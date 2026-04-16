@@ -1,0 +1,144 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://skillgraph.dev/schemas/manifest.schema.json",
+  "title": "Skill Graph Manifest",
+  "type": "object",
+  "required": ["schema_version", "generated_at", "summary", "skills"],
+  "additionalProperties": false,
+  "properties": {
+    "schema_version": {
+      "type": ["integer", "string"]
+    },
+    "generated_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "summary": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["total_skills"],
+      "properties": {
+        "total_skills": { "type": "integer", "minimum": 0 },
+        "by_type": {
+          "type": "object",
+          "additionalProperties": { "type": "integer", "minimum": 0 }
+        },
+        "by_family": {
+          "type": "object",
+          "additionalProperties": { "type": "integer", "minimum": 0 }
+        },
+        "by_scope": {
+          "type": "object",
+          "additionalProperties": { "type": "integer", "minimum": 0 }
+        },
+        "by_stability": {
+          "type": "object",
+          "additionalProperties": { "type": "integer", "minimum": 0 }
+        }
+      }
+    },
+    "skills": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "id",
+          "path",
+          "name",
+          "description",
+          "version",
+          "type",
+          "family",
+          "scope",
+          "owner"
+        ],
+        "properties": {
+          "id": { "type": "string" },
+          "path": { "type": "string" },
+          "name": { "type": "string" },
+          "description": { "type": "string" },
+          "version": { "type": "string" },
+          "type": {
+            "type": "string",
+            "enum": ["capability", "workflow", "router", "overlay"]
+          },
+          "family": { "type": "string" },
+          "scope": {
+            "type": "string",
+            "enum": ["operational", "reference", "generic"]
+          },
+          "owner": { "type": "string" },
+          "stability": {
+            "type": "string",
+            "enum": ["experimental", "stable", "frozen", "deprecated"]
+          },
+          "extends": { "type": "string" },
+          "activation": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "triggers": { "type": "array", "items": { "type": "string" } },
+              "keywords": { "type": "array", "items": { "type": "string" } },
+              "paths": { "type": "array", "items": { "type": "string" } }
+            }
+          },
+          "relations": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "adjacent": { "type": "array", "items": { "type": "string" } },
+              "boundary": { "type": "array", "items": { "type": "string" } },
+              "verify_with": { "type": "array", "items": { "type": "string" } },
+              "depends_on": { "type": "array", "items": { "type": "string" } }
+            }
+          },
+          "grounding": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "evaluation_mode": {
+                "type": "string",
+                "enum": ["repo_specific", "universal", "hybrid"]
+              },
+              "truth_sources": { "type": "array", "items": { "type": "string" } },
+              "failure_modes": { "type": "array", "items": { "type": "string" } },
+              "evidence_priority": {
+                "type": "string",
+                "enum": ["repo_code_first", "general_knowledge_first", "equal"]
+              }
+            }
+          },
+          "portability": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "level": {
+                "type": "string",
+                "enum": ["high", "medium", "low"]
+              },
+              "exports": {
+                "type": "array",
+                "items": {
+                  "type": "string",
+                  "enum": ["agent-skills", "cursor", "windsurf", "copilot", "agents-md"]
+                }
+              }
+            }
+          },
+          "health": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "eval_status": { "type": "string" },
+              "freshness": { "type": "string", "format": "date" },
+              "drift_check": { "type": "string", "format": "date" },
+              "has_domain_frame": { "type": "boolean" },
+              "has_relations": { "type": "boolean" }
+            }
+          }
+        }
+      }
+    }
+  }
+}

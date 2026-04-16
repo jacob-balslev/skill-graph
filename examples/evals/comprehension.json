@@ -1,0 +1,84 @@
+{
+  "skill_name": "example-doc-quality",
+  "subject": "Documentation-quality review for a public technical repo",
+  "adjacent_concepts": ["documentation", "testing-strategy"],
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "A repo README says a runtime and tooling stack already exists, but the repo only contains docs, schemas, and examples. What should the review say?",
+      "dimension": "definition",
+      "substance": "domain",
+      "calibration": "semantic",
+      "truth_mode": "conceptual_correctness_plus_repo_application",
+      "skill_type": "concept",
+      "criticality": "high",
+      "truth_sources": ["README.md:1-18"]
+    },
+    {
+      "id": 2,
+      "prompt": "How should an OSS contract doc separate authored metadata from generated manifest output?",
+      "dimension": "mental_model",
+      "substance": "domain",
+      "calibration": "semantic",
+      "truth_mode": "conceptual_correctness_plus_repo_application",
+      "skill_type": "concept",
+      "criticality": "normal",
+      "truth_sources": ["docs/metadata-contract.md:16-27", "docs/metadata-contract.md:285-322"]
+    },
+    {
+      "id": 3,
+      "prompt": "An example template points to skills that are not present in the OSS repo. Is that acceptable?",
+      "dimension": "boundary",
+      "substance": "contradiction-check",
+      "calibration": "semantic",
+      "truth_mode": "code_verification",
+      "skill_type": "concept",
+      "criticality": "high",
+      "truth_sources": ["examples/skill-template.md:1-85"]
+    },
+    {
+      "id": 4,
+      "prompt": "What concrete files should an OSS audit loop produce so outsiders can follow the format consistently?",
+      "dimension": "application",
+      "substance": "domain",
+      "calibration": "process",
+      "truth_mode": "process_correctness",
+      "skill_type": "workflow",
+      "criticality": "normal",
+      "truth_sources": ["docs/skill-audit-checklist.md:15-23", "docs/skill-audit-loop.md:38-45"]
+    },
+    {
+      "id": 5,
+      "prompt": "The repo has starter skills with eval_status: pending and no eval files anywhere. What packaging risk does that create?",
+      "dimension": "purpose",
+      "substance": "domain",
+      "calibration": "semantic",
+      "truth_mode": "code_verification",
+      "skill_type": "concept",
+      "criticality": "normal",
+      "truth_sources": ["skills/a11y/SKILL.md:1-40", "skills/debugging/SKILL.md:1-40"]
+    },
+    {
+      "id": 6,
+      "prompt": "The schema title says Skill System but the manifest schema already says Skill Graph. How should this be classified?",
+      "dimension": "taxonomy",
+      "substance": "domain",
+      "calibration": "semantic",
+      "truth_mode": "code_verification",
+      "skill_type": "concept",
+      "criticality": "high",
+      "truth_sources": ["schemas/skill.schema.json:1-5", "schemas/manifest.schema.json:1-5"]
+    },
+    {
+      "id": 7,
+      "prompt": "Should an OSS README say tooling exists when only the roadmap for that tooling exists?",
+      "dimension": "apply",
+      "substance": "contradiction-check",
+      "calibration": "semantic",
+      "truth_mode": "conceptual_correctness_plus_repo_application",
+      "skill_type": "concept",
+      "criticality": "critical",
+      "truth_sources": ["README.md:1-18", "docs/plans/scripts-roadmap.md:1-10"]
+    }
+  ]
+}
