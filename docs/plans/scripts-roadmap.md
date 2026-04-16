@@ -1,8 +1,14 @@
 # Scripts Roadmap
 
-This document defines the first script surfaces planned for Skill Graph.
+This document tracks the script surfaces planned for Skill Graph. The goal is the smallest coherent toolchain that makes the metadata contract and audit system executable.
 
-These scripts do not exist in the repo yet. The goal is to describe the smallest coherent future toolchain that would make the metadata contract and audit system executable.
+## Status
+
+| Script | State | Notes |
+|---|---|---|
+| `scripts/skill-lint.js` | **Shipping** | Validates frontmatter against the schema, enforces parent-dir-matches-name, verifies relation targets exist, checks eval coherence |
+| `scripts/generate-manifest.js` | Planned | `examples/skills.manifest.sample.json` is hand-written as a reference until the generator ships |
+| `scripts/skill-audit.js` | Planned | Audit runner that consumes the checklist and writes findings artifacts |
 
 ## Priority Order
 
@@ -27,28 +33,32 @@ Minimum output:
 - `summary`
 - `skills[]`
 
-### 2. Skill lint
+A hand-written sample manifest showing the exact output shape ships today at `examples/skills.manifest.sample.json`.
+
+### 2. Skill lint (SHIPPED)
 
 Target file:
 
 - `scripts/skill-lint.js`
 
-Purpose:
+Shipping today. Covers:
 
-- validate frontmatter against `schemas/skill.schema.json`
-- check relation targets exist
-- check `extends` targets exist
-- check required field combinations
+1. required fields present and well-typed
+2. valid `type` enum
+3. valid `scope` enum
+4. `extends` required for overlays (schema conditional)
+5. `domain_frame` required for `scope: operational` (schema conditional)
+6. relation targets (`adjacent`, `boundary`, `verify_with`, `depends_on`) exist as sibling skills
+7. parent directory name matches the authored `name` (Agent Skills compatibility)
+8. `eval_status: evals` is backed by a real eval file under `examples/evals/`
+
+Run with `node scripts/skill-lint.js` (see `README.md § Validation`). Exit 0 on success, 1 on any failure.
+
+Planned extensions:
+
 - flag deprecated or legacy contract usage
-
-Minimum checks:
-
-1. required fields present
-2. valid `type`
-3. valid `scope`
-4. `extends` required for overlays
-5. relation targets exist
-6. no legacy portability booleans
+- stricter Agent Skills name pattern mode (reject `/` and `:`)
+- integration with `generate-manifest.js` for combined health reporting
 
 ### 3. Audit runner
 

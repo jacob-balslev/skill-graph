@@ -8,15 +8,16 @@ Shipping today:
 
 - public `SKILL.md` frontmatter contract (`docs/metadata-contract.md`)
 - JSON Schemas for skill and manifest validation (`schemas/`)
+- **skill lint script** with schema validation, parent-directory check, relation-target existence, and eval coherence (`scripts/skill-lint.js`)
 - audit documentation for single-skill and repeated-library review (`docs/skill-audit-checklist.md`, `docs/skill-audit-loop.md`)
 - a self-referential skill template (`examples/skill-template.md`)
 - five starter skills (`skills/a11y`, `debugging`, `documentation`, `refactor`, `testing-strategy`)
 - concrete example audit and eval artifacts against the `documentation` starter (`examples/audits/`, `examples/evals/`)
+- sample manifest showing the compiled downstream shape (`examples/skills.manifest.sample.json`)
 
 Planned, not yet implemented:
 
-- manifest generation (`scripts/generate-manifest.js`)
-- skill lint and relation validation (`scripts/skill-lint.js`)
+- manifest generation script (`scripts/generate-manifest.js`) — the sample manifest is hand-written today
 - audit runner (`scripts/skill-audit.js`)
 - overlap detection, routing, export, and coverage tooling
 
@@ -75,13 +76,20 @@ Starter `eval_status` is `pending` for four of the five (no eval artifact shippe
 
 ## Validation
 
-Validation tooling is on the roadmap. Until a bundled CLI ships, a Skill Graph `SKILL.md` can be validated against the schema with any JSON Schema validator, for example:
+Skill Graph ships a self-contained Node lint script with no external dependencies. It validates frontmatter against the schema, enforces the Agent-Skills-compatible parent-directory-matches-name rule, verifies every `relations.*` target exists as a real sibling skill, and confirms `eval_status: evals` is backed by a real eval artifact.
 
 ```bash
-npx ajv-cli validate -s schemas/skill.schema.json -d "skills/**/SKILL.md"
+# Lint every skill under skills/
+node scripts/skill-lint.js
+
+# Lint a single skill directory
+node scripts/skill-lint.js skills/documentation
+
+# Also lint the example template
+node scripts/skill-lint.js --include-template
 ```
 
-This requires extracting the YAML frontmatter before piping it to the validator; a dedicated `scripts/skill-lint.js` will handle this end-to-end.
+Exit code 0 means all checks passed. Exit code 1 means one or more files failed — each failure prints its specific error lines.
 
 ## Non-goals
 
