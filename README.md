@@ -24,7 +24,7 @@ See `docs/plans/scripts-roadmap.md` for the planned script surface.
 
 ## Relationship to Agent Skills
 
-Skill Graph is a graph-aware superset of the [Agent Skills](https://agentskills.io/specification) open standard. A Skill Graph `SKILL.md` adopts the same two required base fields (`name`, `description`) and optional base fields (`license`, `compatibility`, `allowed-tools`, `metadata`), then adds typed relations, grounding anchors, health metadata, and portability declarations as additional top-level fields.
+Skill Graph is a graph-aware superset of the [Agent Skills](https://agentskills.io/specification) open standard. It keeps the two required base fields (`name`, `description`) and the optional base fields (`license`, `compatibility`, `allowed-tools`). Skill Graph then adds typed relations, grounding anchors, health metadata, and portability declarations as additional top-level fields.
 
 The base standard and the Skill Graph extensions:
 
@@ -39,7 +39,7 @@ The base standard and the Skill Graph extensions:
 | `schema_version`, `version`, `type`, `family`, `scope`, `owner`, `freshness`, `drift_check`, `eval_status` | Skill Graph | Required extensions for governance, routing, and health tracking |
 | `relations`, `domain_frame`, `portability`, `triggers`, `keywords`, `paths`, `route_groups`, `extends`, `stability` | Skill Graph | Optional extensions for graph semantics, grounding, and exportability |
 
-**Compatibility direction.** Every valid Agent Skills skill is *not* automatically a valid Skill Graph skill — Skill Graph adds required fields beyond the base two. A Skill Graph skill can be exported back to the base Agent Skills format by moving all extension fields under the standard `metadata:` key; tooling for this transform is on the roadmap as `scripts/export-skill.js`. Until that ships, the `agent-skills` value in the `portability.exports` enum describes a compatibility *goal*, not a working export path.
+**Compatibility direction.** A valid Agent Skills skill is *not* automatically a valid Skill Graph skill — Skill Graph requires fields beyond the base two. Going the other way is possible via a transform: move every Skill Graph extension field under the standard `metadata:` key, leaving only the Agent Skills fields at the top level. Tooling for this transform is on the roadmap as `scripts/export-skill.js`. Until it ships, the `agent-skills` value in `portability.exports` describes a compatibility *goal*, not a working export path.
 
 ## Quick tour
 

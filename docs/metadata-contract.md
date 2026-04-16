@@ -16,7 +16,7 @@ Tooling to consume this contract is planned — see `docs/plans/scripts-roadmap.
 
 ## Relationship to the Agent Skills standard
 
-Skill Graph is a graph-aware superset of the [Agent Skills](https://agentskills.io/specification) open standard. The base standard requires two frontmatter fields (`name` and `description`) and defines four optional fields (`license`, `compatibility`, `metadata`, `allowed-tools`). Skill Graph keeps the two required base fields, keeps three of the four optional base fields as top-level Skill Graph fields (`license`, `compatibility`, `allowed-tools`), and promotes its own extensions to additional top-level fields instead of nesting them under `metadata`.
+Skill Graph is a graph-aware superset of the [Agent Skills](https://agentskills.io/specification) open standard. The base standard requires two frontmatter fields (`name` and `description`) and defines four optional fields (`license`, `compatibility`, `metadata`, `allowed-tools`). Skill Graph keeps the two required base fields. It keeps three of the four optional base fields (`license`, `compatibility`, `allowed-tools`) as top-level Skill Graph fields. It does not use the base `metadata` field; Skill Graph promotes its own extensions to additional top-level fields instead of nesting them under `metadata`.
 
 | Field | Source | Skill Graph treatment |
 |---|---|---|
@@ -29,7 +29,7 @@ Skill Graph is a graph-aware superset of the [Agent Skills](https://agentskills.
 | `schema_version`, `version`, `type`, `family`, `scope`, `owner`, `freshness`, `drift_check`, `eval_status` | Skill Graph extension | Required for Skill Graph; additive to the base |
 | `relations`, `domain_frame`, `portability`, `triggers`, `keywords`, `paths`, `route_groups`, `extends`, `stability` | Skill Graph extension | Optional in Skill Graph; additive to the base |
 
-A Skill Graph `SKILL.md` is **not** a valid Agent Skills file as authored, because Skill Graph requires fields the base standard does not define. To export back to the base Agent Skills shape, a transform must move every Skill Graph extension field under the standard `metadata:` key, leaving only `name`, `description`, `license`, `compatibility`, `allowed-tools`, and `metadata` at the top level. Tooling for this transform is on the roadmap as `scripts/export-skill.js`. Until that ships, the `agent-skills` value in `portability.exports` describes a compatibility goal, not a working export path.
+A Skill Graph `SKILL.md` is **not** a valid Agent Skills file as authored, because Skill Graph requires fields the base standard does not define. An export transform can produce an Agent-Skills-valid file by moving every Skill Graph extension field under the standard `metadata:` key. The top-level fields in the exported file are then only `name`, `description`, `license`, `compatibility`, `allowed-tools`, and `metadata`. Tooling for this transform is on the roadmap as `scripts/export-skill.js`. Until that ships, the `agent-skills` value in `portability.exports` describes a compatibility goal, not a working export path.
 
 ## Current Status
 
@@ -83,7 +83,7 @@ If `description:` is bloated with scope detail, it will conflict with `## Covera
 
 ### Teaching layer delivery mechanisms
 
-Meta-commentary aimed at the template reader must never live in an H2 header slot. AI agents adapting a template copy its H2 structure verbatim, which causes meta sections like `## How To Read This Template` or `## Omitted On Purpose` to be cargo-culted into every new skill. The correct delivery mechanisms are:
+Meta-commentary aimed at the template reader must never live in an H2 header slot. AI agents adapting a template copy its H2 structure verbatim. That means meta sections like `## How To Read This Template` or `## Omitted On Purpose` get cargo-culted into every new skill. The correct delivery mechanisms are:
 
 - **`> **TEMPLATE NOTE:**` blockquotes** for body-level meta guidance (visible on GitHub, structurally distinct from H2 headers in the markdown AST)
 - **`# TEMPLATE NOTE:` inline YAML comments** in the frontmatter for field-level meta guidance (disappears naturally when an author tightens a new skill's frontmatter)
@@ -110,7 +110,7 @@ Each skill archetype expects a specific set of body H2 sections. These are the m
 
 `## Key Files` is recommended for skills that reference concrete repo files. `## References` is recommended for skills that point at external reading.
 
-The goal is to teach agents what a finished skill should look like in practice, and to give them a delivery mechanism for learning that does not pollute the final artifact.
+The goal is to teach agents what a finished skill should look like in practice. The delivery mechanism must not pollute the final artifact.
 
 ## Relationship To Audit Tooling
 
