@@ -439,10 +439,44 @@ Rule:
 ### `portability`
 
 Purpose:
-- models exportability without introducing legacy booleans
+- declares which agent runtimes a skill can be exported to
 
 Rule:
-- replaces `portable`, `cursor_compatible`, `copilot_compatible`
+- single structured object with `level` and `exports`
+- `level` must be one of `high`, `medium`, `low`
+- `exports` is an array constrained to the enum in `schemas/skill.schema.json`
+
+### `allowed-tools`
+
+Purpose:
+- names the pre-approved tools a skill is permitted to invoke when loaded into an agent runtime that honors the declaration
+
+Format:
+- space-separated string (matches the [Agent Skills](https://agentskills.io/specification) base standard)
+- not an array — the string form is a hard requirement for Agent-Skills-compatible export
+
+Example:
+```yaml
+allowed-tools: Read Grep Bash
+```
+
+Scope:
+- Experimental per the Agent Skills spec — support varies across agent implementations
+- Skill Graph validates the shape but does not enforce the allowlist at runtime
+
+### `compatibility`
+
+Purpose:
+- declares environment requirements (intended product, system packages, network access) for skills that have specific runtime needs
+
+Format:
+- string, maximum 500 characters (per Agent Skills spec)
+- omit entirely when a skill is fully generic with no environment requirements
+
+Example:
+```yaml
+compatibility: Requires Node.js 18+ and git
+```
 
 ## Authored vs Generated Fields
 
@@ -511,18 +545,6 @@ The v1 OSS schemas are intentionally strict.
 - unknown top-level fields should fail validation rather than being silently accepted
 - field names should not rely on undocumented aliases
 - new public fields should be added by updating both the docs and the schemas
-
-## Contract Notes
-
-This OSS contract intentionally keeps the authored surface small:
-
-1. adds `schema_version`
-2. adds `stability`
-3. adds `extends`
-4. narrows `type`
-5. narrows `scope`
-6. replaces legacy portability booleans with `portability`
-7. clarifies authored vs generated fields
 
 ## Example
 

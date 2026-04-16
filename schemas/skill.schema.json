@@ -175,6 +175,17 @@
       "then": {
         "required": ["extends"]
       }
+    },
+    {
+      "if": {
+        "properties": {
+          "scope": { "const": "operational" }
+        },
+        "required": ["scope"]
+      },
+      "then": {
+        "required": ["domain_frame"]
+      }
     }
   ]
 }

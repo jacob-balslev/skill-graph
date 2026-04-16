@@ -22,6 +22,8 @@ keywords:
   - regression test
 triggers:
   - testing-skill
+route_groups:
+  - quality
 relations:
   adjacent:
     - debugging

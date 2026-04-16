@@ -59,17 +59,19 @@ Skill Graph ships two reusable audit documents and a concrete artifact set that 
 
 ## Starter skill pack
 
-Five generic, portable starter skills:
+Five generic, portable starter skills. Each starter demonstrates at least one contract feature the others do not:
 
-- `a11y`
-- `debugging`
-- `documentation`
-- `refactor`
-- `testing-strategy`
+| Starter | Archetype | Unique feature demonstrated |
+|---|---|---|
+| `a11y` | `capability` | Minimal routable capability — frontmatter baseline, keyword + trigger activation, no optional extensions |
+| `debugging` | `workflow` | Workflow archetype with a `## Workflow` body section showing numbered procedural steps |
+| `documentation` | `capability` | `eval_status: evals` with a shipped eval artifact (`examples/evals/comprehension.json`) |
+| `refactor` | `workflow` | `relations.depends_on` pointing at `testing-strategy` (refactor verification needs a test suite) |
+| `testing-strategy` | `capability` | `route_groups: [quality]` showing the optional classification field |
 
-The starters intentionally demonstrate only the ungrounded path (no `domain_frame`). The `examples/skill-template.md` file shows the grounded variant with `domain_frame` populated.
+The starters are all `scope: generic` and intentionally demonstrate the ungrounded path (no `domain_frame`). The `examples/skill-template.md` file shows the grounded variant with `domain_frame` populated.
 
-Starter `eval_status` is `pending` — eval artifacts for the starter pack are planned, and `examples/evals/comprehension.json` shows the artifact shape applied to the `documentation` starter as a concrete reference.
+Starter `eval_status` is `pending` for four of the five (no eval artifact shipped yet). `documentation` is `eval_status: evals` because `examples/evals/comprehension.json` targets it as the reference example.
 
 ## Validation
 

@@ -30,6 +30,8 @@ relations:
     - documentation
   verify_with:
     - testing-strategy
+  depends_on:
+    - testing-strategy
 portability:
   level: high
   exports:
