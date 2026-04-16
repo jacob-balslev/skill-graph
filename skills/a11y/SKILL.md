@@ -7,8 +7,8 @@ type: capability
 family: frontend
 scope: generic
 owner: maintainer
-freshness: "2026-04-15"
-drift_check: "2026-04-15"
+freshness: "2026-04-16"
+drift_check: "2026-04-16"
 eval_status: pending
 stability: experimental
 license: MIT
@@ -43,7 +43,12 @@ portability:
 
 ## Coverage
 
-Semantic HTML, keyboard access, focus management, labeling, and interaction states that support assistive technologies.
+- Semantic HTML: choosing the right primitive elements so structure is meaningful to assistive technology
+- Keyboard access: making every interaction reachable and operable without a pointing device
+- Focus management: keeping focus visible, predictable, and correctly placed after navigation and state changes
+- Labeling and naming: ensuring every interactive element has a programmatic name that matches its visible label
+- State and change announcement: communicating dynamic updates (loading, errors, success) to assistive technology
+- Reduced-motion and high-contrast preferences: respecting user settings that affect interaction perception
 
 ## Philosophy
 
@@ -55,9 +60,11 @@ Accessibility is part of product quality, not a finishing pass. The correct defa
 - [ ] Keyboard-only flows remain usable
 - [ ] Focus is visible and lands in the correct place
 - [ ] Labels and state changes are perceivable
+- [ ] User preferences (reduced motion, high contrast) are respected
 
 ## Do NOT Use When
 
 | Instead of this skill | Use | Why |
 |---|---|---|
 | `a11y` | `documentation` | Documentation handles prose structure, not interaction accessibility |
+| `a11y` | `refactor` | Behavior-preserving code cleanup is not the same as changing what assistive technology perceives |

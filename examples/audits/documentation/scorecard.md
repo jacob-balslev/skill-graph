@@ -9,9 +9,9 @@
 | Dimension | Score | Note |
 |---|---:|---|
 | Metadata validity | 5 | All required frontmatter fields present; schema validates cleanly |
-| Activation quality | 4 | Description is specific; keywords cover the common entry phrases; no triggers beyond the label variant |
-| Relation quality | 3 | `verify_with: [a11y]` is ornamental; other relations are coherent |
-| Grounding fidelity | N/A | Skill is `scope: generic` with no `domain_frame`; grounding dimension does not apply |
-| Content quality | 3 | Philosophy and Verification are sharp; `## Coverage` collapses into a one-line restate and needs expansion |
-| Eval quality | 2 | `eval_status: pending` with no artifact; acceptable as an intentional temporary state but not evidence of coverage |
-| Portability quality | 5 | Generic, no private assumptions, exports cleanly to all declared targets |
+| Activation quality | 5 | Description is specific; keywords cover common entry phrases; label trigger present |
+| Relation quality | 5 | Relations are conservative and real — no ornamental partners; three negative routes in `## Do NOT Use When` |
+| Grounding fidelity | N/A | Skill is `scope: generic` with no `domain_frame`; grounding dimension does not apply to generic starters |
+| Content quality | 5 | `## Coverage` is a six-item scope map; `## Philosophy` is two sentences with a clear stance; `## Verification` has five actionable items |
+| Eval quality | 4 | `examples/evals/comprehension.json` ships seven grounded prompts; full coverage of boundary and semantic-layer concerns. Deduct one for no explicit failure-mode eval |
+| Portability quality | 5 | Generic, no private assumptions, exports cleanly to all four declared targets |

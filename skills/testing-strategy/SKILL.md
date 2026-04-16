@@ -7,8 +7,8 @@ type: capability
 family: quality
 scope: generic
 owner: maintainer
-freshness: "2026-04-15"
-drift_check: "2026-04-15"
+freshness: "2026-04-16"
+drift_check: "2026-04-16"
 eval_status: pending
 stability: experimental
 license: MIT
@@ -43,7 +43,12 @@ portability:
 
 ## Coverage
 
-Choosing test scope, selecting the right test level, and matching verification effort to change risk.
+- Test scope: deciding what behavior actually needs a test, and what does not earn the maintenance cost
+- Test level selection: choosing between unit, integration, contract, and end-to-end tests based on risk and coupling
+- Effort-to-risk matching: investing verification effort where regressions are most likely and most damaging
+- Regression targeting: writing tests that pin the specific behavior a change risks breaking, not generic coverage
+- Evidence quality: preferring concrete, reproducible verification over assumed or manual checks
+- Failure-case coverage: ensuring boundary conditions and error paths are tested, not only the happy path
 
 ## Philosophy
 
@@ -54,9 +59,11 @@ Not every change needs the same test shape. Good testing strategy focuses effort
 - [ ] The test type matches the change risk
 - [ ] A behavior or regression target is explicit
 - [ ] Verification evidence is concrete, not assumed
+- [ ] Failure cases and boundaries are covered, not only the happy path
 
 ## Do NOT Use When
 
 | Instead of this skill | Use | Why |
 |---|---|---|
 | `testing-strategy` | `documentation` | Documentation structures explanation; testing strategy structures verification |
+| `testing-strategy` | `debugging` | Chasing a known failure is debugging work; test strategy is planned before the failure |
