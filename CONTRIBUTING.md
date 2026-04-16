@@ -1,0 +1,72 @@
+# Contributing to Skill Graph
+
+Skill Graph is a metadata contract and example pack for graph-aware AI skills. Contributions are welcome — the target audience is anyone extending, auditing, or adopting the contract for their own skill library.
+
+Start with `README.md` and `docs/metadata-contract.md` before opening a pull request.
+
+## What you can contribute
+
+**Welcome:**
+
+- Fixes to broken cross-references, stale examples, or drift between the schemas and `docs/metadata-contract.md`
+- Additional starter skills that demonstrate contract features the current five do not already cover (see `README.md § Starter skill pack` for what each existing starter demonstrates)
+- Worked example artifacts under `examples/audits/` against a starter skill
+- Improvements to `scripts/skill-lint.js` — additional rules, better error messages, stricter Agent Skills compatibility mode
+- Documentation improvements that make the contract easier to read for an outsider who has never seen the repo before
+- Bug reports with a minimal reproducing `SKILL.md` snippet
+
+**Out of scope:**
+
+- Proprietary skill content tied to a specific company, product, or runtime
+- Prompt-library entries or agent-framework wrappers — Skill Graph is a metadata contract, not a prompt repository
+- Changes that add a full runtime implementation — the roadmap is intentionally narrow (see `docs/plans/scripts-roadmap.md`)
+- Breaking schema changes without a bumped `schema_version` and a migration note
+
+## Authoring a new skill
+
+1. **Start from the template.** Copy `examples/skill-template.md` to `skills/<your-skill-name>/SKILL.md`. The template is self-referential — its body teaches you what each section should contain. Read its blockquote notes before editing.
+2. **Rewrite the identity.** Change `name:` to your skill's identifier (lowercase, hyphens, matches the parent directory). Rewrite `description:` as a routing contract: ≤ 3 sentences, pushy trigger phrases, explicit negative boundary. Rewrite every other field to match your subject.
+3. **Pick an archetype and follow its section map.** `docs/metadata-contract.md § Archetype section map` lists the required H2 sections per archetype (`capability`, `workflow`, `router`, `overlay`). Do not add or remove sections outside that map.
+4. **Strip the teaching layer.** Remove every `> **TEMPLATE NOTE:**` blockquote and every `# TEMPLATE NOTE:` YAML comment before committing. They are authoring scaffolding, not skill content.
+5. **Choose `scope` honestly.** Use `generic` for a portable skill with no repo-specific claims, `reference` for a documentation-style skill grounded in contract documents, `operational` for a skill grounded in a specific codebase. `scope: operational` requires a populated `domain_frame` — this is machine-enforced by the schema.
+6. **Point `relations.*` at real skills.** Every `adjacent`, `boundary`, `verify_with`, and `depends_on` target must be the `name` of another skill that exists in `skills/`. `scripts/skill-lint.js` will reject dangling targets.
+7. **Match `eval_status` to reality.** Use `none` if no eval work is planned, `pending` if planned but not yet authored, `evals` if a real eval artifact ships alongside the skill (the lint script verifies this).
+
+## Before opening a pull request
+
+Run the full validation pass:
+
+```bash
+# Lint every skill in the repo
+node scripts/skill-lint.js --include-template
+
+# Verify the sample manifest still validates against the schema
+node -e "
+  const s = require('./schemas/manifest.schema.json');
+  const m = require('./examples/skills.manifest.sample.json');
+  if (m.schema_version !== 1) { console.error('bad schema_version'); process.exit(1); }
+  if (m.summary.total_skills !== m.skills.length) { console.error('total_skills mismatch'); process.exit(1); }
+  console.log('manifest sample ok');
+"
+```
+
+Both must exit 0. If the lint script reports an error, fix the underlying skill — do not silence the error or edit the lint output.
+
+If you touched `docs/metadata-contract.md` or `schemas/skill.schema.json`, also update the other side so they remain in lockstep. The metadata contract is the source of truth for semantics; the schema is the source of truth for machine enforcement. Drift between them is a bug.
+
+If you touched `scripts/skill-lint.js`, run it against every starter skill plus the template and confirm the expected pass count.
+
+## Pull request expectations
+
+- One logical change per pull request. A new starter skill is one PR; a contract revision is a separate PR.
+- The PR description states what changed and why, references the relevant `docs/metadata-contract.md` sections, and includes the `node scripts/skill-lint.js` output.
+- Commits use a short imperative title (≤ 70 chars) and, when needed, a body explaining the motivation rather than restating the diff.
+- Tests, validation, and documentation updates land in the same commit as the code they describe. Do not defer doc updates to a follow-up PR.
+
+## Audit workflow
+
+When auditing an existing skill, follow `docs/skill-audit-loop.md` for the 12-step process and `docs/skill-audit-checklist.md` for the per-skill checklist. Audit artifacts land under `examples/audits/<skill-name>/` with the standard three files (`findings.md`, `verdict.md`, `scorecard.md`) — see `examples/audits/documentation/` for a worked example.
+
+## License
+
+By contributing, you agree that your contributions are licensed under the MIT License (see `LICENSE`).
