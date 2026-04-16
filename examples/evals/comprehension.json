@@ -1,84 +1,84 @@
 {
-  "skill_name": "example-doc-quality",
-  "subject": "Documentation-quality review for a public technical repo",
-  "adjacent_concepts": ["documentation", "testing-strategy"],
+  "skill_name": "documentation",
+  "subject": "General technical documentation authoring: document type selection, audience fit, progressive disclosure, and docs-as-code discipline",
+  "adjacent_concepts": ["testing-strategy", "refactor"],
   "evals": [
     {
       "id": 1,
-      "prompt": "A repo README says a runtime and tooling stack already exists, but the repo only contains docs, schemas, and examples. What should the review say?",
+      "prompt": "A project needs to document a new internal API. The author is unsure whether to write a reference doc, a tutorial, or an architecture note. What does the documentation skill say about choosing the right document type?",
       "dimension": "definition",
       "substance": "domain",
       "calibration": "semantic",
       "truth_mode": "conceptual_correctness_plus_repo_application",
       "skill_type": "concept",
       "criticality": "high",
-      "truth_sources": ["README.md:1-18"]
+      "truth_sources": ["skills/documentation/SKILL.md:44-49"]
     },
     {
       "id": 2,
-      "prompt": "How should an OSS contract doc separate authored metadata from generated manifest output?",
+      "prompt": "Why does the documentation skill treat audience fit as a required verification item rather than a nice-to-have?",
       "dimension": "mental_model",
       "substance": "domain",
       "calibration": "semantic",
       "truth_mode": "conceptual_correctness_plus_repo_application",
       "skill_type": "concept",
       "criticality": "normal",
-      "truth_sources": ["docs/metadata-contract.md:16-27", "docs/metadata-contract.md:285-322"]
+      "truth_sources": ["skills/documentation/SKILL.md:51-58"]
     },
     {
       "id": 3,
-      "prompt": "An example template points to skills that are not present in the OSS repo. Is that acceptable?",
+      "prompt": "A document about UI accessibility behavior arrives for review. Should the reviewer use the documentation skill or the a11y skill? Cite the negative-routing rule that decides this.",
       "dimension": "boundary",
       "substance": "contradiction-check",
       "calibration": "semantic",
       "truth_mode": "code_verification",
       "skill_type": "concept",
       "criticality": "high",
-      "truth_sources": ["examples/skill-template.md:1-85"]
+      "truth_sources": ["skills/documentation/SKILL.md:60-64"]
     },
     {
       "id": 4,
-      "prompt": "What concrete files should an OSS audit loop produce so outsiders can follow the format consistently?",
+      "prompt": "What steps does the skill-audit-loop prescribe for checking whether a skill's claims are still true against its truth sources?",
       "dimension": "application",
       "substance": "domain",
       "calibration": "process",
       "truth_mode": "process_correctness",
       "skill_type": "workflow",
       "criticality": "normal",
-      "truth_sources": ["docs/skill-audit-checklist.md:15-23", "docs/skill-audit-loop.md:38-45"]
+      "truth_sources": ["docs/skill-audit-loop.md:91-101"]
     },
     {
       "id": 5,
-      "prompt": "The repo has starter skills with eval_status: pending and no eval files anywhere. What packaging risk does that create?",
+      "prompt": "The documentation starter ships with `eval_status: pending` and no eval artifact. According to the metadata contract, is that an acceptable state, and for how long?",
       "dimension": "purpose",
       "substance": "domain",
       "calibration": "semantic",
       "truth_mode": "code_verification",
       "skill_type": "concept",
       "criticality": "normal",
-      "truth_sources": ["skills/a11y/SKILL.md:1-40", "skills/debugging/SKILL.md:1-40"]
+      "truth_sources": ["docs/metadata-contract.md:419-436"]
     },
     {
       "id": 6,
-      "prompt": "The schema title says Skill System but the manifest schema already says Skill Graph. How should this be classified?",
+      "prompt": "A Skill Graph skill uses forward slashes in its `name`. Can it still be exported to the base Agent Skills standard? Cite the compatibility rule.",
       "dimension": "taxonomy",
       "substance": "domain",
       "calibration": "semantic",
       "truth_mode": "code_verification",
       "skill_type": "concept",
       "criticality": "high",
-      "truth_sources": ["schemas/skill.schema.json:1-5", "schemas/manifest.schema.json:1-5"]
+      "truth_sources": ["docs/metadata-contract.md:313-325"]
     },
     {
       "id": 7,
-      "prompt": "Should an OSS README say tooling exists when only the roadmap for that tooling exists?",
+      "prompt": "Should the documentation skill's `## Coverage` section restate its `description:` field? What does semantic layer discipline say about the difference between the two?",
       "dimension": "apply",
       "substance": "contradiction-check",
       "calibration": "semantic",
       "truth_mode": "conceptual_correctness_plus_repo_application",
       "skill_type": "concept",
       "criticality": "critical",
-      "truth_sources": ["README.md:1-18", "docs/plans/scripts-roadmap.md:1-10"]
+      "truth_sources": ["docs/metadata-contract.md:73-82", "skills/documentation/SKILL.md:42-49"]
     }
   ]
 }

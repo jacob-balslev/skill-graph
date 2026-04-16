@@ -9,7 +9,7 @@ scope: reference
 owner: maintainer
 freshness: "2026-04-16"
 drift_check: "2026-04-16"
-eval_status: evals
+eval_status: pending
 stability: stable
 license: MIT
 compatibility: Markdown, YAML, JSON Schema
