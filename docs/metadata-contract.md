@@ -9,9 +9,27 @@ It does:
 - keep one `SKILL.md` file per skill
 - keep one generated manifest downstream
 - tighten field semantics
-- add a small number of high-value fields
+- add a small number of high-value fields beyond the Agent Skills base
+- stay additive to the Agent Skills standard so every Skill Graph skill can be transformed back to the base shape
 
-It does **not** claim that the full runtime toolchain already exists in this repo.
+Tooling to consume this contract is planned — see `docs/plans/scripts-roadmap.md`.
+
+## Relationship to the Agent Skills standard
+
+Skill Graph is a graph-aware superset of the [Agent Skills](https://agentskills.io/specification) open standard. The base standard requires two frontmatter fields (`name` and `description`) and defines four optional fields (`license`, `compatibility`, `metadata`, `allowed-tools`). Skill Graph keeps the two required base fields, keeps three of the four optional base fields as top-level Skill Graph fields (`license`, `compatibility`, `allowed-tools`), and promotes its own extensions to additional top-level fields instead of nesting them under `metadata`.
+
+| Field | Source | Skill Graph treatment |
+|---|---|---|
+| `name` | Agent Skills required | Kept as required; Skill Graph tightens the character pattern |
+| `description` | Agent Skills required | Kept as required; scoped to routing |
+| `license` | Agent Skills optional | Kept top-level; strongly recommended for shared skills |
+| `compatibility` | Agent Skills optional | Kept top-level; optional |
+| `allowed-tools` | Agent Skills optional | Kept top-level as a space-separated string |
+| `metadata` | Agent Skills optional | Not used at the top level; Skill Graph promotes extensions to named fields |
+| `schema_version`, `version`, `type`, `family`, `scope`, `owner`, `freshness`, `drift_check`, `eval_status` | Skill Graph extension | Required for Skill Graph; additive to the base |
+| `relations`, `domain_frame`, `portability`, `triggers`, `keywords`, `paths`, `route_groups`, `extends`, `stability` | Skill Graph extension | Optional in Skill Graph; additive to the base |
+
+A Skill Graph `SKILL.md` is **not** a valid Agent Skills file as authored, because Skill Graph requires fields the base standard does not define. To export back to the base Agent Skills shape, a transform must move every Skill Graph extension field under the standard `metadata:` key, leaving only `name`, `description`, `license`, `compatibility`, `allowed-tools`, and `metadata` at the top level. Tooling for this transform is on the roadmap as `scripts/export-skill.js`. Until that ships, the `agent-skills` value in `portability.exports` describes a compatibility goal, not a working export path.
 
 ## Current Status
 
@@ -74,10 +92,23 @@ Meta-commentary aimed at the template reader must never live in an H2 header slo
 ### When adapting the example
 
 1. Restore `description:` to routing-only if it has drifted into scope description.
-2. Keep the H2 structure that matches the skill archetype per `skill-scaffold § 5`.
+2. Keep the H2 structure that matches the skill archetype (see **Archetype section map** below).
 3. Replace example values only with equally real, context-correct values.
 4. Remove sections that are conditionally irrelevant rather than keeping them and filling with fake content.
 5. Leave `> **TEMPLATE NOTE:**` blockquotes and `# TEMPLATE NOTE:` YAML comments out of the new skill — they are authoring scaffolding, not skill content.
+
+### Archetype section map
+
+Each skill archetype expects a specific set of body H2 sections. These are the minimum required sections per archetype. Additional sections are allowed when they earn their line count.
+
+| Archetype | Required H2 sections |
+|---|---|
+| `capability` | `## Coverage`, `## Philosophy`, `## Verification`, `## Do NOT Use When` |
+| `workflow` | `## Coverage`, `## Philosophy`, `## Workflow`, `## Verification`, `## Do NOT Use When` |
+| `router` | `## Coverage`, `## Routing Rules`, `## Do NOT Use When` |
+| `overlay` | `## Coverage`, `## Overlay Rules`, `## Extends` (name of the base skill), `## Do NOT Use When` |
+
+`## Key Files` is recommended for skills that reference concrete repo files. `## References` is recommended for skills that point at external reading.
 
 The goal is to teach agents what a finished skill should look like in practice, and to give them a delivery mechanism for learning that does not pollute the final artifact.
 
@@ -184,32 +215,9 @@ portability:
     - copilot
 ```
 
-## Required Fields
-
-These should be required in the OSS contract:
-
-```yaml
-schema_version
-name
-description
-version
-type
-family
-scope
-owner
-freshness
-drift_check
-eval_status
-```
-
-Recommended for all non-trivial skills:
-
-```yaml
-stability
-relations
-```
-
 ## Strongly Recommended Fields
+
+These are not required by the schema, but most useful skills include them:
 
 ```yaml
 relations
@@ -286,9 +294,9 @@ compatibility
 allowed-tools
 route_groups
 portability
-stability
-license
 ```
+
+`stability` and `license` are listed under **Strongly Recommended Fields** above — every non-trivial skill should set them, even though the schema does not enforce them.
 
 ## Field Semantics
 
@@ -302,6 +310,19 @@ Rule:
 - integer or stringified integer accepted
 - start at `1`
 
+### `name`
+
+Purpose:
+- stable skill identifier used for routing, relations, and filesystem layout
+
+Rule:
+- must match the regular expression `^[a-z0-9][a-z0-9-/:]*$`
+- lowercase alphanumerics, hyphens, forward slashes, and colons only
+- must start with a letter or digit
+- should match the parent directory name for Agent-Skills-compatible export
+
+Note: The Agent Skills base standard uses a stricter name pattern (no `/`, no `:`, no consecutive hyphens, no trailing hyphen). A Skill Graph name that uses `/` or `:` can still be exported to Agent Skills by normalizing the separators in the transform layer.
+
 ### `type`
 
 Purpose:
@@ -314,7 +335,8 @@ Allowed values:
 - `overlay`
 
 Rule:
-- do not overload `type` with doctrine/framework/strategy/system/domain concepts
+- keep `type` restricted to the four allowed archetype values
+- `family` is the field for browse taxonomy and domain grouping, not `type`
 
 ### `family`
 
@@ -536,6 +558,8 @@ relations:
     - fulfillment
   verify_with:
     - test-coverage
+  depends_on:
+    - api-key-management
 domain_frame:
   domain_object: Shopify integration behavior
   evaluation_mode: repo_specific
