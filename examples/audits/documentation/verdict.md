@@ -4,18 +4,41 @@
 
 `documentation`
 
+## Audit Date
+
+2026-04-17
+
+## Audit Mode
+
+`--graded` (grader: `node scripts/lib/mock-grader.js`)
+
 ## Final Verdict
 
-PASS
+PASS WITH FIXES
+
+## Dimension Summary
+
+| Dimension | Verdict | Score |
+|---|---|---|
+| Metadata validity | PASS | 5 |
+| Activation quality | PASS WITH FIXES | 4 |
+| Relation quality | PASS | 5 |
+| Grounding fidelity | N/A | N/A |
+| Content quality | PASS WITH FIXES | 4 |
+| Eval quality | PASS WITH FIXES | 4 |
+| Portability quality | PASS | 5 |
 
 ## Rationale
 
-The skill is structurally valid against `schemas/skill.schema.json` and the frontmatter contract. The description cleanly routes documentation-authoring work and gives three explicit negative boundaries (`debugging`, `a11y`, `refactor`). The `## Coverage` section is a proper six-item scope map, not a restate of the description. The `## Verification` checklist has five actionable items including a source-of-truth discipline item. Relations are conservative and real — no ornamental `verify_with` partner is asserted.
+- **Metadata validity** (PASS, score 5): All thirteen required v2 frontmatter fields are present and well-typed; schema_version is 2.
+- **Activation quality** (PASS WITH FIXES, score 4): Description names real trigger scenarios and keywords are specific, but the skill has no explicit `triggers` array for label-based routing.
+- **Relation quality** (PASS, score 5): adjacent and boundary relations are concise and point at real sibling skills; no dangling targets.
+- **Grounding fidelity** (N/A, score N/A): Dimension does not apply to this skill (scope: portable).
+- **Content quality** (PASS WITH FIXES, score 4): Coverage, Philosophy, and Verification sections are present and concrete, but "Do NOT Use When" boundaries are implicit rather than an explicit named section.
+- **Eval quality** (PASS WITH FIXES, score 4): Eval artifact ships with seven grounded prompts; boundary coverage is good, but failure-mode prompts are missing.
+- **Portability quality** (PASS, score 5): Skill is generic, portable, and the agent-skills export via scripts/export-skill.js round-trips cleanly.
 
-`eval_status: evals` is honest: the companion eval artifact lives at `examples/evals/comprehension.json` and exercises the skill against real line ranges in the current repo.
-
-The three findings in `findings.md` are P3/P4 polish observations about future extensibility, not corrective actions.
 
 ## Follow-up State
 
-No fixes required. Re-run the checklist the next time this starter is edited, or whenever the metadata contract version bumps.
+TODO — set to one of: `No fixes required`, `Fixes applied`, `Fixes deferred — <reason>`, or `Pending human review`.

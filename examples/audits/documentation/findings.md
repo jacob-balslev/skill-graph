@@ -4,33 +4,49 @@
 
 `documentation`
 
+## Audit Date
+
+2026-04-17
+
+## Audit Mode
+
+`--graded` (grader: `node scripts/lib/mock-grader.js`)
+
 ## Verdict Summary
 
-PASS
+PASS WITH FIXES
 
 ## Findings
 
 ID: F1
 Severity: P3
-Surface: frontmatter
-Problem: The skill is declared `scope: generic` but could be promoted to `repo_specific` with a `grounding` if it ever anchors to concrete truth sources in an adopting project.
-Evidence: The current skill is fully generic — there is no `grounding` and no `truth_sources`. This is intentional for a portable starter skill; flagged only as a future extensibility note.
-Required action: None required. When an adopting project customizes this starter, consider adding a `grounding` block pointing at the project's style guide or documentation site as `truth_sources`.
+Surface: frontmatter: triggers
+Category: Activation quality
+Source: grader (node scripts/lib/mock-grader.js)
+Problem: No triggers array is declared; the skill is only discoverable via keyword matching.
+Evidence: triggers: (absent from frontmatter)
+Required action: Add a `triggers: [documentation-skill]` entry so label-based routers can activate the skill deterministically.
 
 ID: F2
-Severity: P3
-Surface: frontmatter
-Problem: `relations` has no `verify_with` partner.
-Evidence: `relations.verify_with` is absent from the frontmatter. An earlier draft listed `a11y`, which was removed because the relation was ornamental. There is no strong verification partner among the starter pack for a purely generic documentation skill.
-Required action: None required. The absence is honest. An adopting project that ships documentation tests can add `verify_with: [testing-strategy]` when the test surface is real.
+Severity: P2
+Surface: skill body
+Category: Content quality
+Source: grader (node scripts/lib/mock-grader.js)
+Problem: No explicit `## Do NOT Use When` section; negative routing is only implied.
+Evidence: Section headings observed: `# Documentation`, `## Coverage`, `## Philosophy`, `## Verification` — no explicit negative-bounds section.
+Required action: Add a `## Do NOT Use When` section listing at least two cases where the skill must not activate (e.g. UI accessibility behavior, runtime debugging).
 
 ID: F3
-Severity: P4
-Surface: body
-Problem: `## Coverage` bullets could be further subdivided into separate sub-headings if the skill ever grows past six topics.
-Evidence: The current six-bullet list is at the clarity ceiling for a flat list. Not a defect; noted for future growth.
-Required action: None required.
+Severity: P3
+Surface: examples/evals/comprehension.json
+Category: Eval quality
+Source: grader (node scripts/lib/mock-grader.js)
+Problem: Eval covers happy-path and boundary prompts but has no explicit failure-mode eval.
+Evidence: Seven prompts, all affirmative; no prompt tests what the skill should refuse.
+Required action: Add one failure-mode prompt per skills/evaluation SKILL.md guidance (≥ 1 negative expectation per skill).
 
 ## Required Fixes
 
-None. The skill passes all eight sections of `docs/single-skill-audit-checklist.md`. The three findings above are forward-looking polish observations, not corrective actions.
+- Activation quality: PASS WITH FIXES — 1 finding(s) from grader
+- Content quality: PASS WITH FIXES — 1 finding(s) from grader
+- Eval quality: PASS WITH FIXES — 1 finding(s) from grader

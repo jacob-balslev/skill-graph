@@ -12,7 +12,7 @@ Shipping today:
 - **contract consistency checker** for cross-artifact parity between schemas, docs, and example artifacts (`scripts/check-contract-consistency.js`)
 - **manifest generator** that walks `skills/**/SKILL.md`, applies the rename map from `docs/manifest-contract.md`, and emits a validated, deterministic manifest (`scripts/generate-manifest.js`)
 - **Agent Skills export script** that transforms a Skill Graph SKILL.md into an Agent Skills-compatible file (`scripts/export-skill.js`); five exported fixtures in `examples/exports/`
-- **audit runner (stub generator)** that seeds `audits/<skill>/{findings,verdict,scorecard}.md` stubs from lint output for a human or graded model to complete (`scripts/skill-audit.js`)
+- **audit runner** with two modes (`scripts/skill-audit.js`): stub mode seeds `audits/<skill>/{findings,verdict,scorecard}.md` from lint output with human TODO placeholders; `--graded` mode extends the stub by calling an external model CLI (e.g. `claude -p`, `codex exec`) for each of the seven scorecard dimensions, writing evidence-backed PASS / PASS WITH FIXES / FAIL verdicts into the artifact files. Per-dimension prompts are composed by `scripts/lib/audit-prompt-builder.js`; a deterministic mock grader ships at `scripts/lib/mock-grader.js` for CI smoke-tests.
 - **CI integration** — self-hosted GitHub Actions workflow running lint + consistency checks on every PR touching schema, scripts, skills, or examples (`.github/workflows/skill-graph-lint.yml`); consumer copy-paste snippet at `docs/integrations/github-actions.md`
 - audit documentation for single-skill and repeated-library review (`docs/single-skill-audit-checklist.md`, `docs/library-audit-workflow.md`)
 - a self-referential skill template (`examples/skill-template.md`)
@@ -22,7 +22,6 @@ Shipping today:
 
 Planned, not yet implemented:
 
-- audit runner — full qualitative pass beyond the stub generator (prompt-driven 7-checklist grading, writing verdicts directly rather than seeding stubs)
 - overlap detection, routing, and coverage tooling (`scripts/skill-overlap.js`, `scripts/skill-router.js`, `scripts/build-coverage.js`)
 
 Deferred (removed from the contract in 0.3.0):

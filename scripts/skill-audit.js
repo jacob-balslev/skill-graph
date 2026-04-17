@@ -1,24 +1,41 @@
 #!/usr/bin/env node
 /**
- * Skill Audit Stub Generator
+ * Skill Audit Runner
  *
- * Seeds three audit artifact stubs from lint output, leaving all qualitative
- * judgment as human TODOs. Designed to accelerate the Step 2–9 sequence in
- * docs/library-audit-workflow.md by pre-populating deterministic findings so
- * auditors can focus on routing, content, and eval quality.
+ * Two modes:
+ *
+ * 1. Stub mode (default, no flags) — seeds findings.md / verdict.md / scorecard.md
+ *    from lint output, leaving qualitative judgment as human TODOs. Fast, free,
+ *    deterministic. This is the original behavior and is unchanged.
+ *
+ * 2. Graded mode (--graded) — on top of the stub, runs a prompt-driven
+ *    seven-dimension review by calling an external model CLI for each
+ *    dimension. Writes structured PASS / PASS WITH FIXES / FAIL verdicts with
+ *    evidence quotes into findings.md / verdict.md / scorecard.md, replacing
+ *    the human-TODO placeholders. Requires a grader CLI to be on PATH.
  *
  * Usage:
  *   node scripts/skill-audit.js <skill-name>
  *   node scripts/skill-audit.js <skill-name> --audit-root <path>
  *   node scripts/skill-audit.js <skill-name> --force
- *   node scripts/skill-audit.js <skill-name> --audit-root audits/ --force
+ *   node scripts/skill-audit.js <skill-name> --graded
+ *   node scripts/skill-audit.js <skill-name> --graded --grader-cli "claude -p"
+ *   node scripts/skill-audit.js <skill-name> --graded --grader-cli "codex exec"
+ *
+ * Flags:
+ *   --audit-root <path>   Output directory root (default: examples/audits/).
+ *   --force               Overwrite existing artifacts.
+ *   --graded              Enable the prompt-driven grader pass.
+ *   --grader-cli <cmd>    Shell command to invoke the grader. The prompt is
+ *                         piped to stdin; stdout is parsed. Default: `claude -p`.
+ *   --grader-timeout <ms> Per-dimension timeout in milliseconds. Default: 120000.
  *
  * Produces under <audit-root>/<skill-name>/:
- *   findings.md   — lint-derived findings + human-judgment TODOs
- *   verdict.md    — stub verdict based on lint outcome
- *   scorecard.md  — 7 dimension rows with schema validity auto-scored
+ *   findings.md   — lint-derived findings + graded findings (graded mode) or human TODOs (stub)
+ *   verdict.md    — stub verdict (stub mode) or aggregated graded verdict (graded mode)
+ *   scorecard.md  — seven dimensions with scores from lint (metadata) and grader (others)
  *
- * Self-contained. Only uses Node built-ins. No external dependencies.
+ * Self-contained. Only uses Node built-ins. No external npm dependencies.
  * Exit 0 on success, 1 on any error.
  */
 
@@ -31,17 +48,31 @@ const { spawnSync } = require('child_process');
 const REPO_ROOT  = path.resolve(__dirname, '..');
 const SKILLS_DIR = path.join(REPO_ROOT, 'skills');
 
+const {
+  DIMENSIONS,
+  collectContext,
+  buildDimensionPrompt,
+  parseDimensionResponse,
+  aggregateVerdict,
+} = require('./lib/audit-prompt-builder');
+
 // ---------------------------------------------------------------------------
 // CLI argument parsing
 // ---------------------------------------------------------------------------
 
+const DEFAULT_GRADER_CLI     = 'claude -p';
+const DEFAULT_GRADER_TIMEOUT = 120_000;
+
 function parseArgs(argv) {
   const args = argv.slice(2);
   const result = {
-    skillName: null,
-    auditRoot: path.join(REPO_ROOT, 'examples', 'audits'),
-    force:     false,
-    errors:    [],
+    skillName:      null,
+    auditRoot:      path.join(REPO_ROOT, 'examples', 'audits'),
+    force:          false,
+    graded:         false,
+    graderCli:      DEFAULT_GRADER_CLI,
+    graderTimeout:  DEFAULT_GRADER_TIMEOUT,
+    errors:         [],
   };
 
   let i = 0;
@@ -49,42 +80,39 @@ function parseArgs(argv) {
     const a = args[i];
     if (a === '--audit-root') {
       i++;
-      if (!args[i]) {
-        result.errors.push('--audit-root requires a path argument');
-      } else {
-        result.auditRoot = path.resolve(args[i]);
-      }
+      if (!args[i]) result.errors.push('--audit-root requires a path argument');
+      else result.auditRoot = path.resolve(args[i]);
     } else if (a === '--force') {
       result.force = true;
+    } else if (a === '--graded') {
+      result.graded = true;
+    } else if (a === '--grader-cli') {
+      i++;
+      if (!args[i]) result.errors.push('--grader-cli requires a command string');
+      else result.graderCli = args[i];
+    } else if (a === '--grader-timeout') {
+      i++;
+      const n = Number(args[i]);
+      if (!Number.isFinite(n) || n <= 0) result.errors.push('--grader-timeout requires a positive integer (ms)');
+      else result.graderTimeout = n;
     } else if (!a.startsWith('--')) {
-      if (result.skillName) {
-        result.errors.push(`unexpected positional argument: ${a}`);
-      } else {
-        result.skillName = a;
-      }
+      if (result.skillName) result.errors.push(`unexpected positional argument: ${a}`);
+      else result.skillName = a;
     } else {
       result.errors.push(`unknown flag: ${a}`);
     }
     i++;
   }
 
-  if (!result.skillName) {
-    result.errors.push('missing required argument: <skill-name>');
-  }
+  if (!result.skillName) result.errors.push('missing required argument: <skill-name>');
 
   return result;
 }
 
 // ---------------------------------------------------------------------------
-// Lint runner — spawns skill-lint.js as a child process and captures output
+// Lint runner
 // ---------------------------------------------------------------------------
 
-/**
- * Run skill-lint.js against the given skill directory.
- *
- * @param {string} skillDir - Absolute path to the skill directory.
- * @returns {{ stdout: string, stderr: string, exitCode: number }}
- */
 function runLint(skillDir) {
   const lintScript = path.join(__dirname, 'skill-lint.js');
   const result = spawnSync(
@@ -104,8 +132,6 @@ function runLint(skillDir) {
 // ---------------------------------------------------------------------------
 
 /**
- * Diagnostic tuple extracted from lint stderr.
- *
  * @typedef {object} LintDiagnostic
  * @property {'error'|'warn'} severity
  * @property {string} filePath
@@ -115,44 +141,14 @@ function runLint(skillDir) {
  * @property {string|null} help
  */
 
-/**
- * Parse the lint stderr output into structured diagnostic tuples.
- *
- * skill-lint.js emits diagnostics in this format (with --no-color):
- *
- *   [error] skills/a11y/SKILL.md:3:1
- *   (blank)
- *   > 3 | schema_version: 2
- *       ^ some message
- *   (blank or more frame lines)
- *   (blank)
- *     help: optional help text
- *   (blank)
- *
- * The parser collects the [error]/[warn] header lines and the caret message
- * lines. It does NOT attempt to parse full code frames — it only extracts
- * the minimal (file, line, col, severity, message) tuple needed for findings.
- *
- * @param {string} stderr - Raw stderr from the lint child process.
- * @returns {LintDiagnostic[]}
- */
 function parseLintOutput(stderr) {
   const diagnostics = [];
   const lines = stderr.split('\n');
-
-  // State machine: walk the lines, collecting header + caret pairs.
-  // A diagnostic block starts with a [error] or [warn] header line:
-  //   [error] skills/foo/SKILL.md:12:3
-  // followed by frame lines, then a caret line:
-  //     ^ message text here
-
   let current = null;
 
   for (let i = 0; i < lines.length; i++) {
     const line = lines[i];
 
-    // Match the severity+location header line.
-    // Pattern: [error] path/to/file.md:line:col
     const headerMatch = line.match(/^\[(error|warn)\]\s+(.+?):(\d+):(\d+)\s*$/);
     if (headerMatch) {
       if (current) diagnostics.push(current);
@@ -167,8 +163,6 @@ function parseLintOutput(stderr) {
       continue;
     }
 
-    // Match the caret line: spaces + ^ + space + message
-    // e.g.  "        ^ unknown field: nme"
     if (current && current.message === '') {
       const caretMatch = line.match(/^\s*\^\s+(.+)$/);
       if (caretMatch) {
@@ -177,7 +171,6 @@ function parseLintOutput(stderr) {
       }
     }
 
-    // Match a help line: "  help: ..."
     if (current && line.match(/^\s+help:\s+/)) {
       current.help = line.replace(/^\s+help:\s+/, '').trim();
       continue;
@@ -185,8 +178,6 @@ function parseLintOutput(stderr) {
   }
 
   if (current) diagnostics.push(current);
-
-  // Filter out diagnostics without a parsed message (incomplete blocks).
   return diagnostics.filter(d => d.message !== '');
 }
 
@@ -194,46 +185,18 @@ function parseLintOutput(stderr) {
 // Category inference from message text
 // ---------------------------------------------------------------------------
 
-/**
- * Infer a human-readable category from a lint error/warn message.
- *
- * @param {string} message
- * @returns {string}
- */
 function inferCategory(message) {
-  if (/missing required field|unknown field|enum|pattern|minLength|oneOf|sub-field/.test(message)) {
-    return 'Schema validity';
-  }
-  if (/parent directory|name/.test(message)) {
-    return 'Naming convention';
-  }
-  if (/relations\.|adjacent|boundary|verify_with|depends_on/.test(message)) {
-    return 'Relation quality';
-  }
-  if (/eval_artifacts|eval_state|routing_eval/.test(message)) {
-    return 'Eval quality';
-  }
-  if (/grounding|domain_object|truth_sources/.test(message)) {
-    return 'Grounding quality';
-  }
-  if (/section|Coverage|Philosophy|Verification|Do NOT/.test(message)) {
-    return 'Content quality';
-  }
-  if (/keywords|description|routing/.test(message)) {
-    return 'Activation quality';
-  }
-  if (/deprecated|migration|rename|v1/.test(message)) {
-    return 'Schema migration';
-  }
+  if (/missing required field|unknown field|enum|pattern|minLength|oneOf|sub-field/.test(message)) return 'Schema validity';
+  if (/parent directory|name/.test(message)) return 'Naming convention';
+  if (/relations\.|adjacent|boundary|verify_with|depends_on/.test(message)) return 'Relation quality';
+  if (/eval_artifacts|eval_state|routing_eval/.test(message)) return 'Eval quality';
+  if (/grounding|domain_object|truth_sources/.test(message)) return 'Grounding quality';
+  if (/section|Coverage|Philosophy|Verification|Do NOT/.test(message)) return 'Content quality';
+  if (/keywords|description|routing/.test(message)) return 'Activation quality';
+  if (/deprecated|migration|rename|v1/.test(message)) return 'Schema migration';
   return 'Lint diagnostic';
 }
 
-/**
- * Derive a recommended fix suggestion from the diagnostic.
- *
- * @param {LintDiagnostic} d
- * @returns {string}
- */
 function inferFix(d) {
   if (d.help) return d.help;
   if (/missing required field: (.+)/.test(d.message)) {
@@ -244,44 +207,130 @@ function inferFix(d) {
     const field = d.message.match(/unknown field: (.+)/)[1];
     return `Remove or rename \`${field}\`. Check docs/field-reference.md for the canonical field list.`;
   }
-  if (/not in enum/.test(d.message)) {
-    return 'Replace the value with one of the canonical enum values listed in docs/field-reference.md.';
-  }
-  if (/does not match any known skill/.test(d.message)) {
-    return 'Check the skill name for typos or remove the dangling relation target.';
-  }
-  if (/deprecated/.test(d.message)) {
-    return 'Follow the migration note in docs/manifest-contract.md § Migration Note — v1 → v2.';
-  }
+  if (/not in enum/.test(d.message)) return 'Replace the value with one of the canonical enum values listed in docs/field-reference.md.';
+  if (/does not match any known skill/.test(d.message)) return 'Check the skill name for typos or remove the dangling relation target.';
+  if (/deprecated/.test(d.message)) return 'Follow the migration note in docs/manifest-contract.md § Migration Note — v1 → v2.';
   return 'Inspect the flagged line, correct the value, and re-run skill-lint.js.';
 }
 
 // ---------------------------------------------------------------------------
-// Artifact template builders
+// Grader CLI invocation
 // ---------------------------------------------------------------------------
 
 /**
- * Build the findings.md stub.
+ * Invoke the grader CLI with the composed prompt on stdin, return stdout.
  *
- * @param {string} skillName
- * @param {LintDiagnostic[]} diagnostics
- * @param {string} isoDate - e.g. "2026-04-17"
- * @returns {string}
+ * The CLI command is user-supplied (--grader-cli) so we do not hardcode a
+ * provider. The prompt is piped to stdin to avoid shell-escaping issues with
+ * large multi-line prompts containing quotes and backticks.
+ *
+ * @param {string} graderCli Shell-style command, e.g. `claude -p` or `codex exec`.
+ * @param {string} prompt    Full prompt text.
+ * @param {number} timeoutMs Per-call timeout.
+ * @returns {{ ok: boolean, stdout: string, stderr: string, exitCode: number, error: string|null }}
  */
-function buildFindings(skillName, diagnostics, isoDate) {
+function invokeGrader(graderCli, prompt, timeoutMs) {
+  const [cmd, ...cmdArgs] = graderCli.trim().split(/\s+/);
+  if (!cmd) {
+    return { ok: false, stdout: '', stderr: '', exitCode: 1, error: 'empty grader-cli' };
+  }
+
+  const result = spawnSync(cmd, cmdArgs, {
+    input:    prompt,
+    encoding: 'utf8',
+    timeout:  timeoutMs,
+    maxBuffer: 20 * 1024 * 1024,
+    stdio:    ['pipe', 'pipe', 'pipe'],
+  });
+
+  if (result.error) {
+    const msg = result.error.code === 'ENOENT'
+      ? `grader CLI not found on PATH: ${cmd}. Pass --grader-cli to point at an installed CLI.`
+      : `grader CLI failed to spawn: ${result.error.message}`;
+    return { ok: false, stdout: '', stderr: '', exitCode: 1, error: msg };
+  }
+
+  if (result.signal === 'SIGTERM' || result.status === null) {
+    return { ok: false, stdout: result.stdout || '', stderr: result.stderr || '', exitCode: 124, error: `grader CLI timed out after ${timeoutMs}ms` };
+  }
+
+  return {
+    ok: result.status === 0,
+    stdout: result.stdout || '',
+    stderr: result.stderr || '',
+    exitCode: result.status,
+    error: result.status === 0 ? null : `grader CLI exited with status ${result.status}: ${(result.stderr || '').trim().slice(0, 500)}`,
+  };
+}
+
+// ---------------------------------------------------------------------------
+// Graded pass — run every dimension, collect verdicts
+// ---------------------------------------------------------------------------
+
+function runGradedPass(skillDir, opts) {
+  const context = collectContext({ skillDir, repoRoot: REPO_ROOT });
+  const results = [];
+
+  for (const dimension of DIMENSIONS) {
+    const applies = dimension.appliesWhen(context.frontmatter);
+    if (!applies) {
+      results.push({
+        dimension,
+        skipped: true,
+        verdict: {
+          dimension: dimension.id,
+          score: 'N/A',
+          verdict: 'N/A',
+          justification: `Dimension does not apply to this skill (scope: ${context.frontmatter && context.frontmatter.scope}).`,
+          findings: [],
+          raw: '',
+        },
+        error: null,
+      });
+      console.log(`  ${dimension.id}: N/A (skipped — does not apply)`);
+      continue;
+    }
+
+    const prompt = buildDimensionPrompt({ dimension, context });
+    process.stdout.write(`  ${dimension.id}: calling grader (${prompt.length} char prompt)… `);
+    const call = invokeGrader(opts.graderCli, prompt, opts.graderTimeout);
+
+    if (!call.ok) {
+      console.log(`ERROR — ${call.error}`);
+      results.push({ dimension, skipped: false, verdict: null, error: call.error });
+      continue;
+    }
+
+    const parsed = parseDimensionResponse(call.stdout, dimension);
+    if (!parsed.ok) {
+      const preview = call.stdout.trim().slice(0, 200).replace(/\n/g, ' ');
+      console.log(`PARSE ERROR — ${parsed.error} (preview: ${preview})`);
+      results.push({ dimension, skipped: false, verdict: null, error: parsed.error, raw: call.stdout });
+      continue;
+    }
+
+    console.log(`${parsed.verdict.verdict} — score ${parsed.verdict.score} — ${parsed.verdict.findings.length} finding(s)`);
+    results.push({ dimension, skipped: false, verdict: parsed.verdict, error: null });
+  }
+
+  return { context, results };
+}
+
+// ---------------------------------------------------------------------------
+// Artifact template builders — stub mode
+// ---------------------------------------------------------------------------
+
+function buildFindingsStub(skillName, diagnostics, isoDate) {
   const errors   = diagnostics.filter(d => d.severity === 'error');
   const warnings = diagnostics.filter(d => d.severity === 'warn');
 
-  // Assign finding IDs to lint-derived issues, then add human-judgment TODOs.
   const findingBlocks = [];
   let fIndex = 1;
 
-  // Lint-derived findings — one per diagnostic.
   for (const d of diagnostics) {
     const severity = d.severity === 'error' ? 'P1' : 'P2';
     const category = inferCategory(d.message);
     const fix      = inferFix(d);
-
     findingBlocks.push([
       `ID: F${fIndex}`,
       `Severity: ${severity}`,
@@ -294,18 +343,17 @@ function buildFindings(skillName, diagnostics, isoDate) {
     fIndex++;
   }
 
-  // Human-judgment placeholder findings always appended.
   const humanJudgmentTodos = [
-    { id: `F${fIndex++}`,   surface: 'activation',   title: 'Activation quality — routing coverage',         note: 'Does the description name real trigger scenarios? Are keywords specific and not generic filler? Does the skill under-trigger or over-trigger for its intended use case?' },
-    { id: `F${fIndex++}`,   surface: 'relations',     title: 'Relation quality — graph correctness',          note: 'Do adjacent/boundary/verify_with relations point at semantically correct neighbors? Are boundary rules crisp enough to prevent misuse? Are dependencies real?' },
-    { id: `F${fIndex++}`,   surface: 'grounding',     title: 'Grounding quality — claims vs truth sources',   note: 'If scope: codebase, do all truth_sources exist? Do claims in the body match the referenced files? Classify any mismatch as skill drift, code drift, or doc drift.' },
-    { id: `F${fIndex++}`,   surface: 'content',       title: 'Content quality — completeness and density',    note: 'Does the skill have a clear Coverage section, a Philosophy section, at least one decision table or checklist, and explicit negative bounds (Do NOT Use When)? Does it contain generic filler that adds no routing signal?' },
-    { id: `F${fIndex++}`,   surface: 'evals',         title: 'Eval quality — coverage and realism',           note: 'Do eval files exist if the skill is expected to be graded? Do they test realistic prompts — not trivia — and cover boundaries and failure cases as well as the happy path?' },
+    { surface: 'activation',   title: 'Activation quality — routing coverage',         note: 'Does the description name real trigger scenarios? Are keywords specific and not generic filler? Does the skill under-trigger or over-trigger for its intended use case?' },
+    { surface: 'relations',    title: 'Relation quality — graph correctness',          note: 'Do adjacent/boundary/verify_with relations point at semantically correct neighbors? Are boundary rules crisp enough to prevent misuse? Are dependencies real?' },
+    { surface: 'grounding',    title: 'Grounding quality — claims vs truth sources',   note: 'If scope: codebase, do all truth_sources exist? Do claims in the body match the referenced files? Classify any mismatch as skill drift, code drift, or doc drift.' },
+    { surface: 'content',      title: 'Content quality — completeness and density',    note: 'Does the skill have a clear Coverage section, a Philosophy section, at least one decision table or checklist, and explicit negative bounds (Do NOT Use When)? Does it contain generic filler that adds no routing signal?' },
+    { surface: 'evals',        title: 'Eval quality — coverage and realism',           note: 'Do eval files exist if the skill is expected to be graded? Do they test realistic prompts — not trivia — and cover boundaries and failure cases as well as the happy path?' },
   ];
 
   for (const todo of humanJudgmentTodos) {
     findingBlocks.push([
-      `ID: ${todo.id}`,
+      `ID: F${fIndex}`,
       `Severity: TODO`,
       `Surface: ${todo.surface}`,
       `Category: ${todo.title}`,
@@ -313,9 +361,9 @@ function buildFindings(skillName, diagnostics, isoDate) {
       `Evidence: TODO — reviewer must inspect the skill body`,
       `Required action: ${todo.note}`,
     ].join('\n'));
+    fIndex++;
   }
 
-  // Required fixes section.
   let requiredFixes = '';
   if (errors.length === 0 && warnings.length === 0) {
     requiredFixes = 'None identified by lint. See human-judgment finding blocks above for remaining review areas.';
@@ -343,7 +391,7 @@ function buildFindings(skillName, diagnostics, isoDate) {
     '',
     '## Verdict Summary',
     '',
-    verdictLabel(diagnostics),
+    verdictLabelFromLint(diagnostics),
     '',
     '## Findings',
     '',
@@ -356,18 +404,10 @@ function buildFindings(skillName, diagnostics, isoDate) {
   ].join('\n');
 }
 
-/**
- * Build the verdict.md stub.
- *
- * @param {string} skillName
- * @param {LintDiagnostic[]} diagnostics
- * @param {string} isoDate
- * @returns {string}
- */
-function buildVerdict(skillName, diagnostics, isoDate) {
+function buildVerdictStub(skillName, diagnostics, isoDate) {
   const errors   = diagnostics.filter(d => d.severity === 'error');
   const warnings = diagnostics.filter(d => d.severity === 'warn');
-  const verdict  = verdictLabel(diagnostics);
+  const verdict  = verdictLabelFromLint(diagnostics);
 
   let rationale = '';
   if (errors.length === 0 && warnings.length === 0) {
@@ -434,18 +474,7 @@ function buildVerdict(skillName, diagnostics, isoDate) {
   ].join('\n');
 }
 
-/**
- * Build the scorecard.md stub.
- *
- * Schema validity is auto-scored from lint; all other dimensions are TODO.
- * When scope is portable the grounding row is N/A.
- *
- * @param {string}           skillName
- * @param {LintDiagnostic[]} diagnostics
- * @param {string|null}      scope       - Value of the `scope:` frontmatter field.
- * @returns {string}
- */
-function buildScorecard(skillName, diagnostics, scope) {
+function buildScorecardStub(skillName, diagnostics, scope) {
   const errors     = diagnostics.filter(d => d.severity === 'error');
   const schemaErrs = errors.filter(d => {
     const cat = inferCategory(d.message);
@@ -489,40 +518,239 @@ function buildScorecard(skillName, diagnostics, scope) {
 }
 
 // ---------------------------------------------------------------------------
-// Verdict label helper
+// Artifact template builders — graded mode
 // ---------------------------------------------------------------------------
 
-/**
- * Derive the canonical verdict label from lint diagnostics.
- *
- * Lint errors → FAIL.
- * Lint warnings only → PASS WITH FIXES.
- * No lint issues → PASS WITH FIXES (pending human review).
- *
- * The human reviewer will update this label after qualitative inspection.
- *
- * @param {LintDiagnostic[]} diagnostics
- * @returns {string}
- */
-function verdictLabel(diagnostics) {
-  const errors   = diagnostics.filter(d => d.severity === 'error');
-  const warnings = diagnostics.filter(d => d.severity === 'warn');
-  if (errors.length > 0)   return 'FAIL';
-  if (warnings.length > 0) return 'PASS WITH FIXES';
-  return 'PASS WITH FIXES';   // pending qualitative human review
+function buildFindingsGraded(skillName, diagnostics, isoDate, gradedResults, finalVerdict, graderCli) {
+  const findingBlocks = [];
+  let fIndex = 1;
+
+  // Lint-derived findings first, unchanged.
+  for (const d of diagnostics) {
+    const severity = d.severity === 'error' ? 'P1' : 'P2';
+    const category = inferCategory(d.message);
+    const fix      = inferFix(d);
+    findingBlocks.push([
+      `ID: F${fIndex}`,
+      `Severity: ${severity}`,
+      `Surface: ${d.filePath}:${d.line}:${d.column}`,
+      `Category: ${category}`,
+      `Source: skill-lint.js`,
+      `Problem: ${d.message}`,
+      `Evidence: Emitted by skill-lint.js — see ${d.filePath} line ${d.line}`,
+      `Required action: ${fix}`,
+    ].join('\n'));
+    fIndex++;
+  }
+
+  // Graded findings, one block per finding, tagged with dimension + grader.
+  for (const r of gradedResults) {
+    if (r.error || !r.verdict || r.verdict.verdict === 'N/A') continue;
+    for (const finding of r.verdict.findings) {
+      findingBlocks.push([
+        `ID: F${fIndex}`,
+        `Severity: ${finding.severity}`,
+        `Surface: ${finding.surface}`,
+        `Category: ${r.dimension.label}`,
+        `Source: grader (${graderCli})`,
+        `Problem: ${finding.problem}`,
+        `Evidence: ${finding.evidence}`,
+        `Required action: ${finding.required_action}`,
+      ].join('\n'));
+      fIndex++;
+    }
+  }
+
+  // Graded errors surface as findings too so they don't get lost.
+  for (const r of gradedResults) {
+    if (!r.error) continue;
+    findingBlocks.push([
+      `ID: F${fIndex}`,
+      `Severity: P2`,
+      `Surface: grader-${r.dimension.id}`,
+      `Category: Grader infrastructure`,
+      `Source: skill-audit.js`,
+      `Problem: Grader call failed for dimension "${r.dimension.label}"`,
+      `Evidence: ${r.error.slice(0, 400)}`,
+      `Required action: Re-run with a working grader CLI (see --grader-cli) or complete this dimension manually.`,
+    ].join('\n'));
+    fIndex++;
+  }
+
+  const requiredFixesLines = [];
+  if (diagnostics.length > 0) {
+    let fi = 1;
+    for (const d of diagnostics) {
+      const sev = d.severity === 'error' ? '[P1 error]' : '[P2 warning]';
+      requiredFixesLines.push(`- F${fi} ${sev}: ${d.message}`);
+      fi++;
+    }
+  }
+  for (const r of gradedResults) {
+    if (r.error || !r.verdict || r.verdict.verdict === 'PASS' || r.verdict.verdict === 'N/A') continue;
+    const count = r.verdict.findings.length;
+    if (count > 0) {
+      requiredFixesLines.push(`- ${r.dimension.label}: ${r.verdict.verdict} — ${count} finding(s) from grader`);
+    }
+  }
+  const requiredFixes = requiredFixesLines.length === 0
+    ? 'None — all dimensions PASS under grader review and lint is clean.'
+    : requiredFixesLines.join('\n');
+
+  return [
+    '# Findings',
+    '',
+    '## Skill',
+    '',
+    `\`${skillName}\``,
+    '',
+    '## Audit Date',
+    '',
+    isoDate,
+    '',
+    '## Audit Mode',
+    '',
+    `\`--graded\` (grader: \`${graderCli}\`)`,
+    '',
+    '## Verdict Summary',
+    '',
+    finalVerdict,
+    '',
+    '## Findings',
+    '',
+    findingBlocks.length === 0 ? '_(no findings — lint clean and grader PASS across every dimension)_' : findingBlocks.join('\n\n'),
+    '',
+    '## Required Fixes',
+    '',
+    requiredFixes,
+    '',
+  ].join('\n');
+}
+
+function buildVerdictGraded(skillName, isoDate, gradedResults, finalVerdict, graderCli) {
+  const summaryRows = [
+    '| Dimension | Verdict | Score |',
+    '|---|---|---|',
+    ...gradedResults.map(r => {
+      if (r.error) return `| ${r.dimension.label} | ERROR | n/a |`;
+      const v = r.verdict;
+      return `| ${r.dimension.label} | ${v.verdict} | ${v.score} |`;
+    }),
+  ].join('\n');
+
+  const justifications = gradedResults
+    .filter(r => r.verdict && !r.error)
+    .map(r => `- **${r.dimension.label}** (${r.verdict.verdict}, score ${r.verdict.score}): ${r.verdict.justification}`)
+    .join('\n');
+
+  const errorNotes = gradedResults
+    .filter(r => r.error)
+    .map(r => `- **${r.dimension.label}** — grader error: ${r.error.slice(0, 300)}`)
+    .join('\n');
+
+  return [
+    '# Verdict',
+    '',
+    '## Skill',
+    '',
+    `\`${skillName}\``,
+    '',
+    '## Audit Date',
+    '',
+    isoDate,
+    '',
+    '## Audit Mode',
+    '',
+    `\`--graded\` (grader: \`${graderCli}\`)`,
+    '',
+    '## Final Verdict',
+    '',
+    finalVerdict,
+    '',
+    '## Dimension Summary',
+    '',
+    summaryRows,
+    '',
+    '## Rationale',
+    '',
+    justifications || '_(no per-dimension justifications — every dimension errored)_',
+    '',
+    errorNotes ? ['## Grader Errors', '', errorNotes, ''].join('\n') : '',
+    '## Follow-up State',
+    '',
+    'TODO — set to one of: `No fixes required`, `Fixes applied`, `Fixes deferred — <reason>`, or `Pending human review`.',
+    '',
+  ].join('\n');
+}
+
+function buildScorecardGraded(skillName, diagnostics, gradedResults) {
+  const errors     = diagnostics.filter(d => d.severity === 'error');
+  const schemaErrs = errors.filter(d => {
+    const cat = inferCategory(d.message);
+    return cat === 'Schema validity' || cat === 'Naming convention';
+  });
+  const metaScore = schemaErrs.length === 0 ? '5' : '0';
+  const metaNote  = schemaErrs.length === 0 ? 'lint passes' : `${schemaErrs.length} lint error(s)`;
+
+  // Metadata validity is lint-derived; all other rows come from the grader.
+  const byId = new Map(gradedResults.map(r => [r.dimension.id, r]));
+
+  function rowFor(id, label) {
+    if (id === 'metadata') {
+      return `| ${label} | ${metaScore} | auto: ${metaNote} |`;
+    }
+    const r = byId.get(id);
+    if (!r) return `| ${label} | TODO | (no grader output) |`;
+    if (r.error) return `| ${label} | ERROR | grader error — see findings.md |`;
+    const v = r.verdict;
+    const note = (v.justification || '').replace(/\|/g, '\\|').slice(0, 300);
+    return `| ${label} | ${v.score} | ${v.verdict} — ${note} |`;
+  }
+
+  const rows = [
+    rowFor('metadata',    'Metadata validity'),
+    rowFor('activation',  'Activation quality'),
+    rowFor('relation',    'Relation quality'),
+    rowFor('grounding',   'Grounding fidelity'),
+    rowFor('content',     'Content quality'),
+    rowFor('eval',        'Eval quality'),
+    rowFor('portability', 'Portability quality'),
+  ];
+
+  return [
+    '# Scorecard',
+    '',
+    '## Skill',
+    '',
+    `\`${skillName}\``,
+    '',
+    '## Dimensions',
+    '',
+    '| Dimension | Score | Note |',
+    '|---|---|---|',
+    ...rows,
+    '',
+    '> **Note:** Metadata validity is auto-scored from `skill-lint.js`. All other',
+    '> dimensions come from the `--graded` grader pass. See `verdict.md` for the',
+    '> per-dimension rationale and `findings.md` for the specific finding evidence.',
+    '',
+  ].join('\n');
 }
 
 // ---------------------------------------------------------------------------
-// Read frontmatter scope from the skill file (best-effort, no hard dep)
+// Verdict label helper (stub mode)
 // ---------------------------------------------------------------------------
 
-/**
- * Extract the `scope:` value from a SKILL.md frontmatter block.
- * Returns null if the file cannot be read or parsed.
- *
- * @param {string} skillFilePath
- * @returns {string|null}
- */
+function verdictLabelFromLint(diagnostics) {
+  const errors   = diagnostics.filter(d => d.severity === 'error');
+  if (errors.length > 0) return 'FAIL';
+  return 'PASS WITH FIXES';   // stub mode always has human TODOs pending
+}
+
+// ---------------------------------------------------------------------------
+// Scope reader (fallback for when we don't collect full context)
+// ---------------------------------------------------------------------------
+
 function readScopeFromSkill(skillFilePath) {
   try {
     const { parseFrontmatter } = require('./lib/parse-frontmatter');
@@ -539,16 +767,15 @@ function readScopeFromSkill(skillFilePath) {
 // ---------------------------------------------------------------------------
 
 function main() {
-  const { skillName, auditRoot, force, errors: argErrors } = parseArgs(process.argv);
+  const opts = parseArgs(process.argv);
 
-  if (argErrors.length > 0) {
-    for (const e of argErrors) console.error(`error: ${e}`);
-    console.error('\nUsage: node scripts/skill-audit.js <skill-name> [--audit-root <path>] [--force]');
+  if (opts.errors.length > 0) {
+    for (const e of opts.errors) console.error(`error: ${e}`);
+    console.error('\nUsage: node scripts/skill-audit.js <skill-name> [--audit-root <path>] [--force] [--graded [--grader-cli <cmd>] [--grader-timeout <ms>]]');
     process.exit(1);
   }
 
-  // 1. Validate skill directory exists.
-  const skillDir  = path.join(SKILLS_DIR, skillName);
+  const skillDir  = path.join(SKILLS_DIR, opts.skillName);
   const skillFile = path.join(skillDir, 'SKILL.md');
   if (!fs.existsSync(skillDir)) {
     console.error(`error: skill directory not found: ${skillDir}`);
@@ -560,12 +787,9 @@ function main() {
     process.exit(1);
   }
 
-  // 2. Determine output directory.
-  const outDir = path.join(auditRoot, skillName);
-
-  // 3. Guard against overwriting existing artifacts unless --force.
+  const outDir = path.join(opts.auditRoot, opts.skillName);
   const targetFiles = ['findings.md', 'verdict.md', 'scorecard.md'];
-  if (!force) {
+  if (!opts.force) {
     const existing = targetFiles.filter(f => fs.existsSync(path.join(outDir, f)));
     if (existing.length > 0) {
       console.error(`error: audit artifacts already exist in ${outDir}`);
@@ -575,48 +799,59 @@ function main() {
     }
   }
 
-  // 4. Run lint and capture output.
-  console.log(`Running skill-lint.js on skills/${skillName}…`);
+  console.log(`Running skill-lint.js on skills/${opts.skillName}…`);
   const { stderr, exitCode } = runLint(skillDir);
   const diagnostics = parseLintOutput(stderr);
-
-  const errors   = diagnostics.filter(d => d.severity === 'error');
-  const warnings = diagnostics.filter(d => d.severity === 'warn');
-
+  const lintErrors   = diagnostics.filter(d => d.severity === 'error');
+  const lintWarnings = diagnostics.filter(d => d.severity === 'warn');
   if (exitCode === 0) {
-    console.log(`  lint: PASS${warnings.length > 0 ? ` (${warnings.length} warning(s))` : ''}`);
+    console.log(`  lint: PASS${lintWarnings.length > 0 ? ` (${lintWarnings.length} warning(s))` : ''}`);
   } else {
-    console.log(`  lint: FAIL (${errors.length} error(s), ${warnings.length} warning(s))`);
+    console.log(`  lint: FAIL (${lintErrors.length} error(s), ${lintWarnings.length} warning(s))`);
   }
 
-  // 5. Read scope for scorecard grounding row.
-  const scope = readScopeFromSkill(skillFile);
-
-  // 6. Determine today's date for timestamps.
   const isoDate = new Date().toISOString().slice(0, 10);
 
-  // 7. Build the three artifact stubs.
-  const findingsMd  = buildFindings(skillName, diagnostics, isoDate);
-  const verdictMd   = buildVerdict(skillName, diagnostics, isoDate);
-  const scorecardMd = buildScorecard(skillName, diagnostics, scope);
+  let findingsMd, verdictMd, scorecardMd, summaryTail;
 
-  // 8. Write output files.
+  if (!opts.graded) {
+    // ---- stub path (unchanged) ----
+    const scope = readScopeFromSkill(skillFile);
+    findingsMd  = buildFindingsStub(opts.skillName, diagnostics, isoDate);
+    verdictMd   = buildVerdictStub(opts.skillName, diagnostics, isoDate);
+    scorecardMd = buildScorecardStub(opts.skillName, diagnostics, scope);
+    const humanTodoCount = 5;
+    summaryTail = `${diagnostics.length} lint finding(s) stubbed, ${humanTodoCount} human-judgment TODOs.`;
+  } else {
+    // ---- graded path ----
+    console.log(`\nRunning graded pass — grader: \`${opts.graderCli}\` (timeout ${opts.graderTimeout}ms/call)`);
+    const { results } = runGradedPass(skillDir, opts);
+
+    const validVerdicts = results.filter(r => r.verdict && !r.error).map(r => r.verdict);
+    const finalVerdict  = lintErrors.length > 0 ? 'FAIL' : aggregateVerdict(validVerdicts);
+
+    findingsMd  = buildFindingsGraded(opts.skillName, diagnostics, isoDate, results, finalVerdict, opts.graderCli);
+    verdictMd   = buildVerdictGraded(opts.skillName, isoDate, results, finalVerdict, opts.graderCli);
+    scorecardMd = buildScorecardGraded(opts.skillName, diagnostics, results);
+
+    const graderErrors = results.filter(r => r.error).length;
+    const gradedFindingCount = results.reduce((n, r) => n + (r.verdict ? r.verdict.findings.length : 0), 0);
+    summaryTail = `${diagnostics.length} lint finding(s), ${gradedFindingCount} graded finding(s), ${graderErrors} grader error(s).`;
+  }
+
   fs.mkdirSync(outDir, { recursive: true });
   fs.writeFileSync(path.join(outDir, 'findings.md'),  findingsMd,  'utf8');
   fs.writeFileSync(path.join(outDir, 'verdict.md'),   verdictMd,   'utf8');
   fs.writeFileSync(path.join(outDir, 'scorecard.md'), scorecardMd, 'utf8');
 
-  // 9. Print summary.
-  const humanTodoCount = 5; // fixed: the 5 qualitative TODO findings always appended
-  console.log(
-    `\nCreated ${path.relative(REPO_ROOT, outDir)}/{findings,verdict,scorecard}.md` +
-    ` — ${diagnostics.length} lint finding(s) stubbed, ${humanTodoCount} human-judgment TODOs.`
-  );
+  console.log(`\nWrote ${path.relative(REPO_ROOT, outDir)}/{findings,verdict,scorecard}.md — ${summaryTail}`);
 
-  if (errors.length > 0) {
+  if (lintErrors.length > 0) {
     console.log('\nNext step: fix the lint errors listed in findings.md, then re-run skill-audit.js --force.');
+  } else if (!opts.graded) {
+    console.log('\nNext step: open findings.md and complete the human-judgment TODO sections, or re-run with --graded to invoke the grader.');
   } else {
-    console.log('\nNext step: open findings.md and complete the human-judgment TODO sections.');
+    console.log('\nNext step: address the graded findings in findings.md, then re-run with --force to refresh the verdict.');
   }
 }
 

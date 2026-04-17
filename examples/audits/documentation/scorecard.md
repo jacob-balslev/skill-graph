@@ -7,11 +7,15 @@
 ## Dimensions
 
 | Dimension | Score | Note |
-|---|---:|---|
-| Metadata validity | 5 | All required frontmatter fields present; schema validates cleanly |
-| Activation quality | 5 | Description is specific; keywords cover common entry phrases; label trigger present |
-| Relation quality | 5 | Relations are conservative and real — no ornamental partners; three negative routes in `## Do NOT Use When` |
-| Grounding fidelity | N/A | Skill is `scope: generic` with no `domain_frame`; grounding dimension does not apply to generic starters |
-| Content quality | 5 | `## Coverage` is a six-item scope map; `## Philosophy` is two sentences with a clear stance; `## Verification` has five actionable items |
-| Eval quality | 4 | `examples/evals/comprehension.json` ships seven grounded prompts; full coverage of boundary and semantic-layer concerns. Deduct one for no explicit failure-mode eval |
-| Portability quality | 5 | Generic, no private assumptions, portable to the only declared export target; `agent-skills` export works via `node scripts/export-skill.js <skill-dir>`. Other runtimes (cursor, windsurf, copilot, agents-md) were removed from the `portability.targets` enum in 0.3.0 pending working transforms |
+|---|---|---|
+| Metadata validity | 5 | auto: lint passes |
+| Activation quality | 4 | PASS WITH FIXES — Description names real trigger scenarios and keywords are specific, but the skill has no explicit `triggers` array for label-based routing. |
+| Relation quality | 5 | PASS — adjacent and boundary relations are concise and point at real sibling skills; no dangling targets. |
+| Grounding fidelity | N/A | N/A — Dimension does not apply to this skill (scope: portable). |
+| Content quality | 4 | PASS WITH FIXES — Coverage, Philosophy, and Verification sections are present and concrete, but "Do NOT Use When" boundaries are implicit rather than an explicit named section. |
+| Eval quality | 4 | PASS WITH FIXES — Eval artifact ships with seven grounded prompts; boundary coverage is good, but failure-mode prompts are missing. |
+| Portability quality | 5 | PASS — Skill is generic, portable, and the agent-skills export via scripts/export-skill.js round-trips cleanly. |
+
+> **Note:** Metadata validity is auto-scored from `skill-lint.js`. All other
+> dimensions come from the `--graded` grader pass. See `verdict.md` for the
+> per-dimension rationale and `findings.md` for the specific finding evidence.

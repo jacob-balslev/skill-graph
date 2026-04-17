@@ -10,7 +10,7 @@ This document tracks the script surfaces planned for Skill Graph. The goal is th
 | `scripts/generate-manifest.js` | **Shipping** | Walks `skills/**/SKILL.md`, applies the rename map from `docs/manifest-contract.md`, emits deterministic validated manifest; `examples/skills.manifest.sample.json` is generated output, not hand-written |
 | `scripts/export-skill.js` | **Shipping** | Agent Skills export target only; transforms Skill Graph extensions under `metadata:` key. Five fixtures in `examples/exports/`. Other runtimes (cursor, windsurf, copilot, agents-md) were removed from the `portability.targets` enum in 0.3.0 — re-add via a new RFC and the PR that ships the transform |
 | `scripts/check-contract-consistency.js` | **Shipping** | Cross-artifact consistency — field-set parity, authored-to-generated parity, example truth invariants (C1–C5 checks) |
-| `scripts/skill-audit.js` | **Shipping (stub-only)** | Seeds `audits/<skill>/{findings,verdict,scorecard}.md` stubs from lint output. Full qualitative 7-checklist grader pass is still manual; promoting the stub to a prompt-driven runner is the next milestone |
+| `scripts/skill-audit.js` | **Shipping** | Stub mode seeds `audits/<skill>/{findings,verdict,scorecard}.md` from lint output (unchanged). `--graded` mode composes per-dimension prompts via `scripts/lib/audit-prompt-builder.js`, calls an external model CLI for each of the seven scorecard dimensions, and writes evidence-backed verdicts into the artifact files replacing TODO placeholders. A deterministic mock grader ships at `scripts/lib/mock-grader.js` for CI smoke-tests |
 
 ## Priority Order
 
@@ -62,7 +62,7 @@ Planned extensions:
 - stricter Agent Skills name pattern mode (reject `/` and `:`)
 - integration with `generate-manifest.js` for combined health reporting
 
-### 3. Audit runner
+### 3. Audit runner (SHIPPED)
 
 Target file:
 
@@ -71,16 +71,20 @@ Target file:
 Purpose:
 
 - audit one skill at a time using `docs/single-skill-audit-checklist.md`
-- write findings and verdict artifacts
+- write findings, verdict, and scorecard artifacts
 - optionally run deterministic validation after fixes
 
-Minimum behavior:
+Shipping today. Two modes:
 
-1. select one skill
-2. run lint
-3. read skill and apply checklist
-4. write `audits/<skill>/findings.md`
-5. write `audits/<skill>/verdict.md`
+1. **Stub mode** (default) — runs `scripts/skill-lint.js` and seeds `audits/<skill>/{findings,verdict,scorecard}.md` with lint-derived findings and human-TODO placeholders for the seven qualitative dimensions.
+2. **`--graded` mode** — on top of the stub, composes per-dimension prompts via `scripts/lib/audit-prompt-builder.js` and calls an external model CLI (`--grader-cli`, default `claude -p`) once per dimension. Each response must return a `<verdict>…</verdict>` JSON block matching the fixed schema (dimension / score / verdict / justification / findings[]). The runner parses, validates, and merges these into the artifact files, replacing TODO placeholders with structured PASS / PASS WITH FIXES / FAIL verdicts with evidence quotes.
+
+Related files:
+
+- `scripts/lib/audit-prompt-builder.js` — dimension registry, context collector, prompt composer, response parser, verdict aggregator
+- `scripts/lib/mock-grader.js` — deterministic canned-response grader for CI smoke-tests and reproducible examples (prints fixed `<verdict>` blocks per dimension)
+
+Grader CLI discipline: the runner NEVER embeds API keys. Auth is delegated to the external CLI on the host (see `.claude/rules/cli-first.md`). `--grader-cli "claude -p"` and `--grader-cli "codex exec"` both work when the respective CLIs are authenticated.
 
 ## Suggested Follow-on Scripts
 
