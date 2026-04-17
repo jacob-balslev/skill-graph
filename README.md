@@ -46,7 +46,9 @@ The base standard and the Skill Graph extensions:
 
 ## Quick tour
 
-- `docs/metadata-contract.md` — authoritative field semantics, required vs optional, conditional requiredness, schema strictness rules
+- `docs/metadata-contract.md` — overview, archetype section map, requiredness groups, and schema strictness rules
+- `docs/field-reference.md` — one section per authored field (23 total): purpose, rules, allowed values, examples, when to use
+- `docs/field-decision-guide.md` — decision tables for the three hardest choices: `scope`, `relations.*`, and `eval_status` / `portability`
 - `docs/manifest-contract.md` — the authored-to-generated bridge: rename map, loss policy, migration policy, and a worked example projecting authored frontmatter into the compiled manifest
 - `schemas/skill.schema.json` — the frontmatter contract as enforceable JSON Schema
 - `schemas/manifest.schema.json` — the compiled manifest contract as enforceable JSON Schema

@@ -2,7 +2,7 @@
 
 Skill Graph is a metadata contract and example pack for graph-aware AI skills. Contributions are welcome — the target audience is anyone extending, auditing, or adopting the contract for their own skill library.
 
-Start with `README.md` and `docs/metadata-contract.md` before opening a pull request.
+Start with `README.md`, `docs/metadata-contract.md`, and `docs/field-reference.md` before opening a pull request.
 
 ## What you can contribute
 
@@ -26,9 +26,9 @@ Start with `README.md` and `docs/metadata-contract.md` before opening a pull req
 
 1. **Start from the template.** Copy `examples/skill-template.md` to `skills/<your-skill-name>/SKILL.md`. The template is self-referential — its body teaches you what each section should contain. Read its blockquote notes before editing.
 2. **Rewrite the identity.** Change `name:` to your skill's identifier (lowercase, hyphens, matches the parent directory). Rewrite `description:` as a routing contract: ≤ 3 sentences, pushy trigger phrases, explicit negative boundary. Rewrite every other field to match your subject.
-3. **Pick an archetype and follow its section map.** `docs/metadata-contract.md § Archetype section map` lists the required H2 sections per archetype (`capability`, `workflow`, `router`, `overlay`). Do not remove required sections. Additional sections are allowed when they earn their line count — for example, `## Key Files` for skills that reference concrete repo files, or `## References` for skills that point at external reading.
+3. **Pick an archetype and follow its section map.** `docs/metadata-contract.md § Archetype section map` lists the required H2 sections per archetype (`capability`, `workflow`, `router`, `overlay`). Do not remove required sections. Additional sections are allowed when they earn their line count — for example, `## Key Files` for skills that reference concrete repo files, or `## References` for skills that point at external reading. For field-level guidance, see `docs/field-reference.md`.
 4. **Strip the teaching layer.** Remove every `> **TEMPLATE NOTE:**` blockquote and every `# TEMPLATE NOTE:` YAML comment before committing. They are authoring scaffolding, not skill content.
-5. **Choose `scope` honestly.** Use `generic` for a portable skill with no repo-specific claims, `reference` for a documentation-style skill grounded in contract documents, `operational` for a skill grounded in a specific codebase. `scope: operational` requires a populated `grounding` block — this is machine-enforced by the schema.
+5. **Choose `scope` honestly.** Use `generic` for a portable skill with no repo-specific claims, `reference` for a documentation-style skill grounded in contract documents, `operational` for a skill grounded in a specific codebase. `scope: operational` requires a populated `grounding` block — this is machine-enforced by the schema. For a decision table, see `docs/field-decision-guide.md § 1. Which scope do I use?`.
 6. **Point `relations.*` at real skills.** Every `adjacent`, `boundary`, `verify_with`, and `depends_on` target must be the `name` of another skill that exists in `skills/`. `scripts/skill-lint.js` will reject dangling targets.
 7. **Match `eval_status` to reality.** Use `none` if no eval work is planned, `pending` if planned but not yet authored, `evals` if a real eval artifact ships alongside the skill (the lint script verifies this).
 
@@ -52,7 +52,7 @@ node -e "
 
 Both must exit 0. If the lint script reports an error, fix the underlying skill — do not silence the error or edit the lint output.
 
-If you touched `docs/metadata-contract.md` or `schemas/skill.schema.json`, also update the other side so they remain in lockstep. The metadata contract is the source of truth for semantics; the schema is the source of truth for machine enforcement. Drift between them is a bug.
+If you touched `docs/metadata-contract.md`, `docs/field-reference.md`, or `schemas/skill.schema.json`, also update the other sides so they remain in lockstep. The metadata contract is the overview; `docs/field-reference.md` is the per-field semantics authority; the schema is the source of truth for machine enforcement. Drift between them is a bug.
 
 If you touched `scripts/skill-lint.js`, run it against every starter skill plus the template and confirm the expected pass count.
 
