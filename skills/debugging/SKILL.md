@@ -9,7 +9,7 @@ scope: portable
 owner: maintainer
 freshness: "2026-04-17"
 drift_check: "2026-04-17"
-eval_artifacts: planned
+eval_artifacts: none
 eval_state: unverified
 routing_eval: absent
 stability: experimental
@@ -25,6 +25,12 @@ keywords:
   - minimum reproduction
   - bisect
   - what caused it
+  - my tests are failing
+  - why is this broken
+  - it broke in production
+  - cannot reproduce
+  - test passes locally
+  - stack trace
 triggers:
   - debugging-skill
 relations:

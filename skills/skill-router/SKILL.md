@@ -9,7 +9,7 @@ scope: portable
 owner: maintainer
 freshness: "2026-04-17"
 drift_check: "2026-04-17"
-eval_artifacts: planned
+eval_artifacts: none
 eval_state: unverified
 routing_eval: absent
 stability: experimental
@@ -21,16 +21,19 @@ keywords:
   - skill dispatch
   - keyword routing
   - route skill
-  - which skill
+  - which skill to use
   - skill selector
+  - routing table
+  - coverage gap
+  - ambiguous skill activation
 triggers:
   - skill-router
 relations:
   adjacent:
     - documentation
-    - testing-strategy
   boundary:
-    - refactor
+    - documentation
+    - graph-audit
 portability:
   readiness: scripted
   targets:
@@ -61,7 +64,7 @@ The router evaluates three matching surfaces in priority order. The first surfac
 
 When keyword scores are equal, prefer skills in this `scope` order: `codebase` > `reference` > `portable`. A codebase-scoped skill is specific to *this* repository and wins over a portable one when both match the query equally.
 
-> **Schema version note.** The v1 enum values `operational` and `generic` were renamed to `codebase` and `portable` in `schema_version: 2` (SH-5784). Always use the v2 names; the current schema rejects the v1 names as hard errors.
+> **Schema version note.** The v1 enum values `operational` and `generic` were renamed to `codebase` and `portable` in `schema_version: 2`. Always use the v2 names; the current schema rejects the v1 names as hard errors. See `docs/manifest-contract.md § Migration Note — schema_version 1 → 2` for the full rename map.
 
 ### Type tiebreaker
 
@@ -77,4 +80,5 @@ If no skill matches any surface, the router does not fall back to a default skil
 |---|---|
 | The target skill directly | The correct skill is already known — skip the router and load it |
 | `documentation` | The task is writing or structuring doc prose, not routing |
-| `skill-template` | The task is authoring a new skill, not dispatching to an existing one |
+| `graph-audit` | The task is auditing whether routing metadata is consistent, not dispatching a query |
+| `examples/skill-template.md` | The task is authoring a new skill from scratch, not dispatching to an existing one (the template is a reference artifact, not a routable skill) |

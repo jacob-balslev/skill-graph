@@ -13,7 +13,7 @@ metadata:
   owner: maintainer
   freshness: "2026-04-17"
   drift_check: "2026-04-17"
-  eval_artifacts: planned
+  eval_artifacts: none
   eval_state: unverified
   routing_eval: absent
   stability: experimental
@@ -23,6 +23,12 @@ metadata:
     - simplify
     - extract function
     - reduce duplication
+    - clean this up
+    - simplify this
+    - rename this
+    - split this file
+    - too long function
+    - duplicated logic
   triggers:
     - refactor-skill
   relations:

@@ -9,7 +9,7 @@ scope: portable
 owner: maintainer
 freshness: "2026-04-17"
 drift_check: "2026-04-17"
-eval_artifacts: planned
+eval_artifacts: none
 eval_state: unverified
 routing_eval: absent
 stability: experimental
@@ -25,6 +25,11 @@ keywords:
   - static analysis
   - eslint
   - format check
+  - add eslint rule
+  - lint is failing
+  - add lint check
+  - rule migration
+  - lint gate
 triggers:
   - lint-overlay
 relations:

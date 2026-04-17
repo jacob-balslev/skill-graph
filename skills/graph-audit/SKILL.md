@@ -23,12 +23,24 @@ keywords:
   - skill consistency
   - graph audit
   - metadata check
+  - skill frontmatter check
+  - broken relation
+  - skill drift
+  - audit my skills
 triggers:
   - graph-audit
+paths:
+  - skills/**/SKILL.md
+  - schemas/*.json
+  - examples/skills.manifest.sample.json
 relations:
   adjacent:
     - documentation
     - refactor
+  boundary:
+    - documentation
+    - refactor
+    - debugging
   verify_with:
     - testing-strategy
 grounding:
@@ -38,16 +50,18 @@ grounding:
     - schemas/skill.schema.json
     - schemas/manifest.schema.json
     - docs/metadata-contract.md
+    - scripts/skill-lint.js
+    - scripts/check-contract-consistency.js
+    - scripts/generate-manifest.js
+    - examples/skills.manifest.sample.json
+    - examples/evals/graph-audit.json
   failure_modes:
     - schema_drift
     - manifest_sample_out_of_sync
     - broken_relation_targets
     - eval_artifacts_mismatch
+    - name_directory_mismatch
   evidence_priority: repo_code_first
-portability:
-  readiness: scripted
-  targets:
-    - agent-skills
 ---
 
 # Graph Audit
@@ -76,6 +90,10 @@ Skill graphs fail silently. A broken relation or a drifted enum value does not c
 | `scripts/check-contract-consistency.js` | Cross-artifact contract checker (C1–C6). Complementary to `skill-lint.js` — lint validates per-skill correctness; this validates that the contract documents themselves remain consistent with the schemas. |
 | `examples/skills.manifest.sample.json` | Generator-produced sample; lint fails if this drifts from `generate-manifest.js` output |
 
+## Evals
+
+This skill ships a comprehension-eval artifact at [`examples/evals/graph-audit.json`](../../examples/evals/graph-audit.json) covering all six audit dimensions listed under Coverage. The `Verification` checklist below is the deterministic per-file audit gate; the eval file is how this skill's concept comprehension is graded by `scripts/skill-audit.js --graded`.
+
 ## Verification
 
 Run the lint script to execute all audit checks:
@@ -103,6 +121,7 @@ Exit code 0 means all checks passed. Exit code 1 means at least one check failed
 - [ ] All relation targets exist as real sibling skill directories
 - [ ] All `eval_artifacts: present` skills have a matching eval artifact
 - [ ] All `scope: codebase` skills have a complete `grounding` block
+- [ ] Every skill's `name` field matches its parent directory name (Agent Skills compatibility)
 
 ## Do NOT Use When
 
