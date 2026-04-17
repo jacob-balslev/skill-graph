@@ -1,0 +1,62 @@
+{
+  "skill_name": "graph-audit",
+  "subject": "Skill metadata and manifest consistency auditing for the Skill Graph repository",
+  "adjacent_concepts": ["documentation", "refactor", "testing-strategy"],
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "A contributor adds a new skill and sets `eval_status: evals` in the frontmatter, but does not create a corresponding eval artifact under `examples/evals/`. What does the graph-audit skill say will happen when `node scripts/skill-lint.js` runs, and which specific check catches this?",
+      "dimension": "definition",
+      "substance": "domain",
+      "calibration": "semantic",
+      "truth_mode": "code_verification",
+      "skill_type": "concept",
+      "criticality": "high",
+      "truth_sources": ["skills/graph-audit/SKILL.md", "scripts/skill-lint.js"]
+    },
+    {
+      "id": 2,
+      "prompt": "A skill with `scope: operational` is missing its `grounding` block entirely. According to the graph-audit skill, which two enforcement layers catch this violation — name them and explain the role of each.",
+      "dimension": "mental_model",
+      "substance": "domain",
+      "calibration": "semantic",
+      "truth_mode": "conceptual_correctness_plus_repo_application",
+      "skill_type": "concept",
+      "criticality": "high",
+      "truth_sources": ["skills/graph-audit/SKILL.md", "schemas/skill.schema.json"]
+    },
+    {
+      "id": 3,
+      "prompt": "When should an agent use the graph-audit skill instead of the refactor skill to address a problem found in a SKILL.md file? Cite the negative-routing boundary that decides this.",
+      "dimension": "boundary",
+      "substance": "contradiction-check",
+      "calibration": "semantic",
+      "truth_mode": "code_verification",
+      "skill_type": "concept",
+      "criticality": "normal",
+      "truth_sources": ["skills/graph-audit/SKILL.md"]
+    },
+    {
+      "id": 4,
+      "prompt": "A skill names `relations.verify_with: [missing-skill]` where `missing-skill` does not exist as a directory under `skills/`. What does the graph-audit skill say is the correct fix, and what is the category of this failure mode?",
+      "dimension": "application",
+      "substance": "domain",
+      "calibration": "process",
+      "truth_mode": "process_correctness",
+      "skill_type": "workflow",
+      "criticality": "high",
+      "truth_sources": ["skills/graph-audit/SKILL.md", "scripts/skill-lint.js"]
+    },
+    {
+      "id": 5,
+      "prompt": "Why does the graph-audit skill set `grounding.grounding_mode: repo_specific` rather than `universal`? What concrete truth sources does this ground it to, and what would be lost if those files changed?",
+      "dimension": "purpose",
+      "substance": "domain",
+      "calibration": "semantic",
+      "truth_mode": "conceptual_correctness_plus_repo_application",
+      "skill_type": "concept",
+      "criticality": "normal",
+      "truth_sources": ["skills/graph-audit/SKILL.md", "docs/metadata-contract.md"]
+    }
+  ]
+}

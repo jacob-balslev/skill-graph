@@ -168,6 +168,127 @@
     {
       "activation": {
         "keywords": [
+          "skill audit",
+          "manifest audit",
+          "schema validation",
+          "skill consistency",
+          "graph audit",
+          "metadata check"
+        ],
+        "triggers": [
+          "graph-audit"
+        ]
+      },
+      "allowed-tools": "Read Grep Bash",
+      "compatibility": "Markdown, JSON Schema, Node.js",
+      "description": "Skill metadata and manifest consistency auditing for the Skill Graph repository. Use when checking that every SKILL.md conforms to the schema, that manifest entries are in sync with authored frontmatter, or that relation targets point at real sibling skills. Do NOT use for general code review or for auditing non-skill files.",
+      "family": "knowledge",
+      "grounding": {
+        "domain_object": "Skill Graph skill metadata and manifest consistency",
+        "evidence_priority": "repo_code_first",
+        "failure_modes": [
+          "schema_drift",
+          "manifest_sample_out_of_sync",
+          "broken_relation_targets",
+          "eval_status_mismatch"
+        ],
+        "grounding_mode": "repo_specific",
+        "truth_sources": [
+          "schemas/skill.schema.json",
+          "schemas/manifest.schema.json",
+          "docs/metadata-contract.md"
+        ]
+      },
+      "health": {
+        "drift_check": "2026-04-17",
+        "eval_status": "evals",
+        "freshness": "2026-04-17",
+        "has_grounding": true,
+        "has_relations": true
+      },
+      "id": "graph-audit",
+      "license": "MIT",
+      "name": "graph-audit",
+      "owner": "maintainer",
+      "path": "skills/graph-audit/SKILL.md",
+      "portability": {
+        "exports": [
+          "agent-skills"
+        ],
+        "level": "medium"
+      },
+      "relations": {
+        "adjacent": [
+          "documentation",
+          "refactor"
+        ],
+        "verify_with": [
+          "testing-strategy"
+        ]
+      },
+      "scope": "operational",
+      "stability": "experimental",
+      "type": "capability",
+      "version": "1.0.0"
+    },
+    {
+      "activation": {
+        "keywords": [
+          "lint",
+          "linting",
+          "lint rules",
+          "lint integration",
+          "static analysis",
+          "eslint",
+          "format check"
+        ],
+        "triggers": [
+          "lint-overlay"
+        ]
+      },
+      "allowed-tools": "Read Grep Bash",
+      "compatibility": "Markdown, Git, any codebase with a lint tool",
+      "description": "Lint integration overlay on top of the testing-strategy skill. Activate when adding or enforcing lint rules as part of a test or verification plan. Do NOT use standalone — this overlay only makes sense when the base testing-strategy skill is also loaded.",
+      "extends": "testing-strategy",
+      "family": "quality",
+      "health": {
+        "drift_check": "2026-04-17",
+        "eval_status": "pending",
+        "freshness": "2026-04-17",
+        "has_grounding": false,
+        "has_relations": true
+      },
+      "id": "lint-overlay",
+      "license": "MIT",
+      "name": "lint-overlay",
+      "owner": "maintainer",
+      "path": "skills/lint-overlay/SKILL.md",
+      "portability": {
+        "exports": [
+          "agent-skills",
+          "cursor",
+          "windsurf",
+          "copilot"
+        ],
+        "level": "high"
+      },
+      "relations": {
+        "adjacent": [
+          "refactor",
+          "debugging"
+        ],
+        "verify_with": [
+          "testing-strategy"
+        ]
+      },
+      "scope": "generic",
+      "stability": "experimental",
+      "type": "overlay",
+      "version": "1.0.0"
+    },
+    {
+      "activation": {
+        "keywords": [
           "refactor",
           "cleanup",
           "simplify",
@@ -221,6 +342,59 @@
       "scope": "generic",
       "stability": "experimental",
       "type": "workflow",
+      "version": "1.0.0"
+    },
+    {
+      "activation": {
+        "keywords": [
+          "skill routing",
+          "skill dispatch",
+          "keyword routing",
+          "route skill",
+          "which skill",
+          "skill selector"
+        ],
+        "triggers": [
+          "skill-router"
+        ]
+      },
+      "allowed-tools": "Read Grep",
+      "compatibility": "Markdown, YAML, any agent runtime",
+      "description": "Skill routing logic for dispatching agent requests to the correct skill variant by keyword pattern, trigger label, or file path. Use when you need to decide which skill handles an incoming request, when building a routing table for a multi-skill repo, or when auditing existing routing coverage. Do NOT use when the target skill is already known — load that skill directly.",
+      "family": "knowledge",
+      "health": {
+        "drift_check": "2026-04-17",
+        "eval_status": "pending",
+        "freshness": "2026-04-17",
+        "has_grounding": false,
+        "has_relations": true
+      },
+      "id": "skill-router",
+      "license": "MIT",
+      "name": "skill-router",
+      "owner": "maintainer",
+      "path": "skills/skill-router/SKILL.md",
+      "portability": {
+        "exports": [
+          "agent-skills",
+          "cursor",
+          "windsurf",
+          "copilot"
+        ],
+        "level": "high"
+      },
+      "relations": {
+        "adjacent": [
+          "documentation",
+          "testing-strategy"
+        ],
+        "boundary": [
+          "refactor"
+        ]
+      },
+      "scope": "generic",
+      "stability": "experimental",
+      "type": "router",
       "version": "1.0.0"
     },
     {
@@ -360,21 +534,24 @@
     "by_family": {
       "engineering": 2,
       "frontend": 1,
-      "knowledge": 2,
-      "quality": 1
+      "knowledge": 4,
+      "quality": 2
     },
     "by_scope": {
-      "generic": 5,
+      "generic": 7,
+      "operational": 1,
       "reference": 1
     },
     "by_stability": {
-      "experimental": 5,
+      "experimental": 8,
       "stable": 1
     },
     "by_type": {
-      "capability": 4,
+      "capability": 5,
+      "overlay": 1,
+      "router": 1,
       "workflow": 2
     },
-    "total_skills": 6
+    "total_skills": 9
   }
 }
