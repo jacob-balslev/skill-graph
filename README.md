@@ -45,7 +45,9 @@ The base standard and the Skill Graph extensions:
 ## Quick tour
 
 - `docs/metadata-contract.md` — authoritative field semantics, required vs optional, conditional requiredness, schema strictness rules
+- `docs/manifest-contract.md` — the authored-to-generated bridge: rename map, loss policy, migration policy, and a worked example projecting authored frontmatter into the compiled manifest
 - `schemas/skill.schema.json` — the frontmatter contract as enforceable JSON Schema
+- `schemas/manifest.schema.json` — the compiled manifest contract as enforceable JSON Schema
 - `docs/skill-audit-checklist.md` — the canonical per-skill audit checklist
 - `docs/skill-audit-loop.md` — the repeatable audit loop wrapping the checklist
 - `examples/skill-template.md` — a self-referential template; its subject is skill authoring itself
