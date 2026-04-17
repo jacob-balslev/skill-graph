@@ -47,6 +47,8 @@ The base standard and the Skill Graph extensions:
 
 **Compatibility direction.** A valid Agent Skills skill is *not* automatically a valid Skill Graph skill — Skill Graph requires fields beyond the base two. Going the other way is possible via a transform: move every Skill Graph extension field under the standard `metadata:` key, leaving only the Agent Skills fields at the top level. The transform is implemented as `scripts/export-skill.js`. Running `node scripts/export-skill.js <skill-dir>` produces a `SKILL.agent-skills.md` file with only the Agent Skills base fields at the top level and all Skill Graph extensions nested under `metadata:`. The `cursor`, `windsurf`, and `copilot` values in `portability.targets` still describe compatibility goals — export tooling for those targets is not yet implemented.
 
+**Internal supersets.** A consumer library can be a strict superset of the Skill Graph contract by adding governance fields that Skill Graph deliberately does not model (dispatch layers, routing roles, category taxonomy, bundle aggregates). The Development workspace's own `skills/` library does exactly this — see its contract-delta document for how that library extends v2 and why the two contracts are intentionally divergent. Superset libraries should validate against their own richer schema, not against `skill-lint.js`.
+
 ## Quick tour
 
 - `docs/metadata-contract.md` — overview, archetype section map, requiredness groups, schema strictness rules, and schema versioning policy
