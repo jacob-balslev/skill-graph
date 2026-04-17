@@ -57,8 +57,9 @@ The base standard and the Skill Graph extensions:
 - `docs/field-reference.md` — one section per authored field (25 total): purpose, rules, allowed values, examples, when to use
 - `docs/field-decision-guide.md` — decision tables for the three hardest choices: `scope`, `relations.*`, and the eval-health triple (`eval_artifacts` / `eval_state` / `routing_eval`) plus `portability`
 - `docs/manifest-contract.md` — the authored-to-generated bridge: rename map, loss policy, migration policy, v1→v2 migration note, and a worked example projecting authored frontmatter into the compiled manifest
-- `schemas/skill.schema.json` — the frontmatter contract as enforceable JSON Schema
-- `schemas/manifest.schema.json` — the compiled manifest contract as enforceable JSON Schema
+- `schemas/skill.schema.json` — the frontmatter contract as enforceable JSON Schema (tracks latest; v2 today)
+- `schemas/manifest.schema.json` — the compiled manifest contract as enforceable JSON Schema (tracks latest; v2 today)
+- `schemas/skill.v2.schema.json` + `schemas/manifest.v2.schema.json` — pinned v2 copies, content-identical to the unversioned files modulo `$id` and `title`. Consumers that want stability across a future v3 bump pin to these; consumers that want to follow latest use the unversioned files. See `docs/metadata-contract.md § Schema Versioning Policy`.
 - `docs/single-skill-audit-checklist.md` — the canonical per-skill audit checklist
 - `docs/library-audit-workflow.md` — the repeatable audit loop wrapping the checklist
 - `examples/skill-template.md` — a self-referential template; its subject is skill authoring itself
@@ -165,7 +166,7 @@ Exit code 0 means all checks passed. Exit code 1 means one or more files failed.
 
 `scripts/check-contract-consistency.js` validates the consistency of the contract documents and example artifacts against each other. This is complementary to `skill-lint.js` — where lint validates per-skill schema correctness, the contract checker validates that the contract documents themselves are internally consistent.
 
-The script runs five checks:
+The script runs six checks:
 
 | Check | What it detects | Level |
 |-------|----------------|-------|
@@ -174,6 +175,7 @@ The script runs five checks:
 | **C3 Artifact-root convention** | Shipped audit examples (those under `examples/audits/`) are not referred to by the bare `audits/<skill>/` root in docs (which is the consumer/adopter convention) | Warn |
 | **C4 Sample manifest correctness** | `examples/skills.manifest.sample.json` validates against `schemas/manifest.schema.json` and `summary.total_skills` equals `skills.length` | Error |
 | **C5 Example truth invariants** | Scorecards don't claim unqualified all-target portability; eval artifacts don't use the deprecated v1 `eval_status` JSON key; scorecards don't use v1 portability sub-field names (`level`, `exports`) | Error |
+| **C6 Versioned schema parity** | `schemas/skill.v2.schema.json` + `schemas/manifest.v2.schema.json` are content-identical to their unversioned counterparts modulo `$id` and `title` — guarantees the pinned v2 copy does not drift from "latest" while v2 is current | Error |
 
 ```bash
 # Run all contract consistency checks

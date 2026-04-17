@@ -29,6 +29,11 @@
  *              field; post-SH-5784 use eval_artifacts, eval_state, routing_eval).
  *         C5c: Scorecard portability rows must not use v1 sub-field names
  *              ("level" or "exports") -- use v2 names "readiness" and "targets".
+ *   C6 -- Versioned schema parity: schemas/skill.v2.schema.json and
+ *         schemas/manifest.v2.schema.json must be content-identical to the
+ *         unversioned schemas/skill.schema.json and schemas/manifest.schema.json,
+ *         modulo $id and title. Drift between them breaks the pinning promise
+ *         documented in docs/metadata-contract.md § Schema Versioning Policy.
  *
  * Usage:
  *   node scripts/check-contract-consistency.js
@@ -642,6 +647,52 @@ function checkC5ExampleTruthInvariants() {
 }
 
 // ---------------------------------------------------------------------------
+// C6 -- Versioned schema parity
+// ---------------------------------------------------------------------------
+
+/**
+ * Ensure schemas/skill.v2.schema.json and schemas/manifest.v2.schema.json are
+ * content-identical to the unversioned schemas/skill.schema.json and
+ * schemas/manifest.schema.json, except for $id and title. When v3 ships, the
+ * v2 files will freeze at their current content and the unversioned files
+ * will move forward; until then, the v2 files are the pinned stable copy and
+ * MUST track the unversioned files exactly.
+ *
+ * Returns a list of error strings. Empty array means pass.
+ */
+function checkC6VersionedSchemaParity() {
+  const pairs = [
+    { unversioned: 'schemas/skill.schema.json',    versioned: 'schemas/skill.v2.schema.json' },
+    { unversioned: 'schemas/manifest.schema.json', versioned: 'schemas/manifest.v2.schema.json' },
+  ];
+  const errors = [];
+
+  for (const { unversioned, versioned } of pairs) {
+    const u = readJson(path.join(REPO_ROOT, unversioned));
+    const v = readJson(path.join(REPO_ROOT, versioned));
+    if (!u) { errors.push(`${unversioned}: missing or unreadable`); continue; }
+    if (!v) { errors.push(`${versioned}: missing — run the P3a versioning step`); continue; }
+
+    const stripped = (obj) => {
+      const copy = JSON.parse(JSON.stringify(obj));
+      delete copy.$id;
+      delete copy.title;
+      return copy;
+    };
+
+    const uStr = JSON.stringify(stripped(u));
+    const vStr = JSON.stringify(stripped(v));
+    if (uStr !== vStr) {
+      errors.push(`${versioned} is out of sync with ${unversioned} (content differs modulo $id/title). After editing the unversioned schema, copy it to the versioned file and keep the v2 $id/title.`);
+    }
+
+    if (VERBOSE && uStr === vStr) console.log(`  ${versioned}: tracks ${unversioned}`);
+  }
+
+  return errors;
+}
+
+// ---------------------------------------------------------------------------
 // Main
 // ---------------------------------------------------------------------------
 
@@ -688,6 +739,13 @@ function main() {
   if (c5.length === 0) console.log('OK');
   else { console.log('FAIL'); for (const e of c5) { console.error(`  ERROR ${e}`); } }
   allErrors.push(...c5);
+
+  // C6
+  process.stdout.write('C6 Versioned schema parity... ');
+  const c6 = checkC6VersionedSchemaParity();
+  if (c6.length === 0) console.log('OK');
+  else { console.log('FAIL'); for (const e of c6) { console.error(`  ERROR ${e}`); } }
+  allErrors.push(...c6);
 
   console.log('');
 
