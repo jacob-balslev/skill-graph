@@ -9,8 +9,11 @@ Shipping today:
 - public `SKILL.md` frontmatter contract (`docs/metadata-contract.md`)
 - JSON Schemas for skill and manifest validation (`schemas/`)
 - **skill lint script** with schema validation, parent-directory check, relation-target existence, eval coherence, and generator parity check (`scripts/skill-lint.js`)
+- **contract consistency checker** for cross-artifact parity between schemas, docs, and example artifacts (`scripts/check-contract-consistency.js`)
 - **manifest generator** that walks `skills/**/SKILL.md`, applies the rename map from `docs/manifest-contract.md`, and emits a validated, deterministic manifest (`scripts/generate-manifest.js`)
 - **Agent Skills export script** that transforms a Skill Graph SKILL.md into an Agent Skills-compatible file (`scripts/export-skill.js`); five exported fixtures in `examples/exports/`
+- **audit runner (stub generator)** that seeds `audits/<skill>/{findings,verdict,scorecard}.md` stubs from lint output for a human or graded model to complete (`scripts/skill-audit.js`)
+- **CI integration** — self-hosted GitHub Actions workflow running lint + consistency checks on every PR touching schema, scripts, skills, or examples (`.github/workflows/skill-graph-lint.yml`); consumer copy-paste snippet at `docs/integrations/github-actions.md`
 - audit documentation for single-skill and repeated-library review (`docs/single-skill-audit-checklist.md`, `docs/library-audit-workflow.md`)
 - a self-referential skill template (`examples/skill-template.md`)
 - eight starter skills (`skills/a11y`, `debugging`, `documentation`, `refactor`, `testing-strategy`, `skill-router`, `lint-overlay`, `graph-audit`) — covering all four archetypes and all three scopes
@@ -19,10 +22,9 @@ Shipping today:
 
 Planned, not yet implemented:
 
-- CI integration — self-hosted GitHub Actions workflow (`.github/workflows/skill-graph-lint.yml`); consumer copy-paste snippet at `docs/integrations/github-actions.md`
-- audit runner (`scripts/skill-audit.js`)
-- overlap detection, routing, and coverage tooling
-- export tooling for `cursor`, `windsurf`, and `copilot` targets
+- audit runner — full qualitative pass beyond the stub generator (prompt-driven 7-checklist grading, writing verdicts directly rather than seeding stubs)
+- overlap detection, routing, and coverage tooling (`scripts/skill-overlap.js`, `scripts/skill-router.js`, `scripts/build-coverage.js`)
+- export tooling for `cursor`, `windsurf`, and `copilot` targets (only `agent-skills` target is implemented today; the other three values in `portability.targets` describe compatibility goals, not working exports)
 
 See `docs/plans/scripts-roadmap.md` for the planned script surface.
 
