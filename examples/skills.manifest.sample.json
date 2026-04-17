@@ -1,15 +1,365 @@
 {
+  "generated_at": "2026-04-17T00:00:00Z",
   "schema_version": 1,
-  "generated_at": "2026-04-16T00:00:00Z",
-  "summary": {
-    "total_skills": 6,
-    "by_type": {
-      "capability": 4,
-      "workflow": 2
+  "skills": [
+    {
+      "activation": {
+        "keywords": [
+          "accessibility",
+          "a11y",
+          "keyboard navigation",
+          "screen reader",
+          "focus management"
+        ],
+        "triggers": [
+          "a11y-skill"
+        ]
+      },
+      "allowed-tools": "Read Grep",
+      "compatibility": "Markdown, Git, any web stack",
+      "description": "Accessibility skill for semantic HTML, keyboard support, focus behavior, and screen-reader-safe interaction design. Use when building or reviewing interactive UI, forms, navigation, or dynamic content. Do NOT use for color palette creation or visual branding strategy.",
+      "family": "frontend",
+      "health": {
+        "drift_check": "2026-04-16",
+        "eval_status": "pending",
+        "freshness": "2026-04-16",
+        "has_grounding": false,
+        "has_relations": true
+      },
+      "id": "a11y",
+      "license": "MIT",
+      "name": "a11y",
+      "owner": "maintainer",
+      "path": "skills/a11y/SKILL.md",
+      "portability": {
+        "exports": [
+          "agent-skills",
+          "cursor",
+          "windsurf",
+          "copilot"
+        ],
+        "level": "high"
+      },
+      "relations": {
+        "adjacent": [
+          "documentation",
+          "testing-strategy"
+        ],
+        "boundary": [
+          "refactor"
+        ],
+        "verify_with": [
+          "testing-strategy"
+        ]
+      },
+      "scope": "generic",
+      "stability": "experimental",
+      "type": "capability",
+      "version": "1.0.0"
     },
+    {
+      "activation": {
+        "keywords": [
+          "debugging",
+          "bug",
+          "reproduce",
+          "failing test",
+          "root cause"
+        ],
+        "triggers": [
+          "debugging-skill"
+        ]
+      },
+      "allowed-tools": "Read Grep Bash",
+      "compatibility": "Markdown, Git, any codebase",
+      "description": "Debugging skill for reproducing failures, narrowing scope, checking evidence, and separating symptoms from root causes. Use when behavior is broken, tests fail, or runtime output contradicts expectations. Do NOT use for feature planning or pure refactoring work.",
+      "family": "engineering",
+      "health": {
+        "drift_check": "2026-04-16",
+        "eval_status": "pending",
+        "freshness": "2026-04-16",
+        "has_grounding": false,
+        "has_relations": true
+      },
+      "id": "debugging",
+      "license": "MIT",
+      "name": "debugging",
+      "owner": "maintainer",
+      "path": "skills/debugging/SKILL.md",
+      "portability": {
+        "exports": [
+          "agent-skills",
+          "cursor",
+          "windsurf",
+          "copilot"
+        ],
+        "level": "high"
+      },
+      "relations": {
+        "adjacent": [
+          "testing-strategy",
+          "refactor"
+        ],
+        "boundary": [
+          "documentation"
+        ],
+        "verify_with": [
+          "testing-strategy"
+        ]
+      },
+      "scope": "generic",
+      "stability": "experimental",
+      "type": "workflow",
+      "version": "1.0.0"
+    },
+    {
+      "activation": {
+        "keywords": [
+          "documentation",
+          "docs",
+          "reference doc",
+          "guide",
+          "architecture note"
+        ],
+        "triggers": [
+          "documentation-skill"
+        ]
+      },
+      "allowed-tools": "Read Grep",
+      "compatibility": "Markdown, Git",
+      "description": "Documentation skill for choosing the right doc type, structuring technical explanation, and keeping system knowledge readable and durable. Use when writing reference docs, guides, specs, or architecture notes. Do NOT use for runtime debugging or UI accessibility behavior.",
+      "family": "knowledge",
+      "health": {
+        "drift_check": "2026-04-16",
+        "eval_status": "evals",
+        "freshness": "2026-04-16",
+        "has_grounding": false,
+        "has_relations": true
+      },
+      "id": "documentation",
+      "license": "MIT",
+      "name": "documentation",
+      "owner": "maintainer",
+      "path": "skills/documentation/SKILL.md",
+      "portability": {
+        "exports": [
+          "agent-skills",
+          "cursor",
+          "windsurf",
+          "copilot"
+        ],
+        "level": "high"
+      },
+      "relations": {
+        "adjacent": [
+          "testing-strategy",
+          "refactor"
+        ],
+        "boundary": [
+          "debugging",
+          "a11y"
+        ]
+      },
+      "scope": "generic",
+      "stability": "experimental",
+      "type": "capability",
+      "version": "1.0.0"
+    },
+    {
+      "activation": {
+        "keywords": [
+          "refactor",
+          "cleanup",
+          "simplify",
+          "extract function",
+          "reduce duplication"
+        ],
+        "triggers": [
+          "refactor-skill"
+        ]
+      },
+      "allowed-tools": "Read Grep Bash",
+      "compatibility": "Markdown, Git, any codebase",
+      "description": "Refactor skill for behavior-preserving structural cleanup, simplification, and readability improvements. Use when reorganizing code without changing external behavior. Do NOT use for bug investigation or for adding new product behavior.",
+      "family": "engineering",
+      "health": {
+        "drift_check": "2026-04-16",
+        "eval_status": "pending",
+        "freshness": "2026-04-16",
+        "has_grounding": false,
+        "has_relations": true
+      },
+      "id": "refactor",
+      "license": "MIT",
+      "name": "refactor",
+      "owner": "maintainer",
+      "path": "skills/refactor/SKILL.md",
+      "portability": {
+        "exports": [
+          "agent-skills",
+          "cursor",
+          "windsurf",
+          "copilot"
+        ],
+        "level": "high"
+      },
+      "relations": {
+        "adjacent": [
+          "debugging",
+          "testing-strategy"
+        ],
+        "boundary": [
+          "documentation"
+        ],
+        "depends_on": [
+          "testing-strategy"
+        ],
+        "verify_with": [
+          "testing-strategy"
+        ]
+      },
+      "scope": "generic",
+      "stability": "experimental",
+      "type": "workflow",
+      "version": "1.0.0"
+    },
+    {
+      "activation": {
+        "keywords": [
+          "skill authoring",
+          "skill template",
+          "new skill",
+          "skill frontmatter",
+          "skill graph contract"
+        ],
+        "paths": [
+          "examples/skill-template.md",
+          "skills/**/SKILL.md"
+        ],
+        "triggers": [
+          "skill-template"
+        ]
+      },
+      "allowed-tools": "Read Grep",
+      "compatibility": "Markdown, YAML, JSON Schema",
+      "description": "Authoring template for new Skill Graph skills. Activate when creating a new SKILL.md, adapting an existing template to a different archetype, or teaching an author the canonical frontmatter and body structure. Do NOT use when modifying an already-written skill (work on that skill directly) or when writing general technical documentation (use documentation).",
+      "family": "knowledge",
+      "grounding": {
+        "domain_object": "Skill authoring for the Skill Graph frontmatter contract",
+        "evidence_priority": "repo_code_first",
+        "failure_modes": [
+          "placeholder_sludge",
+          "cargo_cult_meta_sections",
+          "description_coverage_collapse",
+          "authoring_gate_skipped"
+        ],
+        "grounding_mode": "repo_specific",
+        "truth_sources": [
+          "docs/metadata-contract.md",
+          "schemas/skill.schema.json",
+          "docs/skill-audit-checklist.md"
+        ]
+      },
+      "health": {
+        "drift_check": "2026-04-16",
+        "eval_status": "pending",
+        "freshness": "2026-04-16",
+        "has_grounding": true,
+        "has_relations": true
+      },
+      "id": "skill-template",
+      "license": "MIT",
+      "name": "skill-template",
+      "owner": "maintainer",
+      "path": "examples/skill-template.md",
+      "portability": {
+        "exports": [
+          "agent-skills",
+          "cursor",
+          "windsurf",
+          "copilot"
+        ],
+        "level": "high"
+      },
+      "relations": {
+        "adjacent": [
+          "documentation"
+        ],
+        "boundary": [
+          "refactor"
+        ],
+        "verify_with": [
+          "documentation"
+        ]
+      },
+      "scope": "reference",
+      "stability": "stable",
+      "type": "capability",
+      "version": "1.0.0"
+    },
+    {
+      "activation": {
+        "keywords": [
+          "testing strategy",
+          "what to test",
+          "unit test",
+          "integration test",
+          "regression test"
+        ],
+        "triggers": [
+          "testing-skill"
+        ]
+      },
+      "allowed-tools": "Read Grep Bash",
+      "compatibility": "Markdown, Git, any codebase",
+      "description": "Testing strategy skill for deciding what to test, choosing the right test level, and verifying behavior changes with meaningful evidence. Use when planning tests for bug fixes, features, or refactors. Do NOT use for documentation writing or purely conceptual architecture discussion.",
+      "family": "quality",
+      "health": {
+        "drift_check": "2026-04-16",
+        "eval_status": "pending",
+        "freshness": "2026-04-16",
+        "has_grounding": false,
+        "has_relations": true
+      },
+      "id": "testing-strategy",
+      "license": "MIT",
+      "name": "testing-strategy",
+      "owner": "maintainer",
+      "path": "skills/testing-strategy/SKILL.md",
+      "portability": {
+        "exports": [
+          "agent-skills",
+          "cursor",
+          "windsurf",
+          "copilot"
+        ],
+        "level": "high"
+      },
+      "relations": {
+        "adjacent": [
+          "debugging",
+          "refactor"
+        ],
+        "boundary": [
+          "documentation"
+        ],
+        "verify_with": [
+          "debugging"
+        ]
+      },
+      "route_groups": [
+        "quality"
+      ],
+      "scope": "generic",
+      "stability": "experimental",
+      "type": "capability",
+      "version": "1.0.0"
+    }
+  ],
+  "summary": {
     "by_family": {
-      "frontend": 1,
       "engineering": 2,
+      "frontend": 1,
       "knowledge": 2,
       "quality": 1
     },
@@ -18,213 +368,13 @@
       "reference": 1
     },
     "by_stability": {
-      "experimental": 4,
-      "stable": 2
-    }
-  },
-  "skills": [
-    {
-      "id": "skill-template",
-      "path": "examples/skill-template.md",
-      "name": "skill-template",
-      "description": "Authoring template for new Skill Graph skills. Activate when creating a new SKILL.md, adapting an existing template to a different archetype, or teaching an author the canonical frontmatter and body structure. Do NOT use when modifying an already-written skill (work on that skill directly) or when writing general technical documentation (use documentation).",
-      "version": "1.0.0",
-      "type": "capability",
-      "family": "knowledge",
-      "scope": "reference",
-      "owner": "maintainer",
-      "stability": "stable",
-      "license": "MIT",
-      "compatibility": "Markdown, YAML, JSON Schema",
-      "allowed-tools": "Read Grep",
-      "activation": {
-        "triggers": ["skill-template"],
-        "keywords": ["skill authoring", "skill template", "new skill", "skill frontmatter", "skill graph contract"],
-        "paths": ["examples/skill-template.md", "skills/**/SKILL.md"]
-      },
-      "relations": {
-        "adjacent": ["documentation"],
-        "boundary": ["refactor"],
-        "verify_with": ["documentation"]
-      },
-      "grounding": {
-        "domain_object": "Skill authoring for the Skill Graph frontmatter contract",
-        "grounding_mode": "repo_specific",
-        "truth_sources": ["docs/metadata-contract.md", "schemas/skill.schema.json", "docs/skill-audit-checklist.md"],
-        "failure_modes": ["placeholder_sludge", "cargo_cult_meta_sections", "description_coverage_collapse", "authoring_gate_skipped"],
-        "evidence_priority": "repo_code_first"
-      },
-      "portability": {
-        "level": "high",
-        "exports": ["agent-skills", "cursor", "windsurf", "copilot"]
-      },
-      "health": {
-        "eval_status": "pending",
-        "freshness": "2026-04-16",
-        "drift_check": "2026-04-16",
-        "has_grounding": true,
-        "has_relations": true
-      }
+      "experimental": 5,
+      "stable": 1
     },
-    {
-      "id": "a11y",
-      "path": "skills/a11y/SKILL.md",
-      "name": "a11y",
-      "description": "Accessibility skill for semantic HTML, keyboard support, focus behavior, and screen-reader-safe interaction design. Use when building or reviewing interactive UI, forms, navigation, or dynamic content. Do NOT use for color palette creation or visual branding strategy.",
-      "version": "1.0.0",
-      "type": "capability",
-      "family": "frontend",
-      "scope": "generic",
-      "owner": "maintainer",
-      "stability": "experimental",
-      "activation": {
-        "triggers": ["a11y-skill"],
-        "keywords": ["accessibility", "a11y", "keyboard navigation", "screen reader", "focus management"]
-      },
-      "relations": {
-        "adjacent": ["documentation", "testing-strategy"],
-        "boundary": ["refactor"],
-        "verify_with": ["testing-strategy"]
-      },
-      "portability": {
-        "level": "high",
-        "exports": ["agent-skills", "cursor", "windsurf", "copilot"]
-      },
-      "health": {
-        "eval_status": "pending",
-        "freshness": "2026-04-16",
-        "drift_check": "2026-04-16",
-        "has_grounding": false,
-        "has_relations": true
-      }
+    "by_type": {
+      "capability": 4,
+      "workflow": 2
     },
-    {
-      "id": "debugging",
-      "path": "skills/debugging/SKILL.md",
-      "name": "debugging",
-      "description": "Debugging skill for reproducing failures, narrowing scope, checking evidence, and separating symptoms from root causes. Use when behavior is broken, tests fail, or runtime output contradicts expectations. Do NOT use for feature planning or pure refactoring work.",
-      "version": "1.0.0",
-      "type": "workflow",
-      "family": "engineering",
-      "scope": "generic",
-      "owner": "maintainer",
-      "stability": "experimental",
-      "activation": {
-        "triggers": ["debugging-skill"],
-        "keywords": ["debugging", "bug", "reproduce", "failing test", "root cause"]
-      },
-      "relations": {
-        "adjacent": ["testing-strategy", "refactor"],
-        "boundary": ["documentation"],
-        "verify_with": ["testing-strategy"]
-      },
-      "portability": {
-        "level": "high",
-        "exports": ["agent-skills", "cursor", "windsurf", "copilot"]
-      },
-      "health": {
-        "eval_status": "pending",
-        "freshness": "2026-04-16",
-        "drift_check": "2026-04-16",
-        "has_grounding": false,
-        "has_relations": true
-      }
-    },
-    {
-      "id": "documentation",
-      "path": "skills/documentation/SKILL.md",
-      "name": "documentation",
-      "description": "Documentation skill for choosing the right doc type, structuring technical explanation, and keeping system knowledge readable and durable. Use when writing reference docs, guides, specs, or architecture notes. Do NOT use for runtime debugging or UI accessibility behavior.",
-      "version": "1.0.0",
-      "type": "capability",
-      "family": "knowledge",
-      "scope": "generic",
-      "owner": "maintainer",
-      "stability": "experimental",
-      "activation": {
-        "triggers": ["documentation-skill"],
-        "keywords": ["documentation", "docs", "reference doc", "guide", "architecture note"]
-      },
-      "relations": {
-        "adjacent": ["testing-strategy", "refactor"],
-        "boundary": ["debugging", "a11y"]
-      },
-      "portability": {
-        "level": "high",
-        "exports": ["agent-skills", "cursor", "windsurf", "copilot"]
-      },
-      "health": {
-        "eval_status": "evals",
-        "freshness": "2026-04-16",
-        "drift_check": "2026-04-16",
-        "has_grounding": false,
-        "has_relations": true
-      }
-    },
-    {
-      "id": "refactor",
-      "path": "skills/refactor/SKILL.md",
-      "name": "refactor",
-      "description": "Refactor skill for behavior-preserving structural cleanup, simplification, and readability improvements. Use when reorganizing code without changing external behavior. Do NOT use for bug investigation or for adding new product behavior.",
-      "version": "1.0.0",
-      "type": "workflow",
-      "family": "engineering",
-      "scope": "generic",
-      "owner": "maintainer",
-      "stability": "experimental",
-      "activation": {
-        "triggers": ["refactor-skill"],
-        "keywords": ["refactor", "cleanup", "simplify", "extract function", "reduce duplication"]
-      },
-      "relations": {
-        "adjacent": ["debugging", "testing-strategy"],
-        "boundary": ["documentation"],
-        "verify_with": ["testing-strategy"],
-        "depends_on": ["testing-strategy"]
-      },
-      "portability": {
-        "level": "high",
-        "exports": ["agent-skills", "cursor", "windsurf", "copilot"]
-      },
-      "health": {
-        "eval_status": "pending",
-        "freshness": "2026-04-16",
-        "drift_check": "2026-04-16",
-        "has_grounding": false,
-        "has_relations": true
-      }
-    },
-    {
-      "id": "testing-strategy",
-      "path": "skills/testing-strategy/SKILL.md",
-      "name": "testing-strategy",
-      "description": "Testing strategy skill for deciding what to test, choosing the right test level, and verifying behavior changes with meaningful evidence. Use when planning tests for bug fixes, features, or refactors. Do NOT use for documentation writing or purely conceptual architecture discussion.",
-      "version": "1.0.0",
-      "type": "capability",
-      "family": "quality",
-      "scope": "generic",
-      "owner": "maintainer",
-      "stability": "experimental",
-      "activation": {
-        "triggers": ["testing-skill"],
-        "keywords": ["testing strategy", "what to test", "unit test", "integration test", "regression test"]
-      },
-      "relations": {
-        "adjacent": ["debugging", "refactor"],
-        "boundary": ["documentation"],
-        "verify_with": ["debugging"]
-      },
-      "portability": {
-        "level": "high",
-        "exports": ["agent-skills", "cursor", "windsurf", "copilot"]
-      },
-      "health": {
-        "eval_status": "pending",
-        "freshness": "2026-04-16",
-        "drift_check": "2026-04-16",
-        "has_grounding": false,
-        "has_relations": true
-      }
-    }
-  ]
+    "total_skills": 6
+  }
 }

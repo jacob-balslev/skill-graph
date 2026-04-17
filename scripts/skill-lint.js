@@ -23,18 +23,27 @@
  *      examples/skills.manifest.sample.json validates against
  *      manifest.schema.json#skills.items, so the hand-written sample
  *      cannot drift out of step with the schema.
+ *   8. Generator parity (runs once): re-runs scripts/generate-manifest.js
+ *      and compares its output (minus generated_at) against
+ *      examples/skills.manifest.sample.json (also minus generated_at).
+ *      Fails if the sample is out of step with the generator. This locks
+ *      the sample as generator-produced output — not hand-maintained.
+ *      Skipped when --skip-generator-parity is passed (useful during
+ *      initial setup before the sample has been regenerated).
  *
  * Self-contained. Only uses Node built-ins — no external dependencies.
  * Exit 0 on success, 1 on any failure.
  *
  * Usage:
- *   node scripts/skill-lint.js                 # lint all skills
- *   node scripts/skill-lint.js skills/a11y     # lint one skill
- *   node scripts/skill-lint.js --include-template  # also lint the example template
+ *   node scripts/skill-lint.js                       # lint all skills
+ *   node scripts/skill-lint.js skills/a11y           # lint one skill
+ *   node scripts/skill-lint.js --include-template    # also lint the example template
+ *   node scripts/skill-lint.js --skip-generator-parity  # skip check 8
  */
 
 const fs = require('fs');
 const path = require('path');
+const { execFileSync } = require('child_process');
 const { parseFrontmatter } = require('./lib/parse-frontmatter');
 
 const REPO_ROOT = path.resolve(__dirname, '..');
@@ -259,6 +268,100 @@ function checkSampleManifest(manifestSchema) {
   return errors;
 }
 
+// Generator parity check (check 8).
+//
+// Runs `node scripts/generate-manifest.js --include-template` and compares the
+// result against `examples/skills.manifest.sample.json`. Both manifests are
+// normalized (generated_at removed, keys sorted) before comparison so that
+// the live timestamp in the generator output does not cause spurious failures.
+//
+// Returns an array of error strings (empty = parity holds).
+//
+// Why include-template? The sample manifest was generated with --include-template
+// so the skill-template entry is part of the canonical sample. The parity check
+// must use the same flags that were used to generate the sample, otherwise the
+// skill count will always differ.
+function checkGeneratorParity() {
+  if (!fs.existsSync(SAMPLE_MANIFEST_PATH)) {
+    return ['generator parity: examples/skills.manifest.sample.json does not exist (run node scripts/generate-manifest.js --include-template --output examples/skills.manifest.sample.json)'];
+  }
+
+  const generatorScript = path.join(__dirname, 'generate-manifest.js');
+  if (!fs.existsSync(generatorScript)) {
+    return ['generator parity: scripts/generate-manifest.js does not exist'];
+  }
+
+  let generatedJson;
+  try {
+    generatedJson = execFileSync(
+      process.execPath,
+      [generatorScript, '--include-template', '--timestamp', '1970-01-01T00:00:00Z'],
+      { encoding: 'utf8', stdio: ['pipe', 'pipe', 'pipe'] }
+    );
+  } catch (e) {
+    return [`generator parity: generate-manifest.js failed — ${e.stderr || e.message}`];
+  }
+
+  let generated;
+  try {
+    generated = JSON.parse(generatedJson);
+  } catch (e) {
+    return [`generator parity: failed to parse generator output — ${e.message}`];
+  }
+
+  let sample;
+  try {
+    sample = JSON.parse(fs.readFileSync(SAMPLE_MANIFEST_PATH, 'utf8'));
+  } catch (e) {
+    return [`generator parity: failed to parse sample manifest — ${e.message}`];
+  }
+
+  // Normalize both manifests: remove generated_at (changes on every run),
+  // then sort all object keys recursively for stable JSON.stringify comparison.
+  //
+  // Note: JSON.stringify(obj, keyArray) filters keys at all levels, not just
+  // the top level — do NOT use that pattern for recursive key sorting. Instead,
+  // use a recursive sortKeys pass that visits every nested object.
+  function sortKeys(value) {
+    if (Array.isArray(value)) return value.map(sortKeys);
+    if (value !== null && typeof value === 'object') {
+      const sorted = {};
+      for (const key of Object.keys(value).sort()) sorted[key] = sortKeys(value[key]);
+      return sorted;
+    }
+    return value;
+  }
+
+  function normalize(manifest) {
+    const m = Object.assign({}, manifest);
+    delete m.generated_at;
+    return sortKeys(m);
+  }
+
+  const normalizedGenerated = JSON.stringify(normalize(generated), null, 2);
+  const normalizedSample = JSON.stringify(normalize(sample), null, 2);
+
+  if (normalizedGenerated !== normalizedSample) {
+    // Produce a line-level diff summary: find first diverging line
+    const genLines = normalizedGenerated.split('\n');
+    const sampleLines = normalizedSample.split('\n');
+    const maxLen = Math.max(genLines.length, sampleLines.length);
+    let firstDiffLine = -1;
+    for (let i = 0; i < maxLen; i++) {
+      if (genLines[i] !== sampleLines[i]) { firstDiffLine = i + 1; break; }
+    }
+    const hint = firstDiffLine > 0
+      ? ` (first difference at normalized line ${firstDiffLine}: sample has "${sampleLines[firstDiffLine - 1]}", generator produces "${genLines[firstDiffLine - 1]}")`
+      : '';
+    return [
+      `generator parity: examples/skills.manifest.sample.json is out of step with generator output${hint}`,
+      'generator parity: run `node scripts/generate-manifest.js --include-template --timestamp <ISO> --output examples/skills.manifest.sample.json` to regenerate',
+    ];
+  }
+
+  return [];
+}
+
 function collectSkillFiles(args) {
   const files = [];
   const includeTemplate = args.includes('--include-template');
@@ -292,6 +395,7 @@ function main() {
   const schema = loadSchema();
   const manifestSchema = loadManifestSchema();
   const files = collectSkillFiles(args);
+  const skipGeneratorParity = args.includes('--skip-generator-parity');
 
   if (files.length === 0) {
     console.error('No skill files found to lint.');
@@ -319,6 +423,21 @@ function main() {
     console.log('OK   examples/skills.manifest.sample.json');
   }
 
+  // Generator parity: re-run the manifest generator and verify the output
+  // matches examples/skills.manifest.sample.json (ignoring generated_at).
+  // This ensures the sample is always kept in sync with the generator —
+  // a hand-edited sample will fail this check. Skippable via --skip-generator-parity.
+  let generatorParityErrors = [];
+  if (!skipGeneratorParity) {
+    generatorParityErrors = checkGeneratorParity();
+    if (generatorParityErrors.length > 0) {
+      console.error('FAIL examples/skills.manifest.sample.json (generator parity)');
+      for (const e of generatorParityErrors) console.error(`     - ${e}`);
+    } else {
+      console.log('OK   examples/skills.manifest.sample.json (generator parity)');
+    }
+  }
+
   // Build the known-skill set from skills/ for relation target checks
   const knownSkillNames = new Set();
   if (fs.existsSync(SKILLS_DIR)) {
@@ -331,7 +450,7 @@ function main() {
     }
   }
 
-  let totalErrors = parityErrors.length + sampleErrors.length;
+  let totalErrors = parityErrors.length + sampleErrors.length + generatorParityErrors.length;
   for (const file of files) {
     const relPath = path.relative(REPO_ROOT, file);
     const text = fs.readFileSync(file, 'utf8');
