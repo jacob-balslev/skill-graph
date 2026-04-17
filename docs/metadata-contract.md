@@ -186,3 +186,15 @@ For the purpose, rules, and examples for each field, see `docs/field-reference.m
 - generated docs ownership
 
 See `docs/manifest-contract.md` for the full rename map, loss policy, migration policy, and a worked example showing the authored-to-generated projection field by field.
+
+## Schema Versioning Policy
+
+Skill Graph uses a single integer `schema_version` to signal contract evolution. Current version: **2** (bumped from 1 in SH-5784). The policy five policy points together define when `schema_version` bumps, what consumers should expect, and where migration tooling lives:
+
+1. **Breaking changes bump `schema_version`.** Renamed fields, removed fields, retyped fields, removed enum values, or tightened required-ness constraints bump the integer. Consumers must migrate or pin.
+2. **Additive changes do not bump.** New optional fields, new enum values that extend (not replace) an enum, and new checks in `scripts/skill-lint.js` that only affect warnings do not bump the version. Consumers on the prior minor release continue to pass.
+3. **Validate against the matching schema.** Today `schemas/skill.schema.json` is the canonical v2 schema. Once a v3 change is in flight, versioned schema files (`schemas/skill.v2.schema.json`, `schemas/skill.v3.schema.json`) will ship alongside the unversioned `schemas/skill.schema.json` (which tracks latest). Consumers can pin to the versioned file.
+4. **One-version-overlap deprecation is preferred.** When v3 ships, `scripts/skill-lint.js` emits warnings (not errors) for v2-specific patterns for one minor release. Authors get a warning window to migrate. The rule that applies today — SH-5784's deprecation warnings for v1 field names during the v2 window — is the canonical pattern.
+5. **Migration tooling ships with the bump.** The first real v3 bump will ship a `scripts/migrate-skill-v2-to-v3.js` codemod in the same PR. No migration framework is built ahead of the first real need — the SH-5784 v1→v2 bump was handled as a coordinated one-shot rewrite of in-repo starters (no external consumers yet).
+
+For the concrete v1→v2 mapping tables, see `docs/manifest-contract.md § Migration Note — schema_version 1 → 2 (SH-5784)`. For field-level before/after pairs, see `docs/field-decision-guide.md`.

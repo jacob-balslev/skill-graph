@@ -47,7 +47,7 @@ The base standard and the Skill Graph extensions:
 
 ## Quick tour
 
-- `docs/metadata-contract.md` — overview, archetype section map, requiredness groups, and schema strictness rules
+- `docs/metadata-contract.md` — overview, archetype section map, requiredness groups, schema strictness rules, and schema versioning policy
 - `docs/field-reference.md` — one section per authored field (25 total): purpose, rules, allowed values, examples, when to use
 - `docs/field-decision-guide.md` — decision tables for the three hardest choices: `scope`, `relations.*`, and the eval-health triple (`eval_artifacts` / `eval_state` / `routing_eval`) plus `portability`
 - `docs/manifest-contract.md` — the authored-to-generated bridge: rename map, loss policy, migration policy, v1→v2 migration note, and a worked example projecting authored frontmatter into the compiled manifest
@@ -71,18 +71,18 @@ Eight starter skills. Each starter demonstrates at least one contract feature th
 
 | Starter | Archetype | Scope | Unique feature demonstrated |
 |---|---|---|---|
-| `a11y` | `capability` | `generic` | Minimal routable capability — frontmatter baseline, keyword + trigger activation, no optional extensions |
-| `debugging` | `workflow` | `generic` | Workflow archetype with a `## Workflow` body section showing numbered procedural steps |
-| `documentation` | `capability` | `generic` | `eval_status: evals` with a shipped eval artifact (`examples/evals/comprehension.json`) |
-| `refactor` | `workflow` | `generic` | `relations.depends_on` pointing at `testing-strategy` (refactor verification needs a test suite) |
-| `testing-strategy` | `capability` | `generic` | `route_groups: [quality]` showing the optional classification field |
-| `skill-router` | `router` | `generic` | Router archetype with a `## Routing Rules` table showing the three-surface priority dispatch logic |
-| `lint-overlay` | `overlay` | `generic` | Overlay archetype with `extends: testing-strategy`, `## Extends`, and `## Overlay Rules` sections — the only archetype that exercises the schema's conditional `extends` requirement |
-| `graph-audit` | `capability` | `operational` | `scope: operational` with a fully populated `grounding` block (`domain_object`, `grounding_mode`, `truth_sources`, `failure_modes`, `evidence_priority`) and a shipped eval artifact (`examples/evals/graph-audit.json`) |
+| `a11y` | `capability` | `portable` | Minimal routable capability — frontmatter baseline, keyword + trigger activation, no optional extensions |
+| `debugging` | `workflow` | `portable` | Workflow archetype with a `## Workflow` body section showing numbered procedural steps |
+| `documentation` | `capability` | `portable` | `eval_artifacts: present` with a shipped eval artifact (`examples/evals/comprehension.json`) |
+| `refactor` | `workflow` | `portable` | `relations.depends_on` pointing at `testing-strategy` (refactor verification needs a test suite) |
+| `testing-strategy` | `capability` | `portable` | `routing_groups: [quality]` showing the optional classification field |
+| `skill-router` | `router` | `portable` | Router archetype with a `## Routing Rules` table showing the three-surface priority dispatch logic |
+| `lint-overlay` | `overlay` | `portable` | Overlay archetype with `extends: testing-strategy`, `## Extends`, and `## Overlay Rules` sections — the only archetype that exercises the schema's conditional `extends` requirement |
+| `graph-audit` | `capability` | `codebase` | `scope: codebase` with a fully populated `grounding` block (`domain_object`, `grounding_mode`, `truth_sources`, `failure_modes`, `evidence_priority`) and a shipped eval artifact (`examples/evals/graph-audit.json`) |
 
-The five original starters are all `scope: generic` and demonstrate the ungrounded path (no `grounding` block). The three new starters exercise the previously uncovered schema paths: the `router` and `overlay` archetypes, and the `operational` scope with its mandatory `grounding` contract.
+The five original starters are all `scope: portable` and demonstrate the ungrounded path (no `grounding` block). The three new starters exercise the previously uncovered schema paths: the `router` and `overlay` archetypes, and the `codebase` scope with its mandatory `grounding` contract. (v1 values `generic` and `operational` were renamed to `portable` and `codebase` in schema_version 2 — SH-5784.)
 
-`skill-router` and `lint-overlay` have `eval_status: pending` (no eval artifact shipped). `graph-audit` has `eval_status: evals` backed by `examples/evals/graph-audit.json`. The `examples/skill-template.md` file shows the full optional extension set including `grounding`.
+`skill-router` and `lint-overlay` have `eval_artifacts: planned` (no eval artifact shipped). `graph-audit` has `eval_artifacts: present` backed by `examples/evals/graph-audit.json`. The `examples/skill-template.md` file shows the full optional extension set including `grounding`.
 
 ## Manifest generation
 
