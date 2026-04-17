@@ -19,6 +19,7 @@ Shipping today:
 
 Planned, not yet implemented:
 
+- CI integration — self-hosted GitHub Actions workflow (`.github/workflows/skill-graph-lint.yml`); consumer copy-paste snippet at `docs/integrations/github-actions.md`
 - audit runner (`scripts/skill-audit.js`)
 - overlap detection, routing, and coverage tooling
 - export tooling for `cursor`, `windsurf`, and `copilot` targets
