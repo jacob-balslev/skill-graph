@@ -54,7 +54,7 @@ grounding:
   truth_sources:
     - docs/metadata-contract.md
     - schemas/skill.schema.json
-    - docs/skill-audit-checklist.md
+    - docs/single-skill-audit-checklist.md
   failure_modes:
     - placeholder_sludge
     - cargo_cult_meta_sections
@@ -99,7 +99,7 @@ A template teaches by example, not by placeholder. A concrete, internally consis
 |---|---|
 | `docs/metadata-contract.md` | Authoritative field semantics: required vs optional, conditional requiredness, relationship to the Agent Skills standard, archetype section map |
 | `schemas/skill.schema.json` | Enforceable JSON Schema for the frontmatter contract |
-| `docs/skill-audit-checklist.md` | The audit checklist every new skill should pass before commit |
+| `docs/single-skill-audit-checklist.md` | The audit checklist every new skill should pass before commit |
 
 ## Verification
 
@@ -129,4 +129,4 @@ Use this checklist as the authoring gate before committing a skill adapted from 
 - `docs/metadata-contract.md § Relationship to the Agent Skills standard` — how Skill Graph extends the base standard
 - `docs/metadata-contract.md § Example Template Rule` — the no-placeholder-sludge rule this template enforces
 - `docs/metadata-contract.md § Archetype section map` — required H2 sections per archetype
-- `docs/skill-audit-checklist.md` — the checklist this template's Verification section is derived from
+- `docs/single-skill-audit-checklist.md` — the checklist this template's Verification section is derived from

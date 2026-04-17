@@ -100,7 +100,7 @@ Read the skill itself and classify it:
 
 ### Step 4. Apply the Skill Audit Checklist
 
-Use `docs/skill-audit-checklist.md` as the canonical audit checklist.
+Use `docs/single-skill-audit-checklist.md` as the canonical audit checklist.
 
 ### Step 5. Verify grounding
 
@@ -158,7 +158,7 @@ Optional artifacts:
 2. updated manifest snapshot
 3. migration notes
 
-Use the standard file names and section structures from `docs/skill-audit-checklist.md`.
+Use the standard file names and section structures from `docs/single-skill-audit-checklist.md`.
 
 ### Step 10. Fix what is safe to fix now
 

@@ -45,7 +45,7 @@
       "truth_mode": "process_correctness",
       "skill_type": "workflow",
       "criticality": "normal",
-      "truth_sources": ["docs/skill-audit-loop.md:91-101"]
+      "truth_sources": ["docs/library-audit-workflow.md:91-101"]
     },
     {
       "id": 5,

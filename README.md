@@ -11,7 +11,7 @@ Shipping today:
 - **skill lint script** with schema validation, parent-directory check, relation-target existence, eval coherence, and generator parity check (`scripts/skill-lint.js`)
 - **manifest generator** that walks `skills/**/SKILL.md`, applies the rename map from `docs/manifest-contract.md`, and emits a validated, deterministic manifest (`scripts/generate-manifest.js`)
 - **Agent Skills export script** that transforms a Skill Graph SKILL.md into an Agent Skills-compatible file (`scripts/export-skill.js`); five exported fixtures in `examples/exports/`
-- audit documentation for single-skill and repeated-library review (`docs/skill-audit-checklist.md`, `docs/skill-audit-loop.md`)
+- audit documentation for single-skill and repeated-library review (`docs/single-skill-audit-checklist.md`, `docs/library-audit-workflow.md`)
 - a self-referential skill template (`examples/skill-template.md`)
 - eight starter skills (`skills/a11y`, `debugging`, `documentation`, `refactor`, `testing-strategy`, `skill-router`, `lint-overlay`, `graph-audit`) — covering all four archetypes and all three scopes
 - concrete example audit and eval artifacts against the `documentation` starter (`examples/audits/`, `examples/evals/`)
@@ -53,16 +53,16 @@ The base standard and the Skill Graph extensions:
 - `docs/manifest-contract.md` — the authored-to-generated bridge: rename map, loss policy, migration policy, v1→v2 migration note, and a worked example projecting authored frontmatter into the compiled manifest
 - `schemas/skill.schema.json` — the frontmatter contract as enforceable JSON Schema
 - `schemas/manifest.schema.json` — the compiled manifest contract as enforceable JSON Schema
-- `docs/skill-audit-checklist.md` — the canonical per-skill audit checklist
-- `docs/skill-audit-loop.md` — the repeatable audit loop wrapping the checklist
+- `docs/single-skill-audit-checklist.md` — the canonical per-skill audit checklist
+- `docs/library-audit-workflow.md` — the repeatable audit loop wrapping the checklist
 - `examples/skill-template.md` — a self-referential template; its subject is skill authoring itself
 
 ## Audit surfaces
 
 Skill Graph ships two reusable audit documents and a concrete artifact set that shows what the outputs look like:
 
-- `docs/skill-audit-checklist.md` — the checklist for auditing one skill
-- `docs/skill-audit-loop.md` — the standard 12-step loop for auditing many skills over time
+- `docs/single-skill-audit-checklist.md` — the checklist for auditing one skill
+- `docs/library-audit-workflow.md` — the standard 12-step loop for auditing many skills over time
 - `examples/audits/documentation/` — worked example of `findings.md`, `verdict.md`, and `scorecard.md` applied to the `documentation` starter skill
 
 ## Starter skill pack

@@ -93,7 +93,7 @@ The same checks run whether you install via npm or vendor the script:
 5. Archetype-aware section validation (required H2 sections per archetype)
 6. Routing quality (keywords required for `scope: codebase` skills)
 
-See `docs/skill-audit-checklist.md` for the full list of what each check catches.
+See `docs/single-skill-audit-checklist.md` for the full list of what each check catches.
 
 ## Example: PR blocked by a malformed skill
 

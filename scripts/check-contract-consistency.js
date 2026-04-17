@@ -382,7 +382,7 @@ function checkC2AuthoredToGeneratedParity() {
 // Check C3 -- Artifact-root convention
 //
 // Skill Graph uses a two-tier artifact root convention (documented in
-// docs/skill-audit-loop.md after commit 873c463):
+// docs/library-audit-workflow.md after commit 873c463):
 //   - examples/audits/<skill>/ -- shipped, curated worked examples in this repo
 //   - audits/<skill>/          -- downstream consumer output (adopters' own repos)
 //

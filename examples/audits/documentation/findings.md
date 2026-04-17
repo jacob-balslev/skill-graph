@@ -33,4 +33,4 @@ Required action: None required.
 
 ## Required Fixes
 
-None. The skill passes all eight sections of `docs/skill-audit-checklist.md`. The three findings above are forward-looking polish observations, not corrective actions.
+None. The skill passes all eight sections of `docs/single-skill-audit-checklist.md`. The three findings above are forward-looking polish observations, not corrective actions.

@@ -147,8 +147,8 @@ The v1 OSS schemas are intentionally strict.
 
 This contract is designed to work with:
 
-1. `docs/skill-audit-checklist.md`
-2. `docs/skill-audit-loop.md`
+1. `docs/single-skill-audit-checklist.md`
+2. `docs/library-audit-workflow.md`
 
 The metadata must support three things cleanly:
 

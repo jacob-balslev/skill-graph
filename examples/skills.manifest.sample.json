@@ -445,7 +445,7 @@
         "truth_sources": [
           "docs/metadata-contract.md",
           "schemas/skill.schema.json",
-          "docs/skill-audit-checklist.md"
+          "docs/single-skill-audit-checklist.md"
         ]
       },
       "health": {

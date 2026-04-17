@@ -4,7 +4,7 @@
  *
  * Seeds three audit artifact stubs from lint output, leaving all qualitative
  * judgment as human TODOs. Designed to accelerate the Step 2–9 sequence in
- * docs/skill-audit-loop.md by pre-populating deterministic findings so
+ * docs/library-audit-workflow.md by pre-populating deterministic findings so
  * auditors can focus on routing, content, and eval quality.
  *
  * Usage:

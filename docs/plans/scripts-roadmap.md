@@ -68,7 +68,7 @@ Target file:
 
 Purpose:
 
-- audit one skill at a time using `docs/skill-audit-checklist.md`
+- audit one skill at a time using `docs/single-skill-audit-checklist.md`
 - write findings and verdict artifacts
 - optionally run deterministic validation after fixes
 
