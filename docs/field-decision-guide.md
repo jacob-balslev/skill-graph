@@ -74,80 +74,26 @@ The four relation keys serve distinct purposes. Using the wrong key creates misl
 
 ### Decision table
 
-| Situation | Correct key |
-|---|---|
-| The other skill covers related topics a reader should know about | `adjacent` |
-| The other skill covers topics my skill explicitly does NOT own | `boundary` |
-| The other skill should be co-loaded to verify my skill's claims | `verify_with` |
-| My skill cannot function correctly without the other skill's concepts | `depends_on` |
-| An overlay: this skill extends another skill's base behavior | Use `extends` field instead |
+| Field | Use when | Do NOT use when |
+|---|---|---|
+| `adjacent` | Another skill is useful next reading or common co-loading | You need ordering or verification |
+| `boundary` | Users commonly confuse this skill with another | You only want related reading |
+| `verify_with` | A second skill materially increases confidence on the same task | The other skill is merely adjacent |
+| `depends_on` | This skill cannot be applied correctly before another one | You just want a recommended pairing |
 
-### Key-by-key guidance
+### Concrete examples
 
-#### `adjacent` — related reading, no dependency
+The distinction between these relation types is best illustrated by existing usage in the library:
 
-Use when:
-- The other skill is topically related and a reader of your skill would likely benefit from reading it.
-- There is no activation dependency or ownership claim — just discoverability.
+- **`depends_on`** — `refactor` declares `depends_on: [testing-strategy]` because refactoring without understanding test strategy is unsafe. The concepts are foundational to the skill's correctness.
 
-Do NOT use when:
-- You are actually depending on the other skill (`depends_on` is correct).
-- The other skill covers something you explicitly don't own (`boundary` is correct).
+- **`verify_with`** — `graph-audit` declares `verify_with: [testing-strategy]` because running the graph-audit verification alongside testing-strategy evals materially increases confidence in the skill's claims. They are commonly used together in audit pipelines.
 
-```yaml
-relations:
-  adjacent:
-    - webhook-integration   # related topic, useful co-reading
-    - api-rate-limiting     # reader may also want this context
-```
+- **`adjacent`** — `refactor` declares `adjacent: [debugging, testing-strategy]` because readers of the refactor skill would benefit from understanding debugging and testing approaches. These are topically related but not mandatory dependencies.
 
-#### `boundary` — anti-ownership, wrong-skill routing protection
+- **`boundary`** — `refactor` declares `boundary: [documentation]` to prevent confusion. Documentation skills are not owned by refactor — they are a separate domain. This guards against incorrect skill activation.
 
-Use when:
-- A router might confuse your skill with the boundary skill and incorrectly activate yours.
-- You want to explicitly declare "I don't own that — go to X instead."
-
-Do NOT use when:
-- The other skill is merely unrelated — omit rather than adding every non-owner.
-- The other skill is a dependency — that is `depends_on`.
-
-```yaml
-relations:
-  boundary:
-    - fulfillment   # fulfillment is NOT owned by this skill; route to fulfillment skill instead
-```
-
-#### `verify_with` — co-load for verification
-
-Use when:
-- Running your skill's verification steps alongside the target skill improves correctness or coverage.
-- The two skills are used together in audit or review pipelines.
-
-Do NOT use when:
-- You merely recommend the other skill as reading — use `adjacent`.
-- The other skill is a hard dependency — use `depends_on`.
-
-```yaml
-relations:
-  verify_with:
-    - test-coverage   # co-load for verification during audits
-```
-
-#### `depends_on` — explicit dependency
-
-Use when:
-- Your skill's instructions or concepts build on the other skill's foundation.
-- An agent loading your skill without the dependency skill would likely produce incorrect results.
-
-Do NOT use when:
-- The relationship is just "related" — use `adjacent`.
-- The relationship is "should verify together" — use `verify_with`.
-
-```yaml
-relations:
-  depends_on:
-    - api-key-management   # this skill requires API key management concepts to function
-```
+When a skill extends another skill's base behavior (e.g., an overlay), use the `extends` field instead of relations.
 
 ### Combined example
 
