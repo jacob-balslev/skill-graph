@@ -1,0 +1,84 @@
+{
+  "skill_name": "refactor",
+  "subject": "Behavior-preserving code reorganization: contract identification, next-change justification, smallest useful cut, behavior re-verification, and explicit stop condition",
+  "adjacent_concepts": ["debugging", "testing-strategy", "documentation"],
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "A contributor proposes a \"code cleanup\" refactor but cannot name a specific pending change that will become easier because of it. According to the refactor skill's Workflow table, what is step 2 and what should happen when its question is answered \"no\"?",
+      "dimension": "definition",
+      "substance": "domain",
+      "calibration": "semantic",
+      "truth_mode": "code_verification",
+      "skill_type": "workflow",
+      "criticality": "critical",
+      "truth_sources": ["skills/refactor/SKILL.md:64-74"]
+    },
+    {
+      "id": 2,
+      "prompt": "The refactor skill's Philosophy says the honest test is not \"this feels better\" but \"the next concrete change will be materially easier.\" Why does the skill reject subjective taste as a justification, and what failure mode does the next-change test prevent?",
+      "dimension": "mental_model",
+      "substance": "domain",
+      "calibration": "semantic",
+      "truth_mode": "conceptual_correctness_plus_repo_application",
+      "skill_type": "concept",
+      "criticality": "high",
+      "truth_sources": ["skills/refactor/SKILL.md:60-62"]
+    },
+    {
+      "id": 3,
+      "prompt": "An engineer is chasing a null-pointer exception that surfaces intermittently in production. They wonder if they should engage the refactor skill to clean up the suspected code paths. Should they? Cite the negative-routing rule and name the skill that applies instead.",
+      "dimension": "boundary",
+      "substance": "contradiction-check",
+      "calibration": "semantic",
+      "truth_mode": "code_verification",
+      "skill_type": "concept",
+      "criticality": "high",
+      "truth_sources": ["skills/refactor/SKILL.md:89-95"]
+    },
+    {
+      "id": 4,
+      "prompt": "A refactor commit touches three abstraction layers at once and the tests still pass. According to the refactor skill's \"When to back out\" section, is this acceptable? If not, what is the correct remediation and why?",
+      "dimension": "application",
+      "substance": "domain",
+      "calibration": "process",
+      "truth_mode": "process_correctness",
+      "skill_type": "workflow",
+      "criticality": "high",
+      "truth_sources": ["skills/refactor/SKILL.md:76-80"]
+    },
+    {
+      "id": 5,
+      "prompt": "The refactor skill declares `depends_on: testing-strategy` in its relations. Why does refactor declare a hard dependency on testing-strategy rather than a softer `adjacent` or `verify_with` relation?",
+      "dimension": "purpose",
+      "substance": "domain",
+      "calibration": "semantic",
+      "truth_mode": "conceptual_correctness_plus_repo_application",
+      "skill_type": "concept",
+      "criticality": "high",
+      "truth_sources": ["skills/refactor/SKILL.md:33-42", "skills/refactor/SKILL.md:64-74"]
+    },
+    {
+      "id": 6,
+      "prompt": "A team claims their refactor is safe because they added new tests to cover the refactored code. According to the refactor skill's step 1 and its Verification checklist, is the refactor's safety properly established? What is wrong with using newly-added tests as the behavior-preservation contract?",
+      "dimension": "application",
+      "substance": "contradiction-check",
+      "calibration": "semantic",
+      "truth_mode": "conceptual_correctness_plus_repo_application",
+      "skill_type": "concept",
+      "criticality": "critical",
+      "truth_sources": ["skills/refactor/SKILL.md:64-74", "skills/refactor/SKILL.md:82-87"]
+    },
+    {
+      "id": 7,
+      "prompt": "A contributor asks the refactor skill to help write a changelog entry that explains what the refactor changed and why. Should the skill accept? Cite the negative-routing rule that decides this.",
+      "dimension": "boundary",
+      "substance": "contradiction-check",
+      "calibration": "semantic",
+      "truth_mode": "code_verification",
+      "skill_type": "concept",
+      "criticality": "normal",
+      "truth_sources": ["skills/refactor/SKILL.md:89-95"]
+    }
+  ]
+}

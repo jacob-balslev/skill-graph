@@ -9,8 +9,8 @@ scope: portable
 owner: maintainer
 freshness: "2026-04-17"
 drift_check: "2026-04-17"
-eval_artifacts: none
-eval_state: unverified
+eval_artifacts: present
+eval_state: passing
 routing_eval: absent
 stability: experimental
 license: MIT
@@ -84,6 +84,10 @@ These rules augment (not replace) the testing-strategy base skill.
 | Lint scope matches the test scope | When the diff is bounded to specific files | Run lint only on changed files unless a global rule is at risk |
 | Lint failures are blocking, not advisory | When lint is part of the official CI gate | A lint failure is a test failure; treat it the same way |
 | New lint rules require a migration plan | When adding a rule that affects many existing files | Adding a rule that immediately fails 200 files is not a test — it is a scope change |
+
+## Evals
+
+This skill ships a comprehension-eval artifact at [`examples/evals/lint-overlay.json`](../../examples/evals/lint-overlay.json). Because this is an overlay, the eval prompts specifically test what the overlay adds on top of `testing-strategy` and what it deliberately leaves to the base. The eval file is how this skill is graded by `scripts/skill-audit.js --graded`.
 
 ## Do NOT Use When
 

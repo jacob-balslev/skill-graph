@@ -1,0 +1,84 @@
+{
+  "skill_name": "testing-strategy",
+  "subject": "Verification planning for bug fixes, features, and refactors: test scope, test-level selection, effort-to-risk matching, regression targeting, evidence quality, and failure-case coverage",
+  "adjacent_concepts": ["debugging", "refactor", "lint-overlay"],
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "An engineer is adding a new feature that involves a pure function with no I/O composed inside a service that calls a payment processor over the network. According to the testing-strategy skill's Test-Level Selection table, which test level applies to which piece and why?",
+      "dimension": "definition",
+      "substance": "domain",
+      "calibration": "semantic",
+      "truth_mode": "code_verification",
+      "skill_type": "concept",
+      "criticality": "high",
+      "truth_sources": ["skills/testing-strategy/SKILL.md:67-78"]
+    },
+    {
+      "id": 2,
+      "prompt": "The skill's Philosophy says \"a test that never fails is noise.\" Explain the mental model behind that claim — why does the skill treat a non-failing test as a cost rather than a free safety net, and what does it imply about coverage-percentage targets?",
+      "dimension": "mental_model",
+      "substance": "domain",
+      "calibration": "semantic",
+      "truth_mode": "conceptual_correctness_plus_repo_application",
+      "skill_type": "concept",
+      "criticality": "high",
+      "truth_sources": ["skills/testing-strategy/SKILL.md:63-65"]
+    },
+    {
+      "id": 3,
+      "prompt": "A bug has already landed in production. An engineer wants to use the testing-strategy skill to chase it. Should they? Cite the negative-routing rule that decides this and name the skill that applies to an already-failing behavior.",
+      "dimension": "boundary",
+      "substance": "contradiction-check",
+      "calibration": "semantic",
+      "truth_mode": "code_verification",
+      "skill_type": "concept",
+      "criticality": "high",
+      "truth_sources": ["skills/testing-strategy/SKILL.md:94-100"]
+    },
+    {
+      "id": 4,
+      "prompt": "A team writes a unit test for a function by mocking its only external collaborator. The test passes. According to the testing-strategy's level-selection anti-patterns, what is wrong with this approach and what is the correct fix?",
+      "dimension": "application",
+      "substance": "domain",
+      "calibration": "process",
+      "truth_mode": "process_correctness",
+      "skill_type": "workflow",
+      "criticality": "high",
+      "truth_sources": ["skills/testing-strategy/SKILL.md:80-85"]
+    },
+    {
+      "id": 5,
+      "prompt": "A bug slipped past unit tests and reached production. The team asks where to put the regression test. According to the testing-strategy skill's Test-Level Selection table, what is the answer and why is adding a new unit test at the same level a poor choice?",
+      "dimension": "purpose",
+      "substance": "domain",
+      "calibration": "semantic",
+      "truth_mode": "conceptual_correctness_plus_repo_application",
+      "skill_type": "concept",
+      "criticality": "critical",
+      "truth_sources": ["skills/testing-strategy/SKILL.md:67-78"]
+    },
+    {
+      "id": 6,
+      "prompt": "A contributor argues that adding a test is always net-positive because more coverage can never be bad. According to the testing-strategy skill, is that correct? Cite the row in the Test-Level Selection table that contradicts this and explain the cost that the argument ignores.",
+      "dimension": "application",
+      "substance": "contradiction-check",
+      "calibration": "semantic",
+      "truth_mode": "conceptual_correctness_plus_repo_application",
+      "skill_type": "concept",
+      "criticality": "critical",
+      "truth_sources": ["skills/testing-strategy/SKILL.md:67-78", "skills/testing-strategy/SKILL.md:80-85"]
+    },
+    {
+      "id": 7,
+      "prompt": "A team asks the testing-strategy skill to review whether their architecture diagram correctly describes the service boundaries — there is no pending change, no failure, and no verification target. Should the skill accept? Cite the negative-routing rule.",
+      "dimension": "boundary",
+      "substance": "contradiction-check",
+      "calibration": "semantic",
+      "truth_mode": "code_verification",
+      "skill_type": "concept",
+      "criticality": "normal",
+      "truth_sources": ["skills/testing-strategy/SKILL.md:94-100"]
+    }
+  ]
+}

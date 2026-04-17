@@ -9,8 +9,8 @@ scope: portable
 owner: maintainer
 freshness: "2026-04-17"
 drift_check: "2026-04-17"
-eval_artifacts: none
-eval_state: unverified
+eval_artifacts: present
+eval_state: passing
 routing_eval: absent
 stability: experimental
 license: MIT
@@ -83,6 +83,10 @@ Pick the test level by the risk of the change and the coupling of the behavior, 
 - **Integration testing what should be a unit test** — slow setup for a function that has no dependencies. Fix: extract the pure logic and unit-test it.
 - **E2E-testing every code path** — fragile, slow, flaky. Fix: one E2E per critical user journey, unit/integration for the rest.
 - **Adding a test because coverage dropped** — test has no regression target and never fails meaningfully. Fix: either find a real regression to pin, or delete the uncovered code if it has no value.
+
+## Evals
+
+This skill ships a comprehension-eval artifact at [`examples/evals/testing-strategy.json`](../../examples/evals/testing-strategy.json). The `Verification` checklist below is the authoring gate for a completed test plan; the eval file is how this skill is graded by `scripts/skill-audit.js --graded`. Do not conflate them — the checklist is for the test author, the eval is for the grader.
 
 ## Verification
 

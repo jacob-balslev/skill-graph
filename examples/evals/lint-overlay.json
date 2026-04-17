@@ -1,0 +1,84 @@
+{
+  "skill_name": "lint-overlay",
+  "subject": "Overlay for testing-strategy covering lint as verification: rule selection, gate placement, failure triage, and migration planning when introducing rules to an existing codebase",
+  "adjacent_concepts": ["testing-strategy", "refactor", "debugging"],
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "A contributor loads lint-overlay alone and asks it to decide whether lint belongs in a change's verification plan at all. According to the overlay's Extends section, is that a valid use? If not, what does the overlay say must be loaded alongside it and why?",
+      "dimension": "definition",
+      "substance": "domain",
+      "calibration": "semantic",
+      "truth_mode": "code_verification",
+      "skill_type": "concept",
+      "criticality": "critical",
+      "truth_sources": ["skills/lint-overlay/SKILL.md:49-66"]
+    },
+    {
+      "id": 2,
+      "prompt": "The overlay says \"effort-to-risk matching\" is NOT overridden — the base testing-strategy skill still decides whether to lint before this overlay decides how. Explain why the overlay deliberately leaves that decision to the base rather than re-deriving it.",
+      "dimension": "mental_model",
+      "substance": "domain",
+      "calibration": "semantic",
+      "truth_mode": "conceptual_correctness_plus_repo_application",
+      "skill_type": "concept",
+      "criticality": "high",
+      "truth_sources": ["skills/lint-overlay/SKILL.md:49-66"]
+    },
+    {
+      "id": 3,
+      "prompt": "An engineer is staring at a single failing ESLint rule in one file and wants help fixing that specific violation. Should they load lint-overlay? Cite the negative-routing rule that decides this and name the skill that should be loaded instead.",
+      "dimension": "boundary",
+      "substance": "contradiction-check",
+      "calibration": "semantic",
+      "truth_mode": "code_verification",
+      "skill_type": "concept",
+      "criticality": "high",
+      "truth_sources": ["skills/lint-overlay/SKILL.md:88-94"]
+    },
+    {
+      "id": 4,
+      "prompt": "A team wants to introduce a new `no-console` lint rule to an existing codebase that already has ~200 violations. According to the lint-overlay's Overlay Rules table, what is the correct migration approach and why does adding a rule that immediately fails 200 files count as a scope change rather than a test?",
+      "dimension": "application",
+      "substance": "domain",
+      "calibration": "process",
+      "truth_mode": "process_correctness",
+      "skill_type": "workflow",
+      "criticality": "high",
+      "truth_sources": ["skills/lint-overlay/SKILL.md:76-86"]
+    },
+    {
+      "id": 5,
+      "prompt": "The lint-overlay places lint after unit tests but before integration tests in the verification sequence. Why this specific ordering? What property of lint failures makes running them earlier than integration tests a win, and what property of unit tests makes them still earlier?",
+      "dimension": "purpose",
+      "substance": "domain",
+      "calibration": "semantic",
+      "truth_mode": "conceptual_correctness_plus_repo_application",
+      "skill_type": "concept",
+      "criticality": "normal",
+      "truth_sources": ["skills/lint-overlay/SKILL.md:76-86"]
+    },
+    {
+      "id": 6,
+      "prompt": "A reviewer argues that lint failures on pre-existing violations should be downgraded to warnings because the current change did not introduce them. According to the lint-overlay, is that correct? Cite the rule it would invoke instead.",
+      "dimension": "application",
+      "substance": "contradiction-check",
+      "calibration": "semantic",
+      "truth_mode": "conceptual_correctness_plus_repo_application",
+      "skill_type": "concept",
+      "criticality": "high",
+      "truth_sources": ["skills/lint-overlay/SKILL.md:76-86"]
+    },
+    {
+      "id": 7,
+      "prompt": "A team asks the lint-overlay to help decide whether their codebase should have lint at all. Should the overlay answer directly? Cite what the overlay says about the scope of decisions it adds vs. the scope it leaves to the base skill.",
+      "dimension": "boundary",
+      "substance": "contradiction-check",
+      "calibration": "semantic",
+      "truth_mode": "code_verification",
+      "skill_type": "concept",
+      "criticality": "critical",
+      "truth_sources": ["skills/lint-overlay/SKILL.md:49-66", "skills/lint-overlay/SKILL.md:88-94"]
+    }
+  ]
+}

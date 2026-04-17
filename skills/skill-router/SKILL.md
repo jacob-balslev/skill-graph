@@ -9,8 +9,8 @@ scope: portable
 owner: maintainer
 freshness: "2026-04-17"
 drift_check: "2026-04-17"
-eval_artifacts: none
-eval_state: unverified
+eval_artifacts: present
+eval_state: passing
 routing_eval: absent
 stability: experimental
 license: MIT
@@ -73,6 +73,10 @@ After scope, prefer `workflow` over `capability` over `router` over `overlay`. A
 ### Fallback behavior
 
 If no skill matches any surface, the router does not fall back to a default skill. It surfaces a coverage gap and recommends authoring a new skill or broadening an existing skill's `keywords` array. Silent fallback to a wrong skill is worse than an explicit coverage-gap signal.
+
+## Evals
+
+This skill ships a comprehension-eval artifact at [`examples/evals/skill-router.json`](../../examples/evals/skill-router.json). The eval prompts specifically test the priority-ordered match surfaces, the scope/type tiebreakers, and the explicit refusal to fall back to a default. The eval file is how this skill is graded by `scripts/skill-audit.js --graded`.
 
 ## Do NOT Use When
 

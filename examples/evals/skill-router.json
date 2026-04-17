@@ -1,0 +1,84 @@
+{
+  "skill_name": "skill-router",
+  "subject": "Skill-dispatch mechanics for multi-skill agent runtimes: trigger-label matching, file-path matching, keyword matching, scope/type tiebreakers, and coverage-gap detection",
+  "adjacent_concepts": ["documentation", "graph-audit"],
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "An inbound agent request arrives with the trigger label `a11y-skill` AND a keyword overlap with three other skills. According to the skill-router's Routing Rules priority order, which surface decides the winner and why does the chain stop there?",
+      "dimension": "definition",
+      "substance": "domain",
+      "calibration": "semantic",
+      "truth_mode": "code_verification",
+      "skill_type": "concept",
+      "criticality": "high",
+      "truth_sources": ["skills/skill-router/SKILL.md:53-61"]
+    },
+    {
+      "id": 2,
+      "prompt": "The skill-router explicitly refuses to fall back to a default skill when no match is found. Why is surfacing a coverage gap treated as better than silent fallback — what authoring signal does the explicit gap carry that a silent default would destroy?",
+      "dimension": "mental_model",
+      "substance": "domain",
+      "calibration": "semantic",
+      "truth_mode": "conceptual_correctness_plus_repo_application",
+      "skill_type": "concept",
+      "criticality": "high",
+      "truth_sources": ["skills/skill-router/SKILL.md:73-75"]
+    },
+    {
+      "id": 3,
+      "prompt": "A query asks \"audit whether this SKILL.md declares the correct relations.\" Should the skill-router take the query or route it to another skill? Cite the negative-routing rule and name the target skill.",
+      "dimension": "boundary",
+      "substance": "contradiction-check",
+      "calibration": "semantic",
+      "truth_mode": "code_verification",
+      "skill_type": "concept",
+      "criticality": "high",
+      "truth_sources": ["skills/skill-router/SKILL.md:77-84"]
+    },
+    {
+      "id": 4,
+      "prompt": "Two skills tie on keyword score: one is `scope: codebase` (repo-specific), the other is `scope: portable`. According to the skill-router's Scope tiebreaker, which wins and why does repo-specificity outrank portability when the match is otherwise equal?",
+      "dimension": "application",
+      "substance": "domain",
+      "calibration": "process",
+      "truth_mode": "process_correctness",
+      "skill_type": "workflow",
+      "criticality": "high",
+      "truth_sources": ["skills/skill-router/SKILL.md:63-67"]
+    },
+    {
+      "id": 5,
+      "prompt": "The skill-router notes that the v1 enum values `operational` and `generic` were renamed to `codebase` and `portable` in schema_version 2, and that the current schema rejects v1 names as hard errors. Why does the router specifically flag this rename rather than silently accepting both sets of names?",
+      "dimension": "purpose",
+      "substance": "domain",
+      "calibration": "semantic",
+      "truth_mode": "code_verification",
+      "skill_type": "concept",
+      "criticality": "normal",
+      "truth_sources": ["skills/skill-router/SKILL.md:63-67"]
+    },
+    {
+      "id": 6,
+      "prompt": "An author proposes routing ambiguous queries to the nearest-match skill \"because surfacing a coverage gap blocks the user.\" According to the skill-router, is this acceptable? Cite the fallback-behavior rule and the contradiction with the router's stated purpose.",
+      "dimension": "application",
+      "substance": "contradiction-check",
+      "calibration": "semantic",
+      "truth_mode": "conceptual_correctness_plus_repo_application",
+      "skill_type": "concept",
+      "criticality": "critical",
+      "truth_sources": ["skills/skill-router/SKILL.md:73-75"]
+    },
+    {
+      "id": 7,
+      "prompt": "A contributor is about to create a brand-new skill from scratch and asks the skill-router to guide the authoring. Should the router take the task? Cite the Do-NOT-Use row and name what the router directs the contributor to instead.",
+      "dimension": "boundary",
+      "substance": "contradiction-check",
+      "calibration": "semantic",
+      "truth_mode": "code_verification",
+      "skill_type": "concept",
+      "criticality": "high",
+      "truth_sources": ["skills/skill-router/SKILL.md:77-84"]
+    }
+  ]
+}

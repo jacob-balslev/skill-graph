@@ -1,0 +1,84 @@
+{
+  "skill_name": "a11y",
+  "subject": "Interaction accessibility for web UI: semantic primitive selection, keyboard access, focus management, labeling, change announcement, and user-preference respect",
+  "adjacent_concepts": ["documentation", "testing-strategy", "refactor"],
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "A designer wants a clickable element that triggers an action on the same page without navigating. The current code uses `<a href=\"#\">` with a click handler. According to the a11y skill's Primitive Selection table, what is the correct primitive and why is the current one wrong?",
+      "dimension": "definition",
+      "substance": "domain",
+      "calibration": "semantic",
+      "truth_mode": "code_verification",
+      "skill_type": "concept",
+      "criticality": "high",
+      "truth_sources": ["skills/a11y/SKILL.md:63-76"]
+    },
+    {
+      "id": 2,
+      "prompt": "The a11y skill says accessible interaction is \"structural, not cosmetic.\" Explain what that claim commits the author to before writing any ARIA, and why treating accessibility as a finishing pass costs teams twice.",
+      "dimension": "mental_model",
+      "substance": "domain",
+      "calibration": "semantic",
+      "truth_mode": "conceptual_correctness_plus_repo_application",
+      "skill_type": "concept",
+      "criticality": "high",
+      "truth_sources": ["skills/a11y/SKILL.md:59-61"]
+    },
+    {
+      "id": 3,
+      "prompt": "A reviewer is asked to evaluate whether a tutorial page uses clear section headings and reading-level-appropriate prose. Should they load the a11y skill or a different one? Cite the negative-routing rule that decides this.",
+      "dimension": "boundary",
+      "substance": "contradiction-check",
+      "calibration": "semantic",
+      "truth_mode": "code_verification",
+      "skill_type": "concept",
+      "criticality": "high",
+      "truth_sources": ["skills/a11y/SKILL.md:90-95"]
+    },
+    {
+      "id": 4,
+      "prompt": "A custom tab strip is built with `<div role=\"tab\">` elements. According to the a11y skill, what additional work must ship with the `role` attribute for the ARIA to be appropriate rather than harmful, and when is ARIA the wrong answer entirely?",
+      "dimension": "application",
+      "substance": "domain",
+      "calibration": "process",
+      "truth_mode": "process_correctness",
+      "skill_type": "workflow",
+      "criticality": "high",
+      "truth_sources": ["skills/a11y/SKILL.md:63-80"]
+    },
+    {
+      "id": 5,
+      "prompt": "The a11y Verification checklist lists \"User preferences (reduced motion, high contrast) are respected\" as a required item, alongside keyboard and label checks. Why are user-preference media queries treated as a verification gate rather than a progressive enhancement?",
+      "dimension": "purpose",
+      "substance": "domain",
+      "calibration": "semantic",
+      "truth_mode": "conceptual_correctness_plus_repo_application",
+      "skill_type": "concept",
+      "criticality": "normal",
+      "truth_sources": ["skills/a11y/SKILL.md:82-88", "skills/a11y/SKILL.md:50-57"]
+    },
+    {
+      "id": 6,
+      "prompt": "A contributor claims that adding `role=\"button\"` to a `<div>` makes it accessible because screen readers will announce it as a button. What does the a11y skill say about this claim, and why is the ad-hoc approach worse than leaving the `<div>` untyped?",
+      "dimension": "application",
+      "substance": "contradiction-check",
+      "calibration": "semantic",
+      "truth_mode": "conceptual_correctness_plus_repo_application",
+      "skill_type": "concept",
+      "criticality": "critical",
+      "truth_sources": ["skills/a11y/SKILL.md:78-80", "skills/a11y/SKILL.md:63-76"]
+    },
+    {
+      "id": 7,
+      "prompt": "An engineer asks the a11y skill to review a pull request that renames variables and extracts a function inside an already-accessible component, with no change to rendered output, focus order, or ARIA. Should the skill accept the task or refuse it? Cite the rule.",
+      "dimension": "boundary",
+      "substance": "contradiction-check",
+      "calibration": "semantic",
+      "truth_mode": "code_verification",
+      "skill_type": "concept",
+      "criticality": "high",
+      "truth_sources": ["skills/a11y/SKILL.md:90-95"]
+    }
+  ]
+}

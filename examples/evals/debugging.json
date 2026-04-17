@@ -1,0 +1,84 @@
+{
+  "skill_name": "debugging",
+  "subject": "Failure-driven diagnosis workflow: reproduction, scope reduction, evidence capture, root-cause isolation, fix verification, and regression-test creation",
+  "adjacent_concepts": ["testing-strategy", "refactor"],
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "A bug report says \"checkout sometimes fails.\" An engineer is tempted to start reading the checkout code. According to the debugging skill's Workflow table, what is step 1 and why must it come before any hypothesis?",
+      "dimension": "definition",
+      "substance": "domain",
+      "calibration": "semantic",
+      "truth_mode": "code_verification",
+      "skill_type": "workflow",
+      "criticality": "high",
+      "truth_sources": ["skills/debugging/SKILL.md:65-76"]
+    },
+    {
+      "id": 2,
+      "prompt": "The debugging skill's Philosophy section warns that \"a clever fix that skips the reproduction step ships the same bug again under a different name.\" Explain the causal chain behind that claim — why does skipping reproduction make the same failure likely to reappear?",
+      "dimension": "mental_model",
+      "substance": "domain",
+      "calibration": "semantic",
+      "truth_mode": "conceptual_correctness_plus_repo_application",
+      "skill_type": "concept",
+      "criticality": "high",
+      "truth_sources": ["skills/debugging/SKILL.md:61-63"]
+    },
+    {
+      "id": 3,
+      "prompt": "A team wants to plan test coverage for a newly built billing module that has not yet failed in production. Should they reach for the debugging skill or a different one? Cite the negative-routing rule that decides this.",
+      "dimension": "boundary",
+      "substance": "contradiction-check",
+      "calibration": "semantic",
+      "truth_mode": "code_verification",
+      "skill_type": "concept",
+      "criticality": "high",
+      "truth_sources": ["skills/debugging/SKILL.md:92-98"]
+    },
+    {
+      "id": 4,
+      "prompt": "An engineer has a working hypothesis that explains why the error is visible but not why a related field is simultaneously empty. Per the debugging skill's step 4, can they proceed to step 5? If not, what do they do instead and why?",
+      "dimension": "application",
+      "substance": "domain",
+      "calibration": "process",
+      "truth_mode": "process_correctness",
+      "skill_type": "workflow",
+      "criticality": "critical",
+      "truth_sources": ["skills/debugging/SKILL.md:65-76"]
+    },
+    {
+      "id": 5,
+      "prompt": "The debugging skill requires that a regression test both fail without the fix and pass with it. Why is \"passes with the fix\" alone insufficient, and what failure mode does the two-way check prevent?",
+      "dimension": "purpose",
+      "substance": "domain",
+      "calibration": "semantic",
+      "truth_mode": "conceptual_correctness_plus_repo_application",
+      "skill_type": "concept",
+      "criticality": "high",
+      "truth_sources": ["skills/debugging/SKILL.md:65-76", "skills/debugging/SKILL.md:84-90"]
+    },
+    {
+      "id": 6,
+      "prompt": "An engineer has spent 90 minutes trying to reproduce a production intermittent failure on their laptop without success. According to the debugging skill's \"When to stop and escalate\" guidance, what does this symptom suggest and what is the correct next move?",
+      "dimension": "application",
+      "substance": "domain",
+      "calibration": "process",
+      "truth_mode": "process_correctness",
+      "skill_type": "workflow",
+      "criticality": "high",
+      "truth_sources": ["skills/debugging/SKILL.md:78-82"]
+    },
+    {
+      "id": 7,
+      "prompt": "A contributor asks the debugging skill to help design a new test suite for a feature that has never failed but is about to ship. Should the skill accept the task? Cite the boundary rule and name the skill it routes to instead.",
+      "dimension": "boundary",
+      "substance": "contradiction-check",
+      "calibration": "semantic",
+      "truth_mode": "code_verification",
+      "skill_type": "concept",
+      "criticality": "normal",
+      "truth_sources": ["skills/debugging/SKILL.md:92-98"]
+    }
+  ]
+}
