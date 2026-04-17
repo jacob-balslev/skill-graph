@@ -9,6 +9,7 @@ Shipping today:
 - public `SKILL.md` frontmatter contract (`docs/metadata-contract.md`)
 - JSON Schemas for skill and manifest validation (`schemas/`)
 - **skill lint script** with schema validation, parent-directory check, relation-target existence, and eval coherence (`scripts/skill-lint.js`)
+- **Agent Skills export script** that transforms a Skill Graph SKILL.md into an Agent Skills-compatible file (`scripts/export-skill.js`); five exported fixtures in `examples/exports/`
 - audit documentation for single-skill and repeated-library review (`docs/skill-audit-checklist.md`, `docs/skill-audit-loop.md`)
 - a self-referential skill template (`examples/skill-template.md`)
 - five starter skills (`skills/a11y`, `debugging`, `documentation`, `refactor`, `testing-strategy`)
@@ -19,7 +20,8 @@ Planned, not yet implemented:
 
 - manifest generation script (`scripts/generate-manifest.js`) — the sample manifest is hand-written today
 - audit runner (`scripts/skill-audit.js`)
-- overlap detection, routing, export, and coverage tooling
+- overlap detection, routing, and coverage tooling
+- export tooling for `cursor`, `windsurf`, and `copilot` targets
 
 See `docs/plans/scripts-roadmap.md` for the planned script surface.
 
@@ -40,7 +42,7 @@ The base standard and the Skill Graph extensions:
 | `schema_version`, `version`, `type`, `family`, `scope`, `owner`, `freshness`, `drift_check`, `eval_status` | Skill Graph | Required extensions for governance, routing, and health tracking |
 | `relations`, `grounding`, `portability`, `triggers`, `keywords`, `paths`, `route_groups`, `extends`, `stability` | Skill Graph | Optional extensions for graph semantics, grounding, and exportability |
 
-**Compatibility direction.** A valid Agent Skills skill is *not* automatically a valid Skill Graph skill — Skill Graph requires fields beyond the base two. Going the other way is possible via a transform: move every Skill Graph extension field under the standard `metadata:` key, leaving only the Agent Skills fields at the top level. Tooling for this transform is on the roadmap as `scripts/export-skill.js`. Until it ships, the `agent-skills` value in `portability.exports` describes a compatibility *goal*, not a working export path.
+**Compatibility direction.** A valid Agent Skills skill is *not* automatically a valid Skill Graph skill — Skill Graph requires fields beyond the base two. Going the other way is possible via a transform: move every Skill Graph extension field under the standard `metadata:` key, leaving only the Agent Skills fields at the top level. The transform is implemented as `scripts/export-skill.js`. Running `node scripts/export-skill.js <skill-dir>` produces a `SKILL.agent-skills.md` file with only the Agent Skills base fields at the top level and all Skill Graph extensions nested under `metadata:`. The `cursor`, `windsurf`, and `copilot` values in `portability.exports` still describe compatibility goals — export tooling for those targets is not yet implemented.
 
 ## Quick tour
 
