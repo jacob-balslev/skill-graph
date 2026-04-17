@@ -175,12 +175,20 @@ A loop iteration is done when:
 
 ## Recommended Artifact Layout
 
+Skill Graph uses a two-tier artifact root convention:
+
+| Root | When to use |
+|---|---|
+| `examples/audits/<skill-name>/` | Shipped, curated worked examples that travel with the repo (e.g. the `documentation` audit in this repo). These are reference artifacts for adopters. |
+| `audits/<skill-name>/` | Downstream consumer output — audit artifacts produced by adopters running the loop against their own skill libraries. These do not belong in the Skill Graph repo itself. |
+
+The minimum concrete file set under either root is:
+
 ```text
-audits/
-  <skill-name>/
+<root>/<skill-name>/
     findings.md
     verdict.md
-    scorecard.md
+    scorecard.md   (optional but strongly recommended)
 ```
 
 ## Artifact Content Contract

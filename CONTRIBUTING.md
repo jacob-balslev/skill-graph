@@ -26,7 +26,7 @@ Start with `README.md` and `docs/metadata-contract.md` before opening a pull req
 
 1. **Start from the template.** Copy `examples/skill-template.md` to `skills/<your-skill-name>/SKILL.md`. The template is self-referential — its body teaches you what each section should contain. Read its blockquote notes before editing.
 2. **Rewrite the identity.** Change `name:` to your skill's identifier (lowercase, hyphens, matches the parent directory). Rewrite `description:` as a routing contract: ≤ 3 sentences, pushy trigger phrases, explicit negative boundary. Rewrite every other field to match your subject.
-3. **Pick an archetype and follow its section map.** `docs/metadata-contract.md § Archetype section map` lists the required H2 sections per archetype (`capability`, `workflow`, `router`, `overlay`). Do not add or remove sections outside that map.
+3. **Pick an archetype and follow its section map.** `docs/metadata-contract.md § Archetype section map` lists the required H2 sections per archetype (`capability`, `workflow`, `router`, `overlay`). Do not remove required sections. Additional sections are allowed when they earn their line count — for example, `## Key Files` for skills that reference concrete repo files, or `## References` for skills that point at external reading.
 4. **Strip the teaching layer.** Remove every `> **TEMPLATE NOTE:**` blockquote and every `# TEMPLATE NOTE:` YAML comment before committing. They are authoring scaffolding, not skill content.
 5. **Choose `scope` honestly.** Use `generic` for a portable skill with no repo-specific claims, `reference` for a documentation-style skill grounded in contract documents, `operational` for a skill grounded in a specific codebase. `scope: operational` requires a populated `domain_frame` — this is machine-enforced by the schema.
 6. **Point `relations.*` at real skills.** Every `adjacent`, `boundary`, `verify_with`, and `depends_on` target must be the `name` of another skill that exists in `skills/`. `scripts/skill-lint.js` will reject dangling targets.
@@ -40,9 +40,9 @@ Run the full validation pass:
 # Lint every skill in the repo
 node scripts/skill-lint.js --include-template
 
-# Verify the sample manifest still validates against the schema
+# Verify the sample manifest still passes structural integrity checks
+# (schema_version correct, total_skills count matches the skills array)
 node -e "
-  const s = require('./schemas/manifest.schema.json');
   const m = require('./examples/skills.manifest.sample.json');
   if (m.schema_version !== 1) { console.error('bad schema_version'); process.exit(1); }
   if (m.summary.total_skills !== m.skills.length) { console.error('total_skills mismatch'); process.exit(1); }
@@ -65,7 +65,7 @@ If you touched `scripts/skill-lint.js`, run it against every starter skill plus 
 
 ## Audit workflow
 
-When auditing an existing skill, follow `docs/skill-audit-loop.md` for the 12-step process and `docs/skill-audit-checklist.md` for the per-skill checklist. Audit artifacts land under `examples/audits/<skill-name>/` with the standard three files (`findings.md`, `verdict.md`, `scorecard.md`) — see `examples/audits/documentation/` for a worked example.
+When auditing an existing skill, follow `docs/skill-audit-loop.md` for the 12-step process and `docs/skill-audit-checklist.md` for the per-skill checklist. See `docs/skill-audit-loop.md § Recommended Artifact Layout` for the authoritative two-tier artifact root convention (`examples/audits/<skill-name>/` for shipped worked examples; `audits/<skill-name>/` for downstream consumer output). The `examples/audits/documentation/` directory is the canonical worked example.
 
 ## License
 

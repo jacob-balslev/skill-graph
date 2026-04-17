@@ -14,4 +14,4 @@
 | Grounding fidelity | N/A | Skill is `scope: generic` with no `domain_frame`; grounding dimension does not apply to generic starters |
 | Content quality | 5 | `## Coverage` is a six-item scope map; `## Philosophy` is two sentences with a clear stance; `## Verification` has five actionable items |
 | Eval quality | 4 | `examples/evals/comprehension.json` ships seven grounded prompts; full coverage of boundary and semantic-layer concerns. Deduct one for no explicit failure-mode eval |
-| Portability quality | 5 | Generic, no private assumptions, exports cleanly to all four declared targets |
+| Portability quality | 5 | Generic, no private assumptions, compatible with all declared export targets; `agent-skills` export requires the planned `scripts/export-skill.js` transform (roadmap item, not yet implemented) |

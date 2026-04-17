@@ -49,7 +49,7 @@
     },
     {
       "id": 5,
-      "prompt": "The documentation starter ships with `eval_status: pending` and no eval artifact. According to the metadata contract, is that an acceptable state, and for how long?",
+      "prompt": "The documentation starter ships with `eval_status: evals` and a companion eval artifact at `examples/evals/comprehension.json`. According to the metadata contract, what does that status declare and what does the lint script verify to confirm it?",
       "dimension": "purpose",
       "substance": "domain",
       "calibration": "semantic",
@@ -72,7 +72,7 @@
     {
       "id": 7,
       "prompt": "Should the documentation skill's `## Coverage` section restate its `description:` field? What does semantic layer discipline say about the difference between the two?",
-      "dimension": "apply",
+      "dimension": "application",
       "substance": "contradiction-check",
       "calibration": "semantic",
       "truth_mode": "conceptual_correctness_plus_repo_application",
