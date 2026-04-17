@@ -199,7 +199,7 @@ The `readiness` field is operational, not ordinal. Each value says something con
 | `cursor` | The skill is structured for use in Cursor (export tooling not yet implemented — this is a compatibility goal). |
 | `windsurf` | The skill targets Windsurf (export tooling not yet implemented). |
 | `copilot` | The skill targets GitHub Copilot (export tooling not yet implemented). |
-| `agents-md` | The skill is compatible with the `AGENTS.md` format. |
+| `agents-md` | The skill can be rendered as an `AGENTS.md`-style project context file — the Markdown convention for project-scoped AI agent instructions (see [agents.md](https://agents.md/)). Target format: a single Markdown file with a top H1 title, H2 sections for each capability area, and no YAML frontmatter. Export tooling not yet implemented — declaring this target today is a compatibility claim only. Include when the skill's body is already structured as instruction-style Markdown that would slot into a project's `AGENTS.md` without transformation. |
 
 **If in doubt:** Include only `agent-skills` until the other export transforms are implemented. See `README.md` for current export tooling status.
 

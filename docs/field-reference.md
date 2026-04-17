@@ -635,6 +635,7 @@ grounding:
 - `readiness` must be `declared`, `scripted`, or `verified`. This is an operational axis, not an ordinal rating — each value says something concrete about what is true of the skill today.
 - `targets` is an array constrained to `["agent-skills", "cursor", "windsurf", "copilot", "agents-md"]`.
 - `agent-skills` in `targets` means the skill can be transformed to a valid Agent Skills file via `scripts/export-skill.js`. Other targets describe compatibility goals, not yet-implemented transforms (see README for current status).
+- `agents-md` targets the [AGENTS.md](https://agents.md/) project-context file convention — a single Markdown file with H1 title, H2 sections, and no YAML frontmatter. Declaring this target is a compatibility claim: the skill's body is already structured as instruction-style Markdown that could slot into a project's `AGENTS.md` without transformation. Export tooling is not yet implemented.
 
 **Sub-fields.**
 
