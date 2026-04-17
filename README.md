@@ -111,7 +111,11 @@ node scripts/generate-manifest.js --include-template \
 
 ## Validation
 
-Skill Graph ships a self-contained Node lint script with no external dependencies. Errors are reported with `file:line:column` + a 5-line code frame and caret, similar to Rust or Babel diagnostics.
+Skill Graph ships two self-contained Node validation tools with no external dependencies.
+
+### skill-lint.js — per-file schema and consistency checks
+
+`scripts/skill-lint.js` reports errors with `file:line:column` + a 5-line code frame and caret, similar to Rust or Babel diagnostics.
 
 The lint tool runs eleven checks:
 
@@ -150,6 +154,30 @@ node scripts/skill-lint.js --no-color
 ```
 
 Exit code 0 means all checks passed. Exit code 1 means one or more files failed. Warnings do not affect the exit code unless `--strict` is active.
+
+### check-contract-consistency.js — cross-artifact contract checks
+
+`scripts/check-contract-consistency.js` validates the consistency of the contract documents and example artifacts against each other. This is complementary to `skill-lint.js` — where lint validates per-skill schema correctness, the contract checker validates that the contract documents themselves are internally consistent.
+
+The script runs five checks:
+
+| Check | What it detects | Level |
+|-------|----------------|-------|
+| **C1 Field-set parity** | `docs/field-reference.md` section headers match `schemas/skill.schema.json` top-level properties exactly | Error |
+| **C2 Authored-to-generated parity** | Every authored field in `skill.schema.json` appears in `manifest.schema.json` (possibly grouped) or is listed as intentional loss in `docs/manifest-contract.md` | Error |
+| **C3 Artifact-root convention** | Shipped audit examples (those under `examples/audits/`) are not referred to by the bare `audits/<skill>/` root in docs (which is the consumer/adopter convention) | Warn |
+| **C4 Sample manifest correctness** | `examples/skills.manifest.sample.json` validates against `schemas/manifest.schema.json` and `summary.total_skills` equals `skills.length` | Error |
+| **C5 Example truth invariants** | Scorecards don't claim unqualified all-target portability; eval artifacts don't use the deprecated v1 `eval_status` JSON key; scorecards don't use v1 portability sub-field names (`level`, `exports`) | Error |
+
+```bash
+# Run all contract consistency checks
+node scripts/check-contract-consistency.js
+
+# Show per-check OK messages as well as errors
+node scripts/check-contract-consistency.js --verbose
+```
+
+Exit code 0 means all checks passed (warnings do not affect the exit code). Exit code 1 means at least one check failed.
 
 ### Archetype section map
 

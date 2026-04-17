@@ -10,6 +10,7 @@ on:
       - 'scripts/lib/**'
       - 'schemas/**'
       - 'examples/**'
+      - 'docs/**'
   pull_request:
     paths:
       - 'skills/**'
@@ -18,6 +19,7 @@ on:
       - 'scripts/lib/**'
       - 'schemas/**'
       - 'examples/**'
+      - 'docs/**'
 
 jobs:
   lint:
@@ -30,3 +32,15 @@ jobs:
           node-version: '20'
       - name: Run skill lint
         run: node scripts/skill-lint.js --include-template
+
+  contract-consistency:
+    name: Contract consistency
+    runs-on: ubuntu-latest
+    needs: lint
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+      - name: Check contract consistency
+        run: node scripts/check-contract-consistency.js
