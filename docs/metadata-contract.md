@@ -529,14 +529,21 @@ This table defines the intended public mapping for downstream tooling.
 | `family` | `family` | copied through |
 | `scope` | `scope` | copied through |
 | `owner` | `owner` | copied through |
+| `stability` | `stability` | copied through when present |
 | `extends` | `extends` | copied through when present |
+| `license` | `license` | copied through when present (Agent Skills compatibility) |
+| `compatibility` | `compatibility` | copied through when present (Agent Skills compatibility) |
+| `allowed-tools` | `allowed-tools` | copied through when present (Agent Skills compatibility) |
+| `route_groups` | `route_groups` | copied through when present |
 | `keywords`, `triggers`, `paths` | `activation.*` | grouped under `activation` |
 | `relations.*` | `relations.*` | grouped under `relations` |
-| `domain_frame.*` | `grounding.*` | normalized under `grounding` |
+| `domain_frame.*` | `grounding.*` | normalized under `grounding`; `grounding` shares `domain_frame`'s required-field set, including `domain_object` (Updated 2026-04-17 — SH-5776) |
 | `portability.*` | `portability.*` | copied through when present |
 | `eval_status`, `freshness`, `drift_check` | `health.*` | grouped under `health` |
 
 Generator-only fields such as summary rollups, path normalization, mirror status, and health flags belong only in `skills.manifest.json`.
+
+Fields that are **not** listed above and are not marked as generator-only are treated as authored-only and intentionally dropped during manifest generation. As of 2026-04-17 (SH-5776) no authored top-level fields are dropped — every field from `skill.schema.json` has a manifest projection in `manifest.schema.json`. This loss-policy parity is enforced by `scripts/skill-lint.js`, which fails CI if `manifest.schema.json` drops a field listed in this table without documenting the new loss intent here.
 
 ## Schema Strictness
 

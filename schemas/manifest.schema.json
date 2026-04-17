@@ -99,7 +99,15 @@
           "grounding": {
             "type": "object",
             "additionalProperties": false,
+            "required": [
+              "domain_object",
+              "evaluation_mode",
+              "truth_sources",
+              "failure_modes",
+              "evidence_priority"
+            ],
             "properties": {
+              "domain_object": { "type": "string" },
               "evaluation_mode": {
                 "type": "string",
                 "enum": ["repo_specific", "universal", "hybrid"]
@@ -112,6 +120,13 @@
               }
             }
           },
+          "route_groups": {
+            "type": "array",
+            "items": { "type": "string" }
+          },
+          "license": { "type": "string" },
+          "compatibility": { "type": "string" },
+          "allowed-tools": { "type": "string" },
           "portability": {
             "type": "object",
             "additionalProperties": false,

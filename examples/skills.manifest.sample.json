@@ -34,6 +34,9 @@
       "scope": "reference",
       "owner": "maintainer",
       "stability": "stable",
+      "license": "MIT",
+      "compatibility": "Markdown, YAML, JSON Schema",
+      "allowed-tools": "Read Grep",
       "activation": {
         "triggers": ["skill-template"],
         "keywords": ["skill authoring", "skill template", "new skill", "skill frontmatter", "skill graph contract"],
@@ -45,6 +48,7 @@
         "verify_with": ["documentation"]
       },
       "grounding": {
+        "domain_object": "Skill authoring for the Skill Graph frontmatter contract",
         "evaluation_mode": "repo_specific",
         "truth_sources": ["docs/metadata-contract.md", "schemas/skill.schema.json", "docs/skill-audit-checklist.md"],
         "failure_modes": ["placeholder_sludge", "cargo_cult_meta_sections", "description_coverage_collapse", "authoring_gate_skipped"],

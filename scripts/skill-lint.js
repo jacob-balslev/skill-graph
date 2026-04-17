@@ -12,6 +12,17 @@
  *   4. Eval artifact coherence check (eval_status: evals requires at
  *      least one eval file targeting the skill)
  *   5. scope: operational → require domain_frame (conditional from schema)
+ *   6. Cross-schema parity (runs once): every property and required field
+ *      of skill.schema.json#domain_frame must be representable in
+ *      manifest.schema.json#grounding, and the documented loss-policy
+ *      fields (route_groups, license, compatibility, allowed-tools) must
+ *      exist as top-level manifest skill-item properties. Prevents the
+ *      SH-5776 regression where the manifest silently dropped
+ *      domain_object and four optional top-level fields.
+ *   7. Sample manifest conformance (runs once): every skill entry in
+ *      examples/skills.manifest.sample.json validates against
+ *      manifest.schema.json#skills.items, so the hand-written sample
+ *      cannot drift out of step with the schema.
  *
  * Self-contained. Only uses Node built-ins — no external dependencies.
  * Exit 0 on success, 1 on any failure.
@@ -29,10 +40,84 @@ const REPO_ROOT = path.resolve(__dirname, '..');
 const SKILLS_DIR = path.join(REPO_ROOT, 'skills');
 const TEMPLATE_PATH = path.join(REPO_ROOT, 'examples', 'skill-template.md');
 const SCHEMA_PATH = path.join(REPO_ROOT, 'schemas', 'skill.schema.json');
+const MANIFEST_SCHEMA_PATH = path.join(REPO_ROOT, 'schemas', 'manifest.schema.json');
+const SAMPLE_MANIFEST_PATH = path.join(REPO_ROOT, 'examples', 'skills.manifest.sample.json');
 const EVALS_DIR = path.join(REPO_ROOT, 'examples', 'evals');
+
+// Explicit "loss policy" list. Each entry is an authored top-level field in
+// skill.schema.json that must have a representation in the manifest skill-item
+// schema. If a future edit deletes one of these without documenting it in
+// docs/metadata-contract.md or docs/manifest-contract.md, lint fails loudly.
+//
+// This closes the regression window that shipped SH-5776: the original
+// manifest.schema.json silently dropped domain_object, route_groups, license,
+// compatibility, and allowed-tools. Adding a field here is cheap and makes
+// the mapping auditable without a separate contract doc.
+const AUTHORED_FIELDS_MUST_FLOW = [
+  'route_groups',
+  'license',
+  'compatibility',
+  'allowed-tools',
+];
 
 function loadSchema() {
   return JSON.parse(fs.readFileSync(SCHEMA_PATH, 'utf8'));
+}
+
+function loadManifestSchema() {
+  return JSON.parse(fs.readFileSync(MANIFEST_SCHEMA_PATH, 'utf8'));
+}
+
+// Frontmatter → manifest parity check. Runs once per lint invocation, not
+// per file. Guarantees:
+//   1. Every property of skill.schema.json#domain_frame is representable in
+//      manifest.schema.json#skills.items.properties.grounding (prevents the
+//      original SH-5776 bug where domain_object was silently dropped).
+//   2. Every field in domain_frame.required is also required in grounding.
+//   3. The documented loss-policy fields (AUTHORED_FIELDS_MUST_FLOW) exist
+//      as top-level properties on the manifest skill-item schema.
+function checkSchemaParity(skillSchema, manifestSchema) {
+  const errors = [];
+
+  const domainFrame = skillSchema.properties && skillSchema.properties.domain_frame;
+  const skillItem = manifestSchema.properties
+    && manifestSchema.properties.skills
+    && manifestSchema.properties.skills.items;
+  const grounding = skillItem && skillItem.properties && skillItem.properties.grounding;
+
+  if (!domainFrame) {
+    errors.push('skill.schema.json: missing properties.domain_frame (cannot run parity check)');
+    return errors;
+  }
+  if (!grounding) {
+    errors.push('manifest.schema.json: missing properties.skills.items.properties.grounding');
+    return errors;
+  }
+
+  const dfProps = Object.keys(domainFrame.properties || {});
+  const gProps = Object.keys(grounding.properties || {});
+  for (const prop of dfProps) {
+    if (!gProps.includes(prop)) {
+      errors.push(`parity: skill.schema.json#domain_frame.${prop} is not representable in manifest.schema.json#grounding.properties`);
+    }
+  }
+
+  const dfRequired = domainFrame.required || [];
+  const gRequired = grounding.required || [];
+  for (const req of dfRequired) {
+    if (!gRequired.includes(req)) {
+      errors.push(`parity: skill.schema.json#domain_frame.required contains "${req}" but manifest.schema.json#grounding.required does not`);
+    }
+  }
+
+  const itemProps = Object.keys((skillItem && skillItem.properties) || {});
+  for (const f of AUTHORED_FIELDS_MUST_FLOW) {
+    if (!itemProps.includes(f)) {
+      errors.push(`loss-policy: authored field "${f}" is listed in AUTHORED_FIELDS_MUST_FLOW but manifest.schema.json has no property for it on skills.items`);
+    }
+  }
+
+  return errors;
 }
 
 // Minimal YAML frontmatter parser for the subset used in Skill Graph
@@ -217,6 +302,36 @@ function checkEvalCoherence(filePath, fm) {
   return [`eval_status: evals declared but no file in ${EVALS_DIR} has skill_name: "${fm.name}"`];
 }
 
+// Validate every skill entry in examples/skills.manifest.sample.json against
+// the manifest skill-item schema. Uses the same minimal validator as the
+// SKILL.md frontmatter check, applied to each array element. Prevents the
+// sample manifest from drifting out of step with the manifest schema (which
+// was one of the SH-5776 acceptance criteria).
+function checkSampleManifest(manifestSchema) {
+  if (!fs.existsSync(SAMPLE_MANIFEST_PATH)) return [];
+  let sample;
+  try {
+    sample = JSON.parse(fs.readFileSync(SAMPLE_MANIFEST_PATH, 'utf8'));
+  } catch (e) {
+    return [`sample manifest parse error: ${e.message}`];
+  }
+  const itemSchema = manifestSchema.properties
+    && manifestSchema.properties.skills
+    && manifestSchema.properties.skills.items;
+  if (!itemSchema) {
+    return ['manifest.schema.json: missing properties.skills.items (cannot validate sample)'];
+  }
+  const errors = [];
+  const skills = Array.isArray(sample.skills) ? sample.skills : [];
+  for (let i = 0; i < skills.length; i++) {
+    const skill = skills[i];
+    const label = skill && skill.id ? skill.id : `[${i}]`;
+    const skillErrors = validateAgainstSchema(skill, itemSchema);
+    for (const e of skillErrors) errors.push(`skills[${label}]: ${e}`);
+  }
+  return errors;
+}
+
 function collectSkillFiles(args) {
   const files = [];
   const includeTemplate = args.includes('--include-template');
@@ -248,11 +363,33 @@ function collectSkillFiles(args) {
 function main() {
   const args = process.argv.slice(2);
   const schema = loadSchema();
+  const manifestSchema = loadManifestSchema();
   const files = collectSkillFiles(args);
 
   if (files.length === 0) {
     console.error('No skill files found to lint.');
     process.exit(1);
+  }
+
+  // Cross-schema parity: frontmatter → manifest. Runs once per invocation.
+  // Fails the lint early if either schema has drifted from the authored-to-
+  // generated mapping in docs/metadata-contract.md.
+  const parityErrors = checkSchemaParity(schema, manifestSchema);
+  if (parityErrors.length > 0) {
+    console.error('FAIL schemas/ (cross-schema parity)');
+    for (const e of parityErrors) console.error(`     - ${e}`);
+  } else {
+    console.log('OK   schemas/ (cross-schema parity)');
+  }
+
+  // Sample manifest conformance. Validates each skill entry in
+  // examples/skills.manifest.sample.json against manifest.schema.json#skills.items.
+  const sampleErrors = checkSampleManifest(manifestSchema);
+  if (sampleErrors.length > 0) {
+    console.error('FAIL examples/skills.manifest.sample.json');
+    for (const e of sampleErrors) console.error(`     - ${e}`);
+  } else {
+    console.log('OK   examples/skills.manifest.sample.json');
   }
 
   // Build the known-skill set from skills/ for relation target checks
@@ -267,7 +404,7 @@ function main() {
     }
   }
 
-  let totalErrors = 0;
+  let totalErrors = parityErrors.length + sampleErrors.length;
   for (const file of files) {
     const relPath = path.relative(REPO_ROOT, file);
     const text = fs.readFileSync(file, 'utf8');
