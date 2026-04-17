@@ -4,6 +4,8 @@ Graph-aware skill metadata for AI agents. A superset of the [Agent Skills](https
 
 ## Status
 
+**Current version: 0.3.0** (2026-04-17) — see [CHANGELOG.md](CHANGELOG.md) for the full release history and migration notes.
+
 Shipping today:
 
 - public `SKILL.md` frontmatter contract (`docs/metadata-contract.md`)
@@ -28,7 +30,7 @@ Deferred (removed from the contract in 0.3.0):
 
 - Export transforms for `cursor`, `windsurf`, `copilot`, and `agents-md` targets. These values previously appeared in the `portability.targets` enum as compatibility *goals* with no working transform. Because `additionalProperties: false` plus enum restriction is the whole point of the contract, aspirational enum values violated that contract. The enum now accepts only `agent-skills`. Re-add via a new RFC and the same PR that ships the transform.
 
-See `docs/plans/scripts-roadmap.md` for the planned script surface.
+See `docs/plans/scripts-roadmap.md` for the planned script surface and [CHANGELOG.md](CHANGELOG.md) for what has shipped in each release.
 
 ## Relationship to Agent Skills
 
