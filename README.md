@@ -110,7 +110,23 @@ node scripts/generate-manifest.js --include-template \
 
 ## Validation
 
-Skill Graph ships a self-contained Node lint script with no external dependencies. It validates frontmatter against the schema, enforces the Agent-Skills-compatible parent-directory-matches-name rule, verifies every `relations.*` target exists as a real sibling skill, confirms `eval_status: evals` is backed by a real eval artifact, and checks that `examples/skills.manifest.sample.json` matches generator output.
+Skill Graph ships a self-contained Node lint script with no external dependencies. Errors are reported with `file:line:column` + a 5-line code frame and caret, similar to Rust or Babel diagnostics.
+
+The lint tool runs eleven checks:
+
+| Check | Scope | Level |
+|-------|-------|-------|
+| Schema validation (required fields, types, enums) | Per file | Error |
+| Parent-directory-matches-name (Agent Skills compatibility) | Per file | Error |
+| Relation target existence (`relations.*` targets must be real sibling skills) | Per file | Error |
+| Eval artifact coherence (`eval_artifacts: present` requires a real eval file) | Per file | Error |
+| Cross-schema parity (frontmatter → manifest field representability) | Once | Error |
+| Sample manifest conformance (`examples/skills.manifest.sample.json` vs schema) | Once | Error |
+| Generator parity (sample manifest vs live generator output) | Once | Error |
+| Migration warnings (v1 → v2 field renames) | Per file | Warn |
+| **Archetype-aware section validator** (required H2 sections per archetype; empty sections) | Per file | Error / Warn |
+| **Routing quality — empty keywords** (`scope: codebase` or `routing_groups` skills must have keywords) | Per file | Error |
+| **Routing quality — description-in-Coverage duplication** (description text copied verbatim into `## Coverage`) | Per file | Warn |
 
 ```bash
 # Lint every skill under skills/
@@ -124,9 +140,28 @@ node scripts/skill-lint.js --include-template
 
 # Skip the generator parity check (useful during initial setup)
 node scripts/skill-lint.js --skip-generator-parity
+
+# Promote warnings to errors (zero-warning CI enforcement)
+node scripts/skill-lint.js --strict
+
+# Suppress ANSI colour codes (plain output for CI logs)
+node scripts/skill-lint.js --no-color
 ```
 
-Exit code 0 means all checks passed. Exit code 1 means one or more files failed — each failure prints its specific error lines.
+Exit code 0 means all checks passed. Exit code 1 means one or more files failed. Warnings do not affect the exit code unless `--strict` is active.
+
+### Archetype section map
+
+Each archetype requires a minimum set of H2 body sections:
+
+| Archetype | Required sections |
+|-----------|------------------|
+| `capability` | `## Coverage`, `## Philosophy`, `## Verification`, `## Do NOT Use When` |
+| `workflow` | `## Coverage`, `## Philosophy`, `## Workflow`, `## Verification`, `## Do NOT Use When` |
+| `router` | `## Coverage`, `## Routing Rules`, `## Do NOT Use When` |
+| `overlay` | `## Coverage`, `## Overlay Rules`, `## Extends`, `## Do NOT Use When` |
+
+Lint errors on missing sections. Lint warns on sections that exist but contain fewer than 50 non-whitespace characters (empty-placeholder guard).
 
 ## Non-goals
 

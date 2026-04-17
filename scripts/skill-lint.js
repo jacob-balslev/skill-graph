@@ -35,6 +35,17 @@
  *      route_groups during the migration window. The old enum values for
  *      `scope` (generic, operational) are hard errors already — the schema
  *      enum only lists the v2 values (portable, codebase, reference).
+ *  10. Archetype-aware section validator (runs per file): errors on missing
+ *      required H2 sections per archetype (capability, workflow, router,
+ *      overlay); warns on sections that exist but are empty (< 50 non-
+ *      whitespace characters). See scripts/lint/check-archetype-sections.js.
+ *  11. Routing quality — narrow (runs per file): errors when keywords: []
+ *      for scope: codebase or routing_groups-having skills; warns when
+ *      description text appears verbatim in ## Coverage.
+ *      See scripts/lint/check-routing-quality.js.
+ *
+ * Error output uses file:line:column + 5-line code frame + caret + help
+ * line for actionable diagnostics. Use --no-color for plain CI output.
  *
  * Self-contained. Only uses Node built-ins — no external dependencies.
  * Exit 0 on success, 1 on any failure.
@@ -44,12 +55,17 @@
  *   node scripts/skill-lint.js skills/a11y           # lint one skill
  *   node scripts/skill-lint.js --include-template    # also lint the example template
  *   node scripts/skill-lint.js --skip-generator-parity  # skip check 8
+ *   node scripts/skill-lint.js --strict              # promote warnings to errors
+ *   node scripts/skill-lint.js --no-color            # plain output for CI
  */
 
 const fs = require('fs');
 const path = require('path');
 const { execFileSync } = require('child_process');
 const { parseFrontmatter } = require('./lib/parse-frontmatter');
+const { formatCodeFrame, locateYamlKey, locateH2Section } = require('./lint/format-code-frame');
+const { checkArchetypeSections } = require('./lint/check-archetype-sections');
+const { checkRoutingQuality } = require('./lint/check-routing-quality');
 
 const REPO_ROOT = path.resolve(__dirname, '..');
 const SKILLS_DIR = path.join(REPO_ROOT, 'skills');
@@ -416,6 +432,10 @@ function main() {
   const manifestSchema = loadManifestSchema();
   const files = collectSkillFiles(args);
   const skipGeneratorParity = args.includes('--skip-generator-parity');
+  // --strict: promote warnings to errors so CI can enforce a zero-warning bar.
+  const strict = args.includes('--strict');
+  // --no-color: suppress ANSI escape codes (useful in CI environments).
+  const noColor = args.includes('--no-color');
 
   if (files.length === 0) {
     console.error('No skill files found to lint.');
@@ -471,6 +491,8 @@ function main() {
   }
 
   let totalErrors = parityErrors.length + sampleErrors.length + generatorParityErrors.length;
+  let totalWarnings = 0;
+
   for (const file of files) {
     const relPath = path.relative(REPO_ROOT, file);
     const text = fs.readFileSync(file, 'utf8');
@@ -480,52 +502,169 @@ function main() {
       totalErrors++;
       continue;
     }
-    // Deprecation warning: skills authored with the old domain_frame field name
-    // (schema_version: 1 compatibility window) are warned here. domain_frame is
-    // already rejected by the schema at schema_version: 2 via additionalProperties:
-    // false, so this warning is a friendlier pointer for authors who still have
-    // the old name. See docs/manifest-contract.md § Migration Note — domain_frame
-    // → grounding.
+
+    // ----------------------------------------------------------------
+    // Migration warnings (v1 → v2 field renames). These emit WARN lines
+    // above the per-file OK/FAIL summary so authors see them even when the
+    // file otherwise passes.
+    // ----------------------------------------------------------------
+
+    // domain_frame is deprecated — rename to "grounding". domain_frame is
+    // already rejected by the schema at schema_version: 2 via
+    // additionalProperties: false, so the schema validation step will also
+    // emit an `unknown field` error; the warning here is a friendlier pointer.
     if (fm.domain_frame) {
-      console.warn(`WARN ${relPath}: "domain_frame" is deprecated — rename to "grounding"`);
+      emitWarning(relPath, text, 'domain_frame', '"domain_frame" is deprecated — rename to "grounding"', {
+        help: 'Rename "domain_frame:" to "grounding:". See docs/manifest-contract.md § Migration Note — domain_frame → grounding.',
+        noColor,
+      });
     }
+
     // Migration warnings for the schema_version 2 field renames (SH-5784).
-    // These field names are already rejected by the schema (additionalProperties:
-    // false), so the schema validation step will emit an `unknown field` error;
-    // the warning below is a friendlier migration pointer that names the v2
-    // replacement explicitly.
     if (fm.eval_status) {
-      console.warn(`WARN ${relPath}: "eval_status" is deprecated — split into "eval_artifacts", "eval_state", and "routing_eval". See docs/manifest-contract.md § Migration Note — v1 → v2.`);
+      emitWarning(relPath, text, 'eval_status', '"eval_status" is deprecated — split into "eval_artifacts", "eval_state", and "routing_eval"', {
+        help: 'See docs/manifest-contract.md § Migration Note — v1 → v2.',
+        noColor,
+      });
     }
     if (fm.route_groups) {
-      console.warn(`WARN ${relPath}: "route_groups" is deprecated — rename to "routing_groups".`);
+      emitWarning(relPath, text, 'route_groups', '"route_groups" is deprecated — rename to "routing_groups"', {
+        help: 'Rename "route_groups:" to "routing_groups:". Values are unchanged.',
+        noColor,
+      });
     }
     if (fm.portability && typeof fm.portability === 'object') {
       if (fm.portability.level) {
-        console.warn(`WARN ${relPath}: "portability.level" is deprecated — rename to "portability.readiness" and change values per docs/field-reference.md § portability.`);
+        emitWarning(relPath, text, 'level', '"portability.level" is deprecated — rename to "portability.readiness"', {
+          help: 'See docs/field-reference.md § portability.',
+          noColor,
+        });
       }
       if (fm.portability.exports) {
-        console.warn(`WARN ${relPath}: "portability.exports" is deprecated — rename to "portability.targets".`);
+        emitWarning(relPath, text, 'exports', '"portability.exports" is deprecated — rename to "portability.targets"', {
+          help: 'See docs/field-reference.md § portability.',
+          noColor,
+        });
       }
     }
 
-    const errors = [
+    // ----------------------------------------------------------------
+    // Collect errors from all per-file checks.
+    // ----------------------------------------------------------------
+    const rawErrors = [
       ...validateAgainstSchema(fm, schema),
       ...checkParentDirMatchesName(file, fm),
       ...checkRelationTargets(fm, knownSkillNames),
       ...checkEvalCoherence(file, fm),
     ];
-    if (errors.length === 0) {
+
+    // Archetype-aware section check (check 10).
+    const archetypeResult = checkArchetypeSections({ filePath: relPath, sourceText: text, fm });
+
+    // Routing quality check (check 11).
+    const routingResult = checkRoutingQuality({ filePath: relPath, sourceText: text, fm });
+
+    // Promote warnings to errors when --strict is active.
+    const fileErrors = [
+      ...rawErrors.map(msg => ({ msg, line: null, column: null, help: null })),
+      ...archetypeResult.errors.map(e => ({ msg: e.message, line: e.line, column: e.column, help: e.help })),
+      ...routingResult.errors.map(e => ({ msg: e.message, line: e.line, column: e.column, help: e.help })),
+      ...(strict ? [
+        ...archetypeResult.warnings.map(w => ({ msg: `[promoted from warn] ${w.message}`, line: w.line, column: w.column, help: w.help })),
+        ...routingResult.warnings.map(w => ({ msg: `[promoted from warn] ${w.message}`, line: w.line, column: w.column, help: w.help })),
+      ] : []),
+    ];
+
+    const fileWarnings = strict ? [] : [
+      ...archetypeResult.warnings,
+      ...routingResult.warnings,
+    ];
+
+    if (fileErrors.length === 0 && fileWarnings.length === 0) {
       console.log(`OK   ${relPath}`);
+    } else if (fileErrors.length === 0) {
+      // Only warnings — file passes but annotate with WARN prefix.
+      console.log(`OK   ${relPath} (${fileWarnings.length} warning(s))`);
     } else {
       console.error(`FAIL ${relPath}`);
-      for (const e of errors) console.error(`     - ${e}`);
-      totalErrors += errors.length;
+    }
+
+    // Print errors with code frames.
+    for (const e of fileErrors) {
+      if (e.line != null) {
+        process.stderr.write(formatCodeFrame({
+          filePath: relPath,
+          line: e.line,
+          column: e.column || 1,
+          message: e.msg,
+          help: e.help,
+          sourceText: text,
+          severity: 'error',
+          noColor,
+        }));
+      } else {
+        // Legacy plain-string errors from schema/relation checks. Locate the
+        // field name in frontmatter for a better-than-nothing code frame.
+        const fieldMatch = e.msg.match(/^([a-zA-Z_][a-zA-Z0-9_.[\]-]*):/);
+        const fieldKey = fieldMatch ? fieldMatch[1].split('.')[0] : null;
+        const loc = fieldKey ? locateYamlKey(text, fieldKey) : { line: 1, column: 1 };
+        process.stderr.write(formatCodeFrame({
+          filePath: relPath,
+          line: loc.line,
+          column: loc.column,
+          message: e.msg,
+          sourceText: text,
+          severity: 'error',
+          noColor,
+        }));
+      }
+      totalErrors++;
+    }
+
+    // Print warnings with code frames.
+    for (const w of fileWarnings) {
+      process.stderr.write(formatCodeFrame({
+        filePath: relPath,
+        line: w.line,
+        column: w.column || 1,
+        message: w.message,
+        help: w.help,
+        sourceText: text,
+        severity: 'warn',
+        noColor,
+      }));
+      totalWarnings++;
     }
   }
 
-  console.log(`\n${files.length} file(s) checked, ${totalErrors} error(s).`);
+  const warnSuffix = totalWarnings > 0 ? `, ${totalWarnings} warning(s)` : '';
+  const strictNote = strict && totalWarnings === 0 ? '' : strict ? ' (--strict: warnings promoted to errors)' : '';
+  console.log(`\n${files.length} file(s) checked, ${totalErrors} error(s)${warnSuffix}.${strictNote}`);
   process.exit(totalErrors > 0 ? 1 : 0);
+}
+
+/**
+ * Emit a migration-warning line with a code frame, located at the given YAML
+ * key in the frontmatter.
+ *
+ * @param {string} relPath  - File path relative to repo root.
+ * @param {string} text     - Full file text.
+ * @param {string} key      - YAML key to locate (for the frame position).
+ * @param {string} message  - Warning message.
+ * @param {object} [opts]   - Optional: { help, noColor }.
+ */
+function emitWarning(relPath, text, key, message, opts = {}) {
+  const loc = locateYamlKey(text, key) || { line: 1, column: 1 };
+  process.stderr.write(formatCodeFrame({
+    filePath: relPath,
+    line: loc.line,
+    column: loc.column,
+    message,
+    help: opts.help,
+    sourceText: text,
+    severity: 'warn',
+    noColor: opts.noColor || false,
+  }));
 }
 
 main();

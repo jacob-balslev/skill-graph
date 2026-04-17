@@ -72,6 +72,8 @@ description: >
 
 **When NOT to use.** Do not expand beyond 3 sentences or copy-paste the `## Coverage` scope list here. The description and `## Coverage` are sibling layers of progressive disclosure, not duplicates.
 
+**Lint check.** `scripts/skill-lint.js` warns when the description text appears verbatim inside the `## Coverage` section body — a signal that the two layers have collapsed. See `scripts/lint/check-routing-quality.js` (check R2).
+
 ---
 
 ## `version`
@@ -122,6 +124,8 @@ type: capability
 **When to use.** Always — required.
 
 **When NOT to use.** Do not invent new type values. If none of the four archetypes fit, use `capability` as the closest and note the variation in the `## Coverage` section.
+
+**Lint check.** `scripts/skill-lint.js` enforces the archetype section map: missing required H2 sections produce an error; H2 sections present but containing fewer than 50 non-whitespace characters produce a warning. See `scripts/lint/check-archetype-sections.js`.
 
 ---
 
@@ -489,6 +493,8 @@ keywords:
 
 **When NOT to use.** Keywords are not tags for browse taxonomy — that is `family`'s job. Do not add every possible synonym; keep to the 3–8 most likely search terms.
 
+**Lint check.** `scripts/skill-lint.js` errors when `keywords` is absent or empty for a skill with `scope: codebase` or a non-empty `routing_groups` field. Those skills are designed to be discovered by keyword routers and cannot be omitted. See `scripts/lint/check-routing-quality.js` (check R1).
+
 ---
 
 ## `paths`
@@ -538,6 +544,8 @@ routing_groups:
 **When NOT to use.** Skills that should only activate individually. Do not add routing groups speculatively — add them when a real routing pattern requires them.
 
 **Migration from v1.** The v1 field name `route_groups` is a hard error under the v2 schema. Rename the field to `routing_groups`; values are unchanged.
+
+**Lint check.** `scripts/skill-lint.js` errors when a skill has a non-empty `routing_groups` field but an absent or empty `keywords` field. A skill designed for group-based batch activation must also be discoverable by keyword-based routers. See `scripts/lint/check-routing-quality.js` (check R1).
 
 ---
 
