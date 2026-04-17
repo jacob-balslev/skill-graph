@@ -633,9 +633,9 @@ grounding:
 **Rules.**
 - Object with two required sub-fields: `readiness` and `targets`.
 - `readiness` must be `declared`, `scripted`, or `verified`. This is an operational axis, not an ordinal rating — each value says something concrete about what is true of the skill today.
-- `targets` is an array constrained to `["agent-skills", "cursor", "windsurf", "copilot", "agents-md"]`.
-- `agent-skills` in `targets` means the skill can be transformed to a valid Agent Skills file via `scripts/export-skill.js`. Other targets describe compatibility goals, not yet-implemented transforms (see README for current status).
-- `agents-md` targets the [AGENTS.md](https://agents.md/) project-context file convention — a single Markdown file with H1 title, H2 sections, and no YAML frontmatter. Declaring this target is a compatibility claim: the skill's body is already structured as instruction-style Markdown that could slot into a project's `AGENTS.md` without transformation. Export tooling is not yet implemented.
+- `targets` is an array constrained to `["agent-skills"]`.
+- `agent-skills` in `targets` means the skill can be transformed to a valid Agent Skills file via `scripts/export-skill.js`.
+- Other runtimes — `cursor`, `windsurf`, `copilot`, `agents-md` — were removed from the enum in 0.3.0. They previously described compatibility goals, but without a working transform they violated the `additionalProperties: false` strictness rule. Re-add via a new RFC and the same PR that ships the transform.
 
 **Sub-fields.**
 
@@ -658,12 +658,9 @@ portability:
   readiness: scripted
   targets:
     - agent-skills
-    - cursor
-    - windsurf
-    - copilot
 ```
 
-**When to use.** When the skill is intended for distribution or cross-runtime use, and you want to declare its portability explicitly.
+**When to use.** When the skill is intended for distribution via the Agent Skills transform, and you want to declare its portability explicitly.
 
 **When NOT to use.** Internal-only skills that will never be exported. Omit the field rather than setting `readiness: declared` with an empty `targets` array.
 

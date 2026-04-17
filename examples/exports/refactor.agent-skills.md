@@ -5,15 +5,17 @@ license: MIT
 compatibility: "Markdown, Git, any codebase"
 allowed-tools: Read Grep Bash
 metadata:
-  schema_version: 1
+  schema_version: 2
   version: "1.0.0"
   type: workflow
   family: engineering
-  scope: generic
+  scope: portable
   owner: maintainer
-  freshness: "2026-04-16"
-  drift_check: "2026-04-16"
-  eval_status: pending
+  freshness: "2026-04-17"
+  drift_check: "2026-04-17"
+  eval_artifacts: planned
+  eval_state: unverified
+  routing_eval: absent
   stability: experimental
   keywords:
     - refactor
@@ -34,12 +36,9 @@ metadata:
     depends_on:
       - testing-strategy
   portability:
-    level: high
-    exports:
+    readiness: scripted
+    targets:
       - agent-skills
-      - cursor
-      - windsurf
-      - copilot
 ---
 
 # Refactor

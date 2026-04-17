@@ -64,14 +64,14 @@ grounding:
 # TEMPLATE NOTE: portability declares which external agent runtimes this skill is
 # known to work on. `readiness` is the operational rating: `declared` (claim only),
 # `scripted` (export tooling exists), or `verified` (proven with a receipt). `targets`
-# is the list of destination runtimes. Remove this block if the skill is internal-only.
+# is the list of destination runtimes. Today the only supported target is `agent-skills`
+# (see `schemas/skill.schema.json`). Other runtimes (cursor, windsurf, copilot, agents-md)
+# were removed from the enum in 0.3.0 pending working transforms — re-add via RFC if
+# adoption pressure appears. Remove this block if the skill is internal-only.
 portability:
   readiness: scripted
   targets:
     - agent-skills
-    - cursor
-    - windsurf
-    - copilot
 ---
 
 # Skill Template

@@ -8,7 +8,7 @@ This document tracks the script surfaces planned for Skill Graph. The goal is th
 |---|---|---|
 | `scripts/skill-lint.js` | **Shipping** | Validates frontmatter against the schema, enforces parent-dir-matches-name, verifies relation targets exist, checks eval coherence, archetype sections, routing quality; `--strict` mode promotes warnings to errors |
 | `scripts/generate-manifest.js` | **Shipping** | Walks `skills/**/SKILL.md`, applies the rename map from `docs/manifest-contract.md`, emits deterministic validated manifest; `examples/skills.manifest.sample.json` is generated output, not hand-written |
-| `scripts/export-skill.js` | **Shipping** | Agent Skills export target only; transforms Skill Graph extensions under `metadata:` key. Five fixtures in `examples/exports/`. `cursor` / `windsurf` / `copilot` targets are declared in `portability.targets` but not yet implemented |
+| `scripts/export-skill.js` | **Shipping** | Agent Skills export target only; transforms Skill Graph extensions under `metadata:` key. Five fixtures in `examples/exports/`. Other runtimes (cursor, windsurf, copilot, agents-md) were removed from the `portability.targets` enum in 0.3.0 — re-add via a new RFC and the PR that ships the transform |
 | `scripts/check-contract-consistency.js` | **Shipping** | Cross-artifact consistency — field-set parity, authored-to-generated parity, example truth invariants (C1–C5 checks) |
 | `scripts/skill-audit.js` | **Shipping (stub-only)** | Seeds `audits/<skill>/{findings,verdict,scorecard}.md` stubs from lint output. Full qualitative 7-checklist grader pass is still manual; promoting the stub to a prompt-driven runner is the next milestone |
 
@@ -89,7 +89,7 @@ After the first 5 scripts exist (all Shipping as of 2026-04-17), the next useful
 1. `scripts/skill-overlap.js` — detect semantic and scope-range overlap between skills
 2. `scripts/skill-router.js` — simulate routing decisions against a test corpus
 3. `scripts/build-coverage.js` — build-time coverage report (keywords × triggers × archetypes)
-4. Export transforms for `cursor`, `windsurf`, `copilot` targets — extend `scripts/export-skill.js` or narrow `portability.targets` enum to match reality
+4. Export transforms for `cursor`, `windsurf`, `copilot`, or `agents-md` targets — removed from scope in 0.3.0. Re-add via RFC + the PR that ships the transform.
 
 ## Non-Goals For The First Cut
 

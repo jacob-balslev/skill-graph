@@ -5,15 +5,17 @@ license: MIT
 compatibility: "Markdown, Git"
 allowed-tools: Read Grep
 metadata:
-  schema_version: 1
+  schema_version: 2
   version: "1.0.0"
   type: capability
   family: knowledge
-  scope: generic
+  scope: portable
   owner: maintainer
-  freshness: "2026-04-16"
-  drift_check: "2026-04-16"
-  eval_status: evals
+  freshness: "2026-04-17"
+  drift_check: "2026-04-17"
+  eval_artifacts: present
+  eval_state: passing
+  routing_eval: absent
   stability: experimental
   keywords:
     - documentation
@@ -31,12 +33,9 @@ metadata:
       - debugging
       - a11y
   portability:
-    level: high
-    exports:
+    readiness: scripted
+    targets:
       - agent-skills
-      - cursor
-      - windsurf
-      - copilot
 ---
 
 # Documentation

@@ -38,9 +38,6 @@ portability:
   readiness: scripted
   targets:
     - agent-skills
-    - cursor
-    - windsurf
-    - copilot
 ---
 
 # Refactor

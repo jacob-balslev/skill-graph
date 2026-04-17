@@ -196,12 +196,10 @@ The `readiness` field is operational, not ordinal. Each value says something con
 | Target | Include when |
 |---|---|
 | `agent-skills` | The skill can be transformed to a valid Agent Skills file via `scripts/export-skill.js`. |
-| `cursor` | The skill is structured for use in Cursor (export tooling not yet implemented — this is a compatibility goal). |
-| `windsurf` | The skill targets Windsurf (export tooling not yet implemented). |
-| `copilot` | The skill targets GitHub Copilot (export tooling not yet implemented). |
-| `agents-md` | The skill can be rendered as an `AGENTS.md`-style project context file — the Markdown convention for project-scoped AI agent instructions (see [agents.md](https://agents.md/)). Target format: a single Markdown file with a top H1 title, H2 sections for each capability area, and no YAML frontmatter. Export tooling not yet implemented — declaring this target today is a compatibility claim only. Include when the skill's body is already structured as instruction-style Markdown that would slot into a project's `AGENTS.md` without transformation. |
 
-**If in doubt:** Include only `agent-skills` until the other export transforms are implemented. See `README.md` for current export tooling status.
+The enum accepts only `agent-skills` today. Other runtimes — `cursor`, `windsurf`, `copilot`, `agents-md` — were removed from the enum in 0.3.0. They previously sat in the enum as compatibility *goals* with no working transform, which violated the contract's `additionalProperties: false` strictness rule. Re-add via a new RFC and the same PR that ships the transform for that runtime.
+
+**Rule of thumb:** if the skill can round-trip through `scripts/export-skill.js` today, include `agent-skills`. Otherwise omit the `portability` block entirely.
 
 ### Migration from v1
 
@@ -214,18 +212,9 @@ The `readiness` field is operational, not ordinal. Each value says something con
 `portability.exports` was renamed to `portability.targets`. Values are unchanged.
 
 ```yaml
-# Minimal: only agent-skills export is implemented
+# Canonical: the only target currently accepted by the schema.
 portability:
   readiness: scripted
   targets:
     - agent-skills
-
-# Aspirational: declares intent for future export targets
-portability:
-  readiness: scripted
-  targets:
-    - agent-skills
-    - cursor
-    - windsurf
-    - copilot
 ```

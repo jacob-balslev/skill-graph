@@ -257,7 +257,7 @@ grounding:
   evidence_priority: repo_code_first
 portability:
   readiness: scripted
-  targets: [agent-skills, cursor, windsurf, copilot]
+  targets: [agent-skills]
 ---
 ```
 
@@ -300,7 +300,7 @@ portability:
   },
   "portability": {
     "readiness": "scripted",
-    "targets": ["agent-skills", "cursor", "windsurf", "copilot"]
+    "targets": ["agent-skills"]
   },
   "health": {
     "eval_artifacts": "planned",

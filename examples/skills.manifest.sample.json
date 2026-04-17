@@ -36,10 +36,7 @@
       "portability": {
         "readiness": "scripted",
         "targets": [
-          "agent-skills",
-          "cursor",
-          "windsurf",
-          "copilot"
+          "agent-skills"
         ]
       },
       "relations": {
@@ -93,10 +90,7 @@
       "portability": {
         "readiness": "scripted",
         "targets": [
-          "agent-skills",
-          "cursor",
-          "windsurf",
-          "copilot"
+          "agent-skills"
         ]
       },
       "relations": {
@@ -150,10 +144,7 @@
       "portability": {
         "readiness": "scripted",
         "targets": [
-          "agent-skills",
-          "cursor",
-          "windsurf",
-          "copilot"
+          "agent-skills"
         ]
       },
       "relations": {
@@ -276,10 +267,7 @@
       "portability": {
         "readiness": "scripted",
         "targets": [
-          "agent-skills",
-          "cursor",
-          "windsurf",
-          "copilot"
+          "agent-skills"
         ]
       },
       "relations": {
@@ -330,10 +318,7 @@
       "portability": {
         "readiness": "scripted",
         "targets": [
-          "agent-skills",
-          "cursor",
-          "windsurf",
-          "copilot"
+          "agent-skills"
         ]
       },
       "relations": {
@@ -391,10 +376,7 @@
       "portability": {
         "readiness": "scripted",
         "targets": [
-          "agent-skills",
-          "cursor",
-          "windsurf",
-          "copilot"
+          "agent-skills"
         ]
       },
       "relations": {
@@ -465,10 +447,7 @@
       "portability": {
         "readiness": "scripted",
         "targets": [
-          "agent-skills",
-          "cursor",
-          "windsurf",
-          "copilot"
+          "agent-skills"
         ]
       },
       "relations": {
@@ -521,10 +500,7 @@
       "portability": {
         "readiness": "scripted",
         "targets": [
-          "agent-skills",
-          "cursor",
-          "windsurf",
-          "copilot"
+          "agent-skills"
         ]
       },
       "relations": {

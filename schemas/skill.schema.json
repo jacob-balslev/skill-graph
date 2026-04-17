@@ -169,7 +169,7 @@
           "type": "array",
           "items": {
             "type": "string",
-            "enum": ["agent-skills", "cursor", "windsurf", "copilot", "agents-md"]
+            "enum": ["agent-skills"]
           }
         }
       }

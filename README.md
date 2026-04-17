@@ -24,7 +24,10 @@ Planned, not yet implemented:
 
 - audit runner — full qualitative pass beyond the stub generator (prompt-driven 7-checklist grading, writing verdicts directly rather than seeding stubs)
 - overlap detection, routing, and coverage tooling (`scripts/skill-overlap.js`, `scripts/skill-router.js`, `scripts/build-coverage.js`)
-- export tooling for `cursor`, `windsurf`, and `copilot` targets (only `agent-skills` target is implemented today; the other three values in `portability.targets` describe compatibility goals, not working exports)
+
+Deferred (removed from the contract in 0.3.0):
+
+- Export transforms for `cursor`, `windsurf`, `copilot`, and `agents-md` targets. These values previously appeared in the `portability.targets` enum as compatibility *goals* with no working transform. Because `additionalProperties: false` plus enum restriction is the whole point of the contract, aspirational enum values violated that contract. The enum now accepts only `agent-skills`. Re-add via a new RFC and the same PR that ships the transform.
 
 See `docs/plans/scripts-roadmap.md` for the planned script surface.
 
@@ -45,7 +48,7 @@ The base standard and the Skill Graph extensions:
 | `schema_version`, `version`, `type`, `family`, `scope`, `owner`, `freshness`, `drift_check`, `eval_artifacts`, `eval_state`, `routing_eval` | Skill Graph | Required extensions for governance, routing, and health tracking |
 | `relations`, `grounding`, `portability`, `triggers`, `keywords`, `paths`, `routing_groups`, `extends`, `stability` | Skill Graph | Optional extensions for graph semantics, grounding, and exportability |
 
-**Compatibility direction.** A valid Agent Skills skill is *not* automatically a valid Skill Graph skill — Skill Graph requires fields beyond the base two. Going the other way is possible via a transform: move every Skill Graph extension field under the standard `metadata:` key, leaving only the Agent Skills fields at the top level. The transform is implemented as `scripts/export-skill.js`. Running `node scripts/export-skill.js <skill-dir>` produces a `SKILL.agent-skills.md` file with only the Agent Skills base fields at the top level and all Skill Graph extensions nested under `metadata:`. The `cursor`, `windsurf`, and `copilot` values in `portability.targets` still describe compatibility goals — export tooling for those targets is not yet implemented.
+**Compatibility direction.** A valid Agent Skills skill is *not* automatically a valid Skill Graph skill — Skill Graph requires fields beyond the base two. Going the other way is possible via a transform: move every Skill Graph extension field under the standard `metadata:` key, leaving only the Agent Skills fields at the top level. The transform is implemented as `scripts/export-skill.js`. Running `node scripts/export-skill.js <skill-dir>` produces a `SKILL.agent-skills.md` file with only the Agent Skills base fields at the top level and all Skill Graph extensions nested under `metadata:`. Only `agent-skills` is a valid `portability.targets` value today; other runtimes (cursor, windsurf, copilot, agents-md) are deferred until a working transform ships.
 
 **Internal supersets.** A consumer library can be a strict superset of the Skill Graph contract by adding governance fields that Skill Graph deliberately does not model (dispatch layers, routing roles, category taxonomy, bundle aggregates). The Development workspace's own `skills/` library does exactly this — see its contract-delta document for how that library extends v2 and why the two contracts are intentionally divergent. Superset libraries should validate against their own richer schema, not against `skill-lint.js`.
 
