@@ -17,7 +17,7 @@
       },
       "allowed-tools": "Read Grep",
       "compatibility": "Markdown, Git, any web stack",
-      "description": "Accessibility skill for semantic HTML, keyboard support, focus behavior, and screen-reader-safe interaction design. Use when building or reviewing interactive UI, forms, navigation, or dynamic content. Do NOT use for color palette creation or visual branding strategy.",
+      "description": "Use when building or reviewing interactive UI, forms, navigation, or dynamic content. Covers semantic HTML, keyboard access, focus management, labeling, state-change announcement, and reduced-motion / high-contrast preferences. Do NOT use for color-palette creation, visual branding, or prose reading-level accessibility — those belong to visual-design and documentation respectively.",
       "family": "frontend",
       "health": {
         "drift_check": "2026-04-17",
@@ -60,10 +60,13 @@
       "activation": {
         "keywords": [
           "debugging",
-          "bug",
-          "reproduce",
+          "reproduce failure",
           "failing test",
-          "root cause"
+          "root cause",
+          "symptom vs cause",
+          "minimum reproduction",
+          "bisect",
+          "what caused it"
         ],
         "triggers": [
           "debugging-skill"
@@ -71,7 +74,7 @@
       },
       "allowed-tools": "Read Grep Bash",
       "compatibility": "Markdown, Git, any codebase",
-      "description": "Debugging skill for reproducing failures, narrowing scope, checking evidence, and separating symptoms from root causes. Use when behavior is broken, tests fail, or runtime output contradicts expectations. Do NOT use for feature planning or pure refactoring work.",
+      "description": "Use when behavior is broken, a test is failing, or runtime output contradicts expectations. Covers failure reproduction, scope reduction by bisection, evidence capture at the moment of failure, root-cause isolation (not symptom patching), fix verification against the same evidence path, and regression-test creation. Do NOT use for feature planning, architectural design, or behavior-preserving refactor.",
       "family": "engineering",
       "health": {
         "drift_check": "2026-04-17",
@@ -114,10 +117,16 @@
       "activation": {
         "keywords": [
           "documentation",
-          "docs",
           "reference doc",
           "guide",
-          "architecture note"
+          "tutorial",
+          "how-to",
+          "architecture note",
+          "explain to reader",
+          "doc type",
+          "stale docs",
+          "doc drift",
+          "spec"
         ],
         "triggers": [
           "documentation-skill"
@@ -125,7 +134,7 @@
       },
       "allowed-tools": "Read Grep",
       "compatibility": "Markdown, Git",
-      "description": "Documentation skill for choosing the right doc type, structuring technical explanation, and keeping system knowledge readable and durable. Use when writing reference docs, guides, specs, or architecture notes. Do NOT use for runtime debugging or UI accessibility behavior.",
+      "description": "Use when writing reference docs, guides, tutorials, specs, architecture notes, or any durable technical prose that a future reader has to trust. Covers doc-type selection, audience fit, progressive disclosure, docs-as-code workflow, freshness and drift tracking, and source-of-truth discipline. Do NOT use for runtime debugging, UI accessibility behavior, or behavior-preserving code refactor.",
       "family": "knowledge",
       "health": {
         "drift_check": "2026-04-17",
@@ -178,7 +187,7 @@
       },
       "allowed-tools": "Read Grep Bash",
       "compatibility": "Markdown, JSON Schema, Node.js",
-      "description": "Skill metadata and manifest consistency auditing for the Skill Graph repository. Use when checking that every SKILL.md conforms to the schema, that manifest entries are in sync with authored frontmatter, or that relation targets point at real sibling skills. Do NOT use for general code review or for auditing non-skill files.",
+      "description": "Use when checking that every SKILL.md conforms to the schema, that manifest entries match authored frontmatter, or that relation targets point at real sibling skills. Covers schema conformance, manifest sync, relation integrity, eval-artifact coherence, grounding presence, and name-directory parity. Do NOT use for general code review, runtime agent debugging, or auditing non-skill files.",
       "family": "knowledge",
       "grounding": {
         "domain_object": "Skill Graph skill metadata and manifest consistency",
@@ -247,7 +256,7 @@
       },
       "allowed-tools": "Read Grep Bash",
       "compatibility": "Markdown, Git, any codebase with a lint tool",
-      "description": "Lint integration overlay on top of the testing-strategy skill. Activate when adding or enforcing lint rules as part of a test or verification plan. Do NOT use standalone — this overlay only makes sense when the base testing-strategy skill is also loaded.",
+      "description": "Use when adding or enforcing lint rules as part of a test or verification plan. Extends testing-strategy with lint-specific guidance: rule selection, gate placement, failure triage, and migration planning when introducing rules to an existing codebase. Do NOT use standalone — load the base testing-strategy skill alongside it — and do NOT use for chasing a specific lint failure in one file (that is debugging).",
       "extends": "testing-strategy",
       "family": "quality",
       "health": {
@@ -299,7 +308,7 @@
       },
       "allowed-tools": "Read Grep Bash",
       "compatibility": "Markdown, Git, any codebase",
-      "description": "Refactor skill for behavior-preserving structural cleanup, simplification, and readability improvements. Use when reorganizing code without changing external behavior. Do NOT use for bug investigation or for adding new product behavior.",
+      "description": "Use when reorganizing existing code without changing external behavior — extracting functions, reducing duplication, renaming for clarity, splitting modules, or tightening structure. Covers behavior preservation, duplication reduction, decomposition, naming improvements, structural reorganization, and before/after verification. Do NOT use for bug investigation, adding new product behavior, or writing documentation (even when the docs describe the refactored code).",
       "family": "engineering",
       "health": {
         "drift_check": "2026-04-17",
@@ -357,7 +366,7 @@
       },
       "allowed-tools": "Read Grep",
       "compatibility": "Markdown, YAML, any agent runtime",
-      "description": "Skill routing logic for dispatching agent requests to the correct skill variant by keyword pattern, trigger label, or file path. Use when you need to decide which skill handles an incoming request, when building a routing table for a multi-skill repo, or when auditing existing routing coverage. Do NOT use when the target skill is already known — load that skill directly.",
+      "description": "Use when deciding which skill handles an incoming agent request, building a routing table for a multi-skill repo, or auditing routing coverage. Covers trigger-label matching, file-path matching, keyword matching, scope/type tiebreakers, and coverage-gap detection. Do NOT use when the target skill is already known (load it directly) or when authoring a new skill (use the skill-template).",
       "family": "knowledge",
       "health": {
         "drift_check": "2026-04-17",
@@ -412,7 +421,7 @@
       },
       "allowed-tools": "Read Grep",
       "compatibility": "Markdown, YAML, JSON Schema",
-      "description": "Authoring template for new Skill Graph skills. Activate when creating a new SKILL.md, adapting an existing template to a different archetype, or teaching an author the canonical frontmatter and body structure. Do NOT use when modifying an already-written skill (work on that skill directly) or when writing general technical documentation (use documentation).",
+      "description": "Use when creating a new SKILL.md, adapting an existing skill to a different archetype, or teaching an author the canonical frontmatter and body structure. Covers schema-conformant frontmatter, archetype-aware body layout, semantic-layer discipline (description vs Coverage), teaching-layer mechanics (TEMPLATE NOTE blockquotes and YAML comments), and the authoring gate. Do NOT use when modifying an already-written skill (edit that skill directly) or when writing general technical documentation (use the documentation skill).",
       "family": "knowledge",
       "grounding": {
         "domain_object": "Skill authoring for the Skill Graph frontmatter contract",
@@ -471,9 +480,13 @@
         "keywords": [
           "testing strategy",
           "what to test",
-          "unit test",
-          "integration test",
-          "regression test"
+          "what not to test",
+          "which test level",
+          "test scope",
+          "effort vs risk",
+          "regression target",
+          "failure case coverage",
+          "test plan"
         ],
         "triggers": [
           "testing-skill"
@@ -481,7 +494,7 @@
       },
       "allowed-tools": "Read Grep Bash",
       "compatibility": "Markdown, Git, any codebase",
-      "description": "Testing strategy skill for deciding what to test, choosing the right test level, and verifying behavior changes with meaningful evidence. Use when planning tests for bug fixes, features, or refactors. Do NOT use for documentation writing or purely conceptual architecture discussion.",
+      "description": "Use when planning tests for a bug fix, feature, or refactor — deciding what deserves a test, at which level, with what evidence. Covers test-scope decisions, test-level selection (unit / integration / contract / e2e), effort-to-risk matching, regression targeting, evidence quality, and failure-case coverage. Do NOT use for chasing a known failure (that is debugging), for pure doc writing, or for conceptual architecture discussion with no verification target.",
       "family": "quality",
       "health": {
         "drift_check": "2026-04-17",

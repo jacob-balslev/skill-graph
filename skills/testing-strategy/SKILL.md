@@ -1,7 +1,7 @@
 ---
 schema_version: 2
 name: testing-strategy
-description: Testing strategy skill for deciding what to test, choosing the right test level, and verifying behavior changes with meaningful evidence. Use when planning tests for bug fixes, features, or refactors. Do NOT use for documentation writing or purely conceptual architecture discussion.
+description: "Use when planning tests for a bug fix, feature, or refactor — deciding what deserves a test, at which level, with what evidence. Covers test-scope decisions, test-level selection (unit / integration / contract / e2e), effort-to-risk matching, regression targeting, evidence quality, and failure-case coverage. Do NOT use for chasing a known failure (that is debugging), for pure doc writing, or for conceptual architecture discussion with no verification target."
 version: 1.0.0
 type: capability
 family: quality
@@ -19,9 +19,13 @@ allowed-tools: Read Grep Bash
 keywords:
   - testing strategy
   - what to test
-  - unit test
-  - integration test
-  - regression test
+  - what not to test
+  - which test level
+  - test scope
+  - effort vs risk
+  - regression target
+  - failure case coverage
+  - test plan
 triggers:
   - testing-skill
 routing_groups:
@@ -53,7 +57,7 @@ portability:
 
 ## Philosophy
 
-Not every change needs the same test shape. Good testing strategy focuses effort where it catches the most likely regressions.
+Most test suites fail the effort-to-risk test: they exercise code that will never break and skip code that breaks in production. The correct target is the behavior that ships to users, not the code you happen to have written last. Coverage percentage is a proxy, and every proxy eventually gets gamed — the real signal is regressions caught before release. A test that never fails is noise; a test that fails without isolating the cause is worse than no test at all because it wastes the next engineer's time.
 
 ## Verification
 
@@ -64,7 +68,8 @@ Not every change needs the same test shape. Good testing strategy focuses effort
 
 ## Do NOT Use When
 
-| Instead of this skill | Use | Why |
-|---|---|---|
-| `testing-strategy` | `documentation` | Documentation structures explanation; testing strategy structures verification |
-| `testing-strategy` | `debugging` | Chasing a known failure is debugging work; test strategy is planned before the failure |
+| Use instead | When |
+|---|---|
+| `documentation` | The task structures explanation for a reader, not verification for a change |
+| `debugging` | The task is chasing a known failure — strategy is planned before the failure, not after |
+| `refactor` | The task is restructuring code; any test work is to preserve existing behavior, which belongs to the refactor skill's verification step |

@@ -1,7 +1,7 @@
 ---
 schema_version: 2
 name: skill-router
-description: "Skill routing logic for dispatching agent requests to the correct skill variant by keyword pattern, trigger label, or file path. Use when you need to decide which skill handles an incoming request, when building a routing table for a multi-skill repo, or when auditing existing routing coverage. Do NOT use when the target skill is already known — load that skill directly."
+description: "Use when deciding which skill handles an incoming agent request, building a routing table for a multi-skill repo, or auditing routing coverage. Covers trigger-label matching, file-path matching, keyword matching, scope/type tiebreakers, and coverage-gap detection. Do NOT use when the target skill is already known (load it directly) or when authoring a new skill (use the skill-template)."
 version: 1.0.0
 type: router
 family: knowledge
@@ -59,19 +59,22 @@ The router evaluates three matching surfaces in priority order. The first surfac
 
 ### Scope tiebreaker
 
-When keyword scores are equal, prefer skills in this `scope` order: `operational` > `reference` > `generic`. An operational skill is more specific to this repository and wins over a generic one when both match equally.
+When keyword scores are equal, prefer skills in this `scope` order: `codebase` > `reference` > `portable`. A codebase-scoped skill is specific to *this* repository and wins over a portable one when both match the query equally.
+
+> **Schema version note.** The v1 enum values `operational` and `generic` were renamed to `codebase` and `portable` in `schema_version: 2` (SH-5784). Always use the v2 names; the current schema rejects the v1 names as hard errors.
 
 ### Type tiebreaker
 
-After scope, prefer `workflow` over `capability` over `router` over `overlay`. A workflow skill provides procedural steps that are usually more actionable than a pure capability reference when the query is ambiguous.
+After scope, prefer `workflow` over `capability` over `router` over `overlay`. A workflow skill ships procedural decision logic that is usually more actionable than a pure capability reference when the query is ambiguous.
 
 ### Fallback behavior
 
-If no skill matches any surface, the router does not fall back to a generic response. It surfaces a coverage gap and recommends authoring a new skill or broadening an existing skill's `keywords` array.
+If no skill matches any surface, the router does not fall back to a default skill. It surfaces a coverage gap and recommends authoring a new skill or broadening an existing skill's `keywords` array. Silent fallback to a wrong skill is worse than an explicit coverage-gap signal.
 
 ## Do NOT Use When
 
-| Instead of this skill | Use | Why |
-|---|---|---|
-| `skill-router` | the target skill directly | When the correct skill is already known, skip the router and load the skill |
-| `skill-router` | `documentation` | Writing skill documentation is not routing — use documentation for authoring guides |
+| Use instead | When |
+|---|---|
+| The target skill directly | The correct skill is already known — skip the router and load it |
+| `documentation` | The task is writing or structuring doc prose, not routing |
+| `skill-template` | The task is authoring a new skill, not dispatching to an existing one |

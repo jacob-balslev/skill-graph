@@ -1,6 +1,6 @@
 ---
 name: documentation
-description: "Documentation skill for choosing the right doc type, structuring technical explanation, and keeping system knowledge readable and durable. Use when writing reference docs, guides, specs, or architecture notes. Do NOT use for runtime debugging or UI accessibility behavior."
+description: "Use when writing reference docs, guides, tutorials, specs, architecture notes, or any durable technical prose that a future reader has to trust. Covers doc-type selection, audience fit, progressive disclosure, docs-as-code workflow, freshness and drift tracking, and source-of-truth discipline. Do NOT use for runtime debugging, UI accessibility behavior, or behavior-preserving code refactor."
 license: MIT
 compatibility: "Markdown, Git"
 allowed-tools: Read Grep
@@ -19,10 +19,16 @@ metadata:
   stability: experimental
   keywords:
     - documentation
-    - docs
     - reference doc
     - guide
+    - tutorial
+    - how-to
     - architecture note
+    - explain to reader
+    - doc type
+    - stale docs
+    - doc drift
+    - spec
   triggers:
     - documentation-skill
   relations:
@@ -51,7 +57,7 @@ metadata:
 
 ## Philosophy
 
-Good documentation is not just correct text. It is the right kind of document for the reader's need, written at the right depth, and placed where the reader will actually find it.
+Documentation is a product, not a deliverable. It is consumed under time pressure by someone who did not write it, and it ages against a codebase that moves without asking permission. The test of good documentation is a single question: does the reader reach the correct mental model faster by reading the doc than by reading the code? Everything else — format, length, voice, tone — follows from that one test. Docs that fail it waste everyone's time twice: the writer's on the way in, and every reader's on the way out.
 
 ## Verification
 
@@ -63,8 +69,8 @@ Good documentation is not just correct text. It is the right kind of document fo
 
 ## Do NOT Use When
 
-| Instead of this skill | Use | Why |
-|---|---|---|
-| `documentation` | `debugging` | Debugging is about failure diagnosis, not knowledge packaging |
-| `documentation` | `a11y` | Accessibility covers interaction behavior and assistive-tech affordances; `documentation` covers prose structure and technical explanation |
-| `documentation` | `refactor` | Refactor is for behavior-preserving code cleanup, not for rewriting docs that describe the code |
+| Use instead | When |
+|---|---|
+| `debugging` | The task is failure diagnosis, not knowledge packaging |
+| `a11y` | The task is interaction behavior and assistive-tech affordances, not prose structure |
+| `refactor` | The task is behavior-preserving code cleanup — even when the refactor should be documented, the documenting is separate work |

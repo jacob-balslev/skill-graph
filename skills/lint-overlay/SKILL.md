@@ -1,7 +1,7 @@
 ---
 schema_version: 2
 name: lint-overlay
-description: "Lint integration overlay on top of the testing-strategy skill. Activate when adding or enforcing lint rules as part of a test or verification plan. Do NOT use standalone — this overlay only makes sense when the base testing-strategy skill is also loaded."
+description: "Use when adding or enforcing lint rules as part of a test or verification plan. Extends testing-strategy with lint-specific guidance: rule selection, gate placement, failure triage, and migration planning when introducing rules to an existing codebase. Do NOT use standalone — load the base testing-strategy skill alongside it — and do NOT use for chasing a specific lint failure in one file (that is debugging)."
 version: 1.0.0
 type: overlay
 family: quality
@@ -43,7 +43,22 @@ portability:
 
 ## Extends
 
-This skill extends `testing-strategy`. Load both skills when lint is a required part of the test and verification plan. All testing-strategy rules apply; this overlay adds the lint-specific rules below.
+This overlay extends `testing-strategy`. Load both skills whenever lint is part of a verification plan — this overlay alone is under-specified because it relies on the base skill's effort-to-risk framework for deciding which rules to enforce at all.
+
+**What this overlay adds on top of `testing-strategy`:**
+
+| Concern | `testing-strategy` (base) | `lint-overlay` (this skill) |
+|---|---|---|
+| What to verify | Behavior under real input | Static properties of the source, independent of input |
+| When to run | At the scope dictated by risk | Before unit tests, on changed files only (unless a global rule is at risk) |
+| Failure meaning | A regression in shipped behavior | A rule violation — block the merge, do not debug it in situ |
+| Migration pattern | Write tests for existing behavior once | Introduce rules by pinning pre-change green state; fail only on new violations |
+
+**What this overlay does NOT override from the base:**
+
+- Effort-to-risk matching (base decides *whether* to lint before this decides *how*)
+- Evidence quality (lint output is evidence; the same "concrete, reproducible" rule applies)
+- Failure-case coverage (lint catches only the cases its rules know about; behavior tests still cover the rest)
 
 ## Coverage
 
@@ -67,7 +82,8 @@ These rules augment (not replace) the testing-strategy base skill.
 
 ## Do NOT Use When
 
-| Instead of this skill | Use | Why |
-|---|---|---|
-| `lint-overlay` | `testing-strategy` alone | If lint is not in scope for this change, load only the base skill |
-| `lint-overlay` | `debugging` | Chasing a lint failure in a specific file is debugging, not lint strategy |
+| Use instead | When |
+|---|---|
+| `testing-strategy` alone | Lint is not in scope for this change — load only the base skill |
+| `debugging` | The task is chasing a specific lint failure in one file, not planning lint-gate strategy |
+| `refactor` | The task is fixing accumulated lint debt as structural cleanup — refactor covers behavior preservation during the cleanup |

@@ -1,7 +1,7 @@
 ---
 schema_version: 2
 name: skill-template
-description: "Authoring template for new Skill Graph skills. Activate when creating a new SKILL.md, adapting an existing template to a different archetype, or teaching an author the canonical frontmatter and body structure. Do NOT use when modifying an already-written skill (work on that skill directly) or when writing general technical documentation (use documentation)."
+description: "Use when creating a new SKILL.md, adapting an existing skill to a different archetype, or teaching an author the canonical frontmatter and body structure. Covers schema-conformant frontmatter, archetype-aware body layout, semantic-layer discipline (description vs Coverage), teaching-layer mechanics (TEMPLATE NOTE blockquotes and YAML comments), and the authoring gate. Do NOT use when modifying an already-written skill (edit that skill directly) or when writing general technical documentation (use the documentation skill)."
 version: 1.0.0
 type: capability
 family: knowledge

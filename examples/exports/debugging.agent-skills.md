@@ -1,6 +1,6 @@
 ---
 name: debugging
-description: "Debugging skill for reproducing failures, narrowing scope, checking evidence, and separating symptoms from root causes. Use when behavior is broken, tests fail, or runtime output contradicts expectations. Do NOT use for feature planning or pure refactoring work."
+description: "Use when behavior is broken, a test is failing, or runtime output contradicts expectations. Covers failure reproduction, scope reduction by bisection, evidence capture at the moment of failure, root-cause isolation (not symptom patching), fix verification against the same evidence path, and regression-test creation. Do NOT use for feature planning, architectural design, or behavior-preserving refactor."
 license: MIT
 compatibility: "Markdown, Git, any codebase"
 allowed-tools: Read Grep Bash
@@ -19,10 +19,13 @@ metadata:
   stability: experimental
   keywords:
     - debugging
-    - bug
-    - reproduce
+    - reproduce failure
     - failing test
     - root cause
+    - symptom vs cause
+    - minimum reproduction
+    - bisect
+    - what caused it
   triggers:
     - debugging-skill
   relations:
@@ -52,27 +55,39 @@ metadata:
 
 ## Philosophy
 
-A good debugging loop reduces uncertainty step by step. It does not jump straight from symptoms to preferred fixes.
+The fastest way to fix a bug is usually the wrong fix. A working reproduction is worth more than a plausible hypothesis; a plausible hypothesis is worth more than a clever fix; a clever fix that skips the reproduction step ships the same bug again under a different name. When pressure is high the temptation to jump from symptom to patch is also high — resist it, because the cost of a wrong fix is paid again by the next person who hits the same failure with less context than you had.
 
 ## Workflow
 
-1. Reproduce the issue
-2. Capture the exact failing behavior
-3. Narrow the affected surface
-4. Identify the root cause
-5. Verify the fix with the same evidence path
-6. Add a regression test so the failure cannot return silently
+Each step asks a question. The answer decides the next step. Do not skip steps to save time; the steps exist because skipping them is how bugs return.
+
+| Step | Ask | If yes | If no |
+|---|---|---|---|
+| 1. Reproduce | Do you have a deterministic failing case? | Go to step 2 | Add logging, narrow inputs, or run the failing path in a loop until the failure is reliable |
+| 2. Scope | Can you reproduce it in a surface smaller than the full system? | Go to step 3 | Bisect — halve the code path, data, or config and retry |
+| 3. Evidence | Do you have the state at the moment of failure, not just the symptom after? | Go to step 4 | Add instrumentation at the boundary where state flips wrong |
+| 4. Cause | Does your hypothesis explain ALL of the evidence, not just the visible symptom? | Go to step 5 | Form a better hypothesis — partial explanations hide shared root causes |
+| 5. Verify | Does the same evidence path pass with the fix applied, and fail with it reverted? | Go to step 6 | The fix did not land or the cause was wrong — return to step 4 |
+| 6. Regression test | Does the test you just wrote fail without the fix and pass with it? | Done | Your test is not isolating the cause — rewrite it |
+
+### When to stop and escalate
+
+- Step 1 is still unreproducible after ~60 min of narrowing → suspect non-determinism (race, timing, clock, network). This is a design issue, not a debugging issue.
+- Step 3 instrumentation shows contradictory state on the same object → suspect memory corruption, concurrent mutation, or stale cache. Out of scope for a single-file debugger; escalate to architectural review.
+- The same bug returned after a previous fix → the previous fix patched a symptom. Start over at step 1 and find the real cause.
 
 ## Verification
 
-- [ ] The original failure was reproduced or evidenced
-- [ ] The fix targets the cause, not only the symptom
-- [ ] The failure path was re-tested after the change
-- [ ] A regression test exists covering the failure path
+- [ ] The original failure was reproduced deterministically, not just described
+- [ ] The hypothesis explains every piece of evidence collected, not a subset
+- [ ] The fix was verified by the same evidence path that revealed the bug
+- [ ] A regression test fails without the fix and passes with it
+- [ ] The next engineer who hits this failure can reach the fix from the regression test alone
 
 ## Do NOT Use When
 
-| Instead of this skill | Use | Why |
-|---|---|---|
-| `debugging` | `refactor` | Refactor is for structural cleanup without failure-driven diagnosis |
-| `debugging` | `testing-strategy` | Designing a new test suite is not the same as chasing a known failure |
+| Use instead | When |
+|---|---|
+| `refactor` | The task is structural cleanup, not failure-driven diagnosis |
+| `testing-strategy` | The task is planning what to test, not chasing a known failure |
+| `documentation` | The task is explaining behavior, not fixing broken behavior |

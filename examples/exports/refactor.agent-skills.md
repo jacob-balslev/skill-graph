@@ -1,6 +1,6 @@
 ---
 name: refactor
-description: "Refactor skill for behavior-preserving structural cleanup, simplification, and readability improvements. Use when reorganizing code without changing external behavior. Do NOT use for bug investigation or for adding new product behavior."
+description: "Use when reorganizing existing code without changing external behavior — extracting functions, reducing duplication, renaming for clarity, splitting modules, or tightening structure. Covers behavior preservation, duplication reduction, decomposition, naming improvements, structural reorganization, and before/after verification. Do NOT use for bug investigation, adding new product behavior, or writing documentation (even when the docs describe the refactored code)."
 license: MIT
 compatibility: "Markdown, Git, any codebase"
 allowed-tools: Read Grep Bash
@@ -54,24 +54,37 @@ metadata:
 
 ## Philosophy
 
-Refactoring improves the shape of the code without changing what the code means or does for consumers.
+Refactoring pays off only when the shape of the code has diverged from the shape of the problem. Before that point it is risk without reward — every move invites a regression, and "cleaner" is a preference, not a justification. The honest test for a legitimate refactor is not "this feels better" but "the next concrete change will be materially easier because of this one." If you cannot name the next change, stop — you are rearranging, not refactoring, and the safest rearrangement is none.
 
 ## Workflow
 
-1. Identify the behavior that must remain stable
-2. Make the smallest structural improvement that helps
-3. Re-run verification against the unchanged behavior
+Each step decides whether to continue, split, or stop. "Stop" is always a valid answer; speculative refactoring is a failure mode, not a signal of ambition.
+
+| Step | Ask | If yes | If no |
+|---|---|---|---|
+| 1. Contract | What externally observable behavior must stay the same? | Write it down as a test suite or explicit checklist | Stop — you cannot refactor what you cannot pin down |
+| 2. Next-change justification | Can you name one concrete pending change that becomes easier because of this refactor? | Go to step 3 | Stop — you are rearranging for taste, not improving the codebase |
+| 3. Smallest useful cut | What is the smallest structural change that moves toward the next-change goal? | Make only that change | Split into sequential cuts; do not change multiple abstraction layers at once |
+| 4. Behavior re-verify | Does the contract from step 1 still hold exactly? | Commit | Revert; the refactor was not behavior-preserving. Start over smaller |
+| 5. Stop condition | Have you made the next change materially easier than it would have been before? | Done | Do not keep going — refactoring beyond the next change is speculative waste |
+
+### When to back out
+
+- A green test from before the refactor is now red → revert immediately, then cut smaller.
+- The next-change goal shifted during the refactor → restart at step 2 with the new goal before continuing.
+- The refactor requires touching more than one abstraction layer in a single commit → split into per-layer commits and re-verify each.
 
 ## Verification
 
-- [ ] External behavior is unchanged
-- [ ] The resulting structure is simpler or clearer
-- [ ] Verification was run before and after the change
-- [ ] No new abstraction was introduced speculatively
+- [ ] External behavior is unchanged — same tests green before and after
+- [ ] The named next change is now demonstrably easier, not merely "more possible"
+- [ ] No new abstraction was introduced speculatively (no "future-proofing" without a named consumer)
+- [ ] Each commit is a single structural change, not a bundle of rearrangements
 
 ## Do NOT Use When
 
-| Instead of this skill | Use | Why |
-|---|---|---|
-| `refactor` | `debugging` | Debugging starts from a failing behavior rather than structural cleanup |
-| `refactor` | `documentation` | Rewriting docs is documentation work, even when the docs describe code that was just refactored |
+| Use instead | When |
+|---|---|
+| `debugging` | The task starts from a failing behavior, not from structural cleanup |
+| `documentation` | The task is rewriting docs — even docs about the refactored code — it belongs to a separate commit and skill |
+| `testing-strategy` | The task is designing a new test suite; the refactor's own tests should already exist before step 1 |

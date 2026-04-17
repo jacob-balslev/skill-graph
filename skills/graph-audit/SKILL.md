@@ -1,7 +1,7 @@
 ---
 schema_version: 2
 name: graph-audit
-description: "Skill metadata and manifest consistency auditing for the Skill Graph repository. Use when checking that every SKILL.md conforms to the schema, that manifest entries are in sync with authored frontmatter, or that relation targets point at real sibling skills. Do NOT use for general code review or for auditing non-skill files."
+description: "Use when checking that every SKILL.md conforms to the schema, that manifest entries match authored frontmatter, or that relation targets point at real sibling skills. Covers schema conformance, manifest sync, relation integrity, eval-artifact coherence, grounding presence, and name-directory parity. Do NOT use for general code review, runtime agent debugging, or auditing non-skill files."
 version: 1.0.0
 type: capability
 family: knowledge
@@ -63,7 +63,7 @@ portability:
 
 ## Philosophy
 
-A skill graph is only as reliable as its metadata. Schema drift, broken relation targets, and manifest desync are silent bugs — they do not break the skill's prose content but they make automated retrieval unreliable. The audit catches these violations before they accumulate.
+Skill graphs fail silently. A broken relation or a drifted enum value does not crash the agent — it just makes retrieval subtly wrong, and subtly-wrong retrieval is worse than a crash because nothing tells you to look. The audit's job is to turn every silent bug into a loud one before the graph accumulates enough drift that agents can no longer trust its edges.
 
 ## Key Files
 
@@ -72,7 +72,8 @@ A skill graph is only as reliable as its metadata. Schema drift, broken relation
 | `schemas/skill.schema.json` | Enforces the frontmatter contract for every SKILL.md |
 | `schemas/manifest.schema.json` | Enforces the compiled manifest shape |
 | `docs/metadata-contract.md` | Source of truth for field semantics and the archetype section map |
-| `scripts/skill-lint.js` | The canonical audit runner; covers all six checks listed in Coverage |
+| `scripts/skill-lint.js` | The canonical audit runner. Implements the six dimensions listed in Coverage plus five more: parent-directory-matches-name, cross-schema parity, sample-manifest conformance, generator parity, and routing-quality rules. See README § Validation for the full eleven-check list. |
+| `scripts/check-contract-consistency.js` | Cross-artifact contract checker (C1–C6). Complementary to `skill-lint.js` — lint validates per-skill correctness; this validates that the contract documents themselves remain consistent with the schemas. |
 | `examples/skills.manifest.sample.json` | Generator-produced sample; lint fails if this drifts from `generate-manifest.js` output |
 
 ## Verification
@@ -105,8 +106,8 @@ Exit code 0 means all checks passed. Exit code 1 means at least one check failed
 
 ## Do NOT Use When
 
-| Instead of this skill | Use | Why |
-|---|---|---|
-| `graph-audit` | `documentation` | Documentation authoring is not metadata auditing |
-| `graph-audit` | `refactor` | Restructuring skill prose is refactor work, not a schema audit |
-| `graph-audit` | `debugging` | Chasing a runtime failure in an agent is debugging, not a skill graph audit |
+| Use instead | When |
+|---|---|
+| `documentation` | The task is authoring or restructuring skill prose, not auditing metadata |
+| `refactor` | The task is restructuring skill body sections while keeping the contract stable |
+| `debugging` | The task is chasing a runtime failure in an agent, not validating graph metadata |
