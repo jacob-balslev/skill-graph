@@ -64,9 +64,24 @@ Selection strategies:
 
 ### Step 2. Run deterministic checks
 
-Run the local health tooling first.
+Run the local health tooling first. The stub generator combines Steps 2 and 9
+into a single command — it runs lint for you, parses the output, and writes the
+three artifact stubs with lint findings pre-populated so you can focus on the
+qualitative sections:
 
-Typical checks:
+```bash
+node scripts/skill-audit.js <skill-name>
+# options:
+#   --audit-root <path>   default: examples/audits/ (use audits/ for downstream output)
+#   --force               overwrite existing artifacts
+```
+
+The command produces `<audit-root>/<skill-name>/{findings,verdict,scorecard}.md`
+with lint errors and warnings stubbed as P1/P2 findings and all qualitative
+dimensions left as TODO placeholders for human review. See "## Stub Generator"
+below for the full behaviour reference.
+
+Typical manual checks (when running the loop without the stub generator):
 
 1. frontmatter/schema validation
 2. manifest regeneration
@@ -237,6 +252,77 @@ Use these dimensions if you want a richer audit output.
 | Content quality | Is the skill dense, clear, and actionable? |
 | Eval quality | Does the skill have meaningful evaluation coverage? |
 | Portability quality | Can the skill travel without losing its meaning? |
+
+## Stub Generator
+
+`scripts/skill-audit.js` accelerates the audit loop by seeding the three
+artifact stubs from lint output. It is the recommended entry point for Steps 2
+and 9 of the loop.
+
+### What it does
+
+1. Validates that `skills/<skill-name>/SKILL.md` exists.
+2. Runs `scripts/skill-lint.js skills/<skill-name> --no-color --skip-generator-parity`
+   and captures stdout, stderr, and exit code.
+3. Parses the lint output into `(file, line, col, severity, message)` tuples.
+4. Writes three stubs under `<audit-root>/<skill-name>/`:
+   - `findings.md` — one finding per lint diagnostic (P1 for errors, P2 for
+     warnings) plus five human-judgment TODO sections (activation, relations,
+     grounding, content, evals).
+   - `verdict.md` — FAIL when lint errors exist, PASS WITH FIXES otherwise;
+     always includes a "Human Judgment Required" section.
+   - `scorecard.md` — schema validity auto-scored from lint; all other
+     dimensions are TODO. Grounding row is N/A when `scope: portable`.
+
+### What it does NOT do
+
+- It does not automate any qualitative judgment.
+- It does not modify the skill being audited.
+- It does not run the full lint suite (generator parity and sample manifest
+  checks are skipped — those run against the whole library, not one skill).
+
+### CLI reference
+
+```bash
+node scripts/skill-audit.js <skill-name>
+node scripts/skill-audit.js <skill-name> --audit-root <path>
+node scripts/skill-audit.js <skill-name> --force
+```
+
+| Flag | Default | Effect |
+|---|---|---|
+| `<skill-name>` | required | Must match a directory under `skills/` |
+| `--audit-root <path>` | `examples/audits/` | Destination root for the three stubs |
+| `--force` | off | Overwrite any existing artifact files |
+
+The tool exits 1 if the skill directory does not exist, if any of the three
+output files already exist (without `--force`), or if argument parsing fails.
+
+### Audit-root convention
+
+| Root | When to use |
+|---|---|
+| `examples/audits/<skill-name>/` | Shipped, curated worked examples (this repo) |
+| `audits/<skill-name>/` | Downstream consumer output (adopters' own libraries) |
+
+Use `--audit-root audits/` when running the loop against a skill library that
+is not the Skill Graph repo itself.
+
+### Typical workflow
+
+```bash
+# 1. Seed the stubs
+node scripts/skill-audit.js my-skill
+
+# 2. Open findings.md and complete the human-judgment TODO sections
+
+# 3. Update verdict.md with the final verdict once all sections are reviewed
+
+# 4. Fill in scorecard.md scores (replace TODO with 1–5 + justification)
+
+# 5. Re-run lint to confirm any fixes are clean
+node scripts/skill-lint.js skills/my-skill
+```
 
 ## Standard Cadence
 

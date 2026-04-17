@@ -67,6 +67,26 @@ If you touched `scripts/skill-lint.js`, run it against every starter skill plus 
 
 When auditing an existing skill, follow `docs/skill-audit-loop.md` for the 12-step process and `docs/skill-audit-checklist.md` for the per-skill checklist. See `docs/skill-audit-loop.md § Recommended Artifact Layout` for the authoritative two-tier artifact root convention (`examples/audits/<skill-name>/` for shipped worked examples; `audits/<skill-name>/` for downstream consumer output). The `examples/audits/documentation/` directory is the canonical worked example.
 
+To bootstrap an audit quickly, use the stub generator:
+
+```bash
+# Seed three artifact stubs from lint output (leaves qualitative judgment as TODOs)
+node scripts/skill-audit.js <skill-name>
+
+# Overwrite existing stubs (e.g. re-seed after updating a skill)
+node scripts/skill-audit.js <skill-name> --force
+
+# Write output to a custom root (for downstream consumer use)
+node scripts/skill-audit.js <skill-name> --audit-root audits/
+```
+
+The command runs `scripts/skill-lint.js` under the hood, converts errors and
+warnings into pre-populated `findings.md` entries (P1 for errors, P2 for
+warnings), and leaves all qualitative dimensions as `TODO` placeholders.
+Schema validity is auto-scored in `scorecard.md` from the lint result. A human
+auditor must complete the TODO sections before the verdict is considered final.
+See `docs/skill-audit-loop.md § Stub Generator` for the full reference.
+
 ## License
 
 By contributing, you agree that your contributions are licensed under the MIT License (see `LICENSE`).
