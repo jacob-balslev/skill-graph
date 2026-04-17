@@ -116,19 +116,19 @@
         }
       }
     },
-    "domain_frame": {
+    "grounding": {
       "type": "object",
       "additionalProperties": false,
       "required": [
         "domain_object",
-        "evaluation_mode",
+        "grounding_mode",
         "truth_sources",
         "failure_modes",
         "evidence_priority"
       ],
       "properties": {
         "domain_object": { "type": "string" },
-        "evaluation_mode": {
+        "grounding_mode": {
           "type": "string",
           "enum": ["repo_specific", "universal", "hybrid"]
         },
@@ -184,7 +184,7 @@
         "required": ["scope"]
       },
       "then": {
-        "required": ["domain_frame"]
+        "required": ["grounding"]
       }
     }
   ]

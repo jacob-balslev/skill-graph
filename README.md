@@ -38,7 +38,7 @@ The base standard and the Skill Graph extensions:
 | `allowed-tools` | Agent Skills | Optional; space-separated tool allowlist |
 | `metadata` | Agent Skills | Not used at top level; Skill Graph promotes extensions to dedicated fields |
 | `schema_version`, `version`, `type`, `family`, `scope`, `owner`, `freshness`, `drift_check`, `eval_status` | Skill Graph | Required extensions for governance, routing, and health tracking |
-| `relations`, `domain_frame`, `portability`, `triggers`, `keywords`, `paths`, `route_groups`, `extends`, `stability` | Skill Graph | Optional extensions for graph semantics, grounding, and exportability |
+| `relations`, `grounding`, `portability`, `triggers`, `keywords`, `paths`, `route_groups`, `extends`, `stability` | Skill Graph | Optional extensions for graph semantics, grounding, and exportability |
 
 **Compatibility direction.** A valid Agent Skills skill is *not* automatically a valid Skill Graph skill — Skill Graph requires fields beyond the base two. Going the other way is possible via a transform: move every Skill Graph extension field under the standard `metadata:` key, leaving only the Agent Skills fields at the top level. Tooling for this transform is on the roadmap as `scripts/export-skill.js`. Until it ships, the `agent-skills` value in `portability.exports` describes a compatibility *goal*, not a working export path.
 
@@ -72,7 +72,7 @@ Five generic, portable starter skills. Each starter demonstrates at least one co
 | `refactor` | `workflow` | `relations.depends_on` pointing at `testing-strategy` (refactor verification needs a test suite) |
 | `testing-strategy` | `capability` | `route_groups: [quality]` showing the optional classification field |
 
-The starters are all `scope: generic` and intentionally demonstrate the ungrounded path (no `domain_frame`). The `examples/skill-template.md` file shows the grounded variant with `domain_frame` populated.
+The starters are all `scope: generic` and intentionally demonstrate the ungrounded path (no `grounding` block). The `examples/skill-template.md` file shows the grounded variant with `grounding` populated.
 
 Starter `eval_status` is `pending` for four of the five (no eval artifact shipped yet). `documentation` is `eval_status: evals` because `examples/evals/comprehension.json` targets it as the reference example.
 

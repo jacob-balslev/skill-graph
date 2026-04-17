@@ -47,7 +47,7 @@ Shipping today. Covers:
 2. valid `type` enum
 3. valid `scope` enum
 4. `extends` required for overlays (schema conditional)
-5. `domain_frame` required for `scope: operational` (schema conditional)
+5. `grounding` required for `scope: operational` (schema conditional)
 6. relation targets (`adjacent`, `boundary`, `verify_with`, `depends_on`) exist as sibling skills
 7. parent directory name matches the authored `name` (Agent Skills compatibility)
 8. `eval_status: evals` is backed by a real eval file under `examples/evals/`

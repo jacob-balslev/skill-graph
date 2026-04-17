@@ -11,9 +11,9 @@
  *      depends_on targets must be real sibling skills in the repo)
  *   4. Eval artifact coherence check (eval_status: evals requires at
  *      least one eval file targeting the skill)
- *   5. scope: operational → require domain_frame (conditional from schema)
+ *   5. scope: operational → require grounding (conditional from schema)
  *   6. Cross-schema parity (runs once): every property and required field
- *      of skill.schema.json#domain_frame must be representable in
+ *      of skill.schema.json#grounding must be representable in
  *      manifest.schema.json#grounding, and the documented loss-policy
  *      fields (route_groups, license, compatibility, allowed-tools) must
  *      exist as top-level manifest skill-item properties. Prevents the
@@ -70,23 +70,23 @@ function loadManifestSchema() {
 
 // Frontmatter → manifest parity check. Runs once per lint invocation, not
 // per file. Guarantees:
-//   1. Every property of skill.schema.json#domain_frame is representable in
+//   1. Every property of skill.schema.json#grounding is representable in
 //      manifest.schema.json#skills.items.properties.grounding (prevents the
 //      original SH-5776 bug where domain_object was silently dropped).
-//   2. Every field in domain_frame.required is also required in grounding.
+//   2. Every field in grounding.required is also required in manifest grounding.
 //   3. The documented loss-policy fields (AUTHORED_FIELDS_MUST_FLOW) exist
 //      as top-level properties on the manifest skill-item schema.
 function checkSchemaParity(skillSchema, manifestSchema) {
   const errors = [];
 
-  const domainFrame = skillSchema.properties && skillSchema.properties.domain_frame;
+  const groundingSchema = skillSchema.properties && skillSchema.properties.grounding;
   const skillItem = manifestSchema.properties
     && manifestSchema.properties.skills
     && manifestSchema.properties.skills.items;
   const grounding = skillItem && skillItem.properties && skillItem.properties.grounding;
 
-  if (!domainFrame) {
-    errors.push('skill.schema.json: missing properties.domain_frame (cannot run parity check)');
+  if (!groundingSchema) {
+    errors.push('skill.schema.json: missing properties.grounding (cannot run parity check)');
     return errors;
   }
   if (!grounding) {
@@ -94,19 +94,19 @@ function checkSchemaParity(skillSchema, manifestSchema) {
     return errors;
   }
 
-  const dfProps = Object.keys(domainFrame.properties || {});
+  const dfProps = Object.keys(groundingSchema.properties || {});
   const gProps = Object.keys(grounding.properties || {});
   for (const prop of dfProps) {
     if (!gProps.includes(prop)) {
-      errors.push(`parity: skill.schema.json#domain_frame.${prop} is not representable in manifest.schema.json#grounding.properties`);
+      errors.push(`parity: skill.schema.json#grounding.${prop} is not representable in manifest.schema.json#grounding.properties`);
     }
   }
 
-  const dfRequired = domainFrame.required || [];
+  const dfRequired = groundingSchema.required || [];
   const gRequired = grounding.required || [];
   for (const req of dfRequired) {
     if (!gRequired.includes(req)) {
-      errors.push(`parity: skill.schema.json#domain_frame.required contains "${req}" but manifest.schema.json#grounding.required does not`);
+      errors.push(`parity: skill.schema.json#grounding.required contains "${req}" but manifest.schema.json#grounding.required does not`);
     }
   }
 
@@ -196,7 +196,7 @@ function parseFrontmatter(text) {
 
 // Minimal schema validator covering the subset used by skill.schema.json:
 // required fields, type checks, enum constraints, pattern constraints,
-// and the two conditional rules (overlay → extends, operational → domain_frame).
+// and the two conditional rules (overlay → extends, operational → grounding).
 function validateAgainstSchema(fm, schema) {
   const errors = [];
   const props = schema.properties || {};
@@ -254,8 +254,8 @@ function validateAgainstSchema(fm, schema) {
   if (fm.type === 'overlay' && !fm.extends) {
     errors.push(`type: overlay requires extends field`);
   }
-  if (fm.scope === 'operational' && !fm.domain_frame) {
-    errors.push(`scope: operational requires domain_frame field`);
+  if (fm.scope === 'operational' && !fm.grounding) {
+    errors.push(`scope: operational requires grounding field`);
   }
 
   return errors;
@@ -414,6 +414,14 @@ function main() {
       totalErrors++;
       continue;
     }
+    // Deprecation warning: skills authored with the old domain_frame field name
+    // (schema_version: 1 compatibility window) are warned here. For schema_version: 2
+    // (when released), domain_frame will be a hard error (rejected by the schema).
+    // See docs/manifest-contract.md § Migration Note — domain_frame → grounding.
+    if (fm.domain_frame) {
+      console.warn(`WARN ${relPath}: "domain_frame" is deprecated — rename to "grounding" (schema_version: 2 will reject this field)`);
+    }
+
     const errors = [
       ...validateAgainstSchema(fm, schema),
       ...checkParentDirMatchesName(file, fm),

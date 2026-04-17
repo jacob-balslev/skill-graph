@@ -101,14 +101,14 @@
             "additionalProperties": false,
             "required": [
               "domain_object",
-              "evaluation_mode",
+              "grounding_mode",
               "truth_sources",
               "failure_modes",
               "evidence_priority"
             ],
             "properties": {
               "domain_object": { "type": "string" },
-              "evaluation_mode": {
+              "grounding_mode": {
                 "type": "string",
                 "enum": ["repo_specific", "universal", "hybrid"]
               },
@@ -151,7 +151,7 @@
               "eval_status": { "type": "string" },
               "freshness": { "type": "string", "format": "date" },
               "drift_check": { "type": "string", "format": "date" },
-              "has_domain_frame": { "type": "boolean" },
+              "has_grounding": { "type": "boolean" },
               "has_relations": { "type": "boolean" }
             }
           }

@@ -39,12 +39,12 @@ relations:
     - refactor
   verify_with:
     - documentation
-# TEMPLATE NOTE: domain_frame is REQUIRED for grounded skills that make concrete
-# repo claims. Remove this entire block if your skill has evaluation_mode: universal
+# TEMPLATE NOTE: grounding is REQUIRED for grounded skills that make concrete
+# repo claims. Remove this entire block if your skill has grounding_mode: universal
 # and does not anchor to truth sources in the repo.
-domain_frame:
+grounding:
   domain_object: Skill authoring for the Skill Graph frontmatter contract
-  evaluation_mode: repo_specific
+  grounding_mode: repo_specific
   truth_sources:
     - docs/metadata-contract.md
     - schemas/skill.schema.json
@@ -70,7 +70,7 @@ portability:
 
 > **TEMPLATE NOTE — HOW TO READ THIS FILE:** This file is a real, valid, schema-conformant Skill Graph skill whose *subject* is skill authoring itself. Read it as a finished specimen of the contract, then adapt it by (1) renaming the identity, (2) rewriting `description`, `## Coverage`, `## Philosophy`, and `## Key Files` for your subject, (3) rewriting `## Verification` to be your skill's self-check, (4) removing any section or field that does not apply to your archetype, and (5) stripping the `> **TEMPLATE NOTE:**` blockquotes and `# TEMPLATE NOTE:` YAML comments — they are authoring scaffolding, never skill content. Never ship placeholder sludge (`your-skill-name`, `path/to/file`, `todo`). If a section does not apply, remove it — do not keep it and fill it with fake content.
 
-> **TEMPLATE NOTE — CONDITIONAL FIELDS:** `extends` is valid only when `type: overlay`. `route_groups` only applies when route ownership is part of the skill contract. `triggers` and `paths` are shown because this template is both label-routable and file-activated; most skills need only one. Generated manifest health fields belong in `skills.manifest.json`, not in the authored `SKILL.md`.
+> **TEMPLATE NOTE — CONDITIONAL FIELDS:** `extends` is valid only when `type: overlay`. `route_groups` only applies when route ownership is part of the skill contract. `triggers` and `paths` are shown because this template is both label-routable and file-activated; most skills need only one. `grounding` is REQUIRED for `scope: operational` skills; remove the block entirely for `scope: generic` or `scope: reference`. Generated manifest health fields belong in `skills.manifest.json`, not in the authored `SKILL.md`.
 
 ## Coverage
 
@@ -78,7 +78,7 @@ portability:
 - Semantic layer discipline: how `description:` (routing contract, ≤ 3 sentences) differs from `## Coverage` (scope map, bulleted topic list) and why each must stay in its own layer
 - Teaching-layer delivery: how to use `> **TEMPLATE NOTE:**` blockquotes and `# TEMPLATE NOTE:` YAML comments to teach authors without cargo-culting meta sections into every new skill
 - Archetype-driven body structure: which `## H2` sections each of the four archetypes (`capability`, `workflow`, `router`, `overlay`) must contain
-- Grounding via `domain_frame`: when a skill should declare truth sources and failure modes, and when it should stay `evaluation_mode: universal`
+- Grounding via `grounding`: when a skill should declare truth sources and failure modes, and when it should stay `grounding_mode: universal`
 - Adapter workflow: how to strip a template down, how to detect and remove cargo-culted meta, and how to verify a new skill against `schemas/skill.schema.json` before committing
 
 ## Philosophy

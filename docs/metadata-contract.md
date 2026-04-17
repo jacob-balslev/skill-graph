@@ -27,7 +27,7 @@ Skill Graph is a graph-aware superset of the [Agent Skills](https://agentskills.
 | `allowed-tools` | Agent Skills optional | Kept top-level as a space-separated string |
 | `metadata` | Agent Skills optional | Not used at the top level; Skill Graph promotes extensions to named fields |
 | `schema_version`, `version`, `type`, `family`, `scope`, `owner`, `freshness`, `drift_check`, `eval_status` | Skill Graph extension | Required for Skill Graph; additive to the base |
-| `relations`, `domain_frame`, `portability`, `triggers`, `keywords`, `paths`, `route_groups`, `extends`, `stability` | Skill Graph extension | Optional in Skill Graph; additive to the base |
+| `relations`, `grounding`, `portability`, `triggers`, `keywords`, `paths`, `route_groups`, `extends`, `stability` | Skill Graph extension | Optional in Skill Graph; additive to the base |
 
 A Skill Graph `SKILL.md` is **not** a valid Agent Skills file as authored, because Skill Graph requires fields the base standard does not define. An export transform can produce an Agent-Skills-valid file by moving every Skill Graph extension field under the standard `metadata:` key. The top-level fields in the exported file are then only `name`, `description`, `license`, `compatibility`, `allowed-tools`, and `metadata`. Tooling for this transform is on the roadmap as `scripts/export-skill.js`. Until that ships, the `agent-skills` value in `portability.exports` describes a compatibility goal, not a working export path.
 
@@ -179,9 +179,9 @@ relations:
 ### Grounding
 
 ```yaml
-domain_frame:
+grounding:
   domain_object: Shopify integration behavior
-  evaluation_mode: repo_specific
+  grounding_mode: repo_specific
   truth_sources:
     - src/integrations/shopify/client.ts
     - src/integrations/shopify/webhooks.ts
@@ -237,7 +237,7 @@ compatibility
 allowed-tools
 route_groups
 extends
-domain_frame
+grounding
 portability
 ```
 
@@ -282,7 +282,7 @@ extends
 Use this group when the skill makes concrete repo or implementation claims.
 
 ```yaml
-domain_frame
+grounding
 ```
 
 ### Optional enrichments
@@ -394,7 +394,7 @@ Rules:
 - `verify_with`: verification or co-loading candidates
 - `depends_on`: explicit dependency where ordering or conceptual reliance matters
 
-### `domain_frame`
+### `grounding`
 
 Purpose:
 - declares what the skill governs in the real world or codebase
@@ -498,7 +498,7 @@ compatibility: Requires Node.js 18+ and git
 - `paths`
 - `relations`
 - `extends`
-- `domain_frame`
+- `grounding`
 - `route_groups`
 - `license`
 - `compatibility`
@@ -564,9 +564,9 @@ relations:
     - test-coverage
   depends_on:
     - api-key-management
-domain_frame:
+grounding:
   domain_object: Shopify integration behavior
-  evaluation_mode: repo_specific
+  grounding_mode: repo_specific
   truth_sources:
     - src/integrations/shopify/client.ts
     - src/integrations/shopify/webhooks.ts

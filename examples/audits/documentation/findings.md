@@ -13,9 +13,9 @@ PASS
 ID: F1
 Severity: P3
 Surface: frontmatter
-Problem: The skill is declared `scope: generic` but could be promoted to `repo_specific` with a `domain_frame` if it ever anchors to concrete truth sources in an adopting project.
-Evidence: The current skill is fully generic — there is no `domain_frame` and no `truth_sources`. This is intentional for a portable starter skill; flagged only as a future extensibility note.
-Required action: None required. When an adopting project customizes this starter, consider adding a `domain_frame` block pointing at the project's style guide or documentation site as `truth_sources`.
+Problem: The skill is declared `scope: generic` but could be promoted to `repo_specific` with a `grounding` if it ever anchors to concrete truth sources in an adopting project.
+Evidence: The current skill is fully generic — there is no `grounding` and no `truth_sources`. This is intentional for a portable starter skill; flagged only as a future extensibility note.
+Required action: None required. When an adopting project customizes this starter, consider adding a `grounding` block pointing at the project's style guide or documentation site as `truth_sources`.
 
 ID: F2
 Severity: P3

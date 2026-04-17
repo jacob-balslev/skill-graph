@@ -121,7 +121,7 @@ Required dimension rows:
 
 Run this section when the skill is repo-grounded or implementation-aware.
 
-- [ ] `domain_frame` exists when the skill makes concrete implementation claims
+- [ ] `grounding` exists when the skill makes concrete implementation claims
 - [ ] `domain_object` clearly states what the skill governs
 - [ ] `truth_sources` point to real files or docs
 - [ ] `failure_modes` are concrete and testable

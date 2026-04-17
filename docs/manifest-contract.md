@@ -52,7 +52,7 @@ Every top-level authored field in `schemas/skill.schema.json` has exactly one en
 | 19 | `paths` | **grouped under parent** (`activation`) | `activation.paths` |
 | 20 | `route_groups` | copied through unchanged (when present) | `route_groups` — restored to flow-through on 2026-04-17 (SH-5776). |
 | 21 | `relations` | copied through unchanged (when present) | `relations` — same shape, same sub-keys (`adjacent`, `boundary`, `verify_with`, `depends_on`). |
-| 22 | `domain_frame` | **renamed but preserved** | `grounding` — same required-field set including `domain_object`, `evaluation_mode`, `truth_sources`, `failure_modes`, `evidence_priority`. The rename expresses intent: the authored surface declares a domain frame; the compiled manifest presents it as grounding to consumers. |
+| 22 | `grounding` | **copied through unchanged** | `grounding` — same required-field set including `domain_object`, `grounding_mode`, `truth_sources`, `failure_modes`, `evidence_priority`. The authored field was renamed from `domain_frame` in schema_version 1 (SH-5779, 2026-04-16); the manifest projection has always used `grounding`. |
 | 23 | `portability` | copied through unchanged (when present) | `portability` — same shape (`level`, `exports`). |
 
 ### Generated-only manifest fields
@@ -66,7 +66,7 @@ These fields exist in `skills.manifest.json` with no authored counterpart:
 | `summary.by_type`, `summary.by_family`, `summary.by_scope`, `summary.by_stability` | Rollup counts derived from the corresponding authored fields across all skills. |
 | `skills[].id` | Stable identifier derived from `name`. Normalization rules live in the generator; `id` may be equal to `name` when no normalization is needed. |
 | `skills[].path` | Repo-relative path to the source `SKILL.md` file, written by the generator when it reads the file. |
-| `health.has_domain_frame` | Boolean flag — `true` when the authored frontmatter contains a `domain_frame` block, `false` otherwise. A convenience signal for consumers. |
+| `health.has_grounding` | Boolean flag — `true` when the authored frontmatter contains a `grounding` block, `false` otherwise. A convenience signal for consumers. |
 | `health.has_relations` | Boolean flag — `true` when the authored frontmatter contains a non-empty `relations` block. |
 
 ---
@@ -85,7 +85,7 @@ Four Agent-Skills base-standard fields and one Skill Graph classification field 
 | `compatibility` | Dropped as "belongs in a separate spec" | Agent Skills compatibility. The compatibility string declares runtime or environment requirements (e.g. `Markdown, YAML, JSON Schema` or `Python 3.11+`). Consumers route based on this. Without flow-through, consumers would have to re-parse the authored source. |
 | `allowed-tools` | Dropped as "a runtime concern, not metadata" | Agent Skills compatibility. The base standard defines `allowed-tools` as a frontmatter field that sandboxes tool use. The manifest is the canonical feed for runtime consumers; stripping `allowed-tools` would force consumers back to the authored file, defeating the purpose of compiling a manifest. |
 | `route_groups` | Dropped as "superseded by `relations`" | Relations and route groups encode different semantics. `relations` declares per-skill adjacencies; `route_groups` declares a classification tag (e.g. `quality`, `security`) that a routing layer can use to pick a skill family. They are complementary, not overlapping, and the router layer needs both. |
-| `domain_object` (inside `domain_frame` / `grounding`) | Dropped from the required-field set during an earlier schema tightening | Grounded skills anchor to a specific domain object (e.g. "Shopify order reconciliation," "Skill authoring for the Skill Graph frontmatter contract"). Consumers use `domain_object` to decide whether a skill matches a task's subject. Dropping it left grounded skills ungrounded to consumers. SH-5776 restored it as a required sub-field. |
+| `domain_object` (inside `grounding`) | Dropped from the required-field set during an earlier schema tightening | Grounded skills anchor to a specific domain object (e.g. "Shopify order reconciliation," "Skill authoring for the Skill Graph frontmatter contract"). Consumers use `domain_object` to decide whether a skill matches a task's subject. Dropping it left grounded skills ungrounded to consumers. SH-5776 restored it as a required sub-field. |
 
 ### Current dropped-field list
 
@@ -130,7 +130,7 @@ The manifest `schema_version` follows semver on the consumer contract:
 | New optional field added to manifest | patch | Adding an optional `health.last_audit_run` timestamp. |
 | Existing field becomes optional (was required) | minor | Relaxing `owner` to optional for skills without a declared owner. |
 | Existing optional field becomes required | **major** | Requiring `portability` on every skill. |
-| Field renamed or removed | **major** | Renaming `grounding` back to `domain_frame`, or dropping `allowed-tools`. |
+| Field renamed or removed | **major** | Renaming `grounding` back to `domain_frame`, renaming `grounding_mode` back to `evaluation_mode`, or dropping `allowed-tools`. |
 | Field shape changed (e.g. string → object) | **major** | Changing `allowed-tools` from a space-separated string to an array. |
 
 A major bump of the manifest `schema_version` does not force a major bump of the authored `skill.schema.json` — the two contracts evolve independently.
@@ -153,11 +153,15 @@ When a major manifest schema change ships:
 3. A migration note lands in this document under a dated heading describing what changed and how consumers should adapt.
 4. The old schema file remains accessible by version for consumers pinning to the old contract during their migration window.
 
+### Migration Note — `domain_frame` → `grounding` and `evaluation_mode` → `grounding_mode` (2026-04-16, SH-5779)
+
+The authored frontmatter field `domain_frame` has been renamed to `grounding`. Simultaneously, the sub-field `evaluation_mode` (inside the grounding block) has been renamed to `grounding_mode` — this sub-field describes the evidence source for a skill's claims (repo-specific, universal, or hybrid), not an execution mode, so the new name better expresses its intent. Both renames are at schema_version 1 — the `schema_version` integer is unchanged. The generated manifest projection has always used `grounding` as the key, so manifests generated before this change are unaffected at the manifest level; only the authored `SKILL.md` frontmatter format changed. Skills authored before this change that still use `domain_frame` will receive a deprecation warning from `scripts/skill-lint.js`. A future `schema_version: 2` will reject `domain_frame` with a hard lint error. Authors should rename `domain_frame:` → `grounding:` and `evaluation_mode:` → `grounding_mode:` in their skill frontmatter during the current release window. The generated `health.has_domain_frame` manifest flag has been renamed to `health.has_grounding` in the same change.
+
 ---
 
 ## Worked Example
 
-The `skill-template` starter (`examples/skill-template.md`) is the canonical worked example because it exercises the widest set of fields — it is the only starter that populates `domain_frame`, `license`, `compatibility`, `allowed-tools`, and `portability` together with activation, relations, and all governance fields.
+The `skill-template` starter (`examples/skill-template.md`) is the canonical worked example because it exercises the widest set of fields — it is the only starter that populates `grounding`, `license`, `compatibility`, `allowed-tools`, and `portability` together with activation, relations, and all governance fields.
 
 ### Authored frontmatter (abridged to fields that transform)
 
@@ -190,9 +194,9 @@ relations:
   adjacent: [documentation]
   boundary: [refactor]
   verify_with: [documentation]
-domain_frame:
+grounding:
   domain_object: Skill authoring for the Skill Graph frontmatter contract
-  evaluation_mode: repo_specific
+  grounding_mode: repo_specific
   truth_sources:
     - docs/metadata-contract.md
     - schemas/skill.schema.json
@@ -235,7 +239,7 @@ portability:
   },
   "grounding": {
     "domain_object": "Skill authoring for the Skill Graph frontmatter contract",
-    "evaluation_mode": "repo_specific",
+    "grounding_mode": "repo_specific",
     "truth_sources": [
       "docs/metadata-contract.md",
       "schemas/skill.schema.json"
@@ -251,7 +255,7 @@ portability:
     "eval_status": "pending",
     "freshness": "2026-04-16",
     "drift_check": "2026-04-16",
-    "has_domain_frame": true,
+    "has_grounding": true,
     "has_relations": true
   }
 }
@@ -267,9 +271,9 @@ Each arrow corresponds to one row of the rename map.
 - `license`, `compatibility`, `allowed-tools` — straight copies (post-SH-5776). The three Agent Skills base-standard optional fields flow through unchanged; a consumer that only speaks Agent Skills sees them at the expected keys.
 - `triggers`, `keywords`, `paths` → `activation.triggers`, `activation.keywords`, `activation.paths` — three sibling authored fields are grouped under a single `activation` object. This matches the semantic: they are all activation signals. The grouping is a presentation choice, not a loss.
 - `relations` → `relations` — copied through with the full sub-key set (`adjacent`, `boundary`, `verify_with`, `depends_on`). Same shape on both sides.
-- `domain_frame` → `grounding` — renamed, with the full required-field set preserved. The rename expresses a semantic lens change: the authored surface names what the skill frames; the manifest names what the skill is grounded in. Same data, different vocabulary for different audiences.
+- `grounding` → `grounding` — copied through unchanged. The authored field was renamed from `domain_frame` to `grounding` in SH-5779 (2026-04-16), aligning the authored field name with its long-standing manifest projection key. The internal sub-field `evaluation_mode` was renamed to `grounding_mode` in the same change — the field describes the evidence source, not the execution mode.
 - `portability` → `portability` — copied through with the full sub-key set (`level`, `exports`).
-- `freshness`, `drift_check`, `eval_status` → `health.freshness`, `health.drift_check`, `health.eval_status` — three sibling governance fields are grouped under a single `health` object. `has_domain_frame` and `has_relations` are generated boolean flags that summarize presence of the corresponding authored blocks, so a consumer can filter on "grounded skills" without re-parsing the full `grounding` object.
+- `freshness`, `drift_check`, `eval_status` → `health.freshness`, `health.drift_check`, `health.eval_status` — three sibling governance fields are grouped under a single `health` object. `has_grounding` and `has_relations` are generated boolean flags that summarize presence of the corresponding authored blocks, so a consumer can filter on "grounded skills" without re-parsing the full `grounding` object.
 
 ### What is deliberately absent from the projection
 

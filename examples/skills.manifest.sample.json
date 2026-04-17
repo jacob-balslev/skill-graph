@@ -49,7 +49,7 @@
       },
       "grounding": {
         "domain_object": "Skill authoring for the Skill Graph frontmatter contract",
-        "evaluation_mode": "repo_specific",
+        "grounding_mode": "repo_specific",
         "truth_sources": ["docs/metadata-contract.md", "schemas/skill.schema.json", "docs/skill-audit-checklist.md"],
         "failure_modes": ["placeholder_sludge", "cargo_cult_meta_sections", "description_coverage_collapse", "authoring_gate_skipped"],
         "evidence_priority": "repo_code_first"
@@ -62,7 +62,7 @@
         "eval_status": "pending",
         "freshness": "2026-04-16",
         "drift_check": "2026-04-16",
-        "has_domain_frame": true,
+        "has_grounding": true,
         "has_relations": true
       }
     },
@@ -94,7 +94,7 @@
         "eval_status": "pending",
         "freshness": "2026-04-16",
         "drift_check": "2026-04-16",
-        "has_domain_frame": false,
+        "has_grounding": false,
         "has_relations": true
       }
     },
@@ -126,7 +126,7 @@
         "eval_status": "pending",
         "freshness": "2026-04-16",
         "drift_check": "2026-04-16",
-        "has_domain_frame": false,
+        "has_grounding": false,
         "has_relations": true
       }
     },
@@ -157,7 +157,7 @@
         "eval_status": "evals",
         "freshness": "2026-04-16",
         "drift_check": "2026-04-16",
-        "has_domain_frame": false,
+        "has_grounding": false,
         "has_relations": true
       }
     },
@@ -190,7 +190,7 @@
         "eval_status": "pending",
         "freshness": "2026-04-16",
         "drift_check": "2026-04-16",
-        "has_domain_frame": false,
+        "has_grounding": false,
         "has_relations": true
       }
     },
@@ -222,7 +222,7 @@
         "eval_status": "pending",
         "freshness": "2026-04-16",
         "drift_check": "2026-04-16",
-        "has_domain_frame": false,
+        "has_grounding": false,
         "has_relations": true
       }
     }
