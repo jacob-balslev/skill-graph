@@ -1,15 +1,17 @@
 ---
-schema_version: 1
+schema_version: 2
 name: skill-router
 description: "Skill routing logic for dispatching agent requests to the correct skill variant by keyword pattern, trigger label, or file path. Use when you need to decide which skill handles an incoming request, when building a routing table for a multi-skill repo, or when auditing existing routing coverage. Do NOT use when the target skill is already known — load that skill directly."
 version: 1.0.0
 type: router
 family: knowledge
-scope: generic
+scope: portable
 owner: maintainer
 freshness: "2026-04-17"
 drift_check: "2026-04-17"
-eval_status: pending
+eval_artifacts: planned
+eval_state: unverified
+routing_eval: absent
 stability: experimental
 license: MIT
 compatibility: Markdown, YAML, any agent runtime
@@ -30,8 +32,8 @@ relations:
   boundary:
     - refactor
 portability:
-  level: high
-  exports:
+  readiness: scripted
+  targets:
     - agent-skills
     - cursor
     - windsurf

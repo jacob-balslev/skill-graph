@@ -1,15 +1,17 @@
 ---
-schema_version: 1
+schema_version: 2
 name: debugging
 description: Debugging skill for reproducing failures, narrowing scope, checking evidence, and separating symptoms from root causes. Use when behavior is broken, tests fail, or runtime output contradicts expectations. Do NOT use for feature planning or pure refactoring work.
 version: 1.0.0
 type: workflow
 family: engineering
-scope: generic
+scope: portable
 owner: maintainer
-freshness: "2026-04-16"
-drift_check: "2026-04-16"
-eval_status: pending
+freshness: "2026-04-17"
+drift_check: "2026-04-17"
+eval_artifacts: planned
+eval_state: unverified
+routing_eval: absent
 stability: experimental
 license: MIT
 compatibility: Markdown, Git, any codebase
@@ -31,8 +33,8 @@ relations:
   verify_with:
     - testing-strategy
 portability:
-  level: high
-  exports:
+  readiness: scripted
+  targets:
     - agent-skills
     - cursor
     - windsurf

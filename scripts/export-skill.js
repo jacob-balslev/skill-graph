@@ -37,6 +37,11 @@ const AGENT_SKILLS_BASE_FIELDS = ['name', 'description', 'license', 'compatibili
 // Every known Skill Graph extension field is listed here so the set is
 // explicit and auditable. Unknown fields that appear in the frontmatter but
 // are not in either list are placed under metadata: too (fail-safe).
+//
+// Updated for schema_version 2 (SH-5784): eval_status split into eval_artifacts,
+// eval_state, and routing_eval; route_groups renamed to routing_groups. The
+// exporter is field-name-aware; the new names flow through to the metadata
+// block under the Agent Skills base envelope.
 const SKILL_GRAPH_EXTENSION_FIELDS = new Set([
   'schema_version',
   'version',
@@ -46,7 +51,9 @@ const SKILL_GRAPH_EXTENSION_FIELDS = new Set([
   'owner',
   'freshness',
   'drift_check',
-  'eval_status',
+  'eval_artifacts',
+  'eval_state',
+  'routing_eval',
   'stability',
   'relations',
   'grounding',
@@ -54,7 +61,7 @@ const SKILL_GRAPH_EXTENSION_FIELDS = new Set([
   'triggers',
   'keywords',
   'paths',
-  'route_groups',
+  'routing_groups',
   'extends',
 ]);
 

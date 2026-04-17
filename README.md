@@ -39,17 +39,17 @@ The base standard and the Skill Graph extensions:
 | `compatibility` | Agent Skills | Optional; environment requirements |
 | `allowed-tools` | Agent Skills | Optional; space-separated tool allowlist |
 | `metadata` | Agent Skills | Not used at top level; Skill Graph promotes extensions to dedicated fields |
-| `schema_version`, `version`, `type`, `family`, `scope`, `owner`, `freshness`, `drift_check`, `eval_status` | Skill Graph | Required extensions for governance, routing, and health tracking |
-| `relations`, `grounding`, `portability`, `triggers`, `keywords`, `paths`, `route_groups`, `extends`, `stability` | Skill Graph | Optional extensions for graph semantics, grounding, and exportability |
+| `schema_version`, `version`, `type`, `family`, `scope`, `owner`, `freshness`, `drift_check`, `eval_artifacts`, `eval_state`, `routing_eval` | Skill Graph | Required extensions for governance, routing, and health tracking |
+| `relations`, `grounding`, `portability`, `triggers`, `keywords`, `paths`, `routing_groups`, `extends`, `stability` | Skill Graph | Optional extensions for graph semantics, grounding, and exportability |
 
-**Compatibility direction.** A valid Agent Skills skill is *not* automatically a valid Skill Graph skill — Skill Graph requires fields beyond the base two. Going the other way is possible via a transform: move every Skill Graph extension field under the standard `metadata:` key, leaving only the Agent Skills fields at the top level. The transform is implemented as `scripts/export-skill.js`. Running `node scripts/export-skill.js <skill-dir>` produces a `SKILL.agent-skills.md` file with only the Agent Skills base fields at the top level and all Skill Graph extensions nested under `metadata:`. The `cursor`, `windsurf`, and `copilot` values in `portability.exports` still describe compatibility goals — export tooling for those targets is not yet implemented.
+**Compatibility direction.** A valid Agent Skills skill is *not* automatically a valid Skill Graph skill — Skill Graph requires fields beyond the base two. Going the other way is possible via a transform: move every Skill Graph extension field under the standard `metadata:` key, leaving only the Agent Skills fields at the top level. The transform is implemented as `scripts/export-skill.js`. Running `node scripts/export-skill.js <skill-dir>` produces a `SKILL.agent-skills.md` file with only the Agent Skills base fields at the top level and all Skill Graph extensions nested under `metadata:`. The `cursor`, `windsurf`, and `copilot` values in `portability.targets` still describe compatibility goals — export tooling for those targets is not yet implemented.
 
 ## Quick tour
 
 - `docs/metadata-contract.md` — overview, archetype section map, requiredness groups, and schema strictness rules
-- `docs/field-reference.md` — one section per authored field (23 total): purpose, rules, allowed values, examples, when to use
-- `docs/field-decision-guide.md` — decision tables for the three hardest choices: `scope`, `relations.*`, and `eval_status` / `portability`
-- `docs/manifest-contract.md` — the authored-to-generated bridge: rename map, loss policy, migration policy, and a worked example projecting authored frontmatter into the compiled manifest
+- `docs/field-reference.md` — one section per authored field (25 total): purpose, rules, allowed values, examples, when to use
+- `docs/field-decision-guide.md` — decision tables for the three hardest choices: `scope`, `relations.*`, and the eval-health triple (`eval_artifacts` / `eval_state` / `routing_eval`) plus `portability`
+- `docs/manifest-contract.md` — the authored-to-generated bridge: rename map, loss policy, migration policy, v1→v2 migration note, and a worked example projecting authored frontmatter into the compiled manifest
 - `schemas/skill.schema.json` — the frontmatter contract as enforceable JSON Schema
 - `schemas/manifest.schema.json` — the compiled manifest contract as enforceable JSON Schema
 - `docs/skill-audit-checklist.md` — the canonical per-skill audit checklist

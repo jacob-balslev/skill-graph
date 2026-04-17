@@ -13,12 +13,13 @@ Fields are listed in authored order — the same order they appear in `examples/
 **Purpose.** Versions the contract so migration tooling can handle future schema changes deterministically.
 
 **Rules.**
-- Must be the integer `1` or the string `"1"` for all v1 skills.
-- Start every new skill at `1`. Do not increment unless a schema version bump is explicitly published.
+- Must be the integer `2` or the string `"2"` for all v2 skills.
+- Start every new skill at the current schema version. Do not downgrade.
+- The v1 → v2 bump (SH-5784) changed the `scope` enum (`generic`→`portable`, `operational`→`codebase`), split `eval_status` into three orthogonal fields, renamed `portability.level`→`readiness` and `portability.exports`→`targets`, and renamed `route_groups`→`routing_groups`. See `docs/manifest-contract.md § Migration Note — v1 → v2` for the full migration map.
 
 **Example.**
 ```yaml
-schema_version: 1
+schema_version: 2
 ```
 
 **When to use.** Always — this is a required field.
@@ -158,29 +159,30 @@ family: integration
 
 ## `scope`
 
-**Purpose.** Indicates locality and usage mode. Tells the router and auditor whether the skill is generic and portable, a documentation reference, or grounded in a specific codebase.
+**Purpose.** Indicates locality and usage mode. Tells the router and auditor whether the skill is fully portable, a documentation reference, or grounded in a specific codebase.
 
 **Allowed values.**
 
 | Value | Meaning | Requires `grounding`? |
 |---|---|---|
-| `generic` | Fully portable, no repo-specific claims | No |
+| `portable` | Fully portable, no repo-specific claims | No |
 | `reference` | Documentation-style skill grounded in contract documents | No |
-| `operational` | Grounded in a specific codebase or deployment | **Yes** (schema-enforced) |
+| `codebase` | Grounded in a specific codebase or deployment | **Yes** (schema-enforced) |
 
 **Rules.**
-- `scope: operational` triggers a schema `allOf` rule that requires the `grounding` block. Lint fails without it.
+- `scope: codebase` triggers a schema `allOf` rule that requires the `grounding` block. Lint fails without it.
 - Do not use `overlay` as a scope value — use `type: overlay` and `extends` instead.
-- Choose `generic` for starter skills and broadly reusable skills.
+- Choose `portable` for starter skills and broadly reusable skills.
+- The v1 names `generic` and `operational` were renamed in schema_version 2: `generic` → `portable` (the intent is "works anywhere"), and `operational` → `codebase` (the intent is "grounded in *this* codebase"). The v1 names are hard errors under the v2 schema.
 
 **Example.**
 ```yaml
-scope: operational
+scope: codebase
 ```
 
 **When to use.** Always — required.
 
-**When NOT to use.** Do not use `operational` for skills that make no concrete repo claims — use `generic` instead.
+**When NOT to use.** Do not use `codebase` for skills that make no concrete repo claims — use `portable` instead.
 
 ---
 
@@ -231,8 +233,8 @@ freshness: "2026-04-15"
 
 **Rules.**
 - ISO 8601 date string (`YYYY-MM-DD`).
-- For `scope: generic` skills with no external truth sources, `drift_check` equals `freshness`.
-- For `scope: operational` skills, update `drift_check` whenever you verify the skill's claims against the live codebase.
+- For `scope: portable` skills with no external truth sources, `drift_check` equals `freshness`.
+- For `scope: codebase` skills, update `drift_check` whenever you verify the skill's claims against the live codebase.
 - A `drift_check` date significantly older than `freshness` is a warning sign that editorial updates have outpaced verification.
 
 **Example.**
@@ -246,34 +248,87 @@ drift_check: "2026-04-15"
 
 ---
 
-## `eval_status`
+## `eval_artifacts`
 
-**Purpose.** Makes audit and eval readiness visible in authored metadata so tooling can surface skills lacking coverage.
+**Purpose.** Declares the presence of eval artifact files for this skill. This is the "does an eval file exist on disk?" axis — independent of whether the eval has ever been run or is routed anywhere.
 
 **Allowed values.**
 
 | Value | Meaning | Artifact expectation |
 |---|---|---|
 | `none` | No eval work started or planned | No eval artifact expected |
-| `pending` | Eval work intended but not yet authored | No eval artifact yet — temporary state |
-| `evals` | Eval artifact(s) exist | One or more eval files present; lint verifies |
-| `evals+trigger` | Eval artifacts exist and trigger coverage is checked | Eval files plus trigger-aware review |
-| `passing` | Eval artifacts exist and are currently passing | Eval files plus verification receipt |
-| `active` | Actively maintained in a live toolchain | Eval files plus active maintenance loop |
+| `planned` | Eval work intended but not yet authored | No eval artifact yet — temporary state |
+| `present` | One or more eval files exist on disk | `scripts/skill-lint.js` verifies a file under `examples/evals/` carries the skill's `skill_name` |
 
 **Rules.**
-- `evals` or higher requires a real eval artifact. `scripts/skill-lint.js` verifies the artifact exists.
-- Use `pending` only as a temporary state — move to `evals` once artifacts ship.
-- Do not use `none` to mean "I haven't thought about it" — use `pending` for that case.
+- `present` requires a real eval artifact. The lint script rejects a mismatch.
+- `planned` is a temporary state — move to `present` once artifacts ship.
+- `none` is reserved for skills where evals are genuinely not part of the plan (rare).
 
 **Example.**
 ```yaml
-eval_status: evals
+eval_artifacts: present
 ```
 
 **When to use.** Always — required.
 
-**When NOT to use.** N/A — required. Pick the most accurate value; do not inflate (`passing` without a passing run).
+**When NOT to use.** N/A — required. Do not inflate (`present` without a real file).
+
+**Migration from v1.** The v1 `eval_status` enum mixed three orthogonal concerns; this field is the "artifact state" axis. See `docs/manifest-contract.md § Migration Note — v1 → v2` for the full mapping (e.g. `eval_status: evals` → `eval_artifacts: present, eval_state: passing, routing_eval: absent`).
+
+---
+
+## `eval_state`
+
+**Purpose.** Declares the current runtime verification state of the skill's evals. This is the "have the evals been run and passed recently?" axis — independent of whether the artifact file exists.
+
+**Allowed values.**
+
+| Value | Meaning |
+|---|---|
+| `unverified` | No passing run has been recorded for these evals |
+| `passing` | A recent run exists and was green |
+| `monitored` | Actively run in a live toolchain, continuously verified |
+
+**Rules.**
+- `passing` requires a concrete verification receipt (test output, CI run, or similar evidence).
+- `monitored` requires a live toolchain that re-runs the evals on some cadence.
+- Do not use `passing` without a recorded run — use `unverified` when the artifacts exist but have not been exercised.
+
+**Example.**
+```yaml
+eval_state: passing
+```
+
+**When to use.** Always — required.
+
+**When NOT to use.** N/A — required.
+
+---
+
+## `routing_eval`
+
+**Purpose.** Declares whether routing / trigger coverage is explicitly evaluated for this skill. This is the "are we checking that the skill activates on the right prompts?" axis — independent of the content-level eval state.
+
+**Allowed values.**
+
+| Value | Meaning |
+|---|---|
+| `absent` | Routing / trigger coverage is not evaluated for this skill |
+| `present` | Routing / trigger coverage is part of the eval set |
+
+**Rules.**
+- `present` implies the eval artifacts include routing or trigger assertions, not just content quality.
+- Most starter skills default to `absent` — routing coverage is a deeper authoring step.
+
+**Example.**
+```yaml
+routing_eval: absent
+```
+
+**When to use.** Always — required.
+
+**When NOT to use.** N/A — required.
 
 ---
 
@@ -453,31 +508,36 @@ paths:
   - src/webhooks/shopify.ts
 ```
 
-**When to use.** For `scope: operational` skills that govern specific files or directories. Omit for generic or reference skills.
+**When to use.** For `scope: codebase` skills that govern specific files or directories. Omit for portable or reference skills.
 
 **When NOT to use.** Generic skills with no specific file surfaces. Do not add paths as aspirational documentation — only add paths the skill actively covers.
 
 ---
 
-## `route_groups`
+## `routing_groups`
 
 **Purpose.** Named routing group membership for batch activation and browse classification. Allows a router to load all skills in a group with a single label.
+
+**Taxonomy note.** A routing group is a *classification tag* a router can consult to select a family of skills (e.g., `quality`, `security`, `integrations`). It is not a URL route, not an execution graph, and not a permission scope. The field was renamed from `route_groups` in schema_version 2 (SH-5784) because the old name invited confusion with URL routing; the semantics did not change.
 
 **Rules.**
 - Array of strings.
 - Group names are library-defined — establish a consistent vocabulary and document it in the library's README.
-- A skill can belong to multiple route groups.
+- A skill can belong to multiple routing groups.
+- Use established groups before inventing new ones. Today's canonical group in this repo is `quality` (used by `testing-strategy`). Propose new groups in a PR before adopting them.
 
 **Example.**
 ```yaml
-route_groups:
+routing_groups:
   - integrations
   - quality
 ```
 
 **When to use.** When the skill belongs to a logical activation group (e.g., all `integrations` skills load together during an integration task, all `quality` skills load together during an audit).
 
-**When NOT to use.** Skills that should only activate individually. Do not add route groups speculatively — add them when a real routing pattern requires them.
+**When NOT to use.** Skills that should only activate individually. Do not add routing groups speculatively — add them when a real routing pattern requires them.
+
+**Migration from v1.** The v1 field name `route_groups` is a hard error under the v2 schema. Rename the field to `routing_groups`; values are unchanged.
 
 ---
 
@@ -520,11 +580,11 @@ relations:
 
 ## `grounding`
 
-**Purpose.** Declares what the skill governs in the real world or codebase, and provides evidence anchors for repo-grounded verification. Required for `scope: operational` skills.
+**Purpose.** Declares what the skill governs in the real world or codebase, and provides evidence anchors for repo-grounded verification. Required for `scope: codebase` skills.
 
 **Rules.**
 - Object with five required sub-fields: `domain_object`, `grounding_mode`, `truth_sources`, `failure_modes`, `evidence_priority`.
-- Omit entirely for `scope: generic` and `scope: reference` skills.
+- Omit entirely for `scope: portable` and `scope: reference` skills.
 - `grounding_mode` must be one of `repo_specific`, `universal`, or `hybrid`.
 - `evidence_priority` must be one of `repo_code_first`, `general_knowledge_first`, or `equal`.
 
@@ -552,34 +612,42 @@ grounding:
   evidence_priority: repo_code_first
 ```
 
-**When to use.** Required for `scope: operational`. Strongly recommended for any skill that makes concrete implementation claims, even if `scope` is `generic`.
+**When to use.** Required for `scope: codebase`. Strongly recommended for any skill that makes concrete implementation claims, even if `scope` is `portable`.
 
-**When NOT to use.** Generic, portable skills with no specific codebase claims. Omit the entire block rather than populating it with placeholder values.
+**When NOT to use.** Portable skills with no specific codebase claims. Omit the entire block rather than populating it with placeholder values.
 
 ---
 
 ## `portability`
 
-**Purpose.** Declares which agent runtimes the skill can be exported to, and a coarse-grained rating of how portable it is overall.
+**Purpose.** Declares which agent runtimes the skill can be exported to, and an operational rating of how ready the skill is for export.
 
 **Rules.**
-- Object with two required sub-fields: `level` and `exports`.
-- `level` must be `high`, `medium`, or `low`.
-- `exports` is an array constrained to `["agent-skills", "cursor", "windsurf", "copilot", "agents-md"]`.
-- `agent-skills` in `exports` means the skill can be transformed to a valid Agent Skills file via `scripts/export-skill.js`. Other export targets describe compatibility goals, not yet-implemented transforms (see README for current status).
+- Object with two required sub-fields: `readiness` and `targets`.
+- `readiness` must be `declared`, `scripted`, or `verified`. This is an operational axis, not an ordinal rating — each value says something concrete about what is true of the skill today.
+- `targets` is an array constrained to `["agent-skills", "cursor", "windsurf", "copilot", "agents-md"]`.
+- `agent-skills` in `targets` means the skill can be transformed to a valid Agent Skills file via `scripts/export-skill.js`. Other targets describe compatibility goals, not yet-implemented transforms (see README for current status).
 
 **Sub-fields.**
 
 | Sub-field | Type | Meaning |
 |---|---|---|
-| `level` | `high` \| `medium` \| `low` | Overall portability rating |
-| `exports` | string[] | Target runtimes the skill can be exported to |
+| `readiness` | `declared` \| `scripted` \| `verified` | Operational export readiness — see values table below |
+| `targets` | string[] | Destination runtimes the skill is declared portable to |
+
+**`readiness` values.**
+
+| Value | Meaning | What must be true |
+|---|---|---|
+| `declared` | Portability is asserted in metadata only | The author claims the skill is portable to the listed targets; no export tooling has been run |
+| `scripted` | Export tooling exists for at least one target | A script (e.g., `scripts/export-skill.js`) can transform this skill to a listed target |
+| `verified` | Export tooling exists AND the exported output has been verified | A receipt artifact (test run, import check) proves the exported skill works in the target runtime |
 
 **Example.**
 ```yaml
 portability:
-  level: medium
-  exports:
+  readiness: scripted
+  targets:
     - agent-skills
     - cursor
     - windsurf
@@ -588,4 +656,6 @@ portability:
 
 **When to use.** When the skill is intended for distribution or cross-runtime use, and you want to declare its portability explicitly.
 
-**When NOT to use.** Internal-only skills that will never be exported. Omit the field rather than setting `level: low` with an empty `exports` array.
+**When NOT to use.** Internal-only skills that will never be exported. Omit the field rather than setting `readiness: declared` with an empty `targets` array.
+
+**Migration from v1.** The v1 sub-fields `portability.level` (values `high`/`medium`/`low`) and `portability.exports` were renamed in schema_version 2 (SH-5784). Map `high` → `scripted` when an export script exists for a listed target, else `declared`. Map `medium` → `scripted` similarly. Map `low` → `declared`. Rename `portability.exports` → `portability.targets`; values are unchanged.

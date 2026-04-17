@@ -83,8 +83,8 @@ function buildSkillEntry(fm, filePath, skillId) {
   if (fm['allowed-tools'] !== undefined && fm['allowed-tools'] !== null) {
     entry['allowed-tools'] = fm['allowed-tools'];
   }
-  if (fm.route_groups !== undefined && fm.route_groups !== null) {
-    entry.route_groups = fm.route_groups;
+  if (fm.routing_groups !== undefined && fm.routing_groups !== null) {
+    entry.routing_groups = fm.routing_groups;
   }
 
   // --- Grouped: activation (triggers + keywords + paths) ---
@@ -131,10 +131,19 @@ function buildSkillEntry(fm, filePath, skillId) {
     entry.portability = fm.portability;
   }
 
-  // --- Grouped: health (eval_status + freshness + drift_check + generated booleans) ---
+  // --- Grouped: health (eval_artifacts + eval_state + routing_eval + freshness + drift_check + generated booleans) ---
+  // schema_version 2 (SH-5784): the old `eval_status` enum was split into three
+  // orthogonal sub-fields so that artifact state, runtime state, and routing
+  // coverage are each their own axis. All three flow through into `health`.
   const health = {};
-  if (fm.eval_status !== undefined && fm.eval_status !== null) {
-    health.eval_status = fm.eval_status;
+  if (fm.eval_artifacts !== undefined && fm.eval_artifacts !== null) {
+    health.eval_artifacts = fm.eval_artifacts;
+  }
+  if (fm.eval_state !== undefined && fm.eval_state !== null) {
+    health.eval_state = fm.eval_state;
+  }
+  if (fm.routing_eval !== undefined && fm.routing_eval !== null) {
+    health.routing_eval = fm.routing_eval;
   }
   if (fm.freshness !== undefined && fm.freshness !== null) {
     health.freshness = fm.freshness;
@@ -413,9 +422,25 @@ function main() {
       continue;
     }
 
-    // Warn about deprecated domain_frame usage (compatibility window, schema_version 1)
+    // Warn about deprecated field names. The schema will reject them via
+    // additionalProperties: false at the lint step, but a warning from the
+    // generator is friendlier for authors running the generator directly.
     if (fm.domain_frame) {
       process.stderr.write(`WARN ${relPath}: "domain_frame" is deprecated — rename to "grounding"\n`);
+    }
+    if (fm.eval_status) {
+      process.stderr.write(`WARN ${relPath}: "eval_status" is deprecated — split into "eval_artifacts", "eval_state", and "routing_eval"\n`);
+    }
+    if (fm.route_groups) {
+      process.stderr.write(`WARN ${relPath}: "route_groups" is deprecated — rename to "routing_groups"\n`);
+    }
+    if (fm.portability && typeof fm.portability === 'object') {
+      if (fm.portability.level) {
+        process.stderr.write(`WARN ${relPath}: "portability.level" is deprecated — rename to "portability.readiness"\n`);
+      }
+      if (fm.portability.exports) {
+        process.stderr.write(`WARN ${relPath}: "portability.exports" is deprecated — rename to "portability.targets"\n`);
+      }
     }
 
     let entry;
@@ -440,9 +465,13 @@ function main() {
   // Sort keys within each entry deterministically
   const sortedEntries = skillEntries.map(sortKeys);
 
-  // Build the manifest object
+  // Build the manifest object.
+  // schema_version 2 (SH-5784) — breaking change: `scope` enum renames
+  // (generic→portable, operational→codebase), `eval_status` split into three
+  // fields, `portability.level`→`readiness`, `portability.exports`→`targets`,
+  // `route_groups`→`routing_groups`.
   const manifest = {
-    schema_version: 1,
+    schema_version: 2,
     generated_at: fixedTimestamp || new Date().toISOString(),
     summary: computeSummary(skillEntries),
     skills: sortedEntries,

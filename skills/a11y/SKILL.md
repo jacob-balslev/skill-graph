@@ -1,15 +1,17 @@
 ---
-schema_version: 1
+schema_version: 2
 name: a11y
 description: Accessibility skill for semantic HTML, keyboard support, focus behavior, and screen-reader-safe interaction design. Use when building or reviewing interactive UI, forms, navigation, or dynamic content. Do NOT use for color palette creation or visual branding strategy.
 version: 1.0.0
 type: capability
 family: frontend
-scope: generic
+scope: portable
 owner: maintainer
-freshness: "2026-04-16"
-drift_check: "2026-04-16"
-eval_status: pending
+freshness: "2026-04-17"
+drift_check: "2026-04-17"
+eval_artifacts: planned
+eval_state: unverified
+routing_eval: absent
 stability: experimental
 license: MIT
 compatibility: Markdown, Git, any web stack
@@ -31,8 +33,8 @@ relations:
   verify_with:
     - testing-strategy
 portability:
-  level: high
-  exports:
+  readiness: scripted
+  targets:
     - agent-skills
     - cursor
     - windsurf

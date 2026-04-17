@@ -1,6 +1,6 @@
 {
   "generated_at": "2026-04-17T00:00:00Z",
-  "schema_version": 1,
+  "schema_version": 2,
   "skills": [
     {
       "activation": {
@@ -20,11 +20,13 @@
       "description": "Accessibility skill for semantic HTML, keyboard support, focus behavior, and screen-reader-safe interaction design. Use when building or reviewing interactive UI, forms, navigation, or dynamic content. Do NOT use for color palette creation or visual branding strategy.",
       "family": "frontend",
       "health": {
-        "drift_check": "2026-04-16",
-        "eval_status": "pending",
-        "freshness": "2026-04-16",
+        "drift_check": "2026-04-17",
+        "eval_artifacts": "planned",
+        "eval_state": "unverified",
+        "freshness": "2026-04-17",
         "has_grounding": false,
-        "has_relations": true
+        "has_relations": true,
+        "routing_eval": "absent"
       },
       "id": "a11y",
       "license": "MIT",
@@ -32,13 +34,13 @@
       "owner": "maintainer",
       "path": "skills/a11y/SKILL.md",
       "portability": {
-        "exports": [
+        "readiness": "scripted",
+        "targets": [
           "agent-skills",
           "cursor",
           "windsurf",
           "copilot"
-        ],
-        "level": "high"
+        ]
       },
       "relations": {
         "adjacent": [
@@ -52,7 +54,7 @@
           "testing-strategy"
         ]
       },
-      "scope": "generic",
+      "scope": "portable",
       "stability": "experimental",
       "type": "capability",
       "version": "1.0.0"
@@ -75,11 +77,13 @@
       "description": "Debugging skill for reproducing failures, narrowing scope, checking evidence, and separating symptoms from root causes. Use when behavior is broken, tests fail, or runtime output contradicts expectations. Do NOT use for feature planning or pure refactoring work.",
       "family": "engineering",
       "health": {
-        "drift_check": "2026-04-16",
-        "eval_status": "pending",
-        "freshness": "2026-04-16",
+        "drift_check": "2026-04-17",
+        "eval_artifacts": "planned",
+        "eval_state": "unverified",
+        "freshness": "2026-04-17",
         "has_grounding": false,
-        "has_relations": true
+        "has_relations": true,
+        "routing_eval": "absent"
       },
       "id": "debugging",
       "license": "MIT",
@@ -87,13 +91,13 @@
       "owner": "maintainer",
       "path": "skills/debugging/SKILL.md",
       "portability": {
-        "exports": [
+        "readiness": "scripted",
+        "targets": [
           "agent-skills",
           "cursor",
           "windsurf",
           "copilot"
-        ],
-        "level": "high"
+        ]
       },
       "relations": {
         "adjacent": [
@@ -107,7 +111,7 @@
           "testing-strategy"
         ]
       },
-      "scope": "generic",
+      "scope": "portable",
       "stability": "experimental",
       "type": "workflow",
       "version": "1.0.0"
@@ -130,11 +134,13 @@
       "description": "Documentation skill for choosing the right doc type, structuring technical explanation, and keeping system knowledge readable and durable. Use when writing reference docs, guides, specs, or architecture notes. Do NOT use for runtime debugging or UI accessibility behavior.",
       "family": "knowledge",
       "health": {
-        "drift_check": "2026-04-16",
-        "eval_status": "evals",
-        "freshness": "2026-04-16",
+        "drift_check": "2026-04-17",
+        "eval_artifacts": "present",
+        "eval_state": "passing",
+        "freshness": "2026-04-17",
         "has_grounding": false,
-        "has_relations": true
+        "has_relations": true,
+        "routing_eval": "absent"
       },
       "id": "documentation",
       "license": "MIT",
@@ -142,13 +148,13 @@
       "owner": "maintainer",
       "path": "skills/documentation/SKILL.md",
       "portability": {
-        "exports": [
+        "readiness": "scripted",
+        "targets": [
           "agent-skills",
           "cursor",
           "windsurf",
           "copilot"
-        ],
-        "level": "high"
+        ]
       },
       "relations": {
         "adjacent": [
@@ -160,7 +166,7 @@
           "a11y"
         ]
       },
-      "scope": "generic",
+      "scope": "portable",
       "stability": "experimental",
       "type": "capability",
       "version": "1.0.0"
@@ -190,7 +196,7 @@
           "schema_drift",
           "manifest_sample_out_of_sync",
           "broken_relation_targets",
-          "eval_status_mismatch"
+          "eval_artifacts_mismatch"
         ],
         "grounding_mode": "repo_specific",
         "truth_sources": [
@@ -201,10 +207,12 @@
       },
       "health": {
         "drift_check": "2026-04-17",
-        "eval_status": "evals",
+        "eval_artifacts": "present",
+        "eval_state": "passing",
         "freshness": "2026-04-17",
         "has_grounding": true,
-        "has_relations": true
+        "has_relations": true,
+        "routing_eval": "absent"
       },
       "id": "graph-audit",
       "license": "MIT",
@@ -212,10 +220,10 @@
       "owner": "maintainer",
       "path": "skills/graph-audit/SKILL.md",
       "portability": {
-        "exports": [
+        "readiness": "scripted",
+        "targets": [
           "agent-skills"
-        ],
-        "level": "medium"
+        ]
       },
       "relations": {
         "adjacent": [
@@ -226,7 +234,7 @@
           "testing-strategy"
         ]
       },
-      "scope": "operational",
+      "scope": "codebase",
       "stability": "experimental",
       "type": "capability",
       "version": "1.0.0"
@@ -253,10 +261,12 @@
       "family": "quality",
       "health": {
         "drift_check": "2026-04-17",
-        "eval_status": "pending",
+        "eval_artifacts": "planned",
+        "eval_state": "unverified",
         "freshness": "2026-04-17",
         "has_grounding": false,
-        "has_relations": true
+        "has_relations": true,
+        "routing_eval": "absent"
       },
       "id": "lint-overlay",
       "license": "MIT",
@@ -264,13 +274,13 @@
       "owner": "maintainer",
       "path": "skills/lint-overlay/SKILL.md",
       "portability": {
-        "exports": [
+        "readiness": "scripted",
+        "targets": [
           "agent-skills",
           "cursor",
           "windsurf",
           "copilot"
-        ],
-        "level": "high"
+        ]
       },
       "relations": {
         "adjacent": [
@@ -281,7 +291,7 @@
           "testing-strategy"
         ]
       },
-      "scope": "generic",
+      "scope": "portable",
       "stability": "experimental",
       "type": "overlay",
       "version": "1.0.0"
@@ -304,11 +314,13 @@
       "description": "Refactor skill for behavior-preserving structural cleanup, simplification, and readability improvements. Use when reorganizing code without changing external behavior. Do NOT use for bug investigation or for adding new product behavior.",
       "family": "engineering",
       "health": {
-        "drift_check": "2026-04-16",
-        "eval_status": "pending",
-        "freshness": "2026-04-16",
+        "drift_check": "2026-04-17",
+        "eval_artifacts": "planned",
+        "eval_state": "unverified",
+        "freshness": "2026-04-17",
         "has_grounding": false,
-        "has_relations": true
+        "has_relations": true,
+        "routing_eval": "absent"
       },
       "id": "refactor",
       "license": "MIT",
@@ -316,13 +328,13 @@
       "owner": "maintainer",
       "path": "skills/refactor/SKILL.md",
       "portability": {
-        "exports": [
+        "readiness": "scripted",
+        "targets": [
           "agent-skills",
           "cursor",
           "windsurf",
           "copilot"
-        ],
-        "level": "high"
+        ]
       },
       "relations": {
         "adjacent": [
@@ -339,7 +351,7 @@
           "testing-strategy"
         ]
       },
-      "scope": "generic",
+      "scope": "portable",
       "stability": "experimental",
       "type": "workflow",
       "version": "1.0.0"
@@ -364,10 +376,12 @@
       "family": "knowledge",
       "health": {
         "drift_check": "2026-04-17",
-        "eval_status": "pending",
+        "eval_artifacts": "planned",
+        "eval_state": "unverified",
         "freshness": "2026-04-17",
         "has_grounding": false,
-        "has_relations": true
+        "has_relations": true,
+        "routing_eval": "absent"
       },
       "id": "skill-router",
       "license": "MIT",
@@ -375,13 +389,13 @@
       "owner": "maintainer",
       "path": "skills/skill-router/SKILL.md",
       "portability": {
-        "exports": [
+        "readiness": "scripted",
+        "targets": [
           "agent-skills",
           "cursor",
           "windsurf",
           "copilot"
-        ],
-        "level": "high"
+        ]
       },
       "relations": {
         "adjacent": [
@@ -392,7 +406,7 @@
           "refactor"
         ]
       },
-      "scope": "generic",
+      "scope": "portable",
       "stability": "experimental",
       "type": "router",
       "version": "1.0.0"
@@ -435,11 +449,13 @@
         ]
       },
       "health": {
-        "drift_check": "2026-04-16",
-        "eval_status": "pending",
-        "freshness": "2026-04-16",
+        "drift_check": "2026-04-17",
+        "eval_artifacts": "planned",
+        "eval_state": "unverified",
+        "freshness": "2026-04-17",
         "has_grounding": true,
-        "has_relations": true
+        "has_relations": true,
+        "routing_eval": "absent"
       },
       "id": "skill-template",
       "license": "MIT",
@@ -447,13 +463,13 @@
       "owner": "maintainer",
       "path": "examples/skill-template.md",
       "portability": {
-        "exports": [
+        "readiness": "scripted",
+        "targets": [
           "agent-skills",
           "cursor",
           "windsurf",
           "copilot"
-        ],
-        "level": "high"
+        ]
       },
       "relations": {
         "adjacent": [
@@ -489,11 +505,13 @@
       "description": "Testing strategy skill for deciding what to test, choosing the right test level, and verifying behavior changes with meaningful evidence. Use when planning tests for bug fixes, features, or refactors. Do NOT use for documentation writing or purely conceptual architecture discussion.",
       "family": "quality",
       "health": {
-        "drift_check": "2026-04-16",
-        "eval_status": "pending",
-        "freshness": "2026-04-16",
+        "drift_check": "2026-04-17",
+        "eval_artifacts": "planned",
+        "eval_state": "unverified",
+        "freshness": "2026-04-17",
         "has_grounding": false,
-        "has_relations": true
+        "has_relations": true,
+        "routing_eval": "absent"
       },
       "id": "testing-strategy",
       "license": "MIT",
@@ -501,13 +519,13 @@
       "owner": "maintainer",
       "path": "skills/testing-strategy/SKILL.md",
       "portability": {
-        "exports": [
+        "readiness": "scripted",
+        "targets": [
           "agent-skills",
           "cursor",
           "windsurf",
           "copilot"
-        ],
-        "level": "high"
+        ]
       },
       "relations": {
         "adjacent": [
@@ -521,10 +539,10 @@
           "debugging"
         ]
       },
-      "route_groups": [
+      "routing_groups": [
         "quality"
       ],
-      "scope": "generic",
+      "scope": "portable",
       "stability": "experimental",
       "type": "capability",
       "version": "1.0.0"
@@ -538,8 +556,8 @@
       "quality": 2
     },
     "by_scope": {
-      "generic": 7,
-      "operational": 1,
+      "codebase": 1,
+      "portable": 7,
       "reference": 1
     },
     "by_stability": {

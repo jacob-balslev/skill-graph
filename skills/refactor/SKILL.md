@@ -1,15 +1,17 @@
 ---
-schema_version: 1
+schema_version: 2
 name: refactor
 description: Refactor skill for behavior-preserving structural cleanup, simplification, and readability improvements. Use when reorganizing code without changing external behavior. Do NOT use for bug investigation or for adding new product behavior.
 version: 1.0.0
 type: workflow
 family: engineering
-scope: generic
+scope: portable
 owner: maintainer
-freshness: "2026-04-16"
-drift_check: "2026-04-16"
-eval_status: pending
+freshness: "2026-04-17"
+drift_check: "2026-04-17"
+eval_artifacts: planned
+eval_state: unverified
+routing_eval: absent
 stability: experimental
 license: MIT
 compatibility: Markdown, Git, any codebase
@@ -33,8 +35,8 @@ relations:
   depends_on:
     - testing-strategy
 portability:
-  level: high
-  exports:
+  readiness: scripted
+  targets:
     - agent-skills
     - cursor
     - windsurf

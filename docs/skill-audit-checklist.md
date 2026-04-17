@@ -93,11 +93,11 @@ Required dimension rows:
 - [ ] `version` exists
 - [ ] `type` is one of `capability`, `workflow`, `router`, `overlay`
 - [ ] `family` exists
-- [ ] `scope` is one of `operational`, `reference`, `generic`
+- [ ] `scope` is one of `codebase`, `reference`, `portable`
 - [ ] `owner` exists
 - [ ] `freshness` exists
 - [ ] `drift_check` exists
-- [ ] `eval_status` exists
+- [ ] `eval_artifacts`, `eval_state`, `routing_eval` all exist (schema_version 2)
 - [ ] `extends` exists when `type: overlay`
 
 ### 2. Activation quality
@@ -147,7 +147,7 @@ Run this section when the skill is repo-grounded or implementation-aware.
 
 ### 7. Portability quality
 
-- [ ] portability level is declared when relevant
+- [ ] `portability.readiness` is declared when relevant
 - [ ] export targets are realistic
 - [ ] no private or local-only assumptions leak into the public skill
 - [ ] the skill can survive export without losing its main meaning

@@ -8,7 +8,7 @@
   "properties": {
     "schema_version": {
       "oneOf": [
-        { "type": "integer", "const": 1 },
+        { "type": "integer", "const": 2 },
         { "type": "string", "pattern": "^[0-9]+$" }
       ]
     },
@@ -69,7 +69,7 @@
           "family": { "type": "string" },
           "scope": {
             "type": "string",
-            "enum": ["operational", "reference", "generic"]
+            "enum": ["codebase", "reference", "portable"]
           },
           "owner": { "type": "string" },
           "stability": {
@@ -120,7 +120,7 @@
               }
             }
           },
-          "route_groups": {
+          "routing_groups": {
             "type": "array",
             "items": { "type": "string" }
           },
@@ -131,11 +131,11 @@
             "type": "object",
             "additionalProperties": false,
             "properties": {
-              "level": {
+              "readiness": {
                 "type": "string",
-                "enum": ["high", "medium", "low"]
+                "enum": ["declared", "scripted", "verified"]
               },
-              "exports": {
+              "targets": {
                 "type": "array",
                 "items": {
                   "type": "string",
@@ -148,7 +148,9 @@
             "type": "object",
             "additionalProperties": false,
             "properties": {
-              "eval_status": { "type": "string" },
+              "eval_artifacts": { "type": "string" },
+              "eval_state": { "type": "string" },
+              "routing_eval": { "type": "string" },
               "freshness": { "type": "string", "format": "date" },
               "drift_check": { "type": "string", "format": "date" },
               "has_grounding": { "type": "boolean" },

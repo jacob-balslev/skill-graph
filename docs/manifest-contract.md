@@ -27,7 +27,7 @@ Every top-level authored field in `schemas/skill.schema.json` has exactly one en
 | **dropped intentionally** | The field does not appear in the manifest. Loss policy explains why. |
 | **generated only** | The manifest key is produced by the generator, not copied from authored frontmatter. |
 
-### Top-level authored fields (23 total)
+### Top-level authored fields (25 total)
 
 | # | Authored field | Fate | Manifest projection |
 |---|---|---|---|
@@ -37,23 +37,25 @@ Every top-level authored field in `schemas/skill.schema.json` has exactly one en
 | 4 | `version` | copied through unchanged | `version` |
 | 5 | `type` | copied through unchanged | `type` |
 | 6 | `family` | copied through unchanged | `family` |
-| 7 | `scope` | copied through unchanged | `scope` |
+| 7 | `scope` | copied through unchanged | `scope` — v2 enum is `portable` / `reference` / `codebase` (renamed from v1 `generic` / `reference` / `operational`). |
 | 8 | `owner` | copied through unchanged | `owner` |
 | 9 | `freshness` | **grouped under parent** (`health`) | `health.freshness` |
 | 10 | `drift_check` | **grouped under parent** (`health`) | `health.drift_check` |
-| 11 | `eval_status` | **grouped under parent** (`health`) | `health.eval_status` |
-| 12 | `stability` | copied through unchanged (when present) | `stability` |
-| 13 | `license` | copied through unchanged (when present) | `license` — Agent Skills base-standard field. Restored to flow-through on 2026-04-17 (SH-5776). |
-| 14 | `compatibility` | copied through unchanged (when present) | `compatibility` — Agent Skills base-standard field. Restored to flow-through on 2026-04-17 (SH-5776). |
-| 15 | `allowed-tools` | copied through unchanged (when present) | `allowed-tools` — Agent Skills base-standard field. Restored to flow-through on 2026-04-17 (SH-5776). |
-| 16 | `extends` | copied through unchanged (when present) | `extends` |
-| 17 | `triggers` | **grouped under parent** (`activation`) | `activation.triggers` |
-| 18 | `keywords` | **grouped under parent** (`activation`) | `activation.keywords` |
-| 19 | `paths` | **grouped under parent** (`activation`) | `activation.paths` |
-| 20 | `route_groups` | copied through unchanged (when present) | `route_groups` — restored to flow-through on 2026-04-17 (SH-5776). |
-| 21 | `relations` | copied through unchanged (when present) | `relations` — same shape, same sub-keys (`adjacent`, `boundary`, `verify_with`, `depends_on`). |
-| 22 | `grounding` | **copied through unchanged** | `grounding` — same required-field set including `domain_object`, `grounding_mode`, `truth_sources`, `failure_modes`, `evidence_priority`. The authored field was renamed from `domain_frame` in schema_version 1 (SH-5779, 2026-04-16); the manifest projection has always used `grounding`. |
-| 23 | `portability` | copied through unchanged (when present) | `portability` — same shape (`level`, `exports`). |
+| 11 | `eval_artifacts` | **grouped under parent** (`health`) | `health.eval_artifacts` — v2 field, one of three axes that replaced the v1 `eval_status` enum. |
+| 12 | `eval_state` | **grouped under parent** (`health`) | `health.eval_state` — v2 field, runtime state axis. |
+| 13 | `routing_eval` | **grouped under parent** (`health`) | `health.routing_eval` — v2 field, routing coverage axis. |
+| 14 | `stability` | copied through unchanged (when present) | `stability` |
+| 15 | `license` | copied through unchanged (when present) | `license` — Agent Skills base-standard field. Restored to flow-through on 2026-04-17 (SH-5776). |
+| 16 | `compatibility` | copied through unchanged (when present) | `compatibility` — Agent Skills base-standard field. Restored to flow-through on 2026-04-17 (SH-5776). |
+| 17 | `allowed-tools` | copied through unchanged (when present) | `allowed-tools` — Agent Skills base-standard field. Restored to flow-through on 2026-04-17 (SH-5776). |
+| 18 | `extends` | copied through unchanged (when present) | `extends` |
+| 19 | `triggers` | **grouped under parent** (`activation`) | `activation.triggers` |
+| 20 | `keywords` | **grouped under parent** (`activation`) | `activation.keywords` |
+| 21 | `paths` | **grouped under parent** (`activation`) | `activation.paths` |
+| 22 | `routing_groups` | copied through unchanged (when present) | `routing_groups` — renamed from `route_groups` in schema_version 2 (SH-5784); values unchanged. |
+| 23 | `relations` | copied through unchanged (when present) | `relations` — same shape, same sub-keys (`adjacent`, `boundary`, `verify_with`, `depends_on`). |
+| 24 | `grounding` | **copied through unchanged** | `grounding` — same required-field set including `domain_object`, `grounding_mode`, `truth_sources`, `failure_modes`, `evidence_priority`. The authored field was renamed from `domain_frame` in schema_version 1 (SH-5779, 2026-04-16); the manifest projection has always used `grounding`. |
+| 25 | `portability` | copied through unchanged (when present) | `portability` — v2 shape (`readiness`, `targets`), renamed from v1 (`level`, `exports`). |
 
 ### Generated-only manifest fields
 
@@ -84,7 +86,7 @@ Four Agent-Skills base-standard fields and one Skill Graph classification field 
 | `license` | Dropped as "per-repo, not per-skill" | Agent Skills compatibility. Downstream runtimes that consume the manifest need the license metadata to decide whether they may execute a skill. Per-skill overrides are legitimate when a repo mixes skills under different licenses. |
 | `compatibility` | Dropped as "belongs in a separate spec" | Agent Skills compatibility. The compatibility string declares runtime or environment requirements (e.g. `Markdown, YAML, JSON Schema` or `Python 3.11+`). Consumers route based on this. Without flow-through, consumers would have to re-parse the authored source. |
 | `allowed-tools` | Dropped as "a runtime concern, not metadata" | Agent Skills compatibility. The base standard defines `allowed-tools` as a frontmatter field that sandboxes tool use. The manifest is the canonical feed for runtime consumers; stripping `allowed-tools` would force consumers back to the authored file, defeating the purpose of compiling a manifest. |
-| `route_groups` | Dropped as "superseded by `relations`" | Relations and route groups encode different semantics. `relations` declares per-skill adjacencies; `route_groups` declares a classification tag (e.g. `quality`, `security`) that a routing layer can use to pick a skill family. They are complementary, not overlapping, and the router layer needs both. |
+| `routing_groups` (v1 name: `route_groups`) | Dropped as "superseded by `relations`" | Relations and routing groups encode different semantics. `relations` declares per-skill adjacencies; `routing_groups` declares a classification tag (e.g. `quality`, `security`) that a routing layer can use to pick a skill family. They are complementary, not overlapping, and the router layer needs both. Field renamed to `routing_groups` in schema_version 2 (SH-5784). |
 | `domain_object` (inside `grounding`) | Dropped from the required-field set during an earlier schema tightening | Grounded skills anchor to a specific domain object (e.g. "Shopify order reconciliation," "Skill authoring for the Skill Graph frontmatter contract"). Consumers use `domain_object` to decide whether a skill matches a task's subject. Dropping it left grounded skills ungrounded to consumers. SH-5776 restored it as a required sub-field. |
 
 ### Current dropped-field list
@@ -118,8 +120,8 @@ Three versions coexist in a manifest ecosystem:
 | Version | Lives in | Meaning |
 |---|---|---|
 | Authored skill `version` | Per-skill frontmatter `version` field | Version of the skill's content (e.g. `1.2.0` means the skill has been iterated twice since its initial publish). |
-| Authored schema version | Per-skill frontmatter `schema_version` field | Version of the `skill.schema.json` contract the skill was authored against. Currently `1` for all skills. |
-| Manifest schema version | Manifest root `schema_version` field | Version of the `manifest.schema.json` contract the manifest was generated against. Currently `1`. |
+| Authored schema version | Per-skill frontmatter `schema_version` field | Version of the `skill.schema.json` contract the skill was authored against. Currently `2` for all skills (bumped in SH-5784). |
+| Manifest schema version | Manifest root `schema_version` field | Version of the `manifest.schema.json` contract the manifest was generated against. Currently `2` (bumped in SH-5784). |
 
 ### When to bump `schema_version`
 
@@ -155,7 +157,54 @@ When a major manifest schema change ships:
 
 ### Migration Note — `domain_frame` → `grounding` and `evaluation_mode` → `grounding_mode` (2026-04-16, SH-5779)
 
-The authored frontmatter field `domain_frame` has been renamed to `grounding`. Simultaneously, the sub-field `evaluation_mode` (inside the grounding block) has been renamed to `grounding_mode` — this sub-field describes the evidence source for a skill's claims (repo-specific, universal, or hybrid), not an execution mode, so the new name better expresses its intent. Both renames are at schema_version 1 — the `schema_version` integer is unchanged. The generated manifest projection has always used `grounding` as the key, so manifests generated before this change are unaffected at the manifest level; only the authored `SKILL.md` frontmatter format changed. Skills authored before this change that still use `domain_frame` will receive a deprecation warning from `scripts/skill-lint.js`. A future `schema_version: 2` will reject `domain_frame` with a hard lint error. Authors should rename `domain_frame:` → `grounding:` and `evaluation_mode:` → `grounding_mode:` in their skill frontmatter during the current release window. The generated `health.has_domain_frame` manifest flag has been renamed to `health.has_grounding` in the same change.
+The authored frontmatter field `domain_frame` has been renamed to `grounding`. Simultaneously, the sub-field `evaluation_mode` (inside the grounding block) has been renamed to `grounding_mode` — this sub-field describes the evidence source for a skill's claims (repo-specific, universal, or hybrid), not an execution mode, so the new name better expresses its intent. Both renames shipped under schema_version 1. The generated manifest projection has always used `grounding` as the key, so manifests generated before this change are unaffected at the manifest level; only the authored `SKILL.md` frontmatter format changed. `domain_frame` is rejected as an unknown field under the v2 schema via `additionalProperties: false`; authors should rename `domain_frame:` → `grounding:` and `evaluation_mode:` → `grounding_mode:` in their skill frontmatter. The generated `health.has_domain_frame` manifest flag has been renamed to `health.has_grounding` in the same change.
+
+### Migration Note — v1 → v2 (2026-04-17, SH-5784)
+
+Schema_version 2 is a breaking bump. Four coordinated renames ship together. The v1 field names are hard errors under the v2 schema (the schema's `additionalProperties: false` rejects them), and the old `scope` enum values are not in the v2 enum. Authors must migrate all four changes in one pass.
+
+**1. `eval_status` (single overloaded enum) split into three orthogonal fields.**
+
+The v1 `eval_status` compressed three orthogonal concerns — artifact state, runtime state, and routing coverage — into a single ordinal. Each axis now has its own field.
+
+| v1 `eval_status` | v2 `eval_artifacts` | v2 `eval_state` | v2 `routing_eval` |
+|---|---|---|---|
+| `none` | `none` | `unverified` | `absent` |
+| `pending` | `planned` | `unverified` | `absent` |
+| `evals` | `present` | `passing` | `absent` |
+| `passing` | `present` | `passing` | `absent` |
+| `active` | `present` | `monitored` | `absent` |
+| `evals+trigger` | `present` | `passing` | `present` |
+
+All three v2 fields are required. The lint script verifies that `eval_artifacts: present` is backed by a real artifact under `examples/evals/` (the v1 `eval_status: evals` check moved to this field).
+
+**2. `portability.level` → `portability.readiness` and `portability.exports` → `portability.targets`.**
+
+`level` was an ordinal rating (`high`/`medium`/`low`) with no operational meaning. `readiness` is an operational axis that says something concrete about what is true of the skill today.
+
+| v1 `portability.level` | v2 `portability.readiness` |
+|---|---|
+| `high` | `scripted` (if an export script covers at least one target) else `declared` |
+| `medium` | `scripted` (if an export script covers at least one target) else `declared` |
+| `low` | `declared` |
+
+`portability.exports` was renamed to `portability.targets`. Values are unchanged. New `readiness` enum: `declared` (metadata claim only), `scripted` (export tooling exists), `verified` (tooling exists AND output has been verified with a receipt).
+
+**3. `scope` values renamed.**
+
+| v1 `scope` | v2 `scope` | Intent |
+|---|---|---|
+| `generic` | `portable` | The skill works in any codebase |
+| `operational` | `codebase` | The skill is grounded in *this* codebase |
+| `reference` | `reference` (unchanged) | Documentation-style skill |
+
+The v1 names (`generic`, `operational`) are rejected as out-of-enum by the v2 schema.
+
+**4. `route_groups` → `routing_groups`.**
+
+The field name was misleading — it suggested URL routing. The semantics are unchanged: a classification tag (e.g. `quality`, `security`) a routing layer can consult to pick a skill family. `routing_groups` makes the intent explicit.
+
+**Consumer impact.** The manifest projection shape changed in lockstep. Consumers that pin to v1 must regenerate against v2 or fall back to field-by-field introspection. The three health fields (`eval_artifacts`, `eval_state`, `routing_eval`) all appear under `health.*` in the manifest, parallel to the v1 `health.eval_status`.
 
 ---
 
@@ -167,7 +216,7 @@ The `skill-template` starter (`examples/skill-template.md`) is the canonical wor
 
 ```yaml
 ---
-schema_version: 1
+schema_version: 2
 name: skill-template
 description: "Authoring template for new Skill Graph skills. ..."
 version: 1.0.0
@@ -175,9 +224,11 @@ type: capability
 family: knowledge
 scope: reference
 owner: maintainer
-freshness: "2026-04-16"
-drift_check: "2026-04-16"
-eval_status: pending
+freshness: "2026-04-17"
+drift_check: "2026-04-17"
+eval_artifacts: planned
+eval_state: unverified
+routing_eval: absent
 stability: stable
 license: MIT
 compatibility: "Markdown, YAML, JSON Schema"
@@ -205,8 +256,8 @@ grounding:
     - cargo_cult_meta_sections
   evidence_priority: repo_code_first
 portability:
-  level: high
-  exports: [agent-skills, cursor, windsurf, copilot]
+  readiness: scripted
+  targets: [agent-skills, cursor, windsurf, copilot]
 ---
 ```
 
@@ -248,13 +299,15 @@ portability:
     "evidence_priority": "repo_code_first"
   },
   "portability": {
-    "level": "high",
-    "exports": ["agent-skills", "cursor", "windsurf", "copilot"]
+    "readiness": "scripted",
+    "targets": ["agent-skills", "cursor", "windsurf", "copilot"]
   },
   "health": {
-    "eval_status": "pending",
-    "freshness": "2026-04-16",
-    "drift_check": "2026-04-16",
+    "eval_artifacts": "planned",
+    "eval_state": "unverified",
+    "routing_eval": "absent",
+    "freshness": "2026-04-17",
+    "drift_check": "2026-04-17",
     "has_grounding": true,
     "has_relations": true
   }
@@ -272,12 +325,12 @@ Each arrow corresponds to one row of the rename map.
 - `triggers`, `keywords`, `paths` → `activation.triggers`, `activation.keywords`, `activation.paths` — three sibling authored fields are grouped under a single `activation` object. This matches the semantic: they are all activation signals. The grouping is a presentation choice, not a loss.
 - `relations` → `relations` — copied through with the full sub-key set (`adjacent`, `boundary`, `verify_with`, `depends_on`). Same shape on both sides.
 - `grounding` → `grounding` — copied through unchanged. The authored field was renamed from `domain_frame` to `grounding` in SH-5779 (2026-04-16), aligning the authored field name with its long-standing manifest projection key. The internal sub-field `evaluation_mode` was renamed to `grounding_mode` in the same change — the field describes the evidence source, not the execution mode.
-- `portability` → `portability` — copied through with the full sub-key set (`level`, `exports`).
-- `freshness`, `drift_check`, `eval_status` → `health.freshness`, `health.drift_check`, `health.eval_status` — three sibling governance fields are grouped under a single `health` object. `has_grounding` and `has_relations` are generated boolean flags that summarize presence of the corresponding authored blocks, so a consumer can filter on "grounded skills" without re-parsing the full `grounding` object.
+- `portability` → `portability` — copied through with the v2 sub-key set (`readiness`, `targets`). Renamed from v1 (`level`, `exports`) in SH-5784.
+- `freshness`, `drift_check`, `eval_artifacts`, `eval_state`, `routing_eval` → `health.freshness`, `health.drift_check`, `health.eval_artifacts`, `health.eval_state`, `health.routing_eval` — five sibling governance fields are grouped under a single `health` object. The three eval-health fields replaced the v1 `health.eval_status` in SH-5784. `has_grounding` and `has_relations` are generated boolean flags that summarize presence of the corresponding authored blocks, so a consumer can filter on "grounded skills" without re-parsing the full `grounding` object.
 
 ### What is deliberately absent from the projection
 
-`schema_version` appears only at the manifest root (as `1`), not inside each skill entry — manifest-level schema versioning tracks the manifest contract, and per-skill `schema_version: 1` from the authored frontmatter is absorbed into that root value. If a future manifest supports multiple authored schema versions simultaneously, `skills[].schema_version` would become a flow-through field; today it is not, because every skill in a given manifest is bound to a single authored schema version by assumption.
+`schema_version` appears only at the manifest root (as `2` post-SH-5784), not inside each skill entry — manifest-level schema versioning tracks the manifest contract, and per-skill `schema_version` from the authored frontmatter is absorbed into that root value. If a future manifest supports multiple authored schema versions simultaneously, `skills[].schema_version` would become a flow-through field; today it is not, because every skill in a given manifest is bound to a single authored schema version by assumption.
 
 ---
 

@@ -1,15 +1,17 @@
 ---
-schema_version: 1
+schema_version: 2
 name: documentation
 description: Documentation skill for choosing the right doc type, structuring technical explanation, and keeping system knowledge readable and durable. Use when writing reference docs, guides, specs, or architecture notes. Do NOT use for runtime debugging or UI accessibility behavior.
 version: 1.0.0
 type: capability
 family: knowledge
-scope: generic
+scope: portable
 owner: maintainer
-freshness: "2026-04-16"
-drift_check: "2026-04-16"
-eval_status: evals
+freshness: "2026-04-17"
+drift_check: "2026-04-17"
+eval_artifacts: present
+eval_state: passing
+routing_eval: absent
 stability: experimental
 license: MIT
 compatibility: Markdown, Git
@@ -30,8 +32,8 @@ relations:
     - debugging
     - a11y
 portability:
-  level: high
-  exports:
+  readiness: scripted
+  targets:
     - agent-skills
     - cursor
     - windsurf

@@ -6,7 +6,7 @@
 |---|---|
 | `docs/metadata-contract.md` (this file) | Overview, archetype map, requiredness groups, schema strictness rules |
 | `docs/field-reference.md` | One section per authored field — purpose, rules, examples, when to use |
-| `docs/field-decision-guide.md` | Decision tables for `scope`, `relations.*`, and `eval_status` / `portability` |
+| `docs/field-decision-guide.md` | Decision tables for `scope`, `relations.*`, and the eval-health fields (`eval_artifacts`, `eval_state`, `routing_eval`) / `portability` |
 | `docs/manifest-contract.md` | Authored-to-generated bridge: rename map, loss policy, worked example |
 
 ## Design Principles
@@ -33,8 +33,8 @@ Skill Graph is a graph-aware superset of the [Agent Skills](https://agentskills.
 | `compatibility` | Agent Skills optional | Kept top-level; optional |
 | `allowed-tools` | Agent Skills optional | Kept top-level as a space-separated string |
 | `metadata` | Agent Skills optional | Not used at the top level; Skill Graph promotes extensions to named fields |
-| `schema_version`, `version`, `type`, `family`, `scope`, `owner`, `freshness`, `drift_check`, `eval_status` | Skill Graph extension | Required for Skill Graph; additive to the base |
-| `relations`, `grounding`, `portability`, `triggers`, `keywords`, `paths`, `route_groups`, `extends`, `stability` | Skill Graph extension | Optional in Skill Graph; additive to the base |
+| `schema_version`, `version`, `type`, `family`, `scope`, `owner`, `freshness`, `drift_check`, `eval_artifacts`, `eval_state`, `routing_eval` | Skill Graph extension | Required for Skill Graph; additive to the base |
+| `relations`, `grounding`, `portability`, `triggers`, `keywords`, `paths`, `routing_groups`, `extends`, `stability` | Skill Graph extension | Optional in Skill Graph; additive to the base |
 
 A Skill Graph `SKILL.md` is **not** a valid Agent Skills file as authored, because Skill Graph requires fields the base standard does not define. An export transform can produce an Agent-Skills-valid file by moving every Skill Graph extension field under the standard `metadata:` key. The transform is implemented as `scripts/export-skill.js`.
 
@@ -68,7 +68,9 @@ scope
 owner
 freshness
 drift_check
-eval_status
+eval_artifacts
+eval_state
+routing_eval
 ```
 
 ### Strongly recommended
@@ -88,7 +90,7 @@ triggers
 | Condition | Required field(s) |
 |---|---|
 | `type: overlay` | `extends` |
-| `scope: operational` | `grounding` (schema-enforced) |
+| `scope: codebase` | `grounding` (schema-enforced) |
 | Routable skills (label or language activation) | `keywords`; `triggers` and `paths` when routing explicitly depends on them |
 
 ### Optional enrichments
@@ -99,7 +101,7 @@ These improve portability or discoverability, but are not required for a valid v
 paths
 compatibility
 allowed-tools
-route_groups
+routing_groups
 portability
 ```
 
@@ -169,7 +171,7 @@ It also does not require a full private control plane. The OSS contract keeps on
 
 ### Authored in `SKILL.md`
 
-The 23 authored fields (in schema order): `schema_version`, `name`, `description`, `version`, `type`, `family`, `scope`, `owner`, `freshness`, `drift_check`, `eval_status`, `stability`, `license`, `compatibility`, `allowed-tools`, `extends`, `triggers`, `keywords`, `paths`, `route_groups`, `relations`, `grounding`, `portability`.
+The 25 authored fields (in schema order): `schema_version`, `name`, `description`, `version`, `type`, `family`, `scope`, `owner`, `freshness`, `drift_check`, `eval_artifacts`, `eval_state`, `routing_eval`, `stability`, `license`, `compatibility`, `allowed-tools`, `extends`, `triggers`, `keywords`, `paths`, `routing_groups`, `relations`, `grounding`, `portability`.
 
 For the purpose, rules, and examples for each field, see `docs/field-reference.md`.
 

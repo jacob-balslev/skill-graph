@@ -9,13 +9,13 @@
  *   2. Parent-directory-matches-name check (Agent Skills compatibility)
  *   3. Relation target existence check (adjacent, boundary, verify_with,
  *      depends_on targets must be real sibling skills in the repo)
- *   4. Eval artifact coherence check (eval_status: evals requires at
+ *   4. Eval artifact coherence check (eval_artifacts: present requires at
  *      least one eval file targeting the skill)
- *   5. scope: operational → require grounding (conditional from schema)
+ *   5. scope: codebase → require grounding (conditional from schema)
  *   6. Cross-schema parity (runs once): every property and required field
  *      of skill.schema.json#grounding must be representable in
  *      manifest.schema.json#grounding, and the documented loss-policy
- *      fields (route_groups, license, compatibility, allowed-tools) must
+ *      fields (routing_groups, license, compatibility, allowed-tools) must
  *      exist as top-level manifest skill-item properties. Prevents the
  *      SH-5776 regression where the manifest silently dropped
  *      domain_object and four optional top-level fields.
@@ -30,6 +30,11 @@
  *      the sample as generator-produced output — not hand-maintained.
  *      Skipped when --skip-generator-parity is passed (useful during
  *      initial setup before the sample has been regenerated).
+ *   9. schema_version 2 migration (runs per file): WARN on the v1 field
+ *      names eval_status, portability.level, portability.exports, and
+ *      route_groups during the migration window. The old enum values for
+ *      `scope` (generic, operational) are hard errors already — the schema
+ *      enum only lists the v2 values (portable, codebase, reference).
  *
  * Self-contained. Only uses Node built-ins — no external dependencies.
  * Exit 0 on success, 1 on any failure.
@@ -63,11 +68,24 @@ const EVALS_DIR = path.join(REPO_ROOT, 'examples', 'evals');
 // manifest.schema.json silently dropped domain_object, route_groups, license,
 // compatibility, and allowed-tools. Adding a field here is cheap and makes
 // the mapping auditable without a separate contract doc.
+//
+// Updated for schema_version 2 (SH-5784): `route_groups` renamed to
+// `routing_groups` at both authored and manifest layers.
 const AUTHORED_FIELDS_MUST_FLOW = [
-  'route_groups',
+  'routing_groups',
   'license',
   'compatibility',
   'allowed-tools',
+];
+
+// Deprecated v1 field names. Authors using these fields receive a WARN from
+// the lint script during the schema_version 2 migration window. The old enum
+// values (`generic`, `operational` on `scope`) are NOT in this list — they
+// are rejected as hard errors by the schema because the v2 enum does not
+// include them. See docs/manifest-contract.md § Migration Note — v1 → v2.
+const DEPRECATED_V1_FIELDS = [
+  'eval_status',
+  'route_groups',
 ];
 
 function loadSchema() {
@@ -190,8 +208,8 @@ function validateAgainstSchema(fm, schema) {
   if (fm.type === 'overlay' && !fm.extends) {
     errors.push(`type: overlay requires extends field`);
   }
-  if (fm.scope === 'operational' && !fm.grounding) {
-    errors.push(`scope: operational requires grounding field`);
+  if (fm.scope === 'codebase' && !fm.grounding) {
+    errors.push(`scope: codebase requires grounding field`);
   }
 
   return errors;
@@ -222,9 +240,11 @@ function checkRelationTargets(fm, knownSkillNames) {
 }
 
 function checkEvalCoherence(filePath, fm) {
-  if (fm.eval_status !== 'evals') return [];
+  // schema_version 2: eval_artifacts: present requires a real eval artifact.
+  // Only `present` demands an artifact on disk — `planned` and `none` do not.
+  if (fm.eval_artifacts !== 'present') return [];
   if (!fs.existsSync(EVALS_DIR)) {
-    return [`eval_status: evals declared but ${EVALS_DIR} does not exist`];
+    return [`eval_artifacts: present declared but ${EVALS_DIR} does not exist`];
   }
   const evalFiles = fs.readdirSync(EVALS_DIR).filter(f => f.endsWith('.json'));
   for (const evalFile of evalFiles) {
@@ -235,7 +255,7 @@ function checkEvalCoherence(filePath, fm) {
       // ignore malformed eval files here; they are out of scope for this check
     }
   }
-  return [`eval_status: evals declared but no file in ${EVALS_DIR} has skill_name: "${fm.name}"`];
+  return [`eval_artifacts: present declared but no file in ${EVALS_DIR} has skill_name: "${fm.name}"`];
 }
 
 // Validate every skill entry in examples/skills.manifest.sample.json against
@@ -461,11 +481,32 @@ function main() {
       continue;
     }
     // Deprecation warning: skills authored with the old domain_frame field name
-    // (schema_version: 1 compatibility window) are warned here. For schema_version: 2
-    // (when released), domain_frame will be a hard error (rejected by the schema).
-    // See docs/manifest-contract.md § Migration Note — domain_frame → grounding.
+    // (schema_version: 1 compatibility window) are warned here. domain_frame is
+    // already rejected by the schema at schema_version: 2 via additionalProperties:
+    // false, so this warning is a friendlier pointer for authors who still have
+    // the old name. See docs/manifest-contract.md § Migration Note — domain_frame
+    // → grounding.
     if (fm.domain_frame) {
-      console.warn(`WARN ${relPath}: "domain_frame" is deprecated — rename to "grounding" (schema_version: 2 will reject this field)`);
+      console.warn(`WARN ${relPath}: "domain_frame" is deprecated — rename to "grounding"`);
+    }
+    // Migration warnings for the schema_version 2 field renames (SH-5784).
+    // These field names are already rejected by the schema (additionalProperties:
+    // false), so the schema validation step will emit an `unknown field` error;
+    // the warning below is a friendlier migration pointer that names the v2
+    // replacement explicitly.
+    if (fm.eval_status) {
+      console.warn(`WARN ${relPath}: "eval_status" is deprecated — split into "eval_artifacts", "eval_state", and "routing_eval". See docs/manifest-contract.md § Migration Note — v1 → v2.`);
+    }
+    if (fm.route_groups) {
+      console.warn(`WARN ${relPath}: "route_groups" is deprecated — rename to "routing_groups".`);
+    }
+    if (fm.portability && typeof fm.portability === 'object') {
+      if (fm.portability.level) {
+        console.warn(`WARN ${relPath}: "portability.level" is deprecated — rename to "portability.readiness" and change values per docs/field-reference.md § portability.`);
+      }
+      if (fm.portability.exports) {
+        console.warn(`WARN ${relPath}: "portability.exports" is deprecated — rename to "portability.targets".`);
+      }
     }
 
     const errors = [

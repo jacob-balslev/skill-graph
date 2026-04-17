@@ -1,5 +1,5 @@
 ---
-schema_version: 1
+schema_version: 2
 name: skill-template
 description: "Authoring template for new Skill Graph skills. Activate when creating a new SKILL.md, adapting an existing template to a different archetype, or teaching an author the canonical frontmatter and body structure. Do NOT use when modifying an already-written skill (work on that skill directly) or when writing general technical documentation (use documentation)."
 version: 1.0.0
@@ -7,9 +7,15 @@ type: capability
 family: knowledge
 scope: reference
 owner: maintainer
-freshness: "2026-04-16"
-drift_check: "2026-04-16"
-eval_status: pending
+freshness: "2026-04-17"
+drift_check: "2026-04-17"
+# TEMPLATE NOTE: eval_artifacts, eval_state, and routing_eval are the three
+# orthogonal eval-health axes introduced in schema_version 2. Set eval_artifacts
+# to `planned` only as a temporary state — move to `present` once the artifact
+# ships. Set eval_state to `unverified` when no run has been recorded yet.
+eval_artifacts: planned
+eval_state: unverified
+routing_eval: absent
 stability: stable
 license: MIT
 compatibility: Markdown, YAML, JSON Schema
@@ -56,10 +62,12 @@ grounding:
     - authoring_gate_skipped
   evidence_priority: repo_code_first
 # TEMPLATE NOTE: portability declares which external agent runtimes this skill is
-# known to work on. Remove this block if the skill is internal-only.
+# known to work on. `readiness` is the operational rating: `declared` (claim only),
+# `scripted` (export tooling exists), or `verified` (proven with a receipt). `targets`
+# is the list of destination runtimes. Remove this block if the skill is internal-only.
 portability:
-  level: high
-  exports:
+  readiness: scripted
+  targets:
     - agent-skills
     - cursor
     - windsurf
@@ -70,7 +78,7 @@ portability:
 
 > **TEMPLATE NOTE — HOW TO READ THIS FILE:** This file is a real, valid, schema-conformant Skill Graph skill whose *subject* is skill authoring itself. Read it as a finished specimen of the contract, then adapt it by (1) renaming the identity, (2) rewriting `description`, `## Coverage`, `## Philosophy`, and `## Key Files` for your subject, (3) rewriting `## Verification` to be your skill's self-check, (4) removing any section or field that does not apply to your archetype, and (5) stripping the `> **TEMPLATE NOTE:**` blockquotes and `# TEMPLATE NOTE:` YAML comments — they are authoring scaffolding, never skill content. Never ship placeholder sludge (`your-skill-name`, `path/to/file`, `todo`). If a section does not apply, remove it — do not keep it and fill it with fake content.
 
-> **TEMPLATE NOTE — CONDITIONAL FIELDS:** `extends` is valid only when `type: overlay`. `route_groups` only applies when route ownership is part of the skill contract. `triggers` and `paths` are shown because this template is both label-routable and file-activated; most skills need only one. `grounding` is REQUIRED for `scope: operational` skills; remove the block entirely for `scope: generic` or `scope: reference`. Generated manifest health fields belong in `skills.manifest.json`, not in the authored `SKILL.md`.
+> **TEMPLATE NOTE — CONDITIONAL FIELDS:** `extends` is valid only when `type: overlay`. `routing_groups` only applies when routing-group ownership is part of the skill contract. `triggers` and `paths` are shown because this template is both label-routable and file-activated; most skills need only one. `grounding` is REQUIRED for `scope: codebase` skills; remove the block entirely for `scope: portable` or `scope: reference`. Generated manifest health fields belong in `skills.manifest.json`, not in the authored `SKILL.md`.
 
 ## Coverage
 
@@ -102,7 +110,7 @@ Use this checklist as the authoring gate before committing a skill adapted from 
 - [ ] Body sections match the skill's declared archetype per `docs/metadata-contract.md § Archetype section map`
 - [ ] `description:` is ≤ 3 sentences, contains pushy trigger phrases, and names an explicit negative boundary
 - [ ] `## Coverage` is a scope map of distinct topics, not a one-line restate of the description
-- [ ] `eval_status` matches actual artifact presence (if `evals`, an eval file exists under `examples/evals/` or alongside the skill)
+- [ ] `eval_artifacts` matches actual artifact presence (if `present`, an eval file exists under `examples/evals/` or alongside the skill); `eval_state` reflects whether a real passing run has been recorded; `routing_eval` reflects whether trigger/routing coverage is explicitly checked
 - [ ] All `relations` entries point to skills that exist in the target repo
 - [ ] No placeholder sludge (`your-skill-name`, `path/to/file`, `todo`) remains
 - [ ] No `> **TEMPLATE NOTE:**` blockquotes or `# TEMPLATE NOTE:` YAML comments remain in the adapted skill

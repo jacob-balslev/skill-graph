@@ -1,15 +1,17 @@
 ---
-schema_version: 1
+schema_version: 2
 name: testing-strategy
 description: Testing strategy skill for deciding what to test, choosing the right test level, and verifying behavior changes with meaningful evidence. Use when planning tests for bug fixes, features, or refactors. Do NOT use for documentation writing or purely conceptual architecture discussion.
 version: 1.0.0
 type: capability
 family: quality
-scope: generic
+scope: portable
 owner: maintainer
-freshness: "2026-04-16"
-drift_check: "2026-04-16"
-eval_status: pending
+freshness: "2026-04-17"
+drift_check: "2026-04-17"
+eval_artifacts: planned
+eval_state: unverified
+routing_eval: absent
 stability: experimental
 license: MIT
 compatibility: Markdown, Git, any codebase
@@ -22,7 +24,7 @@ keywords:
   - regression test
 triggers:
   - testing-skill
-route_groups:
+routing_groups:
   - quality
 relations:
   adjacent:
@@ -33,8 +35,8 @@ relations:
   verify_with:
     - debugging
 portability:
-  level: high
-  exports:
+  readiness: scripted
+  targets:
     - agent-skills
     - cursor
     - windsurf

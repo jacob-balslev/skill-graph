@@ -15,12 +15,14 @@
     "owner",
     "freshness",
     "drift_check",
-    "eval_status"
+    "eval_artifacts",
+    "eval_state",
+    "routing_eval"
   ],
   "properties": {
     "schema_version": {
       "oneOf": [
-        { "type": "integer", "const": 1 },
+        { "type": "integer", "const": 2 },
         { "type": "string", "pattern": "^[0-9]+$" }
       ]
     },
@@ -45,7 +47,7 @@
     },
     "scope": {
       "type": "string",
-      "enum": ["operational", "reference", "generic"]
+      "enum": ["codebase", "reference", "portable"]
     },
     "owner": {
       "type": "string"
@@ -58,9 +60,17 @@
       "type": "string",
       "format": "date"
     },
-    "eval_status": {
+    "eval_artifacts": {
       "type": "string",
-      "enum": ["none", "pending", "evals", "evals+trigger", "passing", "active"]
+      "enum": ["none", "planned", "present"]
+    },
+    "eval_state": {
+      "type": "string",
+      "enum": ["unverified", "passing", "monitored"]
+    },
+    "routing_eval": {
+      "type": "string",
+      "enum": ["absent", "present"]
     },
     "stability": {
       "type": "string",
@@ -90,7 +100,7 @@
       "type": "array",
       "items": { "type": "string" }
     },
-    "route_groups": {
+    "routing_groups": {
       "type": "array",
       "items": { "type": "string" }
     },
@@ -149,13 +159,13 @@
     "portability": {
       "type": "object",
       "additionalProperties": false,
-      "required": ["level", "exports"],
+      "required": ["readiness", "targets"],
       "properties": {
-        "level": {
+        "readiness": {
           "type": "string",
-          "enum": ["high", "medium", "low"]
+          "enum": ["declared", "scripted", "verified"]
         },
-        "exports": {
+        "targets": {
           "type": "array",
           "items": {
             "type": "string",
@@ -179,7 +189,7 @@
     {
       "if": {
         "properties": {
-          "scope": { "const": "operational" }
+          "scope": { "const": "codebase" }
         },
         "required": ["scope"]
       },

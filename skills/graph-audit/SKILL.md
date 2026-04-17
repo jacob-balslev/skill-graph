@@ -1,15 +1,17 @@
 ---
-schema_version: 1
+schema_version: 2
 name: graph-audit
 description: "Skill metadata and manifest consistency auditing for the Skill Graph repository. Use when checking that every SKILL.md conforms to the schema, that manifest entries are in sync with authored frontmatter, or that relation targets point at real sibling skills. Do NOT use for general code review or for auditing non-skill files."
 version: 1.0.0
 type: capability
 family: knowledge
-scope: operational
+scope: codebase
 owner: maintainer
 freshness: "2026-04-17"
 drift_check: "2026-04-17"
-eval_status: evals
+eval_artifacts: present
+eval_state: passing
+routing_eval: absent
 stability: experimental
 license: MIT
 compatibility: Markdown, JSON Schema, Node.js
@@ -40,11 +42,11 @@ grounding:
     - schema_drift
     - manifest_sample_out_of_sync
     - broken_relation_targets
-    - eval_status_mismatch
+    - eval_artifacts_mismatch
   evidence_priority: repo_code_first
 portability:
-  level: medium
-  exports:
+  readiness: scripted
+  targets:
     - agent-skills
 ---
 
@@ -55,8 +57,8 @@ portability:
 - Schema conformance: checking that every `skills/<name>/SKILL.md` validates against `schemas/skill.schema.json` without errors
 - Manifest sync: verifying that `examples/skills.manifest.sample.json` matches the output of `scripts/generate-manifest.js` run against the current skills
 - Relation integrity: confirming that every target named in `relations.adjacent`, `relations.boundary`, `relations.verify_with`, and `relations.depends_on` corresponds to a real sibling skill directory
-- Eval status coherence: ensuring that `eval_status: evals` is backed by a real eval artifact under `examples/evals/` that names the skill in its `skill_name` field
-- Grounding presence: confirming that every `scope: operational` skill has a fully populated `grounding` block with `domain_object`, `grounding_mode`, `truth_sources`, `failure_modes`, and `evidence_priority`
+- Eval artifact coherence: ensuring that `eval_artifacts: present` is backed by a real eval artifact under `examples/evals/` that names the skill in its `skill_name` field
+- Grounding presence: confirming that every `scope: codebase` skill has a fully populated `grounding` block with `domain_object`, `grounding_mode`, `truth_sources`, `failure_modes`, and `evidence_priority`
 - Name-directory parity: checking that a skill's `name` field matches the name of the parent directory (required for Agent Skills compatibility)
 
 ## Philosophy
@@ -98,8 +100,8 @@ Exit code 0 means all checks passed. Exit code 1 means at least one check failed
 - [ ] All SKILL.md files pass schema validation
 - [ ] Manifest sample matches generator output
 - [ ] All relation targets exist as real sibling skill directories
-- [ ] All `eval_status: evals` skills have a matching eval artifact
-- [ ] All `scope: operational` skills have a complete `grounding` block
+- [ ] All `eval_artifacts: present` skills have a matching eval artifact
+- [ ] All `scope: codebase` skills have a complete `grounding` block
 
 ## Do NOT Use When
 
