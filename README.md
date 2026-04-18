@@ -4,31 +4,35 @@ Graph-aware skill metadata for AI agents. A superset of the [Agent Skills](https
 
 ## Status
 
-**Current version: 0.3.0** (2026-04-17) — see [CHANGELOG.md](CHANGELOG.md) for the full release history and migration notes.
+**Current version: 0.4.0** (2026-04-18) — see [CHANGELOG.md](CHANGELOG.md) for the full release history and migration notes.
 
 Shipping today:
 
-- public `SKILL.md` frontmatter contract (`docs/metadata-contract.md`)
-- JSON Schemas for skill and manifest validation (`schemas/`)
-- **skill lint script** with schema validation, parent-directory check, relation-target existence, eval coherence, and generator parity check (`scripts/skill-lint.js`)
-- **contract consistency checker** for cross-artifact parity between schemas, docs, and example artifacts (`scripts/check-contract-consistency.js`)
-- **manifest generator** that walks `skills/**/SKILL.md`, applies the rename map from `docs/manifest-contract.md`, and emits a validated, deterministic manifest (`scripts/generate-manifest.js`)
-- **Agent Skills export script** that transforms a Skill Graph SKILL.md into an Agent Skills-compatible file (`scripts/export-skill.js`); five exported fixtures in `examples/exports/`
-- **audit runner** with two modes (`scripts/skill-audit.js`): stub mode seeds `audits/<skill>/{findings,verdict,scorecard}.md` from lint output with human TODO placeholders; `--graded` mode extends the stub by calling an external model CLI (e.g. `claude -p`, `codex exec`) for each of the seven scorecard dimensions, writing evidence-backed PASS / PASS WITH FIXES / FAIL verdicts into the artifact files. Per-dimension prompts are composed by `scripts/lib/audit-prompt-builder.js`; a deterministic mock grader ships at `scripts/lib/mock-grader.js` for CI smoke-tests.
+- public `SKILL.md` frontmatter contract (`docs/metadata-contract.md`) — 29 authored fields, schema_version 3
+- JSON Schemas for skill and manifest validation (`schemas/`) with pinned v2 (frozen) and v3 (current) copies alongside the unversioned files
+- **skill lint script** with schema validation, parent-directory check, relation-target existence (supports v3 object-item forms), eval coherence, generator parity, archetype-aware sections, and routing quality (`scripts/skill-lint.js`)
+- **contract consistency checker** for cross-artifact parity between schemas, docs, and example artifacts; version-aware C6 that tracks the current pinned schema and freezes prior versions (`scripts/check-contract-consistency.js`)
+- **manifest generator** that walks `skills/**/SKILL.md` (or every root declared in `.skill-graph/config.json` for multi-project workspaces), applies the rename map from `docs/manifest-contract.md`, computes SHA-256 drift detection, and emits a validated, deterministic manifest (`scripts/generate-manifest.js`)
+- **Agent Skills export script** that transforms a Skill Graph SKILL.md into an Agent Skills-compatible file — flattens v3 `compatibility` object to a 500-char string (`scripts/export-skill.js`); five exported fixtures in `examples/exports/`
+- **audit runner** with two modes (`scripts/skill-audit.js`): stub mode seeds `audits/<skill>/{findings,verdict,scorecard}.md` from lint output with human TODO placeholders; `--graded` mode extends the stub by calling an external model CLI (e.g. `claude -p`, `codex exec`) for each of the seven scorecard dimensions, writing evidence-backed PASS / PASS WITH FIXES / FAIL verdicts. Per-dimension prompts are composed by `scripts/lib/audit-prompt-builder.js`; a deterministic mock grader ships at `scripts/lib/mock-grader.js` for CI smoke-tests.
+- **reference consumer — `skill-graph route`** (`scripts/skill-graph-route.js`): graph-aware skill selector that makes `relations`, `grounding`, `eval_state`, `lifecycle`, and `project_tags` visibly drive a routing decision. Supports `--project`, `--max`, `--min-eval-state`, `--path`, `--json`. This is the tool that demonstrates why the extra metadata exists.
+- **drift sentinel — `skill-graph drift`** (`scripts/skill-graph-drift.js`): hashes every `grounding.truth_sources` entry and reports DRIFT / BROKEN / STALE / NO_BASELINE against the stored `drift_check.truth_source_hashes` baseline. `--record --apply` updates the SKILL.md frontmatter in place.
+- **v2 → v3 codemod** (`scripts/migrate-skill-v2-to-v3.js`): line-based migration preserving author YAML style, applying the four v3 shape changes automatically.
+- **multi-root workspace mode** — `.skill-graph/config.json` declares multiple `skill_roots` and a `projects → semantic_tags` map; the generator unions all roots into one manifest and stamps each skill with its `project` handle. Fallback to single-root `skills/` when absent.
 - **CI integration** — self-hosted GitHub Actions workflow running lint + consistency checks on every PR touching schema, scripts, skills, or examples (`.github/workflows/skill-graph-lint.yml`); consumer copy-paste snippet at `docs/integrations/github-actions.md`
 - audit documentation for single-skill and repeated-library review (`docs/single-skill-audit-checklist.md`, `docs/library-audit-workflow.md`)
-- a self-referential skill template (`examples/skill-template.md`)
-- eight starter skills (`skills/a11y`, `debugging`, `documentation`, `refactor`, `testing-strategy`, `skill-router`, `lint-overlay`, `graph-audit`) — covering all four archetypes and all three scopes
+- a self-referential skill template (`examples/skill-template.md`) — now demonstrates v3 object `drift_check`, object `compatibility`, object `boundary` with reason, and `lifecycle`
+- eight starter skills (`skills/a11y`, `debugging`, `documentation`, `refactor`, `testing-strategy`, `skill-router`, `lint-overlay`, `graph-audit`) — covering all four archetypes and all three scopes, all migrated to v3
 - concrete example audit and eval artifacts against the `documentation` starter (`examples/audits/`, `examples/evals/`)
 - sample manifest generated by `scripts/generate-manifest.js` — not hand-written (`examples/skills.manifest.sample.json`)
 
 Planned, not yet implemented:
 
-- overlap detection, routing, and coverage tooling (`scripts/skill-overlap.js`, `scripts/skill-router.js`, `scripts/build-coverage.js`)
+- overlap detection and coverage tooling (`scripts/skill-overlap.js`, `scripts/build-coverage.js`)
 
-Deferred (removed from the contract in 0.3.0):
+Deferred (removed from the contract in 0.3.0, still deferred in 0.4.0):
 
-- Export transforms for `cursor`, `windsurf`, `copilot`, and `agents-md` targets. These values previously appeared in the `portability.targets` enum as compatibility *goals* with no working transform. Because `additionalProperties: false` plus enum restriction is the whole point of the contract, aspirational enum values violated that contract. The enum now accepts only `agent-skills`. Re-add via a new RFC and the same PR that ships the transform.
+- Export transforms for `cursor`, `windsurf`, `copilot`, and `agents-md` targets. These values previously appeared in the `portability.targets` enum as compatibility *goals* with no working transform. Because `additionalProperties: false` plus enum restriction is the whole point of the contract, aspirational enum values violated that contract. The enum accepts only `agent-skills`. Re-add via a new RFC and the same PR that ships the transform.
 
 See `docs/plans/scripts-roadmap.md` for the planned script surface and [CHANGELOG.md](CHANGELOG.md) for what has shipped in each release.
 
@@ -55,16 +59,52 @@ The base standard and the Skill Graph extensions:
 
 ## Quick tour
 
-- `docs/metadata-contract.md` — overview, archetype section map, requiredness groups, schema strictness rules, and schema versioning policy
-- `docs/field-reference.md` — one section per authored field (25 total): purpose, rules, allowed values, examples, when to use
-- `docs/field-decision-guide.md` — decision tables for the three hardest choices: `scope`, `relations.*`, and the eval-health triple (`eval_artifacts` / `eval_state` / `routing_eval`) plus `portability`
-- `docs/manifest-contract.md` — the authored-to-generated bridge: rename map, loss policy, migration policy, v1→v2 migration note, and a worked example projecting authored frontmatter into the compiled manifest
-- `schemas/skill.schema.json` — the frontmatter contract as enforceable JSON Schema (tracks latest; v2 today)
-- `schemas/manifest.schema.json` — the compiled manifest contract as enforceable JSON Schema (tracks latest; v2 today)
-- `schemas/skill.v2.schema.json` + `schemas/manifest.v2.schema.json` — pinned v2 copies, content-identical to the unversioned files modulo `$id` and `title`. Consumers that want stability across a future v3 bump pin to these; consumers that want to follow latest use the unversioned files. See `docs/metadata-contract.md § Schema Versioning Policy`.
-- `docs/single-skill-audit-checklist.md` — the canonical per-skill audit checklist
-- `docs/library-audit-workflow.md` — the repeatable audit loop wrapping the checklist
-- `examples/skill-template.md` — a self-referential template; its subject is skill authoring itself
+The repo is organised in five authority tiers. When two files disagree, the higher tier wins — and CI enforces every tier boundary automatically. For the full architecture walkthrough, read [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md).
+
+### Tier 1 — Contract (source of truth)
+
+- `schemas/skill.schema.json` — frontmatter contract; tracks latest (v3 today)
+- `schemas/manifest.schema.json` — compiled manifest contract; tracks latest (v3 today)
+- `schemas/skill.v3.schema.json` + `schemas/manifest.v3.schema.json` — pinned v3 copies. Consumers wanting stability across a future v4 bump validate against these.
+- `schemas/skill.v2.schema.json` + `schemas/manifest.v2.schema.json` — **frozen** v2 copies for consumers still on v2. Run `node scripts/migrate-skill-v2-to-v3.js` to upgrade.
+
+### Tier 2 — Explanation (human reflections of the contract)
+
+- `docs/metadata-contract.md` — archetype section map, requiredness groups, strictness rules, schema versioning policy
+- `docs/field-reference.md` — per-field semantics for all 29 v3 authored fields
+- `docs/field-decision-guide.md` — decision tables for the hard choices: `scope`, `relations.*`, eval-health triple, `portability`, `project_tags`, and `browse_category` vs `category` vs `project_tags` vs `routing_groups`
+- `docs/manifest-contract.md` — authored → generated bridge with rename map, loss policy, and v2→v3 migration notes
+
+### Tier 3 — Enforcement and transformation
+
+- `scripts/skill-lint.js` — 11-check per-skill validator
+- `scripts/check-contract-consistency.js` — 6-check cross-artifact consistency checker
+- `scripts/generate-manifest.js` — authored → manifest compiler; multi-root workspace aware
+- `scripts/export-skill.js` — Agent Skills export transform
+- `scripts/migrate-skill-v2-to-v3.js` — v2→v3 codemod
+- `scripts/skill-audit.js` — two-mode audit runner (stub + `--graded`)
+
+### Tier 4 — Reference consumer (what the contract buys you)
+
+- `scripts/skill-graph-route.js` — graph-aware skill selector using relations + grounding + eval_state + project_tags
+- `scripts/skill-graph-drift.js` — drift sentinel that hashes `grounding.truth_sources` against the recorded baseline
+
+### Tier 5 — Specimens
+
+- `examples/skill-template.md` — self-referential authoring template
+- `examples/skills.manifest.sample.json` — generator-produced sample manifest
+- `skills/*/SKILL.md` — eight starter skills covering every archetype × scope combination the schema permits
+- `examples/audits/` — worked audit artifacts (findings / verdict / scorecard) for three starters
+- `examples/evals/` — nine eval fixtures
+- `examples/exports/` — five Agent Skills exports demonstrating the export transform
+
+### Governance (outside the tier hierarchy)
+
+- `docs/ARCHITECTURE.md` — the full tier walkthrough
+- `docs/single-skill-audit-checklist.md` + `docs/library-audit-workflow.md` — audit workflow docs
+- `docs/integrations/github-actions.md` — consumer copy-paste CI snippet
+- `docs/plans/multi-root-workspace.md` — shipped v0.4.0 design doc
+- `CHANGELOG.md`, `CONTRIBUTING.md`, `LICENSE`, `.github/workflows/` — project housekeeping
 
 ## Audit surfaces
 
@@ -117,6 +157,51 @@ node scripts/generate-manifest.js --include-template \
 ```
 
 `examples/skills.manifest.sample.json` is produced by the generator (with `--include-template`) and committed as a reference artifact. It is not hand-written. `scripts/skill-lint.js` enforces parity: running lint will fail if the sample has drifted from what the generator would produce. Regenerate with the command above whenever skills are added or changed.
+
+## Reference consumer
+
+The metadata contract is only as valuable as the decisions it drives. Two reference tools exercise every unique Skill Graph field end to end — if you want to see what `boundary`, `grounding.truth_sources`, `eval_state`, `lifecycle`, and `project_tags` do, run these:
+
+```bash
+# Graph-aware skill selector — shows WHY each skill was selected, co-loaded, or excluded.
+# Uses activation.keywords/triggers/paths, depends_on closure, verify_with co-loading,
+# boundary anti-ownership exclusion, eval_state quality gate, and lifecycle staleness.
+node scripts/skill-graph-route.js "accessibility keyboard navigation" --max 5
+
+# With a project filter (expands via workspace.projects.<handle>.semantic_tags):
+node scripts/skill-graph-route.js "refactor tests" --project sales-hub
+
+# Drift sentinel — hashes every grounding.truth_sources file and reports
+# DRIFT / BROKEN / STALE / NO_BASELINE against the stored baseline.
+node scripts/skill-graph-drift.js
+
+# Record a new hash baseline for one skill (after verifying it against the truth sources):
+node scripts/skill-graph-drift.js --record --apply skills/graph-audit
+```
+
+These are reference implementations. Real consumers build their own router or CI check on top of `skills.manifest.json` — the tools above document the field semantics by using them.
+
+## Multi-project workspace
+
+For repos with more than one project, add `.skill-graph/config.json` at the repo root:
+
+```json
+{
+  "workspace": {
+    "skill_roots": [
+      { "path": "skills",                         "project": null },
+      { "path": "sales-hub/.skill-graph/skills",  "project": "sales-hub" },
+      { "path": "free-oppression/.skill-graph/skills", "project": "free-oppression" }
+    ],
+    "projects": {
+      "sales-hub":       { "semantic_tags": ["ecommerce", "shopify-stack"] },
+      "free-oppression": { "semantic_tags": ["ecommerce", "etsy-stack"] }
+    }
+  }
+}
+```
+
+The generator walks every declared root, stamps each skill with its `project` handle, and emits the workspace block in the manifest. Skills with no `project_tags` are ambient (every project); skills with tags match projects whose `semantic_tags` include any tag. See `docs/plans/multi-root-workspace.md` for the full design.
 
 ## Validation
 

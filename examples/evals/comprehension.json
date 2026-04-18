@@ -12,7 +12,7 @@
       "truth_mode": "conceptual_correctness_plus_repo_application",
       "skill_type": "concept",
       "criticality": "high",
-      "truth_sources": ["skills/documentation/SKILL.md:44-49"]
+      "truth_sources": ["skills/documentation/SKILL.md:68-79"]
     },
     {
       "id": 2,
@@ -23,7 +23,7 @@
       "truth_mode": "conceptual_correctness_plus_repo_application",
       "skill_type": "concept",
       "criticality": "normal",
-      "truth_sources": ["skills/documentation/SKILL.md:51-58"]
+      "truth_sources": ["skills/documentation/SKILL.md:92-98"]
     },
     {
       "id": 3,
@@ -34,7 +34,7 @@
       "truth_mode": "code_verification",
       "skill_type": "concept",
       "criticality": "high",
-      "truth_sources": ["skills/documentation/SKILL.md:60-64"]
+      "truth_sources": ["skills/documentation/SKILL.md:100-106"]
     },
     {
       "id": 4,
@@ -45,18 +45,18 @@
       "truth_mode": "process_correctness",
       "skill_type": "workflow",
       "criticality": "normal",
-      "truth_sources": ["docs/library-audit-workflow.md:91-101"]
+      "truth_sources": ["docs/library-audit-workflow.md:105-114"]
     },
     {
       "id": 5,
-      "prompt": "The documentation starter ships with `eval_status: evals` and a companion eval artifact at `examples/evals/comprehension.json`. According to the metadata contract, what does that status declare and what does the lint script verify to confirm it?",
+      "prompt": "The documentation starter ships with `eval_artifacts: present`, `eval_state: passing`, and a companion eval artifact at `examples/evals/comprehension.json`. According to the Skill Graph field reference, what does each of those two fields assert, and what does `scripts/skill-lint.js` verify to confirm `eval_artifacts: present`?",
       "dimension": "purpose",
       "substance": "domain",
       "calibration": "semantic",
       "truth_mode": "code_verification",
       "skill_type": "concept",
       "criticality": "normal",
-      "truth_sources": ["docs/metadata-contract.md:419-436"]
+      "truth_sources": ["docs/field-reference.md:299-325", "docs/field-reference.md:329-353"]
     },
     {
       "id": 6,
@@ -67,7 +67,7 @@
       "truth_mode": "code_verification",
       "skill_type": "concept",
       "criticality": "high",
-      "truth_sources": ["docs/metadata-contract.md:313-325"]
+      "truth_sources": ["docs/field-reference.md:32-51"]
     },
     {
       "id": 7,
@@ -78,7 +78,7 @@
       "truth_mode": "conceptual_correctness_plus_repo_application",
       "skill_type": "concept",
       "criticality": "critical",
-      "truth_sources": ["docs/metadata-contract.md:73-82", "skills/documentation/SKILL.md:42-49"]
+      "truth_sources": ["docs/metadata-contract.md:114-123", "skills/documentation/SKILL.md:55-62"]
     }
   ]
 }

@@ -476,21 +476,36 @@ function buildVerdictStub(skillName, diagnostics, isoDate) {
 
 function buildScorecardStub(skillName, diagnostics, scope) {
   const errors     = diagnostics.filter(d => d.severity === 'error');
+  const warnings   = diagnostics.filter(d => d.severity === 'warning');
   const schemaErrs = errors.filter(d => {
     const cat = inferCategory(d.message);
     return cat === 'Schema validity' || cat === 'Naming convention';
   });
 
-  const metaScore = schemaErrs.length === 0 ? '5 (auto: lint passes)' : `0 (auto: ${schemaErrs.length} lint error(s))`;
+  // v0.5.0: 3-column markdown (Dimension | Score | Note) + 1–5 numeric scores
+  // aligned with `evaluation` doctrine. Prior version emitted a 2-column row
+  // for Metadata validity which broke markdown rendering.
+  let metaScore, metaNote;
+  if (schemaErrs.length > 0) {
+    metaScore = '1';
+    metaNote  = `auto: ${schemaErrs.length} lint error(s) — schema contract violated`;
+  } else if (warnings.length > 0) {
+    metaScore = '4';
+    metaNote  = `auto: lint passes with ${warnings.length} warning(s)`;
+  } else {
+    metaScore = '5';
+    metaNote  = 'auto: lint passes clean';
+  }
+
   const groundingRow = scope === 'portable'
-    ? 'N/A | `scope: portable` — grounding dimension does not apply'
-    : 'TODO | Human review required — verify claims match truth sources';
+    ? '| Grounding fidelity | N/A | `scope: portable` — grounding dimension does not apply |'
+    : '| Grounding fidelity | TODO | Human review required — verify claims match truth sources |';
 
   const rows = [
-    `| Metadata validity | ${metaScore} |`,
+    `| Metadata validity | ${metaScore} | ${metaNote} |`,
     '| Activation quality | TODO | Human review required — see findings.md |',
     '| Relation quality | TODO | Human review required — see findings.md |',
-    `| Grounding fidelity | ${groundingRow} |`,
+    groundingRow,
     '| Content quality | TODO | Human review required — see findings.md |',
     '| Eval quality | TODO | Human review required — see findings.md |',
     '| Portability quality | TODO | Human review required — see findings.md |',
@@ -685,12 +700,25 @@ function buildVerdictGraded(skillName, isoDate, gradedResults, finalVerdict, gra
 
 function buildScorecardGraded(skillName, diagnostics, gradedResults) {
   const errors     = diagnostics.filter(d => d.severity === 'error');
+  const warnings   = diagnostics.filter(d => d.severity === 'warning');
   const schemaErrs = errors.filter(d => {
     const cat = inferCategory(d.message);
     return cat === 'Schema validity' || cat === 'Naming convention';
   });
-  const metaScore = schemaErrs.length === 0 ? '5' : '0';
-  const metaNote  = schemaErrs.length === 0 ? 'lint passes' : `${schemaErrs.length} lint error(s)`;
+  // v0.5.0: use the full 1–5 scale per `skills/evaluation/SKILL.md:69-106`
+  // doctrine. 5 = zero lint errors and zero warnings. 4 = zero errors, some
+  // warnings. 1 = lint errors present (the skill fails the schema contract).
+  let metaScore, metaNote;
+  if (schemaErrs.length > 0) {
+    metaScore = '1';
+    metaNote  = `${schemaErrs.length} lint error(s) — schema contract violated`;
+  } else if (warnings.length > 0) {
+    metaScore = '4';
+    metaNote  = `lint passes with ${warnings.length} warning(s)`;
+  } else {
+    metaScore = '5';
+    metaNote  = 'lint passes clean';
+  }
 
   // Metadata validity is lint-derived; all other rows come from the grader.
   const byId = new Map(gradedResults.map(r => [r.dimension.id, r]));
@@ -744,7 +772,13 @@ function buildScorecardGraded(skillName, diagnostics, gradedResults) {
 function verdictLabelFromLint(diagnostics) {
   const errors   = diagnostics.filter(d => d.severity === 'error');
   if (errors.length > 0) return 'FAIL';
-  return 'PASS WITH FIXES';   // stub mode always has human TODOs pending
+  // v0.5.0: stub mode completes only the Metadata-validity row (from lint).
+  // The other six dimensions are human-judgment TODOs. Per `skills/evaluation/
+  // SKILL.md:69-106` doctrine, a skill is not Done until all scores >= 4 —
+  // so a stub with 6 TODO rows cannot honestly claim PASS WITH FIXES. PARTIAL
+  // reflects "useful but still incomplete" (the vocabulary definition in
+  // `docs/single-skill-audit-checklist.md § Verdict`).
+  return 'PARTIAL';
 }
 
 // ---------------------------------------------------------------------------

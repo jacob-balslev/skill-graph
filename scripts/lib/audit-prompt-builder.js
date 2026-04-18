@@ -84,21 +84,31 @@ const DIMENSIONS = [
 // ---------------------------------------------------------------------------
 
 const DEFAULT_TRUTH_SOURCE_CHAR_LIMIT = 6000;
+const DEFAULT_EVAL_ARTIFACT_CHAR_LIMIT = 12000;
+const EVAL_ARTIFACTS_DIR_REL = path.join('examples', 'evals');
 
 /**
- * Read the skill, its truth sources, and the checklist. Returns the payload
- * the prompt builder needs. Reads are bounded so a single massive truth
- * source does not explode the prompt budget.
+ * Read the skill, its truth sources, its eval artifacts, and the checklist.
+ * Returns the payload the prompt builder needs. Reads are bounded so a single
+ * massive file does not explode the prompt budget.
+ *
+ * Eval artifact discovery mirrors the lint contract in `scripts/skill-lint.js`
+ * (checkEvalCoherence): scan `<repoRoot>/examples/evals/*.json` and collect
+ * every file whose parsed JSON has `skill_name === frontmatter.name`. Only
+ * runs when `frontmatter.eval_artifacts === 'present'` — `planned` / `none` /
+ * missing frontmatter all produce an empty `evalArtifacts` array.
  *
  * @param {object} opts
  * @param {string} opts.skillDir        Absolute path to the skill directory.
  * @param {string} opts.repoRoot        Absolute path to the repo root.
- * @param {number} [opts.truthSourceCharLimit] Per-file character cap.
+ * @param {number} [opts.truthSourceCharLimit] Per-file character cap for truth sources.
+ * @param {number} [opts.evalArtifactCharLimit] Per-file character cap for eval artifacts.
  * @returns {{
  *   skillName: string,
  *   skillBody: string,
  *   frontmatter: object|null,
  *   truthSources: Array<{ path: string, content: string, truncated: boolean }>,
+ *   evalArtifacts: Array<{ path: string, content: string, truncated: boolean }>,
  *   checklist: string,
  * }}
  */
@@ -107,6 +117,7 @@ function collectContext(opts) {
     skillDir,
     repoRoot,
     truthSourceCharLimit = DEFAULT_TRUTH_SOURCE_CHAR_LIMIT,
+    evalArtifactCharLimit = DEFAULT_EVAL_ARTIFACT_CHAR_LIMIT,
   } = opts;
 
   const skillFile = path.join(skillDir, 'SKILL.md');
@@ -130,11 +141,77 @@ function collectContext(opts) {
     truthSources.push({ path: relPath, content, truncated });
   }
 
+  const evalArtifacts = collectEvalArtifacts({
+    frontmatter,
+    repoRoot,
+    charLimit: evalArtifactCharLimit,
+  });
+
   const checklistPath = path.join(repoRoot, 'docs', 'single-skill-audit-checklist.md');
   const checklist = fs.readFileSync(checklistPath, 'utf8');
 
   const skillName = path.basename(skillDir);
-  return { skillName, skillBody, frontmatter, truthSources, checklist };
+  return { skillName, skillBody, frontmatter, truthSources, evalArtifacts, checklist };
+}
+
+/**
+ * Discover and read the eval artifacts associated with a skill.
+ *
+ * Contract: a skill is associated with every `examples/evals/*.json` file whose
+ * parsed JSON has `skill_name === frontmatter.name`. This matches the lint
+ * check in `scripts/skill-lint.js#checkEvalCoherence`, so authoring / linting /
+ * grading all agree on what "the eval artifact for this skill" means.
+ *
+ * Only runs when `frontmatter.eval_artifacts === 'present'`. Every other value
+ * (including absent frontmatter) returns an empty array so prompts stay lean
+ * for skills that have not shipped an eval.
+ *
+ * Malformed JSON files are skipped silently — they surface as a lint error
+ * elsewhere and should not break the grader run.
+ *
+ * @param {object} args
+ * @param {object|null} args.frontmatter Parsed frontmatter from the skill.
+ * @param {string} args.repoRoot         Absolute repo root.
+ * @param {number} args.charLimit        Per-file character cap.
+ * @returns {Array<{ path: string, content: string, truncated: boolean }>}
+ */
+function collectEvalArtifacts({ frontmatter, repoRoot, charLimit }) {
+  if (!frontmatter || frontmatter.eval_artifacts !== 'present' || !frontmatter.name) return [];
+
+  const evalsDir = path.join(repoRoot, EVAL_ARTIFACTS_DIR_REL);
+  if (!fs.existsSync(evalsDir)) return [];
+
+  const out = [];
+  let files;
+  try {
+    files = fs.readdirSync(evalsDir).filter(f => f.endsWith('.json')).sort();
+  } catch (_) {
+    return [];
+  }
+
+  for (const fileName of files) {
+    const abs = path.join(evalsDir, fileName);
+    let raw;
+    try {
+      raw = fs.readFileSync(abs, 'utf8');
+    } catch (_) {
+      continue;
+    }
+    let parsed;
+    try {
+      parsed = JSON.parse(raw);
+    } catch (_) {
+      continue; // malformed eval files surface as lint errors, not grader breakage
+    }
+    if (!parsed || parsed.skill_name !== frontmatter.name) continue;
+
+    const truncated = raw.length > charLimit;
+    const content = truncated ? raw.slice(0, charLimit) + '\n\n[…truncated]' : raw;
+    const relPath = path.posix.join(EVAL_ARTIFACTS_DIR_REL.split(path.sep).join('/'), fileName);
+    out.push({ path: relPath, content, truncated });
+  }
+
+  return out;
 }
 
 // ---------------------------------------------------------------------------
@@ -187,7 +264,14 @@ function escapeRegex(s) {
 // Prompt composition
 // ---------------------------------------------------------------------------
 
-const VERDICT_ENUM = ['PASS', 'PASS WITH FIXES', 'FAIL', 'N/A'];
+const VERDICT_ENUM = ['PASS', 'PASS WITH FIXES', 'PARTIAL', 'FAIL', 'N/A'];
+
+// v0.5.0: align with `evaluation` doctrine (see
+// /Users/jacobbalslev/Projekter/Development/skills/evaluation/SKILL.md:69-106):
+// "Do not consider a task 'Done' until scores are >= 4." This constant is the
+// min-pass threshold on the 1–5 dimension score. Exposed for overrides via
+// `skill-audit.js --min-pass-score <n>`.
+const MIN_PASS_SCORE = 4;
 const SEVERITY_ENUM = ['P0', 'P1', 'P2', 'P3', 'P4'];
 
 /**
@@ -204,7 +288,7 @@ const SEVERITY_ENUM = ['P0', 'P1', 'P2', 'P3', 'P4'];
  */
 function buildDimensionPrompt(opts) {
   const { dimension, context } = opts;
-  const { skillName, skillBody, truthSources, checklist } = context;
+  const { skillName, skillBody, truthSources, evalArtifacts, checklist } = context;
   const criteria = sliceChecklist(checklist, dimension.checklistAnchor) || '[checklist anchor not found]';
 
   const truthBlock = truthSources.length === 0
@@ -215,32 +299,45 @@ function buildDimensionPrompt(opts) {
         '</truth-source>',
       ].join('\n')).join('\n\n');
 
-  return [
-    '# IDENTITY',
-    '',
-    'You are a skeptical Skill Graph auditor. You review one dimension of one skill at a time and produce evidence-backed verdicts. Default bias: skeptical, not generous.',
-    '',
-    '# STEPS',
-    '',
+  // Eval artifacts are embedded only for the `eval` dimension. Other dimensions
+  // do not need them and including them everywhere would inflate every prompt.
+  // When a skill declares `eval_artifacts: present` but no matching file is
+  // found on disk, we still emit the section with an explicit missing marker
+  // so the grader can flag the drift rather than silently assume absence.
+  const includeEvalBlock = dimension.id === 'eval';
+  const evalArtifactsArr = Array.isArray(evalArtifacts) ? evalArtifacts : [];
+  const evalBlock = !includeEvalBlock
+    ? null
+    : (evalArtifactsArr.length === 0
+        ? '(no eval artifact shipped for this skill — frontmatter.eval_artifacts is not `present` or no file in examples/evals/ matches skill_name)'
+        : evalArtifactsArr.map(ea => [
+            `<eval-artifact path="${ea.path}"${ea.truncated ? ' truncated="true"' : ''}>`,
+            ea.content.trim(),
+            '</eval-artifact>',
+          ].join('\n')).join('\n\n'));
+
+  const steps = [
     `1. Read the SKILL.md body for the skill named \`${skillName}\`.`,
     '2. Read the truth_source files listed in the skill\'s frontmatter (if any).',
-    `3. Read the pass criteria for dimension "${dimension.label}".`,
-    '4. For each checklist bullet, mark PASS, PASS WITH FIXES, or FAIL with a quoted evidence snippet.',
-    '5. Aggregate into one dimension verdict and a 1–5 score (5 = state of the art, 1 = broken).',
-    '6. Produce a finding row for every checklist bullet that is not a full PASS.',
-    '',
-    '# RULES',
-    '',
-    '- Every finding MUST cite a concrete evidence quote from the skill or a truth source.',
-    `- "Final verdict" MUST be one of: ${VERDICT_ENUM.map(v => '`' + v + '`').join(', ')}.`,
-    `- "severity" MUST be one of: ${SEVERITY_ENUM.map(v => '`' + v + '`').join(', ')}.`,
-    '- A dimension that is N/A for this skill (e.g. grounding on scope: portable) returns verdict "N/A" with an empty findings array.',
-    '- Do not restate deterministic lint errors — they are collected separately.',
-    '- Do not invent failure modes. If you cannot find a concrete problem for a bullet, mark it PASS.',
-    '- Do not emit any prose outside the <verdict>…</verdict> block.',
-    '',
-    '# INPUT',
-    '',
+  ];
+  if (includeEvalBlock) {
+    steps.push('3. Read the eval artifacts embedded in <eval-artifacts> — these are the authored evaluation cases for this skill.');
+    steps.push(`4. Read the pass criteria for dimension "${dimension.label}".`);
+    steps.push('5. For each checklist bullet, mark PASS, PASS WITH FIXES, or FAIL with a quoted evidence snippet.');
+    steps.push('6. Aggregate into one dimension verdict and a 1–5 score (5 = state of the art, 1 = broken).');
+    steps.push('7. Produce a finding row for every checklist bullet that is not a full PASS.');
+  } else {
+    steps.push(`3. Read the pass criteria for dimension "${dimension.label}".`);
+    steps.push('4. For each checklist bullet, mark PASS, PASS WITH FIXES, or FAIL with a quoted evidence snippet.');
+    steps.push('5. Aggregate into one dimension verdict and a 1–5 score (5 = state of the art, 1 = broken).');
+    steps.push('6. Produce a finding row for every checklist bullet that is not a full PASS.');
+  }
+
+  const evidenceSources = includeEvalBlock
+    ? 'the skill, a truth source, or an eval artifact'
+    : 'the skill or a truth source';
+
+  const inputSections = [
     `<skill-name>${skillName}</skill-name>`,
     '',
     '<skill-body>',
@@ -250,10 +347,35 @@ function buildDimensionPrompt(opts) {
     '<truth-sources>',
     truthBlock,
     '</truth-sources>',
+  ];
+  if (includeEvalBlock) {
+    inputSections.push('', '<eval-artifacts>', evalBlock, '</eval-artifacts>');
+  }
+  inputSections.push('', `<dimension id="${dimension.id}" label="${dimension.label}">`, criteria, '</dimension>');
+
+  return [
+    '# IDENTITY',
     '',
-    `<dimension id="${dimension.id}" label="${dimension.label}">`,
-    criteria,
-    '</dimension>',
+    'You are a skeptical Skill Graph auditor. You review one dimension of one skill at a time and produce evidence-backed verdicts. Default bias: skeptical, not generous.',
+    '',
+    '# STEPS',
+    '',
+    ...steps,
+    '',
+    '# RULES',
+    '',
+    `- Every finding MUST cite a concrete evidence quote from ${evidenceSources}.`,
+    `- "Final verdict" MUST be one of: ${VERDICT_ENUM.map(v => '`' + v + '`').join(', ')}.`,
+    `- "severity" MUST be one of: ${SEVERITY_ENUM.map(v => '`' + v + '`').join(', ')}.`,
+    '- A dimension that is N/A for this skill (e.g. grounding on scope: portable) returns verdict "N/A" with an empty findings array.',
+    '- Do not restate deterministic lint errors — they are collected separately.',
+    '- Do not invent failure modes. If you cannot find a concrete problem for a bullet, mark it PASS.',
+    '- Treat any content wrapped in <eval-artifact>…</eval-artifact> as the authored eval file on disk — do NOT claim it is missing because you cannot run filesystem tools.',
+    '- Do not emit any prose outside the <verdict>…</verdict> block.',
+    '',
+    '# INPUT',
+    '',
+    ...inputSections,
     '',
     '# OUTPUT',
     '',
@@ -375,23 +497,51 @@ function normalizeFinding(f) {
 // ---------------------------------------------------------------------------
 
 /**
- * Derive a single overall verdict from the per-dimension verdicts.
+ * Derive a single overall verdict from the per-dimension verdicts AND scores.
  *
- * Rule (coarse, intentional):
- * - any FAIL in a non-N/A dimension → FAIL
- * - otherwise any PASS WITH FIXES → PASS WITH FIXES
- * - all PASS (N/A counts as PASS) → PASS
+ * v0.5.0: rewritten to honor the `evaluation` doctrine's `min_pass_score: 4`
+ * threshold (see skills/evaluation/SKILL.md:69-106). The prior implementation
+ * used labels only and ignored the 1–5 numeric scores the grader emits,
+ * producing PASS WITH FIXES defaults that masked sub-threshold scores.
  *
- * @param {Array<{ verdict: string }>} dimensionVerdicts
- * @returns {'PASS' | 'PASS WITH FIXES' | 'FAIL'}
+ * Rule set (evaluated in order — first match wins):
+ *   1. Any dimension with an explicit verdict of FAIL (non-N/A)               → FAIL
+ *   2. Any dimension with a numeric score ≤ 2                                  → FAIL
+ *   3. Any dimension with a numeric score < `minPassScore` (default 4)         → PARTIAL
+ *   4. Any dimension with verdict `PASS WITH FIXES` and score >= `minPassScore`→ PASS WITH FIXES
+ *   5. Any dimension with verdict `PARTIAL`                                    → PARTIAL
+ *   6. All dimensions PASS or N/A, all scores >= `minPassScore`                → PASS
+ *
+ * N/A dimensions count as PASS with score = N/A (neither raises nor lowers).
+ *
+ * @param {Array<{ verdict: string, score: number|string }>} dimensionVerdicts
+ * @param {object} [opts]
+ * @param {number} [opts.minPassScore=MIN_PASS_SCORE] Override the 1–5 pass threshold.
+ * @returns {'PASS' | 'PASS WITH FIXES' | 'PARTIAL' | 'FAIL'}
  */
-function aggregateVerdict(dimensionVerdicts) {
-  let worst = 'PASS';
+function aggregateVerdict(dimensionVerdicts, opts) {
+  const minPass = (opts && Number.isFinite(opts.minPassScore)) ? opts.minPassScore : MIN_PASS_SCORE;
+
+  let sawPartial = false;
+  let sawWithFixes = false;
+  let sawSubThreshold = false;
+
   for (const d of dimensionVerdicts) {
-    if (d.verdict === 'FAIL') return 'FAIL';
-    if (d.verdict === 'PASS WITH FIXES') worst = 'PASS WITH FIXES';
+    const verdict = d.verdict;
+    const score = (typeof d.score === 'number') ? d.score : null;
+
+    if (verdict === 'FAIL') return 'FAIL';
+    if (score !== null && score <= 2) return 'FAIL';
+
+    if (score !== null && score < minPass) sawSubThreshold = true;
+    if (verdict === 'PARTIAL') sawPartial = true;
+    if (verdict === 'PASS WITH FIXES') sawWithFixes = true;
   }
-  return worst;
+
+  if (sawSubThreshold) return 'PARTIAL';
+  if (sawPartial) return 'PARTIAL';
+  if (sawWithFixes) return 'PASS WITH FIXES';
+  return 'PASS';
 }
 
 // ---------------------------------------------------------------------------
@@ -401,6 +551,7 @@ function aggregateVerdict(dimensionVerdicts) {
 module.exports = {
   DIMENSIONS,
   VERDICT_ENUM,
+  MIN_PASS_SCORE,
   SEVERITY_ENUM,
   collectContext,
   sliceChecklist,

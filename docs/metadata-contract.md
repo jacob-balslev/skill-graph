@@ -33,8 +33,8 @@ Skill Graph is a graph-aware superset of the [Agent Skills](https://agentskills.
 | `compatibility` | Agent Skills optional | Kept top-level; optional |
 | `allowed-tools` | Agent Skills optional | Kept top-level as a space-separated string |
 | `metadata` | Agent Skills optional | Not used at the top level; Skill Graph promotes extensions to named fields |
-| `schema_version`, `version`, `type`, `family`, `scope`, `owner`, `freshness`, `drift_check`, `eval_artifacts`, `eval_state`, `routing_eval` | Skill Graph extension | Required for Skill Graph; additive to the base |
-| `relations`, `grounding`, `portability`, `triggers`, `keywords`, `paths`, `routing_groups`, `extends`, `stability` | Skill Graph extension | Optional in Skill Graph; additive to the base |
+| `schema_version`, `version`, `type`, `browse_category`, `scope`, `owner`, `freshness`, `drift_check`, `eval_artifacts`, `eval_state`, `routing_eval` | Skill Graph extension | Required for Skill Graph; additive to the base |
+| `relations`, `grounding`, `portability`, `triggers`, `keywords`, `paths`, `project_tags`, `category`, `routing_groups`, `lifecycle`, `runtime_telemetry`, `extends`, `stability` | Skill Graph extension | Optional in Skill Graph; additive to the base |
 
 A Skill Graph `SKILL.md` is **not** a valid Agent Skills file as authored, because Skill Graph requires fields the base standard does not define. An export transform can produce an Agent-Skills-valid file by moving every Skill Graph extension field under the standard `metadata:` key. The transform is implemented as `scripts/export-skill.js`.
 
@@ -49,7 +49,11 @@ Each skill archetype expects a specific set of body H2 sections. These are the m
 | `router` | `## Coverage`, `## Routing Rules`, `## Do NOT Use When` |
 | `overlay` | `## Coverage`, `## Overlay Rules`, `## Extends` (name of the base skill), `## Do NOT Use When` |
 
-`## Key Files` is recommended for skills that reference concrete repo files. `## References` is recommended for skills that point at external reading.
+`## Key Files` is recommended for skills that reference concrete repo files. Prefer file paths with line ranges (`src/foo.ts:45-120`) over bare paths when the skill depends on a specific function or section. `## References` is recommended for skills that point at external reading.
+
+### Relationship to wider skill-authoring doctrine
+
+This archetype map is Skill Graph's own minimum. When Skill Graph is adopted into a monorepo that already has a canonical authoring standard (e.g., a `canonical-standard` or `skill-scaffold` skill), the adopter's standard may impose additional required sections or stricter content rules on top of this map. Skill Graph does not replace such a standard — it provides the portable subset that every skill must satisfy regardless of which adopter's fuller doctrine also applies. If you are adopting Skill Graph into a repo with a `canonical-standard` skill, reference that skill's archetype canon instead of republishing a narrower one in your own repo docs.
 
 ## Requiredness Groups
 
@@ -63,7 +67,7 @@ name
 description
 version
 type
-family
+browse_category
 scope
 owner
 freshness
@@ -95,14 +99,18 @@ triggers
 
 ### Optional enrichments
 
-These improve portability or discoverability, but are not required for a valid v1 skill.
+These improve portability, discoverability, and health tracking, but are not required for a valid Skill Graph skill.
 
 ```yaml
 paths
+project_tags
+category
 compatibility
 allowed-tools
 routing_groups
 portability
+lifecycle
+runtime_telemetry
 ```
 
 ## Template and Teaching Layer Discipline
@@ -179,7 +187,7 @@ It also does not require a full private control plane. The OSS contract keeps on
 
 ### Authored in `SKILL.md`
 
-The 25 authored fields (in schema order): `schema_version`, `name`, `description`, `version`, `type`, `family`, `scope`, `owner`, `freshness`, `drift_check`, `eval_artifacts`, `eval_state`, `routing_eval`, `stability`, `license`, `compatibility`, `allowed-tools`, `extends`, `triggers`, `keywords`, `paths`, `routing_groups`, `relations`, `grounding`, `portability`.
+The 29 authored fields (in schema order): `schema_version`, `name`, `description`, `version`, `type`, `browse_category`, `category`, `scope`, `owner`, `freshness`, `drift_check`, `eval_artifacts`, `eval_state`, `routing_eval`, `stability`, `license`, `compatibility`, `allowed-tools`, `extends`, `triggers`, `keywords`, `paths`, `project_tags`, `routing_groups`, `relations`, `grounding`, `portability`, `lifecycle`, `runtime_telemetry`.
 
 For the purpose, rules, and examples for each field, see `docs/field-reference.md`.
 
@@ -197,12 +205,12 @@ See `docs/manifest-contract.md` for the full rename map, loss policy, migration 
 
 ## Schema Versioning Policy
 
-Skill Graph uses a single integer `schema_version` to signal contract evolution. Current version: **2** (bumped from 1 in SH-5784). The policy five policy points together define when `schema_version` bumps, what consumers should expect, and where migration tooling lives:
+Skill Graph uses a single integer `schema_version` to signal contract evolution. Current version: **3** (bumped from 2 in the v0.4.0 release). The five policy points together define when `schema_version` bumps, what consumers should expect, and where migration tooling lives:
 
 1. **Breaking changes bump `schema_version`.** Renamed fields, removed fields, retyped fields, removed enum values, or tightened required-ness constraints bump the integer. Consumers must migrate or pin.
 2. **Additive changes do not bump.** New optional fields, new enum values that extend (not replace) an enum, and new checks in `scripts/skill-lint.js` that only affect warnings do not bump the version. Consumers on the prior minor release continue to pass.
-3. **Validate against the matching schema.** `schemas/skill.schema.json` and `schemas/manifest.schema.json` track the latest contract (v2 today). Pinned copies ship alongside them as `schemas/skill.v2.schema.json` and `schemas/manifest.v2.schema.json` — content-identical to the unversioned files except for `$id` and `title`. Consumers that want stability across a future v3 bump should validate against the versioned files; consumers that want to automatically follow the latest contract should validate against the unversioned files. When v3 is in flight, `schemas/skill.v3.schema.json` + `schemas/manifest.v3.schema.json` will ship in the same PR; the unversioned files will then track v3 and the v2 files will remain frozen at their current content.
-4. **One-version-overlap deprecation is preferred.** When v3 ships, `scripts/skill-lint.js` emits warnings (not errors) for v2-specific patterns for one minor release. Authors get a warning window to migrate. The rule that applies today — SH-5784's deprecation warnings for v1 field names during the v2 window — is the canonical pattern.
-5. **Migration tooling ships with the bump.** The first real v3 bump will ship a `scripts/migrate-skill-v2-to-v3.js` codemod in the same PR. No migration framework is built ahead of the first real need — the SH-5784 v1→v2 bump was handled as a coordinated one-shot rewrite of in-repo starters (no external consumers yet).
+3. **Validate against the matching schema.** `schemas/skill.schema.json` and `schemas/manifest.schema.json` track the latest contract (v3 today). Pinned copies ship alongside them as `schemas/skill.v3.schema.json` and `schemas/manifest.v3.schema.json` — content-identical to the unversioned files except for `$id` and `title`. The prior-version pinned files (`schemas/skill.v2.schema.json`, `schemas/manifest.v2.schema.json`) remain in the repo for consumers pinned to v2. Consumers that want stability across a future v4 bump should validate against the versioned files; consumers that want to automatically follow the latest contract should validate against the unversioned files.
+4. **One-version-overlap deprecation is preferred.** `scripts/skill-lint.js` emits warnings (not errors) for v2-specific patterns (scalar `drift_check`, scalar `compatibility`, `family` field name) during the v3 window. Authors get a warning window to migrate. Hard-error enum/shape changes — rejected by `additionalProperties: false` + type constraints in the schema itself — are paired with the friendlier lint warning so the error points at the rename.
+5. **Migration tooling ships with the bump.** The v3 bump ships `scripts/migrate-skill-v2-to-v3.js`, a line-based codemod that preserves author YAML style (comments, quoting, indentation). Future bumps follow the same pattern: one codemod per version, shipped in the same PR.
 
-For the concrete v1→v2 mapping tables, see `docs/manifest-contract.md § Migration Note — schema_version 1 → 2 (SH-5784)`. For field-level before/after pairs, see `docs/field-decision-guide.md`.
+For the concrete v2→v3 mapping tables, see `docs/manifest-contract.md § Migration Note — schema_version 2 → 3`. For the v1→v2 tables (historical), see the same document. For field-level before/after pairs, see `docs/field-decision-guide.md`.

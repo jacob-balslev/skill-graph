@@ -1,20 +1,22 @@
 ---
-schema_version: 2
+schema_version: 3
 name: a11y
 description: "Use when building or reviewing interactive UI, forms, navigation, or dynamic content. Covers semantic HTML, keyboard access, focus management, labeling, state-change announcement, and reduced-motion / high-contrast preferences. Do NOT use for color-palette creation, visual branding, or prose reading-level accessibility — those belong to visual-design and documentation respectively."
 version: 1.0.0
 type: capability
-family: frontend
+browse_category: frontend
 scope: portable
 owner: maintainer
 freshness: "2026-04-17"
-drift_check: "2026-04-17"
+drift_check:
+  last_verified: "2026-04-17"
 eval_artifacts: present
 eval_state: passing
 routing_eval: absent
 stability: experimental
 license: MIT
-compatibility: Markdown, Git, any web stack
+compatibility:
+  notes: "Markdown, Git, any web stack"
 allowed-tools: Read Grep
 keywords:
   - accessibility

@@ -4,11 +4,60 @@ All notable changes to Skill Graph are recorded here.
 
 The format is based on [Keep a Changelog 1.1.0](https://keepachangelog.com/en/1.1.0/) and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-Skill Graph has not been published to a package registry. Versions below describe the contract at each checkpoint in the git history and are how consumers pin. `schema_version` in the JSON Schemas tracks contract shape (currently `2`); this changelog tracks the library as a whole (tooling + starters + docs).
+Skill Graph has not been published to a package registry. Versions below describe the contract at each checkpoint in the git history and are how consumers pin. `schema_version` in the JSON Schemas tracks contract shape (currently `3`); this changelog tracks the library as a whole (tooling + starters + docs).
 
 ## [Unreleased]
 
-No unreleased changes since 0.3.0.
+No unreleased changes since 0.4.0.
+
+## [0.4.0] — 2026-04-18
+
+The "v3 contract + reference consumer + multi-project workspace" release. A breaking schema bump (v2 → v3) coordinated with new authoring fields, executable drift evidence, multi-root workspace support, and two new reference consumer tools that exercise the full graph contract end-to-end.
+
+### Added
+- **`schemas/skill.v3.schema.json` + `schemas/manifest.v3.schema.json`** — pinned v3 copies. The unversioned schemas now track v3; v2 pinned copies remain in the repo as frozen prior-version stable copies.
+- **`scripts/migrate-skill-v2-to-v3.js`** — line-based codemod that preserves author YAML style (comments, quoting, indentation). Applies the four v2 → v3 transformations: `schema_version: 2 → 3`, `family → browse_category`, scalar `drift_check` → object with `last_verified`, scalar `compatibility` → object with `notes`.
+- **`scripts/skill-graph-route.js`** — the reference consumer. Graph-aware skill selector that uses `relations` (all four kinds), `grounding.truth_sources`, `eval_state`, `drift_check`, `lifecycle`, and `project_tags` to make routing decisions visible. Emits ranked lists with per-skill reasons explaining why each skill was selected, co-loaded via `verify_with` / `depends_on`, or excluded via `boundary`. Supports `--project`, `--max`, `--min-eval-state`, `--path`, `--manifest`, `--json`.
+- **`scripts/skill-graph-drift.js`** — the drift sentinel. Hashes every `grounding.truth_sources` entry with SHA-256, compares against the stored `drift_check.truth_source_hashes` baseline, and reports DRIFT / BROKEN / STALE / NO_BASELINE states. `--record --apply` updates the SKILL.md frontmatter in place with current hashes and today's date.
+- **`.skill-graph/config.json`** (optional workspace config) — declares `skill_roots` (multiple directories the generator unions into one manifest) and `projects` (literal handle → `semantic_tags` mapping). Fallback to single-root `skills/` when absent. Documented in `docs/plans/multi-root-workspace.md`.
+- **Four new optional v3 fields** in the authored frontmatter contract:
+  - `category` — hierarchical browse path (`ecommerce/integrations/shopify`), pattern-validated.
+  - `project_tags` — array of literal project handles or semantic tags for multi-project filtering. Absent = ambient/cross-project.
+  - `lifecycle` — object with `stale_after_days` and `review_cadence`. Drives the drift sentinel's staleness flag.
+  - `runtime_telemetry` — object with `feedback_source` path, `last_updated`, and optional success-rate metrics. Enables closing the loop from self-reported `eval_state` to externally-observed success/failure.
+- **Relation item object form** — `relations.boundary` items may now be `{skill, reason}` objects (back-compat with bare strings), and `relations.depends_on` items may be `{skill, min_version}` objects. Reasons make the anti-ownership field self-documenting.
+- **Manifest-level generated fields**: `workspace` block echoing the config, `summary.by_project` rollup, `skills[].project` handle, `skills[].category`, `skills[].project_tags`, `health.lifecycle`, `health.runtime_telemetry`, `health.drift_detected` (computed by the generator when hashes are recorded).
+- **Paths negation** — `paths` globs may now be prefixed with `!` for gitignore-style exclusion, matching how real file scanners work.
+- **`docs/plans/multi-root-workspace.md`** — design reference for the hybrid layout, config format, scope placement rules, and migration path from single-root to multi-root.
+- **`docs/field-decision-guide.md` § 4–5** — new decision tables for `project_tags` (literal vs semantic tags, when to tag vs leave ambient) and a cross-cutting table disambiguating `browse_category` vs `category` vs `project_tags` vs `routing_groups`.
+
+### Changed (breaking)
+- **`schema_version`: 2 → 3.** All v2 field names and scalar shapes that change are hard-rejected by the v3 schema's `additionalProperties: false` and type constraints. Lint emits friendlier WARN lines pointing at the rename for the first v3 minor release window.
+- **`family` → `browse_category`** (rename). Values unchanged. The v2 name invited misuse as a routing signal; the v3 name makes the browse-taxonomy intent explicit.
+- **`drift_check` shape: date string → object.** v2: `drift_check: "2026-04-15"`. v3: `drift_check: { last_verified: "2026-04-15", truth_source_hashes?: { ... } }`. The new hash map is optional but strongly recommended — it turns drift detection from self-asserted into evidence-backed.
+- **`compatibility` shape: free-text string → object.** v2: `compatibility: "Node.js 18+, Git"`. v3: `compatibility: { runtimes?: [...], node?: string, notes?: string }`. The codemod moves the old string verbatim into `compatibility.notes`; authors upgrade to structured fields manually.
+- **`summary.by_family` → `summary.by_browse_category`** in the manifest projection. Consumers reading the old key must update.
+- **`scripts/skill-lint.js`** — `DEPRECATED_V1_FIELDS` becomes `DEPRECATED_V1_FIELDS` for v1 names plus new v2 → v3 warnings for `family`, scalar `drift_check`, scalar `compatibility`. `AUTHORED_FIELDS_MUST_FLOW` adds `browse_category`, `project_tags`, `category`.
+- **`scripts/check-contract-consistency.js` C6** — now version-aware: resolves the current schema version from the unversioned schema, checks parity against the matching pinned copy, treats all prior versions as frozen (must exist, not checked for parity).
+- **`scripts/generate-manifest.js`** — reads `.skill-graph/config.json` when present and walks multiple skill roots; falls back to single-root `skills/` otherwise. Computes SHA-256 on truth sources and emits `health.drift_detected` when baselines exist. `schema_version` written as `3`.
+- **`scripts/export-skill.js`** — flattens the v3 `compatibility` object to a single string for Agent Skills export, concatenating `runtimes`, `node`, and `notes` into a 500-char budget. New v3 fields flow through the `metadata:` envelope without special handling.
+- **`scripts/lib/parse-frontmatter.js`** — extended to parse block sequences of map entries (needed for v3 `boundary: [{skill, reason}]` and `depends_on: [{skill, min_version}]` shapes).
+- **`examples/skill-template.md`** — upgraded to v3, now exercises `browse_category`, `category`, object `drift_check`, object `compatibility`, object `boundary` with reason, and `lifecycle`.
+- **All 8 starter skills** migrated to v3 via the codemod.
+- **All 5 Agent Skills exports** regenerated with the flattened v3 `compatibility`.
+- **`examples/skills.manifest.sample.json`** regenerated with v3 shape (nine skill entries: 8 starters + template).
+
+### Migration
+- Run `node scripts/migrate-skill-v2-to-v3.js` against any v2 skill directory to apply all four transformations automatically.
+- See `docs/manifest-contract.md § Migration Note — v2 → v3` for the full mapping table.
+- See `docs/field-reference.md` for per-field rules, v3 examples, and v2 → v3 migration notes inline with each changed field.
+
+### Verification
+- `node scripts/skill-lint.js --include-template` → 0 errors across 8 starters + template.
+- `node scripts/check-contract-consistency.js` → C1–C6 OK, 0 warnings. C6 confirms v3 tracks unversioned and v2 is correctly frozen.
+- `node scripts/generate-manifest.js --include-template --validate-only` → manifest valid against `schemas/manifest.schema.json`.
+- `node scripts/skill-graph-route.js "accessibility screen reader"` → produces expected selection + co-load + boundary-exclusion output with per-skill reasons.
+- `node scripts/skill-graph-drift.js` → reports baseline status for every skill with truth sources.
 
 ## [0.3.0] — 2026-04-17
 
@@ -57,6 +106,7 @@ The "v2 contract + scripts toolchain" release. Before 0.3.0 the project did not 
 - Restored four optional schema fields that were accidentally dropped in an earlier manifest refactor (`8791558`, SH-5776).
 - Repaired six factual errors in the shipped worked examples (`873c463`, SH-5777).
 
-[Unreleased]: https://github.com/PLACEHOLDER/skill-graph/compare/v0.3.0...HEAD
+[Unreleased]: https://github.com/PLACEHOLDER/skill-graph/compare/v0.4.0...HEAD
+[0.4.0]: https://github.com/PLACEHOLDER/skill-graph/compare/v0.3.0...v0.4.0
 [0.3.0]: https://github.com/PLACEHOLDER/skill-graph/compare/v0.2.0...v0.3.0
 [0.2.0]: https://github.com/PLACEHOLDER/skill-graph/releases/tag/v0.2.0

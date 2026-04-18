@@ -13,13 +13,14 @@ Fields are listed in authored order — the same order they appear in `examples/
 **Purpose.** Versions the contract so migration tooling can handle future schema changes deterministically.
 
 **Rules.**
-- Must be the integer `2` or the string `"2"` for all v2 skills.
+- Must be the integer `3` or the string `"3"` for all v3 skills.
 - Start every new skill at the current schema version. Do not downgrade.
-- The v1 → v2 bump (SH-5784) changed the `scope` enum (`generic`→`portable`, `operational`→`codebase`), split `eval_status` into three orthogonal fields, renamed `portability.level`→`readiness` and `portability.exports`→`targets`, and renamed `route_groups`→`routing_groups`. See `docs/manifest-contract.md § Migration Note — v1 → v2` for the full migration map.
+- The v2 → v3 bump introduced `drift_check` as an object (was a date string), `compatibility` as an object (was a free-text string), renamed `family` → `browse_category`, and added optional `category`, `project_tags`, `lifecycle`, and `runtime_telemetry`. Run `node scripts/migrate-skill-v2-to-v3.js` for a one-shot migration. See `docs/manifest-contract.md § Migration Note — v2 → v3` for the full map.
+- The v1 → v2 bump (SH-5784) changed the `scope` enum (`generic`→`portable`, `operational`→`codebase`), split `eval_status` into three orthogonal fields, renamed `portability.level`→`readiness` and `portability.exports`→`targets`, and renamed `route_groups`→`routing_groups`. See `docs/manifest-contract.md § Migration Note — v1 → v2` for the historical map.
 
 **Example.**
 ```yaml
-schema_version: 2
+schema_version: 3
 ```
 
 **When to use.** Always — this is a required field.
@@ -129,15 +130,16 @@ type: capability
 
 ---
 
-## `family`
+## `browse_category`
 
-**Purpose.** Human browse taxonomy for discovery and grouping. Does not imply runtime behavior or evaluation logic.
+**Purpose.** Flat human browse bucket for discovery and grouping. Does not imply runtime behavior or evaluation logic. Renamed from v2 `family` in v3 — the old name invited misuse as a routing signal, so the v3 name makes the intent (browse, not behavior) explicit.
 
 **Rules.**
-- Open-ended string — no enum is enforced in v1.
+- Open-ended string — no enum is enforced.
 - Use stable, human-readable buckets.
 - Avoid one-off synonyms for the same idea (e.g., pick `engineering` and stick to it; don't use `dev` in one skill and `engineering` in another).
 - A future release may adopt a controlled vocabulary; until then, choose consistently within a skill library.
+- For hierarchical taxonomy (`ecommerce/integrations/shopify`), use the separate optional `category` field. `browse_category` is flat on purpose.
 
 **Recommended values.**
 
@@ -152,12 +154,36 @@ type: capability
 
 **Example.**
 ```yaml
-family: integration
+browse_category: integration
 ```
 
-**When to use.** Always — required. Even if the family is unusual, populate it so the skill appears in browse indexes.
+**When to use.** Always — required. Even if the bucket is unusual, populate it so the skill appears in browse indexes.
 
-**When NOT to use.** Do not use `family` for behavioral control — that is `type`'s job.
+**When NOT to use.** Do not use `browse_category` for behavioral control — that is `type`'s job. Do not use it for routing group membership — that is `routing_groups`. Do not use it for hierarchical placement — that is `category`.
+
+**Migration from v2.** The field name changed from `family` to `browse_category` in v3 (values unchanged). The v2 name is rejected as an unknown field under the v3 schema via `additionalProperties: false`. Run `node scripts/migrate-skill-v2-to-v3.js` for an automatic rename.
+
+---
+
+## `category`
+
+**Purpose.** Hierarchical browse path as slash-delimited segments. Complements `browse_category`: flat bucket vs. tree path answer different questions. A UI or docs site uses `category` to render a folder tree; a filter UI uses `browse_category` for quick grouping.
+
+**Rules.**
+- Optional.
+- Lowercase alphanumeric segments separated by `/` (e.g., `ecommerce/integrations/shopify`).
+- Must match pattern `^[a-z0-9][a-z0-9-]*(/[a-z0-9][a-z0-9-]*)*$`.
+- Do not use absolute paths (no leading `/`), no trailing `/`, no `.` or `..`.
+- One skill, one path. A skill cannot belong to two hierarchies at once — the `browse_category` field is the escape hatch for secondary flat grouping.
+
+**Example.**
+```yaml
+category: ecommerce/integrations/shopify
+```
+
+**When to use.** When the skill library is large enough that a tree structure helps readers find related skills. A library with fewer than 20 skills rarely benefits.
+
+**When NOT to use.** Small skill libraries — `browse_category` alone is sufficient. Skills where categorization is genuinely ambiguous — use `project_tags` or `routing_groups` to attach flat semantic tags instead.
 
 ---
 
@@ -233,22 +259,40 @@ freshness: "2026-04-15"
 
 ## `drift_check`
 
-**Purpose.** Records when the skill was last verified against its truth sources (code, docs, external specs). Distinct from `freshness` — a skill can be editorially fresh but technically drifted.
+**Purpose.** Records when the skill was last verified against its truth sources (code, docs, external specs) AND stores content hashes of those truth sources at the time of verification. The stored hashes turn `drift_check` from a self-asserted date into evidence the drift sentinel can verify. Distinct from `freshness` — a skill can be editorially fresh but technically drifted.
+
+**Shape change in v3.** The v2 field was a date string. The v3 field is an object with a required `last_verified` date and an optional `truth_source_hashes` map. The v2 scalar form is rejected as a type error under v3; run `node scripts/migrate-skill-v2-to-v3.js` for an automatic upgrade.
 
 **Rules.**
-- ISO 8601 date string (`YYYY-MM-DD`).
-- For `scope: portable` skills with no external truth sources, `drift_check` equals `freshness`.
-- For `scope: codebase` skills, update `drift_check` whenever you verify the skill's claims against the live codebase.
-- A `drift_check` date significantly older than `freshness` is a warning sign that editorial updates have outpaced verification.
+- Object with one required sub-field and one optional sub-field.
+- `last_verified`: ISO 8601 date string (`YYYY-MM-DD`).
+- `truth_source_hashes`: optional map of truth source file path → SHA-256 hex digest.
+- The file paths in `truth_source_hashes` must match entries in `grounding.truth_sources` exactly. The drift sentinel (`scripts/skill-graph-drift.js`) reports DRIFT when any live hash differs from the recorded hash, BROKEN when a truth source is missing, and NO_BASELINE when `truth_source_hashes` is absent but truth sources are declared.
+- For `scope: portable` skills with no external truth sources, `drift_check.last_verified` equals `freshness` and `truth_source_hashes` is omitted.
+- Record hashes with `node scripts/skill-graph-drift.js --record --apply <skill-path>`; preview without `--apply`.
+- A `drift_check.last_verified` date significantly older than `freshness` is a warning sign that editorial updates have outpaced verification.
+
+**Sub-fields.**
+
+| Sub-field | Type | Meaning |
+|---|---|---|
+| `last_verified` | string (date) | ISO date of the most recent verification against truth sources |
+| `truth_source_hashes` | object (string → string) | Map of truth source path → SHA-256 hex digest at the time of verification |
 
 **Example.**
 ```yaml
-drift_check: "2026-04-15"
+drift_check:
+  last_verified: "2026-04-17"
+  truth_source_hashes:
+    "src/integrations/shopify/client.ts": "c2a4b1e0...64-char-hex..."
+    "src/integrations/shopify/webhooks.ts": "7f81a3d2...64-char-hex..."
 ```
 
 **When to use.** Always — required.
 
-**When NOT to use.** N/A — required.
+**When NOT to use.** Do not fabricate hashes. If you cannot compute them with the drift tool, omit `truth_source_hashes` and accept a NO_BASELINE state until you can run the tool.
+
+**Migration from v2.** v2 used a single date string: `drift_check: "2026-04-15"`. v3 requires an object: `drift_check:\n  last_verified: "2026-04-15"`. The codemod handles this transformation automatically.
 
 ---
 
@@ -365,6 +409,88 @@ stability: stable
 
 ---
 
+## `superseded_by`
+
+**Purpose.** Names the skill that replaces this one when `stability: deprecated`. Consumers and routers use this to follow a deprecation chain automatically instead of reading the body prose.
+
+**Rules.**
+- Optional for non-deprecated skills.
+- **Required when `stability: deprecated`** — enforced by the `allOf` rule in `skill.schema.json`. A deprecated skill without `superseded_by` fails schema validation.
+- The value must be the `name` of an existing skill in the library. (Target-existence check follows the `relations.*` enforcement pattern and is expected to land in a future lint iteration.)
+- Write a brief pointer in `## Coverage` as well so human readers see the migration path without re-parsing frontmatter.
+
+**Example.**
+```yaml
+stability: deprecated
+superseded_by: new-skill-name
+```
+
+**When to use.** On every skill entering the `deprecated` state, in the same commit that sets `stability: deprecated`.
+
+**When NOT to use.** Non-deprecated skills. Do not declare a speculative replacement ahead of the deprecation event — it misleads routers.
+
+**Migration from v2.** Added in v0.5.0 (additive — not a schema bump). Prior deprecated skills must retroactively populate `superseded_by` when they next get edited.
+
+---
+
+## `examples`
+
+**Purpose.** Positive-class activation examples — a short list of realistic user prompts the skill SHOULD activate for. Complements `keywords` (semantic tokens) and `triggers` (exact labels) by giving routers full-prompt, few-shot retrieval targets.
+
+**Rules.**
+- Optional array of strings.
+- 2–5 entries is the sweet spot. Fewer than 2 gives the router no discrimination signal; more than 5 dilutes the vector-search centroid.
+- Write the examples in the user's voice — the prompt they would actually type — not in imperative abstract form.
+- Each example should be a self-contained prompt, not a fragment (router embeddings cover the full string).
+- Groups under `activation.examples` in the manifest projection.
+
+**Example.**
+```yaml
+examples:
+  - "how do I validate a webhook signature from Shopify?"
+  - "the HMAC check is failing for a real payload — what's wrong?"
+  - "add Stripe webhook signature verification to this route"
+```
+
+**When to use.** Any skill that relies on natural-language routing at query time — the router cannot see the skill body, only the metadata. Routable skills without `examples` under-trigger at library scale (see SkillRouter paper, `.artifacts/audit-brief.md` for references).
+
+**When NOT to use.** Internal helper skills activated only by label or path. Overlay skills that inherit their parent's activation.
+
+**Migration from v2.** Added in v0.5.0 (additive — not a schema bump).
+
+---
+
+## `anti_examples`
+
+**Purpose.** Negative-class activation examples — user prompts that look topically related to this skill but should activate a DIFFERENT skill instead. Used as hard-negative training signal by embedding routers to sharpen boundary discrimination.
+
+**Rules.**
+- Optional array of strings.
+- Pair with `relations.boundary` — every `anti_examples` entry should correspond to a concrete other skill the router should route to. Name that skill in `relations.boundary` with an object-form `{skill, reason}` explaining why it owns that territory.
+- Do not dump generic off-topic prompts here — this is not a blocklist. Use it only for near-misses the router keeps getting wrong.
+- Groups under `activation.anti_examples` in the manifest projection.
+
+**Example.**
+```yaml
+anti_examples:
+  - "refactor this function to be more testable"     # → refactor skill, not this one
+  - "why is my test failing after the refactor?"     # → debugging skill
+relations:
+  boundary:
+    - skill: refactor
+      reason: "refactor covers behavior-preserving code modification; this skill is test-strategy planning"
+    - skill: debugging
+      reason: "chasing a failure is debugging; planning is strategy"
+```
+
+**When to use.** When the skill has documented confusables (near-miss activations) that the routing layer has gotten wrong. Write the anti-example list after you have seen the router misfire, not before — authoring anti-examples without real router data is speculative.
+
+**When NOT to use.** Skills with no close-neighbor confusables. Skills that are activated only by exact label or path (routing is deterministic, not embedding-based).
+
+**Migration from v2.** Added in v0.5.0 (additive — not a schema bump).
+
+---
+
 ## `license`
 
 **Purpose.** Declares the distribution license for the skill content. Required for any skill intended for public or cross-team sharing.
@@ -387,22 +513,40 @@ license: MIT
 
 ## `compatibility`
 
-**Purpose.** Declares environment requirements for skills that have specific runtime needs (package managers, system tools, network access).
+**Purpose.** Declares environment requirements for skills that have specific runtime needs — target agent runtimes, Node.js version, and free-text notes for anything else.
+
+**Shape change in v3.** The v2 field was a free-text string up to 500 characters. The v3 field is a structured object so consumers can parse `runtimes` and `node` without heuristics. The scalar form is rejected as a type error under v3; run `node scripts/migrate-skill-v2-to-v3.js` to upgrade (the codemod moves the old string verbatim into `compatibility.notes`).
 
 **Rules.**
-- Free-form string; maximum 500 characters (Agent Skills spec limit).
-- Omit entirely when the skill is fully generic with no environment requirements.
-- Use comma-separated values for multiple requirements.
-- Do not encode version ranges beyond what is readable as plain text.
+- Object with up to three optional sub-fields.
+- Omit the field entirely when the skill is fully generic with no environment requirements.
+- `runtimes`: array of strings naming target agent runtimes with optional version constraints (e.g., `claude-code>=2.0`, `cursor>=0.40`). Use short stable identifiers.
+- `node`: Node.js version constraint as a string (e.g., `>=18`).
+- `notes`: free-text supplement, capped at 500 characters.
+
+**Sub-fields.**
+
+| Sub-field | Type | Meaning |
+|---|---|---|
+| `runtimes` | string[] | Target agent runtimes with optional version constraints |
+| `node` | string | Node.js version constraint |
+| `notes` | string (≤500 chars) | Free-text supplement |
 
 **Example.**
 ```yaml
-compatibility: Node.js 18+, Git
+compatibility:
+  runtimes:
+    - claude-code>=2.0
+    - cursor>=0.40
+  node: ">=18"
+  notes: Requires PostgreSQL 15+ when using the `neon` adapter.
 ```
 
 **When to use.** When the skill's instructions require a specific runtime, CLI tool, or package version that is not universally available.
 
-**When NOT to use.** Generic skills with no runtime dependencies — omit rather than setting to `any` or a blank value.
+**When NOT to use.** Generic skills with no runtime dependencies — omit the field rather than setting it to an empty object.
+
+**Migration from v2.** The codemod (`scripts/migrate-skill-v2-to-v3.js`) transforms `compatibility: "<text>"` to `compatibility:\n  notes: "<text>"`. Authors move the string into `runtimes` / `node` manually when the structured form is more accurate.
 
 ---
 
@@ -520,6 +664,52 @@ paths:
 
 ---
 
+## `project_tags`
+
+**Purpose.** Declares which projects a skill is relevant to in a multi-project workspace. A skill without `project_tags` is ambient — it applies to every project. A skill with tags is filtered in or out by the router based on the active project.
+
+**Taxonomy note.** `project_tags` answers "which of my projects is this skill relevant to?" `category` answers "where does this belong in a browse tree?" `routing_groups` answers "which batch-activation group is this in?" Three fields, three different jobs, no overlap.
+
+**Rules.**
+- Optional array of lowercase kebab-case tokens.
+- Each tag is either a literal project handle (e.g., `sales-hub`, `free-oppression`) or a semantic tag that multiple projects share (e.g., `ecommerce`, `shopify-stack`).
+- The workspace config at `.skill-graph/config.json` maps literal project handles to `semantic_tags`. A skill tagged with a semantic tag matches every project whose config expands to include that tag.
+- Absent `project_tags` means the skill is ambient — applies to every project. This is the default; use it for cross-cutting skills like GDPR, a11y, or test-driven-development.
+
+**Example.**
+```yaml
+# Sales Hub only
+project_tags: [sales-hub]
+
+# Cross-ecommerce — both sales-hub and free-oppression
+project_tags: [ecommerce]
+
+# Literal + semantic — precise match on sales-hub, semantic match on any ecommerce project
+project_tags: [sales-hub, ecommerce]
+```
+
+**Workspace config resolution.**
+
+```json
+// .skill-graph/config.json
+{
+  "workspace": {
+    "projects": {
+      "sales-hub":        { "semantic_tags": ["ecommerce", "shopify-stack"] },
+      "free-oppression":  { "semantic_tags": ["ecommerce", "etsy-stack"] }
+    }
+  }
+}
+```
+
+A skill tagged `[ecommerce]` matches both `sales-hub` and `free-oppression`. A skill tagged `[sales-hub]` only matches `sales-hub`. A skill tagged `[etsy-stack]` only matches `free-oppression`.
+
+**When to use.** When the workspace has more than one project and a skill's scope is clearly bound to a subset. Tag with semantic tags whenever possible — literal project handles couple the skill to a project name that may change.
+
+**When NOT to use.** Single-project workspaces — omit the field. Cross-cutting skills that apply everywhere — omit the field. Do not use it as a substitute for `browse_category` or `routing_groups`; they answer different questions.
+
+---
+
 ## `routing_groups`
 
 **Purpose.** Named routing group membership for batch activation and browse classification. Allows a router to load all skills in a group with a single label.
@@ -560,14 +750,37 @@ routing_groups:
 
 **Allowed keys.**
 
-| Key | Meaning |
-|---|---|
-| `adjacent` | Related skills for discoverability and recommended co-reading. No dependency implied. |
-| `boundary` | Skills this skill explicitly does NOT own — anti-ownership and wrong-skill routing protection. |
-| `verify_with` | Skills that should be co-loaded for verification or that provide cross-checks. |
-| `depends_on` | Explicit dependency — this skill requires the target conceptually or operationally. |
+| Key | Meaning | Item shape |
+|---|---|---|
+| `adjacent` | Related skills for discoverability and recommended co-reading. No dependency implied. | string |
+| `boundary` | Skills this skill explicitly does NOT own — anti-ownership and wrong-skill routing protection. | string OR `{skill, reason}` |
+| `verify_with` | Skills that should be co-loaded for verification or that provide cross-checks. | string |
+| `depends_on` | Explicit dependency — this skill requires the target conceptually or operationally. | string OR `{skill, min_version}` |
 
-**Example.**
+**Item shapes in v3.** `boundary` and `depends_on` accept both the bare-string form (v2-compatible) and the enriched object form (v3 addition). The bare form remains valid — upgrade item-by-item when a reason or version constraint is real.
+
+- `boundary` objects carry a `reason` string. The reason is what makes the boundary self-documenting: `"fulfillment owns order state transitions; this skill only reads them"` beats `"fulfillment"` alone.
+- `depends_on` objects carry a `min_version` semver constraint. Useful when a skill depends on a specific version of another skill's contract.
+
+**Example (v3, enriched).**
+```yaml
+relations:
+  adjacent:
+    - webhook-integration
+  boundary:
+    - skill: fulfillment
+      reason: "fulfillment owns order state transitions; this skill only reads them"
+    - skill: shipping
+      reason: "shipping is covered by the shipping-integration skill"
+  verify_with:
+    - test-coverage
+  depends_on:
+    - skill: api-key-management
+      min_version: "1.2.0"
+    - testing-strategy
+```
+
+**Example (v2-compatible, bare strings only).**
 ```yaml
 relations:
   adjacent:
@@ -582,7 +795,9 @@ relations:
 
 **When to use.** Populate `adjacent` and `boundary` for any skill that has clearly related or clearly excluded neighbors. Populate `depends_on` when the skill cannot function without another skill's concepts. Populate `verify_with` when a co-loaded skill improves verification quality.
 
-**When NOT to use.** Do not use `adjacent` as a dumping ground for loosely related skills — keep it to the 2–4 most meaningful connections.
+**When to use object form.** Use `{skill, reason}` whenever a `boundary` entry's rationale isn't obvious from the skill name alone. Use `{skill, min_version}` when a dependency's contract has versioned — without the constraint, a future update to the target skill can silently break this skill's claims.
+
+**When NOT to use.** Do not use `adjacent` as a dumping ground for loosely related skills — keep it to the 2–4 most meaningful connections. Do not fabricate `min_version` values — if you don't know the constraint, omit it.
 
 ---
 
@@ -665,3 +880,71 @@ portability:
 **When NOT to use.** Internal-only skills that will never be exported. Omit the field rather than setting `readiness: declared` with an empty `targets` array.
 
 **Migration from v1.** The v1 sub-fields `portability.level` (values `high`/`medium`/`low`) and `portability.exports` were renamed in schema_version 2 (SH-5784). Map `high` → `scripted` when an export script exists for a listed target, else `declared`. Map `medium` → `scripted` similarly. Map `low` → `declared`. Rename `portability.exports` → `portability.targets`; values are unchanged.
+
+---
+
+## `lifecycle`
+
+**Purpose.** Per-skill maintenance policy consumed by the drift sentinel (`scripts/skill-graph-drift.js`). Declares how often the skill should be re-verified and after how many days it is considered stale. New in v3.
+
+**Why it exists.** Integration skills rot faster than pure concept skills. A Shopify API skill might need quarterly review; a testing-strategy skill might be stable for years. A single global staleness threshold misrepresents both. `lifecycle.stale_after_days` lets each skill declare its own decay rate.
+
+**Rules.**
+- Optional object with two optional sub-fields.
+- `stale_after_days`: positive integer. The drift sentinel flags the skill as STALE when `today - drift_check.last_verified > stale_after_days`.
+- `review_cadence`: enum hint for scheduled drift checks. The value does not affect schema validation; it signals to tooling when the skill wants to be re-verified.
+
+**Sub-fields.**
+
+| Sub-field | Type | Meaning |
+|---|---|---|
+| `stale_after_days` | integer (≥1) | Days after `drift_check.last_verified` at which the skill is flagged stale |
+| `review_cadence` | enum | `per-commit` \| `weekly` \| `quarterly` \| `on-truth-source-change` |
+
+**Example.**
+```yaml
+lifecycle:
+  stale_after_days: 90
+  review_cadence: quarterly
+```
+
+**When to use.** Any skill that makes concrete claims about external systems, APIs, or code that changes independently of the skill content.
+
+**When NOT to use.** Purely conceptual skills where staleness is not a meaningful concept. In that case, omit the whole block rather than setting `stale_after_days` to an absurdly high value.
+
+---
+
+## `runtime_telemetry`
+
+**Purpose.** Pointer to a real-world success/failure feed for this skill. Consumers may use telemetry to corroborate or override the authored `eval_state`. New in v3.
+
+**Why it exists.** `eval_state` is self-reported — an author claims a skill's evals are passing. `runtime_telemetry` is external-reported — a feedback pipeline records actual success/failure rates from agents that ran the skill. Together they close the loop from "did the author claim this works?" to "does this actually work in the field?"
+
+**Rules.**
+- Optional object.
+- `feedback_source` is required when the block is present. It is a path or URL to a JSONL of run receipts. Each receipt is expected to carry at minimum `{ timestamp, skill, outcome }`.
+- `last_updated` records when the block's `metrics` were last refreshed.
+- `metrics` is optional summary statistics derived from the feedback source. Consumers may read this pre-computed summary instead of re-parsing the JSONL.
+
+**Sub-fields.**
+
+| Sub-field | Type | Meaning |
+|---|---|---|
+| `feedback_source` | string | Path or URL to a JSONL of run receipts (required) |
+| `last_updated` | string (date) | ISO date of the most recent metrics refresh |
+| `metrics.sample_size` | integer (≥0) | Number of recorded runs used for the summary |
+| `metrics.success_rate` | number (0–1) | Fraction of runs with a positive outcome |
+
+**Example.**
+```yaml
+runtime_telemetry:
+  feedback_source: "telemetry/skills/shopify.jsonl"
+  last_updated: "2026-04-15"
+  metrics:
+    sample_size: 142
+    success_rate: 0.87
+```
+
+**When to use.** When a telemetry pipeline actually exists for this skill and produces receipts the router or auditor can consume.
+
+**When NOT to use.** Speculative feedback-source paths that do not yet exist. An empty `feedback_source` is worse than an absent block — it promises data that isn't there.

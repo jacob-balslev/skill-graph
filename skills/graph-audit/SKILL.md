@@ -1,20 +1,30 @@
 ---
-schema_version: 2
+schema_version: 3
 name: graph-audit
 description: "Use when checking that every SKILL.md conforms to the schema, that manifest entries match authored frontmatter, or that relation targets point at real sibling skills. Covers schema conformance, manifest sync, relation integrity, eval-artifact coherence, grounding presence, and name-directory parity. Do NOT use for general code review, runtime agent debugging, or auditing non-skill files."
 version: 1.0.0
 type: capability
-family: knowledge
+browse_category: knowledge
 scope: codebase
 owner: maintainer
 freshness: "2026-04-17"
-drift_check: "2026-04-17"
+drift_check:
+  last_verified: "2026-04-18"
+  truth_source_hashes:
+    "schemas/skill.schema.json": "04cf90cfa703a4dd5bf74fde5ad4c273a16f5977c34b1fd569140e3d9d38aade"
+    "schemas/manifest.schema.json": "3a1fdf060f0928f12c54d5414bd17fee999c1edcb9833b82d40d36268481906a"
+    "docs/metadata-contract.md": "98e923369eac343b7581560caa7e580d6f2a03eb129069cd48f7dd7894b886fa"
+    "scripts/skill-lint.js": "b6e4053808802fa328e6ecc616b01e37ca439e21656edb3da7426baf438c2b96"
+    "scripts/check-contract-consistency.js": "2d6a88154c28629e58d2cffc2778726b80c631717428a037ad81a5350f791444"
+    "scripts/generate-manifest.js": "50a3aa0910a34a6721475fc2cf2f4408ca801ef1f8971858754704d6f1debcd8"
+    "examples/evals/graph-audit.json": "18ec7a85872c8b6db67edc2e144d71c0c4a7f9b73f4193d03f9fd60d43a57f26"
 eval_artifacts: present
 eval_state: passing
 routing_eval: absent
 stability: experimental
 license: MIT
-compatibility: Markdown, JSON Schema, Node.js
+compatibility:
+  notes: "Markdown, JSON Schema, Node.js"
 allowed-tools: Read Grep Bash
 keywords:
   - skill audit
@@ -53,7 +63,6 @@ grounding:
     - scripts/skill-lint.js
     - scripts/check-contract-consistency.js
     - scripts/generate-manifest.js
-    - examples/skills.manifest.sample.json
     - examples/evals/graph-audit.json
   failure_modes:
     - schema_drift
@@ -81,14 +90,14 @@ Skill graphs fail silently. A broken relation or a drifted enum value does not c
 
 ## Key Files
 
-| File | Purpose |
-|---|---|
-| `schemas/skill.schema.json` | Enforces the frontmatter contract for every SKILL.md |
-| `schemas/manifest.schema.json` | Enforces the compiled manifest shape |
-| `docs/metadata-contract.md` | Source of truth for field semantics and the archetype section map |
-| `scripts/skill-lint.js` | The canonical audit runner. Implements the six dimensions listed in Coverage plus five more: parent-directory-matches-name, cross-schema parity, sample-manifest conformance, generator parity, and routing-quality rules. See README § Validation for the full eleven-check list. |
-| `scripts/check-contract-consistency.js` | Cross-artifact contract checker (C1–C6). Complementary to `skill-lint.js` — lint validates per-skill correctness; this validates that the contract documents themselves remain consistent with the schemas. |
-| `examples/skills.manifest.sample.json` | Generator-produced sample; lint fails if this drifts from `generate-manifest.js` output |
+| File | Line range | Purpose |
+|---|---|---|
+| `schemas/skill.schema.json` | whole file | Enforces the frontmatter contract for every SKILL.md |
+| `schemas/manifest.schema.json` | whole file | Enforces the compiled manifest shape |
+| `docs/metadata-contract.md` | §§ Archetype, Requiredness, Schema Versioning | Source of truth for field semantics and the archetype section map |
+| `scripts/skill-lint.js` | 91–114 (`AUTHORED_FIELDS_MUST_FLOW`), 149–202 (`checkSchemaParity`), 175–250 (`validateAgainstSchema`) | The canonical audit runner. Implements the six dimensions listed in Coverage plus five more: parent-directory-matches-name, cross-schema parity, sample-manifest conformance, generator parity, and routing-quality rules. See README § Validation for the full eleven-check list. |
+| `scripts/check-contract-consistency.js` | C1–C6 checks | Cross-artifact contract checker. Complementary to `skill-lint.js` — lint validates per-skill correctness; this validates that the contract documents themselves remain consistent with the schemas. |
+| `examples/skills.manifest.sample.json` | whole file | Generator-produced sample; lint fails if this drifts from `generate-manifest.js` output |
 
 ## Evals
 

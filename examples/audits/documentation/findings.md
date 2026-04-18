@@ -6,47 +6,54 @@
 
 ## Audit Date
 
-2026-04-17
-
-## Audit Mode
-
-`--graded` (grader: `node scripts/lib/mock-grader.js`)
+2026-04-18
 
 ## Verdict Summary
 
-PASS WITH FIXES
+PARTIAL
 
 ## Findings
 
 ID: F1
-Severity: P3
-Surface: frontmatter: triggers
-Category: Activation quality
-Source: grader (node scripts/lib/mock-grader.js)
-Problem: No triggers array is declared; the skill is only discoverable via keyword matching.
-Evidence: triggers: (absent from frontmatter)
-Required action: Add a `triggers: [documentation-skill]` entry so label-based routers can activate the skill deterministically.
+Severity: TODO
+Surface: activation
+Category: Activation quality — routing coverage
+Problem: TODO — human judgment required
+Evidence: TODO — reviewer must inspect the skill body
+Required action: Does the description name real trigger scenarios? Are keywords specific and not generic filler? Does the skill under-trigger or over-trigger for its intended use case?
 
 ID: F2
-Severity: P2
-Surface: skill body
-Category: Content quality
-Source: grader (node scripts/lib/mock-grader.js)
-Problem: No explicit `## Do NOT Use When` section; negative routing is only implied.
-Evidence: Section headings observed: `# Documentation`, `## Coverage`, `## Philosophy`, `## Verification` — no explicit negative-bounds section.
-Required action: Add a `## Do NOT Use When` section listing at least two cases where the skill must not activate (e.g. UI accessibility behavior, runtime debugging).
+Severity: TODO
+Surface: relations
+Category: Relation quality — graph correctness
+Problem: TODO — human judgment required
+Evidence: TODO — reviewer must inspect the skill body
+Required action: Do adjacent/boundary/verify_with relations point at semantically correct neighbors? Are boundary rules crisp enough to prevent misuse? Are dependencies real?
 
 ID: F3
-Severity: P3
-Surface: examples/evals/comprehension.json
-Category: Eval quality
-Source: grader (node scripts/lib/mock-grader.js)
-Problem: Eval covers happy-path and boundary prompts but has no explicit failure-mode eval.
-Evidence: Seven prompts, all affirmative; no prompt tests what the skill should refuse.
-Required action: Add one failure-mode prompt per skills/evaluation SKILL.md guidance (≥ 1 negative expectation per skill).
+Severity: TODO
+Surface: grounding
+Category: Grounding quality — claims vs truth sources
+Problem: TODO — human judgment required
+Evidence: TODO — reviewer must inspect the skill body
+Required action: If scope: codebase, do all truth_sources exist? Do claims in the body match the referenced files? Classify any mismatch as skill drift, code drift, or doc drift.
+
+ID: F4
+Severity: TODO
+Surface: content
+Category: Content quality — completeness and density
+Problem: TODO — human judgment required
+Evidence: TODO — reviewer must inspect the skill body
+Required action: Does the skill have a clear Coverage section, a Philosophy section, at least one decision table or checklist, and explicit negative bounds (Do NOT Use When)? Does it contain generic filler that adds no routing signal?
+
+ID: F5
+Severity: TODO
+Surface: evals
+Category: Eval quality — coverage and realism
+Problem: TODO — human judgment required
+Evidence: TODO — reviewer must inspect the skill body
+Required action: Do eval files exist if the skill is expected to be graded? Do they test realistic prompts — not trivia — and cover boundaries and failure cases as well as the happy path?
 
 ## Required Fixes
 
-- Activation quality: PASS WITH FIXES — 1 finding(s) from grader
-- Content quality: PASS WITH FIXES — 1 finding(s) from grader
-- Eval quality: PASS WITH FIXES — 1 finding(s) from grader
+None identified by lint. See human-judgment finding blocks above for remaining review areas.

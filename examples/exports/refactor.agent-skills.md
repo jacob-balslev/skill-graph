@@ -5,16 +5,17 @@ license: MIT
 compatibility: "Markdown, Git, any codebase"
 allowed-tools: Read Grep Bash
 metadata:
-  schema_version: 2
+  schema_version: 3
   version: "1.0.0"
   type: workflow
-  family: engineering
+  browse_category: engineering
   scope: portable
   owner: maintainer
   freshness: "2026-04-17"
-  drift_check: "2026-04-17"
-  eval_artifacts: none
-  eval_state: unverified
+  drift_check:
+    last_verified: "2026-04-17"
+  eval_artifacts: present
+  eval_state: passing
   routing_eval: absent
   stability: experimental
   keywords:
@@ -79,6 +80,10 @@ Each step decides whether to continue, split, or stop. "Stop" is always a valid 
 - A green test from before the refactor is now red → revert immediately, then cut smaller.
 - The next-change goal shifted during the refactor → restart at step 2 with the new goal before continuing.
 - The refactor requires touching more than one abstraction layer in a single commit → split into per-layer commits and re-verify each.
+
+## Evals
+
+This skill ships a comprehension-eval artifact at [`examples/evals/refactor.json`](../../examples/evals/refactor.json). The `Verification` checklist below is the authoring gate for a completed refactor; the eval file is how this skill is graded by `scripts/skill-audit.js --graded`. Do not conflate them — the checklist is for the engineer, the eval is for the grader.
 
 ## Verification
 

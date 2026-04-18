@@ -647,46 +647,90 @@ function checkC5ExampleTruthInvariants() {
 }
 
 // ---------------------------------------------------------------------------
-// C6 -- Versioned schema parity
+// C6 -- Versioned schema parity (version-aware)
 // ---------------------------------------------------------------------------
 
 /**
- * Ensure schemas/skill.v2.schema.json and schemas/manifest.v2.schema.json are
- * content-identical to the unversioned schemas/skill.schema.json and
- * schemas/manifest.schema.json, except for $id and title. When v3 ships, the
- * v2 files will freeze at their current content and the unversioned files
- * will move forward; until then, the v2 files are the pinned stable copy and
- * MUST track the unversioned files exactly.
+ * Resolve the current schema version from the unversioned skill schema.
+ * Looks at the `schema_version.const` variant in the oneOf or at the top-level
+ * const. Returns a number (e.g. 2, 3) or null if it cannot be determined.
+ */
+function resolveCurrentSchemaVersion(skillSchema) {
+  const sv = skillSchema && skillSchema.properties && skillSchema.properties.schema_version;
+  if (!sv) return null;
+  if (Number.isInteger(sv.const)) return sv.const;
+  if (Array.isArray(sv.oneOf)) {
+    for (const variant of sv.oneOf) {
+      if (Number.isInteger(variant.const)) return variant.const;
+      if (typeof variant.const === 'string' && /^\d+$/.test(variant.const)) return parseInt(variant.const, 10);
+    }
+  }
+  return null;
+}
+
+/**
+ * Check C6 — schema parity across the authored / generated / pinned files.
+ *
+ * The invariants:
+ *   (a) The unversioned schemas (`skill.schema.json`, `manifest.schema.json`)
+ *       must be content-identical to the pinned copy of the current version
+ *       (`skill.v{N}.schema.json`, `manifest.v{N}.schema.json`), modulo
+ *       `$id` and `title`.
+ *   (b) All prior pinned versions (v2 when v3 is current, etc.) are treated
+ *       as FROZEN: they must still exist and be readable, but they are NOT
+ *       checked against the unversioned files. Freezing them is the whole
+ *       point of pinning.
  *
  * Returns a list of error strings. Empty array means pass.
  */
 function checkC6VersionedSchemaParity() {
-  const pairs = [
-    { unversioned: 'schemas/skill.schema.json',    versioned: 'schemas/skill.v2.schema.json' },
-    { unversioned: 'schemas/manifest.schema.json', versioned: 'schemas/manifest.v2.schema.json' },
-  ];
   const errors = [];
 
-  for (const { unversioned, versioned } of pairs) {
-    const u = readJson(path.join(REPO_ROOT, unversioned));
+  const skillUnversioned = readJson(path.join(REPO_ROOT, 'schemas/skill.schema.json'));
+  const manifestUnversioned = readJson(path.join(REPO_ROOT, 'schemas/manifest.schema.json'));
+  if (!skillUnversioned) { errors.push('schemas/skill.schema.json: missing or unreadable'); return errors; }
+  if (!manifestUnversioned) { errors.push('schemas/manifest.schema.json: missing or unreadable'); return errors; }
+
+  const current = resolveCurrentSchemaVersion(skillUnversioned);
+  if (!current) {
+    errors.push('schemas/skill.schema.json: cannot determine current schema_version for parity check');
+    return errors;
+  }
+
+  // (a) Current-version pinned copies must match the unversioned files.
+  const currentPairs = [
+    { unversioned: 'schemas/skill.schema.json',    versioned: `schemas/skill.v${current}.schema.json`,    data: skillUnversioned },
+    { unversioned: 'schemas/manifest.schema.json', versioned: `schemas/manifest.v${current}.schema.json`, data: manifestUnversioned },
+  ];
+
+  const stripped = (obj) => {
+    const copy = JSON.parse(JSON.stringify(obj));
+    delete copy.$id;
+    delete copy.title;
+    return copy;
+  };
+
+  for (const { unversioned, versioned, data } of currentPairs) {
     const v = readJson(path.join(REPO_ROOT, versioned));
-    if (!u) { errors.push(`${unversioned}: missing or unreadable`); continue; }
-    if (!v) { errors.push(`${versioned}: missing — run the P3a versioning step`); continue; }
-
-    const stripped = (obj) => {
-      const copy = JSON.parse(JSON.stringify(obj));
-      delete copy.$id;
-      delete copy.title;
-      return copy;
-    };
-
-    const uStr = JSON.stringify(stripped(u));
+    if (!v) { errors.push(`${versioned}: missing — pinned copy of current schema version ${current} must exist`); continue; }
+    const uStr = JSON.stringify(stripped(data));
     const vStr = JSON.stringify(stripped(v));
     if (uStr !== vStr) {
-      errors.push(`${versioned} is out of sync with ${unversioned} (content differs modulo $id/title). After editing the unversioned schema, copy it to the versioned file and keep the v2 $id/title.`);
+      errors.push(`${versioned} is out of sync with ${unversioned} (content differs modulo $id/title). After editing the unversioned schema, copy it to the versioned file and keep the v${current} $id/title.`);
     }
-
     if (VERBOSE && uStr === vStr) console.log(`  ${versioned}: tracks ${unversioned}`);
+  }
+
+  // (b) Prior-version pinned copies must exist but are not parity-checked.
+  for (let v = 2; v < current; v++) {
+    for (const kind of ['skill', 'manifest']) {
+      const frozenPath = `schemas/${kind}.v${v}.schema.json`;
+      if (!fs.existsSync(path.join(REPO_ROOT, frozenPath))) {
+        errors.push(`${frozenPath}: missing — frozen prior-version schema must remain in the repo for consumers pinned to v${v}`);
+      } else if (VERBOSE) {
+        console.log(`  ${frozenPath}: frozen (parity not checked)`);
+      }
+    }
   }
 
   return errors;

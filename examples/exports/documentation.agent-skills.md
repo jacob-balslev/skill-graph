@@ -5,14 +5,15 @@ license: MIT
 compatibility: "Markdown, Git"
 allowed-tools: Read Grep
 metadata:
-  schema_version: 2
+  schema_version: 3
   version: "1.0.0"
   type: capability
-  family: knowledge
+  browse_category: knowledge
   scope: portable
   owner: maintainer
   freshness: "2026-04-17"
-  drift_check: "2026-04-17"
+  drift_check:
+    last_verified: "2026-04-17"
   eval_artifacts: present
   eval_state: passing
   routing_eval: absent

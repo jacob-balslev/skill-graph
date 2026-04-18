@@ -1,6 +1,6 @@
 {
-  "generated_at": "2026-04-17T00:00:00Z",
-  "schema_version": 2,
+  "generated_at": "2026-04-18T18:00:00Z",
+  "schema_version": 3,
   "skills": [
     {
       "activation": {
@@ -23,11 +23,15 @@
         ]
       },
       "allowed-tools": "Read Grep",
-      "compatibility": "Markdown, Git, any web stack",
+      "browse_category": "frontend",
+      "compatibility": {
+        "notes": "Markdown, Git, any web stack"
+      },
       "description": "Use when building or reviewing interactive UI, forms, navigation, or dynamic content. Covers semantic HTML, keyboard access, focus management, labeling, state-change announcement, and reduced-motion / high-contrast preferences. Do NOT use for color-palette creation, visual branding, or prose reading-level accessibility — those belong to visual-design and documentation respectively.",
-      "family": "frontend",
       "health": {
-        "drift_check": "2026-04-17",
+        "drift_check": {
+          "last_verified": "2026-04-17"
+        },
         "eval_artifacts": "present",
         "eval_state": "passing",
         "freshness": "2026-04-17",
@@ -86,11 +90,15 @@
         ]
       },
       "allowed-tools": "Read Grep Bash",
-      "compatibility": "Markdown, Git, any codebase",
+      "browse_category": "engineering",
+      "compatibility": {
+        "notes": "Markdown, Git, any codebase"
+      },
       "description": "Use when behavior is broken, a test is failing, or runtime output contradicts expectations. Covers failure reproduction, scope reduction by bisection, evidence capture at the moment of failure, root-cause isolation (not symptom patching), fix verification against the same evidence path, and regression-test creation. Do NOT use for feature planning, architectural design, or behavior-preserving refactor.",
-      "family": "engineering",
       "health": {
-        "drift_check": "2026-04-17",
+        "drift_check": {
+          "last_verified": "2026-04-17"
+        },
         "eval_artifacts": "present",
         "eval_state": "passing",
         "freshness": "2026-04-17",
@@ -151,11 +159,15 @@
         ]
       },
       "allowed-tools": "Read Grep",
-      "compatibility": "Markdown, Git",
+      "browse_category": "knowledge",
+      "compatibility": {
+        "notes": "Markdown, Git"
+      },
       "description": "Use when writing reference docs, guides, tutorials, specs, architecture notes, or any durable technical prose that a future reader has to trust. Covers doc-type selection, audience fit, progressive disclosure, docs-as-code workflow, freshness and drift tracking, and source-of-truth discipline. Do NOT use for runtime debugging, UI accessibility behavior, or behavior-preserving code refactor.",
-      "family": "knowledge",
       "health": {
-        "drift_check": "2026-04-17",
+        "drift_check": {
+          "last_verified": "2026-04-17"
+        },
         "eval_artifacts": "present",
         "eval_state": "passing",
         "freshness": "2026-04-17",
@@ -213,9 +225,11 @@
         ]
       },
       "allowed-tools": "Read Grep Bash",
-      "compatibility": "Markdown, JSON Schema, Node.js",
+      "browse_category": "knowledge",
+      "compatibility": {
+        "notes": "Markdown, JSON Schema, Node.js"
+      },
       "description": "Use when checking that every SKILL.md conforms to the schema, that manifest entries match authored frontmatter, or that relation targets point at real sibling skills. Covers schema conformance, manifest sync, relation integrity, eval-artifact coherence, grounding presence, and name-directory parity. Do NOT use for general code review, runtime agent debugging, or auditing non-skill files.",
-      "family": "knowledge",
       "grounding": {
         "domain_object": "Skill Graph skill metadata and manifest consistency",
         "evidence_priority": "repo_code_first",
@@ -234,12 +248,23 @@
           "scripts/skill-lint.js",
           "scripts/check-contract-consistency.js",
           "scripts/generate-manifest.js",
-          "examples/skills.manifest.sample.json",
           "examples/evals/graph-audit.json"
         ]
       },
       "health": {
-        "drift_check": "2026-04-17",
+        "drift_check": {
+          "last_verified": "2026-04-18",
+          "truth_source_hashes": {
+            "docs/metadata-contract.md": "98e923369eac343b7581560caa7e580d6f2a03eb129069cd48f7dd7894b886fa",
+            "examples/evals/graph-audit.json": "18ec7a85872c8b6db67edc2e144d71c0c4a7f9b73f4193d03f9fd60d43a57f26",
+            "schemas/manifest.schema.json": "3a1fdf060f0928f12c54d5414bd17fee999c1edcb9833b82d40d36268481906a",
+            "schemas/skill.schema.json": "04cf90cfa703a4dd5bf74fde5ad4c273a16f5977c34b1fd569140e3d9d38aade",
+            "scripts/check-contract-consistency.js": "2d6a88154c28629e58d2cffc2778726b80c631717428a037ad81a5350f791444",
+            "scripts/generate-manifest.js": "50a3aa0910a34a6721475fc2cf2f4408ca801ef1f8971858754704d6f1debcd8",
+            "scripts/skill-lint.js": "b6e4053808802fa328e6ecc616b01e37ca439e21656edb3da7426baf438c2b96"
+          }
+        },
+        "drift_detected": true,
         "eval_artifacts": "present",
         "eval_state": "passing",
         "freshness": "2026-04-17",
@@ -292,12 +317,16 @@
         ]
       },
       "allowed-tools": "Read Grep Bash",
-      "compatibility": "Markdown, Git, any codebase with a lint tool",
+      "browse_category": "quality",
+      "compatibility": {
+        "notes": "Markdown, Git, any codebase with a lint tool"
+      },
       "description": "Use when adding or enforcing lint rules as part of a test or verification plan. Extends testing-strategy with lint-specific guidance: rule selection, gate placement, failure triage, and migration planning when introducing rules to an existing codebase. Do NOT use standalone — load the base testing-strategy skill alongside it — and do NOT use for chasing a specific lint failure in one file (that is debugging).",
       "extends": "testing-strategy",
-      "family": "quality",
       "health": {
-        "drift_check": "2026-04-17",
+        "drift_check": {
+          "last_verified": "2026-04-17"
+        },
         "eval_artifacts": "present",
         "eval_state": "passing",
         "freshness": "2026-04-17",
@@ -350,11 +379,15 @@
         ]
       },
       "allowed-tools": "Read Grep Bash",
-      "compatibility": "Markdown, Git, any codebase",
+      "browse_category": "engineering",
+      "compatibility": {
+        "notes": "Markdown, Git, any codebase"
+      },
       "description": "Use when reorganizing existing code without changing external behavior — extracting functions, reducing duplication, renaming for clarity, splitting modules, or tightening structure. Covers behavior preservation, duplication reduction, decomposition, naming improvements, structural reorganization, and before/after verification. Do NOT use for bug investigation, adding new product behavior, or writing documentation (even when the docs describe the refactored code).",
-      "family": "engineering",
       "health": {
-        "drift_check": "2026-04-17",
+        "drift_check": {
+          "last_verified": "2026-04-17"
+        },
         "eval_artifacts": "present",
         "eval_state": "passing",
         "freshness": "2026-04-17",
@@ -411,11 +444,15 @@
         ]
       },
       "allowed-tools": "Read Grep",
-      "compatibility": "Markdown, YAML, any agent runtime",
-      "description": "Use when deciding which skill handles an incoming agent request, building a routing table for a multi-skill repo, or auditing routing coverage. Covers trigger-label matching, file-path matching, keyword matching, scope/type tiebreakers, and coverage-gap detection. Do NOT use when the target skill is already known (load it directly) or when authoring a new skill (use the skill-template).",
-      "family": "knowledge",
+      "browse_category": "knowledge",
+      "compatibility": {
+        "notes": "Markdown, YAML, any agent runtime"
+      },
+      "description": "MUST be used when routing an agent request across multiple skills, building or auditing a routing table, detecting routing coverage gaps, or deciding which skill claims a user task. Activate for: 'which skill handles this?', 'who routes X?', 'am I using the right skill?', 'why did skill A activate instead of B?'. Covers trigger-label matching, file-path matching, keyword matching, description-based semantic matching, scope/type tiebreakers, and coverage-gap detection. Do NOT use when the target skill is already known (load it directly), when authoring a new skill (use `skill-template` instead), or when evaluating a SINGLE skill's quality (use `graph-audit`).",
       "health": {
-        "drift_check": "2026-04-17",
+        "drift_check": {
+          "last_verified": "2026-04-17"
+        },
         "eval_artifacts": "present",
         "eval_state": "passing",
         "freshness": "2026-04-17",
@@ -450,6 +487,15 @@
     },
     {
       "activation": {
+        "anti_examples": [
+          "\"refactor this skill to be more concise\"           # → refactor, not authoring",
+          "\"my skill's routing isn't activating — why?\"       # → skill-router, not template"
+        ],
+        "examples": [
+          "I'm writing a new skill from scratch — where do I start?",
+          "how do I pick between capability and workflow for my skill type?",
+          "what's the difference between description and the ## Coverage section?"
+        ],
         "keywords": [
           "skill authoring",
           "skill template",
@@ -466,9 +512,12 @@
         ]
       },
       "allowed-tools": "Read Grep",
-      "compatibility": "Markdown, YAML, JSON Schema",
+      "browse_category": "knowledge",
+      "category": "skill-system/authoring",
+      "compatibility": {
+        "notes": "Markdown, YAML, JSON Schema"
+      },
       "description": "Use when creating a new SKILL.md, adapting an existing skill to a different archetype, or teaching an author the canonical frontmatter and body structure. Covers schema-conformant frontmatter, archetype-aware body layout, semantic-layer discipline (description vs Coverage), teaching-layer mechanics (TEMPLATE NOTE blockquotes and YAML comments), and the authoring gate. Do NOT use when modifying an already-written skill (edit that skill directly) or when writing general technical documentation (use the documentation skill).",
-      "family": "knowledge",
       "grounding": {
         "domain_object": "Skill authoring for the Skill Graph frontmatter contract",
         "evidence_priority": "repo_code_first",
@@ -486,12 +535,18 @@
         ]
       },
       "health": {
-        "drift_check": "2026-04-17",
+        "drift_check": {
+          "last_verified": "2026-04-17"
+        },
         "eval_artifacts": "planned",
         "eval_state": "unverified",
         "freshness": "2026-04-17",
         "has_grounding": true,
         "has_relations": true,
+        "lifecycle": {
+          "review_cadence": "quarterly",
+          "stale_after_days": 180
+        },
         "routing_eval": "absent"
       },
       "id": "skill-template",
@@ -510,7 +565,10 @@
           "documentation"
         ],
         "boundary": [
-          "refactor"
+          {
+            "reason": "refactor is behavior-preserving code modification, not skill authoring",
+            "skill": "refactor"
+          }
         ],
         "verify_with": [
           "documentation"
@@ -544,11 +602,15 @@
         ]
       },
       "allowed-tools": "Read Grep Bash",
-      "compatibility": "Markdown, Git, any codebase",
+      "browse_category": "quality",
+      "compatibility": {
+        "notes": "Markdown, Git, any codebase"
+      },
       "description": "Use when planning tests for a bug fix, feature, or refactor — deciding what deserves a test, at which level, with what evidence. Covers test-scope decisions, test-level selection (unit / integration / contract / e2e), effort-to-risk matching, regression targeting, evidence quality, and failure-case coverage. Do NOT use for chasing a known failure (that is debugging), for pure doc writing, or for conceptual architecture discussion with no verification target.",
-      "family": "quality",
       "health": {
-        "drift_check": "2026-04-17",
+        "drift_check": {
+          "last_verified": "2026-04-17"
+        },
         "eval_artifacts": "present",
         "eval_state": "passing",
         "freshness": "2026-04-17",
@@ -589,7 +651,7 @@
     }
   ],
   "summary": {
-    "by_family": {
+    "by_browse_category": {
       "engineering": 2,
       "frontend": 1,
       "knowledge": 4,

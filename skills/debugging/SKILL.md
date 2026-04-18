@@ -1,20 +1,22 @@
 ---
-schema_version: 2
+schema_version: 3
 name: debugging
 description: "Use when behavior is broken, a test is failing, or runtime output contradicts expectations. Covers failure reproduction, scope reduction by bisection, evidence capture at the moment of failure, root-cause isolation (not symptom patching), fix verification against the same evidence path, and regression-test creation. Do NOT use for feature planning, architectural design, or behavior-preserving refactor."
 version: 1.0.0
 type: workflow
-family: engineering
+browse_category: engineering
 scope: portable
 owner: maintainer
 freshness: "2026-04-17"
-drift_check: "2026-04-17"
+drift_check:
+  last_verified: "2026-04-17"
 eval_artifacts: present
 eval_state: passing
 routing_eval: absent
 stability: experimental
 license: MIT
-compatibility: Markdown, Git, any codebase
+compatibility:
+  notes: "Markdown, Git, any codebase"
 allowed-tools: Read Grep Bash
 keywords:
   - debugging

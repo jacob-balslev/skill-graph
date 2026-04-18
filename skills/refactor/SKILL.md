@@ -1,20 +1,22 @@
 ---
-schema_version: 2
+schema_version: 3
 name: refactor
 description: "Use when reorganizing existing code without changing external behavior — extracting functions, reducing duplication, renaming for clarity, splitting modules, or tightening structure. Covers behavior preservation, duplication reduction, decomposition, naming improvements, structural reorganization, and before/after verification. Do NOT use for bug investigation, adding new product behavior, or writing documentation (even when the docs describe the refactored code)."
 version: 1.0.0
 type: workflow
-family: engineering
+browse_category: engineering
 scope: portable
 owner: maintainer
 freshness: "2026-04-17"
-drift_check: "2026-04-17"
+drift_check:
+  last_verified: "2026-04-17"
 eval_artifacts: present
 eval_state: passing
 routing_eval: absent
 stability: experimental
 license: MIT
-compatibility: Markdown, Git, any codebase
+compatibility:
+  notes: "Markdown, Git, any codebase"
 allowed-tools: Read Grep Bash
 keywords:
   - refactor

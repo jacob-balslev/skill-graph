@@ -38,14 +38,16 @@ const AGENT_SKILLS_BASE_FIELDS = ['name', 'description', 'license', 'compatibili
 // explicit and auditable. Unknown fields that appear in the frontmatter but
 // are not in either list are placed under metadata: too (fail-safe).
 //
-// Updated for schema_version 2 (SH-5784): eval_status split into eval_artifacts,
-// eval_state, and routing_eval; route_groups renamed to routing_groups. The
-// exporter is field-name-aware; the new names flow through to the metadata
-// block under the Agent Skills base envelope.
+// Updated for schema_version 3: `family` renamed to `browse_category`;
+// `category`, `project_tags`, `lifecycle`, `runtime_telemetry` added. The
+// legacy `family` remains in the set for back-compat with v2 skills during
+// the migration window.
 const SKILL_GRAPH_EXTENSION_FIELDS = new Set([
   'schema_version',
   'version',
   'type',
+  'browse_category',
+  'category',
   'family',
   'scope',
   'owner',
@@ -61,9 +63,34 @@ const SKILL_GRAPH_EXTENSION_FIELDS = new Set([
   'triggers',
   'keywords',
   'paths',
+  'project_tags',
   'routing_groups',
+  'lifecycle',
+  'runtime_telemetry',
   'extends',
 ]);
+
+/**
+ * Flatten a v3 `compatibility` object to a single free-text string suitable
+ * for the Agent Skills base-standard `compatibility` field (≤500 chars).
+ *
+ * v3 shape:  { runtimes?: string[], node?: string, notes?: string }
+ * v2 shape:  string (passed through unchanged)
+ *
+ * Concatenation order: runtimes, node, notes — joined with "; ".
+ */
+function flattenCompatibility(value) {
+  if (typeof value === 'string') return value;
+  if (!value || typeof value !== 'object') return null;
+  const parts = [];
+  if (Array.isArray(value.runtimes) && value.runtimes.length > 0) {
+    parts.push(value.runtimes.join(', '));
+  }
+  if (value.node) parts.push(`node ${value.node}`);
+  if (value.notes) parts.push(value.notes);
+  const joined = parts.join('; ');
+  return joined.length > 500 ? joined.slice(0, 500) : joined;
+}
 
 /**
  * Validate that a skill name is safe for Agent Skills. The Agent Skills
@@ -156,7 +183,13 @@ function buildFrontmatter(fm) {
   // 1. Top-level Agent Skills base fields (in canonical order).
   for (const field of AGENT_SKILLS_BASE_FIELDS) {
     if (!(field in fm) || fm[field] === null || fm[field] === undefined) continue;
-    const serialized = serializeValue(fm[field], 1);
+    // v3: compatibility is an object; Agent Skills wants a string. Flatten.
+    let value = fm[field];
+    if (field === 'compatibility' && typeof value === 'object' && value !== null) {
+      value = flattenCompatibility(value);
+      if (!value) continue;
+    }
+    const serialized = serializeValue(value, 1);
     if (serialized.startsWith('\n')) {
       lines.push(`${field}:${serialized}`);
     } else {

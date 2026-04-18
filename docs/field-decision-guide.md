@@ -218,3 +218,104 @@ portability:
   targets:
     - agent-skills
 ```
+
+---
+
+## 4. How do I tag a skill for multiple projects?
+
+`project_tags` is the v3 mechanism for multi-project relevance. It is flat and composable — no hierarchy required. A workspace config at `.skill-graph/config.json` expands literal project handles into semantic tag sets, so one skill tag can match many projects.
+
+### Decision table
+
+| Situation | Correct `project_tags` |
+|---|---|
+| Skill applies to every project (cross-cutting concern) | Omit `project_tags` (ambient) |
+| Skill applies to one specific project and not reusable elsewhere | `[literal-project-handle]` |
+| Skill applies to several projects that share a technology / domain | Semantic tag(s) that the workspace config maps those projects to |
+| Skill applies to one project by literal handle AND to a semantic group | Both: `[literal-handle, semantic-tag]` |
+| Single-project workspace | Omit `project_tags` always |
+
+### Literal vs semantic tags
+
+| Tag style | Example | When to use |
+|---|---|---|
+| Literal | `sales-hub`, `free-oppression` | Precise targeting. Couples the skill to a specific project name. Readable but brittle to renames. |
+| Semantic | `ecommerce`, `shopify-stack`, `saas-b2b` | Reusable across projects. The workspace config declares which literal projects expand to which semantic tags, so one tag match several projects. |
+
+**Prefer semantic when possible.** Literal handles work but they bind the skill to a project name. Semantic tags describe the domain and survive project renames.
+
+### Diagnostic questions
+
+**Q: Does my workspace have more than one project?**
+→ If no, omit `project_tags` always.
+
+**Q: Is this skill a cross-cutting concern (GDPR, a11y, testing patterns, general coding rules)?**
+→ Omit `project_tags` — ambient.
+
+**Q: Does this skill reference a specific project's files or domain?**
+→ Tag with that project's literal handle OR its semantic tags.
+
+**Q: Would I want to reuse this skill if I cloned the current project pattern into a new project?**
+→ If yes, tag with semantic tags (so the new project can map its handle to those tags). If no, tag with the literal handle.
+
+### Example
+
+```yaml
+# Sales Hub only — literal targeting
+project_tags: [sales-hub]
+
+# Cross-ecommerce — semantic, applies to sales-hub AND free-oppression
+project_tags: [ecommerce]
+
+# Explicit both — literal match on sales-hub, semantic match on any ecommerce project
+project_tags: [sales-hub, ecommerce]
+```
+
+With the workspace config:
+
+```json
+{
+  "workspace": {
+    "projects": {
+      "sales-hub":        { "semantic_tags": ["ecommerce", "shopify-stack", "saas-b2b"] },
+      "free-oppression":  { "semantic_tags": ["ecommerce", "etsy-stack", "physical-merch"] }
+    }
+  }
+}
+```
+
+A skill with `project_tags: [ecommerce]` routes into both projects. A skill with `project_tags: [saas-b2b]` routes only into sales-hub. A skill with no `project_tags` routes into all projects (ambient).
+
+---
+
+## 5. Do I use `browse_category`, `category`, `project_tags`, or `routing_groups`?
+
+These four fields all group skills, but they answer different questions. Picking the wrong field creates misleading organization that corrodes routing quality. Use this table before adding any skill-grouping field:
+
+| Field | Answers the question | Shape | Primary consumer |
+|---|---|---|---|
+| `browse_category` | What flat bucket does this skill live in for quick browsing? | single string (e.g., `integration`) | human browse UI, filter dropdowns |
+| `category` | Where does this skill sit in a hierarchy for tree browsing? | slash-delimited path (e.g., `ecommerce/integrations/shopify`) | folder-tree UI, docs site navigation |
+| `project_tags` | Which of my projects is this skill relevant to? | flat array (e.g., `[sales-hub, ecommerce]`) | router filter at routing time |
+| `routing_groups` | Which batch-activation group does this skill belong to? | flat array (e.g., `[quality, security]`) | router batch-load by group label |
+
+### Three rules that prevent misuse
+
+1. **Never use `browse_category` for routing.** It's a browse index. If you find yourself writing "when the router sees `integration` it should load all X" — you want `routing_groups`, not `browse_category`.
+
+2. **Never use `project_tags` for taxonomy.** It's a routing filter. If you find yourself tagging every skill with every project handle to build a grouping — you want `browse_category` or `category`.
+
+3. **Never use `category` to filter routing.** A hierarchy helps humans find skills. The router doesn't walk it. If you want the router to match `ecommerce/integrations/shopify` at query time, flatten it into `routing_groups: [integrations]` or `project_tags: [ecommerce]`.
+
+### Worked example
+
+A Shopify skill in a multi-project, large-library workspace:
+
+```yaml
+browse_category: integration        # "Where does it live in a flat browse UI?"
+category: ecommerce/integrations/shopify   # "Where in a tree?"
+project_tags: [ecommerce]           # "Which of my projects?"
+routing_groups: [integrations]      # "Which batch-activation group?"
+```
+
+Each field does a distinct job. None is redundant with the others. A smaller library can omit `category` entirely; a single-project workspace can omit `project_tags`; a library with no batch-activation pattern can omit `routing_groups`. `browse_category` is always present because it is required.

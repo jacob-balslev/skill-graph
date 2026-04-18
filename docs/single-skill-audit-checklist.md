@@ -87,18 +87,19 @@ Required dimension rows:
 
 ### 1. Frontmatter validity
 
-- [ ] `schema_version` exists
+- [ ] `schema_version` exists and equals `3`
 - [ ] `name` exists and matches the intended skill identifier
 - [ ] `description` exists and is specific enough to route from
 - [ ] `version` exists
 - [ ] `type` is one of `capability`, `workflow`, `router`, `overlay`
-- [ ] `family` exists
+- [ ] `browse_category` exists (v3 — renamed from `family` in v2→v3 bump)
 - [ ] `scope` is one of `codebase`, `reference`, `portable`
 - [ ] `owner` exists
 - [ ] `freshness` exists
-- [ ] `drift_check` exists
-- [ ] `eval_artifacts`, `eval_state`, `routing_eval` all exist (schema_version 2)
+- [ ] `drift_check` exists as an object with `last_verified` (v3 — was scalar date in v2)
+- [ ] `eval_artifacts`, `eval_state`, `routing_eval` all exist (schema_version 3, orthogonal triple)
 - [ ] `extends` exists when `type: overlay`
+- [ ] `extends` is absent when `type` is not `overlay`
 
 ### 2. Activation quality
 

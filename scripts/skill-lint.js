@@ -85,23 +85,50 @@ const EVALS_DIR = path.join(REPO_ROOT, 'examples', 'evals');
 // compatibility, and allowed-tools. Adding a field here is cheap and makes
 // the mapping auditable without a separate contract doc.
 //
-// Updated for schema_version 2 (SH-5784): `route_groups` renamed to
-// `routing_groups` at both authored and manifest layers.
+// Updated for schema_version 3: `family` renamed to `browse_category`; the
+// new optional v3 fields `project_tags` and `category` flow through as
+// top-level manifest properties. `lifecycle` and `runtime_telemetry` project
+// under `health.*` — see AUTHORED_FIELDS_MUST_FLOW_HEALTH below for the
+// parallel parity guard.
 const AUTHORED_FIELDS_MUST_FLOW = [
   'routing_groups',
   'license',
   'compatibility',
   'allowed-tools',
+  'browse_category',
+  'project_tags',
+  'category',
+  'superseded_by',
 ];
 
-// Deprecated v1 field names. Authors using these fields receive a WARN from
-// the lint script during the schema_version 2 migration window. The old enum
-// values (`generic`, `operational` on `scope`) are NOT in this list — they
-// are rejected as hard errors by the schema because the v2 enum does not
-// include them. See docs/manifest-contract.md § Migration Note — v1 → v2.
+// v0.5.0: separate parity guard for authored fields that the manifest
+// groups under the `health.*` parent object. Closes the symmetric gap
+// discovered by the doctrine-grounded audit: the prior comment on
+// AUTHORED_FIELDS_MUST_FLOW claimed `lifecycle` and `runtime_telemetry`
+// were covered, but they are not top-level manifest fields — they
+// project into `health.lifecycle` and `health.runtime_telemetry` per
+// docs/manifest-contract.md § rename-map rows 28–29.
+const AUTHORED_FIELDS_MUST_FLOW_HEALTH = [
+  'freshness',
+  'drift_check',
+  'eval_artifacts',
+  'eval_state',
+  'routing_eval',
+  'lifecycle',
+  'runtime_telemetry',
+];
+
+// Deprecated field names from prior schema versions. Authors using these
+// fields receive a WARN from the lint script during the migration window.
+// Hard-error enum/shape changes (scope values, drift_check scalar form,
+// compatibility scalar form) are rejected by the schema via
+// additionalProperties: false and type: object; the warnings below point
+// to the rename so the schema error is actionable.
 const DEPRECATED_V1_FIELDS = [
   'eval_status',
   'route_groups',
+  'domain_frame',
+  'family',
 ];
 
 function loadSchema() {
@@ -161,6 +188,16 @@ function checkSchemaParity(skillSchema, manifestSchema) {
     }
   }
 
+  // v0.5.0: verify health-nested authored fields. These project under
+  // skills.items.properties.health.properties.* in the manifest.
+  const healthSchema = skillItem && skillItem.properties && skillItem.properties.health;
+  const healthProps = Object.keys((healthSchema && healthSchema.properties) || {});
+  for (const f of AUTHORED_FIELDS_MUST_FLOW_HEALTH) {
+    if (!healthProps.includes(f)) {
+      errors.push(`loss-policy: authored field "${f}" is listed in AUTHORED_FIELDS_MUST_FLOW_HEALTH but manifest.schema.json has no property for it on skills.items.health`);
+    }
+  }
+
   return errors;
 }
 
@@ -205,14 +242,21 @@ function validateAgainstSchema(fm, schema) {
       }
     }
     if (spec.oneOf) {
-      // schema_version uses oneOf — accept any match
+      // schema_version uses oneOf — accept any match.
+      // BUG FIX (v0.5.0): when a variant declares `const`, the value MUST equal
+      // that const. The prior implementation fell through to the type-only check
+      // on non-matching const, allowing any integer to pass `{type: integer, const: 3}`.
       const anyMatch = spec.oneOf.some(variant => {
-        if (variant.const !== undefined && value === variant.const) return true;
+        if (variant.const !== undefined) {
+          // Variant is a const literal — value must equal it exactly (after type coercion for
+          // the common "3 vs '3'" case used by schema_version).
+          return value === variant.const;
+        }
         if (variant.type === 'integer' && Number.isInteger(value)) return true;
         if (variant.type === 'string' && typeof value === 'string' && (!variant.pattern || new RegExp(variant.pattern).test(value))) return true;
         return false;
       });
-      if (!anyMatch) errors.push(`${key}: value does not match any oneOf variant`);
+      if (!anyMatch) errors.push(`${key}: value ${JSON.stringify(value)} does not match any oneOf variant`);
     }
   }
 
@@ -223,6 +267,13 @@ function validateAgainstSchema(fm, schema) {
   // Conditional rules from allOf
   if (fm.type === 'overlay' && !fm.extends) {
     errors.push(`type: overlay requires extends field`);
+  }
+  // v0.5.0: enforce the reverse — extends is overlay-only. The schema documents
+  // this rule in docs/field-reference.md:492-509 but earlier versions only
+  // enforced the forward direction (overlay → requires extends), silently
+  // allowing extends on non-overlay skills.
+  if (fm.type && fm.type !== 'overlay' && fm.extends) {
+    errors.push(`extends is only valid on type: overlay (got type: ${JSON.stringify(fm.type)})`);
   }
   if (fm.scope === 'codebase' && !fm.grounding) {
     errors.push(`scope: codebase requires grounding field`);
@@ -244,11 +295,26 @@ function checkParentDirMatchesName(filePath, fm) {
 function checkRelationTargets(fm, knownSkillNames) {
   const errors = [];
   const rel = fm.relations || {};
+
+  // v3: relations.boundary and relations.depends_on items may be
+  // `{skill, reason}` or `{skill, min_version}` objects. Extract the
+  // skill name from either shape.
+  function targetName(t) {
+    if (typeof t === 'string') return t;
+    if (t && typeof t === 'object' && typeof t.skill === 'string') return t.skill;
+    return null;
+  }
+
   for (const kind of ['adjacent', 'boundary', 'verify_with', 'depends_on']) {
     const targets = rel[kind] || [];
     for (const t of targets) {
-      if (!knownSkillNames.has(t)) {
-        errors.push(`relations.${kind}: "${t}" does not match any known skill in ${SKILLS_DIR}`);
+      const name = targetName(t);
+      if (name === null) {
+        errors.push(`relations.${kind}: item is not a string or object with "skill" property — got ${JSON.stringify(t)}`);
+        continue;
+      }
+      if (!knownSkillNames.has(name)) {
+        errors.push(`relations.${kind}: "${name}" does not match any known skill in ${SKILLS_DIR}`);
       }
     }
   }
@@ -256,22 +322,54 @@ function checkRelationTargets(fm, knownSkillNames) {
 }
 
 function checkEvalCoherence(filePath, fm) {
-  // schema_version 2: eval_artifacts: present requires a real eval artifact.
+  // eval_artifacts: present requires a real eval artifact.
   // Only `present` demands an artifact on disk — `planned` and `none` do not.
-  if (fm.eval_artifacts !== 'present') return [];
+  const results = { errors: [], warnings: [] };
+
+  // v0.5.0 (from doctrine-grounded audit): guard against the
+  // `eval_artifacts: planned` staleness exploit. If a skill has been in
+  // `planned` state longer than its lifecycle.stale_after_days (default 180),
+  // emit a warning so the state doesn't sit there indefinitely.
+  if (fm.eval_artifacts === 'planned' && fm.freshness) {
+    const freshnessDate = new Date(fm.freshness);
+    if (!Number.isNaN(freshnessDate.getTime())) {
+      const daysOld = (Date.now() - freshnessDate.getTime()) / (24 * 60 * 60 * 1000);
+      const threshold = (fm.lifecycle && fm.lifecycle.stale_after_days) || 180;
+      if (daysOld > threshold) {
+        results.warnings.push(`eval_artifacts: planned has been set for ${Math.round(daysOld)} days (threshold: ${threshold}). Either ship an eval artifact and move to "present", or move to "none" if evals are genuinely not planned.`);
+      }
+    }
+  }
+
+  if (fm.eval_artifacts !== 'present') return results;
   if (!fs.existsSync(EVALS_DIR)) {
-    return [`eval_artifacts: present declared but ${EVALS_DIR} does not exist`];
+    results.errors.push(`eval_artifacts: present declared but ${EVALS_DIR} does not exist`);
+    return results;
   }
   const evalFiles = fs.readdirSync(EVALS_DIR).filter(f => f.endsWith('.json'));
   for (const evalFile of evalFiles) {
     try {
       const data = JSON.parse(fs.readFileSync(path.join(EVALS_DIR, evalFile), 'utf8'));
-      if (data.skill_name === fm.name) return [];
+      if (data.skill_name === fm.name) return results;
     } catch (e) {
       // ignore malformed eval files here; they are out of scope for this check
     }
   }
-  return [`eval_artifacts: present declared but no file in ${EVALS_DIR} has skill_name: "${fm.name}"`];
+  results.errors.push(`eval_artifacts: present declared but no file in ${EVALS_DIR} has skill_name: "${fm.name}"`);
+  return results;
+}
+
+// v0.5.0: guard against `paths` that consist only of negation patterns.
+// Such a list matches nothing (negations only subtract from prior includes).
+// This is a dead-routing trap per the Gemini audit finding.
+function checkPathsNegation(fm) {
+  const paths = fm.paths;
+  if (!Array.isArray(paths) || paths.length === 0) return [];
+  const allNegation = paths.every(p => typeof p === 'string' && p.startsWith('!'));
+  if (allNegation) {
+    return [`paths: list consists only of negation patterns (starting with "!") — this matches nothing. Include at least one positive pattern.`];
+  }
+  return [];
 }
 
 // Validate every skill entry in examples/skills.manifest.sample.json against
@@ -445,22 +543,29 @@ function main() {
   // Cross-schema parity: frontmatter → manifest. Runs once per invocation.
   // Fails the lint early if either schema has drifted from the authored-to-
   // generated mapping in docs/metadata-contract.md.
+  //
+  // Tier label legend (see docs/ARCHITECTURE.md):
+  //   [T1]      Tier 1 — binding contract (schemas/)
+  //   [T1↔T3]   Tier 1 ↔ Tier 3 parity check (authored schema ↔ manifest schema)
+  //   [T3↔T5]   Tier 3 ↔ Tier 5 parity check (generator output ↔ sample manifest)
+  //   [T5]      Tier 5 — specimen (starter skill or template)
+  //   [T5 sample] Tier 5 specimen — the sample manifest
   const parityErrors = checkSchemaParity(schema, manifestSchema);
   if (parityErrors.length > 0) {
-    console.error('FAIL schemas/ (cross-schema parity)');
+    console.error('FAIL [T1↔T3]     schemas/ (cross-schema parity)');
     for (const e of parityErrors) console.error(`     - ${e}`);
   } else {
-    console.log('OK   schemas/ (cross-schema parity)');
+    console.log('OK   [T1↔T3]     schemas/ (cross-schema parity)');
   }
 
   // Sample manifest conformance. Validates each skill entry in
   // examples/skills.manifest.sample.json against manifest.schema.json#skills.items.
   const sampleErrors = checkSampleManifest(manifestSchema);
   if (sampleErrors.length > 0) {
-    console.error('FAIL examples/skills.manifest.sample.json');
+    console.error('FAIL [T5 sample] examples/skills.manifest.sample.json');
     for (const e of sampleErrors) console.error(`     - ${e}`);
   } else {
-    console.log('OK   examples/skills.manifest.sample.json');
+    console.log('OK   [T5 sample] examples/skills.manifest.sample.json');
   }
 
   // Generator parity: re-run the manifest generator and verify the output
@@ -471,10 +576,10 @@ function main() {
   if (!skipGeneratorParity) {
     generatorParityErrors = checkGeneratorParity();
     if (generatorParityErrors.length > 0) {
-      console.error('FAIL examples/skills.manifest.sample.json (generator parity)');
+      console.error('FAIL [T3↔T5]     examples/skills.manifest.sample.json (generator parity)');
       for (const e of generatorParityErrors) console.error(`     - ${e}`);
     } else {
-      console.log('OK   examples/skills.manifest.sample.json (generator parity)');
+      console.log('OK   [T3↔T5]     examples/skills.manifest.sample.json (generator parity)');
     }
   }
 
@@ -509,18 +614,13 @@ function main() {
     // file otherwise passes.
     // ----------------------------------------------------------------
 
-    // domain_frame is deprecated — rename to "grounding". domain_frame is
-    // already rejected by the schema at schema_version: 2 via
-    // additionalProperties: false, so the schema validation step will also
-    // emit an `unknown field` error; the warning here is a friendlier pointer.
+    // Migration warnings for v1 → v2 field renames.
     if (fm.domain_frame) {
       emitWarning(relPath, text, 'domain_frame', '"domain_frame" is deprecated — rename to "grounding"', {
-        help: 'Rename "domain_frame:" to "grounding:". See docs/manifest-contract.md § Migration Note — domain_frame → grounding.',
+        help: 'Rename "domain_frame:" to "grounding:". See docs/manifest-contract.md § Migration Note — v1 → v2.',
         noColor,
       });
     }
-
-    // Migration warnings for the schema_version 2 field renames (SH-5784).
     if (fm.eval_status) {
       emitWarning(relPath, text, 'eval_status', '"eval_status" is deprecated — split into "eval_artifacts", "eval_state", and "routing_eval"', {
         help: 'See docs/manifest-contract.md § Migration Note — v1 → v2.',
@@ -548,14 +648,39 @@ function main() {
       }
     }
 
+    // Migration warnings for v2 → v3 field changes.
+    if (fm.family) {
+      emitWarning(relPath, text, 'family', '"family" is deprecated in v3 — rename to "browse_category"', {
+        help: 'Run `node scripts/migrate-skill-v2-to-v3.js <skill>` to apply. See docs/manifest-contract.md § Migration Note — v2 → v3.',
+        noColor,
+      });
+    }
+    if (typeof fm.drift_check === 'string') {
+      emitWarning(relPath, text, 'drift_check', 'scalar "drift_check" is deprecated in v3 — use an object with "last_verified"', {
+        help: 'Run `node scripts/migrate-skill-v2-to-v3.js <skill>` to apply. See docs/field-reference.md § drift_check.',
+        noColor,
+      });
+    }
+    if (typeof fm.compatibility === 'string') {
+      emitWarning(relPath, text, 'compatibility', 'scalar "compatibility" is deprecated in v3 — use an object with "runtimes"/"node"/"notes"', {
+        help: 'Run `node scripts/migrate-skill-v2-to-v3.js <skill>` to apply. See docs/field-reference.md § compatibility.',
+        noColor,
+      });
+    }
+
     // ----------------------------------------------------------------
     // Collect errors from all per-file checks.
     // ----------------------------------------------------------------
+    const evalResult = checkEvalCoherence(file, fm);
     const rawErrors = [
       ...validateAgainstSchema(fm, schema),
       ...checkParentDirMatchesName(file, fm),
       ...checkRelationTargets(fm, knownSkillNames),
-      ...checkEvalCoherence(file, fm),
+      ...evalResult.errors,
+      ...checkPathsNegation(fm),
+    ];
+    const rawWarnings = [
+      ...evalResult.warnings,
     ];
 
     // Archetype-aware section check (check 10).
@@ -570,23 +695,27 @@ function main() {
       ...archetypeResult.errors.map(e => ({ msg: e.message, line: e.line, column: e.column, help: e.help })),
       ...routingResult.errors.map(e => ({ msg: e.message, line: e.line, column: e.column, help: e.help })),
       ...(strict ? [
+        ...rawWarnings.map(msg => ({ msg: `[promoted from warn] ${msg}`, line: null, column: null, help: null })),
         ...archetypeResult.warnings.map(w => ({ msg: `[promoted from warn] ${w.message}`, line: w.line, column: w.column, help: w.help })),
         ...routingResult.warnings.map(w => ({ msg: `[promoted from warn] ${w.message}`, line: w.line, column: w.column, help: w.help })),
       ] : []),
     ];
 
     const fileWarnings = strict ? [] : [
+      ...rawWarnings.map(msg => ({ message: msg, line: null, column: null, help: null })),
       ...archetypeResult.warnings,
       ...routingResult.warnings,
     ];
 
+    // Tier label per file: template + starter skills are all Tier 5 specimens.
+    const tierLabel = '[T5]        ';
     if (fileErrors.length === 0 && fileWarnings.length === 0) {
-      console.log(`OK   ${relPath}`);
+      console.log(`OK   ${tierLabel}${relPath}`);
     } else if (fileErrors.length === 0) {
       // Only warnings — file passes but annotate with WARN prefix.
-      console.log(`OK   ${relPath} (${fileWarnings.length} warning(s))`);
+      console.log(`OK   ${tierLabel}${relPath} (${fileWarnings.length} warning(s))`);
     } else {
-      console.error(`FAIL ${relPath}`);
+      console.error(`FAIL ${tierLabel}${relPath}`);
     }
 
     // Print errors with code frames.

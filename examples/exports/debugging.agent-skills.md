@@ -5,16 +5,17 @@ license: MIT
 compatibility: "Markdown, Git, any codebase"
 allowed-tools: Read Grep Bash
 metadata:
-  schema_version: 2
+  schema_version: 3
   version: "1.0.0"
   type: workflow
-  family: engineering
+  browse_category: engineering
   scope: portable
   owner: maintainer
   freshness: "2026-04-17"
-  drift_check: "2026-04-17"
-  eval_artifacts: none
-  eval_state: unverified
+  drift_check:
+    last_verified: "2026-04-17"
+  eval_artifacts: present
+  eval_state: passing
   routing_eval: absent
   stability: experimental
   keywords:
@@ -81,6 +82,10 @@ Each step asks a question. The answer decides the next step. Do not skip steps t
 - Step 1 is still unreproducible after ~60 min of narrowing → suspect non-determinism (race, timing, clock, network). This is a design issue, not a debugging issue.
 - Step 3 instrumentation shows contradictory state on the same object → suspect memory corruption, concurrent mutation, or stale cache. Out of scope for a single-file debugger; escalate to architectural review.
 - The same bug returned after a previous fix → the previous fix patched a symptom. Start over at step 1 and find the real cause.
+
+## Evals
+
+This skill ships a comprehension-eval artifact at [`examples/evals/debugging.json`](../../examples/evals/debugging.json). The `Verification` checklist below is the authoring gate for a completed debugging pass; the eval file is how this skill is graded by `scripts/skill-audit.js --graded`. Do not conflate them — the checklist is for the debugger, the eval is for the grader.
 
 ## Verification
 
