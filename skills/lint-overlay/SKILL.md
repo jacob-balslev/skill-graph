@@ -1,4 +1,5 @@
 ---
+# yaml-language-server: $schema=https://skillgraph.dev/schemas/skill.v3.schema.json
 schema_version: 3
 name: lint-overlay
 description: "Use when adding or enforcing lint rules as part of a test or verification plan. Extends testing-strategy with lint-specific guidance: rule selection, gate placement, failure triage, and migration planning when introducing rules to an existing codebase. Do NOT use standalone — load the base testing-strategy skill alongside it — and do NOT use for chasing a specific lint failure in one file (that is debugging)."
@@ -7,9 +8,9 @@ type: overlay
 browse_category: quality
 scope: portable
 owner: maintainer
-freshness: "2026-04-17"
+freshness: "2026-04-18"
 drift_check:
-  last_verified: "2026-04-17"
+  last_verified: "2026-04-18"
 eval_artifacts: present
 eval_state: passing
 routing_eval: absent
@@ -34,10 +35,22 @@ keywords:
   - lint gate
 triggers:
   - lint-overlay
+examples:
+  - "plan ESLint rule introduction for a monorepo that has never had linting"
+  - "which lint rules should block CI and which should warn-only for now?"
+  - "migrate these legacy noImplicitAny violations in phased gates"
+  - "decide whether this new rule runs pre-commit or in CI only"
+anti_examples:
+  - "this specific ESLint error is blocking my commit — why?"       # debugging owns single-file failure chasing
+  - "decide whether to unit-test or integration-test this handler"  # base testing-strategy (without lint overlay)
+  - "extract this repeated code pattern into a shared util"          # refactor owns code reorganization
 relations:
   adjacent:
     - refactor
     - debugging
+  boundary:
+    - skill: debugging
+      reason: "debugging fixes a specific failing lint result; lint-overlay plans rule selection and gate placement"
   verify_with:
     - testing-strategy
 portability:

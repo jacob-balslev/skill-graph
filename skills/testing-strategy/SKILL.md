@@ -1,4 +1,5 @@
 ---
+# yaml-language-server: $schema=https://skillgraph.dev/schemas/skill.v3.schema.json
 schema_version: 3
 name: testing-strategy
 description: "Use when planning tests for a bug fix, feature, or refactor — deciding what deserves a test, at which level, with what evidence. Covers test-scope decisions, test-level selection (unit / integration / contract / e2e), effort-to-risk matching, regression targeting, evidence quality, and failure-case coverage. Do NOT use for chasing a known failure (that is debugging), for pure doc writing, or for conceptual architecture discussion with no verification target."
@@ -7,9 +8,9 @@ type: capability
 browse_category: quality
 scope: portable
 owner: maintainer
-freshness: "2026-04-17"
+freshness: "2026-04-18"
 drift_check:
-  last_verified: "2026-04-17"
+  last_verified: "2026-04-18"
 eval_artifacts: present
 eval_state: passing
 routing_eval: absent
@@ -37,12 +38,22 @@ triggers:
   - testing-skill
 routing_groups:
   - quality
+examples:
+  - "do I need a unit test for this pure formatter or is integration enough?"
+  - "what's the right test level for a webhook handler that talks to Stripe?"
+  - "the feature passes manual QA — does it need an automated test?"
+  - "pin this regression so the same bug can't slip through again"
+anti_examples:
+  - "my existing test is failing — why?"                           # debugging chases specific failure
+  - "write a testing-patterns guide for the contributor docs"      # documentation owns durable prose
+  - "clean up this duplicated test setup across three files"       # refactor owns behavior-preserving code changes
 relations:
   adjacent:
     - debugging
     - refactor
   boundary:
-    - documentation
+    - skill: documentation
+      reason: "documentation is durable prose; testing-strategy is active verification planning"
   verify_with:
     - debugging
 portability:

@@ -1,4 +1,5 @@
 ---
+# yaml-language-server: $schema=https://skillgraph.dev/schemas/skill.v3.schema.json
 schema_version: 3
 name: documentation
 description: "Use when writing reference docs, guides, tutorials, specs, architecture notes, or any durable technical prose that a future reader has to trust. Covers doc-type selection, audience fit, progressive disclosure, docs-as-code workflow, freshness and drift tracking, and source-of-truth discipline. Do NOT use for runtime debugging, UI accessibility behavior, or behavior-preserving code refactor."
@@ -7,9 +8,9 @@ type: capability
 browse_category: knowledge
 scope: portable
 owner: maintainer
-freshness: "2026-04-17"
+freshness: "2026-04-18"
 drift_check:
-  last_verified: "2026-04-17"
+  last_verified: "2026-04-18"
 eval_artifacts: present
 eval_state: passing
 routing_eval: absent
@@ -37,13 +38,24 @@ keywords:
   - add a comment block
 triggers:
   - documentation-skill
+examples:
+  - "write an API reference for this new route handler"
+  - "the README has drifted from the actual CLI flags — which wins?"
+  - "draft an architecture note explaining why we chose Postgres over DynamoDB"
+  - "this tutorial is too terse for a beginner — expand it with progressive disclosure"
+anti_examples:
+  - "the test suite is failing after my change — find the cause"  # debugging owns failure chasing
+  - "add an aria-label to this icon button"                       # a11y owns assistive-tech behavior
+  - "extract this repeated string-concat into a helper function"   # refactor owns behavior-preserving code changes
 relations:
   adjacent:
     - testing-strategy
     - refactor
   boundary:
-    - debugging
-    - a11y
+    - skill: debugging
+      reason: "debugging chases a specific failure; documentation builds durable reference prose"
+    - skill: a11y
+      reason: "a11y covers assistive-tech behavior; documentation covers prose reading-level and audience fit"
 portability:
   readiness: scripted
   targets:

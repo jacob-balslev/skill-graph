@@ -1,4 +1,5 @@
 ---
+# yaml-language-server: $schema=https://skillgraph.dev/schemas/skill.v3.schema.json
 schema_version: 3
 name: a11y
 description: "Use when building or reviewing interactive UI, forms, navigation, or dynamic content. Covers semantic HTML, keyboard access, focus management, labeling, state-change announcement, and reduced-motion / high-contrast preferences. Do NOT use for color-palette creation, visual branding, or prose reading-level accessibility — those belong to visual-design and documentation respectively."
@@ -7,9 +8,9 @@ type: capability
 browse_category: frontend
 scope: portable
 owner: maintainer
-freshness: "2026-04-17"
+freshness: "2026-04-18"
 drift_check:
-  last_verified: "2026-04-17"
+  last_verified: "2026-04-18"
 eval_artifacts: present
 eval_state: passing
 routing_eval: absent
@@ -33,12 +34,22 @@ keywords:
   - semantic html
 triggers:
   - a11y-skill
+examples:
+  - "this modal is keyboard-trapped — users can't Escape to close it"
+  - "screen reader doesn't announce when the form validation state changes"
+  - "add proper labels to these form fields so assistive tech can read them"
+  - "review this dropdown menu for arrow-key navigation and focus return"
+anti_examples:
+  - "pick an accessible brand color palette"              # color-palette design, not keyboard/SR behavior
+  - "rewrite this error message at a 6th-grade reading level"  # documentation covers reading level
+  - "clean up this accessibility code without changing how it behaves"  # refactor owns behavior preservation
 relations:
   adjacent:
     - documentation
     - testing-strategy
   boundary:
-    - refactor
+    - skill: refactor
+      reason: "refactor is behavior-preserving code modification; a11y is observable user-facing behavior"
   verify_with:
     - testing-strategy
 portability:

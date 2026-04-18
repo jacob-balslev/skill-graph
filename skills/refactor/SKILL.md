@@ -1,4 +1,5 @@
 ---
+# yaml-language-server: $schema=https://skillgraph.dev/schemas/skill.v3.schema.json
 schema_version: 3
 name: refactor
 description: "Use when reorganizing existing code without changing external behavior — extracting functions, reducing duplication, renaming for clarity, splitting modules, or tightening structure. Covers behavior preservation, duplication reduction, decomposition, naming improvements, structural reorganization, and before/after verification. Do NOT use for bug investigation, adding new product behavior, or writing documentation (even when the docs describe the refactored code)."
@@ -7,9 +8,9 @@ type: workflow
 browse_category: engineering
 scope: portable
 owner: maintainer
-freshness: "2026-04-17"
+freshness: "2026-04-18"
 drift_check:
-  last_verified: "2026-04-17"
+  last_verified: "2026-04-18"
 eval_artifacts: present
 eval_state: passing
 routing_eval: absent
@@ -32,16 +33,27 @@ keywords:
   - duplicated logic
 triggers:
   - refactor-skill
+examples:
+  - "this 600-line function is hard to reason about — decompose it while keeping tests green"
+  - "extract the duplicated validation logic from these three handlers into a helper"
+  - "rename this module from `utils` to something that describes what it actually does"
+  - "split this file by responsibility; no behavior changes, tests must still pass"
+anti_examples:
+  - "the test is failing after my edit — what did I break?"          # debugging (fix-then-verify, not behavior-preserving)
+  - "write an architecture note explaining this pattern for new team members"  # documentation
+  - "add retry logic to this function for transient network errors"   # new behavior, not refactor
 relations:
   adjacent:
     - debugging
     - testing-strategy
   boundary:
-    - documentation
+    - skill: documentation
+      reason: "documentation is prose about the code; refactor is behavior-preserving changes to the code itself"
   verify_with:
     - testing-strategy
   depends_on:
-    - testing-strategy
+    - skill: testing-strategy
+      min_version: "^1.0.0"
 portability:
   readiness: scripted
   targets:

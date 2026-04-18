@@ -1,4 +1,5 @@
 ---
+# yaml-language-server: $schema=https://skillgraph.dev/schemas/skill.v3.schema.json
 schema_version: 3
 name: skill-router
 description: "MUST be used when routing an agent request across multiple skills, building or auditing a routing table, detecting routing coverage gaps, or deciding which skill claims a user task. Activate for: 'which skill handles this?', 'who routes X?', 'am I using the right skill?', 'why did skill A activate instead of B?'. Covers trigger-label matching, file-path matching, keyword matching, description-based semantic matching, scope/type tiebreakers, and coverage-gap detection. Do NOT use when the target skill is already known (load it directly), when authoring a new skill (use `skill-template` instead), or when evaluating a SINGLE skill's quality (use `graph-audit`)."
@@ -7,9 +8,9 @@ type: router
 browse_category: knowledge
 scope: portable
 owner: maintainer
-freshness: "2026-04-17"
+freshness: "2026-04-18"
 drift_check:
-  last_verified: "2026-04-17"
+  last_verified: "2026-04-18"
 eval_artifacts: present
 eval_state: passing
 routing_eval: absent
@@ -30,12 +31,23 @@ keywords:
   - ambiguous skill activation
 triggers:
   - skill-router
+examples:
+  - "which skill should activate for 'my tests are failing in CI'?"
+  - "build a routing table that covers every agent request type we see"
+  - "why did the documentation skill activate when the user asked about a11y?"
+  - "find the coverage gaps — which agent requests match no skill at all?"
+anti_examples:
+  - "audit the graph-audit skill for schema conformance"   # graph-audit owns single-skill metadata verification
+  - "write a guide explaining how our routing works"       # documentation owns durable prose
+  - "the router activated the wrong skill once — debug it" # debugging (specific failure) not routing design
 relations:
   adjacent:
     - documentation
   boundary:
-    - documentation
-    - graph-audit
+    - skill: documentation
+      reason: "documentation writes prose ABOUT routing; skill-router is the routing logic itself"
+    - skill: graph-audit
+      reason: "graph-audit verifies ONE skill's metadata; skill-router chooses BETWEEN skills at request time"
 portability:
   readiness: scripted
   targets:

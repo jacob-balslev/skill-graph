@@ -1,4 +1,5 @@
 ---
+# yaml-language-server: $schema=https://skillgraph.dev/schemas/skill.v3.schema.json
 schema_version: 3
 name: graph-audit
 description: "Use when checking that every SKILL.md conforms to the schema, that manifest entries match authored frontmatter, or that relation targets point at real sibling skills. Covers schema conformance, manifest sync, relation integrity, eval-artifact coherence, grounding presence, and name-directory parity. Do NOT use for general code review, runtime agent debugging, or auditing non-skill files."
@@ -7,16 +8,16 @@ type: capability
 browse_category: knowledge
 scope: codebase
 owner: maintainer
-freshness: "2026-04-17"
+freshness: "2026-04-18"
 drift_check:
   last_verified: "2026-04-18"
   truth_source_hashes:
-    "schemas/skill.schema.json": "04cf90cfa703a4dd5bf74fde5ad4c273a16f5977c34b1fd569140e3d9d38aade"
-    "schemas/manifest.schema.json": "3a1fdf060f0928f12c54d5414bd17fee999c1edcb9833b82d40d36268481906a"
-    "docs/metadata-contract.md": "98e923369eac343b7581560caa7e580d6f2a03eb129069cd48f7dd7894b886fa"
-    "scripts/skill-lint.js": "b6e4053808802fa328e6ecc616b01e37ca439e21656edb3da7426baf438c2b96"
+    "schemas/skill.schema.json": "c73ef1a19e663961bff4775096447893485995f26c547303528864f2e33ba288"
+    "schemas/manifest.schema.json": "c782bd6d1a435c8dfafae10abf2580c5a4695b8847df9ec5da8f59d32a18a137"
+    "docs/metadata-contract.md": "f639b8e39062fa9122e66c6aef2e03f40bbbd3f24ec74fa1a7540e5f306a40ae"
+    "scripts/skill-lint.js": "9e0b89f3b1959e9a8307f5115bdabe4351af74346b6b756da2729a0db858f4c8"
     "scripts/check-contract-consistency.js": "2d6a88154c28629e58d2cffc2778726b80c631717428a037ad81a5350f791444"
-    "scripts/generate-manifest.js": "50a3aa0910a34a6721475fc2cf2f4408ca801ef1f8971858754704d6f1debcd8"
+    "scripts/generate-manifest.js": "72e9b86ed6be6384551b9106ad076496efb867fece7686661b1e3ec8ab2bf176"
     "examples/evals/graph-audit.json": "18ec7a85872c8b6db67edc2e144d71c0c4a7f9b73f4193d03f9fd60d43a57f26"
 eval_artifacts: present
 eval_state: passing
@@ -43,14 +44,26 @@ paths:
   - skills/**/SKILL.md
   - schemas/*.json
   - examples/skills.manifest.sample.json
+examples:
+  - "audit all skills for schema conformance and broken relation targets"
+  - "the manifest sample drifted from the generator — find the mismatch"
+  - "check that every `scope: codebase` skill has a populated grounding block"
+  - "which skills declare a relations target that doesn't exist in the library?"
+anti_examples:
+  - "is the @/components import graph correct in sales-hub?"  # general dependency audit, not skill metadata
+  - "my agent is stuck in a loop — what's wrong?"             # debugging owns runtime failure
+  - "document what each check in skill-lint.js verifies"      # documentation owns durable prose
 relations:
   adjacent:
     - documentation
     - refactor
   boundary:
-    - documentation
-    - refactor
-    - debugging
+    - skill: documentation
+      reason: "documentation writes prose about the contract; graph-audit verifies the contract against the live files"
+    - skill: refactor
+      reason: "refactor changes skill body structure; graph-audit is read-only metadata verification"
+    - skill: debugging
+      reason: "debugging chases a specific runtime failure; graph-audit is bulk static verification of every skill"
   verify_with:
     - testing-strategy
 grounding:

@@ -4,6 +4,17 @@
   "skills": [
     {
       "activation": {
+        "anti_examples": [
+          "\"pick an accessible brand color palette\"              # color-palette design, not keyboard/SR behavior",
+          "\"rewrite this error message at a 6th-grade reading level\"  # documentation covers reading level",
+          "\"clean up this accessibility code without changing how it behaves\"  # refactor owns behavior preservation"
+        ],
+        "examples": [
+          "this modal is keyboard-trapped — users can't Escape to close it",
+          "screen reader doesn't announce when the form validation state changes",
+          "add proper labels to these form fields so assistive tech can read them",
+          "review this dropdown menu for arrow-key navigation and focus return"
+        ],
         "keywords": [
           "accessibility",
           "a11y",
@@ -30,11 +41,11 @@
       "description": "Use when building or reviewing interactive UI, forms, navigation, or dynamic content. Covers semantic HTML, keyboard access, focus management, labeling, state-change announcement, and reduced-motion / high-contrast preferences. Do NOT use for color-palette creation, visual branding, or prose reading-level accessibility — those belong to visual-design and documentation respectively.",
       "health": {
         "drift_check": {
-          "last_verified": "2026-04-17"
+          "last_verified": "2026-04-18"
         },
         "eval_artifacts": "present",
         "eval_state": "passing",
-        "freshness": "2026-04-17",
+        "freshness": "2026-04-18",
         "has_grounding": false,
         "has_relations": true,
         "routing_eval": "absent"
@@ -56,7 +67,10 @@
           "testing-strategy"
         ],
         "boundary": [
-          "refactor"
+          {
+            "reason": "refactor is behavior-preserving code modification; a11y is observable user-facing behavior",
+            "skill": "refactor"
+          }
         ],
         "verify_with": [
           "testing-strategy"
@@ -69,6 +83,17 @@
     },
     {
       "activation": {
+        "anti_examples": [
+          "\"plan test coverage for a new feature\"                    # testing-strategy plans, debugging chases",
+          "\"document what this function does for future readers\"     # documentation skill",
+          "\"refactor this messy code while the test suite is green\"  # refactor (no failure, no symptom)"
+        ],
+        "examples": [
+          "my tests pass locally but fail in CI — why?",
+          "this function used to work yesterday; what changed?",
+          "reproduce this Stripe webhook failure from production logs",
+          "I see the symptom but can't find the root cause of this nil panic"
+        ],
         "keywords": [
           "debugging",
           "reproduce failure",
@@ -97,11 +122,11 @@
       "description": "Use when behavior is broken, a test is failing, or runtime output contradicts expectations. Covers failure reproduction, scope reduction by bisection, evidence capture at the moment of failure, root-cause isolation (not symptom patching), fix verification against the same evidence path, and regression-test creation. Do NOT use for feature planning, architectural design, or behavior-preserving refactor.",
       "health": {
         "drift_check": {
-          "last_verified": "2026-04-17"
+          "last_verified": "2026-04-18"
         },
         "eval_artifacts": "present",
         "eval_state": "passing",
-        "freshness": "2026-04-17",
+        "freshness": "2026-04-18",
         "has_grounding": false,
         "has_relations": true,
         "routing_eval": "absent"
@@ -123,7 +148,10 @@
           "refactor"
         ],
         "boundary": [
-          "documentation"
+          {
+            "reason": "documentation is durable reference prose; debugging is transient failure-chasing",
+            "skill": "documentation"
+          }
         ],
         "verify_with": [
           "testing-strategy"
@@ -136,6 +164,17 @@
     },
     {
       "activation": {
+        "anti_examples": [
+          "\"the test suite is failing after my change — find the cause\"  # debugging owns failure chasing",
+          "\"add an aria-label to this icon button\"                       # a11y owns assistive-tech behavior",
+          "\"extract this repeated string-concat into a helper function\"   # refactor owns behavior-preserving code changes"
+        ],
+        "examples": [
+          "write an API reference for this new route handler",
+          "the README has drifted from the actual CLI flags — which wins?",
+          "draft an architecture note explaining why we chose Postgres over DynamoDB",
+          "this tutorial is too terse for a beginner — expand it with progressive disclosure"
+        ],
         "keywords": [
           "documentation",
           "reference doc",
@@ -166,11 +205,11 @@
       "description": "Use when writing reference docs, guides, tutorials, specs, architecture notes, or any durable technical prose that a future reader has to trust. Covers doc-type selection, audience fit, progressive disclosure, docs-as-code workflow, freshness and drift tracking, and source-of-truth discipline. Do NOT use for runtime debugging, UI accessibility behavior, or behavior-preserving code refactor.",
       "health": {
         "drift_check": {
-          "last_verified": "2026-04-17"
+          "last_verified": "2026-04-18"
         },
         "eval_artifacts": "present",
         "eval_state": "passing",
-        "freshness": "2026-04-17",
+        "freshness": "2026-04-18",
         "has_grounding": false,
         "has_relations": true,
         "routing_eval": "absent"
@@ -192,8 +231,14 @@
           "refactor"
         ],
         "boundary": [
-          "debugging",
-          "a11y"
+          {
+            "reason": "debugging chases a specific failure; documentation builds durable reference prose",
+            "skill": "debugging"
+          },
+          {
+            "reason": "a11y covers assistive-tech behavior; documentation covers prose reading-level and audience fit",
+            "skill": "a11y"
+          }
         ]
       },
       "scope": "portable",
@@ -203,6 +248,17 @@
     },
     {
       "activation": {
+        "anti_examples": [
+          "\"is the @/components import graph correct in sales-hub?\"  # general dependency audit, not skill metadata",
+          "\"my agent is stuck in a loop — what's wrong?\"             # debugging owns runtime failure",
+          "\"document what each check in skill-lint.js verifies\"      # documentation owns durable prose"
+        ],
+        "examples": [
+          "audit all skills for schema conformance and broken relation targets",
+          "the manifest sample drifted from the generator — find the mismatch",
+          "check that every `scope: codebase` skill has a populated grounding block",
+          "which skills declare a relations target that doesn't exist in the library?"
+        ],
         "keywords": [
           "skill audit",
           "manifest audit",
@@ -255,19 +311,19 @@
         "drift_check": {
           "last_verified": "2026-04-18",
           "truth_source_hashes": {
-            "docs/metadata-contract.md": "98e923369eac343b7581560caa7e580d6f2a03eb129069cd48f7dd7894b886fa",
+            "docs/metadata-contract.md": "f639b8e39062fa9122e66c6aef2e03f40bbbd3f24ec74fa1a7540e5f306a40ae",
             "examples/evals/graph-audit.json": "18ec7a85872c8b6db67edc2e144d71c0c4a7f9b73f4193d03f9fd60d43a57f26",
-            "schemas/manifest.schema.json": "3a1fdf060f0928f12c54d5414bd17fee999c1edcb9833b82d40d36268481906a",
-            "schemas/skill.schema.json": "04cf90cfa703a4dd5bf74fde5ad4c273a16f5977c34b1fd569140e3d9d38aade",
+            "schemas/manifest.schema.json": "c782bd6d1a435c8dfafae10abf2580c5a4695b8847df9ec5da8f59d32a18a137",
+            "schemas/skill.schema.json": "c73ef1a19e663961bff4775096447893485995f26c547303528864f2e33ba288",
             "scripts/check-contract-consistency.js": "2d6a88154c28629e58d2cffc2778726b80c631717428a037ad81a5350f791444",
-            "scripts/generate-manifest.js": "50a3aa0910a34a6721475fc2cf2f4408ca801ef1f8971858754704d6f1debcd8",
-            "scripts/skill-lint.js": "b6e4053808802fa328e6ecc616b01e37ca439e21656edb3da7426baf438c2b96"
+            "scripts/generate-manifest.js": "72e9b86ed6be6384551b9106ad076496efb867fece7686661b1e3ec8ab2bf176",
+            "scripts/skill-lint.js": "9e0b89f3b1959e9a8307f5115bdabe4351af74346b6b756da2729a0db858f4c8"
           }
         },
-        "drift_detected": true,
+        "drift_detected": false,
         "eval_artifacts": "present",
         "eval_state": "passing",
-        "freshness": "2026-04-17",
+        "freshness": "2026-04-18",
         "has_grounding": true,
         "has_relations": true,
         "routing_eval": "absent"
@@ -283,9 +339,18 @@
           "refactor"
         ],
         "boundary": [
-          "documentation",
-          "refactor",
-          "debugging"
+          {
+            "reason": "documentation writes prose about the contract; graph-audit verifies the contract against the live files",
+            "skill": "documentation"
+          },
+          {
+            "reason": "refactor changes skill body structure; graph-audit is read-only metadata verification",
+            "skill": "refactor"
+          },
+          {
+            "reason": "debugging chases a specific runtime failure; graph-audit is bulk static verification of every skill",
+            "skill": "debugging"
+          }
         ],
         "verify_with": [
           "testing-strategy"
@@ -298,6 +363,17 @@
     },
     {
       "activation": {
+        "anti_examples": [
+          "\"this specific ESLint error is blocking my commit — why?\"       # debugging owns single-file failure chasing",
+          "\"decide whether to unit-test or integration-test this handler\"  # base testing-strategy (without lint overlay)",
+          "\"extract this repeated code pattern into a shared util\"          # refactor owns code reorganization"
+        ],
+        "examples": [
+          "plan ESLint rule introduction for a monorepo that has never had linting",
+          "which lint rules should block CI and which should warn-only for now?",
+          "migrate these legacy noImplicitAny violations in phased gates",
+          "decide whether this new rule runs pre-commit or in CI only"
+        ],
         "keywords": [
           "lint",
           "linting",
@@ -325,11 +401,11 @@
       "extends": "testing-strategy",
       "health": {
         "drift_check": {
-          "last_verified": "2026-04-17"
+          "last_verified": "2026-04-18"
         },
         "eval_artifacts": "present",
         "eval_state": "passing",
-        "freshness": "2026-04-17",
+        "freshness": "2026-04-18",
         "has_grounding": false,
         "has_relations": true,
         "routing_eval": "absent"
@@ -350,6 +426,12 @@
           "refactor",
           "debugging"
         ],
+        "boundary": [
+          {
+            "reason": "debugging fixes a specific failing lint result; lint-overlay plans rule selection and gate placement",
+            "skill": "debugging"
+          }
+        ],
         "verify_with": [
           "testing-strategy"
         ]
@@ -361,6 +443,17 @@
     },
     {
       "activation": {
+        "anti_examples": [
+          "\"the test is failing after my edit — what did I break?\"          # debugging (fix-then-verify, not behavior-preserving)",
+          "\"write an architecture note explaining this pattern for new team members\"  # documentation",
+          "\"add retry logic to this function for transient network errors\"   # new behavior, not refactor"
+        ],
+        "examples": [
+          "this 600-line function is hard to reason about — decompose it while keeping tests green",
+          "extract the duplicated validation logic from these three handlers into a helper",
+          "rename this module from `utils` to something that describes what it actually does",
+          "split this file by responsibility; no behavior changes, tests must still pass"
+        ],
         "keywords": [
           "refactor",
           "cleanup",
@@ -386,11 +479,11 @@
       "description": "Use when reorganizing existing code without changing external behavior — extracting functions, reducing duplication, renaming for clarity, splitting modules, or tightening structure. Covers behavior preservation, duplication reduction, decomposition, naming improvements, structural reorganization, and before/after verification. Do NOT use for bug investigation, adding new product behavior, or writing documentation (even when the docs describe the refactored code).",
       "health": {
         "drift_check": {
-          "last_verified": "2026-04-17"
+          "last_verified": "2026-04-18"
         },
         "eval_artifacts": "present",
         "eval_state": "passing",
-        "freshness": "2026-04-17",
+        "freshness": "2026-04-18",
         "has_grounding": false,
         "has_relations": true,
         "routing_eval": "absent"
@@ -412,10 +505,16 @@
           "testing-strategy"
         ],
         "boundary": [
-          "documentation"
+          {
+            "reason": "documentation is prose about the code; refactor is behavior-preserving changes to the code itself",
+            "skill": "documentation"
+          }
         ],
         "depends_on": [
-          "testing-strategy"
+          {
+            "min_version": "^1.0.0",
+            "skill": "testing-strategy"
+          }
         ],
         "verify_with": [
           "testing-strategy"
@@ -428,6 +527,17 @@
     },
     {
       "activation": {
+        "anti_examples": [
+          "\"audit the graph-audit skill for schema conformance\"   # graph-audit owns single-skill metadata verification",
+          "\"write a guide explaining how our routing works\"       # documentation owns durable prose",
+          "\"the router activated the wrong skill once — debug it\" # debugging (specific failure) not routing design"
+        ],
+        "examples": [
+          "which skill should activate for 'my tests are failing in CI'?",
+          "build a routing table that covers every agent request type we see",
+          "why did the documentation skill activate when the user asked about a11y?",
+          "find the coverage gaps — which agent requests match no skill at all?"
+        ],
         "keywords": [
           "skill routing",
           "skill dispatch",
@@ -451,11 +561,11 @@
       "description": "MUST be used when routing an agent request across multiple skills, building or auditing a routing table, detecting routing coverage gaps, or deciding which skill claims a user task. Activate for: 'which skill handles this?', 'who routes X?', 'am I using the right skill?', 'why did skill A activate instead of B?'. Covers trigger-label matching, file-path matching, keyword matching, description-based semantic matching, scope/type tiebreakers, and coverage-gap detection. Do NOT use when the target skill is already known (load it directly), when authoring a new skill (use `skill-template` instead), or when evaluating a SINGLE skill's quality (use `graph-audit`).",
       "health": {
         "drift_check": {
-          "last_verified": "2026-04-17"
+          "last_verified": "2026-04-18"
         },
         "eval_artifacts": "present",
         "eval_state": "passing",
-        "freshness": "2026-04-17",
+        "freshness": "2026-04-18",
         "has_grounding": false,
         "has_relations": true,
         "routing_eval": "absent"
@@ -476,8 +586,14 @@
           "documentation"
         ],
         "boundary": [
-          "documentation",
-          "graph-audit"
+          {
+            "reason": "documentation writes prose ABOUT routing; skill-router is the routing logic itself",
+            "skill": "documentation"
+          },
+          {
+            "reason": "graph-audit verifies ONE skill's metadata; skill-router chooses BETWEEN skills at request time",
+            "skill": "graph-audit"
+          }
         ]
       },
       "scope": "portable",
@@ -581,6 +697,17 @@
     },
     {
       "activation": {
+        "anti_examples": [
+          "\"my existing test is failing — why?\"                           # debugging chases specific failure",
+          "\"write a testing-patterns guide for the contributor docs\"      # documentation owns durable prose",
+          "\"clean up this duplicated test setup across three files\"       # refactor owns behavior-preserving code changes"
+        ],
+        "examples": [
+          "do I need a unit test for this pure formatter or is integration enough?",
+          "what's the right test level for a webhook handler that talks to Stripe?",
+          "the feature passes manual QA — does it need an automated test?",
+          "pin this regression so the same bug can't slip through again"
+        ],
         "keywords": [
           "testing strategy",
           "what to test",
@@ -609,11 +736,11 @@
       "description": "Use when planning tests for a bug fix, feature, or refactor — deciding what deserves a test, at which level, with what evidence. Covers test-scope decisions, test-level selection (unit / integration / contract / e2e), effort-to-risk matching, regression targeting, evidence quality, and failure-case coverage. Do NOT use for chasing a known failure (that is debugging), for pure doc writing, or for conceptual architecture discussion with no verification target.",
       "health": {
         "drift_check": {
-          "last_verified": "2026-04-17"
+          "last_verified": "2026-04-18"
         },
         "eval_artifacts": "present",
         "eval_state": "passing",
-        "freshness": "2026-04-17",
+        "freshness": "2026-04-18",
         "has_grounding": false,
         "has_relations": true,
         "routing_eval": "absent"
@@ -635,7 +762,10 @@
           "refactor"
         ],
         "boundary": [
-          "documentation"
+          {
+            "reason": "documentation is durable prose; testing-strategy is active verification planning",
+            "skill": "documentation"
+          }
         ],
         "verify_with": [
           "debugging"
