@@ -13,7 +13,15 @@ drift_check:
   last_verified: "2026-04-18"
 eval_artifacts: present
 eval_state: passing
-routing_eval: present
+# routing_eval: absent pending a passing `scripts/skill-graph-routing-eval.js`
+# run. The harness surfaced one hard-negative regression — the anti_example
+# "the router activated the wrong skill once — debug it" routes back to
+# skill-router instead of to debugging. Fix by strengthening either
+# debugging's `my tests`/`what caused` keyword coverage or this skill's
+# description boundary clause, then re-run the harness and flip back to
+# `present`. Downgraded under the "honesty over green checkmarks" rule —
+# see `docs/field-reference.md § routing_eval`.
+routing_eval: absent
 stability: experimental
 license: MIT
 compatibility:

@@ -43,6 +43,14 @@
  *      for scope: codebase or routing_groups-having skills; warns when
  *      description text appears verbatim in ## Coverage.
  *      See scripts/lint/check-routing-quality.js.
+ *  12. Routing-eval integrity (runs per file): errors when routing_eval:
+ *      present but examples / anti_examples are empty, OR when the routing
+ *      harness (scripts/skill-graph-routing-eval.js) reports any FAIL case
+ *      for the skill. Turns the `present` assertion into a verifiable
+ *      claim — a skill can only ship `present` when every positive example
+ *      routes to itself and every anti_example routes away (ideally to a
+ *      skill named in its relations.boundary[]).
+ *      See scripts/lint/check-routing-eval.js.
  *
  * Error output uses file:line:column + 5-line code frame + caret + help
  * line for actionable diagnostics. Use --no-color for plain CI output.
@@ -66,6 +74,7 @@ const { parseFrontmatter } = require('./lib/parse-frontmatter');
 const { formatCodeFrame, locateYamlKey, locateH2Section } = require('./lint/format-code-frame');
 const { checkArchetypeSections } = require('./lint/check-archetype-sections');
 const { checkRoutingQuality } = require('./lint/check-routing-quality');
+const { checkRoutingEval } = require('./lint/check-routing-eval');
 
 const REPO_ROOT = path.resolve(__dirname, '..');
 const SKILLS_DIR = path.join(REPO_ROOT, 'skills');
@@ -932,11 +941,15 @@ function main() {
     // Routing quality check (check 11).
     const routingResult = checkRoutingQuality({ filePath: relPath, sourceText: text, fm });
 
+    // Routing-eval check (check 12). Only fires when routing_eval: present.
+    const routingEvalResult = checkRoutingEval({ filePath: relPath, sourceText: text, fm });
+
     // Promote warnings to errors when --strict is active.
     const fileErrors = [
       ...rawErrors.map(msg => ({ msg, line: null, column: null, help: null })),
       ...archetypeResult.errors.map(e => ({ msg: e.message, line: e.line, column: e.column, help: e.help })),
       ...routingResult.errors.map(e => ({ msg: e.message, line: e.line, column: e.column, help: e.help })),
+      ...routingEvalResult.errors.map(e => ({ msg: e.message, line: e.line, column: e.column, help: e.help })),
       ...(strict ? [
         ...rawWarnings.map(msg => ({ msg: `[promoted from warn] ${msg}`, line: null, column: null, help: null })),
         ...archetypeResult.warnings.map(w => ({ msg: `[promoted from warn] ${w.message}`, line: w.line, column: w.column, help: w.help })),

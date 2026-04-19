@@ -1,0 +1,41 @@
+flowchart LR
+  Start(["For each skill S<br/>in manifest"])
+  HasCases{{"S has examples[]<br/>or anti_examples[]?"}}
+  Skip(["SKIP<br/>no cases"])
+  Pos["Positive cases<br/>S.examples[]"]
+  Neg["Negative cases<br/>S.anti_examples[]"]
+  Route1["skill-graph-route<br/>top-1 winner"]
+  Route2["skill-graph-route<br/>top-1 winner"]
+  WinEq{{"winner === S?"}}
+  WinBound{{"winner === S?<br/>winner &isin; S.boundary?<br/>winner === null?"}}
+  PosPass(["PASS<br/>positive"])
+  PosFail(["FAIL<br/>positive"])
+  NegPass(["PASS<br/>negative"])
+  NegFail(["FAIL<br/>negative"])
+  Gap(["COVERAGE_GAP<br/>informational"])
+
+  Start --> HasCases
+  HasCases -->|no| Skip
+  HasCases -->|yes| Pos
+  HasCases -->|yes| Neg
+  Pos --> Route1 --> WinEq
+  Neg --> Route2 --> WinBound
+  WinEq -->|yes| PosPass
+  WinEq -->|no| PosFail
+  WinBound -->|winner === S| NegFail
+  WinBound -->|winner &isin; boundary| NegPass
+  WinBound -->|winner === null| Gap
+  WinBound -->|winner &notin; boundary<br/>and non-null| NegFail
+
+  classDef start fill:#ecfdf5,stroke:#047857,color:#064e3b
+  classDef gate fill:#fce7f3,stroke:#db2777,color:#831843
+  classDef work fill:#dbeafe,stroke:#2563eb,color:#1e3a8a
+  classDef pass fill:#ecfdf5,stroke:#047857,color:#064e3b,font-weight:bold
+  classDef fail fill:#fee2e2,stroke:#b91c1c,color:#7f1d1d,font-weight:bold
+  classDef skip fill:#f5f3ff,stroke:#7c3aed,color:#4c1d95,stroke-dasharray:4 2
+  class Start,Skip start
+  class HasCases,WinEq,WinBound gate
+  class Pos,Neg,Route1,Route2 work
+  class PosPass,NegPass pass
+  class PosFail,NegFail fail
+  class Gap skip

@@ -369,12 +369,14 @@ eval_state: passing
 - `present` implies the eval artifacts include routing or trigger assertions, not just content quality.
 - Most starter skills default to `absent` — routing coverage is a deeper authoring step.
 
-**Current status (forward-looking).** As of 0.5.0 no starter skill sets `routing_eval: present`, and the Skill Graph does not yet ship a routing-evaluation harness. Setting `present` is authorable but cannot be exercised in CI until one of the planned scripts lands:
+**Enforcement.** As of [Unreleased], `routing_eval: present` is a verifiable claim. The harness at `scripts/skill-graph-routing-eval.js` runs every `examples[]` entry through `skill-graph-route.js` and asserts the skill wins; runs every `anti_examples[]` entry and asserts the winner is NOT this skill AND (if non-null) is named in `relations.boundary[]`. A skill that declares `present` must satisfy two lint gates (check 12 in `scripts/skill-lint.js`):
 
-- `scripts/skill-router.js` — runtime routing harness (planned per README)
-- `scripts/build-coverage.js` — coverage-gap computation over a corpus of test prompts (planned)
+1. Both `examples` and `anti_examples` are populated — the harness needs prompts to evaluate.
+2. Running `node scripts/skill-graph-routing-eval.js --skill <name>` returns verdict `PASS` for the skill.
 
-Until those ship, authors declaring `routing_eval: present` are making a claim that only a human reviewer can verify. Prefer `absent` for starter skills; flip to `present` only once an accompanying routing assertion set is shipped alongside the content eval.
+A skill whose harness run contains any `FAIL` case cannot ship `present`; lint surfaces each failing prompt with the router's actual decision. A `COVERAGE_GAP` verdict (the anti-example correctly avoids this skill but no other skill absorbs it) is informational and does not block `present` — the anti-example did its job; the coverage-gap signal is for the next authoring iteration. Prefer `absent` until the harness agrees — honesty over green checkmarks.
+
+**Current status of the starter library.** As of the `[Unreleased]` entry, all eight starters plus the template sit at `routing_eval: absent`. The harness exists and is executable against every starter, but none pass today — the revealed failures (stopword contamination in keyword scoring, boundary-exclusion blowback, anti-example hard-negative regressions) are prerequisites for a future sprint that tightens keywords and boundary relations until starters can honestly flip to `present`. Until then, the field documents the gap rather than masking it.
 
 **Example.**
 ```yaml

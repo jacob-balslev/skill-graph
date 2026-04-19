@@ -26,6 +26,13 @@ drift_check:
 # orthogonal eval-health axes introduced in schema_version 2. Set eval_artifacts
 # to `planned` only as a temporary state — move to `present` once the artifact
 # ships. Set eval_state to `unverified` when no run has been recorded yet.
+#
+# routing_eval: `present` is LINT-ENFORCED since [Unreleased]. Setting `present`
+# requires (1) populated `examples` + `anti_examples` below, AND (2) a passing
+# run of `node scripts/skill-graph-routing-eval.js --skill <name>`. Lint check
+# 12 surfaces each failing prompt. Default to `absent` when authoring; flip
+# to `present` only after the harness agrees. See docs/field-reference.md §
+# routing_eval for the full enforcement contract.
 eval_artifacts: planned
 eval_state: unverified
 routing_eval: absent

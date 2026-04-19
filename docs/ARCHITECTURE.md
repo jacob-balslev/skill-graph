@@ -214,6 +214,61 @@ stateDiagram-v2
 
 **Legend.** Five states; arrows are transitions with the trigger printed on them. `OK` is the only green state — every other state signals something the author must act on. `--record --apply` is the only author action that can write hashes back into the skill's frontmatter; every other transition is observed, not commanded. The `DRIFT → BROKEN` edge is the one nobody wants — a drifted claim silently outlives the file it was grounded in.
 
+### Routing harness — per-skill decision path
+
+> **The question this diagram answers:** "How does `skill-graph-routing-eval.js` decide whether a skill's `routing_eval: present` claim holds?"
+
+This is the rent-proof for the v0.5.0 `examples`, `anti_examples`, and `relations.boundary.{skill, reason}` fields. Without this harness those fields sit unverified in every SKILL.md — the router's retrieval behavior against them is asserted but never checked. With this harness every authored positive prompt and every authored negative prompt produces a concrete routing decision that the manifest can be graded against. Lint check 12 (`scripts/lint/check-routing-eval.js`) calls into `evaluateSkill()` per-file and refuses `routing_eval: present` unless every case is `PASS` or `COVERAGE_GAP`.
+
+```mermaid
+flowchart LR
+  Start(["For each skill S<br/>in manifest"])
+  HasCases{{"S has examples[]<br/>or anti_examples[]?"}}
+  Skip(["SKIP<br/>no cases"])
+  Pos["Positive cases<br/>S.examples[]"]
+  Neg["Negative cases<br/>S.anti_examples[]"]
+  Route1["skill-graph-route<br/>top-1 winner"]
+  Route2["skill-graph-route<br/>top-1 winner"]
+  WinEq{{"winner === S?"}}
+  WinBound{{"winner === S?<br/>winner &isin; S.boundary?<br/>winner === null?"}}
+  PosPass(["PASS<br/>positive"])
+  PosFail(["FAIL<br/>positive"])
+  NegPass(["PASS<br/>negative"])
+  NegFail(["FAIL<br/>negative"])
+  Gap(["COVERAGE_GAP<br/>informational"])
+
+  Start --> HasCases
+  HasCases -->|no| Skip
+  HasCases -->|yes| Pos
+  HasCases -->|yes| Neg
+  Pos --> Route1 --> WinEq
+  Neg --> Route2 --> WinBound
+  WinEq -->|yes| PosPass
+  WinEq -->|no| PosFail
+  WinBound -->|winner === S| NegFail
+  WinBound -->|winner &isin; boundary| NegPass
+  WinBound -->|winner === null| Gap
+  WinBound -->|winner &notin; boundary<br/>and non-null| NegFail
+
+  classDef start fill:#ecfdf5,stroke:#047857,color:#064e3b
+  classDef gate fill:#fce7f3,stroke:#db2777,color:#831843
+  classDef work fill:#dbeafe,stroke:#2563eb,color:#1e3a8a
+  classDef pass fill:#ecfdf5,stroke:#047857,color:#064e3b,font-weight:bold
+  classDef fail fill:#fee2e2,stroke:#b91c1c,color:#7f1d1d,font-weight:bold
+  classDef skip fill:#f5f3ff,stroke:#7c3aed,color:#4c1d95,stroke-dasharray:4 2
+  class Start,Skip start
+  class HasCases,WinEq,WinBound gate
+  class Pos,Neg,Route1,Route2 work
+  class PosPass,NegPass pass
+  class PosFail,NegFail fail
+  class Gap skip
+```
+
+<!-- Rendered copy for non-Mermaid viewers. Source: docs/diagrams/routing-harness.mmd. Regenerate via: npx @mermaid-js/mermaid-cli -i docs/diagrams/routing-harness.mmd -o docs/images/routing-harness.png -b white --width 1600 -->
+<img src="./images/routing-harness.png" alt="Routing harness decision path — per skill, positive examples must route to the skill itself; negative anti-examples must route elsewhere (ideally to a skill named in relations.boundary[]) or nowhere (COVERAGE_GAP, informational)" width="960" />
+
+**Legend.** Green = pass state or loop endpoint. Red = FAIL state — the verdict that keeps `routing_eval: absent`. Pink = decision gate. Blue = work node. Purple-dashed = `COVERAGE_GAP` (not a FAIL — the anti-example correctly avoids the skill but no other skill absorbs it; surfaces a `relations.boundary` gap worth tightening in the next pass). The asymmetry between the positive and negative gates is the whole point: positive cases must uniquely identify the skill (tight gate); negative cases must only avoid the skill (loose gate with boundary confirmation as the quality signal). Lint check 12 refuses `routing_eval: present` when any red terminal is reached; a skill with only green + purple terminals earns `present`.
+
 ---
 
 ## Tier 5 — Specimens (worked examples that illustrate)
@@ -379,5 +434,6 @@ When in doubt: if the file *defines* a constraint, it's Tier 1. If it *describes
 - [`docs/library-audit-workflow.md`](library-audit-workflow.md) — the repeatable audit loop; § Loop at a Glance carries the Mermaid diagram of the five-phase flow (deterministic → graded → aggregate → fix → re-verify).
 - [§ Tier 3 — Pipeline](#pipeline--how-a-skillmd-becomes-a-manifest-entry) — how `generate-manifest.js` projects authored frontmatter into the compiled manifest.
 - [§ Tier 4 — Drift sentinel state machine](#drift-sentinel--state-machine) — the five states a grounded skill sits in and what transitions them.
+- [§ Tier 4 — Routing harness](#routing-harness--per-skill-decision-path) — per-skill decision path that turns `routing_eval: present` from self-assertion into a lint-enforced claim.
 - [§ The starter graph](#the-starter-graph--how-the-eight-starters-relate) — Layer 7 indexed visually across all eight starters plus the template.
 - [`CHANGELOG.md`](../CHANGELOG.md) — what shipped in each version.

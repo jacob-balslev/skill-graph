@@ -549,4 +549,8 @@ function main() {
   process.exit(0);
 }
 
-main();
+// Allow require() from scripts/skill-graph-routing-eval.js so the harness
+// can reuse the scoring + boundary-exclusion pipeline without shelling out.
+module.exports = { routeSkills, tokenize, matchesGlob, computeStaleness };
+
+if (require.main === module) main();

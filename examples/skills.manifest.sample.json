@@ -1,13 +1,13 @@
 {
-  "generated_at": "2026-04-19T11:23:52.930Z",
+  "generated_at": "1970-01-01T00:00:00Z",
   "schema_version": 3,
   "skills": [
     {
       "activation": {
         "anti_examples": [
-          "\"pick an accessible brand color palette\"              # color-palette design, not keyboard/SR behavior",
-          "\"rewrite this error message at a 6th-grade reading level\"  # documentation covers reading level",
-          "\"clean up this accessibility code without changing how it behaves\"  # refactor owns behavior preservation"
+          "pick an accessible brand color palette",
+          "rewrite this error message at a 6th-grade reading level",
+          "clean up this accessibility code without changing how it behaves"
         ],
         "examples": [
           "this modal is keyboard-trapped — users can't Escape to close it",
@@ -87,9 +87,9 @@
     {
       "activation": {
         "anti_examples": [
-          "\"plan test coverage for a new feature\"                    # testing-strategy plans, debugging chases",
-          "\"document what this function does for future readers\"     # documentation skill",
-          "\"refactor this messy code while the test suite is green\"  # refactor (no failure, no symptom)"
+          "plan test coverage for a new feature",
+          "document what this function does for future readers",
+          "refactor this messy code while the test suite is green"
         ],
         "examples": [
           "my tests pass locally but fail in CI — why?",
@@ -168,9 +168,9 @@
     {
       "activation": {
         "anti_examples": [
-          "\"the test suite is failing after my change — find the cause\"  # debugging owns failure chasing",
-          "\"add an aria-label to this icon button\"                       # a11y owns assistive-tech behavior",
-          "\"extract this repeated string-concat into a helper function\"   # refactor owns behavior-preserving code changes"
+          "the test suite is failing after my change — find the cause",
+          "add an aria-label to this icon button",
+          "extract this repeated string-concat into a helper function"
         ],
         "examples": [
           "write an API reference for this new route handler",
@@ -252,9 +252,9 @@
     {
       "activation": {
         "anti_examples": [
-          "\"is the @/components import graph correct in sales-hub?\"  # general dependency audit, not skill metadata",
-          "\"my agent is stuck in a loop — what's wrong?\"             # debugging owns runtime failure",
-          "\"document what each check in skill-lint.js verifies\"      # documentation owns durable prose"
+          "is the @/components import graph correct in sales-hub?",
+          "my agent is stuck in a loop — what's wrong?",
+          "document what each check in skill-lint.js verifies"
         ],
         "examples": [
           "audit all skills for schema conformance and broken relation targets",
@@ -363,9 +363,9 @@
     {
       "activation": {
         "anti_examples": [
-          "\"this specific ESLint error is blocking my commit — why?\"       # debugging owns single-file failure chasing",
-          "\"decide whether to unit-test or integration-test this handler\"  # base testing-strategy (without lint overlay)",
-          "\"extract this repeated code pattern into a shared util\"          # refactor owns code reorganization"
+          "this specific ESLint error is blocking my commit — why?",
+          "decide whether to unit-test or integration-test this handler",
+          "extract this repeated code pattern into a shared util"
         ],
         "examples": [
           "plan ESLint rule introduction for a monorepo that has never had linting",
@@ -440,9 +440,9 @@
     {
       "activation": {
         "anti_examples": [
-          "\"the test is failing after my edit — what did I break?\"          # debugging (fix-then-verify, not behavior-preserving)",
-          "\"write an architecture note explaining this pattern for new team members\"  # documentation",
-          "\"add retry logic to this function for transient network errors\"   # new behavior, not refactor"
+          "the test is failing after my edit — what did I break?",
+          "write an architecture note explaining this pattern for new team members",
+          "add retry logic to this function for transient network errors"
         ],
         "examples": [
           "this 600-line function is hard to reason about — decompose it while keeping tests green",
@@ -524,9 +524,9 @@
     {
       "activation": {
         "anti_examples": [
-          "\"audit the graph-audit skill for schema conformance\"   # graph-audit owns single-skill metadata verification",
-          "\"write a guide explaining how our routing works\"       # documentation owns durable prose",
-          "\"the router activated the wrong skill once — debug it\" # debugging (specific failure) not routing design"
+          "audit the graph-audit skill for schema conformance",
+          "write a guide explaining how our routing works",
+          "the router activated the wrong skill once — debug it"
         ],
         "examples": [
           "which skill should activate for 'my tests are failing in CI'?",
@@ -564,7 +564,7 @@
         "freshness": "2026-04-18",
         "has_grounding": false,
         "has_relations": true,
-        "routing_eval": "present"
+        "routing_eval": "absent"
       },
       "id": "skill-router",
       "license": "MIT",
@@ -600,8 +600,8 @@
     {
       "activation": {
         "anti_examples": [
-          "\"refactor this skill to be more concise\"           # → refactor, not authoring",
-          "\"my skill's routing isn't activating — why?\"       # → skill-router, not template"
+          "refactor this skill to be more concise",
+          "my skill's routing isn't activating — why?"
         ],
         "examples": [
           "I'm writing a new skill from scratch — where do I start?",
@@ -701,9 +701,9 @@
     {
       "activation": {
         "anti_examples": [
-          "\"my existing test is failing — why?\"                           # debugging chases specific failure",
-          "\"write a testing-patterns guide for the contributor docs\"      # documentation owns durable prose",
-          "\"clean up this duplicated test setup across three files\"       # refactor owns behavior-preserving code changes"
+          "my existing test is failing — why?",
+          "write a testing-patterns guide for the contributor docs",
+          "clean up this duplicated test setup across three files"
         ],
         "examples": [
           "do I need a unit test for this pure formatter or is integration enough?",

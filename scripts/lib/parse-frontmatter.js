@@ -29,8 +29,47 @@ function parseFrontmatter(text) {
   const lines = m[1].split('\n');
   let i = 0;
 
+  /**
+   * Strip a trailing YAML inline comment from a scalar value.
+   *
+   * Rules (YAML 1.2): an inline comment starts at a `#` preceded by
+   * whitespace and runs to end-of-line. A `#` inside a quoted string does
+   * NOT start a comment. This matters for `examples` / `anti_examples`
+   * arrays where authors annotate hard-negative prompts with `# reason`
+   * tails — the intent is documentation, not part of the routing signal.
+   *
+   * Handles three cases:
+   *   1. Value starts with a quote — find the matching close quote, then
+   *      everything after it up to an optional `  #` tail is stripped.
+   *   2. Unquoted value — the first ` #` sequence begins the comment.
+   *   3. Value contains no `#` — return unchanged.
+   */
+  function stripInlineComment(raw) {
+    if (raw.length === 0) return raw;
+    const first = raw[0];
+    if (first === '"' || first === "'") {
+      // Scan for the matching close quote.
+      for (let idx = 1; idx < raw.length; idx++) {
+        if (raw[idx] === '\\') { idx++; continue; }
+        if (raw[idx] === first) {
+          // Found close quote. Trim everything after it if it matches ` #...`.
+          const tail = raw.slice(idx + 1);
+          const commentMatch = tail.match(/^\s+#/);
+          if (commentMatch) return raw.slice(0, idx + 1);
+          return raw;
+        }
+      }
+      // Unterminated quote — leave the author's text alone.
+      return raw;
+    }
+    // Unquoted: find ` #` (space-hash).
+    const m = raw.match(/\s+#/);
+    if (m) return raw.slice(0, m.index);
+    return raw;
+  }
+
   function parseValue(v) {
-    v = v.trim();
+    v = stripInlineComment(v).trim();
     if (v === '') return null;
     if ((v.startsWith('"') && v.endsWith('"')) || (v.startsWith("'") && v.endsWith("'"))) {
       return v.slice(1, -1);
