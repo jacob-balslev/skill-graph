@@ -47,12 +47,57 @@ const SAMPLE_MANIFEST = path.join(REPO_ROOT, 'examples', 'skills.manifest.sample
 // Tokenization & scoring
 // ---------------------------------------------------------------------------
 
-/** Split a query or keyword into lowercase tokens of length ≥ 2. */
+/**
+ * English function-word stopwords. Dropped from both query and keyword
+ * tokenization so that matches are carried by content tokens, not by
+ * pronouns / articles / auxiliaries / WH-words that appear in almost every
+ * natural-language prompt.
+ *
+ * Without this set, a query like "fix this" exact-matches any keyword phrase
+ * containing "this", driving library-wide false positives. See
+ * `docs/plans/routing-harness-followup.md` § M1.
+ */
+/**
+ * Scope tiebreaker ranks (lower wins). Doctrine: a skill bound to a specific
+ * codebase is always more specific than a reference skill, which is always
+ * more specific than a portable skill. Used in `routeSkills()` sort. Unknown
+ * scopes fall back to `_default` so a manifest with a new scope value sorts
+ * last rather than throwing.
+ */
+const SCOPE_RANK = { codebase: 0, reference: 1, portable: 2, _default: 99 };
+
+/**
+ * Type tiebreaker ranks (lower wins). Doctrine: workflow > capability >
+ * router > overlay. Matches `skills/skill-router/SKILL.md § Type tiebreaker`.
+ */
+const TYPE_RANK = { workflow: 0, capability: 1, router: 2, overlay: 3, _default: 99 };
+
+const STOPWORDS = new Set([
+  'a', 'an', 'the', 'this', 'that', 'these', 'those',
+  'to', 'of', 'in', 'on', 'at', 'by', 'for', 'with', 'from', 'as', 'if',
+  'is', 'are', 'was', 'were', 'be', 'been', 'being',
+  'it', 'its', 'my', 'our', 'your', 'their', 'his', 'her',
+  'do', 'does', 'did', 'can', 'could', 'may', 'might', 'should', 'would',
+  'have', 'has', 'had',
+  'how', 'when', 'where', 'what', 'why', 'who', 'which',
+  'and', 'or', 'not', 'but', 'so', 'then',
+]);
+
+/**
+ * Split a query or keyword into lowercase content tokens.
+ *
+ * A token must be length ≥ 2 and NOT a stopword. The stopword filter applies
+ * equally on both sides of the comparison (query and keyword), so dropping a
+ * token from one side implicitly drops it from the other. The keyword side
+ * additionally enforces length ≥ 3 in `scoreSkill()` to prevent short-token
+ * false positives surviving stopword removal (e.g. "up", "it" in phrases
+ * like "set up the …").
+ */
 function tokenize(text) {
   return String(text || '')
     .toLowerCase()
     .split(/[^a-z0-9]+/)
-    .filter(t => t.length >= 2);
+    .filter(t => t.length >= 2 && !STOPWORDS.has(t));
 }
 
 /**
@@ -60,8 +105,11 @@ function tokenize(text) {
  *
  * Signals, in decreasing weight:
  *   - trigger exact match: 5
- *   - keyword exact-token match: 3
- *   - keyword substring match: 1 (per distinct query token)
+ *   - keyword exact-token match: 3 (each query token credited at most ONCE
+ *     per skill, regardless of how many keyword phrases contain it —
+ *     prevents keyword-bag stuffing, see M2 in the follow-up plan)
+ *   - keyword substring match: 1 (per distinct query token, also deduped
+ *     against tokens already credited as exact matches)
  *   - path match on --path arg: 2
  *
  * Returns { score, matchedBecause } where matchedBecause is a short tag list
@@ -86,21 +134,53 @@ function scoreSkill(skill, queryTokens, pathArg) {
     }
   }
 
-  // Keywords: exact-token match per query token.
+  // Keywords scored in TWO passes, each with its own per-token dedup set:
+  //
+  //   Pass 1 (exact):     each query token earns +3 AT MOST ONCE per skill,
+  //                       regardless of how many keyword phrases contain it.
+  //                       Prevents keyword-bag stuffing (M2 in the follow-up
+  //                       plan) — e.g. a skill with six phrases all containing
+  //                       "skill" can no longer beat a skill with two phrases
+  //                       but more precise content.
+  //
+  //   Pass 2 (substring): each query token earns +1 AT MOST ONCE per skill,
+  //                       and ONLY if it did not already earn an exact match
+  //                       in pass 1. Running substring in a second pass —
+  //                       rather than falling back per-keyword inside pass 1
+  //                       — is the critical fix for the "cleanup" vs
+  //                       "clean this up" interaction. A substring credit on
+  //                       "clean" from the phrase "cleanup" must not poison a
+  //                       later exact match on "clean" from the phrase
+  //                       "clean this up". Separate sets keep the two dedups
+  //                       independent.
+  const exactMatchedTokens = new Set();
   for (const keyword of keywords) {
-    const kwTokens = tokenize(keyword);
-    const exact = kwTokens.some(kw => queryTokens.includes(kw));
-    if (exact) {
-      score += 3;
-      reasons.push(`keyword:${keyword}`);
-      continue;
+    const kwTokens = tokenize(keyword).filter(t => t.length >= 3);
+    for (const kw of kwTokens) {
+      if (queryTokens.includes(kw) && !exactMatchedTokens.has(kw)) {
+        exactMatchedTokens.add(kw);
+        score += 3;
+        reasons.push(`keyword:${keyword}`);
+        break;
+      }
     }
-    // Substring match on the full keyword phrase.
+  }
+
+  const substringMatchedTokens = new Set();
+  for (const keyword of keywords) {
     const full = String(keyword).toLowerCase();
-    const substr = queryTokens.some(q => full.includes(q) && q.length >= 3);
-    if (substr) {
-      score += 1;
-      reasons.push(`~keyword:${keyword}`);
+    for (const q of queryTokens) {
+      if (
+        q.length >= 3 &&
+        !exactMatchedTokens.has(q) &&
+        !substringMatchedTokens.has(q) &&
+        full.includes(q)
+      ) {
+        substringMatchedTokens.add(q);
+        score += 1;
+        reasons.push(`~keyword:${keyword}`);
+        break;
+      }
     }
   }
 
@@ -267,7 +347,18 @@ function routeSkills(manifest, options) {
     };
   }
 
-  scored.sort((a, b) => b.score - a.score || a.skill.name.localeCompare(b.skill.name));
+  // Tiebreakers implement the doctrine documented in
+  // `skills/skill-router/SKILL.md § Scope tiebreaker` and `§ Type tiebreaker`:
+  //   1. Highest score wins.
+  //   2. On a score tie, narrower scope wins: codebase > reference > portable.
+  //   3. On a scope tie, more specific type wins: workflow > capability > router > overlay.
+  //   4. On a complete tie, alphabetical by name (stable, deterministic output).
+  scored.sort((a, b) =>
+    (b.score - a.score) ||
+    (SCOPE_RANK[a.skill.scope] ?? SCOPE_RANK._default) - (SCOPE_RANK[b.skill.scope] ?? SCOPE_RANK._default) ||
+    (TYPE_RANK[a.skill.type] ?? TYPE_RANK._default) - (TYPE_RANK[b.skill.type] ?? TYPE_RANK._default) ||
+    a.skill.name.localeCompare(b.skill.name)
+  );
 
   // -------------------------------------------------------------------------
   // Stage 2: top-N matches seed the selection set.
@@ -330,28 +421,53 @@ function routeSkills(manifest, options) {
   }
 
   // -------------------------------------------------------------------------
-  // Stage 5: boundary exclusion. Any skill listed in a SELECTED skill's
-  // boundary[] is removed from the selection (and flagged for the user).
+  // Stage 5: score-aware boundary exclusion.
+  //
+  // A skill listed in another SELECTED skill's boundary[] is removed from
+  // the selection, subject to two guards:
+  //
+  //   (1) Only skills that scored in stage 1 — i.e. topMatches — may act as
+  //       declaring skills. Co-loaded skills (brought in via depends_on or
+  //       verify_with, with no independent query score) MUST NOT boundary-
+  //       exclude anyone. Otherwise a topMatch that pulls in a verify_with
+  //       partner can be excluded BY THAT PARTNER if the partner's boundary
+  //       names the topMatch — a cyclic invalidation of the topMatch's own
+  //       win. The partner's boundary is authored as a request-time guard
+  //       for when the partner itself is the primary match, not as a veto
+  //       on whatever brought it along.
+  //
+  //   (2) Even among topMatches, exclusion only fires if the declarer
+  //       actually outscored the target. A weaker match cannot veto a
+  //       stronger, more direct match on its own vocabulary (M3 in the
+  //       follow-up plan). Score ties fall through to exclusion, so
+  //       authored boundaries still break ties deterministically.
   // -------------------------------------------------------------------------
   const boundaryExcluded = [];
-  for (const { skill } of topMatches.concat(coLoaded)) {
+  for (const declaring of topMatches) {
+    const skill = declaring.skill;
     if (!skill.relations || !Array.isArray(skill.relations.boundary)) continue;
     for (const b of skill.relations.boundary) {
       const bName = relItemName(b);
       const reason = boundaryReason(b);
       if (!bName) continue;
-      if (selectedNames.has(bName)) {
-        const bSkill = byName.get(bName);
-        if (bSkill) {
-          boundaryExcluded.push({
-            skill: bSkill,
-            reason: reason
-              ? `in boundary[] of ${skill.name}: ${reason}`
-              : `in boundary[] of ${skill.name}`,
-            role: 'boundary_excluded',
-          });
-          selectedNames.delete(bName);
-        }
+      if (!selectedNames.has(bName)) continue;
+
+      const bScored = scored.find(e => e.skill.name === bName);
+      if (bScored && bScored.score > declaring.score) {
+        // Target outscored the declarer on the query; keep it in selection.
+        continue;
+      }
+
+      const bSkill = byName.get(bName);
+      if (bSkill) {
+        boundaryExcluded.push({
+          skill: bSkill,
+          reason: reason
+            ? `in boundary[] of ${skill.name}: ${reason}`
+            : `in boundary[] of ${skill.name}`,
+          role: 'boundary_excluded',
+        });
+        selectedNames.delete(bName);
       }
     }
   }

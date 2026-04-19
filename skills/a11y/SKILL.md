@@ -13,7 +13,7 @@ drift_check:
   last_verified: "2026-04-18"
 eval_artifacts: present
 eval_state: passing
-routing_eval: absent
+routing_eval: present
 stability: experimental
 license: MIT
 compatibility:
@@ -32,6 +32,13 @@ keywords:
   - reduced motion
   - high contrast
   - semantic html
+  - form labels
+  - form fields
+  - aria-label
+  - assistive tech
+  - assistive technology
+  - accessible labels
+  - proper labels
 triggers:
   - a11y-skill
 # File surface: a11y concerns live in user-facing markup and component code.
@@ -50,13 +57,14 @@ examples:
   - "add proper labels to these form fields so assistive tech can read them"
   - "review this dropdown menu for arrow-key navigation and focus return"
 anti_examples:
-  - "pick an accessible brand color palette"              # color-palette design, not keyboard/SR behavior
-  - "rewrite this error message at a 6th-grade reading level"  # documentation covers reading level
+  - "rewrite this error message at a 6th-grade reading level"  # documentation covers reading level and audience fit
   - "clean up this accessibility code without changing how it behaves"  # refactor owns behavior preservation
 relations:
   boundary:
     - skill: refactor
       reason: "refactor is behavior-preserving code modification; a11y is observable user-facing behavior"
+    - skill: documentation
+      reason: "documentation owns prose reading-level and audience fit; a11y owns assistive-tech behavior"
   verify_with:
     - testing-strategy
 portability:

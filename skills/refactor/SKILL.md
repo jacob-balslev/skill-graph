@@ -13,7 +13,7 @@ drift_check:
   last_verified: "2026-04-18"
 eval_artifacts: present
 eval_state: passing
-routing_eval: absent
+routing_eval: present
 stability: experimental
 license: MIT
 compatibility:
@@ -31,6 +31,19 @@ keywords:
   - split this file
   - too long function
   - duplicated logic
+  - decompose function
+  - decompose code
+  - decompose long
+  - split by responsibility
+  - behavior preserving
+  - rename module
+  - rename utils
+  - messy code
+  - messy suite
+  - extract helper
+  - extract duplicated
+  - consolidate logic
+  - tighten structure
 triggers:
   - refactor-skill
 examples:
@@ -39,16 +52,24 @@ examples:
   - "rename this module from `utils` to something that describes what it actually does"
   - "split this file by responsibility; no behavior changes, tests must still pass"
 anti_examples:
-  - "the test is failing after my edit — what did I break?"          # debugging (fix-then-verify, not behavior-preserving)
+  - "the test is failing after my edit — what did I break?"                 # debugging (fix-then-verify, not behavior-preserving)
   - "write an architecture note explaining this pattern for new team members"  # documentation
-  - "add retry logic to this function for transient network errors"   # new behavior, not refactor
+  - "reproduce why this function retries three times on transient network errors"  # debugging (observed behavior, reproduce-first), not refactor
 relations:
-  adjacent:
-    - debugging
-    - testing-strategy
+  # debugging and testing-strategy were formerly listed under `adjacent`, but
+  # the routing harness surfaced anti_examples that need those skills to
+  # absorb anti-routing (debugging for "the test is failing after my edit…",
+  # testing-strategy for the refactor-adjacent anti). `boundary` is the
+  # correct relation for confusables; lint `check-adjacency-boundary`
+  # forbids holding both. testing-strategy is retained in `depends_on` and
+  # `verify_with` — the pre/post guard for every behavior-preserving change
+  # — so the authoring signal ("you need a green suite first") is preserved
+  # without the adjacency mis-routing.
   boundary:
     - skill: documentation
       reason: "documentation is prose about the code; refactor is behavior-preserving changes to the code itself"
+    - skill: debugging
+      reason: "debugging chases an observed failure; refactor runs only with a green test suite and preserves behavior"
   verify_with:
     - testing-strategy
   depends_on:

@@ -13,7 +13,7 @@ drift_check:
   last_verified: "2026-04-18"
 eval_artifacts: present
 eval_state: passing
-routing_eval: absent
+routing_eval: present
 stability: experimental
 license: MIT
 compatibility:
@@ -34,6 +34,13 @@ keywords:
   - unit or integration
   - test coverage
   - pin this behavior
+  - plan test coverage
+  - plan coverage
+  - needs an automated test
+  - automated test
+  - manual QA coverage
+  - passes manual QA
+  - test level decision
 triggers:
   - testing-skill
 routing_groups:
@@ -48,12 +55,22 @@ anti_examples:
   - "write a testing-patterns guide for the contributor docs"      # documentation owns durable prose
   - "clean up this duplicated test setup across three files"       # refactor owns behavior-preserving code changes
 relations:
-  adjacent:
-    - debugging
-    - refactor
+  # debugging and refactor were formerly listed under `adjacent` as close
+  # kin, but the routing harness surfaced confusable anti_examples ("my
+  # existing test is failing — why?" → debugging; "clean up this duplicated
+  # test setup…" → refactor). Those sit in `boundary` now so the router
+  # absorbs the anti-routing cleanly; lint `check-adjacency-boundary`
+  # forbids holding both. `verify_with: debugging` is retained because a
+  # regression test authored here is frequently verified by running the
+  # debugging reproduction — that's not a confusable at request time, it's
+  # a post-fix handoff.
   boundary:
     - skill: documentation
       reason: "documentation is durable prose; testing-strategy is active verification planning"
+    - skill: debugging
+      reason: "debugging chases a specific observed failure; testing-strategy decides what to test BEFORE a failure exists"
+    - skill: refactor
+      reason: "refactor reshapes code (including test setup) while preserving behavior; testing-strategy decides what coverage to author in the first place"
   verify_with:
     - debugging
 portability:

@@ -13,7 +13,7 @@ drift_check:
   last_verified: "2026-04-18"
 eval_artifacts: present
 eval_state: passing
-routing_eval: absent
+routing_eval: present
 stability: experimental
 license: MIT
 compatibility:
@@ -36,6 +36,18 @@ keywords:
   - write api docs
   - doc this
   - add a comment block
+  - progressive disclosure
+  - expand tutorial
+  - reading level
+  - plain language
+  - beginner friendly
+  - terse prose
+  - terse tutorial
+  - audience fit
+  - reader mental model
+  - explain the pattern
+  - write comments
+  - newcomer guide
 triggers:
   - documentation-skill
 examples:

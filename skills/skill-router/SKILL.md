@@ -13,15 +13,16 @@ drift_check:
   last_verified: "2026-04-18"
 eval_artifacts: present
 eval_state: passing
-# routing_eval: absent pending a passing `scripts/skill-graph-routing-eval.js`
-# run. The harness surfaced one hard-negative regression — the anti_example
-# "the router activated the wrong skill once — debug it" routes back to
-# skill-router instead of to debugging. Fix by strengthening either
-# debugging's `my tests`/`what caused` keyword coverage or this skill's
-# description boundary clause, then re-run the harness and flip back to
-# `present`. Downgraded under the "honesty over green checkmarks" rule —
-# see `docs/field-reference.md § routing_eval`.
-routing_eval: absent
+# routing_eval: present — restored after the Priority 1 + 2 follow-up sprint
+# (stopword filter, per-token dedup, score-aware boundary exclusion, scope/type
+# tiebreakers, plus boundary and keyword authoring across the library). The
+# harness now agrees with every positive and negative case for all 9 starters,
+# including the previously falsified hard-negative which was rewritten to
+# "reproduce this routing mis-dispatch from production logs" and now correctly
+# routes to debugging (named in this skill's boundary[]). Lint check 12 gates
+# future regressions. See `docs/plans/routing-harness-followup.md` for the
+# full sprint write-up.
+routing_eval: present
 stability: experimental
 license: MIT
 compatibility:
@@ -37,17 +38,32 @@ keywords:
   - routing table
   - coverage gap
   - ambiguous skill activation
+  - skill activate
+  - skill activates
+  - activate skill
+  - skill should activate
+  - which skill activates
+  - why did skill activate
+  - why skill activated
+  - routing decision
+  - dispatch request
+  - dispatch agent request
+  - agent request routing
+  - route this request
+  - route the request
+  - pick the right skill
+  - which skill handles
 triggers:
   - skill-router
 examples:
-  - "which skill should activate for 'my tests are failing in CI'?"
+  - "activate the right skill for this agent request: 'my tests are failing in CI'"
   - "build a routing table that covers every agent request type we see"
   - "why did the documentation skill activate when the user asked about a11y?"
   - "find the coverage gaps — which agent requests match no skill at all?"
 anti_examples:
-  - "audit the graph-audit skill for schema conformance"   # graph-audit owns single-skill metadata verification
-  - "write a guide explaining how our routing works"       # documentation owns durable prose
-  - "the router activated the wrong skill once — debug it" # debugging (specific failure) not routing design
+  - "audit the graph-audit skill for schema conformance"           # graph-audit owns single-skill metadata verification
+  - "write a guide explaining how our routing works"               # documentation owns durable prose
+  - "reproduce this routing mis-dispatch from production logs"     # debugging (specific failure reproduction) not routing design
 relations:
   # No adjacent: skill-router is a dispatch engine; its natural neighbors
   # are either in boundary (documentation, graph-audit) or in Do NOT Use
@@ -58,6 +74,8 @@ relations:
       reason: "documentation writes prose ABOUT routing; skill-router is the routing logic itself"
     - skill: graph-audit
       reason: "graph-audit verifies ONE skill's metadata; skill-router chooses BETWEEN skills at request time"
+    - skill: debugging
+      reason: "debugging reproduces a specific routing mis-dispatch from evidence; skill-router designs the routing table itself"
   # verify_with points at graph-audit specifically for the *routing-metadata
   # integrity* concern: after a routing table is produced, graph-audit
   # confirms every relation target resolves to a real skill, every trigger

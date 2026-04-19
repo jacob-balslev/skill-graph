@@ -5,7 +5,6 @@
     {
       "activation": {
         "anti_examples": [
-          "pick an accessible brand color palette",
           "rewrite this error message at a 6th-grade reading level",
           "clean up this accessibility code without changing how it behaves"
         ],
@@ -27,7 +26,14 @@
           "screen reader says",
           "reduced motion",
           "high contrast",
-          "semantic html"
+          "semantic html",
+          "form labels",
+          "form fields",
+          "aria-label",
+          "assistive tech",
+          "assistive technology",
+          "accessible labels",
+          "proper labels"
         ],
         "paths": [
           "**/*.{html,tsx,jsx,vue,svelte}",
@@ -55,7 +61,7 @@
         "freshness": "2026-04-18",
         "has_grounding": false,
         "has_relations": true,
-        "routing_eval": "absent"
+        "routing_eval": "present"
       },
       "id": "a11y",
       "license": "MIT",
@@ -73,6 +79,10 @@
           {
             "reason": "refactor is behavior-preserving code modification; a11y is observable user-facing behavior",
             "skill": "refactor"
+          },
+          {
+            "reason": "documentation owns prose reading-level and audience fit; a11y owns assistive-tech behavior",
+            "skill": "documentation"
           }
         ],
         "verify_with": [
@@ -100,6 +110,7 @@
         "keywords": [
           "debugging",
           "reproduce failure",
+          "reproduce bug",
           "failing test",
           "root cause",
           "symptom vs cause",
@@ -111,7 +122,22 @@
           "it broke in production",
           "cannot reproduce",
           "test passes locally",
-          "stack trace"
+          "stack trace",
+          "used to work",
+          "worked yesterday",
+          "what changed",
+          "was working before",
+          "agent stuck",
+          "stuck in a loop",
+          "stuck in loop",
+          "blocking my commit",
+          "blocking the build",
+          "specific error",
+          "specific failure",
+          "diagnose failure",
+          "error blocking",
+          "broke the build",
+          "broke build"
         ],
         "triggers": [
           "debugging-skill"
@@ -132,7 +158,7 @@
         "freshness": "2026-04-18",
         "has_grounding": false,
         "has_relations": true,
-        "routing_eval": "absent"
+        "routing_eval": "present"
       },
       "id": "debugging",
       "license": "MIT",
@@ -146,14 +172,18 @@
         ]
       },
       "relations": {
-        "adjacent": [
-          "testing-strategy",
-          "refactor"
-        ],
         "boundary": [
           {
             "reason": "documentation is durable reference prose; debugging is transient failure-chasing",
             "skill": "documentation"
+          },
+          {
+            "reason": "testing-strategy plans what to test before a failure exists; debugging chases a specific observed failure",
+            "skill": "testing-strategy"
+          },
+          {
+            "reason": "refactor is behavior-preserving code change with green tests; debugging is invoked because tests or behavior are NOT green",
+            "skill": "refactor"
           }
         ],
         "verify_with": [
@@ -194,7 +224,19 @@
           "document this function",
           "write api docs",
           "doc this",
-          "add a comment block"
+          "add a comment block",
+          "progressive disclosure",
+          "expand tutorial",
+          "reading level",
+          "plain language",
+          "beginner friendly",
+          "terse prose",
+          "terse tutorial",
+          "audience fit",
+          "reader mental model",
+          "explain the pattern",
+          "write comments",
+          "newcomer guide"
         ],
         "triggers": [
           "documentation-skill"
@@ -215,7 +257,7 @@
         "freshness": "2026-04-18",
         "has_grounding": false,
         "has_relations": true,
-        "routing_eval": "absent"
+        "routing_eval": "present"
       },
       "id": "documentation",
       "license": "MIT",
@@ -252,9 +294,9 @@
     {
       "activation": {
         "anti_examples": [
-          "is the @/components import graph correct in sales-hub?",
+          "diagnose why the @/components import cycle broke the build",
           "my agent is stuck in a loop — what's wrong?",
-          "document what each check in skill-lint.js verifies"
+          "write a reference doc explaining what the lint-checker pipeline does"
         ],
         "examples": [
           "audit all skills for schema conformance and broken relation targets",
@@ -329,7 +371,7 @@
         "freshness": "2026-04-18",
         "has_grounding": true,
         "has_relations": true,
-        "routing_eval": "absent"
+        "routing_eval": "present"
       },
       "id": "graph-audit",
       "license": "MIT",
@@ -385,7 +427,20 @@
           "lint is failing",
           "add lint check",
           "rule migration",
-          "lint gate"
+          "lint gate",
+          "migrate legacy",
+          "migrate lint",
+          "phased migration",
+          "phased gates",
+          "legacy violations",
+          "legacy lint violations",
+          "noimplicitany",
+          "pre-commit vs ci",
+          "pre-commit gate",
+          "ci gate",
+          "introduce lint rule",
+          "rule pre-commit",
+          "rule runs pre-commit"
         ],
         "triggers": [
           "lint-overlay"
@@ -407,7 +462,7 @@
         "freshness": "2026-04-18",
         "has_grounding": false,
         "has_relations": true,
-        "routing_eval": "absent"
+        "routing_eval": "present"
       },
       "id": "lint-overlay",
       "license": "MIT",
@@ -429,6 +484,10 @@
           {
             "reason": "refactor changes behavior-preserving code shape; lint-overlay is verification-plan authoring, not code modification",
             "skill": "refactor"
+          },
+          {
+            "reason": "base testing-strategy owns unit-vs-integration scope selection; lint-overlay extends it only for lint-specific gate placement",
+            "skill": "testing-strategy"
           }
         ]
       },
@@ -442,7 +501,7 @@
         "anti_examples": [
           "the test is failing after my edit — what did I break?",
           "write an architecture note explaining this pattern for new team members",
-          "add retry logic to this function for transient network errors"
+          "reproduce why this function retries three times on transient network errors"
         ],
         "examples": [
           "this 600-line function is hard to reason about — decompose it while keeping tests green",
@@ -461,7 +520,20 @@
           "rename this",
           "split this file",
           "too long function",
-          "duplicated logic"
+          "duplicated logic",
+          "decompose function",
+          "decompose code",
+          "decompose long",
+          "split by responsibility",
+          "behavior preserving",
+          "rename module",
+          "rename utils",
+          "messy code",
+          "messy suite",
+          "extract helper",
+          "extract duplicated",
+          "consolidate logic",
+          "tighten structure"
         ],
         "triggers": [
           "refactor-skill"
@@ -482,7 +554,7 @@
         "freshness": "2026-04-18",
         "has_grounding": false,
         "has_relations": true,
-        "routing_eval": "absent"
+        "routing_eval": "present"
       },
       "id": "refactor",
       "license": "MIT",
@@ -496,14 +568,14 @@
         ]
       },
       "relations": {
-        "adjacent": [
-          "debugging",
-          "testing-strategy"
-        ],
         "boundary": [
           {
             "reason": "documentation is prose about the code; refactor is behavior-preserving changes to the code itself",
             "skill": "documentation"
+          },
+          {
+            "reason": "debugging chases an observed failure; refactor runs only with a green test suite and preserves behavior",
+            "skill": "debugging"
           }
         ],
         "depends_on": [
@@ -526,10 +598,10 @@
         "anti_examples": [
           "audit the graph-audit skill for schema conformance",
           "write a guide explaining how our routing works",
-          "the router activated the wrong skill once — debug it"
+          "reproduce this routing mis-dispatch from production logs"
         ],
         "examples": [
-          "which skill should activate for 'my tests are failing in CI'?",
+          "activate the right skill for this agent request: 'my tests are failing in CI'",
           "build a routing table that covers every agent request type we see",
           "why did the documentation skill activate when the user asked about a11y?",
           "find the coverage gaps — which agent requests match no skill at all?"
@@ -543,7 +615,22 @@
           "skill selector",
           "routing table",
           "coverage gap",
-          "ambiguous skill activation"
+          "ambiguous skill activation",
+          "skill activate",
+          "skill activates",
+          "activate skill",
+          "skill should activate",
+          "which skill activates",
+          "why did skill activate",
+          "why skill activated",
+          "routing decision",
+          "dispatch request",
+          "dispatch agent request",
+          "agent request routing",
+          "route this request",
+          "route the request",
+          "pick the right skill",
+          "which skill handles"
         ],
         "triggers": [
           "skill-router"
@@ -564,7 +651,7 @@
         "freshness": "2026-04-18",
         "has_grounding": false,
         "has_relations": true,
-        "routing_eval": "absent"
+        "routing_eval": "present"
       },
       "id": "skill-router",
       "license": "MIT",
@@ -586,6 +673,10 @@
           {
             "reason": "graph-audit verifies ONE skill's metadata; skill-router chooses BETWEEN skills at request time",
             "skill": "graph-audit"
+          },
+          {
+            "reason": "debugging reproduces a specific routing mis-dispatch from evidence; skill-router designs the routing table itself",
+            "skill": "debugging"
           }
         ],
         "verify_with": [
@@ -612,8 +703,19 @@
           "skill authoring",
           "skill template",
           "new skill",
+          "writing a new skill",
           "skill frontmatter",
-          "skill graph contract"
+          "skill graph contract",
+          "capability or workflow",
+          "pick capability or workflow",
+          "skill type pick",
+          "description vs coverage",
+          "description versus coverage",
+          "authoring a skill",
+          "skill archetype",
+          "frontmatter structure",
+          "skill body layout",
+          "teaching layer"
         ],
         "paths": [
           "examples/skill-template.md"
@@ -687,6 +789,14 @@
           {
             "reason": "refactor is behavior-preserving code modification, not skill authoring",
             "skill": "refactor"
+          },
+          {
+            "reason": "skill-router dispatches between existing skills at request time; this template creates a NEW skill",
+            "skill": "skill-router"
+          },
+          {
+            "reason": "graph-audit verifies the authored metadata of an existing skill; this template is the authoring-time guide",
+            "skill": "graph-audit"
           }
         ],
         "verify_with": [
@@ -725,7 +835,14 @@
           "should I test this",
           "unit or integration",
           "test coverage",
-          "pin this behavior"
+          "pin this behavior",
+          "plan test coverage",
+          "plan coverage",
+          "needs an automated test",
+          "automated test",
+          "manual QA coverage",
+          "passes manual QA",
+          "test level decision"
         ],
         "triggers": [
           "testing-skill"
@@ -746,7 +863,7 @@
         "freshness": "2026-04-18",
         "has_grounding": false,
         "has_relations": true,
-        "routing_eval": "absent"
+        "routing_eval": "present"
       },
       "id": "testing-strategy",
       "license": "MIT",
@@ -760,14 +877,18 @@
         ]
       },
       "relations": {
-        "adjacent": [
-          "debugging",
-          "refactor"
-        ],
         "boundary": [
           {
             "reason": "documentation is durable prose; testing-strategy is active verification planning",
             "skill": "documentation"
+          },
+          {
+            "reason": "debugging chases a specific observed failure; testing-strategy decides what to test BEFORE a failure exists",
+            "skill": "debugging"
+          },
+          {
+            "reason": "refactor reshapes code (including test setup) while preserving behavior; testing-strategy decides what coverage to author in the first place",
+            "skill": "refactor"
           }
         ],
         "verify_with": [

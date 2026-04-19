@@ -13,7 +13,7 @@ drift_check:
   last_verified: "2026-04-18"
 eval_artifacts: present
 eval_state: passing
-routing_eval: absent
+routing_eval: present
 stability: experimental
 license: MIT
 compatibility:
@@ -33,6 +33,19 @@ keywords:
   - add lint check
   - rule migration
   - lint gate
+  - migrate legacy
+  - migrate lint
+  - phased migration
+  - phased gates
+  - legacy violations
+  - legacy lint violations
+  - noimplicitany
+  - pre-commit vs ci
+  - pre-commit gate
+  - ci gate
+  - introduce lint rule
+  - rule pre-commit
+  - rule runs pre-commit
 triggers:
   - lint-overlay
 examples:
@@ -57,6 +70,8 @@ relations:
       reason: "debugging fixes a specific failing lint result; lint-overlay plans rule selection and gate placement"
     - skill: refactor
       reason: "refactor changes behavior-preserving code shape; lint-overlay is verification-plan authoring, not code modification"
+    - skill: testing-strategy
+      reason: "base testing-strategy owns unit-vs-integration scope selection; lint-overlay extends it only for lint-specific gate placement"
   # No verify_with: `extends: testing-strategy` already binds this overlay to
   # its base contract — the base IS the verification partner, so naming it
   # again under verify_with would be redundant without adding signal. If a

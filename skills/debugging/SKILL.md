@@ -13,7 +13,7 @@ drift_check:
   last_verified: "2026-04-18"
 eval_artifacts: present
 eval_state: passing
-routing_eval: absent
+routing_eval: present
 stability: experimental
 license: MIT
 compatibility:
@@ -22,6 +22,7 @@ allowed-tools: Read Grep Bash
 keywords:
   - debugging
   - reproduce failure
+  - reproduce bug
   - failing test
   - root cause
   - symptom vs cause
@@ -34,6 +35,21 @@ keywords:
   - cannot reproduce
   - test passes locally
   - stack trace
+  - used to work
+  - worked yesterday
+  - what changed
+  - was working before
+  - agent stuck
+  - stuck in a loop
+  - stuck in loop
+  - blocking my commit
+  - blocking the build
+  - specific error
+  - specific failure
+  - diagnose failure
+  - error blocking
+  - broke the build
+  - broke build
 triggers:
   - debugging-skill
 examples:
@@ -46,12 +62,22 @@ anti_examples:
   - "document what this function does for future readers"     # documentation skill
   - "refactor this messy code while the test suite is green"  # refactor (no failure, no symptom)
 relations:
-  adjacent:
-    - testing-strategy
-    - refactor
+  # testing-strategy and refactor USED to live in `adjacent` here as close
+  # siblings, but the routing harness surfaced real confusable collisions:
+  # debugging's anti_examples ("plan test coverage…", "refactor this messy
+  # code…") need those two skills to WIN the anti-routing, not to be loaded
+  # alongside debugging. `boundary` is the correct relation for confusables
+  # — the lint `check-adjacency-boundary` enforces this dichotomy, so both
+  # adjacency entries were removed. verify_with still pulls testing-strategy
+  # in when debugging is the primary match (regression-test authoring after
+  # a failure is fixed), which is the original intent of the adjacency.
   boundary:
     - skill: documentation
       reason: "documentation is durable reference prose; debugging is transient failure-chasing"
+    - skill: testing-strategy
+      reason: "testing-strategy plans what to test before a failure exists; debugging chases a specific observed failure"
+    - skill: refactor
+      reason: "refactor is behavior-preserving code change with green tests; debugging is invoked because tests or behavior are NOT green"
   verify_with:
     - testing-strategy
 portability:

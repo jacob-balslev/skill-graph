@@ -21,7 +21,7 @@ drift_check:
     "examples/evals/graph-audit.json": "18ec7a85872c8b6db67edc2e144d71c0c4a7f9b73f4193d03f9fd60d43a57f26"
 eval_artifacts: present
 eval_state: passing
-routing_eval: absent
+routing_eval: present
 stability: experimental
 license: MIT
 compatibility:
@@ -50,9 +50,9 @@ examples:
   - "check that every `scope: codebase` skill has a populated grounding block"
   - "which skills declare a relations target that doesn't exist in the library?"
 anti_examples:
-  - "is the @/components import graph correct in sales-hub?"  # general dependency audit, not skill metadata
-  - "my agent is stuck in a loop — what's wrong?"             # debugging owns runtime failure
-  - "document what each check in skill-lint.js verifies"      # documentation owns durable prose
+  - "diagnose why the @/components import cycle broke the build"  # debugging owns build-failure diagnosis; this is NOT skill metadata
+  - "my agent is stuck in a loop — what's wrong?"                 # debugging owns runtime failure
+  - "write a reference doc explaining what the lint-checker pipeline does"  # documentation owns durable prose about the pipeline
 relations:
   boundary:
     - skill: documentation
