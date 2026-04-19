@@ -8,7 +8,7 @@ Graph-aware skill metadata for AI agents. A superset of the [Agent Skills](https
 
 Shipping today:
 
-- public `SKILL.md` frontmatter contract (`docs/metadata-contract.md`) — 29 authored fields, schema_version 3
+- public `SKILL.md` frontmatter contract (`docs/metadata-contract.md`) — 32 authored fields, schema_version 3
 - JSON Schemas for skill and manifest validation (`schemas/`) with pinned v2 (frozen) and v3 (current) copies alongside the unversioned files
 - **skill lint script** with schema validation, parent-directory check, relation-target existence (supports v3 object-item forms), eval coherence, generator parity, archetype-aware sections, and routing quality (`scripts/skill-lint.js`)
 - **contract consistency checker** for cross-artifact parity between schemas, docs, and example artifacts; version-aware C6 that tracks the current pinned schema and freezes prior versions (`scripts/check-contract-consistency.js`)

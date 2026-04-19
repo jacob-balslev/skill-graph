@@ -150,6 +150,77 @@ The H1 title at the top of each SKILL.md body is Title Case — every significan
 
 Every `description:` field leads with a trigger clause — `"Use when …"` or an equivalent imperative — and names at least one explicit negative boundary with `"Do NOT use for …"`. Do not lead with the skill's own name as a noun (`"Debugging skill for …"`); the router already knows the name from the `name:` field, so the opener should spend its budget on when the skill activates, not on self-reference. A good opener names (a) the triggering situation, (b) the scope the skill covers, and (c) at least one concrete case where a different skill is correct instead.
 
+## Anatomy
+
+> **The question this diagram answers:** "What are the parts of a SKILL.md?"
+
+Every Skill Graph SKILL.md is the same shape: a YAML frontmatter, a Markdown body, and — only in the canonical template specimen — a teaching layer that is stripped when the template is adapted. The field-level detail lives in the table below the diagram and in [`docs/field-reference.md`](field-reference.md); the archetype → required-section mapping lives in the [Archetype Section Map](#archetype-section-map) above. This diagram shows only the compositional shape.
+
+```mermaid
+flowchart LR
+  Skill(["<b>SKILL.md</b>"])
+  FM["<b>YAML Frontmatter</b><br/>32 named fields · machine-validated"]
+  Body["<b>Markdown Body</b><br/>H2 sections depend on <code>type</code>"]
+  Teach["<b>Teaching Layer</b><br/>TEMPLATE NOTE scaffolding<br/>template specimen only"]
+
+  Skill --> FM
+  Skill --> Body
+  Skill -.->|optional| Teach
+
+  classDef file fill:#dbeafe,stroke:#2563eb,color:#1e3a8a,font-weight:bold
+  classDef layer fill:#ecfdf5,stroke:#047857,color:#064e3b
+  classDef optional fill:#fef3c7,stroke:#d97706,color:#78350f,stroke-dasharray:4 2
+  class Skill file
+  class FM,Body layer
+  class Teach optional
+```
+
+<!-- Rendered copy for non-Mermaid viewers. Regenerate via: npx @mermaid-js/mermaid-cli -i <source> -o docs/images/skill-anatomy.png -->
+<img src="./images/skill-anatomy.png" alt="Skill anatomy — SKILL.md decomposes into YAML Frontmatter plus Markdown Body, with an optional Teaching Layer that only exists in the canonical template specimen" width="720" />
+
+**Legend.** Blue = the file. Green = a required layer. Yellow dashed = an optional / specimen-only layer.
+
+### The 32 authored fields, grouped by purpose
+
+The YAML frontmatter has 32 top-level fields. The schema is the authoritative source for types and requiredness (`schemas/skill.v3.schema.json`); the canonical per-field reference is [`docs/field-reference.md`](field-reference.md). The table below is a navigable index — every field name links to its reference section. `always` = required by the base schema; `if <condition>` = conditionally required; blank = optional enrichment.
+
+| Group | Field | Required? | Shape |
+|---|---|---|---|
+| **Identity** | [`name`](field-reference.md#name) | always | string |
+| | [`description`](field-reference.md#description) | always | string |
+| | [`version`](field-reference.md#version) | always | semver string |
+| | [`owner`](field-reference.md#owner) | always | string |
+| **Classification** | [`schema_version`](field-reference.md#schema_version) | always | integer `3` |
+| | [`type`](field-reference.md#type) | always | `capability` \| `workflow` \| `router` \| `overlay` |
+| | [`scope`](field-reference.md#scope) | always | `codebase` \| `reference` \| `portable` |
+| | [`browse_category`](field-reference.md#browse_category) | always | string |
+| | [`category`](field-reference.md#category) | | hierarchical path |
+| | [`stability`](field-reference.md#stability) | | `experimental` \| `stable` \| `deprecated` |
+| | [`superseded_by`](field-reference.md#superseded_by) | if `stability: deprecated` | skill name |
+| **Health & Drift** | [`freshness`](field-reference.md#freshness) | always | ISO date |
+| | [`drift_check`](field-reference.md#drift_check) | always | `{ last_verified, truth_source_hashes? }` |
+| | [`lifecycle`](field-reference.md#lifecycle) | | `{ stale_after_days, review_cadence }` |
+| | [`runtime_telemetry`](field-reference.md#runtime_telemetry) | | `{ feedback_source, metrics }` |
+| **Eval Health** (orthogonal triple) | [`eval_artifacts`](field-reference.md#eval_artifacts) | always | `present` \| `planned` \| `none` |
+| | [`eval_state`](field-reference.md#eval_state) | always | `passing` \| `unverified` \| `failing` |
+| | [`routing_eval`](field-reference.md#routing_eval) | always | `present` \| `absent` |
+| **Activation & Routing** | [`keywords`](field-reference.md#keywords) | if routable | string[] |
+| | [`triggers`](field-reference.md#triggers) | | string[] |
+| | [`paths`](field-reference.md#paths) | | glob[] |
+| | [`examples`](field-reference.md#examples) | | string[] (positive prompts) |
+| | [`anti_examples`](field-reference.md#anti_examples) | | string[] (negative prompts) |
+| | [`project_tags`](field-reference.md#project_tags) | | string[] |
+| | [`routing_groups`](field-reference.md#routing_groups) | | string[] |
+| **Relations** | [`relations`](field-reference.md#relations) | | `{ adjacent, boundary, verify_with, depends_on }` |
+| **Grounding** | [`grounding`](field-reference.md#grounding) | if `scope: codebase` | `{ domain_object, grounding_mode, truth_sources, failure_modes, evidence_priority }` |
+| **Portability & Standards** | [`portability`](field-reference.md#portability) | | `{ readiness, targets }` |
+| | [`license`](field-reference.md#license) | | SPDX identifier |
+| | [`compatibility`](field-reference.md#compatibility) | | `{ runtimes?, node?, notes? }` |
+| | [`allowed-tools`](field-reference.md#allowed-tools) | | space-separated string |
+| | [`extends`](field-reference.md#extends) | if `type: overlay` | skill name |
+
+**Conditional requiredness in one line:** `keywords` when the skill is routable, `extends` when `type: overlay`, `grounding` when `scope: codebase`, `superseded_by` when `stability: deprecated`. The schema enforces all four via `allOf` rules. For the decision tables that help you choose between `capability` / `workflow` / `router` / `overlay` or between `codebase` / `reference` / `portable`, see [`docs/field-decision-guide.md`](field-decision-guide.md).
+
 ## Schema Strictness
 
 The v1 OSS schemas are intentionally strict.
@@ -187,7 +258,7 @@ It also does not require a full private control plane. The OSS contract keeps on
 
 ### Authored in `SKILL.md`
 
-The 29 authored fields (in schema order): `schema_version`, `name`, `description`, `version`, `type`, `browse_category`, `category`, `scope`, `owner`, `freshness`, `drift_check`, `eval_artifacts`, `eval_state`, `routing_eval`, `stability`, `license`, `compatibility`, `allowed-tools`, `extends`, `triggers`, `keywords`, `paths`, `project_tags`, `routing_groups`, `relations`, `grounding`, `portability`, `lifecycle`, `runtime_telemetry`.
+The 32 authored fields (in schema order): `schema_version`, `name`, `description`, `version`, `type`, `browse_category`, `category`, `scope`, `owner`, `freshness`, `drift_check`, `eval_artifacts`, `eval_state`, `routing_eval`, `stability`, `superseded_by`, `license`, `compatibility`, `allowed-tools`, `extends`, `triggers`, `keywords`, `examples`, `anti_examples`, `paths`, `project_tags`, `routing_groups`, `relations`, `grounding`, `portability`, `lifecycle`, `runtime_telemetry`.
 
 For the purpose, rules, and examples for each field, see `docs/field-reference.md`.
 

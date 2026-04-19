@@ -6,6 +6,40 @@ Skill Graph is a contract-first project. The repo is organised in five authority
 
 ---
 
+## System Model — how the pieces fit together
+
+> **The question this diagram answers:** "What are the moving parts of Skill Graph, and who talks to whom?"
+
+Before drilling into the five authority tiers, orient yourself on the five runtime entities you will actually interact with as an author or adopter. Every other diagram in the docs zooms into one of these boxes.
+
+```mermaid
+flowchart LR
+  Skill["<b>SKILL.md</b><br/>authored file<br/>frontmatter + body"]
+  Linter["<b>skill-lint.js</b><br/>deterministic validator"]
+  Manifest["<b>skills.manifest.json</b><br/>compiled artifact"]
+  Auditor["<b>skill-audit.js</b><br/>stub · graded"]
+  Artifacts["<b>audits/&lt;skill&gt;/</b><br/>findings · verdict · scorecard"]
+
+  Skill -->|validated by| Linter
+  Skill -->|compiled into| Manifest
+  Linter -->|seeds findings for| Auditor
+  Auditor -->|emits| Artifacts
+
+  classDef author fill:#dbeafe,stroke:#2563eb,color:#1e3a8a
+  classDef tool fill:#ecfdf5,stroke:#047857,color:#064e3b
+  classDef artifact fill:#fef3c7,stroke:#d97706,color:#78350f
+  class Skill author
+  class Linter,Auditor,Manifest tool
+  class Artifacts artifact
+```
+
+<!-- Rendered copy for non-Mermaid viewers. Regenerate via: npx @mermaid-js/mermaid-cli -i <source> -o docs/images/system-model.png -->
+<img src="./images/system-model.png" alt="System model — SKILL.md is validated by skill-lint.js, compiled into skills.manifest.json, and audited by skill-audit.js which emits findings/verdict/scorecard artifacts" width="900" />
+
+**Legend.** Blue = authored input. Green = tooling. Yellow = output artifact. Solid arrows are the data flow. Every entity in this diagram has its own deep-dive diagram: [§ Anatomy](metadata-contract.md#anatomy) for `SKILL.md`, [§ Loop at a Glance](library-audit-workflow.md#loop-at-a-glance) for `skill-audit.js`, [§ Manifest Contract](manifest-contract.md) for `skills.manifest.json`.
+
+---
+
 ## The five tiers at a glance
 
 | Tier | Role | When it's truth | What enforces the derivation |
@@ -196,7 +230,8 @@ When in doubt: if the file *defines* a constraint, it's Tier 1. If it *describes
 ## Further reading
 
 - [`README.md`](../README.md) — the project overview; now structured by these same tiers.
-- [`docs/metadata-contract.md`](metadata-contract.md) — the authoritative field-semantics doc.
+- [`docs/metadata-contract.md`](metadata-contract.md) — the authoritative field-semantics doc; § Anatomy carries the Mermaid diagram of the SKILL.md three-layer composition (frontmatter × body × teaching layer).
 - [`docs/manifest-contract.md`](manifest-contract.md) — the authored → generated bridge.
 - [`docs/field-decision-guide.md`](field-decision-guide.md) — decision tables for hard field choices.
+- [`docs/library-audit-workflow.md`](library-audit-workflow.md) — the repeatable audit loop; § Loop at a Glance carries the Mermaid diagram of the five-phase flow (deterministic → graded → aggregate → fix → re-verify).
 - [`CHANGELOG.md`](../CHANGELOG.md) — what shipped in each version.
