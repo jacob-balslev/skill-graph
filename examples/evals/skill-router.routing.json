@@ -1,0 +1,113 @@
+{
+  "skill_name": "skill-router",
+  "kind": "routing_eval",
+  "subject": "Dispatch assertions: given (query, candidate-skills) tuples, verify the router selects the expected winner skill by applying the Routing Rules priority chain, Scope tiebreaker, Type tiebreaker, and Fallback behavior.",
+  "schema_note": "This is a v1 routing_eval artifact. Each case is a (query, candidates, expected_winner, reason) tuple. A consuming grader SHOULD implement the router's priority chain and assert that the winner matches expected_winner for each case. The format is deliberate: comprehension evals (examples/evals/skill-router.json) ask the model to explain what the router would do; routing evals (this file) ask a router implementation to actually do it. A skill declaring `routing_eval: present` ships one of these.",
+  "routing_cases": [
+    {
+      "id": "trigger-only-winner",
+      "description": "Surface 1 unique match — the trigger label resolves the dispatch without consulting surfaces 2 or 3.",
+      "query": {
+        "triggers": ["a11y-skill"],
+        "paths_touched": [],
+        "keywords": ["modal", "keyboard-trapped"]
+      },
+      "candidates": ["a11y", "debugging", "testing-strategy"],
+      "expected_winner": "a11y",
+      "expected_surface": "triggers",
+      "reason": "a11y is the only skill whose triggers array contains 'a11y-skill'. Priority 1 produces a unique winner — the chain stops."
+    },
+    {
+      "id": "path-only-winner",
+      "description": "Surface 2 unique match — no trigger is declared, path glob resolves the dispatch.",
+      "query": {
+        "triggers": [],
+        "paths_touched": ["src/components/Modal.tsx"],
+        "keywords": []
+      },
+      "candidates": ["a11y", "graph-audit", "refactor"],
+      "expected_winner": "a11y",
+      "expected_surface": "paths",
+      "reason": "a11y declares `paths: **/*.{html,tsx,jsx,vue,svelte}` which matches Modal.tsx. No other candidate's paths match. Priority 1 had no match, Priority 2 produces a unique winner."
+    },
+    {
+      "id": "keyword-only-winner",
+      "description": "Surface 3 unique match — keyword overlap with exactly one skill's keywords array.",
+      "query": {
+        "triggers": [],
+        "paths_touched": [],
+        "keywords": ["bisection", "reproduce", "symptom"]
+      },
+      "candidates": ["a11y", "debugging", "documentation"],
+      "expected_winner": "debugging",
+      "expected_surface": "keywords",
+      "reason": "debugging's keywords include 'reproduce' and closely-related concepts; a11y and documentation do not share these keywords. Priority 3 produces a unique winner after priorities 1 and 2 had no match."
+    },
+    {
+      "id": "multi-surface-conflict-chain-stops-at-surface-1",
+      "description": "Three surfaces produce THREE different winners. The priority chain must stop at surface 1 and NOT consult surfaces 2 or 3. Mirrors comprehension eval #11.",
+      "query": {
+        "triggers": ["debugging-skill"],
+        "paths_touched": ["src/components/Modal.tsx"],
+        "keywords": ["decide what to test"]
+      },
+      "candidates": ["debugging", "a11y", "testing-strategy"],
+      "expected_winner": "debugging",
+      "expected_surface": "triggers",
+      "reason": "debugging-skill is a unique trigger match for debugging. Even though Modal.tsx would path-match a11y AND 'decide what to test' would keyword-match testing-strategy, the chain stops at Priority 1. A router that aggregated votes across surfaces here would be wrong."
+    },
+    {
+      "id": "scope-tiebreaker-codebase-over-portable",
+      "description": "Two skills tie on keyword score. Scope tiebreaker breaks the tie in favor of `codebase` > `portable`. Mirrors comprehension eval #4.",
+      "query": {
+        "triggers": [],
+        "paths_touched": [],
+        "keywords": ["audit", "metadata", "schema"]
+      },
+      "candidates": ["graph-audit", "documentation"],
+      "candidate_metadata": {
+        "graph-audit":   { "scope": "codebase", "type": "capability" },
+        "documentation": { "scope": "portable", "type": "capability" }
+      },
+      "expected_winner": "graph-audit",
+      "expected_surface": "keywords",
+      "expected_tiebreaker": "scope",
+      "reason": "Both skills score similarly on keyword match. graph-audit is `scope: codebase`; documentation is `scope: portable`. Scope tiebreaker: `codebase` > `reference` > `portable`. graph-audit wins."
+    },
+    {
+      "id": "type-tiebreaker-workflow-over-capability",
+      "description": "Two skills tie on keyword AND scope. Type tiebreaker breaks the tie: `workflow` > `capability` > `router` > `overlay`. Mirrors comprehension eval #8.",
+      "query": {
+        "triggers": [],
+        "paths_touched": [],
+        "keywords": ["bug", "fix", "verify"]
+      },
+      "candidates": ["debugging", "a11y"],
+      "candidate_metadata": {
+        "debugging": { "scope": "portable", "type": "workflow" },
+        "a11y":      { "scope": "portable", "type": "capability" }
+      },
+      "expected_winner": "debugging",
+      "expected_surface": "keywords",
+      "expected_tiebreaker": "type",
+      "reason": "Both skills are `scope: portable`. debugging is `type: workflow`; a11y is `type: capability`. Type tiebreaker: `workflow` > `capability` > `router` > `overlay`. debugging wins because procedural decision logic beats a pure reference when the query is otherwise ambiguous."
+    },
+    {
+      "id": "no-match-coverage-gap",
+      "description": "Zero surfaces match. The router returns an explicit coverage-gap signal — NOT a nearest-match fallback and NOT a silent null. Mirrors comprehension eval #12.",
+      "query": {
+        "triggers": [],
+        "paths_touched": [],
+        "keywords": ["translate", "german", "error message"]
+      },
+      "candidates": ["a11y", "debugging", "documentation", "refactor", "testing-strategy", "graph-audit", "skill-router", "lint-overlay"],
+      "expected_winner": null,
+      "expected_surface": "none",
+      "expected_signal": {
+        "kind": "coverage_gap",
+        "message_contract": "MUST surface an explicit coverage-gap signal to the caller indicating no skill matched. MUST recommend authoring a new skill or broadening an existing skill's keywords. MUST NOT fall back to a nearest-match skill. MUST NOT return null silently without the coverage-gap annotation."
+      },
+      "reason": "No skill in the library has triggers, paths, or keywords that match a translation-into-German query. The Fallback behavior doctrine is non-negotiable: surface the gap, do not guess. A router that returned 'documentation' here because German is prose-ish would be wrong."
+    }
+  ]
+}

@@ -13,7 +13,7 @@ drift_check:
   last_verified: "2026-04-18"
 eval_artifacts: present
 eval_state: passing
-routing_eval: absent
+routing_eval: present
 stability: experimental
 license: MIT
 compatibility:
@@ -50,6 +50,14 @@ relations:
       reason: "documentation writes prose ABOUT routing; skill-router is the routing logic itself"
     - skill: graph-audit
       reason: "graph-audit verifies ONE skill's metadata; skill-router chooses BETWEEN skills at request time"
+  # verify_with points at graph-audit specifically for the *routing-metadata
+  # integrity* concern: after a routing table is produced, graph-audit
+  # confirms every relation target resolves to a real skill, every trigger
+  # label is unique across the library, and the manifest sample stays in
+  # sync with the generator. This is distinct from the boundary concern
+  # above — boundary forbids confusing the two at request time; verify_with
+  # says "run graph-audit on skill-router's authored metadata before
+  # shipping a routing table."
   verify_with:
     - graph-audit
 portability:
@@ -93,7 +101,7 @@ The router evaluates three matching surfaces in priority order. The first surfac
 
 When keyword scores are equal, prefer skills in this `scope` order: `codebase` > `reference` > `portable`. A codebase-scoped skill is specific to *this* repository and wins over a portable one when both match the query equally.
 
-> **Schema version note.** The v1 enum values `operational` and `generic` were renamed to `codebase` and `portable` in `schema_version: 2`. Always use the v2 names; the current schema rejects the v1 names as hard errors. See `docs/manifest-contract.md § Migration Note — schema_version 1 → 2` for the full rename map.
+> **Schema version note.** The v1 enum values `operational` and `generic` were renamed to `codebase` and `portable` in `schema_version: 2`. Always use the v2 names; the current schema rejects the v1 names as hard errors. A full rename map ships with the Skill Graph schema migration notes — consult those when porting a v1 skill.
 
 ### Type tiebreaker
 
@@ -105,7 +113,7 @@ If no skill matches any surface, the router does not fall back to a default skil
 
 ## Evals
 
-This skill ships a comprehension-eval artifact at [`examples/evals/skill-router.json`](../../examples/evals/skill-router.json). The eval prompts specifically test the priority-ordered match surfaces, the scope/type tiebreakers, and the explicit refusal to fall back to a default. The eval file is how this skill is graded by `scripts/skill-audit.js --graded`.
+This skill ships a comprehension-eval artifact as `skill-router.json` in the Skill Graph `examples/evals/` directory. The eval prompts specifically test the priority-ordered match surfaces, the scope/type tiebreakers, and the explicit refusal to fall back to a default. The eval file is how this skill is graded by the Skill Graph audit runner — consumers in other agent runtimes can treat the eval cases as conformance tests translated to their own grading harness.
 
 ## Do NOT Use When
 

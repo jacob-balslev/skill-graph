@@ -2,6 +2,7 @@
   "skill_name": "skill-router",
   "subject": "Skill-dispatch mechanics for multi-skill agent runtimes: trigger-label matching, file-path matching, keyword matching, scope/type tiebreakers, and coverage-gap detection",
   "adjacent_concepts": ["documentation", "graph-audit"],
+  "grounding_note": "Truth_sources cite skills/skill-router/SKILL.md line ranges. Drift is caught by scripts/skill-lint.js's `checkEvalTruthSourceRanges` check (D2) — any edit that moves a cited range out of file bounds fails lint before commit. Section-anchor citations (`## Routing Rules`) were considered but rejected: the Skill Graph schema does not define a stable anchor format across Markdown renderers, and line ranges plus the lint check give the grader an exact substring to ground against without renderer ambiguity.",
   "evals": [
     {
       "id": 1,
@@ -112,6 +113,28 @@
       "skill_type": "workflow",
       "criticality": "normal",
       "truth_sources": ["skills/skill-router/SKILL.md:82-90"]
+    },
+    {
+      "id": 11,
+      "prompt": "A query arrives with trigger label `debugging-skill` (matches: debugging), touches `src/components/Modal.tsx` (path-matches: a11y), and uses the phrase \"decide what to test\" (keyword-matches: testing-strategy). THREE different skills win on THREE different surfaces. According to the Routing Rules priority ordering, which skill does the router actually return and why does the chain not consult surfaces 2 and 3 even though they have distinct winners? What failure mode would a naive multi-surface-vote implementation produce here?",
+      "dimension": "application",
+      "substance": "contradiction-check",
+      "calibration": "process",
+      "truth_mode": "process_correctness",
+      "skill_type": "workflow",
+      "criticality": "critical",
+      "truth_sources": ["skills/skill-router/SKILL.md:82-90", "skills/skill-router/SKILL.md:71-80"]
+    },
+    {
+      "id": 12,
+      "prompt": "An agent sends the query \"translate this error message into German.\" No skill declares a trigger for translation, no skill's paths match (it is a runtime operation, not a file edit), and no skill's keywords contain translation-related terms. According to the Fallback behavior section, describe the EXACT response the router returns to the caller — not \"it refuses,\" but the concrete shape of the coverage-gap signal, what it tells the caller to do, and what it explicitly does NOT do (e.g., does it pick nearest-match? fall back to a default? return null silently?). The caller needs to distinguish \"no skill matches\" from \"skill matched but produced no answer.\"",
+      "dimension": "application",
+      "substance": "domain",
+      "calibration": "process",
+      "truth_mode": "process_correctness",
+      "skill_type": "workflow",
+      "criticality": "high",
+      "truth_sources": ["skills/skill-router/SKILL.md:102-104", "skills/skill-router/SKILL.md:71-80"]
     }
   ]
 }

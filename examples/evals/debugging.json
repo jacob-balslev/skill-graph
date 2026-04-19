@@ -2,6 +2,7 @@
   "skill_name": "debugging",
   "subject": "Failure-driven diagnosis workflow: reproduction, scope reduction, evidence capture, root-cause isolation, fix verification, and regression-test creation",
   "adjacent_concepts": ["testing-strategy", "refactor"],
+  "grounding_note": "This skill is deliberately self-grounding. The debugging workflow is a synthesis of industry practice rather than a derivation from a single canonical text, so truth_sources cite skills/debugging/SKILL.md line ranges rather than external references. The `checkEvalTruthSourceRanges` lint check (D2 in scripts/skill-lint.js) catches citation drift by verifying that every cited line range still exists in the file. Attach external truth_sources only when the skill is later narrowed to a specific methodology (e.g., the SRE debugging runbook).",
   "evals": [
     {
       "id": 1,
@@ -101,6 +102,17 @@
       "skill_type": "workflow",
       "criticality": "high",
       "truth_sources": ["skills/debugging/SKILL.md:82-89", "skills/debugging/SKILL.md:101-107"]
+    },
+    {
+      "id": 10,
+      "prompt": "An on-call engineer is debugging a production cart-abandonment spike. They notice a null dereference in the checkout path, wrap it in a `try { ... } catch { return null }`, deploy the patch, and the error rate drops. Two weeks later, a different symptom appears (orders with empty line items) that traces back to the same swallowed null. According to the debugging skill's Philosophy and Workflow step 4, is the original patch a valid fix? Name the specific failure mode this commits, explain why the cart-abandonment rate dropping is not evidence the fix was correct, and describe what step 4 required instead.",
+      "dimension": "anti_pattern",
+      "substance": "contradiction-check",
+      "calibration": "semantic",
+      "truth_mode": "conceptual_correctness_plus_repo_application",
+      "skill_type": "concept",
+      "criticality": "critical",
+      "truth_sources": ["skills/debugging/SKILL.md:74-76", "skills/debugging/SKILL.md:82-89"]
     }
   ]
 }

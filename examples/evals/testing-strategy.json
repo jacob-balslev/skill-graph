@@ -2,7 +2,7 @@
   "skill_name": "testing-strategy",
   "subject": "Verification planning for bug fixes, features, and refactors: test scope, test-level selection, effort-to-risk matching, regression targeting, evidence quality, and failure-case coverage",
   "adjacent_concepts": ["debugging", "refactor", "lint-overlay"],
-  "grounding_note": "This skill is self-grounding. Its evals validate internal consistency against the SKILL.md body — the skill does not anchor to an external canonical source (e.g., a specific testing-pyramid paper) because the doctrine here is synthesized from industry practice rather than derived from one authoritative text. Evals cite SKILL.md line ranges deliberately; add external truth_sources only if the skill is later narrowed to a specific external framework.",
+  "grounding_note": "This skill is self-grounding. Its evals validate internal consistency against the SKILL.md body — the skill does not anchor to an external canonical source (e.g., a specific testing-pyramid paper) because the doctrine here is synthesized from industry practice rather than derived from one authoritative text. Evals cite SKILL.md line ranges deliberately; add external truth_sources only if the skill is later narrowed to a specific external framework. Line-range stability is enforced by the `checkEvalTruthSourceRanges` lint check (scripts/skill-lint.js D2) — every edit that moves a cited range out of file bounds fails lint before commit, so drift surfaces immediately rather than silently degrading grader grounding.",
   "evals": [
     {
       "id": 1,
@@ -102,6 +102,17 @@
       "skill_type": "concept",
       "criticality": "high",
       "truth_sources": ["skills/testing-strategy/SKILL.md:104-109"]
+    },
+    {
+      "id": 10,
+      "prompt": "A utility function for formatting phone numbers has been stable and unchanged for two years, with no bug history. Its behavior is covered only indirectly by integration tests of the features that call it. A compliance auditor has flagged that the codebase needs explicit test coverage for every public utility used in customer-facing flows, and the engineering team is onboarding five new contributors next quarter who will benefit from clearer specs. According to the testing-strategy skill's Test-Level Selection table — specifically the `No new test` row which reads \"Behavior that is 'obviously correct,' unchanged for a year, no external pressure\" — does the compliance and onboarding context shift the verdict? Apply the qualifier \"no external pressure\" correctly and recommend what the skill would actually prescribe here.",
+      "dimension": "application",
+      "substance": "domain",
+      "calibration": "semantic",
+      "truth_mode": "conceptual_correctness_plus_repo_application",
+      "skill_type": "concept",
+      "criticality": "high",
+      "truth_sources": ["skills/testing-strategy/SKILL.md:84-91"]
     }
   ]
 }

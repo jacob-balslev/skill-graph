@@ -564,7 +564,7 @@
         "freshness": "2026-04-18",
         "has_grounding": false,
         "has_relations": true,
-        "routing_eval": "absent"
+        "routing_eval": "present"
       },
       "id": "skill-router",
       "license": "MIT",

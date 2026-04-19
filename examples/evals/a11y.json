@@ -2,6 +2,7 @@
   "skill_name": "a11y",
   "subject": "Interaction accessibility for web UI: semantic primitive selection, keyboard access, focus management, labeling, change announcement, and user-preference respect",
   "adjacent_concepts": ["documentation", "testing-strategy", "refactor"],
+  "grounding_note": "Truth sources cite line ranges in SKILL.md. The stability mechanism is the `checkEvalTruthSourceRanges` check in scripts/skill-lint.js (D2) — every edit that shifts a cited line out of file bounds or to a missing file fails lint before commit. Section-anchor citations are not used because Markdown renderers slugify headings inconsistently across consumers; line ranges give the grader an exact substring to ground against.",
   "evals": [
     {
       "id": 1,
@@ -112,6 +113,28 @@
       "skill_type": "concept",
       "criticality": "normal",
       "truth_sources": ["skills/a11y/SKILL.md:83-96", "skills/a11y/SKILL.md:70-77"]
+    },
+    {
+      "id": 11,
+      "prompt": "A custom dropdown is implemented as a styled `<div>` that opens on click. When it is open, the items inside are focusable but pressing the Down arrow key does nothing, Enter does not select the focused item, and Escape does not close the dropdown. No screen reader is involved in this bug report — the complaint is purely about keyboard operability. According to the a11y skill's Coverage statement on keyboard access, what is wrong with this component and what specific keyboard behaviors must ship before it is considered accessible?",
+      "dimension": "application",
+      "substance": "domain",
+      "calibration": "process",
+      "truth_mode": "process_correctness",
+      "skill_type": "workflow",
+      "criticality": "high",
+      "truth_sources": ["skills/a11y/SKILL.md:70-77", "skills/a11y/SKILL.md:98-100"]
+    },
+    {
+      "id": 12,
+      "prompt": "A product designer asks the a11y skill to recommend brand palette colors that meet WCAG AA contrast while looking premium. According to the a11y skill's `description` field and `anti_examples`, should the skill take this task? Cite the specific anti_example entry that decides the boundary and name the skill family that actually owns color-palette creation.",
+      "dimension": "boundary",
+      "substance": "contradiction-check",
+      "calibration": "semantic",
+      "truth_mode": "code_verification",
+      "skill_type": "concept",
+      "criticality": "normal",
+      "truth_sources": ["skills/a11y/SKILL.md:52-55"]
     }
   ]
 }

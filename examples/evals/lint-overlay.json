@@ -101,6 +101,17 @@
       "skill_type": "concept",
       "criticality": "high",
       "truth_sources": ["skills/lint-overlay/SKILL.md:102-112", "skills/lint-overlay/SKILL.md:92-100"]
+    },
+    {
+      "id": 10,
+      "prompt": "A team wants to introduce `react-hooks/exhaustive-deps` as a new ESLint rule. The codebase currently has ~150 files that would newly fail this rule, across 8 feature teams, on code paths that range from new (<1 month old) to legacy (>3 years, unowned). According to the lint-overlay's `New lint rules require a migration plan` rule, produce the migration plan the overlay would require — including phased gates, cleanup ownership, timeline, and the explicit artifact(s) the plan must ship with. Distinguish this from the adjacent `Only enforce rules that were green before the change` rule: what does the migration plan add beyond pinning pre-change green state?",
+      "dimension": "application",
+      "substance": "domain",
+      "calibration": "process",
+      "truth_mode": "process_correctness",
+      "skill_type": "workflow",
+      "criticality": "high",
+      "truth_sources": ["skills/lint-overlay/SKILL.md:102-112"]
     }
   ]
 }

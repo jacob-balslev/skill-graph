@@ -45,6 +45,13 @@ anti_examples:
   - "decide whether to unit-test or integration-test this handler"  # base testing-strategy (without lint overlay)
   - "extract this repeated code pattern into a shared util"          # refactor owns code reorganization
 relations:
+  # No adjacent: the natural siblings of a lint overlay would be other
+  # verification-plan skills (code-coverage-overlay, perf-budget-overlay,
+  # security-scan-overlay) but none of those exist in this starter library
+  # yet. Declaring speculative adjacency to `refactor` or `debugging`
+  # would be wrong — both are in boundary because the overlay explicitly
+  # hands those concerns off. An adjacent slot will open once a peer
+  # quality-overlay skill ships.
   boundary:
     - skill: debugging
       reason: "debugging fixes a specific failing lint result; lint-overlay plans rule selection and gate placement"
