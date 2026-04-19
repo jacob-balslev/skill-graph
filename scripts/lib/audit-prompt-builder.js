@@ -85,7 +85,12 @@ const DIMENSIONS = [
 
 const DEFAULT_TRUTH_SOURCE_CHAR_LIMIT = 6000;
 const DEFAULT_EVAL_ARTIFACT_CHAR_LIMIT = 12000;
+const DEFAULT_SCHEMA_CHAR_LIMIT = 20000;
+const DEFAULT_NEIGHBOR_CHAR_LIMIT = 800;
 const EVAL_ARTIFACTS_DIR_REL = path.join('examples', 'evals');
+const SCHEMA_REL = path.join('schemas', 'skill.schema.json');
+const SKILLS_DIR_REL = 'skills';
+const EXPORT_SCRIPT_REL = path.join('scripts', 'export-skill.js');
 
 /**
  * Read the skill, its truth sources, its eval artifacts, and the checklist.
@@ -147,11 +152,138 @@ function collectContext(opts) {
     charLimit: evalArtifactCharLimit,
   });
 
+  // E1: active schema. Embedded on the `metadata` dimension so the grader can
+  // cross-check every required field, enum, and conditional rule without
+  // relying on recall. Truncated defensively — current schema is ~12KB.
+  const schemaContent = readFileBounded(
+    path.join(repoRoot, SCHEMA_REL),
+    DEFAULT_SCHEMA_CHAR_LIMIT
+  );
+
+  // E2: neighbor skill summaries. Every skill referenced in
+  // `relations.{adjacent, boundary, verify_with, depends_on}` becomes a short
+  // summary block {name, type, scope, description} so the `relation` dimension
+  // grader can judge whether the linkage targets a semantically correct peer
+  // (not merely whether the name exists — that's already a lint check).
+  const neighborSummaries = collectNeighborSummaries({
+    frontmatter,
+    repoRoot,
+    charLimit: DEFAULT_NEIGHBOR_CHAR_LIMIT,
+  });
+
+  // E4: portability export transform. The sole supported target is
+  // `agent-skills` and the transform lives at scripts/export-skill.js.
+  // We pass a boolean so the `portability` dimension can note whether the
+  // transform ships — the grader uses this to judge "export targets are
+  // realistic" concretely rather than speculatively.
+  const exportTransformAvailable = fs.existsSync(path.join(repoRoot, EXPORT_SCRIPT_REL));
+
   const checklistPath = path.join(repoRoot, 'docs', 'single-skill-audit-checklist.md');
   const checklist = fs.readFileSync(checklistPath, 'utf8');
 
   const skillName = path.basename(skillDir);
-  return { skillName, skillBody, frontmatter, truthSources, evalArtifacts, checklist };
+  return {
+    skillName,
+    skillBody,
+    frontmatter,
+    truthSources,
+    evalArtifacts,
+    schemaContent,
+    neighborSummaries,
+    exportTransformAvailable,
+    checklist,
+  };
+}
+
+/**
+ * Read a file and truncate it to `charLimit` characters. Returns `null` if the
+ * file does not exist. Used for optional context blocks that should fail
+ * quietly — the grader prompt then emits an explicit "absent" marker instead.
+ */
+function readFileBounded(absPath, charLimit) {
+  if (!fs.existsSync(absPath)) return null;
+  try {
+    const raw = fs.readFileSync(absPath, 'utf8');
+    return raw.length > charLimit ? raw.slice(0, charLimit) + '\n\n[…truncated]' : raw;
+  } catch (_) {
+    return null;
+  }
+}
+
+/**
+ * Collect summary blocks for every sibling skill referenced in this skill's
+ * relations. Each summary is `{name, type, scope, description}` — enough to
+ * judge semantic neighborhood without embedding full sibling SKILL.md bodies.
+ *
+ * Supports v3 polymorphic relation items: `boundary` and `depends_on` may be
+ * either bare strings or `{skill, reason}` / `{skill, min_version}` objects.
+ * The target name is extracted from both shapes identically to
+ * `scripts/skill-lint.js#checkRelationTargets`.
+ *
+ * Silent on missing peers — the lint check already fails on dangling relation
+ * targets, so the grader does not need to duplicate that error class.
+ */
+function collectNeighborSummaries({ frontmatter, repoRoot, charLimit }) {
+  if (!frontmatter || !frontmatter.relations) return [];
+
+  const rels = frontmatter.relations;
+  const kinds = ['adjacent', 'boundary', 'verify_with', 'depends_on'];
+  const targetsByKind = new Map();
+  const allTargets = new Set();
+
+  for (const kind of kinds) {
+    const list = Array.isArray(rels[kind]) ? rels[kind] : [];
+    const names = [];
+    for (const item of list) {
+      let name = null;
+      if (typeof item === 'string') name = item;
+      else if (item && typeof item === 'object' && typeof item.skill === 'string') name = item.skill;
+      if (name && name !== frontmatter.name) {
+        names.push(name);
+        allTargets.add(name);
+      }
+    }
+    if (names.length > 0) targetsByKind.set(kind, names);
+  }
+
+  if (allTargets.size === 0) return [];
+
+  const skillsRoot = path.join(repoRoot, SKILLS_DIR_REL);
+  if (!fs.existsSync(skillsRoot)) return [];
+
+  const out = [];
+  for (const name of Array.from(allTargets).sort()) {
+    const skillMd = path.join(skillsRoot, name, 'SKILL.md');
+    if (!fs.existsSync(skillMd)) continue;
+    let body;
+    try {
+      body = fs.readFileSync(skillMd, 'utf8');
+    } catch (_) {
+      continue;
+    }
+    const fm = parseFrontmatter(body);
+    if (!fm || !fm.name) continue;
+
+    const description = typeof fm.description === 'string'
+      ? (fm.description.length > charLimit ? fm.description.slice(0, charLimit) + '…' : fm.description)
+      : '';
+
+    // Discover which of the caller's relation kinds reference this neighbor.
+    const relatedVia = [];
+    for (const [kind, names] of targetsByKind) {
+      if (names.includes(name)) relatedVia.push(kind);
+    }
+
+    out.push({
+      name:        fm.name,
+      type:        fm.type || null,
+      scope:       fm.scope || null,
+      description,
+      relatedVia,  // ["adjacent"], ["boundary", "verify_with"], etc.
+    });
+  }
+
+  return out;
 }
 
 /**
@@ -288,7 +420,16 @@ const SEVERITY_ENUM = ['P0', 'P1', 'P2', 'P3', 'P4'];
  */
 function buildDimensionPrompt(opts) {
   const { dimension, context } = opts;
-  const { skillName, skillBody, truthSources, evalArtifacts, checklist } = context;
+  const {
+    skillName,
+    skillBody,
+    truthSources,
+    evalArtifacts,
+    schemaContent,
+    neighborSummaries,
+    exportTransformAvailable,
+    checklist,
+  } = context;
   const criteria = sliceChecklist(checklist, dimension.checklistAnchor) || '[checklist anchor not found]';
 
   const truthBlock = truthSources.length === 0
@@ -316,26 +457,78 @@ function buildDimensionPrompt(opts) {
             '</eval-artifact>',
           ].join('\n')).join('\n\n'));
 
+  // E1: active schema. Embedded only on the `metadata` dimension — other
+  // dimensions don't need to re-verify field definitions and embedding 12KB
+  // of schema on every call would waste tokens.
+  const includeSchemaBlock = dimension.id === 'metadata';
+  const schemaBlock = !includeSchemaBlock
+    ? null
+    : (schemaContent
+        ? `<schema path="${SCHEMA_REL}">\n${schemaContent.trim()}\n</schema>`
+        : `<schema path="${SCHEMA_REL}">(schema file not found at this path — grader should flag this as infrastructure drift)</schema>`);
+
+  // E2: neighbor summaries. Embedded only on the `relation` dimension so the
+  // grader can judge semantic adjacency against actual peer metadata rather
+  // than recall. Empty when the skill has no relations.
+  const includeNeighborBlock = dimension.id === 'relation';
+  const neighbors = Array.isArray(neighborSummaries) ? neighborSummaries : [];
+  const neighborBlock = !includeNeighborBlock
+    ? null
+    : (neighbors.length === 0
+        ? '(this skill declares no relations — nothing to cross-check)'
+        : neighbors.map(n => [
+            `<neighbor name="${n.name}" type="${n.type || 'unknown'}" scope="${n.scope || 'unknown'}" related-via="${(n.relatedVia || []).join(',')}">`,
+            n.description,
+            '</neighbor>',
+          ].join('\n')).join('\n\n'));
+
+  // E4: export transform reference. Embedded only on the `portability`
+  // dimension. The sole supported target is `agent-skills` and the transform
+  // lives at scripts/export-skill.js. Stating whether the script exists
+  // converts the `readiness: scripted` claim from self-report to verifiable.
+  const includePortabilityBlock = dimension.id === 'portability';
+  const portabilityBlock = !includePortabilityBlock
+    ? null
+    : (exportTransformAvailable
+        ? `<export-transform path="${EXPORT_SCRIPT_REL}" available="true">\nThe export transform exists on disk. Run \`node ${EXPORT_SCRIPT_REL} skills/${skillName}\` to produce a SKILL.agent-skills.md with only Agent Skills base fields at the top level. Only \`agent-skills\` is a valid portability.targets value today; other runtimes (cursor, windsurf, copilot, agents-md) are deferred per v0.3.0 CHANGELOG.\n</export-transform>`
+        : `<export-transform path="${EXPORT_SCRIPT_REL}" available="false">\nThe export transform script is missing from the repo. A skill declaring \`portability.readiness: scripted\` while the transform is absent is over-claiming — flag this as a contract violation.\n</export-transform>`);
+
+  // STEPS are composed dynamically per dimension so only the context sources
+  // the grader actually has are referenced. This keeps the step count honest
+  // (no "read the schema" when no schema block is present) and the numbering
+  // contiguous — important for LLMs that interpret step numbers literally.
   const steps = [
     `1. Read the SKILL.md body for the skill named \`${skillName}\`.`,
     '2. Read the truth_source files listed in the skill\'s frontmatter (if any).',
   ];
-  if (includeEvalBlock) {
-    steps.push('3. Read the eval artifacts embedded in <eval-artifacts> — these are the authored evaluation cases for this skill.');
-    steps.push(`4. Read the pass criteria for dimension "${dimension.label}".`);
-    steps.push('5. For each checklist bullet, mark PASS, PASS WITH FIXES, or FAIL with a quoted evidence snippet.');
-    steps.push('6. Aggregate into one dimension verdict and a 1–5 score (5 = state of the art, 1 = broken).');
-    steps.push('7. Produce a finding row for every checklist bullet that is not a full PASS.');
-  } else {
-    steps.push(`3. Read the pass criteria for dimension "${dimension.label}".`);
-    steps.push('4. For each checklist bullet, mark PASS, PASS WITH FIXES, or FAIL with a quoted evidence snippet.');
-    steps.push('5. Aggregate into one dimension verdict and a 1–5 score (5 = state of the art, 1 = broken).');
-    steps.push('6. Produce a finding row for every checklist bullet that is not a full PASS.');
+  let n = 3;
+  if (includeSchemaBlock) {
+    steps.push(`${n++}. Read the embedded <schema> — this is the active Skill Graph JSON Schema that every field must conform to.`);
   }
+  if (includeNeighborBlock) {
+    steps.push(`${n++}. Read the <neighbor-skills> summaries — each is a sibling skill this one links to via relations. Judge whether the linkage is semantically correct.`);
+  }
+  if (includeEvalBlock) {
+    steps.push(`${n++}. Read the eval artifacts embedded in <eval-artifacts> — these are the authored evaluation cases for this skill.`);
+  }
+  if (includePortabilityBlock) {
+    steps.push(`${n++}. Read the <export-transform> note — it states whether the Agent Skills export script actually ships and how to invoke it.`);
+  }
+  steps.push(`${n++}. Read the pass criteria for dimension "${dimension.label}".`);
+  steps.push(`${n++}. For each checklist bullet, mark PASS, PASS WITH FIXES, or FAIL with a quoted evidence snippet.`);
+  steps.push(`${n++}. Aggregate into one dimension verdict and a 1–5 score (5 = state of the art, 1 = broken).`);
+  steps.push(`${n++}. Produce a finding row for every checklist bullet that is not a full PASS.`);
 
-  const evidenceSources = includeEvalBlock
-    ? 'the skill, a truth source, or an eval artifact'
-    : 'the skill or a truth source';
+  // Evidence-sources clause reflects whichever blocks are embedded — the
+  // grader is constrained to cite only what it can see.
+  const evidenceParts = ['the skill', 'a truth source'];
+  if (includeSchemaBlock)     evidenceParts.push('the schema');
+  if (includeNeighborBlock)   evidenceParts.push('a neighbor summary');
+  if (includeEvalBlock)       evidenceParts.push('an eval artifact');
+  if (includePortabilityBlock) evidenceParts.push('the export-transform note');
+  const evidenceSources = evidenceParts.length === 2
+    ? evidenceParts.join(' or ')
+    : evidenceParts.slice(0, -1).join(', ') + ', or ' + evidenceParts[evidenceParts.length - 1];
 
   const inputSections = [
     `<skill-name>${skillName}</skill-name>`,
@@ -348,8 +541,17 @@ function buildDimensionPrompt(opts) {
     truthBlock,
     '</truth-sources>',
   ];
+  if (includeSchemaBlock) {
+    inputSections.push('', schemaBlock);
+  }
+  if (includeNeighborBlock) {
+    inputSections.push('', '<neighbor-skills>', neighborBlock, '</neighbor-skills>');
+  }
   if (includeEvalBlock) {
     inputSections.push('', '<eval-artifacts>', evalBlock, '</eval-artifacts>');
+  }
+  if (includePortabilityBlock) {
+    inputSections.push('', portabilityBlock);
   }
   inputSections.push('', `<dimension id="${dimension.id}" label="${dimension.label}">`, criteria, '</dimension>');
 

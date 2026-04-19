@@ -45,12 +45,11 @@ anti_examples:
   - "decide whether to unit-test or integration-test this handler"  # base testing-strategy (without lint overlay)
   - "extract this repeated code pattern into a shared util"          # refactor owns code reorganization
 relations:
-  adjacent:
-    - refactor
-    - debugging
   boundary:
     - skill: debugging
       reason: "debugging fixes a specific failing lint result; lint-overlay plans rule selection and gate placement"
+    - skill: refactor
+      reason: "refactor changes behavior-preserving code shape; lint-overlay is verification-plan authoring, not code modification"
   verify_with:
     - testing-strategy
 portability:

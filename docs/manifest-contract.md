@@ -397,7 +397,7 @@ Each arrow corresponds to one row of the rename map.
 
 - `name` → `id` **and** `name` — the generator writes both. `id` is the stable reference used by other manifest entries (e.g. `relations.adjacent: ["documentation"]` refers to the `id` of another skill). `name` remains human-readable for display.
 - `name` → `path` — the generator records the source file path; this is the only way a consumer can trace a manifest entry back to its authored source without re-scanning the repo.
-- `description`, `version`, `type`, `family`, `scope`, `owner`, `stability` — straight copies, same keys, same shape.
+- `description`, `version`, `type`, `browse_category`, `scope`, `owner`, `stability` — straight copies, same keys, same shape. (v2 `family` was renamed to `browse_category` in v3 — see § Migration Note — v2 → v3.)
 - `license`, `compatibility`, `allowed-tools` — straight copies (post-SH-5776). The three Agent Skills base-standard optional fields flow through unchanged; a consumer that only speaks Agent Skills sees them at the expected keys.
 - `triggers`, `keywords`, `paths` → `activation.triggers`, `activation.keywords`, `activation.paths` — three sibling authored fields are grouped under a single `activation` object. This matches the semantic: they are all activation signals. The grouping is a presentation choice, not a loss.
 - `relations` → `relations` — copied through with the full sub-key set (`adjacent`, `boundary`, `verify_with`, `depends_on`). Same shape on both sides.

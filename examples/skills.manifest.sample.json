@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-04-18T18:00:00Z",
+  "generated_at": "2026-04-18T00:00:00Z",
   "schema_version": 3,
   "skills": [
     {
@@ -28,6 +28,13 @@
           "reduced motion",
           "high contrast",
           "semantic html"
+        ],
+        "paths": [
+          "**/*.{html,tsx,jsx,vue,svelte}",
+          "**/*.css",
+          "!**/*.test.{ts,tsx,js,jsx}",
+          "!**/dist/**",
+          "!**/node_modules/**"
         ],
         "triggers": [
           "a11y-skill"
@@ -62,10 +69,6 @@
         ]
       },
       "relations": {
-        "adjacent": [
-          "documentation",
-          "testing-strategy"
-        ],
         "boundary": [
           {
             "reason": "refactor is behavior-preserving code modification; a11y is observable user-facing behavior",
@@ -226,10 +229,6 @@
         ]
       },
       "relations": {
-        "adjacent": [
-          "testing-strategy",
-          "refactor"
-        ],
         "boundary": [
           {
             "reason": "debugging chases a specific failure; documentation builds durable reference prose",
@@ -238,6 +237,10 @@
           {
             "reason": "a11y covers assistive-tech behavior; documentation covers prose reading-level and audience fit",
             "skill": "a11y"
+          },
+          {
+            "reason": "refactor owns behavior-preserving code changes; documentation owns the prose that describes them",
+            "skill": "refactor"
           }
         ]
       },
@@ -320,7 +323,7 @@
             "scripts/skill-lint.js": "9e0b89f3b1959e9a8307f5115bdabe4351af74346b6b756da2729a0db858f4c8"
           }
         },
-        "drift_detected": false,
+        "drift_detected": true,
         "eval_artifacts": "present",
         "eval_state": "passing",
         "freshness": "2026-04-18",
@@ -334,10 +337,6 @@
       "owner": "maintainer",
       "path": "skills/graph-audit/SKILL.md",
       "relations": {
-        "adjacent": [
-          "documentation",
-          "refactor"
-        ],
         "boundary": [
           {
             "reason": "documentation writes prose about the contract; graph-audit verifies the contract against the live files",
@@ -422,14 +421,14 @@
         ]
       },
       "relations": {
-        "adjacent": [
-          "refactor",
-          "debugging"
-        ],
         "boundary": [
           {
             "reason": "debugging fixes a specific failing lint result; lint-overlay plans rule selection and gate placement",
             "skill": "debugging"
+          },
+          {
+            "reason": "refactor changes behavior-preserving code shape; lint-overlay is verification-plan authoring, not code modification",
+            "skill": "refactor"
           }
         ],
         "verify_with": [
@@ -558,7 +557,7 @@
       "compatibility": {
         "notes": "Markdown, YAML, any agent runtime"
       },
-      "description": "MUST be used when routing an agent request across multiple skills, building or auditing a routing table, detecting routing coverage gaps, or deciding which skill claims a user task. Activate for: 'which skill handles this?', 'who routes X?', 'am I using the right skill?', 'why did skill A activate instead of B?'. Covers trigger-label matching, file-path matching, keyword matching, description-based semantic matching, scope/type tiebreakers, and coverage-gap detection. Do NOT use when the target skill is already known (load it directly), when authoring a new skill (use `skill-template` instead), or when evaluating a SINGLE skill's quality (use `graph-audit`).",
+      "description": "MUST be used when routing an agent request across multiple skills, building or auditing a routing table, detecting routing coverage gaps, or answering questions like 'which skill handles this?', 'who routes X?', or 'why did skill A activate instead of B?'. Covers trigger-label matching, file-path matching, keyword matching, description-based semantic matching, scope/type tiebreakers, and coverage-gap detection. Do NOT use when the target skill is already known (load it directly), when authoring a new skill (use `skill-template` instead), or when evaluating a SINGLE skill's quality (use `graph-audit`).",
       "health": {
         "drift_check": {
           "last_verified": "2026-04-18"
@@ -582,9 +581,6 @@
         ]
       },
       "relations": {
-        "adjacent": [
-          "documentation"
-        ],
         "boundary": [
           {
             "reason": "documentation writes prose ABOUT routing; skill-router is the routing logic itself",
@@ -663,7 +659,15 @@
           "review_cadence": "quarterly",
           "stale_after_days": 180
         },
-        "routing_eval": "absent"
+        "routing_eval": "absent",
+        "runtime_telemetry": {
+          "feedback_source": ".skill-graph/telemetry/skill-template.jsonl",
+          "last_updated": "2026-04-17",
+          "metrics": {
+            "sample_size": 0,
+            "success_rate": 0
+          }
+        }
       },
       "id": "skill-template",
       "license": "MIT",
@@ -676,10 +680,10 @@
           "agent-skills"
         ]
       },
+      "project_tags": [
+        "skill-authoring"
+      ],
       "relations": {
-        "adjacent": [
-          "documentation"
-        ],
         "boundary": [
           {
             "reason": "refactor is behavior-preserving code modification, not skill authoring",

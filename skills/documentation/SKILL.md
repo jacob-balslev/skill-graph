@@ -48,14 +48,13 @@ anti_examples:
   - "add an aria-label to this icon button"                       # a11y owns assistive-tech behavior
   - "extract this repeated string-concat into a helper function"   # refactor owns behavior-preserving code changes
 relations:
-  adjacent:
-    - testing-strategy
-    - refactor
   boundary:
     - skill: debugging
       reason: "debugging chases a specific failure; documentation builds durable reference prose"
     - skill: a11y
       reason: "a11y covers assistive-tech behavior; documentation covers prose reading-level and audience fit"
+    - skill: refactor
+      reason: "refactor owns behavior-preserving code changes; documentation owns the prose that describes them"
 portability:
   readiness: scripted
   targets:

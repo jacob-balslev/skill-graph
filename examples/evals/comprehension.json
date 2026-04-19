@@ -23,7 +23,7 @@
       "truth_mode": "conceptual_correctness_plus_repo_application",
       "skill_type": "concept",
       "criticality": "normal",
-      "truth_sources": ["skills/documentation/SKILL.md:92-98"]
+      "truth_sources": ["skills/documentation/SKILL.md:103-109"]
     },
     {
       "id": 3,
@@ -38,47 +38,47 @@
     },
     {
       "id": 4,
-      "prompt": "What steps does the skill-audit-loop prescribe for checking whether a skill's claims are still true against its truth sources?",
+      "prompt": "A reviewer opens an API reference doc that spends the first two screens walking the reader through a multi-step tutorial before the actual field definitions appear. Which anti-pattern from the documentation skill does this match, and what is the prescribed fix?",
       "dimension": "application",
       "substance": "domain",
-      "calibration": "process",
-      "truth_mode": "process_correctness",
-      "skill_type": "workflow",
-      "criticality": "normal",
-      "truth_sources": ["docs/library-audit-workflow.md:105-114"]
+      "calibration": "semantic",
+      "truth_mode": "conceptual_correctness_plus_repo_application",
+      "skill_type": "concept",
+      "criticality": "high",
+      "truth_sources": ["skills/documentation/SKILL.md:81-86"]
     },
     {
       "id": 5,
-      "prompt": "The documentation starter ships with `eval_artifacts: present`, `eval_state: passing`, and a companion eval artifact at `examples/evals/comprehension.json`. According to the Skill Graph field reference, what does each of those two fields assert, and what does `scripts/skill-lint.js` verify to confirm `eval_artifacts: present`?",
-      "dimension": "purpose",
-      "substance": "domain",
-      "calibration": "semantic",
-      "truth_mode": "code_verification",
-      "skill_type": "concept",
-      "criticality": "normal",
-      "truth_sources": ["docs/field-reference.md:299-325", "docs/field-reference.md:329-353"]
-    },
-    {
-      "id": 6,
-      "prompt": "A Skill Graph skill uses forward slashes in its `name`. Can it still be exported to the base Agent Skills standard? Cite the compatibility rule.",
-      "dimension": "taxonomy",
-      "substance": "domain",
+      "prompt": "A pull request arrives with a failing integration test. The author asks whether they should invoke the documentation skill to write a new runbook page explaining the test, or use a different skill. Which skill handles failure diagnosis, and cite the boundary rule that decides this.",
+      "dimension": "boundary",
+      "substance": "contradiction-check",
       "calibration": "semantic",
       "truth_mode": "code_verification",
       "skill_type": "concept",
       "criticality": "high",
-      "truth_sources": ["docs/field-reference.md:32-51"]
+      "truth_sources": ["skills/documentation/SKILL.md:100-106"]
+    },
+    {
+      "id": 6,
+      "prompt": "An engineer is extracting a duplicated helper function across three files and wants documentation input on how to restructure the code. Should the documentation skill activate, and if not, which skill does? Cite the negative-routing rule.",
+      "dimension": "boundary",
+      "substance": "contradiction-check",
+      "calibration": "semantic",
+      "truth_mode": "code_verification",
+      "skill_type": "concept",
+      "criticality": "high",
+      "truth_sources": ["skills/documentation/SKILL.md:100-106"]
     },
     {
       "id": 7,
-      "prompt": "Should the documentation skill's `## Coverage` section restate its `description:` field? What does semantic layer discipline say about the difference between the two?",
+      "prompt": "A reviewer opens a new architecture note and finds that the central design decision (why Postgres was chosen over DynamoDB) appears in paragraph nine, after eight paragraphs of context. Which verification rule does this violate, and how should the author restructure the doc?",
       "dimension": "application",
-      "substance": "contradiction-check",
+      "substance": "domain",
       "calibration": "semantic",
       "truth_mode": "conceptual_correctness_plus_repo_application",
       "skill_type": "concept",
-      "criticality": "critical",
-      "truth_sources": ["docs/metadata-contract.md:114-123", "skills/documentation/SKILL.md:55-62"]
+      "criticality": "high",
+      "truth_sources": ["skills/documentation/SKILL.md:103-109"]
     }
   ]
 }

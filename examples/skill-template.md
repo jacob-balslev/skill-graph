@@ -69,12 +69,20 @@ anti_examples:
 # skills (the common case). Add literal project handles or semantic tags when
 # the skill is relevant to a subset of projects in a multi-project workspace.
 # See docs/field-decision-guide.md § 4 for the full decision tree.
+#
+# Example — this template is useful across every skill-authoring project, but
+# the semantic tag scopes it to the Skill Graph authoring workflow rather than
+# arbitrary project docs. A workspace config at `.skill-graph/config.json` can
+# map literal project handles (e.g. `sales-hub`, `free-oppression`) to tag sets
+# that include `skill-authoring`, so one tag reaches many projects.
+project_tags:
+  - skill-authoring
 relations:
-  adjacent:
-    - documentation
   # TEMPLATE NOTE: boundary items may be bare skill names OR `{skill, reason}`
   # objects (v3). Reasons are strongly recommended — they make the boundary
-  # self-documenting.
+  # self-documenting. Adjacency has been removed here because `documentation`
+  # is already declared as `verify_with` — adjacent ("often used together")
+  # would be redundant and asymmetric.
   boundary:
     - skill: refactor
       reason: "refactor is behavior-preserving code modification, not skill authoring"
@@ -115,6 +123,19 @@ portability:
 lifecycle:
   stale_after_days: 180
   review_cadence: quarterly
+# TEMPLATE NOTE: runtime_telemetry is optional. It points at a JSONL feed of
+# real-world success/failure receipts so consumers can corroborate or override
+# `eval_state`. Omit the entire block when no feedback pipeline exists — the
+# skill is still graded on authored `eval_state` and `eval_artifacts`.
+# Each run receipt should carry at minimum `{ timestamp, skill, outcome }`.
+# `metrics.sample_size` and `metrics.success_rate` are the aggregate summary;
+# consumers may compute their own from the raw feed.
+runtime_telemetry:
+  feedback_source: .skill-graph/telemetry/skill-template.jsonl
+  last_updated: "2026-04-17"
+  metrics:
+    sample_size: 0
+    success_rate: 0
 ---
 
 # Skill Template

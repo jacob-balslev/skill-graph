@@ -2,7 +2,7 @@
 # yaml-language-server: $schema=https://skillgraph.dev/schemas/skill.v3.schema.json
 schema_version: 3
 name: skill-router
-description: "MUST be used when routing an agent request across multiple skills, building or auditing a routing table, detecting routing coverage gaps, or deciding which skill claims a user task. Activate for: 'which skill handles this?', 'who routes X?', 'am I using the right skill?', 'why did skill A activate instead of B?'. Covers trigger-label matching, file-path matching, keyword matching, description-based semantic matching, scope/type tiebreakers, and coverage-gap detection. Do NOT use when the target skill is already known (load it directly), when authoring a new skill (use `skill-template` instead), or when evaluating a SINGLE skill's quality (use `graph-audit`)."
+description: "MUST be used when routing an agent request across multiple skills, building or auditing a routing table, detecting routing coverage gaps, or answering questions like 'which skill handles this?', 'who routes X?', or 'why did skill A activate instead of B?'. Covers trigger-label matching, file-path matching, keyword matching, description-based semantic matching, scope/type tiebreakers, and coverage-gap detection. Do NOT use when the target skill is already known (load it directly), when authoring a new skill (use `skill-template` instead), or when evaluating a SINGLE skill's quality (use `graph-audit`)."
 version: 1.0.0
 type: router
 browse_category: knowledge
@@ -41,8 +41,6 @@ anti_examples:
   - "write a guide explaining how our routing works"       # documentation owns durable prose
   - "the router activated the wrong skill once — debug it" # debugging (specific failure) not routing design
 relations:
-  adjacent:
-    - documentation
   boundary:
     - skill: documentation
       reason: "documentation writes prose ABOUT routing; skill-router is the routing logic itself"

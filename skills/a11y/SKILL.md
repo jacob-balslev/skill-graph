@@ -34,6 +34,16 @@ keywords:
   - semantic html
 triggers:
   - a11y-skill
+# File surface: a11y concerns live in user-facing markup and component code.
+# Path-based routers activate this skill when the agent edits these file types.
+# Tests are excluded (testing-strategy owns test authoring); generated files
+# and vendor bundles are excluded with gitignore-style negations.
+paths:
+  - "**/*.{html,tsx,jsx,vue,svelte}"
+  - "**/*.css"
+  - "!**/*.test.{ts,tsx,js,jsx}"
+  - "!**/dist/**"
+  - "!**/node_modules/**"
 examples:
   - "this modal is keyboard-trapped — users can't Escape to close it"
   - "screen reader doesn't announce when the form validation state changes"
@@ -44,9 +54,6 @@ anti_examples:
   - "rewrite this error message at a 6th-grade reading level"  # documentation covers reading level
   - "clean up this accessibility code without changing how it behaves"  # refactor owns behavior preservation
 relations:
-  adjacent:
-    - documentation
-    - testing-strategy
   boundary:
     - skill: refactor
       reason: "refactor is behavior-preserving code modification; a11y is observable user-facing behavior"

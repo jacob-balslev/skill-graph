@@ -32,6 +32,25 @@ const REQUIRED_SECTIONS = {
 };
 
 /**
+ * Conditional section requirements. Applied on top of REQUIRED_SECTIONS based on
+ * frontmatter values. Each entry is `{ section, predicate, help }` — if the
+ * predicate returns true for the frontmatter, the section is required in
+ * addition to the archetype's base set.
+ *
+ * The `## Evals` rule closes a discoverability gap: a skill that declares
+ * `eval_artifacts: present` but has no `## Evals` body section hides the eval
+ * surface from readers (the artifact is findable only via the `examples/evals/`
+ * scan). Forcing the section guarantees the skill body links to its eval file.
+ */
+const CONDITIONAL_SECTIONS = [
+  {
+    section:   'Evals',
+    predicate: (fm) => fm && fm.eval_artifacts === 'present',
+    help:      'Add a "## Evals" body section that references the eval artifact under examples/evals/ so readers can discover it from the SKILL.md alone.',
+  },
+];
+
+/**
  * Extract all top-level H2 section headers from the markdown body (the part
  * after the closing `---` of the frontmatter block).
  *
@@ -134,6 +153,18 @@ function checkArchetypeSections(opts) {
         help:    `Add a "## ${req}" section. Required sections for ${archetype}: ${required.map(r => `"## ${r}"`).join(', ')}. See docs/metadata-contract.md § Archetype Section Map.`,
       });
     }
+  }
+
+  // Conditional sections — required when frontmatter predicate holds.
+  for (const { section, predicate, help } of CONDITIONAL_SECTIONS) {
+    if (!predicate(fm)) continue;
+    if (presentHeadings.has(section)) continue;
+    errors.push({
+      message: `missing required section "## ${section}" (conditional: eval_artifacts is "${fm && fm.eval_artifacts}")`,
+      line:    1,
+      column:  1,
+      help,
+    });
   }
 
   // Warn: sections present but empty.

@@ -54,9 +54,6 @@ anti_examples:
   - "my agent is stuck in a loop — what's wrong?"             # debugging owns runtime failure
   - "document what each check in skill-lint.js verifies"      # documentation owns durable prose
 relations:
-  adjacent:
-    - documentation
-    - refactor
   boundary:
     - skill: documentation
       reason: "documentation writes prose about the contract; graph-audit verifies the contract against the live files"

@@ -50,8 +50,8 @@ The base standard and the Skill Graph extensions:
 | `compatibility` | Agent Skills | Optional; environment requirements |
 | `allowed-tools` | Agent Skills | Optional; space-separated tool allowlist |
 | `metadata` | Agent Skills | Not used at top level; Skill Graph promotes extensions to dedicated fields |
-| `schema_version`, `version`, `type`, `family`, `scope`, `owner`, `freshness`, `drift_check`, `eval_artifacts`, `eval_state`, `routing_eval` | Skill Graph | Required extensions for governance, routing, and health tracking |
-| `relations`, `grounding`, `portability`, `triggers`, `keywords`, `paths`, `routing_groups`, `extends`, `stability` | Skill Graph | Optional extensions for graph semantics, grounding, and exportability |
+| `schema_version`, `version`, `type`, `browse_category`, `scope`, `owner`, `freshness`, `drift_check`, `eval_artifacts`, `eval_state`, `routing_eval` | Skill Graph | Required extensions for governance, routing, and health tracking |
+| `category`, `relations`, `grounding`, `portability`, `triggers`, `keywords`, `examples`, `anti_examples`, `paths`, `project_tags`, `routing_groups`, `extends`, `stability`, `superseded_by`, `lifecycle`, `runtime_telemetry` | Skill Graph | Optional extensions for graph semantics, grounding, hierarchical taxonomy, activation examples, exportability, and lifecycle |
 
 **Compatibility direction.** A valid Agent Skills skill is *not* automatically a valid Skill Graph skill — Skill Graph requires fields beyond the base two. Going the other way is possible via a transform: move every Skill Graph extension field under the standard `metadata:` key, leaving only the Agent Skills fields at the top level. The transform is implemented as `scripts/export-skill.js`. Running `node scripts/export-skill.js <skill-dir>` produces a `SKILL.agent-skills.md` file with only the Agent Skills base fields at the top level and all Skill Graph extensions nested under `metadata:`. Only `agent-skills` is a valid `portability.targets` value today; other runtimes (cursor, windsurf, copilot, agents-md) are deferred until a working transform ships.
 
@@ -120,7 +120,7 @@ Eight starter skills. Each starter demonstrates at least one contract feature th
 
 | Starter | Archetype | Scope | Unique feature demonstrated |
 |---|---|---|---|
-| `a11y` | `capability` | `portable` | Minimal routable capability — frontmatter baseline, keyword + trigger activation, no optional extensions |
+| `a11y` | `capability` | `portable` | Routable capability with path-based activation — `paths:` glob targeting UI files (`**/*.{html,tsx,jsx,vue,svelte}` and `**/*.css`) with gitignore-style negations for tests and vendor bundles |
 | `debugging` | `workflow` | `portable` | Workflow archetype with a `## Workflow` body section showing numbered procedural steps |
 | `documentation` | `capability` | `portable` | `eval_artifacts: present` with a shipped eval artifact (`examples/evals/comprehension.json`) |
 | `refactor` | `workflow` | `portable` | `relations.depends_on` pointing at `testing-strategy` (refactor verification needs a test suite) |
@@ -131,7 +131,7 @@ Eight starter skills. Each starter demonstrates at least one contract feature th
 
 The five original starters are all `scope: portable` and demonstrate the ungrounded path (no `grounding` block). The three new starters exercise the previously uncovered schema paths: the `router` and `overlay` archetypes, and the `codebase` scope with its mandatory `grounding` contract. (v1 values `generic` and `operational` were renamed to `portable` and `codebase` in schema_version 2 — SH-5784.)
 
-`skill-router` and `lint-overlay` have `eval_artifacts: planned` (no eval artifact shipped). `graph-audit` has `eval_artifacts: present` backed by `examples/evals/graph-audit.json`. The `examples/skill-template.md` file shows the full optional extension set including `grounding`.
+All eight starters have `eval_artifacts: present` with a shipped `examples/evals/<name>.json` companion — `skill-router` and `lint-overlay` were authored with `planned` during their archetype-coverage work and have since shipped real eval artifacts. `graph-audit` additionally exercises the `scope: codebase` grounding path. The `examples/skill-template.md` file shows the full optional extension set including `grounding`, `project_tags`, `lifecycle`, and `runtime_telemetry`.
 
 ## Manifest generation
 
@@ -262,7 +262,7 @@ The script runs six checks:
 | **C3 Artifact-root convention** | Shipped audit examples (those under `examples/audits/`) are not referred to by the bare `audits/<skill>/` root in docs (which is the consumer/adopter convention) | Warn |
 | **C4 Sample manifest correctness** | `examples/skills.manifest.sample.json` validates against `schemas/manifest.schema.json` and `summary.total_skills` equals `skills.length` | Error |
 | **C5 Example truth invariants** | Scorecards don't claim unqualified all-target portability; eval artifacts don't use the deprecated v1 `eval_status` JSON key; scorecards don't use v1 portability sub-field names (`level`, `exports`) | Error |
-| **C6 Versioned schema parity** | `schemas/skill.v2.schema.json` + `schemas/manifest.v2.schema.json` are content-identical to their unversioned counterparts modulo `$id` and `title` — guarantees the pinned v2 copy does not drift from "latest" while v2 is current | Error |
+| **C6 Versioned schema parity** | The pinned copy of the CURRENT schema version (`schemas/skill.v{N}.schema.json` + `schemas/manifest.v{N}.schema.json`, where N is read from `schema_version` in the unversioned schema) is content-identical to the unversioned files modulo `$id` and `title`. Prior-version pinned copies must still exist but are frozen (not parity-checked). Guarantees the latest-pin does not drift from the current-version-pin. | Error |
 
 ```bash
 # Run all contract consistency checks

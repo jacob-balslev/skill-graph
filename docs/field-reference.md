@@ -114,7 +114,7 @@ version: 1.0.0
 
 **Rules.**
 - Keep `type` restricted to these four values.
-- Use `family` for browse taxonomy, not `type`.
+- Use `browse_category` (flat bucket) or `category` (hierarchical path) for browse taxonomy, not `type`.
 - `overlay` type always requires the `extends` field.
 
 **Example.**
@@ -356,7 +356,7 @@ eval_state: passing
 
 ## `routing_eval`
 
-**Purpose.** Declares whether routing / trigger coverage is explicitly evaluated for this skill. This is the "are we checking that the skill activates on the right prompts?" axis — independent of the content-level eval state.
+**Purpose.** Declares whether routing / trigger coverage is explicitly evaluated for this skill. This is the "are we checking that the skill activates on the right prompts?" axis — independent of the content-level eval state captured by `eval_state`.
 
 **Allowed values.**
 
@@ -369,6 +369,13 @@ eval_state: passing
 - `present` implies the eval artifacts include routing or trigger assertions, not just content quality.
 - Most starter skills default to `absent` — routing coverage is a deeper authoring step.
 
+**Current status (forward-looking).** As of 0.5.0 no starter skill sets `routing_eval: present`, and the Skill Graph does not yet ship a routing-evaluation harness. Setting `present` is authorable but cannot be exercised in CI until one of the planned scripts lands:
+
+- `scripts/skill-router.js` — runtime routing harness (planned per README)
+- `scripts/build-coverage.js` — coverage-gap computation over a corpus of test prompts (planned)
+
+Until those ship, authors declaring `routing_eval: present` are making a claim that only a human reviewer can verify. Prefer `absent` for starter skills; flip to `present` only once an accompanying routing assertion set is shipped alongside the content eval.
+
 **Example.**
 ```yaml
 routing_eval: absent
@@ -376,7 +383,7 @@ routing_eval: absent
 
 **When to use.** Always — required.
 
-**When NOT to use.** N/A — required.
+**When NOT to use.** N/A — required. Do not inflate (`present` without a routing harness).
 
 ---
 
@@ -635,7 +642,7 @@ keywords:
 
 **When to use.** Required for all routable skills. Omit only for internal helper skills that are never activated by user language.
 
-**When NOT to use.** Keywords are not tags for browse taxonomy — that is `family`'s job. Do not add every possible synonym; keep to the 3–8 most likely search terms.
+**When NOT to use.** Keywords are not tags for browse taxonomy — that is `browse_category` / `category`'s job. Do not add every possible synonym; keep to the 3–8 most likely search terms.
 
 **Lint check.** `scripts/skill-lint.js` errors when `keywords` is absent or empty for a skill with `scope: codebase` or a non-empty `routing_groups` field. Those skills are designed to be discovered by keyword routers and cannot be omitted. See `scripts/lint/check-routing-quality.js` (check R1).
 

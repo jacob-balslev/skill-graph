@@ -359,6 +359,178 @@ function checkEvalCoherence(filePath, fm) {
   return results;
 }
 
+// A1 + A2: relation graph semantics.
+//
+// Validates the adjacency/boundary graph across every authored skill.
+// Two invariants are checked:
+//
+//  1. Adjacency symmetry (WARNING). `adjacent` models "siblings often used
+//     together" — a symmetric relationship. If A says B is adjacent but B
+//     does not name A, either one author forgot the return edge or adjacency
+//     is being used directionally (which the contract does not endorse).
+//     Warning — not error — because historical skills may have drifted and
+//     fixing the reciprocal is a one-line author change.
+//
+//  2. adjacent ↔ boundary contradiction (ERROR). `boundary` is negative
+//     routing ("hand off, do NOT activate"). If A lists B as adjacent and B
+//     lists A as boundary (or vice versa), the two authors disagree on
+//     whether the skills belong together. This is a real contract
+//     violation and will mis-route prompts. Errors so CI fails.
+//
+// Polymorphism: v3 `boundary` items are `{skill, reason}` objects;
+// `adjacent` items are plain strings. The `rel()` helper extracts the skill
+// name from either shape (same logic as checkRelationTargets above).
+function checkRelationSemantics(fm, knownFrontmatters) {
+  const results = { errors: [], warnings: [] };
+  if (!fm || !fm.name || !fm.relations) return results;
+
+  function rel(kind, targets) {
+    const out = [];
+    for (const t of targets || []) {
+      if (typeof t === 'string') out.push(t);
+      else if (t && typeof t === 'object' && typeof t.skill === 'string') out.push(t.skill);
+    }
+    return out;
+  }
+
+  const selfName = fm.name;
+  const myAdjacent = rel('adjacent', fm.relations.adjacent);
+  const myBoundary = rel('boundary', fm.relations.boundary);
+
+  for (const target of myAdjacent) {
+    const peer = knownFrontmatters.get(target);
+    if (!peer || !peer.relations) continue;
+
+    const peerAdjacent = rel('adjacent', peer.relations.adjacent);
+    const peerBoundary = rel('boundary', peer.relations.boundary);
+
+    // ERROR: adjacent ↔ boundary contradiction.
+    if (peerBoundary.includes(selfName)) {
+      results.errors.push(
+        `relations: this skill lists "${target}" as adjacent, but "${target}" lists this skill as boundary — adjacency/boundary contradiction (routing will mis-fire). Either remove from my adjacent or remove from ${target}.boundary.`
+      );
+      continue; // contradiction supersedes the asymmetry warning
+    }
+
+    // WARNING: adjacency asymmetry (reciprocal edge missing).
+    if (!peerAdjacent.includes(selfName)) {
+      results.warnings.push(
+        `relations.adjacent: "${target}" does not reciprocate adjacency — adjacency is symmetric ("often used together"). Either add "${selfName}" to ${target}.relations.adjacent, or promote one side to relations.verify_with / relations.depends_on if the link is directional.`
+      );
+    }
+  }
+
+  // Also catch the mirror case: I list X as boundary while X lists me as adjacent.
+  // Covers asymmetric authoring where the contradiction lives on the boundary side.
+  for (const target of myBoundary) {
+    const peer = knownFrontmatters.get(target);
+    if (!peer || !peer.relations) continue;
+    const peerAdjacent = rel('adjacent', peer.relations.adjacent);
+    if (peerAdjacent.includes(selfName)) {
+      results.errors.push(
+        `relations: this skill lists "${target}" as boundary, but "${target}" lists this skill as adjacent — adjacency/boundary contradiction (routing will mis-fire). Either remove "${target}" from my boundary or remove "${selfName}" from ${target}.adjacent.`
+      );
+    }
+  }
+
+  return results;
+}
+
+// D2: truth-source range validator.
+//
+// Scans every eval artifact under examples/evals/ and validates each
+// `truth_sources` reference: the referenced file exists AND the end line is
+// within file bounds. Catches the silent-drift class where SKILL.md gets
+// rewritten but truth_sources still cite the old line ranges, leading
+// graders to read the wrong content.
+//
+// Reference format: `path` (whole file) or `path:start-end` or `path:line`.
+// Malformed references are surfaced as errors (the grader has nothing to do
+// with a broken pointer).
+//
+// Runs once per invocation, not per file. Returns plain error strings.
+const TRUTH_SOURCE_RE = /^([^:]+)(?::(\d+)(?:-(\d+))?)?$/;
+function checkEvalTruthSourceRanges() {
+  const errors = [];
+  if (!fs.existsSync(EVALS_DIR)) return errors;
+
+  const evalFiles = fs.readdirSync(EVALS_DIR).filter(f => f.endsWith('.json')).sort();
+  const lineCountCache = new Map();
+
+  for (const evalFile of evalFiles) {
+    const evalPath = path.join(EVALS_DIR, evalFile);
+    let data;
+    try {
+      data = JSON.parse(fs.readFileSync(evalPath, 'utf8'));
+    } catch (e) {
+      // Malformed JSON files surface elsewhere; skip here rather than double-report.
+      continue;
+    }
+    const cases = Array.isArray(data.evals) ? data.evals : [];
+    for (const c of cases) {
+      const refs = Array.isArray(c.truth_sources) ? c.truth_sources : [];
+      for (const raw of refs) {
+        const s = String(raw);
+        const m = s.match(TRUTH_SOURCE_RE);
+        if (!m) {
+          errors.push(`examples/evals/${evalFile} eval id=${c.id}: truth_source "${s}" is malformed — expected "path" or "path:start-end"`);
+          continue;
+        }
+        const [, relPath, start, end] = m;
+        const abs = path.resolve(REPO_ROOT, relPath);
+        if (!fs.existsSync(abs)) {
+          errors.push(`examples/evals/${evalFile} eval id=${c.id}: truth_source "${s}" — file ${relPath} does not exist`);
+          continue;
+        }
+        if (!start) continue; // whole-file reference is valid
+
+        let lineCount = lineCountCache.get(abs);
+        if (lineCount == null) {
+          lineCount = fs.readFileSync(abs, 'utf8').split('\n').length;
+          lineCountCache.set(abs, lineCount);
+        }
+        const endN = parseInt(end || start, 10);
+        const startN = parseInt(start, 10);
+        if (startN < 1) {
+          errors.push(`examples/evals/${evalFile} eval id=${c.id}: truth_source "${s}" — start line ${startN} must be >= 1`);
+          continue;
+        }
+        if (endN > lineCount) {
+          errors.push(`examples/evals/${evalFile} eval id=${c.id}: truth_source "${s}" — end line ${endN} out of range (${relPath} has ${lineCount} lines)`);
+        }
+      }
+    }
+  }
+  return errors;
+}
+
+// H3: description sentence-count check.
+//
+// The routing contract in `docs/metadata-contract.md § Semantic layer discipline`
+// caps descriptions at ≤3 sentences — descriptions longer than that drift from
+// pure routing signal into scope-map restatement. Counts sentence terminators
+// (`.`, `!`, `?`) followed by whitespace or end-of-string; ignores trailing
+// punctuation. Warning severity because the "rule" is a style convention, not
+// a contract failure.
+function checkDescriptionLength(fm) {
+  const warnings = [];
+  const desc = fm && fm.description;
+  if (typeof desc !== 'string' || desc.trim().length === 0) return warnings;
+
+  // Split on sentence boundaries. A sentence terminator is one of . ! ? followed
+  // by whitespace-or-end-of-string. Strip trailing terminator on the last segment.
+  const parts = desc
+    .replace(/\s+/g, ' ')
+    .split(/(?<=[.!?])\s+/)
+    .map(s => s.trim())
+    .filter(s => s.length > 0);
+  const sentenceCount = parts.length;
+  if (sentenceCount > 3) {
+    warnings.push(`description: ${sentenceCount} sentences exceeds the ≤3 sentence routing-contract cap. Move scope detail into ## Coverage; keep description a pure "use when / covers / do NOT use" signal.`);
+  }
+  return warnings;
+}
+
 // v0.5.0: guard against `paths` that consist only of negation patterns.
 // Such a list matches nothing (negations only subtract from prior includes).
 // This is a dead-routing trap per the Gemini audit finding.
@@ -583,19 +755,36 @@ function main() {
     }
   }
 
-  // Build the known-skill set from skills/ for relation target checks
+  // Build the known-skill set (names) + frontmatter map (for relation
+  // semantic checks that need to look across sibling skills' relation blocks).
   const knownSkillNames = new Set();
+  const knownFrontmatters = new Map();
   if (fs.existsSync(SKILLS_DIR)) {
     for (const name of fs.readdirSync(SKILLS_DIR)) {
       const skillMd = path.join(SKILLS_DIR, name, 'SKILL.md');
       if (fs.existsSync(skillMd)) {
         const fm = parseFrontmatter(fs.readFileSync(skillMd, 'utf8'));
-        if (fm && fm.name) knownSkillNames.add(fm.name);
+        if (fm && fm.name) {
+          knownSkillNames.add(fm.name);
+          knownFrontmatters.set(fm.name, fm);
+        }
       }
     }
   }
 
-  let totalErrors = parityErrors.length + sampleErrors.length + generatorParityErrors.length;
+  // Truth-source range validator (D2): runs once over every eval file and
+  // reports broken `truth_sources` references before any per-file work. The
+  // result is a flat error list tied to a synthetic "[truth-sources]" label
+  // in the summary so authors see it prominently even on mass runs.
+  const truthSourceErrors = checkEvalTruthSourceRanges();
+  if (truthSourceErrors.length > 0) {
+    console.error('FAIL [T5 evals]  examples/evals/ (truth_source ranges)');
+    for (const e of truthSourceErrors) console.error(`     - ${e}`);
+  } else {
+    console.log('OK   [T5 evals]  examples/evals/ (truth_source ranges)');
+  }
+
+  let totalErrors = parityErrors.length + sampleErrors.length + generatorParityErrors.length + truthSourceErrors.length;
   let totalWarnings = 0;
 
   for (const file of files) {
@@ -672,15 +861,19 @@ function main() {
     // Collect errors from all per-file checks.
     // ----------------------------------------------------------------
     const evalResult = checkEvalCoherence(file, fm);
+    const relationSemanticsResult = checkRelationSemantics(fm, knownFrontmatters);
     const rawErrors = [
       ...validateAgainstSchema(fm, schema),
       ...checkParentDirMatchesName(file, fm),
       ...checkRelationTargets(fm, knownSkillNames),
       ...evalResult.errors,
+      ...relationSemanticsResult.errors,
       ...checkPathsNegation(fm),
     ];
     const rawWarnings = [
       ...evalResult.warnings,
+      ...relationSemanticsResult.warnings,
+      ...checkDescriptionLength(fm),
     ];
 
     // Archetype-aware section check (check 10).
