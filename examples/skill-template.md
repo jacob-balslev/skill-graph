@@ -1,5 +1,28 @@
 ---
 # yaml-language-server: $schema=https://skillgraph.dev/schemas/skill.v3.schema.json
+#
+# ============================================================================
+# SCAFFOLD — this file is a skill template, not a production skill.
+# ============================================================================
+#
+# Adopters COPY this file to `skills/<new-name>/SKILL.md` and then edit it to
+# author a new skill. Every `# TEMPLATE NOTE:` YAML comment and every
+# `> **TEMPLATE NOTE:**` body blockquote is authoring scaffolding that MUST be
+# stripped from the derived copy before shipping.
+#
+# Field values here are deliberate authoring-time defaults, not aspirational
+# targets. In particular `eval_artifacts: planned`, `eval_state: unverified`,
+# and `routing_eval: absent` (see comment on the routing_eval line below)
+# encode the correct starting state for a brand-new un-verified skill —
+# flipping them to `present` on this scaffold would make every derived skill
+# inherit a false attestation until the author noticed.
+#
+# Build automation treats this file specially: the sample manifest
+# generator ingests it only under `--include-template`, and the library-wide
+# harness counts it as the 9th "skill" only when the flag is set. It is NOT
+# routable in day-to-day skill dispatch — `scope: reference` keeps it out of
+# the normal routing pool.
+# ============================================================================
 schema_version: 3
 name: skill-template
 description: "Use when creating a new SKILL.md, adapting an existing skill to a different archetype, or teaching an author the canonical frontmatter and body structure. Covers schema-conformant frontmatter, archetype-aware body layout, semantic-layer discipline (description vs Coverage), teaching-layer mechanics (TEMPLATE NOTE blockquotes and YAML comments), and the authoring gate. Do NOT use when modifying an already-written skill (edit that skill directly) or when writing general technical documentation (use the documentation skill)."
@@ -33,6 +56,16 @@ drift_check:
 # 12 surfaces each failing prompt. Default to `absent` when authoring; flip
 # to `present` only after the harness agrees. See docs/field-reference.md §
 # routing_eval for the full enforcement contract.
+#
+# SCAFFOLD NOTE — on this specific file (`examples/skill-template.md`),
+# routing_eval MUST stay `absent` even though the harness happens to report
+# every case passing. The scaffold's job is to model the correct authoring-
+# time default for a brand-new un-verified skill. If this line were flipped
+# to `present`, every skill copy-pasted from the scaffold would inherit a
+# false attestation until the author noticed and downgraded. In your
+# derived copy, leave this line `absent` at first commit; flip it to
+# `present` only after `node scripts/skill-graph-routing-eval.js --skill
+# <your-skill-name>` exits 0 on YOUR skill's own examples + anti_examples.
 eval_artifacts: planned
 eval_state: unverified
 routing_eval: absent
@@ -184,7 +217,9 @@ runtime_telemetry:
     success_rate: 0
 ---
 
-# Skill Template
+# Skill Template — Scaffold
+
+> **SCAFFOLD — NOT A PRODUCTION SKILL.** This file is the starting point authors copy when creating a new skill. It lives at `examples/skill-template.md` deliberately; production skills live at `skills/<name>/SKILL.md`. The authoring flow is: copy → rename → adapt → strip teaching annotations → verify → commit. Until you have completed those steps, the file you are editing is a *scaffold*, not a skill.
 
 > **TEMPLATE NOTE — HOW TO READ THIS FILE:** This file is a real, valid, schema-conformant Skill Graph skill whose *subject* is skill authoring itself. Read it as a finished specimen of the contract, then adapt it by (1) renaming the identity, (2) rewriting `description`, `## Coverage`, `## Philosophy`, and `## Key Files` for your subject, (3) rewriting `## Verification` to be your skill's self-check, (4) removing any section or field that does not apply to your archetype, and (5) stripping the `> **TEMPLATE NOTE:**` blockquotes and `# TEMPLATE NOTE:` YAML comments — they are authoring scaffolding, never skill content. Never ship placeholder sludge (`your-skill-name`, `path/to/file`, `todo`). If a section does not apply, remove it — do not keep it and fill it with fake content.
 
