@@ -7,7 +7,7 @@ version: 1.0.0
 type: overlay
 browse_category: quality
 scope: portable
-owner: jacob-balslev
+owner: skill-graph-maintainer
 freshness: "2026-04-18"
 drift_check:
   last_verified: "2026-04-18"

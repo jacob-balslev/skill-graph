@@ -66,7 +66,7 @@
       "id": "a11y",
       "license": "MIT",
       "name": "a11y",
-      "owner": "jacob-balslev",
+      "owner": "skill-graph-maintainer",
       "path": "skills/a11y/SKILL.md",
       "portability": {
         "readiness": "scripted",
@@ -163,7 +163,7 @@
       "id": "debugging",
       "license": "MIT",
       "name": "debugging",
-      "owner": "jacob-balslev",
+      "owner": "skill-graph-maintainer",
       "path": "skills/debugging/SKILL.md",
       "portability": {
         "readiness": "scripted",
@@ -262,7 +262,7 @@
       "id": "documentation",
       "license": "MIT",
       "name": "documentation",
-      "owner": "jacob-balslev",
+      "owner": "skill-graph-maintainer",
       "path": "skills/documentation/SKILL.md",
       "portability": {
         "readiness": "scripted",
@@ -376,7 +376,7 @@
       "id": "graph-audit",
       "license": "MIT",
       "name": "graph-audit",
-      "owner": "jacob-balslev",
+      "owner": "skill-graph-maintainer",
       "path": "skills/graph-audit/SKILL.md",
       "relations": {
         "boundary": [
@@ -467,7 +467,7 @@
       "id": "lint-overlay",
       "license": "MIT",
       "name": "lint-overlay",
-      "owner": "jacob-balslev",
+      "owner": "skill-graph-maintainer",
       "path": "skills/lint-overlay/SKILL.md",
       "portability": {
         "readiness": "scripted",
@@ -559,7 +559,7 @@
       "id": "refactor",
       "license": "MIT",
       "name": "refactor",
-      "owner": "jacob-balslev",
+      "owner": "skill-graph-maintainer",
       "path": "skills/refactor/SKILL.md",
       "portability": {
         "readiness": "scripted",
@@ -656,7 +656,7 @@
       "id": "skill-router",
       "license": "MIT",
       "name": "skill-router",
-      "owner": "jacob-balslev",
+      "owner": "skill-graph-maintainer",
       "path": "skills/skill-router/SKILL.md",
       "portability": {
         "readiness": "scripted",
@@ -773,7 +773,7 @@
       "id": "skill-template",
       "license": "MIT",
       "name": "skill-template",
-      "owner": "jacob-balslev",
+      "owner": "skill-graph-maintainer",
       "path": "examples/skill-template.md",
       "portability": {
         "readiness": "scripted",
@@ -868,7 +868,7 @@
       "id": "testing-strategy",
       "license": "MIT",
       "name": "testing-strategy",
-      "owner": "jacob-balslev",
+      "owner": "skill-graph-maintainer",
       "path": "skills/testing-strategy/SKILL.md",
       "portability": {
         "readiness": "scripted",

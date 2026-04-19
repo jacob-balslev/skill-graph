@@ -38,7 +38,7 @@ browse_category: knowledge
 # but is never a replacement.
 category: skill-system/authoring
 scope: reference
-owner: jacob-balslev
+owner: skill-graph-maintainer
 freshness: "2026-04-17"
 # TEMPLATE NOTE: drift_check is an object in v3. `last_verified` is required.
 # `truth_source_hashes` is optional — record it with `node scripts/skill-graph-drift.js

@@ -1,0 +1,15 @@
+# Transient sweep checkpoint state — regenerated every run. Skills audit
+# findings themselves (audits/<skill>/findings.md) are committed per
+# `docs/library-audit-workflow.md`; the checkpoint and ledger are not.
+audits/_state/
+audits/sweep-ledger.jsonl
+
+# Node
+node_modules/
+
+# macOS
+.DS_Store
+
+# Editor state
+.vscode/
+.idea/
