@@ -7,7 +7,7 @@ version: 1.0.0
 type: capability
 browse_category: knowledge
 scope: portable
-owner: maintainer
+owner: jacob-balslev
 freshness: "2026-04-18"
 drift_check:
   last_verified: "2026-04-18"
@@ -95,6 +95,70 @@ Pick the doc type by the reader's need, not by the author's content. A reader lo
 - **Tutorial that references** — interrupting flow with "see the full API docs for all options." Fix: link at the end, not mid-step.
 - **How-to that explains** — "before we do this, let's understand how X works." Fix: cut it; add a "Background" link for readers who need it.
 - **Explanation that how-tos** — mixing mental-model prose with step-by-step procedure. Fix: separate the two; each gets its own page.
+
+## Docs-as-Code Workflow
+
+Docs live in the same repository as the code they describe, ship through the same pull request, and pass the same automated gates. The workflow is not a style preference — it is the only arrangement that keeps documentation accountable to the code it claims to describe, because it forces every code change to confront its documentation at review time rather than at some deferred future sprint.
+
+| Stage | Rule for code | Rule for docs |
+|---|---|---|
+| Source location | In the repo | In the same repo — not a separate wiki, not a hosted doc service, not a confluence page |
+| Authoring context | Open in the same editor | Open in the same editor — authored alongside the change, not after it |
+| Review | Required on the PR that changes the code | Required on the **same** PR that changes the code — not a follow-up ticket |
+| CI gate | Tests must pass | Link-check, freshness check, and spelling gate must pass |
+| Versioning | Git history | Git history — the doc's past is a `git log`, not a migration story |
+| Deploy | The release pipeline ships it | The same release pipeline publishes the docs — no separate "docs site" release cadence |
+
+**Anti-patterns.**
+
+- **Docs in a separate system** (wiki, confluence, notion). The system's access model, version history, and review workflow diverge from the code's, and the docs become un-reviewable. Fix: move them to the repo.
+- **"I'll document this in a follow-up ticket"** after shipping code. The follow-up never happens. Fix: the PR that ships the code ships the docs, or it doesn't ship.
+- **No CI gate on doc freshness or link integrity.** Broken links accumulate silently. Fix: add `lychee`, `markdownlint`, or an equivalent to CI and block the merge on failures.
+- **Doc site deploy cadence that lags code deploy cadence.** A user can read a doc that describes behavior the deployed code no longer has. Fix: the same deploy ships both.
+
+## Freshness and Drift
+
+Documented behavior diverges from real behavior over time. That is drift, and drift is a bug. The reader's contract with the doc is "what is written here is true right now" — a stale doc does not inform, it misleads, and being misled is worse than having no doc. The owner of the doc is responsible for keeping it current; "the user should have known that was old" is not an excuse, it is an admission that the doc failed its one job.
+
+| Drift symptom | Most likely cause | Fix |
+|---|---|---|
+| README shows CLI flags the actual binary rejects | Code changed, doc didn't | Regenerate from `--help` output or re-sync by hand; add a CI check that diffs the two |
+| Tutorial commands fail on a fresh checkout | Dependencies, env vars, or bootstrap steps changed | Re-run the tutorial end-to-end on a clean machine; update every step that broke |
+| Architecture doc references a service that was replaced | Service was renamed, decomposed, or deleted | Rewrite the section; add a "superseded by" note linking to the new canonical doc |
+| "See X for details" points at a moved or deleted file | File was renamed, moved, or deleted | Fix the link; run a link-checker as a pre-commit gate so future renames fail loudly |
+| Field table lists options the code no longer supports | Options were removed without sweeping the docs | Generate the field table from the schema or config; manual field tables always drift |
+
+**Drift detection rules.**
+
+- **Touch code → touch its docs.** If the change alters behavior a doc describes, update the doc in the same commit. Code review must block otherwise.
+- **Prefer generation over restatement.** A field table derived from a JSON Schema cannot drift. A hand-typed one always does.
+- **Record last-verified dates.** When a doc cannot be generated, record when it was last confirmed against the code (e.g., a `last_verified: 2026-04-19` comment). Readers can then judge trust by date, and authors have a scheduled nudge to re-verify.
+- **Treat stale docs as blockers.** Drift is not a cosmetic issue to defer; it is a correctness issue to fix before the next feature merges.
+
+## Source-of-Truth Discipline
+
+Every fact has exactly one canonical location. Restating that fact anywhere else creates a drift surface — two copies will eventually disagree, and the reader cannot tell which is authoritative. The default move is to link to the source of truth, not to paraphrase it. Duplication is a cost; justify it before paying it.
+
+| Fact lives in | Correct doc treatment | Incorrect doc treatment |
+|---|---|---|
+| A JSON Schema | Link to the schema, or generate the field table from it | Hand-write a separate field table that will drift |
+| An OpenAPI / GraphQL spec | Embed or reference the spec; generate endpoint docs from it | Hand-write a table of endpoints that will drift |
+| A config file | Show the actual file in a code block; link to it | Paraphrase the config prose; copy key names into sentences |
+| A migration / SQL file | Link to the file by permalink | Restate the migration steps in prose |
+| A dependency's own docs | Link to the upstream canonical page | Copy-paste upstream content into this doc |
+
+**When duplication is justified.**
+
+- **Self-contained short docs** that a reader needs to use offline or without following links. Mark the duplicate explicitly: `Mirrored from <source>, last verified YYYY-MM-DD.`
+- **Quoted excerpts** for illustration. Keep them short and cite the source.
+- **Derived summaries** that compress the canonical source for a different audience. The derivation must be one-way (summary → source), and the summary should be regenerated from the source when the source changes.
+
+**Anti-patterns.**
+
+- **"Keep this in sync with X" comments.** These comments do not prevent drift; they document drift that will happen.
+- **Re-stating file paths or function signatures in prose.** Renames break the prose silently. Link to the file/symbol via a permalink or a symbol-resolving system.
+- **Paraphrasing a config file.** The config file is already authored prose for its reader — duplicating it in English is just adding a second source with a lower update frequency.
+- **"See X for the full truth"** when you have partially restated X above. Either fully defer to X (link only) or fully mirror it (and take on the maintenance). The middle option — partial restate — is where drift lives.
 
 ## Evals
 

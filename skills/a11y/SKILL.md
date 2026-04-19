@@ -7,7 +7,7 @@ version: 1.0.0
 type: capability
 browse_category: frontend
 scope: portable
-owner: maintainer
+owner: jacob-balslev
 freshness: "2026-04-18"
 drift_check:
   last_verified: "2026-04-18"

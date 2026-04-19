@@ -12,7 +12,7 @@
       "truth_mode": "conceptual_correctness_plus_repo_application",
       "skill_type": "concept",
       "criticality": "high",
-      "truth_sources": ["skills/documentation/SKILL.md:68-79"]
+      "truth_sources": ["skills/documentation/SKILL.md:79-90"]
     },
     {
       "id": 2,
@@ -23,7 +23,7 @@
       "truth_mode": "conceptual_correctness_plus_repo_application",
       "skill_type": "concept",
       "criticality": "normal",
-      "truth_sources": ["skills/documentation/SKILL.md:103-109"]
+      "truth_sources": ["skills/documentation/SKILL.md:167-173"]
     },
     {
       "id": 3,
@@ -34,7 +34,7 @@
       "truth_mode": "code_verification",
       "skill_type": "concept",
       "criticality": "high",
-      "truth_sources": ["skills/documentation/SKILL.md:100-106"]
+      "truth_sources": ["skills/documentation/SKILL.md:175-181"]
     },
     {
       "id": 4,
@@ -45,7 +45,7 @@
       "truth_mode": "conceptual_correctness_plus_repo_application",
       "skill_type": "concept",
       "criticality": "high",
-      "truth_sources": ["skills/documentation/SKILL.md:81-86"]
+      "truth_sources": ["skills/documentation/SKILL.md:92-97"]
     },
     {
       "id": 5,
@@ -56,7 +56,7 @@
       "truth_mode": "code_verification",
       "skill_type": "concept",
       "criticality": "high",
-      "truth_sources": ["skills/documentation/SKILL.md:100-106"]
+      "truth_sources": ["skills/documentation/SKILL.md:175-181"]
     },
     {
       "id": 6,
@@ -67,7 +67,7 @@
       "truth_mode": "code_verification",
       "skill_type": "concept",
       "criticality": "high",
-      "truth_sources": ["skills/documentation/SKILL.md:100-106"]
+      "truth_sources": ["skills/documentation/SKILL.md:175-181"]
     },
     {
       "id": 7,
@@ -78,7 +78,40 @@
       "truth_mode": "conceptual_correctness_plus_repo_application",
       "skill_type": "concept",
       "criticality": "high",
-      "truth_sources": ["skills/documentation/SKILL.md:103-109"]
+      "truth_sources": ["skills/documentation/SKILL.md:167-173"]
+    },
+    {
+      "id": 8,
+      "prompt": "A team proposes keeping their project documentation in a shared Confluence space so non-engineers can edit it without learning git. What does the documentation skill say about this arrangement, and what rule from the docs-as-code workflow does it violate?",
+      "dimension": "application",
+      "substance": "contradiction-check",
+      "calibration": "semantic",
+      "truth_mode": "conceptual_correctness_plus_repo_application",
+      "skill_type": "concept",
+      "criticality": "high",
+      "truth_sources": ["skills/documentation/SKILL.md:99-117"]
+    },
+    {
+      "id": 9,
+      "prompt": "A user files a bug: the README's `--help` output lists a flag `--dry-run`, but the actual CLI rejects it with 'unknown flag'. The maintainer responds 'yeah the README is a bit old.' Which drift symptom is this, what does the documentation skill say about ownership of the fix, and what is the prescribed repair approach?",
+      "dimension": "application",
+      "substance": "domain",
+      "calibration": "semantic",
+      "truth_mode": "conceptual_correctness_plus_repo_application",
+      "skill_type": "concept",
+      "criticality": "critical",
+      "truth_sources": ["skills/documentation/SKILL.md:119-136"]
+    },
+    {
+      "id": 10,
+      "prompt": "An author is writing a guide that explains how a service is configured. The service's canonical configuration schema lives at `config/service.schema.json`. The author copy-pastes the schema's field definitions into a Markdown table in the guide. According to the documentation skill's source-of-truth discipline, what is wrong with this approach and what should the author do instead?",
+      "dimension": "application",
+      "substance": "contradiction-check",
+      "calibration": "semantic",
+      "truth_mode": "conceptual_correctness_plus_repo_application",
+      "skill_type": "concept",
+      "criticality": "high",
+      "truth_sources": ["skills/documentation/SKILL.md:138-161"]
     }
   ]
 }

@@ -77,7 +77,8 @@ The repo is organised in five authority tiers. When two files disagree, the high
 
 ### Tier 3 — Enforcement and transformation
 
-- `scripts/skill-lint.js` — 11-check per-skill validator
+- `scripts/skill-lint.js` — per-skill validator (schema, relations, evals, archetype sections, routing quality, truth-source ranges, description length)
+- `scripts/skill-overlap.js` — cross-skill routing-hygiene checker (duplicate triggers, keywords, path globs)
 - `scripts/check-contract-consistency.js` — 6-check cross-artifact consistency checker
 - `scripts/generate-manifest.js` — authored → manifest compiler; multi-root workspace aware
 - `scripts/export-skill.js` — Agent Skills export transform

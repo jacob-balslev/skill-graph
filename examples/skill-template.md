@@ -8,7 +8,7 @@ type: capability
 browse_category: knowledge
 category: skill-system/authoring
 scope: reference
-owner: maintainer
+owner: jacob-balslev
 freshness: "2026-04-17"
 # TEMPLATE NOTE: drift_check is an object in v3. `last_verified` is required.
 # `truth_source_hashes` is optional — record it with `node scripts/skill-graph-drift.js
@@ -42,13 +42,18 @@ keywords:
 triggers:
   - skill-template
 # TEMPLATE NOTE: paths is present because this template is the entry point whenever
-# examples/skill-template.md or a new skills/<name>/SKILL.md file is touched.
-# v3 supports gitignore-style negation — e.g. `- "!skills/experimental/**"` excludes
-# a subdirectory from an otherwise broad glob. Remove this block if your skill is
-# purely conceptual and has no file surface.
+# examples/skill-template.md itself is touched. v3 supports gitignore-style negation —
+# e.g. `- "!skills/experimental/**"` excludes a subdirectory from an otherwise broad
+# glob. Remove this block if your skill is purely conceptual and has no file surface.
+#
+# Previous versions of this block also listed `skills/**/SKILL.md` but that glob is
+# owned by `graph-audit` (the audit tooling that verifies every SKILL.md against the
+# schema). Two skills claiming the same glob produces router ambiguity — the scope
+# tiebreaker (`codebase` > `reference`) picks graph-audit anyway, and reference-scope
+# skills are looked-up rather than path-routed. Lesson: each path glob should map to
+# ONE canonical skill; `scripts/skill-overlap.js` surfaces duplicates as warnings.
 paths:
   - examples/skill-template.md
-  - skills/**/SKILL.md
 # TEMPLATE NOTE: examples is new in v0.5.0. 2–5 realistic user prompts the skill
 # SHOULD activate for. Improves retrieval recall over keywords alone. Write in
 # the user's voice, not imperative abstract form. See docs/field-reference.md §
