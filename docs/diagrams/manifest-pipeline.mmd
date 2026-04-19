@@ -1,0 +1,25 @@
+flowchart LR
+  Skills["<b>skills/&#42;/SKILL.md</b><br/>+ examples/skill-template.md<br/>authored frontmatter"]
+  Config[".skill-graph/config.json<br/>workspace roots + projects<br/><i>optional — falls back to skills/</i>"]
+  Parse["<b>parse-frontmatter.js</b><br/>YAML → object"]
+  Rename["<b>generate-manifest.js</b><br/>apply rename map<br/>group under activation / health"]
+  Hash["<b>SHA-256</b><br/>hash each grounding.truth_sources<br/>compute health.drift_detected"]
+  Validate{{"<b>ajv + manifest.schema.json</b><br/>additionalProperties: false"}}
+  Manifest["<b>skills.manifest.json</b><br/>compiled artifact"]
+
+  Skills --> Parse
+  Config -.-> Rename
+  Parse --> Rename --> Hash --> Validate
+  Validate -->|pass| Manifest
+  Validate -->|fail| Error((("exit 1")))
+
+  classDef input fill:#dbeafe,stroke:#2563eb,color:#1e3a8a
+  classDef tool fill:#ecfdf5,stroke:#047857,color:#064e3b
+  classDef gate fill:#fce7f3,stroke:#db2777,color:#831843
+  classDef artifact fill:#fef3c7,stroke:#d97706,color:#78350f
+  classDef err fill:#fee2e2,stroke:#b91c1c,color:#7f1d1d
+  class Skills,Config input
+  class Parse,Rename,Hash tool
+  class Validate gate
+  class Manifest artifact
+  class Error err

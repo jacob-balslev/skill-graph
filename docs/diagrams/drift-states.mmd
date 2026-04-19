@@ -1,0 +1,21 @@
+stateDiagram-v2
+  direction LR
+  [*] --> NO_BASELINE: skill declares<br/>grounding.truth_sources<br/>but truth_source_hashes absent
+  NO_BASELINE --> OK: --record --apply<br/>writes SHA-256 hashes
+  OK --> STALE: today − last_verified<br/>> lifecycle.stale_after_days
+  OK --> DRIFT: any live SHA-256<br/>≠ recorded hash
+  OK --> BROKEN: truth_source file<br/>missing on disk
+  STALE --> OK: author re-verifies<br/>bumps last_verified
+  STALE --> DRIFT: detected during re-verify
+  DRIFT --> OK: content re-verified<br/>--record --apply rewrites hashes
+  BROKEN --> OK: truth source restored<br/>--record --apply rewrites hashes
+  DRIFT --> BROKEN: truth source deleted<br/>before re-verify
+
+  note right of OK
+    Hashes match
+    within lifecycle window
+  end note
+  note right of NO_BASELINE
+    schema-valid but
+    unverifiable — fix first
+  end note
