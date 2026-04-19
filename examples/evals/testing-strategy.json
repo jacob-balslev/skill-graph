@@ -2,6 +2,7 @@
   "skill_name": "testing-strategy",
   "subject": "Verification planning for bug fixes, features, and refactors: test scope, test-level selection, effort-to-risk matching, regression targeting, evidence quality, and failure-case coverage",
   "adjacent_concepts": ["debugging", "refactor", "lint-overlay"],
+  "grounding_note": "This skill is self-grounding. Its evals validate internal consistency against the SKILL.md body — the skill does not anchor to an external canonical source (e.g., a specific testing-pyramid paper) because the doctrine here is synthesized from industry practice rather than derived from one authoritative text. Evals cite SKILL.md line ranges deliberately; add external truth_sources only if the skill is later narrowed to a specific external framework.",
   "evals": [
     {
       "id": 1,
@@ -12,7 +13,7 @@
       "truth_mode": "code_verification",
       "skill_type": "concept",
       "criticality": "high",
-      "truth_sources": ["skills/testing-strategy/SKILL.md:67-78"]
+      "truth_sources": ["skills/testing-strategy/SKILL.md:84-91"]
     },
     {
       "id": 2,
@@ -23,7 +24,7 @@
       "truth_mode": "conceptual_correctness_plus_repo_application",
       "skill_type": "concept",
       "criticality": "high",
-      "truth_sources": ["skills/testing-strategy/SKILL.md:63-65"]
+      "truth_sources": ["skills/testing-strategy/SKILL.md:76-78"]
     },
     {
       "id": 3,
@@ -34,7 +35,7 @@
       "truth_mode": "code_verification",
       "skill_type": "concept",
       "criticality": "high",
-      "truth_sources": ["skills/testing-strategy/SKILL.md:94-100"]
+      "truth_sources": ["skills/testing-strategy/SKILL.md:111-116"]
     },
     {
       "id": 4,
@@ -45,7 +46,7 @@
       "truth_mode": "process_correctness",
       "skill_type": "workflow",
       "criticality": "high",
-      "truth_sources": ["skills/testing-strategy/SKILL.md:80-85"]
+      "truth_sources": ["skills/testing-strategy/SKILL.md:93-98"]
     },
     {
       "id": 5,
@@ -56,7 +57,7 @@
       "truth_mode": "conceptual_correctness_plus_repo_application",
       "skill_type": "concept",
       "criticality": "critical",
-      "truth_sources": ["skills/testing-strategy/SKILL.md:67-78"]
+      "truth_sources": ["skills/testing-strategy/SKILL.md:84-91"]
     },
     {
       "id": 6,
@@ -67,7 +68,7 @@
       "truth_mode": "conceptual_correctness_plus_repo_application",
       "skill_type": "concept",
       "criticality": "critical",
-      "truth_sources": ["skills/testing-strategy/SKILL.md:67-78", "skills/testing-strategy/SKILL.md:80-85"]
+      "truth_sources": ["skills/testing-strategy/SKILL.md:84-91", "skills/testing-strategy/SKILL.md:93-98"]
     },
     {
       "id": 7,
@@ -78,7 +79,29 @@
       "truth_mode": "code_verification",
       "skill_type": "concept",
       "criticality": "normal",
-      "truth_sources": ["skills/testing-strategy/SKILL.md:94-100"]
+      "truth_sources": ["skills/testing-strategy/SKILL.md:111-116"]
+    },
+    {
+      "id": 8,
+      "prompt": "A test plan for a new feature states: \"The QA team will manually walk through the checkout flow each week and sign off in Slack.\" According to the testing-strategy skill's Verification checklist, does this satisfy the evidence-quality gate? If not, explain what \"concrete, reproducible verification\" requires and what the correct response to this plan is.",
+      "dimension": "application",
+      "substance": "contradiction-check",
+      "calibration": "semantic",
+      "truth_mode": "conceptual_correctness_plus_repo_application",
+      "skill_type": "concept",
+      "criticality": "high",
+      "truth_sources": ["skills/testing-strategy/SKILL.md:104-109"]
+    },
+    {
+      "id": 9,
+      "prompt": "A test plan for a new discount-code redemption feature covers the happy path (valid code applied) but has no tests for expired codes, maxed-out codes, or malformed codes. According to the testing-strategy skill's Verification checklist, which gate fails, and what is the prescribed response from the skill when asked to sign off on this plan?",
+      "dimension": "application",
+      "substance": "domain",
+      "calibration": "semantic",
+      "truth_mode": "conceptual_correctness_plus_repo_application",
+      "skill_type": "concept",
+      "criticality": "high",
+      "truth_sources": ["skills/testing-strategy/SKILL.md:104-109"]
     }
   ]
 }

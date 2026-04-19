@@ -41,11 +41,17 @@ anti_examples:
   - "write a guide explaining how our routing works"       # documentation owns durable prose
   - "the router activated the wrong skill once — debug it" # debugging (specific failure) not routing design
 relations:
+  # No adjacent: skill-router is a dispatch engine; its natural neighbors
+  # are either in boundary (documentation, graph-audit) or in Do NOT Use
+  # (skill-template is a reference artifact, not a routable skill). No
+  # sibling skill is routinely loaded alongside this one.
   boundary:
     - skill: documentation
       reason: "documentation writes prose ABOUT routing; skill-router is the routing logic itself"
     - skill: graph-audit
       reason: "graph-audit verifies ONE skill's metadata; skill-router chooses BETWEEN skills at request time"
+  verify_with:
+    - graph-audit
 portability:
   readiness: scripted
   targets:
@@ -61,6 +67,17 @@ portability:
 - Routing by file path: matching touched or mentioned file paths against skill `paths` arrays for file-activated skills
 - Fallback ordering: how to rank skills when multiple candidates score equally, including `scope` and `type` tiebreakers
 - Coverage gaps: detecting when no skill matches a request and how to surface that gap as an authoring signal
+
+## Philosophy
+
+Routing is adversarial against convenience. The tempting move — "if nothing matches exactly, just pick the closest skill and activate it" — is the one that silently degrades every agent that depends on the router. A wrong skill that activates confidently is worse than a coverage gap that surfaces loudly, because silent wrongness has no signal for anyone to fix. The router's job is to produce either a certain winner or an explicit non-answer, never a confident guess.
+
+Four principles follow from that stance:
+
+- **First unique winner stops the chain.** A match on `triggers` is stronger than a match on `paths`, which is stronger than a match on `keywords`. Evaluate surfaces in priority order and stop at the first one that yields a unique winner — do not second-guess a trigger-label hit with keyword analysis.
+- **Tiebreakers favor specificity, not popularity.** When scores tie, a skill specific to *this* codebase (`scope: codebase`) wins over a portable skill, and a procedural skill (`type: workflow`) wins over a reference (`type: capability`) because the inbound query is more likely to need action than lookup. Never rank by skill age, usage count, or author preference.
+- **Explicit coverage gaps beat silent wrong fallback.** If no surface produces a winner, surface the gap to the caller — recommend authoring a new skill or broadening a keyword list. Silent fallback to a default skill is a bug that no test catches, because the misrouted query looks successful to the router but nonsensical to the downstream agent.
+- **The router is a mapping, not a judge.** It decides which skill owns a query; it does not decide whether the query is well-formed, worth handling, or strategically important. Those are the activated skill's concerns. Overloading the router with domain judgment makes it harder to audit and harder to change.
 
 ## Routing Rules
 

@@ -50,8 +50,10 @@ relations:
       reason: "debugging fixes a specific failing lint result; lint-overlay plans rule selection and gate placement"
     - skill: refactor
       reason: "refactor changes behavior-preserving code shape; lint-overlay is verification-plan authoring, not code modification"
-  verify_with:
-    - testing-strategy
+  # No verify_with: `extends: testing-strategy` already binds this overlay to
+  # its base contract — the base IS the verification partner, so naming it
+  # again under verify_with would be redundant without adding signal. If a
+  # dedicated CI-gate or lint-runner skill lands later, it belongs here.
 portability:
   readiness: scripted
   targets:
@@ -86,6 +88,16 @@ This overlay extends `testing-strategy`. Load both skills whenever lint is part 
 - Lint-gate placement: where lint fits in the verification sequence relative to unit and integration tests
 - Failure triage: separating lint failures caused by the current change from pre-existing rule violations
 - Overlay discipline: what this skill adds on top of testing-strategy and what it intentionally leaves to the base
+
+## Philosophy
+
+Lint is a verification signal, not a style opinion. A lint rule exists because a pattern has a measurable cost — a bug class, a readability drop, a maintenance drag — and the rule's job is to surface that cost early enough to fix it cheaply. Rules without that grounding are style preferences dressed up as gates, and style preferences should not block merges.
+
+Three principles follow from that stance:
+
+- **Enforce only rules that were green before the change.** A new rule that fails 200 pre-existing files on its first run is not a test — it is a scope change. Pin the pre-change green state, fail only on *new* violations, and plan the cleanup as a separate migration track.
+- **Lint failures are test failures, not advisory warnings.** A rule that does not block the merge does not change behavior; it just adds noise to the log. Either the rule is worth a block or it is not a rule yet. "Warn-only" is a deployment mode for a migration window, not a permanent posture.
+- **Lint scope matches test scope.** Run lint on the files the change touches, not on the entire tree. The exception is a rule whose correctness is global (e.g., a no-circular-imports check that a local diff cannot detect) — those run tree-wide, deliberately, and their cost is acknowledged.
 
 ## Overlay Rules
 

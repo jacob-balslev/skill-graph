@@ -12,7 +12,7 @@
       "truth_mode": "code_verification",
       "skill_type": "workflow",
       "criticality": "critical",
-      "truth_sources": ["skills/refactor/SKILL.md:64-74"]
+      "truth_sources": ["skills/refactor/SKILL.md:82-89"]
     },
     {
       "id": 2,
@@ -23,7 +23,7 @@
       "truth_mode": "conceptual_correctness_plus_repo_application",
       "skill_type": "concept",
       "criticality": "high",
-      "truth_sources": ["skills/refactor/SKILL.md:60-62"]
+      "truth_sources": ["skills/refactor/SKILL.md:74-76"]
     },
     {
       "id": 3,
@@ -34,7 +34,7 @@
       "truth_mode": "code_verification",
       "skill_type": "concept",
       "criticality": "high",
-      "truth_sources": ["skills/refactor/SKILL.md:89-95"]
+      "truth_sources": ["skills/refactor/SKILL.md:107-113"]
     },
     {
       "id": 4,
@@ -45,7 +45,7 @@
       "truth_mode": "process_correctness",
       "skill_type": "workflow",
       "criticality": "high",
-      "truth_sources": ["skills/refactor/SKILL.md:76-80"]
+      "truth_sources": ["skills/refactor/SKILL.md:90-94"]
     },
     {
       "id": 5,
@@ -56,7 +56,7 @@
       "truth_mode": "conceptual_correctness_plus_repo_application",
       "skill_type": "concept",
       "criticality": "high",
-      "truth_sources": ["skills/refactor/SKILL.md:33-42", "skills/refactor/SKILL.md:64-74"]
+      "truth_sources": ["skills/refactor/SKILL.md:45-56", "skills/refactor/SKILL.md:82-89"]
     },
     {
       "id": 6,
@@ -67,7 +67,7 @@
       "truth_mode": "conceptual_correctness_plus_repo_application",
       "skill_type": "concept",
       "criticality": "critical",
-      "truth_sources": ["skills/refactor/SKILL.md:64-74", "skills/refactor/SKILL.md:82-87"]
+      "truth_sources": ["skills/refactor/SKILL.md:82-89", "skills/refactor/SKILL.md:100-105"]
     },
     {
       "id": 7,
@@ -78,7 +78,51 @@
       "truth_mode": "code_verification",
       "skill_type": "concept",
       "criticality": "normal",
-      "truth_sources": ["skills/refactor/SKILL.md:89-95"]
+      "truth_sources": ["skills/refactor/SKILL.md:107-113"]
+    },
+    {
+      "id": 8,
+      "prompt": "After a refactor commit is pushed, a previously-green test from the contract suite is now red. According to the refactor skill's `## When to back out` section, what is the correct response? Why does the skill prescribe reverting immediately rather than forward-fixing the test?",
+      "dimension": "application",
+      "substance": "domain",
+      "calibration": "process",
+      "truth_mode": "process_correctness",
+      "skill_type": "workflow",
+      "criticality": "high",
+      "truth_sources": ["skills/refactor/SKILL.md:90-94"]
+    },
+    {
+      "id": 9,
+      "prompt": "An engineer has identified a refactor goal and plans three structural changes: rename a module, extract a helper, and collapse two duplicated branches. According to Workflow step 3 (Smallest useful cut), should these ship as one commit or three? What is the rule's reasoning, and what failure mode does splitting prevent?",
+      "dimension": "application",
+      "substance": "domain",
+      "calibration": "process",
+      "truth_mode": "process_correctness",
+      "skill_type": "workflow",
+      "criticality": "normal",
+      "truth_sources": ["skills/refactor/SKILL.md:82-89"]
+    },
+    {
+      "id": 10,
+      "prompt": "A product manager asks the refactor skill to add retry logic with exponential backoff to a flaky network call. The change adds new behavior (retrying on failure) that the system did not previously have. Should the refactor skill accept this task, and if not, what is the boundary rule that decides this? Distinguish the \"add retry logic\" request from a refactor whose contract stays the same.",
+      "dimension": "boundary",
+      "substance": "contradiction-check",
+      "calibration": "semantic",
+      "truth_mode": "code_verification",
+      "skill_type": "concept",
+      "criticality": "high",
+      "truth_sources": ["skills/refactor/SKILL.md:45-55", "skills/refactor/SKILL.md:107-113"]
+    },
+    {
+      "id": 11,
+      "prompt": "An engineer is about to run the refactor skill on their change and is looking at two artifacts in the SKILL.md: the `## Verification` checklist and the `## Evals` pointer to `examples/evals/refactor.json`. The skill explicitly warns: \"Do not conflate them — the checklist is for the engineer, the eval is for the grader.\" Explain the distinction: what does the engineer consult the Verification checklist for, what does the eval artifact do instead, and why does the skill refuse to merge the two?",
+      "dimension": "mental_model",
+      "substance": "domain",
+      "calibration": "semantic",
+      "truth_mode": "conceptual_correctness_plus_repo_application",
+      "skill_type": "concept",
+      "criticality": "normal",
+      "truth_sources": ["skills/refactor/SKILL.md:96-105"]
     }
   ]
 }

@@ -12,7 +12,7 @@
       "truth_mode": "code_verification",
       "skill_type": "concept",
       "criticality": "high",
-      "truth_sources": ["skills/a11y/SKILL.md:63-76"]
+      "truth_sources": ["skills/a11y/SKILL.md:83-96"]
     },
     {
       "id": 2,
@@ -22,8 +22,8 @@
       "calibration": "semantic",
       "truth_mode": "conceptual_correctness_plus_repo_application",
       "skill_type": "concept",
-      "criticality": "high",
-      "truth_sources": ["skills/a11y/SKILL.md:59-61"]
+      "criticality": "normal",
+      "truth_sources": ["skills/a11y/SKILL.md:79-81"]
     },
     {
       "id": 3,
@@ -33,8 +33,8 @@
       "calibration": "semantic",
       "truth_mode": "code_verification",
       "skill_type": "concept",
-      "criticality": "high",
-      "truth_sources": ["skills/a11y/SKILL.md:90-95"]
+      "criticality": "normal",
+      "truth_sources": ["skills/a11y/SKILL.md:114-119"]
     },
     {
       "id": 4,
@@ -45,7 +45,7 @@
       "truth_mode": "process_correctness",
       "skill_type": "workflow",
       "criticality": "high",
-      "truth_sources": ["skills/a11y/SKILL.md:63-80"]
+      "truth_sources": ["skills/a11y/SKILL.md:83-100"]
     },
     {
       "id": 5,
@@ -56,7 +56,7 @@
       "truth_mode": "conceptual_correctness_plus_repo_application",
       "skill_type": "concept",
       "criticality": "normal",
-      "truth_sources": ["skills/a11y/SKILL.md:82-88", "skills/a11y/SKILL.md:50-57"]
+      "truth_sources": ["skills/a11y/SKILL.md:106-112", "skills/a11y/SKILL.md:70-77"]
     },
     {
       "id": 6,
@@ -67,7 +67,7 @@
       "truth_mode": "conceptual_correctness_plus_repo_application",
       "skill_type": "concept",
       "criticality": "critical",
-      "truth_sources": ["skills/a11y/SKILL.md:78-80", "skills/a11y/SKILL.md:63-76"]
+      "truth_sources": ["skills/a11y/SKILL.md:98-100", "skills/a11y/SKILL.md:83-96"]
     },
     {
       "id": 7,
@@ -77,8 +77,41 @@
       "calibration": "semantic",
       "truth_mode": "code_verification",
       "skill_type": "concept",
+      "criticality": "normal",
+      "truth_sources": ["skills/a11y/SKILL.md:114-119"]
+    },
+    {
+      "id": 8,
+      "prompt": "A modal dialog closes when the user presses Escape. The current implementation removes the modal from the DOM but leaves focus wherever it happened to be when the modal opened. According to the a11y skill's Coverage statement on focus management, where should focus land after the modal closes, and why does \"correctly placed after navigation and state changes\" specifically cover this case?",
+      "dimension": "application",
+      "substance": "domain",
+      "calibration": "process",
+      "truth_mode": "process_correctness",
+      "skill_type": "workflow",
       "criticality": "high",
-      "truth_sources": ["skills/a11y/SKILL.md:90-95"]
+      "truth_sources": ["skills/a11y/SKILL.md:70-77"]
+    },
+    {
+      "id": 9,
+      "prompt": "An async form submission shows a spinner while the request is in flight, then silently swaps the spinner for a success toast in a visual-only layer. A screen-reader user receives no signal that the form submitted successfully. Which Primitive Selection row covers this case, and what is the correct implementation?",
+      "dimension": "application",
+      "substance": "domain",
+      "calibration": "process",
+      "truth_mode": "process_correctness",
+      "skill_type": "workflow",
+      "criticality": "high",
+      "truth_sources": ["skills/a11y/SKILL.md:83-96"]
+    },
+    {
+      "id": 10,
+      "prompt": "A form input has no visible label; the placeholder text `\"Enter your email\"` is used as the label substitute. The a11y skill's Primitive Selection table explicitly flags `placeholder` as a wrong primitive for labeling. Explain why placeholder-as-label fails the skill's labeling criterion and what the correct pattern is.",
+      "dimension": "definition",
+      "substance": "domain",
+      "calibration": "semantic",
+      "truth_mode": "code_verification",
+      "skill_type": "concept",
+      "criticality": "normal",
+      "truth_sources": ["skills/a11y/SKILL.md:83-96", "skills/a11y/SKILL.md:70-77"]
     }
   ]
 }

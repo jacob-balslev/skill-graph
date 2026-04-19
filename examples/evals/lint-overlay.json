@@ -12,7 +12,7 @@
       "truth_mode": "code_verification",
       "skill_type": "concept",
       "criticality": "critical",
-      "truth_sources": ["skills/lint-overlay/SKILL.md:49-66"]
+      "truth_sources": ["skills/lint-overlay/SKILL.md:65-82"]
     },
     {
       "id": 2,
@@ -23,7 +23,7 @@
       "truth_mode": "conceptual_correctness_plus_repo_application",
       "skill_type": "concept",
       "criticality": "high",
-      "truth_sources": ["skills/lint-overlay/SKILL.md:49-66"]
+      "truth_sources": ["skills/lint-overlay/SKILL.md:65-82"]
     },
     {
       "id": 3,
@@ -34,7 +34,7 @@
       "truth_mode": "code_verification",
       "skill_type": "concept",
       "criticality": "high",
-      "truth_sources": ["skills/lint-overlay/SKILL.md:88-94"]
+      "truth_sources": ["skills/lint-overlay/SKILL.md:118-124"]
     },
     {
       "id": 4,
@@ -45,7 +45,7 @@
       "truth_mode": "process_correctness",
       "skill_type": "workflow",
       "criticality": "high",
-      "truth_sources": ["skills/lint-overlay/SKILL.md:76-86"]
+      "truth_sources": ["skills/lint-overlay/SKILL.md:102-112"]
     },
     {
       "id": 5,
@@ -56,7 +56,7 @@
       "truth_mode": "conceptual_correctness_plus_repo_application",
       "skill_type": "concept",
       "criticality": "normal",
-      "truth_sources": ["skills/lint-overlay/SKILL.md:76-86"]
+      "truth_sources": ["skills/lint-overlay/SKILL.md:102-112"]
     },
     {
       "id": 6,
@@ -67,7 +67,7 @@
       "truth_mode": "conceptual_correctness_plus_repo_application",
       "skill_type": "concept",
       "criticality": "high",
-      "truth_sources": ["skills/lint-overlay/SKILL.md:76-86"]
+      "truth_sources": ["skills/lint-overlay/SKILL.md:102-112"]
     },
     {
       "id": 7,
@@ -78,7 +78,29 @@
       "truth_mode": "code_verification",
       "skill_type": "concept",
       "criticality": "critical",
-      "truth_sources": ["skills/lint-overlay/SKILL.md:49-66", "skills/lint-overlay/SKILL.md:88-94"]
+      "truth_sources": ["skills/lint-overlay/SKILL.md:65-82", "skills/lint-overlay/SKILL.md:118-124"]
+    },
+    {
+      "id": 8,
+      "prompt": "A CI pipeline currently runs lint across the entire repository tree on every pull request, including files the current change did not touch. According to the lint-overlay's `Lint scope matches the test scope` rule, is this the correct posture? When is tree-wide lint justified, and when should it be restricted to changed files?",
+      "dimension": "application",
+      "substance": "domain",
+      "calibration": "process",
+      "truth_mode": "process_correctness",
+      "skill_type": "workflow",
+      "criticality": "high",
+      "truth_sources": ["skills/lint-overlay/SKILL.md:102-112", "skills/lint-overlay/SKILL.md:92-100"]
+    },
+    {
+      "id": 9,
+      "prompt": "A team configures their CI so that lint produces output but does not fail the build — the rationale is \"developers will see the warnings and fix them eventually.\" According to the lint-overlay's `Lint failures are blocking, not advisory` rule, is this posture consistent with the overlay's doctrine? What is the overlay's position on warn-only lint, and when (if ever) is it acceptable?",
+      "dimension": "application",
+      "substance": "contradiction-check",
+      "calibration": "semantic",
+      "truth_mode": "conceptual_correctness_plus_repo_application",
+      "skill_type": "concept",
+      "criticality": "high",
+      "truth_sources": ["skills/lint-overlay/SKILL.md:102-112", "skills/lint-overlay/SKILL.md:92-100"]
     }
   ]
 }

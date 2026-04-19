@@ -12,7 +12,7 @@
       "truth_mode": "code_verification",
       "skill_type": "concept",
       "criticality": "high",
-      "truth_sources": ["skills/skill-router/SKILL.md:53-61"]
+      "truth_sources": ["skills/skill-router/SKILL.md:82-90"]
     },
     {
       "id": 2,
@@ -23,7 +23,7 @@
       "truth_mode": "conceptual_correctness_plus_repo_application",
       "skill_type": "concept",
       "criticality": "high",
-      "truth_sources": ["skills/skill-router/SKILL.md:73-75"]
+      "truth_sources": ["skills/skill-router/SKILL.md:102-104"]
     },
     {
       "id": 3,
@@ -34,7 +34,7 @@
       "truth_mode": "code_verification",
       "skill_type": "concept",
       "criticality": "high",
-      "truth_sources": ["skills/skill-router/SKILL.md:77-84"]
+      "truth_sources": ["skills/skill-router/SKILL.md:110-117"]
     },
     {
       "id": 4,
@@ -45,7 +45,7 @@
       "truth_mode": "process_correctness",
       "skill_type": "workflow",
       "criticality": "high",
-      "truth_sources": ["skills/skill-router/SKILL.md:63-67"]
+      "truth_sources": ["skills/skill-router/SKILL.md:92-96"]
     },
     {
       "id": 5,
@@ -56,7 +56,7 @@
       "truth_mode": "code_verification",
       "skill_type": "concept",
       "criticality": "normal",
-      "truth_sources": ["skills/skill-router/SKILL.md:63-67"]
+      "truth_sources": ["skills/skill-router/SKILL.md:92-96"]
     },
     {
       "id": 6,
@@ -67,7 +67,7 @@
       "truth_mode": "conceptual_correctness_plus_repo_application",
       "skill_type": "concept",
       "criticality": "critical",
-      "truth_sources": ["skills/skill-router/SKILL.md:73-75"]
+      "truth_sources": ["skills/skill-router/SKILL.md:102-104"]
     },
     {
       "id": 7,
@@ -78,7 +78,40 @@
       "truth_mode": "code_verification",
       "skill_type": "concept",
       "criticality": "high",
-      "truth_sources": ["skills/skill-router/SKILL.md:77-84"]
+      "truth_sources": ["skills/skill-router/SKILL.md:110-117"]
+    },
+    {
+      "id": 8,
+      "prompt": "Two candidate skills tie on keyword score AND tie on scope (both `portable`). One is `type: workflow` (a procedural debugging skill), the other is `type: capability` (a reference skill on the same topic). According to the Type tiebreaker, which wins and why does the router prefer the procedural skill when the query is otherwise ambiguous?",
+      "dimension": "application",
+      "substance": "domain",
+      "calibration": "process",
+      "truth_mode": "process_correctness",
+      "skill_type": "workflow",
+      "criticality": "high",
+      "truth_sources": ["skills/skill-router/SKILL.md:98-100"]
+    },
+    {
+      "id": 9,
+      "prompt": "An agent edits `src/components/Modal.tsx`. The a11y skill declares `paths: [\"**/*.{html,tsx,jsx,vue,svelte}\", \"!**/*.test.{ts,tsx,js,jsx}\"]`. No other skill matches this path. No trigger label is declared by the caller. According to the skill-router's Routing Rules priority order (surface 2 — file path), which skill wins and why does path-match-with-negation-exclusion produce a unique winner here before keyword matching is consulted?",
+      "dimension": "application",
+      "substance": "domain",
+      "calibration": "process",
+      "truth_mode": "process_correctness",
+      "skill_type": "workflow",
+      "criticality": "high",
+      "truth_sources": ["skills/skill-router/SKILL.md:82-90"]
+    },
+    {
+      "id": 10,
+      "prompt": "An agent sends the query \"why is this modal keyboard-trapped?\" and declares the trigger label `a11y-skill`. No other skill in the library declares that trigger. According to the skill-router's Routing Rules (surface 1 — trigger label), describe the routing path: which surface fires, why the chain stops there, and what the router returns without consulting paths or keywords. This is the baseline positive case against which the tiebreaker and fallback evals are edge cases.",
+      "dimension": "definition",
+      "substance": "domain",
+      "calibration": "process",
+      "truth_mode": "process_correctness",
+      "skill_type": "workflow",
+      "criticality": "normal",
+      "truth_sources": ["skills/skill-router/SKILL.md:82-90"]
     }
   ]
 }

@@ -79,6 +79,61 @@
       "skill_type": "concept",
       "criticality": "normal",
       "truth_sources": ["skills/graph-audit/SKILL.md", "scripts/generate-manifest.js", "examples/skills.manifest.sample.json"]
+    },
+    {
+      "id": 8,
+      "prompt": "Given the following synthetic SKILL.md frontmatter excerpt:\n\n```yaml\nschema_version: 3\nname: example\ntype: capability\nbrowse_category: quality\nscope: portable\nowner: maintainer\nfreshness: \"2026-04-19\"\ndrift_check:\n  last_verified: \"2026-04-19\"\neval_artifacts: pending\neval_state: passing\nrouting_eval: absent\n```\n\nPredict which check in `scripts/skill-lint.js` will fire first when this skill is linted, what the exact error category will be (per the eleven-check list), and what the underlying rule is. (Hint: one required field has a value that is not in the schema's allowed enum.)",
+      "dimension": "application",
+      "substance": "domain",
+      "calibration": "semantic",
+      "truth_mode": "output_correctness",
+      "skill_type": "workflow",
+      "criticality": "high",
+      "truth_sources": ["skills/graph-audit/SKILL.md", "schemas/skill.schema.json", "scripts/skill-lint.js"]
+    },
+    {
+      "id": 9,
+      "prompt": "A skill ships with `schema_version: 2` while the current schema locks `schema_version: const 3`. According to the graph-audit skill, which of the eleven lint checks detects this specifically, and why does `additionalProperties: false` in the schema matter for catching schema drift beyond just the version field?",
+      "dimension": "application",
+      "substance": "domain",
+      "calibration": "semantic",
+      "truth_mode": "code_verification",
+      "skill_type": "concept",
+      "criticality": "high",
+      "truth_sources": ["skills/graph-audit/SKILL.md", "schemas/skill.schema.json", "scripts/skill-lint.js"]
+    },
+    {
+      "id": 10,
+      "prompt": "A contributor runs `node scripts/skill-lint.js skills/a11y` on a correct skill and receives exit code 0, then introduces a typo changing `eval_artifacts: present` to `eval_artifacts: presnt` (misspelled enum value) and re-runs the same command. According to the graph-audit skill's `## Verification` gate, describe the end-to-end behavioral outcome: what exit code returns, what output category surfaces, which specific check produces the error, and what decision should the contributor's CI make based on the non-zero exit? This is a behavioral assertion — the answer is an observable CI outcome, not a skill-quotation.",
+      "dimension": "application",
+      "substance": "domain",
+      "calibration": "process",
+      "truth_mode": "output_correctness",
+      "skill_type": "workflow",
+      "criticality": "high",
+      "truth_sources": ["skills/graph-audit/SKILL.md", "scripts/skill-lint.js", "schemas/skill.schema.json"]
+    },
+    {
+      "id": 11,
+      "prompt": "A contributor asks graph-audit to debug why their agent is looping infinitely when it tries to resolve a relation target. Should graph-audit take this task? Cite the `Do NOT Use When` row that decides this and name the correct skill.",
+      "dimension": "boundary",
+      "substance": "contradiction-check",
+      "calibration": "semantic",
+      "truth_mode": "code_verification",
+      "skill_type": "concept",
+      "criticality": "normal",
+      "truth_sources": ["skills/graph-audit/SKILL.md"]
+    },
+    {
+      "id": 12,
+      "prompt": "A contributor asks graph-audit to help rewrite the `## Coverage` prose in an existing SKILL.md to read more naturally — no schema change, no manifest change, just prose polish. Should graph-audit take this task? Cite the `Do NOT Use When` row that decides this and name the correct skill.",
+      "dimension": "boundary",
+      "substance": "contradiction-check",
+      "calibration": "semantic",
+      "truth_mode": "code_verification",
+      "skill_type": "concept",
+      "criticality": "normal",
+      "truth_sources": ["skills/graph-audit/SKILL.md"]
     }
   ]
 }

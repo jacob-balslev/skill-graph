@@ -430,9 +430,6 @@
             "reason": "refactor changes behavior-preserving code shape; lint-overlay is verification-plan authoring, not code modification",
             "skill": "refactor"
           }
-        ],
-        "verify_with": [
-          "testing-strategy"
         ]
       },
       "scope": "portable",
@@ -590,6 +587,9 @@
             "reason": "graph-audit verifies ONE skill's metadata; skill-router chooses BETWEEN skills at request time",
             "skill": "graph-audit"
           }
+        ],
+        "verify_with": [
+          "graph-audit"
         ]
       },
       "scope": "portable",
