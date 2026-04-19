@@ -97,7 +97,7 @@ Required dimension rows:
 - [ ] `owner` exists
 - [ ] `freshness` exists
 - [ ] `drift_check` exists as an object with `last_verified` (v3 — was scalar date in v2)
-- [ ] `eval_artifacts`, `eval_state`, `routing_eval` all exist (schema_version 3, orthogonal triple)
+- [ ] `eval_artifacts`, `eval_state`, `routing_eval` all exist (orthogonal triple — shipped in schema_version 2 under SH-5784, retained in v3)
 - [ ] `extends` exists when `type: overlay`
 - [ ] `extends` is absent when `type` is not `overlay`
 
@@ -133,6 +133,7 @@ Run this section when the skill is repo-grounded or implementation-aware.
 
 - [ ] the skill has a clear `Coverage` section
 - [ ] the skill has a clear `Philosophy` section
+- [ ] the skill has a clear `Verification` section (required for `capability` and `workflow` archetypes per `docs/metadata-contract.md § Archetype Section Map`; enforced by `scripts/lint/check-archetype-sections.js`)
 - [ ] the skill has at least one concrete decision table, checklist, or routing rule
 - [ ] the skill contains negative bounds (`Do NOT Use When` or equivalent)
 - [ ] the skill does not contain generic model-native filler

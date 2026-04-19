@@ -11,7 +11,7 @@
 - `docs/metadata-contract.md` — authoritative field semantics for the authored `SKILL.md` contract.
 - `schemas/skill.schema.json` — enforceable JSON Schema for authored frontmatter.
 - `schemas/manifest.schema.json` — enforceable JSON Schema for the generated manifest.
-- `examples/skills.manifest.sample.json` — sample manifest showing the generated shape for the six shipped skills.
+- `examples/skills.manifest.sample.json` — sample manifest showing the generated shape for the eight starter skills and the template (nine entries total).
 
 ---
 
@@ -422,4 +422,4 @@ After a generator change or a schema change, verify:
 - [ ] Every field in `schemas/manifest.schema.json` appears in either the rename map or the "Generated-only manifest fields" list.
 - [ ] The worked example's JSON projection can be regenerated from its YAML frontmatter by applying only the transforms declared in the rename map.
 - [ ] `node scripts/skill-lint.js --include-template` exits 0 on the shipped template.
-- [ ] `examples/skills.manifest.sample.json` still matches the projection rules when regenerated from the five starters plus the template.
+- [ ] `examples/skills.manifest.sample.json` still matches the projection rules when regenerated from the eight starters plus the template.

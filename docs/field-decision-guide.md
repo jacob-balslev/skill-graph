@@ -41,13 +41,7 @@
 
 ### Migration from v1
 
-The v1 names were renamed in schema_version 2 (SH-5784). The old names are hard errors under the v2 schema.
-
-| v1 value | v2 value |
-|---|---|
-| `generic` | `portable` |
-| `operational` | `codebase` |
-| `reference` | `reference` (unchanged) |
+The v1 scope values (`generic`, `operational`) were renamed in schema_version 2 (SH-5784) and are rejected as hard errors by the v2+ schemas. For the full v1 → v2 rename table see [`docs/field-reference.md § scope`](field-reference.md#scope); for the codemod that applies every v2 → v3 change automatically, see [`docs/manifest-contract.md § Migration Note — v2 → v3`](manifest-contract.md#migration-note--v2--v3-v040).
 
 ### Examples
 

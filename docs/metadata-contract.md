@@ -34,7 +34,7 @@ Skill Graph is a graph-aware superset of the [Agent Skills](https://agentskills.
 | `allowed-tools` | Agent Skills optional | Kept top-level as a space-separated string |
 | `metadata` | Agent Skills optional | Not used at the top level; Skill Graph promotes extensions to named fields |
 | `schema_version`, `version`, `type`, `browse_category`, `scope`, `owner`, `freshness`, `drift_check`, `eval_artifacts`, `eval_state`, `routing_eval` | Skill Graph extension | Required for Skill Graph; additive to the base |
-| `relations`, `grounding`, `portability`, `triggers`, `keywords`, `paths`, `project_tags`, `category`, `routing_groups`, `lifecycle`, `runtime_telemetry`, `extends`, `stability` | Skill Graph extension | Optional in Skill Graph; additive to the base |
+| `relations`, `grounding`, `portability`, `triggers`, `keywords`, `examples`, `anti_examples`, `paths`, `project_tags`, `category`, `routing_groups`, `lifecycle`, `runtime_telemetry`, `extends`, `stability`, `superseded_by` | Skill Graph extension | Optional in Skill Graph; additive to the base |
 
 A Skill Graph `SKILL.md` is **not** a valid Agent Skills file as authored, because Skill Graph requires fields the base standard does not define. An export transform can produce an Agent-Skills-valid file by moving every Skill Graph extension field under the standard `metadata:` key. The transform is implemented as `scripts/export-skill.js`.
 
@@ -223,7 +223,7 @@ The YAML frontmatter has 32 top-level fields. The schema is the authoritative so
 
 ## Schema Strictness
 
-The v1 OSS schemas are intentionally strict.
+The Skill Graph schemas are intentionally strict.
 
 - Unknown top-level fields fail validation rather than being silently accepted.
 - Field names must not rely on undocumented aliases.
