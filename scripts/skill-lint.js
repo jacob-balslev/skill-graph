@@ -444,12 +444,53 @@ function checkRelationSemantics(fm, knownFrontmatters) {
 // rewritten but truth_sources still cite the old line ranges, leading
 // graders to read the wrong content.
 //
-// Reference format: `path` (whole file) or `path:start-end` or `path:line`.
+// Reference formats:
+//   `path`                   — whole-file reference
+//   `path:start-end`         — line range (or `path:line` for a single line)
+//   `path#anchor`            — heading anchor; the file must contain a heading
+//                              whose slug equals `anchor`. Anchors are
+//                              drift-resistant: renaming a section requires
+//                              updating the anchor, which the linter catches,
+//                              whereas editing section content around fixed
+//                              line numbers silently drifts. Use anchor form
+//                              alongside a line range for defense in depth.
 // Malformed references are surfaced as errors (the grader has nothing to do
 // with a broken pointer).
 //
 // Runs once per invocation, not per file. Returns plain error strings.
-const TRUTH_SOURCE_RE = /^([^:]+)(?::(\d+)(?:-(\d+))?)?$/;
+const TRUTH_SOURCE_RE = /^([^:#]+)(?:(?::(\d+)(?:-(\d+))?)|(?:#([a-z0-9][a-z0-9-]*)))?$/;
+
+// Slugify a heading the same way common markdown renderers do: strip leading
+// `#` markers, lowercase, replace non-alphanumerics with hyphens, collapse
+// consecutive hyphens, trim leading/trailing hyphens.
+function slugifyHeading(headingText) {
+  return headingText
+    .replace(/^#+\s*/, '')
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, '-')
+    .replace(/-+/g, '-')
+    .replace(/^-|-$/g, '');
+}
+
+// Extract the set of heading anchors present in a markdown file. Cached per
+// file path to avoid repeated re-parsing when many evals cite the same file.
+const headingAnchorsCache = new Map();
+function getHeadingAnchors(absPath) {
+  if (headingAnchorsCache.has(absPath)) return headingAnchorsCache.get(absPath);
+  const content = fs.readFileSync(absPath, 'utf8');
+  const anchors = new Set();
+  const lines = content.split('\n');
+  let inCodeFence = false;
+  for (const line of lines) {
+    if (/^```/.test(line)) { inCodeFence = !inCodeFence; continue; }
+    if (inCodeFence) continue;
+    const m = line.match(/^(#{1,6})\s+(.+?)\s*$/);
+    if (m) anchors.add(slugifyHeading(m[2]));
+  }
+  headingAnchorsCache.set(absPath, anchors);
+  return anchors;
+}
+
 function checkEvalTruthSourceRanges() {
   const errors = [];
   if (!fs.existsSync(EVALS_DIR)) return errors;
@@ -473,15 +514,24 @@ function checkEvalTruthSourceRanges() {
         const s = String(raw);
         const m = s.match(TRUTH_SOURCE_RE);
         if (!m) {
-          errors.push(`examples/evals/${evalFile} eval id=${c.id}: truth_source "${s}" is malformed — expected "path" or "path:start-end"`);
+          errors.push(`examples/evals/${evalFile} eval id=${c.id}: truth_source "${s}" is malformed — expected "path", "path:start-end", or "path#anchor"`);
           continue;
         }
-        const [, relPath, start, end] = m;
+        const [, relPath, start, end, anchor] = m;
         const abs = path.resolve(REPO_ROOT, relPath);
         if (!fs.existsSync(abs)) {
           errors.push(`examples/evals/${evalFile} eval id=${c.id}: truth_source "${s}" — file ${relPath} does not exist`);
           continue;
         }
+
+        if (anchor) {
+          const anchors = getHeadingAnchors(abs);
+          if (!anchors.has(anchor)) {
+            errors.push(`examples/evals/${evalFile} eval id=${c.id}: truth_source "${s}" — no heading in ${relPath} slugifies to "${anchor}" (known anchors: ${[...anchors].slice(0, 8).join(', ')}${anchors.size > 8 ? ', ...' : ''})`);
+          }
+          continue;
+        }
+
         if (!start) continue; // whole-file reference is valid
 
         let lineCount = lineCountCache.get(abs);

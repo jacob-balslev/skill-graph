@@ -8,7 +8,10 @@ Skill Graph has not been published to a package registry. Versions below describ
 
 ## [Unreleased]
 
-No unreleased changes since 0.4.0.
+### Added
+- **`scripts/skill-lint.js`** — `truth_sources` entries in eval artifacts may now use `path#anchor` format (e.g. `skills/documentation/SKILL.md#doc-type-selection`) alongside the existing `path` and `path:start-end` forms. The linter extracts all markdown headings from the target file, slugifies them using the common GitHub/pandoc convention (lowercase, non-alphanumerics → hyphens, collapsed), and reports an error with the known-anchor list when an entry cites a slug that no heading produces. Anchors are drift-resistant: renaming a section forces an anchor update the linter catches, whereas editing section content around fixed line numbers silently drifts. Authors are encouraged to cite both a line range and a heading anchor for defense in depth.
+- **`examples/evals/comprehension.json`** — documentation eval artifact expanded from 10 to 12 cases and migrated to dual-citation (line range + heading anchor). Eval 6 now also cites the frontmatter `relations.boundary` block so boundary grounding spans both the Do-NOT-Use table and the declared boundary reasons. Evals 11–12 add a new `rule_conflict` dimension — adversarial cases where two skill rules collide (same-commit doc updates vs. security hotfix time pressure; structural checklist passing vs. the "faster mental model" philosophical test) with explicit `expected_reasoning`.
+- **`skills/documentation/SKILL.md` § Relations Rationale** — explicit justification for an empty `verify_with` surface: doc-drift and link-checking are owned by CI tools (`lychee`, `markdownlint`) that live outside the skill graph rather than by sibling skills. Points at where a future `doc-freshness` or `link-check` skill would live.
 
 ## [0.4.0] — 2026-04-18
 

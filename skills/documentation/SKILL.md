@@ -164,6 +164,10 @@ Every fact has exactly one canonical location. Restating that fact anywhere else
 
 This skill ships a comprehension-eval artifact at [`examples/evals/comprehension.json`](../../examples/evals/comprehension.json). The `Verification` checklist below is the authoring gate for a new doc; the eval file is how this skill is graded by `scripts/skill-audit.js --graded`. Do not conflate them — the checklist is for writers, the eval is for the grader.
 
+## Relations Rationale
+
+This skill declares `boundary` relations only. `verify_with` is intentionally empty: doc-drift detection and link-checking are owned by CI tools (`lychee`, `markdownlint`, generated-from-schema checks) that live outside the Skill Graph rather than by sibling skills. Adding a `verify_with` entry that points at `lint-overlay` or `testing-strategy` would misrepresent the relation — those skills govern code-lint gate selection and test-level decisions, not prose freshness or link integrity. If a future `doc-freshness` or `link-check` skill is authored, that is where `verify_with` should point.
+
 ## Verification
 
 - [ ] The document matches its intended purpose
