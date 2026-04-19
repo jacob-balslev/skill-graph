@@ -121,6 +121,43 @@ Scripts that police Tier 1 (lint, consistency) or compile Tier 1's output (manif
 | `scripts/export-skill.js` | Agent Skills export transform. Flattens the v3 `compatibility` object to a single 500-char string for the base standard. |
 | `scripts/migrate-skill-v2-to-v3.js` | v2 → v3 codemod. Line-based — preserves author YAML style (comments, quoting, indentation). |
 
+#### Pipeline — how a SKILL.md becomes a manifest entry
+
+> **The question this diagram answers:** "How does `generate-manifest.js` project authored frontmatter into `skills.manifest.json`?"
+
+```mermaid
+flowchart LR
+  Skills["<b>skills/&#42;/SKILL.md</b><br/>+ examples/skill-template.md<br/>authored frontmatter"]
+  Config[".skill-graph/config.json<br/>workspace roots + projects<br/><i>optional — falls back to skills/</i>"]
+  Parse["<b>parse-frontmatter.js</b><br/>YAML → object"]
+  Rename["<b>generate-manifest.js</b><br/>apply rename map<br/>group under activation / health"]
+  Hash["<b>SHA-256</b><br/>hash each grounding.truth_sources<br/>compute health.drift_detected"]
+  Validate{{"<b>ajv + manifest.schema.json</b><br/>additionalProperties: false"}}
+  Manifest["<b>skills.manifest.json</b><br/>compiled artifact"]
+
+  Skills --> Parse
+  Config -.-> Rename
+  Parse --> Rename --> Hash --> Validate
+  Validate -->|pass| Manifest
+  Validate -->|fail| Error((("exit 1")))
+
+  classDef input fill:#dbeafe,stroke:#2563eb,color:#1e3a8a
+  classDef tool fill:#ecfdf5,stroke:#047857,color:#064e3b
+  classDef gate fill:#fce7f3,stroke:#db2777,color:#831843
+  classDef artifact fill:#fef3c7,stroke:#d97706,color:#78350f
+  classDef err fill:#fee2e2,stroke:#b91c1c,color:#7f1d1d
+  class Skills,Config input
+  class Parse,Rename,Hash tool
+  class Validate gate
+  class Manifest artifact
+  class Error err
+```
+
+<!-- Rendered copy for non-Mermaid viewers. Source: docs/diagrams/manifest-pipeline.mmd. Regenerate via: npx @mermaid-js/mermaid-cli -i docs/diagrams/manifest-pipeline.mmd -o docs/images/manifest-pipeline.png -b white --width 1600 -->
+<img src="./images/manifest-pipeline.png" alt="Manifest pipeline — authored SKILL.md files plus optional workspace config flow through parse-frontmatter, rename/group, SHA-256 hashing, and ajv validation against manifest.schema.json before becoming skills.manifest.json" width="960" />
+
+**Legend.** Blue = authored input. Green = tooling step. Pink = validation gate (hard-fail on additionalProperties). Yellow = the compiled artifact. Red = exit-1 on schema mismatch. The rename map this pipeline applies is the one documented in [`docs/manifest-contract.md § Rename Map`](manifest-contract.md#rename-map) — the diagram shows the topology, the manifest contract shows the field-level fates.
+
 ### Audit (hybrid enforcement/consumption)
 
 | File | Role |
@@ -141,6 +178,41 @@ Scripts that police Tier 1 (lint, consistency) or compile Tier 1's output (manif
 | `scripts/skill-graph-drift.js` | Drift sentinel. Hashes every `grounding.truth_sources` entry with SHA-256; compares against the recorded `drift_check.truth_source_hashes` baseline; reports DRIFT / BROKEN / STALE / NO_BASELINE. `--record --apply` updates the SKILL.md in place with fresh hashes. |
 
 These tools are the *proof* that Tier 1's schema earns its complexity. If you ever doubt whether `boundary` or `grounding.truth_sources` or `lifecycle` is worth the field count, run these scripts against a real skill library and watch them change routing decisions.
+
+### Drift sentinel — state machine
+
+> **The question this diagram answers:** "What state can `skill-graph-drift.js` put a skill in, and what transitions it?"
+
+This is the single highest-leverage argument for the v3 `drift_check.truth_source_hashes` + `lifecycle.stale_after_days` fields. Without them the sentinel has nothing to compare against and nothing to time-box. With them every grounded skill sits in one of five states with explicit transitions.
+
+```mermaid
+stateDiagram-v2
+  direction LR
+  [*] --> NO_BASELINE: skill declares<br/>grounding.truth_sources<br/>but truth_source_hashes absent
+  NO_BASELINE --> OK: --record --apply<br/>writes SHA-256 hashes
+  OK --> STALE: today − last_verified<br/>> lifecycle.stale_after_days
+  OK --> DRIFT: any live SHA-256<br/>≠ recorded hash
+  OK --> BROKEN: truth_source file<br/>missing on disk
+  STALE --> OK: author re-verifies<br/>bumps last_verified
+  STALE --> DRIFT: detected during re-verify
+  DRIFT --> OK: content re-verified<br/>--record --apply rewrites hashes
+  BROKEN --> OK: truth source restored<br/>--record --apply rewrites hashes
+  DRIFT --> BROKEN: truth source deleted<br/>before re-verify
+
+  note right of OK
+    Hashes match
+    within lifecycle window
+  end note
+  note right of NO_BASELINE
+    schema-valid but
+    unverifiable — fix first
+  end note
+```
+
+<!-- Rendered copy for non-Mermaid viewers. Source: docs/diagrams/drift-states.mmd. Regenerate via: npx @mermaid-js/mermaid-cli -i docs/diagrams/drift-states.mmd -o docs/images/drift-states.png -b white --width 1400 -->
+<img src="./images/drift-states.png" alt="Drift sentinel state machine — NO_BASELINE, OK, STALE, DRIFT, BROKEN states with transitions driven by --record --apply, lifecycle.stale_after_days, live SHA-256 comparison, and truth-source file availability" width="900" />
+
+**Legend.** Five states; arrows are transitions with the trigger printed on them. `OK` is the only green state — every other state signals something the author must act on. `--record --apply` is the only author action that can write hashes back into the skill's frontmatter; every other transition is observed, not commanded. The `DRIFT → BROKEN` edge is the one nobody wants — a drifted claim silently outlives the file it was grounded in.
 
 ---
 
@@ -177,6 +249,77 @@ Eight starters, chosen to cover every archetype × scope combination that the sc
 | `examples/audits/` | Worked audit outputs (findings/verdict/scorecard) for `a11y`, `debugging`, `documentation`. |
 | `examples/evals/` | Nine eval fixtures — one per starter + `comprehension.json`. |
 | `examples/exports/` | Five round-trip Agent Skills exports demonstrating Tier 3's `export-skill.js` transform. |
+
+---
+
+## The starter graph — how the eight starters relate
+
+> **The question this diagram answers:** "Who verifies whom, depends on whom, and boundaries whom out across the eight starter skills?"
+
+Layer 7 of the authority model is the relations graph — the edges declared in each SKILL.md's `relations` frontmatter block. This is the worst failure mode when it drifts silently: the router fails *confidently* because a dangling target looks like a valid one. The diagram below indexes every relation edge in the starters without duplicating any L1 data. The authoritative relation data lives once, in each SKILL.md's frontmatter; this diagram reads it.
+
+```mermaid
+flowchart LR
+  A11Y["a11y<br/><i>capability · portable</i>"]
+  DBG["debugging<br/><i>workflow · portable</i>"]
+  DOC["documentation<br/><i>capability · portable</i>"]
+  GA["graph-audit<br/><i>capability · codebase</i>"]
+  LO["lint-overlay<br/><i>overlay · portable</i>"]
+  RF["refactor<br/><i>workflow · portable</i>"]
+  SR["skill-router<br/><i>router · portable</i>"]
+  TS["testing-strategy<br/><i>capability · portable</i>"]
+  ST(["skill-template<br/><i>specimen · reference</i>"])
+
+  %% depends_on — thick solid, load-bearing
+  RF ==>|depends_on<br/>^1.0.0| TS
+  LO ==>|extends| TS
+
+  %% verify_with — dashed, co-load for confidence
+  A11Y -.->|verify_with| TS
+  DBG -.->|verify_with| TS
+  GA  -.->|verify_with| TS
+  RF  -.->|verify_with| TS
+  TS  -.->|verify_with| DBG
+  SR  -.->|verify_with| GA
+  ST  -.->|verify_with| DOC
+
+  %% adjacent — thin undirected, suggested co-reading
+  DBG --- TS
+  DBG --- RF
+
+  %% boundary — red, anti-ownership
+  A11Y -. boundary .-x RF
+  DBG  -. boundary .-x DOC
+  DOC  -. boundary .-x DBG
+  DOC  -. boundary .-x A11Y
+  DOC  -. boundary .-x RF
+  GA   -. boundary .-x DOC
+  LO   -. boundary .-x DBG
+  RF   -. boundary .-x DOC
+  SR   -. boundary .-x DOC
+  ST   -. boundary .-x RF
+  TS   -. boundary .-x DOC
+
+  classDef capability fill:#dbeafe,stroke:#2563eb,color:#1e3a8a
+  classDef workflow fill:#ecfdf5,stroke:#047857,color:#064e3b
+  classDef router fill:#fce7f3,stroke:#db2777,color:#831843
+  classDef overlay fill:#fef3c7,stroke:#d97706,color:#78350f,stroke-dasharray:4 2
+  classDef specimen fill:#f5f3ff,stroke:#7c3aed,color:#4c1d95
+  classDef codebase stroke-width:3px
+  class A11Y,DOC,GA,TS capability
+  class DBG,RF workflow
+  class SR router
+  class LO overlay
+  class ST specimen
+  class GA codebase
+```
+
+<!-- Rendered copy for non-Mermaid viewers. Source: docs/diagrams/starter-graph.mmd. Regenerate via: npx @mermaid-js/mermaid-cli -i docs/diagrams/starter-graph.mmd -o docs/images/starter-graph.png -b white --width 1600 -->
+<img src="./images/starter-graph.png" alt="Starter-skill relations graph — eight starters plus the template, with depends_on/extends (thick solid), verify_with (dashed), adjacent (thin undirected), and boundary (red anti-ownership) edges between them" width="1100" />
+
+**Legend.** Node fill encodes archetype: blue = capability, green = workflow, pink = router, yellow-dashed = overlay, purple = specimen. A thick node stroke marks `scope: codebase` — only `graph-audit`; every other starter is `portable` and the template is `reference`. Edge styles: `==>` thick solid = `depends_on` (load-bearing) or `extends` (overlay inheritance — semantically stronger than `depends_on`); `-.->` dashed = `verify_with` (co-load for confidence); `---` thin = `adjacent` (suggested co-reading, no dependency); `-. boundary .-x` red-dashed = `boundary` (anti-ownership — the router must route elsewhere).
+
+Every edge is verifiable. `node scripts/skill-lint.js` rejects dangling targets (see `skills/graph-audit/SKILL.md § Relation Integrity`); `node scripts/skill-graph-route.js` uses these edges at request time to decide which skill wins, which co-loads via `verify_with` or `depends_on`, and which is excluded via `boundary`. Regenerate the PNG when a starter is added or a relation block changes — the source is `docs/diagrams/starter-graph.mmd`.
 
 ---
 
@@ -234,4 +377,7 @@ When in doubt: if the file *defines* a constraint, it's Tier 1. If it *describes
 - [`docs/manifest-contract.md`](manifest-contract.md) — the authored → generated bridge.
 - [`docs/field-decision-guide.md`](field-decision-guide.md) — decision tables for hard field choices.
 - [`docs/library-audit-workflow.md`](library-audit-workflow.md) — the repeatable audit loop; § Loop at a Glance carries the Mermaid diagram of the five-phase flow (deterministic → graded → aggregate → fix → re-verify).
+- [§ Tier 3 — Pipeline](#pipeline--how-a-skillmd-becomes-a-manifest-entry) — how `generate-manifest.js` projects authored frontmatter into the compiled manifest.
+- [§ Tier 4 — Drift sentinel state machine](#drift-sentinel--state-machine) — the five states a grounded skill sits in and what transitions them.
+- [§ The starter graph](#the-starter-graph--how-the-eight-starters-relate) — Layer 7 indexed visually across all eight starters plus the template.
 - [`CHANGELOG.md`](../CHANGELOG.md) — what shipped in each version.

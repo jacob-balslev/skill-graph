@@ -6,6 +6,13 @@ description: "Use when creating a new SKILL.md, adapting an existing skill to a 
 version: 1.0.0
 type: capability
 browse_category: knowledge
+# TEMPLATE NOTE: category is the OPTIONAL hierarchical browse path (slash-
+# delimited, lowercase kebab-case segments). Use it only when the skill library
+# is large enough that a tree structure helps readers find related skills —
+# `docs/field-reference.md § category` recommends against it for libraries
+# under ~20 skills. Remove this line entirely when the flat `browse_category`
+# above is sufficient. `browse_category` is required; `category` complements it
+# but is never a replacement.
 category: skill-system/authoring
 scope: reference
 owner: jacob-balslev
@@ -22,6 +29,18 @@ drift_check:
 eval_artifacts: planned
 eval_state: unverified
 routing_eval: absent
+# TEMPLATE NOTE: stability values are `experimental` / `stable` / `frozen` /
+# `deprecated`. When you move a skill to `deprecated`, the schema's `allOf`
+# rule REQUIRES you to also add `superseded_by: <replacement-skill-name>` —
+# without it the skill fails validation. A deprecated + superseded skill looks
+# like:
+#
+#   stability: deprecated
+#   superseded_by: new-skill-name
+#
+# The replacement must be a real skill in the same library. Omit `superseded_by`
+# for any stability other than `deprecated`. See `docs/field-reference.md §
+# superseded_by` for the full rules and the schema's `allOf` enforcement.
 stability: stable
 license: MIT
 # TEMPLATE NOTE: compatibility is an object in v3. Prefer structured fields
