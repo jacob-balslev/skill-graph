@@ -71,7 +71,7 @@ The repo is organised in five authority tiers. When two files disagree, the high
 ### Tier 2 — Explanation (human reflections of the contract)
 
 - `docs/metadata-contract.md` — archetype section map, requiredness groups, strictness rules, schema versioning policy
-- `docs/field-reference.md` — per-field semantics for all 29 v3 authored fields
+- `docs/field-reference.md` — per-field semantics for all 32 v3 authored fields
 - `docs/field-decision-guide.md` — decision tables for the hard choices: `scope`, `relations.*`, eval-health triple, `portability`, `project_tags`, and `browse_category` vs `category` vs `project_tags` vs `routing_groups`
 - `docs/manifest-contract.md` — authored → generated bridge with rename map, loss policy, and v2→v3 migration notes
 

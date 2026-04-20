@@ -81,7 +81,7 @@ Documents that describe the schemas in prose. If a Tier 2 file disagrees with Ti
 | File | Role |
 |---|---|
 | `docs/metadata-contract.md` | Authoritative overview: archetype section map, requiredness groups, strictness rules, schema versioning policy. |
-| `docs/field-reference.md` | One section per authored field. All 29 v3 fields with purpose, rules, allowed values, examples. |
+| `docs/field-reference.md` | One section per authored field. All 32 v3 fields with purpose, rules, allowed values, examples. |
 | `docs/field-decision-guide.md` | Decision tables for the hard choices: `scope`, `relations.*`, eval-health triple, `portability`, `project_tags`, and the "tag vs. category vs. routing_groups" question. |
 | `docs/manifest-contract.md` | The authored → generated bridge: rename map, loss policy, per-version migration notes, worked example. |
 

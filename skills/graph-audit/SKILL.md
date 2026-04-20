@@ -10,15 +10,15 @@ scope: codebase
 owner: skill-graph-maintainer
 freshness: "2026-04-18"
 drift_check:
-  last_verified: "2026-04-18"
+  last_verified: "2026-04-20"
   truth_source_hashes:
     "schemas/skill.schema.json": "c73ef1a19e663961bff4775096447893485995f26c547303528864f2e33ba288"
     "schemas/manifest.schema.json": "c782bd6d1a435c8dfafae10abf2580c5a4695b8847df9ec5da8f59d32a18a137"
-    "docs/metadata-contract.md": "f639b8e39062fa9122e66c6aef2e03f40bbbd3f24ec74fa1a7540e5f306a40ae"
-    "scripts/skill-lint.js": "9e0b89f3b1959e9a8307f5115bdabe4351af74346b6b756da2729a0db858f4c8"
+    "docs/metadata-contract.md": "a89f5395ca067ce8bf8acc569ebef373ed4516748c0264e17121b61a3d6926b1"
+    "scripts/skill-lint.js": "66d011dcae1ff88d9beb52bf81694bca3c4bcfde7bba5277a2658b6510e3cee0"
     "scripts/check-contract-consistency.js": "2d6a88154c28629e58d2cffc2778726b80c631717428a037ad81a5350f791444"
     "scripts/generate-manifest.js": "72e9b86ed6be6384551b9106ad076496efb867fece7686661b1e3ec8ab2bf176"
-    "examples/evals/graph-audit.json": "18ec7a85872c8b6db67edc2e144d71c0c4a7f9b73f4193d03f9fd60d43a57f26"
+    "examples/evals/graph-audit.json": "8447d8752f5f553ee42246370d74efe7c413b859e52dbf246e4cfe2677c04abb"
 eval_artifacts: present
 eval_state: passing
 routing_eval: present
