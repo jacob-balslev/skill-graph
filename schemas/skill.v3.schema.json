@@ -30,6 +30,11 @@
       "type": "string",
       "pattern": "^[a-z0-9][a-z0-9-/:]*$"
     },
+    "urn": {
+      "type": "string",
+      "pattern": "^urn:skill:[a-z0-9][a-z0-9-]*:[a-z0-9][a-z0-9-/:]*$",
+      "description": "Optional globally-unique persistent identifier in the `urn:skill:<repo>:<skill-name>` form (RFC 8141). Unlocks FAIR Findability across repos and federated skill registries. Consumers treat the URN as the stable identity; `name` is the display-layer handle. The `<skill-name>` segment MUST equal the `name` field. Optional in v3; target-required in v4 (ADR 0004)."
+    },
     "description": {
       "type": "string",
       "minLength": 20
@@ -180,14 +185,21 @@
     "relations": {
       "type": "object",
       "additionalProperties": false,
+      "description": "Typed edges to sibling skills. Lint verifies every target exists. Predicate-to-W3C-vocabulary mapping is provided via schemas/skill.context.jsonld (JSON-LD @context). See docs/adr/0001-predicate-set.md for the v3.1 additive evolution (related/disjoint_with/broader/narrower) and the deprecation plan for adjacent/boundary.",
       "properties": {
         "adjacent": {
           "type": "array",
+          "description": "DEPRECATED ALIAS of `related` (v3.0 name). Semantics: symmetric co-read relation, maps to skos:related. Still valid in v3.x; lint emits a soft warning pointing at `related` as the preferred name. Removal target: v4. See ADR 0001.",
+          "items": { "type": "string" }
+        },
+        "related": {
+          "type": "array",
+          "description": "v3.1 preferred name for the symmetric associative relation (skos:related). Use for skills that should be co-read because they teach the same surface from different angles. Max 5 entries recommended to avoid hub-and-spoke clutter. Replaces `adjacent`; both names validate in v3.x for backward compatibility.",
           "items": { "type": "string" }
         },
         "boundary": {
           "type": "array",
-          "description": "Skills this skill explicitly does NOT own. Items may be bare skill names (v2-compatible) or `{skill, reason}` objects (v3 enrichment). Reasons are strongly recommended because boundary is the anti-ownership field — the reason is what makes the boundary self-documenting.",
+          "description": "DEPRECATED ALIAS of `disjoint_with` (v3.0 name). Skills this skill explicitly does NOT own — anti-ownership and wrong-skill routing protection. Items may be bare skill names (v2-compatible) or `{skill, reason}` objects. Maps to skos:related + owl:disjointWith semantics. Still valid in v3.x; lint emits a soft warning. Removal target: v4. See ADR 0001.",
           "items": {
             "oneOf": [
               { "type": "string" },
@@ -203,8 +215,37 @@
             ]
           }
         },
+        "disjoint_with": {
+          "type": "array",
+          "description": "v3.1 preferred name for the anti-ownership edge. Makes OWL-style disjointness explicit in the name. Same item shape as `boundary` — bare string OR `{skill, reason}`. Reasons are strongly recommended because the entire point of disjoint_with is to explain why the two skills are NOT the same concern.",
+          "items": {
+            "oneOf": [
+              { "type": "string" },
+              {
+                "type": "object",
+                "additionalProperties": false,
+                "required": ["skill"],
+                "properties": {
+                  "skill": { "type": "string" },
+                  "reason": { "type": "string" }
+                }
+              }
+            ]
+          }
+        },
+        "broader": {
+          "type": "array",
+          "description": "v3.1 addition — cross-skill generalisation (skos:broader). Use when this skill is a specialisation of another skill that is NOT its overlay parent (if it were, use `extends`). Example: `react-best-practices` has `broader: [frontend]`. Closes the cross-skill generalisation gap that `browse_category` cannot express.",
+          "items": { "type": "string" }
+        },
+        "narrower": {
+          "type": "array",
+          "description": "v3.1 addition — cross-skill specialisation (skos:narrower). The inverse of `broader` — this skill is more general than the targets. Tooling can infer this from other skills' `broader` edges; authoring it explicitly is optional.",
+          "items": { "type": "string" }
+        },
         "verify_with": {
           "type": "array",
+          "description": "Skills to co-load for verification. Maps to prov:wasInformedBy — this skill's claims are informed by the verifier's claims. Keep to 1-3 high-signal verifiers.",
           "items": { "type": "string" }
         },
         "depends_on": {

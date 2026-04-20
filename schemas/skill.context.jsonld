@@ -1,0 +1,146 @@
+{
+  "_comment": "JSON-LD @context for Skill Graph v3 frontmatter. Maps authored fields to W3C standard vocabularies so a Skill Graph SKILL.md can be projected into RDF/OWL/SKOS consumers without changing the authoring surface. Unlocks FAIR Interoperability (Wilkinson et al. 2016, DOI:10.1038/sdata.2016.18). Consumers: third-party knowledge-graph tooling, federated skill registries, cross-framework import.",
+  "_version": "1.0.0",
+  "_schema_version_target": 3,
+  "_references": {
+    "skos": "https://www.w3.org/TR/skos-reference/",
+    "dcterms": "https://www.dublincore.org/specifications/dublin-core/dcmi-terms/",
+    "prov": "https://www.w3.org/TR/prov-o/",
+    "spdx": "https://spdx.org/licenses/",
+    "schema": "https://schema.org/",
+    "fair": "https://www.nature.com/articles/sdata201618"
+  },
+  "@context": {
+    "sg": "https://skillgraph.dev/vocab#",
+    "skos": "http://www.w3.org/2004/02/skos/core#",
+    "dcterms": "http://purl.org/dc/terms/",
+    "prov": "http://www.w3.org/ns/prov#",
+    "spdx": "http://spdx.org/rdf/terms#",
+    "schema": "https://schema.org/",
+    "xsd": "http://www.w3.org/2001/XMLSchema#",
+
+    "name": "dcterms:identifier",
+    "description": "dcterms:description",
+    "version": "dcterms:hasVersion",
+    "schema_version": "sg:schemaVersion",
+    "owner": "dcterms:creator",
+    "license": {
+      "@id": "dcterms:license",
+      "@type": "@id",
+      "_note": "SPDX identifier; resolve against spdx:licenseId"
+    },
+    "freshness": { "@id": "dcterms:modified", "@type": "xsd:date" },
+    "stability": "sg:stability",
+    "superseded_by": { "@id": "prov:wasRevisionOf", "@type": "@id", "@reverse": false },
+
+    "type": "sg:archetype",
+    "scope": "sg:scope",
+    "browse_category": "sg:browseCategory",
+    "category": {
+      "@id": "skos:broader",
+      "_note": "Hierarchical slash path projects to a chain of skos:broader edges in RDF output"
+    },
+    "project_tags": { "@id": "dcterms:audience", "@container": "@set" },
+    "routing_groups": { "@id": "sg:routingGroup", "@container": "@set" },
+
+    "keywords": { "@id": "dcat:keyword", "@container": "@set" },
+    "triggers": { "@id": "sg:trigger", "@container": "@set" },
+    "examples": { "@id": "sg:positiveExample", "@container": "@set" },
+    "anti_examples": { "@id": "sg:negativeExample", "@container": "@set" },
+    "paths": { "@id": "sg:pathGlob", "@container": "@set" },
+    "allowed-tools": "sg:allowedTools",
+
+    "relations": "sg:relations",
+    "adjacent": {
+      "@id": "skos:related",
+      "@container": "@set",
+      "_note": "SKOS associative relation — symmetric, non-hierarchical"
+    },
+    "related": {
+      "@id": "skos:related",
+      "@container": "@set",
+      "_note": "v3.1 preferred alias for `adjacent`; same SKOS mapping"
+    },
+    "broader": {
+      "@id": "skos:broader",
+      "@container": "@set",
+      "_note": "Cross-skill generalisation — target is a more general skill"
+    },
+    "narrower": {
+      "@id": "skos:narrower",
+      "@container": "@set",
+      "_note": "Cross-skill specialisation — target is a more specific skill"
+    },
+    "boundary": {
+      "@id": "sg:disjointOwnership",
+      "@container": "@set",
+      "_note": "Anti-ownership edge — decomposes in RDF to skos:related + owl:disjointWith semantics"
+    },
+    "disjoint_with": {
+      "@id": "sg:disjointOwnership",
+      "@container": "@set",
+      "_note": "v3.1 alias for `boundary`; identical semantics"
+    },
+    "verify_with": {
+      "@id": "prov:wasInformedBy",
+      "@container": "@set",
+      "_note": "PROV-O informational influence — verifier skill informed this skill's claims"
+    },
+    "depends_on": {
+      "@id": "dcterms:requires",
+      "@container": "@set"
+    },
+    "extends": {
+      "@id": "prov:wasDerivedFrom",
+      "@type": "@id",
+      "_note": "Overlay specialisation — PROV-O derivation relation"
+    },
+
+    "grounding": "sg:grounding",
+    "domain_object": "sg:domainObject",
+    "grounding_mode": "sg:groundingMode",
+    "truth_sources": {
+      "@id": "dcterms:source",
+      "@container": "@set",
+      "_note": "DCMI Source — resource from which the skill's claims are derived"
+    },
+    "failure_modes": { "@id": "sg:failureMode", "@container": "@set" },
+    "evidence_priority": "sg:evidencePriority",
+
+    "drift_check": "sg:driftCheck",
+    "last_verified": { "@id": "prov:generatedAtTime", "@type": "xsd:date" },
+    "truth_source_hashes": {
+      "@id": "sg:truthSourceHash",
+      "_note": "Map of file path → SHA-256 hex digest. Complements prov:generatedAtTime with content-addressable evidence."
+    },
+
+    "eval_artifacts": "sg:evalArtifacts",
+    "eval_state": "sg:evalState",
+    "routing_eval": "sg:routingEval",
+
+    "lifecycle": "sg:lifecycle",
+    "stale_after_days": { "@id": "sg:staleAfterDays", "@type": "xsd:integer" },
+    "review_cadence": "sg:reviewCadence",
+
+    "runtime_telemetry": "sg:runtimeTelemetry",
+    "feedback_source": "sg:feedbackSource",
+    "last_updated": { "@id": "dcterms:modified", "@type": "xsd:date" },
+    "metrics": "sg:telemetryMetrics",
+    "sample_size": { "@id": "sg:sampleSize", "@type": "xsd:integer" },
+    "success_rate": { "@id": "sg:successRate", "@type": "xsd:double" },
+
+    "compatibility": "sg:compatibility",
+    "runtimes": { "@id": "sg:compatibleRuntime", "@container": "@set" },
+    "node": "sg:nodeVersion",
+    "notes": "sg:compatibilityNotes",
+
+    "portability": "sg:portability",
+    "readiness": "sg:portabilityReadiness",
+    "targets": { "@id": "sg:portabilityTarget", "@container": "@set" },
+
+    "urn": {
+      "@id": "@id",
+      "_note": "Globally-unique persistent identifier (urn:skill:<repo>:<name>). Unlocks FAIR Findability. Optional in v3, recommended for v4."
+    }
+  }
+}

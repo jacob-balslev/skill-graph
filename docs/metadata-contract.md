@@ -1,5 +1,11 @@
 # Skill Graph Metadata Contract
 
+> **Migrating from an older schema?** Jump straight to the migration notes:
+> - [v2 → v3](manifest-contract.md#migration-note--v2--v3-v040) — `drift_check` scalar → object, `compatibility` scalar → object, `family` → `browse_category`, new optional fields
+> - [v1 → v2](manifest-contract.md#migration-note--v1--v2-sh-5784) — `scope` enum rename, `eval_status` split into three fields, `route_groups` → `routing_groups`
+> - Codemod: `node scripts/migrate-skill-v2-to-v3.js` upgrades v2 skills in place
+> - Planned v3 → v4 changes (ADR 0001, ADR 0004): `adjacent`/`boundary` removed in favour of `related`/`disjoint_with`; `urn` becomes required
+
 ## Related Documents
 
 | Document | Purpose |
@@ -7,7 +13,11 @@
 | `docs/metadata-contract.md` (this file) | Overview, archetype map, requiredness groups, schema strictness rules |
 | `docs/field-reference.md` | One section per authored field — purpose, rules, examples, when to use |
 | `docs/field-decision-guide.md` | Decision tables for `scope`, `relations.*`, and the eval-health fields (`eval_artifacts`, `eval_state`, `routing_eval`) / `portability` |
+| `docs/concept-map.md` | Teaching map — 32 authored fields grouped by conceptual role; drift log vs earlier framings |
 | `docs/manifest-contract.md` | Authored-to-generated bridge: rename map, loss policy, worked example |
+| `docs/adr/` | Architecture decision records — 0001 predicate set, 0002 JSON-LD @context, 0003 OntoClean rigidity tags, 0004 persistent identifiers |
+| `schemas/skill.context.jsonld` | JSON-LD @context mapping every authored field to W3C vocabularies (SKOS, Dublin Core, PROV-O) |
+| `schemas/vocabulary/` | Controlled vocabularies for `keywords` (canonical + synonyms) and `project_tags` (literal handles + semantic tags) — advisory, surfaced as lint warnings |
 
 ## Design Principles
 
@@ -20,6 +30,32 @@ It:
 - tightens field semantics
 - adds a small number of high-value fields beyond the Agent Skills base
 - stays additive to the Agent Skills standard so every Skill Graph skill can be transformed back to the base shape
+
+### What kind of graph is this?
+
+Skill Graph is a **property graph with a controlled-vocabulary set of typed predicates**, not an RDF knowledge graph. Nodes are skills; edges are keys inside `relations.*`; node attributes are the 32 authored frontmatter fields. The JSON-LD `@context` at `schemas/skill.context.jsonld` projects the property graph into SKOS / Dublin Core Terms / PROV-O triples for consumers that want RDF semantics, but authoring stays in flat YAML.
+
+Skill Graph does **not** promise:
+
+- Automated inference (no OWL reasoner runs against the graph)
+- Open-world consistency checking (the schema closes it via `additionalProperties: false`)
+- SPARQL queryability as the primary interface (get that by applying the JSON-LD `@context` first)
+
+What it does promise: deterministic lint, manifest generation, relation-aware routing, drift detection against content-addressable truth sources, and portable export to Agent Skills.
+
+### Drift-check hash semantics
+
+`drift_check.truth_source_hashes` maps each truth-source **file path** (never a directory) to the **SHA-256 hex digest of the file content** at the time of last verification. The digest is computed over the raw byte stream of the file, not a normalisation of it — line endings, trailing whitespace, and encoding are all hashed as-is. The drift sentinel (`scripts/skill-graph-drift.js`) reports `DRIFT` when the live hash differs from the recorded hash, `BROKEN` when a declared truth source is missing from disk, `STALE` when `today - drift_check.last_verified > lifecycle.stale_after_days`, and `NO_BASELINE` when truth sources are declared but no hashes are recorded. To add a baseline: `node scripts/skill-graph-drift.js --record --apply <skill-path>`.
+
+### Overlay composition precedence
+
+When `type: overlay` and `extends: <parent-skill>`, the overlay's authored fields **override** the parent's fields on a per-field basis. There is no field-level merge — a field present on the overlay replaces the same field on the parent entirely. The overlay body sections (`## Coverage`, `## Overlay Rules`, `## Extends`, `## Do NOT Use When`) stand on their own and do not inherit prose from the parent. This mirrors OntoClean specialisation: the overlay is anti-rigid (-R) and existentially dependent (+D) on the parent, but the overlay's *content* is authoritative within its own SKILL.md (ADR 0003). Consumers resolving an overlay at routing time:
+
+1. Load the overlay's frontmatter as the effective skill metadata.
+2. Treat the parent's metadata as context — available for reference but not merged.
+3. Apply the overlay's `## Overlay Rules` as modifications to the parent's behaviour, scoped to the overlay's `## Coverage`.
+
+If an overlay needs to *add* rather than *replace* a field's value (e.g. add keywords), author the full intended set in the overlay — the schema does not offer additive inheritance. Future work under ADR 0001 may introduce explicit merge strategies; today the rule is overlay-wins-per-field.
 
 ## Relationship to the Agent Skills Standard
 

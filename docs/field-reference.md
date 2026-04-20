@@ -18,6 +18,8 @@ Fields are listed in authored order — the same order they appear in `examples/
 - The v2 → v3 bump introduced `drift_check` as an object (was a date string), `compatibility` as an object (was a free-text string), renamed `family` → `browse_category`, and added optional `category`, `project_tags`, `lifecycle`, and `runtime_telemetry`. Run `node scripts/migrate-skill-v2-to-v3.js` for a one-shot migration. See `docs/manifest-contract.md § Migration Note — v2 → v3` for the full map.
 - The v1 → v2 bump (SH-5784) changed the `scope` enum (`generic`→`portable`, `operational`→`codebase`), split `eval_status` into three orthogonal fields, renamed `portability.level`→`readiness` and `portability.exports`→`targets`, and renamed `route_groups`→`routing_groups`. See `docs/manifest-contract.md § Migration Note — v1 → v2` for the historical map.
 
+**Versioning semantics (policy).** The integer signals *breaking vs non-breaking* evolution. A minor/patch axis is intentionally not surfaced on this field — the schema's own additive changes (new optional fields, new enum values, new lint warnings) do not require consumers to migrate, so no version bump is emitted. If a future release needs finer-grained version signalling (e.g. "v3.1 adds the SKOS-aligned predicates"), the canonical location is `CHANGELOG.md`, not a schema bump. v4 is the breaking-change horizon — `urn` becomes required, `adjacent` / `boundary` are removed in favour of `related` / `disjoint_with`, and the freshness fields may consolidate (ADR 0001, ADR 0004).
+
 **Example.**
 ```yaml
 schema_version: 3
@@ -26,6 +28,34 @@ schema_version: 3
 **When to use.** Always — this is a required field.
 
 **When NOT to use.** N/A — required.
+
+---
+
+## `urn`
+
+**Purpose.** Globally-unique persistent identifier for the skill. Unlocks FAIR Findability (Wilkinson et al. 2016) across repos and federated registries. `name` is the display-layer handle; `urn` is the stable identity consumers should cite. See ADR 0004 for the full rationale.
+
+**Rules.**
+- Optional in v3; target-required in v4.
+- Format: `urn:skill:<repo-slug>:<skill-name>`.
+- `<repo-slug>` is the publishing repo's canonical short handle — lowercase, hyphen-separated, `[a-z0-9-]+` (e.g. `skill-graph`, `development`, `sales-hub`).
+- `<skill-name>` MUST equal the `name` field exactly.
+- Must be globally unique across all federated repos — the URN is the primary key a registry uses to resolve skills.
+- Pattern: `^urn:skill:[a-z0-9][a-z0-9-]*:[a-z0-9][a-z0-9-/:]*$`.
+
+**Example.**
+```yaml
+name: knowledge-graph
+urn: urn:skill:skill-graph:knowledge-graph
+```
+
+**When to use.** Populate on every new skill and on every skill edited after 2026-04-20. Required when the skill is published to a federated registry. Recommended universally because it is cheap to add and free to have.
+
+**When NOT to use.** Skills that are strictly internal and will never leave the authoring repo MAY omit the field in v3. They cannot omit it in v4.
+
+**JSON-LD mapping.** `urn` maps to `@id` in `schemas/skill.context.jsonld`. When the skill is projected to RDF, the URN becomes the subject of every triple derived from the skill's frontmatter.
+
+**References.** RFC 8141 (URN Syntax), ADR 0004.
 
 ---
 
@@ -759,24 +789,35 @@ routing_groups:
 
 **Allowed keys.**
 
-| Key | Meaning | Item shape |
-|---|---|---|
-| `adjacent` | Related skills for discoverability and recommended co-reading. No dependency implied. | string |
-| `boundary` | Skills this skill explicitly does NOT own — anti-ownership and wrong-skill routing protection. | string OR `{skill, reason}` |
-| `verify_with` | Skills that should be co-loaded for verification or that provide cross-checks. | string |
-| `depends_on` | Explicit dependency — this skill requires the target conceptually or operationally. | string OR `{skill, min_version}` |
+| Key | Meaning | Item shape | W3C mapping |
+|---|---|---|---|
+| `related` *(v3.1 preferred)* | Related skills for discoverability and recommended co-reading. Symmetric; no dependency implied. | string | `skos:related` |
+| `adjacent` *(deprecated alias of `related`)* | v3.0 name; still valid in v3.x. Lint warns. Removed in v4. | string | `skos:related` |
+| `broader` *(v3.1)* | Cross-skill generalisation — target is more general than this skill | string | `skos:broader` |
+| `narrower` *(v3.1)* | Cross-skill specialisation — target is more specific than this skill | string | `skos:narrower` |
+| `disjoint_with` *(v3.1 preferred)* | Anti-ownership — skills this skill explicitly does NOT own | string OR `{skill, reason}` | `skos:related` + `owl:disjointWith` |
+| `boundary` *(deprecated alias of `disjoint_with`)* | v3.0 name; same deprecation path as `adjacent`. | string OR `{skill, reason}` | `skos:related` + `owl:disjointWith` |
+| `verify_with` | Skills that should be co-loaded for verification or that provide cross-checks | string | `prov:wasInformedBy` |
+| `depends_on` | Explicit dependency — this skill requires the target conceptually or operationally | string OR `{skill, min_version}` | `dcterms:requires` |
 
-**Item shapes in v3.** `boundary` and `depends_on` accept both the bare-string form (v2-compatible) and the enriched object form (v3 addition). The bare form remains valid — upgrade item-by-item when a reason or version constraint is real.
+**Glossary.** See `docs/glossary.md § Relation predicates` for the formal definitions of each predicate, including the OntoClean rigidity tags for `extends` (which lives outside `relations` but participates in the same semantic space). The JSON-LD `@context` at `schemas/skill.context.jsonld` projects these predicates to their W3C equivalents for RDF consumers.
 
-- `boundary` objects carry a `reason` string. The reason is what makes the boundary self-documenting: `"fulfillment owns order state transitions; this skill only reads them"` beats `"fulfillment"` alone.
+**Item shapes in v3.** `boundary` / `disjoint_with` and `depends_on` accept both the bare-string form (v2-compatible) and the enriched object form (v3 addition). The bare form remains valid — upgrade item-by-item when a reason or version constraint is real.
+
+- `disjoint_with` objects carry a `reason` string. The reason is what makes the boundary self-documenting: `"fulfillment owns order state transitions; this skill only reads them"` beats `"fulfillment"` alone.
 - `depends_on` objects carry a `min_version` semver constraint. Useful when a skill depends on a specific version of another skill's contract.
+- `related`, `broader`, `narrower`, `verify_with` are bare-string only — they carry no additional metadata.
 
-**Example (v3, enriched).**
+**When to use `broader` vs `extends`.** `extends` is overlay-only (`type: overlay`) and forms a single-parent existential-dependency chain (child ceases to have meaning without parent; ADR 0003). `broader` is cross-skill generalisation that does NOT imply existential dependency or overlay semantics — use it when the target is a more general concept but this skill has its own standalone identity. Example: `react-best-practices` has `broader: [frontend]` because it specialises frontend knowledge, but React-best-practices remains a coherent skill even if the `frontend` skill were deleted.
+
+**Example (v3.1, SKOS-aligned preferred names).**
 ```yaml
 relations:
-  adjacent:
+  related:
     - webhook-integration
-  boundary:
+  broader:
+    - integration
+  disjoint_with:
     - skill: fulfillment
       reason: "fulfillment owns order state transitions; this skill only reads them"
     - skill: shipping
@@ -789,13 +830,14 @@ relations:
     - testing-strategy
 ```
 
-**Example (v2-compatible, bare strings only).**
+**Example (v3.0 legacy names, still valid, emits lint warning).**
 ```yaml
 relations:
   adjacent:
     - webhook-integration
   boundary:
-    - fulfillment
+    - skill: fulfillment
+      reason: "fulfillment owns order state transitions; this skill only reads them"
   verify_with:
     - test-coverage
   depends_on:

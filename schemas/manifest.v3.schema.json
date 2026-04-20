@@ -92,6 +92,11 @@
             "description": "Literal handle of the project this skill was loaded from. Absent for skills loaded from a shared root without a project owner."
           },
           "name": { "type": "string" },
+          "urn": {
+            "type": "string",
+            "pattern": "^urn:skill:[a-z0-9][a-z0-9-]*:[a-z0-9][a-z0-9-/:]*$",
+            "description": "Optional globally-unique persistent identifier from the authored frontmatter (RFC 8141). Pass-through — generator does not synthesise this."
+          },
           "description": { "type": "string" },
           "version": { "type": "string" },
           "type": {

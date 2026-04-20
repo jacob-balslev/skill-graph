@@ -916,6 +916,23 @@ function main() {
       });
     }
 
+    // Migration warnings for v3.0 → v3.1 predicate rename (SKOS alignment, ADR 0001).
+    // adjacent / boundary remain valid through v3.x but will be removed in v4.
+    if (fm.relations && typeof fm.relations === 'object') {
+      if (Array.isArray(fm.relations.adjacent) && fm.relations.adjacent.length > 0) {
+        emitWarning(relPath, text, 'adjacent', '"relations.adjacent" is deprecated in v3.1 — rename to "relations.related" (SKOS-aligned)', {
+          help: 'See docs/adr/0001-predicate-set.md. Removal target: v4. Both names validate through v3.x.',
+          noColor,
+        });
+      }
+      if (Array.isArray(fm.relations.boundary) && fm.relations.boundary.length > 0) {
+        emitWarning(relPath, text, 'boundary', '"relations.boundary" is deprecated in v3.1 — rename to "relations.disjoint_with" (OWL-aligned)', {
+          help: 'See docs/adr/0001-predicate-set.md. Removal target: v4. Both names validate through v3.x.',
+          noColor,
+        });
+      }
+    }
+
     // ----------------------------------------------------------------
     // Collect errors from all per-file checks.
     // ----------------------------------------------------------------
