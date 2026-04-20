@@ -174,18 +174,18 @@ function enumerateSkills() {
     .filter(s => fs.existsSync(s.skillPath));
 }
 
+// Use the shared parser that skill-lint, generate-manifest, export-skill, and
+// the router all use. The previous implementation was a line-by-line regex
+// that only captured scalar values on the same line as the key, silently
+// dropping every block sequence (keywords, triggers, examples, anti_examples,
+// paths) and every nested object (relations, grounding, drift_check). That
+// caused false-positive findings like "no Layer 1 activation signals" on
+// skills that in fact declared dozens of keywords.
+const { parseFrontmatter: sharedParseFrontmatter } = require('./lib/parse-frontmatter');
+
 function readFrontmatter(skillPath) {
   const src = fs.readFileSync(skillPath, 'utf8');
-  const m = src.match(/^---\n([\s\S]*?)\n---/);
-  if (!m) return {};
-  const yaml = m[1];
-  const obj = {};
-  for (const line of yaml.split('\n')) {
-    const mm = line.match(/^([a-zA-Z0-9_-]+):\s*(.*)$/);
-    if (!mm) continue;
-    obj[mm[1]] = mm[2].replace(/^["']|["']$/g, '');
-  }
-  return obj;
+  return sharedParseFrontmatter(src) || {};
 }
 
 // ─── Gate runners ───────────────────────────────────────────────────────────
@@ -256,8 +256,19 @@ function analyzeSkill(skill) {
   if (!/^# /m.test(body))                       findings.push({ sev: 'error',   msg: 'no H1 in body' });
   if (!/## Coverage\b/m.test(body))             findings.push({ sev: 'warning', msg: 'no ## Coverage section' });
   if (!/## Philosophy\b/m.test(body))           findings.push({ sev: 'info',    msg: 'no ## Philosophy section' });
-  if (!/activation:|## Activation\b/m.test(body + JSON.stringify(fm)))
-                                                 findings.push({ sev: 'info',    msg: 'no activation surface declared' });
+  // Layer 1 (Activation surface) is a CONCEPT spread across five optional
+  // fields in the v3 contract, not a single `activation:` field or `## Activation`
+  // body section. Check whether any of them carry a non-empty value.
+  const activationFields = ['keywords', 'triggers', 'examples', 'anti_examples', 'paths'];
+  const hasActivation = activationFields.some((f) => {
+    const v = fm[f];
+    return Array.isArray(v) ? v.length > 0 : Boolean(v);
+  });
+  if (!hasActivation)
+    findings.push({
+      sev: 'info',
+      msg: 'no Layer 1 activation signals (keywords/triggers/examples/anti_examples/paths all empty)',
+    });
 
   const localRedaction = runRedaction([skill.skillPath]);
   for (const h of localRedaction.hits) {
