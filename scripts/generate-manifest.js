@@ -224,9 +224,20 @@ function buildSkillEntry(fm, filePath, skillId, project) {
   }
 
   // --- Copied-through: relations (with v3 union-type items preserved as-is) ---
+  // Predicate set per ADR 0001 (v3.1 SKOS additions: related/broader/narrower) and ADR 0006
+  // (boundary stays canonical for routing-layer handoff; disjoint_with is a separate orthogonal
+  // relation for formal OWL class-disjointness). All seven keys flow through to the manifest;
+  // back-compat is preserved by keeping `adjacent` valid as an alias for `related`.
   if (fm.relations !== null && fm.relations !== undefined && typeof fm.relations === 'object') {
     const rel = {};
-    for (const kind of ['adjacent', 'boundary', 'verify_with', 'depends_on']) {
+    for (const kind of [
+      // v3.1 SKOS additions (preferred names; ADR 0001 Decisions #1 + #3)
+      'related', 'broader', 'narrower',
+      // v3.0 stable + canonical (ADR 0006: boundary stays canonical)
+      'adjacent', 'boundary', 'verify_with', 'depends_on',
+      // v3.1 separate orthogonal relation per ADR 0006 Option B
+      'disjoint_with',
+    ]) {
       if (Array.isArray(fm.relations[kind]) && fm.relations[kind].length > 0) {
         rel[kind] = fm.relations[kind];
       }
@@ -620,4 +631,17 @@ function main() {
   process.exit(0);
 }
 
-main();
+if (require.main === module) {
+  main();
+} else {
+  // Expose internals for testing without changing the CLI behaviour.
+  // The CLI still runs `main()` when invoked directly via `node generate-manifest.js`.
+  module.exports = {
+    buildSkillEntry,
+    sortKeys,
+    validate,
+    detectDrift,
+    sha256File,
+    computeSummary,
+  };
+}

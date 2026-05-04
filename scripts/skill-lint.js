@@ -305,16 +305,29 @@ function checkRelationTargets(fm, knownSkillNames) {
   const errors = [];
   const rel = fm.relations || {};
 
-  // v3: relations.boundary and relations.depends_on items may be
-  // `{skill, reason}` or `{skill, min_version}` objects. Extract the
-  // skill name from either shape.
+  // v3: relations.boundary, relations.disjoint_with, and relations.depends_on
+  // items may be `{skill, reason}` or `{skill, min_version}` objects. Extract
+  // the skill name from either shape.
   function targetName(t) {
     if (typeof t === 'string') return t;
     if (t && typeof t === 'object' && typeof t.skill === 'string') return t.skill;
     return null;
   }
 
-  for (const kind of ['adjacent', 'boundary', 'verify_with', 'depends_on']) {
+  // Predicate set per ADR 0001 (v3.1 SKOS additions: related/broader/narrower)
+  // and ADR 0006 (boundary stays canonical for routing-layer handoff;
+  // disjoint_with is a separate orthogonal relation for formal OWL
+  // class-disjointness — both targets must exist as known skills).
+  const predicateKinds = [
+    // v3.1 SKOS additions (preferred names; ADR 0001 Decisions #1 + #3)
+    'related', 'broader', 'narrower',
+    // v3.0 stable + canonical (ADR 0006: boundary stays canonical)
+    'adjacent', 'boundary', 'verify_with', 'depends_on',
+    // v3.1 separate orthogonal relation per ADR 0006 Option B
+    'disjoint_with',
+  ];
+
+  for (const kind of predicateKinds) {
     const targets = rel[kind] || [];
     for (const t of targets) {
       const name = targetName(t);
@@ -328,6 +341,52 @@ function checkRelationTargets(fm, knownSkillNames) {
     }
   }
   return errors;
+}
+
+/**
+ * Detect double-declarations across deprecated/preferred predicate aliases.
+ * Per ADR 0001, `adjacent` is a deprecated alias for `related`. Authors who
+ * declare the same target under both names are duplicating intent; the manifest
+ * will emit both keys and downstream consumers will see the relation twice.
+ *
+ * Per ADR 0006, `boundary` and `disjoint_with` are NOT aliases (they have
+ * distinct semantics — routing-layer vs formal OWL class-disjointness), so
+ * declaring the same target under both is legitimate and is NOT flagged.
+ *
+ * Returns warning records (not errors).
+ */
+function checkRelationDoubleDeclarations(fm) {
+  const warnings = [];
+  const rel = fm.relations || {};
+
+  function targetName(t) {
+    if (typeof t === 'string') return t;
+    if (t && typeof t === 'object' && typeof t.skill === 'string') return t.skill;
+    return null;
+  }
+
+  function targetSet(arr) {
+    if (!Array.isArray(arr)) return new Set();
+    const out = new Set();
+    for (const t of arr) {
+      const n = targetName(t);
+      if (n) out.add(n);
+    }
+    return out;
+  }
+
+  // adjacent (deprecated) vs related (preferred) — same SKOS mapping per ADR 0001
+  const adjacentTargets = targetSet(rel.adjacent);
+  const relatedTargets = targetSet(rel.related);
+  for (const name of adjacentTargets) {
+    if (relatedTargets.has(name)) {
+      warnings.push({
+        message: `relations: "${name}" appears in both "adjacent" (deprecated) and "related" (preferred) — drop the "adjacent" entry to avoid double-counting in the manifest. See ADR 0001.`,
+      });
+    }
+  }
+
+  return warnings;
 }
 
 function checkEvalCoherence(filePath, fm) {
@@ -916,8 +975,13 @@ function main() {
       });
     }
 
-    // Migration warnings for v3.0 → v3.1 predicate rename (SKOS alignment, ADR 0001).
-    // adjacent / boundary remain valid through v3.x but will be removed in v4.
+    // Migration warnings for v3.0 → v3.1 predicate rename (SKOS alignment, ADR 0001 Decision #1).
+    // `adjacent` remains valid through v3.x but will be removed in v4 in favor of `related`.
+    //
+    // Note: ADR 0006 reverted the parallel `boundary -> disjoint_with` rename. `boundary` stays
+    // canonical for routing-layer asymmetric handoff; `disjoint_with` is a separate orthogonal
+    // relation for formal OWL class-disjointness. No deprecation warning is emitted on
+    // `boundary` because it is not deprecated.
     if (fm.relations && typeof fm.relations === 'object') {
       if (Array.isArray(fm.relations.adjacent) && fm.relations.adjacent.length > 0) {
         emitWarning(relPath, text, 'adjacent', '"relations.adjacent" is deprecated in v3.1 — rename to "relations.related" (SKOS-aligned)', {
@@ -925,9 +989,16 @@ function main() {
           noColor,
         });
       }
-      if (Array.isArray(fm.relations.boundary) && fm.relations.boundary.length > 0) {
-        emitWarning(relPath, text, 'boundary', '"relations.boundary" is deprecated in v3.1 — rename to "relations.disjoint_with" (OWL-aligned)', {
-          help: 'See docs/adr/0001-predicate-set.md. Removal target: v4. Both names validate through v3.x.',
+    }
+
+    // Double-declaration detection across deprecated/preferred alias pairs (ADR 0001 Decision #1).
+    // Authors who write the same target under both `adjacent` and `related` produce duplicate
+    // entries in the manifest; lint nudges them to drop the deprecated entry.
+    if (fm.relations && typeof fm.relations === 'object') {
+      const doubles = checkRelationDoubleDeclarations(fm);
+      for (const w of doubles) {
+        emitWarning(relPath, text, 'relations', w.message, {
+          help: 'Drop the deprecated entry; the preferred name carries the same SKOS mapping.',
           noColor,
         });
       }

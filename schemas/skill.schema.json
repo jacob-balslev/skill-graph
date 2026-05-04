@@ -185,7 +185,7 @@
     "relations": {
       "type": "object",
       "additionalProperties": false,
-      "description": "Typed edges to sibling skills. Lint verifies every target exists. Predicate-to-W3C-vocabulary mapping is provided via schemas/skill.context.jsonld (JSON-LD @context). See docs/adr/0001-predicate-set.md for the v3.1 additive evolution (related/disjoint_with/broader/narrower) and the deprecation plan for adjacent/boundary.",
+      "description": "Typed edges to sibling skills. Lint verifies every target exists. Predicate-to-W3C-vocabulary mapping is provided via schemas/skill.context.jsonld (JSON-LD @context). See docs/adr/0001-predicate-set.md for the v3.1 SKOS additions (related/broader/narrower) and ADR 0006 for the `boundary` / `disjoint_with` semantic split (boundary = routing-layer asymmetric handoff; disjoint_with = optional OWL class-disjointness).",
       "properties": {
         "adjacent": {
           "type": "array",
@@ -199,7 +199,7 @@
         },
         "boundary": {
           "type": "array",
-          "description": "DEPRECATED ALIAS of `disjoint_with` (v3.0 name). Skills this skill explicitly does NOT own — anti-ownership and wrong-skill routing protection. Items may be bare skill names (v2-compatible) or `{skill, reason}` objects. Maps to skos:related + owl:disjointWith semantics. Still valid in v3.x; lint emits a soft warning. Removal target: v4. See ADR 0001.",
+          "description": "Anti-ownership / routing handoff edge — directional. Skills this skill explicitly does NOT own; the router uses this to redirect wrong-skill queries to the correct owner. Items may be bare skill names (v2-compatible) or `{skill, reason}` objects; reasons are strongly recommended. Maps to sg:disjointOwnership (a Skill-Graph-specific predicate intentionally weaker than OWL class-disjointness — it makes a routing-layer claim, not a formal ontological one). For formal OWL class-disjointness, use `disjoint_with`. See ADR 0006.",
           "items": {
             "oneOf": [
               { "type": "string" },
@@ -217,7 +217,7 @@
         },
         "disjoint_with": {
           "type": "array",
-          "description": "v3.1 preferred name for the anti-ownership edge. Makes OWL-style disjointness explicit in the name. Same item shape as `boundary` — bare string OR `{skill, reason}`. Reasons are strongly recommended because the entire point of disjoint_with is to explain why the two skills are NOT the same concern.",
+          "description": "Optional OWL-style class-disjointness assertion. Maps to owl:disjointWith — a formal ontological claim that the two skills name disjoint conceptual classes (no entity can simultaneously be an instance of both). Use only when authors genuinely want formal class-disjointness; rare in practice. Does NOT replace `boundary` (which is a routing-layer asymmetric handoff and is the canonical name for wrong-skill routing protection). Same item shape as `boundary` — bare string OR `{skill, reason}`. See ADR 0006 for the boundary-vs-disjoint_with semantic split.",
           "items": {
             "oneOf": [
               { "type": "string" },

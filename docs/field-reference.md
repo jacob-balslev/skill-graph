@@ -406,16 +406,21 @@ eval_state: passing
 
 A skill whose harness run contains any `FAIL` case cannot ship `present`; lint surfaces each failing prompt with the router's actual decision. A `COVERAGE_GAP` verdict (the anti-example correctly avoids this skill but no other skill absorbs it) is informational and does not block `present` — the anti-example did its job; the coverage-gap signal is for the next authoring iteration. Prefer `absent` until the harness agrees — honesty over green checkmarks.
 
-**Current status of the starter library.** As of the `[Unreleased]` entry, all eight starters plus the template sit at `routing_eval: absent`. The harness exists and is executable against every starter, but none pass today — the revealed failures (stopword contamination in keyword scoring, boundary-exclusion blowback, anti-example hard-negative regressions) are prerequisites for a future sprint that tightens keywords and boundary relations until starters can honestly flip to `present`. Until then, the field documents the gap rather than masking it.
+**Current status of the starter library.** As of the `[Unreleased]` entry, all eight starters declare `routing_eval: present` and pass the harness 8-of-8 (verified by `node scripts/skill-graph-routing-eval.js --only-asserted`). Each starter's `examples[]` activate the skill correctly and each `anti_examples[]` route to the appropriate boundary owner. The route flips `present` were earned by tightening keywords, splitting `examples` from `anti_examples`, and populating `relations.boundary[]` with explicit handoff targets. New skills should default to `absent` until the harness agrees — honesty over green checkmarks remains the rule.
 
-**Example.**
+**Example (preferred — production starters).**
+```yaml
+routing_eval: present
+```
+
+**Example (acceptable for new authoring — flip to `present` once the harness passes).**
 ```yaml
 routing_eval: absent
 ```
 
 **When to use.** Always — required.
 
-**When NOT to use.** N/A — required. Do not inflate (`present` without a routing harness).
+**When NOT to use.** N/A — required. Do not inflate (`present` without a routing harness that returns verdict PASS for the skill).
 
 ---
 
@@ -783,9 +788,9 @@ routing_groups:
 **Purpose.** Graph semantics between skills. Each key in the `relations` object describes a different type of relationship. Together they form the edges of the skill graph.
 
 **Rules.**
-- Object with four optional keys: `adjacent`, `boundary`, `verify_with`, `depends_on`.
-- Every target must be the `name` of an existing skill. `scripts/skill-lint.js` rejects dangling targets.
-- Relations are directional from the skill that declares them (A `depends_on` B means A depends on B, not the reverse).
+- Object with up to seven optional keys: `related` (preferred) / `adjacent` (deprecated alias), `broader`, `narrower`, `boundary`, `disjoint_with`, `verify_with`, `depends_on`.
+- Every target must be the `name` of an existing skill. `scripts/skill-lint.js` rejects dangling targets across all seven keys.
+- Relations are directional from the skill that declares them (A `depends_on` B means A depends on B, not the reverse). `related` is symmetric by SKOS convention; `boundary` is asymmetric (A `boundary: B` does not imply B `boundary: A`).
 
 **Allowed keys.**
 
@@ -793,31 +798,38 @@ routing_groups:
 |---|---|---|---|
 | `related` *(v3.1 preferred)* | Related skills for discoverability and recommended co-reading. Symmetric; no dependency implied. | string | `skos:related` |
 | `adjacent` *(deprecated alias of `related`)* | v3.0 name; still valid in v3.x. Lint warns. Removed in v4. | string | `skos:related` |
-| `broader` *(v3.1)* | Cross-skill generalisation — target is more general than this skill | string | `skos:broader` |
-| `narrower` *(v3.1)* | Cross-skill specialisation — target is more specific than this skill | string | `skos:narrower` |
-| `disjoint_with` *(v3.1 preferred)* | Anti-ownership — skills this skill explicitly does NOT own | string OR `{skill, reason}` | `skos:related` + `owl:disjointWith` |
-| `boundary` *(deprecated alias of `disjoint_with`)* | v3.0 name; same deprecation path as `adjacent`. | string OR `{skill, reason}` | `skos:related` + `owl:disjointWith` |
+| `broader` *(v3.1)* | Cross-skill generalisation — target is more general than this skill. Triggers Stage 4b parent recall in `scripts/skill-graph-route.js`. | string | `skos:broader` |
+| `narrower` *(v3.1)* | Cross-skill specialisation — target is more specific than this skill. Inverse of `broader`; not used to drive co-load (a parent match should not pull in arbitrary children). | string | `skos:narrower` |
+| `boundary` *(canonical, ADR 0006)* | Routing-layer asymmetric handoff — skills this skill explicitly does NOT own; the router uses this to redirect wrong-skill queries to the correct owner. | string OR `{skill, reason}` | `sg:disjointOwnership` |
+| `disjoint_with` *(v3.1, separate orthogonal relation per ADR 0006)* | Optional formal OWL class-disjointness assertion. Use only when authors genuinely want to claim that no entity can simultaneously be an instance of both classes. Rare; most authors only need `boundary`. | string OR `{skill, reason}` | `owl:disjointWith` |
 | `verify_with` | Skills that should be co-loaded for verification or that provide cross-checks | string | `prov:wasInformedBy` |
 | `depends_on` | Explicit dependency — this skill requires the target conceptually or operationally | string OR `{skill, min_version}` | `dcterms:requires` |
 
+**Boundary vs disjoint_with — the ADR 0006 split.** ADR 0001 originally proposed renaming `boundary` to `disjoint_with` and treating them as aliases. ADR 0006 reverses that: the two predicates operate at different semantic layers and the schema keeps them distinct.
+
+- `boundary` is a **routing-layer** claim. Skill A says "I am not the right answer for queries also matching B; route those to B." The router uses this for wrong-skill exclusion. Asymmetric; `reason` is strongly recommended; the canonical name for the everyday use case.
+- `disjoint_with` is a **formal class-theory** claim. A and B name disjoint conceptual classes; no entity can simultaneously be an instance of both. Maps to OWL `owl:disjointWith` for RDF consumers that reason about class membership. Rare in practice — most skill libraries never need this.
+
+If you are unsure which to use, you want `boundary`. Use `disjoint_with` only when you have an explicit reason to make a formal ontological claim that survives the JSON-LD projection into OWL.
+
 **Glossary.** See `docs/glossary.md § Relation predicates` for the formal definitions of each predicate, including the OntoClean rigidity tags for `extends` (which lives outside `relations` but participates in the same semantic space). The JSON-LD `@context` at `schemas/skill.context.jsonld` projects these predicates to their W3C equivalents for RDF consumers.
 
-**Item shapes in v3.** `boundary` / `disjoint_with` and `depends_on` accept both the bare-string form (v2-compatible) and the enriched object form (v3 addition). The bare form remains valid — upgrade item-by-item when a reason or version constraint is real.
+**Item shapes in v3.** `boundary`, `disjoint_with`, and `depends_on` accept both the bare-string form (v2-compatible) and the enriched object form (v3 addition). The bare form remains valid — upgrade item-by-item when a reason or version constraint is real.
 
-- `disjoint_with` objects carry a `reason` string. The reason is what makes the boundary self-documenting: `"fulfillment owns order state transitions; this skill only reads them"` beats `"fulfillment"` alone.
+- `boundary` and `disjoint_with` objects carry a `reason` string. The reason is what makes the relation self-documenting: `"fulfillment owns order state transitions; this skill only reads them"` beats `"fulfillment"` alone.
 - `depends_on` objects carry a `min_version` semver constraint. Useful when a skill depends on a specific version of another skill's contract.
 - `related`, `broader`, `narrower`, `verify_with` are bare-string only — they carry no additional metadata.
 
 **When to use `broader` vs `extends`.** `extends` is overlay-only (`type: overlay`) and forms a single-parent existential-dependency chain (child ceases to have meaning without parent; ADR 0003). `broader` is cross-skill generalisation that does NOT imply existential dependency or overlay semantics — use it when the target is a more general concept but this skill has its own standalone identity. Example: `react-best-practices` has `broader: [frontend]` because it specialises frontend knowledge, but React-best-practices remains a coherent skill even if the `frontend` skill were deleted.
 
-**Example (v3.1, SKOS-aligned preferred names).**
+**Example (v3.1, SKOS-aligned preferred names + ADR 0006 boundary canonical).**
 ```yaml
 relations:
   related:
     - webhook-integration
   broader:
     - integration
-  disjoint_with:
+  boundary:
     - skill: fulfillment
       reason: "fulfillment owns order state transitions; this skill only reads them"
     - skill: shipping
@@ -830,12 +842,12 @@ relations:
     - testing-strategy
 ```
 
-**Example (v3.0 legacy names, still valid, emits lint warning).**
+**Example (back-compat — `adjacent` still validates with a deprecation warning).**
 ```yaml
 relations:
-  adjacent:
+  adjacent:                                   # warns: rename to `related`
     - webhook-integration
-  boundary:
+  boundary:                                   # canonical (no warning per ADR 0006)
     - skill: fulfillment
       reason: "fulfillment owns order state transitions; this skill only reads them"
   verify_with:
@@ -844,11 +856,22 @@ relations:
     - api-key-management
 ```
 
-**When to use.** Populate `adjacent` and `boundary` for any skill that has clearly related or clearly excluded neighbors. Populate `depends_on` when the skill cannot function without another skill's concepts. Populate `verify_with` when a co-loaded skill improves verification quality.
+**Example (rare — formal OWL class-disjointness assertion).**
+```yaml
+relations:
+  boundary:                                   # routing-layer (everyday)
+    - skill: error-tracking
+      reason: "error-tracking owns observability surface; this skill is for prevention"
+  disjoint_with:                              # formal class-theory (rare)
+    - skill: physical-security
+      reason: "Physical-security and information-security are disjoint conceptual classes by design"
+```
 
-**When to use object form.** Use `{skill, reason}` whenever a `boundary` entry's rationale isn't obvious from the skill name alone. Use `{skill, min_version}` when a dependency's contract has versioned — without the constraint, a future update to the target skill can silently break this skill's claims.
+**When to use.** Populate `related` and `boundary` for any skill that has clearly related or clearly excluded neighbours. Populate `broader` when the target is a more general standalone skill (router uses this for parent recall). Populate `depends_on` when the skill cannot function without another skill's concepts. Populate `verify_with` when a co-loaded skill improves verification quality. Populate `disjoint_with` only for explicit OWL-class-disjointness needs.
 
-**When NOT to use.** Do not use `adjacent` as a dumping ground for loosely related skills — keep it to the 2–4 most meaningful connections. Do not fabricate `min_version` values — if you don't know the constraint, omit it.
+**When to use object form.** Use `{skill, reason}` whenever a `boundary` or `disjoint_with` entry's rationale isn't obvious from the skill name alone. Use `{skill, min_version}` when a dependency's contract has versioned — without the constraint, a future update to the target skill can silently break this skill's claims.
+
+**When NOT to use.** Do not use `related` as a dumping ground for loosely related skills — keep it to the 2–4 most meaningful connections. Do not declare the same target under both `adjacent` and `related` (lint warns). Do not fabricate `min_version` values — if you don't know the constraint, omit it. Do not use `disjoint_with` as a more emphatic `boundary`; the OWL semantics are real and reaching for them changes how RDF consumers reason about your skill graph.
 
 ---
 

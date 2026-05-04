@@ -1,18 +1,25 @@
 {
   "_comment": "JSON-LD @context for Skill Graph v3 frontmatter. Maps authored fields to W3C standard vocabularies so a Skill Graph SKILL.md can be projected into RDF/OWL/SKOS consumers without changing the authoring surface. Unlocks FAIR Interoperability (Wilkinson et al. 2016, DOI:10.1038/sdata.2016.18). Consumers: third-party knowledge-graph tooling, federated skill registries, cross-framework import.",
-  "_version": "1.0.0",
+  "_version": "1.1.0",
   "_schema_version_target": 3,
   "_references": {
     "skos": "https://www.w3.org/TR/skos-reference/",
+    "owl": "https://www.w3.org/TR/owl2-overview/",
     "dcterms": "https://www.dublincore.org/specifications/dublin-core/dcmi-terms/",
     "prov": "https://www.w3.org/TR/prov-o/",
     "spdx": "https://spdx.org/licenses/",
     "schema": "https://schema.org/",
     "fair": "https://www.nature.com/articles/sdata201618"
   },
+  "_adr_anchors": {
+    "0001": "Initial SKOS-aligned predicate set (related/broader/narrower additions; adjacent deprecation).",
+    "0002": "JSON-LD @context coverage policy.",
+    "0006": "boundary stays canonical for routing-layer asymmetric handoff (sg:disjointOwnership); disjoint_with is a separate orthogonal relation for formal OWL class-disjointness (owl:disjointWith). Reverts the `boundary -> disjoint_with` rename proposed in ADR 0001 Decision #2."
+  },
   "@context": {
     "sg": "https://skillgraph.dev/vocab#",
     "skos": "http://www.w3.org/2004/02/skos/core#",
+    "owl": "http://www.w3.org/2002/07/owl#",
     "dcterms": "http://purl.org/dc/terms/",
     "prov": "http://www.w3.org/ns/prov#",
     "spdx": "http://spdx.org/rdf/terms#",
@@ -74,12 +81,12 @@
     "boundary": {
       "@id": "sg:disjointOwnership",
       "@container": "@set",
-      "_note": "Anti-ownership edge — decomposes in RDF to skos:related + owl:disjointWith semantics"
+      "_note": "Routing-layer asymmetric handoff — directional. Canonical name for wrong-skill routing protection. Maps to sg:disjointOwnership, a Skill-Graph-specific predicate intentionally weaker than OWL class-disjointness — it makes a routing claim, not a formal ontological one. See ADR 0006."
     },
     "disjoint_with": {
-      "@id": "sg:disjointOwnership",
+      "@id": "owl:disjointWith",
       "@container": "@set",
-      "_note": "v3.1 alias for `boundary`; identical semantics"
+      "_note": "Formal OWL class-disjointness assertion — symmetric. Use only when authors genuinely want to claim that no entity can simultaneously be an instance of both classes. Distinct from `boundary` (which is a weaker routing-layer relation). See ADR 0006."
     },
     "verify_with": {
       "@id": "prov:wasInformedBy",

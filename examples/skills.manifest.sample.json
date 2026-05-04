@@ -1,5 +1,5 @@
 {
-  "generated_at": "1970-01-01T00:00:00Z",
+  "generated_at": "2026-05-04T00:00:00.000Z",
   "schema_version": 3,
   "skills": [
     {
@@ -365,7 +365,7 @@
             "scripts/skill-lint.js": "4aca694a2fb3d4bbb68a1347b032f1ed5f40369dd544dd29c0332a758f3f81f1"
           }
         },
-        "drift_detected": false,
+        "drift_detected": true,
         "eval_artifacts": "present",
         "eval_state": "passing",
         "freshness": "2026-04-18",

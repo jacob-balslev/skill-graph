@@ -1,6 +1,8 @@
 # ADR 0001 — Relation Predicate Set
 
-- **Status:** Accepted (2026-04-20)
+- **Status:** Accepted with revision per ADR 0006 (the `boundary -> disjoint_with` rename in Decision #2 was reverted; Decisions #1, #3, and #4 stand unchanged).
+- **Original acceptance:** 2026-04-20
+- **Revision:** 2026-05-04 (see `docs/adr/0006-revise-predicate-rename.md`)
 - **Deciders:** Skill Graph maintainers
 - **Consulted:** SKOS Reference (W3C 2009), PROV-O (W3C 2013), Gruber 1995 on ontology design, Guarino & Welty OntoClean, Wilkinson et al. 2016 on FAIR
 
@@ -11,7 +13,7 @@ Skill Graph models inter-skill relationships with typed edges under `relations.*
 The audit proposed:
 
 1. Rename `adjacent` → `related` to align with `skos:related`.
-2. Decompose `boundary` into an ownership-style `disjoint_with` (OWL `disjointWith` semantics) — `boundary` currently conflates "there is an edge" with "the edge is explicitly-not-ownership".
+2. Decompose `boundary` into an ownership-style `disjoint_with` (OWL `disjointWith` semantics) — `boundary` currently conflates "there is an edge" with "the edge is explicitly-not-ownership". **(Revised by ADR 0006: `boundary` and `owl:disjointWith` operate at different semantic layers — routing vs formal class-theory — so the two relations are not aliases. `boundary` stays canonical for routing-layer asymmetric handoff; `disjoint_with` becomes a separate orthogonal relation for formal OWL class-disjointness.)**
 3. Add `broader` / `narrower` to express cross-skill generalisation that `browse_category` cannot capture.
 4. Keep `verify_with` and `depends_on` — they have no clean SKOS equivalent and map instead to `prov:wasInformedBy` and `dcterms:requires` respectively.
 
@@ -20,7 +22,7 @@ The audit proposed:
 Accept all four proposals, with an **additive, backward-compatible** rollout:
 
 1. Extend the `relations` schema to accept `related`, `broader`, `narrower`, and `disjoint_with` as optional predicates.
-2. Keep `adjacent` and `boundary` valid. `adjacent` becomes an alias for `related`. `boundary` becomes an alias for `disjoint_with`.
+2. Keep `adjacent` and `boundary` valid. `adjacent` becomes an alias for `related`. `boundary` ~~becomes an alias for `disjoint_with`~~ **stays canonical for routing-layer asymmetric handoff per ADR 0006; `disjoint_with` becomes a separate orthogonal relation for formal OWL class-disjointness, not an alias.**
 3. Emit a `skill-lint.js` warning (not error) when `adjacent` or `boundary` is used. The warning points at the preferred name and the v4 deprecation target.
 4. Map all six predicates to their W3C equivalents via `schemas/skill.context.jsonld`. Consumers gain RDF-projectable semantics without changing the authoring surface.
 5. Target v4 for removal of the deprecated names. No v3 skill needs to change. The predicate set does not become breaking until the v4 schema bump.

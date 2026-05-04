@@ -421,6 +421,45 @@ function routeSkills(manifest, options) {
   }
 
   // -------------------------------------------------------------------------
+  // Stage 4b: broader (SKOS generalisation) parent recall boost.
+  //
+  // Per ADR 0001 Decision #3, `relations.broader` declares cross-skill
+  // generalisation — the target is a more general skill the author wants
+  // co-loaded when the specific (child) skill matches. SKOS semantics:
+  //   skos:broader(child, parent) means "parent is broader than child".
+  //
+  // Recall behaviour: when a topMatch declares `broader: [parent]`, the parent
+  // is co-loaded as a generalisation companion — the agent gets the broader
+  // context alongside the specific match. One hop only (no transitive
+  // ancestor walk), to mirror Stage 4's verify_with shape and avoid
+  // accidentally pulling in entire taxonomy chains.
+  //
+  // Inverse direction (`narrower`) is NOT co-loaded because if the parent
+  // matched, the children are NOT necessarily relevant — only an explicit
+  // child match should pull the parent in. (Authors who want parent →
+  // child co-loading should use `verify_with` or `depends_on`.)
+  // -------------------------------------------------------------------------
+  for (const { skill } of topMatches) {
+    if (!skill.relations || !Array.isArray(skill.relations.broader)) continue;
+    for (const b of skill.relations.broader) {
+      const bName = typeof b === 'string' ? b : null;
+      if (!bName || selectedNames.has(bName)) continue;
+      const bSkill = byName.get(bName);
+      if (bSkill) {
+        const projectCheck = skillAppliesToProject(bSkill, project, workspace);
+        if (projectCheck.applies) {
+          coLoaded.push({
+            skill: bSkill,
+            reason: `broader generalisation of ${skill.name}`,
+            role: 'broader',
+          });
+          selectedNames.add(bName);
+        }
+      }
+    }
+  }
+
+  // -------------------------------------------------------------------------
   // Stage 5: score-aware boundary exclusion.
   //
   // A skill listed in another SELECTED skill's boundary[] is removed from
