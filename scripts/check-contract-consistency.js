@@ -737,6 +737,65 @@ function checkC6VersionedSchemaParity() {
 }
 
 // ---------------------------------------------------------------------------
+// C7 -- Generated field-reference parity
+// ---------------------------------------------------------------------------
+
+/**
+ * Check C7 — `docs/field-reference.generated.md` must match live regeneration
+ * from `schemas/skill.v3.schema.json` description strings via
+ * `scripts/build-field-reference.js`.
+ *
+ * Invariant: the generated index is a deterministic projection of the schema's
+ * description fields. If the schema changes (a description is added, edited, or
+ * a new field is introduced) without regenerating the index, the docs drift
+ * silently. C7 closes this loop.
+ *
+ * Implementation strategy: spawn `node scripts/build-field-reference.js --check`
+ * which performs the regeneration in-memory and exits non-zero when the live
+ * file differs from regenerated output. C7 surfaces that exit signal as a
+ * structured contract-consistency error.
+ *
+ * Returns a list of error strings. Empty array means pass.
+ */
+function checkC7GeneratedFieldReferenceParity() {
+  const errors = [];
+  const builderPath = path.join(REPO_ROOT, 'scripts', 'build-field-reference.js');
+  const generatedPath = path.join(REPO_ROOT, 'docs', 'field-reference.generated.md');
+
+  if (!fs.existsSync(builderPath)) {
+    errors.push('scripts/build-field-reference.js: missing — required to regenerate docs/field-reference.generated.md');
+    return errors;
+  }
+  if (!fs.existsSync(generatedPath)) {
+    errors.push('docs/field-reference.generated.md: missing — run `node scripts/build-field-reference.js` to generate');
+    return errors;
+  }
+
+  const result = require('child_process').spawnSync(
+    process.execPath,
+    [builderPath, '--check'],
+    { cwd: REPO_ROOT, encoding: 'utf8' }
+  );
+
+  if (result.error) {
+    errors.push(`C7 [docs/field-reference.generated.md]: cannot invoke build-field-reference.js — ${result.error.message}`);
+    return errors;
+  }
+
+  if (result.status !== 0) {
+    errors.push(
+      `docs/field-reference.generated.md is out of step with schemas/skill.v3.schema.json description strings. ` +
+      `Run \`node scripts/build-field-reference.js\` to regenerate, then commit the result alongside any schema description edits.`
+    );
+    if (VERBOSE && result.stderr) {
+      console.error(result.stderr.trim());
+    }
+  }
+
+  return errors;
+}
+
+// ---------------------------------------------------------------------------
 // Main
 // ---------------------------------------------------------------------------
 
@@ -790,6 +849,13 @@ function main() {
   if (c6.length === 0) console.log('OK');
   else { console.log('FAIL'); for (const e of c6) { console.error(`  ERROR ${e}`); } }
   allErrors.push(...c6);
+
+  // C7
+  process.stdout.write('C7 Generated field-reference parity... ');
+  const c7 = checkC7GeneratedFieldReferenceParity();
+  if (c7.length === 0) console.log('OK');
+  else { console.log('FAIL'); for (const e of c7) { console.error(`  ERROR ${e}`); } }
+  allErrors.push(...c7);
 
   console.log('');
 

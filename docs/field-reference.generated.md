@@ -1,6 +1,6 @@
 # Skill Graph Field Reference (Generated)
 
-> **Generated from** `schemas/skill.v3.schema.json` on 2026-04-20 by `scripts/gen-field-reference.js`.
+> **Generated from** `schemas/skill.v3.schema.json` on 2026-05-04 by `scripts/build-field-reference.js`.
 > **Do not edit by hand.** The canonical prose reference is [`docs/field-reference.md`](field-reference.md).
 > **Predicate glossary:** [`docs/glossary.md`](glossary.md).
 > **JSON-LD @context:** [`schemas/skill.context.jsonld`](../schemas/skill.context.jsonld).
@@ -13,7 +13,7 @@ Schema version: **3** · Field count: **33** · Required: **13**
 
 **Type:** multiple — see schema
 
-_No description in schema._
+Major contract shape version. Integer for v3+; string '3' tolerated for back-compat with hand-rolled YAML. Bumps when shape changes break consumers (additive minor changes do not bump). v4 is the next breaking-change horizon — see CHANGELOG.md and docs/metadata-contract.md § Schema Versioning Policy.
 
 **Full reference:** [`docs/field-reference.md#schema_version`](field-reference.md#schema_version)
 
@@ -23,7 +23,7 @@ _No description in schema._
 
 **Type:** string
 
-_No description in schema._
+Stable display-layer skill identifier. Lowercase kebab-case; allows `/` and `:` for hierarchical/namespaced names. Must equal the parent directory name (skills/<name>/SKILL.md). The URN at `urn` is the long-term globally-unique identifier; `name` is the local handle.
 
 **Pattern:** `^[a-z0-9][a-z0-9-/:]*$`
 
@@ -47,7 +47,7 @@ Optional globally-unique persistent identifier in the `urn:skill:<repo>:<skill-n
 
 **Type:** string
 
-_No description in schema._
+The routing contract — tells a router whether this skill should activate for a given query. Pushy, specific, boundary-aware. Should include an explicit negative boundary ("Do NOT use for…") so the router doesn't over-activate. Min 20 characters.
 
 **Min length:** 20
 
@@ -59,7 +59,7 @@ _No description in schema._
 
 **Type:** string
 
-_No description in schema._
+Skill content version (semver). Bumps when the SKILL.md body or contract changes meaningfully. Distinct from `schema_version` (the contract shape). Used by `relations.depends_on` for `min_version` constraints.
 
 **Pattern:** `^[0-9]+\.[0-9]+\.[0-9]+$`
 
@@ -71,7 +71,7 @@ _No description in schema._
 
 **Type:** `capability` | `workflow` | `router` | `overlay`
 
-_No description in schema._
+Archetype classifier — what kind of skill this is. `capability` (knows how to do something), `workflow` (orchestrates a sequence), `router` (dispatches to other skills), `overlay` (specialises a parent via `extends`). OntoClean rigidity tags per ADR 0003.
 
 **Full reference:** [`docs/field-reference.md#type`](field-reference.md#type)
 
@@ -103,7 +103,7 @@ Hierarchical browse path using slash-delimited segments (e.g., `ecommerce/integr
 
 **Type:** `codebase` | `reference` | `portable`
 
-_No description in schema._
+Where this skill applies. `codebase` — coupled to a specific repo's code/conventions; `reference` — pure knowledge (no repo coupling); `portable` — repo-agnostic patterns. Drives multi-project overlay decisions and informs the router's project-fit check.
 
 **Full reference:** [`docs/field-reference.md#scope`](field-reference.md#scope)
 
@@ -113,7 +113,7 @@ _No description in schema._
 
 **Type:** string
 
-_No description in schema._
+Maintainer or team accountable for keeping this skill correct. Free-form string; conventional values: `skill-graph-maintainer`, GitHub team handles, individual usernames. Used by drift-check workflows to route review requests.
 
 **Full reference:** [`docs/field-reference.md#owner`](field-reference.md#owner)
 
@@ -123,7 +123,7 @@ _No description in schema._
 
 **Type:** string
 
-_No description in schema._
+ISO date (YYYY-MM-DD) of the last meaningful content review. The author's claim that the skill was current as of this date. Complemented by `drift_check.truth_source_hashes` for grounded skills. ADR 0005 documents the freshness consolidation policy.
 
 **Format:** date
 
@@ -135,7 +135,7 @@ _No description in schema._
 
 **Type:** object
 
-_No description in schema._
+Drift-detection record for grounded skills. `last_verified` is the author's claim; `truth_source_hashes` is content-addressable evidence (SHA-256 per truth source file). The combination lets `scripts/skill-graph-drift.js` detect when underlying truth has changed without an accompanying review.
 
 **Sub-fields:**
 
@@ -150,7 +150,7 @@ _No description in schema._
 
 **Type:** `none` | `planned` | `present`
 
-_No description in schema._
+Are eval artifacts present on disk for this skill? `none` (no evals planned), `planned` (eval intent declared but not yet shipped), `present` (eval JSON exists at `evals/<skill>.json` or similar). Lint enforces the `present` claim by requiring a real file. The `planned` state has a staleness guard — see lint check 6.
 
 **Full reference:** [`docs/field-reference.md#eval_artifacts`](field-reference.md#eval_artifacts)
 
@@ -160,7 +160,7 @@ _No description in schema._
 
 **Type:** `unverified` | `passing` | `monitored`
 
-_No description in schema._
+What does the eval say about content quality? `unverified` (no eval has run), `passing` (last run passed), `monitored` (eval runs on a cadence and is currently passing). Independent of `routing_eval` (the routing-coverage axis). Use to express content-level quality grading orthogonal to routing coverage.
 
 **Full reference:** [`docs/field-reference.md#eval_state`](field-reference.md#eval_state)
 
@@ -170,7 +170,7 @@ _No description in schema._
 
 **Type:** `absent` | `present`
 
-_No description in schema._
+Is routing / trigger coverage explicitly evaluated? `absent` (router behaviour is not part of the eval set), `present` (the skill's `examples[]` and `anti_examples[]` pass `scripts/skill-graph-routing-eval.js`). When `present`, lint check 12 requires the harness to agree. Honesty over green checkmarks — flip to `present` only after the harness PASSes.
 
 **Full reference:** [`docs/field-reference.md#routing_eval`](field-reference.md#routing_eval)
 
@@ -180,7 +180,7 @@ _No description in schema._
 
 **Type:** `experimental` | `stable` | `frozen` | `deprecated`
 
-_No description in schema._
+Lifecycle posture for consumers. `experimental` (subject to change), `stable` (production-ready), `frozen` (no further changes expected), `deprecated` (use `superseded_by` to name the replacement). Drives consumer pinning decisions and ADR 0001 deprecation flow.
 
 **Full reference:** [`docs/field-reference.md#stability`](field-reference.md#stability)
 
@@ -200,7 +200,7 @@ Name of the skill that replaces this one. Required when `stability: deprecated` 
 
 **Type:** string
 
-_No description in schema._
+SPDX license identifier (e.g., `MIT`, `Apache-2.0`, `CC-BY-4.0`). Resolved against the SPDX license list (ISO/IEC 5962:2021). Required for skills shipped externally; optional for codebase-internal skills.
 
 **Full reference:** [`docs/field-reference.md#license`](field-reference.md#license)
 
@@ -210,7 +210,7 @@ _No description in schema._
 
 **Type:** object
 
-_No description in schema._
+Cross-runtime compatibility envelope. `runtimes` lists target agent runtimes with version constraints; `node` is the Node.js version requirement; `notes` is free-text overflow. Distinct from `extends` (overlay parent) and `relations.depends_on` (sibling skill dependency).
 
 **Sub-fields:**
 
@@ -226,7 +226,7 @@ _No description in schema._
 
 **Type:** string
 
-_No description in schema._
+Optional comma-separated whitelist of tools the skill is permitted to use (e.g., `Read,Edit,Bash`). Honoured by harnesses that gate tool calls per skill. Conventional spelling matches Claude Code's `--allowed-tools` CLI flag.
 
 **Full reference:** [`docs/field-reference.md#allowed-tools`](field-reference.md#allowed-tools)
 
@@ -236,7 +236,7 @@ _No description in schema._
 
 **Type:** string
 
-_No description in schema._
+Overlay parent skill name. Only valid when `type: overlay`. Establishes a single-parent existential-dependency chain — the overlay specialises the parent and ceases to have meaning without it. Per ADR 0003 (OntoClean rigidity), the overlay's identity is INHERITED, not REPLACED. For non-existential cross-skill generalisation, use `relations.broader` instead.
 
 **Full reference:** [`docs/field-reference.md#extends`](field-reference.md#extends)
 
@@ -306,7 +306,7 @@ Literal project handles or semantic tags identifying which projects this skill i
 
 **Type:** array of string
 
-_No description in schema._
+Tags that group skills for activation routing (e.g., `frontend`, `data-pipeline`). Routers use these for batch retrieval — when a query matches a routing group, all skills tagged with that group become candidates. Distinct from `browse_category` (single-value human bucket) and `category` (hierarchical taxonomy path).
 
 **Full reference:** [`docs/field-reference.md#routing_groups`](field-reference.md#routing_groups)
 
@@ -316,14 +316,14 @@ _No description in schema._
 
 **Type:** object
 
-Typed edges to sibling skills. Lint verifies every target exists. Predicate-to-W3C-vocabulary mapping is provided via schemas/skill.context.jsonld (JSON-LD @context). See docs/adr/0001-predicate-set.md for the v3.1 additive evolution (related/disjoint_with/broader/narrower) and the deprecation plan for adjacent/boundary.
+Typed edges to sibling skills. Lint verifies every target exists. Predicate-to-W3C-vocabulary mapping is provided via schemas/skill.context.jsonld (JSON-LD @context). See docs/adr/0001-predicate-set.md for the v3.1 SKOS additions (related/broader/narrower) and ADR 0006 for the `boundary` / `disjoint_with` semantic split (boundary = routing-layer asymmetric handoff; disjoint_with = optional OWL class-disjointness).
 
 **Sub-fields:**
 
 - `adjacent` *optional* — DEPRECATED ALIAS of `related` (v3.
 - `related` *optional* — v3.
-- `boundary` *optional* — DEPRECATED ALIAS of `disjoint_with` (v3.
-- `disjoint_with` *optional* — v3.
+- `boundary` *optional* — Anti-ownership / routing handoff edge — directional.
+- `disjoint_with` *optional* — Optional OWL-style class-disjointness assertion.
 - `broader` *optional* — v3.
 - `narrower` *optional* — v3.
 - `verify_with` *optional* — Skills to co-load for verification.
@@ -337,7 +337,7 @@ Typed edges to sibling skills. Lint verifies every target exists. Predicate-to-W
 
 **Type:** object
 
-_No description in schema._
+Records what the skill is grounded against — the truth sources, the grounding mode, and the failure modes when the truth drifts. Required when the skill makes claims about specific code or external systems. Optional for purely conceptual skills.
 
 **Sub-fields:**
 
@@ -355,7 +355,7 @@ _No description in schema._
 
 **Type:** object
 
-_No description in schema._
+Adopter-readiness signal. `readiness` declares how transferable the skill is between projects (`portable`, `requires-adaptation`, `repo-specific`). `targets` lists the runtime/CLI environments the skill has been validated against. Drives the multi-project overlay decision tree.
 
 **Sub-fields:**
 

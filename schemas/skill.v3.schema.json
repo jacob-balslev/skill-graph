@@ -22,13 +22,21 @@
   "properties": {
     "schema_version": {
       "oneOf": [
-        { "type": "integer", "const": 3 },
-        { "type": "string", "const": "3" }
-      ]
+        {
+          "type": "integer",
+          "const": 3
+        },
+        {
+          "type": "string",
+          "const": "3"
+        }
+      ],
+      "description": "Major contract shape version. Integer for v3+; string '3' tolerated for back-compat with hand-rolled YAML. Bumps when shape changes break consumers (additive minor changes do not bump). v4 is the next breaking-change horizon — see CHANGELOG.md and docs/metadata-contract.md § Schema Versioning Policy."
     },
     "name": {
       "type": "string",
-      "pattern": "^[a-z0-9][a-z0-9-/:]*$"
+      "pattern": "^[a-z0-9][a-z0-9-/:]*$",
+      "description": "Stable display-layer skill identifier. Lowercase kebab-case; allows `/` and `:` for hierarchical/namespaced names. Must equal the parent directory name (skills/<name>/SKILL.md). The URN at `urn` is the long-term globally-unique identifier; `name` is the local handle."
     },
     "urn": {
       "type": "string",
@@ -37,15 +45,23 @@
     },
     "description": {
       "type": "string",
-      "minLength": 20
+      "minLength": 20,
+      "description": "The routing contract — tells a router whether this skill should activate for a given query. Pushy, specific, boundary-aware. Should include an explicit negative boundary (\"Do NOT use for…\") so the router doesn't over-activate. Min 20 characters."
     },
     "version": {
       "type": "string",
-      "pattern": "^[0-9]+\\.[0-9]+\\.[0-9]+$"
+      "pattern": "^[0-9]+\\.[0-9]+\\.[0-9]+$",
+      "description": "Skill content version (semver). Bumps when the SKILL.md body or contract changes meaningfully. Distinct from `schema_version` (the contract shape). Used by `relations.depends_on` for `min_version` constraints."
     },
     "type": {
       "type": "string",
-      "enum": ["capability", "workflow", "router", "overlay"]
+      "enum": [
+        "capability",
+        "workflow",
+        "router",
+        "overlay"
+      ],
+      "description": "Archetype classifier — what kind of skill this is. `capability` (knows how to do something), `workflow` (orchestrates a sequence), `router` (dispatches to other skills), `overlay` (specialises a parent via `extends`). OntoClean rigidity tags per ADR 0003."
     },
     "browse_category": {
       "type": "string",
@@ -58,19 +74,28 @@
     },
     "scope": {
       "type": "string",
-      "enum": ["codebase", "reference", "portable"]
+      "enum": [
+        "codebase",
+        "reference",
+        "portable"
+      ],
+      "description": "Where this skill applies. `codebase` — coupled to a specific repo's code/conventions; `reference` — pure knowledge (no repo coupling); `portable` — repo-agnostic patterns. Drives multi-project overlay decisions and informs the router's project-fit check."
     },
     "owner": {
-      "type": "string"
+      "type": "string",
+      "description": "Maintainer or team accountable for keeping this skill correct. Free-form string; conventional values: `skill-graph-maintainer`, GitHub team handles, individual usernames. Used by drift-check workflows to route review requests."
     },
     "freshness": {
       "type": "string",
-      "format": "date"
+      "format": "date",
+      "description": "ISO date (YYYY-MM-DD) of the last meaningful content review. The author's claim that the skill was current as of this date. Complemented by `drift_check.truth_source_hashes` for grounded skills. ADR 0005 documents the freshness consolidation policy."
     },
     "drift_check": {
       "type": "object",
       "additionalProperties": false,
-      "required": ["last_verified"],
+      "required": [
+        "last_verified"
+      ],
       "properties": {
         "last_verified": {
           "type": "string",
@@ -85,30 +110,52 @@
             "pattern": "^[a-f0-9]{64}$"
           }
         }
-      }
+      },
+      "description": "Drift-detection record for grounded skills. `last_verified` is the author's claim; `truth_source_hashes` is content-addressable evidence (SHA-256 per truth source file). The combination lets `scripts/skill-graph-drift.js` detect when underlying truth has changed without an accompanying review."
     },
     "eval_artifacts": {
       "type": "string",
-      "enum": ["none", "planned", "present"]
+      "enum": [
+        "none",
+        "planned",
+        "present"
+      ],
+      "description": "Are eval artifacts present on disk for this skill? `none` (no evals planned), `planned` (eval intent declared but not yet shipped), `present` (eval JSON exists at `evals/<skill>.json` or similar). Lint enforces the `present` claim by requiring a real file. The `planned` state has a staleness guard — see lint check 6."
     },
     "eval_state": {
       "type": "string",
-      "enum": ["unverified", "passing", "monitored"]
+      "enum": [
+        "unverified",
+        "passing",
+        "monitored"
+      ],
+      "description": "What does the eval say about content quality? `unverified` (no eval has run), `passing` (last run passed), `monitored` (eval runs on a cadence and is currently passing). Independent of `routing_eval` (the routing-coverage axis). Use to express content-level quality grading orthogonal to routing coverage."
     },
     "routing_eval": {
       "type": "string",
-      "enum": ["absent", "present"]
+      "enum": [
+        "absent",
+        "present"
+      ],
+      "description": "Is routing / trigger coverage explicitly evaluated? `absent` (router behaviour is not part of the eval set), `present` (the skill's `examples[]` and `anti_examples[]` pass `scripts/skill-graph-routing-eval.js`). When `present`, lint check 12 requires the harness to agree. Honesty over green checkmarks — flip to `present` only after the harness PASSes."
     },
     "stability": {
       "type": "string",
-      "enum": ["experimental", "stable", "frozen", "deprecated"]
+      "enum": [
+        "experimental",
+        "stable",
+        "frozen",
+        "deprecated"
+      ],
+      "description": "Lifecycle posture for consumers. `experimental` (subject to change), `stable` (production-ready), `frozen` (no further changes expected), `deprecated` (use `superseded_by` to name the replacement). Drives consumer pinning decisions and ADR 0001 deprecation flow."
     },
     "superseded_by": {
       "type": "string",
       "description": "Name of the skill that replaces this one. Required when `stability: deprecated` — enforced by the allOf rule so every deprecated skill names its successor and consumers can follow the chain automatically. Omit on non-deprecated skills."
     },
     "license": {
-      "type": "string"
+      "type": "string",
+      "description": "SPDX license identifier (e.g., `MIT`, `Apache-2.0`, `CC-BY-4.0`). Resolved against the SPDX license list (ISO/IEC 5962:2021). Required for skills shipped externally; optional for codebase-internal skills."
     },
     "compatibility": {
       "type": "object",
@@ -117,7 +164,9 @@
         "runtimes": {
           "type": "array",
           "description": "Target agent runtimes with optional version constraints (e.g., `claude-code>=2.0`, `cursor>=0.40`).",
-          "items": { "type": "string" }
+          "items": {
+            "type": "string"
+          }
         },
         "node": {
           "type": "string",
@@ -128,23 +177,30 @@
           "description": "Free-text additional compatibility notes. Use sparingly; prefer structured fields.",
           "maxLength": 500
         }
-      }
+      },
+      "description": "Cross-runtime compatibility envelope. `runtimes` lists target agent runtimes with version constraints; `node` is the Node.js version requirement; `notes` is free-text overflow. Distinct from `extends` (overlay parent) and `relations.depends_on` (sibling skill dependency)."
     },
     "allowed-tools": {
-      "type": "string"
+      "type": "string",
+      "description": "Optional comma-separated whitelist of tools the skill is permitted to use (e.g., `Read,Edit,Bash`). Honoured by harnesses that gate tool calls per skill. Conventional spelling matches Claude Code's `--allowed-tools` CLI flag."
     },
     "extends": {
-      "type": "string"
+      "type": "string",
+      "description": "Overlay parent skill name. Only valid when `type: overlay`. Establishes a single-parent existential-dependency chain — the overlay specialises the parent and ceases to have meaning without it. Per ADR 0003 (OntoClean rigidity), the overlay's identity is INHERITED, not REPLACED. For non-existential cross-skill generalisation, use `relations.broader` instead."
     },
     "triggers": {
       "type": "array",
       "description": "Exact phrase or label triggers that activate this skill. For semantic phrases use `keywords`; for example user prompts use `examples`.",
-      "items": { "type": "string" }
+      "items": {
+        "type": "string"
+      }
     },
     "keywords": {
       "type": "array",
       "description": "Semantic keywords for discovery and fuzzy matching. Complements `triggers` (exact) and `examples` (full prompts).",
-      "items": { "type": "string" }
+      "items": {
+        "type": "string"
+      }
     },
     "examples": {
       "type": "array",
@@ -180,7 +236,10 @@
     },
     "routing_groups": {
       "type": "array",
-      "items": { "type": "string" }
+      "items": {
+        "type": "string"
+      },
+      "description": "Tags that group skills for activation routing (e.g., `frontend`, `data-pipeline`). Routers use these for batch retrieval — when a query matches a routing group, all skills tagged with that group become candidates. Distinct from `browse_category` (single-value human bucket) and `category` (hierarchical taxonomy path)."
     },
     "relations": {
       "type": "object",
@@ -190,26 +249,38 @@
         "adjacent": {
           "type": "array",
           "description": "DEPRECATED ALIAS of `related` (v3.0 name). Semantics: symmetric co-read relation, maps to skos:related. Still valid in v3.x; lint emits a soft warning pointing at `related` as the preferred name. Removal target: v4. See ADR 0001.",
-          "items": { "type": "string" }
+          "items": {
+            "type": "string"
+          }
         },
         "related": {
           "type": "array",
           "description": "v3.1 preferred name for the symmetric associative relation (skos:related). Use for skills that should be co-read because they teach the same surface from different angles. Max 5 entries recommended to avoid hub-and-spoke clutter. Replaces `adjacent`; both names validate in v3.x for backward compatibility.",
-          "items": { "type": "string" }
+          "items": {
+            "type": "string"
+          }
         },
         "boundary": {
           "type": "array",
           "description": "Anti-ownership / routing handoff edge — directional. Skills this skill explicitly does NOT own; the router uses this to redirect wrong-skill queries to the correct owner. Items may be bare skill names (v2-compatible) or `{skill, reason}` objects; reasons are strongly recommended. Maps to sg:disjointOwnership (a Skill-Graph-specific predicate intentionally weaker than OWL class-disjointness — it makes a routing-layer claim, not a formal ontological one). For formal OWL class-disjointness, use `disjoint_with`. See ADR 0006.",
           "items": {
             "oneOf": [
-              { "type": "string" },
+              {
+                "type": "string"
+              },
               {
                 "type": "object",
                 "additionalProperties": false,
-                "required": ["skill"],
+                "required": [
+                  "skill"
+                ],
                 "properties": {
-                  "skill": { "type": "string" },
-                  "reason": { "type": "string" }
+                  "skill": {
+                    "type": "string"
+                  },
+                  "reason": {
+                    "type": "string"
+                  }
                 }
               }
             ]
@@ -220,14 +291,22 @@
           "description": "Optional OWL-style class-disjointness assertion. Maps to owl:disjointWith — a formal ontological claim that the two skills name disjoint conceptual classes (no entity can simultaneously be an instance of both). Use only when authors genuinely want formal class-disjointness; rare in practice. Does NOT replace `boundary` (which is a routing-layer asymmetric handoff and is the canonical name for wrong-skill routing protection). Same item shape as `boundary` — bare string OR `{skill, reason}`. See ADR 0006 for the boundary-vs-disjoint_with semantic split.",
           "items": {
             "oneOf": [
-              { "type": "string" },
+              {
+                "type": "string"
+              },
               {
                 "type": "object",
                 "additionalProperties": false,
-                "required": ["skill"],
+                "required": [
+                  "skill"
+                ],
                 "properties": {
-                  "skill": { "type": "string" },
-                  "reason": { "type": "string" }
+                  "skill": {
+                    "type": "string"
+                  },
+                  "reason": {
+                    "type": "string"
+                  }
                 }
               }
             ]
@@ -236,30 +315,42 @@
         "broader": {
           "type": "array",
           "description": "v3.1 addition — cross-skill generalisation (skos:broader). Use when this skill is a specialisation of another skill that is NOT its overlay parent (if it were, use `extends`). Example: `react-best-practices` has `broader: [frontend]`. Closes the cross-skill generalisation gap that `browse_category` cannot express.",
-          "items": { "type": "string" }
+          "items": {
+            "type": "string"
+          }
         },
         "narrower": {
           "type": "array",
           "description": "v3.1 addition — cross-skill specialisation (skos:narrower). The inverse of `broader` — this skill is more general than the targets. Tooling can infer this from other skills' `broader` edges; authoring it explicitly is optional.",
-          "items": { "type": "string" }
+          "items": {
+            "type": "string"
+          }
         },
         "verify_with": {
           "type": "array",
           "description": "Skills to co-load for verification. Maps to prov:wasInformedBy — this skill's claims are informed by the verifier's claims. Keep to 1-3 high-signal verifiers.",
-          "items": { "type": "string" }
+          "items": {
+            "type": "string"
+          }
         },
         "depends_on": {
           "type": "array",
           "description": "Skills this skill requires conceptually or operationally. Items may be bare skill names (v2-compatible) or `{skill, min_version}` objects (v3 enrichment) for version-constrained dependencies.",
           "items": {
             "oneOf": [
-              { "type": "string" },
+              {
+                "type": "string"
+              },
               {
                 "type": "object",
                 "additionalProperties": false,
-                "required": ["skill"],
+                "required": [
+                  "skill"
+                ],
                 "properties": {
-                  "skill": { "type": "string" },
+                  "skill": {
+                    "type": "string"
+                  },
                   "min_version": {
                     "type": "string",
                     "description": "Semver range for the minimum required version of the target skill. Accepts bare semver (`1.2.0`, treated as exact), caret range (`^1.2.0`), tilde range (`~1.2.0`), comparator range (`>=1.2.0`, `>1.2.0`, `<2.0.0`, `<=1.5.0`), or AND-joined ranges (`>=1.2.0 <2.0.0`). v0.5.0 loosened the pattern from exact-match-only to support real dependency declarations.",
@@ -283,42 +374,67 @@
         "evidence_priority"
       ],
       "properties": {
-        "domain_object": { "type": "string" },
+        "domain_object": {
+          "type": "string"
+        },
         "grounding_mode": {
           "type": "string",
-          "enum": ["repo_specific", "universal", "hybrid"]
+          "enum": [
+            "repo_specific",
+            "universal",
+            "hybrid"
+          ]
         },
         "truth_sources": {
           "type": "array",
-          "items": { "type": "string" }
+          "items": {
+            "type": "string"
+          }
         },
         "failure_modes": {
           "type": "array",
-          "items": { "type": "string" }
+          "items": {
+            "type": "string"
+          }
         },
         "evidence_priority": {
           "type": "string",
-          "enum": ["repo_code_first", "general_knowledge_first", "equal"]
+          "enum": [
+            "repo_code_first",
+            "general_knowledge_first",
+            "equal"
+          ]
         }
-      }
+      },
+      "description": "Records what the skill is grounded against — the truth sources, the grounding mode, and the failure modes when the truth drifts. Required when the skill makes claims about specific code or external systems. Optional for purely conceptual skills."
     },
     "portability": {
       "type": "object",
       "additionalProperties": false,
-      "required": ["readiness", "targets"],
+      "required": [
+        "readiness",
+        "targets"
+      ],
       "properties": {
         "readiness": {
           "type": "string",
-          "enum": ["declared", "scripted", "verified"]
+          "enum": [
+            "declared",
+            "scripted",
+            "verified"
+          ]
         },
         "targets": {
           "type": "array",
           "items": {
             "type": "string",
-            "enum": ["agent-skills"]
+            "enum": [
+              "agent-skills"
+            ]
           }
         }
-      }
+      },
+      "description": "Adopter-readiness signal. `readiness` declares how transferable the skill is between projects (`portable`, `requires-adaptation`, `repo-specific`). `targets` lists the runtime/CLI environments the skill has been validated against. Drives the multi-project overlay decision tree."
     },
     "lifecycle": {
       "type": "object",
@@ -332,7 +448,12 @@
         },
         "review_cadence": {
           "type": "string",
-          "enum": ["per-commit", "weekly", "quarterly", "on-truth-source-change"],
+          "enum": [
+            "per-commit",
+            "weekly",
+            "quarterly",
+            "on-truth-source-change"
+          ],
           "description": "How frequently the skill should be re-verified. Drives scheduled drift checks."
         }
       }
@@ -340,7 +461,9 @@
     "runtime_telemetry": {
       "type": "object",
       "additionalProperties": false,
-      "required": ["feedback_source"],
+      "required": [
+        "feedback_source"
+      ],
       "description": "Optional pointer to a real-world success/failure feed. Consumers may use telemetry to corroborate or override `eval_state`.",
       "properties": {
         "feedback_source": {
@@ -373,44 +496,70 @@
     {
       "if": {
         "properties": {
-          "type": { "const": "overlay" }
+          "type": {
+            "const": "overlay"
+          }
         }
       },
       "then": {
-        "required": ["extends"]
+        "required": [
+          "extends"
+        ]
       }
     },
     {
       "if": {
         "properties": {
-          "scope": { "const": "codebase" }
+          "scope": {
+            "const": "codebase"
+          }
         },
-        "required": ["scope"]
+        "required": [
+          "scope"
+        ]
       },
       "then": {
-        "required": ["grounding"]
+        "required": [
+          "grounding"
+        ]
       }
     },
     {
       "if": {
         "properties": {
-          "type": { "not": { "const": "overlay" } }
+          "type": {
+            "not": {
+              "const": "overlay"
+            }
+          }
         },
-        "required": ["type"]
+        "required": [
+          "type"
+        ]
       },
       "then": {
-        "not": { "required": ["extends"] }
+        "not": {
+          "required": [
+            "extends"
+          ]
+        }
       }
     },
     {
       "if": {
         "properties": {
-          "stability": { "const": "deprecated" }
+          "stability": {
+            "const": "deprecated"
+          }
         },
-        "required": ["stability"]
+        "required": [
+          "stability"
+        ]
       },
       "then": {
-        "required": ["superseded_by"]
+        "required": [
+          "superseded_by"
+        ]
       }
     }
   ]
