@@ -139,7 +139,27 @@
             "additionalProperties": false,
             "properties": {
               "adjacent": { "type": "array", "items": { "type": "string" } },
+              "related": { "type": "array", "items": { "type": "string" } },
+              "broader": { "type": "array", "items": { "type": "string" } },
+              "narrower": { "type": "array", "items": { "type": "string" } },
               "boundary": {
+                "type": "array",
+                "items": {
+                  "oneOf": [
+                    { "type": "string" },
+                    {
+                      "type": "object",
+                      "additionalProperties": false,
+                      "required": ["skill"],
+                      "properties": {
+                        "skill": { "type": "string" },
+                        "reason": { "type": "string" }
+                      }
+                    }
+                  ]
+                }
+              },
+              "disjoint_with": {
                 "type": "array",
                 "items": {
                   "oneOf": [
