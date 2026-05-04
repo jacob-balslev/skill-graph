@@ -1,10 +1,12 @@
 # Skill Graph
 
-Graph-aware skill metadata for AI agents. A superset of the [Agent Skills](https://agentskills.io/specification) open standard that adds typed relations, grounding contracts, audit surfaces, and deterministic validation targets.
+Graph-aware skill metadata for AI agents and human authors. Compatible with the [Agent Skills](https://agentskills.io/specification) open standard via the export transform at `scripts/export-skill.js` — adds typed relations, grounding contracts, audit surfaces, and deterministic validation. A Skill Graph SKILL.md is *not* automatically a valid Agent Skills file (the `compatibility` shape and `name` pattern diverge); the two formats round-trip via the export transform.
 
 ## Status
 
 **Current version: 0.4.0** (2026-04-18) — see [CHANGELOG.md](CHANGELOG.md) for the full release history and migration notes.
+
+**Considering adoption?** Read [`docs/ADOPTION.md`](docs/ADOPTION.md) for a 1-page decision tree. **Wondering which skills the OSS library should ship?** Read [`docs/recommended-skills.md`](docs/recommended-skills.md) for the curated set targeted at all humans and AI agents.
 
 Shipping today:
 
@@ -38,7 +40,11 @@ See `docs/plans/scripts-roadmap.md` for the planned script surface and [CHANGELO
 
 ## Relationship to Agent Skills
 
-Skill Graph is a graph-aware superset of the [Agent Skills](https://agentskills.io/specification) open standard. It keeps the two required base fields (`name`, `description`) and the optional base fields (`license`, `compatibility`, `allowed-tools`). Skill Graph then adds typed relations, grounding anchors, health metadata, and portability declarations as additional top-level fields.
+Skill Graph extends the [Agent Skills](https://agentskills.io/specification) open standard with a richer authoring contract. It keeps the base standard's two required fields (`name`, `description`) and the optional fields (`license`, `compatibility`, `allowed-tools`) — but tightens their shape and adds typed relations, grounding anchors, health metadata, and portability declarations as additional top-level fields.
+
+**Compatibility is *not* automatic in either direction.** Skill Graph's `compatibility` is an object (with structured `runtimes` / `node` / `notes` keys); Agent Skills' is a free-text string capped at 500 characters. Skill Graph's `name` pattern allows `/` and `:` for namespacing; Agent Skills' is strictly kebab-case. A skill written for either format must be transformed before it is valid in the other. Use `scripts/export-skill.js` to project a Skill Graph skill back into Agent Skills shape (extensions are nested under `metadata:`); use a manual rewrite to import an Agent Skills skill into Skill Graph (Skill Graph requires fields beyond the base two).
+
+Skill Graph then adds, as additional top-level fields beyond the base standard:
 
 The base standard and the Skill Graph extensions:
 

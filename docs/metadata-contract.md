@@ -59,7 +59,9 @@ If an overlay needs to *add* rather than *replace* a field's value (e.g. add key
 
 ## Relationship to the Agent Skills Standard
 
-Skill Graph is a graph-aware superset of the [Agent Skills](https://agentskills.io/specification) open standard. The base standard requires two frontmatter fields (`name` and `description`) and defines four optional fields (`license`, `compatibility`, `metadata`, `allowed-tools`). Skill Graph keeps the two required base fields and three of the four optional base fields (`license`, `compatibility`, `allowed-tools`) as top-level Skill Graph fields. It does not use the base `metadata` field; Skill Graph promotes its own extensions to additional named top-level fields instead.
+Skill Graph extends the [Agent Skills](https://agentskills.io/specification) open standard with a richer authoring contract. The base standard requires two frontmatter fields (`name` and `description`) and defines four optional fields (`license`, `compatibility`, `metadata`, `allowed-tools`). Skill Graph keeps the two required base fields and three of the four optional base fields (`license`, `compatibility`, `allowed-tools`) as top-level Skill Graph fields — though `compatibility` is tightened from a free-text string to a structured object, and `name` allows `/` and `:` for namespacing. It does not use the base `metadata` field; Skill Graph promotes its own extensions to additional named top-level fields instead.
+
+A Skill Graph SKILL.md is *not* automatically a valid Agent Skills file: the `compatibility` shape and `name` pattern diverge. The export transform at `scripts/export-skill.js` produces a `SKILL.agent-skills.md` that is valid against the base standard — flattening `compatibility` to a string and nesting Skill Graph's extension fields under the base `metadata:` key. Round-trip parity is via the export transform, not via direct schema compatibility.
 
 | Field | Source | Skill Graph treatment |
 |---|---|---|
