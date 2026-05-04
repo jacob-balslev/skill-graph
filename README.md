@@ -76,8 +76,9 @@ The repo is organised in five authority tiers. When two files disagree, the high
 
 ### Tier 2 — Explanation (human reflections of the contract)
 
-- `docs/metadata-contract.md` — archetype section map, requiredness groups, strictness rules, schema versioning policy
-- `docs/field-reference.md` — per-field semantics for all 32 v3 authored fields
+- `CONTRACT.md` — **the normative spec.** Top-level public contract: required vs optional fields, semantic rules by field group, authored vs generated, migration notes, schema versioning policy. Terse, boundary-aware, no rationale. The doc you print and tape to the wall.
+- `docs/metadata-contract.md` — **the design rationale.** Archetype map + anatomy + requiredness groups + strictness rules + schema versioning policy AND the *why*: why archetypes are rigid vs anti-rigid (OntoClean per ADR 0003), why the eval-health triple is orthogonal (ADR 0001 + ADR 0006), how JSON-LD `@context` maps every field to W3C terms (ADR 0002). Pedagogical, philosophical, ADR-referencing.
+- `docs/field-reference.md` — per-field semantics for all 32 v3 authored fields, hand-curated prose with examples and lint notes (canonical for authoring). Now the apex of a three-doc structure including `docs/field-reference.generated.md` (auto-generated drift-free index from schema descriptions) and `docs/field-rationale.md` (hand-authored "why this field exists" rationale for the 10 non-obvious fields).
 - `docs/field-decision-guide.md` — decision tables for the hard choices: `scope`, `relations.*`, eval-health triple, `portability`, `project_tags`, and `browse_category` vs `category` vs `project_tags` vs `routing_groups`
 - `docs/manifest-contract.md` — authored → generated bridge with rename map, loss policy, and v2→v3 migration notes
 

@@ -259,6 +259,86 @@ The YAML frontmatter has 32 top-level fields. The schema is the authoritative so
 
 **Conditional requiredness in one line:** `keywords` when the skill is routable, `extends` when `type: overlay`, `grounding` when `scope: codebase`, `superseded_by` when `stability: deprecated`. The schema enforces all four via `allOf` rules. For the decision tables that help you choose between `capability` / `workflow` / `router` / `overlay` or between `codebase` / `reference` / `portable`, see [`docs/field-decision-guide.md`](field-decision-guide.md).
 
+## Why archetypes are rigid vs anti-rigid (OntoClean per ADR 0003)
+
+The four `type` values — `capability`, `workflow`, `router`, `overlay` — are not interchangeable buckets. They partition the skill space along the OntoClean rigidity axis (Guarino & Welty 2002), which is why ADR 0003 tags each archetype as either RIGID, ANTI-RIGID, or DEPENDENT.
+
+| Archetype | Rigidity tag | What it means |
+|---|---|---|
+| `capability` | **Rigid** | A capability skill's identity is intrinsic. "Web accessibility (a11y)" is a stable concept; an entity that is a `capability` cannot stop being a `capability` without ceasing to exist as the same skill. |
+| `workflow` | **Rigid** | Same as capability — a workflow's identity is the procedure it teaches. "Code review" stops being "code review" only by being deleted, not by changing type. |
+| `router` | **Rigid** | A router's identity is its dispatch role; replacing the dispatch logic produces a different router skill, not the same router doing something else. |
+| `overlay` | **Anti-rigid + Dependent** | An overlay's identity is INHERITED from the parent it `extends`. Without the parent, the overlay does not have a coherent identity on its own. The overlay is a specialisation, not a standalone skill. |
+
+The practical consequence is in **migration**: a rigid type cannot change at runtime without invalidating consumer assumptions. If a skill that consumers use as a `capability` is silently switched to `router`, the consumer's keyword scoring, eval interpretation, and routing-eval contract all break. Type changes therefore require a `superseded_by` chain — the old skill becomes `stability: deprecated` and a new skill takes the new type. Rigidity is the invariant that makes this discipline trustworthy.
+
+The anti-rigid `overlay` is treated specially by the lint:
+
+- An overlay must declare `extends: <parent-skill-name>`.
+- The overlay's `## Coverage` should reference parent concepts (heuristic; lint check 14 OntoClean enforcement, ADR 0003).
+- The overlay must NOT declare its own `relations.broader` or `relations.narrower` — those flow through `extends`.
+- Deleting the parent invalidates every overlay that extended it; lint surfaces the dangling reference.
+
+For cross-skill generalisation that is NOT existential dependency (i.e., the child is a coherent standalone skill that just happens to specialise a parent concept), use `relations.broader` instead of `extends`. `react-best-practices` has `broader: [frontend]` because react-best-practices remains coherent even if `frontend` were deleted; it is RIGID. The `extends`-vs-`broader` decision is the OntoClean test in everyday authoring.
+
+**Read this when:** deciding `type:` for a new skill, deciding `extends:` vs `relations.broader:`, or judging whether a refactor that changes a skill's type is safe.
+
+## Why the eval-health triple is orthogonal (ADR 0001 + ADR 0006)
+
+`eval_artifacts`, `eval_state`, and `routing_eval` are three fields that look like they could be one. They are deliberately separate because they answer three orthogonal questions about a skill's eval health:
+
+| Question | Field | Values |
+|---|---|---|
+| Are eval files on disk? | `eval_artifacts` | `none` / `planned` / `present` |
+| What does the eval say about content quality? | `eval_state` | `unverified` / `passing` / `monitored` |
+| Is routing / trigger coverage explicitly evaluated? | `routing_eval` | `absent` / `present` |
+
+Each axis has consumer-visible meaning. A consumer deciding whether to load a skill into an agent context can read all three and make a graded decision: high-quality content + verified routing > unverified content + verified routing > unverified content + absent routing. Conflating them would force the consumer to guess.
+
+The orthogonality also expresses real states cleanly:
+
+- `eval_artifacts: planned + eval_state: unverified` — the author intends to ship evals but hasn't yet; the planned-staleness guard (lint check 6) warns when this sits longer than 180 days.
+- `eval_artifacts: present + eval_state: passing + routing_eval: absent` — content quality is verified but the router has never been tested against this skill's `examples[]`. Common during the early life of a skill.
+- `eval_artifacts: present + eval_state: monitored + routing_eval: present` — fully verified along all three axes; the harness runs on a cadence and routing coverage is part of the eval set. The aspirational state.
+
+Note the asymmetry: `routing_eval` is binary (`absent` / `present`) because the harness either agrees or it doesn't — there is no "monitored routing eval" because lint check 12 enforces routing-eval agreement at every lint run. `eval_state` is ternary because content evals can run once (`passing`) or repeatedly (`monitored`), and the difference is consumer-visible.
+
+The "honesty over green checkmarks" rule (documented at `docs/field-reference.md § routing_eval`) governs the `routing_eval` flip specifically: an author cannot ship `routing_eval: present` until `node scripts/skill-graph-routing-eval.js --skill <name>` returns verdict PASS. Lint check 12 refuses the commit otherwise. The OSS starter library currently sits at all-8-`present` (verified by `node scripts/skill-graph-routing-eval.js --only-asserted`).
+
+For the field-by-field rationale and worked-example confusion-cases, see [`docs/field-rationale.md`](field-rationale.md).
+
+## How JSON-LD context maps fields to W3C terms (ADR 0002)
+
+Skill Graph ships an optional JSON-LD `@context` at `schemas/skill.context.jsonld` that projects every authored field onto a W3C standard vocabulary term. This is the FAIR Interoperability layer (Wilkinson et al. 2016, DOI:10.1038/sdata.2016.18): a Skill Graph skill loaded into a knowledge-graph consumer that already understands SKOS, PROV-O, OWL, or Dublin Core gets RDF-projectable semantics with no Skill-Graph-specific code.
+
+The context is the source of truth for cross-vocabulary mapping. The most consequential mappings:
+
+| Authored field | W3C term | Vocabulary | Why this term |
+|---|---|---|---|
+| `name` | `dcterms:identifier` | Dublin Core | Stable display-layer skill identity |
+| `description` | `dcterms:description` | Dublin Core | Free-text subject summary |
+| `version` | `dcterms:hasVersion` | Dublin Core | Skill content version (semver) |
+| `freshness` | `dcterms:modified` | Dublin Core (xsd:date) | Author's claim of last-meaningful-review date |
+| `category` | `skos:broader` | SKOS | Hierarchical category path projects to a skos:broader chain |
+| `relations.related` / `adjacent` | `skos:related` | SKOS | Symmetric associative relation between concepts |
+| `relations.broader` | `skos:broader` | SKOS | Cross-skill generalisation (target is more general) |
+| `relations.narrower` | `skos:narrower` | SKOS | Cross-skill specialisation (target is more specific) |
+| `relations.boundary` | `sg:disjointOwnership` | Skill-Graph custom | Routing-layer asymmetric handoff — intentionally weaker than OWL class-disjointness (per ADR 0006) |
+| `relations.disjoint_with` | `owl:disjointWith` | OWL | Formal class-theoretic disjointness — distinct from `boundary` (per ADR 0006) |
+| `relations.verify_with` | `prov:wasInformedBy` | PROV-O | Verifier skill informs this skill's claims |
+| `relations.depends_on` | `dcterms:requires` | Dublin Core | Operational prerequisite |
+| `extends` | `prov:wasDerivedFrom` | PROV-O | Overlay derivation relation |
+| `grounding.truth_sources` | `dcterms:source` | Dublin Core | Source resources from which claims are derived |
+| `urn` | `@id` | RFC 8141 + JSON-LD | Globally-unique persistent identifier |
+
+The `boundary` vs `disjoint_with` split is the most semantically subtle entry. Per ADR 0006, `boundary` operates at the **routing layer** (the router uses it to redirect wrong-skill queries to the correct owner — asymmetric, directional) while `disjoint_with` operates at the **ontology layer** (formal class-disjointness — symmetric, reflexive). They are NOT aliases. Treating them as aliases — which ADR 0001 originally proposed — would force consumers to reason about routing claims as if they were ontological claims, which is unsound.
+
+The `@context` also declares the `owl` namespace (since the v1.1.0 update) so the `disjoint_with` mapping resolves cleanly. The `_adr_anchors` block in the context file explicitly cross-references ADRs 0001, 0002, and 0006 so future maintainers see the reasoning for the split mapping in-tree, not only in commit history.
+
+**Coverage policy:** ADR 0002 requires that every top-level authored field appears in `schemas/skill.context.jsonld`. The forthcoming Lint Check 15 (planned per synthesis IP-R6) will enforce coverage automatically. Until that check ships, maintainers verify coverage by hand when adding new fields.
+
+**Read this when:** adding a new top-level field, adding a new `relations.*` predicate, or considering whether to map an existing field to a different W3C term.
+
 ## Schema Strictness
 
 The Skill Graph schemas are intentionally strict.

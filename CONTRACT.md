@@ -3,9 +3,11 @@
 > **Version:** 1.0.0 (schema_version 3, Skill Graph 0.4.x)
 > **Machine-readable schema:** `schemas/skill.v3.schema.json`
 > **Detailed field reference:** `docs/field-reference.md`
-> **Full semantics:** `docs/metadata-contract.md`
+> **Full semantics + design rationale:** `docs/metadata-contract.md`
 
-This document is the top-level public contract for the Skill Graph frontmatter format. It defines which fields are required, what each field means, which fields are authored by humans vs computed by tooling, and how to migrate from older schema versions.
+This document is the top-level public contract for the Skill Graph frontmatter format — the **normative spec**. It defines which fields are required, what each field means in operational terms, which fields are authored by humans vs computed by tooling, and how to migrate from older schema versions. The prose is terse and boundary-aware: every clause is a rule a consumer or author can verify against the schema and against `scripts/skill-lint.js`.
+
+**Companion docs by genre.** This contract is the *what*. The *why* — design rationale, archetype semantics, OntoClean rigidity, the eval-health triple's orthogonality, the JSON-LD W3C mappings, and the philosophical posture behind the field choices — lives in [`docs/metadata-contract.md`](docs/metadata-contract.md). The two docs are coordinated and grow together: a normative rule that lacks a "why" is fragile; a "why" that lacks a normative rule is vapourware. If you are authoring a SKILL.md, you read this file. If you are deciding whether to add a field to the schema, you read both.
 
 ---
 
