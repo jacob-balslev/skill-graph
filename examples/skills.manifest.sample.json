@@ -1945,6 +1945,108 @@
     {
       "activation": {
         "anti_examples": [
+          "decide kebab-case vs snake_case vs camelCase for new database columns",
+          "restructure this doc into a tutorial format with progressive disclosure",
+          "implement Intl.NumberFormat for DKK vs USD currency formatting",
+          "give me the canonical definition of reconciliation in our domain",
+          "review this PR for code quality and missing tests",
+          "rename this function and update every call-site across the repo"
+        ],
+        "examples": [
+          "this variable is named provider but it could mean fulfillment, auth, or payment — what linguistic rule applies?",
+          "rewrite this error message to be specific, blame-free, and actionable",
+          "the word shipping means seller cost in one file and customer charge in another — how do we resolve the polysemy without a glossary cleanup?",
+          "should this helper file be called utils.ts, helpers.ts, or something domain-specific?",
+          "explain how to phrase the same finance concept for an end-user, an agent, and a developer",
+          "audit this UI copy for register mismatch with the end-user audience",
+          "when is an abbreviation acceptable in a code identifier?"
+        ],
+        "keywords": [
+          "polysemy resolution",
+          "polysemy map",
+          "register selection",
+          "audience register",
+          "blame-free error wording",
+          "three-part error structure",
+          "morphology rules",
+          "compound-word ordering",
+          "abbreviation policy",
+          "ambiguous identifier qualification",
+          "linguistic precision",
+          "register mismatch",
+          "unqualified polysemous identifier",
+          "error-message linguistics",
+          "cross-cultural linguistic awareness",
+          "verb-noun naming rule",
+          "what-why-action error structure"
+        ]
+      },
+      "allowed-tools": "Read Grep",
+      "browse_category": "knowledge",
+      "category": "ai-engineering/language",
+      "compatibility": {
+        "notes": "Provider-/runtime-/stack-agnostic. The morphology, polysemy, register, and error-message rules apply to any software product written in any human-spoken language; the casing-convention table is illustrative for typical OSS stacks (TypeScript, SQL, CSS, Python) — substitute the conventions of your own stack."
+      },
+      "description": "Use when choosing names for files, functions, variables, types, or columns; writing or reviewing UI copy, error messages, or onboarding text; disambiguating a term that means different things in different parts of the codebase; or matching tone to a specific audience (end-user, agent, developer). Covers naming precision (morphology, compound-word ordering, abbreviation policy, verb-noun rules), polysemy resolution (qualifying ambiguous identifiers like provider, shipping, cost, margin with their domain), audience-register selection across three audiences (end-user / agent / developer), the three-part What → Why → What-to-do structure for error messages with blame-free framing, and cross-cultural linguistic awareness for product copy. Provides linguistic rationale for naming, copy, and message decisions — the form rules and the disambiguation logic, not the casing convention or the canonical definition. Do NOT use for the casing convention itself (use naming-conventions), for doc structure or doc-type selection (use documentation), or for renaming code across many call sites (use refactor).",
+      "health": {
+        "drift_check": {
+          "last_verified": "2026-05-06"
+        },
+        "eval_artifacts": "planned",
+        "eval_state": "unverified",
+        "freshness": "2026-05-06",
+        "has_grounding": false,
+        "has_relations": true,
+        "lifecycle": {
+          "review_cadence": "quarterly",
+          "stale_after_days": 365
+        },
+        "routing_eval": "absent"
+      },
+      "id": "linguistics",
+      "license": "MIT",
+      "name": "linguistics",
+      "owner": "skill-graph-maintainer",
+      "path": "skills/linguistics/SKILL.md",
+      "portability": {
+        "readiness": "scripted",
+        "targets": [
+          "agent-skills"
+        ]
+      },
+      "relations": {
+        "boundary": [
+          {
+            "reason": "naming-conventions owns the deterministic casing/format choice per artifact kind (kebab-case for files, camelCase for TS, snake_case for SQL); linguistics owns the linguistic rationale (morphology, polysemy resolution, register fit, blame-free copy) — the same 'help me name this' prompt routes by whether the user wants the convention itself or the linguistic basis behind it",
+            "skill": "naming-conventions"
+          },
+          {
+            "reason": "documentation owns doc-type selection, audience targeting, and progressive disclosure of doc content; linguistics owns the prose-form rules inside docs (register match, three-part error structure, blame-free phrasing) — the same 'review this writing' prompt routes by whether the trigger is doc architecture or prose form",
+            "skill": "documentation"
+          },
+          {
+            "reason": "refactor owns behavior-preserving structural change including rename mechanics across call sites; linguistics owns the linguistic decision of what the new name should be — the same 'rename this thing' prompt routes by whether the trigger is the rename mechanics or the naming choice itself",
+            "skill": "refactor"
+          }
+        ],
+        "related": [
+          "prompt-craft",
+          "intent-recognition",
+          "code-review"
+        ],
+        "verify_with": [
+          "naming-conventions",
+          "code-review"
+        ]
+      },
+      "scope": "portable",
+      "stability": "experimental",
+      "type": "capability",
+      "version": "1.0.0"
+    },
+    {
+      "activation": {
+        "anti_examples": [
           "this specific ESLint error is blocking my commit — why?",
           "decide whether to unit-test or integration-test this handler",
           "extract this repeated code pattern into a shared util"
@@ -3657,25 +3759,25 @@
     "by_browse_category": {
       "engineering": 10,
       "frontend": 1,
-      "knowledge": 19,
+      "knowledge": 20,
       "quality": 3,
       "security": 1
     },
     "by_scope": {
       "codebase": 1,
-      "portable": 31,
+      "portable": 32,
       "reference": 2
     },
     "by_stability": {
-      "experimental": 33,
+      "experimental": 34,
       "stable": 1
     },
     "by_type": {
-      "capability": 27,
+      "capability": 28,
       "overlay": 1,
       "router": 1,
       "workflow": 5
     },
-    "total_skills": 34
+    "total_skills": 35
   }
 }
