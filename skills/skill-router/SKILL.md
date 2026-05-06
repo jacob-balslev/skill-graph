@@ -76,6 +76,8 @@ relations:
       reason: "graph-audit verifies ONE skill's metadata; skill-router chooses BETWEEN skills at request time"
     - skill: debugging
       reason: "debugging reproduces a specific routing mis-dispatch from evidence; skill-router designs the routing table itself"
+    - skill: skill-infrastructure
+      reason: "skill-infrastructure analyses routing-miss patterns across the whole library to find systemic gaps; skill-router authors the routing logic for one library at a time"
   # verify_with points at graph-audit specifically for the *routing-metadata
   # integrity* concern: after a routing table is produced, graph-audit
   # confirms every relation target resolves to a real skill, every trigger

@@ -1250,6 +1250,122 @@
     {
       "activation": {
         "anti_examples": [
+          "scaffold a new SKILL.md for our team's deploy procedure",
+          "audit this Skill Graph repo for schema conformance and dangling relation targets",
+          "the manifest sample drifted from the generator — find the mismatch",
+          "improve this prompt's wording to get better outputs",
+          "review this AI-generated PR for correctness",
+          "set up ESLint for our TypeScript repo",
+          "draft an architecture note explaining why we chose Postgres"
+        ],
+        "examples": [
+          "our skill library is growing and we're getting silent decay — eval counts dropping, conflicts emerging — what tooling should we add?",
+          "two of our skills give opposite instructions for the same function — how do we detect this automatically?",
+          "we keep getting skill-router misses on real user queries — how do we surface and close routing gaps?",
+          "design a health-check pipeline for a 200-skill library that runs in CI",
+          "what's a reasonable minimum eval count per skill, and how do we enforce it?",
+          "our skill mirror in `.claude/skills` keeps drifting from the source — what's the parity check?",
+          "we want to add a contradiction-check eval pattern — what does it look like and when do we use it?",
+          "skill-overlap-detector flagged 12 imperative conflicts — how do we triage which to fix vs suppress?"
+        ],
+        "keywords": [
+          "skill library health",
+          "skill system tooling",
+          "skill library decay",
+          "skill library maintenance",
+          "skill census",
+          "skill inventory",
+          "frontmatter validation",
+          "imperative conflict",
+          "skill overlap detection",
+          "skill conflict",
+          "routing gap",
+          "routing miss",
+          "routing health",
+          "eval threshold",
+          "eval minimum",
+          "contradiction check",
+          "negative expectation",
+          "drift sentinel",
+          "truth source hash",
+          "mirror parity",
+          "skill graph health",
+          "production skill library",
+          "skill linter",
+          "skill quality gate",
+          "phantom ref"
+        ]
+      },
+      "allowed-tools": "Read Grep Bash Edit Write",
+      "browse_category": "knowledge",
+      "category": "skill-system/health",
+      "compatibility": {
+        "notes": "Library- and harness-agnostic. Patterns apply to any skill-style library (Skill Graph, Anthropic Agent Skills, Cursor rules, custom in-house skill systems). Specific tool names in this skill (skill-lint, generate-manifest, routing-eval, drift-sentinel) are concrete examples from the Skill Graph reference implementation -- substitute your library's equivalents."
+      },
+      "description": "Use when designing the deterministic health-tooling layer for a skill library, diagnosing why an existing library is decaying invisibly, deciding which categories of automated check to add (inventory, contract consistency, conflict detection, routing health, drift sentinel), debugging eval-threshold violations across many skills at once, or auditing whether a skill-system has the safety nets a production library needs. Covers the five categories of skill-health tooling, the library-as-database mental model, eval quality patterns (minimum thresholds, contradiction-check pattern, negative-expectation requirement), maintenance workflows triggered by batch skill changes, and the anti-patterns that cause skill libraries to decay until agents loading them get worse over time. Do NOT use for authoring an individual SKILL.md (use `skill-scaffold`), for running the conformance audit on the Skill Graph repo itself (use `graph-audit`), or for general lint rule selection across a codebase (use `lint-overlay`).",
+      "health": {
+        "drift_check": {
+          "last_verified": "2026-05-06"
+        },
+        "eval_artifacts": "planned",
+        "eval_state": "unverified",
+        "freshness": "2026-05-06",
+        "has_grounding": false,
+        "has_relations": true,
+        "lifecycle": {
+          "review_cadence": "quarterly",
+          "stale_after_days": 90
+        },
+        "routing_eval": "absent"
+      },
+      "id": "skill-infrastructure",
+      "license": "MIT",
+      "name": "skill-infrastructure",
+      "owner": "skill-graph-maintainer",
+      "path": "skills/skill-infrastructure/SKILL.md",
+      "portability": {
+        "readiness": "scripted",
+        "targets": [
+          "agent-skills"
+        ]
+      },
+      "relations": {
+        "boundary": [
+          {
+            "reason": "skill-scaffold owns authoring methodology for one new SKILL.md; skill-infrastructure owns the deterministic health-tooling layer that watches the entire library after authoring",
+            "skill": "skill-scaffold"
+          },
+          {
+            "reason": "graph-audit is the operational audit of one specific library (Skill Graph), scope: codebase; skill-infrastructure is the portable discipline of designing health tooling for any skill library",
+            "skill": "graph-audit"
+          },
+          {
+            "reason": "lint-overlay covers lint-rule selection and gate placement for general codebases; skill-infrastructure covers the skill-system-specific tooling category that includes lint but extends to overlap, routing-gap, drift, and mirror-parity",
+            "skill": "lint-overlay"
+          },
+          {
+            "reason": "documentation produces durable prose for human readers; skill-infrastructure designs the deterministic checks that no human reads unless violated",
+            "skill": "documentation"
+          }
+        ],
+        "related": [
+          "skill-scaffold",
+          "graph-audit",
+          "testing-strategy"
+        ],
+        "verify_with": [
+          "testing-strategy",
+          "code-review"
+        ]
+      },
+      "scope": "portable",
+      "stability": "experimental",
+      "type": "capability",
+      "version": "1.0.0"
+    },
+    {
+      "activation": {
+        "anti_examples": [
           "audit the graph-audit skill for schema conformance",
           "write a guide explaining how our routing works",
           "reproduce this routing mis-dispatch from production logs"
@@ -1331,6 +1447,10 @@
           {
             "reason": "debugging reproduces a specific routing mis-dispatch from evidence; skill-router designs the routing table itself",
             "skill": "debugging"
+          },
+          {
+            "reason": "skill-infrastructure analyses routing-miss patterns across the whole library to find systemic gaps; skill-router authors the routing logic for one library at a time",
+            "skill": "skill-infrastructure"
           }
         ],
         "verify_with": [
@@ -1794,25 +1914,25 @@
     "by_browse_category": {
       "engineering": 5,
       "frontend": 1,
-      "knowledge": 7,
+      "knowledge": 8,
       "quality": 3,
       "security": 1
     },
     "by_scope": {
       "codebase": 1,
-      "portable": 14,
+      "portable": 15,
       "reference": 2
     },
     "by_stability": {
-      "experimental": 16,
+      "experimental": 17,
       "stable": 1
     },
     "by_type": {
-      "capability": 12,
+      "capability": 13,
       "overlay": 1,
       "router": 1,
       "workflow": 3
     },
-    "total_skills": 17
+    "total_skills": 18
   }
 }
