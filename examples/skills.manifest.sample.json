@@ -2021,6 +2021,119 @@
     {
       "activation": {
         "anti_examples": [
+          "draft a Conventional Commits message for this change",
+          "the release pipeline failed at the tag-creation step — find out why",
+          "review this PR before we merge it",
+          "explain our git policy to new contributors in the docs",
+          "decide if this branching-rule change needs a regression test",
+          "refactor the git helper scripts in our tooling repo"
+        ],
+        "examples": [
+          "set up trunk-based development for a four-person team",
+          "the main branch has 50 merge commits before release — clean up the history",
+          "two agents are working in the same repo and clobbering each other's uncommitted changes — set up worktrees",
+          "tag the v1.2.0 release with provenance back to the closing tracker milestone",
+          "the feature branch is two weeks old and three weeks behind main — rebase or recreate?",
+          "design the hotfix workflow for an urgent production patch off a release tag",
+          "every commit must link back to a tracker ticket — what's the right enforcement layer?",
+          "should we squash, rebase, or merge when integrating a feature branch?"
+        ],
+        "keywords": [
+          "version control",
+          "git workflow",
+          "branching strategy",
+          "trunk-based development",
+          "git flow",
+          "short-lived branch",
+          "feature branch",
+          "merge vs rebase",
+          "linear history",
+          "atomic commit",
+          "squash commit",
+          "cherry-pick",
+          "release tag",
+          "annotated tag",
+          "SemVer release",
+          "hotfix branch",
+          "git worktree",
+          "parallel branch development",
+          "commit provenance",
+          "merge conflict resolution",
+          "protected branch"
+        ]
+      },
+      "allowed-tools": "Read Grep Bash Edit",
+      "browse_category": "engineering",
+      "category": "engineering/version-control",
+      "compatibility": {
+        "notes": "Git-centric. Patterns translate to other DAG-based version-control systems (Mercurial, Jujutsu) with tool-specific syntax substitutions. Centralized systems (SVN, CVS) lack cheap branching and most of this skill's discipline does not apply."
+      },
+      "description": "Use when designing or maintaining the shape of a repository's git history — choosing a branching model, deciding rebase vs merge, sizing commits, linking commits to tracker tickets, tagging releases, running parallel work across worktrees, and resolving the merge conflicts that arise from any of the above. Covers trunk-based development, short-lived feature branches, atomic commit discipline, linear-history conventions (rebase + squash), release tagging with annotated tags and SemVer, hotfix flows from tags, and worktree lifecycle for parallel agents or contributors. Do NOT use for the words inside the commit message (Conventional Commits format, identifier naming — use `naming-conventions`), for chasing a release-pipeline failure (use `debugging`), or for reviewing a PR's content (use `code-review`).",
+      "health": {
+        "drift_check": {
+          "last_verified": "2026-05-06"
+        },
+        "eval_artifacts": "planned",
+        "eval_state": "unverified",
+        "freshness": "2026-05-06",
+        "has_grounding": false,
+        "has_relations": true,
+        "lifecycle": {
+          "review_cadence": "quarterly",
+          "stale_after_days": 90
+        },
+        "routing_eval": "absent"
+      },
+      "id": "version-control",
+      "license": "MIT",
+      "name": "version-control",
+      "owner": "skill-graph-maintainer",
+      "path": "skills/version-control/SKILL.md",
+      "portability": {
+        "readiness": "scripted",
+        "targets": [
+          "agent-skills"
+        ]
+      },
+      "relations": {
+        "boundary": [
+          {
+            "reason": "documentation produces durable prose explaining the version-control policy; version-control owns the discipline that policy describes",
+            "skill": "documentation"
+          },
+          {
+            "reason": "code-review evaluates the *content* of a change before merge; version-control owns the *shape* of history that change leaves behind",
+            "skill": "code-review"
+          },
+          {
+            "reason": "refactor reorganizes code without changing external behavior; version-control reorganizes history without changing the code's content (rebase, squash, cherry-pick)",
+            "skill": "refactor"
+          },
+          {
+            "reason": "naming-conventions owns commit-message wording (Conventional Commits prefix, scope, subject); version-control owns commit *boundaries* (what counts as one commit) and history *shape*",
+            "skill": "naming-conventions"
+          }
+        ],
+        "related": [
+          "documentation",
+          "code-review",
+          "refactor",
+          "naming-conventions",
+          "debugging"
+        ],
+        "verify_with": [
+          "code-review",
+          "documentation"
+        ]
+      },
+      "scope": "portable",
+      "stability": "experimental",
+      "type": "capability",
+      "version": "1.0.0"
+    },
+    {
+      "activation": {
+        "anti_examples": [
           "design our outbound webhook product (we want to deliver events to customers)",
           "the production webhook is failing — find the root cause",
           "explain our webhook patterns in the contributor docs",
@@ -2136,7 +2249,7 @@
   ],
   "summary": {
     "by_browse_category": {
-      "engineering": 7,
+      "engineering": 8,
       "frontend": 1,
       "knowledge": 8,
       "quality": 3,
@@ -2144,19 +2257,19 @@
     },
     "by_scope": {
       "codebase": 1,
-      "portable": 17,
+      "portable": 18,
       "reference": 2
     },
     "by_stability": {
-      "experimental": 19,
+      "experimental": 20,
       "stable": 1
     },
     "by_type": {
-      "capability": 15,
+      "capability": 16,
       "overlay": 1,
       "router": 1,
       "workflow": 3
     },
-    "total_skills": 20
+    "total_skills": 21
   }
 }
