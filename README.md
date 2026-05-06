@@ -112,6 +112,72 @@ The base standard and the Skill Graph extensions:
 
 **Internal supersets.** A consumer library can be a strict superset of the Skill Graph contract by adding governance fields that Skill Graph deliberately does not model (dispatch layers, routing roles, category taxonomy, bundle aggregates). The Development workspace's own `skills/` library does exactly this — see its contract-delta document for how that library extends v2 and why the two contracts are intentionally divergent. Superset libraries should validate against their own richer schema, not against `skill-lint.js`.
 
+## Walkthrough: a real project (Next.js SaaS with Stripe + Postgres)
+
+This is the missing concrete-project example — what does Skill Graph look like applied to a recognizable real-world stack? The directory [`examples/projects/saas-stripe-postgres/`](examples/projects/saas-stripe-postgres/) ships **5 specimen skills** that exercise every contract feature against a Next.js + Stripe + Postgres SaaS:
+
+| Specimen | Archetype | Scope | Demonstrates |
+|---|---|---|---|
+| [`stripe-webhook-signature-verification`](examples/projects/saas-stripe-postgres/skills/stripe-webhook-signature-verification/SKILL.md) | `capability` | `codebase` | Full `grounding` block + pushy description + hierarchical category |
+| [`postgres-rls-pattern`](examples/projects/saas-stripe-postgres/skills/postgres-rls-pattern/SKILL.md) | `capability` | `codebase` | Five concrete `failure_modes` for the eval grader to target |
+| [`nextjs-server-action-validation`](examples/projects/saas-stripe-postgres/skills/nextjs-server-action-validation/SKILL.md) | `capability` | `portable` | The `portable` scope — no `grounding` needed for repo-agnostic knowledge |
+| [`payment-provider-router`](examples/projects/saas-stripe-postgres/skills/payment-provider-router/SKILL.md) | `router` | `codebase` | The `router` archetype with `## Routing Rules` and the anti-default doctrine |
+| [`migrate-orders-to-canonical-schema`](examples/projects/saas-stripe-postgres/skills/migrate-orders-to-canonical-schema/SKILL.md) | `workflow` | `codebase` | The `workflow` archetype with `## Workflow` + `relations.depends_on` |
+
+### (a) The conceptual `relations.depends_on` graph
+
+Read the [specimen pack README](examples/projects/saas-stripe-postgres/README.md) for the full ASCII diagram. The short version: `migrate-orders-to-canonical-schema` (workflow) conceptually depends on `postgres-rls-pattern` (capability) — the workflow's step 4 enables RLS on the new column, and that step is unsafe unless the RLS pattern is authored correctly. `payment-provider-router` (router) dispatches to `stripe-webhook-signature-verification` (capability) and to the analogous PayPal / Adyen primitives.
+
+### (b) A routing trace where the agent picks the right skill
+
+Run on a query against the existing starter skills (the specimens are not in `skills/`, so the route below uses real starters; install a specimen as documented in its README to exercise the route against it):
+
+```bash
+node scripts/skill-graph-route.js "audit my skills for schema conformance"
+```
+
+```
+Query: "audit my skills for schema conformance"
+
+SELECTED
+  Skill                   Score  State       Reason
+  ────────────────────────────────────────────────────────────────────────
+  graph-audit             9      passing     keyword:skill audit, keyword:schema validation, keyword:audit my skills
+  owasp-security          3      unverified  keyword:audit code for security
+
+EXCLUDED
+  Skill                   Score  State       Reason
+  ────────────────────────────────────────────────────────────────────────
+  code-review             —      unverified  in boundary[] of owasp-security: code-review is the holistic per-PR pass that includes security as one of many concerns; owasp-security is the security-specific deep audit
+  testing-strategy        —      passing     in boundary[] of owasp-security: testing-strategy decides what to test broadly; owasp-security defines security-specific test cases as a sub-concern
+
+2 selected, 0 co-loaded, 2 excluded. 0 stale.
+```
+
+Read the trace as evidence: the SELECTED column shows *why* each skill activated (which specific keywords matched), the EXCLUDED column shows which adjacent skills the boundary predicates kept out and *why* — neither is a guess; both are auditable from the SKILL.md frontmatter.
+
+### (c) A drift warning when a truth source moves
+
+The `graph-audit` starter skill is grounded in seven truth sources (schemas, contract docs, scripts). Edit any one of them — say, add a comment to `scripts/skill-lint.js` — then run:
+
+```bash
+node scripts/skill-graph-drift.js
+```
+
+```
+DRIFT         graph-audit
+  DRIFT         scripts/skill-lint.js
+NO_BASELINE   skill-scaffold
+
+13 skill(s): 1 DRIFT, 1 NO_BASELINE, 11 UNGROUNDED
+```
+
+The skill now warns that one of its truth sources moved. The `UNGROUNDED` count is normal — `scope: portable` and `scope: reference` skills don't ground to truth sources, so they're correctly excluded from drift detection.
+
+### Hands-on next step
+
+For a step-by-step 30-minute walkthrough where you author a skill from scratch, lint it, watch lint catch a broken relation, route a real query, and record a drift baseline, see [`docs/QUICKSTART-30MIN.md`](docs/QUICKSTART-30MIN.md).
+
 ## Quick tour
 
 The repo is organised in five authority tiers. When two files disagree, the higher tier wins — and CI enforces every tier boundary automatically. For the full architecture walkthrough, read [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md).
