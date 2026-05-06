@@ -626,11 +626,15 @@ function main() {
   if (outputPath) {
     fs.writeFileSync(outputPath, json, 'utf8');
     console.error(`OK   manifest written to ${outputPath} (${skillEntries.length} skill(s))`);
+    process.exit(0);
   } else {
-    process.stdout.write(json);
+    // Wait for stdout to drain before exiting. Without this callback, process.exit()
+    // can terminate before the pipe buffer flushes when the manifest exceeds the OS
+    // pipe-buffer size (64 KB on macOS), causing silent truncation when the script
+    // is invoked via execFileSync/spawnSync (the harness used by skill-lint's
+    // generator-parity check). See `scripts/skill-lint.js` § "Generator parity".
+    process.stdout.write(json, () => process.exit(0));
   }
-
-  process.exit(0);
 }
 
 if (require.main === module) {
