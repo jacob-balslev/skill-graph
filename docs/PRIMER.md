@@ -307,24 +307,24 @@ Same library, same manifest, same metadata. Different compound decision. The rou
 
 ### 6.5 Routing trace — boundary edge fires on a webhook prompt
 
-Same pattern, different domain. Imagine an adopter library with `webhook-review` (capability, codebase-grounded), `owasp-security` (capability, listed as `verify_with` of `webhook-review`), and `documentation` (capability, listed in `webhook-review.boundary` because docs would otherwise absorb the prompt).
+Same pattern, different domain. Imagine an adopter library with `markdown-post-frontmatter-review` (capability, codebase-grounded), `testing-strategy` (capability, listed as `verify_with` of the review skill), and `documentation` (capability, listed in `markdown-post-frontmatter-review.boundary` because docs would otherwise absorb the prompt).
 
-A query about a specific Stripe webhook signature failure routes like this:
+A query about a specific frontmatter-validation failure routes like this:
 
 ```
-$ node scripts/skill-graph-route.js "why is the stripe webhook intermittently rejecting valid signatures"
-SELECTED  webhook-review     eval_state=passing    keyword:stripe webhook, keyword:signature
-VERIFY    owasp-security     eval_state=passing    verify_with of webhook-review
-EXCLUDED  documentation      —                     in boundary[] of webhook-review: documentation writes prose ABOUT webhook patterns; webhook-review is the verification primitive in code
+$ node scripts/skill-graph-route.js "review my post's frontmatter — the build is rejecting the date format"
+SELECTED  markdown-post-frontmatter-review   eval_state=passing    keyword:frontmatter, keyword:date format
+VERIFY    testing-strategy                   eval_state=passing    verify_with of markdown-post-frontmatter-review
+EXCLUDED  documentation                      —                     in boundary[] of markdown-post-frontmatter-review: documentation writes prose ABOUT the frontmatter format; markdown-post-frontmatter-review is the validation primitive in code
 ```
 
 Three layers fired in one query:
 
-1. **Layer 1** lexical match selected `webhook-review` on two keyword tokens.
-2. **Layer 3 `verify_with`** co-loaded `owasp-security` because `webhook-review` declares it as a verifier — the agent now has the security checklist alongside the implementation review.
-3. **Layer 3 `boundary`** excluded `documentation` because `webhook-review.boundary` explicitly says "documentation writes prose; this skill is the primitive in code." Without that boundary, `documentation` might have outscored `webhook-review` on a query mentioning "review" — the boundary edge prevents that misroute.
+1. **Layer 1** lexical match selected `markdown-post-frontmatter-review` on two keyword tokens.
+2. **Layer 3 `verify_with`** co-loaded `testing-strategy` because the review skill declares it as a verifier — the agent now has the test-coverage checklist alongside the validation primitive.
+3. **Layer 3 `boundary`** excluded `documentation` because the review skill's `boundary` explicitly says "documentation writes prose; this skill is the primitive in code." Without that boundary, `documentation` might have outscored the review skill on a query mentioning "review" — the boundary edge prevents that misroute.
 
-This trace pattern is how the `payment-provider-router` specimen at [`examples/projects/saas-stripe-postgres/skills/payment-provider-router/`](../examples/projects/saas-stripe-postgres/skills/payment-provider-router/SKILL.md) works in concept; install the specimens into your own `skills/` and the same trace runs against them.
+This trace pattern is how the `content-source-router` specimen at [`examples/projects/markdown-static-site/skills/content-source-router/`](../examples/projects/markdown-static-site/skills/content-source-router/SKILL.md) works in concept; install the specimens into your own `skills/` and the same trace runs against them.
 
 ---
 

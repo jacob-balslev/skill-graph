@@ -2,7 +2,7 @@
 
 > **Audience.** A working developer with at least one painful skill — wrong-skill activation on an ambiguous prompt, or a `SKILL.md` quoting a file that no longer exists, or skills that should be project-scoped but live in a shared folder. You have ~30 minutes and a Node 20+ environment.
 >
-> **What you'll do.** Adopt Skill Graph for one painful workflow — author a `webhook-review` skill grounded in real repository files, add a second skill that depends on it, watch the lint catch a broken relation, route a real query, and record a drift baseline so the skill warns you when its truth source moves.
+> **What you'll do.** Adopt Skill Graph for one painful workflow — author a `markdown-post-frontmatter-review` skill grounded in real repository files, add a second skill that depends on it, watch the lint catch a broken relation, route a real query, and record a drift baseline so the skill warns you when its truth source moves.
 >
 > **What you won't do.** Migrate your whole library yet. Pilot on one skill first; the rest follows after you've felt the contract pay off once.
 
@@ -10,12 +10,14 @@
 |---|---|---|
 | M0–M2 | Clone the repo and install | The repo runs with zero external dependencies |
 | M3–M7 | Copy the template into your first skill directory | The authoring flow is copy → rename → adapt → strip → verify |
-| M8–M11 | Fill in the 13 required v3 fields for `webhook-review` | Why each field exists and what it commits you to |
+| M8–M11 | Fill in the 13 required v3 fields for `markdown-post-frontmatter-review` | Why each field exists and what it commits you to |
 | M12–M15 | Lint your first skill | Lint output is the primary debugging surface |
-| M16–M19 | Create a second skill (`webhook-incident-runbook`) with a `relations.depends_on` link | The graph is real — relations enforce that `depends_on` targets exist |
+| M16–M19 | Create a second skill (`post-archive-rebuild`) with a `relations.depends_on` link | The graph is real — relations enforce that `depends_on` targets exist |
 | M20–M24 | Break the relation deliberately and watch lint catch it | The contract fails loud, not silent |
 | M25–M29 | Route a real query and read the routing trace | Why each skill was SELECTED, CO-LOADED, or EXCLUDED |
 | M30 | Record the drift baseline | The skill now knows when its truth source moved |
+
+This walkthrough uses a markdown static-site project as the running example — content under `content/posts/**/*.md`, a build-time validator at `lib/content/parse-frontmatter.ts`, a content schema at `lib/content/schema.ts`. Substitute paths from your own project as you go.
 
 ---
 
@@ -37,12 +39,12 @@ That's it for installation. Skill Graph has zero runtime dependencies — every 
 
 ---
 
-## M3–M7: Copy the template into `webhook-review`
+## M3–M7: Copy the template into `markdown-post-frontmatter-review`
 
 ```bash
-mkdir -p skills/webhook-review
-cp examples/skill-template.md skills/webhook-review/SKILL.md
-ls skills/webhook-review/
+mkdir -p skills/markdown-post-frontmatter-review
+cp examples/skill-template.md skills/markdown-post-frontmatter-review/SKILL.md
+ls skills/markdown-post-frontmatter-review/
 ```
 
 Expected output:
@@ -51,7 +53,7 @@ Expected output:
 SKILL.md
 ```
 
-Open `skills/webhook-review/SKILL.md` in your editor. The template is a *real, valid, schema-conformant* Skill Graph skill whose subject is skill authoring itself. You'll adapt it by:
+Open `skills/markdown-post-frontmatter-review/SKILL.md` in your editor. The template is a *real, valid, schema-conformant* Skill Graph skill whose subject is skill authoring itself. You'll adapt it by:
 
 1. Renaming the identity (`name`, `description`, `version`)
 2. Rewriting `## Coverage`, `## Philosophy`, `## Verification`, `## Do NOT Use When` for your subject
@@ -65,15 +67,15 @@ The template lints clean as-is, so you can incrementally edit and re-lint to cat
 
 The 13 required v3 fields are: `schema_version`, `name`, `description`, `version`, `type`, `browse_category`, `scope`, `owner`, `freshness`, `drift_check`, `eval_artifacts`, `eval_state`, `routing_eval`. The template has all 13 — you're replacing values, not adding fields.
 
-For `webhook-review`, the values look like:
+For `markdown-post-frontmatter-review`, the values look like:
 
 ```yaml
 schema_version: 3
-name: webhook-review
-description: "Use when reviewing or implementing the webhook receiver for a third-party integration — verifying the signature header, reading the raw request body before parsing, returning the correct HTTP status codes, and pairing verification with an idempotency layer. Activate this skill whenever the task touches files under `app/api/webhooks/**` or mentions webhook signature verification — even if the user just says 'the webhook'. Do NOT use for general API authentication patterns (use a different skill) or for chasing a specific webhook failure from logs (use debugging)."
+name: markdown-post-frontmatter-review
+description: "Use when authoring or reviewing the YAML frontmatter of a markdown post — checking required fields (title, date, slug, tags), validating against the content schema, catching ambiguous date formats, and ensuring the slug matches the file path. Activate this skill whenever the task touches files under `content/posts/**/*.md` or the `parsePostFrontmatter()` helper — even if the user just says 'the post'. Do NOT use for general YAML schema design (use a different skill) or for chasing a specific build-time validation failure (use debugging)."
 version: 0.1.0
 type: capability
-browse_category: integration
+browse_category: content
 scope: codebase
 owner: <your-handle-or-team>
 freshness: "2026-05-06"
@@ -84,31 +86,32 @@ eval_state: unverified
 routing_eval: absent
 ```
 
-For `scope: codebase` you also need a `grounding` block — point it at the real webhook handler in your repo:
+For `scope: codebase` you also need a `grounding` block — point it at the real content schema and template post in your repo:
 
 ```yaml
 grounding:
-  domain_object: "Webhook signature verification primitive — the cryptographic check that makes the signature header trustworthy"
+  domain_object: "Markdown post frontmatter — the YAML block at the top of every content file that drives the site's index, routing, and rendering"
   grounding_mode: repo_specific
   truth_sources:
-    - app/api/webhooks/stripe/route.ts
-    - lib/webhooks/verify-signature.ts
-    - .env.example
+    - content/posts/_template.md
+    - lib/content/schema.ts
+    - lib/content/parse-frontmatter.ts
   failure_modes:
-    - signature_check_skipped
-    - raw_body_mutated_before_verify
-    - constructEvent_in_try_catch_with_swallow
+    - missing_required_title_field
+    - ambiguous_date_format_no_timezone
+    - tag_not_in_controlled_vocabulary
+    - slug_mismatch_with_file_path
   evidence_priority: repo_code_first
 ```
 
-Adjust the `truth_sources` paths to match your actual handler files. Strip every `# TEMPLATE NOTE:` and `> **TEMPLATE NOTE:**` blockquote before the next step.
+Adjust the `truth_sources` paths to match your actual content schema and template files. Strip every `# TEMPLATE NOTE:` and `> **TEMPLATE NOTE:**` blockquote before the next step.
 
 ---
 
 ## M12–M15: Lint your first skill
 
 ```bash
-node scripts/skill-lint.js skills/webhook-review
+node scripts/skill-lint.js skills/markdown-post-frontmatter-review
 ```
 
 If everything is correct:
@@ -118,7 +121,7 @@ OK   [T1↔T3]     schemas/ (cross-schema parity)
 OK   [T5 sample] examples/skills.manifest.sample.json
 OK   [T3↔T5]     examples/skills.manifest.sample.json (generator parity)
 OK   [T5 evals]  examples/evals/ (truth_source ranges)
-OK   [T5]        skills/webhook-review/SKILL.md
+OK   [T5]        skills/markdown-post-frontmatter-review/SKILL.md
 
 1 file(s) checked, 0 error(s).
 ```
@@ -126,7 +129,7 @@ OK   [T5]        skills/webhook-review/SKILL.md
 If a required field is missing, the failure looks like:
 
 ```
-FAIL skills/webhook-review/SKILL.md
+FAIL skills/markdown-post-frontmatter-review/SKILL.md
   ─ schema: must have required property 'browse_category'
 
 1 file(s) checked, 1 error(s).
@@ -138,22 +141,22 @@ The lint is opinionated and verbose by design — it tells you the file, the rul
 
 ## M16–M19: Create a second skill with a `depends_on` link
 
-Most pain in skill libraries comes from skills that *depend on* each other but don't say so. Let's add `webhook-incident-runbook` (a workflow skill that runs when a webhook outage happens) and have it declare `depends_on: webhook-review` — the runbook can't proceed if the underlying review skill isn't authored.
+Most pain in skill libraries comes from skills that *depend on* each other but don't say so. Let's add `post-archive-rebuild` (a workflow skill that re-indexes the post archive when frontmatter changes) and have it declare `depends_on: markdown-post-frontmatter-review` — the rebuild can't proceed if the frontmatter primitive isn't authored.
 
 ```bash
-mkdir -p skills/webhook-incident-runbook
-cp examples/skill-template.md skills/webhook-incident-runbook/SKILL.md
+mkdir -p skills/post-archive-rebuild
+cp examples/skill-template.md skills/post-archive-rebuild/SKILL.md
 ```
 
-Edit `skills/webhook-incident-runbook/SKILL.md` to set:
+Edit `skills/post-archive-rebuild/SKILL.md` to set:
 
 ```yaml
 schema_version: 3
-name: webhook-incident-runbook
-description: "Use when a webhook receiver is failing in production — reproduce the failure, isolate to a specific provider, restore service. Activate this skill whenever the task says 'the webhook is down' or mentions a webhook outage. Do NOT use for routine code-review of webhook receivers (use webhook-review)."
+name: post-archive-rebuild
+description: "Use when re-indexing the post archive after one or more frontmatter fields have changed — walking every post, re-extracting the indexed fields, and writing the updated archive page. Activate this skill whenever the task says 'rebuild the archive' or mentions a post-index regeneration after a content edit. Do NOT use for routine authoring of a single post (use markdown-post-frontmatter-review)."
 version: 0.1.0
 type: workflow
-browse_category: integration
+browse_category: content
 scope: portable
 owner: <your-handle>
 freshness: "2026-05-06"
@@ -164,7 +167,7 @@ eval_state: unverified
 routing_eval: absent
 relations:
   depends_on:
-    - skill: webhook-review
+    - skill: markdown-post-frontmatter-review
       min_version: "^0.1.0"
 ```
 
@@ -173,13 +176,13 @@ Body: include the required `## Workflow` section (workflow archetype mandates it
 Lint:
 
 ```bash
-node scripts/skill-lint.js skills/webhook-incident-runbook
+node scripts/skill-lint.js skills/post-archive-rebuild
 ```
 
 Expected:
 
 ```
-OK   [T5]        skills/webhook-incident-runbook/SKILL.md
+OK   [T5]        skills/post-archive-rebuild/SKILL.md
 
 1 file(s) checked, 0 error(s).
 ```
@@ -188,26 +191,26 @@ OK   [T5]        skills/webhook-incident-runbook/SKILL.md
 
 ## M20–M24: Break the relation and watch lint catch it
 
-In `skills/webhook-incident-runbook/SKILL.md`, change the depends_on target from `webhook-review` to a name that doesn't exist yet:
+In `skills/post-archive-rebuild/SKILL.md`, change the `depends_on` target from `markdown-post-frontmatter-review` to a name that doesn't exist:
 
 ```yaml
 relations:
   depends_on:
-    - skill: webhook-review-typo
+    - skill: markdown-post-frontmatter-review-typo
       min_version: "^0.1.0"
 ```
 
 Re-lint:
 
 ```bash
-node scripts/skill-lint.js skills/webhook-incident-runbook
+node scripts/skill-lint.js skills/post-archive-rebuild
 ```
 
 Expected:
 
 ```
-FAIL skills/webhook-incident-runbook/SKILL.md
-  ─ relations.depends_on: "webhook-review-typo" does not match any known skill in skills/
+FAIL skills/post-archive-rebuild/SKILL.md
+  ─ relations.depends_on: "markdown-post-frontmatter-review-typo" does not match any known skill in skills/
 
 1 file(s) checked, 1 error(s).
 ```
@@ -219,7 +222,7 @@ Restore the correct name:
 ```yaml
 relations:
   depends_on:
-    - skill: webhook-review
+    - skill: markdown-post-frontmatter-review
       min_version: "^0.1.0"
 ```
 
@@ -230,52 +233,52 @@ Re-lint and confirm `0 error(s)`.
 ## M25–M29: Route a real query
 
 ```bash
-node scripts/skill-graph-route.js "review my webhook receiver for signature handling"
+node scripts/skill-graph-route.js "review my post's frontmatter for the controlled-vocabulary tag check"
 ```
 
 Expected (your output will list whatever skills exist in your library):
 
 ```
-Query: "review my webhook receiver for signature handling"
+Query: "review my post's frontmatter for the controlled-vocabulary tag check"
 
 SELECTED
-  Skill                   Score  State        Reason
-  ────────────────────────────────────────────────────────────────────────
-  webhook-review          7      unverified   keyword:webhook signature verification, keyword:webhook receiver, keyword:webhook authentication
+  Skill                              Score  State        Reason
+  ──────────────────────────────────────────────────────────────────────────────
+  markdown-post-frontmatter-review   7      unverified   keyword:frontmatter, keyword:controlled-vocabulary, keyword:tag
 
 CO-LOADED
-  Skill                   State        Reason
-  ────────────────────────────────────────────────────────────────────────
-  webhook-incident-runbook unverified  depends_on: webhook-review depends on this skill
+  Skill                              State        Reason
+  ──────────────────────────────────────────────────────────────────────────────
+  post-archive-rebuild               unverified   depends_on: post-archive-rebuild depends on this skill
 
 1 selected, 1 co-loaded, 0 excluded. 0 stale.
 ```
 
 Read the trace as evidence:
 
-- **SELECTED** — the router picked `webhook-review` because three keyword tokens matched. You can see exactly *which* keywords matched, so if the wrong skill activates you can fix the keyword list rather than guess.
-- **CO-LOADED** — `webhook-incident-runbook` is loaded alongside because it `depends_on: webhook-review`. The router respects the graph automatically — you don't have to ask for the dependency.
-- **EXCLUDED** — would appear if any skill named `webhook-review` in its `relations.boundary` (anti-routing). Empty here because no boundary fires.
+- **SELECTED** — the router picked `markdown-post-frontmatter-review` because three keyword tokens matched. You can see exactly *which* keywords matched, so if the wrong skill activates you can fix the keyword list rather than guess.
+- **CO-LOADED** — `post-archive-rebuild` is loaded alongside because it `depends_on: markdown-post-frontmatter-review`. The router respects the graph automatically — you don't have to ask for the dependency.
+- **EXCLUDED** — would appear if any skill named `markdown-post-frontmatter-review` in its `relations.boundary` (anti-routing). Empty here because no boundary fires.
 
 ---
 
 ## M30: Record the drift baseline
 
-`webhook-review` is grounded in three truth sources (the route handler, the verifier, the env example). If any of those files change, the skill might be silently lying. Record the baseline so the drift sentinel can warn you:
+`markdown-post-frontmatter-review` is grounded in three truth sources (the template post, the schema, the parser). If any of those files change, the skill might be silently lying. Record the baseline so the drift sentinel can warn you:
 
 ```bash
-node scripts/skill-graph-drift.js --record --apply skills/webhook-review
+node scripts/skill-graph-drift.js --record --apply skills/markdown-post-frontmatter-review
 ```
 
 Expected:
 
 ```
-Recorded baseline for webhook-review:
-  app/api/webhooks/stripe/route.ts: <sha256...>
-  lib/webhooks/verify-signature.ts: <sha256...>
-  .env.example: <sha256...>
+Recorded baseline for markdown-post-frontmatter-review:
+  content/posts/_template.md: <sha256...>
+  lib/content/schema.ts: <sha256...>
+  lib/content/parse-frontmatter.ts: <sha256...>
 
-Updated skills/webhook-review/SKILL.md frontmatter: drift_check.truth_source_hashes
+Updated skills/markdown-post-frontmatter-review/SKILL.md frontmatter: drift_check.truth_source_hashes
 ```
 
 Run the drift check:
@@ -292,7 +295,7 @@ Expected:
 
 (`UNGROUNDED` = skills with no `grounding` block; that's normal for `scope: portable` and `scope: reference` skills.)
 
-Now edit `app/api/webhooks/stripe/route.ts` (any change — add a comment) and re-run drift:
+Now edit `lib/content/schema.ts` (any change — add a comment) and re-run drift:
 
 ```bash
 node scripts/skill-graph-drift.js
@@ -301,8 +304,8 @@ node scripts/skill-graph-drift.js
 Expected:
 
 ```
-DRIFT         webhook-review
-  DRIFT         app/api/webhooks/stripe/route.ts
+DRIFT         markdown-post-frontmatter-review
+  DRIFT         lib/content/schema.ts
 
 13 skill(s): 1 DRIFT, 0 NO_BASELINE, 12 UNGROUNDED
 ```
@@ -310,7 +313,7 @@ DRIFT         webhook-review
 The skill now warns you that the truth source moved. Re-verify the skill against the changed file (does the `## Verification` checklist still pass?), then re-record the baseline once you've confirmed:
 
 ```bash
-node scripts/skill-graph-drift.js --record --apply skills/webhook-review
+node scripts/skill-graph-drift.js --record --apply skills/markdown-post-frontmatter-review
 ```
 
 ---
@@ -323,7 +326,7 @@ You've adopted Skill Graph for one painful workflow. The contract paid off twice
 |---|---|
 | Migrate your second skill | This document, repeated for the next skill |
 | Understand the full contract | [`docs/PRIMER.md`](PRIMER.md) and [`docs/metadata-contract.md`](metadata-contract.md) |
-| See worked examples in a real project | [`examples/projects/saas-stripe-postgres/README.md`](../examples/projects/saas-stripe-postgres/README.md) |
+| See worked examples in a real project | [`examples/projects/markdown-static-site/README.md`](../examples/projects/markdown-static-site/README.md) |
 | Set up CI integration | [`docs/integrations/github-actions.md`](integrations/github-actions.md) |
 | Decide which skills to author next | [`docs/recommended-skills.md`](recommended-skills.md) |
 

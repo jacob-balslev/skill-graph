@@ -85,9 +85,9 @@ Each skill archetype expects a specific set of body H2 sections. These are the m
 
 | Archetype | Required H2 sections | Example for a real project |
 |---|---|---|
-| `capability` | `## Coverage`, `## Philosophy`, `## Verification`, `## Do NOT Use When` | [`stripe-webhook-signature-verification`](../examples/projects/saas-stripe-postgres/skills/stripe-webhook-signature-verification/SKILL.md) — codebase-grounded with full `grounding` block |
-| `workflow` | `## Coverage`, `## Philosophy`, `## Workflow`, `## Verification`, `## Do NOT Use When` | [`migrate-orders-to-canonical-schema`](../examples/projects/saas-stripe-postgres/skills/migrate-orders-to-canonical-schema/SKILL.md) — codebase-grounded; demonstrates the four-phase NOT NULL backfill workflow |
-| `router` | `## Coverage`, `## Routing Rules`, `## Do NOT Use When` | [`payment-provider-router`](../examples/projects/saas-stripe-postgres/skills/payment-provider-router/SKILL.md) — dispatches to Stripe / PayPal / Adyen primitives by signature header inspection |
+| `capability` | `## Coverage`, `## Philosophy`, `## Verification`, `## Do NOT Use When` | [`markdown-post-frontmatter-validation`](../examples/projects/markdown-static-site/skills/markdown-post-frontmatter-validation/SKILL.md) — codebase-grounded with full `grounding` block |
+| `workflow` | `## Coverage`, `## Philosophy`, `## Workflow`, `## Verification`, `## Do NOT Use When` | [`migrate-posts-to-v2-frontmatter`](../examples/projects/markdown-static-site/skills/migrate-posts-to-v2-frontmatter/SKILL.md) — codebase-grounded; demonstrates the four-phase add-required-field workflow with dry-run gate |
+| `router` | `## Coverage`, `## Routing Rules`, `## Do NOT Use When` | [`content-source-router`](../examples/projects/markdown-static-site/skills/content-source-router/SKILL.md) — dispatches between local markdown / MDX / CMS-synced sources by file extension or content-path prefix |
 | `overlay` | `## Coverage`, `## Overlay Rules`, `## Extends` (name of the base skill), `## Do NOT Use When` | [`lint-overlay`](../skills/lint-overlay/SKILL.md) extends [`testing-strategy`](../skills/testing-strategy/SKILL.md) — adds lint-specific gate placement on top of the base verification framework |
 
 `## Key Files` is recommended for skills that reference concrete repo files. Prefer file paths with line ranges (`src/foo.ts:45-120`) over bare paths when the skill depends on a specific function or section. `## References` is recommended for skills that point at external reading.

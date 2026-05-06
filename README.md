@@ -120,21 +120,25 @@ The base standard and the Skill Graph extensions:
 
 **Internal supersets.** A consumer library can be a strict superset of the Skill Graph contract by adding governance fields that Skill Graph deliberately does not model (dispatch layers, routing roles, category taxonomy, bundle aggregates). The Development workspace's own `skills/` library does exactly this — see its contract-delta document for how that library extends v2 and why the two contracts are intentionally divergent. Superset libraries should validate against their own richer schema, not against `skill-lint.js`.
 
-## Walkthrough: a real project (Next.js SaaS with Stripe + Postgres)
+## Walkthrough: a real project (multi-tenant markdown static site)
 
-This is the missing concrete-project example — what does Skill Graph look like applied to a recognizable real-world stack? The directory [`examples/projects/saas-stripe-postgres/`](examples/projects/saas-stripe-postgres/) ships **5 specimen skills** that exercise every contract feature against a Next.js + Stripe + Postgres SaaS:
+This is the missing concrete-project example — what does Skill Graph look like applied to a recognizable real-world stack? The directory [`examples/projects/markdown-static-site/`](examples/projects/markdown-static-site/) ships **5 specimen skills** that exercise every contract feature against a multi-tenant markdown static site with a build-time image pipeline, a periodic link-rot scan, and a content-source router:
 
 | Specimen | Archetype | Scope | Demonstrates |
 |---|---|---|---|
-| [`stripe-webhook-signature-verification`](examples/projects/saas-stripe-postgres/skills/stripe-webhook-signature-verification/SKILL.md) | `capability` | `codebase` | Full `grounding` block + pushy description + hierarchical category |
-| [`postgres-rls-pattern`](examples/projects/saas-stripe-postgres/skills/postgres-rls-pattern/SKILL.md) | `capability` | `codebase` | Five concrete `failure_modes` for the eval grader to target |
-| [`nextjs-server-action-validation`](examples/projects/saas-stripe-postgres/skills/nextjs-server-action-validation/SKILL.md) | `capability` | `portable` | The `portable` scope — no `grounding` needed for repo-agnostic knowledge |
-| [`payment-provider-router`](examples/projects/saas-stripe-postgres/skills/payment-provider-router/SKILL.md) | `router` | `codebase` | The `router` archetype with `## Routing Rules` and the anti-default doctrine |
-| [`migrate-orders-to-canonical-schema`](examples/projects/saas-stripe-postgres/skills/migrate-orders-to-canonical-schema/SKILL.md) | `workflow` | `codebase` | The `workflow` archetype with `## Workflow` + `relations.depends_on` |
+| [`markdown-post-frontmatter-validation`](examples/projects/markdown-static-site/skills/markdown-post-frontmatter-validation/SKILL.md) | `capability` | `codebase` | Full `grounding` block + pushy description + hierarchical category |
+| [`image-optimization-pipeline-config`](examples/projects/markdown-static-site/skills/image-optimization-pipeline-config/SKILL.md) | `capability` | `codebase` | Five concrete `failure_modes` for the eval grader to target |
+| [`link-rot-detection`](examples/projects/markdown-static-site/skills/link-rot-detection/SKILL.md) | `capability` | `portable` | The `portable` scope — no `grounding` needed for repo-agnostic knowledge |
+| [`content-source-router`](examples/projects/markdown-static-site/skills/content-source-router/SKILL.md) | `router` | `codebase` | The `router` archetype with `## Routing Rules` and the anti-default doctrine |
+| [`migrate-posts-to-v2-frontmatter`](examples/projects/markdown-static-site/skills/migrate-posts-to-v2-frontmatter/SKILL.md) | `workflow` | `codebase` | The `workflow` archetype with `## Workflow` + `relations.depends_on` |
 
 ### (a) The conceptual `relations.depends_on` graph
 
-Read the [specimen pack README](examples/projects/saas-stripe-postgres/README.md) for the full ASCII diagram. The short version: `migrate-orders-to-canonical-schema` (workflow) conceptually depends on `postgres-rls-pattern` (capability) — the workflow's step 4 enables RLS on the new column, and that step is unsafe unless the RLS pattern is authored correctly. `payment-provider-router` (router) dispatches to `stripe-webhook-signature-verification` (capability) and to the analogous PayPal / Adyen primitives.
+Read the [specimen pack README](examples/projects/markdown-static-site/README.md) for the full ASCII diagram. The short version: `migrate-posts-to-v2-frontmatter` (workflow) conceptually depends on `markdown-post-frontmatter-validation` (capability) — the workflow re-validates against the same schema this capability owns; flipping the validator is unsafe unless the capability's contract is authored correctly. `content-source-router` (router) dispatches to `markdown-post-frontmatter-validation` (capability) and to analogous MDX / CMS-source primitives.
+
+### Why this stack
+
+The specimens are deliberately a low-stakes content stack: no payments, no auth, no tenant-isolation boundaries, no cryptographic primitives. If a reader template-copies one of these specimens and gets it slightly wrong, the worst outcome is a broken image variant or a 404 on a bad route — not a customer-affecting incident. The Skill Graph contract features the specimens demonstrate (typed relations, grounding, drift detection, project tags, archetype discipline) work identically against any stack.
 
 ### (b) A routing trace where the agent picks the right skill
 
