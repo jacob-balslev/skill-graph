@@ -2357,35 +2357,40 @@
           "this endpoint is slow under load — find the bottleneck",
           "scan this repo for OWASP top 10 vulnerabilities",
           "run scientific-method debugging on this stack trace",
-          "classify this failure into a problem class before debugging"
+          "I see the symptom but cannot find the root cause of this nil panic",
+          "classify this failure into a problem class before debugging",
+          "pin this regression so the same bug can't slip through again",
+          "decide what test pyramid this feature needs"
         ],
         "examples": [
           "this route returns 500 but I have no idea where the failure starts — walk me through finding the boundary",
           "I have a wrong-total bug — show me how to locate the divergence point",
-          "the build broke after a merge but the error trace is a cascade — where do I start?",
-          "intermittent failure that I cannot reproduce reliably — what's the locate-to-solve workflow?",
-          "two candidate fixes for this null-pointer crash — how do I compare them?",
-          "I patched the symptom but the bug came back two days later — what step did I skip?"
+          "the build broke after a merge but the error trace is a cascade — which file should I open first?",
+          "I see the symptom but I am still in discovery — bound the search space for me",
+          "two candidate fixes for this null-pointer crash — compare blast radius between them",
+          "I have an unfamiliar codebase and need to find where this report is computed wrong",
+          "what step in the locate-to-fix workflow did I skip — the bug came back under different inputs"
         ],
         "keywords": [
-          "locate a bug in unfamiliar codebase",
+          "locate a defect in unfamiliar codebase",
           "failing-boundary identification",
           "first failing boundary",
-          "search-space reduction by symptom",
-          "minimal reproducible example",
-          "symptom vs cause analysis",
-          "root-cause isolation loop",
-          "multi-option fix comparison",
-          "blast-radius comparison",
-          "regression-proof verification",
-          "repro test before fix",
-          "neighbor-path regression check",
-          "explanation-check fix verification",
+          "find where defect originates",
+          "trace symptom backward to source",
+          "search-space reduction by symptom type",
+          "boundary-based fault localization",
           "locate-to-solve workflow",
-          "bounding the search space",
+          "search-space bounding rules",
           "entry-point tracing technique",
-          "differential comparison good vs bad path",
-          "post-fix reflection prevention"
+          "differential good-path vs bad-path comparison",
+          "binary-search a long call chain",
+          "minimal repro for noisy stateful failure",
+          "multi-option fix candidate comparison",
+          "lowest-blast-radius fix selection",
+          "blast-radius comparison between fix candidates",
+          "neighbor-path side-effect check",
+          "explanation-check on a proposed fix",
+          "post-fix reflection prevention promotion"
         ]
       },
       "allowed-tools": "Read Grep",
@@ -2394,7 +2399,7 @@
       "compatibility": {
         "notes": "Language- and stack-agnostic. The locate-to-solve loop, boundary-localization techniques, and verification rules apply to any software bug investigation; specific tool names (binary search, git bisect, MRE) are illustrative — substitute the equivalents of your stack."
       },
-      "description": "Use when you need to locate a bug in an unfamiliar codebase, trace a failure from symptom to source, or choose between multiple candidate fixes after the symptom is observed but before any patch is committed. Provides the locate-to-solve workflow: problem-statement contract, search-space reduction by symptom type, boundary-based fault localization (entry-point tracing, differential comparison, binary search, minimal repro), root-cause isolation (symptom vs cause analysis), multi-option fix generation with blast-radius comparison, regression-proof verification rules (repro test, regression test, neighbor check, blast-radius check, explanation check), and post-fix reflection for prevention. Do NOT use for broad task planning and sequencing once the bug is already localized, for proactive code-quality review of a not-yet-broken codebase, or for performance forensics — those need measurement-first methodology, not fault localization.",
+      "description": "Use when you need to locate a bug in an unfamiliar codebase, trace a failure from symptom to source, or choose between multiple candidate fixes after the symptom is observed but before any patch is committed. Provides the locate-to-solve workflow: problem-statement contract, search-space reduction by symptom type, boundary-based fault localization (entry-point tracing, differential good-vs-bad-path comparison, binary search through the call chain, minimal repro), root-cause isolation (symptom vs cause analysis), multi-option fix generation with blast-radius comparison, post-fix verification gates (reproduce the failure before, confirm it no longer occurs after, neighbor-path side-effect check, blast-radius check, explanation check), and reflection that promotes one-off fixes into prevention mechanisms when the class could recur. Do NOT use for broad task planning and sequencing once the bug is already localized, for designing the test pyramid or regression suite that locks in absence of a bug class, or for performance forensics — those need test-strategy or measurement-first methodologies, not fault localization.",
       "health": {
         "drift_check": {
           "last_verified": "2026-05-06"
@@ -2426,6 +2431,10 @@
           {
             "reason": "debugging is the *execution* of one chosen technique against an already-localized bug; problem-locating-solving is the workflow that produces the localization — same 'I have a bug, what do I do?' prompt routes to debugging when the class is known and to problem-locating-solving when localization is needed first",
             "skill": "debugging"
+          },
+          {
+            "reason": "testing-strategy owns the framework for what tests to write to lock in the absence of a bug class (regression suite design, test pyramid, coverage strategy); problem-locating-solving uses a single verification test as one phase of its locate-to-fix workflow but does not own test design — same 'pin this regression' prompt routes to testing-strategy when the question is what test to write, not how to find the bug",
+            "skill": "testing-strategy"
           },
           {
             "reason": "code-review evaluates the quality and correctness of a specific change at PR scope (proactive); problem-locating-solving investigates already-broken behaviour (reactive) — both can apply to 'look at this code,' but the routing differs by whether a failure has already been observed",
@@ -3112,6 +3121,105 @@
     {
       "activation": {
         "anti_examples": [
+          "review this PR for code quality",
+          "audit this UI for WCAG 2.2 violations",
+          "decide the CSS grid layout for this hero section",
+          "pick the right colors for this status badge",
+          "build the navigation taxonomy for the whole product",
+          "should we use a dropdown or a stepper here"
+        ],
+        "examples": [
+          "this onboarding flow feels confusing — analyze the task structure",
+          "audit this dashboard route for whether it supports the user's top task",
+          "what should be above the fold on this page?",
+          "users keep abandoning this wizard at step 3 — find the breakpoint",
+          "decide what belongs in the first viewport for this analytics page",
+          "diagnose why this multi-step setup has too many decisions",
+          "the team disagrees on what the top task is for this route — settle it"
+        ],
+        "keywords": [
+          "top task analysis",
+          "goal-driven UX review",
+          "route audit workflow",
+          "onboarding flow analysis",
+          "task friction scoring",
+          "five friction dimensions",
+          "dead-end detection",
+          "hidden next-step diagnosis",
+          "hierarchy contract first viewport",
+          "actor and scenario identification",
+          "subtask sequencing skip paths",
+          "flow breakpoint taxonomy",
+          "mobile-only friction",
+          "role-permission confusion",
+          "time-to-value analysis",
+          "task vs goal distinction",
+          "excessive branching detection",
+          "persona-journey route mapping"
+        ]
+      },
+      "allowed-tools": "Read Grep",
+      "browse_category": "knowledge",
+      "category": "design/ux",
+      "compatibility": {
+        "notes": "Stack-agnostic. The actor / scenario / top-task model, the five friction dimensions, the breakpoint taxonomy, and the primary / secondary / supporting hierarchy apply to any UI under review; persona / journey YAML files are illustrative — substitute the equivalents (Notion, Confluence, in-repo Markdown, Figma annotations) of your team."
+      },
+      "description": "Use when auditing a route, defining a route contract, reviewing onboarding or setup flows, diagnosing why a page feels confusing, or when the user asks about top tasks, time-to-value, branching, dead ends, or task complexity. Provides goal-driven UX analysis that turns vague critique into explicit goal → task → subtask decomposition: identifying the actor and scenario, extracting the top task, breaking it into sequential subtasks with skip paths and blocked states, scoring task friction across five dimensions (discoverability, cognitive load, effort, trust, recovery), identifying breakpoints, and producing the primary / secondary / supporting hierarchy contract for the first viewport. Do NOT use for low-level component styling, generic heuristic critique without a user goal, or accessibility-only QA of an existing implementation — those need component, design-critique, or accessibility-specific skills, not goal-driven decomposition.",
+      "health": {
+        "drift_check": {
+          "last_verified": "2026-05-06"
+        },
+        "eval_artifacts": "planned",
+        "eval_state": "unverified",
+        "freshness": "2026-05-06",
+        "has_grounding": false,
+        "has_relations": true,
+        "lifecycle": {
+          "review_cadence": "quarterly",
+          "stale_after_days": 365
+        },
+        "routing_eval": "absent"
+      },
+      "id": "task-analysis",
+      "license": "MIT",
+      "name": "task-analysis",
+      "owner": "skill-graph-maintainer",
+      "path": "skills/task-analysis/SKILL.md",
+      "portability": {
+        "readiness": "scripted",
+        "targets": [
+          "agent-skills"
+        ]
+      },
+      "relations": {
+        "boundary": [
+          {
+            "reason": "code-review judges the quality and correctness of a specific change at PR scope; task-analysis judges whether a route's structure supports the user's top task — same 'review this page' prompt routes by whether the lens is code or user goal",
+            "skill": "code-review"
+          },
+          {
+            "reason": "a11y is accessibility QA against WCAG / ARIA / keyboard / screen-reader contracts on an existing UI; task-analysis is goal-driven decomposition of what the UI must support — same 'review this UI' prompt routes by whether the trigger is accessibility compliance or user-task fit",
+            "skill": "a11y"
+          }
+        ],
+        "related": [
+          "diagnosis",
+          "pattern-recognition",
+          "documentation"
+        ],
+        "verify_with": [
+          "documentation",
+          "a11y"
+        ]
+      },
+      "scope": "portable",
+      "stability": "experimental",
+      "type": "workflow",
+      "version": "1.0.0"
+    },
+    {
+      "activation": {
+        "anti_examples": [
           "my existing test is failing — why?",
           "write a testing-patterns guide for the contributor docs",
           "clean up this duplicated test setup across three files"
@@ -3549,25 +3657,25 @@
     "by_browse_category": {
       "engineering": 10,
       "frontend": 1,
-      "knowledge": 18,
+      "knowledge": 19,
       "quality": 3,
       "security": 1
     },
     "by_scope": {
       "codebase": 1,
-      "portable": 30,
+      "portable": 31,
       "reference": 2
     },
     "by_stability": {
-      "experimental": 32,
+      "experimental": 33,
       "stable": 1
     },
     "by_type": {
       "capability": 27,
       "overlay": 1,
       "router": 1,
-      "workflow": 4
+      "workflow": 5
     },
-    "total_skills": 33
+    "total_skills": 34
   }
 }
