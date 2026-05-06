@@ -433,6 +433,111 @@
     {
       "activation": {
         "anti_examples": [
+          "give me the physical table design with PKs, FKs, and normalization forms",
+          "I need OWL class axioms and reasoning constraints for these concepts",
+          "build the DDD aggregate boundaries and anti-corruption layer",
+          "what hypernymy / meronymy labels apply between these terms",
+          "review this ORM model class for code correctness",
+          "name the entities and fields once we agree on the conceptual model"
+        ],
+        "examples": [
+          "a stakeholder says 'users place orders that ship in multiple boxes' — how do I capture this as a model before naming tables?",
+          "is a refund its own entity or just a payment status — what conceptual test decides that?",
+          "two business stakeholders disagree on whether a cart and an order are the same thing — how should the conceptual model resolve that?",
+          "our domain diagram already mentions UUIDs and cascade-delete — what anti-pattern is that and how do I pull it back?",
+          "this relationship has a date, an amount, and a status — should it stay as a line between entities or become its own entity?",
+          "should this attribute live on the Customer entity or on Order — what's the rule?",
+          "we have Physical, Digital, and Subscription products — how do I model that as generalization without lying about totality?"
+        ],
+        "keywords": [
+          "conceptual model",
+          "conceptual modeling methodology",
+          "domain abstraction",
+          "entity relationship cardinality",
+          "conceptual schema before implementation",
+          "business model to system model",
+          "generalization specialization",
+          "aggregation composition relationship",
+          "reify relationship to entity",
+          "conceptual logical physical layers",
+          "implementation leakage anti-pattern",
+          "unnamed relationship anti-pattern",
+          "god entity anti-pattern",
+          "missing entity anti-pattern",
+          "validate model with stakeholders",
+          "UML class diagram conceptual",
+          "role modeling pattern",
+          "is-a vs has-a vs owns"
+        ]
+      },
+      "allowed-tools": "Read Grep",
+      "browse_category": "knowledge",
+      "category": "modeling/conceptual",
+      "compatibility": {
+        "notes": "Domain- and language-agnostic. The conceptual / logical / physical ladder applies across relational, document, graph, and event-sourced systems."
+      },
+      "description": "Use when translating business requirements into a structured domain representation, designing a new feature from scratch, or validating that a system's structure matches business reality — before any database schema, API endpoint, or aggregate boundary is named. Covers entity / attribute / relationship identification, cardinality (1:1, 1:N, M:N, 0..1, 1..*), generalization vs specialization (disjoint / overlapping, total / partial), aggregation vs composition, role modeling, the conceptual → logical → physical abstraction ladder, validation against business stakeholders' mental models, and the seven anti-patterns (implementation leakage, missing entity, god entity, phantom relationship, premature normalization, attribute-as-entity, unnamed relationship). Do NOT use for database-specific ER diagrams with PK / FK / normalization (use a logical-modeling skill), formal ontology axioms with OWL or RDFS (use an ontology skill), or DDD tactical design (aggregates, bounded contexts) — conceptual modeling stays one layer above all three.",
+      "health": {
+        "drift_check": {
+          "last_verified": "2026-05-06"
+        },
+        "eval_artifacts": "planned",
+        "eval_state": "unverified",
+        "freshness": "2026-05-06",
+        "has_grounding": false,
+        "has_relations": true,
+        "lifecycle": {
+          "review_cadence": "quarterly",
+          "stale_after_days": 365
+        },
+        "routing_eval": "absent"
+      },
+      "id": "conceptual-modeling",
+      "license": "MIT",
+      "name": "conceptual-modeling",
+      "owner": "skill-graph-maintainer",
+      "path": "skills/conceptual-modeling/SKILL.md",
+      "portability": {
+        "readiness": "scripted",
+        "targets": [
+          "agent-skills"
+        ]
+      },
+      "relations": {
+        "boundary": [
+          {
+            "reason": "code-review evaluates implementation output; conceptual-modeling is the pre-implementation domain analysis above it",
+            "skill": "code-review"
+          },
+          {
+            "reason": "naming-conventions decides what to call entities and fields; conceptual-modeling decides what entities and fields exist in the first place",
+            "skill": "naming-conventions"
+          },
+          {
+            "reason": "documentation produces durable prose for a human reader; conceptual-modeling produces a structured domain model that documentation may later describe",
+            "skill": "documentation"
+          },
+          {
+            "reason": "refactor preserves behavior while restructuring code; conceptual-modeling restructures the domain abstraction itself, which usually requires non-behavior-preserving change",
+            "skill": "refactor"
+          }
+        ],
+        "related": [
+          "documentation",
+          "naming-conventions"
+        ],
+        "verify_with": [
+          "documentation"
+        ]
+      },
+      "scope": "portable",
+      "stability": "experimental",
+      "type": "capability",
+      "version": "1.0.0"
+    },
+    {
+      "activation": {
+        "anti_examples": [
           "improve this prompt's wording to get better outputs",
           "scaffold a new SKILL.md for our team's deploy procedure",
           "the router picked the wrong skill for this query — debug it",
@@ -2477,25 +2582,25 @@
     "by_browse_category": {
       "engineering": 9,
       "frontend": 1,
-      "knowledge": 9,
+      "knowledge": 10,
       "quality": 3,
       "security": 1
     },
     "by_scope": {
       "codebase": 1,
-      "portable": 20,
+      "portable": 21,
       "reference": 2
     },
     "by_stability": {
-      "experimental": 22,
+      "experimental": 23,
       "stable": 1
     },
     "by_type": {
-      "capability": 18,
+      "capability": 19,
       "overlay": 1,
       "router": 1,
       "workflow": 3
     },
-    "total_skills": 23
+    "total_skills": 24
   }
 }
