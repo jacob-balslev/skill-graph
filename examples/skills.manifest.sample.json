@@ -2251,6 +2251,107 @@
     {
       "activation": {
         "anti_examples": [
+          "review this code for semantic correctness",
+          "find where the user-auth helper is defined",
+          "design a MECE classification taxonomy for our error catalogue",
+          "investigate why this single failing test is breaking",
+          "trigger an alert when CPU exceeds 80% for 5 minutes",
+          "rewrite this function to be cleaner"
+        ],
+        "examples": [
+          "I keep seeing the same null-pointer crash in three different files — what's the systemic fix?",
+          "audit this codebase for hardcoded colors instead of design tokens",
+          "cluster the errors from this session log into root-cause buckets",
+          "I've fixed this bug five times in five different places — how do I codify a detection rule?",
+          "the agent keeps treating null and zero as the same thing in financial calculations — flag the pattern class",
+          "every PR introduces a new convention violation — what's the lint rule that would prevent it?",
+          "the same Linear ticket keeps reappearing under different titles — how do I deduplicate?"
+        ],
+        "keywords": [
+          "recurring code pattern detection",
+          "anti-pattern audit",
+          "convention drift detection",
+          "error cluster triage",
+          "normalize-then-hash error grouping",
+          "five-whys root cause ladder",
+          "eval as pattern test",
+          "heading hierarchy violation",
+          "design token drift",
+          "null-vs-zero domain encoding",
+          "integer encoding for monetary amounts",
+          "source-rank trust hierarchy",
+          "stale detection rule pruning",
+          "migrated convention dual detection",
+          "pattern lifecycle states",
+          "false-positive exclusion discipline",
+          "three-instance threshold codify",
+          "symptom loop fix churn"
+        ]
+      },
+      "allowed-tools": "Read Grep",
+      "browse_category": "knowledge",
+      "category": "engineering/quality",
+      "compatibility": {
+        "notes": "Language- and stack-agnostic. The recognition loop, clustering method, eval pipeline, and 5-Whys ladder apply to any codebase; the grep patterns and example detection rules are illustrative — substitute the equivalents of your stack."
+      },
+      "description": "Use when auditing code for recurring issues, triaging errors by cluster, detecting drift from established conventions, or when an agent keeps fixing symptoms instead of root causes. Covers the six-step recognition loop (Observe → Cluster → Name → Codify → Detect → Prevent), grep-based audit strategies, error-pattern clustering with normalize-then-hash, board-health patterns (stale tasks, WIP overflow, duplicates), design pattern violations (heading hierarchy, token drift, triple-encoding), domain-encoding patterns (null-vs-zero distinction, integer encoding for monetary amounts, magnitude-conversion at the display boundary, source-rank trust hierarchy), the eval-as-pattern-test pipeline, the 5-Whys for root cause vs symptom analysis, pattern lifecycle states, and six named drift traps. Do NOT use for one-off bug localization without recurrence — fix the bug and move on — or for designing the classification system itself; this skill detects violations of conventions that already exist, while taxonomy design defines the system.",
+      "health": {
+        "drift_check": {
+          "last_verified": "2026-05-06"
+        },
+        "eval_artifacts": "planned",
+        "eval_state": "unverified",
+        "freshness": "2026-05-06",
+        "has_grounding": false,
+        "has_relations": true,
+        "lifecycle": {
+          "review_cadence": "quarterly",
+          "stale_after_days": 365
+        },
+        "routing_eval": "absent"
+      },
+      "id": "pattern-recognition",
+      "license": "MIT",
+      "name": "pattern-recognition",
+      "owner": "skill-graph-maintainer",
+      "path": "skills/pattern-recognition/SKILL.md",
+      "portability": {
+        "readiness": "scripted",
+        "targets": [
+          "agent-skills"
+        ]
+      },
+      "relations": {
+        "boundary": [
+          {
+            "reason": "debugging fixes one specific bug; pattern-recognition identifies the recurring class behind many bugs and proposes a structural fix that prevents the whole class — same recurring-bug prompt routes to debugging for the immediate fix and to pattern-recognition for the systemic rule",
+            "skill": "debugging"
+          },
+          {
+            "reason": "code-review judges quality of a specific change at PR scope; pattern-recognition systematically detects recurring structural issues across the entire codebase — same 'recurring violation in PRs' prompt routes to code-review for blocking that PR and to pattern-recognition for adding a lint rule",
+            "skill": "code-review"
+          }
+        ],
+        "related": [
+          "refactor",
+          "naming-conventions",
+          "lint-overlay",
+          "diagnosis"
+        ],
+        "verify_with": [
+          "context-graph",
+          "graph-audit",
+          "tool-call-strategy"
+        ]
+      },
+      "scope": "portable",
+      "stability": "experimental",
+      "type": "capability",
+      "version": "1.0.0"
+    },
+    {
+      "activation": {
+        "anti_examples": [
           "review this AI-generated PR for correctness",
           "scaffold a new skill that teaches prompt engineering",
           "which skill should the router pick for this query?",
@@ -3345,25 +3446,25 @@
     "by_browse_category": {
       "engineering": 10,
       "frontend": 1,
-      "knowledge": 16,
+      "knowledge": 17,
       "quality": 3,
       "security": 1
     },
     "by_scope": {
       "codebase": 1,
-      "portable": 28,
+      "portable": 29,
       "reference": 2
     },
     "by_stability": {
-      "experimental": 30,
+      "experimental": 31,
       "stable": 1
     },
     "by_type": {
-      "capability": 26,
+      "capability": 27,
       "overlay": 1,
       "router": 1,
       "workflow": 3
     },
-    "total_skills": 31
+    "total_skills": 32
   }
 }
