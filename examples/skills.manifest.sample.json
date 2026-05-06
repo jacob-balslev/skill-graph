@@ -1285,6 +1285,112 @@
     {
       "activation": {
         "anti_examples": [
+          "actually execute scientific-method debugging on this stack trace",
+          "review this AI-generated PR for correctness",
+          "scan this repo for OWASP top 10 vulnerabilities",
+          "design observability instrumentation for this service",
+          "decide which agent should pick up this ticket",
+          "what's the right test pyramid for this feature"
+        ],
+        "examples": [
+          "the agent has been chasing this bug for 30 minutes — what's the structural fix?",
+          "the symptoms span data integrity and UI rendering — which is the root cause?",
+          "the build fails locally but passes in CI — how do I diagnose that class first?",
+          "I have a stack trace and an unhandled exception — what's the cheapest technique?",
+          "intermittent failure that doesn't reproduce on retry — which class is this?",
+          "we ran profiling, instrumentation, and bisect — none converge. What did we misclassify?",
+          "two engineers disagree on whether this is a config issue or a logic error — what evidence settles it?"
+        ],
+        "keywords": [
+          "diagnostic triage software failure",
+          "symptom classification taxonomy",
+          "what kind of bug is this",
+          "which debugging approach",
+          "diagnostic routing framework",
+          "evidence collection before hypothesis",
+          "confidence ladder debugging",
+          "escalation criteria debugging",
+          "cascade vs coincidence failure",
+          "environment ghost",
+          "failure not converging",
+          "misclassified symptom debugging",
+          "stuck at level 1 diagnosis",
+          "debug technique selection matrix",
+          "configuration vs code error",
+          "timing vs logic error",
+          "integration boundary failure",
+          "data integrity vs logic error"
+        ]
+      },
+      "allowed-tools": "Read Grep",
+      "browse_category": "knowledge",
+      "category": "engineering/debugging",
+      "compatibility": {
+        "notes": "Language- and stack-agnostic. The classification taxonomy, evidence protocol, and confidence ladder apply to any software failure investigation; specific technique names (git bisect, EXPLAIN plans, HMAC verification) are illustrative — substitute the equivalents of your stack."
+      },
+      "description": "Use when facing an unknown software failure and unsure which debugging methodology to apply, when multiple symptoms suggest different root causes, or when an initial debugging attempt has not converged after a few iterations. Provides the triage-first diagnostic routing framework that classifies a failure into a problem class and routes it to the right specialist methodology before root-cause analysis begins. Covers nine symptom classes (Logic Error / Runtime Crash / Data Integrity / Timing & Race / Performance / Configuration / Security / Integration / Tooling-Build-Script-path) with a classification decision tree; the universal evidence-collection protocol plus class-specific evidence checklists; the technique-selection matrix (stack-trace reading, data-flow tracing, git bisect, differential comparison, instrumentation, MRE isolation, profiling, boundary probing) with time-cost and evidence prerequisites; the diagnostic confidence ladder (level 0 Symptom → 1 Classified → 2 Localized → 3 Root Cause → 4 Verified Fix) with stuck-state checkpoints; escalation criteria for switching approach or escalating to a human; cross-domain patterns (Cascade, Coincidence, Environment Ghost); diagnostic anti-patterns; and a structured diagnostic-session template. Do NOT use for actually executing scientific debugging (use `debugging` once triage has classified the failure), for code-quality review (use `code-review`), or for proactive observability setup.",
+      "health": {
+        "drift_check": {
+          "last_verified": "2026-05-06"
+        },
+        "eval_artifacts": "planned",
+        "eval_state": "unverified",
+        "freshness": "2026-05-06",
+        "has_grounding": false,
+        "has_relations": true,
+        "lifecycle": {
+          "review_cadence": "quarterly",
+          "stale_after_days": 365
+        },
+        "routing_eval": "absent"
+      },
+      "id": "diagnosis",
+      "license": "MIT",
+      "name": "diagnosis",
+      "owner": "skill-graph-maintainer",
+      "path": "skills/diagnosis/SKILL.md",
+      "portability": {
+        "readiness": "scripted",
+        "targets": [
+          "agent-skills"
+        ]
+      },
+      "relations": {
+        "boundary": [
+          {
+            "reason": "debugging is the *execution* phase (run a chosen technique against an already-classified failure); diagnosis is the *triage* phase before debugging — classify first, then debug",
+            "skill": "debugging"
+          },
+          {
+            "reason": "code-review evaluates code for quality / correctness in advance; diagnosis investigates an already-broken behavior",
+            "skill": "code-review"
+          },
+          {
+            "reason": "owasp-security is a domain-specific scan against a known threat list; diagnosis is the cross-domain triage that routes to security investigation only when symptoms point there",
+            "skill": "owasp-security"
+          },
+          {
+            "reason": "testing-strategy decides what to test proactively; diagnosis decides how to investigate after a test (or production) has revealed a failure",
+            "skill": "testing-strategy"
+          }
+        ],
+        "related": [
+          "debugging",
+          "error-tracking",
+          "code-review"
+        ],
+        "verify_with": [
+          "debugging"
+        ]
+      },
+      "scope": "portable",
+      "stability": "experimental",
+      "type": "capability",
+      "version": "1.0.0"
+    },
+    {
+      "activation": {
+        "anti_examples": [
           "the test suite is failing after my change — find the cause",
           "add an aria-label to this icon button",
           "extract this repeated string-concat into a helper function"
@@ -3010,25 +3116,25 @@
     "by_browse_category": {
       "engineering": 9,
       "frontend": 1,
-      "knowledge": 14,
+      "knowledge": 15,
       "quality": 3,
       "security": 1
     },
     "by_scope": {
       "codebase": 1,
-      "portable": 25,
+      "portable": 26,
       "reference": 2
     },
     "by_stability": {
-      "experimental": 27,
+      "experimental": 28,
       "stable": 1
     },
     "by_type": {
-      "capability": 23,
+      "capability": 24,
       "overlay": 1,
       "router": 1,
       "workflow": 3
     },
-    "total_skills": 28
+    "total_skills": 29
   }
 }
