@@ -97,6 +97,132 @@
     {
       "activation": {
         "anti_examples": [
+          "improve this prompt's wording to get better outputs",
+          "the agent made 17 read calls when 3 greps would have done",
+          "design what skills get loaded for which prompts",
+          "scaffold a new SKILL.md for our orchestration runbook",
+          "review this AI-generated PR for correctness",
+          "the test suite is failing after my change — find the cause",
+          "draft an architecture note explaining why we chose Postgres"
+        ],
+        "examples": [
+          "we want to fan out 40 classification subtasks to subagents — what coordination pattern should we use and what are the failure modes?",
+          "two of our agents claimed the same task and produced duplicate PRs — what atomicity guarantee prevents this?",
+          "the orchestrator burns 6x the budget we planned every Tuesday — where do we add cost visibility and caps?",
+          "an agent loop ran for four hours without progress before anyone noticed — how do we detect silent stalls?",
+          "we keep getting context-contamination bugs where agent B uses stale output from agent A's failed run — fix the protocol",
+          "audit this agent loop and tell me whether it's production-ready or still a demo",
+          "is consensus-of-three worth the 3x cost for security-critical decisions, or is two-pass cheaper and good enough?",
+          "design the lifecycle for a long-running autonomous agent that survives crashes mid-task"
+        ],
+        "keywords": [
+          "agent engineering",
+          "agentic engineering",
+          "multi-agent systems",
+          "production agent system",
+          "orchestration patterns",
+          "orchestrator worker",
+          "fan-out merge",
+          "consensus pattern",
+          "evaluator optimizer",
+          "sequential chain",
+          "two-pass pattern",
+          "task decomposition",
+          "delegation overhead",
+          "claim lock",
+          "claim race",
+          "silent stall",
+          "stall detection",
+          "safety caps",
+          "iteration limit",
+          "cost budget",
+          "idempotency key",
+          "failure recovery",
+          "retry backoff",
+          "escalation path",
+          "context rot",
+          "god agent",
+          "runaway loop",
+          "ghost claim",
+          "telephone game",
+          "file-based coordination",
+          "continuation signal",
+          "exit code protocol",
+          "heartbeat",
+          "flow engineering",
+          "software 3.0"
+        ]
+      },
+      "allowed-tools": "Read Grep Bash Edit Write",
+      "browse_category": "engineering",
+      "category": "ai-engineering/architecture",
+      "compatibility": {
+        "notes": "Provider- and harness-agnostic. Patterns apply across Claude Code, Cursor, Copilot, OpenCode, Aider, Continue, custom Anthropic/OpenAI/Google SDK loops, and self-hosted multi-agent systems. Specific filenames in this skill (continuation.json, claim.lock, session-logs.jsonl) are example artefacts -- substitute your harness's equivalents."
+      },
+      "description": "Use when designing or evaluating a production AI agent system, choosing a multi-agent coordination pattern (orchestrator/worker, fan-out, consensus, sequential chain, evaluator/optimizer), diagnosing coordination failures (claim races, silent stalls, context contamination, runaway loops), or auditing whether an agent loop is truly production-ready. Covers the four pillars (architecture and lifecycle, task decomposition, coordination patterns, production reliability), the six reliability requirements (observability, cost budgets, idempotency, failure recovery, safety caps, claim locks), the delegation decision framework with overhead crossover, and the most common anti-patterns. Do NOT use for prompt wording (use `prompt-craft`), per-call tool efficiency (use `tool-call-strategy`), context-stack design within a single agent (use `context-engineering`), or runtime debugging of a deployed system (use `debugging`).",
+      "health": {
+        "drift_check": {
+          "last_verified": "2026-05-06"
+        },
+        "eval_artifacts": "planned",
+        "eval_state": "unverified",
+        "freshness": "2026-05-06",
+        "has_grounding": false,
+        "has_relations": true,
+        "lifecycle": {
+          "review_cadence": "quarterly",
+          "stale_after_days": 90
+        },
+        "routing_eval": "absent"
+      },
+      "id": "agent-engineering",
+      "license": "MIT",
+      "name": "agent-engineering",
+      "owner": "skill-graph-maintainer",
+      "path": "skills/agent-engineering/SKILL.md",
+      "portability": {
+        "readiness": "scripted",
+        "targets": [
+          "agent-skills"
+        ]
+      },
+      "relations": {
+        "boundary": [
+          {
+            "reason": "prompt-craft optimises a single LLM call's wording; agent-engineering optimises the entire system that composes many calls into a workflow",
+            "skill": "prompt-craft"
+          },
+          {
+            "reason": "tool-call-strategy owns per-call efficiency decisions inside one agent; agent-engineering owns the multi-agent architecture those calls run within",
+            "skill": "tool-call-strategy"
+          },
+          {
+            "reason": "context-engineering owns what reaches a single agent's context window; agent-engineering owns the system architecture that decides which agent runs at all",
+            "skill": "context-engineering"
+          },
+          {
+            "reason": "debugging chases a specific runtime failure; agent-engineering is about preventing classes of coordination failure through architecture",
+            "skill": "debugging"
+          }
+        ],
+        "related": [
+          "context-engineering",
+          "tool-call-strategy",
+          "prompt-craft"
+        ],
+        "verify_with": [
+          "testing-strategy",
+          "code-review"
+        ]
+      },
+      "scope": "portable",
+      "stability": "experimental",
+      "type": "capability",
+      "version": "1.0.0"
+    },
+    {
+      "activation": {
+        "anti_examples": [
           "fix this bug that production users are reporting",
           "refactor this 200-line function into smaller pieces",
           "scaffold a new skill that teaches code review",
@@ -1666,7 +1792,7 @@
   ],
   "summary": {
     "by_browse_category": {
-      "engineering": 4,
+      "engineering": 5,
       "frontend": 1,
       "knowledge": 7,
       "quality": 3,
@@ -1674,19 +1800,19 @@
     },
     "by_scope": {
       "codebase": 1,
-      "portable": 13,
+      "portable": 14,
       "reference": 2
     },
     "by_stability": {
-      "experimental": 15,
+      "experimental": 16,
       "stable": 1
     },
     "by_type": {
-      "capability": 11,
+      "capability": 12,
       "overlay": 1,
       "router": 1,
       "workflow": 3
     },
-    "total_skills": 16
+    "total_skills": 17
   }
 }
