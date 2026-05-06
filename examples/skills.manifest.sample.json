@@ -2969,6 +2969,107 @@
     {
       "activation": {
         "anti_examples": [
+          "I need formal OWL axioms, class restrictions, and reasoning semantics on a knowledge base",
+          "I need the physical database foreign keys and junction-table design for these relationships",
+          "I need to connect external IDs from one platform to canonical IDs in our system operationally",
+          "I need the broader representation choice between graph, frames, rules, or hybrid knowledge systems",
+          "I need to analyze icon metaphors, color connotation, and UI sign systems",
+          "rename this function across all call-sites in the repo"
+        ],
+        "examples": [
+          "our codebase uses customer, client, buyer, and user in different modules — which relation analysis tells us whether this is synonymy, near-synonymy, or distinct domain language?",
+          "a new graph schema uses related_to for every edge — which semantic relation types should replace it so traversal and reasoning stay meaningful?",
+          "is a refund a kind of payment, part of a payment, or the result of a payment action?",
+          "two skills seem close: one owns structure design and one owns assignment into that structure — is that adjacency, a boundary, or a deeper taxonomic relation?",
+          "the word status appears across payments, orders, and fulfillment — how should relation analysis expose the polysemy and guide disambiguation?",
+          "type these knowledge-graph edges so traversal is meaningful instead of generic",
+          "test whether 'every line item is an order' passes the IS-A substitution test"
+        ],
+        "keywords": [
+          "semantic relations",
+          "relation typing",
+          "IS-A relation",
+          "PART-OF relation",
+          "hypernymy hyponymy",
+          "meronymy holonymy",
+          "synonymy versus polysemy",
+          "thematic role analysis",
+          "relation property check",
+          "knowledge-graph edge typing",
+          "substitution test",
+          "relation-vocabulary discipline",
+          "typed-edge taxonomy",
+          "conceptual-relation analysis",
+          "adjacency-vs-boundary disambiguation",
+          "generic related-to anti-pattern"
+        ]
+      },
+      "allowed-tools": "Read Grep",
+      "browse_category": "knowledge",
+      "category": "ai-engineering/knowledge",
+      "compatibility": {
+        "notes": "Vocabulary-layer skill, stack- and storage-agnostic. The relation taxonomy and the substitution / property tests apply to any knowledge graph, concept map, taxonomy, or naming system; downstream implementation skills (ontology, ER modeling, relational mapping) consume the typed relations defined here."
+      },
+      "description": "Use when typing edges in a knowledge graph or concept map; resolving synonym, antonym, polysemy, or homonym confusion in naming; testing whether a connection is IS-A, PART-OF, causal, thematic, or merely vague; explaining the difference between two adjacent concepts or skills; or auditing whether hierarchy, graph, or naming decisions rest on the wrong relation type. Covers taxonomic relations (hypernymy/hyponymy, holonymy/meronymy with the substitution test), associative relations (synonymy, antonymy, polysemy, homonymy, metonymy), thematic relations (agent, patient, instrument, location, source, goal, cause, result, beneficiary), relation properties (symmetry, asymmetry, transitivity, reflexivity, irreflexivity), and the application of all of the above to knowledge-graph edge typing, naming disambiguation, and skill-boundary analysis. Do NOT use for formal ontology axioms with reasoning constraints (use an ontology skill), database foreign-key and junction-table design (use an entity-relationship-modeling skill), or operational data correspondence across systems (use a relational-mapping skill).",
+      "health": {
+        "drift_check": {
+          "last_verified": "2026-05-06"
+        },
+        "eval_artifacts": "planned",
+        "eval_state": "unverified",
+        "freshness": "2026-05-06",
+        "has_grounding": false,
+        "has_relations": true,
+        "lifecycle": {
+          "review_cadence": "quarterly",
+          "stale_after_days": 365
+        },
+        "routing_eval": "absent"
+      },
+      "id": "semantic-relations",
+      "license": "MIT",
+      "name": "semantic-relations",
+      "owner": "skill-graph-maintainer",
+      "path": "skills/semantic-relations/SKILL.md",
+      "portability": {
+        "readiness": "scripted",
+        "targets": [
+          "agent-skills"
+        ]
+      },
+      "relations": {
+        "boundary": [
+          {
+            "reason": "linguistics owns the rules of word form (morphology, polysemy resolution at the identifier level, audience register); semantic-relations owns the typing of meaning connections between concepts (IS-A, PART-OF, thematic roles, relation properties) — the same 'what's the relationship between these two terms?' prompt routes by whether the lens is the term form/morphology or the typed connection between meanings",
+            "skill": "linguistics"
+          },
+          {
+            "reason": "conceptual-modeling builds the full concept structure (which entities, which attributes, which relationships exist); semantic-relations supplies the relation-typing vocabulary used inside that structure (whether a relationship is taxonomic, mereological, thematic, causal) — the same 'model these concepts' prompt routes by whether the user wants the structure built or the relation types named",
+            "skill": "conceptual-modeling"
+          },
+          {
+            "reason": "knowledge-modeling chooses the representation paradigm (graph, frames, rules, hybrid) for a knowledge surface; semantic-relations chooses the relation vocabulary used inside whatever paradigm is picked — the same 'design how to represent this knowledge' prompt routes by whether the trigger is the representation choice or the relation typing",
+            "skill": "knowledge-modeling"
+          }
+        ],
+        "related": [
+          "linguistics",
+          "pattern-recognition",
+          "semantic-center"
+        ],
+        "verify_with": [
+          "linguistics",
+          "code-review"
+        ]
+      },
+      "scope": "portable",
+      "stability": "experimental",
+      "type": "capability",
+      "version": "1.0.0"
+    },
+    {
+      "activation": {
+        "anti_examples": [
           "scaffold a new SKILL.md for our team's deploy procedure",
           "audit this Skill Graph repo for schema conformance and dangling relation targets",
           "the manifest sample drifted from the generator — find the mismatch",
@@ -3960,25 +4061,25 @@
     "by_browse_category": {
       "engineering": 10,
       "frontend": 1,
-      "knowledge": 22,
+      "knowledge": 23,
       "quality": 3,
       "security": 1
     },
     "by_scope": {
       "codebase": 1,
-      "portable": 34,
+      "portable": 35,
       "reference": 2
     },
     "by_stability": {
-      "experimental": 36,
+      "experimental": 37,
       "stable": 1
     },
     "by_type": {
-      "capability": 29,
+      "capability": 30,
       "overlay": 1,
       "router": 1,
       "workflow": 6
     },
-    "total_skills": 37
+    "total_skills": 38
   }
 }
