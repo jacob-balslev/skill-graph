@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-05-06T12:00:00Z",
+  "generated_at": "2026-05-06T00:00:00Z",
   "schema_version": 3,
   "skills": [
     {
@@ -213,6 +213,114 @@
         "verify_with": [
           "testing-strategy",
           "code-review"
+        ]
+      },
+      "scope": "portable",
+      "stability": "experimental",
+      "type": "capability",
+      "version": "1.0.0"
+    },
+    {
+      "activation": {
+        "anti_examples": [
+          "improve this specific prompt for the grader",
+          "review this AI-generated PR for correctness",
+          "design the checkpoint state machine for our loop",
+          "scaffold a new skill that codifies our coding doctrine",
+          "the autonomous loop is stalling — debug it"
+        ],
+        "examples": [
+          "we keep accepting agent-generated code on first try and shipping bugs — what discipline replaces this?",
+          "what autonomy level should I run for a security-sensitive change?",
+          "does measuring lines-of-code per session make sense when an agent generates the code?",
+          "the team is treating prompts and skill files like throwaway notes — what's the alternative framing?",
+          "we want an auto-improve loop for our skill content — how do we constrain it so it doesn't regress?",
+          "what's the conceptual difference between a vibe coding session and an agentic engineering session?",
+          "AI-generated code is shipping with vulnerabilities — what gates should sit between agent output and production?",
+          "how do I match autonomy level to the risk profile of the task?"
+        ],
+        "keywords": [
+          "software 3.0",
+          "vibe coding",
+          "agentic engineering",
+          "autonomy slider",
+          "prompt as code",
+          "karpathy three eras",
+          "autoresearch loop",
+          "ai-generated code quality",
+          "vibe hangover",
+          "llm-native development",
+          "software 1.0 vs 2.0 vs 3.0",
+          "natural language programs",
+          "agent productivity metrics",
+          "rework rate",
+          "agent completion rate",
+          "quality gates ai code",
+          "autonomy levels coding",
+          "ai code security regression"
+        ]
+      },
+      "allowed-tools": "Read Grep",
+      "browse_category": "knowledge",
+      "category": "ai-engineering/concepts",
+      "compatibility": {
+        "notes": "Provider- and runtime-agnostic. The autonomy-slider levels and quality-gate sequence apply to any LLM-coding harness (Claude Code, OpenCode, Cursor, Aider, Copilot Workspace, Continue) that supports a deterministic verify step between agent output and merge."
+      },
+      "description": "Use when reasoning about agent autonomy levels, designing auto-improve loops, evaluating AI-generated code quality, or measuring agent productivity in an LLM-assisted codebase. Covers Karpathy's three eras of software (1.0 explicit / 2.0 learned / 3.0 natural-language), the vibe-coding-vs-agentic-engineering distinction, the 0–5 autonomy slider with task-type recommendations, the one-asset / one-metric / one-time-box AutoResearch loop, Software 3.0 productivity metrics, and the documented quality regressions of ungated AI-generated code (the 'vibe hangover'). Do NOT use for choosing a specific autonomy-loop topology (use `agent-engineering`), for the per-prompt authoring discipline (use `prompt-craft`), or for reviewing the AI-generated code that comes out of a Software 3.0 workflow (use `code-review`).",
+      "health": {
+        "drift_check": {
+          "last_verified": "2026-05-06"
+        },
+        "eval_artifacts": "planned",
+        "eval_state": "unverified",
+        "freshness": "2026-05-06",
+        "has_grounding": false,
+        "has_relations": true,
+        "lifecycle": {
+          "review_cadence": "quarterly",
+          "stale_after_days": 180
+        },
+        "routing_eval": "absent"
+      },
+      "id": "ai-native-development",
+      "license": "MIT",
+      "name": "ai-native-development",
+      "owner": "skill-graph-maintainer",
+      "path": "skills/ai-native-development/SKILL.md",
+      "portability": {
+        "readiness": "scripted",
+        "targets": [
+          "agent-skills"
+        ]
+      },
+      "relations": {
+        "boundary": [
+          {
+            "reason": "prompt-craft is the per-prompt authoring discipline; ai-native-development is the meta-frame that explains why prompts are source code",
+            "skill": "prompt-craft"
+          },
+          {
+            "reason": "agent-engineering owns the production reliability discipline (orchestration, error budgets, observability); ai-native-development owns the conceptual model that motivates those concerns",
+            "skill": "agent-engineering"
+          },
+          {
+            "reason": "code-review evaluates the AI-generated output; ai-native-development frames why that output exists and how to size the gates around it",
+            "skill": "code-review"
+          },
+          {
+            "reason": "tool-call-strategy is the tactical layer for an agent's tool dispatch; ai-native-development is the conceptual layer above it",
+            "skill": "tool-call-strategy"
+          }
+        ],
+        "related": [
+          "prompt-craft",
+          "agent-engineering",
+          "code-review",
+          "skill-router"
+        ],
+        "verify_with": [
+          "code-review",
+          "testing-strategy"
         ]
       },
       "scope": "portable",
@@ -2369,25 +2477,25 @@
     "by_browse_category": {
       "engineering": 9,
       "frontend": 1,
-      "knowledge": 8,
+      "knowledge": 9,
       "quality": 3,
       "security": 1
     },
     "by_scope": {
       "codebase": 1,
-      "portable": 19,
+      "portable": 20,
       "reference": 2
     },
     "by_stability": {
-      "experimental": 21,
+      "experimental": 22,
       "stable": 1
     },
     "by_type": {
-      "capability": 17,
+      "capability": 18,
       "overlay": 1,
       "router": 1,
       "workflow": 3
     },
-    "total_skills": 22
+    "total_skills": 23
   }
 }
