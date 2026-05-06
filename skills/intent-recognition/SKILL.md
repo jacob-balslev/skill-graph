@@ -48,12 +48,12 @@ examples:
   - "the agent classified everything as Modification because there's no exception for credentials"
   - "what trigger phrases should activate this skill in our harness?"
 anti_examples:
-  - "design the deterministic safety hook that blocks destructive commands"     # → hook-based guardrail
-  - "decide whether to use a switch or a chain of ifs"                          # → code-logic / code-quality
-  - "actually execute the migration after we've classified the risk"            # → task execution
-  - "scan this repo for OWASP top 10 vulnerabilities"                           # → owasp-security
-  - "review this AI-generated PR for correctness"                               # → code-review
-  - "the loop is stalling — what's the steering signal"                         # → an agent-control skill
+  - "design the deterministic safety hook that blocks destructive commands" # → hook-based guardrail
+  - "decide whether to use a switch or a chain of ifs" # → code-logic / code-quality
+  - "actually execute the migration after we've classified the risk" # → task execution
+  - "scan this repo for OWASP top 10 vulnerabilities" # → owasp-security
+  - "review this AI-generated PR for correctness" # → code-review
+  - "the loop is stalling — what's the steering signal" # → an agent-control skill
 relations:
   boundary:
     - skill: owasp-security
@@ -89,36 +89,36 @@ Pre-execution action classification for any agent that can call tools with side 
 
 ## Philosophy
 
-Agents execute tool calls at machine speed with no undo. Without an explicit pre-execution classification step, `git reset --hard` runs with the same ease as `cat README.md`. The cost of a single misclassified destructive action — wiped uncommitted work, dropped database, force-pushed branch — exceeds the cost of *every* classification step the agent will ever run. The math is simple: classification is cheap, regret is expensive.
+Agents execute tool calls at machine speed with no undo. Without an explicit pre-execution classification step, `git reset --hard` runs with the same ease as `cat README.md`. The cost of a single misclassified destructive action — wiped uncommitted work, dropped database, force-pushed branch — exceeds the cost of _every_ classification step the agent will ever run. The math is simple: classification is cheap, regret is expensive.
 
-The most subtle failure mode is *target-content elevation*. Reading a file is a Passive operation in the abstract. Reading a `.env` file is Reconnaissance because the *target* is sensitive — credentials, connection strings, API keys. The tier comes from the combination of operation *and* target, not the operation alone. A classifier that looks only at the verb misses half the risk surface.
+The most subtle failure mode is _target-content elevation_. Reading a file is a Passive operation in the abstract. Reading a `.env` file is Reconnaissance because the _target_ is sensitive — credentials, connection strings, API keys. The tier comes from the combination of operation _and_ target, not the operation alone. A classifier that looks only at the verb misses half the risk surface.
 
-The Identify / Confirm / Verify sequence is the second non-negotiable. *Identify* surfaces the agent's own reasoning about the action; if the agent can't state the tier and the rationale, it shouldn't fire the tool. *Confirm* tests the action against the agreed plan — drift between "what we agreed to do" and "what the next tool call will do" is itself a signal. *Verify* asks whether a safer alternative exists and is the step where most preventable destructive actions get caught.
+The Identify / Confirm / Verify sequence is the second non-negotiable. _Identify_ surfaces the agent's own reasoning about the action; if the agent can't state the tier and the rationale, it shouldn't fire the tool. _Confirm_ tests the action against the agreed plan — drift between "what we agreed to do" and "what the next tool call will do" is itself a signal. _Verify_ asks whether a safer alternative exists and is the step where most preventable destructive actions get caught.
 
 ## 1. The Four-Tier Taxonomy
 
-| Tier | Name | Examples | Risk |
-|---|---|---|---|
-| 1 | **Passive / Read** | View a non-sensitive file, list a directory, grep for a string | Low |
-| 2 | **Reconnaissance** | Read `.env`, view a `credentials.*` file, run a SQL `SELECT` against a sensitive table, list installed packages and versions | Moderate (information exposure even without state change) |
-| 3 | **Modification** | Write or edit a source file, run a routine `git commit`, run a non-destructive `INSERT` or `UPDATE` with a `WHERE` clause | Standard |
-| 4 | **Destructive / Irreversible** | `git reset --hard`, `git push --force`, `DROP TABLE`, `TRUNCATE`, `DELETE FROM ...` without `WHERE`, `rm -rf`, `npm publish`, credential rotation, dependency lockfile rewrite | Critical — requires explicit justification |
+| Tier | Name                           | Examples                                                                                                                                                                       | Risk                                                      |
+| ---- | ------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | --------------------------------------------------------- |
+| 1    | **Passive / Read**             | View a non-sensitive file, list a directory, grep for a string                                                                                                                 | Low                                                       |
+| 2    | **Reconnaissance**             | Read `.env`, view a `credentials.*` file, run a SQL `SELECT` against a sensitive table, list installed packages and versions                                                   | Moderate (information exposure even without state change) |
+| 3    | **Modification**               | Write or edit a source file, run a routine `git commit`, run a non-destructive `INSERT` or `UPDATE` with a `WHERE` clause                                                      | Standard                                                  |
+| 4    | **Destructive / Irreversible** | `git reset --hard`, `git push --force`, `DROP TABLE`, `TRUNCATE`, `DELETE FROM ...` without `WHERE`, `rm -rf`, `npm publish`, credential rotation, dependency lockfile rewrite | Critical — requires explicit justification                |
 
 Every tool call gets a tier before it fires. No exceptions, including for "familiar" commands.
 
 ## 2. Operation-vs-Target Rule
 
-The tier comes from the combination of *operation* and *target*. The same operation has a different tier depending on what it touches.
+The tier comes from the combination of _operation_ and _target_. The same operation has a different tier depending on what it touches.
 
-| Operation | Generic target | Sensitive target | Tier shift |
-|---|---|---|---|
-| Read | Source file | `.env`, `credentials.*`, private key | Passive → Reconnaissance |
-| Read | Local DB | Production DB or secrets table | Passive → Reconnaissance |
-| Write | Source file | Lockfile, environment config, public-key registry | Modification → Modification (still standard) |
-| Run | Script with no side effects | Script with side effects (install, deploy, mutate prod) | Passive → Modification or Destructive |
-| Git push | Topic branch | Main / master, force-push | Modification → Destructive (force-push) |
+| Operation | Generic target              | Sensitive target                                        | Tier shift                                   |
+| --------- | --------------------------- | ------------------------------------------------------- | -------------------------------------------- |
+| Read      | Source file                 | `.env`, `credentials.*`, private key                    | Passive → Reconnaissance                     |
+| Read      | Local DB                    | Production DB or secrets table                          | Passive → Reconnaissance                     |
+| Write     | Source file                 | Lockfile, environment config, public-key registry       | Modification → Modification (still standard) |
+| Run       | Script with no side effects | Script with side effects (install, deploy, mutate prod) | Passive → Modification or Destructive        |
+| Git push  | Topic branch                | Main / master, force-push                               | Modification → Destructive (force-push)      |
 
-When in doubt about the target, classify *up*, not down.
+When in doubt about the target, classify _up_, not down.
 
 ## 3. The Identify / Confirm / Verify Sequence
 
@@ -127,6 +127,7 @@ Before executing any tier-3 or tier-4 tool call:
 ### Identify
 
 State explicitly:
+
 - The exact action (full command, full target path)
 - The classified tier
 - The reason this action is needed
@@ -136,25 +137,26 @@ If the agent cannot complete this sentence — "I'm about to run X (tier Y) beca
 ### Confirm
 
 Check the action against the active plan or task spec:
+
 - Was this action agreed to?
 - Does the spec name the same target?
 - If the action escalates a previously-agreed tier (e.g., the spec said "modify"; the proposed action is "destroy"), is the escalation explicitly authorized?
 
-Drift between agreed action and proposed action is the signal. The right response to drift is to *re-confirm with the human*, not to proceed.
+Drift between agreed action and proposed action is the signal. The right response to drift is to _re-confirm with the human_, not to proceed.
 
 ### Verify
 
 Ask: is there a non-destructive alternative that achieves the same goal?
 
-| Destructive | Non-destructive alternative |
-|---|---|
-| `git reset --hard` | `git revert` (preserves history) or `git stash` (preserves work) |
-| `git push --force` | `git push --force-with-lease` (fails if remote moved unexpectedly) |
-| `DROP TABLE x` | `ALTER TABLE x RENAME TO x_archived_<date>` (reversible) |
-| `DELETE FROM x WHERE condition` | `UPDATE x SET deleted_at = now() WHERE condition` (soft delete) |
-| `rm -rf <dir>` | `mv <dir> <dir>.archived.<date>` (still on disk; recoverable) |
-| `npm publish` | `npm publish --dry-run` first (sees the package; doesn't push) |
-| Lockfile rewrite | Smaller dependency change scoped to one package |
+| Destructive                     | Non-destructive alternative                                        |
+| ------------------------------- | ------------------------------------------------------------------ |
+| `git reset --hard`              | `git revert` (preserves history) or `git stash` (preserves work)   |
+| `git push --force`              | `git push --force-with-lease` (fails if remote moved unexpectedly) |
+| `DROP TABLE x`                  | `ALTER TABLE x RENAME TO x_archived_<date>` (reversible)           |
+| `DELETE FROM x WHERE condition` | `UPDATE x SET deleted_at = now() WHERE condition` (soft delete)    |
+| `rm -rf <dir>`                  | `mv <dir> <dir>.archived.<date>` (still on disk; recoverable)      |
+| `npm publish`                   | `npm publish --dry-run` first (sees the package; doesn't push)     |
+| Lockfile rewrite                | Smaller dependency change scoped to one package                    |
 
 If a non-destructive alternative exists and the destructive form was not specifically requested, prefer the non-destructive form.
 
@@ -173,14 +175,14 @@ These triggers are deliberately broad. False positives (classifying a Passive ac
 
 ## 5. Anti-Patterns
 
-| Anti-pattern | Why it fails | Correct approach |
-|---|---|---|
-| Classifying *all* reads as Passive | A read of `.env` is Reconnaissance — credential exposure is the risk even with no state change | Check operation *and* target type |
-| Treating `npm install` / `pnpm install` as Passive | Lockfile rewrites and node_modules churn affect reproducibility and can pull in compromised packages | Classify any environment-affecting command as at least Modification |
-| Skipping classification for "familiar" commands | `git push` is routine; `git push --force origin main` is Destructive — flags change tier | Classify every tool call regardless of familiarity |
-| Classifying force-push as Modification | Force-push rewrites remote history and cannot be `git checkout`-ed back | Any history-rewriting or unrecoverable action is Destructive |
-| Proceeding with Destructive without checking alternatives | `git reset --hard` instead of `git revert` is the single most common preventable loss | Run the Verify step every time |
-| Conflating Reconnaissance with Passive because "no state changes" | Information exposure (logging credentials, leaking connection strings into chat history) is itself a state change at the system level | Reconnaissance is its own tier for a reason |
+| Anti-pattern                                                      | Why it fails                                                                                                                          | Correct approach                                                    |
+| ----------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------- |
+| Classifying _all_ reads as Passive                                | A read of `.env` is Reconnaissance — credential exposure is the risk even with no state change                                        | Check operation _and_ target type                                   |
+| Treating `npm install` / `pnpm install` as Passive                | Lockfile rewrites and node_modules churn affect reproducibility and can pull in compromised packages                                  | Classify any environment-affecting command as at least Modification |
+| Skipping classification for "familiar" commands                   | `git push` is routine; `git push --force origin main` is Destructive — flags change tier                                              | Classify every tool call regardless of familiarity                  |
+| Classifying force-push as Modification                            | Force-push rewrites remote history and cannot be `git checkout`-ed back                                                               | Any history-rewriting or unrecoverable action is Destructive        |
+| Proceeding with Destructive without checking alternatives         | `git reset --hard` instead of `git revert` is the single most common preventable loss                                                 | Run the Verify step every time                                      |
+| Conflating Reconnaissance with Passive because "no state changes" | Information exposure (logging credentials, leaking connection strings into chat history) is itself a state change at the system level | Reconnaissance is its own tier for a reason                         |
 
 ## Verification
 
@@ -193,11 +195,11 @@ These triggers are deliberately broad. False positives (classifying a Passive ac
 
 ## Do NOT Use When
 
-| Use instead | When |
-|---|---|
-| A hook-based guardrail (deterministic blocker, e.g. PreToolUse hook in Claude Code) | Setting up *reactive* / *structural* enforcement that fires on a pattern match in the harness — that is hook-pattern territory; this skill is the agent-side cognitive classifier |
-| A code-quality / code-logic skill | Deciding *what* the code should do — implementation correctness rather than action risk |
-| Task execution | Actually doing the work after classification has cleared the action |
-| `owasp-security` | A domain audit against a known threat catalog (Top 10) — that is a class of investigation, not per-action classification |
-| `code-review` | Reviewing an artefact for quality — orthogonal to action-risk classification |
-| `version-control` | The general discipline of using git well — this skill is the moment-of-execution gate on specific git commands |
+| Use instead                                                                         | When                                                                                                                                                                              |
+| ----------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| A hook-based guardrail (deterministic blocker, e.g. PreToolUse hook in Claude Code) | Setting up _reactive_ / _structural_ enforcement that fires on a pattern match in the harness — that is hook-pattern territory; this skill is the agent-side cognitive classifier |
+| A code-quality / code-logic skill                                                   | Deciding _what_ the code should do — implementation correctness rather than action risk                                                                                           |
+| Task execution                                                                      | Actually doing the work after classification has cleared the action                                                                                                               |
+| `owasp-security`                                                                    | A domain audit against a known threat catalog (Top 10) — that is a class of investigation, not per-action classification                                                          |
+| `code-review`                                                                       | Reviewing an artefact for quality — orthogonal to action-risk classification                                                                                                      |
+| `version-control`                                                                   | The general discipline of using git well — this skill is the moment-of-execution gate on specific git commands                                                                    |

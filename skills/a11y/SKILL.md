@@ -57,14 +57,16 @@ examples:
   - "add proper labels to these form fields so assistive tech can read them"
   - "review this dropdown menu for arrow-key navigation and focus return"
 anti_examples:
-  - "rewrite this error message at a 6th-grade reading level"  # documentation covers reading level and audience fit
-  - "clean up this accessibility code without changing how it behaves"  # refactor owns behavior preservation
+  - "rewrite this error message at a 6th-grade reading level" # documentation covers reading level and audience fit
+  - "clean up this accessibility code without changing how it behaves" # refactor owns behavior preservation
 relations:
   boundary:
     - skill: refactor
       reason: "refactor is behavior-preserving code modification; a11y is observable user-facing behavior"
     - skill: documentation
       reason: "documentation owns prose reading-level and audience fit; a11y owns assistive-tech behavior"
+    - skill: diagnosis
+      reason: "diagnosis classifies failure symptoms (Logic / Runtime / Performance / etc.) for triage; a11y owns assistive-tech behavior. The phrase 'rewrite this error message...' is a documentation/UX concern, not a diagnosis or a11y concern — diagnosis is named here so the router excludes it from a11y's positive scope."
   verify_with:
     - testing-strategy
 portability:
@@ -92,16 +94,16 @@ Accessible interaction is structural, not cosmetic. It is decided by the primiti
 
 The single highest-leverage accessibility decision is picking the right HTML primitive before styling. A wrong primitive cannot be rescued by ARIA; the right primitive usually needs no ARIA at all.
 
-| User intent | Correct primitive | Wrong primitives (common mistakes) |
-|---|---|---|
-| Trigger an action on the same page | `<button type="button">` | `<a href="#">`, `<div onclick>`, `<span role="button">` |
-| Navigate to a different URL | `<a href="…">` | `<button onclick=navigate>`, `<div onclick>` |
-| Group related form controls | `<fieldset>` + `<legend>` | `<div>` with a heading above it |
-| Label a form control | `<label for="…">` (or wrapping `<label>`) | `<div>` text next to the input, `placeholder` only |
-| Show a collapsible section | `<details>` + `<summary>` | `<div>` with JS toggle and no ARIA |
-| Present tabular data | `<table>` + `<th scope="…">` | `<div>` grid, CSS grid with no semantic role |
-| Announce a status change | `<output>` or `role="status"` live region | Toast that only renders visually |
-| Interactive widget not covered above | Native element + tested keyboard + ARIA pattern | Custom `<div>` with ad-hoc `role` and handlers |
+| User intent                          | Correct primitive                               | Wrong primitives (common mistakes)                      |
+| ------------------------------------ | ----------------------------------------------- | ------------------------------------------------------- |
+| Trigger an action on the same page   | `<button type="button">`                        | `<a href="#">`, `<div onclick>`, `<span role="button">` |
+| Navigate to a different URL          | `<a href="…">`                                  | `<button onclick=navigate>`, `<div onclick>`            |
+| Group related form controls          | `<fieldset>` + `<legend>`                       | `<div>` with a heading above it                         |
+| Label a form control                 | `<label for="…">` (or wrapping `<label>`)       | `<div>` text next to the input, `placeholder` only      |
+| Show a collapsible section           | `<details>` + `<summary>`                       | `<div>` with JS toggle and no ARIA                      |
+| Present tabular data                 | `<table>` + `<th scope="…">`                    | `<div>` grid, CSS grid with no semantic role            |
+| Announce a status change             | `<output>` or `role="status"` live region       | Toast that only renders visually                        |
+| Interactive widget not covered above | Native element + tested keyboard + ARIA pattern | Custom `<div>` with ad-hoc `role` and handlers          |
 
 ### When ARIA is appropriate
 
@@ -121,7 +123,7 @@ This skill ships a comprehension-eval artifact at [`examples/evals/a11y.json`](.
 
 ## Do NOT Use When
 
-| Use instead | When |
-|---|---|
-| `documentation` | The task is prose structure or reading-level clarity, not interaction accessibility |
-| `refactor` | The task is behavior-preserving code cleanup — refactoring does not change what assistive tech perceives |
+| Use instead     | When                                                                                                     |
+| --------------- | -------------------------------------------------------------------------------------------------------- |
+| `documentation` | The task is prose structure or reading-level clarity, not interaction accessibility                      |
+| `refactor`      | The task is behavior-preserving code cleanup — refactoring does not change what assistive tech perceives |

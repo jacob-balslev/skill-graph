@@ -32,6 +32,8 @@ keywords:
   - doc drift
   - spec
   - update the readme
+  - readme drifted from code
+  - docs drifted from cli
   - document this function
   - write api docs
   - doc this
@@ -56,9 +58,9 @@ examples:
   - "draft an architecture note explaining why we chose Postgres over DynamoDB"
   - "this tutorial is too terse for a beginner — expand it with progressive disclosure"
 anti_examples:
-  - "the test suite is failing after my change — find the cause"  # debugging owns failure chasing
-  - "add an aria-label to this icon button"                       # a11y owns assistive-tech behavior
-  - "extract this repeated string-concat into a helper function"   # refactor owns behavior-preserving code changes
+  - "the test suite is failing after my change — find the cause" # debugging owns failure chasing
+  - "add an aria-label to this icon button" # a11y owns assistive-tech behavior
+  - "extract this repeated string-concat into a helper function" # refactor owns behavior-preserving code changes
 relations:
   boundary:
     - skill: debugging
@@ -67,6 +69,8 @@ relations:
       reason: "a11y covers assistive-tech behavior; documentation covers prose reading-level and audience fit"
     - skill: refactor
       reason: "refactor owns behavior-preserving code changes; documentation owns the prose that describes them"
+    - skill: context-window
+      reason: "context-window owns runtime context-budget management for an agent session; documentation owns durable reference prose. The phrase 'README has drifted from the actual CLI flags' is a documentation-drift question, not a context-budget question — context-window is named here so the router excludes it from documentation's positive scope."
 portability:
   readiness: scripted
   targets:
@@ -92,14 +96,14 @@ Documentation is a product, not a deliverable. It is consumed under time pressur
 
 Pick the doc type by the reader's need, not by the author's content. A reader looking for "how do I do X" will not read a reference; a reader looking up a field will not read a tutorial. The wrong type is worse than a missing doc because it consumes attention before failing.
 
-| Reader's need right now | Doc type | Primary test |
-|---|---|---|
-| "What does this field / function / endpoint do?" | **Reference** | Can a reader look up any symbol in under 30 seconds and get the complete definition? |
-| "I am new to this system — walk me through it" | **Tutorial** | Does a first-time reader following step-by-step reach a working end state without unexplained jumps? |
-| "I need to accomplish task X; just tell me how" | **How-to** | Does the doc solve one specific task, and can the reader execute it without reading anything else? |
-| "I need to understand how this system works" | **Explanation / guide** | Does the reader leave with the right mental model — not just facts but why the design is this way? |
+| Reader's need right now                           | Doc type                    | Primary test                                                                                               |
+| ------------------------------------------------- | --------------------------- | ---------------------------------------------------------------------------------------------------------- |
+| "What does this field / function / endpoint do?"  | **Reference**               | Can a reader look up any symbol in under 30 seconds and get the complete definition?                       |
+| "I am new to this system — walk me through it"    | **Tutorial**                | Does a first-time reader following step-by-step reach a working end state without unexplained jumps?       |
+| "I need to accomplish task X; just tell me how"   | **How-to**                  | Does the doc solve one specific task, and can the reader execute it without reading anything else?         |
+| "I need to understand how this system works"      | **Explanation / guide**     | Does the reader leave with the right mental model — not just facts but why the design is this way?         |
 | "Where are we headed / why did we pick X over Y?" | **Architecture note / ADR** | Does the reader see the decision, the alternatives considered, and the constraints that forced the choice? |
-| "What does this one thing mean?" (glossary term) | **Glossary entry** | Is the definition self-contained and free of forward references to other glossary terms? |
+| "What does this one thing mean?" (glossary term)  | **Glossary entry**          | Is the definition self-contained and free of forward references to other glossary terms?                   |
 
 ### Anti-patterns per type
 
@@ -112,14 +116,14 @@ Pick the doc type by the reader's need, not by the author's content. A reader lo
 
 Docs live in the same repository as the code they describe, ship through the same pull request, and pass the same automated gates. The workflow is not a style preference — it is the only arrangement that keeps documentation accountable to the code it claims to describe, because it forces every code change to confront its documentation at review time rather than at some deferred future sprint.
 
-| Stage | Rule for code | Rule for docs |
-|---|---|---|
-| Source location | In the repo | In the same repo — not a separate wiki, not a hosted doc service, not a confluence page |
-| Authoring context | Open in the same editor | Open in the same editor — authored alongside the change, not after it |
-| Review | Required on the PR that changes the code | Required on the **same** PR that changes the code — not a follow-up ticket |
-| CI gate | Tests must pass | Link-check, freshness check, and spelling gate must pass |
-| Versioning | Git history | Git history — the doc's past is a `git log`, not a migration story |
-| Deploy | The release pipeline ships it | The same release pipeline publishes the docs — no separate "docs site" release cadence |
+| Stage             | Rule for code                            | Rule for docs                                                                           |
+| ----------------- | ---------------------------------------- | --------------------------------------------------------------------------------------- |
+| Source location   | In the repo                              | In the same repo — not a separate wiki, not a hosted doc service, not a confluence page |
+| Authoring context | Open in the same editor                  | Open in the same editor — authored alongside the change, not after it                   |
+| Review            | Required on the PR that changes the code | Required on the **same** PR that changes the code — not a follow-up ticket              |
+| CI gate           | Tests must pass                          | Link-check, freshness check, and spelling gate must pass                                |
+| Versioning        | Git history                              | Git history — the doc's past is a `git log`, not a migration story                      |
+| Deploy            | The release pipeline ships it            | The same release pipeline publishes the docs — no separate "docs site" release cadence  |
 
 **Anti-patterns.**
 
@@ -132,13 +136,13 @@ Docs live in the same repository as the code they describe, ship through the sam
 
 Documented behavior diverges from real behavior over time. That is drift, and drift is a bug. The reader's contract with the doc is "what is written here is true right now" — a stale doc does not inform, it misleads, and being misled is worse than having no doc. The owner of the doc is responsible for keeping it current; "the user should have known that was old" is not an excuse, it is an admission that the doc failed its one job.
 
-| Drift symptom | Most likely cause | Fix |
-|---|---|---|
-| README shows CLI flags the actual binary rejects | Code changed, doc didn't | Regenerate from `--help` output or re-sync by hand; add a CI check that diffs the two |
-| Tutorial commands fail on a fresh checkout | Dependencies, env vars, or bootstrap steps changed | Re-run the tutorial end-to-end on a clean machine; update every step that broke |
-| Architecture doc references a service that was replaced | Service was renamed, decomposed, or deleted | Rewrite the section; add a "superseded by" note linking to the new canonical doc |
-| "See X for details" points at a moved or deleted file | File was renamed, moved, or deleted | Fix the link; run a link-checker as a pre-commit gate so future renames fail loudly |
-| Field table lists options the code no longer supports | Options were removed without sweeping the docs | Generate the field table from the schema or config; manual field tables always drift |
+| Drift symptom                                           | Most likely cause                                  | Fix                                                                                   |
+| ------------------------------------------------------- | -------------------------------------------------- | ------------------------------------------------------------------------------------- |
+| README shows CLI flags the actual binary rejects        | Code changed, doc didn't                           | Regenerate from `--help` output or re-sync by hand; add a CI check that diffs the two |
+| Tutorial commands fail on a fresh checkout              | Dependencies, env vars, or bootstrap steps changed | Re-run the tutorial end-to-end on a clean machine; update every step that broke       |
+| Architecture doc references a service that was replaced | Service was renamed, decomposed, or deleted        | Rewrite the section; add a "superseded by" note linking to the new canonical doc      |
+| "See X for details" points at a moved or deleted file   | File was renamed, moved, or deleted                | Fix the link; run a link-checker as a pre-commit gate so future renames fail loudly   |
+| Field table lists options the code no longer supports   | Options were removed without sweeping the docs     | Generate the field table from the schema or config; manual field tables always drift  |
 
 **Drift detection rules.**
 
@@ -151,13 +155,13 @@ Documented behavior diverges from real behavior over time. That is drift, and dr
 
 Every fact has exactly one canonical location. Restating that fact anywhere else creates a drift surface — two copies will eventually disagree, and the reader cannot tell which is authoritative. The default move is to link to the source of truth, not to paraphrase it. Duplication is a cost; justify it before paying it.
 
-| Fact lives in | Correct doc treatment | Incorrect doc treatment |
-|---|---|---|
-| A JSON Schema | Link to the schema, or generate the field table from it | Hand-write a separate field table that will drift |
-| An OpenAPI / GraphQL spec | Embed or reference the spec; generate endpoint docs from it | Hand-write a table of endpoints that will drift |
-| A config file | Show the actual file in a code block; link to it | Paraphrase the config prose; copy key names into sentences |
-| A migration / SQL file | Link to the file by permalink | Restate the migration steps in prose |
-| A dependency's own docs | Link to the upstream canonical page | Copy-paste upstream content into this doc |
+| Fact lives in             | Correct doc treatment                                       | Incorrect doc treatment                                    |
+| ------------------------- | ----------------------------------------------------------- | ---------------------------------------------------------- |
+| A JSON Schema             | Link to the schema, or generate the field table from it     | Hand-write a separate field table that will drift          |
+| An OpenAPI / GraphQL spec | Embed or reference the spec; generate endpoint docs from it | Hand-write a table of endpoints that will drift            |
+| A config file             | Show the actual file in a code block; link to it            | Paraphrase the config prose; copy key names into sentences |
+| A migration / SQL file    | Link to the file by permalink                               | Restate the migration steps in prose                       |
+| A dependency's own docs   | Link to the upstream canonical page                         | Copy-paste upstream content into this doc                  |
 
 **When duplication is justified.**
 
@@ -190,8 +194,8 @@ This skill declares `boundary` relations only. `verify_with` is intentionally em
 
 ## Do NOT Use When
 
-| Use instead | When |
-|---|---|
-| `debugging` | The task is failure diagnosis, not knowledge packaging |
-| `a11y` | The task is interaction behavior and assistive-tech affordances, not prose structure |
-| `refactor` | The task is behavior-preserving code cleanup — even when the refactor should be documented, the documenting is separate work |
+| Use instead | When                                                                                                                         |
+| ----------- | ---------------------------------------------------------------------------------------------------------------------------- |
+| `debugging` | The task is failure diagnosis, not knowledge packaging                                                                       |
+| `a11y`      | The task is interaction behavior and assistive-tech affordances, not prose structure                                         |
+| `refactor`  | The task is behavior-preserving code cleanup — even when the refactor should be documented, the documenting is separate work |

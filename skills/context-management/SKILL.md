@@ -48,12 +48,12 @@ examples:
   - "the active question changed three times this session — how do I prevent the old context from steering the new one?"
   - "this conversation has 40K tokens of evidence; what should the working set actually contain?"
 anti_examples:
-  - "calculate the per-zone token budget for the 200K context window"   # → context-window budget skill
-  - "improve this prompt template for the grader"                       # → prompt-craft
-  - "curate the persistent memory index file"                           # → memory-curation skill
-  - "design the multi-graph architecture for skills + docs + memory"    # → context-graph
-  - "review this AI-generated PR for correctness"                       # → code-review
-  - "why is this skill not routing — fix the keyword config"            # → skill-router
+  - "calculate the per-zone token budget for the 200K context window" # → context-window budget skill
+  - "improve this prompt template for the grader" # → prompt-craft
+  - "curate the persistent memory index file" # → memory-curation skill
+  - "design the multi-graph architecture for skills + docs + memory" # → context-graph
+  - "review this AI-generated PR for correctness" # → code-review
+  - "why is this skill not routing — fix the keyword config" # → skill-router
 relations:
   boundary:
     - skill: context-graph
@@ -87,60 +87,60 @@ The working discipline that controls what enters, stays in, and exits an active 
 
 ## Philosophy
 
-Context management is the practical layer between *having* the right information available somewhere in the workspace and *having* it active in the agent at the right moment. The goal is *not* to load more context — it is to keep the smallest working set that still lets the agent act correctly. Without this discipline, agents speculate from stale assumptions, re-read files they already processed, and lose the decision trail at the moment of compaction. Every context slot occupied by noise is a slot unavailable for the evidence that would actually resolve the current question.
+Context management is the practical layer between _having_ the right information available somewhere in the workspace and _having_ it active in the agent at the right moment. The goal is _not_ to load more context — it is to keep the smallest working set that still lets the agent act correctly. Without this discipline, agents speculate from stale assumptions, re-read files they already processed, and lose the decision trail at the moment of compaction. Every context slot occupied by noise is a slot unavailable for the evidence that would actually resolve the current question.
 
-The hardest part is not what to load. It is *what to drop*. Disproven hypotheses, raw logs after the key pattern is extracted, full files after the needed lines are identified, alternative hypotheses that have already been falsified — all of these continue to occupy context until they are *deliberately* removed. The working set is what the agent is actively reasoning over, not everything it has ever seen.
+The hardest part is not what to load. It is _what to drop_. Disproven hypotheses, raw logs after the key pattern is extracted, full files after the needed lines are identified, alternative hypotheses that have already been falsified — all of these continue to occupy context until they are _deliberately_ removed. The working set is what the agent is actively reasoning over, not everything it has ever seen.
 
 ## 1. Outcomes
 
-| Job | What success looks like | Common failure |
-|---|---|---|
-| Intake | Only task-critical context is loaded first | Reading five files before the problem is even named |
-| Working set | The active context matches the *current* question | Old assumptions keep steering new work |
-| Handoff | Another session can resume cleanly | Compaction loses the decision trail |
-| Recovery | The agent can rebuild the thread quickly | Re-reading everything from scratch |
+| Job         | What success looks like                           | Common failure                                      |
+| ----------- | ------------------------------------------------- | --------------------------------------------------- |
+| Intake      | Only task-critical context is loaded first        | Reading five files before the problem is even named |
+| Working set | The active context matches the _current_ question | Old assumptions keep steering new work              |
+| Handoff     | Another session can resume cleanly                | Compaction loses the decision trail                 |
+| Recovery    | The agent can rebuild the thread quickly          | Re-reading everything from scratch                  |
 
 ## 2. The Context-Management Loop
 
 Use this loop whenever a task starts to sprawl or the session feels noisy:
 
 1. **Define the active question** in one sentence.
-2. **Name the minimum evidence** that would answer it — both the *prove* set and the *disprove* set.
+2. **Name the minimum evidence** that would answer it — both the _prove_ set and the _disprove_ set.
 3. **Load the cheapest sources first**: index, search result, narrow file slice. Avoid full-file reads until evidence demands the rest of the file.
 4. **Collapse confirmed facts** into a short checkpoint that the agent can re-read at any later turn.
 5. **Drop stale or disproven assumptions** from the active thread — disprove ≠ delete-from-history, but delete-from-active-context.
 6. **Re-check whether the active question changed** before reading more. If yes, restart the loop. Do not drag old context along.
 
-The loop is recursive — every "load more" decision restarts it. The goal is not to never read; it is to read *only when evidence demands it*.
+The loop is recursive — every "load more" decision restarts it. The goal is not to never read; it is to read _only when evidence demands it_.
 
 ## 3. Intake Triage — Four Buckets
 
 Before reading anything large, sort every candidate context source into one of four buckets:
 
-| Bucket | Load now? | Examples | Rule |
-|---|---|---|---|
-| **Must-have** | Yes | The user-named file, the failing route, the owning skill | Read first |
-| **Useful soon** | Maybe | Neighbouring docs, related tests, adjacent skill files | Load only after the active question is stable |
-| **Durable background** | Rarely | Broad architecture overview, long design guide, full module README | Use the index first; slice narrowly only if the index points there |
-| **Noise** | No | Adjacent-but-unneeded files, unrelated generated output, one-off scripts | Ignore unless evidence later points there |
+| Bucket                 | Load now? | Examples                                                                 | Rule                                                               |
+| ---------------------- | --------- | ------------------------------------------------------------------------ | ------------------------------------------------------------------ |
+| **Must-have**          | Yes       | The user-named file, the failing route, the owning skill                 | Read first                                                         |
+| **Useful soon**        | Maybe     | Neighbouring docs, related tests, adjacent skill files                   | Load only after the active question is stable                      |
+| **Durable background** | Rarely    | Broad architecture overview, long design guide, full module README       | Use the index first; slice narrowly only if the index points there |
+| **Noise**              | No        | Adjacent-but-unneeded files, unrelated generated output, one-off scripts | Ignore unless evidence later points there                          |
 
 ### Intake rules
 
-- Start from the user's *concrete* artefact (file, error, ticket) before loading background.
-- Prefer an *owning* doc over a broad repo-wide reference.
-- Prefer a *search result* over a full-file read.
-- Prefer *one decisive file slice* over three speculative reads.
-- If you cannot explain — out loud, in one sentence — *why* a source is being loaded, do not load it.
+- Start from the user's _concrete_ artefact (file, error, ticket) before loading background.
+- Prefer an _owning_ doc over a broad repo-wide reference.
+- Prefer a _search result_ over a full-file read.
+- Prefer _one decisive file slice_ over three speculative reads.
+- If you cannot explain — out loud, in one sentence — _why_ a source is being loaded, do not load it.
 
 ## 4. Working-Set Shaping
 
-The working set is what the agent is *actively reasoning over* — not everything it has ever seen.
+The working set is what the agent is _actively reasoning over_ — not everything it has ever seen.
 
 ### Keep these in the working set
 
 - The current problem statement
 - The current hypothesis
-- The smallest evidence set that can *prove or disprove* it
+- The smallest evidence set that can _prove or disprove_ it
 - The next verification step
 
 ### Push these out of the working set
@@ -152,38 +152,38 @@ The working set is what the agent is *actively reasoning over* — not everythin
 
 ### Distillation pattern
 
-| Raw input | Keep in active context instead |
-|---|---|
-| 300-line error log | 2-line summary of the repeating error and its trigger |
-| Whole component file | Function name + line slice + one key invariant |
-| Large skill body | The one rule that changes the current decision |
-| Long conversation thread | Current state, blocker, next step |
-| Multi-page doc | The single section that answers the active question |
+| Raw input                | Keep in active context instead                        |
+| ------------------------ | ----------------------------------------------------- |
+| 300-line error log       | 2-line summary of the repeating error and its trigger |
+| Whole component file     | Function name + line slice + one key invariant        |
+| Large skill body         | The one rule that changes the current decision        |
+| Long conversation thread | Current state, blocker, next step                     |
+| Multi-page doc           | The single section that answers the active question   |
 
-The distillation is the *artefact* — write it down, paste it into the active context, then drop the raw input. Distillation that lives only in the agent's "memory" is fragile; distillation written into the conversation is durable.
+The distillation is the _artefact_ — write it down, paste it into the active context, then drop the raw input. Distillation that lives only in the agent's "memory" is fragile; distillation written into the conversation is durable.
 
 ## 5. Drift Detection
 
-Context drift means the session is no longer solving the same problem it started with, *or* is still reasoning from assumptions that have already been falsified.
+Context drift means the session is no longer solving the same problem it started with, _or_ is still reasoning from assumptions that have already been falsified.
 
-| Drift signal | What it usually means | Response |
-|---|---|---|
-| Re-reading the same file repeatedly | The active question is vague | Rewrite the question and search narrower |
-| Fix ideas change every turn | No anchored hypothesis | Stop implementing; restate the evidence; pick one hypothesis to test |
-| New files keep getting pulled in | Search space is unbounded | Identify the *first failing boundary* and stay there |
-| The agent forgets what was already proven | Facts were never collapsed into a checkpoint | Write the checkpoint *before* continuing |
-| The agent restates earlier conclusions in different words | Active context is too large to scan | Distil and drop the original sources |
+| Drift signal                                              | What it usually means                        | Response                                                             |
+| --------------------------------------------------------- | -------------------------------------------- | -------------------------------------------------------------------- |
+| Re-reading the same file repeatedly                       | The active question is vague                 | Rewrite the question and search narrower                             |
+| Fix ideas change every turn                               | No anchored hypothesis                       | Stop implementing; restate the evidence; pick one hypothesis to test |
+| New files keep getting pulled in                          | Search space is unbounded                    | Identify the _first failing boundary_ and stay there                 |
+| The agent forgets what was already proven                 | Facts were never collapsed into a checkpoint | Write the checkpoint _before_ continuing                             |
+| The agent restates earlier conclusions in different words | Active context is too large to scan          | Distil and drop the original sources                                 |
 
 ### Anti-drift rules
 
 - **One active hypothesis** at a time.
 - **One primary question** at a time.
 - **One verification target** at a time.
-- When evidence contradicts the plan, *update the checkpoint* before moving on. Do not silently abandon the contradicted hypothesis.
+- When evidence contradicts the plan, _update the checkpoint_ before moving on. Do not silently abandon the contradicted hypothesis.
 
 ## 6. Compaction-Ready Handoffs
 
-This skill does not own token math or compaction triggers. It owns *handoff quality* — the artefact a successor agent reads when the current session compacts, restarts, or hands over.
+This skill does not own token math or compaction triggers. It owns _handoff quality_ — the artefact a successor agent reads when the current session compacts, restarts, or hands over.
 
 Before any compaction, restart, or handover, preserve five fields:
 
@@ -195,19 +195,19 @@ Before any compaction, restart, or handover, preserve five fields:
 
 ### Good handoff format
 
-| Field | Example |
-|---|---|
-| Task | `ABC-123` (a single task ID or link) |
-| Question | "Why does the settings save path ignore org scope?" |
-| Proven facts | "The route uses an unscoped query helper, not the org-scoped one; failure reproduces only for non-owner roles." |
-| Rejected paths | "Not a session bug — auth claims are correct." |
-| Next step | "Patch the org-scoped update path; rerun the failing request." |
+| Field          | Example                                                                                                         |
+| -------------- | --------------------------------------------------------------------------------------------------------------- |
+| Task           | `ABC-123` (a single task ID or link)                                                                            |
+| Question       | "Why does the settings save path ignore org scope?"                                                             |
+| Proven facts   | "The route uses an unscoped query helper, not the org-scoped one; failure reproduces only for non-owner roles." |
+| Rejected paths | "Not a session bug — auth claims are correct."                                                                  |
+| Next step      | "Patch the org-scoped update path; rerun the failing request."                                                  |
 
-If the handoff cannot tell another agent *where to start* in under thirty seconds of reading, it is incomplete. Optimise for the *cold start*, not for the agent that already has full context.
+If the handoff cannot tell another agent _where to start_ in under thirty seconds of reading, it is incomplete. Optimise for the _cold start_, not for the agent that already has full context.
 
 ## 7. Recovery After Lost Context
 
-When the thread is lost — after compaction, after a session restart, after a long context-switching gap — rebuild *selectively*, in this order:
+When the thread is lost — after compaction, after a session restart, after a long context-switching gap — rebuild _selectively_, in this order:
 
 1. **Re-read the user request** (the canonical task statement, not your own paraphrase).
 2. **Re-read the last checkpoint** (or continuation artefact, or the most recent agent-written summary).
@@ -215,7 +215,7 @@ When the thread is lost — after compaction, after a session restart, after a l
 4. **Reconstruct the current hypothesis from evidence**, not from memory of what you used to think.
 5. **Resume from the next unverified step.**
 
-Do not "warm up" by re-reading everything. Recovery is a *selective* rebuild, not a context flood. Loading 30 files to "get back into the task" recreates the original drift on a fresh canvas.
+Do not "warm up" by re-reading everything. Recovery is a _selective_ rebuild, not a context flood. Loading 30 files to "get back into the task" recreates the original drift on a fresh canvas.
 
 ## Verification
 
@@ -224,18 +224,18 @@ Do not "warm up" by re-reading everything. Recovery is a *selective* rebuild, no
 - [ ] I have reduced raw inputs into a smaller written working summary that lives in the conversation, not in the agent's memory
 - [ ] I have removed or ignored disproven hypotheses from the active thread
 - [ ] I have a handoff-ready checkpoint with all five required fields before any compaction or session restart
-- [ ] I am loading new context because *evidence demands it*, not because I feel uncertain
+- [ ] I am loading new context because _evidence demands it_, not because I feel uncertain
 - [ ] One active hypothesis, one primary question, one verification target — no exceptions
 - [ ] A successor agent could resume from my checkpoint in under thirty seconds
 
 ## Do NOT Use When
 
-| Use instead | When |
-|---|---|
-| A context-window budget skill | Calculating per-zone token budgets, compaction thresholds, or 1M-vs-200K decisions |
-| `prompt-craft` | Writing or improving a prompt template — wording, structure, format constraints |
-| A persistent-memory curation skill | Curating cross-session memory files, pruning the memory index, deciding what *survives* a session |
-| `context-graph` | Designing the architectural model for the multi-graph context system itself |
-| `context-engineering` | Designing the system-level information architecture, injector quality, and failure metrics — context-engineering is upstream of this skill |
-| `code-review` | Reviewing AI-generated code — orthogonal concern |
-| `tool-call-strategy` | The dispatch decision (which tool to call next) — context-management is the *input* to that decision, not the decision itself |
+| Use instead                        | When                                                                                                                                       |
+| ---------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------ |
+| A context-window budget skill      | Calculating per-zone token budgets, compaction thresholds, or 1M-vs-200K decisions                                                         |
+| `prompt-craft`                     | Writing or improving a prompt template — wording, structure, format constraints                                                            |
+| A persistent-memory curation skill | Curating cross-session memory files, pruning the memory index, deciding what _survives_ a session                                          |
+| `context-graph`                    | Designing the architectural model for the multi-graph context system itself                                                                |
+| `context-engineering`              | Designing the system-level information architecture, injector quality, and failure metrics — context-engineering is upstream of this skill |
+| `code-review`                      | Reviewing AI-generated code — orthogonal concern                                                                                           |
+| `tool-call-strategy`               | The dispatch decision (which tool to call next) — context-management is the _input_ to that decision, not the decision itself              |

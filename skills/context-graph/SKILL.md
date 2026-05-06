@@ -48,12 +48,12 @@ examples:
   - "design a deterministic recipe for synthesizing the skill graph from frontmatter without running an LLM"
   - "what's the right cap on adjacent / boundary / verify_with relations per skill?"
 anti_examples:
-  - "scaffold a new SKILL.md from a template"                       # → skill-scaffold
-  - "validate that this single skill's frontmatter matches the schema"  # → graph-audit
-  - "decide which skill to inject for this query right now"         # → skill-router
+  - "scaffold a new SKILL.md from a template" # → skill-scaffold
+  - "validate that this single skill's frontmatter matches the schema" # → graph-audit
+  - "decide which skill to inject for this query right now" # → skill-router
   - "this skill says 'use orgQuery'; that one says 'never use orgQuery' — fix the conflict" # → skill-infrastructure
   - "decide what should and shouldn't be in this agent's context window for this task" # → context engineering / management skill
-  - "review this AI-generated PR for correctness"                   # → code-review
+  - "review this AI-generated PR for correctness" # → code-review
 relations:
   boundary:
     - skill: skill-router
@@ -95,7 +95,7 @@ Without a navigable graph, agents cannot discover context they did not already k
 
 Context discovery is therefore a precondition for context quality. If the right skill, doc, or memory file cannot be found by following edges from the current task, content quality is irrelevant. Graph maintenance — adding edges, fixing orphans, capping inflation, keeping cross-graph references current — is a quality gate, not optional metadata. Every new skill enters the system with a question attached: who reaches this from where, by which edges?
 
-The deterministic-signal discipline is the second non-negotiable. Graph synthesis must be a deterministic function of the authored artifacts (frontmatter relations, bundle membership, prose references, shared routing labels, keyword overlap) — not an LLM inference. If the graph drifts on rebuild, agents lose the one stable surface they have. Use AI to *suggest* edges during authoring; never to *generate* the live graph at runtime.
+The deterministic-signal discipline is the second non-negotiable. Graph synthesis must be a deterministic function of the authored artifacts (frontmatter relations, bundle membership, prose references, shared routing labels, keyword overlap) — not an LLM inference. If the graph drifts on rebuild, agents lose the one stable surface they have. Use AI to _suggest_ edges during authoring; never to _generate_ the live graph at runtime.
 
 ## 1. The Four Context Graphs
 
@@ -103,49 +103,49 @@ A mature AI-coding workspace converges on four interconnected graphs:
 
 ### Graph 1 — Skill Knowledge Graph
 
-Nodes are skill files; edges are the typed relations declared in skill frontmatter. The job of this graph is *what knowledge exists in the workspace, and what knowledge teaches alongside what other knowledge*. The graph's vital signs are connectivity (no large isolated components), orphan rate (no skills nobody references), and edge-type discipline (each edge has a typed reason).
+Nodes are skill files; edges are the typed relations declared in skill frontmatter. The job of this graph is _what knowledge exists in the workspace, and what knowledge teaches alongside what other knowledge_. The graph's vital signs are connectivity (no large isolated components), orphan rate (no skills nobody references), and edge-type discipline (each edge has a typed reason).
 
 ### Graph 2 — Document Routing Graph
 
-Nodes are documentation targets and change categories; edges express "when this kind of code changes, those docs must be updated." The job of this graph is *propagation* — preventing stale docs by making the doc-update obligation visible at the point of code change. The graph is most valuable when it is read by humans during PR review and by agents during the wrap / closeout protocol, not when it is read by no one.
+Nodes are documentation targets and change categories; edges express "when this kind of code changes, those docs must be updated." The job of this graph is _propagation_ — preventing stale docs by making the doc-update obligation visible at the point of code change. The graph is most valuable when it is read by humans during PR review and by agents during the wrap / closeout protocol, not when it is read by no one.
 
 ### Graph 3 — Memory Index
 
-Nodes are persistent memory topic files (decisions, observations, durable preferences); edges are the index entries that point from a topic table to the underlying file. The job of this graph is *cross-session knowledge persistence* — the answer to "what did we already decide about X, why, and when did the decision become true." A memory graph that records facts but not the *why* and *how* of decisions cannot answer audit questions like "why did the agent choose Y?". Workspaces that need decision provenance extend the memory graph with the Process Knowledge Ontology pattern (modeling decisions, triggers, state transitions, and outcomes as first-class entities).
+Nodes are persistent memory topic files (decisions, observations, durable preferences); edges are the index entries that point from a topic table to the underlying file. The job of this graph is _cross-session knowledge persistence_ — the answer to "what did we already decide about X, why, and when did the decision become true." A memory graph that records facts but not the _why_ and _how_ of decisions cannot answer audit questions like "why did the agent choose Y?". Workspaces that need decision provenance extend the memory graph with the Process Knowledge Ontology pattern (modeling decisions, triggers, state transitions, and outcomes as first-class entities).
 
 ### Graph 4 — Script / Command Registry
 
-Nodes are scripts and commands; edges are the categorisations that group them by purpose. The job of this graph is *agent tooling discovery* — when an agent needs a deterministic script or a slash command, the registry is what makes it findable without trial-and-error.
+Nodes are scripts and commands; edges are the categorisations that group them by purpose. The job of this graph is _agent tooling discovery_ — when an agent needs a deterministic script or a slash command, the registry is what makes it findable without trial-and-error.
 
 ### Cross-graph edges
 
-The four graphs are *interconnected*. The cross-graph edges are where most of the propagation value lives:
+The four graphs are _interconnected_. The cross-graph edges are where most of the propagation value lives:
 
-| From | To | Edge type | Example |
-|---|---|---|---|
-| Skill | Script | `key_file` (frontmatter `paths` or body reference) | A health-audit skill points at the script that runs the audit |
-| Skill | Skill | `adjacent` / `boundary` / `verify_with` | Frontmatter relations |
-| Script | Command | `consumed_by` | A loop-supervisor script is consumed by a manage-style command |
-| Memory | Skill | `informs` | A memory file recording a billing strategy informs an agent-routing skill |
-| Doc-routing | Doc | `requires_update` | A code change row points at the docs that must be updated together |
+| From        | To      | Edge type                                          | Example                                                                   |
+| ----------- | ------- | -------------------------------------------------- | ------------------------------------------------------------------------- |
+| Skill       | Script  | `key_file` (frontmatter `paths` or body reference) | A health-audit skill points at the script that runs the audit             |
+| Skill       | Skill   | `adjacent` / `boundary` / `verify_with`            | Frontmatter relations                                                     |
+| Script      | Command | `consumed_by`                                      | A loop-supervisor script is consumed by a manage-style command            |
+| Memory      | Skill   | `informs`                                          | A memory file recording a billing strategy informs an agent-routing skill |
+| Doc-routing | Doc     | `requires_update`                                  | A code change row points at the docs that must be updated together        |
 
-A workspace that names all four graphs *and* their cross-graph edges has a complete map. A workspace that names only the skill graph has roughly a quarter of the picture.
+A workspace that names all four graphs _and_ their cross-graph edges has a complete map. A workspace that names only the skill graph has roughly a quarter of the picture.
 
 ## 2. Edge Types in the Skill Graph
 
-The skill graph uses three relation types. Each has a different *meaning* and a different *cap*. Mixing them collapses the graph into noise.
+The skill graph uses three relation types. Each has a different _meaning_ and a different _cap_. Mixing them collapses the graph into noise.
 
-| Type | Recommended cap | Meaning | Example |
-|---|---|---|---|
-| `adjacent` | ≤ 5 per skill | Closely related — teach together; an agent loading one would benefit from also loading the other | A data-reconciliation skill ↔ a financial-correctness skill |
-| `boundary` | ≤ 5 per skill | Contrasting — "do NOT use X for this; use Y instead." The router should *exclude* the boundary skill when both match | A financial-correctness skill ↮ a data-visualisation skill |
-| `verify_with` | ≤ 3 per skill | Cross-check skill output against this skill before trusting it | A financial-correctness skill → a code-logic skill |
+| Type          | Recommended cap | Meaning                                                                                                              | Example                                                     |
+| ------------- | --------------- | -------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------- |
+| `adjacent`    | ≤ 5 per skill   | Closely related — teach together; an agent loading one would benefit from also loading the other                     | A data-reconciliation skill ↔ a financial-correctness skill |
+| `boundary`    | ≤ 5 per skill   | Contrasting — "do NOT use X for this; use Y instead." The router should _exclude_ the boundary skill when both match | A financial-correctness skill ↮ a data-visualisation skill  |
+| `verify_with` | ≤ 3 per skill   | Cross-check skill output against this skill before trusting it                                                       | A financial-correctness skill → a code-logic skill          |
 
 The caps exist to prevent edge inflation. A skill with 12 `adjacent` relations is not "well-connected" — it is a hub that pulls every adjacent traversal toward itself, hiding more specific signals. Edge discipline beats edge volume.
 
 ### `boundary` is exclusion, not adjacency
 
-The most common edge-type confusion: putting "topical neighbour" skills in `boundary`. Boundary edges tell the router "if both this skill and the boundary skill match, route AWAY from the boundary skill" — they are *exclusion-with-a-reason*, not "see also." Putting a skill in `boundary` that should be in `related` will hijack the boundary skill's positive cases and depress its routing-eval pass rate. When in doubt, prefer `related` and only promote to `boundary` when the two skills genuinely *compete* for the same prompt with different correct answers.
+The most common edge-type confusion: putting "topical neighbour" skills in `boundary`. Boundary edges tell the router "if both this skill and the boundary skill match, route AWAY from the boundary skill" — they are _exclusion-with-a-reason_, not "see also." Putting a skill in `boundary` that should be in `related` will hijack the boundary skill's positive cases and depress its routing-eval pass rate. When in doubt, prefer `related` and only promote to `boundary` when the two skills genuinely _compete_ for the same prompt with different correct answers.
 
 ## 3. Orphan Detection
 
@@ -156,8 +156,8 @@ An **orphan** is a node with zero (or near-zero) incoming edges. Nothing points 
 1. Rebuild the graph from authored artefacts (deterministic synthesis).
 2. Walk every node, count its `degree` (incoming + outgoing).
 3. Flag every node with degree ≤ 1 as an orphan candidate.
-4. For each orphan: identify its domain cluster (layer, keywords, examples) and find 3–5 sibling skills that *should* reference it.
-5. Add `relations` to the orphan and reciprocal references to its siblings — bidirectionally. A one-way edge from the orphan does not solve discovery, because the existing skills are where traversal *starts*.
+4. For each orphan: identify its domain cluster (layer, keywords, examples) and find 3–5 sibling skills that _should_ reference it.
+5. Add `relations` to the orphan and reciprocal references to its siblings — bidirectionally. A one-way edge from the orphan does not solve discovery, because the existing skills are where traversal _starts_.
 
 ### Remediation priority
 
@@ -173,14 +173,14 @@ Fix orphans in order of blast radius, not alphabetically:
 
 These are the vital signs of a skill graph. Run them after every batch of skill additions or edge edits.
 
-| Metric | Formula | Healthy band | Unhealthy signal |
-|---|---|---|---|
-| **Connectivity** | `connected_skills / total_skills` | > 95% | Multiple disconnected clusters indicate domain silos |
-| **Average degree** | `total_edges × 2 / total_nodes` | > 5 | Below 3 means the graph is too sparse for traversal to be useful |
-| **Orphan rate** | `nodes with degree ≤ 1 / total_nodes` | < 10% | Above 30% means agents cannot discover most of the library |
-| **Max degree** | Highest degree of any node | < 30 | A single node with degree 50+ is a hub-and-spoke anti-pattern |
-| **Cluster count** | Connected components | < 3 (ideally 1) | Many clusters means the workspace has informal silos that traversal can't bridge |
-| **Hub-spoke ratio** | `nodes with degree > 15 / total_nodes` | < 5% | More than 10% means the graph is degenerating into a star around a few mega-hubs |
+| Metric              | Formula                                | Healthy band    | Unhealthy signal                                                                 |
+| ------------------- | -------------------------------------- | --------------- | -------------------------------------------------------------------------------- |
+| **Connectivity**    | `connected_skills / total_skills`      | > 95%           | Multiple disconnected clusters indicate domain silos                             |
+| **Average degree**  | `total_edges × 2 / total_nodes`        | > 5             | Below 3 means the graph is too sparse for traversal to be useful                 |
+| **Orphan rate**     | `nodes with degree ≤ 1 / total_nodes`  | < 10%           | Above 30% means agents cannot discover most of the library                       |
+| **Max degree**      | Highest degree of any node             | < 30            | A single node with degree 50+ is a hub-and-spoke anti-pattern                    |
+| **Cluster count**   | Connected components                   | < 3 (ideally 1) | Many clusters means the workspace has informal silos that traversal can't bridge |
+| **Hub-spoke ratio** | `nodes with degree > 15 / total_nodes` | < 5%            | More than 10% means the graph is degenerating into a star around a few mega-hubs |
 
 ### Five deterministic signals for graph synthesis
 
@@ -192,7 +192,7 @@ Synthesise the skill graph from these signals only — never from an LLM at runt
 4. **Shared routing labels / triggers** — overlapping `triggers` or label declarations
 5. **Keyword overlap** — shared keywords via the routing-config map
 
-A graph built from these signals is *reproducible*: rebuild today and tomorrow and the edges are identical. A graph that uses LLM inference at synthesis time will drift on every rebuild and the routing layer cannot trust it.
+A graph built from these signals is _reproducible_: rebuild today and tomorrow and the edges are identical. A graph that uses LLM inference at synthesis time will drift on every rebuild and the routing layer cannot trust it.
 
 ## 5. Change-Propagation Analysis
 
@@ -200,26 +200,26 @@ When a single artefact changes, trace the propagation across all four graphs. Th
 
 ### Propagation checklist
 
-| Step | Action | Tool |
-|---|---|---|
-| 1 | Read the document-routing graph. Find the change category (e.g., "DB migration", "webhook handler change") and list the docs that must be updated. | Read the routing table |
-| 2 | Grep the changed file path / function name across all `*.md` for stale references | `grep -r "<changed_id>" --include="*.md"` |
-| 3 | Check skill key-file sections for references to the changed file | `grep -r "<changed_id>" skills/` |
-| 4 | Check the memory index for related topic files; update or add records if a decision changed | Read the memory index |
-| 5 | Verify no stale references remain — run any doc-verification gate the workspace ships | Local doc-verification script |
+| Step | Action                                                                                                                                             | Tool                                      |
+| ---- | -------------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------- |
+| 1    | Read the document-routing graph. Find the change category (e.g., "DB migration", "webhook handler change") and list the docs that must be updated. | Read the routing table                    |
+| 2    | Grep the changed file path / function name across all `*.md` for stale references                                                                  | `grep -r "<changed_id>" --include="*.md"` |
+| 3    | Check skill key-file sections for references to the changed file                                                                                   | `grep -r "<changed_id>" skills/`          |
+| 4    | Check the memory index for related topic files; update or add records if a decision changed                                                        | Read the memory index                     |
+| 5    | Verify no stale references remain — run any doc-verification gate the workspace ships                                                              | Local doc-verification script             |
 
 Each step exercises a different edge type. Skipping a step leaves a stale edge somewhere in the system, and the staleness compounds — the next change inherits a wrong baseline.
 
 ## 6. Anti-Patterns
 
-| Anti-pattern | Why it fails | What to do instead |
-|---|---|---|
-| **Edge inflation** — adding 10+ `adjacent` relations to one skill | Creates a hub-and-spoke; traversal pulls everything toward the hub and hides specific signals | Cap at 5; pick the most semantically-close siblings |
-| **One-way edges** — adding edges *from* a new skill *to* existing skills only | Existing skills stay orphaned; nothing points at them in the new direction | Add reciprocal references — update the existing skill too |
-| **Optional-metadata mindset** — treating relations as nice-to-have | Orphan rate drifts up silently; eventually most skills are unreachable | Graph maintenance is a quality gate; CI should fail on degraded connectivity |
-| **AI-inferred runtime edges** — letting an LLM "infer" relations on every rebuild | Graph drifts non-deterministically; routing layer cannot trust it | Use deterministic signals at synthesis time; use AI only as an *authoring suggestion* the human accepts |
-| **Ignoring cross-graph edges** — only maintaining the skill graph | Skills reference scripts and memory references skills, but those edges are unmaintained | Map all four graphs and the cross-graph edges between them |
-| **Boundary-as-adjacency** — putting topical neighbours in `boundary` | Hijacks the neighbour's positive cases; depresses its routing-eval | Use `related` for neighbours; reserve `boundary` for genuine routing-exclusion |
+| Anti-pattern                                                                      | Why it fails                                                                                  | What to do instead                                                                                      |
+| --------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------- |
+| **Edge inflation** — adding 10+ `adjacent` relations to one skill                 | Creates a hub-and-spoke; traversal pulls everything toward the hub and hides specific signals | Cap at 5; pick the most semantically-close siblings                                                     |
+| **One-way edges** — adding edges _from_ a new skill _to_ existing skills only     | Existing skills stay orphaned; nothing points at them in the new direction                    | Add reciprocal references — update the existing skill too                                               |
+| **Optional-metadata mindset** — treating relations as nice-to-have                | Orphan rate drifts up silently; eventually most skills are unreachable                        | Graph maintenance is a quality gate; CI should fail on degraded connectivity                            |
+| **AI-inferred runtime edges** — letting an LLM "infer" relations on every rebuild | Graph drifts non-deterministically; routing layer cannot trust it                             | Use deterministic signals at synthesis time; use AI only as an _authoring suggestion_ the human accepts |
+| **Ignoring cross-graph edges** — only maintaining the skill graph                 | Skills reference scripts and memory references skills, but those edges are unmaintained       | Map all four graphs and the cross-graph edges between them                                              |
+| **Boundary-as-adjacency** — putting topical neighbours in `boundary`              | Hijacks the neighbour's positive cases; depresses its routing-eval                            | Use `related` for neighbours; reserve `boundary` for genuine routing-exclusion                          |
 
 ## Verification
 
@@ -235,11 +235,11 @@ Each step exercises a different edge type. Skipping a step leaves a stale edge s
 
 ## Do NOT Use When
 
-| Use instead | When |
-|---|---|
-| `skill-scaffold` | Authoring or restructuring a single SKILL.md — the per-skill craft, not the whole-graph architecture |
-| `skill-infrastructure` | Running the live skill library tooling — census, overlap detection, routing-gap reporting, drift checks on individual skills |
-| `graph-audit` | Validating that one skill's frontmatter matches the schema and its relation targets exist |
-| `skill-router` | Deciding which skill activates for a specific query at dispatch time — that is the *consumer* of this graph, not the graph's design |
-| `documentation` | Writing the prose of a single document for a human reader — the change-propagation framework here is upstream |
-| `code-review` | Reviewing AI-generated code — orthogonal concern |
+| Use instead            | When                                                                                                                                |
+| ---------------------- | ----------------------------------------------------------------------------------------------------------------------------------- |
+| `skill-scaffold`       | Authoring or restructuring a single SKILL.md — the per-skill craft, not the whole-graph architecture                                |
+| `skill-infrastructure` | Running the live skill library tooling — census, overlap detection, routing-gap reporting, drift checks on individual skills        |
+| `graph-audit`          | Validating that one skill's frontmatter matches the schema and its relation targets exist                                           |
+| `skill-router`         | Deciding which skill activates for a specific query at dispatch time — that is the _consumer_ of this graph, not the graph's design |
+| `documentation`        | Writing the prose of a single document for a human reader — the change-propagation framework here is upstream                       |
+| `code-review`          | Reviewing AI-generated code — orthogonal concern                                                                                    |

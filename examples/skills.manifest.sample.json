@@ -83,6 +83,10 @@
           {
             "reason": "documentation owns prose reading-level and audience fit; a11y owns assistive-tech behavior",
             "skill": "documentation"
+          },
+          {
+            "reason": "diagnosis classifies failure symptoms (Logic / Runtime / Performance / etc.) for triage; a11y owns assistive-tech behavior. The phrase 'rewrite this error message...' is a documentation/UX concern, not a diagnosis or a11y concern — diagnosis is named here so the router excludes it from a11y's positive scope.",
+            "skill": "diagnosis"
           }
         ],
         "verify_with": [
@@ -972,7 +976,9 @@
           "improve the prompt template the agent uses",
           "curate the durable memory index across sessions",
           "which skill should activate for this query",
-          "review this AI-generated PR for correctness"
+          "review this AI-generated PR for correctness",
+          "the README has drifted from the actual CLI flags — which wins?",
+          "the docs have drifted from the code — which is canonical?"
         ],
         "examples": [
           "the agent's tool results are starting to truncate — what state are we in and what should I do next?",
@@ -993,7 +999,7 @@
           "post-compact recovery",
           "cross-session persistence hierarchy",
           "token consumption per operation",
-          "cli vs mcp tokens",
+          "deterministic cli vs mcp tool result tokens",
           "targeted file read offset limit",
           "progressive skill disclosure",
           "count mode exploration",
@@ -1414,6 +1420,8 @@
           "doc drift",
           "spec",
           "update the readme",
+          "readme drifted from code",
+          "docs drifted from cli",
           "document this function",
           "write api docs",
           "doc this",
@@ -1476,6 +1484,10 @@
           {
             "reason": "refactor owns behavior-preserving code changes; documentation owns the prose that describes them",
             "skill": "refactor"
+          },
+          {
+            "reason": "context-window owns runtime context-budget management for an agent session; documentation owns durable reference prose. The phrase 'README has drifted from the actual CLI flags' is a documentation-drift question, not a context-budget question — context-window is named here so the router excludes it from documentation's positive scope.",
+            "skill": "context-window"
           }
         ]
       },

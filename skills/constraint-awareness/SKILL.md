@@ -48,11 +48,11 @@ examples:
   - "is this proposed automation a constraint-elevator or a non-constraint optimization that won't move throughput?"
   - "the rework rate climbed from 12% to 24% over the quarter — which constraint step does that point at?"
 anti_examples:
-  - "what's the ICE / RICE score for this initiative against five others"   # → prioritization framework skill
-  - "estimate the effort tier for this ticket"                              # → task-sizing
-  - "route this debugging task to the cheapest model that can solve it"     # → model routing / agents
-  - "review this AI-generated PR for correctness"                           # → code-review
-  - "design the production reliability layer for our agent system"          # → agent-engineering
+  - "what's the ICE / RICE score for this initiative against five others" # → prioritization framework skill
+  - "estimate the effort tier for this ticket" # → task-sizing
+  - "route this debugging task to the cheapest model that can solve it" # → model routing / agents
+  - "review this AI-generated PR for correctness" # → code-review
+  - "design the production reliability layer for our agent system" # → agent-engineering
 relations:
   boundary:
     - skill: ai-native-development
@@ -86,7 +86,7 @@ Theory-of-Constraints (Goldratt) applied to the cost-structure inversion of AI-a
 
 Most AI-coding systems fail not because the agents are incapable, but because they waste the one resource that cannot be scaled: the human operator's attention. Without explicit constraint-awareness, agents treat all tasks as equal-priority, interrupt the operator with questions they could have answered themselves, and produce verbose output nobody reads. Theory of Constraints turns this into a tractable engineering problem rather than a vague productivity complaint: identify the constraint, route work around it, invest only in changes that genuinely move it.
 
-The single sharpest insight TOC offers an AI-coding team is the *cost-structure inversion*. Pre-AI, code production was the dominant cost — every feature took hours of typing, every test took hours of writing. Post-AI, code production is nearly free; an agent can produce ten thousand lines in minutes. The bottleneck has moved entirely to the activities that cannot be delegated: reviewing whether the agent's output is correct, deciding what to build next, validating that the system matches user reality, and learning from outcomes. Every team optimization should now be evaluated through one question: does this reduce demand on the constraint?
+The single sharpest insight TOC offers an AI-coding team is the _cost-structure inversion_. Pre-AI, code production was the dominant cost — every feature took hours of typing, every test took hours of writing. Post-AI, code production is nearly free; an agent can produce ten thousand lines in minutes. The bottleneck has moved entirely to the activities that cannot be delegated: reviewing whether the agent's output is correct, deciding what to build next, validating that the system matches user reality, and learning from outcomes. Every team optimization should now be evaluated through one question: does this reduce demand on the constraint?
 
 ## 1. Goldratt's Theory of Constraints
 
@@ -94,21 +94,21 @@ Eliyahu Goldratt's TOC states that every system has exactly one constraint that 
 
 ### The Five Focusing Steps
 
-1. **IDENTIFY the constraint.** What single resource currently limits system throughput? In an AI-coding team, this is almost always a class of *human* activity, not a class of *agent* activity.
+1. **IDENTIFY the constraint.** What single resource currently limits system throughput? In an AI-coding team, this is almost always a class of _human_ activity, not a class of _agent_ activity.
 2. **EXPLOIT the constraint.** Maximize the value of every minute of constraint-time. Never waste it on work the constraint shouldn't be touching.
-3. **SUBORDINATE everything else to the constraint.** Non-constraint resources (agents, automation, tooling) exist to *serve* the constraint, not the other way around. Their schedules, outputs, and APIs should be shaped around the constraint's needs.
+3. **SUBORDINATE everything else to the constraint.** Non-constraint resources (agents, automation, tooling) exist to _serve_ the constraint, not the other way around. Their schedules, outputs, and APIs should be shaped around the constraint's needs.
 4. **ELEVATE the constraint.** Invest in increasing the constraint's capacity — better tooling, better skills, higher agent autonomy, better pre-review.
 5. **REPEAT.** When the constraint moves (and it will), restart from step 1. The subordination rules change.
 
 ### The map for an AI-coding team
 
-| Focusing step | Applied to a team operating coding agents |
-|---|---|
-| **IDENTIFY** | The constraint is the senior reviewer's / architect's / product-owner's attention — review bandwidth, validation, decision-making, learning. |
-| **EXPLOIT** | Only surface decisions to the constraint that genuinely require human judgment. Every constraint-minute should produce maximum value. |
-| **SUBORDINATE** | Agents do all work that does not require the constraint: building, testing, auditing, documenting, researching, comparing options, drafting recommendations. |
-| **ELEVATE** | Better tools, better agent autonomy, better skill / context content, better memory across sessions = less demand on the constraint per unit of throughput. |
-| **REPEAT** | Once agent autonomy is high enough, the constraint may move from review to strategic decisions, then to user research, then to market timing. The processes that served the old constraint may be irrelevant to the new one. |
+| Focusing step   | Applied to a team operating coding agents                                                                                                                                                                                    |
+| --------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **IDENTIFY**    | The constraint is the senior reviewer's / architect's / product-owner's attention — review bandwidth, validation, decision-making, learning.                                                                                 |
+| **EXPLOIT**     | Only surface decisions to the constraint that genuinely require human judgment. Every constraint-minute should produce maximum value.                                                                                        |
+| **SUBORDINATE** | Agents do all work that does not require the constraint: building, testing, auditing, documenting, researching, comparing options, drafting recommendations.                                                                 |
+| **ELEVATE**     | Better tools, better agent autonomy, better skill / context content, better memory across sessions = less demand on the constraint per unit of throughput.                                                                   |
+| **REPEAT**      | Once agent autonomy is high enough, the constraint may move from review to strategic decisions, then to user research, then to market timing. The processes that served the old constraint may be irrelevant to the new one. |
 
 ## 2. The Constraint Shift — When Building Becomes Cheap
 
@@ -138,17 +138,17 @@ The inversion: code production was the bottleneck; now it is nearly free. The bo
 
 ### Implications for prioritization
 
-| Activity | Cost | Who does it | Constraint impact |
-|---|---|---|---|
-| Writing code | Nearly free | Agents | None |
-| Writing tests | Nearly free | Agents | None |
-| Writing docs | Nearly free | Agents | None |
-| Codebase audits | Nearly free | Agents | None |
-| Research & comparison | Cheap | Agents draft; human reads conclusions | Low |
-| Design decisions | Expensive | Human (agents prepare options) | HIGH |
-| Bug triage and prioritization | Expensive | Human | HIGH |
-| Code review | Medium | Agents pre-review; human spot-checks | MEDIUM (reduced by pre-review) |
-| User research / market validation | Very expensive | Human only | VERY HIGH |
+| Activity                          | Cost           | Who does it                           | Constraint impact              |
+| --------------------------------- | -------------- | ------------------------------------- | ------------------------------ |
+| Writing code                      | Nearly free    | Agents                                | None                           |
+| Writing tests                     | Nearly free    | Agents                                | None                           |
+| Writing docs                      | Nearly free    | Agents                                | None                           |
+| Codebase audits                   | Nearly free    | Agents                                | None                           |
+| Research & comparison             | Cheap          | Agents draft; human reads conclusions | Low                            |
+| Design decisions                  | Expensive      | Human (agents prepare options)        | HIGH                           |
+| Bug triage and prioritization     | Expensive      | Human                                 | HIGH                           |
+| Code review                       | Medium         | Agents pre-review; human spot-checks  | MEDIUM (reduced by pre-review) |
+| User research / market validation | Very expensive | Human only                            | VERY HIGH                      |
 
 ## 3. The Constraint Lens — One Question for Every Decision
 
@@ -224,21 +224,21 @@ GOOD: "Upstream null tracking — three options:
        Recommendation: A. Approve?"
 ```
 
-The bad pattern requires the constraint to *generate* the solution. The good pattern requires only a yes/no judgment.
+The bad pattern requires the constraint to _generate_ the solution. The good pattern requires only a yes/no judgment.
 
 ### 4.4 Eliminate false dependencies on the constraint
 
-Some tasks that *seem* to require the constraint actually do not:
+Some tasks that _seem_ to require the constraint actually do not:
 
-| Looks like it needs human approval | Actually | Promote to |
-|---|---|---|
-| "Should I fix this lint error?" | Always yes | Rule / agent default |
-| "This test is failing — should I investigate?" | Always yes | Rule / agent default |
-| "Should I update the docs for this change?" | Always yes | Rule / agent default |
+| Looks like it needs human approval              | Actually                                  | Promote to                                       |
+| ----------------------------------------------- | ----------------------------------------- | ------------------------------------------------ |
+| "Should I fix this lint error?"                 | Always yes                                | Rule / agent default                             |
+| "This test is failing — should I investigate?"  | Always yes                                | Rule / agent default                             |
+| "Should I update the docs for this change?"     | Always yes                                | Rule / agent default                             |
 | "Is this the right pattern for error handling?" | If a documented pattern exists, follow it | Skill content; only ask when genuinely ambiguous |
-| "Should I report this bug somewhere?" | Always yes | Rule / agent default |
+| "Should I report this bug somewhere?"           | Always yes                                | Rule / agent default                             |
 
-If the answer is *always the same*, it should live in a rule or skill, not in a question to the constraint.
+If the answer is _always the same_, it should live in a rule or skill, not in a question to the constraint.
 
 ## 5. Anti-Patterns That Waste the Constraint
 
@@ -278,14 +278,14 @@ Multi-agent debates that produce no actionable output. Re-litigating settled dec
 
 Periodically review where constraint-attention actually went. Healthy and unhealthy ranges:
 
-| Category | Healthy share | Unhealthy signal |
-|---|---|---|
-| Reviewing agent output | 30–40% | > 50% means agents need more autonomy |
-| Making design / product decisions | 20–30% | < 10% means agents are making decisions they shouldn't |
-| Debugging agent failures | 5–10% | > 20% means skill or context content is incomplete |
-| Answering agent questions | 5–10% | > 15% means rules / skills are incomplete |
-| Administrative overhead | < 10% | > 20% means processes need automation |
-| Learning / user research / strategy | 15–25% | < 10% means the constraint is consumed by operations |
+| Category                            | Healthy share | Unhealthy signal                                       |
+| ----------------------------------- | ------------- | ------------------------------------------------------ |
+| Reviewing agent output              | 30–40%        | > 50% means agents need more autonomy                  |
+| Making design / product decisions   | 20–30%        | < 10% means agents are making decisions they shouldn't |
+| Debugging agent failures            | 5–10%         | > 20% means skill or context content is incomplete     |
+| Answering agent questions           | 5–10%         | > 15% means rules / skills are incomplete              |
+| Administrative overhead             | < 10%         | > 20% means processes need automation                  |
+| Learning / user research / strategy | 15–25%        | < 10% means the constraint is consumed by operations   |
 
 ### 6.2 Constraint throughput
 
@@ -299,25 +299,25 @@ This number should increase over time as agents become more autonomous and skill
 
 ### 6.3 Leading indicators
 
-| Indicator | Measures | Healthy target |
-|---|---|---|
-| Agent autonomous-completion rate | % of tasks agents finish without asking | > 80% |
-| Skill / context-injection precision | % of injected context that was actually relevant | > 80% |
-| Rework rate | % of agent work needing human correction | < 15% |
-| Decision batch size | Average number of decisions per constraint interruption | > 5 |
+| Indicator                           | Measures                                                | Healthy target |
+| ----------------------------------- | ------------------------------------------------------- | -------------- |
+| Agent autonomous-completion rate    | % of tasks agents finish without asking                 | > 80%          |
+| Skill / context-injection precision | % of injected context that was actually relevant        | > 80%          |
+| Rework rate                         | % of agent work needing human correction                | < 15%          |
+| Decision batch size                 | Average number of decisions per constraint interruption | > 5            |
 
 ## 7. When the Constraint Moves
 
 The constraint is not permanently fixed. As agent autonomy improves, the bottleneck shifts:
 
-| Current constraint | What elevates it | New constraint |
-|---|---|---|
-| Review bandwidth | Better agent pre-review, automated quality gates, tripwire safety | Strategic decision bandwidth |
-| Strategic decision bandwidth | Multi-model decision-support, better research agents | User research (cannot automate talking to actual users) |
-| User research | AI-assisted user research, synthetic personas, automated interview analysis | Market timing / GTM execution |
-| Market timing / GTM | Capital, distribution partners | A *resource* constraint (capital, headcount), not a *throughput* constraint |
+| Current constraint           | What elevates it                                                            | New constraint                                                              |
+| ---------------------------- | --------------------------------------------------------------------------- | --------------------------------------------------------------------------- |
+| Review bandwidth             | Better agent pre-review, automated quality gates, tripwire safety           | Strategic decision bandwidth                                                |
+| Strategic decision bandwidth | Multi-model decision-support, better research agents                        | User research (cannot automate talking to actual users)                     |
+| User research                | AI-assisted user research, synthetic personas, automated interview analysis | Market timing / GTM execution                                               |
+| Market timing / GTM          | Capital, distribution partners                                              | A _resource_ constraint (capital, headcount), not a _throughput_ constraint |
 
-When the constraint moves, the Five Focusing Steps restart from step 1. The processes that served the old constraint may now be irrelevant or actively counterproductive. Subordination targets change. The team's *job* changes.
+When the constraint moves, the Five Focusing Steps restart from step 1. The processes that served the old constraint may now be irrelevant or actively counterproductive. Subordination targets change. The team's _job_ changes.
 
 ## Verification
 
@@ -327,16 +327,16 @@ When the constraint moves, the Five Focusing Steps restart from step 1. The proc
 - [ ] When agents present a decision to the constraint, they present options + recommendation, not an open question
 - [ ] Recurring questions have been promoted to rules or skills until they stop recurring
 - [ ] Attention-audit ratios are within the healthy bands; outliers have a known cause and an active elevation action
-- [ ] The team has named what would cause the constraint to *move* and what the next constraint is likely to be
+- [ ] The team has named what would cause the constraint to _move_ and what the next constraint is likely to be
 
 ## Do NOT Use When
 
-| Use instead | When |
-|---|---|
-| A task-sizing skill | Estimating effort tier or fast-track-vs-full-protocol for a single task |
-| A prioritization-framework skill (RICE / WSJF / ICE) | Scoring a backlog of initiatives against each other |
-| A model-routing / `agents` skill | Deciding which AI model gets a specific task |
-| `agent-engineering` | Designing the production-reliability layer (orchestration, error budgets, observability) |
-| `ai-native-development` | Reasoning about the conceptual model (Software 3.0, autonomy slider, vibe vs agentic) — that's the frame; constraint-awareness is the prioritization lens within it |
-| `tool-call-strategy` | Choosing the right tool, batching, or sequencing for a single agent action |
-| `code-review` | Reviewing an actual piece of agent-generated code |
+| Use instead                                          | When                                                                                                                                                                |
+| ---------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| A task-sizing skill                                  | Estimating effort tier or fast-track-vs-full-protocol for a single task                                                                                             |
+| A prioritization-framework skill (RICE / WSJF / ICE) | Scoring a backlog of initiatives against each other                                                                                                                 |
+| A model-routing / `agents` skill                     | Deciding which AI model gets a specific task                                                                                                                        |
+| `agent-engineering`                                  | Designing the production-reliability layer (orchestration, error budgets, observability)                                                                            |
+| `ai-native-development`                              | Reasoning about the conceptual model (Software 3.0, autonomy slider, vibe vs agentic) — that's the frame; constraint-awareness is the prioritization lens within it |
+| `tool-call-strategy`                                 | Choosing the right tool, batching, or sequencing for a single agent action                                                                                          |
+| `code-review`                                        | Reviewing an actual piece of agent-generated code                                                                                                                   |
