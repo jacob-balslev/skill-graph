@@ -1550,11 +1550,123 @@
       "stability": "experimental",
       "type": "capability",
       "version": "1.0.0"
+    },
+    {
+      "activation": {
+        "anti_examples": [
+          "improve this prompt's wording to get better outputs",
+          "design what skills get loaded for which prompts",
+          "the test suite is failing after my change — find the cause",
+          "extract this repeated string-concat into a helper function",
+          "scaffold a new SKILL.md for our team's tool-use rules",
+          "review this AI-generated PR for correctness"
+        ],
+        "examples": [
+          "the agent made 17 read_file calls when 3 greps would have done — what should it have done?",
+          "we're renaming a variable across 40 files — script or tool calls?",
+          "the agent re-reads the same file three times in one task — fix the policy",
+          "should I batch these reads into one message or wait for each result?",
+          "design a tool-use protocol for our new agent harness — what rules matter?",
+          "the context window is filling with verbose terminal output — how do I cut it?",
+          "is it worth delegating this exploratory search to a subagent?",
+          "what's a reasonable tool-call budget for a single-file bug fix?"
+        ],
+        "keywords": [
+          "tool call optimization",
+          "reduce tool calls",
+          "too many tool calls",
+          "script vs tool call",
+          "batching tool calls",
+          "parallel tool calls",
+          "parallelize calls",
+          "independent calls",
+          "redundant reads",
+          "re-reading file",
+          "tool selection",
+          "which tool to use",
+          "grep before read",
+          "file search before grep",
+          "bulk edit script",
+          "poka-yoke tool design",
+          "subagent delegation",
+          "context-efficient tool use",
+          "cost per tool call",
+          "tool call benchmark",
+          "agent efficiency",
+          "token efficiency per call"
+        ]
+      },
+      "allowed-tools": "Read Grep Bash Edit",
+      "browse_category": "engineering",
+      "category": "ai-engineering/tool-use",
+      "compatibility": {
+        "notes": "Provider-agnostic; abstract tool capabilities map to concrete tools across Claude Code, Cursor, Copilot, OpenCode, Aider, Continue. Specific tool names in this skill (read_file, grep_search, run_in_terminal, apply_patch) are concrete examples — substitute the equivalent in your harness."
+      },
+      "description": "Use when an agent is making too many tool calls, when context is filling from verbose tool outputs, when the same operation could be a script instead of N individual calls, or when designing a tool-use protocol for a new agent or harness. Covers the three costs of every call (token, latency, context pollution), the script-vs-call decision gate, tool-selection decision trees (file-search vs content-search vs targeted-read vs full-read), call batching and parallelization, redundancy avoidance, the poka-yoke principle, subagent delegation for context protection, and cost-benchmark heuristics by task type. Do NOT use for prompt wording (use `prompt-craft`), broader context stack design across the five layers (use `context-engineering`), runtime tool failures or production debugging (use `debugging`), or behaviour-preserving refactor mechanics (use `refactor`).",
+      "health": {
+        "drift_check": {
+          "last_verified": "2026-05-06"
+        },
+        "eval_artifacts": "planned",
+        "eval_state": "unverified",
+        "freshness": "2026-05-06",
+        "has_grounding": false,
+        "has_relations": true,
+        "lifecycle": {
+          "review_cadence": "quarterly",
+          "stale_after_days": 90
+        },
+        "routing_eval": "absent"
+      },
+      "id": "tool-call-strategy",
+      "license": "MIT",
+      "name": "tool-call-strategy",
+      "owner": "skill-graph-maintainer",
+      "path": "skills/tool-call-strategy/SKILL.md",
+      "portability": {
+        "readiness": "scripted",
+        "targets": [
+          "agent-skills"
+        ]
+      },
+      "relations": {
+        "boundary": [
+          {
+            "reason": "context-engineering designs the entire information stack reaching the model; tool-call-strategy owns the per-call efficiency decisions inside that stack",
+            "skill": "context-engineering"
+          },
+          {
+            "reason": "prompt-craft writes the wording of one instruction; tool-call-strategy decides which external operations the agent should invoke around that instruction",
+            "skill": "prompt-craft"
+          },
+          {
+            "reason": "debugging chases a specific runtime failure; tool-call-strategy is about the efficiency profile of healthy tool use",
+            "skill": "debugging"
+          },
+          {
+            "reason": "refactor owns behaviour-preserving code transformations as the deliverable; tool-call-strategy decides whether to deliver that transformation through 50 tool calls or one script",
+            "skill": "refactor"
+          }
+        ],
+        "related": [
+          "context-engineering",
+          "refactor",
+          "prompt-craft"
+        ],
+        "verify_with": [
+          "code-review",
+          "documentation"
+        ]
+      },
+      "scope": "portable",
+      "stability": "experimental",
+      "type": "capability",
+      "version": "1.0.0"
     }
   ],
   "summary": {
     "by_browse_category": {
-      "engineering": 3,
+      "engineering": 4,
       "frontend": 1,
       "knowledge": 7,
       "quality": 3,
@@ -1562,19 +1674,19 @@
     },
     "by_scope": {
       "codebase": 1,
-      "portable": 12,
+      "portable": 13,
       "reference": 2
     },
     "by_stability": {
-      "experimental": 14,
+      "experimental": 15,
       "stable": 1
     },
     "by_type": {
-      "capability": 10,
+      "capability": 11,
       "overlay": 1,
       "router": 1,
       "workflow": 3
     },
-    "total_skills": 15
+    "total_skills": 16
   }
 }
