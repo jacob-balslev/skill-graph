@@ -740,6 +740,124 @@
     {
       "activation": {
         "anti_examples": [
+          "design accessible error-message copy and recovery UI for the 404 page",
+          "the boundary fired but the tracker shows no event — root-cause it",
+          "explain our error-tracking architecture in the contributor docs",
+          "review this AI-generated error handler for correctness",
+          "decide if the new error path needs an integration regression test",
+          "design our overall PII storage and retention policy across the system",
+          "refactor the error-helper module for clarity"
+        ],
+        "examples": [
+          "set up exception reporting for a new React + Next.js application",
+          "add a route-level error boundary that recovers gracefully and still reports",
+          "the error tracker is showing customer emails in event payloads — fix the PII leak",
+          "wrap captureException in a centralized reporter that adds environment gating",
+          "audit the error pipeline — confirm every layer eventually reaches the tracker",
+          "decide where error boundaries should live: component, section, route, or app-global",
+          "implement PII sanitization for error payloads before they hit the tracker SDK",
+          "set user context (internal id, org id, role) on errors without sending email or name"
+        ],
+        "keywords": [
+          "error tracking",
+          "exception reporting",
+          "error reporting",
+          "error boundary",
+          "React ErrorBoundary",
+          "route error boundary",
+          "global error boundary",
+          "error tracker SDK",
+          "Sentry integration",
+          "captureException wrapper",
+          "captureMessage wrapper",
+          "addBreadcrumb wrapper",
+          "set user context error",
+          "PII sanitization error payload",
+          "environment-aware error reporting",
+          "dev logger prod tracker",
+          "error digest deduplication",
+          "catastrophic failure capture",
+          "reportError wrapper",
+          "error tracking provider"
+        ]
+      },
+      "allowed-tools": "Read Grep Bash Edit",
+      "browse_category": "engineering",
+      "category": "engineering/observability",
+      "compatibility": {
+        "notes": "Tracker-agnostic. The patterns target any exception-reporting SDK with a `captureException` / `captureMessage` / `addBreadcrumb` shape — Sentry, Rollbar, Bugsnag, Honeybadger, Datadog Errors, Application Insights. Examples are framed in React + Next.js because that is the most common surface; analogous primitives exist in Vue (`errorCaptured`), Svelte (error stores), Remix (`ErrorBoundary`), Nuxt (`error.vue`), and any framework with framework-level error hooks."
+      },
+      "description": "Use when designing or extending the exception-reporting pipeline for an application — choosing where error boundaries live (component, section, route, app-global), wrapping the tracker SDK so every reporting call is sanitized and environment-gated, attaching user context without leaking PII, and verifying that every layer's errors actually reach the tracker. Covers the four-surface error-capture model (component boundaries, route fallbacks, global crash handler, manual API), centralized wrapper design (`reportError` / `reportMessage` / `addBreadcrumb` / `setUser`), PII sanitization before any external send, environment-aware gating (dev → local logger, prod → tracker SDK), and the diagnostic question 'does this layer actually report, or does it only log?' Do NOT use for the *visual* error UX seen by the user (use `a11y` for accessible error messages and recovery flows), for chasing a single observed error already captured in the tracker (use `debugging`), or for the broader privacy and PII-retention policy (use `owasp-security`).",
+      "health": {
+        "drift_check": {
+          "last_verified": "2026-05-06"
+        },
+        "eval_artifacts": "planned",
+        "eval_state": "unverified",
+        "freshness": "2026-05-06",
+        "has_grounding": false,
+        "has_relations": true,
+        "lifecycle": {
+          "review_cadence": "quarterly",
+          "stale_after_days": 90
+        },
+        "routing_eval": "absent"
+      },
+      "id": "error-tracking",
+      "license": "MIT",
+      "name": "error-tracking",
+      "owner": "skill-graph-maintainer",
+      "path": "skills/error-tracking/SKILL.md",
+      "portability": {
+        "readiness": "scripted",
+        "targets": [
+          "agent-skills"
+        ]
+      },
+      "relations": {
+        "boundary": [
+          {
+            "reason": "documentation produces durable prose explaining the error-tracking architecture; error-tracking owns the architecture itself",
+            "skill": "documentation"
+          },
+          {
+            "reason": "debugging chases an observed failure already in the tracker; error-tracking designs the pipeline that captures and routes failures in the first place",
+            "skill": "debugging"
+          },
+          {
+            "reason": "owasp-security owns the cross-cutting PII and credential-handling policy; error-tracking owns the request-time sanitization that error payloads pass through before leaving the application",
+            "skill": "owasp-security"
+          },
+          {
+            "reason": "a11y owns the user-visible error UX (message copy, focus management, screen-reader announcements); error-tracking owns the engineering pipeline behind the error boundary",
+            "skill": "a11y"
+          },
+          {
+            "reason": "refactor reorganizes existing code while preserving behavior; error-tracking changes the *behavior* of the error pipeline (where it reports, what it sanitizes, how layers compose)",
+            "skill": "refactor"
+          }
+        ],
+        "related": [
+          "documentation",
+          "debugging",
+          "owasp-security",
+          "a11y",
+          "code-review",
+          "testing-strategy"
+        ],
+        "verify_with": [
+          "code-review",
+          "testing-strategy"
+        ]
+      },
+      "scope": "portable",
+      "stability": "experimental",
+      "type": "capability",
+      "version": "1.0.0"
+    },
+    {
+      "activation": {
+        "anti_examples": [
           "diagnose why the @/components import cycle broke the build",
           "my agent is stuck in a loop — what's wrong?",
           "write a reference doc explaining what the lint-checker pipeline does"
@@ -2249,7 +2367,7 @@
   ],
   "summary": {
     "by_browse_category": {
-      "engineering": 8,
+      "engineering": 9,
       "frontend": 1,
       "knowledge": 8,
       "quality": 3,
@@ -2257,19 +2375,19 @@
     },
     "by_scope": {
       "codebase": 1,
-      "portable": 18,
+      "portable": 19,
       "reference": 2
     },
     "by_stability": {
-      "experimental": 20,
+      "experimental": 21,
       "stable": 1
     },
     "by_type": {
-      "capability": 16,
+      "capability": 17,
       "overlay": 1,
       "router": 1,
       "workflow": 3
     },
-    "total_skills": 21
+    "total_skills": 22
   }
 }
