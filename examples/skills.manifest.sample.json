@@ -538,6 +538,108 @@
     {
       "activation": {
         "anti_examples": [
+          "what's the ICE / RICE score for this initiative against five others",
+          "estimate the effort tier for this ticket",
+          "route this debugging task to the cheapest model that can solve it",
+          "review this AI-generated PR for correctness",
+          "design the production reliability layer for our agent system"
+        ],
+        "examples": [
+          "we keep adding tooling and the agent throughput isn't going up — what TOC step are we missing?",
+          "should this approval gate stay in the loop or be replaced by an automated check?",
+          "the agents keep asking me clarifying questions and I'm answering 30 a day — what's the structural fix?",
+          "we're considering a 4-model boardmeeting on every architectural decision — does that subordinate to or overload the constraint?",
+          "code production used to be the bottleneck; what does the new bottleneck look like once agents do all the typing?",
+          "is this proposed automation a constraint-elevator or a non-constraint optimization that won't move throughput?",
+          "the rework rate climbed from 12% to 24% over the quarter — which constraint step does that point at?"
+        ],
+        "keywords": [
+          "theory of constraints",
+          "goldratt five focusing steps",
+          "bottleneck identification",
+          "constraint of an ai-coding system",
+          "human attention as constraint",
+          "cost structure inversion ai",
+          "what to automate vs keep manual",
+          "batch decisions not interrupt",
+          "options not questions",
+          "constraint-aware process design",
+          "attention budget",
+          "reduce demand on the bottleneck",
+          "elevate the constraint",
+          "subordinate to the constraint",
+          "constraint shift over time",
+          "rework rate as constraint signal",
+          "false dependency on the human",
+          "over-engineering anti-pattern constraint"
+        ]
+      },
+      "allowed-tools": "Read Grep",
+      "browse_category": "knowledge",
+      "category": "ai-engineering/strategy",
+      "compatibility": {
+        "notes": "Operating-model-agnostic. Applies whether the constraint is a single solo developer operating multiple agents, a small team where one senior engineer reviews everything, or a larger team where review capacity is the limiting factor. The framework adapts as the constraint identity changes."
+      },
+      "description": "Use when prioritizing work in an AI-assisted codebase, designing agent autonomy levels, deciding what to automate vs what to keep manual, or evaluating whether a proposed process or tool actually adds value. Applies Eliyahu Goldratt's Theory of Constraints to the AI-coding era's specific cost-structure inversion: code production has become cheap (agents generate it in minutes), so the system bottleneck has moved to the human activities that cannot be delegated — review, validation, decision-making, and learning. Covers the Five Focusing Steps (Identify / Exploit / Subordinate / Elevate / Repeat), the pre-AI vs post-AI cost structure, the constraint decision framework, four constraint-aware process-design rules (front-load agent work, batch constraint touches, present options not questions, eliminate false dependencies), five anti-patterns that waste the constraint, attention-audit ratios for measuring constraint health, and the constraint-shift model (when the bottleneck moves from review → strategic decisions → user research → market timing). Do NOT use for task-effort estimation (that is a sizing question), for backlog scoring with RICE / WSJF / ICE (that is a prioritization framework), or for routing a specific task to a specific model (that is an operational dispatch decision).",
+      "health": {
+        "drift_check": {
+          "last_verified": "2026-05-06"
+        },
+        "eval_artifacts": "planned",
+        "eval_state": "unverified",
+        "freshness": "2026-05-06",
+        "has_grounding": false,
+        "has_relations": true,
+        "lifecycle": {
+          "review_cadence": "quarterly",
+          "stale_after_days": 365
+        },
+        "routing_eval": "absent"
+      },
+      "id": "constraint-awareness",
+      "license": "MIT",
+      "name": "constraint-awareness",
+      "owner": "skill-graph-maintainer",
+      "path": "skills/constraint-awareness/SKILL.md",
+      "portability": {
+        "readiness": "scripted",
+        "targets": [
+          "agent-skills"
+        ]
+      },
+      "relations": {
+        "boundary": [
+          {
+            "reason": "ai-native-development is the conceptual frame for AI-coding (eras, autonomy slider, vibe vs agentic); constraint-awareness is the prioritization lens applied within that frame",
+            "skill": "ai-native-development"
+          },
+          {
+            "reason": "agent-engineering owns production reliability patterns (orchestration, error budgets, observability); constraint-awareness owns *which* of those to invest in based on where the bottleneck currently is",
+            "skill": "agent-engineering"
+          },
+          {
+            "reason": "code-review evaluates one piece of work; constraint-awareness reasons about whether the review gate itself is the bottleneck",
+            "skill": "code-review"
+          },
+          {
+            "reason": "tool-call-strategy decides per-action which tool an agent calls; constraint-awareness decides per-process whether that whole class of action should require human intervention at all",
+            "skill": "tool-call-strategy"
+          }
+        ],
+        "related": [
+          "ai-native-development",
+          "agent-engineering",
+          "code-review"
+        ]
+      },
+      "scope": "portable",
+      "stability": "experimental",
+      "type": "capability",
+      "version": "1.0.0"
+    },
+    {
+      "activation": {
+        "anti_examples": [
           "improve this prompt's wording to get better outputs",
           "scaffold a new SKILL.md for our team's deploy procedure",
           "the router picked the wrong skill for this query — debug it",
@@ -2582,25 +2684,25 @@
     "by_browse_category": {
       "engineering": 9,
       "frontend": 1,
-      "knowledge": 10,
+      "knowledge": 11,
       "quality": 3,
       "security": 1
     },
     "by_scope": {
       "codebase": 1,
-      "portable": 21,
+      "portable": 22,
       "reference": 2
     },
     "by_stability": {
-      "experimental": 23,
+      "experimental": 24,
       "stable": 1
     },
     "by_type": {
-      "capability": 19,
+      "capability": 20,
       "overlay": 1,
       "router": 1,
       "workflow": 3
     },
-    "total_skills": 24
+    "total_skills": 25
   }
 }
