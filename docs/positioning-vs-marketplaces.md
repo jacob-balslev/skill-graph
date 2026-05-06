@@ -19,7 +19,7 @@ There are four categories of AI-coding context tool, and they solve different pr
 | **Aggregator marketplaces** | [skillsmp.com](https://skillsmp.com), [skills.sh](https://skills.sh) | The discovery surface — find a skill, install it |
 | **Always-on repo conventions** | CLAUDE.md, AGENTS.md, Cursor rules, Continue rules, GitHub Copilot custom instructions | Per-repo behavior rules the agent reads at session start (always loaded, not on-demand) |
 
-Skill Graph sits in the second category. It does not compete with the first (it extends Agent Skills), the third (it's the contract a marketplace could enforce on the skills it aggregates), or the fourth (those are repo behavior rules; Skill Graph is skill-library structure).
+Skill Graph sits in the second category. It does not compete with the first (it is interoperable with Agent Skills via the export transform but is its own contract — distinct shape, distinct fields), the third (it's the contract a marketplace could enforce on the skills it aggregates), or the fourth (those are repo behavior rules; Skill Graph is skill-library structure).
 
 ---
 
@@ -31,7 +31,7 @@ Skill Graph sits in the second category. It does not compete with the first (it 
 
 | Axis | Anthropic Agent Skills | Skill Graph |
 |---|---|---|
-| **Required fields** | 2 (`name`, `description`) | 13 (the 2 base + 11 Skill Graph extensions) |
+| **Required fields** | 2 (`name`, `description`) | 13 (Skill Graph specifies its own required set; `name` and `description` happen to be 2 of them, which is what enables export to Agent Skills) |
 | **Routing model** | Lexical retrieval over `description` and tag fields | Compound graph-aware retrieval using `relations.*`, `grounding`, `eval_state`, `project_tags`, plus the Layer-1 lexical surface |
 | **Drift detection** | None — staleness is invisible to the standard | SHA-256 baselines on `truth_sources`; the drift sentinel reports DRIFT / BROKEN / STALE / NO_BASELINE |
 | **Project scoping** | Folder structure or naming hacks | `project_tags` + workspace `semantic_tags` matching, no folder gymnastics |
@@ -39,9 +39,9 @@ Skill Graph sits in the second category. It does not compete with the first (it 
 | **Inheritance** | None | `type: overlay` + `extends` for specialisation with schema-level body-section enforcement |
 | **Round-trip compatibility** | N/A | One-way export to base Agent Skills via `scripts/export-skill.js`; round-trip back requires re-authoring the lost fields |
 
-**When to use both:** always. Agent Skills is the substrate; Skill Graph is the structural layer on top. Every Skill Graph skill round-trips back to a valid Agent Skills file.
+**When to use both:** when you want Skill Graph's metadata for authoring and the broader runtime support of Agent Skills' format simultaneously. Author in Skill Graph; export to Agent Skills shape via `scripts/export-skill.js` for runtimes that read only the simpler format. The two contracts are peers, not parent-child.
 
-**When Skill Graph is overhead, not benefit:** library size below ~3 skills, single project, no grounded skills, no eval pipeline. The 11 extra required fields are pure tax until at least one of those pressures appears.
+**When Skill Graph is overhead, not benefit:** library size below ~3 skills, single project, no grounded skills, no eval pipeline. Skill Graph's richer required field set is pure tax until at least one of those pressures appears — plain Agent Skills covers the simple case.
 
 ---
 
