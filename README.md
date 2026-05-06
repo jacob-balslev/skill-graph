@@ -2,15 +2,17 @@
 
 > **Glossary.** In this repo, **tier** = authority (which file wins on conflict — see the 5-tier "Quick tour" below; [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md) is the same 5 tiers in detail). **Layer** = type of metadata inside a single skill's frontmatter — there are 5 of those too, defined in [`docs/PRIMER.md`](docs/PRIMER.md) § 3. The two fives count to the same number but refer to different concepts: tiers span the whole repo; layers live inside one `SKILL.md`.
 
-Your first five skills can be a folder of `SKILL.md` files. Your next fifteen usually cannot. Once skills overlap, depend on real project files, and start carrying quality promises, you need more than descriptions and tags. **Skill Graph is the contract and toolchain for that moment** — built on top of the [Agent Skills](https://agentskills.io/specification) open standard, it adds typed relations, grounding contracts, audit surfaces, and deterministic validation. Round-trips back to plain Agent Skills via the export transform at `scripts/export-skill.js`. (A Skill Graph SKILL.md is *not* automatically a valid Agent Skills file — the `compatibility` shape and `name` pattern diverge — but the two formats round-trip via the transform.)
+**Skill Graph is the metadata contract for skills that know your codebase.** Where the [Agent Skills](https://agentskills.io/specification) open standard declares a skill in 2 fields — name and description — Skill Graph adds the structure a skill needs once it lives inside a real project: hashed grounding to actual repository files, typed relations to other skills, project tags for stack-specific scoping, and eval state for routing trust. The result is skills that are relevant to *your* project, not generic skills that happen to mention your stack.
 
-### Three pains Skill Graph solves
+Built on top of Agent Skills; round-trips back via `scripts/export-skill.js`. (A Skill Graph `SKILL.md` is *not* automatically a valid Agent Skills file — the `compatibility` shape and `name` pattern diverge — but the two formats round-trip via the transform.)
+
+### Three failures the contract prevents
 
 1. **Wrong-skill activation.** The agent picks the wrong skill on an ambiguous prompt — and you can't tell whether the description was vague, the keywords overlapped, or two skills both claimed the territory. *Skill Graph names this with `relations.boundary` predicates and routing-quality lint rules so the conflict is visible at lint time, not runtime.*
 2. **Silent staleness.** A grounded skill cites a file you rewrote last Tuesday. The skill is now lying, but lint doesn't know and the agent will quote it anyway. *Skill Graph hashes every `grounding.truth_sources` entry and reports DRIFT / BROKEN / STALE / NO_BASELINE against the recorded baseline.*
 3. **Project-scope leak.** You want to share some skills across two projects but not all. Today this lives in folder structure or naming hacks; tomorrow you change the layout and break a project. *Skill Graph names project scope in the contract via `project_tags` + workspace `semantic_tags` matching — no folder gymnastics required.*
 
-The contract names those problems with typed metadata; the lint catches them before they hit production.
+The contract names each failure with typed metadata; the lint catches them before they hit production. Each one is a specific symptom of skills that don't yet know which files, stacks, or sibling skills they belong to.
 
 ### Why now
 

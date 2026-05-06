@@ -2,9 +2,11 @@
 
 > Should you adopt Skill Graph for your AI agent skill library? This page is a 1-screen decision tree. For the full mental model, read [`PRIMER.md`](PRIMER.md). For the contract details, read [`metadata-contract.md`](metadata-contract.md).
 
-## Pain-recognition probe
+## Relevance probe
 
-> **If you've ever said "why did the agent load the wrong skill?" or "this skill was right last week but the code changed," you are in Skill Graph territory.** Library size is a proxy — these failures usually start around 3–5 skills, sometimes earlier if you have multiple projects, sometimes later for a single small project.
+> **Skill Graph is for project-relevant skills — skills that know your repository's files, your stack, and their relationships to one another.** If your skills are generic (no codebase grounding, no inter-skill relations, one project), plain Agent Skills covers it. If you've started authoring skills that reference real files in your repo, that need to coexist with related skills, or that should activate for some projects but not others, you're in Skill Graph territory.
+>
+> The pain test is the same idea, said differently: if you've ever said *"why did the agent load the wrong skill?"* or *"this skill was right last week but the code changed,"* those are the failure modes the contract addresses. Library size is a proxy — these failures usually start around 3–5 skills, earlier with multiple projects, later for a single small library.
 
 ## You don't have skills yet?
 

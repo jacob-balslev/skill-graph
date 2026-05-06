@@ -6,6 +6,8 @@
 >
 > **Last updated.** 2026-05-06.
 
+**Skill Graph's job is authoring skills that know your project — its files, its stack, its inter-skill relationships.** Every comparison below is framed against that job. The other tools on the shelf solve different problems; the comparison clarifies which tool fits which job, and where Skill Graph complements rather than competes.
+
 ## Categories on the shelf
 
 There are four categories of AI-coding context tool, and they solve different problems:
