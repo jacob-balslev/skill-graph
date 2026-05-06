@@ -1716,6 +1716,116 @@
     {
       "activation": {
         "anti_examples": [
+          "design the deterministic safety hook that blocks destructive commands",
+          "decide whether to use a switch or a chain of ifs",
+          "actually execute the migration after we've classified the risk",
+          "scan this repo for OWASP top 10 vulnerabilities",
+          "review this AI-generated PR for correctness",
+          "the loop is stalling — what's the steering signal"
+        ],
+        "examples": [
+          "the agent is about to run `git reset --hard` — what tier is this and what's the safer alternative?",
+          "is reading the `.env` file a Passive operation since nothing mutates?",
+          "I'm about to install a new package — what tier does that fit and why?",
+          "force-push to main looks like 'just a push' — should I classify it as Modification?",
+          "before running `DELETE FROM orders WHERE …`, what's the verification sequence?",
+          "the agent classified everything as Modification because there's no exception for credentials",
+          "what trigger phrases should activate this skill in our harness?"
+        ],
+        "keywords": [
+          "intent recognition",
+          "pre-execution risk classification",
+          "four tier action taxonomy",
+          "passive read reconnaissance modification destructive",
+          "identify confirm verify sequence",
+          "destructive operation classification",
+          "credential read is reconnaissance",
+          "git reset hard is destructive",
+          "force push is destructive",
+          "lockfile install is high impact",
+          "non-destructive alternative",
+          "agent action risk assessment",
+          "tool call pre-execution gate",
+          "reading dotenv is not passive",
+          "history rewriting is irreversible",
+          "state-changing tool call",
+          "agent safety pre-execution",
+          "target content elevates tier"
+        ]
+      },
+      "allowed-tools": "Read Grep",
+      "browse_category": "engineering",
+      "category": "ai-engineering/safety",
+      "compatibility": {
+        "notes": "Runtime-agnostic. The four-tier classification, target-content rule, and Identify/Confirm/Verify sequence apply to any agent harness with tool execution — Claude Code, OpenCode, Cursor, Aider, Copilot Workspace, custom MCP-based agents, or any LLM with shell access."
+      },
+      "description": "Use BEFORE executing any tool call that could modify state — git commands, file writes, database queries, dependency installs, package publishes, shell commands with side effects, or anything touching credentials, environment files, lockfiles, or version-control history. Classifies the intended action into one of four tiers (Passive/Read, Reconnaissance, Modification, Destructive/Irreversible) using both the *operation type* and the *target content* (reading `.env` is Reconnaissance even though no state changes), and runs the three-step Identify / Confirm / Verify sequence that surfaces non-destructive alternatives before a destructive action fires. Covers the four-tier taxonomy with examples; the operation-vs-target rule (the target's sensitivity can elevate the tier above what the operation alone would suggest); the verification sequence (state the action and tier explicitly, confirm rationale against the plan, check for non-destructive alternatives); the trigger phrases that should activate it; and the anti-patterns that demote credential reads to Passive or treat history-rewriting commands as routine Modification. Do NOT use for deciding what code to write (that's a code-logic / code-quality concern), for executing work after classification has already happened (that's task execution), for reactive safety gates that fire AFTER execution (use a hook-based guardrail instead), or for defining governance policies (those are upstream of this per-action classifier).",
+      "health": {
+        "drift_check": {
+          "last_verified": "2026-05-06"
+        },
+        "eval_artifacts": "planned",
+        "eval_state": "unverified",
+        "freshness": "2026-05-06",
+        "has_grounding": false,
+        "has_relations": true,
+        "lifecycle": {
+          "review_cadence": "quarterly",
+          "stale_after_days": 365
+        },
+        "routing_eval": "absent"
+      },
+      "id": "intent-recognition",
+      "license": "MIT",
+      "name": "intent-recognition",
+      "owner": "skill-graph-maintainer",
+      "path": "skills/intent-recognition/SKILL.md",
+      "portability": {
+        "readiness": "scripted",
+        "targets": [
+          "agent-skills"
+        ]
+      },
+      "relations": {
+        "boundary": [
+          {
+            "reason": "owasp-security is a domain audit against a known threat list; intent-recognition is the per-action risk classification that runs immediately before a tool call regardless of domain",
+            "skill": "owasp-security"
+          },
+          {
+            "reason": "debugging investigates a failure that has already happened; intent-recognition prevents one class of failure (destructive action mis-classification) from happening at all",
+            "skill": "debugging"
+          },
+          {
+            "reason": "code-review evaluates code-quality of an artefact; intent-recognition evaluates risk of an action about to be performed by a tool",
+            "skill": "code-review"
+          },
+          {
+            "reason": "version-control owns the discipline of using git well; intent-recognition specifically classifies which git commands are safe vs destructive at the moment of execution",
+            "skill": "version-control"
+          },
+          {
+            "reason": "testing-strategy decides what to test proactively; intent-recognition gates one specific tool call from firing without classification",
+            "skill": "testing-strategy"
+          }
+        ],
+        "related": [
+          "owasp-security",
+          "version-control",
+          "debugging"
+        ],
+        "verify_with": [
+          "owasp-security"
+        ]
+      },
+      "scope": "portable",
+      "stability": "experimental",
+      "type": "capability",
+      "version": "1.0.0"
+    },
+    {
+      "activation": {
+        "anti_examples": [
           "this specific ESLint error is blocking my commit — why?",
           "decide whether to unit-test or integration-test this handler",
           "extract this repeated code pattern into a shared util"
@@ -3114,7 +3224,7 @@
   ],
   "summary": {
     "by_browse_category": {
-      "engineering": 9,
+      "engineering": 10,
       "frontend": 1,
       "knowledge": 15,
       "quality": 3,
@@ -3122,19 +3232,19 @@
     },
     "by_scope": {
       "codebase": 1,
-      "portable": 26,
+      "portable": 27,
       "reference": 2
     },
     "by_stability": {
-      "experimental": 28,
+      "experimental": 29,
       "stable": 1
     },
     "by_type": {
-      "capability": 24,
+      "capability": 25,
       "overlay": 1,
       "router": 1,
       "workflow": 3
     },
-    "total_skills": 29
+    "total_skills": 30
   }
 }
