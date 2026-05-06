@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-05-04T00:00:00.000Z",
+  "generated_at": "2026-05-06T12:00:00Z",
   "schema_version": 3,
   "skills": [
     {
@@ -194,6 +194,115 @@
       "scope": "portable",
       "stability": "experimental",
       "type": "workflow",
+      "version": "1.0.0"
+    },
+    {
+      "activation": {
+        "anti_examples": [
+          "improve this prompt's wording to get better outputs",
+          "scaffold a new SKILL.md for our team's deploy procedure",
+          "the router picked the wrong skill for this query — debug it",
+          "review this AI-generated PR for correctness",
+          "write a doc explaining our agent system to a new joiner",
+          "investigate why production crashed at 3am"
+        ],
+        "examples": [
+          "the agent ignored the instruction and used the wrong query helper — was the right skill loaded?",
+          "we keep getting generic answers from the agent even though the skill has the answer — what's wrong?",
+          "I want to design which skills get injected for which prompts — where do I start?",
+          "the agent's quality drops in long sessions — when should I compact?",
+          "diagnose this agent failure: it had the file open but produced wrong output anyway",
+          "we have 200 skills and the agent picks the wrong ones — fix the injection",
+          "should I read this 5K-line file directly or delegate to a subagent?",
+          "audit our context pipeline — what's loaded when, and is any of it stale?"
+        ],
+        "keywords": [
+          "context engineering",
+          "context failure",
+          "agent context",
+          "context quality",
+          "context design",
+          "missing context",
+          "stale context",
+          "wrong context",
+          "overwhelming context",
+          "context window",
+          "context utilization",
+          "injection precision",
+          "injection recall",
+          "frequent intentional compaction",
+          "FIC",
+          "context compaction",
+          "subagent delegation",
+          "context stack",
+          "context layers",
+          "skill injection",
+          "context engineering stack",
+          "agent failure diagnosis",
+          "why did the agent fail"
+        ]
+      },
+      "allowed-tools": "Read Grep Bash Edit",
+      "browse_category": "knowledge",
+      "category": "ai-engineering/context",
+      "compatibility": {
+        "notes": "Provider-agnostic; principles apply across Claude, GPT, Gemini, and open-weight models. Layer mapping varies by harness (Claude Code, OpenCode, Cursor, Continue, Aider) but the five-layer abstraction holds."
+      },
+      "description": "Use when designing what information reaches an LLM agent before it reasons — system prompt, persistent memory, always-loaded rules, injected skills, and the user prompt — or when diagnosing why an agent produced a wrong answer despite a clear instruction. Covers the four context failure modes (missing, stale, wrong, overwhelming), the five-layer context stack, four context quality metrics (injection precision and recall, utilization, freshness), the Frequent Intentional Compaction (FIC) protocol, subagent delegation for context-heavy work, and the failure-mode decision tree. Do NOT use for prompt wording (use `prompt-craft`), authoring a new SKILL.md (use `skill-scaffold`), or deciding which skill the router activates for a given query (use `skill-router`).",
+      "health": {
+        "drift_check": {
+          "last_verified": "2026-05-06"
+        },
+        "eval_artifacts": "planned",
+        "eval_state": "unverified",
+        "freshness": "2026-05-06",
+        "has_grounding": false,
+        "has_relations": true,
+        "lifecycle": {
+          "review_cadence": "quarterly",
+          "stale_after_days": 90
+        },
+        "routing_eval": "absent"
+      },
+      "id": "context-engineering",
+      "license": "MIT",
+      "name": "context-engineering",
+      "owner": "skill-graph-maintainer",
+      "path": "skills/context-engineering/SKILL.md",
+      "portability": {
+        "readiness": "scripted",
+        "targets": [
+          "agent-skills"
+        ]
+      },
+      "relations": {
+        "boundary": [
+          {
+            "reason": "prompt-craft writes the wording of one instruction; context-engineering shapes the entire surrounding payload (rules, memory, skills, file reads) that the prompt sits inside",
+            "skill": "prompt-craft"
+          },
+          {
+            "reason": "skill-scaffold authors the structure of a single SKILL.md file; context-engineering decides which skills should exist, get loaded, and reach the model in the first place",
+            "skill": "skill-scaffold"
+          },
+          {
+            "reason": "skill-router is the runtime mechanism that selects skills for a query; context-engineering is the design discipline behind the entire context stack the router operates within",
+            "skill": "skill-router"
+          }
+        ],
+        "related": [
+          "prompt-craft",
+          "skill-router",
+          "documentation"
+        ],
+        "verify_with": [
+          "documentation",
+          "code-review"
+        ]
+      },
+      "scope": "portable",
+      "stability": "experimental",
+      "type": "capability",
       "version": "1.0.0"
     },
     {
@@ -1447,25 +1556,25 @@
     "by_browse_category": {
       "engineering": 3,
       "frontend": 1,
-      "knowledge": 6,
+      "knowledge": 7,
       "quality": 3,
       "security": 1
     },
     "by_scope": {
       "codebase": 1,
-      "portable": 11,
+      "portable": 12,
       "reference": 2
     },
     "by_stability": {
-      "experimental": 13,
+      "experimental": 14,
       "stable": 1
     },
     "by_type": {
-      "capability": 9,
+      "capability": 10,
       "overlay": 1,
       "router": 1,
       "workflow": 3
     },
-    "total_skills": 14
+    "total_skills": 15
   }
 }
