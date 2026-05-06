@@ -4262,31 +4262,132 @@
       "stability": "experimental",
       "type": "capability",
       "version": "1.0.0"
+    },
+    {
+      "activation": {
+        "anti_examples": [
+          "decide kebab-case vs camelCase for this new database column",
+          "draft the marketing headline for the pricing page with strong persuasion",
+          "restructure this doc into a tutorial format with progressive disclosure",
+          "rewrite this UI button label so it names the actual action instead of saying Submit",
+          "rename this React component across all call-sites in the repo",
+          "audit this WCAG 2.2 contrast violation on the dashboard"
+        ],
+        "examples": [
+          "this PR description sounds AI-generated — strip the tells and rewrite it concisely",
+          "rewrite this onboarding paragraph in the active voice with shorter average sentence length",
+          "audit this release-notes draft for Tier 1 AI tells (delve, leverage, comprehensive, testament)",
+          "this paragraph starts every sentence with The dashboard — rotate the openers and vary the rhythm",
+          "humanize this error-message body so it stops sounding like a corporate FAQ",
+          "drop the hollow intensifiers and over-qualification from this tooltip",
+          "the docs team flagged this prose as robotic — apply the 5-step humanization workflow"
+        ],
+        "keywords": [
+          "AI-tell detection",
+          "AI-tell removal",
+          "prose humanization",
+          "passive-to-active voice",
+          "hedging-pattern removal",
+          "readability scoring diagnosis",
+          "sentence-rhythm pattern",
+          "3-beat sentence variety",
+          "hook-body-landing paragraph",
+          "tone mapping framework",
+          "AI-detection avoidance",
+          "perplexity burstiness rule",
+          "enumeration-trap anti-pattern",
+          "hollow-intensifier removal",
+          "jargon decision tree",
+          "humanization 5-step workflow"
+        ]
+      },
+      "allowed-tools": "Read Grep Edit",
+      "browse_category": "knowledge",
+      "category": "ai-engineering/language",
+      "compatibility": {
+        "notes": "Stack-agnostic prose-humanization rules. The AI-tell catalog, voice-conversion decision tree, readability formulas, sentence-rhythm patterns, tone-mapping table, and detection-avoidance techniques apply to any human-readable text in any product domain — substitute the equivalents from your own audience and brand voice."
+      },
+      "description": "Use when writing or editing prose that humans will read — documentation, PR descriptions, issue bodies, release notes, error messages, UI copy, commit messages, tooltips, support responses — or when text sounds robotic, padded, monotonous, or overly formal. Covers AI-tell detection and removal (Tier 1 zero-tolerance words like 'delve', 'testament', 'comprehensive', 'leverage'; Tier 2 conditional removals like 'utilize', 'facilitate'), passive-to-active voice conversion with the actor-known decision tree, hedging-pattern removal, readability scoring (Flesch-Kincaid, Gunning Fog, Flesch Reading Ease) used as diagnosis not target, sentence variety and the 3-beat short-long-medium rhythm, vocabulary-diversity rules, tone mapping across context types, AI-detection-avoidance techniques (perplexity, burstiness), paragraph rhythm with the hook-body-landing pattern, the bullets-vs-prose decision tree, anti-patterns (over-qualification, repetitive transitions, the enumeration trap, hollow intensifiers), and the 5-step humanization workflow. Provides the prose-quality humanization layer for any human-readable text — not the doc structure itself, not the casing convention, and not the in-product UI-text pattern catalog. Do NOT use for documentation routing or doc-type selection (use documentation), code-identifier naming (use semantics or naming-conventions), or the in-product UI-text pattern catalog (use microcopy).",
+      "health": {
+        "drift_check": {
+          "last_verified": "2026-05-06"
+        },
+        "eval_artifacts": "planned",
+        "eval_state": "unverified",
+        "freshness": "2026-05-06",
+        "has_grounding": false,
+        "has_relations": true,
+        "lifecycle": {
+          "review_cadence": "quarterly",
+          "stale_after_days": 365
+        },
+        "routing_eval": "absent"
+      },
+      "id": "writing-humanizer",
+      "license": "MIT",
+      "name": "writing-humanizer",
+      "owner": "skill-graph-maintainer",
+      "path": "skills/writing-humanizer/SKILL.md",
+      "portability": {
+        "readiness": "scripted",
+        "targets": [
+          "agent-skills"
+        ]
+      },
+      "relations": {
+        "boundary": [
+          {
+            "reason": "documentation owns doc-type selection, audience targeting, freshness, and progressive disclosure of doc *content*; writing-humanizer owns the prose-form quality inside any human-readable text (AI tells, voice, sentence rhythm, register fit) — the same 'fix this writing' prompt routes by whether the trigger is doc structure or prose form",
+            "skill": "documentation"
+          },
+          {
+            "reason": "microcopy owns the specific in-product UX-text patterns (button labels, empty-state structure, tooltip rules, dialog rules, toast rules); writing-humanizer owns AI-tell removal and prose-rhythm rules across any human-readable text including but not limited to UI — the same 'rewrite this for humans' prompt routes by whether the surface is a specific UI pattern or any other prose",
+            "skill": "microcopy"
+          },
+          {
+            "reason": "linguistics owns the underlying language rules (morphology, polysemy, audience register as a general principle, blame-free framing); writing-humanizer owns the specific catalog of AI tells, the perplexity/burstiness fingerprint, and the 5-step humanization workflow — the same 'is this writing good?' prompt routes by whether the trigger is the linguistic rationale or the AI-fingerprint detection-and-fix",
+            "skill": "linguistics"
+          }
+        ],
+        "related": [
+          "linguistics",
+          "microcopy",
+          "semantics"
+        ],
+        "verify_with": [
+          "linguistics",
+          "documentation"
+        ]
+      },
+      "scope": "portable",
+      "stability": "experimental",
+      "type": "capability",
+      "version": "1.0.0"
     }
   ],
   "summary": {
     "by_browse_category": {
       "engineering": 10,
       "frontend": 1,
-      "knowledge": 25,
+      "knowledge": 26,
       "quality": 3,
       "security": 1
     },
     "by_scope": {
       "codebase": 1,
-      "portable": 37,
+      "portable": 38,
       "reference": 2
     },
     "by_stability": {
-      "experimental": 39,
+      "experimental": 40,
       "stable": 1
     },
     "by_type": {
-      "capability": 32,
+      "capability": 33,
       "overlay": 1,
       "router": 1,
       "workflow": 6
     },
-    "total_skills": 40
+    "total_skills": 41
   }
 }
