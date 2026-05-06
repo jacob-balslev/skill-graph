@@ -1,6 +1,27 @@
 # Skill Graph
 
-Graph-aware skill metadata for AI agents and human authors. Compatible with the [Agent Skills](https://agentskills.io/specification) open standard via the export transform at `scripts/export-skill.js` — adds typed relations, grounding contracts, audit surfaces, and deterministic validation. A Skill Graph SKILL.md is *not* automatically a valid Agent Skills file (the `compatibility` shape and `name` pattern diverge); the two formats round-trip via the export transform.
+> **Glossary.** In this repo, **tier** = authority (which file wins on conflict). **Layer** = type of metadata. They are different concepts and the counts (5 tiers vs 5 layers vs 7 architecture levels) refer to different things — see [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md) for the reconciliation.
+
+Your first five skills can be a folder of `SKILL.md` files. Your next fifteen usually cannot. Once skills overlap, depend on real project files, and start carrying quality promises, you need more than descriptions and tags. **Skill Graph is the contract and toolchain for that moment** — built on top of the [Agent Skills](https://agentskills.io/specification) open standard, it adds typed relations, grounding contracts, audit surfaces, and deterministic validation. Round-trips back to plain Agent Skills via the export transform at `scripts/export-skill.js`. (A Skill Graph SKILL.md is *not* automatically a valid Agent Skills file — the `compatibility` shape and `name` pattern diverge — but the two formats round-trip via the transform.)
+
+### Three pains Skill Graph solves
+
+1. **Wrong-skill activation.** The agent picks the wrong skill on an ambiguous prompt — and you can't tell whether the description was vague, the keywords overlapped, or two skills both claimed the territory. *Skill Graph names this with `relations.boundary` predicates and routing-quality lint rules so the conflict is visible at lint time, not runtime.*
+2. **Silent staleness.** A grounded skill cites a file you rewrote last Tuesday. The skill is now lying, but lint doesn't know and the agent will quote it anyway. *Skill Graph hashes every `grounding.truth_sources` entry and reports DRIFT / BROKEN / STALE / NO_BASELINE against the recorded baseline.*
+3. **Project-scope leak.** You want to share some skills across two projects but not all. Today this lives in folder structure or naming hacks; tomorrow you change the layout and break a project. *Skill Graph names project scope in the contract via `project_tags` + workspace `semantic_tags` matching — no folder gymnastics required.*
+
+The contract names those problems with typed metadata; the lint catches them before they hit production.
+
+### What Skill Graph is *not*
+
+Skill Graph sits one layer below aggregator marketplaces like [skillsmp.com](https://skillsmp.com) and [skills.sh](https://skills.sh) — it's the contract those marketplaces could enforce on the skills they aggregate. It is not itself a marketplace, a runtime, or a prompt library; it complements them. **A skillsmp search is for *finding* a skill; a Skill Graph library is for *managing* your team's expertise.** Specifically, Skill Graph is **not**:
+
+- a prompt library
+- a skill marketplace
+- another agent framework
+- a complete runtime implementation
+
+It is a portable metadata contract with deterministic validation, designed to be consumed by any agent runtime that already supports Agent Skills.
 
 ## Status
 
@@ -8,7 +29,33 @@ Graph-aware skill metadata for AI agents and human authors. Compatible with the 
 
 **Considering adoption?** Read [`docs/ADOPTION.md`](docs/ADOPTION.md) for a 1-page decision tree. **Wondering which skills the OSS library should ship?** Read [`docs/recommended-skills.md`](docs/recommended-skills.md) for the curated set targeted at all humans and AI agents.
 
-Shipping today:
+## Where Skill Graph sits in the agent-skills landscape
+
+A 2026 reader has at least six AI-coding context tools in their head. Here's how Skill Graph relates to each:
+
+| Tool | What it does (in their words) | What Skill Graph does differently | When you'd use both |
+|---|---|---|---|
+| [**Anthropic Agent Skills**](https://www.claude.com/skills) | *"Teach Claude your way of working" — "Build once, use everywhere" — "Stack skills for complex work."* The open standard for packaging procedural knowledge as discoverable folders. | Skill Graph **extends** Agent Skills with typed relations, drift detection, eval state, and project scoping. Every Skill Graph skill round-trips back to a valid Agent Skills file via `scripts/export-skill.js`. | Always — Agent Skills is the substrate. Skill Graph is the structural layer on top. |
+| [**Cursor rules**](https://cursor.com/docs) (`.cursor/rules/*.mdc`) | Repo-behavior guardrails the IDE applies to every Cursor agent action — "always treat this folder as auth-critical," "never modify schemas without a migration." | Cursor rules are repo-behavior guardrails; Skill Graph is **skill-library structure** for the moment you have many skills to route, verify, and ground. The two solve different problems. | Together — Cursor rules constrain the agent's behavior in your repo; Skill Graph organizes the skills the agent draws from. |
+| **Continue rules** (`.continue/rules/*`) | Same shape as Cursor rules — IDE-applied behavior constraints. | Same distinction as Cursor: behavior rules vs. library structure. | Together — Continue rules for IDE behavior, Skill Graph for skill-library shape. |
+| **GitHub Copilot custom instructions** (`.github/instructions/*`) | Per-repo prompt augmentation that ships with every Copilot completion request. | Custom instructions are inline prompt content; Skill Graph is a **routable, validatable, droppable** skill-library contract. Copilot does not load skills dynamically — Skill Graph assumes a runtime that does. | Together — custom instructions for the prompt context Copilot always sees; Skill Graph for the on-demand skills a more capable runtime would route to. |
+| **CLAUDE.md / AGENTS.md** | Plain-text repo-level conventions Claude Code or generic agent runtimes read at session start. | CLAUDE.md/AGENTS.md is **always-on** repo context (small, opinionated). Skill Graph is **on-demand** skill packaging (many, structured, routable). | Together — AGENTS.md for non-negotiable repo rules; Skill Graph for the skills the agent reaches for when those rules don't cover the specific task. |
+| [**skillsmp.com**](https://skillsmp.com) | Aggregator marketplace — *"Discover open-source agent skills from GitHub."* Discovery surface. | Skill Graph is the contract a marketplace could enforce on the skills it aggregates. Library-management surface. | Together — skillsmp for finding new skills to install; Skill Graph for governing the library you've assembled. |
+| [**skills.sh**](https://skills.sh) | Same category as skillsmp — *"The Open Agent Skills Ecosystem."* | Same distinction as skillsmp: discovery vs. management. | Together — same pattern. |
+
+## What you get
+
+Three benefits, each backed by a contract field and a script:
+
+| Benefit | What it solves | Powered by |
+|---|---|---|
+| **Routing that respects your skill graph** | No more wrong-skill picks on ambiguous prompts. The router reads `relations.boundary`, `relations.depends_on`, and routing-quality lint rules to make the right pick visible. | `relations` block in the contract; `scripts/skill-graph-route.js` |
+| **Drift detection** | Grounded skills warn you when the truth source moved. A skill that cites `migrations/0042_add_org_id.sql` and that file has changed since the last baseline → DRIFT. | `grounding.truth_sources` + `drift_check.truth_source_hashes`; `scripts/skill-graph-drift.js` |
+| **Multi-project mode** | Share skills across projects without naming codebases in frontmatter. A workspace `.skill-graph/config.json` matches `project_tags` to project `semantic_tags` automatically. | `project_tags` + `.skill-graph/config.json`; `scripts/generate-manifest.js` |
+
+### Full feature inventory
+
+The complete set of shipped features:
 
 - public `SKILL.md` frontmatter contract (`docs/metadata-contract.md`) — 32 authored fields, schema_version 3
 - JSON Schemas for skill and manifest validation (`schemas/`) with pinned v2 (frozen) and v3 (current) copies alongside the unversioned files
@@ -28,17 +75,19 @@ Shipping today:
 - concrete example audit and eval artifacts against the `documentation` starter (`examples/audits/`, `examples/evals/`)
 - sample manifest generated by `scripts/generate-manifest.js` — not hand-written (`examples/skills.manifest.sample.json`)
 
-Planned, not yet implemented:
+### Planned, not yet implemented
 
 - overlap detection and coverage tooling (`scripts/skill-overlap.js`, `scripts/build-coverage.js`)
 
-Deferred (removed from the contract in 0.3.0, still deferred in 0.4.0):
+### Deferred (removed from the contract in 0.3.0, still deferred in 0.4.0)
 
 - Export transforms for `cursor`, `windsurf`, `copilot`, and `agents-md` targets. These values previously appeared in the `portability.targets` enum as compatibility *goals* with no working transform. Because `additionalProperties: false` plus enum restriction is the whole point of the contract, aspirational enum values violated that contract. The enum accepts only `agent-skills`. Re-add via a new RFC and the same PR that ships the transform.
 
 See `docs/plans/scripts-roadmap.md` for the planned script surface and [CHANGELOG.md](CHANGELOG.md) for what has shipped in each release.
 
 ## Relationship to Agent Skills
+
+**If you only need plain Agent Skills, stay there.** Skill Graph exists for the moment your skills become a system and need typed relations, trust signals, and code grounding. Anthropic's own framing: *"Claude is powerful, but real work requires procedural knowledge and organizational context"* ([Anthropic engineering blog](https://www.anthropic.com/engineering/equipping-agents-for-the-real-world-with-agent-skills)). Skill Graph is what you adopt when "organizational context" stops being a folder of `SKILL.md` files and starts being a graph.
 
 Skill Graph extends the [Agent Skills](https://agentskills.io/specification) open standard with a richer authoring contract. It keeps the base standard's two required fields (`name`, `description`) and the optional fields (`license`, `compatibility`, `allowed-tools`) — but tightens their shape and adds typed relations, grounding anchors, health metadata, and portability declarations as additional top-level fields.
 
@@ -294,17 +343,6 @@ Each archetype requires a minimum set of H2 body sections:
 | `overlay` | `## Coverage`, `## Overlay Rules`, `## Extends`, `## Do NOT Use When` |
 
 Lint errors on missing sections. Lint warns on sections that exist but contain fewer than 50 non-whitespace characters (empty-placeholder guard).
-
-## Non-goals
-
-Skill Graph is not:
-
-- a prompt library
-- a skill marketplace
-- another agent framework
-- a complete runtime implementation
-
-It is a portable metadata contract with deterministic validation targets, designed to be consumed by any agent runtime that already supports Agent Skills.
 
 ## License
 
