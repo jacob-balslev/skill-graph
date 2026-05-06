@@ -90,8 +90,8 @@ The remaining Wave 2 candidates from the broader plan. These are **not** univers
 |---|---|---|
 | **Phase 0 (today)** | The 8 starters in v0.4.0 | Done |
 | **Phase 1 — close Tier A** | Add `skill-scaffold`, `naming-conventions`, `code-review`, `prompt-craft`, `owasp-security` | Next milestone (~2–3 weeks of focused authoring) |
-| **Phase 2 — Tier B batch 1** | `context-engineering`, `tool-call-strategy`, `agent-engineering`, `skill-infrastructure` | After Phase 1 ships and is verified by external adopters |
-| **Phase 3 — Tier B batch 2** | `database-migration`, `webhook-integration`, `version-control`, `error-tracking` | Two weeks after Phase 2 |
+| **Phase 2 — Tier B batch 1** | `context-engineering`, `tool-call-strategy`, `agent-engineering`, `skill-infrastructure` | Done — 2026-05-06 |
+| **Phase 3 — Tier B batch 2** | `database-migration`, `webhook-integration`, `version-control`, `error-tracking` | Done — 2026-05-06 |
 | **Phase 4 — Tier C pilot** | Pick one Tier C cluster based on observed adopter demand; ship its 5–7 skills | When Phase 3 stabilizes |
 
 **Rationale:** Tier A → B → C is a deliberate sequencing from universal to specialized. A starter library with all of Tier A + 4 from Tier B (17 skills total) is a credible foundation for any adopter regardless of stack or domain. Tier C should ship demand-driven, not speculatively.
