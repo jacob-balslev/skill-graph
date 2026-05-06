@@ -2141,6 +2141,107 @@
     {
       "activation": {
         "anti_examples": [
+          "write the marketing headline for the pricing page",
+          "review this WCAG 2.2 contrast violation on the dashboard",
+          "explain the morphology rule behind verb-first function names",
+          "restructure this help-center article into a tutorial",
+          "decide the kebab-case format for this new CSS class",
+          "rename this React component across all call-sites"
+        ],
+        "examples": [
+          "rewrite this button label so it names the actual action instead of saying Submit",
+          "what should the empty state say when a user has no orders yet?",
+          "draft tooltip text for a production-cost field that explains what it means in one sentence",
+          "this destructive confirmation dialog says OK — what should the button label be instead?",
+          "the inline validation message says Invalid input — make it specific and actionable",
+          "draft a toast message for a successful order export with undo",
+          "what should the loading state say when a sync takes longer than 10 seconds?"
+        ],
+        "keywords": [
+          "button label microcopy",
+          "empty-state copy",
+          "tooltip text rule",
+          "confirmation dialog wording",
+          "inline validation message",
+          "toast notification copy",
+          "placeholder text rule",
+          "loading-state messaging",
+          "functional UI text",
+          "ux writing patterns",
+          "destructive-action confirmation copy",
+          "permission request copy",
+          "onboarding step copy",
+          "microcopy verb-first button",
+          "acknowledge-explain-guide empty state",
+          "blame-free toast wording"
+        ]
+      },
+      "allowed-tools": "Read Grep",
+      "browse_category": "knowledge",
+      "category": "design/ux",
+      "compatibility": {
+        "notes": "Stack-agnostic UX-writing patterns. The button-label, empty-state, tooltip, dialog, loading, validation, and toast rules apply to any web, mobile, or desktop UI; example product copy uses generic e-commerce framings (storefront, fulfillment partner, orders) — substitute the equivalents from your own product domain."
+      },
+      "description": "Use when writing or reviewing functional UI text — button labels, empty-state messages, tooltip content, confirmation dialogs, placeholder text, loading and progress messages, error/success/warning toasts, inline form-validation messages, permission request copy, or onboarding step instructions. Covers the verb-first specific-action button-label rule, the acknowledge-explain-guide empty-state structure, the one-sentence answer-what-is-this tooltip rule, the consequence-first action-named confirmation-dialog rule, the spinner → skeleton → message → reassurance progressive-loading sequence, and the appear-on-blur disappear-on-fix inline-validation rule. Provides the patterns for the words inside the working interface — not marketing copy, not documentation prose, not the general linguistic rationale behind naming. Do NOT use for marketing or landing-page persuasion (use a copywriting skill), for documentation prose or guide structure (use documentation), or for the general linguistic rationale behind UI wording (use linguistics).",
+      "health": {
+        "drift_check": {
+          "last_verified": "2026-05-06"
+        },
+        "eval_artifacts": "planned",
+        "eval_state": "unverified",
+        "freshness": "2026-05-06",
+        "has_grounding": false,
+        "has_relations": true,
+        "lifecycle": {
+          "review_cadence": "quarterly",
+          "stale_after_days": 365
+        },
+        "routing_eval": "absent"
+      },
+      "id": "microcopy",
+      "license": "MIT",
+      "name": "microcopy",
+      "owner": "skill-graph-maintainer",
+      "path": "skills/microcopy/SKILL.md",
+      "portability": {
+        "readiness": "scripted",
+        "targets": [
+          "agent-skills"
+        ]
+      },
+      "relations": {
+        "boundary": [
+          {
+            "reason": "linguistics owns the underlying language rules (morphology, polysemy, audience register, blame-free framing as a general principle); microcopy owns the specific UI-text patterns where those rules apply (button label rule, empty-state structure, tooltip rule, confirmation-dialog rule) — the same 'rewrite this UI text' prompt routes by whether the user wants the linguistic rationale or the concrete UX-writing pattern",
+            "skill": "linguistics"
+          },
+          {
+            "reason": "documentation owns long-form prose inside guides, tutorials, and reference docs; microcopy owns short-form text inside the working interface (buttons, dialogs, empty states) — the same 'review this writing' prompt routes by whether the writing lives in a doc or in the live UI",
+            "skill": "documentation"
+          },
+          {
+            "reason": "a11y owns the accessibility contracts that govern how copy is announced (aria-live regions, aria-label fallbacks, screen-reader semantics); microcopy owns the words themselves — the same 'fix this UI text' prompt routes by whether the trigger is accessibility compliance or copy quality",
+            "skill": "a11y"
+          }
+        ],
+        "related": [
+          "linguistics",
+          "task-analysis",
+          "intent-recognition"
+        ],
+        "verify_with": [
+          "linguistics",
+          "a11y"
+        ]
+      },
+      "scope": "portable",
+      "stability": "experimental",
+      "type": "capability",
+      "version": "1.0.0"
+    },
+    {
+      "activation": {
+        "anti_examples": [
           "refactor this 200-line function into smaller pieces",
           "write a doc explaining our naming conventions",
           "review this PR's naming choices",
@@ -3759,25 +3860,25 @@
     "by_browse_category": {
       "engineering": 10,
       "frontend": 1,
-      "knowledge": 20,
+      "knowledge": 21,
       "quality": 3,
       "security": 1
     },
     "by_scope": {
       "codebase": 1,
-      "portable": 32,
+      "portable": 33,
       "reference": 2
     },
     "by_stability": {
-      "experimental": 34,
+      "experimental": 35,
       "stable": 1
     },
     "by_type": {
-      "capability": 28,
+      "capability": 29,
       "overlay": 1,
       "router": 1,
       "workflow": 5
     },
-    "total_skills": 35
+    "total_skills": 36
   }
 }
