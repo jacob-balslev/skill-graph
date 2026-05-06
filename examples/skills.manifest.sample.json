@@ -3070,6 +3070,112 @@
     {
       "activation": {
         "anti_examples": [
+          "should onboarding be hyphenated, and how does English compound morphology affect that decision?",
+          "what does margin mean in finance reporting versus CSS layout — give me the canonical definition?",
+          "what casing should a new database timestamp column use — kebab, snake, or camel?",
+          "audit whether this button has the correct aria-label and focus semantics for screen readers",
+          "decide whether these entities should live in a strict hierarchy or a faceted taxonomy",
+          "draft the empty-state copy for a freshly connected storefront with no orders yet"
+        ],
+        "examples": [
+          "a function named process(data) actually reconciles revenue with production cost — what semantic rename would make the operation self-explanatory without reading the implementation?",
+          "our API returns HTTP 200 with { success: false, error: 'User not found' } — is that syntactically valid but semantically wrong, and what should the response signal be instead?",
+          "we named a token --light-blue and now dark mode plus rebranding broke its meaning — what semantic token pattern should replace it?",
+          "a variable called provider could mean payment, fulfillment, or auth in three different modules — how should semantics resolve that ambiguity?",
+          "I need to choose between feat(billing): add email notifications and chore(billing): add email notifications — which commit message is semantically correct?",
+          "should this ID be a branded type or a plain string, and what does parse-don't-validate mean for it?",
+          "audit this database schema for unitless financial columns and timestamp-naming drift"
+        ],
+        "keywords": [
+          "semantic naming",
+          "semantic drift detection",
+          "branded type design",
+          "semantic versioning rules",
+          "conventional commit type choice",
+          "HTTP status semantic signaling",
+          "design-token semantic layer",
+          "naming smells catalogue",
+          "DDD ubiquitous language",
+          "affordance signifier match",
+          "semantic UI signal",
+          "semantic API contract",
+          "parse-do-not-validate pattern",
+          "three-layer token architecture",
+          "meaning-encoding identifier",
+          "semantic-vs-syntactic distinction",
+          "cargo-cult naming anti-pattern"
+        ]
+      },
+      "allowed-tools": "Read Grep",
+      "browse_category": "knowledge",
+      "category": "ai-engineering/language",
+      "compatibility": {
+        "notes": "Cross-domain naming and meaning skill, stack-agnostic. The naming-smells catalogue, SemVer rules, conventional-commit format, three-layer token architecture, HTTP-status semantics, REST/GraphQL conventions, and anti-pattern catalog apply to any codebase; example identifiers use generic e-commerce framings — substitute the equivalents from your domain."
+      },
+      "description": "Use when naming any artifact across any domain — function, variable, file, CSS class, design token, database column, API field, HTTP status code, semantic-version bump, conventional-commit type, UI label, error code, or branded TypeScript type — or when a name in code review feels wrong, ambiguous, or misleading. Covers the meaning-encoding rules across naming smells (Peter Hilton catalogue), DDD ubiquitous language, semantic versioning (SemVer 2.0.0), conventional commit messages, branded/nominal types and parse-don't-validate, three-layer design-token architecture (primitive → semantic → component), semantic CSS / BEM, semantic REST and GraphQL APIs, HTTP status codes as semantic signals, semantic UI affordances and color usage, and the universal anti-pattern catalog (generic names, semantic drift, misleading names, appearance-based names, abbreviation ambiguity, cargo-cult naming). Provides the cross-domain meaning-encoding layer — the why behind every naming convention — not the casing format itself, not word-form morphology, and not relation typing between concepts. Do NOT use for word morphology or polysemy resolution at the identifier level (use linguistics), the casing format per artifact kind (use naming-conventions), the typed connection between concepts (use semantic-relations), or specific in-product UI-text patterns (use microcopy).",
+      "health": {
+        "drift_check": {
+          "last_verified": "2026-05-06"
+        },
+        "eval_artifacts": "planned",
+        "eval_state": "unverified",
+        "freshness": "2026-05-06",
+        "has_grounding": false,
+        "has_relations": true,
+        "lifecycle": {
+          "review_cadence": "quarterly",
+          "stale_after_days": 365
+        },
+        "routing_eval": "absent"
+      },
+      "id": "semantics",
+      "license": "MIT",
+      "name": "semantics",
+      "owner": "skill-graph-maintainer",
+      "path": "skills/semantics/SKILL.md",
+      "portability": {
+        "readiness": "scripted",
+        "targets": [
+          "agent-skills"
+        ]
+      },
+      "relations": {
+        "boundary": [
+          {
+            "reason": "linguistics owns word-form rules (morphology, compound-word ordering, abbreviation policy, audience register, blame-free phrasing); semantics owns meaning encoding (what the name communicates, semantic drift, branded types, HTTP-status semantics, SemVer signaling) — the same 'is this name good?' prompt routes by whether the trigger is the form of the word or the meaning the name encodes",
+            "skill": "linguistics"
+          },
+          {
+            "reason": "naming-conventions owns the deterministic casing/format choice per artifact kind (kebab vs camel vs snake vs Pascal); semantics owns the meaning encoding behind the name — the same 'what should I call this?' prompt routes by whether the user wants the format rule or the meaning-encoding decision",
+            "skill": "naming-conventions"
+          },
+          {
+            "reason": "semantic-relations owns the typed-connection vocabulary between concepts (IS-A, PART-OF, thematic roles); semantics owns the meaning encoding for an individual identifier or signal — the same 'what does this mean?' prompt routes by whether the trigger is the relation between things or the encoding of one thing",
+            "skill": "semantic-relations"
+          },
+          {
+            "reason": "microcopy owns specific in-product UI-text patterns (button labels, empty states, tooltips, dialogs, toasts); semantics owns the underlying meaning-encoding rules that apply to any name or signal — the same 'rewrite this UI text' prompt routes by whether the trigger is the UX-pattern surface or the cross-domain meaning rule",
+            "skill": "microcopy"
+          }
+        ],
+        "related": [
+          "linguistics",
+          "semantic-relations",
+          "microcopy"
+        ],
+        "verify_with": [
+          "a11y",
+          "code-review"
+        ]
+      },
+      "scope": "portable",
+      "stability": "experimental",
+      "type": "capability",
+      "version": "1.0.0"
+    },
+    {
+      "activation": {
+        "anti_examples": [
           "scaffold a new SKILL.md for our team's deploy procedure",
           "audit this Skill Graph repo for schema conformance and dangling relation targets",
           "the manifest sample drifted from the generator — find the mismatch",
@@ -4061,25 +4167,25 @@
     "by_browse_category": {
       "engineering": 10,
       "frontend": 1,
-      "knowledge": 23,
+      "knowledge": 24,
       "quality": 3,
       "security": 1
     },
     "by_scope": {
       "codebase": 1,
-      "portable": 35,
+      "portable": 36,
       "reference": 2
     },
     "by_stability": {
-      "experimental": 37,
+      "experimental": 38,
       "stable": 1
     },
     "by_type": {
-      "capability": 30,
+      "capability": 31,
       "overlay": 1,
       "router": 1,
       "workflow": 6
     },
-    "total_skills": 38
+    "total_skills": 39
   }
 }
