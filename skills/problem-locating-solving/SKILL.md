@@ -2,7 +2,7 @@
 # yaml-language-server: $schema=https://skillgraph.dev/schemas/skill.v3.schema.json
 schema_version: 3
 name: problem-locating-solving
-description: "Use when you need to locate a bug in an unfamiliar codebase, trace a failure from symptom to source, or choose between multiple candidate fixes after the symptom is observed but before any patch is committed. Provides the locate-to-solve workflow: problem-statement contract, search-space reduction by symptom type, boundary-based fault localization (entry-point tracing, differential comparison, binary search, minimal repro), root-cause isolation (symptom vs cause analysis), multi-option fix generation with blast-radius comparison, regression-proof verification rules (repro test, regression test, neighbor check, blast-radius check, explanation check), and post-fix reflection for prevention. Do NOT use for broad task planning and sequencing once the bug is already localized, for proactive code-quality review of a not-yet-broken codebase, or for performance forensics — those need measurement-first methodology, not fault localization."
+description: "Use when you need to locate a bug in an unfamiliar codebase, trace a failure from symptom to source, or choose between multiple candidate fixes after the symptom is observed but before any patch is committed. Provides the locate-to-solve workflow: problem-statement contract, search-space reduction by symptom type, boundary-based fault localization (entry-point tracing, differential good-vs-bad-path comparison, binary search through the call chain, minimal repro), root-cause isolation (symptom vs cause analysis), multi-option fix generation with blast-radius comparison, post-fix verification gates (reproduce the failure before, confirm it no longer occurs after, neighbor-path side-effect check, blast-radius check, explanation check), and reflection that promotes one-off fixes into prevention mechanisms when the class could recur. Do NOT use for broad task planning and sequencing once the bug is already localized, for designing the test pyramid or regression suite that locks in absence of a bug class, or for performance forensics — those need test-strategy or measurement-first methodologies, not fault localization."
 version: 1.0.0
 type: workflow
 browse_category: knowledge
@@ -21,42 +21,49 @@ compatibility:
   notes: "Language- and stack-agnostic. The locate-to-solve loop, boundary-localization techniques, and verification rules apply to any software bug investigation; specific tool names (binary search, git bisect, MRE) are illustrative — substitute the equivalents of your stack."
 allowed-tools: Read Grep
 keywords:
-  - locate a bug in unfamiliar codebase
+  - locate a defect in unfamiliar codebase
   - failing-boundary identification
   - first failing boundary
-  - search-space reduction by symptom
-  - minimal reproducible example
-  - symptom vs cause analysis
-  - root-cause isolation loop
-  - multi-option fix comparison
-  - blast-radius comparison
-  - regression-proof verification
-  - repro test before fix
-  - neighbor-path regression check
-  - explanation-check fix verification
+  - find where defect originates
+  - trace symptom backward to source
+  - search-space reduction by symptom type
+  - boundary-based fault localization
   - locate-to-solve workflow
-  - bounding the search space
+  - search-space bounding rules
   - entry-point tracing technique
-  - differential comparison good vs bad path
-  - post-fix reflection prevention
+  - differential good-path vs bad-path comparison
+  - binary-search a long call chain
+  - minimal repro for noisy stateful failure
+  - multi-option fix candidate comparison
+  - lowest-blast-radius fix selection
+  - blast-radius comparison between fix candidates
+  - neighbor-path side-effect check
+  - explanation-check on a proposed fix
+  - post-fix reflection prevention promotion
 examples:
   - "this route returns 500 but I have no idea where the failure starts — walk me through finding the boundary"
   - "I have a wrong-total bug — show me how to locate the divergence point"
-  - "the build broke after a merge but the error trace is a cascade — where do I start?"
-  - "intermittent failure that I cannot reproduce reliably — what's the locate-to-solve workflow?"
-  - "two candidate fixes for this null-pointer crash — how do I compare them?"
-  - "I patched the symptom but the bug came back two days later — what step did I skip?"
+  - "the build broke after a merge but the error trace is a cascade — which file should I open first?"
+  - "I see the symptom but I am still in discovery — bound the search space for me"
+  - "two candidate fixes for this null-pointer crash — compare blast radius between them"
+  - "I have an unfamiliar codebase and need to find where this report is computed wrong"
+  - "what step in the locate-to-fix workflow did I skip — the bug came back under different inputs"
 anti_examples:
   - "plan the next 6 weeks of work for the team"                              # → task planning
   - "review this PR for code quality"                                          # → code-review
   - "this endpoint is slow under load — find the bottleneck"                   # → performance forensics
   - "scan this repo for OWASP top 10 vulnerabilities"                          # → owasp-security
   - "run scientific-method debugging on this stack trace"                      # → debugging
+  - "I see the symptom but cannot find the root cause of this nil panic"       # → debugging (RCA execution)
   - "classify this failure into a problem class before debugging"              # → diagnosis
+  - "pin this regression so the same bug can't slip through again"             # → testing-strategy (write the regression test)
+  - "decide what test pyramid this feature needs"                              # → testing-strategy
 relations:
   boundary:
     - skill: debugging
       reason: "debugging is the *execution* of one chosen technique against an already-localized bug; problem-locating-solving is the workflow that produces the localization — same 'I have a bug, what do I do?' prompt routes to debugging when the class is known and to problem-locating-solving when localization is needed first"
+    - skill: testing-strategy
+      reason: "testing-strategy owns the framework for what tests to write to lock in the absence of a bug class (regression suite design, test pyramid, coverage strategy); problem-locating-solving uses a single verification test as one phase of its locate-to-fix workflow but does not own test design — same 'pin this regression' prompt routes to testing-strategy when the question is what test to write, not how to find the bug"
     - skill: code-review
       reason: "code-review evaluates the quality and correctness of a specific change at PR scope (proactive); problem-locating-solving investigates already-broken behaviour (reactive) — both can apply to 'look at this code,' but the routing differs by whether a failure has already been observed"
     - skill: refactor
