@@ -2869,6 +2869,106 @@
     {
       "activation": {
         "anti_examples": [
+          "implement the new chart component for the reports page",
+          "which task should I work on next from the board?",
+          "design bounded contexts and aggregate ownership for the domain",
+          "review this PR for code quality and missing tests",
+          "decide kebab-case vs camelCase for new database columns",
+          "rewrite this UI button label to be specific and action-oriented"
+        ],
+        "examples": [
+          "what is the most important part of this dashboard, and how do the surrounding widgets relate to it?",
+          "explain how the order, fulfillment, and payment systems relate — what is the semantic center of that flow?",
+          "break down the query-tier system; what is the governing part and how do the others depend on it?",
+          "we need to understand the onboarding flow, not implement it — what is the primary part and how do the steps relate around it?",
+          "a skill system has frontmatter, body, and references — which part is the semantic center, and what roles do the others play?",
+          "untangle these dense module dependencies into one core plus typed relations",
+          "explain at a high level how this system hangs together"
+        ],
+        "keywords": [
+          "semantic center",
+          "semantic-center workflow",
+          "one-primary-part reduction",
+          "removal test",
+          "governance test",
+          "load-bearing part",
+          "typed relation map",
+          "center-finding method",
+          "structural importance",
+          "single primary part",
+          "figure-ground reduction",
+          "explanation structure",
+          "relation typing rules",
+          "supporting-relation map",
+          "analysis-vs-prioritization distinction"
+        ]
+      },
+      "allowed-tools": "Read Grep",
+      "browse_category": "knowledge",
+      "category": "ai-engineering/analysis",
+      "compatibility": {
+        "notes": "Domain-agnostic explanation method. The five-step workflow, the five primary-part tests, and the typed-relation taxonomy apply to systems, features, modules, workflows, concepts, decisions, or problems in any stack — substitute the relevant domain vocabulary for the structural skeleton."
+      },
+      "description": "Use when you need to explain how parts of a system, feature, concept, page, workflow, or problem connect; identify the single most important part of something; untangle dense dependencies into a core plus typed relations; or answer 'what is the load-bearing part?' without drifting into implementation or task prioritization. Provides a five-step workflow — classify the unit of analysis, find the single primary part using removal/governance/purpose/weight/decision tests, map secondary parts via typed relations (dependency, input/output, parent/child, owner/owned, cause/effect, constraint/enabler, and others), produce a structured output, and reduce the whole to one final sentence — that forces explanation through one-primary reduction rather than flat lists or chronology. Do NOT use for implementation work (use the relevant domain skill), choosing what to do next (use a prioritization skill), or formal architectural-ownership design (use a domain-modeling skill).",
+      "health": {
+        "drift_check": {
+          "last_verified": "2026-05-06"
+        },
+        "eval_artifacts": "planned",
+        "eval_state": "unverified",
+        "freshness": "2026-05-06",
+        "has_grounding": false,
+        "has_relations": true,
+        "lifecycle": {
+          "review_cadence": "quarterly",
+          "stale_after_days": 365
+        },
+        "routing_eval": "absent"
+      },
+      "id": "semantic-center",
+      "license": "MIT",
+      "name": "semantic-center",
+      "owner": "skill-graph-maintainer",
+      "path": "skills/semantic-center/SKILL.md",
+      "portability": {
+        "readiness": "scripted",
+        "targets": [
+          "agent-skills"
+        ]
+      },
+      "relations": {
+        "boundary": [
+          {
+            "reason": "task-analysis decomposes a route or flow around the user's top task and friction dimensions (UX-goal-driven decomposition); semantic-center decomposes a system or concept around its single load-bearing part (structural-importance reduction) — the same 'what's the primary thing on this page?' prompt routes by whether the lens is the user's goal or the structural importance of the parts",
+            "skill": "task-analysis"
+          },
+          {
+            "reason": "conceptual-modeling builds out a full concept structure (entities, attributes, relationships, invariants); semantic-center reduces a concept structure to one primary part plus typed relations to it — the same 'how do these concepts relate?' prompt routes by whether the user wants the full model or the load-bearing reduction",
+            "skill": "conceptual-modeling"
+          },
+          {
+            "reason": "pattern-recognition surfaces recurring pattern classes across many instances; semantic-center forces one-primary reduction within a single instance — the same 'how does this hang together?' prompt routes by whether the unit of analysis is many instances (pattern) or one instance (center)",
+            "skill": "pattern-recognition"
+          }
+        ],
+        "related": [
+          "intent-recognition",
+          "diagnosis",
+          "knowledge-modeling"
+        ],
+        "verify_with": [
+          "code-review",
+          "documentation"
+        ]
+      },
+      "scope": "portable",
+      "stability": "experimental",
+      "type": "workflow",
+      "version": "1.0.0"
+    },
+    {
+      "activation": {
+        "anti_examples": [
           "scaffold a new SKILL.md for our team's deploy procedure",
           "audit this Skill Graph repo for schema conformance and dangling relation targets",
           "the manifest sample drifted from the generator — find the mismatch",
@@ -3860,25 +3960,25 @@
     "by_browse_category": {
       "engineering": 10,
       "frontend": 1,
-      "knowledge": 21,
+      "knowledge": 22,
       "quality": 3,
       "security": 1
     },
     "by_scope": {
       "codebase": 1,
-      "portable": 33,
+      "portable": 34,
       "reference": 2
     },
     "by_stability": {
-      "experimental": 35,
+      "experimental": 36,
       "stable": 1
     },
     "by_type": {
       "capability": 29,
       "overlay": 1,
       "router": 1,
-      "workflow": 5
+      "workflow": 6
     },
-    "total_skills": 36
+    "total_skills": 37
   }
 }
