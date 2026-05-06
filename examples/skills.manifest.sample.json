@@ -434,6 +434,115 @@
     {
       "activation": {
         "anti_examples": [
+          "design the row-level-security model for our new tenant table",
+          "the migration crashed in production — find the root cause",
+          "explain our migration conventions in the contributor docs",
+          "refactor the migration runner helper for clarity",
+          "decide whether this column rename needs an automated regression test",
+          "review this AI-generated DDL diff for correctness"
+        ],
+        "examples": [
+          "add a nullable column to a 50M-row orders table without taking downtime",
+          "rename the `display_name` column to `username` while the app is live",
+          "create a btree index on a 100M-row table without locking writes",
+          "the migration takes ACCESS EXCLUSIVE — how do I avoid the lock?",
+          "add a foreign key to a 10M-row table without blocking writes",
+          "should I use ADD COLUMN ... NOT NULL DEFAULT 0 in this migration?",
+          "write a rollback strategy for this schema change in case production breaks",
+          "split the migration into expand and contract phases across two deploys"
+        ],
+        "keywords": [
+          "database migration",
+          "schema migration",
+          "zero-downtime migration",
+          "DDL migration",
+          "raw SQL migration",
+          "Postgres DDL",
+          "alter table production",
+          "expand contract migration",
+          "concurrent index creation",
+          "migration rollback",
+          "add column nullable",
+          "rename column zero downtime",
+          "batched backfill",
+          "non-constant default",
+          "NOT VALID foreign key",
+          "branched database migration",
+          "point-in-time restore",
+          "DDL transaction"
+        ]
+      },
+      "allowed-tools": "Read Grep Bash Edit",
+      "browse_category": "engineering",
+      "category": "data/migrations",
+      "compatibility": {
+        "notes": "PostgreSQL 12+ (covers concurrent index, NOT VALID foreign keys, generated columns). Connection examples target raw `psql` and the unpooled side of any PgBouncer-style pooler. Branching examples reference `neonctl` as one provider — substitute the equivalent CLI for Supabase, Xata, or self-hosted clones if your platform supports branched databases."
+      },
+      "description": "Use when planning or applying a raw-SQL database migration to a live PostgreSQL database — adding columns, renaming columns or tables, changing types, creating indexes, adding foreign keys, or running data backfills. Covers zero-downtime patterns (expand / contract, batched backfill, NOT VALID foreign keys, CONCURRENTLY indexes), the unpooled-connection requirement for DDL, branched-database workflows, and rollback strategy. Do NOT use for ORM-managed migrations driven by Prisma/Drizzle/TypeORM CLI scaffolding (the generation rules are tool-specific), for chasing a migration that has already failed in production (use `debugging`), or for designing the row-level-security model itself (use `owasp-security`).",
+      "health": {
+        "drift_check": {
+          "last_verified": "2026-05-06"
+        },
+        "eval_artifacts": "planned",
+        "eval_state": "unverified",
+        "freshness": "2026-05-06",
+        "has_grounding": false,
+        "has_relations": true,
+        "lifecycle": {
+          "review_cadence": "quarterly",
+          "stale_after_days": 90
+        },
+        "routing_eval": "absent"
+      },
+      "id": "database-migration",
+      "license": "MIT",
+      "name": "database-migration",
+      "owner": "skill-graph-maintainer",
+      "path": "skills/database-migration/SKILL.md",
+      "portability": {
+        "readiness": "scripted",
+        "targets": [
+          "agent-skills"
+        ]
+      },
+      "relations": {
+        "boundary": [
+          {
+            "reason": "documentation produces durable prose about migration conventions; database-migration produces the executable DDL patterns themselves",
+            "skill": "documentation"
+          },
+          {
+            "reason": "debugging chases an observed migration failure; database-migration plans the safe DDL path forward before execution",
+            "skill": "debugging"
+          },
+          {
+            "reason": "refactor is behavior-preserving code reorganization; database-migration is schema mutation that may require coordinated code changes across two or more deploys",
+            "skill": "refactor"
+          },
+          {
+            "reason": "testing-strategy decides what deserves a regression test; database-migration owns the verification dance that runs before, during, and after applying DDL",
+            "skill": "testing-strategy"
+          }
+        ],
+        "related": [
+          "testing-strategy",
+          "debugging",
+          "documentation",
+          "owasp-security"
+        ],
+        "verify_with": [
+          "testing-strategy",
+          "code-review"
+        ]
+      },
+      "scope": "portable",
+      "stability": "experimental",
+      "type": "capability",
+      "version": "1.0.0"
+    },
+    {
+      "activation": {
+        "anti_examples": [
           "plan test coverage for a new feature",
           "document what this function does for future readers",
           "refactor this messy code while the test suite is green"
@@ -1912,7 +2021,7 @@
   ],
   "summary": {
     "by_browse_category": {
-      "engineering": 5,
+      "engineering": 6,
       "frontend": 1,
       "knowledge": 8,
       "quality": 3,
@@ -1920,19 +2029,19 @@
     },
     "by_scope": {
       "codebase": 1,
-      "portable": 15,
+      "portable": 16,
       "reference": 2
     },
     "by_stability": {
-      "experimental": 17,
+      "experimental": 18,
       "stable": 1
     },
     "by_type": {
-      "capability": 13,
+      "capability": 14,
       "overlay": 1,
       "router": 1,
       "workflow": 3
     },
-    "total_skills": 18
+    "total_skills": 19
   }
 }
