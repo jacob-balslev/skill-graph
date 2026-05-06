@@ -2352,6 +2352,109 @@
     {
       "activation": {
         "anti_examples": [
+          "plan the next 6 weeks of work for the team",
+          "review this PR for code quality",
+          "this endpoint is slow under load — find the bottleneck",
+          "scan this repo for OWASP top 10 vulnerabilities",
+          "run scientific-method debugging on this stack trace",
+          "classify this failure into a problem class before debugging"
+        ],
+        "examples": [
+          "this route returns 500 but I have no idea where the failure starts — walk me through finding the boundary",
+          "I have a wrong-total bug — show me how to locate the divergence point",
+          "the build broke after a merge but the error trace is a cascade — where do I start?",
+          "intermittent failure that I cannot reproduce reliably — what's the locate-to-solve workflow?",
+          "two candidate fixes for this null-pointer crash — how do I compare them?",
+          "I patched the symptom but the bug came back two days later — what step did I skip?"
+        ],
+        "keywords": [
+          "locate a bug in unfamiliar codebase",
+          "failing-boundary identification",
+          "first failing boundary",
+          "search-space reduction by symptom",
+          "minimal reproducible example",
+          "symptom vs cause analysis",
+          "root-cause isolation loop",
+          "multi-option fix comparison",
+          "blast-radius comparison",
+          "regression-proof verification",
+          "repro test before fix",
+          "neighbor-path regression check",
+          "explanation-check fix verification",
+          "locate-to-solve workflow",
+          "bounding the search space",
+          "entry-point tracing technique",
+          "differential comparison good vs bad path",
+          "post-fix reflection prevention"
+        ]
+      },
+      "allowed-tools": "Read Grep",
+      "browse_category": "knowledge",
+      "category": "engineering/debugging",
+      "compatibility": {
+        "notes": "Language- and stack-agnostic. The locate-to-solve loop, boundary-localization techniques, and verification rules apply to any software bug investigation; specific tool names (binary search, git bisect, MRE) are illustrative — substitute the equivalents of your stack."
+      },
+      "description": "Use when you need to locate a bug in an unfamiliar codebase, trace a failure from symptom to source, or choose between multiple candidate fixes after the symptom is observed but before any patch is committed. Provides the locate-to-solve workflow: problem-statement contract, search-space reduction by symptom type, boundary-based fault localization (entry-point tracing, differential comparison, binary search, minimal repro), root-cause isolation (symptom vs cause analysis), multi-option fix generation with blast-radius comparison, regression-proof verification rules (repro test, regression test, neighbor check, blast-radius check, explanation check), and post-fix reflection for prevention. Do NOT use for broad task planning and sequencing once the bug is already localized, for proactive code-quality review of a not-yet-broken codebase, or for performance forensics — those need measurement-first methodology, not fault localization.",
+      "health": {
+        "drift_check": {
+          "last_verified": "2026-05-06"
+        },
+        "eval_artifacts": "planned",
+        "eval_state": "unverified",
+        "freshness": "2026-05-06",
+        "has_grounding": false,
+        "has_relations": true,
+        "lifecycle": {
+          "review_cadence": "quarterly",
+          "stale_after_days": 365
+        },
+        "routing_eval": "absent"
+      },
+      "id": "problem-locating-solving",
+      "license": "MIT",
+      "name": "problem-locating-solving",
+      "owner": "skill-graph-maintainer",
+      "path": "skills/problem-locating-solving/SKILL.md",
+      "portability": {
+        "readiness": "scripted",
+        "targets": [
+          "agent-skills"
+        ]
+      },
+      "relations": {
+        "boundary": [
+          {
+            "reason": "debugging is the *execution* of one chosen technique against an already-localized bug; problem-locating-solving is the workflow that produces the localization — same 'I have a bug, what do I do?' prompt routes to debugging when the class is known and to problem-locating-solving when localization is needed first",
+            "skill": "debugging"
+          },
+          {
+            "reason": "code-review evaluates the quality and correctness of a specific change at PR scope (proactive); problem-locating-solving investigates already-broken behaviour (reactive) — both can apply to 'look at this code,' but the routing differs by whether a failure has already been observed",
+            "skill": "code-review"
+          },
+          {
+            "reason": "refactor restructures non-broken code for clarity or maintainability; problem-locating-solving finds and fixes broken code — same 'this code needs change' prompt routes by whether the trigger is a failure (locate) or a quality concern (refactor)",
+            "skill": "refactor"
+          }
+        ],
+        "related": [
+          "pattern-recognition",
+          "diagnosis",
+          "lint-overlay"
+        ],
+        "verify_with": [
+          "tool-call-strategy",
+          "context-graph",
+          "graph-audit"
+        ]
+      },
+      "scope": "portable",
+      "stability": "experimental",
+      "type": "workflow",
+      "version": "1.0.0"
+    },
+    {
+      "activation": {
+        "anti_examples": [
           "review this AI-generated PR for correctness",
           "scaffold a new skill that teaches prompt engineering",
           "which skill should the router pick for this query?",
@@ -3446,25 +3549,25 @@
     "by_browse_category": {
       "engineering": 10,
       "frontend": 1,
-      "knowledge": 17,
+      "knowledge": 18,
       "quality": 3,
       "security": 1
     },
     "by_scope": {
       "codebase": 1,
-      "portable": 29,
+      "portable": 30,
       "reference": 2
     },
     "by_stability": {
-      "experimental": 31,
+      "experimental": 32,
       "stable": 1
     },
     "by_type": {
       "capability": 27,
       "overlay": 1,
       "router": 1,
-      "workflow": 3
+      "workflow": 4
     },
-    "total_skills": 32
+    "total_skills": 33
   }
 }
