@@ -311,7 +311,7 @@ Eight starters, chosen to cover every archetype × scope combination that the sc
 
 > **The question this diagram answers:** "Who verifies whom, depends on whom, and boundaries whom out across the eight starter skills?"
 
-Layer 7 of the authority model is the relations graph — the edges declared in each SKILL.md's `relations` frontmatter block. This is the worst failure mode when it drifts silently: the router fails *confidently* because a dangling target looks like a valid one. The diagram below indexes every relation edge in the starters without duplicating any L1 data. The authoritative relation data lives once, in each SKILL.md's frontmatter; this diagram reads it.
+The relations graph cuts across all five tiers — declared in Tier 5 SKILL.md frontmatter, validated by Tier 3 lint, and consumed by Tier 4 routing. This is the worst failure mode when it drifts silently: the router fails *confidently* because a dangling target looks like a valid one. The diagram below indexes every relation edge in the starters without duplicating any L1 data. The authoritative relation data lives once, in each SKILL.md's frontmatter; this diagram reads it.
 
 ```mermaid
 flowchart LR
