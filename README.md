@@ -300,7 +300,7 @@ The metadata contract is only as valuable as the decisions it drives. Two refere
 node scripts/skill-graph-route.js "accessibility keyboard navigation" --max 5
 
 # With a project filter (expands via workspace.projects.<handle>.semantic_tags):
-node scripts/skill-graph-route.js "refactor tests" --project sales-hub
+node scripts/skill-graph-route.js "refactor tests" --project <your-project>
 
 # Drift sentinel — hashes every grounding.truth_sources file and reports
 # DRIFT / BROKEN / STALE / NO_BASELINE against the stored baseline.
@@ -320,19 +320,19 @@ For repos with more than one project, add `.skill-graph/config.json` at the repo
 {
   "workspace": {
     "skill_roots": [
-      { "path": "skills",                         "project": null },
-      { "path": "sales-hub/.skill-graph/skills",  "project": "sales-hub" },
-      { "path": "free-oppression/.skill-graph/skills", "project": "free-oppression" }
+      { "path": "skills",                              "project": null },
+      { "path": "<project-a>/.skill-graph/skills",     "project": "<project-a>" },
+      { "path": "<project-b>/.skill-graph/skills",     "project": "<project-b>" }
     ],
     "projects": {
-      "sales-hub":       { "semantic_tags": ["ecommerce", "shopify-stack"] },
-      "free-oppression": { "semantic_tags": ["ecommerce", "etsy-stack"] }
+      "<project-a>":  { "semantic_tags": ["ecommerce", "saas"] },
+      "<project-b>":  { "semantic_tags": ["ecommerce", "b2c"] }
     }
   }
 }
 ```
 
-The generator walks every declared root, stamps each skill with its `project` handle, and emits the workspace block in the manifest. Skills with no `project_tags` are ambient (every project); skills with tags match projects whose `semantic_tags` include any tag. See `docs/plans/multi-root-workspace.md` for the full design.
+`<project-a>` and `<project-b>` are placeholders — adopters use whatever kebab-case handles they choose. The generator walks every declared root, stamps each skill with its `project` handle, and emits the workspace block in the manifest. Skills with no `project_tags` are ambient (every project); skills with tags match projects whose `semantic_tags` include any tag. See `docs/plans/multi-root-workspace.md` for the full design.
 
 ## Validation
 

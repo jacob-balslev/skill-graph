@@ -398,10 +398,9 @@ function escapeRegex(s) {
 
 const VERDICT_ENUM = ['PASS', 'PASS WITH FIXES', 'PARTIAL', 'FAIL', 'N/A'];
 
-// v0.5.0: align with `evaluation` doctrine (see
-// /Users/jacobbalslev/Projekter/Development/skills/evaluation/SKILL.md:69-106):
-// "Do not consider a task 'Done' until scores are >= 4." This constant is the
-// min-pass threshold on the 1–5 dimension score. Exposed for overrides via
+// v0.5.0: align with the evaluation-doctrine principle that a task is not
+// "Done" until per-dimension scores are >= 4. This constant is the min-pass
+// threshold on the 1–5 dimension score. Exposed for overrides via
 // `skill-audit.js --min-pass-score <n>`.
 const MIN_PASS_SCORE = 4;
 const SEVERITY_ENUM = ['P0', 'P1', 'P2', 'P3', 'P4'];

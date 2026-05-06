@@ -4,6 +4,15 @@
 audits/_state/
 audits/sweep-ledger.jsonl
 
+# Local-only agent harness artifacts (Claude Code state, research notes,
+# auxiliary audit outputs). These can carry filesystem paths and session
+# telemetry that aren't meant to ship publicly. Maintainers who want to
+# commit a specific audit/research artifact should do so explicitly rather
+# than by `git add .`.
+.claude/
+.artifacts/
+.research/
+
 # Node
 node_modules/
 

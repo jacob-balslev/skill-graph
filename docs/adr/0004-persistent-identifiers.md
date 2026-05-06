@@ -19,9 +19,9 @@ urn:skill:<repo-slug>:<skill-name>
 Examples:
 
 - `urn:skill:skill-graph:knowledge-graph`
-- `urn:skill:development:data-table-ux`
-- `urn:skill:sales-hub:shopify-integration`
-- `urn:skill:free-oppression:political-merch-seo`
+- `urn:skill:<placeholder-repo-a>:data-table-ux`
+- `urn:skill:<placeholder-repo-b>:order-fulfillment`
+- `urn:skill:<placeholder-repo-c>:seo-keywords`
 
 Rules:
 

@@ -110,7 +110,7 @@ To set expectations:
 
 ## How this list was selected
 
-The 4-reviewer board meeting at [`agent-orchestration/boardmeeting-output/skill-graph-2026-05-04/SYNTHESIS.md`](../../agent-orchestration/boardmeeting-output/skill-graph-2026-05-04/SYNTHESIS.md) (Opus 4.7 + GPT-5.4 + Gemini 3.1 Pro + GPT-5.5 base) produced three competing Wave 2 strategies:
+The 4-reviewer board meeting at the 2026-05-04 multi-model synthesis (kept private) (Opus 4.7 + GPT-5.4 + Gemini 3.1 Pro + GPT-5.5 base) produced three competing Wave 2 strategies:
 
 | Reviewer | Strategy | Picks |
 |---|---|---|
@@ -124,7 +124,7 @@ Tier A here picks the **5-way intersection** across the three strategies plus th
 
 ## Open questions for the maintainer
 
-The synthesis [`§ 13 Inputs Affecting Sequencing`](../../agent-orchestration/boardmeeting-output/skill-graph-2026-05-04/SYNTHESIS.md) names seven decisions that gate downstream work. Two affect this recommendation list directly:
+The 2026-05-04 multi-model synthesis (kept private) names seven decisions in its "Inputs Affecting Sequencing" section that gate downstream work. Two affect this recommendation list directly:
 
 1. **Wave 2 pace** — the synthesis recommended 1 batch every 2 weeks (Aggressive), 4 weeks (Steady), or pilot-first. Tier A ships in one batch; Tier B in two. Pace decision drives milestone planning.
 2. **Doctrine archetype mapping** — Tier C's Doctrine & Strategy cluster needs the schema's `type` enum either extended (Option B: add `doctrine` and `strategy` archetypes via v3.1 minor bump) or accepted as lossy (Option A: map to `capability` on extraction). The synthesis recommends Option B.
@@ -143,4 +143,4 @@ Both decisions are the maintainer's. The recommendations above hold regardless.
 | Authoring template | [`../examples/skill-template.md`](../examples/skill-template.md) |
 | Architecture and authority tiers | [`ARCHITECTURE.md`](ARCHITECTURE.md) |
 | Broader Wave 2 plan (graph-density-optimized) | [`plans/wave-2-extraction.md`](plans/wave-2-extraction.md) |
-| 4-reviewer board meeting and synthesis | [`agent-orchestration/boardmeeting-output/skill-graph-2026-05-04/SYNTHESIS.md`](../../agent-orchestration/boardmeeting-output/skill-graph-2026-05-04/SYNTHESIS.md) |
+| 4-reviewer board meeting and synthesis | the 2026-05-04 multi-model synthesis (kept private) |

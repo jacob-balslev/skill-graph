@@ -22,7 +22,7 @@
 ## M0–M2: Clone and install
 
 ```bash
-git clone https://github.com/jacobbalslev/skill-graph my-skill-library
+git clone https://github.com/<your-org>/skill-graph my-skill-library
 cd my-skill-library
 node --version
 ```

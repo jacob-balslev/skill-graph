@@ -159,8 +159,8 @@ anti_examples:
 # Example — this template is useful across every skill-authoring project, but
 # the semantic tag scopes it to the Skill Graph authoring workflow rather than
 # arbitrary project docs. A workspace config at `.skill-graph/config.json` can
-# map literal project handles (e.g. `sales-hub`, `free-oppression`) to tag sets
-# that include `skill-authoring`, so one tag reaches many projects.
+# map your literal project handles to tag sets that include `skill-authoring`,
+# so one tag reaches many projects.
 project_tags:
   - skill-authoring
 relations:

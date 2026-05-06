@@ -1,40 +1,23 @@
 {
-  "$comment": "Controlled vocabulary for the `project_tags` field. Literal project handles (sales-hub, free-oppression, skill-graph) and semantic cross-project tags (ecommerce, shopify-stack, etsy-stack). The workspace config at .skill-graph/config.json maps literal handles to semantic tag sets — a skill tagged with a semantic tag matches every project whose config expands to include that tag. Scope: soft-advisory — skill-lint.js emits WARNING (not error) for unknown tags.",
-  "version": "1.0.0",
-  "last_updated": "2026-04-20",
+  "$comment": "Controlled vocabulary for the `project_tags` field. Adopters declare their own literal project handles in their workspace config (`.skill-graph/config.json`); only `skill-graph` (this repo) is shipped as a literal handle. Semantic tags below are illustrative categories cross-project tags commonly fall into — extend with your own. Scope: soft-advisory — skill-lint.js emits WARNING (not error) for unknown tags.",
+  "version": "1.1.0",
+  "last_updated": "2026-05-06",
   "literal_project_handles": [
-    "development",
-    "sales-hub",
-    "free-oppression",
-    "skill-graph",
-    "orchestrator-ui",
-    "agent-orchestration",
-    "module-components"
+    "skill-graph"
   ],
   "semantic_tags": [
     "ecommerce",
-    "shopify-stack",
-    "etsy-stack",
-    "pod",
     "saas",
     "b2b",
     "b2c",
     "ai-agent",
     "design-system",
     "infrastructure",
-    "devex",
-    "content-ops",
     "analytics",
     "integrations"
   ],
   "synonyms": {
     "e-commerce": "ecommerce",
-    "eCommerce": "ecommerce",
-    "print-on-demand": "pod",
-    "printondemand": "pod",
-    "sales_hub": "sales-hub",
-    "saleshub": "sales-hub",
-    "free_oppression": "free-oppression",
-    "freeoppression": "free-oppression"
+    "eCommerce": "ecommerce"
   }
 }

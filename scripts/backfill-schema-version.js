@@ -20,9 +20,10 @@
  *
  * Default roots (in order, first existing wins):
  *   - ./skills
- *   - ./sales-hub/.skill-graph/skills
- *   - ./free-oppression/.skill-graph/skills
  *   - ./Skill Graph/skills
+ *
+ * Multi-root workspaces should pass `--root <dir>` per project root, or use
+ * `.skill-graph/config.json` (consumed by `scripts/generate-manifest.js`).
  *
  * No external dependencies.
  */
@@ -32,8 +33,6 @@ const path = require('path');
 
 const DEFAULT_ROOTS = [
   'skills',
-  'sales-hub/.skill-graph/skills',
-  'free-oppression/.skill-graph/skills',
   'Skill Graph/skills'
 ];
 

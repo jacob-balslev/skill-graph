@@ -50,7 +50,7 @@ schema_version: 3
 **Rules.**
 - Optional in v3; target-required in v4.
 - Format: `urn:skill:<repo-slug>:<skill-name>`.
-- `<repo-slug>` is the publishing repo's canonical short handle — lowercase, hyphen-separated, `[a-z0-9-]+` (e.g. `skill-graph`, `development`, `sales-hub`).
+- `<repo-slug>` is the publishing repo's canonical short handle — lowercase, hyphen-separated, `[a-z0-9-]+` (e.g. `skill-graph`, or your own repo's short name).
 - `<skill-name>` MUST equal the `name` field exactly.
 - Must be globally unique across all federated repos — the URN is the primary key a registry uses to resolve skills.
 - Pattern: `^urn:skill:[a-z0-9][a-z0-9-]*:[a-z0-9][a-z0-9-/:]*$`.
@@ -728,20 +728,20 @@ paths:
 
 **Rules.**
 - Optional array of lowercase kebab-case tokens.
-- Each tag is either a literal project handle (e.g., `sales-hub`, `free-oppression`) or a semantic tag that multiple projects share (e.g., `ecommerce`, `shopify-stack`).
+- Each tag is either a literal project handle (whatever kebab-case name you give a project in your workspace config) or a semantic tag that multiple projects share (e.g., `ecommerce`, `saas`, `b2b`).
 - The workspace config at `.skill-graph/config.json` maps literal project handles to `semantic_tags`. A skill tagged with a semantic tag matches every project whose config expands to include that tag.
 - Absent `project_tags` means the skill is ambient — applies to every project. This is the default; use it for cross-cutting skills like GDPR, a11y, or test-driven-development.
 
 **Example.**
 ```yaml
-# Sales Hub only
-project_tags: [sales-hub]
+# One specific project only — literal targeting
+project_tags: [<project-a>]
 
-# Cross-ecommerce — both sales-hub and free-oppression
+# Cross-ecommerce — every project whose workspace config maps to `ecommerce`
 project_tags: [ecommerce]
 
-# Literal + semantic — precise match on sales-hub, semantic match on any ecommerce project
-project_tags: [sales-hub, ecommerce]
+# Literal + semantic — precise match on <project-a>, semantic match on any ecommerce project
+project_tags: [<project-a>, ecommerce]
 ```
 
 **Workspace config resolution.**
@@ -751,14 +751,14 @@ project_tags: [sales-hub, ecommerce]
 {
   "workspace": {
     "projects": {
-      "sales-hub":        { "semantic_tags": ["ecommerce", "shopify-stack"] },
-      "free-oppression":  { "semantic_tags": ["ecommerce", "etsy-stack"] }
+      "<project-a>":  { "semantic_tags": ["ecommerce", "saas"] },
+      "<project-b>":  { "semantic_tags": ["ecommerce", "b2c"] }
     }
   }
 }
 ```
 
-A skill tagged `[ecommerce]` matches both `sales-hub` and `free-oppression`. A skill tagged `[sales-hub]` only matches `sales-hub`. A skill tagged `[etsy-stack]` only matches `free-oppression`.
+A skill tagged `[ecommerce]` matches both projects. A skill tagged `[<project-a>]` only matches the first. A skill tagged `[saas]` only matches whichever projects' configs map to that semantic tag (the first, in this example).
 
 **When to use.** When the workspace has more than one project and a skill's scope is clearly bound to a subset. Tag with semantic tags whenever possible — literal project handles couple the skill to a project name that may change.
 

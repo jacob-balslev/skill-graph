@@ -317,7 +317,7 @@ routing_groups, relations, grounding, portability, lifecycle, runtime_telemetry
 
 The manifest generator (`scripts/generate-manifest.js`) reads the authored frontmatter and emits computed fields that do not exist in the source `SKILL.md`:
 
-- `id` — derived from the skill's path relative to `skills/` (e.g. `task-execution`, `sales-hub/design-review`).
+- `id` — derived from the skill's path relative to `skills/` (e.g. `task-execution`, or `<project>/design-review` in a multi-root workspace).
 - `path` — relative path to the `SKILL.md` file.
 - `summary` — aggregate counts (`total_skills`, `by_type`, `by_browse_category`, `by_scope`, `by_stability`).
 - `generated_at` — ISO timestamp of when the manifest was generated.

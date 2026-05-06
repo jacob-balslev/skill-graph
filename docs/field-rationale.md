@@ -27,7 +27,7 @@ Authors confuse `scope: portable` with "I haven't bothered to check yet" — usi
 ### Worked example
 
 ```yaml
-# Coupled to Sales Hub's specific table names + auth helpers
+# Coupled to a specific repo's table names + auth helpers
 scope: codebase
 
 # Universal patterns; safe to load in any web project

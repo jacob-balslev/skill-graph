@@ -1,5 +1,5 @@
 {
-  "$comment": "Controlled vocabulary for the `keywords` field across Skill Graph skills. Prevents drift like 'e-commerce' vs 'ecommerce' across 300+ skills. Scope: soft-advisory — skill-lint.js emits a WARNING (not an error) when a skill uses a keyword not in this list. Update when a genuinely new domain emerges; do not over-curate.",
+  "$comment": "Controlled vocabulary for the `keywords` field across Skill Graph skills. Prevents drift like 'e-commerce' vs 'ecommerce' as a library scales. Scope: soft-advisory — skill-lint.js emits a WARNING (not an error) when a skill uses a keyword not in this list. Update when a genuinely new domain emerges; do not over-curate.",
   "version": "1.0.0",
   "last_updated": "2026-04-20",
   "synonyms": {
@@ -119,7 +119,6 @@
     "performance",
     "playwright",
     "postgresql",
-    "printify",
     "prisma",
     "privacy",
     "product-strategy",
@@ -140,7 +139,6 @@
     "review",
     "rls",
     "routing",
-    "sales-hub",
     "scss",
     "security",
     "seo",

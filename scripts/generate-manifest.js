@@ -46,15 +46,17 @@ const CONFIG_PATH = path.join(REPO_ROOT, '.skill-graph', 'config.json');
 //   {
 //     "workspace": {
 //       "skill_roots": [
-//         { "path": "skills",                    "project": null },
-//         { "path": "sales-hub/.skill-graph/skills", "project": "sales-hub" }
+//         { "path": "skills",                              "project": null },
+//         { "path": "<project-a>/.skill-graph/skills",     "project": "<project-a>" }
 //       ],
 //       "projects": {
-//         "sales-hub":        { "semantic_tags": ["ecommerce", "shopify-stack"] },
-//         "free-oppression":  { "semantic_tags": ["ecommerce", "etsy-stack"] }
+//         "<project-a>":  { "semantic_tags": ["ecommerce", "saas"] },
+//         "<project-b>":  { "semantic_tags": ["ecommerce", "b2c"] }
 //       }
 //     }
 //   }
+// (`<project-a>` / `<project-b>` are placeholders — replace with your actual
+//  project handles. Adopters declare their own; the OSS contract ships none.)
 //
 // When absent, the generator falls back to single-root mode with SKILLS_DIR
 // and no project ownership.

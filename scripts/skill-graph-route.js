@@ -22,8 +22,8 @@
  * frontmatter nobody reads.
  *
  * Usage:
- *   node scripts/skill-graph-route.js "shopify webhook signature"
- *   node scripts/skill-graph-route.js "refactor" --project sales-hub
+ *   node scripts/skill-graph-route.js "accessibility keyboard navigation"
+ *   node scripts/skill-graph-route.js "refactor" --project <your-project>
  *   node scripts/skill-graph-route.js "ssr hydration" --max 5
  *   node scripts/skill-graph-route.js "types" --min-eval-state passing
  *   node scripts/skill-graph-route.js "css" --path src/components/Header.tsx

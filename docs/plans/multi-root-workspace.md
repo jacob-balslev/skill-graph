@@ -9,7 +9,7 @@ Skill Graph v0.3.0 assumed a single `skills/` directory at the repo root. That w
 
 - **Codebase-scoped skills** (skills with `scope: codebase` and concrete file paths in `grounding.truth_sources`) cannot live in a central `skills/` folder because their truth sources reference files in a specific project. Moving them to the central folder either invalidates the paths or picks one project over another.
 - **Cross-project skills** (GDPR, a11y, react-best-practices) should not be duplicated per project — duplication leads to drift.
-- **Project-specific skills** (sales-hub-orders, free-oppression-seo) should not pollute the shared namespace.
+- **Project-specific skills** (e.g. `<project-a>-orders`, `<project-b>-seo` — names tied to one project's domain) should not pollute the shared namespace.
 
 The existing single-root design forced authors to either duplicate skills or invent contract-breaking workarounds.
 
@@ -22,21 +22,21 @@ v3 adds an optional workspace config at `.skill-graph/config.json` that declares
 ```
 workspace/
   .skill-graph/
-    config.json              # workspace definition
-  skills/                    # shared / ambient skills (scope: portable | reference)
+    config.json                  # workspace definition
+  skills/                        # shared / ambient skills (scope: portable | reference)
     gdpr/SKILL.md
     a11y/SKILL.md
     react-best-practices/SKILL.md
-  sales-hub/                 # project 1
+  <project-a>/                   # project 1 (placeholder name — adopters use their own)
     .skill-graph/skills/
-      sales-hub-orders/SKILL.md
-      financial-correctness/SKILL.md
-  free-oppression/           # project 2
+      <project-a>-orders/SKILL.md
+      <project-a>-billing/SKILL.md
+  <project-b>/                   # project 2
     .skill-graph/skills/
-      free-oppression-seo/SKILL.md
-      free-oppression-keywords/SKILL.md
-  shared-skills/             # optional alternative shared root
-    political-merch-seo/SKILL.md
+      <project-b>-seo/SKILL.md
+      <project-b>-keywords/SKILL.md
+  shared-skills/                 # optional alternative shared root
+      cross-project-onboarding/SKILL.md
 ```
 
 Three layout styles this design accommodates:
@@ -55,17 +55,19 @@ Three layout styles this design accommodates:
 {
   "workspace": {
     "skill_roots": [
-      { "path": "skills",                         "project": null },
-      { "path": "sales-hub/.skill-graph/skills",  "project": "sales-hub" },
-      { "path": "free-oppression/.skill-graph/skills", "project": "free-oppression" }
+      { "path": "skills",                              "project": null },
+      { "path": "<project-a>/.skill-graph/skills",     "project": "<project-a>" },
+      { "path": "<project-b>/.skill-graph/skills",     "project": "<project-b>" }
     ],
     "projects": {
-      "sales-hub":        { "semantic_tags": ["ecommerce", "shopify-stack", "saas-b2b"] },
-      "free-oppression":  { "semantic_tags": ["ecommerce", "etsy-stack", "physical-merch"] }
+      "<project-a>":  { "semantic_tags": ["ecommerce", "saas", "b2b"] },
+      "<project-b>":  { "semantic_tags": ["ecommerce", "b2c"] }
     }
   }
 }
 ```
+
+(`<project-a>` and `<project-b>` are placeholder handles — adopters use whatever kebab-case names they choose for their projects.)
 
 **Fields:**
 

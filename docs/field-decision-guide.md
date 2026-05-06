@@ -233,8 +233,8 @@ portability:
 
 | Tag style | Example | When to use |
 |---|---|---|
-| Literal | `sales-hub`, `free-oppression` | Precise targeting. Couples the skill to a specific project name. Readable but brittle to renames. |
-| Semantic | `ecommerce`, `shopify-stack`, `saas-b2b` | Reusable across projects. The workspace config declares which literal projects expand to which semantic tags, so one tag match several projects. |
+| Literal | `<your-project-handle>` (whatever short kebab-case name you give a project in your workspace config) | Precise targeting. Couples the skill to a specific project name. Readable but brittle to renames. |
+| Semantic | `ecommerce`, `saas`, `b2b` | Reusable across projects. The workspace config declares which literal projects expand to which semantic tags, so one tag matches several projects. |
 
 **Prefer semantic when possible.** Literal handles work but they bind the skill to a project name. Semantic tags describe the domain and survive project renames.
 
@@ -255,30 +255,30 @@ portability:
 ### Example
 
 ```yaml
-# Sales Hub only — literal targeting
-project_tags: [sales-hub]
+# One specific project only — literal targeting
+project_tags: [<project-a>]
 
-# Cross-ecommerce — semantic, applies to sales-hub AND free-oppression
+# Cross-ecommerce — semantic, applies to every project whose config maps to `ecommerce`
 project_tags: [ecommerce]
 
-# Explicit both — literal match on sales-hub, semantic match on any ecommerce project
-project_tags: [sales-hub, ecommerce]
+# Explicit both — literal match on <project-a>, semantic match on any ecommerce project
+project_tags: [<project-a>, ecommerce]
 ```
 
-With the workspace config:
+With a hypothetical two-project workspace config:
 
 ```json
 {
   "workspace": {
     "projects": {
-      "sales-hub":        { "semantic_tags": ["ecommerce", "shopify-stack", "saas-b2b"] },
-      "free-oppression":  { "semantic_tags": ["ecommerce", "etsy-stack", "physical-merch"] }
+      "<project-a>":  { "semantic_tags": ["ecommerce", "saas", "b2b"] },
+      "<project-b>":  { "semantic_tags": ["ecommerce", "b2c"] }
     }
   }
 }
 ```
 
-A skill with `project_tags: [ecommerce]` routes into both projects. A skill with `project_tags: [saas-b2b]` routes only into sales-hub. A skill with no `project_tags` routes into all projects (ambient).
+(`<project-a>` and `<project-b>` are placeholders — adopters use whatever kebab-case handles they choose.) A skill with `project_tags: [ecommerce]` routes into both projects. A skill with `project_tags: [b2b]` routes only into the first. A skill with no `project_tags` routes into all projects (ambient).
 
 ---
 
@@ -290,7 +290,7 @@ These four fields all group skills, but they answer different questions. Picking
 |---|---|---|---|
 | `browse_category` | What flat bucket does this skill live in for quick browsing? | single string (e.g., `integration`) | human browse UI, filter dropdowns |
 | `category` | Where does this skill sit in a hierarchy for tree browsing? | slash-delimited path (e.g., `ecommerce/integrations/shopify`) | folder-tree UI, docs site navigation |
-| `project_tags` | Which of my projects is this skill relevant to? | flat array (e.g., `[sales-hub, ecommerce]`) | router filter at routing time |
+| `project_tags` | Which of my projects is this skill relevant to? | flat array (e.g., `[<project-a>, ecommerce]`) | router filter at routing time |
 | `routing_groups` | Which batch-activation group does this skill belong to? | flat array (e.g., `[quality, security]`) | router batch-load by group label |
 
 ### Three rules that prevent misuse

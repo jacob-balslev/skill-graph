@@ -165,7 +165,7 @@ flowchart TB
 
 ### How the five layers compose into a routing decision
 
-The reference router (`scripts/skill-graph-route.js`) reads all five layers and produces a single ranked result set. For a query `"accessibility keyboard navigation"` scoped to `--project sales-hub`:
+The reference router (`scripts/skill-graph-route.js`) reads all five layers and produces a single ranked result set. For a query `"accessibility keyboard navigation"` scoped to `--project <your-project>`:
 
 1. **Layer 1** matches against `description`, `keywords`, `triggers`, `paths`. Non-matches are filtered out.
 2. **`project_tags`** (Layer 1 field) filters further by workspace affiliation.
@@ -208,7 +208,7 @@ Use `category` only when the library is big enough that a tree helps navigation.
 
 ### 4.3 Domain affiliation — *which kinds of project is this relevant to?*
 
-`project_tags` is a many-to-many coarse-grained affiliation tag. A skill declaring `project_tags: [ecommerce]` becomes available to every project whose workspace `.skill-graph/config.json` lists `ecommerce` among its `semantic_tags`. A `sales-hub` project and a `free-oppression` project that both declare the `ecommerce` tag share that skill without either naming the other. Multi-root workspaces union their `skill_roots` into a single manifest with each skill stamped by its owning project handle.
+`project_tags` is a many-to-many coarse-grained affiliation tag. A skill declaring `project_tags: [ecommerce]` becomes available to every project whose workspace `.skill-graph/config.json` lists `ecommerce` among its `semantic_tags`. Two projects that both declare the `ecommerce` tag share that skill without either naming the other. Multi-root workspaces union their `skill_roots` into a single manifest with each skill stamped by its owning project handle.
 
 `project_tags` names the *kind of project* a skill applies to — **not** the specific codebase or the company that owns it. For per-codebase gating, put the codebase identifier in the workspace's `config.json`, not the skill's frontmatter.
 

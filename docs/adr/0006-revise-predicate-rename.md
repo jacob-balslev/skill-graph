@@ -14,7 +14,7 @@ ADR 0001 (2026-04-20) accepted four predicate-set proposals as a single bundle f
 3. Add `broader` / `narrower` (skos:broader / skos:narrower). **Sound — closes a real expressivity gap.**
 4. Keep `verify_with` and `depends_on`. **Sound — these are PROV-O and DCMI relations, not SKOS classifications.**
 
-The 2026-05-04 board meeting (synthesis at `agent-orchestration/boardmeeting-output/skill-graph-2026-05-04/SYNTHESIS.md` § 8 Disagreements / § 12 IP-R2) flagged Decision #2 as a category error: `boundary` and `owl:disjointWith` operate at different semantic layers and equating them obscures a real distinction the schema needs to keep.
+The 2026-05-04 board meeting (synthesis at the 2026-05-04 multi-model synthesis (kept private) § 8 Disagreements / § 12 IP-R2) flagged Decision #2 as a category error: `boundary` and `owl:disjointWith` operate at different semantic layers and equating them obscures a real distinction the schema needs to keep.
 
 The Opus 4.7 reviewer (`opus.md`) noted this directly. The GPT-5.5 reviewer (`gpt-5.5.md`) verified empirically that the in-tree JSON-LD context (`schemas/skill.context.jsonld`) was already mapping `boundary` to `sg:disjointOwnership` — a custom Skill-Graph predicate — and not to `owl:disjointWith`. The implementation was correct; only the ADR text claiming OWL alignment was wrong. This ADR documents what the implementation already does and revises the ADR 0001 narrative to match.
 
@@ -97,8 +97,8 @@ The full set of edits accompanying this ADR is documented in the synthesis IP-R2
 - W3C SKOS Reference (skos:related, skos:broader, skos:narrower) — https://www.w3.org/TR/skos-reference/
 - ADR 0001 — `docs/adr/0001-predicate-set.md` (the decision this ADR partially supersedes)
 - ADR 0002 — `docs/adr/0002-json-ld-context.md` (governs the @context coverage policy)
-- Synthesis 2026-05-04 § 8 Disagreement D1 + § 12 IP-R2 — `agent-orchestration/boardmeeting-output/skill-graph-2026-05-04/SYNTHESIS.md`
-- GPT-5.5 reviewer empirical verification — `agent-orchestration/boardmeeting-output/skill-graph-2026-05-04/gpt-5.5.md`
+- Synthesis 2026-05-04 § 8 Disagreement D1 + § 12 IP-R2 — the 2026-05-04 multi-model synthesis (kept private)
+- GPT-5.5 reviewer empirical verification — kept private alongside the 2026-05-04 multi-model synthesis
 
 ## Supersedes
 
