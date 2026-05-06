@@ -749,6 +749,118 @@
     {
       "activation": {
         "anti_examples": [
+          "scaffold a new SKILL.md from a template",
+          "validate that this single skill's frontmatter matches the schema",
+          "decide which skill to inject for this query right now",
+          "this skill says 'use orgQuery'; that one says 'never use orgQuery' — fix the conflict",
+          "decide what should and shouldn't be in this agent's context window for this task",
+          "review this AI-generated PR for correctness"
+        ],
+        "examples": [
+          "we have ~300 skills but the agent never finds half of them — what's the diagnostic frame?",
+          "how do I measure whether our skill graph is actually navigable vs just present?",
+          "I changed a webhook handler — what's the discipline for tracing the impact across docs, skills, memory, and scripts?",
+          "we keep accumulating orphan skills and our connectivity drops every quarter — how do I make graph-health a deliberate gate?",
+          "the agent is loading 15 skills per task and burning context — is the underlying graph too dense, too sparse, or wrong-shaped?",
+          "design a deterministic recipe for synthesizing the skill graph from frontmatter without running an LLM",
+          "what's the right cap on adjacent / boundary / verify_with relations per skill?"
+        ],
+        "keywords": [
+          "context graph architecture",
+          "multi-graph context model",
+          "skill knowledge graph",
+          "document routing graph",
+          "memory index graph",
+          "script command registry graph",
+          "cross-graph edges",
+          "orphan detection skill graph",
+          "graph connectivity metrics",
+          "average node degree",
+          "hub-and-spoke anti-pattern",
+          "reciprocal relations",
+          "bidirectional graph edges",
+          "change propagation across graphs",
+          "edge type taxonomy",
+          "adjacent boundary verify_with",
+          "deterministic graph synthesis",
+          "bundle co-membership"
+        ]
+      },
+      "allowed-tools": "Read Grep",
+      "browse_category": "knowledge",
+      "category": "ai-engineering/architecture",
+      "compatibility": {
+        "notes": "Architecture-level skill. Applies to any agent-coding workspace that has more than one skill / doc-routing / memory artifact and any way to traverse them — Claude Code, OpenCode, Cursor, Aider, Continue, Copilot Workspace, or a custom harness. The four-graph model and the orphan / connectivity metrics are independent of the specific runtime."
+      },
+      "description": "Use when designing the multi-graph context architecture of an AI-coding workspace, when analyzing change-propagation impact across skills / docs / memory / scripts, when measuring graph connectivity health (orphan rate, average degree, hub-spoke ratio, cluster count), when classifying the edge types between skills, or when building a discovery layer that lets agents find context they did not already know existed. Covers the four interconnected graphs every mature AI-coding workspace ends up with — Skill Knowledge Graph, Document Routing Graph, Memory Index, Script / Command Registry — plus the cross-graph edges that connect them; orphan detection and remediation priorities; the deterministic-signal recipe for graph synthesis (explicit prose references, manual relations frontmatter, bundle co-membership, shared routing labels, keyword overlap); the three skill-edge types (adjacent, boundary, verify_with) and their per-edge-type caps; the change-propagation checklist that traces a single edit across all four graphs; and the anti-patterns that produce hub-and-spoke topology, drift, or silent orphan accumulation. Do NOT use for authoring or editing individual SKILL.md content (use `skill-scaffold` for authoring and `skill-infrastructure` for maintenance), for validating one skill against the schema (use `graph-audit`), for the live routing-decision step (use `skill-router`), for context-budget allocation inside a single agent session (that is a context-window concern), or for the design-phase 'what should I load for this task' decision (that is a context-management concern).",
+      "health": {
+        "drift_check": {
+          "last_verified": "2026-05-06"
+        },
+        "eval_artifacts": "planned",
+        "eval_state": "unverified",
+        "freshness": "2026-05-06",
+        "has_grounding": false,
+        "has_relations": true,
+        "lifecycle": {
+          "review_cadence": "quarterly",
+          "stale_after_days": 365
+        },
+        "routing_eval": "absent"
+      },
+      "id": "context-graph",
+      "license": "MIT",
+      "name": "context-graph",
+      "owner": "skill-graph-maintainer",
+      "path": "skills/context-graph/SKILL.md",
+      "portability": {
+        "readiness": "scripted",
+        "targets": [
+          "agent-skills"
+        ]
+      },
+      "relations": {
+        "boundary": [
+          {
+            "reason": "skill-router is the per-query dispatch decision (which skill activates now); context-graph is the underlying graph the router traverses",
+            "skill": "skill-router"
+          },
+          {
+            "reason": "graph-audit validates one skill's schema and relation-target existence; context-graph reasons about the topology of the whole graph (orphans, connectivity, edge cap discipline)",
+            "skill": "graph-audit"
+          },
+          {
+            "reason": "skill-infrastructure owns the live skill library tooling (census, conflict detection, routing-gap reporting); context-graph owns the architectural model behind it",
+            "skill": "skill-infrastructure"
+          },
+          {
+            "reason": "skill-scaffold authors a single SKILL.md; context-graph designs the graph that those authored skills participate in",
+            "skill": "skill-scaffold"
+          },
+          {
+            "reason": "documentation produces durable prose; context-graph reasons about the routing-graph that connects code changes to the docs that need updating",
+            "skill": "documentation"
+          }
+        ],
+        "related": [
+          "skill-router",
+          "graph-audit",
+          "skill-infrastructure",
+          "skill-scaffold"
+        ],
+        "verify_with": [
+          "graph-audit",
+          "skill-infrastructure"
+        ]
+      },
+      "scope": "portable",
+      "stability": "experimental",
+      "type": "capability",
+      "version": "1.0.0"
+    },
+    {
+      "activation": {
+        "anti_examples": [
           "design the row-level-security model for our new tenant table",
           "the migration crashed in production — find the root cause",
           "explain our migration conventions in the contributor docs",
@@ -2684,25 +2796,25 @@
     "by_browse_category": {
       "engineering": 9,
       "frontend": 1,
-      "knowledge": 11,
+      "knowledge": 12,
       "quality": 3,
       "security": 1
     },
     "by_scope": {
       "codebase": 1,
-      "portable": 22,
+      "portable": 23,
       "reference": 2
     },
     "by_stability": {
-      "experimental": 24,
+      "experimental": 25,
       "stable": 1
     },
     "by_type": {
-      "capability": 20,
+      "capability": 21,
       "overlay": 1,
       "router": 1,
       "workflow": 3
     },
-    "total_skills": 25
+    "total_skills": 26
   }
 }
