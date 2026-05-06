@@ -21,17 +21,18 @@
 
 ## Design Principles
 
-This contract is the public source of truth for the Skill Graph frontmatter format.
+This contract is the public source of truth for the Skill Graph frontmatter format. Every design decision is in service of a benefit a working developer feels:
 
-It:
-- keeps a flat author-facing frontmatter format
-- keeps one `SKILL.md` file per skill
-- keeps one generated manifest downstream
-- tightens field semantics
-- adds a small number of high-value fields beyond the Agent Skills base
-- stays additive to the Agent Skills standard so every Skill Graph skill can be transformed back to the base shape
+- **Keeps a flat author-facing frontmatter format** → you can author skills in plain YAML — no nested syntax to remember, no DSL to learn
+- **Keeps one `SKILL.md` file per skill** → a skill's everything-you-need-to-know lives at one path; no parallel sidecar files to keep in sync
+- **Keeps one generated manifest downstream** → consumers read a single deterministic artifact; the manifest is content-addressable and CI-verifiable
+- **Tightens field semantics** → lint catches you when `relations.depends_on` points at a skill that doesn't exist, instead of silently breaking the router at runtime
+- **Adds a small number of high-value fields beyond the Agent Skills base** → typed relations, drift detection, and project scoping become declarative metadata rather than tribal knowledge
+- **Stays additive to the Agent Skills standard so every Skill Graph skill can be transformed back to the base shape** → adopting Skill Graph does not trap you; the export transform at `scripts/export-skill.js` produces a valid Agent Skills file
 
 ### What kind of graph is this?
+
+**In plain English:** Skill Graph lets one skill say *"I depend on that one, verify me with this one, and stop routing users here when they really mean that other one."* The four predicates (`depends_on`, `verify_with`, `boundary`, `adjacent`) are the typed edges that turn a skill collection into a graph an agent can reason over.
 
 Skill Graph is a **property graph with a controlled-vocabulary set of typed predicates**, not an RDF knowledge graph. Nodes are skills; edges are keys inside `relations.*`; node attributes are the 32 authored frontmatter fields. The JSON-LD `@context` at `schemas/skill.context.jsonld` projects the property graph into SKOS / Dublin Core Terms / PROV-O triples for consumers that want RDF semantics, but authoring stays in flat YAML.
 
@@ -59,6 +60,8 @@ If an overlay needs to *add* rather than *replace* a field's value (e.g. add key
 
 ## Relationship to the Agent Skills Standard
 
+> **This added structure is the price of making skills verifiable and system-aware once descriptions alone stop being enough.** If your library is small enough that descriptions and keywords are sufficient, stay on plain Agent Skills — Skill Graph's additional fields are overhead without payoff until the implicit graph appears.
+
 Skill Graph extends the [Agent Skills](https://agentskills.io/specification) open standard with a richer authoring contract. The base standard requires two frontmatter fields (`name` and `description`) and defines four optional fields (`license`, `compatibility`, `metadata`, `allowed-tools`). Skill Graph keeps the two required base fields and three of the four optional base fields (`license`, `compatibility`, `allowed-tools`) as top-level Skill Graph fields — though `compatibility` is tightened from a free-text string to a structured object, and `name` allows `/` and `:` for namespacing. It does not use the base `metadata` field; Skill Graph promotes its own extensions to additional named top-level fields instead.
 
 A Skill Graph SKILL.md is *not* automatically a valid Agent Skills file: the `compatibility` shape and `name` pattern diverge. The export transform at `scripts/export-skill.js` produces a `SKILL.agent-skills.md` that is valid against the base standard — flattening `compatibility` to a string and nesting Skill Graph's extension fields under the base `metadata:` key. Round-trip parity is via the export transform, not via direct schema compatibility.
@@ -80,12 +83,12 @@ A Skill Graph `SKILL.md` is **not** a valid Agent Skills file as authored, becau
 
 Each skill archetype expects a specific set of body H2 sections. These are the minimum required sections per archetype. Additional sections are allowed when they earn their line count.
 
-| Archetype | Required H2 sections |
-|---|---|
-| `capability` | `## Coverage`, `## Philosophy`, `## Verification`, `## Do NOT Use When` |
-| `workflow` | `## Coverage`, `## Philosophy`, `## Workflow`, `## Verification`, `## Do NOT Use When` |
-| `router` | `## Coverage`, `## Routing Rules`, `## Do NOT Use When` |
-| `overlay` | `## Coverage`, `## Overlay Rules`, `## Extends` (name of the base skill), `## Do NOT Use When` |
+| Archetype | Required H2 sections | Example for a real project |
+|---|---|---|
+| `capability` | `## Coverage`, `## Philosophy`, `## Verification`, `## Do NOT Use When` | [`stripe-webhook-signature-verification`](../examples/projects/saas-stripe-postgres/skills/stripe-webhook-signature-verification/SKILL.md) — codebase-grounded with full `grounding` block |
+| `workflow` | `## Coverage`, `## Philosophy`, `## Workflow`, `## Verification`, `## Do NOT Use When` | [`migrate-orders-to-canonical-schema`](../examples/projects/saas-stripe-postgres/skills/migrate-orders-to-canonical-schema/SKILL.md) — codebase-grounded; demonstrates the four-phase NOT NULL backfill workflow |
+| `router` | `## Coverage`, `## Routing Rules`, `## Do NOT Use When` | [`payment-provider-router`](../examples/projects/saas-stripe-postgres/skills/payment-provider-router/SKILL.md) — dispatches to Stripe / PayPal / Adyen primitives by signature header inspection |
+| `overlay` | `## Coverage`, `## Overlay Rules`, `## Extends` (name of the base skill), `## Do NOT Use When` | [`lint-overlay`](../skills/lint-overlay/SKILL.md) extends [`testing-strategy`](../skills/testing-strategy/SKILL.md) — adds lint-specific gate placement on top of the base verification framework |
 
 `## Key Files` is recommended for skills that reference concrete repo files. Prefer file paths with line ranges (`src/foo.ts:45-120`) over bare paths when the skill depends on a specific function or section. `## References` is recommended for skills that point at external reading.
 
@@ -269,6 +272,8 @@ The four `type` values — `capability`, `workflow`, `router`, `overlay` — are
 | `workflow` | **Rigid** | Same as capability — a workflow's identity is the procedure it teaches. "Code review" stops being "code review" only by being deleted, not by changing type. |
 | `router` | **Rigid** | A router's identity is its dispatch role; replacing the dispatch logic produces a different router skill, not the same router doing something else. |
 | `overlay` | **Anti-rigid + Dependent** | An overlay's identity is INHERITED from the parent it `extends`. Without the parent, the overlay does not have a coherent identity on its own. The overlay is a specialisation, not a standalone skill. |
+
+**Operationally, this is why changing a skill's `type` is not a harmless refactor**: it changes how downstream routers, eval graders, and reviewers interpret the skill. A type-change cascades into different routing behaviour, different eval interpretation, and different relation semantics — none of which surface as a syntax error, all of which produce subtly wrong agent behaviour.
 
 The practical consequence is in **migration**: a rigid type cannot change at runtime without invalidating consumer assumptions. If a skill that consumers use as a `capability` is silently switched to `router`, the consumer's keyword scoring, eval interpretation, and routing-eval contract all break. Type changes therefore require a `superseded_by` chain — the old skill becomes `stability: deprecated` and a new skill takes the new type. Rigidity is the invariant that makes this discipline trustworthy.
 

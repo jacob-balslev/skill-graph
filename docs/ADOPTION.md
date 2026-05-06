@@ -2,6 +2,14 @@
 
 > Should you adopt Skill Graph for your AI agent skill library? This page is a 1-screen decision tree. For the full mental model, read [`PRIMER.md`](PRIMER.md). For the contract details, read [`metadata-contract.md`](metadata-contract.md).
 
+## Pain-recognition probe
+
+> **If you've ever said "why did the agent load the wrong skill?" or "this skill was right last week but the code changed," you are in Skill Graph territory.** Library size is a proxy — these failures usually start around 3–5 skills, sometimes earlier if you have multiple projects, sometimes later for a single small project.
+
+## You don't have skills yet?
+
+If you have not yet authored any skills, **adopt [Anthropic Agent Skills](https://www.claude.com/skills) first** — that is the on-ramp. A folder of `SKILL.md` files using the base standard is the right starting point. **Adopt Skill Graph after your 3rd skill** (or earlier if you have multiple projects), when the typed-relations layer starts to pay off.
+
 ## Quick yes/no
 
 You should adopt Skill Graph if your skill library has any of these properties:
@@ -19,8 +27,8 @@ If none of these apply, stay on base [Agent Skills](https://agentskills.io/speci
 
 | You have… | You want… | Recommendation |
 |---|---|---|
-| 1–10 skills, single project | A simple way to author and load instructions | Stay on Agent Skills; revisit later |
-| 10+ skills, growing | Routing that respects relations + quality | **Adopt Skill Graph** |
+| 0–2 skills, single project, no grounded skills | A simple way to author and load instructions | Stay on Agent Skills; revisit at skill #3 |
+| **3+ skills with one wrong-routing incident OR multi-project workspace OR any grounded skill** | Routing that respects relations + drift detection + project scoping | **Adopt Skill Graph** |
 | Skills grounded in repo files | Drift detection when truth sources change | **Adopt Skill Graph** (drift sentinel) |
 | Multi-project workspace | Shared skills + project-specific overlays | **Adopt Skill Graph** (multi-root mode) |
 | Skills shipped externally | Compatibility with Agent Skills consumers | **Adopt Skill Graph + use export transform** |
@@ -28,18 +36,22 @@ If none of these apply, stay on base [Agent Skills](https://agentskills.io/speci
 
 ## Cost-benefit summary
 
-| You pay | You get |
-|---|---|
-| 13 required frontmatter fields per skill (vs Agent Skills' 2) | Typed relations enforced by lint |
-| SHA-256 baselines for grounded skills | Drift detection at skill-level granularity |
-| Cross-skill relation existence checks | Confident routing decisions, auditable by CI |
-| Time-boxed `freshness` claims | Time-boxed credibility |
-| Schema versioning discipline | Smooth migration story across breaking bumps |
-| One export transform step before publishing externally | Round-trip compatibility with the base standard |
+| You pay | Time investment per skill | You get (in outcomes) |
+|---|---|---|
+| 13 required frontmatter fields per skill (vs Agent Skills' 2) | ~5 min boilerplate (use template) | Wrong-skill activation becomes debuggable |
+| SHA-256 baselines for grounded skills | ~5 min one-command baseline (`drift-check --record`) | Repo-specific skills stop silently rotting |
+| Cross-skill relation existence checks | ~10 min on day 1 (less afterward as relations stabilise) | Team conventions become auditable rather than tribal |
+| Time-boxed `freshness` claims | <1 min per re-verification | Credibility you can defend in code review |
+| Schema versioning discipline | One-time codemod per major bump | Smooth migration story across breaking schema bumps |
+| One export transform step before publishing externally | ~1 min one command | Round-trip compatibility with the base Agent Skills standard |
+
+**Total time per skill on day 1: ~20 min. Steady-state after the library settles: ~10 min per new skill.**
 
 The fields you pay for cluster into 8 semantic purposes (Identity, Classification, Health, Eval Health, Activation & Routing, Relations, Grounding, Portability). The full anatomy is in [`metadata-contract.md § Anatomy`](metadata-contract.md).
 
 ## 5-minute quickstart
+
+> **Step 0 — pilot first, do not migrate the whole library.** Choose ONE skill currently most likely to misroute or drift. Add the required Skill Graph fields, route a real query against it, record a drift baseline. Pay the contract once on a skill where the payoff is visible, before paying it 20 times across skills where it isn't yet. The 30-minute walkthrough in [`docs/QUICKSTART-30MIN.md`](QUICKSTART-30MIN.md) walks you through this with literal terminal output at every step.
 
 For the full conceptual primer read [`PRIMER.md`](PRIMER.md). To migrate your first skill from a valid Agent Skills file:
 

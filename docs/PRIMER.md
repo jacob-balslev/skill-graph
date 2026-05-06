@@ -3,7 +3,7 @@
 > **Read this if:** you author Agent Skills and your library is large enough that skills have started to depend on, verify, or exclude one another. This primer is the conceptual introduction to the Skill Graph metadata contract. It is *explanation* documentation — it answers *what* and *why*. For reference material see `docs/field-reference.md`; for procedures see `CONTRIBUTING.md` and `docs/library-audit-workflow.md`; for decision tables see `docs/field-decision-guide.md`.
 
 **Status.** Stable for `schema_version: 3`.
-**Audience.** Authors and maintainers of skill libraries ≥ ~20 skills.
+**Audience.** Skill authors who have hit at least one of these failures: (a) the agent picks the wrong skill on an ambiguous prompt; (b) a grounded skill cites a file that was rewritten and the skill is now lying; (c) you need to share some skills across two projects but not all. Library size is a proxy for this — these failures usually start around 5 skills, sometimes earlier if you have multiple projects, sometimes later for a single small project.
 **Prerequisites.** Working familiarity with the [Agent Skills specification](https://agentskills.io/specification), including `SKILL.md` layout and the progressive-disclosure loading model.
 
 ## Related documents
@@ -37,7 +37,7 @@
 
 ## 1. What is Skill Graph?
 
-Skill Graph is a **metadata contract** that extends Agent Skills with typed relations, taxonomic structure, grounding anchors, and eval-health signals. It keeps the base standard's two required fields (`name` and `description`), preserves the `SKILL.md` file-folder layout, and adds 30 optional fields that let a library describe its own structure, validate that structure deterministically, and expose it to a graph-aware router.
+**Skill Graph is what you adopt when your skill library has started misbehaving** — wrong-skill routing on ambiguous prompts, silent staleness when a grounded skill's truth source moves, or shared-versus-project ambiguity when you author for multiple projects. The contract names those problems with typed metadata and ships a lint that catches them before they hit production. Built on top of [Agent Skills](https://agentskills.io/specification) (you keep the 2 required fields, you can export back via the transform), it adds 11 required and ~19 optional fields for typed relations, drift detection, eval-health signals, and multi-project workspace mode.
 
 It is a **contract**, not a runtime. This repository ships reference implementations of a linter (`scripts/skill-lint.js`), a manifest generator (`scripts/generate-manifest.js`), a router (`scripts/skill-graph-route.js`), and a drift sentinel (`scripts/skill-graph-drift.js`) so adopters have something to read, fork, or replace. A Skill Graph library can be consumed by any agent runtime that supports the base Agent Skills standard, at whatever level of Skill Graph awareness that runtime chooses to implement.
 
@@ -56,6 +56,20 @@ It is a **contract**, not a runtime. This repository ships reference implementat
 ### Scope of this primer
 
 The primer transmits the **mental model** needed to read the reference material without getting lost. It does not exhaust the contract; every field named here has a normative definition in `docs/field-reference.md`. Worked authoring procedures live in `CONTRIBUTING.md § Adding or modifying a skill`. Audit procedures live in `docs/library-audit-workflow.md`.
+
+### How Skill Graph differs from marketplaces and runtimes
+
+Before the four "not"s in section 8, here is what Skill Graph **is**, in relation to its closest neighbors in the 2026 AI-coding-context landscape:
+
+| Neighbor | What it does | What Skill Graph does differently |
+|---|---|---|
+| **[Anthropic Agent Skills](https://www.claude.com/skills)** | The open standard for "Build once, use everywhere" skill packaging; "Stack skills for complex work." | Skill Graph **extends** Agent Skills with typed relations, drift detection, eval state, and project scoping. Round-trips back via `scripts/export-skill.js`. |
+| **[skillsmp.com](https://skillsmp.com)** | Aggregator marketplace — *"Discover open-source agent skills from GitHub."* The discovery surface for community skills. | Skill Graph is the contract a marketplace could enforce on the skills it aggregates. **A skillsmp search is for *finding* a skill; a Skill Graph library is for *managing* your team's expertise.** |
+| **[skills.sh](https://skills.sh)** | Same category as skillsmp — *"The Open Agent Skills Ecosystem."* | Same distinction as skillsmp: discovery surface vs. library-management contract. |
+| **[Cursor rules](https://cursor.com/docs)** (`.cursor/rules/*.mdc`) | Repo-behavior guardrails the IDE applies to every Cursor agent action. | Cursor rules are repo-behavior guardrails; Skill Graph is **skill-library structure** for the moment you have many skills to route, verify, and ground. The two solve different problems and complement each other in the same repo. |
+| **CLAUDE.md / AGENTS.md** | Always-on plain-text repo conventions Claude Code or generic agent runtimes read at session start. | CLAUDE.md/AGENTS.md is *always-on* repo context (small, opinionated). Skill Graph is *on-demand* skill packaging (many, structured, routable). |
+
+For the standalone reference covering every neighbor with pros/cons per axis, see [`docs/positioning-vs-marketplaces.md`](positioning-vs-marketplaces.md).
 
 ---
 
@@ -105,6 +119,8 @@ flowchart TB
 
 **What it answers.** *Does this skill activate for this query?* This is the **semantic layer** — text for lexical retrieval, exactly what Agent Skills ships with. It is useful for discovery and not sufficient for reasoning.
 
+**What you do with this:** Tune `keywords` until the right skill activates on your test prompts. Adjust `description` when two skills compete for the same prompt. Add `examples` for prompts you've seen in production. Add `anti_examples` after the router has misfired — speculative anti_examples rarely match reality.
+
 ### Layer 2. Taxonomy
 
 **Purpose.** Place the skill at exactly one position in a hierarchical tree.
@@ -112,6 +128,8 @@ flowchart TB
 **Fields.** `browse_category` (the top-level shelf, always required), `category` (the slash-delimited nested path, optional).
 
 **What it answers.** *What kind of concern is this?* The tree carries meaning through nesting: `editor/linting/eslint-rules` says eslint-rules *is a kind of* linting *is a kind of* editor concern. Use `category` only when the library is large enough that a tree helps navigation (`docs/field-reference.md § category` recommends it past ~20 skills). A skill occupies exactly one taxonomic position — this is the difference between taxonomy and the multi-membership tag axes (see section 4).
+
+**What you do with this:** Pick `browse_category` to file the skill on a top-level shelf (`engineering`, `quality`, `integration`, etc.). Add `category` only when your library is past ~20 skills and a tree helps readers navigate.
 
 ### Layer 3. Ontology
 
@@ -121,6 +139,8 @@ flowchart TB
 
 **What it answers.** *How does this skill relate to the rest of the library?* The four predicates are not synonyms. `depends_on` closure is transitive; the linter enforces that targets resolve. `verify_with` is additive at selection — the router co-loads the verifier when the primary skill is picked. `boundary` excludes — a prompt covered by a boundary-listed skill is pushed off the current skill and onto the boundary target. `adjacent` is a hint without routing consequences. This is the layer that turns a skill collection into a graph an agent can reason over.
 
+**What you do with this:** Add `boundary` when two skills cover the same prompt and you want the more-specific one to win. Add `verify_with` when one skill's verdict needs another skill's check before being trusted. Add `depends_on` when removing the target would silently break this skill at runtime. Use `adjacent` sparingly — most "often used together" links are better expressed as `verify_with` if the secondary skill should auto-co-load.
+
 ### Layer 4. Inheritance
 
 **Purpose.** Express "this skill is a specialisation of that skill" as a single typed predicate with schema-level consequences.
@@ -129,6 +149,8 @@ flowchart TB
 
 **What it answers.** *Is this skill a specialised version of another skill?* Inheritance is its own layer rather than folded into Ontology because it carries a dual obligation: an ontological claim (*this is a kind of that*) *and* a schema-level constraint on body structure (overlay skills MUST carry `## Extends` and `## Overlay Rules` sections). The other four relation predicates do not impose body-structure obligations.
 
+**What you do with this:** Use `extends` only when removing the parent would break the overlay's identity (the overlay is anti-rigid in OntoClean terms — it has no coherent meaning standalone). For "this is a kind of that" without existential dependency, use `relations.broader` instead — that's the OntoClean test (ADR 0003). The `lint-overlay` starter `extends: testing-strategy` because lint-overlay is meaningless without the base verification framework; `react-best-practices broader: [frontend]` because react-best-practices remains coherent if `frontend` is deleted.
+
 ### Layer 5. Grounding
 
 **Purpose.** Tie an otherwise abstract skill to specific, hashable artifacts in the codebase, and report when those artifacts have changed.
@@ -136,6 +158,8 @@ flowchart TB
 **Fields.** `grounding.domain_object`, `grounding.grounding_mode`, `grounding.truth_sources`, `grounding.failure_modes`, `grounding.evidence_priority`, `drift_check.truth_source_hashes`, `lifecycle.stale_after_days`, `freshness`, `eval_state`.
 
 **What it answers.** *Is what this skill claims still true?* Grounding is conditional on `scope: codebase` and is enforced by the schema. The drift sentinel (`scripts/skill-graph-drift.js`) SHA-256-hashes every listed `truth_source` and reports one of four states: `CLEAN`, `DRIFT`, `BROKEN` (file moved or deleted), or `NO_BASELINE` (hashes not recorded yet). `lifecycle.stale_after_days` time-boxes the freshness claim independently. This is the layer that turns an abstract ontology into a knowledge graph populated with real entities, and keeps the representation honest as those entities change.
+
+**What you do with this:** Re-baseline `truth_source_hashes` after every deliberate edit to the source file (`node scripts/skill-graph-drift.js --record --apply <skill-dir>`). When the drift sentinel reports DRIFT, re-verify the skill's `## Verification` checklist against the changed truth source *before* re-recording — drift is a prompt to re-read the truth source, not to silently rubber-stamp the new hash.
 
 ### How the five layers compose into a routing decision
 
@@ -279,6 +303,27 @@ EXCLUDED  refactor            boundary: debugging absorbs this prompt
 
 Same library, same manifest, same metadata. Different compound decision. The router explains *why* one skill was chosen and another was not, in a form a human can audit and a CI check can assert on.
 
+### 6.5 Routing trace — boundary edge fires on a webhook prompt
+
+Same pattern, different domain. Imagine an adopter library with `webhook-review` (capability, codebase-grounded), `owasp-security` (capability, listed as `verify_with` of `webhook-review`), and `documentation` (capability, listed in `webhook-review.boundary` because docs would otherwise absorb the prompt).
+
+A query about a specific Stripe webhook signature failure routes like this:
+
+```
+$ node scripts/skill-graph-route.js "why is the stripe webhook intermittently rejecting valid signatures"
+SELECTED  webhook-review     eval_state=passing    keyword:stripe webhook, keyword:signature
+VERIFY    owasp-security     eval_state=passing    verify_with of webhook-review
+EXCLUDED  documentation      —                     in boundary[] of webhook-review: documentation writes prose ABOUT webhook patterns; webhook-review is the verification primitive in code
+```
+
+Three layers fired in one query:
+
+1. **Layer 1** lexical match selected `webhook-review` on two keyword tokens.
+2. **Layer 3 `verify_with`** co-loaded `owasp-security` because `webhook-review` declares it as a verifier — the agent now has the security checklist alongside the implementation review.
+3. **Layer 3 `boundary`** excluded `documentation` because `webhook-review.boundary` explicitly says "documentation writes prose; this skill is the primitive in code." Without that boundary, `documentation` might have outscored `webhook-review` on a query mentioning "review" — the boundary edge prevents that misroute.
+
+This trace pattern is how the `payment-provider-router` specimen at [`examples/projects/saas-stripe-postgres/skills/payment-provider-router/`](../examples/projects/saas-stripe-postgres/skills/payment-provider-router/SKILL.md) works in concept; install the specimens into your own `skills/` and the same trace runs against them.
+
 ---
 
 ## 7. Portability back to base Agent Skills
@@ -293,11 +338,13 @@ Exporting is appropriate for publishing a skill to a runtime that does not yet r
 
 ## 8. What Skill Graph is not
 
+The positive identity is in [§1 — How Skill Graph differs from marketplaces and runtimes](#how-skill-graph-differs-from-marketplaces-and-runtimes). For completeness, the brief negative summary:
+
 - **Not a prompt library.** Skill Graph does not distribute skills or prompts. It describes the metadata format for skills a library already contains.
-- **Not a skill marketplace.** There is no registry, no discovery service, no hosted index.
+- **Not a skill marketplace.** There is no registry, no discovery service, no hosted index — see skillsmp.com or skills.sh for that surface.
 - **Not an agent runtime.** The contract is consumed by agent runtimes; it is not one.
 - **Not a second skill format competing with Agent Skills.** Every valid Skill Graph skill is also a valid Agent Skills skill for the two required fields, and can be exported to base Agent Skills (section 7).
-- **Not a tutorial.** For "how do I author my first skill," see `CONTRIBUTING.md § Adding or modifying a skill`.
+- **Not a tutorial.** For "how do I author my first skill," see [`docs/QUICKSTART-30MIN.md`](QUICKSTART-30MIN.md) and `CONTRIBUTING.md § Adding or modifying a skill`.
 - **Not exhaustive.** This primer transmits the mental model. Normative field semantics live in `docs/field-reference.md`; archetype section maps live in `docs/metadata-contract.md`; contract invariants live in `docs/ARCHITECTURE.md`.
 
 ---

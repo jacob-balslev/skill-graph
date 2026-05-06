@@ -1,6 +1,6 @@
 # Skill Graph
 
-> **Glossary.** In this repo, **tier** = authority (which file wins on conflict). **Layer** = type of metadata. They are different concepts and the counts (5 tiers vs 5 layers vs 7 architecture levels) refer to different things — see [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md) for the reconciliation.
+> **Glossary.** In this repo, **tier** = authority (which file wins on conflict — see the 5-tier "Quick tour" below; [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md) is the same 5 tiers in detail). **Layer** = type of metadata inside a single skill's frontmatter — there are 5 of those too, defined in [`docs/PRIMER.md`](docs/PRIMER.md) § 3. The two fives count to the same number but refer to different concepts: tiers span the whole repo; layers live inside one `SKILL.md`.
 
 Your first five skills can be a folder of `SKILL.md` files. Your next fifteen usually cannot. Once skills overlap, depend on real project files, and start carrying quality promises, you need more than descriptions and tags. **Skill Graph is the contract and toolchain for that moment** — built on top of the [Agent Skills](https://agentskills.io/specification) open standard, it adds typed relations, grounding contracts, audit surfaces, and deterministic validation. Round-trips back to plain Agent Skills via the export transform at `scripts/export-skill.js`. (A Skill Graph SKILL.md is *not* automatically a valid Agent Skills file — the `compatibility` shape and `name` pattern diverge — but the two formats round-trip via the transform.)
 
@@ -11,6 +11,10 @@ Your first five skills can be a folder of `SKILL.md` files. Your next fifteen us
 3. **Project-scope leak.** You want to share some skills across two projects but not all. Today this lives in folder structure or naming hacks; tomorrow you change the layout and break a project. *Skill Graph names project scope in the contract via `project_tags` + workspace `semantic_tags` matching — no folder gymnastics required.*
 
 The contract names those problems with typed metadata; the lint catches them before they hit production.
+
+### Why now
+
+Industry framing has caught up: *"Context engineering is the essential AI coding skill of 2026"* — and *"by carefully crafting rule files, project docs, and example code, you can increase agent task success rates from 30% to 90%"* ([QubitTool 2026 AI Coding Tools comparison](https://qubittool.com/blog/ai-coding-tools-2026-comparison)). Carefully-shaped skill metadata is the leverage point — the difference between an agent that works on demos and one that works in production. Skill Graph is the contract that makes that metadata legible to lint, router, and audit.
 
 ### What Skill Graph is *not*
 
@@ -79,9 +83,11 @@ The complete set of shipped features:
 
 - overlap detection and coverage tooling (`scripts/skill-overlap.js`, `scripts/build-coverage.js`)
 
-### Deferred (removed from the contract in 0.3.0, still deferred in 0.4.0)
+### Roadmap: cross-runtime portability
 
-- Export transforms for `cursor`, `windsurf`, `copilot`, and `agents-md` targets. These values previously appeared in the `portability.targets` enum as compatibility *goals* with no working transform. Because `additionalProperties: false` plus enum restriction is the whole point of the contract, aspirational enum values violated that contract. The enum accepts only `agent-skills`. Re-add via a new RFC and the same PR that ships the transform.
+Skill Graph today exports to base Agent Skills. Planned target runtimes — Cursor (`.cursor/rules/*.mdc`), Continue (`.continue/rules/*`), GitHub Copilot (`.github/instructions/*`), Anthropic AGENTS.md — will be added via new RFCs as transforms ship. Each gets its own PR pairing the enum addition with a working transform; the enum and the transform land together so `additionalProperties: false` plus enum restriction (the whole point of the contract) is never violated by aspirational values.
+
+> **Why not now?** These four enum values previously appeared in `portability.targets` in 0.2.x as compatibility *goals* with no working transform. They were removed in 0.3.0 because aspirational enum values violated the contract. Today the enum accepts only `agent-skills`. They re-land when the matching transforms are ready — RFC + transform PR together.
 
 See `docs/plans/scripts-roadmap.md` for the planned script surface and [CHANGELOG.md](CHANGELOG.md) for what has shipped in each release.
 

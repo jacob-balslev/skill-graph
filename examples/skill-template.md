@@ -25,6 +25,17 @@
 # ============================================================================
 schema_version: 3
 name: skill-template
+# TEMPLATE NOTE: Be pushy in your description — Claude tends to under-trigger
+# skills, so descriptions should read as commands ("Use when X", "Activate
+# this skill whenever Y") not as polite suggestions ("This skill provides Z").
+# State both WHAT the skill does AND WHEN to use it, and include an explicit
+# negative boundary ("Do NOT use for ..." with a pointer to the right
+# alternative skill). The 3-test quality gate for descriptions is:
+#   (1) names a real domain object (file path, function name, route),
+#   (2) has an explicit "Do NOT use for X (use Y)" exclusion clause,
+#   (3) names a concrete trigger (code pattern, file path, command).
+# See https://platform.claude.com/docs/en/agents-and-tools/agent-skills/best-practices
+# for Anthropic's own guidance on pushy descriptions.
 description: "Use when creating a new SKILL.md, adapting an existing skill to a different archetype, or teaching an author the canonical frontmatter and body structure. Covers schema-conformant frontmatter, archetype-aware body layout, semantic-layer discipline (description vs Coverage), teaching-layer mechanics (TEMPLATE NOTE blockquotes and YAML comments), and the authoring gate. Do NOT use when modifying an already-written skill (edit that skill directly) or when writing general technical documentation (use the documentation skill)."
 version: 1.0.0
 type: capability
