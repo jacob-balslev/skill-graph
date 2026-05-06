@@ -2017,11 +2017,126 @@
       "stability": "experimental",
       "type": "capability",
       "version": "1.0.0"
+    },
+    {
+      "activation": {
+        "anti_examples": [
+          "design our outbound webhook product (we want to deliver events to customers)",
+          "the production webhook is failing — find the root cause",
+          "explain our webhook patterns in the contributor docs",
+          "review this AI-generated webhook handler for correctness",
+          "refactor the webhook handler helpers for clarity",
+          "decide whether this webhook needs an integration test",
+          "design the secret-rotation policy for our integration credentials"
+        ],
+        "examples": [
+          "implement signature verification for a new third-party webhook handler",
+          "the same webhook event is being processed twice — fix the idempotency",
+          "should I return 200 or 500 when a webhook handler hits a database error?",
+          "the provider keeps retrying a webhook we already accepted — what's wrong with our 200 path?",
+          "design a quarantine path for webhooks that fail signature verification",
+          "extract a stable idempotency key from this provider's webhook payload",
+          "reject all webhook deliveries with an invalid HMAC, log them for audit",
+          "the provider deletes customer data 30 days after order — how do I capture PII safely on first delivery?"
+        ],
+        "keywords": [
+          "webhook handler",
+          "webhook signature",
+          "webhook signature verification",
+          "HMAC webhook",
+          "timing-safe comparison",
+          "duplicate webhook delivery",
+          "webhook idempotency",
+          "idempotency key",
+          "webhook retry",
+          "retry contract",
+          "webhook 200 vs 500",
+          "replay attack webhook",
+          "webhook quarantine",
+          "raw payload archive",
+          "webhook canonical mapping",
+          "PII capture window",
+          "webhook secret rotation",
+          "inbound event handler"
+        ]
+      },
+      "allowed-tools": "Read Grep Bash Edit",
+      "browse_category": "engineering",
+      "category": "integrations/webhooks",
+      "compatibility": {
+        "notes": "Provider-agnostic. Examples reference HMAC-SHA256 (the dominant scheme), SDK-style verification helpers (Stripe-style, where the provider ships a library that takes raw body + header + secret), and round-trip verification APIs (PayPal-style, where the receiver POSTs the event back to the provider for validation). Substitute each provider's specific header names, hashing algorithm, and retry-status-code contract from their docs."
+      },
+      "description": "Use when implementing or reviewing an inbound webhook handler for any third-party provider — verifying signatures, deduplicating retries, choosing the right HTTP status code for retry vs no-retry, persisting raw payloads before canonical mapping, and quarantining unverifiable events. Covers the three signature-scheme families (shared-secret HMAC, provider-SDK verification, round-trip verification API), the four idempotency patterns (processed-flag, payload-hash UPSERT, event-ID dedup, composite-key UPSERT), the per-provider retry-contract reading discipline, the raw-then-canonical pipeline, and PII-capture timing for providers with deletion windows. Do NOT use for outbound webhook *publishing* (designing your own webhook product is a different surface), for general background-job orchestration (use `documentation` to describe it; the orchestration framework owns the runtime), or for chasing a webhook handler that has already failed in production (use `debugging`).",
+      "health": {
+        "drift_check": {
+          "last_verified": "2026-05-06"
+        },
+        "eval_artifacts": "planned",
+        "eval_state": "unverified",
+        "freshness": "2026-05-06",
+        "has_grounding": false,
+        "has_relations": true,
+        "lifecycle": {
+          "review_cadence": "quarterly",
+          "stale_after_days": 90
+        },
+        "routing_eval": "absent"
+      },
+      "id": "webhook-integration",
+      "license": "MIT",
+      "name": "webhook-integration",
+      "owner": "skill-graph-maintainer",
+      "path": "skills/webhook-integration/SKILL.md",
+      "portability": {
+        "readiness": "scripted",
+        "targets": [
+          "agent-skills"
+        ]
+      },
+      "relations": {
+        "boundary": [
+          {
+            "reason": "documentation produces durable prose about integration patterns; webhook-integration produces the executable handler skeleton and verification path",
+            "skill": "documentation"
+          },
+          {
+            "reason": "debugging chases an observed handler failure with reproduction; webhook-integration plans the safe handler shape before deployment",
+            "skill": "debugging"
+          },
+          {
+            "reason": "refactor is behavior-preserving cleanup; webhook-integration is the contract-enforcement layer that decides what behavior the handler must preserve",
+            "skill": "refactor"
+          },
+          {
+            "reason": "owasp-security owns the secret-storage and rotation policy; webhook-integration owns the per-request signature-verification mechanics that consume those secrets",
+            "skill": "owasp-security"
+          },
+          {
+            "reason": "testing-strategy decides what deserves a regression test; webhook-integration defines the failure modes (replay, signature mismatch, duplicate delivery) those tests target",
+            "skill": "testing-strategy"
+          }
+        ],
+        "related": [
+          "testing-strategy",
+          "debugging",
+          "documentation",
+          "owasp-security",
+          "code-review"
+        ],
+        "verify_with": [
+          "testing-strategy",
+          "code-review"
+        ]
+      },
+      "scope": "portable",
+      "stability": "experimental",
+      "type": "capability",
+      "version": "1.0.0"
     }
   ],
   "summary": {
     "by_browse_category": {
-      "engineering": 6,
+      "engineering": 7,
       "frontend": 1,
       "knowledge": 8,
       "quality": 3,
@@ -2029,19 +2144,19 @@
     },
     "by_scope": {
       "codebase": 1,
-      "portable": 16,
+      "portable": 17,
       "reference": 2
     },
     "by_stability": {
-      "experimental": 18,
+      "experimental": 19,
       "stable": 1
     },
     "by_type": {
-      "capability": 14,
+      "capability": 15,
       "overlay": 1,
       "router": 1,
       "workflow": 3
     },
-    "total_skills": 19
+    "total_skills": 20
   }
 }
