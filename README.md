@@ -1,18 +1,68 @@
 # Skill Graph
 
-> **Glossary.** In this repo, **tier** = authority (which file wins on conflict — see the 5-tier "Quick tour" below; [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md) is the same 5 tiers in detail). **Layer** = type of metadata inside a single skill's frontmatter — there are 5 of those too, defined in [`docs/PRIMER.md`](docs/PRIMER.md) § 3. The two fives count to the same number but refer to different concepts: tiers span the whole repo; layers live inside one `SKILL.md`.
+[![Version 0.4.0](https://img.shields.io/badge/version-0.4.0-blue?style=flat-square)](CHANGELOG.md) [![Schema v3](https://img.shields.io/badge/schema-v3-blueviolet?style=flat-square)](schemas/skill.v3.schema.json) [![License Apache--2.0 + CC--BY--4.0](https://img.shields.io/badge/license-Apache--2.0%20%2B%20CC--BY--4.0-green?style=flat-square)](LICENSE) [![Exports Agent Skills](https://img.shields.io/badge/exports-Agent%20Skills-orange?style=flat-square)](https://agentskills.io/specification)
 
-**Skill Graph is the metadata contract for skills that know your codebase.** It adds the structure a skill needs once it lives inside a real project: hashed grounding to actual repository files, typed relations to other skills, project tags for stack-specific scoping, and eval state for routing trust. The result is skills that are relevant to *your* project, not generic skills that happen to mention your stack.
+**The metadata contract for skills that know your codebase.** Hashed grounding to actual repository files, typed relations between skills, project tags for stack-specific scoping, and eval state for routing trust. The result is skills that are relevant to *your* project — not generic skills that happen to mention your stack. Skills export to [Agent Skills](https://agentskills.io/specification) shape via `scripts/export-skill.js` and are consumed by Claude Code's skill loader and any Agent-Skills-compatible runtime.
 
-The format is interoperable with [Agent Skills](https://agentskills.io/specification) via the export transform at `scripts/export-skill.js`, so a Skill Graph library is consumable by any Agent-Skills-compatible runtime. The two contracts are distinct — Skill Graph's `compatibility` shape and `name` pattern diverge from Agent Skills' — but the export transform round-trips Skill Graph skills into Agent Skills shape.
+[Adoption](docs/ADOPTION.md) · [Architecture](docs/ARCHITECTURE.md) · [Primer](docs/PRIMER.md) · [CONTRACT](CONTRACT.md) · [CHANGELOG](CHANGELOG.md) · [Quickstart (30 min)](docs/QUICKSTART-30MIN.md) · [Glossary](docs/glossary.md)
+
+> **Read this if** you're managing more than ~20 skills, your agent picks the wrong one on ambiguous prompts, your grounded skills silently lie when their cited files move, or you want to share skills across projects without folder gymnastics.
+
+## Quick start
+
+Three commands exercise the whole contract — validate, route, drift-check:
+
+```bash
+# 1. Lint one skill (33 fields, 13 required, 11 contract checks)
+node scripts/skill-lint.js skills/documentation
+
+# 2. Route a real query — prints WHY each skill is selected, co-loaded, or excluded
+node scripts/skill-graph-route.js "audit my skills for schema conformance"
+
+# 3. Hash-check every grounded skill against its baseline truth sources
+node scripts/skill-graph-drift.js
+```
+
+A real `SKILL.md` frontmatter looks like this — the contract is what every field validates against:
+
+```yaml
+---
+schema_version: 3
+name: documentation
+version: 1.0.0
+type: skill
+archetype: capability
+scope: portable
+description: Documentation type selection (reference, tutorial, spec, skill, report) and audience targeting…
+relations:
+  depends_on: [editorial-standards]
+  boundary:
+    - { skill: copywriting, reason: "this skill owns docs prose; copywriting owns marketing prose" }
+eval_state: passing
+eval_artifacts: present
+drift_check:
+  truth_source_hashes: {}
+  last_verified: 2026-04-18
+lifecycle:
+  stale_after_days: 90
+---
+```
+
+The router and drift sentinel both read this frontmatter to make their decisions. Lint enforces every field. The contract is machine-checked, not aspirational.
+
+## Why this exists
+
+Skill libraries break in three predictable ways once they grow past a handful: the agent picks the wrong skill on an ambiguous prompt, a grounded skill silently lies because its cited file moved, and skills leak between projects because scope lives in folder structure. Skill Graph names each failure with typed metadata and catches it at lint time — not after the agent has already produced wrong output. The OSS release is the contract, the validators (lint + contract-consistency checker), and a reference router and drift sentinel that prove the metadata is more than decoration.
 
 ### Three failures the contract prevents
+
+**Wrong-skill activation. Silent staleness. Project-scope leak.** Each is a specific symptom of skills that don't yet know which files, stacks, or sibling skills they belong to. The contract names each failure with a typed predicate; lint catches the predicate before runtime:
 
 1. **Wrong-skill activation.** The agent picks the wrong skill on an ambiguous prompt — and you can't tell whether the description was vague, the keywords overlapped, or two skills both claimed the territory. *Skill Graph names this with `relations.boundary` predicates and routing-quality lint rules so the conflict is visible at lint time, not runtime.*
 2. **Silent staleness.** A grounded skill cites a file you rewrote last Tuesday. The skill is now lying, but lint doesn't know and the agent will quote it anyway. *Skill Graph hashes every `grounding.truth_sources` entry and reports DRIFT / BROKEN / STALE / NO_BASELINE against the recorded baseline.*
 3. **Project-scope leak.** You want to share some skills across two projects but not all. Today this lives in folder structure or naming hacks; tomorrow you change the layout and break a project. *Skill Graph names project scope in the contract via `project_tags` + workspace `semantic_tags` matching — no folder gymnastics required.*
 
-The contract names each failure with typed metadata; the lint catches them before they hit production. Each one is a specific symptom of skills that don't yet know which files, stacks, or sibling skills they belong to.
+The contract names each failure with typed metadata; the lint catches them before they hit production.
 
 ### Authoring is "fill the template, lint catches the rest"
 
@@ -35,11 +85,11 @@ It is a portable metadata contract with deterministic validation, designed to be
 
 ## Status
 
-**Current version: 0.4.0** (2026-04-18) — see [CHANGELOG.md](CHANGELOG.md) for the full release history and migration notes.
-
-**Considering adoption?** Read [`docs/ADOPTION.md`](docs/ADOPTION.md) for a 1-page decision tree. **Wondering which skills the OSS library should ship?** Read [`docs/recommended-skills.md`](docs/recommended-skills.md) for the curated set targeted at all humans and AI agents.
+Released **2026-04-18**. See [CHANGELOG.md](CHANGELOG.md) for release history and migration notes. **Considering adoption?** Read [`docs/ADOPTION.md`](docs/ADOPTION.md) for a 1-page decision tree. **Wondering which skills the OSS library should ship?** Read [`docs/recommended-skills.md`](docs/recommended-skills.md) for the curated set targeted at all humans and AI agents.
 
 ## Where Skill Graph sits in the agent-skills landscape
+
+> *Cursor rules govern behavior. Agent Skills package knowledge. Skill Graph adds typed structure to the knowledge.*
 
 A 2026 reader has at least six AI-coding context tools in their head. Here's how Skill Graph relates to each:
 
