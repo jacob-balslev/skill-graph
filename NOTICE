@@ -1,0 +1,70 @@
+@agent-orchestration-tools/skill-graph
+
+Copyright 2026 Jacob Balslev
+
+================================================================================
+Dual-licensing
+================================================================================
+
+This package contains TWO bodies of work under different licenses:
+
+1. CODE — everything outside `skills/**`
+   Licensed under the Apache License, Version 2.0.
+   See LICENSE for the full text. http://www.apache.org/licenses/LICENSE-2.0
+
+2. SKILL CONTENT — markdown files under `skills/**`
+   Licensed under the Creative Commons Attribution 4.0 International License
+   (CC-BY-4.0). See https://creativecommons.org/licenses/by/4.0/ for the full
+   text.
+
+When redistributing or building derivative works from skills, attribute as:
+
+   "Skills from @agent-orchestration-tools/skill-graph
+    (https://github.com/jacob-balslev/skill-graph),
+    licensed CC-BY-4.0."
+
+The two licenses cover non-overlapping files. Building a derivative work that
+combines code + skill content (e.g., a hosted service, a SaaS product, an
+adapted skill catalog) requires complying with BOTH licenses for their
+respective files.
+
+================================================================================
+Disclaimers
+================================================================================
+
+This project is NOT affiliated with, endorsed by, sponsored by, or in any way
+officially connected to:
+
+- Anthropic, PBC (Claude, Claude Code, Claude API)
+- OpenAI, Inc. (ChatGPT, GPT models, OpenAI API, Codex)
+- Google LLC / Alphabet Inc. (Gemini, Google Cloud, Gemini CLI)
+- GitHub, Inc. / Microsoft Corporation (GitHub Copilot)
+- The Model Context Protocol working group / contributors
+
+References to these companies, their products, or trademarks in code,
+documentation, examples, or model descriptors are descriptive only and do not
+constitute endorsement in either direction.
+
+================================================================================
+Third-party software
+================================================================================
+
+This project has zero runtime dependencies. Build and test tooling is listed
+in package.json devDependencies under their respective licenses (Vitest MIT,
+TypeScript Apache-2.0, etc.).
+
+================================================================================
+Skill content provenance
+================================================================================
+
+Skills under `skills/**` were extracted from the agent-orchestration-tools
+private monorepo and stripped of project-specific coupling (paths, internal
+identifiers, business names). The extraction preserved each skill's authorship
+and version history at the time of extraction.
+
+Project-specific skills (financial-correctness, sales-hub-* doctrines, etc.)
+were intentionally excluded as enumerated in the original extraction filter.
+
+The two skills that fail strict frontmatter validation (data-reconciliation,
+token-cost-estimation) are still distributed but require `tolerant: true` to
+load. They will be migrated to the v1.0 frontmatter shape in a future release.

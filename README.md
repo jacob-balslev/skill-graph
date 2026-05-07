@@ -454,4 +454,9 @@ Lint errors on missing sections. Lint warns on sections that exist but contain f
 
 ## License
 
-MIT — see `LICENSE`.
+Dual-licensed across two non-overlapping bodies of work:
+
+- **Code** (everything outside `skills/**`) — Apache License 2.0. See [`LICENSE`](LICENSE).
+- **Skill content** (markdown files under `skills/**`) — Creative Commons Attribution 4.0 International ([CC-BY-4.0](https://creativecommons.org/licenses/by/4.0/)).
+
+When redistributing or adapting skills, attribute as: *"Skills from @agent-orchestration-tools/skill-graph (https://github.com/jacob-balslev/skill-graph), licensed CC-BY-4.0."* See [`NOTICE`](NOTICE) for the full dual-licensing terms, third-party disclaimers, and skill provenance.
