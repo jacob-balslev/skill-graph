@@ -14,6 +14,10 @@ The format is interoperable with [Agent Skills](https://agentskills.io/specifica
 
 The contract names each failure with typed metadata; the lint catches them before they hit production. Each one is a specific symptom of skills that don't yet know which files, stacks, or sibling skills they belong to.
 
+### Authoring is "fill the template, lint catches the rest"
+
+The contract is machine-checked. Authoring a skill means copying [`examples/skill-template.md`](examples/skill-template.md), filling the 13 required and ~19 optional frontmatter fields, and running `node scripts/skill-lint.js` — which validates against [`schemas/skill.v3.schema.json`](schemas/skill.v3.schema.json), checks that every `relations.*` target resolves, enforces archetype-specific body sections (e.g. `## Coverage` + `## Philosophy` + `## Verification` + `## Do NOT Use When` for `capability` skills), and surfaces routing-quality regressions. Pinned v2 (frozen) and v3 (current) schema copies in `schemas/` mean adopters can pin a contract version across a future v4 bump. You do not read 32 field docs to author a skill — you copy the template, fill the placeholders, and let lint name what's missing.
+
 ### Why now
 
 Industry framing has caught up: *"Context engineering is the essential AI coding skill of 2026"* — and *"by carefully crafting rule files, project docs, and example code, you can increase agent task success rates from 30% to 90%"* ([QubitTool 2026 AI Coding Tools comparison](https://qubittool.com/blog/ai-coding-tools-2026-comparison)). Carefully-shaped skill metadata is the leverage point — the difference between an agent that works on demos and one that works in production. Skill Graph is the contract that makes that metadata legible to lint, router, and audit.
@@ -93,6 +97,17 @@ Skill Graph today exports to base Agent Skills. Planned target runtimes — Curs
 
 See `docs/plans/scripts-roadmap.md` for the planned script surface and [CHANGELOG.md](CHANGELOG.md) for what has shipped in each release.
 
+### The iteration loop — measured, not ad-hoc
+
+The contract pieces compose into a **measurable improvement cycle**:
+
+1. **Skills are versioned artifacts** — every `SKILL.md` declares `schema_version` and a per-skill `version`, and ships in a contract pinned by `schemas/skill.v3.schema.json`.
+2. **Grounding is hashed** — `drift_check.truth_source_hashes` records a SHA-256 of every cited file; `scripts/skill-graph-drift.js` reports `DRIFT` / `BROKEN` / `STALE` / `NO_BASELINE` against the recorded baseline. `lifecycle.stale_after_days` time-boxes the freshness claim independently.
+3. **Audits produce evidence-backed verdicts** — `node scripts/skill-audit.js <skill> --graded` runs seven per-dimension prompts through an external grader CLI (`claude -p`, `codex exec`, etc.) and writes `PASS` / `PASS WITH FIXES` / `FAIL` per dimension into `findings.md` / `verdict.md` / `scorecard.md`.
+4. **The library workflow loops the whole thing** — [`docs/library-audit-workflow.md`](docs/library-audit-workflow.md) is the standard 12-step loop: select → deterministic lint → optional graded → aggregate → fix → re-verify → next skill. Phase 5 confirms fixes stuck and updates `drift_check.last_verified`.
+
+The result is a skill library where "this skill is good" is a defended claim with a hash, an eval verdict, and a re-verify date — not a vibe.
+
 ## Relationship to Agent Skills
 
 **If you only need plain Agent Skills, stay there.** Skill Graph exists for the moment your skills become a system and need typed relations, trust signals, and code grounding. Anthropic's own framing: *"Claude is powerful, but real work requires procedural knowledge and organizational context"* ([Anthropic engineering blog](https://www.anthropic.com/engineering/equipping-agents-for-the-real-world-with-agent-skills)). Skill Graph is what you adopt when "organizational context" stops being a folder of `SKILL.md` files and starts being a graph.
@@ -141,6 +156,8 @@ Read the [specimen pack README](examples/projects/markdown-static-site/README.md
 The specimens are deliberately a low-stakes content stack: no payments, no auth, no tenant-isolation boundaries, no cryptographic primitives. If a reader template-copies one of these specimens and gets it slightly wrong, the worst outcome is a broken image variant or a 404 on a bad route — not a customer-affecting incident. The Skill Graph contract features the specimens demonstrate (typed relations, grounding, drift detection, project tags, archetype discipline) work identically against any stack.
 
 ### (b) A routing trace where the agent picks the right skill
+
+Unlike a flat keyword search, the router prints WHY each skill was selected, co-loaded, or excluded — every line cites the specific frontmatter field that drove the decision (a matched keyword, a `boundary` reason, an `eval_state`, a `verify_with` co-load).
 
 Run on a query against the existing starter skills (the specimens are not in `skills/`, so the route below uses real starters; install a specimen as documented in its README to exercise the route against it):
 
@@ -335,6 +352,19 @@ For repos with more than one project, add `.skill-graph/config.json` at the repo
   }
 }
 ```
+
+A skill declares which kinds of project it applies to via `project_tags`:
+
+```yaml
+# skills/checkout-flow-review/SKILL.md
+---
+name: checkout-flow-review
+project_tags: [ecommerce, b2c]
+# ...
+---
+```
+
+With the workspace config above, this skill is automatically visible to `<project-a>` (`semantic_tags: [ecommerce, saas]`) AND `<project-b>` (`semantic_tags: [ecommerce, b2c]`) because both projects' `semantic_tags` overlap the skill's `project_tags`. A skill with `project_tags: [b2b-saas]` would be visible to neither. Skills with no `project_tags` are ambient — every project sees them. No folder structure is involved; the matching is declarative.
 
 `<project-a>` and `<project-b>` are placeholders — adopters use whatever kebab-case handles they choose. The generator walks every declared root, stamps each skill with its `project` handle, and emits the workspace block in the manifest. Skills with no `project_tags` are ambient (every project); skills with tags match projects whose `semantic_tags` include any tag. See `docs/plans/multi-root-workspace.md` for the full design.
 

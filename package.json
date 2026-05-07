@@ -1,0 +1,86 @@
+{
+  "name": "@agent-orchestration-tools/skill-graph",
+  "version": "0.1.0",
+  "description": "260-skill universal catalog plus a graph engine, parser, and MCP server. Zero runtime dependencies. Apache-2.0 (code) + CC-BY-4.0 (skill content).",
+  "type": "module",
+  "license": "Apache-2.0",
+  "author": "Jacob Balslev <jacob@agent-orchestration.tools>",
+  "homepage": "https://github.com/jacob-balslev/skill-graph#readme",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jacob-balslev/skill-graph.git"
+  },
+  "bugs": {
+    "url": "https://github.com/jacob-balslev/skill-graph/issues"
+  },
+  "keywords": [
+    "ai-agents",
+    "agent-orchestration",
+    "agent-orchestration-tools",
+    "skills",
+    "agent-skills",
+    "skill-catalog",
+    "mcp",
+    "model-context-protocol",
+    "knowledge-graph"
+  ],
+  "sideEffects": false,
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    },
+    "./mcp": {
+      "types": "./dist/mcp/index.d.ts",
+      "import": "./dist/mcp/index.js"
+    }
+  },
+  "files": [
+    "dist",
+    "examples",
+    "schemas",
+    "skills",
+    "README.md",
+    "LICENSE",
+    "NOTICE",
+    "CHANGELOG.md"
+  ],
+  "engines": {
+    "node": ">=20.0.0"
+  },
+  "scripts": {
+    "build": "tsup src/index.ts src/mcp/index.ts --format esm --dts --clean",
+    "dev": "tsup src/index.ts src/mcp/index.ts --format esm --dts --watch",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "test:coverage": "vitest run --coverage",
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix",
+    "format": "prettier --write .",
+    "format:check": "prettier --check .",
+    "example": "tsx examples/quickstart.ts",
+    "changeset": "changeset",
+    "release": "changeset publish",
+    "prepublishOnly": "pnpm build && pnpm test"
+  },
+  "dependencies": {},
+  "devDependencies": {
+    "@changesets/cli": "^2.29.0",
+    "@types/node": "^22.0.0",
+    "@vitest/coverage-v8": "^3.0.0",
+    "eslint": "^9.0.0",
+    "prettier": "^3.0.0",
+    "tsup": "^8.0.0",
+    "tsx": "^4.0.0",
+    "typescript": "^5.8.0",
+    "vitest": "^3.0.0"
+  },
+  "publishConfig": {
+    "access": "public",
+    "provenance": true
+  },
+  "packageManager": "pnpm@9.15.0"
+}
