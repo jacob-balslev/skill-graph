@@ -43,6 +43,10 @@ Skill Metadata Protocol is interoperable with [Agent Skills](https://agentskills
 
 Skill Graph is a **library system**, not a runtime. This repository ships reference implementations of a linter (`scripts/skill-lint.js`), a manifest generator (`scripts/generate-manifest.js`), a router (`scripts/skill-graph-route.js`), and a drift sentinel (`scripts/skill-graph-drift.js`) so adopters have something to read, fork, or replace. A Skill Graph library can be consumed by any agent runtime that supports the base Agent Skills standard, at whatever level of Skill Graph awareness that runtime chooses to implement.
 
+The shortest mental model: **Agent Skills package reusable procedural knowledge; Skill Metadata Protocol makes each skill's relevance, boundaries, grounding, and trust state explicit; Skill Graph operates over those declarations across a library.**
+
+Skill Metadata Protocol is the canonical contract, not the canonical template. The template is a replaceable authoring aid; the protocol is the schema-backed agreement that tools validate. Adopters can create stricter templates for their own teams without changing the contract.
+
 ### At a glance
 
 | | Agent Skills | Skill Metadata Protocol + Skill Graph |
@@ -70,6 +74,8 @@ Before the four "not"s in section 8, here is what Skill Graph **is**, in relatio
 | **[skills.sh](https://skills.sh)** | Public agent-skill library / registry — *"The Open Agent Skills Ecosystem."* | Same distinction as skillsmp: discovery / installation vs. project-relevance metadata plus the Skill Graph system for clustering, routing, testing, and re-verification. |
 | **[Cursor rules](https://cursor.com/docs)** (`.cursor/rules/*.mdc`) | Repo-behavior guardrails the IDE applies to every Cursor agent action. | Cursor rules are repo-behavior guardrails; Skill Graph is **skill-library structure** for the moment you have many skills to route, verify, and ground. The two solve different problems and complement each other in the same repo. |
 | **CLAUDE.md / AGENTS.md** | Always-on plain-text repo conventions Claude Code or generic agent runtimes read at session start. | CLAUDE.md/AGENTS.md is *always-on* repo context (small, opinionated). Skill Graph is *on-demand* skill packaging (many, structured, routable). |
+
+Agent memory belongs in the same mental map. Memory is local or product-managed recall of stable preferences, workflows, pitfalls, and recent context. Skill Graph is not memory; it gives durable skills memory-like discipline: explicit scope, retrieval signals, truth sources, freshness, and drift checks.
 
 For the standalone reference covering every neighbor with pros/cons per axis, see [`docs/positioning-vs-marketplaces.md`](positioning-vs-marketplaces.md).
 
@@ -348,6 +354,8 @@ The positive identity is in [§1 — How Skill Graph differs from marketplaces a
 - **Not a prompt library.** Skill Graph does not distribute skills or prompts. It operates on metadata for skills a library already contains.
 - **Not a skill marketplace.** There is no registry, no discovery service, no hosted index — see skillsmp.com or skills.sh for that surface.
 - **Not an agent runtime.** Skill Graph can feed agent runtimes; it is not one.
+- **Not persistent agent memory.** Skill Graph does not remember prior sessions. It structures durable skill knowledge so routers and humans can retrieve and reverify it.
+- **Not an always-on project instruction file.** Keep non-negotiable repo rules in AGENTS.md / CLAUDE.md; keep routable procedural knowledge in skills.
 - **Not a second skill format competing with Agent Skills.** Skill Metadata Protocol is an enriched contract over Agent Skills and can be exported to base Agent Skills (section 7).
 - **Not a tutorial.** For "how do I author my first skill," see [`docs/QUICKSTART-30MIN.md`](QUICKSTART-30MIN.md) and `CONTRIBUTING.md § Adding or modifying a skill`.
 - **Not exhaustive.** This primer transmits the mental model. Normative field semantics live in `docs/field-reference.md`; archetype section maps live in `docs/skill-metadata-protocol.md`; contract invariants live in `docs/ARCHITECTURE.md`.

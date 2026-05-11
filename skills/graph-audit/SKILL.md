@@ -14,7 +14,7 @@ drift_check:
   truth_source_hashes:
     "schemas/skill.schema.json": "d679ac0bc4cba7cdb7039eac645ab520c73ed22a4349a7b429febaa3015cf3c1"
     "schemas/manifest.schema.json": "ed1d13f30f1c9dcc96934a80136e6cd1f29df9db9bf6fdca2af99e5dc240ad44"
-    "docs/skill-metadata-protocol.md": "f90b4cce65d1c0d16b73ef90719d56fd63a95726fc8bc7478f9702d873f7a1bd"
+    "docs/skill-metadata-protocol.md": "3eba5f34009059f4bf12d741c9b4f0b16a8b2f83f5a47db77ad10f4e565b2170"
     "scripts/skill-lint.js": "a1ad4ec085a20908160886c59a63377630870651aaee696346d76db29c45ac92"
     "scripts/check-contract-consistency.js": "22786c2de59d3d27bef75ea9d36ead5ee5d4c61eb11d72ba04ccb5a0ce4a4c1e"
     "scripts/generate-manifest.js": "379c5015674fade4a00ea3a2366fd54d46a79182ee05cc9e96e51b56d565bc12"

@@ -31,7 +31,23 @@ So the split is simple:
 
 `SKILL.md` is the document. Skill Metadata Protocol is the skill-level relevance contract. Skill Graph is the search index, router, dependency map, eval harness, drift sentinel, and maintenance loop that works with that contract.
 
+Do not treat Skill Metadata Protocol as the canonical template. The template is [`examples/skill-metadata-template.md`](examples/skill-metadata-template.md): a teaching artifact you copy when authoring. The protocol is the canonical contract: the schema-backed agreement that says what one skill must declare so tools can validate, route, audit, and reverify it. Templates can vary by adopter; the contract is what stays interoperable.
+
 > Skill Graph turns Skill-Metadata-Protocol-enriched AI Agent Skills into a project-relevant, structured, testable metadata graph that agents can route through and humans can maintain.
+
+## Context and Memory Framing
+
+Skill Graph sits in the broader agent-context stack. Each artifact has a different loading pattern and authority level:
+
+| Artifact | Loaded when | Belongs here | Does not belong here |
+|---|---|---|---|
+| `AGENTS.md` / `CLAUDE.md` | Always-on at session start or by directory scope | Non-negotiable repo rules, setup commands, project conventions, safety reminders | Long procedural playbooks, large reference material, skill-library metadata |
+| Memory | Persisted across sessions, usually local and recall-based | Stable preferences, recurring workflows, recent pitfalls, personal or local continuity | Required team rules, authoritative project facts, unverified claims |
+| Plain Agent Skill | On demand when its `description` matches the task | Reusable procedural knowledge, workflow steps, examples, scripts, references | Cross-library routing policy, project relevance maps, drift state |
+| Skill Metadata Protocol | Authored in each `SKILL.md` frontmatter | Relevance, scope, boundaries, grounding, relations, eval state, drift state | Runtime orchestration, marketplace discovery, local personal memory |
+| Skill Graph | Generated and queried across a library | Manifest generation, routing, clustering, auditing, drift detection, eval loops | A model runtime, prompt library, or memory store |
+
+The memory analogy is useful but bounded. Skill Graph is not memory. It applies memory discipline to skills: split durable knowledge by domain and scope, store it in the right artifact, attach retrieval signals, ground concrete claims in truth sources, and revalidate those claims when the sources change. Where memory helps an agent carry prior context forward, Skill Metadata Protocol helps a skill declare why it should be retrieved, trusted, co-loaded, excluded, or ignored for a specific project task.
 
 ## Quick start
 
@@ -122,6 +138,8 @@ Industry framing has caught up: *"Context engineering is the essential AI coding
 - a skill marketplace
 - another agent framework
 - a complete runtime implementation
+- persistent agent memory
+- an always-on project instruction file like `AGENTS.md` or `CLAUDE.md`
 
 Skill Metadata Protocol is a portable file-level metadata contract with deterministic validation. Skill Graph is the surrounding index, router, cluster map, eval harness, and re-verification loop designed to be consumed by any agent runtime that already supports Agent Skills.
 

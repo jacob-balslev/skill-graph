@@ -2776,7 +2776,7 @@
         "drift_check": {
           "last_verified": "2026-05-11",
           "truth_source_hashes": {
-            "docs/skill-metadata-protocol.md": "f90b4cce65d1c0d16b73ef90719d56fd63a95726fc8bc7478f9702d873f7a1bd",
+            "docs/skill-metadata-protocol.md": "3eba5f34009059f4bf12d741c9b4f0b16a8b2f83f5a47db77ad10f4e565b2170",
             "examples/evals/graph-audit.json": "0484253253dd95b6205a1579bc0c365617499024581734fab10592ae94ee6bee",
             "schemas/manifest.schema.json": "ed1d13f30f1c9dcc96934a80136e6cd1f29df9db9bf6fdca2af99e5dc240ad44",
             "schemas/skill.schema.json": "d679ac0bc4cba7cdb7039eac645ab520c73ed22a4349a7b429febaa3015cf3c1",

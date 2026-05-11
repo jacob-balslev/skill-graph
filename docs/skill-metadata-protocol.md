@@ -160,6 +160,8 @@ runtime_telemetry
 
 ## Template and Teaching Layer Discipline
 
+Skill Metadata Protocol is the canonical contract, not the canonical template. The contract is the schema-backed set of fields, requiredness rules, relation semantics, grounding rules, and validation expectations. [`examples/skill-metadata-template.md`](../examples/skill-metadata-template.md) is a teaching artifact that demonstrates the contract for authors. A team can maintain its own stricter template as long as the resulting `SKILL.md` files still validate against the protocol.
+
 ### Semantic layer discipline
 
 Two fields look similar but serve opposite layers — sibling levels of progressive disclosure, not duplicates:
