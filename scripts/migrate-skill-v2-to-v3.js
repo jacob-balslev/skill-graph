@@ -39,7 +39,7 @@
  *   node scripts/migrate-skill-v2-to-v3.js <path>               # migrate one file or dir
  *   node scripts/migrate-skill-v2-to-v3.js skills/              # migrate every skill
  *   node scripts/migrate-skill-v2-to-v3.js --dry-run <path>     # show diffs, do not write
- *   node scripts/migrate-skill-v2-to-v3.js --include-template   # also migrate examples/skill-template.md
+ *   node scripts/migrate-skill-v2-to-v3.js --include-template   # also migrate examples/skill-metadata-template.md
  *
  * Self-contained. Only uses Node built-ins — no external dependencies.
  * Exit 0 on success, 1 if any file needed manual migration or failed to parse.
@@ -52,7 +52,7 @@ const path = require('path');
 
 const REPO_ROOT = path.resolve(__dirname, '..');
 const SKILLS_DIR = path.join(REPO_ROOT, 'skills');
-const TEMPLATE_PATH = path.join(REPO_ROOT, 'examples', 'skill-template.md');
+const TEMPLATE_PATH = path.join(REPO_ROOT, 'examples', 'skill-metadata-template.md');
 
 // ---------------------------------------------------------------------------
 // Frontmatter extraction — line-level so we can preserve the body verbatim.

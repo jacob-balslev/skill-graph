@@ -31,7 +31,7 @@
           "const": "3"
         }
       ],
-      "description": "Major contract shape version. Integer for v3+; string '3' tolerated for back-compat with hand-rolled YAML. Bumps when shape changes break consumers (additive minor changes do not bump). v4 is the next breaking-change horizon — see CHANGELOG.md and docs/metadata-contract.md § Schema Versioning Policy."
+      "description": "Major contract shape version. Integer for v3+; string '3' tolerated for back-compat with hand-rolled YAML. Bumps when shape changes break consumers (additive minor changes do not bump). v4 is the next breaking-change horizon — see CHANGELOG.md and docs/skill-metadata-protocol.md § Schema Versioning Policy."
     },
     "name": {
       "type": "string",
@@ -434,7 +434,7 @@
           }
         }
       },
-      "description": "Adopter-readiness signal. `readiness` declares how transferable the skill is between projects (`portable`, `requires-adaptation`, `repo-specific`). `targets` lists the runtime/CLI environments the skill has been validated against. Drives the multi-project overlay decision tree."
+      "description": "Portability execution signal. `readiness` declares whether portability is only declared (`declared`), covered by export tooling (`scripted`), or verified with a target-runtime receipt (`verified`). `targets` lists supported export destinations, currently `agent-skills`."
     },
     "lifecycle": {
       "type": "object",

@@ -91,7 +91,7 @@ function checkRoutingQuality(opts) {
         message: 'description text appears verbatim in ## Coverage — the two layers have collapsed into one',
         line:    sectionLine ? sectionLine.line : 1,
         column:  1,
-        help:    'The description is the routing contract (≤3 sentences). ## Coverage is a bulleted scope map. Rewrite ## Coverage as a topic list, removing the copied description sentence. See docs/metadata-contract.md § Semantic layer discipline.',
+        help:    'The description is the routing contract (≤3 sentences). ## Coverage is a bulleted scope map. Rewrite ## Coverage as a topic list, removing the copied description sentence. See docs/skill-metadata-protocol.md § Semantic layer discipline.',
       });
     }
   }

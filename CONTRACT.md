@@ -1,13 +1,13 @@
-# Skill Graph v1 OSS Metadata Contract
+# Skill Graph v1 OSS Skill Metadata Protocol
 
 > **Version:** 1.0.0 (schema_version 3, Skill Graph 0.4.x)
 > **Machine-readable schema:** `schemas/skill.v3.schema.json`
 > **Detailed field reference:** `docs/field-reference.md`
-> **Full semantics + design rationale:** `docs/metadata-contract.md`
+> **Full semantics + design rationale:** `docs/skill-metadata-protocol.md`
 
-This document is the top-level public contract for the Skill Graph frontmatter format — the **normative spec**. It defines which fields are required, what each field means in operational terms, which fields are authored by humans vs computed by tooling, and how to migrate from older schema versions. The prose is terse and boundary-aware: every clause is a rule a consumer or author can verify against the schema and against `scripts/skill-lint.js`.
+This document is the top-level public contract for the Skill Metadata Protocol frontmatter format — the **normative spec**. It defines which fields are required, what each field means in operational terms, which fields are authored by humans vs computed by tooling, and how to migrate from older schema versions. Skill Graph is the library-level system that consumes this contract. The prose is terse and boundary-aware: every clause is a rule a consumer or author can verify against the schema and against `scripts/skill-lint.js`.
 
-**Companion docs by genre.** This contract is the *what*. The *why* — design rationale, archetype semantics, OntoClean rigidity, the eval-health triple's orthogonality, the JSON-LD W3C mappings, and the philosophical posture behind the field choices — lives in [`docs/metadata-contract.md`](docs/metadata-contract.md). The two docs are coordinated and grow together: a normative rule that lacks a "why" is fragile; a "why" that lacks a normative rule is vapourware. If you are authoring a SKILL.md, you read this file. If you are deciding whether to add a field to the schema, you read both.
+**Companion docs by genre.** This contract is the *what*. The *why* — design rationale, archetype semantics, OntoClean rigidity, the eval-health triple's orthogonality, the JSON-LD W3C mappings, and the philosophical posture behind the field choices — lives in [`docs/skill-metadata-protocol.md`](docs/skill-metadata-protocol.md). The two docs are coordinated and grow together: a normative rule that lacks a "why" is fragile; a "why" that lacks a normative rule is vapourware. If you are authoring a SKILL.md, you read this file. If you are deciding whether to add a field to the schema, you read both.
 
 ---
 
@@ -223,7 +223,8 @@ The `relations` block contains typed edges to sibling skills. All targets are va
 ```yaml
 relations:
   related:        # symmetric co-read relation (skos:related). v3.1 preferred name.
-  disjoint_with:  # anti-ownership edge (owl:disjointWith). v3.1 preferred name.
+  boundary:       # routing-layer anti-ownership handoff (sg:disjointOwnership).
+  disjoint_with:  # formal class-disjointness assertion (owl:disjointWith).
   verify_with:    # skills to co-load for verification (prov:wasInformedBy).
   depends_on:     # skills this skill requires operationally or conceptually.
   broader:        # this skill is a specialisation of the target skill (skos:broader).
@@ -235,10 +236,15 @@ relations:
 - Maximum 5 entries recommended to avoid hub-and-spoke clutter.
 - `adjacent` is a deprecated alias from v3.0. Use `related` in all new skills. Lint emits a warning on `adjacent`.
 
-**`disjoint_with`** (preferred) / `boundary` (deprecated alias)
-- Anti-ownership edge. Use to make explicit that this skill does NOT own the target concern.
+**`boundary`**
+- Routing-layer anti-ownership handoff. Use to make explicit that this skill does NOT own the target concern and should hand near-miss prompts to another skill.
 - Items may be bare skill names or `{ skill, reason }` objects. Reasons are strongly recommended.
-- `boundary` is a deprecated alias from v3.0. Use `disjoint_with` in all new skills. Lint emits a warning on `boundary`.
+- This is a Skill-Graph-specific routing predicate, not formal OWL class disjointness.
+
+**`disjoint_with`**
+- Formal class-disjointness assertion. Use only when the two skill concepts are genuinely disjoint in the ontology sense.
+- Items may be bare skill names or `{ skill, reason }` objects.
+- Do not use it as a replacement for routing-layer `boundary`.
 
 **`verify_with`**
 - Skills to co-load when verifying claims in this skill. Maps to `prov:wasInformedBy`.
@@ -303,7 +309,7 @@ grounding:
 
 ### Authored in `SKILL.md` (human-written)
 
-All 32 fields in the frontmatter are authored. No field is computed during the lint or manifest generation steps and written back into the source file, with one exception: `drift_check.truth_source_hashes` is computed and written by the drift sentinel when you run `skill-graph drift --record --apply`.
+All 33 fields in the frontmatter are authored. No field is computed during the lint or manifest generation steps and written back into the source file, with one exception: `drift_check.truth_source_hashes` is computed and written by the drift sentinel when you run `skill-graph drift --record --apply`.
 
 ```
 schema_version, name, urn, description, version, type, browse_category,
@@ -372,7 +378,7 @@ Skills that remain on v2 forms will pass lint as warnings (not errors) during th
 v4 is the next breaking-change horizon. No v4 changes are in scope for v3 skills today, but these are planned:
 
 - `urn` becomes required (ADR 0004).
-- `adjacent` and `boundary` are removed; use `related` and `disjoint_with` instead (ADR 0001).
+- `adjacent` is removed; use `related` instead (ADR 0001). `boundary` remains canonical for routing-layer handoff (ADR 0006).
 - `freshness` and `drift_check.last_verified` may consolidate into a single field.
 
 ---
@@ -391,4 +397,4 @@ The v1 contract enforces the following invariants. Any change to the schema or t
 
 ---
 
-*See `docs/metadata-contract.md` for full design rationale, overlay composition precedence, and schema versioning policy. See `docs/field-reference.md` for one section per field with examples. See `schemas/skill.v3.schema.json` for the machine-enforceable version of this contract.*
+*See `docs/skill-metadata-protocol.md` for full design rationale, overlay composition precedence, and schema versioning policy. See `docs/field-reference.md` for one section per field with examples. See `schemas/skill.v3.schema.json` for the machine-enforceable version of this contract.*

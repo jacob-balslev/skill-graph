@@ -1,10 +1,10 @@
 # Adopting Skill Graph
 
-> Should you adopt Skill Graph for your AI agent skill library? This page is a 1-screen decision tree. For the full mental model, read [`PRIMER.md`](PRIMER.md). For the contract details, read [`metadata-contract.md`](metadata-contract.md).
+> Should you adopt Skill Graph for your AI agent skill library? This page is a 1-screen decision tree. For the full mental model, read [`PRIMER.md`](PRIMER.md). For the contract details, read [`skill-metadata-protocol.md`](skill-metadata-protocol.md).
 
 ## Relevance probe
 
-> **Skill Graph is for project-relevant skills — skills that know your repository's files, your stack, and their relationships to one another.** If your skills are generic (no codebase grounding, no inter-skill relations, one project), plain Agent Skills covers it. If you've started authoring skills that reference real files in your repo, that need to coexist with related skills, or that should activate for some projects but not others, you're in Skill Graph territory.
+> **Skill Metadata Protocol is for project-relevant skills; Skill Graph is for operating on a library of them.** If your skills are generic (no codebase grounding, no inter-skill relations, one project), plain Agent Skills covers it. If you've started authoring skills that reference real files in your repo, that need to coexist with related skills, or that should activate for some projects but not others, you need the protocol. If you then want indexing, routing, clustering, drift checks, and eval loops across the library, you are in Skill Graph territory.
 >
 > The pain test is the same idea, said differently: if you've ever said *"why did the agent load the wrong skill?"* or *"this skill was right last week but the code changed,"* those are the failure modes the contract addresses. Library size is a proxy — these failures usually start around 3–5 skills, earlier with multiple projects, later for a single small library.
 
@@ -49,16 +49,16 @@ If none of these apply, stay on base [Agent Skills](https://agentskills.io/speci
 
 **Total time per skill on day 1: ~20 min. Steady-state after the library settles: ~10 min per new skill.**
 
-The fields you pay for cluster into 8 semantic purposes (Identity, Classification, Health, Eval Health, Activation & Routing, Relations, Grounding, Portability). The full anatomy is in [`metadata-contract.md § Anatomy`](metadata-contract.md).
+The fields you pay for cluster into 8 semantic purposes (Identity, Classification, Health, Eval Health, Activation & Routing, Relations, Grounding, Portability). The full anatomy is in [`skill-metadata-protocol.md § Anatomy`](skill-metadata-protocol.md).
 
 ## 5-minute quickstart
 
-> **Step 0 — pilot first, do not migrate the whole library.** Choose ONE skill currently most likely to misroute or drift. Add the required Skill Graph fields, route a real query against it, record a drift baseline. Pay the contract once on a skill where the payoff is visible, before paying it 20 times across skills where it isn't yet. The 30-minute walkthrough in [`docs/QUICKSTART-30MIN.md`](QUICKSTART-30MIN.md) walks you through this with literal terminal output at every step.
+> **Step 0 — pilot first, do not migrate the whole library.** Choose ONE skill currently most likely to misroute or drift. Add the required Skill Metadata Protocol fields, route a real query against it, record a drift baseline. Pay the contract once on a skill where the payoff is visible, before paying it 20 times across skills where it isn't yet. The 30-minute walkthrough in [`docs/QUICKSTART-30MIN.md`](QUICKSTART-30MIN.md) walks you through this with literal terminal output at every step.
 
 For the full conceptual primer read [`PRIMER.md`](PRIMER.md). To migrate your first skill from a valid Agent Skills file:
 
-1. **Copy the template** — `cp examples/skill-template.md skills/<your-skill>/SKILL.md`. The template is a real, valid, schema-conformant Skill Graph skill whose subject is skill authoring itself; adapt by rewriting identity, description, body, and verification.
-2. **Add the 13 required Skill Graph fields** — `schema_version: 3`, `version`, `type`, `browse_category`, `scope`, `owner`, `freshness`, `drift_check`, `eval_artifacts`, `eval_state`, `routing_eval`, plus your existing `name` and `description`. The template inline-comments each field.
+1. **Copy the template** — `cp examples/skill-metadata-template.md skills/<your-skill>/SKILL.md`. The template is a real, valid, schema-conformant Skill Metadata Protocol skill whose subject is skill authoring itself; adapt by rewriting identity, description, body, and verification.
+2. **Add the 13 required Skill Metadata Protocol fields** — `schema_version: 3`, `version`, `type`, `browse_category`, `scope`, `owner`, `freshness`, `drift_check`, `eval_artifacts`, `eval_state`, `routing_eval`, plus your existing `name` and `description`. The template inline-comments each field.
 3. **Strip the teaching annotations** — every `> **TEMPLATE NOTE:**` blockquote and `# TEMPLATE NOTE:` YAML comment must be removed before commit.
 4. **Validate locally:**
    ```bash
@@ -94,7 +94,7 @@ To set expectations honestly:
 
 - **Not a router.** Skill Graph ships a *reference* router (`scripts/skill-graph-route.js`) to demonstrate why the metadata exists. Production routers should consume the manifest and apply their own scoring. The reference router is intentionally simple.
 - **Not a runtime.** Skill Graph defines the contract and ships the validators. It does not load skills into an agent at request time — that's the consumer's job.
-- **Not a full ontology framework.** The relations are typed (boundary, related, broader, narrower, depends_on, verify_with) but Skill Graph does not implement OWL inference, satisfiability checking, or formal class subsumption. Use `ontology` skill if you need that.
+- **Not a full ontology framework.** The relations are typed (boundary, related, broader, narrower, depends_on, verify_with) but Skill Graph does not implement OWL inference, satisfiability checking, or formal class subsumption. Use `ontology-modeling` if you need that.
 - **Not a proprietary format.** The schema is JSON Schema; the contract is MIT-licensed. The export transform makes every skill round-trippable to the base Agent Skills format.
 
 ## Where to go next
@@ -103,7 +103,7 @@ To set expectations honestly:
 |---|---|
 | Understand the conceptual model | [`PRIMER.md`](PRIMER.md) |
 | Look up a specific field's semantics | [`field-reference.md`](field-reference.md) |
-| See a worked authoring example | [`../examples/skill-template.md`](../examples/skill-template.md) |
+| See a worked authoring example | [`../examples/skill-metadata-template.md`](../examples/skill-metadata-template.md) |
 | Read the architecture and authority tiers | [`ARCHITECTURE.md`](ARCHITECTURE.md) |
 | See which skills are recommended for a starter library | [`recommended-skills.md`](recommended-skills.md) |
 | Set up CI integration | [`integrations/github-actions.md`](integrations/github-actions.md) |
@@ -111,4 +111,4 @@ To set expectations honestly:
 
 ## Compatibility direction (one-paragraph honesty)
 
-A Skill Graph SKILL.md is **not** automatically a valid Agent Skills file. The `compatibility` shape (object vs string) and the `name` pattern (allows `/` and `:` vs strict kebab-case) diverge. Going either direction requires a transform. Skill Graph → Agent Skills is automated via `scripts/export-skill.js` (flattens `compatibility` to a string, nests extensions under `metadata:`). Agent Skills → Skill Graph is a manual rewrite — you must add the 11 additional required fields. The two formats are *interoperable* via the transform, not *compatible* via shared shape.
+A Skill-Metadata-Protocol-enriched `SKILL.md` is **not** automatically a valid Agent Skills file. The `compatibility` shape (object vs string) and the `name` pattern (allows `/` and `:` vs strict kebab-case) diverge. Going either direction requires a transform. Skill Metadata Protocol → Agent Skills is automated via `scripts/export-skill.js` (flattens `compatibility` to a string, nests extensions under `metadata:`). Agent Skills → Skill Metadata Protocol is a manual rewrite — you must add the additional required fields. The two formats are *interoperable* via the transform, not *compatible* via shared shape.

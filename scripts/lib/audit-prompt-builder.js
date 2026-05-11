@@ -161,7 +161,7 @@ function collectContext(opts) {
   );
 
   // E2: neighbor skill summaries. Every skill referenced in
-  // `relations.{adjacent, boundary, verify_with, depends_on}` becomes a short
+  // `relations.*` becomes a short
   // summary block {name, type, scope, description} so the `relation` dimension
   // grader can judge whether the linkage targets a semantically correct peer
   // (not merely whether the name exists — that's already a lint check).
@@ -215,8 +215,8 @@ function readFileBounded(absPath, charLimit) {
  * relations. Each summary is `{name, type, scope, description}` — enough to
  * judge semantic neighborhood without embedding full sibling SKILL.md bodies.
  *
- * Supports v3 polymorphic relation items: `boundary` and `depends_on` may be
- * either bare strings or `{skill, reason}` / `{skill, min_version}` objects.
+ * Supports v3 polymorphic relation items: `boundary`, `disjoint_with`, and
+ * `depends_on` may be bare strings or `{skill, reason}` / `{skill, min_version}` objects.
  * The target name is extracted from both shapes identically to
  * `scripts/skill-lint.js#checkRelationTargets`.
  *
@@ -227,7 +227,16 @@ function collectNeighborSummaries({ frontmatter, repoRoot, charLimit }) {
   if (!frontmatter || !frontmatter.relations) return [];
 
   const rels = frontmatter.relations;
-  const kinds = ['adjacent', 'boundary', 'verify_with', 'depends_on'];
+  const kinds = [
+    'adjacent',
+    'related',
+    'broader',
+    'narrower',
+    'boundary',
+    'disjoint_with',
+    'verify_with',
+    'depends_on',
+  ];
   const targetsByKind = new Map();
   const allTargets = new Set();
 
@@ -279,7 +288,7 @@ function collectNeighborSummaries({ frontmatter, repoRoot, charLimit }) {
       type:        fm.type || null,
       scope:       fm.scope || null,
       description,
-      relatedVia,  // ["adjacent"], ["boundary", "verify_with"], etc.
+      relatedVia,  // ["related"], ["boundary", "verify_with"], etc.
     });
   }
 

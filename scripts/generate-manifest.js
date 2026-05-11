@@ -2,7 +2,7 @@
 /**
  * Manifest generator for Skill Graph (schema_version 3).
  *
- * Walks `skills/<name>/SKILL.md` (and optionally `examples/skill-template.md`),
+ * Walks `skills/<name>/SKILL.md` (and optionally `examples/skill-metadata-template.md`),
  * applies the authored-to-generated rename map documented in
  * `docs/manifest-contract.md`, computes summary aggregates, validates the
  * result against `schemas/manifest.schema.json`, and emits the compiled
@@ -19,7 +19,7 @@
  *   node scripts/generate-manifest.js                    # emit to stdout
  *   node scripts/generate-manifest.js --output <path>   # emit to file
  *   node scripts/generate-manifest.js --validate-only   # validate, no output
- *   node scripts/generate-manifest.js --include-template # include examples/skill-template.md
+ *   node scripts/generate-manifest.js --include-template # include examples/skill-metadata-template.md
  *   node scripts/generate-manifest.js --timestamp <ISO> # fixed timestamp for reproducible builds
  *
  * Self-contained. Only uses Node built-ins — no external dependencies.
@@ -35,9 +35,13 @@ const { parseFrontmatter } = require('./lib/parse-frontmatter');
 
 const REPO_ROOT = path.resolve(__dirname, '..');
 const DEFAULT_SKILLS_DIR = path.join(REPO_ROOT, 'skills');
-const TEMPLATE_PATH = path.join(REPO_ROOT, 'examples', 'skill-template.md');
+const TEMPLATE_PATH = path.join(REPO_ROOT, 'examples', 'skill-metadata-template.md');
 const MANIFEST_SCHEMA_PATH = path.join(REPO_ROOT, 'schemas', 'manifest.schema.json');
 const CONFIG_PATH = path.join(REPO_ROOT, '.skill-graph', 'config.json');
+
+function repoRelative(filePath) {
+  return path.relative(REPO_ROOT, filePath).split(path.sep).join('/');
+}
 
 // ---------------------------------------------------------------------------
 // Workspace config (optional)
@@ -163,7 +167,7 @@ function buildSkillEntry(fm, filePath, skillId, project) {
 
   // --- Generated fields ---
   entry.id = skillId;
-  entry.path = path.relative(REPO_ROOT, filePath);
+  entry.path = repoRelative(filePath);
   if (project) entry.project = project;
 
   // --- Copied-through required fields ---
@@ -436,7 +440,7 @@ function validate(value, schema, pointer) {
  * Collect skill source files to process.
  *
  * Walks every resolved skill root. When --include-template is passed, also
- * includes `examples/skill-template.md` (marked as project=null).
+ * includes `examples/skill-metadata-template.md` (marked as project=null).
  */
 function collectSources(args, skillRoots) {
   const includeTemplate = args.includes('--include-template');
@@ -461,7 +465,7 @@ function collectSources(args, skillRoots) {
   if (includeTemplate && fs.existsSync(TEMPLATE_PATH) && !seen.has(TEMPLATE_PATH)) {
     const text = fs.readFileSync(TEMPLATE_PATH, 'utf8');
     const fm = parseFrontmatter(text);
-    const id = (fm && fm.name) ? fm.name : 'skill-template';
+    const id = (fm && fm.name) ? fm.name : 'skill-metadata-template';
     sources.push({ filePath: TEMPLATE_PATH, skillId: id, project: null });
     seen.add(TEMPLATE_PATH);
   }
@@ -531,7 +535,7 @@ function main() {
   const errors = [];
 
   for (const { filePath, skillId, project } of sources) {
-    const relPath = path.relative(REPO_ROOT, filePath);
+    const relPath = repoRelative(filePath);
     let text;
     try {
       text = fs.readFileSync(filePath, 'utf8');

@@ -1,0 +1,52 @@
+{
+  "skill_name": "layout-composition",
+  "subject": "Responsive layout and screen composition for page structure, scan pattern, breakpoints, and stable viewport hierarchy",
+  "adjacent_concepts": ["task-analysis", "information-architecture", "visual-design-foundations", "design-system-architecture"],
+  "grounding_note": "Truth sources cite the whole SKILL.md file to keep the initial eval surface stable while the new skill settles.",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "A route contract already names primary, secondary, and supporting content. The user asks how to order the sections on desktop and mobile. Which skill owns the next step, and what should it produce?",
+      "dimension": "application",
+      "substance": "domain",
+      "calibration": "process",
+      "truth_mode": "process_correctness",
+      "skill_type": "concept",
+      "criticality": "high",
+      "truth_sources": ["skills/layout-composition/SKILL.md"]
+    },
+    {
+      "id": 2,
+      "prompt": "A dashboard looks fine at 1440px but the chart controls jump above the title and the table overflows on mobile. According to the layout-composition skill, what verification gates are failing?",
+      "dimension": "application",
+      "substance": "domain",
+      "calibration": "semantic",
+      "truth_mode": "conceptual_correctness_plus_repo_application",
+      "skill_type": "concept",
+      "criticality": "high",
+      "truth_sources": ["skills/layout-composition/SKILL.md"]
+    },
+    {
+      "id": 3,
+      "prompt": "The user asks for a color palette and type scale after the grid is already settled. Should layout-composition accept the task or route elsewhere?",
+      "dimension": "boundary",
+      "substance": "contradiction-check",
+      "calibration": "semantic",
+      "truth_mode": "code_verification",
+      "skill_type": "concept",
+      "criticality": "normal",
+      "truth_sources": ["skills/layout-composition/SKILL.md"]
+    },
+    {
+      "id": 4,
+      "prompt": "A card grid changes height when a status label appears, causing nearby buttons to move. Which layout-composition principle applies?",
+      "dimension": "application",
+      "substance": "domain",
+      "calibration": "process",
+      "truth_mode": "process_correctness",
+      "skill_type": "workflow",
+      "criticality": "normal",
+      "truth_sources": ["skills/layout-composition/SKILL.md"]
+    }
+  ]
+}

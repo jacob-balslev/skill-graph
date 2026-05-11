@@ -2,7 +2,7 @@
 
 > Decision tables for the three hardest field choices in a `SKILL.md` file.
 > For full field semantics and rules, see `docs/field-reference.md`.
-> For field groups and conditional requiredness, see `docs/metadata-contract.md`.
+> For field groups and conditional requiredness, see `docs/skill-metadata-protocol.md`.
 
 ---
 
@@ -15,7 +15,7 @@
 | Situation | Correct `scope` |
 |---|---|
 | Skill applies across any codebase or team with no repo-specific claims | `portable` |
-| Skill is primarily a reference for a contract, spec, or document (e.g., "the metadata contract for this repo") | `reference` |
+| Skill is primarily a reference for a contract, spec, or document (e.g., "Skill Metadata Protocol for this repo") | `reference` |
 | Skill makes concrete claims about files, APIs, or behavior in a specific codebase | `codebase` |
 | Skill is a starter or template that could be copied into any project | `portable` |
 | Skill references specific file paths, function names, or deployment details | `codebase` |
@@ -29,7 +29,7 @@
 **Q: Does my skill say "in the codebase" without naming specific files?**
 → `portable`
 
-**Q: Is my skill's primary purpose to be a reference for a contract document (like a schema or this metadata contract)?**
+**Q: Is my skill's primary purpose to be a reference for a contract document (like a schema or this Skill Metadata Protocol)?**
 → `reference`
 
 **Q: Would this skill work unchanged if copied into a completely different project?**

@@ -1,0 +1,52 @@
+{
+  "skill_name": "visual-design-foundations",
+  "subject": "Visual craft decisions for color, typography, spacing, density, hierarchy, elevation, and motion feel",
+  "adjacent_concepts": ["semiotics", "design-system-architecture", "layout-composition", "a11y"],
+  "grounding_note": "Truth sources cite the whole SKILL.md file to keep the initial eval surface stable while the new skill settles.",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "A dense internal admin tool feels noisy and hard to scan. The task structure is settled. Which visual-design-foundations method steps apply first?",
+      "dimension": "application",
+      "substance": "domain",
+      "calibration": "process",
+      "truth_mode": "process_correctness",
+      "skill_type": "concept",
+      "criticality": "high",
+      "truth_sources": ["skills/visual-design-foundations/SKILL.md"]
+    },
+    {
+      "id": 2,
+      "prompt": "A green badge means both 'healthy' and 'cost increased' in a finance UI. Should visual-design-foundations own the meaning problem?",
+      "dimension": "boundary",
+      "substance": "contradiction-check",
+      "calibration": "semantic",
+      "truth_mode": "code_verification",
+      "skill_type": "concept",
+      "criticality": "normal",
+      "truth_sources": ["skills/visual-design-foundations/SKILL.md"]
+    },
+    {
+      "id": 3,
+      "prompt": "A designer wants raw hex colors wired into reusable component variants. Which boundary decides whether visual-design-foundations or design-system-architecture should own the work?",
+      "dimension": "boundary",
+      "substance": "contradiction-check",
+      "calibration": "semantic",
+      "truth_mode": "code_verification",
+      "skill_type": "concept",
+      "criticality": "normal",
+      "truth_sources": ["skills/visual-design-foundations/SKILL.md"]
+    },
+    {
+      "id": 4,
+      "prompt": "A product card has oversized headings, inconsistent metadata text, and heavy borders around every element. What verification checks should visual-design-foundations apply?",
+      "dimension": "application",
+      "substance": "domain",
+      "calibration": "semantic",
+      "truth_mode": "conceptual_correctness_plus_repo_application",
+      "skill_type": "concept",
+      "criticality": "normal",
+      "truth_sources": ["skills/visual-design-foundations/SKILL.md"]
+    }
+  ]
+}

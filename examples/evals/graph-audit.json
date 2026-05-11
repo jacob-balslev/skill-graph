@@ -56,7 +56,7 @@
       "truth_mode": "conceptual_correctness_plus_repo_application",
       "skill_type": "concept",
       "criticality": "normal",
-      "truth_sources": ["skills/graph-audit/SKILL.md", "docs/metadata-contract.md"]
+      "truth_sources": ["skills/graph-audit/SKILL.md", "docs/skill-metadata-protocol.md"]
     },
     {
       "id": 6,
@@ -67,7 +67,7 @@
       "truth_mode": "process_correctness",
       "skill_type": "workflow",
       "criticality": "high",
-      "truth_sources": ["skills/graph-audit/SKILL.md", "scripts/skill-lint.js", "docs/metadata-contract.md"]
+      "truth_sources": ["skills/graph-audit/SKILL.md", "scripts/skill-lint.js", "docs/skill-metadata-protocol.md"]
     },
     {
       "id": 7,

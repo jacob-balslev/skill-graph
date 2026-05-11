@@ -2,7 +2,7 @@
 # yaml-language-server: $schema=https://skillgraph.dev/schemas/skill.v3.schema.json
 schema_version: 3
 name: semantics
-description: "Use when naming any artifact across any domain — function, variable, file, CSS class, design token, database column, API field, HTTP status code, semantic-version bump, conventional-commit type, UI label, error code, or branded TypeScript type — or when a name in code review feels wrong, ambiguous, or misleading. Covers the meaning-encoding rules across naming smells (Peter Hilton catalogue), DDD ubiquitous language, semantic versioning (SemVer 2.0.0), conventional commit messages, branded/nominal types and parse-don't-validate, three-layer design-token architecture (primitive → semantic → component), semantic CSS / BEM, semantic REST and GraphQL APIs, HTTP status codes as semantic signals, semantic UI affordances and color usage, and the universal anti-pattern catalog (generic names, semantic drift, misleading names, appearance-based names, abbreviation ambiguity, cargo-cult naming). Provides the cross-domain meaning-encoding layer — the why behind every naming convention — not the casing format itself, not word-form morphology, and not relation typing between concepts. Do NOT use for word morphology or polysemy resolution at the identifier level (use linguistics), the casing format per artifact kind (use naming-conventions), the typed connection between concepts (use semantic-relations), or specific in-product UI-text patterns (use microcopy)."
+description: "Use when naming artifacts across code, APIs, design tokens, commits, HTTP/status signals, UI labels, error codes, or branded types, especially when a name feels ambiguous or misleading. Covers cross-domain meaning-encoding: naming smells, DDD ubiquitous language, SemVer, conventional commits, branded types, semantic design tokens/CSS/APIs, semantic UI affordances, and naming anti-patterns. Do NOT use for word morphology/polysemy (use linguistics), casing formats (use naming-conventions), typed concept relations (use semantic-relations), or in-product UI-text patterns (use microcopy)."
 version: 1.0.0
 type: capability
 browse_category: knowledge
@@ -30,7 +30,7 @@ keywords:
   - design-token semantic layer
   - naming smells catalogue
   - DDD ubiquitous language
-  - affordance signifier match
+  - semantic affordance naming
   - semantic UI signal
   - semantic API contract
   - parse-do-not-validate pattern

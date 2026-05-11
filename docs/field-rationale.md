@@ -162,13 +162,13 @@ The router co-loads `verify_with` partners as a one-hop expansion (Stage 4) — 
 
 ### Why this field exists
 
-`grounding.evidence_priority` lets a skill rank its truth sources when they conflict. A `code` truth source (live source-of-truth file) beats a `doc` truth source (description that may be stale) in conflict resolution. Without an explicit priority, agents reading the skill have to invent ad-hoc tie-breaking rules — which is unsafe when the skill makes claims about specific code.
+`grounding.evidence_priority` lets a skill rank evidence when repo files and general knowledge disagree. Without an explicit priority, agents reading the skill have to invent ad-hoc tie-breaking rules, which is unsafe when the skill makes claims about specific code.
 
-Three values: `code-first` (live code wins), `doc-first` (the doc is the spec), `mixed` (case-by-case, judgment required).
+Three values are valid in v3: `repo_code_first` (repo evidence wins), `general_knowledge_first` (external standard or general doctrine wins), and `equal` (case-by-case judgment required).
 
 ### Common confusion
 
-`code-first` is the right default for skills grounded in a specific repo's code. `doc-first` is correct only when the doc is intentionally the spec and the code may legitimately deviate (e.g., the skill teaches a contract that is enforced elsewhere). Most skills want `code-first`.
+`repo_code_first` is the right default for skills grounded in a specific repo's code. `general_knowledge_first` is correct only when the skill teaches an external standard and the repo may legitimately lag behind it. Use `equal` when the skill's verification section explains how to resolve conflicts.
 
 ---
 
@@ -180,7 +180,7 @@ Three values: `code-first` (live code wins), `doc-first` (the doc is the spec), 
 
 ### Common confusion
 
-`review_cadence` is a process commitment, not a fact about the past. Don't set it to `quarterly` aspirationally if you have no actual cadence; set it to `ad-hoc` and use the staleness threshold to drive reviews. Lying in the cadence makes the next maintainer mistrust the whole frontmatter.
+`review_cadence` is a process commitment, not a fact about the past. Don't set it to `quarterly` aspirationally if you have no actual cadence; omit it and use `stale_after_days` to drive reviews. Lying in the cadence makes the next maintainer mistrust the whole frontmatter.
 
 ---
 
@@ -188,13 +188,13 @@ Three values: `code-first` (live code wins), `doc-first` (the doc is the spec), 
 
 ### Why this field exists
 
-`portability.readiness` exists because `scope` is too coarse for adopter decisions. A skill can be `scope: portable` but still need light adaptation when moved to a new project (rename a few placeholders, swap one library). Authors who know their skill is genuinely turnkey across projects can declare `readiness: portable`; authors of skills that need adaptation declare `requires-adaptation` with notes; authors who haven't tested cross-project use declare `unknown` honestly.
+`portability.readiness` exists because `scope` says where a skill applies, while readiness says how proven its export path is. A skill can be `scope: portable` and still have only a declared portability claim. Authors use `declared` for metadata-only portability, `scripted` when an export transform exists for at least one target, and `verified` when the exported output has been checked with a receipt.
 
-The router uses `readiness` together with `scope` to decide whether to surface a skill from another project's library to the current project's agent.
+Consumers use `readiness` together with `scope` to decide whether a skill is only theoretically portable, mechanically exportable, or already verified in a target runtime.
 
 ### Common confusion
 
-`portability.readiness` is the runtime-tested claim; `scope` is the design-time intent. Both should agree most of the time, but they can diverge: a skill *intended* as portable can have a `readiness: requires-adaptation` once adopters report concrete pain. Update `readiness` from adopter feedback; update `scope` only if the skill itself was rewritten.
+Do not use `readiness` as a second taxonomy for project fit. `scope: portable` plus `portability.readiness: declared` is a valid state: the skill is intended to transfer, but no export verification exists yet. Move to `scripted` only when tooling exists, and to `verified` only when there is a concrete verification receipt.
 
 ---
 
@@ -206,6 +206,6 @@ The router uses `readiness` together with `scope` to decide whether to surface a
 | Full prose reference with examples and lint notes | [`field-reference.md`](field-reference.md) |
 | Decision tree for taxonomy fields (`browse_category`, `category`, `routing_groups`, `project_tags`) | [`field-decision-guide.md`](field-decision-guide.md) |
 | Predicate semantics (relations) | [`glossary.md` § Relation predicates](glossary.md) |
-| Authoring template | [`../examples/skill-template.md`](../examples/skill-template.md) |
+| Authoring template | [`../examples/skill-metadata-template.md`](../examples/skill-metadata-template.md) |
 | Why archetypes are rigid vs anti-rigid (OntoClean) | [`adr/0003-ontoclean-rigidity-tags.md`](adr/0003-ontoclean-rigidity-tags.md) |
 | Why the eval-health triple is orthogonal | [`adr/0001-predicate-set.md`](adr/0001-predicate-set.md) + [`adr/0006-revise-predicate-rename.md`](adr/0006-revise-predicate-rename.md) |

@@ -2,7 +2,7 @@
 # yaml-language-server: $schema=https://skillgraph.dev/schemas/skill.v3.schema.json
 schema_version: 3
 name: task-analysis
-description: "Use when auditing a route, defining a route contract, reviewing onboarding or setup flows, diagnosing why a page feels confusing, or when the user asks about top tasks, time-to-value, branching, dead ends, or task complexity. Provides goal-driven UX analysis that turns vague critique into explicit goal → task → subtask decomposition: identifying the actor and scenario, extracting the top task, breaking it into sequential subtasks with skip paths and blocked states, scoring task friction across five dimensions (discoverability, cognitive load, effort, trust, recovery), identifying breakpoints, and producing the primary / secondary / supporting hierarchy contract for the first viewport. Do NOT use for low-level component styling, generic heuristic critique without a user goal, or accessibility-only QA of an existing implementation — those need component, design-critique, or accessibility-specific skills, not goal-driven decomposition."
+description: "Use when auditing a route, defining a route contract, reviewing onboarding or setup flows, diagnosing why a page feels confusing, or when the user asks about top tasks, time-to-value, branching, dead ends, or task complexity. Provides goal-driven UX analysis that turns vague critique into explicit goal -> task -> subtask decomposition and a primary / secondary / supporting hierarchy contract for the first viewport. Do NOT use for control-pattern choice (use `interaction-patterns`), visual craft (use `visual-design-foundations`), responsive layout (use `layout-composition`), or accessibility-only QA (use `a11y`)."
 version: 1.0.0
 type: workflow
 browse_category: knowledge
@@ -50,20 +50,34 @@ examples:
 anti_examples:
   - "review this PR for code quality"                                          # → code-review
   - "audit this UI for WCAG 2.2 violations"                                    # → a11y
-  - "decide the CSS grid layout for this hero section"                         # → composition / layout
-  - "pick the right colors for this status badge"                              # → visual-design / color
+  - "decide the CSS grid layout for this hero section"                         # -> layout-composition
+  - "pick the right colors for this status badge"                              # -> visual-design-foundations
   - "build the navigation taxonomy for the whole product"                      # → information-architecture
-  - "should we use a dropdown or a stepper here"                               # → component-pattern selection
+  - "should we use a dropdown or a stepper here"                               # -> interaction-patterns
 relations:
   boundary:
     - skill: code-review
       reason: "code-review judges the quality and correctness of a specific change at PR scope; task-analysis judges whether a route's structure supports the user's top task — same 'review this page' prompt routes by whether the lens is code or user goal"
     - skill: a11y
       reason: "a11y is accessibility QA against WCAG / ARIA / keyboard / screen-reader contracts on an existing UI; task-analysis is goal-driven decomposition of what the UI must support — same 'review this UI' prompt routes by whether the trigger is accessibility compliance or user-task fit"
+    - skill: layout-composition
+      reason: "layout-composition owns responsive section order, grids, and scan patterns; task-analysis stops at the first-viewport hierarchy contract"
+    - skill: visual-design-foundations
+      reason: "visual-design-foundations owns visual craft; task-analysis owns whether the route supports the user's goal"
+    - skill: interaction-patterns
+      reason: "interaction-patterns owns control-pattern selection; task-analysis identifies the decision or action that the pattern must support"
+    - skill: interaction-feedback
+      reason: "interaction-feedback owns loading, progress, success, error, retry, and undo behavior; task-analysis identifies where feedback is needed"
+    - skill: information-architecture
+      reason: "information-architecture owns navigation and page grouping across a product; task-analysis owns one route or flow"
   related:
     - diagnosis
     - pattern-recognition
     - documentation
+    - information-architecture
+    - layout-composition
+    - interaction-patterns
+    - interaction-feedback
   verify_with:
     - documentation
     - a11y
@@ -154,7 +168,7 @@ Also name the hierarchy contract for the first viewport:
 - **Secondary:** what must frame or support the primary task.
 - **Supporting:** what can wait until the user asks for more detail.
 
-If you cannot name these three layers, you are not ready to decide what belongs above the fold. Once named, hand off to your layout / composition skill to turn the hierarchy into actual section order, scan pattern, and component decisions.
+If you cannot name these three layers, you are not ready to decide what belongs above the fold. Once named, hand off to `layout-composition` to turn the hierarchy into actual section order, scan pattern, and component decisions.
 
 #### 3. Break the task into subtasks
 
@@ -242,7 +256,7 @@ After applying task analysis, verify:
 - [ ] Friction scoring covers all five dimensions (discoverability, cognitive load, effort, trust, recovery).
 - [ ] Breakpoints identify the exact point where the journey degrades, not generic complaints.
 - [ ] Primary / secondary / supporting hierarchy contract is named for the first viewport.
-- [ ] Layout and composition decisions are deferred to the layout / composition skill, not attempted here.
+- [ ] Layout and composition decisions are deferred to `layout-composition`, not attempted here.
 - [ ] Recommendations are framed in terms of task support, not aesthetic preference.
 
 ## Do NOT Use When
@@ -254,7 +268,8 @@ After applying task analysis, verify:
 | `diagnosis` | Triaging an unknown software failure into a problem class before debugging begins. Diagnosis owns the per-incident triage; task-analysis owns the per-route user-task decomposition. |
 | `pattern-recognition` | Detecting recurring UX-friction patterns across many routes. Pattern-recognition owns the cross-route class analysis; task-analysis owns the within-route analysis of one route at a time. |
 | `documentation` | Writing or updating route-contract docs, page-template specs, or sitemap docs. Documentation owns the artifact format; task-analysis produces the content that goes into those artifacts. |
-| (a layout / composition skill) | Deciding CSS grid layout, section ordering, or scan-pattern composition. Task-analysis stops at the hierarchy contract; layout / composition owns the visual structure decisions. |
-| (a visual-design skill) | Reviewing visual polish (spacing, color, typography). Task-analysis is goal-first; visual-design is style-first. |
-| (an interaction-feedback skill) | Adding loading skeletons, empty states, or progress indicators. Interaction-feedback owns UI-state patterns; task-analysis identifies *where* such patterns are needed without specifying *which*. |
-| (an information-architecture skill) | Building the navigation taxonomy or page-group structure for an entire product. IA owns the structural organization across pages; task-analysis owns the per-page user-goal analysis. |
+| `layout-composition` | Deciding CSS grid layout, section ordering, breakpoints, or scan-pattern composition. Task-analysis stops at the hierarchy contract; layout-composition owns the visual structure decisions. |
+| `visual-design-foundations` | Reviewing visual polish (spacing, color, typography). Task-analysis is goal-first; visual-design-foundations owns visual craft. |
+| `interaction-patterns` | Choosing controls such as dropdowns, steppers, tabs, modals, or inline edit. Interaction-patterns owns pattern selection. |
+| `interaction-feedback` | Adding loading skeletons, empty states, progress indicators, retry, or undo behavior. Interaction-feedback owns UI-state patterns; task-analysis identifies where such patterns are needed without specifying which. |
+| `information-architecture` | Building the navigation taxonomy or page-group structure for an entire product. IA owns structural organization across pages; task-analysis owns per-page user-goal analysis. |

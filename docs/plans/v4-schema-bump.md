@@ -32,7 +32,7 @@ grounding:
     - path: src/integrations/shopify/client.ts
       start_line: 45
       end_line: 120
-    - path: docs/metadata-contract.md   # whole-file grounding still valid (omit line range)
+    - path: docs/skill-metadata-protocol.md   # whole-file grounding still valid (omit line range)
 ```
 
 Schema:

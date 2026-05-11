@@ -2,7 +2,7 @@
 # yaml-language-server: $schema=https://skillgraph.dev/schemas/skill.v3.schema.json
 schema_version: 3
 name: semiotics
-description: "Use when designing or auditing icon systems; checking whether a color, badge, or shape communicates the wrong judgment; explaining why users misread a button, state, or symbol; choosing visual metaphors for abstract concepts; or auditing naming and interface signs together when a surface feels semantically off. Covers Peirce's icon/index/symbol trichotomy, Saussure's signifier/signified dyad, Barthes' denotation/connotation/myth layers, color as sign with the denotation-vs-connotation audit, shape and position as sign channels, iconography as a sign system (consistency, metaphor clarity, pairing, system coherence), affordance theory (real, perceived, signifier, anti-affordance), code-and-API semiotics (vague names like processData are signifier failures), and the semiotic-coherence audit checklist. Provides the sign-system reasoning layer above microcopy execution and color-token math, and below formal ontology — owns the question 'what does this sign communicate to a user?'. Do NOT use for the actual UI wording (use microcopy), live color-token values and contrast math (use a color-science skill), formal class hierarchies and existence rules (use an ontology skill), or word-form morphology and abbreviation rules (use linguistics)."
+description: "Use when designing or auditing icon systems, colors/badges/shapes, visual metaphors, interface signs, or naming-plus-visual surfaces that users misread. Covers semiotic reasoning across icon/index/symbol, signifier/signified, denotation/connotation/myth, color/shape/position/iconography, affordances, code/API signifiers, and semiotic-coherence audits. Do NOT use for actual UI wording (use `microcopy`), palette/typography craft (use `visual-design-foundations`), accessibility or contrast compliance (use `a11y`), formal class hierarchies, or word morphology rules."
 version: 1.0.0
 type: capability
 browse_category: knowledge
@@ -60,10 +60,13 @@ relations:
       reason: "microcopy owns the actual UI wording (button labels, empty states, tooltips, dialogs); semiotics owns the sign-system reasoning that determines what the words and accompanying visual signs should communicate — the same 'fix this UI element' prompt routes by whether the trigger is the wording itself or the sign system the wording sits inside"
     - skill: semantic-relations
       reason: "semantic-relations owns the typed connections between concepts (IS-A, PART-OF, thematic roles); semiotics owns the signifier-to-signified mapping in interface and naming surfaces — the same 'how does this relate to that?' prompt routes by whether the trigger is a conceptual relation type or a sign-system relationship"
+    - skill: visual-design-foundations
+      reason: "visual-design-foundations owns visual craft decisions such as palette, type, spacing, and hierarchy; semiotics owns what those signs communicate"
   related:
     - linguistics
     - a11y
     - intent-recognition
+    - visual-design-foundations
   verify_with:
     - a11y
     - code-review
@@ -168,7 +171,7 @@ Rules:
 
 - Color should not be the *only* sign channel for important meaning.
 - Audit color decisions at both denotation and connotation levels.
-- Live token values and contrast math belong to a color-science skill; semiotics evaluates only whether the *sign* itself is coherent.
+- Live token values, contrast compliance, and visual craft belong to `a11y` or `visual-design-foundations`; semiotics evaluates only whether the *sign* itself is coherent.
 
 ### Shape and Position as Sign
 
@@ -273,6 +276,5 @@ After applying this skill, verify:
 | `semantic-relations` | Typing the connection between two concepts (IS-A, PART-OF, thematic, causal). Semantic-relations owns concept-to-concept relations; semiotics owns sign-to-meaning mappings. |
 | `linguistics` | Word morphology, compound-word ordering, abbreviation policy. Linguistics owns word-form rules; semiotics owns broader sign systems including visual ones. |
 | `a11y` | Auditing aria-label correctness, focus management, screen-reader semantics. A11y owns accessibility contracts; semiotics may inform them but does not own them. |
-| (a color-science skill) | Live color-token values, APCA contrast math, palette enforcement. Color-science owns the runtime token math; semiotics asks what the color *means*. |
+| `visual-design-foundations` | Palette, typography, spacing, hierarchy, craft quality, and motion feel. Visual-design-foundations owns visual craft; semiotics asks what the visual element *signifies*. |
 | (an ontology skill) | Formal class hierarchies, existence axioms, reasoning constraints. Ontology owns formal classification; semiotics owns sign meaning in interfaces. |
-| (a visual-design skill) | Layout, spacing, hierarchy, and craft quality. Visual-design owns the visual craft; semiotics asks what the visual element *signifies*. |

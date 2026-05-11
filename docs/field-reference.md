@@ -2,9 +2,9 @@
 
 > One section per authored field. Use this when writing or reviewing a `SKILL.md` file.
 > For the "which value do I pick?" decisions, see [`docs/field-decision-guide.md`](field-decision-guide.md).
-> For field groups, conditional requiredness, and schema strictness rules, see [`docs/metadata-contract.md`](metadata-contract.md).
+> For field groups, conditional requiredness, and schema strictness rules, see [`docs/skill-metadata-protocol.md`](skill-metadata-protocol.md).
 
-Fields are listed in authored order — the same order they appear in [`examples/skill-template.md`](../examples/skill-template.md).
+Fields are listed in authored order — the same order they appear in [`examples/skill-metadata-template.md`](../examples/skill-metadata-template.md).
 
 ## Three docs, three genres
 
@@ -30,7 +30,7 @@ The schema is the single source of truth for shape; this doc is the source of tr
 - The v2 → v3 bump introduced `drift_check` as an object (was a date string), `compatibility` as an object (was a free-text string), renamed `family` → `browse_category`, and added optional `category`, `project_tags`, `lifecycle`, and `runtime_telemetry`. Run `node scripts/migrate-skill-v2-to-v3.js` for a one-shot migration. See `docs/manifest-contract.md § Migration Note — v2 → v3` for the full map.
 - The v1 → v2 bump (SH-5784) changed the `scope` enum (`generic`→`portable`, `operational`→`codebase`), split `eval_status` into three orthogonal fields, renamed `portability.level`→`readiness` and `portability.exports`→`targets`, and renamed `route_groups`→`routing_groups`. See `docs/manifest-contract.md § Migration Note — v1 → v2` for the historical map.
 
-**Versioning semantics (policy).** The integer signals *breaking vs non-breaking* evolution. A minor/patch axis is intentionally not surfaced on this field — the schema's own additive changes (new optional fields, new enum values, new lint warnings) do not require consumers to migrate, so no version bump is emitted. If a future release needs finer-grained version signalling (e.g. "v3.1 adds the SKOS-aligned predicates"), the canonical location is `CHANGELOG.md`, not a schema bump. v4 is the breaking-change horizon — `urn` becomes required, `adjacent` / `boundary` are removed in favour of `related` / `disjoint_with`, and the freshness fields may consolidate (ADR 0001, ADR 0004).
+**Versioning semantics (policy).** The integer signals *breaking vs non-breaking* evolution. A minor/patch axis is intentionally not surfaced on this field — the schema's own additive changes (new optional fields, new enum values, new lint warnings) do not require consumers to migrate, so no version bump is emitted. If a future release needs finer-grained version signalling (e.g. "v3.1 adds the SKOS-aligned predicates"), the canonical location is `CHANGELOG.md`, not a schema bump. v4 is the breaking-change horizon — `urn` becomes required, `adjacent` is removed in favour of `related`, and the freshness fields may consolidate. `boundary` remains canonical for routing-layer handoff (ADR 0001, ADR 0004, ADR 0006).
 
 **Example.**
 ```yaml

@@ -3,7 +3,7 @@
  * Skill Graph lint tool.
  *
  * Validates every `skills/<name>/SKILL.md` (and optionally
- * `examples/skill-template.md`) against the frontmatter contract. Runs:
+ * `examples/skill-metadata-template.md`) against the frontmatter contract. Runs:
  *
  *   1. Schema validation against `schemas/skill.schema.json`
  *   2. Parent-directory-matches-name check (Agent Skills compatibility)
@@ -78,7 +78,7 @@ const { checkRoutingEval } = require('./lint/check-routing-eval');
 
 const REPO_ROOT = path.resolve(__dirname, '..');
 const SKILLS_DIR = path.join(REPO_ROOT, 'skills');
-const TEMPLATE_PATH = path.join(REPO_ROOT, 'examples', 'skill-template.md');
+const TEMPLATE_PATH = path.join(REPO_ROOT, 'examples', 'skill-metadata-template.md');
 const SCHEMA_PATH = path.join(REPO_ROOT, 'schemas', 'skill.schema.json');
 const MANIFEST_SCHEMA_PATH = path.join(REPO_ROOT, 'schemas', 'manifest.schema.json');
 const SAMPLE_MANIFEST_PATH = path.join(REPO_ROOT, 'examples', 'skills.manifest.sample.json');
@@ -87,7 +87,7 @@ const EVALS_DIR = path.join(REPO_ROOT, 'examples', 'evals');
 // Explicit "loss policy" list. Each entry is an authored top-level field in
 // skill.schema.json that must have a representation in the manifest skill-item
 // schema. If a future edit deletes one of these without documenting it in
-// docs/metadata-contract.md or docs/manifest-contract.md, lint fails loudly.
+// docs/skill-metadata-protocol.md or docs/manifest-contract.md, lint fails loudly.
 //
 // This closes the regression window that shipped SH-5776: the original
 // manifest.schema.json silently dropped domain_object, route_groups, license,
@@ -624,7 +624,7 @@ function checkEvalTruthSourceRanges() {
 
 // H3: description sentence-count check.
 //
-// The routing contract in `docs/metadata-contract.md § Semantic layer discipline`
+// The routing contract in `docs/skill-metadata-protocol.md § Semantic layer discipline`
 // caps descriptions at ≤3 sentences — descriptions longer than that drift from
 // pure routing signal into scope-map restatement. Counts sentence terminators
 // (`.`, `!`, `?`) followed by whitespace or end-of-string; ignores trailing
@@ -702,7 +702,7 @@ function checkSampleManifest(manifestSchema) {
 // Returns an array of error strings (empty = parity holds).
 //
 // Why include-template? The sample manifest was generated with --include-template
-// so the skill-template entry is part of the canonical sample. The parity check
+// so the skill-metadata-template entry is part of the canonical sample. The parity check
 // must use the same flags that were used to generate the sample, otherwise the
 // skill count will always differ.
 function checkGeneratorParity() {
@@ -832,7 +832,7 @@ function main() {
 
   // Cross-schema parity: frontmatter → manifest. Runs once per invocation.
   // Fails the lint early if either schema has drifted from the authored-to-
-  // generated mapping in docs/metadata-contract.md.
+  // generated mapping in docs/skill-metadata-protocol.md.
   //
   // Tier label legend (see docs/ARCHITECTURE.md):
   //   [T1]      Tier 1 — binding contract (schemas/)

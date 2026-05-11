@@ -37,7 +37,7 @@ keywords:
   - file search before grep
   - bulk edit script
   - poka-yoke tool design
-  - subagent delegation
+  - subagent delegation for tool efficiency
   - context-efficient tool use
   - cost per tool call
   - tool call benchmark

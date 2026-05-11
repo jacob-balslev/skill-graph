@@ -2,7 +2,7 @@
 # yaml-language-server: $schema=https://skillgraph.dev/schemas/skill.v3.schema.json
 schema_version: 3
 name: a11y
-description: "Use when building or reviewing interactive UI, forms, navigation, or dynamic content. Covers semantic HTML, keyboard access, focus management, labeling, state-change announcement, and reduced-motion / high-contrast preferences. Do NOT use for color-palette creation, visual branding, or prose reading-level accessibility — those belong to visual-design and documentation respectively."
+description: "Use when building or reviewing interactive UI, forms, navigation, or dynamic content. Covers semantic HTML, keyboard access, focus management, labeling, state-change announcement, and reduced-motion / high-contrast preferences. Do NOT use for color-palette creation, visual branding, feedback-state staging, or prose reading-level accessibility - those belong to `visual-design-foundations`, `interaction-feedback`, and documentation respectively."
 version: 1.0.0
 type: capability
 browse_category: frontend
@@ -67,6 +67,15 @@ relations:
       reason: "documentation owns prose reading-level and audience fit; a11y owns assistive-tech behavior"
     - skill: diagnosis
       reason: "diagnosis classifies failure symptoms (Logic / Runtime / Performance / etc.) for triage; a11y owns assistive-tech behavior. The phrase 'rewrite this error message...' is a documentation/UX concern, not a diagnosis or a11y concern — diagnosis is named here so the router excludes it from a11y's positive scope."
+    - skill: visual-design-foundations
+      reason: "visual-design-foundations owns palette, typography, spacing, and visual craft; a11y owns whether the resulting interaction is perceivable, operable, understandable, and robust"
+    - skill: interaction-feedback
+      reason: "interaction-feedback owns feedback-state staging; a11y owns whether those state changes are announced and operable"
+  related:
+    - interaction-patterns
+    - form-ux-architecture
+    - interaction-feedback
+    - design-system-architecture
   verify_with:
     - testing-strategy
 portability:

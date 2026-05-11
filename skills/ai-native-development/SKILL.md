@@ -21,9 +21,9 @@ compatibility:
   notes: "Provider- and runtime-agnostic. The autonomy-slider levels and quality-gate sequence apply to any LLM-coding harness (Claude Code, OpenCode, Cursor, Aider, Copilot Workspace, Continue) that supports a deterministic verify step between agent output and merge."
 allowed-tools: Read Grep
 keywords:
-  - software 3.0
+  - software 3.0 concepts
   - vibe coding
-  - agentic engineering
+  - agentic engineering doctrine
   - autonomy slider
   - prompt as code
   - karpathy three eras

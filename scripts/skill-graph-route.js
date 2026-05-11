@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 /**
- * skill-graph route — the reference consumer for the Skill Graph contract.
+ * skill-graph route — the reference consumer for Skill Metadata Protocol metadata.
  *
  * Reads a compiled manifest (`skills.manifest.json` or
  * `examples/skills.manifest.sample.json`) and picks skills for a natural-language

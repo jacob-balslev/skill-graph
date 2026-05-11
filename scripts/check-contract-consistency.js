@@ -33,7 +33,7 @@
  *         schemas/manifest.v2.schema.json must be content-identical to the
  *         unversioned schemas/skill.schema.json and schemas/manifest.schema.json,
  *         modulo $id and title. Drift between them breaks the pinning promise
- *         documented in docs/metadata-contract.md § Schema Versioning Policy.
+ *         documented in docs/skill-metadata-protocol.md § Schema Versioning Policy.
  *
  * Usage:
  *   node scripts/check-contract-consistency.js
@@ -75,7 +75,7 @@ function readText(filePath) {
 /** Extract all ## heading texts from a Markdown document. */
 function extractH2Headings(text) {
   const headings = [];
-  for (const line of text.split('\n')) {
+  for (const line of text.split(/\r?\n/)) {
     const m = line.match(/^##\s+(.+)$/);
     if (m) headings.push(m[1].trim());
   }

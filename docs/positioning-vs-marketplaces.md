@@ -6,20 +6,21 @@
 >
 > **Last updated.** 2026-05-06.
 
-**Skill Graph's job is authoring skills that know your project — its files, its stack, its inter-skill relationships.** Every comparison below is framed against that job. The other tools on the shelf solve different problems; the comparison clarifies which tool fits which job, and where Skill Graph complements rather than competes.
+**Skill Metadata Protocol's job is project-relevance metadata for AI Agent Skills. Skill Graph's job is library-level operation over that metadata.** The protocol asks: which area is this skill for, which angle does it take, which project or stack does it fit, which taxonomy / semantic cluster does it belong to, which methodology or framework does it encode, and how should it be tested or reverified? Skill Graph asks how to index, route, cluster, audit, and reverify a library of skills that expose those declarations. Every comparison below is framed against that split.
 
 ## Categories on the shelf
 
-There are four categories of AI-coding context tool, and they solve different problems:
+There are five categories of AI-coding context tool, and they solve different problems:
 
 | Category | Examples | What it does |
 |---|---|---|
 | **Open standard for skill packaging** | [Anthropic Agent Skills](https://www.claude.com/skills) | The base format for procedural-knowledge folders an agent can discover and load |
-| **Library-management contract on top of the standard** | **Skill Graph** (this repo) | The metadata extension that makes a multi-skill library routable, verifiable, and ground-able |
-| **Aggregator marketplaces** | [skillsmp.com](https://skillsmp.com), [skills.sh](https://skills.sh) | The discovery surface — find a skill, install it |
+| **Project-relevance metadata protocol on top of the standard** | **Skill Metadata Protocol** | The skill-level contract that makes skills indexable by area, angle, taxonomy, semantics, project fit, methodology, framework, and verification loop |
+| **Library-level system over skill metadata** | **Skill Graph** (this repo) | The index, router, cluster map, lint/eval harness, drift sentinel, and manifest pipeline that works with Skill Metadata Protocol records |
+| **Public skill libraries / registries** | [skillsmp.com](https://skillsmp.com), [skills.sh](https://skills.sh) | The discovery and installation surface — find a skill, install it |
 | **Always-on repo conventions** | CLAUDE.md, AGENTS.md, Cursor rules, Continue rules, GitHub Copilot custom instructions | Per-repo behavior rules the agent reads at session start (always loaded, not on-demand) |
 
-Skill Graph sits in the second category. It does not compete with the first (it is interoperable with Agent Skills via the export transform but is its own contract — distinct shape, distinct fields), the third (it's the contract a marketplace could enforce on the skills it aggregates), or the fourth (those are repo behavior rules; Skill Graph is skill-library structure).
+Skill Metadata Protocol sits in the second category. Skill Graph sits in the third row above. Neither competes with Agent Skills (the protocol is interoperable with Agent Skills via the export transform), public libraries (those help you find skills; the protocol makes chosen skills relevant; Skill Graph makes them indexable, clusterable, routable, and testable inside a project), or always-on repo rules (those are repo behavior rules; Skill Graph is skill-library structure).
 
 ---
 
@@ -29,19 +30,19 @@ Skill Graph sits in the second category. It does not compete with the first (it 
 
 [claude.com/skills](https://www.claude.com/skills) — *"Teach Claude your way of working"*, *"Build once, use everywhere"*, *"Stack skills for complex work"*.
 
-| Axis | Anthropic Agent Skills | Skill Graph |
+| Axis | Anthropic Agent Skills | Skill Metadata Protocol + Skill Graph |
 |---|---|---|
-| **Required fields** | 2 (`name`, `description`) | 13 (Skill Graph specifies its own required set; `name` and `description` happen to be 2 of them, which is what enables export to Agent Skills) |
-| **Routing model** | Lexical retrieval over `description` and tag fields | Compound graph-aware retrieval using `relations.*`, `grounding`, `eval_state`, `project_tags`, plus the Layer-1 lexical surface |
+| **Required fields** | 2 (`name`, `description`) | 13 in Skill Metadata Protocol; `name` and `description` remain the base bridge to Agent Skills |
+| **Relevance model** | Mostly lexical retrieval over `description` and tag fields | Area, angle, taxonomy, semantic relations, project fit, grounding, eval state, and file/path relevance |
 | **Drift detection** | None — staleness is invisible to the standard | SHA-256 baselines on `truth_sources`; the drift sentinel reports DRIFT / BROKEN / STALE / NO_BASELINE |
 | **Project scoping** | Folder structure or naming hacks | `project_tags` + workspace `semantic_tags` matching, no folder gymnastics |
 | **Eval awareness** | Not standardised | `eval_artifacts` + `eval_state` + `routing_eval` triple; routers can gate by quality |
 | **Inheritance** | None | `type: overlay` + `extends` for specialisation with schema-level body-section enforcement |
 | **Round-trip compatibility** | N/A | One-way export to base Agent Skills via `scripts/export-skill.js`; round-trip back requires re-authoring the lost fields |
 
-**When to use both:** when you want Skill Graph's metadata for authoring and the broader runtime support of Agent Skills' format simultaneously. Author in Skill Graph; export to Agent Skills shape via `scripts/export-skill.js` for runtimes that read only the simpler format. The two contracts are peers, not parent-child.
+**When to use both:** when you want Skill Metadata Protocol metadata for authoring and the broader runtime support of Agent Skills' format simultaneously. Author with the protocol; use Skill Graph for library-level operations; export to Agent Skills shape via `scripts/export-skill.js` for runtimes that read only the simpler format. The two contracts are peers, not parent-child.
 
-**When Skill Graph is overhead, not benefit:** library size below ~3 skills, single project, no grounded skills, no eval pipeline. Skill Graph's richer required field set is pure tax until at least one of those pressures appears — plain Agent Skills covers the simple case.
+**When this is overhead, not benefit:** library size below ~3 skills, single project, no grounded skills, no eval pipeline. Skill Metadata Protocol's richer required field set and Skill Graph's tooling are pure tax until at least one of those pressures appears — plain Agent Skills covers the simple case.
 
 ---
 
@@ -49,16 +50,16 @@ Skill Graph sits in the second category. It does not compete with the first (it 
 
 [skillsmp.com](https://skillsmp.com) — *"Discover open-source agent skills from GitHub."*
 
-| Axis | skillsmp.com | Skill Graph |
+| Axis | skillsmp.com | Skill Metadata Protocol + Skill Graph |
 |---|---|---|
-| **What it does** | Aggregator marketplace — indexes publicly-available agent skills from GitHub repositories | The contract a library uses to govern its OWN skills (validatable, routable, ground-able) |
-| **Surface** | Discovery (find a skill to install) | Library management (govern the skills you've assembled) |
-| **Hosted** | Yes — independent community-run service | No — Skill Graph is a contract + reference scripts you run in your own repo |
-| **Per-skill structure** | Whatever the source repo authored | The 13 required + ~19 optional Skill Graph fields |
+| **What it does** | Public agent-skill library / marketplace that indexes skills from GitHub repositories | Skill Metadata Protocol describes imported or local skills; Skill Graph operates over the resulting library |
+| **Surface** | Discovery and installation (find a skill to install) | Relevance, structure, clustering, routing, testing, and re-verification inside your project |
+| **Hosted** | Yes — independent community-run service | No — the protocol and Skill Graph reference scripts run in your own repo |
+| **Per-skill structure** | Whatever the source repo authored | The 13 required + ~20 optional Skill Metadata Protocol fields |
 
-**When to use both:** install a skill from skillsmp.com → adopt it into your library → adapt the frontmatter to satisfy the Skill Graph contract → benefit from lint, drift, and graph-aware routing on top of the imported skill.
+**When to use both:** install a skill from skillsmp.com -> adopt it into your library -> annotate the frontmatter with area, angle, taxonomy, project tags, relations, grounding, and eval metadata -> benefit from lint, routing, clustering, drift checks, and Karpathy-style iteration loops on top of the imported skill.
 
-**Mental model:** *A skillsmp search is for **finding** a skill; a Skill Graph library is for **managing** your team's expertise.*
+**Mental model:** *skillsmp answers "what skills exist?"; Skill Metadata Protocol answers "what is this skill relevant for?"; Skill Graph answers "how can that relevance be indexed, routed, clustered, tested, and reverified?"*
 
 ---
 
@@ -66,9 +67,9 @@ Skill Graph sits in the second category. It does not compete with the first (it 
 
 [skills.sh](https://skills.sh) — *"The Open Agent Skills Ecosystem."* The hero copy: *"Skills are reusable capabilities for AI agents. Install them with a single command to enhance your agents with access to procedural knowledge."*
 
-Same category as skillsmp.com. Same Skill Graph distinction: discovery-surface vs library-management contract. The two marketplaces differ in their cataloging conventions and ranking surface (skills.sh leads with a popularity leaderboard, skillsmp leads with GitHub-source provenance), but neither is a contract for the skill internals.
+Same category as skillsmp.com. Same distinction: discovery / installation surface vs Skill Metadata Protocol plus Skill Graph. The two public libraries differ in their cataloging conventions and ranking surface (skills.sh leads with a popularity leaderboard, skillsmp leads with GitHub-source provenance), but neither tells a local project which area, angle, taxonomy cluster, semantic relation, methodology, framework, or verification loop a skill belongs to.
 
-**When to use both:** install a popular skill from skills.sh → adopt the imported folder into your library → upgrade the frontmatter to Skill Graph spec.
+**When to use both:** install a popular skill from skills.sh -> adopt the imported folder into your library -> upgrade the frontmatter to Skill Graph spec so it becomes relevant, indexable, clusterable, and testable in your project.
 
 ---
 
@@ -93,7 +94,7 @@ Same category as skillsmp.com. Same Skill Graph distinction: discovery-surface v
 
 `.continue/rules/*` — the [Continue](https://continue.dev) IDE's analog of Cursor rules. Same shape as Cursor: per-repo behavior constraints applied always-on to agent actions.
 
-Same Skill Graph distinction as Cursor: behavior rules vs library structure. Use both.
+Same distinction as Cursor: behavior rules vs library structure. Use both.
 
 ---
 
@@ -134,10 +135,10 @@ Plain-text repo-level conventions that Claude Code or generic agent runtimes rea
 For symmetry with the README's negative framing:
 
 - **Not a marketplace.** Skill Graph does not host or distribute skills. Use skillsmp.com or skills.sh for that.
-- **Not a runtime.** The contract is consumed by agent runtimes; it is not one. Claude Code, custom agent harnesses, or any runtime that reads Agent Skills can consume a Skill Graph library at whatever level of awareness it chooses.
-- **Not a prompt library.** The skills' content is your team's procedural knowledge, authored by you; Skill Graph governs the metadata around it, not the prose inside it.
-- **Not a competing format.** Every valid Skill Graph skill is a valid Agent Skills skill for the two required fields, and every Skill Graph library can be exported to base Agent Skills via `scripts/export-skill.js`.
-- **Not always-on context.** Skill Graph skills are loaded on-demand by a router; they are not appended to every agent request the way CLAUDE.md or Copilot custom instructions are.
+- **Not a runtime.** Skill Graph can feed agent runtimes; it is not one. Claude Code, custom agent harnesses, or any runtime that reads Agent Skills can consume a Skill Graph library at whatever level of awareness it chooses.
+- **Not a prompt library.** The skills' content is your team's procedural knowledge, authored by you; Skill Metadata Protocol structures the relevance metadata around it, not the prose inside it.
+- **Not a competing format.** Skill Metadata Protocol enriches Agent Skills and can be exported to base Agent Skills via `scripts/export-skill.js`.
+- **Not always-on context.** Skills managed by Skill Graph are loaded on-demand by a router; they are not appended to every agent request the way CLAUDE.md or Copilot custom instructions are.
 
 ---
 
@@ -149,7 +150,7 @@ If you're trying to decide which tool to reach for:
 |---|---|
 | Find a community-authored skill to install | skillsmp.com or skills.sh |
 | Author a procedural-knowledge folder for an agent | Anthropic Agent Skills (the base standard) |
-| Govern a multi-skill library so routing is auditable | **Skill Graph** |
+| Make a multi-skill library project-relevant, indexable, and testable | **Skill Graph** |
 | Apply repo-wide behavior constraints to every IDE agent action | Cursor rules / Continue rules |
 | Prepend always-on context to every Copilot completion | Copilot custom instructions |
 | Document repo conventions for any agent at session start | CLAUDE.md / AGENTS.md |

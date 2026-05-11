@@ -1,0 +1,52 @@
+{
+  "skill_name": "event-contract-design",
+  "subject": "Asynchronous event contract design for schemas, envelopes, topics, compatibility, idempotency, ordering, replay, and observability",
+  "adjacent_concepts": ["event-storming", "system-interface-contracts", "webhook-integration", "api-design"],
+  "grounding_note": "Truth sources cite the whole SKILL.md file to keep the initial eval surface stable while the new skill settles.",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "The team has selected OrderPaid as a domain event and now needs topic name, envelope fields, payload schema, idempotency, and versioning. Which skill owns this?",
+      "dimension": "application",
+      "substance": "domain",
+      "calibration": "process",
+      "truth_mode": "process_correctness",
+      "skill_type": "concept",
+      "criticality": "high",
+      "truth_sources": ["skills/event-contract-design/SKILL.md"]
+    },
+    {
+      "id": 2,
+      "prompt": "A team is still discovering commands, policies, aggregates, and the timeline for a business process. Should event-contract-design take over?",
+      "dimension": "boundary",
+      "substance": "contradiction-check",
+      "calibration": "semantic",
+      "truth_mode": "code_verification",
+      "skill_type": "concept",
+      "criticality": "normal",
+      "truth_sources": ["skills/event-contract-design/SKILL.md"]
+    },
+    {
+      "id": 3,
+      "prompt": "An outbound webhook product sends customer-facing events, but there are no compatibility rules or negative fixtures. Which verification gates fail?",
+      "dimension": "application",
+      "substance": "domain",
+      "calibration": "semantic",
+      "truth_mode": "conceptual_correctness_plus_repo_application",
+      "skill_type": "concept",
+      "criticality": "high",
+      "truth_sources": ["skills/event-contract-design/SKILL.md"]
+    },
+    {
+      "id": 4,
+      "prompt": "A provider sends inbound webhook deliveries and the handler must verify HMAC signatures on raw bytes. Which skill owns that mechanics work?",
+      "dimension": "boundary",
+      "substance": "contradiction-check",
+      "calibration": "semantic",
+      "truth_mode": "code_verification",
+      "skill_type": "concept",
+      "criticality": "normal",
+      "truth_sources": ["skills/event-contract-design/SKILL.md"]
+    }
+  ]
+}

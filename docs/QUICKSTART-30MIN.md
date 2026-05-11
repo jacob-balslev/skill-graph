@@ -43,7 +43,7 @@ That's it for installation. Skill Graph has zero runtime dependencies — every 
 
 ```bash
 mkdir -p skills/markdown-post-frontmatter-review
-cp examples/skill-template.md skills/markdown-post-frontmatter-review/SKILL.md
+cp examples/skill-metadata-template.md skills/markdown-post-frontmatter-review/SKILL.md
 ls skills/markdown-post-frontmatter-review/
 ```
 
@@ -53,7 +53,7 @@ Expected output:
 SKILL.md
 ```
 
-Open `skills/markdown-post-frontmatter-review/SKILL.md` in your editor. The template is a *real, valid, schema-conformant* Skill Graph skill whose subject is skill authoring itself. You'll adapt it by:
+Open `skills/markdown-post-frontmatter-review/SKILL.md` in your editor. The template is a *real, valid, schema-conformant* Skill Metadata Protocol skill whose subject is skill authoring itself. You'll adapt it by:
 
 1. Renaming the identity (`name`, `description`, `version`)
 2. Rewriting `## Coverage`, `## Philosophy`, `## Verification`, `## Do NOT Use When` for your subject
@@ -145,7 +145,7 @@ Most pain in skill libraries comes from skills that *depend on* each other but d
 
 ```bash
 mkdir -p skills/post-archive-rebuild
-cp examples/skill-template.md skills/post-archive-rebuild/SKILL.md
+cp examples/skill-metadata-template.md skills/post-archive-rebuild/SKILL.md
 ```
 
 Edit `skills/post-archive-rebuild/SKILL.md` to set:
@@ -290,7 +290,7 @@ node scripts/skill-graph-drift.js
 Expected:
 
 ```
-13 skill(s): 0 DRIFT, 0 NO_BASELINE, 12 UNGROUNDED
+41 skill(s): 3 CLEAN, 38 UNGROUNDED
 ```
 
 (`UNGROUNDED` = skills with no `grounding` block; that's normal for `scope: portable` and `scope: reference` skills.)
@@ -307,7 +307,7 @@ Expected:
 DRIFT         markdown-post-frontmatter-review
   DRIFT         lib/content/schema.ts
 
-13 skill(s): 1 DRIFT, 0 NO_BASELINE, 12 UNGROUNDED
+41 skill(s): 1 DRIFT, 2 CLEAN, 38 UNGROUNDED
 ```
 
 The skill now warns you that the truth source moved. Re-verify the skill against the changed file (does the `## Verification` checklist still pass?), then re-record the baseline once you've confirmed:
@@ -325,7 +325,7 @@ You've adopted Skill Graph for one painful workflow. The contract paid off twice
 | Next step | Read |
 |---|---|
 | Migrate your second skill | This document, repeated for the next skill |
-| Understand the full contract | [`docs/PRIMER.md`](PRIMER.md) and [`docs/metadata-contract.md`](metadata-contract.md) |
+| Understand the full contract | [`docs/PRIMER.md`](PRIMER.md) and [`docs/skill-metadata-protocol.md`](skill-metadata-protocol.md) |
 | See worked examples in a real project | [`examples/projects/markdown-static-site/README.md`](../examples/projects/markdown-static-site/README.md) |
 | Set up CI integration | [`docs/integrations/github-actions.md`](integrations/github-actions.md) |
 | Decide which skills to author next | [`docs/recommended-skills.md`](recommended-skills.md) |

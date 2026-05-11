@@ -29,7 +29,7 @@
  *
  * Usage:
  *   node scripts/skill-overlap.js
- *   node scripts/skill-overlap.js --include-template   # also scan skill-template.md
+ *   node scripts/skill-overlap.js --include-template   # also scan skill-metadata-template.md
  *   node scripts/skill-overlap.js --strict             # warnings become errors
  *   node scripts/skill-overlap.js --json               # machine-readable output
  *   node scripts/skill-overlap.js --no-color           # plain CI output
@@ -43,7 +43,7 @@ const { parseFrontmatter } = require('./lib/parse-frontmatter');
 
 const REPO_ROOT = path.resolve(__dirname, '..');
 const SKILLS_DIR = path.join(REPO_ROOT, 'skills');
-const TEMPLATE_PATH = path.join(REPO_ROOT, 'examples', 'skill-template.md');
+const TEMPLATE_PATH = path.join(REPO_ROOT, 'examples', 'skill-metadata-template.md');
 
 // ANSI color helpers — matched to scripts/lint/format-code-frame.js palette.
 const C = {

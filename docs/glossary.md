@@ -1,6 +1,6 @@
 # Skill Graph Glossary
 
-> Canonical definitions for every domain term used in the Skill Graph contract. Field-reference doc links to these entries instead of redefining terms inline.
+> Canonical definitions for every domain term used by Skill Metadata Protocol and Skill Graph. Field-reference doc links to these entries instead of redefining terms inline.
 
 ## Relation predicates
 
@@ -14,15 +14,15 @@ The v3.0 name for the symmetric associative relation. Still valid in v3.x; lint 
 
 Symmetric co-read relation. Use for skills that teach the same surface from different angles — reading one prompts a reader to want the other. Relation is symmetric in intent but the schema does not enforce reciprocity; lint-level reciprocity checking is a future feature. Max 5 entries recommended per skill to avoid hub-and-spoke clutter.
 
-### `boundary` *(deprecated alias of `disjoint_with`)*
+### `boundary`
 
-The v3.0 name for the anti-ownership edge. Still valid in v3.x; same deprecation path as `adjacent`.
+Routing-layer anti-ownership edge. Use for skills this skill explicitly does NOT own, where the router should hand a near-miss prompt to a different skill. This relation is directional and Skill-Graph-specific; it is intentionally weaker than formal OWL disjointness. Item shape: bare string OR `{skill, reason}`. Reasons are strongly recommended because routing handoffs need an explicit boundary rule.
 
 ### `disjoint_with`
 
-*v3.1 preferred name; W3C mapping: `skos:related` + `owl:disjointWith`*
+*v3.1 addition; W3C mapping: `owl:disjointWith`*
 
-Anti-ownership edge — naming a skill this skill explicitly does NOT own. Decomposes in RDF to "there is a relation AND the relation is disjointness". Item shape: bare string OR `{skill, reason}`. The reason is strongly recommended because the whole point of `disjoint_with` is to document why the two skills are NOT the same concern.
+Formal class-disjointness assertion. Use only when the two skill concepts are genuinely disjoint in the ontology sense. This is rare in day-to-day routing; most wrong-skill prevention belongs in `boundary`. `disjoint_with` is symmetric in meaning even though the schema does not enforce reciprocal authoring.
 
 ### `broader`
 
@@ -160,7 +160,7 @@ Globally-unique persistent identifier in the `urn:skill:<repo>:<skill-name>` for
 
 ### `schema_version`
 
-Integer or string-of-integer identifying the metadata-contract version. Currently `3`. Bumps on breaking changes to field semantics, shape, or required-ness. Additive additions (new optional fields, new enum values, new lint warnings) do not bump the version.
+Integer or string-of-integer identifying the Skill Metadata Protocol version. Currently `3`. Bumps on breaking changes to field semantics, shape, or required-ness. Additive additions (new optional fields, new enum values, new lint warnings) do not bump the version.
 
 ### `stability`
 
@@ -177,7 +177,7 @@ Each term below names the FAIR dimension(s) the Skill Graph field covers (Wilkin
 - **Findable:** `name`, `urn`, `description`, `keywords`, `triggers`, `examples`, `browse_category`, `category`, `routing_groups`
 - **Accessible:** `paths`, `allowed-tools`, `compatibility`, `portability`
 - **Interoperable:** `schema_version`, the JSON-LD `@context`, SPDX in `license`, all typed predicates
-- **Reusable:** `license`, `compatibility`, `portability.targets`, `grounding.truth_sources`, `freshness`, `drift_check`, `lifecycle`, `evidence_priority`
+- **Reusable:** `license`, `compatibility`, `portability.targets`, `grounding.truth_sources`, `freshness`, `drift_check`, `lifecycle`, `grounding.evidence_priority`
 
 ## References
 

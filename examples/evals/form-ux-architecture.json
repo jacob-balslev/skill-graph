@@ -1,0 +1,52 @@
+{
+  "skill_name": "form-ux-architecture",
+  "subject": "Form structure and validation UX across field grouping, validation timing, submission lifecycle, recovery, and client/server split",
+  "adjacent_concepts": ["a11y", "microcopy", "api-design", "data-modeling"],
+  "grounding_note": "Truth sources cite the whole SKILL.md file to keep the initial eval surface stable while the new skill settles.",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "A checkout form asks for 24 fields before shipping can be estimated. How should form-ux-architecture decide what stays, defers, or becomes progressive disclosure?",
+      "dimension": "application",
+      "substance": "domain",
+      "calibration": "process",
+      "truth_mode": "process_correctness",
+      "skill_type": "concept",
+      "criticality": "high",
+      "truth_sources": ["skills/form-ux-architecture/SKILL.md"]
+    },
+    {
+      "id": 2,
+      "prompt": "A form validates every keystroke and shows red errors while the user is still typing. Which validation-timing rule should be applied?",
+      "dimension": "application",
+      "substance": "domain",
+      "calibration": "semantic",
+      "truth_mode": "conceptual_correctness_plus_repo_application",
+      "skill_type": "concept",
+      "criticality": "high",
+      "truth_sources": ["skills/form-ux-architecture/SKILL.md"]
+    },
+    {
+      "id": 3,
+      "prompt": "A developer says client-side validation is enough because the browser blocks malformed input. What boundary or philosophy point should form-ux-architecture enforce?",
+      "dimension": "mental_model",
+      "substance": "contradiction-check",
+      "calibration": "semantic",
+      "truth_mode": "conceptual_correctness_plus_repo_application",
+      "skill_type": "concept",
+      "criticality": "critical",
+      "truth_sources": ["skills/form-ux-architecture/SKILL.md"]
+    },
+    {
+      "id": 4,
+      "prompt": "The team asks for final inline validation text after the form lifecycle is settled. Which skill owns that wording?",
+      "dimension": "boundary",
+      "substance": "contradiction-check",
+      "calibration": "semantic",
+      "truth_mode": "code_verification",
+      "skill_type": "concept",
+      "criticality": "normal",
+      "truth_sources": ["skills/form-ux-architecture/SKILL.md"]
+    }
+  ]
+}

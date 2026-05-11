@@ -3,7 +3,7 @@
  * Archetype-aware section validator for SKILL.md files.
  *
  * Each archetype has a minimum required set of H2 body sections defined in
- * `docs/metadata-contract.md § Archetype Section Map`. This check:
+ * `docs/skill-metadata-protocol.md § Archetype Section Map`. This check:
  *
  *   - Errors on any required H2 section that is missing from the body.
  *   - Warns on any H2 section that exists but whose content is empty
@@ -20,7 +20,7 @@
 
 /**
  * Required H2 sections per archetype, sourced from
- * `docs/metadata-contract.md § Archetype Section Map`.
+ * `docs/skill-metadata-protocol.md § Archetype Section Map`.
  *
  * @type {Record<string, string[]>}
  */
@@ -61,7 +61,7 @@ const CONDITIONAL_SECTIONS = [
  *   section body (i.e. between this H2 and the next one or end-of-file).
  */
 function extractH2Sections(sourceText) {
-  const lines = sourceText.split('\n');
+  const lines = sourceText.split(/\r?\n/);
 
   // Find the end of the frontmatter block (second `---`).
   let bodyStart = 0;
@@ -150,7 +150,7 @@ function checkArchetypeSections(opts) {
         message: `missing required section "## ${req}" for archetype "${archetype}"`,
         line:    1,
         column:  1,
-        help:    `Add a "## ${req}" section. Required sections for ${archetype}: ${required.map(r => `"## ${r}"`).join(', ')}. See docs/metadata-contract.md § Archetype Section Map.`,
+        help:    `Add a "## ${req}" section. Required sections for ${archetype}: ${required.map(r => `"## ${r}"`).join(', ')}. See docs/skill-metadata-protocol.md § Archetype Section Map.`,
       });
     }
   }

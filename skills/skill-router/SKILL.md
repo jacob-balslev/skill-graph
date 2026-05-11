@@ -2,7 +2,7 @@
 # yaml-language-server: $schema=https://skillgraph.dev/schemas/skill.v3.schema.json
 schema_version: 3
 name: skill-router
-description: "Use when routing an agent request across multiple skills, building or auditing a routing table, detecting routing coverage gaps, or answering questions like 'which skill handles this?', 'who routes X?', or 'why did skill A activate instead of B?'. Covers trigger-label matching, file-path matching, keyword matching, description-based semantic matching, scope/type tiebreakers, and coverage-gap detection. Do NOT use when the target skill is already known (load it directly), when authoring a new skill (use `skill-template` instead), or when evaluating a SINGLE skill's quality (use `graph-audit`)."
+description: "Use when routing an agent request across multiple skills, building or auditing a routing table, detecting routing coverage gaps, or answering questions like 'which skill handles this?', 'who routes X?', or 'why did skill A activate instead of B?'. Covers trigger-label matching, file-path matching, keyword matching, description-based semantic matching, scope/type tiebreakers, and coverage-gap detection. Do NOT use when the target skill is already known (load it directly), when authoring a new skill (use `skill-metadata-template` instead), or when evaluating a SINGLE skill's quality (use `graph-audit`)."
 version: 1.0.0
 type: router
 browse_category: knowledge
@@ -67,7 +67,7 @@ anti_examples:
 relations:
   # No adjacent: skill-router is a dispatch engine; its natural neighbors
   # are either in boundary (documentation, graph-audit) or in Do NOT Use
-  # (skill-template is a reference artifact, not a routable skill). No
+  # (skill-metadata-template is a reference artifact, not a routable skill). No
   # sibling skill is routinely loaded alongside this one.
   boundary:
     - skill: documentation
@@ -150,4 +150,4 @@ This skill ships a comprehension-eval artifact as `skill-router.json` in the Ski
 | The target skill directly | The correct skill is already known — skip the router and load it |
 | `documentation` | The task is writing or structuring doc prose, not routing |
 | `graph-audit` | The task is auditing whether routing metadata is consistent, not dispatching a query |
-| `examples/skill-template.md` | The task is authoring a new skill from scratch, not dispatching to an existing one (the template is a reference artifact, not a routable skill) |
+| `examples/skill-metadata-template.md` | The task is authoring a new skill from scratch, not dispatching to an existing one (the template is a reference artifact, not a routable skill) |

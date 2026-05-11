@@ -188,7 +188,7 @@ function parseLintOutput(stderr) {
 function inferCategory(message) {
   if (/missing required field|unknown field|enum|pattern|minLength|oneOf|sub-field/.test(message)) return 'Schema validity';
   if (/parent directory|name/.test(message)) return 'Naming convention';
-  if (/relations\.|adjacent|boundary|verify_with|depends_on/.test(message)) return 'Relation quality';
+  if (/relations\.|adjacent|related|broader|narrower|boundary|disjoint_with|verify_with|depends_on/.test(message)) return 'Relation quality';
   if (/eval_artifacts|eval_state|routing_eval/.test(message)) return 'Eval quality';
   if (/grounding|domain_object|truth_sources/.test(message)) return 'Grounding quality';
   if (/section|Coverage|Philosophy|Verification|Do NOT/.test(message)) return 'Content quality';
@@ -345,7 +345,7 @@ function buildFindingsStub(skillName, diagnostics, isoDate) {
 
   const humanJudgmentTodos = [
     { surface: 'activation',   title: 'Activation quality — routing coverage',         note: 'Does the description name real trigger scenarios? Are keywords specific and not generic filler? Does the skill under-trigger or over-trigger for its intended use case?' },
-    { surface: 'relations',    title: 'Relation quality — graph correctness',          note: 'Do adjacent/boundary/verify_with relations point at semantically correct neighbors? Are boundary rules crisp enough to prevent misuse? Are dependencies real?' },
+    { surface: 'relations',    title: 'Relation quality — graph correctness',          note: 'Do relations point at semantically correct neighbors? Are boundary handoffs crisp enough to prevent misuse? Are broader/narrower claims taxonomic rather than associative? Are dependencies real?' },
     { surface: 'grounding',    title: 'Grounding quality — claims vs truth sources',   note: 'If scope: codebase, do all truth_sources exist? Do claims in the body match the referenced files? Classify any mismatch as skill drift, code drift, or doc drift.' },
     { surface: 'content',      title: 'Content quality — completeness and density',    note: 'Does the skill have a clear Coverage section, a Philosophy section, at least one decision table or checklist, and explicit negative bounds (Do NOT Use When)? Does it contain generic filler that adds no routing signal?' },
     { surface: 'evals',        title: 'Eval quality — coverage and realism',           note: 'Do eval files exist if the skill is expected to be graded? Do they test realistic prompts — not trivia — and cover boundaries and failure cases as well as the happy path?' },
@@ -461,7 +461,7 @@ function buildVerdictStub(skillName, diagnostics, isoDate) {
     'A human auditor must review the following before this verdict is final:',
     '',
     '- Activation quality (routing coverage, keyword specificity)',
-    '- Relation semantics (adjacency correctness, boundary crispness)',
+    '- Relation semantics (related/broader/boundary correctness)',
     '- Grounding fidelity (claims vs truth sources, when scope: codebase)',
     '- Content quality (decision tables, Philosophy section, negative bounds)',
     '- Eval quality (coverage, realism, boundary cases)',

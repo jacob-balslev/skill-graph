@@ -1,0 +1,52 @@
+{
+  "skill_name": "interaction-feedback",
+  "subject": "UI feedback-state staging for user actions, asynchronous work, success, failure, retry, undo, and perceived latency",
+  "adjacent_concepts": ["microcopy", "a11y", "state-machine-modeling", "performance-engineering"],
+  "grounding_note": "Truth sources cite the whole SKILL.md file to keep the initial eval surface stable while the new skill settles.",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "A user clicks Export and nothing changes for 8 seconds before a file appears. Which feedback states should interaction-feedback design before wording is written?",
+      "dimension": "application",
+      "substance": "domain",
+      "calibration": "process",
+      "truth_mode": "process_correctness",
+      "skill_type": "workflow",
+      "criticality": "high",
+      "truth_sources": ["skills/interaction-feedback/SKILL.md"]
+    },
+    {
+      "id": 2,
+      "prompt": "A toast message is too vague and needs better copy. Should interaction-feedback own the words?",
+      "dimension": "boundary",
+      "substance": "contradiction-check",
+      "calibration": "semantic",
+      "truth_mode": "code_verification",
+      "skill_type": "concept",
+      "criticality": "normal",
+      "truth_sources": ["skills/interaction-feedback/SKILL.md"]
+    },
+    {
+      "id": 3,
+      "prompt": "A save action updates the UI optimistically, then the server rejects the change. What must the interaction-feedback verification cover?",
+      "dimension": "application",
+      "substance": "domain",
+      "calibration": "semantic",
+      "truth_mode": "conceptual_correctness_plus_repo_application",
+      "skill_type": "concept",
+      "criticality": "high",
+      "truth_sources": ["skills/interaction-feedback/SKILL.md"]
+    },
+    {
+      "id": 4,
+      "prompt": "An order lifecycle has pending, paid, fulfilled, refunded, and cancelled states with legal transitions. Should interaction-feedback define the lifecycle itself?",
+      "dimension": "boundary",
+      "substance": "contradiction-check",
+      "calibration": "semantic",
+      "truth_mode": "code_verification",
+      "skill_type": "concept",
+      "criticality": "normal",
+      "truth_sources": ["skills/interaction-feedback/SKILL.md"]
+    }
+  ]
+}

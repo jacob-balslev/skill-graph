@@ -6,7 +6,7 @@
 
 ## Context
 
-The external audit of 2026-04-20 identified **FAIR Interoperability** as the Skill Graph's weakest dimension. The contract was self-consistent but isolated — no machine-readable mapping to established W3C vocabularies (SKOS, Dublin Core Terms, PROV-O, SPDX, schema.org). Third parties wanting to consume Skill Graph metadata in a federated knowledge-graph tool or a generic RDF triplestore had no adapter path short of writing Skill-Graph-specific code.
+The external audit of 2026-04-20 identified **FAIR Interoperability** as the Skill Metadata Protocol's weakest dimension. The contract was self-consistent but isolated — no machine-readable mapping to established W3C vocabularies (SKOS, Dublin Core Terms, PROV-O, SPDX, schema.org). Third parties wanting to consume protocol metadata in a federated knowledge-graph tool or a generic RDF triplestore had no adapter path short of writing Skill-Metadata-Protocol-specific code.
 
 ## Decision
 

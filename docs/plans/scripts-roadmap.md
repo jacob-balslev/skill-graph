@@ -1,6 +1,6 @@
 # Scripts Roadmap
 
-This document tracks the script surfaces planned for Skill Graph. The goal is the smallest coherent toolchain that makes the metadata contract and audit system executable.
+This document tracks the script surfaces planned for Skill Graph. The goal is the smallest coherent toolchain that makes Skill Metadata Protocol and audit system executable.
 
 ## Status
 
@@ -104,4 +104,4 @@ Do not build these first:
 - marketplace packaging layers
 - runtime execution or skill hosting
 
-These are useful later. They are not required for a credible starter toolchain around the metadata contract.
+These are useful later. They are not required for a credible starter toolchain around Skill Metadata Protocol.

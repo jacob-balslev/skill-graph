@@ -2,7 +2,7 @@
 # yaml-language-server: $schema=https://skillgraph.dev/schemas/skill.v3.schema.json
 schema_version: 3
 name: skill-scaffold
-description: "Use when creating a new SKILL.md from scratch, adapting an existing skill to a different archetype, or teaching another author the canonical Skill Graph frontmatter and body structure. Covers schema-conformant frontmatter, archetype-aware body layout, semantic-layer discipline (description vs Coverage), teaching-layer mechanics (TEMPLATE NOTE blockquotes), the lint-first authoring gate, and the routing-eval honesty rule. Do NOT use when modifying an already-written skill (edit it directly), when writing general technical documentation (use `documentation`), or when fixing a malformed skill detected by lint (use `graph-audit` for systematic library health, not authoring scaffold help)."
+description: "Use when creating a new SKILL.md from scratch, adapting an existing skill to a different archetype, or teaching another author the canonical Skill Metadata Protocol frontmatter and body structure. Covers schema-conformant frontmatter, archetype-aware body layout, semantic-layer discipline (description vs Coverage), teaching-layer mechanics (TEMPLATE NOTE blockquotes), the lint-first authoring gate, and the routing-eval honesty rule. Do NOT use when modifying an already-written skill (edit it directly), when writing general technical documentation (use `documentation`), or when fixing a malformed skill detected by lint (use `graph-audit` for systematic library health, not authoring scaffold help)."
 version: 1.0.0
 type: capability
 browse_category: knowledge
@@ -11,7 +11,12 @@ scope: reference
 owner: skill-graph-maintainer
 freshness: "2026-05-04"
 drift_check:
-  last_verified: "2026-05-04"
+  last_verified: "2026-05-10"
+  truth_source_hashes:
+    "examples/skill-metadata-template.md": "54589ec6e1f930fc7f76b81a6b4b845e8497ddaee274fd86779cfa4e48f3a24c"
+    "schemas/skill.v3.schema.json": "94c5e14e9a38182f6dea7d6ce5b6953147702fcee586d71e294742e0db3e5c81"
+    "docs/skill-metadata-protocol.md": "7add14972c3674698b50a0ebaea3c572ae66faedbe2458f21a7d4769696c80ae"
+    "docs/single-skill-audit-checklist.md": "f3a5c370a64471e3273b82b6c4826ed19f16ef5f355d00dafc1bd96316e2cabc"
 eval_artifacts: planned
 eval_state: unverified
 routing_eval: absent
@@ -42,7 +47,7 @@ examples:
   - "how do I pick between capability and workflow for my skill type?"
   - "what's the difference between description and the ## Coverage section?"
   - "scaffold a new skill that teaches react component composition patterns"
-  - "I copied skill-template.md but my new skill won't pass lint — help"
+  - "I copied skill-metadata-template.md but my new skill won't pass lint — help"
   - "draft frontmatter for a workflow skill that owns deployment rollback"
   - "how do I strip teaching annotations from the template before commit?"
   - "should I flip routing_eval to present on my new skill?"
@@ -67,12 +72,12 @@ relations:
   verify_with:
     - documentation
 grounding:
-  domain_object: Authoring a new SKILL.md against the Skill Graph v3 contract
+  domain_object: Authoring a new SKILL.md against the Skill Metadata Protocol v3 contract
   grounding_mode: repo_specific
   truth_sources:
-    - examples/skill-template.md
+    - examples/skill-metadata-template.md
     - schemas/skill.v3.schema.json
-    - docs/metadata-contract.md
+    - docs/skill-metadata-protocol.md
     - docs/single-skill-audit-checklist.md
   failure_modes:
     - placeholder_sludge
@@ -95,7 +100,7 @@ lifecycle:
 ## Coverage
 
 - Authoring flow: copy → rename → adapt → strip teaching annotations → verify → commit
-- Frontmatter identity: `name`, `description`, `version`, `type`, `browse_category`, `scope`, `owner`, plus the eval-health triple and `drift_check` required by every Skill Graph skill
+- Frontmatter identity: `name`, `description`, `version`, `type`, `browse_category`, `scope`, `owner`, plus the eval-health triple and `drift_check` required by every Skill Metadata Protocol skill
 - Archetype selection: how to pick between `capability`, `workflow`, `router`, and `overlay` and which `## H2` body sections each archetype requires
 - Semantic-layer discipline: how `description:` (≤ 3 sentences, pushy, boundary-aware routing contract) differs from `## Coverage` (bulleted scope map of distinct topics) and why each must stay in its own layer
 - Teaching-layer mechanics: how to use `> **TEMPLATE NOTE:**` blockquotes and `# TEMPLATE NOTE:` YAML comments to teach without cargo-culting meta sections into derived skills
@@ -111,9 +116,9 @@ A scaffold teaches by example, not by placeholder. A concrete, internally consis
 
 The five steps are non-negotiable; skipping any step produces a skill that lints in your editor but breaks on someone else's machine.
 
-1. **Copy** `examples/skill-template.md` to `skills/<your-skill-name>/SKILL.md`. Do not rename in-place; the template stays as the canonical specimen.
-2. **Rename** identity fields: `name`, `description`, `category` (if used), `keywords`, `examples`, `anti_examples`, `paths` (if applicable), and the body title. Every reference to "skill-template" should be gone.
-3. **Adapt** body sections to your skill's subject. Match the `## H2` layout to your declared archetype per `docs/metadata-contract.md § Archetype section map`. Remove sections that do not apply — do not keep them with placeholder content.
+1. **Copy** `examples/skill-metadata-template.md` to `skills/<your-skill-name>/SKILL.md`. Do not rename in-place; the template stays as the canonical specimen.
+2. **Rename** identity fields: `name`, `description`, `category` (if used), `keywords`, `examples`, `anti_examples`, `paths` (if applicable), and the body title. Every reference to "skill-metadata-template" should be gone.
+3. **Adapt** body sections to your skill's subject. Match the `## H2` layout to your declared archetype per `docs/skill-metadata-protocol.md § Archetype section map`. Remove sections that do not apply — do not keep them with placeholder content.
 4. **Strip** every `> **TEMPLATE NOTE:**` body blockquote and every `# TEMPLATE NOTE:` YAML comment. They are authoring scaffolding; shipping them in a derived skill is the most common authoring mistake. Run `grep -n "TEMPLATE NOTE" skills/<your-skill>/SKILL.md` to confirm zero hits.
 5. **Verify** by running the gate sequence: `node scripts/skill-lint.js --strict` (must show 0 errors), `node scripts/check-contract-consistency.js` (C1-C7 must all pass), and (if you populated `examples` and `anti_examples`) `node scripts/skill-graph-routing-eval.js --skill <your-skill>` (verdict PASS before flipping `routing_eval` to `present`).
 
@@ -157,7 +162,7 @@ Use this checklist as the authoring gate before committing a skill. Every item m
 
 - [ ] Every retained field has a real reason to exist in the new skill
 - [ ] Every removed field was removed because of archetype or grounding mismatch, not laziness
-- [ ] Body sections match the declared archetype per `docs/metadata-contract.md § Archetype section map`
+- [ ] Body sections match the declared archetype per `docs/skill-metadata-protocol.md § Archetype section map`
 - [ ] `description:` is ≤ 3 sentences, contains pushy trigger phrases, and names an explicit negative boundary
 - [ ] `## Coverage` is a scope map of distinct topics, not a one-line restate of the description
 - [ ] `drift_check` is an object with `last_verified`; `truth_source_hashes` recorded when truth sources exist

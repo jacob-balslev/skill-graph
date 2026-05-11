@@ -28,7 +28,7 @@ Surface: relations
 Category: Relation quality — graph correctness
 Problem: TODO — human judgment required
 Evidence: TODO — reviewer must inspect the skill body
-Required action: Do adjacent/boundary/verify_with relations point at semantically correct neighbors? Are boundary rules crisp enough to prevent misuse? Are dependencies real?
+Required action: Do relations point at semantically correct neighbors? Are boundary handoffs crisp enough to prevent misuse? Are broader/narrower claims taxonomic rather than associative? Are dependencies real?
 
 ID: F3
 Severity: TODO

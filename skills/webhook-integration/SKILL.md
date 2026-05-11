@@ -2,7 +2,7 @@
 # yaml-language-server: $schema=https://skillgraph.dev/schemas/skill.v3.schema.json
 schema_version: 3
 name: webhook-integration
-description: "Use when implementing or reviewing an inbound webhook handler for any third-party provider — verifying signatures, deduplicating retries, choosing the right HTTP status code for retry vs no-retry, persisting raw payloads before canonical mapping, and quarantining unverifiable events. Covers the three signature-scheme families (shared-secret HMAC, provider-SDK verification, round-trip verification API), the four idempotency patterns (processed-flag, payload-hash UPSERT, event-ID dedup, composite-key UPSERT), the per-provider retry-contract reading discipline, the raw-then-canonical pipeline, and PII-capture timing for providers with deletion windows. Do NOT use for outbound webhook *publishing* (designing your own webhook product is a different surface), for general background-job orchestration (use `documentation` to describe it; the orchestration framework owns the runtime), or for chasing a webhook handler that has already failed in production (use `debugging`)."
+description: "Use when implementing or reviewing an inbound webhook handler for any third-party provider - verifying signatures, deduplicating retries, choosing the right HTTP status code for retry vs no-retry, persisting raw payloads before canonical mapping, and quarantining unverifiable events. Covers signature schemes, idempotency patterns, provider retry contracts, raw-then-canonical pipelines, quarantine, secret rotation, and PII-capture timing. Do NOT use for outbound webhook publishing (use `event-contract-design`), general background-job orchestration, or chasing a webhook handler that has already failed in production (use `debugging`)."
 version: 1.0.0
 type: capability
 browse_category: engineering
@@ -49,7 +49,7 @@ examples:
   - "reject all webhook deliveries with an invalid HMAC, log them for audit"
   - "the provider deletes customer data 30 days after order — how do I capture PII safely on first delivery?"
 anti_examples:
-  - "design our outbound webhook product (we want to deliver events to customers)" # → documentation (publishing webhooks is a product surface, not a handler-implementation skill)
+  - "design our outbound webhook product (we want to deliver events to customers)" # -> event-contract-design
   - "the production webhook is failing — find the root cause"                       # → debugging
   - "explain our webhook patterns in the contributor docs"                          # → documentation
   - "review this AI-generated webhook handler for correctness"                      # → code-review
@@ -60,6 +60,8 @@ relations:
   boundary:
     - skill: documentation
       reason: "documentation produces durable prose about integration patterns; webhook-integration produces the executable handler skeleton and verification path"
+    - skill: event-contract-design
+      reason: "event-contract-design owns outbound event and webhook contracts; webhook-integration owns inbound third-party handler mechanics"
     - skill: debugging
       reason: "debugging chases an observed handler failure with reproduction; webhook-integration plans the safe handler shape before deployment"
     - skill: refactor
@@ -74,6 +76,7 @@ relations:
     - documentation
     - owasp-security
     - code-review
+    - event-contract-design
   verify_with:
     - testing-strategy
     - code-review
@@ -393,6 +396,7 @@ The previous secret stays valid for the provider's maximum retry window after ro
 | Use instead | When |
 |---|---|
 | `documentation` | Writing the integration-conventions page for the contributor docs, or explaining your outbound webhook product to consumers |
+| `event-contract-design` | Designing outbound webhook or async event schemas, envelopes, topics, compatibility, and consumer-facing fixtures |
 | `debugging` | Chasing a webhook handler that is failing in production and reproducing the failure |
 | `refactor` | Reorganizing webhook helper code or consolidating duplicated handler logic |
 | `testing-strategy` | Deciding whether a particular webhook handler needs a regression test |

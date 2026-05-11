@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 /**
- * skill-graph drift — the drift sentinel for the Skill Graph contract.
+ * skill-graph drift — the drift sentinel for Skill Metadata Protocol grounding metadata.
  *
  * Walks every skill with a `grounding.truth_sources` list, hashes each source
  * file, and compares against the stored
@@ -197,11 +197,12 @@ function buildDriftCheckBlock(truthSources, indent) {
  */
 function applyRecord(skillMdPath, truthSources) {
   const text = fs.readFileSync(skillMdPath, 'utf8');
-  const lines = text.split('\n');
-  if (lines[0] !== '---') throw new Error('no frontmatter delimiter');
+  const newline = text.includes('\r\n') ? '\r\n' : '\n';
+  const lines = text.split(/\r?\n/);
+  if (lines[0].replace(/^\uFEFF/, '') !== '---') throw new Error('no frontmatter delimiter');
   let closeIdx = -1;
   for (let i = 1; i < lines.length; i++) {
-    if (lines[i] === '---') { closeIdx = i; break; }
+    if (lines[i].trim() === '---') { closeIdx = i; break; }
   }
   if (closeIdx === -1) throw new Error('unterminated frontmatter');
 
@@ -240,7 +241,7 @@ function applyRecord(skillMdPath, truthSources) {
   const before = lines.slice(0, start);
   const after = lines.slice(end + 1);
   const newLines = before.concat(newBlock, after);
-  fs.writeFileSync(skillMdPath, newLines.join('\n'), 'utf8');
+  fs.writeFileSync(skillMdPath, newLines.join(newline), 'utf8');
 }
 
 // ---------------------------------------------------------------------------

@@ -24,9 +24,9 @@
  *   frontmatter block is found.
  */
 function parseFrontmatter(text) {
-  const m = text.match(/^---\n([\s\S]*?)\n---/);
+  const m = text.match(/^\uFEFF?---\r?\n([\s\S]*?)\r?\n---(?:\r?\n|$)/);
   if (!m) return null;
-  const lines = m[1].split('\n');
+  const lines = m[1].split(/\r?\n/);
   let i = 0;
 
   /**

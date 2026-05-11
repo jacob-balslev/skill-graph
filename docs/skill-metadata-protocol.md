@@ -1,19 +1,23 @@
-# Skill Graph Metadata Contract
+# Skill Metadata Protocol
+
+Skill Metadata Protocol is the **skill-level contract** for AI Agent Skills. It defines the structured relevance metadata a skill should declare: activation signals, taxonomy, project/file scope, sibling-skill relations, grounding, drift checks, eval state, and portability.
+
+Skill Graph is the **library-level system** that works with this protocol. It indexes, routes, clusters, audits, and reverifies libraries of Skill-Metadata-Protocol-enriched skills.
 
 > **Migrating from an older schema?** Jump straight to the migration notes:
 > - [v2 → v3](manifest-contract.md#migration-note--v2--v3-v040) — `drift_check` scalar → object, `compatibility` scalar → object, `family` → `browse_category`, new optional fields
 > - [v1 → v2](manifest-contract.md#migration-note--v1--v2-sh-5784) — `scope` enum rename, `eval_status` split into three fields, `route_groups` → `routing_groups`
 > - Codemod: `node scripts/migrate-skill-v2-to-v3.js` upgrades v2 skills in place
-> - Planned v3 → v4 changes (ADR 0001, ADR 0004): `adjacent`/`boundary` removed in favour of `related`/`disjoint_with`; `urn` becomes required
+> - Planned v3 → v4 changes (ADR 0001, ADR 0004, ADR 0006): `adjacent` removed in favour of `related`; `boundary` remains the routing-layer handoff; `urn` becomes required
 
 ## Related Documents
 
 | Document | Purpose |
 |---|---|
-| `docs/metadata-contract.md` (this file) | Overview, archetype map, requiredness groups, schema strictness rules |
+| `docs/skill-metadata-protocol.md` (this file) | Overview, archetype map, requiredness groups, schema strictness rules |
 | `docs/field-reference.md` | One section per authored field — purpose, rules, examples, when to use |
 | `docs/field-decision-guide.md` | Decision tables for `scope`, `relations.*`, and the eval-health fields (`eval_artifacts`, `eval_state`, `routing_eval`) / `portability` |
-| `docs/concept-map.md` | Teaching map — 32 authored fields grouped by conceptual role; drift log vs earlier framings |
+| `docs/concept-map.md` | Teaching map — 33 authored fields grouped by conceptual role; drift log vs earlier framings |
 | `docs/manifest-contract.md` | Authored-to-generated bridge: rename map, loss policy, worked example |
 | `docs/adr/` | Architecture decision records — 0001 predicate set, 0002 JSON-LD @context, 0003 OntoClean rigidity tags, 0004 persistent identifiers |
 | `schemas/skill.context.jsonld` | JSON-LD @context mapping every authored field to W3C vocabularies (SKOS, Dublin Core, PROV-O) |
@@ -21,20 +25,20 @@
 
 ## Design Principles
 
-This contract is the public source of truth for the Skill Graph frontmatter format. Every design decision is in service of a benefit a working developer feels:
+This document is the public source of truth for the Skill Metadata Protocol frontmatter format. Every design decision is in service of a benefit a working developer feels:
 
 - **Keeps a flat author-facing frontmatter format** → you can author skills in plain YAML — no nested syntax to remember, no DSL to learn
 - **Keeps one `SKILL.md` file per skill** → a skill's everything-you-need-to-know lives at one path; no parallel sidecar files to keep in sync
 - **Keeps one generated manifest downstream** → consumers read a single deterministic artifact; the manifest is content-addressable and CI-verifiable
 - **Tightens field semantics** → lint catches you when `relations.depends_on` points at a skill that doesn't exist, instead of silently breaking the router at runtime
 - **Adds a small number of high-value fields beyond the Agent Skills base** → typed relations, drift detection, and project scoping become declarative metadata rather than tribal knowledge
-- **Stays additive to the Agent Skills standard so every Skill Graph skill can be transformed back to the base shape** → adopting Skill Graph does not trap you; the export transform at `scripts/export-skill.js` produces a valid Agent Skills file
+- **Stays additive to the Agent Skills standard so every protocol-enriched skill can be transformed back to the base shape** → adopting the protocol does not trap you; the export transform at `scripts/export-skill.js` produces a valid Agent Skills file
 
 ### What kind of graph is this?
 
-**In plain English:** Skill Graph lets one skill say *"I depend on that one, verify me with this one, and stop routing users here when they really mean that other one."* The four predicates (`depends_on`, `verify_with`, `boundary`, `adjacent`) are the typed edges that turn a skill collection into a graph an agent can reason over.
+**In plain English:** Skill Metadata Protocol lets one skill say *"I depend on that one, verify me with this one, and stop routing users here when they really mean that other one."* The relation predicates (`depends_on`, `verify_with`, `boundary`, `adjacent`, `related`, `broader`, `narrower`, `disjoint_with`) are the typed edges that Skill Graph can use to turn a skill collection into a graph an agent can reason over.
 
-Skill Graph is a **property graph with a controlled-vocabulary set of typed predicates**, not an RDF knowledge graph. Nodes are skills; edges are keys inside `relations.*`; node attributes are the 32 authored frontmatter fields. The JSON-LD `@context` at `schemas/skill.context.jsonld` projects the property graph into SKOS / Dublin Core Terms / PROV-O triples for consumers that want RDF semantics, but authoring stays in flat YAML.
+Skill Graph is a **property graph with a controlled-vocabulary set of typed predicates**, not an RDF knowledge graph. Nodes are skills; edges are keys inside `relations.*`; node attributes are the 33 authored frontmatter fields. The JSON-LD `@context` at `schemas/skill.context.jsonld` projects the property graph into SKOS / Dublin Core Terms / PROV-O triples for consumers that want RDF semantics, but authoring stays in flat YAML.
 
 Skill Graph does **not** promise:
 
@@ -60,24 +64,24 @@ If an overlay needs to *add* rather than *replace* a field's value (e.g. add key
 
 ## Relationship to the Agent Skills Standard
 
-> **This added structure is the price of making skills verifiable and system-aware once descriptions alone stop being enough.** If your library is small enough that descriptions and keywords are sufficient, stay on plain Agent Skills — Skill Graph's additional fields are overhead without payoff until the implicit graph appears.
+> **This added structure is the price of making skills verifiable and system-aware once descriptions alone stop being enough.** If your library is small enough that descriptions and keywords are sufficient, stay on plain Agent Skills — Skill Metadata Protocol's additional fields are overhead without payoff until the implicit graph appears.
 
-Skill Graph extends the [Agent Skills](https://agentskills.io/specification) open standard with a richer authoring contract. The base standard requires two frontmatter fields (`name` and `description`) and defines four optional fields (`license`, `compatibility`, `metadata`, `allowed-tools`). Skill Graph keeps the two required base fields and three of the four optional base fields (`license`, `compatibility`, `allowed-tools`) as top-level Skill Graph fields — though `compatibility` is tightened from a free-text string to a structured object, and `name` allows `/` and `:` for namespacing. It does not use the base `metadata` field; Skill Graph promotes its own extensions to additional named top-level fields instead.
+Skill Metadata Protocol extends the [Agent Skills](https://agentskills.io/specification) open standard with a richer authoring contract. The base standard requires two frontmatter fields (`name` and `description`) and defines four optional fields (`license`, `compatibility`, `metadata`, `allowed-tools`). The protocol keeps the two required base fields and three of the four optional base fields (`license`, `compatibility`, `allowed-tools`) as top-level fields — though `compatibility` is tightened from a free-text string to a structured object, and `name` allows `/` and `:` for namespacing. It does not use the base `metadata` field; protocol extensions are promoted to additional named top-level fields instead.
 
-A Skill Graph SKILL.md is *not* automatically a valid Agent Skills file: the `compatibility` shape and `name` pattern diverge. The export transform at `scripts/export-skill.js` produces a `SKILL.agent-skills.md` that is valid against the base standard — flattening `compatibility` to a string and nesting Skill Graph's extension fields under the base `metadata:` key. Round-trip parity is via the export transform, not via direct schema compatibility.
+A Skill-Metadata-Protocol-enriched `SKILL.md` is *not* automatically a valid Agent Skills file: the `compatibility` shape and `name` pattern diverge. The export transform at `scripts/export-skill.js` produces a `SKILL.agent-skills.md` that is valid against the base standard — flattening `compatibility` to a string and nesting protocol extension fields under the base `metadata:` key. Round-trip parity is via the export transform, not via direct schema compatibility.
 
-| Field | Source | Skill Graph treatment |
+| Field | Source | Skill Metadata Protocol treatment |
 |---|---|---|
-| `name` | Agent Skills required | Kept as required; Skill Graph tightens the character pattern |
+| `name` | Agent Skills required | Kept as required; the protocol tightens the character pattern |
 | `description` | Agent Skills required | Kept as required; scoped to routing |
 | `license` | Agent Skills optional | Kept top-level; strongly recommended for shared skills |
 | `compatibility` | Agent Skills optional | Kept top-level; optional |
 | `allowed-tools` | Agent Skills optional | Kept top-level as a space-separated string |
-| `metadata` | Agent Skills optional | Not used at the top level; Skill Graph promotes extensions to named fields |
-| `schema_version`, `version`, `type`, `browse_category`, `scope`, `owner`, `freshness`, `drift_check`, `eval_artifacts`, `eval_state`, `routing_eval` | Skill Graph extension | Required for Skill Graph; additive to the base |
-| `relations`, `grounding`, `portability`, `triggers`, `keywords`, `examples`, `anti_examples`, `paths`, `project_tags`, `category`, `routing_groups`, `lifecycle`, `runtime_telemetry`, `extends`, `stability`, `superseded_by` | Skill Graph extension | Optional in Skill Graph; additive to the base |
+| `metadata` | Agent Skills optional | Not used at the top level; the protocol promotes extensions to named fields |
+| `schema_version`, `version`, `type`, `browse_category`, `scope`, `owner`, `freshness`, `drift_check`, `eval_artifacts`, `eval_state`, `routing_eval` | Skill Metadata Protocol extension | Required by the protocol; additive to the base |
+| `relations`, `grounding`, `portability`, `triggers`, `keywords`, `examples`, `anti_examples`, `paths`, `project_tags`, `category`, `routing_groups`, `lifecycle`, `runtime_telemetry`, `extends`, `stability`, `superseded_by` | Skill Metadata Protocol extension | Optional protocol enrichments; additive to the base |
 
-A Skill Graph `SKILL.md` is **not** a valid Agent Skills file as authored, because Skill Graph requires fields the base standard does not define. An export transform can produce an Agent-Skills-valid file by moving every Skill Graph extension field under the standard `metadata:` key. The transform is implemented as `scripts/export-skill.js`.
+A Skill-Metadata-Protocol-enriched `SKILL.md` is **not** a valid Agent Skills file as authored, because the protocol requires fields the base standard does not define. An export transform can produce an Agent-Skills-valid file by moving every protocol extension field under the standard `metadata:` key. The transform is implemented as `scripts/export-skill.js`.
 
 ## Archetype Section Map
 
@@ -94,7 +98,7 @@ Each skill archetype expects a specific set of body H2 sections. These are the m
 
 ### Relationship to wider skill-authoring doctrine
 
-This archetype map is Skill Graph's own minimum. When Skill Graph is adopted into a monorepo that already has a canonical authoring standard (e.g., a `canonical-standard` or `skill-scaffold` skill), the adopter's standard may impose additional required sections or stricter content rules on top of this map. Skill Graph does not replace such a standard — it provides the portable subset that every skill must satisfy regardless of which adopter's fuller doctrine also applies. If you are adopting Skill Graph into a repo with a `canonical-standard` skill, reference that skill's archetype canon instead of republishing a narrower one in your own repo docs.
+This archetype map is Skill Metadata Protocol's own minimum. When the protocol is adopted into a monorepo that already has a canonical authoring standard (e.g., a `canonical-standard` or `skill-scaffold` skill), the adopter's standard may impose additional required sections or stricter content rules on top of this map. Skill Metadata Protocol does not replace such a standard — it provides the portable subset that every skill must satisfy regardless of which adopter's fuller doctrine also applies. If you are adopting Skill Graph into a repo with a `canonical-standard` skill, reference that skill's archetype canon instead of republishing a narrower one in your own repo docs.
 
 ## Requiredness Groups
 
@@ -140,7 +144,7 @@ triggers
 
 ### Optional enrichments
 
-These improve portability, discoverability, and health tracking, but are not required for a valid Skill Graph skill.
+These improve portability, discoverability, and health tracking, but are not required for a valid Skill Metadata Protocol skill.
 
 ```yaml
 paths
@@ -221,13 +225,14 @@ flowchart LR
 
 **Legend.** Blue = the file. Green = a required layer. Yellow dashed = an optional / specimen-only layer.
 
-### The 32 authored fields, grouped by purpose
+### The 33 authored fields, grouped by purpose
 
-The YAML frontmatter has 32 top-level fields. The schema is the authoritative source for types and requiredness (`schemas/skill.v3.schema.json`); the canonical per-field reference is [`docs/field-reference.md`](field-reference.md). The table below is a navigable index — every field name links to its reference section. `always` = required by the base schema; `if <condition>` = conditionally required; blank = optional enrichment.
+The YAML frontmatter has 33 top-level fields. The schema is the authoritative source for types and requiredness (`schemas/skill.v3.schema.json`); the canonical per-field reference is [`docs/field-reference.md`](field-reference.md). The table below is a navigable index — every field name links to its reference section. `always` = required by the base schema; `if <condition>` = conditionally required; blank = optional enrichment.
 
 | Group | Field | Required? | Shape |
 |---|---|---|---|
 | **Identity** | [`name`](field-reference.md#name) | always | string |
+| | [`urn`](field-reference.md#urn) | | persistent `urn:skill:<repo>:<skill-name>` identifier |
 | | [`description`](field-reference.md#description) | always | string |
 | | [`version`](field-reference.md#version) | always | semver string |
 | | [`owner`](field-reference.md#owner) | always | string |
@@ -243,7 +248,7 @@ The YAML frontmatter has 32 top-level fields. The schema is the authoritative so
 | | [`lifecycle`](field-reference.md#lifecycle) | | `{ stale_after_days, review_cadence }` |
 | | [`runtime_telemetry`](field-reference.md#runtime_telemetry) | | `{ feedback_source, metrics }` |
 | **Eval Health** (orthogonal triple) | [`eval_artifacts`](field-reference.md#eval_artifacts) | always | `present` \| `planned` \| `none` |
-| | [`eval_state`](field-reference.md#eval_state) | always | `passing` \| `unverified` \| `failing` |
+| | [`eval_state`](field-reference.md#eval_state) | always | `unverified` \| `passing` \| `monitored` |
 | | [`routing_eval`](field-reference.md#routing_eval) | always | `present` \| `absent` |
 | **Activation & Routing** | [`keywords`](field-reference.md#keywords) | if routable | string[] |
 | | [`triggers`](field-reference.md#triggers) | | string[] |
@@ -252,7 +257,7 @@ The YAML frontmatter has 32 top-level fields. The schema is the authoritative so
 | | [`anti_examples`](field-reference.md#anti_examples) | | string[] (negative prompts) |
 | | [`project_tags`](field-reference.md#project_tags) | | string[] |
 | | [`routing_groups`](field-reference.md#routing_groups) | | string[] |
-| **Relations** | [`relations`](field-reference.md#relations) | | `{ adjacent, boundary, verify_with, depends_on }` |
+| **Relations** | [`relations`](field-reference.md#relations) | | `{ adjacent, related, broader, narrower, boundary, disjoint_with, verify_with, depends_on }` |
 | **Grounding** | [`grounding`](field-reference.md#grounding) | if `scope: codebase` | `{ domain_object, grounding_mode, truth_sources, failure_modes, evidence_priority }` |
 | **Portability & Standards** | [`portability`](field-reference.md#portability) | | `{ readiness, targets }` |
 | | [`license`](field-reference.md#license) | | SPDX identifier |
@@ -314,7 +319,7 @@ For the field-by-field rationale and worked-example confusion-cases, see [`docs/
 
 ## How JSON-LD context maps fields to W3C terms (ADR 0002)
 
-Skill Graph ships an optional JSON-LD `@context` at `schemas/skill.context.jsonld` that projects every authored field onto a W3C standard vocabulary term. This is the FAIR Interoperability layer (Wilkinson et al. 2016, DOI:10.1038/sdata.2016.18): a Skill Graph skill loaded into a knowledge-graph consumer that already understands SKOS, PROV-O, OWL, or Dublin Core gets RDF-projectable semantics with no Skill-Graph-specific code.
+Skill Metadata Protocol ships an optional JSON-LD `@context` at `schemas/skill.context.jsonld` that projects every authored field onto a W3C standard vocabulary term. This is the FAIR Interoperability layer (Wilkinson et al. 2016, DOI:10.1038/sdata.2016.18): a protocol-enriched skill loaded into a knowledge-graph consumer that already understands SKOS, PROV-O, OWL, or Dublin Core gets RDF-projectable semantics with no Skill-Metadata-Protocol-specific code.
 
 The context is the source of truth for cross-vocabulary mapping. The most consequential mappings:
 
@@ -346,16 +351,16 @@ The `@context` also declares the `owl` namespace (since the v1.1.0 update) so th
 
 ## Schema Strictness
 
-The Skill Graph schemas are intentionally strict.
+The Skill Metadata Protocol schemas are intentionally strict.
 
 - Unknown top-level fields fail validation rather than being silently accepted.
 - Field names must not rely on undocumented aliases.
 - New public fields must be added by updating both the docs and the schemas.
-- If you touched `docs/metadata-contract.md` or `schemas/skill.schema.json`, also update the other side so they remain in lockstep. The metadata contract is the source of truth for semantics; the schema is the source of truth for machine enforcement. Drift between them is a bug.
+- If you touched `docs/skill-metadata-protocol.md` or `schemas/skill.schema.json`, also update the other side so they remain in lockstep. Skill Metadata Protocol is the source of truth for semantics; the schema is the source of truth for machine enforcement. Drift between them is a bug.
 
 ## Relationship to Audit Tooling
 
-This contract is designed to work with:
+Skill Metadata Protocol is designed to work with:
 
 1. `docs/single-skill-audit-checklist.md`
 2. `docs/library-audit-workflow.md`
@@ -381,7 +386,7 @@ It also does not require a full private control plane. The OSS contract keeps on
 
 ### Authored in `SKILL.md`
 
-The 32 authored fields (in schema order): `schema_version`, `name`, `description`, `version`, `type`, `browse_category`, `category`, `scope`, `owner`, `freshness`, `drift_check`, `eval_artifacts`, `eval_state`, `routing_eval`, `stability`, `superseded_by`, `license`, `compatibility`, `allowed-tools`, `extends`, `triggers`, `keywords`, `examples`, `anti_examples`, `paths`, `project_tags`, `routing_groups`, `relations`, `grounding`, `portability`, `lifecycle`, `runtime_telemetry`.
+The 33 authored fields (in schema order): `schema_version`, `name`, `urn`, `description`, `version`, `type`, `browse_category`, `category`, `scope`, `owner`, `freshness`, `drift_check`, `eval_artifacts`, `eval_state`, `routing_eval`, `stability`, `superseded_by`, `license`, `compatibility`, `allowed-tools`, `extends`, `triggers`, `keywords`, `examples`, `anti_examples`, `paths`, `project_tags`, `routing_groups`, `relations`, `grounding`, `portability`, `lifecycle`, `runtime_telemetry`.
 
 For the purpose, rules, and examples for each field, see `docs/field-reference.md`.
 

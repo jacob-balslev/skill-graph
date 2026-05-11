@@ -2,7 +2,7 @@
 
 > **Read this if:** you want to understand how the ~70 files in this repo relate to each other, which file is authoritative when two files disagree, and why the contract doesn't silently drift.
 
-Skill Graph is a contract-first project. The repo is organised in five authority tiers — each tier derives from the one above it, and tooling enforces the derivation automatically. When any two files appear to contradict each other, the tier with higher authority wins; the lower-tier file is a bug.
+Skill Graph is built around a contract-first protocol. Skill Metadata Protocol defines the skill-level contract; Skill Graph supplies the library-level tooling around it. The repo is organised in five authority tiers — each tier derives from the one above it, and tooling enforces the derivation automatically. When any two files appear to contradict each other, the tier with higher authority wins; the lower-tier file is a bug.
 
 ---
 
@@ -36,7 +36,7 @@ flowchart LR
 <!-- Rendered copy for non-Mermaid viewers. Regenerate via: npx @mermaid-js/mermaid-cli -i <source> -o docs/images/system-model.png -->
 <img src="./images/system-model.png" alt="System model — SKILL.md is validated by skill-lint.js, compiled into skills.manifest.json, and audited by skill-audit.js which emits findings/verdict/scorecard artifacts" width="900" />
 
-**Legend.** Blue = authored input. Green = tooling. Yellow = output artifact. Solid arrows are the data flow. Every entity in this diagram has its own deep-dive diagram: [§ Anatomy](metadata-contract.md#anatomy) for `SKILL.md`, [§ Loop at a Glance](library-audit-workflow.md#loop-at-a-glance) for `skill-audit.js`, [§ Manifest Contract](manifest-contract.md) for `skills.manifest.json`.
+**Legend.** Blue = authored input. Green = tooling. Yellow = output artifact. Solid arrows are the data flow. Every entity in this diagram has its own deep-dive diagram: [§ Anatomy](skill-metadata-protocol.md#anatomy) for `SKILL.md`, [§ Loop at a Glance](library-audit-workflow.md#loop-at-a-glance) for `skill-audit.js`, [§ Manifest Contract](manifest-contract.md) for `skills.manifest.json`.
 
 ---
 
@@ -80,8 +80,8 @@ Documents that describe the schemas in prose. If a Tier 2 file disagrees with Ti
 
 | File | Role |
 |---|---|
-| `docs/metadata-contract.md` | Authoritative overview: archetype section map, requiredness groups, strictness rules, schema versioning policy. |
-| `docs/field-reference.md` | One section per authored field. All 32 v3 fields with purpose, rules, allowed values, examples. |
+| `docs/skill-metadata-protocol.md` | Authoritative overview: archetype section map, requiredness groups, strictness rules, schema versioning policy. |
+| `docs/field-reference.md` | One section per authored field. All 33 v3 fields with purpose, rules, allowed values, examples. |
 | `docs/field-decision-guide.md` | Decision tables for the hard choices: `scope`, `relations.*`, eval-health triple, `portability`, `project_tags`, and the "tag vs. category vs. routing_groups" question. |
 | `docs/manifest-contract.md` | The authored → generated bridge: rename map, loss policy, per-version migration notes, worked example. |
 
@@ -111,7 +111,7 @@ Scripts that police Tier 1 (lint, consistency) or compile Tier 1's output (manif
 
 | File | Role |
 |---|---|
-| `scripts/check-contract-consistency.js` | Six checks (C1–C6): field-set parity, authored-to-generated parity, artifact-root convention, sample manifest correctness, example truth invariants, versioned schema parity. |
+| `scripts/check-contract-consistency.js` | Seven checks (C1–C7): field-set parity, authored-to-generated parity, artifact-root convention, sample manifest correctness, example truth invariants, versioned schema parity, generated field-reference parity. |
 
 ### Compilation and transformation
 
@@ -127,7 +127,7 @@ Scripts that police Tier 1 (lint, consistency) or compile Tier 1's output (manif
 
 ```mermaid
 flowchart LR
-  Skills["<b>skills/&#42;/SKILL.md</b><br/>+ examples/skill-template.md<br/>authored frontmatter"]
+  Skills["<b>skills/&#42;/SKILL.md</b><br/>+ examples/skill-metadata-template.md<br/>authored frontmatter"]
   Config[".skill-graph/config.json<br/>workspace roots + projects<br/><i>optional — falls back to skills/</i>"]
   Parse["<b>parse-frontmatter.js</b><br/>YAML → object"]
   Rename["<b>generate-manifest.js</b><br/>apply rename map<br/>group under activation / health"]
@@ -279,12 +279,12 @@ Concrete artifacts that show adopters what "good" looks like. Every specimen is 
 
 | File | Role |
 |---|---|
-| `examples/skill-template.md` | Self-referential authoring template. Its subject is skill authoring itself. Demonstrates every v3 field including object-shaped `drift_check`, `compatibility`, `boundary[{skill, reason}]`, and `lifecycle`. |
+| `examples/skill-metadata-template.md` | Self-referential authoring template. Its subject is skill authoring itself. Demonstrates every v3 field including object-shaped `drift_check`, `compatibility`, `boundary[{skill, reason}]`, and `lifecycle`. |
 | `examples/skills.manifest.sample.json` | Generator-produced sample. Drift-checked against live generator output by `skill-lint.js` check 8. |
 
 ### Starter skills
 
-Eight starters, chosen to cover every archetype × scope combination that the schema permits:
+The repo currently ships a larger `skills/` library. The eight starters below are the canonical specimen subset chosen to cover every archetype × scope combination that the schema permits:
 
 | Skill | `type` | `scope` | Unique thing it demonstrates |
 |---|---|---|---|
@@ -323,7 +323,7 @@ flowchart LR
   RF["refactor<br/><i>workflow · portable</i>"]
   SR["skill-router<br/><i>router · portable</i>"]
   TS["testing-strategy<br/><i>capability · portable</i>"]
-  ST(["skill-template<br/><i>specimen · reference</i>"])
+  ST(["skill-metadata-template<br/><i>specimen · reference</i>"])
 
   %% depends_on — thick solid, load-bearing
   RF ==>|depends_on<br/>^1.0.0| TS
@@ -413,7 +413,7 @@ Break any one of these invariants and CI fails. That's why the tiering works: th
 
 | You want to add | Tier | Also touch |
 |---|---|---|
-| A new required field | 1 (schema) | 2 (field-reference.md, metadata-contract.md, manifest-contract.md rename map), 3 (generator if grouped; lint deprecation warning if renaming), 5 (template + at least one starter) |
+| A new required field | 1 (schema) | 2 (field-reference.md, skill-metadata-protocol.md, manifest-contract.md rename map), 3 (generator if grouped; lint deprecation warning if renaming), 5 (template + at least one starter) |
 | A new optional field | 1 (schema) | 2 (field-reference.md entry), 3 (generator flow-through), 5 (template if it demonstrates the new field) |
 | A new lint rule | 3 (skill-lint.js or scripts/lint/) | — |
 | A new tool that uses the manifest | 4 | README Reference consumer section |
@@ -428,7 +428,7 @@ When in doubt: if the file *defines* a constraint, it's Tier 1. If it *describes
 ## Further reading
 
 - [`README.md`](../README.md) — the project overview; now structured by these same tiers.
-- [`docs/metadata-contract.md`](metadata-contract.md) — the authoritative field-semantics doc; § Anatomy carries the Mermaid diagram of the SKILL.md three-layer composition (frontmatter × body × teaching layer).
+- [`docs/skill-metadata-protocol.md`](skill-metadata-protocol.md) — the authoritative field-semantics doc; § Anatomy carries the Mermaid diagram of the SKILL.md three-layer composition (frontmatter × body × teaching layer).
 - [`docs/manifest-contract.md`](manifest-contract.md) — the authored → generated bridge.
 - [`docs/field-decision-guide.md`](field-decision-guide.md) — decision tables for hard field choices.
 - [`docs/library-audit-workflow.md`](library-audit-workflow.md) — the repeatable audit loop; § Loop at a Glance carries the Mermaid diagram of the five-phase flow (deterministic → graded → aggregate → fix → re-verify).

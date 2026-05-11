@@ -2,6 +2,8 @@
 
 > Which skills should an OSS Skill Graph library ship to be credibly useful to **all humans and AI agents**? This page names the recommended set, organized by relevance tier. For the broader Wave 2 expansion plan (skills that demonstrate the standard's expressive range across archetypes and scopes), read [`plans/wave-2-extraction.md`](plans/wave-2-extraction.md).
 
+**Status note (2026-05-10):** the current repo ships the Tier A and Tier B recommendations plus additional conceptual skills. This document is retained as sequencing rationale and recommendation criteria, not as the current inventory.
+
 ## Selection criterion
 
 Skills are picked by **universal relevance**, not by graph density or archetype-coverage demonstration. The test for inclusion: "Would a randomly-sampled developer or AI agent across any reasonable project benefit from having this skill loaded?"
@@ -18,24 +20,24 @@ Picks that fail any filter are deferred to project-specific Wave 2 batches (Tech
 
 ## Tier A — The Essential 12 (must-ship for any OSS skill library)
 
-These 12 skills form the credible baseline. Without them the library cannot honestly claim to help "all humans and AI agents." 8 are already shipped as starters in v0.4.0; 4 must be added.
+These 12 skills form the credible baseline. Without them the library cannot honestly claim to help "all humans and AI agents." In the current repo, all Tier A skills are shipped; the original eight-starter subset remains the canonical minimal specimen set.
 
 | # | Skill | Status | Archetype | Scope | Why it's essential |
 |---:|---|---|---|---|---|
-| 1 | `skill-router` | starter | router | reference | The entry point. Without a router skill, agents loading the library do not know how to dispatch among the rest. Demonstrates the unique value claim — graph-aware selection — at the same time. |
-| 2 | `skill-scaffold` | **NEW** | capability | reference | Without this, adopters cannot extend the library — they can only consume it. The whole "all humans and AI agents to use" mission requires that anyone can author a new skill correctly. This skill teaches the contract by example. Closes the empty `scope: reference` gap in the starter set (currently zero starters use it). |
-| 3 | `graph-audit` | starter | workflow | reference | Library integrity matters as soon as you ship. Without this, drift accumulates silently. Operationally needed by anyone running the library more than 30 days. |
-| 4 | `documentation` | starter | capability | portable | Every codebase, every agent. The most cross-cutting skill in any library. |
-| 5 | `naming-conventions` | **NEW** | capability | portable | Affects every file, function, variable, column, route, token. The single most cross-cutting authoring concern in any codebase, used by humans and agents at every commit. |
-| 6 | `testing-strategy` | starter | capability | portable | Universal need; pyramid/trophy/honeycomb decisions apply across stacks. |
-| 7 | `debugging` | starter | workflow | portable | Both humans and agents get stuck; both need the same triage discipline. |
-| 8 | `refactor` | starter | workflow | portable | Behavior-preserving change discipline. The most-requested operation when adopters use AI agents to clean up legacy code. |
-| 9 | `code-review` | **NEW** | workflow | portable | Universal: humans review AI output, agents review human PRs, peers review peers. The most valuable skill an OSS library can ship to make AI-assisted coding production-safe. |
-| 10 | `prompt-craft` | **NEW** | capability | portable | The meta-skill of working with LLMs. Used by every human asking an agent to do anything; used by every agent composing sub-agent prompts. Universal in the AI-coding era. |
-| 11 | `owasp-security` | **NEW** | capability | portable | OWASP Top 10 is the universally-applicable security baseline. AI-generated code has 1.7–2.74× more security issues than human-written; a security skill in the library is non-negotiable. |
-| 12 | `a11y` | starter | capability | portable | WCAG 2.2 is the universal accessibility floor. Every UI, every public-facing surface. Already shipped — keep. |
+| 1 | `skill-router` | shipped starter | router | reference | The entry point. Without a router skill, agents loading the library do not know how to dispatch among the rest. Demonstrates the unique value claim — graph-aware selection — at the same time. |
+| 2 | `skill-scaffold` | shipped | capability | reference | Without this, adopters cannot extend the library — they can only consume it. The whole "all humans and AI agents to use" mission requires that anyone can author a new skill correctly. This skill teaches the contract by example. |
+| 3 | `graph-audit` | shipped starter | workflow | reference | Library integrity matters as soon as you ship. Without this, drift accumulates silently. Operationally needed by anyone running the library more than 30 days. |
+| 4 | `documentation` | shipped starter | capability | portable | Every codebase, every agent. The most cross-cutting skill in any library. |
+| 5 | `naming-conventions` | shipped | capability | portable | Affects every file, function, variable, column, route, token. The single most cross-cutting authoring concern in any codebase, used by humans and agents at every commit. |
+| 6 | `testing-strategy` | shipped starter | capability | portable | Universal need; pyramid/trophy/honeycomb decisions apply across stacks. |
+| 7 | `debugging` | shipped starter | workflow | portable | Both humans and agents get stuck; both need the same triage discipline. |
+| 8 | `refactor` | shipped starter | workflow | portable | Behavior-preserving change discipline. The most-requested operation when adopters use AI agents to clean up legacy code. |
+| 9 | `code-review` | shipped | workflow | portable | Universal: humans review AI output, agents review human PRs, peers review peers. The most valuable skill an OSS library can ship to make AI-assisted coding production-safe. |
+| 10 | `prompt-craft` | shipped | capability | portable | The meta-skill of working with LLMs. Used by every human asking an agent to do anything; used by every agent composing sub-agent prompts. Universal in the AI-coding era. |
+| 11 | `owasp-security` | shipped | capability | portable | OWASP Top 10 is the universally-applicable security baseline. AI-generated code has 1.7–2.74× more security issues than human-written; a security skill in the library is non-negotiable. |
+| 12 | `a11y` | shipped starter | capability | portable | WCAG 2.2 is the universal accessibility floor. Every UI, every public-facing surface. |
 
-**Net change vs current v0.4.0:** add `skill-scaffold`, `naming-conventions`, `code-review`, `prompt-craft`, `owasp-security`. Drop nothing. Total goes from 8 → 13. (`lint-overlay` is the 9th existing starter — kept because it is the only `archetype: overlay` worked example and the contract's overlay semantics are unverified without it.)
+**Current status:** Tier A is shipped. The original recommendation closed the gap from the eight-starter baseline by adding `skill-scaffold`, `naming-conventions`, `code-review`, `prompt-craft`, and `owasp-security`; `lint-overlay` remains because it is the worked `archetype: overlay` specimen.
 
 ---
 
@@ -74,9 +76,11 @@ The remaining Wave 2 candidates from the broader plan. These are **not** univers
 
 `agent-orchestration`, `agent-observability`, `hook-patterns`, `autonomous-loop-patterns`, `human-in-the-loop`, `session-lifecycle`, `claude-api`. Specialized to multi-agent systems; not universal.
 
-### Design & UX cluster (currently zero in OSS library)
+### Design & UX cluster (partially shipped in OSS library)
 
-`color-science`, `typography`, `design-token-architecture`, `motion-design`, `interaction-feedback`, `responsive`, `a11y-deep` (deeper than the Tier A `a11y`). Closes a glaring coverage gap for design-aware adopters.
+Shipped coverage now includes `a11y`, `task-analysis`, `information-architecture`, `microcopy`, `semiotics`, `design-system-architecture`, `layout-composition`, `interaction-patterns`, `visual-design-foundations`, `interaction-feedback`, and `form-ux-architecture`.
+
+Deferred split candidates: `color-science`, `typography`, `motion-design`, and `a11y-deep`. Do not add `design-token-architecture` as a separate OSS skill unless routing evals prove `design-system-architecture` is too broad; token architecture is currently owned there. Do not add a standalone `responsive` skill unless `layout-composition` becomes overloaded; responsive layout is currently owned there.
 
 ### Doctrine & Strategy cluster (academic-rigor signature picks)
 
@@ -88,8 +92,8 @@ The remaining Wave 2 candidates from the broader plan. These are **not** univers
 
 | Phase | Ships | When |
 |---|---|---|
-| **Phase 0 (today)** | The 8 starters in v0.4.0 | Done |
-| **Phase 1 — close Tier A** | Add `skill-scaffold`, `naming-conventions`, `code-review`, `prompt-craft`, `owasp-security` | Next milestone (~2–3 weeks of focused authoring) |
+| **Phase 0 (baseline)** | The 8 starters in v0.4.0 | Done |
+| **Phase 1 — close Tier A** | Add `skill-scaffold`, `naming-conventions`, `code-review`, `prompt-craft`, `owasp-security` | Done |
 | **Phase 2 — Tier B batch 1** | `context-engineering`, `tool-call-strategy`, `agent-engineering`, `skill-infrastructure` | Done — 2026-05-06 |
 | **Phase 3 — Tier B batch 2** | `database-migration`, `webhook-integration`, `version-control`, `error-tracking` | Done — 2026-05-06 |
 | **Phase 4 — Tier C pilot** | Pick one Tier C cluster based on observed adopter demand; ship its 5–7 skills | When Phase 3 stabilizes |
@@ -104,7 +108,7 @@ To set expectations:
 
 - **Not a graph-density demo.** The broader [`plans/wave-2-extraction.md`](plans/wave-2-extraction.md) optimizes for archetype × scope coverage and inter-skill relations. This list optimizes for adopter utility. The two lists overlap but are not the same.
 - **Not a comprehensive index.** A real adopter will need project-specific skills beyond Tier A + B. Tier C names categories, not exhaustive lists.
-- **Not a contract.** This is a recommendation. The OSS library currently ships the 8 starters; this doc names the next 5 to add and the 8 after that. The maintainer chooses the actual sequence.
+- **Not a contract.** This is a recommendation. The OSS library has moved beyond the original 8-starter baseline; this doc explains the recommended order and why those skills mattered. The maintainer chooses the actual sequence.
 
 ---
 
@@ -140,7 +144,7 @@ Both decisions are the maintainer's. The recommendations above hold regardless.
 | Should you adopt Skill Graph at all? | [`ADOPTION.md`](ADOPTION.md) |
 | Conceptual primer | [`PRIMER.md`](PRIMER.md) |
 | Field-by-field semantics | [`field-reference.md`](field-reference.md) |
-| Authoring template | [`../examples/skill-template.md`](../examples/skill-template.md) |
+| Authoring template | [`../examples/skill-metadata-template.md`](../examples/skill-metadata-template.md) |
 | Architecture and authority tiers | [`ARCHITECTURE.md`](ARCHITECTURE.md) |
 | Broader Wave 2 plan (graph-density-optimized) | [`plans/wave-2-extraction.md`](plans/wave-2-extraction.md) |
 | 4-reviewer board meeting and synthesis | the 2026-05-04 multi-model synthesis (kept private) |

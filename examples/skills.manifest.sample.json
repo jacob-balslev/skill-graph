@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-05-06T00:00:00Z",
+  "generated_at": "1970-01-01T00:00:00Z",
   "schema_version": 3,
   "skills": [
     {
@@ -51,7 +51,7 @@
       "compatibility": {
         "notes": "Markdown, Git, any web stack"
       },
-      "description": "Use when building or reviewing interactive UI, forms, navigation, or dynamic content. Covers semantic HTML, keyboard access, focus management, labeling, state-change announcement, and reduced-motion / high-contrast preferences. Do NOT use for color-palette creation, visual branding, or prose reading-level accessibility — those belong to visual-design and documentation respectively.",
+      "description": "Use when building or reviewing interactive UI, forms, navigation, or dynamic content. Covers semantic HTML, keyboard access, focus management, labeling, state-change announcement, and reduced-motion / high-contrast preferences. Do NOT use for color-palette creation, visual branding, feedback-state staging, or prose reading-level accessibility - those belong to `visual-design-foundations`, `interaction-feedback`, and documentation respectively.",
       "health": {
         "drift_check": {
           "last_verified": "2026-04-18"
@@ -87,7 +87,21 @@
           {
             "reason": "diagnosis classifies failure symptoms (Logic / Runtime / Performance / etc.) for triage; a11y owns assistive-tech behavior. The phrase 'rewrite this error message...' is a documentation/UX concern, not a diagnosis or a11y concern — diagnosis is named here so the router excludes it from a11y's positive scope.",
             "skill": "diagnosis"
+          },
+          {
+            "reason": "visual-design-foundations owns palette, typography, spacing, and visual craft; a11y owns whether the resulting interaction is perceivable, operable, understandable, and robust",
+            "skill": "visual-design-foundations"
+          },
+          {
+            "reason": "interaction-feedback owns feedback-state staging; a11y owns whether those state changes are announced and operable",
+            "skill": "interaction-feedback"
           }
+        ],
+        "related": [
+          "interaction-patterns",
+          "form-ux-architecture",
+          "interaction-feedback",
+          "design-system-architecture"
         ],
         "verify_with": [
           "testing-strategy"
@@ -140,7 +154,7 @@
           "safety caps",
           "iteration limit",
           "cost budget",
-          "idempotency key",
+          "agent idempotency guard",
           "failure recovery",
           "retry backoff",
           "escalation path",
@@ -150,11 +164,11 @@
           "ghost claim",
           "telephone game",
           "file-based coordination",
-          "continuation signal",
+          "agent continuation protocol",
           "exit code protocol",
           "heartbeat",
           "flow engineering",
-          "software 3.0"
+          "software 3.0 agent systems"
         ]
       },
       "allowed-tools": "Read Grep Bash Edit Write",
@@ -227,6 +241,101 @@
     {
       "activation": {
         "anti_examples": [
+          "plan unit, integration, and e2e tests for this product feature",
+          "run the skill graph lint and overlap tooling",
+          "debug why yesterday's agent run failed",
+          "write production code to fix this failing test"
+        ],
+        "examples": [
+          "design an eval set for whether this skill routes correctly against near-miss prompts",
+          "create a rubric for judging agent outputs on grounded project knowledge extraction",
+          "what hard negatives should test this router before we mark routing_eval present?",
+          "turn these agent failure traces into regression eval cases"
+        ],
+        "keywords": [
+          "agent eval",
+          "AI eval design",
+          "skill routing eval",
+          "eval rubric",
+          "hard negatives",
+          "grader design",
+          "regression eval",
+          "trace evaluation",
+          "acceptance threshold",
+          "prompt eval"
+        ]
+      },
+      "allowed-tools": "Read Grep",
+      "browse_category": "quality",
+      "category": "ai-engineering/evaluation",
+      "compatibility": {
+        "notes": "Portable eval-design discipline for agent workflows, skill routers, prompt systems, and tool-use policies."
+      },
+      "description": "Use when designing evaluations for AI agents, skills, routers, prompts, tool-use policies, or multi-step workflows: task sets, rubrics, graders, hard negatives, regression cases, traces, and acceptance thresholds. Do NOT use for application test planning (use `testing-strategy`), skill-library health tooling (use `skill-infrastructure`), or live debugging of a failed run (use `debugging`).",
+      "health": {
+        "drift_check": {
+          "last_verified": "2026-05-11"
+        },
+        "eval_artifacts": "planned",
+        "eval_state": "unverified",
+        "freshness": "2026-05-11",
+        "has_grounding": false,
+        "has_relations": true,
+        "lifecycle": {
+          "review_cadence": "quarterly",
+          "stale_after_days": 365
+        },
+        "routing_eval": "absent"
+      },
+      "id": "agent-eval-design",
+      "license": "MIT",
+      "name": "agent-eval-design",
+      "owner": "skill-graph-maintainer",
+      "path": "skills/agent-eval-design/SKILL.md",
+      "portability": {
+        "readiness": "scripted",
+        "targets": [
+          "agent-skills"
+        ]
+      },
+      "relations": {
+        "boundary": [
+          {
+            "reason": "testing-strategy plans software tests; agent-eval-design designs behavioral evals for AI agents and skills",
+            "skill": "testing-strategy"
+          },
+          {
+            "reason": "skill-infrastructure owns library health tooling; agent-eval-design owns eval content and grading design",
+            "skill": "skill-infrastructure"
+          },
+          {
+            "reason": "debugging investigates a live failure; agent-eval-design turns patterns into future evals",
+            "skill": "debugging"
+          },
+          {
+            "reason": "code-review evaluates diffs; agent-eval-design evaluates agent behavior",
+            "skill": "code-review"
+          }
+        ],
+        "related": [
+          "skill-router",
+          "context-engineering",
+          "testing-strategy",
+          "skill-infrastructure"
+        ],
+        "verify_with": [
+          "testing-strategy",
+          "skill-infrastructure"
+        ]
+      },
+      "scope": "portable",
+      "stability": "experimental",
+      "type": "capability",
+      "version": "1.0.0"
+    },
+    {
+      "activation": {
+        "anti_examples": [
           "improve this specific prompt for the grader",
           "review this AI-generated PR for correctness",
           "design the checkpoint state machine for our loop",
@@ -244,9 +353,9 @@
           "how do I match autonomy level to the risk profile of the task?"
         ],
         "keywords": [
-          "software 3.0",
+          "software 3.0 concepts",
           "vibe coding",
-          "agentic engineering",
+          "agentic engineering doctrine",
           "autonomy slider",
           "prompt as code",
           "karpathy three eras",
@@ -325,6 +434,298 @@
         "verify_with": [
           "code-review",
           "testing-strategy"
+        ]
+      },
+      "scope": "portable",
+      "stability": "experimental",
+      "type": "capability",
+      "version": "1.0.0"
+    },
+    {
+      "activation": {
+        "anti_examples": [
+          "define the broader contract between a job, service, and dashboard",
+          "design database tables, foreign keys, and views",
+          "implement provider webhook signature verification and retry behavior",
+          "debug why this endpoint is returning 500"
+        ],
+        "examples": [
+          "design the API for listing orders with filters, pagination, and stable errors",
+          "review this route contract before frontend and backend implement it separately",
+          "should this operation be a resource update, an action endpoint, or an async job?",
+          "define API versioning and idempotency for this create endpoint"
+        ],
+        "keywords": [
+          "API design",
+          "REST API",
+          "endpoint design",
+          "request response schema",
+          "status codes",
+          "pagination",
+          "filtering",
+          "idempotency",
+          "API versioning",
+          "error envelope"
+        ]
+      },
+      "allowed-tools": "Read Grep",
+      "browse_category": "engineering",
+      "category": "engineering/api-design",
+      "compatibility": {
+        "notes": "Portable API design guidance for REST-like HTTP APIs, route handlers, internal APIs, and documented JSON contracts."
+      },
+      "description": "Use when designing or reviewing API surfaces: resources/actions, request and response schemas, status codes, pagination, filtering, idempotency, versioning, auth boundaries, and error envelopes. Do NOT use for non-HTTP system contracts (use `system-interface-contracts`), async event contracts (use `event-contract-design`), database design (use `data-modeling`), or inbound provider webhook mechanics (use `webhook-integration`).",
+      "health": {
+        "drift_check": {
+          "last_verified": "2026-05-11"
+        },
+        "eval_artifacts": "planned",
+        "eval_state": "unverified",
+        "freshness": "2026-05-11",
+        "has_grounding": false,
+        "has_relations": true,
+        "lifecycle": {
+          "review_cadence": "quarterly",
+          "stale_after_days": 365
+        },
+        "routing_eval": "absent"
+      },
+      "id": "api-design",
+      "license": "MIT",
+      "name": "api-design",
+      "owner": "skill-graph-maintainer",
+      "path": "skills/api-design/SKILL.md",
+      "portability": {
+        "readiness": "scripted",
+        "targets": [
+          "agent-skills"
+        ]
+      },
+      "relations": {
+        "boundary": [
+          {
+            "reason": "system-interface-contracts owns interface contracts across any boundary; api-design owns API endpoint shape and HTTP semantics",
+            "skill": "system-interface-contracts"
+          },
+          {
+            "reason": "event-contract-design owns asynchronous event and message contracts; api-design owns HTTP request/response surfaces",
+            "skill": "event-contract-design"
+          },
+          {
+            "reason": "data-modeling owns persistence shape; api-design owns external representation and operation shape",
+            "skill": "data-modeling"
+          },
+          {
+            "reason": "webhook-integration owns inbound provider webhooks; api-design owns APIs the system exposes or calls by contract",
+            "skill": "webhook-integration"
+          },
+          {
+            "reason": "debugging owns known endpoint failures; api-design owns pre-implementation surface design",
+            "skill": "debugging"
+          }
+        ],
+        "related": [
+          "system-interface-contracts",
+          "data-modeling",
+          "testing-strategy",
+          "webhook-integration",
+          "event-contract-design"
+        ],
+        "verify_with": [
+          "testing-strategy",
+          "code-review"
+        ]
+      },
+      "scope": "portable",
+      "stability": "experimental",
+      "type": "capability",
+      "version": "1.0.0"
+    },
+    {
+      "activation": {
+        "anti_examples": [
+          "write a general README section explaining how this module works",
+          "choose which framework we should use for this project",
+          "review this PR for bugs and regressions",
+          "design the interface contract between these two services"
+        ],
+        "examples": [
+          "write an ADR for choosing Postgres views as the source of truth",
+          "review this architecture decision record for missing consequences and rejected options",
+          "this decision changed - should we amend the ADR or supersede it?",
+          "extract the decision from this long architecture discussion into a durable ADR"
+        ],
+        "keywords": [
+          "ADR",
+          "architecture decision record",
+          "decision log",
+          "technical decision",
+          "decision consequences",
+          "options rejected",
+          "superseded ADR",
+          "architectural rationale",
+          "decision status"
+        ]
+      },
+      "allowed-tools": "Read Grep",
+      "browse_category": "engineering",
+      "category": "architecture/decision-records",
+      "compatibility": {
+        "notes": "Portable ADR discipline for Markdown decision logs, repo docs, design docs, and architecture governance."
+      },
+      "description": "Use when writing, reviewing, or updating Architecture Decision Records: context, decision, options rejected, consequences, status, supersession, and follow-up verification. Do NOT use for general documentation prose (use `documentation`), code review findings (use `code-review`), or choosing between frameworks before a decision exists (use `framework-fit-analysis`).",
+      "health": {
+        "drift_check": {
+          "last_verified": "2026-05-11"
+        },
+        "eval_artifacts": "planned",
+        "eval_state": "unverified",
+        "freshness": "2026-05-11",
+        "has_grounding": false,
+        "has_relations": true,
+        "lifecycle": {
+          "review_cadence": "quarterly",
+          "stale_after_days": 365
+        },
+        "routing_eval": "absent"
+      },
+      "id": "architecture-decision-records",
+      "license": "MIT",
+      "name": "architecture-decision-records",
+      "owner": "skill-graph-maintainer",
+      "path": "skills/architecture-decision-records/SKILL.md",
+      "portability": {
+        "readiness": "scripted",
+        "targets": [
+          "agent-skills"
+        ]
+      },
+      "relations": {
+        "boundary": [
+          {
+            "reason": "documentation explains systems broadly; architecture-decision-records records a specific durable decision and its consequences",
+            "skill": "documentation"
+          },
+          {
+            "reason": "framework-fit-analysis evaluates options before selection; architecture-decision-records records the selected option and tradeoffs",
+            "skill": "framework-fit-analysis"
+          },
+          {
+            "reason": "code-review evaluates a diff; architecture-decision-records evaluates the decision record",
+            "skill": "code-review"
+          },
+          {
+            "reason": "system-interface-contracts designs boundaries and contracts; architecture-decision-records records the decision to adopt one",
+            "skill": "system-interface-contracts"
+          }
+        ],
+        "related": [
+          "framework-fit-analysis",
+          "bounded-context-mapping",
+          "system-interface-contracts",
+          "dependency-architecture"
+        ],
+        "verify_with": [
+          "documentation",
+          "code-review"
+        ]
+      },
+      "scope": "portable",
+      "stability": "experimental",
+      "type": "capability",
+      "version": "1.0.0"
+    },
+    {
+      "activation": {
+        "anti_examples": [
+          "list entities, attributes, and cardinalities before any architecture decision",
+          "create SQL tables, foreign keys, and indexes",
+          "design REST routes and response envelopes",
+          "write an ADR for the boundary decision after we already chose it"
+        ],
+        "examples": [
+          "orders, fulfillment, payments, and support all use status differently - where should the bounded contexts be?",
+          "map the upstream/downstream relationships before we split this module",
+          "do we need an anti-corruption layer between our canonical order model and Shopify?",
+          "which concepts belong to a shared kernel and which are context-local?"
+        ],
+        "keywords": [
+          "bounded context",
+          "context map",
+          "domain-driven design",
+          "DDD boundary",
+          "anti-corruption layer",
+          "shared kernel",
+          "upstream downstream",
+          "conformist",
+          "customer supplier",
+          "domain boundary"
+        ]
+      },
+      "allowed-tools": "Read Grep",
+      "browse_category": "engineering",
+      "category": "architecture/domain-boundaries",
+      "compatibility": {
+        "notes": "Portable DDD boundary-mapping discipline for monoliths, modular monoliths, services, event-driven systems, and agent workspaces."
+      },
+      "description": "Use when drawing Domain-Driven Design boundaries: bounded contexts, context maps, ownership seams, upstream/downstream relationships, anti-corruption layers, shared kernels, and translation boundaries. Do NOT use for pre-DDD entity discovery (use `conceptual-modeling`), database schema design (use `data-modeling`), or HTTP endpoint design (use `api-design`).",
+      "health": {
+        "drift_check": {
+          "last_verified": "2026-05-11"
+        },
+        "eval_artifacts": "planned",
+        "eval_state": "unverified",
+        "freshness": "2026-05-11",
+        "has_grounding": false,
+        "has_relations": true,
+        "lifecycle": {
+          "review_cadence": "quarterly",
+          "stale_after_days": 365
+        },
+        "routing_eval": "absent"
+      },
+      "id": "bounded-context-mapping",
+      "license": "MIT",
+      "name": "bounded-context-mapping",
+      "owner": "skill-graph-maintainer",
+      "path": "skills/bounded-context-mapping/SKILL.md",
+      "portability": {
+        "readiness": "scripted",
+        "targets": [
+          "agent-skills"
+        ]
+      },
+      "relations": {
+        "boundary": [
+          {
+            "reason": "conceptual-modeling discovers domain structure before DDD boundary ownership is assigned",
+            "skill": "conceptual-modeling"
+          },
+          {
+            "reason": "data-modeling owns persistence structure after context boundaries inform ownership",
+            "skill": "data-modeling"
+          },
+          {
+            "reason": "api-design owns external endpoint shape; bounded-context-mapping owns domain ownership and translation boundaries",
+            "skill": "api-design"
+          },
+          {
+            "reason": "architecture-decision-records records a chosen decision; bounded-context-mapping analyzes the boundary before the decision is recorded",
+            "skill": "architecture-decision-records"
+          }
+        ],
+        "depends_on": [
+          "conceptual-modeling"
+        ],
+        "related": [
+          "event-storming",
+          "system-interface-contracts",
+          "conceptual-modeling",
+          "architecture-decision-records"
+        ],
+        "verify_with": [
+          "semantic-relations",
+          "system-interface-contracts"
         ]
       },
       "scope": "portable",
@@ -584,7 +985,7 @@
       "compatibility": {
         "notes": "Operating-model-agnostic. Applies whether the constraint is a single solo developer operating multiple agents, a small team where one senior engineer reviews everything, or a larger team where review capacity is the limiting factor. The framework adapts as the constraint identity changes."
       },
-      "description": "Use when prioritizing work in an AI-assisted codebase, designing agent autonomy levels, deciding what to automate vs what to keep manual, or evaluating whether a proposed process or tool actually adds value. Applies Eliyahu Goldratt's Theory of Constraints to the AI-coding era's specific cost-structure inversion: code production has become cheap (agents generate it in minutes), so the system bottleneck has moved to the human activities that cannot be delegated — review, validation, decision-making, and learning. Covers the Five Focusing Steps (Identify / Exploit / Subordinate / Elevate / Repeat), the pre-AI vs post-AI cost structure, the constraint decision framework, four constraint-aware process-design rules (front-load agent work, batch constraint touches, present options not questions, eliminate false dependencies), five anti-patterns that waste the constraint, attention-audit ratios for measuring constraint health, and the constraint-shift model (when the bottleneck moves from review → strategic decisions → user research → market timing). Do NOT use for task-effort estimation (that is a sizing question), for backlog scoring with RICE / WSJF / ICE (that is a prioritization framework), or for routing a specific task to a specific model (that is an operational dispatch decision).",
+      "description": "Use when prioritizing work in an AI-assisted codebase, designing agent autonomy levels, deciding what to automate vs keep manual, or evaluating whether a process/tool adds value. Covers Theory of Constraints for AI-era engineering: cheap code production, human review/validation/decision bottlenecks, Five Focusing Steps, constraint-aware process design, attention audits, and constraint-shift modeling. Do NOT use for task-effort estimation, backlog scoring with RICE/WSJF/ICE, or routing a task to a specific model.",
       "health": {
         "drift_check": {
           "last_verified": "2026-05-06"
@@ -1081,6 +1482,105 @@
     {
       "activation": {
         "anti_examples": [
+          "identify business entities and relationships without implementation details",
+          "write and apply the actual migration for an existing database",
+          "define OWL/RDF class axioms and reasoning rules",
+          "design REST endpoints for these resources"
+        ],
+        "examples": [
+          "turn this conceptual model into a logical schema with keys and constraints",
+          "should this be normalized, denormalized, or materialized as a view?",
+          "model provenance for revenue, cost, and refund fields",
+          "choose identifiers and uniqueness constraints before writing the migration"
+        ],
+        "keywords": [
+          "data modeling",
+          "logical data model",
+          "physical data model",
+          "entity relationship",
+          "normalization",
+          "denormalization",
+          "primary key",
+          "foreign key",
+          "schema design",
+          "data provenance",
+          "indexing implications"
+        ]
+      },
+      "allowed-tools": "Read Grep",
+      "browse_category": "engineering",
+      "category": "data/modeling",
+      "compatibility": {
+        "notes": "Portable data-modeling discipline across relational, document, graph, event-sourced, and warehouse-style systems."
+      },
+      "description": "Use when designing logical or physical data structures: entities as stored data, keys, constraints, normalization, denormalization, provenance, lifecycle, indexing implications, and schema tradeoffs. Do NOT use for pre-implementation business concept discovery (use `conceptual-modeling`), migrations against an existing database (use `database-migration`), or formal ontology semantics (use `ontology-modeling`).",
+      "health": {
+        "drift_check": {
+          "last_verified": "2026-05-11"
+        },
+        "eval_artifacts": "planned",
+        "eval_state": "unverified",
+        "freshness": "2026-05-11",
+        "has_grounding": false,
+        "has_relations": true,
+        "lifecycle": {
+          "review_cadence": "quarterly",
+          "stale_after_days": 365
+        },
+        "routing_eval": "absent"
+      },
+      "id": "data-modeling",
+      "license": "MIT",
+      "name": "data-modeling",
+      "owner": "skill-graph-maintainer",
+      "path": "skills/data-modeling/SKILL.md",
+      "portability": {
+        "readiness": "scripted",
+        "targets": [
+          "agent-skills"
+        ]
+      },
+      "relations": {
+        "boundary": [
+          {
+            "reason": "conceptual-modeling is implementation-neutral; data-modeling adds logical and physical data constraints",
+            "skill": "conceptual-modeling"
+          },
+          {
+            "reason": "database-migration changes an existing database; data-modeling decides the schema shape before migration",
+            "skill": "database-migration"
+          },
+          {
+            "reason": "ontology-modeling formalizes meaning; data-modeling structures persisted data",
+            "skill": "ontology-modeling"
+          },
+          {
+            "reason": "api-design exposes resources and operations; data-modeling stores and constrains underlying data",
+            "skill": "api-design"
+          }
+        ],
+        "depends_on": [
+          "conceptual-modeling"
+        ],
+        "related": [
+          "conceptual-modeling",
+          "database-migration",
+          "api-design",
+          "state-machine-modeling"
+        ],
+        "verify_with": [
+          "database-migration",
+          "testing-strategy"
+        ]
+      },
+      "scope": "portable",
+      "stability": "experimental",
+      "type": "capability",
+      "version": "1.0.0"
+    },
+    {
+      "activation": {
+        "anti_examples": [
           "design the row-level-security model for our new tenant table",
           "the migration crashed in production — find the root cause",
           "explain our migration conventions in the contributor docs",
@@ -1291,6 +1791,217 @@
     {
       "activation": {
         "anti_examples": [
+          "choose between Next.js, Remix, and Astro for a new app",
+          "scan dependencies only for known vulnerabilities",
+          "refactor this module without changing dependency boundaries",
+          "write an ADR after the dependency decision is accepted"
+        ],
+        "examples": [
+          "audit whether this repo has duplicate-purpose dependencies and unsafe package boundaries",
+          "should this SDK be wrapped behind an adapter or imported everywhere?",
+          "design dependency rules for packages in this monorepo",
+          "evaluate dependency lock-in and upgrade risk before adding this library"
+        ],
+        "keywords": [
+          "dependency architecture",
+          "dependency graph",
+          "package boundaries",
+          "runtime dependency",
+          "build dependency",
+          "duplicate libraries",
+          "supply chain risk",
+          "adapter layer",
+          "lock-in",
+          "upgrade policy"
+        ]
+      },
+      "allowed-tools": "Read Grep",
+      "browse_category": "engineering",
+      "category": "architecture/dependencies",
+      "compatibility": {
+        "notes": "Portable dependency architecture guidance for monorepos, package.json ecosystems, service boundaries, SDKs, and internal libraries."
+      },
+      "description": "Use when designing or auditing dependency structure: package boundaries, runtime vs build dependencies, adapter layers, duplicate-purpose libraries, supply-chain risk, upgrade policy, lock-in, and dependency graph health. Do NOT use for choosing a major framework (use `framework-fit-analysis`), vulnerability-only review (use `owasp-security`), or routine refactoring without dependency boundary changes (use `refactor`).",
+      "health": {
+        "drift_check": {
+          "last_verified": "2026-05-11"
+        },
+        "eval_artifacts": "planned",
+        "eval_state": "unverified",
+        "freshness": "2026-05-11",
+        "has_grounding": false,
+        "has_relations": true,
+        "lifecycle": {
+          "review_cadence": "quarterly",
+          "stale_after_days": 180
+        },
+        "routing_eval": "absent"
+      },
+      "id": "dependency-architecture",
+      "license": "MIT",
+      "name": "dependency-architecture",
+      "owner": "skill-graph-maintainer",
+      "path": "skills/dependency-architecture/SKILL.md",
+      "portability": {
+        "readiness": "scripted",
+        "targets": [
+          "agent-skills"
+        ]
+      },
+      "relations": {
+        "boundary": [
+          {
+            "reason": "framework-fit-analysis evaluates major technology choices; dependency-architecture governs dependency graph structure and package boundaries",
+            "skill": "framework-fit-analysis"
+          },
+          {
+            "reason": "owasp-security owns vulnerability and security review; dependency-architecture includes supply-chain risk as one design dimension",
+            "skill": "owasp-security"
+          },
+          {
+            "reason": "refactor preserves behavior in code structure; dependency-architecture changes or audits dependency boundaries",
+            "skill": "refactor"
+          },
+          {
+            "reason": "architecture-decision-records records accepted dependency decisions; dependency-architecture analyzes the dependency design",
+            "skill": "architecture-decision-records"
+          }
+        ],
+        "related": [
+          "framework-fit-analysis",
+          "system-interface-contracts",
+          "version-control",
+          "owasp-security"
+        ],
+        "verify_with": [
+          "owasp-security",
+          "code-review"
+        ]
+      },
+      "scope": "portable",
+      "stability": "experimental",
+      "type": "capability",
+      "version": "1.0.0"
+    },
+    {
+      "activation": {
+        "anti_examples": [
+          "organize pages, nav, sitemap, and wayfinding",
+          "rewrite the empty-state text and tooltip labels",
+          "add aria-labels and keyboard behavior to this component",
+          "draft an architecture note explaining why we chose Postgres over DynamoDB"
+        ],
+        "examples": [
+          "define semantic tokens so charts, status colors, and surfaces do not hardcode raw colors",
+          "audit this component library for API consistency and token drift",
+          "design the theming architecture before adding dark mode",
+          "how should we migrate old CSS variables to canonical design-system tokens?"
+        ],
+        "keywords": [
+          "design tokens",
+          "semantic tokens",
+          "component API",
+          "theming",
+          "component library",
+          "token taxonomy",
+          "design system migration",
+          "design system audit",
+          "component library audit",
+          "token drift",
+          "component API consistency",
+          "tokens components variants"
+        ]
+      },
+      "allowed-tools": "Read Grep",
+      "browse_category": "frontend",
+      "category": "frontend/design-system",
+      "compatibility": {
+        "notes": "Portable design-system architecture guidance for web and app component systems, token systems, and multi-theme UI libraries."
+      },
+      "description": "Use when designing or auditing a design system's architecture: token taxonomy, semantic tokens, component APIs, theming, accessibility contracts, documentation, governance, and migration strategy. Do NOT use for information hierarchy and navigation (use `information-architecture`), page-specific layout (use `layout-composition`), visual craft direction (use `visual-design-foundations`), sentence-level UI copy (use `microcopy`), or accessibility-only audits (use `a11y`).",
+      "health": {
+        "drift_check": {
+          "last_verified": "2026-05-11"
+        },
+        "eval_artifacts": "planned",
+        "eval_state": "unverified",
+        "freshness": "2026-05-11",
+        "has_grounding": false,
+        "has_relations": true,
+        "lifecycle": {
+          "review_cadence": "quarterly",
+          "stale_after_days": 365
+        },
+        "routing_eval": "absent"
+      },
+      "id": "design-system-architecture",
+      "license": "MIT",
+      "name": "design-system-architecture",
+      "owner": "skill-graph-maintainer",
+      "path": "skills/design-system-architecture/SKILL.md",
+      "portability": {
+        "readiness": "scripted",
+        "targets": [
+          "agent-skills"
+        ]
+      },
+      "relations": {
+        "boundary": [
+          {
+            "reason": "information-architecture owns navigation and content structure; design-system-architecture owns tokens and component systems",
+            "skill": "information-architecture"
+          },
+          {
+            "reason": "microcopy owns UI text patterns; design-system-architecture owns reusable component and token contracts",
+            "skill": "microcopy"
+          },
+          {
+            "reason": "a11y verifies accessibility behavior; design-system-architecture embeds accessibility contracts into components",
+            "skill": "a11y"
+          },
+          {
+            "reason": "layout-composition owns page-specific responsive structure; design-system-architecture owns reusable component and token rules",
+            "skill": "layout-composition"
+          },
+          {
+            "reason": "visual-design-foundations owns surface-level visual craft; design-system-architecture owns reusable system contracts",
+            "skill": "visual-design-foundations"
+          },
+          {
+            "reason": "interaction-patterns owns selecting the right pattern for a task; design-system-architecture owns reusable component APIs once the pattern belongs in the system",
+            "skill": "interaction-patterns"
+          },
+          {
+            "reason": "documentation owns durable architecture notes and prose; design-system-architecture owns UI system contracts",
+            "skill": "documentation"
+          },
+          {
+            "reason": "refactor restructures code behavior-preservingly; design-system-architecture changes the UI system contract",
+            "skill": "refactor"
+          }
+        ],
+        "related": [
+          "a11y",
+          "microcopy",
+          "information-architecture",
+          "semantics",
+          "layout-composition",
+          "visual-design-foundations",
+          "interaction-patterns"
+        ],
+        "verify_with": [
+          "a11y",
+          "code-review"
+        ]
+      },
+      "scope": "portable",
+      "stability": "experimental",
+      "type": "capability",
+      "version": "1.0.0"
+    },
+    {
+      "activation": {
+        "anti_examples": [
           "actually execute scientific-method debugging on this stack trace",
           "review this AI-generated PR for correctness",
           "scan this repo for OWASP top 10 vulnerabilities",
@@ -1334,7 +2045,7 @@
       "compatibility": {
         "notes": "Language- and stack-agnostic. The classification taxonomy, evidence protocol, and confidence ladder apply to any software failure investigation; specific technique names (git bisect, EXPLAIN plans, HMAC verification) are illustrative — substitute the equivalents of your stack."
       },
-      "description": "Use when facing an unknown software failure and unsure which debugging methodology to apply, when multiple symptoms suggest different root causes, or when an initial debugging attempt has not converged after a few iterations. Provides the triage-first diagnostic routing framework that classifies a failure into a problem class and routes it to the right specialist methodology before root-cause analysis begins. Covers nine symptom classes (Logic Error / Runtime Crash / Data Integrity / Timing & Race / Performance / Configuration / Security / Integration / Tooling-Build-Script-path) with a classification decision tree; the universal evidence-collection protocol plus class-specific evidence checklists; the technique-selection matrix (stack-trace reading, data-flow tracing, git bisect, differential comparison, instrumentation, MRE isolation, profiling, boundary probing) with time-cost and evidence prerequisites; the diagnostic confidence ladder (level 0 Symptom → 1 Classified → 2 Localized → 3 Root Cause → 4 Verified Fix) with stuck-state checkpoints; escalation criteria for switching approach or escalating to a human; cross-domain patterns (Cascade, Coincidence, Environment Ghost); diagnostic anti-patterns; and a structured diagnostic-session template. Do NOT use for actually executing scientific debugging (use `debugging` once triage has classified the failure), for code-quality review (use `code-review`), or for proactive observability setup.",
+      "description": "Use when facing an unknown software failure, when symptoms point to different root causes, or when an initial debugging attempt has not converged. Provides a triage-first diagnostic routing framework: classify the failure, collect the right evidence, choose a technique, track confidence, and escalate when stuck. Do NOT use for executing scientific debugging after triage (use `debugging`), code-quality review (use `code-review`), or proactive observability setup.",
       "health": {
         "drift_check": {
           "last_verified": "2026-05-06"
@@ -1617,6 +2328,392 @@
     {
       "activation": {
         "anti_examples": [
+          "discover the domain events, commands, and policies in this business process",
+          "define every boundary contract between services, jobs, and APIs",
+          "verify inbound provider webhook signatures and retry behavior",
+          "design REST endpoints, status codes, and pagination"
+        ],
+        "examples": [
+          "design the event contract for publishing OrderPaid to downstream consumers",
+          "define topic names, payload schema, idempotency, and versioning for this event stream",
+          "review this outbound webhook event schema before customers integrate with it",
+          "write the compatibility rules for consumers of these async messages"
+        ],
+        "keywords": [
+          "event-contract",
+          "async-api",
+          "cloudevents",
+          "event envelope",
+          "topic naming",
+          "async event schema",
+          "event compatibility",
+          "replay contract",
+          "dead-letter behavior",
+          "consumer fixtures"
+        ]
+      },
+      "allowed-tools": "Read Grep",
+      "browse_category": "engineering",
+      "category": "architecture/events",
+      "compatibility": {
+        "notes": "Portable async-event contract guidance for queues, streams, pub/sub, internal events, outbound webhooks, and documented event-driven APIs."
+      },
+      "description": "Use when designing or reviewing asynchronous event contracts: producer/consumer ownership, event envelope, schema, topic/channel naming, ordering, idempotency, versioning, compatibility, replay, dead-letter behavior, and AsyncAPI/CloudEvents-style documentation. Do NOT use for domain-event discovery (use `event-storming`), broad interface contracts (use `system-interface-contracts`), inbound provider webhook mechanics (use `webhook-integration`), or HTTP endpoint design (use `api-design`).",
+      "health": {
+        "drift_check": {
+          "last_verified": "2026-05-11"
+        },
+        "eval_artifacts": "present",
+        "eval_state": "unverified",
+        "freshness": "2026-05-11",
+        "has_grounding": false,
+        "has_relations": true,
+        "lifecycle": {
+          "review_cadence": "quarterly",
+          "stale_after_days": 365
+        },
+        "routing_eval": "absent"
+      },
+      "id": "event-contract-design",
+      "license": "MIT",
+      "name": "event-contract-design",
+      "owner": "skill-graph-maintainer",
+      "path": "skills/event-contract-design/SKILL.md",
+      "portability": {
+        "readiness": "scripted",
+        "targets": [
+          "agent-skills"
+        ]
+      },
+      "relations": {
+        "boundary": [
+          {
+            "reason": "event-storming discovers domain events and policies; event-contract-design turns selected events into publishable contracts",
+            "skill": "event-storming"
+          },
+          {
+            "reason": "system-interface-contracts owns broad boundary contracts; event-contract-design owns asynchronous message and event surfaces",
+            "skill": "system-interface-contracts"
+          },
+          {
+            "reason": "webhook-integration owns inbound third-party delivery mechanics; event-contract-design owns events this system publishes or documents for consumers",
+            "skill": "webhook-integration"
+          },
+          {
+            "reason": "api-design owns HTTP resource and action surfaces; event-contract-design owns asynchronous event contracts",
+            "skill": "api-design"
+          }
+        ],
+        "related": [
+          "event-storming",
+          "system-interface-contracts",
+          "observability-modeling",
+          "state-machine-modeling",
+          "data-modeling"
+        ],
+        "verify_with": [
+          "system-interface-contracts",
+          "observability-modeling"
+        ]
+      },
+      "scope": "portable",
+      "stability": "experimental",
+      "type": "capability",
+      "version": "1.0.0"
+    },
+    {
+      "activation": {
+        "anti_examples": [
+          "implement Shopify webhook signature verification and idempotent retries",
+          "draw the state machine for this one status field",
+          "create a normalized data model and indexes",
+          "write event-bus infrastructure code",
+          "define the schema, topic, compatibility, and fixtures for a selected event"
+        ],
+        "examples": [
+          "map the order lifecycle as domain events before we design tables or APIs",
+          "which commands, policies, and external systems are hidden in this workflow?",
+          "use event storming to find aggregate boundaries for fulfillment",
+          "turn this incident-prone business process into events and decisions"
+        ],
+        "keywords": [
+          "event storming",
+          "domain events",
+          "commands",
+          "aggregates",
+          "policies",
+          "read models",
+          "temporal workflow",
+          "event-driven discovery",
+          "process modeling"
+        ]
+      },
+      "allowed-tools": "Read Grep",
+      "browse_category": "engineering",
+      "category": "architecture/domain-discovery",
+      "compatibility": {
+        "notes": "Portable event-storming discipline for product discovery, domain modeling, event-driven architecture, and workflow analysis."
+      },
+      "description": "Use when discovering a domain through events, commands, actors, policies, aggregates, read models, external systems, and temporal workflows before implementation. Do NOT use for event schema/topic contracts (use `event-contract-design`), webhook handler implementation (use `webhook-integration`), generic state transition modeling (use `state-machine-modeling`), or persistence schema design (use `data-modeling`).",
+      "health": {
+        "drift_check": {
+          "last_verified": "2026-05-11"
+        },
+        "eval_artifacts": "planned",
+        "eval_state": "unverified",
+        "freshness": "2026-05-11",
+        "has_grounding": false,
+        "has_relations": true,
+        "lifecycle": {
+          "review_cadence": "quarterly",
+          "stale_after_days": 365
+        },
+        "routing_eval": "absent"
+      },
+      "id": "event-storming",
+      "license": "MIT",
+      "name": "event-storming",
+      "owner": "skill-graph-maintainer",
+      "path": "skills/event-storming/SKILL.md",
+      "portability": {
+        "readiness": "scripted",
+        "targets": [
+          "agent-skills"
+        ]
+      },
+      "relations": {
+        "boundary": [
+          {
+            "reason": "event-contract-design owns publishable event envelopes, schemas, topics, and compatibility; event-storming discovers the domain behavior before contract design",
+            "skill": "event-contract-design"
+          },
+          {
+            "reason": "webhook-integration implements inbound provider event handlers; event-storming discovers business-domain events before implementation",
+            "skill": "webhook-integration"
+          },
+          {
+            "reason": "state-machine-modeling formalizes states and transitions; event-storming discovers events, commands, policies, and aggregates",
+            "skill": "state-machine-modeling"
+          },
+          {
+            "reason": "data-modeling designs stored data structures after domain events are understood",
+            "skill": "data-modeling"
+          },
+          {
+            "reason": "api-design shapes endpoint surfaces; event-storming discovers the domain behavior those surfaces expose",
+            "skill": "api-design"
+          }
+        ],
+        "related": [
+          "bounded-context-mapping",
+          "state-machine-modeling",
+          "system-interface-contracts",
+          "event-contract-design",
+          "conceptual-modeling"
+        ],
+        "verify_with": [
+          "conceptual-modeling",
+          "bounded-context-mapping"
+        ]
+      },
+      "scope": "portable",
+      "stability": "experimental",
+      "type": "capability",
+      "version": "1.0.0"
+    },
+    {
+      "activation": {
+        "anti_examples": [
+          "add labels so assistive tech can read each field",
+          "rewrite the inline validation messages",
+          "define the request and response schema for the form submit endpoint",
+          "model the database columns that store these inputs"
+        ],
+        "examples": [
+          "design the validation lifecycle for this signup form",
+          "audit this checkout form for grouping, required fields, and recovery",
+          "should this be one form, a wizard, or progressive disclosure?",
+          "split client-side and server-side validation responsibilities for this form"
+        ],
+        "keywords": [
+          "form-ux",
+          "form architecture",
+          "validation timing",
+          "client server validation",
+          "field grouping",
+          "submission lifecycle",
+          "form recovery",
+          "multi-step forms",
+          "required optional fields"
+        ]
+      },
+      "allowed-tools": "Read Grep",
+      "browse_category": "frontend",
+      "category": "design/ux",
+      "compatibility": {
+        "notes": "Portable form UX guidance for web and app forms. Client-side validation improves UX; server-side validation remains mandatory for trust and security."
+      },
+      "description": "Use when designing or auditing form structure and validation UX: field grouping, required vs optional inputs, validation timing, client/server validation split, submission lifecycle, recovery, multi-step forms, and high-risk data entry. Do NOT use for labels and announcements alone (use `a11y`), validation-message wording (use `microcopy`), API schema design (use `api-design`), or stored data modeling (use `data-modeling`).",
+      "health": {
+        "drift_check": {
+          "last_verified": "2026-05-11"
+        },
+        "eval_artifacts": "present",
+        "eval_state": "unverified",
+        "freshness": "2026-05-11",
+        "has_grounding": false,
+        "has_relations": true,
+        "lifecycle": {
+          "review_cadence": "quarterly",
+          "stale_after_days": 365
+        },
+        "routing_eval": "absent"
+      },
+      "id": "form-ux-architecture",
+      "license": "MIT",
+      "name": "form-ux-architecture",
+      "owner": "skill-graph-maintainer",
+      "path": "skills/form-ux-architecture/SKILL.md",
+      "portability": {
+        "readiness": "scripted",
+        "targets": [
+          "agent-skills"
+        ]
+      },
+      "relations": {
+        "boundary": [
+          {
+            "reason": "a11y owns labels, focus, fieldsets, errors, and assistive-tech behavior; form-ux-architecture owns form structure and validation lifecycle",
+            "skill": "a11y"
+          },
+          {
+            "reason": "microcopy owns validation-message wording; form-ux-architecture owns when validation appears and how users recover",
+            "skill": "microcopy"
+          },
+          {
+            "reason": "api-design owns submit endpoint schemas and error envelopes; form-ux-architecture owns the user-facing input and correction flow",
+            "skill": "api-design"
+          },
+          {
+            "reason": "data-modeling owns stored data shape; form-ux-architecture owns collection and correction before submission",
+            "skill": "data-modeling"
+          }
+        ],
+        "related": [
+          "interaction-patterns",
+          "interaction-feedback",
+          "task-analysis",
+          "a11y",
+          "microcopy"
+        ],
+        "verify_with": [
+          "a11y",
+          "microcopy"
+        ]
+      },
+      "scope": "portable",
+      "stability": "experimental",
+      "type": "capability",
+      "version": "1.0.0"
+    },
+    {
+      "activation": {
+        "anti_examples": [
+          "audit installed packages for duplication and supply-chain risk",
+          "write the ADR after we chose the framework",
+          "implement this feature in the framework we already selected",
+          "profile a slow page and optimize bottlenecks"
+        ],
+        "examples": [
+          "should we use Next.js server actions, route handlers, or a separate API service for this workflow?",
+          "evaluate whether adding this charting library is worth it",
+          "compare Supabase, Firebase, and custom Postgres for this project under real constraints",
+          "we want to replace this framework - what fit analysis should happen before an ADR?"
+        ],
+        "keywords": [
+          "framework fit",
+          "technology selection",
+          "library choice",
+          "SDK evaluation",
+          "platform evaluation",
+          "migration cost",
+          "exit cost",
+          "operability",
+          "ecosystem maturity",
+          "build vs buy"
+        ]
+      },
+      "allowed-tools": "Read Grep",
+      "browse_category": "engineering",
+      "category": "architecture/technology-selection",
+      "compatibility": {
+        "notes": "Portable technology-selection discipline for application frameworks, libraries, SDKs, platforms, runtimes, data stores, and agent tooling."
+      },
+      "description": "Use when choosing, replacing, or justifying a framework, library, SDK, runtime, database, UI kit, or platform by fit: constraints, team skill, ecosystem maturity, migration cost, operability, performance, security, and exit cost. Do NOT use for routine dependency hygiene (use `dependency-architecture`), documenting an accepted decision (use `architecture-decision-records`), or framework-specific implementation work.",
+      "health": {
+        "drift_check": {
+          "last_verified": "2026-05-11"
+        },
+        "eval_artifacts": "planned",
+        "eval_state": "unverified",
+        "freshness": "2026-05-11",
+        "has_grounding": false,
+        "has_relations": true,
+        "lifecycle": {
+          "review_cadence": "quarterly",
+          "stale_after_days": 180
+        },
+        "routing_eval": "absent"
+      },
+      "id": "framework-fit-analysis",
+      "license": "MIT",
+      "name": "framework-fit-analysis",
+      "owner": "skill-graph-maintainer",
+      "path": "skills/framework-fit-analysis/SKILL.md",
+      "portability": {
+        "readiness": "scripted",
+        "targets": [
+          "agent-skills"
+        ]
+      },
+      "relations": {
+        "boundary": [
+          {
+            "reason": "dependency-architecture governs dependency graph shape and package boundaries; framework-fit-analysis evaluates a candidate technology decision",
+            "skill": "dependency-architecture"
+          },
+          {
+            "reason": "architecture-decision-records records accepted decisions; framework-fit-analysis compares options before acceptance",
+            "skill": "architecture-decision-records"
+          },
+          {
+            "reason": "performance-engineering measures and optimizes actual behavior; framework-fit-analysis weighs expected performance among selection criteria",
+            "skill": "performance-engineering"
+          },
+          {
+            "reason": "refactor changes existing code structure; framework-fit-analysis decides whether a larger technology shift is justified",
+            "skill": "refactor"
+          }
+        ],
+        "related": [
+          "architecture-decision-records",
+          "dependency-architecture",
+          "performance-engineering",
+          "owasp-security"
+        ],
+        "verify_with": [
+          "architecture-decision-records",
+          "dependency-architecture"
+        ]
+      },
+      "scope": "portable",
+      "stability": "experimental",
+      "type": "capability",
+      "version": "1.0.0"
+    },
+    {
+      "activation": {
+        "anti_examples": [
           "diagnose why the @/components import cycle broke the build",
           "my agent is stuck in a loop — what's wrong?",
           "write a reference doc explaining what the lint-checker pipeline does"
@@ -1655,7 +2752,7 @@
       },
       "description": "Use when checking that every SKILL.md conforms to the schema, that manifest entries match authored frontmatter, or that relation targets point at real sibling skills. Covers schema conformance, manifest sync, relation integrity, eval-artifact coherence, grounding presence, and name-directory parity. Do NOT use for general code review, runtime agent debugging, or auditing non-skill files.",
       "grounding": {
-        "domain_object": "Skill Graph skill metadata and manifest consistency",
+        "domain_object": "Skill Metadata Protocol and Skill Graph manifest consistency",
         "evidence_priority": "repo_code_first",
         "failure_modes": [
           "schema_drift",
@@ -1668,7 +2765,7 @@
         "truth_sources": [
           "schemas/skill.schema.json",
           "schemas/manifest.schema.json",
-          "docs/metadata-contract.md",
+          "docs/skill-metadata-protocol.md",
           "scripts/skill-lint.js",
           "scripts/check-contract-consistency.js",
           "scripts/generate-manifest.js",
@@ -1677,18 +2774,18 @@
       },
       "health": {
         "drift_check": {
-          "last_verified": "2026-04-20",
+          "last_verified": "2026-05-11",
           "truth_source_hashes": {
-            "docs/metadata-contract.md": "62ccb52b5abfc7277b6d720f5d507417677c2042787a29893e8f9a66efb0dbf9",
-            "examples/evals/graph-audit.json": "8447d8752f5f553ee42246370d74efe7c413b859e52dbf246e4cfe2677c04abb",
-            "schemas/manifest.schema.json": "ac34c86ccea38ed33e11a4e2650f1c53c9ccbc27951b28452d5a79339f7f2482",
-            "schemas/skill.schema.json": "28ebc1df28dbe101ec989f9a5c16785af0599f7a190283632ba8e4fb4f2983b8",
-            "scripts/check-contract-consistency.js": "2d6a88154c28629e58d2cffc2778726b80c631717428a037ad81a5350f791444",
-            "scripts/generate-manifest.js": "72e9b86ed6be6384551b9106ad076496efb867fece7686661b1e3ec8ab2bf176",
-            "scripts/skill-lint.js": "4aca694a2fb3d4bbb68a1347b032f1ed5f40369dd544dd29c0332a758f3f81f1"
+            "docs/skill-metadata-protocol.md": "f90b4cce65d1c0d16b73ef90719d56fd63a95726fc8bc7478f9702d873f7a1bd",
+            "examples/evals/graph-audit.json": "0484253253dd95b6205a1579bc0c365617499024581734fab10592ae94ee6bee",
+            "schemas/manifest.schema.json": "ed1d13f30f1c9dcc96934a80136e6cd1f29df9db9bf6fdca2af99e5dc240ad44",
+            "schemas/skill.schema.json": "d679ac0bc4cba7cdb7039eac645ab520c73ed22a4349a7b429febaa3015cf3c1",
+            "scripts/check-contract-consistency.js": "22786c2de59d3d27bef75ea9d36ead5ee5d4c61eb11d72ba04ccb5a0ce4a4c1e",
+            "scripts/generate-manifest.js": "379c5015674fade4a00ea3a2366fd54d46a79182ee05cc9e96e51b56d565bc12",
+            "scripts/skill-lint.js": "a1ad4ec085a20908160886c59a63377630870651aaee696346d76db29c45ac92"
           }
         },
-        "drift_detected": true,
+        "drift_detected": false,
         "eval_artifacts": "present",
         "eval_state": "passing",
         "freshness": "2026-04-18",
@@ -1721,6 +2818,106 @@
         ]
       },
       "scope": "codebase",
+      "stability": "experimental",
+      "type": "capability",
+      "version": "1.0.0"
+    },
+    {
+      "activation": {
+        "anti_examples": [
+          "make the category taxonomy and assignment rules for this skill library",
+          "define design tokens, component APIs, and theming rules",
+          "rewrite this tooltip and empty-state copy",
+          "audit keyboard accessibility and ARIA semantics"
+        ],
+        "examples": [
+          "our docs have good content but nobody can find the setup instructions - how should the IA change?",
+          "design the navigation and page hierarchy for this admin app",
+          "these dashboard sections overlap and users do not know where to look first",
+          "should this be a top-level nav item, a tab, a filter, or a page section?"
+        ],
+        "keywords": [
+          "information architecture",
+          "navigation structure",
+          "sitemap",
+          "wayfinding",
+          "page hierarchy",
+          "docs architecture",
+          "labeling system",
+          "content grouping",
+          "findability",
+          "content model"
+        ]
+      },
+      "allowed-tools": "Read Grep",
+      "browse_category": "knowledge",
+      "category": "design/information-architecture",
+      "compatibility": {
+        "notes": "Portable IA guidance for apps, documentation, dashboards, admin tools, and skill libraries."
+      },
+      "description": "Use when structuring information for findability: navigation, page hierarchy, docs architecture, sitemap shape, labeling systems, wayfinding, and content grouping. Do NOT use for formal category-governance work (use `taxonomy-design`), responsive page composition (use `layout-composition`), component/token architecture (use `design-system-architecture`), or sentence-level UI text (use `microcopy`).",
+      "health": {
+        "drift_check": {
+          "last_verified": "2026-05-11"
+        },
+        "eval_artifacts": "planned",
+        "eval_state": "unverified",
+        "freshness": "2026-05-11",
+        "has_grounding": false,
+        "has_relations": true,
+        "lifecycle": {
+          "review_cadence": "quarterly",
+          "stale_after_days": 365
+        },
+        "routing_eval": "absent"
+      },
+      "id": "information-architecture",
+      "license": "MIT",
+      "name": "information-architecture",
+      "owner": "skill-graph-maintainer",
+      "path": "skills/information-architecture/SKILL.md",
+      "portability": {
+        "readiness": "scripted",
+        "targets": [
+          "agent-skills"
+        ]
+      },
+      "relations": {
+        "boundary": [
+          {
+            "reason": "taxonomy-design governs classification systems; information-architecture arranges user-facing information paths",
+            "skill": "taxonomy-design"
+          },
+          {
+            "reason": "design-system-architecture owns component and token systems; information-architecture owns navigation and content structure",
+            "skill": "design-system-architecture"
+          },
+          {
+            "reason": "layout-composition owns structure inside a page or screen; information-architecture owns cross-page organization and wayfinding",
+            "skill": "layout-composition"
+          },
+          {
+            "reason": "microcopy owns sentence-level UI text; information-architecture owns placement and hierarchy",
+            "skill": "microcopy"
+          },
+          {
+            "reason": "a11y owns accessibility compliance; information-architecture can create structures that a11y later verifies",
+            "skill": "a11y"
+          }
+        ],
+        "related": [
+          "taxonomy-design",
+          "task-analysis",
+          "documentation",
+          "design-system-architecture",
+          "layout-composition"
+        ],
+        "verify_with": [
+          "task-analysis",
+          "a11y"
+        ]
+      },
+      "scope": "portable",
       "stability": "experimental",
       "type": "capability",
       "version": "1.0.0"
@@ -1771,7 +2968,7 @@
       "compatibility": {
         "notes": "Runtime-agnostic. The four-tier classification, target-content rule, and Identify/Confirm/Verify sequence apply to any agent harness with tool execution — Claude Code, OpenCode, Cursor, Aider, Copilot Workspace, custom MCP-based agents, or any LLM with shell access."
       },
-      "description": "Use BEFORE executing any tool call that could modify state — git commands, file writes, database queries, dependency installs, package publishes, shell commands with side effects, or anything touching credentials, environment files, lockfiles, or version-control history. Classifies the intended action into one of four tiers (Passive/Read, Reconnaissance, Modification, Destructive/Irreversible) using both the *operation type* and the *target content* (reading `.env` is Reconnaissance even though no state changes), and runs the three-step Identify / Confirm / Verify sequence that surfaces non-destructive alternatives before a destructive action fires. Covers the four-tier taxonomy with examples; the operation-vs-target rule (the target's sensitivity can elevate the tier above what the operation alone would suggest); the verification sequence (state the action and tier explicitly, confirm rationale against the plan, check for non-destructive alternatives); the trigger phrases that should activate it; and the anti-patterns that demote credential reads to Passive or treat history-rewriting commands as routine Modification. Do NOT use for deciding what code to write (that's a code-logic / code-quality concern), for executing work after classification has already happened (that's task execution), for reactive safety gates that fire AFTER execution (use a hook-based guardrail instead), or for defining governance policies (those are upstream of this per-action classifier).",
+      "description": "Use BEFORE any tool call that could modify state, touch sensitive targets, rewrite history, install dependencies, publish packages, or expose credentials/environment data. Classifies intent into Passive/Read, Reconnaissance, Modification, or Destructive/Irreversible using operation type plus target sensitivity, then runs Identify / Confirm / Verify before action. Do NOT use for deciding what code to write, executing already-classified work, reactive post-execution guardrails, or defining upstream governance policy.",
       "health": {
         "drift_check": {
           "last_verified": "2026-05-06"
@@ -1828,6 +3025,196 @@
         ],
         "verify_with": [
           "owasp-security"
+        ]
+      },
+      "scope": "portable",
+      "stability": "experimental",
+      "type": "capability",
+      "version": "1.0.0"
+    },
+    {
+      "activation": {
+        "anti_examples": [
+          "rewrite the toast and validation text",
+          "make sure the status update is announced to screen readers",
+          "model the order lifecycle and legal transitions",
+          "profile the endpoint that makes this action slow"
+        ],
+        "examples": [
+          "design loading, success, error, and retry feedback for this async action",
+          "should this save be optimistic, pending, blocked, or undoable?",
+          "the sync takes 30 seconds - what should users see at each stage?",
+          "add feedback states so the UI does not feel frozen after clicking Export"
+        ],
+        "keywords": [
+          "interaction-feedback",
+          "feedback-state staging",
+          "optimistic ui",
+          "pending state",
+          "retry feedback",
+          "undo feedback",
+          "perceived latency",
+          "long-running action feedback",
+          "skeleton loading"
+        ]
+      },
+      "allowed-tools": "Read Grep",
+      "browse_category": "frontend",
+      "category": "design/interaction",
+      "compatibility": {
+        "notes": "Portable feedback-state design for web and app UI. Applies before framework-specific implementation and after task or interaction pattern selection."
+      },
+      "description": "Use when designing UI feedback around user actions and system state: loading, skeletons, optimistic updates, progress, success, errors, empty states, retries, disabled/pending states, autosave, undo, and perceived latency. Do NOT use for the words inside feedback (use `microcopy`), accessibility announcement mechanics (use `a11y`), business lifecycle modeling (use `state-machine-modeling`), or performance optimization (use `performance-engineering`).",
+      "health": {
+        "drift_check": {
+          "last_verified": "2026-05-11"
+        },
+        "eval_artifacts": "present",
+        "eval_state": "unverified",
+        "freshness": "2026-05-11",
+        "has_grounding": false,
+        "has_relations": true,
+        "lifecycle": {
+          "review_cadence": "quarterly",
+          "stale_after_days": 365
+        },
+        "routing_eval": "absent"
+      },
+      "id": "interaction-feedback",
+      "license": "MIT",
+      "name": "interaction-feedback",
+      "owner": "skill-graph-maintainer",
+      "path": "skills/interaction-feedback/SKILL.md",
+      "portability": {
+        "readiness": "scripted",
+        "targets": [
+          "agent-skills"
+        ]
+      },
+      "relations": {
+        "boundary": [
+          {
+            "reason": "microcopy owns the words inside feedback states; interaction-feedback owns timing, placement, persistence, and recovery behavior",
+            "skill": "microcopy"
+          },
+          {
+            "reason": "a11y owns assistive-technology announcement mechanics; interaction-feedback owns the visible and behavioral feedback model",
+            "skill": "a11y"
+          },
+          {
+            "reason": "state-machine-modeling owns business lifecycle legality; interaction-feedback owns the UI representation of pending, success, failure, and recovery",
+            "skill": "state-machine-modeling"
+          },
+          {
+            "reason": "performance-engineering reduces measured latency; interaction-feedback communicates latency and state honestly",
+            "skill": "performance-engineering"
+          }
+        ],
+        "related": [
+          "interaction-patterns",
+          "microcopy",
+          "task-analysis",
+          "a11y",
+          "performance-engineering"
+        ],
+        "verify_with": [
+          "a11y",
+          "microcopy"
+        ]
+      },
+      "scope": "portable",
+      "stability": "experimental",
+      "type": "capability",
+      "version": "1.0.0"
+    },
+    {
+      "activation": {
+        "anti_examples": [
+          "audit this combobox for ARIA roles and keyboard support",
+          "define the user's top task before choosing controls",
+          "add skeleton loading and optimistic feedback to this action",
+          "define the component props, variants, slots, and token contract"
+        ],
+        "examples": [
+          "should this control be a dropdown, combobox, radio group, or stepper?",
+          "choose the interaction pattern for bulk editing rows in this table",
+          "this modal interrupts the flow - should the edit be inline instead?",
+          "decide whether these settings belong in tabs, accordion sections, or separate pages"
+        ],
+        "keywords": [
+          "interaction-patterns",
+          "control pattern selection",
+          "dropdown combobox choice",
+          "modal inline edit choice",
+          "tabs accordion choice",
+          "bulk selection pattern",
+          "command menu pattern",
+          "disclosure pattern",
+          "gesture alternative"
+        ]
+      },
+      "allowed-tools": "Read Grep",
+      "browse_category": "frontend",
+      "category": "design/interaction",
+      "compatibility": {
+        "notes": "Portable interaction-pattern guidance for web and app UI. Pattern choices should be checked against platform conventions and accessible-widget guidance before implementation."
+      },
+      "description": "Use when choosing or auditing UI interaction patterns and controls: tabs vs pages, dropdown vs combobox, stepper vs wizard, modal vs inline edit, disclosure, command menus, selection, filtering, and gesture alternatives. Do NOT use for accessibility compliance (use `a11y`), task decomposition (use `task-analysis`), feedback-state staging (use `interaction-feedback`), or reusable component API design (use `design-system-architecture`).",
+      "health": {
+        "drift_check": {
+          "last_verified": "2026-05-11"
+        },
+        "eval_artifacts": "present",
+        "eval_state": "unverified",
+        "freshness": "2026-05-11",
+        "has_grounding": false,
+        "has_relations": true,
+        "lifecycle": {
+          "review_cadence": "quarterly",
+          "stale_after_days": 365
+        },
+        "routing_eval": "absent"
+      },
+      "id": "interaction-patterns",
+      "license": "MIT",
+      "name": "interaction-patterns",
+      "owner": "skill-graph-maintainer",
+      "path": "skills/interaction-patterns/SKILL.md",
+      "portability": {
+        "readiness": "scripted",
+        "targets": [
+          "agent-skills"
+        ]
+      },
+      "relations": {
+        "boundary": [
+          {
+            "reason": "a11y verifies accessibility semantics and keyboard behavior; interaction-patterns chooses the user-facing pattern before implementation",
+            "skill": "a11y"
+          },
+          {
+            "reason": "task-analysis identifies what the user is trying to accomplish; interaction-patterns chooses the control pattern that supports it",
+            "skill": "task-analysis"
+          },
+          {
+            "reason": "interaction-feedback owns feedback states after an action; interaction-patterns owns the primary control and flow shape",
+            "skill": "interaction-feedback"
+          },
+          {
+            "reason": "design-system-architecture owns reusable component APIs; interaction-patterns decides which pattern is appropriate for a surface",
+            "skill": "design-system-architecture"
+          }
+        ],
+        "related": [
+          "layout-composition",
+          "form-ux-architecture",
+          "microcopy",
+          "semiotics",
+          "a11y"
+        ],
+        "verify_with": [
+          "a11y",
+          "task-analysis"
         ]
       },
       "scope": "portable",
@@ -1945,6 +3332,101 @@
     {
       "activation": {
         "anti_examples": [
+          "what is the user's top task for this route?",
+          "design the global navigation and sitemap",
+          "pick the color palette, type scale, and visual mood",
+          "define component variants and semantic tokens"
+        ],
+        "examples": [
+          "turn this route hierarchy into a responsive section order",
+          "decide whether this dashboard should use tabs, columns, or stacked sections on mobile",
+          "the page works on desktop but the mobile scan path is broken",
+          "choose grid tracks, breakpoints, and responsive media behavior for this screen"
+        ],
+        "keywords": [
+          "layout-composition",
+          "responsive screen composition",
+          "viewport hierarchy",
+          "breakpoint selection",
+          "grid flex composition",
+          "stable dimensions",
+          "scan pattern",
+          "responsive media",
+          "density planning"
+        ]
+      },
+      "allowed-tools": "Read Grep",
+      "browse_category": "frontend",
+      "category": "frontend/layout",
+      "compatibility": {
+        "notes": "Portable layout and responsive-composition guidance for web apps, dashboards, documentation sites, admin tools, and mobile-first product surfaces."
+      },
+      "description": "Use when deciding responsive page or screen structure: section order, scan pattern, grid/flex composition, breakpoints, viewport hierarchy, responsive media, and density. Do NOT use for user-goal decomposition (use `task-analysis`), navigation taxonomy (use `information-architecture`), visual polish (use `visual-design-foundations`), or component/token contracts (use `design-system-architecture`).",
+      "health": {
+        "drift_check": {
+          "last_verified": "2026-05-11"
+        },
+        "eval_artifacts": "present",
+        "eval_state": "unverified",
+        "freshness": "2026-05-11",
+        "has_grounding": false,
+        "has_relations": true,
+        "lifecycle": {
+          "review_cadence": "quarterly",
+          "stale_after_days": 365
+        },
+        "routing_eval": "absent"
+      },
+      "id": "layout-composition",
+      "license": "MIT",
+      "name": "layout-composition",
+      "owner": "skill-graph-maintainer",
+      "path": "skills/layout-composition/SKILL.md",
+      "portability": {
+        "readiness": "scripted",
+        "targets": [
+          "agent-skills"
+        ]
+      },
+      "relations": {
+        "boundary": [
+          {
+            "reason": "task-analysis defines the user goal and first-viewport hierarchy contract; layout-composition turns that contract into responsive structure",
+            "skill": "task-analysis"
+          },
+          {
+            "reason": "information-architecture owns navigation and page grouping; layout-composition owns the structure inside a page or screen",
+            "skill": "information-architecture"
+          },
+          {
+            "reason": "visual-design-foundations owns visual craft choices; layout-composition owns spatial structure and responsive behavior",
+            "skill": "visual-design-foundations"
+          },
+          {
+            "reason": "design-system-architecture owns reusable component and token contracts; layout-composition uses those contracts on a concrete surface",
+            "skill": "design-system-architecture"
+          }
+        ],
+        "related": [
+          "task-analysis",
+          "information-architecture",
+          "design-system-architecture",
+          "a11y",
+          "performance-engineering"
+        ],
+        "verify_with": [
+          "task-analysis",
+          "a11y"
+        ]
+      },
+      "scope": "portable",
+      "stability": "experimental",
+      "type": "capability",
+      "version": "1.0.0"
+    },
+    {
+      "activation": {
+        "anti_examples": [
           "decide kebab-case vs snake_case vs camelCase for new database columns",
           "restructure this doc into a tutorial format with progressive disclosure",
           "implement Intl.NumberFormat for DKK vs USD currency formatting",
@@ -1987,7 +3469,7 @@
       "compatibility": {
         "notes": "Provider-/runtime-/stack-agnostic. The morphology, polysemy, register, and error-message rules apply to any software product written in any human-spoken language; the casing-convention table is illustrative for typical OSS stacks (TypeScript, SQL, CSS, Python) — substitute the conventions of your own stack."
       },
-      "description": "Use when choosing names for files, functions, variables, types, or columns; writing or reviewing UI copy, error messages, or onboarding text; disambiguating a term that means different things in different parts of the codebase; or matching tone to a specific audience (end-user, agent, developer). Covers naming precision (morphology, compound-word ordering, abbreviation policy, verb-noun rules), polysemy resolution (qualifying ambiguous identifiers like provider, shipping, cost, margin with their domain), audience-register selection across three audiences (end-user / agent / developer), the three-part What → Why → What-to-do structure for error messages with blame-free framing, and cross-cultural linguistic awareness for product copy. Provides linguistic rationale for naming, copy, and message decisions — the form rules and the disambiguation logic, not the casing convention or the canonical definition. Do NOT use for the casing convention itself (use naming-conventions), for doc structure or doc-type selection (use documentation), or for renaming code across many call sites (use refactor).",
+      "description": "Use when choosing names for files/functions/variables/types/columns, writing or reviewing UI copy/error/onboarding text, disambiguating overloaded terms, or matching tone to end-user/agent/developer audiences. Covers morphology, compound-word order, abbreviation policy, verb-noun rules, polysemy resolution, audience register, blame-free error-message structure, and cross-cultural product-copy awareness. Do NOT use for casing conventions (use naming-conventions), doc structure/type selection (use documentation), or call-site-wide renames (use refactor).",
       "health": {
         "drift_check": {
           "last_verified": "2026-05-06"
@@ -2182,7 +3664,7 @@
       "compatibility": {
         "notes": "Stack-agnostic UX-writing patterns. The button-label, empty-state, tooltip, dialog, loading, validation, and toast rules apply to any web, mobile, or desktop UI; example product copy uses generic e-commerce framings (storefront, fulfillment partner, orders) — substitute the equivalents from your own product domain."
       },
-      "description": "Use when writing or reviewing functional UI text — button labels, empty-state messages, tooltip content, confirmation dialogs, placeholder text, loading and progress messages, error/success/warning toasts, inline form-validation messages, permission request copy, or onboarding step instructions. Covers the verb-first specific-action button-label rule, the acknowledge-explain-guide empty-state structure, the one-sentence answer-what-is-this tooltip rule, the consequence-first action-named confirmation-dialog rule, the spinner → skeleton → message → reassurance progressive-loading sequence, and the appear-on-blur disappear-on-fix inline-validation rule. Provides the patterns for the words inside the working interface — not marketing copy, not documentation prose, not the general linguistic rationale behind naming. Do NOT use for marketing or landing-page persuasion (use a copywriting skill), for documentation prose or guide structure (use documentation), or for the general linguistic rationale behind UI wording (use linguistics).",
+      "description": "Use when writing or reviewing functional UI text: button labels, empty states, tooltips, dialogs, placeholders, loading/progress messages, toasts, inline validation, permission copy, or onboarding steps. Covers interface-copy patterns such as verb-first action labels, acknowledge-explain-guide empty states, one-sentence tooltips, consequence-first confirmations, progressive loading language, and blur/fix validation messages. Do NOT use for marketing persuasion, documentation prose/guide structure, feedback-state staging, or general linguistic rationale behind wording.",
       "health": {
         "drift_check": {
           "last_verified": "2026-05-06"
@@ -2222,12 +3704,18 @@
           {
             "reason": "a11y owns the accessibility contracts that govern how copy is announced (aria-live regions, aria-label fallbacks, screen-reader semantics); microcopy owns the words themselves — the same 'fix this UI text' prompt routes by whether the trigger is accessibility compliance or copy quality",
             "skill": "a11y"
+          },
+          {
+            "reason": "interaction-feedback owns when, where, and how feedback states appear; microcopy owns the words inside those states",
+            "skill": "interaction-feedback"
           }
         ],
         "related": [
           "linguistics",
           "task-analysis",
-          "intent-recognition"
+          "intent-recognition",
+          "interaction-feedback",
+          "form-ux-architecture"
         ],
         "verify_with": [
           "linguistics",
@@ -2336,6 +3824,204 @@
         ],
         "verify_with": [
           "code-review"
+        ]
+      },
+      "scope": "portable",
+      "stability": "experimental",
+      "type": "capability",
+      "version": "1.0.0"
+    },
+    {
+      "activation": {
+        "anti_examples": [
+          "set up Sentry error tracking for this app",
+          "profile and optimize a slow endpoint",
+          "debug the current production incident",
+          "write application tests for this feature"
+        ],
+        "examples": [
+          "design telemetry for this ingestion pipeline so failures can be diagnosed later",
+          "which logs, metrics, spans, and correlation IDs should this interface contract require?",
+          "model observability for a background job before adding alerts",
+          "turn these diagnostic questions into events and metrics"
+        ],
+        "keywords": [
+          "observability modeling",
+          "telemetry design",
+          "logs metrics traces",
+          "SLO",
+          "spans",
+          "correlation id",
+          "diagnostic events",
+          "alert design",
+          "instrumentation model"
+        ]
+      },
+      "allowed-tools": "Read Grep",
+      "browse_category": "engineering",
+      "category": "engineering/observability",
+      "compatibility": {
+        "notes": "Portable observability modeling discipline for applications, integrations, jobs, queues, APIs, and agent workflows."
+      },
+      "description": "Use when designing telemetry semantics before or during implementation: logs, metrics, traces, events, spans, attributes, correlation IDs, SLOs, alert signals, and diagnostic questions. Do NOT use for domain/business event contracts (use `event-contract-design`), configuring an error tracker alone (use `error-tracking`), performance optimization (use `performance-engineering`), or debugging a current incident (use `debugging`).",
+      "health": {
+        "drift_check": {
+          "last_verified": "2026-05-11"
+        },
+        "eval_artifacts": "planned",
+        "eval_state": "unverified",
+        "freshness": "2026-05-11",
+        "has_grounding": false,
+        "has_relations": true,
+        "lifecycle": {
+          "review_cadence": "quarterly",
+          "stale_after_days": 365
+        },
+        "routing_eval": "absent"
+      },
+      "id": "observability-modeling",
+      "license": "MIT",
+      "name": "observability-modeling",
+      "owner": "skill-graph-maintainer",
+      "path": "skills/observability-modeling/SKILL.md",
+      "portability": {
+        "readiness": "scripted",
+        "targets": [
+          "agent-skills"
+        ]
+      },
+      "relations": {
+        "boundary": [
+          {
+            "reason": "error-tracking owns error-capture setup and handling; observability-modeling owns the broader telemetry schema",
+            "skill": "error-tracking"
+          },
+          {
+            "reason": "event-contract-design owns published business event contracts; observability-modeling owns telemetry events, spans, metrics, and logs for diagnosability",
+            "skill": "event-contract-design"
+          },
+          {
+            "reason": "performance-engineering improves measured performance; observability-modeling defines the signals needed to measure and diagnose",
+            "skill": "performance-engineering"
+          },
+          {
+            "reason": "debugging investigates a current failure; observability-modeling designs future diagnosability",
+            "skill": "debugging"
+          },
+          {
+            "reason": "testing-strategy proves behavior in tests; observability-modeling proves runtime diagnosability",
+            "skill": "testing-strategy"
+          }
+        ],
+        "related": [
+          "error-tracking",
+          "performance-engineering",
+          "system-interface-contracts",
+          "event-contract-design",
+          "debugging"
+        ],
+        "verify_with": [
+          "error-tracking",
+          "debugging"
+        ]
+      },
+      "scope": "portable",
+      "stability": "experimental",
+      "type": "capability",
+      "version": "1.0.0"
+    },
+    {
+      "activation": {
+        "anti_examples": [
+          "make a simple browse category tree for skills",
+          "identify the business entities and relationships before implementation",
+          "design the SQL tables, keys, and indexes",
+          "choose whether this knowledge belongs in rules, frames, a graph, or a hybrid"
+        ],
+        "examples": [
+          "we need class and property definitions that another system can reason over, not just a human-readable diagram",
+          "should Customer and Organization be disjoint classes in this ontology?",
+          "define property domains and ranges for our skill graph export",
+          "turn this conceptual model into a machine-checkable ontology without inventing database tables"
+        ],
+        "keywords": [
+          "ontology modeling",
+          "formal semantics",
+          "RDF",
+          "OWL",
+          "JSON-LD",
+          "SHACL",
+          "class axioms",
+          "property domains",
+          "property ranges",
+          "disjoint classes",
+          "reasoning constraints",
+          "semantic interoperability"
+        ]
+      },
+      "allowed-tools": "Read Grep",
+      "browse_category": "knowledge",
+      "category": "modeling/ontology",
+      "compatibility": {
+        "notes": "Portable ontology modeling guidance; implementation can be Markdown, RDF, JSON-LD, OWL, SHACL, or an internal schema language."
+      },
+      "description": "Use when formalizing domain meaning with classes, properties, constraints, RDF/OWL-style semantics, SHACL-like validation shapes, or reasoning-ready axioms. Do NOT use for simple category trees (use `taxonomy-design`), pre-implementation business entity sketches (use `conceptual-modeling`), database schemas (use `data-modeling`), or broad representation choice (use `knowledge-modeling`).",
+      "health": {
+        "drift_check": {
+          "last_verified": "2026-05-11"
+        },
+        "eval_artifacts": "planned",
+        "eval_state": "unverified",
+        "freshness": "2026-05-11",
+        "has_grounding": false,
+        "has_relations": true,
+        "lifecycle": {
+          "review_cadence": "quarterly",
+          "stale_after_days": 365
+        },
+        "routing_eval": "absent"
+      },
+      "id": "ontology-modeling",
+      "license": "MIT",
+      "name": "ontology-modeling",
+      "owner": "skill-graph-maintainer",
+      "path": "skills/ontology-modeling/SKILL.md",
+      "portability": {
+        "readiness": "scripted",
+        "targets": [
+          "agent-skills"
+        ]
+      },
+      "relations": {
+        "boundary": [
+          {
+            "reason": "taxonomy-design owns informal classification and facets; ontology-modeling owns formal semantics",
+            "skill": "taxonomy-design"
+          },
+          {
+            "reason": "conceptual-modeling is stakeholder-readable domain analysis; ontology-modeling is machine-checkable semantic formalization",
+            "skill": "conceptual-modeling"
+          },
+          {
+            "reason": "data-modeling owns persistence structure and constraints; ontology-modeling owns meaning constraints",
+            "skill": "data-modeling"
+          },
+          {
+            "reason": "knowledge-modeling chooses the representation paradigm; ontology-modeling applies one formal paradigm",
+            "skill": "knowledge-modeling"
+          }
+        ],
+        "depends_on": [
+          "semantic-relations"
+        ],
+        "related": [
+          "semantic-relations",
+          "taxonomy-design",
+          "knowledge-modeling"
+        ],
+        "verify_with": [
+          "semantic-relations",
+          "conceptual-modeling"
         ]
       },
       "scope": "portable",
@@ -2555,6 +4241,101 @@
     {
       "activation": {
         "anti_examples": [
+          "design logs, spans, metrics, and correlation IDs before implementation",
+          "set up Sentry and error redaction",
+          "make random micro-optimizations without measurements",
+          "write general unit tests for this feature"
+        ],
+        "examples": [
+          "profile this slow dashboard and decide what to optimize first",
+          "set performance budgets for API latency, page load, and query time",
+          "review this change for likely N+1 queries, cache mistakes, or bundle growth",
+          "design a regression check so this endpoint cannot get slow again unnoticed"
+        ],
+        "keywords": [
+          "performance engineering",
+          "performance budget",
+          "profiling",
+          "latency",
+          "throughput",
+          "Core Web Vitals",
+          "database performance",
+          "caching",
+          "bundle size",
+          "performance regression"
+        ]
+      },
+      "allowed-tools": "Read Grep",
+      "browse_category": "engineering",
+      "category": "engineering/performance",
+      "compatibility": {
+        "notes": "Portable performance discipline for frontend, backend, databases, jobs, APIs, and agent tooling."
+      },
+      "description": "Use when measuring, diagnosing, budgeting, or improving performance: latency, throughput, Core Web Vitals, database queries, caching, bundle size, concurrency, resource use, and regression prevention. Do NOT use for telemetry schema design alone (use `observability-modeling`), error capture setup (use `error-tracking`), or premature micro-optimization without a measured bottleneck.",
+      "health": {
+        "drift_check": {
+          "last_verified": "2026-05-11"
+        },
+        "eval_artifacts": "planned",
+        "eval_state": "unverified",
+        "freshness": "2026-05-11",
+        "has_grounding": false,
+        "has_relations": true,
+        "lifecycle": {
+          "review_cadence": "quarterly",
+          "stale_after_days": 180
+        },
+        "routing_eval": "absent"
+      },
+      "id": "performance-engineering",
+      "license": "MIT",
+      "name": "performance-engineering",
+      "owner": "skill-graph-maintainer",
+      "path": "skills/performance-engineering/SKILL.md",
+      "portability": {
+        "readiness": "scripted",
+        "targets": [
+          "agent-skills"
+        ]
+      },
+      "relations": {
+        "boundary": [
+          {
+            "reason": "observability-modeling designs telemetry signals; performance-engineering uses measurements to improve performance",
+            "skill": "observability-modeling"
+          },
+          {
+            "reason": "error-tracking captures failures; performance-engineering handles latency, throughput, and resource efficiency",
+            "skill": "error-tracking"
+          },
+          {
+            "reason": "testing-strategy plans correctness tests; performance-engineering plans performance budgets and regressions",
+            "skill": "testing-strategy"
+          },
+          {
+            "reason": "refactor restructures code while preserving behavior; performance-engineering changes behavior characteristics under measurement",
+            "skill": "refactor"
+          }
+        ],
+        "related": [
+          "observability-modeling",
+          "api-design",
+          "data-modeling",
+          "testing-strategy"
+        ],
+        "verify_with": [
+          "observability-modeling",
+          "code-review"
+        ]
+      },
+      "scope": "portable",
+      "stability": "experimental",
+      "type": "capability",
+      "version": "1.0.0"
+    },
+    {
+      "activation": {
+        "anti_examples": [
           "plan the next 6 weeks of work for the team",
           "review this PR for code quality",
           "this endpoint is slow under load — find the bottleneck",
@@ -2662,6 +4443,101 @@
       "scope": "portable",
       "stability": "experimental",
       "type": "workflow",
+      "version": "1.0.0"
+    },
+    {
+      "activation": {
+        "anti_examples": [
+          "create a new SKILL.md from the Skill Metadata Protocol template",
+          "run the skill library health tooling and overlap detector",
+          "rewrite this README to sound better",
+          "decide which skill should route for this exact prompt"
+        ],
+        "examples": [
+          "read this repo and extract the durable domain knowledge an agent should know next time",
+          "turn these incident notes into reusable context without copying noise",
+          "mine the code and docs for the true source-of-truth files and project vocabulary",
+          "convert repeated discoveries from recent tasks into skills, ADRs, or context docs"
+        ],
+        "keywords": [
+          "project knowledge extraction",
+          "context extraction",
+          "durable knowledge",
+          "knowledge capture",
+          "code archaeology",
+          "docs mining",
+          "issue mining",
+          "tacit knowledge",
+          "context doc",
+          "agent memory"
+        ]
+      },
+      "allowed-tools": "Read Grep",
+      "browse_category": "knowledge",
+      "category": "ai-engineering/knowledge-extraction",
+      "compatibility": {
+        "notes": "Portable extraction workflow for turning project evidence into durable agent context without hallucinated project claims."
+      },
+      "description": "Use when extracting durable project knowledge from code, docs, issues, incidents, reports, screenshots, or conversations into reusable context such as skills, ADRs, glossaries, context docs, or memory. Do NOT use for writing a new skill contract (use `skill-scaffold`), maintaining library tooling (use `skill-infrastructure`), or generic documentation polish (use `documentation`).",
+      "health": {
+        "drift_check": {
+          "last_verified": "2026-05-11"
+        },
+        "eval_artifacts": "planned",
+        "eval_state": "unverified",
+        "freshness": "2026-05-11",
+        "has_grounding": false,
+        "has_relations": true,
+        "lifecycle": {
+          "review_cadence": "quarterly",
+          "stale_after_days": 365
+        },
+        "routing_eval": "absent"
+      },
+      "id": "project-knowledge-extraction",
+      "license": "MIT",
+      "name": "project-knowledge-extraction",
+      "owner": "skill-graph-maintainer",
+      "path": "skills/project-knowledge-extraction/SKILL.md",
+      "portability": {
+        "readiness": "scripted",
+        "targets": [
+          "agent-skills"
+        ]
+      },
+      "relations": {
+        "boundary": [
+          {
+            "reason": "skill-scaffold authors a specific skill contract; project-knowledge-extraction decides what durable knowledge should become a skill, ADR, context doc, or memory",
+            "skill": "skill-scaffold"
+          },
+          {
+            "reason": "skill-infrastructure maintains library tooling; project-knowledge-extraction mines evidence into reusable knowledge artifacts",
+            "skill": "skill-infrastructure"
+          },
+          {
+            "reason": "documentation writes reader-facing prose; project-knowledge-extraction extracts and classifies durable knowledge before deciding the artifact",
+            "skill": "documentation"
+          },
+          {
+            "reason": "skill-router dispatches a prompt to existing skills; project-knowledge-extraction creates or updates the knowledge base the router later uses",
+            "skill": "skill-router"
+          }
+        ],
+        "related": [
+          "knowledge-modeling",
+          "context-graph",
+          "architecture-decision-records",
+          "documentation"
+        ],
+        "verify_with": [
+          "knowledge-modeling",
+          "documentation"
+        ]
+      },
+      "scope": "portable",
+      "stability": "experimental",
+      "type": "capability",
       "version": "1.0.0"
     },
     {
@@ -3096,7 +4972,7 @@
           "design-token semantic layer",
           "naming smells catalogue",
           "DDD ubiquitous language",
-          "affordance signifier match",
+          "semantic affordance naming",
           "semantic UI signal",
           "semantic API contract",
           "parse-do-not-validate pattern",
@@ -3112,7 +4988,7 @@
       "compatibility": {
         "notes": "Cross-domain naming and meaning skill, stack-agnostic. The naming-smells catalogue, SemVer rules, conventional-commit format, three-layer token architecture, HTTP-status semantics, REST/GraphQL conventions, and anti-pattern catalog apply to any codebase; example identifiers use generic e-commerce framings — substitute the equivalents from your domain."
       },
-      "description": "Use when naming any artifact across any domain — function, variable, file, CSS class, design token, database column, API field, HTTP status code, semantic-version bump, conventional-commit type, UI label, error code, or branded TypeScript type — or when a name in code review feels wrong, ambiguous, or misleading. Covers the meaning-encoding rules across naming smells (Peter Hilton catalogue), DDD ubiquitous language, semantic versioning (SemVer 2.0.0), conventional commit messages, branded/nominal types and parse-don't-validate, three-layer design-token architecture (primitive → semantic → component), semantic CSS / BEM, semantic REST and GraphQL APIs, HTTP status codes as semantic signals, semantic UI affordances and color usage, and the universal anti-pattern catalog (generic names, semantic drift, misleading names, appearance-based names, abbreviation ambiguity, cargo-cult naming). Provides the cross-domain meaning-encoding layer — the why behind every naming convention — not the casing format itself, not word-form morphology, and not relation typing between concepts. Do NOT use for word morphology or polysemy resolution at the identifier level (use linguistics), the casing format per artifact kind (use naming-conventions), the typed connection between concepts (use semantic-relations), or specific in-product UI-text patterns (use microcopy).",
+      "description": "Use when naming artifacts across code, APIs, design tokens, commits, HTTP/status signals, UI labels, error codes, or branded types, especially when a name feels ambiguous or misleading. Covers cross-domain meaning-encoding: naming smells, DDD ubiquitous language, SemVer, conventional commits, branded types, semantic design tokens/CSS/APIs, semantic UI affordances, and naming anti-patterns. Do NOT use for word morphology/polysemy (use linguistics), casing formats (use naming-conventions), typed concept relations (use semantic-relations), or in-product UI-text patterns (use microcopy).",
       "health": {
         "drift_check": {
           "last_verified": "2026-05-06"
@@ -3217,7 +5093,7 @@
       "compatibility": {
         "notes": "Stack-agnostic sign-system analysis. The Peirce / Saussure / Barthes models, color-as-sign rules, iconography principles, and affordance taxonomy apply to any UI; example surfaces use generic e-commerce framings — substitute the equivalents from your domain."
       },
-      "description": "Use when designing or auditing icon systems; checking whether a color, badge, or shape communicates the wrong judgment; explaining why users misread a button, state, or symbol; choosing visual metaphors for abstract concepts; or auditing naming and interface signs together when a surface feels semantically off. Covers Peirce's icon/index/symbol trichotomy, Saussure's signifier/signified dyad, Barthes' denotation/connotation/myth layers, color as sign with the denotation-vs-connotation audit, shape and position as sign channels, iconography as a sign system (consistency, metaphor clarity, pairing, system coherence), affordance theory (real, perceived, signifier, anti-affordance), code-and-API semiotics (vague names like processData are signifier failures), and the semiotic-coherence audit checklist. Provides the sign-system reasoning layer above microcopy execution and color-token math, and below formal ontology — owns the question 'what does this sign communicate to a user?'. Do NOT use for the actual UI wording (use microcopy), live color-token values and contrast math (use a color-science skill), formal class hierarchies and existence rules (use an ontology skill), or word-form morphology and abbreviation rules (use linguistics).",
+      "description": "Use when designing or auditing icon systems, colors/badges/shapes, visual metaphors, interface signs, or naming-plus-visual surfaces that users misread. Covers semiotic reasoning across icon/index/symbol, signifier/signified, denotation/connotation/myth, color/shape/position/iconography, affordances, code/API signifiers, and semiotic-coherence audits. Do NOT use for actual UI wording (use `microcopy`), palette/typography craft (use `visual-design-foundations`), accessibility or contrast compliance (use `a11y`), formal class hierarchies, or word morphology rules.",
       "health": {
         "drift_check": {
           "last_verified": "2026-05-06"
@@ -3257,12 +5133,17 @@
           {
             "reason": "semantic-relations owns the typed connections between concepts (IS-A, PART-OF, thematic roles); semiotics owns the signifier-to-signified mapping in interface and naming surfaces — the same 'how does this relate to that?' prompt routes by whether the trigger is a conceptual relation type or a sign-system relationship",
             "skill": "semantic-relations"
+          },
+          {
+            "reason": "visual-design-foundations owns visual craft decisions such as palette, type, spacing, and hierarchy; semiotics owns what those signs communicate",
+            "skill": "visual-design-foundations"
           }
         ],
         "related": [
           "linguistics",
           "a11y",
-          "intent-recognition"
+          "intent-recognition",
+          "visual-design-foundations"
         ],
         "verify_with": [
           "a11y",
@@ -3393,6 +5274,126 @@
     {
       "activation": {
         "anti_examples": [
+          "refactor this skill to be more concise",
+          "my skill's routing isn't activating — why?"
+        ],
+        "examples": [
+          "I'm writing a new skill from scratch — where do I start?",
+          "how do I pick between capability and workflow for my skill type?",
+          "what's the difference between description and the ## Coverage section?"
+        ],
+        "keywords": [
+          "skill authoring",
+          "skill template",
+          "new skill",
+          "writing a new skill",
+          "skill frontmatter",
+          "skill graph contract",
+          "capability or workflow",
+          "pick capability or workflow",
+          "skill type pick",
+          "description vs coverage",
+          "description versus coverage",
+          "authoring a skill",
+          "skill archetype",
+          "frontmatter structure",
+          "skill body layout",
+          "teaching layer"
+        ],
+        "paths": [
+          "examples/skill-metadata-template.md"
+        ],
+        "triggers": [
+          "skill-metadata-template"
+        ]
+      },
+      "allowed-tools": "Read Grep",
+      "browse_category": "knowledge",
+      "category": "skill-system/authoring",
+      "compatibility": {
+        "notes": "Markdown, YAML, JSON Schema"
+      },
+      "description": "Use when creating a new SKILL.md, adapting an existing skill to a different archetype, or teaching an author the canonical frontmatter and body structure. Covers schema-conformant frontmatter, archetype-aware body layout, semantic-layer discipline (description vs Coverage), teaching-layer mechanics (TEMPLATE NOTE blockquotes and YAML comments), and the authoring gate. Do NOT use when modifying an already-written skill (edit that skill directly) or when writing general technical documentation (use the documentation skill).",
+      "grounding": {
+        "domain_object": "Skill authoring for the Skill Metadata Protocol frontmatter contract",
+        "evidence_priority": "repo_code_first",
+        "failure_modes": [
+          "placeholder_sludge",
+          "cargo_cult_meta_sections",
+          "description_coverage_collapse",
+          "authoring_gate_skipped"
+        ],
+        "grounding_mode": "repo_specific",
+        "truth_sources": [
+          "docs/skill-metadata-protocol.md",
+          "schemas/skill.schema.json",
+          "docs/single-skill-audit-checklist.md"
+        ]
+      },
+      "health": {
+        "drift_check": {
+          "last_verified": "2026-04-17"
+        },
+        "eval_artifacts": "planned",
+        "eval_state": "unverified",
+        "freshness": "2026-04-17",
+        "has_grounding": true,
+        "has_relations": true,
+        "lifecycle": {
+          "review_cadence": "quarterly",
+          "stale_after_days": 180
+        },
+        "routing_eval": "absent",
+        "runtime_telemetry": {
+          "feedback_source": ".skill-graph/telemetry/skill-metadata-template.jsonl",
+          "last_updated": "2026-04-17",
+          "metrics": {
+            "sample_size": 0,
+            "success_rate": 0
+          }
+        }
+      },
+      "id": "skill-metadata-template",
+      "license": "MIT",
+      "name": "skill-metadata-template",
+      "owner": "skill-graph-maintainer",
+      "path": "examples/skill-metadata-template.md",
+      "portability": {
+        "readiness": "scripted",
+        "targets": [
+          "agent-skills"
+        ]
+      },
+      "project_tags": [
+        "skill-authoring"
+      ],
+      "relations": {
+        "boundary": [
+          {
+            "reason": "refactor is behavior-preserving code modification, not skill authoring",
+            "skill": "refactor"
+          },
+          {
+            "reason": "skill-router dispatches between existing skills at request time; this template creates a NEW skill",
+            "skill": "skill-router"
+          },
+          {
+            "reason": "graph-audit verifies the authored metadata of an existing skill; this template is the authoring-time guide",
+            "skill": "graph-audit"
+          }
+        ],
+        "verify_with": [
+          "documentation"
+        ]
+      },
+      "scope": "reference",
+      "stability": "stable",
+      "type": "capability",
+      "version": "1.0.0"
+    },
+    {
+      "activation": {
+        "anti_examples": [
           "audit the graph-audit skill for schema conformance",
           "write a guide explaining how our routing works",
           "reproduce this routing mis-dispatch from production logs"
@@ -3438,7 +5439,7 @@
       "compatibility": {
         "notes": "Markdown, YAML, any agent runtime"
       },
-      "description": "Use when routing an agent request across multiple skills, building or auditing a routing table, detecting routing coverage gaps, or answering questions like 'which skill handles this?', 'who routes X?', or 'why did skill A activate instead of B?'. Covers trigger-label matching, file-path matching, keyword matching, description-based semantic matching, scope/type tiebreakers, and coverage-gap detection. Do NOT use when the target skill is already known (load it directly), when authoring a new skill (use `skill-template` instead), or when evaluating a SINGLE skill's quality (use `graph-audit`).",
+      "description": "Use when routing an agent request across multiple skills, building or auditing a routing table, detecting routing coverage gaps, or answering questions like 'which skill handles this?', 'who routes X?', or 'why did skill A activate instead of B?'. Covers trigger-label matching, file-path matching, keyword matching, description-based semantic matching, scope/type tiebreakers, and coverage-gap detection. Do NOT use when the target skill is already known (load it directly), when authoring a new skill (use `skill-metadata-template` instead), or when evaluating a SINGLE skill's quality (use `graph-audit`).",
       "health": {
         "drift_check": {
           "last_verified": "2026-04-18"
@@ -3503,7 +5504,7 @@
           "how do I pick between capability and workflow for my skill type?",
           "what's the difference between description and the ## Coverage section?",
           "scaffold a new skill that teaches react component composition patterns",
-          "I copied skill-template.md but my new skill won't pass lint — help",
+          "I copied skill-metadata-template.md but my new skill won't pass lint — help",
           "draft frontmatter for a workflow skill that owns deployment rollback",
           "how do I strip teaching annotations from the template before commit?",
           "should I flip routing_eval to present on my new skill?"
@@ -3533,9 +5534,9 @@
       "compatibility": {
         "notes": "Markdown, YAML, JSON Schema"
       },
-      "description": "Use when creating a new SKILL.md from scratch, adapting an existing skill to a different archetype, or teaching another author the canonical Skill Graph frontmatter and body structure. Covers schema-conformant frontmatter, archetype-aware body layout, semantic-layer discipline (description vs Coverage), teaching-layer mechanics (TEMPLATE NOTE blockquotes), the lint-first authoring gate, and the routing-eval honesty rule. Do NOT use when modifying an already-written skill (edit it directly), when writing general technical documentation (use `documentation`), or when fixing a malformed skill detected by lint (use `graph-audit` for systematic library health, not authoring scaffold help).",
+      "description": "Use when creating a new SKILL.md from scratch, adapting an existing skill to a different archetype, or teaching another author the canonical Skill Metadata Protocol frontmatter and body structure. Covers schema-conformant frontmatter, archetype-aware body layout, semantic-layer discipline (description vs Coverage), teaching-layer mechanics (TEMPLATE NOTE blockquotes), the lint-first authoring gate, and the routing-eval honesty rule. Do NOT use when modifying an already-written skill (edit it directly), when writing general technical documentation (use `documentation`), or when fixing a malformed skill detected by lint (use `graph-audit` for systematic library health, not authoring scaffold help).",
       "grounding": {
-        "domain_object": "Authoring a new SKILL.md against the Skill Graph v3 contract",
+        "domain_object": "Authoring a new SKILL.md against the Skill Metadata Protocol v3 contract",
         "evidence_priority": "repo_code_first",
         "failure_modes": [
           "placeholder_sludge",
@@ -3546,16 +5547,23 @@
         ],
         "grounding_mode": "repo_specific",
         "truth_sources": [
-          "examples/skill-template.md",
+          "examples/skill-metadata-template.md",
           "schemas/skill.v3.schema.json",
-          "docs/metadata-contract.md",
+          "docs/skill-metadata-protocol.md",
           "docs/single-skill-audit-checklist.md"
         ]
       },
       "health": {
         "drift_check": {
-          "last_verified": "2026-05-04"
+          "last_verified": "2026-05-10",
+          "truth_source_hashes": {
+            "docs/single-skill-audit-checklist.md": "f3a5c370a64471e3273b82b6c4826ed19f16ef5f355d00dafc1bd96316e2cabc",
+            "docs/skill-metadata-protocol.md": "7add14972c3674698b50a0ebaea3c572ae66faedbe2458f21a7d4769696c80ae",
+            "examples/skill-metadata-template.md": "54589ec6e1f930fc7f76b81a6b4b845e8497ddaee274fd86779cfa4e48f3a24c",
+            "schemas/skill.v3.schema.json": "94c5e14e9a38182f6dea7d6ce5b6953147702fcee586d71e294742e0db3e5c81"
+          }
         },
+        "drift_detected": true,
         "eval_artifacts": "planned",
         "eval_state": "unverified",
         "freshness": "2026-05-04",
@@ -3612,120 +5620,194 @@
     {
       "activation": {
         "anti_examples": [
-          "refactor this skill to be more concise",
-          "my skill's routing isn't activating — why?"
+          "discover the domain events and policies for the whole business process",
+          "create database tables and constraints for this lifecycle",
+          "instrument metrics and traces for an existing workflow",
+          "debug why this job got stuck yesterday"
         ],
         "examples": [
-          "I'm writing a new skill from scratch — where do I start?",
-          "how do I pick between capability and workflow for my skill type?",
-          "what's the difference between description and the ## Coverage section?"
+          "model the order fulfillment status lifecycle so invalid transitions are impossible",
+          "this status field keeps growing flags - should it become a state machine?",
+          "define guards and side effects for onboarding steps",
+          "find impossible states in this workflow before we implement it"
         ],
         "keywords": [
-          "skill authoring",
-          "skill template",
-          "new skill",
-          "writing a new skill",
-          "skill frontmatter",
-          "skill graph contract",
-          "capability or workflow",
-          "pick capability or workflow",
-          "skill type pick",
-          "description vs coverage",
-          "description versus coverage",
-          "authoring a skill",
-          "skill archetype",
-          "frontmatter structure",
-          "skill body layout",
-          "teaching layer"
-        ],
-        "paths": [
-          "examples/skill-template.md"
-        ],
-        "triggers": [
-          "skill-template"
+          "state machine",
+          "state modeling",
+          "lifecycle states",
+          "transitions",
+          "guards",
+          "finite state machine",
+          "invalid states",
+          "status field",
+          "workflow invariants"
         ]
       },
       "allowed-tools": "Read Grep",
-      "browse_category": "knowledge",
-      "category": "skill-system/authoring",
+      "browse_category": "engineering",
+      "category": "modeling/state-machines",
       "compatibility": {
-        "notes": "Markdown, YAML, JSON Schema"
+        "notes": "Portable state-machine discipline for product workflows, domain lifecycles, retries, background jobs, and UI flow control."
       },
-      "description": "Use when creating a new SKILL.md, adapting an existing skill to a different archetype, or teaching an author the canonical frontmatter and body structure. Covers schema-conformant frontmatter, archetype-aware body layout, semantic-layer discipline (description vs Coverage), teaching-layer mechanics (TEMPLATE NOTE blockquotes and YAML comments), and the authoring gate. Do NOT use when modifying an already-written skill (edit that skill directly) or when writing general technical documentation (use the documentation skill).",
-      "grounding": {
-        "domain_object": "Skill authoring for the Skill Graph frontmatter contract",
-        "evidence_priority": "repo_code_first",
-        "failure_modes": [
-          "placeholder_sludge",
-          "cargo_cult_meta_sections",
-          "description_coverage_collapse",
-          "authoring_gate_skipped"
-        ],
-        "grounding_mode": "repo_specific",
-        "truth_sources": [
-          "docs/metadata-contract.md",
-          "schemas/skill.schema.json",
-          "docs/single-skill-audit-checklist.md"
-        ]
-      },
+      "description": "Use when modeling lifecycle states, transitions, guards, events, side effects, invalid states, retries, and state invariants for workflows or domain objects. Do NOT use for broad event discovery (use `event-storming`), database schema design (use `data-modeling`), or observability instrumentation after the lifecycle already exists (use `observability-modeling`).",
       "health": {
         "drift_check": {
-          "last_verified": "2026-04-17"
+          "last_verified": "2026-05-11"
         },
         "eval_artifacts": "planned",
         "eval_state": "unverified",
-        "freshness": "2026-04-17",
-        "has_grounding": true,
+        "freshness": "2026-05-11",
+        "has_grounding": false,
         "has_relations": true,
         "lifecycle": {
           "review_cadence": "quarterly",
-          "stale_after_days": 180
+          "stale_after_days": 365
         },
-        "routing_eval": "absent",
-        "runtime_telemetry": {
-          "feedback_source": ".skill-graph/telemetry/skill-template.jsonl",
-          "last_updated": "2026-04-17",
-          "metrics": {
-            "sample_size": 0,
-            "success_rate": 0
-          }
-        }
+        "routing_eval": "absent"
       },
-      "id": "skill-template",
+      "id": "state-machine-modeling",
       "license": "MIT",
-      "name": "skill-template",
+      "name": "state-machine-modeling",
       "owner": "skill-graph-maintainer",
-      "path": "examples/skill-template.md",
+      "path": "skills/state-machine-modeling/SKILL.md",
       "portability": {
         "readiness": "scripted",
         "targets": [
           "agent-skills"
         ]
       },
-      "project_tags": [
-        "skill-authoring"
-      ],
       "relations": {
         "boundary": [
           {
-            "reason": "refactor is behavior-preserving code modification, not skill authoring",
-            "skill": "refactor"
+            "reason": "event-storming discovers domain behavior broadly; state-machine-modeling formalizes a specific lifecycle",
+            "skill": "event-storming"
           },
           {
-            "reason": "skill-router dispatches between existing skills at request time; this template creates a NEW skill",
-            "skill": "skill-router"
+            "reason": "data-modeling persists state; state-machine-modeling defines legal state behavior",
+            "skill": "data-modeling"
           },
           {
-            "reason": "graph-audit verifies the authored metadata of an existing skill; this template is the authoring-time guide",
-            "skill": "graph-audit"
+            "reason": "observability-modeling instruments a lifecycle; state-machine-modeling defines the lifecycle itself",
+            "skill": "observability-modeling"
+          },
+          {
+            "reason": "debugging investigates an observed stuck state; state-machine-modeling prevents invalid states by design",
+            "skill": "debugging"
           }
         ],
+        "related": [
+          "event-storming",
+          "system-interface-contracts",
+          "testing-strategy",
+          "api-design"
+        ],
         "verify_with": [
-          "documentation"
+          "testing-strategy",
+          "system-interface-contracts"
         ]
       },
-      "scope": "reference",
-      "stability": "stable",
+      "scope": "portable",
+      "stability": "experimental",
+      "type": "capability",
+      "version": "1.0.0"
+    },
+    {
+      "activation": {
+        "anti_examples": [
+          "design the REST endpoints, status codes, and pagination",
+          "create database tables and constraints",
+          "investigate why this existing integration is failing in production",
+          "write an ADR after the interface decision has already been accepted"
+        ],
+        "examples": [
+          "define the contract between the ingestion job and the dashboard view layer",
+          "what invariants must this event producer and consumer share?",
+          "review this module boundary for missing ownership and compatibility rules",
+          "we need an interface contract before several agents implement opposite sides of the boundary"
+        ],
+        "keywords": [
+          "interface contract",
+          "system boundary",
+          "contract design",
+          "compatibility contract",
+          "input output invariant",
+          "event schema",
+          "module boundary",
+          "idempotency contract",
+          "versioning contract",
+          "error contract"
+        ]
+      },
+      "allowed-tools": "Read Grep",
+      "browse_category": "engineering",
+      "category": "architecture/contracts",
+      "compatibility": {
+        "notes": "Portable contract-design discipline across code modules, services, queues, APIs, webhooks, jobs, and agent interfaces."
+      },
+      "description": "Use when defining or reviewing contracts between systems, modules, services, agents, jobs, events, APIs, or teams: ownership, inputs, outputs, invariants, compatibility, errors, idempotency, and versioning. Do NOT use for REST resource design alone (use `api-design`), async event contract detail (use `event-contract-design`), database schemas (use `data-modeling`), or post-failure debugging (use `debugging`).",
+      "health": {
+        "drift_check": {
+          "last_verified": "2026-05-11"
+        },
+        "eval_artifacts": "planned",
+        "eval_state": "unverified",
+        "freshness": "2026-05-11",
+        "has_grounding": false,
+        "has_relations": true,
+        "lifecycle": {
+          "review_cadence": "quarterly",
+          "stale_after_days": 365
+        },
+        "routing_eval": "absent"
+      },
+      "id": "system-interface-contracts",
+      "license": "MIT",
+      "name": "system-interface-contracts",
+      "owner": "skill-graph-maintainer",
+      "path": "skills/system-interface-contracts/SKILL.md",
+      "portability": {
+        "readiness": "scripted",
+        "targets": [
+          "agent-skills"
+        ]
+      },
+      "relations": {
+        "boundary": [
+          {
+            "reason": "api-design owns REST/API surface shape; system-interface-contracts owns the broader boundary contract across any interface type",
+            "skill": "api-design"
+          },
+          {
+            "reason": "event-contract-design owns asynchronous event envelopes, schemas, topics, and compatibility; system-interface-contracts owns the broader boundary discipline",
+            "skill": "event-contract-design"
+          },
+          {
+            "reason": "data-modeling owns stored data structure; system-interface-contracts owns producer/consumer expectations and compatibility",
+            "skill": "data-modeling"
+          },
+          {
+            "reason": "debugging investigates a known failure; system-interface-contracts prevents ambiguous boundary behavior before failure",
+            "skill": "debugging"
+          },
+          {
+            "reason": "architecture-decision-records records the adopted contract decision; this skill designs the contract",
+            "skill": "architecture-decision-records"
+          }
+        ],
+        "related": [
+          "bounded-context-mapping",
+          "api-design",
+          "event-storming",
+          "event-contract-design",
+          "state-machine-modeling"
+        ],
+        "verify_with": [
+          "testing-strategy",
+          "code-review"
+        ]
+      },
+      "scope": "portable",
+      "stability": "experimental",
       "type": "capability",
       "version": "1.0.0"
     },
@@ -3775,7 +5857,7 @@
       "compatibility": {
         "notes": "Stack-agnostic. The actor / scenario / top-task model, the five friction dimensions, the breakpoint taxonomy, and the primary / secondary / supporting hierarchy apply to any UI under review; persona / journey YAML files are illustrative — substitute the equivalents (Notion, Confluence, in-repo Markdown, Figma annotations) of your team."
       },
-      "description": "Use when auditing a route, defining a route contract, reviewing onboarding or setup flows, diagnosing why a page feels confusing, or when the user asks about top tasks, time-to-value, branching, dead ends, or task complexity. Provides goal-driven UX analysis that turns vague critique into explicit goal → task → subtask decomposition: identifying the actor and scenario, extracting the top task, breaking it into sequential subtasks with skip paths and blocked states, scoring task friction across five dimensions (discoverability, cognitive load, effort, trust, recovery), identifying breakpoints, and producing the primary / secondary / supporting hierarchy contract for the first viewport. Do NOT use for low-level component styling, generic heuristic critique without a user goal, or accessibility-only QA of an existing implementation — those need component, design-critique, or accessibility-specific skills, not goal-driven decomposition.",
+      "description": "Use when auditing a route, defining a route contract, reviewing onboarding or setup flows, diagnosing why a page feels confusing, or when the user asks about top tasks, time-to-value, branching, dead ends, or task complexity. Provides goal-driven UX analysis that turns vague critique into explicit goal -> task -> subtask decomposition and a primary / secondary / supporting hierarchy contract for the first viewport. Do NOT use for control-pattern choice (use `interaction-patterns`), visual craft (use `visual-design-foundations`), responsive layout (use `layout-composition`), or accessibility-only QA (use `a11y`).",
       "health": {
         "drift_check": {
           "last_verified": "2026-05-06"
@@ -3811,12 +5893,36 @@
           {
             "reason": "a11y is accessibility QA against WCAG / ARIA / keyboard / screen-reader contracts on an existing UI; task-analysis is goal-driven decomposition of what the UI must support — same 'review this UI' prompt routes by whether the trigger is accessibility compliance or user-task fit",
             "skill": "a11y"
+          },
+          {
+            "reason": "layout-composition owns responsive section order, grids, and scan patterns; task-analysis stops at the first-viewport hierarchy contract",
+            "skill": "layout-composition"
+          },
+          {
+            "reason": "visual-design-foundations owns visual craft; task-analysis owns whether the route supports the user's goal",
+            "skill": "visual-design-foundations"
+          },
+          {
+            "reason": "interaction-patterns owns control-pattern selection; task-analysis identifies the decision or action that the pattern must support",
+            "skill": "interaction-patterns"
+          },
+          {
+            "reason": "interaction-feedback owns loading, progress, success, error, retry, and undo behavior; task-analysis identifies where feedback is needed",
+            "skill": "interaction-feedback"
+          },
+          {
+            "reason": "information-architecture owns navigation and page grouping across a product; task-analysis owns one route or flow",
+            "skill": "information-architecture"
           }
         ],
         "related": [
           "diagnosis",
           "pattern-recognition",
-          "documentation"
+          "documentation",
+          "information-architecture",
+          "layout-composition",
+          "interaction-patterns",
+          "interaction-feedback"
         ],
         "verify_with": [
           "documentation",
@@ -3826,6 +5932,100 @@
       "scope": "portable",
       "stability": "experimental",
       "type": "workflow",
+      "version": "1.0.0"
+    },
+    {
+      "activation": {
+        "anti_examples": [
+          "define OWL class restrictions and property domains for this knowledge base",
+          "decide whether this knowledge should be represented as a graph, frame, rules, or hybrid",
+          "type this single relation as meronymy, causality, synonymy, or thematic role",
+          "write user-facing labels for this navigation item"
+        ],
+        "examples": [
+          "our skill categories are drifting: some are by domain, some by activity, and some by tool - how should the taxonomy be redesigned?",
+          "should these be tags, facets, or child categories?",
+          "build a clean category tree for these concepts without making every related term a parent-child relation",
+          "we have analytics, observability, telemetry, and monitoring as categories - which should merge and which should stay separate?"
+        ],
+        "keywords": [
+          "taxonomy design",
+          "controlled vocabulary",
+          "browse taxonomy",
+          "category hierarchy",
+          "facets",
+          "tagging rules",
+          "broader narrower",
+          "SKOS hierarchy",
+          "classification cleanup",
+          "duplicate categories",
+          "taxonomy governance"
+        ]
+      },
+      "allowed-tools": "Read Grep",
+      "browse_category": "knowledge",
+      "category": "modeling/taxonomy",
+      "compatibility": {
+        "notes": "Portable taxonomy design discipline for skill libraries, product information architecture, documentation trees, and knowledge graphs."
+      },
+      "description": "Use when designing a controlled classification system: category trees, facets, browse taxonomies, SKOS broader/narrower relationships, tagging rules, and duplicate-category cleanup. Do NOT use for formal ontology axioms with reasoning constraints (use `ontology-modeling`), broad knowledge-representation choice (use `knowledge-modeling`), or one-off edge typing (use `semantic-relations`).",
+      "health": {
+        "drift_check": {
+          "last_verified": "2026-05-11"
+        },
+        "eval_artifacts": "planned",
+        "eval_state": "unverified",
+        "freshness": "2026-05-11",
+        "has_grounding": false,
+        "has_relations": true,
+        "lifecycle": {
+          "review_cadence": "quarterly",
+          "stale_after_days": 365
+        },
+        "routing_eval": "absent"
+      },
+      "id": "taxonomy-design",
+      "license": "MIT",
+      "name": "taxonomy-design",
+      "owner": "skill-graph-maintainer",
+      "path": "skills/taxonomy-design/SKILL.md",
+      "portability": {
+        "readiness": "scripted",
+        "targets": [
+          "agent-skills"
+        ]
+      },
+      "relations": {
+        "boundary": [
+          {
+            "reason": "ontology-modeling owns formal axioms and reasoning semantics; taxonomy-design owns human-governed classification",
+            "skill": "ontology-modeling"
+          },
+          {
+            "reason": "knowledge-modeling chooses the representation paradigm; taxonomy-design works inside the classification paradigm once chosen",
+            "skill": "knowledge-modeling"
+          },
+          {
+            "reason": "semantic-relations types individual concept edges; taxonomy-design governs the category system and assignment rules",
+            "skill": "semantic-relations"
+          }
+        ],
+        "depends_on": [
+          "semantic-relations"
+        ],
+        "related": [
+          "information-architecture",
+          "skill-infrastructure",
+          "context-graph"
+        ],
+        "verify_with": [
+          "semantic-relations",
+          "context-graph"
+        ]
+      },
+      "scope": "portable",
+      "stability": "experimental",
+      "type": "capability",
       "version": "1.0.0"
     },
     {
@@ -3960,7 +6160,7 @@
           "file search before grep",
           "bulk edit script",
           "poka-yoke tool design",
-          "subagent delegation",
+          "subagent delegation for tool efficiency",
           "context-efficient tool use",
           "cost per tool call",
           "tool call benchmark",
@@ -4151,6 +6351,101 @@
     {
       "activation": {
         "anti_examples": [
+          "what does this icon or badge color communicate to users?",
+          "define semantic tokens and component variants",
+          "decide the responsive section order and breakpoint behavior",
+          "verify WCAG contrast, focus order, and screen-reader behavior"
+        ],
+        "examples": [
+          "pick a visual direction for this dashboard without changing the task structure",
+          "audit color, typography, spacing, and hierarchy for this product page",
+          "this UI feels flat and hard to scan - improve the visual hierarchy",
+          "choose a restrained palette and type scale for an internal admin tool"
+        ],
+        "keywords": [
+          "visual-design",
+          "visual hierarchy",
+          "palette direction",
+          "type scale",
+          "spacing rhythm",
+          "density rules",
+          "elevation treatment",
+          "motion feel",
+          "brand fit"
+        ]
+      },
+      "allowed-tools": "Read Grep",
+      "browse_category": "frontend",
+      "category": "design/visual",
+      "compatibility": {
+        "notes": "Portable visual-design guidance for product UI, dashboards, docs, marketing-adjacent product surfaces, and design-system consumers. Does not replace brand-specific guidelines."
+      },
+      "description": "Use when designing or auditing visual craft: color palette, typography, spacing, elevation, rhythm, density, visual hierarchy, brand fit, contrast intent, and motion feel. Do NOT use for sign-system meaning (use `semiotics`), token/component architecture (use `design-system-architecture`), responsive structure (use `layout-composition`), or accessibility compliance (use `a11y`).",
+      "health": {
+        "drift_check": {
+          "last_verified": "2026-05-11"
+        },
+        "eval_artifacts": "present",
+        "eval_state": "unverified",
+        "freshness": "2026-05-11",
+        "has_grounding": false,
+        "has_relations": true,
+        "lifecycle": {
+          "review_cadence": "quarterly",
+          "stale_after_days": 365
+        },
+        "routing_eval": "absent"
+      },
+      "id": "visual-design-foundations",
+      "license": "MIT",
+      "name": "visual-design-foundations",
+      "owner": "skill-graph-maintainer",
+      "path": "skills/visual-design-foundations/SKILL.md",
+      "portability": {
+        "readiness": "scripted",
+        "targets": [
+          "agent-skills"
+        ]
+      },
+      "relations": {
+        "boundary": [
+          {
+            "reason": "semiotics owns what visual signs mean; visual-design-foundations owns the craft choices that shape the surface",
+            "skill": "semiotics"
+          },
+          {
+            "reason": "design-system-architecture owns reusable tokens and components; visual-design-foundations owns visual direction and craft on a surface",
+            "skill": "design-system-architecture"
+          },
+          {
+            "reason": "layout-composition owns responsive structure; visual-design-foundations owns palette, typography, rhythm, density, and polish",
+            "skill": "layout-composition"
+          },
+          {
+            "reason": "a11y owns accessibility compliance; visual-design-foundations can propose visual choices that a11y later verifies",
+            "skill": "a11y"
+          }
+        ],
+        "related": [
+          "semiotics",
+          "design-system-architecture",
+          "layout-composition",
+          "microcopy",
+          "a11y"
+        ],
+        "verify_with": [
+          "a11y",
+          "semiotics"
+        ]
+      },
+      "scope": "portable",
+      "stability": "experimental",
+      "type": "capability",
+      "version": "1.0.0"
+    },
+    {
+      "activation": {
+        "anti_examples": [
           "design our outbound webhook product (we want to deliver events to customers)",
           "the production webhook is failing — find the root cause",
           "explain our webhook patterns in the contributor docs",
@@ -4196,7 +6491,7 @@
       "compatibility": {
         "notes": "Provider-agnostic. Examples reference HMAC-SHA256 (the dominant scheme), SDK-style verification helpers (Stripe-style, where the provider ships a library that takes raw body + header + secret), and round-trip verification APIs (PayPal-style, where the receiver POSTs the event back to the provider for validation). Substitute each provider's specific header names, hashing algorithm, and retry-status-code contract from their docs."
       },
-      "description": "Use when implementing or reviewing an inbound webhook handler for any third-party provider — verifying signatures, deduplicating retries, choosing the right HTTP status code for retry vs no-retry, persisting raw payloads before canonical mapping, and quarantining unverifiable events. Covers the three signature-scheme families (shared-secret HMAC, provider-SDK verification, round-trip verification API), the four idempotency patterns (processed-flag, payload-hash UPSERT, event-ID dedup, composite-key UPSERT), the per-provider retry-contract reading discipline, the raw-then-canonical pipeline, and PII-capture timing for providers with deletion windows. Do NOT use for outbound webhook *publishing* (designing your own webhook product is a different surface), for general background-job orchestration (use `documentation` to describe it; the orchestration framework owns the runtime), or for chasing a webhook handler that has already failed in production (use `debugging`).",
+      "description": "Use when implementing or reviewing an inbound webhook handler for any third-party provider - verifying signatures, deduplicating retries, choosing the right HTTP status code for retry vs no-retry, persisting raw payloads before canonical mapping, and quarantining unverifiable events. Covers signature schemes, idempotency patterns, provider retry contracts, raw-then-canonical pipelines, quarantine, secret rotation, and PII-capture timing. Do NOT use for outbound webhook publishing (use `event-contract-design`), general background-job orchestration, or chasing a webhook handler that has already failed in production (use `debugging`).",
       "health": {
         "drift_check": {
           "last_verified": "2026-05-06"
@@ -4230,6 +6525,10 @@
             "skill": "documentation"
           },
           {
+            "reason": "event-contract-design owns outbound event and webhook contracts; webhook-integration owns inbound third-party handler mechanics",
+            "skill": "event-contract-design"
+          },
+          {
             "reason": "debugging chases an observed handler failure with reproduction; webhook-integration plans the safe handler shape before deployment",
             "skill": "debugging"
           },
@@ -4251,7 +6550,8 @@
           "debugging",
           "documentation",
           "owasp-security",
-          "code-review"
+          "code-review",
+          "event-contract-design"
         ],
         "verify_with": [
           "testing-strategy",
@@ -4307,7 +6607,7 @@
       "compatibility": {
         "notes": "Stack-agnostic prose-humanization rules. The AI-tell catalog, voice-conversion decision tree, readability formulas, sentence-rhythm patterns, tone-mapping table, and detection-avoidance techniques apply to any human-readable text in any product domain — substitute the equivalents from your own audience and brand voice."
       },
-      "description": "Use when writing or editing prose that humans will read — documentation, PR descriptions, issue bodies, release notes, error messages, UI copy, commit messages, tooltips, support responses — or when text sounds robotic, padded, monotonous, or overly formal. Covers AI-tell detection and removal (Tier 1 zero-tolerance words like 'delve', 'testament', 'comprehensive', 'leverage'; Tier 2 conditional removals like 'utilize', 'facilitate'), passive-to-active voice conversion with the actor-known decision tree, hedging-pattern removal, readability scoring (Flesch-Kincaid, Gunning Fog, Flesch Reading Ease) used as diagnosis not target, sentence variety and the 3-beat short-long-medium rhythm, vocabulary-diversity rules, tone mapping across context types, AI-detection-avoidance techniques (perplexity, burstiness), paragraph rhythm with the hook-body-landing pattern, the bullets-vs-prose decision tree, anti-patterns (over-qualification, repetitive transitions, the enumeration trap, hollow intensifiers), and the 5-step humanization workflow. Provides the prose-quality humanization layer for any human-readable text — not the doc structure itself, not the casing convention, and not the in-product UI-text pattern catalog. Do NOT use for documentation routing or doc-type selection (use documentation), code-identifier naming (use semantics or naming-conventions), or the in-product UI-text pattern catalog (use microcopy).",
+      "description": "Use when writing or editing human-readable prose such as docs, PRs, issues, release notes, errors, UI copy, commits, tooltips, or support replies, especially when text sounds robotic, padded, monotonous, or overly formal. Covers AI-tell removal, active voice, hedging reduction, readability diagnosis, sentence rhythm, vocabulary variety, tone mapping, paragraph rhythm, bullets-vs-prose choice, and the 5-step humanization workflow. Do NOT use for documentation routing/type selection, code-identifier naming, or in-product UI-text pattern catalogs.",
       "health": {
         "drift_check": {
           "last_verified": "2026-05-06"
@@ -4367,27 +6667,27 @@
   ],
   "summary": {
     "by_browse_category": {
-      "engineering": 10,
-      "frontend": 1,
-      "knowledge": 26,
-      "quality": 3,
+      "engineering": 22,
+      "frontend": 7,
+      "knowledge": 30,
+      "quality": 4,
       "security": 1
     },
     "by_scope": {
       "codebase": 1,
-      "portable": 38,
+      "portable": 61,
       "reference": 2
     },
     "by_stability": {
-      "experimental": 40,
+      "experimental": 63,
       "stable": 1
     },
     "by_type": {
-      "capability": 33,
+      "capability": 56,
       "overlay": 1,
       "router": 1,
       "workflow": 6
     },
-    "total_skills": 41
+    "total_skills": 64
   }
 }

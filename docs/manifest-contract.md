@@ -2,16 +2,16 @@
 
 > **Scope.** This document is the authored-to-generated bridge for Skill Graph: it specifies exactly how every top-level field in a `SKILL.md` frontmatter block projects into the compiled `skills.manifest.json` that downstream tooling consumes.
 >
-> **Audience.** Authors of manifest generators and consumers of the manifest. If you are authoring a skill itself, read `docs/metadata-contract.md` instead — that document owns the field semantics. This document owns the transformation from authored to generated.
+> **Audience.** Authors of manifest generators and consumers of the manifest. If you are authoring a skill itself, read `docs/skill-metadata-protocol.md` instead — that document owns the field semantics. This document owns the transformation from authored to generated.
 >
 > **Authority.** `schemas/skill.schema.json` is the authored contract. `schemas/manifest.schema.json` is the generated contract. This document explains the mapping between them and may not contradict either schema.
 
 ## Related documents
 
-- `docs/metadata-contract.md` — authoritative field semantics for the authored `SKILL.md` contract.
+- `docs/skill-metadata-protocol.md` — authoritative field semantics for the authored `SKILL.md` contract.
 - `schemas/skill.schema.json` — enforceable JSON Schema for authored frontmatter.
 - `schemas/manifest.schema.json` — enforceable JSON Schema for the generated manifest.
-- `examples/skills.manifest.sample.json` — sample manifest showing the generated shape for the eight starter skills and the template (nine entries total).
+- `examples/skills.manifest.sample.json` — sample manifest showing the generated shape for the current `skills/` library plus the template.
 
 ---
 
@@ -27,42 +27,43 @@ Every top-level authored field in `schemas/skill.schema.json` has exactly one en
 | **dropped intentionally** | The field does not appear in the manifest. Loss policy explains why. |
 | **generated only** | The manifest key is produced by the generator, not copied from authored frontmatter. |
 
-### Top-level authored fields (32 total)
+### Top-level authored fields (33 total)
 
 | # | Authored field | Fate | Manifest projection |
 |---|---|---|---|
 | 1 | `schema_version` | **copied through unchanged** | Manifest-level `schema_version` at the root of `skills.manifest.json`; it is not a per-skill field. The authored per-skill `schema_version` and the manifest top-level `schema_version` are versioned independently — see Migration Policy. |
 | 2 | `name` | **copied through unchanged**, with an additional generated alias | Manifest per-skill `name` (human-readable, identical to authored) plus a generated `id` derived from `name` for stable referencing. |
-| 3 | `description` | copied through unchanged | `description` |
-| 4 | `version` | copied through unchanged | `version` |
-| 5 | `type` | copied through unchanged | `type` |
-| 6 | `browse_category` | copied through unchanged | `browse_category` — renamed from `family` in schema_version 3; values unchanged. |
-| 7 | `category` | copied through unchanged (when present) | `category` — new optional v3 field for hierarchical browse paths. |
-| 8 | `scope` | copied through unchanged | `scope` — v2 enum is `portable` / `reference` / `codebase` (renamed from v1 `generic` / `reference` / `operational`). |
-| 9 | `owner` | copied through unchanged | `owner` |
-| 10 | `freshness` | **grouped under parent** (`health`) | `health.freshness` |
-| 11 | `drift_check` | **grouped under parent** (`health`) | `health.drift_check` — v3 shape: object with required `last_verified` (was scalar date in v2) and optional `truth_source_hashes` map enabling the drift sentinel. |
-| 12 | `eval_artifacts` | **grouped under parent** (`health`) | `health.eval_artifacts` — v2 field, one of three axes that replaced the v1 `eval_status` enum. |
-| 13 | `eval_state` | **grouped under parent** (`health`) | `health.eval_state` — v2 field, runtime state axis. |
-| 14 | `routing_eval` | **grouped under parent** (`health`) | `health.routing_eval` — v2 field, routing coverage axis. |
-| 15 | `stability` | copied through unchanged (when present) | `stability` |
-| 16 | `superseded_by` | copied through unchanged (when present) | `superseded_by` — required when `stability: deprecated` (enforced by an `allOf` rule in the schema), omit otherwise. Points at the replacement skill so consumers can follow the chain. |
-| 17 | `license` | copied through unchanged (when present) | `license` — Agent Skills base-standard field. Restored to flow-through on 2026-04-17 (SH-5776). |
-| 18 | `compatibility` | copied through unchanged (when present) | `compatibility` — v3 shape: object with optional `runtimes`, `node`, `notes` (was free-text string in v2). Agent Skills base-standard field. |
-| 19 | `allowed-tools` | copied through unchanged (when present) | `allowed-tools` — Agent Skills base-standard field. |
-| 20 | `extends` | copied through unchanged (when present) | `extends` |
-| 21 | `triggers` | **grouped under parent** (`activation`) | `activation.triggers` |
-| 22 | `keywords` | **grouped under parent** (`activation`) | `activation.keywords` |
-| 23 | `examples` | **grouped under parent** (`activation`) | `activation.examples` — new v0.5.0 field. Positive-class activation prompts (2–5 entries recommended) that improve embedding-based router recall when `keywords` alone is insufficient at library scale. |
-| 24 | `anti_examples` | **grouped under parent** (`activation`) | `activation.anti_examples` — new v0.5.0 field. Negative-class activation prompts — realistic queries that look topically related but a DIFFERENT skill should handle. Used as hard-negative training signal; pair with `relations.boundary` to name the skill that should activate instead. |
-| 25 | `paths` | **grouped under parent** (`activation`) | `activation.paths` — v3 supports gitignore-style negation (`!pattern`). |
-| 26 | `project_tags` | copied through unchanged (when present) | `project_tags` — new optional v3 field for multi-project relevance filtering. |
-| 27 | `routing_groups` | copied through unchanged (when present) | `routing_groups` — renamed from `route_groups` in schema_version 2 (SH-5784); values unchanged. |
-| 28 | `relations` | copied through unchanged (when present) | `relations` — same shape, same sub-keys (`adjacent`, `boundary`, `verify_with`, `depends_on`). v3 adds object-item shape: `boundary` accepts `{skill, reason}`, `depends_on` accepts `{skill, min_version}`. Bare-string items remain valid. |
-| 29 | `grounding` | **copied through unchanged** | `grounding` — same required-field set including `domain_object`, `grounding_mode`, `truth_sources`, `failure_modes`, `evidence_priority`. The authored field was renamed from `domain_frame` in SH-5779 (2026-04-16); the manifest projection has always used `grounding`. |
-| 30 | `portability` | copied through unchanged (when present) | `portability` — v2 shape (`readiness`, `targets`), renamed from v1 (`level`, `exports`). |
-| 31 | `lifecycle` | **grouped under parent** (`health`) | `health.lifecycle` — new optional v3 object with `stale_after_days` and `review_cadence`. Drives the drift sentinel. |
-| 32 | `runtime_telemetry` | **grouped under parent** (`health`) | `health.runtime_telemetry` — new optional v3 object pointing at a feedback source for real-world success/failure signal. |
+| 3 | `urn` | copied through unchanged (when present) | `urn` — optional persistent identifier in `urn:skill:<repo>:<skill-name>` form. |
+| 4 | `description` | copied through unchanged | `description` |
+| 5 | `version` | copied through unchanged | `version` |
+| 6 | `type` | copied through unchanged | `type` |
+| 7 | `browse_category` | copied through unchanged | `browse_category` — renamed from `family` in schema_version 3; values unchanged. |
+| 8 | `category` | copied through unchanged (when present) | `category` — new optional v3 field for hierarchical browse paths. |
+| 9 | `scope` | copied through unchanged | `scope` — v2 enum is `portable` / `reference` / `codebase` (renamed from v1 `generic` / `reference` / `operational`). |
+| 10 | `owner` | copied through unchanged | `owner` |
+| 11 | `freshness` | **grouped under parent** (`health`) | `health.freshness` |
+| 12 | `drift_check` | **grouped under parent** (`health`) | `health.drift_check` — v3 shape: object with required `last_verified` (was scalar date in v2) and optional `truth_source_hashes` map enabling the drift sentinel. |
+| 13 | `eval_artifacts` | **grouped under parent** (`health`) | `health.eval_artifacts` — v2 field, one of three axes that replaced the v1 `eval_status` enum. |
+| 14 | `eval_state` | **grouped under parent** (`health`) | `health.eval_state` — v2 field, runtime state axis. |
+| 15 | `routing_eval` | **grouped under parent** (`health`) | `health.routing_eval` — v2 field, routing coverage axis. |
+| 16 | `stability` | copied through unchanged (when present) | `stability` |
+| 17 | `superseded_by` | copied through unchanged (when present) | `superseded_by` — required when `stability: deprecated` (enforced by an `allOf` rule in the schema), omit otherwise. Points at the replacement skill so consumers can follow the chain. |
+| 18 | `license` | copied through unchanged (when present) | `license` — Agent Skills base-standard field. Restored to flow-through on 2026-04-17 (SH-5776). |
+| 19 | `compatibility` | copied through unchanged (when present) | `compatibility` — v3 shape: object with optional `runtimes`, `node`, `notes` (was free-text string in v2). Agent Skills base-standard field. |
+| 20 | `allowed-tools` | copied through unchanged (when present) | `allowed-tools` — Agent Skills base-standard field. |
+| 21 | `extends` | copied through unchanged (when present) | `extends` |
+| 22 | `triggers` | **grouped under parent** (`activation`) | `activation.triggers` |
+| 23 | `keywords` | **grouped under parent** (`activation`) | `activation.keywords` |
+| 24 | `examples` | **grouped under parent** (`activation`) | `activation.examples` — new v0.5.0 field. Positive-class activation prompts (2–5 entries recommended) that improve embedding-based router recall when `keywords` alone is insufficient at library scale. |
+| 25 | `anti_examples` | **grouped under parent** (`activation`) | `activation.anti_examples` — new v0.5.0 field. Negative-class activation prompts — realistic queries that look topically related but a DIFFERENT skill should handle. Used as hard-negative training signal; pair with `relations.boundary` to name the skill that should activate instead. |
+| 26 | `paths` | **grouped under parent** (`activation`) | `activation.paths` — v3 supports gitignore-style negation (`!pattern`). |
+| 27 | `project_tags` | copied through unchanged (when present) | `project_tags` — new optional v3 field for multi-project relevance filtering. |
+| 28 | `routing_groups` | copied through unchanged (when present) | `routing_groups` — renamed from `route_groups` in schema_version 2 (SH-5784); values unchanged. |
+| 29 | `relations` | copied through unchanged (when present) | `relations` — supports `related`, `broader`, `narrower`, `adjacent`, `boundary`, `verify_with`, `depends_on`, and `disjoint_with`. v3 adds object-item shape: `boundary` accepts `{skill, reason}`, `depends_on` accepts `{skill, min_version}`. Bare-string items remain valid. |
+| 30 | `grounding` | **copied through unchanged** | `grounding` — same required-field set including `domain_object`, `grounding_mode`, `truth_sources`, `failure_modes`, `evidence_priority`. The authored field was renamed from `domain_frame` in SH-5779 (2026-04-16); the manifest projection has always used `grounding`. |
+| 31 | `portability` | copied through unchanged (when present) | `portability` — v2 shape (`readiness`, `targets`), renamed from v1 (`level`, `exports`). |
+| 32 | `lifecycle` | **grouped under parent** (`health`) | `health.lifecycle` — new optional v3 object with `stale_after_days` and `review_cadence`. Drives the drift sentinel. |
+| 33 | `runtime_telemetry` | **grouped under parent** (`health`) | `health.runtime_telemetry` — new optional v3 object pointing at a feedback source for real-world success/failure signal. |
 
 ### Generated-only manifest fields
 
@@ -97,7 +98,7 @@ Four Agent-Skills base-standard fields and one Skill Graph classification field 
 | `compatibility` | Dropped as "belongs in a separate spec" | Agent Skills compatibility. The compatibility string declares runtime or environment requirements (e.g. `Markdown, YAML, JSON Schema` or `Python 3.11+`). Consumers route based on this. Without flow-through, consumers would have to re-parse the authored source. |
 | `allowed-tools` | Dropped as "a runtime concern, not metadata" | Agent Skills compatibility. The base standard defines `allowed-tools` as a frontmatter field that sandboxes tool use. The manifest is the canonical feed for runtime consumers; stripping `allowed-tools` would force consumers back to the authored file, defeating the purpose of compiling a manifest. |
 | `routing_groups` (v1 name: `route_groups`) | Dropped as "superseded by `relations`" | Relations and routing groups encode different semantics. `relations` declares per-skill adjacencies; `routing_groups` declares a classification tag (e.g. `quality`, `security`) that a routing layer can use to pick a skill family. They are complementary, not overlapping, and the router layer needs both. Field renamed to `routing_groups` in schema_version 2 (SH-5784). |
-| `domain_object` (inside `grounding`) | Dropped from the required-field set during an earlier schema tightening | Grounded skills anchor to a specific domain object (e.g. "Shopify order reconciliation," "Skill authoring for the Skill Graph frontmatter contract"). Consumers use `domain_object` to decide whether a skill matches a task's subject. Dropping it left grounded skills ungrounded to consumers. SH-5776 restored it as a required sub-field. |
+| `domain_object` (inside `grounding`) | Dropped from the required-field set during an earlier schema tightening | Grounded skills anchor to a specific domain object (e.g. "Shopify order reconciliation," "Skill authoring for the Skill Metadata Protocol frontmatter contract"). Consumers use `domain_object` to decide whether a skill matches a task's subject. Dropping it left grounded skills ungrounded to consumers. SH-5776 restored it as a required sub-field. |
 
 ### Current dropped-field list
 
@@ -278,15 +279,15 @@ The bare-string form remains valid (`- fulfillment`). The object form is opt-in 
 
 ## Worked Example
 
-The `skill-template` starter (`examples/skill-template.md`) is the canonical worked example because it exercises the widest set of fields — it is the only starter that populates `grounding`, `license`, `compatibility`, `allowed-tools`, and `portability` together with activation, relations, and all governance fields.
+The `skill-metadata-template` starter (`examples/skill-metadata-template.md`) is the canonical worked example because it exercises the widest set of fields — it is the only starter that populates `grounding`, `license`, `compatibility`, `allowed-tools`, and `portability` together with activation, relations, and all governance fields.
 
 ### Authored frontmatter (abridged to fields that transform)
 
 ```yaml
 ---
 schema_version: 3
-name: skill-template
-description: "Authoring template for new Skill Graph skills. ..."
+name: skill-metadata-template
+description: "Authoring template for new Skill Metadata Protocol skills. ..."
 version: 1.0.0
 type: capability
 browse_category: knowledge
@@ -308,9 +309,9 @@ keywords:
   - skill authoring
   - skill template
 triggers:
-  - skill-template
+  - skill-metadata-template
 paths:
-  - examples/skill-template.md
+  - examples/skill-metadata-template.md
   - skills/**/SKILL.md
 relations:
   adjacent: [documentation]
@@ -319,10 +320,10 @@ relations:
       reason: "refactor is behavior-preserving code modification, not skill authoring"
   verify_with: [documentation]
 grounding:
-  domain_object: Skill authoring for the Skill Graph frontmatter contract
+  domain_object: Skill authoring for the Skill Metadata Protocol frontmatter contract
   grounding_mode: repo_specific
   truth_sources:
-    - docs/metadata-contract.md
+    - docs/skill-metadata-protocol.md
     - schemas/skill.schema.json
   failure_modes:
     - placeholder_sludge
@@ -341,10 +342,10 @@ lifecycle:
 
 ```json
 {
-  "id": "skill-template",
-  "path": "examples/skill-template.md",
-  "name": "skill-template",
-  "description": "Authoring template for new Skill Graph skills. ...",
+  "id": "skill-metadata-template",
+  "path": "examples/skill-metadata-template.md",
+  "name": "skill-metadata-template",
+  "description": "Authoring template for new Skill Metadata Protocol skills. ...",
   "version": "1.0.0",
   "type": "capability",
   "browse_category": "knowledge",
@@ -356,9 +357,9 @@ lifecycle:
   "compatibility": { "notes": "Markdown, YAML, JSON Schema" },
   "allowed-tools": "Read Grep",
   "activation": {
-    "triggers": ["skill-template"],
+    "triggers": ["skill-metadata-template"],
     "keywords": ["skill authoring", "skill template"],
-    "paths": ["examples/skill-template.md", "skills/**/SKILL.md"]
+    "paths": ["examples/skill-metadata-template.md", "skills/**/SKILL.md"]
   },
   "relations": {
     "adjacent": ["documentation"],
@@ -368,10 +369,10 @@ lifecycle:
     "verify_with": ["documentation"]
   },
   "grounding": {
-    "domain_object": "Skill authoring for the Skill Graph frontmatter contract",
+    "domain_object": "Skill authoring for the Skill Metadata Protocol frontmatter contract",
     "grounding_mode": "repo_specific",
     "truth_sources": [
-      "docs/metadata-contract.md",
+      "docs/skill-metadata-protocol.md",
       "schemas/skill.schema.json"
     ],
     "failure_modes": ["placeholder_sludge", "cargo_cult_meta_sections"],
@@ -403,7 +404,7 @@ Each arrow corresponds to one row of the rename map.
 - `description`, `version`, `type`, `browse_category`, `scope`, `owner`, `stability` — straight copies, same keys, same shape. (v2 `family` was renamed to `browse_category` in v3 — see § Migration Note — v2 → v3.)
 - `license`, `compatibility`, `allowed-tools` — straight copies (post-SH-5776). The three Agent Skills base-standard optional fields flow through unchanged; a consumer that only speaks Agent Skills sees them at the expected keys.
 - `triggers`, `keywords`, `paths` → `activation.triggers`, `activation.keywords`, `activation.paths` — three sibling authored fields are grouped under a single `activation` object. This matches the semantic: they are all activation signals. The grouping is a presentation choice, not a loss.
-- `relations` → `relations` — copied through with the full sub-key set (`adjacent`, `boundary`, `verify_with`, `depends_on`). Same shape on both sides.
+- `relations` → `relations` — copied through with the full sub-key set (`adjacent`, `related`, `broader`, `narrower`, `boundary`, `disjoint_with`, `verify_with`, `depends_on`). Same shape on both sides.
 - `grounding` → `grounding` — copied through unchanged. The authored field was renamed from `domain_frame` to `grounding` in SH-5779 (2026-04-16), aligning the authored field name with its long-standing manifest projection key. The internal sub-field `evaluation_mode` was renamed to `grounding_mode` in the same change — the field describes the evidence source, not the execution mode.
 - `portability` → `portability` — copied through with the v2 sub-key set (`readiness`, `targets`). Renamed from v1 (`level`, `exports`) in SH-5784.
 - `freshness`, `drift_check`, `eval_artifacts`, `eval_state`, `routing_eval` → `health.freshness`, `health.drift_check`, `health.eval_artifacts`, `health.eval_state`, `health.routing_eval` — five sibling governance fields are grouped under a single `health` object. The three eval-health fields replaced the v1 `health.eval_status` in SH-5784. `has_grounding` and `has_relations` are generated boolean flags that summarize presence of the corresponding authored blocks, so a consumer can filter on "grounded skills" without re-parsing the full `grounding` object.
@@ -422,4 +423,4 @@ After a generator change or a schema change, verify:
 - [ ] Every field in `schemas/manifest.schema.json` appears in either the rename map or the "Generated-only manifest fields" list.
 - [ ] The worked example's JSON projection can be regenerated from its YAML frontmatter by applying only the transforms declared in the rename map.
 - [ ] `node scripts/skill-lint.js --include-template` exits 0 on the shipped template.
-- [ ] `examples/skills.manifest.sample.json` still matches the projection rules when regenerated from the eight starters plus the template.
+- [ ] `examples/skills.manifest.sample.json` still matches the projection rules when regenerated from the current `skills/` library plus the template.

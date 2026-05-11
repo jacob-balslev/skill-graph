@@ -41,7 +41,7 @@ keywords:
   - safety caps
   - iteration limit
   - cost budget
-  - idempotency key
+  - agent idempotency guard
   - failure recovery
   - retry backoff
   - escalation path
@@ -51,11 +51,11 @@ keywords:
   - ghost claim
   - telephone game
   - file-based coordination
-  - continuation signal
+  - agent continuation protocol
   - exit code protocol
   - heartbeat
   - flow engineering
-  - software 3.0
+  - software 3.0 agent systems
 examples:
   - "we want to fan out 40 classification subtasks to subagents — what coordination pattern should we use and what are the failure modes?"
   - "two of our agents claimed the same task and produced duplicate PRs — what atomicity guarantee prevents this?"

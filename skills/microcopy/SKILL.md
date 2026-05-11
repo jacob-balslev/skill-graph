@@ -2,7 +2,7 @@
 # yaml-language-server: $schema=https://skillgraph.dev/schemas/skill.v3.schema.json
 schema_version: 3
 name: microcopy
-description: "Use when writing or reviewing functional UI text — button labels, empty-state messages, tooltip content, confirmation dialogs, placeholder text, loading and progress messages, error/success/warning toasts, inline form-validation messages, permission request copy, or onboarding step instructions. Covers the verb-first specific-action button-label rule, the acknowledge-explain-guide empty-state structure, the one-sentence answer-what-is-this tooltip rule, the consequence-first action-named confirmation-dialog rule, the spinner → skeleton → message → reassurance progressive-loading sequence, and the appear-on-blur disappear-on-fix inline-validation rule. Provides the patterns for the words inside the working interface — not marketing copy, not documentation prose, not the general linguistic rationale behind naming. Do NOT use for marketing or landing-page persuasion (use a copywriting skill), for documentation prose or guide structure (use documentation), or for the general linguistic rationale behind UI wording (use linguistics)."
+description: "Use when writing or reviewing functional UI text: button labels, empty states, tooltips, dialogs, placeholders, loading/progress messages, toasts, inline validation, permission copy, or onboarding steps. Covers interface-copy patterns such as verb-first action labels, acknowledge-explain-guide empty states, one-sentence tooltips, consequence-first confirmations, progressive loading language, and blur/fix validation messages. Do NOT use for marketing persuasion, documentation prose/guide structure, feedback-state staging, or general linguistic rationale behind wording."
 version: 1.0.0
 type: capability
 browse_category: knowledge
@@ -60,10 +60,14 @@ relations:
       reason: "documentation owns long-form prose inside guides, tutorials, and reference docs; microcopy owns short-form text inside the working interface (buttons, dialogs, empty states) — the same 'review this writing' prompt routes by whether the writing lives in a doc or in the live UI"
     - skill: a11y
       reason: "a11y owns the accessibility contracts that govern how copy is announced (aria-live regions, aria-label fallbacks, screen-reader semantics); microcopy owns the words themselves — the same 'fix this UI text' prompt routes by whether the trigger is accessibility compliance or copy quality"
+    - skill: interaction-feedback
+      reason: "interaction-feedback owns when, where, and how feedback states appear; microcopy owns the words inside those states"
   related:
     - linguistics
     - task-analysis
     - intent-recognition
+    - interaction-feedback
+    - form-ux-architecture
   verify_with:
     - linguistics
     - a11y
@@ -289,4 +293,4 @@ After writing or reviewing UI text, verify:
 | `intent-recognition` | Disambiguating a user's intent from an ambiguous prompt. Intent-recognition is upstream of any UI; microcopy is the words the UI uses to respond. |
 | (a copywriting skill) | Marketing headlines, pricing copy, landing-page persuasion, brand-voice work. Copywriting owns persuasive product surfaces; microcopy owns functional in-product text. |
 | (a content-strategy skill) | Page structure, funnel strategy, or what content belongs on each page. Content strategy is upstream of microcopy. |
-| (an interaction-feedback skill) | When and how feedback states appear (timing, placement, animation). Interaction-feedback owns the staging; microcopy owns the words inside the staged element. |
+| `interaction-feedback` | When and how feedback states appear (timing, placement, persistence, recovery). Interaction-feedback owns the staging; microcopy owns the words inside the staged element. |

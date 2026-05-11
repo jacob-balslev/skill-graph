@@ -1,6 +1,6 @@
 # Skill Graph Field Reference (Generated)
 
-> **Generated from** `schemas/skill.v3.schema.json` on 2026-05-06 by `scripts/build-field-reference.js`.
+> **Generated from** `schemas/skill.v3.schema.json` on 2026-05-11 by `scripts/build-field-reference.js`.
 > **Do not edit by hand.** The canonical prose reference is [`docs/field-reference.md`](field-reference.md).
 > **Predicate glossary:** [`docs/glossary.md`](glossary.md).
 > **JSON-LD @context:** [`schemas/skill.context.jsonld`](../schemas/skill.context.jsonld).
@@ -13,7 +13,7 @@ Schema version: **3** · Field count: **33** · Required: **13**
 
 **Type:** multiple — see schema
 
-Major contract shape version. Integer for v3+; string '3' tolerated for back-compat with hand-rolled YAML. Bumps when shape changes break consumers (additive minor changes do not bump). v4 is the next breaking-change horizon — see CHANGELOG.md and docs/metadata-contract.md § Schema Versioning Policy.
+Major contract shape version. Integer for v3+; string '3' tolerated for back-compat with hand-rolled YAML. Bumps when shape changes break consumers (additive minor changes do not bump). v4 is the next breaking-change horizon — see CHANGELOG.md and docs/skill-metadata-protocol.md § Schema Versioning Policy.
 
 **Full reference:** [`docs/field-reference.md#schema_version`](field-reference.md#schema_version)
 
@@ -355,7 +355,7 @@ Records what the skill is grounded against — the truth sources, the grounding 
 
 **Type:** object
 
-Adopter-readiness signal. `readiness` declares how transferable the skill is between projects (`portable`, `requires-adaptation`, `repo-specific`). `targets` lists the runtime/CLI environments the skill has been validated against. Drives the multi-project overlay decision tree.
+Portability execution signal. `readiness` declares whether portability is only declared (`declared`), covered by export tooling (`scripted`), or verified with a target-runtime receipt (`verified`). `targets` lists supported export destinations, currently `agent-skills`.
 
 **Sub-fields:**
 
