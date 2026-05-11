@@ -1,0 +1,52 @@
+{
+  "skill_name": "database-migration",
+  "subject": "Safe database migration design for expand-contract rollout, locks, backfills, deploy ordering, rollback, and verification",
+  "adjacent_concepts": ["data-modeling", "testing-strategy", "debugging", "owasp-security"],
+  "grounding_note": "Truth sources cite the whole SKILL.md file to keep the initial eval surface stable while routing boundaries are tightened.",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "A migration adds a NOT NULL column to a large production table. Which skill owns the rollout sequence and lock-risk analysis?",
+      "dimension": "application",
+      "substance": "domain",
+      "calibration": "process",
+      "truth_mode": "process_correctness",
+      "skill_type": "workflow",
+      "criticality": "high",
+      "truth_sources": ["skills/database-migration/SKILL.md"]
+    },
+    {
+      "id": 2,
+      "prompt": "The schema change needs an expand-contract path, a backfill, application deploy ordering, and rollback conditions. What should database-migration produce?",
+      "dimension": "application",
+      "substance": "domain",
+      "calibration": "semantic",
+      "truth_mode": "conceptual_correctness_plus_repo_application",
+      "skill_type": "workflow",
+      "criticality": "high",
+      "truth_sources": ["skills/database-migration/SKILL.md"]
+    },
+    {
+      "id": 3,
+      "prompt": "The team is still deciding entity relationships and normalized shape before any DDL is drafted. Should database-migration accept or hand off?",
+      "dimension": "boundary",
+      "substance": "contradiction-check",
+      "calibration": "semantic",
+      "truth_mode": "code_verification",
+      "skill_type": "concept",
+      "criticality": "normal",
+      "truth_sources": ["skills/database-migration/SKILL.md"]
+    },
+    {
+      "id": 4,
+      "prompt": "A production query is slow and the user asks for profiling and caching strategy, not schema rollout. Which boundary should database-migration respect?",
+      "dimension": "boundary",
+      "substance": "contradiction-check",
+      "calibration": "semantic",
+      "truth_mode": "code_verification",
+      "skill_type": "concept",
+      "criticality": "normal",
+      "truth_sources": ["skills/database-migration/SKILL.md"]
+    }
+  ]
+}

@@ -12,7 +12,7 @@ owner: skill-graph-maintainer
 freshness: "2026-05-11"
 drift_check:
   last_verified: "2026-05-11"
-eval_artifacts: planned
+eval_artifacts: present
 eval_state: unverified
 routing_eval: absent
 stability: experimental
@@ -91,6 +91,10 @@ Do not confuse popularity with fit. Do not let a narrow implementation preferenc
 7. Recommend one path with accepted tradeoffs.
 8. Hand off to `architecture-decision-records` if the decision is durable.
 
+## Evals
+
+This skill ships a comprehension-eval artifact at [`examples/evals/framework-fit-analysis.json`](../../examples/evals/framework-fit-analysis.json). The checklist below is the authoring gate for technology-fit decisions; the eval file is the grader surface.
+
 ## Verification
 
 - [ ] The recommendation is tied to explicit project constraints
@@ -109,4 +113,3 @@ Do not confuse popularity with fit. Do not let a narrow implementation preferenc
 | `architecture-decision-records` | The choice is already made and needs a record. |
 | `performance-engineering` | You need to measure and optimize actual runtime behavior. |
 | A framework-specific skill | The framework is already chosen and the task is implementation. |
-

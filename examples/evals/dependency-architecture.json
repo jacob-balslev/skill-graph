@@ -1,0 +1,52 @@
+{
+  "skill_name": "dependency-architecture",
+  "subject": "Dependency graph architecture for package boundaries, direct and transitive dependencies, adapters, duplicate-purpose libraries, lock-in, upgrades, and supply-chain risk",
+  "adjacent_concepts": ["framework-fit-analysis", "owasp-security", "refactor", "architecture-decision-records"],
+  "grounding_note": "Truth sources cite the whole SKILL.md file to keep the initial eval surface stable while routing boundaries are tightened.",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "A monorepo imports provider SDKs directly from many packages and the team wants dependency boundary rules. Which skill owns the architecture review?",
+      "dimension": "application",
+      "substance": "domain",
+      "calibration": "process",
+      "truth_mode": "process_correctness",
+      "skill_type": "concept",
+      "criticality": "high",
+      "truth_sources": ["skills/dependency-architecture/SKILL.md"]
+    },
+    {
+      "id": 2,
+      "prompt": "The repo has two libraries that solve the same problem and one should be wrapped behind an adapter. What should dependency-architecture inspect?",
+      "dimension": "application",
+      "substance": "domain",
+      "calibration": "semantic",
+      "truth_mode": "conceptual_correctness_plus_repo_application",
+      "skill_type": "concept",
+      "criticality": "high",
+      "truth_sources": ["skills/dependency-architecture/SKILL.md"]
+    },
+    {
+      "id": 3,
+      "prompt": "The team has not chosen whether to use Next.js, Remix, or Astro for a new app. Should dependency-architecture accept the framework selection task?",
+      "dimension": "boundary",
+      "substance": "contradiction-check",
+      "calibration": "semantic",
+      "truth_mode": "code_verification",
+      "skill_type": "concept",
+      "criticality": "normal",
+      "truth_sources": ["skills/dependency-architecture/SKILL.md"]
+    },
+    {
+      "id": 4,
+      "prompt": "The request is a vulnerability-only scan of installed packages. Which boundary should dependency-architecture respect?",
+      "dimension": "boundary",
+      "substance": "contradiction-check",
+      "calibration": "semantic",
+      "truth_mode": "code_verification",
+      "skill_type": "concept",
+      "criticality": "normal",
+      "truth_sources": ["skills/dependency-architecture/SKILL.md"]
+    }
+  ]
+}

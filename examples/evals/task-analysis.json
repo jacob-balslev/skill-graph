@@ -1,0 +1,52 @@
+{
+  "skill_name": "task-analysis",
+  "subject": "Goal-driven UX route and flow analysis for actor, scenario, top task, subtasks, friction, breakpoints, and first-viewport hierarchy contracts",
+  "adjacent_concepts": ["information-architecture", "layout-composition", "interaction-patterns", "a11y"],
+  "grounding_note": "Truth sources cite the whole SKILL.md file to keep the initial eval surface stable while routing boundaries are tightened.",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "An onboarding flow feels confusing and users abandon step 3. Which skill owns identifying the actor, top task, subtasks, friction, and breakpoint?",
+      "dimension": "application",
+      "substance": "domain",
+      "calibration": "process",
+      "truth_mode": "process_correctness",
+      "skill_type": "workflow",
+      "criticality": "high",
+      "truth_sources": ["skills/task-analysis/SKILL.md"]
+    },
+    {
+      "id": 2,
+      "prompt": "A route needs a first-viewport contract that separates primary, secondary, and supporting content before layout begins. What should task-analysis produce?",
+      "dimension": "application",
+      "substance": "domain",
+      "calibration": "semantic",
+      "truth_mode": "conceptual_correctness_plus_repo_application",
+      "skill_type": "workflow",
+      "criticality": "high",
+      "truth_sources": ["skills/task-analysis/SKILL.md"]
+    },
+    {
+      "id": 3,
+      "prompt": "The task is to pick tabs, accordions, dropdowns, or a stepper after the user goal is already known. Should task-analysis continue?",
+      "dimension": "boundary",
+      "substance": "contradiction-check",
+      "calibration": "semantic",
+      "truth_mode": "code_verification",
+      "skill_type": "concept",
+      "criticality": "normal",
+      "truth_sources": ["skills/task-analysis/SKILL.md"]
+    },
+    {
+      "id": 4,
+      "prompt": "The task is a focused WCAG 2.2 audit for keyboard and screen-reader compliance. Which boundary should task-analysis respect?",
+      "dimension": "boundary",
+      "substance": "contradiction-check",
+      "calibration": "semantic",
+      "truth_mode": "code_verification",
+      "skill_type": "concept",
+      "criticality": "normal",
+      "truth_sources": ["skills/task-analysis/SKILL.md"]
+    }
+  ]
+}

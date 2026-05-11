@@ -1,0 +1,52 @@
+{
+  "skill_name": "framework-fit-analysis",
+  "subject": "Technology fit analysis for choosing, replacing, or justifying frameworks, libraries, SDKs, runtimes, databases, UI kits, and platforms",
+  "adjacent_concepts": ["dependency-architecture", "architecture-decision-records", "performance-engineering", "owasp-security"],
+  "grounding_note": "Truth sources cite the whole SKILL.md file to keep the initial eval surface stable while routing boundaries are tightened.",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "A team must choose between Next.js route handlers, server actions, and a separate API service under real deployment constraints. Which skill owns the fit analysis?",
+      "dimension": "application",
+      "substance": "domain",
+      "calibration": "process",
+      "truth_mode": "process_correctness",
+      "skill_type": "concept",
+      "criticality": "high",
+      "truth_sources": ["skills/framework-fit-analysis/SKILL.md"]
+    },
+    {
+      "id": 2,
+      "prompt": "Before adding a charting library, the team wants to weigh ecosystem maturity, migration cost, bundle impact, lock-in, and exit cost. What should framework-fit-analysis evaluate?",
+      "dimension": "application",
+      "substance": "domain",
+      "calibration": "semantic",
+      "truth_mode": "conceptual_correctness_plus_repo_application",
+      "skill_type": "concept",
+      "criticality": "high",
+      "truth_sources": ["skills/framework-fit-analysis/SKILL.md"]
+    },
+    {
+      "id": 3,
+      "prompt": "The framework was already chosen and the task is routine dependency hygiene for duplicate packages. Should framework-fit-analysis accept?",
+      "dimension": "boundary",
+      "substance": "contradiction-check",
+      "calibration": "semantic",
+      "truth_mode": "code_verification",
+      "skill_type": "concept",
+      "criticality": "normal",
+      "truth_sources": ["skills/framework-fit-analysis/SKILL.md"]
+    },
+    {
+      "id": 4,
+      "prompt": "The team has already decided and now needs the formal ADR. Which boundary should framework-fit-analysis respect?",
+      "dimension": "boundary",
+      "substance": "contradiction-check",
+      "calibration": "semantic",
+      "truth_mode": "code_verification",
+      "skill_type": "concept",
+      "criticality": "normal",
+      "truth_sources": ["skills/framework-fit-analysis/SKILL.md"]
+    }
+  ]
+}

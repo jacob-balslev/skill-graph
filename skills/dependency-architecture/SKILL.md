@@ -12,7 +12,7 @@ owner: skill-graph-maintainer
 freshness: "2026-05-11"
 drift_check:
   last_verified: "2026-05-11"
-eval_artifacts: planned
+eval_artifacts: present
 eval_state: unverified
 routing_eval: absent
 stability: experimental
@@ -90,6 +90,10 @@ Prefer fewer, clearer dependencies with explicit ownership. Wrap volatile extern
 6. Assess security, maintenance, license, and ecosystem health.
 7. Define upgrade, pinning, and removal policy.
 
+## Evals
+
+This skill ships a comprehension-eval artifact at [`examples/evals/dependency-architecture.json`](../../examples/evals/dependency-architecture.json). The checklist below is the authoring gate for dependency-boundary decisions; the eval file is the grader surface.
+
 ## Verification
 
 - [ ] Each dependency has a purpose and owner
@@ -108,4 +112,3 @@ Prefer fewer, clearer dependencies with explicit ownership. Wrap volatile extern
 | `owasp-security` | The task is vulnerability-focused security review. |
 | `refactor` | You are restructuring code without changing dependency architecture. |
 | `architecture-decision-records` | The dependency decision is already made and needs a record. |
-

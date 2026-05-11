@@ -1,0 +1,52 @@
+{
+  "skill_name": "webhook-integration",
+  "subject": "Inbound third-party webhook handler design for signature verification, idempotency, provider retry contracts, raw payload persistence, quarantine, secret rotation, and PII capture timing",
+  "adjacent_concepts": ["event-contract-design", "testing-strategy", "debugging", "owasp-security"],
+  "grounding_note": "Truth sources cite the whole SKILL.md file to keep the initial eval surface stable while routing boundaries are tightened.",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "A new third-party webhook handler must verify HMAC signatures on the raw body, dedupe retries, and choose 200 vs 500 behavior. Which skill owns this?",
+      "dimension": "application",
+      "substance": "domain",
+      "calibration": "process",
+      "truth_mode": "process_correctness",
+      "skill_type": "workflow",
+      "criticality": "high",
+      "truth_sources": ["skills/webhook-integration/SKILL.md"]
+    },
+    {
+      "id": 2,
+      "prompt": "A provider deletes customer data after 30 days and the handler must capture safe canonical data on first delivery. What should webhook-integration decide?",
+      "dimension": "application",
+      "substance": "domain",
+      "calibration": "semantic",
+      "truth_mode": "conceptual_correctness_plus_repo_application",
+      "skill_type": "workflow",
+      "criticality": "high",
+      "truth_sources": ["skills/webhook-integration/SKILL.md"]
+    },
+    {
+      "id": 3,
+      "prompt": "The product is an outbound webhook publisher that delivers customer-facing events. Should webhook-integration accept the contract design task?",
+      "dimension": "boundary",
+      "substance": "contradiction-check",
+      "calibration": "semantic",
+      "truth_mode": "code_verification",
+      "skill_type": "concept",
+      "criticality": "normal",
+      "truth_sources": ["skills/webhook-integration/SKILL.md"]
+    },
+    {
+      "id": 4,
+      "prompt": "The webhook handler is already failing in production and the user wants root-cause debugging. Which boundary should webhook-integration respect?",
+      "dimension": "boundary",
+      "substance": "contradiction-check",
+      "calibration": "semantic",
+      "truth_mode": "code_verification",
+      "skill_type": "concept",
+      "criticality": "normal",
+      "truth_sources": ["skills/webhook-integration/SKILL.md"]
+    }
+  ]
+}

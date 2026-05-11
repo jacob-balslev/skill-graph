@@ -1,0 +1,52 @@
+{
+  "skill_name": "design-system-architecture",
+  "subject": "Design-system architecture for token taxonomy, semantic tokens, component APIs, variants, theming, accessibility contracts, governance, and migration",
+  "adjacent_concepts": ["a11y", "microcopy", "layout-composition", "visual-design-foundations"],
+  "grounding_note": "Truth sources cite the whole SKILL.md file to keep the initial eval surface stable while routing boundaries are tightened.",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "A product needs semantic tokens for statuses, chart colors, surfaces, and dark mode before teams keep hardcoding raw colors. Which skill owns this?",
+      "dimension": "application",
+      "substance": "domain",
+      "calibration": "process",
+      "truth_mode": "process_correctness",
+      "skill_type": "concept",
+      "criticality": "high",
+      "truth_sources": ["skills/design-system-architecture/SKILL.md"]
+    },
+    {
+      "id": 2,
+      "prompt": "A component library has inconsistent props, missing state contracts, and no migration path for deprecated tokens. What should design-system-architecture verify?",
+      "dimension": "application",
+      "substance": "domain",
+      "calibration": "semantic",
+      "truth_mode": "conceptual_correctness_plus_repo_application",
+      "skill_type": "concept",
+      "criticality": "high",
+      "truth_sources": ["skills/design-system-architecture/SKILL.md"]
+    },
+    {
+      "id": 3,
+      "prompt": "The task is to decide page hierarchy, sitemap, and navigation labels for a product. Should design-system-architecture accept or hand off?",
+      "dimension": "boundary",
+      "substance": "contradiction-check",
+      "calibration": "semantic",
+      "truth_mode": "code_verification",
+      "skill_type": "concept",
+      "criticality": "normal",
+      "truth_sources": ["skills/design-system-architecture/SKILL.md"]
+    },
+    {
+      "id": 4,
+      "prompt": "The task is to rewrite button labels and empty-state copy, not component APIs or tokens. Which boundary should design-system-architecture respect?",
+      "dimension": "boundary",
+      "substance": "contradiction-check",
+      "calibration": "semantic",
+      "truth_mode": "code_verification",
+      "skill_type": "concept",
+      "criticality": "normal",
+      "truth_sources": ["skills/design-system-architecture/SKILL.md"]
+    }
+  ]
+}

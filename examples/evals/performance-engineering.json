@@ -1,0 +1,52 @@
+{
+  "skill_name": "performance-engineering",
+  "subject": "Performance measurement and improvement for latency, throughput, Core Web Vitals, database queries, caching, bundle size, concurrency, resource use, and regressions",
+  "adjacent_concepts": ["observability-modeling", "testing-strategy", "api-design", "data-modeling"],
+  "grounding_note": "Truth sources cite the whole SKILL.md file to keep the initial eval surface stable while routing boundaries are tightened.",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "A dashboard is slow and the team needs measurement, bottleneck analysis, and a decision about what to optimize first. Which skill owns the work?",
+      "dimension": "application",
+      "substance": "domain",
+      "calibration": "process",
+      "truth_mode": "process_correctness",
+      "skill_type": "concept",
+      "criticality": "high",
+      "truth_sources": ["skills/performance-engineering/SKILL.md"]
+    },
+    {
+      "id": 2,
+      "prompt": "An endpoint risks N+1 queries and cache mistakes, and the team wants regression prevention. What should performance-engineering verify?",
+      "dimension": "application",
+      "substance": "domain",
+      "calibration": "semantic",
+      "truth_mode": "conceptual_correctness_plus_repo_application",
+      "skill_type": "concept",
+      "criticality": "high",
+      "truth_sources": ["skills/performance-engineering/SKILL.md"]
+    },
+    {
+      "id": 3,
+      "prompt": "The task is to design logs, metrics, spans, and correlation IDs before implementation, not optimize a measured bottleneck. Should performance-engineering accept?",
+      "dimension": "boundary",
+      "substance": "contradiction-check",
+      "calibration": "semantic",
+      "truth_mode": "code_verification",
+      "skill_type": "concept",
+      "criticality": "normal",
+      "truth_sources": ["skills/performance-engineering/SKILL.md"]
+    },
+    {
+      "id": 4,
+      "prompt": "The user asks for random micro-optimizations without a measurement or bottleneck. Which performance-engineering guardrail applies?",
+      "dimension": "boundary",
+      "substance": "contradiction-check",
+      "calibration": "semantic",
+      "truth_mode": "code_verification",
+      "skill_type": "concept",
+      "criticality": "normal",
+      "truth_sources": ["skills/performance-engineering/SKILL.md"]
+    }
+  ]
+}

@@ -1,0 +1,52 @@
+{
+  "skill_name": "code-review",
+  "subject": "Reviewing diffs and pull requests for correctness, clarity, security, performance, tests, and project conventions",
+  "adjacent_concepts": ["testing-strategy", "refactor", "debugging", "owasp-security"],
+  "grounding_note": "Truth sources cite the whole SKILL.md file to keep the initial eval surface stable while routing boundaries are tightened.",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "A teammate opens a PR that changes an endpoint, tests, and call sites. Which skill owns the review pass and what read order should it use?",
+      "dimension": "application",
+      "substance": "domain",
+      "calibration": "process",
+      "truth_mode": "process_correctness",
+      "skill_type": "workflow",
+      "criticality": "high",
+      "truth_sources": ["skills/code-review/SKILL.md"]
+    },
+    {
+      "id": 2,
+      "prompt": "An AI-generated diff looks plausible but changes auth behavior. According to code-review, what should the reviewer refuse to do?",
+      "dimension": "application",
+      "substance": "domain",
+      "calibration": "semantic",
+      "truth_mode": "conceptual_correctness_plus_repo_application",
+      "skill_type": "workflow",
+      "criticality": "high",
+      "truth_sources": ["skills/code-review/SKILL.md"]
+    },
+    {
+      "id": 3,
+      "prompt": "Production users are already seeing a known failure and there is no proposed diff yet. Should code-review accept the task?",
+      "dimension": "boundary",
+      "substance": "contradiction-check",
+      "calibration": "semantic",
+      "truth_mode": "code_verification",
+      "skill_type": "concept",
+      "criticality": "normal",
+      "truth_sources": ["skills/code-review/SKILL.md"]
+    },
+    {
+      "id": 4,
+      "prompt": "The user asks for a security-only audit focused on SQL injection and XSS. Which boundary should code-review respect?",
+      "dimension": "boundary",
+      "substance": "contradiction-check",
+      "calibration": "semantic",
+      "truth_mode": "code_verification",
+      "skill_type": "concept",
+      "criticality": "normal",
+      "truth_sources": ["skills/code-review/SKILL.md"]
+    }
+  ]
+}

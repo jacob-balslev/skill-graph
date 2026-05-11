@@ -12,7 +12,7 @@ owner: skill-graph-maintainer
 freshness: "2026-05-11"
 drift_check:
   last_verified: "2026-05-11"
-eval_artifacts: planned
+eval_artifacts: present
 eval_state: unverified
 routing_eval: absent
 stability: experimental
@@ -91,6 +91,10 @@ Instrument boundaries, state changes, and decisions. Avoid high-cardinality or s
 5. Add SLOs and alert signals only for user or business impact.
 6. Define privacy redaction and sampling rules.
 7. Verify that failures can be reconstructed from emitted signals.
+
+## Evals
+
+This skill ships a comprehension-eval artifact at [`examples/evals/observability-modeling.json`](../../examples/evals/observability-modeling.json). The checklist below is the authoring gate for telemetry-semantics decisions; the eval file is the grader surface.
 
 ## Verification
 

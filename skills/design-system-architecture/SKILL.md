@@ -12,7 +12,7 @@ owner: skill-graph-maintainer
 freshness: "2026-05-11"
 drift_check:
   last_verified: "2026-05-11"
-eval_artifacts: planned
+eval_artifacts: present
 eval_state: unverified
 routing_eval: absent
 stability: experimental
@@ -102,6 +102,10 @@ Optimize for clear constraints. A system with too many escape hatches is not fle
 5. Mark forbidden local overrides and migration paths.
 6. Add docs examples that show expected use and anti-use.
 7. Verify real screens can be built without one-off styling.
+
+## Evals
+
+This skill ships a comprehension-eval artifact at [`examples/evals/design-system-architecture.json`](../../examples/evals/design-system-architecture.json). The checklist below is the authoring gate for design-system architecture decisions; the eval file is the grader surface.
 
 ## Verification
 

@@ -12,7 +12,7 @@ owner: skill-graph-maintainer
 freshness: "2026-05-06"
 drift_check:
   last_verified: "2026-05-06"
-eval_artifacts: planned
+eval_artifacts: present
 eval_state: unverified
 routing_eval: absent
 stability: experimental
@@ -306,6 +306,10 @@ The audit:
 4. For surfaces that only log: decide whether they *should* report, and wire them up if so.
 
 A common output of this audit: "47 routes have `error.tsx` files; 12 of them inherit a shared fallback that does report; 35 inherit a different shared fallback that only logs; we have been blind to errors on those 35 routes for a year."
+
+## Evals
+
+This skill ships a comprehension-eval artifact at [`examples/evals/error-tracking.json`](../../examples/evals/error-tracking.json). The checklist below is the authoring gate for exception-reporting pipeline decisions; the eval file is the grader surface.
 
 ## Verification
 

@@ -302,7 +302,7 @@ The repo currently ships a larger `skills/` library. The eight starters below ar
 | Directory | Role |
 |---|---|
 | `examples/audits/` | Worked audit outputs (findings/verdict/scorecard) for `a11y`, `debugging`, `documentation`. |
-| `examples/evals/` | Nine eval fixtures — one per starter + `comprehension.json`. |
+| `examples/evals/` | Eval fixtures for starter skills plus expanded routing and content-verification surfaces. |
 | `examples/exports/` | Five round-trip Agent Skills exports demonstrating Tier 3's `export-skill.js` transform. |
 
 ---

@@ -1,0 +1,52 @@
+{
+  "skill_name": "api-design",
+  "subject": "API surface design for resources, actions, schemas, status codes, pagination, idempotency, versioning, auth, and error envelopes",
+  "adjacent_concepts": ["system-interface-contracts", "event-contract-design", "data-modeling", "webhook-integration"],
+  "grounding_note": "Truth sources cite the whole SKILL.md file to keep the initial eval surface stable while routing boundaries are tightened.",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "A team needs an endpoint for listing orders with filters, pagination, stable ordering, auth boundaries, and predictable errors. Which skill owns the API contract shape?",
+      "dimension": "application",
+      "substance": "domain",
+      "calibration": "process",
+      "truth_mode": "process_correctness",
+      "skill_type": "concept",
+      "criticality": "high",
+      "truth_sources": ["skills/api-design/SKILL.md"]
+    },
+    {
+      "id": 2,
+      "prompt": "A create endpoint can be retried by clients after timeouts. According to api-design, what must the contract decide before implementation?",
+      "dimension": "application",
+      "substance": "domain",
+      "calibration": "semantic",
+      "truth_mode": "conceptual_correctness_plus_repo_application",
+      "skill_type": "concept",
+      "criticality": "high",
+      "truth_sources": ["skills/api-design/SKILL.md"]
+    },
+    {
+      "id": 3,
+      "prompt": "The task is to define topic names, event envelopes, replay behavior, and compatibility rules for asynchronous messages. Should api-design accept or hand off?",
+      "dimension": "boundary",
+      "substance": "contradiction-check",
+      "calibration": "semantic",
+      "truth_mode": "code_verification",
+      "skill_type": "concept",
+      "criticality": "normal",
+      "truth_sources": ["skills/api-design/SKILL.md"]
+    },
+    {
+      "id": 4,
+      "prompt": "The task is to design database tables, foreign keys, and uniqueness constraints before any endpoint exists. Which boundary should api-design respect?",
+      "dimension": "boundary",
+      "substance": "contradiction-check",
+      "calibration": "semantic",
+      "truth_mode": "code_verification",
+      "skill_type": "concept",
+      "criticality": "normal",
+      "truth_sources": ["skills/api-design/SKILL.md"]
+    }
+  ]
+}

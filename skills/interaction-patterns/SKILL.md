@@ -14,7 +14,7 @@ drift_check:
   last_verified: "2026-05-11"
 eval_artifacts: present
 eval_state: unverified
-routing_eval: absent
+routing_eval: present
 stability: experimental
 license: MIT
 compatibility:

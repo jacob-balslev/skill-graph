@@ -1,0 +1,52 @@
+{
+  "skill_name": "information-architecture",
+  "subject": "Information architecture for navigation, page hierarchy, sitemaps, wayfinding, labeling systems, content grouping, and findability",
+  "adjacent_concepts": ["task-analysis", "taxonomy-design", "layout-composition", "microcopy"],
+  "grounding_note": "Truth sources cite the whole SKILL.md file to keep the initial eval surface stable while routing boundaries are tightened.",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "A docs site has useful content but users cannot find setup instructions. Which skill owns navigation, grouping, and wayfinding improvements?",
+      "dimension": "application",
+      "substance": "domain",
+      "calibration": "process",
+      "truth_mode": "process_correctness",
+      "skill_type": "concept",
+      "criticality": "high",
+      "truth_sources": ["skills/information-architecture/SKILL.md"]
+    },
+    {
+      "id": 2,
+      "prompt": "A product team is deciding whether information belongs in top-level nav, tabs, filters, or a page section. What should information-architecture inspect?",
+      "dimension": "application",
+      "substance": "domain",
+      "calibration": "semantic",
+      "truth_mode": "conceptual_correctness_plus_repo_application",
+      "skill_type": "concept",
+      "criticality": "high",
+      "truth_sources": ["skills/information-architecture/SKILL.md"]
+    },
+    {
+      "id": 3,
+      "prompt": "The task is to build a formal category taxonomy and assignment rules for the skill library. Should information-architecture accept?",
+      "dimension": "boundary",
+      "substance": "contradiction-check",
+      "calibration": "semantic",
+      "truth_mode": "code_verification",
+      "skill_type": "concept",
+      "criticality": "normal",
+      "truth_sources": ["skills/information-architecture/SKILL.md"]
+    },
+    {
+      "id": 4,
+      "prompt": "The route hierarchy is known and the next task is responsive grid and breakpoint composition. Which boundary should information-architecture respect?",
+      "dimension": "boundary",
+      "substance": "contradiction-check",
+      "calibration": "semantic",
+      "truth_mode": "code_verification",
+      "skill_type": "concept",
+      "criticality": "normal",
+      "truth_sources": ["skills/information-architecture/SKILL.md"]
+    }
+  ]
+}

@@ -12,7 +12,7 @@ owner: skill-graph-maintainer
 freshness: "2026-05-06"
 drift_check:
   last_verified: "2026-05-06"
-eval_artifacts: planned
+eval_artifacts: present
 eval_state: unverified
 routing_eval: absent
 stability: experimental
@@ -245,6 +245,10 @@ Flag the exact point where the journey degrades:
 - Ignoring skip paths or role-limited states.
 - Counting decorative polish as more important than task completion.
 - Using fictional persona detail instead of route / journey evidence.
+
+## Evals
+
+This skill ships a comprehension-eval artifact at [`examples/evals/task-analysis.json`](../../examples/evals/task-analysis.json). The checklist below is the authoring gate for route and flow analysis; the eval file is the grader surface.
 
 ## Verification
 

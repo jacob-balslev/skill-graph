@@ -12,7 +12,7 @@ owner: skill-graph-maintainer
 freshness: "2026-05-11"
 drift_check:
   last_verified: "2026-05-11"
-eval_artifacts: planned
+eval_artifacts: present
 eval_state: unverified
 routing_eval: absent
 stability: experimental
@@ -92,6 +92,10 @@ Contracts should be specific enough to protect both sides from drift and small e
 5. Specify compatibility: additive changes, breaking changes, versioning, and deprecation.
 6. Identify observability required to prove the contract is being honored.
 7. Add contract tests or fixtures where possible.
+
+## Evals
+
+This skill ships a comprehension-eval artifact at [`examples/evals/system-interface-contracts.json`](../../examples/evals/system-interface-contracts.json). The checklist below is the authoring gate for system-boundary contracts; the eval file is the grader surface.
 
 ## Verification
 

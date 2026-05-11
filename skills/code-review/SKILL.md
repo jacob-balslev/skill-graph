@@ -11,7 +11,7 @@ owner: skill-graph-maintainer
 freshness: "2026-05-04"
 drift_check:
   last_verified: "2026-05-04"
-eval_artifacts: planned
+eval_artifacts: present
 eval_state: unverified
 routing_eval: absent
 stability: experimental
@@ -158,6 +158,10 @@ A review without a verdict is incomplete. Don't leave PRs open with comments and
 ## Self-Review (Before Opening the PR)
 
 Run the same six phases on your own diff before opening the PR. The author's self-review catches 60-80% of the issues a reviewer would otherwise raise, leaving the reviewer's attention free for the non-obvious. Self-review is not optional — it is the cheapest place to catch the obvious mistakes.
+
+## Evals
+
+This skill ships a comprehension-eval artifact at [`examples/evals/code-review.json`](../../examples/evals/code-review.json). The checklist below is the reviewer gate for proposed changes; the eval file is the grader surface.
 
 ## Verification
 

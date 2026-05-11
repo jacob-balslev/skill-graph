@@ -1,0 +1,52 @@
+{
+  "skill_name": "microcopy",
+  "subject": "Functional UI text for action labels, empty states, tooltips, dialogs, loading messages, toasts, validation, permissions, and onboarding steps",
+  "adjacent_concepts": ["semiotics", "a11y", "interaction-feedback", "writing-humanizer"],
+  "grounding_note": "Truth sources cite the whole SKILL.md file to keep the initial eval surface stable while routing boundaries are tightened.",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "A destructive dialog says Submit and the team needs a specific, consequence-first action label. Which skill owns the wording pattern?",
+      "dimension": "application",
+      "substance": "domain",
+      "calibration": "process",
+      "truth_mode": "process_correctness",
+      "skill_type": "concept",
+      "criticality": "high",
+      "truth_sources": ["skills/microcopy/SKILL.md"]
+    },
+    {
+      "id": 2,
+      "prompt": "An empty state needs to acknowledge what is missing, explain why, and guide the next action in one compact UI surface. What should microcopy produce?",
+      "dimension": "application",
+      "substance": "domain",
+      "calibration": "semantic",
+      "truth_mode": "conceptual_correctness_plus_repo_application",
+      "skill_type": "concept",
+      "criticality": "high",
+      "truth_sources": ["skills/microcopy/SKILL.md"]
+    },
+    {
+      "id": 3,
+      "prompt": "The task is marketing persuasion for the pricing-page headline. Should microcopy accept the work?",
+      "dimension": "boundary",
+      "substance": "contradiction-check",
+      "calibration": "semantic",
+      "truth_mode": "code_verification",
+      "skill_type": "concept",
+      "criticality": "normal",
+      "truth_sources": ["skills/microcopy/SKILL.md"]
+    },
+    {
+      "id": 4,
+      "prompt": "The task is to decide the loading, success, retry, and undo state sequence, not the words inside those states. Which boundary should microcopy respect?",
+      "dimension": "boundary",
+      "substance": "contradiction-check",
+      "calibration": "semantic",
+      "truth_mode": "code_verification",
+      "skill_type": "concept",
+      "criticality": "normal",
+      "truth_sources": ["skills/microcopy/SKILL.md"]
+    }
+  ]
+}

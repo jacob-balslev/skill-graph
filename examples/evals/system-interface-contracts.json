@@ -1,0 +1,52 @@
+{
+  "skill_name": "system-interface-contracts",
+  "subject": "System boundary contracts across modules, services, jobs, agents, APIs, events, dashboards, invariants, ownership, failure modes, and verification",
+  "adjacent_concepts": ["api-design", "event-contract-design", "data-modeling", "observability-modeling"],
+  "grounding_note": "Truth sources cite the whole SKILL.md file to keep the initial eval surface stable while routing boundaries are tightened.",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "An ingestion job, dashboard, and background worker need a shared contract for ownership, invariants, failure modes, and verification. Which skill owns the broad boundary?",
+      "dimension": "application",
+      "substance": "domain",
+      "calibration": "process",
+      "truth_mode": "process_correctness",
+      "skill_type": "concept",
+      "criticality": "high",
+      "truth_sources": ["skills/system-interface-contracts/SKILL.md"]
+    },
+    {
+      "id": 2,
+      "prompt": "Two systems exchange data through several surfaces and the team needs to name shared invariants before choosing API or event details. What should system-interface-contracts produce?",
+      "dimension": "application",
+      "substance": "domain",
+      "calibration": "semantic",
+      "truth_mode": "conceptual_correctness_plus_repo_application",
+      "skill_type": "concept",
+      "criticality": "high",
+      "truth_sources": ["skills/system-interface-contracts/SKILL.md"]
+    },
+    {
+      "id": 3,
+      "prompt": "The task is only REST route naming, request and response schemas, pagination, and status codes. Should system-interface-contracts accept?",
+      "dimension": "boundary",
+      "substance": "contradiction-check",
+      "calibration": "semantic",
+      "truth_mode": "code_verification",
+      "skill_type": "concept",
+      "criticality": "normal",
+      "truth_sources": ["skills/system-interface-contracts/SKILL.md"]
+    },
+    {
+      "id": 4,
+      "prompt": "The task is asynchronous topic names, event envelopes, replay, and compatibility. Which boundary should system-interface-contracts respect?",
+      "dimension": "boundary",
+      "substance": "contradiction-check",
+      "calibration": "semantic",
+      "truth_mode": "code_verification",
+      "skill_type": "concept",
+      "criticality": "normal",
+      "truth_sources": ["skills/system-interface-contracts/SKILL.md"]
+    }
+  ]
+}

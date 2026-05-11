@@ -1,0 +1,52 @@
+{
+  "skill_name": "error-tracking",
+  "subject": "Exception-reporting pipeline design for error boundaries, centralized tracker wrappers, environment gating, PII sanitization, breadcrumbs, and capture verification",
+  "adjacent_concepts": ["observability-modeling", "a11y", "debugging", "owasp-security"],
+  "grounding_note": "Truth sources cite the whole SKILL.md file to keep the initial eval surface stable while routing boundaries are tightened.",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "A React app needs component, route, global, and manual exception reporting paths wired through one sanitized wrapper. Which skill owns the design?",
+      "dimension": "application",
+      "substance": "domain",
+      "calibration": "process",
+      "truth_mode": "process_correctness",
+      "skill_type": "concept",
+      "criticality": "high",
+      "truth_sources": ["skills/error-tracking/SKILL.md"]
+    },
+    {
+      "id": 2,
+      "prompt": "The tracker is receiving customer emails in payloads. According to error-tracking, what must happen before any external send?",
+      "dimension": "application",
+      "substance": "domain",
+      "calibration": "semantic",
+      "truth_mode": "conceptual_correctness_plus_repo_application",
+      "skill_type": "concept",
+      "criticality": "high",
+      "truth_sources": ["skills/error-tracking/SKILL.md"]
+    },
+    {
+      "id": 3,
+      "prompt": "The user needs accessible error-message copy and recovery UI for a 404 page. Should error-tracking accept the task?",
+      "dimension": "boundary",
+      "substance": "contradiction-check",
+      "calibration": "semantic",
+      "truth_mode": "code_verification",
+      "skill_type": "concept",
+      "criticality": "normal",
+      "truth_sources": ["skills/error-tracking/SKILL.md"]
+    },
+    {
+      "id": 4,
+      "prompt": "An observed production exception already exists in the tracker and the task is to find its root cause. Which boundary should error-tracking respect?",
+      "dimension": "boundary",
+      "substance": "contradiction-check",
+      "calibration": "semantic",
+      "truth_mode": "code_verification",
+      "skill_type": "concept",
+      "criticality": "normal",
+      "truth_sources": ["skills/error-tracking/SKILL.md"]
+    }
+  ]
+}

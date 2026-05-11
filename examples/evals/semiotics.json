@@ -1,0 +1,52 @@
+{
+  "skill_name": "semiotics",
+  "subject": "Interface sign-system analysis for icons, colors, badges, shapes, visual metaphors, affordances, signifier/signified mapping, and sign drift",
+  "adjacent_concepts": ["microcopy", "visual-design-foundations", "a11y", "semantic-relations"],
+  "grounding_note": "Truth sources cite the whole SKILL.md file to keep the initial eval surface stable while routing boundaries are tightened.",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "A dashboard uses green for both revenue increases and cost increases, causing users to read both as good. Which skill owns the sign-system failure?",
+      "dimension": "application",
+      "substance": "domain",
+      "calibration": "process",
+      "truth_mode": "process_correctness",
+      "skill_type": "concept",
+      "criticality": "high",
+      "truth_sources": ["skills/semiotics/SKILL.md"]
+    },
+    {
+      "id": 2,
+      "prompt": "Users keep clicking a label because it looks like an affordance. What should semiotics inspect before recommending a fix?",
+      "dimension": "application",
+      "substance": "domain",
+      "calibration": "semantic",
+      "truth_mode": "conceptual_correctness_plus_repo_application",
+      "skill_type": "concept",
+      "criticality": "high",
+      "truth_sources": ["skills/semiotics/SKILL.md"]
+    },
+    {
+      "id": 3,
+      "prompt": "The task is to rewrite tooltip wording and validation copy. Should semiotics accept the work?",
+      "dimension": "boundary",
+      "substance": "contradiction-check",
+      "calibration": "semantic",
+      "truth_mode": "code_verification",
+      "skill_type": "concept",
+      "criticality": "normal",
+      "truth_sources": ["skills/semiotics/SKILL.md"]
+    },
+    {
+      "id": 4,
+      "prompt": "The task is WCAG contrast math, focus order, and screen-reader behavior for the same visual surface. Which boundary should semiotics respect?",
+      "dimension": "boundary",
+      "substance": "contradiction-check",
+      "calibration": "semantic",
+      "truth_mode": "code_verification",
+      "skill_type": "concept",
+      "criticality": "normal",
+      "truth_sources": ["skills/semiotics/SKILL.md"]
+    }
+  ]
+}

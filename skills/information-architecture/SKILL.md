@@ -12,7 +12,7 @@ owner: skill-graph-maintainer
 freshness: "2026-05-11"
 drift_check:
   last_verified: "2026-05-11"
-eval_artifacts: planned
+eval_artifacts: present
 eval_state: unverified
 routing_eval: absent
 stability: experimental
@@ -92,6 +92,10 @@ Good IA starts from tasks, then chooses structure. Do not promote every importan
 5. Apply label discipline: recognizable user language, stable nouns, no internal jargon.
 6. Add wayfinding: current location, sibling options, next action, and escape path.
 7. Test against task scenarios and no-prior-knowledge discovery.
+
+## Evals
+
+This skill ships a comprehension-eval artifact at [`examples/evals/information-architecture.json`](../../examples/evals/information-architecture.json). The checklist below is the authoring gate for findability and structure decisions; the eval file is the grader surface.
 
 ## Verification
 

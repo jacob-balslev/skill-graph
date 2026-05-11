@@ -12,7 +12,7 @@ owner: skill-graph-maintainer
 freshness: "2026-05-06"
 drift_check:
   last_verified: "2026-05-06"
-eval_artifacts: planned
+eval_artifacts: present
 eval_state: unverified
 routing_eval: absent
 stability: experimental
@@ -373,6 +373,10 @@ function verifyWithRotation(rawBody: string, sig: string, current: string, previ
 ```
 
 The previous secret stays valid for the provider's maximum retry window after rotation, then is removed. Without this, every rotation drops every event still in the retry queue from the old secret.
+
+## Evals
+
+This skill ships a comprehension-eval artifact at [`examples/evals/webhook-integration.json`](../../examples/evals/webhook-integration.json). The checklist below is the authoring gate for inbound webhook-handler decisions; the eval file is the grader surface.
 
 ## Verification
 

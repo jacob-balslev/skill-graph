@@ -12,7 +12,7 @@ owner: skill-graph-maintainer
 freshness: "2026-05-11"
 drift_check:
   last_verified: "2026-05-11"
-eval_artifacts: planned
+eval_artifacts: present
 eval_state: unverified
 routing_eval: absent
 stability: experimental
@@ -94,6 +94,10 @@ Do not jump from concept to migration. First decide what must be stored, what ca
 7. Check query patterns and indexing implications.
 8. Hand off to `database-migration` for implementation changes.
 
+## Evals
+
+This skill ships a comprehension-eval artifact at [`examples/evals/data-modeling.json`](../../examples/evals/data-modeling.json). The checklist below is the authoring gate for persistence-model decisions; the eval file is the grader surface.
+
 ## Verification
 
 - [ ] Every stored entity has identity and uniqueness criteria
@@ -112,4 +116,3 @@ Do not jump from concept to migration. First decide what must be stored, what ca
 | `database-migration` | You need to write, apply, or verify a concrete migration. |
 | `ontology-modeling` | You need formal semantic axioms or reasoning constraints. |
 | `api-design` | You need endpoint, request, response, error, and versioning design. |
-

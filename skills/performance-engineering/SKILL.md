@@ -12,7 +12,7 @@ owner: skill-graph-maintainer
 freshness: "2026-05-11"
 drift_check:
   last_verified: "2026-05-11"
-eval_artifacts: planned
+eval_artifacts: present
 eval_state: unverified
 routing_eval: absent
 stability: experimental
@@ -90,6 +90,10 @@ Performance is also a contract. If speed matters, define budgets and regression 
 6. Add a budget, alert, or regression test for the fixed surface.
 7. Record tradeoffs such as freshness, complexity, cost, or cache invalidation risk.
 
+## Evals
+
+This skill ships a comprehension-eval artifact at [`examples/evals/performance-engineering.json`](../../examples/evals/performance-engineering.json). The checklist below is the authoring gate for performance decisions; the eval file is the grader surface.
+
 ## Verification
 
 - [ ] Baseline and post-change measurements use the same method
@@ -108,4 +112,3 @@ Performance is also a contract. If speed matters, define budgets and regression 
 | `error-tracking` | You need error capture, redaction, source maps, or issue triage. |
 | `testing-strategy` | You need general correctness test planning. |
 | `refactor` | You are restructuring code without a measured performance goal. |
-

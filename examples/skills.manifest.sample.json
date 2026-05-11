@@ -479,7 +479,7 @@
         "drift_check": {
           "last_verified": "2026-05-11"
         },
-        "eval_artifacts": "planned",
+        "eval_artifacts": "present",
         "eval_state": "unverified",
         "freshness": "2026-05-11",
         "has_grounding": false,
@@ -780,7 +780,7 @@
         "drift_check": {
           "last_verified": "2026-05-04"
         },
-        "eval_artifacts": "planned",
+        "eval_artifacts": "present",
         "eval_state": "unverified",
         "freshness": "2026-05-04",
         "has_grounding": false,
@@ -1518,7 +1518,7 @@
         "drift_check": {
           "last_verified": "2026-05-11"
         },
-        "eval_artifacts": "planned",
+        "eval_artifacts": "present",
         "eval_state": "unverified",
         "freshness": "2026-05-11",
         "has_grounding": false,
@@ -1630,7 +1630,7 @@
         "drift_check": {
           "last_verified": "2026-05-06"
         },
-        "eval_artifacts": "planned",
+        "eval_artifacts": "present",
         "eval_state": "unverified",
         "freshness": "2026-05-06",
         "has_grounding": false,
@@ -1826,7 +1826,7 @@
         "drift_check": {
           "last_verified": "2026-05-11"
         },
-        "eval_artifacts": "planned",
+        "eval_artifacts": "present",
         "eval_state": "unverified",
         "freshness": "2026-05-11",
         "has_grounding": false,
@@ -1923,7 +1923,7 @@
         "drift_check": {
           "last_verified": "2026-05-11"
         },
-        "eval_artifacts": "planned",
+        "eval_artifacts": "present",
         "eval_state": "unverified",
         "freshness": "2026-05-11",
         "has_grounding": false,
@@ -2262,7 +2262,7 @@
         "drift_check": {
           "last_verified": "2026-05-06"
         },
-        "eval_artifacts": "planned",
+        "eval_artifacts": "present",
         "eval_state": "unverified",
         "freshness": "2026-05-06",
         "has_grounding": false,
@@ -2654,7 +2654,7 @@
         "drift_check": {
           "last_verified": "2026-05-11"
         },
-        "eval_artifacts": "planned",
+        "eval_artifacts": "present",
         "eval_state": "unverified",
         "freshness": "2026-05-11",
         "has_grounding": false,
@@ -2860,7 +2860,7 @@
         "drift_check": {
           "last_verified": "2026-05-11"
         },
-        "eval_artifacts": "planned",
+        "eval_artifacts": "present",
         "eval_state": "unverified",
         "freshness": "2026-05-11",
         "has_grounding": false,
@@ -3173,7 +3173,7 @@
           "review_cadence": "quarterly",
           "stale_after_days": 365
         },
-        "routing_eval": "absent"
+        "routing_eval": "present"
       },
       "id": "interaction-patterns",
       "license": "MIT",
@@ -3669,7 +3669,7 @@
         "drift_check": {
           "last_verified": "2026-05-06"
         },
-        "eval_artifacts": "planned",
+        "eval_artifacts": "present",
         "eval_state": "unverified",
         "freshness": "2026-05-06",
         "has_grounding": false,
@@ -3868,7 +3868,7 @@
         "drift_check": {
           "last_verified": "2026-05-11"
         },
-        "eval_artifacts": "planned",
+        "eval_artifacts": "present",
         "eval_state": "unverified",
         "freshness": "2026-05-11",
         "has_grounding": false,
@@ -4276,7 +4276,7 @@
         "drift_check": {
           "last_verified": "2026-05-11"
         },
-        "eval_artifacts": "planned",
+        "eval_artifacts": "present",
         "eval_state": "unverified",
         "freshness": "2026-05-11",
         "has_grounding": false,
@@ -5098,7 +5098,7 @@
         "drift_check": {
           "last_verified": "2026-05-06"
         },
-        "eval_artifacts": "planned",
+        "eval_artifacts": "present",
         "eval_state": "unverified",
         "freshness": "2026-05-06",
         "has_grounding": false,
@@ -5749,7 +5749,7 @@
         "drift_check": {
           "last_verified": "2026-05-11"
         },
-        "eval_artifacts": "planned",
+        "eval_artifacts": "present",
         "eval_state": "unverified",
         "freshness": "2026-05-11",
         "has_grounding": false,
@@ -5862,7 +5862,7 @@
         "drift_check": {
           "last_verified": "2026-05-06"
         },
-        "eval_artifacts": "planned",
+        "eval_artifacts": "present",
         "eval_state": "unverified",
         "freshness": "2026-05-06",
         "has_grounding": false,
@@ -6496,7 +6496,7 @@
         "drift_check": {
           "last_verified": "2026-05-06"
         },
-        "eval_artifacts": "planned",
+        "eval_artifacts": "present",
         "eval_state": "unverified",
         "freshness": "2026-05-06",
         "has_grounding": false,

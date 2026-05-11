@@ -12,7 +12,7 @@ owner: skill-graph-maintainer
 freshness: "2026-05-06"
 drift_check:
   last_verified: "2026-05-06"
-eval_artifacts: planned
+eval_artifacts: present
 eval_state: unverified
 routing_eval: absent
 stability: experimental
@@ -255,6 +255,10 @@ Use this checklist when reviewing a surface:
 - Is the same concept being signed consistently across UI and code-facing surfaces?
 
 ---
+
+## Evals
+
+This skill ships a comprehension-eval artifact at [`examples/evals/semiotics.json`](../../examples/evals/semiotics.json). The checklist below is the authoring gate for sign-system decisions; the eval file is the grader surface.
 
 ## Verification
 

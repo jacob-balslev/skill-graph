@@ -1,0 +1,52 @@
+{
+  "skill_name": "observability-modeling",
+  "subject": "Telemetry semantics for diagnostic questions, logs, metrics, traces, spans, attributes, correlation IDs, SLOs, alert signals, cardinality, privacy, and sampling",
+  "adjacent_concepts": ["error-tracking", "event-contract-design", "performance-engineering", "debugging"],
+  "grounding_note": "Truth sources cite the whole SKILL.md file to keep the initial eval surface stable while routing boundaries are tightened.",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "A background ingestion pipeline needs logs, metrics, spans, correlation IDs, and alert signals designed before implementation. Which skill owns the telemetry model?",
+      "dimension": "application",
+      "substance": "domain",
+      "calibration": "process",
+      "truth_mode": "process_correctness",
+      "skill_type": "concept",
+      "criticality": "high",
+      "truth_sources": ["skills/observability-modeling/SKILL.md"]
+    },
+    {
+      "id": 2,
+      "prompt": "The team has diagnostic questions but no event attributes or SLO signals. What should observability-modeling turn those questions into?",
+      "dimension": "application",
+      "substance": "domain",
+      "calibration": "semantic",
+      "truth_mode": "conceptual_correctness_plus_repo_application",
+      "skill_type": "concept",
+      "criticality": "high",
+      "truth_sources": ["skills/observability-modeling/SKILL.md"]
+    },
+    {
+      "id": 3,
+      "prompt": "The task is to configure Sentry error boundaries and sanitized exception capture only. Should observability-modeling accept?",
+      "dimension": "boundary",
+      "substance": "contradiction-check",
+      "calibration": "semantic",
+      "truth_mode": "code_verification",
+      "skill_type": "concept",
+      "criticality": "normal",
+      "truth_sources": ["skills/observability-modeling/SKILL.md"]
+    },
+    {
+      "id": 4,
+      "prompt": "There is a live production incident and the user wants root-cause debugging. Which boundary should observability-modeling respect?",
+      "dimension": "boundary",
+      "substance": "contradiction-check",
+      "calibration": "semantic",
+      "truth_mode": "code_verification",
+      "skill_type": "concept",
+      "criticality": "normal",
+      "truth_sources": ["skills/observability-modeling/SKILL.md"]
+    }
+  ]
+}
