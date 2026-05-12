@@ -103,8 +103,17 @@
             "type": "string",
             "enum": ["capability", "workflow", "router", "overlay"]
           },
+          "archetype": {
+            "type": "string",
+            "enum": ["capability", "workflow", "router", "overlay"],
+            "description": "v3.1 preferred alias for `type`. Pass-through from authored frontmatter."
+          },
           "browse_category": { "type": "string" },
           "category": { "type": "string" },
+          "category_path": {
+            "type": "string",
+            "description": "v3.1 preferred alias for `category`. Pass-through from authored frontmatter."
+          },
           "scope": {
             "type": "string",
             "enum": ["codebase", "reference", "portable"]
@@ -212,9 +221,18 @@
             ],
             "properties": {
               "domain_object": { "type": "string" },
+              "subject": {
+                "type": "string",
+                "description": "v3.1 preferred alias for `domain_object`. Pass-through."
+              },
               "grounding_mode": {
                 "type": "string",
                 "enum": ["repo_specific", "universal", "hybrid"]
+              },
+              "claim_scope": {
+                "type": "string",
+                "enum": ["repo_specific", "universal", "hybrid"],
+                "description": "v3.1 preferred alias for `grounding_mode`. Pass-through."
               },
               "truth_sources": { "type": "array", "items": { "type": "string" } },
               "failure_modes": { "type": "array", "items": { "type": "string" } },
@@ -234,11 +252,24 @@
             "additionalProperties": false,
             "properties": {
               "runtimes": { "type": "array", "items": { "type": "string" } },
+              "agent_runtimes": {
+                "type": "array",
+                "items": { "type": "string" },
+                "description": "v3.1 preferred alias for `runtimes`. Pass-through."
+              },
               "node": { "type": "string" },
+              "node_version": {
+                "type": "string",
+                "description": "v3.1 preferred alias for `node`. Pass-through."
+              },
               "notes": { "type": "string", "maxLength": 500 }
             }
           },
           "allowed-tools": { "type": "string" },
+          "allowed_tools": {
+            "type": "string",
+            "description": "v3.1 preferred snake_case alias for `allowed-tools`. Pass-through."
+          },
           "portability": {
             "type": "object",
             "additionalProperties": false,
@@ -253,6 +284,14 @@
                   "type": "string",
                   "enum": ["agent-skills"]
                 }
+              },
+              "export_targets": {
+                "type": "array",
+                "description": "v3.1 preferred alias for `targets`. Pass-through.",
+                "items": {
+                  "type": "string",
+                  "enum": ["agent-skills"]
+                }
               }
             }
           },
@@ -263,13 +302,33 @@
               "eval_artifacts": { "type": "string" },
               "eval_state": { "type": "string" },
               "routing_eval": { "type": "string" },
+              "eval": {
+                "type": "object",
+                "additionalProperties": false,
+                "description": "v3.1 preferred nested form for the eval-health triple. Pass-through from authored frontmatter.",
+                "properties": {
+                  "artifacts": { "type": "string" },
+                  "content_state": { "type": "string" },
+                  "routing_coverage": { "type": "string" }
+                }
+              },
               "freshness": { "type": "string", "format": "date" },
+              "reviewed_at": {
+                "type": "string",
+                "format": "date",
+                "description": "v3.1 preferred alias for `freshness`. Pass-through."
+              },
               "drift_check": {
                 "type": "object",
                 "additionalProperties": false,
                 "required": ["last_verified"],
                 "properties": {
                   "last_verified": { "type": "string", "format": "date" },
+                  "verified_at": {
+                    "type": "string",
+                    "format": "date",
+                    "description": "v3.1 preferred alias for `last_verified`. Pass-through."
+                  },
                   "truth_source_hashes": {
                     "type": "object",
                     "additionalProperties": {

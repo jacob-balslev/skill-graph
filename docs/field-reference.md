@@ -172,6 +172,27 @@ type: capability
 
 ---
 
+## `archetype`
+
+**Purpose.** v3.1 preferred alias for `type`. Identical enum and semantics; the rename resolves sign-drift between the schema (`type`) and the doc body / ADR 0003 (which already say "archetype" everywhere) and removes a generic-name anti-pattern.
+
+**Allowed values.** Identical to `type`: `capability`, `workflow`, `router`, `overlay`.
+
+**Rules.**
+- When both `type` and `archetype` are present, they must match. The lint will warn on mismatch.
+- v3.x skills can set either form; v4 makes `archetype` canonical and removes `type`.
+
+**Example.**
+```yaml
+archetype: capability
+```
+
+**When to use.** Prefer `archetype` for new skills authored against the v3.1 contract. Existing skills do not need to migrate during v3.x.
+
+**Lint check.** Mismatch warning when both are set (planned). v4 will hard-error on `type`.
+
+---
+
 ## `browse_category`
 
 **Purpose.** Flat human browse bucket for discovery and grouping. Does not imply runtime behavior or evaluation logic. Renamed from v2 `family` in v3 — the old name invited misuse as a routing signal, so the v3 name makes the intent (browse, not behavior) explicit.
@@ -226,6 +247,21 @@ category: ecommerce/integrations/shopify
 **When to use.** When the skill library is large enough that a tree structure helps readers find related skills. A library with fewer than 20 skills rarely benefits.
 
 **When NOT to use.** Small skill libraries — `browse_category` alone is sufficient. Skills where categorization is genuinely ambiguous — use `project_tags` or `routing_groups` to attach flat semantic tags instead.
+
+---
+
+## `category_path`
+
+**Purpose.** v3.1 preferred alias for `category`. Identical pattern and semantics; the rename resolves polysemy with `browse_category` — the `_path` suffix signals slash-delimited hierarchy explicitly in the field name.
+
+**Rules.**
+- When both `category` and `category_path` are present, they must match.
+- v3.x skills can set either; v4 makes `category_path` canonical and removes `category`.
+
+**Example.**
+```yaml
+category_path: ecommerce/integrations/shopify
+```
 
 ---
 
@@ -296,6 +332,22 @@ freshness: "2026-04-15"
 **When to use.** Always — required.
 
 **When NOT to use.** N/A — required. If you are unsure of the last review date, set it to the current date as an explicit "reviewed now" assertion.
+
+---
+
+## `reviewed_at`
+
+**Purpose.** v3.1 preferred alias for `freshness`. Identical semantics; the rename uses the project's own `_at` date-field convention (per the `linguistics` skill) and removes the metaphorical phrasing ("freshness" is a property of food).
+
+**Rules.**
+- ISO 8601 date string (`YYYY-MM-DD`).
+- When both `freshness` and `reviewed_at` are present, they must match.
+- v3.x skills can set either; v4 makes `reviewed_at` canonical and removes `freshness`. ADR 0005 proposes a further consolidation with `drift_check.last_verified` in v4.
+
+**Example.**
+```yaml
+reviewed_at: "2026-05-12"
+```
 
 ---
 
@@ -433,6 +485,27 @@ routing_eval: absent
 **When to use.** Always — required.
 
 **When NOT to use.** N/A — required. Do not inflate (`present` without a routing harness that returns verdict PASS for the skill).
+
+---
+
+## `eval`
+
+**Purpose.** v3.1 preferred nested form for the eval-health triple (`eval_artifacts` + `eval_state` + `routing_eval`). Aligns with the sibling-object pattern of `drift_check`, `grounding`, `lifecycle`, `portability`. Also resolves the head-first compound ambiguity of `routing_eval` (renamed to `routing_coverage`) and disambiguates `eval_state` from `routing_coverage` (renamed to `content_state`).
+
+**Shape.**
+```yaml
+eval:
+  artifacts: present       # mirrors eval_artifacts — none | planned | present
+  content_state: passing   # mirrors eval_state    — unverified | passing | monitored
+  routing_coverage: present  # mirrors routing_eval — absent | present
+```
+
+**Rules.**
+- Optional in v3.1 (the top-level triple is still the source of truth during v3.x).
+- When both the nested `eval.*` fields and the top-level fields are present, they must match.
+- v4 makes `eval` canonical and removes the top-level triple.
+
+**When to use.** Prefer for new skills authored against v3.1. Setting both shapes is allowed but redundant.
 
 ---
 
@@ -624,6 +697,22 @@ allowed-tools: Read Grep Bash
 **When to use.** When deploying to a runtime that enforces tool allowlists and you want to declare the minimum required set.
 
 **When NOT to use.** Skills where all tools are permitted (omit the field) or where the deployment runtime does not read this field.
+
+---
+
+## `allowed_tools`
+
+**Purpose.** v3.1 preferred snake_case alias for `allowed-tools`. The kebab-case form is the only field in a snake_case schema; the alias removes that inconsistency on the authoring side. The export transform still writes the kebab-case form for Agent Skills consumers.
+
+**Rules.**
+- Space-separated string (same as `allowed-tools`).
+- When both forms are present, they must match.
+- v3.x skills can set either; v4 makes `allowed_tools` canonical for authoring. The export transform continues to write `allowed-tools` (kebab) for Agent Skills compatibility.
+
+**Example.**
+```yaml
+allowed_tools: Read Grep Bash
+```
 
 ---
 

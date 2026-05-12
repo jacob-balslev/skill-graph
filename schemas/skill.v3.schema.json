@@ -41,7 +41,7 @@
     "urn": {
       "type": "string",
       "pattern": "^urn:skill:[a-z0-9][a-z0-9-]*:[a-z0-9][a-z0-9-/:]*$",
-      "description": "Optional globally-unique persistent identifier in the `urn:skill:<repo>:<skill-name>` form (RFC 8141). Unlocks FAIR Findability across repos and federated skill registries. Consumers treat the URN as the stable identity; `name` is the display-layer handle. The `<skill-name>` segment MUST equal the `name` field. Optional in v3; target-required in v4 (ADR 0004)."
+      "description": "Optional globally-unique persistent identifier in the `urn:skill:<repo>:<skill-name>` form (RFC 8141). Consumers treat the URN as the stable identity across repos and federated registries; `name` is the display-layer handle. The `<skill-name>` segment MUST equal the `name` field."
     },
     "description": {
       "type": "string",
@@ -61,16 +61,31 @@
         "router",
         "overlay"
       ],
-      "description": "Archetype classifier — what kind of skill this is. `capability` (knows how to do something), `workflow` (orchestrates a sequence), `router` (dispatches to other skills), `overlay` (specialises a parent via `extends`). OntoClean rigidity tags per ADR 0003."
+      "description": "Archetype classifier — what kind of skill this is. `capability` (knows how to do something), `workflow` (orchestrates a sequence), `router` (dispatches to other skills), `overlay` (specialises a parent via `extends`). `archetype` is the v3.1 preferred alias and becomes canonical in v4."
+    },
+    "archetype": {
+      "type": "string",
+      "enum": [
+        "capability",
+        "workflow",
+        "router",
+        "overlay"
+      ],
+      "description": "Archetype classifier (v3.1 preferred alias for `type`). When both are present they must match. Becomes canonical in v4."
     },
     "browse_category": {
       "type": "string",
-      "description": "Flat human browse bucket (e.g., knowledge, engineering, quality). Renamed from v2 `family`. For hierarchical taxonomy use `category` instead."
+      "description": "Flat human browse bucket (e.g., knowledge, engineering, quality). For hierarchical taxonomy use `category` instead."
     },
     "category": {
       "type": "string",
       "pattern": "^[a-z0-9][a-z0-9-]*(/[a-z0-9][a-z0-9-]*)*$",
-      "description": "Hierarchical browse path using slash-delimited segments (e.g., `ecommerce/integrations/shopify`). Complements `browse_category`; flat vs tree answer different questions."
+      "description": "Hierarchical browse path using slash-delimited segments (e.g., `ecommerce/integrations/shopify`). Complements `browse_category`; flat vs tree answer different questions. `category_path` is the v3.1 preferred alias and becomes canonical in v4."
+    },
+    "category_path": {
+      "type": "string",
+      "pattern": "^[a-z0-9][a-z0-9-]*(/[a-z0-9][a-z0-9-]*)*$",
+      "description": "Hierarchical browse path (v3.1 preferred alias for `category`). Slash-delimited segments. Becomes canonical in v4."
     },
     "scope": {
       "type": "string",
@@ -88,7 +103,12 @@
     "freshness": {
       "type": "string",
       "format": "date",
-      "description": "ISO date (YYYY-MM-DD) of the last meaningful content review. The author's claim that the skill was current as of this date. Complemented by `drift_check.truth_source_hashes` for grounded skills. ADR 0005 documents the freshness consolidation policy."
+      "description": "ISO date (YYYY-MM-DD) of the last meaningful content review. The author's claim that the skill was current as of this date. Complemented by `drift_check.truth_source_hashes` for grounded skills. `reviewed_at` is the v3.1 preferred alias and becomes canonical in v4."
+    },
+    "reviewed_at": {
+      "type": "string",
+      "format": "date",
+      "description": "ISO date (YYYY-MM-DD) of the last meaningful content review (v3.1 preferred alias for `freshness`). When both are present they must match. Becomes canonical in v4."
     },
     "drift_check": {
       "type": "object",
@@ -100,7 +120,12 @@
         "last_verified": {
           "type": "string",
           "format": "date",
-          "description": "ISO date of the last verification against truth sources. Authored claim."
+          "description": "ISO date of the last verification against truth sources. Authored claim. `verified_at` is the v3.1 preferred alias and becomes canonical in v4."
+        },
+        "verified_at": {
+          "type": "string",
+          "format": "date",
+          "description": "ISO date of the last verification against truth sources (v3.1 preferred alias for `last_verified`). When both are present they must match. Becomes canonical in v4."
         },
         "truth_source_hashes": {
           "type": "object",
@@ -137,7 +162,40 @@
         "absent",
         "present"
       ],
-      "description": "Is routing / trigger coverage explicitly evaluated? `absent` (router behaviour is not part of the eval set), `present` (the skill's `examples[]` and `anti_examples[]` pass `scripts/skill-graph-routing-eval.js`). When `present`, lint check 12 requires the harness to agree. Honesty over green checkmarks — flip to `present` only after the harness PASSes."
+      "description": "Is routing / trigger coverage explicitly evaluated? `absent` (router behaviour is not part of the eval set), `present` (the skill's `examples[]` and `anti_examples[]` pass `scripts/skill-graph-routing-eval.js`). When `present`, lint check 12 requires the harness to agree. Honesty over green checkmarks — flip to `present` only after the harness PASSes. The nested `eval.routing_coverage` is the v3.1 preferred alias."
+    },
+    "eval": {
+      "type": "object",
+      "additionalProperties": false,
+      "description": "Nested eval-health record (v3.1 preferred alias for the sibling triple `eval_artifacts` / `eval_state` / `routing_eval`). When both the top-level and nested forms are present they must match. Becomes canonical in v4.",
+      "properties": {
+        "artifacts": {
+          "type": "string",
+          "enum": [
+            "none",
+            "planned",
+            "present"
+          ],
+          "description": "Are eval artifacts present on disk for this skill? Mirrors top-level `eval_artifacts`."
+        },
+        "content_state": {
+          "type": "string",
+          "enum": [
+            "unverified",
+            "passing",
+            "monitored"
+          ],
+          "description": "What does the eval say about content quality? Mirrors top-level `eval_state`. Renamed to `content_state` here to disambiguate from `routing_coverage`."
+        },
+        "routing_coverage": {
+          "type": "string",
+          "enum": [
+            "absent",
+            "present"
+          ],
+          "description": "Is routing / trigger coverage explicitly evaluated? Mirrors top-level `routing_eval`. Renamed to `routing_coverage` here to remove the head-first compound ambiguity."
+        }
+      }
     },
     "stability": {
       "type": "string",
@@ -147,7 +205,7 @@
         "frozen",
         "deprecated"
       ],
-      "description": "Lifecycle posture for consumers. `experimental` (subject to change), `stable` (production-ready), `frozen` (no further changes expected), `deprecated` (use `superseded_by` to name the replacement). Drives consumer pinning decisions and ADR 0001 deprecation flow."
+      "description": "Lifecycle posture for consumers. `experimental` (subject to change), `stable` (production-ready), `frozen` (no further changes expected), `deprecated` (use `superseded_by` to name the replacement). Drives consumer pinning decisions."
     },
     "superseded_by": {
       "type": "string",
@@ -163,14 +221,25 @@
       "properties": {
         "runtimes": {
           "type": "array",
-          "description": "Target agent runtimes with optional version constraints (e.g., `claude-code>=2.0`, `cursor>=0.40`).",
+          "description": "Target agent runtimes with optional version constraints (e.g., `claude-code>=2.0`, `cursor>=0.40`). `agent_runtimes` is the v3.1 preferred alias and becomes canonical in v4.",
+          "items": {
+            "type": "string"
+          }
+        },
+        "agent_runtimes": {
+          "type": "array",
+          "description": "Target agent runtimes (v3.1 preferred alias for `runtimes`). Disambiguates from Node runtime, container runtime, etc. When both are present they must match. Becomes canonical in v4.",
           "items": {
             "type": "string"
           }
         },
         "node": {
           "type": "string",
-          "description": "Node.js version constraint (e.g., `>=18`)."
+          "description": "Node.js version constraint (e.g., `>=18`). `node_version` is the v3.1 preferred alias and becomes canonical in v4."
+        },
+        "node_version": {
+          "type": "string",
+          "description": "Node.js version constraint (v3.1 preferred alias for `node`). Disambiguates from `node` reading as graph-node in a graph repo. When both are present they must match. Becomes canonical in v4."
         },
         "notes": {
           "type": "string",
@@ -182,11 +251,15 @@
     },
     "allowed-tools": {
       "type": "string",
-      "description": "Optional comma-separated whitelist of tools the skill is permitted to use (e.g., `Read,Edit,Bash`). Honoured by harnesses that gate tool calls per skill. Conventional spelling matches Claude Code's `--allowed-tools` CLI flag."
+      "description": "Optional space-separated whitelist of tools the skill is permitted to use (e.g., `Read Edit Bash`). Honoured by harnesses that gate tool calls per skill. Kebab-case spelling matches the Agent Skills base standard and Claude Code's `--allowed-tools` CLI flag. `allowed_tools` (snake_case) is the v3.1 preferred protocol alias; the export transform writes the kebab-case form for Agent Skills consumers."
+    },
+    "allowed_tools": {
+      "type": "string",
+      "description": "Space-separated whitelist of tools (v3.1 preferred snake_case alias for `allowed-tools`). When both are present they must match. The Agent Skills export transform rewrites this to the kebab-case form. Becomes canonical in v4."
     },
     "extends": {
       "type": "string",
-      "description": "Overlay parent skill name. Only valid when `type: overlay`. Establishes a single-parent existential-dependency chain — the overlay specialises the parent and ceases to have meaning without it. Per ADR 0003 (OntoClean rigidity), the overlay's identity is INHERITED, not REPLACED. For non-existential cross-skill generalisation, use `relations.broader` instead."
+      "description": "Overlay parent skill name. Only valid when `type: overlay`. The overlay specialises the parent and ceases to have meaning without it; its identity is INHERITED from the parent, not REPLACED. For non-existential cross-skill generalisation, use `relations.broader` instead."
     },
     "triggers": {
       "type": "array",
@@ -244,25 +317,25 @@
     "relations": {
       "type": "object",
       "additionalProperties": false,
-      "description": "Typed edges to sibling skills. Lint verifies every target exists. Predicate-to-W3C-vocabulary mapping is provided via schemas/skill.context.jsonld (JSON-LD @context). See docs/adr/0001-predicate-set.md for the v3.1 SKOS additions (related/broader/narrower) and ADR 0006 for the `boundary` / `disjoint_with` semantic split (boundary = routing-layer asymmetric handoff; disjoint_with = optional OWL class-disjointness).",
+      "description": "Typed edges to sibling skills. Lint verifies every target exists. Predicate-to-W3C-vocabulary mapping is provided via schemas/skill.context.jsonld (JSON-LD @context). `boundary` is routing-layer asymmetric handoff; `disjoint_with` is the optional OWL class-disjointness predicate — they are distinct, not aliases.",
       "properties": {
         "adjacent": {
           "type": "array",
-          "description": "DEPRECATED ALIAS of `related` (v3.0 name). Semantics: symmetric co-read relation, maps to skos:related. Still valid in v3.x; lint emits a soft warning pointing at `related` as the preferred name. Removal target: v4. See ADR 0001.",
+          "description": "DEPRECATED ALIAS of `related`. Symmetric co-read relation, maps to skos:related. Still valid in v3.x; lint emits a soft warning pointing at `related` as the preferred name. Removal target: v4.",
           "items": {
             "type": "string"
           }
         },
         "related": {
           "type": "array",
-          "description": "v3.1 preferred name for the symmetric associative relation (skos:related). Use for skills that should be co-read because they teach the same surface from different angles. Max 5 entries recommended to avoid hub-and-spoke clutter. Replaces `adjacent`; both names validate in v3.x for backward compatibility.",
+          "description": "Symmetric associative relation (skos:related). Use for skills that should be co-read because they teach the same surface from different angles. Max 5 entries recommended to avoid hub-and-spoke clutter. Preferred over the deprecated `adjacent` alias.",
           "items": {
             "type": "string"
           }
         },
         "boundary": {
           "type": "array",
-          "description": "Anti-ownership / routing handoff edge — directional. Skills this skill explicitly does NOT own; the router uses this to redirect wrong-skill queries to the correct owner. Items may be bare skill names (v2-compatible) or `{skill, reason}` objects; reasons are strongly recommended. Maps to sg:disjointOwnership (a Skill-Graph-specific predicate intentionally weaker than OWL class-disjointness — it makes a routing-layer claim, not a formal ontological one). For formal OWL class-disjointness, use `disjoint_with`. See ADR 0006.",
+          "description": "Anti-ownership / routing handoff edge — directional. Skills this skill explicitly does NOT own; the router uses this to redirect wrong-skill queries to the correct owner. Items may be bare skill names or `{skill, reason}` objects; reasons are strongly recommended. Maps to sg:disjointOwnership — a Skill-Graph-specific routing-layer predicate, intentionally weaker than OWL class-disjointness. For formal class-disjointness, use `disjoint_with`.",
           "items": {
             "oneOf": [
               {
@@ -288,7 +361,7 @@
         },
         "disjoint_with": {
           "type": "array",
-          "description": "Optional OWL-style class-disjointness assertion. Maps to owl:disjointWith — a formal ontological claim that the two skills name disjoint conceptual classes (no entity can simultaneously be an instance of both). Use only when authors genuinely want formal class-disjointness; rare in practice. Does NOT replace `boundary` (which is a routing-layer asymmetric handoff and is the canonical name for wrong-skill routing protection). Same item shape as `boundary` — bare string OR `{skill, reason}`. See ADR 0006 for the boundary-vs-disjoint_with semantic split.",
+          "description": "Optional OWL class-disjointness assertion. Maps to owl:disjointWith — a formal ontological claim that the two skills name disjoint conceptual classes (no entity can simultaneously be an instance of both). Rare in practice. Does NOT replace `boundary` (the routing-layer asymmetric handoff). Same item shape as `boundary` — bare string OR `{skill, reason}`.",
           "items": {
             "oneOf": [
               {
@@ -314,14 +387,14 @@
         },
         "broader": {
           "type": "array",
-          "description": "v3.1 addition — cross-skill generalisation (skos:broader). Use when this skill is a specialisation of another skill that is NOT its overlay parent (if it were, use `extends`). Example: `react-best-practices` has `broader: [frontend]`. Closes the cross-skill generalisation gap that `browse_category` cannot express.",
+          "description": "Cross-skill generalisation (skos:broader). Use when this skill is a specialisation of another skill that is NOT its overlay parent (if it were, use `extends`). Example: `react-best-practices` has `broader: [frontend]`. Closes the cross-skill generalisation gap that `browse_category` cannot express.",
           "items": {
             "type": "string"
           }
         },
         "narrower": {
           "type": "array",
-          "description": "v3.1 addition — cross-skill specialisation (skos:narrower). The inverse of `broader` — this skill is more general than the targets. Tooling can infer this from other skills' `broader` edges; authoring it explicitly is optional.",
+          "description": "Cross-skill specialisation (skos:narrower). The inverse of `broader` — this skill is more general than the targets. Tooling can infer this from other skills' `broader` edges; authoring it explicitly is optional.",
           "items": {
             "type": "string"
           }
@@ -335,7 +408,7 @@
         },
         "depends_on": {
           "type": "array",
-          "description": "Skills this skill requires conceptually or operationally. Items may be bare skill names (v2-compatible) or `{skill, min_version}` objects (v3 enrichment) for version-constrained dependencies.",
+          "description": "Skills this skill requires conceptually or operationally. Items may be bare skill names or `{skill, min_version}` objects for version-constrained dependencies.",
           "items": {
             "oneOf": [
               {
@@ -353,7 +426,7 @@
                   },
                   "min_version": {
                     "type": "string",
-                    "description": "Semver range for the minimum required version of the target skill. Accepts bare semver (`1.2.0`, treated as exact), caret range (`^1.2.0`), tilde range (`~1.2.0`), comparator range (`>=1.2.0`, `>1.2.0`, `<2.0.0`, `<=1.5.0`), or AND-joined ranges (`>=1.2.0 <2.0.0`). v0.5.0 loosened the pattern from exact-match-only to support real dependency declarations.",
+                    "description": "Semver range for the minimum required version of the target skill. Accepts bare semver (`1.2.0`, treated as exact), caret range (`^1.2.0`), tilde range (`~1.2.0`), comparator range (`>=1.2.0`, `>1.2.0`, `<2.0.0`, `<=1.5.0`), or AND-joined ranges (`>=1.2.0 <2.0.0`).",
                     "pattern": "^(\\^|~|>=|<=|>|<|=)?[0-9]+\\.[0-9]+\\.[0-9]+(-[a-zA-Z0-9.-]+)?( +(\\^|~|>=|<=|>|<|=)?[0-9]+\\.[0-9]+\\.[0-9]+(-[a-zA-Z0-9.-]+)?)*$"
                   }
                 }
@@ -375,7 +448,12 @@
       ],
       "properties": {
         "domain_object": {
-          "type": "string"
+          "type": "string",
+          "description": "What the skill is about (e.g., `Shopify order sync`). `subject` is the v3.1 preferred alias and becomes canonical in v4."
+        },
+        "subject": {
+          "type": "string",
+          "description": "What the skill is about (v3.1 preferred alias for `domain_object`). When both are present they must match. Becomes canonical in v4."
         },
         "grounding_mode": {
           "type": "string",
@@ -383,7 +461,17 @@
             "repo_specific",
             "universal",
             "hybrid"
-          ]
+          ],
+          "description": "Whether the skill's claims are repo-specific, universal, or a hybrid. `claim_scope` is the v3.1 preferred alias and becomes canonical in v4."
+        },
+        "claim_scope": {
+          "type": "string",
+          "enum": [
+            "repo_specific",
+            "universal",
+            "hybrid"
+          ],
+          "description": "Whether the skill's claims are repo-specific, universal, or a hybrid (v3.1 preferred alias for `grounding_mode`). When both are present they must match. Becomes canonical in v4."
         },
         "truth_sources": {
           "type": "array",
@@ -426,6 +514,17 @@
         },
         "targets": {
           "type": "array",
+          "description": "Supported export destinations. `export_targets` is the v3.1 preferred alias and becomes canonical in v4.",
+          "items": {
+            "type": "string",
+            "enum": [
+              "agent-skills"
+            ]
+          }
+        },
+        "export_targets": {
+          "type": "array",
+          "description": "Supported export destinations (v3.1 preferred alias for `targets`). Distinguishes from bare `targets` which is generic. When both are present they must match. Becomes canonical in v4.",
           "items": {
             "type": "string",
             "enum": [

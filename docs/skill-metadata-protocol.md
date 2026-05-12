@@ -206,7 +206,7 @@ Every Skill Graph SKILL.md is the same shape: a YAML frontmatter, a Markdown bod
 ```mermaid
 flowchart LR
   Skill(["<b>SKILL.md</b>"])
-  FM["<b>YAML Frontmatter</b><br/>32 named fields · machine-validated"]
+  FM["<b>YAML Frontmatter</b><br/>33 named fields · machine-validated"]
   Body["<b>Markdown Body</b><br/>H2 sections depend on <code>type</code>"]
   Teach["<b>Teaching Layer</b><br/>TEMPLATE NOTE scaffolding<br/>template specimen only"]
 

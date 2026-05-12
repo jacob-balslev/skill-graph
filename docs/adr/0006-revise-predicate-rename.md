@@ -29,7 +29,7 @@ The Opus 4.7 reviewer (`opus.md`) noted this directly. The GPT-5.5 reviewer (`gp
 
 `boundary` is a **directional, asymmetric** routing claim. Skill A says "I am not the right answer for queries also matching B; route those to B." Skill B is not required to make the reciprocal claim. The router uses this to demote A in the candidate list when B scores higher, even when A's keywords and triggers also matched.
 
-`owl:disjointWith` is a **symmetric, reflexive** class-theoretic claim. If A `owl:disjointWith` B, then B `owl:disjointWith` A — and any reasoner deriving an entity that is both A and B will flag a contradiction.
+`owl:disjointWith` is a **symmetric, irreflexive** class-theoretic claim. If A `owl:disjointWith` B, then B `owl:disjointWith` A — and any reasoner deriving an entity that is both A and B will flag a contradiction. (Irreflexive because a class is never disjoint with itself: every class is identical to itself, not disjoint from itself.)
 
 These are not aliases. They model different facts about the world.
 

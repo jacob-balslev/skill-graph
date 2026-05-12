@@ -62,14 +62,14 @@ All thirteen fields in this group are required. A skill missing any of them fail
 
 ### Conditionally required
 
-These fields are required only when a specific condition is met. The schema enforces them via `allOf` rules.
+These fields are required only when a specific condition is met. The first three are enforced by JSON-Schema `allOf` rules; the `keywords` rule is enforced by `scripts/skill-lint.js` (lint check R1) rather than the schema, since the schema cannot reason about routability intent.
 
-| Field | Required when |
-|---|---|
-| `extends` | `type: overlay` |
-| `grounding` | `scope: codebase` |
-| `superseded_by` | `stability: deprecated` |
-| `keywords` | The skill is intended to be routable by semantic label |
+| Field | Required when | Enforced by |
+|---|---|---|
+| `extends` | `type: overlay` | schema `allOf` |
+| `grounding` | `scope: codebase` | schema `allOf` |
+| `superseded_by` | `stability: deprecated` | schema `allOf` |
+| `keywords` | `scope: codebase` OR `routing_groups` is set | `scripts/skill-lint.js` (lint check R1) |
 
 ### Optional (strongly recommended)
 
@@ -360,7 +360,7 @@ Run the codemod to migrate in place: `node scripts/migrate-skill-v2-to-v3.js`
 | `compatibility` shape | free-text string | object `{ runtimes?, node?, notes? }` |
 | `family` field name | `family: engineering` | `browse_category: engineering` |
 | New optional fields | (none) | `category`, `project_tags`, `lifecycle`, `runtime_telemetry` |
-| Relation predicate names | `adjacent` (hard), `boundary` (hard) | `related` (preferred), `disjoint_with` (preferred); old names valid with lint warning |
+| Relation predicate names | `adjacent` (canonical) | `related` (preferred); `adjacent` valid with lint warning, removal target v4. `boundary` stays canonical for routing-layer asymmetric handoff (per ADR 0006); `disjoint_with` is a separate orthogonal relation for formal OWL class-disjointness, not an alias for `boundary`. `broader` and `narrower` added in v3.1. |
 
 Skills that remain on v2 forms will pass lint as warnings (not errors) during the v3 window. Warnings become errors in v4.
 
@@ -373,13 +373,34 @@ Skills that remain on v2 forms will pass lint as warnings (not errors) during th
 | `portability` shape | `portability.level`, `portability.exports` | `portability.readiness`, `portability.targets` |
 | Route groups | `route_groups` | `routing_groups` |
 
+### v3.1 — preferred field-name aliases (additive)
+
+v3.1 adds a set of optional aliases to the schema. Both the original and the alias names validate during v3.x; lint emits a warning when the legacy name is used. The aliases become canonical in v4 and the legacy names are removed there. No existing v3.0 skill is invalidated; authors who want to preview the v4 shape can switch incrementally.
+
+| Legacy name (v3.0) | Preferred alias (v3.1 → v4) | Reason |
+|---|---|---|
+| `type` | `archetype` | The rationale doc, ADR 0003, and every body section already say "archetype"; the schema's `type` was sign-drift. Plus `type` is a generic-name anti-pattern. |
+| `category` | `category_path` | Polysemy with `browse_category` — `category_path` signals slash-delimited hierarchy explicitly. |
+| `freshness` | `reviewed_at` | "Freshness" is metaphorical; `reviewed_at` uses the project's own `_at` date-field convention. |
+| `allowed-tools` | `allowed_tools` | Only kebab-case field in a snake_case schema. The export transform still writes the kebab-case form for Agent Skills consumers. |
+| `eval_artifacts` + `eval_state` + `routing_eval` (top-level triple) | `eval: { artifacts, content_state, routing_coverage }` (nested object) | Aligns with the sibling-object pattern of `drift_check`, `grounding`, `lifecycle`, `portability`. Also resolves `routing_eval`'s head-first compound ambiguity by renaming to `routing_coverage`. |
+| `grounding.domain_object` | `grounding.subject` | "domain_object" is DDD jargon; `subject` is the natural English word for what the skill is about. |
+| `grounding.grounding_mode` | `grounding.claim_scope` | "mode" is generic; `claim_scope` names the actual semantic axis. |
+| `compatibility.node` | `compatibility.node_version` | In a skill-graph repo, bare `node` reads as graph-node. |
+| `compatibility.runtimes` | `compatibility.agent_runtimes` | Disambiguates from Node runtime, container runtime, etc. |
+| `portability.targets` | `portability.export_targets` | Bare `targets` is generic; `export_targets` names the actual operation. |
+| `drift_check.last_verified` | `drift_check.verified_at` | Follows the project's own `_at` convention for date fields. |
+
+When both forms are present, the values must match. The manifest generator passes both through; consumers should prefer the v3.1 alias.
+
 ### Planned for v4
 
 v4 is the next breaking-change horizon. No v4 changes are in scope for v3 skills today, but these are planned:
 
 - `urn` becomes required (ADR 0004).
-- `adjacent` is removed; use `related` instead (ADR 0001). `boundary` remains canonical for routing-layer handoff (ADR 0006).
-- `freshness` and `drift_check.last_verified` may consolidate into a single field.
+- `adjacent` is removed; use `related` instead. `boundary` remains canonical for routing-layer handoff (ADR 0006).
+- `freshness` / `drift_check.last_verified` may consolidate (ADR 0005).
+- All v3.1 aliases above become canonical; the legacy names are removed.
 
 ---
 

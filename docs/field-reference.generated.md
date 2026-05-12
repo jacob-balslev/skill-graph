@@ -1,11 +1,11 @@
 # Skill Graph Field Reference (Generated)
 
-> **Generated from** `schemas/skill.v3.schema.json` on 2026-05-11 by `scripts/build-field-reference.js`.
+> **Generated from** `schemas/skill.v3.schema.json` on 2026-05-12 by `scripts/build-field-reference.js`.
 > **Do not edit by hand.** The canonical prose reference is [`docs/field-reference.md`](field-reference.md).
 > **Predicate glossary:** [`docs/glossary.md`](glossary.md).
 > **JSON-LD @context:** [`schemas/skill.context.jsonld`](../schemas/skill.context.jsonld).
 
-Schema version: **3** · Field count: **33** · Required: **13**
+Schema version: **3** · Field count: **38** · Required: **13**
 
 ---
 
@@ -35,7 +35,7 @@ Stable display-layer skill identifier. Lowercase kebab-case; allows `/` and `:` 
 
 **Type:** string
 
-Optional globally-unique persistent identifier in the `urn:skill:<repo>:<skill-name>` form (RFC 8141). Unlocks FAIR Findability across repos and federated skill registries. Consumers treat the URN as the stable identity; `name` is the display-layer handle. The `<skill-name>` segment MUST equal the `name` field. Optional in v3; target-required in v4 (ADR 0004).
+Optional globally-unique persistent identifier in the `urn:skill:<repo>:<skill-name>` form (RFC 8141). Consumers treat the URN as the stable identity across repos and federated registries; `name` is the display-layer handle. The `<skill-name>` segment MUST equal the `name` field.
 
 **Pattern:** `^urn:skill:[a-z0-9][a-z0-9-]*:[a-z0-9][a-z0-9-/:]*$`
 
@@ -71,9 +71,19 @@ Skill content version (semver). Bumps when the SKILL.md body or contract changes
 
 **Type:** `capability` | `workflow` | `router` | `overlay`
 
-Archetype classifier — what kind of skill this is. `capability` (knows how to do something), `workflow` (orchestrates a sequence), `router` (dispatches to other skills), `overlay` (specialises a parent via `extends`). OntoClean rigidity tags per ADR 0003.
+Archetype classifier — what kind of skill this is. `capability` (knows how to do something), `workflow` (orchestrates a sequence), `router` (dispatches to other skills), `overlay` (specialises a parent via `extends`). `archetype` is the v3.1 preferred alias and becomes canonical in v4.
 
 **Full reference:** [`docs/field-reference.md#type`](field-reference.md#type)
+
+---
+
+### `archetype` *(optional)*
+
+**Type:** `capability` | `workflow` | `router` | `overlay`
+
+Archetype classifier (v3.1 preferred alias for `type`). When both are present they must match. Becomes canonical in v4.
+
+**Full reference:** [`docs/field-reference.md#archetype`](field-reference.md#archetype)
 
 ---
 
@@ -81,7 +91,7 @@ Archetype classifier — what kind of skill this is. `capability` (knows how to 
 
 **Type:** string
 
-Flat human browse bucket (e.g., knowledge, engineering, quality). Renamed from v2 `family`. For hierarchical taxonomy use `category` instead.
+Flat human browse bucket (e.g., knowledge, engineering, quality). For hierarchical taxonomy use `category` instead.
 
 **Full reference:** [`docs/field-reference.md#browse_category`](field-reference.md#browse_category)
 
@@ -91,11 +101,23 @@ Flat human browse bucket (e.g., knowledge, engineering, quality). Renamed from v
 
 **Type:** string
 
-Hierarchical browse path using slash-delimited segments (e.g., `ecommerce/integrations/shopify`). Complements `browse_category`; flat vs tree answer different questions.
+Hierarchical browse path using slash-delimited segments (e.g., `ecommerce/integrations/shopify`). Complements `browse_category`; flat vs tree answer different questions. `category_path` is the v3.1 preferred alias and becomes canonical in v4.
 
 **Pattern:** `^[a-z0-9][a-z0-9-]*(/[a-z0-9][a-z0-9-]*)*$`
 
 **Full reference:** [`docs/field-reference.md#category`](field-reference.md#category)
+
+---
+
+### `category_path` *(optional)*
+
+**Type:** string
+
+Hierarchical browse path (v3.1 preferred alias for `category`). Slash-delimited segments. Becomes canonical in v4.
+
+**Pattern:** `^[a-z0-9][a-z0-9-]*(/[a-z0-9][a-z0-9-]*)*$`
+
+**Full reference:** [`docs/field-reference.md#category_path`](field-reference.md#category_path)
 
 ---
 
@@ -123,11 +145,23 @@ Maintainer or team accountable for keeping this skill correct. Free-form string;
 
 **Type:** string
 
-ISO date (YYYY-MM-DD) of the last meaningful content review. The author's claim that the skill was current as of this date. Complemented by `drift_check.truth_source_hashes` for grounded skills. ADR 0005 documents the freshness consolidation policy.
+ISO date (YYYY-MM-DD) of the last meaningful content review. The author's claim that the skill was current as of this date. Complemented by `drift_check.truth_source_hashes` for grounded skills. `reviewed_at` is the v3.1 preferred alias and becomes canonical in v4.
 
 **Format:** date
 
 **Full reference:** [`docs/field-reference.md#freshness`](field-reference.md#freshness)
+
+---
+
+### `reviewed_at` *(optional)*
+
+**Type:** string
+
+ISO date (YYYY-MM-DD) of the last meaningful content review (v3.1 preferred alias for `freshness`). When both are present they must match. Becomes canonical in v4.
+
+**Format:** date
+
+**Full reference:** [`docs/field-reference.md#reviewed_at`](field-reference.md#reviewed_at)
 
 ---
 
@@ -140,6 +174,7 @@ Drift-detection record for grounded skills. `last_verified` is the author's clai
 **Sub-fields:**
 
 - `last_verified` *required* — ISO date of the last verification against truth sources.
+- `verified_at` *optional* — ISO date of the last verification against truth sources (v3.
 - `truth_source_hashes` *optional* — Map of truth source file path → SHA-256 hex digest at the time of last verification.
 
 **Full reference:** [`docs/field-reference.md#drift_check`](field-reference.md#drift_check)
@@ -170,9 +205,25 @@ What does the eval say about content quality? `unverified` (no eval has run), `p
 
 **Type:** `absent` | `present`
 
-Is routing / trigger coverage explicitly evaluated? `absent` (router behaviour is not part of the eval set), `present` (the skill's `examples[]` and `anti_examples[]` pass `scripts/skill-graph-routing-eval.js`). When `present`, lint check 12 requires the harness to agree. Honesty over green checkmarks — flip to `present` only after the harness PASSes.
+Is routing / trigger coverage explicitly evaluated? `absent` (router behaviour is not part of the eval set), `present` (the skill's `examples[]` and `anti_examples[]` pass `scripts/skill-graph-routing-eval.js`). When `present`, lint check 12 requires the harness to agree. Honesty over green checkmarks — flip to `present` only after the harness PASSes. The nested `eval.routing_coverage` is the v3.1 preferred alias.
 
 **Full reference:** [`docs/field-reference.md#routing_eval`](field-reference.md#routing_eval)
+
+---
+
+### `eval` *(optional)*
+
+**Type:** object
+
+Nested eval-health record (v3.1 preferred alias for the sibling triple `eval_artifacts` / `eval_state` / `routing_eval`). When both the top-level and nested forms are present they must match. Becomes canonical in v4.
+
+**Sub-fields:**
+
+- `artifacts` *optional* (`none` | `planned` | `present`) — Are eval artifacts present on disk for this skill? Mirrors top-level `eval_artifacts`.
+- `content_state` *optional* (`unverified` | `passing` | `monitored`) — What does the eval say about content quality? Mirrors top-level `eval_state`.
+- `routing_coverage` *optional* (`absent` | `present`) — Is routing / trigger coverage explicitly evaluated? Mirrors top-level `routing_eval`.
+
+**Full reference:** [`docs/field-reference.md#eval`](field-reference.md#eval)
 
 ---
 
@@ -180,7 +231,7 @@ Is routing / trigger coverage explicitly evaluated? `absent` (router behaviour i
 
 **Type:** `experimental` | `stable` | `frozen` | `deprecated`
 
-Lifecycle posture for consumers. `experimental` (subject to change), `stable` (production-ready), `frozen` (no further changes expected), `deprecated` (use `superseded_by` to name the replacement). Drives consumer pinning decisions and ADR 0001 deprecation flow.
+Lifecycle posture for consumers. `experimental` (subject to change), `stable` (production-ready), `frozen` (no further changes expected), `deprecated` (use `superseded_by` to name the replacement). Drives consumer pinning decisions.
 
 **Full reference:** [`docs/field-reference.md#stability`](field-reference.md#stability)
 
@@ -215,7 +266,9 @@ Cross-runtime compatibility envelope. `runtimes` lists target agent runtimes wit
 **Sub-fields:**
 
 - `runtimes` *optional* — Target agent runtimes with optional version constraints (e.
+- `agent_runtimes` *optional* — Target agent runtimes (v3.
 - `node` *optional* — Node.
+- `node_version` *optional* — Node.
 - `notes` *optional* — Free-text additional compatibility notes.
 
 **Full reference:** [`docs/field-reference.md#compatibility`](field-reference.md#compatibility)
@@ -226,9 +279,19 @@ Cross-runtime compatibility envelope. `runtimes` lists target agent runtimes wit
 
 **Type:** string
 
-Optional comma-separated whitelist of tools the skill is permitted to use (e.g., `Read,Edit,Bash`). Honoured by harnesses that gate tool calls per skill. Conventional spelling matches Claude Code's `--allowed-tools` CLI flag.
+Optional space-separated whitelist of tools the skill is permitted to use (e.g., `Read Edit Bash`). Honoured by harnesses that gate tool calls per skill. Kebab-case spelling matches the Agent Skills base standard and Claude Code's `--allowed-tools` CLI flag. `allowed_tools` (snake_case) is the v3.1 preferred protocol alias; the export transform writes the kebab-case form for Agent Skills consumers.
 
 **Full reference:** [`docs/field-reference.md#allowed-tools`](field-reference.md#allowed-tools)
+
+---
+
+### `allowed_tools` *(optional)*
+
+**Type:** string
+
+Space-separated whitelist of tools (v3.1 preferred snake_case alias for `allowed-tools`). When both are present they must match. The Agent Skills export transform rewrites this to the kebab-case form. Becomes canonical in v4.
+
+**Full reference:** [`docs/field-reference.md#allowed_tools`](field-reference.md#allowed_tools)
 
 ---
 
@@ -236,7 +299,7 @@ Optional comma-separated whitelist of tools the skill is permitted to use (e.g.,
 
 **Type:** string
 
-Overlay parent skill name. Only valid when `type: overlay`. Establishes a single-parent existential-dependency chain — the overlay specialises the parent and ceases to have meaning without it. Per ADR 0003 (OntoClean rigidity), the overlay's identity is INHERITED, not REPLACED. For non-existential cross-skill generalisation, use `relations.broader` instead.
+Overlay parent skill name. Only valid when `type: overlay`. The overlay specialises the parent and ceases to have meaning without it; its identity is INHERITED from the parent, not REPLACED. For non-existential cross-skill generalisation, use `relations.broader` instead.
 
 **Full reference:** [`docs/field-reference.md#extends`](field-reference.md#extends)
 
@@ -316,16 +379,16 @@ Tags that group skills for activation routing (e.g., `frontend`, `data-pipeline`
 
 **Type:** object
 
-Typed edges to sibling skills. Lint verifies every target exists. Predicate-to-W3C-vocabulary mapping is provided via schemas/skill.context.jsonld (JSON-LD @context). See docs/adr/0001-predicate-set.md for the v3.1 SKOS additions (related/broader/narrower) and ADR 0006 for the `boundary` / `disjoint_with` semantic split (boundary = routing-layer asymmetric handoff; disjoint_with = optional OWL class-disjointness).
+Typed edges to sibling skills. Lint verifies every target exists. Predicate-to-W3C-vocabulary mapping is provided via schemas/skill.context.jsonld (JSON-LD @context). `boundary` is routing-layer asymmetric handoff; `disjoint_with` is the optional OWL class-disjointness predicate — they are distinct, not aliases.
 
 **Sub-fields:**
 
-- `adjacent` *optional* — DEPRECATED ALIAS of `related` (v3.
-- `related` *optional* — v3.
+- `adjacent` *optional* — DEPRECATED ALIAS of `related`.
+- `related` *optional* — Symmetric associative relation (skos:related).
 - `boundary` *optional* — Anti-ownership / routing handoff edge — directional.
-- `disjoint_with` *optional* — Optional OWL-style class-disjointness assertion.
-- `broader` *optional* — v3.
-- `narrower` *optional* — v3.
+- `disjoint_with` *optional* — Optional OWL class-disjointness assertion.
+- `broader` *optional* — Cross-skill generalisation (skos:broader).
+- `narrower` *optional* — Cross-skill specialisation (skos:narrower).
 - `verify_with` *optional* — Skills to co-load for verification.
 - `depends_on` *optional* — Skills this skill requires conceptually or operationally.
 
@@ -341,8 +404,10 @@ Records what the skill is grounded against — the truth sources, the grounding 
 
 **Sub-fields:**
 
-- `domain_object` *required*
-- `grounding_mode` *required* (`repo_specific` | `universal` | `hybrid`)
+- `domain_object` *required* — What the skill is about (e.
+- `subject` *optional* — What the skill is about (v3.
+- `grounding_mode` *required* (`repo_specific` | `universal` | `hybrid`) — Whether the skill's claims are repo-specific, universal, or a hybrid.
+- `claim_scope` *optional* (`repo_specific` | `universal` | `hybrid`) — Whether the skill's claims are repo-specific, universal, or a hybrid (v3.
 - `truth_sources` *required*
 - `failure_modes` *required*
 - `evidence_priority` *required* (`repo_code_first` | `general_knowledge_first` | `equal`)
@@ -360,7 +425,8 @@ Portability execution signal. `readiness` declares whether portability is only d
 **Sub-fields:**
 
 - `readiness` *required* (`declared` | `scripted` | `verified`)
-- `targets` *required*
+- `targets` *required* — Supported export destinations.
+- `export_targets` *optional* — Supported export destinations (v3.
 
 **Full reference:** [`docs/field-reference.md#portability`](field-reference.md#portability)
 
