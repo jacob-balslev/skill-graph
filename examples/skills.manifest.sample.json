@@ -1,5 +1,5 @@
 {
-  "generated_at": "1970-01-01T00:00:00Z",
+  "generated_at": "2026-05-12T00:00:00.000Z",
   "schema_version": 3,
   "skills": [
     {
@@ -838,6 +838,80 @@
     {
       "activation": {
         "anti_examples": [
+          "Pick the brand's primary color from scratch with no constraints",
+          "Implement the prefers-color-scheme media query and toggle UI",
+          "Choose spacing values for the layout grid"
+        ],
+        "examples": [
+          "Build a 10-step color scale from a brand seed color with perceptually even lightness steps",
+          "Map semantic intents (success, warning, danger, info) to scale colors with WCAG AA contrast against both light and dark surfaces",
+          "Audit an existing palette for AA contrast failures and propose minimal changes"
+        ],
+        "keywords": [
+          "color palette design",
+          "semantic color tokens",
+          "wcag contrast ratio",
+          "apca contrast",
+          "oklch color space",
+          "perceptual uniformity",
+          "color scales",
+          "light dark parity",
+          "color accessibility",
+          "p3 color gamut",
+          "color-mix"
+        ],
+        "triggers": [
+          "color system",
+          "color palette",
+          "color tokens",
+          "wcag contrast",
+          "oklch"
+        ]
+      },
+      "browse_category": "design",
+      "description": "Use when designing a color system — palette construction, semantic color tokens, WCAG contrast ratios, perceptual uniformity in OKLCH/LCH, and light/dark mode parity. Do NOT use for single brand-color picks, runtime theme-switching mechanics, or non-color design tokens.",
+      "health": {
+        "drift_check": {
+          "last_verified": "2026-05-12"
+        },
+        "eval_artifacts": "planned",
+        "eval_state": "unverified",
+        "freshness": "2026-05-12",
+        "has_grounding": false,
+        "has_relations": true,
+        "routing_eval": "absent"
+      },
+      "id": "color-system-design",
+      "license": "CC-BY-4.0",
+      "name": "color-system-design",
+      "owner": "skill-graph-maintainer",
+      "path": "skills/color-system-design/SKILL.md",
+      "relations": {
+        "boundary": [
+          {
+            "reason": "theme-system-design structures how color decisions become tokens and reach components; this skill produces those color decisions.",
+            "skill": "theme-system-design"
+          },
+          {
+            "reason": "a11y owns the WCAG criteria themselves; this skill applies them when constructing palettes and selecting pairings.",
+            "skill": "a11y"
+          }
+        ],
+        "related": [
+          "theme-system-design",
+          "dark-mode-implementation",
+          "visual-design-foundations",
+          "a11y"
+        ]
+      },
+      "scope": "portable",
+      "stability": "experimental",
+      "type": "capability",
+      "version": "1.0.0"
+    },
+    {
+      "activation": {
+        "anti_examples": [
           "give me the physical table design with PKs, FKs, and normalization forms",
           "I need OWL class axioms and reasoning constraints for these concepts",
           "build the DDD aggregate boundaries and anti-corruption layer",
@@ -1482,6 +1556,80 @@
     {
       "activation": {
         "anti_examples": [
+          "Pick the dark mode color palette values",
+          "Design the three-tier token architecture",
+          "Build a multi-brand theme system with five themes"
+        ],
+        "examples": [
+          "Add a dark mode toggle with system / light / dark options and persist the user's choice",
+          "Eliminate the white flash that appears for a moment when a dark-mode user loads the page",
+          "Provide dark variants of the marketing illustrations and the favicon"
+        ],
+        "keywords": [
+          "dark mode",
+          "prefers-color-scheme",
+          "theme persistence",
+          "flash of unstyled theme",
+          "flash of incorrect theme",
+          "color-scheme css property",
+          "meta theme-color",
+          "dark mode images",
+          "picture source media",
+          "system theme detection",
+          "light dark css function"
+        ],
+        "triggers": [
+          "dark mode",
+          "prefers-color-scheme",
+          "light dark toggle",
+          "system theme",
+          "FOUC dark mode"
+        ]
+      },
+      "browse_category": "frontend",
+      "description": "Use when implementing dark mode — prefers-color-scheme detection, theme persistence, flash-of-unstyled-theme prevention, color token mirroring, image and asset variants, and meta theme-color updates. Do NOT use for designing the dark palette itself, designing the token architecture, or generic theme-switching across more than two themes.",
+      "health": {
+        "drift_check": {
+          "last_verified": "2026-05-12"
+        },
+        "eval_artifacts": "planned",
+        "eval_state": "unverified",
+        "freshness": "2026-05-12",
+        "has_grounding": false,
+        "has_relations": true,
+        "routing_eval": "absent"
+      },
+      "id": "dark-mode-implementation",
+      "license": "CC-BY-4.0",
+      "name": "dark-mode-implementation",
+      "owner": "skill-graph-maintainer",
+      "path": "skills/dark-mode-implementation/SKILL.md",
+      "relations": {
+        "boundary": [
+          {
+            "reason": "theme-system-design defines the token layering that makes dark mode a token-mapping change; this skill handles the integration mechanics on top of that foundation.",
+            "skill": "theme-system-design"
+          },
+          {
+            "reason": "The dark palette and its contrast pairings are color-system-design's responsibility; this skill consumes them.",
+            "skill": "color-system-design"
+          }
+        ],
+        "related": [
+          "theme-system-design",
+          "color-system-design",
+          "a11y",
+          "frontend-architecture"
+        ]
+      },
+      "scope": "portable",
+      "stability": "experimental",
+      "type": "capability",
+      "version": "1.0.0"
+    },
+    {
+      "activation": {
+        "anti_examples": [
           "identify business entities and relationships without implementation details",
           "write and apply the actual migration for an existing database",
           "define OWL/RDF class axioms and reasoning rules",
@@ -1886,6 +2034,80 @@
     {
       "activation": {
         "anti_examples": [
+          "Choose the border radius value for cards",
+          "Decide where the OrderDetailPage component lives in the folder structure",
+          "Pick the brand font for headings"
+        ],
+        "examples": [
+          "Design a Dialog component whose trigger, content, and close button are addressable by consumers",
+          "Refactor a Card with 14 boolean props into a composition-based API",
+          "Build a headless table primitive that exposes state and behavior without imposing markup"
+        ],
+        "keywords": [
+          "component composition",
+          "compound components",
+          "slot api",
+          "headless components",
+          "render props",
+          "polymorphic components",
+          "asChild pattern",
+          "children as api",
+          "composition over configuration",
+          "component contract design",
+          "component module patterns"
+        ],
+        "triggers": [
+          "compound component",
+          "composition over configuration",
+          "headless component",
+          "slot pattern",
+          "asChild"
+        ]
+      },
+      "browse_category": "design",
+      "description": "Use when designing reusable component modules — composition patterns, compound components, slot/children APIs, render props, headless component contracts, and the choice between configuration and composition. Do NOT use for application-level architecture, single-use feature components, or visual styling decisions.",
+      "health": {
+        "drift_check": {
+          "last_verified": "2026-05-12"
+        },
+        "eval_artifacts": "planned",
+        "eval_state": "unverified",
+        "freshness": "2026-05-12",
+        "has_grounding": false,
+        "has_relations": true,
+        "routing_eval": "absent"
+      },
+      "id": "design-module-composition",
+      "license": "CC-BY-4.0",
+      "name": "design-module-composition",
+      "owner": "skill-graph-maintainer",
+      "path": "skills/design-module-composition/SKILL.md",
+      "relations": {
+        "boundary": [
+          {
+            "reason": "frontend-architecture covers application-level organization; this skill covers the internal API of a reusable module that the application composes.",
+            "skill": "frontend-architecture"
+          },
+          {
+            "reason": "Composition choices affect accessibility (focus management, ARIA wiring); when the question is whether a pattern meets WCAG requirements, hand off to a11y.",
+            "skill": "a11y"
+          }
+        ],
+        "related": [
+          "design-system-architecture",
+          "frontend-architecture",
+          "interaction-patterns",
+          "a11y"
+        ]
+      },
+      "scope": "portable",
+      "stability": "experimental",
+      "type": "capability",
+      "version": "1.0.0"
+    },
+    {
+      "activation": {
+        "anti_examples": [
           "organize pages, nav, sitemap, and wayfinding",
           "rewrite the empty-state text and tooltip labels",
           "add aria-labels and keyboard behavior to this component",
@@ -1992,6 +2214,86 @@
         "verify_with": [
           "a11y",
           "code-review"
+        ]
+      },
+      "scope": "portable",
+      "stability": "experimental",
+      "type": "capability",
+      "version": "1.0.0"
+    },
+    {
+      "activation": {
+        "anti_examples": [
+          "Run a single crazy-8s round on this specific how-might-we.",
+          "Write the React component for the dashboard widget.",
+          "Model the bounded contexts for the order-fulfillment domain."
+        ],
+        "examples": [
+          "We have user interviews done but no synthesis yet — which design-thinking stage are we in and what's next?",
+          "Plan a full design-thinking arc for a four-week project on rural healthcare access.",
+          "We just finished a usability test and three findings broke our framing — should we loop back to define?",
+          "Route this brief to the right stage-specific skill: 'help us figure out what to build for new homeowners'."
+        ],
+        "keywords": [
+          "design thinking process",
+          "double diamond",
+          "five stage design process",
+          "empathize define ideate prototype test",
+          "human centered design",
+          "Stanford d.school",
+          "IDEO method",
+          "design sprint",
+          "discover define develop deliver",
+          "looping back",
+          "stage routing",
+          "MIT Sloan design thinking",
+          "Tim Brown HBR"
+        ],
+        "triggers": [
+          "design thinking",
+          "human-centered design",
+          "double diamond",
+          "which stage",
+          "design process"
+        ]
+      },
+      "browse_category": "design",
+      "description": "Use when orchestrating a full human-centered design process across discovery, definition, ideation, prototyping, and testing — when uncertain which stage of the arc a team is in, when deciding whether to loop back, or when routing to the right stage-specific sibling skill. Do NOT use for single-stage execution (go directly to problem-framing, user-research, research-synthesis, journey-mapping, ideation, prototyping, or usability-testing) or for engineering domain discovery (use event-storming).",
+      "health": {
+        "drift_check": {
+          "last_verified": "2026-05-12"
+        },
+        "eval_artifacts": "planned",
+        "eval_state": "unverified",
+        "freshness": "2026-05-12",
+        "has_grounding": false,
+        "has_relations": true,
+        "routing_eval": "absent"
+      },
+      "id": "design-thinking",
+      "license": "CC-BY-4.0",
+      "name": "design-thinking",
+      "owner": "skill-graph-maintainer",
+      "path": "skills/design-thinking/SKILL.md",
+      "relations": {
+        "boundary": [
+          {
+            "reason": "event-storming is a collaborative engineering discovery practice for mapping domain events, commands, and aggregates with developers and domain experts. design-thinking orchestrates a human-centered design arc with users at the center. Both are 'discovery' practices but they differ in subject (system vs. human), participants, and output.",
+            "skill": "event-storming"
+          },
+          {
+            "reason": "problem-locating-solving handles concrete code-level bug localization. design-thinking handles the upstream open-ended question of what should be designed at all — different problem class entirely.",
+            "skill": "problem-locating-solving"
+          }
+        ],
+        "related": [
+          "problem-framing",
+          "user-research",
+          "research-synthesis",
+          "journey-mapping",
+          "ideation",
+          "prototyping",
+          "usability-testing"
         ]
       },
       "scope": "portable",
@@ -2714,6 +3016,80 @@
     {
       "activation": {
         "anti_examples": [
+          "Pick the brand color palette for a marketing site",
+          "Design the REST endpoint shape for the orders resource",
+          "Decide whether to use CSS-in-JS or Tailwind"
+        ],
+        "examples": [
+          "Decide whether a new modal lives in the shared component library or inside a feature folder",
+          "Reorganize a frontend that has mixed presentational components and data-fetching components in the same files",
+          "Choose a state shape that doesn't force every consumer to re-render on unrelated changes"
+        ],
+        "keywords": [
+          "frontend architecture",
+          "component boundaries",
+          "module organization",
+          "state management shape",
+          "feature-sliced design",
+          "container presentational",
+          "data flow direction",
+          "shared primitives",
+          "component layering",
+          "frontend folder structure",
+          "colocation"
+        ],
+        "triggers": [
+          "frontend architecture",
+          "component boundaries",
+          "folder structure",
+          "state shape",
+          "where should this code live"
+        ]
+      },
+      "browse_category": "frontend",
+      "description": "Use when organizing a frontend codebase — module boundaries, component layering, state ownership, data-flow direction, and the separation between feature code and shared primitives. Do NOT use for visual design decisions, specific framework migration tactics, or backend API contract design.",
+      "health": {
+        "drift_check": {
+          "last_verified": "2026-05-12"
+        },
+        "eval_artifacts": "planned",
+        "eval_state": "unverified",
+        "freshness": "2026-05-12",
+        "has_grounding": false,
+        "has_relations": true,
+        "routing_eval": "absent"
+      },
+      "id": "frontend-architecture",
+      "license": "CC-BY-4.0",
+      "name": "frontend-architecture",
+      "owner": "skill-graph-maintainer",
+      "path": "skills/frontend-architecture/SKILL.md",
+      "relations": {
+        "boundary": [
+          {
+            "reason": "design-system-architecture covers token layering, primitive component contracts, and library publishing; this skill covers application-side organization that consumes those primitives.",
+            "skill": "design-system-architecture"
+          },
+          {
+            "reason": "API contract shape lives in api-design; this skill takes the API as given and structures the frontend around it.",
+            "skill": "api-design"
+          }
+        ],
+        "related": [
+          "design-system-architecture",
+          "design-module-composition",
+          "refactor",
+          "testing-strategy"
+        ]
+      },
+      "scope": "portable",
+      "stability": "experimental",
+      "type": "capability",
+      "version": "1.0.0"
+    },
+    {
+      "activation": {
+        "anti_examples": [
           "diagnose why the @/components import cycle broke the build",
           "my agent is stuck in a loop — what's wrong?",
           "write a reference doc explaining what the lint-checker pipeline does"
@@ -2818,6 +3194,83 @@
         ]
       },
       "scope": "codebase",
+      "stability": "experimental",
+      "type": "capability",
+      "version": "1.0.0"
+    },
+    {
+      "activation": {
+        "anti_examples": [
+          "Decide whether to invest in this feature for the next quarter.",
+          "Model the bounded contexts for the order-fulfillment domain.",
+          "Write the production code for the selected concept."
+        ],
+        "examples": [
+          "Run a crazy-8s round on this how-might-we statement and produce a divergent set.",
+          "Apply SCAMPER to this existing feature to generate variant concepts.",
+          "Use dot voting and an impact/effort matrix to converge on three concepts to prototype.",
+          "Help me set up a worst-possible-idea round to break the team out of solution fixation."
+        ],
+        "keywords": [
+          "crazy 8s",
+          "brainstorming",
+          "SCAMPER",
+          "worst possible idea",
+          "headlines from the future",
+          "dot voting",
+          "NUF test",
+          "divergent thinking",
+          "convergent thinking",
+          "ideation workshop",
+          "impact effort matrix",
+          "weighted decision matrix",
+          "suspended judgment",
+          "design sprint sketch"
+        ],
+        "triggers": [
+          "brainstorm",
+          "ideation session",
+          "crazy 8s",
+          "generate concepts",
+          "narrow down ideas"
+        ]
+      },
+      "browse_category": "design",
+      "description": "Use when generating a wide range of solution concepts before converging on a direction, running structured idea-generation sessions, breaking out of solution fixation, or moving from divergent to convergent selection with explicit criteria. Do NOT use for collaborative engineering domain discovery (event-storming), solo deep technical design, or making final go/no-go investment decisions — those require different methods.",
+      "health": {
+        "drift_check": {
+          "last_verified": "2026-05-12"
+        },
+        "eval_artifacts": "planned",
+        "eval_state": "unverified",
+        "freshness": "2026-05-12",
+        "has_grounding": false,
+        "has_relations": true,
+        "routing_eval": "absent"
+      },
+      "id": "ideation",
+      "license": "CC-BY-4.0",
+      "name": "ideation",
+      "owner": "skill-graph-maintainer",
+      "path": "skills/ideation/SKILL.md",
+      "relations": {
+        "boundary": [
+          {
+            "reason": "event-storming is a collaborative engineering discovery practice for mapping domain events and aggregates. ideation generates user-facing concept variants and applies divergent/convergent selection — different purpose, different output, different participants.",
+            "skill": "event-storming"
+          },
+          {
+            "reason": "conceptual-modeling produces a single best model of a domain. ideation deliberately produces many alternatives before selecting — opposite epistemic stance.",
+            "skill": "conceptual-modeling"
+          }
+        ],
+        "related": [
+          "problem-framing",
+          "prototyping",
+          "design-thinking"
+        ]
+      },
+      "scope": "portable",
       "stability": "experimental",
       "type": "capability",
       "version": "1.0.0"
@@ -3215,6 +3668,83 @@
         "verify_with": [
           "a11y",
           "task-analysis"
+        ]
+      },
+      "scope": "portable",
+      "stability": "experimental",
+      "type": "capability",
+      "version": "1.0.0"
+    },
+    {
+      "activation": {
+        "anti_examples": [
+          "Break down the steps a user takes inside the upload modal.",
+          "Draw the microservice call graph for the checkout API.",
+          "Diagram the database schema for the order entity."
+        ],
+        "examples": [
+          "Build a journey map for first-time tax filers from awareness through filing to refund.",
+          "Add a service-blueprint layer below this journey map showing the back-stage support steps.",
+          "Identify the emotional low points in this onboarding journey and the opportunities at each.",
+          "Map the cross-channel experience of returning an online order to a physical store."
+        ],
+        "keywords": [
+          "customer journey map",
+          "user journey",
+          "service blueprint",
+          "touchpoint",
+          "moments of truth",
+          "experience map",
+          "front-stage back-stage",
+          "emotional curve",
+          "opportunity areas",
+          "pain points",
+          "cross-channel experience",
+          "end-to-end journey",
+          "onboarding journey"
+        ],
+        "triggers": [
+          "journey map",
+          "service blueprint",
+          "map the user experience",
+          "customer journey",
+          "touchpoints"
+        ]
+      },
+      "browse_category": "design",
+      "description": "Use when mapping a user's experience across multiple touchpoints and time, surfacing emotional peaks and troughs, identifying opportunity moments in a cross-channel flow, or aligning a team on the end-to-end experience including back-stage support processes. Do NOT use for decomposing a single screen into UI steps (use task-analysis) or for drawing back-end service architecture diagrams — journey maps describe human experience, not system topology.",
+      "health": {
+        "drift_check": {
+          "last_verified": "2026-05-12"
+        },
+        "eval_artifacts": "planned",
+        "eval_state": "unverified",
+        "freshness": "2026-05-12",
+        "has_grounding": false,
+        "has_relations": true,
+        "routing_eval": "absent"
+      },
+      "id": "journey-mapping",
+      "license": "CC-BY-4.0",
+      "name": "journey-mapping",
+      "owner": "skill-graph-maintainer",
+      "path": "skills/journey-mapping/SKILL.md",
+      "relations": {
+        "boundary": [
+          {
+            "reason": "task-analysis decomposes a single goal-directed task into ordered steps within one interface or session. journey-mapping spans many sessions, channels, and days, and includes emotional and contextual layers task-analysis does not.",
+            "skill": "task-analysis"
+          },
+          {
+            "reason": "bounded-context-mapping is an engineering practice for modeling DDD context boundaries. journey-mapping describes human experience across touchpoints — a similar diagrammatic instinct but unrelated output.",
+            "skill": "bounded-context-mapping"
+          }
+        ],
+        "related": [
+          "research-synthesis",
+          "information-architecture",
+          "design-thinking",
+          "problem-framing"
         ]
       },
       "scope": "portable",
@@ -4336,6 +4866,154 @@
     {
       "activation": {
         "anti_examples": [
+          "Generate the artwork PNG file that gets uploaded as a print file",
+          "Implement the Shopify side of the Printify-to-Shopify sync",
+          "Design a generic POD-vendor-agnostic product schema"
+        ],
+        "examples": [
+          "Create a Printify product from a blueprint + print provider + variant set and publish it to a connected Shopify store",
+          "Handle a Printify order:updated webhook and reconcile fulfillment status",
+          "Resolve shipping cost for a basket of Printify variants given a destination country"
+        ],
+        "keywords": [
+          "printify api",
+          "print on demand",
+          "printify blueprints",
+          "printify print providers",
+          "printify publish lifecycle",
+          "printify webhooks",
+          "printify variants",
+          "printify shipping costs",
+          "printify order routing",
+          "print provider catalog"
+        ],
+        "triggers": [
+          "printify",
+          "printify api",
+          "printify webhook",
+          "print on demand"
+        ]
+      },
+      "browse_category": "integrations",
+      "description": "Use when working with Printify — the print-on-demand REST API, catalog model (blueprints, print providers, variants, print areas), product creation and publish lifecycle to connected channels, order routing, shipping cost queries, and HMAC SHA-256 webhook verification. Do NOT use for non-Printify POD vendors, generic Shopify storefront work, or print-file (artwork) generation.",
+      "health": {
+        "drift_check": {
+          "last_verified": "2026-05-12"
+        },
+        "eval_artifacts": "planned",
+        "eval_state": "unverified",
+        "freshness": "2026-05-12",
+        "has_grounding": false,
+        "has_relations": true,
+        "routing_eval": "absent"
+      },
+      "id": "printify",
+      "license": "CC-BY-4.0",
+      "name": "printify",
+      "owner": "skill-graph-maintainer",
+      "path": "skills/printify/SKILL.md",
+      "relations": {
+        "boundary": [
+          {
+            "reason": "Printify publishes to Shopify (and other channels) but the Shopify-side concerns — theme display, Shopify webhooks, Admin API — belong in the shopify skill.",
+            "skill": "shopify"
+          },
+          {
+            "reason": "webhook-integration covers vendor-neutral signing/retry patterns; this skill handles Printify's specific event types and signature scheme.",
+            "skill": "webhook-integration"
+          }
+        ],
+        "related": [
+          "shopify",
+          "webhook-integration",
+          "api-design"
+        ]
+      },
+      "scope": "portable",
+      "stability": "experimental",
+      "type": "capability",
+      "version": "1.0.0"
+    },
+    {
+      "activation": {
+        "anti_examples": [
+          "Find the bug causing the 500 error in the checkout endpoint.",
+          "Why is the test suite flaky on CI?",
+          "Classify whether this agent request is high-risk before executing."
+        ],
+        "examples": [
+          "We've been asked to 'add a chatbot' — help me reframe what we're actually solving for users.",
+          "Draft three how-might-we statements from these synthesis insights.",
+          "The PRD jumps straight to features; help me extract the underlying user problem.",
+          "List the assumptions baked into this product brief and rank them by riskiness."
+        ],
+        "keywords": [
+          "how might we",
+          "problem statement",
+          "reframing",
+          "assumption mapping",
+          "root need",
+          "symptom vs need",
+          "point of view statement",
+          "jobs to be done framing",
+          "design challenge",
+          "double diamond discover",
+          "problem definition",
+          "brief interrogation",
+          "solution-first brief"
+        ],
+        "triggers": [
+          "frame this problem",
+          "how might we",
+          "write a problem statement",
+          "this brief is a solution",
+          "what are we actually solving"
+        ]
+      },
+      "browse_category": "design",
+      "description": "Use when a team is converging on solutions before agreeing on the problem, when a brief reads as a feature request, when symptoms and root needs are tangled, or when assumptions need surfacing before design work proceeds. Do NOT use for code-level bug triage, runtime failure diagnosis, or root-cause analysis of system errors — those are engineering investigation tasks, not design problem framing.",
+      "health": {
+        "drift_check": {
+          "last_verified": "2026-05-12"
+        },
+        "eval_artifacts": "planned",
+        "eval_state": "unverified",
+        "freshness": "2026-05-12",
+        "has_grounding": false,
+        "has_relations": true,
+        "routing_eval": "absent"
+      },
+      "id": "problem-framing",
+      "license": "CC-BY-4.0",
+      "name": "problem-framing",
+      "owner": "skill-graph-maintainer",
+      "path": "skills/problem-framing/SKILL.md",
+      "relations": {
+        "boundary": [
+          {
+            "reason": "problem-locating-solving handles bug localization in source code — concrete failure traced to a line or function. problem-framing handles ambiguous human/business problems where the question itself is unclear and there is no error to reproduce.",
+            "skill": "problem-locating-solving"
+          },
+          {
+            "reason": "diagnosis handles failure triage of broken systems and incidents. problem-framing handles upstream definition of what a team should be working on at all.",
+            "skill": "diagnosis"
+          }
+        ],
+        "related": [
+          "user-research",
+          "ideation",
+          "research-synthesis",
+          "design-thinking"
+        ]
+      },
+      "scope": "portable",
+      "stability": "experimental",
+      "type": "capability",
+      "version": "1.0.0"
+    },
+    {
+      "activation": {
+        "anti_examples": [
           "plan the next 6 weeks of work for the team",
           "review this PR for code quality",
           "this endpoint is slow under load — find the bottleneck",
@@ -4648,6 +5326,82 @@
     {
       "activation": {
         "anti_examples": [
+          "Build the production React component for the new dashboard widget.",
+          "Add this component to the design system library.",
+          "Write the migration script for the production database."
+        ],
+        "examples": [
+          "Pick the right fidelity for a prototype that tests whether users will trust an AI-suggested category.",
+          "Plan a wizard-of-oz study where a human acts as the recommendation engine.",
+          "Sketch a role-play prototype for a service-desk interaction before any UI is built.",
+          "Decide between a paper prototype and a Figma clickable for this onboarding test."
+        ],
+        "keywords": [
+          "paper prototype",
+          "low fidelity prototype",
+          "clickable prototype",
+          "wizard of oz",
+          "role play prototype",
+          "service prototype",
+          "code spike",
+          "learning goal",
+          "fidelity matching",
+          "throwaway prototype",
+          "sacrificial concept",
+          "prototype to learn",
+          "rough and right"
+        ],
+        "triggers": [
+          "prototype this",
+          "wizard of oz",
+          "paper prototype",
+          "clickable mockup",
+          "what fidelity"
+        ]
+      },
+      "browse_category": "design",
+      "description": "Use when building an artifact whose purpose is to answer a specific question — paper sketch, wireframe, clickable mockup, wizard-of-oz, role-play, service prototype, or code spike — at the lowest fidelity sufficient to produce that learning. Do NOT use for production-grade component construction, design-system contribution, or building the actual ship-ready feature — those are design-module-composition and engineering implementation.",
+      "health": {
+        "drift_check": {
+          "last_verified": "2026-05-12"
+        },
+        "eval_artifacts": "planned",
+        "eval_state": "unverified",
+        "freshness": "2026-05-12",
+        "has_grounding": false,
+        "has_relations": true,
+        "routing_eval": "absent"
+      },
+      "id": "prototyping",
+      "license": "CC-BY-4.0",
+      "name": "prototyping",
+      "owner": "skill-graph-maintainer",
+      "path": "skills/prototyping/SKILL.md",
+      "relations": {
+        "boundary": [
+          {
+            "reason": "design-module-composition produces durable design-system components meant to ship and be reused. prototyping produces disposable artifacts whose only purpose is learning — different lifecycle, different quality bar, different audience.",
+            "skill": "design-module-composition"
+          },
+          {
+            "reason": "interaction-patterns is a reference catalog of established UI behaviors. prototyping is the activity of building a thing to test a question — it may use interaction patterns but is not itself a pattern library.",
+            "skill": "interaction-patterns"
+          }
+        ],
+        "related": [
+          "ideation",
+          "usability-testing",
+          "design-thinking"
+        ]
+      },
+      "scope": "portable",
+      "stability": "experimental",
+      "type": "capability",
+      "version": "1.0.0"
+    },
+    {
+      "activation": {
+        "anti_examples": [
           "the test is failing after my edit — what did I break?",
           "write an architecture note explaining this pattern for new team members",
           "reproduce why this function retries three times on transient network errors"
@@ -4740,6 +5494,83 @@
       "scope": "portable",
       "stability": "experimental",
       "type": "workflow",
+      "version": "1.0.0"
+    },
+    {
+      "activation": {
+        "anti_examples": [
+          "Run more interviews with five additional participants.",
+          "Calculate the response rate of the survey.",
+          "Summarize this single PDF document."
+        ],
+        "examples": [
+          "Cluster these 14 interview transcripts into themes using affinity mapping.",
+          "Build an empathy map for the 'first-time buyer' segment from these field notes.",
+          "Turn this set of observations into three insight statements I can take into ideation.",
+          "Draft a jobs-to-be-done statement from this user research corpus."
+        ],
+        "keywords": [
+          "affinity mapping",
+          "empathy map",
+          "insight statement",
+          "theme clustering",
+          "jobs to be done synthesis",
+          "qualitative coding",
+          "research wall",
+          "downloading research",
+          "say think do feel",
+          "persona drafting",
+          "point of view",
+          "sticky-note synthesis",
+          "pattern extraction"
+        ],
+        "triggers": [
+          "synthesize research",
+          "affinity map",
+          "empathy map",
+          "find themes in interviews",
+          "insight statements"
+        ]
+      },
+      "browse_category": "design",
+      "description": "Use when turning raw qualitative research output (interview transcripts, field notes, diary entries, observation logs) into themes, patterns, insight statements, and design-ready artifacts via affinity mapping, empathy maps, and jobs-to-be-done framing. Do NOT use for collecting new research, quantitative analysis, statistical inference, or summarizing a single document — synthesis specifically operates on a corpus of qualitative evidence.",
+      "health": {
+        "drift_check": {
+          "last_verified": "2026-05-12"
+        },
+        "eval_artifacts": "planned",
+        "eval_state": "unverified",
+        "freshness": "2026-05-12",
+        "has_grounding": false,
+        "has_relations": true,
+        "routing_eval": "absent"
+      },
+      "id": "research-synthesis",
+      "license": "CC-BY-4.0",
+      "name": "research-synthesis",
+      "owner": "skill-graph-maintainer",
+      "path": "skills/research-synthesis/SKILL.md",
+      "relations": {
+        "boundary": [
+          {
+            "reason": "user-research collects primary qualitative data. research-synthesis transforms that data into design-ready themes. Both are needed, in that order.",
+            "skill": "user-research"
+          },
+          {
+            "reason": "conceptual-modeling synthesizes domain entities and their relationships for engineering. research-synthesis synthesizes human behavior and need patterns for design — different output shapes, different audiences.",
+            "skill": "conceptual-modeling"
+          }
+        ],
+        "related": [
+          "user-research",
+          "journey-mapping",
+          "problem-framing",
+          "design-thinking"
+        ]
+      },
+      "scope": "portable",
+      "stability": "experimental",
+      "type": "capability",
       "version": "1.0.0"
     },
     {
@@ -5148,6 +5979,79 @@
         "verify_with": [
           "a11y",
           "code-review"
+        ]
+      },
+      "scope": "portable",
+      "stability": "experimental",
+      "type": "capability",
+      "version": "1.0.0"
+    },
+    {
+      "activation": {
+        "anti_examples": [
+          "Design the event payload schema for our internal order-processing pipeline",
+          "Implement Stripe Connect onboarding for a marketplace",
+          "Refactor a generic shopping cart component that isn't Shopify-specific"
+        ],
+        "examples": [
+          "Verify an incoming Shopify webhook by computing HMAC SHA-256 over the raw body and comparing against the X-Shopify-Hmac-Sha256 header",
+          "Query the Shopify Admin GraphQL API for product variants with their metafields and handle query cost throttling",
+          "Build an Online Store 2.0 section schema with block types and dynamic settings"
+        ],
+        "keywords": [
+          "shopify admin api",
+          "shopify storefront api",
+          "shopify webhooks",
+          "shopify oauth scopes",
+          "shopify hmac verification",
+          "online store 2.0 sections",
+          "liquid templates",
+          "shopify graphql query cost",
+          "shopify metafields",
+          "shopify rate limits",
+          "shopify app proxy"
+        ],
+        "triggers": [
+          "shopify",
+          "shopify webhook",
+          "shopify api",
+          "shopify theme",
+          "shopify app"
+        ]
+      },
+      "browse_category": "integrations",
+      "description": "Use when working with Shopify — Admin API, Storefront API, OAuth scopes, HMAC SHA-256 webhook verification, GraphQL query-cost handling, Online Store 2.0 themes (sections, blocks, Liquid), metafields and metaobjects, and App Proxy. Do NOT use for generic e-commerce design, non-Shopify storefronts, or internal event-contract design.",
+      "health": {
+        "drift_check": {
+          "last_verified": "2026-05-12"
+        },
+        "eval_artifacts": "planned",
+        "eval_state": "unverified",
+        "freshness": "2026-05-12",
+        "has_grounding": false,
+        "has_relations": true,
+        "routing_eval": "absent"
+      },
+      "id": "shopify",
+      "license": "CC-BY-4.0",
+      "name": "shopify",
+      "owner": "skill-graph-maintainer",
+      "path": "skills/shopify/SKILL.md",
+      "relations": {
+        "boundary": [
+          {
+            "reason": "webhook-integration covers vendor-agnostic delivery, retries, and signing; this skill handles Shopify's specific topic names, X-Shopify-* header contract, and the 5-second response deadline before retry.",
+            "skill": "webhook-integration"
+          },
+          {
+            "reason": "Hand off to event-contract-design when modeling internal events downstream of Shopify webhooks — the contract surface there is your own system, not Shopify's.",
+            "skill": "event-contract-design"
+          }
+        ],
+        "related": [
+          "webhook-integration",
+          "api-design",
+          "printify"
         ]
       },
       "scope": "portable",
@@ -6126,6 +7030,81 @@
     {
       "activation": {
         "anti_examples": [
+          "Choose the exact hex value for the brand's primary blue",
+          "Configure Tailwind's content array and purge settings",
+          "Implement the dark mode toggle interaction"
+        ],
+        "examples": [
+          "Design a three-tier token system (reference → system → component) for a multi-brand product",
+          "Add a third theme to an existing two-theme system without breaking the component contracts",
+          "Move from hard-coded colors to CSS custom properties with runtime switching"
+        ],
+        "keywords": [
+          "design tokens",
+          "semantic tokens",
+          "theme variables",
+          "css custom properties",
+          "runtime theme switching",
+          "token tiers",
+          "theme contract",
+          "design tokens community group",
+          "light dark parity",
+          "token naming",
+          "reference tokens",
+          "system tokens"
+        ],
+        "triggers": [
+          "theme system",
+          "design tokens",
+          "theme switching",
+          "css variables for theming",
+          "token architecture"
+        ]
+      },
+      "browse_category": "design",
+      "description": "Use when designing a theme system — design tokens, semantic token layering, CSS custom property strategy, runtime theme switching, and theme contract guarantees. Do NOT use for one-off color choices, brand-only palette work, or framework-specific styling-library configuration.",
+      "health": {
+        "drift_check": {
+          "last_verified": "2026-05-12"
+        },
+        "eval_artifacts": "planned",
+        "eval_state": "unverified",
+        "freshness": "2026-05-12",
+        "has_grounding": false,
+        "has_relations": true,
+        "routing_eval": "absent"
+      },
+      "id": "theme-system-design",
+      "license": "CC-BY-4.0",
+      "name": "theme-system-design",
+      "owner": "skill-graph-maintainer",
+      "path": "skills/theme-system-design/SKILL.md",
+      "relations": {
+        "boundary": [
+          {
+            "reason": "color-system-design produces the palette and the semantic color decisions; this skill structures how those decisions become tokens and reach components.",
+            "skill": "color-system-design"
+          },
+          {
+            "reason": "dark-mode-implementation handles preference detection, asset swapping, and image handling; this skill defines the token layer that makes dark mode trivial to add.",
+            "skill": "dark-mode-implementation"
+          }
+        ],
+        "related": [
+          "color-system-design",
+          "design-system-architecture",
+          "visual-design-foundations",
+          "dark-mode-implementation"
+        ]
+      },
+      "scope": "portable",
+      "stability": "experimental",
+      "type": "capability",
+      "version": "1.0.0"
+    },
+    {
+      "activation": {
+        "anti_examples": [
           "improve this prompt's wording to get better outputs",
           "design what skills get loaded for which prompts",
           "the test suite is failing after my change — find the cause",
@@ -6228,6 +7207,236 @@
         "verify_with": [
           "code-review",
           "documentation"
+        ]
+      },
+      "scope": "portable",
+      "stability": "experimental",
+      "type": "capability",
+      "version": "1.0.0"
+    },
+    {
+      "activation": {
+        "anti_examples": [
+          "Write the headline copy for the landing page",
+          "Pick the brand's primary color",
+          "Decide where the headline component lives in the folder structure"
+        ],
+        "examples": [
+          "Build a type scale with seven steps using a 1.25 ratio and assign each step to a semantic token (display, h1, body, caption)",
+          "Pair a serif display face with a sans-serif text face and document when to use each",
+          "Self-host a variable font with WOFF2 subsetting and font-display: swap"
+        ],
+        "keywords": [
+          "type scale",
+          "typeface pairing",
+          "vertical rhythm",
+          "line height",
+          "measure line length",
+          "web font delivery",
+          "variable fonts",
+          "font-display swap",
+          "font subsetting",
+          "modular scale",
+          "typographic tokens",
+          "opentype features"
+        ],
+        "triggers": [
+          "typography system",
+          "type scale",
+          "font pairing",
+          "variable fonts",
+          "vertical rhythm"
+        ]
+      },
+      "browse_category": "design",
+      "description": "Use when designing a typography system — typeface selection and pairing, modular type scale, vertical rhythm, line-height and measure rules, and web font delivery (subsetting, font-display, variable fonts). Do NOT use for body copy writing, single-headline font pairing, or non-text design tokens.",
+      "health": {
+        "drift_check": {
+          "last_verified": "2026-05-12"
+        },
+        "eval_artifacts": "planned",
+        "eval_state": "unverified",
+        "freshness": "2026-05-12",
+        "has_grounding": false,
+        "has_relations": true,
+        "routing_eval": "absent"
+      },
+      "id": "typography-system",
+      "license": "CC-BY-4.0",
+      "name": "typography-system",
+      "owner": "skill-graph-maintainer",
+      "path": "skills/typography-system/SKILL.md",
+      "relations": {
+        "boundary": [
+          {
+            "reason": "visual-hierarchy decides how to deploy type as an ordering signal on a given surface; this skill defines the scale and faces that get deployed.",
+            "skill": "visual-hierarchy"
+          },
+          {
+            "reason": "theme-system-design covers how typography tokens are layered and switched; this skill produces the typographic decisions inside them.",
+            "skill": "theme-system-design"
+          }
+        ],
+        "related": [
+          "visual-hierarchy",
+          "visual-design-foundations",
+          "theme-system-design",
+          "layout-composition"
+        ]
+      },
+      "scope": "portable",
+      "stability": "experimental",
+      "type": "capability",
+      "version": "1.0.0"
+    },
+    {
+      "activation": {
+        "anti_examples": [
+          "Add unit tests for the order-total calculation function.",
+          "Set up the CI pipeline for the new repo.",
+          "Run a load test against the checkout API."
+        ],
+        "examples": [
+          "Write three task scenarios for a usability test of this onboarding flow.",
+          "How many participants do I need for a formative round on this prototype?",
+          "Review my moderator script for neutrality and leading prompts.",
+          "Rate the severity of these eight usability findings using Nielsen's scale."
+        ],
+        "keywords": [
+          "think aloud protocol",
+          "task scenario",
+          "moderated usability test",
+          "unmoderated test",
+          "severity rating",
+          "five user rule",
+          "formative testing",
+          "summative testing",
+          "hallway test",
+          "moderator neutrality",
+          "usability heuristics",
+          "SUS score",
+          "task success rate",
+          "critical incident"
+        ],
+        "triggers": [
+          "usability test",
+          "think aloud",
+          "test this prototype",
+          "task scenarios",
+          "test with users"
+        ]
+      },
+      "browse_category": "design",
+      "description": "Use when observing real users attempting tasks on a prototype or live product to surface usability issues — moderated or unmoderated, think-aloud protocol, task scenarios, severity rating, sample sizing per Nielsen's heuristics. Do NOT use for automated test suites, code coverage analysis, CI pipelines, unit/integration testing, or any engineering verification — those are testing-strategy concerns, not human-behavior observation.",
+      "health": {
+        "drift_check": {
+          "last_verified": "2026-05-12"
+        },
+        "eval_artifacts": "planned",
+        "eval_state": "unverified",
+        "freshness": "2026-05-12",
+        "has_grounding": false,
+        "has_relations": true,
+        "routing_eval": "absent"
+      },
+      "id": "usability-testing",
+      "license": "CC-BY-4.0",
+      "name": "usability-testing",
+      "owner": "skill-graph-maintainer",
+      "path": "skills/usability-testing/SKILL.md",
+      "relations": {
+        "boundary": [
+          {
+            "reason": "testing-strategy is an engineering practice for automated test suites that verify code behavior against specifications. usability-testing is a research practice for observing humans interacting with artifacts. The shared word 'testing' is the only thing in common.",
+            "skill": "testing-strategy"
+          },
+          {
+            "reason": "a11y covers accessibility conformance criteria (WCAG, screen reader behavior, keyboard operability). usability-testing can include accessibility-focused sessions but its scope is broader and its method is empirical observation rather than spec conformance.",
+            "skill": "a11y"
+          }
+        ],
+        "related": [
+          "prototyping",
+          "user-research",
+          "research-synthesis",
+          "design-thinking"
+        ]
+      },
+      "scope": "portable",
+      "stability": "experimental",
+      "type": "capability",
+      "version": "1.0.0"
+    },
+    {
+      "activation": {
+        "anti_examples": [
+          "Analyze last quarter's NPS results and produce a dashboard.",
+          "Classify whether this agent request from the user is high-risk before executing.",
+          "Set up an A/B test of two onboarding flows."
+        ],
+        "examples": [
+          "Draft an interview guide for SMB founders adopting their first accounting software.",
+          "How do I observe ICU nurses on shift without disturbing the workflow?",
+          "Review my interview script for leading questions and solution-prompts.",
+          "Plan a two-week diary study for commuters using public transit apps."
+        ],
+        "keywords": [
+          "user interviews",
+          "contextual inquiry",
+          "ethnographic observation",
+          "diary study",
+          "generative research",
+          "qualitative research",
+          "interview guide",
+          "leading questions",
+          "master-apprentice model",
+          "in-context observation",
+          "field study",
+          "listening for needs",
+          "five whys interview"
+        ],
+        "triggers": [
+          "interview users",
+          "user research plan",
+          "what to ask users",
+          "contextual inquiry",
+          "diary study"
+        ]
+      },
+      "browse_category": "design",
+      "description": "Use when planning or conducting generative qualitative research with real users — interviews, contextual inquiry, ethnographic observation, diary studies — to learn what people do, think, and need in their own context. Do NOT use for analytics review, survey statistics, A/B test interpretation, or agent-side intent classification — those are different research practices entirely.",
+      "health": {
+        "drift_check": {
+          "last_verified": "2026-05-12"
+        },
+        "eval_artifacts": "planned",
+        "eval_state": "unverified",
+        "freshness": "2026-05-12",
+        "has_grounding": false,
+        "has_relations": true,
+        "routing_eval": "absent"
+      },
+      "id": "user-research",
+      "license": "CC-BY-4.0",
+      "name": "user-research",
+      "owner": "skill-graph-maintainer",
+      "path": "skills/user-research/SKILL.md",
+      "relations": {
+        "boundary": [
+          {
+            "reason": "intent-recognition classifies an agent request's risk level at runtime from the agent's perspective. user-research investigates real human users' goals, contexts, and needs through fieldwork — these are entirely different practices that share only the word 'intent'.",
+            "skill": "intent-recognition"
+          },
+          {
+            "reason": "usability-testing is evaluative — it watches users attempt tasks on an artifact to find usability defects. user-research is generative — it studies users before any artifact exists, to discover needs and context.",
+            "skill": "usability-testing"
+          }
+        ],
+        "related": [
+          "problem-framing",
+          "research-synthesis",
+          "usability-testing",
+          "design-thinking"
         ]
       },
       "scope": "portable",
@@ -6436,6 +7645,80 @@
         "verify_with": [
           "a11y",
           "semiotics"
+        ]
+      },
+      "scope": "portable",
+      "stability": "experimental",
+      "type": "capability",
+      "version": "1.0.0"
+    },
+    {
+      "activation": {
+        "anti_examples": [
+          "Write the H1 copy that should appear at the top of the landing page",
+          "Choose between sans-serif and serif typefaces for the brand",
+          "Pick the brand's primary color"
+        ],
+        "examples": [
+          "Decide the H1/H2/H3 size ratios and weight contrast for a long-form article layout",
+          "Reduce visual noise on a dashboard where every element competes for attention",
+          "Establish a clear primary call-to-action on a page with multiple secondary actions"
+        ],
+        "keywords": [
+          "visual hierarchy",
+          "type scale",
+          "spacing rhythm",
+          "contrast hierarchy",
+          "importance ordering",
+          "reading order",
+          "focal point",
+          "figure ground",
+          "gestalt principles",
+          "hierarchy through weight",
+          "hierarchy through size"
+        ],
+        "triggers": [
+          "visual hierarchy",
+          "type scale",
+          "what should the eye go to first",
+          "establishing focus",
+          "page hierarchy"
+        ]
+      },
+      "browse_category": "design",
+      "description": "Use when establishing visual hierarchy — type scale ratios, spacing rhythm, contrast as ordering signal, weight and size as importance, and the layered relationship between primary, secondary, and tertiary information. Do NOT use for content writing, information architecture, or specific color palette construction.",
+      "health": {
+        "drift_check": {
+          "last_verified": "2026-05-12"
+        },
+        "eval_artifacts": "planned",
+        "eval_state": "unverified",
+        "freshness": "2026-05-12",
+        "has_grounding": false,
+        "has_relations": true,
+        "routing_eval": "absent"
+      },
+      "id": "visual-hierarchy",
+      "license": "CC-BY-4.0",
+      "name": "visual-hierarchy",
+      "owner": "skill-graph-maintainer",
+      "path": "skills/visual-hierarchy/SKILL.md",
+      "relations": {
+        "boundary": [
+          {
+            "reason": "typography-system defines the scale and the typefaces; this skill decides how to deploy them as hierarchy signals on a given surface.",
+            "skill": "typography-system"
+          },
+          {
+            "reason": "layout-composition handles grid, alignment, and spatial structure; this skill handles the prioritization within a layout.",
+            "skill": "layout-composition"
+          }
+        ],
+        "related": [
+          "typography-system",
+          "color-system-design",
+          "layout-composition",
+          "visual-design-foundations"
         ]
       },
       "scope": "portable",
@@ -6667,27 +7950,29 @@
   ],
   "summary": {
     "by_browse_category": {
+      "design": 13,
       "engineering": 22,
-      "frontend": 7,
+      "frontend": 9,
+      "integrations": 2,
       "knowledge": 30,
       "quality": 4,
       "security": 1
     },
     "by_scope": {
       "codebase": 1,
-      "portable": 61,
+      "portable": 78,
       "reference": 2
     },
     "by_stability": {
-      "experimental": 63,
+      "experimental": 80,
       "stable": 1
     },
     "by_type": {
-      "capability": 56,
+      "capability": 73,
       "overlay": 1,
       "router": 1,
       "workflow": 6
     },
-    "total_skills": 64
+    "total_skills": 81
   }
 }
