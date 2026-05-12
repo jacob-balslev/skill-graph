@@ -81,7 +81,7 @@ Documents that describe the schemas in prose. If a Tier 2 file disagrees with Ti
 | File | Role |
 |---|---|
 | `docs/skill-metadata-protocol.md` | Authoritative overview: archetype section map, requiredness groups, strictness rules, schema versioning policy. |
-| `docs/field-reference.md` | One section per authored field. All 33 v3 fields with purpose, rules, allowed values, examples. |
+| `docs/field-reference.md` | One section per authored field. All 36 canonical v3 fields with purpose, rules, allowed values, examples. |
 | `docs/field-decision-guide.md` | Decision tables for the hard choices: `scope`, `relations.*`, eval-health triple, `portability`, `project_tags`, and the "tag vs. category vs. routing_groups" question. |
 | `docs/manifest-contract.md` | The authored → generated bridge: rename map, loss policy, per-version migration notes, worked example. |
 
@@ -117,7 +117,7 @@ Scripts that police Tier 1 (lint, consistency) or compile Tier 1's output (manif
 
 | File | Role |
 |---|---|
-| `scripts/generate-manifest.js` | Authored → compiled manifest compiler. Multi-root workspace aware via `.skill-graph/config.json`. Computes SHA-256 on truth sources for drift detection. |
+| `scripts/generate-manifest.js` | Authored -> compiled manifest compiler. Multi-root workspace aware via `.skill-graph/config.json`. Computes SHA-256 on normalized truth-source keys for drift detection. |
 | `scripts/export-skill.js` | Agent Skills export transform. Flattens the v3 `compatibility` object to a single 500-char string for the base standard. |
 | `scripts/migrate-skill-v2-to-v3.js` | v2 → v3 codemod. Line-based — preserves author YAML style (comments, quoting, indentation). |
 
@@ -175,7 +175,7 @@ flowchart LR
 | File | Role |
 |---|---|
 | `scripts/skill-graph-route.js` | Graph-aware selector. Uses every unique Skill Graph field: `relations.depends_on` transitive closure, `relations.verify_with` co-loading, `relations.boundary` anti-ownership exclusion, `eval_state` quality gate, `lifecycle.stale_after_days` staleness annotation, `project_tags` filtering with workspace semantic-tag expansion. Emits per-skill reasons. |
-| `scripts/skill-graph-drift.js` | Drift sentinel. Hashes every `grounding.truth_sources` entry with SHA-256; compares against the recorded `drift_check.truth_source_hashes` baseline; reports DRIFT / BROKEN / STALE / NO_BASELINE. `--record --apply` updates the SKILL.md in place with fresh hashes. |
+| `scripts/skill-graph-drift.js` | Drift sentinel. Hashes every `grounding.truth_sources` entry with SHA-256, including line-range and anchor object entries; compares against the recorded `drift_check.truth_source_hashes` baseline; reports DRIFT / BROKEN / STALE / NO_BASELINE. `--record --apply` updates the SKILL.md in place with fresh hashes. |
 
 These tools are the *proof* that Tier 1's schema earns its complexity. If you ever doubt whether `boundary` or `grounding.truth_sources` or `lifecycle` is worth the field count, run these scripts against a real skill library and watch them change routing decisions.
 

@@ -80,6 +80,14 @@ drift_check:
 eval_artifacts: planned
 eval_state: unverified
 routing_eval: absent
+# TEMPLATE NOTE: Optional. Populate eval_last_run only after the skill has a
+# real eval receipt (scorecard, grader history, CI run). Leave it absent for a
+# brand-new skill with eval_state: unverified.
+# eval_last_run:
+#   at: "2026-05-12T09:30:00Z"
+#   status: pass
+#   runner: "node scripts/skill-audit.js --graded"
+#   receipt: "examples/audits/<skill>/scorecard.md"
 # TEMPLATE NOTE: stability values are `experimental` / `stable` / `frozen` /
 # `deprecated`. When you move a skill to `deprecated`, the schema's `allOf`
 # rule REQUIRES you to also add `superseded_by: <replacement-skill-name>` —
@@ -185,9 +193,17 @@ grounding:
   domain_object: Skill authoring for the Skill Metadata Protocol frontmatter contract
   grounding_mode: repo_specific
   truth_sources:
-    - docs/skill-metadata-protocol.md
-    - schemas/skill.schema.json
-    - docs/single-skill-audit-checklist.md
+    - path: docs/skill-metadata-protocol.md
+      anchor: the-36-authored-fields-grouped-by-purpose
+      note: "Protocol anatomy and field requiredness"
+    - path: schemas/skill.schema.json
+      line_range:
+        start: 480
+        end: 590
+      note: "Grounding schema shape"
+    - path: docs/single-skill-audit-checklist.md
+      anchor: canonical-checklist
+      note: "Audit checklist this template supports"
   failure_modes:
     - placeholder_sludge
     - cargo_cult_meta_sections

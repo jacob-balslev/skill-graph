@@ -10,15 +10,15 @@ scope: codebase
 owner: skill-graph-maintainer
 freshness: "2026-04-18"
 drift_check:
-  last_verified: "2026-05-11"
+  last_verified: "2026-05-12"
   truth_source_hashes:
-    "schemas/skill.schema.json": "d679ac0bc4cba7cdb7039eac645ab520c73ed22a4349a7b429febaa3015cf3c1"
-    "schemas/manifest.schema.json": "ed1d13f30f1c9dcc96934a80136e6cd1f29df9db9bf6fdca2af99e5dc240ad44"
-    "docs/skill-metadata-protocol.md": "3eba5f34009059f4bf12d741c9b4f0b16a8b2f83f5a47db77ad10f4e565b2170"
-    "scripts/skill-lint.js": "a1ad4ec085a20908160886c59a63377630870651aaee696346d76db29c45ac92"
-    "scripts/check-contract-consistency.js": "22786c2de59d3d27bef75ea9d36ead5ee5d4c61eb11d72ba04ccb5a0ce4a4c1e"
-    "scripts/generate-manifest.js": "379c5015674fade4a00ea3a2366fd54d46a79182ee05cc9e96e51b56d565bc12"
-    "examples/evals/graph-audit.json": "0484253253dd95b6205a1579bc0c365617499024581734fab10592ae94ee6bee"
+    "schemas/skill.schema.json": "370a021a129cba5b54cd15daaaa934fbb172df306dc0095608ea4a5607fe2526"
+    "schemas/manifest.schema.json": "5952eee971339e4910f79497554199d3b833f37bdad86038344f66596e81c0c0"
+    "docs/skill-metadata-protocol.md": "9a75c1a0380c7e6094b54607d89cf923651cac9e46ea30deaeaaca5d6bd5a421"
+    "scripts/skill-lint.js": "47b90999a04066d786a8f85be2608bd0b417fe45e2168dbc0bd9dc4fad70406c"
+    "scripts/check-contract-consistency.js": "829d5e2ee4111bab3062e3cd2fe3b11b4c101a4639254afbe3969e13d4e27f97"
+    "scripts/generate-manifest.js": "11a68b8ddebacdcae4fe98189b1bcb1b0fbc5dc1e873f8d9bf4d6aec5f803fdc"
+    "examples/evals/graph-audit.json": "8edab7bc057c65c8fd43f6ca17863c7a12ea831f6eb2158f1b2fde2ba03ad4b2"
 eval_artifacts: present
 eval_state: passing
 routing_eval: present

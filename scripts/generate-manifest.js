@@ -111,16 +111,91 @@ function resolveSkillRoots(workspace) {
 // ---------------------------------------------------------------------------
 
 /**
- * Compute SHA-256 hex digest for a file. Returns null if the file does not
- * exist or cannot be read. Paths in `grounding.truth_sources` are resolved
- * relative to REPO_ROOT.
+ * Normalize legacy string truth sources and v3.1 anchored object truth sources
+ * into a stable key. The key is also the key used in
+ * drift_check.truth_source_hashes.
  */
-function sha256File(relPath) {
+function normalizeTruthSource(src) {
+  if (typeof src === 'string') {
+    return { key: src, path: src, lineRange: null, anchor: null };
+  }
+  if (src && typeof src === 'object' && typeof src.path === 'string') {
+    const lineRange = src.line_range && typeof src.line_range === 'object'
+      ? {
+          start: Number.isInteger(src.line_range.start) ? src.line_range.start : null,
+          end: Number.isInteger(src.line_range.end) ? src.line_range.end : null,
+        }
+      : null;
+    const anchor = typeof src.anchor === 'string' && src.anchor.length > 0 ? src.anchor : null;
+    let key = src.path;
+    if (lineRange && lineRange.start) {
+      key += `#L${lineRange.start}-L${lineRange.end || lineRange.start}`;
+    } else if (anchor) {
+      key += `#${anchor}`;
+    }
+    return { key, path: src.path, lineRange, anchor };
+  }
+  return { key: String(src), path: null, lineRange: null, anchor: null };
+}
+
+function slugifyHeading(headingText) {
+  return headingText
+    .replace(/^#+\s*/, '')
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, '-')
+    .replace(/-+/g, '-')
+    .replace(/^-|-$/g, '');
+}
+
+function sectionForHeadingAnchor(text, anchor) {
+  const lines = text.split('\n');
+  let start = -1;
+  let level = null;
+  for (let i = 0; i < lines.length; i++) {
+    const m = lines[i].match(/^(#{1,6})\s+(.+?)\s*$/);
+    if (m && slugifyHeading(m[2]) === anchor) {
+      start = i;
+      level = m[1].length;
+      break;
+    }
+  }
+  if (start === -1) return null;
+  let end = lines.length;
+  for (let i = start + 1; i < lines.length; i++) {
+    const m = lines[i].match(/^(#{1,6})\s+/);
+    if (m && m[1].length <= level) {
+      end = i;
+      break;
+    }
+  }
+  return lines.slice(start, end).join('\n');
+}
+
+/**
+ * Compute SHA-256 hex digest for a truth source. Legacy string entries hash the
+ * normalized whole file. Object entries with `line_range` hash only that
+ * inclusive line range, normalized to LF, which avoids CRLF-only drift.
+ */
+function sha256TruthSource(src) {
+  const normalized = normalizeTruthSource(src);
+  if (!normalized.path) return null;
   try {
-    const abs = path.resolve(REPO_ROOT, relPath);
+    const abs = path.resolve(REPO_ROOT, normalized.path);
     if (!fs.existsSync(abs)) return null;
-    const buf = fs.readFileSync(abs);
-    return crypto.createHash('sha256').update(buf).digest('hex');
+    const text = fs.readFileSync(abs, 'utf8').replace(/\r\n?/g, '\n');
+    let content = text;
+    if (normalized.lineRange && normalized.lineRange.start) {
+      const lines = text.split('\n');
+      const start = normalized.lineRange.start;
+      const end = normalized.lineRange.end || start;
+      if (start < 1 || end < start || end > lines.length) return null;
+      content = lines.slice(start - 1, end).join('\n');
+    } else if (normalized.anchor) {
+      const section = sectionForHeadingAnchor(text, normalized.anchor);
+      if (section !== null) content = section;
+    }
+    if (normalized.anchor && !text.includes(normalized.anchor) && sectionForHeadingAnchor(text, normalized.anchor) === null) return null;
+    return crypto.createHash('sha256').update(content).digest('hex');
   } catch (e) {
     return null;
   }
@@ -139,9 +214,10 @@ function detectDrift(fm) {
   if (!Array.isArray(truthSources) || truthSources.length === 0) return null;
 
   for (const src of truthSources) {
-    const recorded = recordedHashes[src];
+    const normalized = normalizeTruthSource(src);
+    const recorded = recordedHashes[normalized.key];
     if (!recorded) continue;
-    const live = sha256File(src);
+    const live = sha256TruthSource(src);
     if (live === null) return true; // truth source vanished
     if (live !== recorded) return true;
   }
@@ -263,6 +339,11 @@ function buildSkillEntry(fm, filePath, skillId, project) {
     entry.portability = fm.portability;
   }
 
+  // --- Copied-through: concept teaching block ---
+  if (fm.concept !== null && fm.concept !== undefined && typeof fm.concept === 'object') {
+    entry.concept = fm.concept;
+  }
+
   // --- Grouped: health (eval triple + freshness + drift_check + lifecycle + telemetry + generated booleans) ---
   const health = {};
   if (fm.eval_artifacts !== undefined && fm.eval_artifacts !== null) {
@@ -273,6 +354,12 @@ function buildSkillEntry(fm, filePath, skillId, project) {
   }
   if (fm.routing_eval !== undefined && fm.routing_eval !== null) {
     health.routing_eval = fm.routing_eval;
+  }
+  if (fm.comprehension_state !== undefined && fm.comprehension_state !== null) {
+    health.comprehension_state = fm.comprehension_state;
+  }
+  if (fm.eval_last_run !== undefined && fm.eval_last_run !== null && typeof fm.eval_last_run === 'object') {
+    health.eval_last_run = fm.eval_last_run;
   }
   if (fm.freshness !== undefined && fm.freshness !== null) {
     health.freshness = fm.freshness;
@@ -651,7 +738,8 @@ if (require.main === module) {
     sortKeys,
     validate,
     detectDrift,
-    sha256File,
+    normalizeTruthSource,
+    sha256TruthSource,
     computeSummary,
   };
 }

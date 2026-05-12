@@ -54,7 +54,7 @@ The memory analogy is useful but bounded. Skill Graph is not memory. It applies 
 Three commands exercise the whole contract — validate, route, drift-check:
 
 ```bash
-# 1. Lint one skill (33 fields, 13 required, 11 contract checks)
+# 1. Lint one skill (36 canonical fields, 13 required, 11 contract checks)
 node scripts/skill-lint.js skills/documentation
 
 # 2. Route a real query — prints WHY each skill is selected, co-loaded, or excluded
@@ -124,7 +124,7 @@ The deeper point is not "governance." It is relevance. Once Skill Metadata Proto
 
 ### Authoring is "fill the template, lint catches the rest"
 
-The contract is machine-checked. Authoring a skill means copying [`examples/skill-metadata-template.md`](examples/skill-metadata-template.md), filling the 13 required and ~20 optional frontmatter fields, and running `node scripts/skill-lint.js` — which validates against [`schemas/skill.v3.schema.json`](schemas/skill.v3.schema.json), checks that every `relations.*` target resolves, enforces archetype-specific body sections (e.g. `## Coverage` + `## Philosophy` + `## Verification` + `## Do NOT Use When` for `capability` skills), and surfaces routing-quality regressions. Pinned v2 (frozen) and v3 (current) schema copies in `schemas/` mean adopters can pin a contract version across a future v4 bump. You do not read 33 field docs to author a skill — you copy the template, fill the placeholders, and let lint name what's missing.
+The contract is machine-checked. Authoring a skill means copying [`examples/skill-metadata-template.md`](examples/skill-metadata-template.md), filling the 13 required and ~20 optional frontmatter fields, and running `node scripts/skill-lint.js` — which validates against [`schemas/skill.v3.schema.json`](schemas/skill.v3.schema.json), checks that every `relations.*` target resolves, enforces archetype-specific body sections (e.g. `## Coverage` + `## Philosophy` + `## Verification` + `## Do NOT Use When` for `capability` skills), and surfaces routing-quality regressions. Pinned v2 (frozen) and v3 (current) schema copies in `schemas/` mean adopters can pin a contract version across a future v4 bump. You do not read 36 field docs to author a skill — you copy the template, fill the placeholders, and let lint name what's missing.
 
 ### Why now
 
@@ -183,7 +183,7 @@ For teams, Skill Graph turns a folder of skills into an indexed, testable, proje
 
 The complete set of shipped features:
 
-- public `SKILL.md` frontmatter contract (`docs/skill-metadata-protocol.md`) — 33 authored fields, schema_version 3
+- public `SKILL.md` frontmatter contract (`docs/skill-metadata-protocol.md`) — 36 canonical authored fields, schema_version 3
 - JSON Schemas for skill and manifest validation (`schemas/`) with pinned v2 (frozen) and v3 (current) copies alongside the unversioned files
 - **skill lint script** with schema validation, parent-directory check, relation-target existence (supports v3 object-item forms), eval coherence, generator parity, archetype-aware sections, and routing quality (`scripts/skill-lint.js`)
 - **contract consistency checker** for cross-artifact parity between schemas, docs, and example artifacts; version-aware C6 that tracks the current pinned schema and freezes prior versions (`scripts/check-contract-consistency.js`)
@@ -191,7 +191,7 @@ The complete set of shipped features:
 - **Agent Skills export script** that transforms a Skill Graph SKILL.md into an Agent Skills-compatible file — flattens v3 `compatibility` object to a 500-char string (`scripts/export-skill.js`); five exported fixtures in `examples/exports/`
 - **audit runner** with two modes (`scripts/skill-audit.js`): stub mode seeds `audits/<skill>/{findings,verdict,scorecard}.md` from lint output with human TODO placeholders; `--graded` mode extends the stub by calling an external model CLI (e.g. `claude -p`, `codex exec`) for each of the seven scorecard dimensions, writing evidence-backed PASS / PASS WITH FIXES / FAIL verdicts. Per-dimension prompts are composed by `scripts/lib/audit-prompt-builder.js`; a deterministic mock grader ships at `scripts/lib/mock-grader.js` for CI smoke-tests.
 - **reference consumer — `skill-graph route`** (`scripts/skill-graph-route.js`): graph-aware skill selector that makes `relations`, `grounding`, `eval_state`, `lifecycle`, and `project_tags` visibly drive a routing decision. Supports `--project`, `--max`, `--min-eval-state`, `--path`, `--json`. This is the tool that demonstrates why the extra metadata exists.
-- **drift sentinel — `skill-graph drift`** (`scripts/skill-graph-drift.js`): hashes every `grounding.truth_sources` entry and reports DRIFT / BROKEN / STALE / NO_BASELINE against the stored `drift_check.truth_source_hashes` baseline. `--record --apply` updates the SKILL.md frontmatter in place.
+- **drift sentinel — `skill-graph drift`** (`scripts/skill-graph-drift.js`): hashes every `grounding.truth_sources` entry, including object entries narrowed to line ranges or anchors, and reports DRIFT / BROKEN / STALE / NO_BASELINE against the stored `drift_check.truth_source_hashes` baseline. `--record --apply` updates the SKILL.md frontmatter in place.
 - **v2 → v3 codemod** (`scripts/migrate-skill-v2-to-v3.js`): line-based migration preserving author YAML style, applying the four v3 shape changes automatically.
 - **multi-root workspace mode** — `.skill-graph/config.json` declares multiple `skill_roots` and a `projects → semantic_tags` map; the generator unions all roots into one manifest and stamps each skill with its `project` handle. Fallback to single-root `skills/` when absent.
 - **CI integration** — self-hosted GitHub Actions workflow running lint + consistency checks on every PR touching schema, scripts, skills, or examples (`.github/workflows/skill-graph-lint.yml`); consumer copy-paste snippet at `docs/integrations/github-actions.md`
@@ -218,7 +218,7 @@ See `docs/plans/scripts-roadmap.md` for the planned script surface and [CHANGELO
 The contract pieces compose into a **measurable improvement cycle**:
 
 1. **Skills are versioned artifacts** — every `SKILL.md` declares `schema_version` and a per-skill `version`, and ships in a contract pinned by `schemas/skill.v3.schema.json`.
-2. **Grounding is hashed** — `drift_check.truth_source_hashes` records a SHA-256 of every cited file; `scripts/skill-graph-drift.js` reports `DRIFT` / `BROKEN` / `STALE` / `NO_BASELINE` against the recorded baseline. `lifecycle.stale_after_days` time-boxes the freshness claim independently.
+2. **Grounding is hashed** — `drift_check.truth_source_hashes` records a SHA-256 for every normalized truth-source key, whether that key is a whole file, line range, or anchor; `scripts/skill-graph-drift.js` reports `DRIFT` / `BROKEN` / `STALE` / `NO_BASELINE` against the recorded baseline. `lifecycle.stale_after_days` time-boxes the freshness claim independently.
 3. **Audits produce evidence-backed verdicts** — `node scripts/skill-audit.js <skill> --graded` runs seven per-dimension prompts through an external grader CLI (`claude -p`, `codex exec`, etc.) and writes `PASS` / `PASS WITH FIXES` / `FAIL` per dimension into `findings.md` / `verdict.md` / `scorecard.md`.
 4. **The library workflow loops the whole thing** — [`docs/library-audit-workflow.md`](docs/library-audit-workflow.md) is the standard 12-step loop: select → deterministic lint → optional graded → aggregate → fix → re-verify → next skill. Phase 5 confirms fixes stuck and updates `drift_check.last_verified`.
 
@@ -337,7 +337,7 @@ The repo is organised in five authority tiers. When two files disagree, the high
 
 - `CONTRACT.md` — **the normative spec.** Top-level public contract: required vs optional fields, semantic rules by field group, authored vs generated, migration notes, schema versioning policy. Terse, boundary-aware, no rationale. The doc you print and tape to the wall.
 - `docs/skill-metadata-protocol.md` — **the design rationale.** Archetype map + anatomy + requiredness groups + strictness rules + schema versioning policy AND the *why*: why archetypes are rigid vs anti-rigid (OntoClean per ADR 0003), why the eval-health triple is orthogonal (ADR 0001 + ADR 0006), how JSON-LD `@context` maps every field to W3C terms (ADR 0002). Pedagogical, philosophical, ADR-referencing.
-- `docs/field-reference.md` — per-field semantics for all 33 v3 authored fields, hand-curated prose with examples and lint notes (canonical for authoring). Now the apex of a three-doc structure including `docs/field-reference.generated.md` (auto-generated drift-free index from schema descriptions) and `docs/field-rationale.md` (hand-authored "why this field exists" rationale for the 10 non-obvious fields).
+- `docs/field-reference.md` — per-field semantics for all 36 canonical v3 authored fields, hand-curated prose with examples and lint notes (canonical for authoring). Now the apex of a three-doc structure including `docs/field-reference.generated.md` (auto-generated drift-free index from schema descriptions) and `docs/field-rationale.md` (hand-authored "why this field exists" rationale for the 10 non-obvious fields).
 - `docs/field-decision-guide.md` — decision tables for the hard choices: `scope`, `relations.*`, eval-health triple, `portability`, `project_tags`, and `browse_category` vs `category` vs `project_tags` vs `routing_groups`
 - `docs/manifest-contract.md` — authored → generated bridge with rename map, loss policy, and v2→v3 migration notes
 

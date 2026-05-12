@@ -5,7 +5,7 @@
 > **Predicate glossary:** [`docs/glossary.md`](glossary.md).
 > **JSON-LD @context:** [`schemas/skill.context.jsonld`](../schemas/skill.context.jsonld).
 
-Schema version: **3** · Field count: **38** · Required: **13**
+Schema version: **3** · Field count: **41** · Required: **13**
 
 ---
 
@@ -169,13 +169,13 @@ ISO date (YYYY-MM-DD) of the last meaningful content review (v3.1 preferred alia
 
 **Type:** object
 
-Drift-detection record for grounded skills. `last_verified` is the author's claim; `truth_source_hashes` is content-addressable evidence (SHA-256 per truth source file). The combination lets `scripts/skill-graph-drift.js` detect when underlying truth has changed without an accompanying review.
+Drift-detection record for grounded skills. `last_verified` is the author's claim; `truth_source_hashes` is content-addressable evidence keyed by each normalized `grounding.truth_sources` entry. Whole-file sources hash normalized file content; line-range sources hash only the cited slice; anchor-only sources hash the resolved Markdown section or literal text. The combination lets `scripts/skill-graph-drift.js` detect when underlying truth has changed without an accompanying review.
 
 **Sub-fields:**
 
 - `last_verified` *required* — ISO date of the last verification against truth sources.
 - `verified_at` *optional* — ISO date of the last verification against truth sources (v3.
-- `truth_source_hashes` *optional* — Map of truth source file path → SHA-256 hex digest at the time of last verification.
+- `truth_source_hashes` *optional* — Map of normalized truth source key to SHA-256 hex digest at the time of last verification.
 
 **Full reference:** [`docs/field-reference.md#drift_check`](field-reference.md#drift_check)
 
@@ -211,6 +211,55 @@ Is routing / trigger coverage explicitly evaluated? `absent` (router behaviour i
 
 ---
 
+### `comprehension_state` *(optional)*
+
+**Type:** `absent` | `present`
+
+Does this skill carry a comprehension eval (typically `evals/comprehension.json`) and a `concept` block authored for the 7-dimension comprehension grader? `absent` (no comprehension grading), `present` (comprehension evals exist; the `concept` block is required by the allOf rule). Optional in v3 — omitted means `absent`. Independent of `routing_eval` (router-level) and `eval_state` (content-level). The nested `eval.comprehension_state` is the v3.1 preferred alias.
+
+**Full reference:** [`docs/field-reference.md#comprehension_state`](field-reference.md#comprehension_state)
+
+---
+
+### `concept` *(optional)*
+
+**Type:** object
+
+Seven-field universal-subject concept teaching block. Read by the comprehension grader (`scripts/skill/evaluate-skill.js --comprehension`) and rendered into the agent context when the skill is loaded. Required when `comprehension_state: present`. No total length ceiling — author each field as deeply as the concept requires. Per-field `minLength` is a floor against empty content, not a cap. Distinct from `## Philosophy` in the body, which is about *why this skill file exists in this repo*; the `concept` block is about *what the subject is, universally*.
+
+**Sub-fields:**
+
+- `definition` *required* — What the concept IS.
+- `mental_model` *required* — Primitives and their relationships.
+- `purpose` *required* — What problem the concept solves and the alternative it replaced.
+- `boundary` *required* — Things commonly confused with the concept but that are NOT it.
+- `taxonomy` *required* — Nearby concepts with their relationship type (subset / alternative / prerequisite / composition / specialization).
+- `analogy` *required* — Analogy that preserves the core mechanism.
+- `misconception` *required* — The wrong mental model people bring and why it misleads.
+
+**Full reference:** [`docs/field-reference.md#concept`](field-reference.md#concept)
+
+---
+
+### `eval_last_run` *(optional)*
+
+**Type:** object
+
+Optional receipt for the most recent eval run. Complements `eval_state` so `passing` and `monitored` claims can point at evidence instead of remaining self-attested.
+
+**Sub-fields:**
+
+- `at` *required* — Timestamp for the eval run that supports the current eval_state claim.
+- `status` *required* (`pass` | `fail` | `mixed`)
+- `runner` *optional* — Eval runner or command used, e.
+- `model` *optional* — Optional grader/model identifier when an LLM grader was used.
+- `receipt` *optional* — Path or URL to the eval receipt, scorecard, grader history, or CI run.
+- `receipt_hash` *optional* — Optional SHA-256 digest of the receipt artifact.
+
+**Full reference:** [`docs/field-reference.md#eval_last_run`](field-reference.md#eval_last_run)
+
+---
+
 ### `eval` *(optional)*
 
 **Type:** object
@@ -222,6 +271,7 @@ Nested eval-health record (v3.1 preferred alias for the sibling triple `eval_art
 - `artifacts` *optional* (`none` | `planned` | `present`) — Are eval artifacts present on disk for this skill? Mirrors top-level `eval_artifacts`.
 - `content_state` *optional* (`unverified` | `passing` | `monitored`) — What does the eval say about content quality? Mirrors top-level `eval_state`.
 - `routing_coverage` *optional* (`absent` | `present`) — Is routing / trigger coverage explicitly evaluated? Mirrors top-level `routing_eval`.
+- `comprehension_state` *optional* (`absent` | `present`) — Mirrors top-level `comprehension_state`.
 
 **Full reference:** [`docs/field-reference.md#eval`](field-reference.md#eval)
 
@@ -408,7 +458,7 @@ Records what the skill is grounded against — the truth sources, the grounding 
 - `subject` *optional* — What the skill is about (v3.
 - `grounding_mode` *required* (`repo_specific` | `universal` | `hybrid`) — Whether the skill's claims are repo-specific, universal, or a hybrid.
 - `claim_scope` *optional* (`repo_specific` | `universal` | `hybrid`) — Whether the skill's claims are repo-specific, universal, or a hybrid (v3.
-- `truth_sources` *required*
+- `truth_sources` *required* — Files, docs, or URLs that ground the skill's claims.
 - `failure_modes` *required*
 - `evidence_priority` *required* (`repo_code_first` | `general_knowledge_first` | `equal`)
 

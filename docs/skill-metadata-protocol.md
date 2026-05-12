@@ -17,7 +17,7 @@ Skill Graph is the **library-level system** that works with this protocol. It in
 | `docs/skill-metadata-protocol.md` (this file) | Overview, archetype map, requiredness groups, schema strictness rules |
 | `docs/field-reference.md` | One section per authored field — purpose, rules, examples, when to use |
 | `docs/field-decision-guide.md` | Decision tables for `scope`, `relations.*`, and the eval-health fields (`eval_artifacts`, `eval_state`, `routing_eval`) / `portability` |
-| `docs/concept-map.md` | Teaching map — 33 authored fields grouped by conceptual role; drift log vs earlier framings |
+| `docs/concept-map.md` | Teaching map — 36 authored fields grouped by conceptual role; drift log vs earlier framings |
 | `docs/manifest-contract.md` | Authored-to-generated bridge: rename map, loss policy, worked example |
 | `docs/adr/` | Architecture decision records — 0001 predicate set, 0002 JSON-LD @context, 0003 OntoClean rigidity tags, 0004 persistent identifiers |
 | `schemas/skill.context.jsonld` | JSON-LD @context mapping every authored field to W3C vocabularies (SKOS, Dublin Core, PROV-O) |
@@ -38,7 +38,7 @@ This document is the public source of truth for the Skill Metadata Protocol fron
 
 **In plain English:** Skill Metadata Protocol lets one skill say *"I depend on that one, verify me with this one, and stop routing users here when they really mean that other one."* The relation predicates (`depends_on`, `verify_with`, `boundary`, `adjacent`, `related`, `broader`, `narrower`, `disjoint_with`) are the typed edges that Skill Graph can use to turn a skill collection into a graph an agent can reason over.
 
-Skill Graph is a **property graph with a controlled-vocabulary set of typed predicates**, not an RDF knowledge graph. Nodes are skills; edges are keys inside `relations.*`; node attributes are the 33 authored frontmatter fields. The JSON-LD `@context` at `schemas/skill.context.jsonld` projects the property graph into SKOS / Dublin Core Terms / PROV-O triples for consumers that want RDF semantics, but authoring stays in flat YAML.
+Skill Graph is a **property graph with a controlled-vocabulary set of typed predicates**, not an RDF knowledge graph. Nodes are skills; edges are keys inside `relations.*`; node attributes are the 36 canonical authored frontmatter fields. The JSON-LD `@context` at `schemas/skill.context.jsonld` projects the property graph into SKOS / Dublin Core Terms / PROV-O triples for consumers that want RDF semantics, but authoring stays in flat YAML.
 
 Skill Graph does **not** promise:
 
@@ -50,7 +50,7 @@ What it does promise: deterministic lint, manifest generation, relation-aware ro
 
 ### Drift-check hash semantics
 
-`drift_check.truth_source_hashes` maps each truth-source **file path** (never a directory) to the **SHA-256 hex digest of the file content** at the time of last verification. The digest is computed over the raw byte stream of the file, not a normalisation of it — line endings, trailing whitespace, and encoding are all hashed as-is. The drift sentinel (`scripts/skill-graph-drift.js`) reports `DRIFT` when the live hash differs from the recorded hash, `BROKEN` when a declared truth source is missing from disk, `STALE` when `today - drift_check.last_verified > lifecycle.stale_after_days`, and `NO_BASELINE` when truth sources are declared but no hashes are recorded. To add a baseline: `node scripts/skill-graph-drift.js --record --apply <skill-path>`.
+`drift_check.truth_source_hashes` maps each normalized truth-source key to the **SHA-256 hex digest** at the time of last verification. String truth sources hash the whole file under `path`; object truth sources can narrow the hash to `path#Lstart-Lend` for a line range or `path#anchor` for a Markdown heading slug / literal-text anchor. Local file content is normalized to LF before hashing so CRLF-only edits do not create false drift. The drift sentinel (`scripts/skill-graph-drift.js`) reports `DRIFT` when the live hash differs from the recorded hash, `BROKEN` when a declared truth source is missing from disk, `STALE` when `today - drift_check.last_verified > lifecycle.stale_after_days`, and `NO_BASELINE` when truth sources are declared but no hashes are recorded. To add a baseline: `node scripts/skill-graph-drift.js --record --apply <skill-path>`.
 
 ### Overlay composition precedence
 
@@ -227,9 +227,9 @@ flowchart LR
 
 **Legend.** Blue = the file. Green = a required layer. Yellow dashed = an optional / specimen-only layer.
 
-### The 33 authored fields, grouped by purpose
+### The 36 authored fields, grouped by purpose
 
-The YAML frontmatter has 33 top-level fields. The schema is the authoritative source for types and requiredness (`schemas/skill.v3.schema.json`); the canonical per-field reference is [`docs/field-reference.md`](field-reference.md). The table below is a navigable index — every field name links to its reference section. `always` = required by the base schema; `if <condition>` = conditionally required; blank = optional enrichment.
+The YAML frontmatter has 36 canonical top-level fields, plus v3.1 alias fields accepted for migration. The schema is the authoritative source for types and requiredness (`schemas/skill.v3.schema.json`); the canonical per-field reference is [`docs/field-reference.md`](field-reference.md). The table below is a navigable index — every field name links to its reference section. `always` = required by the base schema; `if <condition>` = conditionally required; blank = optional enrichment.
 
 | Group | Field | Required? | Shape |
 |---|---|---|---|
@@ -252,6 +252,9 @@ The YAML frontmatter has 33 top-level fields. The schema is the authoritative so
 | **Eval Health** (orthogonal triple) | [`eval_artifacts`](field-reference.md#eval_artifacts) | always | `present` \| `planned` \| `none` |
 | | [`eval_state`](field-reference.md#eval_state) | always | `unverified` \| `passing` \| `monitored` |
 | | [`routing_eval`](field-reference.md#routing_eval) | always | `present` \| `absent` |
+| | [`comprehension_state`](field-reference.md#comprehension_state) | | `present` \| `absent` |
+| | [`concept`](field-reference.md#concept) | if `comprehension_state: present` | `{ definition, mental_model, purpose, boundary, taxonomy, analogy, misconception }` |
+| | [`eval_last_run`](field-reference.md#eval_last_run) | | `{ at, status, runner?, model?, receipt?, receipt_hash? }` |
 | **Activation & Routing** | [`keywords`](field-reference.md#keywords) | if routable | string[] |
 | | [`triggers`](field-reference.md#triggers) | | string[] |
 | | [`paths`](field-reference.md#paths) | | glob[] |
@@ -388,7 +391,7 @@ It also does not require a full private control plane. The OSS contract keeps on
 
 ### Authored in `SKILL.md`
 
-The 33 authored fields (in schema order): `schema_version`, `name`, `urn`, `description`, `version`, `type`, `browse_category`, `category`, `scope`, `owner`, `freshness`, `drift_check`, `eval_artifacts`, `eval_state`, `routing_eval`, `stability`, `superseded_by`, `license`, `compatibility`, `allowed-tools`, `extends`, `triggers`, `keywords`, `examples`, `anti_examples`, `paths`, `project_tags`, `routing_groups`, `relations`, `grounding`, `portability`, `lifecycle`, `runtime_telemetry`.
+The 36 canonical authored fields (in schema order): `schema_version`, `name`, `urn`, `description`, `version`, `type`, `browse_category`, `category`, `scope`, `owner`, `freshness`, `drift_check`, `eval_artifacts`, `eval_state`, `routing_eval`, `comprehension_state`, `concept`, `eval_last_run`, `stability`, `superseded_by`, `license`, `compatibility`, `allowed-tools`, `extends`, `triggers`, `keywords`, `examples`, `anti_examples`, `paths`, `project_tags`, `routing_groups`, `relations`, `grounding`, `portability`, `lifecycle`, `runtime_telemetry`.
 
 For the purpose, rules, and examples for each field, see `docs/field-reference.md`.
 

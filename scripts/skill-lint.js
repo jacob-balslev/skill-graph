@@ -63,6 +63,7 @@
  *   node scripts/skill-lint.js skills/a11y           # lint one skill
  *   node scripts/skill-lint.js --include-template    # also lint the example template
  *   node scripts/skill-lint.js --skip-generator-parity  # skip check 8
+ *   node scripts/skill-lint.js --relation-hygiene  # include broad relation-graph hygiene warnings
  *   node scripts/skill-lint.js --strict              # promote warnings to errors
  *   node scripts/skill-lint.js --no-color            # plain output for CI
  */
@@ -107,6 +108,7 @@ const AUTHORED_FIELDS_MUST_FLOW = [
   'browse_category',
   'project_tags',
   'category',
+  'concept',
   'superseded_by',
 ];
 
@@ -123,6 +125,8 @@ const AUTHORED_FIELDS_MUST_FLOW_HEALTH = [
   'eval_artifacts',
   'eval_state',
   'routing_eval',
+  'comprehension_state',
+  'eval_last_run',
   'lifecycle',
   'runtime_telemetry',
 ];
@@ -470,6 +474,8 @@ function checkRelationSemantics(fm, knownFrontmatters) {
     if (!peer || !peer.relations) continue;
 
     const peerAdjacent = rel('adjacent', peer.relations.adjacent);
+    const peerRelatedPreferred = rel('related', peer.relations.related);
+    const peerRelated = [...new Set([...peerAdjacent, ...peerRelatedPreferred])];
     const peerBoundary = rel('boundary', peer.relations.boundary);
 
     // ERROR: adjacent ↔ boundary contradiction.
@@ -481,7 +487,7 @@ function checkRelationSemantics(fm, knownFrontmatters) {
     }
 
     // WARNING: adjacency asymmetry (reciprocal edge missing).
-    if (!peerAdjacent.includes(selfName)) {
+    if (!peerRelated.includes(selfName)) {
       results.warnings.push(
         `relations.adjacent: "${target}" does not reciprocate adjacency — adjacency is symmetric ("often used together"). Either add "${selfName}" to ${target}.relations.adjacent, or promote one side to relations.verify_with / relations.depends_on if the link is directional.`
       );
@@ -619,6 +625,84 @@ function checkEvalTruthSourceRanges() {
       }
     }
   }
+  return errors;
+}
+
+function isRemoteTruthSourcePath(value) {
+  return /^https?:\/\//i.test(String(value));
+}
+
+function validateLocalTruthSourcePointer({ owner, source, relPath, lineRange, anchor }) {
+  const errors = [];
+  if (isRemoteTruthSourcePath(relPath)) {
+    if (lineRange) errors.push(`${owner}: truth_sources ${source}: line_range is only supported for local file paths`);
+    return errors;
+  }
+
+  const abs = path.resolve(REPO_ROOT, relPath);
+  if (!fs.existsSync(abs)) {
+    errors.push(`${owner}: truth_sources ${source}: file ${relPath} does not exist`);
+    return errors;
+  }
+
+  const text = fs.readFileSync(abs, 'utf8');
+  const lines = text.split(/\r?\n/);
+  if (lineRange) {
+    const start = lineRange.start;
+    const end = lineRange.end || start;
+    if (!Number.isInteger(start) || start < 1) {
+      errors.push(`${owner}: truth_sources ${source}: line_range.start must be an integer >= 1`);
+    } else if (!Number.isInteger(end) || end < start) {
+      errors.push(`${owner}: truth_sources ${source}: line_range.end must be an integer >= line_range.start`);
+    } else if (end > lines.length) {
+      errors.push(`${owner}: truth_sources ${source}: line_range.end ${end} out of range (${relPath} has ${lines.length} lines)`);
+    }
+  }
+  if (anchor) {
+    const anchors = getHeadingAnchors(abs);
+    if (!anchors.has(anchor) && !text.includes(anchor)) {
+      errors.push(`${owner}: truth_sources ${source}: anchor "${anchor}" is neither a heading slug nor literal text in ${relPath}`);
+    }
+  }
+  return errors;
+}
+
+function checkGroundingTruthSources(fm) {
+  const errors = [];
+  const grounding = fm && fm.grounding;
+  if (!grounding || !Array.isArray(grounding.truth_sources)) return errors;
+
+  for (const raw of grounding.truth_sources) {
+    if (typeof raw === 'string') {
+      if (raw.trim().length === 0) {
+        errors.push(`${fm.name}: grounding.truth_sources contains an empty string`);
+        continue;
+      }
+      errors.push(...validateLocalTruthSourcePointer({
+        owner: fm.name,
+        source: JSON.stringify(raw),
+        relPath: raw,
+        lineRange: null,
+        anchor: null,
+      }));
+      continue;
+    }
+
+    if (!raw || typeof raw !== 'object' || typeof raw.path !== 'string' || raw.path.trim().length === 0) {
+      errors.push(`${fm.name}: grounding.truth_sources entries must be strings or objects with a non-empty path`);
+      continue;
+    }
+    const lineRange = raw.line_range === undefined ? null : raw.line_range;
+    const anchor = typeof raw.anchor === 'string' && raw.anchor.length > 0 ? raw.anchor : null;
+    errors.push(...validateLocalTruthSourcePointer({
+      owner: fm.name,
+      source: JSON.stringify(raw),
+      relPath: raw.path,
+      lineRange,
+      anchor,
+    }));
+  }
+
   return errors;
 }
 
@@ -820,6 +904,7 @@ function main() {
   const manifestSchema = loadManifestSchema();
   const files = collectSkillFiles(args);
   const skipGeneratorParity = args.includes('--skip-generator-parity');
+  const relationHygiene = args.includes('--relation-hygiene');
   // --strict: promote warnings to errors so CI can enforce a zero-warning bar.
   const strict = args.includes('--strict');
   // --no-color: suppress ANSI escape codes (useful in CI environments).
@@ -982,7 +1067,7 @@ function main() {
     // canonical for routing-layer asymmetric handoff; `disjoint_with` is a separate orthogonal
     // relation for formal OWL class-disjointness. No deprecation warning is emitted on
     // `boundary` because it is not deprecated.
-    if (fm.relations && typeof fm.relations === 'object') {
+    if (relationHygiene && fm.relations && typeof fm.relations === 'object') {
       if (Array.isArray(fm.relations.adjacent) && fm.relations.adjacent.length > 0) {
         emitWarning(relPath, text, 'adjacent', '"relations.adjacent" is deprecated in v3.1 — rename to "relations.related" (SKOS-aligned)', {
           help: 'See docs/adr/0001-predicate-set.md. Removal target: v4. Both names validate through v3.x.',
@@ -994,7 +1079,7 @@ function main() {
     // Double-declaration detection across deprecated/preferred alias pairs (ADR 0001 Decision #1).
     // Authors who write the same target under both `adjacent` and `related` produce duplicate
     // entries in the manifest; lint nudges them to drop the deprecated entry.
-    if (fm.relations && typeof fm.relations === 'object') {
+    if (relationHygiene && fm.relations && typeof fm.relations === 'object') {
       const doubles = checkRelationDoubleDeclarations(fm);
       for (const w of doubles) {
         emitWarning(relPath, text, 'relations', w.message, {
@@ -1015,11 +1100,12 @@ function main() {
       ...checkRelationTargets(fm, knownSkillNames),
       ...evalResult.errors,
       ...relationSemanticsResult.errors,
+      ...checkGroundingTruthSources(fm),
       ...checkPathsNegation(fm),
     ];
     const rawWarnings = [
       ...evalResult.warnings,
-      ...relationSemanticsResult.warnings,
+      ...(relationHygiene ? relationSemanticsResult.warnings : []),
       ...checkDescriptionLength(fm),
     ];
 

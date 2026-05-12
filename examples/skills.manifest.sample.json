@@ -3150,15 +3150,15 @@
       },
       "health": {
         "drift_check": {
-          "last_verified": "2026-05-11",
+          "last_verified": "2026-05-12",
           "truth_source_hashes": {
-            "docs/skill-metadata-protocol.md": "3eba5f34009059f4bf12d741c9b4f0b16a8b2f83f5a47db77ad10f4e565b2170",
-            "examples/evals/graph-audit.json": "0484253253dd95b6205a1579bc0c365617499024581734fab10592ae94ee6bee",
-            "schemas/manifest.schema.json": "ed1d13f30f1c9dcc96934a80136e6cd1f29df9db9bf6fdca2af99e5dc240ad44",
-            "schemas/skill.schema.json": "d679ac0bc4cba7cdb7039eac645ab520c73ed22a4349a7b429febaa3015cf3c1",
-            "scripts/check-contract-consistency.js": "22786c2de59d3d27bef75ea9d36ead5ee5d4c61eb11d72ba04ccb5a0ce4a4c1e",
-            "scripts/generate-manifest.js": "379c5015674fade4a00ea3a2366fd54d46a79182ee05cc9e96e51b56d565bc12",
-            "scripts/skill-lint.js": "a1ad4ec085a20908160886c59a63377630870651aaee696346d76db29c45ac92"
+            "docs/skill-metadata-protocol.md": "9a75c1a0380c7e6094b54607d89cf923651cac9e46ea30deaeaaca5d6bd5a421",
+            "examples/evals/graph-audit.json": "8edab7bc057c65c8fd43f6ca17863c7a12ea831f6eb2158f1b2fde2ba03ad4b2",
+            "schemas/manifest.schema.json": "5952eee971339e4910f79497554199d3b833f37bdad86038344f66596e81c0c0",
+            "schemas/skill.schema.json": "370a021a129cba5b54cd15daaaa934fbb172df306dc0095608ea4a5607fe2526",
+            "scripts/check-contract-consistency.js": "829d5e2ee4111bab3062e3cd2fe3b11b4c101a4639254afbe3969e13d4e27f97",
+            "scripts/generate-manifest.js": "11a68b8ddebacdcae4fe98189b1bcb1b0fbc5dc1e873f8d9bf4d6aec5f803fdc",
+            "scripts/skill-lint.js": "47b90999a04066d786a8f85be2608bd0b417fe45e2168dbc0bd9dc4fad70406c"
           }
         },
         "drift_detected": false,
@@ -3656,6 +3656,10 @@
           {
             "reason": "design-system-architecture owns reusable component APIs; interaction-patterns decides which pattern is appropriate for a surface",
             "skill": "design-system-architecture"
+          },
+          {
+            "reason": "design-module-composition owns component props, variants, slots, and token contracts; interaction-patterns owns choosing the user-facing control pattern",
+            "skill": "design-module-composition"
           }
         ],
         "related": [
@@ -6229,9 +6233,24 @@
         ],
         "grounding_mode": "repo_specific",
         "truth_sources": [
-          "docs/skill-metadata-protocol.md",
-          "schemas/skill.schema.json",
-          "docs/single-skill-audit-checklist.md"
+          {
+            "anchor": "the-36-authored-fields-grouped-by-purpose",
+            "note": "Protocol anatomy and field requiredness",
+            "path": "docs/skill-metadata-protocol.md"
+          },
+          {
+            "line_range": {
+              "end": 590,
+              "start": 480
+            },
+            "note": "Grounding schema shape",
+            "path": "schemas/skill.schema.json"
+          },
+          {
+            "anchor": "canonical-checklist",
+            "note": "Audit checklist this template supports",
+            "path": "docs/single-skill-audit-checklist.md"
+          }
         ]
       },
       "health": {
@@ -6459,15 +6478,15 @@
       },
       "health": {
         "drift_check": {
-          "last_verified": "2026-05-10",
+          "last_verified": "2026-05-12",
           "truth_source_hashes": {
-            "docs/single-skill-audit-checklist.md": "f3a5c370a64471e3273b82b6c4826ed19f16ef5f355d00dafc1bd96316e2cabc",
-            "docs/skill-metadata-protocol.md": "7add14972c3674698b50a0ebaea3c572ae66faedbe2458f21a7d4769696c80ae",
-            "examples/skill-metadata-template.md": "54589ec6e1f930fc7f76b81a6b4b845e8497ddaee274fd86779cfa4e48f3a24c",
-            "schemas/skill.v3.schema.json": "94c5e14e9a38182f6dea7d6ce5b6953147702fcee586d71e294742e0db3e5c81"
+            "docs/single-skill-audit-checklist.md": "7f5e53cb8df737e8cd84e814fc778195f99eb105a0fb261df34600fddc979437",
+            "docs/skill-metadata-protocol.md": "9a75c1a0380c7e6094b54607d89cf923651cac9e46ea30deaeaaca5d6bd5a421",
+            "examples/skill-metadata-template.md": "86ea993b71dc53432050ae6fa6fe9cfaffa134d7a243d6296af7e3d9a9918aad",
+            "schemas/skill.v3.schema.json": "8fab936a90718ff12e90b9391e2709cf015a962a18cf8d3666a3d50db8b2017d"
           }
         },
-        "drift_detected": true,
+        "drift_detected": false,
         "eval_artifacts": "planned",
         "eval_state": "unverified",
         "freshness": "2026-05-04",
@@ -7040,15 +7059,15 @@
           "Move from hard-coded colors to CSS custom properties with runtime switching"
         ],
         "keywords": [
-          "design tokens",
-          "semantic tokens",
+          "theme token contract",
+          "theme semantic layer",
           "theme variables",
           "css custom properties",
           "runtime theme switching",
           "token tiers",
           "theme contract",
           "design tokens community group",
-          "light dark parity",
+          "theme parity",
           "token naming",
           "reference tokens",
           "system tokens"
@@ -7573,10 +7592,10 @@
         ],
         "keywords": [
           "visual-design",
-          "visual hierarchy",
+          "visual craft",
           "palette direction",
-          "type scale",
-          "spacing rhythm",
+          "typography direction",
+          "spatial rhythm",
           "density rules",
           "elevation treatment",
           "motion feel",
@@ -7666,8 +7685,8 @@
         ],
         "keywords": [
           "visual hierarchy",
-          "type scale",
-          "spacing rhythm",
+          "hierarchical type sizing",
+          "proximity hierarchy",
           "contrast hierarchy",
           "importance ordering",
           "reading order",
@@ -7679,7 +7698,7 @@
         ],
         "triggers": [
           "visual hierarchy",
-          "type scale",
+          "type as hierarchy",
           "what should the eye go to first",
           "establishing focus",
           "page hierarchy"

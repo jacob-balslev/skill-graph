@@ -72,13 +72,103 @@ function resolveSkillRoots(workspace) {
 }
 
 // ---------------------------------------------------------------------------
-// Hashing
+// Truth source normalization + hashing
 // ---------------------------------------------------------------------------
 
-function sha256File(absPath) {
-  if (!fs.existsSync(absPath)) return null;
-  const buf = fs.readFileSync(absPath);
-  return crypto.createHash('sha256').update(buf).digest('hex');
+function normalizeTruthSource(src) {
+  if (typeof src === 'string') {
+    return { key: src, path: src, lineRange: null, anchor: null, raw: src };
+  }
+  if (src && typeof src === 'object' && typeof src.path === 'string') {
+    const lineRange = src.line_range && typeof src.line_range === 'object'
+      ? {
+          start: Number.isInteger(src.line_range.start) ? src.line_range.start : null,
+          end: Number.isInteger(src.line_range.end) ? src.line_range.end : null,
+        }
+      : null;
+    const anchor = typeof src.anchor === 'string' && src.anchor.length > 0 ? src.anchor : null;
+    let key = src.path;
+    if (lineRange && lineRange.start) {
+      key += `#L${lineRange.start}-L${lineRange.end || lineRange.start}`;
+    } else if (anchor) {
+      key += `#${anchor}`;
+    }
+    return { key, path: src.path, lineRange, anchor, raw: src };
+  }
+  return { key: String(src), path: null, lineRange: null, anchor: null, raw: src, malformed: true };
+}
+
+function hashContent(content) {
+  return crypto.createHash('sha256').update(content).digest('hex');
+}
+
+function slugifyHeading(headingText) {
+  return headingText
+    .replace(/^#+\s*/, '')
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, '-')
+    .replace(/-+/g, '-')
+    .replace(/^-|-$/g, '');
+}
+
+function sectionForHeadingAnchor(text, anchor) {
+  const lines = text.split('\n');
+  let start = -1;
+  let level = null;
+  for (let i = 0; i < lines.length; i++) {
+    const m = lines[i].match(/^(#{1,6})\s+(.+?)\s*$/);
+    if (m && slugifyHeading(m[2]) === anchor) {
+      start = i;
+      level = m[1].length;
+      break;
+    }
+  }
+  if (start === -1) return null;
+  let end = lines.length;
+  for (let i = start + 1; i < lines.length; i++) {
+    const m = lines[i].match(/^(#{1,6})\s+/);
+    if (m && m[1].length <= level) {
+      end = i;
+      break;
+    }
+  }
+  return lines.slice(start, end).join('\n');
+}
+
+function sha256TruthSource(src) {
+  const normalized = normalizeTruthSource(src);
+  if (normalized.malformed || !normalized.path) {
+    return { normalized, hash: null, error: 'malformed truth source' };
+  }
+
+  const absPath = path.resolve(REPO_ROOT, normalized.path);
+  if (!fs.existsSync(absPath)) {
+    return { normalized, hash: null, error: 'file not found' };
+  }
+
+  const text = fs.readFileSync(absPath, 'utf8').replace(/\r\n?/g, '\n');
+  let content = text;
+
+  if (normalized.lineRange && normalized.lineRange.start) {
+    const lines = text.split('\n');
+    const start = normalized.lineRange.start;
+    const end = normalized.lineRange.end || start;
+    if (start < 1 || end < start || end > lines.length) {
+      return { normalized, hash: null, error: `line range ${start}-${end} out of bounds` };
+    }
+    content = lines.slice(start - 1, end).join('\n');
+  } else if (normalized.anchor) {
+    const section = sectionForHeadingAnchor(text, normalized.anchor);
+    if (section !== null) {
+      content = section;
+    }
+  }
+
+  if (normalized.anchor && !text.includes(normalized.anchor) && sectionForHeadingAnchor(text, normalized.anchor) === null) {
+    return { normalized, hash: null, error: `anchor "${normalized.anchor}" not found` };
+  }
+
+  return { normalized, hash: hashContent(content), error: null };
 }
 
 // ---------------------------------------------------------------------------
@@ -110,9 +200,10 @@ function checkSkill(skillMdPath) {
   let anyMissingHash = false;
 
   for (const src of grounding.truth_sources) {
-    const abs = path.resolve(REPO_ROOT, src);
-    const liveHash = sha256File(abs);
-    const recorded = recordedHashes[src];
+    const hashed = sha256TruthSource(src);
+    const liveHash = hashed.hash;
+    const sourceKey = hashed.normalized.key;
+    const recorded = recordedHashes[sourceKey];
 
     let entryStatus;
     if (liveHash === null) { entryStatus = 'BROKEN'; anyBroken = true; }
@@ -121,9 +212,13 @@ function checkSkill(skillMdPath) {
     else { entryStatus = 'CLEAN'; }
 
     truthSources.push({
-      source: src,
+      source: sourceKey,
+      path: hashed.normalized.path,
+      line_range: hashed.normalized.lineRange,
+      anchor: hashed.normalized.anchor,
       live_hash: liveHash,
       recorded_hash: recorded || null,
+      error: hashed.error,
       status: entryStatus,
     });
   }

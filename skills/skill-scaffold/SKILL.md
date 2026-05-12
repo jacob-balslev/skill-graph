@@ -11,12 +11,12 @@ scope: reference
 owner: skill-graph-maintainer
 freshness: "2026-05-04"
 drift_check:
-  last_verified: "2026-05-10"
+  last_verified: "2026-05-12"
   truth_source_hashes:
-    "examples/skill-metadata-template.md": "54589ec6e1f930fc7f76b81a6b4b845e8497ddaee274fd86779cfa4e48f3a24c"
-    "schemas/skill.v3.schema.json": "94c5e14e9a38182f6dea7d6ce5b6953147702fcee586d71e294742e0db3e5c81"
-    "docs/skill-metadata-protocol.md": "7add14972c3674698b50a0ebaea3c572ae66faedbe2458f21a7d4769696c80ae"
-    "docs/single-skill-audit-checklist.md": "f3a5c370a64471e3273b82b6c4826ed19f16ef5f355d00dafc1bd96316e2cabc"
+    "examples/skill-metadata-template.md": "86ea993b71dc53432050ae6fa6fe9cfaffa134d7a243d6296af7e3d9a9918aad"
+    "schemas/skill.v3.schema.json": "8fab936a90718ff12e90b9391e2709cf015a962a18cf8d3666a3d50db8b2017d"
+    "docs/skill-metadata-protocol.md": "9a75c1a0380c7e6094b54607d89cf923651cac9e46ea30deaeaaca5d6bd5a421"
+    "docs/single-skill-audit-checklist.md": "7f5e53cb8df737e8cd84e814fc778195f99eb105a0fb261df34600fddc979437"
 eval_artifacts: planned
 eval_state: unverified
 routing_eval: absent

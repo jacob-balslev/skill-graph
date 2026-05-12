@@ -27,7 +27,7 @@ Every top-level authored field in `schemas/skill.schema.json` has exactly one en
 | **dropped intentionally** | The field does not appear in the manifest. Loss policy explains why. |
 | **generated only** | The manifest key is produced by the generator, not copied from authored frontmatter. |
 
-### Top-level authored fields (33 total)
+### Top-level authored fields (36 canonical total)
 
 | # | Authored field | Fate | Manifest projection |
 |---|---|---|---|
@@ -46,24 +46,27 @@ Every top-level authored field in `schemas/skill.schema.json` has exactly one en
 | 13 | `eval_artifacts` | **grouped under parent** (`health`) | `health.eval_artifacts` — v2 field, one of three axes that replaced the v1 `eval_status` enum. |
 | 14 | `eval_state` | **grouped under parent** (`health`) | `health.eval_state` — v2 field, runtime state axis. |
 | 15 | `routing_eval` | **grouped under parent** (`health`) | `health.routing_eval` — v2 field, routing coverage axis. |
-| 16 | `stability` | copied through unchanged (when present) | `stability` |
-| 17 | `superseded_by` | copied through unchanged (when present) | `superseded_by` — required when `stability: deprecated` (enforced by an `allOf` rule in the schema), omit otherwise. Points at the replacement skill so consumers can follow the chain. |
-| 18 | `license` | copied through unchanged (when present) | `license` — Agent Skills base-standard field. Restored to flow-through on 2026-04-17 (SH-5776). |
-| 19 | `compatibility` | copied through unchanged (when present) | `compatibility` — v3 shape: object with optional `runtimes`, `node`, `notes` (was free-text string in v2). Agent Skills base-standard field. |
-| 20 | `allowed-tools` | copied through unchanged (when present) | `allowed-tools` — Agent Skills base-standard field. |
-| 21 | `extends` | copied through unchanged (when present) | `extends` |
-| 22 | `triggers` | **grouped under parent** (`activation`) | `activation.triggers` |
-| 23 | `keywords` | **grouped under parent** (`activation`) | `activation.keywords` |
-| 24 | `examples` | **grouped under parent** (`activation`) | `activation.examples` — new v0.5.0 field. Positive-class activation prompts (2–5 entries recommended) that improve embedding-based router recall when `keywords` alone is insufficient at library scale. |
-| 25 | `anti_examples` | **grouped under parent** (`activation`) | `activation.anti_examples` — new v0.5.0 field. Negative-class activation prompts — realistic queries that look topically related but a DIFFERENT skill should handle. Used as hard-negative training signal; pair with `relations.boundary` to name the skill that should activate instead. |
-| 26 | `paths` | **grouped under parent** (`activation`) | `activation.paths` — v3 supports gitignore-style negation (`!pattern`). |
-| 27 | `project_tags` | copied through unchanged (when present) | `project_tags` — new optional v3 field for multi-project relevance filtering. |
-| 28 | `routing_groups` | copied through unchanged (when present) | `routing_groups` — renamed from `route_groups` in schema_version 2 (SH-5784); values unchanged. |
-| 29 | `relations` | copied through unchanged (when present) | `relations` — supports `related`, `broader`, `narrower`, `adjacent`, `boundary`, `verify_with`, `depends_on`, and `disjoint_with`. v3 adds object-item shape: `boundary` accepts `{skill, reason}`, `depends_on` accepts `{skill, min_version}`. Bare-string items remain valid. |
-| 30 | `grounding` | **copied through unchanged** | `grounding` — same required-field set including `domain_object`, `grounding_mode`, `truth_sources`, `failure_modes`, `evidence_priority`. The authored field was renamed from `domain_frame` in SH-5779 (2026-04-16); the manifest projection has always used `grounding`. |
-| 31 | `portability` | copied through unchanged (when present) | `portability` — v2 shape (`readiness`, `targets`), renamed from v1 (`level`, `exports`). |
-| 32 | `lifecycle` | **grouped under parent** (`health`) | `health.lifecycle` — new optional v3 object with `stale_after_days` and `review_cadence`. Drives the drift sentinel. |
-| 33 | `runtime_telemetry` | **grouped under parent** (`health`) | `health.runtime_telemetry` — new optional v3 object pointing at a feedback source for real-world success/failure signal. |
+| 16 | `comprehension_state` | **grouped under parent** (`health`) | `health.comprehension_state` - optional comprehension-grading axis, `absent` or `present`. |
+| 17 | `concept` | copied through unchanged (when present) | `concept` - seven-field teaching block required when `comprehension_state: present`. |
+| 18 | `eval_last_run` | **grouped under parent** (`health`) | `health.eval_last_run` - optional v3.1 eval-run receipt with `at`, `status`, and optional runner/model/receipt/hash evidence. |
+| 19 | `stability` | copied through unchanged (when present) | `stability` |
+| 20 | `superseded_by` | copied through unchanged (when present) | `superseded_by` - required when `stability: deprecated` (enforced by an `allOf` rule in the schema), omit otherwise. Points at the replacement skill so consumers can follow the chain. |
+| 21 | `license` | copied through unchanged (when present) | `license` - Agent Skills base-standard field. Restored to flow-through on 2026-04-17 (SH-5776). |
+| 22 | `compatibility` | copied through unchanged (when present) | `compatibility` - v3 shape: object with optional `runtimes`, `node`, `notes` (was free-text string in v2). Agent Skills base-standard field. |
+| 23 | `allowed-tools` | copied through unchanged (when present) | `allowed-tools` - Agent Skills base-standard field. |
+| 24 | `extends` | copied through unchanged (when present) | `extends` |
+| 25 | `triggers` | **grouped under parent** (`activation`) | `activation.triggers` |
+| 26 | `keywords` | **grouped under parent** (`activation`) | `activation.keywords` |
+| 27 | `examples` | **grouped under parent** (`activation`) | `activation.examples` - new v0.5.0 field. Positive-class activation prompts (2-5 entries recommended) that improve embedding-based router recall when `keywords` alone is insufficient at library scale. |
+| 28 | `anti_examples` | **grouped under parent** (`activation`) | `activation.anti_examples` - new v0.5.0 field. Negative-class activation prompts - realistic queries that look topically related but a DIFFERENT skill should handle. Used as hard-negative training signal; pair with `relations.boundary` to name the skill that should activate instead. |
+| 29 | `paths` | **grouped under parent** (`activation`) | `activation.paths` - v3 supports gitignore-style negation (`!pattern`). |
+| 30 | `project_tags` | copied through unchanged (when present) | `project_tags` - new optional v3 field for multi-project relevance filtering. |
+| 31 | `routing_groups` | copied through unchanged (when present) | `routing_groups` - renamed from `route_groups` in schema_version 2 (SH-5784); values unchanged. |
+| 32 | `relations` | copied through unchanged (when present) | `relations` - supports `related`, `broader`, `narrower`, `adjacent`, `boundary`, `verify_with`, `depends_on`, and `disjoint_with`. v3 adds object-item shape: `boundary` accepts `{skill, reason}`, `depends_on` accepts `{skill, min_version}`. Bare-string items remain valid. |
+| 33 | `grounding` | **copied through unchanged** | `grounding` - required-field set including `domain_object`, `grounding_mode`, `truth_sources`, `failure_modes`, `evidence_priority`; `truth_sources` accepts legacy strings and anchored object entries. |
+| 34 | `portability` | copied through unchanged (when present) | `portability` - v2 shape (`readiness`, `targets`), renamed from v1 (`level`, `exports`). |
+| 35 | `lifecycle` | **grouped under parent** (`health`) | `health.lifecycle` - new optional v3 object with `stale_after_days` and `review_cadence`. Drives the drift sentinel. |
+| 36 | `runtime_telemetry` | **grouped under parent** (`health`) | `health.runtime_telemetry` - new optional v3 object pointing at a feedback source for real-world success/failure signal. |
 
 ### Generated-only manifest fields
 
@@ -230,9 +233,9 @@ The v2 name invited misuse as a routing signal. The v3 name makes the browse-tax
 | v2 | v3 |
 |---|---|
 | `drift_check: "2026-04-15"` | `drift_check:`<br>`  last_verified: "2026-04-15"` |
-| (no evidence) | `  truth_source_hashes:`<br>`    "src/foo.ts": "c2a4...64-char-hex..."` |
+| (no evidence) | `  truth_source_hashes:`<br>`    "src/foo.ts": "c2a4...64-char-hex..."`<br>`    "src/foo.ts#L10-L40": "9d21...64-char-hex..."` |
 
-The new `truth_source_hashes` map is optional but strongly recommended — it turns `drift_check` from a self-asserted date into evidence the drift sentinel (`scripts/skill-graph-drift.js`) verifies. Record hashes with `node scripts/skill-graph-drift.js --record --apply <skill-path>`.
+The new `truth_source_hashes` map is optional but strongly recommended - it turns `drift_check` from a self-asserted date into evidence the drift sentinel (`scripts/skill-graph-drift.js`) verifies. Keys are normalized from `grounding.truth_sources`: `path`, `path#Lstart-Lend`, or `path#anchor`. Record hashes with `node scripts/skill-graph-drift.js --record --apply <skill-path>`.
 
 **3. `compatibility` shape: free-text string → object.**
 

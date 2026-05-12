@@ -98,6 +98,9 @@ routing_groups  # string[] — routing group memberships
 portability     # { readiness, targets }
 lifecycle       # { stale_after_days, review_cadence }
 runtime_telemetry  # { feedback_source, metrics }
+comprehension_state # absent | present
+concept        # seven-field concept teaching block, required when comprehension_state: present
+eval_last_run  # { at, status, runner?, model?, receipt?, receipt_hash? }
 compatibility   # { runtimes, node, notes }
 allowed-tools   # space-separated tool allowlist
 ```
@@ -160,7 +163,7 @@ allowed-tools   # space-separated tool allowlist
 **`drift_check`**
 - Object with `last_verified` (ISO date, required) and `truth_source_hashes` (optional).
 - `last_verified`: when the skill was last verified against its truth sources.
-- `truth_source_hashes`: a map of file path → SHA-256 hex digest at the time of last verification. Computed by `node scripts/skill-graph-drift.js --record --apply <skill-dir>`. The drift sentinel (`skill-graph drift`) reports `DRIFT` when a live hash differs from the recorded hash, `BROKEN` when a truth source file is missing, `STALE` when today exceeds `last_verified + lifecycle.stale_after_days`, and `NO_BASELINE` when truth sources are declared but no hashes are recorded.
+- `truth_source_hashes`: a map of normalized truth-source key -> SHA-256 hex digest at the time of last verification. Keys are `path` for whole-file sources, `path#Lstart-Lend` for line ranges, and `path#anchor` for anchor-only sources. Computed by `node scripts/skill-graph-drift.js --record --apply <skill-dir>`. The drift sentinel (`skill-graph drift`) reports `DRIFT` when a live hash differs from the recorded hash, `BROKEN` when a truth source file is missing, `STALE` when today exceeds `last_verified + lifecycle.stale_after_days`, and `NO_BASELINE` when truth sources are declared but no hashes are recorded.
 
 **`lifecycle`**
 - Optional object: `{ stale_after_days, review_cadence }`.
@@ -184,6 +187,22 @@ The three eval-health fields are orthogonal — they measure different dimension
 **`routing_eval`** — Does a routing-specific eval exist?
 - `absent`: no routing eval.
 - `present`: a routing eval exists (typically `evals/routing.json` or similar).
+
+**`comprehension_state`**
+- Optional comprehension-grading axis.
+- `absent` or omitted: no comprehension grading is declared.
+- `present`: the skill has comprehension grading and must include `concept`.
+
+**`concept`**
+- Seven-field concept teaching block required when `comprehension_state: present`.
+- Required sub-fields: `definition`, `mental_model`, `purpose`, `boundary`, `taxonomy`, `analogy`, `misconception`.
+- Use it for universal subject comprehension; keep repo-specific procedure in the body.
+
+**`eval_last_run`**
+- Optional evidence receipt for the most recent eval run.
+- Required sub-fields when present: `at` (ISO date-time) and `status` (`pass`, `fail`, or `mixed`).
+- Optional sub-fields: `runner`, `model`, `receipt`, `receipt_hash`.
+- Use this to support `eval_state: passing` or `eval_state: monitored` with a concrete scorecard, grader history, or CI receipt.
 
 ### Activation and Routing
 
@@ -265,7 +284,9 @@ grounding:
   domain_object: string         # What the skill is about (e.g. "Shopify order sync")
   grounding_mode: repo_specific | universal | hybrid
   truth_sources:                # Files whose content the skill depends on
-    - src/path/to/file.ts
+    - path: src/path/to/file.ts
+      line_range: { start: 10, end: 80 }
+      note: "Primary implementation surface"
   failure_modes:                # What goes wrong when the skill is applied incorrectly
     - "Misapplied to a different integration"
   evidence_priority: repo_code_first | general_knowledge_first | equal
@@ -275,6 +296,8 @@ grounding:
 - `grounding_mode: universal` — the skill's claims are general and not repo-specific.
 - `grounding_mode: hybrid` — some claims are repo-specific, some are general.
 - `evidence_priority` — tells consumers how to resolve conflicts between the skill body and external knowledge.
+
+`truth_sources` accepts legacy string entries for whole resources and object entries with `path`, optional `line_range`, optional `anchor`, and optional `note`. Object entries are preferred for repo-backed claims because the drift sentinel can hash the exact source slice.
 
 ### Portability and Standards
 
@@ -309,14 +332,15 @@ grounding:
 
 ### Authored in `SKILL.md` (human-written)
 
-All 33 fields in the frontmatter are authored. No field is computed during the lint or manifest generation steps and written back into the source file, with one exception: `drift_check.truth_source_hashes` is computed and written by the drift sentinel when you run `skill-graph drift --record --apply`.
+All 36 canonical fields in the frontmatter are authored. No field is computed during the lint or manifest generation steps and written back into the source file, with one exception: `drift_check.truth_source_hashes` is computed and written by the drift sentinel when you run `skill-graph drift --record --apply`.
 
 ```
 schema_version, name, urn, description, version, type, browse_category,
 category, scope, owner, freshness, drift_check, eval_artifacts, eval_state,
-routing_eval, stability, superseded_by, license, compatibility, allowed-tools,
-extends, triggers, keywords, examples, anti_examples, paths, project_tags,
-routing_groups, relations, grounding, portability, lifecycle, runtime_telemetry
+routing_eval, comprehension_state, concept, eval_last_run, stability,
+superseded_by, license, compatibility, allowed-tools, extends, triggers,
+keywords, examples, anti_examples, paths, project_tags, routing_groups,
+relations, grounding, portability, lifecycle, runtime_telemetry
 ```
 
 ### Generated in `skills.manifest.json` (tooling-computed)
@@ -328,7 +352,7 @@ The manifest generator (`scripts/generate-manifest.js`) reads the authored front
 - `summary` — aggregate counts (`total_skills`, `by_type`, `by_browse_category`, `by_scope`, `by_stability`).
 - `generated_at` — ISO timestamp of when the manifest was generated.
 - `activation` — compiled block merging `triggers`, `keywords`, `paths`, `examples`, and `anti_examples` from frontmatter.
-- `health` — compiled block merging `eval_artifacts`, `eval_state`, `routing_eval`, `freshness`, and `drift_check`.
+- `health` — compiled block merging `eval_artifacts`, `eval_state`, `routing_eval`, `comprehension_state`, `eval_last_run`, `freshness`, and `drift_check`.
 
 The manifest schema is at `schemas/manifest.schema.json`. For the complete authored-to-generated field rename map and loss policy, see `docs/manifest-contract.md`.
 

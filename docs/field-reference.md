@@ -360,8 +360,8 @@ reviewed_at: "2026-05-12"
 **Rules.**
 - Object with one required sub-field and one optional sub-field.
 - `last_verified`: ISO 8601 date string (`YYYY-MM-DD`).
-- `truth_source_hashes`: optional map of truth source file path → SHA-256 hex digest.
-- The file paths in `truth_source_hashes` must match entries in `grounding.truth_sources` exactly. The drift sentinel (`scripts/skill-graph-drift.js`) reports DRIFT when any live hash differs from the recorded hash, BROKEN when a truth source is missing, and NO_BASELINE when `truth_source_hashes` is absent but truth sources are declared.
+- `truth_source_hashes`: optional map of normalized truth-source key -> SHA-256 hex digest.
+- Keys must match the normalized form produced from `grounding.truth_sources`: `path` for whole-file sources, `path#Lstart-Lend` for line ranges, and `path#anchor` for anchor-only sources. The drift sentinel (`scripts/skill-graph-drift.js`) reports DRIFT when any live hash differs from the recorded hash, BROKEN when a truth source is missing, STALE when the lifecycle window is exceeded, and NO_BASELINE when `truth_source_hashes` is absent but truth sources are declared.
 - For `scope: portable` skills with no external truth sources, `drift_check.last_verified` equals `freshness` and `truth_source_hashes` is omitted.
 - Record hashes with `node scripts/skill-graph-drift.js --record --apply <skill-path>`; preview without `--apply`.
 - A `drift_check.last_verified` date significantly older than `freshness` is a warning sign that editorial updates have outpaced verification.
@@ -371,7 +371,7 @@ reviewed_at: "2026-05-12"
 | Sub-field | Type | Meaning |
 |---|---|---|
 | `last_verified` | string (date) | ISO date of the most recent verification against truth sources |
-| `truth_source_hashes` | object (string → string) | Map of truth source path → SHA-256 hex digest at the time of verification |
+| `truth_source_hashes` | object (string -> string) | Map of normalized truth-source key -> SHA-256 hex digest at the time of verification |
 
 **Example.**
 ```yaml
@@ -379,7 +379,7 @@ drift_check:
   last_verified: "2026-04-17"
   truth_source_hashes:
     "src/integrations/shopify/client.ts": "c2a4b1e0...64-char-hex..."
-    "src/integrations/shopify/webhooks.ts": "7f81a3d2...64-char-hex..."
+    "src/integrations/shopify/webhooks.ts#L40-L96": "7f81a3d2...64-char-hex..."
 ```
 
 **When to use.** Always — required.
@@ -485,6 +485,88 @@ routing_eval: absent
 **When to use.** Always — required.
 
 **When NOT to use.** N/A — required. Do not inflate (`present` without a routing harness that returns verdict PASS for the skill).
+
+---
+
+## `comprehension_state`
+
+**Purpose.** Declares whether the skill carries a concept-comprehension grading surface in addition to routing and content evals.
+
+**Allowed values.**
+
+| Value | Meaning |
+|---|---|
+| `absent` | No comprehension grading is declared |
+| `present` | A comprehension eval exists and the `concept` block is required |
+
+**Rules.**
+- Optional in v3. Omitted means `absent`.
+- Independent of `routing_eval` and `eval_state`.
+- `present` requires the top-level `concept` block by schema rule.
+
+**Example.**
+```yaml
+comprehension_state: present
+```
+
+**When to use.** Use `present` only when the skill has a real comprehension eval and a filled concept teaching block.
+
+**When NOT to use.** Do not set `present` for skills that only have routing examples or general eval artifacts.
+
+---
+
+## `concept`
+
+**Purpose.** Seven-field teaching block for the skill's subject. It gives graders and agents a direct concept model: what the subject is, how to think about it, why it exists, what it is not, where it sits near other concepts, a useful analogy, and the common misconception to avoid.
+
+**Rules.**
+- Required when `comprehension_state: present`.
+- Object with required `definition`, `mental_model`, `purpose`, `boundary`, `taxonomy`, `analogy`, and `misconception`.
+- Each field should be as deep as the concept requires; schema `minLength` values are floors against empty content, not caps.
+- Keep this about the universal subject. The body `## Philosophy` explains why this skill exists in this repo.
+
+**Example.**
+```yaml
+concept:
+  definition: "Relational mapping is the practice of translating domain relationships into durable data structures."
+  mental_model: "Start from entities, cardinality, optionality, ownership, and lifecycle."
+  purpose: "It prevents persistence shape from smuggling in a false domain model."
+  boundary: "It is not database tuning, UI information architecture, or API envelope design."
+  taxonomy: "Prerequisite to data-modeling; adjacent to bounded-context-mapping."
+  analogy: "Like drawing load-bearing walls before choosing interior paint."
+  misconception: "A table diagram is not a domain model unless the relationships have domain meaning."
+```
+
+**When to use.** Skills whose subject needs concept transfer, not just procedural steps.
+
+**When NOT to use.** Pure execution wrappers where the body already contains all needed operational instruction and no concept grader exists.
+
+---
+
+## `eval_last_run`
+
+**Purpose.** Optional receipt for the most recent eval run. It turns `eval_state: passing` or `eval_state: monitored` from a self-attested label into a pointer to evidence.
+
+**Rules.**
+- Optional in v3.1.
+- Object with required `at` and `status`.
+- `at` is an ISO date-time for the run that supports the current eval claim.
+- `status` is one of `pass`, `fail`, or `mixed`.
+- `runner`, `model`, `receipt`, and `receipt_hash` are optional evidence details.
+- Do not set `eval_state: passing` solely because this object exists; the run still needs to satisfy the skill's eval contract.
+
+**Example.**
+```yaml
+eval_last_run:
+  at: "2026-05-12T09:30:00Z"
+  status: pass
+  runner: "node scripts/skill-audit.js --graded"
+  receipt: "examples/audits/documentation/scorecard.md"
+```
+
+**When to use.** When a skill's eval has actually run and there is a scorecard, grader history, CI run, or other receipt worth preserving.
+
+**When NOT to use.** Brand-new skills with `eval_state: unverified`, or skills whose last run cannot be traced to an artifact.
 
 ---
 
@@ -992,7 +1074,7 @@ relations:
 |---|---|---|
 | `domain_object` | string | The real-world or codebase entity this skill governs (e.g., "Shopify integration behavior") |
 | `grounding_mode` | enum | How the skill is grounded: `repo_specific` (one codebase), `universal` (language/framework), `hybrid` (both) |
-| `truth_sources` | string[] | Files, docs, or URLs that are the ground truth for the skill's claims |
+| `truth_sources` | string[] or object[] | Files, docs, URLs, or anchored source slices that are the ground truth for the skill's claims |
 | `failure_modes` | string[] | Known ways the skill can produce incorrect guidance if applied incorrectly |
 | `evidence_priority` | enum | Whether to trust repo code or general knowledge first when they conflict |
 
@@ -1002,13 +1084,23 @@ grounding:
   domain_object: Shopify integration behavior
   grounding_mode: repo_specific
   truth_sources:
-    - src/integrations/shopify/client.ts
-    - src/integrations/shopify/webhooks.ts
+    - path: src/integrations/shopify/client.ts
+      line_range: { start: 42, end: 118 }
+      note: "Admin API client behavior"
+    - path: src/integrations/shopify/webhooks.ts
+      anchor: webhook-signature-verification
   failure_modes:
     - webhook_signature_bypass
     - stale_cursor_pagination
   evidence_priority: repo_code_first
 ```
+
+**Truth source forms.**
+- String entries remain valid for v3 compatibility and mean "hash/review the whole resource."
+- Object entries are preferred for repo-backed skills: `path` is required; `line_range`, `anchor`, and `note` are optional.
+- `line_range` hashes only the inclusive source slice after normalizing line endings to LF.
+- `anchor` is checked by lint as either a Markdown heading slug or literal text in the file.
+- `drift_check.truth_source_hashes` uses the normalized key: `path` for whole-file sources, `path#Lstart-Lend` for line ranges, and `path#anchor` for anchor-only sources.
 
 **When to use.** Required for `scope: codebase`. Strongly recommended for any skill that makes concrete implementation claims, even if `scope` is `portable`.
 

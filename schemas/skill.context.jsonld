@@ -1,6 +1,6 @@
 {
   "_comment": "JSON-LD @context for Skill Graph v3 frontmatter. Maps authored fields to W3C standard vocabularies so a Skill Graph SKILL.md can be projected into RDF/OWL/SKOS consumers without changing the authoring surface. Unlocks FAIR Interoperability (Wilkinson et al. 2016, DOI:10.1038/sdata.2016.18). Consumers: third-party knowledge-graph tooling, federated skill registries, cross-framework import.",
-  "_version": "1.1.0",
+  "_version": "1.2.0",
   "_schema_version_target": 3,
   "_references": {
     "skos": "https://www.w3.org/TR/skos-reference/",
@@ -118,12 +118,19 @@
     "last_verified": { "@id": "prov:generatedAtTime", "@type": "xsd:date" },
     "truth_source_hashes": {
       "@id": "sg:truthSourceHash",
-      "_note": "Map of file path → SHA-256 hex digest. Complements prov:generatedAtTime with content-addressable evidence."
+      "_note": "Map of normalized truth-source key to SHA-256 hex digest. Complements prov:generatedAtTime with content-addressable evidence."
     },
 
     "eval_artifacts": "sg:evalArtifacts",
     "eval_state": "sg:evalState",
     "routing_eval": "sg:routingEval",
+    "eval_last_run": "sg:evalLastRun",
+    "at": { "@id": "prov:generatedAtTime", "@type": "xsd:dateTime" },
+    "status": "sg:evalRunStatus",
+    "runner": "sg:evalRunner",
+    "model": "sg:evalModel",
+    "receipt": "sg:evalReceipt",
+    "receipt_hash": "sg:evalReceiptHash",
 
     "lifecycle": "sg:lifecycle",
     "stale_after_days": { "@id": "sg:staleAfterDays", "@type": "xsd:integer" },

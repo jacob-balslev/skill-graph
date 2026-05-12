@@ -129,14 +129,14 @@
         },
         "truth_source_hashes": {
           "type": "object",
-          "description": "Map of truth source file path → SHA-256 hex digest at the time of last verification. Evidence that complements the `last_verified` claim. Computed by `skill-graph drift-check --record`.",
+          "description": "Map of normalized truth source key to SHA-256 hex digest at the time of last verification. Keys are `path` for whole-file sources, `path#Lstart-Lend` for line ranges, and `path#anchor` for anchor-only sources. Evidence that complements the `last_verified` claim. Computed by `node scripts/skill-graph-drift.js --record --apply <skill-path>`.",
           "additionalProperties": {
             "type": "string",
             "pattern": "^[a-f0-9]{64}$"
           }
         }
       },
-      "description": "Drift-detection record for grounded skills. `last_verified` is the author's claim; `truth_source_hashes` is content-addressable evidence (SHA-256 per truth source file). The combination lets `scripts/skill-graph-drift.js` detect when underlying truth has changed without an accompanying review."
+      "description": "Drift-detection record for grounded skills. `last_verified` is the author's claim; `truth_source_hashes` is content-addressable evidence keyed by each normalized `grounding.truth_sources` entry. Whole-file sources hash normalized file content; line-range sources hash only the cited slice; anchor-only sources hash the resolved Markdown section or literal text. The combination lets `scripts/skill-graph-drift.js` detect when underlying truth has changed without an accompanying review."
     },
     "eval_artifacts": {
       "type": "string",
@@ -163,6 +163,106 @@
         "present"
       ],
       "description": "Is routing / trigger coverage explicitly evaluated? `absent` (router behaviour is not part of the eval set), `present` (the skill's `examples[]` and `anti_examples[]` pass `scripts/skill-graph-routing-eval.js`). When `present`, lint check 12 requires the harness to agree. Honesty over green checkmarks — flip to `present` only after the harness PASSes. The nested `eval.routing_coverage` is the v3.1 preferred alias."
+    },
+    "comprehension_state": {
+      "type": "string",
+      "enum": [
+        "absent",
+        "present"
+      ],
+      "description": "Does this skill carry a comprehension eval (typically `evals/comprehension.json`) and a `concept` block authored for the 7-dimension comprehension grader? `absent` (no comprehension grading), `present` (comprehension evals exist; the `concept` block is required by the allOf rule). Optional in v3 — omitted means `absent`. Independent of `routing_eval` (router-level) and `eval_state` (content-level). The nested `eval.comprehension_state` is the v3.1 preferred alias."
+    },
+    "concept": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "definition",
+        "mental_model",
+        "purpose",
+        "boundary",
+        "taxonomy",
+        "analogy",
+        "misconception"
+      ],
+      "properties": {
+        "definition": {
+          "type": "string",
+          "minLength": 20,
+          "description": "What the concept IS. Primary category + what it does + who uses it. A domain outsider should understand. Author as deeply as the concept requires — there is no maximum length. The `minLength` here is a floor against empty fields, not a cap. Graded by the comprehension grader's `definition` dimension (weight 1.0)."
+        },
+        "mental_model": {
+          "type": "string",
+          "minLength": 20,
+          "description": "Primitives and their relationships. Name primitives and the relationships between them. Markdown permitted inside the string. Author with the depth the concept needs — there is no maximum length. Graded by the comprehension grader's `mental_model` dimension (weight 1.5)."
+        },
+        "purpose": {
+          "type": "string",
+          "minLength": 20,
+          "description": "What problem the concept solves and the alternative it replaced. Concrete pain point + prior alternative. No maximum length — explain as fully as the concept needs. Graded by the comprehension grader's `purpose` dimension (weight 1.0)."
+        },
+        "boundary": {
+          "type": "string",
+          "minLength": 20,
+          "description": "Things commonly confused with the concept but that are NOT it. Express each difference as a mechanism (different primitives, different purpose, different scope) - not just different names. No maximum length. Graded by the comprehension grader's `boundary` dimension (weight 1.5)."
+        },
+        "taxonomy": {
+          "type": "string",
+          "minLength": 10,
+          "description": "Nearby concepts with their relationship type (subset / alternative / prerequisite / composition / specialization). Markdown list permitted inside the string. No maximum length. Graded by the comprehension grader's `taxonomy` dimension (weight 1.0)."
+        },
+        "analogy": {
+          "type": "string",
+          "minLength": 10,
+          "description": "Analogy that preserves the core mechanism. Translate for a non-expert without breaking the structural relationship between primitives. No maximum length. Graded by the comprehension grader's `analogy` dimension (weight 0.5)."
+        },
+        "misconception": {
+          "type": "string",
+          "minLength": 20,
+          "description": "The wrong mental model people bring and why it misleads. Authored hint to inoculate the agent against the common error trap. No maximum length. Not directly graded; complements `boundary`."
+        }
+      },
+      "description": "Seven-field universal-subject concept teaching block. Read by the comprehension grader (`scripts/skill/evaluate-skill.js --comprehension`) and rendered into the agent context when the skill is loaded. Required when `comprehension_state: present`. No total length ceiling — author each field as deeply as the concept requires. Per-field `minLength` is a floor against empty content, not a cap. Distinct from `## Philosophy` in the body, which is about *why this skill file exists in this repo*; the `concept` block is about *what the subject is, universally*."
+    },
+    "eval_last_run": {
+      "type": "object",
+      "additionalProperties": false,
+      "description": "Optional receipt for the most recent eval run. Complements `eval_state` so `passing` and `monitored` claims can point at evidence instead of remaining self-attested.",
+      "required": [
+        "at",
+        "status"
+      ],
+      "properties": {
+        "at": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Timestamp for the eval run that supports the current eval_state claim."
+        },
+        "status": {
+          "type": "string",
+          "enum": [
+            "pass",
+            "fail",
+            "mixed"
+          ]
+        },
+        "runner": {
+          "type": "string",
+          "description": "Eval runner or command used, e.g. `scripts/skill-audit.js --graded`."
+        },
+        "model": {
+          "type": "string",
+          "description": "Optional grader/model identifier when an LLM grader was used."
+        },
+        "receipt": {
+          "type": "string",
+          "description": "Path or URL to the eval receipt, scorecard, grader history, or CI run."
+        },
+        "receipt_hash": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$",
+          "description": "Optional SHA-256 digest of the receipt artifact."
+        }
+      }
     },
     "eval": {
       "type": "object",
@@ -194,6 +294,14 @@
             "present"
           ],
           "description": "Is routing / trigger coverage explicitly evaluated? Mirrors top-level `routing_eval`. Renamed to `routing_coverage` here to remove the head-first compound ambiguity."
+        },
+        "comprehension_state": {
+          "type": "string",
+          "enum": [
+            "absent",
+            "present"
+          ],
+          "description": "Mirrors top-level `comprehension_state`. When `present`, the `concept` block is required by the allOf rule."
         }
       }
     },
@@ -476,8 +584,54 @@
         "truth_sources": {
           "type": "array",
           "items": {
-            "type": "string"
-          }
+            "oneOf": [
+              {
+                "type": "string",
+                "description": "Legacy whole-resource reference. Local paths are resolved relative to the repo root; URLs are allowed for external specs."
+              },
+              {
+                "type": "object",
+                "additionalProperties": false,
+                "required": [
+                  "path"
+                ],
+                "properties": {
+                  "path": {
+                    "type": "string",
+                    "minLength": 1,
+                    "description": "Local file path or URL for the truth source."
+                  },
+                  "line_range": {
+                    "type": "object",
+                    "additionalProperties": false,
+                    "required": [
+                      "start"
+                    ],
+                    "properties": {
+                      "start": {
+                        "type": "integer",
+                        "minimum": 1
+                      },
+                      "end": {
+                        "type": "integer",
+                        "minimum": 1
+                      }
+                    },
+                    "description": "Optional inclusive line range to hash and review instead of the whole file."
+                  },
+                  "anchor": {
+                    "type": "string",
+                    "description": "Optional stable heading slug or literal text anchor used by lint to detect broken pointers."
+                  },
+                  "note": {
+                    "type": "string",
+                    "description": "Short human note explaining why this source grounds the skill."
+                  }
+                }
+              }
+            ]
+          },
+          "description": "Files, docs, or URLs that ground the skill's claims. Prefer object entries with path plus line_range or anchor for repo-backed skills; string entries remain valid for v3 compatibility."
         },
         "failure_modes": {
           "type": "array",
@@ -658,6 +812,23 @@
       "then": {
         "required": [
           "superseded_by"
+        ]
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "comprehension_state": {
+            "const": "present"
+          }
+        },
+        "required": [
+          "comprehension_state"
+        ]
+      },
+      "then": {
+        "required": [
+          "concept"
         ]
       }
     }

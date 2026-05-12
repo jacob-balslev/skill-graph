@@ -50,6 +50,8 @@ relations:
       reason: "interaction-feedback owns feedback states after an action; interaction-patterns owns the primary control and flow shape"
     - skill: design-system-architecture
       reason: "design-system-architecture owns reusable component APIs; interaction-patterns decides which pattern is appropriate for a surface"
+    - skill: design-module-composition
+      reason: "design-module-composition owns component props, variants, slots, and token contracts; interaction-patterns owns choosing the user-facing control pattern"
   related:
     - layout-composition
     - form-ux-architecture

@@ -22,10 +22,10 @@ compatibility:
 allowed-tools: Read Grep
 keywords:
   - visual-design
-  - visual hierarchy
+  - visual craft
   - palette direction
-  - type scale
-  - spacing rhythm
+  - typography direction
+  - spatial rhythm
   - density rules
   - elevation treatment
   - motion feel
