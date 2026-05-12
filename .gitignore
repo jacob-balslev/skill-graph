@@ -12,6 +12,7 @@ audits/sweep-ledger.jsonl
 .claude/
 .artifacts/
 .research/
+.roundtable/
 
 # Node
 node_modules/
