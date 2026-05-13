@@ -214,7 +214,14 @@ This is not "self-improving skills" as a slogan. It is a maintenance loop with e
 
 ## Quick Start
 
-Run the three commands that prove the protocol is operational:
+Install the CLI from npm:
+
+```bash
+npm install --global @skill-graph/cli
+skill-graph --help
+```
+
+For a source checkout, run the three commands that prove the protocol is operational:
 
 ```bash
 # Validate one skill against the schema and lint rules.
