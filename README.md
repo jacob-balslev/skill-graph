@@ -271,7 +271,9 @@ skill-graph drift
 | [`examples/projects/markdown-static-site/`](examples/projects/markdown-static-site/) | Specimen project showing codebase-grounded skills. |
 | [`docs/field-reference.md`](docs/field-reference.md) | Field-by-field reference. |
 | [`docs/field-decision-guide.md`](docs/field-decision-guide.md) | Decision tables for hard field choices. |
+| [`docs/quality-doctrine.md`](docs/quality-doctrine.md) | Quality bar for preserving scope, readable names, organization-over-trimming, compression, and verification. |
 | [`docs/SKILL-MD-FORMAT-COMPATIBILITY.md`](docs/SKILL-MD-FORMAT-COMPATIBILITY.md) | How export maps protocol-enriched skills back to plain `SKILL.md`. |
+| [`docs/marketplace-syndication.md`](docs/marketplace-syndication.md) | How to syndicate the full library to public `SKILL.md` marketplaces and mine gaps for new skills. |
 
 ## What This Is Not
 

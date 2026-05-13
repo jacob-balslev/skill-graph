@@ -57,7 +57,7 @@ Skill Metadata Protocol sits in the second category. Skill Graph sits in the thi
 | **Hosted** | Yes — independent community-run service | No — the protocol and Skill Graph reference scripts run in your own repo |
 | **Per-skill structure** | Whatever the source repo authored | The 13 required + ~20 optional Skill Metadata Protocol fields |
 
-**When to use both:** install a skill from skillsmp.com -> adopt it into your library -> annotate the frontmatter with area, angle, taxonomy, project tags, relations, grounding, and eval metadata -> benefit from lint, routing, clustering, drift checks, and Karpathy-style iteration loops on top of the imported skill.
+**When to use both:** install a skill from skillsmp.com -> adopt it into your library -> annotate the frontmatter with area, angle, taxonomy, project tags, relations, grounding, and eval metadata -> benefit from lint, routing, clustering, drift checks, and Karpathy-style iteration loops on top of the imported skill. In the other direction, syndicate the full Skill Graph starter library through plain `SKILL.md` exports so SkillsMP can discover the repo while the canonical Skill Metadata Protocol source stays here. The operating plan is [`docs/marketplace-syndication.md`](marketplace-syndication.md).
 
 **Mental model:** *skillsmp answers "what skills exist?"; Skill Metadata Protocol answers "what is this skill relevant for?"; Skill Graph answers "how can that relevance be indexed, routed, clustered, tested, and reverified?"*
 
@@ -69,7 +69,7 @@ Skill Metadata Protocol sits in the second category. Skill Graph sits in the thi
 
 Same category as skillsmp.com. Same distinction: discovery / installation surface vs Skill Metadata Protocol plus Skill Graph. The two public libraries differ in their cataloging conventions and ranking surface (skills.sh leads with a popularity leaderboard, skillsmp leads with GitHub-source provenance), but neither tells a local project which area, angle, taxonomy cluster, semantic relation, methodology, framework, or verification loop a skill belongs to.
 
-**When to use both:** install a popular skill from skills.sh -> adopt the imported folder into your library -> upgrade the frontmatter to Skill Graph spec so it becomes relevant, indexable, clusterable, and testable in your project.
+**When to use both:** install a popular skill from skills.sh -> adopt the imported folder into your library -> upgrade the frontmatter to Skill Graph spec so it becomes relevant, indexable, clusterable, and testable in your project. In the other direction, export and publish the full Skill Graph library to the plain `SKILL.md` shape, use examples only as entry points, and keep provenance metadata pointing back to the canonical repo.
 
 ---
 
