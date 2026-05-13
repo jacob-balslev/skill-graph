@@ -203,7 +203,7 @@ function metadataStringValue(value) {
  * @param {object} fm - Parsed frontmatter.
  * @returns {string}  - Full frontmatter block including --- delimiters.
  */
-function buildFrontmatter(fm) {
+function buildFrontmatter(fm, options = {}) {
   const lines = ['---'];
 
   // 1. Top-level plain SKILL.md fields (in canonical order).
@@ -240,6 +240,13 @@ function buildFrontmatter(fm) {
     if (metadataValue !== null) metadataEntries[key] = metadataValue;
   }
 
+  if (options.metadata && typeof options.metadata === 'object') {
+    for (const [key, value] of Object.entries(options.metadata)) {
+      const metadataValue = metadataStringValue(value);
+      if (metadataValue !== null) metadataEntries[key] = metadataValue;
+    }
+  }
+
   if (Object.keys(metadataEntries).length > 0) {
     lines.push('metadata:');
     for (const [key, value] of Object.entries(metadataEntries)) {
@@ -267,10 +274,12 @@ function extractBody(text) {
   return m ? m[1] : '';
 }
 
-function buildExportedSkill(text) {
+function buildExportedSkill(text, options = {}) {
   const fm = parseFrontmatter(text);
   if (!fm) return null;
-  const frontmatter = buildFrontmatter(fm);
+  const exportFm = { ...fm };
+  if (options.description) exportFm.description = options.description;
+  const frontmatter = buildFrontmatter(exportFm, options);
   const body = extractBody(text);
   return body.trimEnd()
     ? `${frontmatter}\n${body}`

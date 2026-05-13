@@ -51,6 +51,34 @@ skills/<skill-name>/SKILL.md
 
 The plain marketplace artifact should be generated, not hand-edited. If a marketplace needs stricter base `SKILL.md` constraints than Skill Metadata Protocol uses internally, fix the export path or add an export-specific normalization step. Do not weaken the canonical protocol record just to satisfy a registry.
 
+## Release Target Decision
+
+Use a dedicated export repository as the public GitHub target:
+
+```text
+jacob-balslev/skill-graph-skills
+```
+
+Do not point marketplace indexers at this canonical protocol repo as the first
+install target. The canonical `skills/` directory intentionally contains
+Skill Metadata Protocol frontmatter, not plain marketplace frontmatter. A
+dedicated export repository avoids mixed indexing, keeps the marketplace surface
+small, and lets `skills/` sit at the repository root with one plain
+`SKILL.md` per public skill.
+
+The local staging surface is generated in this repo under:
+
+```text
+marketplace/skills/<name>/SKILL.md
+```
+
+After generation and verification, push that generated surface to the dedicated
+export repository. The install command to validate after publishing is:
+
+```bash
+npx skills add jacob-balslev/skill-graph-skills
+```
+
 ## Export Provenance
 
 Marketplace exports should carry a small, factual provenance block in `metadata`. Do not put advertising copy in every skill body; the body is operational context loaded by agents.
@@ -74,6 +102,9 @@ Before publishing or asking a marketplace to index the library:
 - Use [`marketplace-release-agent-prompt.md`](marketplace-release-agent-prompt.md) when handing the export-surface implementation to another agent.
 - Run `npm run verify`.
 - Generate plain `SKILL.md` exports for the whole public library.
+- Generate the marketplace surface with `node scripts/export-marketplace-skills.js`.
+- Verify the generated surface with `node scripts/export-marketplace-skills.js --check`.
+- Verify the generated plain shape with `node scripts/verify-skill-md-export.js --plain marketplace/skills`.
 - Run a privacy gate before creating row-level marketplace lists or export surfaces.
 - Exclude any skill that exposes private projects, customer workflows, local runtime paths, personal names, email addresses, token-like strings, private repository names, or local operating context.
 - Keep excluded rows out of public reports, generated exports, marketplace metadata, social posts, and outreach notes until they are rewritten as general public skills and re-scanned cleanly.

@@ -24,6 +24,8 @@ const COMMANDS = {
   export: 'scripts/export-skill.js',
   'export-verify': 'scripts/verify-skill-md-export.js',
   'export:verify-skill-md': 'scripts/verify-skill-md-export.js',
+  'marketplace-export': 'scripts/export-marketplace-skills.js',
+  'marketplace:export': 'scripts/export-marketplace-skills.js',
   audit: 'scripts/skill-audit.js',
   'protocol-check': 'scripts/check-protocol-consistency.js',
 };
@@ -40,6 +42,8 @@ Commands:
   routing-eval     Run routing examples / anti_examples through the router
   export           Export a Skill Graph skill to plain SKILL.md shape
   export-verify    Verify exported skills against the plain SKILL.md export shape
+  marketplace-export
+                   Generate and validate the public marketplace export surface
   audit            Seed or run a single-skill audit
   protocol-check   Check cross-artifact protocol consistency
 

@@ -236,12 +236,23 @@ node scripts/skill-graph-route.js "audit my skills for schema conformance"
 node scripts/skill-graph-drift.js
 ```
 
+To generate the plain public marketplace surface without weakening the canonical protocol source:
+
+```bash
+node scripts/export-marketplace-skills.js
+node scripts/export-marketplace-skills.js --check
+node scripts/verify-skill-md-export.js --plain marketplace/skills
+```
+
+The marketplace output is generated under `marketplace/` for publication to the dedicated export target `jacob-balslev/skill-graph-skills`. Do not add a marketplace badge until that target has been pushed and the install path has been verified.
+
 The npm package exposes the same scripts through a `skill-graph` binary:
 
 ```bash
 skill-graph lint skills/documentation
 skill-graph route "which skill handles schema drift?"
 skill-graph drift
+skill-graph marketplace-export
 ```
 
 ## What You Get
@@ -257,6 +268,7 @@ skill-graph drift
 | `scripts/skill-overlap.js` | Finds overlapping skill ownership and routing ambiguity. |
 | `scripts/skill-audit.js` | Generates audit artifacts and optional graded review prompts. |
 | `scripts/export-skill.js` | Exports protocol-enriched skills back to plain `SKILL.md` shape. |
+| `scripts/export-marketplace-skills.js` | Generates and validates the public plain `SKILL.md` marketplace surface with provenance, description-limit, privacy, and link gates. |
 
 ## Repository Map
 

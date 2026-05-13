@@ -9,6 +9,7 @@
  * Usage:
  *   node scripts/verify-skill-md-export.js
  *   node scripts/verify-skill-md-export.js skills/documentation
+ *   node scripts/verify-skill-md-export.js --plain marketplace/skills
  *   node scripts/verify-skill-md-export.js --json
  *
  * Self-contained. Only uses Node built-ins.
@@ -113,7 +114,7 @@ function validateExportedFrontmatter(fm) {
   return { errors };
 }
 
-function verifySkillFile(skillMd) {
+function verifySkillFile(skillMd, options = {}) {
   const sourceText = fs.readFileSync(skillMd, 'utf8');
   const sourceFm = parseFrontmatter(sourceText);
   if (!sourceFm) {
@@ -121,6 +122,15 @@ function verifySkillFile(skillMd) {
       file: repoRelative(skillMd),
       ok: false,
       errors: ['source SKILL.md has no parseable frontmatter'],
+    };
+  }
+
+  if (options.plain) {
+    const validation = validateExportedFrontmatter(sourceFm);
+    return {
+      file: repoRelative(skillMd),
+      ok: validation.errors.length === 0,
+      errors: validation.errors,
     };
   }
 
@@ -159,6 +169,7 @@ function main() {
   const args = process.argv.slice(2);
   const outputJson = args.includes('--json');
   const quiet = args.includes('--quiet');
+  const plain = args.includes('--plain') || args.includes('--as-is');
   const inputs = args.filter(a => !a.startsWith('--'));
   const skillFiles = collectSkillFiles(inputs);
 
@@ -167,7 +178,7 @@ function main() {
     process.exit(1);
   }
 
-  const results = skillFiles.map(verifySkillFile);
+  const results = skillFiles.map(skillFile => verifySkillFile(skillFile, { plain }));
 
   if (outputJson) {
     process.stdout.write(JSON.stringify({ results }, null, 2) + '\n');

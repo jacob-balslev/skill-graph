@@ -52,6 +52,31 @@ The JSON encoding is deliberate: the plain export uses a string-to-string
 `metadata` map. Emitting nested YAML objects would preserve structure but would
 stop being the simple portable export shape.
 
+## Marketplace Surface
+
+`scripts/export-marketplace-skills.js` builds the public marketplace surface from
+the canonical `skills/` library:
+
+```bash
+node scripts/export-marketplace-skills.js
+```
+
+The output goes to `marketplace/skills/<name>/SKILL.md`. Each generated file is a
+plain `SKILL.md` export, not a Skill Metadata Protocol source file. The generator
+adds factual provenance under `metadata`:
+
+```yaml
+metadata:
+  skill_graph_source_repo: "https://github.com/jacob-balslev/skill-graph"
+  skill_graph_protocol: "Skill Metadata Protocol v3"
+  skill_graph_project: "Skill Graph"
+  skill_graph_canonical_skill: "skills/<name>/SKILL.md"
+```
+
+The marketplace generator also applies export-specific descriptions only for
+skills whose canonical descriptions exceed the 1024-character Agent Skills
+description limit. The canonical source descriptions stay unchanged.
+
 ## Verify Exports
 
 Run:
@@ -74,6 +99,19 @@ The verifier rebuilds every `skills/*/SKILL.md` export in memory and checks:
 - `metadata` is a string-to-string object
 
 It does not impose description, body, title, or name-length limits.
+
+For a generated plain export surface, validate the files as written:
+
+```bash
+node scripts/verify-skill-md-export.js --plain marketplace/skills
+```
+
+Use the marketplace gate to verify shape, description limit, provenance, privacy
+scan, and generated-surface freshness together:
+
+```bash
+node scripts/export-marketplace-skills.js --check
+```
 
 ## Common Failure Modes
 

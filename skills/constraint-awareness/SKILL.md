@@ -43,7 +43,7 @@ examples:
   - "we keep adding tooling and the agent throughput isn't going up — what TOC step are we missing?"
   - "should this approval gate stay in the loop or be replaced by an automated check?"
   - "the agents keep asking me clarifying questions and I'm answering 30 a day — what's the structural fix?"
-  - "we're considering a 4-model boardmeeting on every architectural decision — does that subordinate to or overload the constraint?"
+  - "we're considering a 4-model review panel on every architectural decision — does that subordinate to or overload the constraint?"
   - "code production used to be the bottleneck; what does the new bottleneck look like once agents do all the typing?"
   - "is this proposed automation a constraint-elevator or a non-constraint optimization that won't move throughput?"
   - "the rework rate climbed from 12% to 24% over the quarter — which constraint step does that point at?"
