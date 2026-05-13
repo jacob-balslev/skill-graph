@@ -8,7 +8,7 @@ A plain `SKILL.md` gives an agent a procedure to load. Skill Metadata Protocol a
 
 [Protocol spec](SKILL_METADATA_PROTOCOL.md) | [Skill Graph system](SKILL_GRAPH.md) | [Full template](examples/skill-metadata-template.md) | [Primer](docs/PRIMER.md) | [Field reference](docs/field-reference.md) | [Adoption guide](docs/ADOPTION.md) | [Conformance](docs/CONFORMANCE.md)
 
-## The Split
+## How SKILL.md, Skill Metadata Protocol, and Skill Graph Differ
 
 | Layer | Job | Concrete output |
 |---|---|---|
@@ -18,7 +18,7 @@ A plain `SKILL.md` gives an agent a procedure to load. Skill Metadata Protocol a
 
 The distinction matters. The `SKILL.md` format answers "what can this skill do?" Skill Metadata Protocol answers "what is this skill relevant for, where does it belong, and what makes it trustworthy?" Skill Graph answers "how do we operate across a whole library of those declarations?"
 
-## Why Structure Skills?
+## Why More Structured Skills Help
 
 The plain `SKILL.md` format only needs `name` and `description` for the smallest useful skill. That is enough for small libraries. It breaks down when a project has many skills, overlapping domains, multiple workspaces, stale codebase assumptions, or a team that needs to audit why a skill was loaded.
 
@@ -36,7 +36,7 @@ Skill Metadata Protocol makes these questions explicit:
 
 Once those fields exist, a skill library stops being a flat folder of Markdown files. It becomes a map of project knowledge that humans can browse and agents can route through.
 
-## Template Example
+## Skill Metadata Protocol
 
 This is a compact example. The full authoring scaffold is [`examples/skill-metadata-template.md`](examples/skill-metadata-template.md).
 
@@ -106,7 +106,7 @@ grounding:
 portability:
   readiness: scripted
   targets:
-    - agent-skills
+    - skill-md
 lifecycle:
   stale_after_days: 90
   review_cadence: quarterly
@@ -123,18 +123,18 @@ Skill Metadata Protocol uses several independent axes. They should not be collap
 |---|---|---:|---|
 | **Archetype** | `type` | one | Skill shape: `capability`, `workflow`, `router`, or `overlay`. |
 | **Scope** | `scope` | one | Where it applies: `portable`, `codebase`, or `reference`. |
-| **Family** | `browse_category` | one | Flat top-level shelf for browsing. Replaces the older `family` name. |
+| **Top-level category** | `browse_category` | one | Flat top-level shelf for browsing. The explicit field name avoids colliding with the hierarchical `category` path. |
 | **Domain path** | `category` | zero or one | Slash-delimited hierarchy, such as `design/ux` or `architecture/events`. |
 | **Project group** | `project_tags` | many | Which project families, workspaces, or product areas this skill applies to. |
 | **Routing group** | `routing_groups` | many | Runtime bundles or dispatch groups. |
 | **Relations** | `relations.*` | many | Typed graph edges between skills. |
 | **Grounding** | `grounding.*` | conditional | Truth sources and failure modes for repo-grounded skills. |
 
-The schema allows adopters to choose their own `browse_category`, `category`, `project_tags`, and `routing_groups`. This repo currently demonstrates the following values.
+The schema uses `browse_category` for the flat top-level category and `category` for the hierarchical path. Adopters can choose their own values for `browse_category`, `category`, `project_tags`, and `routing_groups`. This repo currently demonstrates the following values.
 
-### Current Families
+### Current Top-Level Categories
 
-These are the current `browse_category` values across the shipped skills and specimen skills:
+These are the current `browse_category` values across the shipped skills and specimen skills. The field stays explicit because `category` is already used for slash-delimited domain paths:
 
 `content`, `design`, `engineering`, `frontend`, `integrations`, `knowledge`, `quality`, `security`
 
@@ -174,7 +174,7 @@ Triangulation means selecting skills from multiple independent signals:
 | Signal | Example |
 |---|---|
 | **Project surface** | `project_tags: [shopify, frontend]`, `paths: components/product/**/*` |
-| **Domain and family** | `browse_category: design`, `category: design/ux` |
+| **Top-level and domain category** | `browse_category: design`, `category: design/ux` |
 | **Method or phase** | `design-thinking`, `user-research`, `ideation`, `prototyping`, `usability-testing` |
 | **Related skills** | `visual-hierarchy`, `color-system-design`, `typography-system`, `dark-mode-implementation` |
 | **Verification skills** | `a11y`, `testing-strategy`, `code-review` |
@@ -262,7 +262,7 @@ skill-graph drift
 | [`examples/projects/markdown-static-site/`](examples/projects/markdown-static-site/) | Specimen project showing codebase-grounded skills. |
 | [`docs/field-reference.md`](docs/field-reference.md) | Field-by-field reference. |
 | [`docs/field-decision-guide.md`](docs/field-decision-guide.md) | Decision tables for hard field choices. |
-| [`docs/AGENT-SKILLS-COMPATIBILITY.md`](docs/AGENT-SKILLS-COMPATIBILITY.md) | How export maps protocol-enriched skills back to plain `SKILL.md`. |
+| [`docs/SKILL-MD-FORMAT-COMPATIBILITY.md`](docs/SKILL-MD-FORMAT-COMPATIBILITY.md) | How export maps protocol-enriched skills back to plain `SKILL.md`. |
 
 ## What This Is Not
 
