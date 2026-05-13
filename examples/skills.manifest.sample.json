@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-05-12T00:00:00.000Z",
+  "generated_at": "2026-04-17T00:00:00Z",
   "schema_version": 3,
   "skills": [
     {
@@ -3143,22 +3143,22 @@
           "schemas/manifest.schema.json",
           "docs/skill-metadata-protocol.md",
           "scripts/skill-lint.js",
-          "scripts/check-contract-consistency.js",
+          "scripts/check-protocol-consistency.js",
           "scripts/generate-manifest.js",
           "examples/evals/graph-audit.json"
         ]
       },
       "health": {
         "drift_check": {
-          "last_verified": "2026-05-12",
+          "last_verified": "2026-05-13",
           "truth_source_hashes": {
-            "docs/skill-metadata-protocol.md": "9a75c1a0380c7e6094b54607d89cf923651cac9e46ea30deaeaaca5d6bd5a421",
+            "docs/skill-metadata-protocol.md": "bce8933a4f4f6386e36e618f2de97f0f6feb864a4c1aaeec225291110e7f8a76",
             "examples/evals/graph-audit.json": "8edab7bc057c65c8fd43f6ca17863c7a12ea831f6eb2158f1b2fde2ba03ad4b2",
             "schemas/manifest.schema.json": "5952eee971339e4910f79497554199d3b833f37bdad86038344f66596e81c0c0",
             "schemas/skill.schema.json": "370a021a129cba5b54cd15daaaa934fbb172df306dc0095608ea4a5607fe2526",
-            "scripts/check-contract-consistency.js": "829d5e2ee4111bab3062e3cd2fe3b11b4c101a4639254afbe3969e13d4e27f97",
-            "scripts/generate-manifest.js": "11a68b8ddebacdcae4fe98189b1bcb1b0fbc5dc1e873f8d9bf4d6aec5f803fdc",
-            "scripts/skill-lint.js": "47b90999a04066d786a8f85be2608bd0b417fe45e2168dbc0bd9dc4fad70406c"
+            "scripts/check-protocol-consistency.js": "0ff39406d36e7a9e51c176f657f4f426d8bd5a3fe6411d28b9e9a93dc7d89f29",
+            "scripts/generate-manifest.js": "950f890dd0323c6a9326dcdc16076358ab1d6990a593a335e0e197ae328b3965",
+            "scripts/skill-lint.js": "fa7f14088b699267ba3cf272b7500cb57e6a521e05eb9242df7a479e7adfb657"
           }
         },
         "drift_detected": false,
@@ -6118,14 +6118,14 @@
       "compatibility": {
         "notes": "Library- and harness-agnostic. Patterns apply to any skill-style library (Skill Graph, Anthropic Agent Skills, Cursor rules, custom in-house skill systems). Specific tool names in this skill (skill-lint, generate-manifest, routing-eval, drift-sentinel) are concrete examples from the Skill Graph reference implementation -- substitute your library's equivalents."
       },
-      "description": "Use when designing the deterministic health-tooling layer for a skill library, diagnosing why an existing library is decaying invisibly, deciding which categories of automated check to add (inventory, contract consistency, conflict detection, routing health, drift sentinel), debugging eval-threshold violations across many skills at once, or auditing whether a skill-system has the safety nets a production library needs. Covers the five categories of skill-health tooling, the library-as-database mental model, eval quality patterns (minimum thresholds, contradiction-check pattern, negative-expectation requirement), maintenance workflows triggered by batch skill changes, and the anti-patterns that cause skill libraries to decay until agents loading them get worse over time. Do NOT use for authoring an individual SKILL.md (use `skill-scaffold`), for running the conformance audit on the Skill Graph repo itself (use `graph-audit`), or for general lint rule selection across a codebase (use `lint-overlay`).",
+      "description": "Use when designing the deterministic health-tooling layer for a skill library, diagnosing why an existing library is decaying invisibly, deciding which categories of automated check to add (inventory, protocol consistency, conflict detection, routing health, drift sentinel), debugging eval-threshold violations across many skills at once, or auditing whether a skill-system has the safety nets a production library needs. Covers the five categories of skill-health tooling, the library-as-database mental model, eval quality patterns (minimum thresholds, contradiction-check pattern, negative-expectation requirement), maintenance workflows triggered by batch skill changes, and the anti-patterns that cause skill libraries to decay until agents loading them get worse over time. Do NOT use for authoring an individual SKILL.md (use `skill-scaffold`), for running the conformance audit on the Skill Graph repo itself (use `graph-audit`), or for general lint rule selection across a codebase (use `lint-overlay`).",
       "health": {
         "drift_check": {
-          "last_verified": "2026-05-06"
+          "last_verified": "2026-05-13"
         },
         "eval_artifacts": "planned",
         "eval_state": "unverified",
-        "freshness": "2026-05-06",
+        "freshness": "2026-05-13",
         "has_grounding": false,
         "has_relations": true,
         "lifecycle": {
@@ -6223,7 +6223,7 @@
       },
       "description": "Use when creating a new SKILL.md, adapting an existing skill to a different archetype, or teaching an author the canonical frontmatter and body structure. Covers schema-conformant frontmatter, archetype-aware body layout, semantic-layer discipline (description vs Coverage), teaching-layer mechanics (TEMPLATE NOTE blockquotes and YAML comments), and the authoring gate. Do NOT use when modifying an already-written skill (edit that skill directly) or when writing general technical documentation (use the documentation skill).",
       "grounding": {
-        "domain_object": "Skill authoring for the Skill Metadata Protocol frontmatter contract",
+        "domain_object": "Skill authoring for the Skill Metadata Protocol frontmatter",
         "evidence_priority": "repo_code_first",
         "failure_modes": [
           "placeholder_sludge",
@@ -6249,7 +6249,7 @@
           {
             "anchor": "canonical-checklist",
             "note": "Audit checklist this template supports",
-            "path": "docs/single-skill-audit-checklist.md"
+            "path": "SKILL_AUDIT_CHECKLIST.md"
           }
         ]
       },
@@ -6459,7 +6459,7 @@
       },
       "description": "Use when creating a new SKILL.md from scratch, adapting an existing skill to a different archetype, or teaching another author the canonical Skill Metadata Protocol frontmatter and body structure. Covers schema-conformant frontmatter, archetype-aware body layout, semantic-layer discipline (description vs Coverage), teaching-layer mechanics (TEMPLATE NOTE blockquotes), the lint-first authoring gate, and the routing-eval honesty rule. Do NOT use when modifying an already-written skill (edit it directly), when writing general technical documentation (use `documentation`), or when fixing a malformed skill detected by lint (use `graph-audit` for systematic library health, not authoring scaffold help).",
       "grounding": {
-        "domain_object": "Authoring a new SKILL.md against the Skill Metadata Protocol v3 contract",
+        "domain_object": "Authoring a new SKILL.md against Skill Metadata Protocol v3",
         "evidence_priority": "repo_code_first",
         "failure_modes": [
           "placeholder_sludge",
@@ -6473,16 +6473,16 @@
           "examples/skill-metadata-template.md",
           "schemas/skill.v3.schema.json",
           "docs/skill-metadata-protocol.md",
-          "docs/single-skill-audit-checklist.md"
+          "SKILL_AUDIT_CHECKLIST.md"
         ]
       },
       "health": {
         "drift_check": {
-          "last_verified": "2026-05-12",
+          "last_verified": "2026-05-13",
           "truth_source_hashes": {
-            "docs/single-skill-audit-checklist.md": "7f5e53cb8df737e8cd84e814fc778195f99eb105a0fb261df34600fddc979437",
-            "docs/skill-metadata-protocol.md": "9a75c1a0380c7e6094b54607d89cf923651cac9e46ea30deaeaaca5d6bd5a421",
-            "examples/skill-metadata-template.md": "86ea993b71dc53432050ae6fa6fe9cfaffa134d7a243d6296af7e3d9a9918aad",
+            "SKILL_AUDIT_CHECKLIST.md": "7f5e53cb8df737e8cd84e814fc778195f99eb105a0fb261df34600fddc979437",
+            "docs/skill-metadata-protocol.md": "bce8933a4f4f6386e36e618f2de97f0f6feb864a4c1aaeec225291110e7f8a76",
+            "examples/skill-metadata-template.md": "d09ef613eac7dc0c9465bcb668565c0d9cd0b8f3741342948a21925b15a67344",
             "schemas/skill.v3.schema.json": "8fab936a90718ff12e90b9391e2709cf015a962a18cf8d3666a3d50db8b2017d"
           }
         },

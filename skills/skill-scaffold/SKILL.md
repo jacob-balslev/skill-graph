@@ -11,12 +11,12 @@ scope: reference
 owner: skill-graph-maintainer
 freshness: "2026-05-04"
 drift_check:
-  last_verified: "2026-05-12"
+  last_verified: "2026-05-13"
   truth_source_hashes:
-    "examples/skill-metadata-template.md": "86ea993b71dc53432050ae6fa6fe9cfaffa134d7a243d6296af7e3d9a9918aad"
+    "examples/skill-metadata-template.md": "d09ef613eac7dc0c9465bcb668565c0d9cd0b8f3741342948a21925b15a67344"
     "schemas/skill.v3.schema.json": "8fab936a90718ff12e90b9391e2709cf015a962a18cf8d3666a3d50db8b2017d"
-    "docs/skill-metadata-protocol.md": "9a75c1a0380c7e6094b54607d89cf923651cac9e46ea30deaeaaca5d6bd5a421"
-    "docs/single-skill-audit-checklist.md": "7f5e53cb8df737e8cd84e814fc778195f99eb105a0fb261df34600fddc979437"
+    "docs/skill-metadata-protocol.md": "bce8933a4f4f6386e36e618f2de97f0f6feb864a4c1aaeec225291110e7f8a76"
+    "SKILL_AUDIT_CHECKLIST.md": "7f5e53cb8df737e8cd84e814fc778195f99eb105a0fb261df34600fddc979437"
 eval_artifacts: planned
 eval_state: unverified
 routing_eval: absent
@@ -72,13 +72,13 @@ relations:
   verify_with:
     - documentation
 grounding:
-  domain_object: Authoring a new SKILL.md against the Skill Metadata Protocol v3 contract
+  domain_object: Authoring a new SKILL.md against Skill Metadata Protocol v3
   grounding_mode: repo_specific
   truth_sources:
     - examples/skill-metadata-template.md
     - schemas/skill.v3.schema.json
     - docs/skill-metadata-protocol.md
-    - docs/single-skill-audit-checklist.md
+    - SKILL_AUDIT_CHECKLIST.md
   failure_modes:
     - placeholder_sludge
     - cargo_cult_meta_sections
@@ -120,7 +120,7 @@ The five steps are non-negotiable; skipping any step produces a skill that lints
 2. **Rename** identity fields: `name`, `description`, `category` (if used), `keywords`, `examples`, `anti_examples`, `paths` (if applicable), and the body title. Every reference to "skill-metadata-template" should be gone.
 3. **Adapt** body sections to your skill's subject. Match the `## H2` layout to your declared archetype per `docs/skill-metadata-protocol.md § Archetype section map`. Remove sections that do not apply — do not keep them with placeholder content.
 4. **Strip** every `> **TEMPLATE NOTE:**` body blockquote and every `# TEMPLATE NOTE:` YAML comment. They are authoring scaffolding; shipping them in a derived skill is the most common authoring mistake. Run `grep -n "TEMPLATE NOTE" skills/<your-skill>/SKILL.md` to confirm zero hits.
-5. **Verify** by running the gate sequence: `node scripts/skill-lint.js --strict` (must show 0 errors), `node scripts/check-contract-consistency.js` (C1-C7 must all pass), and (if you populated `examples` and `anti_examples`) `node scripts/skill-graph-routing-eval.js --skill <your-skill>` (verdict PASS before flipping `routing_eval` to `present`).
+5. **Verify** by running the gate sequence: `node scripts/skill-lint.js --strict` (must show 0 errors), `node scripts/check-protocol-consistency.js` (C1-C7 must all pass), and (if you populated `examples` and `anti_examples`) `node scripts/skill-graph-routing-eval.js --skill <your-skill>` (verdict PASS before flipping `routing_eval` to `present`).
 
 ## Archetype Selection
 
@@ -129,7 +129,7 @@ Pick `type:` once, deliberately, before writing the body — the archetype deter
 | Archetype | When to pick it | Required body sections |
 |---|---|---|
 | `capability` | The skill teaches *how to do something* with no fixed sequence (e.g., a11y, naming-conventions, prompt-craft) | `## Coverage`, `## Philosophy`, `## Verification` |
-| `workflow` | The skill orchestrates a *sequence of steps* the agent follows in order (e.g., debugging, refactor, library-audit-workflow) | `## Coverage`, `## Workflow` (numbered steps), `## Verification` |
+| `workflow` | The skill orchestrates a *sequence of steps* the agent follows in order (e.g., debugging, refactor, skill-audit-loop) | `## Coverage`, `## Workflow` (numbered steps), `## Verification` |
 | `router` | The skill dispatches between *other skills* (rare; only one starter — `skill-router`) | `## Coverage`, `## Routing Rules`, `## Verification` |
 | `overlay` | The skill *specialises an `extends:` parent* with project-specific or stack-specific overrides (e.g., `lint-overlay`) | `## Overlay Rules` plus everything inherited from the parent's archetype |
 
@@ -172,7 +172,7 @@ Use this checklist as the authoring gate before committing a skill. Every item m
 - [ ] No placeholder sludge (`your-skill-name`, `path/to/file`, `todo`) remains
 - [ ] No `> **TEMPLATE NOTE:**` blockquotes or `# TEMPLATE NOTE:` YAML comments remain
 - [ ] `node scripts/skill-lint.js --strict` returns 0 errors against the new skill
-- [ ] `node scripts/check-contract-consistency.js` passes C1-C7
+- [ ] `node scripts/check-protocol-consistency.js` passes C1-C7
 - [ ] If `routing_eval: present`, `node scripts/skill-graph-routing-eval.js --skill <name>` returns verdict PASS
 
 ## Do NOT Use When

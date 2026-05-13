@@ -16,7 +16,7 @@ The field reference is split across three coordinated documents. Use whichever f
 | [`field-reference.generated.md`](field-reference.generated.md) | **Auto-generated index.** Built from `schemas/skill.v3.schema.json` description strings by `scripts/build-field-reference.js`. Drift-free against the schema. | When you want the machine-guaranteed list of every field, every type, every pattern, every enum value. The fastest way to verify what the schema actually accepts today. |
 | [`field-rationale.md`](field-rationale.md) | **Hand-authored "why this field" rationale.** Covers the ~10 fields whose meaning is non-obvious from the schema description (`scope`, `eval_artifacts`, `eval_state`, `routing_eval`, `relations.depends_on`, `relations.verify_with`, `relations.broader`, `grounding.evidence_priority`, `lifecycle.review_cadence`, `portability.readiness`). | When you understand *what* a field stores but want to know *why the field exists at all* and *what the common confusion looks like*. |
 
-The schema is the single source of truth for shape; this doc is the source of truth for prose; `field-rationale.md` is the source of truth for design intent. Lint check C7 (in `scripts/check-contract-consistency.js`) verifies the generated index stays in sync with the schema description strings — running `node scripts/build-field-reference.js --check` against the live schema must succeed before commit.
+The schema is the single source of truth for shape; this doc is the source of truth for prose; `field-rationale.md` is the source of truth for design intent. Lint check C7 (in `scripts/check-protocol-consistency.js`) verifies the generated index stays in sync with the schema description strings — running `node scripts/build-field-reference.js --check` against the live schema must succeed before commit.
 
 ---
 
@@ -27,8 +27,8 @@ The schema is the single source of truth for shape; this doc is the source of tr
 **Rules.**
 - Must be the integer `3` or the string `"3"` for all v3 skills.
 - Start every new skill at the current schema version. Do not downgrade.
-- The v2 → v3 bump introduced `drift_check` as an object (was a date string), `compatibility` as an object (was a free-text string), renamed `family` → `browse_category`, and added optional `category`, `project_tags`, `lifecycle`, and `runtime_telemetry`. Run `node scripts/migrate-skill-v2-to-v3.js` for a one-shot migration. See `docs/manifest-contract.md § Migration Note — v2 → v3` for the full map.
-- The v1 → v2 bump (SH-5784) changed the `scope` enum (`generic`→`portable`, `operational`→`codebase`), split `eval_status` into three orthogonal fields, renamed `portability.level`→`readiness` and `portability.exports`→`targets`, and renamed `route_groups`→`routing_groups`. See `docs/manifest-contract.md § Migration Note — v1 → v2` for the historical map.
+- The v2 → v3 bump introduced `drift_check` as an object (was a date string), `compatibility` as an object (was a free-text string), renamed `family` → `browse_category`, and added optional `category`, `project_tags`, `lifecycle`, and `runtime_telemetry`. Run `node scripts/migrate-skill-v2-to-v3.js` for a one-shot migration. See `docs/manifest-field-mapping.md § Migration Note — v2 → v3` for the full map.
+- The v1 → v2 bump (SH-5784) changed the `scope` enum (`generic`→`portable`, `operational`→`codebase`), split `eval_status` into three orthogonal fields, renamed `portability.level`→`readiness` and `portability.exports`→`targets`, and renamed `route_groups`→`routing_groups`. See `docs/manifest-field-mapping.md § Migration Note — v1 → v2` for the historical map.
 
 **Versioning semantics (policy).** The integer signals *breaking vs non-breaking* evolution. A minor/patch axis is intentionally not surfaced on this field — the schema's own additive changes (new optional fields, new enum values, new lint warnings) do not require consumers to migrate, so no version bump is emitted. If a future release needs finer-grained version signalling (e.g. "v3.1 adds the SKOS-aligned predicates"), the canonical location is `CHANGELOG.md`, not a schema bump. v4 is the breaking-change horizon — `urn` becomes required, `adjacent` is removed in favour of `related`, and the freshness fields may consolidate. `boundary` remains canonical for routing-layer handoff (ADR 0001, ADR 0004, ADR 0006).
 
@@ -274,7 +274,7 @@ category_path: ecommerce/integrations/shopify
 | Value | Meaning | Requires `grounding`? |
 |---|---|---|
 | `portable` | Fully portable, no repo-specific claims | No |
-| `reference` | Documentation-style skill grounded in contract documents | No |
+| `reference` | Documentation-style skill grounded in protocol documents | No |
 | `codebase` | Grounded in a specific codebase or deployment | **Yes** (schema-enforced) |
 
 **Rules.**
@@ -416,7 +416,7 @@ eval_artifacts: present
 
 **When NOT to use.** N/A — required. Do not inflate (`present` without a real file).
 
-**Migration from v1.** The v1 `eval_status` enum mixed three orthogonal concerns; this field is the "artifact state" axis. See `docs/manifest-contract.md § Migration Note — v1 → v2` for the full mapping (e.g. `eval_status: evals` → `eval_artifacts: present, eval_state: passing, routing_eval: absent`).
+**Migration from v1.** The v1 `eval_status` enum mixed three orthogonal concerns; this field is the "artifact state" axis. See `docs/manifest-field-mapping.md § Migration Note — v1 → v2` for the full mapping (e.g. `eval_status: evals` → `eval_artifacts: present, eval_state: passing, routing_eval: absent`).
 
 ---
 

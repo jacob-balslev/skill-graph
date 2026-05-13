@@ -209,7 +209,7 @@ function inferFix(d) {
   }
   if (/not in enum/.test(d.message)) return 'Replace the value with one of the canonical enum values listed in docs/field-reference.md.';
   if (/does not match any known skill/.test(d.message)) return 'Check the skill name for typos or remove the dangling relation target.';
-  if (/deprecated/.test(d.message)) return 'Follow the migration note in docs/manifest-contract.md § Migration Note — v1 → v2.';
+  if (/deprecated/.test(d.message)) return 'Follow the migration note in docs/manifest-field-mapping.md § Migration Note — v1 → v2.';
   return 'Inspect the flagged line, correct the value, and re-run skill-lint.js.';
 }
 
@@ -777,7 +777,7 @@ function verdictLabelFromLint(diagnostics) {
   // SKILL.md:69-106` doctrine, a skill is not Done until all scores >= 4 —
   // so a stub with 6 TODO rows cannot honestly claim PASS WITH FIXES. PARTIAL
   // reflects "useful but still incomplete" (the vocabulary definition in
-  // `docs/single-skill-audit-checklist.md § Verdict`).
+  // `SKILL_AUDIT_CHECKLIST.md § Verdict`).
   return 'PARTIAL';
 }
 

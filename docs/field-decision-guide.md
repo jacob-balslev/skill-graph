@@ -41,7 +41,7 @@
 
 ### Migration from v1
 
-The v1 scope values (`generic`, `operational`) were renamed in schema_version 2 (SH-5784) and are rejected as hard errors by the v2+ schemas. For the full v1 → v2 rename table see [`docs/field-reference.md § scope`](field-reference.md#scope); for the codemod that applies every v2 → v3 change automatically, see [`docs/manifest-contract.md § Migration Note — v2 → v3`](manifest-contract.md#migration-note--v2--v3-v040).
+The v1 scope values (`generic`, `operational`) were renamed in schema_version 2 (SH-5784) and are rejected as hard errors by the v2+ schemas. For the full v1 → v2 rename table see [`docs/field-reference.md § scope`](field-reference.md#scope); for the codemod that applies every v2 → v3 change automatically, see [`docs/manifest-field-mapping.md § Migration Note — v2 → v3`](manifest-field-mapping.md#migration-note--v2--v3-v040).
 
 ### Examples
 
@@ -49,7 +49,7 @@ The v1 scope values (`generic`, `operational`) were renamed in schema_version 2 
 # Correct: skill about abstract testing patterns
 scope: portable
 
-# Correct: skill that references this repo's contract documents
+# Correct: skill that references this repo's protocol documents
 scope: reference
 
 # Correct: skill that covers Shopify integration in a specific codebase

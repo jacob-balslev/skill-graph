@@ -4,7 +4,7 @@
  * audit-prompt-builder.js — per-dimension prompt composition for skill-audit.js --graded.
  *
  * Builds the context and prompts for the seven scorecard dimensions defined in
- * docs/single-skill-audit-checklist.md. The audit runner calls an external
+ * SKILL_AUDIT_CHECKLIST.md. The audit runner calls an external
  * model CLI (e.g. `claude -p`) for each dimension, collects the structured
  * verdicts, and merges them into findings.md / verdict.md / scorecard.md.
  *
@@ -22,7 +22,7 @@ const { parseFrontmatter } = require('./parse-frontmatter');
 
 /**
  * The seven dimensions mirror the scorecard rows in
- * docs/single-skill-audit-checklist.md § Standard Artifact Structure, so the
+ * SKILL_AUDIT_CHECKLIST.md § Standard Artifact Structure, so the
  * grader output slots directly into the existing scorecard.md shape.
  *
  * `checklistAnchor` is the section heading (without the leading "### ") in
@@ -178,7 +178,7 @@ function collectContext(opts) {
   // realistic" concretely rather than speculatively.
   const exportTransformAvailable = fs.existsSync(path.join(repoRoot, EXPORT_SCRIPT_REL));
 
-  const checklistPath = path.join(repoRoot, 'docs', 'single-skill-audit-checklist.md');
+  const checklistPath = path.join(repoRoot, 'SKILL_AUDIT_CHECKLIST.md');
   const checklist = fs.readFileSync(checklistPath, 'utf8');
 
   const skillName = path.basename(skillDir);

@@ -57,7 +57,7 @@ Custom predicates live under `https://skillgraph.dev/vocab#` (`sg:` prefix). Eve
 
 ### Negative
 
-- One more file to keep in sync. Mitigated by contract-consistency check (to be added): if `schemas/skill.v3.schema.json` adds a field, the `@context` must add a mapping.
+- One more file to keep in sync. Mitigated by the protocol-consistency checker: if `schemas/skill.v3.schema.json` adds a field, the `@context` must add a mapping.
 - The `sg:` custom namespace is not yet served from `https://skillgraph.dev/vocab#`. The ID is reserved; publishing the live resolvable vocabulary is tracked separately.
 
 ### Neutral

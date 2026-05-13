@@ -190,7 +190,7 @@ relations:
 # repo claims. Remove this entire block if your skill has grounding_mode: universal
 # and does not anchor to truth sources in the repo.
 grounding:
-  domain_object: Skill authoring for the Skill Metadata Protocol frontmatter contract
+  domain_object: Skill authoring for the Skill Metadata Protocol frontmatter
   grounding_mode: repo_specific
   truth_sources:
     - path: docs/skill-metadata-protocol.md
@@ -201,7 +201,7 @@ grounding:
         start: 480
         end: 590
       note: "Grounding schema shape"
-    - path: docs/single-skill-audit-checklist.md
+    - path: SKILL_AUDIT_CHECKLIST.md
       anchor: canonical-checklist
       note: "Audit checklist this template supports"
   failure_modes:
@@ -272,8 +272,8 @@ A template teaches by example, not by placeholder. A concrete, internally consis
 | File | Purpose |
 |---|---|
 | `docs/skill-metadata-protocol.md` | Authoritative field semantics: required vs optional, conditional requiredness, relationship to the Agent Skills standard, archetype section map |
-| `schemas/skill.schema.json` | Enforceable JSON Schema for the frontmatter contract |
-| `docs/single-skill-audit-checklist.md` | The audit checklist every new skill should pass before commit |
+| `schemas/skill.schema.json` | Enforceable JSON Schema for the frontmatter protocol |
+| `SKILL_AUDIT_CHECKLIST.md` | The audit checklist every new skill should pass before commit |
 
 ## Verification
 
@@ -306,5 +306,5 @@ Use this checklist as the authoring gate before committing a skill adapted from 
 - `docs/skill-metadata-protocol.md § Relationship to the Agent Skills standard` — how Skill Metadata Protocol extends the base standard
 - `docs/skill-metadata-protocol.md § Example Template Rule` — the no-placeholder-sludge rule this template enforces
 - `docs/skill-metadata-protocol.md § Archetype section map` — required H2 sections per archetype
-- `docs/manifest-contract.md § Migration Note — v2 → v3` — the shape changes the v3 bump introduced
-- `docs/single-skill-audit-checklist.md` — the checklist this template's Verification section is derived from
+- `docs/manifest-field-mapping.md § Migration Note — v2 → v3` — the shape changes the v3 bump introduced
+- `SKILL_AUDIT_CHECKLIST.md` — the checklist this template's Verification section is derived from

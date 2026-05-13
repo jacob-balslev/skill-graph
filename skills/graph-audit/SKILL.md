@@ -10,14 +10,14 @@ scope: codebase
 owner: skill-graph-maintainer
 freshness: "2026-04-18"
 drift_check:
-  last_verified: "2026-05-12"
+  last_verified: "2026-05-13"
   truth_source_hashes:
     "schemas/skill.schema.json": "370a021a129cba5b54cd15daaaa934fbb172df306dc0095608ea4a5607fe2526"
     "schemas/manifest.schema.json": "5952eee971339e4910f79497554199d3b833f37bdad86038344f66596e81c0c0"
-    "docs/skill-metadata-protocol.md": "9a75c1a0380c7e6094b54607d89cf923651cac9e46ea30deaeaaca5d6bd5a421"
-    "scripts/skill-lint.js": "47b90999a04066d786a8f85be2608bd0b417fe45e2168dbc0bd9dc4fad70406c"
-    "scripts/check-contract-consistency.js": "829d5e2ee4111bab3062e3cd2fe3b11b4c101a4639254afbe3969e13d4e27f97"
-    "scripts/generate-manifest.js": "11a68b8ddebacdcae4fe98189b1bcb1b0fbc5dc1e873f8d9bf4d6aec5f803fdc"
+    "docs/skill-metadata-protocol.md": "bce8933a4f4f6386e36e618f2de97f0f6feb864a4c1aaeec225291110e7f8a76"
+    "scripts/skill-lint.js": "fa7f14088b699267ba3cf272b7500cb57e6a521e05eb9242df7a479e7adfb657"
+    "scripts/check-protocol-consistency.js": "0ff39406d36e7a9e51c176f657f4f426d8bd5a3fe6411d28b9e9a93dc7d89f29"
+    "scripts/generate-manifest.js": "950f890dd0323c6a9326dcdc16076358ab1d6990a593a335e0e197ae328b3965"
     "examples/evals/graph-audit.json": "8edab7bc057c65c8fd43f6ca17863c7a12ea831f6eb2158f1b2fde2ba03ad4b2"
 eval_artifacts: present
 eval_state: passing
@@ -71,7 +71,7 @@ grounding:
     - schemas/manifest.schema.json
     - docs/skill-metadata-protocol.md
     - scripts/skill-lint.js
-    - scripts/check-contract-consistency.js
+    - scripts/check-protocol-consistency.js
     - scripts/generate-manifest.js
     - examples/evals/graph-audit.json
   failure_modes:
@@ -102,11 +102,11 @@ Skill graphs fail silently. A broken relation or a drifted enum value does not c
 
 | File | Line range | Purpose |
 |---|---|---|
-| `schemas/skill.schema.json` | whole file | Enforces the frontmatter contract for every SKILL.md |
+| `schemas/skill.schema.json` | whole file | Enforces the frontmatter schema for every SKILL.md |
 | `schemas/manifest.schema.json` | whole file | Enforces the compiled manifest shape |
 | `docs/skill-metadata-protocol.md` | §§ Archetype, Requiredness, Schema Versioning | Source of truth for field semantics and the archetype section map |
 | `scripts/skill-lint.js` | 91–114 (`AUTHORED_FIELDS_MUST_FLOW`), 149–202 (`checkSchemaParity`), 175–250 (`validateAgainstSchema`) | The canonical audit runner. Implements the six dimensions listed in Coverage plus five more: parent-directory-matches-name, cross-schema parity, sample-manifest conformance, generator parity, and routing-quality rules. See README § Validation for the full eleven-check list. |
-| `scripts/check-contract-consistency.js` | C1–C6 checks | Cross-artifact contract checker. Complementary to `skill-lint.js` — lint validates per-skill correctness; this validates that the contract documents themselves remain consistent with the schemas. |
+| `scripts/check-protocol-consistency.js` | C1–C7 checks | Cross-artifact protocol checker. Complementary to `skill-lint.js` — lint validates per-skill correctness; this validates that the protocol documents themselves remain consistent with the schemas. |
 | `examples/skills.manifest.sample.json` | whole file | Generator-produced sample; lint fails if this drifts from `generate-manifest.js` output |
 
 ## Evals

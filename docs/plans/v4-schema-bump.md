@@ -1,12 +1,30 @@
 # v4 Schema Bump — Planned Breaking Changes
 
-> **Status:** Planned. Not shipped. All items below require coordinated implementation, a codemod (`scripts/migrate-skill-v3-to-v4.js`), pinned schema copies (`schema.v4.schema.json`, `manifest.v4.schema.json`), migration notes in `docs/manifest-contract.md`, and a full library sweep of the 8 shipped skills + template.
+> **Status:** Planned. Not shipped. All items below require coordinated implementation, a codemod (`scripts/migrate-skill-v3-to-v4.js`), pinned schema copies (`schema.v4.schema.json`, `manifest.v4.schema.json`), migration notes in `docs/manifest-field-mapping.md`, and a full library sweep of the 8 shipped skills + template.
 >
 > **Why a plan doc, not direct changes:** v3 shipped 2026-04-18. A second breaking bump within the same release window burns consumer trust — each bump costs re-tooling downstream. Ship these as a bundle under v4 after v3 settles.
 
 ## Scope
 
 Five breaking changes that came out of the Opus + Gemini 3.1 Pro + GPT-5.4 v1 + GPT-5.4 v2 audit (see `.artifacts/` in this repo for the full audit artifacts):
+
+## Public naming candidates from the open-source docs pass
+
+These are naming changes only; do not ship them piecemeal. They need alias handling in v3.x, a codemod in v4, generated-manifest migration notes, and a full starter/template sweep.
+
+| Current v3 name | Candidate v4 name | Why |
+|---|---|---|
+| `type` | `archetype` | The docs and ADRs already teach "archetype"; `type` is too generic for a public schema. |
+| `category` | `category_path` | Makes the slash-delimited hierarchy explicit and separates it from flat `browse_category`. |
+| `freshness` | `reviewed_at` | Names the actual authored claim: the skill was reviewed on a date. |
+| `allowed-tools` | `allowed_tools` | Aligns the protocol schema with the rest of its snake_case field names; the Agent Skills export can still emit `allowed-tools`. |
+| `eval_artifacts`, `eval_state`, `routing_eval` | `eval.artifacts`, `eval.content_state`, `eval.routing_coverage` | Groups the eval-health axes and makes the routing axis clearer. |
+| `grounding.domain_object` | `grounding.subject` | Removes DDD jargon; a newcomer can predict what "subject" means. |
+| `grounding.grounding_mode` | `grounding.claim_scope` | Names the semantic axis instead of calling it a mode. |
+| `compatibility.node` | `compatibility.node_version` | Avoids graph-node ambiguity. |
+| `compatibility.runtimes` | `compatibility.agent_runtimes` | Distinguishes agent runtimes from Node/container runtimes. |
+| `portability.targets` | `portability.export_targets` | Names what the target is for. |
+| `drift_check.last_verified` | `drift_check.verified_at` | Aligns date fields with the `_at` convention. |
 
 ### 1. `name` pattern → kebab-case only
 
@@ -114,9 +132,9 @@ The `not` clause rejects arrays where EVERY item starts with `!`.
    - Normalize `name` to kebab-case, WARN on any `/` or `:` replacement so authors review.
    - Rewrite `grounding.truth_sources` from `string[]` → object-array with `{path}` only; authors add line ranges manually.
    - Leave `paths` untouched; lint already rejects all-negation in v0.5.0.
-5. Update `docs/manifest-contract.md` with a new § "Migration Note — v3 → v4" containing the transformations above.
+5. Update `docs/manifest-field-mapping.md` with a new § "Migration Note — v3 → v4" containing the transformations above.
 6. Update `docs/field-reference.md` for the changed fields.
-7. Update `docs/single-skill-audit-checklist.md` schema_version check.
+7. Update `SKILL_AUDIT_CHECKLIST.md` schema_version check.
 8. Bump `CHANGELOG.md` root `schema_version` reference to `4`.
 9. Run migrate on all 8 starters + template. Regenerate manifest. Re-run drift sentinel with new hash key scheme.
 10. Run full lint + manifest validation + audit sweep.

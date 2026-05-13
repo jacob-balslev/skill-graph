@@ -145,6 +145,6 @@ Both decisions are the maintainer's. The recommendations above hold regardless.
 | Conceptual primer | [`PRIMER.md`](PRIMER.md) |
 | Field-by-field semantics | [`field-reference.md`](field-reference.md) |
 | Authoring template | [`../examples/skill-metadata-template.md`](../examples/skill-metadata-template.md) |
-| Architecture and authority tiers | [`ARCHITECTURE.md`](ARCHITECTURE.md) |
+| Architecture and authority tiers | [`SKILL_GRAPH.md`](../SKILL_GRAPH.md) |
 | Broader Wave 2 plan (graph-density-optimized) | [`plans/wave-2-extraction.md`](plans/wave-2-extraction.md) |
 | 4-reviewer board meeting and synthesis | the 2026-05-04 multi-model synthesis (kept private) |

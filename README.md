@@ -6,7 +6,7 @@
 
 Skill Graph does not primarily answer "what skills exist?" and it is not just a governance layer. It uses Skill Metadata Protocol records to answer "what is this skill relevant for in this project, and how can that relevance be indexed, routed, tested, clustered, and reverified?" Skills export to [Agent Skills](https://agentskills.io/specification) shape via `scripts/export-skill.js` and are consumed by Claude Code's skill loader and any Agent-Skills-compatible runtime.
 
-[Adoption](docs/ADOPTION.md) · [Architecture](docs/ARCHITECTURE.md) · [Primer](docs/PRIMER.md) · [Skill Metadata Protocol](SKILL_METADATA_PROTOCOL.md) · [CHANGELOG](CHANGELOG.md) · [Quickstart (30 min)](docs/QUICKSTART-30MIN.md) · [Glossary](docs/glossary.md)
+[Start Here](docs/PRIMER.md) · [Skill Metadata Protocol](SKILL_METADATA_PROTOCOL.md) · [Skill Graph](SKILL_GRAPH.md) · [Audit Loop](SKILL_AUDIT_LOOP.md) · [Audit Checklist](SKILL_AUDIT_CHECKLIST.md) · [Quickstart (30 min)](docs/QUICKSTART-30MIN.md) · [Adoption](docs/ADOPTION.md)
 
 > **Read this if** you're managing more than ~20 skills, your agent picks the wrong one on ambiguous prompts, your grounded skills silently lie when their cited files move, or you want to share skills across projects without folder gymnastics.
 
@@ -51,10 +51,10 @@ The memory analogy is useful but bounded. Skill Graph is not memory. It applies 
 
 ## Quick start
 
-Three commands exercise the whole contract — validate, route, drift-check:
+Three commands exercise the whole protocol: validate, route, drift-check.
 
 ```bash
-# 1. Lint one skill (36 canonical fields, 13 required, 11 contract checks)
+# 1. Lint one skill (36 canonical fields, 13 required, 11 protocol checks)
 node scripts/skill-lint.js skills/documentation
 
 # 2. Route a real query — prints WHY each skill is selected, co-loaded, or excluded
@@ -98,7 +98,7 @@ The router and drift sentinel both read this frontmatter to make their decisions
 
 Humans and AI agents already use `SKILL.md` files as procedural knowledge packages. Humans write and curate them; agents discover and load them based on descriptions, names, and sometimes folder structure. That works for small libraries.
 
-It gets weak when there are many skills, overlapping domains, multiple projects, stale codebase assumptions, or unclear boundaries between skills. A skill says what it does, but not which project, area, angle, taxonomy cluster, methodology, framework, file surface, sibling skill, or verification loop it belongs to. Skill Metadata Protocol makes those relevance claims explicit in metadata. Skill Graph then uses those claims as operational inputs. The OSS release ships the protocol, validators (lint + contract-consistency checker), and reference tooling that proves the metadata is more than decoration.
+It gets weak when there are many skills, overlapping domains, multiple projects, stale codebase assumptions, or unclear boundaries between skills. A skill says what it does, but not which project, area, angle, taxonomy cluster, methodology, framework, file surface, sibling skill, or verification loop it belongs to. Skill Metadata Protocol makes those relevance claims explicit in metadata. Skill Graph then uses those claims as operational inputs. The OSS release ships the protocol, validators (lint + protocol-consistency checker), and reference tooling that proves the metadata is more than decoration.
 
 ### How the workflow changes
 
@@ -112,7 +112,7 @@ It gets weak when there are many skills, overlapping domains, multiple projects,
 8. Reverify grounded skills when the underlying project files change.
 9. Export back to plain Agent Skills when a runtime only supports the base format.
 
-### Three failures the contract prevents
+### Three failures the protocol prevents
 
 **Wrong-skill activation. Silent staleness. Project-scope leak.** Each is a specific symptom of skills that do not yet declare their relevance surface. Skill Metadata Protocol names each surface with typed metadata; lint catches broken metadata before runtime:
 
@@ -124,7 +124,7 @@ The deeper point is not "governance." It is relevance. Once Skill Metadata Proto
 
 ### Authoring is "fill the template, lint catches the rest"
 
-The contract is machine-checked. Authoring a skill means copying [`examples/skill-metadata-template.md`](examples/skill-metadata-template.md), filling the 13 required and ~20 optional frontmatter fields, and running `node scripts/skill-lint.js` — which validates against [`schemas/skill.v3.schema.json`](schemas/skill.v3.schema.json), checks that every `relations.*` target resolves, enforces archetype-specific body sections (e.g. `## Coverage` + `## Philosophy` + `## Verification` + `## Do NOT Use When` for `capability` skills), and surfaces routing-quality regressions. Pinned v2 (frozen) and v3 (current) schema copies in `schemas/` mean adopters can pin a contract version across a future v4 bump. You do not read 36 field docs to author a skill — you copy the template, fill the placeholders, and let lint name what's missing.
+The protocol is machine-checked. Authoring a skill means copying [`examples/skill-metadata-template.md`](examples/skill-metadata-template.md), filling the 13 required and ~20 optional frontmatter fields, and running `node scripts/skill-lint.js` — which validates against [`schemas/skill.v3.schema.json`](schemas/skill.v3.schema.json), checks that every `relations.*` target resolves, enforces archetype-specific body sections (e.g. `## Coverage` + `## Philosophy` + `## Verification` + `## Do NOT Use When` for `capability` skills), and surfaces routing-quality regressions. Pinned v2 (frozen) and v3 (current) schema copies in `schemas/` mean adopters can pin a schema version across a future v4 bump. You do not read 36 field docs to author a skill — you copy the template, fill the placeholders, and let lint name what's missing.
 
 ### Why now
 
@@ -165,7 +165,7 @@ A 2026 reader has at least six AI-coding context tools in their head. Here's how
 
 ## What you get
 
-Three benefits, each backed by contract fields and scripts:
+Three benefits, each backed by protocol fields and scripts:
 
 | Benefit | What it solves | Powered by |
 |---|---|---|
@@ -183,11 +183,11 @@ For teams, Skill Graph turns a folder of skills into an indexed, testable, proje
 
 The complete set of shipped features:
 
-- public `SKILL.md` frontmatter contract (`docs/skill-metadata-protocol.md`) — 36 canonical authored fields, schema_version 3
+- public Skill Metadata Protocol spec (`SKILL_METADATA_PROTOCOL.md`) — 36 canonical authored fields, schema_version 3
 - JSON Schemas for skill and manifest validation (`schemas/`) with pinned v2 (frozen) and v3 (current) copies alongside the unversioned files
 - **skill lint script** with schema validation, parent-directory check, relation-target existence (supports v3 object-item forms), eval coherence, generator parity, archetype-aware sections, and routing quality (`scripts/skill-lint.js`)
-- **contract consistency checker** for cross-artifact parity between schemas, docs, and example artifacts; version-aware C6 that tracks the current pinned schema and freezes prior versions (`scripts/check-contract-consistency.js`)
-- **manifest generator** that walks `skills/**/SKILL.md` (or every root declared in `.skill-graph/config.json` for multi-project workspaces), applies the rename map from `docs/manifest-contract.md`, computes SHA-256 drift detection, and emits a validated, deterministic manifest (`scripts/generate-manifest.js`)
+- **protocol consistency checker** for cross-artifact parity between schemas, docs, and example artifacts; version-aware C6 that tracks the current pinned schema and freezes prior versions (`scripts/check-protocol-consistency.js`)
+- **manifest generator** that walks `skills/**/SKILL.md` (or every root declared in `.skill-graph/config.json` for multi-project workspaces), applies the rename map from `docs/manifest-field-mapping.md`, computes SHA-256 drift detection, and emits a validated, deterministic manifest (`scripts/generate-manifest.js`)
 - **Agent Skills export script** that transforms a Skill Graph SKILL.md into an Agent Skills-compatible file — flattens v3 `compatibility` object to a 500-char string (`scripts/export-skill.js`); five exported fixtures in `examples/exports/`
 - **audit runner** with two modes (`scripts/skill-audit.js`): stub mode seeds `audits/<skill>/{findings,verdict,scorecard}.md` from lint output with human TODO placeholders; `--graded` mode extends the stub by calling an external model CLI (e.g. `claude -p`, `codex exec`) for each of the seven scorecard dimensions, writing evidence-backed PASS / PASS WITH FIXES / FAIL verdicts. Per-dimension prompts are composed by `scripts/lib/audit-prompt-builder.js`; a deterministic mock grader ships at `scripts/lib/mock-grader.js` for CI smoke-tests.
 - **reference consumer — `skill-graph route`** (`scripts/skill-graph-route.js`): graph-aware skill selector that makes `relations`, `grounding`, `eval_state`, `lifecycle`, and `project_tags` visibly drive a routing decision. Supports `--project`, `--max`, `--min-eval-state`, `--path`, `--json`. This is the tool that demonstrates why the extra metadata exists.
@@ -195,7 +195,7 @@ The complete set of shipped features:
 - **v2 → v3 codemod** (`scripts/migrate-skill-v2-to-v3.js`): line-based migration preserving author YAML style, applying the four v3 shape changes automatically.
 - **multi-root workspace mode** — `.skill-graph/config.json` declares multiple `skill_roots` and a `projects → semantic_tags` map; the generator unions all roots into one manifest and stamps each skill with its `project` handle. Fallback to single-root `skills/` when absent.
 - **CI integration** — self-hosted GitHub Actions workflow running lint + consistency checks on every PR touching schema, scripts, skills, or examples (`.github/workflows/skill-graph-lint.yml`); consumer copy-paste snippet at `docs/integrations/github-actions.md`
-- audit documentation for single-skill and repeated-library review (`docs/single-skill-audit-checklist.md`, `docs/library-audit-workflow.md`)
+- audit documentation for single-skill and repeated-library review (`SKILL_AUDIT_CHECKLIST.md`, `SKILL_AUDIT_LOOP.md`)
 - a self-referential skill template (`examples/skill-metadata-template.md`) — now demonstrates v3 object `drift_check`, object `compatibility`, object `boundary` with reason, and `lifecycle`
 - Current `skills/*/SKILL.md` library files, including the eight canonical starter specimens (`skills/a11y`, `debugging`, `documentation`, `refactor`, `testing-strategy`, `skill-router`, `lint-overlay`, `graph-audit`) that cover all four archetypes and all three scopes
 - concrete example audit and eval artifacts against the `documentation` starter (`examples/audits/`, `examples/evals/`)
@@ -215,12 +215,12 @@ See `docs/plans/scripts-roadmap.md` for the planned script surface and [CHANGELO
 
 ### The iteration loop — measured, not ad-hoc
 
-The contract pieces compose into a **measurable improvement cycle**:
+The protocol pieces compose into a **measurable improvement cycle**:
 
-1. **Skills are versioned artifacts** — every `SKILL.md` declares `schema_version` and a per-skill `version`, and ships in a contract pinned by `schemas/skill.v3.schema.json`.
+1. **Skills are versioned artifacts** — every `SKILL.md` declares `schema_version` and a per-skill `version`, and validates against `schemas/skill.v3.schema.json`.
 2. **Grounding is hashed** — `drift_check.truth_source_hashes` records a SHA-256 for every normalized truth-source key, whether that key is a whole file, line range, or anchor; `scripts/skill-graph-drift.js` reports `DRIFT` / `BROKEN` / `STALE` / `NO_BASELINE` against the recorded baseline. `lifecycle.stale_after_days` time-boxes the freshness claim independently.
 3. **Audits produce evidence-backed verdicts** — `node scripts/skill-audit.js <skill> --graded` runs seven per-dimension prompts through an external grader CLI (`claude -p`, `codex exec`, etc.) and writes `PASS` / `PASS WITH FIXES` / `FAIL` per dimension into `findings.md` / `verdict.md` / `scorecard.md`.
-4. **The library workflow loops the whole thing** — [`docs/library-audit-workflow.md`](docs/library-audit-workflow.md) is the standard 12-step loop: select → deterministic lint → optional graded → aggregate → fix → re-verify → next skill. Phase 5 confirms fixes stuck and updates `drift_check.last_verified`.
+4. **The library workflow loops the whole thing** — [`SKILL_AUDIT_LOOP.md`](SKILL_AUDIT_LOOP.md) is the standard 12-step loop: select → deterministic lint → optional graded → aggregate → fix → re-verify → next skill. Phase 5 confirms fixes stuck and updates `drift_check.last_verified`.
 
 The result is a skill library where "this skill is good" is a defended claim with a hash, an eval verdict, and a re-verify date — not a vibe.
 
@@ -303,7 +303,7 @@ Read the trace as evidence: the SELECTED column shows *why* each skill activated
 
 ### (c) A drift warning when a truth source moves
 
-The `graph-audit` starter skill is grounded in seven truth sources (schemas, contract docs, scripts). Edit any one of them — say, add a comment to `scripts/skill-lint.js` — then run:
+The `graph-audit` starter skill is grounded in seven truth sources (schemas, protocol docs, scripts). Edit any one of them — say, add a comment to `scripts/skill-lint.js` — then run:
 
 ```bash
 node scripts/skill-graph-drift.js
@@ -324,34 +324,34 @@ For a step-by-step 30-minute walkthrough where you author a skill from scratch, 
 
 ## Quick tour
 
-The repo is organised in five authority tiers. When two files disagree, the higher tier wins — and CI enforces every tier boundary automatically. For the full architecture walkthrough, read [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md).
+The repo is organised in five authority tiers. When two files disagree, the higher tier wins — and CI enforces every tier boundary automatically. For the full architecture walkthrough, read [`SKILL_GRAPH.md`](SKILL_GRAPH.md).
 
-### Tier 1 — Contract (source of truth)
+### Tier 1 — Schema (source of truth)
 
-- `schemas/skill.schema.json` — frontmatter contract; tracks latest (v3 today)
-- `schemas/manifest.schema.json` — compiled manifest contract; tracks latest (v3 today)
+- `schemas/skill.schema.json` — frontmatter schema; tracks latest (v3 today)
+- `schemas/manifest.schema.json` — compiled manifest schema; tracks latest (v3 today)
 - `schemas/skill.v3.schema.json` + `schemas/manifest.v3.schema.json` — pinned v3 copies. Consumers wanting stability across a future v4 bump validate against these.
 - `schemas/skill.v2.schema.json` + `schemas/manifest.v2.schema.json` — **frozen** v2 copies for consumers still on v2. Run `node scripts/migrate-skill-v2-to-v3.js` to upgrade.
 
-### Tier 2 — Explanation (human reflections of the contract)
+### Tier 2 — Explanation (human reflections of the schema and protocol)
 
 - `SKILL_METADATA_PROTOCOL.md` — **the normative spec.** Top-level public Skill Metadata Protocol contract: required vs optional fields, semantic rules by field group, authored vs generated, migration notes, schema versioning policy. Terse, boundary-aware, no rationale. The doc you print and tape to the wall.
 - `docs/skill-metadata-protocol.md` — **the design rationale.** Archetype map + anatomy + requiredness groups + strictness rules + schema versioning policy AND the *why*: why archetypes are rigid vs anti-rigid (OntoClean per ADR 0003), why the eval-health triple is orthogonal (ADR 0001 + ADR 0006), how JSON-LD `@context` maps every field to W3C terms (ADR 0002). Pedagogical, philosophical, ADR-referencing.
 - `docs/field-reference.md` — per-field semantics for all 36 canonical v3 authored fields, hand-curated prose with examples and lint notes (canonical for authoring). Now the apex of a three-doc structure including `docs/field-reference.generated.md` (auto-generated drift-free index from schema descriptions) and `docs/field-rationale.md` (hand-authored "why this field exists" rationale for the 10 non-obvious fields).
 - `docs/field-decision-guide.md` — decision tables for the hard choices: `scope`, `relations.*`, eval-health triple, `portability`, `project_tags`, and `browse_category` vs `category` vs `project_tags` vs `routing_groups`
-- `docs/manifest-contract.md` — authored → generated bridge with rename map, loss policy, and v2→v3 migration notes
+- `docs/manifest-field-mapping.md` — authored → generated bridge with rename map, loss policy, and v2→v3 migration notes
 
 ### Tier 3 — Enforcement and transformation
 
 - `scripts/skill-lint.js` — per-skill validator (schema, relations, evals, archetype sections, routing quality, truth-source ranges, description length)
 - `scripts/skill-overlap.js` — cross-skill routing-hygiene checker (duplicate triggers, keywords, path globs)
-- `scripts/check-contract-consistency.js` — 7-check cross-artifact consistency checker
+- `scripts/check-protocol-consistency.js` — 7-check cross-artifact consistency checker
 - `scripts/generate-manifest.js` — authored → manifest compiler; multi-root workspace aware
 - `scripts/export-skill.js` — Agent Skills export transform
 - `scripts/migrate-skill-v2-to-v3.js` — v2→v3 codemod
 - `scripts/skill-audit.js` — two-mode audit runner (stub + `--graded`)
 
-### Tier 4 — Reference consumer (what the contract buys you)
+### Tier 4 — Reference consumer (what the protocol enables)
 
 - `scripts/skill-graph-route.js` — graph-aware skill selector using relations + grounding + eval_state + project_tags
 - `scripts/skill-graph-drift.js` — drift sentinel that hashes `grounding.truth_sources` against the recorded baseline
@@ -367,8 +367,8 @@ The repo is organised in five authority tiers. When two files disagree, the high
 
 ### Governance (outside the tier hierarchy)
 
-- `docs/ARCHITECTURE.md` — the full tier walkthrough
-- `docs/single-skill-audit-checklist.md` + `docs/library-audit-workflow.md` — audit workflow docs
+- `SKILL_GRAPH.md` — the full tier walkthrough
+- `SKILL_AUDIT_CHECKLIST.md` + `SKILL_AUDIT_LOOP.md` — audit workflow docs
 - `docs/integrations/github-actions.md` — consumer copy-paste CI snippet
 - `docs/plans/multi-root-workspace.md` — shipped v0.4.0 design doc
 - `CHANGELOG.md`, `CONTRIBUTING.md`, `LICENSE`, `.github/workflows/` — project housekeeping
@@ -377,8 +377,8 @@ The repo is organised in five authority tiers. When two files disagree, the high
 
 Skill Graph ships two reusable audit documents and a concrete artifact set that shows what the outputs look like:
 
-- `docs/single-skill-audit-checklist.md` — the checklist for auditing one skill
-- `docs/library-audit-workflow.md` — the standard 12-step loop for auditing many skills over time
+- `SKILL_AUDIT_CHECKLIST.md` — the checklist for auditing one skill
+- `SKILL_AUDIT_LOOP.md` — the standard 12-step loop for auditing many skills over time
 - `examples/audits/documentation/` — worked example of `findings.md`, `verdict.md`, and `scorecard.md` applied to the `documentation` starter skill
 
 ## Starter skill pack
@@ -402,7 +402,7 @@ All eight starters have `eval_artifacts: present` with a shipped `examples/evals
 
 ## Manifest generation
 
-`scripts/generate-manifest.js` walks `skills/*/SKILL.md`, applies the authored-to-generated rename map from `docs/manifest-contract.md` (grouping `triggers`/`keywords`/`paths`/`examples`/`anti_examples` into `activation`, and `eval_artifacts`/`eval_state`/`routing_eval`/`freshness`/`drift_check` into `health`), computes summary aggregates, validates the result against `schemas/manifest.schema.json`, and emits deterministic JSON with all object keys sorted alphabetically.
+`scripts/generate-manifest.js` walks `skills/*/SKILL.md`, applies the authored-to-generated rename map from `docs/manifest-field-mapping.md` (grouping `triggers`/`keywords`/`paths`/`examples`/`anti_examples` into `activation`, and `eval_artifacts`/`eval_state`/`routing_eval`/`freshness`/`drift_check` into `health`), computes summary aggregates, validates the result against `schemas/manifest.schema.json`, and emits deterministic JSON with all object keys sorted alphabetically.
 
 ```bash
 # Emit manifest to stdout
@@ -529,16 +529,16 @@ node scripts/skill-lint.js --no-color
 
 Exit code 0 means all checks passed. Exit code 1 means one or more files failed. Warnings do not affect the exit code unless `--strict` is active.
 
-### check-contract-consistency.js — cross-artifact contract checks
+### check-protocol-consistency.js — cross-artifact protocol checks
 
-`scripts/check-contract-consistency.js` validates the consistency of the contract documents and example artifacts against each other. This is complementary to `skill-lint.js` — where lint validates per-skill schema correctness, the contract checker validates that the contract documents themselves are internally consistent.
+`scripts/check-protocol-consistency.js` validates that protocol docs, schemas, generated references, and example artifacts agree. This is complementary to `skill-lint.js`: lint validates each skill file, while the protocol checker validates the public specification surface itself.
 
 The script runs seven checks:
 
 | Check | What it detects | Level |
 |-------|----------------|-------|
 | **C1 Field-set parity** | `docs/field-reference.md` section headers match `schemas/skill.schema.json` top-level properties exactly | Error |
-| **C2 Authored-to-generated parity** | Every authored field in `skill.schema.json` appears in `manifest.schema.json` (possibly grouped) or is listed as intentional loss in `docs/manifest-contract.md` | Error |
+| **C2 Authored-to-generated parity** | Every authored field in `skill.schema.json` appears in `manifest.schema.json` (possibly grouped) or is listed as intentional loss in `docs/manifest-field-mapping.md` | Error |
 | **C3 Artifact-root convention** | Shipped audit examples (those under `examples/audits/`) are not referred to by the bare `audits/<skill>/` root in docs (which is the consumer/adopter convention) | Warn |
 | **C4 Sample manifest correctness** | `examples/skills.manifest.sample.json` validates against `schemas/manifest.schema.json` and `summary.total_skills` equals `skills.length` | Error |
 | **C5 Example truth invariants** | Scorecards don't claim unqualified all-target portability; eval artifacts don't use the deprecated v1 `eval_status` JSON key; scorecards don't use v1 portability sub-field names (`level`, `exports`) | Error |
@@ -546,11 +546,11 @@ The script runs seven checks:
 | **C7 Generated field-reference parity** | `docs/field-reference.generated.md` matches the output of `scripts/build-field-reference.js --check` | Error |
 
 ```bash
-# Run all contract consistency checks
-node scripts/check-contract-consistency.js
+# Run all protocol consistency checks
+node scripts/check-protocol-consistency.js
 
 # Show per-check OK messages as well as errors
-node scripts/check-contract-consistency.js --verbose
+node scripts/check-protocol-consistency.js --verbose
 ```
 
 Exit code 0 means all checks passed (warnings do not affect the exit code). Exit code 1 means at least one check failed.

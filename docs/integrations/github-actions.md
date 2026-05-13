@@ -16,7 +16,7 @@ From the Skill Graph repo, copy these paths into your own repository under a pat
 scripts/skill-lint.js           → tools/skill-graph/skill-lint.js
 scripts/lib/                    → tools/skill-graph/lib/
 scripts/lint/                   → tools/skill-graph/lint/
-scripts/check-contract-consistency.js  (optional) → tools/skill-graph/check-contract-consistency.js
+scripts/check-protocol-consistency.js  (optional) → tools/skill-graph/check-protocol-consistency.js
 scripts/generate-manifest.js    (optional) → tools/skill-graph/generate-manifest.js
 scripts/export-skill.js         (optional) → tools/skill-graph/export-skill.js
 schemas/skill.schema.json       → tools/skill-graph/schemas/skill.schema.json
@@ -160,7 +160,7 @@ The same checks run whether you vendor the script today or (eventually) install 
 5. Archetype-aware section validation (required H2 sections per archetype)
 6. Routing quality (keywords required for `scope: codebase` skills)
 
-See `docs/single-skill-audit-checklist.md` for the full list of what each check catches.
+See [`SKILL_AUDIT_CHECKLIST.md`](../../SKILL_AUDIT_CHECKLIST.md) for the full list of what each check catches.
 
 ## Example: PR blocked by a malformed skill
 

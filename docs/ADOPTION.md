@@ -63,7 +63,7 @@ For the full conceptual primer read [`PRIMER.md`](PRIMER.md). To migrate your fi
 4. **Validate locally:**
    ```bash
    node scripts/skill-lint.js                     # schema + relations + evals + sections
-   node scripts/check-contract-consistency.js     # cross-artifact parity
+   node scripts/check-protocol-consistency.js     # cross-artifact parity
    node scripts/generate-manifest.js              # compile to a deterministic manifest
    node scripts/skill-graph-route.js --query "your test query"  # see routing in action
    ```
@@ -104,7 +104,7 @@ To set expectations honestly:
 | Understand the conceptual model | [`PRIMER.md`](PRIMER.md) |
 | Look up a specific field's semantics | [`field-reference.md`](field-reference.md) |
 | See a worked authoring example | [`../examples/skill-metadata-template.md`](../examples/skill-metadata-template.md) |
-| Read the architecture and authority tiers | [`ARCHITECTURE.md`](ARCHITECTURE.md) |
+| Read the architecture and authority tiers | [`SKILL_GRAPH.md`](../SKILL_GRAPH.md) |
 | See which skills are recommended for a starter library | [`recommended-skills.md`](recommended-skills.md) |
 | Set up CI integration | [`integrations/github-actions.md`](integrations/github-actions.md) |
 | Decide between four overlapping taxonomy axes | [`field-decision-guide.md`](field-decision-guide.md) |

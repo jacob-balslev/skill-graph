@@ -1,4 +1,4 @@
-# Skill Graph v1 OSS Skill Metadata Protocol
+# Skill Metadata Protocol
 
 > **Version:** 1.0.0 (schema_version 3, Skill Graph 0.4.x)
 > **Machine-readable schema:** `schemas/skill.v3.schema.json`
@@ -354,7 +354,7 @@ The manifest generator (`scripts/generate-manifest.js`) reads the authored front
 - `activation` — compiled block merging `triggers`, `keywords`, `paths`, `examples`, and `anti_examples` from frontmatter.
 - `health` — compiled block merging `eval_artifacts`, `eval_state`, `routing_eval`, `comprehension_state`, `eval_last_run`, `freshness`, and `drift_check`.
 
-The manifest schema is at `schemas/manifest.schema.json`. For the complete authored-to-generated field rename map and loss policy, see `docs/manifest-contract.md`.
+The manifest schema is at `schemas/manifest.schema.json`. For the complete authored-to-generated field rename map and loss policy, see `docs/manifest-field-mapping.md`.
 
 ### Normalized during manifest generation
 

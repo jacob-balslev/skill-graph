@@ -2,7 +2,7 @@
 
 > **Status:** Reality-aligned teaching reference as of **2026-04-20** (schema_version 3).
 > **Source of truth precedence:** `schemas/skill.v3.schema.json` > `docs/field-reference.md` > this file.
-> **Purpose:** Explain the 36-field canonical frontmatter contract at a conceptual level without inventing structure that the schema does not actually enforce. If this file disagrees with the schema, the schema wins — fix this file.
+> **Purpose:** Explain the 36-field Skill Metadata Protocol frontmatter at a conceptual level without inventing structure that the schema does not actually enforce. If this file disagrees with the schema, the schema wins — fix this file.
 
 ## What kind of graph is this?
 

@@ -29,12 +29,12 @@
   },
   "scripts": {
     "lint": "node scripts/skill-lint.js --include-template",
-    "contract": "node scripts/check-contract-consistency.js",
+    "protocol:check": "node scripts/check-protocol-consistency.js",
     "manifest:validate": "node scripts/generate-manifest.js --validate-only",
     "routing-eval": "node scripts/skill-graph-routing-eval.js --manifest examples/skills.manifest.sample.json --only-asserted",
     "overlap": "node scripts/skill-overlap.js",
     "drift": "node scripts/skill-graph-drift.js",
-    "verify": "npm run lint && npm run contract && npm run manifest:validate && npm run routing-eval && npm run overlap"
+    "verify": "npm run lint && npm run protocol:check && npm run manifest:validate && npm run routing-eval && npm run overlap"
   },
   "dependencies": {},
   "devDependencies": {},

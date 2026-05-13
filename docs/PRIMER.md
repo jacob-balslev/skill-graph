@@ -1,6 +1,6 @@
 # Skill Graph Primer
 
-> **Read this if:** you author Agent Skills and your library is large enough that skills have started to depend on, verify, or exclude one another. This primer is the conceptual introduction to Skill Metadata Protocol and Skill Graph. It is *explanation* documentation — it answers *what* and *why*. For reference material see `docs/field-reference.md`; for procedures see `CONTRIBUTING.md` and `docs/library-audit-workflow.md`; for decision tables see `docs/field-decision-guide.md`.
+> **Read this if:** you author Agent Skills and your library is large enough that skills have started to depend on, verify, or exclude one another. This primer is the conceptual introduction to Skill Metadata Protocol and Skill Graph. It is *explanation* documentation — it answers *what* and *why*. For reference material see `docs/field-reference.md`; for procedures see `CONTRIBUTING.md` and `SKILL_AUDIT_LOOP.md`; for decision tables see `docs/field-decision-guide.md`.
 
 **Status.** Stable for `schema_version: 3`.
 **Audience.** Skill authors who need skills to declare their relevance: which area they cover, which angle they take, which project or stack they fit, which taxonomy / semantic cluster they belong to, and how they should be tested or reverified. Library size is a proxy for this — these questions usually start around 5 skills, sometimes earlier if you have multiple projects, sometimes later for a single small project.
@@ -12,14 +12,14 @@
 |---|---|
 | `docs/PRIMER.md` (this file) | Conceptual introduction: what Skill Graph is, when to adopt it, how the metadata composes |
 | [`README.md`](../README.md) | Project overview, quick start, five-authority-tier tour |
-| [`docs/ARCHITECTURE.md`](ARCHITECTURE.md) | Repo organisation: five **authority tiers** (contract / docs / tooling / consumer / specimen) and the invariants CI enforces |
+| [`SKILL_GRAPH.md`](../SKILL_GRAPH.md) | Repo organisation: five **authority tiers** (schema / explanation / enforcement / consumer / specimen) and the invariants CI enforces |
 | [`docs/skill-metadata-protocol.md`](skill-metadata-protocol.md) | Archetype section map, requiredness groups, schema strictness rules |
 | [`docs/field-reference.md`](field-reference.md) | Per-field semantics for all 36 canonical v3 fields |
 | [`docs/field-decision-guide.md`](field-decision-guide.md) | Decision tables for `scope`, `relations.*`, eval-health, `portability`, `project_tags` |
-| [`docs/manifest-contract.md`](manifest-contract.md) | The authored → generated bridge: rename map, loss policy, migration notes |
+| [`docs/manifest-field-mapping.md`](manifest-field-mapping.md) | The authored → generated bridge: rename map, loss policy, migration notes |
 | [Agent Skills specification](https://agentskills.io/specification) | The base standard Skill Metadata Protocol extends |
 
-> **Terminology note.** This primer describes the **five metadata layers** inside a single skill's frontmatter (Activation, Taxonomy, Ontology, Inheritance, Grounding). Do not confuse these with the **five authority tiers** of the repository (contract, docs, tooling, consumer, specimen) described in `docs/ARCHITECTURE.md`. They are different fives at different scopes: metadata layers live inside one `SKILL.md`; authority tiers span the whole repo.
+> **Terminology note.** This primer describes the **five metadata layers** inside a single skill's frontmatter (Activation, Taxonomy, Ontology, Inheritance, Grounding). Do not confuse these with the **five authority tiers** of the repository (schema, explanation, enforcement, consumer, specimen) described in `SKILL_GRAPH.md`. They are different fives at different scopes: metadata layers live inside one `SKILL.md`; authority tiers span the whole repo.
 
 ## Contents
 
@@ -61,7 +61,7 @@ Skill Metadata Protocol is the canonical contract, not the canonical template. T
 
 ### Scope of this primer
 
-The primer transmits the **mental model** needed to read the reference material without getting lost. It does not exhaust the contract; every field named here has a normative definition in `docs/field-reference.md`. Worked authoring procedures live in `CONTRIBUTING.md § Adding or modifying a skill`. Audit procedures live in `docs/library-audit-workflow.md`.
+The primer transmits the **mental model** needed to read the reference material without getting lost. It does not exhaust the protocol; every field named here has a normative definition in `docs/field-reference.md`. Worked authoring procedures live in `CONTRIBUTING.md § Adding or modifying a skill`. Audit procedures live in `SKILL_AUDIT_LOOP.md`.
 
 ### How Skill Graph differs from marketplaces and runtimes
 
@@ -247,7 +247,7 @@ Beyond the four structuring axes, three categories of domain knowledge have dedi
 
 **Frameworks and patterns** live in the relations graph (Layer 3). `depends_on` is the right edge for "you cannot apply this pattern responsibly without that framework in place" — the starter `refactor` skill declares `depends_on: [testing-strategy]` for exactly this reason. `extends` (Layer 4) is the right edge for "this is a specialisation" — the `lint-overlay` starter extends `testing-strategy`. `adjacent` is for "these are worth reading together" without load-bearing dependency.
 
-**Templates** live in the specimen tier of the repo (Tier 5 per `docs/ARCHITECTURE.md`): `examples/skill-metadata-template.md` is the self-referential authoring template, and the overlay archetype is the contract's templating mechanism. Adopters fork the template and tighten its frontmatter; the teaching layer (`> **TEMPLATE NOTE:**` blockquotes and `# TEMPLATE NOTE:` YAML comments) is stripped from derived skills before shipping.
+**Templates** live in the specimen tier of the repo (Tier 5 per `SKILL_GRAPH.md`): `examples/skill-metadata-template.md` is the self-referential authoring template, and the overlay archetype is the protocol's templating mechanism. Adopters fork the template and tighten its frontmatter; the teaching layer (`> **TEMPLATE NOTE:**` blockquotes and `# TEMPLATE NOTE:` YAML comments) is stripped from derived skills before shipping.
 
 ---
 
@@ -358,7 +358,7 @@ The positive identity is in [§1 — How Skill Graph differs from marketplaces a
 - **Not an always-on project instruction file.** Keep non-negotiable repo rules in AGENTS.md / CLAUDE.md; keep routable procedural knowledge in skills.
 - **Not a second skill format competing with Agent Skills.** Skill Metadata Protocol is an enriched contract over Agent Skills and can be exported to base Agent Skills (section 7).
 - **Not a tutorial.** For "how do I author my first skill," see [`docs/QUICKSTART-30MIN.md`](QUICKSTART-30MIN.md) and `CONTRIBUTING.md § Adding or modifying a skill`.
-- **Not exhaustive.** This primer transmits the mental model. Normative field semantics live in `docs/field-reference.md`; archetype section maps live in `docs/skill-metadata-protocol.md`; contract invariants live in `docs/ARCHITECTURE.md`.
+- **Not exhaustive.** This primer transmits the mental model. Normative field semantics live in `docs/field-reference.md`; archetype section maps live in `docs/skill-metadata-protocol.md`; authority-tier invariants live in `SKILL_GRAPH.md`.
 
 ---
 
@@ -368,7 +368,7 @@ The positive identity is in [§1 — How Skill Graph differs from marketplaces a
 
 1. `README.md` — project overview and quick start
 2. `docs/PRIMER.md` — this file
-3. `docs/ARCHITECTURE.md` — repo organisation and the five authority tiers
+3. `SKILL_GRAPH.md` — repo organisation and the five authority tiers
 4. `docs/field-decision-guide.md` — decision tables you will consult while authoring
 5. `docs/skill-metadata-protocol.md` — archetype section maps and strictness rules
 6. `docs/field-reference.md` — per-field reference (bookmark, don't read linearly)

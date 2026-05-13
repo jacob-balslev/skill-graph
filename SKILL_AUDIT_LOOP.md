@@ -77,7 +77,7 @@ flowchart LR
 ```
 
 <!-- Rendered copy for non-Mermaid viewers. Regenerate via: npx @mermaid-js/mermaid-cli -i <source> -o docs/images/audit-phases.png -->
-<img src="./images/audit-phases.png" alt="Five audit phases left to right — select skill, deterministic lint, optional graded mode, aggregate verdict, fix or defer, re-verify, then next skill" width="960" />
+<img src="docs/images/audit-phases.png" alt="Five audit phases left to right — select skill, deterministic lint, optional graded mode, aggregate verdict, fix or defer, re-verify, then next skill" width="960" />
 
 **Legend.** Blue solid = mandatory phase. Yellow dashed = optional phase. Green ovals = loop endpoints. The dashed arrow from Phase 3 to Phase 5 is the PASS shortcut — when the verdict is clean, there is nothing to fix.
 
@@ -124,7 +124,7 @@ flowchart TB
 ```
 
 <!-- Rendered copy for non-Mermaid viewers. Regenerate via: npx @mermaid-js/mermaid-cli -i <source> -o docs/images/graded-mode.png -->
-<img src="./images/graded-mode.png" alt="Graded mode fans out to 7 dimensions — metadata, activation, relation, grounding (skipped when portable), content, eval, portability — through a user-configurable grader CLI, then parses structured verdicts for the aggregate phase" width="1000" />
+<img src="docs/images/graded-mode.png" alt="Graded mode fans out to 7 dimensions — metadata, activation, relation, grounding (skipped when portable), content, eval, portability — through a user-configurable grader CLI, then parses structured verdicts for the aggregate phase" width="1000" />
 
 **Legend.** Blue = prompt composition and response parsing (mechanical). Purple = individual dimension prompts. Pink = the external grader CLI, user-configurable via `--grader-cli`. Green ovals = entry/exit handoffs to the main loop.
 
@@ -191,7 +191,7 @@ Read the skill itself and classify it:
 
 ### Step 4. Apply the Skill Audit Checklist
 
-Use `docs/single-skill-audit-checklist.md` as the canonical audit checklist.
+Use `SKILL_AUDIT_CHECKLIST.md` as the canonical audit checklist.
 
 ### Step 5. Verify grounding
 
@@ -249,7 +249,7 @@ Optional artifacts:
 2. updated manifest snapshot
 3. migration notes
 
-Use the standard file names and section structures from `docs/single-skill-audit-checklist.md`.
+Use the standard file names and section structures from `SKILL_AUDIT_CHECKLIST.md`.
 
 ### Step 10. Fix what is safe to fix now
 
@@ -336,7 +336,7 @@ Use these dimensions if you want a richer audit output.
 
 | Dimension | Question |
 |---|---|
-| Metadata validity | Is the frontmatter contract valid? |
+| Metadata validity | Is the frontmatter schema valid? |
 | Activation quality | Will the skill activate when it should? |
 | Relation quality | Are graph relations useful and correct? |
 | Grounding fidelity | Do claims match truth sources? |

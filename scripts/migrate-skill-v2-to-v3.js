@@ -3,7 +3,7 @@
  * Skill Graph codemod: schema_version 2 → 3.
  *
  * Transforms a SKILL.md (or a directory of skill directories) from the v2
- * frontmatter contract to the v3 contract. v3 introduces a small number of
+ * frontmatter shape to the v3 protocol shape. v3 introduces a small number of
  * breaking shape changes and one rename; all new v3 fields are optional and
  * are intentionally NOT inserted by this codemod — authors opt into them
  * individually when the added metadata is real.

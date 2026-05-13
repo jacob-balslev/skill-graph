@@ -1,17 +1,19 @@
-# Manifest Contract
+# Manifest Field Mapping
 
 > **Scope.** This document is the authored-to-generated bridge for Skill Graph: it specifies exactly how every top-level field in a `SKILL.md` frontmatter block projects into the compiled `skills.manifest.json` that downstream tooling consumes.
 >
-> **Audience.** Authors of manifest generators and consumers of the manifest. If you are authoring a skill itself, read `docs/skill-metadata-protocol.md` instead — that document owns the field semantics. This document owns the transformation from authored to generated.
+> **Audience.** Authors of manifest generators and consumers of the manifest. If you are authoring a skill itself, read [`SKILL_METADATA_PROTOCOL.md`](../SKILL_METADATA_PROTOCOL.md) and [`docs/field-reference.md`](field-reference.md) instead. This document owns the transformation from authored to generated.
 >
-> **Authority.** `schemas/skill.schema.json` is the authored contract. `schemas/manifest.schema.json` is the generated contract. This document explains the mapping between them and may not contradict either schema.
+> **Authority.** `schemas/skill.schema.json` is the authored schema. `schemas/manifest.schema.json` is the generated manifest schema. This document explains the mapping between them and may not contradict either schema.
 
 ## Related documents
 
-- `docs/skill-metadata-protocol.md` — authoritative field semantics for the authored `SKILL.md` contract.
-- `schemas/skill.schema.json` — enforceable JSON Schema for authored frontmatter.
-- `schemas/manifest.schema.json` — enforceable JSON Schema for the generated manifest.
-- `examples/skills.manifest.sample.json` — sample manifest showing the generated shape for the current `skills/` library plus the template.
+- [`SKILL_METADATA_PROTOCOL.md`](../SKILL_METADATA_PROTOCOL.md) — normative public spec for the authored `SKILL.md` protocol.
+- [`docs/field-reference.md`](field-reference.md) — per-field authoring reference.
+- [`docs/skill-metadata-protocol.md`](skill-metadata-protocol.md) — rationale and deep explanation.
+- [`schemas/skill.schema.json`](../schemas/skill.schema.json) — enforceable JSON Schema for authored frontmatter.
+- [`schemas/manifest.schema.json`](../schemas/manifest.schema.json) — enforceable JSON Schema for the generated manifest.
+- [`examples/skills.manifest.sample.json`](../examples/skills.manifest.sample.json) — sample manifest showing the generated shape for the current `skills/` library plus the template.
 
 ---
 
@@ -101,7 +103,7 @@ Four Agent-Skills base-standard fields and one Skill Graph classification field 
 | `compatibility` | Dropped as "belongs in a separate spec" | Agent Skills compatibility. The compatibility string declares runtime or environment requirements (e.g. `Markdown, YAML, JSON Schema` or `Python 3.11+`). Consumers route based on this. Without flow-through, consumers would have to re-parse the authored source. |
 | `allowed-tools` | Dropped as "a runtime concern, not metadata" | Agent Skills compatibility. The base standard defines `allowed-tools` as a frontmatter field that sandboxes tool use. The manifest is the canonical feed for runtime consumers; stripping `allowed-tools` would force consumers back to the authored file, defeating the purpose of compiling a manifest. |
 | `routing_groups` (v1 name: `route_groups`) | Dropped as "superseded by `relations`" | Relations and routing groups encode different semantics. `relations` declares per-skill adjacencies; `routing_groups` declares a classification tag (e.g. `quality`, `security`) that a routing layer can use to pick a skill family. They are complementary, not overlapping, and the router layer needs both. Field renamed to `routing_groups` in schema_version 2 (SH-5784). |
-| `domain_object` (inside `grounding`) | Dropped from the required-field set during an earlier schema tightening | Grounded skills anchor to a specific domain object (e.g. "Shopify order reconciliation," "Skill authoring for the Skill Metadata Protocol frontmatter contract"). Consumers use `domain_object` to decide whether a skill matches a task's subject. Dropping it left grounded skills ungrounded to consumers. SH-5776 restored it as a required sub-field. |
+| `domain_object` (inside `grounding`) | Dropped from the required-field set during an earlier schema tightening | Grounded skills anchor to a specific domain object (e.g. "Shopify order reconciliation," "Skill authoring for the Skill Metadata Protocol frontmatter"). Consumers use `domain_object` to decide whether a skill matches a task's subject. Dropping it left grounded skills ungrounded to consumers. SH-5776 restored it as a required sub-field. |
 
 ### Current dropped-field list
 
@@ -323,7 +325,7 @@ relations:
       reason: "refactor is behavior-preserving code modification, not skill authoring"
   verify_with: [documentation]
 grounding:
-  domain_object: Skill authoring for the Skill Metadata Protocol frontmatter contract
+  domain_object: Skill authoring for the Skill Metadata Protocol frontmatter
   grounding_mode: repo_specific
   truth_sources:
     - docs/skill-metadata-protocol.md
@@ -372,7 +374,7 @@ lifecycle:
     "verify_with": ["documentation"]
   },
   "grounding": {
-    "domain_object": "Skill authoring for the Skill Metadata Protocol frontmatter contract",
+    "domain_object": "Skill authoring for the Skill Metadata Protocol frontmatter",
     "grounding_mode": "repo_specific",
     "truth_sources": [
       "docs/skill-metadata-protocol.md",

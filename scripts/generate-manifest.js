@@ -4,7 +4,7 @@
  *
  * Walks `skills/<name>/SKILL.md` (and optionally `examples/skill-metadata-template.md`),
  * applies the authored-to-generated rename map documented in
- * `docs/manifest-contract.md`, computes summary aggregates, validates the
+ * `docs/manifest-field-mapping.md`, computes summary aggregates, validates the
  * result against `schemas/manifest.schema.json`, and emits the compiled
  * `skills.manifest.json`.
  *
@@ -225,7 +225,7 @@ function detectDrift(fm) {
 }
 
 // ---------------------------------------------------------------------------
-// Rename map — implements docs/manifest-contract.md § "Top-level authored fields"
+// Rename map — implements docs/manifest-field-mapping.md § "Top-level authored fields"
 // ---------------------------------------------------------------------------
 
 /**

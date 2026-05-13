@@ -2,16 +2,16 @@
 # yaml-language-server: $schema=https://skillgraph.dev/schemas/skill.v3.schema.json
 schema_version: 3
 name: skill-infrastructure
-description: "Use when designing the deterministic health-tooling layer for a skill library, diagnosing why an existing library is decaying invisibly, deciding which categories of automated check to add (inventory, contract consistency, conflict detection, routing health, drift sentinel), debugging eval-threshold violations across many skills at once, or auditing whether a skill-system has the safety nets a production library needs. Covers the five categories of skill-health tooling, the library-as-database mental model, eval quality patterns (minimum thresholds, contradiction-check pattern, negative-expectation requirement), maintenance workflows triggered by batch skill changes, and the anti-patterns that cause skill libraries to decay until agents loading them get worse over time. Do NOT use for authoring an individual SKILL.md (use `skill-scaffold`), for running the conformance audit on the Skill Graph repo itself (use `graph-audit`), or for general lint rule selection across a codebase (use `lint-overlay`)."
+description: "Use when designing the deterministic health-tooling layer for a skill library, diagnosing why an existing library is decaying invisibly, deciding which categories of automated check to add (inventory, protocol consistency, conflict detection, routing health, drift sentinel), debugging eval-threshold violations across many skills at once, or auditing whether a skill-system has the safety nets a production library needs. Covers the five categories of skill-health tooling, the library-as-database mental model, eval quality patterns (minimum thresholds, contradiction-check pattern, negative-expectation requirement), maintenance workflows triggered by batch skill changes, and the anti-patterns that cause skill libraries to decay until agents loading them get worse over time. Do NOT use for authoring an individual SKILL.md (use `skill-scaffold`), for running the conformance audit on the Skill Graph repo itself (use `graph-audit`), or for general lint rule selection across a codebase (use `lint-overlay`)."
 version: 1.0.0
 type: capability
 browse_category: knowledge
 category: skill-system/health
 scope: portable
 owner: skill-graph-maintainer
-freshness: "2026-05-06"
+freshness: "2026-05-13"
 drift_check:
-  last_verified: "2026-05-06"
+  last_verified: "2026-05-13"
 eval_artifacts: planned
 eval_state: unverified
 routing_eval: absent
@@ -95,7 +95,7 @@ lifecycle:
 
 - The library-as-database mental model: skill-infrastructure as the linter, integrity checker, and query planner for a SKILL.md library
 - Why deterministic, zero-LLM tooling is mandatory for skill libraries (trustworthy enough for CI gates; LLM-based health checks are circular)
-- The five categories of skill-health tooling: (1) inventory and frontmatter validation, (2) contract consistency, (3) conflict detection (overlap, imperative, code duplication, heading overlap), (4) routing health (gap analysis, miss tracking), (5) drift detection (truth-source hashing, mirror parity)
+- The five categories of skill-health tooling: (1) inventory and frontmatter validation, (2) protocol consistency, (3) conflict detection (overlap, imperative, code duplication, heading overlap), (4) routing health (gap analysis, miss tracking), (5) drift detection (truth-source hashing, mirror parity)
 - Eval quality patterns: minimum eval threshold per skill, the contradiction-check eval type, the negative-expectation requirement, valid eval-type taxonomy
 - Imperative conflict detection: the same-target-opposite-polarity rule, three-check false-positive suppression, when conflicts indicate scope-tightening vs merging
 - Routing gap analysis: how to read a "routing-misses" log, how to distinguish keyword gaps from skill content gaps, signal-hygiene rules to suppress noise
@@ -119,11 +119,11 @@ Treat the skill library as a database and skill-infrastructure as its query plan
 
 | Database concept | Skill-library equivalent |
 |---|---|
-| Schema | SKILL.md frontmatter contract (JSON Schema or equivalent) |
+| Schema | SKILL.md frontmatter schema (JSON Schema or equivalent) |
 | Constraints | Required fields, eval thresholds, valid enum values |
 | Foreign keys | `relations.boundary[]`, `relations.related[]` targets — must point at real skills |
 | Indexes | Manifest, routing-keyword map, path-glob inverse index |
-| Integrity check | Contract-consistency tooling (cross-schema parity, sample correctness, generated-field parity) |
+| Integrity check | Protocol-consistency tooling (cross-schema parity, sample correctness, generated-field parity) |
 | Query planner | Skill router (matches user prompt → skill activation) |
 | Replication lag | Mirror parity (`.claude/skills`, `.agents/skills`, harness-specific copies) |
 | Dead code | Skills with broken relation targets, phantom routing entries |
@@ -136,7 +136,7 @@ A production skill library needs all five. Missing any one allows a class of dec
 
 ### 1. Inventory and Frontmatter Validation
 
-Walks the skill tree, parses every SKILL.md's frontmatter, and validates against the contract.
+Walks the skill tree, parses every SKILL.md's frontmatter, and validates against the schema.
 
 | Check | Why it matters |
 |---|---|
@@ -149,7 +149,7 @@ Walks the skill tree, parses every SKILL.md's frontmatter, and validates against
 
 **Reference implementation:** `scripts/skill-lint.js` in this repo runs T5 per-skill lint covering most of these.
 
-### 2. Contract Consistency
+### 2. Protocol Consistency
 
 Cross-checks that the schema, generator, sample manifest, and field-reference docs all agree.
 
@@ -161,7 +161,7 @@ Cross-checks that the schema, generator, sample manifest, and field-reference do
 | Generated field-reference matches authored field-reference | Documentation drift hides field changes |
 | Truth invariants on example evals (e.g. truth-source line ranges still resolve) | Eval expectations point at non-existent code |
 
-**Reference implementation:** `scripts/check-contract-consistency.js` runs C1–C7 contract checks.
+**Reference implementation:** `scripts/check-protocol-consistency.js` runs C1–C7 protocol checks.
 
 ### 3. Conflict Detection
 
@@ -300,8 +300,8 @@ Run after any batch skill work — creating ≥ 3 skills, changing routing confi
 # 1. Inventory snapshot — discover invalid frontmatter, missing fields, broken refs
 <inventory tool>
 
-# 2. Contract consistency — cross-schema, manifest, generated-doc parity
-<contract-consistency tool>
+# 2. Protocol consistency — cross-schema, manifest, generated-doc parity
+<protocol-consistency tool>
 
 # 3. Conflict detection — overlap, imperatives, code duplication
 <conflict tool> --conflicts

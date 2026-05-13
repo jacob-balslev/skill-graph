@@ -1,8 +1,8 @@
-# Skill Graph Architecture
+# Skill Graph
 
-> **Read this if:** you want to understand how the ~70 files in this repo relate to each other, which file is authoritative when two files disagree, and why the contract doesn't silently drift.
+> **Read this if:** you want to understand the library-level Skill Graph system: the tools, generated artifacts, authority tiers, and maintenance loops that operate on Skill Metadata Protocol records.
 
-Skill Graph is built around a contract-first protocol. Skill Metadata Protocol defines the skill-level contract; Skill Graph supplies the library-level tooling around it. The repo is organised in five authority tiers — each tier derives from the one above it, and tooling enforces the derivation automatically. When any two files appear to contradict each other, the tier with higher authority wins; the lower-tier file is a bug.
+Skill Graph is the library-level system around the Skill Metadata Protocol. The protocol defines what one `SKILL.md` must declare; Skill Graph supplies the manifest compiler, validator, router, drift sentinel, audit loop, and specimen library that make those declarations useful across many skills. The repo is organised in five authority tiers: each tier derives from the one above it, and tooling enforces the derivation automatically. When any two files appear to contradict each other, the tier with higher authority wins; the lower-tier file is a bug.
 
 ---
 
@@ -34,9 +34,9 @@ flowchart LR
 ```
 
 <!-- Rendered copy for non-Mermaid viewers. Regenerate via: npx @mermaid-js/mermaid-cli -i <source> -o docs/images/system-model.png -->
-<img src="./images/system-model.png" alt="System model — SKILL.md is validated by skill-lint.js, compiled into skills.manifest.json, and audited by skill-audit.js which emits findings/verdict/scorecard artifacts" width="900" />
+<img src="docs/images/system-model.png" alt="System model — SKILL.md is validated by skill-lint.js, compiled into skills.manifest.json, and audited by skill-audit.js which emits findings/verdict/scorecard artifacts" width="900" />
 
-**Legend.** Blue = authored input. Green = tooling. Yellow = output artifact. Solid arrows are the data flow. Every entity in this diagram has its own deep-dive diagram: [§ Anatomy](skill-metadata-protocol.md#anatomy) for `SKILL.md`, [§ Loop at a Glance](library-audit-workflow.md#loop-at-a-glance) for `skill-audit.js`, [§ Manifest Contract](manifest-contract.md) for `skills.manifest.json`.
+**Legend.** Blue = authored input. Green = tooling. Yellow = output artifact. Solid arrows are the data flow. Every entity in this diagram has its own deep-dive diagram: [§ Anatomy](docs/skill-metadata-protocol.md#anatomy) for `SKILL.md`, [§ Loop at a Glance](SKILL_AUDIT_LOOP.md#loop-at-a-glance) for `skill-audit.js`, [§ Manifest Field Mapping](docs/manifest-field-mapping.md) for `skills.manifest.json`.
 
 ---
 
@@ -44,24 +44,24 @@ flowchart LR
 
 | Tier | Role | When it's truth | What enforces the derivation |
 |---|---|---|---|
-| **1. Contract** | `schemas/*.json` | Always. These are the law. | — |
-| **2. Explanation** | `docs/*.md` describing the schema | Until the schema disagrees. | `check-contract-consistency.js` C1, C2 |
+| **1. Schema** | `schemas/*.json` | Always. These are the machine-enforced rules. | — |
+| **2. Explanation** | `docs/*.md` describing the schema | Until the schema disagrees. | `check-protocol-consistency.js` C1, C2 |
 | **3. Enforcement** | `scripts/*.js` that police + compile + transform | Run-time only; their output must match Tier 1 | `skill-lint.js` checks 6, 7, 8 |
 | **4. Consumer** | `skill-graph-route`, `skill-graph-drift` | They USE Tier 1 to make decisions; they don't redefine anything | — |
 | **5. Specimens** | `examples/` + `skills/` starters | Illustrative only. If they break the schema, they're wrong. | `skill-lint.js` checks 1–4 |
 
-A sixth set of files — `README.md`, `CHANGELOG.md`, `CONTRIBUTING.md`, `LICENSE`, `.github/` — is **governance**, not a tier. These govern *the repo*, not the contract.
+A sixth set of files — `README.md`, `CHANGELOG.md`, `CONTRIBUTING.md`, `LICENSE`, `.github/` — is **governance**, not a tier. These govern *the repo*, not the protocol shape.
 
 ---
 
-## Tier 1 — Contract (binding, machine-enforceable)
+## Tier 1 — Schema (binding, machine-enforceable)
 
 **If Tier 1 disagrees with anything below it, Tier 1 wins. Always.**
 
 | File | Role |
 |---|---|
-| `schemas/skill.schema.json` | The frontmatter contract. Unversioned — tracks latest (v3 today). |
-| `schemas/manifest.schema.json` | The compiled-manifest contract. Unversioned — tracks latest (v3 today). |
+| `schemas/skill.schema.json` | The frontmatter schema. Unversioned — tracks latest (v3 today). |
+| `schemas/manifest.schema.json` | The compiled-manifest schema. Unversioned — tracks latest (v3 today). |
 | `schemas/skill.v3.schema.json` | Pinned v3 copy. Consumers that want stability across a future v4 bump validate against this file. |
 | `schemas/manifest.v3.schema.json` | Pinned v3 copy. Same rationale. |
 | `schemas/skill.v2.schema.json` | **Frozen.** Retained for consumers still on v2. Never updated. |
@@ -69,27 +69,28 @@ A sixth set of files — `README.md`, `CHANGELOG.md`, `CONTRIBUTING.md`, `LICENS
 
 Two rules govern this tier:
 
-1. **Pinned copies must match the unversioned file modulo `$id` and `title`.** Enforced by C6 in `check-contract-consistency.js`. Drift is a CI failure.
+1. **Pinned copies must match the unversioned file modulo `$id` and `title`.** Enforced by C6 in `check-protocol-consistency.js`. Drift is a CI failure.
 2. **Frozen prior-version schemas must exist** but are not parity-checked. Freezing is the whole point of pinning.
 
 ---
 
 ## Tier 2 — Explanation (human-readable reflection of Tier 1)
 
-Documents that describe the schemas in prose. If a Tier 2 file disagrees with Tier 1, Tier 2 is the bug — fix the doc, not the schema.
+Public docs that define or explain the protocol in prose. If a Tier 2 file disagrees with Tier 1, Tier 2 is the bug — fix the doc, not the schema.
 
 | File | Role |
 |---|---|
-| `docs/skill-metadata-protocol.md` | Authoritative overview: archetype section map, requiredness groups, strictness rules, schema versioning policy. |
+| `SKILL_METADATA_PROTOCOL.md` | Normative public spec: required fields, semantic rules, authored vs generated fields, migration notes. |
+| `docs/skill-metadata-protocol.md` | Rationale and deep explanation: archetype section map, requiredness groups, strictness rules, schema versioning policy, design tradeoffs. |
 | `docs/field-reference.md` | One section per authored field. All 36 canonical v3 fields with purpose, rules, allowed values, examples. |
 | `docs/field-decision-guide.md` | Decision tables for the hard choices: `scope`, `relations.*`, eval-health triple, `portability`, `project_tags`, and the "tag vs. category vs. routing_groups" question. |
-| `docs/manifest-contract.md` | The authored → generated bridge: rename map, loss policy, per-version migration notes, worked example. |
+| `docs/manifest-field-mapping.md` | The authored → generated bridge: rename map, loss policy, per-version migration notes, worked example. |
 
 Three rules govern this tier:
 
 1. **Section headers in `field-reference.md` must exactly match the top-level properties of `skill.schema.json`.** Enforced by C1. A missing section or an orphan one is a CI failure.
-2. **Every authored field must be covered in `manifest-contract.md`** (either in the rename map or the dropped-field list). Enforced by C2.
-3. **The v2→v3 migration note in `manifest-contract.md`** must be accurate enough that an author running `migrate-skill-v2-to-v3.js` gets the same result the doc describes. Checked at release time via the worked example.
+2. **Every authored field must be covered in `manifest-field-mapping.md`** (either in the rename map or the dropped-field list). Enforced by C2.
+3. **The v2→v3 migration note in `manifest-field-mapping.md`** must be accurate enough that an author running `migrate-skill-v2-to-v3.js` gets the same result the doc describes. Checked at release time via the worked example.
 
 ---
 
@@ -111,7 +112,7 @@ Scripts that police Tier 1 (lint, consistency) or compile Tier 1's output (manif
 
 | File | Role |
 |---|---|
-| `scripts/check-contract-consistency.js` | Seven checks (C1–C7): field-set parity, authored-to-generated parity, artifact-root convention, sample manifest correctness, example truth invariants, versioned schema parity, generated field-reference parity. |
+| `scripts/check-protocol-consistency.js` | Seven checks (C1–C7): field-set parity, authored-to-generated parity, artifact-root convention, sample manifest correctness, example truth invariants, versioned schema parity, generated field-reference parity. |
 
 ### Compilation and transformation
 
@@ -154,9 +155,9 @@ flowchart LR
 ```
 
 <!-- Rendered copy for non-Mermaid viewers. Source: docs/diagrams/manifest-pipeline.mmd. Regenerate via: npx @mermaid-js/mermaid-cli -i docs/diagrams/manifest-pipeline.mmd -o docs/images/manifest-pipeline.png -b white --width 1600 -->
-<img src="./images/manifest-pipeline.png" alt="Manifest pipeline — authored SKILL.md files plus optional workspace config flow through parse-frontmatter, rename/group, SHA-256 hashing, and ajv validation against manifest.schema.json before becoming skills.manifest.json" width="960" />
+<img src="docs/images/manifest-pipeline.png" alt="Manifest pipeline — authored SKILL.md files plus optional workspace config flow through parse-frontmatter, rename/group, SHA-256 hashing, and ajv validation against manifest.schema.json before becoming skills.manifest.json" width="960" />
 
-**Legend.** Blue = authored input. Green = tooling step. Pink = validation gate (hard-fail on additionalProperties). Yellow = the compiled artifact. Red = exit-1 on schema mismatch. The rename map this pipeline applies is the one documented in [`docs/manifest-contract.md § Rename Map`](manifest-contract.md#rename-map) — the diagram shows the topology, the manifest contract shows the field-level fates.
+**Legend.** Blue = authored input. Green = tooling step. Pink = validation gate (hard-fail on additionalProperties). Yellow = the compiled artifact. Red = exit-1 on schema mismatch. The rename map this pipeline applies is the one documented in [`docs/manifest-field-mapping.md § Rename Map`](docs/manifest-field-mapping.md#rename-map) — the diagram shows the topology, the manifest field mapping shows the field-level fates.
 
 ### Audit (hybrid enforcement/consumption)
 
@@ -210,7 +211,7 @@ stateDiagram-v2
 ```
 
 <!-- Rendered copy for non-Mermaid viewers. Source: docs/diagrams/drift-states.mmd. Regenerate via: npx @mermaid-js/mermaid-cli -i docs/diagrams/drift-states.mmd -o docs/images/drift-states.png -b white --width 1400 -->
-<img src="./images/drift-states.png" alt="Drift sentinel state machine — NO_BASELINE, OK, STALE, DRIFT, BROKEN states with transitions driven by --record --apply, lifecycle.stale_after_days, live SHA-256 comparison, and truth-source file availability" width="900" />
+<img src="docs/images/drift-states.png" alt="Drift sentinel state machine — NO_BASELINE, OK, STALE, DRIFT, BROKEN states with transitions driven by --record --apply, lifecycle.stale_after_days, live SHA-256 comparison, and truth-source file availability" width="900" />
 
 **Legend.** Five states; arrows are transitions with the trigger printed on them. `OK` is the only green state — every other state signals something the author must act on. `--record --apply` is the only author action that can write hashes back into the skill's frontmatter; every other transition is observed, not commanded. The `DRIFT → BROKEN` edge is the one nobody wants — a drifted claim silently outlives the file it was grounded in.
 
@@ -265,7 +266,7 @@ flowchart LR
 ```
 
 <!-- Rendered copy for non-Mermaid viewers. Source: docs/diagrams/routing-harness.mmd. Regenerate via: npx @mermaid-js/mermaid-cli -i docs/diagrams/routing-harness.mmd -o docs/images/routing-harness.png -b white --width 1600 -->
-<img src="./images/routing-harness.png" alt="Routing harness decision path — per skill, positive examples must route to the skill itself; negative anti-examples must route elsewhere (ideally to a skill named in relations.boundary[]) or nowhere (COVERAGE_GAP, informational)" width="960" />
+<img src="docs/images/routing-harness.png" alt="Routing harness decision path — per skill, positive examples must route to the skill itself; negative anti-examples must route elsewhere (ideally to a skill named in relations.boundary[]) or nowhere (COVERAGE_GAP, informational)" width="960" />
 
 **Legend.** Green = pass state or loop endpoint. Red = FAIL state — the verdict that keeps `routing_eval: absent`. Pink = decision gate. Blue = work node. Purple-dashed = `COVERAGE_GAP` (not a FAIL — the anti-example correctly avoids the skill but no other skill absorbs it; surfaces a `relations.boundary` gap worth tightening in the next pass). The asymmetry between the positive and negative gates is the whole point: positive cases must uniquely identify the skill (tight gate); negative cases must only avoid the skill (loose gate with boundary confirmation as the quality signal). Lint check 12 refuses `routing_eval: present` when any red terminal is reached; a skill with only green + purple terminals earns `present`.
 
@@ -370,7 +371,7 @@ flowchart LR
 ```
 
 <!-- Rendered copy for non-Mermaid viewers. Source: docs/diagrams/starter-graph.mmd. Regenerate via: npx @mermaid-js/mermaid-cli -i docs/diagrams/starter-graph.mmd -o docs/images/starter-graph.png -b white --width 1600 -->
-<img src="./images/starter-graph.png" alt="Starter-skill relations graph — eight starters plus the template, with depends_on/extends (thick solid), verify_with (dashed), adjacent (thin undirected), and boundary (red anti-ownership) edges between them" width="1100" />
+<img src="docs/images/starter-graph.png" alt="Starter-skill relations graph — eight starters plus the template, with depends_on/extends (thick solid), verify_with (dashed), adjacent (thin undirected), and boundary (red anti-ownership) edges between them" width="1100" />
 
 **Legend.** Node fill encodes archetype: blue = capability, green = workflow, pink = router, yellow-dashed = overlay, purple = specimen. A thick node stroke marks `scope: codebase` — only `graph-audit`; every other starter is `portable` and the template is `reference`. Edge styles: `==>` thick solid = `depends_on` (load-bearing) or `extends` (overlay inheritance — semantically stronger than `depends_on`); `-.->` dashed = `verify_with` (co-load for confidence); `---` thin = `adjacent` (suggested co-reading, no dependency); `-. boundary .-x` red-dashed = `boundary` (anti-ownership — the router must route elsewhere).
 
@@ -388,8 +389,8 @@ Every edge is verifiable. `node scripts/skill-lint.js` rejects dangling targets 
 | `LICENSE` | MIT. |
 | `.github/workflows/skill-graph-lint.yml` | CI: runs Tier 3 enforcement on every PR. |
 | `docs/integrations/github-actions.md` | Copy-paste CI snippet for adopters. |
-| `docs/single-skill-audit-checklist.md` | Checklist accompanying Tier 3 audit runner. |
-| `docs/library-audit-workflow.md` | Repeated audit loop for a whole library. |
+| `SKILL_AUDIT_CHECKLIST.md` | Checklist accompanying Tier 3 audit runner. |
+| `SKILL_AUDIT_LOOP.md` | Repeated audit loop for a whole library. |
 | `docs/plans/multi-root-workspace.md` | Shipped v0.4.0 design doc. |
 | `docs/plans/scripts-roadmap.md` | Forward-looking script plan. |
 
@@ -399,7 +400,7 @@ Every edge is verifiable. `node scripts/skill-lint.js` rejects dangling targets 
 
 Because the tiers are ordered, a tiny set of invariants holds the whole repo together:
 
-- **Tier 1 → Tier 2:** Every top-level property in `skill.schema.json` has a matching section in `field-reference.md`. (`check-contract-consistency.js` C1.)
+- **Tier 1 → Tier 2:** Every top-level property in `skill.schema.json` has a matching section in `field-reference.md`. (`check-protocol-consistency.js` C1.)
 - **Tier 1 → Tier 1 (pinned):** The current pinned schema is byte-identical to the unversioned schema modulo `$id` and `title`. (C6.)
 - **Tier 1 → Tier 3 (generator):** Every authored field has a documented projection into the manifest — copied, grouped, or dropped. No silent drops. (C2.)
 - **Tier 1 ↔ Tier 5 (sample manifest):** The committed sample manifest matches live generator output. (`skill-lint.js` check 8.)
@@ -413,7 +414,7 @@ Break any one of these invariants and CI fails. That's why the tiering works: th
 
 | You want to add | Tier | Also touch |
 |---|---|---|
-| A new required field | 1 (schema) | 2 (field-reference.md, skill-metadata-protocol.md, manifest-contract.md rename map), 3 (generator if grouped; lint deprecation warning if renaming), 5 (template + at least one starter) |
+| A new required field | 1 (schema) | 2 (field-reference.md, skill-metadata-protocol.md, manifest-field-mapping.md rename map), 3 (generator if grouped; lint deprecation warning if renaming), 5 (template + at least one starter) |
 | A new optional field | 1 (schema) | 2 (field-reference.md entry), 3 (generator flow-through), 5 (template if it demonstrates the new field) |
 | A new lint rule | 3 (skill-lint.js or scripts/lint/) | — |
 | A new tool that uses the manifest | 4 | README Reference consumer section |
@@ -427,13 +428,13 @@ When in doubt: if the file *defines* a constraint, it's Tier 1. If it *describes
 
 ## Further reading
 
-- [`README.md`](../README.md) — the project overview; now structured by these same tiers.
-- [`docs/skill-metadata-protocol.md`](skill-metadata-protocol.md) — the authoritative field-semantics doc; § Anatomy carries the Mermaid diagram of the SKILL.md three-layer composition (frontmatter × body × teaching layer).
-- [`docs/manifest-contract.md`](manifest-contract.md) — the authored → generated bridge.
-- [`docs/field-decision-guide.md`](field-decision-guide.md) — decision tables for hard field choices.
-- [`docs/library-audit-workflow.md`](library-audit-workflow.md) — the repeatable audit loop; § Loop at a Glance carries the Mermaid diagram of the five-phase flow (deterministic → graded → aggregate → fix → re-verify).
+- [`README.md`](README.md) — the project overview; now structured by these same tiers.
+- [`docs/skill-metadata-protocol.md`](docs/skill-metadata-protocol.md) — the authoritative field-semantics doc; § Anatomy carries the Mermaid diagram of the SKILL.md three-layer composition (frontmatter × body × teaching layer).
+- [`docs/manifest-field-mapping.md`](docs/manifest-field-mapping.md) — the authored → generated bridge.
+- [`docs/field-decision-guide.md`](docs/field-decision-guide.md) — decision tables for hard field choices.
+- [`SKILL_AUDIT_LOOP.md`](SKILL_AUDIT_LOOP.md) — the repeatable audit loop; § Loop at a Glance carries the Mermaid diagram of the five-phase flow (deterministic → graded → aggregate → fix → re-verify).
 - [§ Tier 3 — Pipeline](#pipeline--how-a-skillmd-becomes-a-manifest-entry) — how `generate-manifest.js` projects authored frontmatter into the compiled manifest.
 - [§ Tier 4 — Drift sentinel state machine](#drift-sentinel--state-machine) — the five states a grounded skill sits in and what transitions them.
 - [§ Tier 4 — Routing harness](#routing-harness--per-skill-decision-path) — per-skill decision path that turns `routing_eval: present` from self-assertion into a lint-enforced claim.
 - [§ The starter graph](#the-starter-graph--how-the-eight-starters-relate) — Layer 7 indexed visually across all eight starters plus the template.
-- [`CHANGELOG.md`](../CHANGELOG.md) — what shipped in each version.
+- [`CHANGELOG.md`](CHANGELOG.md) — what shipped in each version.

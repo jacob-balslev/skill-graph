@@ -1,19 +1,19 @@
 #!/usr/bin/env node
 /**
- * Contract consistency checker for Skill Graph.
+ * Protocol consistency checker for Skill Graph.
  *
- * Runs 5 machine-detectable checks across the repo's contract artifacts.
+ * Runs 7 machine-detectable checks across the repo's protocol artifacts.
  * These checks are complementary to skill-lint.js, which validates per-skill
  * schema correctness. This script validates cross-artifact consistency:
- * does the field reference doc match the schema? Does the manifest contract
+ * does the field reference doc match the schema? Does the manifest field mapping
  * accurately describe what the generator does? Is the sample manifest correct?
  *
- * The 5 checks:
+ * The 7 checks:
  *   C1 -- Field-set parity: docs/field-reference.md section headers vs
  *         schemas/skill.schema.json top-level properties.
  *   C2 -- Authored-to-generated parity: every skill.schema.json property either
  *         appears in manifest.schema.json (possibly grouped) or is listed as
- *         intentional loss in docs/manifest-contract.md.
+ *         intentional loss in docs/manifest-field-mapping.md.
  *   C3 -- Artifact-root convention: detect when a shipped audit example (one that
  *         exists under examples/audits/) is referenced by a bare "audits/<skill>/"
  *         path in docs, conflicting with the canonical "examples/audits/<skill>/"
@@ -36,8 +36,8 @@
  *         documented in docs/skill-metadata-protocol.md § Schema Versioning Policy.
  *
  * Usage:
- *   node scripts/check-contract-consistency.js
- *   node scripts/check-contract-consistency.js --verbose
+ *   node scripts/check-protocol-consistency.js
+ *   node scripts/check-protocol-consistency.js --verbose
  *
  * Self-contained. Only uses Node built-ins -- no external dependencies.
  * Exit 0 on success, 1 on any check failure.
@@ -258,9 +258,9 @@ function checkC1FieldSetParity() {
 // Every property in schemas/skill.schema.json must either:
 //   (a) appear in schemas/manifest.schema.json (at top level or grouped under
 //       a parent like `activation`, `health`), OR
-//   (b) appear in the rename map table in docs/manifest-contract.md, OR
+//   (b) appear in the rename map table in docs/manifest-field-mapping.md, OR
 //   (c) be listed as intentional loss in the dropped-field list of
-//       docs/manifest-contract.md.
+//       docs/manifest-field-mapping.md.
 //
 // The rename map is parsed from the "Top-level authored fields" table.
 // ---------------------------------------------------------------------------
@@ -269,7 +269,7 @@ function checkC2AuthoredToGeneratedParity() {
   const errors = [];
   const skillSchemaPath = path.join(REPO_ROOT, 'schemas', 'skill.schema.json');
   const manifestSchemaPath = path.join(REPO_ROOT, 'schemas', 'manifest.schema.json');
-  const contractPath = path.join(REPO_ROOT, 'docs', 'manifest-contract.md');
+  const mappingPath = path.join(REPO_ROOT, 'docs', 'manifest-field-mapping.md');
 
   const skillSchema = readJson(skillSchemaPath);
   if (!skillSchema || !skillSchema.properties) {
@@ -283,9 +283,9 @@ function checkC2AuthoredToGeneratedParity() {
     return errors;
   }
 
-  const contractText = readText(contractPath);
-  if (!contractText) {
-    errors.push('C2 [docs/manifest-contract.md]: cannot read file -- authored-to-generated parity check skipped');
+  const mappingText = readText(mappingPath);
+  if (!mappingText) {
+    errors.push('C2 [docs/manifest-field-mapping.md]: cannot read file -- authored-to-generated parity check skipped');
     return errors;
   }
 
@@ -310,14 +310,14 @@ function checkC2AuthoredToGeneratedParity() {
     }
   }
 
-  // Parse the rename map table from manifest-contract.md.
+  // Parse the rename map table from manifest-field-mapping.md.
   // Table rows look like: | N | `authored_field` | fate | manifest projection |
   const renameMapFields = new Set();
   const droppedFields = new Set();
 
   let inRenameMap = false;
   let inDroppedList = false;
-  for (const line of contractText.split('\n')) {
+  for (const line of mappingText.split('\n')) {
     if (/^##+ Top-level authored fields/.test(line)) {
       inRenameMap = true;
       inDroppedList = false;
@@ -387,7 +387,7 @@ function checkC2AuthoredToGeneratedParity() {
 // Check C3 -- Artifact-root convention
 //
 // Skill Graph uses a two-tier artifact root convention (documented in
-// docs/library-audit-workflow.md after commit 873c463):
+// SKILL_AUDIT_LOOP.md after commit 873c463):
 //   - examples/audits/<skill>/ -- shipped, curated worked examples in this repo
 //   - audits/<skill>/          -- downstream consumer output (adopters' own repos)
 //
@@ -753,7 +753,7 @@ function checkC6VersionedSchemaParity() {
  * Implementation strategy: spawn `node scripts/build-field-reference.js --check`
  * which performs the regeneration in-memory and exits non-zero when the live
  * file differs from regenerated output. C7 surfaces that exit signal as a
- * structured contract-consistency error.
+ * structured protocol-consistency error.
  *
  * Returns a list of error strings. Empty array means pass.
  */
@@ -800,7 +800,7 @@ function checkC7GeneratedFieldReferenceParity() {
 // ---------------------------------------------------------------------------
 
 function main() {
-  console.log('Running contract consistency checks...\n');
+  console.log('Running protocol consistency checks...\n');
 
   const allErrors = [];
   const allWarnings = [];
@@ -863,7 +863,7 @@ function main() {
     console.error(`FAIL: ${allErrors.length} error(s) found. ${allWarnings.length} warning(s).`);
     process.exit(1);
   } else {
-    console.log(`PASS: all contract consistency checks passed. ${allWarnings.length} warning(s).`);
+    console.log(`PASS: all protocol consistency checks passed. ${allWarnings.length} warning(s).`);
     process.exit(0);
   }
 }

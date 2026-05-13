@@ -3,7 +3,7 @@
  * Skill Graph lint tool.
  *
  * Validates every `skills/<name>/SKILL.md` (and optionally
- * `examples/skill-metadata-template.md`) against the frontmatter contract. Runs:
+ * `examples/skill-metadata-template.md`) against the frontmatter schema. Runs:
  *
  *   1. Schema validation against `schemas/skill.schema.json`
  *   2. Parent-directory-matches-name check (Agent Skills compatibility)
@@ -88,7 +88,7 @@ const EVALS_DIR = path.join(REPO_ROOT, 'examples', 'evals');
 // Explicit "loss policy" list. Each entry is an authored top-level field in
 // skill.schema.json that must have a representation in the manifest skill-item
 // schema. If a future edit deletes one of these without documenting it in
-// docs/skill-metadata-protocol.md or docs/manifest-contract.md, lint fails loudly.
+// docs/skill-metadata-protocol.md or docs/manifest-field-mapping.md, lint fails loudly.
 //
 // This closes the regression window that shipped SH-5776: the original
 // manifest.schema.json silently dropped domain_object, route_groups, license,
@@ -118,7 +118,7 @@ const AUTHORED_FIELDS_MUST_FLOW = [
 // AUTHORED_FIELDS_MUST_FLOW claimed `lifecycle` and `runtime_telemetry`
 // were covered, but they are not top-level manifest fields — they
 // project into `health.lifecycle` and `health.runtime_telemetry` per
-// docs/manifest-contract.md § rename-map rows 28–29.
+// docs/manifest-field-mapping.md § rename-map rows 28–29.
 const AUTHORED_FIELDS_MUST_FLOW_HEALTH = [
   'freshness',
   'drift_check',
@@ -919,8 +919,8 @@ function main() {
   // Fails the lint early if either schema has drifted from the authored-to-
   // generated mapping in docs/skill-metadata-protocol.md.
   //
-  // Tier label legend (see docs/ARCHITECTURE.md):
-  //   [T1]      Tier 1 — binding contract (schemas/)
+  // Tier label legend (see SKILL_GRAPH.md):
+  //   [T1]      Tier 1 — binding schema (schemas/)
   //   [T1↔T3]   Tier 1 ↔ Tier 3 parity check (authored schema ↔ manifest schema)
   //   [T3↔T5]   Tier 3 ↔ Tier 5 parity check (generator output ↔ sample manifest)
   //   [T5]      Tier 5 — specimen (starter skill or template)
@@ -1009,13 +1009,13 @@ function main() {
     // Migration warnings for v1 → v2 field renames.
     if (fm.domain_frame) {
       emitWarning(relPath, text, 'domain_frame', '"domain_frame" is deprecated — rename to "grounding"', {
-        help: 'Rename "domain_frame:" to "grounding:". See docs/manifest-contract.md § Migration Note — v1 → v2.',
+        help: 'Rename "domain_frame:" to "grounding:". See docs/manifest-field-mapping.md § Migration Note — v1 → v2.',
         noColor,
       });
     }
     if (fm.eval_status) {
       emitWarning(relPath, text, 'eval_status', '"eval_status" is deprecated — split into "eval_artifacts", "eval_state", and "routing_eval"', {
-        help: 'See docs/manifest-contract.md § Migration Note — v1 → v2.',
+        help: 'See docs/manifest-field-mapping.md § Migration Note — v1 → v2.',
         noColor,
       });
     }
@@ -1043,7 +1043,7 @@ function main() {
     // Migration warnings for v2 → v3 field changes.
     if (fm.family) {
       emitWarning(relPath, text, 'family', '"family" is deprecated in v3 — rename to "browse_category"', {
-        help: 'Run `node scripts/migrate-skill-v2-to-v3.js <skill>` to apply. See docs/manifest-contract.md § Migration Note — v2 → v3.',
+        help: 'Run `node scripts/migrate-skill-v2-to-v3.js <skill>` to apply. See docs/manifest-field-mapping.md § Migration Note — v2 → v3.',
         noColor,
       });
     }

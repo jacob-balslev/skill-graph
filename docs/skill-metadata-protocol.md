@@ -1,12 +1,14 @@
-# Skill Metadata Protocol
+# Skill Metadata Protocol Rationale
+
+This is the rationale and deep explanation for the Skill Metadata Protocol. For normative authoring rules, start with [`SKILL_METADATA_PROTOCOL.md`](../SKILL_METADATA_PROTOCOL.md); this document explains why the protocol has this shape and how the pieces fit together.
 
 Skill Metadata Protocol is the **skill-level contract** for AI Agent Skills. It defines the structured relevance metadata a skill should declare: activation signals, taxonomy, project/file scope, sibling-skill relations, grounding, drift checks, eval state, and portability.
 
 Skill Graph is the **library-level system** that works with this protocol. It indexes, routes, clusters, audits, and reverifies libraries of Skill-Metadata-Protocol-enriched skills.
 
 > **Migrating from an older schema?** Jump straight to the migration notes:
-> - [v2 → v3](manifest-contract.md#migration-note--v2--v3-v040) — `drift_check` scalar → object, `compatibility` scalar → object, `family` → `browse_category`, new optional fields
-> - [v1 → v2](manifest-contract.md#migration-note--v1--v2-sh-5784) — `scope` enum rename, `eval_status` split into three fields, `route_groups` → `routing_groups`
+> - [v2 → v3](manifest-field-mapping.md#migration-note--v2--v3-v040) — `drift_check` scalar → object, `compatibility` scalar → object, `family` → `browse_category`, new optional fields
+> - [v1 → v2](manifest-field-mapping.md#migration-note--v1--v2-sh-5784) — `scope` enum rename, `eval_status` split into three fields, `route_groups` → `routing_groups`
 > - Codemod: `node scripts/migrate-skill-v2-to-v3.js` upgrades v2 skills in place
 > - Planned v3 → v4 changes (ADR 0001, ADR 0004, ADR 0006): `adjacent` removed in favour of `related`; `boundary` remains the routing-layer handoff; `urn` becomes required
 
@@ -14,11 +16,12 @@ Skill Graph is the **library-level system** that works with this protocol. It in
 
 | Document | Purpose |
 |---|---|
-| `docs/skill-metadata-protocol.md` (this file) | Overview, archetype map, requiredness groups, schema strictness rules |
+| [`SKILL_METADATA_PROTOCOL.md`](../SKILL_METADATA_PROTOCOL.md) | Normative public spec: required fields, semantic rules, authored vs generated fields, migration notes |
+| `docs/skill-metadata-protocol.md` (this file) | Rationale and deep explanation: archetype map, requiredness groups, schema strictness rules, design tradeoffs |
 | `docs/field-reference.md` | One section per authored field — purpose, rules, examples, when to use |
 | `docs/field-decision-guide.md` | Decision tables for `scope`, `relations.*`, and the eval-health fields (`eval_artifacts`, `eval_state`, `routing_eval`) / `portability` |
 | `docs/concept-map.md` | Teaching map — 36 authored fields grouped by conceptual role; drift log vs earlier framings |
-| `docs/manifest-contract.md` | Authored-to-generated bridge: rename map, loss policy, worked example |
+| `docs/manifest-field-mapping.md` | Authored-to-generated bridge: rename map, loss policy, worked example |
 | `docs/adr/` | Architecture decision records — 0001 predicate set, 0002 JSON-LD @context, 0003 OntoClean rigidity tags, 0004 persistent identifiers |
 | `schemas/skill.context.jsonld` | JSON-LD @context mapping every authored field to W3C vocabularies (SKOS, Dublin Core, PROV-O) |
 | `schemas/vocabulary/` | Controlled vocabularies for `keywords` (canonical + synonyms) and `project_tags` (literal handles + semantic tags) — advisory, surfaced as lint warnings |
@@ -367,8 +370,8 @@ The Skill Metadata Protocol schemas are intentionally strict.
 
 Skill Metadata Protocol is designed to work with:
 
-1. `docs/single-skill-audit-checklist.md`
-2. `docs/library-audit-workflow.md`
+1. `SKILL_AUDIT_CHECKLIST.md`
+2. `SKILL_AUDIT_LOOP.md`
 
 The metadata must support three things cleanly:
 
@@ -405,7 +408,7 @@ For the purpose, rules, and examples for each field, see `docs/field-reference.m
 - compiled activation tables
 - generated docs ownership
 
-See `docs/manifest-contract.md` for the full rename map, loss policy, migration policy, and a worked example showing the authored-to-generated projection field by field.
+See `docs/manifest-field-mapping.md` for the full rename map, loss policy, migration policy, and a worked example showing the authored-to-generated projection field by field.
 
 ## Schema Versioning Policy
 
@@ -417,4 +420,4 @@ Skill Graph uses a single integer `schema_version` to signal contract evolution.
 4. **One-version-overlap deprecation is preferred.** `scripts/skill-lint.js` emits warnings (not errors) for v2-specific patterns (scalar `drift_check`, scalar `compatibility`, `family` field name) during the v3 window. Authors get a warning window to migrate. Hard-error enum/shape changes — rejected by `additionalProperties: false` + type constraints in the schema itself — are paired with the friendlier lint warning so the error points at the rename.
 5. **Migration tooling ships with the bump.** The v3 bump ships `scripts/migrate-skill-v2-to-v3.js`, a line-based codemod that preserves author YAML style (comments, quoting, indentation). Future bumps follow the same pattern: one codemod per version, shipped in the same PR.
 
-For the concrete v2→v3 mapping tables, see `docs/manifest-contract.md § Migration Note — schema_version 2 → 3`. For the v1→v2 tables (historical), see the same document. For field-level before/after pairs, see `docs/field-decision-guide.md`.
+For the concrete v2→v3 mapping tables, see `docs/manifest-field-mapping.md § Migration Note — schema_version 2 → 3`. For the v1→v2 tables (historical), see the same document. For field-level before/after pairs, see `docs/field-decision-guide.md`.

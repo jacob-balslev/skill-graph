@@ -7,9 +7,9 @@ This document tracks the script surfaces planned for Skill Graph. The goal is th
 | Script | State | Notes |
 |---|---|---|
 | `scripts/skill-lint.js` | **Shipping** | Validates frontmatter against the schema, enforces parent-dir-matches-name, verifies relation targets exist, checks eval coherence, archetype sections, routing quality; `--strict` mode promotes warnings to errors |
-| `scripts/generate-manifest.js` | **Shipping** | Walks `skills/**/SKILL.md`, applies the rename map from `docs/manifest-contract.md`, emits deterministic validated manifest; `examples/skills.manifest.sample.json` is generated output, not hand-written |
+| `scripts/generate-manifest.js` | **Shipping** | Walks `skills/**/SKILL.md`, applies the rename map from `docs/manifest-field-mapping.md`, emits deterministic validated manifest; `examples/skills.manifest.sample.json` is generated output, not hand-written |
 | `scripts/export-skill.js` | **Shipping** | Agent Skills export target only; transforms Skill Graph extensions under `metadata:` key. Five fixtures in `examples/exports/`. Other runtimes (cursor, windsurf, copilot, agents-md) were removed from the `portability.targets` enum in 0.3.0 — re-add via a new RFC and the PR that ships the transform |
-| `scripts/check-contract-consistency.js` | **Shipping** | Cross-artifact consistency — field-set parity, authored-to-generated parity, example truth invariants (C1–C5 checks) |
+| `scripts/check-protocol-consistency.js` | **Shipping** | Cross-artifact consistency — field-set parity, authored-to-generated parity, example truth invariants (C1–C5 checks) |
 | `scripts/skill-audit.js` | **Shipping** | Stub mode seeds `audits/<skill>/{findings,verdict,scorecard}.md` from lint output (unchanged). `--graded` mode composes per-dimension prompts via `scripts/lib/audit-prompt-builder.js`, calls an external model CLI for each of the seven scorecard dimensions, and writes evidence-backed verdicts into the artifact files replacing TODO placeholders. A deterministic mock grader ships at `scripts/lib/mock-grader.js` for CI smoke-tests |
 
 ## Priority Order
@@ -70,7 +70,7 @@ Target file:
 
 Purpose:
 
-- audit one skill at a time using `docs/single-skill-audit-checklist.md`
+- audit one skill at a time using `SKILL_AUDIT_CHECKLIST.md`
 - write findings, verdict, and scorecard artifacts
 - optionally run deterministic validation after fixes
 
