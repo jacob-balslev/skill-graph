@@ -2,6 +2,8 @@
 
 [![Version 0.5.0](https://img.shields.io/badge/version-0.5.0-blue?style=flat-square)](CHANGELOG.md) [![Schema v3](https://img.shields.io/badge/schema-v3-blueviolet?style=flat-square)](schemas/skill.v3.schema.json) [![License Apache-2.0 + CC-BY-4.0](https://img.shields.io/badge/license-Apache--2.0%20%2B%20CC--BY--4.0-green?style=flat-square)](LICENSE) [![Exports SKILL.md](https://img.shields.io/badge/exports-SKILL.md-orange?style=flat-square)](https://agentskills.io/specification)
 
+**Skills that know your project and codebase. Structured and categorized.**
+
 **Skill Metadata Protocol is a structured frontmatter contract for `SKILL.md`. Skill Graph is the local library tooling that works across those structured skills.**
 
 A plain `SKILL.md` gives an agent a procedure to load. Skill Metadata Protocol adds the missing project map: what the skill is for, where it belongs, which files or domains ground it, which skills it depends on, which nearby skills it must not replace, and how it should be checked. Skill Graph turns those declarations into a manifest, router, cluster map, drift sentinel, audit loop, and export path back to the plain `SKILL.md` format.
