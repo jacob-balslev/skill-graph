@@ -22,6 +22,7 @@
     "owl": "http://www.w3.org/2002/07/owl#",
     "dcterms": "http://purl.org/dc/terms/",
     "prov": "http://www.w3.org/ns/prov#",
+    "dcat": "http://www.w3.org/ns/dcat#",
     "spdx": "http://spdx.org/rdf/terms#",
     "schema": "https://schema.org/",
     "xsd": "http://www.w3.org/2001/XMLSchema#",
@@ -37,15 +38,21 @@
       "_note": "SPDX identifier; resolve against spdx:licenseId"
     },
     "freshness": { "@id": "dcterms:modified", "@type": "xsd:date" },
+    "reviewed_at": { "@id": "dcterms:modified", "@type": "xsd:date" },
     "stability": "sg:stability",
     "superseded_by": { "@id": "prov:wasRevisionOf", "@type": "@id", "@reverse": false },
 
     "type": "sg:archetype",
+    "archetype": "sg:archetype",
     "scope": "sg:scope",
     "browse_category": "sg:browseCategory",
     "category": {
       "@id": "skos:broader",
       "_note": "Hierarchical slash path projects to a chain of skos:broader edges in RDF output"
+    },
+    "category_path": {
+      "@id": "skos:broader",
+      "_note": "v3.1 preferred alias for category; hierarchical slash path projects to a chain of skos:broader edges in RDF output"
     },
     "project_tags": { "@id": "dcterms:audience", "@container": "@set" },
     "routing_groups": { "@id": "sg:routingGroup", "@container": "@set" },
@@ -56,6 +63,7 @@
     "anti_examples": { "@id": "sg:negativeExample", "@container": "@set" },
     "paths": { "@id": "sg:pathGlob", "@container": "@set" },
     "allowed-tools": "sg:allowedTools",
+    "allowed_tools": "sg:allowedTools",
 
     "relations": "sg:relations",
     "adjacent": {
@@ -105,7 +113,9 @@
 
     "grounding": "sg:grounding",
     "domain_object": "sg:domainObject",
+    "subject": "sg:domainObject",
     "grounding_mode": "sg:groundingMode",
+    "claim_scope": "sg:groundingMode",
     "truth_sources": {
       "@id": "dcterms:source",
       "@container": "@set",
@@ -116,14 +126,21 @@
 
     "drift_check": "sg:driftCheck",
     "last_verified": { "@id": "prov:generatedAtTime", "@type": "xsd:date" },
+    "verified_at": { "@id": "prov:generatedAtTime", "@type": "xsd:date" },
     "truth_source_hashes": {
       "@id": "sg:truthSourceHash",
       "_note": "Map of normalized truth-source key to SHA-256 hex digest. Complements prov:generatedAtTime with content-addressable evidence."
     },
 
+    "concept": "sg:concept",
+    "comprehension_state": "sg:comprehensionState",
     "eval_artifacts": "sg:evalArtifacts",
     "eval_state": "sg:evalState",
     "routing_eval": "sg:routingEval",
+    "eval": "sg:eval",
+    "artifacts": "sg:evalArtifacts",
+    "content_state": "sg:evalState",
+    "routing_coverage": "sg:routingEval",
     "eval_last_run": "sg:evalLastRun",
     "at": { "@id": "prov:generatedAtTime", "@type": "xsd:dateTime" },
     "status": "sg:evalRunStatus",
@@ -145,12 +162,15 @@
 
     "compatibility": "sg:compatibility",
     "runtimes": { "@id": "sg:compatibleRuntime", "@container": "@set" },
+    "agent_runtimes": { "@id": "sg:compatibleRuntime", "@container": "@set" },
     "node": "sg:nodeVersion",
+    "node_version": "sg:nodeVersion",
     "notes": "sg:compatibilityNotes",
 
     "portability": "sg:portability",
     "readiness": "sg:portabilityReadiness",
     "targets": { "@id": "sg:portabilityTarget", "@container": "@set" },
+    "export_targets": { "@id": "sg:portabilityTarget", "@container": "@set" },
 
     "urn": {
       "@id": "@id",

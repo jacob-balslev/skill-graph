@@ -1,6 +1,6 @@
 # Skill Metadata Protocol
 
-> **Version:** 1.0.0 (schema_version 3, Skill Graph 0.4.x)
+> **Version:** 1.0.0 (schema_version 3, Skill Graph 0.5.0)
 > **Machine-readable schema:** `schemas/skill.v3.schema.json`
 > **Detailed field reference:** `docs/field-reference.md`
 > **Full semantics + design rationale:** `docs/skill-metadata-protocol.md`

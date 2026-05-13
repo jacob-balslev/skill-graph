@@ -48,41 +48,70 @@ negative-case summary counts:
 | `self_hit` | Anti-example routed back to the skill under test. This is a hard false positive. |
 | `off_boundary_hit` | Anti-example routed to some other skill not named in `relations.boundary`. |
 
-## Baseline Recommendation
+## Routing Architecture Recommendation
 
-For public claims, keep two routing runs:
+Do not design production routing around `name` + `description` only. That is a
+diagnostic ablation at most, not the best router shape.
 
-1. **Description-only baseline.** Route using only `name` and `description`.
-2. **Skill Graph routing.** Route using examples, anti-examples, paths,
-   keywords, eval state, project tags, and relations.
+The best-supported architecture for serious skill libraries is full-text,
+retrieve-and-rerank routing:
 
-Then report the delta in Precision@1, false-positive rate, and confusion pairs.
-The strongest proof for the protocol is not "metadata exists"; it is "metadata
-changed the routing outcome and reduced misses."
+1. **Candidate record:** index each skill as a structured document containing
+   `name`, `description`, full body text, examples, anti-examples, paths,
+   keywords, project tags, eval state, grounding, and relation edges.
+2. **First-stage retrieval:** use sparse, dense, or hybrid retrieval over the
+   full skill record. Field weights may prefer `name`, `description`, examples,
+   and headings for precision, but the body must remain in the index.
+3. **Second-stage reranking:** rerank the top candidates with a cross-encoder,
+   LLM judge, or task-trained reranker that can inspect the full skill record.
+4. **Graph post-processing:** apply `relations.boundary` to suppress wrong
+   owners, co-load `verify_with`, respect `depends_on`, and surface coverage
+   gaps where anti-examples route nowhere.
+5. **Evaluation:** report Precision@1, Precision@3, false-positive rate,
+   coverage gaps, and confusion pairs against held-out prompts.
 
-The reference router does not yet ship a description-only baseline mode. Until
-it does, use the current harness as the enforced correctness gate and treat
-before/after routing traces as qualitative evidence.
+For public claims, compare the full-text graph router against production
+alternatives: current metadata router, hybrid sparse+dense retrieval, and
+full-text reranking. A `name` + `description` run can be kept as a negative
+control to show what information is lost, but it must not be presented as the
+architecture this project is trying to optimize.
+
+Recent routing and tool-retrieval papers support this direction:
+
+- SkillRouter (arXiv:2603.22455) reports that hiding the full skill body causes
+  a 31-44 percentage-point drop in routing accuracy on an approximately 80K
+  skill benchmark, then proposes a compact full-text retrieve-and-rerank
+  pipeline. <https://arxiv.org/abs/2603.22455>
+- SkillRet (arXiv:2605.05726) shows that skill retrieval is still far from
+  solved on realistic libraries and that task-specific retrieval training
+  improves NDCG@10 materially over off-the-shelf retrievers.
+  <https://arxiv.org/abs/2605.05726>
+- ToolRet (arXiv:2503.01763) shows that conventional IR models perform poorly
+  for large tool retrieval, and that retrieval quality directly affects
+  tool-use task pass rate. <https://arxiv.org/abs/2503.01763>
+- Tool-to-Agent Retrieval (arXiv:2511.01854) argues against routing only through
+  coarse agent descriptions; representing fine-grained tool capabilities and
+  metadata relationships improves Recall@5 and nDCG@5.
+  <https://arxiv.org/abs/2511.01854>
 
 ## Scaling Limits
 
-The reference router is deliberately simple and metadata-first. That is the
-right shape for curated libraries where explainability, authored boundaries,
-and deterministic linting matter more than maximum recall.
+The reference router is deliberately simple and metadata-first. That is useful
+for deterministic local validation, but it is not the final retrieval
+architecture for large or mixed-source skill libraries. The production path is
+full skill text plus Skill Graph metadata and relations.
 
-For very large skill pools, metadata-only routing should not be the only
-retrieval layer. The 2026 SkillRouter paper, "Retrieve-and-Rerank Skill
-Selection for LLM Agents at Scale" (<https://huggingface.co/papers/2603.22455>),
-reports that removing the skill body caused a 29-44 percentage-point routing
-drop across retrieval methods on an approximately 80K-skill pool, and that
-cross-encoder attention concentrated heavily on the skill body.
+For very large skill pools, metadata-only routing should not be the primary
+retrieval layer. Skill Graph metadata remains valuable as the contract,
+governance, filtering, boundary, eval, and trust layer around a full-text
+retrieval system.
 
 Practical rule:
 
 | Library size / shape | Suggested routing architecture |
 |---|---|
 | 1-10 skills | Base descriptions are usually enough. |
-| 10-200 curated skills | Skill Graph metadata, relations, and evals can be the primary routing layer. |
+| 10-200 curated skills | Skill Graph metadata, relations, evals, and full skill bodies should all be available to routing; deterministic metadata routing is acceptable only as a local validation harness. |
 | Hundreds to thousands of mixed-source skills | Use Skill Graph as the authoring, eval, grounding, and governance layer; pair it with full-text retrieve-and-rerank over skill bodies. |
 | Tens of thousands of community skills | Use a learned retriever/reranker over full skill text; consume Skill Graph metadata as filters, labels, eval targets, and trust signals. |
 

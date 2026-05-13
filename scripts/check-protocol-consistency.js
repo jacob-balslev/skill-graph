@@ -2,13 +2,13 @@
 /**
  * Protocol consistency checker for Skill Graph.
  *
- * Runs 7 machine-detectable checks across the repo's protocol artifacts.
+ * Runs 8 machine-detectable checks across the repo's protocol artifacts.
  * These checks are complementary to skill-lint.js, which validates per-skill
  * schema correctness. This script validates cross-artifact consistency:
  * does the field reference doc match the schema? Does the manifest field mapping
  * accurately describe what the generator does? Is the sample manifest correct?
  *
- * The 7 checks:
+ * The 8 checks:
  *   C1 -- Field-set parity: docs/field-reference.md section headers vs
  *         schemas/skill.schema.json top-level properties.
  *   C2 -- Authored-to-generated parity: every skill.schema.json property either
@@ -34,6 +34,11 @@
  *         unversioned schemas/skill.schema.json and schemas/manifest.schema.json,
  *         modulo $id and title. Drift between them breaks the pinning promise
  *         documented in docs/skill-metadata-protocol.md § Schema Versioning Policy.
+ *   C7 -- Generated field-reference parity: docs/field-reference.generated.md
+ *         must match live regeneration from schemas/skill.v3.schema.json.
+ *   C8 -- JSON-LD context coverage: every top-level authored schema field must
+ *         appear in schemas/skill.context.jsonld and every compact IRI prefix
+ *         used there must be declared.
  *
  * Usage:
  *   node scripts/check-protocol-consistency.js
@@ -796,6 +801,102 @@ function checkC7GeneratedFieldReferenceParity() {
 }
 
 // ---------------------------------------------------------------------------
+// C8 -- JSON-LD context coverage
+// ---------------------------------------------------------------------------
+
+/**
+ * Check C8 - `schemas/skill.context.jsonld` must cover every top-level
+ * authored field in `schemas/skill.schema.json`.
+ *
+ * ADR 0002 makes the JSON-LD context the FAIR interoperability bridge. If a
+ * new top-level schema field is added without a context term, RDF consumers
+ * silently lose that field. This check turns the prior hand-review rule into a
+ * deterministic cross-artifact gate.
+ *
+ * It also validates compact IRI prefixes used by context mappings. For example,
+ * `"keywords": "dcat:keyword"` requires a top-level `"dcat": "..."` namespace
+ * declaration in the same `@context` object.
+ */
+function checkC8JsonLdContextCoverage() {
+  const errors = [];
+  const schemaPath = path.join(REPO_ROOT, 'schemas', 'skill.schema.json');
+  const contextPath = path.join(REPO_ROOT, 'schemas', 'skill.context.jsonld');
+
+  const schema = readJson(schemaPath);
+  if (!schema || !schema.properties) {
+    errors.push('C8 [schemas/skill.schema.json]: cannot read schema -- JSON-LD context coverage check skipped');
+    return errors;
+  }
+
+  const contextDoc = readJson(contextPath);
+  const context = contextDoc && contextDoc['@context'];
+  if (!context || typeof context !== 'object' || Array.isArray(context)) {
+    errors.push('C8 [schemas/skill.context.jsonld]: missing or invalid @context object');
+    return errors;
+  }
+
+  const schemaFields = Object.keys(schema.properties);
+  const contextKeys = new Set(Object.keys(context));
+  const missing = schemaFields.filter(field => !contextKeys.has(field));
+
+  if (missing.length > 0) {
+    errors.push(
+      `C8 [schemas/skill.context.jsonld]: ${missing.length} top-level schema field(s) missing from @context: ` +
+      missing.map(f => `"${f}"`).join(', ')
+    );
+  }
+
+  const declaredPrefixes = new Set();
+  for (const [key, value] of Object.entries(context)) {
+    if (typeof value === 'string' && /^https?:\/\//.test(value)) {
+      declaredPrefixes.add(key);
+    }
+  }
+
+  const prefixUses = [];
+  function collectCompactIris(value, jsonPath) {
+    if (typeof value === 'string') {
+      const m = value.match(/^([A-Za-z][A-Za-z0-9_-]*):[^/]/);
+      if (m) prefixUses.push({ prefix: m[1], value, jsonPath });
+      return;
+    }
+    if (Array.isArray(value)) {
+      value.forEach((item, idx) => collectCompactIris(item, `${jsonPath}[${idx}]`));
+      return;
+    }
+    if (value && typeof value === 'object') {
+      for (const [key, subValue] of Object.entries(value)) {
+        if (key.startsWith('_')) continue;
+        collectCompactIris(subValue, `${jsonPath}.${key}`);
+      }
+    }
+  }
+
+  for (const [key, value] of Object.entries(context)) {
+    if (declaredPrefixes.has(key)) continue;
+    collectCompactIris(value, `@context.${key}`);
+  }
+
+  for (const use of prefixUses) {
+    if (!declaredPrefixes.has(use.prefix)) {
+      errors.push(
+        `C8 [schemas/skill.context.jsonld]: ${use.jsonPath} uses compact IRI ` +
+        `"${use.value}" but prefix "${use.prefix}" is not declared in @context`
+      );
+    }
+  }
+
+  if (VERBOSE && errors.length === 0) {
+    console.log(
+      `  C8: OK -- ${schemaFields.length} top-level schema fields covered; ` +
+      `${declaredPrefixes.size} namespace prefix(es) declared`
+    );
+  }
+
+  return errors;
+}
+
+// ---------------------------------------------------------------------------
 // Main
 // ---------------------------------------------------------------------------
 
@@ -856,6 +957,13 @@ function main() {
   if (c7.length === 0) console.log('OK');
   else { console.log('FAIL'); for (const e of c7) { console.error(`  ERROR ${e}`); } }
   allErrors.push(...c7);
+
+  // C8
+  process.stdout.write('C8 JSON-LD context coverage... ');
+  const c8 = checkC8JsonLdContextCoverage();
+  if (c8.length === 0) console.log('OK');
+  else { console.log('FAIL'); for (const e of c8) { console.error(`  ERROR ${e}`); } }
+  allErrors.push(...c8);
 
   console.log('');
 
