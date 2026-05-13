@@ -1,13 +1,16 @@
 #!/usr/bin/env node
 /**
- * export-skill.js — Agent Skills export transform.
+ * export-skill.js - SKILL.md export transform.
  *
  * Reads a Skill Graph SKILL.md, moves every Skill Graph extension field under
- * the Agent Skills `metadata:` key, and writes an Agent Skills-compatible
- * SKILL.agent-skills.md to the skill directory (or to --output <path>).
+ * the plain `metadata:` key, and writes a SKILL.md-format export to the skill
+ * directory (or to --output <path>).
  *
- * The resulting file has exactly 6 top-level fields:
+ * The resulting file has at most 6 top-level fields:
  *   name, description, license, compatibility, allowed-tools, metadata
+ *
+ * Plain SKILL.md metadata is a string-to-string map. Structured Skill Graph
+ * extension values are therefore JSON-encoded as strings under metadata.
  *
  * Only the fields that are present in the source are included. Fields that are
  * absent (e.g. license is optional) are omitted from the output rather than
@@ -16,11 +19,11 @@
  * Usage:
  *   node scripts/export-skill.js <skill-dir>
  *   node scripts/export-skill.js skills/documentation
- *   node scripts/export-skill.js skills/documentation --output /tmp/doc.agent-skills.md
+ *   node scripts/export-skill.js skills/documentation --output /tmp/doc.skill-md.md
  *
  * Exit 0 on success, 1 on error.
  *
- * Self-contained. Only uses Node built-ins — no external dependencies.
+ * Self-contained. Only uses Node built-ins - no external dependencies.
  */
 
 'use strict';
@@ -29,9 +32,9 @@ const fs = require('fs');
 const path = require('path');
 const { parseFrontmatter } = require('./lib/parse-frontmatter');
 
-// Agent Skills base fields that stay at the top level of the output.
-// Order matters for the generated YAML — base fields appear first.
-const AGENT_SKILLS_BASE_FIELDS = ['name', 'description', 'license', 'compatibility', 'allowed-tools'];
+// Plain SKILL.md fields that stay at the top level of the output.
+// Order matters for the generated YAML - base fields appear first.
+const SKILL_MD_BASE_FIELDS = ['name', 'description', 'license', 'compatibility', 'allowed-tools'];
 
 // Skill Graph extension fields that move under metadata:.
 // Every known Skill Graph extension field is listed here so the set is
@@ -44,22 +47,31 @@ const AGENT_SKILLS_BASE_FIELDS = ['name', 'description', 'license', 'compatibili
 // the migration window.
 const SKILL_GRAPH_EXTENSION_FIELDS = new Set([
   'schema_version',
+  'urn',
   'version',
   'type',
+  'archetype',
   'browse_category',
   'category',
+  'category_path',
   'family',
   'scope',
   'owner',
   'freshness',
+  'reviewed_at',
   'drift_check',
   'eval_artifacts',
   'eval_state',
   'routing_eval',
+  'comprehension_state',
+  'eval_last_run',
+  'eval',
   'stability',
+  'superseded_by',
   'relations',
   'grounding',
   'portability',
+  'concept',
   'triggers',
   'keywords',
   'paths',
@@ -68,50 +80,45 @@ const SKILL_GRAPH_EXTENSION_FIELDS = new Set([
   'lifecycle',
   'runtime_telemetry',
   'extends',
+  'allowed_tools',
 ]);
 
 /**
  * Flatten a v3 `compatibility` object to a single free-text string suitable
- * for the Agent Skills base-standard `compatibility` field (≤500 chars).
+ * for the plain SKILL.md `compatibility` field.
  *
  * v3 shape:  { runtimes?: string[], node?: string, notes?: string }
  * v2 shape:  string (passed through unchanged)
  *
- * Concatenation order: runtimes, node, notes — joined with "; ".
+ * Concatenation order: runtimes, node, notes - joined with "; ".
  */
 function flattenCompatibility(value) {
   if (typeof value === 'string') return value;
   if (!value || typeof value !== 'object') return null;
   const parts = [];
-  if (Array.isArray(value.runtimes) && value.runtimes.length > 0) {
-    parts.push(value.runtimes.join(', '));
+  const runtimes = Array.isArray(value.runtimes) && value.runtimes.length > 0
+    ? value.runtimes
+    : value.agent_runtimes;
+  if (Array.isArray(runtimes) && runtimes.length > 0) {
+    parts.push(runtimes.join(', '));
   }
-  if (value.node) parts.push(`node ${value.node}`);
+  const nodeVersion = value.node || value.node_version;
+  if (nodeVersion) parts.push(`node ${nodeVersion}`);
   if (value.notes) parts.push(value.notes);
-  const joined = parts.join('; ');
-  return joined.length > 500 ? joined.slice(0, 500) : joined;
+  return parts.join('; ');
 }
 
-/**
- * Validate that a skill name is safe for Agent Skills. The Agent Skills
- * specification does not allow `/` (which would look like a path) or `:`
- * (which would break YAML parsing). If the name contains these characters,
- * emit a clear error and a suggested normalized form.
- *
- * @param {string} name
- * @returns {{ ok: boolean, suggestion?: string }}
- */
 function validateName(name) {
-  const forbidden = /[/:]/.test(name);
-  if (!forbidden) return { ok: true };
+  return typeof name === 'string' && name.length > 0
+    ? { ok: true }
+    : { ok: false };
+}
 
-  const suggestion = name
-    .replace(/\//g, '-')
-    .replace(/:/g, '-')
+function normalizeExportName(name) {
+  return String(name || '')
+    .replace(/[/:]/g, '-')
     .replace(/-+/g, '-')
     .replace(/^-|-$/g, '');
-
-  return { ok: false, suggestion };
 }
 
 /**
@@ -171,6 +178,25 @@ function serializeValue(value, depth) {
 }
 
 /**
+ * Convert a Skill Graph extension value into a plain SKILL.md metadata string.
+ * Metadata exports use string keys to string values, so objects and arrays are
+ * preserved as compact JSON strings.
+ *
+ * @param {*} value - Parsed Skill Graph frontmatter value.
+ * @returns {string|null} Metadata-safe string value.
+ */
+function metadataStringValue(value) {
+  if (value === null || value === undefined) return null;
+  if (typeof value === 'string') return value;
+  if (typeof value === 'number' || typeof value === 'boolean') return String(value);
+  try {
+    return JSON.stringify(value);
+  } catch (e) {
+    return String(value);
+  }
+}
+
+/**
  * Build the output YAML frontmatter from the parsed frontmatter object.
  * Only includes fields that are actually present in the source.
  *
@@ -180,11 +206,16 @@ function serializeValue(value, depth) {
 function buildFrontmatter(fm) {
   const lines = ['---'];
 
-  // 1. Top-level Agent Skills base fields (in canonical order).
-  for (const field of AGENT_SKILLS_BASE_FIELDS) {
-    if (!(field in fm) || fm[field] === null || fm[field] === undefined) continue;
-    // v3: compatibility is an object; Agent Skills wants a string. Flatten.
-    let value = fm[field];
+  // 1. Top-level plain SKILL.md fields (in canonical order).
+  for (const field of SKILL_MD_BASE_FIELDS) {
+    if (!(field in fm) || fm[field] === null || fm[field] === undefined) {
+      if (field !== 'allowed-tools' || fm.allowed_tools === null || fm.allowed_tools === undefined) continue;
+    }
+    // v3: compatibility is an object; plain SKILL.md wants a string. Flatten.
+    let value = field === 'allowed-tools' && !(field in fm) ? fm.allowed_tools : fm[field];
+    if (field === 'name') {
+      value = normalizeExportName(value);
+    }
     if (field === 'compatibility' && typeof value === 'object' && value !== null) {
       value = flattenCompatibility(value);
       if (!value) continue;
@@ -198,13 +229,15 @@ function buildFrontmatter(fm) {
   }
 
   // 2. Gather all fields that belong under metadata:.
-  //    - Known Skill Graph extension fields
-  //    - Any unknown fields not in the base set (fail-safe catch-all)
+  //    Metadata export values are strings, so structured extension values
+  //    are JSON-encoded rather than emitted as nested YAML objects.
   const metadataEntries = {};
   for (const [key, value] of Object.entries(fm)) {
-    if (AGENT_SKILLS_BASE_FIELDS.includes(key)) continue;
+    if (SKILL_MD_BASE_FIELDS.includes(key)) continue;
+    if (key === 'allowed_tools') continue;
     if (value === null || value === undefined) continue;
-    metadataEntries[key] = value;
+    const metadataValue = metadataStringValue(value);
+    if (metadataValue !== null) metadataEntries[key] = metadataValue;
   }
 
   if (Object.keys(metadataEntries).length > 0) {
@@ -230,8 +263,18 @@ function buildFrontmatter(fm) {
  * @returns {string}    - Body text (may be empty string).
  */
 function extractBody(text) {
-  const m = text.match(/^---\n[\s\S]*?\n---\n?([\s\S]*)$/);
+  const m = text.match(/^\uFEFF?---\r?\n[\s\S]*?\r?\n---(?:\r?\n|$)([\s\S]*)$/);
   return m ? m[1] : '';
+}
+
+function buildExportedSkill(text) {
+  const fm = parseFrontmatter(text);
+  if (!fm) return null;
+  const frontmatter = buildFrontmatter(fm);
+  const body = extractBody(text);
+  return body.trimEnd()
+    ? `${frontmatter}\n${body}`
+    : `${frontmatter}\n`;
 }
 
 function main() {
@@ -240,12 +283,12 @@ function main() {
   if (args.length === 0 || args.includes('--help') || args.includes('-h')) {
     console.log(`Usage: node scripts/export-skill.js <skill-dir> [--output <path>]
 
-Exports a Skill Graph SKILL.md as an Agent Skills-compatible file.
+Exports a Skill Graph SKILL.md as a plain SKILL.md-format file.
 
 Arguments:
   <skill-dir>         Path to the skill directory (must contain SKILL.md)
   --output <path>     Write output to this path instead of
-                      <skill-dir>/SKILL.agent-skills.md
+                      <skill-dir>/SKILL.skill-md.md
 
 Exit 0 on success, 1 on error.`);
     process.exit(0);
@@ -286,31 +329,36 @@ Exit 0 on success, 1 on error.`);
     process.exit(1);
   }
 
-  // Validate name
+  // Validate required identity field.
   if (!fm.name) {
     console.error('Error: frontmatter is missing the required "name" field.');
     process.exit(1);
   }
   const nameCheck = validateName(fm.name);
   if (!nameCheck.ok) {
-    console.error(
-      `Error: skill name "${fm.name}" contains characters not allowed by Agent Skills (/ or :).\n` +
-      `Suggested safe name: "${nameCheck.suggestion}"\n` +
-      `Update the "name" field in SKILL.md before exporting.`
-    );
+    console.error('Error: frontmatter field "name" must be a non-empty string.');
     process.exit(1);
   }
 
-  const frontmatter = buildFrontmatter(fm);
-  const body = extractBody(text);
-  const output = body.trimEnd()
-    ? `${frontmatter}\n${body}`
-    : `${frontmatter}\n`;
+  const output = buildExportedSkill(text);
 
-  const dest = outputPath || path.join(skillDirAbs, 'SKILL.agent-skills.md');
+  const dest = outputPath || path.join(skillDirAbs, 'SKILL.skill-md.md');
   fs.writeFileSync(dest, output, 'utf8');
   console.log(`Exported: ${dest}`);
   process.exit(0);
 }
 
-main();
+module.exports = {
+  SKILL_MD_BASE_FIELDS,
+  SKILL_GRAPH_EXTENSION_FIELDS,
+  buildFrontmatter,
+  buildExportedSkill,
+  extractBody,
+  flattenCompatibility,
+  metadataStringValue,
+  normalizeExportName,
+  serializeValue,
+  validateName,
+};
+
+if (require.main === module) main();

@@ -11,7 +11,7 @@ Start with `README.md`, `SKILL_GRAPH.md`, `docs/skill-metadata-protocol.md`, and
 - Fixes to broken cross-references, stale examples, or drift between the schemas and the Tier 2 docs (`docs/skill-metadata-protocol.md`, `docs/field-reference.md`, `docs/manifest-field-mapping.md`)
 - Additional starter skills that demonstrate contract features the current eight do not already cover (see `README.md § Quick tour → Tier 5` for what each existing starter demonstrates)
 - Worked example artifacts under `examples/audits/` against a starter skill
-- Improvements to `scripts/skill-lint.js` — additional rules, better error messages, stricter Agent Skills compatibility mode
+- Improvements to `scripts/skill-lint.js` — additional rules, better error messages, clearer SKILL.md compatibility checks
 - New Tier 4 reference consumers that demonstrate value the metadata enables (e.g., a coverage dashboard, a routing replay tool). See `scripts/skill-graph-route.js` and `scripts/skill-graph-drift.js` for what Tier 4 looks like today.
 - Documentation improvements that make the contract easier to read for an outsider who has never seen the repo before
 - Bug reports with a minimal reproducing `SKILL.md` snippet

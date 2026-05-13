@@ -101,7 +101,7 @@ const CANNED = {
   portability: {
     score: 5,
     verdict: 'PASS',
-    justification: 'Skill is generic, portable, and the agent-skills export via scripts/export-skill.js round-trips cleanly.',
+    justification: 'Skill is generic, portable, and the skill-md export via scripts/export-skill.js round-trips cleanly.',
     findings: [],
   },
 };

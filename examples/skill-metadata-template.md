@@ -34,7 +34,8 @@ name: skill-metadata-template
 #   (1) names a real domain object (file path, function name, route),
 #   (2) has an explicit "Do NOT use for X (use Y)" exclusion clause,
 #   (3) names a concrete trigger (code pattern, file path, command).
-# See https://platform.claude.com/docs/en/agents-and-tools/agent-skills/best-practices
+# Keep the description concise enough to route well, but do not treat runtime
+# wording guidelines as protocol limits.
 # for Anthropic's own guidance on pushy descriptions.
 description: "Use when creating a new SKILL.md, adapting an existing skill to a different archetype, or teaching an author the canonical frontmatter and body structure. Covers schema-conformant frontmatter, archetype-aware body layout, semantic-layer discipline (description vs Coverage), teaching-layer mechanics (TEMPLATE NOTE blockquotes and YAML comments), and the authoring gate. Do NOT use when modifying an already-written skill (edit that skill directly) or when writing general technical documentation (use the documentation skill)."
 version: 1.0.0
@@ -213,14 +214,14 @@ grounding:
 # TEMPLATE NOTE: portability declares which external agent runtimes this skill is
 # known to work on. `readiness` is the operational rating: `declared` (claim only),
 # `scripted` (export tooling exists), or `verified` (proven with a receipt). `targets`
-# is the list of destination runtimes. Today the only supported target is `agent-skills`
+# is the list of destination runtimes. Today the supported portable target is `skill-md`
 # (see `schemas/skill.schema.json`). Other runtimes (cursor, windsurf, copilot, agents-md)
 # were removed from the enum in 0.3.0 pending working transforms — re-add via RFC if
 # adoption pressure appears. Remove this block if the skill is internal-only.
 portability:
   readiness: scripted
   targets:
-    - agent-skills
+    - skill-md
 # TEMPLATE NOTE: lifecycle declares maintenance policy for the drift sentinel.
 # `stale_after_days` flags the skill as STALE when more than N days have passed
 # since `drift_check.last_verified`. Integration skills (third-party APIs) want
@@ -271,7 +272,7 @@ A template teaches by example, not by placeholder. A concrete, internally consis
 
 | File | Purpose |
 |---|---|
-| `docs/skill-metadata-protocol.md` | Authoritative field semantics: required vs optional, conditional requiredness, relationship to the Agent Skills standard, archetype section map |
+| `docs/skill-metadata-protocol.md` | Authoritative field semantics: required vs optional, conditional requiredness, relationship to the plain `SKILL.md` format, archetype section map |
 | `schemas/skill.schema.json` | Enforceable JSON Schema for the frontmatter protocol |
 | `SKILL_AUDIT_CHECKLIST.md` | The audit checklist every new skill should pass before commit |
 
@@ -303,7 +304,7 @@ Use this checklist as the authoring gate before committing a skill adapted from 
 
 ## References
 
-- `docs/skill-metadata-protocol.md § Relationship to the Agent Skills standard` — how Skill Metadata Protocol extends the base standard
+- `docs/skill-metadata-protocol.md § Relationship to the SKILL.md format` - how Skill Metadata Protocol extends the base format
 - `docs/skill-metadata-protocol.md § Example Template Rule` — the no-placeholder-sludge rule this template enforces
 - `docs/skill-metadata-protocol.md § Archetype section map` — required H2 sections per archetype
 - `docs/manifest-field-mapping.md § Migration Note — v2 → v3` — the shape changes the v3 bump introduced

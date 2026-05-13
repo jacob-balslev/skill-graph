@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-04-17T00:00:00Z",
+  "generated_at": "2026-05-13T13:37:02.425Z",
   "schema_version": 3,
   "skills": [
     {
@@ -71,7 +71,7 @@
       "portability": {
         "readiness": "scripted",
         "targets": [
-          "agent-skills"
+          "skill-md"
         ]
       },
       "relations": {
@@ -201,7 +201,7 @@
       "portability": {
         "readiness": "scripted",
         "targets": [
-          "agent-skills"
+          "skill-md"
         ]
       },
       "relations": {
@@ -295,7 +295,7 @@
       "portability": {
         "readiness": "scripted",
         "targets": [
-          "agent-skills"
+          "skill-md"
         ]
       },
       "relations": {
@@ -403,7 +403,7 @@
       "portability": {
         "readiness": "scripted",
         "targets": [
-          "agent-skills"
+          "skill-md"
         ]
       },
       "relations": {
@@ -498,7 +498,7 @@
       "portability": {
         "readiness": "scripted",
         "targets": [
-          "agent-skills"
+          "skill-md"
         ]
       },
       "relations": {
@@ -597,7 +597,7 @@
       "portability": {
         "readiness": "scripted",
         "targets": [
-          "agent-skills"
+          "skill-md"
         ]
       },
       "relations": {
@@ -692,7 +692,7 @@
       "portability": {
         "readiness": "scripted",
         "targets": [
-          "agent-skills"
+          "skill-md"
         ]
       },
       "relations": {
@@ -799,7 +799,7 @@
       "portability": {
         "readiness": "scripted",
         "targets": [
-          "agent-skills"
+          "skill-md"
         ]
       },
       "relations": {
@@ -979,7 +979,7 @@
       "portability": {
         "readiness": "scripted",
         "targets": [
-          "agent-skills"
+          "skill-md"
         ]
       },
       "relations": {
@@ -1083,7 +1083,7 @@
       "portability": {
         "readiness": "scripted",
         "targets": [
-          "agent-skills"
+          "skill-md"
         ]
       },
       "relations": {
@@ -1192,7 +1192,7 @@
       "portability": {
         "readiness": "scripted",
         "targets": [
-          "agent-skills"
+          "skill-md"
         ]
       },
       "relations": {
@@ -1272,14 +1272,42 @@
         "notes": "Architecture-level skill. Applies to any agent-coding workspace that has more than one skill / doc-routing / memory artifact and any way to traverse them — Claude Code, OpenCode, Cursor, Aider, Continue, Copilot Workspace, or a custom harness. The four-graph model and the orphan / connectivity metrics are independent of the specific runtime."
       },
       "description": "Use when designing the multi-graph context architecture of an AI-coding workspace, when analyzing change-propagation impact across skills / docs / memory / scripts, when measuring graph connectivity health (orphan rate, average degree, hub-spoke ratio, cluster count), when classifying the edge types between skills, or when building a discovery layer that lets agents find context they did not already know existed. Covers the four interconnected graphs every mature AI-coding workspace ends up with — Skill Knowledge Graph, Document Routing Graph, Memory Index, Script / Command Registry — plus the cross-graph edges that connect them; orphan detection and remediation priorities; the deterministic-signal recipe for graph synthesis (explicit prose references, manual relations frontmatter, bundle co-membership, shared routing labels, keyword overlap); the three skill-edge types (adjacent, boundary, verify_with) and their per-edge-type caps; the change-propagation checklist that traces a single edit across all four graphs; and the anti-patterns that produce hub-and-spoke topology, drift, or silent orphan accumulation. Do NOT use for authoring or editing individual SKILL.md content (use `skill-scaffold` for authoring and `skill-infrastructure` for maintenance), for validating one skill against the schema (use `graph-audit`), for the live routing-decision step (use `skill-router`), for context-budget allocation inside a single agent session (that is a context-window concern), or for the design-phase 'what should I load for this task' decision (that is a context-management concern).",
+      "grounding": {
+        "domain_object": "Skill Graph library topology and context discovery model",
+        "evidence_priority": "repo_code_first",
+        "failure_modes": [
+          "inferred_edges_replace_authored_relations",
+          "orphan_skills_remain_unreachable",
+          "relation_caps_turn_into_hub_and_spoke_graph",
+          "change_propagation_ignores_cross_graph_edges"
+        ],
+        "grounding_mode": "hybrid",
+        "truth_sources": [
+          "SKILL_GRAPH.md",
+          "docs/PRIMER.md",
+          "docs/concept-map.md",
+          "docs/diagrams/starter-graph.mmd",
+          "scripts/generate-manifest.js",
+          "scripts/skill-overlap.js"
+        ]
+      },
       "health": {
         "drift_check": {
-          "last_verified": "2026-05-06"
+          "last_verified": "2026-05-13",
+          "truth_source_hashes": {
+            "SKILL_GRAPH.md": "a63fc59a1d99933fc6bc5c4033f8be86ee2f5460f3b5d5ab232a3f77eff71c8f",
+            "docs/PRIMER.md": "e6bd99468c224fe4c9606e147c5db94dff889feeb9ca5d80084480039c7e9296",
+            "docs/concept-map.md": "053e5cf891d7abf7efb30c9014fd2365da7d13588ef6b55057520756a315dc8c",
+            "docs/diagrams/starter-graph.mmd": "6aeaa417e08efbb6bb90b34f56c8df7f06dc608e3c8cd743d428da9fcfaf278c",
+            "scripts/generate-manifest.js": "9d7bbbdae440fdb1763d61ffa7bda10c9efae92359d1c2139d0e971582d59e0e",
+            "scripts/skill-overlap.js": "ed642cbc677cc76ec1321300b37d6752337b6b5541c7a9f558fd315d6f934e4b"
+          }
         },
+        "drift_detected": true,
         "eval_artifacts": "planned",
         "eval_state": "unverified",
         "freshness": "2026-05-06",
-        "has_grounding": false,
+        "has_grounding": true,
         "has_relations": true,
         "lifecycle": {
           "review_cadence": "quarterly",
@@ -1295,7 +1323,7 @@
       "portability": {
         "readiness": "scripted",
         "targets": [
-          "agent-skills"
+          "skill-md"
         ]
       },
       "relations": {
@@ -1407,7 +1435,7 @@
       "portability": {
         "readiness": "scripted",
         "targets": [
-          "agent-skills"
+          "skill-md"
         ]
       },
       "relations": {
@@ -1516,7 +1544,7 @@
       "portability": {
         "readiness": "scripted",
         "targets": [
-          "agent-skills"
+          "skill-md"
         ]
       },
       "relations": {
@@ -1685,7 +1713,7 @@
       "portability": {
         "readiness": "scripted",
         "targets": [
-          "agent-skills"
+          "skill-md"
         ]
       },
       "relations": {
@@ -1797,7 +1825,7 @@
       "portability": {
         "readiness": "scripted",
         "targets": [
-          "agent-skills"
+          "skill-md"
         ]
       },
       "relations": {
@@ -1909,7 +1937,7 @@
       "portability": {
         "readiness": "scripted",
         "targets": [
-          "agent-skills"
+          "skill-md"
         ]
       },
       "relations": {
@@ -1993,7 +2021,7 @@
       "portability": {
         "readiness": "scripted",
         "targets": [
-          "agent-skills"
+          "skill-md"
         ]
       },
       "relations": {
@@ -2164,7 +2192,7 @@
       "portability": {
         "readiness": "scripted",
         "targets": [
-          "agent-skills"
+          "skill-md"
         ]
       },
       "relations": {
@@ -2371,7 +2399,7 @@
       "portability": {
         "readiness": "scripted",
         "targets": [
-          "agent-skills"
+          "skill-md"
         ]
       },
       "relations": {
@@ -2462,14 +2490,40 @@
         "notes": "Markdown, Git"
       },
       "description": "Use when writing reference docs, guides, tutorials, specs, architecture notes, or any durable technical prose that a future reader has to trust. Covers doc-type selection, audience fit, progressive disclosure, docs-as-code workflow, freshness and drift tracking, and source-of-truth discipline. Do NOT use for runtime debugging, UI accessibility behavior, or behavior-preserving code refactor.",
+      "grounding": {
+        "domain_object": "Documentation discipline in the Skill Graph repository",
+        "evidence_priority": "repo_code_first",
+        "failure_modes": [
+          "docs_restating_instead_of_citing_truth",
+          "readme_cli_examples_drift_from_scripts",
+          "durable_prose_confused_with_runtime_debugging",
+          "audience_fit_omitted_from_reference_docs"
+        ],
+        "grounding_mode": "hybrid",
+        "truth_sources": [
+          "README.md",
+          "docs/PRIMER.md",
+          "docs/manifest-field-mapping.md",
+          "docs/field-reference.md",
+          "examples/evals/comprehension.json"
+        ]
+      },
       "health": {
         "drift_check": {
-          "last_verified": "2026-04-18"
+          "last_verified": "2026-05-13",
+          "truth_source_hashes": {
+            "README.md": "957c366dbc8f3b1056fb812cc4440e56a9cb329ddb4c9ac4e0ea7294383ba013",
+            "docs/PRIMER.md": "e6bd99468c224fe4c9606e147c5db94dff889feeb9ca5d80084480039c7e9296",
+            "docs/field-reference.md": "2e5afcc5b623f0a7e1471485f627c24a91900e1d4c43168aa866314454ea46fa",
+            "docs/manifest-field-mapping.md": "aca0b7f2d4631be24a3e7daed1a1d207b488f253164a7d514b9db7af21c6177f",
+            "examples/evals/comprehension.json": "539f8d9aaf75f2eb2edd20ba6fb44be1b5fdccdd80440d0fb0217c781a08e1be"
+          }
         },
+        "drift_detected": true,
         "eval_artifacts": "present",
         "eval_state": "passing",
         "freshness": "2026-04-18",
-        "has_grounding": false,
+        "has_grounding": true,
         "has_relations": true,
         "routing_eval": "present"
       },
@@ -2481,7 +2535,7 @@
       "portability": {
         "readiness": "scripted",
         "targets": [
-          "agent-skills"
+          "skill-md"
         ]
       },
       "relations": {
@@ -2583,7 +2637,7 @@
       "portability": {
         "readiness": "scripted",
         "targets": [
-          "agent-skills"
+          "skill-md"
         ]
       },
       "relations": {
@@ -2684,7 +2738,7 @@
       "portability": {
         "readiness": "scripted",
         "targets": [
-          "agent-skills"
+          "skill-md"
         ]
       },
       "relations": {
@@ -2780,7 +2834,7 @@
       "portability": {
         "readiness": "scripted",
         "targets": [
-          "agent-skills"
+          "skill-md"
         ]
       },
       "relations": {
@@ -2879,7 +2933,7 @@
       "portability": {
         "readiness": "scripted",
         "targets": [
-          "agent-skills"
+          "skill-md"
         ]
       },
       "relations": {
@@ -2975,7 +3029,7 @@
       "portability": {
         "readiness": "scripted",
         "targets": [
-          "agent-skills"
+          "skill-md"
         ]
       },
       "relations": {
@@ -3143,6 +3197,7 @@
           "schemas/manifest.schema.json",
           "docs/skill-metadata-protocol.md",
           "scripts/skill-lint.js",
+          "scripts/lib/alias-contract.js",
           "scripts/check-protocol-consistency.js",
           "scripts/generate-manifest.js",
           "examples/evals/graph-audit.json"
@@ -3154,14 +3209,15 @@
           "truth_source_hashes": {
             "docs/skill-metadata-protocol.md": "bce8933a4f4f6386e36e618f2de97f0f6feb864a4c1aaeec225291110e7f8a76",
             "examples/evals/graph-audit.json": "8edab7bc057c65c8fd43f6ca17863c7a12ea831f6eb2158f1b2fde2ba03ad4b2",
-            "schemas/manifest.schema.json": "5952eee971339e4910f79497554199d3b833f37bdad86038344f66596e81c0c0",
+            "schemas/manifest.schema.json": "b5181764e0b645d01a8b6918c78463e53a2f28669a6883365c3a1d132323c066",
             "schemas/skill.schema.json": "370a021a129cba5b54cd15daaaa934fbb172df306dc0095608ea4a5607fe2526",
             "scripts/check-protocol-consistency.js": "0ff39406d36e7a9e51c176f657f4f426d8bd5a3fe6411d28b9e9a93dc7d89f29",
-            "scripts/generate-manifest.js": "950f890dd0323c6a9326dcdc16076358ab1d6990a593a335e0e197ae328b3965",
-            "scripts/skill-lint.js": "fa7f14088b699267ba3cf272b7500cb57e6a521e05eb9242df7a479e7adfb657"
+            "scripts/generate-manifest.js": "9d7bbbdae440fdb1763d61ffa7bda10c9efae92359d1c2139d0e971582d59e0e",
+            "scripts/lib/alias-contract.js": "ab7b4f15c13caf1ff1f3205e285415b086f7b6cbc3fcfaba982a590cc56b49cd",
+            "scripts/skill-lint.js": "3a78f75f8921542b91dc619cd41bde29bf379de3c16bdcf3653c854ecbe9fa29"
           }
         },
-        "drift_detected": false,
+        "drift_detected": true,
         "eval_artifacts": "present",
         "eval_state": "passing",
         "freshness": "2026-04-18",
@@ -3332,7 +3388,7 @@
       "portability": {
         "readiness": "scripted",
         "targets": [
-          "agent-skills"
+          "skill-md"
         ]
       },
       "relations": {
@@ -3445,7 +3501,7 @@
       "portability": {
         "readiness": "scripted",
         "targets": [
-          "agent-skills"
+          "skill-md"
         ]
       },
       "relations": {
@@ -3541,7 +3597,7 @@
       "portability": {
         "readiness": "scripted",
         "targets": [
-          "agent-skills"
+          "skill-md"
         ]
       },
       "relations": {
@@ -3636,7 +3692,7 @@
       "portability": {
         "readiness": "scripted",
         "targets": [
-          "agent-skills"
+          "skill-md"
         ]
       },
       "relations": {
@@ -3826,7 +3882,7 @@
       "portability": {
         "readiness": "scripted",
         "targets": [
-          "agent-skills"
+          "skill-md"
         ]
       },
       "relations": {
@@ -3919,7 +3975,7 @@
       "portability": {
         "readiness": "scripted",
         "targets": [
-          "agent-skills"
+          "skill-md"
         ]
       },
       "relations": {
@@ -4027,7 +4083,7 @@
       "portability": {
         "readiness": "scripted",
         "targets": [
-          "agent-skills"
+          "skill-md"
         ]
       },
       "relations": {
@@ -4111,14 +4167,40 @@
       },
       "description": "Use when adding or enforcing lint rules as part of a test or verification plan. Extends testing-strategy with lint-specific guidance: rule selection, gate placement, failure triage, and migration planning when introducing rules to an existing codebase. Do NOT use standalone — load the base testing-strategy skill alongside it — and do NOT use for chasing a specific lint failure in one file (that is debugging).",
       "extends": "testing-strategy",
+      "grounding": {
+        "domain_object": "Lint-specific verification planning in the Skill Graph starter library",
+        "evidence_priority": "repo_code_first",
+        "failure_modes": [
+          "lint_failure_triaged_as_strategy_problem",
+          "overlay_loaded_without_base_testing_strategy",
+          "rule_migration_lacks_gate_placement",
+          "routing_eval_claim_not_backed_by_harness"
+        ],
+        "grounding_mode": "hybrid",
+        "truth_sources": [
+          "scripts/skill-lint.js",
+          "scripts/lint/check-routing-quality.js",
+          "scripts/lint/check-routing-eval.js",
+          "examples/evals/lint-overlay.json",
+          "skills/testing-strategy/SKILL.md"
+        ]
+      },
       "health": {
         "drift_check": {
-          "last_verified": "2026-04-18"
+          "last_verified": "2026-05-13",
+          "truth_source_hashes": {
+            "examples/evals/lint-overlay.json": "d60dcd4512904f36e56702d5338295dbf1238448b988dc60225fdd77285eaff9",
+            "scripts/lint/check-routing-eval.js": "ab541922dfcbfb2cd7740c4abebb892e8b26477643e9d802fd0ea4cfbc8de649",
+            "scripts/lint/check-routing-quality.js": "b57d10f4c7c4e42a1a86c2741cbac6708e2de7dedb51b13f707283fbf91e32b5",
+            "scripts/skill-lint.js": "3a78f75f8921542b91dc619cd41bde29bf379de3c16bdcf3653c854ecbe9fa29",
+            "skills/testing-strategy/SKILL.md": "9c5da135ab8834843367da9e9120c92b57e81d1680ef84a0ea9e32f362e1456e"
+          }
         },
+        "drift_detected": true,
         "eval_artifacts": "present",
         "eval_state": "passing",
         "freshness": "2026-04-18",
-        "has_grounding": false,
+        "has_grounding": true,
         "has_relations": true,
         "routing_eval": "present"
       },
@@ -4130,7 +4212,7 @@
       "portability": {
         "readiness": "scripted",
         "targets": [
-          "agent-skills"
+          "skill-md"
         ]
       },
       "relations": {
@@ -4222,7 +4304,7 @@
       "portability": {
         "readiness": "scripted",
         "targets": [
-          "agent-skills"
+          "skill-md"
         ]
       },
       "relations": {
@@ -4330,7 +4412,7 @@
       "portability": {
         "readiness": "scripted",
         "targets": [
-          "agent-skills"
+          "skill-md"
         ]
       },
       "relations": {
@@ -4421,7 +4503,7 @@
       "portability": {
         "readiness": "scripted",
         "targets": [
-          "agent-skills"
+          "skill-md"
         ]
       },
       "relations": {
@@ -4523,7 +4605,7 @@
       "portability": {
         "readiness": "scripted",
         "targets": [
-          "agent-skills"
+          "skill-md"
         ]
       },
       "relations": {
@@ -4635,7 +4717,7 @@
       "portability": {
         "readiness": "scripted",
         "targets": [
-          "agent-skills"
+          "skill-md"
         ]
       },
       "relations": {
@@ -4741,7 +4823,7 @@
       "portability": {
         "readiness": "scripted",
         "targets": [
-          "agent-skills"
+          "skill-md"
         ]
       },
       "relations": {
@@ -4829,7 +4911,7 @@
       "portability": {
         "readiness": "scripted",
         "targets": [
-          "agent-skills"
+          "skill-md"
         ]
       },
       "relations": {
@@ -5089,7 +5171,7 @@
       "portability": {
         "readiness": "scripted",
         "targets": [
-          "agent-skills"
+          "skill-md"
         ]
       },
       "relations": {
@@ -5161,14 +5243,40 @@
         "notes": "Portable extraction workflow for turning project evidence into durable agent context without hallucinated project claims."
       },
       "description": "Use when extracting durable project knowledge from code, docs, issues, incidents, reports, screenshots, or conversations into reusable context such as skills, ADRs, glossaries, context docs, or memory. Do NOT use for writing a new skill contract (use `skill-scaffold`), maintaining library tooling (use `skill-infrastructure`), or generic documentation polish (use `documentation`).",
+      "grounding": {
+        "domain_object": "Extracting durable project knowledge into Skill Graph context artifacts",
+        "evidence_priority": "repo_code_first",
+        "failure_modes": [
+          "session_noise_promoted_to_durable_context",
+          "project_claims_without_truth_sources",
+          "artifact_type_chosen_before_evidence_is_classified",
+          "extracted_knowledge_not_linked_into_graph"
+        ],
+        "grounding_mode": "hybrid",
+        "truth_sources": [
+          "docs/PRIMER.md",
+          "docs/ADOPTION.md",
+          "docs/recommended-skills.md",
+          "skills/skill-scaffold/SKILL.md",
+          "skills/context-graph/SKILL.md"
+        ]
+      },
       "health": {
         "drift_check": {
-          "last_verified": "2026-05-11"
+          "last_verified": "2026-05-13",
+          "truth_source_hashes": {
+            "docs/ADOPTION.md": "3a75c1a613ac0bdf0b4b56e567d8ec1f35a80252e68595e8d86bb0a5abdf1bfc",
+            "docs/PRIMER.md": "e6bd99468c224fe4c9606e147c5db94dff889feeb9ca5d80084480039c7e9296",
+            "docs/recommended-skills.md": "5c0201bd76cdc0310bb57ddc88565ffa41f47f3b41f489c0557cb7634ed16379",
+            "skills/context-graph/SKILL.md": "732a04f09f2f4362ee17a65bee24406715a773aefd78dbcdc37a4cb3a9f287a7",
+            "skills/skill-scaffold/SKILL.md": "ea0e988de27bea1bb0868c153b4e6b2739895d180f857339b97202cc287262f7"
+          }
         },
+        "drift_detected": true,
         "eval_artifacts": "planned",
         "eval_state": "unverified",
         "freshness": "2026-05-11",
-        "has_grounding": false,
+        "has_grounding": true,
         "has_relations": true,
         "lifecycle": {
           "review_cadence": "quarterly",
@@ -5184,7 +5292,7 @@
       "portability": {
         "readiness": "scripted",
         "targets": [
-          "agent-skills"
+          "skill-md"
         ]
       },
       "relations": {
@@ -5292,7 +5400,7 @@
       "portability": {
         "readiness": "scripted",
         "targets": [
-          "agent-skills"
+          "skill-md"
         ]
       },
       "relations": {
@@ -5471,7 +5579,7 @@
       "portability": {
         "readiness": "scripted",
         "targets": [
-          "agent-skills"
+          "skill-md"
         ]
       },
       "relations": {
@@ -5644,7 +5752,7 @@
       "portability": {
         "readiness": "scripted",
         "targets": [
-          "agent-skills"
+          "skill-md"
         ]
       },
       "relations": {
@@ -5745,7 +5853,7 @@
       "portability": {
         "readiness": "scripted",
         "targets": [
-          "agent-skills"
+          "skill-md"
         ]
       },
       "relations": {
@@ -5847,7 +5955,7 @@
       "portability": {
         "readiness": "scripted",
         "targets": [
-          "agent-skills"
+          "skill-md"
         ]
       },
       "relations": {
@@ -5952,7 +6060,7 @@
       "portability": {
         "readiness": "scripted",
         "targets": [
-          "agent-skills"
+          "skill-md"
         ]
       },
       "relations": {
@@ -6116,17 +6224,53 @@
       "browse_category": "knowledge",
       "category": "skill-system/health",
       "compatibility": {
-        "notes": "Library- and harness-agnostic. Patterns apply to any skill-style library (Skill Graph, Anthropic Agent Skills, Cursor rules, custom in-house skill systems). Specific tool names in this skill (skill-lint, generate-manifest, routing-eval, drift-sentinel) are concrete examples from the Skill Graph reference implementation -- substitute your library's equivalents."
+        "notes": "Library- and harness-agnostic. Patterns apply to any skill-style library (Skill Graph, Claude skills, Cursor rules, custom in-house skill systems). Specific tool names in this skill (skill-lint, generate-manifest, routing-eval, drift-sentinel) are concrete examples from the Skill Graph reference implementation -- substitute your library's equivalents."
       },
       "description": "Use when designing the deterministic health-tooling layer for a skill library, diagnosing why an existing library is decaying invisibly, deciding which categories of automated check to add (inventory, protocol consistency, conflict detection, routing health, drift sentinel), debugging eval-threshold violations across many skills at once, or auditing whether a skill-system has the safety nets a production library needs. Covers the five categories of skill-health tooling, the library-as-database mental model, eval quality patterns (minimum thresholds, contradiction-check pattern, negative-expectation requirement), maintenance workflows triggered by batch skill changes, and the anti-patterns that cause skill libraries to decay until agents loading them get worse over time. Do NOT use for authoring an individual SKILL.md (use `skill-scaffold`), for running the conformance audit on the Skill Graph repo itself (use `graph-audit`), or for general lint rule selection across a codebase (use `lint-overlay`).",
+      "grounding": {
+        "domain_object": "Deterministic health tooling for Skill Graph libraries",
+        "evidence_priority": "repo_code_first",
+        "failure_modes": [
+          "health_tooling_categories_missing_from_ci",
+          "protocol_mapping_drift",
+          "eval_thresholds_become_self_attested",
+          "overlap_or_drift_checks_not_run_after_batch_changes"
+        ],
+        "grounding_mode": "hybrid",
+        "truth_sources": [
+          "package.json",
+          "bin/skill-graph.js",
+          "scripts/skill-lint.js",
+          "scripts/lib/roots.js",
+          "scripts/check-protocol-consistency.js",
+          "scripts/generate-manifest.js",
+          "scripts/skill-graph-drift.js",
+          "scripts/skill-overlap.js",
+          "scripts/skill-graph-routing-eval.js",
+          "docs/manifest-field-mapping.md"
+        ]
+      },
       "health": {
         "drift_check": {
-          "last_verified": "2026-05-13"
+          "last_verified": "2026-05-13",
+          "truth_source_hashes": {
+            "bin/skill-graph.js": "113a1e01ac7276ac1b5d77a1c32e35a73113da93fc33cfd0caf6db842d2d679f",
+            "docs/manifest-field-mapping.md": "aca0b7f2d4631be24a3e7daed1a1d207b488f253164a7d514b9db7af21c6177f",
+            "package.json": "7a3410a004aea78a2065092e289c0f3cf3c082298804dda6c5829eff22c14b62",
+            "scripts/check-protocol-consistency.js": "0ff39406d36e7a9e51c176f657f4f426d8bd5a3fe6411d28b9e9a93dc7d89f29",
+            "scripts/generate-manifest.js": "9d7bbbdae440fdb1763d61ffa7bda10c9efae92359d1c2139d0e971582d59e0e",
+            "scripts/lib/roots.js": "e742efa57b6c33ff1c87034b16a689d1499f6d53c1e6b740f3e9783db7fd557f",
+            "scripts/skill-graph-drift.js": "6b69c25b59c16b477a377e5ab40adb6ff30f72d5a12947772053a6cd16b1f409",
+            "scripts/skill-graph-routing-eval.js": "fffac2858863662bde6bc54c56bb77a219ae93f626e0c8d5886566f998181deb",
+            "scripts/skill-lint.js": "3a78f75f8921542b91dc619cd41bde29bf379de3c16bdcf3653c854ecbe9fa29",
+            "scripts/skill-overlap.js": "ed642cbc677cc76ec1321300b37d6752337b6b5541c7a9f558fd315d6f934e4b"
+          }
         },
+        "drift_detected": true,
         "eval_artifacts": "planned",
         "eval_state": "unverified",
         "freshness": "2026-05-13",
-        "has_grounding": false,
+        "has_grounding": true,
         "has_relations": true,
         "lifecycle": {
           "review_cadence": "quarterly",
@@ -6142,7 +6286,7 @@
       "portability": {
         "readiness": "scripted",
         "targets": [
-          "agent-skills"
+          "skill-md"
         ]
       },
       "relations": {
@@ -6284,7 +6428,7 @@
       "portability": {
         "readiness": "scripted",
         "targets": [
-          "agent-skills"
+          "skill-md"
         ]
       },
       "project_tags": [
@@ -6363,14 +6507,38 @@
         "notes": "Markdown, YAML, any agent runtime"
       },
       "description": "Use when routing an agent request across multiple skills, building or auditing a routing table, detecting routing coverage gaps, or answering questions like 'which skill handles this?', 'who routes X?', or 'why did skill A activate instead of B?'. Covers trigger-label matching, file-path matching, keyword matching, description-based semantic matching, scope/type tiebreakers, and coverage-gap detection. Do NOT use when the target skill is already known (load it directly), when authoring a new skill (use `skill-metadata-template` instead), or when evaluating a SINGLE skill's quality (use `graph-audit`).",
+      "grounding": {
+        "domain_object": "Skill Graph reference routing behavior",
+        "evidence_priority": "repo_code_first",
+        "failure_modes": [
+          "negation_paths_score_as_positive_matches",
+          "routing_eval_claim_without_harness_pass",
+          "boundary_exclusion_removes_stronger_match",
+          "coverage_gap_silently_falls_back"
+        ],
+        "grounding_mode": "repo_specific",
+        "truth_sources": [
+          "scripts/skill-graph-route.js",
+          "scripts/skill-graph-routing-eval.js",
+          "examples/evals/skill-router.json",
+          "examples/evals/skill-router.routing.json"
+        ]
+      },
       "health": {
         "drift_check": {
-          "last_verified": "2026-04-18"
+          "last_verified": "2026-05-13",
+          "truth_source_hashes": {
+            "examples/evals/skill-router.json": "fccabcbc5f9d8057536f397fb0fc71a567371f75fb9a21afda343b197af30293",
+            "examples/evals/skill-router.routing.json": "c4dc88db1e746bea78a7cf96b50c6c84532a07eda42da2e35d790c8928d4da8c",
+            "scripts/skill-graph-route.js": "b9a7b51d0e8b845b11473f479c4593754768c3775508049db7339892b2f08cc2",
+            "scripts/skill-graph-routing-eval.js": "fffac2858863662bde6bc54c56bb77a219ae93f626e0c8d5886566f998181deb"
+          }
         },
+        "drift_detected": true,
         "eval_artifacts": "present",
         "eval_state": "passing",
         "freshness": "2026-04-18",
-        "has_grounding": false,
+        "has_grounding": true,
         "has_relations": true,
         "routing_eval": "present"
       },
@@ -6382,7 +6550,7 @@
       "portability": {
         "readiness": "scripted",
         "targets": [
-          "agent-skills"
+          "skill-md"
         ]
       },
       "relations": {
@@ -6486,7 +6654,7 @@
             "schemas/skill.v3.schema.json": "8fab936a90718ff12e90b9391e2709cf015a962a18cf8d3666a3d50db8b2017d"
           }
         },
-        "drift_detected": false,
+        "drift_detected": true,
         "eval_artifacts": "planned",
         "eval_state": "unverified",
         "freshness": "2026-05-04",
@@ -6506,7 +6674,7 @@
       "portability": {
         "readiness": "scripted",
         "targets": [
-          "agent-skills"
+          "skill-md"
         ]
       },
       "relations": {
@@ -6596,7 +6764,7 @@
       "portability": {
         "readiness": "scripted",
         "targets": [
-          "agent-skills"
+          "skill-md"
         ]
       },
       "relations": {
@@ -6691,7 +6859,7 @@
       "portability": {
         "readiness": "scripted",
         "targets": [
-          "agent-skills"
+          "skill-md"
         ]
       },
       "relations": {
@@ -6804,7 +6972,7 @@
       "portability": {
         "readiness": "scripted",
         "targets": [
-          "agent-skills"
+          "skill-md"
         ]
       },
       "relations": {
@@ -6915,7 +7083,7 @@
       "portability": {
         "readiness": "scripted",
         "targets": [
-          "agent-skills"
+          "skill-md"
         ]
       },
       "relations": {
@@ -7016,7 +7184,7 @@
       "portability": {
         "readiness": "scripted",
         "targets": [
-          "agent-skills"
+          "skill-md"
         ]
       },
       "relations": {
@@ -7196,7 +7364,7 @@
       "portability": {
         "readiness": "scripted",
         "targets": [
-          "agent-skills"
+          "skill-md"
         ]
       },
       "relations": {
@@ -7537,7 +7705,7 @@
       "portability": {
         "readiness": "scripted",
         "targets": [
-          "agent-skills"
+          "skill-md"
         ]
       },
       "relations": {
@@ -7632,7 +7800,7 @@
       "portability": {
         "readiness": "scripted",
         "targets": [
-          "agent-skills"
+          "skill-md"
         ]
       },
       "relations": {
@@ -7817,7 +7985,7 @@
       "portability": {
         "readiness": "scripted",
         "targets": [
-          "agent-skills"
+          "skill-md"
         ]
       },
       "relations": {
@@ -7933,7 +8101,7 @@
       "portability": {
         "readiness": "scripted",
         "targets": [
-          "agent-skills"
+          "skill-md"
         ]
       },
       "relations": {

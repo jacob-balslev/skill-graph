@@ -36,7 +36,7 @@ PASS WITH FIXES
 - **Grounding fidelity** (N/A, score N/A): Dimension does not apply to this skill (scope: portable).
 - **Content quality** (PASS WITH FIXES, score 4): Coverage, Philosophy, and Verification sections are present and concrete, but "Do NOT Use When" boundaries are implicit rather than an explicit named section.
 - **Eval quality** (PASS WITH FIXES, score 4): Eval artifact ships with seven grounded prompts; boundary coverage is good, but failure-mode prompts are missing.
-- **Portability quality** (PASS, score 5): Skill is generic, portable, and the agent-skills export via scripts/export-skill.js round-trips cleanly.
+- **Portability quality** (PASS, score 5): Skill is generic, portable, and the skill-md export via scripts/export-skill.js round-trips cleanly.
 
 
 ## Follow-up State

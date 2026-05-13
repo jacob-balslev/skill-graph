@@ -32,11 +32,13 @@ const fs = require('fs');
 const path = require('path');
 const crypto = require('crypto');
 const { parseFrontmatter } = require('./lib/parse-frontmatter');
+const { checkAliasParity } = require('./lib/alias-contract');
+const { resolveSchemaPath, workspaceRoot } = require('./lib/roots');
 
-const REPO_ROOT = path.resolve(__dirname, '..');
+const REPO_ROOT = workspaceRoot();
 const DEFAULT_SKILLS_DIR = path.join(REPO_ROOT, 'skills');
 const TEMPLATE_PATH = path.join(REPO_ROOT, 'examples', 'skill-metadata-template.md');
-const MANIFEST_SCHEMA_PATH = path.join(REPO_ROOT, 'schemas', 'manifest.schema.json');
+const MANIFEST_SCHEMA_PATH = resolveSchemaPath(REPO_ROOT, 'manifest.schema.json');
 const CONFIG_PATH = path.join(REPO_ROOT, '.skill-graph', 'config.json');
 
 function repoRelative(filePath) {
@@ -147,6 +149,10 @@ function slugifyHeading(headingText) {
     .replace(/^-|-$/g, '');
 }
 
+function isRemoteTruthSourcePath(value) {
+  return /^https?:\/\//i.test(String(value));
+}
+
 function sectionForHeadingAnchor(text, anchor) {
   const lines = text.split('\n');
   let start = -1;
@@ -179,6 +185,7 @@ function sectionForHeadingAnchor(text, anchor) {
 function sha256TruthSource(src) {
   const normalized = normalizeTruthSource(src);
   if (!normalized.path) return null;
+  if (isRemoteTruthSourcePath(normalized.path)) return undefined;
   try {
     const abs = path.resolve(REPO_ROOT, normalized.path);
     if (!fs.existsSync(abs)) return null;
@@ -218,6 +225,7 @@ function detectDrift(fm) {
     const recorded = recordedHashes[normalized.key];
     if (!recorded) continue;
     const live = sha256TruthSource(src);
+    if (live === undefined) continue; // URL truth source: valid but not hashable locally.
     if (live === null) return true; // truth source vanished
     if (live !== recorded) return true;
   }
@@ -239,6 +247,11 @@ function detectDrift(fm) {
  * @returns {object} Manifest skill entry object
  */
 function buildSkillEntry(fm, filePath, skillId, project) {
+  const aliasErrors = checkAliasParity(fm);
+  if (aliasErrors.length > 0) {
+    throw new Error(`v3.1 alias contract violation: ${aliasErrors.join('; ')}`);
+  }
+
   const entry = {};
 
   // --- Generated fields ---
@@ -248,9 +261,15 @@ function buildSkillEntry(fm, filePath, skillId, project) {
 
   // --- Copied-through required fields ---
   entry.name = fm.name;
+  if (fm.urn !== undefined && fm.urn !== null) {
+    entry.urn = fm.urn;
+  }
   entry.description = fm.description;
   entry.version = fm.version;
   entry.type = fm.type;
+  if (fm.archetype !== undefined && fm.archetype !== null) {
+    entry.archetype = fm.archetype;
+  }
   entry.browse_category = fm.browse_category;
   entry.scope = fm.scope;
   entry.owner = fm.owner;
@@ -258,6 +277,9 @@ function buildSkillEntry(fm, filePath, skillId, project) {
   // --- Copied-through optional fields ---
   if (fm.category !== undefined && fm.category !== null) {
     entry.category = fm.category;
+  }
+  if (fm.category_path !== undefined && fm.category_path !== null) {
+    entry.category_path = fm.category_path;
   }
   if (fm.stability !== undefined && fm.stability !== null) {
     entry.stability = fm.stability;
@@ -276,6 +298,9 @@ function buildSkillEntry(fm, filePath, skillId, project) {
   }
   if (fm['allowed-tools'] !== undefined && fm['allowed-tools'] !== null) {
     entry['allowed-tools'] = fm['allowed-tools'];
+  }
+  if (fm.allowed_tools !== undefined && fm.allowed_tools !== null) {
+    entry.allowed_tools = fm.allowed_tools;
   }
   if (fm.routing_groups !== undefined && fm.routing_groups !== null) {
     entry.routing_groups = fm.routing_groups;
@@ -361,8 +386,14 @@ function buildSkillEntry(fm, filePath, skillId, project) {
   if (fm.eval_last_run !== undefined && fm.eval_last_run !== null && typeof fm.eval_last_run === 'object') {
     health.eval_last_run = fm.eval_last_run;
   }
+  if (fm.eval !== undefined && fm.eval !== null && typeof fm.eval === 'object') {
+    health.eval = fm.eval;
+  }
   if (fm.freshness !== undefined && fm.freshness !== null) {
     health.freshness = fm.freshness;
+  }
+  if (fm.reviewed_at !== undefined && fm.reviewed_at !== null) {
+    health.reviewed_at = fm.reviewed_at;
   }
   if (fm.drift_check !== undefined && fm.drift_check !== null && typeof fm.drift_check === 'object') {
     health.drift_check = fm.drift_check;

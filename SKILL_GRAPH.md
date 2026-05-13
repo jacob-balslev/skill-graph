@@ -119,7 +119,7 @@ Scripts that police Tier 1 (lint, consistency) or compile Tier 1's output (manif
 | File | Role |
 |---|---|
 | `scripts/generate-manifest.js` | Authored -> compiled manifest compiler. Multi-root workspace aware via `.skill-graph/config.json`. Computes SHA-256 on normalized truth-source keys for drift detection. |
-| `scripts/export-skill.js` | Agent Skills export transform. Flattens the v3 `compatibility` object to a single 500-char string for the base standard. |
+| `scripts/export-skill.js` | Plain `SKILL.md` export transform. Flattens the v3 `compatibility` object to a single string for the portable export shape. |
 | `scripts/migrate-skill-v2-to-v3.js` | v2 → v3 codemod. Line-based — preserves author YAML style (comments, quoting, indentation). |
 
 #### Pipeline — how a SKILL.md becomes a manifest entry
@@ -304,7 +304,7 @@ The repo currently ships a larger `skills/` library. The eight starters below ar
 |---|---|
 | `examples/audits/` | Worked audit outputs (findings/verdict/scorecard) for `a11y`, `debugging`, `documentation`. |
 | `examples/evals/` | Eval fixtures for starter skills plus expanded routing and content-verification surfaces. |
-| `examples/exports/` | Five round-trip Agent Skills exports demonstrating Tier 3's `export-skill.js` transform. |
+| `examples/exports/` | Five plain `SKILL.md` exports demonstrating Tier 3's `export-skill.js` transform. |
 
 ---
 

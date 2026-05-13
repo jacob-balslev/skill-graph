@@ -8,8 +8,10 @@
  *
  *   - DRIFT           truth source has changed since last verification
  *   - STALE           `drift_check.last_verified` is older than lifecycle.stale_after_days
- *   - BROKEN          a declared truth source file does not exist
+ *   - BROKEN          a declared local truth source file does not exist
  *   - NO_BASELINE     truth sources exist but no hashes are recorded yet
+ *   - EXTERNAL_UNHASHED
+ *                     a URL truth source is valid but not fetched by this tool
  *
  * This tool is the reason `grounding.truth_sources` is in the contract at all.
  * Without an executable drift check, grounding is decorative; with this tool,
@@ -24,8 +26,8 @@
  *   node scripts/skill-graph-drift.js --record --apply skills/shopify  # write in place
  *
  * Self-contained. Only uses Node built-ins — no external dependencies.
- * Exit 0 when no DRIFT or BROKEN; 1 otherwise. STALE and NO_BASELINE are
- * informational and do not fail.
+ * Exit 0 when no DRIFT or BROKEN; 1 otherwise. STALE, NO_BASELINE, and
+ * EXTERNAL_UNHASHED are informational and do not fail.
  */
 
 'use strict';
@@ -34,8 +36,9 @@ const fs = require('fs');
 const path = require('path');
 const crypto = require('crypto');
 const { parseFrontmatter } = require('./lib/parse-frontmatter');
+const { workspaceRoot } = require('./lib/roots');
 
-const REPO_ROOT = path.resolve(__dirname, '..');
+const REPO_ROOT = workspaceRoot();
 const DEFAULT_SKILLS_DIR = path.join(REPO_ROOT, 'skills');
 const CONFIG_PATH = path.join(REPO_ROOT, '.skill-graph', 'config.json');
 
@@ -102,6 +105,10 @@ function hashContent(content) {
   return crypto.createHash('sha256').update(content).digest('hex');
 }
 
+function isRemoteTruthSourcePath(value) {
+  return /^https?:\/\//i.test(String(value));
+}
+
 function slugifyHeading(headingText) {
   return headingText
     .replace(/^#+\s*/, '')
@@ -139,6 +146,15 @@ function sha256TruthSource(src) {
   const normalized = normalizeTruthSource(src);
   if (normalized.malformed || !normalized.path) {
     return { normalized, hash: null, error: 'malformed truth source' };
+  }
+
+  if (isRemoteTruthSourcePath(normalized.path)) {
+    return {
+      normalized,
+      hash: null,
+      error: 'external URL not hashed by zero-dependency drift sentinel',
+      external: true,
+    };
   }
 
   const absPath = path.resolve(REPO_ROOT, normalized.path);
@@ -198,6 +214,7 @@ function checkSkill(skillMdPath) {
   let anyDrift = false;
   let anyBroken = false;
   let anyMissingHash = false;
+  let anyExternal = false;
 
   for (const src of grounding.truth_sources) {
     const hashed = sha256TruthSource(src);
@@ -206,7 +223,8 @@ function checkSkill(skillMdPath) {
     const recorded = recordedHashes[sourceKey];
 
     let entryStatus;
-    if (liveHash === null) { entryStatus = 'BROKEN'; anyBroken = true; }
+    if (hashed.external) { entryStatus = 'EXTERNAL_UNHASHED'; anyExternal = true; }
+    else if (liveHash === null) { entryStatus = 'BROKEN'; anyBroken = true; }
     else if (!recorded) { entryStatus = 'NO_BASELINE'; anyMissingHash = true; }
     else if (liveHash !== recorded) { entryStatus = 'DRIFT'; anyDrift = true; }
     else { entryStatus = 'CLEAN'; }
@@ -240,6 +258,7 @@ function checkSkill(skillMdPath) {
   else if (anyBroken) status = 'BROKEN';
   else if (stale) status = 'STALE';
   else if (anyMissingHash) status = 'NO_BASELINE';
+  else if (anyExternal) status = 'EXTERNAL_UNHASHED';
   else status = 'CLEAN';
 
   return {
@@ -452,4 +471,12 @@ function main() {
   process.exit(hasDriftOrBroken ? 1 : 0);
 }
 
-main();
+module.exports = {
+  checkSkill,
+  hashContent,
+  isRemoteTruthSourcePath,
+  normalizeTruthSource,
+  sha256TruthSource,
+};
+
+if (require.main === module) main();

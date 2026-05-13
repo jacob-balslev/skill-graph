@@ -6,7 +6,7 @@
  * `examples/skill-metadata-template.md`) against the frontmatter schema. Runs:
  *
  *   1. Schema validation against `schemas/skill.schema.json`
- *   2. Parent-directory-matches-name check (Agent Skills compatibility)
+ *   2. Parent-directory-matches-name check (SKILL.md compatibility)
  *   3. Relation target existence check (adjacent, boundary, verify_with,
  *      depends_on targets must be real sibling skills in the repo)
  *   4. Eval artifact coherence check (eval_artifacts: present requires at
@@ -72,18 +72,24 @@ const fs = require('fs');
 const path = require('path');
 const { execFileSync } = require('child_process');
 const { parseFrontmatter } = require('./lib/parse-frontmatter');
+const { checkAliasParity } = require('./lib/alias-contract');
+const { loadWorkspaceConfig, resolveSchemaPath, resolveSkillRoots, workspaceRoot } = require('./lib/roots');
 const { formatCodeFrame, locateYamlKey, locateH2Section } = require('./lint/format-code-frame');
 const { checkArchetypeSections } = require('./lint/check-archetype-sections');
 const { checkRoutingQuality } = require('./lint/check-routing-quality');
 const { checkRoutingEval } = require('./lint/check-routing-eval');
 
-const REPO_ROOT = path.resolve(__dirname, '..');
-const SKILLS_DIR = path.join(REPO_ROOT, 'skills');
+const REPO_ROOT = workspaceRoot();
 const TEMPLATE_PATH = path.join(REPO_ROOT, 'examples', 'skill-metadata-template.md');
-const SCHEMA_PATH = path.join(REPO_ROOT, 'schemas', 'skill.schema.json');
-const MANIFEST_SCHEMA_PATH = path.join(REPO_ROOT, 'schemas', 'manifest.schema.json');
+const SCHEMA_PATH = resolveSchemaPath(REPO_ROOT, 'skill.schema.json');
+const MANIFEST_SCHEMA_PATH = resolveSchemaPath(REPO_ROOT, 'manifest.schema.json');
 const SAMPLE_MANIFEST_PATH = path.join(REPO_ROOT, 'examples', 'skills.manifest.sample.json');
 const EVALS_DIR = path.join(REPO_ROOT, 'examples', 'evals');
+const WORKSPACE_CONFIG = loadWorkspaceConfig(REPO_ROOT, msg => process.stderr.write(`WARN ${msg}\n`));
+const SKILL_ROOTS = resolveSkillRoots(REPO_ROOT, WORKSPACE_CONFIG);
+const SKILL_ROOT_LABEL = SKILL_ROOTS
+  .map(root => path.relative(REPO_ROOT, root.absPath).split(path.sep).join('/') || '.')
+  .join(', ');
 
 // Explicit "loss policy" list. Each entry is an authored top-level field in
 // skill.schema.json that must have a representation in the manifest skill-item
@@ -101,10 +107,14 @@ const EVALS_DIR = path.join(REPO_ROOT, 'examples', 'evals');
 // under `health.*` — see AUTHORED_FIELDS_MUST_FLOW_HEALTH below for the
 // parallel parity guard.
 const AUTHORED_FIELDS_MUST_FLOW = [
+  'urn',
+  'archetype',
+  'category_path',
   'routing_groups',
   'license',
   'compatibility',
   'allowed-tools',
+  'allowed_tools',
   'browse_category',
   'project_tags',
   'category',
@@ -127,6 +137,8 @@ const AUTHORED_FIELDS_MUST_FLOW_HEALTH = [
   'routing_eval',
   'comprehension_state',
   'eval_last_run',
+  'eval',
+  'reviewed_at',
   'lifecycle',
   'runtime_telemetry',
 ];
@@ -291,16 +303,22 @@ function validateAgainstSchema(fm, schema) {
   if (fm.scope === 'codebase' && !fm.grounding) {
     errors.push(`scope: codebase requires grounding field`);
   }
+  if (fm.stability === 'deprecated' && !fm.superseded_by) {
+    errors.push(`stability: deprecated requires superseded_by field`);
+  }
+  if (fm.comprehension_state === 'present' && !fm.concept) {
+    errors.push(`comprehension_state: present requires concept field`);
+  }
 
   return errors;
 }
 
 function checkParentDirMatchesName(filePath, fm) {
-  // Only applies to skills/<name>/SKILL.md, not the example template
-  if (!filePath.startsWith(SKILLS_DIR)) return [];
+  // Only applies to <skill-root>/<name>/SKILL.md, not the example template.
+  if (path.basename(filePath) !== 'SKILL.md') return [];
   const parentDir = path.basename(path.dirname(filePath));
   if (parentDir !== fm.name) {
-    return [`parent directory "${parentDir}" does not match name "${fm.name}" (Agent Skills compatibility rule)`];
+    return [`parent directory "${parentDir}" does not match name "${fm.name}" (SKILL.md compatibility rule)`];
   }
   return [];
 }
@@ -340,7 +358,7 @@ function checkRelationTargets(fm, knownSkillNames) {
         continue;
       }
       if (!knownSkillNames.has(name)) {
-        errors.push(`relations.${kind}: "${name}" does not match any known skill in ${SKILLS_DIR}`);
+        errors.push(`relations.${kind}: "${name}" does not match any known skill in configured roots (${SKILL_ROOT_LABEL})`);
       }
     }
   }
@@ -791,7 +809,7 @@ function checkSampleManifest(manifestSchema) {
 // skill count will always differ.
 function checkGeneratorParity() {
   if (!fs.existsSync(SAMPLE_MANIFEST_PATH)) {
-    return ['generator parity: examples/skills.manifest.sample.json does not exist (run node scripts/generate-manifest.js --include-template --output examples/skills.manifest.sample.json)'];
+    return [];
   }
 
   const generatorScript = path.join(__dirname, 'generate-manifest.js');
@@ -870,30 +888,44 @@ function checkGeneratorParity() {
   return [];
 }
 
-function collectSkillFiles(args) {
+function collectSkillFilesFromRoot(rootDir) {
   const files = [];
+  if (!fs.existsSync(rootDir)) return files;
+  for (const name of fs.readdirSync(rootDir)) {
+    const skillMd = path.join(rootDir, name, 'SKILL.md');
+    if (fs.existsSync(skillMd)) files.push(skillMd);
+  }
+  return files;
+}
+
+function collectSkillFilesFromRoots(roots) {
+  return roots.flatMap(root => collectSkillFilesFromRoot(root.absPath));
+}
+
+function collectSkillFilesFromExplicitArg(arg) {
+  const abs = path.resolve(arg);
+  if (!fs.existsSync(abs)) return [];
+  if (fs.statSync(abs).isDirectory()) {
+    const directSkillMd = path.join(abs, 'SKILL.md');
+    if (fs.existsSync(directSkillMd)) return [directSkillMd];
+    return collectSkillFilesFromRoot(abs);
+  }
+  if (abs.endsWith('SKILL.md') || abs.endsWith('.md')) return [abs];
+  return [];
+}
+
+function collectSkillFiles(args) {
   const includeTemplate = args.includes('--include-template');
   const explicit = args.filter(a => !a.startsWith('--'));
-
+  const files = [];
   if (explicit.length > 0) {
     for (const arg of explicit) {
-      const abs = path.resolve(arg);
-      if (fs.statSync(abs).isDirectory()) {
-        const skillMd = path.join(abs, 'SKILL.md');
-        if (fs.existsSync(skillMd)) files.push(skillMd);
-      } else if (abs.endsWith('SKILL.md') || abs.endsWith('.md')) {
-        files.push(abs);
-      }
+      files.push(...collectSkillFilesFromExplicitArg(arg));
     }
   } else {
-    if (fs.existsSync(SKILLS_DIR)) {
-      for (const name of fs.readdirSync(SKILLS_DIR)) {
-        const skillMd = path.join(SKILLS_DIR, name, 'SKILL.md');
-        if (fs.existsSync(skillMd)) files.push(skillMd);
-      }
-    }
-    if (includeTemplate && fs.existsSync(TEMPLATE_PATH)) files.push(TEMPLATE_PATH);
+    files.push(...collectSkillFilesFromRoots(SKILL_ROOTS));
   }
+  if (includeTemplate && fs.existsSync(TEMPLATE_PATH)) files.push(TEMPLATE_PATH);
 
   return files;
 }
@@ -935,12 +967,15 @@ function main() {
 
   // Sample manifest conformance. Validates each skill entry in
   // examples/skills.manifest.sample.json against manifest.schema.json#skills.items.
+  const hasSampleManifest = fs.existsSync(SAMPLE_MANIFEST_PATH);
   const sampleErrors = checkSampleManifest(manifestSchema);
   if (sampleErrors.length > 0) {
     console.error('FAIL [T5 sample] examples/skills.manifest.sample.json');
     for (const e of sampleErrors) console.error(`     - ${e}`);
-  } else {
+  } else if (hasSampleManifest) {
     console.log('OK   [T5 sample] examples/skills.manifest.sample.json');
+  } else {
+    console.log('SKIP [T5 sample] examples/skills.manifest.sample.json (not present in workspace)');
   }
 
   // Generator parity: re-run the manifest generator and verify the output
@@ -949,6 +984,9 @@ function main() {
   // a hand-edited sample will fail this check. Skippable via --skip-generator-parity.
   let generatorParityErrors = [];
   if (!skipGeneratorParity) {
+    if (!hasSampleManifest) {
+      console.log('SKIP [T3↔T5]     examples/skills.manifest.sample.json (not present in workspace)');
+    } else {
     generatorParityErrors = checkGeneratorParity();
     if (generatorParityErrors.length > 0) {
       console.error('FAIL [T3↔T5]     examples/skills.manifest.sample.json (generator parity)');
@@ -958,19 +996,19 @@ function main() {
     }
   }
 
+  }
+
   // Build the known-skill set (names) + frontmatter map (for relation
   // semantic checks that need to look across sibling skills' relation blocks).
   const knownSkillNames = new Set();
   const knownFrontmatters = new Map();
-  if (fs.existsSync(SKILLS_DIR)) {
-    for (const name of fs.readdirSync(SKILLS_DIR)) {
-      const skillMd = path.join(SKILLS_DIR, name, 'SKILL.md');
-      if (fs.existsSync(skillMd)) {
-        const fm = parseFrontmatter(fs.readFileSync(skillMd, 'utf8'));
-        if (fm && fm.name) {
-          knownSkillNames.add(fm.name);
-          knownFrontmatters.set(fm.name, fm);
-        }
+  const knownFiles = new Set([...collectSkillFilesFromRoots(SKILL_ROOTS), ...files]);
+  for (const skillMd of knownFiles) {
+    if (fs.existsSync(skillMd)) {
+      const fm = parseFrontmatter(fs.readFileSync(skillMd, 'utf8'));
+      if (fm && fm.name) {
+        knownSkillNames.add(fm.name);
+        knownFrontmatters.set(fm.name, fm);
       }
     }
   }
@@ -983,8 +1021,10 @@ function main() {
   if (truthSourceErrors.length > 0) {
     console.error('FAIL [T5 evals]  examples/evals/ (truth_source ranges)');
     for (const e of truthSourceErrors) console.error(`     - ${e}`);
-  } else {
+  } else if (fs.existsSync(EVALS_DIR)) {
     console.log('OK   [T5 evals]  examples/evals/ (truth_source ranges)');
+  } else {
+    console.log('SKIP [T5 evals]  examples/evals/ (not present in workspace)');
   }
 
   let totalErrors = parityErrors.length + sampleErrors.length + generatorParityErrors.length + truthSourceErrors.length;
@@ -1096,6 +1136,7 @@ function main() {
     const relationSemanticsResult = checkRelationSemantics(fm, knownFrontmatters);
     const rawErrors = [
       ...validateAgainstSchema(fm, schema),
+      ...checkAliasParity(fm),
       ...checkParentDirMatchesName(file, fm),
       ...checkRelationTargets(fm, knownSkillNames),
       ...evalResult.errors,

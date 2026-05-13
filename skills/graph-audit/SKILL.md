@@ -13,11 +13,12 @@ drift_check:
   last_verified: "2026-05-13"
   truth_source_hashes:
     "schemas/skill.schema.json": "370a021a129cba5b54cd15daaaa934fbb172df306dc0095608ea4a5607fe2526"
-    "schemas/manifest.schema.json": "5952eee971339e4910f79497554199d3b833f37bdad86038344f66596e81c0c0"
+    "schemas/manifest.schema.json": "b5181764e0b645d01a8b6918c78463e53a2f28669a6883365c3a1d132323c066"
     "docs/skill-metadata-protocol.md": "bce8933a4f4f6386e36e618f2de97f0f6feb864a4c1aaeec225291110e7f8a76"
-    "scripts/skill-lint.js": "fa7f14088b699267ba3cf272b7500cb57e6a521e05eb9242df7a479e7adfb657"
+    "scripts/skill-lint.js": "3a78f75f8921542b91dc619cd41bde29bf379de3c16bdcf3653c854ecbe9fa29"
+    "scripts/lib/alias-contract.js": "ab7b4f15c13caf1ff1f3205e285415b086f7b6cbc3fcfaba982a590cc56b49cd"
     "scripts/check-protocol-consistency.js": "0ff39406d36e7a9e51c176f657f4f426d8bd5a3fe6411d28b9e9a93dc7d89f29"
-    "scripts/generate-manifest.js": "950f890dd0323c6a9326dcdc16076358ab1d6990a593a335e0e197ae328b3965"
+    "scripts/generate-manifest.js": "9d7bbbdae440fdb1763d61ffa7bda10c9efae92359d1c2139d0e971582d59e0e"
     "examples/evals/graph-audit.json": "8edab7bc057c65c8fd43f6ca17863c7a12ea831f6eb2158f1b2fde2ba03ad4b2"
 eval_artifacts: present
 eval_state: passing
@@ -71,6 +72,7 @@ grounding:
     - schemas/manifest.schema.json
     - docs/skill-metadata-protocol.md
     - scripts/skill-lint.js
+    - scripts/lib/alias-contract.js
     - scripts/check-protocol-consistency.js
     - scripts/generate-manifest.js
     - examples/evals/graph-audit.json
@@ -92,7 +94,7 @@ grounding:
 - Relation integrity: confirming that every target named under `relations.*` corresponds to a real sibling skill directory and uses the right predicate semantics (`related`/`broader`/`boundary`/`disjoint_with`/`verify_with`/`depends_on`)
 - Eval artifact coherence: ensuring that `eval_artifacts: present` is backed by a real eval artifact under `examples/evals/` that names the skill in its `skill_name` field
 - Grounding presence: confirming that every `scope: codebase` skill has a fully populated `grounding` block with `domain_object`, `grounding_mode`, `truth_sources`, `failure_modes`, and `evidence_priority`
-- Name-directory parity: checking that a skill's `name` field matches the name of the parent directory (required for Agent Skills compatibility)
+- Name-directory parity: checking that a skill's `name` field matches the name of the parent directory (required for SKILL.md compatibility)
 
 ## Philosophy
 
@@ -106,6 +108,7 @@ Skill graphs fail silently. A broken relation or a drifted enum value does not c
 | `schemas/manifest.schema.json` | whole file | Enforces the compiled manifest shape |
 | `docs/skill-metadata-protocol.md` | §§ Archetype, Requiredness, Schema Versioning | Source of truth for field semantics and the archetype section map |
 | `scripts/skill-lint.js` | 91–114 (`AUTHORED_FIELDS_MUST_FLOW`), 149–202 (`checkSchemaParity`), 175–250 (`validateAgainstSchema`) | The canonical audit runner. Implements the six dimensions listed in Coverage plus five more: parent-directory-matches-name, cross-schema parity, sample-manifest conformance, generator parity, and routing-quality rules. See README § Validation for the full eleven-check list. |
+| `scripts/lib/alias-contract.js` | whole file | Shared v3.1 alias-parity guard used by lint and manifest generation so preferred/legacy fields cannot diverge silently |
 | `scripts/check-protocol-consistency.js` | C1–C7 checks | Cross-artifact protocol checker. Complementary to `skill-lint.js` — lint validates per-skill correctness; this validates that the protocol documents themselves remain consistent with the schemas. |
 | `examples/skills.manifest.sample.json` | whole file | Generator-produced sample; lint fails if this drifts from `generate-manifest.js` output |
 
@@ -140,7 +143,7 @@ Exit code 0 means all checks passed. Exit code 1 means at least one check failed
 - [ ] All relation targets exist as real sibling skill directories
 - [ ] All `eval_artifacts: present` skills have a matching eval artifact
 - [ ] All `scope: codebase` skills have a complete `grounding` block
-- [ ] Every skill's `name` field matches its parent directory name (Agent Skills compatibility)
+- [ ] Every skill's `name` field matches its parent directory name (SKILL.md compatibility)
 
 ## Do NOT Use When
 

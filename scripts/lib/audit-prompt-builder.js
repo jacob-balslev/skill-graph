@@ -172,7 +172,7 @@ function collectContext(opts) {
   });
 
   // E4: portability export transform. The sole supported target is
-  // `agent-skills` and the transform lives at scripts/export-skill.js.
+  // `skill-md` and the transform lives at scripts/export-skill.js.
   // We pass a boolean so the `portability` dimension can note whether the
   // transform ships — the grader uses this to judge "export targets are
   // realistic" concretely rather than speculatively.
@@ -491,14 +491,14 @@ function buildDimensionPrompt(opts) {
           ].join('\n')).join('\n\n'));
 
   // E4: export transform reference. Embedded only on the `portability`
-  // dimension. The sole supported target is `agent-skills` and the transform
+  // dimension. The sole supported target is `skill-md` and the transform
   // lives at scripts/export-skill.js. Stating whether the script exists
   // converts the `readiness: scripted` claim from self-report to verifiable.
   const includePortabilityBlock = dimension.id === 'portability';
   const portabilityBlock = !includePortabilityBlock
     ? null
     : (exportTransformAvailable
-        ? `<export-transform path="${EXPORT_SCRIPT_REL}" available="true">\nThe export transform exists on disk. Run \`node ${EXPORT_SCRIPT_REL} skills/${skillName}\` to produce a SKILL.agent-skills.md with only Agent Skills base fields at the top level. Only \`agent-skills\` is a valid portability.targets value today; other runtimes (cursor, windsurf, copilot, agents-md) are deferred per v0.3.0 CHANGELOG.\n</export-transform>`
+        ? `<export-transform path="${EXPORT_SCRIPT_REL}" available="true">\nThe export transform exists on disk. Run \`node ${EXPORT_SCRIPT_REL} skills/${skillName}\` to produce a SKILL.skill-md.md with only SKILL.md base fields at the top level. Only \`skill-md\` is a valid portability.targets value today; other runtimes (cursor, windsurf, copilot, agents-md) are deferred per v0.3.0 CHANGELOG.\n</export-transform>`
         : `<export-transform path="${EXPORT_SCRIPT_REL}" available="false">\nThe export transform script is missing from the repo. A skill declaring \`portability.readiness: scripted\` while the transform is absent is over-claiming — flag this as a contract violation.\n</export-transform>`);
 
   // STEPS are composed dynamically per dimension so only the context sources
@@ -520,7 +520,7 @@ function buildDimensionPrompt(opts) {
     steps.push(`${n++}. Read the eval artifacts embedded in <eval-artifacts> — these are the authored evaluation cases for this skill.`);
   }
   if (includePortabilityBlock) {
-    steps.push(`${n++}. Read the <export-transform> note — it states whether the Agent Skills export script actually ships and how to invoke it.`);
+    steps.push(`${n++}. Read the <export-transform> note — it states whether the SKILL.md export script actually ships and how to invoke it.`);
   }
   steps.push(`${n++}. Read the pass criteria for dimension "${dimension.label}".`);
   steps.push(`${n++}. For each checklist bullet, mark PASS, PASS WITH FIXES, or FAIL with a quoted evidence snippet.`);

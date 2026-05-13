@@ -11,7 +11,14 @@ scope: portable
 owner: skill-graph-maintainer
 freshness: "2026-05-06"
 drift_check:
-  last_verified: "2026-05-06"
+  last_verified: "2026-05-13"
+  truth_source_hashes:
+    "SKILL_GRAPH.md": "a63fc59a1d99933fc6bc5c4033f8be86ee2f5460f3b5d5ab232a3f77eff71c8f"
+    "docs/PRIMER.md": "e6bd99468c224fe4c9606e147c5db94dff889feeb9ca5d80084480039c7e9296"
+    "docs/concept-map.md": "053e5cf891d7abf7efb30c9014fd2365da7d13588ef6b55057520756a315dc8c"
+    "docs/diagrams/starter-graph.mmd": "6aeaa417e08efbb6bb90b34f56c8df7f06dc608e3c8cd743d428da9fcfaf278c"
+    "scripts/generate-manifest.js": "9d7bbbdae440fdb1763d61ffa7bda10c9efae92359d1c2139d0e971582d59e0e"
+    "scripts/skill-overlap.js": "ed642cbc677cc76ec1321300b37d6752337b6b5541c7a9f558fd315d6f934e4b"
 eval_artifacts: planned
 eval_state: unverified
 routing_eval: absent
@@ -74,10 +81,26 @@ relations:
   verify_with:
     - graph-audit
     - skill-infrastructure
+grounding:
+  domain_object: Skill Graph library topology and context discovery model
+  grounding_mode: hybrid
+  truth_sources:
+    - SKILL_GRAPH.md
+    - docs/PRIMER.md
+    - docs/concept-map.md
+    - docs/diagrams/starter-graph.mmd
+    - scripts/generate-manifest.js
+    - scripts/skill-overlap.js
+  failure_modes:
+    - inferred_edges_replace_authored_relations
+    - orphan_skills_remain_unreachable
+    - relation_caps_turn_into_hub_and_spoke_graph
+    - change_propagation_ignores_cross_graph_edges
+  evidence_priority: repo_code_first
 portability:
   readiness: scripted
   targets:
-    - agent-skills
+    - skill-md
 lifecycle:
   stale_after_days: 365
   review_cadence: quarterly

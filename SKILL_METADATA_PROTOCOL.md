@@ -113,14 +113,14 @@ allowed-tools   # space-separated tool allowlist
 
 **`name`**
 - Pattern: `^[a-z0-9][a-z0-9-/:]*$` — lowercase alphanumerics, hyphens, forward slashes, and colons.
-- Must match the parent directory name when possible so Agent Skills export can use the directory as the canonical identifier.
+- Must match the parent directory name when possible so plain `SKILL.md` export can use the directory as the canonical identifier.
 - Other skills reference this skill using the `name` value in their `relations.*` arrays.
 
 **`description`**
 - The routing contract, not a summary. Write for the router, not for a human reader.
 - Lead with a trigger clause: `"Use when…"` or `"Activates for…"`.
 - Include an explicit negative boundary: `"Do NOT use for…"`.
-- Maximum 3 sentences. The `## Coverage` section inside the body carries the full scope detail.
+- Keep this focused on routing. The `## Coverage` section inside the body carries the full scope detail.
 
 **`version`**
 - Semver format: `x.y.z`. Bumped when the skill's instructional content changes.
@@ -163,7 +163,7 @@ allowed-tools   # space-separated tool allowlist
 **`drift_check`**
 - Object with `last_verified` (ISO date, required) and `truth_source_hashes` (optional).
 - `last_verified`: when the skill was last verified against its truth sources.
-- `truth_source_hashes`: a map of normalized truth-source key -> SHA-256 hex digest at the time of last verification. Keys are `path` for whole-file sources, `path#Lstart-Lend` for line ranges, and `path#anchor` for anchor-only sources. Computed by `node scripts/skill-graph-drift.js --record --apply <skill-dir>`. The drift sentinel (`skill-graph drift`) reports `DRIFT` when a live hash differs from the recorded hash, `BROKEN` when a truth source file is missing, `STALE` when today exceeds `last_verified + lifecycle.stale_after_days`, and `NO_BASELINE` when truth sources are declared but no hashes are recorded.
+- `truth_source_hashes`: a map of normalized truth-source key -> SHA-256 hex digest at the time of last verification. Keys are `path` for whole-file sources, `path#Lstart-Lend` for line ranges, and `path#anchor` for anchor-only sources. Computed by `node scripts/skill-graph-drift.js --record --apply <skill-dir>` for local truth sources. The drift sentinel (`skill-graph drift`) reports `DRIFT` when a live hash differs from the recorded hash, `BROKEN` when a local truth source file is missing, `STALE` when today exceeds `last_verified + lifecycle.stale_after_days`, `NO_BASELINE` when local truth sources are declared but no hashes are recorded, and `EXTERNAL_UNHASHED` when a URL truth source is valid but is not fetched by the zero-dependency sentinel.
 
 **`lifecycle`**
 - Optional object: `{ stale_after_days, review_cadence }`.
@@ -304,7 +304,7 @@ grounding:
 **`portability`**
 - Declares the skill's export readiness.
 - `readiness`: `declared` (intent only), `scripted` (a transform exists), or `verified` (the export has been tested).
-- `targets`: array of export targets. Only `agent-skills` is valid today.
+- `targets`: array of export targets. Only `skill-md` is valid today.
 
 **`urn`**
 - Optional in v3; required in v4.
@@ -320,11 +320,11 @@ grounding:
 - Object: `{ runtimes?, node?, notes? }`.
 - `runtimes`: array of target agent runtimes with optional version constraints (e.g. `claude-code>=2.0`).
 - `node`: Node.js version constraint (e.g. `>=18`).
-- `notes`: free-text notes, maximum 500 characters.
+- `notes`: free-text notes. No protocol length cap.
 
 **`allowed-tools`**
 - Space-separated string of tool names the skill is authorized to invoke.
-- Inherited from the Agent Skills base standard.
+- Inherited from the plain `SKILL.md` format.
 
 ---
 
@@ -406,7 +406,7 @@ v3.1 adds a set of optional aliases to the schema. Both the original and the ali
 | `type` | `archetype` | The rationale doc, ADR 0003, and every body section already say "archetype"; the schema's `type` was sign-drift. Plus `type` is a generic-name anti-pattern. |
 | `category` | `category_path` | Polysemy with `browse_category` — `category_path` signals slash-delimited hierarchy explicitly. |
 | `freshness` | `reviewed_at` | "Freshness" is metaphorical; `reviewed_at` uses the project's own `_at` date-field convention. |
-| `allowed-tools` | `allowed_tools` | Only kebab-case field in a snake_case schema. The export transform still writes the kebab-case form for Agent Skills consumers. |
+| `allowed-tools` | `allowed_tools` | Only kebab-case field in a snake_case schema. The export transform still writes the kebab-case form for `SKILL.md` consumers. |
 | `eval_artifacts` + `eval_state` + `routing_eval` (top-level triple) | `eval: { artifacts, content_state, routing_coverage }` (nested object) | Aligns with the sibling-object pattern of `drift_check`, `grounding`, `lifecycle`, `portability`. Also resolves `routing_eval`'s head-first compound ambiguity by renaming to `routing_coverage`. |
 | `grounding.domain_object` | `grounding.subject` | "domain_object" is DDD jargon; `subject` is the natural English word for what the skill is about. |
 | `grounding.grounding_mode` | `grounding.claim_scope` | "mode" is generic; `claim_scope` names the actual semantic axis. |
@@ -435,7 +435,7 @@ The v1 contract enforces the following invariants. Any change to the schema or t
 1. **One file, one skill.** Each skill lives in one `SKILL.md`. No split-source format. No per-environment variants.
 2. **One manifest.** All skills aggregate into one `skills.manifest.json`. No closed/open split manifest.
 3. **No private-only fields.** Every field in the schema is part of the public contract. There are no fields reserved for specific organisations or runtime environments.
-4. **No second runtime model.** The same frontmatter shape serves local development, CI, and federated registry export. Export to the Agent Skills base standard is a transform (`scripts/export-skill.js`), not a separate authoring format.
+4. **No second runtime model.** The same frontmatter shape serves local development, CI, and federated registry export. Export to plain `SKILL.md` is a transform (`scripts/export-skill.js`), not a separate authoring format.
 5. **Strict schema.** `additionalProperties: false` on both the skill and manifest schemas. Unknown fields fail lint rather than being silently ignored.
 6. **Additive evolution only within a version.** New optional fields, new enum values that extend (not replace) an existing enum, and new lint warnings are non-breaking. Renamed fields, removed fields, retyped fields, tightened required-ness, and removed enum values require a `schema_version` bump.
 7. **Migration tooling ships with every breaking change.** The v3 bump ships `scripts/migrate-skill-v2-to-v3.js`. Future bumps follow the same pattern.

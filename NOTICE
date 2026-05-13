@@ -58,5 +58,5 @@ Skill content provenance
 ================================================================================
 
 Skills under `skills/**` are the public subset intended for reuse in open
-source Agent Skills libraries. Private, customer-specific, and project-specific
+source SKILL.md libraries. Private, customer-specific, and project-specific
 skills were intentionally excluded from this distribution.

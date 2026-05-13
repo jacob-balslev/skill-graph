@@ -10,7 +10,12 @@ scope: portable
 owner: skill-graph-maintainer
 freshness: "2026-04-18"
 drift_check:
-  last_verified: "2026-04-18"
+  last_verified: "2026-05-13"
+  truth_source_hashes:
+    "scripts/skill-graph-route.js": "b9a7b51d0e8b845b11473f479c4593754768c3775508049db7339892b2f08cc2"
+    "scripts/skill-graph-routing-eval.js": "fffac2858863662bde6bc54c56bb77a219ae93f626e0c8d5886566f998181deb"
+    "examples/evals/skill-router.json": "fccabcbc5f9d8057536f397fb0fc71a567371f75fb9a21afda343b197af30293"
+    "examples/evals/skill-router.routing.json": "c4dc88db1e746bea78a7cf96b50c6c84532a07eda42da2e35d790c8928d4da8c"
 eval_artifacts: present
 eval_state: passing
 # routing_eval: present — restored after the Priority 1 + 2 follow-up sprint
@@ -88,10 +93,24 @@ relations:
   # shipping a routing table."
   verify_with:
     - graph-audit
+grounding:
+  domain_object: Skill Graph reference routing behavior
+  grounding_mode: repo_specific
+  truth_sources:
+    - scripts/skill-graph-route.js
+    - scripts/skill-graph-routing-eval.js
+    - examples/evals/skill-router.json
+    - examples/evals/skill-router.routing.json
+  failure_modes:
+    - negation_paths_score_as_positive_matches
+    - routing_eval_claim_without_harness_pass
+    - boundary_exclusion_removes_stronger_match
+    - coverage_gap_silently_falls_back
+  evidence_priority: repo_code_first
 portability:
   readiness: scripted
   targets:
-    - agent-skills
+    - skill-md
 ---
 
 # Skill Router

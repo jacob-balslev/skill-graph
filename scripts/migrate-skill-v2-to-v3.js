@@ -49,8 +49,9 @@
 
 const fs = require('fs');
 const path = require('path');
+const { workspaceRoot } = require('./lib/roots');
 
-const REPO_ROOT = path.resolve(__dirname, '..');
+const REPO_ROOT = workspaceRoot();
 const SKILLS_DIR = path.join(REPO_ROOT, 'skills');
 const TEMPLATE_PATH = path.join(REPO_ROOT, 'examples', 'skill-metadata-template.md');
 

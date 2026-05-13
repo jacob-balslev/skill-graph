@@ -68,9 +68,91 @@ function parseFrontmatter(text) {
     return raw;
   }
 
+  function splitTopLevel(value, separator) {
+    const parts = [];
+    let start = 0;
+    let depth = 0;
+    let quote = null;
+    for (let idx = 0; idx < value.length; idx++) {
+      const ch = value[idx];
+      if (quote) {
+        if (ch === '\\') { idx++; continue; }
+        if (ch === quote) quote = null;
+        continue;
+      }
+      if (ch === '"' || ch === "'") {
+        quote = ch;
+        continue;
+      }
+      if (ch === '[' || ch === '{') {
+        depth++;
+        continue;
+      }
+      if (ch === ']' || ch === '}') {
+        depth--;
+        continue;
+      }
+      if (ch === separator && depth === 0) {
+        parts.push(value.slice(start, idx).trim());
+        start = idx + 1;
+      }
+    }
+    parts.push(value.slice(start).trim());
+    return parts.filter(Boolean);
+  }
+
+  function findTopLevelColon(value) {
+    let depth = 0;
+    let quote = null;
+    for (let idx = 0; idx < value.length; idx++) {
+      const ch = value[idx];
+      if (quote) {
+        if (ch === '\\') { idx++; continue; }
+        if (ch === quote) quote = null;
+        continue;
+      }
+      if (ch === '"' || ch === "'") {
+        quote = ch;
+        continue;
+      }
+      if (ch === '[' || ch === '{') {
+        depth++;
+        continue;
+      }
+      if (ch === ']' || ch === '}') {
+        depth--;
+        continue;
+      }
+      if (ch === ':' && depth === 0) return idx;
+    }
+    return -1;
+  }
+
+  function parseInlineArray(v) {
+    const body = v.slice(1, -1).trim();
+    if (body === '') return [];
+    return splitTopLevel(body, ',').map(parseValue);
+  }
+
+  function parseInlineMap(v) {
+    const body = v.slice(1, -1).trim();
+    if (body === '') return {};
+    const obj = {};
+    for (const part of splitTopLevel(body, ',')) {
+      const colonIdx = findTopLevelColon(part);
+      if (colonIdx <= 0) return v;
+      const key = extractKey(part.slice(0, colonIdx));
+      const rawValue = part.slice(colonIdx + 1).trim();
+      obj[key] = parseValue(rawValue);
+    }
+    return obj;
+  }
+
   function parseValue(v) {
     v = stripInlineComment(v).trim();
     if (v === '') return null;
+    if (v.startsWith('[') && v.endsWith(']')) return parseInlineArray(v);
+    if (v.startsWith('{') && v.endsWith('}')) return parseInlineMap(v);
     if ((v.startsWith('"') && v.endsWith('"')) || (v.startsWith("'") && v.endsWith("'"))) {
       return v.slice(1, -1);
     }
@@ -137,6 +219,13 @@ function parseFrontmatter(text) {
       if (!lc.startsWith('- ')) break;
 
       const inline = lc.slice(2).trim();
+
+      if ((inline.startsWith('{') && inline.endsWith('}')) ||
+          (inline.startsWith('[') && inline.endsWith(']'))) {
+        arr.push(parseValue(inline));
+        i++;
+        continue;
+      }
 
       // Block mapping as an item: "- key: value" optionally followed by
       // more keys at indent (li + 2). Distinguish from scalar items like

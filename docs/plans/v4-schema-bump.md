@@ -17,7 +17,7 @@ These are naming changes only; do not ship them piecemeal. They need alias handl
 | `type` | `archetype` | The docs and ADRs already teach "archetype"; `type` is too generic for a public schema. |
 | `category` | `category_path` | Makes the slash-delimited hierarchy explicit and separates it from flat `browse_category`. |
 | `freshness` | `reviewed_at` | Names the actual authored claim: the skill was reviewed on a date. |
-| `allowed-tools` | `allowed_tools` | Aligns the protocol schema with the rest of its snake_case field names; the Agent Skills export can still emit `allowed-tools`. |
+| `allowed-tools` | `allowed_tools` | Aligns the protocol schema with the rest of its snake_case field names; the SKILL.md export can still emit `allowed-tools`. |
 | `eval_artifacts`, `eval_state`, `routing_eval` | `eval.artifacts`, `eval.content_state`, `eval.routing_coverage` | Groups the eval-health axes and makes the routing axis clearer. |
 | `grounding.domain_object` | `grounding.subject` | Removes DDD jargon; a newcomer can predict what "subject" means. |
 | `grounding.grounding_mode` | `grounding.claim_scope` | Names the semantic axis instead of calling it a mode. |

@@ -175,7 +175,7 @@ The `readiness` field is operational, not ordinal. Each value says something con
 | Readiness | Use when |
 |---|---|
 | `declared` | Portability is claimed in metadata only; no export tooling has run. |
-| `scripted` | Export tooling exists for at least one listed target (e.g., `scripts/export-skill.js` covers `agent-skills`). |
+| `scripted` | Export tooling exists for at least one listed target (e.g., `scripts/export-skill.js` covers `skill-md`). |
 | `verified` | Export tooling exists AND the exported output has been verified in the target runtime with a receipt artifact. |
 
 **Quick heuristic:**
@@ -189,11 +189,11 @@ The `readiness` field is operational, not ordinal. Each value says something con
 
 | Target | Include when |
 |---|---|
-| `agent-skills` | The skill can be transformed to a valid Agent Skills file via `scripts/export-skill.js`. |
+| `skill-md` | The skill can be transformed to a valid SKILL.md file via `scripts/export-skill.js`. |
 
-The enum accepts only `agent-skills` today. Other runtimes — `cursor`, `windsurf`, `copilot`, `agents-md` — were removed from the enum in 0.3.0. They previously sat in the enum as compatibility *goals* with no working transform, which violated the contract's `additionalProperties: false` strictness rule. Re-add via a new RFC and the same PR that ships the transform for that runtime.
+The enum accepts only `skill-md` today. Other runtimes — `cursor`, `windsurf`, `copilot`, `agents-md` — were removed from the enum in 0.3.0. They previously sat in the enum as compatibility *goals* with no working transform, which violated the contract's `additionalProperties: false` strictness rule. Re-add via a new RFC and the same PR that ships the transform for that runtime.
 
-**Rule of thumb:** if the skill can round-trip through `scripts/export-skill.js` today, include `agent-skills`. Otherwise omit the `portability` block entirely.
+**Rule of thumb:** if the skill can round-trip through `scripts/export-skill.js` today, include `skill-md`. Otherwise omit the `portability` block entirely.
 
 ### Migration from v1
 
@@ -210,7 +210,7 @@ The enum accepts only `agent-skills` today. Other runtimes — `cursor`, `windsu
 portability:
   readiness: scripted
   targets:
-    - agent-skills
+    - skill-md
 ```
 
 ---

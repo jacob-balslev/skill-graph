@@ -24,6 +24,7 @@
  *   node scripts/skill-graph-routing-eval.js --manifest PATH           # custom manifest
  *   node scripts/skill-graph-routing-eval.js --only-asserted           # only skills with
  *                                                                        routing_eval: present
+ *   node scripts/skill-graph-routing-eval.js --confusion-matrix         # expected vs actual
  *
  * Self-contained. Only uses Node built-ins — no external dependencies.
  * Exit 0 when every evaluated skill passes (or has no cases); exit 1 on
@@ -35,10 +36,13 @@
 const fs = require('fs');
 const path = require('path');
 const { routeSkills } = require('./skill-graph-route');
+const { packageRoot, workspaceRoot } = require('./lib/roots');
 
-const REPO_ROOT = path.resolve(__dirname, '..');
+const REPO_ROOT = workspaceRoot();
+const PACKAGE_ROOT = packageRoot();
 const DEFAULT_MANIFEST = path.join(REPO_ROOT, 'skills.manifest.json');
 const SAMPLE_MANIFEST = path.join(REPO_ROOT, 'examples', 'skills.manifest.sample.json');
+const PACKAGE_SAMPLE_MANIFEST = path.join(PACKAGE_ROOT, 'examples', 'skills.manifest.sample.json');
 
 // ---------------------------------------------------------------------------
 // Case evaluators
@@ -244,6 +248,69 @@ function renderText(reports) {
   return lines.join('\n');
 }
 
+function buildConfusionMatrix(reports) {
+  const positive = {};
+  const negative = {
+    total: 0,
+    pass_boundary_target: 0,
+    coverage_gap: 0,
+    self_hit: 0,
+    off_boundary_hit: 0,
+  };
+
+  for (const report of reports) {
+    for (const c of report.cases) {
+      if (c.kind === 'positive') {
+        const expected = report.skill;
+        const actual = c.actual || 'NO_WINNER';
+        if (!positive[expected]) positive[expected] = {};
+        positive[expected][actual] = (positive[expected][actual] || 0) + 1;
+        continue;
+      }
+
+      negative.total++;
+      if (c.actual === null) negative.coverage_gap++;
+      else if (c.actual === report.skill) negative.self_hit++;
+      else if (c.verdict === 'PASS') negative.pass_boundary_target++;
+      else negative.off_boundary_hit++;
+    }
+  }
+
+  return { positive, negative };
+}
+
+function renderConfusionMatrix(matrix) {
+  const lines = [];
+  lines.push('');
+  lines.push('POSITIVE-CASE CONFUSION MATRIX');
+  lines.push('Expected skill'.padEnd(28) + 'Actual winner'.padEnd(28) + 'Cases');
+  lines.push('-'.repeat(61));
+
+  const rows = [];
+  for (const expected of Object.keys(matrix.positive).sort()) {
+    for (const actual of Object.keys(matrix.positive[expected]).sort()) {
+      rows.push({ expected, actual, count: matrix.positive[expected][actual] });
+    }
+  }
+
+  if (rows.length === 0) {
+    lines.push('(no positive examples evaluated)');
+  } else {
+    for (const row of rows) {
+      lines.push(row.expected.padEnd(28) + row.actual.padEnd(28) + String(row.count));
+    }
+  }
+
+  lines.push('');
+  lines.push('NEGATIVE-CASE SUMMARY');
+  lines.push(`  total: ${matrix.negative.total}`);
+  lines.push(`  pass_boundary_target: ${matrix.negative.pass_boundary_target}`);
+  lines.push(`  coverage_gap: ${matrix.negative.coverage_gap}`);
+  lines.push(`  self_hit: ${matrix.negative.self_hit}`);
+  lines.push(`  off_boundary_hit: ${matrix.negative.off_boundary_hit}`);
+  return lines.join('\n');
+}
+
 function truncate(s, n) {
   return s.length <= n ? s : s.slice(0, n - 1) + '\u2026';
 }
@@ -262,12 +329,15 @@ function main() {
   const outputJson = args.includes('--json');
   const quiet = args.includes('--quiet');
   const onlyAsserted = args.includes('--only-asserted');
+  const confusionMatrix = args.includes('--confusion-matrix');
   const skillFilter = argValue(args, '--skill');
   const manifestArg = argValue(args, '--manifest');
 
   const manifestPath = manifestArg
     ? path.resolve(manifestArg)
-    : (fs.existsSync(DEFAULT_MANIFEST) ? DEFAULT_MANIFEST : SAMPLE_MANIFEST);
+    : (fs.existsSync(DEFAULT_MANIFEST)
+        ? DEFAULT_MANIFEST
+        : (fs.existsSync(SAMPLE_MANIFEST) ? SAMPLE_MANIFEST : PACKAGE_SAMPLE_MANIFEST));
 
   if (!fs.existsSync(manifestPath)) {
     console.error(`ERROR manifest not found: ${manifestPath}`);
@@ -295,11 +365,15 @@ function main() {
   }
 
   const reports = target.map(s => evaluateSkill(manifest, s, todayISO));
+  const matrix = confusionMatrix ? buildConfusionMatrix(reports) : null;
 
   if (outputJson) {
-    process.stdout.write(JSON.stringify({ reports }, null, 2) + '\n');
+    process.stdout.write(JSON.stringify(matrix ? { reports, confusion_matrix: matrix } : { reports }, null, 2) + '\n');
   } else if (!quiet) {
-    process.stdout.write(renderText(reports) + '\n');
+    const text = confusionMatrix
+      ? renderText(reports) + renderConfusionMatrix(matrix)
+      : renderText(reports);
+    process.stdout.write(text + '\n');
   }
 
   const anyFail = reports.some(r => r.verdict === 'FAIL');
@@ -307,6 +381,13 @@ function main() {
 }
 
 // Allow require() for programmatic use by scripts/lint/check-routing-eval.js.
-module.exports = { evaluateSkill, evaluatePositive, evaluateNegative, extractBoundaryTargets };
+module.exports = {
+  buildConfusionMatrix,
+  evaluateSkill,
+  evaluatePositive,
+  evaluateNegative,
+  extractBoundaryTargets,
+  renderConfusionMatrix,
+};
 
 if (require.main === module) main();

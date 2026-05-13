@@ -97,8 +97,6 @@ name: shopify
 **Purpose.** The routing contract. Tells a router whether this skill should activate for a given query or label. It is pushy, specific, and boundary-aware.
 
 **Rules.**
-- Minimum 20 characters.
-- Maximum 3 sentences.
 - Lead with trigger phrases ("Use when…", "Activates for…") rather than generic summaries.
 - Include an explicit negative boundary ("Do NOT use for…") so the router doesn't over-activate.
 - Do not repeat the `## Coverage` section body here — that belongs inside the skill body, not in the routing contract.
@@ -361,7 +359,7 @@ reviewed_at: "2026-05-12"
 - Object with one required sub-field and one optional sub-field.
 - `last_verified`: ISO 8601 date string (`YYYY-MM-DD`).
 - `truth_source_hashes`: optional map of normalized truth-source key -> SHA-256 hex digest.
-- Keys must match the normalized form produced from `grounding.truth_sources`: `path` for whole-file sources, `path#Lstart-Lend` for line ranges, and `path#anchor` for anchor-only sources. The drift sentinel (`scripts/skill-graph-drift.js`) reports DRIFT when any live hash differs from the recorded hash, BROKEN when a truth source is missing, STALE when the lifecycle window is exceeded, and NO_BASELINE when `truth_source_hashes` is absent but truth sources are declared.
+- Keys must match the normalized form produced from `grounding.truth_sources`: `path` for whole-file sources, `path#Lstart-Lend` for line ranges, and `path#anchor` for anchor-only sources. The drift sentinel (`scripts/skill-graph-drift.js`) reports DRIFT when any live hash differs from the recorded hash, BROKEN when a local truth source is missing, STALE when the lifecycle window is exceeded, NO_BASELINE when `truth_source_hashes` is absent but local truth sources are declared, and EXTERNAL_UNHASHED when a URL truth source is valid but not fetched by the zero-dependency sentinel.
 - For `scope: portable` skills with no external truth sources, `drift_check.last_verified` equals `freshness` and `truth_source_hashes` is omitted.
 - Record hashes with `node scripts/skill-graph-drift.js --record --apply <skill-path>`; preview without `--apply`.
 - A `drift_check.last_verified` date significantly older than `freshness` is a warning sign that editorial updates have outpaced verification.
@@ -384,7 +382,7 @@ drift_check:
 
 **When to use.** Always — required.
 
-**When NOT to use.** Do not fabricate hashes. If you cannot compute them with the drift tool, omit `truth_source_hashes` and accept a NO_BASELINE state until you can run the tool.
+**When NOT to use.** Do not fabricate hashes. If you cannot compute them with the drift tool, omit `truth_source_hashes` and accept a NO_BASELINE state until you can run the tool. URL truth sources are valid grounding references, but the built-in drift sentinel reports them as EXTERNAL_UNHASHED unless a separate fetch-and-hash workflow records evidence.
 
 **Migration from v2.** v2 used a single date string: `drift_check: "2026-04-15"`. v3 requires an object: `drift_check:\n  last_verified: "2026-04-15"`. The codemod handles this transformation automatically.
 
@@ -522,7 +520,6 @@ comprehension_state: present
 **Rules.**
 - Required when `comprehension_state: present`.
 - Object with required `definition`, `mental_model`, `purpose`, `boundary`, `taxonomy`, `analogy`, and `misconception`.
-- Each field should be as deep as the concept requires; schema `minLength` values are floors against empty content, not caps.
 - Keep this about the universal subject. The body `## Philosophy` explains why this skill exists in this repo.
 
 **Example.**
@@ -768,7 +765,7 @@ compatibility:
 **Rules.**
 - Space-separated string — not an array. The string form is required for Agent-Skills-compatible export.
 - Use the tool names as defined by the target agent runtime (e.g., `Read`, `Grep`, `Bash` for Claude Code).
-- This is experimental per the Agent Skills spec — support varies across agent implementations.
+- This is experimental per the SKILL.md spec — support varies across agent implementations.
 - Skill Graph validates the shape but does not enforce the allowlist at runtime.
 
 **Example.**
@@ -784,12 +781,12 @@ allowed-tools: Read Grep Bash
 
 ## `allowed_tools`
 
-**Purpose.** v3.1 preferred snake_case alias for `allowed-tools`. The kebab-case form is the only field in a snake_case schema; the alias removes that inconsistency on the authoring side. The export transform still writes the kebab-case form for Agent Skills consumers.
+**Purpose.** v3.1 preferred snake_case alias for `allowed-tools`. The kebab-case form is the only field in a snake_case schema; the alias removes that inconsistency on the authoring side. The export transform still writes the kebab-case form for SKILL.md consumers.
 
 **Rules.**
 - Space-separated string (same as `allowed-tools`).
 - When both forms are present, they must match.
-- v3.x skills can set either; v4 makes `allowed_tools` canonical for authoring. The export transform continues to write `allowed-tools` (kebab) for Agent Skills compatibility.
+- v3.x skills can set either; v4 makes `allowed_tools` canonical for authoring. The export transform continues to write `allowed-tools` (kebab) for SKILL.md compatibility.
 
 **Example.**
 ```yaml
@@ -1115,8 +1112,8 @@ grounding:
 **Rules.**
 - Object with two required sub-fields: `readiness` and `targets`.
 - `readiness` must be `declared`, `scripted`, or `verified`. This is an operational axis, not an ordinal rating — each value says something concrete about what is true of the skill today.
-- `targets` is an array constrained to `["agent-skills"]`.
-- `agent-skills` in `targets` means the skill can be transformed to a valid Agent Skills file via `scripts/export-skill.js`.
+- `targets` is an array constrained to `["skill-md"]`.
+- `skill-md` in `targets` means the skill can be transformed to a valid SKILL.md file via `scripts/export-skill.js`.
 - Other runtimes — `cursor`, `windsurf`, `copilot`, `agents-md` — were removed from the enum in 0.3.0. They previously described compatibility goals, but without a working transform they violated the `additionalProperties: false` strictness rule. Re-add via a new RFC and the same PR that ships the transform.
 
 **Sub-fields.**
@@ -1139,10 +1136,10 @@ grounding:
 portability:
   readiness: scripted
   targets:
-    - agent-skills
+    - skill-md
 ```
 
-**When to use.** When the skill is intended for distribution via the Agent Skills transform, and you want to declare its portability explicitly.
+**When to use.** When the skill is intended for distribution via the SKILL.md transform, and you want to declare its portability explicitly.
 
 **When NOT to use.** Internal-only skills that will never be exported. Omit the field rather than setting `readiness: declared` with an empty `targets` array.
 

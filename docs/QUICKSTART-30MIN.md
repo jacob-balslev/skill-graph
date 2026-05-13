@@ -35,7 +35,7 @@ Expected output:
 v20.17.0
 ```
 
-That's it for installation. Skill Graph has zero runtime dependencies — every script is pure Node with no `npm install` step. (`package.json` exists for `prettier` only, used in CI.)
+That's it for local clone setup. Skill Graph has zero runtime dependencies — every reference script uses only Node built-ins, so no `npm install` step is required to run the tools from a clone. `package.json` exists for the installable CLI, release packaging, and CI entry points.
 
 ---
 

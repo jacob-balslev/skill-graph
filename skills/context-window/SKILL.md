@@ -77,7 +77,7 @@ relations:
 portability:
   readiness: scripted
   targets:
-    - agent-skills
+    - skill-md
 lifecycle:
   stale_after_days: 180
   review_cadence: quarterly

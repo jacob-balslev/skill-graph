@@ -2,11 +2,51 @@
 
 Add Skill Graph lint to your own repository's CI pipeline.
 
-> **Status.** Skill Graph has not been published to npm. The only working installation path today is **clone and vendor**. A future release will publish `skill-graph` as an npm package with an `npx skill-graph-lint` CLI entry point; those snippets are preserved below as **when-published** reference, not current guidance.
+> **Package shape.** The GitHub repository is `jacob-balslev/skill-graph`. The npm package is `@skill-graph/cli`, and it exposes the `skill-graph` binary. The CLI is a thin dispatcher over the same zero-dependency scripts used in this repo, so local development, CI, and installed usage share one code path.
 
-## Installation (current — clone and vendor)
+## Installation (npm package)
 
-The only working path today is to copy the self-contained lint scripts into your repository and commit them alongside your skills. The scripts use only Node built-ins — no `npm install` step is involved.
+After the package is published, install it as a dev dependency and run the binary through `npx`:
+
+```bash
+npm install --save-dev @skill-graph/cli
+```
+
+```yaml
+# .github/workflows/skill-graph-lint.yml
+name: Skill Graph Lint
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'skills/**'
+  pull_request:
+    paths:
+      - 'skills/**'
+
+jobs:
+  lint:
+    name: Lint skills
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+      - name: Install Skill Graph
+        run: npm install --save-dev @skill-graph/cli
+      - name: Run skill lint
+        run: npx skill-graph lint
+      - name: Verify SKILL.md export
+        run: npx skill-graph export-verify
+```
+
+For local release testing before npm publish, run `npm link` from a clone of this repo, then use `skill-graph lint`, `skill-graph manifest`, `skill-graph route`, and `skill-graph drift` from the consumer repository.
+
+## Installation (clone and vendor)
+
+For air-gapped environments or repos with strict supply-chain policy, copy the self-contained scripts into your repository and commit them alongside your skills. The scripts use only Node built-ins once vendored.
 
 ### 1. Vendor the scripts
 
@@ -57,108 +97,44 @@ jobs:
 
 This triggers on any PR or push to `main` that touches a file under `skills/` or the vendored scripts. It exits 1 (failing the job) when any skill file has a schema or structural error.
 
-**Trade-off.** No external dependency. You own the script and update it manually by re-copying from the Skill Graph repo when you want a newer version. This is the right path for air-gapped environments, repos with strict supply-chain policies, and — today — for every consumer, because no published package exists yet.
+**Trade-off.** No external dependency. You own the script and update it manually by re-copying from the Skill Graph repo when you want a newer version. This is the right path for air-gapped environments and repos with strict supply-chain policies.
 
 ### 3. Pointing at a non-default skills directory
 
-If your skills live somewhere other than `skills/`, pass `--skills-dir`:
+If your skills live somewhere other than `skills/`, either declare the roots in `.skill-graph/config.json` or pass the root directory explicitly. The linter treats a directory containing many `<skill>/SKILL.md` folders as a skill root:
 
 ```yaml
 - name: Run skill lint
-  run: node tools/skill-graph/skill-lint.js --skills-dir src/agent-skills
+  run: node tools/skill-graph/skill-lint.js src/skills
 ```
 
 Update the `paths:` filter to match:
 
 ```yaml
 paths:
-  - 'src/agent-skills/**'
+  - 'src/skills/**'
 ```
 
-### 4. Skipping generator parity when you don't vendor the sample manifest
+### 4. Skipping generator parity when you intentionally diverge
 
-The `--skip-generator-parity` flag tells the linter not to verify that `examples/skills.manifest.sample.json` matches generator output. Pass it if your repo vendors the lint scripts but does not vendor the sample manifest:
+When `examples/skills.manifest.sample.json` is absent, generator parity is skipped automatically. Use `--skip-generator-parity` only when the sample manifest exists but your CI job intentionally does not want to compare it with freshly generated output:
 
 ```yaml
 - name: Run skill lint
   run: node tools/skill-graph/skill-lint.js --skip-generator-parity
 ```
 
-## Installation (when published — not yet available)
-
-The snippets in this section describe the planned npm-based flow. They **do not work today** because Skill Graph has not been published to npm. Keep this section as a reference until the package ships; when it ships, this document will be updated and the clone-and-vendor path above will become the secondary option.
-
-### Planned minimal snippet
-
-```yaml
-# .github/workflows/skill-graph-lint.yml — WHEN PUBLISHED (not today)
-name: Skill Graph Lint
-
-on:
-  push:
-    branches: [main]
-    paths:
-      - 'skills/**'
-  pull_request:
-    paths:
-      - 'skills/**'
-
-jobs:
-  lint:
-    name: Lint skills
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
-        with:
-          node-version: '20'
-      - name: Install Skill Graph
-        run: npm install --save-dev skill-graph  # WHEN PUBLISHED
-      - name: Run skill lint
-        run: npx skill-graph-lint                 # WHEN PUBLISHED
-```
-
-### Planned dev-dependency install
-
-```bash
-# WHEN PUBLISHED — not today
-npm install --save-dev skill-graph
-```
-
-```yaml
-# WHEN PUBLISHED — not today
-- name: Install Skill Graph
-  run: npm install --save-dev skill-graph
-- name: Run skill lint
-  run: npx skill-graph-lint
-```
-
-### Planned skills-dir flag
-
-```yaml
-# WHEN PUBLISHED — not today
-- name: Run skill lint
-  run: npx skill-graph-lint --skills-dir src/agent-skills
-```
-
-### Planned generator-parity skip flag
-
-```yaml
-# WHEN PUBLISHED — not today
-- name: Run skill lint
-  run: npx skill-graph-lint --skip-generator-parity
-```
-
 ## What the lint checks
 
-The same checks run whether you vendor the script today or (eventually) install via npm:
+The same checks run whether you install the npm package or vendor the script:
 
 1. Schema validation against `skill.schema.json`
-2. Parent-directory-matches-name (Agent Skills compatibility)
+2. Parent-directory-matches-name (SKILL.md compatibility)
 3. Relation target existence (linked skills must exist in the repo)
 4. Eval artifact coherence (`eval_artifacts: present` requires at least one eval file)
 5. Archetype-aware section validation (required H2 sections per archetype)
 6. Routing quality (keywords required for `scope: codebase` skills)
+7. SKILL.md export compatibility (when `export-verify` is run)
 
 See [`SKILL_AUDIT_CHECKLIST.md`](../../SKILL_AUDIT_CHECKLIST.md) for the full list of what each check catches.
 

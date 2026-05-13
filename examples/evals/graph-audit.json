@@ -60,7 +60,7 @@
     },
     {
       "id": 6,
-      "prompt": "A contributor renames `skills/shopify/` to `skills/shopify-integration/` but forgets to update the `name:` field inside `skills/shopify-integration/SKILL.md` (which still reads `name: shopify`). According to the graph-audit skill, what does `scripts/skill-lint.js` do with this skill, why does this matter for Agent Skills compatibility, and what is the correct fix?",
+      "prompt": "A contributor renames `skills/shopify/` to `skills/shopify-integration/` but forgets to update the `name:` field inside `skills/shopify-integration/SKILL.md` (which still reads `name: shopify`). According to the graph-audit skill, what does `scripts/skill-lint.js` do with this skill, why does this matter for SKILL.md compatibility, and what is the correct fix?",
       "dimension": "application",
       "substance": "domain",
       "calibration": "process",

@@ -8,7 +8,7 @@ This document tracks the script surfaces planned for Skill Graph. The goal is th
 |---|---|---|
 | `scripts/skill-lint.js` | **Shipping** | Validates frontmatter against the schema, enforces parent-dir-matches-name, verifies relation targets exist, checks eval coherence, archetype sections, routing quality; `--strict` mode promotes warnings to errors |
 | `scripts/generate-manifest.js` | **Shipping** | Walks `skills/**/SKILL.md`, applies the rename map from `docs/manifest-field-mapping.md`, emits deterministic validated manifest; `examples/skills.manifest.sample.json` is generated output, not hand-written |
-| `scripts/export-skill.js` | **Shipping** | Agent Skills export target only; transforms Skill Graph extensions under `metadata:` key. Five fixtures in `examples/exports/`. Other runtimes (cursor, windsurf, copilot, agents-md) were removed from the `portability.targets` enum in 0.3.0 — re-add via a new RFC and the PR that ships the transform |
+| `scripts/export-skill.js` | **Shipping** | SKILL.md export target only; transforms Skill Graph extensions under `metadata:` key. Five fixtures in `examples/exports/`. Other runtimes (cursor, windsurf, copilot, agents-md) were removed from the `portability.targets` enum in 0.3.0 — re-add via a new RFC and the PR that ships the transform |
 | `scripts/check-protocol-consistency.js` | **Shipping** | Cross-artifact consistency — field-set parity, authored-to-generated parity, example truth invariants (C1–C5 checks) |
 | `scripts/skill-audit.js` | **Shipping** | Stub mode seeds `audits/<skill>/{findings,verdict,scorecard}.md` from lint output (unchanged). `--graded` mode composes per-dimension prompts via `scripts/lib/audit-prompt-builder.js`, calls an external model CLI for each of the seven scorecard dimensions, and writes evidence-backed verdicts into the artifact files replacing TODO placeholders. A deterministic mock grader ships at `scripts/lib/mock-grader.js` for CI smoke-tests |
 
@@ -51,7 +51,7 @@ Shipping today. Covers:
 4. `extends` required for overlays (schema conditional)
 5. `grounding` required for `scope: codebase` (schema conditional)
 6. relation targets (`adjacent`, `boundary`, `verify_with`, `depends_on`) exist as sibling skills
-7. parent directory name matches the authored `name` (Agent Skills compatibility)
+7. parent directory name matches the authored `name` (SKILL.md compatibility)
 8. `eval_artifacts: present` is backed by a real eval file under `examples/evals/`
 
 Run with `node scripts/skill-lint.js` (see `README.md § Validation`). Exit 0 on success, 1 on any failure.
@@ -59,7 +59,7 @@ Run with `node scripts/skill-lint.js` (see `README.md § Validation`). Exit 0 on
 Planned extensions:
 
 - flag deprecated or legacy contract usage
-- stricter Agent Skills name pattern mode (reject `/` and `:`)
+- stricter SKILL.md name pattern mode (reject `/` and `:`)
 - integration with `generate-manifest.js` for combined health reporting
 
 ### 3. Audit runner (SHIPPED)

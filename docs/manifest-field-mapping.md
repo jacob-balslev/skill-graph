@@ -29,7 +29,7 @@ Every top-level authored field in `schemas/skill.schema.json` has exactly one en
 | **dropped intentionally** | The field does not appear in the manifest. Loss policy explains why. |
 | **generated only** | The manifest key is produced by the generator, not copied from authored frontmatter. |
 
-### Top-level authored fields (36 canonical total)
+### Top-level authored fields (canonical fields plus v3.1 aliases)
 
 | # | Authored field | Fate | Manifest projection |
 |---|---|---|---|
@@ -53,9 +53,9 @@ Every top-level authored field in `schemas/skill.schema.json` has exactly one en
 | 18 | `eval_last_run` | **grouped under parent** (`health`) | `health.eval_last_run` - optional v3.1 eval-run receipt with `at`, `status`, and optional runner/model/receipt/hash evidence. |
 | 19 | `stability` | copied through unchanged (when present) | `stability` |
 | 20 | `superseded_by` | copied through unchanged (when present) | `superseded_by` - required when `stability: deprecated` (enforced by an `allOf` rule in the schema), omit otherwise. Points at the replacement skill so consumers can follow the chain. |
-| 21 | `license` | copied through unchanged (when present) | `license` - Agent Skills base-standard field. Restored to flow-through on 2026-04-17 (SH-5776). |
-| 22 | `compatibility` | copied through unchanged (when present) | `compatibility` - v3 shape: object with optional `runtimes`, `node`, `notes` (was free-text string in v2). Agent Skills base-standard field. |
-| 23 | `allowed-tools` | copied through unchanged (when present) | `allowed-tools` - Agent Skills base-standard field. |
+| 21 | `license` | copied through unchanged (when present) | `license` - SKILL.md base-standard field. Restored to flow-through on 2026-04-17 (SH-5776). |
+| 22 | `compatibility` | copied through unchanged (when present) | `compatibility` - v3 shape: object with optional `runtimes`, `node`, `notes` (was free-text string in v2). SKILL.md base-standard field. |
+| 23 | `allowed-tools` | copied through unchanged (when present) | `allowed-tools` - SKILL.md base-standard field. |
 | 24 | `extends` | copied through unchanged (when present) | `extends` |
 | 25 | `triggers` | **grouped under parent** (`activation`) | `activation.triggers` |
 | 26 | `keywords` | **grouped under parent** (`activation`) | `activation.keywords` |
@@ -69,6 +69,11 @@ Every top-level authored field in `schemas/skill.schema.json` has exactly one en
 | 34 | `portability` | copied through unchanged (when present) | `portability` - v2 shape (`readiness`, `targets`), renamed from v1 (`level`, `exports`). |
 | 35 | `lifecycle` | **grouped under parent** (`health`) | `health.lifecycle` - new optional v3 object with `stale_after_days` and `review_cadence`. Drives the drift sentinel. |
 | 36 | `runtime_telemetry` | **grouped under parent** (`health`) | `health.runtime_telemetry` - new optional v3 object pointing at a feedback source for real-world success/failure signal. |
+| 37 | `archetype` | copied through unchanged (when present) | `archetype` - v3.1 preferred alias for `type`; when both are authored, lint and the generator require matching values. |
+| 38 | `category_path` | copied through unchanged (when present) | `category_path` - v3.1 preferred alias for `category`; when both are authored, values must match. |
+| 39 | `reviewed_at` | **grouped under parent** (`health`) | `health.reviewed_at` - v3.1 preferred alias for `freshness`; when both are authored, values must match. |
+| 40 | `eval` | **grouped under parent** (`health`) | `health.eval` - v3.1 nested alias for `eval_artifacts`, `eval_state`, `routing_eval`, and `comprehension_state`; duplicate declarations must match. |
+| 41 | `allowed_tools` | copied through unchanged (when present) | `allowed_tools` - v3.1 preferred alias for `allowed-tools`; when both are authored, values must match. |
 
 ### Generated-only manifest fields
 
@@ -99,9 +104,9 @@ Four Agent-Skills base-standard fields and one Skill Graph classification field 
 
 | Field | Prior fate | Reason for restoration |
 |---|---|---|
-| `license` | Dropped as "per-repo, not per-skill" | Agent Skills compatibility. Downstream runtimes that consume the manifest need the license metadata to decide whether they may execute a skill. Per-skill overrides are legitimate when a repo mixes skills under different licenses. |
-| `compatibility` | Dropped as "belongs in a separate spec" | Agent Skills compatibility. The compatibility string declares runtime or environment requirements (e.g. `Markdown, YAML, JSON Schema` or `Python 3.11+`). Consumers route based on this. Without flow-through, consumers would have to re-parse the authored source. |
-| `allowed-tools` | Dropped as "a runtime concern, not metadata" | Agent Skills compatibility. The base standard defines `allowed-tools` as a frontmatter field that sandboxes tool use. The manifest is the canonical feed for runtime consumers; stripping `allowed-tools` would force consumers back to the authored file, defeating the purpose of compiling a manifest. |
+| `license` | Dropped as "per-repo, not per-skill" | SKILL.md compatibility. Downstream runtimes that consume the manifest need the license metadata to decide whether they may execute a skill. Per-skill overrides are legitimate when a repo mixes skills under different licenses. |
+| `compatibility` | Dropped as "belongs in a separate spec" | SKILL.md compatibility. The compatibility string declares runtime or environment requirements (e.g. `Markdown, YAML, JSON Schema` or `Python 3.11+`). Consumers route based on this. Without flow-through, consumers would have to re-parse the authored source. |
+| `allowed-tools` | Dropped as "a runtime concern, not metadata" | SKILL.md compatibility. The base standard defines `allowed-tools` as a frontmatter field that sandboxes tool use. The manifest is the canonical feed for runtime consumers; stripping `allowed-tools` would force consumers back to the authored file, defeating the purpose of compiling a manifest. |
 | `routing_groups` (v1 name: `route_groups`) | Dropped as "superseded by `relations`" | Relations and routing groups encode different semantics. `relations` declares per-skill adjacencies; `routing_groups` declares a classification tag (e.g. `quality`, `security`) that a routing layer can use to pick a skill family. They are complementary, not overlapping, and the router layer needs both. Field renamed to `routing_groups` in schema_version 2 (SH-5784). |
 | `domain_object` (inside `grounding`) | Dropped from the required-field set during an earlier schema tightening | Grounded skills anchor to a specific domain object (e.g. "Shopify order reconciliation," "Skill authoring for the Skill Metadata Protocol frontmatter"). Consumers use `domain_object` to decide whether a skill matches a task's subject. Dropping it left grounded skills ungrounded to consumers. SH-5776 restored it as a required sub-field. |
 
@@ -336,7 +341,7 @@ grounding:
   evidence_priority: repo_code_first
 portability:
   readiness: scripted
-  targets: [agent-skills]
+  targets: [skill-md]
 lifecycle:
   stale_after_days: 180
   review_cadence: quarterly
@@ -385,7 +390,7 @@ lifecycle:
   },
   "portability": {
     "readiness": "scripted",
-    "targets": ["agent-skills"]
+    "targets": ["skill-md"]
   },
   "health": {
     "eval_artifacts": "planned",
@@ -407,7 +412,7 @@ Each arrow corresponds to one row of the rename map.
 - `name` → `id` **and** `name` — the generator writes both. `id` is the stable reference used by other manifest entries (e.g. `relations.adjacent: ["documentation"]` refers to the `id` of another skill). `name` remains human-readable for display.
 - `name` → `path` — the generator records the source file path; this is the only way a consumer can trace a manifest entry back to its authored source without re-scanning the repo.
 - `description`, `version`, `type`, `browse_category`, `scope`, `owner`, `stability` — straight copies, same keys, same shape. (v2 `family` was renamed to `browse_category` in v3 — see § Migration Note — v2 → v3.)
-- `license`, `compatibility`, `allowed-tools` — straight copies (post-SH-5776). The three Agent Skills base-standard optional fields flow through unchanged; a consumer that only speaks Agent Skills sees them at the expected keys.
+- `license`, `compatibility`, `allowed-tools` — straight copies (post-SH-5776). The three SKILL.md base-standard optional fields flow through unchanged; a consumer that only speaks SKILL.md sees them at the expected keys.
 - `triggers`, `keywords`, `paths` → `activation.triggers`, `activation.keywords`, `activation.paths` — three sibling authored fields are grouped under a single `activation` object. This matches the semantic: they are all activation signals. The grouping is a presentation choice, not a loss.
 - `relations` → `relations` — copied through with the full sub-key set (`adjacent`, `related`, `broader`, `narrower`, `boundary`, `disjoint_with`, `verify_with`, `depends_on`). Same shape on both sides.
 - `grounding` → `grounding` — copied through unchanged. The authored field was renamed from `domain_frame` to `grounding` in SH-5779 (2026-04-16), aligning the authored field name with its long-standing manifest projection key. The internal sub-field `evaluation_mode` was renamed to `grounding_mode` in the same change — the field describes the evidence source, not the execution mode.

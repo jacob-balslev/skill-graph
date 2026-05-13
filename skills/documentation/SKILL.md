@@ -10,7 +10,13 @@ scope: portable
 owner: skill-graph-maintainer
 freshness: "2026-04-18"
 drift_check:
-  last_verified: "2026-04-18"
+  last_verified: "2026-05-13"
+  truth_source_hashes:
+    "README.md": "957c366dbc8f3b1056fb812cc4440e56a9cb329ddb4c9ac4e0ea7294383ba013"
+    "docs/PRIMER.md": "e6bd99468c224fe4c9606e147c5db94dff889feeb9ca5d80084480039c7e9296"
+    "docs/manifest-field-mapping.md": "aca0b7f2d4631be24a3e7daed1a1d207b488f253164a7d514b9db7af21c6177f"
+    "docs/field-reference.md": "2e5afcc5b623f0a7e1471485f627c24a91900e1d4c43168aa866314454ea46fa"
+    "examples/evals/comprehension.json": "539f8d9aaf75f2eb2edd20ba6fb44be1b5fdccdd80440d0fb0217c781a08e1be"
 eval_artifacts: present
 eval_state: passing
 routing_eval: present
@@ -71,10 +77,25 @@ relations:
       reason: "refactor owns behavior-preserving code changes; documentation owns the prose that describes them"
     - skill: context-window
       reason: "context-window owns runtime context-budget management for an agent session; documentation owns durable reference prose. The phrase 'README has drifted from the actual CLI flags' is a documentation-drift question, not a context-budget question — context-window is named here so the router excludes it from documentation's positive scope."
+grounding:
+  domain_object: Documentation discipline in the Skill Graph repository
+  grounding_mode: hybrid
+  truth_sources:
+    - README.md
+    - docs/PRIMER.md
+    - docs/manifest-field-mapping.md
+    - docs/field-reference.md
+    - examples/evals/comprehension.json
+  failure_modes:
+    - docs_restating_instead_of_citing_truth
+    - readme_cli_examples_drift_from_scripts
+    - durable_prose_confused_with_runtime_debugging
+    - audience_fit_omitted_from_reference_docs
+  evidence_priority: repo_code_first
 portability:
   readiness: scripted
   targets:
-    - agent-skills
+    - skill-md
 ---
 
 # Documentation

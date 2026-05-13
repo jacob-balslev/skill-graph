@@ -77,7 +77,7 @@ grounding:
 portability:
   readiness: scripted
   targets:
-    - agent-skills
+    - skill-md
 project_tags:
   - content
   - static-site

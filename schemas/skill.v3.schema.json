@@ -45,8 +45,7 @@
     },
     "description": {
       "type": "string",
-      "minLength": 20,
-      "description": "The routing contract — tells a router whether this skill should activate for a given query. Pushy, specific, boundary-aware. Should include an explicit negative boundary (\"Do NOT use for…\") so the router doesn't over-activate. Min 20 characters."
+      "description": "The routing contract: tells a router whether this skill should activate for a given query. Pushy, specific, boundary-aware. Should include an explicit negative boundary so the router does not over-activate. No protocol length cap."
     },
     "version": {
       "type": "string",
@@ -187,41 +186,34 @@
       "properties": {
         "definition": {
           "type": "string",
-          "minLength": 20,
-          "description": "What the concept IS. Primary category + what it does + who uses it. A domain outsider should understand. Author as deeply as the concept requires — there is no maximum length. The `minLength` here is a floor against empty fields, not a cap. Graded by the comprehension grader's `definition` dimension (weight 1.0)."
+          "description": "What the concept IS. Primary category + what it does + who uses it. A domain outsider should understand. Author as deeply as the concept requires — there is no protocol length cap. Graded by the comprehension grader's `definition` dimension (weight 1.0)."
         },
         "mental_model": {
           "type": "string",
-          "minLength": 20,
-          "description": "Primitives and their relationships. Name primitives and the relationships between them. Markdown permitted inside the string. Author with the depth the concept needs — there is no maximum length. Graded by the comprehension grader's `mental_model` dimension (weight 1.5)."
+          "description": "Primitives and their relationships. Name primitives and the relationships between them. Markdown permitted inside the string. Author with the depth the concept needs — there is no protocol length cap. Graded by the comprehension grader's `mental_model` dimension (weight 1.5)."
         },
         "purpose": {
           "type": "string",
-          "minLength": 20,
-          "description": "What problem the concept solves and the alternative it replaced. Concrete pain point + prior alternative. No maximum length — explain as fully as the concept needs. Graded by the comprehension grader's `purpose` dimension (weight 1.0)."
+          "description": "What problem the concept solves and the alternative it replaced. Concrete pain point + prior alternative. No protocol length cap — explain as fully as the concept needs. Graded by the comprehension grader's `purpose` dimension (weight 1.0)."
         },
         "boundary": {
           "type": "string",
-          "minLength": 20,
-          "description": "Things commonly confused with the concept but that are NOT it. Express each difference as a mechanism (different primitives, different purpose, different scope) - not just different names. No maximum length. Graded by the comprehension grader's `boundary` dimension (weight 1.5)."
+          "description": "Things commonly confused with the concept but that are NOT it. Express each difference as a mechanism (different primitives, different purpose, different scope) - not just different names. No protocol length cap. Graded by the comprehension grader's `boundary` dimension (weight 1.5)."
         },
         "taxonomy": {
           "type": "string",
-          "minLength": 10,
-          "description": "Nearby concepts with their relationship type (subset / alternative / prerequisite / composition / specialization). Markdown list permitted inside the string. No maximum length. Graded by the comprehension grader's `taxonomy` dimension (weight 1.0)."
+          "description": "Nearby concepts with their relationship type (subset / alternative / prerequisite / composition / specialization). Markdown list permitted inside the string. No protocol length cap. Graded by the comprehension grader's `taxonomy` dimension (weight 1.0)."
         },
         "analogy": {
           "type": "string",
-          "minLength": 10,
-          "description": "Analogy that preserves the core mechanism. Translate for a non-expert without breaking the structural relationship between primitives. No maximum length. Graded by the comprehension grader's `analogy` dimension (weight 0.5)."
+          "description": "Analogy that preserves the core mechanism. Translate for a non-expert without breaking the structural relationship between primitives. No protocol length cap. Graded by the comprehension grader's `analogy` dimension (weight 0.5)."
         },
         "misconception": {
           "type": "string",
-          "minLength": 20,
-          "description": "The wrong mental model people bring and why it misleads. Authored hint to inoculate the agent against the common error trap. No maximum length. Not directly graded; complements `boundary`."
+          "description": "The wrong mental model people bring and why it misleads. Authored hint to inoculate the agent against the common error trap. No protocol length cap. Not directly graded; complements `boundary`."
         }
       },
-      "description": "Seven-field universal-subject concept teaching block. Read by the comprehension grader (`scripts/skill/evaluate-skill.js --comprehension`) and rendered into the agent context when the skill is loaded. Required when `comprehension_state: present`. No total length ceiling — author each field as deeply as the concept requires. Per-field `minLength` is a floor against empty content, not a cap. Distinct from `## Philosophy` in the body, which is about *why this skill file exists in this repo*; the `concept` block is about *what the subject is, universally*."
+      "description": "Seven-field universal-subject concept teaching block. Read by the comprehension grader (`scripts/skill/evaluate-skill.js --comprehension`) and rendered into the agent context when the skill is loaded. Required when `comprehension_state: present`. No protocol length cap — author each field as deeply as the concept requires. Distinct from `## Philosophy` in the body, which is about *why this skill file exists in this repo*; the `concept` block is about *what the subject is, universally*."
     },
     "eval_last_run": {
       "type": "object",
@@ -351,19 +343,18 @@
         },
         "notes": {
           "type": "string",
-          "description": "Free-text additional compatibility notes. Use sparingly; prefer structured fields.",
-          "maxLength": 500
+          "description": "Free-text additional compatibility notes. Use sparingly; prefer structured fields. No protocol length cap."
         }
       },
       "description": "Cross-runtime compatibility envelope. `runtimes` lists target agent runtimes with version constraints; `node` is the Node.js version requirement; `notes` is free-text overflow. Distinct from `extends` (overlay parent) and `relations.depends_on` (sibling skill dependency)."
     },
     "allowed-tools": {
       "type": "string",
-      "description": "Optional space-separated whitelist of tools the skill is permitted to use (e.g., `Read Edit Bash`). Honoured by harnesses that gate tool calls per skill. Kebab-case spelling matches the Agent Skills base standard and Claude Code's `--allowed-tools` CLI flag. `allowed_tools` (snake_case) is the v3.1 preferred protocol alias; the export transform writes the kebab-case form for Agent Skills consumers."
+      "description": "Optional space-separated whitelist of tools the skill is permitted to use (e.g., `Read Edit Bash`). Honoured by harnesses that gate tool calls per skill. Kebab-case spelling matches the common SKILL.md field name and Claude Code's `--allowed-tools` CLI flag. `allowed_tools` (snake_case) is the v3.1 preferred protocol alias; the export transform writes the kebab-case form for SKILL.md consumers."
     },
     "allowed_tools": {
       "type": "string",
-      "description": "Space-separated whitelist of tools (v3.1 preferred snake_case alias for `allowed-tools`). When both are present they must match. The Agent Skills export transform rewrites this to the kebab-case form. Becomes canonical in v4."
+      "description": "Space-separated whitelist of tools (v3.1 preferred snake_case alias for `allowed-tools`). When both are present they must match. The SKILL.md export transform rewrites this to the kebab-case form. Becomes canonical in v4."
     },
     "extends": {
       "type": "string",
@@ -672,7 +663,7 @@
           "items": {
             "type": "string",
             "enum": [
-              "agent-skills"
+              "skill-md"
             ]
           }
         },
@@ -682,12 +673,12 @@
           "items": {
             "type": "string",
             "enum": [
-              "agent-skills"
+              "skill-md"
             ]
           }
         }
       },
-      "description": "Portability execution signal. `readiness` declares whether portability is only declared (`declared`), covered by export tooling (`scripted`), or verified with a target-runtime receipt (`verified`). `targets` lists supported export destinations, currently `agent-skills`."
+      "description": "Portability execution signal. `readiness` declares whether portability is only declared (`declared`), covered by export tooling (`scripted`), or verified with a target-runtime receipt (`verified`). `targets` lists supported export destinations, currently `skill-md`."
     },
     "lifecycle": {
       "type": "object",

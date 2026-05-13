@@ -10,7 +10,13 @@ scope: portable
 owner: skill-graph-maintainer
 freshness: "2026-04-18"
 drift_check:
-  last_verified: "2026-04-18"
+  last_verified: "2026-05-13"
+  truth_source_hashes:
+    "scripts/skill-lint.js": "3a78f75f8921542b91dc619cd41bde29bf379de3c16bdcf3653c854ecbe9fa29"
+    "scripts/lint/check-routing-quality.js": "b57d10f4c7c4e42a1a86c2741cbac6708e2de7dedb51b13f707283fbf91e32b5"
+    "scripts/lint/check-routing-eval.js": "ab541922dfcbfb2cd7740c4abebb892e8b26477643e9d802fd0ea4cfbc8de649"
+    "examples/evals/lint-overlay.json": "d60dcd4512904f36e56702d5338295dbf1238448b988dc60225fdd77285eaff9"
+    "skills/testing-strategy/SKILL.md": "9c5da135ab8834843367da9e9120c92b57e81d1680ef84a0ea9e32f362e1456e"
 eval_artifacts: present
 eval_state: passing
 routing_eval: present
@@ -76,10 +82,25 @@ relations:
   # its base contract — the base IS the verification partner, so naming it
   # again under verify_with would be redundant without adding signal. If a
   # dedicated CI-gate or lint-runner skill lands later, it belongs here.
+grounding:
+  domain_object: Lint-specific verification planning in the Skill Graph starter library
+  grounding_mode: hybrid
+  truth_sources:
+    - scripts/skill-lint.js
+    - scripts/lint/check-routing-quality.js
+    - scripts/lint/check-routing-eval.js
+    - examples/evals/lint-overlay.json
+    - skills/testing-strategy/SKILL.md
+  failure_modes:
+    - lint_failure_triaged_as_strategy_problem
+    - overlay_loaded_without_base_testing_strategy
+    - rule_migration_lacks_gate_placement
+    - routing_eval_claim_not_backed_by_harness
+  evidence_priority: repo_code_first
 portability:
   readiness: scripted
   targets:
-    - agent-skills
+    - skill-md
 ---
 
 # Lint Overlay

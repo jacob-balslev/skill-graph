@@ -11,7 +11,13 @@ scope: portable
 owner: skill-graph-maintainer
 freshness: "2026-05-11"
 drift_check:
-  last_verified: "2026-05-11"
+  last_verified: "2026-05-13"
+  truth_source_hashes:
+    "docs/PRIMER.md": "e6bd99468c224fe4c9606e147c5db94dff889feeb9ca5d80084480039c7e9296"
+    "docs/ADOPTION.md": "3a75c1a613ac0bdf0b4b56e567d8ec1f35a80252e68595e8d86bb0a5abdf1bfc"
+    "docs/recommended-skills.md": "5c0201bd76cdc0310bb57ddc88565ffa41f47f3b41f489c0557cb7634ed16379"
+    "skills/skill-scaffold/SKILL.md": "ea0e988de27bea1bb0868c153b4e6b2739895d180f857339b97202cc287262f7"
+    "skills/context-graph/SKILL.md": "732a04f09f2f4362ee17a65bee24406715a773aefd78dbcdc37a4cb3a9f287a7"
 eval_artifacts: planned
 eval_state: unverified
 routing_eval: absent
@@ -59,10 +65,25 @@ relations:
   verify_with:
     - knowledge-modeling
     - documentation
+grounding:
+  domain_object: Extracting durable project knowledge into Skill Graph context artifacts
+  grounding_mode: hybrid
+  truth_sources:
+    - docs/PRIMER.md
+    - docs/ADOPTION.md
+    - docs/recommended-skills.md
+    - skills/skill-scaffold/SKILL.md
+    - skills/context-graph/SKILL.md
+  failure_modes:
+    - session_noise_promoted_to_durable_context
+    - project_claims_without_truth_sources
+    - artifact_type_chosen_before_evidence_is_classified
+    - extracted_knowledge_not_linked_into_graph
+  evidence_priority: repo_code_first
 portability:
   readiness: scripted
   targets:
-    - agent-skills
+    - skill-md
 lifecycle:
   stale_after_days: 365
   review_cadence: quarterly
@@ -108,4 +129,3 @@ Durable knowledge must be evidence-backed. If it cannot be tied to code, docs, d
 | `skill-infrastructure` | You need library tooling, audits, overlap detection, or health checks. |
 | `documentation` | You need prose polish or a human-facing guide from known facts. |
 | `skill-router` | You need to choose an existing skill for one prompt. |
-

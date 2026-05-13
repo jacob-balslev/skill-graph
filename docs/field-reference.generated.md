@@ -47,9 +47,7 @@ Optional globally-unique persistent identifier in the `urn:skill:<repo>:<skill-n
 
 **Type:** string
 
-The routing contract — tells a router whether this skill should activate for a given query. Pushy, specific, boundary-aware. Should include an explicit negative boundary ("Do NOT use for…") so the router doesn't over-activate. Min 20 characters.
-
-**Min length:** 20
+The routing contract: tells a router whether this skill should activate for a given query. Pushy, specific, boundary-aware. Should include an explicit negative boundary so the router does not over-activate. No protocol length cap.
 
 **Full reference:** [`docs/field-reference.md#description`](field-reference.md#description)
 
@@ -225,7 +223,7 @@ Does this skill carry a comprehension eval (typically `evals/comprehension.json`
 
 **Type:** object
 
-Seven-field universal-subject concept teaching block. Read by the comprehension grader (`scripts/skill/evaluate-skill.js --comprehension`) and rendered into the agent context when the skill is loaded. Required when `comprehension_state: present`. No total length ceiling — author each field as deeply as the concept requires. Per-field `minLength` is a floor against empty content, not a cap. Distinct from `## Philosophy` in the body, which is about *why this skill file exists in this repo*; the `concept` block is about *what the subject is, universally*.
+Seven-field universal-subject concept teaching block. Read by the comprehension grader (`scripts/skill/evaluate-skill.js --comprehension`) and rendered into the agent context when the skill is loaded. Required when `comprehension_state: present`. No protocol length cap — author each field as deeply as the concept requires. Distinct from `## Philosophy` in the body, which is about *why this skill file exists in this repo*; the `concept` block is about *what the subject is, universally*.
 
 **Sub-fields:**
 
@@ -329,7 +327,7 @@ Cross-runtime compatibility envelope. `runtimes` lists target agent runtimes wit
 
 **Type:** string
 
-Optional space-separated whitelist of tools the skill is permitted to use (e.g., `Read Edit Bash`). Honoured by harnesses that gate tool calls per skill. Kebab-case spelling matches the Agent Skills base standard and Claude Code's `--allowed-tools` CLI flag. `allowed_tools` (snake_case) is the v3.1 preferred protocol alias; the export transform writes the kebab-case form for Agent Skills consumers.
+Optional space-separated whitelist of tools the skill is permitted to use (e.g., `Read Edit Bash`). Honoured by harnesses that gate tool calls per skill. Kebab-case spelling matches the common SKILL.md field name and Claude Code's `--allowed-tools` CLI flag. `allowed_tools` (snake_case) is the v3.1 preferred protocol alias; the export transform writes the kebab-case form for SKILL.md consumers.
 
 **Full reference:** [`docs/field-reference.md#allowed-tools`](field-reference.md#allowed-tools)
 
@@ -339,7 +337,7 @@ Optional space-separated whitelist of tools the skill is permitted to use (e.g.,
 
 **Type:** string
 
-Space-separated whitelist of tools (v3.1 preferred snake_case alias for `allowed-tools`). When both are present they must match. The Agent Skills export transform rewrites this to the kebab-case form. Becomes canonical in v4.
+Space-separated whitelist of tools (v3.1 preferred snake_case alias for `allowed-tools`). When both are present they must match. The SKILL.md export transform rewrites this to the kebab-case form. Becomes canonical in v4.
 
 **Full reference:** [`docs/field-reference.md#allowed_tools`](field-reference.md#allowed_tools)
 
@@ -470,7 +468,7 @@ Records what the skill is grounded against — the truth sources, the grounding 
 
 **Type:** object
 
-Portability execution signal. `readiness` declares whether portability is only declared (`declared`), covered by export tooling (`scripted`), or verified with a target-runtime receipt (`verified`). `targets` lists supported export destinations, currently `agent-skills`.
+Portability execution signal. `readiness` declares whether portability is only declared (`declared`), covered by export tooling (`scripted`), or verified with a target-runtime receipt (`verified`). `targets` lists supported export destinations, currently `skill-md`.
 
 **Sub-fields:**
 

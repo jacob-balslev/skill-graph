@@ -5,7 +5,7 @@
  * Reads a compiled manifest (`skills.manifest.json` or
  * `examples/skills.manifest.sample.json`) and picks skills for a natural-language
  * query using every graph field that differentiates Skill Graph from plain
- * Agent Skills:
+ * SKILL.md:
  *
  *   - activation.keywords / activation.triggers — scoring signal
  *   - activation.paths                          — optional `--path` boost
@@ -38,10 +38,13 @@
 
 const fs = require('fs');
 const path = require('path');
+const { packageRoot, workspaceRoot } = require('./lib/roots');
 
-const REPO_ROOT = path.resolve(__dirname, '..');
+const REPO_ROOT = workspaceRoot();
+const PACKAGE_ROOT = packageRoot();
 const DEFAULT_MANIFEST = path.join(REPO_ROOT, 'skills.manifest.json');
 const SAMPLE_MANIFEST = path.join(REPO_ROOT, 'examples', 'skills.manifest.sample.json');
+const PACKAGE_SAMPLE_MANIFEST = path.join(PACKAGE_ROOT, 'examples', 'skills.manifest.sample.json');
 
 // ---------------------------------------------------------------------------
 // Tokenization & scoring
@@ -184,14 +187,13 @@ function scoreSkill(skill, queryTokens, pathArg) {
     }
   }
 
-  // Path match: if the caller passed --path, boost skills whose paths glob matches.
+  // Path match: if the caller passed --path, boost skills whose positive path
+  // list matches after gitignore-style negations have been applied.
   if (pathArg) {
-    for (const pattern of paths) {
-      if (matchesGlob(pathArg, pattern)) {
-        score += 2;
-        reasons.push(`path:${pattern}`);
-        break;
-      }
+    const pathMatch = matchPathList(pathArg, paths);
+    if (pathMatch.matched) {
+      score += 2;
+      reasons.push(`path:${pathMatch.pattern}`);
     }
   }
 
@@ -199,29 +201,80 @@ function scoreSkill(skill, queryTokens, pathArg) {
 }
 
 /**
- * Minimal glob matcher supporting `*`, `**`, `?`, and `!` negation prefix.
+ * Dependency-free glob support for activation.paths.
  * Paths are matched against posix-style separators.
  *
- * Returns true when the pattern matches. Negation patterns return false when
- * they match (the caller is responsible for handling mixed positive+negative
- * lists, which this routing tool does NOT do yet — keep single-pattern match
- * simple here).
+ * `matchesGlob()` answers whether one concrete glob matches one path.
+ * `matchPathList()` applies authored list semantics, where `!pattern` only
+ * subtracts from prior positive includes.
  */
-function matchesGlob(filePath, pattern) {
-  let negate = false;
-  let pat = pattern;
-  if (pat.startsWith('!')) { negate = true; pat = pat.slice(1); }
+function expandBraces(pattern) {
+  const match = String(pattern).match(/\{([^{}]+)\}/);
+  if (!match) return [String(pattern)];
+  const before = pattern.slice(0, match.index);
+  const after = pattern.slice(match.index + match[0].length);
+  return match[1].split(',').flatMap(part => expandBraces(before + part + after));
+}
 
-  const re = new RegExp(
-    '^' + pat
-      .replace(/[.+^${}()|[\]\\]/g, '\\$&')
-      .replace(/\*\*/g, '::DOUBLE_STAR::')
-      .replace(/\*/g, '[^/]*')
-      .replace(/::DOUBLE_STAR::/g, '.*')
-      .replace(/\?/g, '[^/]') + '$'
-  );
-  const matched = re.test(filePath.replace(/\\/g, '/'));
-  return negate ? !matched : matched;
+function globToRegExp(pattern) {
+  const pat = String(pattern).replace(/\\/g, '/');
+  let out = '^';
+  for (let i = 0; i < pat.length; i++) {
+    const ch = pat[i];
+    if (ch === '*') {
+      if (pat[i + 1] === '*') {
+        if (pat[i + 2] === '/') {
+          out += '(?:.*/)?';
+          i += 2;
+        } else {
+          out += '.*';
+          i += 1;
+        }
+      } else {
+        out += '[^/]*';
+      }
+      continue;
+    }
+    if (ch === '?') {
+      out += '[^/]';
+      continue;
+    }
+    out += ch.replace(/[.+^${}()|[\]\\]/g, '\\$&');
+  }
+  return new RegExp(out + '$');
+}
+
+function matchesGlob(filePath, pattern) {
+  let pat = pattern;
+  if (typeof pat !== 'string' || pat.length === 0) return false;
+  if (pat.startsWith('!')) pat = pat.slice(1);
+  const normalizedPath = String(filePath).replace(/\\/g, '/');
+  return expandBraces(pat).some(expanded => globToRegExp(expanded).test(normalizedPath));
+}
+
+function matchPathList(filePath, patterns) {
+  let matched = false;
+  let matchedPattern = null;
+  let excludedBy = null;
+  if (!Array.isArray(patterns)) return { matched, pattern: null, excludedBy: null };
+
+  for (const pattern of patterns) {
+    if (typeof pattern !== 'string' || pattern.length === 0) continue;
+    const negated = pattern.startsWith('!');
+    if (!matchesGlob(filePath, pattern)) continue;
+    if (negated) {
+      if (matched) {
+        matched = false;
+        excludedBy = pattern;
+      }
+    } else {
+      matched = true;
+      matchedPattern = pattern;
+      excludedBy = null;
+    }
+  }
+
+  return { matched, pattern: matched ? matchedPattern : null, excludedBy };
 }
 
 // ---------------------------------------------------------------------------
@@ -677,7 +730,9 @@ function main() {
 
   const manifestPath = manifestArg
     ? path.resolve(manifestArg)
-    : (fs.existsSync(DEFAULT_MANIFEST) ? DEFAULT_MANIFEST : SAMPLE_MANIFEST);
+    : (fs.existsSync(DEFAULT_MANIFEST)
+        ? DEFAULT_MANIFEST
+        : (fs.existsSync(SAMPLE_MANIFEST) ? SAMPLE_MANIFEST : PACKAGE_SAMPLE_MANIFEST));
 
   if (!fs.existsSync(manifestPath)) {
     console.error(`ERROR manifest not found: ${manifestPath}`);
@@ -706,6 +761,6 @@ function main() {
 
 // Allow require() from scripts/skill-graph-routing-eval.js so the harness
 // can reuse the scoring + boundary-exclusion pipeline without shelling out.
-module.exports = { routeSkills, tokenize, matchesGlob, computeStaleness };
+module.exports = { routeSkills, tokenize, matchesGlob, matchPathList, computeStaleness };
 
 if (require.main === module) main();

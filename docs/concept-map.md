@@ -14,7 +14,7 @@ Skill Graph does **not** promise:
 - Open-world consistency checking (the schema closes it via `additionalProperties: false`)
 - SPARQL queryability as the primary interface (you get that by applying the JSON-LD `@context` first)
 
-What it does promise: deterministic lint, manifest generation, relation-aware routing, drift detection against content-addressable truth sources, and portable export to Agent Skills.
+What it does promise: deterministic lint, manifest generation, relation-aware routing, drift detection against content-addressable truth sources, and portable export to SKILL.md.
 
 ## The 36 authored fields — grouped by role
 
@@ -131,7 +131,7 @@ Ties the skill to hashable artifacts and documents the trust hierarchy.
 | `grounding.failure_modes` | many | Known degradation modes |
 | `grounding.evidence_priority` | one enum | `repo_code_first` \| `general_knowledge_first` \| `equal` |
 
-Drift hash semantics: `drift_check.truth_source_hashes` maps each normalized truth-source key to a SHA-256 digest at the time of last verification. Keys are `path` for whole-file sources, `path#Lstart-Lend` for line ranges, and `path#anchor` for anchor-only sources. Directories cannot be hashed; a truth source must resolve to a file or URL. The drift sentinel (`scripts/skill-graph-drift.js`) reports `DRIFT` when live hash differs from recorded, `BROKEN` when the source is missing, `STALE` when `last_verified + lifecycle.stale_after_days < today`, and `NO_BASELINE` when truth sources are declared but no hashes are recorded.
+Drift hash semantics: `drift_check.truth_source_hashes` maps each normalized truth-source key to a SHA-256 digest at the time of last verification. Keys are `path` for whole-file sources, `path#Lstart-Lend` for line ranges, and `path#anchor` for anchor-only sources. Directories cannot be hashed; local truth sources must resolve to files, while URL truth sources are valid references but are not fetched by the zero-dependency sentinel. The drift sentinel (`scripts/skill-graph-drift.js`) reports `DRIFT` when live hash differs from recorded, `BROKEN` when a local source is missing, `STALE` when `last_verified + lifecycle.stale_after_days < today`, `NO_BASELINE` when local truth sources are declared but no hashes are recorded, and `EXTERNAL_UNHASHED` for URL truth sources.
 
 ### Cross-cutting portability & standards (5 fields, all optional)
 
@@ -143,7 +143,7 @@ Artifact-level metadata.
 | `compatibility` | one object (`runtimes?`, `node?`, `notes?`) | Runtime environment |
 | `allowed-tools` | one space-separated string | Pre-approved tool allowlist |
 | `portability.readiness` | one enum | `declared` \| `scripted` \| `verified` — operational export readiness |
-| `portability.targets` | many, currently `["agent-skills"]` only | Export destinations |
+| `portability.targets` | many, currently `["skill-md"]` only | Export destinations |
 | `urn` *(v3.1, optional)* | one | Global persistent identifier — `urn:skill:<repo>:<name>`. Target: required in v4. |
 
 ## The four orthogonal classification axes (carefully qualified)

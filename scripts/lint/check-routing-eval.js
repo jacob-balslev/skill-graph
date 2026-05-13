@@ -29,10 +29,13 @@
 const fs = require('fs');
 const path = require('path');
 const { evaluateSkill } = require('../skill-graph-routing-eval');
+const { packageRoot, workspaceRoot } = require('../lib/roots');
 
-const REPO_ROOT = path.resolve(__dirname, '..', '..');
+const REPO_ROOT = workspaceRoot();
+const PACKAGE_ROOT = packageRoot();
 const DEFAULT_MANIFEST = path.join(REPO_ROOT, 'skills.manifest.json');
 const SAMPLE_MANIFEST = path.join(REPO_ROOT, 'examples', 'skills.manifest.sample.json');
+const PACKAGE_SAMPLE_MANIFEST = path.join(PACKAGE_ROOT, 'examples', 'skills.manifest.sample.json');
 
 /**
  * Run routing-eval checks on one SKILL.md file.
@@ -111,7 +114,9 @@ function checkRoutingEval(opts) {
 }
 
 function loadManifest() {
-  const p = fs.existsSync(DEFAULT_MANIFEST) ? DEFAULT_MANIFEST : SAMPLE_MANIFEST;
+  const p = fs.existsSync(DEFAULT_MANIFEST)
+    ? DEFAULT_MANIFEST
+    : (fs.existsSync(SAMPLE_MANIFEST) ? SAMPLE_MANIFEST : PACKAGE_SAMPLE_MANIFEST);
   if (!fs.existsSync(p)) return null;
   try { return JSON.parse(fs.readFileSync(p, 'utf8')); }
   catch { return null; }

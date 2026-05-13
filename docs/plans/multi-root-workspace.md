@@ -134,7 +134,7 @@ For an existing v2/v3 single-root repo that wants to adopt multi-root:
 
 ## Non-goals
 
-- **No cross-workspace linking.** The manifest only unions skills within one repo. Pulling skills from a sibling repo is out of scope (and is Agent Skills' job via export).
+- **No cross-workspace linking.** The manifest only unions skills within one repo. Pulling skills from a sibling repo is out of scope (and is SKILL.md' job via export).
 - **No runtime skill-root mounting.** The set of skill roots is read at manifest generation time. A consumer cannot add a root at query time.
 - **No glob-based skill-root declarations.** Each root is a literal directory path. Glob patterns in the config file are a footgun and are not supported.
 

@@ -40,10 +40,12 @@
 const fs = require('fs');
 const path = require('path');
 const { parseFrontmatter } = require('./lib/parse-frontmatter');
+const { loadWorkspaceConfig, resolveSkillRoots, workspaceRoot } = require('./lib/roots');
 
-const REPO_ROOT = path.resolve(__dirname, '..');
-const SKILLS_DIR = path.join(REPO_ROOT, 'skills');
+const REPO_ROOT = workspaceRoot();
 const TEMPLATE_PATH = path.join(REPO_ROOT, 'examples', 'skill-metadata-template.md');
+const WORKSPACE_CONFIG = loadWorkspaceConfig(REPO_ROOT, msg => process.stderr.write(`WARN ${msg}\n`));
+const SKILL_ROOTS = resolveSkillRoots(REPO_ROOT, WORKSPACE_CONFIG);
 
 // ANSI color helpers — matched to scripts/lint/format-code-frame.js palette.
 const C = {
@@ -64,9 +66,10 @@ function paint(s, color, enabled) {
 
 function loadSkills(includeTemplate) {
   const skills = [];
-  if (fs.existsSync(SKILLS_DIR)) {
-    for (const name of fs.readdirSync(SKILLS_DIR).sort()) {
-      const skillMd = path.join(SKILLS_DIR, name, 'SKILL.md');
+  for (const root of SKILL_ROOTS) {
+    if (!fs.existsSync(root.absPath)) continue;
+    for (const name of fs.readdirSync(root.absPath).sort()) {
+      const skillMd = path.join(root.absPath, name, 'SKILL.md');
       if (!fs.existsSync(skillMd)) continue;
       const text = fs.readFileSync(skillMd, 'utf8');
       const fm = parseFrontmatter(text);

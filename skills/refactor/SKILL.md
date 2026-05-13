@@ -78,7 +78,7 @@ relations:
 portability:
   readiness: scripted
   targets:
-    - agent-skills
+    - skill-md
 ---
 
 # Refactor

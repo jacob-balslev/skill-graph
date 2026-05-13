@@ -2,13 +2,13 @@
 
 This is the rationale and deep explanation for the Skill Metadata Protocol. For normative authoring rules, start with [`SKILL_METADATA_PROTOCOL.md`](../SKILL_METADATA_PROTOCOL.md); this document explains why the protocol has this shape and how the pieces fit together.
 
-Skill Metadata Protocol is the **skill-level contract** for AI Agent Skills. It defines the structured relevance metadata a skill should declare: activation signals, taxonomy, project/file scope, sibling-skill relations, grounding, drift checks, eval state, and portability.
+Skill Metadata Protocol is the **skill-level contract** for AI SKILL.md. It defines the structured relevance metadata a skill should declare: activation signals, taxonomy, project/file scope, sibling-skill relations, grounding, drift checks, eval state, and portability.
 
 Skill Graph is the **library-level system** that works with this protocol. It indexes, routes, clusters, audits, and reverifies libraries of Skill-Metadata-Protocol-enriched skills.
 
 > **Migrating from an older schema?** Jump straight to the migration notes:
 > - [v2 → v3](manifest-field-mapping.md#migration-note--v2--v3-v040) — `drift_check` scalar → object, `compatibility` scalar → object, `family` → `browse_category`, new optional fields
-> - [v1 → v2](manifest-field-mapping.md#migration-note--v1--v2-sh-5784) — `scope` enum rename, `eval_status` split into three fields, `route_groups` → `routing_groups`
+> - [v1 → v2](manifest-field-mapping.md#migration-note--v1--v2-2026-04-17-sh-5784) — `scope` enum rename, `eval_status` split into three fields, `route_groups` → `routing_groups`
 > - Codemod: `node scripts/migrate-skill-v2-to-v3.js` upgrades v2 skills in place
 > - Planned v3 → v4 changes (ADR 0001, ADR 0004, ADR 0006): `adjacent` removed in favour of `related`; `boundary` remains the routing-layer handoff; `urn` becomes required
 
@@ -34,8 +34,8 @@ This document is the public source of truth for the Skill Metadata Protocol fron
 - **Keeps one `SKILL.md` file per skill** → a skill's everything-you-need-to-know lives at one path; no parallel sidecar files to keep in sync
 - **Keeps one generated manifest downstream** → consumers read a single deterministic artifact; the manifest is content-addressable and CI-verifiable
 - **Tightens field semantics** → lint catches you when `relations.depends_on` points at a skill that doesn't exist, instead of silently breaking the router at runtime
-- **Adds a small number of high-value fields beyond the Agent Skills base** → typed relations, drift detection, and project scoping become declarative metadata rather than tribal knowledge
-- **Stays additive to the Agent Skills standard so every protocol-enriched skill can be transformed back to the base shape** → adopting the protocol does not trap you; the export transform at `scripts/export-skill.js` produces a valid Agent Skills file
+- **Adds a small number of high-value fields beyond the SKILL.md base** → typed relations, drift detection, and project scoping become declarative metadata rather than tribal knowledge
+- **Stays additive to the SKILL.md standard so every protocol-enriched skill can be transformed back to the base shape** → adopting the protocol does not trap you; the export transform at `scripts/export-skill.js` produces a valid SKILL.md file
 
 ### What kind of graph is this?
 
@@ -49,11 +49,11 @@ Skill Graph does **not** promise:
 - Open-world consistency checking (the schema closes it via `additionalProperties: false`)
 - SPARQL queryability as the primary interface (get that by applying the JSON-LD `@context` first)
 
-What it does promise: deterministic lint, manifest generation, relation-aware routing, drift detection against content-addressable truth sources, and portable export to Agent Skills.
+What it does promise: deterministic lint, manifest generation, relation-aware routing, drift detection against content-addressable truth sources, and portable export to SKILL.md.
 
 ### Drift-check hash semantics
 
-`drift_check.truth_source_hashes` maps each normalized truth-source key to the **SHA-256 hex digest** at the time of last verification. String truth sources hash the whole file under `path`; object truth sources can narrow the hash to `path#Lstart-Lend` for a line range or `path#anchor` for a Markdown heading slug / literal-text anchor. Local file content is normalized to LF before hashing so CRLF-only edits do not create false drift. The drift sentinel (`scripts/skill-graph-drift.js`) reports `DRIFT` when the live hash differs from the recorded hash, `BROKEN` when a declared truth source is missing from disk, `STALE` when `today - drift_check.last_verified > lifecycle.stale_after_days`, and `NO_BASELINE` when truth sources are declared but no hashes are recorded. To add a baseline: `node scripts/skill-graph-drift.js --record --apply <skill-path>`.
+`drift_check.truth_source_hashes` maps each normalized truth-source key to the **SHA-256 hex digest** at the time of last verification. String truth sources hash the whole local file under `path`; object truth sources can narrow the hash to `path#Lstart-Lend` for a line range or `path#anchor` for a Markdown heading slug / literal-text anchor. Local file content is normalized to LF before hashing so CRLF-only edits do not create false drift. The drift sentinel (`scripts/skill-graph-drift.js`) reports `DRIFT` when the live hash differs from the recorded hash, `BROKEN` when a declared local truth source is missing from disk, `STALE` when `today - drift_check.last_verified > lifecycle.stale_after_days`, `NO_BASELINE` when local truth sources are declared but no hashes are recorded, and `EXTERNAL_UNHASHED` when a URL truth source is a valid reference but is not fetched by the zero-dependency sentinel. To add a local-file baseline: `node scripts/skill-graph-drift.js --record --apply <skill-path>`.
 
 ### Overlay composition precedence
 
@@ -65,26 +65,26 @@ When `type: overlay` and `extends: <parent-skill>`, the overlay's authored field
 
 If an overlay needs to *add* rather than *replace* a field's value (e.g. add keywords), author the full intended set in the overlay — the schema does not offer additive inheritance. Future work under ADR 0001 may introduce explicit merge strategies; today the rule is overlay-wins-per-field.
 
-## Relationship to the Agent Skills Standard
+## Relationship to the SKILL.md Standard
 
-> **This added structure is the price of making skills verifiable and system-aware once descriptions alone stop being enough.** If your library is small enough that descriptions and keywords are sufficient, stay on plain Agent Skills — Skill Metadata Protocol's additional fields are overhead without payoff until the implicit graph appears.
+> **This added structure is the price of making skills verifiable and system-aware once descriptions alone stop being enough.** If your library is small enough that descriptions and keywords are sufficient, stay on plain SKILL.md — Skill Metadata Protocol's additional fields are overhead without payoff until the implicit graph appears.
 
-Skill Metadata Protocol extends the [Agent Skills](https://agentskills.io/specification) open standard with a richer authoring contract. The base standard requires two frontmatter fields (`name` and `description`) and defines four optional fields (`license`, `compatibility`, `metadata`, `allowed-tools`). The protocol keeps the two required base fields and three of the four optional base fields (`license`, `compatibility`, `allowed-tools`) as top-level fields — though `compatibility` is tightened from a free-text string to a structured object, and `name` allows `/` and `:` for namespacing. It does not use the base `metadata` field; protocol extensions are promoted to additional named top-level fields instead.
+Skill Metadata Protocol extends the [SKILL.md](https://agentskills.io/specification) open standard with a richer authoring contract. The base standard requires two frontmatter fields (`name` and `description`) and defines four optional fields (`license`, `compatibility`, `metadata`, `allowed-tools`). The protocol keeps the two required base fields and three of the four optional base fields (`license`, `compatibility`, `allowed-tools`) as top-level fields — though `compatibility` is tightened from a free-text string to a structured object, and `name` allows `/` and `:` for namespacing. It does not use the base `metadata` field; protocol extensions are promoted to additional named top-level fields instead.
 
-A Skill-Metadata-Protocol-enriched `SKILL.md` is *not* automatically a valid Agent Skills file: the `compatibility` shape and `name` pattern diverge. The export transform at `scripts/export-skill.js` produces a `SKILL.agent-skills.md` that is valid against the base standard — flattening `compatibility` to a string and nesting protocol extension fields under the base `metadata:` key. Round-trip parity is via the export transform, not via direct schema compatibility.
+A Skill-Metadata-Protocol-enriched `SKILL.md` is *not* automatically a valid SKILL.md file: the `compatibility` shape and `name` pattern diverge. The export transform at `scripts/export-skill.js` produces a `SKILL.skill-md.md` that is valid against the base standard — flattening `compatibility` to a string and nesting protocol extension fields under the base `metadata:` key. Round-trip parity is via the export transform, not via direct schema compatibility.
 
 | Field | Source | Skill Metadata Protocol treatment |
 |---|---|---|
-| `name` | Agent Skills required | Kept as required; the protocol tightens the character pattern |
-| `description` | Agent Skills required | Kept as required; scoped to routing |
-| `license` | Agent Skills optional | Kept top-level; strongly recommended for shared skills |
-| `compatibility` | Agent Skills optional | Kept top-level; optional |
-| `allowed-tools` | Agent Skills optional | Kept top-level as a space-separated string |
-| `metadata` | Agent Skills optional | Not used at the top level; the protocol promotes extensions to named fields |
+| `name` | SKILL.md required | Kept as required; the protocol tightens the character pattern |
+| `description` | SKILL.md required | Kept as required; scoped to routing |
+| `license` | SKILL.md optional | Kept top-level; strongly recommended for shared skills |
+| `compatibility` | SKILL.md optional | Kept top-level; optional |
+| `allowed-tools` | SKILL.md optional | Kept top-level as a space-separated string |
+| `metadata` | SKILL.md optional | Not used at the top level; the protocol promotes extensions to named fields |
 | `schema_version`, `version`, `type`, `browse_category`, `scope`, `owner`, `freshness`, `drift_check`, `eval_artifacts`, `eval_state`, `routing_eval` | Skill Metadata Protocol extension | Required by the protocol; additive to the base |
 | `relations`, `grounding`, `portability`, `triggers`, `keywords`, `examples`, `anti_examples`, `paths`, `project_tags`, `category`, `routing_groups`, `lifecycle`, `runtime_telemetry`, `extends`, `stability`, `superseded_by` | Skill Metadata Protocol extension | Optional protocol enrichments; additive to the base |
 
-A Skill-Metadata-Protocol-enriched `SKILL.md` is **not** a valid Agent Skills file as authored, because the protocol requires fields the base standard does not define. An export transform can produce an Agent-Skills-valid file by moving every protocol extension field under the standard `metadata:` key. The transform is implemented as `scripts/export-skill.js`.
+A Skill-Metadata-Protocol-enriched `SKILL.md` is **not** a valid SKILL.md file as authored, because the protocol requires fields the base standard does not define. An export transform can produce an SKILL.md-valid file by moving every protocol extension field under the standard `metadata:` key. The transform is implemented as `scripts/export-skill.js`.
 
 ## Archetype Section Map
 
