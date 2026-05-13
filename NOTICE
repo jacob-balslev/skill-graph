@@ -1,4 +1,4 @@
-@agent-orchestration-tools/skill-graph
+Skill Graph
 
 Copyright 2026 Jacob Balslev
 
@@ -19,7 +19,7 @@ This package contains TWO bodies of work under different licenses:
 
 When redistributing or building derivative works from skills, attribute as:
 
-   "Skills from @agent-orchestration-tools/skill-graph
+   "Skills from Skill Graph
     (https://github.com/jacob-balslev/skill-graph),
     licensed CC-BY-4.0."
 
@@ -57,14 +57,6 @@ TypeScript Apache-2.0, etc.).
 Skill content provenance
 ================================================================================
 
-Skills under `skills/**` were extracted from the agent-orchestration-tools
-private monorepo and stripped of project-specific coupling (paths, internal
-identifiers, business names). The extraction preserved each skill's authorship
-and version history at the time of extraction.
-
-Project-specific skills (financial-correctness, sales-hub-* doctrines, etc.)
-were intentionally excluded as enumerated in the original extraction filter.
-
-The two skills that fail strict frontmatter validation (data-reconciliation,
-token-cost-estimation) are still distributed but require `tolerant: true` to
-load. They will be migrated to the v1.0 frontmatter shape in a future release.
+Skills under `skills/**` are the public subset intended for reuse in open
+source Agent Skills libraries. Private, customer-specific, and project-specific
+skills were intentionally excluded from this distribution.

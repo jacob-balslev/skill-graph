@@ -1,11 +1,11 @@
 {
-  "name": "@agent-orchestration-tools/skill-graph",
+  "name": "skill-graph",
   "version": "0.4.0",
   "description": "Skill Metadata Protocol schemas plus Skill Graph reference tooling and starter skills for Agent Skills libraries.",
   "private": true,
   "type": "commonjs",
   "license": "Apache-2.0",
-  "author": "Jacob Balslev <jacob@agent-orchestration.tools>",
+  "author": "Jacob Balslev",
   "homepage": "https://github.com/jacob-balslev/skill-graph#readme",
   "repository": {
     "type": "git",
@@ -17,7 +17,6 @@
   "keywords": [
     "ai-agents",
     "agent-orchestration",
-    "agent-orchestration-tools",
     "skills",
     "agent-skills",
     "skill-catalog",
