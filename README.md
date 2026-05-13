@@ -6,7 +6,7 @@
 
 Skill Graph does not primarily answer "what skills exist?" and it is not just a governance layer. It uses Skill Metadata Protocol records to answer "what is this skill relevant for in this project, and how can that relevance be indexed, routed, tested, clustered, and reverified?" Skills export to [Agent Skills](https://agentskills.io/specification) shape via `scripts/export-skill.js` and are consumed by Claude Code's skill loader and any Agent-Skills-compatible runtime.
 
-[Adoption](docs/ADOPTION.md) · [Architecture](docs/ARCHITECTURE.md) · [Primer](docs/PRIMER.md) · [CONTRACT](CONTRACT.md) · [CHANGELOG](CHANGELOG.md) · [Quickstart (30 min)](docs/QUICKSTART-30MIN.md) · [Glossary](docs/glossary.md)
+[Adoption](docs/ADOPTION.md) · [Architecture](docs/ARCHITECTURE.md) · [Primer](docs/PRIMER.md) · [Skill Metadata Protocol](SKILL_METADATA_PROTOCOL.md) · [CHANGELOG](CHANGELOG.md) · [Quickstart (30 min)](docs/QUICKSTART-30MIN.md) · [Glossary](docs/glossary.md)
 
 > **Read this if** you're managing more than ~20 skills, your agent picks the wrong one on ambiguous prompts, your grounded skills silently lie when their cited files move, or you want to share skills across projects without folder gymnastics.
 
@@ -335,7 +335,7 @@ The repo is organised in five authority tiers. When two files disagree, the high
 
 ### Tier 2 — Explanation (human reflections of the contract)
 
-- `CONTRACT.md` — **the normative spec.** Top-level public contract: required vs optional fields, semantic rules by field group, authored vs generated, migration notes, schema versioning policy. Terse, boundary-aware, no rationale. The doc you print and tape to the wall.
+- `SKILL_METADATA_PROTOCOL.md` — **the normative spec.** Top-level public Skill Metadata Protocol contract: required vs optional fields, semantic rules by field group, authored vs generated, migration notes, schema versioning policy. Terse, boundary-aware, no rationale. The doc you print and tape to the wall.
 - `docs/skill-metadata-protocol.md` — **the design rationale.** Archetype map + anatomy + requiredness groups + strictness rules + schema versioning policy AND the *why*: why archetypes are rigid vs anti-rigid (OntoClean per ADR 0003), why the eval-health triple is orthogonal (ADR 0001 + ADR 0006), how JSON-LD `@context` maps every field to W3C terms (ADR 0002). Pedagogical, philosophical, ADR-referencing.
 - `docs/field-reference.md` — per-field semantics for all 36 canonical v3 authored fields, hand-curated prose with examples and lint notes (canonical for authoring). Now the apex of a three-doc structure including `docs/field-reference.generated.md` (auto-generated drift-free index from schema descriptions) and `docs/field-rationale.md` (hand-authored "why this field exists" rationale for the 10 non-obvious fields).
 - `docs/field-decision-guide.md` — decision tables for the hard choices: `scope`, `relations.*`, eval-health triple, `portability`, `project_tags`, and `browse_category` vs `category` vs `project_tags` vs `routing_groups`
