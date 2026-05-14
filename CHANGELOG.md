@@ -10,6 +10,7 @@ Skill Graph versions describe the contract at each checkpoint in the git history
 
 ### Changed
 - **schema_version 4 naming cleanup.** Renamed `browse_category` to `category`, hierarchical `category` / `category_path` to `domain`, `project_tags` to `workspace_tags`, and `routing_groups` to `routing_bundles`. Added active and pinned v4 skill/manifest schemas, migrated shipped skills, regenerated manifests/exports/marketplace artifacts, and added `scripts/migrate-skill-v3-to-v4.js`.
+- **Skill Audit Loop reframed as a re-grounding mechanism (docs only, no `schema_version` impact).** The loop was documented mechanics-first — its cadence and outputs without its purpose. `README.md` and `SKILL_AUDIT_LOOP.md` now open with the conceptual frame: a skill is a contract about a subject, and the loop is what re-grounds it against its two moving targets — the codebase it is grounded in and the subject it describes. `README.md` closing line changed "maintenance loop" to "re-grounding loop"; `SKILL_GRAPH.md` gains a three-layer relationship paragraph (protocol declares grounding, graph operates across the library, loop re-grounds each skill on a cadence). Rationale recorded in new `docs/proposals/skill-audit-loop-positioning.md`. Stated entirely in existing protocol vocabulary — no new fields, scripts, or CLI verbs.
 
 ## [0.5.0] — 2026-05-13
 
