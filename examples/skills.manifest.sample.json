@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-05-14T00:10:55.613Z",
+  "generated_at": "2026-05-14T00:00:00.000Z",
   "schema_version": 4,
   "skills": [
     {
@@ -637,6 +637,66 @@
     },
     {
       "activation": {
+        "keywords": [
+          "background-jobs",
+          "background",
+          "jobs"
+        ],
+        "triggers": [
+          "background-jobs-skill",
+          "job-queue-skill",
+          "async-processing-skill",
+          "long-running-task-skill",
+          "worker-pattern-skill"
+        ]
+      },
+      "allowed-tools": "Read Grep Bash",
+      "category": "workflow",
+      "compatibility": {
+        "notes": "Markdown, Git, agent-skill runtimes"
+      },
+      "description": "This skill provides background job patterns for web applications: job queue architecture, long-running sync operations, progress tracking and reporting, failure handling and retry, job prioritization, and concurrency management. Load when implementing async processing, building job queues, designing progress indicators for long operations, or handling failure recovery for background work.",
+      "health": {
+        "drift_check": {
+          "last_verified": "2026-03-29"
+        },
+        "eval_artifacts": "planned",
+        "eval_state": "unverified",
+        "freshness": "2026-03-29",
+        "has_grounding": false,
+        "has_relations": true,
+        "lifecycle": {
+          "review_cadence": "quarterly",
+          "stale_after_days": 90
+        },
+        "routing_eval": "absent"
+      },
+      "id": "background-jobs",
+      "license": "MIT",
+      "name": "background-jobs",
+      "owner": "skill-graph-maintainer",
+      "path": "skills/background-jobs/SKILL.md",
+      "portability": {
+        "readiness": "scripted",
+        "targets": [
+          "skill-md"
+        ]
+      },
+      "relations": {
+        "boundary": [
+          "real-time-updates"
+        ],
+        "related": [
+          "cron-scheduling"
+        ]
+      },
+      "scope": "portable",
+      "stability": "experimental",
+      "type": "capability",
+      "version": "1.0.0"
+    },
+    {
+      "activation": {
         "anti_examples": [
           "list entities, attributes, and cardinalities before any architecture decision",
           "create SQL tables, foreign keys, and indexes",
@@ -911,6 +971,129 @@
     },
     {
       "activation": {
+        "keywords": [
+          "command-palette",
+          "command",
+          "palette"
+        ],
+        "triggers": [
+          "command-palette-skill",
+          "cmd-k-skill",
+          "keyboard-navigation-skill",
+          "power-user-skill",
+          "fuzzy-search-skill"
+        ]
+      },
+      "allowed-tools": "Read Grep Bash",
+      "category": "ai-engineering",
+      "compatibility": {
+        "notes": "Markdown, Git, agent-skill runtimes"
+      },
+      "description": "This skill provides keyboard-driven navigation patterns for power users: cmdk-style palette (Cmd+K), fuzzy search across orders/products/settings, action shortcuts, recent items, and contextual commands. Load when implementing command palette UI, keyboard shortcut systems, fuzzy search for navigation, or power-user workflow optimization.",
+      "domain": "ai-engineering/display",
+      "health": {
+        "drift_check": {
+          "last_verified": "2026-03-29"
+        },
+        "eval_artifacts": "planned",
+        "eval_state": "unverified",
+        "freshness": "2026-03-29",
+        "has_grounding": false,
+        "has_relations": true,
+        "lifecycle": {
+          "review_cadence": "quarterly",
+          "stale_after_days": 90
+        },
+        "routing_eval": "absent"
+      },
+      "id": "command-palette",
+      "license": "MIT",
+      "name": "command-palette",
+      "owner": "skill-graph-maintainer",
+      "path": "skills/command-palette/SKILL.md",
+      "portability": {
+        "readiness": "scripted",
+        "targets": [
+          "skill-md"
+        ]
+      },
+      "relations": {
+        "related": [
+          "information-architecture"
+        ]
+      },
+      "scope": "portable",
+      "stability": "experimental",
+      "type": "capability",
+      "version": "1.0.0"
+    },
+    {
+      "activation": {
+        "keywords": [
+          "compression",
+          "Zstd",
+          "Brotli",
+          "Gzip",
+          "context window",
+          "token efficiency",
+          "semantic summarization",
+          "payload reduction",
+          "DB TOAST"
+        ],
+        "triggers": [
+          "compression-skill",
+          "context-compression",
+          "payload-optimization"
+        ]
+      },
+      "allowed-tools": "Read Grep Bash",
+      "category": "data",
+      "compatibility": {
+        "notes": "Markdown, Git, agent-skill runtimes"
+      },
+      "description": "This skill provides expertise in data and context compression: SaaS payload optimization (Zstd, Brotli, Gzip), database storage compression, and AI context window compression (Semantic Summarization, Token Pruning). Use when optimizing API latency, reducing storage costs, or managing long-running agent sessions near context limits. Do NOT use for image/video lossy compression (use product-photo) or file archiving.",
+      "health": {
+        "drift_check": {
+          "last_verified": "2026-03-28"
+        },
+        "eval_artifacts": "planned",
+        "eval_state": "unverified",
+        "freshness": "2026-03-28",
+        "has_grounding": false,
+        "has_relations": true,
+        "lifecycle": {
+          "review_cadence": "quarterly",
+          "stale_after_days": 90
+        },
+        "routing_eval": "absent"
+      },
+      "id": "compression",
+      "license": "MIT",
+      "name": "compression",
+      "owner": "skill-graph-maintainer",
+      "path": "skills/compression/SKILL.md",
+      "portability": {
+        "readiness": "scripted",
+        "targets": [
+          "skill-md"
+        ]
+      },
+      "relations": {
+        "boundary": [
+          "context-management",
+          "summarization"
+        ],
+        "related": [
+          "context-window"
+        ]
+      },
+      "scope": "portable",
+      "stability": "experimental",
+      "type": "capability",
+      "version": "1.0.0"
+    },
+    {
+      "activation": {
         "anti_examples": [
           "give me the physical table design with PKs, FKs, and normalization forms",
           "I need OWL class axioms and reasoning constraints for these concepts",
@@ -1109,6 +1292,78 @@
           "ai-native-development",
           "agent-engineering",
           "code-review"
+        ]
+      },
+      "scope": "portable",
+      "stability": "experimental",
+      "type": "capability",
+      "version": "1.0.0"
+    },
+    {
+      "activation": {
+        "keywords": [
+          "content monitor",
+          "github trending",
+          "blog monitor",
+          "intelligence brief",
+          "youtube monitor",
+          "awesome list",
+          "trend tracking",
+          "content pipeline",
+          "content-monitor",
+          "rss feed",
+          "content discovery",
+          "hacker news",
+          "changelog tracking",
+          "arxiv papers",
+          "podcast monitor",
+          "release tracking"
+        ],
+        "triggers": [
+          "content-monitor-skill",
+          "research-mode"
+        ]
+      },
+      "allowed-tools": "Read Grep Bash",
+      "category": "ai-engineering",
+      "compatibility": {
+        "notes": "Markdown, Git, agent-skill runtimes"
+      },
+      "description": "Use when building or operating multi-source intelligence pipelines across video, GitHub, Reddit, curated lists, search, and RSS feeds. Covers source adapters, discovery/transcription/summarization/evaluation phases, deduplication, schedules, model-stage choice, and actionable brief generation. Do NOT use for SEO keyword research (use `keywords`) or competitive product analysis (use `user-research`).",
+      "domain": "ai-engineering/agent-ops",
+      "health": {
+        "drift_check": {
+          "last_verified": "2026-03-28"
+        },
+        "eval_artifacts": "planned",
+        "eval_state": "unverified",
+        "freshness": "2026-03-28",
+        "has_grounding": false,
+        "has_relations": true,
+        "lifecycle": {
+          "review_cadence": "quarterly",
+          "stale_after_days": 90
+        },
+        "routing_eval": "absent"
+      },
+      "id": "content-monitor",
+      "license": "MIT",
+      "name": "content-monitor",
+      "owner": "skill-graph-maintainer",
+      "path": "skills/content-monitor/SKILL.md",
+      "portability": {
+        "readiness": "scripted",
+        "targets": [
+          "skill-md"
+        ]
+      },
+      "relations": {
+        "boundary": [
+          "keywords",
+          "seo-strategy"
+        ],
+        "verify_with": [
+          "evaluation"
         ]
       },
       "scope": "portable",
@@ -1574,6 +1829,63 @@
         ],
         "verify_with": [
           "context-management"
+        ]
+      },
+      "scope": "portable",
+      "stability": "experimental",
+      "type": "capability",
+      "version": "1.0.0"
+    },
+    {
+      "activation": {
+        "keywords": [
+          "cron-scheduling",
+          "cron",
+          "scheduling"
+        ],
+        "triggers": [
+          "cron-scheduling-skill",
+          "cron-job-skill",
+          "scheduled-task-skill",
+          "vercel-cron-skill",
+          "recurring-job-skill"
+        ]
+      },
+      "allowed-tools": "Read Grep Bash",
+      "category": "integration",
+      "compatibility": {
+        "notes": "Markdown, Git, agent-skill runtimes"
+      },
+      "description": "This skill provides cron job architecture patterns for web applications: Inngest schedule integration, Vercel Cron configuration, retry logic, monitoring and alerting for failed crons, and idempotency requirements. Load when designing scheduled tasks, configuring cron triggers, debugging missed or duplicate executions, or implementing monitoring for recurring jobs.",
+      "health": {
+        "drift_check": {
+          "last_verified": "2026-03-29"
+        },
+        "eval_artifacts": "planned",
+        "eval_state": "unverified",
+        "freshness": "2026-03-29",
+        "has_grounding": false,
+        "has_relations": true,
+        "lifecycle": {
+          "review_cadence": "quarterly",
+          "stale_after_days": 90
+        },
+        "routing_eval": "absent"
+      },
+      "id": "cron-scheduling",
+      "license": "MIT",
+      "name": "cron-scheduling",
+      "owner": "skill-graph-maintainer",
+      "path": "skills/cron-scheduling/SKILL.md",
+      "portability": {
+        "readiness": "scripted",
+        "targets": [
+          "skill-md"
+        ]
+      },
+      "relations": {
+        "related": [
+          "background-jobs"
         ]
       },
       "scope": "portable",
@@ -2437,6 +2749,70 @@
     },
     {
       "activation": {
+        "keywords": [
+          "git diff",
+          "unified diff",
+          "patch analysis",
+          "changeset review",
+          "diff analysis",
+          "read a diff"
+        ],
+        "triggers": [
+          "diff-skill"
+        ]
+      },
+      "allowed-tools": "Read Grep Bash",
+      "category": "quality",
+      "compatibility": {
+        "notes": "Markdown, Git, agent-skill runtimes"
+      },
+      "description": "Use when analyzing `git diff`, reviewing a patch before commit, or explaining what a changeset does. Covers unified diff anatomy, hunk interpretation, semantic-vs-formatting separation, blast-radius tracing, hidden-risk scanning, and intent-vs-diff comparison. Do NOT use for full code-review verdicts (use `code-review`), git workflow decisions (use `version-control`), or visual diffs.",
+      "domain": "quality/doctrine",
+      "health": {
+        "drift_check": {
+          "last_verified": "2026-03-28"
+        },
+        "eval_artifacts": "planned",
+        "eval_state": "unverified",
+        "freshness": "2026-03-28",
+        "has_grounding": false,
+        "has_relations": true,
+        "lifecycle": {
+          "review_cadence": "quarterly",
+          "stale_after_days": 90
+        },
+        "routing_eval": "absent"
+      },
+      "id": "diff-analysis",
+      "license": "MIT",
+      "name": "diff-analysis",
+      "owner": "skill-graph-maintainer",
+      "path": "skills/diff-analysis/SKILL.md",
+      "portability": {
+        "readiness": "scripted",
+        "targets": [
+          "skill-md"
+        ]
+      },
+      "relations": {
+        "boundary": [
+          "code-review",
+          "version-control"
+        ],
+        "related": [
+          "semantics"
+        ],
+        "verify_with": [
+          "refactor"
+        ]
+      },
+      "scope": "portable",
+      "stability": "experimental",
+      "type": "capability",
+      "version": "1.0.0"
+    },
+    {
+      "activation": {
         "anti_examples": [
           "the test suite is failing after my change — find the cause",
           "add an aria-label to this icon button",
@@ -2565,6 +2941,74 @@
     },
     {
       "activation": {
+        "keywords": [
+          "entity relationship",
+          "ER diagram",
+          "ER model",
+          "database design",
+          "schema design",
+          "normalization",
+          "foreign key",
+          "primary key",
+          "junction table",
+          "database modeling"
+        ],
+        "triggers": [
+          "er-modeling-skill",
+          "database-design-skill"
+        ]
+      },
+      "allowed-tools": "Read Grep Bash",
+      "category": "data",
+      "compatibility": {
+        "notes": "Markdown, Git, agent-skill runtimes"
+      },
+      "description": "Use when designing database tables, reviewing schema changes, planning migrations, or translating conceptual models into physical database structures. Covers ER notation, entity/attribute/key design, normalization and denormalization, junction tables, inheritance mapping, temporal modeling, ER-to-SQL translation, indexing, and constraints. Do NOT use for conceptual domain analysis (use `conceptual-modeling`), formal ontology (use `ontology`), or cross-system API contracts (use `system-interface-contracts`).",
+      "health": {
+        "drift_check": {
+          "last_verified": "2026-03-29"
+        },
+        "eval_artifacts": "planned",
+        "eval_state": "unverified",
+        "freshness": "2026-03-29",
+        "has_grounding": false,
+        "has_relations": true,
+        "lifecycle": {
+          "review_cadence": "quarterly",
+          "stale_after_days": 90
+        },
+        "routing_eval": "absent"
+      },
+      "id": "entity-relationship-modeling",
+      "license": "MIT",
+      "name": "entity-relationship-modeling",
+      "owner": "skill-graph-maintainer",
+      "path": "skills/entity-relationship-modeling/SKILL.md",
+      "portability": {
+        "readiness": "scripted",
+        "targets": [
+          "skill-md"
+        ]
+      },
+      "relations": {
+        "boundary": [
+          "conceptual-modeling",
+          "ontology"
+        ],
+        "related": [
+          "database-migration"
+        ],
+        "verify_with": [
+          "code-review"
+        ]
+      },
+      "scope": "portable",
+      "stability": "experimental",
+      "type": "capability",
+      "version": "1.0.0"
+    },
+    {
+      "activation": {
         "anti_examples": [
           "design accessible error-message copy and recovery UI for the 404 page",
           "the boundary fired but the tracker shows no event — root-cause it",
@@ -2674,6 +3118,66 @@
         "verify_with": [
           "code-review",
           "testing-strategy"
+        ]
+      },
+      "scope": "portable",
+      "stability": "experimental",
+      "type": "capability",
+      "version": "1.0.0"
+    },
+    {
+      "activation": {
+        "keywords": [
+          "evaluation",
+          "quality gate",
+          "feedback loop",
+          "critic persona",
+          "evaluation revision",
+          "completion contract",
+          "score 1-5",
+          "skeptical critic"
+        ],
+        "triggers": [
+          "evaluation-skill",
+          "critic-loop-skill"
+        ]
+      },
+      "allowed-tools": "Read Grep Bash",
+      "category": "engineering",
+      "compatibility": {
+        "notes": "Markdown, Git, agent-skill runtimes"
+      },
+      "description": "This skill provides a structured framework for automated agentic evaluation and human feedback loops. It defines the 'Critic' persona, the 5-point quality scale, and the mandatory 'Evaluation-Revision' loop for all critical work.",
+      "domain": "engineering/skill-system",
+      "health": {
+        "drift_check": {
+          "last_verified": "2026-03-29"
+        },
+        "eval_artifacts": "planned",
+        "eval_state": "unverified",
+        "freshness": "2026-03-29",
+        "has_grounding": false,
+        "has_relations": true,
+        "lifecycle": {
+          "review_cadence": "quarterly",
+          "stale_after_days": 90
+        },
+        "routing_eval": "absent"
+      },
+      "id": "evaluation",
+      "license": "MIT",
+      "name": "evaluation",
+      "owner": "skill-graph-maintainer",
+      "path": "skills/evaluation/SKILL.md",
+      "portability": {
+        "readiness": "scripted",
+        "targets": [
+          "skill-md"
+        ]
+      },
+      "relations": {
+        "boundary": [
+          "code-review"
         ]
       },
       "scope": "portable",
@@ -3143,6 +3647,69 @@
     },
     {
       "activation": {
+        "keywords": [
+          "governance",
+          "data governance",
+          "design governance",
+          "content governance",
+          "process governance",
+          "change management",
+          "policy lifecycle",
+          "decision authority",
+          "raci",
+          "raci matrix",
+          "accountability matrix",
+          "audit trail"
+        ],
+        "triggers": [
+          "governance-skill"
+        ]
+      },
+      "allowed-tools": "Read Grep Bash",
+      "category": "ai-engineering",
+      "compatibility": {
+        "notes": "Markdown, Git, agent-skill runtimes"
+      },
+      "description": "Use when defining decision rights, ownership, approvals, policy lifecycle, change management, rollout controls, evidence, review cadences, or audit trails across product, content, data, design, and operations. Covers governance domains, RACI-style accountability, controlled change, and compliance evidence. Do NOT use for agent tool-permission policy (use `guardrails`) or application RBAC/user permission checks (use `owasp-security`).",
+      "domain": "ai-engineering/doctrine",
+      "health": {
+        "drift_check": {
+          "last_verified": "2026-03-28"
+        },
+        "eval_artifacts": "planned",
+        "eval_state": "unverified",
+        "freshness": "2026-03-28",
+        "has_grounding": false,
+        "has_relations": true,
+        "lifecycle": {
+          "review_cadence": "quarterly",
+          "stale_after_days": 90
+        },
+        "routing_eval": "absent"
+      },
+      "id": "governance",
+      "license": "MIT",
+      "name": "governance",
+      "owner": "skill-graph-maintainer",
+      "path": "skills/governance/SKILL.md",
+      "portability": {
+        "readiness": "scripted",
+        "targets": [
+          "skill-md"
+        ]
+      },
+      "relations": {
+        "related": [
+          "information-architecture"
+        ]
+      },
+      "scope": "portable",
+      "stability": "experimental",
+      "type": "capability",
+      "version": "1.0.0"
+    },
+    {
+      "activation": {
         "anti_examples": [
           "diagnose why the @/components import cycle broke the build",
           "my agent is stuck in a loop — what's wrong?",
@@ -3250,6 +3817,66 @@
         ]
       },
       "scope": "codebase",
+      "stability": "experimental",
+      "type": "capability",
+      "version": "1.0.0"
+    },
+    {
+      "activation": {
+        "keywords": [
+          "guardrails",
+          "tripwire",
+          "safety gate",
+          "force push",
+          "secret detection",
+          "destructive action",
+          "protected files",
+          "circuit breaker"
+        ],
+        "triggers": [
+          "guardrails-skill",
+          "security-skill"
+        ]
+      },
+      "allowed-tools": "Read Grep Bash",
+      "category": "ai-engineering",
+      "compatibility": {
+        "notes": "Markdown, Git, agent-skill runtimes"
+      },
+      "description": "Use when planning or executing operations that touch protected files, credentials, destructive git commands, destructive SQL, PII, secrets, or irreversible system mutations. Covers proactive policy plus reactive pattern blocking for dangerous operations, data exfiltration, and unsafe mutations. Do NOT use for application input validation, user RBAC, or general code logic review (use `code-review`).",
+      "domain": "ai-engineering/security",
+      "health": {
+        "drift_check": {
+          "last_verified": "2026-03-28"
+        },
+        "eval_artifacts": "planned",
+        "eval_state": "unverified",
+        "freshness": "2026-03-28",
+        "has_grounding": false,
+        "has_relations": true,
+        "lifecycle": {
+          "review_cadence": "quarterly",
+          "stale_after_days": 90
+        },
+        "routing_eval": "absent"
+      },
+      "id": "guardrails",
+      "license": "MIT",
+      "name": "guardrails",
+      "owner": "skill-graph-maintainer",
+      "path": "skills/guardrails/SKILL.md",
+      "portability": {
+        "readiness": "scripted",
+        "targets": [
+          "skill-md"
+        ]
+      },
+      "relations": {
+        "related": [
+          "intent-recognition"
+        ]
+      },
+      "scope": "portable",
       "stability": "experimental",
       "type": "capability",
       "version": "1.0.0"
@@ -3814,6 +4441,72 @@
     },
     {
       "activation": {
+        "keywords": [
+          "keyword research",
+          "keyword strategy",
+          "keyword clustering",
+          "long-tail keywords",
+          "etsy tags",
+          "amazon keywords",
+          "keyword cannibalization",
+          "search intent",
+          "topical authority",
+          "keyword tracking",
+          "rank tracking",
+          "SERP",
+          "seed keywords",
+          "keyword mapping"
+        ],
+        "triggers": [
+          "keyword-skill",
+          "keyword-research-skill"
+        ]
+      },
+      "allowed-tools": "Read Grep Bash",
+      "category": "product",
+      "compatibility": {
+        "notes": "Markdown, Git, agent-skill runtimes"
+      },
+      "description": "Use when performing keyword research, building keyword strategy, optimizing product or marketplace listings, selecting terms for content, detecting cannibalization, or planning topical clusters. Covers seed expansion, intent mapping, topical clustering, marketplace keyword limits, long-tail POD/merch strategy, and tracking methodology. Do NOT use for full SEO implementation strategy (use `seo-strategy`), product copywriting (use `writing-humanizer`), or information architecture (use `information-architecture`).",
+      "domain": "product/overlay",
+      "health": {
+        "drift_check": {
+          "last_verified": "2026-03-28"
+        },
+        "eval_artifacts": "planned",
+        "eval_state": "unverified",
+        "freshness": "2026-03-28",
+        "has_grounding": false,
+        "has_relations": true,
+        "lifecycle": {
+          "review_cadence": "quarterly",
+          "stale_after_days": 90
+        },
+        "routing_eval": "absent"
+      },
+      "id": "keywords",
+      "license": "MIT",
+      "name": "keywords",
+      "owner": "skill-graph-maintainer",
+      "path": "skills/keywords/SKILL.md",
+      "portability": {
+        "readiness": "scripted",
+        "targets": [
+          "skill-md"
+        ]
+      },
+      "relations": {
+        "related": [
+          "seo-strategy"
+        ]
+      },
+      "scope": "portable",
+      "stability": "experimental",
+      "type": "capability",
+      "version": "1.0.0"
+    },
+    {
+      "activation": {
         "anti_examples": [
           "design the database tables and foreign keys for this schema",
           "I just need a clean IS-A category hierarchy with no rules or graph behavior",
@@ -4238,6 +4931,134 @@
     },
     {
       "activation": {
+        "keywords": [
+          "merge queue",
+          "atomic lock",
+          "idempotency",
+          "no-ff merge",
+          "worktree cleanup",
+          "agent branch",
+          "master merge"
+        ],
+        "triggers": [
+          "merge-queue",
+          "agent-merge"
+        ]
+      },
+      "allowed-tools": "Read Grep Bash",
+      "category": "ai-engineering",
+      "compatibility": {
+        "notes": "Markdown, Git, agent-skill runtimes"
+      },
+      "description": "Use when serializing merges across multiple agent branches, resolving conflicts between agent outputs, or cleaning stale task branches. Covers atomic locking, idempotency checks, non-fast-forward handling, and worktree cleanup. Do NOT use for ordinary git operations outside an agent merge queue (use `version-control`).",
+      "domain": "ai-engineering/agent-ops",
+      "health": {
+        "drift_check": {
+          "last_verified": "2026-04-01"
+        },
+        "eval_artifacts": "planned",
+        "eval_state": "unverified",
+        "freshness": "2026-04-01",
+        "has_grounding": false,
+        "has_relations": true,
+        "lifecycle": {
+          "review_cadence": "quarterly",
+          "stale_after_days": 90
+        },
+        "routing_eval": "absent"
+      },
+      "id": "merge-queue",
+      "license": "MIT",
+      "name": "merge-queue",
+      "owner": "skill-graph-maintainer",
+      "path": "skills/merge-queue/SKILL.md",
+      "portability": {
+        "readiness": "scripted",
+        "targets": [
+          "skill-md"
+        ]
+      },
+      "relations": {
+        "boundary": [
+          "version-control"
+        ],
+        "related": [
+          "version-control"
+        ]
+      },
+      "scope": "portable",
+      "stability": "experimental",
+      "type": "workflow",
+      "version": "1.0.0"
+    },
+    {
+      "activation": {
+        "keywords": [
+          "methodology",
+          "method",
+          "process",
+          "formal methods",
+          "cleanroom",
+          "PSP",
+          "TSP",
+          "hypothesis driven",
+          "DMAIC",
+          "PDCA",
+          "Deming",
+          "quality gates",
+          "checklist manifesto",
+          "verification validation",
+          "DO-178C",
+          "V&V",
+          "EDDOps",
+          "defect prevention",
+          "shift left",
+          "evidence based"
+        ],
+        "triggers": [
+          "methodology-skill"
+        ]
+      },
+      "allowed-tools": "Read Grep Bash",
+      "category": "ai-engineering",
+      "compatibility": {
+        "notes": "Markdown, Git, agent-skill runtimes"
+      },
+      "description": "Use when planning multi-step implementations, designing quality gates, establishing verification protocols, or building agent checklists calibrated to known failure modes. Covers methodology/method/process distinctions, Cleanroom, PSP/TSP, hypothesis-driven development, DMAIC, checklist design, V&V frameworks, EDDOps, quality gates, and PDCA. Do NOT use for code-review verdicts (use `code-review`), behavior-preserving implementation work (use `refactor`), or test strategy (use `testing-strategy`).",
+      "domain": "ai-engineering/agent-cognition",
+      "health": {
+        "drift_check": {
+          "last_verified": "2026-04-01"
+        },
+        "eval_artifacts": "planned",
+        "eval_state": "unverified",
+        "freshness": "2026-04-01",
+        "has_grounding": false,
+        "has_relations": false,
+        "lifecycle": {
+          "review_cadence": "quarterly",
+          "stale_after_days": 90
+        },
+        "routing_eval": "absent"
+      },
+      "id": "methodology",
+      "license": "MIT",
+      "name": "methodology",
+      "owner": "skill-graph-maintainer",
+      "path": "skills/methodology/SKILL.md",
+      "portability": {
+        "readiness": "scripted",
+        "targets": [
+          "skill-md"
+        ]
+      },
+      "scope": "reference",
+      "stability": "experimental",
+      "type": "capability",
+      "version": "1.0.0"
+    },
+    {
+      "activation": {
         "anti_examples": [
           "write the marketing headline for the pricing page",
           "review this WCAG 2.2 contrast violation on the dashboard",
@@ -4335,6 +5156,64 @@
         ],
         "verify_with": [
           "linguistics",
+          "a11y"
+        ]
+      },
+      "scope": "portable",
+      "stability": "experimental",
+      "type": "capability",
+      "version": "1.0.0"
+    },
+    {
+      "activation": {
+        "keywords": [
+          "mobile-responsive-ux",
+          "mobile",
+          "responsive"
+        ],
+        "triggers": [
+          "mobile-responsive-ux-skill",
+          "mobile-ux-skill",
+          "touch-target-skill",
+          "thumb-zone-skill",
+          "mobile-dashboard-skill"
+        ]
+      },
+      "allowed-tools": "Read Grep Bash",
+      "category": "design",
+      "compatibility": {
+        "notes": "Markdown, Git, agent-skill runtimes"
+      },
+      "description": "This skill provides mobile-specific UX patterns for SaaS dashboards: touch-friendly targets (44px minimum), thumb-zone optimization, swipe gestures, condensed data display, bottom navigation, and pull-to-refresh. Load when designing for mobile users, implementing touch interactions, building responsive dashboard layouts, or optimizing for the Side Hustler persona who checks on mobile.",
+      "domain": "design/display",
+      "health": {
+        "drift_check": {
+          "last_verified": "2026-03-29"
+        },
+        "eval_artifacts": "planned",
+        "eval_state": "unverified",
+        "freshness": "2026-03-29",
+        "has_grounding": false,
+        "has_relations": true,
+        "lifecycle": {
+          "review_cadence": "quarterly",
+          "stale_after_days": 90
+        },
+        "routing_eval": "absent"
+      },
+      "id": "mobile-responsive-ux",
+      "license": "MIT",
+      "name": "mobile-responsive-ux",
+      "owner": "skill-graph-maintainer",
+      "path": "skills/mobile-responsive-ux/SKILL.md",
+      "portability": {
+        "readiness": "scripted",
+        "targets": [
+          "skill-md"
+        ]
+      },
+      "relations": {
+        "boundary": [
           "a11y"
         ]
       },
@@ -4539,6 +5418,79 @@
         "verify_with": [
           "error-tracking",
           "debugging"
+        ]
+      },
+      "scope": "portable",
+      "stability": "experimental",
+      "type": "capability",
+      "version": "1.0.0"
+    },
+    {
+      "activation": {
+        "keywords": [
+          "ontology",
+          "class hierarchy",
+          "type hierarchy",
+          "upper ontology",
+          "OWL",
+          "RDF",
+          "knowledge representation",
+          "formal ontology",
+          "ontological commitment",
+          "mereology",
+          "classification"
+        ],
+        "triggers": [
+          "ontology-skill",
+          "knowledge-skill"
+        ]
+      },
+      "allowed-tools": "Read Grep Bash",
+      "category": "quality",
+      "compatibility": {
+        "notes": "Markdown, Git, agent-skill runtimes"
+      },
+      "description": "Use when designing domain models that need formal type hierarchies, entity classification, knowledge-graph structure, category/type design, or ontology-driven APIs and databases. Covers class hierarchies, property axioms, instances, upper ontologies, OWL/RDF, mereology, taxonomy-vs-ontology boundaries, and ontological commitment. Do NOT use for database ER diagrams (use `entity-relationship-modeling`), linguistic meaning analysis (use `semiotics`), or bounded contexts (use `bounded-context-mapping`).",
+      "domain": "quality/doctrine",
+      "health": {
+        "drift_check": {
+          "last_verified": "2026-03-29"
+        },
+        "eval_artifacts": "planned",
+        "eval_state": "unverified",
+        "freshness": "2026-03-29",
+        "has_grounding": false,
+        "has_relations": true,
+        "lifecycle": {
+          "review_cadence": "quarterly",
+          "stale_after_days": 90
+        },
+        "routing_eval": "absent"
+      },
+      "id": "ontology",
+      "license": "MIT",
+      "name": "ontology",
+      "owner": "skill-graph-maintainer",
+      "path": "skills/ontology/SKILL.md",
+      "portability": {
+        "readiness": "scripted",
+        "targets": [
+          "skill-md"
+        ]
+      },
+      "relations": {
+        "boundary": [
+          "entity-relationship-modeling",
+          "semiotics"
+        ],
+        "related": [
+          "conceptual-modeling",
+          "knowledge-modeling",
+          "semantic-relations",
+          "semantics"
+        ],
+        "verify_with": [
+          "code-review"
         ]
       },
       "scope": "portable",
@@ -5016,6 +5968,69 @@
         ]
       },
       "scope": "portable",
+      "stability": "experimental",
+      "type": "capability",
+      "version": "1.0.0"
+    },
+    {
+      "activation": {
+        "keywords": [
+          "prioritization",
+          "RICE",
+          "ICE",
+          "MoSCoW",
+          "RICE-A",
+          "AI ambiguity",
+          "feature ranking",
+          "research prioritization",
+          "backlog management",
+          "MVP scope"
+        ],
+        "triggers": [
+          "prioritization-skill",
+          "roadmap-skill",
+          "priority-planning-mode"
+        ]
+      },
+      "allowed-tools": "Read Grep Bash",
+      "category": "quality",
+      "compatibility": {
+        "notes": "Markdown, Git, agent-skill runtimes"
+      },
+      "description": "This skill provides prioritization frameworks for AI engineering: RICE-A (adding AI Ambiguity to RICE) for product features, ICE for research experiments, and MoSCoW for MVP/Release scoping. Use when ranking the backlog, deciding which model research path to follow, or defining the scope of a new feature. Do NOT use for one-off task sequencing (use task skill) or personal time management.",
+      "domain": "quality/doctrine",
+      "health": {
+        "drift_check": {
+          "last_verified": "2026-03-27"
+        },
+        "eval_artifacts": "planned",
+        "eval_state": "unverified",
+        "freshness": "2026-03-27",
+        "has_grounding": false,
+        "has_relations": true,
+        "lifecycle": {
+          "review_cadence": "quarterly",
+          "stale_after_days": 90
+        },
+        "routing_eval": "absent"
+      },
+      "id": "prioritization",
+      "license": "MIT",
+      "name": "prioritization",
+      "owner": "skill-graph-maintainer",
+      "path": "skills/prioritization/SKILL.md",
+      "portability": {
+        "readiness": "scripted",
+        "targets": [
+          "skill-md"
+        ]
+      },
+      "relations": {
+        "related": [
+          "constraint-awareness"
+        ]
+      },
+      "scope": "reference",
       "stability": "experimental",
       "type": "capability",
       "version": "1.0.0"
@@ -5507,6 +6522,136 @@
         ]
       },
       "scope": "portable",
+      "stability": "experimental",
+      "type": "capability",
+      "version": "1.0.0"
+    },
+    {
+      "activation": {
+        "keywords": [
+          "real-time-updates",
+          "real",
+          "time",
+          "updates"
+        ],
+        "triggers": [
+          "real-time-updates-skill",
+          "live-data-skill",
+          "push-updates-skill",
+          "dashboard-refresh-skill",
+          "stale-data-skill"
+        ]
+      },
+      "allowed-tools": "Read Grep Bash",
+      "category": "integration",
+      "compatibility": {
+        "notes": "Markdown, Git, agent-skill runtimes"
+      },
+      "description": "This skill provides live data update patterns for web applications: webhook-to-UI push patterns, Server-Sent Events for dashboard updates, polling fallback strategies, optimistic updates, and stale data indicators. Load when implementing live dashboards, push notifications to the browser, real-time data refresh, or deciding between SSE, WebSocket, and polling.",
+      "health": {
+        "drift_check": {
+          "last_verified": "2026-03-29"
+        },
+        "eval_artifacts": "planned",
+        "eval_state": "unverified",
+        "freshness": "2026-03-29",
+        "has_grounding": false,
+        "has_relations": true,
+        "lifecycle": {
+          "review_cadence": "quarterly",
+          "stale_after_days": 90
+        },
+        "routing_eval": "absent"
+      },
+      "id": "real-time-updates",
+      "license": "MIT",
+      "name": "real-time-updates",
+      "owner": "skill-graph-maintainer",
+      "path": "skills/real-time-updates/SKILL.md",
+      "portability": {
+        "readiness": "scripted",
+        "targets": [
+          "skill-md"
+        ]
+      },
+      "relations": {
+        "boundary": [
+          "background-jobs",
+          "cron-scheduling"
+        ],
+        "verify_with": [
+          "interaction-feedback"
+        ]
+      },
+      "scope": "portable",
+      "stability": "experimental",
+      "type": "capability",
+      "version": "1.0.0"
+    },
+    {
+      "activation": {
+        "keywords": [
+          "reasoning strategy",
+          "extended thinking",
+          "think deeper",
+          "reasoning effort",
+          "chain of thought",
+          "over-thinking",
+          "under-thinking",
+          "reasoning depth",
+          "think before acting"
+        ],
+        "triggers": [
+          "reasoning-skill",
+          "thinking-skill"
+        ]
+      },
+      "allowed-tools": "Read Grep Bash",
+      "category": "ai-engineering",
+      "compatibility": {
+        "notes": "Markdown, Git, agent-skill runtimes"
+      },
+      "description": "Use when choosing reasoning depth, deciding whether to think deeply or act fast, calibrating model effort, or diagnosing under-thinking and over-thinking in agents. Covers deterministic-first reasoning, technique routing by task type, chain/tree/ReAct patterns, the thinking-doing balance, and two-pass audit-then-implement workflows. Do NOT use for prompt wording (use `prompt-craft`) or agent architecture (use `agent-engineering`).",
+      "domain": "ai-engineering/agent-cognition",
+      "health": {
+        "drift_check": {
+          "last_verified": "2026-03-28"
+        },
+        "eval_artifacts": "planned",
+        "eval_state": "unverified",
+        "freshness": "2026-03-28",
+        "has_grounding": false,
+        "has_relations": true,
+        "lifecycle": {
+          "review_cadence": "quarterly",
+          "stale_after_days": 90
+        },
+        "routing_eval": "absent"
+      },
+      "id": "reasoning",
+      "license": "MIT",
+      "name": "reasoning",
+      "owner": "skill-graph-maintainer",
+      "path": "skills/reasoning/SKILL.md",
+      "portability": {
+        "readiness": "scripted",
+        "targets": [
+          "skill-md"
+        ]
+      },
+      "relations": {
+        "boundary": [
+          "prompt-craft"
+        ],
+        "related": [
+          "design-thinking",
+          "semantic-center"
+        ],
+        "verify_with": [
+          "evaluation"
+        ]
+      },
+      "scope": "reference",
       "stability": "experimental",
       "type": "capability",
       "version": "1.0.0"
@@ -6091,6 +7236,76 @@
         "verify_with": [
           "a11y",
           "code-review"
+        ]
+      },
+      "scope": "portable",
+      "stability": "experimental",
+      "type": "capability",
+      "version": "1.0.0"
+    },
+    {
+      "activation": {
+        "keywords": [
+          "seo strategy",
+          "programmatic seo",
+          "content strategy",
+          "comparison page",
+          "alternative page",
+          "schema markup",
+          "structured data",
+          "ai seo",
+          "marketplace seo",
+          "etsy seo",
+          "amazon seo",
+          "shopify seo",
+          "product page seo",
+          "e-e-a-t",
+          "topical authority",
+          "blog cluster",
+          "ai overview"
+        ],
+        "triggers": [
+          "seo-strategy-skill",
+          "seo-skill",
+          "programmatic-seo-skill"
+        ]
+      },
+      "allowed-tools": "Read Grep Bash",
+      "category": "quality",
+      "compatibility": {
+        "notes": "Markdown, Git, agent-skill runtimes"
+      },
+      "description": "SEO implementation strategy for building pages that rank -- covering content strategy, programmatic SEO at scale, marketplace-specific SEO, and AI search optimization.",
+      "domain": "quality/display",
+      "health": {
+        "drift_check": {
+          "last_verified": "2026-03-28"
+        },
+        "eval_artifacts": "planned",
+        "eval_state": "unverified",
+        "freshness": "2026-03-28",
+        "has_grounding": false,
+        "has_relations": true,
+        "lifecycle": {
+          "review_cadence": "quarterly",
+          "stale_after_days": 90
+        },
+        "routing_eval": "absent"
+      },
+      "id": "seo-strategy",
+      "license": "MIT",
+      "name": "seo-strategy",
+      "owner": "skill-graph-maintainer",
+      "path": "skills/seo-strategy/SKILL.md",
+      "portability": {
+        "readiness": "scripted",
+        "targets": [
+          "skill-md"
+        ]
+      },
+      "relations": {
+        "related": [
+          "keywords"
         ]
       },
       "scope": "portable",
@@ -6710,6 +7925,67 @@
     },
     {
       "activation": {
+        "keywords": [
+          "spec driven development",
+          "SDD",
+          "technical plan",
+          "task decomposition",
+          "specification",
+          "architecture plan",
+          "phase gates",
+          "AI engineering methodology"
+        ],
+        "triggers": [
+          "sdd-skill",
+          "planning-mode",
+          "spec-driven-development"
+        ]
+      },
+      "allowed-tools": "Read Grep Bash",
+      "category": "ai-engineering",
+      "compatibility": {
+        "notes": "Markdown, Git, agent-skill runtimes"
+      },
+      "description": "This skill provides Spec Driven Development (SDD) expertise for AI engineering: the Specify → Plan → Tasks → Implement lifecycle. Use when starting any non-trivial task, refactoring a core module, or when an agent loop has stalled due to ambiguous requirements. Do NOT use for one-line edits or README fixes.",
+      "domain": "ai-engineering/workflow",
+      "health": {
+        "drift_check": {
+          "last_verified": "2026-03-28"
+        },
+        "eval_artifacts": "planned",
+        "eval_state": "unverified",
+        "freshness": "2026-03-28",
+        "has_grounding": false,
+        "has_relations": true,
+        "lifecycle": {
+          "review_cadence": "quarterly",
+          "stale_after_days": 90
+        },
+        "routing_eval": "absent"
+      },
+      "id": "spec-driven-development",
+      "license": "MIT",
+      "name": "spec-driven-development",
+      "owner": "skill-graph-maintainer",
+      "path": "skills/spec-driven-development/SKILL.md",
+      "portability": {
+        "readiness": "scripted",
+        "targets": [
+          "skill-md"
+        ]
+      },
+      "relations": {
+        "verify_with": [
+          "code-review"
+        ]
+      },
+      "scope": "reference",
+      "stability": "experimental",
+      "type": "workflow",
+      "version": "1.0.0"
+    },
+    {
+      "activation": {
         "anti_examples": [
           "discover the domain events and policies for the whole business process",
           "create database tables and constraints for this lifecycle",
@@ -6798,6 +8074,78 @@
         ]
       },
       "scope": "portable",
+      "stability": "experimental",
+      "type": "capability",
+      "version": "1.0.0"
+    },
+    {
+      "activation": {
+        "keywords": [
+          "summarization",
+          "summary",
+          "TLDR",
+          "executive summary",
+          "condensation",
+          "abstract",
+          "distill",
+          "key findings",
+          "brief",
+          "compress text",
+          "context handoff",
+          "progressive summarization"
+        ],
+        "triggers": [
+          "summarization-skill",
+          "summary-skill"
+        ]
+      },
+      "allowed-tools": "Read Grep Bash",
+      "category": "ai-engineering",
+      "compatibility": {
+        "notes": "Markdown, Git, agent-skill runtimes"
+      },
+      "description": "Prose condensation and abstraction patterns for AI agents: extracting key findings from long reports, writing executive summaries, creating TLDRs, compressing context for handoffs between agents, progressive summarization (literature notes → permanent notes), audit report condensation, and the discipline of deciding what to keep and what to cut when space is limited. Use when summarizing session findings, writing wrap reports, condensing research for memory files, creating executive summaries of audits, compressing context before agent handoffs, or distilling long documents into actionable briefs. Do NOT use for data compression algorithms (use compression), context window budget management (use token-efficiency), or document structure (use editorial-standards).",
+      "domain": "ai-engineering/knowledge",
+      "health": {
+        "drift_check": {
+          "last_verified": "2026-03-28"
+        },
+        "eval_artifacts": "planned",
+        "eval_state": "unverified",
+        "freshness": "2026-03-28",
+        "has_grounding": false,
+        "has_relations": true,
+        "lifecycle": {
+          "review_cadence": "quarterly",
+          "stale_after_days": 90
+        },
+        "routing_eval": "absent"
+      },
+      "id": "summarization",
+      "license": "MIT",
+      "name": "summarization",
+      "owner": "skill-graph-maintainer",
+      "path": "skills/summarization/SKILL.md",
+      "portability": {
+        "readiness": "scripted",
+        "targets": [
+          "skill-md"
+        ]
+      },
+      "relations": {
+        "boundary": [
+          "compression",
+          "context-window"
+        ],
+        "related": [
+          "context-management",
+          "writing-humanizer"
+        ],
+        "verify_with": [
+          "evaluation"
+        ]
+      },
+      "scope": "reference",
       "stability": "experimental",
       "type": "capability",
       "version": "1.0.0"
@@ -7633,6 +8981,69 @@
     },
     {
       "activation": {
+        "keywords": [
+          "composition pattern",
+          "compound component",
+          "boolean prop",
+          "render prop",
+          "react composition",
+          "context provider",
+          "state explosion",
+          "variant component"
+        ],
+        "triggers": [
+          "vercel-composition-patterns-skill",
+          "react-composition-patterns-skill"
+        ]
+      },
+      "allowed-tools": "Read Grep Bash",
+      "category": "design",
+      "compatibility": {
+        "notes": "Markdown, Git, agent-skill runtimes"
+      },
+      "description": "This skill provides React composition patterns that scale — compound components, render props, context providers, lifted state, and React 19 API changes. It applies when refactoring components with boolean prop proliferation, designing flexible component APIs, building reusable libraries, or reviewing component architecture — triggered by phrases like \\\"this component has too many props,\\\" \\\"design a compound component,\\\" \\\"make this more composable,\\\" \\\"refactor with render props,\\\" or \\\"component API design.\\\" Do NOT use for performance optimization — use react-best-practices instead.",
+      "domain": "design/framework",
+      "health": {
+        "drift_check": {
+          "last_verified": "2026-03-28"
+        },
+        "eval_artifacts": "planned",
+        "eval_state": "unverified",
+        "freshness": "2026-03-28",
+        "has_grounding": false,
+        "has_relations": true,
+        "lifecycle": {
+          "review_cadence": "quarterly",
+          "stale_after_days": 90
+        },
+        "routing_eval": "absent"
+      },
+      "id": "vercel-composition-patterns",
+      "license": "MIT",
+      "name": "vercel-composition-patterns",
+      "owner": "skill-graph-maintainer",
+      "path": "skills/vercel-composition-patterns/SKILL.md",
+      "portability": {
+        "readiness": "scripted",
+        "targets": [
+          "skill-md"
+        ]
+      },
+      "relations": {
+        "related": [
+          "refactor"
+        ],
+        "verify_with": [
+          "code-review"
+        ]
+      },
+      "scope": "portable",
+      "stability": "experimental",
+      "type": "capability",
+      "version": "1.0.0"
+    },
+    {
+      "activation": {
         "anti_examples": [
           "draft a Conventional Commits message for this change",
           "the release pipeline failed at the tag-creation step — find out why",
@@ -8137,29 +9548,34 @@
   ],
   "summary": {
     "by_category": {
-      "design": 13,
-      "engineering": 22,
+      "ai-engineering": 9,
+      "data": 2,
+      "design": 15,
+      "engineering": 23,
       "frontend": 9,
+      "integration": 2,
       "integrations": 2,
       "knowledge": 30,
-      "quality": 4,
-      "security": 1
+      "product": 1,
+      "quality": 8,
+      "security": 1,
+      "workflow": 1
     },
     "by_scope": {
       "codebase": 1,
-      "portable": 78,
-      "reference": 2
+      "portable": 95,
+      "reference": 7
     },
     "by_stability": {
-      "experimental": 80,
+      "experimental": 102,
       "stable": 1
     },
     "by_type": {
-      "capability": 73,
+      "capability": 93,
       "overlay": 1,
       "router": 1,
-      "workflow": 6
+      "workflow": 8
     },
-    "total_skills": 81
+    "total_skills": 103
   }
 }

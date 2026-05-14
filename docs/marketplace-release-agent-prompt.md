@@ -45,7 +45,7 @@ Release principles:
 
 Implementation tasks:
 
-1. Start from the 80 canonical Skill Graph skills under skills/.
+1. Start from the canonical Skill Graph skills under skills/.
 2. Build or extend a deterministic export script that creates the marketplace
    surface from canonical sources.
 3. Make the generated surface contain one plain SKILL.md per public skill.
@@ -59,7 +59,7 @@ Implementation tasks:
 9. Do not push until the generated surface passes npm.cmd run verify, export
    verification, privacy scanning, and markdown link checking.
 10. After the release target is pushed, validate skills.sh installation with
-    npx skills add jacob-balslev/skill-graph or the chosen export target.
+    npx skills add jacob-balslev/skills.
 11. Check SkillsMP discovery after GitHub indexing. If it is not indexed, contact
     SkillsMP with the public GitHub source and the short project description.
 
