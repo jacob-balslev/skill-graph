@@ -97,7 +97,7 @@ const PRIVACY_PATTERNS = [
   {
     id: 'private_project_name',
     message: 'known private project name',
-    regex: /\b(?:sales-hub|boardmeeting|free-oppression-data)\b/gi,
+    regex: /\b(?:placeholder-project-name|boardmeeting|free-oppression-data)\b/gi,
   },
 ];
 
