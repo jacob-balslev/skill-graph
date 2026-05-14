@@ -5,11 +5,11 @@ license: MIT
 compatibility: "Git-centric. Patterns translate to other DAG-based version-control systems (Mercurial, Jujutsu) with tool-specific syntax substitutions. Centralized systems (SVN, CVS) lack cheap branching and most of this skill's discipline does not apply."
 allowed-tools: Read Grep Bash Edit
 metadata:
-  schema_version: "3"
+  schema_version: "4"
   version: "1.0.0"
   type: capability
-  browse_category: engineering
-  category: engineering/version-control
+  category: engineering
+  domain: engineering/version-control
   scope: portable
   owner: skill-graph-maintainer
   freshness: "2026-05-06"

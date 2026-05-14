@@ -2,7 +2,7 @@
 
 > **Read this if:** you author SKILL.md and your library is large enough that skills have started to depend on, verify, or exclude one another. This primer is the conceptual introduction to Skill Metadata Protocol and Skill Graph. It is *explanation* documentation — it answers *what* and *why*. For reference material see `docs/field-reference.md`; for procedures see `CONTRIBUTING.md` and `SKILL_AUDIT_LOOP.md`; for decision tables see `docs/field-decision-guide.md`.
 
-**Status.** Stable for `schema_version: 3`.
+**Status.** Stable for `schema_version: 4`.
 **Audience.** Skill authors who need skills to declare their relevance: which area they cover, which angle they take, which project or stack they fit, which taxonomy / semantic cluster they belong to, and how they should be tested or reverified. Library size is a proxy for this — these questions usually start around 5 skills, sometimes earlier if you have multiple projects, sometimes later for a single small project.
 **Prerequisites.** Working familiarity with the [SKILL.md specification](https://agentskills.io/specification), including `SKILL.md` layout and the progressive-disclosure loading model.
 
@@ -14,8 +14,8 @@
 | [`README.md`](../README.md) | Project overview, quick start, five-authority-tier tour |
 | [`SKILL_GRAPH.md`](../SKILL_GRAPH.md) | Repo organisation: five **authority tiers** (schema / explanation / enforcement / consumer / specimen) and the invariants CI enforces |
 | [`docs/skill-metadata-protocol.md`](skill-metadata-protocol.md) | Archetype section map, requiredness groups, schema strictness rules |
-| [`docs/field-reference.md`](field-reference.md) | Per-field semantics for all 36 canonical v3 fields |
-| [`docs/field-decision-guide.md`](field-decision-guide.md) | Decision tables for `scope`, `relations.*`, eval-health, `portability`, `project_tags` |
+| [`docs/field-reference.md`](field-reference.md) | Per-field semantics for all 40 current v4 top-level fields |
+| [`docs/field-decision-guide.md`](field-decision-guide.md) | Decision tables for `scope`, `relations.*`, eval-health, `portability`, `workspace_tags` |
 | [`docs/manifest-field-mapping.md`](manifest-field-mapping.md) | The authored → generated bridge: rename map, loss policy, migration notes |
 | [SKILL.md specification](https://agentskills.io/specification) | The base standard Skill Metadata Protocol extends |
 
@@ -83,18 +83,18 @@ For the standalone reference covering every neighbor with pros/cons per axis, se
 
 ## 2. When to adopt Skill Graph
 
-Skill Metadata Protocol is materially more expensive to author and maintain than plain SKILL.md. Thirty-three frontmatter fields, SHA-256 baselines for grounded skills, cross-skill relation checks, and a time-boxed freshness claim are ongoing authoring work. The payoff is that relevance becomes explicit enough for Skill Graph to index, cluster, route, test, and iterate on. The linter, manifest generator, and drift sentinel absorb the mechanics — they do not absorb the judgment of choosing the right taxonomy, relation predicate, grounding source, or eval boundary.
+Skill Metadata Protocol is materially more expensive to author and maintain than plain SKILL.md. Structured frontmatter, SHA-256 baselines for grounded skills, cross-skill relation checks, and a time-boxed freshness claim are ongoing authoring work. The payoff is that relevance becomes explicit enough for Skill Graph to index, cluster, route, test, and iterate on. The linter, manifest generator, and drift sentinel absorb the mechanics — they do not absorb the judgment of choosing the right taxonomy, relation predicate, grounding source, or eval boundary.
 
 ### Adopt when any of the following describe your library
 
 - **You need to know what a skill is relevant for** beyond its prose description: area, angle, project, stack, taxonomy, methodology, framework, semantic neighbours, and verification surface.
-- **You want library structure instead of a flat folder**. `browse_category`, `category`, `keywords`, `routing_groups`, and `relations.*` give you taxonomy, semantic clustering, and retrieval surfaces.
+- **You want library structure instead of a flat folder**. `category`, `domain`, `keywords`, `routing_bundles`, and `relations.*` give you taxonomy, semantic clustering, and retrieval surfaces.
 - **You want Karpathy-style eval loops for skills**. `examples`, `anti_examples`, `routing_eval`, `eval_state`, and `drift_check` give you repeatable cases and evidence instead of vibes.
 - **Two skills cover overlapping territory** and the agent routes to the wrong one on ambiguous prompts. `boundary` pushes the router off the wrong skill explicitly rather than relying on description re-ranking.
 - **One skill is load-bearing for another** and you have silently broken the assumption by editing the parent. `depends_on` surfaces the breakage at lint time instead of at routing time.
 - **One or more skills are grounded in specific repo files** and you have noticed the skill get stale the day after the file is rewritten. `drift_check.truth_source_hashes` catches that on the next lint run.
 - **You run evals on skills** and want the router to respect quality, not just relevance. `eval_state` + `--min-eval-state passing` turns "we have evals" into "routing honours evals."
-- **You are authoring skills for multiple projects** that share some and diverge on others. `project_tags` plus `.skill-graph/config.json` expansion gives you many-to-many project membership without naming specific codebases in the skill.
+- **You are authoring skills for multiple projects** that share some and diverge on others. `workspace_tags` plus `.skill-graph/config.json` expansion gives you many-to-many project membership without naming specific codebases in the skill.
 
 ### Stay on base SKILL.md when
 
@@ -108,8 +108,8 @@ Skill Metadata Protocol organises the frontmatter into **five metadata layers**.
 
 ```mermaid
 flowchart TB
-  L1["<b>Layer 1 — Activation surface</b><br/>description · keywords · triggers · examples · anti_examples<br/>paths · routing_groups · project_tags"]
-  L2["<b>Layer 2 — Taxonomy</b><br/>browse_category · category"]
+  L1["<b>Layer 1 — Activation surface</b><br/>description · keywords · triggers · examples · anti_examples<br/>paths · routing_bundles · workspace_tags"]
+  L2["<b>Layer 2 — Taxonomy</b><br/>category · category"]
   L3["<b>Layer 3 — Ontology</b><br/>relations.depends_on · verify_with · adjacent · boundary"]
   L4["<b>Layer 4 — Inheritance</b><br/>type: overlay · extends"]
   L5["<b>Layer 5 — Grounding</b><br/>grounding.* · drift_check · lifecycle · freshness · eval_state"]
@@ -126,7 +126,7 @@ flowchart TB
 
 **Purpose.** Free-text signals and overlapping tags — the words, patterns, and logical groupings a skill belongs to.
 
-**Fields.** `description`, `keywords`, `triggers`, `examples`, `anti_examples`, `paths`, `routing_groups`, `project_tags`.
+**Fields.** `description`, `keywords`, `triggers`, `examples`, `anti_examples`, `paths`, `routing_bundles`, `workspace_tags`.
 
 **What it answers.** *Does this skill activate for this query?* This is the **semantic layer** — text for lexical retrieval, exactly what SKILL.md ships with. It is useful for discovery and not sufficient for reasoning.
 
@@ -136,11 +136,11 @@ flowchart TB
 
 **Purpose.** Place the skill at exactly one position in a hierarchical tree.
 
-**Fields.** `browse_category` (the top-level shelf, always required), `category` (the slash-delimited nested path, optional).
+**Fields.** `category` (the top-level shelf, always required), `category` (the slash-delimited nested path, optional).
 
 **What it answers.** *What kind of concern is this?* The tree carries meaning through nesting: `editor/linting/eslint-rules` says eslint-rules *is a kind of* linting *is a kind of* editor concern. Use `category` only when the library is large enough that a tree helps navigation (`docs/field-reference.md § category` recommends it past ~20 skills). A skill occupies exactly one taxonomic position — this is the difference between taxonomy and the multi-membership tag axes (see section 4).
 
-**What you do with this:** Pick `browse_category` to file the skill on a top-level shelf (`engineering`, `quality`, `integration`, etc.). Add `category` only when your library is past ~20 skills and a tree helps readers navigate.
+**What you do with this:** Pick `category` to file the skill on a top-level shelf (`engineering`, `quality`, `integration`, etc.). Add `category` only when your library is past ~20 skills and a tree helps readers navigate.
 
 ### Layer 3. Ontology
 
@@ -177,7 +177,7 @@ flowchart TB
 The reference router (`scripts/skill-graph-route.js`) reads all five layers and produces a single ranked result set. For a query `"accessibility keyboard navigation"` scoped to `--project <your-project>`:
 
 1. **Layer 1** matches against `description`, `keywords`, `triggers`, `paths`. Non-matches are filtered out.
-2. **`project_tags`** (Layer 1 field) filters further by workspace affiliation.
+2. **`workspace_tags`** (Layer 1 field) filters further by workspace affiliation.
 3. **Layer 3** expands the `depends_on` closure — any skill whose dependency is also matched is boosted; co-loads `verify_with` targets of selected skills.
 4. **Layer 3** applies `boundary`: if a matched skill's boundary targets another skill that also matched, the boundary-owner absorbs the prompt and the boundary-loser is excluded.
 5. **Layer 5** applies the quality gate. The default `--min-eval-state` is `unverified`, which admits everything; passing `--min-eval-state passing` excludes skills below that state. Staleness from `lifecycle.stale_after_days` is annotated on the result line (a `⚠ stale` marker), not used for exclusion.
@@ -193,11 +193,11 @@ Beyond the five metadata layers that express *meaning*, a library needs four ind
 | Axis | Field | Cardinality | Purpose |
 |---|---|---|---|
 | **Scope** | `scope` | Exactly one of `portable` \| `codebase` \| `reference` | *Where does this skill apply?* |
-| **Taxonomy (hierarchy)** | `browse_category` + `category` | Exactly one position | *What kind of concern is this?* |
-| **Domain affiliation (tag)** | `project_tags` | Many-to-many | *Which kinds of project is this relevant to?* |
-| **Routing group (bundle)** | `routing_groups` | Many-to-many | *Which router-query-time bundle does this skill join?* |
+| **Taxonomy (hierarchy)** | `category` + `category` | Exactly one position | *What kind of concern is this?* |
+| **Domain affiliation (tag)** | `workspace_tags` | Many-to-many | *Which kinds of project is this relevant to?* |
+| **Routing group (bundle)** | `routing_bundles` | Many-to-many | *Which router-query-time bundle does this skill join?* |
 
-The four axes compose without nesting. A single skill can be `scope: portable` with `browse_category: engineering`, `category: editor/linting/eslint-rules`, `project_tags: [ecommerce, b2b-saas]`, and `routing_groups: [quality, linting]` — each axis carries a different shape of answer, and the router uses them for different things.
+The four axes compose without nesting. A single skill can be `scope: portable` with `category: engineering`, `domain: editor/linting/eslint-rules`, `workspace_tags: [ecommerce, b2b-saas]`, and `routing_bundles: [quality, linting]` — each axis carries a different shape of answer, and the router uses them for different things.
 
 ### 4.1 Scope — *where does this apply?*
 
@@ -211,19 +211,19 @@ Scope is the first axis the router filters on and the only axis with body-struct
 
 ### 4.2 Taxonomy — *what kind of concern is this?*
 
-`browse_category` is the top-level shelf; `category` is the optional slash-delimited path beneath. Exactly one position per skill. Segments inherit meaning from the ones above them, so `editor/linting/eslint-rules` encodes a three-level kind-of hierarchy. This is the closest thing in the contract to a **taxonomical layer** in the classical sense — each skill sits at a unique address in a tree.
+`category` is the top-level shelf; `category` is the optional slash-delimited path beneath. Exactly one position per skill. Segments inherit meaning from the ones above them, so `editor/linting/eslint-rules` encodes a three-level kind-of hierarchy. This is the closest thing in the contract to a **taxonomical layer** in the classical sense — each skill sits at a unique address in a tree.
 
-Use `category` only when the library is big enough that a tree helps navigation. Smaller libraries stay flat on `browse_category` alone.
+Use `category` only when the library is big enough that a tree helps navigation. Smaller libraries stay flat on `category` alone.
 
 ### 4.3 Domain affiliation — *which kinds of project is this relevant to?*
 
-`project_tags` is a many-to-many coarse-grained affiliation tag. A skill declaring `project_tags: [ecommerce]` becomes available to every project whose workspace `.skill-graph/config.json` lists `ecommerce` among its `semantic_tags`. Two projects that both declare the `ecommerce` tag share that skill without either naming the other. Multi-root workspaces union their `skill_roots` into a single manifest with each skill stamped by its owning project handle.
+`workspace_tags` is a many-to-many coarse-grained affiliation tag. A skill declaring `workspace_tags: [ecommerce]` becomes available to every project whose workspace `.skill-graph/config.json` lists `ecommerce` among its `semantic_tags`. Two projects that both declare the `ecommerce` tag share that skill without either naming the other. Multi-root workspaces union their `skill_roots` into a single manifest with each skill stamped by its owning project handle.
 
-`project_tags` names the *kind of project* a skill applies to — **not** the specific codebase or the company that owns it. For per-codebase gating, put the codebase identifier in the workspace's `config.json`, not the skill's frontmatter.
+`workspace_tags` names the *kind of project* a skill applies to — **not** the specific codebase or the company that owns it. For per-codebase gating, put the codebase identifier in the workspace's `config.json`, not the skill's frontmatter.
 
 ### 4.4 Routing groups — *which query-time bundle does this skill join?*
 
-`routing_groups` is a many-to-many logical grouping used **at router query time**, not at authoring. Adopters typically define 5-15 groups (`quality`, `security`, `design`, `ops`, etc.) and assign each skill to the one or two that best describe what it contributes. The consumer then runs router queries of the form *"return the best skill in group X whose other filters pass"* instead of trying to encode group membership in description text.
+`routing_bundles` is a many-to-many logical grouping used **at router query time**, not at authoring. Adopters typically define 5-15 groups (`quality`, `security`, `design`, `ops`, etc.) and assign each skill to the one or two that best describe what it contributes. The consumer then runs router queries of the form *"return the best skill in group X whose other filters pass"* instead of trying to encode group membership in description text.
 
 Unlike taxonomy (one position in a tree, strict hierarchy), routing groups are **overlapping logical bundles**. A single skill can belong to `quality`, `security`, and `design` simultaneously without that meaning anything about a hierarchy.
 
@@ -232,10 +232,10 @@ Unlike taxonomy (one position in a tree, strict hierarchy), routing groups are *
 If two axes appear to answer the same question for your skill, pick by cardinality:
 
 - **One answer?** Use Scope or Taxonomy.
-- **Many answers along a "which projects apply" dimension?** Use `project_tags`.
-- **Many answers along a "which retrieval bundle" dimension?** Use `routing_groups`.
+- **Many answers along a "which projects apply" dimension?** Use `workspace_tags`.
+- **Many answers along a "which retrieval bundle" dimension?** Use `routing_bundles`.
 
-If an adopter-specific concept doesn't fit any of the four axes, the activation surface (`keywords`, `triggers`) is the escape valve. Do not stretch `project_tags` or `routing_groups` into a new meaning.
+If an adopter-specific concept doesn't fit any of the four axes, the activation surface (`keywords`, `triggers`) is the escape valve. Do not stretch `workspace_tags` or `routing_bundles` into a new meaning.
 
 ---
 
@@ -259,7 +259,7 @@ The claim that authored edges buy the consumer something needs proof. This secti
 
 ```yaml
 ---
-schema_version: 3
+schema_version: 4
 name: my-skill
 description: "Use when <concrete situation>. Covers <A, B, C>. Do NOT use for <D, E>."
 ---
@@ -276,11 +276,11 @@ The `refactor` starter skill reduced to its load-bearing fields:
 
 ```yaml
 ---
-schema_version: 3
+schema_version: 4
 name: refactor
 description: "Use when reorganizing existing code without changing external behavior..."
 type: workflow
-browse_category: engineering
+category: engineering
 scope: portable
 eval_state: passing
 relations:

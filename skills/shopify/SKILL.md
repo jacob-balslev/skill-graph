@@ -1,10 +1,10 @@
 ---
-schema_version: 3
+schema_version: 4
 name: shopify
 description: "Use when working with Shopify — Admin API, Storefront API, OAuth scopes, HMAC SHA-256 webhook verification, GraphQL query-cost handling, Online Store 2.0 themes (sections, blocks, Liquid), metafields and metaobjects, and App Proxy. Do NOT use for generic e-commerce design, non-Shopify storefronts, or internal event-contract design."
 version: 1.0.0
 type: capability
-browse_category: integrations
+category: integrations
 scope: portable
 owner: skill-graph-maintainer
 freshness: "2026-05-12"

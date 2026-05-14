@@ -92,7 +92,7 @@ Required dimension rows:
 - [ ] `description` exists and is specific enough to route from
 - [ ] `version` exists
 - [ ] `type` is one of `capability`, `workflow`, `router`, `overlay`
-- [ ] `browse_category` exists (v3 — renamed from `family` in v2→v3 bump)
+- [ ] `category` exists (v3 — renamed from `family` in v2→v3 bump)
 - [ ] `scope` is one of `codebase`, `reference`, `portable`
 - [ ] `owner` exists
 - [ ] `freshness` exists

@@ -1,12 +1,12 @@
 ---
-# yaml-language-server: $schema=https://skillgraph.dev/schemas/skill.v3.schema.json
-schema_version: 3
+# yaml-language-server: $schema=https://skillgraph.dev/schemas/skill.v4.schema.json
+schema_version: 4
 name: design-system-architecture
 description: "Use when designing or auditing a design system's architecture: token taxonomy, semantic tokens, component APIs, theming, accessibility contracts, documentation, governance, and migration strategy. Do NOT use for information hierarchy and navigation (use `information-architecture`), page-specific layout (use `layout-composition`), visual craft direction (use `visual-design-foundations`), sentence-level UI copy (use `microcopy`), or accessibility-only audits (use `a11y`)."
 version: 1.0.0
 type: capability
-browse_category: frontend
-category: frontend/design-system
+category: frontend
+domain: frontend/design-system
 scope: portable
 owner: skill-graph-maintainer
 freshness: "2026-05-11"

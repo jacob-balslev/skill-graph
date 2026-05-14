@@ -3,10 +3,10 @@ name: color-system-design
 description: "Use when designing a color system — palette construction, semantic color tokens, WCAG contrast ratios, perceptual uniformity in OKLCH/LCH, and light/dark mode parity. Do NOT use for single brand-color picks, runtime theme-switching mechanics, or non-color design tokens."
 license: CC-BY-4.0
 metadata:
-  schema_version: "3"
+  schema_version: "4"
   version: "1.0.0"
   type: capability
-  browse_category: design
+  category: design
   scope: portable
   owner: skill-graph-maintainer
   freshness: "2026-05-12"

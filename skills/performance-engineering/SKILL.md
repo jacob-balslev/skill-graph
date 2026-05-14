@@ -1,12 +1,12 @@
 ---
-# yaml-language-server: $schema=https://skillgraph.dev/schemas/skill.v3.schema.json
-schema_version: 3
+# yaml-language-server: $schema=https://skillgraph.dev/schemas/skill.v4.schema.json
+schema_version: 4
 name: performance-engineering
 description: "Use when measuring, diagnosing, budgeting, or improving performance: latency, throughput, Core Web Vitals, database queries, caching, bundle size, concurrency, resource use, and regression prevention. Do NOT use for telemetry schema design alone (use `observability-modeling`), error capture setup (use `error-tracking`), or premature micro-optimization without a measured bottleneck."
 version: 1.0.0
 type: capability
-browse_category: engineering
-category: engineering/performance
+category: engineering
+domain: engineering/performance
 scope: portable
 owner: skill-graph-maintainer
 freshness: "2026-05-11"

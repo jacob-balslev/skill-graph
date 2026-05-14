@@ -5,11 +5,11 @@ license: MIT
 compatibility: "Portable state-machine discipline for product workflows, domain lifecycles, retries, background jobs, and UI flow control."
 allowed-tools: Read Grep
 metadata:
-  schema_version: "3"
+  schema_version: "4"
   version: "1.0.0"
   type: capability
-  browse_category: engineering
-  category: modeling/state-machines
+  category: engineering
+  domain: modeling/state-machines
   scope: portable
   owner: skill-graph-maintainer
   freshness: "2026-05-11"

@@ -1,12 +1,12 @@
 ---
-# yaml-language-server: $schema=https://skillgraph.dev/schemas/skill.v3.schema.json
-schema_version: 3
+# yaml-language-server: $schema=https://skillgraph.dev/schemas/skill.v4.schema.json
+schema_version: 4
 name: link-rot-detection
 description: "Use when authoring or reviewing a periodic-scan job that walks every external link in a markdown content set and flags 404s, redirects to unrelated content, and connection failures. Activate this skill whenever the task says 'check our links' or mentions a link-rot scan, broken-link audit, or link-health report. Do NOT use for live runtime link checking inside the rendered page (use a frontend a11y / UX skill) or for chasing a specific broken-link incident from a user report (use debugging)."
 version: 0.1.0
 type: capability
-browse_category: content
-category: content/maintenance
+category: content
+domain: content/maintenance
 scope: portable
 owner: markdown-static-site-maintainer
 freshness: "2026-05-06"
@@ -59,7 +59,7 @@ portability:
   readiness: scripted
   targets:
     - skill-md
-project_tags:
+workspace_tags:
   - content
   - markdown
 lifecycle:

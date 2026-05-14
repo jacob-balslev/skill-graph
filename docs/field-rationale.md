@@ -18,7 +18,7 @@ Each section below has three parts: **Why this field exists**, **Common confusio
 - `reference` — the skill is pure knowledge with no repo coupling (e.g., `wcag-audit-patterns`, `next-best-practices`). Safe to load anywhere.
 - `portable` — the skill captures patterns that transfer between similar repos but may need light adaptation (e.g., `webhook-integration`, `database-migration`).
 
-Without `scope`, a consumer cannot tell at glance whether a skill it inherited from another project is safe to use, or whether it's leaking assumptions from that project. The router uses `scope` together with `project_tags` to enforce project-fit — a `codebase` skill from project A is filtered out when serving project B even if the keywords match.
+Without `scope`, a consumer cannot tell at glance whether a skill it inherited from another project is safe to use, or whether it's leaking assumptions from that project. The router uses `scope` together with `workspace_tags` to enforce project-fit — a `codebase` skill from project A is filtered out when serving project B even if the keywords match.
 
 ### Common confusion
 
@@ -148,7 +148,7 @@ The router co-loads `verify_with` partners as a one-hop expansion (Stage 4) — 
 
 ### Why this field exists
 
-`broader` exists because cross-skill generalisation was unexpressable before v3.1. `browse_category` captures hierarchy WITHIN a single category tree, not across skill instances. A skill like `react-best-practices` is conceptually a specialisation of `frontend` (a more general standalone skill), but `browse_category` cannot represent that relationship because both skills sit in the engineering category at the same depth.
+`broader` exists because cross-skill generalisation was unexpressable before v3.1. `category` captures hierarchy WITHIN a single category tree, not across skill instances. A skill like `react-best-practices` is conceptually a specialisation of `frontend` (a more general standalone skill), but `category` cannot represent that relationship because both skills sit in the engineering category at the same depth.
 
 `broader` adds SKOS-style cross-skill generalisation (skos:broader). The router uses it for parent recall: when the specific skill matches, the parent is co-loaded as a generalisation companion. The inverse (`narrower`) is NOT used to drive co-load — a parent match should not pull in arbitrary children.
 
@@ -204,7 +204,7 @@ Do not use `readiness` as a second taxonomy for project fit. `scope: portable` p
 |---|---|
 | Schema-canonical field definitions (auto-generated) | [`field-reference.generated.md`](field-reference.generated.md) |
 | Full prose reference with examples and lint notes | [`field-reference.md`](field-reference.md) |
-| Decision tree for taxonomy fields (`browse_category`, `category`, `routing_groups`, `project_tags`) | [`field-decision-guide.md`](field-decision-guide.md) |
+| Decision tree for taxonomy fields (`category`, `category`, `routing_bundles`, `workspace_tags`) | [`field-decision-guide.md`](field-decision-guide.md) |
 | Predicate semantics (relations) | [`glossary.md` § Relation predicates](glossary.md) |
 | Authoring template | [`../examples/skill-metadata-template.md`](../examples/skill-metadata-template.md) |
 | Why archetypes are rigid vs anti-rigid (OntoClean) | [`adr/0003-ontoclean-rigidity-tags.md`](adr/0003-ontoclean-rigidity-tags.md) |

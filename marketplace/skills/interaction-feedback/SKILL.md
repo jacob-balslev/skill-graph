@@ -5,11 +5,11 @@ license: MIT
 compatibility: Portable feedback-state design for web and app UI. Applies before framework-specific implementation and after task or interaction pattern selection.
 allowed-tools: Read Grep
 metadata:
-  schema_version: "3"
+  schema_version: "4"
   version: "1.0.0"
   type: capability
-  browse_category: frontend
-  category: design/interaction
+  category: frontend
+  domain: design/interaction
   scope: portable
   owner: skill-graph-maintainer
   freshness: "2026-05-11"

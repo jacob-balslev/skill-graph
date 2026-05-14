@@ -1,12 +1,12 @@
 ---
-# yaml-language-server: $schema=https://skillgraph.dev/schemas/skill.v3.schema.json
-schema_version: 3
+# yaml-language-server: $schema=https://skillgraph.dev/schemas/skill.v4.schema.json
+schema_version: 4
 name: context-management
 description: "Use when deciding what to load into an agent session, recovering from context drift, preparing a clean compaction or session restart, distilling raw inputs (logs, full files, long threads) into a small working summary, or writing a handoff that another agent can resume in under thirty seconds. Covers the working discipline that controls what enters, stays in, and exits an active context window — intake triage with the four-bucket classification (must-have / useful soon / durable background / noise), the six-step context-management loop (state the active question / name the minimum evidence / load cheapest sources first / collapse confirmed facts / drop disproven assumptions / re-check the question), working-set shaping with the distillation pattern (raw 300-line log → 2-line summary; whole file → function + slice + invariant), drift detection signals and anti-drift rules (one active hypothesis, one question, one verification target), the compaction-ready handoff format, and the selective-rebuild recipe for recovering after the thread is lost. Do NOT use for context-window token math (that is a budget skill), prompt wording or template authoring (use `prompt-craft`), persistent cross-session memory curation (a memory-curation skill), or the multi-graph context architecture itself (use `context-graph`)."
 version: 1.0.0
 type: capability
-browse_category: knowledge
-category: ai-engineering/context
+category: knowledge
+domain: ai-engineering/context
 scope: portable
 owner: skill-graph-maintainer
 freshness: "2026-05-06"

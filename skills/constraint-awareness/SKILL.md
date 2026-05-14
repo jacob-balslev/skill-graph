@@ -1,12 +1,12 @@
 ---
-# yaml-language-server: $schema=https://skillgraph.dev/schemas/skill.v3.schema.json
-schema_version: 3
+# yaml-language-server: $schema=https://skillgraph.dev/schemas/skill.v4.schema.json
+schema_version: 4
 name: constraint-awareness
 description: "Use when prioritizing work in an AI-assisted codebase, designing agent autonomy levels, deciding what to automate vs keep manual, or evaluating whether a process/tool adds value. Covers Theory of Constraints for AI-era engineering: cheap code production, human review/validation/decision bottlenecks, Five Focusing Steps, constraint-aware process design, attention audits, and constraint-shift modeling. Do NOT use for task-effort estimation, backlog scoring with RICE/WSJF/ICE, or routing a task to a specific model."
 version: 1.0.0
 type: capability
-browse_category: knowledge
-category: ai-engineering/strategy
+category: knowledge
+domain: ai-engineering/strategy
 scope: portable
 owner: skill-graph-maintainer
 freshness: "2026-05-06"

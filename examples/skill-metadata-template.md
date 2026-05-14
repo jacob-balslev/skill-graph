@@ -1,5 +1,5 @@
 ---
-# yaml-language-server: $schema=https://skillgraph.dev/schemas/skill.v3.schema.json
+# yaml-language-server: $schema=https://skillgraph.dev/schemas/skill.v4.schema.json
 #
 # ============================================================================
 # SCAFFOLD — this file is a skill template, not a production skill.
@@ -23,7 +23,7 @@
 # routable in day-to-day skill dispatch — `scope: reference` keeps it out of
 # the normal routing pool.
 # ============================================================================
-schema_version: 3
+schema_version: 4
 name: skill-metadata-template
 # TEMPLATE NOTE: Be pushy in your description — Claude tends to under-trigger
 # skills, so descriptions should read as commands ("Use when X", "Activate
@@ -40,19 +40,16 @@ name: skill-metadata-template
 description: "Use when creating a new SKILL.md, adapting an existing skill to a different archetype, or teaching an author the canonical frontmatter and body structure. Covers schema-conformant frontmatter, archetype-aware body layout, semantic-layer discipline (description vs Coverage), teaching-layer mechanics (TEMPLATE NOTE blockquotes and YAML comments), and the authoring gate. Do NOT use when modifying an already-written skill (edit that skill directly) or when writing general technical documentation (use the documentation skill)."
 version: 1.0.0
 type: capability
-browse_category: knowledge
-# TEMPLATE NOTE: category is the OPTIONAL hierarchical browse path (slash-
+category: knowledge
+# TEMPLATE NOTE: domain is the OPTIONAL hierarchical domain path (slash-
 # delimited, lowercase kebab-case segments). Use it only when the skill library
-# is large enough that a tree structure helps readers find related skills —
-# `docs/field-reference.md § category` recommends against it for libraries
-# under ~20 skills. Remove this line entirely when the flat `browse_category`
-# above is sufficient. `browse_category` is required; `category` complements it
-# but is never a replacement.
-category: skill-system/authoring
+# is large enough that a tree structure helps readers find related skills.
+# Remove this line entirely when the flat `category` above is sufficient.
+domain: skill-system/authoring
 scope: reference
 owner: skill-graph-maintainer
 freshness: "2026-04-17"
-# TEMPLATE NOTE: drift_check is an object in v3. `last_verified` is required.
+# TEMPLATE NOTE: drift_check is an object. `last_verified` is required.
 # `truth_source_hashes` is optional — record it with `node scripts/skill-graph-drift.js
 # --record --apply <skill-dir>`.
 drift_check:
@@ -103,7 +100,7 @@ routing_eval: absent
 # superseded_by` for the full rules and the schema's `allOf` enforcement.
 stability: stable
 license: MIT
-# TEMPLATE NOTE: compatibility is an object in v3. Prefer structured fields
+# TEMPLATE NOTE: compatibility is an object. Prefer structured fields
 # (`runtimes`, `node`) over free-text `notes`.
 compatibility:
   notes: "Markdown, YAML, JSON Schema"
@@ -132,7 +129,7 @@ keywords:
 triggers:
   - skill-metadata-template
 # TEMPLATE NOTE: paths is present because this template is the entry point whenever
-# examples/skill-metadata-template.md itself is touched. v3 supports gitignore-style negation —
+# examples/skill-metadata-template.md itself is touched. the protocol supports gitignore-style negation —
 # e.g. `- "!skills/experimental/**"` excludes a subdirectory from an otherwise broad
 # glob. Remove this block if your skill is purely conceptual and has no file surface.
 #
@@ -160,7 +157,7 @@ examples:
 anti_examples:
   - "refactor this skill to be more concise"           # → refactor, not authoring
   - "my skill's routing isn't activating — why?"       # → skill-router, not template
-# TEMPLATE NOTE: project_tags is new in v3. Omit it for ambient / cross-project
+# TEMPLATE NOTE: workspace_tags replaces v3 project_tags. Omit it for ambient / cross-project
 # skills (the common case). Add literal project handles or semantic tags when
 # the skill is relevant to a subset of projects in a multi-project workspace.
 # See docs/field-decision-guide.md § 4 for the full decision tree.
@@ -170,7 +167,7 @@ anti_examples:
 # arbitrary project docs. A workspace config at `.skill-graph/config.json` can
 # map your literal project handles to tag sets that include `skill-authoring`,
 # so one tag reaches many projects.
-project_tags:
+workspace_tags:
   - skill-authoring
 relations:
   # TEMPLATE NOTE: boundary items may be bare skill names OR `{skill, reason}`
@@ -195,7 +192,7 @@ grounding:
   grounding_mode: repo_specific
   truth_sources:
     - path: docs/skill-metadata-protocol.md
-      anchor: the-36-authored-fields-grouped-by-purpose
+      anchor: the-40-authored-fields-grouped-by-purpose
       note: "Protocol anatomy and field requiredness"
     - path: schemas/skill.schema.json
       line_range:
@@ -251,17 +248,17 @@ runtime_telemetry:
 
 > **TEMPLATE NOTE — HOW TO READ THIS FILE:** This file is a real, valid, schema-conformant Skill Metadata Protocol skill whose *subject* is skill authoring itself. Read it as a finished specimen of the contract, then adapt it by (1) renaming the identity, (2) rewriting `description`, `## Coverage`, `## Philosophy`, and `## Key Files` for your subject, (3) rewriting `## Verification` to be your skill's self-check, (4) removing any section or field that does not apply to your archetype, and (5) stripping the `> **TEMPLATE NOTE:**` blockquotes and `# TEMPLATE NOTE:` YAML comments — they are authoring scaffolding, never skill content. Never ship placeholder sludge (`your-skill-name`, `path/to/file`, `todo`). If a section does not apply, remove it — do not keep it and fill it with fake content.
 
-> **TEMPLATE NOTE — CONDITIONAL FIELDS:** `extends` is valid only when `type: overlay`. `routing_groups` only applies when routing-group ownership is part of the skill contract. `triggers` and `paths` are shown because this template is both label-routable and file-activated; most skills need only one. `grounding` is REQUIRED for `scope: codebase` skills; remove the block entirely for `scope: portable` or `scope: reference`. `project_tags` is optional — omit for ambient / cross-project skills. `lifecycle` is optional — omit when staleness is not meaningful. `runtime_telemetry` is optional — omit when no feedback pipeline exists. Generated manifest health fields belong in `skills.manifest.json`, not in the authored `SKILL.md`.
+> **TEMPLATE NOTE — CONDITIONAL FIELDS:** `extends` is valid only when `type: overlay`. `routing_bundles` only applies when routing-group ownership is part of the skill contract. `triggers` and `paths` are shown because this template is both label-routable and file-activated; most skills need only one. `grounding` is REQUIRED for `scope: codebase` skills; remove the block entirely for `scope: portable` or `scope: reference`. `workspace_tags` is optional — omit for ambient / cross-project skills. `lifecycle` is optional — omit when staleness is not meaningful. `runtime_telemetry` is optional — omit when no feedback pipeline exists. Generated manifest health fields belong in `skills.manifest.json`, not in the authored `SKILL.md`.
 
 ## Coverage
 
-- Frontmatter identity: `name`, `description`, `version`, `type`, `browse_category`, `scope`, `owner`, and the governance fields required by every Skill Metadata Protocol skill
+- Frontmatter identity: `name`, `description`, `version`, `type`, `category`, `scope`, `owner`, and the governance fields required by every Skill Metadata Protocol skill
 - Semantic layer discipline: how `description:` (routing contract, ≤ 3 sentences) differs from `## Coverage` (scope map, bulleted topic list) and why each must stay in its own layer
 - Teaching-layer delivery: how to use `> **TEMPLATE NOTE:**` blockquotes and `# TEMPLATE NOTE:` YAML comments to teach authors without cargo-culting meta sections into every new skill
 - Archetype-driven body structure: which `## H2` sections each of the four archetypes (`capability`, `workflow`, `router`, `overlay`) must contain
 - Grounding via `grounding`: when a skill should declare truth sources and failure modes, and when it should stay `grounding_mode: universal`
-- v3 drift evidence: when to record `drift_check.truth_source_hashes` and how the drift sentinel consumes them
-- v3 multi-project tagging: when to add `project_tags`, when to leave a skill ambient, and how workspace semantic-tag mapping composes
+- drift evidence: when to record `drift_check.truth_source_hashes` and how the drift sentinel consumes them
+- v4 workspace tagging: when to add `workspace_tags`, when to leave a skill ambient, and how workspace semantic-tag mapping composes
 - Adapter workflow: how to strip a template down, how to detect and remove cargo-culted meta, and how to verify a new skill against `schemas/skill.schema.json` before committing
 
 ## Philosophy
@@ -289,7 +286,7 @@ Use this checklist as the authoring gate before committing a skill adapted from 
 - [ ] `compatibility` is an object (not a free-text string) when present
 - [ ] `eval_artifacts` matches actual artifact presence (if `present`, an eval file exists under `examples/evals/` or alongside the skill); `eval_state` reflects whether a real passing run has been recorded; `routing_eval` reflects whether trigger/routing coverage is explicitly checked
 - [ ] All `relations` entries point to skills that exist in the target repo; `boundary` entries with unclear rationale use the `{skill, reason}` form
-- [ ] `project_tags` is present when the skill is project-specific OR absent when the skill is ambient — not left at a stale value
+- [ ] `workspace_tags` is present when the skill is project-specific OR absent when the skill is ambient — not left at a stale value
 - [ ] No placeholder sludge (`your-skill-name`, `path/to/file`, `todo`) remains
 - [ ] No `> **TEMPLATE NOTE:**` blockquotes or `# TEMPLATE NOTE:` YAML comments remain in the adapted skill
 - [ ] The adapted skill validates against `schemas/skill.schema.json` as a real skill
@@ -307,5 +304,5 @@ Use this checklist as the authoring gate before committing a skill adapted from 
 - `docs/skill-metadata-protocol.md § Relationship to the SKILL.md format` - how Skill Metadata Protocol extends the base format
 - `docs/skill-metadata-protocol.md § Example Template Rule` — the no-placeholder-sludge rule this template enforces
 - `docs/skill-metadata-protocol.md § Archetype section map` — required H2 sections per archetype
-- `docs/manifest-field-mapping.md § Migration Note — v2 → v3` — the shape changes the v3 bump introduced
+- `docs/manifest-field-mapping.md § Migration Note — v2 → v3` — the field-name cleanup the v4 bump introduced
 - `SKILL_AUDIT_CHECKLIST.md` — the checklist this template's Verification section is derived from

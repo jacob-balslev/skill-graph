@@ -5,11 +5,11 @@ license: MIT
 compatibility: "Provider-agnostic. Examples reference HMAC-SHA256 (the dominant scheme), SDK-style verification helpers (Stripe-style, where the provider ships a library that takes raw body + header + secret), and round-trip verification APIs (PayPal-style, where the receiver POSTs the event back to the provider for validation). Substitute each provider's specific header names, hashing algorithm, and retry-status-code contract from their docs."
 allowed-tools: Read Grep Bash Edit
 metadata:
-  schema_version: "3"
+  schema_version: "4"
   version: "1.0.0"
   type: capability
-  browse_category: engineering
-  category: integrations/webhooks
+  category: engineering
+  domain: integrations/webhooks
   scope: portable
   owner: skill-graph-maintainer
   freshness: "2026-05-06"

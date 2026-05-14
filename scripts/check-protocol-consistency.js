@@ -35,7 +35,7 @@
  *         modulo $id and title. Drift between them breaks the pinning promise
  *         documented in docs/skill-metadata-protocol.md § Schema Versioning Policy.
  *   C7 -- Generated field-reference parity: docs/field-reference.generated.md
- *         must match live regeneration from schemas/skill.v3.schema.json.
+ *         must match live regeneration from the current pinned skill schema.
  *   C8 -- JSON-LD context coverage: every top-level authored schema field must
  *         appear in schemas/skill.context.jsonld and every compact IRI prefix
  *         used there must be declared.
@@ -747,7 +747,7 @@ function checkC6VersionedSchemaParity() {
 
 /**
  * Check C7 — `docs/field-reference.generated.md` must match live regeneration
- * from `schemas/skill.v3.schema.json` description strings via
+ * from the current pinned schema description strings via
  * `scripts/build-field-reference.js`.
  *
  * Invariant: the generated index is a deterministic projection of the schema's
@@ -789,7 +789,7 @@ function checkC7GeneratedFieldReferenceParity() {
 
   if (result.status !== 0) {
     errors.push(
-      `docs/field-reference.generated.md is out of step with schemas/skill.v3.schema.json description strings. ` +
+      `docs/field-reference.generated.md is out of step with the current skill schema description strings. ` +
       `Run \`node scripts/build-field-reference.js\` to regenerate, then commit the result alongside any schema description edits.`
     );
     if (VERBOSE && result.stderr) {

@@ -5,11 +5,11 @@ license: MIT
 compatibility: Portable extraction workflow for turning project evidence into durable agent context without hallucinated project claims.
 allowed-tools: Read Grep
 metadata:
-  schema_version: "3"
+  schema_version: "4"
   version: "1.0.0"
   type: capability
-  browse_category: knowledge
-  category: ai-engineering/knowledge-extraction
+  category: knowledge
+  domain: ai-engineering/knowledge-extraction
   scope: portable
   owner: skill-graph-maintainer
   freshness: "2026-05-11"

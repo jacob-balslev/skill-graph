@@ -5,11 +5,11 @@ license: MIT
 compatibility: "Provider-/runtime-/stack-agnostic. The morphology, polysemy, register, and error-message rules apply to any software product written in any human-spoken language; the casing-convention table is illustrative for typical OSS stacks (TypeScript, SQL, CSS, Python) — substitute the conventions of your own stack."
 allowed-tools: Read Grep
 metadata:
-  schema_version: "3"
+  schema_version: "4"
   version: "1.0.0"
   type: capability
-  browse_category: knowledge
-  category: ai-engineering/language
+  category: knowledge
+  domain: ai-engineering/language
   scope: portable
   owner: skill-graph-maintainer
   freshness: "2026-05-06"

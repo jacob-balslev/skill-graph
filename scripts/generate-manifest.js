@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 /**
- * Manifest generator for Skill Graph (schema_version 3).
+ * Manifest generator for Skill Graph (schema_version 4).
  *
  * Walks `skills/<name>/SKILL.md` (and optionally `examples/skill-metadata-template.md`),
  * applies the authored-to-generated rename map documented in
@@ -8,7 +8,7 @@
  * result against `schemas/manifest.schema.json`, and emits the compiled
  * `skills.manifest.json`.
  *
- * Workspace mode (v3): when `.skill-graph/config.json` exists at the repo
+ * Workspace mode: when `.skill-graph/config.json` exists at the repo
  * root and declares `workspace.skill_roots`, the generator walks every
  * declared root instead of the default `skills/` directory. Each skill entry
  * carries a `project` field identifying which root it came from. The manifest
@@ -48,7 +48,7 @@ function repoRelative(filePath) {
 // ---------------------------------------------------------------------------
 // Workspace config (optional)
 //
-// Shape of `.skill-graph/config.json` (v3):
+// Shape of `.skill-graph/config.json`:
 //   {
 //     "workspace": {
 //       "skill_roots": [
@@ -249,7 +249,7 @@ function detectDrift(fm) {
 function buildSkillEntry(fm, filePath, skillId, project) {
   const aliasErrors = checkAliasParity(fm);
   if (aliasErrors.length > 0) {
-    throw new Error(`v3.1 alias contract violation: ${aliasErrors.join('; ')}`);
+    throw new Error(`alias contract violation: ${aliasErrors.join('; ')}`);
   }
 
   const entry = {};
@@ -270,16 +270,13 @@ function buildSkillEntry(fm, filePath, skillId, project) {
   if (fm.archetype !== undefined && fm.archetype !== null) {
     entry.archetype = fm.archetype;
   }
-  entry.browse_category = fm.browse_category;
+  entry.category = fm.category;
   entry.scope = fm.scope;
   entry.owner = fm.owner;
 
   // --- Copied-through optional fields ---
-  if (fm.category !== undefined && fm.category !== null) {
-    entry.category = fm.category;
-  }
-  if (fm.category_path !== undefined && fm.category_path !== null) {
-    entry.category_path = fm.category_path;
+  if (fm.domain !== undefined && fm.domain !== null) {
+    entry.domain = fm.domain;
   }
   if (fm.stability !== undefined && fm.stability !== null) {
     entry.stability = fm.stability;
@@ -302,11 +299,11 @@ function buildSkillEntry(fm, filePath, skillId, project) {
   if (fm.allowed_tools !== undefined && fm.allowed_tools !== null) {
     entry.allowed_tools = fm.allowed_tools;
   }
-  if (fm.routing_groups !== undefined && fm.routing_groups !== null) {
-    entry.routing_groups = fm.routing_groups;
+  if (fm.routing_bundles !== undefined && fm.routing_bundles !== null) {
+    entry.routing_bundles = fm.routing_bundles;
   }
-  if (Array.isArray(fm.project_tags) && fm.project_tags.length > 0) {
-    entry.project_tags = fm.project_tags;
+  if (Array.isArray(fm.workspace_tags) && fm.workspace_tags.length > 0) {
+    entry.workspace_tags = fm.workspace_tags;
   }
 
   // --- Grouped: activation (triggers + keywords + paths + examples + anti_examples) ---
@@ -596,14 +593,14 @@ function collectSources(args, skillRoots) {
  */
 function computeSummary(skills) {
   const by_type = {};
-  const by_browse_category = {};
+  const by_category = {};
   const by_scope = {};
   const by_stability = {};
   const by_project = {};
 
   for (const skill of skills) {
     if (skill.type) by_type[skill.type] = (by_type[skill.type] || 0) + 1;
-    if (skill.browse_category) by_browse_category[skill.browse_category] = (by_browse_category[skill.browse_category] || 0) + 1;
+    if (skill.category) by_category[skill.category] = (by_category[skill.category] || 0) + 1;
     if (skill.scope) by_scope[skill.scope] = (by_scope[skill.scope] || 0) + 1;
     if (skill.stability) by_stability[skill.stability] = (by_stability[skill.stability] || 0) + 1;
     if (skill.project) by_project[skill.project] = (by_project[skill.project] || 0) + 1;
@@ -611,7 +608,7 @@ function computeSummary(skills) {
 
   const summary = { total_skills: skills.length };
   if (Object.keys(by_type).length > 0) summary.by_type = sortKeys(by_type);
-  if (Object.keys(by_browse_category).length > 0) summary.by_browse_category = sortKeys(by_browse_category);
+  if (Object.keys(by_category).length > 0) summary.by_category = sortKeys(by_category);
   if (Object.keys(by_scope).length > 0) summary.by_scope = sortKeys(by_scope);
   if (Object.keys(by_stability).length > 0) summary.by_stability = sortKeys(by_stability);
   if (Object.keys(by_project).length > 0) summary.by_project = sortKeys(by_project);
@@ -668,9 +665,9 @@ function main() {
       continue;
     }
 
-    // v2 deprecation warnings — emitted during the v2 → v3 overlap window.
+    // Legacy deprecation warnings.
     if (fm.family) {
-      process.stderr.write(`WARN ${relPath}: "family" is deprecated — rename to "browse_category"\n`);
+      process.stderr.write(`WARN ${relPath}: "family" is deprecated — rename to "category"\n`);
     }
     if (fm.domain_frame) {
       process.stderr.write(`WARN ${relPath}: "domain_frame" is deprecated — rename to "grounding"\n`);
@@ -679,7 +676,7 @@ function main() {
       process.stderr.write(`WARN ${relPath}: "eval_status" is deprecated — split into "eval_artifacts", "eval_state", and "routing_eval"\n`);
     }
     if (fm.route_groups) {
-      process.stderr.write(`WARN ${relPath}: "route_groups" is deprecated — rename to "routing_groups"\n`);
+      process.stderr.write(`WARN ${relPath}: "route_groups" is deprecated — rename to "routing_bundles"\n`);
     }
     if (typeof fm.drift_check === 'string') {
       process.stderr.write(`WARN ${relPath}: scalar "drift_check" is deprecated in v3 — use an object with "last_verified" (run scripts/migrate-skill-v2-to-v3.js)\n`);
@@ -709,7 +706,7 @@ function main() {
 
   // Build the manifest object.
   const manifest = {
-    schema_version: 3,
+    schema_version: 4,
     generated_at: fixedTimestamp || new Date().toISOString(),
     summary: computeSummary(skillEntries),
     skills: sortedEntries,

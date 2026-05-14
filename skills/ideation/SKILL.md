@@ -1,10 +1,10 @@
 ---
-schema_version: 3
+schema_version: 4
 name: ideation
 description: "Use when generating a wide range of solution concepts before converging on a direction, running structured idea-generation sessions, breaking out of solution fixation, or moving from divergent to convergent selection with explicit criteria. Do NOT use for collaborative engineering domain discovery (event-storming), solo deep technical design, or making final go/no-go investment decisions — those require different methods."
 version: 1.0.0
 type: capability
-browse_category: design
+category: design
 scope: portable
 owner: skill-graph-maintainer
 freshness: "2026-05-12"

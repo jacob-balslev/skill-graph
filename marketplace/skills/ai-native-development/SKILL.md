@@ -5,11 +5,11 @@ license: MIT
 compatibility: "Provider- and runtime-agnostic. The autonomy-slider levels and quality-gate sequence apply to any LLM-coding harness (Claude Code, OpenCode, Cursor, Aider, Copilot Workspace, Continue) that supports a deterministic verify step between agent output and merge."
 allowed-tools: Read Grep
 metadata:
-  schema_version: "3"
+  schema_version: "4"
   version: "1.0.0"
   type: capability
-  browse_category: knowledge
-  category: ai-engineering/concepts
+  category: knowledge
+  domain: ai-engineering/concepts
   scope: portable
   owner: skill-graph-maintainer
   freshness: "2026-05-06"

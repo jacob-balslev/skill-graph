@@ -23,7 +23,7 @@ Field-to-vocabulary mapping summary:
 | `license` | `dcterms:license` | Dublin Core Terms (SPDX identifier) |
 | `freshness` | `dcterms:modified` (xsd:date) | Dublin Core Terms |
 | `superseded_by` | `prov:wasRevisionOf` | PROV-O |
-| `project_tags` | `dcterms:audience` (set) | Dublin Core Terms |
+| `workspace_tags` | `dcterms:audience` (set) | Dublin Core Terms |
 | `keywords` | `dcat:keyword` (set) | DCAT |
 | `category` | `skos:broader` (chain) | SKOS |
 | `adjacent` / `related` | `skos:related` | SKOS |
@@ -35,7 +35,7 @@ Field-to-vocabulary mapping summary:
 | `extends` | `prov:wasDerivedFrom` | PROV-O |
 | `truth_sources` | `dcterms:source` | Dublin Core Terms |
 | `drift_check.last_verified` | `prov:generatedAtTime` | PROV-O |
-| `type`, `scope`, `browse_category`, `routing_groups`, `grounding.*`, `eval_*`, `lifecycle.*`, `runtime_telemetry.*`, `portability.*`, `compatibility.*` | `sg:*` custom namespace | Skill Graph vocabulary (no W3C analogue) |
+| `type`, `scope`, `category`, `routing_bundles`, `grounding.*`, `eval_*`, `lifecycle.*`, `runtime_telemetry.*`, `portability.*`, `compatibility.*` | `sg:*` custom namespace | Skill Graph vocabulary (no W3C analogue) |
 
 Custom predicates live under `https://skillgraph.dev/vocab#` (`sg:` prefix). Everything that has a W3C equivalent is mapped to the equivalent, not rediscovered.
 
@@ -68,7 +68,7 @@ Custom predicates live under `https://skillgraph.dev/vocab#` (`sg:` prefix). Eve
 ## Verification
 
 - `schemas/skill.context.jsonld` exists and is valid JSON.
-- Every required authored field (`schema_version`, `name`, `description`, `version`, `type`, `browse_category`, `scope`, `owner`, `freshness`, `drift_check`, `eval_artifacts`, `eval_state`, `routing_eval`) has a mapping.
+- Every required authored field (`schema_version`, `name`, `description`, `version`, `type`, `category`, `scope`, `owner`, `freshness`, `drift_check`, `eval_artifacts`, `eval_state`, `routing_eval`) has a mapping.
 - Every `relations.*` predicate has a mapping.
 - Custom `sg:` IRIs are defined consistently.
 

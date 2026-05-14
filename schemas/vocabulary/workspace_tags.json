@@ -1,0 +1,23 @@
+{
+  "$comment": "Controlled vocabulary for the `workspace_tags` field. Adopters declare their own literal project handles in their workspace config (`.skill-graph/config.json`); only `skill-graph` (this repo) is shipped as a literal handle. Semantic tags below are illustrative categories cross-project tags commonly fall into. Extend with your own. Scope: soft-advisory; skill-lint.js emits WARNING (not error) for unknown tags.",
+  "version": "2.0.0",
+  "last_updated": "2026-05-14",
+  "literal_project_handles": [
+    "skill-graph"
+  ],
+  "semantic_tags": [
+    "ecommerce",
+    "saas",
+    "b2b",
+    "b2c",
+    "ai-agent",
+    "design-system",
+    "infrastructure",
+    "analytics",
+    "integrations"
+  ],
+  "synonyms": {
+    "e-commerce": "ecommerce",
+    "eCommerce": "ecommerce"
+  }
+}

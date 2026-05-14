@@ -1,12 +1,12 @@
 ---
-# yaml-language-server: $schema=https://skillgraph.dev/schemas/skill.v3.schema.json
-schema_version: 3
+# yaml-language-server: $schema=https://skillgraph.dev/schemas/skill.v4.schema.json
+schema_version: 4
 name: state-machine-modeling
 description: "Use when modeling lifecycle states, transitions, guards, events, side effects, invalid states, retries, and state invariants for workflows or domain objects. Do NOT use for broad event discovery (use `event-storming`), database schema design (use `data-modeling`), or observability instrumentation after the lifecycle already exists (use `observability-modeling`)."
 version: 1.0.0
 type: capability
-browse_category: engineering
-category: modeling/state-machines
+category: engineering
+domain: modeling/state-machines
 scope: portable
 owner: skill-graph-maintainer
 freshness: "2026-05-11"

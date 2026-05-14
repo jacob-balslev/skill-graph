@@ -5,11 +5,11 @@ license: MIT
 compatibility: "Stack-agnostic prose-humanization rules. The AI-tell catalog, voice-conversion decision tree, readability formulas, sentence-rhythm patterns, tone-mapping table, and detection-avoidance techniques apply to any human-readable text in any product domain — substitute the equivalents from your own audience and brand voice."
 allowed-tools: Read Grep Edit
 metadata:
-  schema_version: "3"
+  schema_version: "4"
   version: "1.0.0"
   type: capability
-  browse_category: knowledge
-  category: ai-engineering/language
+  category: knowledge
+  domain: ai-engineering/language
   scope: portable
   owner: skill-graph-maintainer
   freshness: "2026-05-06"

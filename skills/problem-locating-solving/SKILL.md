@@ -1,12 +1,12 @@
 ---
-# yaml-language-server: $schema=https://skillgraph.dev/schemas/skill.v3.schema.json
-schema_version: 3
+# yaml-language-server: $schema=https://skillgraph.dev/schemas/skill.v4.schema.json
+schema_version: 4
 name: problem-locating-solving
 description: "Use when you need to locate a bug in an unfamiliar codebase, trace a failure from symptom to source, or choose between multiple candidate fixes after the symptom is observed but before any patch is committed. Provides the locate-to-solve workflow: problem-statement contract, search-space reduction by symptom type, boundary-based fault localization (entry-point tracing, differential good-vs-bad-path comparison, binary search through the call chain, minimal repro), root-cause isolation (symptom vs cause analysis), multi-option fix generation with blast-radius comparison, post-fix verification gates (reproduce the failure before, confirm it no longer occurs after, neighbor-path side-effect check, blast-radius check, explanation check), and reflection that promotes one-off fixes into prevention mechanisms when the class could recur. Do NOT use for broad task planning and sequencing once the bug is already localized, for designing the test pyramid or regression suite that locks in absence of a bug class, or for performance forensics — those need test-strategy or measurement-first methodologies, not fault localization."
 version: 1.0.0
 type: workflow
-browse_category: knowledge
-category: engineering/debugging
+category: knowledge
+domain: engineering/debugging
 scope: portable
 owner: skill-graph-maintainer
 freshness: "2026-05-06"

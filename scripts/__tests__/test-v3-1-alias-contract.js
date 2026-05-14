@@ -26,16 +26,15 @@ function assert(condition, msg) {
 }
 
 const fm = {
-  schema_version: 3,
+  schema_version: 4,
   name: 'alias-fixture',
   urn: 'urn:skill:skill-graph:alias-fixture',
   description: 'Fixture skill used to verify v3.1 alias pass-through and parity checks.',
   version: '1.0.0',
   type: 'capability',
   archetype: 'capability',
-  browse_category: 'testing',
-  category: 'skill-system/testing',
-  category_path: 'skill-system/testing',
+  category: 'testing',
+  domain: 'skill-system/testing',
   scope: 'portable',
   owner: 'skill-graph-maintainer',
   freshness: '2026-05-13',
@@ -84,7 +83,7 @@ assert(parityErrors.length === 0, `fixture should satisfy alias parity, got: ${p
 const entry = buildSkillEntry(fm, FIXTURE_PATH, 'alias-fixture', null);
 assert(entry.urn === fm.urn, 'urn should pass through');
 assert(entry.archetype === fm.archetype, 'archetype alias should pass through');
-assert(entry.category_path === fm.category_path, 'category_path alias should pass through');
+assert(entry.domain === fm.domain, 'domain should pass through');
 assert(entry.allowed_tools === fm.allowed_tools, 'allowed_tools alias should pass through');
 assert(entry.health.reviewed_at === fm.reviewed_at, 'reviewed_at alias should project to health.reviewed_at');
 assert(entry.health.eval && entry.health.eval.content_state === 'unverified', 'nested eval alias should project to health.eval');

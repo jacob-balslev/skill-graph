@@ -9,7 +9,7 @@ Wave 2 was the expansion from a small starter set into a library large enough to
 - Multiple archetypes, not only `capability`.
 - Multiple scopes, including portable, reference, and codebase skills.
 - Enough relation density for routing, verification, and boundary behavior to matter.
-- Enough domain variety that `browse_category`, `category`, `project_tags`, and `routing_groups` are visibly different axes.
+- Enough domain variety that `category`, `category`, `workspace_tags`, and `routing_bundles` are visibly different axes.
 
 The goal was not to maximize skill count. The goal was to make the protocol's graph shape observable in real authored skills.
 

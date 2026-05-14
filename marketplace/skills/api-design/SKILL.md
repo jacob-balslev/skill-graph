@@ -5,11 +5,11 @@ license: MIT
 compatibility: "Portable API design guidance for REST-like HTTP APIs, route handlers, internal APIs, and documented JSON contracts."
 allowed-tools: Read Grep
 metadata:
-  schema_version: "3"
+  schema_version: "4"
   version: "1.0.0"
   type: capability
-  browse_category: engineering
-  category: engineering/api-design
+  category: engineering
+  domain: engineering/api-design
   scope: portable
   owner: skill-graph-maintainer
   freshness: "2026-05-11"

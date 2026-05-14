@@ -1,10 +1,10 @@
 ---
-schema_version: 3
+schema_version: 4
 name: printify
 description: "Use when working with Printify — the print-on-demand REST API, catalog model (blueprints, print providers, variants, print areas), product creation and publish lifecycle to connected channels, order routing, shipping cost queries, and HMAC SHA-256 webhook verification. Do NOT use for non-Printify POD vendors, generic Shopify storefront work, or print-file (artwork) generation."
 version: 1.0.0
 type: capability
-browse_category: integrations
+category: integrations
 scope: portable
 owner: skill-graph-maintainer
 freshness: "2026-05-12"

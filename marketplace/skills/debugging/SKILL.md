@@ -5,10 +5,10 @@ license: MIT
 compatibility: "Markdown, Git, any codebase"
 allowed-tools: Read Grep Bash
 metadata:
-  schema_version: "3"
+  schema_version: "4"
   version: "1.0.0"
   type: workflow
-  browse_category: engineering
+  category: engineering
   scope: portable
   owner: skill-graph-maintainer
   freshness: "2026-04-18"

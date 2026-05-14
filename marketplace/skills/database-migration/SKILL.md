@@ -5,11 +5,11 @@ license: MIT
 compatibility: "PostgreSQL 12+ (covers concurrent index, NOT VALID foreign keys, generated columns). Connection examples target raw `psql` and the unpooled side of any PgBouncer-style pooler. Branching examples reference `neonctl` as one provider — substitute the equivalent CLI for Supabase, Xata, or self-hosted clones if your platform supports branched databases."
 allowed-tools: Read Grep Bash Edit
 metadata:
-  schema_version: "3"
+  schema_version: "4"
   version: "1.0.0"
   type: capability
-  browse_category: engineering
-  category: data/migrations
+  category: engineering
+  domain: data/migrations
   scope: portable
   owner: skill-graph-maintainer
   freshness: "2026-05-06"

@@ -5,11 +5,11 @@ license: MIT
 compatibility: "Language- and stack-agnostic. The locate-to-solve loop, boundary-localization techniques, and verification rules apply to any software bug investigation; specific tool names (binary search, git bisect, MRE) are illustrative — substitute the equivalents of your stack."
 allowed-tools: Read Grep
 metadata:
-  schema_version: "3"
+  schema_version: "4"
   version: "1.0.0"
   type: workflow
-  browse_category: knowledge
-  category: engineering/debugging
+  category: knowledge
+  domain: engineering/debugging
   scope: portable
   owner: skill-graph-maintainer
   freshness: "2026-05-06"

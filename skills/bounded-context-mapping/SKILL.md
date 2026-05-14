@@ -1,12 +1,12 @@
 ---
-# yaml-language-server: $schema=https://skillgraph.dev/schemas/skill.v3.schema.json
-schema_version: 3
+# yaml-language-server: $schema=https://skillgraph.dev/schemas/skill.v4.schema.json
+schema_version: 4
 name: bounded-context-mapping
 description: "Use when drawing Domain-Driven Design boundaries: bounded contexts, context maps, ownership seams, upstream/downstream relationships, anti-corruption layers, shared kernels, and translation boundaries. Do NOT use for pre-DDD entity discovery (use `conceptual-modeling`), database schema design (use `data-modeling`), or HTTP endpoint design (use `api-design`)."
 version: 1.0.0
 type: capability
-browse_category: engineering
-category: architecture/domain-boundaries
+category: engineering
+domain: architecture/domain-boundaries
 scope: portable
 owner: skill-graph-maintainer
 freshness: "2026-05-11"

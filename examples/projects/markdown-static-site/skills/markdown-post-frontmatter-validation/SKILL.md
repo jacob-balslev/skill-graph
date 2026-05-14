@@ -1,12 +1,12 @@
 ---
-# yaml-language-server: $schema=https://skillgraph.dev/schemas/skill.v3.schema.json
-schema_version: 3
+# yaml-language-server: $schema=https://skillgraph.dev/schemas/skill.v4.schema.json
+schema_version: 4
 name: markdown-post-frontmatter-validation
 description: "Use when authoring or reviewing the frontmatter of a markdown post — checking required fields (title, date, slug, tags), validating against the content schema in `lib/content/schema.ts`, catching ambiguous date formats or tags not in the controlled vocabulary, and ensuring the slug matches the file path. Activate this skill whenever the task touches files under `content/posts/**/*.md`, the `parsePostFrontmatter()` helper, or any code path that reads YAML frontmatter from a content file. Do NOT use for general YAML schema design (use a generic schema-design skill) or for chasing a specific build-time validation failure (use debugging)."
 version: 0.1.0
 type: capability
-browse_category: content
-category: content/markdown/frontmatter
+category: content
+domain: content/markdown/frontmatter
 scope: codebase
 owner: markdown-static-site-maintainer
 freshness: "2026-05-06"
@@ -80,7 +80,7 @@ portability:
   readiness: scripted
   targets:
     - skill-md
-project_tags:
+workspace_tags:
   - content
   - static-site
   - markdown

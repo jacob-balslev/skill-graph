@@ -5,11 +5,11 @@ license: MIT
 compatibility: "Portable IA guidance for apps, documentation, dashboards, admin tools, and skill libraries."
 allowed-tools: Read Grep
 metadata:
-  schema_version: "3"
+  schema_version: "4"
   version: "1.0.0"
   type: capability
-  browse_category: knowledge
-  category: design/information-architecture
+  category: knowledge
+  domain: design/information-architecture
   scope: portable
   owner: skill-graph-maintainer
   freshness: "2026-05-11"

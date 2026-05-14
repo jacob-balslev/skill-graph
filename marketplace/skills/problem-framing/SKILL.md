@@ -3,10 +3,10 @@ name: problem-framing
 description: "Use when a team is converging on solutions before agreeing on the problem, when a brief reads as a feature request, when symptoms and root needs are tangled, or when assumptions need surfacing before design work proceeds. Do NOT use for code-level bug triage, runtime failure diagnosis, or root-cause analysis of system errors — those are engineering investigation tasks, not design problem framing."
 license: CC-BY-4.0
 metadata:
-  schema_version: "3"
+  schema_version: "4"
   version: "1.0.0"
   type: capability
-  browse_category: design
+  category: design
   scope: portable
   owner: skill-graph-maintainer
   freshness: "2026-05-12"

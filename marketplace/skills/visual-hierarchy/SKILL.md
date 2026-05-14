@@ -3,10 +3,10 @@ name: visual-hierarchy
 description: "Use when establishing visual hierarchy — type scale ratios, spacing rhythm, contrast as ordering signal, weight and size as importance, and the layered relationship between primary, secondary, and tertiary information. Do NOT use for content writing, information architecture, or specific color palette construction."
 license: CC-BY-4.0
 metadata:
-  schema_version: "3"
+  schema_version: "4"
   version: "1.0.0"
   type: capability
-  browse_category: design
+  category: design
   scope: portable
   owner: skill-graph-maintainer
   freshness: "2026-05-12"

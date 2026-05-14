@@ -5,11 +5,11 @@ license: MIT
 compatibility: "Portable async-event contract guidance for queues, streams, pub/sub, internal events, outbound webhooks, and documented event-driven APIs."
 allowed-tools: Read Grep
 metadata:
-  schema_version: "3"
+  schema_version: "4"
   version: "1.0.0"
   type: capability
-  browse_category: engineering
-  category: architecture/events
+  category: engineering
+  domain: architecture/events
   scope: portable
   owner: skill-graph-maintainer
   freshness: "2026-05-11"

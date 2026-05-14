@@ -1,12 +1,12 @@
 ---
-# yaml-language-server: $schema=https://skillgraph.dev/schemas/skill.v3.schema.json
-schema_version: 3
+# yaml-language-server: $schema=https://skillgraph.dev/schemas/skill.v4.schema.json
+schema_version: 4
 name: architecture-decision-records
 description: "Use when writing, reviewing, or updating Architecture Decision Records: context, decision, options rejected, consequences, status, supersession, and follow-up verification. Do NOT use for general documentation prose (use `documentation`), code review findings (use `code-review`), or choosing between frameworks before a decision exists (use `framework-fit-analysis`)."
 version: 1.0.0
 type: capability
-browse_category: engineering
-category: architecture/decision-records
+category: engineering
+domain: architecture/decision-records
 scope: portable
 owner: skill-graph-maintainer
 freshness: "2026-05-11"

@@ -5,11 +5,11 @@ license: MIT
 compatibility: "Language- and stack-agnostic. The recognition loop, clustering method, eval pipeline, and 5-Whys ladder apply to any codebase; the grep patterns and example detection rules are illustrative — substitute the equivalents of your stack."
 allowed-tools: Read Grep
 metadata:
-  schema_version: "3"
+  schema_version: "4"
   version: "1.0.0"
   type: capability
-  browse_category: knowledge
-  category: engineering/quality
+  category: knowledge
+  domain: engineering/quality
   scope: portable
   owner: skill-graph-maintainer
   freshness: "2026-05-06"

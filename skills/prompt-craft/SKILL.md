@@ -1,12 +1,12 @@
 ---
-# yaml-language-server: $schema=https://skillgraph.dev/schemas/skill.v3.schema.json
-schema_version: 3
+# yaml-language-server: $schema=https://skillgraph.dev/schemas/skill.v4.schema.json
+schema_version: 4
 name: prompt-craft
 description: "Use when writing, structuring, evaluating, or improving a prompt for an LLM — whether for one-shot completion, agent dispatch, sub-agent spawning, eval grading, or prompt-engineered tools. Covers role and instruction layering, context insertion order, few-shot example selection, output-format constraints, the negative-instruction principle, defence against adversarial input, and iterative prompt-improvement evaluation. Do NOT use when the task is reviewing AI-generated code (use `code-review`), authoring a SKILL.md (use `skill-scaffold`), or selecting which agent to dispatch (use `skill-router` for cross-skill dispatch decisions)."
 version: 1.0.0
 type: capability
-browse_category: knowledge
-category: ai-engineering/prompts
+category: knowledge
+domain: ai-engineering/prompts
 scope: portable
 owner: skill-graph-maintainer
 freshness: "2026-05-04"

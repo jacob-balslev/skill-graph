@@ -5,11 +5,11 @@ license: MIT
 compatibility: "Provider-agnostic; abstract tool capabilities map to concrete tools across Claude Code, Cursor, Copilot, OpenCode, Aider, Continue. Specific tool names in this skill (read_file, grep_search, run_in_terminal, apply_patch) are concrete examples — substitute the equivalent in your harness."
 allowed-tools: Read Grep Bash Edit
 metadata:
-  schema_version: "3"
+  schema_version: "4"
   version: "1.0.0"
   type: capability
-  browse_category: engineering
-  category: ai-engineering/tool-use
+  category: engineering
+  domain: ai-engineering/tool-use
   scope: portable
   owner: skill-graph-maintainer
   freshness: "2026-05-06"

@@ -5,11 +5,11 @@ license: MIT
 compatibility: "Portable data-modeling discipline across relational, document, graph, event-sourced, and warehouse-style systems."
 allowed-tools: Read Grep
 metadata:
-  schema_version: "3"
+  schema_version: "4"
   version: "1.0.0"
   type: capability
-  browse_category: engineering
-  category: data/modeling
+  category: engineering
+  domain: data/modeling
   scope: portable
   owner: skill-graph-maintainer
   freshness: "2026-05-11"

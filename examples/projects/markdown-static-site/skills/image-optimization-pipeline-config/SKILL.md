@@ -1,12 +1,12 @@
 ---
-# yaml-language-server: $schema=https://skillgraph.dev/schemas/skill.v3.schema.json
-schema_version: 3
+# yaml-language-server: $schema=https://skillgraph.dev/schemas/skill.v4.schema.json
+schema_version: 4
 name: image-optimization-pipeline-config
 description: "Use when authoring or reviewing the build-time image pipeline config — defining responsive srcset breakpoints, picking output formats (AVIF / WebP / JPEG fallback), tuning compression quality per format, and ensuring the pipeline never produces a lossy artifact for source PNGs with transparency. Activate this skill whenever the task touches `lib/images/pipeline.config.ts`, `scripts/build-images.ts`, or any code path that resizes or recompresses content images. Do NOT use for runtime image rendering choices (use a frontend skill) or for chasing a specific build failure (use debugging)."
 version: 0.1.0
 type: capability
-browse_category: content
-category: content/build/images
+category: content
+domain: content/build/images
 scope: codebase
 owner: markdown-static-site-maintainer
 freshness: "2026-05-06"
@@ -79,7 +79,7 @@ portability:
   readiness: scripted
   targets:
     - skill-md
-project_tags:
+workspace_tags:
   - content
   - static-site
   - build-pipeline

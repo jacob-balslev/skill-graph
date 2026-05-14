@@ -1,12 +1,12 @@
 ---
-# yaml-language-server: $schema=https://skillgraph.dev/schemas/skill.v3.schema.json
-schema_version: 3
+# yaml-language-server: $schema=https://skillgraph.dev/schemas/skill.v4.schema.json
+schema_version: 4
 name: error-tracking
 description: "Use when designing or extending the exception-reporting pipeline for an application — choosing where error boundaries live (component, section, route, app-global), wrapping the tracker SDK so every reporting call is sanitized and environment-gated, attaching user context without leaking PII, and verifying that every layer's errors actually reach the tracker. Covers the four-surface error-capture model (component boundaries, route fallbacks, global crash handler, manual API), centralized wrapper design (`reportError` / `reportMessage` / `addBreadcrumb` / `setUser`), PII sanitization before any external send, environment-aware gating (dev → local logger, prod → tracker SDK), and the diagnostic question 'does this layer actually report, or does it only log?' Do NOT use for the *visual* error UX seen by the user (use `a11y` for accessible error messages and recovery flows), for chasing a single observed error already captured in the tracker (use `debugging`), or for the broader privacy and PII-retention policy (use `owasp-security`)."
 version: 1.0.0
 type: capability
-browse_category: engineering
-category: engineering/observability
+category: engineering
+domain: engineering/observability
 scope: portable
 owner: skill-graph-maintainer
 freshness: "2026-05-06"

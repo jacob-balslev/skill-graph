@@ -10,7 +10,7 @@
 |---|---|---|
 | M0–M2 | Clone the repo and install | The repo runs with zero external dependencies |
 | M3–M7 | Copy the template into your first skill directory | The authoring flow is copy → rename → adapt → strip → verify |
-| M8–M11 | Fill in the 13 required v3 fields for `markdown-post-frontmatter-review` | Why each field exists and what it commits you to |
+| M8–M11 | Fill in the 13 required v4 fields for `markdown-post-frontmatter-review` | Why each field exists and what it commits you to |
 | M12–M15 | Lint your first skill | Lint output is the primary debugging surface |
 | M16–M19 | Create a second skill (`post-archive-rebuild`) with a `relations.depends_on` link | The graph is real — relations enforce that `depends_on` targets exist |
 | M20–M24 | Break the relation deliberately and watch lint catch it | The contract fails loud, not silent |
@@ -63,19 +63,19 @@ The template lints clean as-is, so you can incrementally edit and re-lint to cat
 
 ---
 
-## M8–M11: Fill in the 13 required v3 fields
+## M8–M11: Fill in the 13 required v4 fields
 
-The 13 required v3 fields are: `schema_version`, `name`, `description`, `version`, `type`, `browse_category`, `scope`, `owner`, `freshness`, `drift_check`, `eval_artifacts`, `eval_state`, `routing_eval`. The template has all 13 — you're replacing values, not adding fields.
+The 13 required v4 fields are: `schema_version`, `name`, `description`, `version`, `type`, `category`, `scope`, `owner`, `freshness`, `drift_check`, `eval_artifacts`, `eval_state`, `routing_eval`. The template has all 13 — you're replacing values, not adding fields.
 
 For `markdown-post-frontmatter-review`, the values look like:
 
 ```yaml
-schema_version: 3
+schema_version: 4
 name: markdown-post-frontmatter-review
 description: "Use when authoring or reviewing the YAML frontmatter of a markdown post — checking required fields (title, date, slug, tags), validating against the content schema, catching ambiguous date formats, and ensuring the slug matches the file path. Activate this skill whenever the task touches files under `content/posts/**/*.md` or the `parsePostFrontmatter()` helper — even if the user just says 'the post'. Do NOT use for general YAML schema design (use a different skill) or for chasing a specific build-time validation failure (use debugging)."
 version: 0.1.0
 type: capability
-browse_category: content
+category: content
 scope: codebase
 owner: <your-handle-or-team>
 freshness: "2026-05-06"
@@ -130,7 +130,7 @@ If a required field is missing, the failure looks like:
 
 ```
 FAIL skills/markdown-post-frontmatter-review/SKILL.md
-  ─ schema: must have required property 'browse_category'
+  ─ schema: must have required property 'category'
 
 1 file(s) checked, 1 error(s).
 ```
@@ -151,12 +151,12 @@ cp examples/skill-metadata-template.md skills/post-archive-rebuild/SKILL.md
 Edit `skills/post-archive-rebuild/SKILL.md` to set:
 
 ```yaml
-schema_version: 3
+schema_version: 4
 name: post-archive-rebuild
 description: "Use when re-indexing the post archive after one or more frontmatter fields have changed — walking every post, re-extracting the indexed fields, and writing the updated archive page. Activate this skill whenever the task says 'rebuild the archive' or mentions a post-index regeneration after a content edit. Do NOT use for routine authoring of a single post (use markdown-post-frontmatter-review)."
 version: 0.1.0
 type: workflow
-browse_category: content
+category: content
 scope: portable
 owner: <your-handle>
 freshness: "2026-05-06"

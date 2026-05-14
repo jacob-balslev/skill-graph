@@ -5,11 +5,11 @@ license: MIT
 compatibility: "Portable ADR discipline for Markdown decision logs, repo docs, design docs, and architecture governance."
 allowed-tools: Read Grep
 metadata:
-  schema_version: "3"
+  schema_version: "4"
   version: "1.0.0"
   type: capability
-  browse_category: engineering
-  category: architecture/decision-records
+  category: engineering
+  domain: architecture/decision-records
   scope: portable
   owner: skill-graph-maintainer
   freshness: "2026-05-11"

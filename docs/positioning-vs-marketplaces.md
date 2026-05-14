@@ -35,7 +35,7 @@ Skill Metadata Protocol sits in the second category. Skill Graph sits in the thi
 | **Required fields** | 2 (`name`, `description`) | 13 in Skill Metadata Protocol; `name` and `description` remain the base bridge to SKILL.md |
 | **Relevance model** | Mostly lexical retrieval over `description` and tag fields | Area, angle, taxonomy, semantic relations, project fit, grounding, eval state, and file/path relevance |
 | **Drift detection** | None — staleness is invisible to the standard | SHA-256 baselines on `truth_sources`; the drift sentinel reports DRIFT / BROKEN / STALE / NO_BASELINE |
-| **Project scoping** | Folder structure or naming hacks | `project_tags` + workspace `semantic_tags` matching, no folder gymnastics |
+| **Project scoping** | Folder structure or naming hacks | `workspace_tags` + workspace `semantic_tags` matching, no folder gymnastics |
 | **Eval awareness** | Not standardised | `eval_artifacts` + `eval_state` + `routing_eval` triple; routers can gate by quality |
 | **Inheritance** | None | `type: overlay` + `extends` for specialisation with schema-level body-section enforcement |
 | **Round-trip compatibility** | N/A | One-way export to base SKILL.md via `scripts/export-skill.js`; round-trip back requires re-authoring the lost fields |
@@ -156,7 +156,7 @@ If you're trying to decide which tool to reach for:
 | Document repo conventions for any agent at session start | CLAUDE.md / AGENTS.md |
 | Detect when a skill's truth source has silently moved | **Skill Graph** (drift sentinel) |
 | Express that one skill depends on another | **Skill Graph** (`relations.depends_on`) |
-| Share some skills across two projects but not all | **Skill Graph** (multi-root workspace mode + `project_tags`) |
+| Share some skills across two projects but not all | **Skill Graph** (multi-root workspace mode + `workspace_tags`) |
 
 If your need is in the **Skill Graph** rows, this contract is for you. If your need is in any other row, the named tool is the right primary fit; Skill Graph still complements it where the use cases overlap.
 

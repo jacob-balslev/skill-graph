@@ -3,10 +3,10 @@ name: prototyping
 description: "Use when building an artifact whose purpose is to answer a specific question — paper sketch, wireframe, clickable mockup, wizard-of-oz, role-play, service prototype, or code spike — at the lowest fidelity sufficient to produce that learning. Do NOT use for production-grade component construction, design-system contribution, or building the actual ship-ready feature — those are design-module-composition and engineering implementation."
 license: CC-BY-4.0
 metadata:
-  schema_version: "3"
+  schema_version: "4"
   version: "1.0.0"
   type: capability
-  browse_category: design
+  category: design
   scope: portable
   owner: skill-graph-maintainer
   freshness: "2026-05-12"

@@ -1,11 +1,11 @@
 ---
-# yaml-language-server: $schema=https://skillgraph.dev/schemas/skill.v3.schema.json
-schema_version: 3
+# yaml-language-server: $schema=https://skillgraph.dev/schemas/skill.v4.schema.json
+schema_version: 4
 name: testing-strategy
 description: "Use when planning tests for a bug fix, feature, or refactor — deciding what deserves a test, at which level, with what evidence. Covers test-scope decisions, test-level selection (unit / integration / contract / e2e), effort-to-risk matching, regression targeting, evidence quality, and failure-case coverage. Do NOT use for chasing a known failure (that is `debugging`), for pure doc writing (that is `documentation`), or for conceptual architecture discussion with no verification target (no dedicated skill — treat as strategy, not testing)."
 version: 1.0.0
 type: capability
-browse_category: quality
+category: quality
 scope: portable
 owner: skill-graph-maintainer
 freshness: "2026-04-18"
@@ -43,7 +43,7 @@ keywords:
   - test level decision
 triggers:
   - testing-skill
-routing_groups:
+routing_bundles:
   - quality
 examples:
   - "do I need a unit test for this pure formatter or is integration enough?"

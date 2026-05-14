@@ -5,11 +5,11 @@ license: MIT
 compatibility: "Portable event-storming discipline for product discovery, domain modeling, event-driven architecture, and workflow analysis."
 allowed-tools: Read Grep
 metadata:
-  schema_version: "3"
+  schema_version: "4"
   version: "1.0.0"
   type: capability
-  browse_category: engineering
-  category: architecture/domain-discovery
+  category: engineering
+  domain: architecture/domain-discovery
   scope: portable
   owner: skill-graph-maintainer
   freshness: "2026-05-11"

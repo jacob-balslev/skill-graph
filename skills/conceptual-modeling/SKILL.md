@@ -1,12 +1,12 @@
 ---
-# yaml-language-server: $schema=https://skillgraph.dev/schemas/skill.v3.schema.json
-schema_version: 3
+# yaml-language-server: $schema=https://skillgraph.dev/schemas/skill.v4.schema.json
+schema_version: 4
 name: conceptual-modeling
 description: "Use when translating business requirements into a structured domain representation, designing a new feature from scratch, or validating that a system's structure matches business reality — before any database schema, API endpoint, or aggregate boundary is named. Covers entity / attribute / relationship identification, cardinality (1:1, 1:N, M:N, 0..1, 1..*), generalization vs specialization (disjoint / overlapping, total / partial), aggregation vs composition, role modeling, the conceptual → logical → physical abstraction ladder, validation against business stakeholders' mental models, and the seven anti-patterns (implementation leakage, missing entity, god entity, phantom relationship, premature normalization, attribute-as-entity, unnamed relationship). Do NOT use for database-specific ER diagrams with PK / FK / normalization (use a logical-modeling skill), formal ontology axioms with OWL or RDFS (use an ontology skill), or DDD tactical design (aggregates, bounded contexts) — conceptual modeling stays one layer above all three."
 version: 1.0.0
 type: capability
-browse_category: knowledge
-category: modeling/conceptual
+category: knowledge
+domain: modeling/conceptual
 scope: portable
 owner: skill-graph-maintainer
 freshness: "2026-05-06"

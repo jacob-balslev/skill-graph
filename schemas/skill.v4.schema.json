@@ -1,7 +1,7 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://skillgraph.dev/schemas/skill.schema.json",
-  "title": "Skill Graph Skill Frontmatter",
+  "$id": "https://skillgraph.dev/schemas/skill.v4.schema.json",
+  "title": "Skill Graph Skill Frontmatter (v4, pinned)",
   "type": "object",
   "additionalProperties": false,
   "required": [

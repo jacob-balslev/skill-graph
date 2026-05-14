@@ -1,10 +1,10 @@
 ---
-schema_version: 3
+schema_version: 4
 name: v3-1-skos-fixture
 description: Test fixture exercising v3.1 SKOS predicates (related, broader, narrower) and the ADR 0006 split between boundary (routing-layer) and disjoint_with (OWL class-disjointness). Used by scripts/__tests__/test-v3-1-skos-runtime.js to verify that the manifest generator, lint, and router all recognize the full predicate set. Not a production skill.
 version: 1.0.0
 type: capability
-browse_category: testing
+category: testing
 scope: portable
 owner: skill-graph-maintainer
 freshness: 2026-05-04

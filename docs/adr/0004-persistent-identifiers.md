@@ -6,7 +6,7 @@
 
 ## Context
 
-The external audit of 2026-04-20 found that Skill Graph covers FAIR Findability well *within a single repository* (via `name`, `keywords`, `triggers`, `examples`, `browse_category`) but has **no globally unique persistent identifier**. `name` is unique only inside one repo; two workspaces both shipping a skill called `knowledge-graph` have no way to be told apart. This blocks cross-repo federation, registry publication, and long-term citation.
+The external audit of 2026-04-20 found that Skill Graph covers FAIR Findability well *within a single repository* (via `name`, `keywords`, `triggers`, `examples`, `category`) but has **no globally unique persistent identifier**. `name` is unique only inside one repo; two workspaces both shipping a skill called `knowledge-graph` have no way to be told apart. This blocks cross-repo federation, registry publication, and long-term citation.
 
 ## Decision
 

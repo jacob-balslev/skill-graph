@@ -5,11 +5,11 @@ license: MIT
 compatibility: "Provider-agnostic; principles apply across Anthropic, OpenAI, Google, open-weight models"
 allowed-tools: Read Grep Bash Edit
 metadata:
-  schema_version: "3"
+  schema_version: "4"
   version: "1.0.0"
   type: capability
-  browse_category: knowledge
-  category: ai-engineering/prompts
+  category: knowledge
+  domain: ai-engineering/prompts
   scope: portable
   owner: skill-graph-maintainer
   freshness: "2026-05-04"

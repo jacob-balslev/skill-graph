@@ -7,7 +7,7 @@
 
 ## Context
 
-The external audit of 2026-04-20 flagged a latent modelling bug: the combination of `type: overlay` + `extends` + `browse_category` can accidentally subsume a rigid category under an anti-rigid overlay. In OntoClean terms, an anti-rigid property cannot have a rigid property as its subclass — doing so produces unsatisfiable class hierarchies. The audit asked for explicit rigidity tagging on each archetype so authors and reviewers can recognise the violation before it ships.
+The external audit of 2026-04-20 flagged a latent modelling bug: the combination of `type: overlay` + `extends` + `category` can accidentally subsume a rigid category under an anti-rigid overlay. In OntoClean terms, an anti-rigid property cannot have a rigid property as its subclass — doing so produces unsatisfiable class hierarchies. The audit asked for explicit rigidity tagging on each archetype so authors and reviewers can recognise the violation before it ships.
 
 ## Decision
 

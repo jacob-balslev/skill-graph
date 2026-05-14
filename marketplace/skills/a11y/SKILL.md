@@ -5,10 +5,10 @@ license: MIT
 compatibility: "Markdown, Git, any web stack"
 allowed-tools: Read Grep
 metadata:
-  schema_version: "3"
+  schema_version: "4"
   version: "1.0.0"
   type: capability
-  browse_category: frontend
+  category: frontend
   scope: portable
   owner: skill-graph-maintainer
   freshness: "2026-04-18"

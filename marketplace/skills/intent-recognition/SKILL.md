@@ -5,11 +5,11 @@ license: MIT
 compatibility: "Runtime-agnostic. The four-tier classification, target-content rule, and Identify/Confirm/Verify sequence apply to any agent harness with tool execution — Claude Code, OpenCode, Cursor, Aider, Copilot Workspace, custom MCP-based agents, or any LLM with shell access."
 allowed-tools: Read Grep
 metadata:
-  schema_version: "3"
+  schema_version: "4"
   version: "1.0.0"
   type: capability
-  browse_category: engineering
-  category: ai-engineering/safety
+  category: engineering
+  domain: ai-engineering/safety
   scope: portable
   owner: skill-graph-maintainer
   freshness: "2026-05-06"

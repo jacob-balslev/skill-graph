@@ -5,11 +5,11 @@ license: MIT
 compatibility: "Domain-agnostic explanation method. The five-step workflow, the five primary-part tests, and the typed-relation taxonomy apply to systems, features, modules, workflows, concepts, decisions, or problems in any stack — substitute the relevant domain vocabulary for the structural skeleton."
 allowed-tools: Read Grep
 metadata:
-  schema_version: "3"
+  schema_version: "4"
   version: "1.0.0"
   type: workflow
-  browse_category: knowledge
-  category: ai-engineering/analysis
+  category: knowledge
+  domain: ai-engineering/analysis
   scope: portable
   owner: skill-graph-maintainer
   freshness: "2026-05-06"

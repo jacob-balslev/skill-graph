@@ -33,12 +33,12 @@ function assertIncludes(value, expected, msg) {
 
 const crlfSkill = [
   '---',
-  'schema_version: 3',
+  'schema_version: 4',
   'name: org/foo:bar',
   'description: "Use when testing export behavior. Do NOT use for production docs."',
   'version: 1.0.0',
   'type: capability',
-  'browse_category: quality',
+  'category: quality',
   'scope: portable',
   'owner: test',
   'freshness: "2026-05-13"',
@@ -47,7 +47,7 @@ const crlfSkill = [
   'eval_artifacts: none',
   'eval_state: unverified',
   'routing_eval: absent',
-  'project_tags: [ecommerce, shopify]',
+  'workspace_tags: [ecommerce, shopify]',
   'grounding:',
   '  truth_sources:',
   '    - path: docs/field-reference.md',
@@ -68,8 +68,8 @@ assertIncludes(exported, '# Body', 'export should include source body');
 assert(normalizeExportName('org/foo:bar') === 'org-foo-bar', 'normalizeExportName should replace / and : with hyphens');
 
 const parsed = parseFrontmatter(crlfSkill);
-assert(Array.isArray(parsed.project_tags), 'inline arrays should parse as arrays');
-assert(parsed.project_tags[0] === 'ecommerce', 'inline array values should parse as scalars');
+assert(Array.isArray(parsed.workspace_tags), 'inline arrays should parse as arrays');
+assert(parsed.workspace_tags[0] === 'ecommerce', 'inline array values should parse as scalars');
 assert(
   parsed.grounding.truth_sources[0].line_range &&
   parsed.grounding.truth_sources[0].line_range.start === 1 &&
@@ -100,12 +100,12 @@ try {
   fs.mkdirSync(skillDir, { recursive: true });
   fs.writeFileSync(path.join(skillDir, 'SKILL.md'), [
     '---',
-    'schema_version: 3',
+    'schema_version: 4',
     'name: deprecated-missing',
     'description: "Use when testing conditional lint enforcement. Do NOT use for real skills."',
     'version: 1.0.0',
     'type: capability',
-    'browse_category: quality',
+    'category: quality',
     'scope: portable',
     'owner: test',
     'freshness: "2026-05-13"',

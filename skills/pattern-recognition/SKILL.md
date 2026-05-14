@@ -1,12 +1,12 @@
 ---
-# yaml-language-server: $schema=https://skillgraph.dev/schemas/skill.v3.schema.json
-schema_version: 3
+# yaml-language-server: $schema=https://skillgraph.dev/schemas/skill.v4.schema.json
+schema_version: 4
 name: pattern-recognition
 description: "Use when auditing code for recurring issues, triaging errors by cluster, detecting drift from established conventions, or when an agent keeps fixing symptoms instead of root causes. Covers the six-step recognition loop (Observe → Cluster → Name → Codify → Detect → Prevent), grep-based audit strategies, error-pattern clustering with normalize-then-hash, board-health patterns (stale tasks, WIP overflow, duplicates), design pattern violations (heading hierarchy, token drift, triple-encoding), domain-encoding patterns (null-vs-zero distinction, integer encoding for monetary amounts, magnitude-conversion at the display boundary, source-rank trust hierarchy), the eval-as-pattern-test pipeline, the 5-Whys for root cause vs symptom analysis, pattern lifecycle states, and six named drift traps. Do NOT use for one-off bug localization without recurrence — fix the bug and move on — or for designing the classification system itself; this skill detects violations of conventions that already exist, while taxonomy design defines the system."
 version: 1.0.0
 type: capability
-browse_category: knowledge
-category: engineering/quality
+category: knowledge
+domain: engineering/quality
 scope: portable
 owner: skill-graph-maintainer
 freshness: "2026-05-06"

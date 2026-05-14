@@ -5,11 +5,11 @@ license: MIT
 compatibility: "Stack-agnostic UX-writing patterns. The button-label, empty-state, tooltip, dialog, loading, validation, and toast rules apply to any web, mobile, or desktop UI; example product copy uses generic e-commerce framings (storefront, fulfillment partner, orders) — substitute the equivalents from your own product domain."
 allowed-tools: Read Grep
 metadata:
-  schema_version: "3"
+  schema_version: "4"
   version: "1.0.0"
   type: capability
-  browse_category: knowledge
-  category: design/ux
+  category: knowledge
+  domain: design/ux
   scope: portable
   owner: skill-graph-maintainer
   freshness: "2026-05-06"

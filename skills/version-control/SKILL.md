@@ -1,12 +1,12 @@
 ---
-# yaml-language-server: $schema=https://skillgraph.dev/schemas/skill.v3.schema.json
-schema_version: 3
+# yaml-language-server: $schema=https://skillgraph.dev/schemas/skill.v4.schema.json
+schema_version: 4
 name: version-control
 description: "Use when designing or maintaining the shape of a repository's git history — choosing a branching model, deciding rebase vs merge, sizing commits, linking commits to tracker tickets, tagging releases, running parallel work across worktrees, and resolving the merge conflicts that arise from any of the above. Covers trunk-based development, short-lived feature branches, atomic commit discipline, linear-history conventions (rebase + squash), release tagging with annotated tags and SemVer, hotfix flows from tags, and worktree lifecycle for parallel agents or contributors. Do NOT use for the words inside the commit message (Conventional Commits format, identifier naming — use `naming-conventions`), for chasing a release-pipeline failure (use `debugging`), or for reviewing a PR's content (use `code-review`)."
 version: 1.0.0
 type: capability
-browse_category: engineering
-category: engineering/version-control
+category: engineering
+domain: engineering/version-control
 scope: portable
 owner: skill-graph-maintainer
 freshness: "2026-05-06"

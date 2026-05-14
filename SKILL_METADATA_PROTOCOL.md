@@ -1,7 +1,7 @@
 # Skill Metadata Protocol
 
-> **Version:** 1.0.0 (schema_version 3, Skill Graph 0.5.0)
-> **Machine-readable schema:** `schemas/skill.v3.schema.json`
+> **Version:** 1.1.0 (schema_version 4, Skill Graph 0.5.0)
+> **Machine-readable schema:** `schemas/skill.v4.schema.json`
 > **Detailed field reference:** `docs/field-reference.md`
 > **Full semantics + design rationale:** `docs/skill-metadata-protocol.md`
 
@@ -32,7 +32,7 @@ This document is the top-level public contract for the Skill Metadata Protocol f
 
 ## Overview
 
-Every skill is a single `SKILL.md` file with a YAML frontmatter block. The frontmatter is validated by `skill-lint.js` against `schemas/skill.v3.schema.json`. The `generate-manifest.js` script reads frontmatter from all skill files and emits a single `skills.manifest.json`.
+Every skill is a single `SKILL.md` file with a YAML frontmatter block. The frontmatter is validated by `skill-lint.js` against `schemas/skill.v4.schema.json`. The `generate-manifest.js` script reads frontmatter from all skill files and emits a single `skills.manifest.json`.
 
 The contract has one runtime model: one `SKILL.md` per skill, one manifest, one lint pass. There is no closed/open split, no private control plane, and no enterprise-only fields.
 
@@ -46,12 +46,12 @@ All thirteen fields in this group are required. A skill missing any of them fail
 
 | Field | Type | Purpose |
 |---|---|---|
-| `schema_version` | integer `3` | Signals the contract version. Must be `3` for all v3 skills. |
+| `schema_version` | integer `4` | Signals the contract version. Must be `4` for all v4 skills. |
 | `name` | string | Stable identifier. Used for routing and `relations.*` targets. |
 | `description` | string (≥20 chars) | Routing contract — tells the router when to activate this skill. |
 | `version` | semver string | Skill content version (e.g. `1.2.0`). Bumped by the author. |
 | `type` | enum | One of: `capability`, `workflow`, `router`, `overlay`. |
-| `browse_category` | string | Flat human browse bucket (e.g. `knowledge`, `engineering`, `quality`). |
+| `category` | string | Flat human browse bucket (e.g. `knowledge`, `engineering`, `quality`). |
 | `scope` | enum | One of: `codebase`, `reference`, `portable`. |
 | `owner` | string | Team, username, or tool that is responsible for keeping this skill current. |
 | `freshness` | ISO date | Date the skill body was last reviewed or updated. |
@@ -69,7 +69,7 @@ These fields are required only when a specific condition is met. The first three
 | `extends` | `type: overlay` | schema `allOf` |
 | `grounding` | `scope: codebase` | schema `allOf` |
 | `superseded_by` | `stability: deprecated` | schema `allOf` |
-| `keywords` | `scope: codebase` OR `routing_groups` is set | `scripts/skill-lint.js` (lint check R1) |
+| `keywords` | `scope: codebase` OR `routing_bundles` is set | `scripts/skill-lint.js` (lint check R1) |
 
 ### Optional (strongly recommended)
 
@@ -88,13 +88,13 @@ relations       # typed edges to sibling skills
 These improve portability, discoverability, and health tracking but are not required for a valid skill.
 
 ```yaml
-urn             # globally unique URN — optional in v3, required in v4
-category        # hierarchical browse path (e.g. "ecommerce/integrations/shopify")
+urn             # globally unique URN
+domain          # hierarchical domain path (e.g. "ecommerce/integrations/shopify")
 paths           # glob[] — code surfaces this skill governs
 examples        # string[] — positive activation prompts
 anti_examples   # string[] — negative activation prompts (wrong-skill training)
-project_tags    # string[] — project handles or semantic tags
-routing_groups  # string[] — routing group memberships
+workspace_tags    # string[] — project handles or semantic tags
+routing_bundles  # string[] — routing group memberships
 portability     # { readiness, targets }
 lifecycle       # { stale_after_days, review_cadence }
 runtime_telemetry  # { feedback_source, metrics }
@@ -143,10 +143,15 @@ allowed-tools   # space-separated tool allowlist
 - `reference` — general-purpose reference knowledge not tied to a specific codebase.
 - `portable` — cross-repo knowledge, intended for distribution via `portability.targets`.
 
-**`browse_category`**
+**`category`**
 - A flat string used for human browsing (e.g. sidebar navigation in a skill library UI).
-- Renamed from `family` in v2; use `browse_category` in all v3 skills.
-- For hierarchical taxonomy, use the optional `category` field with slash-delimited segments.
+- Renamed from v3 `browse_category`; use `category` in all v4 skills.
+- For hierarchical taxonomy, use the optional `domain` field with slash-delimited segments.
+
+**`domain`**
+- Optional slash-delimited domain path (e.g. `design/ux`, `architecture/events`).
+- Renamed from v3 `category` / `category_path`; values are unchanged.
+- Complements `category`. Do not use it as a second flat shelf.
 
 **`stability`**
 - `experimental` — may change without notice; use with caution.
@@ -227,12 +232,12 @@ The three eval-health fields are orthogonal — they measure different dimension
 - Negative-class activation examples — realistic prompts that look related but a DIFFERENT skill should handle.
 - Pair with `relations.disjoint_with` to name the skill that should activate instead.
 
-**`project_tags`**
+**`workspace_tags`**
 - Literal project handles or semantic tags identifying which projects this skill is relevant to.
 - Absent means the skill is ambient (applies across all projects).
 - A workspace config at `.skill-graph/config.json` can map literal project handles to semantic tag sets.
 
-**`routing_groups`**
+**`routing_bundles`**
 - String array of routing group memberships. Used by routers that dispatch to groups of skills rather than individual skills.
 
 ### Relations
@@ -335,11 +340,11 @@ grounding:
 All 36 canonical fields in the frontmatter are authored. No field is computed during the lint or manifest generation steps and written back into the source file, with one exception: `drift_check.truth_source_hashes` is computed and written by the drift sentinel when you run `skill-graph drift --record --apply`.
 
 ```
-schema_version, name, urn, description, version, type, browse_category,
+schema_version, name, urn, description, version, type, category,
 category, scope, owner, freshness, drift_check, eval_artifacts, eval_state,
 routing_eval, comprehension_state, concept, eval_last_run, stability,
 superseded_by, license, compatibility, allowed-tools, extends, triggers,
-keywords, examples, anti_examples, paths, project_tags, routing_groups,
+keywords, examples, anti_examples, paths, workspace_tags, routing_bundles,
 relations, grounding, portability, lifecycle, runtime_telemetry
 ```
 
@@ -349,7 +354,7 @@ The manifest generator (`scripts/generate-manifest.js`) reads the authored front
 
 - `id` — derived from the skill's path relative to `skills/` (e.g. `task-execution`, or `<project>/design-review` in a multi-root workspace).
 - `path` — relative path to the `SKILL.md` file.
-- `summary` — aggregate counts (`total_skills`, `by_type`, `by_browse_category`, `by_scope`, `by_stability`).
+- `summary` — aggregate counts (`total_skills`, `by_type`, `by_category`, `by_scope`, `by_stability`).
 - `generated_at` — ISO timestamp of when the manifest was generated.
 - `activation` — compiled block merging `triggers`, `keywords`, `paths`, `examples`, and `anti_examples` from frontmatter.
 - `health` — compiled block merging `eval_artifacts`, `eval_state`, `routing_eval`, `comprehension_state`, `eval_last_run`, `freshness`, and `drift_check`.
@@ -374,9 +379,23 @@ Some legacy scope and type values are normalized by the manifest generator to th
 
 ## Migration Notes
 
-### v2 → v3 (current)
+### v3 -> v4 (current)
 
-Run the codemod to migrate in place: `node scripts/migrate-skill-v2-to-v3.js`
+Run the codemod to migrate in place: `node scripts/migrate-skill-v3-to-v4.js <path>`
+
+| What changed | v3 form | v4 form |
+|---|---|---|
+| Schema version | `schema_version: 3` | `schema_version: 4` |
+| Flat browse shelf | `browse_category: engineering` | `category: engineering` |
+| Hierarchical path | `category: engineering/api-design` or `category_path: engineering/api-design` | `domain: engineering/api-design` |
+| Workspace relevance tags | `project_tags: [...]` | `workspace_tags: [...]` |
+| Activation bundles | `routing_groups: [...]` | `routing_bundles: [...]` |
+
+The generated manifest keeps `skills[].project` as generated project-root ownership from `.skill-graph/config.json`. Do not author `project` in portable skill frontmatter; use `workspace_tags` for semantic relevance.
+
+### v2 -> v3 (historical)
+
+Run the codemod to migrate in place: `node scripts/migrate-skill-v2-to-v3.js <path>`
 
 | What changed | v2 form | v3 form |
 |---|---|---|
@@ -384,53 +403,26 @@ Run the codemod to migrate in place: `node scripts/migrate-skill-v2-to-v3.js`
 | `compatibility` shape | free-text string | object `{ runtimes?, node?, notes? }` |
 | `family` field name | `family: engineering` | `browse_category: engineering` |
 | New optional fields | (none) | `category`, `project_tags`, `lifecycle`, `runtime_telemetry` |
-| Relation predicate names | `adjacent` (canonical) | `related` (preferred); `adjacent` valid with lint warning, removal target v4. `boundary` stays canonical for routing-layer asymmetric handoff (per ADR 0006); `disjoint_with` is a separate orthogonal relation for formal OWL class-disjointness, not an alias for `boundary`. `broader` and `narrower` added in v3.1. |
+| Relation predicate names | `adjacent` canonical | `related` preferred; `adjacent` remains valid with lint warning. `boundary` stays canonical for routing-layer asymmetric handoff; `disjoint_with` is a separate formal OWL class-disjointness relation. |
 
-Skills that remain on v2 forms will pass lint as warnings (not errors) during the v3 window. Warnings become errors in v4.
-
-### v1 → v2 (historical)
+### v1 -> v2 (historical)
 
 | What changed | v1 form | v2 form |
 |---|---|---|
-| `scope` enum | `generic` → `portable`, `operational` → `codebase` | New enum values |
-| Eval health | single `eval_status` field | Three orthogonal fields: `eval_artifacts`, `eval_state`, `routing_eval` |
+| `scope` enum | `generic` / `operational` | `portable` / `codebase` |
+| Eval health | single `eval_status` field | `eval_artifacts`, `eval_state`, `routing_eval` |
 | `portability` shape | `portability.level`, `portability.exports` | `portability.readiness`, `portability.targets` |
 | Route groups | `route_groups` | `routing_groups` |
 
-### v3.1 — preferred field-name aliases (additive)
+### Compatibility aliases
 
-v3.1 adds a set of optional aliases to the schema. Both the original and the alias names validate during v3.x; lint emits a warning when the legacy name is used. The aliases become canonical in v4 and the legacy names are removed there. No existing v3.0 skill is invalidated; authors who want to preview the v4 shape can switch incrementally.
-
-| Legacy name (v3.0) | Preferred alias (v3.1 → v4) | Reason |
-|---|---|---|
-| `type` | `archetype` | The rationale doc, ADR 0003, and every body section already say "archetype"; the schema's `type` was sign-drift. Plus `type` is a generic-name anti-pattern. |
-| `category` | `category_path` | Polysemy with `browse_category` — `category_path` signals slash-delimited hierarchy explicitly. |
-| `freshness` | `reviewed_at` | "Freshness" is metaphorical; `reviewed_at` uses the project's own `_at` date-field convention. |
-| `allowed-tools` | `allowed_tools` | Only kebab-case field in a snake_case schema. The export transform still writes the kebab-case form for `SKILL.md` consumers. |
-| `eval_artifacts` + `eval_state` + `routing_eval` (top-level triple) | `eval: { artifacts, content_state, routing_coverage }` (nested object) | Aligns with the sibling-object pattern of `drift_check`, `grounding`, `lifecycle`, `portability`. Also resolves `routing_eval`'s head-first compound ambiguity by renaming to `routing_coverage`. |
-| `grounding.domain_object` | `grounding.subject` | "domain_object" is DDD jargon; `subject` is the natural English word for what the skill is about. |
-| `grounding.grounding_mode` | `grounding.claim_scope` | "mode" is generic; `claim_scope` names the actual semantic axis. |
-| `compatibility.node` | `compatibility.node_version` | In a skill-graph repo, bare `node` reads as graph-node. |
-| `compatibility.runtimes` | `compatibility.agent_runtimes` | Disambiguates from Node runtime, container runtime, etc. |
-| `portability.targets` | `portability.export_targets` | Bare `targets` is generic; `export_targets` names the actual operation. |
-| `drift_check.last_verified` | `drift_check.verified_at` | Follows the project's own `_at` convention for date fields. |
-
-When both forms are present, the values must match. The manifest generator passes both through; consumers should prefer the v3.1 alias.
-
-### Planned for v4
-
-v4 is the next breaking-change horizon. No v4 changes are in scope for v3 skills today, but these are planned:
-
-- `urn` becomes required (ADR 0004).
-- `adjacent` is removed; use `related` instead. `boundary` remains canonical for routing-layer handoff (ADR 0006).
-- `freshness` / `drift_check.last_verified` may consolidate (ADR 0005).
-- All v3.1 aliases above become canonical; the legacy names are removed.
+Some preferred v3.1 aliases remain accepted in v4 for compatibility: `archetype`, `reviewed_at`, `allowed_tools`, nested `eval.*`, `grounding.subject`, `grounding.claim_scope`, `compatibility.agent_runtimes`, `compatibility.node_version`, `portability.export_targets`, and `drift_check.verified_at`. When both forms are present, values must match.
 
 ---
 
 ## Design Constraints
 
-The v1 contract enforces the following invariants. Any change to the schema or tooling that violates these invariants is a breaking change requiring a `schema_version` bump.
+The contract enforces the following invariants. Any change to the schema or tooling that violates these invariants is a breaking change requiring a `schema_version` bump.
 
 1. **One file, one skill.** Each skill lives in one `SKILL.md`. No split-source format. No per-environment variants.
 2. **One manifest.** All skills aggregate into one `skills.manifest.json`. No closed/open split manifest.
@@ -438,8 +430,8 @@ The v1 contract enforces the following invariants. Any change to the schema or t
 4. **No second runtime model.** The same frontmatter shape serves local development, CI, and federated registry export. Export to plain `SKILL.md` is a transform (`scripts/export-skill.js`), not a separate authoring format.
 5. **Strict schema.** `additionalProperties: false` on both the skill and manifest schemas. Unknown fields fail lint rather than being silently ignored.
 6. **Additive evolution only within a version.** New optional fields, new enum values that extend (not replace) an existing enum, and new lint warnings are non-breaking. Renamed fields, removed fields, retyped fields, tightened required-ness, and removed enum values require a `schema_version` bump.
-7. **Migration tooling ships with every breaking change.** The v3 bump ships `scripts/migrate-skill-v2-to-v3.js`. Future bumps follow the same pattern.
+7. **Migration tooling ships with every breaking change.** The v3 bump ships `scripts/migrate-skill-v2-to-v3.js`; the v4 bump ships `scripts/migrate-skill-v3-to-v4.js`. Future bumps follow the same pattern.
 
 ---
 
-*See `docs/skill-metadata-protocol.md` for full design rationale, overlay composition precedence, and schema versioning policy. See `docs/field-reference.md` for one section per field with examples. See `schemas/skill.v3.schema.json` for the machine-enforceable version of this contract.*
+*See `docs/skill-metadata-protocol.md` for full design rationale, overlay composition precedence, and schema versioning policy. See `docs/field-reference.md` for one section per field with examples. See `schemas/skill.v4.schema.json` for the machine-enforceable version of this contract.*

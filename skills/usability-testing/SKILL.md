@@ -1,10 +1,10 @@
 ---
-schema_version: 3
+schema_version: 4
 name: usability-testing
 description: "Use when observing real users attempting tasks on a prototype or live product to surface usability issues — moderated or unmoderated, think-aloud protocol, task scenarios, severity rating, sample sizing per Nielsen's heuristics. Do NOT use for automated test suites, code coverage analysis, CI pipelines, unit/integration testing, or any engineering verification — those are testing-strategy concerns, not human-behavior observation."
 version: 1.0.0
 type: capability
-browse_category: design
+category: design
 scope: portable
 owner: skill-graph-maintainer
 freshness: "2026-05-12"

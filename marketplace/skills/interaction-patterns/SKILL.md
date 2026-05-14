@@ -5,11 +5,11 @@ license: MIT
 compatibility: Portable interaction-pattern guidance for web and app UI. Pattern choices should be checked against platform conventions and accessible-widget guidance before implementation.
 allowed-tools: Read Grep
 metadata:
-  schema_version: "3"
+  schema_version: "4"
   version: "1.0.0"
   type: capability
-  browse_category: frontend
-  category: design/interaction
+  category: frontend
+  domain: design/interaction
   scope: portable
   owner: skill-graph-maintainer
   freshness: "2026-05-11"

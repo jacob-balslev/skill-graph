@@ -5,11 +5,11 @@ license: MIT
 compatibility: "Provider-agnostic; principles apply across Claude, GPT, Gemini, and open-weight models. Layer mapping varies by harness (Claude Code, OpenCode, Cursor, Continue, Aider) but the five-layer abstraction holds."
 allowed-tools: Read Grep Bash Edit
 metadata:
-  schema_version: "3"
+  schema_version: "4"
   version: "1.0.0"
   type: capability
-  browse_category: knowledge
-  category: ai-engineering/context
+  category: knowledge
+  domain: ai-engineering/context
   scope: portable
   owner: skill-graph-maintainer
   freshness: "2026-05-06"

@@ -5,11 +5,11 @@ license: MIT
 compatibility: "Portable observability modeling discipline for applications, integrations, jobs, queues, APIs, and agent workflows."
 allowed-tools: Read Grep
 metadata:
-  schema_version: "3"
+  schema_version: "4"
   version: "1.0.0"
   type: capability
-  browse_category: engineering
-  category: engineering/observability
+  category: engineering
+  domain: engineering/observability
   scope: portable
   owner: skill-graph-maintainer
   freshness: "2026-05-11"

@@ -1,10 +1,10 @@
 ---
-schema_version: 3
+schema_version: 4
 name: theme-system-design
 description: "Use when designing a theme system — design tokens, semantic token layering, CSS custom property strategy, runtime theme switching, and theme contract guarantees. Do NOT use for one-off color choices, brand-only palette work, or framework-specific styling-library configuration."
 version: 1.0.0
 type: capability
-browse_category: design
+category: design
 scope: portable
 owner: skill-graph-maintainer
 freshness: "2026-05-12"

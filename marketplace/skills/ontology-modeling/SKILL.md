@@ -5,11 +5,11 @@ license: MIT
 compatibility: "Portable ontology modeling guidance; implementation can be Markdown, RDF, JSON-LD, OWL, SHACL, or an internal schema language."
 allowed-tools: Read Grep
 metadata:
-  schema_version: "3"
+  schema_version: "4"
   version: "1.0.0"
   type: capability
-  browse_category: knowledge
-  category: modeling/ontology
+  category: knowledge
+  domain: modeling/ontology
   scope: portable
   owner: skill-graph-maintainer
   freshness: "2026-05-11"

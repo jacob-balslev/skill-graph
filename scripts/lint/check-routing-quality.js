@@ -8,14 +8,14 @@
  * on legitimately terse skills).
  *
  * **Check R1 — empty keywords in operational scope (ERROR)**
- *   A skill with `scope: codebase` or any `routing_groups` entry is meant to
+ *   A skill with `scope: codebase` or any `routing_bundles` entry is meant to
  *   be surfaced by a router. An empty `keywords: []` (or no keywords field)
  *   means the skill cannot be discovered by keyword-based routers. This is
  *   almost always an authoring mistake.
  *
  *   Note: the task spec text says "operational scope" but after SH-5784 the
  *   v2 scope value is `codebase`. This check targets `scope: codebase` OR
- *   skills that have a non-empty `routing_groups` array, matching the intent
+ *   skills that have a non-empty `routing_bundles` array, matching the intent
  *   of the original proposal.
  *
  * **Check R2 — description verbatim in Coverage section (WARN)**
@@ -52,9 +52,9 @@ function checkRoutingQuality(opts) {
   if (!fm) return { errors, warnings };
 
   // ------------------------------------------------------------------ R1
-  // Error: empty keywords for scope: codebase or routing_groups-having skills.
+  // Error: empty keywords for scope: codebase or routing_bundles-having skills.
   const isCodebaseScope   = fm.scope === 'codebase';
-  const hasRoutingGroups  = Array.isArray(fm.routing_groups) && fm.routing_groups.length > 0;
+  const hasRoutingGroups  = Array.isArray(fm.routing_bundles) && fm.routing_bundles.length > 0;
   // The custom frontmatter parser represents `keywords: []` as the string "[]"
   // (inline YAML array syntax). Treat that as empty as well.
   const keywordsEmpty     = !fm.keywords
@@ -70,13 +70,13 @@ function checkRoutingQuality(opts) {
 
     const scopeReason = isCodebaseScope
       ? 'scope: codebase'
-      : `routing_groups: [${fm.routing_groups.join(', ')}]`;
+      : `routing_bundles: [${fm.routing_bundles.join(', ')}]`;
 
     errors.push({
       message: `keywords: [] for a skill with ${scopeReason} — router cannot discover this skill`,
       line:    keyLine.line,
       column:  keyLine.column,
-      help:    'Add at least one keyword to the keywords list. Skills with scope: codebase or routing_groups must be discoverable by keyword routers. See docs/field-reference.md § keywords.',
+      help:    'Add at least one keyword to the keywords list. Skills with scope: codebase or routing_bundles must be discoverable by keyword routers. See docs/field-reference.md § keywords.',
     });
   }
 

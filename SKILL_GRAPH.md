@@ -60,10 +60,12 @@ A sixth set of files — `README.md`, `CHANGELOG.md`, `CONTRIBUTING.md`, `LICENS
 
 | File | Role |
 |---|---|
-| `schemas/skill.schema.json` | The frontmatter schema. Unversioned — tracks latest (v3 today). |
+| `schemas/skill.schema.json` | The frontmatter schema. Unversioned — tracks latest (v4 today). |
 | `schemas/manifest.schema.json` | The compiled-manifest schema. Unversioned — tracks latest (v3 today). |
-| `schemas/skill.v3.schema.json` | Pinned v3 copy. Consumers that want stability across a future v4 bump validate against this file. |
-| `schemas/manifest.v3.schema.json` | Pinned v3 copy. Same rationale. |
+| `schemas/skill.v4.schema.json` | Pinned v4 copy. Consumers that want the current contract validate against this file. |
+| `schemas/skill.v3.schema.json` | Frozen pinned v3 copy for consumers still migrating to v4. |
+| `schemas/manifest.v4.schema.json` | Pinned v4 manifest copy. |
+| `schemas/manifest.v3.schema.json` | Frozen pinned v3 manifest copy. |
 | `schemas/skill.v2.schema.json` | **Frozen.** Retained for consumers still on v2. Never updated. |
 | `schemas/manifest.v2.schema.json` | **Frozen.** Same rationale. |
 
@@ -82,8 +84,8 @@ Public docs that define or explain the protocol in prose. If a Tier 2 file disag
 |---|---|
 | `SKILL_METADATA_PROTOCOL.md` | Normative public spec: required fields, semantic rules, authored vs generated fields, migration notes. |
 | `docs/skill-metadata-protocol.md` | Rationale and deep explanation: archetype section map, requiredness groups, strictness rules, schema versioning policy, design tradeoffs. |
-| `docs/field-reference.md` | One section per authored field. All 36 canonical v3 fields with purpose, rules, allowed values, examples. |
-| `docs/field-decision-guide.md` | Decision tables for the hard choices: `scope`, `relations.*`, eval-health triple, `portability`, `project_tags`, and the "tag vs. category vs. routing_groups" question. |
+| `docs/field-reference.md` | One section per authored field. All 40 current v4 top-level fields with purpose, rules, allowed values, examples. |
+| `docs/field-decision-guide.md` | Decision tables for the hard choices: `scope`, `relations.*`, eval-health triple, `portability`, `workspace_tags`, and the "tag vs. category vs. routing_bundles" question. |
 | `docs/manifest-field-mapping.md` | The authored → generated bridge: rename map, loss policy, per-version migration notes, worked example. |
 
 Three rules govern this tier:
@@ -104,7 +106,7 @@ Scripts that police Tier 1 (lint, consistency) or compile Tier 1's output (manif
 |---|---|
 | `scripts/skill-lint.js` | Eleven-check per-skill validator. Schema validation, parent-directory check, relation-target existence, eval coherence, archetype sections, routing quality, cross-schema parity, sample manifest conformance, generator parity, migration warnings. |
 | `scripts/lint/check-archetype-sections.js` | Archetype-aware H2 section validator. Errors on missing required sections per archetype. |
-| `scripts/lint/check-routing-quality.js` | Routing quality heuristics. R1: keywords required for codebase-scope or routing_groups skills. R2: description must not be duplicated verbatim in `## Coverage`. |
+| `scripts/lint/check-routing-quality.js` | Routing quality heuristics. R1: keywords required for codebase-scope or routing_bundles skills. R2: description must not be duplicated verbatim in `## Coverage`. |
 | `scripts/lint/format-code-frame.js` | Babel/Rust-style diagnostic formatter. |
 | `scripts/lib/parse-frontmatter.js` | Minimal YAML parser. Handles quoted keys, block sequences, nested objects, block sequences of objects (v3 `boundary` / `depends_on` shape). |
 
@@ -175,7 +177,7 @@ flowchart LR
 
 | File | Role |
 |---|---|
-| `scripts/skill-graph-route.js` | Graph-aware selector. Uses every unique Skill Graph field: `relations.depends_on` transitive closure, `relations.verify_with` co-loading, `relations.boundary` anti-ownership exclusion, `eval_state` quality gate, `lifecycle.stale_after_days` staleness annotation, `project_tags` filtering with workspace semantic-tag expansion. Emits per-skill reasons. |
+| `scripts/skill-graph-route.js` | Graph-aware selector. Uses every unique Skill Graph field: `relations.depends_on` transitive closure, `relations.verify_with` co-loading, `relations.boundary` anti-ownership exclusion, `eval_state` quality gate, `lifecycle.stale_after_days` staleness annotation, `workspace_tags` filtering with workspace semantic-tag expansion. Emits per-skill reasons. |
 | `scripts/skill-graph-drift.js` | Drift sentinel. Hashes every `grounding.truth_sources` entry with SHA-256, including line-range and anchor object entries; compares against the recorded `drift_check.truth_source_hashes` baseline; reports DRIFT / BROKEN / STALE / NO_BASELINE. `--record --apply` updates the SKILL.md in place with fresh hashes. |
 
 These tools are the *proof* that Tier 1's schema earns its complexity. If you ever doubt whether `boundary` or `grounding.truth_sources` or `lifecycle` is worth the field count, run these scripts against a real skill library and watch them change routing decisions.
@@ -280,7 +282,7 @@ Concrete artifacts that show adopters what "good" looks like. Every specimen is 
 
 | File | Role |
 |---|---|
-| `examples/skill-metadata-template.md` | Self-referential authoring template. Its subject is skill authoring itself. Demonstrates every v3 field including object-shaped `drift_check`, `compatibility`, `boundary[{skill, reason}]`, and `lifecycle`. |
+| `examples/skill-metadata-template.md` | Self-referential authoring template. Its subject is skill authoring itself. Demonstrates the v4 field shape including object-shaped `drift_check`, `compatibility`, `boundary[{skill, reason}]`, and `lifecycle`. |
 | `examples/skills.manifest.sample.json` | Generator-produced sample. Drift-checked against live generator output by `skill-lint.js` check 8. |
 
 ### Starter skills
@@ -293,7 +295,7 @@ The repo currently ships a larger `skills/` library. The eight starters below ar
 | `skills/debugging` | workflow | portable | `## Workflow` section with numbered steps |
 | `skills/documentation` | capability | portable | Eval artifact + worked audit both shipped |
 | `skills/refactor` | workflow | portable | `relations.depends_on: [testing-strategy]` |
-| `skills/testing-strategy` | capability | portable | `routing_groups: [quality]` |
+| `skills/testing-strategy` | capability | portable | `routing_bundles: [quality]` |
 | `skills/skill-router` | router | portable | Router archetype with `## Routing Rules` |
 | `skills/lint-overlay` | overlay | portable | Overlay archetype with `extends` + `## Overlay Rules` |
 | `skills/graph-audit` | capability | codebase | **The only starter with a full `grounding` block and recorded `truth_source_hashes`.** |

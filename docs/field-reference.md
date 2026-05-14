@@ -13,7 +13,7 @@ The field reference is split across three coordinated documents. Use whichever f
 | Doc | Genre | When to read |
 |---|---|---|
 | [`field-reference.md`](field-reference.md) (this doc) | **Hand-curated prose reference.** Field-by-field, with worked examples, lint notes, and cross-cutting guidance. | When authoring or reviewing a SKILL.md and you want examples and "when to use" rules alongside the schema-canonical definition. |
-| [`field-reference.generated.md`](field-reference.generated.md) | **Auto-generated index.** Built from `schemas/skill.v3.schema.json` description strings by `scripts/build-field-reference.js`. Drift-free against the schema. | When you want the machine-guaranteed list of every field, every type, every pattern, every enum value. The fastest way to verify what the schema actually accepts today. |
+| [`field-reference.generated.md`](field-reference.generated.md) | **Auto-generated index.** Built from `schemas/skill.v4.schema.json` description strings by `scripts/build-field-reference.js`. Drift-free against the schema. | When you want the machine-guaranteed list of every field, every type, every pattern, every enum value. The fastest way to verify what the schema actually accepts today. |
 | [`field-rationale.md`](field-rationale.md) | **Hand-authored "why this field" rationale.** Covers the ~10 fields whose meaning is non-obvious from the schema description (`scope`, `eval_artifacts`, `eval_state`, `routing_eval`, `relations.depends_on`, `relations.verify_with`, `relations.broader`, `grounding.evidence_priority`, `lifecycle.review_cadence`, `portability.readiness`). | When you understand *what* a field stores but want to know *why the field exists at all* and *what the common confusion looks like*. |
 
 The schema is the single source of truth for shape; this doc is the source of truth for prose; `field-rationale.md` is the source of truth for design intent. Lint check C7 (in `scripts/check-protocol-consistency.js`) verifies the generated index stays in sync with the schema description strings — running `node scripts/build-field-reference.js --check` against the live schema must succeed before commit.
@@ -25,16 +25,16 @@ The schema is the single source of truth for shape; this doc is the source of tr
 **Purpose.** Versions the contract so migration tooling can handle future schema changes deterministically.
 
 **Rules.**
-- Must be the integer `3` or the string `"3"` for all v3 skills.
+- Must be the integer `4` or the string `"4"` for all v4 skills.
 - Start every new skill at the current schema version. Do not downgrade.
-- The v2 → v3 bump introduced `drift_check` as an object (was a date string), `compatibility` as an object (was a free-text string), renamed `family` → `browse_category`, and added optional `category`, `project_tags`, `lifecycle`, and `runtime_telemetry`. Run `node scripts/migrate-skill-v2-to-v3.js` for a one-shot migration. See `docs/manifest-field-mapping.md § Migration Note — v2 → v3` for the full map.
-- The v1 → v2 bump (SH-5784) changed the `scope` enum (`generic`→`portable`, `operational`→`codebase`), split `eval_status` into three orthogonal fields, renamed `portability.level`→`readiness` and `portability.exports`→`targets`, and renamed `route_groups`→`routing_groups`. See `docs/manifest-field-mapping.md § Migration Note — v1 → v2` for the historical map.
+- The v3 -> v4 bump renamed `browse_category` -> `category`, `category` / `category_path` -> `domain`, `project_tags` -> `workspace_tags`, and `routing_groups` -> `routing_bundles`. Run `node scripts/migrate-skill-v3-to-v4.js` for a one-shot migration.
+- The v1 → v2 bump (SH-5784) changed the `scope` enum (`generic`→`portable`, `operational`→`codebase`), split `eval_status` into three orthogonal fields, renamed `portability.level`→`readiness` and `portability.exports`→`targets`, and renamed `route_bundles`→`routing_bundles`. See `docs/manifest-field-mapping.md § Migration Note — v1 → v2` for the historical map.
 
-**Versioning semantics (policy).** The integer signals *breaking vs non-breaking* evolution. A minor/patch axis is intentionally not surfaced on this field — the schema's own additive changes (new optional fields, new enum values, new lint warnings) do not require consumers to migrate, so no version bump is emitted. If a future release needs finer-grained version signalling (e.g. "v3.1 adds the SKOS-aligned predicates"), the canonical location is `CHANGELOG.md`, not a schema bump. v4 is the breaking-change horizon — `urn` becomes required, `adjacent` is removed in favour of `related`, and the freshness fields may consolidate. `boundary` remains canonical for routing-layer handoff (ADR 0001, ADR 0004, ADR 0006).
+**Versioning semantics (policy).** The integer signals *breaking vs non-breaking* evolution. A minor/patch axis is intentionally not surfaced on this field; additive schema changes do not require consumers to migrate, so no version bump is emitted.
 
 **Example.**
 ```yaml
-schema_version: 3
+schema_version: 4
 ```
 
 **When to use.** Always — this is a required field.
@@ -48,7 +48,7 @@ schema_version: 3
 **Purpose.** Globally-unique persistent identifier for the skill. Unlocks FAIR Findability (Wilkinson et al. 2016) across repos and federated registries. `name` is the display-layer handle; `urn` is the stable identity consumers should cite. See ADR 0004 for the full rationale.
 
 **Rules.**
-- Optional in v3; target-required in v4.
+- Optional in v4.
 - Format: `urn:skill:<repo-slug>:<skill-name>`.
 - `<repo-slug>` is the publishing repo's canonical short handle — lowercase, hyphen-separated, `[a-z0-9-]+` (e.g. `skill-graph`, or your own repo's short name).
 - `<skill-name>` MUST equal the `name` field exactly.
@@ -154,7 +154,7 @@ version: 1.0.0
 
 **Rules.**
 - Keep `type` restricted to these four values.
-- Use `browse_category` (flat bucket) or `category` (hierarchical path) for browse taxonomy, not `type`.
+- Use `category` (flat bucket) or `category` (hierarchical path) for browse taxonomy, not `type`.
 - `overlay` type always requires the `extends` field.
 
 **Example.**
@@ -191,16 +191,16 @@ archetype: capability
 
 ---
 
-## `browse_category`
+## `category`
 
-**Purpose.** Flat human browse bucket for discovery and grouping. Does not imply runtime behavior or evaluation logic. Renamed from v2 `family` in v3 — the old name invited misuse as a routing signal, so the v3 name makes the intent (browse, not behavior) explicit.
+**Purpose.** Flat human browse bucket for discovery and grouping. Does not imply runtime behavior or evaluation logic. Renamed from v3 `browse_category` in v4 so the public browse axis has the obvious name.
 
 **Rules.**
-- Open-ended string — no enum is enforced.
+- Required.
+- Open-ended string; no enum is enforced.
 - Use stable, human-readable buckets.
-- Avoid one-off synonyms for the same idea (e.g., pick `engineering` and stick to it; don't use `dev` in one skill and `engineering` in another).
-- A future release may adopt a controlled vocabulary; until then, choose consistently within a skill library.
-- For hierarchical taxonomy (`ecommerce/integrations/shopify`), use the separate optional `category` field. `browse_category` is flat on purpose.
+- Avoid one-off synonyms for the same idea (for example, pick `engineering` and stick to it; do not use `dev` in one skill and `engineering` in another).
+- For hierarchical taxonomy (`ecommerce/integrations/shopify`), use the optional `domain` field. `category` is flat on purpose.
 
 **Recommended values.**
 
@@ -210,56 +210,42 @@ archetype: capability
 | `engineering` | Code, architecture, infrastructure |
 | `frontend` | UI, CSS, component patterns |
 | `quality` | Testing, auditing, review |
-| `integration` | External APIs, webhooks, data sync |
-| `meta` | Skills about the skill system itself |
+| `integrations` | External APIs, webhooks, data sync |
+| `security` | Security review and risk controls |
+| `design` | UX, research, visual, and product design |
 
 **Example.**
 ```yaml
-browse_category: integration
+category: integrations
 ```
 
-**When to use.** Always — required. Even if the bucket is unusual, populate it so the skill appears in browse indexes.
+**When to use.** Always. Even if the bucket is unusual, populate it so the skill appears in browse indexes.
 
-**When NOT to use.** Do not use `browse_category` for behavioral control — that is `type`'s job. Do not use it for routing group membership — that is `routing_groups`. Do not use it for hierarchical placement — that is `category`.
+**When NOT to use.** Do not use `category` for behavioral control; that is `type`'s job. Do not use it for activation-bundle membership; that is `routing_bundles`. Do not use it for hierarchical placement; that is `domain`.
 
-**Migration from v2.** The field name changed from `family` to `browse_category` in v3 (values unchanged). The v2 name is rejected as an unknown field under the v3 schema via `additionalProperties: false`. Run `node scripts/migrate-skill-v2-to-v3.js` for an automatic rename.
+**Migration from v3.** The field name changed from `browse_category` to `category` in v4 (values unchanged). Run `node scripts/migrate-skill-v3-to-v4.js` for the automatic rename.
 
 ---
 
-## `category`
+## `domain`
 
-**Purpose.** Hierarchical browse path as slash-delimited segments. Complements `browse_category`: flat bucket vs. tree path answer different questions. A UI or docs site uses `category` to render a folder tree; a filter UI uses `browse_category` for quick grouping.
+**Purpose.** Hierarchical domain path as slash-delimited segments. Complements `category`: flat bucket and tree path answer different questions. A UI or docs site uses `domain` to render a folder tree; a filter UI uses `category` for quick grouping.
 
 **Rules.**
 - Optional.
-- Lowercase alphanumeric segments separated by `/` (e.g., `ecommerce/integrations/shopify`).
+- Lowercase alphanumeric segments separated by `/` (for example, `ecommerce/integrations/shopify`).
 - Must match pattern `^[a-z0-9][a-z0-9-]*(/[a-z0-9][a-z0-9-]*)*$`.
-- Do not use absolute paths (no leading `/`), no trailing `/`, no `.` or `..`.
-- One skill, one path. A skill cannot belong to two hierarchies at once — the `browse_category` field is the escape hatch for secondary flat grouping.
+- Do not use absolute paths, leading `/`, trailing `/`, `.`, or `..`.
+- One skill, one path. Use `workspace_tags` or `routing_bundles` for secondary flat grouping.
 
 **Example.**
 ```yaml
-category: ecommerce/integrations/shopify
+domain: ecommerce/integrations/shopify
 ```
 
 **When to use.** When the skill library is large enough that a tree structure helps readers find related skills. A library with fewer than 20 skills rarely benefits.
 
-**When NOT to use.** Small skill libraries — `browse_category` alone is sufficient. Skills where categorization is genuinely ambiguous — use `project_tags` or `routing_groups` to attach flat semantic tags instead.
-
----
-
-## `category_path`
-
-**Purpose.** v3.1 preferred alias for `category`. Identical pattern and semantics; the rename resolves polysemy with `browse_category` — the `_path` suffix signals slash-delimited hierarchy explicitly in the field name.
-
-**Rules.**
-- When both `category` and `category_path` are present, they must match.
-- v3.x skills can set either; v4 makes `category_path` canonical and removes `category`.
-
-**Example.**
-```yaml
-category_path: ecommerce/integrations/shopify
-```
+**When NOT to use.** Small skill libraries where `category` alone is sufficient. Skills where categorization is genuinely ambiguous should use `workspace_tags` or `routing_bundles` to attach flat semantic tags instead.
 
 ---
 
@@ -859,9 +845,9 @@ keywords:
 
 **When to use.** Required for all routable skills. Omit only for internal helper skills that are never activated by user language.
 
-**When NOT to use.** Keywords are not tags for browse taxonomy — that is `browse_category` / `category`'s job. Do not add every possible synonym; keep to the 3–8 most likely search terms.
+**When NOT to use.** Keywords are not tags for browse taxonomy — that is `category` / `category`'s job. Do not add every possible synonym; keep to the 3–8 most likely search terms.
 
-**Lint check.** `scripts/skill-lint.js` errors when `keywords` is absent or empty for a skill with `scope: codebase` or a non-empty `routing_groups` field. Those skills are designed to be discovered by keyword routers and cannot be omitted. See `scripts/lint/check-routing-quality.js` (check R1).
+**Lint check.** `scripts/skill-lint.js` errors when `keywords` is absent or empty for a skill with `scope: codebase` or a non-empty `routing_bundles` field. Those skills are designed to be discovered by keyword routers and cannot be omitted. See `scripts/lint/check-routing-quality.js` (check R1).
 
 ---
 
@@ -888,28 +874,28 @@ paths:
 
 ---
 
-## `project_tags`
+## `workspace_tags`
 
-**Purpose.** Declares which projects a skill is relevant to in a multi-project workspace. A skill without `project_tags` is ambient — it applies to every project. A skill with tags is filtered in or out by the router based on the active project.
+**Purpose.** Declares which projects a skill is relevant to in a multi-project workspace. A skill without `workspace_tags` is ambient — it applies to every project. A skill with tags is filtered in or out by the router based on the active project.
 
-**Taxonomy note.** `project_tags` answers "which of my projects is this skill relevant to?" `category` answers "where does this belong in a browse tree?" `routing_groups` answers "which batch-activation group is this in?" Three fields, three different jobs, no overlap.
+**Taxonomy note.** `workspace_tags` answers "which of my projects is this skill relevant to?" `category` answers "where does this belong in a browse tree?" `routing_bundles` answers "which batch-activation group is this in?" Three fields, three different jobs, no overlap.
 
 **Rules.**
 - Optional array of lowercase kebab-case tokens.
 - Each tag is either a literal project handle (whatever kebab-case name you give a project in your workspace config) or a semantic tag that multiple projects share (e.g., `ecommerce`, `saas`, `b2b`).
 - The workspace config at `.skill-graph/config.json` maps literal project handles to `semantic_tags`. A skill tagged with a semantic tag matches every project whose config expands to include that tag.
-- Absent `project_tags` means the skill is ambient — applies to every project. This is the default; use it for cross-cutting skills like GDPR, a11y, or test-driven-development.
+- Absent `workspace_tags` means the skill is ambient — applies to every project. This is the default; use it for cross-cutting skills like GDPR, a11y, or test-driven-development.
 
 **Example.**
 ```yaml
 # One specific project only — literal targeting
-project_tags: [<project-a>]
+workspace_tags: [<project-a>]
 
 # Cross-ecommerce — every project whose workspace config maps to `ecommerce`
-project_tags: [ecommerce]
+workspace_tags: [ecommerce]
 
 # Literal + semantic — precise match on <project-a>, semantic match on any ecommerce project
-project_tags: [<project-a>, ecommerce]
+workspace_tags: [<project-a>, ecommerce]
 ```
 
 **Workspace config resolution.**
@@ -930,15 +916,15 @@ A skill tagged `[ecommerce]` matches both projects. A skill tagged `[<project-a>
 
 **When to use.** When the workspace has more than one project and a skill's scope is clearly bound to a subset. Tag with semantic tags whenever possible — literal project handles couple the skill to a project name that may change.
 
-**When NOT to use.** Single-project workspaces — omit the field. Cross-cutting skills that apply everywhere — omit the field. Do not use it as a substitute for `browse_category` or `routing_groups`; they answer different questions.
+**When NOT to use.** Single-project workspaces — omit the field. Cross-cutting skills that apply everywhere — omit the field. Do not use it as a substitute for `category` or `routing_bundles`; they answer different questions.
 
 ---
 
-## `routing_groups`
+## `routing_bundles`
 
 **Purpose.** Named routing group membership for batch activation and browse classification. Allows a router to load all skills in a group with a single label.
 
-**Taxonomy note.** A routing group is a *classification tag* a router can consult to select a family of skills (e.g., `quality`, `security`, `integrations`). It is not a URL route, not an execution graph, and not a permission scope. The field was renamed from `route_groups` in schema_version 2 (SH-5784) because the old name invited confusion with URL routing; the semantics did not change.
+**Taxonomy note.** A routing group is a *classification tag* a router can consult to select a family of skills (e.g., `quality`, `security`, `integrations`). It is not a URL route, not an execution graph, and not a permission scope. The field was renamed from `route_bundles` in schema_version 2 (SH-5784) because the old name invited confusion with URL routing; the semantics did not change.
 
 **Rules.**
 - Array of strings.
@@ -948,7 +934,7 @@ A skill tagged `[ecommerce]` matches both projects. A skill tagged `[<project-a>
 
 **Example.**
 ```yaml
-routing_groups:
+routing_bundles:
   - integrations
   - quality
 ```
@@ -957,9 +943,9 @@ routing_groups:
 
 **When NOT to use.** Skills that should only activate individually. Do not add routing groups speculatively — add them when a real routing pattern requires them.
 
-**Migration from v1.** The v1 field name `route_groups` is a hard error under the v2 schema. Rename the field to `routing_groups`; values are unchanged.
+**Migration from v1.** The v1 field name `route_bundles` is a hard error under the v2 schema. Rename the field to `routing_bundles`; values are unchanged.
 
-**Lint check.** `scripts/skill-lint.js` errors when a skill has a non-empty `routing_groups` field but an absent or empty `keywords` field. A skill designed for group-based batch activation must also be discoverable by keyword-based routers. See `scripts/lint/check-routing-quality.js` (check R1).
+**Lint check.** `scripts/skill-lint.js` errors when a skill has a non-empty `routing_bundles` field but an absent or empty `keywords` field. A skill designed for group-based batch activation must also be discoverable by keyword-based routers. See `scripts/lint/check-routing-quality.js` (check R1).
 
 ---
 

@@ -1,12 +1,12 @@
 ---
-# yaml-language-server: $schema=https://skillgraph.dev/schemas/skill.v3.schema.json
-schema_version: 3
+# yaml-language-server: $schema=https://skillgraph.dev/schemas/skill.v4.schema.json
+schema_version: 4
 name: migrate-posts-to-v2-frontmatter
 description: "Use when migrating every existing post in `content/posts/**/*.md` to the v2 frontmatter schema — adding the new required `summary` field, normalizing `tags` to the controlled vocabulary, converting bare-date `date` strings to ISO 8601 with timezone, and re-validating every post against the v2 schema before the next build runs. Activate this skill whenever the task references migration `0007-frontmatter-v2`, the v2 frontmatter rollout, or asks how to safely change a required-field set across a populated content tree without breaking the build. Do NOT use for unrelated migrations (use a generic content-migration skill or write a fresh one) or for general schema-design questions (use a schema-design skill)."
 version: 0.1.0
 type: workflow
-browse_category: content
-category: content/migrations
+category: content
+domain: content/migrations
 scope: codebase
 owner: markdown-static-site-maintainer
 freshness: "2026-05-06"
@@ -79,7 +79,7 @@ portability:
   readiness: scripted
   targets:
     - skill-md
-project_tags:
+workspace_tags:
   - content
   - static-site
   - migrations

@@ -74,7 +74,7 @@ Three layout styles this design accommodates:
 - `workspace.skill_roots` (required): ordered list of skill root directories. Each entry declares:
   - `path`: repo-relative directory to walk. The generator expects each subdirectory under the path to contain a `SKILL.md`.
   - `project`: literal project handle stamped onto every skill loaded from this root. `null` means "shared / ambient" — skills loaded without a project owner.
-- `workspace.projects` (optional): map of literal project handle → `{ semantic_tags: string[] }`. The router expands the active project into this semantic set before matching skills' `project_tags`.
+- `workspace.projects` (optional): map of literal project handle → `{ semantic_tags: string[] }`. The router expands the active project into this semantic set before matching skills' `workspace_tags`.
 
 ### Single-root fallback
 
@@ -96,10 +96,10 @@ When a consumer calls `skill-graph route <query> --project <handle>`, the router
 
 1. Reads `manifest.workspace.projects[<handle>].semantic_tags` to expand the project handle into a set of matchable tags.
 2. For each skill:
-   - If `project_tags` is absent → skill is ambient, matches.
-   - If `project_tags` contains the literal project handle → matches.
-   - If `project_tags` contains any of the project's expanded semantic tags → matches.
-   - Otherwise → excluded with reason `project_tags [...] exclude project "<handle>"`.
+   - If `workspace_tags` is absent → skill is ambient, matches.
+   - If `workspace_tags` contains the literal project handle → matches.
+   - If `workspace_tags` contains any of the project's expanded semantic tags → matches.
+   - Otherwise → excluded with reason `workspace_tags [...] exclude project "<handle>"`.
 
 ### Drift sentinel scope
 
@@ -129,7 +129,7 @@ For an existing v2/v3 single-root repo that wants to adopt multi-root:
    ```
 2. Run `node scripts/generate-manifest.js` and confirm the manifest is identical to before (plus the new top-level `workspace` block).
 3. Add per-project roots one at a time, moving `scope: codebase` skills into them.
-4. Add `project_tags` to skills that should be filtered by project; leave ambient skills untouched.
+4. Add `workspace_tags` to skills that should be filtered by project; leave ambient skills untouched.
 5. For large libraries, also add hierarchical `category` values to the moved skills — a tree helps readers find skills in a workspace with dozens of per-project skills.
 
 ## Non-goals
@@ -143,6 +143,6 @@ For an existing v2/v3 single-root repo that wants to adopt multi-root:
 - `scripts/generate-manifest.js` — workspace config loader and multi-root walker.
 - `scripts/skill-graph-route.js` — project-aware filter using semantic-tag expansion.
 - `scripts/skill-graph-drift.js` — walks all workspace roots in default mode.
-- `docs/field-reference.md § project_tags` — authored-side semantics.
+- `docs/field-reference.md § workspace_tags` — authored-side semantics.
 - `docs/field-decision-guide.md § 4. How do I tag a skill for multiple projects?` — decision tables.
 - `schemas/manifest.schema.json § workspace` — machine-enforceable config shape in the manifest.

@@ -1,12 +1,12 @@
 # Skill Graph Concept Map
 
-> **Status:** Reality-aligned teaching reference as of **2026-04-20** (schema_version 3).
-> **Source of truth precedence:** `schemas/skill.v3.schema.json` > `docs/field-reference.md` > this file.
-> **Purpose:** Explain the 36-field Skill Metadata Protocol frontmatter at a conceptual level without inventing structure that the schema does not actually enforce. If this file disagrees with the schema, the schema wins — fix this file.
+> **Status:** Reality-aligned teaching reference as of **2026-04-20** (schema_version 4).
+> **Source of truth precedence:** `schemas/skill.v4.schema.json` > `docs/field-reference.md` > this file.
+> **Purpose:** Explain the 40-field Skill Metadata Protocol frontmatter at a conceptual level without inventing structure that the schema does not actually enforce. If this file disagrees with the schema, the schema wins — fix this file.
 
 ## What kind of graph is this?
 
-Skill Graph is a **property graph with a controlled-vocabulary set of typed predicates**, not an RDF knowledge graph. Nodes are skills. Edges are the keys inside `relations.*`. Node attributes are the 36 canonical authored frontmatter fields. A JSON-LD `@context` (`schemas/skill.context.jsonld`) projects the property graph into SKOS / Dublin Core / PROV-O triples for consumers that want RDF semantics, but authoring stays in flat YAML.
+Skill Graph is a **property graph with a controlled-vocabulary set of typed predicates**, not an RDF knowledge graph. Nodes are skills. Edges are the keys inside `relations.*`. Node attributes are the 40 top-level authored frontmatter fields. A JSON-LD `@context` (`schemas/skill.context.jsonld`) projects the property graph into SKOS / Dublin Core / PROV-O triples for consumers that want RDF semantics, but authoring stays in flat YAML.
 
 Skill Graph does **not** promise:
 
@@ -16,18 +16,18 @@ Skill Graph does **not** promise:
 
 What it does promise: deterministic lint, manifest generation, relation-aware routing, drift detection against content-addressable truth sources, and portable export to SKILL.md.
 
-## The 36 authored fields — grouped by role
+## The 40 authored fields — grouped by role
 
 The fields split into nine conceptual groups. This grouping is a teaching aid only — the schema groups by *requiredness* (always required / required-for-archetype / required-for-scope / optional). See `docs/skill-metadata-protocol.md § Requiredness Groups` for the authoritative grouping.
 
 The exact field count:
 
-- **36 canonical authored fields** — the number authors write in YAML frontmatter, excluding v3.1 alias fields.
+- **40 top-level authored fields** — the number authors write in YAML frontmatter, including compatibility aliases.
 - **13 required-for-all fields** — every skill must populate these.
 - **5 conditionally-required fields** — unlocked by `type: overlay`, `scope: codebase`, `stability: deprecated`, `comprehension_state: present`, plus `keywords` for routable skills.
 - **18 optional enrichment fields** — including the full nested sub-fields inside `relations`, `grounding`, `portability`, `compatibility`, `lifecycle`, `runtime_telemetry`, and concept/eval receipts.
 
-When you see "possible fields" counted anywhere, that is the count including nested sub-fields and v3.1 aliases individually. The 36 count refers to canonical top-level authored keys only.
+When you see "possible fields" counted anywhere, that is the count including nested sub-fields and v3.1 aliases individually. The 40 count refers to canonical top-level authored keys only.
 
 ### Identity (5 fields, 4 required, 1 optional)
 
@@ -47,11 +47,11 @@ The kind of skill and where it lives in the library.
 
 | Field | Cardinality | Role | Required? |
 |---|---|---|---|
-| `schema_version` | one | Contract version — currently `3` | always |
+| `schema_version` | one | Contract version - currently `4` | always |
 | `type` | one enum | Archetype — `capability`, `workflow`, `router`, `overlay` | always |
 | `scope` | one enum | Locality — `portable`, `reference`, `codebase` | always |
-| `browse_category` | one | Flat browse bucket (e.g. `engineering`, `knowledge`) | always |
-| `category` | one slash-path | Hierarchical browse path (e.g. `ecommerce/integrations/shopify`) | optional |
+| `category` | one | Flat browse bucket (e.g. `engineering`, `knowledge`) | always |
+| `domain` | one slash-path | Hierarchical domain path (e.g. `ecommerce/integrations/shopify`) | optional |
 | `stability` | one enum | `experimental`, `stable`, `frozen`, `deprecated` | optional |
 | `superseded_by` | one | Replacement skill when deprecated | required if `stability: deprecated` |
 
@@ -88,12 +88,12 @@ How the skill surfaces to a router. The three trigger fields (`triggers`, `keywo
 | Field | Cardinality | Role |
 |---|---|---|
 | `triggers` | many | Exact phrase or label triggers |
-| `keywords` | many | Semantic keywords for fuzzy matching — required when skill is routable (`scope: codebase` or non-empty `routing_groups`) |
+| `keywords` | many | Semantic keywords for fuzzy matching — required when skill is routable (`scope: codebase` or non-empty `routing_bundles`) |
 | `examples` | many | Positive-class activation prompts (few-shot retrieval targets) |
 | `anti_examples` | many | Negative-class prompts (hard negatives for boundary discrimination) |
 | `paths` | many glob patterns | File-surface activation |
-| `project_tags` | many | Project affiliation (literal handles or semantic tags) |
-| `routing_groups` | many | Query-time overlapping bundles (`quality`, `integrations`) |
+| `workspace_tags` | many | Project affiliation (literal handles or semantic tags) |
+| `routing_bundles` | many | Query-time overlapping bundles (`quality`, `integrations`) |
 
 ### Relations (one object, up to 8 predicate keys, each optional)
 
@@ -148,14 +148,14 @@ Artifact-level metadata.
 
 ## The four orthogonal classification axes (carefully qualified)
 
-Skill Graph classifies along **three strictly-orthogonal axes plus one partially-coupled axis**. The concept map's earlier claim of "four orthogonal axes" overstated the orthogonality of `routing_groups`.
+Skill Graph classifies along **three strictly-orthogonal axes plus one partially-coupled axis**. The concept map's earlier claim of "four orthogonal axes" overstated the orthogonality of `routing_bundles`.
 
 | Axis | Field | Orthogonality | Question |
 |---|---|---|---|
 | Scope | `scope` | Strict — `portable`/`reference`/`codebase` do not overlap | Where does this apply? |
-| Taxonomy | `browse_category` + `category` | Strict — one flat bucket, one tree path | What kind of concern is this? |
-| Project affiliation | `project_tags` | Strict — multiple tags allowed, no hierarchy | Which projects use this? |
-| Routing bundle | `routing_groups` | **Partially coupled to taxonomy** — `quality`, `integrations`, etc. are often functions of *what the skill is*, not *when it fires* | Which query-time bundle does this join? |
+| Taxonomy | `category` + `category` | Strict — one flat bucket, one tree path | What kind of concern is this? |
+| Project affiliation | `workspace_tags` | Strict — multiple tags allowed, no hierarchy | Which projects use this? |
+| Routing bundle | `routing_bundles` | **Partially coupled to taxonomy** — `quality`, `integrations`, etc. are often functions of *what the skill is*, not *when it fires* | Which query-time bundle does this join? |
 
 The taxonomy-vs-routing-group coupling is intentional for ergonomics (a router can say "load all `quality` skills") but means the fourth axis is not a strict Ranganathan facet. Keep the distinction in mind when adding routing groups: if the group is redundant with the skill's category, use the category alone.
 
@@ -179,11 +179,11 @@ An earlier concept map (pre-2026-04-20) contained six inaccuracies now corrected
 3. Described `drift_check` as a scalar date — corrected to object (v3 shape, schema-enforced).
 4. Called the axes "4 orthogonal" — corrected to "3 strictly orthogonal + 1 partially coupled".
 5. Stated the field count without distinguishing authored-vs-possible — clarified that the current schema has 36 canonical top-level authored fields, while aliases and nested sub-field counts are separate measures.
-6. Omitted the 6-field-required-for-all set (`browse_category`, `freshness`, `drift_check`, `eval_artifacts`, `eval_state`, `routing_eval`) — restored and grouped under Health & drift and Eval health.
+6. Omitted the 6-field-required-for-all set (`category`, `freshness`, `drift_check`, `eval_artifacts`, `eval_state`, `routing_eval`) — restored and grouped under Health & drift and Eval health.
 
 ## References
 
-- `schemas/skill.v3.schema.json` — pinned v3 schema (source of truth for types and requiredness)
+- `schemas/skill.v4.schema.json` — pinned v3 schema (source of truth for types and requiredness)
 - `schemas/skill.context.jsonld` — JSON-LD `@context` for W3C interoperability
 - `docs/skill-metadata-protocol.md` — requiredness groups, archetype section map, schema strictness
 - `docs/field-reference.md` — per-field semantics (authoritative prose)

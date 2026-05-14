@@ -5,11 +5,11 @@ license: MIT
 compatibility: Runtime-agnostic. The intake-triage / loop / drift / handoff discipline applies to any LLM-coding harness regardless of context window size or compaction implementation.
 allowed-tools: Read Grep
 metadata:
-  schema_version: "3"
+  schema_version: "4"
   version: "1.0.0"
   type: capability
-  browse_category: knowledge
-  category: ai-engineering/context
+  category: knowledge
+  domain: ai-engineering/context
   scope: portable
   owner: skill-graph-maintainer
   freshness: "2026-05-06"

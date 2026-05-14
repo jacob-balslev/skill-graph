@@ -1,12 +1,12 @@
 ---
-# yaml-language-server: $schema=https://skillgraph.dev/schemas/skill.v3.schema.json
-schema_version: 3
+# yaml-language-server: $schema=https://skillgraph.dev/schemas/skill.v4.schema.json
+schema_version: 4
 name: context-window
 description: "Use when allocating context-window budget across the system / skill-injection / working zones, monitoring context health (ok / compact / exhausted), deciding when to compact a session, preserving state through a pre-compact hook so work is not lost, recovering after a compaction, or selecting model-class strategies for 1M / 200K / 128K context windows. Covers the three-zone budget model and per-model practical-budget table; the 80% compaction rule with the 20% safety margin (for completing the current operation, writing the checkpoint, running the closeout protocol, emitting the continuation signal); pre- and post-compact protocols including hook responsibilities and the cross-session persistence hierarchy (git > files-on-disk > durable memory > live context); per-operation token-consumption ranges; the five token-reduction techniques (deterministic-CLI over MCP / heavy-tool, targeted reads with offset+limit, search-before-read, progressive skill disclosure, count-mode for exploration); and the anti-patterns that exhaust the window mid-task. Do NOT use for deciding *what* context to load or drop in the working set (use `context-management`), for designing the prompt itself (use `prompt-craft`), for the multi-graph context architecture (use `context-graph`), or for cross-session persistent memory curation (a memory-curation skill)."
 version: 1.0.0
 type: capability
-browse_category: knowledge
-category: ai-engineering/context
+category: knowledge
+domain: ai-engineering/context
 scope: portable
 owner: skill-graph-maintainer
 freshness: "2026-05-06"

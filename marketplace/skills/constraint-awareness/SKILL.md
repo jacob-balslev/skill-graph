@@ -5,11 +5,11 @@ license: MIT
 compatibility: "Operating-model-agnostic. Applies whether the constraint is a single solo developer operating multiple agents, a small team where one senior engineer reviews everything, or a larger team where review capacity is the limiting factor. The framework adapts as the constraint identity changes."
 allowed-tools: Read Grep
 metadata:
-  schema_version: "3"
+  schema_version: "4"
   version: "1.0.0"
   type: capability
-  browse_category: knowledge
-  category: ai-engineering/strategy
+  category: knowledge
+  domain: ai-engineering/strategy
   scope: portable
   owner: skill-graph-maintainer
   freshness: "2026-05-06"

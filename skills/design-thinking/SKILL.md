@@ -1,10 +1,10 @@
 ---
-schema_version: 3
+schema_version: 4
 name: design-thinking
 description: "Use when orchestrating a full human-centered design process across discovery, definition, ideation, prototyping, and testing — when uncertain which stage of the arc a team is in, when deciding whether to loop back, or when routing to the right stage-specific sibling skill. Do NOT use for single-stage execution (go directly to problem-framing, user-research, research-synthesis, journey-mapping, ideation, prototyping, or usability-testing) or for engineering domain discovery (use event-storming)."
 version: 1.0.0
 type: capability
-browse_category: design
+category: design
 scope: portable
 owner: skill-graph-maintainer
 freshness: "2026-05-12"

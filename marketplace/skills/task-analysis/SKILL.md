@@ -5,11 +5,11 @@ license: MIT
 compatibility: "Stack-agnostic. The actor / scenario / top-task model, the five friction dimensions, the breakpoint taxonomy, and the primary / secondary / supporting hierarchy apply to any UI under review; persona / journey YAML files are illustrative — substitute the equivalents (Notion, Confluence, in-repo Markdown, Figma annotations) of your team."
 allowed-tools: Read Grep
 metadata:
-  schema_version: "3"
+  schema_version: "4"
   version: "1.0.0"
   type: workflow
-  browse_category: knowledge
-  category: design/ux
+  category: knowledge
+  domain: design/ux
   scope: portable
   owner: skill-graph-maintainer
   freshness: "2026-05-06"

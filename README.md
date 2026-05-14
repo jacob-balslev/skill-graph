@@ -1,6 +1,6 @@
 # Skill Metadata Protocol + Skill Graph
 
-[![Version 0.5.0](https://img.shields.io/badge/version-0.5.0-blue?style=flat-square)](CHANGELOG.md) [![Schema v3](https://img.shields.io/badge/schema-v3-blueviolet?style=flat-square)](schemas/skill.v3.schema.json) [![License Apache-2.0 + CC-BY-4.0](https://img.shields.io/badge/license-Apache--2.0%20%2B%20CC--BY--4.0-green?style=flat-square)](LICENSE) [![Exports SKILL.md](https://img.shields.io/badge/exports-SKILL.md-orange?style=flat-square)](https://agentskills.io/specification)
+[![Version 0.5.0](https://img.shields.io/badge/version-0.5.0-blue?style=flat-square)](CHANGELOG.md) [![Schema v4](https://img.shields.io/badge/schema-v4-blueviolet?style=flat-square)](schemas/skill.v4.schema.json) [![License Apache-2.0 + CC-BY-4.0](https://img.shields.io/badge/license-Apache--2.0%20%2B%20CC--BY--4.0-green?style=flat-square)](LICENSE) [![Exports SKILL.md](https://img.shields.io/badge/exports-SKILL.md-orange?style=flat-square)](https://agentskills.io/specification)
 
 **Skills that know your project and codebase. Structured and categorized.**
 
@@ -29,7 +29,7 @@ Skill Metadata Protocol makes these questions explicit:
 | Question | Protocol fields |
 |---|---|
 | What kind of skill is this? | `type`, `scope`, `version`, `owner` |
-| Where does it belong? | `browse_category`, `category`, `project_tags`, `routing_groups` |
+| Where does it belong? | `category`, `domain`, `workspace_tags`, `routing_bundles` |
 | When should it load? | `description`, `keywords`, `triggers`, `examples`, `anti_examples`, `paths` |
 | What is it near, dependent on, or not responsible for? | `relations.related`, `relations.depends_on`, `relations.verify_with`, `relations.boundary`, `relations.broader`, `relations.narrower` |
 | What evidence makes it true? | `grounding.truth_sources`, `grounding.failure_modes`, `grounding.evidence_priority` |
@@ -44,13 +44,13 @@ This is a compact example. The full authoring scaffold is [`examples/skill-metad
 
 ```yaml
 ---
-schema_version: 3
+schema_version: 4
 name: product-page-ux-review
 description: "Use when reviewing a product page's UX, visual hierarchy, interaction patterns, accessibility, and conversion-critical content. Do NOT use for backend Shopify API work, production incident debugging, or general copy editing outside the product-page experience."
 version: 1.0.0
 type: capability
-browse_category: design
-category: design/ux
+category: design
+domain: design/ux
 scope: codebase
 owner: design-platform
 freshness: "2026-05-13"
@@ -71,11 +71,11 @@ examples:
 anti_examples:
   - "Fix the Shopify webhook signature validation failure."
   - "Diagnose why the checkout build failed in CI."
-project_tags:
+workspace_tags:
   - ecommerce
   - shopify
   - frontend
-routing_groups:
+routing_bundles:
   - product-experience
 paths:
   - app/products/**/*
@@ -125,24 +125,24 @@ Skill Metadata Protocol uses several independent axes. They should not be collap
 |---|---|---:|---|
 | **Archetype** | `type` | one | Skill shape: `capability`, `workflow`, `router`, or `overlay`. |
 | **Scope** | `scope` | one | Where it applies: `portable`, `codebase`, or `reference`. |
-| **Top-level category** | `browse_category` | one | Flat top-level shelf for browsing. The explicit field name avoids colliding with the hierarchical `category` path. |
-| **Domain path** | `category` | zero or one | Slash-delimited hierarchy, such as `design/ux` or `architecture/events`. |
-| **Project group** | `project_tags` | many | Which project families, workspaces, or product areas this skill applies to. |
-| **Routing group** | `routing_groups` | many | Runtime bundles or dispatch groups. |
+| **Top-level category** | `category` | one | Flat top-level shelf for browsing. |
+| **Domain path** | `domain` | zero or one | Slash-delimited hierarchy, such as `design/ux` or `architecture/events`. |
+| **Project group** | `workspace_tags` | many | Which project families, workspaces, or product areas this skill applies to. |
+| **Routing group** | `routing_bundles` | many | Runtime bundles or dispatch groups. |
 | **Relations** | `relations.*` | many | Typed graph edges between skills. |
 | **Grounding** | `grounding.*` | conditional | Truth sources and failure modes for repo-grounded skills. |
 
-The schema uses `browse_category` for the flat top-level category and `category` for the hierarchical path. Adopters can choose their own values for `browse_category`, `category`, `project_tags`, and `routing_groups`. This repo currently demonstrates the following values.
+The schema uses `category` for the flat top-level shelf and `domain` for the hierarchical path. Adopters can choose their own values for `category`, `domain`, `workspace_tags`, and `routing_bundles`. This repo currently demonstrates the following values.
 
 ### Current Top-Level Categories
 
-These are the current `browse_category` values across the shipped skills and specimen skills. The field stays explicit because `category` is already used for slash-delimited domain paths:
+These are the current `category` values across the shipped skills and specimen skills:
 
 `content`, `design`, `engineering`, `frontend`, `integrations`, `knowledge`, `quality`, `security`
 
 ### Current Domain Paths
 
-| Domain root | Current `category` paths |
+| Domain root | Current `domain` paths |
 |---|---|
 | `ai-engineering` | `ai-engineering/analysis`, `ai-engineering/architecture`, `ai-engineering/concepts`, `ai-engineering/context`, `ai-engineering/evaluation`, `ai-engineering/knowledge`, `ai-engineering/knowledge-extraction`, `ai-engineering/knowledge-representation`, `ai-engineering/language`, `ai-engineering/prompts`, `ai-engineering/safety`, `ai-engineering/strategy`, `ai-engineering/tool-use` |
 | `architecture` | `architecture/contracts`, `architecture/decision-records`, `architecture/dependencies`, `architecture/domain-boundaries`, `architecture/domain-discovery`, `architecture/events`, `architecture/technology-selection` |
@@ -157,11 +157,11 @@ These are the current `browse_category` values across the shipped skills and spe
 
 ### Current Project And Routing Groups
 
-`project_tags` demonstrated in this repo:
+`workspace_tags` demonstrated in this repo:
 
 `build-pipeline`, `content`, `markdown`, `migrations`, `skill-authoring`, `static-site`
 
-`routing_groups` demonstrated in this repo:
+`routing_bundles` demonstrated in this repo:
 
 `quality`
 
@@ -175,8 +175,8 @@ Triangulation means selecting skills from multiple independent signals:
 
 | Signal | Example |
 |---|---|
-| **Project surface** | `project_tags: [shopify, frontend]`, `paths: components/product/**/*` |
-| **Top-level and domain category** | `browse_category: design`, `category: design/ux` |
+| **Project surface** | `workspace_tags: [shopify, frontend]`, `paths: components/product/**/*` |
+| **Top-level and domain category** | `category: design`, `domain: design/ux` |
 | **Method or phase** | `design-thinking`, `user-research`, `ideation`, `prototyping`, `usability-testing` |
 | **Related skills** | `visual-hierarchy`, `color-system-design`, `typography-system`, `dark-mode-implementation` |
 | **Verification skills** | `a11y`, `testing-strategy`, `code-review` |
@@ -312,6 +312,6 @@ Skill Metadata Protocol is designed to sit next to existing agent-context conven
 
 ## Status
 
-Latest release checkpoint: **0.5.0 (2026-05-13)**. The current contract is `schema_version: 3`.
+Latest release checkpoint: **0.5.0 (2026-05-13)**. The current contract is `schema_version: 4`.
 
 Code is licensed under Apache-2.0. Skill content and documentation are licensed under CC-BY-4.0 where noted. See [`LICENSE`](LICENSE) and [`NOTICE`](NOTICE).

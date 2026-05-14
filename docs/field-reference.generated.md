@@ -1,11 +1,11 @@
 # Skill Graph Field Reference (Generated)
 
-> **Generated from** `schemas/skill.v3.schema.json` on 2026-05-13 by `scripts/build-field-reference.js`.
+> **Generated from** `schemas/skill.v4.schema.json` on 2026-05-14 by `scripts/build-field-reference.js`.
 > **Do not edit by hand.** The canonical prose reference is [`docs/field-reference.md`](field-reference.md).
 > **Predicate glossary:** [`docs/glossary.md`](glossary.md).
 > **JSON-LD @context:** [`schemas/skill.context.jsonld`](../schemas/skill.context.jsonld).
 
-Schema version: **3** · Field count: **41** · Required: **13**
+Schema version: **4** · Field count: **40** · Required: **13**
 
 ---
 
@@ -13,7 +13,7 @@ Schema version: **3** · Field count: **41** · Required: **13**
 
 **Type:** multiple — see schema
 
-Major contract shape version. Integer for v3+; string '3' tolerated for back-compat with hand-rolled YAML. Bumps when shape changes break consumers (additive minor changes do not bump). v4 is the next breaking-change horizon — see CHANGELOG.md and docs/skill-metadata-protocol.md § Schema Versioning Policy.
+Major contract shape version. Integer for v4+; string '4' tolerated for back-compat with hand-rolled YAML. Bumps when shape changes break consumers.
 
 **Full reference:** [`docs/field-reference.md#schema_version`](field-reference.md#schema_version)
 
@@ -69,7 +69,7 @@ Skill content version (semver). Bumps when the SKILL.md body or contract changes
 
 **Type:** `capability` | `workflow` | `router` | `overlay`
 
-Archetype classifier — what kind of skill this is. `capability` (knows how to do something), `workflow` (orchestrates a sequence), `router` (dispatches to other skills), `overlay` (specialises a parent via `extends`). `archetype` is the v3.1 preferred alias and becomes canonical in v4.
+Archetype classifier — what kind of skill this is. `capability` (knows how to do something), `workflow` (orchestrates a sequence), `router` (dispatches to other skills), `overlay` (specialises a parent via `extends`). `archetype` is the supported alias.
 
 **Full reference:** [`docs/field-reference.md#type`](field-reference.md#type)
 
@@ -79,43 +79,31 @@ Archetype classifier — what kind of skill this is. `capability` (knows how to 
 
 **Type:** `capability` | `workflow` | `router` | `overlay`
 
-Archetype classifier (v3.1 preferred alias for `type`). When both are present they must match. Becomes canonical in v4.
+Archetype classifier (v3.1 preferred alias for `type`). When both are present they must match.
 
 **Full reference:** [`docs/field-reference.md#archetype`](field-reference.md#archetype)
 
 ---
 
-### `browse_category` *(required)*
+### `category` *(required)*
 
 **Type:** string
 
-Flat human browse bucket (e.g., knowledge, engineering, quality). For hierarchical taxonomy use `category` instead.
-
-**Full reference:** [`docs/field-reference.md#browse_category`](field-reference.md#browse_category)
-
----
-
-### `category` *(optional)*
-
-**Type:** string
-
-Hierarchical browse path using slash-delimited segments (e.g., `ecommerce/integrations/shopify`). Complements `browse_category`; flat vs tree answer different questions. `category_path` is the v3.1 preferred alias and becomes canonical in v4.
-
-**Pattern:** `^[a-z0-9][a-z0-9-]*(/[a-z0-9][a-z0-9-]*)*$`
+Flat human browse bucket (e.g., knowledge, engineering, quality). For hierarchical taxonomy use `domain` instead.
 
 **Full reference:** [`docs/field-reference.md#category`](field-reference.md#category)
 
 ---
 
-### `category_path` *(optional)*
+### `domain` *(optional)*
 
 **Type:** string
 
-Hierarchical browse path (v3.1 preferred alias for `category`). Slash-delimited segments. Becomes canonical in v4.
+Hierarchical domain path using slash-delimited segments (e.g., `ecommerce/integrations/shopify`). Complements `category`; the flat browse shelf and the domain tree answer different questions.
 
 **Pattern:** `^[a-z0-9][a-z0-9-]*(/[a-z0-9][a-z0-9-]*)*$`
 
-**Full reference:** [`docs/field-reference.md#category_path`](field-reference.md#category_path)
+**Full reference:** [`docs/field-reference.md#domain`](field-reference.md#domain)
 
 ---
 
@@ -143,7 +131,7 @@ Maintainer or team accountable for keeping this skill correct. Free-form string;
 
 **Type:** string
 
-ISO date (YYYY-MM-DD) of the last meaningful content review. The author's claim that the skill was current as of this date. Complemented by `drift_check.truth_source_hashes` for grounded skills. `reviewed_at` is the v3.1 preferred alias and becomes canonical in v4.
+ISO date (YYYY-MM-DD) of the last meaningful content review. The author's claim that the skill was current as of this date. Complemented by `drift_check.truth_source_hashes` for grounded skills. `reviewed_at` is the supported alias.
 
 **Format:** date
 
@@ -155,7 +143,7 @@ ISO date (YYYY-MM-DD) of the last meaningful content review. The author's claim 
 
 **Type:** string
 
-ISO date (YYYY-MM-DD) of the last meaningful content review (v3.1 preferred alias for `freshness`). When both are present they must match. Becomes canonical in v4.
+ISO date (YYYY-MM-DD) of the last meaningful content review (v3.1 preferred alias for `freshness`). When both are present they must match.
 
 **Format:** date
 
@@ -262,7 +250,7 @@ Optional receipt for the most recent eval run. Complements `eval_state` so `pass
 
 **Type:** object
 
-Nested eval-health record (v3.1 preferred alias for the sibling triple `eval_artifacts` / `eval_state` / `routing_eval`). When both the top-level and nested forms are present they must match. Becomes canonical in v4.
+Nested eval-health record (v3.1 preferred alias for the sibling triple `eval_artifacts` / `eval_state` / `routing_eval`). When both the top-level and nested forms are present they must match.
 
 **Sub-fields:**
 
@@ -337,7 +325,7 @@ Optional space-separated whitelist of tools the skill is permitted to use (e.g.,
 
 **Type:** string
 
-Space-separated whitelist of tools (v3.1 preferred snake_case alias for `allowed-tools`). When both are present they must match. The SKILL.md export transform rewrites this to the kebab-case form. Becomes canonical in v4.
+Space-separated whitelist of tools (v3.1 preferred snake_case alias for `allowed-tools`). When both are present they must match. The SKILL.md export transform rewrites this to the kebab-case form.
 
 **Full reference:** [`docs/field-reference.md#allowed_tools`](field-reference.md#allowed_tools)
 
@@ -403,23 +391,23 @@ Glob patterns that identify code surfaces this skill governs. Patterns prefixed 
 
 ---
 
-### `project_tags` *(optional)*
+### `workspace_tags` *(optional)*
 
 **Type:** array of string
 
-Literal project handles or semantic tags identifying which projects this skill is relevant to. Absent = ambient / cross-project. A workspace config at `.skill-graph/config.json` may map literal project handles to semantic tag sets so one skill tag matches many projects.
+Literal workspace/project handles or semantic tags identifying which workspaces this skill is relevant to. Absent = ambient / cross-project. A workspace config at `.skill-graph/config.json` may map literal project handles to semantic tag sets so one skill tag matches many projects. Do not confuse this authored relevance field with generated manifest `project` ownership.
 
-**Full reference:** [`docs/field-reference.md#project_tags`](field-reference.md#project_tags)
+**Full reference:** [`docs/field-reference.md#workspace_tags`](field-reference.md#workspace_tags)
 
 ---
 
-### `routing_groups` *(optional)*
+### `routing_bundles` *(optional)*
 
 **Type:** array of string
 
-Tags that group skills for activation routing (e.g., `frontend`, `data-pipeline`). Routers use these for batch retrieval — when a query matches a routing group, all skills tagged with that group become candidates. Distinct from `browse_category` (single-value human bucket) and `category` (hierarchical taxonomy path).
+Tags that group skills into activation bundles (e.g., `frontend`, `data-pipeline`). Routers use these for batch retrieval: when a query matches a routing bundle, all skills tagged with that bundle become candidates. Distinct from `category` (single-value human shelf) and `domain` (hierarchical taxonomy path).
 
-**Full reference:** [`docs/field-reference.md#routing_groups`](field-reference.md#routing_groups)
+**Full reference:** [`docs/field-reference.md#routing_bundles`](field-reference.md#routing_bundles)
 
 ---
 

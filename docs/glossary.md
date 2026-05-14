@@ -28,7 +28,7 @@ Formal class-disjointness assertion. Use only when the two skill concepts are ge
 
 *v3.1 addition; W3C mapping: `skos:broader`*
 
-Cross-skill generalisation. Use when this skill is a *specialisation* of another skill that is NOT its overlay parent (if it were, use `extends` instead). Closes the gap where `browse_category` cannot express skill-to-skill generalisation across taxonomy branches.
+Cross-skill generalisation. Use when this skill is a *specialisation* of another skill that is NOT its overlay parent (if it were, use `extends` instead). Closes the gap where `category` cannot express skill-to-skill generalisation across taxonomy branches.
 
 Example: `react-best-practices` has `broader: [frontend]`.
 
@@ -174,7 +174,7 @@ Name of the skill that replaces this one. Mandatory when `stability: deprecated`
 
 Each term below names the FAIR dimension(s) the Skill Graph field covers (Wilkinson et al. 2016):
 
-- **Findable:** `name`, `urn`, `description`, `keywords`, `triggers`, `examples`, `browse_category`, `category`, `routing_groups`
+- **Findable:** `name`, `urn`, `description`, `keywords`, `triggers`, `examples`, `category`, `domain`, `routing_bundles`
 - **Accessible:** `paths`, `allowed-tools`, `compatibility`, `portability`
 - **Interoperable:** `schema_version`, the JSON-LD `@context`, SPDX in `license`, all typed predicates
 - **Reusable:** `license`, `compatibility`, `portability.targets`, `grounding.truth_sources`, `freshness`, `drift_check`, `lifecycle`, `grounding.evidence_priority`

@@ -5,11 +5,11 @@ license: MIT
 compatibility: "Stack-agnostic sign-system analysis. The Peirce / Saussure / Barthes models, color-as-sign rules, iconography principles, and affordance taxonomy apply to any UI; example surfaces use generic e-commerce framings — substitute the equivalents from your domain."
 allowed-tools: Read Grep
 metadata:
-  schema_version: "3"
+  schema_version: "4"
   version: "1.0.0"
   type: capability
-  browse_category: knowledge
-  category: design/ux
+  category: knowledge
+  domain: design/ux
   scope: portable
   owner: skill-graph-maintainer
   freshness: "2026-05-06"

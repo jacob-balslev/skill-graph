@@ -7,8 +7,8 @@ Skill Metadata Protocol is the **skill-level contract** for AI SKILL.md. It defi
 Skill Graph is the **library-level system** that works with this protocol. It indexes, routes, clusters, audits, and reverifies libraries of Skill-Metadata-Protocol-enriched skills.
 
 > **Migrating from an older schema?** Jump straight to the migration notes:
-> - [v2 → v3](manifest-field-mapping.md#migration-note--v2--v3-v040) — `drift_check` scalar → object, `compatibility` scalar → object, `family` → `browse_category`, new optional fields
-> - [v1 → v2](manifest-field-mapping.md#migration-note--v1--v2-2026-04-17-sh-5784) — `scope` enum rename, `eval_status` split into three fields, `route_groups` → `routing_groups`
+> - [v2 → v3](manifest-field-mapping.md#migration-note--v2--v3-v040) — `drift_check` scalar → object, `compatibility` scalar → object, `family` → `category`, new optional fields
+> - [v1 → v2](manifest-field-mapping.md#migration-note--v1--v2-2026-04-17-sh-5784) — `scope` enum rename, `eval_status` split into three fields, `route_bundles` → `routing_bundles`
 > - Codemod: `node scripts/migrate-skill-v2-to-v3.js` upgrades v2 skills in place
 > - Planned v3 → v4 changes (ADR 0001, ADR 0004, ADR 0006): `adjacent` removed in favour of `related`; `boundary` remains the routing-layer handoff; `urn` becomes required
 
@@ -24,7 +24,7 @@ Skill Graph is the **library-level system** that works with this protocol. It in
 | `docs/manifest-field-mapping.md` | Authored-to-generated bridge: rename map, loss policy, worked example |
 | `docs/adr/` | Architecture decision records — 0001 predicate set, 0002 JSON-LD @context, 0003 OntoClean rigidity tags, 0004 persistent identifiers |
 | `schemas/skill.context.jsonld` | JSON-LD @context mapping every authored field to W3C vocabularies (SKOS, Dublin Core, PROV-O) |
-| `schemas/vocabulary/` | Controlled vocabularies for `keywords` (canonical + synonyms) and `project_tags` (literal handles + semantic tags) — advisory, surfaced as lint warnings |
+| `schemas/vocabulary/` | Controlled vocabularies for `keywords` (canonical + synonyms) and `workspace_tags` (literal handles + semantic tags) — advisory, surfaced as lint warnings |
 
 ## Design Principles
 
@@ -81,8 +81,8 @@ A Skill-Metadata-Protocol-enriched `SKILL.md` is *not* automatically a valid SKI
 | `compatibility` | SKILL.md optional | Kept top-level; optional |
 | `allowed-tools` | SKILL.md optional | Kept top-level as a space-separated string |
 | `metadata` | SKILL.md optional | Not used at the top level; the protocol promotes extensions to named fields |
-| `schema_version`, `version`, `type`, `browse_category`, `scope`, `owner`, `freshness`, `drift_check`, `eval_artifacts`, `eval_state`, `routing_eval` | Skill Metadata Protocol extension | Required by the protocol; additive to the base |
-| `relations`, `grounding`, `portability`, `triggers`, `keywords`, `examples`, `anti_examples`, `paths`, `project_tags`, `category`, `routing_groups`, `lifecycle`, `runtime_telemetry`, `extends`, `stability`, `superseded_by` | Skill Metadata Protocol extension | Optional protocol enrichments; additive to the base |
+| `schema_version`, `version`, `type`, `category`, `scope`, `owner`, `freshness`, `drift_check`, `eval_artifacts`, `eval_state`, `routing_eval` | Skill Metadata Protocol extension | Required by the protocol; additive to the base |
+| `relations`, `grounding`, `portability`, `triggers`, `keywords`, `examples`, `anti_examples`, `paths`, `workspace_tags`, `domain`, `routing_bundles`, `lifecycle`, `runtime_telemetry`, `extends`, `stability`, `superseded_by` | Skill Metadata Protocol extension | Optional protocol enrichments; additive to the base |
 
 A Skill-Metadata-Protocol-enriched `SKILL.md` is **not** a valid SKILL.md file as authored, because the protocol requires fields the base standard does not define. An export transform can produce an SKILL.md-valid file by moving every protocol extension field under the standard `metadata:` key. The transform is implemented as `scripts/export-skill.js`.
 
@@ -115,7 +115,7 @@ name
 description
 version
 type
-browse_category
+category
 scope
 owner
 freshness
@@ -151,11 +151,11 @@ These improve portability, discoverability, and health tracking, but are not req
 
 ```yaml
 paths
-project_tags
+workspace_tags
 category
 compatibility
 allowed-tools
-routing_groups
+routing_bundles
 portability
 lifecycle
 runtime_telemetry
@@ -230,9 +230,9 @@ flowchart LR
 
 **Legend.** Blue = the file. Green = a required layer. Yellow dashed = an optional / specimen-only layer.
 
-### The 36 authored fields, grouped by purpose
+### The 40 authored fields, grouped by purpose
 
-The YAML frontmatter has 36 canonical top-level fields, plus v3.1 alias fields accepted for migration. The schema is the authoritative source for types and requiredness (`schemas/skill.v3.schema.json`); the canonical per-field reference is [`docs/field-reference.md`](field-reference.md). The table below is a navigable index — every field name links to its reference section. `always` = required by the base schema; `if <condition>` = conditionally required; blank = optional enrichment.
+The YAML frontmatter has 40 top-level fields in the current v4 schema, including compatibility aliases that remain accepted for migration. The schema is the authoritative source for types and requiredness (`schemas/skill.v4.schema.json`); the canonical per-field reference is [`docs/field-reference.md`](field-reference.md). The table below is a navigable index — every field name links to its reference section. `always` = required by the base schema; `if <condition>` = conditionally required; blank = optional enrichment.
 
 | Group | Field | Required? | Shape |
 |---|---|---|---|
@@ -241,11 +241,11 @@ The YAML frontmatter has 36 canonical top-level fields, plus v3.1 alias fields a
 | | [`description`](field-reference.md#description) | always | string |
 | | [`version`](field-reference.md#version) | always | semver string |
 | | [`owner`](field-reference.md#owner) | always | string |
-| **Classification** | [`schema_version`](field-reference.md#schema_version) | always | integer `3` |
+| **Classification** | [`schema_version`](field-reference.md#schema_version) | always | integer `4` |
 | | [`type`](field-reference.md#type) | always | `capability` \| `workflow` \| `router` \| `overlay` |
 | | [`scope`](field-reference.md#scope) | always | `codebase` \| `reference` \| `portable` |
-| | [`browse_category`](field-reference.md#browse_category) | always | string |
-| | [`category`](field-reference.md#category) | | hierarchical path |
+| | [`category`](field-reference.md#category) | always | string |
+| | [`domain`](field-reference.md#domain) | | hierarchical path |
 | | [`stability`](field-reference.md#stability) | | `experimental` \| `stable` \| `deprecated` |
 | | [`superseded_by`](field-reference.md#superseded_by) | if `stability: deprecated` | skill name |
 | **Health & Drift** | [`freshness`](field-reference.md#freshness) | always | ISO date |
@@ -263,8 +263,8 @@ The YAML frontmatter has 36 canonical top-level fields, plus v3.1 alias fields a
 | | [`paths`](field-reference.md#paths) | | glob[] |
 | | [`examples`](field-reference.md#examples) | | string[] (positive prompts) |
 | | [`anti_examples`](field-reference.md#anti_examples) | | string[] (negative prompts) |
-| | [`project_tags`](field-reference.md#project_tags) | | string[] |
-| | [`routing_groups`](field-reference.md#routing_groups) | | string[] |
+| | [`workspace_tags`](field-reference.md#workspace_tags) | | string[] |
+| | [`routing_bundles`](field-reference.md#routing_bundles) | | string[] |
 | **Relations** | [`relations`](field-reference.md#relations) | | `{ adjacent, related, broader, narrower, boundary, disjoint_with, verify_with, depends_on }` |
 | **Grounding** | [`grounding`](field-reference.md#grounding) | if `scope: codebase` | `{ domain_object, grounding_mode, truth_sources, failure_modes, evidence_priority }` |
 | **Portability & Standards** | [`portability`](field-reference.md#portability) | | `{ readiness, targets }` |
@@ -273,7 +273,7 @@ The YAML frontmatter has 36 canonical top-level fields, plus v3.1 alias fields a
 | | [`allowed-tools`](field-reference.md#allowed-tools) | | space-separated string |
 | | [`extends`](field-reference.md#extends) | if `type: overlay` | skill name |
 
-**Conditional requiredness in one line:** `keywords` when the skill is routable, `extends` when `type: overlay`, `grounding` when `scope: codebase`, `superseded_by` when `stability: deprecated`. The schema enforces all four via `allOf` rules. For the decision tables that help you choose between `capability` / `workflow` / `router` / `overlay` or between `codebase` / `reference` / `portable`, see [`docs/field-decision-guide.md`](field-decision-guide.md).
+**Conditional requiredness in one line:** `keywords` when the skill is routable, `extends` when `type: overlay`, `grounding` when `scope: codebase`, `superseded_by` when `stability: deprecated`. The schema enforces the latter three via `allOf`; lint enforces the `keywords` routability rule. For the decision tables that help you choose between `capability` / `workflow` / `router` / `overlay` or between `codebase` / `reference` / `portable`, see [`docs/field-decision-guide.md`](field-decision-guide.md).
 
 ## Why archetypes are rigid vs anti-rigid (OntoClean per ADR 0003)
 
@@ -394,7 +394,7 @@ It also does not require a full private control plane. The OSS contract keeps on
 
 ### Authored in `SKILL.md`
 
-The 36 canonical authored fields (in schema order): `schema_version`, `name`, `urn`, `description`, `version`, `type`, `browse_category`, `category`, `scope`, `owner`, `freshness`, `drift_check`, `eval_artifacts`, `eval_state`, `routing_eval`, `comprehension_state`, `concept`, `eval_last_run`, `stability`, `superseded_by`, `license`, `compatibility`, `allowed-tools`, `extends`, `triggers`, `keywords`, `examples`, `anti_examples`, `paths`, `project_tags`, `routing_groups`, `relations`, `grounding`, `portability`, `lifecycle`, `runtime_telemetry`.
+The 40 top-level authored fields are listed in `schemas/skill.schema.json`; aliases are included there so consumers can validate duplicate declarations consistently.
 
 For the purpose, rules, and examples for each field, see `docs/field-reference.md`.
 
@@ -412,11 +412,11 @@ See `docs/manifest-field-mapping.md` for the full rename map, loss policy, migra
 
 ## Schema Versioning Policy
 
-Skill Graph uses a single integer `schema_version` to signal contract evolution. Current version: **3** (bumped from 2 in the v0.4.0 release). The five policy points together define when `schema_version` bumps, what consumers should expect, and where migration tooling lives:
+Skill Graph uses a single integer `schema_version` to signal contract evolution. Current version: **4** (bumped from 3 in the v4 naming cleanup). The five policy points together define when `schema_version` bumps, what consumers should expect, and where migration tooling lives:
 
 1. **Breaking changes bump `schema_version`.** Renamed fields, removed fields, retyped fields, removed enum values, or tightened required-ness constraints bump the integer. Consumers must migrate or pin.
 2. **Additive changes do not bump.** New optional fields, new enum values that extend (not replace) an enum, and new checks in `scripts/skill-lint.js` that only affect warnings do not bump the version. Consumers on the prior minor release continue to pass.
-3. **Validate against the matching schema.** `schemas/skill.schema.json` and `schemas/manifest.schema.json` track the latest contract (v3 today). Pinned copies ship alongside them as `schemas/skill.v3.schema.json` and `schemas/manifest.v3.schema.json` — content-identical to the unversioned files except for `$id` and `title`. The prior-version pinned files (`schemas/skill.v2.schema.json`, `schemas/manifest.v2.schema.json`) remain in the repo for consumers pinned to v2. Consumers that want stability across a future v4 bump should validate against the versioned files; consumers that want to automatically follow the latest contract should validate against the unversioned files.
+3. **Validate against the matching schema.** `schemas/skill.schema.json` and `schemas/manifest.schema.json` track the latest contract (v3 today). Pinned copies ship alongside them as `schemas/skill.v4.schema.json` and `schemas/manifest.v3.schema.json` — content-identical to the unversioned files except for `$id` and `title`. The prior-version pinned files (`schemas/skill.v2.schema.json`, `schemas/manifest.v2.schema.json`) remain in the repo for consumers pinned to v2. Consumers that want stability across a future v4 bump should validate against the versioned files; consumers that want to automatically follow the latest contract should validate against the unversioned files.
 4. **One-version-overlap deprecation is preferred.** `scripts/skill-lint.js` emits warnings (not errors) for v2-specific patterns (scalar `drift_check`, scalar `compatibility`, `family` field name) during the v3 window. Authors get a warning window to migrate. Hard-error enum/shape changes — rejected by `additionalProperties: false` + type constraints in the schema itself — are paired with the friendlier lint warning so the error points at the rename.
 5. **Migration tooling ships with the bump.** The v3 bump ships `scripts/migrate-skill-v2-to-v3.js`, a line-based codemod that preserves author YAML style (comments, quoting, indentation). Future bumps follow the same pattern: one codemod per version, shipped in the same PR.
 

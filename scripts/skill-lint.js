@@ -15,7 +15,7 @@
  *   6. Cross-schema parity (runs once): every property and required field
  *      of skill.schema.json#grounding must be representable in
  *      manifest.schema.json#grounding, and the documented loss-policy
- *      fields (routing_groups, license, compatibility, allowed-tools) must
+ *      fields (routing_bundles, license, compatibility, allowed-tools) must
  *      exist as top-level manifest skill-item properties. Prevents the
  *      SH-5776 regression where the manifest silently dropped
  *      domain_object and four optional top-level fields.
@@ -40,7 +40,7 @@
  *      overlay); warns on sections that exist but are empty (< 50 non-
  *      whitespace characters). See scripts/lint/check-archetype-sections.js.
  *  11. Routing quality — narrow (runs per file): errors when keywords: []
- *      for scope: codebase or routing_groups-having skills; warns when
+ *      for scope: codebase or routing_bundles-having skills; warns when
  *      description text appears verbatim in ## Coverage.
  *      See scripts/lint/check-routing-quality.js.
  *  12. Routing-eval integrity (runs per file): errors when routing_eval:
@@ -97,27 +97,26 @@ const SKILL_ROOT_LABEL = SKILL_ROOTS
 // docs/skill-metadata-protocol.md or docs/manifest-field-mapping.md, lint fails loudly.
 //
 // This closes the regression window that shipped SH-5776: the original
-// manifest.schema.json silently dropped domain_object, route_groups, license,
+// manifest.schema.json silently dropped domain_object, routing_bundles, license,
 // compatibility, and allowed-tools. Adding a field here is cheap and makes
 // the mapping auditable without a separate contract doc.
 //
-// Updated for schema_version 3: `family` renamed to `browse_category`; the
-// new optional v3 fields `project_tags` and `category` flow through as
-// top-level manifest properties. `lifecycle` and `runtime_telemetry` project
+// Updated for schema_version 4: `browse_category` became `category`,
+// `category` became `domain`, `project_tags` became `workspace_tags`, and
+// `routing_groups` became `routing_bundles`. `lifecycle` and `runtime_telemetry` project
 // under `health.*` — see AUTHORED_FIELDS_MUST_FLOW_HEALTH below for the
 // parallel parity guard.
 const AUTHORED_FIELDS_MUST_FLOW = [
   'urn',
   'archetype',
-  'category_path',
-  'routing_groups',
+  'domain',
+  'routing_bundles',
   'license',
   'compatibility',
   'allowed-tools',
   'allowed_tools',
-  'browse_category',
-  'project_tags',
   'category',
+  'workspace_tags',
   'concept',
   'superseded_by',
 ];
@@ -1060,8 +1059,8 @@ function main() {
       });
     }
     if (fm.route_groups) {
-      emitWarning(relPath, text, 'route_groups', '"route_groups" is deprecated — rename to "routing_groups"', {
-        help: 'Rename "route_groups:" to "routing_groups:". Values are unchanged.',
+      emitWarning(relPath, text, 'route_groups', '"route_groups" is deprecated — rename to "routing_bundles"', {
+        help: 'Rename "route_groups:" to "routing_bundles:". Values are unchanged.',
         noColor,
       });
     }
@@ -1082,8 +1081,27 @@ function main() {
 
     // Migration warnings for v2 → v3 field changes.
     if (fm.family) {
-      emitWarning(relPath, text, 'family', '"family" is deprecated in v3 — rename to "browse_category"', {
+      emitWarning(relPath, text, 'family', '"family" is deprecated in v3 — rename to "browse_category" before migrating to v4 "category"', {
         help: 'Run `node scripts/migrate-skill-v2-to-v3.js <skill>` to apply. See docs/manifest-field-mapping.md § Migration Note — v2 → v3.',
+        noColor,
+      });
+    }
+    // Migration warnings for v3 → v4 field changes.
+    if (fm.browse_category) {
+      emitWarning(relPath, text, 'browse_category', '"browse_category" is deprecated in v4 — rename to "category"', {
+        help: 'Run `node scripts/migrate-skill-v3-to-v4.js <skill>` to apply.',
+        noColor,
+      });
+    }
+    if (fm.project_tags) {
+      emitWarning(relPath, text, 'project_tags', '"project_tags" is deprecated in v4 — rename to "workspace_tags"', {
+        help: 'Run `node scripts/migrate-skill-v3-to-v4.js <skill>` to apply.',
+        noColor,
+      });
+    }
+    if (fm.routing_groups) {
+      emitWarning(relPath, text, 'routing_groups', '"routing_groups" is deprecated in v4 — rename to "routing_bundles"', {
+        help: 'Run `node scripts/migrate-skill-v3-to-v4.js <skill>` to apply.',
         noColor,
       });
     }

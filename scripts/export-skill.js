@@ -41,8 +41,9 @@ const SKILL_MD_BASE_FIELDS = ['name', 'description', 'license', 'compatibility',
 // explicit and auditable. Unknown fields that appear in the frontmatter but
 // are not in either list are placed under metadata: too (fail-safe).
 //
-// Updated for schema_version 3: `family` renamed to `browse_category`;
-// `category`, `project_tags`, `lifecycle`, `runtime_telemetry` added. The
+// Updated for schema_version 4: `category` is the flat browse shelf,
+// `domain` is the hierarchical domain path, `workspace_tags` is authored
+// relevance, and `routing_bundles` is the activation-bundle field. The
 // legacy `family` remains in the set for back-compat with v2 skills during
 // the migration window.
 const SKILL_GRAPH_EXTENSION_FIELDS = new Set([
@@ -51,9 +52,9 @@ const SKILL_GRAPH_EXTENSION_FIELDS = new Set([
   'version',
   'type',
   'archetype',
-  'browse_category',
   'category',
-  'category_path',
+  'category',
+  'domain',
   'family',
   'scope',
   'owner',
@@ -75,8 +76,8 @@ const SKILL_GRAPH_EXTENSION_FIELDS = new Set([
   'triggers',
   'keywords',
   'paths',
-  'project_tags',
-  'routing_groups',
+  'workspace_tags',
+  'routing_bundles',
   'lifecycle',
   'runtime_telemetry',
   'extends',

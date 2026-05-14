@@ -5,11 +5,11 @@ license: MIT
 compatibility: "Portable design-system architecture guidance for web and app component systems, token systems, and multi-theme UI libraries."
 allowed-tools: Read Grep
 metadata:
-  schema_version: "3"
+  schema_version: "4"
   version: "1.0.0"
   type: capability
-  browse_category: frontend
-  category: frontend/design-system
+  category: frontend
+  domain: frontend/design-system
   scope: portable
   owner: skill-graph-maintainer
   freshness: "2026-05-11"

@@ -1,11 +1,11 @@
 ---
-# yaml-language-server: $schema=https://skillgraph.dev/schemas/skill.v3.schema.json
-schema_version: 3
+# yaml-language-server: $schema=https://skillgraph.dev/schemas/skill.v4.schema.json
+schema_version: 4
 name: owasp-security
 description: "Use when reviewing code for security vulnerabilities, threat-modelling a new feature, implementing authentication or authorization, handling user input, or auditing a codebase against the OWASP Top 10 (2021). Covers injection (SQL, NoSQL, command, LDAP, XSS), broken access control, cryptographic failures, insecure design, security misconfiguration, vulnerable dependencies, identification and authentication failures, software and data integrity failures, logging and monitoring failures, and server-side request forgery. Do NOT use for general code review (use `code-review` for the holistic per-PR pass), for chasing a known production bug (use `debugging`), or for writing a security policy doc (use `documentation`)."
 version: 1.0.0
 type: capability
-browse_category: security
+category: security
 scope: portable
 owner: skill-graph-maintainer
 freshness: "2026-05-04"

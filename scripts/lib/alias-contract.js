@@ -1,17 +1,15 @@
 /**
- * v3.1 field-name alias contract.
+ * Field-name alias contract.
  *
- * These pairs are intentionally additive in v3.x: authors keep the canonical
- * v3 fields, may also provide the preferred v3.1 aliases, and lint/generator
- * code verifies that duplicate declarations agree before the alias set becomes
- * canonical in v4.
+ * These pairs are additive compatibility aliases: authors may provide the
+ * legacy and preferred spellings together, and lint/generator code verifies
+ * that duplicate declarations agree.
  */
 
 'use strict';
 
 const ALIAS_PAIRS = [
   { canonical: ['type'], alias: ['archetype'] },
-  { canonical: ['category'], alias: ['category_path'] },
   { canonical: ['freshness'], alias: ['reviewed_at'] },
   { canonical: ['allowed-tools'], alias: ['allowed_tools'] },
   { canonical: ['grounding', 'domain_object'], alias: ['grounding', 'subject'] },

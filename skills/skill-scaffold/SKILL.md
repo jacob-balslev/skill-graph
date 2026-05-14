@@ -1,22 +1,22 @@
 ---
-# yaml-language-server: $schema=https://skillgraph.dev/schemas/skill.v3.schema.json
-schema_version: 3
+# yaml-language-server: $schema=https://skillgraph.dev/schemas/skill.v4.schema.json
+schema_version: 4
 name: skill-scaffold
 description: "Use when creating a new SKILL.md from scratch, adapting an existing skill to a different archetype, or teaching another author the canonical Skill Metadata Protocol frontmatter and body structure. Covers schema-conformant frontmatter, archetype-aware body layout, semantic-layer discipline (description vs Coverage), teaching-layer mechanics (TEMPLATE NOTE blockquotes), the lint-first authoring gate, and the routing-eval honesty rule. Do NOT use when modifying an already-written skill (edit it directly), when writing general technical documentation (use `documentation`), or when fixing a malformed skill detected by lint (use `graph-audit` for systematic library health, not authoring scaffold help)."
 version: 1.0.0
 type: capability
-browse_category: knowledge
-category: skill-system/authoring
+category: knowledge
+domain: skill-system/authoring
 scope: reference
 owner: skill-graph-maintainer
 freshness: "2026-05-04"
 drift_check:
-  last_verified: "2026-05-13"
+  last_verified: "2026-05-14"
   truth_source_hashes:
-    "examples/skill-metadata-template.md": "d09ef613eac7dc0c9465bcb668565c0d9cd0b8f3741342948a21925b15a67344"
-    "schemas/skill.v3.schema.json": "8fab936a90718ff12e90b9391e2709cf015a962a18cf8d3666a3d50db8b2017d"
-    "docs/skill-metadata-protocol.md": "bce8933a4f4f6386e36e618f2de97f0f6feb864a4c1aaeec225291110e7f8a76"
-    "SKILL_AUDIT_CHECKLIST.md": "7f5e53cb8df737e8cd84e814fc778195f99eb105a0fb261df34600fddc979437"
+    "examples/skill-metadata-template.md": "42b3185ebf53f9efc6a32977ee9408efce0957c0a7ed62cabca97cb83c33600a"
+    "schemas/skill.v4.schema.json": "e83d6be8b1314488b39b8c7bec2784d6459980d3f9965be68ad1c9a53865622d"
+    "docs/skill-metadata-protocol.md": "08ad662c5f470fac337aa559dacd0b9e882be7df8d7918f20a5d4e3aaaaa2ed7"
+    "SKILL_AUDIT_CHECKLIST.md": "4056dcbee84a5d160b0d0e7c7f840279e9382bfccbdb31873da95cdf44c8f1af"
 eval_artifacts: planned
 eval_state: unverified
 routing_eval: absent
@@ -72,11 +72,11 @@ relations:
   verify_with:
     - documentation
 grounding:
-  domain_object: Authoring a new SKILL.md against Skill Metadata Protocol v3
+  domain_object: Authoring a new SKILL.md against Skill Metadata Protocol v4
   grounding_mode: repo_specific
   truth_sources:
     - examples/skill-metadata-template.md
-    - schemas/skill.v3.schema.json
+    - schemas/skill.v4.schema.json
     - docs/skill-metadata-protocol.md
     - SKILL_AUDIT_CHECKLIST.md
   failure_modes:
@@ -100,7 +100,7 @@ lifecycle:
 ## Coverage
 
 - Authoring flow: copy → rename → adapt → strip teaching annotations → verify → commit
-- Frontmatter identity: `name`, `description`, `version`, `type`, `browse_category`, `scope`, `owner`, plus the eval-health triple and `drift_check` required by every Skill Metadata Protocol skill
+- Frontmatter identity: `name`, `description`, `version`, `type`, `category`, `scope`, `owner`, plus the eval-health triple and `drift_check` required by every Skill Metadata Protocol skill
 - Archetype selection: how to pick between `capability`, `workflow`, `router`, and `overlay` and which `## H2` body sections each archetype requires
 - Semantic-layer discipline: how `description:` (≤ 3 sentences, pushy, boundary-aware routing contract) differs from `## Coverage` (bulleted scope map of distinct topics) and why each must stay in its own layer
 - Teaching-layer mechanics: how to use `> **TEMPLATE NOTE:**` blockquotes and `# TEMPLATE NOTE:` YAML comments to teach without cargo-culting meta sections into derived skills

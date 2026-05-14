@@ -9,7 +9,7 @@
  *
  *   - activation.keywords / activation.triggers — scoring signal
  *   - activation.paths                          — optional `--path` boost
- *   - project_tags + workspace.projects         — project-scope filter
+ *   - workspace_tags + workspace.projects         — project-scope filter
  *   - relations.depends_on                      — transitive co-load
  *   - relations.boundary                        — anti-ownership exclusion
  *   - relations.verify_with                     — secondary co-load
@@ -304,12 +304,12 @@ function boundaryReason(item) {
  * of matchable tags.
  *
  * A skill matches when:
- *   - it has no project_tags (ambient / cross-project), OR
- *   - any tag in project_tags matches the literal project handle, OR
- *   - any tag in project_tags matches one of the project's semantic_tags.
+ *   - it has no workspace_tags (ambient / cross-project), OR
+ *   - any tag in workspace_tags matches the literal project handle, OR
+ *   - any tag in workspace_tags matches one of the project's semantic_tags.
  */
 function skillAppliesToProject(skill, project, workspace) {
-  const tags = skill.project_tags || [];
+  const tags = skill.workspace_tags || [];
   if (tags.length === 0) return { applies: true, reason: 'ambient' };
   if (!project) return { applies: true, reason: 'no project filter active' };
 
@@ -319,7 +319,7 @@ function skillAppliesToProject(skill, project, workspace) {
   for (const tag of tags) {
     if (semanticTags.includes(tag)) return { applies: true, reason: `semantic:${tag}` };
   }
-  return { applies: false, reason: `project_tags [${tags.join(', ')}] exclude project "${project}"` };
+  return { applies: false, reason: `workspace_tags [${tags.join(', ')}] exclude project "${project}"` };
 }
 
 // ---------------------------------------------------------------------------

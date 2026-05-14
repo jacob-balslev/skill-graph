@@ -5,11 +5,11 @@ license: MIT
 compatibility: "Theory-level skill. Applies to any AI-coding workspace that maintains structured knowledge artefacts: skill libraries, reference docs, decision records, runbooks, agent memory systems, RAG/GraphRAG pipelines."
 allowed-tools: Read Grep
 metadata:
-  schema_version: "3"
+  schema_version: "4"
   version: "1.0.0"
   type: capability
-  browse_category: knowledge
-  category: ai-engineering/knowledge-representation
+  category: knowledge
+  domain: ai-engineering/knowledge-representation
   scope: portable
   owner: skill-graph-maintainer
   freshness: "2026-05-06"

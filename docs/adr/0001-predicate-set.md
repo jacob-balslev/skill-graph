@@ -14,7 +14,7 @@ The audit proposed:
 
 1. Rename `adjacent` → `related` to align with `skos:related`.
 2. Decompose `boundary` into an ownership-style `disjoint_with` (OWL `disjointWith` semantics) — `boundary` currently conflates "there is an edge" with "the edge is explicitly-not-ownership". **(Revised by ADR 0006: `boundary` and `owl:disjointWith` operate at different semantic layers — routing vs formal class-theory — so the two relations are not aliases. `boundary` stays canonical for routing-layer asymmetric handoff; `disjoint_with` becomes a separate orthogonal relation for formal OWL class-disjointness.)**
-3. Add `broader` / `narrower` to express cross-skill generalisation that `browse_category` cannot capture.
+3. Add `broader` / `narrower` to express cross-skill generalisation that `category` cannot capture.
 4. Keep `verify_with` and `depends_on` — they have no clean SKOS equivalent and map instead to `prov:wasInformedBy` and `dcterms:requires` respectively.
 
 ## Decision
@@ -30,7 +30,7 @@ Accept all four proposals, with an **additive, backward-compatible** rollout:
 ## Rationale
 
 - **SKOS alignment is cheap and buys FAIR Interoperability.** `skos:related` is the 17-year-old W3C standard for symmetric associative relations between concepts. Using `related` as the preferred name means a third-party tool that already understands SKOS can consume the Skill Graph with a single `@context` declaration. No parser rewrites.
-- **`broader` / `narrower` close a real gap.** Cross-skill generalisation (e.g. "`react-best-practices` is narrower than `frontend`") is currently unexpressable — `browse_category` captures only taxonomy-tree hierarchy within a category, not skill-to-skill generalisation. SKOS solved this exact problem. Adopting the solved solution is correct.
+- **`broader` / `narrower` close a real gap.** Cross-skill generalisation (e.g. "`react-best-practices` is narrower than `frontend`") is currently unexpressable — `category` captures only taxonomy-tree hierarchy within a category, not skill-to-skill generalisation. SKOS solved this exact problem. Adopting the solved solution is correct.
 - **`disjoint_with` makes anti-ownership semantics explicit.** `boundary` was invented vocabulary. Decomposing it into "there is a relation AND the relation is disjointness" matches OWL's `owl:disjointWith` and lets graph consumers reason about exclusion without special-casing a Skill-Graph-only predicate.
 - **Additive, backward-compatible rollout respects code in the wild.** Hundreds of skills in the Development workspace use `adjacent` / `boundary` today. A breaking rename would force a coordinated library-wide edit. Additive-with-deprecation costs one lint-warning pass and buys the same interoperability.
 - **`verify_with` and `depends_on` stay as-is.** `verify_with` is a provenance relation (PROV-O `wasInformedBy`) not a classification relation. `depends_on` is a pragmatic prerequisite (`dcterms:requires`) not a conceptual hierarchy. Neither has a SKOS analogue and both carry intent that would be lost if forced into SKOS naming.

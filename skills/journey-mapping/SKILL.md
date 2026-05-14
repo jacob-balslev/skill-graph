@@ -1,10 +1,10 @@
 ---
-schema_version: 3
+schema_version: 4
 name: journey-mapping
 description: "Use when mapping a user's experience across multiple touchpoints and time, surfacing emotional peaks and troughs, identifying opportunity moments in a cross-channel flow, or aligning a team on the end-to-end experience including back-stage support processes. Do NOT use for decomposing a single screen into UI steps (use task-analysis) or for drawing back-end service architecture diagrams — journey maps describe human experience, not system topology."
 version: 1.0.0
 type: capability
-browse_category: design
+category: design
 scope: portable
 owner: skill-graph-maintainer
 freshness: "2026-05-12"

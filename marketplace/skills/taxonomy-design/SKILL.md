@@ -5,11 +5,11 @@ license: MIT
 compatibility: "Portable taxonomy design discipline for skill libraries, product information architecture, documentation trees, and knowledge graphs."
 allowed-tools: Read Grep
 metadata:
-  schema_version: "3"
+  schema_version: "4"
   version: "1.0.0"
   type: capability
-  browse_category: knowledge
-  category: modeling/taxonomy
+  category: knowledge
+  domain: modeling/taxonomy
   scope: portable
   owner: skill-graph-maintainer
   freshness: "2026-05-11"

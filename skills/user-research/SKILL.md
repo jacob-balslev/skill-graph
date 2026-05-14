@@ -1,10 +1,10 @@
 ---
-schema_version: 3
+schema_version: 4
 name: user-research
 description: "Use when planning or conducting generative qualitative research with real users — interviews, contextual inquiry, ethnographic observation, diary studies — to learn what people do, think, and need in their own context. Do NOT use for analytics review, survey statistics, A/B test interpretation, or agent-side intent classification — those are different research practices entirely."
 version: 1.0.0
 type: capability
-browse_category: design
+category: design
 scope: portable
 owner: skill-graph-maintainer
 freshness: "2026-05-12"

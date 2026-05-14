@@ -5,11 +5,11 @@ license: MIT
 compatibility: "Portable technology-selection discipline for application frameworks, libraries, SDKs, platforms, runtimes, data stores, and agent tooling."
 allowed-tools: Read Grep
 metadata:
-  schema_version: "3"
+  schema_version: "4"
   version: "1.0.0"
   type: capability
-  browse_category: engineering
-  category: architecture/technology-selection
+  category: engineering
+  domain: architecture/technology-selection
   scope: portable
   owner: skill-graph-maintainer
   freshness: "2026-05-11"
