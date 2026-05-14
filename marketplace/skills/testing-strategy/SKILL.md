@@ -25,7 +25,7 @@ metadata:
   relations: "{\"boundary\":[{\"skill\":\"documentation\",\"reason\":\"documentation is durable prose; testing-strategy is active verification planning\"},{\"skill\":\"debugging\",\"reason\":\"debugging chases a specific observed failure; testing-strategy decides what to test BEFORE a failure exists\"},{\"skill\":\"refactor\",\"reason\":\"refactor reshapes code (including test setup) while preserving behavior; testing-strategy decides what coverage to author in the first place\"}],\"verify_with\":[\"debugging\"]}"
   portability: "{\"readiness\":\"scripted\",\"targets\":[\"skill-md\"]}"
   skill_graph_source_repo: "https://github.com/jacob-balslev/skill-graph"
-  skill_graph_protocol: Skill Metadata Protocol v3
+  skill_graph_protocol: Skill Metadata Protocol v4
   skill_graph_project: Skill Graph
   skill_graph_canonical_skill: skills/testing-strategy/SKILL.md
 ---

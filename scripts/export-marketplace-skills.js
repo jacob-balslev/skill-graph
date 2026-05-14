@@ -35,7 +35,7 @@ const DEFAULT_SOURCE_DIR = path.join(REPO_ROOT, 'skills');
 const DEFAULT_OUTPUT_ROOT = path.join(REPO_ROOT, 'marketplace');
 const MARKETPLACE_DESCRIPTION_LIMIT = 1024;
 const SKILL_GRAPH_SOURCE_REPO = 'https://github.com/jacob-balslev/skill-graph';
-const SKILL_GRAPH_PROTOCOL = 'Skill Metadata Protocol v3';
+const SKILL_GRAPH_PROTOCOL = 'Skill Metadata Protocol v4';
 const SKILL_GRAPH_PROJECT = 'Skill Graph';
 const RELEASE_TARGET_REPO = 'jacob-balslev/skill-graph-skills';
 

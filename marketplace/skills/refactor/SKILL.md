@@ -24,7 +24,7 @@ metadata:
   relations: "{\"boundary\":[{\"skill\":\"documentation\",\"reason\":\"documentation is prose about the code; refactor is behavior-preserving changes to the code itself\"},{\"skill\":\"debugging\",\"reason\":\"debugging chases an observed failure; refactor runs only with a green test suite and preserves behavior\"}],\"verify_with\":[\"testing-strategy\"],\"depends_on\":[{\"skill\":\"testing-strategy\",\"min_version\":\"^1.0.0\"}]}"
   portability: "{\"readiness\":\"scripted\",\"targets\":[\"skill-md\"]}"
   skill_graph_source_repo: "https://github.com/jacob-balslev/skill-graph"
-  skill_graph_protocol: Skill Metadata Protocol v3
+  skill_graph_protocol: Skill Metadata Protocol v4
   skill_graph_project: Skill Graph
   skill_graph_canonical_skill: skills/refactor/SKILL.md
 ---

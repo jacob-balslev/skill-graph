@@ -31,7 +31,7 @@ license: MIT
 compatibility: "Markdown, Git"
 allowed-tools: Read Grep
 metadata:
-  schema_version: "3"
+  schema_version: "4"
   type: capability
   drift_check: "{\"last_verified\":\"2026-04-17\"}"
 ---
@@ -68,7 +68,7 @@ adds factual provenance under `metadata`:
 ```yaml
 metadata:
   skill_graph_source_repo: "https://github.com/jacob-balslev/skill-graph"
-  skill_graph_protocol: "Skill Metadata Protocol v3"
+  skill_graph_protocol: "Skill Metadata Protocol v4"
   skill_graph_project: "Skill Graph"
   skill_graph_canonical_skill: "skills/<name>/SKILL.md"
 ```

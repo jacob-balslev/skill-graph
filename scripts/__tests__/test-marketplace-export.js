@@ -9,6 +9,7 @@ const path = require('path');
 const {
   EXPORT_DESCRIPTION_OVERRIDES,
   MARKETPLACE_DESCRIPTION_LIMIT,
+  SKILL_GRAPH_PROTOCOL,
   buildMarketplaceSkillText,
   collectCanonicalSkills,
   exportDescriptionForSkill,
@@ -65,6 +66,11 @@ assert(shape.errors.length === 0, `marketplace export should be plain SKILL.md s
 assert(
   exportedA11yFm.metadata.skill_graph_canonical_skill === 'skills/a11y/SKILL.md',
   'marketplace export should preserve canonical source path'
+);
+assert(
+  exportedA11yFm.metadata.skill_graph_protocol === SKILL_GRAPH_PROTOCOL &&
+    SKILL_GRAPH_PROTOCOL === 'Skill Metadata Protocol v4',
+  'marketplace export should preserve current Skill Metadata Protocol provenance'
 );
 assert(
   exportedA11y.includes('https://github.com/jacob-balslev/skill-graph/blob/main/examples/evals/a11y.json'),

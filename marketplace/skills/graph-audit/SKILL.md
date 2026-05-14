@@ -25,7 +25,7 @@ metadata:
   relations: "{\"boundary\":[{\"skill\":\"documentation\",\"reason\":\"documentation writes prose about the contract; graph-audit verifies the contract against the live files\"},{\"skill\":\"refactor\",\"reason\":\"refactor changes skill body structure; graph-audit is read-only metadata verification\"},{\"skill\":\"debugging\",\"reason\":\"debugging chases a specific runtime failure; graph-audit is bulk static verification of every skill\"}],\"verify_with\":[\"testing-strategy\"]}"
   grounding: "{\"domain_object\":\"Skill Metadata Protocol and Skill Graph manifest consistency\",\"grounding_mode\":\"repo_specific\",\"truth_sources\":[\"schemas/skill.schema.json\",\"schemas/manifest.schema.json\",\"docs/skill-metadata-protocol.md\",\"scripts/skill-lint.js\",\"scripts/lib/alias-contract.js\",\"scripts/check-protocol-consistency.js\",\"scripts/generate-manifest.js\",\"examples/evals/graph-audit.json\"],\"failure_modes\":[\"schema_drift\",\"manifest_sample_out_of_sync\",\"broken_relation_targets\",\"eval_artifacts_mismatch\",\"name_directory_mismatch\"],\"evidence_priority\":\"repo_code_first\"}"
   skill_graph_source_repo: "https://github.com/jacob-balslev/skill-graph"
-  skill_graph_protocol: Skill Metadata Protocol v3
+  skill_graph_protocol: Skill Metadata Protocol v4
   skill_graph_project: Skill Graph
   skill_graph_canonical_skill: skills/graph-audit/SKILL.md
 ---

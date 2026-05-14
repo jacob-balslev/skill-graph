@@ -21,7 +21,7 @@ metadata:
   anti_examples: "[\"Choose the exact hex value for the brand's primary blue\",\"Configure Tailwind's content array and purge settings\",\"Implement the dark mode toggle interaction\"]"
   relations: "{\"related\":[\"color-system-design\",\"design-system-architecture\",\"visual-design-foundations\",\"dark-mode-implementation\"],\"boundary\":[{\"skill\":\"color-system-design\",\"reason\":\"color-system-design produces the palette and the semantic color decisions; this skill structures how those decisions become tokens and reach components.\"},{\"skill\":\"dark-mode-implementation\",\"reason\":\"dark-mode-implementation handles preference detection, asset swapping, and image handling; this skill defines the token layer that makes dark mode trivial to add.\"}]}"
   skill_graph_source_repo: "https://github.com/jacob-balslev/skill-graph"
-  skill_graph_protocol: Skill Metadata Protocol v3
+  skill_graph_protocol: Skill Metadata Protocol v4
   skill_graph_project: Skill Graph
   skill_graph_canonical_skill: skills/theme-system-design/SKILL.md
 ---

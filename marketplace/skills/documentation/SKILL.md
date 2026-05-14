@@ -25,7 +25,7 @@ metadata:
   grounding: "{\"domain_object\":\"Documentation discipline in the Skill Graph repository\",\"grounding_mode\":\"hybrid\",\"truth_sources\":[\"README.md\",\"docs/PRIMER.md\",\"docs/manifest-field-mapping.md\",\"docs/field-reference.md\",\"examples/evals/comprehension.json\"],\"failure_modes\":[\"docs_restating_instead_of_citing_truth\",\"readme_cli_examples_drift_from_scripts\",\"durable_prose_confused_with_runtime_debugging\",\"audience_fit_omitted_from_reference_docs\"],\"evidence_priority\":\"repo_code_first\"}"
   portability: "{\"readiness\":\"scripted\",\"targets\":[\"skill-md\"]}"
   skill_graph_source_repo: "https://github.com/jacob-balslev/skill-graph"
-  skill_graph_protocol: Skill Metadata Protocol v3
+  skill_graph_protocol: Skill Metadata Protocol v4
   skill_graph_project: Skill Graph
   skill_graph_canonical_skill: skills/documentation/SKILL.md
 ---

@@ -21,7 +21,7 @@ metadata:
   anti_examples: "[\"Analyze last quarter's NPS results and produce a dashboard.\",\"Classify whether this agent request from the user is high-risk before executing.\",\"Set up an A/B test of two onboarding flows.\"]"
   relations: "{\"related\":[\"problem-framing\",\"research-synthesis\",\"usability-testing\",\"design-thinking\"],\"boundary\":[{\"skill\":\"intent-recognition\",\"reason\":\"intent-recognition classifies an agent request's risk level at runtime from the agent's perspective. user-research investigates real human users' goals, contexts, and needs through fieldwork — these are entirely different practices that share only the word 'intent'.\"},{\"skill\":\"usability-testing\",\"reason\":\"usability-testing is evaluative — it watches users attempt tasks on an artifact to find usability defects. user-research is generative — it studies users before any artifact exists, to discover needs and context.\"}]}"
   skill_graph_source_repo: "https://github.com/jacob-balslev/skill-graph"
-  skill_graph_protocol: Skill Metadata Protocol v3
+  skill_graph_protocol: Skill Metadata Protocol v4
   skill_graph_project: Skill Graph
   skill_graph_canonical_skill: skills/user-research/SKILL.md
 ---

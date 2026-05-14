@@ -88,7 +88,7 @@ Use string values so the result stays compatible with the base `SKILL.md` metada
 ```yaml
 metadata:
   skill_graph_source_repo: "https://github.com/jacob-balslev/skill-graph"
-  skill_graph_protocol: "Skill Metadata Protocol v3"
+  skill_graph_protocol: "Skill Metadata Protocol v4"
   skill_graph_project: "Skill Graph"
   skill_graph_canonical_skill: "skills/<name>/SKILL.md"
 ```
