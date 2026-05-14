@@ -1,10 +1,12 @@
 # Skill Audit Loop
 
-This document standardizes the repeatable loop for auditing many skills in Skill Graph.
+A skill is a contract about a subject, and the contract is only true while the things it was written against still hold. The codebase a skill is grounded in changes. The subject a skill describes changes. The Skill Audit Loop is the procedure that re-grounds a skill against both — it checks a skill's declared `grounding.truth_sources` against current reality and records the result.
+
+This document standardizes that procedure so it can be run repeatably across many skills.
 
 ## Goal
 
-The loop exists to keep a skill library healthy over time.
+The loop exists to keep each skill true to what it was grounded against, and therefore to keep a skill library healthy over time.
 
 It should continuously detect:
 

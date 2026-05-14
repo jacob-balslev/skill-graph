@@ -197,7 +197,9 @@ That is the difference between asking an agent to "use the UX skill" and giving 
 
 ## Skill Audit Loop
 
-The Skill Audit Loop adapts two useful patterns:
+A skill is a contract about a subject. The contract is inert on its own — it stays useful only while the things it was written against still hold. Two of those things move: the codebase the skill is grounded in, and the subject the skill describes. The Skill Audit Loop re-grounds a skill against both. It is what keeps a skill true to its declared `grounding.truth_sources` once time has passed — whether a maintainer runs it across a whole library or an adopter runs it against their own repo.
+
+The loop adapts two useful patterns:
 
 - From [Karpathy's `autoresearch`](https://github.com/karpathy/autoresearch): a tight loop with a constrained action surface, a fixed experiment, a measurable result, and keep-or-revert pressure.
 - From [Stanford d.school design thinking](https://dschool.stanford.edu/resources/design-thinking-bootleg) and [IDEO's design thinking framing](https://designthinking.ideo.com/faq/isnt-design-thinking-a-set-step-by-step-process): human-centered iteration through discovery, framing, ideation, prototyping, testing, and loop-back when evidence changes the problem.
@@ -212,7 +214,7 @@ For skills, the loop is:
 6. Re-run checks and record the new state.
 7. Move to the next skill or loop back if the fix changed the graph.
 
-This is not "self-improving skills" as a slogan. It is a maintenance loop with evidence, constraints, and repeatable checks.
+This is not "self-improving skills" as a slogan. It is a re-grounding loop with evidence, constraints, and repeatable checks.
 
 ## Quick Start
 

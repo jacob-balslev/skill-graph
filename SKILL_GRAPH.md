@@ -4,6 +4,8 @@
 
 Skill Graph is the library-level system around the Skill Metadata Protocol. The protocol defines what one `SKILL.md` must declare; Skill Graph supplies the manifest compiler, validator, router, drift sentinel, audit loop, and specimen library that make those declarations useful across many skills. The repo is organised in five authority tiers: each tier derives from the one above it, and tooling enforces the derivation automatically. When any two files appear to contradict each other, the tier with higher authority wins; the lower-tier file is a bug.
 
+The three layers divide the work cleanly. The Skill Metadata Protocol declares what each skill is grounded against — its `truth_sources`, `grounding_mode`, and `failure_modes`. The Skill Graph operates across the whole library of those declarations, compiling, routing, clustering, and checking them. The Skill Audit Loop is the part of the Skill Graph that re-grounds each skill against its declared sources on a cadence, so the declarations the protocol captured stay true to the reality they point at.
+
 ---
 
 ## System Model — how the pieces fit together
