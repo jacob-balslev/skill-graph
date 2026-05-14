@@ -246,7 +246,7 @@ node scripts/export-marketplace-skills.js --check
 node scripts/verify-skill-md-export.js --plain marketplace/skills
 ```
 
-The marketplace output is generated under `marketplace/` for publication to the dedicated export target `jacob-balslev/skill-graph-skills`. Do not add a marketplace badge until that target has been pushed and the install path has been verified.
+The marketplace output is generated under `marketplace/` for publication to the dedicated export target `jacob-balslev/skills`. Do not add a marketplace badge until that target has been pushed and the install path has been verified.
 
 The npm package exposes the same scripts through a `skill-graph` binary:
 

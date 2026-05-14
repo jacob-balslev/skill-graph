@@ -56,7 +56,7 @@ The plain marketplace artifact should be generated, not hand-edited. If a market
 Use a dedicated export repository as the public GitHub target:
 
 ```text
-jacob-balslev/skill-graph-skills
+jacob-balslev/skills
 ```
 
 Do not point marketplace indexers at this canonical protocol repo as the first
@@ -76,7 +76,7 @@ After generation and verification, push that generated surface to the dedicated
 export repository. The install command to validate after publishing is:
 
 ```bash
-npx skills add jacob-balslev/skill-graph-skills
+npx skills add jacob-balslev/skills
 ```
 
 ## Export Provenance

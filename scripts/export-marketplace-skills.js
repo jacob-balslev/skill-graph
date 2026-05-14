@@ -37,7 +37,7 @@ const MARKETPLACE_DESCRIPTION_LIMIT = 1024;
 const SKILL_GRAPH_SOURCE_REPO = 'https://github.com/jacob-balslev/skill-graph';
 const SKILL_GRAPH_PROTOCOL = 'Skill Metadata Protocol v4';
 const SKILL_GRAPH_PROJECT = 'Skill Graph';
-const RELEASE_TARGET_REPO = 'jacob-balslev/skill-graph-skills';
+const RELEASE_TARGET_REPO = 'jacob-balslev/skills';
 
 const PROVENANCE_KEYS = [
   'skill_graph_source_repo',

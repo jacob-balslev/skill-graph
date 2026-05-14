@@ -4,7 +4,7 @@ This directory is generated from the canonical Skill Metadata Protocol source in
 Do not edit generated files here by hand; run `node scripts/export-marketplace-skills.js` from the canonical repo.
 
 Canonical source repo: https://github.com/jacob-balslev/skill-graph
-Release target repo: jacob-balslev/skill-graph-skills
+Release target repo: jacob-balslev/skills
 Generated public skills: 80
 
 Each skill under `skills/<name>/SKILL.md` is a plain Agent Skills-compatible export.
@@ -13,5 +13,5 @@ Protocol fields are preserved as string values under `metadata`, with factual Sk
 After the release target is published, install with:
 
 ```bash
-npx skills add jacob-balslev/skill-graph-skills
+npx skills add jacob-balslev/skills
 ```
