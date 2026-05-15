@@ -1,6 +1,6 @@
 # Skill Graph Field Reference (Generated)
 
-> **Generated from** `schemas/skill.v4.schema.json` on 2026-05-14 by `scripts/build-field-reference.js`.
+> **Generated from** `schemas/skill.v4.schema.json` on 2026-05-15 by `scripts/build-field-reference.js`.
 > **Do not edit by hand.** The canonical prose reference is [`docs/field-reference.md`](field-reference.md).
 > **Predicate glossary:** [`docs/glossary.md`](glossary.md).
 > **JSON-LD @context:** [`schemas/skill.context.jsonld`](../schemas/skill.context.jsonld).
