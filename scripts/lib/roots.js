@@ -72,6 +72,42 @@ function resolveSkillRoots(root = workspaceRoot(), workspace = loadWorkspaceConf
     .filter(Boolean);
 }
 
+/**
+ * Resolve a truth_source-style workspace-relative path against the configured
+ * skill library, falling back to the repo root for back-compat.
+ *
+ * Truth_source paths in eval files and `grounding.truth_sources` blocks look
+ * like `skills/<name>/SKILL.md` — workspace-relative to where the skill
+ * library lives. Pre-2026-05-16 monorepo split, that was always
+ * `<repo-root>/skills/<name>/SKILL.md`. Post-split, the skill library can
+ * live in a sibling repo configured via `.skill-graph/config.json` →
+ * `workspace.skill_roots`. This helper tries the skill-library-aware
+ * resolution first when the relPath starts with `skills/` and the configured
+ * skill_root's basename is `skills`, then falls back to repo-root resolution.
+ *
+ * Behavior:
+ *   - Default workspace (no config, skill_roots = ["./skills"]):
+ *     `skills/a11y/SKILL.md` → `<repo-root>/skills/a11y/SKILL.md` (unchanged)
+ *   - Configured workspace (skill_roots = ["../skills/skills"]):
+ *     `skills/a11y/SKILL.md` → `<repo-root>/../skills/skills/a11y/SKILL.md`
+ *   - Paths that don't start with `skills/` (e.g., `schemas/foo.json`) always
+ *     resolve against `<repo-root>` — they reference the tooling repo itself.
+ *
+ * @param {string} relPath — workspace-relative path from a truth_source
+ * @param {string} repoRoot — the tooling repo workspace root (= REPO_ROOT)
+ * @param {Array<{absPath: string, project?: string|null}>} skillRoots — output of resolveSkillRoots()
+ * @returns {string} absolute path (existence not guaranteed)
+ */
+function resolveTruthSourcePath(relPath, repoRoot, skillRoots) {
+  if (typeof relPath === 'string' && relPath.startsWith('skills/') && Array.isArray(skillRoots) && skillRoots.length > 0) {
+    const firstRoot = skillRoots[0] && skillRoots[0].absPath;
+    if (firstRoot && path.basename(firstRoot) === 'skills') {
+      return path.resolve(path.dirname(firstRoot), relPath);
+    }
+  }
+  return path.resolve(repoRoot, relPath);
+}
+
 module.exports = {
   packageRoot,
   workspaceRoot,
@@ -79,4 +115,5 @@ module.exports = {
   resolvePackagedOrWorkspacePath,
   resolveSchemaPath,
   resolveSkillRoots,
+  resolveTruthSourcePath,
 };

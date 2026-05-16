@@ -36,7 +36,7 @@ const fs = require('fs');
 const path = require('path');
 const crypto = require('crypto');
 const { parseFrontmatter } = require('./lib/parse-frontmatter');
-const { workspaceRoot } = require('./lib/roots');
+const { workspaceRoot, resolveTruthSourcePath } = require('./lib/roots');
 
 const REPO_ROOT = workspaceRoot();
 const DEFAULT_SKILLS_DIR = path.join(REPO_ROOT, 'skills');
@@ -142,7 +142,7 @@ function sectionForHeadingAnchor(text, anchor) {
   return lines.slice(start, end).join('\n');
 }
 
-function sha256TruthSource(src) {
+function sha256TruthSource(src, skillRoots = []) {
   const normalized = normalizeTruthSource(src);
   if (normalized.malformed || !normalized.path) {
     return { normalized, hash: null, error: 'malformed truth source' };
@@ -157,7 +157,7 @@ function sha256TruthSource(src) {
     };
   }
 
-  const absPath = path.resolve(REPO_ROOT, normalized.path);
+  const absPath = resolveTruthSourcePath(normalized.path, REPO_ROOT, skillRoots);
   if (!fs.existsSync(absPath)) {
     return { normalized, hash: null, error: 'file not found' };
   }
@@ -191,7 +191,7 @@ function sha256TruthSource(src) {
 // Drift check per skill
 // ---------------------------------------------------------------------------
 
-function checkSkill(skillMdPath) {
+function checkSkill(skillMdPath, skillRoots = []) {
   const rel = path.relative(REPO_ROOT, skillMdPath);
   const text = fs.readFileSync(skillMdPath, 'utf8');
   const fm = parseFrontmatter(text);
@@ -217,7 +217,7 @@ function checkSkill(skillMdPath) {
   let anyExternal = false;
 
   for (const src of grounding.truth_sources) {
-    const hashed = sha256TruthSource(src);
+    const hashed = sha256TruthSource(src, skillRoots);
     const liveHash = hashed.hash;
     const sourceKey = hashed.normalized.key;
     const recorded = recordedHashes[sourceKey];
@@ -362,10 +362,8 @@ function applyRecord(skillMdPath, truthSources) {
 // CLI
 // ---------------------------------------------------------------------------
 
-function collectSkillFiles(args) {
+function collectSkillFiles(args, roots) {
   const explicit = args.filter(a => !a.startsWith('--'));
-  const workspace = loadWorkspaceConfig();
-  const roots = resolveSkillRoots(workspace);
 
   if (explicit.length > 0) {
     const out = [];
@@ -403,13 +401,16 @@ function main() {
   const record = args.includes('--record');
   const apply = args.includes('--apply');
 
-  const files = collectSkillFiles(args);
+  const workspace = loadWorkspaceConfig();
+  const roots = resolveSkillRoots(workspace);
+
+  const files = collectSkillFiles(args, roots);
   if (files.length === 0) {
     console.error('No SKILL.md files found.');
     process.exit(1);
   }
 
-  const reports = files.map(checkSkill);
+  const reports = files.map(f => checkSkill(f, roots));
 
   // -------------------------------------------------------------------------
   // Record mode

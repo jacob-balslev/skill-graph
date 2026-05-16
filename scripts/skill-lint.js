@@ -73,7 +73,7 @@ const path = require('path');
 const { execFileSync } = require('child_process');
 const { parseFrontmatter, normalizeFrontmatter } = require('./lib/parse-frontmatter');
 const { checkAliasParity } = require('./lib/alias-contract');
-const { loadWorkspaceConfig, resolveSchemaPath, resolveSkillRoots, workspaceRoot } = require('./lib/roots');
+const { loadWorkspaceConfig, resolveSchemaPath, resolveSkillRoots, resolveTruthSourcePath, workspaceRoot } = require('./lib/roots');
 const { formatCodeFrame, locateYamlKey, locateH2Section } = require('./lint/format-code-frame');
 const { checkArchetypeSections } = require('./lint/check-archetype-sections');
 const { checkRoutingQuality } = require('./lint/check-routing-quality');
@@ -610,7 +610,7 @@ function checkEvalTruthSourceRanges() {
           continue;
         }
         const [, relPath, start, end, anchor] = m;
-        const abs = path.resolve(REPO_ROOT, relPath);
+        const abs = resolveTruthSourcePath(relPath, REPO_ROOT, SKILL_ROOTS);
         if (!fs.existsSync(abs)) {
           errors.push(`examples/evals/${evalFile} eval id=${c.id}: truth_source "${s}" — file ${relPath} does not exist`);
           continue;
@@ -657,7 +657,7 @@ function validateLocalTruthSourcePointer({ owner, source, relPath, lineRange, an
     return errors;
   }
 
-  const abs = path.resolve(REPO_ROOT, relPath);
+  const abs = resolveTruthSourcePath(relPath, REPO_ROOT, SKILL_ROOTS);
   if (!fs.existsSync(abs)) {
     errors.push(`${owner}: truth_sources ${source}: file ${relPath} does not exist`);
     return errors;
@@ -753,7 +753,7 @@ function checkDescriptionLength(fm) {
 
 // v0.5.0: guard against `paths` that consist only of negation patterns.
 // Such a list matches nothing (negations only subtract from prior includes).
-// This is a dead-routing trap per the Gemini audit finding.
+// This is a dead-routing trap found during audit review.
 function checkPathsNegation(fm) {
   const paths = fm.paths;
   if (!Array.isArray(paths) || paths.length === 0) return [];

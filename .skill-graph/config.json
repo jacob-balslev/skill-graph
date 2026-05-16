@@ -1,0 +1,9 @@
+{
+  "_comment": "Workspace root config for skill-graph tooling. Post-2026-05-16 monorepo split, this repo is tooling-only — the canonical skill library lives in the sibling jacob-balslev/skills repo. This config points lint, manifest, drift, route, and eval truth_source resolution at that sibling so `npm run verify` works from a fresh clone without setting SKILL_GRAPH_WORKSPACE.",
+  "_assumed_layout": "Sibling clones at the same parent directory: ~/Development/skill-graph (this repo) + ~/Development/skills (canonical skills). If your layout differs, set SKILL_GRAPH_WORKSPACE to override workspaceRoot() or copy this file and edit skill_roots.",
+  "workspace": {
+    "skill_roots": [
+      "../skills/skills"
+    ]
+  }
+}
