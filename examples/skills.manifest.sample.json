@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-05-16T05:55:55Z",
+  "generated_at": "2026-05-16T07:10:08Z",
   "schema_version": 4,
   "skills": [
     {
@@ -1345,15 +1345,25 @@
       "compatibility": {
         "notes": "Operating-model-agnostic. Applies whether the constraint is a single solo developer operating multiple agents, a small team where one senior engineer reviews everything, or a larger team where review capacity is the limiting factor. The framework adapts as the constraint identity changes."
       },
+      "concept": {
+        "analogy": "|",
+        "boundary": "|",
+        "definition": "Constraint awareness is the discipline of identifying the single resource that limits a system's throughput at any given time, and routing all improvement work through that resource. Drawn from Eliyahu Goldratt's Theory of Constraints (1984), it treats systems as throughput pipelines whose total output is bounded by their narrowest section — and treats local optimization of non-constraints as effort that produces no system-level gain.",
+        "mental_model": "|",
+        "misconception": "|",
+        "purpose": "|",
+        "taxonomy": "|"
+      },
       "description": "Use when prioritizing work in an AI-assisted codebase, designing agent autonomy levels, deciding what to automate vs keep manual, or evaluating whether a process/tool adds value. Covers Theory of Constraints for AI-era engineering: cheap code production, human review/validation/decision bottlenecks, Five Focusing Steps, constraint-aware process design, attention audits, and constraint-shift modeling. Do NOT use for task-effort estimation, backlog scoring with RICE/WSJF/ICE, or routing a task to a specific model.",
       "domain": "foundations/strategy",
       "health": {
+        "comprehension_state": "present",
         "drift_check": {
-          "last_verified": "2026-05-06"
+          "last_verified": "2026-05-16"
         },
         "eval_artifacts": "planned",
         "eval_state": "unverified",
-        "freshness": "2026-05-06",
+        "freshness": "2026-05-16",
         "has_grounding": false,
         "has_relations": true,
         "lifecycle": {
@@ -1401,7 +1411,7 @@
       "scope": "portable",
       "stability": "experimental",
       "type": "capability",
-      "version": "1.0.0"
+      "version": "1.1.0"
     },
     {
       "activation": {
@@ -1936,6 +1946,110 @@
         ]
       },
       "scope": "portable",
+      "stability": "experimental",
+      "type": "capability",
+      "version": "1.0.0"
+    },
+    {
+      "activation": {
+        "anti_examples": [
+          "test internal seams of a system (use integration-test-design)",
+          "validate an HTTP response against an OpenAPI schema (use API-spec tooling)",
+          "test a complete user journey through the UI (use e2e-test-design)"
+        ],
+        "examples": [
+          "design a consumer-driven contract test between a frontend and a backend service",
+          "decide whether to use Pact or schema-only validation for a new API",
+          "diagnose a contract test that passes consumer-side but fails provider-side — implementation drift",
+          "explain how the contract broker decouples deploy schedules between consumer and provider teams"
+        ],
+        "keywords": [
+          "contract testing",
+          "consumer-driven contracts",
+          "Pact",
+          "Spring Cloud Contract",
+          "Specmatic",
+          "contract broker",
+          "provider verification",
+          "consumer test",
+          "CDC",
+          "OpenAPI conformance"
+        ],
+        "triggers": [
+          "should this be a contract test or an integration test",
+          "Pact vs OpenAPI",
+          "how do we decouple deploys between services",
+          "the consumer broke when the provider changed",
+          "should we e2e test across services"
+        ]
+      },
+      "allowed-tools": "Read Grep",
+      "category": "quality",
+      "concept": {
+        "analogy": "|",
+        "boundary": "|",
+        "definition": "Contract testing is the technique of verifying that an interface between a consumer and a provider — typically two services across a network boundary — works as both sides expect, by capturing the consumer's expectations as a *contract* artifact and then running that contract against both sides independently. The contract is consumer-driven: it expresses the specific interactions the consumer actually performs (this HTTP request → this response shape and content), not the full surface of the provider's API. The consumer side verifies its code by replaying the contract against a generated mock provider; the provider side verifies its implementation by replaying the contract against the real provider. When both verifications pass independently, the two sides are known to be compatible without ever running them together. The technique decouples deploy schedules between consumer and provider teams and replaces brittle cross-service end-to-end tests with focused interface verification.",
+        "mental_model": "|",
+        "misconception": "|",
+        "purpose": "|",
+        "taxonomy": "|"
+      },
+      "description": "Use when reasoning about verifying the interface between two services or components by capturing the consumer's expectations as a contract artifact and verifying the provider satisfies the contract: the consumer-driven contracts pattern (Fowler 2006; Pact), the contrast with schema-only validation (OpenAPI/JSON Schema) which captures shape but not consumer behavioral expectations, the role of the contract broker as the integration point between consumer and provider deploy schedules, the two-phase verification (consumer-side: record interactions against a mock provider; provider-side: replay those interactions against the real provider), the difference between contract testing and integration testing (contract verifies the interface, integration verifies the implementation through the interface), and how contract testing replaces brittle cross-service e2e tests with focused interface verification. Do NOT use for in-system integration tests (use integration-test-design), full user-journey testing (use e2e-test-design), single-unit testing (use testing-strategy + test-doubles-design), or pure schema validation against OpenAPI (use API-spec validation tooling).",
+      "domain": "quality/testing",
+      "health": {
+        "comprehension_state": "present",
+        "drift_check": {
+          "last_verified": "2026-05-16"
+        },
+        "eval_artifacts": "planned",
+        "eval_state": "unverified",
+        "freshness": "2026-05-16",
+        "has_grounding": false,
+        "has_relations": true,
+        "routing_eval": "absent"
+      },
+      "id": "contract-testing",
+      "license": "MIT",
+      "name": "contract-testing",
+      "owner": "skill-graph-maintainer",
+      "path": "skills/contract-testing/SKILL.md",
+      "relations": {
+        "boundary": [
+          {
+            "reason": "integration-test-design owns tests that exercise the real implementation through an interface; this skill owns tests that verify the interface contract independently of the implementation behind it. Contract tests can replace cross-service e2e tests; they cannot replace integration tests that verify behavior through the interface.",
+            "skill": "integration-test-design"
+          },
+          {
+            "reason": "e2e-test-design owns user-journey tests across the whole stack; this skill owns service-boundary contract verification. Cross-service e2e tests are often the wrong tool — they are slow and verify too much; contract tests verify the interface specifically.",
+            "skill": "e2e-test-design"
+          },
+          {
+            "reason": "api-design owns the design of the request/response surface; this skill owns the testing of whether the implementation meets that design's contract. The two compose: api-design produces the contract; contract testing verifies it.",
+            "skill": "api-design"
+          },
+          {
+            "reason": "system-interface-contracts owns the design and documentation of contracts between systems, modules, and services; this skill owns the testing of those contracts. system-interface-contracts is the design discipline; this skill is the verification technique.",
+            "skill": "system-interface-contracts"
+          },
+          {
+            "reason": "event-contract-design owns the design of asynchronous event contracts; this skill applies to verifying message-bus contracts (Pact supports asynchronous message contracts). The two compose for event-driven systems.",
+            "skill": "event-contract-design"
+          }
+        ],
+        "related": [
+          "testing-strategy",
+          "integration-test-design",
+          "e2e-test-design",
+          "api-design",
+          "event-contract-design",
+          "system-interface-contracts"
+        ],
+        "verify_with": [
+          "api-design",
+          "integration-test-design"
+        ]
+      },
+      "scope": "reference",
       "stability": "experimental",
       "type": "capability",
       "version": "1.0.0"
@@ -3042,6 +3156,106 @@
         ]
       },
       "scope": "portable",
+      "stability": "experimental",
+      "type": "capability",
+      "version": "1.0.0"
+    },
+    {
+      "activation": {
+        "anti_examples": [
+          "test internal seams of the system (use integration-test-design)",
+          "test a single component in isolation (use testing-strategy + test-doubles-design)",
+          "verify a service's contract against consumers (use contract-testing)"
+        ],
+        "examples": [
+          "design an e2e test suite for an onboarding journey: signup → email verify → first action",
+          "decide which user journeys deserve e2e coverage vs integration-test coverage",
+          "diagnose flaky e2e tests — usually wait-strategy or test-data problems",
+          "explain why fewer e2e tests with higher load-bearing value beats many e2e tests with low value"
+        ],
+        "keywords": [
+          "end-to-end testing",
+          "e2e test",
+          "user journey test",
+          "Playwright",
+          "Cypress",
+          "Selenium",
+          "page object",
+          "test flake",
+          "wait strategy",
+          "trace test",
+          "smoke test"
+        ],
+        "triggers": [
+          "do we need e2e tests",
+          "the e2e tests are flaky",
+          "Playwright vs Cypress",
+          "how many e2e tests is too many",
+          "page object pattern"
+        ]
+      },
+      "allowed-tools": "Read Grep",
+      "category": "quality",
+      "concept": {
+        "analogy": "|",
+        "boundary": "|",
+        "definition": "End-to-end (e2e) test design is the discipline of designing tests that exercise a complete user-visible path through the entire system — the UI, the application layer, the data layer, external integrations, and back. The unit of test is the *user journey*: a sequence of user actions and the observable outcomes the user experiences. E2e tests are the highest-scope tier of the test pyramid (or trophy) — the fewest in count, the slowest per test, the most user-meaningful per test. Their value is the confidence that the system, assembled, works for a real user task; their cost is real and growing with the system's complexity. The discipline of e2e test design is keeping the count small enough that the cost stays manageable while keeping the coverage broad enough that the tests are load-bearing evidence the system works for users.",
+        "mental_model": "|",
+        "misconception": "|",
+        "purpose": "|",
+        "taxonomy": "|"
+      },
+      "description": "Use when designing end-to-end tests that exercise a user-visible path through the whole system, including the UI layer: the user-journey unit-of-test that distinguishes e2e from integration testing, the five-primitive structure (user journey, environment, test data, observable assertion, recovery), why e2e tests are expensive and how to keep them few-and-load-bearing, the wait/synchronization discipline that makes them not-flaky, the page-object and trace-test patterns, the role of e2e tests in the test pyramid/trophy (the top tier — fewest in count but highest in coverage of user-observable behavior), and the modern e2e tool landscape (Playwright, Cypress, Selenium). Do NOT use for testing internal seams of the system (use integration-test-design), single-unit isolated tests (use testing-strategy + test-doubles-design), consumer-driven contract verification (use contract-testing), or visual regression of specific components (use snapshot-testing).",
+      "domain": "quality/testing",
+      "health": {
+        "comprehension_state": "present",
+        "drift_check": {
+          "last_verified": "2026-05-16"
+        },
+        "eval_artifacts": "planned",
+        "eval_state": "unverified",
+        "freshness": "2026-05-16",
+        "has_grounding": false,
+        "has_relations": true,
+        "routing_eval": "absent"
+      },
+      "id": "e2e-test-design",
+      "license": "MIT",
+      "name": "e2e-test-design",
+      "owner": "skill-graph-maintainer",
+      "path": "skills/e2e-test-design/SKILL.md",
+      "relations": {
+        "boundary": [
+          {
+            "reason": "testing-strategy owns the strategic ratio of test levels; this skill owns the design of the e2e tier specifically — the smallest tier in the pyramid/trophy, the most expensive per test, the most user-meaningful per test.",
+            "skill": "testing-strategy"
+          },
+          {
+            "reason": "integration-test-design owns tests of internal seams between units; this skill owns user-journey tests through the whole stack including UI. The cost difference is an order of magnitude; conflating them either inflates CI cost or misses real e2e coverage.",
+            "skill": "integration-test-design"
+          },
+          {
+            "reason": "contract-testing verifies the interface between consumer and provider via consumer-driven contracts; this skill verifies the user-journey behavior end-to-end. Contracts replace e2e tests across service boundaries when the journey is service-to-service; e2e is for journeys with humans at one end.",
+            "skill": "contract-testing"
+          },
+          {
+            "reason": "Visual snapshot tests are a regression net at e2e or component scope; this skill owns the user-journey behavior end-to-end. They compose: visual snapshots within e2e tests catch UI changes the journey assertions don't.",
+            "skill": "snapshot-testing"
+          }
+        ],
+        "related": [
+          "testing-strategy",
+          "integration-test-design",
+          "snapshot-testing",
+          "test-driven-development",
+          "contract-testing"
+        ],
+        "verify_with": [
+          "testing-strategy",
+          "integration-test-design"
+        ]
+      },
+      "scope": "reference",
       "stability": "experimental",
       "type": "capability",
       "version": "1.0.0"
@@ -4573,6 +4787,105 @@
     {
       "activation": {
         "anti_examples": [
+          "test a single function in isolation (use testing-strategy + test-doubles-design)",
+          "test a full user journey through the UI (use e2e-test-design)",
+          "verify a consumer-driven contract against a provider (use contract-testing)"
+        ],
+        "examples": [
+          "design an integration test for the order service that exercises real database and real message bus",
+          "decide which dependencies to fake and which to use real in an integration test",
+          "diagnose a flaky integration test — likely shared mutable state across tests",
+          "explain why the test pyramid and test trophy disagree on integration test count"
+        ],
+        "keywords": [
+          "integration test",
+          "integration testing",
+          "test pyramid",
+          "test trophy",
+          "sociable test",
+          "test data setup",
+          "test transaction rollback",
+          "test containers",
+          "testcontainers",
+          "boundary test"
+        ],
+        "triggers": [
+          "should this be a unit or integration test",
+          "the integration test is flaky",
+          "test pyramid vs test trophy",
+          "real database in tests",
+          "test data setup is taking over"
+        ]
+      },
+      "allowed-tools": "Read Grep",
+      "category": "quality",
+      "concept": {
+        "analogy": "|",
+        "boundary": "|",
+        "definition": "Integration test design is the discipline of designing tests that verify the interaction of two or more units of a system — modules within a process, services across processes, layers within an architecture — to catch defects that emerge only at the boundaries between those units. The unit of judgment is the *boundary*: whether type-mapped, serialized, transactional, contract-bound, or simply called across a function boundary, the integration test's value is exercising the *real* interaction between the parts rather than the *mocked* interaction a unit test would exercise. The scope choice — which units are real, which are faked, which are out of scope — is the central design decision and the source of most fragile integration test suites: too narrow and the test is a unit test in disguise; too broad and the test is an end-to-end test in disguise; in between, the test is what its name says.",
+        "mental_model": "|",
+        "misconception": "|",
+        "purpose": "|",
+        "taxonomy": "|"
+      },
+      "description": "Use when designing tests that verify the interaction between two or more units of a system — modules, services, layers, processes: the scope-and-boundary primitives that distinguish integration from unit and e2e tests, the test-pyramid (Cohn 2009) and test-trophy (Dodds) frameworks for how much integration testing belongs in the suite, the real-vs-faked-collaborator decision per dependency, the test-data lifecycle (per-test setup, transaction rollback, container reset), the difference between sociable-unit tests, integration tests, and contract tests, and the failure modes (over-broad scope that mimics e2e, over-narrow scope that mimics unit, shared mutable state that produces flakes). Do NOT use for testing one unit in isolation (use testing-strategy + test-doubles-design), full user-journey testing (use e2e-test-design), consumer-driven contract verification (use contract-testing), or test-suite quality measurement (use mutation-testing).",
+      "domain": "quality/testing",
+      "health": {
+        "comprehension_state": "present",
+        "drift_check": {
+          "last_verified": "2026-05-16"
+        },
+        "eval_artifacts": "planned",
+        "eval_state": "unverified",
+        "freshness": "2026-05-16",
+        "has_grounding": false,
+        "has_relations": true,
+        "routing_eval": "absent"
+      },
+      "id": "integration-test-design",
+      "license": "MIT",
+      "name": "integration-test-design",
+      "owner": "skill-graph-maintainer",
+      "path": "skills/integration-test-design/SKILL.md",
+      "relations": {
+        "boundary": [
+          {
+            "reason": "testing-strategy owns the strategic question of how much of each test level to invest in; this skill owns the design of integration-level tests specifically.",
+            "skill": "testing-strategy"
+          },
+          {
+            "reason": "test-doubles-design owns the construction of mocks/stubs/fakes; this skill owns the per-dependency real-vs-faked decision in integration scope. Integration tests use real collaborators where practical and fakes only at true external boundaries.",
+            "skill": "test-doubles-design"
+          },
+          {
+            "reason": "e2e-test-design owns user-journey-scope tests that exercise the full stack including UI; this skill owns scope below that — interaction of units inside the system, often without UI.",
+            "skill": "e2e-test-design"
+          },
+          {
+            "reason": "contract-testing owns consumer-driven contract verification between services; this skill owns the in-system interaction of modules. Contract tests verify the *interface*; integration tests verify the *implementation through* the interface.",
+            "skill": "contract-testing"
+          }
+        ],
+        "related": [
+          "testing-strategy",
+          "test-doubles-design",
+          "test-driven-development",
+          "e2e-test-design",
+          "contract-testing"
+        ],
+        "verify_with": [
+          "testing-strategy",
+          "e2e-test-design"
+        ]
+      },
+      "scope": "reference",
+      "stability": "experimental",
+      "type": "capability",
+      "version": "1.0.0"
+    },
+    {
+      "activation": {
+        "anti_examples": [
           "design the deterministic safety hook that blocks destructive commands",
           "decide whether to use a switch or a chain of ifs",
           "actually execute the migration after we've classified the risk",
@@ -5062,15 +5375,25 @@
       "compatibility": {
         "notes": "Theory-level skill. Applies to any AI-coding workspace that maintains structured knowledge artefacts: skill libraries, reference docs, decision records, runbooks, agent memory systems, RAG/GraphRAG pipelines."
       },
+      "concept": {
+        "analogy": "|",
+        "boundary": "|",
+        "definition": "Knowledge modeling is the discipline of choosing a *representation paradigm* — knowledge graph, frames, production rules, semantic network, concept map, procedural ontology, or a hybrid — that fits how the resulting knowledge will be queried, reasoned over, and maintained. Drawing from Brachman & Levesque's knowledge-representation tradition and Newell's knowledge-level account, it treats representation as a strategic choice with explicit expressiveness-tractability trade-offs rather than as a default.",
+        "mental_model": "|",
+        "misconception": "|",
+        "purpose": "|",
+        "taxonomy": "|"
+      },
       "description": "Use when deciding *which representation paradigm* fits a piece of domain knowledge — knowledge graph vs frames vs production rules vs semantic network vs concept map vs procedural ontology vs hybrid — when designing AI-agent context systems, building a knowledge base, structuring a skill or reference library, or planning a GraphRAG retrieval pipeline. Covers the seven paradigms with structure / best-for / weakness tables, the tacit-to-explicit knowledge acquisition pipeline (elicitation → articulation → formalization → validation → encoding), knowledge graph design principles (reify when needed, separate schema from instance, label precisely, bidirectional naming, minimal redundancy), the four knowledge-validation types (completeness / consistency / relevance / currency) plus expert walkthrough, the seven-phase knowledge lifecycle (Create / Validate / Publish / Use / Monitor / Update / Retire), the application to AI-agent systems (skills as frames, routing as rules, memory as graph), and a full GraphRAG section covering the five patterns (entity-anchored retrieval, relationship-aware context, path-based reasoning, subgraph summarization, hybrid vector+graph) with rules for when graph-grounded retrieval beats plain RAG. Do NOT use for the *human-readable* domain analysis layer (use `conceptual-modeling`), for the database / ER design layer (a logical-modeling skill), for pure classification hierarchies (a taxonomy skill), for formal ontology axioms (an ontology skill), or for the live skill-library tooling that consumes modeled knowledge (use `skill-infrastructure`).",
       "domain": "foundations/knowledge",
       "health": {
+        "comprehension_state": "present",
         "drift_check": {
-          "last_verified": "2026-05-06"
+          "last_verified": "2026-05-16"
         },
         "eval_artifacts": "planned",
         "eval_state": "unverified",
-        "freshness": "2026-05-06",
+        "freshness": "2026-05-16",
         "has_grounding": false,
         "has_relations": true,
         "lifecycle": {
@@ -5122,7 +5445,7 @@
       "scope": "portable",
       "stability": "experimental",
       "type": "capability",
-      "version": "1.0.0"
+      "version": "1.1.0"
     },
     {
       "activation": {
@@ -5263,15 +5586,25 @@
       "compatibility": {
         "notes": "Provider-/runtime-/stack-agnostic. The morphology, polysemy, register, and error-message rules apply to any software product written in any human-spoken language; the casing-convention table is illustrative for typical OSS stacks (TypeScript, SQL, CSS, Python) — substitute the conventions of your own stack."
       },
+      "concept": {
+        "analogy": "|",
+        "boundary": "|",
+        "definition": "Linguistics applied to software is the discipline of using the rules of human language — morphology, semantics, pragmatics, sociolinguistics — to shape the words inside a software system: identifier names, type labels, error messages, UI copy, and documentation prose. Drawing from Saussure's signifier/signified distinction, Lyons's structural semantics, and Halliday's systemic-functional grammar, it treats every name and every visible string as a small linguistic artefact whose form determines whether the reader can decode the intended meaning quickly and reliably.",
+        "mental_model": "|",
+        "misconception": "|",
+        "purpose": "|",
+        "taxonomy": "|"
+      },
       "description": "Use when choosing names for files/functions/variables/types/columns, writing or reviewing UI copy/error/onboarding text, disambiguating overloaded terms, or matching tone to end-user/agent/developer audiences. Covers morphology, compound-word order, abbreviation policy, verb-noun rules, polysemy resolution, audience register, blame-free error-message structure, and cross-cultural product-copy awareness. Do NOT use for casing conventions (use naming-conventions), doc structure/type selection (use documentation), or call-site-wide renames (use refactor).",
       "domain": "foundations/language",
       "health": {
+        "comprehension_state": "present",
         "drift_check": {
-          "last_verified": "2026-05-06"
+          "last_verified": "2026-05-16"
         },
         "eval_artifacts": "planned",
         "eval_state": "unverified",
-        "freshness": "2026-05-06",
+        "freshness": "2026-05-16",
         "has_grounding": false,
         "has_relations": true,
         "lifecycle": {
@@ -5319,7 +5652,7 @@
       "scope": "portable",
       "stability": "experimental",
       "type": "capability",
-      "version": "1.0.0"
+      "version": "1.1.0"
     },
     {
       "activation": {
@@ -5737,6 +6070,102 @@
     {
       "activation": {
         "anti_examples": [
+          "measure how much code the test suite executes (use test-coverage-strategy)",
+          "design test doubles for an integration test (use test-doubles-design)",
+          "inject failures into a running distributed system (use chaos-engineering)"
+        ],
+        "examples": [
+          "explain why a 90% coverage codebase might have a 40% mutation score and what that means",
+          "decide whether to run mutation testing on a critical financial module",
+          "diagnose surviving mutants in a calculation function and identify the missing assertion",
+          "design a CI pipeline that runs incremental mutation testing only on changed code"
+        ],
+        "keywords": [
+          "mutation testing",
+          "mutation score",
+          "mutant",
+          "mutant operator",
+          "PIT",
+          "Stryker",
+          "DeMillo",
+          "equivalent mutant",
+          "killed mutant",
+          "selective mutation",
+          "higher-order mutant",
+          "test effectiveness"
+        ],
+        "triggers": [
+          "how do we know the tests actually verify anything",
+          "high coverage but bugs still slip through",
+          "what is mutation testing",
+          "is the test suite good or just thorough",
+          "PIT vs Stryker"
+        ]
+      },
+      "allowed-tools": "Read Grep",
+      "category": "quality",
+      "concept": {
+        "analogy": "|",
+        "boundary": "|",
+        "definition": "Mutation testing is a behavioral test-suite quality measurement in which the production code is automatically modified by small, syntactically-valid changes (mutants) and the test suite is run against each modified version. If the test suite fails on a mutant, the mutant is 'killed' — the tests caught the change. If the test suite still passes, the mutant 'survived' — the tests did not catch the change, which means the tests do not actually verify the behavior at that code location. The mutation score is the ratio of killed mutants to total (excluding equivalent mutants, which produce no observable behavior change despite the syntactic modification). Unlike code coverage, which measures whether the tests *reach* a piece of code, mutation testing measures whether the tests *verify* it.",
+        "mental_model": "|",
+        "misconception": "|",
+        "purpose": "|",
+        "taxonomy": "|"
+      },
+      "description": "Use when reasoning about mutation testing as a behavioral signal of test-suite quality: the mutant-operator vocabulary (replace operator, negate condition, flip Boolean, remove statement, alter constant), the mutation-score metric (killed mutants / total non-equivalent mutants), why mutation testing is a stronger signal than code coverage (coverage measures execution; mutation measures whether the tests would catch a defect), the equivalent-mutant problem (mutants that produce no observable behavior change despite syntactic difference), selective and incremental mutation strategies that make the technique practical for large codebases (PIT, Stryker), and the relationship between mutation testing and TDD. Do NOT use for the structural signal of how much code tests reach (use test-coverage-strategy), the construction of test doubles (use test-doubles-design), the strategic question of what to test at which level (use testing-strategy), or generic fault injection at runtime (use chaos-engineering).",
+      "domain": "quality/testing",
+      "health": {
+        "comprehension_state": "present",
+        "drift_check": {
+          "last_verified": "2026-05-16"
+        },
+        "eval_artifacts": "planned",
+        "eval_state": "unverified",
+        "freshness": "2026-05-16",
+        "has_grounding": false,
+        "has_relations": true,
+        "routing_eval": "absent"
+      },
+      "id": "mutation-testing",
+      "license": "MIT",
+      "name": "mutation-testing",
+      "owner": "skill-graph-maintainer",
+      "path": "skills/mutation-testing/SKILL.md",
+      "relations": {
+        "boundary": [
+          {
+            "reason": "test-coverage-strategy owns the structural signal of which code the test suite reaches; mutation-testing owns the behavioral signal of whether the test suite would catch a defect at that code location. The two compose: coverage is a necessary precondition for mutation testing to apply (an uncovered mutant trivially survives); mutation is the next layer of test-quality signal.",
+            "skill": "test-coverage-strategy"
+          },
+          {
+            "reason": "testing-strategy owns the strategic question of what to test at which level; this skill owns one measurement of how good the tests at any level actually are.",
+            "skill": "testing-strategy"
+          },
+          {
+            "reason": "TDD produces tests with high behavioral specificity as a side effect; mutation testing is one way to measure whether that specificity is in fact present in a given test suite.",
+            "skill": "test-driven-development"
+          }
+        ],
+        "related": [
+          "test-coverage-strategy",
+          "test-driven-development",
+          "testing-strategy",
+          "eval-driven-development"
+        ],
+        "verify_with": [
+          "test-coverage-strategy",
+          "testing-strategy"
+        ]
+      },
+      "scope": "reference",
+      "stability": "experimental",
+      "type": "capability",
+      "version": "1.0.0"
+    },
+    {
+      "activation": {
+        "anti_examples": [
           "refactor this 200-line function into smaller pieces",
           "write a doc explaining our naming conventions",
           "review this PR's naming choices",
@@ -6044,15 +6473,25 @@
       "compatibility": {
         "notes": "Portable ontology modeling guidance; implementation can be Markdown, RDF, JSON-LD, OWL, SHACL, or an internal schema language."
       },
+      "concept": {
+        "analogy": "|",
+        "boundary": "|",
+        "definition": "Ontology modeling is the discipline of formalizing the meaning of a domain into classes, properties, and axioms whose semantics is precise enough for automated reasoning, validation, or cross-system interoperability. Drawing from Aristotle's categories, Gruber's information-systems definition of ontology, and Guarino's formal ontology tradition, it treats meaning as something that can be specified — a *commitment to a conceptualization* — and the specification as a contract that downstream consumers can compute over.",
+        "mental_model": "|",
+        "misconception": "|",
+        "purpose": "|",
+        "taxonomy": "|"
+      },
       "description": "Use when formalizing domain meaning with classes, properties, constraints, RDF/OWL-style semantics, SHACL-like validation shapes, or reasoning-ready axioms. Do NOT use for simple category trees (use `taxonomy-design`), pre-implementation business entity sketches (use `conceptual-modeling`), database schemas (use `data-modeling`), or broad representation choice (use `knowledge-modeling`).",
       "domain": "foundations/ontology",
       "health": {
+        "comprehension_state": "present",
         "drift_check": {
-          "last_verified": "2026-05-11"
+          "last_verified": "2026-05-16"
         },
         "eval_artifacts": "planned",
         "eval_state": "unverified",
-        "freshness": "2026-05-11",
+        "freshness": "2026-05-16",
         "has_grounding": false,
         "has_relations": true,
         "lifecycle": {
@@ -6107,7 +6546,7 @@
       "scope": "portable",
       "stability": "experimental",
       "type": "capability",
-      "version": "1.0.0"
+      "version": "1.1.0"
     },
     {
       "activation": {
@@ -6263,15 +6702,25 @@
       "compatibility": {
         "notes": "Language- and stack-agnostic. The recognition loop, clustering method, eval pipeline, and 5-Whys ladder apply to any codebase; the grep patterns and example detection rules are illustrative — substitute the equivalents of your stack."
       },
+      "concept": {
+        "analogy": "|",
+        "boundary": "|",
+        "definition": "Pattern recognition is the cognitive and methodological discipline of identifying recurring structures across instances — separating signal from noise, naming the structure once detected, and elevating it into durable, transmissible knowledge. Drawing from Gestalt perception (Wertheimer 1923), expert intuition research (Klein 1998, Chase & Simon 1973), and the software-pattern tradition (Alexander 1977, Gamma et al. 1994), it treats pattern as a class noun: a regularity worth naming because it explains many observations through one structure.",
+        "mental_model": "|",
+        "misconception": "|",
+        "purpose": "|",
+        "taxonomy": "|"
+      },
       "description": "Use when auditing code for recurring issues, triaging errors by cluster, detecting drift from established conventions, or when an agent keeps fixing symptoms instead of root causes. Covers the six-step recognition loop (Observe → Cluster → Name → Codify → Detect → Prevent), grep-based audit strategies, error-pattern clustering with normalize-then-hash, board-health patterns (stale tasks, WIP overflow, duplicates), design pattern violations (heading hierarchy, token drift, triple-encoding), domain-encoding patterns (null-vs-zero distinction, integer encoding for monetary amounts, magnitude-conversion at the display boundary, source-rank trust hierarchy), the eval-as-pattern-test pipeline, the 5-Whys for root cause vs symptom analysis, pattern lifecycle states, and six named drift traps. Do NOT use for one-off bug localization without recurrence — fix the bug and move on — or for designing the classification system itself; this skill detects violations of conventions that already exist, while taxonomy design defines the system.",
       "domain": "foundations/cognition",
       "health": {
+        "comprehension_state": "present",
         "drift_check": {
-          "last_verified": "2026-05-06"
+          "last_verified": "2026-05-16"
         },
         "eval_artifacts": "planned",
         "eval_state": "unverified",
-        "freshness": "2026-05-06",
+        "freshness": "2026-05-16",
         "has_grounding": false,
         "has_relations": true,
         "lifecycle": {
@@ -6317,7 +6766,7 @@
       "scope": "portable",
       "stability": "experimental",
       "type": "capability",
-      "version": "1.0.0"
+      "version": "1.1.0"
     },
     {
       "activation": {
@@ -6513,6 +6962,115 @@
         ]
       },
       "scope": "portable",
+      "stability": "experimental",
+      "type": "capability",
+      "version": "1.0.0"
+    },
+    {
+      "activation": {
+        "anti_examples": [
+          "measure production traffic latency in real time (use observability)",
+          "benchmark a single function in isolation (use language benchmark tools)",
+          "inject failures into a production system (use chaos-engineering)"
+        ],
+        "examples": [
+          "design a load test for an API endpoint that verifies the p95 SLO at expected production traffic",
+          "decide between load, stress, and soak tests for a new service before launch",
+          "diagnose a soak test failure that only appears after 4 hours — likely a leak",
+          "explain why average latency is the wrong metric for user experience"
+        ],
+        "keywords": [
+          "performance testing",
+          "load testing",
+          "stress testing",
+          "soak testing",
+          "spike testing",
+          "breakpoint test",
+          "k6",
+          "JMeter",
+          "Locust",
+          "Gatling",
+          "latency percentile",
+          "p95",
+          "p99",
+          "SLO",
+          "throughput"
+        ],
+        "triggers": [
+          "what should our load test do",
+          "p95 vs average latency",
+          "k6 vs JMeter vs Locust",
+          "is the system fast enough",
+          "stress test or load test"
+        ]
+      },
+      "allowed-tools": "Read Grep",
+      "category": "quality",
+      "concept": {
+        "analogy": "|",
+        "boundary": "|",
+        "definition": "Performance testing is the discipline of measuring a system's non-functional properties — latency, throughput, resource utilization, error rate under load — by running the system under controlled load conditions and observing the resulting metrics. Where functional tests answer 'does the system produce the right output?', performance tests answer 'does the system produce the right output *quickly enough* and at *sufficient scale*, while staying within resource budgets and error tolerances?'. The unit of judgment is whether the measured metrics meet defined acceptance thresholds (typically Service-Level Objectives expressed as percentiles, e.g., 'p95 latency below 200ms at 1,000 requests per second sustained for 30 minutes'). Performance testing is *controlled* and *offline*; observability is its production-runtime counterpart that measures the live system without imposed load.",
+        "mental_model": "|",
+        "misconception": "|",
+        "purpose": "|",
+        "taxonomy": "|"
+      },
+      "description": "Use when reasoning about performance testing as a discipline distinct from its siblings `performance-engineering` (optimization) and `performance-budgets` (threshold contract): the five primitives (load profile, workload, latency metric, throughput metric, SLO target), the load-shape taxonomy (smoke, load, stress, spike, soak, breakpoint), the latency-percentile vocabulary (p50, p95, p99, p99.9) and why average latency is misleading, the SLO-as-acceptance-criterion discipline, the tool ecosystem (k6, JMeter, Locust, Gatling, Vegeta), the difference between performance testing (controlled offline load) and observability (uncontrolled production measurement), and the failure modes (unrepresentative environment, average-fixation, ignored tail, one-time tests as continuous signal). Do NOT use for the optimization activity (use `performance-engineering`), declaring threshold contracts (use `performance-budgets`), runtime measurement (use `observability` or `error-tracking`), microbenchmarks (use language benchmark tools), chaos and fault injection (use `chaos-engineering`), or test-suite quality (use `mutation-testing`).",
+      "domain": "quality/testing",
+      "health": {
+        "comprehension_state": "present",
+        "drift_check": {
+          "last_verified": "2026-05-16"
+        },
+        "eval_artifacts": "planned",
+        "eval_state": "unverified",
+        "freshness": "2026-05-16",
+        "has_grounding": false,
+        "has_relations": true,
+        "routing_eval": "absent"
+      },
+      "id": "performance-testing",
+      "license": "MIT",
+      "name": "performance-testing",
+      "owner": "skill-graph-maintainer",
+      "path": "skills/performance-testing/SKILL.md",
+      "relations": {
+        "boundary": [
+          {
+            "reason": "testing-strategy owns the strategic question of what to test; this skill owns one tactical technique (controlled-load measurement of non-functional properties) within that strategy.",
+            "skill": "testing-strategy"
+          },
+          {
+            "reason": "integration-test-design owns tests of correctness across internal seams; this skill owns tests of non-functional properties (latency, throughput) under controlled load. Both can use the same environment; they answer different questions.",
+            "skill": "integration-test-design"
+          },
+          {
+            "reason": "e2e-test-design owns user-journey correctness tests; this skill owns load-driven measurement of those same journeys. A 'performance e2e test' is the composition of both disciplines.",
+            "skill": "e2e-test-design"
+          },
+          {
+            "reason": "performance-engineering owns the activity of profiling and optimizing a specific slow path once it has been identified; this skill owns the discipline of exercising the system under controlled load to discover and quantify performance behavior. Performance-engineering acts on bottlenecks; performance-testing produces the measurements that locate them and verifies the optimizations afterward.",
+            "skill": "performance-engineering"
+          },
+          {
+            "reason": "performance-budgets owns the declaration of the threshold-and-consequence contract (metric, threshold, percentile, consequence) as a quality property; this skill owns the test mechanism that exercises the system under load and verifies whether the declared budgets hold. The two compose: budgets declare what 'fast enough' means; performance tests verify the system meets the declaration. Without a budget, a performance test produces measurements without a verdict; without performance tests, a budget is an aspirational threshold without empirical evidence.",
+            "skill": "performance-budgets"
+          }
+        ],
+        "related": [
+          "testing-strategy",
+          "integration-test-design",
+          "e2e-test-design",
+          "performance-engineering",
+          "performance-budgets"
+        ],
+        "verify_with": [
+          "testing-strategy",
+          "integration-test-design",
+          "performance-budgets"
+        ]
+      },
+      "scope": "reference",
       "stability": "experimental",
       "type": "capability",
       "version": "1.0.0"
@@ -7171,6 +7729,103 @@
     {
       "activation": {
         "anti_examples": [
+          "specify one concrete input-output case (use example-based tests; see testing-strategy)",
+          "fuzz for crashes and memory safety (use fuzz-testing)",
+          "measure whether tests would catch a defect (use mutation-testing)"
+        ],
+        "examples": [
+          "design property-based tests for a sorting function that exercise the universal contract",
+          "decide which functions in a parser deserve property tests vs example tests",
+          "diagnose a property test that finds a real bug but the shrunk input is large — likely a poorly-shrinkable generator",
+          "explain the round-trip property for an encode/decode pair"
+        ],
+        "keywords": [
+          "property-based testing",
+          "PBT",
+          "QuickCheck",
+          "Hypothesis",
+          "fast-check",
+          "generator",
+          "shrinker",
+          "forall",
+          "invariant",
+          "round-trip property",
+          "oracle property",
+          "random testing",
+          "generative testing"
+        ],
+        "triggers": [
+          "should this be a property test",
+          "what's an invariant for this function",
+          "the bug only happens on weird inputs",
+          "QuickCheck or fast-check",
+          "how do we test all possible cases"
+        ]
+      },
+      "allowed-tools": "Read Grep",
+      "category": "quality",
+      "concept": {
+        "analogy": "|",
+        "boundary": "|",
+        "definition": "Property-based testing is a tactical technique in which a test specifies a universal property — a claim that must hold for all inputs in a domain — and a test framework generates many random inputs in the domain and checks the property holds. When the property fails on some input, the framework shrinks the input to the smallest failing case to make the bug legible. The unit of specification is a forall-quantified claim, not a single example. Properties typically take three shapes: invariants (a property the output must always have, independent of the input), oracles (the output must equal what an alternative implementation computes), and round-trips (encoding then decoding produces the original value). Property-based testing supplements example-based testing rather than replacing it: examples specify particular behaviors; properties specify the universal contract.",
+        "mental_model": "|",
+        "misconception": "|",
+        "purpose": "|",
+        "taxonomy": "|"
+      },
+      "description": "Use when reasoning about tests that specify universal properties of code rather than specific input-output pairs: the forall(input) → property quantification, the generator/shrinker primitives that produce inputs and minimize failing cases, the four-rules-of-simple-design analog (commutativity, associativity, idempotence, round-trip, oracle, invariant), the difference between example-based tests (one input, one assertion) and property-based tests (many generated inputs, one universal claim), why property tests find bugs example tests don't, the shrinking discipline that produces minimal failing cases, and the trade-off between generator complexity and bug-finding capacity. Do NOT use for specifying one concrete behavior with one input (use example-based tests under testing-strategy), for fuzz-testing focused on crashes (use fuzz-testing), for mutation testing as a test-suite quality signal (use mutation-testing), or for model-based testing of state machines (use state-machine-modeling).",
+      "domain": "quality/testing",
+      "health": {
+        "comprehension_state": "present",
+        "drift_check": {
+          "last_verified": "2026-05-16"
+        },
+        "eval_artifacts": "planned",
+        "eval_state": "unverified",
+        "freshness": "2026-05-16",
+        "has_grounding": false,
+        "has_relations": true,
+        "routing_eval": "absent"
+      },
+      "id": "property-based-testing",
+      "license": "MIT",
+      "name": "property-based-testing",
+      "owner": "skill-graph-maintainer",
+      "path": "skills/property-based-testing/SKILL.md",
+      "relations": {
+        "boundary": [
+          {
+            "reason": "testing-strategy owns the strategic question of what test levels to invest in; this skill owns one tactical technique (generative tests with universal properties) within that strategy. Property-based testing is a complement to example-based tests, not a replacement.",
+            "skill": "testing-strategy"
+          },
+          {
+            "reason": "mutation-testing measures whether the test suite catches code-level defects; property-based testing is one source of high-mutation-killing tests because universal properties tend to be specific about behavior across many inputs. They compose: PBT writes the tests; mutation testing measures their effectiveness.",
+            "skill": "mutation-testing"
+          },
+          {
+            "reason": "type-safety constrains the input space at compile time; property-based testing samples the runtime input space within the type-constraint envelope. Stronger types reduce the property-test surface needed; PBT is most valuable where types alone cannot encode the invariants (algorithmic correctness, business rules, round-trips).",
+            "skill": "type-safety"
+          }
+        ],
+        "related": [
+          "testing-strategy",
+          "test-driven-development",
+          "type-safety",
+          "mutation-testing"
+        ],
+        "verify_with": [
+          "testing-strategy",
+          "mutation-testing"
+        ]
+      },
+      "scope": "reference",
+      "stability": "experimental",
+      "type": "capability",
+      "version": "1.0.0"
+    },
+    {
+      "activation": {
+        "anti_examples": [
           "Build the production React component for the new dashboard widget.",
           "Add this component to the design system library.",
           "Write the migration script for the production database."
@@ -7330,15 +7985,25 @@
       "compatibility": {
         "notes": "Markdown, Git, agent-skill runtimes"
       },
+      "concept": {
+        "analogy": "|",
+        "boundary": "|",
+        "definition": "Reasoning is the deliberate generation, evaluation, and selection of inferences over a problem space. Reasoning calibration is the meta-skill of matching reasoning depth to problem difficulty — engaging sustained multi-step deliberation when a problem requires it, and skipping straight to action or lookup when it does not. Drawn from dual-process accounts of cognition (Kahneman 2011, Stanovich & West 2000) and bounded-rationality theory (Simon 1955), it treats reasoning as an expensive operation that pays back only when the problem cannot be solved by cheaper means.",
+        "mental_model": "|",
+        "misconception": "|",
+        "purpose": "|",
+        "taxonomy": "|"
+      },
       "description": "Use when choosing reasoning depth, deciding whether to think deeply or act fast, calibrating model effort, or diagnosing under-thinking and over-thinking in agents. Covers deterministic-first reasoning, technique routing by task type, chain/tree/ReAct patterns, the thinking-doing balance, and two-pass audit-then-implement workflows. Do NOT use for prompt wording (use `prompt-craft`) or agent architecture (use `agent-engineering`).",
       "domain": "foundations/cognition",
       "health": {
+        "comprehension_state": "present",
         "drift_check": {
-          "last_verified": "2026-03-28"
+          "last_verified": "2026-05-16"
         },
         "eval_artifacts": "planned",
         "eval_state": "unverified",
-        "freshness": "2026-03-28",
+        "freshness": "2026-05-16",
         "has_grounding": false,
         "has_relations": true,
         "lifecycle": {
@@ -7373,7 +8038,7 @@
       "scope": "reference",
       "stability": "experimental",
       "type": "capability",
-      "version": "1.0.0"
+      "version": "1.1.0"
     },
     {
       "activation": {
@@ -8756,6 +9421,106 @@
     },
     {
       "activation": {
+        "anti_examples": [
+          "specify the exact return value of a calculation (use example tests under testing-strategy)",
+          "verify a universal property like sort correctness (use property-based-testing)",
+          "design end-to-end user journey tests (use e2e-test-design)"
+        ],
+        "examples": [
+          "decide whether a rendered component is a candidate for a snapshot test or for behavioral tests",
+          "diagnose a test suite where every PR updates snapshot files — likely snapshot churn from non-stable inputs",
+          "explain why auto-updating snapshots without review removes the testing value",
+          "design an approval cycle for a visual regression suite (Chromatic / Percy)"
+        ],
+        "keywords": [
+          "snapshot testing",
+          "golden file",
+          "characterization test",
+          "approval testing",
+          "visual regression",
+          "Chromatic",
+          "Percy",
+          "Storybook",
+          "Jest snapshot",
+          "DOM snapshot",
+          "image snapshot",
+          "approval cycle"
+        ],
+        "triggers": [
+          "should this be a snapshot test",
+          "the snapshot keeps changing",
+          "is visual regression testing the same thing",
+          "should we auto-update snapshots",
+          "snapshot file is too big"
+        ]
+      },
+      "allowed-tools": "Read Grep",
+      "category": "quality",
+      "concept": {
+        "analogy": "|",
+        "boundary": "|",
+        "definition": "Snapshot testing is a tactical testing technique in which the output of a system under test is captured on a known-good run, stored as an artifact (the snapshot), and compared against fresh output on each subsequent test run. A mismatch is the test failure. The snapshot itself is the assertion — there is no hand-written claim about what the output should be; the claim is 'the output should equal what it was last time, until someone deliberately approves a new baseline.' The discipline is in the *approval cycle*: when the output legitimately changes, a human reviews the diff and accepts the new baseline; when the change is unexpected, the test failure surfaces the regression. A snapshot test without disciplined approval review is not a test; it is a record of whatever the output happened to be on the day the snapshot was last updated.",
+        "mental_model": "|",
+        "misconception": "|",
+        "purpose": "|",
+        "taxonomy": "|"
+      },
+      "description": "Use when reasoning about snapshot testing as a tactical technique: the capture-and-compare-against-baseline pattern, the difference between data snapshots (serialized object trees), DOM snapshots (rendered HTML trees), and visual snapshots (pixel images), the approval-cycle discipline that determines whether the technique adds testing value or just maintenance burden, the failure modes (auto-update without review, snapshot churn on irrelevant changes, large snapshots that hide diffs), where snapshot testing fits (structural regression of complex outputs) and where it doesn't (behavioral specification of contracts), and the relationship to visual regression testing tools (Chromatic, Percy, Loki, Playwright screenshots). Do NOT use for behavioral assertions about output values (use example tests in testing-strategy), for universal property claims (use property-based-testing), for the construction of test doubles (use test-doubles-design), or for end-to-end user-journey testing (use e2e-test-design).",
+      "domain": "quality/testing",
+      "health": {
+        "comprehension_state": "present",
+        "drift_check": {
+          "last_verified": "2026-05-16"
+        },
+        "eval_artifacts": "planned",
+        "eval_state": "unverified",
+        "freshness": "2026-05-16",
+        "has_grounding": false,
+        "has_relations": true,
+        "routing_eval": "absent"
+      },
+      "id": "snapshot-testing",
+      "license": "MIT",
+      "name": "snapshot-testing",
+      "owner": "skill-graph-maintainer",
+      "path": "skills/snapshot-testing/SKILL.md",
+      "relations": {
+        "boundary": [
+          {
+            "reason": "testing-strategy owns the strategic question of what to test at which level; this skill owns one tactical technique (capture-and-compare) within that strategy.",
+            "skill": "testing-strategy"
+          },
+          {
+            "reason": "property-based-testing asserts universal claims about output structure; snapshot testing captures a specific output and asserts equality to a baseline. The two complement: PBT for universal contracts, snapshots for complex structural outputs that are easier to capture than specify.",
+            "skill": "property-based-testing"
+          },
+          {
+            "reason": "TDD prescribes writing the test before the code; snapshot testing requires the code to exist before the snapshot can be captured. Snapshot testing fits poorly with strict TDD on greenfield code and well with characterization of existing code.",
+            "skill": "test-driven-development"
+          },
+          {
+            "reason": "Snapshot diffs surface change evidence that code review must read and approve; the approval cycle of snapshot testing is operationally part of the review process the code-review discipline owns.",
+            "skill": "code-review"
+          }
+        ],
+        "related": [
+          "testing-strategy",
+          "property-based-testing",
+          "test-driven-development",
+          "code-review"
+        ],
+        "verify_with": [
+          "testing-strategy",
+          "code-review"
+        ]
+      },
+      "scope": "reference",
+      "stability": "experimental",
+      "type": "capability",
+      "version": "1.0.0"
+    },
+    {
+      "activation": {
         "keywords": [
           "spec driven development",
           "SDD",
@@ -9341,15 +10106,25 @@
       "compatibility": {
         "notes": "Portable taxonomy design discipline for skill libraries, product information architecture, documentation trees, and knowledge graphs."
       },
+      "concept": {
+        "analogy": "|",
+        "boundary": "|",
+        "definition": "Taxonomy design is the discipline of constructing a controlled classification system — a category tree (possibly augmented by facets) that organizes a set of items so they can be browsed, found, and reasoned about. Drawing from Ranganathan's faceted classification, Aristotelian genus-species hierarchy, and the SKOS data model, it treats classification as a *retrieval contract* between the system that organizes and the readers who navigate, not as a private mental map of the author.",
+        "mental_model": "|",
+        "misconception": "|",
+        "purpose": "|",
+        "taxonomy": "|"
+      },
       "description": "Use when designing a controlled classification system: category trees, facets, browse taxonomies, SKOS broader/narrower relationships, tagging rules, and duplicate-category cleanup. Do NOT use for formal ontology axioms with reasoning constraints (use `ontology-modeling`), broad knowledge-representation choice (use `knowledge-modeling`), or one-off edge typing (use `semantic-relations`).",
       "domain": "foundations/classification",
       "health": {
+        "comprehension_state": "present",
         "drift_check": {
-          "last_verified": "2026-05-11"
+          "last_verified": "2026-05-16"
         },
         "eval_artifacts": "planned",
         "eval_state": "unverified",
-        "freshness": "2026-05-11",
+        "freshness": "2026-05-16",
         "has_grounding": false,
         "has_relations": true,
         "lifecycle": {
@@ -9398,6 +10173,308 @@
         ]
       },
       "scope": "portable",
+      "stability": "experimental",
+      "type": "capability",
+      "version": "1.1.0"
+    },
+    {
+      "activation": {
+        "anti_examples": [
+          "choose test levels (unit/integration/e2e) for a project (use testing-strategy)",
+          "use mutation testing to evaluate test-suite quality (use mutation-testing)",
+          "configure Istanbul, Jest coverage, or JaCoCo (tool documentation)"
+        ],
+        "examples": [
+          "set a coverage policy for a service that distinguishes 'covered' from 'tested'",
+          "explain why a 100% line coverage gate may be worse than an 80% branch coverage gate",
+          "diagnose a high-coverage test suite that still misses bugs — likely a granularity mismatch",
+          "decide when to upgrade from branch coverage to MC/DC for safety-critical code"
+        ],
+        "keywords": [
+          "code coverage",
+          "line coverage",
+          "branch coverage",
+          "decision coverage",
+          "condition coverage",
+          "MC/DC",
+          "modified condition decision coverage",
+          "path coverage",
+          "coverage as target",
+          "Goodhart on coverage",
+          "covered vs tested",
+          "DO-178C"
+        ],
+        "triggers": [
+          "what coverage target should we set",
+          "is 100% coverage the goal",
+          "is this line covered or tested",
+          "should we add tests for these uncovered lines",
+          "branch vs line coverage"
+        ]
+      },
+      "allowed-tools": "Read Grep",
+      "category": "quality",
+      "concept": {
+        "analogy": "|",
+        "boundary": "|",
+        "definition": "Test coverage is the family of structural measurements that report which parts of the production code were exercised by the test suite. Coverage criteria differ in granularity — function, statement, line, branch, decision, condition, modified-condition/decision (MC/DC), path — and each higher criterion subsumes the lower ones. Coverage is a *structural* property: it answers 'did the test reach this code,' not 'did the test verify this behavior.' The strategic discipline of test coverage is using coverage as a diagnostic signal about gaps in the test suite while resisting the Goodhart-Law failure mode of treating the coverage number as the target. Coverage is a floor (below this level, the test suite definitely misses things) not a ceiling (above this level, the test suite is necessarily good).",
+        "mental_model": "|",
+        "misconception": "|",
+        "purpose": "|",
+        "taxonomy": "|"
+      },
+      "description": "Use when reasoning about code coverage as a strategic measurement rather than a target: the coverage-criterion hierarchy (function, statement, line, branch, decision, condition, MC/DC, path), Marick's distinction between coverage as a floor signal and coverage as a ceiling target, Goodhart's Law applied to coverage metrics, why 100% line coverage may catch nothing important while 80% well-chosen coverage catches almost everything, the safety-critical industry's MC/DC requirement (DO-178C aviation, ISO 26262 automotive) as the empirical evidence that coverage at the right granularity matters, the difference between covered (lines exercised) and tested (behaviors verified), and how coverage gaps are diagnostic signals about the test suite. Do NOT use for choosing test levels (use testing-strategy), the technique of mutation testing as a stronger signal (use mutation-testing), the construction of test doubles (use test-doubles-design), or specific coverage-tooling configuration (tool docs).",
+      "domain": "quality/testing",
+      "health": {
+        "comprehension_state": "present",
+        "drift_check": {
+          "last_verified": "2026-05-16"
+        },
+        "eval_artifacts": "planned",
+        "eval_state": "unverified",
+        "freshness": "2026-05-16",
+        "has_grounding": false,
+        "has_relations": true,
+        "routing_eval": "absent"
+      },
+      "id": "test-coverage-strategy",
+      "license": "MIT",
+      "name": "test-coverage-strategy",
+      "owner": "skill-graph-maintainer",
+      "path": "skills/test-coverage-strategy/SKILL.md",
+      "relations": {
+        "boundary": [
+          {
+            "reason": "testing-strategy owns the question of what to test at which level; this skill owns the measurement of how much of the code those tests actually exercise and at what granularity.",
+            "skill": "testing-strategy"
+          },
+          {
+            "reason": "mutation-testing owns the stronger signal of whether tests would *catch* a defect; this skill owns the structural signal of whether tests *reach* the code at all. Coverage is a necessary-not-sufficient precondition for mutation tests to even apply.",
+            "skill": "mutation-testing"
+          },
+          {
+            "reason": "TDD produces high coverage as a side effect; this skill explains why that coverage is a side effect rather than a target, and why pursuing the metric directly produces worse tests.",
+            "skill": "test-driven-development"
+          }
+        ],
+        "related": [
+          "testing-strategy",
+          "mutation-testing",
+          "test-driven-development",
+          "eval-driven-development"
+        ],
+        "verify_with": [
+          "testing-strategy",
+          "mutation-testing"
+        ]
+      },
+      "scope": "reference",
+      "stability": "experimental",
+      "type": "capability",
+      "version": "1.0.0"
+    },
+    {
+      "activation": {
+        "anti_examples": [
+          "decide which test levels (unit/integration/e2e) the project should invest in (use testing-strategy)",
+          "set up a production feature flag (use feature-gating)",
+          "configure a specific mocking library — Jest, Sinon, Mockito (library docs)"
+        ],
+        "examples": [
+          "decide between a mock, a stub, and a fake for a database collaborator in a test",
+          "explain why over-mocking produces fragile tests that change with every refactor",
+          "diagnose a passing test that mirrors the implementation rather than specifying behavior",
+          "design an in-memory fake for a repository interface that supports both classicist tests and integration tests"
+        ],
+        "keywords": [
+          "test double",
+          "mock",
+          "stub",
+          "spy",
+          "fake",
+          "dummy",
+          "test isolation",
+          "interaction verification",
+          "state verification",
+          "mockist",
+          "classicist",
+          "in-memory fake",
+          "sociable test",
+          "solitary test"
+        ],
+        "triggers": [
+          "should this be a mock or a stub",
+          "are we using mocks correctly",
+          "the test is brittle when I refactor",
+          "do we need a fake here",
+          "is this test really testing anything"
+        ]
+      },
+      "allowed-tools": "Read Grep",
+      "category": "quality",
+      "concept": {
+        "analogy": "|",
+        "boundary": "|",
+        "definition": "A test double is a stand-in object that replaces a real collaborator in a test so the test can run without the collaborator's real behavior. The term, from Meszaros's *xUnit Test Patterns*, generalizes a family of stand-ins — dummies, stubs, spies, fakes, and mocks — each defined by what the test expects of it. Doubles exist because real collaborators are often unavailable (external services), nondeterministic (time, network, randomness), slow (databases, file systems), expensive (paid APIs), or have side effects unacceptable in a test (sending email, charging cards). The discipline of test-doubles design is choosing the right kind of double for each test's purpose, recognizing that the choice determines what the test actually verifies — state or interaction — and what the test will reveal under refactoring.",
+        "mental_model": "|",
+        "misconception": "|",
+        "purpose": "|",
+        "taxonomy": "|"
+      },
+      "description": "Use when designing or reviewing test doubles — the stand-in objects that replace real collaborators in a test: the five-kind taxonomy (dummy, stub, spy, fake, mock) from Meszaros's xUnit Test Patterns, the difference between state verification (Detroit-school, classicist) and interaction verification (London-school, mockist) and how it determines which doubles fit, the cost of doubles (fragility, false confidence, divergence from real behavior), the role of fakes as the under-used middle ground, the verify_with relationship to test-driven-development, and the heuristics for when to use a real collaborator instead of any double. Do NOT use for choosing test levels or what to test (use testing-strategy), the design discipline of writing tests first (use test-driven-development), specific mocking-library API choice (library docs), or general production stubs and feature flags (use feature-gating or domain-specific skills).",
+      "domain": "quality/testing",
+      "health": {
+        "comprehension_state": "present",
+        "drift_check": {
+          "last_verified": "2026-05-16"
+        },
+        "eval_artifacts": "planned",
+        "eval_state": "unverified",
+        "freshness": "2026-05-16",
+        "has_grounding": false,
+        "has_relations": true,
+        "routing_eval": "absent"
+      },
+      "id": "test-doubles-design",
+      "license": "MIT",
+      "name": "test-doubles-design",
+      "owner": "skill-graph-maintainer",
+      "path": "skills/test-doubles-design/SKILL.md",
+      "relations": {
+        "boundary": [
+          {
+            "reason": "test-driven-development owns the design discipline of writing the test before the production code; this skill owns the design of the stand-in objects those tests use. The two compose: TDD prescribes the rhythm; test-doubles-design prescribes the stand-ins.",
+            "skill": "test-driven-development"
+          },
+          {
+            "reason": "testing-strategy owns the strategic question of what to test at which level; this skill owns the tactical construction of the stand-ins that make a given test possible.",
+            "skill": "testing-strategy"
+          },
+          {
+            "reason": "refactor owns behavior-preserving structural change; this skill owns the doubles whose over-use produces refactor-fragile tests. The two skills are read together when a test suite resists refactoring.",
+            "skill": "refactor"
+          },
+          {
+            "reason": "api-design owns the design of an interface as a production contract; this skill owns the doubles that exercise that interface in tests. When test doubles drive interface decisions (London-school TDD), this skill and api-design overlap heavily.",
+            "skill": "api-design"
+          }
+        ],
+        "related": [
+          "testing-strategy",
+          "test-driven-development",
+          "refactor",
+          "api-design",
+          "type-safety"
+        ],
+        "verify_with": [
+          "test-driven-development",
+          "refactor"
+        ]
+      },
+      "scope": "reference",
+      "stability": "experimental",
+      "type": "capability",
+      "version": "1.0.0"
+    },
+    {
+      "activation": {
+        "anti_examples": [
+          "construct a mock, stub, or spy (use test-doubles-design)",
+          "decide what test levels (unit/integration/e2e) to invest in (use testing-strategy)",
+          "iterate on LLM behavior using an eval suite (use eval-driven-development)"
+        ],
+        "examples": [
+          "explain why writing the test first changes the design of the code under test",
+          "decide between London-school (mocks-as-design) and Detroit-school (state-verification) TDD for a new module",
+          "diagnose why the test suite is fragile under refactor — likely over-mocked interaction tests",
+          "explain why high test coverage with TDD is a side effect, not the goal"
+        ],
+        "keywords": [
+          "test-driven development",
+          "TDD",
+          "red green refactor",
+          "London school",
+          "Detroit school",
+          "Chicago school",
+          "outside-in TDD",
+          "inside-out TDD",
+          "mockist",
+          "classicist",
+          "emergent design",
+          "test-first",
+          "design pressure",
+          "GOOS"
+        ],
+        "triggers": [
+          "should we write tests first",
+          "are mocks ruining the design",
+          "is TDD worth it",
+          "London school vs Detroit school",
+          "the tests changed every refactor"
+        ]
+      },
+      "allowed-tools": "Read Grep",
+      "category": "quality",
+      "concept": {
+        "analogy": "|",
+        "boundary": "|",
+        "definition": "Test-Driven Development is a software design discipline in which the test for a behavior is written before the production code that satisfies the test, then production code is written until the test passes, then the code is restructured to improve its shape while the test continues to pass. The cycle — red (failing test), green (passing test), refactor (clean code, still passing) — is the unit of work, and the test suite is the design pressure that shapes the production code. TDD is not 'writing tests first' as a procedural rule; it is using the act of writing a test as the moment to design the interface, decompose the responsibility, and discover what the code should be. The tests are a beneficial side effect of doing design through the test-writing lens; mistaking the side effect for the purpose is the most common failure mode.",
+        "mental_model": "|",
+        "misconception": "|",
+        "purpose": "|",
+        "taxonomy": "|"
+      },
+      "description": "Use when reasoning about Test-Driven Development as a design discipline rather than a workflow: the red-green-refactor cycle as a feedback loop, the difference between London-school (outside-in, interaction-heavy, mock-driven) and Detroit-school (inside-out, state-heavy, classicist) TDD, the role of TDD as a design tool (how tests pressure code into more decomposable shapes), the connection between TDD and emergent design, the boundary between TDD and prior-test-suites, why TDD's failure mode is not 'no tests' but 'tests that mirror implementation', and the empirical record of TDD's effects on defect density, design quality, and development velocity. Do NOT use for the strategy of what to test at which level (use testing-strategy), the construction of test doubles (use test-doubles-design), the discipline of LLM eval iteration (use eval-driven-development), or general-software process workflow (use the obra/superpowers test-driven-development workflow skill — this skill is the concept-shape complement).",
+      "domain": "quality/testing",
+      "health": {
+        "comprehension_state": "present",
+        "drift_check": {
+          "last_verified": "2026-05-16"
+        },
+        "eval_artifacts": "planned",
+        "eval_state": "unverified",
+        "freshness": "2026-05-16",
+        "has_grounding": false,
+        "has_relations": true,
+        "routing_eval": "absent"
+      },
+      "id": "test-driven-development",
+      "license": "MIT",
+      "name": "test-driven-development",
+      "owner": "skill-graph-maintainer",
+      "path": "skills/test-driven-development/SKILL.md",
+      "relations": {
+        "boundary": [
+          {
+            "reason": "testing-strategy owns the question 'what should we test, at which level, with what evidence' for a given change; this skill owns the design discipline of writing the test before the code that satisfies it. The two compose — testing-strategy decides the surface; TDD prescribes the rhythm — but they answer different questions.",
+            "skill": "testing-strategy"
+          },
+          {
+            "reason": "test-doubles-design owns mocks/stubs/fakes/spies as a construct; this skill owns the discipline that places them (London-school heavily, Detroit-school lightly). The schools differ on how much test-doubles design matters to the practice.",
+            "skill": "test-doubles-design"
+          },
+          {
+            "reason": "eval-driven-development owns the LLM analog of TDD where the unit of judgment is pass-rate over a sample rather than binary per-test pass/fail. The disciplines share the iteration-first-then-implement spirit but the math underneath differs.",
+            "skill": "eval-driven-development"
+          },
+          {
+            "reason": "refactor owns behavior-preserving structural change; this skill prescribes refactor as the third beat of red-green-refactor. The skills compose: TDD calls refactor on every green; refactor owns how to do it without breaking behavior.",
+            "skill": "refactor"
+          }
+        ],
+        "related": [
+          "testing-strategy",
+          "test-doubles-design",
+          "eval-driven-development",
+          "refactor",
+          "type-safety"
+        ],
+        "verify_with": [
+          "testing-strategy",
+          "refactor"
+        ]
+      },
+      "scope": "reference",
       "stability": "experimental",
       "type": "capability",
       "version": "1.0.0"
@@ -9483,6 +10560,10 @@
           {
             "reason": "refactor reshapes code (including test setup) while preserving behavior; testing-strategy decides what coverage to author in the first place",
             "skill": "refactor"
+          },
+          {
+            "reason": "integration-test-design owns the design of integration-level tests including their setup and data lifecycle; the 'duplicated test setup across three files' anti_example has token overlap with integration-test setup discipline. testing-strategy decides what level a test should be; integration-test-design owns how to design integration tests once chosen.",
+            "skill": "integration-test-design"
           }
         ],
         "verify_with": [
@@ -10683,23 +11764,23 @@
       "foundations": 13,
       "knowledge": 1,
       "product": 1,
-      "quality": 17
+      "quality": 27
     },
     "by_scope": {
       "codebase": 1,
       "portable": 95,
-      "reference": 18
+      "reference": 28
     },
     "by_stability": {
-      "experimental": 113,
+      "experimental": 123,
       "stable": 1
     },
     "by_type": {
-      "capability": 104,
+      "capability": 114,
       "overlay": 1,
       "router": 1,
       "workflow": 8
     },
-    "total_skills": 114
+    "total_skills": 124
   }
 }

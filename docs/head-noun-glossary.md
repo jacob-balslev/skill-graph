@@ -2,7 +2,7 @@
 
 > Type: Reference
 > Purpose: Canonical head nouns for skill names, derived from current live usage.
-> Last updated: 2026-05-16
+> Last updated: 2026-05-16 (Wave 4 Testing promotion of `testing`, `design` increment)
 
 ## What this is
 
@@ -26,11 +26,13 @@ The skills that violate this convention live in `name-exceptions.yaml` with cita
 |---|---|---|
 | `modeling` | 7 | conceptual-modeling, data-modeling, entity-relationship-modeling, knowledge-modeling, ontology-modeling, state-machine-modeling, observability-modeling |
 | `design` | 6 | api-design, agent-eval-design, color-system-design, event-contract-design, taxonomy-design, theme-system-design |
+| `design` | 8 | api-design, agent-eval-design, color-system-design, event-contract-design, taxonomy-design, theme-system-design, test-doubles-design, integration-test-design, e2e-test-design |
+| `testing` | 5 | contract-testing, mutation-testing, property-based-testing, snapshot-testing, performance-testing |
 | `architecture` | 6 | dependency-architecture, design-system-architecture, form-ux-architecture, frontend-architecture, streaming-architecture, agent-engineering (umbrella) |
-| `strategy` | 3 | testing-strategy, seo-strategy, tool-call-strategy |
+| `strategy` | 4 | testing-strategy, seo-strategy, tool-call-strategy, test-coverage-strategy |
+| `development` | 4 | spec-driven-development, ai-native-development, eval-driven-development, test-driven-development |
 | `engineering` | 3 | agent-engineering, performance-engineering, prompt-craft (suffix-style) |
 | `analysis` | 3 | diff-analysis, research-synthesis, task-analysis |
-| `development` | 3 | spec-driven-development, ai-native-development, eval-driven-development |
 | `patterns` | 2 | interaction-patterns, vercel-composition-patterns |
 | `mapping` | 2 | bounded-context-mapping, journey-mapping |
 | `recognition` | 2 | intent-recognition, pattern-recognition |
@@ -38,15 +40,14 @@ The skills that violate this convention live in `name-exceptions.yaml` with cita
 
 ## Single-instance head nouns (kept for completeness)
 
-`audit`, `boundary` (live in `client-server-boundary`), `cognition`, `craft`, `defense` (live in `prompt-injection-defense`), `extraction`, `feedback`, `flow` (live in `tool-call-flow`), `foundations`, `governance`, `hierarchy`, `humanizer`, `infrastructure`, `migration`, `monitor`, `palette`, `queue`, `relations`, `review`, `router`, `routing`, `scaffold`, `scheduling`, `semantics`, `semiotics`, `solving`, `storming`, `summarization`, `synthesis`, `system`, `testing`, `thinking`, `tracking`, `ui` (live in `generative-ui`), `updates`, `ux`, `window`.
+`audit`, `boundary` (live in `client-server-boundary`), `cognition`, `craft`, `defense` (live in `prompt-injection-defense`), `extraction`, `feedback`, `flow` (live in `tool-call-flow`), `foundations`, `governance`, `hierarchy`, `humanizer`, `infrastructure`, `migration`, `monitor`, `palette`, `queue`, `relations`, `review`, `router`, `routing`, `scaffold`, `scheduling`, `semantics`, `semiotics`, `solving`, `storming`, `summarization`, `synthesis`, `system`, `thinking`, `tracking`, `ui` (live in `generative-ui`), `updates`, `ux`, `window`.
 
 ## Reserved head nouns (gap-fill skills, not yet authored)
 
-All Wave 1–3 reservations are now live in source. Wave 4 (Testing) and Wave 5 (Databases) introduce new head nouns reserved below.
+All Wave 1–4 reservations are now live in source. Wave 5 (Databases) introduces new head nouns reserved below.
 
 | Head noun | Reserved for | Notes |
 |---|---|---|
-| `testing` (compound forms) | Wave 4 testing skills (`contract-testing`, `mutation-testing`, `property-based-testing`, `snapshot-testing`, `performance-testing`) | `testing` is already a single-instance head noun; Wave 4 promotes it to a multi-instance group |
 | `optimization` | `query-optimization` (Wave 5 / Databases) | New head noun — formally introduce in same commit as the skill |
 | `evolution` | `schema-evolution` (Wave 5 / Databases) | New head noun |
 | `isolation` | `transaction-isolation` (Wave 5 / Databases) | New head noun |

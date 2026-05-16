@@ -71,6 +71,8 @@ relations:
       reason: "debugging chases a specific observed failure; testing-strategy decides what to test BEFORE a failure exists"
     - skill: refactor
       reason: "refactor reshapes code (including test setup) while preserving behavior; testing-strategy decides what coverage to author in the first place"
+    - skill: integration-test-design
+      reason: "integration-test-design owns the design of integration-level tests including their setup and data lifecycle; the 'duplicated test setup across three files' anti_example has token overlap with integration-test setup discipline. testing-strategy decides what level a test should be; integration-test-design owns how to design integration tests once chosen."
   verify_with:
     - debugging
 portability:
