@@ -2,7 +2,7 @@
 
 > Type: Reference
 > Purpose: Canonical head nouns for skill names, derived from current live usage.
-> Last updated: 2026-05-16 (Wave 4 Testing promotion of `testing`, `design` increment)
+> Last updated: 2026-05-16 (Wave 5 Databases promotion: `optimization`, `evolution`, `isolation`, `pooling`, `tradeoffs`, `fundamentals`)
 
 ## What this is
 
@@ -25,35 +25,28 @@ The skills that violate this convention live in `name-exceptions.yaml` with cita
 | Head noun | Live count | Example skills |
 |---|---|---|
 | `modeling` | 7 | conceptual-modeling, data-modeling, entity-relationship-modeling, knowledge-modeling, ontology-modeling, state-machine-modeling, observability-modeling |
-| `design` | 6 | api-design, agent-eval-design, color-system-design, event-contract-design, taxonomy-design, theme-system-design |
 | `design` | 8 | api-design, agent-eval-design, color-system-design, event-contract-design, taxonomy-design, theme-system-design, test-doubles-design, integration-test-design, e2e-test-design |
 | `testing` | 5 | contract-testing, mutation-testing, property-based-testing, snapshot-testing, performance-testing |
 | `architecture` | 6 | dependency-architecture, design-system-architecture, form-ux-architecture, frontend-architecture, streaming-architecture, agent-engineering (umbrella) |
-| `strategy` | 4 | testing-strategy, seo-strategy, tool-call-strategy, test-coverage-strategy |
+| `strategy` | 6 | testing-strategy, seo-strategy, tool-call-strategy, test-coverage-strategy, indexing-strategy, sharding-strategy |
 | `development` | 4 | spec-driven-development, ai-native-development, eval-driven-development, test-driven-development |
 | `engineering` | 3 | agent-engineering, performance-engineering, prompt-craft (suffix-style) |
 | `analysis` | 3 | diff-analysis, research-synthesis, task-analysis |
-| `patterns` | 2 | interaction-patterns, vercel-composition-patterns |
+| `patterns` | 3 | interaction-patterns, vercel-composition-patterns, replication-patterns |
+| `fundamentals` | 2 | acid-fundamentals, data-modeling-fundamentals |
 | `mapping` | 2 | bounded-context-mapping, journey-mapping |
 | `recognition` | 2 | intent-recognition, pattern-recognition |
 | `composition` | 2 | design-module-composition, layout-composition |
 
 ## Single-instance head nouns (kept for completeness)
 
-`audit`, `boundary` (live in `client-server-boundary`), `cognition`, `craft`, `defense` (live in `prompt-injection-defense`), `extraction`, `feedback`, `flow` (live in `tool-call-flow`), `foundations`, `governance`, `hierarchy`, `humanizer`, `infrastructure`, `migration`, `monitor`, `palette`, `queue`, `relations`, `review`, `router`, `routing`, `scaffold`, `scheduling`, `semantics`, `semiotics`, `solving`, `storming`, `summarization`, `synthesis`, `system`, `thinking`, `tracking`, `ui` (live in `generative-ui`), `updates`, `ux`, `window`.
+`audit`, `boundary` (live in `client-server-boundary`), `cognition`, `craft`, `defense` (live in `prompt-injection-defense`), `evolution` (live in `schema-evolution`), `extraction`, `feedback`, `flow` (live in `tool-call-flow`), `foundations`, `governance`, `hierarchy`, `humanizer`, `infrastructure`, `isolation` (live in `transaction-isolation`), `migration`, `monitor`, `optimization` (live in `query-optimization`), `palette`, `pooling` (live in `connection-pooling`), `queue`, `relations`, `review`, `router`, `routing`, `scaffold`, `scheduling`, `semantics`, `semiotics`, `solving`, `storming`, `summarization`, `synthesis`, `system`, `thinking`, `tracking`, `tradeoffs` (live in `cap-theorem-tradeoffs`), `ui` (live in `generative-ui`), `updates`, `ux`, `window`.
 
 ## Reserved head nouns (gap-fill skills, not yet authored)
 
-All Wave 1–4 reservations are now live in source. Wave 5 (Databases) introduces new head nouns reserved below.
+All Wave 1–5 reservations are now live in source. New gap-fill waves will populate this section.
 
-| Head noun | Reserved for | Notes |
-|---|---|---|
-| `optimization` | `query-optimization` (Wave 5 / Databases) | New head noun — formally introduce in same commit as the skill |
-| `evolution` | `schema-evolution` (Wave 5 / Databases) | New head noun |
-| `isolation` | `transaction-isolation` (Wave 5 / Databases) | New head noun |
-| `pooling` | `connection-pooling` (Wave 5 / Databases) | New head noun |
-| `tradeoffs` | `cap-theorem-tradeoffs` (Wave 5 / Databases) | New head noun |
-| `fundamentals` | `acid-fundamentals` (Wave 5 / Databases) | New head noun if not used elsewhere |
+_(empty — all reservations promoted to Active or Single-instance lists)_
 
 ## Rules
 

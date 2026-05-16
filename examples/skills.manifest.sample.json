@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-05-16T07:30:12Z",
+  "generated_at": "2026-05-16T08:47:47Z",
   "schema_version": 4,
   "skills": [
     {
@@ -109,6 +109,104 @@
         ]
       },
       "scope": "portable",
+      "stability": "experimental",
+      "type": "capability",
+      "version": "1.0.0"
+    },
+    {
+      "activation": {
+        "anti_examples": [
+          "choose an isolation level for a workload (use transaction-isolation)",
+          "reason about availability vs consistency in a distributed system (use cap-theorem-tradeoffs)",
+          "design a database schema (use data-modeling)"
+        ],
+        "examples": [
+          "explain what ACID guarantees a database does and does not provide to the application",
+          "decide whether ACID or BASE is the right model for a new system",
+          "diagnose a data-loss incident — likely a durability or atomicity failure",
+          "explain why the 'C' in ACID is not the same as application consistency"
+        ],
+        "keywords": [
+          "ACID",
+          "atomicity",
+          "consistency",
+          "isolation",
+          "durability",
+          "transaction",
+          "BASE",
+          "Härder Reuter",
+          "Gray transaction model",
+          "transactional guarantee"
+        ],
+        "triggers": [
+          "is this database ACID",
+          "what does consistency mean",
+          "ACID vs BASE",
+          "is my transaction atomic",
+          "what's the durability guarantee"
+        ]
+      },
+      "allowed-tools": "Read Grep",
+      "category": "engineering",
+      "concept": {
+        "analogy": "|",
+        "boundary": "|",
+        "definition": "ACID is the acronym for four properties that a database transaction either provides or does not provide, defining the contract between the database and the application using it: Atomicity (the transaction either entirely happens or entirely does not — there is no partial state visible after a failure), Consistency (the transaction takes the database from one valid state to another valid state per the database's defined integrity constraints), Isolation (concurrent transactions do not see each other's intermediate states; each transaction observes the database as if it were the only transaction), Durability (once the transaction commits, its effects survive any subsequent failure including power loss). The four properties were codified by Härder and Reuter (1983) based on Jim Gray's earlier transaction model and have become the foundational vocabulary for relational and many NoSQL database systems. The strategic value of the ACID frame is that it names the four orthogonal guarantees the application can rely on, so that when a database advertises 'ACID compliance' or claims to relax some property, the conversation has precise vocabulary.",
+        "mental_model": "|",
+        "misconception": "|",
+        "purpose": "|",
+        "taxonomy": "|"
+      },
+      "description": "Use when reasoning about the four ACID properties of database transactions — Atomicity, Consistency, Isolation, Durability — as foundational concepts beneath any transactional system: what each property formally guarantees, the difference between the property the database claims and the property the application gets (depending on isolation level, replication mode, and configuration), the relationship between ACID and BASE (the alternative model in many NoSQL systems), why 'C' is the most contested letter (database consistency vs application invariants), and the historical record (Härder & Reuter 1983, the Gray-Reuter transaction model, Gray's Turing lecture). Do NOT use for choosing isolation levels for a specific workload (use transaction-isolation), distributed-system CAP tradeoffs (use cap-theorem-tradeoffs), database query design (use query-optimization), or zero-downtime migration mechanics (use database-migration).",
+      "domain": "engineering/data",
+      "health": {
+        "comprehension_state": "present",
+        "drift_check": {
+          "last_verified": "2026-05-16"
+        },
+        "eval_artifacts": "planned",
+        "eval_state": "unverified",
+        "freshness": "2026-05-16",
+        "has_grounding": false,
+        "has_relations": true,
+        "routing_eval": "absent"
+      },
+      "id": "acid-fundamentals",
+      "license": "MIT",
+      "name": "acid-fundamentals",
+      "owner": "skill-graph-maintainer",
+      "path": "skills/acid-fundamentals/SKILL.md",
+      "relations": {
+        "boundary": [
+          {
+            "reason": "transaction-isolation owns the choice and semantics of isolation levels (read uncommitted, read committed, repeatable read, serializable, snapshot) — the 'I' of ACID specifically as a tunable. This skill owns ACID as the four-property foundational frame; transaction-isolation owns one of the four in operational depth.",
+            "skill": "transaction-isolation"
+          },
+          {
+            "reason": "cap-theorem-tradeoffs owns the distributed-systems frame (consistency, availability, partition tolerance) which uses 'consistency' in a different sense than the C in ACID. This skill owns the single-system transactional frame; cap-theorem-tradeoffs owns the distributed frame; conflating them is the most common misconception in this space.",
+            "skill": "cap-theorem-tradeoffs"
+          },
+          {
+            "reason": "data-modeling owns schema design and entity structure; this skill owns the transactional-guarantee semantics that any data model relies on at runtime.",
+            "skill": "data-modeling"
+          },
+          {
+            "reason": "replication-patterns owns the patterns for keeping multiple replicas in agreement; this skill owns the single-node transactional model from which distributed replication is a generalization (and often a relaxation of).",
+            "skill": "replication-patterns"
+          }
+        ],
+        "related": [
+          "transaction-isolation",
+          "cap-theorem-tradeoffs",
+          "data-modeling",
+          "replication-patterns"
+        ],
+        "verify_with": [
+          "transaction-isolation",
+          "cap-theorem-tradeoffs"
+        ]
+      },
+      "scope": "reference",
       "stability": "experimental",
       "type": "capability",
       "version": "1.0.0"
@@ -798,6 +896,104 @@
     {
       "activation": {
         "anti_examples": [
+          "choose a transaction isolation level (use transaction-isolation)",
+          "explain the four ACID properties (use acid-fundamentals)",
+          "design the replication topology of a database (use replication-patterns)"
+        ],
+        "examples": [
+          "decide whether a new distributed service should be CP or AP given its workload",
+          "explain why CAP's C and ACID's C are different concepts despite sharing the letter",
+          "diagnose a system claiming 'CA' (consistency + availability without P) — likely confused, since P is not optional",
+          "design the partition-mode behavior of a multi-region service"
+        ],
+        "keywords": [
+          "CAP theorem",
+          "Brewer",
+          "Gilbert Lynch",
+          "consistency availability partition",
+          "CP system",
+          "AP system",
+          "PACELC",
+          "eventual consistency",
+          "linearizability",
+          "distributed system"
+        ],
+        "triggers": [
+          "CAP theorem",
+          "CP or AP",
+          "what should we do on partition",
+          "is this strongly consistent",
+          "PACELC"
+        ]
+      },
+      "allowed-tools": "Read Grep",
+      "category": "engineering",
+      "concept": {
+        "analogy": "|",
+        "boundary": "|",
+        "definition": "CAP is the theorem (Brewer 2000 as a conjecture; Gilbert & Lynch 2002 as a formal proof) that, in a distributed data system, you cannot simultaneously guarantee all three of: Consistency (every read returns the most recent write or an error), Availability (every request receives a non-error response), Partition tolerance (the system continues despite arbitrary message loss between nodes). Since real-world networks can and do partition, P is not optional — the choice is between C and A *during a partition*. A CP system refuses to serve some requests during partition to preserve consistency; an AP system serves all requests but may return stale data. PACELC (Abadi 2010) extends CAP by naming the *Else* case: even without partition, the system must trade Latency against Consistency, because synchronous replication for strong consistency takes time. The discipline is choosing C-vs-A *intentionally per workload*, knowing that P is given by physics and that even outside partition, latency-vs-consistency is a continuous choice.",
+        "mental_model": "|",
+        "misconception": "|",
+        "purpose": "|",
+        "taxonomy": "|"
+      },
+      "description": "Use when reasoning about the consistency-availability-partition-tolerance trade-off for distributed data systems: Brewer's CAP conjecture (2000), Gilbert & Lynch's 2002 formal proof, why P is not optional in any real distributed system, the CP-vs-AP dichotomy that follows, PACELC as the extension that names the latency-vs-consistency trade-off that exists even without partition, the relationship between CAP's C and ACID's C (different concepts with the same letter), and the choice procedure of naming what the system must guarantee under partition. Do NOT use for single-node transactional guarantees (use acid-fundamentals), choosing an isolation level (use transaction-isolation), the design of replication topologies (use replication-patterns), or sharding decisions (use sharding-strategy).",
+      "domain": "engineering/data",
+      "health": {
+        "comprehension_state": "present",
+        "drift_check": {
+          "last_verified": "2026-05-16"
+        },
+        "eval_artifacts": "planned",
+        "eval_state": "unverified",
+        "freshness": "2026-05-16",
+        "has_grounding": false,
+        "has_relations": true,
+        "routing_eval": "absent"
+      },
+      "id": "cap-theorem-tradeoffs",
+      "license": "MIT",
+      "name": "cap-theorem-tradeoffs",
+      "owner": "skill-graph-maintainer",
+      "path": "skills/cap-theorem-tradeoffs/SKILL.md",
+      "relations": {
+        "boundary": [
+          {
+            "reason": "acid-fundamentals owns the single-system transactional frame; this skill owns the distributed-system frame. CAP's C (replica agreement) is not ACID's C (constraint satisfaction); conflating them is the most common misconception in this space.",
+            "skill": "acid-fundamentals"
+          },
+          {
+            "reason": "transaction-isolation owns single-cluster concurrency-correctness; this skill owns multi-replica consistency under network partition. The two layers can compose (a CP system may run at serializable isolation locally) but address different threats.",
+            "skill": "transaction-isolation"
+          },
+          {
+            "reason": "replication-patterns owns the design patterns for multi-replica systems (primary-replica, multi-primary, leaderless quorum); this skill owns the C/A/P trade-off that motivates choosing among them. The two compose: this is the theoretical frame; replication-patterns is the operational realization.",
+            "skill": "replication-patterns"
+          },
+          {
+            "reason": "sharding-strategy owns horizontal partitioning of data across nodes; this skill owns the C/A trade-off when those shards must coordinate or recover from network partition between them.",
+            "skill": "sharding-strategy"
+          }
+        ],
+        "related": [
+          "acid-fundamentals",
+          "transaction-isolation",
+          "replication-patterns",
+          "sharding-strategy"
+        ],
+        "verify_with": [
+          "acid-fundamentals",
+          "replication-patterns"
+        ]
+      },
+      "scope": "reference",
+      "stability": "experimental",
+      "type": "capability",
+      "version": "1.0.0"
+    },
+    {
+      "activation": {
+        "anti_examples": [
           "decide whether a route should be SSG or SSR (use rendering-models)",
           "design HTTP authentication headers (use http-semantics)",
           "design the JSON shape of an API response body (use api-design)"
@@ -1297,6 +1493,107 @@
         ]
       },
       "scope": "portable",
+      "stability": "experimental",
+      "type": "capability",
+      "version": "1.0.0"
+    },
+    {
+      "activation": {
+        "anti_examples": [
+          "tune a slow query (use query-optimization)",
+          "design indexes (use indexing-strategy)",
+          "route reads to a replica (use replication-patterns)",
+          "design partitioning across shards (use sharding-strategy)"
+        ],
+        "examples": [
+          "size a connection pool for a workload with N application servers and M cores per database",
+          "diagnose why a workload is bottlenecked on connections rather than query performance",
+          "decide between PgBouncer session mode and transaction mode for an application",
+          "explain why HikariCP recommends small pools instead of large ones"
+        ],
+        "keywords": [
+          "connection pooling",
+          "PgBouncer",
+          "HikariCP",
+          "pool sizing",
+          "session pooling",
+          "transaction pooling",
+          "statement pooling",
+          "prepared statements",
+          "idle in transaction",
+          "Little's Law",
+          "max_connections",
+          "serverless databases"
+        ],
+        "triggers": [
+          "what should max pool size be",
+          "PgBouncer transaction mode",
+          "too many connections error",
+          "connection exhaustion",
+          "prepared statements not working with PgBouncer"
+        ]
+      },
+      "allowed-tools": "Read Grep",
+      "category": "engineering",
+      "concept": {
+        "analogy": "|",
+        "boundary": "|",
+        "definition": "Connection pooling is the discipline of managing a finite set of database connections shared across many application threads, requests, or processes, because opening a database connection is expensive (network round-trips, authentication, session setup) and every open connection consumes server resources (a process or thread, memory for buffers and catalog state, locks on shared structures). The pool's job is to keep a small, sized-for-workload number of connections open, hand them out to application units of work for the brief time they need them, and return them to the pool. Pooling can happen at the application layer (in-process pool like HikariCP, pgx pool, node-postgres Pool) or at the proxy layer (an external service like PgBouncer or ProxySQL that multiplexes many client connections onto a smaller set of upstream database connections). The pooling mode (session, transaction, statement) determines what feature compatibility the pool preserves and what failure modes the application must handle. The pool size is a *throughput cap*, not a resource budget; sizing it correctly per Little's Law (concurrency = throughput × latency) is the central operational decision.",
+        "mental_model": "|",
+        "misconception": "|",
+        "purpose": "|",
+        "taxonomy": "|"
+      },
+      "description": "Use when reasoning about how an application manages its database connections: why every connection has a server-side cost, the difference between application-level pools (HikariCP, pgx pool, node-postgres Pool) and proxy-level pools (PgBouncer, Pgpool, ProxySQL), the three PgBouncer modes (session, transaction, statement) and their feature compatibility, the canonical pool-sizing math (Little's Law applied to database concurrency; Wooldridge's analyses), the failure modes (connection exhaustion, hot-loop reconnects, prepared-statement breakage under transaction pooling, idle-in-transaction leaks), and the diagnostic procedure when a workload is contending on connections instead of query work. Do NOT use for query-level performance (use query-optimization), for index design (use indexing-strategy), for read/write replica routing (use replication-patterns), or for cross-shard query coordination (use sharding-strategy).",
+      "domain": "engineering/data",
+      "health": {
+        "comprehension_state": "present",
+        "drift_check": {
+          "last_verified": "2026-05-16"
+        },
+        "eval_artifacts": "planned",
+        "eval_state": "unverified",
+        "freshness": "2026-05-16",
+        "has_grounding": false,
+        "has_relations": true,
+        "routing_eval": "absent"
+      },
+      "id": "connection-pooling",
+      "license": "MIT",
+      "name": "connection-pooling",
+      "owner": "skill-graph-maintainer",
+      "path": "skills/connection-pooling/SKILL.md",
+      "relations": {
+        "boundary": [
+          {
+            "reason": "query-optimization owns the cost of individual query work; this skill owns the cost of having a connection at all. A workload contending on connections has different symptoms than a workload contending on query work, and the diagnostic discipline differs.",
+            "skill": "query-optimization"
+          },
+          {
+            "reason": "replication-patterns owns the routing of reads and writes across replicas; this skill owns the connection layer beneath that routing. They compose: a pooled architecture often pools to each replica separately.",
+            "skill": "replication-patterns"
+          },
+          {
+            "reason": "sharding-strategy owns how data is partitioned across nodes; this skill owns how application connections to those nodes are pooled. A sharded architecture multiplies the pool-sizing surface — one pool per shard.",
+            "skill": "sharding-strategy"
+          },
+          {
+            "reason": "transaction-isolation owns the per-transaction concurrency-correctness contract; this skill owns the connection-level mechanics that determine whether a transaction's connection is held, released, or shared. PgBouncer's transaction mode in particular interacts with isolation level and session state.",
+            "skill": "transaction-isolation"
+          }
+        ],
+        "related": [
+          "query-optimization",
+          "replication-patterns",
+          "sharding-strategy",
+          "transaction-isolation"
+        ],
+        "verify_with": [
+          "query-optimization",
+          "replication-patterns"
+        ]
+      },
+      "scope": "reference",
       "stability": "experimental",
       "type": "capability",
       "version": "1.0.0"
@@ -2282,6 +2579,112 @@
         ]
       },
       "scope": "portable",
+      "stability": "experimental",
+      "type": "capability",
+      "version": "1.0.0"
+    },
+    {
+      "activation": {
+        "anti_examples": [
+          "design the practical schema for a new persistence layer (use data-modeling)",
+          "apply an expand-contract migration to change an existing schema (use schema-evolution)",
+          "choose which indexes to maintain (use indexing-strategy)",
+          "discover business entities without implementation details (use conceptual-modeling)"
+        ],
+        "examples": [
+          "explain why a table is in 2NF but not 3NF and what change would bring it to 3NF",
+          "decide whether a workload's read pattern justifies denormalization against the theoretical baseline",
+          "compare the relational, document, and event-sourced models at the conceptual level for a given domain",
+          "trace a functional-dependency closure to find a candidate key"
+        ],
+        "keywords": [
+          "relational model",
+          "Codd",
+          "normalization",
+          "normal forms",
+          "functional dependency",
+          "1NF",
+          "2NF",
+          "3NF",
+          "BCNF",
+          "4NF",
+          "5NF",
+          "entity-relationship model",
+          "Chen",
+          "relational algebra",
+          "denormalization",
+          "immutable data model",
+          "event sourcing"
+        ],
+        "triggers": [
+          "what normal form is this",
+          "should this be normalized or denormalized",
+          "explain functional dependencies",
+          "relational vs document model",
+          "Codd's rules"
+        ]
+      },
+      "allowed-tools": "Read Grep",
+      "category": "engineering",
+      "concept": {
+        "analogy": "|",
+        "boundary": "|",
+        "definition": "Data-modeling fundamentals is the body of formal theory beneath practical database design: Codd's relational model (1970), which represents data as relations (sets of tuples) and provides a closed algebra (selection, projection, join, union, intersection, difference, division) for querying them; the normal forms (1NF through 5NF and BCNF), each defined by the elimination of a specific class of dependency anomaly; the theory of functional dependencies and the closure algorithm used to derive normal-form membership and candidate keys; Chen's entity-relationship model (1976), which sits above the relational model as a higher-abstraction modeling layer that translates downward into relations; the principled justifications for normalization (avoid update, insert, delete anomalies) and for denormalization (workload-driven performance trade-offs against the normal-form baseline); and the alternative data models — document, graph, key-value, columnar, event-sourced — each of which can be characterized by what relational primitives it preserves, relaxes, or trades for a different access pattern. The skill is the *theory* a practitioner draws on when deciding what shape data should take and why; the practical application of that theory is `data-modeling`.",
+        "mental_model": "|",
+        "misconception": "|",
+        "purpose": "|",
+        "taxonomy": "|"
+      },
+      "description": "Use when reasoning about the foundational theory beneath data modeling: Codd's relational model (1970) and the algebra it sits on, the normal forms (1NF, 2NF, 3NF, BCNF, 4NF, 5NF) as a precise sequence of constraint-elimination steps, functional dependencies and the closure algorithm, Chen's entity-relationship model (1976) as a higher-abstraction layer above relations, the principled case for and against denormalization, the relational-vs-document tradeoff at the conceptual level, the immutable-data-model alternative (event sourcing, append-only tables), and the historical and theoretical literature that grounds modern database design. Do NOT use for practical persistence design and method (use data-modeling), for safely applying changes to an existing schema (use schema-evolution), for choosing what indexes to maintain (use indexing-strategy), or for the conceptual-modeling layer above the data model (use conceptual-modeling).",
+      "domain": "engineering/data",
+      "health": {
+        "comprehension_state": "present",
+        "drift_check": {
+          "last_verified": "2026-05-16"
+        },
+        "eval_artifacts": "planned",
+        "eval_state": "unverified",
+        "freshness": "2026-05-16",
+        "has_grounding": false,
+        "has_relations": true,
+        "routing_eval": "absent"
+      },
+      "id": "data-modeling-fundamentals",
+      "license": "MIT",
+      "name": "data-modeling-fundamentals",
+      "owner": "skill-graph-maintainer",
+      "path": "skills/data-modeling-fundamentals/SKILL.md",
+      "relations": {
+        "boundary": [
+          {
+            "reason": "data-modeling owns the practical method of designing persistence — turn a conceptual model into a working schema with keys, constraints, indexing implications. This skill owns the theoretical foundations beneath that method — what normal forms guarantee, what Codd's relational model formally provides, the algebra that makes joins composable, and the principled justification for or against denormalization. They are companion skills: theory and practice.",
+            "skill": "data-modeling"
+          },
+          {
+            "reason": "conceptual-modeling owns implementation-neutral business-concept discovery (entities, relationships, attributes as business reality). This skill owns the formal data-model layer below conceptual modeling: the relational model, the algebra, the dependency theory. The two compose: conceptual modeling identifies entities; data-modeling-fundamentals formalizes how those entities map to relations.",
+            "skill": "conceptual-modeling"
+          },
+          {
+            "reason": "entity-relationship-modeling owns the ER notation and method (entities, relationships, cardinality, ER diagrams) as developed by Chen and extended by Bachman, Barker, and others. This skill owns the broader theoretical frame including the relational model that ER diagrams typically translate into. The boundary: ER is the diagramming and discovery layer; the relational model is the formal target.",
+            "skill": "entity-relationship-modeling"
+          },
+          {
+            "reason": "schema-evolution owns the migration mechanics — how to change a deployed schema without downtime. This skill owns the static theory of what a good schema is. The decision 'this schema should be in 3NF' is grounded by this skill; the application of that decision to a live database is `schema-evolution`'s domain.",
+            "skill": "schema-evolution"
+          }
+        ],
+        "related": [
+          "data-modeling",
+          "conceptual-modeling",
+          "entity-relationship-modeling",
+          "schema-evolution"
+        ],
+        "verify_with": [
+          "data-modeling",
+          "entity-relationship-modeling"
+        ]
+      },
+      "scope": "reference",
       "stability": "experimental",
       "type": "capability",
       "version": "1.0.0"
@@ -4680,6 +5083,104 @@
         ]
       },
       "scope": "portable",
+      "stability": "experimental",
+      "type": "capability",
+      "version": "1.0.0"
+    },
+    {
+      "activation": {
+        "anti_examples": [
+          "diagnose why this specific query is slow (use query-optimization)",
+          "choose a database schema (use data-modeling)",
+          "decide how to partition data across nodes (use sharding-strategy)"
+        ],
+        "examples": [
+          "design indexes for a table with high-volume reads on user_id and date-range queries",
+          "decide between a B-tree index and a partial index for a small subset of rows",
+          "diagnose a query that ignores an existing index — likely a selectivity or type-coercion issue",
+          "explain why adding a sixth index to a write-heavy table is usually wrong"
+        ],
+        "keywords": [
+          "indexing",
+          "index",
+          "B-tree",
+          "hash index",
+          "bitmap index",
+          "GIN",
+          "GiST",
+          "BRIN",
+          "LSM",
+          "composite index",
+          "covering index",
+          "partial index",
+          "filtered index",
+          "index selectivity"
+        ],
+        "triggers": [
+          "should I add an index",
+          "which columns to index",
+          "B-tree vs hash",
+          "is this index being used",
+          "composite index column order"
+        ]
+      },
+      "allowed-tools": "Read Grep",
+      "category": "engineering",
+      "concept": {
+        "analogy": "|",
+        "boundary": "|",
+        "definition": "Indexing strategy is the discipline of designing auxiliary data structures that let the database find rows quickly without scanning every row. An index is a precomputed lookup structure (B-tree, hash, bitmap, inverted index, LSM-tree, BRIN, GiST, GIN) that maps one or more column values to the rows containing those values. Every index speeds up some queries (those whose WHERE / JOIN / ORDER BY clauses match the index's structure) and slows down every write (the index must be updated on every INSERT, UPDATE that touches indexed columns, and DELETE). The strategic question is not 'which columns deserve an index' considered in isolation; it is the *whole-database* trade-off between read speed and write cost, given the actual access patterns the workload produces.",
+        "mental_model": "|",
+        "misconception": "|",
+        "purpose": "|",
+        "taxonomy": "|"
+      },
+      "description": "Use when designing indexes for a relational or NoSQL database: the index-as-precomputed-search-structure mental model, the catalog of structures (B-tree, hash, bitmap, GIN/GiST, BRIN, LSM-tree), the matching of structures to access patterns (equality, range, prefix, contains, geospatial), composite indexes and column order, covering indexes, partial / filtered indexes, the maintenance cost of every index (write amplification, storage, lock impact), and the rules for when to add an index, when not to, and when to drop one. Do NOT use for tuning a slow query (use query-optimization), choosing isolation levels (use transaction-isolation), schema design (use data-modeling), or distributed-data partitioning (use sharding-strategy).",
+      "domain": "engineering/data",
+      "health": {
+        "comprehension_state": "present",
+        "drift_check": {
+          "last_verified": "2026-05-16"
+        },
+        "eval_artifacts": "planned",
+        "eval_state": "unverified",
+        "freshness": "2026-05-16",
+        "has_grounding": false,
+        "has_relations": true,
+        "routing_eval": "absent"
+      },
+      "id": "indexing-strategy",
+      "license": "MIT",
+      "name": "indexing-strategy",
+      "owner": "skill-graph-maintainer",
+      "path": "skills/indexing-strategy/SKILL.md",
+      "relations": {
+        "boundary": [
+          {
+            "reason": "query-optimization owns the diagnosis and tuning of specific slow queries; this skill owns the *design* of which indexes the database has. The two compose: query-optimization diagnoses; this skill is one of the responses.",
+            "skill": "query-optimization"
+          },
+          {
+            "reason": "data-modeling owns the schema and access patterns; this skill owns the auxiliary search structures that make access patterns efficient. The schema determines what indexes can exist; the access patterns determine which should.",
+            "skill": "data-modeling"
+          },
+          {
+            "reason": "schema-evolution owns how the database changes shape over time; this skill owns the indexes that must change with it. Adding or removing an index is itself a schema change.",
+            "skill": "schema-evolution"
+          }
+        ],
+        "related": [
+          "query-optimization",
+          "data-modeling",
+          "schema-evolution",
+          "transaction-isolation"
+        ],
+        "verify_with": [
+          "query-optimization",
+          "data-modeling"
+        ]
+      },
+      "scope": "reference",
       "stability": "experimental",
       "type": "capability",
       "version": "1.0.0"
@@ -7901,6 +8402,103 @@
     },
     {
       "activation": {
+        "anti_examples": [
+          "design which indexes to maintain on a new schema (use indexing-strategy)",
+          "choose a database schema (use data-modeling)",
+          "decide isolation level for a workload (use transaction-isolation)"
+        ],
+        "examples": [
+          "diagnose a query that takes 8 seconds and identify the plan node responsible",
+          "rewrite a slow correlated subquery as a join to enable a faster plan",
+          "explain why ANALYZE on a recently-changed table can change the planner's decisions",
+          "decide whether to add an index, rewrite the query, or accept the cost"
+        ],
+        "keywords": [
+          "query optimization",
+          "query planner",
+          "EXPLAIN",
+          "EXPLAIN ANALYZE",
+          "sequential scan",
+          "index scan",
+          "nested loop",
+          "hash join",
+          "merge join",
+          "query rewriting",
+          "statistics",
+          "planner cost model",
+          "cardinality estimation"
+        ],
+        "triggers": [
+          "this query is slow",
+          "EXPLAIN ANALYZE output",
+          "why isn't the planner using the index",
+          "join order optimization",
+          "subquery vs join"
+        ]
+      },
+      "allowed-tools": "Read Grep",
+      "category": "engineering",
+      "concept": {
+        "analogy": "|",
+        "boundary": "|",
+        "definition": "Query optimization is the discipline of diagnosing and tuning a specific slow query. The unit of work is one query that the application or a user reported as slow; the goal is identifying the root cause and applying a response (rewrite the SQL, add an index, refresh statistics, denormalize the schema, change the access pattern). The mental model is the query planner — the database component that takes the SQL string, parses it, applies rewrites, considers possible plans, estimates each plan's cost using statistics and a cost model, picks the cheapest, and executes it. EXPLAIN and EXPLAIN ANALYZE expose the planner's choices and their actual cost; reading these is the central diagnostic skill. The work is largely interpretation: knowing what each plan-node type means, what its cost implies, what cardinality misestimation looks like, and which response (rewrite, index, statistics, schema) addresses the diagnosis.",
+        "mental_model": "|",
+        "misconception": "|",
+        "purpose": "|",
+        "taxonomy": "|"
+      },
+      "description": "Use when diagnosing and tuning a specific slow query in a relational database: the query planner mental model (parse → rewrite → plan → execute), the canonical inputs the planner reasons over (statistics, cost model, available indexes), reading EXPLAIN and EXPLAIN ANALYZE output, the catalog of plan-node types (sequential scan, index scan, index-only scan, bitmap heap scan, nested loop, hash join, merge join, sort, hash aggregate, materialize) and what each tells you about the query's actual cost, the difference between query rewriting (reformulating the SQL) and operational fixes (adding indexes, ANALYZE, statistics targets), and the diagnostic procedure that takes a slow query to a fast one. Do NOT use for the design of which indexes to maintain (use indexing-strategy), schema design (use data-modeling), distributed-data partitioning (use sharding-strategy), or isolation-level decisions (use transaction-isolation).",
+      "domain": "engineering/data",
+      "health": {
+        "comprehension_state": "present",
+        "drift_check": {
+          "last_verified": "2026-05-16"
+        },
+        "eval_artifacts": "planned",
+        "eval_state": "unverified",
+        "freshness": "2026-05-16",
+        "has_grounding": false,
+        "has_relations": true,
+        "routing_eval": "absent"
+      },
+      "id": "query-optimization",
+      "license": "MIT",
+      "name": "query-optimization",
+      "owner": "skill-graph-maintainer",
+      "path": "skills/query-optimization/SKILL.md",
+      "relations": {
+        "boundary": [
+          {
+            "reason": "indexing-strategy owns the design of which indexes the database has; this skill owns the diagnosis and tuning of specific slow queries. The two compose: query-optimization diagnoses; indexing-strategy is one of the response tools.",
+            "skill": "indexing-strategy"
+          },
+          {
+            "reason": "data-modeling owns schema and access-pattern design; this skill owns the tuning of queries against the existing schema. Sometimes the diagnosis is 'the schema is wrong for this query'; the response is then in data-modeling's scope.",
+            "skill": "data-modeling"
+          },
+          {
+            "reason": "transaction-isolation owns concurrency correctness; this skill owns single-query performance. Sometimes a slow query is slow because of lock contention from isolation; the disciplines intersect on those cases.",
+            "skill": "transaction-isolation"
+          }
+        ],
+        "related": [
+          "indexing-strategy",
+          "data-modeling",
+          "transaction-isolation",
+          "schema-evolution"
+        ],
+        "verify_with": [
+          "indexing-strategy",
+          "data-modeling"
+        ]
+      },
+      "scope": "reference",
+      "stability": "experimental",
+      "type": "capability",
+      "version": "1.0.0"
+    },
+    {
+      "activation": {
         "keywords": [
           "real-time-updates",
           "real",
@@ -8250,6 +8848,103 @@
     {
       "activation": {
         "anti_examples": [
+          "horizontally partition data across nodes (use sharding-strategy)",
+          "reason about the CAP theorem abstractly (use cap-theorem-tradeoffs)",
+          "explain ACID properties (use acid-fundamentals)"
+        ],
+        "examples": [
+          "design replication topology for a service with one region writing and three regions reading",
+          "decide between synchronous and asynchronous replication given a target RPO",
+          "diagnose stale reads after a write — likely replication lag without read-after-write handling",
+          "explain the split-brain risk in multi-leader replication"
+        ],
+        "keywords": [
+          "replication",
+          "primary replica",
+          "multi-leader",
+          "leaderless",
+          "quorum",
+          "synchronous replication",
+          "asynchronous replication",
+          "replication lag",
+          "read-after-write",
+          "failover",
+          "split brain",
+          "log shipping",
+          "WAL streaming"
+        ],
+        "triggers": [
+          "single-leader vs multi-leader",
+          "synchronous vs async replication",
+          "what happens on failover",
+          "split brain",
+          "read-after-write consistency"
+        ]
+      },
+      "allowed-tools": "Read Grep",
+      "category": "engineering",
+      "concept": {
+        "analogy": "|",
+        "boundary": "|",
+        "definition": "Replication is the discipline of keeping multiple copies of the same data on multiple nodes so that the system can serve reads from any copy, survive the failure of any node, or both. The three foundational topologies are single-leader (primary-replica; one node accepts writes, others receive a stream of changes), multi-leader (multi-primary; multiple nodes accept writes and reconcile), and leaderless (quorum; clients write to a quorum of nodes directly). Each topology has its own consistency, availability, conflict-handling, and operational properties; choosing among them is choosing the system's CAP/PACELC position and accepting the operational complexity that comes with it. Synchronous vs asynchronous replication is an orthogonal choice within each topology, trading durability/consistency against latency. The discipline is matching the topology and the synchrony choice to the workload's actual requirements for read scaling, write availability, recovery point objective (RPO), and recovery time objective (RTO).",
+        "mental_model": "|",
+        "misconception": "|",
+        "purpose": "|",
+        "taxonomy": "|"
+      },
+      "description": "Use when designing how a database keeps multiple copies of its data in agreement across nodes for availability, read scaling, and disaster recovery: the three foundational topologies (single-leader / primary-replica, multi-leader / multi-primary, leaderless / quorum), synchronous vs asynchronous replication and the replication-lag trade-off, log shipping vs statement replication vs trigger-based replication, the read-after-write consistency problem and its mitigations (sticky session, read-from-leader, monotonic reads), the failover model and split-brain risk, and the relationship to the CAP/PACELC choices the topology realizes. Do NOT use for horizontal partitioning across nodes (use sharding-strategy), the CAP theoretical frame itself (use cap-theorem-tradeoffs), single-node transactional guarantees (use acid-fundamentals), or query tuning (use query-optimization).",
+      "domain": "engineering/data",
+      "health": {
+        "comprehension_state": "present",
+        "drift_check": {
+          "last_verified": "2026-05-16"
+        },
+        "eval_artifacts": "planned",
+        "eval_state": "unverified",
+        "freshness": "2026-05-16",
+        "has_grounding": false,
+        "has_relations": true,
+        "routing_eval": "absent"
+      },
+      "id": "replication-patterns",
+      "license": "MIT",
+      "name": "replication-patterns",
+      "owner": "skill-graph-maintainer",
+      "path": "skills/replication-patterns/SKILL.md",
+      "relations": {
+        "boundary": [
+          {
+            "reason": "cap-theorem-tradeoffs owns the theoretical frame for the consistency-availability trade-off; this skill owns the operational topologies and protocols that realize a chosen position on that trade-off. The two compose: CAP names the choice; replication-patterns is one of the realizations.",
+            "skill": "cap-theorem-tradeoffs"
+          },
+          {
+            "reason": "sharding-strategy owns horizontal partitioning of data across nodes (different nodes hold different data); this skill owns replication of the same data across nodes (multiple nodes hold the same data). The two often combine in production systems but answer different questions.",
+            "skill": "sharding-strategy"
+          },
+          {
+            "reason": "acid-fundamentals owns the single-system transactional model; this skill owns the multi-node replication patterns that distributed systems use to scale, replicate, and survive failure. Replication often relaxes some ACID properties (most notably durability and isolation in async modes).",
+            "skill": "acid-fundamentals"
+          }
+        ],
+        "related": [
+          "cap-theorem-tradeoffs",
+          "acid-fundamentals",
+          "sharding-strategy",
+          "transaction-isolation"
+        ],
+        "verify_with": [
+          "cap-theorem-tradeoffs",
+          "sharding-strategy"
+        ]
+      },
+      "scope": "reference",
+      "stability": "experimental",
+      "type": "capability",
+      "version": "1.0.0"
+    },
+    {
+      "activation": {
+        "anti_examples": [
           "Run more interviews with five additional participants.",
           "Calculate the response rate of the survey.",
           "Summarize this single PDF document."
@@ -8320,6 +9015,101 @@
         ]
       },
       "scope": "portable",
+      "stability": "experimental",
+      "type": "capability",
+      "version": "1.0.0"
+    },
+    {
+      "activation": {
+        "anti_examples": [
+          "execute one ALTER TABLE migration mechanically (use database-migration)",
+          "design a schema from scratch (use data-modeling)",
+          "diagnose a slow query (use query-optimization)"
+        ],
+        "examples": [
+          "design the expand-contract sequence to rename a column from `name` to `full_name` across a deployed system",
+          "decide whether to add a NOT NULL column with a default or with a separate backfill phase",
+          "diagnose a deploy that broke because the schema change shipped before the code change",
+          "explain why drop-column is the third phase of expand-contract, not the first"
+        ],
+        "keywords": [
+          "schema evolution",
+          "expand contract",
+          "parallel change",
+          "zero-downtime migration",
+          "backwards compatibility",
+          "rolling deploy",
+          "dual write",
+          "dual read",
+          "schema versioning",
+          "additive change",
+          "destructive change"
+        ],
+        "triggers": [
+          "how do we rename this column without downtime",
+          "expand contract",
+          "is this migration safe",
+          "schema versioning",
+          "backwards compatibility for database"
+        ]
+      },
+      "allowed-tools": "Read Grep",
+      "category": "engineering",
+      "concept": {
+        "analogy": "|",
+        "boundary": "|",
+        "definition": "Schema evolution is the discipline of changing a database schema over time in a way that keeps deployed application code working. The unit of work is a *change to the schema* (add a column, rename a column, change a type, add a constraint, drop a column) that must be applied to a database serving an application that does not stop running. The central technique is expand/contract (Ambler & Sadalage 2006; also called parallel change): introduce the new shape *additively* without removing the old shape (expand), migrate the application to use the new shape, then remove the old shape (contract). The discipline is the *ordering* across migrations and deploys, the backwards-and-forwards-compatibility envelope each intermediate state must satisfy, and the rollback discipline that keeps the system recoverable when any step fails. The mechanical execution of any single migration is the concern of database-migration; the *sequence* of migrations and their relationship to application deploys is this skill's concern.",
+        "mental_model": "|",
+        "misconception": "|",
+        "purpose": "|",
+        "taxonomy": "|"
+      },
+      "description": "Use when reasoning about how a database schema changes over time without breaking deployed application code: the expand/contract pattern (Ambler & Sadalage), the zero-downtime change rules, the backwards-and-forwards compatibility envelope (deploy ordering and rollback discipline), the catalog of schema changes (add column, drop column, rename, type change, add constraint, add index) and the safe procedure for each, the dual-write and dual-read transitions that make non-trivial changes safe in production, and the relationship between schema evolution as a design discipline and database-migration mechanics as its tooling. Do NOT use for the mechanical execution of one migration (use database-migration), schema design from scratch (use data-modeling), query tuning (use query-optimization), or distributed-data partitioning (use sharding-strategy).",
+      "domain": "engineering/data",
+      "health": {
+        "comprehension_state": "present",
+        "drift_check": {
+          "last_verified": "2026-05-16"
+        },
+        "eval_artifacts": "planned",
+        "eval_state": "unverified",
+        "freshness": "2026-05-16",
+        "has_grounding": false,
+        "has_relations": true,
+        "routing_eval": "absent"
+      },
+      "id": "schema-evolution",
+      "license": "MIT",
+      "name": "schema-evolution",
+      "owner": "skill-graph-maintainer",
+      "path": "skills/schema-evolution/SKILL.md",
+      "relations": {
+        "boundary": [
+          {
+            "reason": "data-modeling owns the design of a schema at a point in time; this skill owns how that schema changes between points in time. The two compose: data-modeling decides the target shape; this skill decides the safe path from current to target.",
+            "skill": "data-modeling"
+          },
+          {
+            "reason": "database-migration owns the mechanics of applying one migration (ALTER TABLE, batched backfill, CONCURRENTLY indexes, unpooled connections); this skill owns the multi-step sequence of migrations and the deploy-coordination discipline that makes the sequence safe.",
+            "skill": "database-migration"
+          },
+          {
+            "reason": "indexing-strategy owns which indexes the database has; this skill owns how the index set evolves over time. Adding or removing an index is one type of schema change governed by this skill's discipline.",
+            "skill": "indexing-strategy"
+          }
+        ],
+        "related": [
+          "data-modeling",
+          "database-migration",
+          "indexing-strategy",
+          "acid-fundamentals"
+        ],
+        "verify_with": [
+          "data-modeling",
+          "database-migration"
+        ]
+      },
+      "scope": "reference",
       "stability": "experimental",
       "type": "capability",
       "version": "1.0.0"
@@ -8833,6 +9623,104 @@
         ]
       },
       "scope": "portable",
+      "stability": "experimental",
+      "type": "capability",
+      "version": "1.0.0"
+    },
+    {
+      "activation": {
+        "anti_examples": [
+          "design replication topology for the same data (use replication-patterns)",
+          "tune a single slow query (use query-optimization)",
+          "design indexes within one shard (use indexing-strategy)"
+        ],
+        "examples": [
+          "choose a shard key for a multi-tenant system where 90% of queries are tenant-scoped",
+          "diagnose a hot shard caused by skewed shard-key distribution",
+          "design the resharding strategy when adding nodes to a hash-sharded cluster",
+          "decide whether to accept cross-shard JOIN complexity or denormalize"
+        ],
+        "keywords": [
+          "sharding",
+          "partitioning",
+          "horizontal partitioning",
+          "shard key",
+          "hash partitioning",
+          "range partitioning",
+          "consistent hashing",
+          "hot shard",
+          "resharding",
+          "cross-shard query"
+        ],
+        "triggers": [
+          "how should we shard",
+          "what's the right shard key",
+          "hot shard",
+          "cross-shard transaction",
+          "consistent hashing"
+        ]
+      },
+      "allowed-tools": "Read Grep",
+      "category": "engineering",
+      "concept": {
+        "analogy": "|",
+        "boundary": "|",
+        "definition": "Sharding (horizontal partitioning) is the discipline of dividing a database's data across multiple nodes such that each node holds a subset (a shard) of the data. The unit of judgment is the *shard key*: the column or columns the system uses to route each row to a specific shard. Three foundational schemes exist — **range partitioning** (rows with shard-key values in a contiguous range go to the same shard), **hash partitioning** (the shard-key value is hashed; the hash determines the shard), and **directory / lookup partitioning** (an explicit map records which shard owns each key or key-range). Each scheme has its own access-pattern fit, resharding complexity, and hot-shard risk profile. The strategic discipline of sharding is choosing the shard key and scheme such that (a) the per-shard load is balanced, (b) common queries can be answered by a single shard (no cross-shard scatter-gather), and (c) the system can be resharded (add nodes, rebalance data) without unacceptable downtime.",
+        "mental_model": "|",
+        "misconception": "|",
+        "purpose": "|",
+        "taxonomy": "|"
+      },
+      "description": "Use when reasoning about horizontal partitioning of data across nodes for storage capacity and write throughput beyond a single node: the three foundational partitioning schemes (range, hash, directory/lookup), the shard-key choice that determines whether the system scales or hotspots, the resharding problem and how consistent hashing addresses it, cross-shard queries and the joins-and-transactions trade-off, the relationship to replication (sharding partitions data; replication copies each shard), and the failure modes (hot shard, skewed distribution, cross-shard transactions, range-end overload). Do NOT use for replicating the same data across nodes (use replication-patterns), the CAP/PACELC frame (use cap-theorem-tradeoffs), single-node performance tuning (use query-optimization), or indexing within a shard (use indexing-strategy).",
+      "domain": "engineering/data",
+      "health": {
+        "comprehension_state": "present",
+        "drift_check": {
+          "last_verified": "2026-05-16"
+        },
+        "eval_artifacts": "planned",
+        "eval_state": "unverified",
+        "freshness": "2026-05-16",
+        "has_grounding": false,
+        "has_relations": true,
+        "routing_eval": "absent"
+      },
+      "id": "sharding-strategy",
+      "license": "MIT",
+      "name": "sharding-strategy",
+      "owner": "skill-graph-maintainer",
+      "path": "skills/sharding-strategy/SKILL.md",
+      "relations": {
+        "boundary": [
+          {
+            "reason": "replication-patterns owns copying the same data across nodes; this skill owns splitting different data across nodes. The two compose: a sharded system can replicate each shard. They answer different questions.",
+            "skill": "replication-patterns"
+          },
+          {
+            "reason": "cap-theorem-tradeoffs owns the theoretical consistency-availability frame; this skill owns the operational partitioning that often interacts with it (cross-shard transactions have stronger consistency requirements than single-shard ones).",
+            "skill": "cap-theorem-tradeoffs"
+          },
+          {
+            "reason": "indexing-strategy owns within-node retrieval; this skill owns how data is divided across nodes. Indexes within a shard are designed normally; cross-shard secondary indexes are a separate, harder problem.",
+            "skill": "indexing-strategy"
+          },
+          {
+            "reason": "data-modeling owns schema and access-pattern design; this skill owns the partitioning of that schema across nodes. The shard key is a schema design decision with operational consequences.",
+            "skill": "data-modeling"
+          }
+        ],
+        "related": [
+          "replication-patterns",
+          "cap-theorem-tradeoffs",
+          "indexing-strategy",
+          "data-modeling"
+        ],
+        "verify_with": [
+          "replication-patterns",
+          "data-modeling"
+        ]
+      },
+      "scope": "reference",
       "stability": "experimental",
       "type": "capability",
       "version": "1.0.0"
@@ -10899,6 +11787,107 @@
     {
       "activation": {
         "anti_examples": [
+          "explain the four ACID properties (use acid-fundamentals)",
+          "reason about distributed-replica consistency under partition (use cap-theorem-tradeoffs)",
+          "tune a slow query (use query-optimization)"
+        ],
+        "examples": [
+          "choose an isolation level for a workload that has concurrent balance-decrement operations",
+          "diagnose a data-correctness bug caused by an anomaly the chosen isolation level permits",
+          "explain the difference between snapshot isolation and full serializability",
+          "decide whether to use SELECT FOR UPDATE or upgrade isolation level"
+        ],
+        "keywords": [
+          "isolation level",
+          "read committed",
+          "repeatable read",
+          "serializable",
+          "snapshot isolation",
+          "SSI",
+          "MVCC",
+          "dirty read",
+          "non-repeatable read",
+          "phantom read",
+          "write skew",
+          "lost update",
+          "Berenson"
+        ],
+        "triggers": [
+          "what isolation level do we need",
+          "is read committed enough",
+          "what's write skew",
+          "MVCC vs locking",
+          "Postgres serializable vs MySQL serializable"
+        ]
+      },
+      "allowed-tools": "Read Grep",
+      "category": "engineering",
+      "concept": {
+        "analogy": "|",
+        "boundary": "|",
+        "definition": "Transaction isolation is the property — and the configurable choice — that determines whether concurrent transactions appear to execute serially or are permitted to observe each other's intermediate effects. The SQL standard defines four isolation levels (read uncommitted, read committed, repeatable read, serializable) by enumerating the anomalies each level may or may not permit (dirty reads, non-repeatable reads, phantom reads). Snapshot isolation, ubiquitous in modern MVCC databases, is a fifth practical level that the standard did not define. Stronger isolation eliminates more anomalies at the cost of concurrency (more transactions block or retry); weaker isolation admits anomalies that the application must handle, either by tolerating them, by upgrading the isolation level, or by using explicit locking. The discipline is choosing the isolation level by *naming the anomalies the application cannot tolerate*, not by reflex.",
+        "mental_model": "|",
+        "misconception": "|",
+        "purpose": "|",
+        "taxonomy": "|"
+      },
+      "description": "Use when reasoning about the I in ACID — the isolation level a database provides between concurrent transactions: the five SQL-standard levels (read uncommitted, read committed, repeatable read, serializable) plus snapshot isolation; the anomalies each level admits (dirty reads, non-repeatable reads, phantom reads, write skew, lost updates); the Berenson et al. 1995 critique that exposed the standard's looseness; the difference between locking-based and MVCC-based isolation; Postgres's Serializable Snapshot Isolation (SSI) as one rigorous implementation; how to choose an isolation level for a workload by enumerating the anomalies the workload cannot tolerate. Do NOT use for the broader ACID frame (use acid-fundamentals), distributed-replica consistency (use cap-theorem-tradeoffs), query performance tuning (use query-optimization), or schema design (use data-modeling).",
+      "domain": "engineering/data",
+      "health": {
+        "comprehension_state": "present",
+        "drift_check": {
+          "last_verified": "2026-05-16"
+        },
+        "eval_artifacts": "planned",
+        "eval_state": "unverified",
+        "freshness": "2026-05-16",
+        "has_grounding": false,
+        "has_relations": true,
+        "routing_eval": "absent"
+      },
+      "id": "transaction-isolation",
+      "license": "MIT",
+      "name": "transaction-isolation",
+      "owner": "skill-graph-maintainer",
+      "path": "skills/transaction-isolation/SKILL.md",
+      "relations": {
+        "boundary": [
+          {
+            "reason": "acid-fundamentals owns the four-property ACID frame as a whole; this skill owns the I axis specifically — the choice and semantics of isolation levels as a tunable. The two compose: acid-fundamentals names isolation as one of four guarantees; this skill makes the I axis operational.",
+            "skill": "acid-fundamentals"
+          },
+          {
+            "reason": "cap-theorem-tradeoffs owns distributed-replica agreement (CAP's C); this skill owns single-cluster transaction isolation (ACID's I). The two C/I letters concern different layers of the system.",
+            "skill": "cap-theorem-tradeoffs"
+          },
+          {
+            "reason": "query-optimization owns the performance dimension of query execution; this skill owns the correctness dimension of concurrent execution. Optimizations that change locking behavior can shift anomaly exposure; the two interact.",
+            "skill": "query-optimization"
+          },
+          {
+            "reason": "data-modeling owns schema and access-pattern design; this skill owns the concurrency-correctness contract under whichever schema and access pattern are chosen.",
+            "skill": "data-modeling"
+          }
+        ],
+        "related": [
+          "acid-fundamentals",
+          "cap-theorem-tradeoffs",
+          "data-modeling",
+          "query-optimization"
+        ],
+        "verify_with": [
+          "acid-fundamentals",
+          "query-optimization"
+        ]
+      },
+      "scope": "reference",
+      "stability": "experimental",
+      "type": "capability",
+      "version": "1.0.0"
+    },
+    {
+      "activation": {
+        "anti_examples": [
           "implement HMAC verification for an inbound webhook (use webhook-integration)",
           "design the JSON shape of an API endpoint (use api-design)",
           "choose between Postgres column types (use data-modeling)"
@@ -11790,7 +12779,7 @@
     "by_category": {
       "agent": 15,
       "design": 26,
-      "engineering": 41,
+      "engineering": 51,
       "foundations": 13,
       "knowledge": 1,
       "product": 1,
@@ -11799,18 +12788,18 @@
     "by_scope": {
       "codebase": 1,
       "portable": 95,
-      "reference": 28
+      "reference": 38
     },
     "by_stability": {
-      "experimental": 123,
+      "experimental": 133,
       "stable": 1
     },
     "by_type": {
-      "capability": 114,
+      "capability": 124,
       "overlay": 1,
       "router": 1,
       "workflow": 8
     },
-    "total_skills": 124
+    "total_skills": 134
   }
 }
