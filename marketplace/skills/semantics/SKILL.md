@@ -6,17 +6,18 @@ compatibility: "Cross-domain naming and meaning skill, stack-agnostic. The namin
 allowed-tools: Read Grep
 metadata:
   schema_version: "4"
-  version: "1.0.0"
+  version: "1.1.0"
   type: capability
   category: foundations
   domain: foundations/semantics
   scope: portable
   owner: skill-graph-maintainer
-  freshness: "2026-05-06"
-  drift_check: "{\"last_verified\":\"2026-05-06\"}"
+  freshness: "2026-05-16"
+  drift_check: "{\"last_verified\":\"2026-05-16\"}"
   eval_artifacts: planned
   eval_state: unverified
   routing_eval: absent
+  comprehension_state: present
   stability: experimental
   keywords: "[\"semantic naming\",\"semantic drift detection\",\"branded type design\",\"semantic versioning rules\",\"conventional commit type choice\",\"HTTP status semantic signaling\",\"design-token semantic layer\",\"naming smells catalogue\",\"DDD ubiquitous language\",\"semantic affordance naming\",\"semantic UI signal\",\"semantic API contract\",\"parse-do-not-validate pattern\",\"three-layer token architecture\",\"meaning-encoding identifier\",\"semantic-vs-syntactic distinction\",\"cargo-cult naming anti-pattern\"]"
   examples: "[\"a function named process(data) actually reconciles revenue with production cost — what semantic rename would make the operation self-explanatory without reading the implementation?\",\"our API returns HTTP 200 with { success: false, error: 'User not found' } — is that syntactically valid but semantically wrong, and what should the response signal be instead?\",\"we named a token --light-blue and now dark mode plus rebranding broke its meaning — what semantic token pattern should replace it?\",\"a variable called provider could mean payment, fulfillment, or auth in three different modules — how should semantics resolve that ambiguity?\",\"I need to choose between feat(billing): add email notifications and chore(billing): add email notifications — which commit message is semantically correct?\",\"should this ID be a branded type or a plain string, and what does parse-don't-validate mean for it?\",\"audit this database schema for unitless financial columns and timestamp-naming drift\"]"
@@ -24,6 +25,7 @@ metadata:
   relations: "{\"boundary\":[{\"skill\":\"linguistics\",\"reason\":\"linguistics owns word-form rules (morphology, compound-word ordering, abbreviation policy, audience register, blame-free phrasing); semantics owns meaning encoding (what the name communicates, semantic drift, branded types, HTTP-status semantics, SemVer signaling) — the same 'is this name good?' prompt routes by whether the trigger is the form of the word or the meaning the name encodes\"},{\"skill\":\"naming-conventions\",\"reason\":\"naming-conventions owns the deterministic casing/format choice per artifact kind (kebab vs camel vs snake vs Pascal); semantics owns the meaning encoding behind the name — the same 'what should I call this?' prompt routes by whether the user wants the format rule or the meaning-encoding decision\"},{\"skill\":\"semantic-relations\",\"reason\":\"semantic-relations owns the typed-connection vocabulary between concepts (IS-A, PART-OF, thematic roles); semantics owns the meaning encoding for an individual identifier or signal — the same 'what does this mean?' prompt routes by whether the trigger is the relation between things or the encoding of one thing\"},{\"skill\":\"microcopy\",\"reason\":\"microcopy owns specific in-product UI-text patterns (button labels, empty states, tooltips, dialogs, toasts); semantics owns the underlying meaning-encoding rules that apply to any name or signal — the same 'rewrite this UI text' prompt routes by whether the trigger is the UX-pattern surface or the cross-domain meaning rule\"}],\"related\":[\"linguistics\",\"semantic-relations\",\"microcopy\"],\"verify_with\":[\"a11y\",\"code-review\"]}"
   portability: "{\"readiness\":\"scripted\",\"targets\":[\"skill-md\"]}"
   lifecycle: "{\"stale_after_days\":365,\"review_cadence\":\"quarterly\"}"
+  concept: "{\"definition\":\"Semantics — applied to software — is the discipline of *meaning encoding* in identifiers and signals: function names, variable names, design tokens, HTTP status codes, version numbers, commit messages, branded types, and the small textual artefacts that communicate intent to humans and machines. Drawing from Domain-Driven Design's *ubiquitous language* (Evans 2003), Don Norman's affordance theory, semantic versioning, and the broader tradition that treats names as contracts, it commits to the view that every visible identifier is a micro-decision whose meaning compounds across the codebase.\",\"mental_model\":\"|\",\"purpose\":\"|\",\"boundary\":\"|\",\"taxonomy\":\"|\",\"analogy\":\"|\",\"misconception\":\"|\"}"
   skill_graph_source_repo: "https://github.com/jacob-balslev/skill-graph"
   skill_graph_protocol: Skill Metadata Protocol v4
   skill_graph_project: Skill Graph
@@ -369,3 +371,16 @@ SEMANTICS CHECK
 | `code-review` | Reviewing a specific PR for correctness, security, or quality across many concerns. Code-review uses semantics as one input; it does not own the meaning rules. |
 | (a glossary skill) | Defining the canonical meaning of a domain term. A glossary owns the definition; semantics owns the consistent application of the definition in names and signals. |
 | (a taxonomy skill) | Designing the classification structure itself (hierarchy vs facet, IS-A vs PART-OF tree shape). Taxonomy owns the structure; semantics owns the names inside it. |
+
+## Key Sources
+
+- Evans, E. (2003). *Domain-Driven Design: Tackling Complexity in the Heart of Software*. Addison-Wesley. The canonical statement of *ubiquitous language* — that domain code must use the same terms as domain experts — and the value-object pattern for encoding meaning in types.
+- Norman, D. A. (2013). *The Design of Everyday Things* (Revised and Expanded Edition). Basic Books. The foundational affordance / signifier framework; applied directly to the discipline of matching identifier names to actual behavior.
+- Hilton, P. (2017). ["Naming Smells."](https://hilton.org.uk/blog/naming-smells) Seven categories of names that destroy readability: meaningless, abstract, numeric-suffix, abbreviation, vague-verb, type-encoded, weasel-suffix. The practitioner reference for naming review.
+- Preston-Werner, T. [Semantic Versioning 2.0.0](https://semver.org/). The normative specification for MAJOR.MINOR.PATCH; the convention that makes API-compatibility intent machine-readable across package ecosystems.
+- [Conventional Commits 1.0.0](https://www.conventionalcommits.org/). The specification for `type(scope): description` commit messages; the foundation for automated changelog generation and SemVer-from-commits tooling.
+- King, A. (2019). ["Parse, don't validate."](https://lexi-lambda.github.io/blog/2019/11/05/parse-don-t-validate/) The reference statement of the parse-don't-validate pattern; encode meaning in types rather than checking it at use sites.
+- IETF. [RFC 9110: HTTP Semantics](https://datatracker.ietf.org/doc/html/rfc9110). The normative specification of HTTP status code semantics (2xx / 4xx / 5xx) and the body-vs-status separation of concerns.
+- Martin, R. C. (2008). *Clean Code: A Handbook of Agile Software Craftsmanship*. Prentice Hall. Chapter 2 ("Meaningful Names") is one of the most widely cited practitioner statements of naming discipline.
+- Fowler, M. (2010). ["DomainLanguage."](https://martinfowler.com/bliki/DomainLanguage.html) The bridge between DDD's ubiquitous-language principle and day-to-day engineering practice.
+- Hejlsberg, A., et al. Microsoft. [TypeScript Handbook — Branded Types pattern](https://www.typescriptlang.org/docs/handbook/2/everyday-types.html). The implementation surface for branded types and other meaning-encoding patterns in TypeScript.

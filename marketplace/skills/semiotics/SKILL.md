@@ -6,17 +6,18 @@ compatibility: "Stack-agnostic sign-system analysis. The Peirce / Saussure / Bar
 allowed-tools: Read Grep
 metadata:
   schema_version: "4"
-  version: "1.0.0"
+  version: "1.1.0"
   type: capability
   category: foundations
   domain: foundations/semantics
   scope: portable
   owner: skill-graph-maintainer
-  freshness: "2026-05-06"
-  drift_check: "{\"last_verified\":\"2026-05-06\"}"
+  freshness: "2026-05-16"
+  drift_check: "{\"last_verified\":\"2026-05-16\"}"
   eval_artifacts: present
   eval_state: unverified
   routing_eval: absent
+  comprehension_state: present
   stability: experimental
   keywords: "[\"sign-system analysis\",\"icon polysemy\",\"signifier signified mapping\",\"denotation versus connotation\",\"affordance signifier match\",\"icon-index-symbol trichotomy\",\"visual metaphor clarity\",\"color connotation audit\",\"cross-surface sign drift\",\"semiotic coherence audit\",\"anti-affordance design\",\"icon-system consistency\",\"abstract-mark opacity\",\"sign-conflict detection\",\"visual-meaning audit\",\"code-and-api semiotics\"]"
   examples: "[\"our dashboard uses green for both revenue increase and cost increase, so users read both as good — what semiotic failure is that and how should we correct it?\",\"we use a gear icon for settings on one page and preferences on another — is this just a naming issue, or an interface sign conflict?\",\"a disabled button still looks clickable because only the color changed — which signifier or affordance rule is failing?\",\"we need an icon for reconciliation in a financial workflow — which metaphors are available, and when must text stay paired with the icon?\",\"an API function is named processData() — from a sign-system perspective, what is wrong with that name?\",\"audit this status-badge color system for denotation vs connotation conflicts\",\"explain why users keep clicking a non-interactive label that looks like a link\"]"
@@ -24,6 +25,7 @@ metadata:
   relations: "{\"boundary\":[{\"skill\":\"semantics\",\"reason\":\"semantics owns meaning encoding for individual textual identifiers and signals (function names, design tokens, HTTP status codes, branded types, SemVer, conventional commits); semiotics owns sign-system analysis for visual + textual sign systems (icons, color as sign, affordances, signifier/signified mappings) — the same 'what does this mean?' prompt routes by whether the trigger is one identifier's encoding or a multi-channel sign system\"},{\"skill\":\"microcopy\",\"reason\":\"microcopy owns the actual UI wording (button labels, empty states, tooltips, dialogs); semiotics owns the sign-system reasoning that determines what the words and accompanying visual signs should communicate — the same 'fix this UI element' prompt routes by whether the trigger is the wording itself or the sign system the wording sits inside\"},{\"skill\":\"semantic-relations\",\"reason\":\"semantic-relations owns the typed connections between concepts (IS-A, PART-OF, thematic roles); semiotics owns the signifier-to-signified mapping in interface and naming surfaces — the same 'how does this relate to that?' prompt routes by whether the trigger is a conceptual relation type or a sign-system relationship\"},{\"skill\":\"visual-design-foundations\",\"reason\":\"visual-design-foundations owns visual craft decisions such as palette, type, spacing, and hierarchy; semiotics owns what those signs communicate\"}],\"related\":[\"linguistics\",\"a11y\",\"intent-recognition\",\"visual-design-foundations\"],\"verify_with\":[\"a11y\",\"code-review\"]}"
   portability: "{\"readiness\":\"scripted\",\"targets\":[\"skill-md\"]}"
   lifecycle: "{\"stale_after_days\":365,\"review_cadence\":\"quarterly\"}"
+  concept: "{\"definition\":\"Semiotics is the study of *sign systems* — how signifiers (perceivable forms: icons, colors, shapes, positions, words) point to signifieds (concepts, states, actions) via convention, resemblance, or causal connection. Applied to interfaces, it is the discipline of designing and auditing the multi-channel sign systems through which a product communicates with its users. Drawing from Peirce's icon/index/symbol trichotomy, Saussure's signifier/signified dyad, Barthes' denotation/connotation/myth layering, and Norman's affordance theory, it treats every interface element as a sign whose meaning is constructed, not given.\",\"mental_model\":\"|\",\"purpose\":\"|\",\"boundary\":\"|\",\"taxonomy\":\"|\",\"analogy\":\"|\",\"misconception\":\"|\"}"
   skill_graph_source_repo: "https://github.com/jacob-balslev/skill-graph"
   skill_graph_protocol: Skill Metadata Protocol v4
   skill_graph_project: Skill Graph
@@ -233,3 +235,16 @@ After applying this skill, verify:
 | `a11y` | Auditing aria-label correctness, focus management, screen-reader semantics. A11y owns accessibility contracts; semiotics may inform them but does not own them. |
 | `visual-design-foundations` | Palette, typography, spacing, hierarchy, craft quality, and motion feel. Visual-design-foundations owns visual craft; semiotics asks what the visual element *signifies*. |
 | (an ontology skill) | Formal class hierarchies, existence axioms, reasoning constraints. Ontology owns formal classification; semiotics owns sign meaning in interfaces. |
+
+## Key Sources
+
+- Peirce, C. S. (1931-1958). *Collected Papers of Charles Sanders Peirce* (8 vols.). Harvard University Press. The original statement of the icon / index / symbol trichotomy; the foundational typology of sign-to-referent relations that all later interface-semiotics work builds on.
+- Saussure, F. de (1916). *Cours de linguistique générale* / *Course in General Linguistics*. Payot. The signifier/signified dyad and the principle that meaning is constituted by systems of contrast — the structural foundation for sign-system analysis.
+- Barthes, R. (1957). *Mythologies*. Éditions du Seuil. The three-layer denotation / connotation / myth analysis; the canonical demonstration that signs carry cultural and ideological meaning beyond literal reading.
+- Eco, U. (1976). *A Theory of Semiotics*. Indiana University Press. The systematic treatment of semiotics as a discipline; cultural codes, sign-production, and the constructed-meaning principle.
+- Norman, D. A. (2013). *The Design of Everyday Things* (Revised and Expanded Edition). Basic Books. The foundational text on affordances and signifiers for interface design; the discipline of matching visual cues to actual interaction possibilities.
+- Gibson, J. J. (1979). *The Ecological Approach to Visual Perception*. Houghton Mifflin. The original psychological account of affordances — what the environment offers to a perceiver — that Norman adapted to design.
+- Nielsen Norman Group. ["Icon Usability"](https://www.nngroup.com/articles/icon-usability/). Empirical UX research on icon polysemy, opacity, and the icon-plus-text pairing rule; the practitioner reference for icon-system design.
+- W3C. [Web Content Accessibility Guidelines (WCAG) 2.2](https://www.w3.org/TR/WCAG22/) — Use of Color (Success Criterion 1.4.1). The international standard expression of the never-color-alone principle.
+- Frutiger, A. (1989). *Signs and Symbols: Their Design and Meaning*. Watson-Guptill. The reference work on visual sign design from typography to pictograms; foundational for icon-system vocabulary work.
+- Krug, S. (2014). *Don't Make Me Think, Revisited*. New Riders. The practitioner statement of the cognitive-cost principle in interface signs; the empirical observation that users do not read signs analytically — they pattern-match, and the sign system must support that.

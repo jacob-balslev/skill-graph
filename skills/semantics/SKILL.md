@@ -3,18 +3,19 @@
 schema_version: 4
 name: semantics
 description: "Use when naming artifacts across code, APIs, design tokens, commits, HTTP/status signals, UI labels, error codes, or branded types, especially when a name feels ambiguous or misleading. Covers cross-domain meaning-encoding: naming smells, DDD ubiquitous language, SemVer, conventional commits, branded types, semantic design tokens/CSS/APIs, semantic UI affordances, and naming anti-patterns. Do NOT use for word morphology/polysemy (use linguistics), casing formats (use naming-conventions), typed concept relations (use semantic-relations), or in-product UI-text patterns (use microcopy)."
-version: 1.0.0
+version: 1.1.0
 type: capability
 category: foundations
 domain: foundations/semantics
 scope: portable
 owner: skill-graph-maintainer
-freshness: "2026-05-06"
+freshness: "2026-05-16"
 drift_check:
-  last_verified: "2026-05-06"
+  last_verified: "2026-05-16"
 eval_artifacts: planned
 eval_state: unverified
 routing_eval: absent
+comprehension_state: present
 stability: experimental
 license: MIT
 compatibility:
@@ -77,6 +78,65 @@ portability:
 lifecycle:
   stale_after_days: 365
   review_cadence: quarterly
+concept:
+  definition: "Semantics — applied to software — is the discipline of *meaning encoding* in identifiers and signals: function names, variable names, design tokens, HTTP status codes, version numbers, commit messages, branded types, and the small textual artefacts that communicate intent to humans and machines. Drawing from Domain-Driven Design's *ubiquitous language* (Evans 2003), Don Norman's affordance theory, semantic versioning, and the broader tradition that treats names as contracts, it commits to the view that every visible identifier is a micro-decision whose meaning compounds across the codebase."
+  mental_model: |
+    Five primitives structure semantic encoding:
+
+    1. **Sign, referent, convention** — a name is a *sign* (the form, e.g. `processRefund`) that points to a *referent* (what it denotes, e.g. the operation it performs) via a *convention* (the shared agreement that the form means the referent). When all three align, the name communicates; when they drift apart, the name is a silent lie. Semantic drift — referent changes but sign does not — is the failure mode no test catches.
+
+    2. **Affordance** (Norman 1988) — what a name implies you can do with the thing it denotes. `isReady` affords a boolean check; if it returns a Promise, the affordance lies. `getUser` affords retrieval; if it mutates, the affordance lies. The discipline includes making the affordance match the actual behavior, on every name.
+
+    3. **Domain language** (Evans 2003) — the *ubiquitous language* is the shared vocabulary between domain experts and engineers. Names in core domain code must use the domain language ("place order," "settle invoice") rather than translation-tax names ("create transaction," "process record"). Every translation between code vocabulary and business vocabulary is a cognitive tax paid by every future reader.
+
+    4. **Semantic typing** — types carry meaning beyond their underlying primitives. A `string` can hold an email, a SQL query, a credit-card number; treating them as one type erases the distinctions that matter. *Branded types* (`type Email = string & { __brand: 'Email' }`), *value objects* with validated constructors, and the *Parse, don't validate* pattern (Alexis King 2019) make illegal states unrepresentable by encoding meaning in the type system.
+
+    5. **Semantic signaling at boundaries** — outside the codebase, the same encoding discipline applies to HTTP status codes (4xx vs 5xx vs 2xx carry semantic load that bodies shouldn't override), SemVer increments (MAJOR signals breaking, MINOR signals additive, PATCH signals fixes), and Conventional Commits (`feat`/`fix`/`docs` are not aesthetic labels — they drive automated tooling). Every signal at a system boundary either preserves or destroys downstream consumers' ability to act on its meaning.
+
+    The deep insight (Evans, Norman, Hilton): names compound. A codebase with 100 well-named symbols has linear naming cost; the same codebase with 100 poorly-named symbols has quadratic decoding cost across every future reader. The discipline is paid up-front by the author; the cost of skipping it is paid in perpetuity by everyone downstream.
+  purpose: |
+    Most code reads well at the moment it is written and reads worse over time as referents drift and the team's working memory of intent fades. Generic names (`data`, `process`, `handle`, `result`) are cheap to type and expensive to read; domain-specific names (`unpaidInvoices`, `reconcileShipment`, `verifyWebhookSignature`) are expensive to type once and cheap to read forever. Semantics solves the *long-term-readability* problem at the per-identifier scale.
+
+    The discipline addresses three failure modes. The first is *meaningless generic names* — `utils.ts`, `helpers.ts`, `data`, `info`, `result` — that aggregate unrelated functionality and force every reader to open the implementation to learn the purpose. The second is *semantic drift* — names that were accurate at creation but became inaccurate as behavior changed, producing silent lies that no test catches. The third is *boundary-signal collapse* — HTTP 200 with an error body, MAJOR-bumping for a bug fix, commit messages that don't drive automation, all of which destroy the signal that downstream consumers depend on.
+
+    The alternative — treating naming as aesthetic preference rather than communication craft — produces codebases where the implementation is the primary documentation and readers must constantly de-reference signs to learn what they mean. The cost is invisible at any single moment and dominates cumulatively.
+  boundary: |
+    **Semantics is not linguistics.** Linguistics owns the rules of word *form* (morphology, compound-word ordering, polysemy at the identifier level, audience register, blame-free phrasing). Semantics owns the *meaning encoded* by the form. The two compose: linguistics decides whether `orderCount` honors English head-last; semantics decides whether `count` is the right referent to encode at all.
+
+    **Semantics is not naming conventions.** Naming conventions own the deterministic casing/format per artifact kind (kebab-case for files, camelCase for TypeScript, snake_case for SQL). Semantics owns what the identifier *says*, regardless of how it is cased. The two stack: semantics chooses the words; conventions case them.
+
+    **Semantics is not semantic-relations.** Semantic-relations owns the typing of *connections between* concepts (IS-A, PART-OF, thematic roles). Semantics owns the encoding of *one* identifier or signal. A model with rich relation typing and meaningless node names fails at communication; a model with semantically-rich names and untyped relations fails at inference. Both disciplines are needed.
+
+    **Semantics is not microcopy.** Microcopy owns specific UX-text patterns (button labels, empty states, tooltips, dialog confirmations, toast messages). Semantics owns the cross-domain meaning-encoding rules that apply to many surfaces, including microcopy but extending to code identifiers, API contracts, design tokens, and version numbers. Microcopy is a downstream application of semantic principles to one surface.
+
+    **Semantics is not semiotics.** Semiotics owns *sign systems* in interfaces (icons, color, affordance, badges, shapes) — multi-channel sign analysis. Semantics owns identifier-level encoding for one symbol at a time. The two are complementary: semiotics asks "what does this sign system communicate?"; semantics asks "what does this name communicate?"
+
+    **Semantics is not glossary maintenance.** A glossary defines the canonical meaning of a domain term in one place. Semantics is the discipline of *applying* glossary definitions consistently across names, signals, and APIs throughout the codebase. A glossary alone is governance; semantics is what makes the governance load-bearing in practice.
+  taxonomy: |
+    - **Ubiquitous language** (specialization, Evans 2003) — DDD's principle that domain code uses the same terms as domain experts; the foundation for resisting translation-tax names.
+    - **Naming smells** (downstream catalog, Hilton) — meaningless, abstract, numeric-suffix, abbreviation, vague-verb, type-encoded, weasel-suffix; the seven classes of names that destroy readability.
+    - **Parse, don't validate** (downstream pattern, Alexis King 2019) — type-system technique that converts unsafe values to typed values at the boundary, encoding semantic meaning in types rather than checking it at use.
+    - **Branded types** (specialization) — a TypeScript / Flow pattern for distinguishing structurally identical types by intent (OrderId vs UserId are both strings; the brand makes them non-substitutable).
+    - **Value objects** (alternative formalism, Evans 2003) — DDD pattern for encoding meaning in immutable types with validated constructors (Money, Email, Percentage).
+    - **Semantic Versioning 2.0.0** (downstream specification) — MAJOR.MINOR.PATCH numbering that signals API-compatibility intent at the package boundary.
+    - **Conventional Commits** (downstream specification) — `type(scope): description` format that converts commit messages into machine-readable changelog input.
+    - **Affordance theory** (foundational, Norman 1988 / 2013) — the discipline that names should imply behaviors the thing actually offers; if `isReady` returns a Promise, the affordance lies.
+    - **Three-layer design-token architecture** (downstream pattern) — primitive → semantic → component; the semantic layer is where meaning is encoded so the component layer can reference purpose rather than appearance.
+    - **HTTP status semantics** (downstream specification, RFC 9110) — 2xx / 4xx / 5xx as semantic signals; the discipline that never returns HTTP 200 with an error body.
+  analogy: |
+    Naming a symbol is like labelling a switch on a control panel. A switch labelled "Power" tells every operator what it does without testing it; a switch labelled "Switch 3" forces every operator to test it once and remember the result, and every operator who arrives later must re-test or be told by a colleague. The cost of labelling is paid once; the cost of *not* labelling is paid by every operator forever. Code identifiers are the labels on the panel; semantics is the discipline of writing them.
+
+    A second analogy: roadway signage. Two roads can have the same physical capacity; the one with clear, consistent signage carries traffic safely while the one with vague, drifting signage produces accidents at the same physical capacity. Semantics is to code what signage is to roads — the underlying capacity (logic, throughput) is unchanged, but the communication layer determines whether anyone can use the capacity without crashing.
+  misconception: |
+    The most common misconception is that **naming is taste**. Empirically, naming quality varies by orders of magnitude across teams that all rely on "good taste." Taste produces names that feel right to the author at the moment of writing; the cumulative reader's cost is invisible at that moment. Semantic discipline replaces taste with rules — *encode the what and the why; avoid weasel suffixes; use domain language; match affordance to behavior* — and the rules pay back across thousands of future encounters.
+
+    The second misconception is that **shorter names are better**. Short names are *cheaper to type*; descriptive names are *cheaper to read*. Code is read 10-100× more than it is written. The right name is the shortest name that conveys what + why; abbreviations and weasel suffixes that erase meaning to save characters are net-negative trades. The discipline is to write for the reader, not the writer.
+
+    The third misconception is that **semantic drift is rare**. It is the dominant naming failure in any codebase older than six months. The original author chose a name that was accurate; behavior evolved; the name remained. Every subsequent reader is now misled by a name whose referent has shifted. The discipline is to *rename in the same commit as behavior change*, never to defer the rename, and to treat a stale name as a bug rather than a stylistic preference.
+
+    The fourth misconception is that **HTTP 200 with an error body is fine if the response shape is consistent**. It is not — the HTTP status code is an out-of-band semantic signal that load balancers, caches, observability tools, retry middleware, and client error handling all read independently of the body. Returning 200 with an error body destroys that signal for every downstream consumer that uses the status code as designed. The convention is decades old and worth respecting.
+
+    The fifth misconception is that **branded types are over-engineering**. Branded types prevent a class of error — passing a `UserId` where an `OrderId` is expected — that the underlying string type cannot prevent. The cost is a small amount of type ceremony at the boundary; the benefit is compile-time elimination of an entire bug class. The trade is favorable in any system where IDs are used heavily, which is most systems.
 ---
 
 # Semantics
@@ -418,3 +478,16 @@ SEMANTICS CHECK
 | `code-review` | Reviewing a specific PR for correctness, security, or quality across many concerns. Code-review uses semantics as one input; it does not own the meaning rules. |
 | (a glossary skill) | Defining the canonical meaning of a domain term. A glossary owns the definition; semantics owns the consistent application of the definition in names and signals. |
 | (a taxonomy skill) | Designing the classification structure itself (hierarchy vs facet, IS-A vs PART-OF tree shape). Taxonomy owns the structure; semantics owns the names inside it. |
+
+## Key Sources
+
+- Evans, E. (2003). *Domain-Driven Design: Tackling Complexity in the Heart of Software*. Addison-Wesley. The canonical statement of *ubiquitous language* — that domain code must use the same terms as domain experts — and the value-object pattern for encoding meaning in types.
+- Norman, D. A. (2013). *The Design of Everyday Things* (Revised and Expanded Edition). Basic Books. The foundational affordance / signifier framework; applied directly to the discipline of matching identifier names to actual behavior.
+- Hilton, P. (2017). ["Naming Smells."](https://hilton.org.uk/blog/naming-smells) Seven categories of names that destroy readability: meaningless, abstract, numeric-suffix, abbreviation, vague-verb, type-encoded, weasel-suffix. The practitioner reference for naming review.
+- Preston-Werner, T. [Semantic Versioning 2.0.0](https://semver.org/). The normative specification for MAJOR.MINOR.PATCH; the convention that makes API-compatibility intent machine-readable across package ecosystems.
+- [Conventional Commits 1.0.0](https://www.conventionalcommits.org/). The specification for `type(scope): description` commit messages; the foundation for automated changelog generation and SemVer-from-commits tooling.
+- King, A. (2019). ["Parse, don't validate."](https://lexi-lambda.github.io/blog/2019/11/05/parse-don-t-validate/) The reference statement of the parse-don't-validate pattern; encode meaning in types rather than checking it at use sites.
+- IETF. [RFC 9110: HTTP Semantics](https://datatracker.ietf.org/doc/html/rfc9110). The normative specification of HTTP status code semantics (2xx / 4xx / 5xx) and the body-vs-status separation of concerns.
+- Martin, R. C. (2008). *Clean Code: A Handbook of Agile Software Craftsmanship*. Prentice Hall. Chapter 2 ("Meaningful Names") is one of the most widely cited practitioner statements of naming discipline.
+- Fowler, M. (2010). ["DomainLanguage."](https://martinfowler.com/bliki/DomainLanguage.html) The bridge between DDD's ubiquitous-language principle and day-to-day engineering practice.
+- Hejlsberg, A., et al. Microsoft. [TypeScript Handbook — Branded Types pattern](https://www.typescriptlang.org/docs/handbook/2/everyday-types.html). The implementation surface for branded types and other meaning-encoding patterns in TypeScript.

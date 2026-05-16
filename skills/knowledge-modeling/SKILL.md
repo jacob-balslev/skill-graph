@@ -3,18 +3,19 @@
 schema_version: 4
 name: knowledge-modeling
 description: "Use when deciding *which representation paradigm* fits a piece of domain knowledge — knowledge graph vs frames vs production rules vs semantic network vs concept map vs procedural ontology vs hybrid — when designing AI-agent context systems, building a knowledge base, structuring a skill or reference library, or planning a GraphRAG retrieval pipeline. Covers the seven paradigms with structure / best-for / weakness tables, the tacit-to-explicit knowledge acquisition pipeline (elicitation → articulation → formalization → validation → encoding), knowledge graph design principles (reify when needed, separate schema from instance, label precisely, bidirectional naming, minimal redundancy), the four knowledge-validation types (completeness / consistency / relevance / currency) plus expert walkthrough, the seven-phase knowledge lifecycle (Create / Validate / Publish / Use / Monitor / Update / Retire), the application to AI-agent systems (skills as frames, routing as rules, memory as graph), and a full GraphRAG section covering the five patterns (entity-anchored retrieval, relationship-aware context, path-based reasoning, subgraph summarization, hybrid vector+graph) with rules for when graph-grounded retrieval beats plain RAG. Do NOT use for the *human-readable* domain analysis layer (use `conceptual-modeling`), for the database / ER design layer (a logical-modeling skill), for pure classification hierarchies (a taxonomy skill), for formal ontology axioms (an ontology skill), or for the live skill-library tooling that consumes modeled knowledge (use `skill-infrastructure`)."
-version: 1.0.0
+version: 1.1.0
 type: capability
 category: foundations
 domain: foundations/knowledge
 scope: portable
 owner: skill-graph-maintainer
-freshness: "2026-05-06"
+freshness: "2026-05-16"
 drift_check:
-  last_verified: "2026-05-06"
+  last_verified: "2026-05-16"
 eval_artifacts: planned
 eval_state: unverified
 routing_eval: absent
+comprehension_state: present
 stability: experimental
 license: MIT
 compatibility:
@@ -78,6 +79,61 @@ portability:
 lifecycle:
   stale_after_days: 365
   review_cadence: quarterly
+concept:
+  definition: "Knowledge modeling is the discipline of choosing a *representation paradigm* — knowledge graph, frames, production rules, semantic network, concept map, procedural ontology, or a hybrid — that fits how the resulting knowledge will be queried, reasoned over, and maintained. Drawing from Brachman & Levesque's knowledge-representation tradition and Newell's knowledge-level account, it treats representation as a strategic choice with explicit expressiveness-tractability trade-offs rather than as a default."
+  mental_model: |
+    Five primitives structure knowledge-modeling decisions:
+
+    1. **Knowledge vs data** — data records facts ("order #1247 has status 'refunded'"); knowledge encodes the judgment and context required to *act* on those facts ("refunds after 30 days require manager approval; lifetime-value customers get an expedited path"). A database stores data; a knowledge artefact stores the policy, exceptions, and provenance that turn data into action.
+
+    2. **Representation paradigm** — the structural form chosen for the knowledge: a *knowledge graph* (nodes + labelled edges + properties), *frames* (structured records with slots, defaults, inheritance), *production rules* (IF condition THEN action), *semantic network* (concepts linked by IS-A / HAS-A relations), *concept map* (informal proposition graph for human readers), *procedural ontology* (decisions and state changes as first-class entities), or a *hybrid*. Each paradigm has a primary query pattern it serves and a class of queries it answers poorly.
+
+    3. **The expressiveness-tractability trade-off** — more expressive representations (OWL-DL, full first-order logic) admit fewer fast queries; more tractable representations (property graphs, key-value, plain text with conventions) admit fewer formal proofs. Newell's *knowledge level* names the abstraction at which the trade-off is decided; the *symbol level* is the implementation that realizes it. Choosing the right level for the problem is the central skill.
+
+    4. **The acquisition pipeline** — knowledge moves from tacit (in an expert's head, unarticulated) through elicitation (interview, observation, protocol analysis), articulation (natural-language rules), formalization (structured representation), validation (expert walkthrough against real scenarios), to encoding (computable form). Most knowledge work fails at elicitation: the team transcribes already-explicit knowledge and never extracts the tacit parts that distinguish expert from novice judgment.
+
+    5. **The lifecycle** — knowledge is not static. Each artefact has a Create → Validate → Publish → Use → Monitor → Update → Retire arc. Without a currency-check schedule, domain knowledge drifts faster than the code that depends on it; without retirement, obsolete knowledge accumulates and pulls retrieval signal-to-noise down.
+
+    The deep insight (Newell, Sowa, Gruber): a representation is a *commitment* about what can be expressed and what can be inferred. Two systems with different commitments cannot exchange meaning without a translation layer that is itself a knowledge artefact. The choice of paradigm is therefore an architectural choice with long-term coupling consequences, not a tactical one.
+  purpose: |
+    Most teams default to "we'll write it down in docs" — implicitly committing to plain text with conventions as their representation. This works for human-readable knowledge but fails for any consumer that must compute over the semantics: an agent that needs to answer "what skills route to this domain?" cannot easily query Markdown prose; a retrieval system that needs structural similarity cannot use vector embeddings of unstructured text to find relationship-based matches.
+
+    Knowledge modeling solves the *paradigm-mismatch* problem. When the dominant query pattern is multi-hop reasoning over entities, prose without structure is the wrong paradigm; when the dominant pattern is decision logic with exceptions, a flat list of rules is the wrong paradigm; when the goal is human education, formal axioms are the wrong paradigm. Naming the dominant query pattern first, then choosing the paradigm that serves it, is the discipline.
+
+    The alternative — picking a paradigm by familiarity (the team has used graphs before; the team likes OWL) — produces systems where the agent's reasoning breaks against the representation rather than against the domain.
+  boundary: |
+    **Knowledge modeling is not conceptual modeling.** Conceptual modeling produces a human-readable analysis of domain entities, attributes, and relationships — the "what" of the domain. Knowledge modeling chooses the *representation paradigm* used to encode that conceptual model. The two compose: conceptual analysis first, then paradigm choice.
+
+    **Knowledge modeling is not formal ontology.** Formal ontology (OWL, RDFS, description logics) is one paradigm available to knowledge modeling. Most knowledge artefacts do not need formal ontology — they need plain text with conventions, or property graphs, or frames. Escalating to formal ontology before the query pattern requires it produces ceremony without benefit.
+
+    **Knowledge modeling is not data modeling.** Data modeling concerns the *structure of storage* (tables, columns, foreign keys, indexes); knowledge modeling concerns the *structure of meaning* (entities, relations, rules, axioms). A database row about "Order 1247" is data; the rule "refunds after 30 days require manager approval" is knowledge. Both may be persisted in the same database, but they answer different questions and serve different consumers.
+
+    **Knowledge modeling is not retrieval.** Knowledge modeling chooses the representation; retrieval (RAG, GraphRAG, vector search, keyword search) chooses the algorithm that surfaces relevant subsets of the represented knowledge at query time. Retrieval quality is bounded by representation quality — a well-tuned retrieval pipeline over a poorly modelled corpus retrieves polished noise.
+
+    **Knowledge modeling is not classification.** Classification (taxonomy design) builds category trees and facets within an already-chosen paradigm; knowledge modeling is the layer above that chooses whether classification, graphs, rules, or hybrids fit the problem at all.
+  taxonomy: |
+    - **Knowledge graph** (specialization, Bollacker et al. 2008) — labelled directed graph of entities and relationships with properties. Best for multi-hop reasoning, entity disambiguation, relationship discovery.
+    - **Frames** (specialization, Minsky 1974) — structured records with slots, default values, inheritance. Best for object-like domain entities with stable structure and exceptions to defaults.
+    - **Production rules** (specialization, Newell & Simon 1972) — IF condition THEN action. Best for decision logic, business rules, routing.
+    - **Semantic network** (specialization, Quillian 1968) — labelled concept graph organized around IS-A and HAS-A. Best for concept navigation and vocabulary organization.
+    - **Concept map** (specialization, Novak 1984) — informal proposition graph for human learning and communication. Not directly computable.
+    - **Procedural ontology** (specialization) — decisions, state changes, and procedural steps as first-class entities. Best for agent memory with replayable "why / how" traces.
+    - **Hybrid** (composition) — graph + rules + frames combined. Most real systems converge here.
+    - **GraphRAG** (downstream pattern, Edge et al. 2024) — retrieval pattern that grounds RAG in a knowledge graph. Requires a well-modelled graph; reserved for queries where structural relationship matters.
+    - **Description logic / OWL** (formal specialization, Baader et al. 2003) — decidable subset of first-order logic; the formal end of the expressiveness spectrum. Use only when automated reasoning or cross-system interoperability genuinely requires it.
+    - **The knowledge level** (prerequisite framing, Newell 1982) — the abstraction at which representation choices are evaluated, distinct from the symbol level that implements them.
+  analogy: |
+    Knowledge modeling is the cognitive analog of choosing a programming paradigm. Object-oriented, functional, logic, and procedural paradigms each suit different problem shapes; a programmer who only knows one will twist every problem into that paradigm's shape, producing awkward code when the fit is wrong. Knowledge representation works the same way: graphs, frames, rules, and hybrids each serve different query patterns, and a team that knows only one paradigm produces awkward knowledge artefacts when the query pattern doesn't match.
+
+    A second analogy: maps. A road map, a topographic map, a subway map, and a political map of the same territory contain different information and serve different journeys. Asking "which is the right map?" is the wrong question — the right one is "what journey?" Knowledge modeling asks the same question at the representation layer.
+  misconception: |
+    The most common misconception is that **knowledge modeling means formal ontology**. Formal ontology (OWL, RDFS, SHACL) is one paradigm within knowledge modeling, suited to problems where automated reasoning or cross-system semantic interop is the goal. For most product teams, the right answer is plain Markdown with conventions, or a property graph, or a hybrid — not OWL. Escalating to formal ontology by default produces years of schema work for benefits the team never collects.
+
+    The second misconception is that **a knowledge graph is always better than prose**. A sparse, mislabelled, or inconsistently-vocabularied graph retrieves *worse* than plain vector search over prose — the structure becomes noise. The graph is worth its cost only when (a) the vocabulary is disciplined (consistent labels, broader/narrower), (b) the entity resolution is reliable, and (c) the queries actually benefit from structure. None of these is automatic.
+
+    The third misconception is that **the representation captures the knowledge**. Most domain knowledge is tacit — experts can apply it without articulating it. A representation captures only the *articulated* portion of what an expert knows. The acquisition pipeline (elicitation → articulation → formalization) is the expensive step; the encoding step at the end is comparatively cheap. Teams that skip elicitation produce representations that transcribe what was already written down and miss the parts that distinguish expert judgment.
+
+    The fourth misconception is that **knowledge artefacts are static**. Knowledge drifts faster than code: the rule that was true last quarter may be false this quarter; the entity that was canonical last release may have been split into three. Without a lifecycle discipline (currency checks, retirement, monitoring), knowledge bases become repositories of plausible-looking lies — and the consumers that trust them produce confidently wrong outputs.
 ---
 
 # Knowledge Modeling
@@ -285,3 +341,16 @@ Rules:
 | A semantic-relations skill          | Picking exact edge labels — hypernymy, meronymy, synonymy, polysemy, troponymy                                                                          |
 | `skill-infrastructure`              | Maintaining the live skill library (census, overlap detection, drift checks) — knowledge-modeling is the theory, skill-infrastructure is the operations |
 | `context-graph`                     | Designing the multi-graph topology of a workspace — that is one application of this skill, not the theory itself                                        |
+
+## Key Sources
+
+- Newell, A. (1982). "The Knowledge Level." *Artificial Intelligence*, 18(1), 87-127. The foundational paper distinguishing the *knowledge level* (rationality, goals, body of knowledge) from the *symbol level* (representation implementation). Establishes that representation choices are about which abstraction layer is appropriate, not which formalism is most powerful.
+- Brachman, R. J., & Levesque, H. J. (2004). *Knowledge Representation and Reasoning*. Morgan Kaufmann. The canonical textbook on KR&R: the expressiveness-tractability trade-off, description logics, frames, production systems, default reasoning. The reference for paradigm choice.
+- Sowa, J. F. (2000). *Knowledge Representation: Logical, Philosophical, and Computational Foundations*. Brooks/Cole. Encyclopedic synthesis of KR traditions from Aristotle through conceptual graphs. The single best reference for how paradigms relate to each other.
+- Minsky, M. (1974). "A Framework for Representing Knowledge." MIT-AI Memo 306. The foundational paper introducing frames: structured records with slots, defaults, and inheritance. Frames remain the right paradigm for object-like domain entities with stable structure.
+- Gruber, T. R. (1993). "A Translation Approach to Portable Ontology Specifications." *Knowledge Acquisition*, 5(2), 199-220. The definition of ontology as "a specification of a conceptualization" and the formal grounding for interoperable knowledge artefacts.
+- Quillian, M. R. (1968). "Semantic Memory." In M. Minsky (Ed.), *Semantic Information Processing*. MIT Press. The original semantic-network paper; the cognitive-science origin of labelled concept graphs.
+- Novak, J. D., & Cañas, A. J. (2008). *The Theory Underlying Concept Maps and How to Construct Them*. IHMC. The methodology for concept maps as a knowledge-elicitation and human-communication tool.
+- Edge, D., Trinh, H., Cheng, N., et al. (2024). "From Local to Global: A Graph RAG Approach to Query-Focused Summarization." Microsoft Research. The reference statement of GraphRAG as a retrieval pattern over modelled knowledge graphs.
+- W3C. [SKOS Reference](https://www.w3.org/TR/skos-reference/). The Simple Knowledge Organization System specification; the minimal vocabulary discipline (broader/narrower/related, prefLabel/altLabel) that knowledge-graph quality depends on.
+- Studer, R., Benjamins, V. R., & Fensel, D. (1998). "Knowledge Engineering: Principles and Methods." *Data & Knowledge Engineering*, 25(1-2), 161-197. Survey of the acquisition pipeline (elicitation → modeling → validation) and the methodological tradition behind it.

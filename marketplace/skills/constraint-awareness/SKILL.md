@@ -6,17 +6,18 @@ compatibility: "Operating-model-agnostic. Applies whether the constraint is a si
 allowed-tools: Read Grep
 metadata:
   schema_version: "4"
-  version: "1.0.0"
+  version: "1.1.0"
   type: capability
   category: foundations
   domain: foundations/strategy
   scope: portable
   owner: skill-graph-maintainer
-  freshness: "2026-05-06"
-  drift_check: "{\"last_verified\":\"2026-05-06\"}"
+  freshness: "2026-05-16"
+  drift_check: "{\"last_verified\":\"2026-05-16\"}"
   eval_artifacts: planned
   eval_state: unverified
   routing_eval: absent
+  comprehension_state: present
   stability: experimental
   keywords: "[\"theory of constraints\",\"goldratt five focusing steps\",\"bottleneck identification\",\"constraint of an ai-coding system\",\"human attention as constraint\",\"cost structure inversion ai\",\"what to automate vs keep manual\",\"batch decisions not interrupt\",\"options not questions\",\"constraint-aware process design\",\"attention budget\",\"reduce demand on the bottleneck\",\"elevate the constraint\",\"subordinate to the constraint\",\"constraint shift over time\",\"rework rate as constraint signal\",\"false dependency on the human\",\"over-engineering anti-pattern constraint\"]"
   examples: "[\"we keep adding tooling and the agent throughput isn't going up — what TOC step are we missing?\",\"should this approval gate stay in the loop or be replaced by an automated check?\",\"the agents keep asking me clarifying questions and I'm answering 30 a day — what's the structural fix?\",\"we're considering a 4-model review panel on every architectural decision — does that subordinate to or overload the constraint?\",\"code production used to be the bottleneck; what does the new bottleneck look like once agents do all the typing?\",\"is this proposed automation a constraint-elevator or a non-constraint optimization that won't move throughput?\",\"the rework rate climbed from 12% to 24% over the quarter — which constraint step does that point at?\"]"
@@ -24,6 +25,7 @@ metadata:
   relations: "{\"boundary\":[{\"skill\":\"ai-native-development\",\"reason\":\"ai-native-development is the conceptual frame for AI-coding (eras, autonomy slider, vibe vs agentic); constraint-awareness is the prioritization lens applied within that frame\"},{\"skill\":\"agent-engineering\",\"reason\":\"agent-engineering owns production reliability patterns (orchestration, error budgets, observability); constraint-awareness owns *which* of those to invest in based on where the bottleneck currently is\"},{\"skill\":\"code-review\",\"reason\":\"code-review evaluates one piece of work; constraint-awareness reasons about whether the review gate itself is the bottleneck\"},{\"skill\":\"tool-call-strategy\",\"reason\":\"tool-call-strategy decides per-action which tool an agent calls; constraint-awareness decides per-process whether that whole class of action should require human intervention at all\"}],\"related\":[\"ai-native-development\",\"agent-engineering\",\"code-review\"]}"
   portability: "{\"readiness\":\"scripted\",\"targets\":[\"skill-md\"]}"
   lifecycle: "{\"stale_after_days\":365,\"review_cadence\":\"quarterly\"}"
+  concept: "{\"definition\":\"Constraint awareness is the discipline of identifying the single resource that limits a system's throughput at any given time, and routing all improvement work through that resource. Drawn from Eliyahu Goldratt's Theory of Constraints (1984), it treats systems as throughput pipelines whose total output is bounded by their narrowest section — and treats local optimization of non-constraints as effort that produces no system-level gain.\",\"mental_model\":\"|\",\"purpose\":\"|\",\"boundary\":\"|\",\"taxonomy\":\"|\",\"analogy\":\"|\",\"misconception\":\"|\"}"
   skill_graph_source_repo: "https://github.com/jacob-balslev/skill-graph"
   skill_graph_protocol: Skill Metadata Protocol v4
   skill_graph_project: Skill Graph
@@ -294,3 +296,12 @@ When the constraint moves, the Five Focusing Steps restart from step 1. The proc
 | `ai-native-development`                              | Reasoning about the conceptual model (Software 3.0, autonomy slider, vibe vs agentic) — that's the frame; constraint-awareness is the prioritization lens within it |
 | `tool-call-strategy`                                 | Choosing the right tool, batching, or sequencing for a single agent action                                                                                          |
 | `code-review`                                        | Reviewing an actual piece of agent-generated code                                                                                                                   |
+
+## Key Sources
+
+- Goldratt, E. M., & Cox, J. (1984). *The Goal: A Process of Ongoing Improvement*. North River Press. The original business-novel introduction of the Theory of Constraints and the Five Focusing Steps. The plant-floor parable formalizes the throughput / inventory / operating-expense triple.
+- Goldratt, E. M. (1990). *Theory of Constraints*. North River Press. The non-fiction follow-up; canonical statement of the focusing-steps protocol, Drum-Buffer-Rope scheduling, and the Thinking Processes (Current Reality Tree, Evaporating Cloud, Future Reality Tree).
+- Goldratt, E. M. (1997). *Critical Chain*. North River Press. Application of constraint logic to project scheduling; buffer management as a substitute for per-task safety padding.
+- Cox, J. F., & Schleier, J. G. (Eds.). (2010). *Theory of Constraints Handbook*. McGraw-Hill. Comprehensive reference; covers Throughput Accounting, the Thinking Processes, application domains beyond manufacturing.
+- Womack, J. P., & Jones, D. T. (1996). *Lean Thinking*. Simon & Schuster. The complementary Lean discipline; useful for understanding the composition rule between Lean (waste reduction across the stream) and TOC (constraint-first prioritization).
+- Reinertsen, D. G. (2009). *The Principles of Product Development Flow*. Celeritas. Flow-based product development; queueing theory and WIP constraints connect Theory of Constraints to knowledge-work systems beyond manufacturing.

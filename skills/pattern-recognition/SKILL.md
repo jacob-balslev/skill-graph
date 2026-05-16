@@ -3,18 +3,19 @@
 schema_version: 4
 name: pattern-recognition
 description: "Use when auditing code for recurring issues, triaging errors by cluster, detecting drift from established conventions, or when an agent keeps fixing symptoms instead of root causes. Covers the six-step recognition loop (Observe → Cluster → Name → Codify → Detect → Prevent), grep-based audit strategies, error-pattern clustering with normalize-then-hash, board-health patterns (stale tasks, WIP overflow, duplicates), design pattern violations (heading hierarchy, token drift, triple-encoding), domain-encoding patterns (null-vs-zero distinction, integer encoding for monetary amounts, magnitude-conversion at the display boundary, source-rank trust hierarchy), the eval-as-pattern-test pipeline, the 5-Whys for root cause vs symptom analysis, pattern lifecycle states, and six named drift traps. Do NOT use for one-off bug localization without recurrence — fix the bug and move on — or for designing the classification system itself; this skill detects violations of conventions that already exist, while taxonomy design defines the system."
-version: 1.0.0
+version: 1.1.0
 type: capability
 category: foundations
 domain: foundations/cognition
 scope: portable
 owner: skill-graph-maintainer
-freshness: "2026-05-06"
+freshness: "2026-05-16"
 drift_check:
-  last_verified: "2026-05-06"
+  last_verified: "2026-05-16"
 eval_artifacts: planned
 eval_state: unverified
 routing_eval: absent
+comprehension_state: present
 stability: experimental
 license: MIT
 compatibility:
@@ -76,6 +77,59 @@ portability:
 lifecycle:
   stale_after_days: 365
   review_cadence: quarterly
+concept:
+  definition: "Pattern recognition is the cognitive and methodological discipline of identifying recurring structures across instances — separating signal from noise, naming the structure once detected, and elevating it into durable, transmissible knowledge. Drawing from Gestalt perception (Wertheimer 1923), expert intuition research (Klein 1998, Chase & Simon 1973), and the software-pattern tradition (Alexander 1977, Gamma et al. 1994), it treats pattern as a class noun: a regularity worth naming because it explains many observations through one structure."
+  mental_model: |
+    Five primitives structure pattern recognition:
+
+    1. **Instance vs class** — an instance is one observed occurrence; a class is the recurring structure that generates many instances. The recognition step is the move from "I saw this here, and this here, and this here" to "these share a structure that has a name." Misclassification at this step — treating a class as an isolated instance, or treating noise as a class — is the dominant failure mode.
+
+    2. **The three-instance threshold** — one occurrence is a bug; two is a coincidence; three is a pattern. The threshold guards against pareidolia (seeing patterns in noise) on one side and avoidance (refusing to name a real pattern) on the other. The number 3 is a heuristic, not a law; the discipline is requiring enough evidence to distinguish recurrence from accident before committing to a name.
+
+    3. **Chunking** (Miller 1956, Chase & Simon 1973) — experts perceive familiar patterns as single chunks, not as collections of primitive elements. A chess grandmaster sees a board position as a small number of meaningful patterns; a novice sees 32 pieces. Pattern recognition is *what makes expertise possible*: by replacing many primitive observations with one named pattern, the reasoner frees working memory for the parts of the problem that are genuinely novel.
+
+    4. **The recognition cycle** — observe → cluster → name → codify → detect → prevent (and optionally refine). Each stage adds durability: a pattern observed once lives only in the observer's head; a pattern codified into a rule, lint check, or named entry persists across sessions and across people. Most pattern work fails at the codification stage — the observer names the pattern in conversation but never writes it down, and the next observer rediscovers it.
+
+    5. **Root cause vs symptom** — patterns can be classified at multiple levels of explanation. A surface pattern ("null pointer exceptions in the order pipeline") may have a root pattern ("the type system does not distinguish 'unknown' from 'absent' at the upstream boundary"). Recognizing the level matters because the fix at a lower level (add null check here, here, and here) leaves the root pattern intact, and new instances will appear elsewhere. The 5-Whys technique (Toyoda) is one method for descending from symptom to root.
+
+    The deep insight (Alexander, Gamma): a named pattern is *more than its instances*. It is a transmissible unit of knowledge — a way for one person to convey, in one phrase, what would otherwise require many examples. The discipline of naming is the discipline that turns private observation into shared infrastructure.
+  purpose: |
+    Reasoning about systems instance-by-instance does not scale. A reviewer who fixes the same problem five times in five places has paid five times the cost and produced no leverage; on the sixth occurrence, the cost is paid again. Pattern recognition is the cognitive mechanism that converts instance-cost into class-cost: once the pattern is named and a detection method is written, the next occurrence is found cheaply and prevented systematically.
+
+    The discipline solves three failure modes. The first is *symptom churn* — repeatedly fixing the same class of problem because each occurrence is treated as a fresh, isolated bug. The second is *false patterns* — declaring a class on the basis of one or two instances and writing detection rules that produce false positives faster than they catch true ones. The third is *unwritten patterns* — observers who recognize a class but never codify it, so the recognition is private and dies with the observer's working memory.
+
+    The alternative — refusing to abstract over instances — is the position that "every problem is unique." Empirically, this is false: software systems exhibit strong regularities (Alexander's pattern language; the recurring problems Gamma et al. catalogued in 1994 still appear in 2026 code). Refusing to name patterns means paying their cost forever.
+  boundary: |
+    **Pattern recognition is not classification.** Classification assigns existing instances to existing categories; pattern recognition *discovers* the categories. Once a pattern is named, applying it to new instances is classification — but the founding act is recognition.
+
+    **Pattern recognition is not statistical clustering.** Clustering algorithms (k-means, hierarchical, density-based) group points by mathematical similarity in a feature space. They produce clusters whether or not those clusters mean anything. Pattern recognition requires the additional step of judging whether a cluster corresponds to a real generative structure — a step clustering alone cannot perform.
+
+    **Pattern recognition is not pattern matching.** Pattern matching applies a known pattern to detect new instances (does this string match this regex; does this code violate this lint rule). Pattern recognition is the upstream activity of *finding* the patterns to match against. Once the pattern is codified, matching is mechanical; recognition is judgment-laden.
+
+    **Pattern recognition is not template imposition.** A reasoner who already believes "this is the framework" will see that framework's patterns everywhere — including in noise. The discipline includes resistance to premature application of one's favorite frame. Holding multiple framings open until the evidence selects between them is the antidote to template imposition.
+
+    **Pattern recognition is not refactoring.** Recognition is the observation that a structure exists; refactoring is the act of restructuring code to reflect it. They compose — refactoring without recognition is mechanical; recognition without refactoring leaves the value undelivered — but they are separable disciplines.
+  taxonomy: |
+    - **Software design patterns** (specialization, Gamma et al. 1994) — recurring solutions to recurring problems in object-oriented design (Strategy, Observer, Adapter, etc.). Catalogues the original 23 patterns; later collections (Hohpe & Woolf on integration, Fowler on enterprise application architecture) extend the catalogue.
+    - **Architectural patterns** (specialization, Alexander 1977 *A Pattern Language*) — patterns at the level of building and town design; the original use of "pattern" as a term of art. Each pattern is a context + problem + solution + connecting structure to other patterns.
+    - **Anti-patterns** (alternative classification) — recurring solutions that *predictably fail* in their named context (Big Ball of Mud, God Object, Lava Flow). Recognizing them prevents repeated rediscovery.
+    - **Recognition-primed decision** (downstream technique, Klein 1998) — expert decision-making as pattern recognition under time pressure; the expert recognizes the situation as an instance of a familiar class and applies the class's response without deliberation.
+    - **Chunking** (cognitive prerequisite, Miller 1956, Chase & Simon 1973) — the perceptual mechanism that makes pattern recognition possible; experts encode patterns as single chunks.
+    - **The 5-Whys** (downstream technique, Toyoda) — repeated "why" questioning to descend from a surface pattern to its generative root.
+    - **Statistical clustering** (alternative method) — algorithmic grouping by feature similarity; produces candidate patterns but does not validate them as real generative structures.
+    - **Pareidolia** (failure mode) — perceiving meaningful patterns in random noise. The cognitive bias the three-instance threshold defends against.
+  analogy: |
+    Pattern recognition is the cognitive analog of writing a function. A function is a named unit that handles a class of inputs; before the function exists, each input is handled by duplicated inline code. The act of extracting a function is the recognition that "these N inline copies are instances of one pattern" plus the codification step that names it. Once the function exists, future cases of the pattern are handled by calling the function — at constant cost — instead of by adding another inline copy.
+
+    A second analogy: chess pattern libraries. A grandmaster does not see "32 pieces in 64 squares"; they see a small number of named patterns (an isolated queen-side majority, a back-rank weakness, a fianchettoed bishop). The patterns are not in the board — they are in the player's recognition vocabulary. Building that vocabulary is the difference between a master and a beginner. Software pattern vocabulary is structurally identical: the same code looks like 500 lines of detail to one reader and three named patterns to another.
+  misconception: |
+    The most common misconception is that **every regularity is a pattern worth naming**. Code is full of incidental similarity (two files happen to import the same library; two functions happen to be short). These are regularities, not patterns. A pattern is a regularity that *explains many observations through one structure* and that *suggests a class-level intervention*. Naming incidental similarity produces vocabulary inflation without leverage.
+
+    The second misconception is that **pattern recognition is intuition and cannot be taught**. Empirical research on expertise (Ericsson & Charness 1994, Klein 1998) is unambiguous: expert pattern recognition is *learned*, through deliberate practice on cases with feedback. A reviewer who has seen 10,000 PRs has a pattern library that a reviewer who has seen 100 PRs cannot replicate by trying harder. The discipline includes building the library deliberately — recording patterns as they are recognized, so the next person inherits them rather than rediscovering them.
+
+    The third misconception is that **once a pattern is named, it is permanent**. Patterns have lifecycles: Active (occurring, detection rule running) → Fixed (root cause resolved, new instances impossible) → Stale (detection rule still runs but matches nothing) → Migrated (the convention changed, the rule should now flag both old violations and new regressions). Patterns whose detection rules outlive their relevance produce alert fatigue and erode the team's trust in the pattern library.
+
+    The fourth misconception is that **the more patterns you know, the better you reason**. Beyond a threshold, additional patterns become competitive — multiple patterns fit the observation, and the reasoner must choose among them. Expert judgment includes knowing *which* pattern to apply, not just which patterns exist. The signal of expertise is not catalogue size but selection accuracy.
 ---
 
 # Pattern Recognition
@@ -524,3 +578,15 @@ Before codifying a pattern, confirm:
 | `lint-overlay` | Adding the lint rule that automates pattern detection. Lint-overlay owns the rule machinery; pattern-recognition decides which patterns warrant a rule. |
 | `graph-audit` | Performing dependency and structural audits across the codebase graph. Graph-audit owns the structural perspective; pattern-recognition owns the recurring-violation perspective. |
 | `tool-call-strategy` | Deciding which tool (Grep / Glob / Read) to reach for during a scan. Tool-call-strategy owns the tool selection; pattern-recognition owns the analysis of what the tools find. |
+
+## Key Sources
+
+- Alexander, C., Ishikawa, S., & Silverstein, M. (1977). *A Pattern Language: Towns, Buildings, Construction*. Oxford University Press. The original use of "pattern" as a term of art in design; 253 patterns connecting urban planning to room layout. The framing — *context + problem + solution + relations to other patterns* — became the template every later pattern catalogue adopted.
+- Gamma, E., Helm, R., Johnson, R., & Vlissides, J. (1994). *Design Patterns: Elements of Reusable Object-Oriented Software*. Addison-Wesley. The "Gang of Four" catalogue: 23 patterns in creational, structural, and behavioral categories. Established the discipline of pattern documentation in software.
+- Klein, G. (1998). *Sources of Power: How People Make Decisions*. MIT Press. The recognition-primed decision model: expert decision-making as pattern recognition against a learned library of cases. Empirical evidence from firefighters, NICU nurses, and military commanders.
+- Chase, W. G., & Simon, H. A. (1973). "Perception in Chess." *Cognitive Psychology*, 4(1), 55-81. The foundational chunking study: chess masters perceive board positions as small numbers of meaningful patterns; novices see individual pieces. The mechanism behind all expertise.
+- Miller, G. A. (1956). "The Magical Number Seven, Plus or Minus Two." *Psychological Review*, 63(2), 81-97. The original chunking paper; working-memory limits and the role of pattern recognition in expanding effective capacity.
+- Fowler, M. (2002). *Patterns of Enterprise Application Architecture*. Addison-Wesley. Software patterns at the application-architecture level; complements the Gang of Four with patterns for data access, web presentation, and distributed concerns.
+- Hohpe, G., & Woolf, B. (2003). *Enterprise Integration Patterns*. Addison-Wesley. Messaging patterns: routing, transformation, endpoints. Demonstrates how the pattern method extends beyond OO design to distributed-systems concerns.
+- Wertheimer, M. (1923). "Untersuchungen zur Lehre von der Gestalt II." *Psychologische Forschung*, 4. The Gestalt principles (proximity, similarity, continuity, closure); the perceptual mechanisms that make pattern recognition possible at the visual level.
+- Brown, W. J., Malveau, R. C., McCormick, H. W., & Mowbray, T. J. (1998). *AntiPatterns: Refactoring Software, Architectures, and Projects in Crisis*. Wiley. The complementary anti-pattern catalogue; recurring solutions that predictably fail.

@@ -6,23 +6,25 @@ compatibility: "Markdown, Git, agent-skill runtimes"
 allowed-tools: Read Grep Bash
 metadata:
   schema_version: "4"
-  version: "1.0.0"
+  version: "1.1.0"
   type: capability
   category: foundations
   domain: foundations/cognition
   scope: reference
   owner: skill-graph-maintainer
-  freshness: "2026-03-28"
-  drift_check: "{\"last_verified\":\"2026-03-28\"}"
+  freshness: "2026-05-16"
+  drift_check: "{\"last_verified\":\"2026-05-16\"}"
   eval_artifacts: planned
   eval_state: unverified
   routing_eval: absent
+  comprehension_state: present
   stability: experimental
   keywords: "[\"reasoning strategy\",\"extended thinking\",\"think deeper\",\"reasoning effort\",\"chain of thought\",\"over-thinking\",\"under-thinking\",\"reasoning depth\",\"think before acting\"]"
   triggers: "[\"reasoning-skill\",\"thinking-skill\"]"
   relations: "{\"related\":[\"design-thinking\",\"semantic-center\"],\"boundary\":[\"prompt-craft\"],\"verify_with\":[\"evaluation\"]}"
   portability: "{\"readiness\":\"scripted\",\"targets\":[\"skill-md\"]}"
   lifecycle: "{\"stale_after_days\":90,\"review_cadence\":\"quarterly\"}"
+  concept: "{\"definition\":\"Reasoning is the deliberate generation, evaluation, and selection of inferences over a problem space. Reasoning calibration is the meta-skill of matching reasoning depth to problem difficulty — engaging sustained multi-step deliberation when a problem requires it, and skipping straight to action or lookup when it does not. Drawn from dual-process accounts of cognition (Kahneman 2011, Stanovich & West 2000) and bounded-rationality theory (Simon 1955), it treats reasoning as an expensive operation that pays back only when the problem cannot be solved by cheaper means.\",\"mental_model\":\"|\",\"purpose\":\"|\",\"boundary\":\"|\",\"taxonomy\":\"|\",\"analogy\":\"|\",\"misconception\":\"|\"}"
   skill_graph_source_repo: "https://github.com/jacob-balslev/skill-graph"
   skill_graph_protocol: Skill Metadata Protocol v4
   skill_graph_project: Skill Graph
@@ -242,6 +244,18 @@ After applying reasoning strategy selection, verify:
 | Running a generate-critique-revise loop | `reflection-pattern` | reflection-pattern owns iterative quality loops |
 | Calibrating work intensity to task size | `effort` | effort owns fast-track vs full-protocol decisions |
 
+## Key Sources
+
+- Kahneman, D. (2011). *Thinking, Fast and Slow*. Farrar, Straus and Giroux. The canonical popular synthesis of dual-process cognition; System 1 (fast, automatic) vs System 2 (slow, deliberate); cognitive biases and heuristics. Foundational for understanding when reasoning helps and when it produces confident error.
+- Simon, H. A. (1955). "A Behavioral Model of Rational Choice." *Quarterly Journal of Economics*, 69(1), 99-118. The original statement of bounded rationality — reasoning under finite computational resources. Establishes that *satisficing* (good-enough stopping) is the rational stance for bounded agents, not optimization.
+- Newell, A., & Simon, H. A. (1972). *Human Problem Solving*. Prentice-Hall. The classic account of problem solving as state-space search; means-ends analysis; the role of strategy selection in expert reasoning.
+- Klein, G. (1998). *Sources of Power: How People Make Decisions*. MIT Press. The recognition-primed decision model; expert intuition as pattern-matched reasoning rather than its opposite. Why deliberation is not always the right answer under time pressure.
+- Pólya, G. (1945). *How to Solve It*. Princeton University Press. A heuristic method for mathematical problem solving; the canonical statement of strategy-selection discipline in formal problem domains.
+- Stanovich, K. E., & West, R. F. (2000). "Individual differences in reasoning: Implications for the rationality debate?" *Behavioral and Brain Sciences*, 23(5), 645-665. Empirical study of variation in deliberative reasoning; cognitive style versus problem-class fit.
+- Wei, J., Wang, X., Schuurmans, D., Bosma, M., et al. (2022). "Chain-of-Thought Prompting Elicits Reasoning in Large Language Models." *NeurIPS 2022*. The introduction of chain-of-thought as an explicit reasoning technique in language models.
+- Yao, S., Zhao, J., Yu, D., et al. (2022). "ReAct: Synergizing Reasoning and Acting in Language Models." *ICLR 2023*. The ReAct pattern; interleaved reasoning and action.
+- Lanham, T., Chen, A., Radhakrishnan, A., et al. (2023). "Measuring Faithfulness in Chain-of-Thought Reasoning." Anthropic. Empirical evidence that visible chain-of-thought traces can be unfaithful to the actual reasoning process — the visible-trace-vs-doing-the-work distinction.
+
 ---
 
-*Version 1.1.0 — 2026-03-28*
+*Version 1.2.0 — 2026-05-16*

@@ -3,18 +3,19 @@
 schema_version: 4
 name: constraint-awareness
 description: "Use when prioritizing work in an AI-assisted codebase, designing agent autonomy levels, deciding what to automate vs keep manual, or evaluating whether a process/tool adds value. Covers Theory of Constraints for AI-era engineering: cheap code production, human review/validation/decision bottlenecks, Five Focusing Steps, constraint-aware process design, attention audits, and constraint-shift modeling. Do NOT use for task-effort estimation, backlog scoring with RICE/WSJF/ICE, or routing a task to a specific model."
-version: 1.0.0
+version: 1.1.0
 type: capability
 category: foundations
 domain: foundations/strategy
 scope: portable
 owner: skill-graph-maintainer
-freshness: "2026-05-06"
+freshness: "2026-05-16"
 drift_check:
-  last_verified: "2026-05-06"
+  last_verified: "2026-05-16"
 eval_artifacts: planned
 eval_state: unverified
 routing_eval: absent
+comprehension_state: present
 stability: experimental
 license: MIT
 compatibility:
@@ -74,6 +75,56 @@ portability:
 lifecycle:
   stale_after_days: 365
   review_cadence: quarterly
+concept:
+  definition: "Constraint awareness is the discipline of identifying the single resource that limits a system's throughput at any given time, and routing all improvement work through that resource. Drawn from Eliyahu Goldratt's Theory of Constraints (1984), it treats systems as throughput pipelines whose total output is bounded by their narrowest section — and treats local optimization of non-constraints as effort that produces no system-level gain."
+  mental_model: |
+    Four primitives structure constraint reasoning:
+
+    1. **Constraint** — the one resource (capacity, policy, or paradigm) whose availability bounds the system's output. Every system has exactly one binding constraint at any given time. It may be physical (machine capacity), human (review bandwidth, attention), procedural (a required approval step), market (demand), or paradigmatic (the team's mental model of what's possible). A constraint is not the same as a "bottleneck" in the colloquial sense — it is the single binding constraint, not "places where work piles up."
+
+    2. **Throughput** — the rate at which the system produces its goal output (sales, decisions, shipped features). Per the Theory of Constraints, throughput is bounded by the constraint and only by the constraint. Improvements anywhere else affect *capacity* but not throughput.
+
+    3. **The Five Focusing Steps** — the operational protocol: Identify the constraint, Exploit it (use every minute of constraint-time well), Subordinate everything else (non-constraints serve the constraint, not vice versa), Elevate it (invest to expand its capacity), then Repeat — because the constraint moves when capacity changes.
+
+    4. **Cost-structure inversion** — when external conditions change the cost of an activity, the constraint may shift dramatically. Pre-industrial, materials were the constraint; mass production made labor the constraint; commoditized compute makes attention and judgment the constraint. The current constraint is a temporary fact about the cost structure, not a permanent property of the system.
+
+    The deep insight: improving a non-constraint produces *no system-level improvement* — the throughput equation is unchanged. Apparent productivity gains in non-constraints either show up as growing work-in-progress queues at the real constraint, or as wasted capacity the constraint cannot consume. Optimization without constraint identification is by definition local optimization.
+  purpose: |
+    Most performance problems in complex systems are misdiagnosed because the symptom appears far from the cause. A team complains that shipping is slow and invests in faster builds — but builds were never the constraint; review was. Code production accelerates 10x — but throughput stays flat because the reviewer cannot keep up.
+
+    Constraint awareness solves the diagnosis problem. Instead of optimizing the most visible or most measurable resource, identify the binding constraint and direct improvement effort there. Goldratt's framing converts "we need to be faster" into "what specifically is bounding throughput, and what does the next constraint look like once we move this one?"
+
+    The alternative — uniform optimization, the "improve everything everywhere" instinct — produces effort without throughput. It also produces brittle systems: every optimization adds complexity that must be maintained, and most of that complexity does not pay back because it was not on the constraint path.
+  boundary: |
+    **Constraint awareness is not prioritization.** Prioritization frameworks (RICE, WSJF, ICE, MoSCoW) rank initiatives by expected value or effort. Constraint awareness asks a prior question: which initiatives move throughput at all? A high-RICE initiative that optimizes a non-constraint has an effective value of zero. The two stack: constraint awareness filters; prioritization frameworks rank the filtered set.
+
+    **Constraint awareness is not capacity planning.** Capacity planning sums available work-hours against demand. The constraint is the resource that runs out first; the rest of the system has slack by definition. Sizing all resources equally is the anti-pattern that capacity planning often produces.
+
+    **Constraint awareness is not single-task estimation.** It operates at the system / process level, not the individual-task level. Estimating whether one ticket is small or large does not require Theory of Constraints; deciding whether to invest in a tool that would automate a class of tickets does.
+
+    **Constraint awareness is not Lean or Six Sigma.** Lean (Toyota Production System) reduces waste across the whole value stream; Six Sigma reduces variation. Both can improve non-constraints. Theory of Constraints overlays them: focus the Lean / Six Sigma effort on the constraint first; everywhere else, waste reduction is cosmetic until the constraint moves there.
+
+    **Constraint awareness is not "find a bottleneck."** Every system has multiple slow steps; only one is the binding constraint at a given time. Non-binding slow steps look like bottlenecks but are not — investing in them produces no throughput gain.
+  taxonomy: |
+    - **Theory of Constraints** (parent framework — Goldratt 1984, *The Goal*) — the Five Focusing Steps, Throughput Accounting, the Thinking Processes.
+    - **Drum-Buffer-Rope** (specialization) — TOC scheduling: the constraint sets the drumbeat; a work-in-progress buffer protects it from upstream variability; a rope ties material release to constraint consumption.
+    - **Throughput Accounting** (alternative to standard cost accounting) — values decisions by their effect on throughput, inventory, and operating expense rather than per-unit cost. Standard cost accounting can recommend decisions that reduce throughput.
+    - **Lean / TPS** (composition) — Toyota Production System; removes muda (waste) across the whole stream. Theory of Constraints says: prioritize the muda *at the constraint*. The two stack.
+    - **Critical Chain Project Management** (specialization for projects) — Goldratt's application of constraint logic to project scheduling: identify the longest dependent chain that touches the resource constraint; protect it with project and feeding buffers.
+    - **Cost-structure inversion** (downstream concept) — when external technology changes the cost of an activity (industrialization, automation, machine learning), the constraint shifts. Distinguishes transient constraints from structural ones.
+    - **Local optimization** (anti-pattern, prerequisite to recognize) — improving a non-constraint. Looks like progress, produces no throughput change.
+  analogy: |
+    A water pipeline's flow rate is set by its narrowest section. Widening any other section costs money and adds capacity, but total flow does not change — the narrow section is still the bottleneck. Only widening the narrow section increases flow. If you keep widening, eventually a different section becomes the narrowest, and now *that* one bounds flow. The pipeline never has more than one binding constraint at a time.
+
+    The corollary: pumping harder upstream of the constraint just creates pressure (work-in-progress). Pumping harder downstream is wasted capacity. The constraint sets the pace; everything else either serves it or wastes itself.
+  misconception: |
+    The most common misconception is that **every slow step is a bottleneck worth fixing**. Systems have many slow steps; only one is the *binding* constraint at any moment. Investing in the non-binding ones produces no throughput change — the throughput equation is set entirely by the binding constraint. This is why uniform productivity programs usually fail to move the actual output metric.
+
+    The second misconception is that **the constraint is fixed**. The constraint moves whenever capacity changes — including capacity changes caused by your own improvement work. The Five Focusing Steps end with "Repeat" precisely because elevation usually shifts the constraint to a new location. Teams that don't re-identify after elevating end up subordinating to a constraint that no longer exists.
+
+    The third misconception is that **the constraint must be a resource**. Constraints can be policies ("all changes require senior review"), market demand ("we can produce more than we can sell"), or paradigms ("we believe we cannot ship without manual QA"). A policy constraint cannot be fixed by buying more machines or hiring more people — it requires changing the policy. Mistaking a policy constraint for a resource constraint produces years of wasted hiring and tooling.
+
+    The fourth misconception is that **utilization should be maximized everywhere**. In TOC, only the constraint should be at 100% utilization. Non-constraint resources should have idle time — their job is to be available when the constraint needs them, not to be busy. A factory where every machine is at 100% utilization is a factory with massive work-in-progress and slow throughput. The same applies to humans, agents, and review queues.
 ---
 
 # Constraint Awareness
@@ -340,3 +391,12 @@ When the constraint moves, the Five Focusing Steps restart from step 1. The proc
 | `ai-native-development`                              | Reasoning about the conceptual model (Software 3.0, autonomy slider, vibe vs agentic) — that's the frame; constraint-awareness is the prioritization lens within it |
 | `tool-call-strategy`                                 | Choosing the right tool, batching, or sequencing for a single agent action                                                                                          |
 | `code-review`                                        | Reviewing an actual piece of agent-generated code                                                                                                                   |
+
+## Key Sources
+
+- Goldratt, E. M., & Cox, J. (1984). *The Goal: A Process of Ongoing Improvement*. North River Press. The original business-novel introduction of the Theory of Constraints and the Five Focusing Steps. The plant-floor parable formalizes the throughput / inventory / operating-expense triple.
+- Goldratt, E. M. (1990). *Theory of Constraints*. North River Press. The non-fiction follow-up; canonical statement of the focusing-steps protocol, Drum-Buffer-Rope scheduling, and the Thinking Processes (Current Reality Tree, Evaporating Cloud, Future Reality Tree).
+- Goldratt, E. M. (1997). *Critical Chain*. North River Press. Application of constraint logic to project scheduling; buffer management as a substitute for per-task safety padding.
+- Cox, J. F., & Schleier, J. G. (Eds.). (2010). *Theory of Constraints Handbook*. McGraw-Hill. Comprehensive reference; covers Throughput Accounting, the Thinking Processes, application domains beyond manufacturing.
+- Womack, J. P., & Jones, D. T. (1996). *Lean Thinking*. Simon & Schuster. The complementary Lean discipline; useful for understanding the composition rule between Lean (waste reduction across the stream) and TOC (constraint-first prioritization).
+- Reinertsen, D. G. (2009). *The Principles of Product Development Flow*. Celeritas. Flow-based product development; queueing theory and WIP constraints connect Theory of Constraints to knowledge-work systems beyond manufacturing.

@@ -6,17 +6,18 @@ compatibility: "Provider-/runtime-/stack-agnostic. The morphology, polysemy, reg
 allowed-tools: Read Grep
 metadata:
   schema_version: "4"
-  version: "1.0.0"
+  version: "1.1.0"
   type: capability
   category: foundations
   domain: foundations/language
   scope: portable
   owner: skill-graph-maintainer
-  freshness: "2026-05-06"
-  drift_check: "{\"last_verified\":\"2026-05-06\"}"
+  freshness: "2026-05-16"
+  drift_check: "{\"last_verified\":\"2026-05-16\"}"
   eval_artifacts: planned
   eval_state: unverified
   routing_eval: absent
+  comprehension_state: present
   stability: experimental
   keywords: "[\"polysemy resolution\",\"polysemy map\",\"register selection\",\"audience register\",\"blame-free error wording\",\"three-part error structure\",\"morphology rules\",\"compound-word ordering\",\"abbreviation policy\",\"ambiguous identifier qualification\",\"linguistic precision\",\"register mismatch\",\"unqualified polysemous identifier\",\"error-message linguistics\",\"cross-cultural linguistic awareness\",\"verb-noun naming rule\",\"what-why-action error structure\"]"
   examples: "[\"this variable is named provider but it could mean fulfillment, auth, or payment — what linguistic rule applies?\",\"rewrite this error message to be specific, blame-free, and actionable\",\"the word shipping means seller cost in one file and customer charge in another — how do we resolve the polysemy without a glossary cleanup?\",\"should this helper file be called utils.ts, helpers.ts, or something domain-specific?\",\"explain how to phrase the same finance concept for an end-user, an agent, and a developer\",\"audit this UI copy for register mismatch with the end-user audience\",\"when is an abbreviation acceptable in a code identifier?\"]"
@@ -24,6 +25,7 @@ metadata:
   relations: "{\"boundary\":[{\"skill\":\"naming-conventions\",\"reason\":\"naming-conventions owns the deterministic casing/format choice per artifact kind (kebab-case for files, camelCase for TS, snake_case for SQL); linguistics owns the linguistic rationale (morphology, polysemy resolution, register fit, blame-free copy) — the same 'help me name this' prompt routes by whether the user wants the convention itself or the linguistic basis behind it\"},{\"skill\":\"documentation\",\"reason\":\"documentation owns doc-type selection, audience targeting, and progressive disclosure of doc content; linguistics owns the prose-form rules inside docs (register match, three-part error structure, blame-free phrasing) — the same 'review this writing' prompt routes by whether the trigger is doc architecture or prose form\"},{\"skill\":\"refactor\",\"reason\":\"refactor owns behavior-preserving structural change including rename mechanics across call sites; linguistics owns the linguistic decision of what the new name should be — the same 'rename this thing' prompt routes by whether the trigger is the rename mechanics or the naming choice itself\"}],\"related\":[\"prompt-craft\",\"intent-recognition\",\"code-review\"],\"verify_with\":[\"naming-conventions\",\"code-review\"]}"
   portability: "{\"readiness\":\"scripted\",\"targets\":[\"skill-md\"]}"
   lifecycle: "{\"stale_after_days\":365,\"review_cadence\":\"quarterly\"}"
+  concept: "{\"definition\":\"Linguistics applied to software is the discipline of using the rules of human language — morphology, semantics, pragmatics, sociolinguistics — to shape the words inside a software system: identifier names, type labels, error messages, UI copy, and documentation prose. Drawing from Saussure's signifier/signified distinction, Lyons's structural semantics, and Halliday's systemic-functional grammar, it treats every name and every visible string as a small linguistic artefact whose form determines whether the reader can decode the intended meaning quickly and reliably.\",\"mental_model\":\"|\",\"purpose\":\"|\",\"boundary\":\"|\",\"taxonomy\":\"|\",\"analogy\":\"|\",\"misconception\":\"|\"}"
   skill_graph_source_repo: "https://github.com/jacob-balslev/skill-graph"
   skill_graph_protocol: Skill Metadata Protocol v4
   skill_graph_project: Skill Graph
@@ -432,3 +434,16 @@ LINGUISTICS I18N CHECK
 | (a glossary skill) | Defining the canonical meaning of a domain term. A glossary owns the *definition*; linguistics owns the *consistent application* of definitions in names and copy. |
 | (a copywriting skill) | Drafting product messaging, marketing copy, or final user-facing CTA text. Copywriting owns the messaging; linguistics owns the structural form rules under that messaging. |
 | (an i18n skill) | Implementing locale-aware formatting (`Intl.NumberFormat`, date pickers, ICU plurals). i18n owns the implementation; linguistics owns the linguistic awareness behind it. |
+
+## Key Sources
+
+- Saussure, F. de (1916). *Cours de linguistique générale* / *Course in General Linguistics*. Payot. The foundational distinction between *signifier* and *signified*, and the principle that meaning lives in systems of contrast. The theoretical basis for treating identifier names as contracts.
+- Lyons, J. (1977). *Semantics* (2 vols.). Cambridge University Press. The canonical structural-semantics textbook; polysemy, synonymy, hyponymy, and the framework for analyzing word meaning systematically.
+- Cruse, D. A. (1986). *Lexical Semantics*. Cambridge University Press. Detailed treatment of word-level meaning relationships; the reference for understanding how polysemy works and how it can be resolved by qualification.
+- Halliday, M. A. K., & Matthiessen, C. M. I. M. (2014). *An Introduction to Functional Grammar* (4th ed.). Routledge. Systemic-functional grammar: language as meaning-making organized by *field*, *tenor*, and *mode*. The theoretical foundation for register selection by audience.
+- Grice, H. P. (1975). "Logic and Conversation." In *Syntax and Semantics, Vol. 3: Speech Acts*. Academic Press. The cooperative principle and the four maxims (quantity, quality, relation, manner); applied directly in error-message writing.
+- Searle, J. R. (1969). *Speech Acts: An Essay in the Philosophy of Language*. Cambridge University Press. Speech-act theory: what utterances *do*. Foundational for distinguishing reporting from accusing in error wording.
+- Austin, J. L. (1962). *How to Do Things with Words*. Oxford University Press. The original statement of performative utterances and locutionary/illocutionary/perlocutionary acts.
+- Williams, J. M., & Bizup, J. (2017). *Style: Lessons in Clarity and Grace* (12th ed.). Pearson. The leading modern style guide grounded in cognitive-linguistic principles; the practical descendant of structural linguistics for technical and public-facing prose.
+- Nielsen Norman Group. ["Error Message Guidelines"](https://www.nngroup.com/articles/error-message-guidelines/). Empirical UX-research statement of the what/why/what-to-do error structure and the blame-free framing rule.
+- W3C. [Web Content Accessibility Guidelines (WCAG) 2.2](https://www.w3.org/TR/WCAG22/) — Understandable principle. Linguistic accessibility requirements (reading level, plain language, unambiguous error identification) at the international-standards level.

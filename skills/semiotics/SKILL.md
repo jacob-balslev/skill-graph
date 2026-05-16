@@ -3,18 +3,19 @@
 schema_version: 4
 name: semiotics
 description: "Use when designing or auditing icon systems, colors/badges/shapes, visual metaphors, interface signs, or naming-plus-visual surfaces that users misread. Covers semiotic reasoning across icon/index/symbol, signifier/signified, denotation/connotation/myth, color/shape/position/iconography, affordances, code/API signifiers, and semiotic-coherence audits. Do NOT use for actual UI wording (use `microcopy`), palette/typography craft (use `visual-design-foundations`), accessibility or contrast compliance (use `a11y`), formal class hierarchies, or word morphology rules."
-version: 1.0.0
+version: 1.1.0
 type: capability
 category: foundations
 domain: foundations/semantics
 scope: portable
 owner: skill-graph-maintainer
-freshness: "2026-05-06"
+freshness: "2026-05-16"
 drift_check:
-  last_verified: "2026-05-06"
+  last_verified: "2026-05-16"
 eval_artifacts: present
 eval_state: unverified
 routing_eval: absent
+comprehension_state: present
 stability: experimental
 license: MIT
 compatibility:
@@ -77,6 +78,63 @@ portability:
 lifecycle:
   stale_after_days: 365
   review_cadence: quarterly
+concept:
+  definition: "Semiotics is the study of *sign systems* — how signifiers (perceivable forms: icons, colors, shapes, positions, words) point to signifieds (concepts, states, actions) via convention, resemblance, or causal connection. Applied to interfaces, it is the discipline of designing and auditing the multi-channel sign systems through which a product communicates with its users. Drawing from Peirce's icon/index/symbol trichotomy, Saussure's signifier/signified dyad, Barthes' denotation/connotation/myth layering, and Norman's affordance theory, it treats every interface element as a sign whose meaning is constructed, not given."
+  mental_model: |
+    Five primitives structure semiotic analysis:
+
+    1. **The sign trichotomy** (Peirce 1903) — every sign relates to its referent in one of three ways. An *icon* resembles what it represents (magnifying glass ≈ search); an *index* is causally connected to it (loading spinner indicates a process is running); a *symbol* points by arbitrary convention (red = stop, hamburger = menu). Different sign types have different cognitive costs: icons aid first-use discoverability, symbols enable expert fluency, indexes communicate ongoing state.
+
+    2. **The dyad** (Saussure 1916) — every sign decomposes into a *signifier* (the perceivable form: color, shape, position, glyph) and a *signified* (the meaning it conveys: action, state, category, judgment). The link between them is *convention* — a shared agreement that this form means that concept. A signifier that points to multiple signifieds in one product surface (one gear icon meaning "settings" on one screen and "preferences" on another) creates ambiguity; a signified pointed to by inconsistent signifiers across surfaces (success indicated by green here, by a checkmark there, by both elsewhere) creates fragmentation.
+
+    3. **The three layers** (Barthes 1957) — *denotation* is the literal reading (an up-arrow denotes increase); *connotation* is the associated cultural/judgmental reading (green connotes "good," up-arrow + green together connote "improvement"); *myth* is the systemic ideological framing (treating growth as inherently desirable). Denotation and connotation can disagree: a denotationally correct sign (green up-arrow on cost increase) can be connotationally wrong because the connotation ("good") contradicts the situation (rising costs = bad). Most interface sign failures live at this denotation-vs-connotation gap.
+
+    4. **Affordance and signifier** (Gibson 1979 / Norman 1988, 2013) — *real affordance* is what an object permits (a button can be clicked); *perceived affordance* is what it appears to permit; *signifier* is the cue that communicates the affordance (the button's raised shadow, hover-cursor change). Disabled elements need an *anti-affordance* — a signifier that clearly communicates the inability to interact. Most "disabled but looks clickable" failures are anti-affordance failures.
+
+    5. **Sign system coherence** — signs do not communicate in isolation; they communicate as systems. The same concept must be signed consistently across surfaces, the same signifier must not drift across signifieds, and the icon family / color palette / shape vocabulary must form an internally coherent vocabulary that users can learn once and apply everywhere. Coherence is a system-level property, not an element-level one.
+
+    The deep insight (Saussure, Barthes, Eco): meaning is *constructed* by the sign system, not transmitted from the designer to the user. The user reads the signs the system provides and builds an interpretation; the designer's intent matters only insofar as it shapes which signs the system shows. A sign that "should" mean X but is consistently misread as Y means Y to that user community — the system's job is to align what it shows with what it wants read.
+  purpose: |
+    Every interface element communicates whether the designer intended it to or not. A button that looks clickable but is disabled, a green badge that signals "good" while a metric is worsening, a gear icon that means different things on different pages — these are not visual quirks but sign-system failures that erode trust one micro-misread at a time. Semiotics solves the *unintended-meaning* problem by making the communication explicit and coherent.
+
+    The discipline addresses three failure modes. The first is *sign drift* — the same signifier (color, icon, shape) pointing to different signifieds in different surfaces, forcing users to relearn the vocabulary every screen. The second is *denotation-connotation collapse* — using a sign that is technically accurate (denotation) but carries an opposite judgment (connotation), as when a financial dashboard shows costs increasing with green up-arrows because "green + up = good." The third is *affordance-signifier mismatch* — interactive elements that don't look interactive, non-interactive elements that do, and disabled states whose anti-affordance is too weak to communicate unavailability.
+
+    The alternative — treating visual elements as purely aesthetic — produces interfaces that are visually polished and semiotically incoherent. Users compensate by sustained attention to every interaction, which is the cognitive cost a well-designed sign system removes.
+  boundary: |
+    **Semiotics is not visual design.** Visual design owns the craft layer — palette selection, typography, spacing, hierarchy, motion feel, the *quality* of execution. Semiotics owns the *meaning* layer — what each visual element communicates, whether the sign system is coherent across surfaces, whether the connotations align with the situation. The two compose: visual design implements; semiotics decides what should be implemented.
+
+    **Semiotics is not microcopy.** Microcopy owns the actual wording of UI elements (button labels, empty states, tooltips, dialog confirmations). Semiotics owns the multi-channel sign system the words sit inside — including the icon, color, position, and shape signs that accompany the words. The two interact: a button's affordance is signaled by its label *and* its visual form *and* its position; semiotic analysis covers the whole signal.
+
+    **Semiotics is not semantics.** Semantics (in the software-engineering sense in this library) owns identifier-level meaning encoding — function names, design tokens, HTTP status codes, version numbers, commit types. Semiotics owns multi-channel interface sign systems. The two converge where a code-facing sign (a function name like `processData`) is also a sign-system failure (a signifier whose signified is opaque); the convergence is the reminder that the same discipline applies to text and visual signs alike.
+
+    **Semiotics is not semantic-relations.** Semantic-relations owns the typed connections *between concepts* (IS-A, PART-OF, thematic roles). Semiotics owns the relations *between signifiers and signifieds* in interface and naming surfaces. Different problems, both grounded in meaning analysis.
+
+    **Semiotics is not accessibility.** Accessibility (a11y) owns the contracts that make interfaces usable for users with disabilities — aria labels, focus management, screen-reader semantics, contrast compliance. Semiotics owns the sign-system reasoning that often *informs* accessibility decisions (e.g., the never-color-alone rule is a semiotic principle with a11y implications) but does not own the accessibility contracts themselves.
+  taxonomy: |
+    - **Peirce's trichotomy** (foundational, 1903) — icon / index / symbol; the three modes of sign-to-referent relation.
+    - **Saussure's dyad** (foundational, 1916) — signifier / signified; the structural-linguistics model of the sign.
+    - **Barthes' three layers** (specialization, 1957) — denotation / connotation / myth; the systemic-ideological reading of signs.
+    - **Affordance theory** (downstream, Gibson 1979 / Norman 1988, 2013) — the discipline of matching visual signifiers to actual interaction possibilities.
+    - **Visual rhetoric** (alternative tradition) — analysis of how visual choices persuade or argue; overlaps with semiotics but emphasizes intent and reception more than structure.
+    - **Iconography** (applied subfield) — the systematic study of icons as a sign vocabulary; consistency, metaphor clarity, system coherence.
+    - **Color semantics** (applied subfield) — how colors carry denotational and connotational meaning in interfaces; the basis for the never-color-alone discipline.
+    - **Cultural semiotics** (specialization, Eco 1976) — semiotics applied to cultural sign systems; the recognition that meaning conventions are culturally bound and cross-cultural interfaces must account for it.
+    - **Pictograms / wayfinding signs** (applied tradition, Otl Aicher and successors) — the discipline of designing visual signs that communicate without reading; foundational for icon-system design.
+    - **Anti-affordance** (downstream concept) — the signifier that communicates *inability* to interact; the discipline behind "disabled looks unavailable, not just quiet."
+  analogy: |
+    A user interface is a small constructed language whose vocabulary is icons, colors, shapes, positions, and visual states. Like any language, it has signs (the visual elements), grammar (the rules for combining them), and pragmatics (how meaning is constructed in use). A well-designed sign system is a language with a clear vocabulary, consistent grammar, and predictable pragmatics — users learn it once and apply it everywhere. A poorly-designed sign system is a language whose vocabulary drifts, whose grammar breaks across surfaces, and whose pragmatics depend on which screen you happen to be looking at.
+
+    A second analogy: airport signage. International airports communicate through a constrained vocabulary of standardized pictograms (luggage, restroom, departures, customs) supplemented by color codes and consistent positioning. The system works because the vocabulary is small, the conventions are stable across airports, and the same sign means the same thing whether you arrive in Tokyo or Toronto. Interfaces have the same opportunity — and the same penalty when they squander it through sign drift and ad-hoc additions.
+  misconception: |
+    The most common misconception is that **iconography is decoration**. Icons are *signs* that carry meaning; treating them as decoration produces icon sets where the same icon means different things on different screens, abstract marks whose signifieds are opaque, and culturally-bound metaphors that fail outside one audience. The discipline is to treat each icon as a *contract* — this signifier maps to this signified, consistently, across the whole product.
+
+    The second misconception is that **color is presentation, not communication**. Color is a primary sign channel — red denotes stop / error / loss; green denotes go / success / growth; yellow denotes caution. Using color as the *sole* differentiator (no icon, no text, no shape) makes meaning inaccessible to anyone whose color perception differs (≈8% of males have red-green deficiency) and fragile to monochrome rendering. The discipline is to treat color as one channel in a multi-channel signal, never the only one.
+
+    The third misconception is that **a sign means what the designer intended**. Meaning is *constructed by the reader*, not transmitted from the designer. A sign that the designer thinks means X but that users consistently read as Y means Y to that user community. The empirical test — running the sign past representative users — is the only reliable measure of meaning. Designer intent that conflicts with user reading is a design failure, not a user failure.
+
+    The fourth misconception is that **denotational accuracy is enough**. A green up-arrow on a "cost increased 30%" tile is denotationally accurate: the metric did increase. It is connotationally disastrous: green + up-arrow connotes "improvement," contradicting the situation. The user reads connotation faster than denotation. Most financial-dashboard sign failures live at this gap — direction must be separated from judgment when the direction's meaning depends on context.
+
+    The fifth misconception is that **floppy-disk save icons are timeless**. Sign vocabularies have lifecycles: the floppy disk was a vivid metaphor for save in 1985 and is a dead metaphor for users born after 2000, learned only because the convention has not been updated. *Obsolete metaphor* is a recognized semiotic failure; the cure is not to redesign every dead metaphor immediately (the convention is widely shared) but to recognize when the vocabulary has aged out and replace it before the cost of relearning exceeds the cost of the redesign.
 ---
 
 # Semiotics
@@ -282,3 +340,16 @@ After applying this skill, verify:
 | `a11y` | Auditing aria-label correctness, focus management, screen-reader semantics. A11y owns accessibility contracts; semiotics may inform them but does not own them. |
 | `visual-design-foundations` | Palette, typography, spacing, hierarchy, craft quality, and motion feel. Visual-design-foundations owns visual craft; semiotics asks what the visual element *signifies*. |
 | (an ontology skill) | Formal class hierarchies, existence axioms, reasoning constraints. Ontology owns formal classification; semiotics owns sign meaning in interfaces. |
+
+## Key Sources
+
+- Peirce, C. S. (1931-1958). *Collected Papers of Charles Sanders Peirce* (8 vols.). Harvard University Press. The original statement of the icon / index / symbol trichotomy; the foundational typology of sign-to-referent relations that all later interface-semiotics work builds on.
+- Saussure, F. de (1916). *Cours de linguistique générale* / *Course in General Linguistics*. Payot. The signifier/signified dyad and the principle that meaning is constituted by systems of contrast — the structural foundation for sign-system analysis.
+- Barthes, R. (1957). *Mythologies*. Éditions du Seuil. The three-layer denotation / connotation / myth analysis; the canonical demonstration that signs carry cultural and ideological meaning beyond literal reading.
+- Eco, U. (1976). *A Theory of Semiotics*. Indiana University Press. The systematic treatment of semiotics as a discipline; cultural codes, sign-production, and the constructed-meaning principle.
+- Norman, D. A. (2013). *The Design of Everyday Things* (Revised and Expanded Edition). Basic Books. The foundational text on affordances and signifiers for interface design; the discipline of matching visual cues to actual interaction possibilities.
+- Gibson, J. J. (1979). *The Ecological Approach to Visual Perception*. Houghton Mifflin. The original psychological account of affordances — what the environment offers to a perceiver — that Norman adapted to design.
+- Nielsen Norman Group. ["Icon Usability"](https://www.nngroup.com/articles/icon-usability/). Empirical UX research on icon polysemy, opacity, and the icon-plus-text pairing rule; the practitioner reference for icon-system design.
+- W3C. [Web Content Accessibility Guidelines (WCAG) 2.2](https://www.w3.org/TR/WCAG22/) — Use of Color (Success Criterion 1.4.1). The international standard expression of the never-color-alone principle.
+- Frutiger, A. (1989). *Signs and Symbols: Their Design and Meaning*. Watson-Guptill. The reference work on visual sign design from typography to pictograms; foundational for icon-system vocabulary work.
+- Krug, S. (2014). *Don't Make Me Think, Revisited*. New Riders. The practitioner statement of the cognitive-cost principle in interface signs; the empirical observation that users do not read signs analytically — they pattern-match, and the sign system must support that.

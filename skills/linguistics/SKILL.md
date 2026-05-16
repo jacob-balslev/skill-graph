@@ -3,18 +3,19 @@
 schema_version: 4
 name: linguistics
 description: "Use when choosing names for files/functions/variables/types/columns, writing or reviewing UI copy/error/onboarding text, disambiguating overloaded terms, or matching tone to end-user/agent/developer audiences. Covers morphology, compound-word order, abbreviation policy, verb-noun rules, polysemy resolution, audience register, blame-free error-message structure, and cross-cultural product-copy awareness. Do NOT use for casing conventions (use naming-conventions), doc structure/type selection (use documentation), or call-site-wide renames (use refactor)."
-version: 1.0.0
+version: 1.1.0
 type: capability
 category: foundations
 domain: foundations/language
 scope: portable
 owner: skill-graph-maintainer
-freshness: "2026-05-06"
+freshness: "2026-05-16"
 drift_check:
-  last_verified: "2026-05-06"
+  last_verified: "2026-05-16"
 eval_artifacts: planned
 eval_state: unverified
 routing_eval: absent
+comprehension_state: present
 stability: experimental
 license: MIT
 compatibility:
@@ -75,6 +76,63 @@ portability:
 lifecycle:
   stale_after_days: 365
   review_cadence: quarterly
+concept:
+  definition: "Linguistics applied to software is the discipline of using the rules of human language — morphology, semantics, pragmatics, sociolinguistics — to shape the words inside a software system: identifier names, type labels, error messages, UI copy, and documentation prose. Drawing from Saussure's signifier/signified distinction, Lyons's structural semantics, and Halliday's systemic-functional grammar, it treats every name and every visible string as a small linguistic artefact whose form determines whether the reader can decode the intended meaning quickly and reliably."
+  mental_model: |
+    Five primitives structure linguistic decisions in software:
+
+    1. **Morphology** — the internal structure of words: morphemes (the smallest meaning-bearing units), compounding rules (in English: modifier-first, head-last — `orderCount` reads as "a count, specifically of orders"), and inflection. Identifier naming is applied morphology: a compound identifier is well-formed when its parts compose in the order the language expects and ill-formed otherwise (`countOrders` violates English head-last; `orderCount` honors it).
+
+    2. **Semantics and polysemy** — semantics is the meaning carried by a sign; polysemy is the property of one sign carrying multiple meanings. Natural language resolves polysemy by context; isolated identifiers in code do not have that context, so the resolution cost falls on every reader. The discipline is *disambiguation by compounding*: an unqualified polysemous term (`provider`, `shipping`, `cost`) becomes a qualified compound (`fulfillmentProvider`, `shippingCostCents`, `productionCostCents`) that carries its domain context inside the identifier.
+
+    3. **Register and audience** — register is the variety of language appropriate to a social context (formal/informal, technical/lay, intimate/distant). Halliday's functional grammar names *field* (subject), *tenor* (relationship to audience), and *mode* (channel). Software produces text for at least three audiences — end-users, agents, developers — and each warrants a different register. Writing in the wrong register is a communication failure even when the facts are correct ("COGS null — display `—`" is correct prose for an engineer's log and wrong prose for an end-user tooltip).
+
+    4. **Pragmatics** — meaning-in-use beyond literal semantics: what an utterance *does* (Searle's speech-act theory), what it presupposes (Grice's conversational maxims), what blame or agency it assigns. An error message that says "you entered the wrong API key" performs the speech act of accusation; "we couldn't verify the API key" performs the speech act of reporting a system state. The truth-content is similar; the pragmatic effect is different.
+
+    5. **The sign and the contract** — Saussure's *signifier* (the form, e.g. the identifier string `processOrder`) and *signified* (the meaning, e.g. the operation it represents) are linked by convention. In code, that link is a *contract*: a reader sees the signifier and infers the signified. Changing behavior without changing the name violates the contract — the signifier now points to a different signified, and every reader who relies on the old link is misled.
+
+    The deep insight (Saussure, Cruse): meaning lives in *systems of contrasts*, not in isolated signs. `fulfillmentProvider` carries clear meaning only because it contrasts with `authProvider` and `paymentProvider` in the same codebase. Maintaining the contrasts — keeping the polysemy resolved across all uses — is what makes the system communicate; letting them collapse makes it ambiguous.
+  purpose: |
+    Names, labels, and visible strings in software are communication acts at scale: every reader, human or agent, decodes them, and the decoding cost compounds across thousands of encounters. A name that requires three seconds of context-inference to decode imposes that cost on every future reader; the same name encountered ten thousand times produces hours of cumulative cost across a team. Applied linguistics solves the *unambiguous-at-point-of-contact* problem: make the meaning decodable in the form itself, not in a glossary entry the reader has to look up.
+
+    The discipline addresses three failure modes. The first is *polysemy collapse* — the same identifier means different things in different parts of the codebase, and readers cannot tell which meaning is active. The second is *register mismatch* — text written in the wrong register for its audience (engineer prose in an end-user tooltip, marketing language in an agent-facing skill file) causes parsing friction even when the facts are correct. The third is *pragmatic miscalibration* — error messages and prompts that perform unintended speech acts (accusing the user, hedging when commitment is required, promising what cannot be delivered).
+
+    The alternative — treating naming and copy as taste rather than craft — produces codebases where readers must compensate for the language with sustained context-inference, and produces user-facing surfaces that read as if the team has not considered who is reading them.
+  boundary: |
+    **Linguistics is not naming conventions.** Naming conventions own the deterministic casing/format choice per artifact kind (kebab-case for files, camelCase for TypeScript, snake_case for SQL). Linguistics owns the linguistic rationale — *why* each convention fits its context, *how* to compound morphemes inside an identifier, *which* qualifier disambiguates a polysemous term. The two compose: linguistics chooses the words; conventions case them.
+
+    **Linguistics is not copywriting.** Copywriting produces marketing messages, value propositions, and persuasive prose for product surfaces. Linguistics produces the structural rules underneath both copywriting and engineering prose — register selection, blame-free error structure, three-part error format. Copywriters apply linguistic discipline; linguistics is the discipline itself.
+
+    **Linguistics is not internationalization (i18n).** i18n implements locale-aware formatting (number grouping, currency symbols, plurals, RTL layout). Linguistics provides the *linguistic awareness* that motivates the implementation — knowledge that languages differ in number structure, grammatical gender, script direction. The implementation belongs to i18n; the rationale belongs to linguistics.
+
+    **Linguistics is not glossary maintenance.** A glossary defines the canonical meaning of each domain term. Linguistics is the discipline of *applying* glossary definitions consistently in names and copy across the codebase. A glossary owns the definition; linguistics owns the consistent application.
+
+    **Linguistics is not prompt engineering.** Prompt engineering shapes the input given to a language model to elicit a particular behavior. Linguistic awareness improves prompts (clearer register, fewer polysemous terms, explicit pragmatic intent), but the goal of prompt engineering is *the model's output*; the goal of linguistic discipline is *the reader's decoding cost*. Different objective functions, overlapping techniques.
+  taxonomy: |
+    - **Morphology** (subfield) — internal structure of words; affects compounding rules and abbreviation policy.
+    - **Lexical semantics** (subfield, Cruse 1986) — word meaning; polysemy, synonymy, hyponymy, antonymy.
+    - **Pragmatics** (subfield, Grice 1975, Searle 1969) — meaning in use; speech acts, implicature, presupposition.
+    - **Sociolinguistics** (subfield) — language variation by social context; the empirical basis for register.
+    - **Systemic-functional grammar** (theoretical frame, Halliday 1985) — language as a meaning-making system organized by field, tenor, and mode. Foundation for the register-by-audience discipline.
+    - **The sign** (Saussure 1916) — *signifier* + *signified* connected by social convention. Code identifiers are signs whose convention is the contract between author and reader.
+    - **Grice's maxims** (downstream discipline, 1975) — quantity, quality, relation, manner. Error-message writing applies them directly: say enough, say only what's true, stay relevant, stay clear.
+    - **Speech-act theory** (downstream, Austin 1962, Searle 1969) — what an utterance *does*. The basis for blame-free error wording: distinguish reporting (a system state) from accusing (the user).
+    - **Plain Language** (applied tradition, Williams *Style*) — modern guidance for clarity in technical and public-facing prose; the practical descendant of structural linguistics in style guides.
+    - **Conversational AI prompting** (downstream application) — linguistic rules transferred to prompts and agent-facing skill prose.
+  analogy: |
+    Linguistics applied to software is the cognitive analog of architectural standards for buildings. A building can be structurally sound and still fail at its purpose if the doors are unmarked, the rooms are mislabelled, or the signage assumes knowledge the visitor does not have. The bricks-and-mortar work matters; the wayfinding work matters separately. A codebase with sound logic but ambiguous names is a structurally sound building with unlabelled doors — every visitor must guess which room is which, and the cost is paid in cumulative human seconds.
+
+    A second analogy: maps and legends. A map without a legend forces every reader to infer what each symbol means. A map with a clear, consistent legend lets each reader decode the symbols at constant cost. Identifiers are the map's symbols; the linguistic discipline is the legend. The first map is unusable at scale even when the geography is accurate.
+  misconception: |
+    The most common misconception is that **good names emerge from intuition**. Empirically, naming consistency varies by orders of magnitude across teams that all rely on "intuition." Intuition produces names that feel right to the author at the moment of writing; the cumulative reader's cost is invisible at that moment. Linguistic discipline replaces intuition with rules — and the rules pay back across thousands of future encounters.
+
+    The second misconception is that **ambiguity is fine because context resolves it**. Context resolves *some* ambiguity, at a cost — every reader must perform the resolution, every time. Cumulatively, the cost dominates. The discipline of qualifying polysemous terms at the point of contact eliminates the per-reader resolution cost.
+
+    The third misconception is that **error messages should be concise above all**. Concise error messages that lack any of (what happened / why / what to do next) shift work from the system to the user: the user must now investigate what the error means and what action to take. The right length for an error message is the length that lets the reader act without further investigation — not shorter.
+
+    The fourth misconception is that **register is about formality**. Register is about *fit between text and audience*. The right register for a developer code comment is rationale-focused and dense; the right register for an end-user tooltip is warm and outcome-led. Neither is "formal" or "informal" — both are precisely calibrated to their reader. The mistake is treating register as a stylistic preference rather than a communication parameter.
+
+    The fifth misconception is that **bilingual operators can mix languages freely in code**. Code identifiers and agent-readable docs must be in a single language because their readers span regions and decades. Personal notes between operator and operator-only tools can be bilingual; anything an agent or another developer reads cannot. Mixing languages in code identifiers produces ambiguity from collisions (a word in one language collides with a different meaning in another) that the operator's bilingual fluency papers over but no one else can decode.
 ---
 
 # Linguistics
@@ -479,3 +537,16 @@ LINGUISTICS I18N CHECK
 | (a glossary skill) | Defining the canonical meaning of a domain term. A glossary owns the *definition*; linguistics owns the *consistent application* of definitions in names and copy. |
 | (a copywriting skill) | Drafting product messaging, marketing copy, or final user-facing CTA text. Copywriting owns the messaging; linguistics owns the structural form rules under that messaging. |
 | (an i18n skill) | Implementing locale-aware formatting (`Intl.NumberFormat`, date pickers, ICU plurals). i18n owns the implementation; linguistics owns the linguistic awareness behind it. |
+
+## Key Sources
+
+- Saussure, F. de (1916). *Cours de linguistique générale* / *Course in General Linguistics*. Payot. The foundational distinction between *signifier* and *signified*, and the principle that meaning lives in systems of contrast. The theoretical basis for treating identifier names as contracts.
+- Lyons, J. (1977). *Semantics* (2 vols.). Cambridge University Press. The canonical structural-semantics textbook; polysemy, synonymy, hyponymy, and the framework for analyzing word meaning systematically.
+- Cruse, D. A. (1986). *Lexical Semantics*. Cambridge University Press. Detailed treatment of word-level meaning relationships; the reference for understanding how polysemy works and how it can be resolved by qualification.
+- Halliday, M. A. K., & Matthiessen, C. M. I. M. (2014). *An Introduction to Functional Grammar* (4th ed.). Routledge. Systemic-functional grammar: language as meaning-making organized by *field*, *tenor*, and *mode*. The theoretical foundation for register selection by audience.
+- Grice, H. P. (1975). "Logic and Conversation." In *Syntax and Semantics, Vol. 3: Speech Acts*. Academic Press. The cooperative principle and the four maxims (quantity, quality, relation, manner); applied directly in error-message writing.
+- Searle, J. R. (1969). *Speech Acts: An Essay in the Philosophy of Language*. Cambridge University Press. Speech-act theory: what utterances *do*. Foundational for distinguishing reporting from accusing in error wording.
+- Austin, J. L. (1962). *How to Do Things with Words*. Oxford University Press. The original statement of performative utterances and locutionary/illocutionary/perlocutionary acts.
+- Williams, J. M., & Bizup, J. (2017). *Style: Lessons in Clarity and Grace* (12th ed.). Pearson. The leading modern style guide grounded in cognitive-linguistic principles; the practical descendant of structural linguistics for technical and public-facing prose.
+- Nielsen Norman Group. ["Error Message Guidelines"](https://www.nngroup.com/articles/error-message-guidelines/). Empirical UX-research statement of the what/why/what-to-do error structure and the blame-free framing rule.
+- W3C. [Web Content Accessibility Guidelines (WCAG) 2.2](https://www.w3.org/TR/WCAG22/) — Understandable principle. Linguistic accessibility requirements (reading level, plain language, unambiguous error identification) at the international-standards level.

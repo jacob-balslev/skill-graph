@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-05-16T07:10:08Z",
+  "generated_at": "2026-05-16T07:30:12Z",
   "schema_version": 4,
   "skills": [
     {
@@ -8467,15 +8467,25 @@
       "compatibility": {
         "notes": "Vocabulary-layer skill, stack- and storage-agnostic. The relation taxonomy and the substitution / property tests apply to any knowledge graph, concept map, taxonomy, or naming system; downstream implementation skills (ontology, ER modeling, relational mapping) consume the typed relations defined here."
       },
+      "concept": {
+        "analogy": "|",
+        "boundary": "|",
+        "definition": "Semantic relations are the *typed connections* between concepts in a meaning structure: IS-A (hypernymy/hyponymy), PART-OF (holonymy/meronymy), synonymy, antonymy, polysemy, homonymy, metonymy, and the thematic role relations (agent, patient, instrument, location, source, goal, cause, result). Drawn from lexical semantics (Lyons, Cruse), Princeton WordNet, the W3C SKOS vocabulary, and cognitive-semantics work on thematic roles (Fillmore 1968, Jackendoff 1990), it treats every edge in a knowledge graph, concept map, or hierarchy as a relation of a *named kind* rather than a generic association.",
+        "mental_model": "|",
+        "misconception": "|",
+        "purpose": "|",
+        "taxonomy": "|"
+      },
       "description": "Use when typing edges in a knowledge graph or concept map; resolving synonym, antonym, polysemy, or homonym confusion in naming; testing whether a connection is IS-A, PART-OF, causal, thematic, or merely vague; explaining the difference between two adjacent concepts or skills; or auditing whether hierarchy, graph, or naming decisions rest on the wrong relation type. Covers taxonomic relations (hypernymy/hyponymy, holonymy/meronymy with the substitution test), associative relations (synonymy, antonymy, polysemy, homonymy, metonymy), thematic relations (agent, patient, instrument, location, source, goal, cause, result, beneficiary), relation properties (symmetry, asymmetry, transitivity, reflexivity, irreflexivity), and the application of all of the above to knowledge-graph edge typing, naming disambiguation, and skill-boundary analysis. Do NOT use for formal ontology axioms with reasoning constraints (use an ontology skill), database foreign-key and junction-table design (use an entity-relationship-modeling skill), or operational data correspondence across systems (use a relational-mapping skill).",
       "domain": "foundations/semantics",
       "health": {
+        "comprehension_state": "present",
         "drift_check": {
-          "last_verified": "2026-05-06"
+          "last_verified": "2026-05-16"
         },
         "eval_artifacts": "planned",
         "eval_state": "unverified",
-        "freshness": "2026-05-06",
+        "freshness": "2026-05-16",
         "has_grounding": false,
         "has_relations": true,
         "lifecycle": {
@@ -8523,7 +8533,7 @@
       "scope": "portable",
       "stability": "experimental",
       "type": "capability",
-      "version": "1.0.0"
+      "version": "1.1.0"
     },
     {
       "activation": {
@@ -8569,15 +8579,25 @@
       "compatibility": {
         "notes": "Cross-domain naming and meaning skill, stack-agnostic. The naming-smells catalogue, SemVer rules, conventional-commit format, three-layer token architecture, HTTP-status semantics, REST/GraphQL conventions, and anti-pattern catalog apply to any codebase; example identifiers use generic e-commerce framings — substitute the equivalents from your domain."
       },
+      "concept": {
+        "analogy": "|",
+        "boundary": "|",
+        "definition": "Semantics — applied to software — is the discipline of *meaning encoding* in identifiers and signals: function names, variable names, design tokens, HTTP status codes, version numbers, commit messages, branded types, and the small textual artefacts that communicate intent to humans and machines. Drawing from Domain-Driven Design's *ubiquitous language* (Evans 2003), Don Norman's affordance theory, semantic versioning, and the broader tradition that treats names as contracts, it commits to the view that every visible identifier is a micro-decision whose meaning compounds across the codebase.",
+        "mental_model": "|",
+        "misconception": "|",
+        "purpose": "|",
+        "taxonomy": "|"
+      },
       "description": "Use when naming artifacts across code, APIs, design tokens, commits, HTTP/status signals, UI labels, error codes, or branded types, especially when a name feels ambiguous or misleading. Covers cross-domain meaning-encoding: naming smells, DDD ubiquitous language, SemVer, conventional commits, branded types, semantic design tokens/CSS/APIs, semantic UI affordances, and naming anti-patterns. Do NOT use for word morphology/polysemy (use linguistics), casing formats (use naming-conventions), typed concept relations (use semantic-relations), or in-product UI-text patterns (use microcopy).",
       "domain": "foundations/semantics",
       "health": {
+        "comprehension_state": "present",
         "drift_check": {
-          "last_verified": "2026-05-06"
+          "last_verified": "2026-05-16"
         },
         "eval_artifacts": "planned",
         "eval_state": "unverified",
-        "freshness": "2026-05-06",
+        "freshness": "2026-05-16",
         "has_grounding": false,
         "has_relations": true,
         "lifecycle": {
@@ -8629,7 +8649,7 @@
       "scope": "portable",
       "stability": "experimental",
       "type": "capability",
-      "version": "1.0.0"
+      "version": "1.1.0"
     },
     {
       "activation": {
@@ -8674,15 +8694,25 @@
       "compatibility": {
         "notes": "Stack-agnostic sign-system analysis. The Peirce / Saussure / Barthes models, color-as-sign rules, iconography principles, and affordance taxonomy apply to any UI; example surfaces use generic e-commerce framings — substitute the equivalents from your domain."
       },
+      "concept": {
+        "analogy": "|",
+        "boundary": "|",
+        "definition": "Semiotics is the study of *sign systems* — how signifiers (perceivable forms: icons, colors, shapes, positions, words) point to signifieds (concepts, states, actions) via convention, resemblance, or causal connection. Applied to interfaces, it is the discipline of designing and auditing the multi-channel sign systems through which a product communicates with its users. Drawing from Peirce's icon/index/symbol trichotomy, Saussure's signifier/signified dyad, Barthes' denotation/connotation/myth layering, and Norman's affordance theory, it treats every interface element as a sign whose meaning is constructed, not given.",
+        "mental_model": "|",
+        "misconception": "|",
+        "purpose": "|",
+        "taxonomy": "|"
+      },
       "description": "Use when designing or auditing icon systems, colors/badges/shapes, visual metaphors, interface signs, or naming-plus-visual surfaces that users misread. Covers semiotic reasoning across icon/index/symbol, signifier/signified, denotation/connotation/myth, color/shape/position/iconography, affordances, code/API signifiers, and semiotic-coherence audits. Do NOT use for actual UI wording (use `microcopy`), palette/typography craft (use `visual-design-foundations`), accessibility or contrast compliance (use `a11y`), formal class hierarchies, or word morphology rules.",
       "domain": "foundations/semantics",
       "health": {
+        "comprehension_state": "present",
         "drift_check": {
-          "last_verified": "2026-05-06"
+          "last_verified": "2026-05-16"
         },
         "eval_artifacts": "present",
         "eval_state": "unverified",
-        "freshness": "2026-05-06",
+        "freshness": "2026-05-16",
         "has_grounding": false,
         "has_relations": true,
         "lifecycle": {
@@ -8735,7 +8765,7 @@
       "scope": "portable",
       "stability": "experimental",
       "type": "capability",
-      "version": "1.0.0"
+      "version": "1.1.0"
     },
     {
       "activation": {

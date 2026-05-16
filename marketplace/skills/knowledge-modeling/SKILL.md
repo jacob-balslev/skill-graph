@@ -6,17 +6,18 @@ compatibility: "Theory-level skill. Applies to any AI-coding workspace that main
 allowed-tools: Read Grep
 metadata:
   schema_version: "4"
-  version: "1.0.0"
+  version: "1.1.0"
   type: capability
   category: foundations
   domain: foundations/knowledge
   scope: portable
   owner: skill-graph-maintainer
-  freshness: "2026-05-06"
-  drift_check: "{\"last_verified\":\"2026-05-06\"}"
+  freshness: "2026-05-16"
+  drift_check: "{\"last_verified\":\"2026-05-16\"}"
   eval_artifacts: planned
   eval_state: unverified
   routing_eval: absent
+  comprehension_state: present
   stability: experimental
   keywords: "[\"knowledge representation\",\"knowledge graph\",\"frames and slots\",\"production rules\",\"semantic network\",\"concept map\",\"procedural ontology PKO\",\"hybrid knowledge representation\",\"tacit to explicit knowledge\",\"knowledge acquisition pipeline\",\"graphRAG retrieval\",\"entity anchored retrieval\",\"relationship aware context\",\"path based reasoning\",\"subgraph summarization\",\"knowledge lifecycle\",\"representation tradeoff expressiveness tractability\",\"which representation paradigm fits\"]"
   examples: "[\"should this domain knowledge be a graph, a set of rules, a frame structure, or a hybrid?\",\"our skill library keeps adding prose but the agent can't reason over relationships — which representation should change?\",\"the agent retrieves topically similar passages but misses structurally related facts — is GraphRAG the right shift?\",\"how do I capture decision traces and triggers as first-class entities so the agent can replay why it chose Y?\",\"we have facts, exceptions, and procedural decisions for an audit system — what representation keeps both retrieval and reasoning tractable?\",\"should this workflow stay a human concept map or be promoted to machine-usable production rules?\",\"we want to validate the knowledge base against real scenarios — what completeness / consistency / relevance / currency checks should run?\"]"
@@ -24,6 +25,7 @@ metadata:
   relations: "{\"boundary\":[{\"skill\":\"conceptual-modeling\",\"reason\":\"conceptual-modeling is the human-readable domain analysis layer (entities, attributes, relationships, cardinality); knowledge-modeling is the *representation-strategy* layer above that — choosing between graphs, frames, rules, hybrids\"},{\"skill\":\"context-graph\",\"reason\":\"context-graph is one specific *application* of knowledge modeling (the multi-graph context architecture for skills + docs + memory + scripts); knowledge-modeling is the general theory it draws on\"},{\"skill\":\"skill-infrastructure\",\"reason\":\"skill-infrastructure is the live tooling that maintains the skill library; knowledge-modeling is the theory of *what kind of knowledge artefact* a SKILL.md is and why frames are the right paradigm for one\"},{\"skill\":\"database-migration\",\"reason\":\"database-migration concerns *data* structure (tables, columns, FK constraints); knowledge-modeling concerns *meaning* structure (entities, relations, rules)\"}],\"related\":[\"conceptual-modeling\",\"context-graph\",\"context-engineering\",\"skill-infrastructure\"],\"verify_with\":[\"conceptual-modeling\"]}"
   portability: "{\"readiness\":\"scripted\",\"targets\":[\"skill-md\"]}"
   lifecycle: "{\"stale_after_days\":365,\"review_cadence\":\"quarterly\"}"
+  concept: "{\"definition\":\"Knowledge modeling is the discipline of choosing a *representation paradigm* — knowledge graph, frames, production rules, semantic network, concept map, procedural ontology, or a hybrid — that fits how the resulting knowledge will be queried, reasoned over, and maintained. Drawing from Brachman & Levesque's knowledge-representation tradition and Newell's knowledge-level account, it treats representation as a strategic choice with explicit expressiveness-tractability trade-offs rather than as a default.\",\"mental_model\":\"|\",\"purpose\":\"|\",\"boundary\":\"|\",\"taxonomy\":\"|\",\"analogy\":\"|\",\"misconception\":\"|\"}"
   skill_graph_source_repo: "https://github.com/jacob-balslev/skill-graph"
   skill_graph_protocol: Skill Metadata Protocol v4
   skill_graph_project: Skill Graph
@@ -237,3 +239,16 @@ Rules:
 | A semantic-relations skill          | Picking exact edge labels — hypernymy, meronymy, synonymy, polysemy, troponymy                                                                          |
 | `skill-infrastructure`              | Maintaining the live skill library (census, overlap detection, drift checks) — knowledge-modeling is the theory, skill-infrastructure is the operations |
 | `context-graph`                     | Designing the multi-graph topology of a workspace — that is one application of this skill, not the theory itself                                        |
+
+## Key Sources
+
+- Newell, A. (1982). "The Knowledge Level." *Artificial Intelligence*, 18(1), 87-127. The foundational paper distinguishing the *knowledge level* (rationality, goals, body of knowledge) from the *symbol level* (representation implementation). Establishes that representation choices are about which abstraction layer is appropriate, not which formalism is most powerful.
+- Brachman, R. J., & Levesque, H. J. (2004). *Knowledge Representation and Reasoning*. Morgan Kaufmann. The canonical textbook on KR&R: the expressiveness-tractability trade-off, description logics, frames, production systems, default reasoning. The reference for paradigm choice.
+- Sowa, J. F. (2000). *Knowledge Representation: Logical, Philosophical, and Computational Foundations*. Brooks/Cole. Encyclopedic synthesis of KR traditions from Aristotle through conceptual graphs. The single best reference for how paradigms relate to each other.
+- Minsky, M. (1974). "A Framework for Representing Knowledge." MIT-AI Memo 306. The foundational paper introducing frames: structured records with slots, defaults, and inheritance. Frames remain the right paradigm for object-like domain entities with stable structure.
+- Gruber, T. R. (1993). "A Translation Approach to Portable Ontology Specifications." *Knowledge Acquisition*, 5(2), 199-220. The definition of ontology as "a specification of a conceptualization" and the formal grounding for interoperable knowledge artefacts.
+- Quillian, M. R. (1968). "Semantic Memory." In M. Minsky (Ed.), *Semantic Information Processing*. MIT Press. The original semantic-network paper; the cognitive-science origin of labelled concept graphs.
+- Novak, J. D., & Cañas, A. J. (2008). *The Theory Underlying Concept Maps and How to Construct Them*. IHMC. The methodology for concept maps as a knowledge-elicitation and human-communication tool.
+- Edge, D., Trinh, H., Cheng, N., et al. (2024). "From Local to Global: A Graph RAG Approach to Query-Focused Summarization." Microsoft Research. The reference statement of GraphRAG as a retrieval pattern over modelled knowledge graphs.
+- W3C. [SKOS Reference](https://www.w3.org/TR/skos-reference/). The Simple Knowledge Organization System specification; the minimal vocabulary discipline (broader/narrower/related, prefLabel/altLabel) that knowledge-graph quality depends on.
+- Studer, R., Benjamins, V. R., & Fensel, D. (1998). "Knowledge Engineering: Principles and Methods." *Data & Knowledge Engineering*, 25(1-2), 161-197. Survey of the acquisition pipeline (elicitation → modeling → validation) and the methodological tradition behind it.

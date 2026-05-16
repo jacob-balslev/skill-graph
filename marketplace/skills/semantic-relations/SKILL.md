@@ -6,17 +6,18 @@ compatibility: "Vocabulary-layer skill, stack- and storage-agnostic. The relatio
 allowed-tools: Read Grep
 metadata:
   schema_version: "4"
-  version: "1.0.0"
+  version: "1.1.0"
   type: capability
   category: foundations
   domain: foundations/semantics
   scope: portable
   owner: skill-graph-maintainer
-  freshness: "2026-05-06"
-  drift_check: "{\"last_verified\":\"2026-05-06\"}"
+  freshness: "2026-05-16"
+  drift_check: "{\"last_verified\":\"2026-05-16\"}"
   eval_artifacts: planned
   eval_state: unverified
   routing_eval: absent
+  comprehension_state: present
   stability: experimental
   keywords: "[\"semantic relations\",\"relation typing\",\"IS-A relation\",\"PART-OF relation\",\"hypernymy hyponymy\",\"meronymy holonymy\",\"synonymy versus polysemy\",\"thematic role analysis\",\"relation property check\",\"knowledge-graph edge typing\",\"substitution test\",\"relation-vocabulary discipline\",\"typed-edge taxonomy\",\"conceptual-relation analysis\",\"adjacency-vs-boundary disambiguation\",\"generic related-to anti-pattern\"]"
   examples: "[\"our codebase uses customer, client, buyer, and user in different modules — which relation analysis tells us whether this is synonymy, near-synonymy, or distinct domain language?\",\"a new graph schema uses related_to for every edge — which semantic relation types should replace it so traversal and reasoning stay meaningful?\",\"is a refund a kind of payment, part of a payment, or the result of a payment action?\",\"two skills seem close: one owns structure design and one owns assignment into that structure — is that adjacency, a boundary, or a deeper taxonomic relation?\",\"the word status appears across payments, orders, and fulfillment — how should relation analysis expose the polysemy and guide disambiguation?\",\"type these knowledge-graph edges so traversal is meaningful instead of generic\",\"test whether 'every line item is an order' passes the IS-A substitution test\"]"
@@ -24,6 +25,7 @@ metadata:
   relations: "{\"boundary\":[{\"skill\":\"linguistics\",\"reason\":\"linguistics owns the rules of word form (morphology, polysemy resolution at the identifier level, audience register); semantic-relations owns the typing of meaning connections between concepts (IS-A, PART-OF, thematic roles, relation properties) — the same 'what's the relationship between these two terms?' prompt routes by whether the lens is the term form/morphology or the typed connection between meanings\"},{\"skill\":\"conceptual-modeling\",\"reason\":\"conceptual-modeling builds the full concept structure (which entities, which attributes, which relationships exist); semantic-relations supplies the relation-typing vocabulary used inside that structure (whether a relationship is taxonomic, mereological, thematic, causal) — the same 'model these concepts' prompt routes by whether the user wants the structure built or the relation types named\"},{\"skill\":\"knowledge-modeling\",\"reason\":\"knowledge-modeling chooses the representation paradigm (graph, frames, rules, hybrid) for a knowledge surface; semantic-relations chooses the relation vocabulary used inside whatever paradigm is picked — the same 'design how to represent this knowledge' prompt routes by whether the trigger is the representation choice or the relation typing\"}],\"related\":[\"linguistics\",\"pattern-recognition\",\"semantic-center\"],\"verify_with\":[\"linguistics\",\"code-review\"]}"
   portability: "{\"readiness\":\"scripted\",\"targets\":[\"skill-md\"]}"
   lifecycle: "{\"stale_after_days\":365,\"review_cadence\":\"quarterly\"}"
+  concept: "{\"definition\":\"Semantic relations are the *typed connections* between concepts in a meaning structure: IS-A (hypernymy/hyponymy), PART-OF (holonymy/meronymy), synonymy, antonymy, polysemy, homonymy, metonymy, and the thematic role relations (agent, patient, instrument, location, source, goal, cause, result). Drawn from lexical semantics (Lyons, Cruse), Princeton WordNet, the W3C SKOS vocabulary, and cognitive-semantics work on thematic roles (Fillmore 1968, Jackendoff 1990), it treats every edge in a knowledge graph, concept map, or hierarchy as a relation of a *named kind* rather than a generic association.\",\"mental_model\":\"|\",\"purpose\":\"|\",\"boundary\":\"|\",\"taxonomy\":\"|\",\"analogy\":\"|\",\"misconception\":\"|\"}"
   skill_graph_source_repo: "https://github.com/jacob-balslev/skill-graph"
   skill_graph_protocol: Skill Metadata Protocol v4
   skill_graph_project: Skill Graph
@@ -255,3 +257,16 @@ After applying this skill, verify:
 | (a relational-mapping skill) | Mapping entities between different systems or platforms operationally. Relational mapping is operational data correspondence, not conceptual relation typing. |
 | (a taxonomy skill) | Designing hierarchy or facet structures themselves. Taxonomy owns the structural classification system; semantic-relations owns the relation meanings used within and around it. |
 | (a semiotics skill) | Auditing iconography, color connotation, or interface sign systems. Semiotics handles signs in interfaces; semantic-relations handles concept-to-concept meaning relations. |
+
+## Key Sources
+
+- Cruse, D. A. (1986). *Lexical Semantics*. Cambridge University Press. The canonical treatment of word-meaning relationships: synonymy, antonymy, hyponymy, meronymy, and the substitution-test discipline that grounds taxonomic-claim validation.
+- Lyons, J. (1977). *Semantics* (2 vols.). Cambridge University Press. Comprehensive structural-semantics textbook covering sense relations, lexical fields, and the relational view of meaning.
+- Miller, G. A. (1995). "WordNet: A Lexical Database for English." *Communications of the ACM*, 38(11), 39-41. The reference paper for Princeton WordNet — the largest empirically-grounded catalog of semantic relations between English lexemes; the working model for any taxonomic / mereological / antonymy relation system at scale.
+- Fellbaum, C. (Ed.). (1998). *WordNet: An Electronic Lexical Database*. MIT Press. The collected technical account of WordNet's relation set, design decisions, and applications.
+- Winston, M. E., Chaffin, R., & Herrmann, D. (1987). "A Taxonomy of Part-Whole Relations." *Cognitive Science*, 11(4), 417-444. The reference paper for the six PART-OF subtypes (component-integral, member-collection, portion-mass, stuff-object, feature-activity, place-area). Foundation for any mereological analysis.
+- Fillmore, C. J. (1968). "The Case for Case." In E. Bach & R. T. Harms (Eds.), *Universals in Linguistic Theory*. Holt, Rinehart and Winston. The foundational paper for thematic / case roles (agent, patient, instrument, location, source, goal); the linguistics origin of the role catalog still used in event modeling.
+- Jackendoff, R. (1990). *Semantic Structures*. MIT Press. Modern cognitive-semantics treatment of thematic roles, conceptual structure, and the relationship between semantic and syntactic categories.
+- W3C. [SKOS Simple Knowledge Organization System Reference](https://www.w3.org/TR/skos-reference/) (2009). The lightweight RDF vocabulary for broader/narrower/related and prefLabel/altLabel; the minimum-viable formalism for transmissible semantic relations.
+- W3C. [OWL 2 Web Ontology Language: Primer (Second Edition)](https://www.w3.org/TR/owl2-primer/) (2012). Object properties and their characteristics — functional, inverse-functional, transitive, symmetric, asymmetric, reflexive, irreflexive — for the formal end of the relation-typing spectrum.
+- Storey, V. C. (1993). "Understanding Semantic Relationships." *VLDB Journal*, 2(4), 455-488. Survey of semantic relations in data-modeling contexts; the bridge from linguistic relation analysis to information-systems design.
