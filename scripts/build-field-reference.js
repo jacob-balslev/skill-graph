@@ -2,7 +2,8 @@
 /**
  * build-field-reference.js — Schema → field-reference.generated.md
  *
- * Reads schemas/skill.v4.schema.json and emits docs/field-reference.generated.md
+ * Reads schemas/skill.schema.json (the current canonical schema) and emits
+ * docs/field-reference.generated.md
  * with one section per top-level field. The prose is taken from the schema's
  * `description` attributes; cross-links to the full reference + glossary are
  * inserted automatically.
@@ -25,7 +26,7 @@ const fs = require('fs');
 const path = require('path');
 
 const ROOT = path.resolve(__dirname, '..');
-const SCHEMA_PATH = path.join(ROOT, 'schemas', 'skill.v4.schema.json');
+const SCHEMA_PATH = path.join(ROOT, 'schemas', 'skill.schema.json');
 const DEFAULT_OUTPUT = path.join(ROOT, 'docs', 'field-reference.generated.md');
 
 function parseArgs(argv) {
@@ -115,7 +116,7 @@ function render(schema) {
   const lines = [
     '# Skill Graph Field Reference (Generated)',
     '',
-    `> **Generated from** \`schemas/skill.v4.schema.json\` on ${now} by \`scripts/build-field-reference.js\`.`,
+    `> **Generated from** \`schemas/skill.schema.json\` on ${now} by \`scripts/build-field-reference.js\`.`,
     '> **Do not edit by hand.** The canonical prose reference is [\`docs/field-reference.md\`](field-reference.md).',
     '> **Predicate glossary:** [\`docs/glossary.md\`](glossary.md).',
     '> **JSON-LD @context:** [\`schemas/skill.context.jsonld\`](../schemas/skill.context.jsonld).',

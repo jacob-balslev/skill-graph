@@ -1,11 +1,11 @@
 # Skill Graph Field Reference (Generated)
 
-> **Generated from** `schemas/skill.v4.schema.json` on 2026-05-15 by `scripts/build-field-reference.js`.
+> **Generated from** `schemas/skill.schema.json` on 2026-05-16 by `scripts/build-field-reference.js`.
 > **Do not edit by hand.** The canonical prose reference is [`docs/field-reference.md`](field-reference.md).
 > **Predicate glossary:** [`docs/glossary.md`](glossary.md).
 > **JSON-LD @context:** [`schemas/skill.context.jsonld`](../schemas/skill.context.jsonld).
 
-Schema version: **4** · Field count: **40** · Required: **13**
+Schema version: **5** · Field count: **40** · Required: **13**
 
 ---
 
@@ -13,7 +13,7 @@ Schema version: **4** · Field count: **40** · Required: **13**
 
 **Type:** multiple — see schema
 
-Major contract shape version. Integer for v4+; string '4' tolerated for back-compat with hand-rolled YAML. Bumps when shape changes break consumers.
+Major contract shape version. Integer for v5+; string '5' tolerated for back-compat with hand-rolled YAML. Bumps when shape changes break consumers. v5 closes the `category` field to a 6-value enum — see skill-metadata-protocol/docs/migrations/v4-to-v5.md.
 
 **Full reference:** [`docs/field-reference.md#schema_version`](field-reference.md#schema_version)
 
@@ -87,9 +87,9 @@ Archetype classifier (v3.1 preferred alias for `type`). When both are present th
 
 ### `category` *(required)*
 
-**Type:** string
+**Type:** `foundations` | `engineering` | `design` | `quality` | `agent` | `product`
 
-Flat human browse bucket (e.g., knowledge, engineering, quality). For hierarchical taxonomy use `domain` instead.
+Browse facet — answers 'where should a human browse to find this skill first?' Not ontology truth. Closed enum of 6 values in v5: foundations | engineering | design | quality | agent | product. Cross-cutting truth lives in `relations.related`. For hierarchical sub-domain use `domain`. `foundations` is gated — see SKILL_METADATA_PROTOCOL.md § Classification.
 
 **Full reference:** [`docs/field-reference.md#category`](field-reference.md#category)
 
