@@ -8,8 +8,8 @@ metadata:
   schema_version: "4"
   version: "1.0.0"
   type: capability
-  category: knowledge
-  domain: ai-engineering/knowledge
+  category: foundations
+  domain: foundations/semantics
   scope: portable
   owner: skill-graph-maintainer
   freshness: "2026-05-06"

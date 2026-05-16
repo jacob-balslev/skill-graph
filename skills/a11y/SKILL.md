@@ -5,7 +5,8 @@ name: a11y
 description: "Use when building or reviewing interactive UI, forms, navigation, or dynamic content. Covers semantic HTML, keyboard access, focus management, labeling, state-change announcement, and reduced-motion / high-contrast preferences. Do NOT use for color-palette creation, visual branding, feedback-state staging, or prose reading-level accessibility - those belong to `visual-design-foundations`, `interaction-feedback`, and documentation respectively."
 version: 1.0.0
 type: capability
-category: frontend
+category: quality
+domain: quality/accessibility
 scope: portable
 owner: skill-graph-maintainer
 freshness: "2026-04-18"

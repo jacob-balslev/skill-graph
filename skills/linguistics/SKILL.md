@@ -5,8 +5,8 @@ name: linguistics
 description: "Use when choosing names for files/functions/variables/types/columns, writing or reviewing UI copy/error/onboarding text, disambiguating overloaded terms, or matching tone to end-user/agent/developer audiences. Covers morphology, compound-word order, abbreviation policy, verb-noun rules, polysemy resolution, audience register, blame-free error-message structure, and cross-cultural product-copy awareness. Do NOT use for casing conventions (use naming-conventions), doc structure/type selection (use documentation), or call-site-wide renames (use refactor)."
 version: 1.0.0
 type: capability
-category: knowledge
-domain: ai-engineering/language
+category: foundations
+domain: foundations/language
 scope: portable
 owner: skill-graph-maintainer
 freshness: "2026-05-06"

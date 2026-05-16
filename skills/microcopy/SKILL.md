@@ -5,7 +5,7 @@ name: microcopy
 description: "Use when writing or reviewing functional UI text: button labels, empty states, tooltips, dialogs, placeholders, loading/progress messages, toasts, inline validation, permission copy, or onboarding steps. Covers interface-copy patterns such as verb-first action labels, acknowledge-explain-guide empty states, one-sentence tooltips, consequence-first confirmations, progressive loading language, and blur/fix validation messages. Do NOT use for marketing persuasion, documentation prose/guide structure, feedback-state staging, or general linguistic rationale behind wording."
 version: 1.0.0
 type: capability
-category: knowledge
+category: design
 domain: design/ux
 scope: portable
 owner: skill-graph-maintainer

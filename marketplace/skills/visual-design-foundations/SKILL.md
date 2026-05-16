@@ -8,7 +8,7 @@ metadata:
   schema_version: "4"
   version: "1.0.0"
   type: capability
-  category: frontend
+  category: design
   domain: design/visual
   scope: portable
   owner: skill-graph-maintainer

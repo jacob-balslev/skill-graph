@@ -5,8 +5,8 @@ name: governance
 description: "Use when defining decision rights, ownership, approvals, policy lifecycle, change management, rollout controls, evidence, review cadences, or audit trails across product, content, data, design, and operations. Covers governance domains, RACI-style accountability, controlled change, and compliance evidence. Do NOT use for agent tool-permission policy (use `guardrails`) or application RBAC/user permission checks (use `owasp-security`)."
 version: 1.0.0
 type: capability
-category: ai-engineering
-domain: ai-engineering/doctrine
+category: quality
+domain: quality/governance
 scope: portable
 owner: skill-graph-maintainer
 freshness: "2026-03-28"

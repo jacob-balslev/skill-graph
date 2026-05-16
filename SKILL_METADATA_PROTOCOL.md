@@ -147,6 +147,22 @@ allowed-tools   # space-separated tool allowlist
 - A flat string used for human browsing (e.g. sidebar navigation in a skill library UI).
 - Renamed from v3 `browse_category`; use `category` in all v4 skills.
 - For hierarchical taxonomy, use the optional `domain` field with slash-delimited segments.
+- **Closed enum as of 2026-05-15** (enforced by `scripts/lint/check-category-enum.js`, lint check 13). The schema field type remains `string` for back-compat; the **policy** layer narrows to exactly six values, framed as a browse facet, not ontology truth:
+
+  | Value | Definition |
+  |---|---|
+  | `foundations` | Epistemics, grounding, verification, context engineering, reasoning — preconditions of competent agent or engineering work. Reserved category — must justify membership against the foundations gate; cannot default here. Target size 8–15 skills. |
+  | `engineering` | Building software systems: APIs, data, infra, runtime, integrations. |
+  | `design` | Visual, interaction, IA, content, motion — design as a discipline. |
+  | `quality` | Cross-cutting non-functional properties: a11y, performance, security, type-safety, testing, observability. Properties of any artifact. |
+  | `agent` | Agent-specific concepts: tool design, prompt design, agent state, orchestration, eval-driven dev. |
+  | `product` | Prioritization, scope, MVP, PRDs, customer journey, positioning. |
+
+  **Disambiguation rules** (apply in order):
+  1. *Primary surface* — what the skill is *about*, not what it *enables*.
+  2. *Property vs subject* — properties (a11y, perf, security, testing, type-safety) → `quality`. How-to-build → `engineering` / `design` / `agent`.
+  3. *Cross-pollination* — multi-fit skills list secondary categories via `relations.related` (max 5). Never via the `category` field itself.
+  4. *`foundations` gate* — anti-junk-drawer. Membership requires (a) the skill teaches an epistemic precondition AND (b) it cannot be plausibly assigned to `agent`/`engineering`/`quality`/`design`. If `foundations` exceeds 20 entries, the gate has failed and the migration is misrouted.
 
 **`domain`**
 - Optional slash-delimited domain path (e.g. `design/ux`, `architecture/events`).

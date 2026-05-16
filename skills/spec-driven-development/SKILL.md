@@ -5,8 +5,8 @@ name: spec-driven-development
 description: "This skill provides Spec Driven Development (SDD) expertise for AI engineering: the Specify → Plan → Tasks → Implement lifecycle. Use when starting any non-trivial task, refactoring a core module, or when an agent loop has stalled due to ambiguous requirements. Do NOT use for one-line edits or README fixes."
 version: 1.0.0
 type: workflow
-category: ai-engineering
-domain: ai-engineering/workflow
+category: engineering
+domain: engineering/methodology
 scope: reference
 owner: skill-graph-maintainer
 freshness: "2026-03-28"

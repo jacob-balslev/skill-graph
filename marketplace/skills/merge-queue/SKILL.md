@@ -8,8 +8,8 @@ metadata:
   schema_version: "4"
   version: "1.0.0"
   type: workflow
-  category: ai-engineering
-  domain: ai-engineering/agent-ops
+  category: engineering
+  domain: engineering/git
   scope: portable
   owner: skill-graph-maintainer
   freshness: "2026-04-01"

@@ -5,7 +5,8 @@ name: cron-scheduling
 description: "This skill provides cron job architecture patterns for web applications: Inngest schedule integration, Vercel Cron configuration, retry logic, monitoring and alerting for failed crons, and idempotency requirements. Load when designing scheduled tasks, configuring cron triggers, debugging missed or duplicate executions, or implementing monitoring for recurring jobs."
 version: 1.0.0
 type: capability
-category: integration
+category: engineering
+domain: engineering/scheduling
 scope: portable
 owner: skill-graph-maintainer
 freshness: "2026-03-29"

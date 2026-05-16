@@ -5,8 +5,8 @@ name: summarization
 description: "Prose condensation and abstraction patterns for AI agents: extracting key findings from long reports, writing executive summaries, creating TLDRs, compressing context for handoffs between agents, progressive summarization (literature notes → permanent notes), audit report condensation, and the discipline of deciding what to keep and what to cut when space is limited. Use when summarizing session findings, writing wrap reports, condensing research for memory files, creating executive summaries of audits, compressing context before agent handoffs, or distilling long documents into actionable briefs. Do NOT use for data compression algorithms (use compression), context window budget management (use token-efficiency), or document structure (use editorial-standards)."
 version: 1.0.0
 type: capability
-category: ai-engineering
-domain: ai-engineering/knowledge
+category: agent
+domain: agent/cognition
 scope: reference
 owner: skill-graph-maintainer
 freshness: "2026-03-28"

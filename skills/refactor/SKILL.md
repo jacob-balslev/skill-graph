@@ -70,6 +70,10 @@ relations:
       reason: "documentation is prose about the code; refactor is behavior-preserving changes to the code itself"
     - skill: debugging
       reason: "debugging chases an observed failure; refactor runs only with a green test suite and preserves behavior"
+    - skill: tool-call-flow
+      reason: "tool-call-flow owns the protocol-level cycle of model→runtime tool invocation including retry encoding inside the cycle; refactor only restructures the surrounding code while preserving behavior. The anti_example about a function retrying three times is a tool-call/runtime concern, not a refactor concern."
+    - skill: generative-ui
+      reason: "generative-ui owns the model-emits-typed-UI-spec pattern; refactor only restructures existing code while preserving behavior. The retries anti_example has token overlap with the model-output/runtime cycle vocabulary generative-ui discusses, so naming it here keeps the boundary explicit."
   verify_with:
     - testing-strategy
   depends_on:

@@ -78,6 +78,7 @@ const { formatCodeFrame, locateYamlKey, locateH2Section } = require('./lint/form
 const { checkArchetypeSections } = require('./lint/check-archetype-sections');
 const { checkRoutingQuality } = require('./lint/check-routing-quality');
 const { checkRoutingEval } = require('./lint/check-routing-eval');
+const { checkCategoryEnum } = require('./lint/check-category-enum');
 
 const REPO_ROOT = workspaceRoot();
 const TEMPLATE_PATH = path.join(REPO_ROOT, 'examples', 'skill-metadata-template.md');
@@ -1177,12 +1178,16 @@ function main() {
     // Routing-eval check (check 12). Only fires when routing_eval: present.
     const routingEvalResult = checkRoutingEval({ filePath: relPath, sourceText: text, fm });
 
+    // Category-enum check (check 13). Enforces the 6-value canonical category set.
+    const categoryEnumResult = checkCategoryEnum({ filePath: relPath, sourceText: text, fm });
+
     // Promote warnings to errors when --strict is active.
     const fileErrors = [
       ...rawErrors.map(msg => ({ msg, line: null, column: null, help: null })),
       ...archetypeResult.errors.map(e => ({ msg: e.message, line: e.line, column: e.column, help: e.help })),
       ...routingResult.errors.map(e => ({ msg: e.message, line: e.line, column: e.column, help: e.help })),
       ...routingEvalResult.errors.map(e => ({ msg: e.message, line: e.line, column: e.column, help: e.help })),
+      ...categoryEnumResult.errors.map(e => ({ msg: e.message, line: e.line, column: e.column, help: e.help })),
       ...(strict ? [
         ...rawWarnings.map(msg => ({ msg: `[promoted from warn] ${msg}`, line: null, column: null, help: null })),
         ...archetypeResult.warnings.map(w => ({ msg: `[promoted from warn] ${w.message}`, line: w.line, column: w.column, help: w.help })),

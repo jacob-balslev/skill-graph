@@ -5,7 +5,8 @@ name: real-time-updates
 description: "This skill provides live data update patterns for web applications: webhook-to-UI push patterns, Server-Sent Events for dashboard updates, polling fallback strategies, optimistic updates, and stale data indicators. Load when implementing live dashboards, push notifications to the browser, real-time data refresh, or deciding between SSE, WebSocket, and polling."
 version: 1.0.0
 type: capability
-category: integration
+category: engineering
+domain: engineering/realtime
 scope: portable
 owner: skill-graph-maintainer
 freshness: "2026-03-29"

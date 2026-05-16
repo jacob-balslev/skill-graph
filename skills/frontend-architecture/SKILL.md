@@ -4,7 +4,8 @@ name: frontend-architecture
 description: "Use when organizing a frontend codebase — module boundaries, component layering, state ownership, data-flow direction, and the separation between feature code and shared primitives. Do NOT use for visual design decisions, specific framework migration tactics, or backend API contract design."
 version: 1.0.0
 type: capability
-category: frontend
+category: engineering
+domain: engineering/frontend
 scope: portable
 owner: skill-graph-maintainer
 freshness: "2026-05-12"

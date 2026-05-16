@@ -5,8 +5,8 @@ name: content-monitor
 description: "Use when building or operating multi-source intelligence pipelines across video, GitHub, Reddit, curated lists, search, and RSS feeds. Covers source adapters, discovery/transcription/summarization/evaluation phases, deduplication, schedules, model-stage choice, and actionable brief generation. Do NOT use for SEO keyword research (use `keywords`) or competitive product analysis (use `user-research`)."
 version: 1.0.0
 type: capability
-category: ai-engineering
-domain: ai-engineering/agent-ops
+category: agent
+domain: agent/ops
 scope: portable
 owner: skill-graph-maintainer
 freshness: "2026-03-28"

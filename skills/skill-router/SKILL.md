@@ -5,7 +5,8 @@ name: skill-router
 description: "Use when routing an agent request across multiple skills, building or auditing a routing table, detecting routing coverage gaps, or answering questions like 'which skill handles this?', 'who routes X?', or 'why did skill A activate instead of B?'. Covers trigger-label matching, file-path matching, keyword matching, description-based semantic matching, scope/type tiebreakers, and coverage-gap detection. Do NOT use when the target skill is already known (load it directly), when authoring a new skill (use `skill-metadata-template` instead), or when evaluating a SINGLE skill's quality (use `graph-audit`)."
 version: 1.0.0
 type: router
-category: knowledge
+category: agent
+domain: agent/skill-system
 scope: portable
 owner: skill-graph-maintainer
 freshness: "2026-04-18"

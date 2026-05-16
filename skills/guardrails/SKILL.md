@@ -5,8 +5,8 @@ name: guardrails
 description: "Use when planning or executing operations that touch protected files, credentials, destructive git commands, destructive SQL, PII, secrets, or irreversible system mutations. Covers proactive policy plus reactive pattern blocking for dangerous operations, data exfiltration, and unsafe mutations. Do NOT use for application input validation, user RBAC, or general code logic review (use `code-review`)."
 version: 1.0.0
 type: capability
-category: ai-engineering
-domain: ai-engineering/security
+category: quality
+domain: quality/safety
 scope: portable
 owner: skill-graph-maintainer
 freshness: "2026-03-28"

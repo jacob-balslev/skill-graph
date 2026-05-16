@@ -5,7 +5,8 @@ name: compression
 description: "This skill provides expertise in data and context compression: SaaS payload optimization (Zstd, Brotli, Gzip), database storage compression, and AI context window compression (Semantic Summarization, Token Pruning). Use when optimizing API latency, reducing storage costs, or managing long-running agent sessions near context limits. Do NOT use for image/video lossy compression (use product-photo) or file archiving."
 version: 1.0.0
 type: capability
-category: data
+category: engineering
+domain: engineering/data
 scope: portable
 owner: skill-graph-maintainer
 freshness: "2026-03-28"

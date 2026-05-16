@@ -5,7 +5,8 @@ name: entity-relationship-modeling
 description: "Use when designing database tables, reviewing schema changes, planning migrations, or translating conceptual models into physical database structures. Covers ER notation, entity/attribute/key design, normalization and denormalization, junction tables, inheritance mapping, temporal modeling, ER-to-SQL translation, indexing, and constraints. Do NOT use for conceptual domain analysis (use `conceptual-modeling`), formal ontology (use `ontology`), or cross-system API contracts (use `system-interface-contracts`)."
 version: 1.0.0
 type: capability
-category: data
+category: engineering
+domain: engineering/modeling
 scope: portable
 owner: skill-graph-maintainer
 freshness: "2026-03-29"

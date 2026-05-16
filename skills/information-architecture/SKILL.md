@@ -5,7 +5,7 @@ name: information-architecture
 description: "Use when structuring information for findability: navigation, page hierarchy, docs architecture, sitemap shape, labeling systems, wayfinding, and content grouping. Do NOT use for formal category-governance work (use `taxonomy-design`), responsive page composition (use `layout-composition`), component/token architecture (use `design-system-architecture`), or sentence-level UI text (use `microcopy`)."
 version: 1.0.0
 type: capability
-category: knowledge
+category: design
 domain: design/information-architecture
 scope: portable
 owner: skill-graph-maintainer

@@ -5,8 +5,8 @@ name: project-knowledge-extraction
 description: "Use when extracting durable project knowledge from code, docs, issues, incidents, reports, screenshots, or conversations into reusable context such as skills, ADRs, glossaries, context docs, or memory. Do NOT use for writing a new skill contract (use `skill-scaffold`), maintaining library tooling (use `skill-infrastructure`), or generic documentation polish (use `documentation`)."
 version: 1.0.0
 type: capability
-category: knowledge
-domain: ai-engineering/knowledge-extraction
+category: agent
+domain: agent/knowledge
 scope: portable
 owner: skill-graph-maintainer
 freshness: "2026-05-11"

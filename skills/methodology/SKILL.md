@@ -5,8 +5,8 @@ name: methodology
 description: "Use when planning multi-step implementations, designing quality gates, establishing verification protocols, or building agent checklists calibrated to known failure modes. Covers methodology/method/process distinctions, Cleanroom, PSP/TSP, hypothesis-driven development, DMAIC, checklist design, V&V frameworks, EDDOps, quality gates, and PDCA. Do NOT use for code-review verdicts (use `code-review`), behavior-preserving implementation work (use `refactor`), or test strategy (use `testing-strategy`)."
 version: 1.0.0
 type: capability
-category: ai-engineering
-domain: ai-engineering/agent-cognition
+category: quality
+domain: quality/method
 scope: reference
 owner: skill-graph-maintainer
 freshness: "2026-04-01"

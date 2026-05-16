@@ -4,7 +4,8 @@ name: dark-mode-implementation
 description: "Use when implementing dark mode — prefers-color-scheme detection, theme persistence, flash-of-unstyled-theme prevention, color token mirroring, image and asset variants, and meta theme-color updates. Do NOT use for designing the dark palette itself, designing the token architecture, or generic theme-switching across more than two themes."
 version: 1.0.0
 type: capability
-category: frontend
+category: design
+domain: design/visual
 scope: portable
 owner: skill-graph-maintainer
 freshness: "2026-05-12"

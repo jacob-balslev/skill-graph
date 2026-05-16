@@ -8,8 +8,8 @@ metadata:
   schema_version: "4"
   version: "1.0.0"
   type: capability
-  category: knowledge
-  domain: skill-system/authoring
+  category: agent
+  domain: agent/skill-system
   scope: reference
   owner: skill-graph-maintainer
   freshness: "2026-05-04"

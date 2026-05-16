@@ -5,8 +5,8 @@ name: layout-composition
 description: "Use when deciding responsive page or screen structure: section order, scan pattern, grid/flex composition, breakpoints, viewport hierarchy, responsive media, and density. Do NOT use for user-goal decomposition (use `task-analysis`), navigation taxonomy (use `information-architecture`), visual polish (use `visual-design-foundations`), or component/token contracts (use `design-system-architecture`)."
 version: 1.0.0
 type: capability
-category: frontend
-domain: frontend/layout
+category: design
+domain: design/layout
 scope: portable
 owner: skill-graph-maintainer
 freshness: "2026-05-11"

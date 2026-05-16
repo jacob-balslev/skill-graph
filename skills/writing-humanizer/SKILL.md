@@ -5,8 +5,8 @@ name: writing-humanizer
 description: "Use when writing or editing human-readable prose such as docs, PRs, issues, release notes, errors, UI copy, commits, tooltips, or support replies, especially when text sounds robotic, padded, monotonous, or overly formal. Covers AI-tell removal, active voice, hedging reduction, readability diagnosis, sentence rhythm, vocabulary variety, tone mapping, paragraph rhythm, bullets-vs-prose choice, and the 5-step humanization workflow. Do NOT use for documentation routing/type selection, code-identifier naming, or in-product UI-text pattern catalogs."
 version: 1.0.0
 type: capability
-category: knowledge
-domain: ai-engineering/language
+category: design
+domain: design/content
 scope: portable
 owner: skill-graph-maintainer
 freshness: "2026-05-06"

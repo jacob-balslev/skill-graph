@@ -5,8 +5,8 @@ name: semantics
 description: "Use when naming artifacts across code, APIs, design tokens, commits, HTTP/status signals, UI labels, error codes, or branded types, especially when a name feels ambiguous or misleading. Covers cross-domain meaning-encoding: naming smells, DDD ubiquitous language, SemVer, conventional commits, branded types, semantic design tokens/CSS/APIs, semantic UI affordances, and naming anti-patterns. Do NOT use for word morphology/polysemy (use linguistics), casing formats (use naming-conventions), typed concept relations (use semantic-relations), or in-product UI-text patterns (use microcopy)."
 version: 1.0.0
 type: capability
-category: knowledge
-domain: ai-engineering/language
+category: foundations
+domain: foundations/semantics
 scope: portable
 owner: skill-graph-maintainer
 freshness: "2026-05-06"

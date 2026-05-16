@@ -5,8 +5,8 @@ name: command-palette
 description: "This skill provides keyboard-driven navigation patterns for power users: cmdk-style palette (Cmd+K), fuzzy search across orders/products/settings, action shortcuts, recent items, and contextual commands. Load when implementing command palette UI, keyboard shortcut systems, fuzzy search for navigation, or power-user workflow optimization."
 version: 1.0.0
 type: capability
-category: ai-engineering
-domain: ai-engineering/display
+category: design
+domain: design/ui
 scope: portable
 owner: skill-graph-maintainer
 freshness: "2026-03-29"

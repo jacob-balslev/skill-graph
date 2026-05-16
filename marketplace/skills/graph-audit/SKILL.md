@@ -8,7 +8,8 @@ metadata:
   schema_version: "4"
   version: "1.0.0"
   type: capability
-  category: knowledge
+  category: quality
+  domain: quality/audit
   scope: codebase
   owner: skill-graph-maintainer
   freshness: "2026-04-18"

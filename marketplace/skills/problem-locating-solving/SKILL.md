@@ -8,7 +8,7 @@ metadata:
   schema_version: "4"
   version: "1.0.0"
   type: workflow
-  category: knowledge
+  category: engineering
   domain: engineering/debugging
   scope: portable
   owner: skill-graph-maintainer

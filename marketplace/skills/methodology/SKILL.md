@@ -8,8 +8,8 @@ metadata:
   schema_version: "4"
   version: "1.0.0"
   type: capability
-  category: ai-engineering
-  domain: ai-engineering/agent-cognition
+  category: quality
+  domain: quality/method
   scope: reference
   owner: skill-graph-maintainer
   freshness: "2026-04-01"

@@ -5,8 +5,8 @@ name: merge-queue
 description: "Use when serializing merges across multiple agent branches, resolving conflicts between agent outputs, or cleaning stale task branches. Covers atomic locking, idempotency checks, non-fast-forward handling, and worktree cleanup. Do NOT use for ordinary git operations outside an agent merge queue (use `version-control`)."
 version: 1.0.0
 type: workflow
-category: ai-engineering
-domain: ai-engineering/agent-ops
+category: engineering
+domain: engineering/git
 scope: portable
 owner: skill-graph-maintainer
 freshness: "2026-04-01"

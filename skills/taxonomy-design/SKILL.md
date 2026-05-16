@@ -5,8 +5,8 @@ name: taxonomy-design
 description: "Use when designing a controlled classification system: category trees, facets, browse taxonomies, SKOS broader/narrower relationships, tagging rules, and duplicate-category cleanup. Do NOT use for formal ontology axioms with reasoning constraints (use `ontology-modeling`), broad knowledge-representation choice (use `knowledge-modeling`), or one-off edge typing (use `semantic-relations`)."
 version: 1.0.0
 type: capability
-category: knowledge
-domain: modeling/taxonomy
+category: foundations
+domain: foundations/classification
 scope: portable
 owner: skill-graph-maintainer
 freshness: "2026-05-11"

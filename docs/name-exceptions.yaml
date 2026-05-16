@@ -1,0 +1,37 @@
+# Skill name exceptions registry.
+#
+# Skills whose names violate the head-noun-glossary rule (no verb prefix,
+# noun-anchored compound) but are kept as-is because the name is an established
+# industry term-of-art. Adding an entry requires a citation field.
+#
+# See docs/head-noun-glossary.md for the rule.
+# See SKILL_METADATA_PROTOCOL.md § name for the schema pattern.
+
+exceptions:
+  - name: code-review
+    reason: "Industry term-of-art since Fagan inspection."
+    citation: "Fagan, M. E. (1976). Design and code inspections to reduce errors in program development. IBM Systems Journal, 15(3), 182–211."
+
+  - name: design-review
+    reason: "Established industry practice across engineering and design orgs."
+    citation: "Cooper, A., Reimann, R., Cronin, D., & Noessel, C. (2014). About Face: The Essentials of Interaction Design (4th ed.), Chapter on design reviews."
+
+  - name: event-storming
+    reason: "Named methodology, not a verb command."
+    citation: "Brandolini, A. (2013, originally posted). Introducing EventStorming. https://www.eventstorming.com"
+
+  - name: graph-audit
+    reason: "Audit is the noun reading (the artifact), not the verb (the activity). This is a graph audit, not the act of auditing a graph."
+    citation: "Skill Graph internal terminology; pairs with skill-census.js output naming."
+
+  - name: skill-scaffold
+    reason: "Scaffold is the artifact/template, not the verb. This skill provides the authoring scaffold."
+    citation: "Skill Graph internal terminology; matches scaffold tooling vocabulary (e.g. Rails scaffold, Nx scaffold)."
+
+  - name: writing-humanizer
+    reason: "Humanizer is the noun reading (the transformation tool); compound `writing-humanizer` is the named artifact."
+    citation: "Industry usage in style-tooling (Grammarly humanizer, OpenAI text humanizer). Skill represents the discipline, not the command."
+
+  - name: cron-scheduling
+    reason: "Scheduling is the discipline noun; compound `cron-scheduling` names the surface."
+    citation: "POSIX cron(8); Vixie cron documentation."

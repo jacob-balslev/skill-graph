@@ -5,8 +5,8 @@ name: reasoning
 description: "Use when choosing reasoning depth, deciding whether to think deeply or act fast, calibrating model effort, or diagnosing under-thinking and over-thinking in agents. Covers deterministic-first reasoning, technique routing by task type, chain/tree/ReAct patterns, the thinking-doing balance, and two-pass audit-then-implement workflows. Do NOT use for prompt wording (use `prompt-craft`) or agent architecture (use `agent-engineering`)."
 version: 1.0.0
 type: capability
-category: ai-engineering
-domain: ai-engineering/agent-cognition
+category: foundations
+domain: foundations/cognition
 scope: reference
 owner: skill-graph-maintainer
 freshness: "2026-03-28"

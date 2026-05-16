@@ -8,8 +8,8 @@ metadata:
   schema_version: "4"
   version: "1.0.0"
   type: workflow
-  category: ai-engineering
-  domain: ai-engineering/workflow
+  category: engineering
+  domain: engineering/methodology
   scope: reference
   owner: skill-graph-maintainer
   freshness: "2026-03-28"
