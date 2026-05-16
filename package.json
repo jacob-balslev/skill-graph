@@ -1,7 +1,7 @@
 {
   "name": "@skill-graph/cli",
   "version": "0.5.0",
-  "description": "Skill Metadata Protocol schemas plus Skill Graph reference tooling and starter skills for SKILL.md libraries.",
+  "description": "Skill Graph — library-level tooling for SKILL.md libraries: lint, manifest compiler, router, drift sentinel, and export pipeline.",
   "type": "commonjs",
   "license": "Apache-2.0",
   "author": "Jacob Balslev",
@@ -35,12 +35,9 @@
     "examples/",
     "schemas/",
     "scripts/",
-    "skills/",
+    "marketplace/",
     "README.md",
-    "SKILL_AUDIT_CHECKLIST.md",
-    "SKILL_AUDIT_LOOP.md",
     "SKILL_GRAPH.md",
-    "SKILL_METADATA_PROTOCOL.md",
     "CHANGELOG.md",
     "LICENSE",
     "NOTICE"
@@ -62,7 +59,9 @@
     "test:unit": "node scripts/__tests__/test-v3-1-skos-runtime.js && node scripts/__tests__/test-router-paths.js && node scripts/__tests__/test-v3-1-alias-contract.js && node scripts/__tests__/test-export-parser-drift.js && node scripts/__tests__/test-marketplace-export.js && node bin/skill-graph.js --help",
     "verify": "npm run lint && npm run protocol:check && npm run docs:links && npm run manifest:validate && npm run routing-eval && npm run export:verify-skill-md && npm run overlap && npm run test:unit"
   },
-  "dependencies": {},
+  "dependencies": {
+    "@skill-graph/protocol": "^1.1.0"
+  },
   "devDependencies": {},
   "packageManager": "pnpm@9.15.0"
 }

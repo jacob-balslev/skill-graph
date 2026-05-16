@@ -2,9 +2,9 @@
 
 > **Read this if:** you want to understand the library-level Skill Graph system: the tools, generated artifacts, authority tiers, and maintenance loops that operate on Skill Metadata Protocol records.
 
-Skill Graph is the library-level system around the Skill Metadata Protocol. The protocol defines what one `SKILL.md` must declare; Skill Graph supplies the manifest compiler, validator, router, drift sentinel, audit loop, and specimen library that make those declarations useful across many skills. The repo is organised in five authority tiers: each tier derives from the one above it, and tooling enforces the derivation automatically. When any two files appear to contradict each other, the tier with higher authority wins; the lower-tier file is a bug.
+Skill Graph is the library-level system around the [Skill Metadata Protocol](https://github.com/jacob-balslev/skill-metadata-protocol). The protocol defines what one `SKILL.md` must declare; Skill Graph supplies the manifest compiler, validator, router, drift sentinel, and export pipeline that make those declarations useful across many skills. The repo is organised in five authority tiers: each tier derives from the one above it, and tooling enforces the derivation automatically. When any two files appear to contradict each other, the tier with higher authority wins; the lower-tier file is a bug.
 
-The three layers divide the work cleanly. The Skill Metadata Protocol declares what each skill is grounded against — its `truth_sources`, `grounding_mode`, and `failure_modes`. The Skill Graph operates across the whole library of those declarations, compiling, routing, clustering, and checking them. The Skill Audit Loop is the part of the Skill Graph that re-grounds each skill against its declared sources on a cadence, so the declarations the protocol captured stay true to the reality they point at.
+The three layers divide the work cleanly. The [Skill Metadata Protocol](https://github.com/jacob-balslev/skill-metadata-protocol) declares what each skill is grounded against — its `truth_sources`, `grounding_mode`, and `failure_modes`. Skill Graph operates across the whole library of those declarations, compiling, routing, clustering, and checking them. The [Skill Audit Loop](https://github.com/jacob-balslev/skill-audit-loop) is the separate repo that re-grounds each skill against its declared sources on a cadence, so the declarations the protocol captured stay true to the reality they point at.
 
 ---
 
@@ -38,7 +38,7 @@ flowchart LR
 <!-- Rendered copy for non-Mermaid viewers. Regenerate via: npx @mermaid-js/mermaid-cli -i <source> -o docs/images/system-model.png -->
 <img src="docs/images/system-model.png" alt="System model — SKILL.md is validated by skill-lint.js, compiled into skills.manifest.json, and audited by skill-audit.js which emits findings/verdict/scorecard artifacts" width="900" />
 
-**Legend.** Blue = authored input. Green = tooling. Yellow = output artifact. Solid arrows are the data flow. Every entity in this diagram has its own deep-dive diagram: [§ Anatomy](docs/skill-metadata-protocol.md#anatomy) for `SKILL.md`, [§ Loop at a Glance](SKILL_AUDIT_LOOP.md#loop-at-a-glance) for `skill-audit.js`, [§ Manifest Field Mapping](docs/manifest-field-mapping.md) for `skills.manifest.json`.
+**Legend.** Blue = authored input. Green = tooling. Yellow = output artifact. Solid arrows are the data flow. Every entity in this diagram has its own deep-dive diagram: [§ Anatomy](docs/skill-metadata-protocol.md#anatomy) for `SKILL.md`, [§ Loop at a Glance](https://github.com/jacob-balslev/skill-audit-loop/blob/main/SKILL_AUDIT_LOOP.md#loop-at-a-glance) for `skill-audit.js`, [§ Manifest Field Mapping](docs/manifest-field-mapping.md) for `skills.manifest.json`.
 
 ---
 
@@ -84,7 +84,7 @@ Public docs that define or explain the protocol in prose. If a Tier 2 file disag
 
 | File | Role |
 |---|---|
-| `SKILL_METADATA_PROTOCOL.md` | Normative public spec: required fields, semantic rules, authored vs generated fields, migration notes. |
+| [`skill-metadata-protocol`](https://github.com/jacob-balslev/skill-metadata-protocol) | Normative public spec (separate repo): required fields, semantic rules, authored vs generated fields, migration notes. |
 | `docs/skill-metadata-protocol.md` | Rationale and deep explanation: archetype section map, requiredness groups, strictness rules, schema versioning policy, design tradeoffs. |
 | `docs/field-reference.md` | One section per authored field. All 40 current v4 top-level fields with purpose, rules, allowed values, examples. |
 | `docs/field-decision-guide.md` | Decision tables for the hard choices: `scope`, `relations.*`, eval-health triple, `portability`, `workspace_tags`, and the "tag vs. category vs. routing_bundles" question. |
@@ -393,8 +393,7 @@ Every edge is verifiable. `node scripts/skill-lint.js` rejects dangling targets 
 | `LICENSE` | MIT. |
 | `.github/workflows/skill-graph-lint.yml` | CI: runs Tier 3 enforcement on every PR. |
 | `docs/integrations/github-actions.md` | Copy-paste CI snippet for adopters. |
-| `SKILL_AUDIT_CHECKLIST.md` | Checklist accompanying Tier 3 audit runner. |
-| `SKILL_AUDIT_LOOP.md` | Repeated audit loop for a whole library. |
+| [`skill-audit-loop` (separate repo)](https://github.com/jacob-balslev/skill-audit-loop) | 5-phase audit procedure and checklist — moved to its own repo. |
 | `docs/plans/multi-root-workspace.md` | Shipped v0.4.0 design doc. |
 | `docs/plans/scripts-roadmap.md` | Forward-looking script plan. |
 
@@ -436,7 +435,7 @@ When in doubt: if the file *defines* a constraint, it's Tier 1. If it *describes
 - [`docs/skill-metadata-protocol.md`](docs/skill-metadata-protocol.md) — the authoritative field-semantics doc; § Anatomy carries the Mermaid diagram of the SKILL.md three-layer composition (frontmatter × body × teaching layer).
 - [`docs/manifest-field-mapping.md`](docs/manifest-field-mapping.md) — the authored → generated bridge.
 - [`docs/field-decision-guide.md`](docs/field-decision-guide.md) — decision tables for hard field choices.
-- [`SKILL_AUDIT_LOOP.md`](SKILL_AUDIT_LOOP.md) — the repeatable audit loop; § Loop at a Glance carries the Mermaid diagram of the five-phase flow (deterministic → graded → aggregate → fix → re-verify).
+- [`skill-audit-loop` repo](https://github.com/jacob-balslev/skill-audit-loop) — the repeatable audit loop (separate repo); `SKILL_AUDIT_LOOP.md` carries the Mermaid diagram of the five-phase flow (deterministic → graded → aggregate → fix → re-verify).
 - [§ Tier 3 — Pipeline](#pipeline--how-a-skillmd-becomes-a-manifest-entry) — how `generate-manifest.js` projects authored frontmatter into the compiled manifest.
 - [§ Tier 4 — Drift sentinel state machine](#drift-sentinel--state-machine) — the five states a grounded skill sits in and what transitions them.
 - [§ Tier 4 — Routing harness](#routing-harness--per-skill-decision-path) — per-skill decision path that turns `routing_eval: present` from self-assertion into a lint-enforced claim.

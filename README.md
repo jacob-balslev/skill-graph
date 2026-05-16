@@ -1,14 +1,21 @@
-# Skill Metadata Protocol + Skill Graph
+# Skill Graph
 
-[![Version 0.5.0](https://img.shields.io/badge/version-0.5.0-blue?style=flat-square)](CHANGELOG.md) [![Schema v4](https://img.shields.io/badge/schema-v4-blueviolet?style=flat-square)](schemas/skill.v4.schema.json) [![License Apache-2.0 + CC-BY-4.0](https://img.shields.io/badge/license-Apache--2.0%20%2B%20CC--BY--4.0-green?style=flat-square)](LICENSE) [![Exports SKILL.md](https://img.shields.io/badge/exports-SKILL.md-orange?style=flat-square)](https://agentskills.io/specification)
+[![Version 0.5.0](https://img.shields.io/badge/version-0.5.0-blue?style=flat-square)](CHANGELOG.md) [![Protocol v1.1.0](https://img.shields.io/badge/protocol-v1.1.0-blueviolet?style=flat-square)](https://github.com/jacob-balslev/skill-metadata-protocol) [![License Apache-2.0 + CC-BY-4.0](https://img.shields.io/badge/license-Apache--2.0%20%2B%20CC--BY--4.0-green?style=flat-square)](LICENSE) [![Exports SKILL.md](https://img.shields.io/badge/exports-SKILL.md-orange?style=flat-square)](https://agentskills.io/specification)
 
-**Skills that know your project and codebase. Structured and categorized.**
+**The library-level system for structured `SKILL.md` libraries. Lint, manifest compiler, router, drift sentinel, and export pipeline.**
 
-**Skill Metadata Protocol is a structured frontmatter contract for `SKILL.md`. Skill Graph is the local library tooling that works across those structured skills.**
+Skill Graph operates across a library of [Skill Metadata Protocol](https://github.com/jacob-balslev/skill-metadata-protocol) records. A plain `SKILL.md` gives an agent a procedure to load. Skill Metadata Protocol adds the structured frontmatter contract. Skill Graph turns those declarations into a compiled manifest, routing map, drift sentinel, overlap detector, and export path back to the plain `SKILL.md` format.
 
-A plain `SKILL.md` gives an agent a procedure to load. Skill Metadata Protocol adds the missing project map: what the skill is for, where it belongs, which files or domains ground it, which skills it depends on, which nearby skills it must not replace, and how it should be checked. Skill Graph turns those declarations into a manifest, router, cluster map, drift sentinel, audit loop, and export path back to the plain `SKILL.md` format.
+## Ecosystem
 
-[Protocol spec](SKILL_METADATA_PROTOCOL.md) | [Skill Graph system](SKILL_GRAPH.md) | [Full template](examples/skill-metadata-template.md) | [Primer](docs/PRIMER.md) | [Field reference](docs/field-reference.md) | [Adoption guide](docs/ADOPTION.md) | [Conformance](docs/CONFORMANCE.md)
+| Repo | npm | Purpose |
+|------|-----|---------|
+| **[skill-metadata-protocol](https://github.com/jacob-balslev/skill-metadata-protocol)** | `@skill-graph/protocol` | Normative spec + JSON schemas |
+| **skill-graph** *(this repo)* | `@skill-graph/cli` | Library tooling: lint, manifest, router, drift |
+| **[skill-audit-loop](https://github.com/jacob-balslev/skill-audit-loop)** | `@skill-graph/audit` | 5-phase audit procedure |
+| **[skills](https://github.com/jacob-balslev/skills)** | — | Public open-source skill library |
+
+[Skill Graph system](SKILL_GRAPH.md) | [Full template](examples/skill-metadata-template.md) | [Primer](docs/PRIMER.md) | [Field reference](docs/field-reference.md) | [Adoption guide](docs/ADOPTION.md) | [Conformance](docs/CONFORMANCE.md)
 
 ## How SKILL.md, Skill Metadata Protocol, and Skill Graph Differ
 
