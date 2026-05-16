@@ -28,8 +28,8 @@ For audit work, also read `SKILL_AUDIT_LOOP.md` and `SKILL_AUDIT_CHECKLIST.md`.
 - The scripts use only Node built-ins today; there are no package dependencies.
 - Public CLI entrypoint: `bin/skill-graph.js`.
 - Current public release checkpoint in docs: `0.5.0` on `2026-05-13`.
-- Current skill contract: `schema_version: 3` (Tier 1 binding); active skills are authored against `schema_version: 4` in `skills/` while v3 remains the published binding contract. The v3→v4 migration is in progress and is tracked in `docs/migrations/`.
-- The repo currently contains a larger starter skill library under `skills/`, plus specimen projects and evals under `examples/`.
+- Current skill contract: `schema_version: 5` (closed-enum category, browse-facet framing; landed across skill-metadata-protocol `af6fd7f` / skill-graph `f489641` / skills `568647a` on 2026-05-16). The v4→v5 migration is complete across the 137-skill canonical workspace; see `docs/migrations/v4-to-v5.md` for the breaking-change matrix.
+- This repo is **tooling-only** post-2026-05-16 monorepo split (commit `9d6e1d0`). The canonical skill library (137 SKILL.md files) lives at `/Users/jacobbalslev/Development/skills/`; the protocol spec + JSON schemas at `/Users/jacobbalslev/Development/skill-metadata-protocol/`; audit implementation + retrieval evals at `/Users/jacobbalslev/Development/skill-audit-loop/`. `examples/` still holds specimen projects and per-skill comprehension evals.
 
 ## What the Skill Graph Is
 
@@ -115,8 +115,8 @@ Claims of quality require verification. If a change says links work, routing wor
 
 When touching one artifact, update the matching tier artifacts in the same change.
 
-- If you change `schemas/skill.schema.json`, also update `schemas/skill.v3.schema.json` when the current contract remains v3, plus `docs/field-reference.md`, `docs/skill-metadata-protocol.md`, `SKILL_METADATA_PROTOCOL.md` when relevant, `docs/manifest-field-mapping.md`, and `examples/skill-metadata-template.md` when affected.
-- If you change `schemas/manifest.schema.json`, also update `schemas/manifest.v3.schema.json`, `docs/manifest-field-mapping.md`, and `scripts/generate-manifest.js` if projection logic changes.
+- If you change `schemas/skill.schema.json`, also update `schemas/skill.v5.schema.json` (the pinned copy of the current contract — see `npm run protocol:check § C6`) and any prior pinned versions only when intentionally backporting, plus `docs/field-reference.md`, `docs/skill-metadata-protocol.md`, `SKILL_METADATA_PROTOCOL.md` when relevant, `docs/manifest-field-mapping.md`, and `examples/skill-metadata-template.md` when affected. Regenerate `docs/field-reference.generated.md` with `node scripts/build-field-reference.js` in the same commit (enforced by `protocol:check § C7`).
+- If you change `schemas/manifest.schema.json`, also update `schemas/manifest.v5.schema.json` (the pinned copy of the current contract), `docs/manifest-field-mapping.md`, and `scripts/generate-manifest.js` if projection logic changes.
 - If you change `scripts/generate-manifest.js`, regenerate `examples/skills.manifest.sample.json`.
 - If you change `scripts/skill-lint.js`, run it against every skill and the template. Update sample manifest or drift baselines when lint-affecting sources are part of `drift_check.truth_source_hashes`.
 - If you change a Tier 2 protocol doc, check sibling Tier 2 docs for drift. The overview, field reference, decision guide, and manifest mapping must tell one story.
@@ -261,7 +261,7 @@ For audit scaffolding:
 
 ```bash
 node scripts/skill-audit.js <skill-name>
-node scripts/skill-audit.js <skill-name> --graded --grader-cli "codex exec"
+node scripts/skill-audit.js <skill-name> --graded --grader-cli "<command>"
 ```
 
 ## GitHub Actions
@@ -282,7 +282,7 @@ Treat that destination as the only valid answer to "where do users find our skil
 
 ### What `jacob-balslev/skill-graph` IS and IS NOT
 
-- `github.com/jacob-balslev/skill-graph` (this repo) **IS** the canonical Skill Metadata Protocol + Skill Graph **authoring source**. It owns the v4 frontmatter, the protocol docs, the schemas, the tooling, and the canonical `skills/<name>/SKILL.md` source files.
+- `github.com/jacob-balslev/skill-graph` (this repo) **IS** the canonical Skill Graph **tooling repo** post-2026-05-16 monorepo split. It owns the lint, manifest compiler, router, drift sentinel, export pipeline, and per-skill comprehension evals. The protocol contract (v5 frontmatter, JSON Schemas) lives in the sibling `skill-metadata-protocol` repo; the canonical `skills/<name>/SKILL.md` source files live in the sibling `skills` repo.
 - `github.com/jacob-balslev/skill-graph` **IS NOT** a user-facing skills.sh source. The frontmatter is the protocol contract, not a plain Agent Skills marketplace export. Do not document, link, or instruct users to install from this repo. Do not let it surface as a user-facing skills.sh row.
 - The local `marketplace/skills/` directory in this repo is a **staging surface**, not a publication target. Its purpose is to produce the plain `SKILL.md` files that get synced to `jacob-balslev/skills`.
 
@@ -303,7 +303,7 @@ Publishing is a two-step sync because the canonical authoring repo and the canon
 1. **Generate the marketplace surface** in this repo: `node scripts/export-marketplace-skills.js`. Verify: `node scripts/export-marketplace-skills.js --check`. The exporter writes plain Agent Skills `SKILL.md` files to `marketplace/skills/`. `RELEASE_TARGET_REPO` in that script is `jacob-balslev/skills` — do not change without coordinating both repos.
 2. **Sync to the release repo** at `https://github.com/jacob-balslev/skills` (local clone at `~/Development/skills/`). Copy `marketplace/skills/.` into the release repo's `skills/` directory, refresh the release repo's `README.md` from `marketplace/README.md`, commit path-limited with `--only`, and push. The release repo's HEAD becomes the snapshot skills.sh indexes.
 
-The two-step sync is intentional. It prevents the authoring repo's v4 protocol frontmatter from leaking into the marketplace surface, and it keeps the user-facing release small and Agent-Skills-compatible.
+The two-step sync is intentional. It prevents the authoring repo's v5 protocol frontmatter from leaking into the marketplace surface, and it keeps the user-facing release small and Agent-Skills-compatible.
 
 ### Pre-release verification (in addition to Public Release Hygiene below)
 
@@ -312,7 +312,7 @@ Before pushing a sync to `jacob-balslev/skills`:
 - The two repos' skill counts match: `ls marketplace/skills/ | wc -l` (here) equals `ls skills/ | wc -l` (release repo) post-sync.
 - The release repo's `README.md` matches `marketplace/README.md` from this repo.
 - Every exported marketplace description is ≤ the marketplace limit (`node scripts/export-marketplace-skills.js --check`).
-- No protocol frontmatter has leaked through — the release repo's skills are plain Agent Skills shape, not v4 protocol shape.
+- No protocol frontmatter has leaked through — the release repo's skills are plain Agent Skills shape, not v5 protocol shape.
 - All references in this repo's docs, READMEs, and scripts to the public URL go to `https://www.skills.sh/jacob-balslev/skills/`; references to the GitHub release repo go to `https://github.com/jacob-balslev/skills`.
 
 ### When skills.sh is wrong about us
