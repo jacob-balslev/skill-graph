@@ -2,13 +2,13 @@
 
 > **Scope.** This document is the authored-to-generated bridge for Skill Graph: it specifies exactly how every top-level field in a `SKILL.md` frontmatter block projects into the compiled `skills.manifest.json` that downstream tooling consumes.
 >
-> **Audience.** Authors of manifest generators and consumers of the manifest. If you are authoring a skill itself, read [`SKILL_METADATA_PROTOCOL.md`](../SKILL_METADATA_PROTOCOL.md) and [`docs/field-reference.md`](field-reference.md) instead. This document owns the transformation from authored to generated.
+> **Audience.** Authors of manifest generators and consumers of the manifest. If you are authoring a skill itself, read [`SKILL_METADATA_PROTOCOL.md`](https://github.com/jacob-balslev/skill-metadata-protocol) and [`docs/field-reference.md`](field-reference.md) instead. This document owns the transformation from authored to generated.
 >
 > **Authority.** `schemas/skill.schema.json` is the authored schema. `schemas/manifest.schema.json` is the generated manifest schema. This document explains the mapping between them and may not contradict either schema.
 
 ## Related documents
 
-- [`SKILL_METADATA_PROTOCOL.md`](../SKILL_METADATA_PROTOCOL.md) — normative public spec for the authored `SKILL.md` protocol.
+- [`SKILL_METADATA_PROTOCOL.md`](https://github.com/jacob-balslev/skill-metadata-protocol) — normative public spec for the authored `SKILL.md` protocol.
 - [`docs/field-reference.md`](field-reference.md) — per-field authoring reference.
 - [`docs/skill-metadata-protocol.md`](skill-metadata-protocol.md) — rationale and deep explanation.
 - [`schemas/skill.schema.json`](../schemas/skill.schema.json) — enforceable JSON Schema for authored frontmatter.

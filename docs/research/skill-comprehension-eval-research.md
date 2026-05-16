@@ -62,7 +62,7 @@ The Skill Graph's evaluation discipline is described in [`AGENTS.MD` § Evaluati
 | Manifest / contract | Authored skills round-trip through the manifest generator? | `scripts/generate-manifest.js --validate-only` | Yes |
 | Drift | Has the cited truth source changed since `last_verified`? | `scripts/skill-graph-drift.js` | Yes |
 
-The audit loop ([`SKILL_AUDIT_LOOP.md`](/Users/jacobbalslev/Development/skill-graph/SKILL_AUDIT_LOOP.md)) layers a five-phase wrapper on top: deterministic lint (Phase 1), optional model-graded review across seven dimensions (Phase 2), aggregate verdict (Phase 3), fix-or-defer (Phase 4), re-verify (Phase 5). The seven audit dimensions are defined in [`scripts/lib/audit-prompt-builder.js` lines 37–80](/Users/jacobbalslev/Development/skill-graph/scripts/lib/audit-prompt-builder.js): `metadata`, `activation`, `relation`, `grounding`, `content`, `eval`, `portability`.
+The audit loop ([`SKILL_AUDIT_LOOP.md`](https://github.com/jacob-balslev/skill-audit-loop/blob/main/SKILL_AUDIT_LOOP.md)) layers a five-phase wrapper on top: deterministic lint (Phase 1), optional model-graded review across seven dimensions (Phase 2), aggregate verdict (Phase 3), fix-or-defer (Phase 4), re-verify (Phase 5). The seven audit dimensions are defined in [`scripts/lib/audit-prompt-builder.js` lines 37–80](/Users/jacobbalslev/Development/skill-graph/scripts/lib/audit-prompt-builder.js): `metadata`, `activation`, `relation`, `grounding`, `content`, `eval`, `portability`.
 
 ### 2.1 The 31 eval files
 
@@ -106,7 +106,7 @@ This distribution is heavily skewed toward two dimensions — `application` and 
 
 ### 2.3 The audit loop's content dimension
 
-The audit loop's `content` dimension (one of the seven scorecard rows) does include comprehension-shaped checks. From [`SKILL_AUDIT_CHECKLIST.md` § 5 (lines 132–141)](/Users/jacobbalslev/Development/skill-graph/SKILL_AUDIT_CHECKLIST.md):
+The audit loop's `content` dimension (one of the seven scorecard rows) does include comprehension-shaped checks. From [`SKILL_AUDIT_CHECKLIST.md` § 5 (lines 132–141)](https://github.com/jacob-balslev/skill-audit-loop/blob/main/SKILL_AUDIT_CHECKLIST.md):
 
 - the skill has a clear Coverage section
 - the skill has a clear Philosophy section
@@ -1149,7 +1149,7 @@ Output: per-dimension table showing baseline pass-count, skill-loaded pass-count
 
 **Change.** Add an 8th dimension to the audit-loop's seven scorecard rows: `Comprehension quality`. Its `appliesWhen` predicate returns true iff `comprehension_state: present`. The dimension reads the comprehension scorecard (R3 output) and reports the same per-dimension verdicts.
 
-Update [`SKILL_AUDIT_CHECKLIST.md`](/Users/jacobbalslev/Development/skill-graph/SKILL_AUDIT_CHECKLIST.md) to add the new row to the artifact contract.
+Update [`SKILL_AUDIT_CHECKLIST.md`](https://github.com/jacob-balslev/skill-audit-loop/blob/main/SKILL_AUDIT_CHECKLIST.md) to add the new row to the artifact contract.
 
 **Why this is leverage-6.** It surfaces the comprehension grade in the existing audit artifact flow. Audits become 8-dimensional when the skill claims comprehension; they remain 7-dimensional when it doesn't.
 
@@ -1398,9 +1398,9 @@ Recommendation, not decision: defer until R3 ships. Once the grader runs and pro
 This report examined the following **24 repo files** (23 inside `skill-graph/` plus 1 in the parent `Development/skills/` workspace, added in the 2026-05-16 revision):
 
 1. [`/Users/jacobbalslev/Development/skill-graph/AGENTS.MD`](/Users/jacobbalslev/Development/skill-graph/AGENTS.MD) — full read; especially §§ Evaluation Discipline, Skill Audit Loop, What the Skill Graph Is
-2. [`/Users/jacobbalslev/Development/skill-graph/SKILL_METADATA_PROTOCOL.md`](/Users/jacobbalslev/Development/skill-graph/SKILL_METADATA_PROTOCOL.md) — full read
-3. [`/Users/jacobbalslev/Development/skill-graph/SKILL_AUDIT_LOOP.md`](/Users/jacobbalslev/Development/skill-graph/SKILL_AUDIT_LOOP.md) — full read
-4. [`/Users/jacobbalslev/Development/skill-graph/SKILL_AUDIT_CHECKLIST.md`](/Users/jacobbalslev/Development/skill-graph/SKILL_AUDIT_CHECKLIST.md) — full read
+2. [`https://github.com/jacob-balslev/skill-metadata-protocol`](https://github.com/jacob-balslev/skill-metadata-protocol) — full read
+3. [`https://github.com/jacob-balslev/skill-audit-loop/blob/main/SKILL_AUDIT_LOOP.md`](https://github.com/jacob-balslev/skill-audit-loop/blob/main/SKILL_AUDIT_LOOP.md) — full read
+4. [`https://github.com/jacob-balslev/skill-audit-loop/blob/main/SKILL_AUDIT_CHECKLIST.md`](https://github.com/jacob-balslev/skill-audit-loop/blob/main/SKILL_AUDIT_CHECKLIST.md) — full read
 5. [`/Users/jacobbalslev/Development/skill-graph/docs/quality-doctrine.md`](/Users/jacobbalslev/Development/skill-graph/docs/quality-doctrine.md) — full read
 6. [`/Users/jacobbalslev/Development/skill-graph/docs/field-reference.md`](/Users/jacobbalslev/Development/skill-graph/docs/field-reference.md) — read in full (1200 lines); focus on `comprehension_state`, `concept`, `eval_*`, `routing_eval` sections
 7. [`/Users/jacobbalslev/Development/skill-graph/skills/type-safety/SKILL.md`](/Users/jacobbalslev/Development/skill-graph/skills/type-safety/SKILL.md) — full read; used as worked example
@@ -1727,7 +1727,7 @@ A future improvement (out of scope for this report): a lint check that flags ski
 
 ## Appendix C — Mapping the rubric onto the audit-loop scorecard
 
-The audit-loop ([`SKILL_AUDIT_LOOP.md`](/Users/jacobbalslev/Development/skill-graph/SKILL_AUDIT_LOOP.md)) scores seven dimensions: Metadata, Activation, Relation, Grounding, Content, Eval, Portability. The proposed comprehension rubric adds C1–C9. The relationship is **complementary, not overlapping**:
+The audit-loop ([`SKILL_AUDIT_LOOP.md`](https://github.com/jacob-balslev/skill-audit-loop/blob/main/SKILL_AUDIT_LOOP.md)) scores seven dimensions: Metadata, Activation, Relation, Grounding, Content, Eval, Portability. The proposed comprehension rubric adds C1–C9. The relationship is **complementary, not overlapping**:
 
 | Audit-loop dimension | Comprehension dimension(s) | Relationship |
 |---|---|---|
@@ -1745,7 +1745,7 @@ The integration recipe (R6, §7.6): the audit-loop's `Eval quality` row, when a 
 
 ## Appendix D — Pre-existing terms the rubric should use carefully
 
-To avoid the v1→v2 enum drift the protocol experienced ([`SKILL_METADATA_PROTOCOL.md`](/Users/jacobbalslev/Development/skill-graph/SKILL_METADATA_PROTOCOL.md) § Migration Notes), the rubric should use vocabulary that does not collide with existing protocol terms.
+To avoid the v1→v2 enum drift the protocol experienced ([`SKILL_METADATA_PROTOCOL.md`](https://github.com/jacob-balslev/skill-metadata-protocol) § Migration Notes), the rubric should use vocabulary that does not collide with existing protocol terms.
 
 **Terms already in use that the rubric reuses with same meaning:**
 

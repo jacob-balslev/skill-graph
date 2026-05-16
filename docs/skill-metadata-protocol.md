@@ -1,6 +1,6 @@
 # Skill Metadata Protocol Rationale
 
-This is the rationale and deep explanation for the Skill Metadata Protocol. For normative authoring rules, start with [`SKILL_METADATA_PROTOCOL.md`](../SKILL_METADATA_PROTOCOL.md); this document explains why the protocol has this shape and how the pieces fit together.
+This is the rationale and deep explanation for the Skill Metadata Protocol. For normative authoring rules, start with [`SKILL_METADATA_PROTOCOL.md`](https://github.com/jacob-balslev/skill-metadata-protocol); this document explains why the protocol has this shape and how the pieces fit together.
 
 Skill Metadata Protocol is the **skill-level contract** for AI SKILL.md. It defines the structured relevance metadata a skill should declare: activation signals, taxonomy, project/file scope, sibling-skill relations, grounding, drift checks, eval state, and portability.
 
@@ -16,7 +16,7 @@ Skill Graph is the **library-level system** that works with this protocol. It in
 
 | Document | Purpose |
 |---|---|
-| [`SKILL_METADATA_PROTOCOL.md`](../SKILL_METADATA_PROTOCOL.md) | Normative public spec: required fields, semantic rules, authored vs generated fields, migration notes |
+| [`SKILL_METADATA_PROTOCOL.md`](https://github.com/jacob-balslev/skill-metadata-protocol) | Normative public spec: required fields, semantic rules, authored vs generated fields, migration notes |
 | `docs/skill-metadata-protocol.md` (this file) | Rationale and deep explanation: archetype map, requiredness groups, schema strictness rules, design tradeoffs |
 | `docs/field-reference.md` | One section per authored field — purpose, rules, examples, when to use |
 | `docs/field-decision-guide.md` | Decision tables for `scope`, `relations.*`, and the eval-health fields (`eval_artifacts`, `eval_state`, `routing_eval`) / `portability` |
