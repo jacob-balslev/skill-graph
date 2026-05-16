@@ -1,0 +1,249 @@
+{
+  "skill_name": "type-safety",
+  "subject": "Type-safety as a discipline: what static type systems guarantee, the difference between sound and unsound systems, structural vs nominal typing, type narrowing, the runtime boundary problem, the discipline of validating at I/O boundaries and trusting types inside, and the connection from compile-time guarantees to runtime correctness",
+  "adjacent_concepts": ["api-design", "testing-strategy", "data-modeling", "code-review"],
+  "grounding_note": "Truth sources cite line ranges in skills/type-safety/SKILL.md (frontmatter concept block at lines 63-116, body Verification at 254-262, Do NOT Use When at 264-272). Cases are authored against the v4 SKILL.md as of 2026-05-16. Comprehension-dimension extensions (comprehension_dimension, concept_field, transfer, expected_behaviors) are additive — graders that don't consume them treat them as no-ops.",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "Explain what type safety is, to a product manager who has never written code. Do not use the phrases from the type-safety skill body verbatim.",
+      "dimension": "definition",
+      "comprehension_dimension": "C1",
+      "concept_field": "definition",
+      "transfer": "near",
+      "substance": "domain",
+      "calibration": "semantic",
+      "truth_mode": "conceptual_correctness_plus_repo_application",
+      "skill_type": "concept",
+      "criticality": "high",
+      "truth_sources": [
+        "skills/type-safety/SKILL.md:64",
+        "skills/type-safety/SKILL.md#type-safety"
+      ],
+      "expected_behaviors": [
+        { "id": "names_primary_category", "kind": "positive", "description": "Names compile-time error detection as the category" },
+        { "id": "states_observable_effect", "kind": "positive", "description": "States that types rule out a class of runtime errors" },
+        { "id": "no_verbatim_span", "kind": "negative", "description": "No 6-gram span shared with skills/type-safety/SKILL.md concept.definition or body" },
+        { "id": "no_fabricated_specificity", "kind": "negative", "description": "Does not invent claims about specific languages, line counts, or guarantees not in concept.definition" }
+      ],
+      "expected_reasoning": "A correct answer names the category (compile-time error detection), the effect (rules out a class of runtime errors), the cost (annotation burden up-front), and the benefit (compounding safety). It does NOT verbatim-copy the concept.definition's first sentence, which is the canonical body phrasing."
+    },
+    {
+      "id": 2,
+      "prompt": "A team is migrating a Python service that uses dict[str, Any] for inbound API payloads to a TypeScript rewrite. They're debating between Record<string, unknown> and Record<string, any>. Apply type-safety's mental model primitives to this case. The skill body discusses JSON.parse but does not enumerate this specific Python-to-TypeScript migration scenario.",
+      "dimension": "mental_model",
+      "comprehension_dimension": "C2",
+      "concept_field": "mental_model",
+      "transfer": "far",
+      "substance": "domain",
+      "calibration": "semantic",
+      "truth_mode": "conceptual_correctness_plus_repo_application",
+      "skill_type": "concept",
+      "criticality": "critical",
+      "truth_sources": [
+        "skills/type-safety/SKILL.md:65-78",
+        "skills/type-safety/SKILL.md:208-239",
+        "skills/type-safety/SKILL.md#the-runtime-boundary"
+      ],
+      "expected_behaviors": [
+        { "id": "invokes_runtime_boundary_primitive", "kind": "positive", "description": "Identifies API payloads as crossing the runtime boundary, where type information stops" },
+        { "id": "invokes_narrowing_or_validation_primitive", "kind": "positive", "description": "Invokes either the narrowing primitive (unknown forces narrowing) or the validation primitive (parse at boundary)" },
+        { "id": "distinguishes_any_from_unknown", "kind": "positive", "description": "Names that any opts out of type-checking, unknown forces narrowing" },
+        { "id": "conclusion_consistent_with_skill", "kind": "positive", "description": "Concludes Record<string, unknown> + validator at the boundary preserves type-safety; Record<string, any> silently disables it" },
+        { "id": "scenario_not_in_body", "kind": "negative", "description": "Body does not mention Python-to-TypeScript migration; the answer is far transfer, not retrieval" }
+      ],
+      "expected_reasoning": "API payloads are an I/O boundary; their types are unverified bytes until parsed. unknown forces narrowing (the type-safe answer to 'I don't know what this is yet'); any disables checking entirely. The right answer is Record<string, unknown> at the type level plus a schema validator (Zod, io-ts) at the boundary to produce typed values. Record<string, any> would compile but silently destroy the discipline."
+    },
+    {
+      "id": 3,
+      "prompt": "Why does the discipline of type-safety exist as a thing teams choose to invest in? What did practitioners do before it was widely adopted, and what was specifically broken about that approach?",
+      "dimension": "purpose",
+      "comprehension_dimension": "C3",
+      "concept_field": "purpose",
+      "transfer": "near",
+      "substance": "domain",
+      "calibration": "semantic",
+      "truth_mode": "conceptual_correctness_plus_repo_application",
+      "skill_type": "concept",
+      "criticality": "high",
+      "truth_sources": [
+        "skills/type-safety/SKILL.md:79-84"
+      ],
+      "expected_behaviors": [
+        { "id": "names_pain_point", "kind": "positive", "description": "Names the pain point — runtime bugs becoming production incidents or silent data corruption" },
+        { "id": "names_prior_alternative", "kind": "positive", "description": "Names the prior alternative — dynamic languages relying on tests, docs, and reader vigilance to communicate contracts" },
+        { "id": "names_improvement_mechanism", "kind": "positive", "description": "States that types make contracts checkable at compile time and visible at call sites; scales with team size and code size" },
+        { "id": "no_fabricated_purpose", "kind": "negative", "description": "Does not add purposes not in the skill — e.g., does not claim types are about performance" }
+      ]
+    },
+    {
+      "id": 4,
+      "prompt": "We're designing the JSON shape of a new outbound webhook event for the orders service. Apply type-safety to decide the field structure and naming.",
+      "dimension": "boundary",
+      "comprehension_dimension": "C4",
+      "concept_field": "boundary",
+      "transfer": "near",
+      "substance": "contradiction-check",
+      "calibration": "semantic",
+      "truth_mode": "code_verification",
+      "skill_type": "concept",
+      "criticality": "high",
+      "truth_sources": [
+        "skills/type-safety/SKILL.md:85-94",
+        "skills/type-safety/SKILL.md:264-272",
+        "skills/type-safety/SKILL.md#do-not-use-when"
+      ],
+      "expected_behaviors": [
+        { "id": "identifies_cross_into_api_design", "kind": "positive", "description": "Recognizes that JSON-shape design of an API surface is api-design, not type-safety" },
+        { "id": "names_api_design_as_owner", "kind": "positive", "description": "Names api-design as the correct owner skill" },
+        { "id": "explains_mechanism_of_difference", "kind": "positive", "description": "States api-design owns the external surface contract; type-safety owns the discipline of expressing internal program correctness as types" },
+        { "id": "no_partial_comply_in_type_safety_voice", "kind": "negative", "description": "Does not provide JSON shape recommendations in type-safety's voice before handing off" }
+      ]
+    },
+    {
+      "id": 5,
+      "prompt": "Where does Haskell's Generalized Algebraic Data Types (GADTs) feature sit in type-safety's taxonomy? It allows types to depend on values like dependent types but is more constrained. Place it using the skill's taxonomy vocabulary, or explain why it doesn't fit.",
+      "dimension": "mental_model",
+      "comprehension_dimension": "C5",
+      "concept_field": "taxonomy",
+      "transfer": "far",
+      "substance": "domain",
+      "calibration": "semantic",
+      "truth_mode": "conceptual_correctness_plus_repo_application",
+      "skill_type": "concept",
+      "criticality": "normal",
+      "truth_sources": [
+        "skills/type-safety/SKILL.md:95-103"
+      ],
+      "expected_behaviors": [
+        { "id": "uses_taxonomy_vocab", "kind": "positive", "description": "Uses one or more of the schema's taxonomy relationship types: subset, alternative, prerequisite, composition, specialization" },
+        { "id": "places_between_dependent_and_refinement", "kind": "positive", "description": "Places GADTs near dependent and refinement types, recognizing the partial dependency" },
+        { "id": "preserves_existing_relationships", "kind": "positive", "description": "Placement does not contradict the relationships among existing taxonomy entries (sound vs unsound, structural vs nominal)" },
+        { "id": "admits_imperfect_fit_or_extends", "kind": "positive", "description": "Either admits the fit is imperfect and proposes how to extend, or fits with a clear relationship-type justification" }
+      ],
+      "expected_reasoning": "GADTs sit between Haskell's vanilla parametric polymorphism and full dependent types — types can be refined by pattern-matching on constructors, but not by arbitrary value expressions. In the skill's taxonomy, the closest fit is 'specialization of sound type systems toward refinement types' or 'composition of pattern-matching with parametric polymorphism'. A correct answer either places GADTs in one of those slots or names the gap in the taxonomy."
+    },
+    {
+      "id": 6,
+      "prompt": "Part A: The type-safety skill compares a type system to a building's structural engineering. Use that analogy to explain how `npm audit` differs from type-checking — does the analogy place npm audit as a type-check, as a different kind of check, or outside the scope of the analogy?\n\nPart B: Where does the structural-engineering analogy break down? Give one concrete case where applying the analogy would mislead someone.",
+      "dimension": "mental_model",
+      "comprehension_dimension": "C6",
+      "concept_field": "analogy",
+      "transfer": "far",
+      "substance": "domain",
+      "calibration": "semantic",
+      "truth_mode": "conceptual_correctness_plus_repo_application",
+      "skill_type": "concept",
+      "criticality": "normal",
+      "truth_sources": [
+        "skills/type-safety/SKILL.md:104-107"
+      ],
+      "expected_behaviors": [
+        { "id": "part_a_distinguishes_npm_audit", "kind": "positive", "description": "Part A: Identifies npm audit as a different class of check (fire-marshal inspection vs structural design) — checking for vulnerabilities found AFTER the build, not for the threat class the design accounted for" },
+        { "id": "part_b_names_real_break", "kind": "positive", "description": "Part B: Names a concrete way the analogy misleads — e.g., structural engineering is stamped once vs type-check runs every change; or escape hatches are gated in engineering but not in TypeScript by default" },
+        { "id": "preserves_structural_relationships", "kind": "positive", "description": "Part A's mapping preserves the analogy's load-bearing relationship (build-time design verification vs runtime threat tolerance)" },
+        { "id": "no_under_claim_on_break", "kind": "negative", "description": "Part B does not refuse to identify a break ('the analogy holds') — the analogy DOES break in identifiable ways and a refusal indicates non-engagement" }
+      ]
+    },
+    {
+      "id": 7,
+      "prompt": "Our backend team has been told that since we use TypeScript with strict mode enabled, the JSON parsed from our customer API responses is automatically validated at compile time. We've been planning the next quarter's work and someone proposed dropping our Zod schemas to reduce maintenance overhead. Walk me through whether that's a sensible plan.",
+      "dimension": "anti_pattern",
+      "comprehension_dimension": "C7",
+      "concept_field": "misconception",
+      "transfer": "near",
+      "substance": "contradiction-check",
+      "calibration": "semantic",
+      "truth_mode": "conceptual_correctness_plus_repo_application",
+      "skill_type": "concept",
+      "criticality": "critical",
+      "truth_sources": [
+        "skills/type-safety/SKILL.md:108-115",
+        "skills/type-safety/SKILL.md:208-239",
+        "skills/type-safety/SKILL.md#the-runtime-boundary"
+      ],
+      "expected_behaviors": [
+        { "id": "flags_misconception_unprompted", "kind": "positive", "description": "Recognizes 'JSON parsed... automatically validated at compile time' as the misconception without being told it's wrong" },
+        { "id": "corrects_via_runtime_boundary", "kind": "positive", "description": "Corrects using the runtime boundary primitive — TypeScript types are claims about values; values from network/disk are not types until parsed" },
+        { "id": "rejects_dropping_zod", "kind": "positive", "description": "Recommends keeping Zod (or equivalent) for I/O boundary validation; dropping it would silently disable runtime safety" },
+        { "id": "explains_mechanism_of_mislead", "kind": "positive", "description": "States that the misconception conflates 'static type assertion' with 'runtime verification' — JSON.parse(input) as User is a claim, not a check" },
+        { "id": "no_partial_validation_of_misconception", "kind": "negative", "description": "Does not validate the misconception even partially (e.g., 'mostly true, but...')" }
+      ],
+      "expected_reasoning": "The misconception is that TypeScript catches runtime errors. It does not. TypeScript is unsound by design, and even without escape hatches, it makes no guarantees about values crossing the runtime boundary. JSON.parse(input) as User produces a value of static type User and actual type whatever the bytes contained — the static type is a claim, not a verification. Dropping Zod removes the only mechanism that actually validates at runtime; the agent should reject the proposal and explain the mechanism."
+    },
+    {
+      "id": 8,
+      "prompt": "Review this TypeScript snippet for type-safety. Snippet (payments.ts): `export async function fetchPaymentMethod(userId: string) { const response = await fetch('/api/users/' + userId + '/payment'); const data: any = await response.json(); return data as PaymentMethod; } function getUserBalance(user: User): number { const cents = user.balance; return cents / 100; } function summarize(records: PaymentRecord[]): string { return records.map(r => r.amount.toFixed(2)).join(', '); }`. What's your assessment?",
+      "dimension": "application",
+      "comprehension_dimension": "C8",
+      "concept_field": null,
+      "transfer": "near",
+      "substance": "domain",
+      "calibration": "semantic",
+      "truth_mode": "conceptual_correctness_plus_repo_application",
+      "skill_type": "concept",
+      "criticality": "high",
+      "truth_sources": [
+        "skills/type-safety/SKILL.md:254-262",
+        "skills/type-safety/SKILL.md#verification"
+      ],
+      "expected_behaviors": [
+        { "id": "invokes_verification_checklist_unprompted", "kind": "positive", "description": "Walks through ≥3 items from the type-safety Verification checklist without being told to" },
+        { "id": "flags_any_without_comment", "kind": "positive", "description": "Flags `any: any` on the data variable without justification" },
+        { "id": "flags_as_cast_without_comment", "kind": "positive", "description": "Flags `as PaymentMethod` cast on the unvalidated response.json() result" },
+        { "id": "flags_missing_runtime_validation", "kind": "positive", "description": "Flags the fetch boundary as missing runtime validation (Zod/io-ts/valibot)" },
+        { "id": "anchors_to_line_numbers", "kind": "positive", "description": "References specific lines or function names from the snippet, not abstract restatements" },
+        { "id": "no_verdict_without_anchor", "kind": "negative", "description": "Does not provide an overall verdict without anchoring each judgment to a Verification criterion" }
+      ],
+      "expected_reasoning": "The Verification checklist requires (paraphrased): strict mode on, noUncheckedIndexedAccess on, no `any` without justification comment, no `as Type` without justification comment, every I/O boundary parses with a validator, discriminated unions have exhaustiveness, public APIs have explicit return types. This snippet fails the `any` rule (data: any), the as cast rule (as PaymentMethod), the I/O validation rule (fetch result is cast not parsed), the explicit return type rule on the async function (inferred only). It passes 'no @ts-ignore'. The agent should walk through these items by name and anchor each to the snippet."
+    },
+    {
+      "id": 9,
+      "prompt": "Help me design a Postgres schema for storing user-uploaded file metadata. I want to use type-safety to decide which columns should be NOT NULL, which should be enums, and how to express the relationships between the tables.",
+      "dimension": "boundary",
+      "comprehension_dimension": "C9",
+      "concept_field": null,
+      "transfer": "near",
+      "substance": "contradiction-check",
+      "calibration": "semantic",
+      "truth_mode": "code_verification",
+      "skill_type": "concept",
+      "criticality": "high",
+      "truth_sources": [
+        "skills/type-safety/SKILL.md:264-272",
+        "skills/type-safety/SKILL.md#do-not-use-when"
+      ],
+      "expected_behaviors": [
+        { "id": "refuses_schema_design_in_type_safety_voice", "kind": "positive", "description": "Does not produce a column list with NOT NULL or enum suggestions in type-safety's voice" },
+        { "id": "names_data_modeling_as_owner", "kind": "positive", "description": "Names data-modeling as the correct owner skill" },
+        { "id": "explains_mechanism", "kind": "positive", "description": "States that data-modeling owns persistence shape; type-safety owns in-memory type contracts that consume that shape" },
+        { "id": "no_partial_comply", "kind": "negative", "description": "Does not provide partial schema recommendations before refusing" },
+        { "id": "no_overrefuse", "kind": "negative", "description": "If the user asks a follow-up about the TypeScript types that consume the schema once data-modeling has produced it, the agent re-engages — does not blanket-refuse all related work" }
+      ]
+    },
+    {
+      "id": 10,
+      "prompt": "A team has heard that 'type assertions in TypeScript are like runtime casts in C++ — they check the type at runtime and fail if it's wrong.' Walk me through whether this comparison is accurate.",
+      "dimension": "anti_pattern",
+      "comprehension_dimension": "C7",
+      "concept_field": "misconception",
+      "transfer": "far",
+      "substance": "contradiction-check",
+      "calibration": "semantic",
+      "truth_mode": "conceptual_correctness_plus_repo_application",
+      "skill_type": "concept",
+      "criticality": "high",
+      "truth_sources": [
+        "skills/type-safety/SKILL.md:108-115",
+        "skills/type-safety/SKILL.md#any-vs-unknown-vs-never"
+      ],
+      "expected_behaviors": [
+        { "id": "flags_misconception_about_as", "kind": "positive", "description": "Recognizes that TypeScript `as` is NOT a runtime check; C++ dynamic_cast is. The comparison is wrong." },
+        { "id": "states_as_compiles_to_nothing", "kind": "positive", "description": "States that `as` compiles to nothing — it is a directive to the type checker only, no runtime code is emitted" },
+        { "id": "distinguishes_static_directive_from_runtime_check", "kind": "positive", "description": "Distinguishes a static directive ('trust me, this is the type') from a runtime check (`instanceof`, validator parse)" },
+        { "id": "no_partial_validation", "kind": "negative", "description": "Does not say 'yes, with some caveats' — the comparison is structurally wrong, not just imprecise" }
+      ],
+      "expected_reasoning": "TypeScript `as` is a static directive, not a runtime check. It compiles to nothing. C++ `dynamic_cast` IS a runtime check (returns nullptr or throws). C-style casts in C++ are closer to TypeScript `as`. A correct answer rejects the comparison: TypeScript `as` is a silent claim a misused `as` makes; the C++ comparison should be to a C-style cast, not dynamic_cast. The body's misconception field explicitly names this trap."
+    }
+  ]
+}

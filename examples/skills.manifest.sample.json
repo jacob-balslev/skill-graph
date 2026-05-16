@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-05-16T08:47:47Z",
+  "generated_at": "2026-05-16T12:00:00Z",
   "schema_version": 4,
   "skills": [
     {
@@ -1322,6 +1322,121 @@
         ]
       },
       "scope": "portable",
+      "stability": "experimental",
+      "type": "capability",
+      "version": "1.0.0"
+    },
+    {
+      "activation": {
+        "anti_examples": [
+          "decide where the form's state lives across page navigations (use state-management)",
+          "pick the design tokens for color and spacing (use visual-design-foundations)",
+          "decide how a single product's modules are wired together internally (use design-module-composition)",
+          "implement a specific React hook for form management (library docs / tactical decision)"
+        ],
+        "examples": [
+          "design the API surface for a Dialog component that must work in multiple products with different visual languages",
+          "decide whether a Form component should be controlled, uncontrolled, or both",
+          "structure a component library so primitives can be themed without rewriting the composites",
+          "refactor a 30-prop component into a compound API that surfaces the right primitives"
+        ],
+        "keywords": [
+          "component library design",
+          "atomic design layering",
+          "component primitives",
+          "component composites",
+          "compound components",
+          "polymorphic component",
+          "asChild prop",
+          "headless component",
+          "styled component",
+          "controlled component",
+          "uncontrolled component",
+          "ref forwarding",
+          "render props",
+          "component slots",
+          "compose components",
+          "component prop API",
+          "component reuse across products"
+        ],
+        "triggers": [
+          "structure components for reuse",
+          "how do I design this component API",
+          "controlled or uncontrolled",
+          "should I use props or composition",
+          "compound component pattern",
+          "headless vs styled",
+          "primitive vs composite"
+        ]
+      },
+      "allowed-tools": "Read Grep",
+      "category": "design",
+      "concept": {
+        "analogy": "|",
+        "boundary": "|",
+        "definition": "Component architecture is the architectural discipline of structuring a library of UI components so that they can be reused across products, themes, and teams without each reuse requiring a rewrite. The discipline answers four interlocking questions: (1) at what LAYER does a given concern belong — primitive, composite, product-specific assembly; (2) what is the API SURFACE — which props, slots, refs, callbacks, render functions, and which are open for extension vs closed for modification; (3) what STATE CONTRACT does the component expose — controlled, uncontrolled, hybrid; (4) what THEMING and styling mechanism allows the component's behavior to remain stable while its visual language changes. The discipline is distinct from the visual design language itself (which colors, which type scale) and from within-product wiring (which screens compose which modules) — it is the architectural stratum that makes both possible by producing components whose API outlives any single product instance and any single visual treatment.",
+        "mental_model": "|",
+        "misconception": "|",
+        "purpose": "|",
+        "taxonomy": "|"
+      },
+      "description": "Use when structuring a component library or design system for reuse across products, multi-app environments, or scaled teams: the layering of primitives, composites, and product-specific assemblies; component API design (props, polymorphism, compound components, render props vs hooks vs slots); the open-closed principle for component evolution; the headless / styled split and how it enables theming; controlled vs uncontrolled patterns; ref forwarding and imperative escape hatches; the trade-offs between configuration and composition; and the cross-product reuse problem that emerges when one component must serve multiple visual languages or interaction contracts. Do NOT use for within-product module composition that does not span product boundaries (use design-module-composition), the design-system meta-architecture above components (use design-system-architecture), the visual design language itself (use visual-design-foundations or design tokens), tactical React patterns at the hook level (library docs), or state-management decisions that are not component-API-shaped (use state-management).",
+      "domain": "design/component-systems",
+      "health": {
+        "comprehension_state": "present",
+        "drift_check": {
+          "last_verified": "2026-05-16"
+        },
+        "eval_artifacts": "planned",
+        "eval_state": "unverified",
+        "freshness": "2026-05-16",
+        "has_grounding": false,
+        "has_relations": true,
+        "routing_eval": "absent"
+      },
+      "id": "component-architecture",
+      "license": "MIT",
+      "name": "component-architecture",
+      "owner": "skill-graph-maintainer",
+      "path": "skills/component-architecture/SKILL.md",
+      "relations": {
+        "boundary": [
+          {
+            "reason": "design-module-composition owns how a SINGLE PRODUCT's modules compose internally — layout, slots, named regions, within-product composition patterns. This skill owns the layer above: how components are STRUCTURED to be reusable across products, with API surfaces that survive multiple visual languages and interaction contracts. They compose: this skill says how to build the components; design-module-composition says how a product wires them up.",
+            "skill": "design-module-composition"
+          },
+          {
+            "reason": "design-system-architecture owns the META structure of a design system: tokens, foundations, governance, documentation, distribution. This skill owns one stratum inside that: how components themselves are structured. A design system is a system of components plus tokens plus foundations plus distribution; this skill is the component stratum.",
+            "skill": "design-system-architecture"
+          },
+          {
+            "reason": "visual-design-foundations owns the design language itself: color theory, typography, spacing, grid, motion. This skill owns the structural mechanism by which that language is delivered to product code — components that bind to tokens and surface the language in reusable form.",
+            "skill": "visual-design-foundations"
+          },
+          {
+            "reason": "state-management owns the location and ownership of state independent of how it's exposed to components. This skill owns the API surface for state in components: controlled vs uncontrolled, default values, change handlers, ref forwarding to imperative state. The two compose: state-management decides where state lives; this skill decides how a component exposes its state contract.",
+            "skill": "state-management"
+          },
+          {
+            "reason": "frontend-architecture owns the application-level architecture (folder structure, routing, build, deployment). This skill owns the component-level architecture within. A well-architected frontend uses well-architected components, but they answer different questions.",
+            "skill": "frontend-architecture"
+          }
+        ],
+        "related": [
+          "design-system-architecture",
+          "design-module-composition",
+          "visual-design-foundations",
+          "state-management",
+          "frontend-architecture",
+          "typography-system",
+          "color-system-design"
+        ],
+        "verify_with": [
+          "design-system-architecture",
+          "design-module-composition"
+        ]
+      },
+      "scope": "reference",
       "stability": "experimental",
       "type": "capability",
       "version": "1.0.0"
@@ -5669,6 +5784,10 @@
           {
             "reason": "design-module-composition owns component props, variants, slots, and token contracts; interaction-patterns owns choosing the user-facing control pattern",
             "skill": "design-module-composition"
+          },
+          {
+            "reason": "component-architecture owns the structural design of a component library (primitives, composition, headless/styled split, controlled/uncontrolled, polymorphism); interaction-patterns owns choosing the user-facing interaction pattern before any component-API decision is made",
+            "skill": "component-architecture"
           }
         ],
         "related": [
@@ -6273,6 +6392,112 @@
       "scope": "portable",
       "stability": "experimental",
       "type": "overlay",
+      "version": "1.0.0"
+    },
+    {
+      "activation": {
+        "anti_examples": [
+          "draw the boxes-and-arrows diagram of the system (use knowledge-modeling)",
+          "name the React hook for managing form state (tactical implementation choice)",
+          "write user-research interview questions (use user-research)",
+          "teach a junior engineer about distributed-systems consistency models (use teaching-patterns)"
+        ],
+        "examples": [
+          "users keep trying to drag a row to reorder but the table doesn't support drag — diagnose the model mismatch",
+          "explain why race conditions across parallel tool calls are hard for developers to anticipate",
+          "decide on the right metaphor for a feature that combines folders and tags",
+          "the team disagrees on what 'workspace' means in the product — surface the divergent mental models"
+        ],
+        "keywords": [
+          "mental models",
+          "mental model",
+          "gulf of execution",
+          "gulf of evaluation",
+          "user model",
+          "system model",
+          "designer model",
+          "conceptual model",
+          "metaphor",
+          "analogy",
+          "model-system fit",
+          "hidden invariant",
+          "model drift",
+          "shared understanding",
+          "cognitive tool"
+        ],
+        "triggers": [
+          "how do I think about",
+          "users expect X but the system does Y",
+          "this is confusing",
+          "the user's model doesn't match",
+          "why is this surprising",
+          "what's the right metaphor"
+        ]
+      },
+      "allowed-tools": "Read Grep",
+      "category": "foundations",
+      "concept": {
+        "analogy": "|",
+        "boundary": "|",
+        "definition": "A mental model is the internal representation a person carries of how a system, domain, or set of relationships behaves — used to predict outcomes, plan actions, and interpret feedback. Mental models are constructed (from experience, instruction, analogy, and inference), private (each mind holds its own), and partial (no model captures the full complexity of its referent). They are the cognitive scaffolding that makes the world tractable; they are also the silent source of most surprise, frustration, and bug-shaped misunderstanding. The discipline of mental-models is the explicit study of how these representations are built, where they diverge from the systems they represent, and how to bring multiple models into alignment when collaborators, users, and systems are working from different ones.",
+        "mental_model": "|",
+        "misconception": "|",
+        "purpose": "|",
+        "taxonomy": "|"
+      },
+      "description": "Use when reasoning about how a system, user, or designer's internal model of behavior may diverge from reality — applies across UX, distributed systems, type systems, API design, and team collaboration. Covers the three-model frame (designer / system image / user), the two gulfs (execution and evaluation), analogy and metaphor as model-seeding, the five failure modes (transfer, overgeneralization, underspecification, drift, invariant blindness), the surface/operational/architectural/domain layering, and the discipline of validating a model against the system it claims to represent. Do NOT use for the visual representation of a model (use knowledge-modeling), for the formal-domain entities-attributes-relationships of conceptual modeling (use conceptual-modeling), for cognitive biases in decision-making (out of scope), or for empirically eliciting user models via research methods (use user-research).",
+      "domain": "foundations/mental-models",
+      "health": {
+        "comprehension_state": "present",
+        "drift_check": {
+          "last_verified": "2026-05-16"
+        },
+        "eval_artifacts": "planned",
+        "eval_state": "unverified",
+        "freshness": "2026-05-16",
+        "has_grounding": false,
+        "has_relations": true,
+        "routing_eval": "absent"
+      },
+      "id": "mental-models",
+      "license": "MIT",
+      "name": "mental-models",
+      "owner": "skill-graph-maintainer",
+      "path": "skills/mental-models/SKILL.md",
+      "relations": {
+        "boundary": [
+          {
+            "reason": "conceptual-modeling owns the FORMAL representation of a domain (entities, attributes, relationships) for downstream use by schemas and APIs; this skill owns the COGNITIVE construct (how a mind represents the system), which is upstream of any formalism.",
+            "skill": "conceptual-modeling"
+          },
+          {
+            "reason": "knowledge-modeling owns the choice of representation paradigm (graphs, frames, rules, networks); this skill owns the discipline of reasoning about model-system fit before any paradigm is chosen.",
+            "skill": "knowledge-modeling"
+          },
+          {
+            "reason": "user-research owns the methods for eliciting and validating user mental models empirically; this skill owns the framing of what a mental model is and how to reason about its accuracy.",
+            "skill": "user-research"
+          },
+          {
+            "reason": "reasoning is the cognitive primitive of drawing inferences; mental models are the structures over which that reasoning operates. Reasoning uses models; this skill builds and audits them.",
+            "skill": "reasoning"
+          }
+        ],
+        "related": [
+          "reasoning",
+          "conceptual-modeling",
+          "knowledge-modeling",
+          "user-research",
+          "semantics"
+        ],
+        "verify_with": [
+          "user-research",
+          "reasoning"
+        ]
+      },
+      "scope": "reference",
+      "stability": "experimental",
+      "type": "capability",
       "version": "1.0.0"
     },
     {
@@ -9117,6 +9342,114 @@
     {
       "activation": {
         "anti_examples": [
+          "implement HMAC verification for a Shopify webhook (use webhook-integration)",
+          "configure a SAST scanner for the CI pipeline (use security-scanning)",
+          "store an OAuth refresh token in an encrypted column (use credential-encryption)",
+          "respond to a GDPR data-subject-access request (use gdpr-compliance)",
+          "defend an LLM agent against prompt injection (use prompt-injection-defense)"
+        ],
+        "examples": [
+          "audit a route handler for authn, authz, and input validation",
+          "decide where to validate inbound data when the same shape comes in through multiple endpoints",
+          "decide whether a piece of data is a secret, a credential, or non-sensitive — and what handling each requires",
+          "produce a threat model for a new feature before any code is written"
+        ],
+        "keywords": [
+          "security fundamentals",
+          "threat modeling",
+          "input validation",
+          "authentication",
+          "authorization",
+          "authn",
+          "authz",
+          "least privilege",
+          "defense in depth",
+          "secure by default",
+          "OWASP Top 10",
+          "Saltzer and Schroeder",
+          "secrets handling",
+          "attack surface",
+          "trust boundary",
+          "principle of least privilege"
+        ],
+        "triggers": [
+          "is this secure",
+          "where should validation happen",
+          "authentication vs authorization",
+          "what could go wrong here",
+          "threat model",
+          "OWASP",
+          "do I need to check permissions here"
+        ]
+      },
+      "allowed-tools": "Read Grep",
+      "category": "quality",
+      "concept": {
+        "analogy": "|",
+        "boundary": "|",
+        "definition": "Security fundamentals are the cross-cutting design principles, threat-modeling discipline, and recurring vulnerability classes that determine whether a system can be trusted to handle data, identity, and authority safely under adversarial conditions. The discipline is upstream of any specific vulnerability or vendor tool: it asks 'what are we protecting,' 'from whom,' 'what could go wrong,' and 'what's the cost if it does' before any implementation choice is made. Security fundamentals are not a feature added after the system works; they are a property of the design from the first commit, encoded in trust boundaries, validation choices, default permissions, and the placement of authentication and authorization checks. The discipline acknowledges that perfect security is impossible (any system can be attacked given sufficient resources and time), so the goal is to make attacks expensive, traceable, and limited in blast radius — defense in depth rather than perimeter security, least privilege rather than convenience, secure defaults rather than opt-in protections.",
+        "mental_model": "|",
+        "misconception": "|",
+        "purpose": "|",
+        "taxonomy": "|"
+      },
+      "description": "Use when reasoning about the security properties any application or system needs to satisfy: the foundational threat-modeling discipline (assets, threats, adversaries, surfaces), Saltzer and Schroeder's eight design principles (1975), the input-validation discipline and where validation belongs, the authentication vs authorization distinction, secrets handling and key hygiene, secure-by-default and least-privilege rules, the OWASP Top 10 as a working enumeration of recurring vulnerability classes, and the role of defense in depth. Covers the cross-cutting decisions every system makes about what it trusts, what it validates, where it checks permissions, and what it logs — independent of any specific vulnerability class or vendor. Do NOT use for LLM-specific prompt-injection defense (use prompt-injection-defense), the runtime cryptographic implementation of a primitive (use vendor cryptography libraries), security-scanning tool selection (use security-scanning), credential-encryption schemes for stored secrets (use credential-encryption), the GDPR / regulatory-compliance discipline (use gdpr-compliance), or the social/organizational side of security (out of scope — covered by industry training).",
+      "domain": "quality/security",
+      "health": {
+        "comprehension_state": "present",
+        "drift_check": {
+          "last_verified": "2026-05-16"
+        },
+        "eval_artifacts": "planned",
+        "eval_state": "unverified",
+        "freshness": "2026-05-16",
+        "has_grounding": false,
+        "has_relations": true,
+        "routing_eval": "absent"
+      },
+      "id": "security-fundamentals",
+      "license": "MIT",
+      "name": "security-fundamentals",
+      "owner": "skill-graph-maintainer",
+      "path": "skills/security-fundamentals/SKILL.md",
+      "relations": {
+        "boundary": [
+          {
+            "reason": "type-safety provides compile-time guarantees about the SHAPE of data inside the program; security-fundamentals provides the runtime discipline that decides what to trust and what to validate at the system's TRUST BOUNDARIES. The two compose: validate at the boundary, then trust the type inside.",
+            "skill": "type-safety"
+          },
+          {
+            "reason": "api-design owns the external surface contract (endpoints, methods, schemas); this skill owns the security properties any such surface must enforce regardless of design choices (authn, authz, input validation, rate limiting).",
+            "skill": "api-design"
+          },
+          {
+            "reason": "prompt-injection-defense owns the LLM-specific threat class where untrusted text is interpreted as instructions by a model; this skill owns the general security framing that prompt injection specializes from. Prompt injection is one row in the OWASP LLM Top 10; this skill covers the broader discipline.",
+            "skill": "prompt-injection-defense"
+          },
+          {
+            "reason": "http-semantics owns the protocol-level meaning of methods, status codes, and headers; this skill owns the security properties that protocol must enforce at every endpoint (authn, authz, rate limiting, validation). They compose: HTTP gives the protocol; this skill gives the security discipline applied to it.",
+            "skill": "http-semantics"
+          }
+        ],
+        "related": [
+          "type-safety",
+          "api-design",
+          "http-semantics",
+          "prompt-injection-defense"
+        ],
+        "verify_with": [
+          "type-safety",
+          "api-design"
+        ]
+      },
+      "scope": "reference",
+      "stability": "experimental",
+      "type": "capability",
+      "version": "1.0.0"
+    },
+    {
+      "activation": {
+        "anti_examples": [
           "implement the new chart component for the reports page",
           "which task should I work on next from the board?",
           "design bounded contexts and aggregate ownership for the domain",
@@ -10595,6 +10928,113 @@
     {
       "activation": {
         "anti_examples": [
+          "implement a specific Redux reducer (tactical, library-specific)",
+          "design the JSON shape of an API response (use api-design)",
+          "model the state transitions of a multi-step workflow (use state-machine-modeling)",
+          "configure HTTP cache headers on the server (use rendering-models or http-semantics)"
+        ],
+        "examples": [
+          "decide where the filter/sort/page state for a data table should live",
+          "decide whether a piece of state should be in the URL, component state, or persistent storage",
+          "diagnose whether a piece of duplicated state is a real performance need or accidental sprawl",
+          "structure state for a form that spans multiple steps and survives navigation"
+        ],
+        "keywords": [
+          "state management",
+          "state colocation",
+          "lifting state",
+          "state derivation",
+          "single source of truth",
+          "server state",
+          "client state",
+          "URL state",
+          "persistent state",
+          "ephemeral state",
+          "global state",
+          "prop drilling",
+          "state sprawl",
+          "optimistic update",
+          "cache invalidation",
+          "state ownership"
+        ],
+        "triggers": [
+          "where should this state live",
+          "should this be in component state or global",
+          "I have state across multiple routes",
+          "this prop is drilled through 5 components",
+          "is this server state or client state",
+          "should this be in the URL"
+        ]
+      },
+      "allowed-tools": "Read Grep",
+      "category": "engineering",
+      "concept": {
+        "analogy": "|",
+        "boundary": "|",
+        "definition": "State management is the architectural discipline of deciding, for each distinct piece of data that an application reads or writes, where that data lives, who owns it, how it propagates to the components that need it, and how it stays consistent across changes. The discipline is upstream of any specific state library: it asks 'should this be local, lifted, global, server-cached, URL-encoded, or persisted' before asking 'which library do I use to hold it.' State is not a single thing; it is a category with at least four distinct kinds (server state, client UI state, URL state, persistent state), each with different lifetimes, invalidation rules, and consistency requirements. The discipline is the recognition that treating all state the same — putting all of it in one global store, or scattering it across every component — produces the recurring frontend problems of prop drilling, stale data, broken back-buttons, and tests that pass while users are confused.",
+        "mental_model": "|",
+        "misconception": "|",
+        "purpose": "|",
+        "taxonomy": "|"
+      },
+      "description": "Use when deciding where state lives, how it propagates, and how multiple kinds of state compose: local component state vs lifted/shared state vs application state, the difference between server state and client state, URL as state, persistent state, derived state, ephemeral interaction state, and the cross-cutting decision of who owns which piece. Covers state colocation, lifting state up, state derivation vs duplication, single source of truth, optimistic updates, server-state cache invalidation (the React Query/SWR model), the URL as a state container (deep-linking, share-ability, back-button correctness), and the architectural anti-patterns of prop-drilling, state sprawl, and global-state-by-default. Do NOT use for the choice of a specific state library (Redux vs Zustand vs Jotai vs Recoil — those are tactical), for data fetching mechanics (use api-design or rendering-models), for the boundary of what runs on client vs server (use client-server-boundary), for distributed-system state across services (use replication-patterns), or for state-machine modeling of finite states (use state-machine-modeling).",
+      "domain": "engineering/frontend",
+      "health": {
+        "comprehension_state": "present",
+        "drift_check": {
+          "last_verified": "2026-05-16"
+        },
+        "eval_artifacts": "planned",
+        "eval_state": "unverified",
+        "freshness": "2026-05-16",
+        "has_grounding": false,
+        "has_relations": true,
+        "routing_eval": "absent"
+      },
+      "id": "state-management",
+      "license": "MIT",
+      "name": "state-management",
+      "owner": "skill-graph-maintainer",
+      "path": "skills/state-management/SKILL.md",
+      "relations": {
+        "boundary": [
+          {
+            "reason": "client-server-boundary owns the line between code-that-runs-where (server components, client components, the serialization boundary); this skill owns the orthogonal question of which side owns which piece of state. They compose: the boundary skill says what code runs where; this skill says what state lives where.",
+            "skill": "client-server-boundary"
+          },
+          {
+            "reason": "state-machine-modeling owns finite-state representation of workflows (states, transitions, guards); this skill owns the decision of where state of any kind lives. The two compose when a workflow has a finite state space whose value still has to live somewhere — the machine names the values, this skill names the location.",
+            "skill": "state-machine-modeling"
+          },
+          {
+            "reason": "api-design owns the external request/response shape; this skill owns where the response data lives once it arrives, and how it's invalidated. Server state cache management (React Query / SWR doctrine) is in scope of this skill; the API surface itself is not.",
+            "skill": "api-design"
+          },
+          {
+            "reason": "rendering-models owns the question of when content is generated (SSR, RSC, CSR, ISR); this skill owns the question of where data backing that content lives. The two intersect in 'server state' — data fetched on the server that the client needs.",
+            "skill": "rendering-models"
+          }
+        ],
+        "related": [
+          "rendering-models",
+          "client-server-boundary",
+          "frontend-architecture",
+          "api-design",
+          "state-machine-modeling"
+        ],
+        "verify_with": [
+          "rendering-models",
+          "api-design"
+        ]
+      },
+      "scope": "reference",
+      "stability": "experimental",
+      "type": "capability",
+      "version": "1.0.0"
+    },
+    {
+      "activation": {
+        "anti_examples": [
           "design the JSON shape of a single response payload (use api-design)",
           "implement the model→tool message-history protocol (use tool-call-flow)",
           "design pub-sub topic structure (use event-driven-architecture)"
@@ -11936,7 +12376,7 @@
         "drift_check": {
           "last_verified": "2026-05-15"
         },
-        "eval_artifacts": "planned",
+        "eval_artifacts": "present",
         "eval_state": "unverified",
         "freshness": "2026-05-15",
         "has_grounding": false,
@@ -12778,28 +13218,28 @@
   "summary": {
     "by_category": {
       "agent": 15,
-      "design": 26,
-      "engineering": 51,
-      "foundations": 13,
+      "design": 27,
+      "engineering": 52,
+      "foundations": 14,
       "knowledge": 1,
       "product": 1,
-      "quality": 27
+      "quality": 28
     },
     "by_scope": {
       "codebase": 1,
       "portable": 95,
-      "reference": 38
+      "reference": 42
     },
     "by_stability": {
-      "experimental": 133,
+      "experimental": 137,
       "stable": 1
     },
     "by_type": {
-      "capability": 124,
+      "capability": 128,
       "overlay": 1,
       "router": 1,
       "workflow": 8
     },
-    "total_skills": 134
+    "total_skills": 138
   }
 }
