@@ -225,6 +225,18 @@ This is not "self-improving skills" as a slogan. It is a re-grounding loop with 
 
 ## Quick Start
 
+### Using the skills (end users)
+
+The public, ready-to-install skill library lives at [`jacob-balslev/skills`](https://github.com/jacob-balslev/skills) — install with:
+
+```bash
+npx skills add jacob-balslev/skills
+```
+
+That repo holds 137+ canonical skills in plain Agent-Skills shape, indexed on `skills.sh`. You do not need to clone this `skill-graph` tooling repo to consume the skills.
+
+### Running the tooling (authors and maintainers)
+
 Install the CLI from npm:
 
 ```bash
@@ -232,28 +244,31 @@ npm install --global @skill-graph/cli
 skill-graph --help
 ```
 
-For a source checkout, run the three commands that prove the protocol is operational:
+The tooling operates against a skill library by reading from a workspace root. Post-2026-05-16 monorepo split, the canonical skill library is the sibling [`jacob-balslev/skills`](https://github.com/jacob-balslev/skills) repo, not this tooling repo. Clone it and point the tooling at it:
 
 ```bash
-# Validate one skill against the schema and lint rules.
-node scripts/skill-lint.js skills/documentation
+git clone https://github.com/jacob-balslev/skills.git ~/skills
+cd ~/Development/skill-graph    # this repo (tooling)
+
+# Validate every skill against the schema and lint rules.
+SKILL_GRAPH_WORKSPACE=~/skills node scripts/skill-lint.js
 
 # Route a real request and print why each skill was selected, co-loaded, or excluded.
-node scripts/skill-graph-route.js "audit my skills for schema conformance"
+SKILL_GRAPH_WORKSPACE=~/skills node scripts/skill-graph-route.js "audit my skills for schema conformance"
 
 # Check grounded skills against recorded truth-source hashes.
-node scripts/skill-graph-drift.js
+SKILL_GRAPH_WORKSPACE=~/skills node scripts/skill-graph-drift.js
 ```
 
-To generate the plain public marketplace surface without weakening the canonical protocol source:
+To regenerate the plain public marketplace staging surface from the canonical source:
 
 ```bash
-node scripts/export-marketplace-skills.js
-node scripts/export-marketplace-skills.js --check
-node scripts/verify-skill-md-export.js --plain marketplace/skills
+SKILL_GRAPH_WORKSPACE=~/skills node scripts/export-marketplace-skills.js
+SKILL_GRAPH_WORKSPACE=~/skills node scripts/export-marketplace-skills.js --check
+SKILL_GRAPH_WORKSPACE=~/skills node scripts/verify-skill-md-export.js --plain marketplace/skills
 ```
 
-The marketplace output is generated under `marketplace/` for publication to the dedicated export target `jacob-balslev/skills`. Do not add a marketplace badge until that target has been pushed and the install path has been verified.
+The staging surface lands under `marketplace/` for the two-step sync into `jacob-balslev/skills` (see `AGENTS.MD § Release sync`). The canonical end-user install path is `npx skills add jacob-balslev/skills` — that is the path consumers see, and it must remain working before any marketplace badge is added.
 
 The npm package exposes the same scripts through a `skill-graph` binary:
 
