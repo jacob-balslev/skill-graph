@@ -13,7 +13,7 @@ metadata:
   owner: skill-graph-maintainer
   freshness: "2026-05-15"
   drift_check: "{\"last_verified\":\"2026-05-15\"}"
-  eval_artifacts: planned
+  eval_artifacts: present
   eval_state: unverified
   routing_eval: absent
   comprehension_state: present
@@ -163,6 +163,10 @@ async function fetchUser(id: string): Promise<User> {
 | `void` | Returned, not consumed | Function return only; the value is "no value worth using" |
 
 Rule: prefer `unknown` over `any` always. The cost is one narrowing step; the benefit is type-safety preserved.
+
+## Evals
+
+This skill ships a comprehension-eval artifact at [`examples/evals/type-safety.json`](https://github.com/jacob-balslev/skill-graph/blob/main/examples/evals/type-safety.json). The file holds 10 cases authored against the rubric in [`docs/research/skill-comprehension-eval-research.md § 5`](https://github.com/jacob-balslev/skill-graph/blob/main/docs/research/skill-comprehension-eval-research.md), covering all nine comprehension dimensions (C1 definitional precision through C9 negative-boundary refusal) with a mix of near-transfer and far-transfer scenarios. The `Verification` checklist below is the authoring gate for code that uses types; the eval file is how this skill is graded by `scripts/skill-audit.js --graded` and (when the comprehension grader is implemented per R3 of the rubric report) by `scripts/skill/evaluate-skill.js --comprehension`. Do not conflate them — the checklist is for engineers writing code, the eval is for graders measuring whether an agent has internalized the concept.
 
 ## Verification
 

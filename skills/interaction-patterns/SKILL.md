@@ -52,6 +52,8 @@ relations:
       reason: "design-system-architecture owns reusable component APIs; interaction-patterns decides which pattern is appropriate for a surface"
     - skill: design-module-composition
       reason: "design-module-composition owns component props, variants, slots, and token contracts; interaction-patterns owns choosing the user-facing control pattern"
+    - skill: component-architecture
+      reason: "component-architecture owns the structural design of a component library (primitives, composition, headless/styled split, controlled/uncontrolled, polymorphism); interaction-patterns owns choosing the user-facing interaction pattern before any component-API decision is made"
   related:
     - layout-composition
     - form-ux-architecture
