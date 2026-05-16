@@ -1,5 +1,5 @@
 ---
-# yaml-language-server: $schema=https://skillgraph.dev/schemas/skill.v4.schema.json
+# yaml-language-server: $schema=https://skillgraph.dev/schemas/skill.v5.schema.json
 #
 # ============================================================================
 # SCAFFOLD — this file is a skill template, not a production skill.
@@ -23,7 +23,7 @@
 # routable in day-to-day skill dispatch — `scope: reference` keeps it out of
 # the normal routing pool.
 # ============================================================================
-schema_version: 4
+schema_version: 5
 name: skill-metadata-template
 # TEMPLATE NOTE: Be pushy in your description — Claude tends to under-trigger
 # skills, so descriptions should read as commands ("Use when X", "Activate
@@ -40,12 +40,18 @@ name: skill-metadata-template
 description: "Use when creating a new SKILL.md, adapting an existing skill to a different archetype, or teaching an author the canonical frontmatter and body structure. Covers schema-conformant frontmatter, archetype-aware body layout, semantic-layer discipline (description vs Coverage), teaching-layer mechanics (TEMPLATE NOTE blockquotes and YAML comments), and the authoring gate. Do NOT use when modifying an already-written skill (edit that skill directly) or when writing general technical documentation (use the documentation skill)."
 version: 1.0.0
 type: capability
-category: knowledge
+# TEMPLATE NOTE: category is the closed v5 enum — exactly one of:
+# foundations / engineering / design / quality / agent / product. See
+# docs/skill-metadata-protocol.md § Category and docs/migrations/v4-to-v5.md
+# for the migration mapping. The scaffold itself is an agent-system authoring
+# tool, hence `agent`; replace with the correct value for your subject when
+# adapting.
+category: agent
 # TEMPLATE NOTE: domain is the OPTIONAL hierarchical domain path (slash-
 # delimited, lowercase kebab-case segments). Use it only when the skill library
 # is large enough that a tree structure helps readers find related skills.
 # Remove this line entirely when the flat `category` above is sufficient.
-domain: skill-system/authoring
+domain: agent/skill-system
 scope: reference
 owner: skill-graph-maintainer
 freshness: "2026-04-17"
@@ -165,18 +171,26 @@ workspace_tags:
 relations:
   # TEMPLATE NOTE: boundary items may be bare skill names OR `{skill, reason}`
   # objects (v3). Reasons are strongly recommended — they make the boundary
-  # self-documenting. Adjacency has been removed here because `documentation`
-  # is already declared as `verify_with` — adjacent ("often used together")
-  # would be redundant and asymmetric.
-  boundary:
-    - skill: refactor
-      reason: "refactor is behavior-preserving code modification, not skill authoring"
-    - skill: skill-router
-      reason: "skill-router dispatches between existing skills at request time; this template creates a NEW skill"
-    - skill: graph-audit
-      reason: "graph-audit verifies the authored metadata of an existing skill; this template is the authoring-time guide"
-  verify_with:
-    - documentation
+  # self-documenting.
+  #
+  # This scaffold ships with empty `boundary` and `verify_with` arrays because
+  # the skill-graph tooling repo has no peer skill library — lint resolves
+  # relation targets against `<workspace>/skills/`, which is intentionally
+  # empty here. In a real library, populate the arrays as shown in the
+  # commented example below (uncomment and replace with skills that exist in
+  # YOUR workspace):
+  #
+  # boundary:
+  #   - skill: refactor
+  #     reason: "refactor is behavior-preserving code modification, not skill authoring"
+  #   - skill: skill-router
+  #     reason: "skill-router dispatches between existing skills at request time; this template creates a NEW skill"
+  #   - skill: graph-audit
+  #     reason: "graph-audit verifies the authored metadata of an existing skill; this template is the authoring-time guide"
+  # verify_with:
+  #   - documentation
+  boundary: []
+  verify_with: []
 # TEMPLATE NOTE: grounding is REQUIRED for grounded skills that make concrete
 # repo claims. Remove this entire block if your skill has grounding_mode: universal
 # and does not anchor to truth sources in the repo.
@@ -192,9 +206,11 @@ grounding:
         start: 480
         end: 590
       note: "Grounding schema shape"
-    - path: SKILL_AUDIT_CHECKLIST.md
-      anchor: canonical-checklist
-      note: "Audit checklist this template supports"
+    # TEMPLATE NOTE: The canonical SKILL_AUDIT_CHECKLIST.md lives in the
+    # `skill-audit-loop` repo as of the 2026-05-16 monorepo split. The scaffold
+    # cannot anchor across repos, so the previous `SKILL_AUDIT_CHECKLIST.md`
+    # entry has been removed. See the `skill-audit-loop` README for the
+    # canonical authoring-gate checklist.
   failure_modes:
     - placeholder_sludge
     - cargo_cult_meta_sections
@@ -264,7 +280,7 @@ A template teaches by example, not by placeholder. A concrete, internally consis
 |---|---|
 | `docs/skill-metadata-protocol.md` | Authoritative field semantics: required vs optional, conditional requiredness, relationship to the plain `SKILL.md` format, archetype section map |
 | `schemas/skill.schema.json` | Enforceable JSON Schema for the frontmatter protocol |
-| `SKILL_AUDIT_CHECKLIST.md` | The audit checklist every new skill should pass before commit |
+| `../skill-audit-loop/SKILL_AUDIT_CHECKLIST.md` | The audit checklist every new skill should pass before commit (lives in the `skill-audit-loop` repo post-2026-05-16 monorepo split) |
 
 ## Verification
 
@@ -298,4 +314,4 @@ Use this checklist as the authoring gate before committing a skill adapted from 
 - `docs/skill-metadata-protocol.md § Example Template Rule` — the no-placeholder-sludge rule this template enforces
 - `docs/skill-metadata-protocol.md § Archetype section map` — required H2 sections per archetype
 - `docs/manifest-field-mapping.md § Migration Note — v2 → v3` — the field-name cleanup the v4 bump introduced
-- `SKILL_AUDIT_CHECKLIST.md` — the checklist this template's Verification section is derived from
+- `../skill-audit-loop/SKILL_AUDIT_CHECKLIST.md` — the checklist this template's Verification section is derived from (lives in the `skill-audit-loop` repo post-2026-05-16 monorepo split)
