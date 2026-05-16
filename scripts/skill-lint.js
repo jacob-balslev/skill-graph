@@ -71,7 +71,7 @@
 const fs = require('fs');
 const path = require('path');
 const { execFileSync } = require('child_process');
-const { parseFrontmatter } = require('./lib/parse-frontmatter');
+const { parseFrontmatter, normalizeFrontmatter } = require('./lib/parse-frontmatter');
 const { checkAliasParity } = require('./lib/alias-contract');
 const { loadWorkspaceConfig, resolveSchemaPath, resolveSkillRoots, workspaceRoot } = require('./lib/roots');
 const { formatCodeFrame, locateYamlKey, locateH2Section } = require('./lint/format-code-frame');
@@ -1005,7 +1005,7 @@ function main() {
   const knownFiles = new Set([...collectSkillFilesFromRoots(SKILL_ROOTS), ...files]);
   for (const skillMd of knownFiles) {
     if (fs.existsSync(skillMd)) {
-      const fm = parseFrontmatter(fs.readFileSync(skillMd, 'utf8'));
+      const fm = normalizeFrontmatter(parseFrontmatter(fs.readFileSync(skillMd, 'utf8')));
       if (fm && fm.name) {
         knownSkillNames.add(fm.name);
         knownFrontmatters.set(fm.name, fm);
@@ -1033,7 +1033,7 @@ function main() {
   for (const file of files) {
     const relPath = path.relative(REPO_ROOT, file);
     const text = fs.readFileSync(file, 'utf8');
-    const fm = parseFrontmatter(text);
+    const fm = normalizeFrontmatter(parseFrontmatter(text));
     if (!fm) {
       console.error(`FAIL ${relPath}: no frontmatter found`);
       totalErrors++;

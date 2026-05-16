@@ -108,22 +108,15 @@ allowed-tools: Read Grep
 # TEMPLATE NOTE: keywords are the pushy activation surface for authoring tasks.
 # Keep terms that a human would type when starting a new skill.
 keywords:
-  - skill authoring
-  - skill template
-  - new skill
-  - writing a new skill
-  - skill frontmatter
-  - skill graph contract
-  - capability or workflow
-  - pick capability or workflow
-  - skill type pick
-  - description vs coverage
-  - description versus coverage
-  - authoring a skill
-  - skill archetype
-  - frontmatter structure
-  - skill body layout
-  - teaching layer
+  - how to write a SKILL.md file
+  - SKILL.md frontmatter YAML
+  - Skill Metadata Protocol v4
+  - Skill Graph schema fields
+  - skill archetype capability vs workflow
+  - skill description routing contract
+  - drift_check eval_artifacts routing_eval
+  - new skill scaffold template
+  - SKILL.md authoring gate
 # TEMPLATE NOTE: triggers is present because this skill is routable by explicit label.
 # Remove this block if your skill activates only by keyword or path matching.
 triggers:

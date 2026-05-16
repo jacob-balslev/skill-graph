@@ -342,4 +342,88 @@ function parseFrontmatter(text) {
   return parseBlock(0);
 }
 
-module.exports = { parseFrontmatter };
+// Set of base SKILL.md fields that stay at the top level in the marketplace
+// export shape. Anything else found under `metadata:` is a Skill Graph
+// extension field that the export pipeline relocated to satisfy Anthropic
+// Claude Code's frontmatter contract. The normalizer lifts those back to
+// top-level so downstream consumers (lint, manifest, route, drift) can read
+// the canonical shape regardless of which format the file is in.
+const SKILL_MD_BASE_FIELDS = new Set([
+  'name',
+  'description',
+  'license',
+  'compatibility',
+  'allowed-tools',
+]);
+
+// Provenance fields added by the export pipeline (see
+// scripts/export-marketplace-skills.js § PROVENANCE_KEYS and the related
+// description-length book-keeping fields). These are export-only metadata
+// describing where the marketplace file came from; they are not authoring
+// fields and the canonical schema does not declare them. The normalizer
+// strips them so lint and manifest tooling see only the authored shape.
+const EXPORT_PROVENANCE_FIELDS = new Set([
+  'skill_graph_source_repo',
+  'skill_graph_protocol',
+  'skill_graph_project',
+  'skill_graph_canonical_skill',
+  'skill_graph_export_description',
+  'skill_graph_canonical_description_length',
+]);
+
+/**
+ * Convert a parsed frontmatter object from the marketplace export shape
+ * (Skill Graph extension fields nested under `metadata:`, complex values
+ * JSON-stringified) back to the canonical Skill Graph shape (all fields at
+ * top-level, complex values as native arrays/objects).
+ *
+ * Idempotent: a canonical-shape input returns unchanged (modulo a defensive
+ * copy). Top-level fields take precedence over `metadata.*` if both are
+ * present — the explicit author signal wins.
+ *
+ * @param {object|null} fm - Parsed frontmatter (output of parseFrontmatter).
+ * @returns {object|null} Canonicalized frontmatter, or null/undefined passthrough.
+ */
+function normalizeFrontmatter(fm) {
+  if (!fm || typeof fm !== 'object') return fm;
+  const metadata = fm.metadata;
+  if (!metadata || typeof metadata !== 'object' || Array.isArray(metadata)) {
+    return fm;
+  }
+
+  const normalized = { ...fm };
+  delete normalized.metadata;
+
+  for (const [key, rawValue] of Object.entries(metadata)) {
+    if (EXPORT_PROVENANCE_FIELDS.has(key)) continue;
+    // Top-level wins. Authors who explicitly set both forms get the
+    // top-level version preserved without surprise.
+    if (key in normalized && !SKILL_MD_BASE_FIELDS.has(key)) continue;
+
+    // Marketplace export JSON-stringifies arrays and objects so the resulting
+    // YAML stays a flat string-to-string map. Restore native shape here.
+    //
+    // Two unescape passes are needed in order: our parseFrontmatter does not
+    // currently decode YAML double-quote escape sequences (`\"` → `"`,
+    // `\\` → `\`), so the raw value still contains literal backslashes from
+    // the on-disk representation. Strip those before JSON.parse.
+    if (typeof rawValue === 'string') {
+      const trimmed = rawValue.trim();
+      if ((trimmed.startsWith('[') && trimmed.endsWith(']')) ||
+          (trimmed.startsWith('{') && trimmed.endsWith('}'))) {
+        const yamlUnescaped = trimmed.replace(/\\"/g, '"').replace(/\\\\/g, '\\');
+        try {
+          normalized[key] = JSON.parse(yamlUnescaped);
+          continue;
+        } catch (_err) {
+          // Not valid JSON — fall through and keep the raw string.
+        }
+      }
+    }
+    normalized[key] = rawValue;
+  }
+
+  return normalized;
+}
+
+module.exports = { parseFrontmatter, normalizeFrontmatter };

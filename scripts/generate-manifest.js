@@ -31,7 +31,7 @@
 const fs = require('fs');
 const path = require('path');
 const crypto = require('crypto');
-const { parseFrontmatter } = require('./lib/parse-frontmatter');
+const { parseFrontmatter, normalizeFrontmatter } = require('./lib/parse-frontmatter');
 const { checkAliasParity } = require('./lib/alias-contract');
 const { resolveSchemaPath, workspaceRoot } = require('./lib/roots');
 
@@ -579,7 +579,7 @@ function collectSources(args, skillRoots) {
 
   if (includeTemplate && fs.existsSync(TEMPLATE_PATH) && !seen.has(TEMPLATE_PATH)) {
     const text = fs.readFileSync(TEMPLATE_PATH, 'utf8');
-    const fm = parseFrontmatter(text);
+    const fm = normalizeFrontmatter(parseFrontmatter(text));
     const id = (fm && fm.name) ? fm.name : 'skill-metadata-template';
     sources.push({ filePath: TEMPLATE_PATH, skillId: id, project: null });
     seen.add(TEMPLATE_PATH);
@@ -659,7 +659,7 @@ function main() {
       continue;
     }
 
-    const fm = parseFrontmatter(text);
+    const fm = normalizeFrontmatter(parseFrontmatter(text));
     if (!fm) {
       errors.push(`${relPath}: no frontmatter found`);
       continue;
