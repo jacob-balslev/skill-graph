@@ -46,18 +46,19 @@
     "access": "public"
   },
   "scripts": {
-    "lint": "node scripts/skill-lint.js --include-template",
+    "lint": "node scripts/skill-lint.js",
+    "lint:template": "node scripts/skill-lint.js --include-template examples/skill-metadata-template.md",
     "protocol:check": "node scripts/check-protocol-consistency.js",
     "docs:links": "node scripts/check-markdown-links.js",
     "manifest:validate": "node scripts/generate-manifest.js --validate-only",
-    "routing-eval": "node scripts/skill-graph-routing-eval.js --manifest examples/skills.manifest.sample.json --only-asserted",
+    "routing-eval": "node scripts/generate-manifest.js --output .skill-graph/_routing-eval.manifest.json && node scripts/skill-graph-routing-eval.js --manifest .skill-graph/_routing-eval.manifest.json --only-asserted",
     "export:verify-skill-md": "node scripts/verify-skill-md-export.js",
     "marketplace:export": "node scripts/export-marketplace-skills.js",
     "marketplace:verify": "node scripts/export-marketplace-skills.js --check && node scripts/verify-skill-md-export.js --plain marketplace/skills",
     "overlap": "node scripts/skill-overlap.js",
     "drift": "node scripts/skill-graph-drift.js",
     "test:unit": "node scripts/__tests__/test-v3-1-skos-runtime.js && node scripts/__tests__/test-router-paths.js && node scripts/__tests__/test-v3-1-alias-contract.js && node scripts/__tests__/test-export-parser-drift.js && node scripts/__tests__/test-marketplace-export.js && node bin/skill-graph.js --help",
-    "verify": "npm run lint && npm run protocol:check && npm run docs:links && npm run manifest:validate && npm run routing-eval && npm run export:verify-skill-md && npm run overlap && npm run test:unit"
+    "verify": "npm run lint && npm run lint:template && npm run protocol:check && npm run docs:links && npm run manifest:validate && npm run routing-eval && npm run export:verify-skill-md && npm run overlap && npm run test:unit"
   },
   "dependencies": {
     "@skill-graph/protocol": "^1.1.0"

@@ -300,11 +300,8 @@ skill-graph marketplace-export
 
 | Path | Purpose |
 |---|---|
-| [`SKILL_METADATA_PROTOCOL.md`](SKILL_METADATA_PROTOCOL.md) | Normative protocol contract. |
 | [`SKILL_GRAPH.md`](SKILL_GRAPH.md) | Library-level system model and authority tiers. |
-| [`SKILL_AUDIT_LOOP.md`](SKILL_AUDIT_LOOP.md) | Repeatable audit workflow. |
-| [`schemas/`](schemas/) | Skill and manifest JSON Schemas, including pinned v2 and v3 copies. |
-| [`skills/`](skills/) | Starter skill library demonstrating the protocol. |
+| [`schemas/`](schemas/) | Skill and manifest JSON Schemas, including pinned v4 and v5 copies. |
 | [`examples/skill-metadata-template.md`](examples/skill-metadata-template.md) | Copyable authoring template. |
 | [`examples/projects/markdown-static-site/`](examples/projects/markdown-static-site/) | Specimen project showing codebase-grounded skills. |
 | [`docs/field-reference.md`](docs/field-reference.md) | Field-by-field reference. |
@@ -312,6 +309,14 @@ skill-graph marketplace-export
 | [`docs/quality-doctrine.md`](docs/quality-doctrine.md) | Quality bar for preserving scope, readable names, organization-over-trimming, compression, and verification. |
 | [`docs/SKILL-MD-FORMAT-COMPATIBILITY.md`](docs/SKILL-MD-FORMAT-COMPATIBILITY.md) | How export maps protocol-enriched skills back to plain `SKILL.md`. |
 | [`docs/marketplace-syndication.md`](docs/marketplace-syndication.md) | How to syndicate the full library to public `SKILL.md` marketplaces and mine gaps for new skills. |
+
+**Sibling repos** (post-2026-05-16 monorepo split — content moved out of this tooling repo):
+
+| Repo | Purpose |
+|---|---|
+| [`jacob-balslev/skill-metadata-protocol`](https://github.com/jacob-balslev/skill-metadata-protocol) | Normative protocol contract (formerly `SKILL_METADATA_PROTOCOL.md` here). |
+| [`jacob-balslev/skills`](https://github.com/jacob-balslev/skills) | Canonical 137-skill library (formerly `skills/` here). |
+| [`jacob-balslev/skill-audit-loop`](https://github.com/jacob-balslev/skill-audit-loop) | Repeatable audit workflow (formerly `SKILL_AUDIT_LOOP.md` + `SKILL_AUDIT_CHECKLIST.md` here). |
 
 ## What This Is Not
 

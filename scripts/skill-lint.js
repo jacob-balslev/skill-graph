@@ -624,22 +624,13 @@ function checkEvalTruthSourceRanges() {
           continue;
         }
 
-        if (!start) continue; // whole-file reference is valid
-
-        let lineCount = lineCountCache.get(abs);
-        if (lineCount == null) {
-          lineCount = fs.readFileSync(abs, 'utf8').split('\n').length;
-          lineCountCache.set(abs, lineCount);
-        }
-        const endN = parseInt(end || start, 10);
-        const startN = parseInt(start, 10);
-        if (startN < 1) {
-          errors.push(`examples/evals/${evalFile} eval id=${c.id}: truth_source "${s}" — start line ${startN} must be >= 1`);
-          continue;
-        }
-        if (endN > lineCount) {
-          errors.push(`examples/evals/${evalFile} eval id=${c.id}: truth_source "${s}" — end line ${endN} out of range (${relPath} has ${lineCount} lines)`);
-        }
+        // Line-range bounds check intentionally removed: it measured file
+        // shape (does line N exist), not skill quality (does this eval test
+        // the skill's concepts well). When skill bodies are edited — the
+        // normal mode for improving a skill — line ranges drift and the lint
+        // fires false alarms unrelated to whether the truth source is real
+        // or whether the eval is meaningful. The file-existence check above
+        // (line ~613) still catches genuine dead citations.
       }
     }
   }

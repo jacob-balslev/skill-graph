@@ -23,3 +23,5 @@ node_modules/
 # Editor state
 .vscode/
 .idea/
+.skill-graph/_routing-eval.manifest.json
+skills.manifest.json
