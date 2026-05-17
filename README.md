@@ -326,8 +326,8 @@ skill-graph marketplace-export
 
 Before cutting the first release, ensure these one-time steps are done:
 
-1. **npm org** — the `@skill-graph` npm org must exist. If `npm view @skill-graph/cli` returns 404, create the org first: `npm org create skill-graph` (requires npm account with org permissions).
-2. **NPM_TOKEN secret** — add a publish token (`npm token create --type=publish --scope=@skill-graph`) as `NPM_TOKEN` in the GitHub repo secrets (`Settings → Secrets → Actions`).
+1. **npm org** — the `@skill-graph` npm org must exist. The npm CLI does NOT support `npm org create`; orgs are created via the website. Go to https://www.npmjs.com/org/create, enter `skill-graph` as the org name, pick "Unlimited public packages — Free", and add yourself as owner. Verify with `npm org ls skill-graph`.
+2. **NPM_TOKEN secret** — generate a publish token (`npm token create --read-only=false`) and add it as `NPM_TOKEN` in the GitHub repo secrets (`Settings → Secrets and variables → Actions`). For finer scoping, manage tokens at https://www.npmjs.com/settings/<user>/tokens.
 
 ### Cutting a release
 
@@ -345,7 +345,7 @@ The publish pipeline at `.github/workflows/publish.yml` triggers on any `v*.*.*`
 
 | Step | Who | Command |
 |------|-----|---------|
-| Create `@skill-graph` npm org (once) | Jacob | `npm org create skill-graph` |
+| Create `@skill-graph` npm org (once) | Jacob | https://www.npmjs.com/org/create — pick "Unlimited public packages — Free" |
 | Add `NPM_TOKEN` GitHub secret (once) | Jacob | GitHub Settings → Secrets |
 | Cut a release | Maintainer | `npm version <patch\|minor\|major> && git push --tags` |
 
