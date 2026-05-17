@@ -1,5 +1,5 @@
 {
-  "generated_at": "1970-01-01T00:00:00Z",
+  "generated_at": "2026-05-17T06:32:33.511Z",
   "schema_version": 4,
   "skills": [
     {
@@ -77,10 +77,6 @@
           {
             "reason": "refactor is behavior-preserving code modification; a11y is observable user-facing behavior",
             "skill": "refactor"
-          },
-          {
-            "reason": "documentation owns prose reading-level and audience fit; a11y owns assistive-tech behavior",
-            "skill": "documentation"
           },
           {
             "reason": "diagnosis classifies failure symptoms (Logic / Runtime / Performance / etc.) for triage; a11y owns assistive-tech behavior. The phrase 'rewrite this error message...' is a documentation/UX concern, not a diagnosis or a11y concern — diagnosis is named here so the router excludes it from a11y's positive scope.",
@@ -684,10 +680,6 @@
       "relations": {
         "boundary": [
           {
-            "reason": "documentation explains systems broadly; architecture-decision-records records a specific durable decision and its consequences",
-            "skill": "documentation"
-          },
-          {
             "reason": "framework-fit-analysis evaluates options before selection; architecture-decision-records records the selected option and tradeoffs",
             "skill": "framework-fit-analysis"
           },
@@ -707,7 +699,6 @@
           "dependency-architecture"
         ],
         "verify_with": [
-          "documentation",
           "code-review"
         ]
       },
@@ -1502,20 +1493,12 @@
             "skill": "naming-conventions"
           },
           {
-            "reason": "documentation produces durable prose for a human reader; conceptual-modeling produces a structured domain model that documentation may later describe",
-            "skill": "documentation"
-          },
-          {
             "reason": "refactor preserves behavior while restructuring code; conceptual-modeling restructures the domain abstraction itself, which usually requires non-behavior-preserving change",
             "skill": "refactor"
           }
         ],
         "related": [
-          "documentation",
           "naming-conventions"
-        ],
-        "verify_with": [
-          "documentation"
         ]
       },
       "scope": "portable",
@@ -1895,11 +1878,9 @@
         ],
         "related": [
           "prompt-craft",
-          "skill-router",
-          "documentation"
+          "skill-router"
         ],
         "verify_with": [
-          "documentation",
           "code-review"
         ]
       },
@@ -2023,10 +2004,6 @@
           {
             "reason": "skill-scaffold authors a single SKILL.md; context-graph designs the graph that those authored skills participate in",
             "skill": "skill-scaffold"
-          },
-          {
-            "reason": "documentation produces durable prose; context-graph reasons about the routing-graph that connects code changes to the docs that need updating",
-            "skill": "documentation"
           }
         ],
         "related": [
@@ -2765,10 +2742,6 @@
       "relations": {
         "boundary": [
           {
-            "reason": "documentation produces durable prose about migration conventions; database-migration produces the executable DDL patterns themselves",
-            "skill": "documentation"
-          },
-          {
             "reason": "debugging chases an observed migration failure; database-migration plans the safe DDL path forward before execution",
             "skill": "debugging"
           },
@@ -2784,7 +2757,6 @@
         "related": [
           "testing-strategy",
           "debugging",
-          "documentation",
           "owasp-security"
         ],
         "verify_with": [
@@ -2873,10 +2845,6 @@
       },
       "relations": {
         "boundary": [
-          {
-            "reason": "documentation is durable reference prose; debugging is transient failure-chasing",
-            "skill": "documentation"
-          },
           {
             "reason": "testing-strategy plans what to test before a failure exists; debugging chases a specific observed failure",
             "skill": "testing-strategy"
@@ -3152,10 +3120,6 @@
             "skill": "interaction-patterns"
           },
           {
-            "reason": "documentation owns durable architecture notes and prose; design-system-architecture owns UI system contracts",
-            "skill": "documentation"
-          },
-          {
             "reason": "refactor restructures code behavior-preservingly; design-system-architecture changes the UI system contract",
             "skill": "refactor"
           }
@@ -3426,132 +3390,6 @@
     {
       "activation": {
         "anti_examples": [
-          "the test suite is failing after my change — find the cause",
-          "add an aria-label to this icon button",
-          "extract this repeated string-concat into a helper function"
-        ],
-        "examples": [
-          "write an API reference for this new route handler",
-          "the README has drifted from the actual CLI flags — which wins?",
-          "draft an architecture note explaining why we chose Postgres over DynamoDB",
-          "this tutorial is too terse for a beginner — expand it with progressive disclosure"
-        ],
-        "keywords": [
-          "documentation",
-          "reference doc",
-          "guide",
-          "tutorial",
-          "how-to",
-          "architecture note",
-          "explain to reader",
-          "doc type",
-          "stale docs",
-          "doc drift",
-          "spec",
-          "update the readme",
-          "readme drifted from code",
-          "docs drifted from cli",
-          "document this function",
-          "write api docs",
-          "doc this",
-          "add a comment block",
-          "progressive disclosure",
-          "expand tutorial",
-          "reading level",
-          "plain language",
-          "beginner friendly",
-          "terse prose",
-          "terse tutorial",
-          "audience fit",
-          "reader mental model",
-          "explain the pattern",
-          "write comments",
-          "newcomer guide"
-        ],
-        "triggers": [
-          "documentation-skill"
-        ]
-      },
-      "allowed-tools": "Read Grep",
-      "category": "engineering",
-      "description": "Use when writing reference docs, guides, tutorials, specs, architecture notes, or any durable technical prose that a future reader has to trust. Covers doc-type selection, audience fit, progressive disclosure, docs-as-code workflow, freshness and drift tracking, and source-of-truth discipline. Do NOT use for runtime debugging, UI accessibility behavior, or behavior-preserving code refactor.",
-      "domain": "engineering/documentation",
-      "grounding": {
-        "domain_object": "Documentation discipline in the Skill Graph repository",
-        "evidence_priority": "repo_code_first",
-        "failure_modes": [
-          "docs_restating_instead_of_citing_truth",
-          "readme_cli_examples_drift_from_scripts",
-          "durable_prose_confused_with_runtime_debugging",
-          "audience_fit_omitted_from_reference_docs"
-        ],
-        "grounding_mode": "hybrid",
-        "truth_sources": [
-          "README.md",
-          "docs/PRIMER.md",
-          "docs/manifest-field-mapping.md",
-          "docs/field-reference.md",
-          "examples/evals/comprehension.json"
-        ]
-      },
-      "health": {
-        "drift_check": {
-          "last_verified": "2026-05-13",
-          "truth_source_hashes": {
-            "README.md": "957c366dbc8f3b1056fb812cc4440e56a9cb329ddb4c9ac4e0ea7294383ba013",
-            "docs/PRIMER.md": "e6bd99468c224fe4c9606e147c5db94dff889feeb9ca5d80084480039c7e9296",
-            "docs/field-reference.md": "2e5afcc5b623f0a7e1471485f627c24a91900e1d4c43168aa866314454ea46fa",
-            "docs/manifest-field-mapping.md": "aca0b7f2d4631be24a3e7daed1a1d207b488f253164a7d514b9db7af21c6177f",
-            "examples/evals/comprehension.json": "539f8d9aaf75f2eb2edd20ba6fb44be1b5fdccdd80440d0fb0217c781a08e1be"
-          }
-        },
-        "drift_detected": true,
-        "eval_artifacts": "present",
-        "eval_state": "passing",
-        "freshness": "2026-04-18",
-        "has_grounding": true,
-        "has_relations": true,
-        "routing_eval": "present"
-      },
-      "id": "documentation",
-      "license": "MIT",
-      "name": "documentation",
-      "owner": "skill-graph-maintainer",
-      "path": "../skills/skills/documentation/SKILL.md",
-      "portability": {
-        "readiness": "scripted",
-        "targets": [
-          "skill-md"
-        ]
-      },
-      "relations": {
-        "boundary": [
-          {
-            "reason": "debugging chases a specific failure; documentation builds durable reference prose",
-            "skill": "debugging"
-          },
-          {
-            "reason": "a11y covers assistive-tech behavior; documentation covers prose reading-level and audience fit",
-            "skill": "a11y"
-          },
-          {
-            "reason": "refactor owns behavior-preserving code changes; documentation owns the prose that describes them",
-            "skill": "refactor"
-          },
-          {
-            "reason": "context-window owns runtime context-budget management for an agent session; documentation owns durable reference prose. The phrase 'README has drifted from the actual CLI flags' is a documentation-drift question, not a context-budget question — context-window is named here so the router excludes it from documentation's positive scope.",
-            "skill": "context-window"
-          }
-        ]
-      },
-      "scope": "portable",
-      "stability": "experimental",
-      "type": "capability",
-      "version": "1.0.0"
-    },
-    {
-      "activation": {
-        "anti_examples": [
           "test internal seams of the system (use integration-test-design)",
           "test a single component in isolation (use testing-strategy + test-doubles-design)",
           "verify a service's contract against consumers (use contract-testing)"
@@ -3787,15 +3625,10 @@
           {
             "reason": "semantics owns the rules for naming and meaning-making; epistemic-grounding owns the rules for grounding a claim to a verifiable source.",
             "skill": "semantics"
-          },
-          {
-            "reason": "reasoning is the cognitive primitive of drawing inferences; epistemic-grounding is the discipline of distinguishing inference from observation and labeling the difference.",
-            "skill": "reasoning"
           }
         ],
         "related": [
           "methodology",
-          "reasoning",
           "semantics"
         ],
         "verify_with": [
@@ -3987,10 +3820,6 @@
       "relations": {
         "boundary": [
           {
-            "reason": "documentation produces durable prose explaining the error-tracking architecture; error-tracking owns the architecture itself",
-            "skill": "documentation"
-          },
-          {
             "reason": "debugging chases an observed failure already in the tracker; error-tracking designs the pipeline that captures and routes failures in the first place",
             "skill": "debugging"
           },
@@ -4008,7 +3837,6 @@
           }
         ],
         "related": [
-          "documentation",
           "debugging",
           "owasp-security",
           "a11y",
@@ -4751,66 +4579,6 @@
     },
     {
       "activation": {
-        "keywords": [
-          "governance",
-          "data governance",
-          "design governance",
-          "content governance",
-          "process governance",
-          "change management",
-          "policy lifecycle",
-          "decision authority",
-          "raci",
-          "raci matrix",
-          "accountability matrix",
-          "audit trail"
-        ],
-        "triggers": [
-          "governance-skill"
-        ]
-      },
-      "allowed-tools": "Read Grep Bash",
-      "category": "quality",
-      "description": "Use when defining decision rights, ownership, approvals, policy lifecycle, change management, rollout controls, evidence, review cadences, or audit trails across product, content, data, design, and operations. Covers governance domains, RACI-style accountability, controlled change, and compliance evidence. Do NOT use for agent tool-permission policy (use `guardrails`) or application RBAC/user permission checks (use `owasp-security`).",
-      "domain": "quality/governance",
-      "health": {
-        "drift_check": {
-          "last_verified": "2026-03-28"
-        },
-        "eval_artifacts": "planned",
-        "eval_state": "unverified",
-        "freshness": "2026-03-28",
-        "has_grounding": false,
-        "has_relations": true,
-        "lifecycle": {
-          "review_cadence": "quarterly",
-          "stale_after_days": 90
-        },
-        "routing_eval": "absent"
-      },
-      "id": "governance",
-      "license": "MIT",
-      "name": "governance",
-      "owner": "skill-graph-maintainer",
-      "path": "../skills/skills/governance/SKILL.md",
-      "portability": {
-        "readiness": "scripted",
-        "targets": [
-          "skill-md"
-        ]
-      },
-      "relations": {
-        "related": [
-          "information-architecture"
-        ]
-      },
-      "scope": "portable",
-      "stability": "experimental",
-      "type": "capability",
-      "version": "1.0.0"
-    },
-    {
-      "activation": {
         "anti_examples": [
           "diagnose why the @/components import cycle broke the build",
           "my agent is stuck in a loop — what's wrong?",
@@ -4898,10 +4666,6 @@
       "path": "../skills/skills/graph-audit/SKILL.md",
       "relations": {
         "boundary": [
-          {
-            "reason": "documentation writes prose about the contract; graph-audit verifies the contract against the live files",
-            "skill": "documentation"
-          },
           {
             "reason": "refactor changes skill body structure; graph-audit is read-only metadata verification",
             "skill": "refactor"
@@ -5427,7 +5191,6 @@
         "related": [
           "taxonomy-design",
           "task-analysis",
-          "documentation",
           "design-system-architecture",
           "layout-composition"
         ],
@@ -6276,10 +6039,6 @@
             "skill": "naming-conventions"
           },
           {
-            "reason": "documentation owns doc-type selection, audience targeting, and progressive disclosure of doc content; linguistics owns the prose-form rules inside docs (register match, three-part error structure, blame-free phrasing) — the same 'review this writing' prompt routes by whether the trigger is doc architecture or prose form",
-            "skill": "documentation"
-          },
-          {
             "reason": "refactor owns behavior-preserving structural change including rename mechanics across call sites; linguistics owns the linguistic decision of what the new name should be — the same 'rename this thing' prompt routes by whether the trigger is the rename mechanics or the naming choice itself",
             "skill": "refactor"
           }
@@ -6501,22 +6260,16 @@
           {
             "reason": "user-research owns the methods for eliciting and validating user mental models empirically; this skill owns the framing of what a mental model is and how to reason about its accuracy.",
             "skill": "user-research"
-          },
-          {
-            "reason": "reasoning is the cognitive primitive of drawing inferences; mental models are the structures over which that reasoning operates. Reasoning uses models; this skill builds and audits them.",
-            "skill": "reasoning"
           }
         ],
         "related": [
-          "reasoning",
           "conceptual-modeling",
           "knowledge-modeling",
           "user-research",
           "semantics"
         ],
         "verify_with": [
-          "user-research",
-          "reasoning"
+          "user-research"
         ]
       },
       "scope": "reference",
@@ -6721,10 +6474,6 @@
             "skill": "linguistics"
           },
           {
-            "reason": "documentation owns long-form prose inside guides, tutorials, and reference docs; microcopy owns short-form text inside the working interface (buttons, dialogs, empty states) — the same 'review this writing' prompt routes by whether the writing lives in a doc or in the live UI",
-            "skill": "documentation"
-          },
-          {
             "reason": "a11y owns the accessibility contracts that govern how copy is announced (aria-live regions, aria-label fallbacks, screen-reader semantics); microcopy owns the words themselves — the same 'fix this UI text' prompt routes by whether the trigger is accessibility compliance or copy quality",
             "skill": "a11y"
           },
@@ -6746,6 +6495,125 @@
         ]
       },
       "scope": "portable",
+      "stability": "experimental",
+      "type": "capability",
+      "version": "1.0.0"
+    },
+    {
+      "activation": {
+        "anti_examples": [
+          "implement a /api/posts POST endpoint (use route-handler-design)",
+          "implement a delete-comment mutation triggered from a form button (use server-actions-design)",
+          "explain what an HTTP 308 means vs 307 (use http-semantics)",
+          "design the full CSP policy and the rest of the security-header strategy (use security-fundamentals)",
+          "design a long-lived SSE stream from middleware (use streaming-architecture)"
+        ],
+        "examples": [
+          "design middleware that redirects unauthenticated users to /login while letting public routes through, configured via a matcher",
+          "add a middleware that generates a per-request CSP nonce and injects it into both the request and response headers",
+          "implement locale routing that detects Accept-Language and rewrites /about to /en/about for new visitors",
+          "add bot blocking that returns 403 for known scraper user-agents while letting search-engine bots through",
+          "tune a middleware that runs on every request down to 5ms so it stops adding latency to image fetches"
+        ],
+        "keywords": [
+          "Next.js middleware",
+          "middleware.ts file",
+          "NextRequest NextResponse",
+          "matcher config middleware",
+          "Edge Runtime constraints",
+          "NextResponse.redirect rewrite next",
+          "auth check before route",
+          "locale routing i18n middleware",
+          "A/B testing variant rewrite",
+          "CSP nonce middleware",
+          "geo-routing X-Vercel-IP-Country",
+          "request header injection",
+          "bot blocking middleware",
+          "middleware cookie set"
+        ],
+        "triggers": [
+          "how do I redirect unauthenticated users to login in Next.js",
+          "how do I run code before every request in Next.js",
+          "how do I set security headers globally in Next.js",
+          "how do I do locale routing in App Router",
+          "how do I do an A/B test with rewrites",
+          "why does my middleware run on static assets",
+          "can middleware do a database query",
+          "how do I generate a CSP nonce per request"
+        ]
+      },
+      "allowed-tools": "Read Grep",
+      "category": "engineering",
+      "concept": {
+        "analogy": "|",
+        "boundary": "|",
+        "definition": "Next.js middleware is a single async function exported as default from `middleware.ts` at the project root that runs on the Edge Runtime before route resolution for every request matching its `matcher` config. It receives a `NextRequest` and returns a `NextResponse` (or implicitly `NextResponse.next()`), and can do four things: pass through (`next`), rewrite to a different internal path (`rewrite`), redirect to a different URL (`redirect`), or short-circuit with a direct response. It runs once per request before any page render, Server Component fetch, Server Action, or Route Handler executes — making it the only place to apply genuinely cross-cutting concerns without per-route ceremony.",
+        "mental_model": "|",
+        "misconception": "|",
+        "purpose": "|",
+        "taxonomy": "|"
+      },
+      "description": "Use when designing or reviewing Next.js middleware (the single `middleware.ts` file at the project root): the cross-cutting request/response transforms that run before route resolution, the Edge Runtime constraints that govern what middleware can and cannot do, the `matcher` config that decides which paths it runs on, the `NextRequest`/`NextResponse` API for cookies/geo/IP, the four response shapes (`next` / `rewrite` / `redirect` / direct response), the canonical patterns (auth gate, locale routing, A/B testing, header injection, geo-routing, bot blocking), the performance discipline (every matched request pays the cost), and the design rule that middleware is for cross-cutting concerns that apply across many routes — never for per-route business logic. Do NOT use for per-route HTTP endpoint logic (use route-handler-design), for the Server Action mutation surface (use server-actions-design), for the abstract HTTP method/status/header semantics middleware operates on (use http-semantics), for the Content Security Policy and broader hardening patterns it enforces (use security-fundamentals), or for the cross-cutting streaming model (use streaming-architecture).",
+      "domain": "engineering/frontend",
+      "health": {
+        "comprehension_state": "present",
+        "drift_check": {
+          "last_verified": "2026-05-17"
+        },
+        "eval_artifacts": "planned",
+        "eval_state": "unverified",
+        "freshness": "2026-05-17",
+        "has_grounding": false,
+        "has_relations": true,
+        "routing_eval": "absent"
+      },
+      "id": "middleware-patterns",
+      "license": "MIT",
+      "name": "middleware-patterns",
+      "owner": "skill-graph-maintainer",
+      "path": "../skills/skills/middleware-patterns/SKILL.md",
+      "relations": {
+        "boundary": [
+          {
+            "reason": "middleware runs once before route resolution and applies to many routes via a matcher; route-handler-design runs for one route and one method after route resolution. Middleware owns the cross-cutting layer (auth gate, locale rewrite, header injection); route handlers own the per-route logic. They compose: middleware passes through to the handler, the handler executes, the response flows back.",
+            "skill": "route-handler-design"
+          },
+          {
+            "reason": "server-actions-design owns the internal-mutation surface invoked from the app's own UI; middleware is the cross-cutting request preprocessor that runs before any route or action. A Server Action call passes through middleware on its way to the server.",
+            "skill": "server-actions-design"
+          },
+          {
+            "reason": "http-semantics owns the abstract protocol: what each method, status code, and header means per RFC 9110. middleware-patterns owns the Next.js surface for applying those semantics across many requests — issuing 30x redirects, setting headers, choosing between rewrite (internal) and redirect (external).",
+            "skill": "http-semantics"
+          },
+          {
+            "reason": "security-fundamentals owns the broader hardening discipline: the CSP policy itself, threat models, principle of least authority, OWASP failure classes. middleware-patterns covers the Next.js delivery surface for some of those concerns — per-request CSP nonce generation, security-header injection — but defers the policy design to security-fundamentals.",
+            "skill": "security-fundamentals"
+          },
+          {
+            "reason": "server-components-design owns the render path that produces a page; middleware runs upstream of render and can rewrite, redirect, or pass through. Middleware does not replace render; it gates and rewrites it.",
+            "skill": "server-components-design"
+          },
+          {
+            "reason": "webhook-integration owns vendor webhook reliability (HMAC, idempotency, retries). Middleware should generally NOT touch webhook routes — signature verification needs raw bodies that middleware shouldn't consume, and the per-vendor authentication does not match middleware's cross-cutting shape. Exclude webhook paths from the matcher.",
+            "skill": "webhook-integration"
+          }
+        ],
+        "related": [
+          "route-handler-design",
+          "server-actions-design",
+          "http-semantics",
+          "security-fundamentals",
+          "server-components-design",
+          "client-server-boundary",
+          "webhook-integration"
+        ],
+        "verify_with": [
+          "code-review",
+          "security-fundamentals"
+        ]
+      },
+      "scope": "reference",
       "stability": "experimental",
       "type": "capability",
       "version": "1.0.0"
@@ -6977,10 +6845,6 @@
             "skill": "refactor"
           },
           {
-            "reason": "documentation produces durable prose for human readers; naming-conventions sharpens identifiers in code",
-            "skill": "documentation"
-          },
-          {
             "reason": "code-review evaluates a diff holistically; naming-conventions is the focused naming-decision skill invoked during authoring",
             "skill": "code-review"
           },
@@ -6990,7 +6854,6 @@
           }
         ],
         "related": [
-          "documentation",
           "refactor"
         ],
         "verify_with": [
@@ -7356,10 +7219,6 @@
           {
             "reason": "debugging chases a known failure (security or otherwise); owasp-security finds vulnerabilities BEFORE they are exploited in production",
             "skill": "debugging"
-          },
-          {
-            "reason": "documentation produces durable prose; owasp-security is active vulnerability-detection work on real code",
-            "skill": "documentation"
           },
           {
             "reason": "testing-strategy decides what to test broadly; owasp-security defines security-specific test cases (auth bypass tests, injection tests, etc.) as a sub-concern",
@@ -8204,10 +8063,6 @@
             "skill": "skill-infrastructure"
           },
           {
-            "reason": "documentation writes reader-facing prose; project-knowledge-extraction extracts and classifies durable knowledge before deciding the artifact",
-            "skill": "documentation"
-          },
-          {
             "reason": "skill-router dispatches a prompt to existing skills; project-knowledge-extraction creates or updates the knowledge base the router later uses",
             "skill": "skill-router"
           }
@@ -8215,12 +8070,10 @@
         "related": [
           "knowledge-modeling",
           "context-graph",
-          "architecture-decision-records",
-          "documentation"
+          "architecture-decision-records"
         ],
         "verify_with": [
-          "knowledge-modeling",
-          "documentation"
+          "knowledge-modeling"
         ]
       },
       "scope": "portable",
@@ -8309,20 +8162,12 @@
             "skill": "code-review"
           },
           {
-            "reason": "documentation produces durable prose for human readers; prompt-craft writes machine instructions consumed by an LLM",
-            "skill": "documentation"
-          },
-          {
             "reason": "skill-scaffold authors a new SKILL.md; prompt-craft is the skill consumed when authoring prompts that any skill might use",
             "skill": "skill-scaffold"
           }
         ],
         "related": [
-          "documentation",
           "code-review"
-        ],
-        "verify_with": [
-          "documentation"
         ]
       },
       "scope": "portable",
@@ -8765,81 +8610,6 @@
     },
     {
       "activation": {
-        "keywords": [
-          "reasoning strategy",
-          "extended thinking",
-          "think deeper",
-          "reasoning effort",
-          "chain of thought",
-          "over-thinking",
-          "under-thinking",
-          "reasoning depth",
-          "think before acting"
-        ],
-        "triggers": [
-          "reasoning-skill",
-          "thinking-skill"
-        ]
-      },
-      "allowed-tools": "Read Grep Bash",
-      "category": "foundations",
-      "concept": {
-        "analogy": "|",
-        "boundary": "|",
-        "definition": "Reasoning is the deliberate generation, evaluation, and selection of inferences over a problem space. Reasoning calibration is the meta-skill of matching reasoning depth to problem difficulty — engaging sustained multi-step deliberation when a problem requires it, and skipping straight to action or lookup when it does not. Drawn from dual-process accounts of cognition (Kahneman 2011, Stanovich & West 2000) and bounded-rationality theory (Simon 1955), it treats reasoning as an expensive operation that pays back only when the problem cannot be solved by cheaper means.",
-        "mental_model": "|",
-        "misconception": "|",
-        "purpose": "|",
-        "taxonomy": "|"
-      },
-      "description": "Use when choosing reasoning depth, deciding whether to think deeply or act fast, calibrating model effort, or diagnosing under-thinking and over-thinking in agents. Covers deterministic-first reasoning, technique routing by task type, chain/tree/ReAct patterns, the thinking-doing balance, and two-pass audit-then-implement workflows. Do NOT use for prompt wording (use `prompt-craft`) or agent architecture (use `agent-engineering`).",
-      "domain": "foundations/cognition",
-      "health": {
-        "comprehension_state": "present",
-        "drift_check": {
-          "last_verified": "2026-05-16"
-        },
-        "eval_artifacts": "planned",
-        "eval_state": "unverified",
-        "freshness": "2026-05-16",
-        "has_grounding": false,
-        "has_relations": true,
-        "lifecycle": {
-          "review_cadence": "quarterly",
-          "stale_after_days": 90
-        },
-        "routing_eval": "absent"
-      },
-      "id": "reasoning",
-      "license": "MIT",
-      "name": "reasoning",
-      "owner": "skill-graph-maintainer",
-      "path": "../skills/skills/reasoning/SKILL.md",
-      "portability": {
-        "readiness": "scripted",
-        "targets": [
-          "skill-md"
-        ]
-      },
-      "relations": {
-        "boundary": [
-          "prompt-craft"
-        ],
-        "related": [
-          "design-thinking",
-          "semantic-center"
-        ],
-        "verify_with": [
-          "evaluation"
-        ]
-      },
-      "scope": "reference",
-      "stability": "experimental",
-      "type": "capability",
-      "version": "1.1.0"
-    },
-    {
-      "activation": {
         "anti_examples": [
           "the test is failing after my edit — what did I break?",
           "write an architecture note explaining this pattern for new team members",
@@ -8910,10 +8680,6 @@
       },
       "relations": {
         "boundary": [
-          {
-            "reason": "documentation is prose about the code; refactor is behavior-preserving changes to the code itself",
-            "skill": "documentation"
-          },
           {
             "reason": "debugging chases an observed failure; refactor runs only with a green test suite and preserves behavior",
             "skill": "debugging"
@@ -9221,6 +8987,125 @@
     {
       "activation": {
         "anti_examples": [
+          "design an internal create-comment form mutation triggered only from this app's UI (use server-actions-design)",
+          "define the REST contract and resource model for a v2 public API (use api-design)",
+          "explain what an HTTP 422 means vs 400 (use http-semantics)",
+          "add an auth check that runs before every protected route (use middleware-patterns)",
+          "design the idempotency-key + retry + dead-letter-queue strategy for a webhook (use webhook-integration)"
+        ],
+        "examples": [
+          "design the route.ts that receives a Stripe webhook — verify signature before parsing the body, return 200 immediately, queue the heavy work",
+          "decide whether a 'export user data' endpoint should be a Route Handler or a Server Action",
+          "add CORS to a Route Handler that mobile clients call from a different origin",
+          "opt a GET Route Handler out of the default static cache because it depends on the request user",
+          "return a streaming binary response (PDF generation, large CSV export) from a Route Handler"
+        ],
+        "keywords": [
+          "Next.js Route Handler",
+          "route.ts file",
+          "App Router API endpoint",
+          "GET POST PUT DELETE export",
+          "Web Request Response API",
+          "NextRequest NextResponse",
+          "request.json formData parsing",
+          "dynamic force-dynamic segment config",
+          "revalidate Route Handler",
+          "Edge runtime vs Node runtime",
+          "ReadableStream response Next.js",
+          "webhook endpoint App Router",
+          "CORS Route Handler",
+          "Response.json status code"
+        ],
+        "triggers": [
+          "how do I expose an API endpoint in Next.js App Router",
+          "when should I use a Route Handler instead of a Server Action",
+          "how do I receive a webhook in Next.js",
+          "how do I return a streaming response from an API route",
+          "how do I parse a JSON body in route.ts",
+          "why is my Route Handler GET cached",
+          "how do I set CORS headers on a Next.js API route",
+          "Edge runtime vs Node runtime for an API route"
+        ]
+      },
+      "allowed-tools": "Read Grep",
+      "category": "engineering",
+      "concept": {
+        "analogy": "|",
+        "boundary": "|",
+        "definition": "A Next.js Route Handler is a file named route.ts (or route.js) under the app/ directory that exports one async function per HTTP method (GET, POST, PUT, PATCH, DELETE, HEAD, OPTIONS). Each export receives a standard Web Request object and returns a standard Web Response (or NextResponse, which extends it). The file's filesystem path defines the URL; the export name defines the method; the function body defines the handler. There is no Node-style req/res, no middleware chain, no per-method routing config — the file shape IS the contract.",
+        "mental_model": "|",
+        "misconception": "|",
+        "purpose": "|",
+        "taxonomy": "|"
+      },
+      "description": "Use when designing or reviewing Next.js Route Handlers (the `route.ts` file convention in App Router): when a Route Handler is the right surface vs Server Actions or Server Components, the HTTP-method-as-export contract (GET/POST/PUT/PATCH/DELETE/HEAD/OPTIONS), the Web-standard Request/Response interface (no Node `req`/`res`), the body-parsing primitives (`request.json`/`formData`/`text`/`blob`/`arrayBuffer`), the default caching behavior of GET responses and how to opt out (`dynamic = 'force-dynamic'`, `revalidate`, segment config), dynamic segments and search params, manual CORS, runtime selection (Edge vs Node), streaming via `ReadableStream`, status-code and header discipline, error responses, webhook-style handlers (signature verify before parse), and the design rule that a Route Handler is the right surface when the caller is not your own Next.js UI. Do NOT use for internal mutations triggered from your own UI (use server-actions-design), for the broader REST/contract/versioning discipline (use api-design), for HTTP method/status semantics in the abstract (use http-semantics), for request preprocessing across all routes (use middleware-patterns), or for the broader webhook reliability story — HMAC verification, idempotency, retries, queue handoff (use webhook-integration).",
+      "domain": "engineering/frontend",
+      "health": {
+        "comprehension_state": "present",
+        "drift_check": {
+          "last_verified": "2026-05-17"
+        },
+        "eval_artifacts": "planned",
+        "eval_state": "unverified",
+        "freshness": "2026-05-17",
+        "has_grounding": false,
+        "has_relations": true,
+        "routing_eval": "absent"
+      },
+      "id": "route-handler-design",
+      "license": "MIT",
+      "name": "route-handler-design",
+      "owner": "skill-graph-maintainer",
+      "path": "../skills/skills/route-handler-design/SKILL.md",
+      "relations": {
+        "boundary": [
+          {
+            "reason": "server-actions-design owns the internal mutation surface — a function the bundler turns into a network call from your own UI. route-handler-design owns the public-endpoint surface — a Web-standard Request/Response handler invoked by callers (mobile, third-party, webhooks, your own client-side fetches) that are not the Next.js bundler's typed call sites. Use Server Actions when the only caller is this app's UI; use Route Handlers when the caller is anything else or when you need fine-grained HTTP control.",
+            "skill": "server-actions-design"
+          },
+          {
+            "reason": "api-design owns the contract: resource modeling, versioning, pagination, error envelopes, REST/RPC choice. route-handler-design owns the Next.js implementation surface that hosts a contract designed elsewhere. Design the API with api-design; implement it with route-handler-design.",
+            "skill": "api-design"
+          },
+          {
+            "reason": "http-semantics owns the protocol: what each method, status code, and header means per RFC 9110. route-handler-design owns the Next.js-specific way to honor those semantics — exports per method, Response status, headers via the Response constructor or NextResponse helpers.",
+            "skill": "http-semantics"
+          },
+          {
+            "reason": "middleware runs once before route resolution and applies to many routes via a `matcher`; route-handler-design runs for one route and one method. Use middleware for cross-cutting concerns (auth gate, header injection, locale rewrite); use Route Handlers for the per-route logic that runs after middleware passes.",
+            "skill": "middleware-patterns"
+          },
+          {
+            "reason": "webhook-integration owns the cross-vendor reliability story — signature verification, idempotency keys, retry semantics, dead-letter queues, replay protection. route-handler-design owns the Next.js endpoint that hosts a webhook handler; it covers the framework-specific concerns (raw body access for HMAC, runtime choice, streaming) but defers the broader reliability discipline to webhook-integration.",
+            "skill": "webhook-integration"
+          },
+          {
+            "reason": "streaming-architecture owns the cross-cutting streaming model (Web Streams, SSE, RSC streaming, backpressure). route-handler-design covers the specific Next.js Route Handler streaming surface — returning a ReadableStream from a handler and the runtime choices that affect it.",
+            "skill": "streaming-architecture"
+          }
+        ],
+        "related": [
+          "server-actions-design",
+          "api-design",
+          "http-semantics",
+          "middleware-patterns",
+          "webhook-integration",
+          "streaming-architecture",
+          "client-server-boundary"
+        ],
+        "verify_with": [
+          "code-review",
+          "api-design"
+        ]
+      },
+      "scope": "reference",
+      "stability": "experimental",
+      "type": "capability",
+      "version": "1.0.0"
+    },
+    {
+      "activation": {
+        "anti_examples": [
           "execute one ALTER TABLE migration mechanically (use database-migration)",
           "design a schema from scratch (use data-modeling)",
           "diagnose a slow query (use query-optimization)"
@@ -9509,8 +9394,7 @@
           "knowledge-modeling"
         ],
         "verify_with": [
-          "code-review",
-          "documentation"
+          "code-review"
         ]
       },
       "scope": "portable",
@@ -10420,10 +10304,6 @@
           {
             "reason": "lint-overlay covers lint-rule selection and gate placement for general codebases; skill-infrastructure covers the skill-system-specific tooling category that includes lint but extends to overlap, routing-gap, drift, and mirror-parity",
             "skill": "lint-overlay"
-          },
-          {
-            "reason": "documentation produces durable prose for human readers; skill-infrastructure designs the deterministic checks that no human reads unless violated",
-            "skill": "documentation"
           }
         ],
         "related": [
@@ -10642,10 +10522,6 @@
       "relations": {
         "boundary": [
           {
-            "reason": "documentation writes prose ABOUT routing; skill-router is the routing logic itself",
-            "skill": "documentation"
-          },
-          {
             "reason": "graph-audit verifies ONE skill's metadata; skill-router chooses BETWEEN skills at request time",
             "skill": "graph-audit"
           },
@@ -10771,17 +10647,10 @@
           {
             "reason": "graph-audit verifies the authored metadata of an existing skill; skill-scaffold is the authoring-time guide before a skill exists",
             "skill": "graph-audit"
-          },
-          {
-            "reason": "documentation owns durable prose for human readers; skill-scaffold owns the skill-authoring contract specifically",
-            "skill": "documentation"
           }
         ],
         "related": [
           "naming-conventions"
-        ],
-        "verify_with": [
-          "documentation"
         ]
       },
       "scope": "reference",
@@ -11621,14 +11490,12 @@
         "related": [
           "diagnosis",
           "pattern-recognition",
-          "documentation",
           "information-architecture",
           "layout-composition",
           "interaction-patterns",
           "interaction-feedback"
         ],
         "verify_with": [
-          "documentation",
           "a11y"
         ]
       },
@@ -12110,10 +11977,6 @@
       "relations": {
         "boundary": [
           {
-            "reason": "documentation is durable prose; testing-strategy is active verification planning",
-            "skill": "documentation"
-          },
-          {
             "reason": "debugging chases a specific observed failure; testing-strategy decides what to test BEFORE a failure exists",
             "skill": "debugging"
           },
@@ -12416,8 +12279,7 @@
           "prompt-craft"
         ],
         "verify_with": [
-          "code-review",
-          "documentation"
+          "code-review"
         ]
       },
       "scope": "portable",
@@ -12986,10 +12848,6 @@
       "relations": {
         "boundary": [
           {
-            "reason": "documentation produces durable prose explaining the version-control policy; version-control owns the discipline that policy describes",
-            "skill": "documentation"
-          },
-          {
             "reason": "code-review evaluates the *content* of a change before merge; version-control owns the *shape* of history that change leaves behind",
             "skill": "code-review"
           },
@@ -13003,15 +12861,13 @@
           }
         ],
         "related": [
-          "documentation",
           "code-review",
           "refactor",
           "naming-conventions",
           "debugging"
         ],
         "verify_with": [
-          "code-review",
-          "documentation"
+          "code-review"
         ]
       },
       "scope": "portable",
@@ -13262,10 +13118,6 @@
       "relations": {
         "boundary": [
           {
-            "reason": "documentation produces durable prose about integration patterns; webhook-integration produces the executable handler skeleton and verification path",
-            "skill": "documentation"
-          },
-          {
             "reason": "event-contract-design owns outbound event and webhook contracts; webhook-integration owns inbound third-party handler mechanics",
             "skill": "event-contract-design"
           },
@@ -13289,7 +13141,6 @@
         "related": [
           "testing-strategy",
           "debugging",
-          "documentation",
           "owasp-security",
           "code-review",
           "event-contract-design"
@@ -13375,10 +13226,6 @@
       "relations": {
         "boundary": [
           {
-            "reason": "documentation owns doc-type selection, audience targeting, freshness, and progressive disclosure of doc *content*; writing-humanizer owns the prose-form quality inside any human-readable text (AI tells, voice, sentence rhythm, register fit) — the same 'fix this writing' prompt routes by whether the trigger is doc structure or prose form",
-            "skill": "documentation"
-          },
-          {
             "reason": "microcopy owns the specific in-product UX-text patterns (button labels, empty-state structure, tooltip rules, dialog rules, toast rules); writing-humanizer owns AI-tell removal and prose-rhythm rules across any human-readable text including but not limited to UI — the same 'rewrite this for humans' prompt routes by whether the surface is a specific UI pattern or any other prose",
             "skill": "microcopy"
           },
@@ -13393,8 +13240,7 @@
           "semantics"
         ],
         "verify_with": [
-          "linguistics",
-          "documentation"
+          "linguistics"
         ]
       },
       "scope": "portable",
@@ -13407,27 +13253,27 @@
     "by_category": {
       "agent": 16,
       "design": 26,
-      "engineering": 58,
-      "foundations": 13,
+      "engineering": 59,
+      "foundations": 12,
       "product": 1,
-      "quality": 28
+      "quality": 27
     },
     "by_scope": {
       "codebase": 1,
-      "portable": 94,
-      "reference": 47
+      "portable": 92,
+      "reference": 48
     },
     "by_stability": {
-      "experimental": 141,
+      "experimental": 140,
       "stable": 1
     },
     "by_type": {
-      "capability": 132,
+      "capability": 131,
       "overlay": 1,
       "router": 1,
       "workflow": 8
     },
-    "total_skills": 142
+    "total_skills": 141
   },
   "workspace": {
     "skill_roots": [
