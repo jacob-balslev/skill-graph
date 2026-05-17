@@ -2,7 +2,7 @@
 
 > Type: Reference
 > Purpose: Canonical head nouns for skill names, derived from current live usage.
-> Last updated: 2026-05-17 (Wave 6 batch 3: `design` 10→11 from route-handler-design; `patterns` 5→6 from middleware-patterns)
+> Last updated: 2026-05-17 (Wave 6 closure: `patterns` 6→7 from ref-patterns; Wave 6 batch 3 had bumped `design` 10→12 — the count fix resolved a pre-existing off-by-one — and `patterns` 5→6)
 
 ## What this is
 
@@ -32,7 +32,7 @@ The skills that violate this convention live in `name-exceptions.yaml` with cita
 | `development` | 4 | spec-driven-development, ai-native-development, eval-driven-development, test-driven-development |
 | `engineering` | 3 | agent-engineering, performance-engineering, prompt-craft (suffix-style) |
 | `analysis` | 3 | diff-analysis, research-synthesis, task-analysis |
-| `patterns` | 6 | interaction-patterns, vercel-composition-patterns, replication-patterns, hooks-patterns, suspense-patterns, middleware-patterns |
+| `patterns` | 7 | interaction-patterns, vercel-composition-patterns, replication-patterns, hooks-patterns, suspense-patterns, middleware-patterns, ref-patterns |
 | `fundamentals` | 3 | acid-fundamentals, data-modeling-fundamentals, security-fundamentals |
 | `mapping` | 2 | bounded-context-mapping, journey-mapping |
 | `recognition` | 2 | intent-recognition, pattern-recognition |
