@@ -1245,65 +1245,6 @@
     },
     {
       "activation": {
-        "keywords": [
-          "command palette",
-          "Cmd+K menu",
-          "Cmd+K shortcut",
-          "keyboard-driven navigation",
-          "quick actions menu",
-          "fuzzy search launcher",
-          "cmdk library"
-        ],
-        "triggers": [
-          "command-palette-skill",
-          "cmd-k-skill",
-          "keyboard-navigation-skill",
-          "power-user-skill",
-          "fuzzy-search-skill"
-        ]
-      },
-      "allowed-tools": "Read Grep Bash",
-      "category": "design",
-      "description": "This skill provides keyboard-driven navigation patterns for power users: cmdk-style palette (Cmd+K), fuzzy search across orders/products/settings, action shortcuts, recent items, and contextual commands. Load when implementing command palette UI, keyboard shortcut systems, fuzzy search for navigation, or power-user workflow optimization.",
-      "domain": "design/ui",
-      "health": {
-        "drift_check": {
-          "last_verified": "2026-03-29"
-        },
-        "eval_artifacts": "planned",
-        "eval_state": "unverified",
-        "freshness": "2026-03-29",
-        "has_grounding": false,
-        "has_relations": true,
-        "lifecycle": {
-          "review_cadence": "quarterly",
-          "stale_after_days": 90
-        },
-        "routing_eval": "absent"
-      },
-      "id": "command-palette",
-      "license": "MIT",
-      "name": "command-palette",
-      "owner": "skill-graph-maintainer",
-      "path": "../skills/skills/command-palette/SKILL.md",
-      "portability": {
-        "readiness": "scripted",
-        "targets": [
-          "skill-md"
-        ]
-      },
-      "relations": {
-        "related": [
-          "information-architecture"
-        ]
-      },
-      "scope": "portable",
-      "stability": "experimental",
-      "type": "capability",
-      "version": "1.0.0"
-    },
-    {
-      "activation": {
         "anti_examples": [
           "decide where the form's state lives across page navigations (use state-management)",
           "pick the design tokens for color and spacing (use visual-design-foundations)",
@@ -3860,6 +3801,108 @@
         "verify_with": [
           "methodology",
           "evaluation"
+        ]
+      },
+      "scope": "reference",
+      "stability": "experimental",
+      "type": "capability",
+      "version": "1.0.0"
+    },
+    {
+      "activation": {
+        "anti_examples": [
+          "design where to place Suspense fallback boundaries (use suspense-patterns)",
+          "design the API response contract for a 500 error (use api-design)",
+          "set up Sentry SDK initialization (use error-tracking)",
+          "handle a Promise rejection in an event handler (use code-review for the local try/catch pattern)"
+        ],
+        "examples": [
+          "design a route-segment error.tsx for a dashboard so one failing widget doesn't blank the whole page",
+          "diagnose why a click-handler crash bypasses the error boundary and propagates to window.onerror",
+          "pair an error boundary with a Suspense boundary so failed fetches show error UI while successful ones stream in",
+          "integrate an error boundary with Sentry so caught errors are reported with the component tree context"
+        ],
+        "keywords": [
+          "React Error Boundary",
+          "componentDidCatch",
+          "getDerivedStateFromError",
+          "react-error-boundary library",
+          "Next.js error.tsx",
+          "global-error.tsx",
+          "error boundary granularity",
+          "resetKeys",
+          "error boundary with Suspense",
+          "caught render error",
+          "uncaught event handler error",
+          "catch errors in React component tree",
+          "show fallback UI when component crashes",
+          "where to place error boundaries",
+          "React component crash recovery",
+          "error.tsx route segment fallback"
+        ],
+        "triggers": [
+          "my error boundary isn't catching errors",
+          "do I need an error boundary here",
+          "why does the whole page crash on one component error",
+          "how do I recover from a caught error",
+          "error.tsx vs global-error.tsx",
+          "why doesn't this catch async errors"
+        ]
+      },
+      "allowed-tools": "Read Grep",
+      "category": "engineering",
+      "concept": {
+        "analogy": "|",
+        "boundary": "|",
+        "definition": "An error boundary is a React component that catches JavaScript errors thrown anywhere in its descendant tree during rendering, in lifecycle methods, and in constructors — and renders a fallback UI instead of unmounting the broken subtree to the root. As of React 19 it must still be implemented as a class component using getDerivedStateFromError and/or componentDidCatch; function components cannot themselves be error boundaries (they can render one and provide its fallback). React's design choice: failure in a subtree should not require crashing the whole tree, but the boundary itself must be a stable component above the failure point.",
+        "mental_model": "|",
+        "misconception": "|",
+        "purpose": "|",
+        "taxonomy": "|"
+      },
+      "description": "Use when designing or reviewing React error boundaries: what an error boundary catches (rendering errors, lifecycle errors, constructor errors) and what it does not (event handler errors, async errors, SSR errors, errors in the boundary itself), why React still requires class components for error boundaries, how to place boundaries by granularity (page / feature / leaf), how error boundaries pair with Suspense, the reset-and-recover pattern (resetKeys, error.reset), the Next.js error.tsx route-segment convention, and how to integrate boundaries with error reporting (Sentry, observability). Covers React 18+ and Next.js App Router. Do NOT use for Suspense boundary placement (use suspense-patterns), for general error-handling discipline (try/catch in async code, validation errors), for backend error contracts (use api-design), or for observability infrastructure (use error-tracking).",
+      "domain": "engineering/frontend",
+      "health": {
+        "comprehension_state": "present",
+        "drift_check": {
+          "last_verified": "2026-05-16"
+        },
+        "eval_artifacts": "planned",
+        "eval_state": "unverified",
+        "freshness": "2026-05-16",
+        "has_grounding": false,
+        "has_relations": true,
+        "routing_eval": "absent"
+      },
+      "id": "error-boundary",
+      "license": "MIT",
+      "name": "error-boundary",
+      "owner": "skill-graph-maintainer",
+      "path": "../skills/skills/error-boundary/SKILL.md",
+      "relations": {
+        "boundary": [
+          {
+            "reason": "suspense-patterns owns the loading-state boundary mechanism; error-boundary owns the failure-state boundary mechanism. They pair in the canonical ErrorBoundary→Suspense→Component nesting but are distinct primitives that catch different signals (thrown Error vs thrown Promise).",
+            "skill": "suspense-patterns"
+          },
+          {
+            "reason": "error-tracking owns the SDK / observability infrastructure for reporting errors externally (Sentry, Datadog); error-boundary owns the in-tree React mechanism that catches and reports them. The skills compose — boundaries are where caught errors get reported from.",
+            "skill": "error-tracking"
+          },
+          {
+            "reason": "hooks-patterns covers component-internal logic discipline; error-boundary is a tree-level mechanism that handles failures from anywhere in its descendant subtree. Class-component requirement of error boundaries is the one place hooks discipline does not apply.",
+            "skill": "hooks-patterns"
+          }
+        ],
+        "related": [
+          "suspense-patterns",
+          "hooks-patterns",
+          "error-tracking",
+          "server-components-design"
+        ],
+        "verify_with": [
+          "code-review",
+          "error-tracking"
         ]
       },
       "scope": "reference",
@@ -9879,6 +9922,110 @@
     {
       "activation": {
         "anti_examples": [
+          "design a Server Component that reads data on render (use server-components-design)",
+          "design a public REST API consumed by mobile clients (use api-design)",
+          "choose between SSR and SSG (use rendering-models)",
+          "design the visual UX of a form's validation states (use form-ux-architecture)"
+        ],
+        "examples": [
+          "design a 'create comment' form using Server Actions plus useActionState so it works without JavaScript and reports server-side validation errors",
+          "decide whether a delete button should call a Server Action or an API route",
+          "audit a Server Action for missing authorization (the function looks like a normal call but is publicly invokable)",
+          "design the revalidation strategy for a mutation that affects multiple cached routes"
+        ],
+        "keywords": [
+          "Server Actions",
+          "use server directive",
+          "form action attribute",
+          "useActionState",
+          "useFormStatus",
+          "progressive enhancement forms",
+          "revalidatePath",
+          "revalidateTag",
+          "server mutation Next.js",
+          "server-side validation mandatory",
+          "bound arguments Server Action",
+          "redirect after action"
+        ],
+        "triggers": [
+          "how do I submit a form to the server",
+          "do I need an API route for this mutation",
+          "how do I call a server function from a button",
+          "why is my Server Action exposed as an endpoint",
+          "useActionState vs useFormState",
+          "how do I revalidate after mutation",
+          "can Server Actions run in event handlers"
+        ]
+      },
+      "allowed-tools": "Read Grep",
+      "category": "engineering",
+      "concept": {
+        "analogy": "|",
+        "boundary": "|",
+        "definition": "A Server Action is a JavaScript function marked with 'use server' (either at the module level or as the first line of the function body) that executes on the server but is invokable from the client. The bundler turns calls to it from Client Components into a network round-trip: arguments are serialized, the function runs server-side, the return value is serialized back. The function itself looks like an ordinary import in client code, which is the design's main strength and its main security trap — what looks like a function call is a public POST endpoint.",
+        "mental_model": "|",
+        "misconception": "|",
+        "purpose": "|",
+        "taxonomy": "|"
+      },
+      "description": "Use when designing or reviewing Server Actions: the 'use server' directive contract, how a server-side function becomes invokable from the browser without an API route, form integration via the `action` attribute, the React 19 hooks useActionState / useFormStatus, progressive enhancement (works without JS), server-side validation and authorization as mandatory rather than optional, revalidation primitives (revalidatePath, revalidateTag, redirect), error handling and bound arguments, and the security boundary that makes Server Actions a public endpoint despite their function-like syntax. Covers Next.js App Router as the canonical implementation. Do NOT use for read-path data fetching with RSC (use server-components-design), for the broader 'use client' / 'use server' boundary semantics (use client-server-boundary), for designing externally-facing API contracts (use api-design), or for form UX patterns at the component level (use form-ux-architecture).",
+      "domain": "engineering/frontend",
+      "health": {
+        "comprehension_state": "present",
+        "drift_check": {
+          "last_verified": "2026-05-16"
+        },
+        "eval_artifacts": "planned",
+        "eval_state": "unverified",
+        "freshness": "2026-05-16",
+        "has_grounding": false,
+        "has_relations": true,
+        "routing_eval": "absent"
+      },
+      "id": "server-actions-design",
+      "license": "MIT",
+      "name": "server-actions-design",
+      "owner": "skill-graph-maintainer",
+      "path": "../skills/skills/server-actions-design/SKILL.md",
+      "relations": {
+        "boundary": [
+          {
+            "reason": "server-components-design owns the read path — Server Components fetch data on render; server-actions-design owns the write path — Server Actions execute mutations triggered from the client. They share infrastructure (RSC, 'use server') but solve distinct problems.",
+            "skill": "server-components-design"
+          },
+          {
+            "reason": "client-server-boundary owns the serialization and directive mechanics of the boundary itself; server-actions-design owns the discipline of using the 'use server' side of that boundary for mutations.",
+            "skill": "client-server-boundary"
+          },
+          {
+            "reason": "api-design owns externally-facing HTTP contracts intended for multi-client consumption (mobile apps, third-party integrations, server-to-server). Server Actions are an internal mutation surface for the same Next.js app's UI — when the only consumer is this app, Server Actions replace the API surface; when there are other consumers, both can coexist.",
+            "skill": "api-design"
+          },
+          {
+            "reason": "form-ux-architecture owns the visual and interaction design of forms (validation states, layout, accessibility, microcopy); server-actions-design owns the server-side execution model of the mutation that form submits to.",
+            "skill": "form-ux-architecture"
+          }
+        ],
+        "related": [
+          "server-components-design",
+          "client-server-boundary",
+          "form-ux-architecture",
+          "api-design",
+          "hooks-patterns"
+        ],
+        "verify_with": [
+          "code-review",
+          "api-design"
+        ]
+      },
+      "scope": "reference",
+      "stability": "experimental",
+      "type": "capability",
+      "version": "1.0.0"
+    },
+    {
+      "activation": {
+        "anti_examples": [
           "add a click handler to an existing component (use hooks-patterns and client-server-boundary)",
           "choose between SSR and SSG for a marketing page (use rendering-models)",
           "build the form-submission mutation flow (use server-actions-design when authored)",
@@ -13259,28 +13406,28 @@
   "summary": {
     "by_category": {
       "agent": 16,
-      "design": 27,
-      "engineering": 56,
+      "design": 26,
+      "engineering": 58,
       "foundations": 13,
       "product": 1,
       "quality": 28
     },
     "by_scope": {
       "codebase": 1,
-      "portable": 95,
-      "reference": 45
+      "portable": 94,
+      "reference": 47
     },
     "by_stability": {
-      "experimental": 140,
+      "experimental": 141,
       "stable": 1
     },
     "by_type": {
-      "capability": 131,
+      "capability": 132,
       "overlay": 1,
       "router": 1,
       "workflow": 8
     },
-    "total_skills": 141
+    "total_skills": 142
   },
   "workspace": {
     "skill_roots": [
