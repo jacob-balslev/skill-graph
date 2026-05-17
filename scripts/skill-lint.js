@@ -51,6 +51,20 @@
  *      routes to itself and every anti_example routes away (ideally to a
  *      skill named in its relations.boundary[]).
  *      See scripts/lint/check-routing-eval.js.
+ *  13. Category-enum enforcement (runs per file): errors when `category` is
+ *      set to a value not in the 6-value canonical enum (foundations,
+ *      engineering, design, quality, agent, product). Redundant-but-correct
+ *      second layer on top of the schema enum — provides a more descriptive
+ *      error message with the authoritative definitions inline.
+ *      See scripts/lint/check-category-enum.js.
+ *  14. Stability promotion gate (runs per file): warns when a skill declares
+ *      `stability: stable` without meeting all five promotion criteria:
+ *      (1) eval_state ≠ unverified, (2) eval_score ≥ 4.0, (3) routing_eval:
+ *      present, (4) drift_check.last_verified within 90 days, (5)
+ *      grounding.truth_sources populated (codebase/reference scope) or scope
+ *      is portable (exempt). All criteria are checked independently — no
+ *      short-circuit. WARN level only — never ERRORs.
+ *      See scripts/lint/check-stability-promotion.js.
  *
  * Error output uses file:line:column + 5-line code frame + caret + help
  * line for actionable diagnostics. Use --no-color for plain CI output.
@@ -79,6 +93,7 @@ const { checkArchetypeSections } = require('./lint/check-archetype-sections');
 const { checkRoutingQuality } = require('./lint/check-routing-quality');
 const { checkRoutingEval } = require('./lint/check-routing-eval');
 const { checkCategoryEnum } = require('./lint/check-category-enum');
+const { checkStabilityPromotion } = require('./lint/check-stability-promotion');
 
 const REPO_ROOT = workspaceRoot();
 const TEMPLATE_PATH = path.join(REPO_ROOT, 'examples', 'skill-metadata-template.md');
@@ -1172,6 +1187,11 @@ function main() {
     // Category-enum check (check 13). Enforces the 6-value canonical category set.
     const categoryEnumResult = checkCategoryEnum({ filePath: relPath, sourceText: text, fm });
 
+    // Stability promotion gate (check 14). Warns when stability: stable is
+    // declared without meeting all five promotion criteria. WARN level only —
+    // never contributes to fileErrors.
+    const stabilityPromotionResult = checkStabilityPromotion({ filePath: relPath, sourceText: text, fm });
+
     // Promote warnings to errors when --strict is active.
     const fileErrors = [
       ...rawErrors.map(msg => ({ msg, line: null, column: null, help: null })),
@@ -1183,6 +1203,7 @@ function main() {
         ...rawWarnings.map(msg => ({ msg: `[promoted from warn] ${msg}`, line: null, column: null, help: null })),
         ...archetypeResult.warnings.map(w => ({ msg: `[promoted from warn] ${w.message}`, line: w.line, column: w.column, help: w.help })),
         ...routingResult.warnings.map(w => ({ msg: `[promoted from warn] ${w.message}`, line: w.line, column: w.column, help: w.help })),
+        ...stabilityPromotionResult.warnings.map(w => ({ msg: `[promoted from warn] ${w.message}`, line: w.line, column: w.column, help: w.help })),
       ] : []),
     ];
 
@@ -1190,6 +1211,7 @@ function main() {
       ...rawWarnings.map(msg => ({ message: msg, line: null, column: null, help: null })),
       ...archetypeResult.warnings,
       ...routingResult.warnings,
+      ...stabilityPromotionResult.warnings,
     ];
 
     // Tier label per file: template + starter skills are all Tier 5 specimens.

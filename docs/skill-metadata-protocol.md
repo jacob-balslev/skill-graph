@@ -445,3 +445,25 @@ For the concrete v2→v3 mapping tables, see `docs/manifest-field-mapping.md § 
 - The lint always validates against `skill.schema.json` (the v6 contract). Skills on v5 that contain Health Block fields must either be **bumped to v6** or have the Health Block fields stripped.
 
 **Policy:** If the Skill Audit Loop walker stamps Health Block fields onto a skill whose frontmatter does not have `schema_version: 6`, the walker has written to the wrong schema tier. Correct the skill by running the v5→v6 migration script (`scripts/migrate-skill-v5-to-v6.js`) rather than adding an exception to the lint schema. Health Block fields are not universally applicable across schema versions; they are a v6+ contract.
+
+## Stability Promotion Criteria (SH-6109)
+
+`stability: stable` signals that a skill's content is settled and suitable for production dependence. Lint check 14 (`scripts/lint/check-stability-promotion.js`) emits **WARN** (never ERROR) when a skill declares `stability: stable` without meeting the following five criteria. All criteria are evaluated independently — failures are reported for every unmet criterion, not just the first.
+
+A skill qualifies for `stability: stable` when it meets all five of the following:
+
+| # | Criterion | Field(s) | Pass condition |
+|---|---|---|---|
+| 1 | Eval has been run | `eval_state` | Value is `passing` or `monitored` (not `unverified` or absent) |
+| 2 | Eval score meets quality bar | `eval_score` | ≥ 4.0 on the 0.0–5.0 audit scale (≡ 80%) |
+| 3 | Routing coverage evaluated | `routing_eval` | Value is `present` (harness verified by lint check 12) |
+| 4 | Drift verified recently | `drift_check.last_verified` | ISO 8601 date within the last 90 days |
+| 5 | Truth sources declared | `grounding.truth_sources` | Non-empty array; exempt when `scope: portable` |
+
+**Severity:** All findings from this check are warnings, not errors. This prevents 141 currently-experimental skills from breaking the lint run if any author prematurely sets `stability: stable`.
+
+**When criterion 5 is exempt:** Skills with `scope: portable` have no codebase tie-in by definition. They are exempt from criterion 5 because `grounding.truth_sources` is not meaningful for portable skills.
+
+**To promote a skill:** Satisfy each criterion, then change `stability: experimental` to `stability: stable`. The lint run will emit no stability-promotion warnings once all five criteria are met.
+
+**Implementation:** `scripts/lint/check-stability-promotion.js`. Integrated into `scripts/skill-lint.js` as check 14 (warn-only track; also promoted to errors under `--strict`).
