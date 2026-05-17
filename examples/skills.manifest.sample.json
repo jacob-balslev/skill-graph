@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-05-17T06:55:20.298Z",
+  "generated_at": "2026-05-17T08:55:21.562Z",
   "schema_version": 4,
   "skills": [
     {
@@ -1265,7 +1265,8 @@
           "component slots",
           "compose components",
           "component prop API",
-          "component reuse across products"
+          "component reuse across products",
+          "decomposing a large component to maintain it"
         ],
         "triggers": [
           "structure components for reuse",
@@ -4205,120 +4206,6 @@
         ]
       },
       "scope": "portable",
-      "stability": "experimental",
-      "type": "capability",
-      "version": "1.0.0"
-    },
-    {
-      "activation": {
-        "anti_examples": [
-          "format a money value for display in EUR with thousands separators (use formatting)",
-          "choose an isolation level for a transactional money write (use transaction-isolation)",
-          "allocate cost across line items with the specific product allocation formula (use the product's allocation skill)",
-          "design the database column type for a money field (use data-modeling)",
-          "map Stripe Charge balance_transaction.amount to the local schema (use stripe-ledger-recon)"
-        ],
-        "examples": [
-          "explain why this finance code should use integer cents instead of floats",
-          "choose a rounding rule for a finance system that aggregates many small transactions",
-          "decide what to do when a fee is missing — treat as zero, treat as null, or treat as unknown",
-          "verify that allocating $99.99 across 7 line items does not introduce a penny-rounding loss",
-          "reason about whether a price displayed as 19.99 can be stored as 19.99 in a float column"
-        ],
-        "keywords": [
-          "integer cents",
-          "minor units",
-          "float for money",
-          "binary floating point money problem",
-          "Money pattern",
-          "banker's rounding",
-          "round half even",
-          "round half up",
-          "IEEE 754 rounding modes",
-          "ISO 4217",
-          "multi currency",
-          "base currency",
-          "FX conversion",
-          "null cost semantics",
-          "missing money values",
-          "reconciliation invariant",
-          "double entry sign conventions",
-          "allocation problem",
-          "penny rounding",
-          "Knuth fixed point arithmetic",
-          "Goldberg floating point",
-          "Fowler Money pattern",
-          "why not use float for money",
-          "why use integer cents"
-        ],
-        "triggers": [
-          "why not float for money",
-          "why integer cents",
-          "how to round money",
-          "banker's rounding",
-          "missing cost handling",
-          "financial null semantics",
-          "reconciliation invariant",
-          "money allocation",
-          "why do my totals not match"
-        ]
-      },
-      "allowed-tools": "Read Grep",
-      "category": "engineering",
-      "concept": {
-        "analogy": "|",
-        "boundary": "|",
-        "definition": "Financial domain fundamentals are the foundational software primitives for representing, arithmetic-ing, rounding, and reconciling money values in a way that produces deterministic, auditable, exactly-correct results: the choice of integer minor units as the storage primitive (because binary floating-point cannot represent 0.10 exactly, and every cent of error compounds across millions of transactions), the four families of rounding rules (round-half-up / round-half-even-banker's / round-half-down / round-toward-zero) and the IEEE 754 default of round-half-even, the encapsulation of amount and currency as one inseparable Money value object (per Fowler 2002), the semantics of missing money values (fail-fast, zero-default, null-propagation, explicit-unknown — four distinct meanings the application chooses between), reconciliation invariants (the books must balance; debits equal credits; sign conventions are global, not local), the allocation problem (distributing a total across N line items without losing or gaining pennies due to rounding), and the verification discipline that catches money bugs before they become regulatory or customer-trust incidents. The discipline exists because money is the single category of software value where 'almost correct' is wrong, where errors compound rather than cancel, and where the cost of a bug is borne by users one penny at a time across years before anyone notices.",
-        "mental_model": "|",
-        "misconception": "|",
-        "purpose": "|",
-        "taxonomy": "|"
-      },
-      "description": "Use when reasoning about the foundational primitives of money handling in software: why floating-point binary is the wrong representation for money, how integer-minor-units (cents, pence, satoshi) became the industry-standard storage primitive, the four families of rounding rules (round-half-up, round-half-even / banker's rounding, round-half-down, round-toward-zero / away-from-zero) and which is the IEEE 754 default, the Money pattern (encapsulating amount + currency together as one value object per Fowler PoEAA), multi-currency operations and the choice of a base currency, four distinct semantics for missing money values (fail-fast vs zero-default vs null-propagation vs explicit-unknown), reconciliation invariants and sign conventions, the allocation problem (splitting a total across line items without rounding loss), and the verification discipline that catches money bugs before they become incidents. Do NOT use for one specific product's calculation formula or operational rules (use the relevant product-specific finance skill), display formatting and locale rules (use formatting / financial-display-contract), database transaction guarantees underneath the money writes (use acid-fundamentals or transaction-isolation), allocation algorithms for a specific cost pool (use the relevant allocation skill), or payment-processor integration mechanics (use the relevant integration skill).",
-      "domain": "engineering/finance",
-      "health": {
-        "comprehension_state": "present",
-        "drift_check": {
-          "last_verified": "2026-05-17"
-        },
-        "eval_artifacts": "planned",
-        "eval_state": "unverified",
-        "freshness": "2026-05-17",
-        "has_grounding": false,
-        "has_relations": true,
-        "routing_eval": "absent"
-      },
-      "id": "financial-domain-fundamentals",
-      "license": "MIT",
-      "name": "financial-domain-fundamentals",
-      "owner": "skill-graph-maintainer",
-      "path": "../skills/skills/financial-domain-fundamentals/SKILL.md",
-      "relations": {
-        "boundary": [
-          {
-            "reason": "acid-fundamentals owns the transactional guarantees underneath any money write (A, C, I, D). This skill owns the in-memory representation, arithmetic, and rounding of money values regardless of whether they survive a crash; acid-fundamentals owns whether they survive a crash. Conflation is common because both topics are 'finance correctness' — keep separate by asking whether the question is about arithmetic-and-representation or about transactional-guarantee.",
-            "skill": "acid-fundamentals"
-          },
-          {
-            "reason": "transaction-isolation owns the choice of isolation level for concurrent money writes (read-committed, repeatable read, serializable). This skill owns money-value semantics independent of concurrency.",
-            "skill": "transaction-isolation"
-          },
-          {
-            "reason": "data-modeling owns the schema choice for a money column (DECIMAL vs BIGINT vs NUMERIC vs domain type). This skill owns the conceptual frame underneath that choice — why an integer minor-unit column is preferred over a binary float column regardless of the database used.",
-            "skill": "data-modeling"
-          }
-        ],
-        "related": [
-          "acid-fundamentals",
-          "transaction-isolation",
-          "data-modeling"
-        ],
-        "verify_with": [
-          "acid-fundamentals",
-          "data-modeling"
-        ]
-      },
-      "scope": "reference",
       "stability": "experimental",
       "type": "capability",
       "version": "1.0.0"
@@ -9230,7 +9117,7 @@
         "keywords": [
           "Next.js Route Handler",
           "route.ts file",
-          "App Router API endpoint",
+          "API endpoint via route.ts",
           "GET POST PUT DELETE export",
           "Web Request Response API",
           "NextRequest NextResponse",
@@ -9239,9 +9126,9 @@
           "revalidate Route Handler",
           "Edge runtime vs Node runtime",
           "ReadableStream response Next.js",
-          "webhook endpoint App Router",
+          "webhook endpoint in route.ts",
           "CORS Route Handler",
-          "Response.json status code"
+          "Response.json HTTP status"
         ],
         "triggers": [
           "how do I expose an API endpoint in Next.js App Router",
@@ -10046,15 +9933,15 @@
         ],
         "keywords": [
           "Server Actions",
-          "use server directive",
+          "Server Function declaration",
           "form action attribute",
           "useActionState",
           "useFormStatus",
-          "progressive enhancement forms",
+          "forms that work without JavaScript",
           "revalidatePath",
           "revalidateTag",
           "server mutation Next.js",
-          "server-side validation mandatory",
+          "validate Server Action inputs",
           "bound arguments Server Action",
           "redirect after action"
         ],
@@ -13480,7 +13367,7 @@
     "by_category": {
       "agent": 16,
       "design": 26,
-      "engineering": 61,
+      "engineering": 60,
       "foundations": 12,
       "product": 1,
       "quality": 27
@@ -13488,19 +13375,19 @@
     "by_scope": {
       "codebase": 1,
       "portable": 92,
-      "reference": 50
+      "reference": 49
     },
     "by_stability": {
-      "experimental": 142,
+      "experimental": 141,
       "stable": 1
     },
     "by_type": {
-      "capability": 133,
+      "capability": 132,
       "overlay": 1,
       "router": 1,
       "workflow": 8
     },
-    "total_skills": 143
+    "total_skills": 142
   },
   "workspace": {
     "skill_roots": [
