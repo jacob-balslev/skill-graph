@@ -2,7 +2,7 @@
 
 > Type: Reference
 > Purpose: Canonical head nouns for skill names, derived from current live usage.
-> Last updated: 2026-05-16 (Deferred-skills promotion: `models`, `management` added as new active head nouns; `fundamentals` 2->3 and `architecture` 6->7 from component-architecture + security-fundamentals authoring)
+> Last updated: 2026-05-17 (Wave 6 batch 3: `design` 10→11 from route-handler-design; `patterns` 5→6 from middleware-patterns)
 
 ## What this is
 
@@ -25,14 +25,14 @@ The skills that violate this convention live in `name-exceptions.yaml` with cita
 | Head noun | Live count | Example skills |
 |---|---|---|
 | `modeling` | 7 | conceptual-modeling, data-modeling, entity-relationship-modeling, knowledge-modeling, ontology-modeling, state-machine-modeling, observability-modeling |
-| `design` | 10 | api-design, agent-eval-design, color-system-design, event-contract-design, taxonomy-design, theme-system-design, test-doubles-design, integration-test-design, e2e-test-design, server-components-design, server-actions-design |
+| `design` | 12 | api-design, agent-eval-design, color-system-design, event-contract-design, taxonomy-design, theme-system-design, test-doubles-design, integration-test-design, e2e-test-design, server-components-design, server-actions-design, route-handler-design |
 | `testing` | 5 | contract-testing, mutation-testing, property-based-testing, snapshot-testing, performance-testing |
 | `architecture` | 7 | component-architecture, dependency-architecture, design-system-architecture, form-ux-architecture, frontend-architecture, streaming-architecture, agent-engineering (umbrella) |
 | `strategy` | 6 | testing-strategy, seo-strategy, tool-call-strategy, test-coverage-strategy, indexing-strategy, sharding-strategy |
 | `development` | 4 | spec-driven-development, ai-native-development, eval-driven-development, test-driven-development |
 | `engineering` | 3 | agent-engineering, performance-engineering, prompt-craft (suffix-style) |
 | `analysis` | 3 | diff-analysis, research-synthesis, task-analysis |
-| `patterns` | 5 | interaction-patterns, vercel-composition-patterns, replication-patterns, hooks-patterns, suspense-patterns |
+| `patterns` | 6 | interaction-patterns, vercel-composition-patterns, replication-patterns, hooks-patterns, suspense-patterns, middleware-patterns |
 | `fundamentals` | 3 | acid-fundamentals, data-modeling-fundamentals, security-fundamentals |
 | `mapping` | 2 | bounded-context-mapping, journey-mapping |
 | `recognition` | 2 | intent-recognition, pattern-recognition |
