@@ -51,7 +51,7 @@ This is a compact example. The full authoring scaffold is [`examples/skill-metad
 
 ```yaml
 ---
-schema_version: 4
+schema_version: 6
 name: product-page-ux-review
 description: "Use when reviewing a product page's UX, visual hierarchy, interaction patterns, accessibility, and conversion-critical content. Do NOT use for backend Shopify API work, production incident debugging, or general copy editing outside the product-page experience."
 version: 1.0.0
@@ -301,7 +301,7 @@ skill-graph marketplace-export
 | Path | Purpose |
 |---|---|
 | [`SKILL_GRAPH.md`](SKILL_GRAPH.md) | Library-level system model and authority tiers. |
-| [`schemas/`](schemas/) | Skill and manifest JSON Schemas, including pinned v4 and v5 copies. |
+| [`schemas/`](schemas/) | Skill and manifest JSON Schemas, including pinned v4, v5, and v6 copies; the unversioned mirror tracks v6. |
 | [`examples/skill-metadata-template.md`](examples/skill-metadata-template.md) | Copyable authoring template. |
 | [`examples/projects/markdown-static-site/`](examples/projects/markdown-static-site/) | Specimen project showing codebase-grounded skills. |
 | [`docs/field-reference.md`](docs/field-reference.md) | Field-by-field reference. |
@@ -343,6 +343,6 @@ Skill Metadata Protocol is designed to sit next to existing agent-context conven
 
 ## Status
 
-Latest release checkpoint: **0.5.0 (2026-05-13)**. The current contract is `schema_version: 4`.
+Latest release checkpoint: **0.5.0 (2026-05-13)**. The current contract is `schema_version: 6` — see [`skill-metadata-protocol/schemas/skill.v6.schema.json`](https://github.com/jacob-balslev/skill-metadata-protocol/blob/main/schemas/skill.v6.schema.json) for the authoritative shape and [`skill-metadata-protocol/docs/migrations/v5-to-v6.md`](https://github.com/jacob-balslev/skill-metadata-protocol/blob/main/docs/migrations/v5-to-v6.md) for the migration procedure. The local `schemas/` directory pins v4, v5, and v6 copies for tooling that consumes the schemas directly.
 
 Code is licensed under Apache-2.0. Skill content and documentation are licensed under CC-BY-4.0 where noted. See [`LICENSE`](LICENSE) and [`NOTICE`](NOTICE).
