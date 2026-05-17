@@ -5,7 +5,7 @@
 > **Predicate glossary:** [`docs/glossary.md`](glossary.md).
 > **JSON-LD @context:** [`schemas/skill.context.jsonld`](../schemas/skill.context.jsonld).
 
-Schema version: **5** · Field count: **40** · Required: **13**
+Schema version: **6** · Field count: **52** · Required: **13**
 
 ---
 
@@ -13,7 +13,7 @@ Schema version: **5** · Field count: **40** · Required: **13**
 
 **Type:** multiple — see schema
 
-Major contract shape version. Integer for v5+; string '5' tolerated for back-compat with hand-rolled YAML. Bumps when shape changes break consumers. v5 closes the `category` field to a 6-value enum — see skill-metadata-protocol/docs/migrations/v4-to-v5.md.
+Major contract shape version. Integer for v6+; string '6' tolerated for back-compat with hand-rolled YAML. Bumps when shape changes break consumers. v6 promotes the seven `concept.*` sub-fields to flat top-level fields and adds the flat Health block (`last_audited`, `last_changed`, `audit_verdict`, `eval_score`, `eval_failed_ids`, `lint_verdict`, `drift_status`) so a skill's audit fingerprint lives in its own frontmatter instead of scattered log files. See skill-metadata-protocol/docs/migrations/v5-to-v6.md.
 
 **Full reference:** [`docs/field-reference.md#schema_version`](field-reference.md#schema_version)
 
@@ -197,11 +197,85 @@ Is routing / trigger coverage explicitly evaluated? `absent` (router behaviour i
 
 ---
 
+### `last_audited` *(optional)*
+
+**Type:** string
+
+ISO date (YYYY-MM-DD) the `audit` command last ran against this skill. Written by `scripts/skill/skill-audit.js`. Independent of `freshness` (which is the author's claim of content-level review) and `drift_check.last_verified` (which is the truth-source verification). Loop priority uses `last_audited` to pick the stalest skill.
+
+**Format:** date
+
+**Full reference:** [`docs/field-reference.md#last_audited`](field-reference.md#last_audited)
+
+---
+
+### `last_changed` *(optional)*
+
+**Type:** string
+
+ISO date (YYYY-MM-DD) the SKILL.md body or frontmatter was last edited. Written automatically by `improve` operations. Distinct from `freshness` (review claim) — `last_changed` is the editor's footprint, `freshness` is the reviewer's footprint.
+
+**Format:** date
+
+**Full reference:** [`docs/field-reference.md#last_changed`](field-reference.md#last_changed)
+
+---
+
+### `audit_verdict` *(optional)*
+
+**Type:** `PASS` | `PASS_WITH_FIXES` | `PARTIAL` | `FAIL` | `UNKNOWN`
+
+Aggregate result of the most recent `audit` run. Combines `lint_verdict`, `drift_status`, and (when run with `--graded`) the seven dimension scores. Lives on the skill itself instead of in a separate `audits/<skill>/verdict.md` so the audit fingerprint is portable with the skill. `UNKNOWN` is the initial state before any audit has run.
+
+**Full reference:** [`docs/field-reference.md#audit_verdict`](field-reference.md#audit_verdict)
+
+---
+
+### `eval_score` *(optional)*
+
+**Type:** number
+
+Latest aggregate eval grade on a 0.0–5.0 scale, written by `scripts/skill/evaluate-skill.js`. Replaces the read-the-log dance for knowing how this skill scored. When `evals/comprehension.json` exists, the comprehension grader's score lands here; otherwise the standard eval-suite score. Use `eval_failed_ids` to inspect the failing cases.
+
+**Full reference:** [`docs/field-reference.md#eval_score`](field-reference.md#eval_score)
+
+---
+
+### `eval_failed_ids` *(optional)*
+
+**Type:** array of string
+
+Eval IDs that failed in the most recent run. Empty array when clean. Populated alongside `eval_score` by the eval runner. Surfaces failures without forcing readers to crawl `eval-history.jsonl`.
+
+**Full reference:** [`docs/field-reference.md#eval_failed_ids`](field-reference.md#eval_failed_ids)
+
+---
+
+### `lint_verdict` *(optional)*
+
+**Type:** `PASS` | `FAIL` | `UNKNOWN`
+
+Result of the most recent deterministic-lint pass against this skill (`scripts/skill/skill-lint.js`). Schema validation, relation-target existence, archetype section presence, routing quality. `PASS` means zero lint errors; warnings do not flip the verdict. `UNKNOWN` is the initial state.
+
+**Full reference:** [`docs/field-reference.md#lint_verdict`](field-reference.md#lint_verdict)
+
+---
+
+### `drift_status` *(optional)*
+
+**Type:** `OK` | `DRIFT` | `BROKEN` | `STALE` | `NO_BASELINE` | `EXTERNAL_UNHASHED` | `UNKNOWN`
+
+Current truth-source drift status, mirroring the `scripts/skill-graph-drift.js` sentinel verdicts. `OK` (live hashes match recorded), `DRIFT` (mismatch), `BROKEN` (declared truth source missing), `STALE` (older than `lifecycle.stale_after_days`), `NO_BASELINE` (local truth sources declared but no hashes recorded), `EXTERNAL_UNHASHED` (URL truth sources not fetched), `UNKNOWN` (no drift check has run). Written by the drift sentinel; read by the loop to prioritise re-grounding work.
+
+**Full reference:** [`docs/field-reference.md#drift_status`](field-reference.md#drift_status)
+
+---
+
 ### `comprehension_state` *(optional)*
 
 **Type:** `absent` | `present`
 
-Does this skill carry a comprehension eval (typically `evals/comprehension.json`) and a `concept` block authored for the 7-dimension comprehension grader? `absent` (no comprehension grading), `present` (comprehension evals exist; the `concept` block is required by the allOf rule). Optional in v3 — omitted means `absent`. Independent of `routing_eval` (router-level) and `eval_state` (content-level). The nested `eval.comprehension_state` is the v3.1 preferred alias.
+Does this skill carry a comprehension eval (typically `evals/comprehension.json`) and the Understanding fields authored for the comprehension grader? `absent` (no comprehension grading), `present` (comprehension evals exist; the five flat Understanding fields `mental_model`, `purpose`, `boundary`, `analogy`, `misconception` are required by the allOf rule, OR the legacy `concept` block satisfies the requirement for v5 skills not yet migrated). Independent of `routing_eval` (router-level) and `eval_state` (content-level). The nested `eval.comprehension_state` is the v3.1 preferred alias.
 
 **Full reference:** [`docs/field-reference.md#comprehension_state`](field-reference.md#comprehension_state)
 
@@ -211,7 +285,7 @@ Does this skill carry a comprehension eval (typically `evals/comprehension.json`
 
 **Type:** object
 
-Seven-field universal-subject concept teaching block. Read by the comprehension grader (`scripts/skill/evaluate-skill.js --comprehension`) and rendered into the agent context when the skill is loaded. Required when `comprehension_state: present`. No protocol length cap — author each field as deeply as the concept requires. Distinct from `## Philosophy` in the body, which is about *why this skill file exists in this repo*; the `concept` block is about *what the subject is, universally*.
+DEPRECATED in v6: the seven sub-fields below are promoted to flat top-level fields (`mental_model`, `purpose`, `boundary`, `analogy`, `misconception`; `definition` is covered by `description`; `taxonomy` is covered by `category` + `relations.broader`). The nested block is retained for v5 backwards-compatibility but new skills should populate the flat fields instead. The comprehension grader reads either location; when both are present, the flat fields win.
 
 **Sub-fields:**
 
@@ -224,6 +298,56 @@ Seven-field universal-subject concept teaching block. Read by the comprehension 
 - `misconception` *required* — The wrong mental model people bring and why it misleads.
 
 **Full reference:** [`docs/field-reference.md#concept`](field-reference.md#concept)
+
+---
+
+### `mental_model` *(optional)*
+
+**Type:** string
+
+Primitives and their relationships. Name primitives and the relationships between them. Markdown permitted. Author with the depth the concept needs — no protocol length cap. Graded by the comprehension grader's `mental_model` dimension (weight 1.5). Replaces nested `concept.mental_model` in v6 — see the v5-to-v6 migration note.
+
+**Full reference:** [`docs/field-reference.md#mental_model`](field-reference.md#mental_model)
+
+---
+
+### `purpose` *(optional)*
+
+**Type:** string
+
+What problem the concept solves and the alternative it replaced. Concrete pain point + prior alternative. No length cap. Graded by the comprehension grader's `purpose` dimension (weight 1.0). Replaces nested `concept.purpose` in v6.
+
+**Full reference:** [`docs/field-reference.md#purpose`](field-reference.md#purpose)
+
+---
+
+### `boundary` *(optional)*
+
+**Type:** string
+
+Things commonly confused with the concept but that are NOT it. Express each difference as a mechanism (different primitives, purpose, or scope) — not just different names. No length cap. Graded by the comprehension grader's `boundary` dimension (weight 1.5). Replaces nested `concept.boundary` in v6. Distinct from `relations.boundary` (routing-layer handoff).
+
+**Full reference:** [`docs/field-reference.md#boundary`](field-reference.md#boundary)
+
+---
+
+### `analogy` *(optional)*
+
+**Type:** string
+
+Analogy that preserves the core mechanism. Translates the concept for a non-expert without breaking the structural relationship between primitives. No length cap. Graded by the comprehension grader's `analogy` dimension (weight 0.5). Replaces nested `concept.analogy` in v6.
+
+**Full reference:** [`docs/field-reference.md#analogy`](field-reference.md#analogy)
+
+---
+
+### `misconception` *(optional)*
+
+**Type:** string
+
+The wrong mental model people bring and why it misleads. Authored hint to inoculate the agent against the common error trap. No length cap. Not directly graded; complements `boundary`. Replaces nested `concept.misconception` in v6.
+
+**Full reference:** [`docs/field-reference.md#misconception`](field-reference.md#misconception)
 
 ---
 

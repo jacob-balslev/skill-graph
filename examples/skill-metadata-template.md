@@ -199,7 +199,7 @@ grounding:
   grounding_mode: repo_specific
   truth_sources:
     - path: docs/skill-metadata-protocol.md
-      anchor: the-40-authored-fields-grouped-by-purpose
+      anchor: the-52-authored-fields-grouped-by-purpose
       note: "Protocol anatomy and field requiredness"
     - path: schemas/skill.schema.json
       line_range:

@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-05-17T21:36:13Z",
+  "generated_at": "2026-05-17T22:15:31Z",
   "schema_version": 4,
   "skills": [
     {
@@ -10563,7 +10563,7 @@
         "grounding_mode": "repo_specific",
         "truth_sources": [
           {
-            "anchor": "the-40-authored-fields-grouped-by-purpose",
+            "anchor": "the-52-authored-fields-grouped-by-purpose",
             "note": "Protocol anatomy and field requiredness",
             "path": "docs/skill-metadata-protocol.md"
           },
