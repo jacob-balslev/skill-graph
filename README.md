@@ -233,7 +233,7 @@ The public, ready-to-install skill library lives at [`jacob-balslev/skills`](htt
 npx skills add jacob-balslev/skills
 ```
 
-That repo holds 137+ canonical skills in plain Agent-Skills shape, indexed on `skills.sh`. You do not need to clone this `skill-graph` tooling repo to consume the skills.
+That repo holds 141+ canonical skills in plain Agent-Skills shape, indexed on `skills.sh`. You do not need to clone this `skill-graph` tooling repo to consume the skills.
 
 ### Running the tooling (authors and maintainers)
 
@@ -244,7 +244,7 @@ npm install --global @skill-graph/cli
 skill-graph --help
 ```
 
-The tooling operates against a skill library configured via [`.skill-graph/config.json`](.skill-graph/config.json) → `workspace.skill_roots`. Post-2026-05-16 monorepo split, the shipped config points at the sibling [`jacob-balslev/skills`](https://github.com/jacob-balslev/skills) repo (canonical 137-skill library). Clone the canonical skills as a sibling of this repo and the tooling resolves automatically — no env-vars needed:
+The tooling operates against a skill library configured via [`.skill-graph/config.json`](.skill-graph/config.json) → `workspace.skill_roots`. Post-2026-05-16 monorepo split, the shipped config points at the sibling [`jacob-balslev/skills`](https://github.com/jacob-balslev/skills) repo (canonical 141-skill library). Clone the canonical skills as a sibling of this repo and the tooling resolves automatically — no env-vars needed:
 
 ```bash
 git clone https://github.com/jacob-balslev/skills.git ~/Development/skills
@@ -315,7 +315,7 @@ skill-graph marketplace-export
 | Repo | Purpose |
 |---|---|
 | [`jacob-balslev/skill-metadata-protocol`](https://github.com/jacob-balslev/skill-metadata-protocol) | Normative protocol contract (formerly `SKILL_METADATA_PROTOCOL.md` here). |
-| [`jacob-balslev/skills`](https://github.com/jacob-balslev/skills) | Canonical 137-skill library (formerly `skills/` here). |
+| [`jacob-balslev/skills`](https://github.com/jacob-balslev/skills) | Canonical 141-skill library (formerly `skills/` here). |
 | [`jacob-balslev/skill-audit-loop`](https://github.com/jacob-balslev/skill-audit-loop) | Repeatable audit workflow (formerly `SKILL_AUDIT_LOOP.md` + `SKILL_AUDIT_CHECKLIST.md` here). |
 
 ## What This Is Not
