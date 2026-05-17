@@ -17,6 +17,8 @@ Skill Graph operates across a library of [Skill Metadata Protocol](https://githu
 
 [Skill Graph system](SKILL_GRAPH.md) | [Full template](examples/skill-metadata-template.md) | [Primer](docs/PRIMER.md) | [Field reference](docs/field-reference.md) | [Adoption guide](docs/ADOPTION.md) | [Conformance](docs/CONFORMANCE.md)
 
+> **Surface scope:** The OSS-portable canonical library lives at `skills/skills/` (141 v6-compliant skills). A separate personal/Sales Hub surface at `skills/` (263 pre-v6) is frozen — new skills are curated into the OSS surface only when non-PII, non-Sales-Hub, and generalizable. See [ADR 0008](docs/adr/0008-skill-surface-split-and-curation-policy.md).
+
 ## How SKILL.md, Skill Metadata Protocol, and Skill Graph Differ
 
 | Layer | Job | Concrete output |
@@ -317,6 +319,37 @@ skill-graph marketplace-export
 | [`jacob-balslev/skill-metadata-protocol`](https://github.com/jacob-balslev/skill-metadata-protocol) | Normative protocol contract (formerly `SKILL_METADATA_PROTOCOL.md` here). |
 | [`jacob-balslev/skills`](https://github.com/jacob-balslev/skills) | Canonical 141-skill library (formerly `skills/` here). |
 | [`jacob-balslev/skill-audit-loop`](https://github.com/jacob-balslev/skill-audit-loop) | Repeatable audit workflow (formerly `SKILL_AUDIT_LOOP.md` + `SKILL_AUDIT_CHECKLIST.md` here). |
+
+## Releasing (Maintainers)
+
+### Prerequisites
+
+Before cutting the first release, ensure these one-time steps are done:
+
+1. **npm org** — the `@skill-graph` npm org must exist. If `npm view @skill-graph/cli` returns 404, create the org first: `npm org create skill-graph` (requires npm account with org permissions).
+2. **NPM_TOKEN secret** — add a publish token (`npm token create --type=publish --scope=@skill-graph`) as `NPM_TOKEN` in the GitHub repo secrets (`Settings → Secrets → Actions`).
+
+### Cutting a release
+
+```bash
+# Bump version, commit, and tag in one step
+npm version patch   # or minor, or major
+
+# Push the commit and the tag — CI picks up the tag and publishes
+git push && git push --tags
+```
+
+The publish pipeline at `.github/workflows/publish.yml` triggers on any `v*.*.*` tag, runs `npm test`, then publishes `@skill-graph/cli` with provenance attestation. The npm package is always published from CI — do not run `npm publish` locally.
+
+### Manual prereq summary
+
+| Step | Who | Command |
+|------|-----|---------|
+| Create `@skill-graph` npm org (once) | Jacob | `npm org create skill-graph` |
+| Add `NPM_TOKEN` GitHub secret (once) | Jacob | GitHub Settings → Secrets |
+| Cut a release | Maintainer | `npm version <patch\|minor\|major> && git push --tags` |
+
+> CLI distribution via npm (`@skill-graph/cli`) is separate from skill library syndication. The skill library is published from [`jacob-balslev/skills`](https://github.com/jacob-balslev/skills) via `npx skills add jacob-balslev/skills`. See [`docs/marketplace-syndication.md`](docs/marketplace-syndication.md) for the skill library syndication workflow. See SH-6110 for install verification.
 
 ## What This Is Not
 
