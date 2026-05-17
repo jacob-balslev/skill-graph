@@ -140,9 +140,9 @@ These are v3 `type` field values, not v5 `category` values, so they're not break
 
 These are small cleanups identified during the audit. None block Phase 1 or Phase 5; they can be picked up in any wrap pass.
 
-1. **`skill-graph/scripts/lint/check-category-enum.js` header comment** — update lines 4–22 to reflect that v5 schema bump landed and the enum is closed at both schema and lint level. (~5 lines edit.)
-2. **`Development/scripts/skill/skill-census.js:246` fallback** — replace `frontmatter.category || "knowledge"` with `frontmatter.category || null` or drop the fallback entirely. Currently inert (unreachable under v3-only iteration) but misleading. Defer to Phase 5 when census becomes v5-aware.
-3. **Phase 5 prerequisite** — when the 287-skill broader library migrates to v5, every entry in §2 above will need a schema-aware update. Recommend a follow-up audit at Phase 5 kickoff that re-runs the greps above against the merged library.
+1. **`skill-graph/scripts/lint/check-category-enum.js` header comment** — update lines 4–22 to reflect that v5 schema bump landed and the enum is closed at both schema and lint level. (~5 lines edit.) **RESOLVED 2026-05-17** — header rewritten to describe the dual-layer (schema + lint) enforcement and the three-place update protocol when the enum changes.
+2. **`Development/scripts/skill/skill-census.js:246` fallback** — replace `frontmatter.category || "knowledge"` with `frontmatter.category || null` or drop the fallback entirely. Currently inert (unreachable under v3-only iteration) but misleading. Defer to Phase 5 when census becomes v5-aware. **RESOLVED 2026-05-17** — code path preserved (changing fallback string risks downstream consumers expecting always-a-string `type`); added an inline comment that documents the v3-era origin, why the path is currently unreachable, and what will need to change when Phase 5 makes it active. The actual fallback rewrite is now owned by the Phase 5 prerequisite step (see v5 plan).
+3. **Phase 5 prerequisite** — when the 287-skill broader library migrates to v5, every entry in §2 above will need a schema-aware update. Recommend a follow-up audit at Phase 5 kickoff that re-runs the greps above against the merged library. **RESOLVED 2026-05-17** — added as an explicit prerequisite step at the top of Phase 5 in `docs/plans/skill-taxonomy-v5-and-gap-fill.md`, with the specific known-mandatory updates called out (census.js:246, `VALID_TYPES`/`VALID_FAMILIES`/`VALID_PRIMARY_CATEGORIES` constants).
 
 ## Phase 0c gate verdict
 

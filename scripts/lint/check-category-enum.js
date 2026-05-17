@@ -2,23 +2,21 @@
 /**
  * Category enum check for SKILL.md files (Check 13).
  *
- * The schema allows `category` to be any string for backward compatibility,
- * but the Skill Graph policy (as of 2026-05-15) is that the field functions
- * as a **browse facet**, not ontology truth, and must take exactly one of
- * six canonical values.
+ * The Skill Graph policy is that `category` functions as a **browse facet**,
+ * not ontology truth, and must take exactly one of six canonical values.
  *
- * Why lint, not schema:
- *   - Schema is the SHAPE contract; lint is the POLICY contract.
- *   - Closing the schema enum requires a v5 schema bump that cascades through
- *     manifest schemas, generators, and downstream consumers. The lint check
- *     achieves the same enforcement guarantee with no version churn.
- *   - Future protocol revisions may legitimately add a 7th category (e.g.
- *     `research`, `ops`); revising a lint constant is cheaper than a schema
- *     bump.
+ * Post-Phase-1 (v5 schema bump, skill-graph commit `f489641`, 2026-05-16):
+ * the canonical enum is closed at BOTH the schema level (`schemas/skill.schema.json`
+ * `category.enum`) AND this lint level. This file is now redundant-but-correct:
+ * the schema will reject invalid values first, and this lint provides a
+ * second-layer guarantee with a more descriptive error message and the
+ * authoritative definitions inline.
  *
- * The six canonical values and their definitions live in
- * docs/skill-metadata-protocol.md § Category. Any deviation here must update
- * that doc in the same commit.
+ * Both sources of truth must stay in sync. A future protocol revision that
+ * adds (e.g.) a 7th category must update three places in the same commit:
+ *   1. `schemas/skill.schema.json` `category.enum`
+ *   2. `CATEGORY_ENUM` below
+ *   3. `docs/skill-metadata-protocol.md` § Category
  *
  * @module lint/check-category-enum
  */
@@ -26,9 +24,12 @@
 'use strict';
 
 /**
- * Canonical category enum — closed set as of 2026-05-15.
+ * Canonical category enum — closed set as of v5 (2026-05-16).
  *
- * Note: framed as a BROWSE FACET, not ontology truth. Cross-cutting truth
+ * Mirror of `schemas/skill.schema.json` `category.enum`. Update both in the
+ * same commit when adding/removing values.
+ *
+ * Framed as a BROWSE FACET, not ontology truth. Cross-cutting truth
  * (a skill that is both engineering and quality, for example) lives in
  * `relations.related`, not in multiple category memberships.
  */
