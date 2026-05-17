@@ -20,11 +20,14 @@
 const fs = require('fs');
 const path = require('path');
 const { parseFrontmatter } = require('./lib/parse-frontmatter');
-const { workspaceRoot } = require('./lib/roots');
+const { workspaceRoot, loadWorkspaceConfig, resolveSkillRoots } = require('./lib/roots');
 const { buildExportedSkill } = require('./export-skill');
 
 const REPO_ROOT = workspaceRoot();
-const DEFAULT_SKILLS_DIR = path.join(REPO_ROOT, 'skills');
+const WORKSPACE_CONFIG = loadWorkspaceConfig(REPO_ROOT, msg => process.stderr.write(`WARN ${msg}\n`));
+const SKILL_ROOTS = resolveSkillRoots(REPO_ROOT, WORKSPACE_CONFIG);
+// Primary skill root — first configured root, or local skills/ as fallback.
+const DEFAULT_SKILLS_DIR = SKILL_ROOTS[0].absPath;
 const TOP_LEVEL_FIELDS = new Set(['name', 'description', 'license', 'compatibility', 'metadata', 'allowed-tools']);
 
 function repoRelative(filePath) {

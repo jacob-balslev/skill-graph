@@ -25,19 +25,25 @@
 const fs = require('fs');
 const path = require('path');
 const { parseFrontmatter } = require('./lib/parse-frontmatter');
-const { workspaceRoot } = require('./lib/roots');
+const { workspaceRoot, loadWorkspaceConfig, resolveSkillRoots } = require('./lib/roots');
 const { buildExportedSkill, normalizeExportName } = require('./export-skill');
 const { validateExportedFrontmatter } = require('./verify-skill-md-export');
 const { checkFile } = require('./check-markdown-links');
 
 const REPO_ROOT = workspaceRoot();
-const DEFAULT_SOURCE_DIR = path.join(REPO_ROOT, 'skills');
+const WORKSPACE_CONFIG = loadWorkspaceConfig(REPO_ROOT, msg => process.stderr.write(`WARN ${msg}\n`));
+const SKILL_ROOTS = resolveSkillRoots(REPO_ROOT, WORKSPACE_CONFIG);
+// Primary skill root — first configured root, or local skills/ as fallback.
+const DEFAULT_SOURCE_DIR = SKILL_ROOTS[0].absPath;
 const DEFAULT_OUTPUT_ROOT = path.join(REPO_ROOT, 'marketplace');
 const MARKETPLACE_DESCRIPTION_LIMIT = 1024;
 const SKILL_GRAPH_SOURCE_REPO = 'https://github.com/jacob-balslev/skill-graph';
 const SKILL_GRAPH_PROTOCOL = 'Skill Metadata Protocol v4';
 const SKILL_GRAPH_PROJECT = 'Skill Graph';
 const RELEASE_TARGET_REPO = 'jacob-balslev/skills';
+// Public GitHub URL for the release target repo (skills library). Used to rewrite
+// relative cross-repo links that resolve into the sibling skills library.
+const SKILLS_LIBRARY_REPO = `https://github.com/${RELEASE_TARGET_REPO}`;
 
 const PROVENANCE_KEYS = [
   'skill_graph_source_repo',
@@ -46,21 +52,14 @@ const PROVENANCE_KEYS = [
   'skill_graph_canonical_skill',
 ];
 
+// Export description overrides for skills whose canonical description exceeds the
+// 1024-character Agent Skills marketplace limit. Only add an entry when the canonical
+// description (in the skills/ library) is actually over the limit — the export gate
+// enforces this and will throw if an override exists for an under-limit description.
 const EXPORT_DESCRIPTION_OVERRIDES = {
-  'conceptual-modeling': 'Use when translating business requirements into a structured domain model before database schemas, API endpoints, or DDD aggregates are named. Covers entities, attributes, relationships, cardinality, specialization/generalization, aggregation/composition, roles, abstraction levels, stakeholder validation, and modeling anti-patterns such as implementation leakage, god entities, phantom relationships, premature normalization, attribute-as-entity, and unnamed relationships. Do NOT use for database ER diagrams with keys and normalization, formal ontology axioms with OWL/RDFS, or DDD tactical design; use those dedicated skills instead.',
-  'context-graph': 'Use when designing or auditing the multi-graph context architecture of an AI-coding workspace: skill graph, document routing graph, memory index, script registry, and the cross-graph edges between them. Covers edge typing, orphan detection, connectivity health, deterministic graph synthesis signals, change-propagation checks, and drift or hub-and-spoke anti-patterns. Do NOT use for authoring one SKILL.md (use `skill-scaffold`), validating one skill (use `graph-audit`), live routing decisions (use `skill-router`), context-window budgeting (use `context-window`), or session load/drop choices (use `context-management`).',
-  'contract-testing': 'Use when verifying the interface between two services or components by capturing the consumer\'s expectations as a contract artifact and verifying the provider satisfies it. Covers the consumer-driven contracts pattern (Fowler 2006; Pact), the contrast with schema-only validation (OpenAPI/JSON Schema captures shape, not behavioral expectations), the broker as the integration point between consumer and provider deploy schedules, two-phase verification (consumer-side mocks; provider-side replay), the difference between contract testing (verifies the interface) and integration testing (verifies the implementation through it), and how contract tests replace brittle cross-service e2e. Do NOT use for in-system integration (use `integration-test-design`), full user-journey testing (use `e2e-test-design`), single-unit testing (use `testing-strategy` + `test-doubles-design`), or pure OpenAPI schema validation (API-spec tooling).',
-  'context-management': 'Use when deciding what to load into an active agent session, recovering from context drift, preparing compaction or restart, distilling raw inputs into a working summary, or writing a handoff another agent can resume quickly. Covers intake triage, the six-step context-management loop, working-set shaping, evidence-first loading, drift signals, anti-drift rules, compaction-ready handoffs, and selective rebuild after context loss. Do NOT use for token math (use `context-window`), prompt wording (use `prompt-craft`), persistent memory curation, or multi-graph context architecture (use `context-graph`).',
-  'context-window': 'Use when allocating context-window budget across system, skill-injection, working, and output zones; monitoring context health; deciding when to compact; preserving state before compaction; recovering after compaction; or choosing strategies for 1M, 200K, or 128K context windows. Covers zone budgets, practical model-budget tables, the 80% compaction rule, pre/post-compact protocols, persistence hierarchy, operation token costs, and token-reduction techniques. Do NOT use for deciding what information belongs in the working set (use `context-management`), prompt design (use `prompt-craft`), graph architecture (use `context-graph`), or memory curation.',
-  'error-tracking': 'Use when designing or extending an application exception-reporting pipeline: error boundary placement, tracker SDK wrappers, sanitized reporting calls, environment gating, user context without PII leaks, breadcrumbs, and verification that each layer reports correctly. Covers component, route, global, and manual capture surfaces plus central `reportError`/`reportMessage` patterns. Do NOT use for the visual error UX shown to users (use `a11y` and interaction skills), chasing one captured error (use `debugging`), or broad privacy and retention policy (use `owasp-security`).',
-  'knowledge-modeling': 'Use when choosing the representation paradigm for domain knowledge: knowledge graph, frame, production rule, semantic network, concept map, procedural ontology, or hybrid. Covers knowledge acquisition from tacit to explicit, graph design principles, validation types, lifecycle states, AI-agent context systems, skills as frames, routing as rules, memory as graph, and GraphRAG patterns such as entity-anchored retrieval, relationship-aware context, path reasoning, subgraph summaries, and hybrid vector+graph retrieval. Do NOT use for human-readable domain analysis (`conceptual-modeling`), ER/database design, pure taxonomy work, formal ontology axioms, or live skill-library tooling (`skill-infrastructure`).',
-  'pattern-recognition': 'Use when auditing for recurring issues, clustering errors, detecting drift from conventions, or when an agent keeps fixing symptoms instead of root causes. Covers the Observe -> Cluster -> Name -> Codify -> Detect -> Prevent loop, grep-based audits, normalize-then-hash error clustering, board-health patterns, design-token and heading drift, domain-encoding patterns, eval-as-pattern-tests, 5 Whys, pattern lifecycle states, and drift traps. Do NOT use for one-off bug localization without recurrence, or for designing the classification system itself; this skill detects violations of conventions that already exist.',
-  'performance-testing': 'Use when measuring a system\'s non-functional properties — latency, throughput, error rate, resource utilization — by running it under controlled load and verifying against explicit SLO thresholds. Covers the five primitives (load profile, workload, latency metric, throughput metric, SLO target), the load-shape taxonomy (smoke, load, stress, spike, soak, breakpoint), the latency-percentile vocabulary (p50, p95, p99, p99.9) and why average latency misleads, the tool ecosystem (k6, JMeter, Locust, Gatling, Vegeta), and the offline-vs-observability distinction. Do NOT use for the optimization activity itself (use `performance-engineering`), declaring the threshold contract (use `performance-budgets`), runtime measurement of deployed systems (use `observability` or `error-tracking`), microbenchmarks of single functions (language benchmark tools), chaos engineering (use `chaos-engineering`), or test-suite quality measurement (use `mutation-testing`).',
-  'problem-locating-solving': 'Use when locating a bug in an unfamiliar codebase, tracing a failure from symptom to source, or choosing between candidate fixes after the symptom is observed but before a patch lands. Covers the locate-to-solve workflow: problem-statement contract, search-space reduction, boundary-based fault localization, good-vs-bad path comparison, binary search through a call chain, minimal repro, root-cause isolation, fix option comparison, blast-radius review, and post-fix verification. Do NOT use for broad task planning once the bug is localized, test-pyramid design, or performance forensics.',
-  'semantic-relations': 'Use when typing edges in a knowledge graph or concept map, resolving synonym/antonym/polysemy/homonym confusion, testing whether a connection is IS-A, PART-OF, causal, thematic, or vague, explaining adjacent concepts, or auditing whether hierarchy and skill-boundary decisions use the wrong relation type. Covers taxonomic, associative, and thematic relations plus symmetry, asymmetry, transitivity, reflexivity, and irreflexivity. Do NOT use for formal ontology axioms with reasoning constraints, database foreign-key or junction-table design, or operational data correspondence across systems.',
-  'state-management': 'Use when deciding where state lives, how it propagates, and how it composes: local component state vs lifted/shared state vs application state, server state vs client state, URL as state, persistent state, derived state, and the cross-cutting decision of who owns which piece. Covers state colocation, lifting up, derivation vs duplication, single source of truth, optimistic updates, server-state cache invalidation (React Query/SWR model), URL state for deep-linking, and anti-patterns like prop-drilling, state sprawl, and global-state-by-default. Do NOT use for specific state library choice (Redux vs Zustand — tactical), data fetching mechanics (use api-design or rendering-models), client/server boundary (use client-server-boundary), distributed system state (use replication-patterns), or finite state machines (use state-machine-modeling).',
-  'security-fundamentals': 'Use when reasoning about the security properties any application must satisfy: threat modeling (assets, threats, adversaries, surfaces), Saltzer and Schroeder\'s eight design principles (1975), input validation discipline, authentication vs authorization, secrets handling, secure-by-default, least-privilege, the OWASP Top 10 as recurring vulnerability classes, and defense in depth. Covers cross-cutting decisions about trust boundaries, where validation belongs, where authn/authz checks live, and how to bound blast radius. Do NOT use for LLM-specific prompt-injection (use prompt-injection-defense), cryptographic primitive implementation (use vendor libs), security-scanning tools (use security-scanning), credential-encryption schemes (use credential-encryption), GDPR/regulatory compliance (use gdpr-compliance), or the social/organizational side of security (out of scope).',
-  'component-architecture': 'Use when structuring a component library or design system for reuse across products, themes, and teams: layering of primitives, composites, and product-specific assemblies; component API design (props, polymorphism, compound components, render props vs hooks vs slots); the open-closed principle for component evolution; the headless/styled split for theming; controlled vs uncontrolled state contracts; ref forwarding and imperative escape hatches; composition over configuration trade-offs; and the cross-product reuse problem. Do NOT use for within-product module composition (use design-module-composition), design system meta-architecture (use design-system-architecture), the visual language itself (use visual-design-foundations or tokens), tactical hooks (library docs), or state-management decisions that are not component-API-shaped (use state-management).',
+  'middleware-patterns': 'Use when designing or reviewing Next.js middleware (`middleware.ts`): cross-cutting request/response transforms before route resolution, Edge Runtime constraints, `matcher` config, `NextRequest`/`NextResponse` API, the four response shapes (next/rewrite/redirect/direct), canonical patterns (auth gate, locale routing, A/B testing, header injection, geo-routing, bot blocking), and the design rule that middleware is for cross-cutting concerns across many routes — never per-route business logic. Do NOT use for per-route HTTP endpoint logic (use route-handler-design), Server Action mutations (use server-actions-design), abstract HTTP semantics (use http-semantics), CSP and hardening (use security-fundamentals), or the cross-cutting streaming model (use streaming-architecture).',
+  'ref-patterns': 'Use when designing or reviewing React ref usage: refs vs state (mutable handle vs reactive value), `useRef` for DOM access and mutable instance values, ref callbacks, `forwardRef` for passing refs through boundaries (and the React 19 ref-as-prop change), `useImperativeHandle` for controlled imperative surfaces, ref forwarding through compound-component primitives (Radix Slot / Headless UI), and the rule that refs are an escape hatch for DOM access, non-React library integration, focus management, animation, and imperative APIs — never a substitute for state. Do NOT use for hook discipline (use hooks-patterns), component layering (use component-architecture), state ownership (use state-management), client/server boundary (use client-server-boundary), or form-state patterns (use form-ux-architecture).',
+  'route-handler-design': 'Use when designing or reviewing Next.js Route Handlers (`route.ts`): when a Route Handler is right vs Server Actions or Server Components, the HTTP-method-as-export contract (GET/POST/PUT/PATCH/DELETE/HEAD/OPTIONS), Web-standard Request/Response interface, body-parsing primitives, GET caching and opt-out, dynamic segments, manual CORS, runtime selection (Edge vs Node), streaming via ReadableStream, status/header discipline, error responses, webhook-style handlers, and the rule that Route Handlers are the right surface when the caller is not your own Next.js UI. Do NOT use for internal UI mutations (use server-actions-design), REST contract design (use api-design), abstract HTTP semantics (use http-semantics), cross-route preprocessing (use middleware-patterns), or webhook reliability (use webhook-integration).',
 };
 
 const PRIVACY_PATTERNS = [
@@ -129,11 +128,39 @@ function splitMarkdownTarget(rawTarget) {
   };
 }
 
+// Relative posix prefix (from REPO_ROOT) that identifies the skills library repo root.
+// When the source dir is inside the sibling skills repo, links that resolve to within
+// that repo must be rewritten to SKILLS_LIBRARY_REPO rather than SKILL_GRAPH_SOURCE_REPO.
+// Example: source at "../skills/skills/skill-scaffold/SKILL.md" → prefix "../skills/"
+const SKILLS_LIBRARY_ROOT_PREFIX = (() => {
+  const skillsDir = DEFAULT_SOURCE_DIR;
+  // Compute the skills library *repo* root (parent of DEFAULT_SOURCE_DIR, e.g. "../skills")
+  const skillsLibRoot = path.dirname(skillsDir);
+  const rel = path.relative(REPO_ROOT, skillsLibRoot);
+  // Convert to posix and ensure trailing slash for prefix matching
+  const posix = rel.split(path.sep).join('/');
+  return posix ? posix + '/' : '';
+})();
+
 function canonicalRepoUrlForLink(sourceRelPath, pathPart, anchor) {
   const sourceDir = path.posix.dirname(sourceRelPath);
   const normalized = path.posix.normalize(path.posix.join(sourceDir, pathPart));
-  if (!normalized || normalized.startsWith('../') || normalized === '..') return null;
-  return `${SKILL_GRAPH_SOURCE_REPO}/blob/main/${normalized}${anchor || ''}`;
+  if (!normalized || normalized === '..') return null;
+
+  // Link resolves within the skill-graph repo itself
+  if (!normalized.startsWith('../')) {
+    return `${SKILL_GRAPH_SOURCE_REPO}/blob/main/${normalized}${anchor || ''}`;
+  }
+
+  // Link resolves into the sibling skills library repo — rewrite to that repo's GitHub URL
+  if (SKILLS_LIBRARY_ROOT_PREFIX && normalized.startsWith(SKILLS_LIBRARY_ROOT_PREFIX)) {
+    const skillsRepoRelPath = normalized.slice(SKILLS_LIBRARY_ROOT_PREFIX.length);
+    if (skillsRepoRelPath && !skillsRepoRelPath.startsWith('../')) {
+      return `${SKILLS_LIBRARY_REPO}/blob/main/${skillsRepoRelPath}${anchor || ''}`;
+    }
+  }
+
+  return null;
 }
 
 function rewriteLocalMarkdownLinksToCanonicalRepo(text, sourceRelPath) {
@@ -143,6 +170,22 @@ function rewriteLocalMarkdownLinksToCanonicalRepo(text, sourceRelPath) {
     const url = canonicalRepoUrlForLink(sourceRelPath, pathPart, anchor);
     return url ? `${prefix}${url}${suffix}` : match;
   });
+}
+
+// Root of the skills library repo (e.g. ~/Development/skills when using the sibling config).
+// Used to compute canonical skill source paths relative to the skills library, not skill-graph.
+const SKILLS_LIBRARY_REPO_ROOT = SKILLS_LIBRARY_ROOT_PREFIX
+  ? path.resolve(REPO_ROOT, SKILLS_LIBRARY_ROOT_PREFIX.slice(0, -1))
+  : REPO_ROOT;
+
+/**
+ * Returns the canonical source path for a skill file — relative to the skills library
+ * repo root (e.g. "skills/a11y/SKILL.md"). When skills live in a sibling repo, this
+ * strips the sibling prefix so the provenance value is stable and skills-library-relative
+ * rather than skill-graph-relative ("../skills/skills/a11y/SKILL.md").
+ */
+function canonicalSourcePath(skillMd) {
+  return path.relative(SKILLS_LIBRARY_REPO_ROOT, skillMd).split(path.sep).join('/');
 }
 
 function collectCanonicalSkills(sourceDir = DEFAULT_SOURCE_DIR) {
@@ -160,7 +203,12 @@ function collectCanonicalSkills(sourceDir = DEFAULT_SOURCE_DIR) {
     skills.push({
       dirName: entry.name,
       sourcePath: skillMd,
+      // sourceRelPath: skill-graph-repo-relative path — used for link rewriting (filesystem context).
       sourceRelPath: repoRelative(skillMd),
+      // canonicalSkillPath: skills-library-relative path — used for provenance metadata.
+      // When skills live in the sibling skills repo, this is "skills/a11y/SKILL.md" rather
+      // than the skill-graph-relative "../skills/skills/a11y/SKILL.md".
+      canonicalSkillPath: canonicalSourcePath(skillMd),
       text,
       fm,
     });
@@ -214,7 +262,9 @@ function exportDescriptionForSkill(skill) {
 
 function buildMarketplaceSkillText(skill) {
   const description = exportDescriptionForSkill(skill);
-  const metadata = provenanceForSkill(skill.sourceRelPath);
+  // Use canonicalSkillPath (skills-library-relative) for provenance, so the value is
+  // stable across layouts — "skills/a11y/SKILL.md" regardless of where skill-graph lives.
+  const metadata = provenanceForSkill(skill.canonicalSkillPath);
   if (description.shortened) {
     metadata.skill_graph_export_description = 'shortened for Agent Skills 1024-character description limit; canonical source keeps the full routing contract';
     metadata.skill_graph_canonical_description_length = String(description.sourceLength);
@@ -389,9 +439,9 @@ function validateGeneratedSurface(outputRoot, expectedSkills = null) {
       errors.push(`${repoRelative(skillMd)}: no matching canonical skill`);
       continue;
     }
-    if (fm.metadata.skill_graph_canonical_skill !== expectedSkill.sourceRelPath) {
+    if (fm.metadata.skill_graph_canonical_skill !== expectedSkill.canonicalSkillPath) {
       errors.push(
-        `${repoRelative(skillMd)}: metadata.skill_graph_canonical_skill must be ${expectedSkill.sourceRelPath}`
+        `${repoRelative(skillMd)}: metadata.skill_graph_canonical_skill must be ${expectedSkill.canonicalSkillPath}`
       );
     }
   }

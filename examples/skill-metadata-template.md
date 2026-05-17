@@ -1,5 +1,5 @@
 ---
-# yaml-language-server: $schema=https://skillgraph.dev/schemas/skill.v5.schema.json
+# yaml-language-server: $schema=https://skillgraph.dev/schemas/skill.v6.schema.json
 #
 # ============================================================================
 # SCAFFOLD — this file is a skill template, not a production skill.
@@ -23,7 +23,7 @@
 # routable in day-to-day skill dispatch — `scope: reference` keeps it out of
 # the normal routing pool.
 # ============================================================================
-schema_version: 5
+schema_version: 6
 name: skill-metadata-template
 # TEMPLATE NOTE: Be pushy in your description — Claude tends to under-trigger
 # skills, so descriptions should read as commands ("Use when X", "Activate
