@@ -6,6 +6,8 @@
 >
 > **Last verified.** 2026-05-13.
 
+> **CLI vs skill library distribution:** This document covers skill library syndication — publishing `SKILL.md` files to registries like `skills.sh` and SkillsMP. CLI distribution via npm (`@skill-graph/cli`) is a separate concern: the CLI is published from this repo via the `.github/workflows/publish.yml` pipeline on `v*.*.*` tags. See `SH-6110` for install verification and the [Releasing section in README.md](../README.md#releasing-maintainers) for the release procedure.
+
 Skill Graph should use public skill marketplaces as discovery channels, not as the source of truth. The canonical artifacts stay in this repo: protocol-enriched `skills/**/SKILL.md` files, schemas, docs, evals, manifests, and reference tooling. Marketplaces receive plain `SKILL.md` exports or GitHub-indexable surfaces that point back to the canonical Skill Graph source.
 
 The goal is twofold:
