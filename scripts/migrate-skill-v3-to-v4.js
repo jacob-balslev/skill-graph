@@ -110,21 +110,63 @@ function collectSkillFiles(targetPath, out = []) {
 }
 
 function parseArgs(argv) {
+  if (argv.includes('--help') || argv.includes('-h')) {
+    console.log('Usage: migrate-skill-v3-to-v4.js [--dry-run] [--all] [--skill <name>] [--include-template] [<path>...]');
+    console.log('Default mode writes files. Use --dry-run to preview without writing.');
+    console.log('Must specify --all, --skill <name>, or a positional <path>.');
+    process.exit(0);
+  }
+
+  const skillIdx = argv.indexOf('--skill');
+  const skill = skillIdx !== -1 ? argv[skillIdx + 1] : null;
+  // Positional targets are non-flag args, excluding the --skill value if present.
+  const targets = argv.filter((a, i) => {
+    if (a.startsWith('--')) return false;
+    if (skillIdx !== -1 && i === skillIdx + 1) return false;
+    return true;
+  });
   return {
     dryRun: argv.includes('--dry-run'),
+    all: argv.includes('--all'),
     includeTemplate: argv.includes('--include-template'),
-    targets: argv.filter(a => !a.startsWith('--')),
+    skill,
+    targets,
+    hasSkillFlag: skillIdx !== -1,
   };
 }
 
 function main() {
   const args = parseArgs(process.argv.slice(2));
-  const targetArgs = args.targets.length > 0 ? args.targets : ['skills'];
+
+  // Arg validation: require at least one targeting argument.
+  if (args.hasSkillFlag && (!args.skill || args.skill.startsWith('--'))) {
+    console.error('ERROR: --skill requires a skill name argument.');
+    process.exit(1);
+  }
+  if (!args.all && !args.skill && args.targets.length === 0) {
+    console.error('ERROR: must specify --skill <name>, --all, or a target path.');
+    process.exit(1);
+  }
+
+  let targetArgs;
+  if (args.skill) {
+    targetArgs = [path.join('skills', args.skill)];
+  } else if (args.all) {
+    targetArgs = ['skills'];
+  } else {
+    targetArgs = args.targets;
+  }
+
   const targets = [];
   for (const target of targetArgs) {
     targets.push(...collectSkillFiles(path.resolve(REPO_ROOT, target)));
   }
   if (args.includeTemplate) targets.push(TEMPLATE_PATH);
+
+  if (args.skill && targets.length === 0) {
+    console.error(`ERROR: skill '${args.skill}' not found. Check the skill name and try again.`);
+    process.exit(1);
+  }
 
   let changed = 0;
   let failed = 0;

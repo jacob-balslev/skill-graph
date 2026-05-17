@@ -316,10 +316,65 @@ function diffSummary(oldText, newText) {
 
 function main() {
   const args = process.argv.slice(2);
+
+  if (args.includes('--help') || args.includes('-h')) {
+    console.log('Usage: migrate-skill-v2-to-v3.js [--dry-run] [--all] [--skill <name>] [--include-template] [<path>...]');
+    console.log('Default mode writes files. Use --dry-run to preview without writing.');
+    console.log('Must specify --all, --skill <name>, or a positional <path>.');
+    process.exit(0);
+  }
+
   const dryRun = args.includes('--dry-run');
-  const targets = collectTargets(args);
+  const all = args.includes('--all');
+  const skillIdx = args.indexOf('--skill');
+  const skill = skillIdx !== -1 ? args[skillIdx + 1] : null;
+
+  if (skillIdx !== -1 && (!skill || skill.startsWith('--'))) {
+    console.error('ERROR: --skill requires a skill name argument.');
+    process.exit(1);
+  }
+
+  // Exclude the --skill flag and its value from positionals.
+  const positionals = args.filter((a, i) => {
+    if (a.startsWith('--')) return false;
+    if (skillIdx !== -1 && i === skillIdx + 1) return false;  // skip --skill's value
+    return true;
+  });
+
+  if (!all && !skill && positionals.length === 0) {
+    console.error('ERROR: must specify --skill <name>, --all, or a target path.');
+    process.exit(1);
+  }
+
+  // Build the effective args list for collectTargets, preserving --include-template.
+  // collectTargets accepts a flag-and-path mixed argv and handles both.
+  let effectiveArgs;
+  if (skill) {
+    const includeFlag = args.includes('--include-template') ? ['--include-template'] : [];
+    effectiveArgs = [...includeFlag, path.join(SKILLS_DIR, skill)];
+  } else if (all) {
+    // Pass only flags; collectTargets defaults to SKILLS_DIR when no positionals.
+    effectiveArgs = args.filter(a => a.startsWith('--'));
+  } else {
+    effectiveArgs = args.filter(a => a.startsWith('--')).concat(positionals);
+  }
+
+  const targets = collectTargets(effectiveArgs);
+
+  if (skill && targets.length === 0) {
+    console.error(`ERROR: skill '${skill}' not found. Check the skill name and try again.`);
+    process.exit(1);
+  }
 
   if (targets.length === 0) {
+    // When scanning all skills (--all or a directory), 0 results means the
+    // target is already fully migrated or the skills/ directory is empty — not
+    // an error. Only treat 0 results as an error when an explicit positional
+    // path was provided (the user pointed at something that should exist).
+    if (all || positionals.length === 0) {
+      console.log('0 file(s) processed, 0 would migrate, 0 needing manual attention.');
+      process.exit(0);
+    }
     console.error('No SKILL.md files found to migrate.');
     process.exit(1);
   }

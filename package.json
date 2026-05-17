@@ -58,6 +58,8 @@
     "overlap": "node scripts/skill-overlap.js",
     "drift": "node scripts/skill-graph-drift.js",
     "test:unit": "node scripts/__tests__/test-v3-1-skos-runtime.js && node scripts/__tests__/test-router-paths.js && node scripts/__tests__/test-v3-1-alias-contract.js && node scripts/__tests__/test-export-parser-drift.js && node scripts/__tests__/test-marketplace-export.js && node bin/skill-graph.js --help",
+    "test:migrate": "node scripts/__tests__/migrate-skill-v3-to-v4.test.js && node scripts/__tests__/migrate-skill-v2-to-v3.test.js",
+    "test": "npm run test:unit && npm run test:migrate",
     "verify": "npm run lint && npm run lint:template && npm run protocol:check && npm run docs:links && npm run manifest:validate && npm run routing-eval && npm run export:verify-skill-md && npm run overlap && npm run test:unit"
   },
   "dependencies": {
