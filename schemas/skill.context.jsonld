@@ -1,7 +1,7 @@
 {
   "_comment": "JSON-LD @context for Skill Graph v4 frontmatter. Maps authored fields to W3C standard vocabularies so a Skill Graph SKILL.md can be projected into RDF/OWL/SKOS consumers without changing the authoring surface.",
-  "_version": "2.0.0",
-  "_schema_version_target": 4,
+  "_version": "3.0.0",
+  "_schema_version_target": 6,
   "_references": {
     "skos": "https://www.w3.org/TR/skos-reference/",
     "owl": "https://www.w3.org/TR/owl2-overview/",
@@ -226,6 +226,54 @@
     "routing_bundles": {
       "@id": "sg:routingBundle",
       "@container": "@set"
+    },
+    "last_audited": {
+      "@id": "sg:lastAudited",
+      "@type": "xsd:date",
+      "_note": "Health Block — date the skill last passed the audit loop (v6+)"
+    },
+    "last_changed": {
+      "@id": "sg:lastChanged",
+      "@type": "xsd:date",
+      "_note": "Health Block — date the skill frontmatter or body was last modified (v6+)"
+    },
+    "audit_verdict": {
+      "@id": "sg:auditVerdict",
+      "_note": "Health Block — pass | fail | warn result from the most recent audit run (v6+)"
+    },
+    "eval_score": {
+      "@id": "sg:evalScore",
+      "@type": "xsd:double",
+      "_note": "Health Block — numeric eval pass rate (0.0–1.0) from the most recent eval run (v6+)"
+    },
+    "eval_failed_ids": {
+      "@id": "sg:evalFailedIds",
+      "@container": "@set",
+      "_note": "Health Block — list of eval case IDs that failed in the most recent run (v6+)"
+    },
+    "lint_verdict": {
+      "@id": "sg:lintVerdict",
+      "_note": "Health Block — pass | fail | warn result from the most recent lint run (v6+)"
+    },
+    "drift_status": {
+      "@id": "sg:driftStatus",
+      "_note": "Health Block — clean | drifted | unknown — whether truth sources have changed since last verified (v6+)"
+    },
+    "mental_model": {
+      "@id": "sg:mentalModel",
+      "_note": "Concept block — primitives and their relationships; flat-promoted from concept.mental_model in v6"
+    },
+    "purpose": {
+      "@id": "sg:conceptPurpose",
+      "_note": "Concept block — problem the concept solves; flat-promoted from concept.purpose in v6"
+    },
+    "analogy": {
+      "@id": "sg:conceptAnalogy",
+      "_note": "Concept block — analogy that preserves the core mechanism; flat-promoted from concept.analogy in v6"
+    },
+    "misconception": {
+      "@id": "sg:conceptMisconception",
+      "_note": "Concept block — wrong mental model people bring; flat-promoted from concept.misconception in v6"
     }
   }
 }
