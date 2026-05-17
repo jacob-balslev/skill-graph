@@ -25,22 +25,23 @@ The skills that violate this convention live in `name-exceptions.yaml` with cita
 | Head noun | Live count | Example skills |
 |---|---|---|
 | `modeling` | 7 | conceptual-modeling, data-modeling, entity-relationship-modeling, knowledge-modeling, ontology-modeling, state-machine-modeling, observability-modeling |
-| `design` | 8 | api-design, agent-eval-design, color-system-design, event-contract-design, taxonomy-design, theme-system-design, test-doubles-design, integration-test-design, e2e-test-design |
+| `design` | 10 | api-design, agent-eval-design, color-system-design, event-contract-design, taxonomy-design, theme-system-design, test-doubles-design, integration-test-design, e2e-test-design, server-components-design, server-actions-design |
 | `testing` | 5 | contract-testing, mutation-testing, property-based-testing, snapshot-testing, performance-testing |
 | `architecture` | 7 | component-architecture, dependency-architecture, design-system-architecture, form-ux-architecture, frontend-architecture, streaming-architecture, agent-engineering (umbrella) |
 | `strategy` | 6 | testing-strategy, seo-strategy, tool-call-strategy, test-coverage-strategy, indexing-strategy, sharding-strategy |
 | `development` | 4 | spec-driven-development, ai-native-development, eval-driven-development, test-driven-development |
 | `engineering` | 3 | agent-engineering, performance-engineering, prompt-craft (suffix-style) |
 | `analysis` | 3 | diff-analysis, research-synthesis, task-analysis |
-| `patterns` | 3 | interaction-patterns, vercel-composition-patterns, replication-patterns |
+| `patterns` | 5 | interaction-patterns, vercel-composition-patterns, replication-patterns, hooks-patterns, suspense-patterns |
 | `fundamentals` | 3 | acid-fundamentals, data-modeling-fundamentals, security-fundamentals |
 | `mapping` | 2 | bounded-context-mapping, journey-mapping |
 | `recognition` | 2 | intent-recognition, pattern-recognition |
 | `composition` | 2 | design-module-composition, layout-composition |
+| `boundary` | 2 | client-server-boundary, error-boundary |
 
 ## Single-instance head nouns (kept for completeness)
 
-`audit`, `boundary` (live in `client-server-boundary`), `cognition`, `craft`, `defense` (live in `prompt-injection-defense`), `evolution` (live in `schema-evolution`), `extraction`, `feedback`, `flow` (live in `tool-call-flow`), `foundations`, `governance`, `hierarchy`, `humanizer`, `infrastructure`, `isolation` (live in `transaction-isolation`), `management` (live in `state-management`), `migration`, `models` (live in `mental-models`), `monitor`, `optimization` (live in `query-optimization`), `palette`, `pooling` (live in `connection-pooling`), `queue`, `relations`, `review`, `router`, `routing`, `scaffold`, `scheduling`, `semantics`, `semiotics`, `solving`, `storming`, `summarization`, `synthesis`, `system`, `thinking`, `tracking`, `tradeoffs` (live in `cap-theorem-tradeoffs`), `ui` (live in `generative-ui`), `updates`, `ux`, `window`.
+`audit`, `cognition`, `craft`, `defense` (live in `prompt-injection-defense`), `evolution` (live in `schema-evolution`), `extraction`, `feedback`, `flow` (live in `tool-call-flow`), `foundations`, `governance`, `hierarchy`, `humanizer`, `infrastructure`, `isolation` (live in `transaction-isolation`), `management` (live in `state-management`), `migration`, `models` (live in `mental-models`), `monitor`, `optimization` (live in `query-optimization`), `palette`, `pooling` (live in `connection-pooling`), `queue`, `relations`, `review`, `router`, `routing`, `scaffold`, `scheduling`, `semantics`, `semiotics`, `solving`, `storming`, `summarization`, `synthesis`, `system`, `thinking`, `tracking`, `tradeoffs` (live in `cap-theorem-tradeoffs`), `ui` (live in `generative-ui`), `updates`, `ux`, `window`.
 
 ## Reserved head nouns (gap-fill skills, not yet authored)
 
