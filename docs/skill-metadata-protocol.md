@@ -7,10 +7,11 @@ Skill Metadata Protocol is the **skill-level contract** for AI SKILL.md. It defi
 Skill Graph is the **library-level system** that works with this protocol. It indexes, routes, clusters, audits, and reverifies libraries of Skill-Metadata-Protocol-enriched skills.
 
 > **Migrating from an older schema?** Jump straight to the migration notes:
+> - **v5 → v6** — flattens the `concept` block to top-level `mental_model`, `purpose`, `boundary`, `analogy`, `misconception`; adds the Health block (`last_audited`, `last_changed`, `audit_verdict`, `eval_score`, `eval_failed_ids`, `lint_verdict`, `drift_status`) so a skill's audit fingerprint lives in its own frontmatter. Legacy `concept` block remains accepted for v5 skills not yet migrated. See `migrations/v5-to-v6.md`.
+> - **v4 → v5** — closes the `category` field to a 6-value enum
 > - [v2 → v3](manifest-field-mapping.md#migration-note--v2--v3-v040) — `drift_check` scalar → object, `compatibility` scalar → object, `family` → `category`, new optional fields
 > - [v1 → v2](manifest-field-mapping.md#migration-note--v1--v2-2026-04-17-sh-5784) — `scope` enum rename, `eval_status` split into three fields, `route_bundles` → `routing_bundles`
-> - Codemod: `node scripts/migrate-skill-v2-to-v3.js` upgrades v2 skills in place
-> - Planned v3 → v4 changes (ADR 0001, ADR 0004, ADR 0006): `adjacent` removed in favour of `related`; `boundary` remains the routing-layer handoff; `urn` becomes required
+> - Codemod: `node scripts/migrate-skill-v2-to-v3.js` upgrades v2 skills in place. `scripts/migrate-skill-v5-to-v6.js` (backfill mode) populates the new flat fields from the legacy `concept` block.
 
 ## Related Documents
 
@@ -230,9 +231,11 @@ flowchart LR
 
 **Legend.** Blue = the file. Green = a required layer. Yellow dashed = an optional / specimen-only layer.
 
-### The 40 authored fields, grouped by purpose
+### The 52 authored fields, grouped by purpose
 
-The YAML frontmatter has 40 top-level fields in the current v4 schema, including compatibility aliases that remain accepted for migration. The schema is the authoritative source for types and requiredness (`schemas/skill.v4.schema.json`); the canonical per-field reference is [`docs/field-reference.md`](field-reference.md). The table below is a navigable index — every field name links to its reference section. `always` = required by the base schema; `if <condition>` = conditionally required; blank = optional enrichment.
+The YAML frontmatter has 52 top-level fields in the current v6 schema, including compatibility aliases that remain accepted for migration and the seven flat fields (5 Understanding + 7 Health) added in v6. The schema is the authoritative source for types and requiredness (`schemas/skill.v6.schema.json`); the canonical per-field reference is [`docs/field-reference.md`](field-reference.md). The table below is a navigable index. `always` = required by the base schema; `if <condition>` = conditionally required; blank = optional enrichment.
+
+**v6 simplification (2026-05-17).** v6 flattens the seven-field `concept` block to top-level so the Understanding fields read like every other field in the Protocol. It also adds the **Health block** — seven flat fields (`last_audited`, `last_changed`, `audit_verdict`, `eval_score`, `eval_failed_ids`, `lint_verdict`, `drift_status`) — so a skill's audit fingerprint lives in its own frontmatter instead of scattered across `eval-history.jsonl`, `health-ledger.jsonl`, and `.opencode/progress/skill-audit-*`. The Skill Audit Loop reads these flat Health fields directly; no log-file crawl required.
 
 | Group | Field | Required? | Shape |
 |---|---|---|---|
@@ -252,11 +255,23 @@ The YAML frontmatter has 40 top-level fields in the current v4 schema, including
 | | [`drift_check`](field-reference.md#drift_check) | always | `{ last_verified, truth_source_hashes? }` |
 | | [`lifecycle`](field-reference.md#lifecycle) | | `{ stale_after_days, review_cadence }` |
 | | [`runtime_telemetry`](field-reference.md#runtime_telemetry) | | `{ feedback_source, metrics }` |
+| **Health Block** (v6+, flat) | [`last_audited`](field-reference.md#last_audited) | | ISO date |
+| | [`last_changed`](field-reference.md#last_changed) | | ISO date |
+| | [`audit_verdict`](field-reference.md#audit_verdict) | | `PASS` \| `PASS_WITH_FIXES` \| `PARTIAL` \| `FAIL` \| `UNKNOWN` |
+| | [`eval_score`](field-reference.md#eval_score) | | number 0.0–5.0 |
+| | [`eval_failed_ids`](field-reference.md#eval_failed_ids) | | string[] |
+| | [`lint_verdict`](field-reference.md#lint_verdict) | | `PASS` \| `FAIL` \| `UNKNOWN` |
+| | [`drift_status`](field-reference.md#drift_status) | | `OK` \| `DRIFT` \| `BROKEN` \| `STALE` \| `NO_BASELINE` \| `EXTERNAL_UNHASHED` \| `UNKNOWN` |
 | **Eval Health** (orthogonal triple) | [`eval_artifacts`](field-reference.md#eval_artifacts) | always | `present` \| `planned` \| `none` |
 | | [`eval_state`](field-reference.md#eval_state) | always | `unverified` \| `passing` \| `monitored` |
 | | [`routing_eval`](field-reference.md#routing_eval) | always | `present` \| `absent` |
 | | [`comprehension_state`](field-reference.md#comprehension_state) | | `present` \| `absent` |
-| | [`concept`](field-reference.md#concept) | if `comprehension_state: present` | `{ definition, mental_model, purpose, boundary, taxonomy, analogy, misconception }` |
+| **Understanding** (v6+, flat) | [`mental_model`](field-reference.md#mental_model) | if `comprehension_state: present` | string |
+| | [`purpose`](field-reference.md#purpose) | if `comprehension_state: present` | string |
+| | [`boundary`](field-reference.md#boundary) | if `comprehension_state: present` | string |
+| | [`analogy`](field-reference.md#analogy) | if `comprehension_state: present` | string |
+| | [`misconception`](field-reference.md#misconception) | if `comprehension_state: present` | string |
+| | [`concept`](field-reference.md#concept) | DEPRECATED in v6 | `{ definition, mental_model, purpose, boundary, taxonomy, analogy, misconception }` — legacy v5 shape, accepted for back-compat |
 | | [`eval_last_run`](field-reference.md#eval_last_run) | | `{ at, status, runner?, model?, receipt?, receipt_hash? }` |
 | **Activation & Routing** | [`keywords`](field-reference.md#keywords) | if routable | string[] |
 | | [`triggers`](field-reference.md#triggers) | | string[] |
@@ -412,7 +427,7 @@ See `docs/manifest-field-mapping.md` for the full rename map, loss policy, migra
 
 ## Schema Versioning Policy
 
-Skill Graph uses a single integer `schema_version` to signal contract evolution. Current version: **4** (bumped from 3 in the v4 naming cleanup). The five policy points together define when `schema_version` bumps, what consumers should expect, and where migration tooling lives:
+Skill Graph uses a single integer `schema_version` to signal contract evolution. Current version: **6** (bumped from 5 in the v6 flat-fields simplification — concept block flattened, Health block added). The five policy points together define when `schema_version` bumps, what consumers should expect, and where migration tooling lives:
 
 1. **Breaking changes bump `schema_version`.** Renamed fields, removed fields, retyped fields, removed enum values, or tightened required-ness constraints bump the integer. Consumers must migrate or pin.
 2. **Additive changes do not bump.** New optional fields, new enum values that extend (not replace) an enum, and new checks in `scripts/skill-lint.js` that only affect warnings do not bump the version. Consumers on the prior minor release continue to pass.
