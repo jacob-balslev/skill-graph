@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-05-17T06:32:33.511Z",
+  "generated_at": "2026-05-17T06:55:20.298Z",
   "schema_version": 4,
   "skills": [
     {
@@ -4205,6 +4205,120 @@
         ]
       },
       "scope": "portable",
+      "stability": "experimental",
+      "type": "capability",
+      "version": "1.0.0"
+    },
+    {
+      "activation": {
+        "anti_examples": [
+          "format a money value for display in EUR with thousands separators (use formatting)",
+          "choose an isolation level for a transactional money write (use transaction-isolation)",
+          "allocate cost across line items with the specific product allocation formula (use the product's allocation skill)",
+          "design the database column type for a money field (use data-modeling)",
+          "map Stripe Charge balance_transaction.amount to the local schema (use stripe-ledger-recon)"
+        ],
+        "examples": [
+          "explain why this finance code should use integer cents instead of floats",
+          "choose a rounding rule for a finance system that aggregates many small transactions",
+          "decide what to do when a fee is missing — treat as zero, treat as null, or treat as unknown",
+          "verify that allocating $99.99 across 7 line items does not introduce a penny-rounding loss",
+          "reason about whether a price displayed as 19.99 can be stored as 19.99 in a float column"
+        ],
+        "keywords": [
+          "integer cents",
+          "minor units",
+          "float for money",
+          "binary floating point money problem",
+          "Money pattern",
+          "banker's rounding",
+          "round half even",
+          "round half up",
+          "IEEE 754 rounding modes",
+          "ISO 4217",
+          "multi currency",
+          "base currency",
+          "FX conversion",
+          "null cost semantics",
+          "missing money values",
+          "reconciliation invariant",
+          "double entry sign conventions",
+          "allocation problem",
+          "penny rounding",
+          "Knuth fixed point arithmetic",
+          "Goldberg floating point",
+          "Fowler Money pattern",
+          "why not use float for money",
+          "why use integer cents"
+        ],
+        "triggers": [
+          "why not float for money",
+          "why integer cents",
+          "how to round money",
+          "banker's rounding",
+          "missing cost handling",
+          "financial null semantics",
+          "reconciliation invariant",
+          "money allocation",
+          "why do my totals not match"
+        ]
+      },
+      "allowed-tools": "Read Grep",
+      "category": "engineering",
+      "concept": {
+        "analogy": "|",
+        "boundary": "|",
+        "definition": "Financial domain fundamentals are the foundational software primitives for representing, arithmetic-ing, rounding, and reconciling money values in a way that produces deterministic, auditable, exactly-correct results: the choice of integer minor units as the storage primitive (because binary floating-point cannot represent 0.10 exactly, and every cent of error compounds across millions of transactions), the four families of rounding rules (round-half-up / round-half-even-banker's / round-half-down / round-toward-zero) and the IEEE 754 default of round-half-even, the encapsulation of amount and currency as one inseparable Money value object (per Fowler 2002), the semantics of missing money values (fail-fast, zero-default, null-propagation, explicit-unknown — four distinct meanings the application chooses between), reconciliation invariants (the books must balance; debits equal credits; sign conventions are global, not local), the allocation problem (distributing a total across N line items without losing or gaining pennies due to rounding), and the verification discipline that catches money bugs before they become regulatory or customer-trust incidents. The discipline exists because money is the single category of software value where 'almost correct' is wrong, where errors compound rather than cancel, and where the cost of a bug is borne by users one penny at a time across years before anyone notices.",
+        "mental_model": "|",
+        "misconception": "|",
+        "purpose": "|",
+        "taxonomy": "|"
+      },
+      "description": "Use when reasoning about the foundational primitives of money handling in software: why floating-point binary is the wrong representation for money, how integer-minor-units (cents, pence, satoshi) became the industry-standard storage primitive, the four families of rounding rules (round-half-up, round-half-even / banker's rounding, round-half-down, round-toward-zero / away-from-zero) and which is the IEEE 754 default, the Money pattern (encapsulating amount + currency together as one value object per Fowler PoEAA), multi-currency operations and the choice of a base currency, four distinct semantics for missing money values (fail-fast vs zero-default vs null-propagation vs explicit-unknown), reconciliation invariants and sign conventions, the allocation problem (splitting a total across line items without rounding loss), and the verification discipline that catches money bugs before they become incidents. Do NOT use for one specific product's calculation formula or operational rules (use the relevant product-specific finance skill), display formatting and locale rules (use formatting / financial-display-contract), database transaction guarantees underneath the money writes (use acid-fundamentals or transaction-isolation), allocation algorithms for a specific cost pool (use the relevant allocation skill), or payment-processor integration mechanics (use the relevant integration skill).",
+      "domain": "engineering/finance",
+      "health": {
+        "comprehension_state": "present",
+        "drift_check": {
+          "last_verified": "2026-05-17"
+        },
+        "eval_artifacts": "planned",
+        "eval_state": "unverified",
+        "freshness": "2026-05-17",
+        "has_grounding": false,
+        "has_relations": true,
+        "routing_eval": "absent"
+      },
+      "id": "financial-domain-fundamentals",
+      "license": "MIT",
+      "name": "financial-domain-fundamentals",
+      "owner": "skill-graph-maintainer",
+      "path": "../skills/skills/financial-domain-fundamentals/SKILL.md",
+      "relations": {
+        "boundary": [
+          {
+            "reason": "acid-fundamentals owns the transactional guarantees underneath any money write (A, C, I, D). This skill owns the in-memory representation, arithmetic, and rounding of money values regardless of whether they survive a crash; acid-fundamentals owns whether they survive a crash. Conflation is common because both topics are 'finance correctness' — keep separate by asking whether the question is about arithmetic-and-representation or about transactional-guarantee.",
+            "skill": "acid-fundamentals"
+          },
+          {
+            "reason": "transaction-isolation owns the choice of isolation level for concurrent money writes (read-committed, repeatable read, serializable). This skill owns money-value semantics independent of concurrency.",
+            "skill": "transaction-isolation"
+          },
+          {
+            "reason": "data-modeling owns the schema choice for a money column (DECIMAL vs BIGINT vs NUMERIC vs domain type). This skill owns the conceptual frame underneath that choice — why an integer minor-unit column is preferred over a binary float column regardless of the database used.",
+            "skill": "data-modeling"
+          }
+        ],
+        "related": [
+          "acid-fundamentals",
+          "transaction-isolation",
+          "data-modeling"
+        ],
+        "verify_with": [
+          "acid-fundamentals",
+          "data-modeling"
+        ]
+      },
+      "scope": "reference",
       "stability": "experimental",
       "type": "capability",
       "version": "1.0.0"
@@ -8604,6 +8718,119 @@
         ]
       },
       "scope": "portable",
+      "stability": "experimental",
+      "type": "capability",
+      "version": "1.0.0"
+    },
+    {
+      "activation": {
+        "anti_examples": [
+          "design the Rules of Hooks and dependency-array discipline for useEffect (use hooks-patterns)",
+          "decide whether the form state lives in URL, server, client, or persistent storage (use state-management)",
+          "design the headless-vs-styled layering of a component library (use component-architecture)",
+          "explain how 'use client' marks a component boundary (use client-server-boundary)",
+          "design the validation-state UX of an input (use form-ux-architecture)"
+        ],
+        "examples": [
+          "design a Modal component that exposes open() and close() to the parent via useImperativeHandle so the parent can trigger it imperatively without lifting full state",
+          "forward a ref through a styled Button wrapper to the underlying <button> element using React 19 ref-as-prop (or forwardRef on React 18 and earlier)",
+          "integrate a third-party chart library that needs a DOM container by handing it a ref callback that initializes on mount and tears down on unmount",
+          "replace a useState that nobody reads in render with a useRef because the value drives an imperative side effect (interval id, latest-args closure) not the render output",
+          "audit a component that uses a ref to read 'current form values' instead of reading from controlled state — usually a sign the wrong primitive was chosen"
+        ],
+        "keywords": [
+          "useRef hook",
+          "forwardRef",
+          "useImperativeHandle",
+          "ref callback",
+          "DOM ref React",
+          "ref forwarding compound component",
+          "React 19 ref as prop",
+          "mutable ref vs state",
+          "current property ref",
+          "Radix Slot ref forwarding",
+          "focus management ref",
+          "measure DOM node ref",
+          "third-party DOM library ref integration",
+          "escape hatch ref"
+        ],
+        "triggers": [
+          "how do I focus an input on mount",
+          "how do I pass a ref through a wrapper component",
+          "do I still need forwardRef in React 19",
+          "when should I use a ref instead of state",
+          "how do I expose a method like open or close to the parent",
+          "how do I measure a DOM element",
+          "why is my ref.current null on first render",
+          "how do I integrate a non-React DOM library"
+        ]
+      },
+      "allowed-tools": "Read Grep",
+      "category": "engineering",
+      "concept": {
+        "analogy": "|",
+        "boundary": "|",
+        "definition": "A React ref is a mutable object — `{ current: T }` — created by `useRef(initial)` that persists across renders without participating in the render cycle. Writing to `ref.current` does not trigger a re-render; reading from it does not subscribe the component to changes. The two canonical uses are (1) holding a reference to a DOM node so it can be focused, measured, or handed to a non-React library, and (2) holding a mutable value (an interval id, a latest-arguments closure, a previous-value snapshot) that drives side effects but is not part of what gets rendered. The design rule is: if the value should cause a re-render when it changes, it is state. If it should not, it is a ref.",
+        "mental_model": "|",
+        "misconception": "|",
+        "purpose": "|",
+        "taxonomy": "|"
+      },
+      "description": "Use when designing or reviewing React ref usage: the distinction between refs (mutable handle that survives renders without triggering them) and state (reactive value that triggers renders when changed), the `useRef` hook for DOM access and mutable instance values, ref callbacks for fine-grained mount/unmount hooks, `forwardRef` for passing refs through component boundaries (and the React 19 ref-as-prop change that retires it for new code), `useImperativeHandle` for exposing a controlled imperative surface to parent refs, ref forwarding through compound-component primitives (the Radix `Slot` / Headless UI pattern), and the design rule that refs are an escape hatch — for DOM access, integration with non-React DOM libraries, focus management, animation, measurement, and exposing imperative APIs sparingly, never as a substitute for state. Do NOT use for the broader hook discipline — Rules of Hooks, dependency arrays, custom hooks (use hooks-patterns), for the cross-product component-layering question — primitives/composites/headless-vs-styled (use component-architecture), for state location and ownership decisions (use state-management), for the `'use client'` / `'use server'` boundary mechanics (use client-server-boundary), or for form-state and validation patterns (use form-ux-architecture).",
+      "domain": "engineering/frontend",
+      "health": {
+        "comprehension_state": "present",
+        "drift_check": {
+          "last_verified": "2026-05-17"
+        },
+        "eval_artifacts": "planned",
+        "eval_state": "unverified",
+        "freshness": "2026-05-17",
+        "has_grounding": false,
+        "has_relations": true,
+        "routing_eval": "absent"
+      },
+      "id": "ref-patterns",
+      "license": "MIT",
+      "name": "ref-patterns",
+      "owner": "skill-graph-maintainer",
+      "path": "../skills/skills/ref-patterns/SKILL.md",
+      "relations": {
+        "boundary": [
+          {
+            "reason": "hooks-patterns owns the broader hook discipline — Rules of Hooks, dependency arrays, custom hooks, the You Might Not Need an Effect rule, the render/effect/cleanup mental model. ref-patterns covers the ref family specifically (useRef, forwardRef, useImperativeHandle, ref callbacks) and the design rule for when a ref is the right primitive vs when state is. They cross-reference but solve different problems.",
+            "skill": "hooks-patterns"
+          },
+          {
+            "reason": "component-architecture owns the cross-product component-layering question — primitives vs composites vs product-specific, headless vs styled, controlled vs uncontrolled, composition over configuration, polymorphism. ref-patterns covers the ref-forwarding mechanics that enable compound primitives to expose their underlying DOM nodes to consumers.",
+            "skill": "component-architecture"
+          },
+          {
+            "reason": "state-management owns the location and ownership decisions for the four kinds of state (server / client UI / URL / persistent). ref-patterns is about the mutable-handle primitive that is NOT state — using a ref when a useState was needed (or vice versa) is the most common ref misuse. ref-patterns covers the boundary; state-management owns state itself.",
+            "skill": "state-management"
+          },
+          {
+            "reason": "client-server-boundary owns the serialization and directive mechanics. Refs only work in Client Components — a ref cannot be passed through a Server Component or serialized across the 'use client' boundary. ref-patterns notes this constraint; client-server-boundary owns the broader boundary semantics that explain why.",
+            "skill": "client-server-boundary"
+          },
+          {
+            "reason": "form-ux-architecture owns form state, validation states, accessibility, microcopy. ref-patterns covers refs that may appear in forms (focus management, integrating an uncontrolled input with imperative APIs) but does not own the form-design discipline itself.",
+            "skill": "form-ux-architecture"
+          }
+        ],
+        "related": [
+          "hooks-patterns",
+          "component-architecture",
+          "state-management",
+          "client-server-boundary",
+          "form-ux-architecture"
+        ],
+        "verify_with": [
+          "code-review",
+          "hooks-patterns"
+        ]
+      },
+      "scope": "reference",
       "stability": "experimental",
       "type": "capability",
       "version": "1.0.0"
@@ -13253,7 +13480,7 @@
     "by_category": {
       "agent": 16,
       "design": 26,
-      "engineering": 59,
+      "engineering": 61,
       "foundations": 12,
       "product": 1,
       "quality": 27
@@ -13261,19 +13488,19 @@
     "by_scope": {
       "codebase": 1,
       "portable": 92,
-      "reference": 48
+      "reference": 50
     },
     "by_stability": {
-      "experimental": 140,
+      "experimental": 142,
       "stable": 1
     },
     "by_type": {
-      "capability": 131,
+      "capability": 133,
       "overlay": 1,
       "router": 1,
       "workflow": 8
     },
-    "total_skills": 141
+    "total_skills": 143
   },
   "workspace": {
     "skill_roots": [
