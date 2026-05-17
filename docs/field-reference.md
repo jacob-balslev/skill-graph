@@ -374,6 +374,150 @@ drift_check:
 
 ---
 
+## `last_audited`
+
+**Purpose.** ISO date of the most recent audit run that produced a recorded verdict for this skill. Part of the v6 Health Block — a flat set of top-level fields that surface audit state without requiring readers to parse nested audit artifact files.
+
+**Rules.**
+- Optional. ISO 8601 date string (`YYYY-MM-DD`).
+- Set by the audit loop when it writes its verdict. Do not hand-author; let the audit tool write it.
+- If absent, the skill has no recorded audit history.
+
+**Example.**
+```yaml
+last_audited: "2026-05-16"
+```
+
+**When to use.** Set by `skill-audit.js` or the audit-loop pipeline. Authors do not need to set this manually.
+
+**When NOT to use.** Do not fabricate or manually back-date. An absent field is more accurate than a guessed date.
+
+---
+
+## `last_changed`
+
+**Purpose.** ISO date of the last meaningful content change to the SKILL.md. Distinct from `freshness` (editorial review date) and `last_audited` (audit run date). Part of the v6 Health Block.
+
+**Rules.**
+- Optional. ISO 8601 date string (`YYYY-MM-DD`).
+- Updated when the skill body or frontmatter receives a substantive edit.
+- Used by the drift sentinel to determine whether a post-audit change has invalidated the recorded `audit_verdict`.
+
+**Example.**
+```yaml
+last_changed: "2026-05-14"
+```
+
+---
+
+## `audit_verdict`
+
+**Purpose.** The overall verdict from the most recent completed audit run. Part of the v6 Health Block.
+
+**Allowed values.**
+
+| Value | Meaning |
+|---|---|
+| `PASS` | All audit dimensions passed |
+| `PASS_WITH_FIXES` | Passed after in-session corrections |
+| `PARTIAL` | Some dimensions passed; others were deferred |
+| `FAIL` | One or more audit dimensions failed |
+| `UNKNOWN` | No audit has been run or the verdict is unavailable |
+
+**Rules.**
+- Optional. Defaults to `UNKNOWN` when absent.
+- Written by the audit loop; do not hand-author.
+- Paired with `last_audited` — if `last_audited` is set, `audit_verdict` should be set too.
+
+**Example.**
+```yaml
+audit_verdict: PASS
+```
+
+---
+
+## `eval_score`
+
+**Purpose.** Numeric score from the most recent eval run, on the 0.0–5.0 scale used by `scripts/skill-audit.js`. Part of the v6 Health Block.
+
+**Rules.**
+- Optional. Float, range 0.0–5.0.
+- Written by the graded audit; do not hand-author.
+- Corresponds to the weighted average of dimension scores in the audit scorecard.
+
+**Example.**
+```yaml
+eval_score: 4.2
+```
+
+---
+
+## `eval_failed_ids`
+
+**Purpose.** List of eval case IDs that failed in the most recent eval run. Part of the v6 Health Block. Enables fast lookup of which specific cases a skill is failing without opening the full scorecard.
+
+**Rules.**
+- Optional. Array of strings (eval case ID strings, matching `id` fields in the eval JSON).
+- Empty array means all cases passed; absent means no eval has been run.
+- Written by the graded audit; do not hand-author.
+
+**Example.**
+```yaml
+eval_failed_ids: ["case-03", "case-07"]
+```
+
+---
+
+## `lint_verdict`
+
+**Purpose.** The verdict from the most recent lint run against this skill. Part of the v6 Health Block.
+
+**Allowed values.**
+
+| Value | Meaning |
+|---|---|
+| `PASS` | All lint checks passed |
+| `FAIL` | One or more lint checks failed |
+| `UNKNOWN` | No lint has been run or result is unavailable |
+
+**Rules.**
+- Optional. Defaults to `UNKNOWN` when absent.
+- Written by `scripts/skill-lint.js` or the audit loop's Phase 1.
+
+**Example.**
+```yaml
+lint_verdict: PASS
+```
+
+---
+
+## `drift_status`
+
+**Purpose.** The result of the most recent drift check for this skill. Part of the v6 Health Block.
+
+**Allowed values.**
+
+| Value | Meaning |
+|---|---|
+| `OK` | All truth source hashes match |
+| `DRIFT` | At least one local truth source hash differs from the recorded baseline |
+| `BROKEN` | At least one local truth source file is missing |
+| `STALE` | The `last_verified` date exceeds the lifecycle window |
+| `NO_BASELINE` | Local truth sources declared but no hashes recorded |
+| `EXTERNAL_UNHASHED` | URL truth source present but not fetched and hashed |
+| `UNKNOWN` | No drift check has been run |
+
+**Rules.**
+- Optional. Written by `scripts/skill-graph-drift.js`.
+- Do not hand-author; let the drift tool write it.
+
+**Example.**
+```yaml
+drift_status: OK
+```
+
+---
+
 ## `eval_artifacts`
 
 **Purpose.** Declares the presence of eval artifact files for this skill. This is the "does an eval file exist on disk?" axis — independent of whether the eval has ever been run or is routed anywhere.
@@ -523,6 +667,88 @@ concept:
 **When to use.** Skills whose subject needs concept transfer, not just procedural steps.
 
 **When NOT to use.** Pure execution wrappers where the body already contains all needed operational instruction and no concept grader exists.
+
+---
+
+## `mental_model`
+
+**Purpose.** v6 flat form of `concept.mental_model`. The primitives, metaphors, or operative principles an agent needs to reason about this subject. Describes *how* to think about the subject — the reasoning substrate, not a procedure.
+
+**Rules.**
+- Optional. String.
+- Required when `comprehension_state: present` and using the v6 flat form (instead of nested `concept` block).
+- Must be distinct from `purpose` (which covers *why* the concept exists) and `boundary` (which covers *what it is not*).
+
+**Example.**
+```yaml
+mental_model: "Start from entities, cardinality, optionality, ownership, and lifecycle."
+```
+
+**See also.** `concept` (v5 nested block), `purpose`, `boundary`.
+
+---
+
+## `purpose`
+
+**Purpose.** v6 flat form of `concept.purpose`. The problem this concept solves and what it replaced or improved upon. Answers "why does this concept exist?"
+
+**Rules.**
+- Optional. String.
+- Required when `comprehension_state: present` and using the v6 flat form.
+
+**Example.**
+```yaml
+purpose: "It prevents persistence shape from smuggling in a false domain model."
+```
+
+---
+
+## `boundary`
+
+**Purpose.** v6 flat form of `concept.boundary`. An explicit statement of what the concept is **not** — adjacent concepts the agent might confuse it with.
+
+**Rules.**
+- Optional. String.
+- Required when `comprehension_state: present` and using the v6 flat form.
+- This field is the primary grader input for the C4 rubric dimension (adjacent-concept discrimination). Weight 1.5 in the schema — second highest.
+
+**Example.**
+```yaml
+boundary: "It is not database tuning, UI information architecture, or API envelope design."
+```
+
+---
+
+## `analogy`
+
+**Purpose.** v6 flat form of `concept.analogy`. A single structural analogy that helps an agent grasp the concept's shape. Graded on both correct application AND correct identification of the analogy's limits (C6 rubric).
+
+**Rules.**
+- Optional. String.
+- Required when `comprehension_state: present` and using the v6 flat form.
+- Weight 0.5 in the schema — the lowest of the concept-block fields. Analogy is a teaching aid, not a load-bearing primitive.
+
+**Example.**
+```yaml
+analogy: "Like drawing load-bearing walls before choosing interior paint."
+```
+
+---
+
+## `misconception`
+
+**Purpose.** v6 flat form of `concept.misconception`. The single most common wrong belief about the concept that agents and practitioners hold. Graded on whether the agent corrects it unprompted when the misconception is embedded in a probe (C7 rubric).
+
+**Rules.**
+- Optional. String.
+- Required when `comprehension_state: present` and using the v6 flat form.
+- Complements `boundary`: `boundary` describes adjacent concepts; `misconception` describes wrong beliefs *about this concept itself*.
+- Not directly weighted in the schema; complements `boundary` (weight 1.5).
+
+**Example.**
+```yaml
+misconception: "A table diagram is not a domain model unless the relationships have domain meaning."
+```
 
 ---
 

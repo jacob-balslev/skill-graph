@@ -83,7 +83,7 @@ A scenario object has the following per-case fields, observed across the 31 file
 | `truth_sources` | yes (de facto) | array of `path` or `path:start-end` or `path#anchor` | Where a grader reads to verify |
 | `expected_reasoning` | optional | string | Sketch of the correct chain of reasoning |
 
-Two files — `comprehension.json` (`documentation`) and `debugging.json` — also include `expected_reasoning` on at least one case ([`examples/evals/comprehension.json:163`](/Users/jacobbalslev/Development/skill-graph/examples/evals/comprehension.json) and [`examples/evals/comprehension.json:179`](/Users/jacobbalslev/Development/skill-graph/examples/evals/comprehension.json) — both `dimension: rule_conflict`). These two cases are the high-water mark of comprehension-quality measurement in the repo today.
+Two files — `comprehension.json` (`documentation`) and `debugging.json` — also include `expected_reasoning` on at least one case (`examples/evals/comprehension.json:163` and `examples/evals/comprehension.json:179` — both `dimension: rule_conflict`). These two cases are the high-water mark of comprehension-quality measurement in the repo today.
 
 The lint check `checkEvalTruthSourceRanges` (D2, at [`scripts/skill-lint.js:586`](/Users/jacobbalslev/Development/skill-graph/scripts/skill-lint.js)) validates that every `truth_sources` reference resolves: the file exists, line ranges are within bounds, anchors match an actual heading. This is the only contract the eval files enforce today; nothing checks dimension coverage, prompt quality, or rubric alignment.
 
@@ -200,7 +200,7 @@ The `concept.taxonomy` field is required to enumerate nearby concepts with their
 
 ### 3.7 No Verification-checklist application test
 
-Every `capability` and `workflow` skill is required to have a `## Verification` section (enforced by [`scripts/lint/check-archetype-sections.js`](/Users/jacobbalslev/Development/skill-graph/scripts/lint/check-archetype-sections.js)). The Verification section is the skill's authored answer to "after applying this skill, what evidence confirms the skill was applied correctly?" Eval cases occasionally reference Verification (e.g. [`examples/evals/comprehension.json:174-181`](/Users/jacobbalslev/Development/skill-graph/examples/evals/comprehension.json) — the dimension is `rule_conflict`, the prompt asks whether a doc passing Verification but failing the Philosophy test is acceptable). But no case poses a fresh artifact and asks the agent to run the Verification checklist against it unprompted. This is a comprehension test the body already authors and the eval surface does not redeem.
+Every `capability` and `workflow` skill is required to have a `## Verification` section (enforced by [`scripts/lint/check-archetype-sections.js`](/Users/jacobbalslev/Development/skill-graph/scripts/lint/check-archetype-sections.js)). The Verification section is the skill's authored answer to "after applying this skill, what evidence confirms the skill was applied correctly?" Eval cases occasionally reference Verification (e.g. `examples/evals/comprehension.json:174-181` — the dimension is `rule_conflict`, the prompt asks whether a doc passing Verification but failing the Philosophy test is acceptable). But no case poses a fresh artifact and asks the agent to run the Verification checklist against it unprompted. This is a comprehension test the body already authors and the eval surface does not redeem.
 
 ### 3.8 No negative-boundary refusal test
 
@@ -472,7 +472,7 @@ A pass requires all four binary checks. A FAIL on the third criterion (verbatim 
 
 **Pass example (for `type-safety`).** Probe: "Explain type safety to a product manager." Pass answer: "It's the property of a codebase where the compiler catches a category of mistakes — like calling a function with the wrong shape of input — before users see them. The team pays a cost up-front in writing type annotations, and the benefit is that whole classes of runtime errors are ruled out at build time rather than caught in production." This names the primary category (compile-time error detection), the effect (rules out a class of errors), and the cost/benefit, without 6-gram overlap with the body.
 
-**Fail example.** Probe: same. Fail answer: "Type safety is the property of a program in which type errors — operations applied to values of the wrong kind — are detected before they cause incorrect behavior." This is a verbatim copy of [`skills/type-safety/SKILL.md:64`](/Users/jacobbalslev/Development/skill-graph/skills/type-safety/SKILL.md) (the first sentence of `concept.definition`). The agent retrieved; it did not internalize.
+**Fail example.** Probe: same. Fail answer: "Type safety is the property of a program in which type errors — operations applied to values of the wrong kind — are detected before they cause incorrect behavior." This is a verbatim copy of [`skills/type-safety/SKILL.md:64`](https://github.com/jacob-balslev/skills/blob/main/skills/type-safety/SKILL.md) (the first sentence of `concept.definition`). The agent retrieved; it did not internalize.
 
 **Grader procedure.**
 
@@ -644,7 +644,7 @@ This is the [TruthfulQA-shape test (Lin et al. 2021)](https://arxiv.org/abs/2109
 - [ ] The agent does NOT provide a verdict on the artifact without anchoring it to the Verification criteria.
 - [ ] The agent's checks reference **concrete features of the artifact** (line numbers, function names, observable behaviors) — not abstract restatements of the criteria.
 
-**Pass example (for `type-safety`).** Probe: "Review this TypeScript snippet [paste a 30-line module using `any`, `as`, no `noUncheckedIndexedAccess`, and unparsed `JSON.parse`]." Pass answer: walks through the [type-safety Verification checklist (skills/type-safety/SKILL.md:255-262)](/Users/jacobbalslev/Development/skill-graph/skills/type-safety/SKILL.md) — strict mode? not visible from the snippet, ask. `noUncheckedIndexedAccess`? array access on line N doesn't show the safety; needs verification at tsconfig. Any `any` without comment? line M has `any: any` without justification, fail. Any `as Type` cast without comment? line K has `as User` on a `JSON.parse` result, fail. Every I/O boundary parses with a validator? line K is the failure point. Etc.
+**Pass example (for `type-safety`).** Probe: "Review this TypeScript snippet [paste a 30-line module using `any`, `as`, no `noUncheckedIndexedAccess`, and unparsed `JSON.parse`]." Pass answer: walks through the [type-safety Verification checklist (skills/type-safety/SKILL.md:255-262)](https://github.com/jacob-balslev/skills/blob/main/skills/type-safety/SKILL.md) — strict mode? not visible from the snippet, ask. `noUncheckedIndexedAccess`? array access on line N doesn't show the safety; needs verification at tsconfig. Any `any` without comment? line M has `any: any` without justification, fail. Any `as Type` cast without comment? line K has `as User` on a `JSON.parse` result, fail. Every I/O boundary parses with a validator? line K is the failure point. Etc.
 
 **Fail example.** Probe: same. Fail answer: "This code looks fine but uses `any` in a couple places — consider tightening that up." General verdict, no anchoring to the Verification items, no concrete line references.
 
@@ -719,7 +719,7 @@ A grader prompt that does not surface these rules to the grader explicitly — s
 
 ## 6. Worked example — `type-safety`
 
-This section applies the rubric to [`skills/type-safety/SKILL.md`](/Users/jacobbalslev/Development/skill-graph/skills/type-safety/SKILL.md). The output is a JSON eval file shaped like the existing 31 files plus the proposed comprehension extensions. Each case names a rubric dimension and provides truth sources for the grader.
+This section applies the rubric to [`skills/type-safety/SKILL.md`](https://github.com/jacob-balslev/skills/blob/main/skills/type-safety/SKILL.md). The output is a JSON eval file shaped like the existing 31 files plus the proposed comprehension extensions. Each case names a rubric dimension and provides truth sources for the grader.
 
 `type-safety` is chosen because (a) its `concept` block is exemplary in depth, (b) it has `eval_artifacts: planned` and `eval_state: unverified` so the worked example would directly seed the eval, and (c) its primitives (type, soundness, structural/nominal, narrowing, runtime boundary) lend themselves to clean discrimination cases.
 
@@ -1067,7 +1067,7 @@ Ordered by leverage. Each item names files that exist today, scripts that would 
 
 1. Add `examples/evals/type-safety.json` using the worked example in §6.2.
 2. Flip `skills/type-safety/SKILL.md` frontmatter: `eval_artifacts: planned` → `present`.
-3. Add a `## Evals` body section to `skills/type-safety/SKILL.md` (between the last conceptual section and `## Verification`) that links to `examples/evals/type-safety.json`. This is required by the lint when `eval_artifacts: present` — the linter emits `missing required section "## Evals" (conditional: eval_artifacts is "present")` otherwise. Model the section on the canonical example at [`skills/documentation/SKILL.md:201`](/Users/jacobbalslev/Development/skill-graph/skills/documentation/SKILL.md).
+3. Add a `## Evals` body section to `skills/type-safety/SKILL.md` (between the last conceptual section and `## Verification`) that links to `examples/evals/type-safety.json`. This is required by the lint when `eval_artifacts: present` — the linter emits `missing required section "## Evals" (conditional: eval_artifacts is "present")` otherwise. Model the section on the canonical example at [`skills/documentation/SKILL.md:201`](https://github.com/jacob-balslev/skills/blob/main/_archived/documentation/SKILL.md).
 
 Then run `node scripts/skill-lint.js skills/type-safety` to confirm all three changes pass the existing `checkEvalCoherence` and conditional-section checks. The pre-existing `[T3↔T5] examples/skills.manifest.sample.json` generator-parity drift is unrelated to R1 — regenerate the sample independently with `node scripts/generate-manifest.js --include-template --timestamp <ISO> --output examples/skills.manifest.sample.json`.
 
@@ -1403,16 +1403,16 @@ This report examined the following **24 repo files** (23 inside `skill-graph/` p
 4. [`https://github.com/jacob-balslev/skill-audit-loop/blob/main/SKILL_AUDIT_CHECKLIST.md`](https://github.com/jacob-balslev/skill-audit-loop/blob/main/SKILL_AUDIT_CHECKLIST.md) — full read
 5. [`/Users/jacobbalslev/Development/skill-graph/docs/quality-doctrine.md`](/Users/jacobbalslev/Development/skill-graph/docs/quality-doctrine.md) — full read
 6. [`/Users/jacobbalslev/Development/skill-graph/docs/field-reference.md`](/Users/jacobbalslev/Development/skill-graph/docs/field-reference.md) — read in full (1200 lines); focus on `comprehension_state`, `concept`, `eval_*`, `routing_eval` sections
-7. [`/Users/jacobbalslev/Development/skill-graph/skills/type-safety/SKILL.md`](/Users/jacobbalslev/Development/skill-graph/skills/type-safety/SKILL.md) — full read; used as worked example
-8. [`/Users/jacobbalslev/Development/skill-graph/skills/acid-fundamentals/SKILL.md`](/Users/jacobbalslev/Development/skill-graph/skills/acid-fundamentals/SKILL.md) — full read; confirmed gold-standard concept block
-9. [`/Users/jacobbalslev/Development/skill-graph/skills/methodology/SKILL.md`](/Users/jacobbalslev/Development/skill-graph/skills/methodology/SKILL.md) — full read; note: comprehension_state not declared
-10. [`/Users/jacobbalslev/Development/skill-graph/skills/skill-scaffold/SKILL.md`](/Users/jacobbalslev/Development/skill-graph/skills/skill-scaffold/SKILL.md) — full read; authoring contract for evals
+7. [`skills/type-safety/SKILL.md`](https://github.com/jacob-balslev/skills/blob/main/skills/type-safety/SKILL.md) — full read; used as worked example
+8. [`skills/acid-fundamentals/SKILL.md`](https://github.com/jacob-balslev/skills/blob/main/skills/acid-fundamentals/SKILL.md) — full read; confirmed gold-standard concept block
+9. [`skills/methodology/SKILL.md`](https://github.com/jacob-balslev/skills/blob/main/skills/methodology/SKILL.md) — full read; note: comprehension_state not declared
+10. [`skills/skill-scaffold/SKILL.md`](https://github.com/jacob-balslev/skills/blob/main/skills/skill-scaffold/SKILL.md) — full read; authoring contract for evals
 11. [`/Users/jacobbalslev/Development/skill-graph/scripts/skill-graph-routing-eval.js`](/Users/jacobbalslev/Development/skill-graph/scripts/skill-graph-routing-eval.js) — full read; confirmed routing-eval scope is positive/negative routing, not comprehension
 12. [`/Users/jacobbalslev/Development/skill-graph/scripts/skill-audit.js`](/Users/jacobbalslev/Development/skill-graph/scripts/skill-audit.js) — partial read (lines 1–350); confirmed seven-dimension audit shape
 13. [`/Users/jacobbalslev/Development/skill-graph/scripts/lib/audit-prompt-builder.js`](/Users/jacobbalslev/Development/skill-graph/scripts/lib/audit-prompt-builder.js) — partial read (lines 1–500 and 700–772); used as the template for the proposed comprehension-prompt-builder
 14. [`/Users/jacobbalslev/Development/skill-graph/scripts/skill-lint.js`](/Users/jacobbalslev/Development/skill-graph/scripts/skill-lint.js) — partial read (lines 414–620); confirmed `checkEvalCoherence` and `checkEvalTruthSourceRanges`
 15. [`/Users/jacobbalslev/Development/skill-graph/schemas/skill.v4.schema.json`](/Users/jacobbalslev/Development/skill-graph/schemas/skill.v4.schema.json) — read concept block section (lines 165–211); confirmed per-field grader weights
-16. [`/Users/jacobbalslev/Development/skill-graph/examples/evals/comprehension.json`](/Users/jacobbalslev/Development/skill-graph/examples/evals/comprehension.json) — full read; the closest existing case to a comprehension eval
+16. `examples/evals/comprehension.json` — full read at research time; file has since been removed from the repo (the `documentation` skill's eval was renamed; comprehension cases now live in `examples/evals/type-safety.json`)
 17. [`/Users/jacobbalslev/Development/skill-graph/examples/evals/code-review.json`](/Users/jacobbalslev/Development/skill-graph/examples/evals/code-review.json) — full read
 18. [`/Users/jacobbalslev/Development/skill-graph/examples/evals/data-modeling.json`](/Users/jacobbalslev/Development/skill-graph/examples/evals/data-modeling.json) — full read
 19. [`/Users/jacobbalslev/Development/skill-graph/examples/evals/debugging.json`](/Users/jacobbalslev/Development/skill-graph/examples/evals/debugging.json) — full read

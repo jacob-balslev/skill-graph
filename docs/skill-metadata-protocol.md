@@ -96,7 +96,7 @@ Each skill archetype expects a specific set of body H2 sections. These are the m
 | `capability` | `## Coverage`, `## Philosophy`, `## Verification`, `## Do NOT Use When` | [`markdown-post-frontmatter-validation`](../examples/projects/markdown-static-site/skills/markdown-post-frontmatter-validation/SKILL.md) — codebase-grounded with full `grounding` block |
 | `workflow` | `## Coverage`, `## Philosophy`, `## Workflow`, `## Verification`, `## Do NOT Use When` | [`migrate-posts-to-v2-frontmatter`](../examples/projects/markdown-static-site/skills/migrate-posts-to-v2-frontmatter/SKILL.md) — codebase-grounded; demonstrates the four-phase add-required-field workflow with dry-run gate |
 | `router` | `## Coverage`, `## Routing Rules`, `## Do NOT Use When` | [`content-source-router`](../examples/projects/markdown-static-site/skills/content-source-router/SKILL.md) — dispatches between local markdown / MDX / CMS-synced sources by file extension or content-path prefix |
-| `overlay` | `## Coverage`, `## Overlay Rules`, `## Extends` (name of the base skill), `## Do NOT Use When` | [`lint-overlay`](../skills/lint-overlay/SKILL.md) extends [`testing-strategy`](../skills/testing-strategy/SKILL.md) — adds lint-specific gate placement on top of the base verification framework |
+| `overlay` | `## Coverage`, `## Overlay Rules`, `## Extends` (name of the base skill), `## Do NOT Use When` | [`lint-overlay`](https://github.com/jacob-balslev/skills/blob/main/skills/lint-overlay/SKILL.md) extends [`testing-strategy`](https://github.com/jacob-balslev/skills/blob/main/skills/testing-strategy/SKILL.md) — adds lint-specific gate placement on top of the base verification framework |
 
 `## Key Files` is recommended for skills that reference concrete repo files. Prefer file paths with line ranges (`src/foo.ts:45-120`) over bare paths when the skill depends on a specific function or section. `## References` is recommended for skills that point at external reading.
 
@@ -436,3 +436,12 @@ Skill Graph uses a single integer `schema_version` to signal contract evolution.
 5. **Migration tooling ships with the bump.** The v3 bump ships `scripts/migrate-skill-v2-to-v3.js`, a line-based codemod that preserves author YAML style (comments, quoting, indentation). Future bumps follow the same pattern: one codemod per version, shipped in the same PR.
 
 For the concrete v2→v3 mapping tables, see `docs/manifest-field-mapping.md § Migration Note — schema_version 2 → 3`. For the v1→v2 tables (historical), see the same document. For field-level before/after pairs, see `docs/field-decision-guide.md`.
+
+### Health Block versioning (SH-6123)
+
+**Health Block fields are v6-only.** The seven flat Health fields (`last_audited`, `last_changed`, `audit_verdict`, `eval_score`, `eval_failed_ids`, `lint_verdict`, `drift_status`) were introduced in v6. The lint schema (`schemas/skill.schema.json`, which tracks the latest contract) rejects these fields on any skill that lacks `schema_version: 6` because:
+
+- `schemas/skill.v5.schema.json` uses `additionalProperties: false` and does not define the Health Block properties.
+- The lint always validates against `skill.schema.json` (the v6 contract). Skills on v5 that contain Health Block fields must either be **bumped to v6** or have the Health Block fields stripped.
+
+**Policy:** If the Skill Audit Loop walker stamps Health Block fields onto a skill whose frontmatter does not have `schema_version: 6`, the walker has written to the wrong schema tier. Correct the skill by running the v5→v6 migration script (`scripts/migrate-skill-v5-to-v6.js`) rather than adding an exception to the lint schema. Health Block fields are not universally applicable across schema versions; they are a v6+ contract.
