@@ -1,7 +1,10 @@
 {
   "skill_name": "skill-router",
   "subject": "Skill-dispatch mechanics for multi-skill agent runtimes: trigger-label matching, file-path matching, keyword matching, scope/type tiebreakers, and coverage-gap detection",
-  "adjacent_concepts": ["documentation", "graph-audit"],
+  "adjacent_concepts": [
+    "documentation",
+    "graph-audit"
+  ],
   "grounding_note": "Truth_sources cite skills/skill-router/SKILL.md line ranges. Drift is caught by scripts/skill-lint.js's `checkEvalTruthSourceRanges` check (D2) — any edit that moves a cited range out of file bounds fails lint before commit. Section-anchor citations (`## Routing Rules`) were considered but rejected: the Skill Graph schema does not define a stable anchor format across Markdown renderers, and line ranges plus the lint check give the grader an exact substring to ground against without renderer ambiguity.",
   "evals": [
     {
@@ -13,7 +16,9 @@
       "truth_mode": "code_verification",
       "skill_type": "concept",
       "criticality": "high",
-      "truth_sources": ["skills/skill-router/SKILL.md:82-90"]
+      "truth_sources": [
+        "skills/agent/skill-system/skill-router/SKILL.md:82-90"
+      ]
     },
     {
       "id": 2,
@@ -24,7 +29,9 @@
       "truth_mode": "conceptual_correctness_plus_repo_application",
       "skill_type": "concept",
       "criticality": "high",
-      "truth_sources": ["skills/skill-router/SKILL.md:102-104"]
+      "truth_sources": [
+        "skills/agent/skill-system/skill-router/SKILL.md:102-104"
+      ]
     },
     {
       "id": 3,
@@ -35,7 +42,9 @@
       "truth_mode": "code_verification",
       "skill_type": "concept",
       "criticality": "high",
-      "truth_sources": ["skills/skill-router/SKILL.md:110-117"]
+      "truth_sources": [
+        "skills/agent/skill-system/skill-router/SKILL.md:110-117"
+      ]
     },
     {
       "id": 4,
@@ -46,7 +55,9 @@
       "truth_mode": "process_correctness",
       "skill_type": "workflow",
       "criticality": "high",
-      "truth_sources": ["skills/skill-router/SKILL.md:92-96"]
+      "truth_sources": [
+        "skills/agent/skill-system/skill-router/SKILL.md:92-96"
+      ]
     },
     {
       "id": 5,
@@ -57,7 +68,9 @@
       "truth_mode": "code_verification",
       "skill_type": "concept",
       "criticality": "normal",
-      "truth_sources": ["skills/skill-router/SKILL.md:92-96"]
+      "truth_sources": [
+        "skills/agent/skill-system/skill-router/SKILL.md:92-96"
+      ]
     },
     {
       "id": 6,
@@ -68,7 +81,9 @@
       "truth_mode": "conceptual_correctness_plus_repo_application",
       "skill_type": "concept",
       "criticality": "critical",
-      "truth_sources": ["skills/skill-router/SKILL.md:102-104"]
+      "truth_sources": [
+        "skills/agent/skill-system/skill-router/SKILL.md:102-104"
+      ]
     },
     {
       "id": 7,
@@ -79,7 +94,9 @@
       "truth_mode": "code_verification",
       "skill_type": "concept",
       "criticality": "high",
-      "truth_sources": ["skills/skill-router/SKILL.md:110-117"]
+      "truth_sources": [
+        "skills/agent/skill-system/skill-router/SKILL.md:110-117"
+      ]
     },
     {
       "id": 8,
@@ -90,7 +107,9 @@
       "truth_mode": "process_correctness",
       "skill_type": "workflow",
       "criticality": "high",
-      "truth_sources": ["skills/skill-router/SKILL.md:98-100"]
+      "truth_sources": [
+        "skills/agent/skill-system/skill-router/SKILL.md:98-100"
+      ]
     },
     {
       "id": 9,
@@ -101,7 +120,9 @@
       "truth_mode": "process_correctness",
       "skill_type": "workflow",
       "criticality": "high",
-      "truth_sources": ["skills/skill-router/SKILL.md:82-90"]
+      "truth_sources": [
+        "skills/agent/skill-system/skill-router/SKILL.md:82-90"
+      ]
     },
     {
       "id": 10,
@@ -112,7 +133,9 @@
       "truth_mode": "process_correctness",
       "skill_type": "workflow",
       "criticality": "normal",
-      "truth_sources": ["skills/skill-router/SKILL.md:82-90"]
+      "truth_sources": [
+        "skills/agent/skill-system/skill-router/SKILL.md:82-90"
+      ]
     },
     {
       "id": 11,
@@ -123,7 +146,10 @@
       "truth_mode": "process_correctness",
       "skill_type": "workflow",
       "criticality": "critical",
-      "truth_sources": ["skills/skill-router/SKILL.md:82-90", "skills/skill-router/SKILL.md:71-80"]
+      "truth_sources": [
+        "skills/agent/skill-system/skill-router/SKILL.md:82-90",
+        "skills/agent/skill-system/skill-router/SKILL.md:71-80"
+      ]
     },
     {
       "id": 12,
@@ -134,7 +160,10 @@
       "truth_mode": "process_correctness",
       "skill_type": "workflow",
       "criticality": "high",
-      "truth_sources": ["skills/skill-router/SKILL.md:102-104", "skills/skill-router/SKILL.md:71-80"]
+      "truth_sources": [
+        "skills/agent/skill-system/skill-router/SKILL.md:102-104",
+        "skills/agent/skill-system/skill-router/SKILL.md:71-80"
+      ]
     }
   ]
 }
