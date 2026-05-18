@@ -1,0 +1,96 @@
+{
+  "skill_name": "skill-infrastructure",
+  "subject": "Deterministic health tooling for SKILL.md libraries: inventory, protocol consistency, conflict detection, routing health, and drift detection",
+  "adjacent_concepts": ["skill-scaffold", "graph-audit", "testing-strategy", "lint-overlay"],
+  "grounding_note": "This portable skill is grounded in Skill Graph's health-tooling categories and uses whole-file truth sources to avoid brittle line drift while the skill itself continues to evolve.",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "A team has 200 SKILL.md files and no automated checks. Which health-tooling categories should they add first?",
+      "dimension": "definition",
+      "substance": "domain",
+      "calibration": "semantic",
+      "truth_mode": "conceptual_correctness_plus_repo_application",
+      "skill_type": "concept",
+      "criticality": "high",
+      "truth_sources": ["skills/skill-infrastructure/SKILL.md"]
+    },
+    {
+      "id": 2,
+      "prompt": "The manifest generator works on your machine but the sample manifest in the repo is stale. Which class of skill-infrastructure check owns this?",
+      "dimension": "application",
+      "substance": "domain",
+      "calibration": "process",
+      "truth_mode": "process_correctness",
+      "skill_type": "workflow",
+      "criticality": "high",
+      "truth_sources": ["skills/skill-infrastructure/SKILL.md", "scripts/generate-manifest.js"]
+    },
+    {
+      "id": 3,
+      "prompt": "Two skills give opposite instructions for the same target: one says always use a helper and the other says never use it. How should this be handled?",
+      "dimension": "application",
+      "substance": "contradiction-check",
+      "calibration": "semantic",
+      "truth_mode": "conceptual_correctness_plus_repo_application",
+      "skill_type": "concept",
+      "criticality": "high",
+      "truth_sources": ["skills/skill-infrastructure/SKILL.md"]
+    },
+    {
+      "id": 4,
+      "prompt": "A routing-miss report says users frequently ask for 'tool poisoning' but no skill routes. What should skill-infrastructure recommend?",
+      "dimension": "application",
+      "substance": "domain",
+      "calibration": "process",
+      "truth_mode": "process_correctness",
+      "skill_type": "workflow",
+      "criticality": "normal",
+      "truth_sources": ["skills/skill-infrastructure/SKILL.md"]
+    },
+    {
+      "id": 5,
+      "prompt": "A skill declares local truth sources but no truth_source_hashes. What state should the drift sentinel report, and what is the fix?",
+      "dimension": "mental_model",
+      "substance": "domain",
+      "calibration": "semantic",
+      "truth_mode": "conceptual_correctness_plus_repo_application",
+      "skill_type": "concept",
+      "criticality": "high",
+      "truth_sources": ["skills/skill-infrastructure/SKILL.md", "scripts/skill-graph-drift.js"]
+    },
+    {
+      "id": 6,
+      "prompt": "An existing skill has five evals, all with positive expectations. Is that enough for a production skill library?",
+      "dimension": "purpose",
+      "substance": "domain",
+      "calibration": "semantic",
+      "truth_mode": "conceptual_correctness_plus_repo_application",
+      "skill_type": "concept",
+      "criticality": "normal",
+      "truth_sources": ["skills/skill-infrastructure/SKILL.md"]
+    },
+    {
+      "id": 7,
+      "prompt": "A batch skill change leaves the working tree dirty, but someone wants to regenerate the manifest and commit it anyway. What does this skill say?",
+      "dimension": "boundary",
+      "substance": "contradiction-check",
+      "calibration": "semantic",
+      "truth_mode": "process_correctness",
+      "skill_type": "workflow",
+      "criticality": "high",
+      "truth_sources": ["skills/skill-infrastructure/SKILL.md"]
+    },
+    {
+      "id": 8,
+      "prompt": "A user asks: 'Scaffold a new SKILL.md for our deploy procedure.' Should skill-infrastructure own that task?",
+      "dimension": "boundary",
+      "substance": "contradiction-check",
+      "calibration": "semantic",
+      "truth_mode": "conceptual_correctness_plus_repo_application",
+      "skill_type": "concept",
+      "criticality": "normal",
+      "truth_sources": ["skills/skill-infrastructure/SKILL.md"]
+    }
+  ]
+}
