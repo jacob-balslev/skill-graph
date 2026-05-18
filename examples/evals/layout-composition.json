@@ -1,7 +1,12 @@
 {
   "skill_name": "layout-composition",
   "subject": "Responsive layout and screen composition for page structure, scan pattern, breakpoints, and stable viewport hierarchy",
-  "adjacent_concepts": ["task-analysis", "information-architecture", "visual-design-foundations", "design-system-architecture"],
+  "adjacent_concepts": [
+    "task-analysis",
+    "information-architecture",
+    "visual-design-foundations",
+    "design-system-architecture"
+  ],
   "grounding_note": "Truth sources cite the whole SKILL.md file to keep the initial eval surface stable while the new skill settles.",
   "evals": [
     {
@@ -13,7 +18,9 @@
       "truth_mode": "process_correctness",
       "skill_type": "concept",
       "criticality": "high",
-      "truth_sources": ["skills/layout-composition/SKILL.md"]
+      "truth_sources": [
+        "skills/design/layout-composition/SKILL.md"
+      ]
     },
     {
       "id": 2,
@@ -24,7 +31,9 @@
       "truth_mode": "conceptual_correctness_plus_repo_application",
       "skill_type": "concept",
       "criticality": "high",
-      "truth_sources": ["skills/layout-composition/SKILL.md"]
+      "truth_sources": [
+        "skills/design/layout-composition/SKILL.md"
+      ]
     },
     {
       "id": 3,
@@ -35,7 +44,9 @@
       "truth_mode": "code_verification",
       "skill_type": "concept",
       "criticality": "normal",
-      "truth_sources": ["skills/layout-composition/SKILL.md"]
+      "truth_sources": [
+        "skills/design/layout-composition/SKILL.md"
+      ]
     },
     {
       "id": 4,
@@ -46,7 +57,9 @@
       "truth_mode": "process_correctness",
       "skill_type": "workflow",
       "criticality": "normal",
-      "truth_sources": ["skills/layout-composition/SKILL.md"]
+      "truth_sources": [
+        "skills/design/layout-composition/SKILL.md"
+      ]
     }
   ]
 }
