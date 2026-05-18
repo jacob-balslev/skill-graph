@@ -1,7 +1,11 @@
 {
   "skill_name": "lint-overlay",
   "subject": "Overlay for testing-strategy covering lint as verification: rule selection, gate placement, failure triage, and migration planning when introducing rules to an existing codebase",
-  "adjacent_concepts": ["testing-strategy", "refactor", "debugging"],
+  "adjacent_concepts": [
+    "testing-strategy",
+    "refactor",
+    "debugging"
+  ],
   "evals": [
     {
       "id": 1,
@@ -12,7 +16,9 @@
       "truth_mode": "code_verification",
       "skill_type": "concept",
       "criticality": "critical",
-      "truth_sources": ["skills/lint-overlay/SKILL.md:65-82"]
+      "truth_sources": [
+        "skills/quality/lint-overlay/SKILL.md:65-82"
+      ]
     },
     {
       "id": 2,
@@ -23,7 +29,9 @@
       "truth_mode": "conceptual_correctness_plus_repo_application",
       "skill_type": "concept",
       "criticality": "high",
-      "truth_sources": ["skills/lint-overlay/SKILL.md:65-82"]
+      "truth_sources": [
+        "skills/quality/lint-overlay/SKILL.md:65-82"
+      ]
     },
     {
       "id": 3,
@@ -34,7 +42,9 @@
       "truth_mode": "code_verification",
       "skill_type": "concept",
       "criticality": "high",
-      "truth_sources": ["skills/lint-overlay/SKILL.md:118-124"]
+      "truth_sources": [
+        "skills/quality/lint-overlay/SKILL.md:118-124"
+      ]
     },
     {
       "id": 4,
@@ -45,7 +55,9 @@
       "truth_mode": "process_correctness",
       "skill_type": "workflow",
       "criticality": "high",
-      "truth_sources": ["skills/lint-overlay/SKILL.md:102-112"]
+      "truth_sources": [
+        "skills/quality/lint-overlay/SKILL.md:102-112"
+      ]
     },
     {
       "id": 5,
@@ -56,7 +68,9 @@
       "truth_mode": "conceptual_correctness_plus_repo_application",
       "skill_type": "concept",
       "criticality": "normal",
-      "truth_sources": ["skills/lint-overlay/SKILL.md:102-112"]
+      "truth_sources": [
+        "skills/quality/lint-overlay/SKILL.md:102-112"
+      ]
     },
     {
       "id": 6,
@@ -67,7 +81,9 @@
       "truth_mode": "conceptual_correctness_plus_repo_application",
       "skill_type": "concept",
       "criticality": "high",
-      "truth_sources": ["skills/lint-overlay/SKILL.md:102-112"]
+      "truth_sources": [
+        "skills/quality/lint-overlay/SKILL.md:102-112"
+      ]
     },
     {
       "id": 7,
@@ -78,7 +94,10 @@
       "truth_mode": "code_verification",
       "skill_type": "concept",
       "criticality": "critical",
-      "truth_sources": ["skills/lint-overlay/SKILL.md:65-82", "skills/lint-overlay/SKILL.md:118-124"]
+      "truth_sources": [
+        "skills/quality/lint-overlay/SKILL.md:65-82",
+        "skills/quality/lint-overlay/SKILL.md:118-124"
+      ]
     },
     {
       "id": 8,
@@ -89,7 +108,10 @@
       "truth_mode": "process_correctness",
       "skill_type": "workflow",
       "criticality": "high",
-      "truth_sources": ["skills/lint-overlay/SKILL.md:102-112", "skills/lint-overlay/SKILL.md:92-100"]
+      "truth_sources": [
+        "skills/quality/lint-overlay/SKILL.md:102-112",
+        "skills/quality/lint-overlay/SKILL.md:92-100"
+      ]
     },
     {
       "id": 9,
@@ -100,7 +122,10 @@
       "truth_mode": "conceptual_correctness_plus_repo_application",
       "skill_type": "concept",
       "criticality": "high",
-      "truth_sources": ["skills/lint-overlay/SKILL.md:102-112", "skills/lint-overlay/SKILL.md:92-100"]
+      "truth_sources": [
+        "skills/quality/lint-overlay/SKILL.md:102-112",
+        "skills/quality/lint-overlay/SKILL.md:92-100"
+      ]
     },
     {
       "id": 10,
@@ -111,7 +136,9 @@
       "truth_mode": "process_correctness",
       "skill_type": "workflow",
       "criticality": "high",
-      "truth_sources": ["skills/lint-overlay/SKILL.md:102-112"]
+      "truth_sources": [
+        "skills/quality/lint-overlay/SKILL.md:102-112"
+      ]
     }
   ]
 }
