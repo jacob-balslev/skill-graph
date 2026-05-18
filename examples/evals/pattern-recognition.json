@@ -1,0 +1,96 @@
+{
+  "skill_name": "pattern-recognition",
+  "subject": "Recurring-structure recognition across code, errors, board state, conventions, and domain encodings",
+  "adjacent_concepts": ["debugging", "code-review", "diagnosis", "lint-overlay"],
+  "grounding_note": "This portable skill is grounded in its own method description and cited public pattern-recognition sources rather than repo-local implementation files. These evals exercise the recurring-instance threshold, clustering discipline, prevention loop, lifecycle states, and negative-routing boundaries.",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "The same SQL string interpolation bug appears in three route handlers. Should the agent fix only the latest one?",
+      "dimension": "application",
+      "substance": "domain",
+      "calibration": "semantic",
+      "truth_mode": "conceptual_correctness_plus_repo_application",
+      "skill_type": "concept",
+      "criticality": "high",
+      "truth_sources": ["skills/pattern-recognition/SKILL.md:61-80"]
+    },
+    {
+      "id": 2,
+      "prompt": "An agent saw one strange failure once in the logs and wants to write a lint rule immediately. Is that pattern recognition?",
+      "dimension": "boundary",
+      "substance": "contradiction-check",
+      "calibration": "semantic",
+      "truth_mode": "conceptual_correctness_plus_repo_application",
+      "skill_type": "concept",
+      "criticality": "normal",
+      "truth_sources": ["skills/pattern-recognition/SKILL.md:72-80", "skills/pattern-recognition/SKILL.md:462-481"]
+    },
+    {
+      "id": 3,
+      "prompt": "Twelve component files contain hardcoded hex colors outside the design-token source. What is the pattern-recognition response?",
+      "dimension": "application",
+      "substance": "domain",
+      "calibration": "semantic",
+      "truth_mode": "conceptual_correctness_plus_repo_application",
+      "skill_type": "concept",
+      "criticality": "high",
+      "truth_sources": ["skills/pattern-recognition/SKILL.md:233-279"]
+    },
+    {
+      "id": 4,
+      "prompt": "A session log contains many errors that differ only by timestamps, file paths, and line numbers. How should the agent reason about them?",
+      "dimension": "mental_model",
+      "substance": "domain",
+      "calibration": "semantic",
+      "truth_mode": "conceptual_correctness_plus_repo_application",
+      "skill_type": "concept",
+      "criticality": "normal",
+      "truth_sources": ["skills/pattern-recognition/SKILL.md:155-187"]
+    },
+    {
+      "id": 5,
+      "prompt": "A board has many stale In Progress tasks, WIP overflow, and duplicate-looking tickets. Is that random clutter?",
+      "dimension": "application",
+      "substance": "domain",
+      "calibration": "semantic",
+      "truth_mode": "conceptual_correctness_plus_repo_application",
+      "skill_type": "concept",
+      "criticality": "normal",
+      "truth_sources": ["skills/pattern-recognition/SKILL.md:197-231"]
+    },
+    {
+      "id": 6,
+      "prompt": "The same dashboard NaN display bug keeps coming back. A developer proposes adding `|| 0` at every callsite. What should pattern-recognition say?",
+      "dimension": "purpose",
+      "substance": "contradiction-check",
+      "calibration": "semantic",
+      "truth_mode": "conceptual_correctness_plus_repo_application",
+      "skill_type": "concept",
+      "criticality": "critical",
+      "truth_sources": ["skills/pattern-recognition/SKILL.md:281-329", "skills/pattern-recognition/SKILL.md:366-395"]
+    },
+    {
+      "id": 7,
+      "prompt": "A detection rule for an old import path now returns zero matches every week after the migration finished. What state is that pattern in?",
+      "dimension": "taxonomy",
+      "substance": "domain",
+      "calibration": "semantic",
+      "truth_mode": "conceptual_correctness_plus_repo_application",
+      "skill_type": "concept",
+      "criticality": "normal",
+      "truth_sources": ["skills/pattern-recognition/SKILL.md:397-429"]
+    },
+    {
+      "id": 8,
+      "prompt": "The user asks: 'Review this PR for semantic correctness and maintainability.' Should this skill take over?",
+      "dimension": "boundary",
+      "substance": "contradiction-check",
+      "calibration": "semantic",
+      "truth_mode": "conceptual_correctness_plus_repo_application",
+      "skill_type": "concept",
+      "criticality": "normal",
+      "truth_sources": ["skills/pattern-recognition/SKILL.md:483-494"]
+    }
+  ]
+}
