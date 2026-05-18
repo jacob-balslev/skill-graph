@@ -52,7 +52,7 @@ graph TD
 | **Plan adoption in a new repo** | [`docs/ADOPTION.md`](docs/ADOPTION.md) and [`docs/CONFORMANCE.md`](docs/CONFORMANCE.md) |
 | **Migrate from an older `schema_version`** | [`docs/migrations/`](docs/migrations/) |
 
-> **Surface scope:** The OSS-portable canonical library lives at `skills/skills/` (141 v6-compliant skills). A separate personal/Sales Hub surface at `skills/` (263 pre-v6) is frozen — new skills are curated into the OSS surface only when non-PII, non-Sales-Hub, and generalizable. See [ADR 0008](docs/adr/0008-skill-surface-split-and-curation-policy.md).
+> **Surface scope:** The OSS-portable canonical library lives at `skills/skills/` (145 v6-compliant skills). A separate personal/Sales Hub surface at `skills/` (263 pre-v6) is frozen — new skills are curated into the OSS surface only when non-PII, non-Sales-Hub, and generalizable. See [ADR 0008](docs/adr/0008-skill-surface-split-and-curation-policy.md).
 
 ## How SKILL.md, Skill Metadata Protocol, and Skill Graph Differ
 
@@ -270,7 +270,7 @@ The public, ready-to-install skill library lives at [`jacob-balslev/skills`](htt
 npx skills add jacob-balslev/skills
 ```
 
-That repo holds 141+ canonical skills in plain Agent-Skills shape, indexed on `skills.sh`. You do not need to clone this `skill-graph` tooling repo to consume the skills.
+That repo holds 145+ canonical skills in plain Agent-Skills shape, indexed on `skills.sh`. You do not need to clone this `skill-graph` tooling repo to consume the skills.
 
 ### Running the tooling (authors and maintainers)
 
@@ -281,7 +281,7 @@ npm install --global @skill-graph/cli
 skill-graph --help
 ```
 
-The tooling operates against a skill library configured via [`.skill-graph/config.json`](.skill-graph/config.json) → `workspace.skill_roots`. Post-2026-05-16 monorepo split, the shipped config points at the sibling [`jacob-balslev/skills`](https://github.com/jacob-balslev/skills) repo (canonical 141-skill library). Clone the canonical skills as a sibling of this repo and the tooling resolves automatically — no env-vars needed:
+The tooling operates against a skill library configured via [`.skill-graph/config.json`](.skill-graph/config.json) → `workspace.skill_roots`. Post-2026-05-18 consolidation, the shipped config points at the public [`jacob-balslev/skills`](https://github.com/jacob-balslev/skills) repo (canonical 145-skill library). Clone the canonical skills as a sibling of this repo and the tooling resolves automatically — no env-vars needed:
 
 ```bash
 git clone https://github.com/jacob-balslev/skills.git ~/Development/skills
@@ -362,7 +362,7 @@ Run `skill-graph --help` to see all commands (including legacy aliases).
 
 | Repo | Status | Purpose |
 |---|---|---|
-| [`jacob-balslev/skills`](https://github.com/jacob-balslev/skills) | **active** | Public open-source 141-skill library. Distributed via `npx skills add jacob-balslev/skills`. |
+| [`jacob-balslev/skills`](https://github.com/jacob-balslev/skills) | **active** | Public open-source 145-skill library. Distributed via `npx skills add jacob-balslev/skills`. |
 | [`jacob-balslev/skill-metadata-protocol`](https://github.com/jacob-balslev/skill-metadata-protocol) | mirror | Historical docs-only mirror of the protocol spec (kept for inbound-link stability). Canonical doc now in [`docs/SKILL_METADATA_PROTOCOL.md`](docs/SKILL_METADATA_PROTOCOL.md). |
 | [`jacob-balslev/skill-audit-loop`](https://github.com/jacob-balslev/skill-audit-loop) | mirror | Historical docs-only mirror of the audit workflow. Canonical doc now in [`docs/SKILL_AUDIT_LOOP.md`](docs/SKILL_AUDIT_LOOP.md). |
 
