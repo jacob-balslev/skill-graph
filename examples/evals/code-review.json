@@ -1,7 +1,12 @@
 {
   "skill_name": "code-review",
   "subject": "Reviewing diffs and pull requests for correctness, clarity, security, performance, tests, and project conventions",
-  "adjacent_concepts": ["testing-strategy", "refactor", "debugging", "owasp-security"],
+  "adjacent_concepts": [
+    "testing-strategy",
+    "refactor",
+    "debugging",
+    "owasp-security"
+  ],
   "grounding_note": "Truth sources cite the whole SKILL.md file to keep the initial eval surface stable while routing boundaries are tightened.",
   "evals": [
     {
@@ -13,7 +18,9 @@
       "truth_mode": "process_correctness",
       "skill_type": "workflow",
       "criticality": "high",
-      "truth_sources": ["skills/code-review/SKILL.md"]
+      "truth_sources": [
+        "skills/quality/code-review/SKILL.md"
+      ]
     },
     {
       "id": 2,
@@ -24,7 +31,9 @@
       "truth_mode": "conceptual_correctness_plus_repo_application",
       "skill_type": "workflow",
       "criticality": "high",
-      "truth_sources": ["skills/code-review/SKILL.md"]
+      "truth_sources": [
+        "skills/quality/code-review/SKILL.md"
+      ]
     },
     {
       "id": 3,
@@ -35,7 +44,9 @@
       "truth_mode": "code_verification",
       "skill_type": "concept",
       "criticality": "normal",
-      "truth_sources": ["skills/code-review/SKILL.md"]
+      "truth_sources": [
+        "skills/quality/code-review/SKILL.md"
+      ]
     },
     {
       "id": 4,
@@ -46,7 +57,9 @@
       "truth_mode": "code_verification",
       "skill_type": "concept",
       "criticality": "normal",
-      "truth_sources": ["skills/code-review/SKILL.md"]
+      "truth_sources": [
+        "skills/quality/code-review/SKILL.md"
+      ]
     }
   ]
 }
