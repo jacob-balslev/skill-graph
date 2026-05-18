@@ -151,7 +151,7 @@ cp examples/skill-metadata-template.md skills/post-archive-rebuild/SKILL.md
 Edit `skills/post-archive-rebuild/SKILL.md` to set:
 
 ```yaml
-schema_version: 4
+schema_version: 6
 name: post-archive-rebuild
 description: "Use when re-indexing the post archive after one or more frontmatter fields have changed — walking every post, re-extracting the indexed fields, and writing the updated archive page. Activate this skill whenever the task says 'rebuild the archive' or mentions a post-index regeneration after a content edit. Do NOT use for routine authoring of a single post (use markdown-post-frontmatter-review)."
 version: 0.1.0
