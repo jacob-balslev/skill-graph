@@ -188,20 +188,49 @@ function canonicalSourcePath(skillMd) {
   return path.relative(SKILLS_LIBRARY_REPO_ROOT, skillMd).split(path.sep).join('/');
 }
 
+/**
+ * Recursively collect SKILL.md paths from a root directory.
+ *
+ * After the M1 category restructure (jacob-balslev/skills 42552d1), the
+ * skills library uses a nested layout: <root>/<category>/[<domain>/]<name>/SKILL.md
+ * rather than the old flat <root>/<name>/SKILL.md. This walker mirrors the
+ * same recursive pattern used by skill-lint.js so both tools agree on which
+ * skill files are canonical.
+ *
+ * Stops descending as soon as it finds a SKILL.md in a directory (that
+ * directory is a skill, not a container). Skips _underscore and .dot dirs.
+ *
+ * @param {string} dir - Directory to search.
+ * @param {number} depth - Current recursion depth (capped at 3).
+ * @returns {string[]} Absolute paths to every discovered SKILL.md.
+ */
+function walkForSkillMd(dir, depth = 0) {
+  const results = [];
+  if (!fs.existsSync(dir) || depth > 3) return results;
+  for (const name of fs.readdirSync(dir)) {
+    if (name.startsWith('_') || name.startsWith('.')) continue;
+    const entryPath = path.join(dir, name);
+    if (!fs.statSync(entryPath).isDirectory()) continue;
+    const skillMd = path.join(entryPath, 'SKILL.md');
+    if (fs.existsSync(skillMd)) {
+      results.push(skillMd);
+    } else {
+      // Not a skill folder — recurse into it as a category/domain container.
+      results.push(...walkForSkillMd(entryPath, depth + 1));
+    }
+  }
+  return results;
+}
+
 function collectCanonicalSkills(sourceDir = DEFAULT_SOURCE_DIR) {
   const skills = [];
-  for (const entry of fs.readdirSync(sourceDir, { withFileTypes: true })) {
-    if (!entry.isDirectory()) continue;
-    const skillDir = path.join(sourceDir, entry.name);
-    const skillMd = path.join(skillDir, 'SKILL.md');
-    if (!fs.existsSync(skillMd)) continue;
+  for (const skillMd of walkForSkillMd(sourceDir)) {
     const text = fs.readFileSync(skillMd, 'utf8');
     const fm = parseFrontmatter(text);
     if (!fm) {
       throw new Error(`Source skill has no parseable frontmatter: ${repoRelative(skillMd)}`);
     }
     skills.push({
-      dirName: entry.name,
       sourcePath: skillMd,
       // sourceRelPath: skill-graph-repo-relative path — used for link rewriting (filesystem context).
       sourceRelPath: repoRelative(skillMd),

@@ -82,9 +82,13 @@ const exportedA11yFm = parseFrontmatter(exportedA11y);
 assert(exportedA11yFm, 'marketplace export should have frontmatter');
 const shape = validateExportedFrontmatter(exportedA11yFm);
 assert(shape.errors.length === 0, `marketplace export should be plain SKILL.md shape: ${shape.errors.join('; ')}`);
+// After the M1 category restructure, a11y lives at skills/quality/a11y/SKILL.md
+// in the sibling skills repo. Derive the expected path from the resolved source
+// rather than hardcoding it, so the assertion stays correct if the skill moves again.
+const _expectedCanonicalSkill = a11y.canonicalSkillPath;
 assert(
-  exportedA11yFm.metadata.skill_graph_canonical_skill === 'skills/a11y/SKILL.md',
-  'marketplace export should preserve canonical source path'
+  exportedA11yFm.metadata.skill_graph_canonical_skill === _expectedCanonicalSkill,
+  `marketplace export should preserve canonical source path (expected: ${_expectedCanonicalSkill})`
 );
 assert(
   exportedA11yFm.metadata.skill_graph_protocol === SKILL_GRAPH_PROTOCOL &&
