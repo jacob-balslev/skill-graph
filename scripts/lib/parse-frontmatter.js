@@ -344,8 +344,8 @@ function parseFrontmatter(text) {
 
 // Set of base SKILL.md fields that stay at the top level in the marketplace
 // export shape. Anything else found under `metadata:` is a Skill Graph
-// extension field that the export pipeline relocated to satisfy Anthropic
-// Claude Code's frontmatter contract. The normalizer lifts those back to
+// extension field that the export pipeline relocated to satisfy the plain
+// Agent Skills frontmatter contract. The normalizer lifts those back to
 // top-level so downstream consumers (lint, manifest, route, drift) can read
 // the canonical shape regardless of which format the file is in.
 const SKILL_MD_BASE_FIELDS = new Set([

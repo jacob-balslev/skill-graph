@@ -56,8 +56,8 @@ const fm = {
   'allowed-tools': 'Read Grep',
   allowed_tools: 'Read Grep',
   compatibility: {
-    runtimes: ['claude-code>=2.0'],
-    agent_runtimes: ['claude-code>=2.0'],
+    runtimes: ['agent-runtime>=2.0'],
+    agent_runtimes: ['agent-runtime>=2.0'],
     node: '>=20',
     node_version: '>=20',
   },
@@ -87,7 +87,7 @@ assert(entry.domain === fm.domain, 'domain should pass through');
 assert(entry.allowed_tools === fm.allowed_tools, 'allowed_tools alias should pass through');
 assert(entry.health.reviewed_at === fm.reviewed_at, 'reviewed_at alias should project to health.reviewed_at');
 assert(entry.health.eval && entry.health.eval.content_state === 'unverified', 'nested eval alias should project to health.eval');
-assert(entry.compatibility.agent_runtimes[0] === 'claude-code>=2.0', 'compatibility.agent_runtimes should pass through');
+assert(entry.compatibility.agent_runtimes[0] === 'agent-runtime>=2.0', 'compatibility.agent_runtimes should pass through');
 assert(entry.compatibility.node_version === '>=20', 'compatibility.node_version should pass through');
 assert(entry.grounding.subject === 'Alias contract', 'grounding.subject should pass through');
 assert(entry.grounding.claim_scope === 'repo_specific', 'grounding.claim_scope should pass through');

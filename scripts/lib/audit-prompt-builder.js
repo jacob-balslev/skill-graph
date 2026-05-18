@@ -5,11 +5,11 @@
  *
  * Builds the context and prompts for the seven scorecard dimensions defined in
  * SKILL_AUDIT_CHECKLIST.md. The audit runner calls an external
- * model CLI (e.g. `claude -p`) for each dimension, collects the structured
+ * grader CLI for each dimension, collects the structured
  * verdicts, and merges them into findings.md / verdict.md / scorecard.md.
  *
  * This file is self-contained. It only uses Node built-ins and does not depend
- * on any specific model provider — the grader CLI is resolved by the caller.
+ * on any specific provider — the grader CLI is resolved by the caller.
  */
 
 const fs   = require('fs');
@@ -32,7 +32,7 @@ const { parseFrontmatter } = require('./parse-frontmatter');
  *
  * `appliesWhen` is an optional predicate that takes the parsed frontmatter
  * and returns true/false. If it returns false, the dimension is graded as
- * N/A and no model call is made (e.g. grounding for scope: portable).
+ * N/A and no grader call is made (e.g. grounding for scope: portable).
  */
 const DIMENSIONS = [
   {

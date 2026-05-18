@@ -9,7 +9,7 @@
  *    deterministic. This is the original behavior and is unchanged.
  *
  * 2. Graded mode (--graded) — on top of the stub, runs a prompt-driven
- *    seven-dimension review by calling an external model CLI for each
+ *    seven-dimension review by calling an external grader CLI for each
  *    dimension. Writes structured PASS / PASS WITH FIXES / FAIL verdicts with
  *    evidence quotes into findings.md / verdict.md / scorecard.md, replacing
  *    the human-TODO placeholders. Requires a grader CLI to be on PATH.
@@ -18,16 +18,14 @@
  *   node scripts/skill-audit.js <skill-name>
  *   node scripts/skill-audit.js <skill-name> --audit-root <path>
  *   node scripts/skill-audit.js <skill-name> --force
- *   node scripts/skill-audit.js <skill-name> --graded
- *   node scripts/skill-audit.js <skill-name> --graded --grader-cli "claude -p"
- *   node scripts/skill-audit.js <skill-name> --graded --grader-cli "codex exec"
+ *   node scripts/skill-audit.js <skill-name> --graded --grader-cli "<command>"
  *
  * Flags:
  *   --audit-root <path>   Output directory root (default: examples/audits/).
  *   --force               Overwrite existing artifacts.
  *   --graded              Enable the prompt-driven grader pass.
  *   --grader-cli <cmd>    Shell command to invoke the grader. The prompt is
- *                         piped to stdin; stdout is parsed. Default: `claude -p`.
+ *                         piped to stdin; stdout is parsed. Required with --graded.
  *   --grader-timeout <ms> Per-dimension timeout in milliseconds. Default: 120000.
  *
  * Produces under <audit-root>/<skill-name>/:
@@ -61,7 +59,6 @@ const {
 // CLI argument parsing
 // ---------------------------------------------------------------------------
 
-const DEFAULT_GRADER_CLI     = 'claude -p';
 const DEFAULT_GRADER_TIMEOUT = 120_000;
 
 function parseArgs(argv) {
@@ -71,7 +68,7 @@ function parseArgs(argv) {
     auditRoot:      path.join(REPO_ROOT, 'examples', 'audits'),
     force:          false,
     graded:         false,
-    graderCli:      DEFAULT_GRADER_CLI,
+    graderCli:      null,
     graderTimeout:  DEFAULT_GRADER_TIMEOUT,
     errors:         [],
   };
@@ -106,6 +103,7 @@ function parseArgs(argv) {
   }
 
   if (!result.skillName) result.errors.push('missing required argument: <skill-name>');
+  if (result.graded && !result.graderCli) result.errors.push('--graded requires an explicit --grader-cli <cmd>');
 
   return result;
 }
@@ -225,7 +223,7 @@ function inferFix(d) {
  * provider. The prompt is piped to stdin to avoid shell-escaping issues with
  * large multi-line prompts containing quotes and backticks.
  *
- * @param {string} graderCli Shell-style command, e.g. `claude -p` or `codex exec`.
+ * @param {string} graderCli Shell-style command that reads the prompt from stdin.
  * @param {string} prompt    Full prompt text.
  * @param {number} timeoutMs Per-call timeout.
  * @returns {{ ok: boolean, stdout: string, stderr: string, exitCode: number, error: string|null }}
@@ -806,7 +804,7 @@ function main() {
 
   if (opts.errors.length > 0) {
     for (const e of opts.errors) console.error(`error: ${e}`);
-    console.error('\nUsage: node scripts/skill-audit.js <skill-name> [--audit-root <path>] [--force] [--graded [--grader-cli <cmd>] [--grader-timeout <ms>]]');
+    console.error('\nUsage: node scripts/skill-audit.js <skill-name> [--audit-root <path>] [--force] [--graded --grader-cli <cmd> [--grader-timeout <ms>]]');
     process.exit(1);
   }
 
