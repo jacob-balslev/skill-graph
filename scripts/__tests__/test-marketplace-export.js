@@ -1,11 +1,18 @@
 #!/usr/bin/env node
 /**
  * Regression tests for marketplace export generation and gates.
+ *
+ * These tests require the canonical skills library (a sibling repo at
+ * ../skills/skills or configured via .skill-graph/config.json). In CI
+ * environments where only the skill-graph tooling repo is checked out,
+ * the tests skip gracefully rather than failing.
  */
 
 'use strict';
 
+const fs = require('fs');
 const path = require('path');
+const { workspaceRoot, loadWorkspaceConfig, resolveSkillRoots } = require('../lib/roots');
 const {
   EXPORT_DESCRIPTION_OVERRIDES,
   MARKETPLACE_DESCRIPTION_LIMIT,
@@ -28,6 +35,18 @@ function fail(msg) {
 
 function assert(condition, msg) {
   if (!condition) fail(msg);
+}
+
+// Skip gracefully when the canonical skills library is not present (e.g. CI
+// environments that only check out the skill-graph tooling repo).
+const _root = workspaceRoot();
+const _skillRoots = resolveSkillRoots(_root, loadWorkspaceConfig(_root));
+const _sourceDir = _skillRoots[0] && _skillRoots[0].absPath;
+if (!_sourceDir || !fs.existsSync(_sourceDir)) {
+  process.stdout.write(
+    `SKIP test-marketplace-export: canonical skills library not found at ${_sourceDir || '(no path resolved)'} — skipping\n`
+  );
+  process.exit(0);
 }
 
 const skills = collectCanonicalSkills();
