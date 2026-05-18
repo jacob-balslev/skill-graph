@@ -70,7 +70,7 @@ The 13 required v4 fields are: `schema_version`, `name`, `description`, `version
 For `markdown-post-frontmatter-review`, the values look like:
 
 ```yaml
-schema_version: 4
+schema_version: 6
 name: markdown-post-frontmatter-review
 description: "Use when authoring or reviewing the YAML frontmatter of a markdown post — checking required fields (title, date, slug, tags), validating against the content schema, catching ambiguous date formats, and ensuring the slug matches the file path. Activate this skill whenever the task touches files under `content/posts/**/*.md` or the `parsePostFrontmatter()` helper — even if the user just says 'the post'. Do NOT use for general YAML schema design (use a different skill) or for chasing a specific build-time validation failure (use debugging)."
 version: 0.1.0
