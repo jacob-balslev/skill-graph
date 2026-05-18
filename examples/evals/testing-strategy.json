@@ -1,7 +1,11 @@
 {
   "skill_name": "testing-strategy",
   "subject": "Verification planning for bug fixes, features, and refactors: test scope, test-level selection, effort-to-risk matching, regression targeting, evidence quality, and failure-case coverage",
-  "adjacent_concepts": ["debugging", "refactor", "lint-overlay"],
+  "adjacent_concepts": [
+    "debugging",
+    "refactor",
+    "lint-overlay"
+  ],
   "grounding_note": "This skill is self-grounding. Its evals validate internal consistency against the SKILL.md body — the skill does not anchor to an external canonical source (e.g., a specific testing-pyramid paper) because the doctrine here is synthesized from industry practice rather than derived from one authoritative text. Evals cite SKILL.md line ranges deliberately; add external truth_sources only if the skill is later narrowed to a specific external framework. Line-range stability is enforced by the `checkEvalTruthSourceRanges` lint check (scripts/skill-lint.js D2) — every edit that moves a cited range out of file bounds fails lint before commit, so drift surfaces immediately rather than silently degrading grader grounding.",
   "evals": [
     {
@@ -13,7 +17,9 @@
       "truth_mode": "code_verification",
       "skill_type": "concept",
       "criticality": "high",
-      "truth_sources": ["skills/testing-strategy/SKILL.md:84-91"]
+      "truth_sources": [
+        "skills/quality/testing-strategy/SKILL.md:84-91"
+      ]
     },
     {
       "id": 2,
@@ -24,7 +30,9 @@
       "truth_mode": "conceptual_correctness_plus_repo_application",
       "skill_type": "concept",
       "criticality": "high",
-      "truth_sources": ["skills/testing-strategy/SKILL.md:76-78"]
+      "truth_sources": [
+        "skills/quality/testing-strategy/SKILL.md:76-78"
+      ]
     },
     {
       "id": 3,
@@ -35,7 +43,9 @@
       "truth_mode": "code_verification",
       "skill_type": "concept",
       "criticality": "high",
-      "truth_sources": ["skills/testing-strategy/SKILL.md:111-116"]
+      "truth_sources": [
+        "skills/quality/testing-strategy/SKILL.md:111-116"
+      ]
     },
     {
       "id": 4,
@@ -46,7 +56,9 @@
       "truth_mode": "process_correctness",
       "skill_type": "workflow",
       "criticality": "high",
-      "truth_sources": ["skills/testing-strategy/SKILL.md:93-98"]
+      "truth_sources": [
+        "skills/quality/testing-strategy/SKILL.md:93-98"
+      ]
     },
     {
       "id": 5,
@@ -57,7 +69,9 @@
       "truth_mode": "conceptual_correctness_plus_repo_application",
       "skill_type": "concept",
       "criticality": "critical",
-      "truth_sources": ["skills/testing-strategy/SKILL.md:84-91"]
+      "truth_sources": [
+        "skills/quality/testing-strategy/SKILL.md:84-91"
+      ]
     },
     {
       "id": 6,
@@ -68,7 +82,10 @@
       "truth_mode": "conceptual_correctness_plus_repo_application",
       "skill_type": "concept",
       "criticality": "critical",
-      "truth_sources": ["skills/testing-strategy/SKILL.md:84-91", "skills/testing-strategy/SKILL.md:93-98"]
+      "truth_sources": [
+        "skills/quality/testing-strategy/SKILL.md:84-91",
+        "skills/quality/testing-strategy/SKILL.md:93-98"
+      ]
     },
     {
       "id": 7,
@@ -79,7 +96,9 @@
       "truth_mode": "code_verification",
       "skill_type": "concept",
       "criticality": "normal",
-      "truth_sources": ["skills/testing-strategy/SKILL.md:111-116"]
+      "truth_sources": [
+        "skills/quality/testing-strategy/SKILL.md:111-116"
+      ]
     },
     {
       "id": 8,
@@ -90,7 +109,9 @@
       "truth_mode": "conceptual_correctness_plus_repo_application",
       "skill_type": "concept",
       "criticality": "high",
-      "truth_sources": ["skills/testing-strategy/SKILL.md:104-109"]
+      "truth_sources": [
+        "skills/quality/testing-strategy/SKILL.md:104-109"
+      ]
     },
     {
       "id": 9,
@@ -101,7 +122,9 @@
       "truth_mode": "conceptual_correctness_plus_repo_application",
       "skill_type": "concept",
       "criticality": "high",
-      "truth_sources": ["skills/testing-strategy/SKILL.md:104-109"]
+      "truth_sources": [
+        "skills/quality/testing-strategy/SKILL.md:104-109"
+      ]
     },
     {
       "id": 10,
@@ -112,7 +135,9 @@
       "truth_mode": "conceptual_correctness_plus_repo_application",
       "skill_type": "concept",
       "criticality": "high",
-      "truth_sources": ["skills/testing-strategy/SKILL.md:84-91"]
+      "truth_sources": [
+        "skills/quality/testing-strategy/SKILL.md:84-91"
+      ]
     }
   ]
 }
