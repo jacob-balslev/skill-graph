@@ -33,7 +33,12 @@
           "assistive tech",
           "assistive technology",
           "accessible labels",
-          "proper labels"
+          "proper labels",
+          "keyboard trapped",
+          "focus trap",
+          "escape key not working",
+          "modal keyboard trap",
+          "dialog keyboard trap"
         ],
         "paths": [
           "**/*.{html,tsx,jsx,vue,svelte}",
@@ -92,6 +97,10 @@
           {
             "reason": "interaction-feedback owns feedback-state staging; a11y owns whether those state changes are announced and operable",
             "skill": "interaction-feedback"
+          },
+          {
+            "reason": "best-practice owns generic code-quality cleanup and language/idiom hygiene; a11y owns assistive-tech behavior. Phrases like 'clean up this accessibility code without changing behavior' are best-practice refactor activities, not a11y semantic work — best-practice is named here so the router excludes it from a11y's positive scope.",
+            "skill": "best-practice"
           }
         ],
         "related": [
@@ -785,6 +794,116 @@
       "stability": "experimental",
       "type": "capability",
       "version": "1.0.0"
+    },
+    {
+      "activation": {
+        "anti_examples": [
+          "reviewing PR feedback phrasing and comment classification (use code-review)",
+          "choosing between requireAuth, requireOrgAuth, and withOrgAuth (use nextauth-patterns)",
+          "implementing SQL injection prevention or webhook HMAC verification (use security-scanning)",
+          "designing the APCA contrast ratio for a new color palette (use color-science)",
+          "implementing the font loading strategy and vertical rhythm (use typography)",
+          "deciding what quality means per artifact type — code vs skill vs prompt (use craft-doctrine)"
+        ],
+        "examples": [
+          "reviewing a pull request for correctness, security, and style",
+          "creating a new React component and checking it against quality standards",
+          "auditing an existing feature for WCAG compliance and performance regressions",
+          "writing tests and verifying coverage shape (unit / integration / e2e pyramid)",
+          "authoring a new skill and checking it has structured scope, evals, and examples",
+          "adding a new Next.js Server Action and verifying it has Zod validation and auth check"
+        ],
+        "keywords": [
+          "best practice",
+          "best practices",
+          "code quality",
+          "quality enforcement",
+          "code review checklist",
+          "OWASP",
+          "WCAG",
+          "Core Web Vitals",
+          "SOLID principles",
+          "clean code",
+          "visual hierarchy",
+          "typographic hierarchy",
+          "color hierarchy",
+          "UI composition",
+          "cross-cutting concerns",
+          "quality gate",
+          "enforcement layer"
+        ]
+      },
+      "allowed-tools": "Read Grep Bash",
+      "category": "quality",
+      "compatibility": {
+        "notes": "Applies to any web application codebase using TypeScript, React, and Next.js App Router. The cross-domain enforcement priorities (security, a11y, performance, design system, testing, DevOps, AI/LLM) are framework-agnostic; the Next.js section is specific to the App Router pattern."
+      },
+      "description": "Cross-cutting best practices enforcement across code, templates, skills, prompts, scripts, documentation, pages, and design. The enforcement layer that catches violations any specialist might miss. Do NOT use for deep code review methodology (use code-review), auth guard selection (use nextauth-patterns), SQL injection prevention (use security-scanning), PII masking (use gdpr-compliance), accessibility implementation depth (use a11y), or financial semantics (use code-logic).",
+      "domain": "quality/cross-domain",
+      "grounding": {
+        "domain_object": "Cross-cutting quality enforcement across 14 domains",
+        "evidence_priority": "general_knowledge_first",
+        "failure_modes": [
+          "specialist_boundary_gaps",
+          "heading_hierarchy_violations",
+          "hardcoded_values_bypass_token_system",
+          "server_actions_treated_as_internal",
+          "dead_tests_accumulate"
+        ],
+        "grounding_mode": "hybrid",
+        "truth_sources": []
+      },
+      "health": {
+        "drift_check": {
+          "last_verified": "2026-05-18",
+          "truth_source_hashes": {}
+        },
+        "eval_artifacts": "none",
+        "eval_state": "unverified",
+        "freshness": "2026-05-18",
+        "has_grounding": true,
+        "has_relations": true,
+        "lifecycle": {
+          "review_cadence": "quarterly",
+          "stale_after_days": 180
+        },
+        "routing_eval": "absent"
+      },
+      "id": "best-practice",
+      "license": "MIT",
+      "name": "best-practice",
+      "owner": "skill-graph-maintainer",
+      "path": "../skills/skills/best-practice/SKILL.md",
+      "portability": {
+        "readiness": "declared",
+        "targets": [
+          "skill-md"
+        ]
+      },
+      "relations": {
+        "adjacent": [
+          "code-review",
+          "security-scanning",
+          "a11y",
+          "design-guide",
+          "composition-theory",
+          "color-science",
+          "visual-design",
+          "typography",
+          "copywriting",
+          "semantics",
+          "ui-ux",
+          "next-best-practices"
+        ],
+        "verify_with": [
+          "code-review",
+          "security-scanning"
+        ]
+      },
+      "scope": "reference",
+      "stability": "stable",
+      "type": "capability",
+      "version": "1.2.0"
     },
     {
       "activation": {
@@ -1971,10 +2090,19 @@
       "compatibility": {
         "notes": "Architecture-level skill. Applies to any agent-coding workspace that has more than one skill / doc-routing / memory artifact and any way to traverse them — Claude Code, OpenCode, Cursor, Aider, Continue, Copilot Workspace, or a custom harness. The four-graph model and the orphan / connectivity metrics are independent of the specific runtime."
       },
+      "concept": {
+        "analogy": "A context graph is a transit map for an agent workspace: individual stations can be excellent, but the system only works when routes connect them, transfer points are intentional, and isolated stops are visible enough to fix.",
+        "boundary": "It is not per-query skill routing, context-window budgeting, or single-file metadata linting. Routing consumes the graph, budgeting trims selected context, and single-skill audit checks one node; context-graph work asks whether the whole workspace is navigable and whether changes propagate through the right edges.",
+        "definition": "A context graph is the explicit topology that connects an agent workspace's skills, docs, memory records, scripts, and commands so agents can discover relevant context by traversal rather than exact-name recall.",
+        "mental_model": "Agents start from a task as the traversal root, then follow typed edges to reachable nodes. Node quality and graph reachability are separate properties: a beautifully written skill that no route reaches behaves like absent knowledge. Healthy graph work therefore watches edge meaning, orphan rate, degree distribution, cluster boundaries, and cross-graph propagation paths together.",
+        "misconception": "The trap is believing more links always improve discovery. Over-linking creates noisy hubs, under-linking creates orphans, and untyped links destroy routing meaning. The useful graph is the one whose edges preserve intent and make important context reachable.",
+        "purpose": "It solves the flat-library failure mode where useful knowledge exists but agents cannot find it unless the user names it directly. The replacement is explicit topology: authored relations, deterministic synthesis signals, health metrics, and propagation checks that make relevance discoverable and drift visible.",
+        "taxonomy": "Main graph families are skill knowledge graphs, document routing graphs, memory indexes, and script or command registries. Main edge concerns are typed meaning, reachability, reciprocity, degree caps, cross-graph propagation, and deterministic rebuild signals."
+      },
       "description": "Use when designing or auditing the multi-graph context architecture of an AI-coding workspace: skill graph, document routing graph, memory index, script registry, and the cross-graph edges between them. Covers edge typing, orphan detection, connectivity health, deterministic graph synthesis signals, change-propagation checks, and drift or hub-and-spoke anti-patterns. Do NOT use for authoring one SKILL.md (use `skill-scaffold`), validating one skill (use `graph-audit`), live routing decisions (use `skill-router`), context-window budgeting (use `context-window`), or session load/drop choices (use `context-management`).",
       "domain": "agent/context",
       "grounding": {
-        "domain_object": "Skill Graph library topology and context discovery model",
+        "domain_object": "Agent workspace context topology and discovery model",
         "evidence_priority": "repo_code_first",
         "failure_modes": [
           "inferred_edges_replace_authored_relations",
@@ -1984,30 +2112,22 @@
         ],
         "grounding_mode": "hybrid",
         "truth_sources": [
-          "SKILL_GRAPH.md",
-          "docs/PRIMER.md",
-          "docs/concept-map.md",
-          "docs/diagrams/starter-graph.mmd",
-          "scripts/generate-manifest.js",
-          "scripts/skill-overlap.js"
+          "https://github.com/jacob-balslev/skill-graph/blob/main/SKILL_GRAPH.md",
+          "https://github.com/jacob-balslev/skill-graph/blob/main/docs/PRIMER.md",
+          "https://github.com/jacob-balslev/skill-graph/blob/main/docs/concept-map.md",
+          "https://github.com/jacob-balslev/skill-graph/blob/main/docs/diagrams/starter-graph.mmd",
+          "https://github.com/jacob-balslev/skill-graph/blob/main/scripts/generate-manifest.js",
+          "https://github.com/jacob-balslev/skill-graph/blob/main/scripts/skill-overlap.js"
         ]
       },
       "health": {
+        "comprehension_state": "present",
         "drift_check": {
-          "last_verified": "2026-05-13",
-          "truth_source_hashes": {
-            "SKILL_GRAPH.md": "a63fc59a1d99933fc6bc5c4033f8be86ee2f5460f3b5d5ab232a3f77eff71c8f",
-            "docs/PRIMER.md": "e6bd99468c224fe4c9606e147c5db94dff889feeb9ca5d80084480039c7e9296",
-            "docs/concept-map.md": "053e5cf891d7abf7efb30c9014fd2365da7d13588ef6b55057520756a315dc8c",
-            "docs/diagrams/starter-graph.mmd": "6aeaa417e08efbb6bb90b34f56c8df7f06dc608e3c8cd743d428da9fcfaf278c",
-            "scripts/generate-manifest.js": "9d7bbbdae440fdb1763d61ffa7bda10c9efae92359d1c2139d0e971582d59e0e",
-            "scripts/skill-overlap.js": "ed642cbc677cc76ec1321300b37d6752337b6b5541c7a9f558fd315d6f934e4b"
-          }
+          "last_verified": "2026-05-18"
         },
-        "drift_detected": true,
         "eval_artifacts": "planned",
         "eval_state": "unverified",
-        "freshness": "2026-05-06",
+        "freshness": "2026-05-18",
         "has_grounding": true,
         "has_relations": true,
         "lifecycle": {
@@ -2060,7 +2180,7 @@
       "scope": "portable",
       "stability": "experimental",
       "type": "capability",
-      "version": "1.0.0"
+      "version": "1.1.0"
     },
     {
       "activation": {
@@ -2910,6 +3030,10 @@
           {
             "reason": "refactor is behavior-preserving code change with green tests; debugging is invoked because tests or behavior are NOT green",
             "skill": "refactor"
+          },
+          {
+            "reason": "generative-ui owns the model-emits-typed-UI-spec pattern for writing documentation or explanatory content; debugging owns chasing observed runtime failures, not writing documentation about functions",
+            "skill": "generative-ui"
           }
         ],
         "verify_with": [
@@ -4729,16 +4853,16 @@
       },
       "health": {
         "drift_check": {
-          "last_verified": "2026-05-13",
+          "last_verified": "2026-05-18",
           "truth_source_hashes": {
-            "docs/skill-metadata-protocol.md": "bce8933a4f4f6386e36e618f2de97f0f6feb864a4c1aaeec225291110e7f8a76",
-            "examples/evals/graph-audit.json": "8edab7bc057c65c8fd43f6ca17863c7a12ea831f6eb2158f1b2fde2ba03ad4b2",
-            "schemas/manifest.schema.json": "b5181764e0b645d01a8b6918c78463e53a2f28669a6883365c3a1d132323c066",
-            "schemas/skill.schema.json": "370a021a129cba5b54cd15daaaa934fbb172df306dc0095608ea4a5607fe2526",
-            "scripts/check-protocol-consistency.js": "0ff39406d36e7a9e51c176f657f4f426d8bd5a3fe6411d28b9e9a93dc7d89f29",
-            "scripts/generate-manifest.js": "9d7bbbdae440fdb1763d61ffa7bda10c9efae92359d1c2139d0e971582d59e0e",
-            "scripts/lib/alias-contract.js": "ab7b4f15c13caf1ff1f3205e285415b086f7b6cbc3fcfaba982a590cc56b49cd",
-            "scripts/skill-lint.js": "3a78f75f8921542b91dc619cd41bde29bf379de3c16bdcf3653c854ecbe9fa29"
+            "docs/skill-metadata-protocol.md": "300bbdaf87754298ca19e581b587d2fac901ab57b8c4c75d33e11bebc24a5fe4",
+            "examples/evals/graph-audit.json": "4fc0fa157b363c9d5675112bfe860ed48a599d05c41720b387aa2d8798eab5a3",
+            "schemas/manifest.schema.json": "94f2e990cc81b7a9aa26ea9855de1dbe1535a127feb5e5c74629c9e1dad2ee1a",
+            "schemas/skill.schema.json": "f9fc4fc8f61999c18d5c1c534f9642101b0ee7173f261e28f9470aeb03b68e5b",
+            "scripts/check-protocol-consistency.js": "22f1f747b6b578e83ae371ac3f9af4b6906d94529f383d1785ed3303b4c5a008",
+            "scripts/generate-manifest.js": "ec4ad89e21e44c272676846377679f59a272c193f0b0d448a7b6d881b0b9effc",
+            "scripts/lib/alias-contract.js": "d2a9831fef1ab06d2ea37b9d41e000d8b3a9a327357b62063ad00102cd2763cf",
+            "scripts/skill-lint.js": "e5de8a822b88172079263c8316b173e688b71498c9ed6a8a54dd0fba6aa9fd66"
           }
         },
         "drift_detected": true,
@@ -4763,6 +4887,10 @@
           {
             "reason": "debugging chases a specific runtime failure; graph-audit is bulk static verification of every skill",
             "skill": "debugging"
+          },
+          {
+            "reason": "eval-driven-development owns LLM eval iteration discipline and writing reference documentation; graph-audit is read-only static verification of skill metadata schemas — writing an explanatory doc about a pipeline is documentation work, not a schema audit",
+            "skill": "eval-driven-development"
           }
         ],
         "verify_with": [
@@ -7723,6 +7851,136 @@
     {
       "activation": {
         "anti_examples": [
+          "implementing application-level auth guards (requireAuth, requireOrgAuth) — use nextauth-patterns",
+          "choosing when to use orgQuery() vs query() in application code — use multi-tenancy-rls",
+          "implementing CSRF protection or webhook HMAC verification — use security-scanning",
+          "designing the overall multi-tenant data architecture — use data-architect",
+          "designing row-level access control in non-PostgreSQL databases"
+        ],
+        "examples": [
+          "adding RLS to a new table — what statements are required and in what order?",
+          "auditing our existing RLS migrations for missing FORCE or WITH CHECK",
+          "implementing a view on an RLS-protected table in PostgreSQL 15+",
+          "debugging a cross-tenant data leak in a multi-tenant SaaS system",
+          "ensuring connection pool context (SET LOCAL) does not leak tenant state between requests",
+          "reviewing a migration that enables RLS to check for superuser and owner bypass risks",
+          "verifying that materialized views over RLS tables are documented as security-sensitive"
+        ],
+        "keywords": [
+          "rls",
+          "row-level-security",
+          "postgres",
+          "tenant-isolation",
+          "org-id",
+          "security-policy",
+          "set-local",
+          "view-bypass",
+          "migration",
+          "multi-tenant",
+          "ENABLE ROW LEVEL SECURITY",
+          "FORCE ROW LEVEL SECURITY",
+          "security_invoker",
+          "USING clause",
+          "WITH CHECK",
+          "superuser bypass",
+          "orgQuery",
+          "app.organization_id",
+          "connection pool safety",
+          "materialized view RLS"
+        ]
+      },
+      "allowed-tools": "Read Grep Glob Bash",
+      "category": "engineering",
+      "compatibility": {
+        "notes": "Targets PostgreSQL 15+ with Neon serverless driver. The security_invoker view pattern requires PG15+. The SET LOCAL / set_config(key, val, true) pattern applies to any connection-pooled PostgreSQL setup. Core ENABLE+FORCE+USING+WITH CHECK rules are PG version-independent."
+      },
+      "description": "Guides agents implementing or auditing PostgreSQL Row Level Security in a multi-tenant SaaS codebase. Covers ENABLE+FORCE pairing, USING+WITH CHECK policies, view bypass via security_invoker, SET LOCAL for connection pool safety, superuser/owner bypass detection, and materialized view risks. Do NOT use for application-level authorization logic (use nextauth-patterns), non-PostgreSQL databases, or application query tier questions (use multi-tenancy-rls for orgQuery() usage).",
+      "domain": "engineering/database-security",
+      "grounding": {
+        "domain_object": "PostgreSQL Row Level Security implementation in Sales Hub",
+        "evidence_priority": "repo_code_first",
+        "failure_modes": [
+          "security_leak",
+          "incorrect_isolation",
+          "missing_force_rls",
+          "missing_with_check",
+          "superuser_bypass",
+          "connection_pool_context_leakage",
+          "view_security_invoker_missing"
+        ],
+        "grounding_mode": "repo_specific",
+        "truth_sources": [
+          "../sales-hub/apps/web/src/lib/db.ts",
+          "../sales-hub/db/migrations/20260218_rls_hardening.sql",
+          "../sales-hub/db/migrations/20260314_rls_expansion.sql",
+          "../sales-hub/db/migrations/20260314_rls_with_check_and_security_invoker.sql",
+          "../sales-hub/db/migrations/20260315_enable_rls_all.sql"
+        ]
+      },
+      "health": {
+        "drift_check": {
+          "last_verified": "2026-05-18",
+          "truth_source_hashes": {
+            "../sales-hub/apps/web/src/lib/db.ts": "d1d9988d1da4545c58f76b5f44dbd12d5323409b777920d31d5f496db31ad7cb",
+            "../sales-hub/db/migrations/20260218_rls_hardening.sql": "b5fb6dc74e78a3fb7e77c669af4e4b4303a4e995eaf4993cb6bdcbe7bdca424f",
+            "../sales-hub/db/migrations/20260314_rls_expansion.sql": "406e2c419b09a6866f10c508e4ff6dc1f7a1ee82b788c5e2515186561c30ffb5",
+            "../sales-hub/db/migrations/20260314_rls_with_check_and_security_invoker.sql": "2edcb51debd4ab4e7306eb6f8908c7a725217b19962e1429728e911fc57e88fb",
+            "../sales-hub/db/migrations/20260315_enable_rls_all.sql": "c8de6823684f84b54376284a3a51bb6b52e38acd4f5c29664be26e89e5d39570"
+          }
+        },
+        "drift_detected": false,
+        "eval_artifacts": "none",
+        "eval_state": "unverified",
+        "freshness": "2026-05-18",
+        "has_grounding": true,
+        "has_relations": true,
+        "lifecycle": {
+          "review_cadence": "quarterly",
+          "stale_after_days": 90
+        },
+        "routing_eval": "absent"
+      },
+      "id": "postgres-rls",
+      "license": "MIT",
+      "name": "postgres-rls",
+      "owner": "skill-graph-maintainer",
+      "path": "../skills/skills/postgres-rls/SKILL.md",
+      "portability": {
+        "readiness": "declared",
+        "targets": [
+          "skill-md"
+        ]
+      },
+      "relations": {
+        "adjacent": [
+          "database-migration",
+          "security-scanning",
+          "data-architect",
+          "guardrails"
+        ],
+        "boundary": [
+          {
+            "reason": "nextauth-patterns owns application-level authorization (requireAuth, requireOrgAuth, withOrgAuth); postgres-rls owns database-level isolation via PostgreSQL RLS policies",
+            "skill": "nextauth-patterns"
+          },
+          {
+            "reason": "multi-tenancy-rls owns the application query tier (orgQuery, query, withAppSession usage patterns); postgres-rls owns the PostgreSQL server-side RLS policy implementation",
+            "skill": "multi-tenancy-rls"
+          }
+        ],
+        "verify_with": [
+          "security-scanning",
+          "database-migration"
+        ]
+      },
+      "scope": "codebase",
+      "stability": "stable",
+      "type": "capability",
+      "version": "1.1.0"
+    },
+    {
+      "activation": {
+        "anti_examples": [
           "Generate the artwork PNG file that gets uploaded as a print file",
           "Implement the Shopify side of the Printify-to-Shopify sync",
           "Design a generic POD-vendor-agnostic product schema"
@@ -8885,6 +9143,14 @@
           {
             "reason": "generative-ui owns the model-emits-typed-UI-spec pattern; refactor only restructures existing code while preserving behavior. The retries anti_example has token overlap with the model-output/runtime cycle vocabulary generative-ui discusses, so naming it here keeps the boundary explicit.",
             "skill": "generative-ui"
+          },
+          {
+            "reason": "context-graph owns the design and documentation of AI workspace graph architecture; refactor owns behavior-preserving code restructuring. Writing an architecture note for team members is documentation work, not a code refactor.",
+            "skill": "context-graph"
+          },
+          {
+            "reason": "error-boundary owns React error boundary design and the mechanics of retry-on-error patterns; refactor owns behavior-preserving code restructuring. Reproducing or explaining retry behavior is a runtime/error-handling concern, not a refactor concern.",
+            "skill": "error-boundary"
           }
         ],
         "depends_on": [
@@ -10448,17 +10714,17 @@
       },
       "health": {
         "drift_check": {
-          "last_verified": "2026-05-13",
+          "last_verified": "2026-05-18",
           "truth_source_hashes": {
-            "bin/skill-graph.js": "113a1e01ac7276ac1b5d77a1c32e35a73113da93fc33cfd0caf6db842d2d679f",
-            "docs/manifest-field-mapping.md": "aca0b7f2d4631be24a3e7daed1a1d207b488f253164a7d514b9db7af21c6177f",
-            "package.json": "7a3410a004aea78a2065092e289c0f3cf3c082298804dda6c5829eff22c14b62",
-            "scripts/check-protocol-consistency.js": "0ff39406d36e7a9e51c176f657f4f426d8bd5a3fe6411d28b9e9a93dc7d89f29",
-            "scripts/generate-manifest.js": "9d7bbbdae440fdb1763d61ffa7bda10c9efae92359d1c2139d0e971582d59e0e",
-            "scripts/lib/roots.js": "e742efa57b6c33ff1c87034b16a689d1499f6d53c1e6b740f3e9783db7fd557f",
-            "scripts/skill-graph-drift.js": "6b69c25b59c16b477a377e5ab40adb6ff30f72d5a12947772053a6cd16b1f409",
+            "bin/skill-graph.js": "3048b6e2d9e648a25efa38152578217eaf230716c1dabc921e8f8d944164ec8b",
+            "docs/manifest-field-mapping.md": "8de06aa16e23c219da1f5f2ec38b5b29aa912ad577377c8422e2300cdd77ee90",
+            "package.json": "2f480e50b8eecaa022caf065b5bb98db5db407f4e3ff8553a092a3f70750edba",
+            "scripts/check-protocol-consistency.js": "22f1f747b6b578e83ae371ac3f9af4b6906d94529f383d1785ed3303b4c5a008",
+            "scripts/generate-manifest.js": "ec4ad89e21e44c272676846377679f59a272c193f0b0d448a7b6d881b0b9effc",
+            "scripts/lib/roots.js": "49085fc54b2c6ff0ad23a2dffe25b5ab2b3d1e8d14a8d5b1e1eefb53a30f20de",
+            "scripts/skill-graph-drift.js": "350f624a6e82bb488cd9abd3be4d832ca7892ce1c7f27d39efd97326e1f04db6",
             "scripts/skill-graph-routing-eval.js": "fffac2858863662bde6bc54c56bb77a219ae93f626e0c8d5886566f998181deb",
-            "scripts/skill-lint.js": "3a78f75f8921542b91dc619cd41bde29bf379de3c16bdcf3653c854ecbe9fa29",
+            "scripts/skill-lint.js": "e5de8a822b88172079263c8316b173e688b71498c9ed6a8a54dd0fba6aa9fd66",
             "scripts/skill-overlap.js": "ed642cbc677cc76ec1321300b37d6752337b6b5541c7a9f558fd315d6f934e4b"
           }
         },
@@ -10689,15 +10955,15 @@
       },
       "health": {
         "drift_check": {
-          "last_verified": "2026-05-13",
+          "last_verified": "2026-05-18",
           "truth_source_hashes": {
             "examples/evals/skill-router.json": "fccabcbc5f9d8057536f397fb0fc71a567371f75fb9a21afda343b197af30293",
             "examples/evals/skill-router.routing.json": "c4dc88db1e746bea78a7cf96b50c6c84532a07eda42da2e35d790c8928d4da8c",
-            "scripts/skill-graph-route.js": "b9a7b51d0e8b845b11473f479c4593754768c3775508049db7339892b2f08cc2",
+            "scripts/skill-graph-route.js": "7c29b1bc2420887f32809b8f52f5bd448c1234542672e669a68247942dd77df4",
             "scripts/skill-graph-routing-eval.js": "fffac2858863662bde6bc54c56bb77a219ae93f626e0c8d5886566f998181deb"
           }
         },
-        "drift_detected": true,
+        "drift_detected": false,
         "eval_artifacts": "present",
         "eval_state": "passing",
         "freshness": "2026-04-18",
@@ -10729,6 +10995,10 @@
           {
             "reason": "skill-infrastructure analyses routing-miss patterns across the whole library to find systemic gaps; skill-router authors the routing logic for one library at a time",
             "skill": "skill-infrastructure"
+          },
+          {
+            "reason": "middleware-patterns owns the design of Next.js middleware (request/response transforms, edge runtime, matchers); skill-router owns agent skill dispatch. Writing a guide explaining 'how our routing works' is documentation about Next.js middleware patterns, not an agent skill routing exercise.",
+            "skill": "middleware-patterns"
           }
         ],
         "verify_with": [
@@ -12158,7 +12428,11 @@
           "automated test",
           "manual QA coverage",
           "passes manual QA",
-          "test level decision"
+          "test level decision",
+          "right test level",
+          "correct test level",
+          "test level for webhook",
+          "test level for handler"
         ],
         "triggers": [
           "testing-skill"
@@ -12205,6 +12479,10 @@
           {
             "reason": "integration-test-design owns the design of integration-level tests including their setup and data lifecycle; the 'duplicated test setup across three files' anti_example has token overlap with integration-test setup discipline. testing-strategy decides what level a test should be; integration-test-design owns how to design integration tests once chosen.",
             "skill": "integration-test-design"
+          },
+          {
+            "reason": "microcopy owns functional UI text and contributor-facing writing; testing-strategy decides what and how to test. Writing a testing-patterns guide for contributor docs is a documentation/writing task owned by microcopy, not a test-scope decision.",
+            "skill": "microcopy"
           }
         ],
         "verify_with": [
@@ -13489,27 +13767,27 @@
     "by_category": {
       "agent": 16,
       "design": 26,
-      "engineering": 59,
+      "engineering": 60,
       "foundations": 12,
       "product": 1,
-      "quality": 27
+      "quality": 28
     },
     "by_scope": {
-      "codebase": 1,
+      "codebase": 2,
       "portable": 91,
-      "reference": 49
+      "reference": 50
     },
     "by_stability": {
       "experimental": 140,
-      "stable": 1
+      "stable": 3
     },
     "by_type": {
-      "capability": 131,
+      "capability": 133,
       "overlay": 1,
       "router": 1,
       "workflow": 8
     },
-    "total_skills": 141
+    "total_skills": 143
   },
   "workspace": {
     "skill_roots": [

@@ -1,6 +1,6 @@
 # Marketplace Publication Queue (generated)
 
-Generated: 2026-05-18T10:55:00.441Z
+Generated: 2026-05-18T13:56:43.757Z
 Schema: 2.0.0
 Generator: skill-audit-loop@0.3.0
 Source ledger: `skill-graph/data/publication-classification.json`
@@ -14,7 +14,7 @@ Source ledger: `skill-graph/data/publication-classification.json`
 - Publishable candidates: 136
 - Sales-Hub-bound (excluded): 53
 - Personal-infra (excluded): 27
-- Already published (in OSS export): 140
+- Already published (in OSS export): 142
 - Tier counts: S=18 A=29 B=42 C=47
 - Ledger entries total: 216
 
