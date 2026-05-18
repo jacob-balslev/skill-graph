@@ -1,6 +1,6 @@
 {
   "name": "@skill-graph/cli",
-  "version": "0.5.1",
+  "version": "0.5.2",
   "description": "Skill Graph — library-level tooling for SKILL.md libraries: lint, manifest compiler, router, drift sentinel, and export pipeline.",
   "type": "commonjs",
   "license": "Apache-2.0",
