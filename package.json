@@ -62,9 +62,7 @@
     "test": "npm run test:unit && npm run test:migrate",
     "verify": "npm run lint && npm run lint:template && npm run protocol:check && npm run docs:links && npm run manifest:validate && npm run routing-eval && npm run export:verify-skill-md && npm run overlap && npm run test:unit"
   },
-  "dependencies": {
-    "@skill-graph/protocol": "^1.1.0"
-  },
+  "dependencies": {},
   "devDependencies": {},
   "packageManager": "pnpm@9.15.0"
 }
