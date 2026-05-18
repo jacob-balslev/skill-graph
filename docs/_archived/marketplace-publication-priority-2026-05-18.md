@@ -9,7 +9,7 @@
 > **Purpose:** prioritized publication queue for `github.com/jacob-balslev/skills` / `skills.sh/jacob-balslev/skills/`,
 > ranked by **expected popularity** given current marketplace demand signals.
 >
-> **Scope filter (per [ADR 0008](./adr/0008-skill-surface-split-and-curation-policy.md)):**
+> **Scope filter (per [ADR 0008](../adr/0008-skill-surface-split-and-curation-policy.md)):**
 > Sales-Hub-bound, customer-data-bearing, and personal/PII-bound skills are listed in the
 > "Excluded" sections so the decision is auditable — none are recommended for publication
 > in this pass.
