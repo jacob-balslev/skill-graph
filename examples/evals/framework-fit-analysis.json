@@ -1,7 +1,12 @@
 {
   "skill_name": "framework-fit-analysis",
   "subject": "Technology fit analysis for choosing, replacing, or justifying frameworks, libraries, SDKs, runtimes, databases, UI kits, and platforms",
-  "adjacent_concepts": ["dependency-architecture", "architecture-decision-records", "performance-engineering", "owasp-security"],
+  "adjacent_concepts": [
+    "dependency-architecture",
+    "architecture-decision-records",
+    "performance-engineering",
+    "owasp-security"
+  ],
   "grounding_note": "Truth sources cite the whole SKILL.md file to keep the initial eval surface stable while routing boundaries are tightened.",
   "evals": [
     {
@@ -13,7 +18,9 @@
       "truth_mode": "process_correctness",
       "skill_type": "concept",
       "criticality": "high",
-      "truth_sources": ["skills/framework-fit-analysis/SKILL.md"]
+      "truth_sources": [
+        "skills/engineering/framework-fit-analysis/SKILL.md"
+      ]
     },
     {
       "id": 2,
@@ -24,7 +31,9 @@
       "truth_mode": "conceptual_correctness_plus_repo_application",
       "skill_type": "concept",
       "criticality": "high",
-      "truth_sources": ["skills/framework-fit-analysis/SKILL.md"]
+      "truth_sources": [
+        "skills/engineering/framework-fit-analysis/SKILL.md"
+      ]
     },
     {
       "id": 3,
@@ -35,7 +44,9 @@
       "truth_mode": "code_verification",
       "skill_type": "concept",
       "criticality": "normal",
-      "truth_sources": ["skills/framework-fit-analysis/SKILL.md"]
+      "truth_sources": [
+        "skills/engineering/framework-fit-analysis/SKILL.md"
+      ]
     },
     {
       "id": 4,
@@ -46,7 +57,9 @@
       "truth_mode": "code_verification",
       "skill_type": "concept",
       "criticality": "normal",
-      "truth_sources": ["skills/framework-fit-analysis/SKILL.md"]
+      "truth_sources": [
+        "skills/engineering/framework-fit-analysis/SKILL.md"
+      ]
     }
   ]
 }
