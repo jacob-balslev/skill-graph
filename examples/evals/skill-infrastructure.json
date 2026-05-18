@@ -1,7 +1,12 @@
 {
   "skill_name": "skill-infrastructure",
   "subject": "Deterministic health tooling for SKILL.md libraries: inventory, protocol consistency, conflict detection, routing health, and drift detection",
-  "adjacent_concepts": ["skill-scaffold", "graph-audit", "testing-strategy", "lint-overlay"],
+  "adjacent_concepts": [
+    "skill-scaffold",
+    "graph-audit",
+    "testing-strategy",
+    "lint-overlay"
+  ],
   "grounding_note": "This portable skill is grounded in Skill Graph's health-tooling categories and uses whole-file truth sources to avoid brittle line drift while the skill itself continues to evolve.",
   "evals": [
     {
@@ -13,7 +18,9 @@
       "truth_mode": "conceptual_correctness_plus_repo_application",
       "skill_type": "concept",
       "criticality": "high",
-      "truth_sources": ["skills/skill-infrastructure/SKILL.md"]
+      "truth_sources": [
+        "skills/agent/skill-system/skill-infrastructure/SKILL.md"
+      ]
     },
     {
       "id": 2,
@@ -24,7 +31,10 @@
       "truth_mode": "process_correctness",
       "skill_type": "workflow",
       "criticality": "high",
-      "truth_sources": ["skills/skill-infrastructure/SKILL.md", "scripts/generate-manifest.js"]
+      "truth_sources": [
+        "skills/agent/skill-system/skill-infrastructure/SKILL.md",
+        "scripts/generate-manifest.js"
+      ]
     },
     {
       "id": 3,
@@ -35,7 +45,9 @@
       "truth_mode": "conceptual_correctness_plus_repo_application",
       "skill_type": "concept",
       "criticality": "high",
-      "truth_sources": ["skills/skill-infrastructure/SKILL.md"]
+      "truth_sources": [
+        "skills/agent/skill-system/skill-infrastructure/SKILL.md"
+      ]
     },
     {
       "id": 4,
@@ -46,7 +58,9 @@
       "truth_mode": "process_correctness",
       "skill_type": "workflow",
       "criticality": "normal",
-      "truth_sources": ["skills/skill-infrastructure/SKILL.md"]
+      "truth_sources": [
+        "skills/agent/skill-system/skill-infrastructure/SKILL.md"
+      ]
     },
     {
       "id": 5,
@@ -57,7 +71,10 @@
       "truth_mode": "conceptual_correctness_plus_repo_application",
       "skill_type": "concept",
       "criticality": "high",
-      "truth_sources": ["skills/skill-infrastructure/SKILL.md", "scripts/skill-graph-drift.js"]
+      "truth_sources": [
+        "skills/agent/skill-system/skill-infrastructure/SKILL.md",
+        "scripts/skill-graph-drift.js"
+      ]
     },
     {
       "id": 6,
@@ -68,7 +85,9 @@
       "truth_mode": "conceptual_correctness_plus_repo_application",
       "skill_type": "concept",
       "criticality": "normal",
-      "truth_sources": ["skills/skill-infrastructure/SKILL.md"]
+      "truth_sources": [
+        "skills/agent/skill-system/skill-infrastructure/SKILL.md"
+      ]
     },
     {
       "id": 7,
@@ -79,7 +98,9 @@
       "truth_mode": "process_correctness",
       "skill_type": "workflow",
       "criticality": "high",
-      "truth_sources": ["skills/skill-infrastructure/SKILL.md"]
+      "truth_sources": [
+        "skills/agent/skill-system/skill-infrastructure/SKILL.md"
+      ]
     },
     {
       "id": 8,
@@ -90,7 +111,9 @@
       "truth_mode": "conceptual_correctness_plus_repo_application",
       "skill_type": "concept",
       "criticality": "normal",
-      "truth_sources": ["skills/skill-infrastructure/SKILL.md"]
+      "truth_sources": [
+        "skills/agent/skill-system/skill-infrastructure/SKILL.md"
+      ]
     }
   ]
 }
