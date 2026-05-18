@@ -87,7 +87,7 @@ Required dimension rows:
 
 ### 1. Frontmatter validity
 
-- [ ] `schema_version` exists and equals `5` (integer; the string `"5"` is tolerated for hand-rolled YAML for back-compat — see `schemas/skill.v5.schema.json`)
+- [ ] `schema_version` exists and equals `6` (integer; the string `"6"` is tolerated for hand-rolled YAML for back-compat — see `schemas/skill.v6.schema.json`)
 - [ ] `name` exists and matches the intended skill identifier
 - [ ] `description` exists and is specific enough to route from
 - [ ] `version` exists
