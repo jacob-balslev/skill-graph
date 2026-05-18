@@ -140,6 +140,14 @@ Examples:
   },
   evolve:  {
     script: 'lib/audit/skill-evolution-loop.js',
+    requires: ['lib/audit-shared/auto-improve.js'],
+    unmetMessage: `skill-graph evolve depends on lib/audit-shared/auto-improve.js, which is\n` +
+      `not yet bundled in this release. The script also reaches into parent-repo paths\n` +
+      `(scripts/run-skill-improvement-loop.js, scripts/skill-auto-create.js,\n` +
+      `scripts/dispatch-solver.js, agent-orchestration/logs/) that exist only in the\n` +
+      `source Development monorepo.\n\n` +
+      `Standalone-compatible refactor tracked in SH-6138 (parent EPIC SH-6132).\n` +
+      `Until then, run the loop from the source repo where these deps are available.`,
     help: `Usage: skill-graph evolve [options]
 
 Run the continuous Karpathy-style skill-improvement loop.
@@ -165,9 +173,10 @@ Examples:
   skill-graph evolve --analyze-only
   skill-graph evolve --resume
 
-Note: skill-graph evolve requires the lib/audit-shared/auto-improve.js module.
-      If you see a missing-module error at runtime, it means the auto-improve
-      dependency was not fully migrated in SH-6133. Track fix in SH-6134.
+Note: skill-graph evolve is not yet standalone-compatible. It depends on
+      lib/audit-shared/auto-improve.js and several parent-repo scripts that
+      do not yet ship with @skill-graph/cli. Tracking the standalone refactor
+      in SH-6138. Until then, run the loop from the source Development repo.
 `,
   },
 
@@ -332,6 +341,17 @@ function main() {
     process.stderr.write(`Error: implementation script not found: ${entry.script}\n`);
     process.stderr.write(`REPO_ROOT: ${REPO_ROOT}\n`);
     process.exit(1);
+  }
+
+  if (Array.isArray(entry.requires) && entry.requires.length) {
+    const missing = entry.requires.filter((rel) => !fs.existsSync(path.join(REPO_ROOT, rel)));
+    if (missing.length) {
+      process.stderr.write(`Error: '${command}' is not standalone-compatible in this release.\n\n`);
+      if (entry.unmetMessage) process.stderr.write(`${entry.unmetMessage}\n\n`);
+      process.stderr.write(`Missing required file(s):\n`);
+      for (const rel of missing) process.stderr.write(`  - ${rel}\n`);
+      process.exit(1);
+    }
   }
 
   const result = spawnSync(process.execPath, [scriptPath, ...args], {

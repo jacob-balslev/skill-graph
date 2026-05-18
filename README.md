@@ -328,6 +328,17 @@ Run `skill-graph --help` to see all commands (including legacy aliases).
 
 ## Releasing (Maintainers)
 
+### Local development note (pnpm workspace)
+
+If you have a parent `pnpm-workspace.yaml` above this directory (e.g. when this repo is checked out inside the `Development` monorepo), pnpm will absorb `skill-graph/` into the parent workspace. That blocks standalone `pnpm-lock.yaml` generation here. For local dev/lockfile work, run:
+
+```bash
+pnpm install --ignore-workspace
+pnpm install --frozen-lockfile --ignore-workspace
+```
+
+CI is unaffected — `.github/workflows/publish.yml` runs in a clean checkout with no parent workspace, so the unflagged `pnpm install --frozen-lockfile` works correctly there.
+
 ### Prerequisites
 
 Before cutting the first release, ensure these one-time steps are done:
