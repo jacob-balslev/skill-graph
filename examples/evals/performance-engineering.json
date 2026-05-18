@@ -1,7 +1,12 @@
 {
   "skill_name": "performance-engineering",
   "subject": "Performance measurement and improvement for latency, throughput, Core Web Vitals, database queries, caching, bundle size, concurrency, resource use, and regressions",
-  "adjacent_concepts": ["observability-modeling", "testing-strategy", "api-design", "data-modeling"],
+  "adjacent_concepts": [
+    "observability-modeling",
+    "testing-strategy",
+    "api-design",
+    "data-modeling"
+  ],
   "grounding_note": "Truth sources cite the whole SKILL.md file to keep the initial eval surface stable while routing boundaries are tightened.",
   "evals": [
     {
@@ -13,7 +18,9 @@
       "truth_mode": "process_correctness",
       "skill_type": "concept",
       "criticality": "high",
-      "truth_sources": ["skills/performance-engineering/SKILL.md"]
+      "truth_sources": [
+        "skills/quality/performance-engineering/SKILL.md"
+      ]
     },
     {
       "id": 2,
@@ -24,7 +31,9 @@
       "truth_mode": "conceptual_correctness_plus_repo_application",
       "skill_type": "concept",
       "criticality": "high",
-      "truth_sources": ["skills/performance-engineering/SKILL.md"]
+      "truth_sources": [
+        "skills/quality/performance-engineering/SKILL.md"
+      ]
     },
     {
       "id": 3,
@@ -35,7 +44,9 @@
       "truth_mode": "code_verification",
       "skill_type": "concept",
       "criticality": "normal",
-      "truth_sources": ["skills/performance-engineering/SKILL.md"]
+      "truth_sources": [
+        "skills/quality/performance-engineering/SKILL.md"
+      ]
     },
     {
       "id": 4,
@@ -46,7 +57,9 @@
       "truth_mode": "code_verification",
       "skill_type": "concept",
       "criticality": "normal",
-      "truth_sources": ["skills/performance-engineering/SKILL.md"]
+      "truth_sources": [
+        "skills/quality/performance-engineering/SKILL.md"
+      ]
     }
   ]
 }
