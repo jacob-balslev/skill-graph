@@ -77,14 +77,14 @@ Purpose:
 Shipping today. Two modes:
 
 1. **Stub mode** (default) — runs `scripts/skill-lint.js` and seeds `audits/<skill>/{findings,verdict,scorecard}.md` with lint-derived findings and human-TODO placeholders for the seven qualitative dimensions.
-2. **`--graded` mode** — on top of the stub, composes per-dimension prompts via `scripts/lib/audit-prompt-builder.js` and calls an external model CLI (`--grader-cli`, default `claude -p`) once per dimension. Each response must return a `<verdict>…</verdict>` JSON block matching the fixed schema (dimension / score / verdict / justification / findings[]). The runner parses, validates, and merges these into the artifact files, replacing TODO placeholders with structured PASS / PASS WITH FIXES / FAIL verdicts with evidence quotes.
+2. **`--graded` mode** — on top of the stub, composes per-dimension prompts via `scripts/lib/audit-prompt-builder.js` and calls an explicit external grader CLI (`--grader-cli "<command>"`) once per dimension. Each response must return a `<verdict>…</verdict>` JSON block matching the fixed schema (dimension / score / verdict / justification / findings[]). The runner parses, validates, and merges these into the artifact files, replacing TODO placeholders with structured PASS / PASS WITH FIXES / FAIL verdicts with evidence quotes.
 
 Related files:
 
 - `scripts/lib/audit-prompt-builder.js` — dimension registry, context collector, prompt composer, response parser, verdict aggregator
 - `scripts/lib/mock-grader.js` — deterministic canned-response grader for CI smoke-tests and reproducible examples (prints fixed `<verdict>` blocks per dimension)
 
-Grader CLI discipline: the runner NEVER embeds API keys. Auth is delegated to the external CLI on the host (see `.claude/rules/cli-first.md`). `--grader-cli "claude -p"` and `--grader-cli "codex exec"` both work when the respective CLIs are authenticated.
+Grader CLI discipline: the runner NEVER embeds API keys, never selects a default provider, and never writes model-routing metadata into Skill Graph project artifacts. Auth and provider choice are delegated to the explicit external CLI command supplied by the caller.
 
 ## Suggested Follow-on Scripts
 
