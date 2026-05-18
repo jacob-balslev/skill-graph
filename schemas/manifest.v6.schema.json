@@ -167,6 +167,10 @@
           "category": {
             "type": "string"
           },
+          "secondary_categories": {
+            "type": "array",
+            "items": { "type": "string" }
+          },
           "domain": {
             "type": "string"
           },
@@ -189,6 +193,10 @@
               "frozen",
               "deprecated"
             ]
+          },
+          "marketplace_tier": {
+            "type": "string",
+            "enum": ["S", "A", "B", "C"]
           },
           "superseded_by": {
             "type": "string",

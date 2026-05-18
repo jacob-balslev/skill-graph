@@ -5,7 +5,7 @@
 > **Predicate glossary:** [`docs/glossary.md`](glossary.md).
 > **JSON-LD @context:** [`schemas/skill.context.jsonld`](../schemas/skill.context.jsonld).
 
-Schema version: **6** · Field count: **52** · Required: **13**
+Schema version: **6** · Field count: **54** · Required: **13**
 
 ---
 
@@ -104,6 +104,16 @@ Hierarchical domain path using slash-delimited segments (e.g., `ecommerce/integr
 **Pattern:** `^[a-z0-9][a-z0-9-]*(/[a-z0-9][a-z0-9-]*)*$`
 
 **Full reference:** [`docs/field-reference.md#domain`](field-reference.md#domain)
+
+---
+
+### `secondary_categories` *(optional)*
+
+**Type:** array of string
+
+Additive tags for cross-listing in marketplace collections. Primary `category` is MECE and decides folder placement; `secondary_categories` lets a skill that genuinely serves two audiences (e.g., `playwright-cli` is primarily `quality` but also relevant to `engineering`) appear in additional marketplace collections without affecting filesystem layout. Max 2 entries to prevent dilution. Drawn from the same closed 6-enum as `category`; MUST NOT include the primary `category` value.
+
+**Full reference:** [`docs/field-reference.md#secondary_categories`](field-reference.md#secondary_categories)
 
 ---
 
@@ -394,6 +404,16 @@ Nested eval-health record (v3.1 preferred alias for the sibling triple `eval_art
 Lifecycle posture for consumers. `experimental` (subject to change), `stable` (production-ready), `frozen` (no further changes expected), `deprecated` (use `superseded_by` to name the replacement). Drives consumer pinning decisions.
 
 **Full reference:** [`docs/field-reference.md#stability`](field-reference.md#stability)
+
+---
+
+### `marketplace_tier` *(optional)*
+
+**Type:** `S` | `A` | `B` | `C`
+
+Publication priority for the public marketplace at `github.com/jacob-balslev/skills` / `skills.sh`. `S` = featured (top-of-README, individual hero copy). `A` = high-demand (named in collection tables). `B` = standard utility (included in collection tables). `C` = niche (collapsed 'More' section). Omit entirely for skills that should not be published. Sourced from `marketplace-publication-priority-*.md` and authored per skill. Lint validates the enum; consumers (export-marketplace-skills.js, generate-marketplace-readmes.js) filter and group on this field.
+
+**Full reference:** [`docs/field-reference.md#marketplace_tier`](field-reference.md#marketplace_tier)
 
 ---
 

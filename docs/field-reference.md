@@ -227,6 +227,30 @@ category: integrations
 
 ---
 
+## `secondary_categories`
+
+**Purpose.** Additive cross-listing tags for marketplace collections. Primary `category` is MECE and decides folder placement; `secondary_categories` lets a skill that genuinely serves two audiences (e.g., `playwright-cli` is primarily `quality` but also relevant to `engineering`) appear in additional marketplace collections without affecting filesystem layout.
+
+**Rules.**
+
+- Optional. Omit if the primary `category` is sufficient.
+- Drawn from the same closed 6-enum as `category` (`foundations` | `engineering` | `design` | `quality` | `agent` | `product`).
+- Max 2 entries to prevent dilution.
+- MUST NOT include the primary `category` value.
+
+**Example.**
+
+```yaml
+category: quality
+secondary_categories: [engineering]
+```
+
+**When to use.** When a skill is genuinely useful in more than one browse bucket and you want it to surface in additional marketplace collections.
+
+**When NOT to use.** Do not stuff this field as a dumping ground for tags. Use `workspace_tags` or `routing_bundles` for non-marketplace classification.
+
+---
+
 ## `domain`
 
 **Purpose.** Hierarchical domain path as slash-delimited segments. Complements `category`: flat bucket and tree path answer different questions. A UI or docs site uses `domain` to render a folder tree; a filter UI uses `category` for quick grouping.
@@ -826,6 +850,33 @@ stability: stable
 **When to use.** For any skill intended to be used by others. Omit only if the skill is a draft that will be revised immediately.
 
 **When NOT to use.** Do not use `frozen` for skills that might still need maintenance — `stable` is the correct choice for mature, actively-owned skills.
+
+---
+
+## `marketplace_tier`
+
+**Purpose.** Publication priority for the public marketplace at `github.com/jacob-balslev/skills` / `skills.sh`. Drives which collection table or hero block a skill appears in. Omit entirely for skills that should not be published.
+
+**Rules.**
+
+- Optional. Omit on skills that are not publication candidates (the export pipeline filters those out).
+- Closed enum: `S` | `A` | `B` | `C`.
+- `S` — featured (top-of-README, individual hero copy).
+- `A` — high-demand (named in collection tables).
+- `B` — standard utility (included in collection tables).
+- `C` — niche (collapsed "More" section).
+
+**Example.**
+
+```yaml
+marketplace_tier: A
+```
+
+**When to use.** When you intend a skill to appear in the public marketplace and want explicit control over its placement. Sourced from `marketplace-publication-priority-*.md` and authored per skill.
+
+**When NOT to use.** For repo-internal skills, sales-hub-private skills, or skills with PII bindings. Omit and they will not be published.
+
+**Consumers.** `scripts/export-marketplace-skills.js` and `scripts/generate-marketplace-readmes.js` filter and group on this field.
 
 ---
 

@@ -45,6 +45,7 @@
       "@type": "xsd:date"
     },
     "stability": "sg:stability",
+    "marketplace_tier": "sg:marketplaceTier",
     "superseded_by": {
       "@id": "prov:wasRevisionOf",
       "@type": "@id",
@@ -54,6 +55,10 @@
     "archetype": "sg:archetype",
     "scope": "sg:scope",
     "category": "sg:browseCategory",
+    "secondary_categories": {
+      "@id": "sg:secondaryCategories",
+      "@container": "@set"
+    },
     "keywords": {
       "@id": "dcat:keyword",
       "@container": "@set"

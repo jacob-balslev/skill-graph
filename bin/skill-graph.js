@@ -181,14 +181,38 @@ Note: skill-graph evolve is not yet standalone-compatible. It depends on
   },
 
   // ─── Legacy / additional subcommands (backward compat) ───────────────────
-  manifest:           { script: 'scripts/generate-manifest.js' },
-  overlap:            { script: 'scripts/skill-overlap.js' },
-  'routing-eval':     { script: 'scripts/skill-graph-routing-eval.js' },
-  'export-verify':    { script: 'scripts/verify-skill-md-export.js' },
-  'export:verify-skill-md': { script: 'scripts/verify-skill-md-export.js' },
-  'marketplace-export': { script: 'scripts/export-marketplace-skills.js' },
-  'marketplace:export': { script: 'scripts/export-marketplace-skills.js' },
-  'protocol-check':   { script: 'scripts/check-protocol-consistency.js' },
+  manifest: {
+    script: 'scripts/generate-manifest.js',
+    help: `Usage: skill-graph manifest [options]\n\nGenerate or validate a skills.manifest.json from the skill library.\n\nOptions:\n  --validate-only   Validate only, do not write. Exits non-zero on invalid manifest.\n  --output <path>   Output path (default: skills.manifest.json).\n\nSee also: skill-graph protocol-check (cross-artifact consistency)\n`,
+  },
+  overlap: {
+    script: 'scripts/skill-overlap.js',
+    help: `Usage: skill-graph overlap [options]\n\nDetect duplicate activation signals (keywords, paths, triggers) across skills.\n\nFlags activation collisions where two or more skills would compete for the same routing query.\n`,
+  },
+  'routing-eval': {
+    script: 'scripts/skill-graph-routing-eval.js',
+    help: `Usage: skill-graph routing-eval [options]\n\nRun the routing examples and anti_examples from each skill's frontmatter through the live router.\n\nOptions:\n  --manifest <path>     Pre-built manifest to use (default: generate one).\n  --only-asserted       Only run examples with asserted expected skills.\n`,
+  },
+  'export-verify': {
+    script: 'scripts/verify-skill-md-export.js',
+    help: `Usage: skill-graph export-verify [path]\n\nVerify exported skills under marketplace/skills/ against the plain SKILL.md export shape contract.\n\nDefault path: marketplace/skills\n`,
+  },
+  'export:verify-skill-md': {
+    script: 'scripts/verify-skill-md-export.js',
+    help: `Usage: skill-graph export:verify-skill-md [path]\n\nAlias for 'export-verify'. Verify exported skills against the plain SKILL.md export shape.\n`,
+  },
+  'marketplace-export': {
+    script: 'scripts/export-marketplace-skills.js',
+    help: `Usage: skill-graph marketplace-export [options]\n\nGenerate and validate the public marketplace export surface (marketplace/ tree).\n\nOptions:\n  --output <dir>    Marketplace output root (default: marketplace).\n  --check           Validate only; fail if generated files are stale.\n`,
+  },
+  'marketplace:export': {
+    script: 'scripts/export-marketplace-skills.js',
+    help: `Usage: skill-graph marketplace:export [options]\n\nAlias for 'marketplace-export'. Generate and validate the public marketplace surface.\n`,
+  },
+  'protocol-check': {
+    script: 'scripts/check-protocol-consistency.js',
+    help: `Usage: skill-graph protocol-check [options]\n\nCheck cross-artifact protocol consistency across the C1-C8 invariants:\n\n  C1 — Field-set parity (field-reference.md vs skill.schema.json)\n  C2 — Authored-to-generated parity (skill.schema.json -> manifest.schema.json)\n  C3 — Artifact-root convention\n  C4 — Sample manifest correctness\n  C5 — Example truth invariants\n  C6 — Versioned schema parity (skill.schema.json vs skill.v6.schema.json)\n  C7 — Generated field-reference parity\n  C8 — JSON-LD context coverage (schema fields vs skill.context.jsonld)\n\nOptions:\n  --verbose   Print per-field diagnostics for each failed check.\n\nExit codes: 0 on PASS; non-zero on any FAIL.\n`,
+  },
 };
 
 function printHelp() {
