@@ -73,6 +73,13 @@ Every top-level authored field in `schemas/skill.schema.json` has exactly one en
 | 38 | `portability` | copied through unchanged | `portability`. |
 | 39 | `lifecycle` | grouped under parent | `health.lifecycle`. |
 | 40 | `runtime_telemetry` | grouped under parent | `health.runtime_telemetry`. |
+| 41 | `last_audited` | grouped under parent | `health.last_audited`. v6 Health Block field — ISO date the `audit` command last ran. Pass-through from authored frontmatter. |
+| 42 | `last_changed` | grouped under parent | `health.last_changed`. v6 Health Block field — ISO date the SKILL.md was last edited. Pass-through from authored frontmatter. |
+| 43 | `audit_verdict` | grouped under parent | `health.audit_verdict`. v6 Health Block field — aggregate verdict of the most recent audit run (`PASS`, `PASS_WITH_FIXES`, `PARTIAL`, `FAIL`, `UNKNOWN`). Pass-through from authored frontmatter. |
+| 44 | `eval_score` | grouped under parent | `health.eval_score`. v6 Health Block field — latest aggregate eval grade (0.0–5.0). Pass-through from authored frontmatter. |
+| 45 | `eval_failed_ids` | grouped under parent | `health.eval_failed_ids`. v6 Health Block field — eval IDs that failed in the most recent run. Pass-through from authored frontmatter. |
+| 46 | `lint_verdict` | grouped under parent | `health.lint_verdict`. v6 Health Block field — result of the most recent lint pass (`PASS`, `FAIL`, `UNKNOWN`). Pass-through from authored frontmatter. |
+| 47 | `drift_status` | grouped under parent | `health.drift_status`. v6 Health Block field — current truth-source drift status sentinel. Pass-through from authored frontmatter. |
 ### Generated-only manifest fields
 
 These fields exist in `skills.manifest.json` with no authored counterpart:
@@ -94,7 +101,9 @@ These fields exist in `skills.manifest.json` with no authored counterpart:
 
 ## Loss Policy
 
-**Current state (2026-04-17, post-SH-5776):** no authored top-level fields are dropped during manifest generation. Every field in `schemas/skill.schema.json` has a manifest projection in `schemas/manifest.schema.json`. This parity is enforced by `scripts/skill-lint.js` — CI fails if `manifest.schema.json` drops a field declared in the authored contract without a matching entry in this document's loss policy.
+**Current state (2026-05-18, post-SH-6131):** no authored top-level fields are dropped during manifest generation. Every field in `schemas/skill.schema.json` has a manifest projection in `schemas/manifest.schema.json`. This parity is enforced by `scripts/check-protocol-consistency.js` (C2 check) — CI fails if `manifest.schema.json` drops a field declared in the authored contract without a matching entry in this document's loss policy.
+
+The seven v6 Health Block fields (`last_audited`, `last_changed`, `audit_verdict`, `eval_score`, `eval_failed_ids`, `lint_verdict`, `drift_status`) were added to the authored schema in commit `ecaf001` (v6 Health Block addition) but were not registered in the manifest schema or this mapping document until SH-6131 (2026-05-18). They are now flow-through fields grouped under `health.*` in the manifest, matching the pattern of other governance fields (`freshness`, `drift_check`, `eval_artifacts`, etc.).
 
 ### Previously dropped, now restored
 
