@@ -39,8 +39,16 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 9.15.0
+
       - uses: actions/setup-node@v4
         with:
           node-version: '20'
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
       - name: Run full verification gate
-        run: npm run verify
+        run: pnpm run verify

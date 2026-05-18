@@ -277,11 +277,17 @@ The staging surface lands under `marketplace/` for the two-step sync into `jacob
 The npm package exposes the same scripts through a `skill-graph` binary:
 
 ```bash
-skill-graph lint skills/documentation
-skill-graph route "which skill handles schema drift?"
-skill-graph drift
-skill-graph marketplace-export
+skill-graph init my-skill            # Scaffold a new SKILL.md from the template
+skill-graph add debugging            # Install a skill from the marketplace
+skill-graph lint                     # Validate all SKILL.md files
+skill-graph audit my-skill           # Seed or run a single-skill audit
+skill-graph route "schema drift"     # Select skills for a query
+skill-graph drift                    # Check truth-source hashes
+skill-graph export                   # Generate marketplace export surface
+skill-graph evolve --top 5           # Run the continuous improvement loop
 ```
+
+Run `skill-graph --help` to see all commands (including legacy aliases).
 
 ## What You Get
 
@@ -333,13 +339,13 @@ Before cutting the first release, ensure these one-time steps are done:
 
 ```bash
 # Bump version, commit, and tag in one step
-npm version patch   # or minor, or major
+pnpm version patch   # or minor, or major
 
 # Push the commit and the tag — CI picks up the tag and publishes
 git push && git push --tags
 ```
 
-The publish pipeline at `.github/workflows/publish.yml` triggers on any `v*.*.*` tag, runs `npm test`, then publishes `@skill-graph/cli` with provenance attestation. The npm package is always published from CI — do not run `npm publish` locally.
+The publish pipeline at `.github/workflows/publish.yml` triggers on any `v*.*.*` tag, runs `pnpm test`, then publishes `@skill-graph/cli` with provenance attestation. The npm package is always published from CI — do not run `pnpm publish` locally.
 
 ### Manual prereq summary
 
@@ -347,7 +353,7 @@ The publish pipeline at `.github/workflows/publish.yml` triggers on any `v*.*.*`
 |------|-----|---------|
 | Create `@skill-graph` npm org (once) | Jacob | https://www.npmjs.com/org/create — pick "Unlimited public packages — Free" |
 | Add `NPM_TOKEN` GitHub secret (once) | Jacob | GitHub Settings → Secrets |
-| Cut a release | Maintainer | `npm version <patch\|minor\|major> && git push --tags` |
+| Cut a release | Maintainer | `pnpm version <patch\|minor\|major> && git push --tags` |
 
 > CLI distribution via npm (`@skill-graph/cli`) is separate from skill library syndication. The skill library is published from [`jacob-balslev/skills`](https://github.com/jacob-balslev/skills) via `npx skills add jacob-balslev/skills`. See [`docs/marketplace-syndication.md`](docs/marketplace-syndication.md) for the skill library syndication workflow. See SH-6110 for install verification.
 
