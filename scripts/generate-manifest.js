@@ -562,19 +562,33 @@ function collectSources(args, skillRoots) {
   const sources = [];
   const seen = new Set();
 
+  // Recursive walker (added 2026-05-18 for category folder structure).
+  // Skills now live at `<root>/<category>/[<domain>/]<name>/SKILL.md`,
+  // not the flat `<root>/<name>/SKILL.md`. Recurse up to 3 levels;
+  // stop descending once a SKILL.md is found in a directory.
+  function walkForSkillMd(dir, depth, project) {
+    if (depth > 3) return;
+    for (const name of fs.readdirSync(dir).sort()) {
+      if (name.startsWith('_') || name.startsWith('.')) continue;
+      const entry = path.join(dir, name);
+      if (!fs.statSync(entry).isDirectory()) continue;
+      const skillMd = path.join(entry, 'SKILL.md');
+      if (fs.existsSync(skillMd)) {
+        if (!seen.has(skillMd)) {
+          sources.push({ filePath: skillMd, skillId: name, project });
+          seen.add(skillMd);
+        }
+      } else {
+        walkForSkillMd(entry, depth + 1, project);
+      }
+    }
+  }
+
   for (const { absPath, project } of skillRoots) {
     if (!fs.existsSync(absPath)) continue;
     const stat = fs.statSync(absPath);
     if (!stat.isDirectory()) continue;
-
-    // Sort for deterministic output.
-    for (const name of fs.readdirSync(absPath).sort()) {
-      const skillMd = path.join(absPath, name, 'SKILL.md');
-      if (fs.existsSync(skillMd) && !seen.has(skillMd)) {
-        sources.push({ filePath: skillMd, skillId: name, project });
-        seen.add(skillMd);
-      }
-    }
+    walkForSkillMd(absPath, 0, project);
   }
 
   if (includeTemplate && fs.existsSync(TEMPLATE_PATH) && !seen.has(TEMPLATE_PATH)) {

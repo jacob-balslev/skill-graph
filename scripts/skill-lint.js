@@ -894,12 +894,23 @@ function checkGeneratorParity() {
   return [];
 }
 
-function collectSkillFilesFromRoot(rootDir) {
+function collectSkillFilesFromRoot(rootDir, depth = 0) {
   const files = [];
   if (!fs.existsSync(rootDir)) return files;
+  // Recurse up to 3 levels deep (root → category → optional domain → skill).
+  // Stops descending once a SKILL.md is found in a directory.
+  if (depth > 3) return files;
   for (const name of fs.readdirSync(rootDir)) {
-    const skillMd = path.join(rootDir, name, 'SKILL.md');
-    if (fs.existsSync(skillMd)) files.push(skillMd);
+    if (name.startsWith('_') || name.startsWith('.')) continue;
+    const entryPath = path.join(rootDir, name);
+    if (!fs.statSync(entryPath).isDirectory()) continue;
+    const skillMd = path.join(entryPath, 'SKILL.md');
+    if (fs.existsSync(skillMd)) {
+      files.push(skillMd);
+    } else {
+      // Not a skill folder — recurse into it as a category/domain container.
+      files.push(...collectSkillFilesFromRoot(entryPath, depth + 1));
+    }
   }
   return files;
 }
