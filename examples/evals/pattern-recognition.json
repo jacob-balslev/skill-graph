@@ -1,7 +1,12 @@
 {
   "skill_name": "pattern-recognition",
   "subject": "Recurring-structure recognition across code, errors, board state, conventions, and domain encodings",
-  "adjacent_concepts": ["debugging", "code-review", "diagnosis", "lint-overlay"],
+  "adjacent_concepts": [
+    "debugging",
+    "code-review",
+    "diagnosis",
+    "lint-overlay"
+  ],
   "grounding_note": "This portable skill is grounded in its own method description and cited public pattern-recognition sources rather than repo-local implementation files. These evals exercise the recurring-instance threshold, clustering discipline, prevention loop, lifecycle states, and negative-routing boundaries.",
   "evals": [
     {
@@ -13,7 +18,9 @@
       "truth_mode": "conceptual_correctness_plus_repo_application",
       "skill_type": "concept",
       "criticality": "high",
-      "truth_sources": ["skills/pattern-recognition/SKILL.md:61-80"]
+      "truth_sources": [
+        "skills/foundations/pattern-recognition/SKILL.md:61-80"
+      ]
     },
     {
       "id": 2,
@@ -24,7 +31,10 @@
       "truth_mode": "conceptual_correctness_plus_repo_application",
       "skill_type": "concept",
       "criticality": "normal",
-      "truth_sources": ["skills/pattern-recognition/SKILL.md:72-80", "skills/pattern-recognition/SKILL.md:462-481"]
+      "truth_sources": [
+        "skills/foundations/pattern-recognition/SKILL.md:72-80",
+        "skills/foundations/pattern-recognition/SKILL.md:462-481"
+      ]
     },
     {
       "id": 3,
@@ -35,7 +45,9 @@
       "truth_mode": "conceptual_correctness_plus_repo_application",
       "skill_type": "concept",
       "criticality": "high",
-      "truth_sources": ["skills/pattern-recognition/SKILL.md:233-279"]
+      "truth_sources": [
+        "skills/foundations/pattern-recognition/SKILL.md:233-279"
+      ]
     },
     {
       "id": 4,
@@ -46,7 +58,9 @@
       "truth_mode": "conceptual_correctness_plus_repo_application",
       "skill_type": "concept",
       "criticality": "normal",
-      "truth_sources": ["skills/pattern-recognition/SKILL.md:155-187"]
+      "truth_sources": [
+        "skills/foundations/pattern-recognition/SKILL.md:155-187"
+      ]
     },
     {
       "id": 5,
@@ -57,7 +71,9 @@
       "truth_mode": "conceptual_correctness_plus_repo_application",
       "skill_type": "concept",
       "criticality": "normal",
-      "truth_sources": ["skills/pattern-recognition/SKILL.md:197-231"]
+      "truth_sources": [
+        "skills/foundations/pattern-recognition/SKILL.md:197-231"
+      ]
     },
     {
       "id": 6,
@@ -68,7 +84,10 @@
       "truth_mode": "conceptual_correctness_plus_repo_application",
       "skill_type": "concept",
       "criticality": "critical",
-      "truth_sources": ["skills/pattern-recognition/SKILL.md:281-329", "skills/pattern-recognition/SKILL.md:366-395"]
+      "truth_sources": [
+        "skills/foundations/pattern-recognition/SKILL.md:281-329",
+        "skills/foundations/pattern-recognition/SKILL.md:366-395"
+      ]
     },
     {
       "id": 7,
@@ -79,7 +98,9 @@
       "truth_mode": "conceptual_correctness_plus_repo_application",
       "skill_type": "concept",
       "criticality": "normal",
-      "truth_sources": ["skills/pattern-recognition/SKILL.md:397-429"]
+      "truth_sources": [
+        "skills/foundations/pattern-recognition/SKILL.md:397-429"
+      ]
     },
     {
       "id": 8,
@@ -90,7 +111,9 @@
       "truth_mode": "conceptual_correctness_plus_repo_application",
       "skill_type": "concept",
       "criticality": "normal",
-      "truth_sources": ["skills/pattern-recognition/SKILL.md:483-494"]
+      "truth_sources": [
+        "skills/foundations/pattern-recognition/SKILL.md:483-494"
+      ]
     }
   ]
 }
