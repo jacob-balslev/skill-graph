@@ -1,0 +1,17 @@
+%%{init: {'theme':'neutral','flowchart':{'curve':'basis','padding':20}}}%%
+graph TD
+  G["<b>skill-graph</b><br/><i>canonical monolith: spec, schemas, tooling, audit</i><br/>@skill-graph/cli — npm install -g"]
+  L["<b>skills</b><br/><i>public open-source skill library</i><br/>npx skills add jacob-balslev/skills"]
+  P["<b>skill-metadata-protocol</b><br/><i>deprecated · docs-only mirror</i><br/>SKILL_METADATA_PROTOCOL.md preserved"]
+  A["<b>skill-audit-loop</b><br/><i>deprecated · docs-only mirror</i><br/>SKILL_AUDIT_LOOP.md preserved"]
+
+  G -->|exports SKILL.md| L
+  G -. mirrors protocol spec to .-> P
+  G -. mirrors audit procedure to .-> A
+
+  classDef active fill:#dcfce7,stroke:#16a34a,stroke-width:2px,color:#14532d;
+  classDef tool fill:#fef3c7,stroke:#d97706,stroke-width:2px,color:#78350f;
+  classDef mirror fill:#f3f4f6,stroke:#9ca3af,stroke-width:1px,color:#4b5563,stroke-dasharray:4 3;
+  class G tool;
+  class L active;
+  class P,A mirror;

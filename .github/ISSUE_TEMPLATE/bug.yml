@@ -1,0 +1,69 @@
+name: Bug report
+description: Report a defect in the CLI, scripts, or library tooling
+title: "[bug] "
+labels: ["bug"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for filing a bug. Please fill in the fields below so we can reproduce and triage it.
+  - type: input
+    id: pkg-version
+    attributes:
+      label: Package version
+      description: "`@skill-graph/cli` version (from `skill-graph --version` or `package.json`)"
+      placeholder: "e.g. 0.5.6"
+    validations:
+      required: true
+  - type: dropdown
+    id: command
+    attributes:
+      label: Which command surfaced the bug?
+      options:
+        - skill-graph init
+        - skill-graph add
+        - skill-graph lint
+        - skill-graph audit
+        - skill-graph route
+        - skill-graph drift
+        - skill-graph export
+        - skill-graph evolve
+        - scripts/* (specify in steps)
+        - other / unsure
+    validations:
+      required: true
+  - type: textarea
+    id: steps
+    attributes:
+      label: Reproduction steps
+      description: Minimal commands or repo state to reproduce.
+      placeholder: |
+        1. Clone the repo
+        2. Run `skill-graph lint`
+        3. ...
+      render: shell
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected behavior
+    validations:
+      required: true
+  - type: textarea
+    id: actual
+    attributes:
+      label: Actual behavior
+      description: Include the full error message, stack trace, or CLI output.
+    validations:
+      required: true
+  - type: textarea
+    id: environment
+    attributes:
+      label: Environment
+      placeholder: |
+        - OS: macOS 15.5 / Ubuntu 24.04 / ...
+        - Node: 22.x
+        - Skill library path: ~/Development/skills
+    validations:
+      required: false
