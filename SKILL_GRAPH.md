@@ -62,7 +62,7 @@ A sixth set of files — `README.md`, `CHANGELOG.md`, `CONTRIBUTING.md`, `LICENS
 
 | File | Role |
 |---|---|
-| `schemas/skill.schema.json` | The frontmatter schema. Unversioned — tracks latest (v4 today). |
+| `schemas/skill.schema.json` | The frontmatter schema. Unversioned — tracks latest (v6 today). |
 | `schemas/manifest.schema.json` | The compiled-manifest schema. Unversioned — tracks latest (v3 today). |
 | `schemas/skill.v4.schema.json` | Pinned v4 copy. Consumers that want the current contract validate against this file. |
 | `schemas/skill.v3.schema.json` | Frozen pinned v3 copy for consumers still migrating to v4. |
