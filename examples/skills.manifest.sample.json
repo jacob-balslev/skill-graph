@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-05-17T22:15:31Z",
+  "generated_at": "2026-05-18T20:30:00Z",
   "schema_version": 4,
   "skills": [
     {
@@ -73,7 +73,7 @@
       "license": "MIT",
       "name": "a11y",
       "owner": "skill-graph-maintainer",
-      "path": "../skills/skills/a11y/SKILL.md",
+      "path": "../skills/skills/quality/a11y/SKILL.md",
       "portability": {
         "readiness": "scripted",
         "targets": [
@@ -180,7 +180,7 @@
       "license": "MIT",
       "name": "acid-fundamentals",
       "owner": "skill-graph-maintainer",
-      "path": "../skills/skills/acid-fundamentals/SKILL.md",
+      "path": "../skills/skills/engineering/data/acid-fundamentals/SKILL.md",
       "relations": {
         "boundary": [
           {
@@ -280,16 +280,46 @@
       "compatibility": {
         "notes": "Provider- and harness-agnostic. Patterns apply across Claude Code, Cursor, Copilot, OpenCode, Aider, Continue, custom Anthropic/OpenAI/Google SDK loops, and self-hosted multi-agent systems. Specific filenames in this skill (continuation.json, claim.lock, session-logs.jsonl) are example artefacts -- substitute your harness's equivalents."
       },
+      "concept": {
+        "analogy": "Agent engineering is like operating a crew of contractors on a construction site: each specialist may be capable, but the project succeeds only if the plan, locks, handoffs, inspections, budget, and stop conditions are explicit.",
+        "boundary": "It is not prompt wording, per-tool efficiency, single-agent context assembly, incident debugging, code review, or ADR writing. Neighboring skills own those surfaces; agent-engineering owns the workflow architecture that composes them.",
+        "definition": "Agent engineering is the discipline of designing production AI agent systems: loops, handoffs, coordination patterns, lifecycle state, verification gates, observability, budgets, and recovery mechanisms around one or more LLM agents.",
+        "mental_model": "Treat each LLM call as an unreliable component in a larger system. Use architecture to constrain variance: explicit state, clear ownership, durable handoffs, verification, stop conditions, and measurable operating limits.",
+        "misconception": "More agents is not automatically better. Extra agents add coordination overhead, duplicated work risk, context-transfer loss, and merge complexity; delegation needs a positive expected value.",
+        "purpose": "It turns ad hoc prompt-and-tool demos into systems that can run unattended, survive crashes, coordinate multiple agents, control cost, and produce verifiable outcomes.",
+        "taxonomy": "Core areas include lifecycle management, task decomposition, coordination patterns, handoff protocols, observability, cost controls, idempotency, failure recovery, safety caps, claim locks, and staged rollout."
+      },
       "description": "Use when designing or evaluating a production AI agent system, choosing a multi-agent coordination pattern (orchestrator/worker, fan-out, consensus, sequential chain, evaluator/optimizer), diagnosing coordination failures (claim races, silent stalls, context contamination, runaway loops), or auditing whether an agent loop is truly production-ready. Covers the four pillars (architecture and lifecycle, task decomposition, coordination patterns, production reliability), the six reliability requirements (observability, cost budgets, idempotency, failure recovery, safety caps, claim locks), the delegation decision framework with overhead crossover, and the most common anti-patterns. Do NOT use for prompt wording (use `prompt-craft`), per-call tool efficiency (use `tool-call-strategy`), context-stack design within a single agent (use `context-engineering`), or runtime debugging of a deployed system (use `debugging`).",
       "domain": "ai-engineering/architecture",
+      "grounding": {
+        "domain_object": "Production AI agent system architecture and multi-agent coordination",
+        "evidence_priority": "equal",
+        "failure_modes": [
+          "coordination_pattern_mismatch",
+          "unbounded_agent_loop",
+          "missing_observability",
+          "duplicate_task_claims",
+          "handoff_context_loss",
+          "over_delegation_cost_spike"
+        ],
+        "grounding_mode": "hybrid",
+        "truth_sources": [
+          "https://www.anthropic.com/engineering/building-effective-agents",
+          "https://www.anthropic.com/engineering/multi-agent-research-system",
+          "https://www.anthropic.com/engineering/effective-harnesses-for-long-running-agents",
+          "https://openai.github.io/openai-agents-python/tracing/",
+          "https://arxiv.org/abs/2308.08155"
+        ]
+      },
       "health": {
+        "comprehension_state": "present",
         "drift_check": {
-          "last_verified": "2026-05-06"
+          "last_verified": "2026-05-18"
         },
         "eval_artifacts": "planned",
         "eval_state": "unverified",
-        "freshness": "2026-05-06",
-        "has_grounding": false,
+        "freshness": "2026-05-18",
+        "has_grounding": true,
         "has_relations": true,
         "lifecycle": {
           "review_cadence": "quarterly",
@@ -301,7 +331,7 @@
       "license": "MIT",
       "name": "agent-engineering",
       "owner": "skill-graph-maintainer",
-      "path": "../skills/skills/agent-engineering/SKILL.md",
+      "path": "../skills/skills/engineering/agent-engineering/SKILL.md",
       "portability": {
         "readiness": "scripted",
         "targets": [
@@ -323,14 +353,24 @@
             "skill": "context-engineering"
           },
           {
+            "reason": "context-window owns token-budget thresholds and compaction timing; agent-engineering uses those signals as one part of lifecycle and coordination design",
+            "skill": "context-window"
+          },
+          {
             "reason": "debugging chases a specific runtime failure; agent-engineering is about preventing classes of coordination failure through architecture",
             "skill": "debugging"
+          },
+          {
+            "reason": "architecture-decision-records records and explains decisions; agent-engineering designs the agent-system architecture being decided",
+            "skill": "architecture-decision-records"
           }
         ],
         "related": [
           "context-engineering",
+          "context-window",
           "tool-call-strategy",
-          "prompt-craft"
+          "prompt-craft",
+          "summarization"
         ],
         "verify_with": [
           "testing-strategy",
@@ -340,7 +380,7 @@
       "scope": "portable",
       "stability": "experimental",
       "type": "capability",
-      "version": "1.0.0"
+      "version": "1.1.0"
     },
     {
       "activation": {
@@ -395,7 +435,7 @@
       "license": "MIT",
       "name": "agent-eval-design",
       "owner": "skill-graph-maintainer",
-      "path": "../skills/skills/agent-eval-design/SKILL.md",
+      "path": "../skills/skills/quality/agent-eval-design/SKILL.md",
       "portability": {
         "readiness": "scripted",
         "targets": [
@@ -484,14 +524,35 @@
       },
       "description": "Use when reasoning about agent autonomy levels, designing auto-improve loops, evaluating AI-generated code quality, or measuring agent productivity in an LLM-assisted codebase. Covers Karpathy's three eras of software (1.0 explicit / 2.0 learned / 3.0 natural-language), the vibe-coding-vs-agentic-engineering distinction, the 0–5 autonomy slider with task-type recommendations, the one-asset / one-metric / one-time-box AutoResearch loop, Software 3.0 productivity metrics, and the documented quality regressions of ungated AI-generated code (the 'vibe hangover'). Do NOT use for choosing a specific autonomy-loop topology (use `agent-engineering`), for the per-prompt authoring discipline (use `prompt-craft`), or for reviewing the AI-generated code that comes out of a Software 3.0 workflow (use `code-review`).",
       "domain": "agent/concepts",
+      "grounding": {
+        "domain_object": "AI-native software development discipline for prompt-as-code workflows, agent autonomy calibration, metric-gated auto-improvement loops, and quality gates for AI-generated code",
+        "evidence_priority": "equal",
+        "failure_modes": [
+          "unintentional_high_autonomy_for_high_risk_work",
+          "accepting_ai_generated_code_without_review_or_tests",
+          "treating_prompts_and_skills_as_throwaway_notes",
+          "optimizing_agent_loops_against_multiple_moving_metrics",
+          "citing_stale_ai_code_security_statistics_as_fixed_truth",
+          "shipping_agentic_systems_without_prompt_injection_or_excessive_agency_controls"
+        ],
+        "grounding_mode": "hybrid",
+        "truth_sources": [
+          "https://www.youtube.com/watch?v=LCEmiRjPEtQ",
+          "https://github.com/karpathy/autoresearch",
+          "https://arxiv.org/abs/2211.03622",
+          "https://arxiv.org/abs/2504.20814",
+          "https://snyk.io/lp/secure-adoption-in-the-genai-era/",
+          "https://owasp.org/www-project-top-10-for-large-language-model-applications/"
+        ]
+      },
       "health": {
         "drift_check": {
-          "last_verified": "2026-05-06"
+          "last_verified": "2026-05-18"
         },
         "eval_artifacts": "planned",
         "eval_state": "unverified",
-        "freshness": "2026-05-06",
-        "has_grounding": false,
+        "freshness": "2026-05-18",
+        "has_grounding": true,
         "has_relations": true,
         "lifecycle": {
           "review_cadence": "quarterly",
@@ -503,7 +564,7 @@
       "license": "MIT",
       "name": "ai-native-development",
       "owner": "skill-graph-maintainer",
-      "path": "../skills/skills/ai-native-development/SKILL.md",
+      "path": "../skills/skills/agent/ai-native-development/SKILL.md",
       "portability": {
         "readiness": "scripted",
         "targets": [
@@ -543,7 +604,7 @@
       "scope": "portable",
       "stability": "experimental",
       "type": "capability",
-      "version": "1.0.0"
+      "version": "1.1.0"
     },
     {
       "activation": {
@@ -598,7 +659,7 @@
       "license": "MIT",
       "name": "api-design",
       "owner": "skill-graph-maintainer",
-      "path": "../skills/skills/api-design/SKILL.md",
+      "path": "../skills/skills/engineering/api-design/SKILL.md",
       "portability": {
         "readiness": "scripted",
         "targets": [
@@ -697,7 +758,7 @@
       "license": "MIT",
       "name": "architecture-decision-records",
       "owner": "skill-graph-maintainer",
-      "path": "../skills/skills/architecture-decision-records/SKILL.md",
+      "path": "../skills/skills/engineering/architecture-decision-records/SKILL.md",
       "portability": {
         "readiness": "scripted",
         "targets": [
@@ -733,6 +794,59 @@
       "stability": "experimental",
       "type": "capability",
       "version": "1.0.0"
+    },
+    {
+      "activation": {
+        "keywords": [
+          "autonomous loop",
+          "ralph wiggum",
+          "grind loop",
+          "manage loop",
+          "agent respawn",
+          "completion detection",
+          "safety cap"
+        ],
+        "triggers": [
+          "autonomous-loop-skill",
+          "loop-patterns-skill"
+        ]
+      },
+      "category": "agent",
+      "description": "This skill consolidates autonomous AI agent loop patterns: the Ralph Wiggum exit-code-2 pattern, our manage-loop (manage-continuation.json + manage-loop-hook.py), grind-loop.sh supervisor, completion detection strategies, safety caps, stall detection, and the tradeoffs between simple loops and sophisticated orchestration. Use when designing or debugging autonomous agent loops, choosing between loop approaches, or implementing safety limits. Do NOT use for choosing which command to run (use ai-coding-agents) or for task management (use linear).",
+      "health": {
+        "comprehension_state": "present",
+        "eval_artifacts": "present",
+        "eval_state": "passing",
+        "freshness": "2026-05-18",
+        "has_grounding": false,
+        "has_relations": true,
+        "routing_eval": "present"
+      },
+      "id": "autonomous-loop-patterns",
+      "name": "autonomous-loop-patterns",
+      "owner": "claude",
+      "path": "../skills/skills/agent/autonomous-loop-patterns/SKILL.md",
+      "relations": {
+        "adjacent": [
+          "agent-governance",
+          "ai-native-development",
+          "hook-patterns",
+          "agent-observability",
+          "orchestration"
+        ],
+        "boundary": [
+          "ai-coding-agents",
+          "linear",
+          "task-execution"
+        ],
+        "verify_with": [
+          "agent-observability",
+          "agent-control"
+        ]
+      },
+      "scope": "portable",
+      "type": "capability",
+      "version": "1.2.0"
     },
     {
       "activation": {
@@ -775,7 +889,7 @@
       "license": "MIT",
       "name": "background-jobs",
       "owner": "skill-graph-maintainer",
-      "path": "../skills/skills/background-jobs/SKILL.md",
+      "path": "../skills/skills/engineering/background-jobs/SKILL.md",
       "portability": {
         "readiness": "scripted",
         "targets": [
@@ -873,7 +987,7 @@
       "license": "MIT",
       "name": "best-practice",
       "owner": "skill-graph-maintainer",
-      "path": "../skills/skills/best-practice/SKILL.md",
+      "path": "../skills/skills/quality/best-practice/SKILL.md",
       "portability": {
         "readiness": "declared",
         "targets": [
@@ -958,7 +1072,7 @@
       "license": "MIT",
       "name": "bounded-context-mapping",
       "owner": "skill-graph-maintainer",
-      "path": "../skills/skills/bounded-context-mapping/SKILL.md",
+      "path": "../skills/skills/engineering/bounded-context-mapping/SKILL.md",
       "portability": {
         "readiness": "scripted",
         "targets": [
@@ -1065,7 +1179,7 @@
       "license": "MIT",
       "name": "cap-theorem-tradeoffs",
       "owner": "skill-graph-maintainer",
-      "path": "../skills/skills/cap-theorem-tradeoffs/SKILL.md",
+      "path": "../skills/skills/engineering/data/cap-theorem-tradeoffs/SKILL.md",
       "relations": {
         "boundary": [
           {
@@ -1165,7 +1279,7 @@
       "license": "MIT",
       "name": "client-server-boundary",
       "owner": "skill-graph-maintainer",
-      "path": "../skills/skills/client-server-boundary/SKILL.md",
+      "path": "../skills/skills/engineering/frontend/client-server-boundary/SKILL.md",
       "relations": {
         "boundary": [
           {
@@ -1264,7 +1378,7 @@
       "license": "MIT",
       "name": "code-review",
       "owner": "skill-graph-maintainer",
-      "path": "../skills/skills/code-review/SKILL.md",
+      "path": "../skills/skills/quality/code-review/SKILL.md",
       "portability": {
         "readiness": "scripted",
         "targets": [
@@ -1356,7 +1470,7 @@
       "license": "CC-BY-4.0",
       "name": "color-system-design",
       "owner": "skill-graph-maintainer",
-      "path": "../skills/skills/color-system-design/SKILL.md",
+      "path": "../skills/skills/design/color-system-design/SKILL.md",
       "relations": {
         "boundary": [
           {
@@ -1455,7 +1569,7 @@
       "license": "MIT",
       "name": "component-architecture",
       "owner": "skill-graph-maintainer",
-      "path": "../skills/skills/component-architecture/SKILL.md",
+      "path": "../skills/skills/design/component-architecture/SKILL.md",
       "relations": {
         "boundary": [
           {
@@ -1535,7 +1649,7 @@
       "license": "MIT",
       "name": "compression",
       "owner": "skill-graph-maintainer",
-      "path": "../skills/skills/compression/SKILL.md",
+      "path": "../skills/skills/engineering/data/compression/SKILL.md",
       "portability": {
         "readiness": "scripted",
         "targets": [
@@ -1622,7 +1736,7 @@
       "license": "MIT",
       "name": "conceptual-modeling",
       "owner": "skill-graph-maintainer",
-      "path": "../skills/skills/conceptual-modeling/SKILL.md",
+      "path": "../skills/skills/engineering/conceptual-modeling/SKILL.md",
       "portability": {
         "readiness": "scripted",
         "targets": [
@@ -1718,7 +1832,7 @@
       "license": "MIT",
       "name": "connection-pooling",
       "owner": "skill-graph-maintainer",
-      "path": "../skills/skills/connection-pooling/SKILL.md",
+      "path": "../skills/skills/engineering/data/connection-pooling/SKILL.md",
       "relations": {
         "boundary": [
           {
@@ -1829,7 +1943,7 @@
       "license": "MIT",
       "name": "constraint-awareness",
       "owner": "skill-graph-maintainer",
-      "path": "../skills/skills/constraint-awareness/SKILL.md",
+      "path": "../skills/skills/foundations/constraint-awareness/SKILL.md",
       "portability": {
         "readiness": "scripted",
         "targets": [
@@ -1917,7 +2031,7 @@
       "license": "MIT",
       "name": "content-monitor",
       "owner": "skill-graph-maintainer",
-      "path": "../skills/skills/content-monitor/SKILL.md",
+      "path": "../skills/skills/agent/content-monitor/SKILL.md",
       "portability": {
         "readiness": "scripted",
         "targets": [
@@ -1969,12 +2083,16 @@
           "wrong context",
           "overwhelming context",
           "context window",
+          "context rot",
           "context utilization",
           "injection precision",
           "injection recall",
           "frequent intentional compaction",
           "FIC",
           "context compaction",
+          "tool result clearing",
+          "agent memory",
+          "just in time context",
           "subagent delegation",
           "context stack",
           "context layers",
@@ -1989,16 +2107,45 @@
       "compatibility": {
         "notes": "Provider-agnostic; principles apply across Claude, GPT, Gemini, and open-weight models. Layer mapping varies by harness (Claude Code, OpenCode, Cursor, Continue, Aider) but the five-layer abstraction holds."
       },
+      "concept": {
+        "analogy": "Context engineering is like packing a surgical tray: success depends less on owning every possible instrument and more on putting the right clean tools in the right order before the operation starts.",
+        "boundary": "It is not prompt wording, single-skill authoring, per-query routing, generic code review, or runtime incident debugging. It owns the information payload surrounding those surfaces: selection, structure, sequencing, memory, retrieval, compaction, delegation, and tool-result lifecycle.",
+        "definition": "Context engineering is the practice of designing and maintaining the information environment an LLM sees at inference time so the model receives the right instructions, memory, retrieved knowledge, tool outputs, examples, and task state in usable form.",
+        "mental_model": "Treat each model call as a context compile step. The compile output should be sufficient for the next decision, small enough to preserve attention, fresh enough to be trusted, and structured enough for the model to distinguish rules from evidence and current facts from historical notes.",
+        "misconception": "More context is not automatically safer. Prompt stuffing, broad retrieval dumps, stale memory, and unbounded tool transcripts can make an agent less reliable by drowning the useful signal.",
+        "purpose": "It prevents agent failures caused by missing, stale, wrong, or overwhelming context, and gives teams a diagnostic vocabulary for fixing the context pipeline rather than blaming the model or endlessly polishing prompt wording.",
+        "taxonomy": "Core levers include context selection, context structuring, context sequencing, context compression, memory integration, retrieval strategy, tool-result clearing, provenance tracking, and subagent isolation."
+      },
       "description": "Use when designing what information reaches an LLM agent before it reasons — system prompt, persistent memory, always-loaded rules, injected skills, and the user prompt — or when diagnosing why an agent produced a wrong answer despite a clear instruction. Covers the four context failure modes (missing, stale, wrong, overwhelming), the five-layer context stack, four context quality metrics (injection precision and recall, utilization, freshness), the Frequent Intentional Compaction (FIC) protocol, subagent delegation for context-heavy work, and the failure-mode decision tree. Do NOT use for prompt wording (use `prompt-craft`), authoring a new SKILL.md (use `skill-scaffold`), or deciding which skill the router activates for a given query (use `skill-router`).",
       "domain": "agent/context",
+      "grounding": {
+        "domain_object": "Context engineering for LLM agents",
+        "evidence_priority": "equal",
+        "failure_modes": [
+          "context_window_treated_as_unlimited",
+          "prompt_wording_treated_as_context_design",
+          "retrieval_dump_replaces_selection",
+          "tool_results_accumulate_without_clearing",
+          "stale_memory_overrides_current_evidence"
+        ],
+        "grounding_mode": "hybrid",
+        "truth_sources": [
+          "https://www.anthropic.com/engineering/effective-context-engineering-for-ai-agents",
+          "https://platform.claude.com/docs/en/build-with-claude/context-windows",
+          "https://platform.claude.com/cookbook/tool-use-context-engineering-context-engineering-tools",
+          "https://www.ibm.com/think/topics/context-engineering",
+          "https://arxiv.org/abs/2510.26493"
+        ]
+      },
       "health": {
+        "comprehension_state": "present",
         "drift_check": {
-          "last_verified": "2026-05-06"
+          "last_verified": "2026-05-18"
         },
         "eval_artifacts": "planned",
         "eval_state": "unverified",
-        "freshness": "2026-05-06",
-        "has_grounding": false,
+        "freshness": "2026-05-18",
+        "has_grounding": true,
         "has_relations": true,
         "lifecycle": {
           "review_cadence": "quarterly",
@@ -2010,7 +2157,7 @@
       "license": "MIT",
       "name": "context-engineering",
       "owner": "skill-graph-maintainer",
-      "path": "../skills/skills/context-engineering/SKILL.md",
+      "path": "../skills/skills/agent/context/context-engineering/SKILL.md",
       "portability": {
         "readiness": "scripted",
         "targets": [
@@ -2043,7 +2190,7 @@
       "scope": "portable",
       "stability": "experimental",
       "type": "capability",
-      "version": "1.0.0"
+      "version": "1.1.0"
     },
     {
       "activation": {
@@ -2140,7 +2287,7 @@
       "license": "MIT",
       "name": "context-graph",
       "owner": "skill-graph-maintainer",
-      "path": "../skills/skills/context-graph/SKILL.md",
+      "path": "../skills/skills/agent/context/context-graph/SKILL.md",
       "portability": {
         "readiness": "scripted",
         "targets": [
@@ -2248,7 +2395,7 @@
       "license": "MIT",
       "name": "context-management",
       "owner": "skill-graph-maintainer",
-      "path": "../skills/skills/context-management/SKILL.md",
+      "path": "../skills/skills/agent/context/context-management/SKILL.md",
       "portability": {
         "readiness": "scripted",
         "targets": [
@@ -2336,16 +2483,46 @@
       "compatibility": {
         "notes": "Provider-agnostic. The zone model, 80% rule, persistence hierarchy, and token-reduction techniques apply across Anthropic, OpenAI, Google, and open-weight contexts of any size. Specific token figures are illustrative — substitute the figures of the model you actually run."
       },
+      "concept": {
+        "analogy": "Context-window management is like scuba air management: a large tank lets you dive longer, but you still track pressure, reserve enough air for ascent, and surface before the gauge is empty.",
+        "boundary": "It is budget math and compaction timing, not qualitative working-set selection, prompt writing, graph topology, memory curation, or per-tool choice. It tells neighboring skills how much room they have and when the session must checkpoint or compact.",
+        "definition": "Context-window management is the practice of allocating and protecting the finite token budget available to an LLM call or agent session, including instructions, tool schemas, injected skills, conversation history, tool results, retrieved files, and output headroom.",
+        "mental_model": "Treat the window as working memory with a gauge. Every added message, tool result, file slice, image, or reasoning/output allocation consumes capacity. The operating loop is measure, reserve headroom, narrow inputs, checkpoint durable state, compact before overflow, and rebuild selectively after compaction.",
+        "misconception": "A 1M-token window is not infinite. It delays overflow but does not remove context pollution, stale assumptions, output-headroom needs, or the cost of raw dumps.",
+        "purpose": "It keeps long-running agent work from losing state or degrading quality when the active context becomes too large, noisy, or close to the model limit.",
+        "taxonomy": "Core levers include zone budgeting, health-state thresholds, output headroom, tool-result shaping, targeted reads, progressive skill disclosure, compaction checkpoints, persistence hierarchy, and model-class strategy."
+      },
       "description": "Use when allocating context-window budget across system, skill-injection, working, and output zones; monitoring context health; deciding when to compact; preserving state before compaction; recovering after compaction; or choosing strategies for 1M, 200K, or 128K context windows. Covers zone budgets, practical model-budget tables, the 80% compaction rule, pre/post-compact protocols, persistence hierarchy, operation token costs, and token-reduction techniques. Do NOT use for deciding what information belongs in the working set (use `context-management`), prompt design (use `prompt-craft`), graph architecture (use `context-graph`), or memory curation.",
       "domain": "agent/context",
+      "grounding": {
+        "domain_object": "Runtime context-window budgeting and compaction discipline for LLM agents",
+        "evidence_priority": "equal",
+        "failure_modes": [
+          "large_context_treated_as_unlimited",
+          "output_headroom_not_reserved",
+          "compaction_started_after_overflow",
+          "mixed_git_tree_committed_before_compaction",
+          "raw_tool_results_preserved_after_distillation"
+        ],
+        "grounding_mode": "hybrid",
+        "truth_sources": [
+          "https://platform.claude.com/docs/en/build-with-claude/context-windows",
+          "https://ai.google.dev/gemini-api/docs/long-context",
+          "https://developers.openai.com/api/docs/models/compare",
+          "https://github.com/jacob-balslev/skills/blob/main/skills/context-engineering/SKILL.md",
+          "https://github.com/jacob-balslev/skills/blob/main/skills/context-management/SKILL.md",
+          "https://github.com/jacob-balslev/skills/blob/main/skills/tool-call-strategy/SKILL.md"
+        ]
+      },
       "health": {
+        "comprehension_state": "present",
         "drift_check": {
-          "last_verified": "2026-05-06"
+          "last_verified": "2026-05-18"
         },
         "eval_artifacts": "planned",
         "eval_state": "unverified",
-        "freshness": "2026-05-06",
-        "has_grounding": false,
+        "freshness": "2026-05-18",
+        "has_grounding": true,
         "has_relations": true,
         "lifecycle": {
           "review_cadence": "quarterly",
@@ -2357,7 +2534,7 @@
       "license": "MIT",
       "name": "context-window",
       "owner": "skill-graph-maintainer",
-      "path": "../skills/skills/context-window/SKILL.md",
+      "path": "../skills/skills/agent/context/context-window/SKILL.md",
       "portability": {
         "readiness": "scripted",
         "targets": [
@@ -2396,7 +2573,7 @@
       "scope": "portable",
       "stability": "experimental",
       "type": "capability",
-      "version": "1.0.0"
+      "version": "1.1.0"
     },
     {
       "activation": {
@@ -2460,7 +2637,7 @@
       "license": "MIT",
       "name": "contract-testing",
       "owner": "skill-graph-maintainer",
-      "path": "../skills/skills/contract-testing/SKILL.md",
+      "path": "../skills/skills/quality/testing/contract-testing/SKILL.md",
       "relations": {
         "boundary": [
           {
@@ -2543,7 +2720,7 @@
       "license": "MIT",
       "name": "cron-scheduling",
       "owner": "skill-graph-maintainer",
-      "path": "../skills/skills/cron-scheduling/SKILL.md",
+      "path": "../skills/skills/engineering/cron-scheduling/SKILL.md",
       "portability": {
         "readiness": "scripted",
         "targets": [
@@ -2611,7 +2788,7 @@
       "license": "CC-BY-4.0",
       "name": "dark-mode-implementation",
       "owner": "skill-graph-maintainer",
-      "path": "../skills/skills/dark-mode-implementation/SKILL.md",
+      "path": "../skills/skills/design/dark-mode-implementation/SKILL.md",
       "relations": {
         "boundary": [
           {
@@ -2689,7 +2866,7 @@
       "license": "MIT",
       "name": "data-modeling",
       "owner": "skill-graph-maintainer",
-      "path": "../skills/skills/data-modeling/SKILL.md",
+      "path": "../skills/skills/engineering/data-modeling/SKILL.md",
       "portability": {
         "readiness": "scripted",
         "targets": [
@@ -2804,7 +2981,7 @@
       "license": "MIT",
       "name": "data-modeling-fundamentals",
       "owner": "skill-graph-maintainer",
-      "path": "../skills/skills/data-modeling-fundamentals/SKILL.md",
+      "path": "../skills/skills/engineering/data/data-modeling-fundamentals/SKILL.md",
       "relations": {
         "boundary": [
           {
@@ -2907,7 +3084,7 @@
       "license": "MIT",
       "name": "database-migration",
       "owner": "skill-graph-maintainer",
-      "path": "../skills/skills/database-migration/SKILL.md",
+      "path": "../skills/skills/engineering/database-migration/SKILL.md",
       "portability": {
         "readiness": "scripted",
         "targets": [
@@ -3014,7 +3191,7 @@
       "license": "MIT",
       "name": "debugging",
       "owner": "skill-graph-maintainer",
-      "path": "../skills/skills/debugging/SKILL.md",
+      "path": "../skills/skills/engineering/debugging/SKILL.md",
       "portability": {
         "readiness": "scripted",
         "targets": [
@@ -3098,7 +3275,7 @@
       "license": "MIT",
       "name": "dependency-architecture",
       "owner": "skill-graph-maintainer",
-      "path": "../skills/skills/dependency-architecture/SKILL.md",
+      "path": "../skills/skills/engineering/dependency-architecture/SKILL.md",
       "portability": {
         "readiness": "scripted",
         "targets": [
@@ -3192,7 +3369,7 @@
       "license": "CC-BY-4.0",
       "name": "design-module-composition",
       "owner": "skill-graph-maintainer",
-      "path": "../skills/skills/design-module-composition/SKILL.md",
+      "path": "../skills/skills/design/design-module-composition/SKILL.md",
       "relations": {
         "boundary": [
           {
@@ -3274,7 +3451,7 @@
       "license": "MIT",
       "name": "design-system-architecture",
       "owner": "skill-graph-maintainer",
-      "path": "../skills/skills/design-system-architecture/SKILL.md",
+      "path": "../skills/skills/design/design-system-architecture/SKILL.md",
       "portability": {
         "readiness": "scripted",
         "targets": [
@@ -3384,7 +3561,7 @@
       "license": "CC-BY-4.0",
       "name": "design-thinking",
       "owner": "skill-graph-maintainer",
-      "path": "../skills/skills/design-thinking/SKILL.md",
+      "path": "../skills/skills/design/design-thinking/SKILL.md",
       "relations": {
         "boundary": [
           {
@@ -3458,14 +3635,37 @@
       },
       "description": "Use when facing an unknown software failure, when symptoms point to different root causes, or when an initial debugging attempt has not converged. Provides a triage-first diagnostic routing framework: classify the failure, collect the right evidence, choose a technique, track confidence, and escalate when stuck. Do NOT use for executing scientific debugging after triage (use `debugging`), code-quality review (use `code-review`), or proactive observability setup.",
       "domain": "engineering/debugging",
+      "grounding": {
+        "domain_object": "Portable software-failure diagnostic triage: evidence collection, symptom classification, technique selection, confidence tracking, escalation, and sensitive diagnostic evidence handling",
+        "evidence_priority": "equal",
+        "failure_modes": [
+          "fixing_before_classification",
+          "hypothesis_without_baseline_evidence",
+          "wrong_technique_for_problem_class",
+          "confidence_inflation_without_verification",
+          "stuck_state_not_escalated_or_reclassified",
+          "diagnostic_evidence_captures_sensitive_or_secret_data",
+          "eval_or_routing_claim_inflated_without_run"
+        ],
+        "grounding_mode": "universal",
+        "truth_sources": [
+          "https://sre.google/sre-book/effective-troubleshooting/",
+          "https://git-scm.com/docs/git-bisect",
+          "https://stackoverflow.com/help/minimal-reproducible-example",
+          "https://developer.chrome.com/docs/devtools/performance/overview",
+          "https://www.postgresql.org/docs/current/sql-explain.html",
+          "https://cheatsheetseries.owasp.org/cheatsheets/Logging_Cheat_Sheet.html",
+          "https://opentelemetry.io/docs/security/handling-sensitive-data/"
+        ]
+      },
       "health": {
         "drift_check": {
-          "last_verified": "2026-05-06"
+          "last_verified": "2026-05-18"
         },
         "eval_artifacts": "planned",
         "eval_state": "unverified",
-        "freshness": "2026-05-06",
-        "has_grounding": false,
+        "freshness": "2026-05-18",
+        "has_grounding": true,
         "has_relations": true,
         "lifecycle": {
           "review_cadence": "quarterly",
@@ -3477,7 +3677,7 @@
       "license": "MIT",
       "name": "diagnosis",
       "owner": "skill-graph-maintainer",
-      "path": "../skills/skills/diagnosis/SKILL.md",
+      "path": "../skills/skills/engineering/diagnosis/SKILL.md",
       "portability": {
         "readiness": "scripted",
         "targets": [
@@ -3515,7 +3715,7 @@
       "scope": "portable",
       "stability": "experimental",
       "type": "capability",
-      "version": "1.0.0"
+      "version": "1.1.0"
     },
     {
       "activation": {
@@ -3557,7 +3757,7 @@
       "license": "MIT",
       "name": "diff-analysis",
       "owner": "skill-graph-maintainer",
-      "path": "../skills/skills/diff-analysis/SKILL.md",
+      "path": "../skills/skills/quality/diff-analysis/SKILL.md",
       "portability": {
         "readiness": "scripted",
         "targets": [
@@ -3644,7 +3844,7 @@
       "license": "MIT",
       "name": "e2e-test-design",
       "owner": "skill-graph-maintainer",
-      "path": "../skills/skills/e2e-test-design/SKILL.md",
+      "path": "../skills/skills/quality/testing/e2e-test-design/SKILL.md",
       "relations": {
         "boundary": [
           {
@@ -3726,7 +3926,7 @@
       "license": "MIT",
       "name": "entity-relationship-modeling",
       "owner": "skill-graph-maintainer",
-      "path": "../skills/skills/entity-relationship-modeling/SKILL.md",
+      "path": "../skills/skills/engineering/entity-relationship-modeling/SKILL.md",
       "portability": {
         "readiness": "scripted",
         "targets": [
@@ -3811,7 +4011,7 @@
       "license": "MIT",
       "name": "epistemic-grounding",
       "owner": "skill-graph-maintainer",
-      "path": "../skills/skills/epistemic-grounding/SKILL.md",
+      "path": "../skills/skills/foundations/epistemic-grounding/SKILL.md",
       "relations": {
         "boundary": [
           {
@@ -3908,7 +4108,7 @@
       "license": "MIT",
       "name": "error-boundary",
       "owner": "skill-graph-maintainer",
-      "path": "../skills/skills/error-boundary/SKILL.md",
+      "path": "../skills/skills/engineering/frontend/error-boundary/SKILL.md",
       "relations": {
         "boundary": [
           {
@@ -3987,14 +4187,33 @@
       },
       "description": "Use when designing or extending an application exception-reporting pipeline: error boundary placement, tracker SDK wrappers, sanitized reporting calls, environment gating, user context without PII leaks, breadcrumbs, and verification that each layer reports correctly. Covers component, route, global, and manual capture surfaces plus central `reportError`/`reportMessage` patterns. Do NOT use for the visual error UX shown to users (use `a11y` and interaction skills), chasing one captured error (use `debugging`), or broad privacy and retention policy (use `owasp-security`).",
       "domain": "engineering/observability",
+      "grounding": {
+        "domain_object": "Application exception-reporting pipeline design across boundaries, tracker wrappers, sanitization, user context, breadcrumbs, and environment gates",
+        "evidence_priority": "equal",
+        "failure_modes": [
+          "route_fallback_renders_recovery_ui_but_never_reports",
+          "manual_async_error_path_logs_locally_only",
+          "payload_or_breadcrumb_leaks_pii_or_secrets",
+          "tracker_sdk_imported_directly_at_many_call_sites",
+          "user_context_uses_email_name_phone_or_ip_instead_of_internal_ids",
+          "test_environment_bypasses_sanitization_wrapper"
+        ],
+        "grounding_mode": "universal",
+        "truth_sources": [
+          "https://nextjs.org/docs/app/getting-started/error-handling",
+          "https://docs.sentry.io/platforms/javascript/configuration/environments/",
+          "https://docs.sentry.io/platforms/javascript/guides/koa/data-management/data-collected/",
+          "https://cheatsheetseries.owasp.org/cheatsheets/Logging_Cheat_Sheet.html"
+        ]
+      },
       "health": {
         "drift_check": {
-          "last_verified": "2026-05-06"
+          "last_verified": "2026-05-18"
         },
-        "eval_artifacts": "present",
+        "eval_artifacts": "planned",
         "eval_state": "unverified",
-        "freshness": "2026-05-06",
-        "has_grounding": false,
+        "freshness": "2026-05-18",
+        "has_grounding": true,
         "has_relations": true,
         "lifecycle": {
           "review_cadence": "quarterly",
@@ -4006,7 +4225,7 @@
       "license": "MIT",
       "name": "error-tracking",
       "owner": "skill-graph-maintainer",
-      "path": "../skills/skills/error-tracking/SKILL.md",
+      "path": "../skills/skills/engineering/error-tracking/SKILL.md",
       "portability": {
         "readiness": "scripted",
         "targets": [
@@ -4047,7 +4266,7 @@
       "scope": "portable",
       "stability": "experimental",
       "type": "capability",
-      "version": "1.0.0"
+      "version": "1.1.0"
     },
     {
       "activation": {
@@ -4116,7 +4335,7 @@
       "license": "MIT",
       "name": "eval-driven-development",
       "owner": "skill-graph-maintainer",
-      "path": "../skills/skills/eval-driven-development/SKILL.md",
+      "path": "../skills/skills/agent/eval-driven-development/SKILL.md",
       "relations": {
         "boundary": [
           {
@@ -4160,36 +4379,93 @@
     },
     {
       "activation": {
+        "anti_examples": [
+          "design a new eval dataset, grader, and hard negatives for this router",
+          "review this pull request line by line for bugs and security issues",
+          "choose unit versus integration versus end-to-end tests for this feature",
+          "design the whole implementation methodology and quality gate sequence before work starts",
+          "debug why the existing run failed in production",
+          "author a new SKILL.md from scratch"
+        ],
+        "examples": [
+          "score this completed agent task against the original request, changed files, tests, and remaining risks before we call it done",
+          "act as a skeptical critic and tell me whether this deliverable is actually complete or only technically working",
+          "run a completion gate on this implementation: what is the 1-5 score, what evidence supports it, and what must be revised?",
+          "evaluate whether this documentation update satisfies the acceptance criteria and preserves all required information",
+          "after the focused checks pass, decide whether the skill upgrade can be marked complete without inflating eval claims",
+          "review the final artifact and produce a scorecard with blockers, required revisions, residual risks, and verification evidence"
+        ],
         "keywords": [
           "evaluation",
           "quality gate",
-          "feedback loop",
-          "critic persona",
-          "evaluation revision",
-          "completion contract",
+          "deliverable review",
+          "completion review",
+          "evidence-based score",
+          "skeptical critic",
           "score 1-5",
-          "skeptical critic"
+          "evaluation revision loop",
+          "acceptance criteria review",
+          "done gate",
+          "artifact scorecard",
+          "gap analysis",
+          "quality verdict",
+          "verification evidence",
+          "score ceiling",
+          "agent output evaluation",
+          "final answer review",
+          "rubric scoring"
         ],
         "triggers": [
           "evaluation-skill",
-          "critic-loop-skill"
+          "critic-loop-skill",
+          "quality-gate-skill"
         ]
       },
       "allowed-tools": "Read Grep Bash",
       "category": "engineering",
       "compatibility": {
-        "notes": "Markdown, Git, agent-skill runtimes"
+        "notes": "Portable completion-evaluation discipline for AI agent work, documentation, skill upgrades, and software deliverables. It assumes the evaluator can inspect the request, artifact, changed files or report, and verification evidence; substitute local tools and acceptance criteria as needed."
       },
-      "description": "This skill provides a structured framework for automated agentic evaluation and human feedback loops. It defines the 'Critic' persona, the 5-point quality scale, and the mandatory 'Evaluation-Revision' loop for all critical work.",
-      "domain": "engineering/skill-system",
+      "concept": {
+        "analogy": "Evaluation is like an inspection gate at the end of a production line: passing one measurement is not enough if the product misses the order, lacks traceability, or carries a known safety risk.",
+        "boundary": "It does not design eval datasets, review code line by line, choose test levels before implementation, debug failures, or design the whole process. It scores an artifact or task result after evidence exists.",
+        "definition": "Evaluation is the disciplined scoring of a concrete output against explicit goals, evidence, rubric criteria, and residual risks so a team can decide whether to accept, revise, or block the work.",
+        "mental_model": "Treat evaluation as a gate, not a compliment. The evaluator compares the requested outcome, the produced artifact, the evidence trail, and the failure modes that would matter if the artifact shipped unchanged.",
+        "misconception": "The common mistake is treating evaluation as praise, taste, or a post-hoc score. Good evaluation is adversarial in the useful sense: it looks for the first honest reason the work is not done yet.",
+        "purpose": "It prevents optimistic done claims by forcing visible scores, score ceilings, missing-evidence callouts, required revisions, and a final accept or block decision.",
+        "taxonomy": "Core evaluation surfaces are acceptance fit, evidence sufficiency, artifact quality, risk handling, regression protection, portability, and reporting completeness. Common graders are checklist, rubric, exact or code-based checks, trace inspection, human review, and LLM-as-judge with calibration."
+      },
+      "description": "Use when scoring a completed agent task, implementation, document, skill upgrade, or other deliverable against the original request, acceptance criteria, verification evidence, quality rubric, and residual risks before calling it done. Covers skeptical critic review, 1-5 scoring, score ceilings, evidence sufficiency, finding/action capture, and the evaluation-revision loop. Do NOT use for designing eval datasets or graders (use agent-eval-design), line-by-line diff review (use code-review), choosing test levels (use testing-strategy), or designing the overall process and gates before work starts (use methodology).",
+      "domain": "engineering/evaluation",
+      "grounding": {
+        "domain_object": "Evidence-based evaluation of agent outputs, deliverables, and completion claims",
+        "evidence_priority": "equal",
+        "failure_modes": [
+          "self_assessment_optimism_marks_incomplete_work_done",
+          "tests_pass_treated_as_full_quality_evidence",
+          "score_inflated_despite_missing_acceptance_criteria",
+          "rubric_omits_negative_boundaries_or_residual_risks",
+          "evaluation_confused_with_code_review_or_eval_dataset_design",
+          "unverified_claims_enter_final_report"
+        ],
+        "grounding_mode": "universal",
+        "truth_sources": [
+          "https://github.com/openai/evals",
+          "https://www.anthropic.com/engineering/demystifying-evals-for-ai-agents",
+          "https://platform.claude.com/docs/en/test-and-evaluate/develop-tests",
+          "https://adk.dev/evaluate/",
+          "https://airc.nist.gov/"
+        ]
+      },
       "health": {
+        "comprehension_state": "present",
         "drift_check": {
-          "last_verified": "2026-03-29"
+          "last_verified": "2026-05-18"
         },
         "eval_artifacts": "planned",
         "eval_state": "unverified",
-        "freshness": "2026-03-29",
-        "has_grounding": false,
+        "freshness": "2026-05-18",
+        "has_grounding": true,
         "has_relations": true,
         "lifecycle": {
           "review_cadence": "quarterly",
@@ -4201,7 +4477,7 @@
       "license": "MIT",
       "name": "evaluation",
       "owner": "skill-graph-maintainer",
-      "path": "../skills/skills/evaluation/SKILL.md",
+      "path": "../skills/skills/engineering/evaluation/SKILL.md",
       "portability": {
         "readiness": "scripted",
         "targets": [
@@ -4210,13 +4486,44 @@
       },
       "relations": {
         "boundary": [
+          {
+            "reason": "agent-eval-design creates eval suites, graders, thresholds, and hard negatives; evaluation applies a completion rubric to a concrete artifact or finished task.",
+            "skill": "agent-eval-design"
+          },
+          {
+            "reason": "code-review inspects a diff for correctness, security, maintainability, and review comments; evaluation scores the whole deliverable against request, evidence, risks, and done criteria.",
+            "skill": "code-review"
+          },
+          {
+            "reason": "testing-strategy decides what behavior deserves which test level; evaluation judges whether the delivered verification evidence is sufficient for the task risk.",
+            "skill": "testing-strategy"
+          },
+          {
+            "reason": "methodology designs the process and gates before execution; evaluation is the gate applied to an artifact after work exists.",
+            "skill": "methodology"
+          },
+          {
+            "reason": "skill-infrastructure runs deterministic health tooling across a skill library; evaluation is a human-readable scoring discipline for one deliverable.",
+            "skill": "skill-infrastructure"
+          }
+        ],
+        "related": [
+          "best-practice",
+          "methodology",
+          "agent-eval-design",
+          "testing-strategy",
           "code-review"
+        ],
+        "verify_with": [
+          "code-review",
+          "testing-strategy",
+          "best-practice"
         ]
       },
       "scope": "portable",
       "stability": "experimental",
       "type": "capability",
-      "version": "1.0.0"
+      "version": "1.1.0"
     },
     {
       "activation": {
@@ -4271,7 +4578,7 @@
       "license": "MIT",
       "name": "event-contract-design",
       "owner": "skill-graph-maintainer",
-      "path": "../skills/skills/event-contract-design/SKILL.md",
+      "path": "../skills/skills/engineering/event-contract-design/SKILL.md",
       "portability": {
         "readiness": "scripted",
         "targets": [
@@ -4367,7 +4674,7 @@
       "license": "MIT",
       "name": "event-storming",
       "owner": "skill-graph-maintainer",
-      "path": "../skills/skills/event-storming/SKILL.md",
+      "path": "../skills/skills/engineering/event-storming/SKILL.md",
       "portability": {
         "readiness": "scripted",
         "targets": [
@@ -4468,7 +4775,7 @@
       "license": "MIT",
       "name": "form-ux-architecture",
       "owner": "skill-graph-maintainer",
-      "path": "../skills/skills/form-ux-architecture/SKILL.md",
+      "path": "../skills/skills/design/form-ux-architecture/SKILL.md",
       "portability": {
         "readiness": "scripted",
         "targets": [
@@ -4564,7 +4871,7 @@
       "license": "MIT",
       "name": "framework-fit-analysis",
       "owner": "skill-graph-maintainer",
-      "path": "../skills/skills/framework-fit-analysis/SKILL.md",
+      "path": "../skills/skills/engineering/framework-fit-analysis/SKILL.md",
       "portability": {
         "readiness": "scripted",
         "targets": [
@@ -4658,7 +4965,7 @@
       "license": "CC-BY-4.0",
       "name": "frontend-architecture",
       "owner": "skill-graph-maintainer",
-      "path": "../skills/skills/frontend-architecture/SKILL.md",
+      "path": "../skills/skills/engineering/frontend/frontend-architecture/SKILL.md",
       "relations": {
         "boundary": [
           {
@@ -4745,7 +5052,7 @@
       "license": "MIT",
       "name": "generative-ui",
       "owner": "skill-graph-maintainer",
-      "path": "../skills/skills/generative-ui/SKILL.md",
+      "path": "../skills/skills/agent/generative-ui/SKILL.md",
       "relations": {
         "boundary": [
           {
@@ -4877,7 +5184,7 @@
       "license": "MIT",
       "name": "graph-audit",
       "owner": "skill-graph-maintainer",
-      "path": "../skills/skills/graph-audit/SKILL.md",
+      "path": "../skills/skills/quality/graph-audit/SKILL.md",
       "relations": {
         "boundary": [
           {
@@ -4906,17 +5213,28 @@
       "activation": {
         "keywords": [
           "guardrails",
+          "tool guardrails",
           "tripwire",
           "safety gate",
           "force push",
           "secret detection",
           "destructive action",
           "protected files",
-          "circuit breaker"
+          "circuit breaker",
+          "excessive agency",
+          "prompt injection containment",
+          "blocking guardrail",
+          "advisory guardrail",
+          "tool-call safety",
+          "credential exposure",
+          "destructive SQL",
+          "package publication safety"
         ],
         "triggers": [
           "guardrails-skill",
-          "security-skill"
+          "tool-guardrails",
+          "tripwire-skill",
+          "agent-safety-guardrails"
         ]
       },
       "allowed-tools": "Read Grep Bash",
@@ -4924,16 +5242,37 @@
       "compatibility": {
         "notes": "Markdown, Git, agent-skill runtimes"
       },
-      "description": "Use when planning or executing operations that touch protected files, credentials, destructive git commands, destructive SQL, PII, secrets, or irreversible system mutations. Covers proactive policy plus reactive pattern blocking for dangerous operations, data exfiltration, and unsafe mutations. Do NOT use for application input validation, user RBAC, or general code logic review (use `code-review`).",
+      "description": "Use when planning or executing agent/tool operations that touch protected files, credentials, destructive git commands, destructive SQL, PII, secrets, deployments, package publication, or irreversible system mutations. Covers proactive safety policy, tool-call tripwires, blocking vs advisory enforcement, secret-exposure prevention, and excessive-agency containment. Do NOT use for application input validation, routine git workflow design, migration authoring, or general code correctness review (use `code-review`, `version-control`, or `database-migration`).",
       "domain": "quality/safety",
+      "grounding": {
+        "domain_object": "Agent and tool-call safety guardrails for destructive operations, secret exposure prevention, excessive-agency containment, and irreversible system mutations",
+        "evidence_priority": "equal",
+        "failure_modes": [
+          "tool_call_runs_before_guardrail_completes",
+          "agent_level_guardrail_misses_delegated_tool_call",
+          "secret_pattern_committed_or_echoed",
+          "force_push_or_hard_reset_destroys_work",
+          "unbounded_sql_mutation_reaches_live_database",
+          "excessive_agency_allows_unchecked_real_world_action",
+          "guardrail_bypass_treated_as_normal_override"
+        ],
+        "grounding_mode": "hybrid",
+        "truth_sources": [
+          "https://openai.github.io/openai-agents-python/guardrails/",
+          "https://owasp.org/www-project-top-10-for-large-language-model-applications/",
+          "https://www.nist.gov/itl/ai-risk-management-framework",
+          "https://nvlpubs.nist.gov/nistpubs/ai/NIST.AI.600-1.pdf",
+          "https://docs.github.com/en/code-security/how-tos/secure-your-secrets/detect-secret-leaks"
+        ]
+      },
       "health": {
         "drift_check": {
-          "last_verified": "2026-03-28"
+          "last_verified": "2026-05-18"
         },
         "eval_artifacts": "planned",
         "eval_state": "unverified",
-        "freshness": "2026-03-28",
-        "has_grounding": false,
+        "freshness": "2026-05-18",
+        "has_grounding": true,
         "has_relations": true,
         "lifecycle": {
           "review_cadence": "quarterly",
@@ -4945,7 +5284,7 @@
       "license": "MIT",
       "name": "guardrails",
       "owner": "skill-graph-maintainer",
-      "path": "../skills/skills/guardrails/SKILL.md",
+      "path": "../skills/skills/quality/guardrails/SKILL.md",
       "portability": {
         "readiness": "scripted",
         "targets": [
@@ -4953,14 +5292,34 @@
         ]
       },
       "relations": {
+        "boundary": [
+          {
+            "reason": "code-review evaluates a proposed code change; guardrails evaluates whether an agent/tool action should be blocked, confirmed, or allowed before side effects happen",
+            "skill": "code-review"
+          },
+          {
+            "reason": "version-control owns routine git hygiene; guardrails owns high-risk git tripwires such as force-push, hard reset, branch deletion, and history rewrite",
+            "skill": "version-control"
+          },
+          {
+            "reason": "database-migration plans safe DDL and data migrations; guardrails blocks or escalates destructive SQL patterns at execution time",
+            "skill": "database-migration"
+          }
+        ],
         "related": [
-          "intent-recognition"
+          "intent-recognition",
+          "version-control",
+          "database-migration"
+        ],
+        "verify_with": [
+          "intent-recognition",
+          "code-review"
         ]
       },
       "scope": "portable",
       "stability": "experimental",
       "type": "capability",
-      "version": "1.0.0"
+      "version": "1.2.0"
     },
     {
       "activation": {
@@ -5030,7 +5389,7 @@
       "license": "MIT",
       "name": "hooks-patterns",
       "owner": "skill-graph-maintainer",
-      "path": "../skills/skills/hooks-patterns/SKILL.md",
+      "path": "../skills/skills/engineering/frontend/hooks-patterns/SKILL.md",
       "relations": {
         "boundary": [
           {
@@ -5120,7 +5479,7 @@
       "license": "MIT",
       "name": "http-semantics",
       "owner": "skill-graph-maintainer",
-      "path": "../skills/skills/http-semantics/SKILL.md",
+      "path": "../skills/skills/engineering/http-semantics/SKILL.md",
       "relations": {
         "boundary": [
           {
@@ -5205,7 +5564,7 @@
       "license": "CC-BY-4.0",
       "name": "ideation",
       "owner": "skill-graph-maintainer",
-      "path": "../skills/skills/ideation/SKILL.md",
+      "path": "../skills/skills/design/ideation/SKILL.md",
       "relations": {
         "boundary": [
           {
@@ -5294,7 +5653,7 @@
       "license": "MIT",
       "name": "indexing-strategy",
       "owner": "skill-graph-maintainer",
-      "path": "../skills/skills/indexing-strategy/SKILL.md",
+      "path": "../skills/skills/engineering/data/indexing-strategy/SKILL.md",
       "relations": {
         "boundary": [
           {
@@ -5379,7 +5738,7 @@
       "license": "MIT",
       "name": "information-architecture",
       "owner": "skill-graph-maintainer",
-      "path": "../skills/skills/information-architecture/SKILL.md",
+      "path": "../skills/skills/design/information-architecture/SKILL.md",
       "portability": {
         "readiness": "scripted",
         "targets": [
@@ -5487,7 +5846,7 @@
       "license": "MIT",
       "name": "integration-test-design",
       "owner": "skill-graph-maintainer",
-      "path": "../skills/skills/integration-test-design/SKILL.md",
+      "path": "../skills/skills/quality/testing/integration-test-design/SKILL.md",
       "relations": {
         "boundary": [
           {
@@ -5590,7 +5949,7 @@
       "license": "MIT",
       "name": "intent-recognition",
       "owner": "skill-graph-maintainer",
-      "path": "../skills/skills/intent-recognition/SKILL.md",
+      "path": "../skills/skills/engineering/intent-recognition/SKILL.md",
       "portability": {
         "readiness": "scripted",
         "targets": [
@@ -5686,7 +6045,7 @@
       "license": "MIT",
       "name": "interaction-feedback",
       "owner": "skill-graph-maintainer",
-      "path": "../skills/skills/interaction-feedback/SKILL.md",
+      "path": "../skills/skills/design/interaction-feedback/SKILL.md",
       "portability": {
         "readiness": "scripted",
         "targets": [
@@ -5784,7 +6143,7 @@
       "license": "MIT",
       "name": "interaction-patterns",
       "owner": "skill-graph-maintainer",
-      "path": "../skills/skills/interaction-patterns/SKILL.md",
+      "path": "../skills/skills/design/interaction-patterns/SKILL.md",
       "portability": {
         "readiness": "scripted",
         "targets": [
@@ -5888,7 +6247,7 @@
       "license": "CC-BY-4.0",
       "name": "journey-mapping",
       "owner": "skill-graph-maintainer",
-      "path": "../skills/skills/journey-mapping/SKILL.md",
+      "path": "../skills/skills/design/journey-mapping/SKILL.md",
       "relations": {
         "boundary": [
           {
@@ -5961,7 +6320,7 @@
       "license": "MIT",
       "name": "keywords",
       "owner": "skill-graph-maintainer",
-      "path": "../skills/skills/keywords/SKILL.md",
+      "path": "../skills/skills/product/keywords/SKILL.md",
       "portability": {
         "readiness": "scripted",
         "targets": [
@@ -6024,25 +6383,44 @@
         "notes": "Theory-level skill. Applies to any AI-coding workspace that maintains structured knowledge artefacts: skill libraries, reference docs, decision records, runbooks, agent memory systems, RAG/GraphRAG pipelines."
       },
       "concept": {
-        "analogy": "|",
-        "boundary": "|",
-        "definition": "Knowledge modeling is the discipline of choosing a *representation paradigm* — knowledge graph, frames, production rules, semantic network, concept map, procedural ontology, or a hybrid — that fits how the resulting knowledge will be queried, reasoned over, and maintained. Drawing from Brachman & Levesque's knowledge-representation tradition and Newell's knowledge-level account, it treats representation as a strategic choice with explicit expressiveness-tractability trade-offs rather than as a default.",
-        "mental_model": "|",
-        "misconception": "|",
-        "purpose": "|",
-        "taxonomy": "|"
+        "analogy": "Knowledge modeling is like choosing between a blueprint, schematic, flowchart, and storyboard for the same device: each representation makes different questions easy and different mistakes visible.",
+        "boundary": "It is representation strategy, not human-readable domain analysis, database/data modeling, pure taxonomy design, formal ontology axiom authoring, exact semantic edge labeling, or live skill-library operations.",
+        "definition": "Knowledge modeling is the discipline of choosing a representation paradigm — knowledge graph, frames, production rules, semantic network, concept map, procedural ontology, or a hybrid — that fits how knowledge will be queried, reasoned over, validated, and maintained.",
+        "mental_model": "Choose by the dominant query pattern and operating constraint. Graphs answer relationship questions, rules answer decision questions, frames answer object-property questions, concept maps communicate to humans, procedural ontologies preserve why/how traces, and hybrids handle real systems when one paradigm is insufficient.",
+        "misconception": "The common mistake is believing more structure or more formalism is automatically better. A sparse graph, vague edge labels, or OWL-level formality without query demand can make the system harder to validate and worse for retrieval than plain text with conventions.",
+        "purpose": "It prevents teams from treating all structured text as equivalent. The goal is to make agent and product knowledge explicit enough to retrieve, reason over, validate, update, and retire without over-formalizing beyond the system's real needs.",
+        "taxonomy": "Core paradigms include knowledge graphs, frames, semantic networks, production rules, concept maps, procedural knowledge ontologies, and hybrids. Core lifecycle stages include create, validate, publish, use, monitor, update, and retire."
       },
-      "description": "Use when choosing the representation paradigm for domain knowledge: knowledge graph, frame, production rule, semantic network, concept map, procedural ontology, or hybrid. Covers knowledge acquisition from tacit to explicit, graph design principles, validation types, lifecycle states, AI-agent context systems, skills as frames, routing as rules, memory as graph, and GraphRAG patterns such as entity-anchored retrieval, relationship-aware context, path reasoning, subgraph summaries, and hybrid vector+graph retrieval. Do NOT use for human-readable domain analysis (`conceptual-modeling`), ER/database design, pure taxonomy work, formal ontology axioms, or live skill-library tooling (`skill-infrastructure`).",
+      "description": "Use when choosing the representation paradigm for domain knowledge: knowledge graph, frame, production rule, semantic network, concept map, procedural ontology, or hybrid. Covers knowledge acquisition from tacit to explicit, graph design principles, validation types, lifecycle states, AI-agent context systems, skills as frames, routing as rules, memory as graph, and GraphRAG patterns such as entity-anchored retrieval, relationship-aware context, path reasoning, subgraph summaries, and hybrid vector+graph retrieval. Do NOT use for human-readable domain analysis (use `conceptual-modeling`), ER/database design (use `data-modeling`), pure taxonomy hierarchy (use `taxonomy-design`), formal ontology axioms (use `ontology-modeling`), exact semantic edge labels (use `semantic-relations`), or live skill-library tooling (use `skill-infrastructure`).",
       "domain": "foundations/knowledge",
+      "grounding": {
+        "domain_object": "Knowledge representation paradigm choice and GraphRAG-ready knowledge modeling",
+        "evidence_priority": "equal",
+        "failure_modes": [
+          "representation_chosen_by_familiarity_not_query_pattern",
+          "graph_structure_too_sparse_for_graphrag",
+          "formalism_overfit_to_theory_not_maintenance",
+          "tacit_knowledge_transcribed_without_validation",
+          "taxonomy_used_when_rules_or_frames_are_required"
+        ],
+        "grounding_mode": "hybrid",
+        "truth_sources": [
+          "https://doi.org/10.1016/0004-3702(82)90012-1",
+          "https://books.google.com/books/about/Knowledge_Representation_and_Reasoning.html?id=ln6Ux-EZm6YC",
+          "https://courses.media.mit.edu/2004spring/mas966/Minsky%201974%20Framework%20for%20knowledge.pdf",
+          "https://www.w3.org/TR/skos-reference/",
+          "https://arxiv.org/abs/2404.16130"
+        ]
+      },
       "health": {
         "comprehension_state": "present",
         "drift_check": {
-          "last_verified": "2026-05-16"
+          "last_verified": "2026-05-18"
         },
         "eval_artifacts": "planned",
         "eval_state": "unverified",
-        "freshness": "2026-05-16",
-        "has_grounding": false,
+        "freshness": "2026-05-18",
+        "has_grounding": true,
         "has_relations": true,
         "lifecycle": {
           "review_cadence": "quarterly",
@@ -6054,7 +6432,7 @@
       "license": "MIT",
       "name": "knowledge-modeling",
       "owner": "skill-graph-maintainer",
-      "path": "../skills/skills/knowledge-modeling/SKILL.md",
+      "path": "../skills/skills/foundations/knowledge-modeling/SKILL.md",
       "portability": {
         "readiness": "scripted",
         "targets": [
@@ -6064,36 +6442,52 @@
       "relations": {
         "boundary": [
           {
-            "reason": "conceptual-modeling is the human-readable domain analysis layer (entities, attributes, relationships, cardinality); knowledge-modeling is the *representation-strategy* layer above that — choosing between graphs, frames, rules, hybrids",
+            "reason": "conceptual-modeling is the human-readable domain analysis layer (entities, attributes, relationships, cardinality); knowledge-modeling is the representation-strategy layer above that — choosing between graphs, frames, rules, and hybrids",
             "skill": "conceptual-modeling"
           },
           {
-            "reason": "context-graph is one specific *application* of knowledge modeling (the multi-graph context architecture for skills + docs + memory + scripts); knowledge-modeling is the general theory it draws on",
+            "reason": "data-modeling owns logical and physical data structures such as tables, columns, constraints, and persistence shape; knowledge-modeling owns meaning structures and representation paradigms",
+            "skill": "data-modeling"
+          },
+          {
+            "reason": "taxonomy-design owns pure IS-A hierarchy design and browse/category structure; knowledge-modeling owns broader representation choice across graphs, frames, rules, concept maps, and hybrids",
+            "skill": "taxonomy-design"
+          },
+          {
+            "reason": "ontology-modeling owns formal axioms, OWL/RDFS-style constraints, and automated reasoning semantics; knowledge-modeling decides whether that level of formality is needed",
+            "skill": "ontology-modeling"
+          },
+          {
+            "reason": "semantic-relations owns exact edge-label semantics such as hypernymy, meronymy, synonymy, and polysemy; knowledge-modeling chooses the representation paradigm that will contain those edges",
+            "skill": "semantic-relations"
+          },
+          {
+            "reason": "context-graph is one specific application of knowledge modeling to workspace context topology; knowledge-modeling is the general theory it draws on",
             "skill": "context-graph"
           },
           {
-            "reason": "skill-infrastructure is the live tooling that maintains the skill library; knowledge-modeling is the theory of *what kind of knowledge artefact* a SKILL.md is and why frames are the right paradigm for one",
+            "reason": "skill-infrastructure is the live tooling that maintains the skill library; knowledge-modeling is the theory of what kind of knowledge artefact a SKILL.md is and why frames are the right paradigm for one",
             "skill": "skill-infrastructure"
-          },
-          {
-            "reason": "database-migration concerns *data* structure (tables, columns, FK constraints); knowledge-modeling concerns *meaning* structure (entities, relations, rules)",
-            "skill": "database-migration"
           }
         ],
         "related": [
           "conceptual-modeling",
+          "ontology-modeling",
+          "taxonomy-design",
+          "semantic-relations",
           "context-graph",
           "context-engineering",
           "skill-infrastructure"
         ],
         "verify_with": [
-          "conceptual-modeling"
+          "conceptual-modeling",
+          "ontology-modeling"
         ]
       },
       "scope": "portable",
       "stability": "experimental",
       "type": "capability",
-      "version": "1.1.0"
+      "version": "1.2.0"
     },
     {
       "activation": {
@@ -6149,7 +6543,7 @@
       "license": "MIT",
       "name": "layout-composition",
       "owner": "skill-graph-maintainer",
-      "path": "../skills/skills/layout-composition/SKILL.md",
+      "path": "../skills/skills/design/layout-composition/SKILL.md",
       "portability": {
         "readiness": "scripted",
         "targets": [
@@ -6267,7 +6661,7 @@
       "license": "MIT",
       "name": "linguistics",
       "owner": "skill-graph-maintainer",
-      "path": "../skills/skills/linguistics/SKILL.md",
+      "path": "../skills/skills/foundations/linguistics/SKILL.md",
       "portability": {
         "readiness": "scripted",
         "targets": [
@@ -6392,7 +6786,7 @@
       "license": "MIT",
       "name": "lint-overlay",
       "owner": "skill-graph-maintainer",
-      "path": "../skills/skills/lint-overlay/SKILL.md",
+      "path": "../skills/skills/quality/lint-overlay/SKILL.md",
       "portability": {
         "readiness": "scripted",
         "targets": [
@@ -6491,7 +6885,7 @@
       "license": "MIT",
       "name": "mental-models",
       "owner": "skill-graph-maintainer",
-      "path": "../skills/skills/mental-models/SKILL.md",
+      "path": "../skills/skills/foundations/mental-models/SKILL.md",
       "relations": {
         "boundary": [
           {
@@ -6564,7 +6958,7 @@
       "license": "MIT",
       "name": "merge-queue",
       "owner": "skill-graph-maintainer",
-      "path": "../skills/skills/merge-queue/SKILL.md",
+      "path": "../skills/skills/engineering/merge-queue/SKILL.md",
       "portability": {
         "readiness": "scripted",
         "targets": [
@@ -6586,6 +6980,21 @@
     },
     {
       "activation": {
+        "anti_examples": [
+          "review this PR and decide whether to approve it",
+          "refactor this file while preserving behavior",
+          "decide unit vs integration vs e2e coverage for this feature",
+          "write the eval cases and grader rubric for this router",
+          "block this dangerous git command or secret-bearing tool call"
+        ],
+        "examples": [
+          "design a verification protocol for this multi-step agent workflow before implementation starts",
+          "turn these recurring agent failure modes into a checklist and hard quality gate",
+          "explain why this process step exists instead of just telling the agent to follow it",
+          "choose whether this task needs PDCA, DMAIC, hypothesis-driven development, or V&V-style traceability",
+          "build a methodology-backed plan for preventing defects earlier in this skill audit loop",
+          "convert a vague done checklist into binary gates with evidence receipts"
+        ],
         "keywords": [
           "methodology",
           "method",
@@ -6619,15 +7028,41 @@
       },
       "description": "Use when planning multi-step implementations, designing quality gates, establishing verification protocols, or building agent checklists calibrated to known failure modes. Covers methodology/method/process distinctions, Cleanroom, PSP/TSP, hypothesis-driven development, DMAIC, checklist design, V&V frameworks, EDDOps, quality gates, and PDCA. Do NOT use for code-review verdicts (use `code-review`), behavior-preserving implementation work (use `refactor`), or test strategy (use `testing-strategy`).",
       "domain": "quality/method",
+      "grounding": {
+        "domain_object": "Reference methodology for rigorous agent work: methodology-method-process layering, defect prevention, PSP/TSP measurement, hypothesis-driven development, DMAIC/PDCA, checklist design, V&V, and evaluation-driven LLM agent operations",
+        "evidence_priority": "equal",
+        "failure_modes": [
+          "process_steps_followed_without_underlying_methodology",
+          "quality_gate_treated_as_advisory",
+          "verification_claim_without_evidence_receipt",
+          "checklist_not_calibrated_to_known_failure_modes",
+          "exact_cost_or_success_claim_made_without_source_or_eval",
+          "non_public_neighbor_skill_used_as_public_boundary",
+          "eval_or_routing_state_inflated_without_run"
+        ],
+        "grounding_mode": "universal",
+        "truth_sources": [
+          "https://voljournals.utk.edu/utk_harlan/18/",
+          "https://www.sei.cmu.edu/library/the-team-software-process-tsp/",
+          "https://www.sei.cmu.edu/library/team-software-process-tsp-and-personal-software-process-psp-materials/",
+          "https://asq.org/Quality-resources/Dmaic",
+          "https://asq.org/quality-resources/pdca-cycle",
+          "https://www.who.int/publications/i/item/9789241598590",
+          "https://www.nasa.gov/ivv-overview/",
+          "https://www.nasa.gov/reference/system-engineering-handbook-appendix/",
+          "https://barryoreilly.com/explore/blog/how-to-implement-hypothesis-driven-development/",
+          "https://arxiv.org/abs/2411.13768"
+        ]
+      },
       "health": {
         "drift_check": {
-          "last_verified": "2026-04-01"
+          "last_verified": "2026-05-18"
         },
         "eval_artifacts": "planned",
         "eval_state": "unverified",
-        "freshness": "2026-04-01",
-        "has_grounding": false,
-        "has_relations": false,
+        "freshness": "2026-05-18",
+        "has_grounding": true,
+        "has_relations": true,
         "lifecycle": {
           "review_cadence": "quarterly",
           "stale_after_days": 90
@@ -6638,17 +7073,52 @@
       "license": "MIT",
       "name": "methodology",
       "owner": "skill-graph-maintainer",
-      "path": "../skills/skills/methodology/SKILL.md",
+      "path": "../skills/skills/quality/methodology/SKILL.md",
       "portability": {
         "readiness": "scripted",
         "targets": [
           "skill-md"
         ]
       },
+      "relations": {
+        "boundary": [
+          {
+            "reason": "code-review evaluates a concrete diff or PR; methodology designs the process and gates that make rigorous execution possible before a diff exists",
+            "skill": "code-review"
+          },
+          {
+            "reason": "refactor changes code structure while preserving behavior; methodology defines why and when a process should contain gates, traces, and feedback loops",
+            "skill": "refactor"
+          },
+          {
+            "reason": "testing-strategy decides what software behavior deserves tests and at which level; methodology defines the broader quality-management frame behind verification gates",
+            "skill": "testing-strategy"
+          },
+          {
+            "reason": "agent-eval-design authors agent eval cases, rubrics, and graders; methodology provides the process principles behind evidence-driven agent quality loops",
+            "skill": "agent-eval-design"
+          },
+          {
+            "reason": "guardrails blocks or escalates high-risk tool actions at execution time; methodology designs the preventive process and checklist discipline around work",
+            "skill": "guardrails"
+          }
+        ],
+        "related": [
+          "best-practice",
+          "agent-eval-design",
+          "guardrails",
+          "testing-strategy",
+          "code-review"
+        ],
+        "verify_with": [
+          "best-practice",
+          "agent-eval-design"
+        ]
+      },
       "scope": "reference",
       "stability": "experimental",
       "type": "capability",
-      "version": "1.0.0"
+      "version": "1.1.0"
     },
     {
       "activation": {
@@ -6714,7 +7184,7 @@
       "license": "MIT",
       "name": "microcopy",
       "owner": "skill-graph-maintainer",
-      "path": "../skills/skills/microcopy/SKILL.md",
+      "path": "../skills/skills/design/microcopy/SKILL.md",
       "portability": {
         "readiness": "scripted",
         "targets": [
@@ -6828,7 +7298,7 @@
       "license": "MIT",
       "name": "middleware-patterns",
       "owner": "skill-graph-maintainer",
-      "path": "../skills/skills/middleware-patterns/SKILL.md",
+      "path": "../skills/skills/engineering/frontend/middleware-patterns/SKILL.md",
       "relations": {
         "boundary": [
           {
@@ -6904,7 +7374,7 @@
       "license": "MIT",
       "name": "mobile-responsive-ux",
       "owner": "skill-graph-maintainer",
-      "path": "../skills/skills/mobile-responsive-ux/SKILL.md",
+      "path": "../skills/skills/design/mobile-responsive-ux/SKILL.md",
       "portability": {
         "readiness": "scripted",
         "targets": [
@@ -6985,7 +7455,7 @@
       "license": "MIT",
       "name": "mutation-testing",
       "owner": "skill-graph-maintainer",
-      "path": "../skills/skills/mutation-testing/SKILL.md",
+      "path": "../skills/skills/quality/testing/mutation-testing/SKILL.md",
       "relations": {
         "boundary": [
           {
@@ -7082,7 +7552,7 @@
       "license": "MIT",
       "name": "naming-conventions",
       "owner": "skill-graph-maintainer",
-      "path": "../skills/skills/naming-conventions/SKILL.md",
+      "path": "../skills/skills/engineering/naming-conventions/SKILL.md",
       "portability": {
         "readiness": "scripted",
         "targets": [
@@ -7168,7 +7638,7 @@
       "license": "MIT",
       "name": "observability-modeling",
       "owner": "skill-graph-maintainer",
-      "path": "../skills/skills/observability-modeling/SKILL.md",
+      "path": "../skills/skills/engineering/observability-modeling/SKILL.md",
       "portability": {
         "readiness": "scripted",
         "targets": [
@@ -7280,7 +7750,7 @@
       "license": "MIT",
       "name": "ontology-modeling",
       "owner": "skill-graph-maintainer",
-      "path": "../skills/skills/ontology-modeling/SKILL.md",
+      "path": "../skills/skills/foundations/ontology-modeling/SKILL.md",
       "portability": {
         "readiness": "scripted",
         "targets": [
@@ -7394,7 +7864,7 @@
       "license": "MIT",
       "name": "owasp-security",
       "owner": "skill-graph-maintainer",
-      "path": "../skills/skills/owasp-security/SKILL.md",
+      "path": "../skills/skills/quality/security/owasp-security/SKILL.md",
       "portability": {
         "readiness": "scripted",
         "targets": [
@@ -7489,11 +7959,11 @@
       "health": {
         "comprehension_state": "present",
         "drift_check": {
-          "last_verified": "2026-05-16"
+          "last_verified": "2026-05-18"
         },
-        "eval_artifacts": "planned",
+        "eval_artifacts": "present",
         "eval_state": "unverified",
-        "freshness": "2026-05-16",
+        "freshness": "2026-05-18",
         "has_grounding": false,
         "has_relations": true,
         "lifecycle": {
@@ -7506,7 +7976,7 @@
       "license": "MIT",
       "name": "pattern-recognition",
       "owner": "skill-graph-maintainer",
-      "path": "../skills/skills/pattern-recognition/SKILL.md",
+      "path": "../skills/skills/foundations/pattern-recognition/SKILL.md",
       "portability": {
         "readiness": "scripted",
         "targets": [
@@ -7539,7 +8009,7 @@
       "scope": "portable",
       "stability": "experimental",
       "type": "capability",
-      "version": "1.1.0"
+      "version": "1.2.0"
     },
     {
       "activation": {
@@ -7607,7 +8077,7 @@
       "license": "MIT",
       "name": "performance-budgets",
       "owner": "skill-graph-maintainer",
-      "path": "../skills/skills/performance-budgets/SKILL.md",
+      "path": "../skills/skills/quality/performance-budgets/SKILL.md",
       "relations": {
         "boundary": [
           {
@@ -7697,7 +8167,7 @@
       "license": "MIT",
       "name": "performance-engineering",
       "owner": "skill-graph-maintainer",
-      "path": "../skills/skills/performance-engineering/SKILL.md",
+      "path": "../skills/skills/quality/performance-engineering/SKILL.md",
       "portability": {
         "readiness": "scripted",
         "targets": [
@@ -7806,7 +8276,7 @@
       "license": "MIT",
       "name": "performance-testing",
       "owner": "skill-graph-maintainer",
-      "path": "../skills/skills/performance-testing/SKILL.md",
+      "path": "../skills/skills/quality/testing/performance-testing/SKILL.md",
       "relations": {
         "boundary": [
           {
@@ -7944,7 +8414,7 @@
       "license": "MIT",
       "name": "postgres-rls",
       "owner": "skill-graph-maintainer",
-      "path": "../skills/skills/postgres-rls/SKILL.md",
+      "path": "../skills/skills/engineering/postgres-rls/SKILL.md",
       "portability": {
         "readiness": "declared",
         "targets": [
@@ -8027,7 +8497,7 @@
       "license": "CC-BY-4.0",
       "name": "printify",
       "owner": "skill-graph-maintainer",
-      "path": "../skills/skills/printify/SKILL.md",
+      "path": "../skills/skills/engineering/printify/SKILL.md",
       "relations": {
         "boundary": [
           {
@@ -8096,7 +8566,7 @@
       "license": "MIT",
       "name": "prioritization",
       "owner": "skill-graph-maintainer",
-      "path": "../skills/skills/prioritization/SKILL.md",
+      "path": "../skills/skills/quality/prioritization/SKILL.md",
       "portability": {
         "readiness": "scripted",
         "targets": [
@@ -8166,7 +8636,7 @@
       "license": "CC-BY-4.0",
       "name": "problem-framing",
       "owner": "skill-graph-maintainer",
-      "path": "../skills/skills/problem-framing/SKILL.md",
+      "path": "../skills/skills/design/problem-framing/SKILL.md",
       "relations": {
         "boundary": [
           {
@@ -8260,7 +8730,7 @@
       "license": "MIT",
       "name": "problem-locating-solving",
       "owner": "skill-graph-maintainer",
-      "path": "../skills/skills/problem-locating-solving/SKILL.md",
+      "path": "../skills/skills/engineering/problem-locating-solving/SKILL.md",
       "portability": {
         "readiness": "scripted",
         "targets": [
@@ -8381,7 +8851,7 @@
       "license": "MIT",
       "name": "project-knowledge-extraction",
       "owner": "skill-graph-maintainer",
-      "path": "../skills/skills/project-knowledge-extraction/SKILL.md",
+      "path": "../skills/skills/agent/project-knowledge-extraction/SKILL.md",
       "portability": {
         "readiness": "scripted",
         "targets": [
@@ -8423,18 +8893,19 @@
           "review this AI-generated PR for correctness",
           "scaffold a new skill that teaches prompt engineering",
           "which skill should the router pick for this query?",
-          "the prompt routes to the wrong skill — debug it",
-          "write a doc explaining our prompt conventions"
+          "design an eval suite and grader thresholds for this agent",
+          "debug why the deployed prompt failed last night",
+          "write a doc explaining our prompt conventions for humans only"
         ],
         "examples": [
-          "I'm writing a prompt for the LLM to grade essays — how do I structure it?",
-          "improve this system prompt — the model keeps giving generic answers",
-          "how do I get the model to return strict JSON every time?",
-          "the agent's sub-task prompt is too vague — how do I tighten it?",
-          "few-shot or chain-of-thought for this classification task?",
-          "the model is being talked into bypassing its instructions — fix the prompt",
-          "review this prompt for an LLM-as-judge eval",
-          "how do I prompt the model to ask clarifying questions when ambiguous?"
+          "write a reusable prompt for an LLM to classify support tickets and return one JSON object",
+          "improve this system prompt because the model keeps giving generic answers",
+          "how do I get the model to return strict JSON and retry safely when it does not?",
+          "tighten this sub-agent prompt so it knows what evidence to gather and when to stop",
+          "should this task use zero-shot, few-shot examples, or a separate eval loop?",
+          "the model follows instructions embedded in user content; harden the prompt against injection",
+          "review this LLM-as-judge prompt for clarity and output constraints",
+          "how do I prompt the model to ask clarifying questions only when ambiguity blocks the task?"
         ],
         "keywords": [
           "prompt",
@@ -8445,33 +8916,74 @@
           "iterate on prompt",
           "prompt template",
           "system prompt",
+          "developer prompt",
           "user prompt",
           "few shot",
-          "few shot examples",
+          "few-shot examples",
           "role prompt",
-          "instruction layering",
+          "instruction hierarchy",
+          "message roles",
           "output format",
-          "chain of thought",
+          "structured output",
+          "reasoning prompt",
+          "prompt injection",
           "adversarial input",
           "llm prompt",
           "agent prompt"
+        ],
+        "triggers": [
+          "prompt-craft-skill",
+          "prompt-engineering-skill",
+          "prompt-template-skill"
         ]
       },
       "allowed-tools": "Read Grep Bash Edit",
       "category": "agent",
       "compatibility": {
-        "notes": "Provider-agnostic; principles apply across Anthropic, OpenAI, Google, open-weight models"
+        "notes": "Provider-agnostic prompt-design discipline for OpenAI, Anthropic, Google Gemini, open-weight models, and agent runtimes; provider-specific APIs, role names, structured-output features, and reasoning controls must be checked before implementation."
       },
-      "description": "Use when writing, structuring, evaluating, or improving a prompt for an LLM — whether for one-shot completion, agent dispatch, sub-agent spawning, eval grading, or prompt-engineered tools. Covers role and instruction layering, context insertion order, few-shot example selection, output-format constraints, the negative-instruction principle, defence against adversarial input, and iterative prompt-improvement evaluation. Do NOT use when the task is reviewing AI-generated code (use `code-review`), authoring a SKILL.md (use `skill-scaffold`), or selecting which agent to dispatch (use `skill-router` for cross-skill dispatch decisions).",
+      "concept": {
+        "analogy": "It is like writing a contract for a skilled but unfamiliar collaborator: the contract names the job, evidence, allowed moves, examples, acceptance format, and escalation path.",
+        "boundary": "It does not design the full context stack, create eval harnesses, review generated code, author SKILL.md files, select routing, or debug deployed failures without prompt-specific evidence.",
+        "definition": "Prompt craft is the disciplined design and revision of LLM instructions, examples, context boundaries, and output constraints so a model can perform a target task reliably under measured conditions.",
+        "mental_model": "Treat the prompt as an executable contract. Stable instructions and examples define the function, variable user content supplies arguments, and eval results decide whether the contract works.",
+        "misconception": "A longer or more forceful prompt is not automatically better. Prompt quality is measured by reliable task performance, format compliance, safety behavior, and maintainability under realistic inputs.",
+        "purpose": "It turns vague intent into inspectable instructions with clear task framing, input boundaries, output shape, safety constraints, and revision evidence.",
+        "taxonomy": "Core surfaces are instruction authority, role and tone, task statement, context and retrieval payload, constraints, examples, variable input delimitation, output format, tool-use instructions, safety boundaries, provider controls, and eval-linked revision."
+      },
+      "description": "Use when writing, tightening, evaluating, or repairing an LLM prompt or reusable prompt template for completion, agent dispatch, grading, structured extraction, tool use, or prompt-engineered workflows. Covers instruction hierarchy, message roles, context placement, few-shot examples, structured output, positive constraints, reasoning guidance, prompt-injection resistance, provider differences, and eval-driven iteration. Do NOT use for whole context-system design (use context-engineering), eval dataset or grader design (use agent-eval-design), reviewing generated code (use code-review), authoring SKILL.md files (use skill-scaffold), choosing which skill or agent should activate (use skill-router), or root-causing a deployed failure after outputs already exist (use debugging).",
       "domain": "agent/prompts",
+      "grounding": {
+        "domain_object": "Portable LLM prompt design, instruction hierarchy, structured-output prompting, adversarial-input boundaries, and eval-driven prompt iteration",
+        "evidence_priority": "equal",
+        "failure_modes": [
+          "prompt_shipped_after_one_plausible_output_without_eval",
+          "role_or_instruction_authority_confused_with_user_input",
+          "examples_teach_surface_patterns_instead_of_decision_boundaries",
+          "structured_output_assumed_without_validation_or_schema_support",
+          "negative_instruction_increases_salience_without_positive_target",
+          "hidden_chain_of_thought_requested_or_exposed_unnecessarily",
+          "prompt_injection_treated_as_wording_problem_instead_of_data_instruction_separation",
+          "prompt_changes_claimed_success_without_rerunning_linked_eval"
+        ],
+        "grounding_mode": "universal",
+        "truth_sources": [
+          "https://developers.openai.com/api/docs/guides/prompt-engineering",
+          "https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/overview",
+          "https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/claude-prompting-best-practices",
+          "https://ai.google.dev/gemini-api/docs/prompting-strategies",
+          "https://cheatsheetseries.owasp.org/cheatsheets/LLM_Prompt_Injection_Prevention_Cheat_Sheet.html"
+        ]
+      },
       "health": {
+        "comprehension_state": "present",
         "drift_check": {
-          "last_verified": "2026-05-04"
+          "last_verified": "2026-05-18"
         },
         "eval_artifacts": "planned",
         "eval_state": "unverified",
-        "freshness": "2026-05-04",
-        "has_grounding": false,
+        "freshness": "2026-05-18",
+        "has_grounding": true,
         "has_relations": true,
         "lifecycle": {
           "review_cadence": "quarterly",
@@ -8483,7 +8995,7 @@
       "license": "MIT",
       "name": "prompt-craft",
       "owner": "skill-graph-maintainer",
-      "path": "../skills/skills/prompt-craft/SKILL.md",
+      "path": "../skills/skills/agent/prompt-craft/SKILL.md",
       "portability": {
         "readiness": "scripted",
         "targets": [
@@ -8493,26 +9005,48 @@
       "relations": {
         "boundary": [
           {
-            "reason": "skill-router decides which skill activates for a given query; prompt-craft writes the prompts that the activated skill consumes",
-            "skill": "skill-router"
+            "reason": "context-engineering designs the whole information environment, retrieval payload, memory, compaction, and context budget; prompt-craft shapes the instructions and prompt template that consume that context.",
+            "skill": "context-engineering"
           },
           {
-            "reason": "code-review evaluates code; prompt-craft writes the prompts that produce code (or grade it)",
+            "reason": "agent-eval-design creates eval datasets, graders, thresholds, hard negatives, and harnesses; prompt-craft uses eval evidence to revise prompt wording and structure.",
+            "skill": "agent-eval-design"
+          },
+          {
+            "reason": "code-review evaluates generated or human-written code; prompt-craft writes or improves the prompt that may produce or grade code.",
             "skill": "code-review"
           },
           {
-            "reason": "skill-scaffold authors a new SKILL.md; prompt-craft is the skill consumed when authoring prompts that any skill might use",
+            "reason": "skill-scaffold owns SKILL.md authoring and metadata structure; prompt-craft owns prompts used by agents or tools.",
             "skill": "skill-scaffold"
+          },
+          {
+            "reason": "skill-router decides which skill or agent activates for a user request; prompt-craft writes the selected prompt or dispatch instruction after that routing decision.",
+            "skill": "skill-router"
+          },
+          {
+            "reason": "debugging investigates a known deployed failure and root cause; prompt-craft provides prompt-level remediation once evidence shows prompt wording or structure is the failing surface.",
+            "skill": "debugging"
           }
         ],
         "related": [
+          "context-engineering",
+          "agent-eval-design",
+          "evaluation",
+          "guardrails",
+          "debugging",
           "code-review"
+        ],
+        "verify_with": [
+          "agent-eval-design",
+          "evaluation",
+          "guardrails"
         ]
       },
       "scope": "portable",
       "stability": "experimental",
       "type": "capability",
-      "version": "1.0.0"
+      "version": "1.1.0"
     },
     {
       "activation": {
@@ -8581,7 +9115,7 @@
       "license": "MIT",
       "name": "prompt-injection-defense",
       "owner": "skill-graph-maintainer",
-      "path": "../skills/skills/prompt-injection-defense/SKILL.md",
+      "path": "../skills/skills/quality/security/prompt-injection-defense/SKILL.md",
       "relations": {
         "boundary": [
           {
@@ -8682,7 +9216,7 @@
       "license": "MIT",
       "name": "property-based-testing",
       "owner": "skill-graph-maintainer",
-      "path": "../skills/skills/property-based-testing/SKILL.md",
+      "path": "../skills/skills/quality/testing/property-based-testing/SKILL.md",
       "relations": {
         "boundary": [
           {
@@ -8767,7 +9301,7 @@
       "license": "CC-BY-4.0",
       "name": "prototyping",
       "owner": "skill-graph-maintainer",
-      "path": "../skills/skills/prototyping/SKILL.md",
+      "path": "../skills/skills/design/prototyping/SKILL.md",
       "relations": {
         "boundary": [
           {
@@ -8855,7 +9389,7 @@
       "license": "MIT",
       "name": "query-optimization",
       "owner": "skill-graph-maintainer",
-      "path": "../skills/skills/query-optimization/SKILL.md",
+      "path": "../skills/skills/engineering/data/query-optimization/SKILL.md",
       "relations": {
         "boundary": [
           {
@@ -8929,7 +9463,7 @@
       "license": "MIT",
       "name": "real-time-updates",
       "owner": "skill-graph-maintainer",
-      "path": "../skills/skills/real-time-updates/SKILL.md",
+      "path": "../skills/skills/engineering/real-time-updates/SKILL.md",
       "portability": {
         "readiness": "scripted",
         "targets": [
@@ -9024,7 +9558,7 @@
       "license": "MIT",
       "name": "ref-patterns",
       "owner": "skill-graph-maintainer",
-      "path": "../skills/skills/ref-patterns/SKILL.md",
+      "path": "../skills/skills/engineering/frontend/ref-patterns/SKILL.md",
       "relations": {
         "boundary": [
           {
@@ -9123,7 +9657,7 @@
       "license": "MIT",
       "name": "refactor",
       "owner": "skill-graph-maintainer",
-      "path": "../skills/skills/refactor/SKILL.md",
+      "path": "../skills/skills/engineering/refactor/SKILL.md",
       "portability": {
         "readiness": "scripted",
         "targets": [
@@ -9233,7 +9767,7 @@
       "license": "MIT",
       "name": "rendering-models",
       "owner": "skill-graph-maintainer",
-      "path": "../skills/skills/rendering-models/SKILL.md",
+      "path": "../skills/skills/engineering/frontend/rendering-models/SKILL.md",
       "relations": {
         "boundary": [
           {
@@ -9335,7 +9869,7 @@
       "license": "MIT",
       "name": "replication-patterns",
       "owner": "skill-graph-maintainer",
-      "path": "../skills/skills/replication-patterns/SKILL.md",
+      "path": "../skills/skills/engineering/data/replication-patterns/SKILL.md",
       "relations": {
         "boundary": [
           {
@@ -9420,7 +9954,7 @@
       "license": "CC-BY-4.0",
       "name": "research-synthesis",
       "owner": "skill-graph-maintainer",
-      "path": "../skills/skills/research-synthesis/SKILL.md",
+      "path": "../skills/skills/design/research-synthesis/SKILL.md",
       "relations": {
         "boundary": [
           {
@@ -9520,7 +10054,7 @@
       "license": "MIT",
       "name": "route-handler-design",
       "owner": "skill-graph-maintainer",
-      "path": "../skills/skills/route-handler-design/SKILL.md",
+      "path": "../skills/skills/engineering/frontend/route-handler-design/SKILL.md",
       "relations": {
         "boundary": [
           {
@@ -9614,7 +10148,7 @@
       "license": "MIT",
       "name": "schema-evolution",
       "owner": "skill-graph-maintainer",
-      "path": "../skills/skills/schema-evolution/SKILL.md",
+      "path": "../skills/skills/engineering/data/schema-evolution/SKILL.md",
       "relations": {
         "boundary": [
           {
@@ -9718,7 +10252,7 @@
       "license": "MIT",
       "name": "security-fundamentals",
       "owner": "skill-graph-maintainer",
-      "path": "../skills/skills/security-fundamentals/SKILL.md",
+      "path": "../skills/skills/quality/security/security-fundamentals/SKILL.md",
       "relations": {
         "boundary": [
           {
@@ -9817,7 +10351,7 @@
       "license": "MIT",
       "name": "semantic-center",
       "owner": "skill-graph-maintainer",
-      "path": "../skills/skills/semantic-center/SKILL.md",
+      "path": "../skills/skills/foundations/semantics/semantic-center/SKILL.md",
       "portability": {
         "readiness": "scripted",
         "targets": [
@@ -9927,7 +10461,7 @@
       "license": "MIT",
       "name": "semantic-relations",
       "owner": "skill-graph-maintainer",
-      "path": "../skills/skills/semantic-relations/SKILL.md",
+      "path": "../skills/skills/foundations/semantics/semantic-relations/SKILL.md",
       "portability": {
         "readiness": "scripted",
         "targets": [
@@ -10039,7 +10573,7 @@
       "license": "MIT",
       "name": "semantics",
       "owner": "skill-graph-maintainer",
-      "path": "../skills/skills/semantics/SKILL.md",
+      "path": "../skills/skills/foundations/semantics/semantics/SKILL.md",
       "portability": {
         "readiness": "scripted",
         "targets": [
@@ -10124,25 +10658,45 @@
         "notes": "Stack-agnostic sign-system analysis. The Peirce / Saussure / Barthes models, color-as-sign rules, iconography principles, and affordance taxonomy apply to any UI; example surfaces use generic e-commerce framings — substitute the equivalents from your domain."
       },
       "concept": {
-        "analogy": "|",
-        "boundary": "|",
-        "definition": "Semiotics is the study of *sign systems* — how signifiers (perceivable forms: icons, colors, shapes, positions, words) point to signifieds (concepts, states, actions) via convention, resemblance, or causal connection. Applied to interfaces, it is the discipline of designing and auditing the multi-channel sign systems through which a product communicates with its users. Drawing from Peirce's icon/index/symbol trichotomy, Saussure's signifier/signified dyad, Barthes' denotation/connotation/myth layering, and Norman's affordance theory, it treats every interface element as a sign whose meaning is constructed, not given.",
-        "mental_model": "|",
-        "misconception": "|",
-        "purpose": "|",
-        "taxonomy": "|"
+        "analogy": "Semiotics is like stage direction for an interface: the words matter, but gesture, placement, lighting, costume, and timing tell the audience what the scene means before anyone explains it.",
+        "boundary": "It owns sign-to-meaning analysis across visual and textual systems, not the final wording, visual craft, accessibility compliance, formal ontology, database modeling, or morphology rules.",
+        "definition": "Semiotics is the study of sign systems: how signifiers such as icons, colors, shapes, positions, words, names, and interaction cues point to signified concepts, states, actions, or judgments through resemblance, causal trace, convention, and cultural association.",
+        "mental_model": "Treat an interface as a layered sign system. Peirce helps classify icon, index, and symbol; Saussure separates signifier from signified; Barthes separates denotation, connotation, and myth; Norman's signifiers connect perceivable cues to expected action. A good surface aligns those layers so the user reads the intended meaning without extra inference.",
+        "misconception": "The common mistake is treating sign-system failures as taste or polish. They are communication failures: if green signals good in one place and bad in another, or a non-interactive label looks clickable, the system is teaching users the wrong language.",
+        "purpose": "It makes implicit communication explicit before users misread the product. The goal is to prevent sign drift, color-only state signaling, icon polysemy, misleading affordances, and code/API names that force readers to inspect implementation before they understand intent.",
+        "taxonomy": "Core lenses include Peircean icon/index/symbol, Saussurean signifier/signified, Barthesian denotation/connotation/myth, affordance/signifier/anti-affordance, color-as-sign, shape/position channels, icon-system coherence, and code/API signifiers."
       },
       "description": "Use when designing or auditing icon systems, colors/badges/shapes, visual metaphors, interface signs, or naming-plus-visual surfaces that users misread. Covers semiotic reasoning across icon/index/symbol, signifier/signified, denotation/connotation/myth, color/shape/position/iconography, affordances, code/API signifiers, and semiotic-coherence audits. Do NOT use for actual UI wording (use `microcopy`), palette/typography craft (use `visual-design-foundations`), accessibility or contrast compliance (use `a11y`), formal class hierarchies, or word morphology rules.",
       "domain": "design/semantics",
+      "grounding": {
+        "domain_object": "Interface sign-system analysis for icons, color, badges, affordances, visual metaphors, and code/API signifiers",
+        "evidence_priority": "equal",
+        "failure_modes": [
+          "icon_polysemy_masked_as_style_issue",
+          "color_connotation_conflated_with_metric_direction",
+          "disabled_state_lacks_anti_affordance",
+          "abstract_icon_unpaired_before_convention_is_learned",
+          "identifier_or_api_name_forces_reader_to_open_implementation"
+        ],
+        "grounding_mode": "universal",
+        "truth_sources": [
+          "https://plato.stanford.edu/archives/spr2024/entries/peirce-semiotics/",
+          "https://openlibrary.org/books/OL23291521M/Course_in_general_linguistics.",
+          "https://openlibrary.org/books/OL21215289M/Mythologies",
+          "https://jnd.org/signifiers-not-affordances/",
+          "https://www.nngroup.com/articles/icon-usability/",
+          "https://www.w3.org/WAI/WCAG22/Understanding/use-of-color"
+        ]
+      },
       "health": {
         "comprehension_state": "present",
         "drift_check": {
-          "last_verified": "2026-05-16"
+          "last_verified": "2026-05-18"
         },
-        "eval_artifacts": "present",
+        "eval_artifacts": "planned",
         "eval_state": "unverified",
-        "freshness": "2026-05-16",
-        "has_grounding": false,
+        "freshness": "2026-05-18",
+        "has_grounding": true,
         "has_relations": true,
         "lifecycle": {
           "review_cadence": "quarterly",
@@ -10154,7 +10708,7 @@
       "license": "MIT",
       "name": "semiotics",
       "owner": "skill-graph-maintainer",
-      "path": "../skills/skills/semiotics/SKILL.md",
+      "path": "../skills/skills/design/semiotics/SKILL.md",
       "portability": {
         "readiness": "scripted",
         "targets": [
@@ -10194,7 +10748,7 @@
       "scope": "portable",
       "stability": "experimental",
       "type": "capability",
-      "version": "1.1.0"
+      "version": "1.2.0"
     },
     {
       "activation": {
@@ -10249,7 +10803,7 @@
       "license": "MIT",
       "name": "seo-strategy",
       "owner": "skill-graph-maintainer",
-      "path": "../skills/skills/seo-strategy/SKILL.md",
+      "path": "../skills/skills/quality/seo-strategy/SKILL.md",
       "portability": {
         "readiness": "scripted",
         "targets": [
@@ -10335,7 +10889,7 @@
       "license": "MIT",
       "name": "server-actions-design",
       "owner": "skill-graph-maintainer",
-      "path": "../skills/skills/server-actions-design/SKILL.md",
+      "path": "../skills/skills/engineering/frontend/server-actions-design/SKILL.md",
       "relations": {
         "boundary": [
           {
@@ -10428,7 +10982,7 @@
       "license": "MIT",
       "name": "server-components-design",
       "owner": "skill-graph-maintainer",
-      "path": "../skills/skills/server-components-design/SKILL.md",
+      "path": "../skills/skills/engineering/frontend/server-components-design/SKILL.md",
       "relations": {
         "boundary": [
           {
@@ -10523,7 +11077,7 @@
       "license": "MIT",
       "name": "sharding-strategy",
       "owner": "skill-graph-maintainer",
-      "path": "../skills/skills/sharding-strategy/SKILL.md",
+      "path": "../skills/skills/engineering/data/sharding-strategy/SKILL.md",
       "relations": {
         "boundary": [
           {
@@ -10610,7 +11164,7 @@
       "license": "CC-BY-4.0",
       "name": "shopify",
       "owner": "skill-graph-maintainer",
-      "path": "../skills/skills/shopify/SKILL.md",
+      "path": "../skills/skills/engineering/shopify/SKILL.md",
       "relations": {
         "boundary": [
           {
@@ -10729,9 +11283,9 @@
           }
         },
         "drift_detected": true,
-        "eval_artifacts": "planned",
+        "eval_artifacts": "present",
         "eval_state": "unverified",
-        "freshness": "2026-05-13",
+        "freshness": "2026-05-18",
         "has_grounding": true,
         "has_relations": true,
         "lifecycle": {
@@ -10744,7 +11298,7 @@
       "license": "MIT",
       "name": "skill-infrastructure",
       "owner": "skill-graph-maintainer",
-      "path": "../skills/skills/skill-infrastructure/SKILL.md",
+      "path": "../skills/skills/agent/skill-system/skill-infrastructure/SKILL.md",
       "portability": {
         "readiness": "scripted",
         "targets": [
@@ -10779,7 +11333,7 @@
       "scope": "portable",
       "stability": "experimental",
       "type": "capability",
-      "version": "1.0.0"
+      "version": "1.1.0"
     },
     {
       "activation": {
@@ -10975,7 +11529,7 @@
       "license": "MIT",
       "name": "skill-router",
       "owner": "skill-graph-maintainer",
-      "path": "../skills/skills/skill-router/SKILL.md",
+      "path": "../skills/skills/agent/skill-system/skill-router/SKILL.md",
       "portability": {
         "readiness": "scripted",
         "targets": [
@@ -11036,12 +11590,15 @@
           "skill scaffold",
           "skill template",
           "skill frontmatter",
+          "skill metadata protocol v6",
           "skill graph contract",
           "capability or workflow",
           "description vs coverage",
           "archetype selection",
           "skill body layout",
           "teaching layer",
+          "understanding fields",
+          "health block",
           "placeholder sludge",
           "cargo cult meta sections",
           "lint first authoring",
@@ -11053,38 +11610,45 @@
       "compatibility": {
         "notes": "Markdown, YAML, JSON Schema"
       },
+      "concept": {
+        "analogy": "A skill scaffold is like construction formwork: it gives the new structure its shape while the concrete sets, but the temporary braces must be removed before the finished building is occupied.",
+        "boundary": "It is not routine editing, router debugging, static graph audit, general documentation, or domain-content review for an existing skill.",
+        "definition": "Skill scaffolding is the protocol-backed process of creating a SKILL.md whose frontmatter, body sections, relations, grounding, and verification claims are coherent from the first commit.",
+        "mental_model": "Think of a skill as a graph node with a routing contract, an instructional body, typed edges, evidence, and health state. Scaffolding is the work of shaping all five together before the node joins the graph.",
+        "misconception": "The template is not copy text to fill in. It is an authoring instrument whose teaching layer must be removed and whose claims must be re-earned for the new skill.",
+        "purpose": "It prevents cargo-culted templates, vague activation text, false eval claims, dangling relation targets, and stale schema assumptions from entering a skill library.",
+        "taxonomy": "Authoring workflow adjacent to graph-audit, skill-router, skill-infrastructure, and naming-conventions; distinct because it happens before a skill is fully authored."
+      },
       "description": "Use when creating a new SKILL.md from scratch, adapting an existing skill to a different archetype, or teaching another author the canonical Skill Metadata Protocol frontmatter and body structure. Covers schema-conformant frontmatter, archetype-aware body layout, semantic-layer discipline (description vs Coverage), teaching-layer mechanics (TEMPLATE NOTE blockquotes), the lint-first authoring gate, and the routing-eval honesty rule. Do NOT use when modifying an already-written skill (edit it directly), when writing general technical documentation (use `documentation`), or when fixing a malformed skill detected by lint (use `graph-audit` for systematic library health, not authoring scaffold help).",
       "domain": "agent/skill-system",
       "grounding": {
-        "domain_object": "Authoring a new SKILL.md against Skill Metadata Protocol v5",
-        "evidence_priority": "repo_code_first",
+        "domain_object": "Authoring a new SKILL.md against Skill Metadata Protocol v6",
+        "evidence_priority": "equal",
         "failure_modes": [
           "placeholder_sludge",
           "cargo_cult_meta_sections",
           "description_coverage_collapse",
           "authoring_gate_skipped",
-          "inflated_routing_eval"
+          "inflated_routing_eval",
+          "v5_v6_contract_drift"
         ],
-        "grounding_mode": "repo_specific",
+        "grounding_mode": "hybrid",
         "truth_sources": [
-          "examples/skill-metadata-template.md",
-          "schemas/skill.v4.schema.json",
-          "docs/skill-metadata-protocol.md"
+          "https://github.com/jacob-balslev/skill-graph/blob/main/examples/skill-metadata-template.md",
+          "https://github.com/jacob-balslev/skill-metadata-protocol/blob/main/SKILL_METADATA_PROTOCOL.md",
+          "https://github.com/jacob-balslev/skill-metadata-protocol/blob/main/schemas/skill.v6.schema.json",
+          "https://github.com/jacob-balslev/skill-metadata-protocol/blob/main/docs/field-reference.md",
+          "https://github.com/jacob-balslev/skill-metadata-protocol/blob/main/docs/migrations/v5-to-v6.md"
         ]
       },
       "health": {
+        "comprehension_state": "present",
         "drift_check": {
-          "last_verified": "2026-05-14",
-          "truth_source_hashes": {
-            "docs/skill-metadata-protocol.md": "08ad662c5f470fac337aa559dacd0b9e882be7df8d7918f20a5d4e3aaaaa2ed7",
-            "examples/skill-metadata-template.md": "42b3185ebf53f9efc6a32977ee9408efce0957c0a7ed62cabca97cb83c33600a",
-            "schemas/skill.v4.schema.json": "e83d6be8b1314488b39b8c7bec2784d6459980d3f9965be68ad1c9a53865622d"
-          }
+          "last_verified": "2026-05-18"
         },
-        "drift_detected": true,
         "eval_artifacts": "planned",
         "eval_state": "unverified",
-        "freshness": "2026-05-04",
+        "freshness": "2026-05-18",
         "has_grounding": true,
         "has_relations": true,
         "lifecycle": {
@@ -11097,7 +11661,7 @@
       "license": "MIT",
       "name": "skill-scaffold",
       "owner": "skill-graph-maintainer",
-      "path": "../skills/skills/skill-scaffold/SKILL.md",
+      "path": "../skills/skills/agent/skill-system/skill-scaffold/SKILL.md",
       "portability": {
         "readiness": "scripted",
         "targets": [
@@ -11126,7 +11690,7 @@
       "scope": "reference",
       "stability": "experimental",
       "type": "capability",
-      "version": "1.0.0"
+      "version": "1.1.0"
     },
     {
       "activation": {
@@ -11192,7 +11756,7 @@
       "license": "MIT",
       "name": "snapshot-testing",
       "owner": "skill-graph-maintainer",
-      "path": "../skills/skills/snapshot-testing/SKILL.md",
+      "path": "../skills/skills/quality/testing/snapshot-testing/SKILL.md",
       "relations": {
         "boundary": [
           {
@@ -11233,10 +11797,13 @@
         "keywords": [
           "spec driven development",
           "SDD",
+          "specification first",
           "technical plan",
           "task decomposition",
-          "specification",
-          "architecture plan",
+          "spec.md",
+          "plan.md",
+          "tasks.md",
+          "requirements before code",
           "phase gates",
           "AI engineering methodology"
         ],
@@ -11251,16 +11818,34 @@
       "compatibility": {
         "notes": "Markdown, Git, agent-skill runtimes"
       },
-      "description": "This skill provides Spec Driven Development (SDD) expertise for AI engineering: the Specify → Plan → Tasks → Implement lifecycle. Use when starting any non-trivial task, refactoring a core module, or when an agent loop has stalled due to ambiguous requirements. Do NOT use for one-line edits or README fixes.",
+      "description": "Use when starting a non-trivial feature, refactor, or agent implementation that needs a written spec, plan, task breakdown, and verification path before code changes. Covers Spec Kit-style SDD phases, requirements-vs-plan separation, task traceability, review gates, and spec-compliance verification. Do NOT use for one-line edits, README-only fixes, post-implementation code review (use `code-review`), or test-level decisions (use `testing-strategy`).",
       "domain": "engineering/methodology",
+      "grounding": {
+        "domain_object": "Spec-driven development workflow for AI-assisted engineering using specification, plan, task, implementation, and verification artifacts",
+        "evidence_priority": "equal",
+        "failure_modes": [
+          "code_started_before_spec_or_plan",
+          "implementation_plan_missing_architecture_contracts_or_tests",
+          "tasks_not_traceable_to_plan_or_success_criteria",
+          "verification_not_mapped_to_spec_requirements",
+          "workflow_requires_vendor_specific_commands_when_plain_markdown_would_work"
+        ],
+        "grounding_mode": "hybrid",
+        "truth_sources": [
+          "https://github.github.com/spec-kit/index.html",
+          "https://github.github.com/spec-kit/reference/workflows.html",
+          "https://github.com/github/spec-kit",
+          "https://standards.ieee.org/ieee/29148/6937/"
+        ]
+      },
       "health": {
         "drift_check": {
-          "last_verified": "2026-03-28"
+          "last_verified": "2026-05-18"
         },
         "eval_artifacts": "planned",
         "eval_state": "unverified",
-        "freshness": "2026-03-28",
-        "has_grounding": false,
+        "freshness": "2026-05-18",
+        "has_grounding": true,
         "has_relations": true,
         "lifecycle": {
           "review_cadence": "quarterly",
@@ -11272,7 +11857,7 @@
       "license": "MIT",
       "name": "spec-driven-development",
       "owner": "skill-graph-maintainer",
-      "path": "../skills/skills/spec-driven-development/SKILL.md",
+      "path": "../skills/skills/engineering/spec-driven-development/SKILL.md",
       "portability": {
         "readiness": "scripted",
         "targets": [
@@ -11280,14 +11865,29 @@
         ]
       },
       "relations": {
+        "boundary": [
+          {
+            "reason": "code-review evaluates a concrete diff after implementation; spec-driven-development shapes the spec, plan, and task path before implementation",
+            "skill": "code-review"
+          },
+          {
+            "reason": "testing-strategy decides the right test level and regression target; spec-driven-development only requires that the plan names verification evidence traceable to the spec",
+            "skill": "testing-strategy"
+          }
+        ],
+        "related": [
+          "testing-strategy",
+          "evaluation"
+        ],
         "verify_with": [
-          "code-review"
+          "code-review",
+          "testing-strategy"
         ]
       },
       "scope": "reference",
       "stability": "experimental",
       "type": "workflow",
-      "version": "1.0.0"
+      "version": "1.1.0"
     },
     {
       "activation": {
@@ -11341,7 +11941,7 @@
       "license": "MIT",
       "name": "state-machine-modeling",
       "owner": "skill-graph-maintainer",
-      "path": "../skills/skills/state-machine-modeling/SKILL.md",
+      "path": "../skills/skills/engineering/state-machine-modeling/SKILL.md",
       "portability": {
         "readiness": "scripted",
         "targets": [
@@ -11455,7 +12055,7 @@
       "license": "MIT",
       "name": "state-management",
       "owner": "skill-graph-maintainer",
-      "path": "../skills/skills/state-management/SKILL.md",
+      "path": "../skills/skills/engineering/frontend/state-management/SKILL.md",
       "relations": {
         "boundary": [
           {
@@ -11561,7 +12161,7 @@
       "license": "MIT",
       "name": "streaming-architecture",
       "owner": "skill-graph-maintainer",
-      "path": "../skills/skills/streaming-architecture/SKILL.md",
+      "path": "../skills/skills/engineering/streaming-architecture/SKILL.md",
       "relations": {
         "boundary": [
           {
@@ -11601,6 +12201,63 @@
     {
       "activation": {
         "keywords": [
+          "stripeEventMapper",
+          "stripe-event-mapper",
+          "stripe event mapper",
+          "stripe webhook event",
+          "stripe_order_links",
+          "payout reconciliation",
+          "payout matching",
+          "balance transaction"
+        ],
+        "triggers": [
+          "stripe-skill",
+          "reconciliation-skill",
+          "payment-skill",
+          "stripe-fee-skill",
+          "stripe-webhook-skill",
+          "stripe-refund-skill",
+          "stripe-dispute-skill",
+          "payment-reconciliation-skill"
+        ]
+      },
+      "category": "engineering",
+      "description": "Stripe payment reconciliation for Sales Hub: webhook lifecycle (signature verification, idempotency, PII-redacted raw event storage, order linking, ledger projection, normalization queueing), fee allocation from balance transactions, refund/dispute handling, currency conversion via fx_rates_daily, GDPR erasure, and the gateway allocator registry. Covers stripe_events_raw, stripe_payments_raw, stripe_order_links, and the `stripe_balance_transactions` fee-allocation read path used by jobs. Use when reconciling Stripe charges against platform orders, allocating Stripe fees to order line items, handling refunds or disputes from Stripe, debugging stripe_order_links mismatches, implementing payment-to-order linkage, or building financial event views. Do NOT use for Shopify Payments fee allocation (use shopify / gateway-specific finance logic), full 8-component profit formula (use data-reconciliation skill), or subscription billing management (use billing-subscription).",
+      "health": {
+        "eval_artifacts": "present",
+        "eval_state": "passing",
+        "freshness": "2026-05-18",
+        "has_grounding": false,
+        "has_relations": true,
+        "routing_eval": "present"
+      },
+      "id": "stripe-ledger-recon",
+      "name": "stripe-ledger-recon",
+      "owner": "claude",
+      "path": "../skills/skills/engineering/stripe-ledger-recon/SKILL.md",
+      "relations": {
+        "adjacent": [
+          "deterministic",
+          "data-reconciliation",
+          "financial-allocation",
+          "feature-gating"
+        ],
+        "boundary": [
+          "webhook-integration",
+          "entity-resolution",
+          "shopify"
+        ],
+        "verify_with": [
+          "feature-gating"
+        ]
+      },
+      "scope": "codebase",
+      "type": "capability",
+      "version": "3.0.0"
+    },
+    {
+      "activation": {
+        "keywords": [
           "summarization",
           "summary",
           "TLDR",
@@ -11624,16 +12281,46 @@
       "compatibility": {
         "notes": "Markdown, Git, agent-skill runtimes"
       },
-      "description": "Prose condensation and abstraction patterns for AI agents: extracting key findings from long reports, writing executive summaries, creating TLDRs, compressing context for handoffs between agents, progressive summarization (literature notes → permanent notes), audit report condensation, and the discipline of deciding what to keep and what to cut when space is limited. Use when summarizing session findings, writing wrap reports, condensing research for memory files, creating executive summaries of audits, compressing context before agent handoffs, or distilling long documents into actionable briefs. Do NOT use for data compression algorithms (use compression), context window budget management (use token-efficiency), or document structure (use editorial-standards).",
+      "concept": {
+        "analogy": "Summarization is like packing an evidence suitcase for a trip: you cannot bring the whole room, so you choose the items the next person will actually need, label where they came from, and leave a map back to the rest.",
+        "boundary": "It is not byte compression, context-budget math, working-set selection, prose tone repair, or quality scoring. Those neighboring skills decide size constraints, context membership, style, and evaluation; summarization preserves meaning inside the chosen constraint.",
+        "definition": "Summarization is semantic compression of prose: creating a shorter artifact that preserves the source's main meaning, task-relevant evidence, decisions, and provenance while intentionally omitting lower-value detail.",
+        "mental_model": "Treat every summary as a lossy transform with a declared audience and job. First choose the summary level, then preserve the causal chain and evidence links, then cut material whose absence will not harm the reader's next decision.",
+        "misconception": "Shorter is not automatically better. A summary that drops the decisive evidence, hides findings, or invents a clean story is worse than the messy source.",
+        "purpose": "It turns long agent outputs, research notes, audit reports, and handoff materials into usable briefs without losing the facts a successor needs to trust or continue the work.",
+        "taxonomy": "Core forms include TLDR, executive summary, brief, condensed report, progressive summary, agent handoff, research-to-memory note, and audit summary. Core methods include extractive, abstractive, synthesis, evidence-linking, and priority grouping."
+      },
+      "description": "Use when condensing prose while preserving meaning: session findings, wrap reports, research briefs, executive summaries, TLDRs, agent handoffs, progressive summaries, audit summaries, and long-document distillation. Covers extractive vs abstractive summarization, what to keep vs drop, evidence preservation, summary levels, handoff summaries, and audit-report condensation without hiding findings. Do NOT use for byte/data compression algorithms (use `compression`), context-window budget math or compaction triggers (use `context-window`), working-set selection (use `context-management`), prose tone repair (use `writing-humanizer`), or quality scoring (use `evaluation`).",
       "domain": "agent/cognition",
+      "grounding": {
+        "domain_object": "Prose summarization and agent handoff condensation",
+        "evidence_priority": "equal",
+        "failure_modes": [
+          "summary_drops_decisive_evidence",
+          "summary_introduces_new_claims",
+          "audit_summary_hides_findings",
+          "handoff_omits_next_step",
+          "style_polish_overrides_meaning_preservation"
+        ],
+        "grounding_mode": "hybrid",
+        "truth_sources": [
+          "https://owl.purdue.edu/owl/research_and_citation/using_research/quoting_paraphrasing_and_summarizing/index.html",
+          "https://fortelabs.com/blog/progressive-summarization-a-practical-technique-for-designing-discoverable-notes/",
+          "https://arxiv.org/abs/2204.09519",
+          "https://github.com/jacob-balslev/skills/blob/main/skills/agent/context/context-management/SKILL.md",
+          "https://github.com/jacob-balslev/skills/blob/main/skills/agent/context/context-window/SKILL.md",
+          "https://github.com/jacob-balslev/skills/blob/main/skills/design/writing-humanizer/SKILL.md"
+        ]
+      },
       "health": {
+        "comprehension_state": "present",
         "drift_check": {
-          "last_verified": "2026-03-28"
+          "last_verified": "2026-05-18"
         },
         "eval_artifacts": "planned",
         "eval_state": "unverified",
-        "freshness": "2026-03-28",
-        "has_grounding": false,
+        "freshness": "2026-05-18",
+        "has_grounding": true,
         "has_relations": true,
         "lifecycle": {
           "review_cadence": "quarterly",
@@ -11645,7 +12332,7 @@
       "license": "MIT",
       "name": "summarization",
       "owner": "skill-graph-maintainer",
-      "path": "../skills/skills/summarization/SKILL.md",
+      "path": "../skills/skills/agent/summarization/SKILL.md",
       "portability": {
         "readiness": "scripted",
         "targets": [
@@ -11654,21 +12341,41 @@
       },
       "relations": {
         "boundary": [
-          "compression",
-          "context-window"
+          {
+            "reason": "compression owns byte, payload, and storage compression; summarization owns semantic prose condensation",
+            "skill": "compression"
+          },
+          {
+            "reason": "context-window owns token-budget math and compaction triggers; summarization is one technique for shrinking prose after the budget decision is made",
+            "skill": "context-window"
+          },
+          {
+            "reason": "context-management decides what belongs in the active working set; summarization condenses selected material into a usable form",
+            "skill": "context-management"
+          },
+          {
+            "reason": "writing-humanizer repairs tone and AI-patterned prose; summarization decides what meaning to preserve and what to omit",
+            "skill": "writing-humanizer"
+          },
+          {
+            "reason": "evaluation scores work quality; summarization may report scores but does not define the rubric",
+            "skill": "evaluation"
+          }
         ],
         "related": [
           "context-management",
+          "context-window",
           "writing-humanizer"
         ],
         "verify_with": [
-          "evaluation"
+          "evaluation",
+          "writing-humanizer"
         ]
       },
       "scope": "reference",
       "stability": "experimental",
       "type": "capability",
-      "version": "1.0.0"
+      "version": "1.1.0"
     },
     {
       "activation": {
@@ -11737,7 +12444,7 @@
       "license": "MIT",
       "name": "suspense-patterns",
       "owner": "skill-graph-maintainer",
-      "path": "../skills/skills/suspense-patterns/SKILL.md",
+      "path": "../skills/skills/engineering/frontend/suspense-patterns/SKILL.md",
       "relations": {
         "boundary": [
           {
@@ -11818,7 +12525,7 @@
       "license": "MIT",
       "name": "system-interface-contracts",
       "owner": "skill-graph-maintainer",
-      "path": "../skills/skills/system-interface-contracts/SKILL.md",
+      "path": "../skills/skills/engineering/system-interface-contracts/SKILL.md",
       "portability": {
         "readiness": "scripted",
         "targets": [
@@ -11931,7 +12638,7 @@
       "license": "MIT",
       "name": "task-analysis",
       "owner": "skill-graph-maintainer",
-      "path": "../skills/skills/task-analysis/SKILL.md",
+      "path": "../skills/skills/foundations/task-analysis/SKILL.md",
       "portability": {
         "readiness": "scripted",
         "targets": [
@@ -11985,6 +12692,67 @@
       "stability": "experimental",
       "type": "workflow",
       "version": "1.0.0"
+    },
+    {
+      "activation": {
+        "keywords": [
+          "optimal path",
+          "plan vs act",
+          "task decomposition",
+          "critical path",
+          "parallelization strategy",
+          "agent architecture",
+          "scope management",
+          "execution efficiency",
+          "shortest path to solution",
+          "when to plan",
+          "when to act immediately",
+          "fresh approach",
+          "task complexity assessment"
+        ],
+        "triggers": [
+          "task-path-optimization",
+          "execution-strategy",
+          "approach-selection"
+        ]
+      },
+      "category": "agent",
+      "description": "This skill provides decision frameworks for choosing the optimal execution path before starting work: plan-vs-act gates, agent architecture selection (chaining, routing, parallelization, orchestrator-worker, evaluator-optimizer), scope management heuristics, critical-path analysis across task networks, and context budget awareness. Use when deciding how to approach a task (plan first vs act immediately), decomposing complex work into parallelizable subtasks, choosing between subagent patterns, or when a task has failed twice and needs a fresh approach. Do NOT use for executing the chosen plan (use task-execution), debugging failures (use troubleshooting or diagnosis), or tool-level efficiency (use tool-call-strategy).",
+      "health": {
+        "comprehension_state": "present",
+        "eval_artifacts": "present",
+        "eval_state": "passing",
+        "freshness": "2026-05-18",
+        "has_grounding": false,
+        "has_relations": true,
+        "routing_eval": "present"
+      },
+      "id": "task-path-optimization",
+      "name": "task-path-optimization",
+      "owner": "claude",
+      "path": "../skills/skills/agent/task-path-optimization/SKILL.md",
+      "relations": {
+        "adjacent": [
+          "task-lifecycle",
+          "agents",
+          "task-sizing",
+          "sequential-thinking",
+          "codebase-search",
+          "task-execution"
+        ],
+        "boundary": [
+          "tool-call-strategy",
+          "diagnosis",
+          "troubleshooting"
+        ],
+        "verify_with": [
+          "task-evaluation",
+          "code-review"
+        ]
+      },
+      "scope": "portable",
+      "type": "capability",
+      "version": "1.1.0"
     },
     {
       "activation": {
@@ -12050,7 +12818,7 @@
       "license": "MIT",
       "name": "taxonomy-design",
       "owner": "skill-graph-maintainer",
-      "path": "../skills/skills/taxonomy-design/SKILL.md",
+      "path": "../skills/skills/foundations/taxonomy-design/SKILL.md",
       "portability": {
         "readiness": "scripted",
         "targets": [
@@ -12154,7 +12922,7 @@
       "license": "MIT",
       "name": "test-coverage-strategy",
       "owner": "skill-graph-maintainer",
-      "path": "../skills/skills/test-coverage-strategy/SKILL.md",
+      "path": "../skills/skills/quality/testing/test-coverage-strategy/SKILL.md",
       "relations": {
         "boundary": [
           {
@@ -12254,7 +13022,7 @@
       "license": "MIT",
       "name": "test-doubles-design",
       "owner": "skill-graph-maintainer",
-      "path": "../skills/skills/test-doubles-design/SKILL.md",
+      "path": "../skills/skills/quality/testing/test-doubles-design/SKILL.md",
       "relations": {
         "boundary": [
           {
@@ -12331,33 +13099,65 @@
       "allowed-tools": "Read Grep",
       "category": "quality",
       "concept": {
-        "analogy": "|",
-        "boundary": "|",
-        "definition": "Test-Driven Development is a software design discipline in which the test for a behavior is written before the production code that satisfies the test, then production code is written until the test passes, then the code is restructured to improve its shape while the test continues to pass. The cycle — red (failing test), green (passing test), refactor (clean code, still passing) — is the unit of work, and the test suite is the design pressure that shapes the production code. TDD is not 'writing tests first' as a procedural rule; it is using the act of writing a test as the moment to design the interface, decompose the responsibility, and discover what the code should be. The tests are a beneficial side effect of doing design through the test-writing lens; mistaking the side effect for the purpose is the most common failure mode.",
-        "mental_model": "|",
-        "misconception": "|",
-        "purpose": "|",
-        "taxonomy": "|"
+        "analogy": "TDD is to code design what a piano-teacher metronome is to a student performance: the rhythm is not the music, but it surfaces rushed measures and hesitations early enough to correct them before they become habit.",
+        "boundary": "Testing-strategy chooses what level and scope deserves a test; TDD prescribes the rhythm inside that chosen surface. Test-doubles-design chooses the stand-ins used by tests; TDD chooses when and why tests are written. Refactor owns behavior-preserving restructuring; TDD invokes refactor as the third beat. Eval-driven-development is the LLM analog with statistical pass-rate rather than binary test pass/fail.",
+        "definition": "Test-Driven Development is a software design discipline in which the test for a behavior is written before the production code that satisfies it, the production code is written until the test passes, and the code is then refactored while the test suite stays green. The red-green-refactor cycle is the unit of work; the test suite is the design pressure that shapes the code.",
+        "mental_model": "TDD applies pressure through short red-green-refactor loops. Red names one behavior before implementation, green proves the smallest production change satisfies it, and refactor improves the code and test shape without changing behavior. London-school TDD applies pressure through collaborator interactions and mocks; Detroit-school TDD applies pressure through observable state and sparse doubles; hybrid practice names which pressure is intentional.",
+        "misconception": "The common mistake is treating TDD as a mechanical rule to write tests first. Tests are not the point; they are the artifact of design through a test-shaped tool. A team that writes tests first but ignores design pressure gets the cost without the benefit.",
+        "purpose": "TDD solves the problem of tests written after implementation merely mirroring the implementation. Writing the test first forces the interface, responsibility, and observable behavior to be designed before internal structure hardens. Regression coverage is a side effect; the primary purpose is design feedback while change is still cheap.",
+        "taxonomy": "Prerequisite: testing-strategy selects the test surface. Composition: test-doubles-design supplies mocks, stubs, fakes, spies, and dummies when the chosen TDD school needs them. Phase relation: refactor is the third beat of each cycle. Alternative/analog: eval-driven-development adapts the iteration-first discipline to stochastic LLM systems."
       },
       "description": "Use when reasoning about Test-Driven Development as a design discipline rather than a workflow: the red-green-refactor cycle as a feedback loop, the difference between London-school (outside-in, interaction-heavy, mock-driven) and Detroit-school (inside-out, state-heavy, classicist) TDD, the role of TDD as a design tool (how tests pressure code into more decomposable shapes), the connection between TDD and emergent design, the boundary between TDD and prior-test-suites, why TDD's failure mode is not 'no tests' but 'tests that mirror implementation', and the empirical record of TDD's effects on defect density, design quality, and development velocity. Do NOT use for the strategy of what to test at which level (use testing-strategy), the construction of test doubles (use test-doubles-design), the discipline of LLM eval iteration (use eval-driven-development), or general-software process workflow (use the obra/superpowers test-driven-development workflow skill — this skill is the concept-shape complement).",
       "domain": "quality/testing",
+      "grounding": {
+        "domain_object": "Reference-grounded Test-Driven Development concept, school taxonomy, design-discipline mechanics, and empirical evidence boundaries",
+        "evidence_priority": "equal",
+        "failure_modes": [
+          "treating_test_first_order_as_tdd_without_refactor_design_pressure",
+          "over_specifying_interactions_so_tests_mirror_implementation",
+          "choosing_london_or_detroit_school_accidentally",
+          "using_tdd_as_a_substitute_for_testing_strategy",
+          "treating_empirical_defect_reduction_numbers_as_guaranteed_outcomes",
+          "claiming_eval_or_routing_verification_without_a_run"
+        ],
+        "grounding_mode": "universal",
+        "truth_sources": [
+          "https://martinfowler.com/bliki/TestDrivenDevelopment.html",
+          "https://martinfowler.com/articles/mocksArentStubs.html",
+          "https://link.springer.com/article/10.1007/s10664-008-9062-z",
+          "https://ieeexplore.ieee.org/document/1423994",
+          "https://ieeexplore.ieee.org/document/4493089",
+          "https://doi.org/10.1016/j.infsof.2016.02.004",
+          "https://dannorth.net/introducing-bdd/"
+        ]
+      },
       "health": {
         "comprehension_state": "present",
         "drift_check": {
-          "last_verified": "2026-05-16"
+          "last_verified": "2026-05-18"
         },
         "eval_artifacts": "planned",
         "eval_state": "unverified",
-        "freshness": "2026-05-16",
-        "has_grounding": false,
+        "freshness": "2026-05-18",
+        "has_grounding": true,
         "has_relations": true,
+        "lifecycle": {
+          "review_cadence": "quarterly",
+          "stale_after_days": 180
+        },
         "routing_eval": "absent"
       },
       "id": "test-driven-development",
       "license": "MIT",
       "name": "test-driven-development",
       "owner": "skill-graph-maintainer",
-      "path": "../skills/skills/test-driven-development/SKILL.md",
+      "path": "../skills/skills/quality/testing/test-driven-development/SKILL.md",
+      "portability": {
+        "readiness": "scripted",
+        "targets": [
+          "skill-md"
+        ]
+      },
       "relations": {
         "boundary": [
           {
@@ -12392,7 +13192,7 @@
       "scope": "reference",
       "stability": "experimental",
       "type": "capability",
-      "version": "1.0.0"
+      "version": "1.2.0"
     },
     {
       "activation": {
@@ -12459,7 +13259,7 @@
       "license": "MIT",
       "name": "testing-strategy",
       "owner": "skill-graph-maintainer",
-      "path": "../skills/skills/testing-strategy/SKILL.md",
+      "path": "../skills/skills/quality/testing-strategy/SKILL.md",
       "portability": {
         "readiness": "scripted",
         "targets": [
@@ -12548,7 +13348,7 @@
       "license": "CC-BY-4.0",
       "name": "theme-system-design",
       "owner": "skill-graph-maintainer",
-      "path": "../skills/skills/theme-system-design/SKILL.md",
+      "path": "../skills/skills/design/theme-system-design/SKILL.md",
       "relations": {
         "boundary": [
           {
@@ -12638,7 +13438,7 @@
       "license": "MIT",
       "name": "tool-call-flow",
       "owner": "skill-graph-maintainer",
-      "path": "../skills/skills/tool-call-flow/SKILL.md",
+      "path": "../skills/skills/agent/tool-call-flow/SKILL.md",
       "relations": {
         "boundary": [
           {
@@ -12725,16 +13525,45 @@
       "compatibility": {
         "notes": "Provider-agnostic; abstract tool capabilities map to concrete tools across Claude Code, Cursor, Copilot, OpenCode, Aider, Continue. Specific tool names in this skill (read_file, grep_search, run_in_terminal, apply_patch) are concrete examples — substitute the equivalent in your harness."
       },
+      "concept": {
+        "analogy": "Tool-call strategy is like planning queries against a slow, expensive database: ask the smallest question that returns the needed evidence, combine independent queries when possible, avoid repeating a query whose result is already in hand, and use set-based operations for bulk deterministic work.",
+        "boundary": "It is not the tool-call protocol itself, prompt wording, whole-context architecture, runtime debugging, or refactor methodology. It owns per-call efficiency choices inside those broader workflows.",
+        "definition": "Tool-call strategy is the discipline of choosing, batching, sequencing, and shaping an agent's external operations so each call produces enough evidence for the next decision without unnecessary latency, token cost, or context pollution.",
+        "mental_model": "Treat tool use as query planning for an expensive, persistent evidence stream. Each call should have a specific information need, a bounded expected result, and a clear reason it cannot be satisfied from existing context. Independent calls can run together; dependent calls wait; deterministic bulk work moves into scripts; judgment-dependent work stays in the agent loop.",
+        "misconception": "Fewer calls is not automatically better. The correct target is sufficient evidence with minimal noise; skipping a needed check is worse than making one more focused call.",
+        "purpose": "It keeps agents fast and accurate by preventing redundant reads, serial round trips, noisy outputs, and manual N+1 edits while preserving enough verification to avoid hallucination.",
+        "taxonomy": "Core levers include tool selection, script-vs-call gating, batching and parallelization, dependency detection, redundancy checks, output bounding, subagent isolation, and reviewable edit strategy."
+      },
       "description": "Use when an agent is making too many tool calls, when context is filling from verbose tool outputs, when the same operation could be a script instead of N individual calls, or when designing a tool-use protocol for a new agent or harness. Covers the three costs of every call (token, latency, context pollution), the script-vs-call decision gate, tool-selection decision trees (file-search vs content-search vs targeted-read vs full-read), call batching and parallelization, redundancy avoidance, the poka-yoke principle, subagent delegation for context protection, and cost-benchmark heuristics by task type. Do NOT use for prompt wording (use `prompt-craft`), broader context stack design across the five layers (use `context-engineering`), runtime tool failures or production debugging (use `debugging`), or behaviour-preserving refactor mechanics (use `refactor`).",
       "domain": "ai-engineering/tool-use",
+      "grounding": {
+        "domain_object": "Efficient tool-call strategy for LLM coding agents",
+        "evidence_priority": "equal",
+        "failure_modes": [
+          "tool_call_minimization_without_verification",
+          "serial_calls_when_parallel_independent",
+          "shell_bulk_work_without_reviewable_diff",
+          "verbose_outputs_pollute_context",
+          "same_result_refetched_from_conversation"
+        ],
+        "grounding_mode": "hybrid",
+        "truth_sources": [
+          "https://developers.openai.com/api/docs/guides/function-calling",
+          "https://platform.claude.com/docs/en/agents-and-tools/tool-use/overview",
+          "https://platform.claude.com/docs/en/agents-and-tools/tool-use/manage-tool-context",
+          "https://github.com/jacob-balslev/skills/blob/main/skills/tool-call-flow/SKILL.md",
+          "https://github.com/jacob-balslev/skills/blob/main/skills/context-engineering/SKILL.md"
+        ]
+      },
       "health": {
+        "comprehension_state": "present",
         "drift_check": {
-          "last_verified": "2026-05-06"
+          "last_verified": "2026-05-18"
         },
         "eval_artifacts": "planned",
         "eval_state": "unverified",
-        "freshness": "2026-05-06",
-        "has_grounding": false,
+        "freshness": "2026-05-18",
+        "has_grounding": true,
         "has_relations": true,
         "lifecycle": {
           "review_cadence": "quarterly",
@@ -12746,7 +13575,7 @@
       "license": "MIT",
       "name": "tool-call-strategy",
       "owner": "skill-graph-maintainer",
-      "path": "../skills/skills/tool-call-strategy/SKILL.md",
+      "path": "../skills/skills/engineering/tool-call-strategy/SKILL.md",
       "portability": {
         "readiness": "scripted",
         "targets": [
@@ -12784,7 +13613,7 @@
       "scope": "portable",
       "stability": "experimental",
       "type": "capability",
-      "version": "1.0.0"
+      "version": "1.1.0"
     },
     {
       "activation": {
@@ -12851,7 +13680,7 @@
       "license": "MIT",
       "name": "transaction-isolation",
       "owner": "skill-graph-maintainer",
-      "path": "../skills/skills/transaction-isolation/SKILL.md",
+      "path": "../skills/skills/engineering/data/transaction-isolation/SKILL.md",
       "relations": {
         "boundary": [
           {
@@ -12949,7 +13778,7 @@
       "license": "MIT",
       "name": "type-safety",
       "owner": "skill-graph-maintainer",
-      "path": "../skills/skills/type-safety/SKILL.md",
+      "path": "../skills/skills/quality/type-safety/SKILL.md",
       "relations": {
         "boundary": [
           {
@@ -13031,7 +13860,7 @@
       "license": "CC-BY-4.0",
       "name": "typography-system",
       "owner": "skill-graph-maintainer",
-      "path": "../skills/skills/typography-system/SKILL.md",
+      "path": "../skills/skills/design/typography-system/SKILL.md",
       "relations": {
         "boundary": [
           {
@@ -13109,7 +13938,7 @@
       "license": "CC-BY-4.0",
       "name": "usability-testing",
       "owner": "skill-graph-maintainer",
-      "path": "../skills/skills/usability-testing/SKILL.md",
+      "path": "../skills/skills/design/usability-testing/SKILL.md",
       "relations": {
         "boundary": [
           {
@@ -13186,7 +14015,7 @@
       "license": "CC-BY-4.0",
       "name": "user-research",
       "owner": "skill-graph-maintainer",
-      "path": "../skills/skills/user-research/SKILL.md",
+      "path": "../skills/skills/design/user-research/SKILL.md",
       "relations": {
         "boundary": [
           {
@@ -13253,7 +14082,7 @@
       "license": "MIT",
       "name": "vercel-composition-patterns",
       "owner": "skill-graph-maintainer",
-      "path": "../skills/skills/vercel-composition-patterns/SKILL.md",
+      "path": "../skills/skills/engineering/frontend/vercel-composition-patterns/SKILL.md",
       "portability": {
         "readiness": "scripted",
         "targets": [
@@ -13343,7 +14172,7 @@
       "license": "MIT",
       "name": "version-control",
       "owner": "skill-graph-maintainer",
-      "path": "../skills/skills/version-control/SKILL.md",
+      "path": "../skills/skills/engineering/version-control/SKILL.md",
       "portability": {
         "readiness": "scripted",
         "targets": [
@@ -13432,7 +14261,7 @@
       "license": "MIT",
       "name": "visual-design-foundations",
       "owner": "skill-graph-maintainer",
-      "path": "../skills/skills/visual-design-foundations/SKILL.md",
+      "path": "../skills/skills/design/visual-design-foundations/SKILL.md",
       "portability": {
         "readiness": "scripted",
         "targets": [
@@ -13527,7 +14356,7 @@
       "license": "CC-BY-4.0",
       "name": "visual-hierarchy",
       "owner": "skill-graph-maintainer",
-      "path": "../skills/skills/visual-hierarchy/SKILL.md",
+      "path": "../skills/skills/design/visual-hierarchy/SKILL.md",
       "relations": {
         "boundary": [
           {
@@ -13619,7 +14448,7 @@
       "license": "MIT",
       "name": "webhook-integration",
       "owner": "skill-graph-maintainer",
-      "path": "../skills/skills/webhook-integration/SKILL.md",
+      "path": "../skills/skills/engineering/webhook-integration/SKILL.md",
       "portability": {
         "readiness": "scripted",
         "targets": [
@@ -13696,8 +14525,9 @@
           "3-beat sentence variety",
           "hook-body-landing paragraph",
           "tone mapping framework",
-          "AI-detection avoidance",
-          "perplexity burstiness rule",
+          "AI detector limitations",
+          "prose fingerprint cleanup",
+          "perplexity burstiness caveat",
           "enumeration-trap anti-pattern",
           "hollow-intensifier removal",
           "jargon decision tree",
@@ -13707,17 +14537,27 @@
       "allowed-tools": "Read Grep Edit",
       "category": "design",
       "compatibility": {
-        "notes": "Stack-agnostic prose-humanization rules. The AI-tell catalog, voice-conversion decision tree, readability formulas, sentence-rhythm patterns, tone-mapping table, and detection-avoidance techniques apply to any human-readable text in any product domain — substitute the equivalents from your own audience and brand voice."
+        "notes": "Stack-agnostic prose-humanization rules. The AI-tell catalog, voice-conversion decision tree, readability formulas, sentence-rhythm patterns, tone-mapping table, and responsible prose-fingerprint guidance apply to any human-readable text in any product domain — substitute the equivalents from your own audience and brand voice."
+      },
+      "concept": {
+        "analogy": "Writing humanization is like audio mastering: the recording may already contain the right notes, but mastering removes hiss, balances loudness, and restores dynamics so a listener can trust what they hear.",
+        "boundary": "It does not prove authorship, promise detector-proof output, bypass review processes, design persuasive marketing, choose documentation structure, or own specialized UI microcopy patterns.",
+        "definition": "Writing humanization is the discipline of turning robotic or AI-patterned prose into clear, direct, reader-trustworthy text while preserving truth and intent.",
+        "mental_model": "Writing humanization is prose-quality repair, not authorship laundering. Its primitives are AI tells, readability signals, rhythm signals, audience register, evidence specificity, and detector-limit awareness.",
+        "misconception": "Humanizing is not adding slang, contractions, typos, or random fragments until a detector score changes; the reader, not the detector, is the audience.",
+        "purpose": "The skill replaces vague requests to make writing sound human with a repeatable edit pass that improves clarity, specificity, rhythm, and trust across docs, PRs, UI-adjacent prose, and support text.",
+        "taxonomy": "Design/content skill adjacent to linguistics, microcopy, and semantics; distinct from copywriting and documentation architecture."
       },
       "description": "Use when writing or editing human-readable prose such as docs, PRs, issues, release notes, errors, UI copy, commits, tooltips, or support replies, especially when text sounds robotic, padded, monotonous, or overly formal. Covers AI-tell removal, active voice, hedging reduction, readability diagnosis, sentence rhythm, vocabulary variety, tone mapping, paragraph rhythm, bullets-vs-prose choice, and the 5-step humanization workflow. Do NOT use for documentation routing/type selection, code-identifier naming, or in-product UI-text pattern catalogs.",
       "domain": "design/content",
       "health": {
+        "comprehension_state": "present",
         "drift_check": {
-          "last_verified": "2026-05-06"
+          "last_verified": "2026-05-18"
         },
         "eval_artifacts": "planned",
         "eval_state": "unverified",
-        "freshness": "2026-05-06",
+        "freshness": "2026-05-18",
         "has_grounding": false,
         "has_relations": true,
         "lifecycle": {
@@ -13730,7 +14570,7 @@
       "license": "MIT",
       "name": "writing-humanizer",
       "owner": "skill-graph-maintainer",
-      "path": "../skills/skills/writing-humanizer/SKILL.md",
+      "path": "../skills/skills/design/writing-humanizer/SKILL.md",
       "portability": {
         "readiness": "scripted",
         "targets": [
@@ -13760,21 +14600,21 @@
       "scope": "portable",
       "stability": "experimental",
       "type": "capability",
-      "version": "1.0.0"
+      "version": "1.1.0"
     }
   ],
   "summary": {
     "by_category": {
-      "agent": 16,
+      "agent": 18,
       "design": 26,
-      "engineering": 60,
+      "engineering": 61,
       "foundations": 12,
       "product": 1,
       "quality": 28
     },
     "by_scope": {
-      "codebase": 2,
-      "portable": 91,
+      "codebase": 3,
+      "portable": 93,
       "reference": 50
     },
     "by_stability": {
@@ -13782,12 +14622,12 @@
       "stable": 3
     },
     "by_type": {
-      "capability": 133,
+      "capability": 136,
       "overlay": 1,
       "router": 1,
       "workflow": 8
     },
-    "total_skills": 143
+    "total_skills": 146
   },
   "workspace": {
     "skill_roots": [
