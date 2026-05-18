@@ -231,9 +231,9 @@ flowchart LR
 
 **Legend.** Blue = the file. Green = a required layer. Yellow dashed = an optional / specimen-only layer.
 
-### The 52 authored fields, grouped by purpose
+### The 54 authored fields, grouped by purpose
 
-The YAML frontmatter has 52 top-level fields in the current v6 schema, including compatibility aliases that remain accepted for migration and the seven flat fields (5 Understanding + 7 Health) added in v6. The schema is the authoritative source for types and requiredness (`schemas/skill.v6.schema.json`); the canonical per-field reference is [`docs/field-reference.md`](field-reference.md). The table below is a navigable index. `always` = required by the base schema; `if <condition>` = conditionally required; blank = optional enrichment.
+The YAML frontmatter has 54 top-level fields in the current v6 schema, including compatibility aliases that remain accepted for migration, the seven flat fields (5 Understanding + 7 Health) added in v6, and the two publication-facet fields (`secondary_categories`, `marketplace_tier`) added in the May 2026 skill-org reorganization. The schema is the authoritative source for types and requiredness (`schemas/skill.v6.schema.json`); the canonical per-field reference is [`docs/field-reference.md`](field-reference.md). The table below is a navigable index. `always` = required by the base schema; `if <condition>` = conditionally required; blank = optional enrichment.
 
 **v6 simplification (2026-05-17).** v6 flattens the seven-field `concept` block to top-level so the Understanding fields read like every other field in the Protocol. It also adds the **Health block** — seven flat fields (`last_audited`, `last_changed`, `audit_verdict`, `eval_score`, `eval_failed_ids`, `lint_verdict`, `drift_status`) — so a skill's audit fingerprint lives in its own frontmatter instead of scattered across `eval-history.jsonl`, `health-ledger.jsonl`, and `.opencode/progress/skill-audit-*`. The Skill Audit Loop reads these flat Health fields directly; no log-file crawl required.
 
@@ -249,8 +249,10 @@ The YAML frontmatter has 52 top-level fields in the current v6 schema, including
 | | [`scope`](field-reference.md#scope) | always | `codebase` \| `reference` \| `portable` |
 | | [`category`](field-reference.md#category) | always | string |
 | | [`domain`](field-reference.md#domain) | | hierarchical path |
+| | [`secondary_categories`](field-reference.md#secondary_categories) | | string[] (max 2, drawn from the `category` enum; for marketplace cross-listing only — does not affect filesystem placement) |
 | | [`stability`](field-reference.md#stability) | | `experimental` \| `stable` \| `deprecated` |
 | | [`superseded_by`](field-reference.md#superseded_by) | if `stability: deprecated` | skill name |
+| | [`marketplace_tier`](field-reference.md#marketplace_tier) | | `S` \| `A` \| `B` \| `C` (omit for unpublished; sourced from publication-priority docs) |
 | **Health & Drift** | [`freshness`](field-reference.md#freshness) | always | ISO date |
 | | [`drift_check`](field-reference.md#drift_check) | always | `{ last_verified, truth_source_hashes? }` |
 | | [`lifecycle`](field-reference.md#lifecycle) | | `{ stale_after_days, review_cadence }` |
