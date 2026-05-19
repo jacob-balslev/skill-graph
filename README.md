@@ -459,7 +459,7 @@ For project framing context, see [GitHub Discussion #1](https://github.com/jacob
 
 ## Status
 
-Latest release: **`@skill-graph/cli@0.5.7`** (2026-05-18) — see [`CHANGELOG.md`](CHANGELOG.md). The current contract is `schema_version: 6` — see [`schemas/skill.v6.schema.json`](schemas/skill.v6.schema.json) for the authoritative shape and [`docs/migrations/v5-to-v6.md`](docs/migrations/v5-to-v6.md) for the migration procedure. The `schemas/` directory pins v2 through v6 for tooling that consumes the schemas directly. The unversioned `skill.schema.json` tracks v6.
+Latest release: **`@skill-graph/cli@0.5.8`** (2026-05-19) — see [`CHANGELOG.md`](CHANGELOG.md). The current contract is `schema_version: 6` — see [`schemas/skill.v6.schema.json`](schemas/skill.v6.schema.json) for the authoritative shape and [`docs/migrations/v5-to-v6.md`](docs/migrations/v5-to-v6.md) for the migration procedure. The `schemas/` directory pins v2 through v6 for tooling that consumes the schemas directly. The unversioned `skill.schema.json` tracks v6.
 
 ## Contributing & Trust
 
