@@ -5,7 +5,7 @@
 > **Predicate glossary:** [`docs/glossary.md`](glossary.md).
 > **JSON-LD @context:** [`schemas/skill.context.jsonld`](../schemas/skill.context.jsonld).
 
-Schema version: **6** · Field count: **54** · Required: **13**
+Schema version: **7** · Field count: **57** · Required: **13**
 
 ---
 
@@ -13,7 +13,7 @@ Schema version: **6** · Field count: **54** · Required: **13**
 
 **Type:** multiple — see schema
 
-Major contract shape version. Integer for v6+; string '6' tolerated for back-compat with hand-rolled YAML. Bumps when shape changes break consumers. v6 promotes the seven `concept.*` sub-fields to flat top-level fields and adds the flat Health block (`last_audited`, `last_changed`, `audit_verdict`, `eval_score`, `eval_failed_ids`, `lint_verdict`, `drift_status`) so a skill's audit fingerprint lives in its own frontmatter instead of scattered log files. See skill-metadata-protocol/docs/migrations/v5-to-v6.md.
+Major contract shape version. Integer for v6+; string '7' tolerated for back-compat with hand-rolled YAML. Bumps when shape changes break consumers. v7 splits the single `audit_verdict` field from v6 into four discrete verdicts (`structural_verdict`, `truth_verdict`, `comprehension_verdict`, `application_verdict`) so the Health Block can carry independent verdicts for each layer of the skill-audit loop instead of compressing form, truth, comprehension, and behavior into one PASS/FAIL signal. See docs/migrations/v6-to-v7.md and docs/adr/0011-split-audit-verdict-into-four-verdicts.md.
 
 **Full reference:** [`docs/field-reference.md#schema_version`](field-reference.md#schema_version)
 
@@ -231,13 +231,43 @@ ISO date (YYYY-MM-DD) the SKILL.md body or frontmatter was last edited. Written 
 
 ---
 
-### `audit_verdict` *(optional)*
+### `structural_verdict` *(optional)*
 
-**Type:** `PASS` | `PASS_WITH_FIXES` | `PARTIAL` | `FAIL` | `UNKNOWN`
+**Type:** `PASS` | `PASS_WITH_FIXES` | `FAIL` | `UNVERIFIED`
 
-Aggregate result of the most recent `audit` run. Combines `lint_verdict`, `drift_status`, and (when run with `--graded`) the seven dimension scores. Lives on the skill itself instead of in a separate `audits/<skill>/verdict.md` so the audit fingerprint is portable with the skill. `UNKNOWN` is the initial state before any audit has run.
+Structural-layer verdict produced by gates 1–2 and 7 of the skill-audit loop (schema lint, manifest census, concept-card shape). `PASS` (clean), `PASS_WITH_FIXES` (warnings present but no errors), `FAIL` (lint or schema errors), `UNVERIFIED` (no structural audit has run since the v7 schema bump). Replaces the structural slice of the v6 `audit_verdict` aggregate. Independent of `lint_verdict` (per-script signal); this is the audit-loop roll-up. See docs/adr/0011-split-audit-verdict-into-four-verdicts.md.
 
-**Full reference:** [`docs/field-reference.md#audit_verdict`](field-reference.md#audit_verdict)
+**Full reference:** [`docs/field-reference.md#structural_verdict`](field-reference.md#structural_verdict)
+
+---
+
+### `truth_verdict` *(optional)*
+
+**Type:** `PASS` | `DRIFT` | `BROKEN` | `UNVERIFIED`
+
+Truth-layer verdict produced by gates 3–6 of the skill-audit loop (truth-source catalog, drift sentinel, test coverage, claim verification). `PASS` (truth sources align with declared `last_verified` and hashes), `DRIFT` (truth sources changed since last_verified), `BROKEN` (declared truth sources missing or unreadable), `UNVERIFIED` (no truth audit has run since the v7 schema bump). Replaces the truth slice of the v6 `audit_verdict` aggregate. Independent of `drift_status` (per-script signal); this is the audit-loop roll-up. See docs/adr/0011-split-audit-verdict-into-four-verdicts.md.
+
+**Full reference:** [`docs/field-reference.md#truth_verdict`](field-reference.md#truth_verdict)
+
+---
+
+### `comprehension_verdict` *(optional)*
+
+**Type:** `PASS` | `SHALLOW` | `REDUNDANT` | `UNVERIFIED` | `SKIPPED_BASELINE_HIGH` | `NA`
+
+Comprehension-layer verdict produced by gate 8 (the comprehension grader on `evals/comprehension.json`). `PASS` (with-skill answers measurably deeper than baseline on the comprehension scenarios), `SHALLOW` (skill recites the concept but does not deepen agent understanding), `REDUNDANT` (baseline already saturated — skill adds no comprehension lift on this concept), `SKIPPED_BASELINE_HIGH` (early-skip — `avg_primary_baseline >= 1.0` after the first 2 evals so the dual-run was aborted; v7 demotion behavior), `NA` (skill carries no `evals/comprehension.json`), `UNVERIFIED` (initial state before any grader run since the v7 schema bump). Demoted in v7: never alone certifies a skill as useful — `application_verdict` is the aggregate-quality field. See docs/adr/0011-split-audit-verdict-into-four-verdicts.md.
+
+**Full reference:** [`docs/field-reference.md#comprehension_verdict`](field-reference.md#comprehension_verdict)
+
+---
+
+### `application_verdict` *(optional)*
+
+**Type:** `APPLICABLE` | `REDUNDANT` | `HARMFUL` | `MIXED` | `FALSE_POSITIVE` | `UNVERIFIED`
+
+Application-layer verdict produced by gate 9 (the application grader on `evals/application.json`). `APPLICABLE` (loading the skill changes agent behavior on real artifacts in the expected direction — flags, fixes, generative trajectory), `REDUNDANT` (no behavioral delta — agent behaves the same with or without the skill loaded), `HARMFUL` (negative delta — agent makes worse decisions with the skill loaded; SkillsBench arXiv 2602.12670 found 19% of evaluated skills exhibit this), `MIXED` (delta varies across cases — some applicable, some redundant or false-positive), `FALSE_POSITIVE` (skill over-triggers — applies on cases where its expertise does not apply), `UNVERIFIED` (default for the v6→v7 corpus migration — no application audit has run on this skill yet). The aggregate-quality field in v7: a skill is only behaviorally certified when this verdict is `APPLICABLE`. See docs/adr/0011-split-audit-verdict-into-four-verdicts.md.
+
+**Full reference:** [`docs/field-reference.md#application_verdict`](field-reference.md#application_verdict)
 
 ---
 

@@ -242,9 +242,25 @@
       "@type": "xsd:date",
       "_note": "Health Block — date the skill frontmatter or body was last modified (v6+)"
     },
+    "structural_verdict": {
+      "@id": "sg:structuralVerdict",
+      "_note": "Health Block — form-layer verdict (gates 1-2, 7): PASS | PASS_WITH_FIXES | FAIL | UNVERIFIED (v7+)"
+    },
+    "truth_verdict": {
+      "@id": "sg:truthVerdict",
+      "_note": "Health Block — truth-layer verdict (gates 3-6): PASS | DRIFT | BROKEN | UNVERIFIED (v7+)"
+    },
+    "comprehension_verdict": {
+      "@id": "sg:comprehensionVerdict",
+      "_note": "Health Block — comprehension grader verdict (gate 8, demoted in v7): PASS | SHALLOW | REDUNDANT | UNVERIFIED | SKIPPED_BASELINE_HIGH | NA"
+    },
+    "application_verdict": {
+      "@id": "sg:applicationVerdict",
+      "_note": "Health Block — application grader verdict (gate 9, v7 primary quality signal): APPLICABLE | REDUNDANT | HARMFUL | MIXED | FALSE_POSITIVE | UNVERIFIED. A skill is only behaviorally certified when this is APPLICABLE."
+    },
     "audit_verdict": {
       "@id": "sg:auditVerdict",
-      "_note": "Health Block — pass | fail | warn result from the most recent audit run (v6+)"
+      "_note": "Health Block — DEPRECATED in v7. Pre-v7 single aggregate verdict (PASS | PASS_WITH_FIXES | PARTIAL | FAIL | UNKNOWN). Kept in the context for back-read of unmigrated v6 manifests. New consumers should read structural_verdict / truth_verdict / comprehension_verdict / application_verdict directly. See docs/adr/0011-split-audit-verdict-into-four-verdicts.md."
     },
     "eval_score": {
       "@id": "sg:evalScore",

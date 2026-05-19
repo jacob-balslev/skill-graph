@@ -23,7 +23,7 @@
 # routable in day-to-day skill dispatch — `scope: reference` keeps it out of
 # the normal routing pool.
 # ============================================================================
-schema_version: 6
+schema_version: 7
 name: skill-metadata-template
 # TEMPLATE NOTE: Be pushy in your description — Claude tends to under-trigger
 # skills, so descriptions should read as commands ("Use when X", "Activate

@@ -425,7 +425,7 @@ last_audited: "2026-05-16"
 **Rules.**
 - Optional. ISO 8601 date string (`YYYY-MM-DD`).
 - Updated when the skill body or frontmatter receives a substantive edit.
-- Used by the drift sentinel to determine whether a post-audit change has invalidated the recorded `audit_verdict`.
+- Used by the drift sentinel to determine whether a post-audit change has invalidated the recorded layer verdicts.
 
 **Example.**
 ```yaml
@@ -434,29 +434,121 @@ last_changed: "2026-05-14"
 
 ---
 
-## `audit_verdict`
+## `structural_verdict`
 
-**Purpose.** The overall verdict from the most recent completed audit run. Part of the v6 Health Block.
+**Purpose.** Form-layer verdict produced by gates 1–2 and 7 of the skill-audit loop (schema lint, manifest census, concept-card shape). Part of the v7 Health Block. Replaces the structural slice of the v6 `audit_verdict` aggregate.
 
 **Allowed values.**
 
 | Value | Meaning |
 |---|---|
-| `PASS` | All audit dimensions passed |
-| `PASS_WITH_FIXES` | Passed after in-session corrections |
-| `PARTIAL` | Some dimensions passed; others were deferred |
-| `FAIL` | One or more audit dimensions failed |
-| `UNKNOWN` | No audit has been run or the verdict is unavailable |
+| `PASS` | Form gates passed cleanly |
+| `PASS_WITH_FIXES` | Form gates passed with warnings (not errors) |
+| `FAIL` | One or more form gates produced errors that block external-constraint compliance (Anthropic Agent Skills marketplace, OpenAI tool-use API) |
+| `UNVERIFIED` | No structural audit has run since the v7 schema bump |
 
 **Rules.**
-- Optional. Defaults to `UNKNOWN` when absent.
-- Written by the audit loop; do not hand-author.
-- Paired with `last_audited` — if `last_audited` is set, `audit_verdict` should be set too.
+- Optional. Defaults to `UNVERIFIED` when absent.
+- Written by the audit loop (`scripts/skill/skill-evolution-loop.js`); do not hand-author.
+- Per ADR 0011: only external-constraint violations produce `FAIL`. Internal style preferences (title length below external limit, body section preferences, naming conventions beyond what the marketplace enforces) are warnings, not failures.
 
 **Example.**
 ```yaml
-audit_verdict: PASS
+structural_verdict: PASS
 ```
+
+---
+
+## `truth_verdict`
+
+**Purpose.** Truth-layer verdict produced by gates 3–6 of the skill-audit loop (truth-source catalog, drift sentinel, test coverage, claim verification). Part of the v7 Health Block. Replaces the truth slice of the v6 `audit_verdict` aggregate.
+
+**Allowed values.**
+
+| Value | Meaning |
+|---|---|
+| `PASS` | Truth sources align with declared `last_verified` and recorded hashes |
+| `DRIFT` | Truth sources changed since `last_verified` |
+| `BROKEN` | Declared truth sources missing or unreadable |
+| `UNVERIFIED` | No truth audit has run since the v7 schema bump |
+
+**Rules.**
+- Optional. Defaults to `UNVERIFIED` when absent.
+- Written by the audit loop; do not hand-author.
+- Independent of `drift_status` — that field is the per-script signal from `scripts/skill-graph-drift.js`. `truth_verdict` is the audit-loop roll-up.
+
+**Example.**
+```yaml
+truth_verdict: PASS
+```
+
+---
+
+## `comprehension_verdict`
+
+**Purpose.** Comprehension-layer verdict produced by gate 8 (the comprehension grader on `evals/comprehension.json`). Part of the v7 Health Block. Demoted in v7: never alone certifies a skill as useful.
+
+**Allowed values.**
+
+| Value | Meaning |
+|---|---|
+| `PASS` | Loading the skill produces a measurable comprehension delta on the comprehension scenarios |
+| `SHALLOW` | The skill recites the concept but does not deepen agent understanding |
+| `REDUNDANT` | Baseline already saturated — the foundation model already knows the concept from training |
+| `SKIPPED_BASELINE_HIGH` | Early-skip: `avg_primary_baseline >= 1.0` after the first 2 evals, so the dual-run was aborted (v7 demotion behaviour) |
+| `NA` | The skill has no `evals/comprehension.json` |
+| `UNVERIFIED` | Initial state before any grader run |
+
+**Rules.**
+- Optional. Defaults to `UNVERIFIED` when absent.
+- Written by the comprehension grader (`scripts/skill/evaluate-skill.js --comprehension`); do not hand-author.
+- Demoted in v7: the comprehension grader runs on a cheap model (Haiku 4.5 / Gemini Flash) and exits early when baseline is already high. See ADR 0011 Change 3.
+- This verdict is advisory. It never alone determines a skill's usefulness — that authority lives on `application_verdict`.
+
+**Example.**
+```yaml
+comprehension_verdict: SKIPPED_BASELINE_HIGH
+```
+
+---
+
+## `application_verdict`
+
+**Purpose.** Application-layer verdict produced by gate 9 (the application grader on `evals/application.json`). Part of the v7 Health Block. The **primary quality signal** in v7 — a skill is only behaviorally certified when this is `APPLICABLE`.
+
+**Allowed values.**
+
+| Value | Meaning |
+|---|---|
+| `APPLICABLE` | Loading the skill changes agent behavior on real artifacts in the expected direction — correct flags, correct fixes, correct generative trajectory |
+| `REDUNDANT` | No behavioral delta — the agent behaves identically with or without the skill loaded |
+| `HARMFUL` | Negative delta — the agent makes worse decisions with the skill loaded. SkillsBench (arXiv 2602.12670) found 19% of evaluated skills exhibit this; the v7 schema makes this verdict surfaceable |
+| `MIXED` | Verdict varies across cases — some applicable, some redundant or false-positive |
+| `FALSE_POSITIVE` | The skill over-triggers — applies on cases where its expertise does not apply |
+| `UNVERIFIED` | Default for the v6→v7 corpus migration — no application audit has run on this skill yet |
+
+**Rules.**
+- Optional. Defaults to `UNVERIFIED` when absent.
+- Written by the application grader (`scripts/skill/evaluate-skill.js --application` → ported to `skill-graph/lib/audit/evaluate-skill.js` per ADR 0011); do not hand-author.
+- Cases authored in `evals/application.json` must come from external anchors (real PR diffs, real agent failures, real audit findings) — never auto-generated from the skill body. Per the SYNTHESIS roundtable (2026-05-19), auto-generation creates a closed-loop synthetic-eval lie.
+- `application_verdict == APPLICABLE` is the **only** verdict that certifies a skill is useful. The other three verdicts (`structural`, `truth`, `comprehension`) are necessary infrastructure but not sufficient.
+
+**Example.**
+```yaml
+application_verdict: APPLICABLE
+```
+
+---
+
+## `audit_verdict` *(deprecated)*
+
+**Purpose.** DEPRECATED in v7. Pre-v7 single aggregate verdict. Replaced by four discrete verdicts (`structural_verdict`, `truth_verdict`, `comprehension_verdict`, `application_verdict`). See [ADR 0011](adr/0011-split-audit-verdict-into-four-verdicts.md).
+
+**Why deprecated.** The single field compressed four independent layers — form, truth, comprehension, behavior — into one PASS/FAIL signal that masqueraded as a quality verdict. A skill could be lint-clean (`audit_verdict: PASS`) while being behaviorally redundant or harmful, and the reader had no way to tell. The four-verdict split lets each layer surface independently. See `docs/migrations/v6-to-v7.md` for the migration procedure.
+
+**Read behavior post-v7.** Tools that read `audit_verdict` for back-compat on unmigrated v6 skills can continue to do so, but the canonical Health Block surface is the four discrete verdicts. The codemod at `scripts/migrate-skill-v6-to-v7.js` strips `audit_verdict` from migrated skills.
+
+**Pre-v7 allowed values (historical).** `PASS` | `PASS_WITH_FIXES` | `PARTIAL` | `FAIL` | `UNKNOWN`.
 
 ---
 

@@ -108,14 +108,23 @@ boundary        # string — what this concept is NOT (with mechanism, not just 
 analogy         # string — one-sentence metaphor preserving the core mechanism
 misconception   # string — the wrong mental model people bring
 concept         # DEPRECATED in v6 — legacy v5 nested block; back-compat only
-# Health Block (v6+, flat) — written by the audit loop, not hand-authored
-last_audited    # ISO date — when `audit` last ran
-last_changed    # ISO date — when the SKILL.md was last edited
-audit_verdict   # PASS | PASS_WITH_FIXES | PARTIAL | FAIL | UNKNOWN
-eval_score      # number 0.0–5.0 — latest aggregate eval grade
-eval_failed_ids # string[] — failing eval IDs (empty when clean)
-lint_verdict    # PASS | FAIL | UNKNOWN
-drift_status    # OK | DRIFT | BROKEN | STALE | NO_BASELINE | EXTERNAL_UNHASHED | UNKNOWN
+# Health Block (v7+, flat) — written by the audit loop, not hand-authored
+last_audited            # ISO date — when `audit` last ran
+last_changed            # ISO date — when the SKILL.md was last edited
+# v7 four-verdict Health Block (replaces the single v6 audit_verdict):
+structural_verdict      # PASS | PASS_WITH_FIXES | FAIL | UNVERIFIED (form roll-up, gates 1-2, 7)
+truth_verdict           # PASS | DRIFT | BROKEN | UNVERIFIED (truth roll-up, gates 3-6)
+comprehension_verdict   # PASS | SHALLOW | REDUNDANT | UNVERIFIED | SKIPPED_BASELINE_HIGH | NA
+                        # (gate 8, demoted in v7 — cheap smoke test only, never alone certifying)
+application_verdict     # APPLICABLE | REDUNDANT | HARMFUL | MIXED | FALSE_POSITIVE | UNVERIFIED
+                        # (gate 9, primary quality signal — a skill is only behaviorally certified
+                        #  when this verdict is APPLICABLE)
+eval_score              # number 0.0–5.0 — latest aggregate eval grade
+eval_failed_ids         # string[] — failing eval IDs (empty when clean)
+lint_verdict            # PASS | FAIL | UNKNOWN (per-script signal from skill-lint.js)
+drift_status            # OK | DRIFT | BROKEN | STALE | NO_BASELINE | EXTERNAL_UNHASHED | UNKNOWN (per-script signal from skill-graph-drift.js)
+# audit_verdict         # DEPRECATED in v7 — the v6 single aggregate, replaced by the four verdicts above.
+                        # Pre-v7 enum: PASS | PASS_WITH_FIXES | PARTIAL | FAIL | UNKNOWN. See docs/adr/0011-split-audit-verdict-into-four-verdicts.md.
 eval_last_run   # { at, status, runner?, model?, receipt?, receipt_hash? }
 compatibility   # { runtimes, node, notes }
 allowed-tools   # space-separated tool allowlist
@@ -286,11 +295,31 @@ Seven flat top-level fields that record a skill's audit fingerprint in its own f
 - Written automatically by `improve` operations.
 - Distinct from `freshness` (review claim) — `last_changed` is the editor's footprint, `freshness` is the reviewer's footprint.
 
-**`audit_verdict`**
-- Aggregate result of the most recent `audit` run.
-- Enum: `PASS` | `PASS_WITH_FIXES` | `PARTIAL` | `FAIL` | `UNKNOWN`.
-- Combines `lint_verdict`, `drift_status`, and (when run with `--graded`) the seven dimension scores.
-- `UNKNOWN` is the initial state before any audit has run.
+**`structural_verdict`** *(v7+)*
+- Form-layer verdict (gates 1–2, 7: schema lint, manifest census, concept-card shape).
+- Enum: `PASS` | `PASS_WITH_FIXES` | `FAIL` | `UNVERIFIED`.
+- Rolled up from `lint_verdict` by the audit loop. Only external-constraint violations (Anthropic Agent Skills marketplace shape, required-fields, valid YAML) produce `FAIL`; internal style preferences are lint warnings.
+
+**`truth_verdict`** *(v7+)*
+- Truth-layer verdict (gates 3–6: truth-source catalog, drift sentinel, test coverage, claim verification).
+- Enum: `PASS` | `DRIFT` | `BROKEN` | `UNVERIFIED`.
+- Rolled up from `drift_status` by the audit loop.
+
+**`comprehension_verdict`** *(v7+)*
+- Comprehension-layer verdict (gate 8, demoted in v7 to a cheap smoke test).
+- Enum: `PASS` | `SHALLOW` | `REDUNDANT` | `UNVERIFIED` | `SKIPPED_BASELINE_HIGH` | `NA`.
+- Written by the comprehension grader. Never alone certifies a skill — `application_verdict` is the aggregate-quality field.
+
+**`application_verdict`** *(v7+)* — **the primary quality signal**
+- Application-layer verdict (gate 9: behavioral change on real artifacts).
+- Enum: `APPLICABLE` | `REDUNDANT` | `HARMFUL` | `MIXED` | `FALSE_POSITIVE` | `UNVERIFIED`.
+- Written by the application grader on `evals/application.json`. A skill is only behaviorally certified when this is `APPLICABLE`.
+- Default `UNVERIFIED` for the v6→v7 corpus — no skill has been audited via gate 9 yet.
+
+**`audit_verdict`** *(DEPRECATED in v7)*
+- Pre-v7 single aggregate verdict, replaced by the four discrete verdicts above.
+- Enum (historical): `PASS` | `PASS_WITH_FIXES` | `PARTIAL` | `FAIL` | `UNKNOWN`.
+- The v7 codemod (`scripts/migrate-skill-v6-to-v7.js`) strips this field. See [ADR 0011](adr/0011-split-audit-verdict-into-four-verdicts.md) and [`migrations/v6-to-v7.md`](migrations/v6-to-v7.md).
 
 **`eval_score`**
 - Latest aggregate eval grade on a 0.0–5.0 scale.
@@ -449,7 +478,7 @@ grounding:
 
 ### Authored in `SKILL.md` (human-written)
 
-The canonical fields in the frontmatter are authored by humans, with two exceptions: `drift_check.truth_source_hashes` is computed by the drift sentinel (`skill-graph drift --record --apply`), and the seven **Health Block** fields (`last_audited`, `last_changed`, `audit_verdict`, `eval_score`, `eval_failed_ids`, `lint_verdict`, `drift_status`) are stamped automatically by the Skill Audit Loop's `audit`, `improve`, and `evaluate` operations. Do not hand-author the Health Block — those values are owned by the loop.
+The canonical fields in the frontmatter are authored by humans, with two exceptions: `drift_check.truth_source_hashes` is computed by the drift sentinel (`skill-graph drift --record --apply`), and the v7 **Health Block** fields (`last_audited`, `last_changed`, `structural_verdict`, `truth_verdict`, `comprehension_verdict`, `application_verdict`, `eval_score`, `eval_failed_ids`, `lint_verdict`, `drift_status`) are stamped automatically by the Skill Audit Loop's `audit`, `improve`, `evaluate`, and grader operations. Do not hand-author the Health Block — those values are owned by the loop and the dedicated graders (comprehension and application). The pre-v7 `audit_verdict` field is deprecated; the codemod (`scripts/migrate-skill-v6-to-v7.js`) strips it from migrated skills.
 
 **Human-authored fields:**
 

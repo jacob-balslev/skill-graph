@@ -7,11 +7,12 @@ Skill Metadata Protocol is the **skill-level contract** for AI SKILL.md. It defi
 Skill Graph is the **library-level system** that works with this protocol. It indexes, routes, clusters, audits, and reverifies libraries of Skill-Metadata-Protocol-enriched skills.
 
 > **Migrating from an older schema?** Jump straight to the migration notes:
-> - **v5 → v6** — flattens the `concept` block to top-level `mental_model`, `purpose`, `boundary`, `analogy`, `misconception`; adds the Health block (`last_audited`, `last_changed`, `audit_verdict`, `eval_score`, `eval_failed_ids`, `lint_verdict`, `drift_status`) so a skill's audit fingerprint lives in its own frontmatter. Legacy `concept` block remains accepted for v5 skills not yet migrated. See `migrations/v5-to-v6.md`.
+> - **v6 → v7** — splits the single v6 `audit_verdict` field into four discrete Health Block verdicts (`structural_verdict`, `truth_verdict`, `comprehension_verdict`, `application_verdict`) so the audit fingerprint carries independent verdicts for each layer (form, truth, comprehension, behavior) instead of compressing them into one PASS/FAIL signal. `application_verdict` is the new primary quality signal — a skill is only behaviorally certified when this verdict is `APPLICABLE`. See [`migrations/v6-to-v7.md`](migrations/v6-to-v7.md) and [`adr/0011-split-audit-verdict-into-four-verdicts.md`](adr/0011-split-audit-verdict-into-four-verdicts.md).
+> - **v5 → v6** — flattens the `concept` block to top-level `mental_model`, `purpose`, `boundary`, `analogy`, `misconception`; adds the Health block (`last_audited`, `last_changed`, `audit_verdict` *[deprecated in v7]*, `eval_score`, `eval_failed_ids`, `lint_verdict`, `drift_status`) so a skill's audit fingerprint lives in its own frontmatter. Legacy `concept` block remains accepted for v5 skills not yet migrated. See `migrations/v5-to-v6.md`.
 > - **v4 → v5** — closes the `category` field to a 6-value enum
 > - [v2 → v3](manifest-field-mapping.md#migration-note--v2--v3-v040) — `drift_check` scalar → object, `compatibility` scalar → object, `family` → `category`, new optional fields
 > - [v1 → v2](manifest-field-mapping.md#migration-note--v1--v2-2026-04-17-sh-5784) — `scope` enum rename, `eval_status` split into three fields, `route_bundles` → `routing_bundles`
-> - Codemod: `node scripts/migrate-skill-v2-to-v3.js` upgrades v2 skills in place. `scripts/migrate-skill-v5-to-v6.js` (backfill mode) populates the new flat fields from the legacy `concept` block.
+> - Codemod: `scripts/migrate-skill-v6-to-v7.js` splits the v6 `audit_verdict` into the four v7 verdicts. `scripts/migrate-skill-v5-to-v6.js` (backfill mode) populates the v6 flat fields from the legacy `concept` block. Older migrators (`migrate-skill-v2-to-v3.js`, `migrate-skill-v3-to-v4.js`) remain for skills lagging multiple versions.
 
 ## Related Documents
 
@@ -257,13 +258,17 @@ The YAML frontmatter has 54 top-level fields in the current v6 schema, including
 | | [`drift_check`](field-reference.md#drift_check) | always | `{ last_verified, truth_source_hashes? }` |
 | | [`lifecycle`](field-reference.md#lifecycle) | | `{ stale_after_days, review_cadence }` |
 | | [`runtime_telemetry`](field-reference.md#runtime_telemetry) | | `{ feedback_source, metrics }` |
-| **Health Block** (v6+, flat) | [`last_audited`](field-reference.md#last_audited) | | ISO date |
+| **Health Block** (v7+, flat) | [`last_audited`](field-reference.md#last_audited) | | ISO date |
 | | [`last_changed`](field-reference.md#last_changed) | | ISO date |
-| | [`audit_verdict`](field-reference.md#audit_verdict) | | `PASS` \| `PASS_WITH_FIXES` \| `PARTIAL` \| `FAIL` \| `UNKNOWN` |
+| | [`structural_verdict`](field-reference.md#structural_verdict) | | `PASS` \| `PASS_WITH_FIXES` \| `FAIL` \| `UNVERIFIED` (v7+; form gate roll-up) |
+| | [`truth_verdict`](field-reference.md#truth_verdict) | | `PASS` \| `DRIFT` \| `BROKEN` \| `UNVERIFIED` (v7+; truth-source roll-up) |
+| | [`comprehension_verdict`](field-reference.md#comprehension_verdict) | | `PASS` \| `SHALLOW` \| `REDUNDANT` \| `UNVERIFIED` \| `SKIPPED_BASELINE_HIGH` \| `NA` (v7+; gate 8, demoted) |
+| | [`application_verdict`](field-reference.md#application_verdict) | | `APPLICABLE` \| `REDUNDANT` \| `HARMFUL` \| `MIXED` \| `FALSE_POSITIVE` \| `UNVERIFIED` (v7+; **primary quality signal**) |
 | | [`eval_score`](field-reference.md#eval_score) | | number 0.0–5.0 |
 | | [`eval_failed_ids`](field-reference.md#eval_failed_ids) | | string[] |
-| | [`lint_verdict`](field-reference.md#lint_verdict) | | `PASS` \| `FAIL` \| `UNKNOWN` |
-| | [`drift_status`](field-reference.md#drift_status) | | `OK` \| `DRIFT` \| `BROKEN` \| `STALE` \| `NO_BASELINE` \| `EXTERNAL_UNHASHED` \| `UNKNOWN` |
+| | [`lint_verdict`](field-reference.md#lint_verdict) | | `PASS` \| `FAIL` \| `UNKNOWN` (per-script signal — `skill-lint.js`) |
+| | [`drift_status`](field-reference.md#drift_status) | | `OK` \| `DRIFT` \| `BROKEN` \| `STALE` \| `NO_BASELINE` \| `EXTERNAL_UNHASHED` \| `UNKNOWN` (per-script signal — `skill-graph-drift.js`) |
+| | [`audit_verdict`](field-reference.md#audit_verdict-deprecated) | | **DEPRECATED in v7** — `PASS` \| `PASS_WITH_FIXES` \| `PARTIAL` \| `FAIL` \| `UNKNOWN` (pre-v7 single aggregate; replaced by the four verdicts above) |
 | **Eval Health** (orthogonal triple) | [`eval_artifacts`](field-reference.md#eval_artifacts) | always | `present` \| `planned` \| `none` |
 | | [`eval_state`](field-reference.md#eval_state) | always | `unverified` \| `passing` \| `monitored` |
 | | [`routing_eval`](field-reference.md#routing_eval) | always | `present` \| `absent` |
@@ -441,12 +446,15 @@ For the concrete v2→v3 mapping tables, see `docs/manifest-field-mapping.md § 
 
 ### Health Block versioning (SH-6123)
 
-**Health Block fields are v6-only.** The seven flat Health fields (`last_audited`, `last_changed`, `audit_verdict`, `eval_score`, `eval_failed_ids`, `lint_verdict`, `drift_status`) were introduced in v6. The lint schema (`schemas/skill.schema.json`, which tracks the latest contract) rejects these fields on any skill that lacks `schema_version: 6` because:
+**Health Block fields are v6+.** The flat Health fields were introduced in v6 (`last_audited`, `last_changed`, `audit_verdict`, `eval_score`, `eval_failed_ids`, `lint_verdict`, `drift_status`) and expanded in v7 to split the single aggregate `audit_verdict` into four discrete verdicts (`structural_verdict`, `truth_verdict`, `comprehension_verdict`, `application_verdict`). The lint schema (`schemas/skill.schema.json`, which tracks the latest contract) rejects Health Block fields on any skill that lacks the matching `schema_version` because:
 
 - `schemas/skill.v5.schema.json` uses `additionalProperties: false` and does not define the Health Block properties.
-- The lint always validates against `skill.schema.json` (the v6 contract). Skills on v5 that contain Health Block fields must either be **bumped to v6** or have the Health Block fields stripped.
+- `schemas/skill.v6.schema.json` defines the seven-field v6 Health Block but does not include the four v7 verdicts.
+- The lint always validates against `skill.schema.json` (the v7 contract). Skills on v5/v6 that contain Health Block fields must either be **bumped to v7** (via the appropriate migration script) or have the Health Block fields stripped.
 
-**Policy:** If the Skill Audit Loop walker stamps Health Block fields onto a skill whose frontmatter does not have `schema_version: 6`, the walker has written to the wrong schema tier. Correct the skill by running the v5→v6 migration script (`scripts/migrate-skill-v5-to-v6.js`) rather than adding an exception to the lint schema. Health Block fields are not universally applicable across schema versions; they are a v6+ contract.
+**Policy:** If the Skill Audit Loop walker stamps Health Block fields onto a skill whose frontmatter does not have `schema_version: 7`, the walker has written to the wrong schema tier. Correct the skill by running the v5→v6 migration script (`scripts/migrate-skill-v5-to-v6.js`) followed by the v6→v7 migration script (`scripts/migrate-skill-v6-to-v7.js`) rather than adding an exception to the lint schema. Health Block fields are not universally applicable across schema versions; they are a v6+ contract, and the four-verdict shape is v7+.
+
+**v7 doctrine: form gates are demoted.** In v7, `structural_verdict: FAIL` is reserved for external-constraint violations only (Anthropic Agent Skills marketplace shape, required-fields, valid YAML). Internal style preferences (title length below the external limit, body section preferences, naming conventions beyond what the marketplace enforces) emit lint warnings but do not produce `FAIL`. See [ADR 0011](adr/0011-split-audit-verdict-into-four-verdicts.md) Change 2.
 
 ## Stability Promotion Criteria (SH-6109)
 
