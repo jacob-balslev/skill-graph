@@ -924,11 +924,29 @@ function collectSkillFilesFromExplicitArg(arg) {
   if (!fs.existsSync(abs)) return [];
   if (fs.statSync(abs).isDirectory()) {
     const directSkillMd = path.join(abs, 'SKILL.md');
-    if (fs.existsSync(directSkillMd)) return [directSkillMd];
+    if (fs.existsSync(directSkillMd)) return collectWithSiblings(directSkillMd);
     return collectSkillFilesFromRoot(abs);
   }
-  if (abs.endsWith('SKILL.md') || abs.endsWith('.md')) return [abs];
+  if (abs.endsWith('SKILL.md') || abs.endsWith('.md')) return collectWithSiblings(abs);
   return [];
+}
+
+// When a single SKILL.md is targeted explicitly, also pull in sibling
+// `<name>/SKILL.md` files that share the same grandparent directory so that
+// intra-collection `relations.*` references (e.g. `examples/fixture-skills/`
+// where every relation target lives in the same parent dir) resolve.
+// Without this, `--path examples/fixture-skills/with-relations` floods with
+// dead-relation errors for siblings the lint resolver never loaded.
+function collectWithSiblings(skillMdPath) {
+  const out = new Set([skillMdPath]);
+  const parent = path.dirname(path.dirname(skillMdPath));
+  if (!fs.existsSync(parent) || !fs.statSync(parent).isDirectory()) return [...out];
+  for (const name of fs.readdirSync(parent)) {
+    if (name.startsWith('_') || name.startsWith('.')) continue;
+    const sibling = path.join(parent, name, 'SKILL.md');
+    if (fs.existsSync(sibling)) out.add(sibling);
+  }
+  return [...out];
 }
 
 function collectSkillFiles(args) {
