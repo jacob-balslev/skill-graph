@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-05-19T02:13:13Z",
+  "generated_at": "2026-05-19T03:11:32Z",
   "schema_version": 4,
   "skills": [
     {
@@ -1674,57 +1674,94 @@
       "activation": {
         "anti_examples": [
           "give me the physical table design with PKs, FKs, and normalization forms",
+          "turn this model into SQL migrations and index definitions",
           "I need OWL class axioms and reasoning constraints for these concepts",
           "build the DDD aggregate boundaries and anti-corruption layer",
-          "what hypernymy / meronymy labels apply between these terms",
+          "what hypernymy or meronymy labels apply between these two terms",
           "review this ORM model class for code correctness",
           "name the entities and fields once we agree on the conceptual model"
         ],
         "examples": [
-          "a stakeholder says 'users place orders that ship in multiple boxes' — how do I capture this as a model before naming tables?",
-          "is a refund its own entity or just a payment status — what conceptual test decides that?",
-          "two business stakeholders disagree on whether a cart and an order are the same thing — how should the conceptual model resolve that?",
-          "our domain diagram already mentions UUIDs and cascade-delete — what anti-pattern is that and how do I pull it back?",
-          "this relationship has a date, an amount, and a status — should it stay as a line between entities or become its own entity?",
-          "should this attribute live on the Customer entity or on Order — what's the rule?",
-          "we have Physical, Digital, and Subscription products — how do I model that as generalization without lying about totality?"
+          "a stakeholder says users place orders that ship in multiple boxes -- how do I capture this as a model before naming tables?",
+          "is a refund its own entity or just a payment status -- what conceptual test decides that?",
+          "two business stakeholders disagree on whether a cart and an order are the same thing -- how should the conceptual model resolve that?",
+          "our domain diagram already mentions UUIDs and cascade-delete -- what anti-pattern is that and how do I pull it back?",
+          "this relationship has a date, an amount, and a status -- should it stay as a line between entities or become its own entity?",
+          "should this attribute live on Customer or Order -- what is the rule?",
+          "we have Physical, Digital, and Subscription products -- how do I model that as specialization without lying about totality?"
         ],
         "keywords": [
           "conceptual model",
           "conceptual modeling methodology",
           "domain abstraction",
-          "entity relationship cardinality",
-          "conceptual schema before implementation",
+          "implementation neutral model",
           "business model to system model",
+          "stakeholder validation",
+          "entity identity criteria",
+          "named relationship",
+          "relationship cardinality",
+          "reified relationship",
+          "associative entity",
           "generalization specialization",
           "aggregation composition relationship",
-          "reify relationship to entity",
           "conceptual logical physical layers",
           "implementation leakage anti-pattern",
           "unnamed relationship anti-pattern",
           "god entity anti-pattern",
           "missing entity anti-pattern",
-          "validate model with stakeholders",
+          "attribute as entity anti-pattern",
+          "conceptual schema before implementation",
           "UML class diagram conceptual",
           "role modeling pattern",
-          "is-a vs has-a vs owns"
+          "is-a vs part-of vs owns"
         ]
       },
       "allowed-tools": "Read Grep",
       "category": "engineering",
       "compatibility": {
-        "notes": "Domain- and language-agnostic. The conceptual / logical / physical ladder applies across relational, document, graph, and event-sourced systems."
+        "notes": "Domain- and language-agnostic. The conceptual / logical / physical ladder applies across relational, document, graph, event-sourced, and service-oriented systems. Examples use generic commerce and education nouns only as public, portable modeling examples."
       },
-      "description": "Use when translating business requirements into a structured domain model before database schemas, API endpoints, or DDD aggregates are named. Covers entities, attributes, relationships, cardinality, specialization/generalization, aggregation/composition, roles, abstraction levels, stakeholder validation, and modeling anti-patterns such as implementation leakage, god entities, phantom relationships, premature normalization, attribute-as-entity, and unnamed relationships. Do NOT use for database ER diagrams with keys and normalization, formal ontology axioms with OWL/RDFS, or DDD tactical design; use those dedicated skills instead.",
+      "concept": {
+        "analogy": "It is the architectural floor plan before engineering drawings: useful because it is precise about the lived structure while still independent of materials and machinery.",
+        "boundary": "It does not design physical database schemas, write migrations, define formal ontology axioms, choose aggregate boundaries, perform code review, or settle implementation naming once the model is already accepted.",
+        "definition": "Conceptual modeling is the implementation-neutral discipline of representing a domain as entities, attributes, relationships, identity criteria, cardinalities, and abstraction boundaries that stakeholders can validate before technical design begins.",
+        "mental_model": "Treat the conceptual model as a contract between stakeholder language and later system design. It must preserve business meaning while postponing storage, API, ontology, and DDD implementation choices.",
+        "misconception": "A conceptual model is not informal hand-waving and not a premature table diagram. It should be business-readable, constraint-aware, and intentionally implementation-neutral.",
+        "purpose": "It exposes hidden domain decisions early: what exists, what makes two things the same, how concepts relate, which relationships carry their own data, and which constraints are business truths rather than technical preferences.",
+        "taxonomy": "Core moves include entity discovery, attribute placement, relationship naming, cardinality and optionality analysis, identity criteria, aggregation versus composition, specialization/generalization, reification of relationship concepts, abstraction-level policing, and stakeholder scenario validation."
+      },
+      "description": "Use when translating messy business requirements, stakeholder language, or early product ideas into an implementation-neutral domain model before database schemas, API endpoints, or DDD aggregates are named. Covers entities, attributes, named relationships, cardinality, identity criteria, specialization/generalization, aggregation/composition, reification, abstraction-level control, stakeholder validation, and modeling anti-patterns. Do NOT use for database ER diagrams with keys and normalization, formal ontology axioms with OWL/RDFS, or DDD tactical design; use those dedicated skills instead.",
       "domain": "engineering/modeling",
+      "grounding": {
+        "domain_object": "Implementation-neutral conceptual modeling for business domains before logical schema, physical database, ontology, API, or DDD tactical design",
+        "evidence_priority": "equal",
+        "failure_modes": [
+          "implementation_leakage_turns_conceptual_model_into_physical_schema",
+          "unnamed_relationships_hide_business_meaning",
+          "cardinality_or_optionality_left_implicit",
+          "identity_criteria_missing_for_entities",
+          "relationship_with_attributes_not_reified",
+          "generalization_claim_lies_about_disjointness_or_totality",
+          "stakeholder_validation_skipped",
+          "conceptual_model_overowns_ontology_data_modeling_or_ddd_design"
+        ],
+        "grounding_mode": "universal",
+        "truth_sources": [
+          "https://doi.org/10.1145/320434.320440",
+          "https://www.omg.org/spec/UML/2.5.1/PDF",
+          "https://opentextbc.ca/dbdesign01/chapter/chapter-8-entity-relationship-model/",
+          "https://www.ibm.com/think/topics/conceptual-data-model"
+        ]
+      },
       "health": {
+        "comprehension_state": "present",
         "drift_check": {
-          "last_verified": "2026-05-06"
+          "last_verified": "2026-05-19"
         },
         "eval_artifacts": "planned",
         "eval_state": "unverified",
-        "freshness": "2026-05-06",
-        "has_grounding": false,
+        "freshness": "2026-05-19",
+        "has_grounding": true,
         "has_relations": true,
         "lifecycle": {
           "review_cadence": "quarterly",
@@ -1746,26 +1783,53 @@
       "relations": {
         "boundary": [
           {
-            "reason": "code-review evaluates implementation output; conceptual-modeling is the pre-implementation domain analysis above it",
-            "skill": "code-review"
+            "reason": "data-modeling owns logical and physical persistence decisions such as keys, constraints, normalization, denormalization, provenance, and indexing; conceptual-modeling stays implementation-neutral and validates business meaning first.",
+            "skill": "data-modeling"
           },
           {
-            "reason": "naming-conventions decides what to call entities and fields; conceptual-modeling decides what entities and fields exist in the first place",
+            "reason": "entity-relationship-modeling owns database-oriented ER notation, primary and foreign keys, junction tables, inheritance mapping, and SQL translation; conceptual-modeling owns pre-database entity, attribute, relationship, and cardinality discovery.",
+            "skill": "entity-relationship-modeling"
+          },
+          {
+            "reason": "ontology-modeling formalizes classes, properties, axioms, validation shapes, and reasoning semantics; conceptual-modeling produces stakeholder-readable domain structure without OWL/RDFS/SHACL commitments.",
+            "skill": "ontology-modeling"
+          },
+          {
+            "reason": "semantic-relations types individual meaning edges such as IS-A, PART-OF, synonymy, and thematic roles; conceptual-modeling assembles the full implementation-neutral domain model that may consume those relation tests.",
+            "skill": "semantic-relations"
+          },
+          {
+            "reason": "bounded-context-mapping owns DDD context boundaries, translations, and anti-corruption layers; conceptual-modeling owns the concept inventory before tactical DDD boundaries are chosen.",
+            "skill": "bounded-context-mapping"
+          },
+          {
+            "reason": "naming-conventions owns how settled concepts are named in code, schemas, or APIs; conceptual-modeling decides which concepts exist and what their identity and relationships are before naming.",
             "skill": "naming-conventions"
           },
           {
-            "reason": "refactor preserves behavior while restructuring code; conceptual-modeling restructures the domain abstraction itself, which usually requires non-behavior-preserving change",
-            "skill": "refactor"
+            "reason": "code-review evaluates an implementation diff; conceptual-modeling happens upstream before code or schema review exists.",
+            "skill": "code-review"
           }
         ],
         "related": [
+          "data-modeling",
+          "entity-relationship-modeling",
+          "semantic-relations",
+          "ontology-modeling",
+          "taxonomy-design",
+          "bounded-context-mapping",
           "naming-conventions"
+        ],
+        "verify_with": [
+          "semantic-relations",
+          "data-modeling",
+          "ontology-modeling"
         ]
       },
       "scope": "portable",
       "stability": "experimental",
       "type": "capability",
-      "version": "1.0.0"
+      "version": "1.1.0"
     },
     {
       "activation": {
