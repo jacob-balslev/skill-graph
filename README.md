@@ -423,14 +423,18 @@ Before cutting the first release, ensure these one-time steps are done:
 ### Cutting a release
 
 ```bash
-# Bump version, commit, and tag in one step
+# 1. Bump version, commit, and tag locally
 pnpm version patch   # or minor, or major
 
-# Push the commit and the tag — CI picks up the tag and publishes
+# 2. Push the commit and the tag — the tag push by itself does NOT publish
 git push && git push --tags
+
+# 3. Trigger the publish workflow manually from the GitHub Actions UI,
+#    or via the CLI, passing the tag you just pushed:
+gh workflow run "Publish @skill-graph/cli to npm" -f tag=v0.5.9
 ```
 
-The publish pipeline at `.github/workflows/publish.yml` triggers on any `v*.*.*` tag, runs `pnpm test`, then publishes `@skill-graph/cli` with provenance attestation. The npm package is always published from CI — do not run `pnpm publish` locally.
+The publish pipeline at `.github/workflows/publish.yml` is **manually gated as of v0.5.9**: it triggers only on `workflow_dispatch` and requires the maintainer to enter the release tag. The workflow checks out that tag, runs `pnpm test`, then publishes `@skill-graph/cli` with provenance attestation. The npm package is always published from CI — do not run `pnpm publish` locally. (Releases up to and including v0.5.8 used an auto-publish-on-tag trigger; the manual gate was added immediately after the v0.5.8 publish completed.)
 
 ### Manual prereq summary
 
@@ -438,7 +442,7 @@ The publish pipeline at `.github/workflows/publish.yml` triggers on any `v*.*.*`
 |------|-----|---------|
 | Create `@skill-graph` npm org (once) | Jacob | https://www.npmjs.com/org/create — pick "Unlimited public packages — Free" |
 | Add `NPM_TOKEN` GitHub secret (once) | Jacob | GitHub Settings → Secrets |
-| Cut a release | Maintainer | `pnpm version <patch\|minor\|major> && git push --tags` |
+| Cut a release | Maintainer | `pnpm version <patch\|minor\|major>` then `git push --tags`, then `gh workflow run "Publish @skill-graph/cli to npm" -f tag=v<x.y.z>` |
 
 > CLI distribution via npm (`@skill-graph/cli`) is separate from skill library syndication. The skill library is published from [`jacob-balslev/skills`](https://github.com/jacob-balslev/skills) via `npx skills add jacob-balslev/skills`. See [`docs/marketplace-syndication.md`](docs/marketplace-syndication.md) for the skill library syndication workflow. See SH-6110 for install verification.
 

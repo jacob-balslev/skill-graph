@@ -1,9 +1,16 @@
 name: Publish @skill-graph/cli to npm
 
+# Manual-gate release: the maintainer triggers this workflow from the GitHub
+# Actions UI (or `gh workflow run`) after sanity-checking the tag, package
+# contents, and CHANGELOG entry. Tag push alone no longer auto-publishes —
+# the gate moved here from b32f1e4 (v0.5.8, the last auto-on-tag release).
 on:
-  push:
-    tags:
-      - 'v[0-9]*.[0-9]*.[0-9]*'
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: 'Release tag to publish (e.g. v0.5.9). Must already exist on the remote.'
+        required: true
+        type: string
 
 jobs:
   publish:
@@ -14,6 +21,8 @@ jobs:
       id-token: write  # required for npm provenance attestation
     steps:
       - uses: actions/checkout@v6
+        with:
+          ref: ${{ inputs.tag }}
 
       - uses: pnpm/action-setup@v6
         with:
