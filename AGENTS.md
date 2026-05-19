@@ -18,7 +18,7 @@ Read these files before changing behavior or docs:
 7. `CONTRIBUTING.md` - contribution boundaries, skill authoring workflow, PR expectations.
 8. `docs/quality-doctrine.md` - quality bar for scope preservation, readable names, compression, verification, and organization-over-trimming.
 
-For audit work, also read `SKILL_AUDIT_LOOP.md` and `SKILL_AUDIT_CHECKLIST.md`.
+For audit work, also read `docs/SKILL_AUDIT_LOOP.md` and `docs/SKILL_AUDIT_CHECKLIST.md`.
 
 ## Project Shape
 
@@ -142,7 +142,7 @@ When a code or schema change lands, update the matching documentation rows in th
 | **Schema deprecation, repo split, sibling-repo lifecycle** | New ADR in `docs/adr/NNNN-<slug>.md`, `AGENTS.md` § Project Shape, `CHANGELOG.md`, `SKILL_GRAPH.md` if authority tiers change |
 | **Field semantics, head nouns, decision tables** | `docs/field-reference.md`, `docs/field-decision-guide.md`, `docs/field-rationale.md`, `docs/head-noun-glossary.md`, `docs/glossary.md`. Regenerate `docs/field-reference.generated.md` via `node scripts/build-field-reference.js` in the same commit (enforced by `protocol:check § C7`) |
 | **Routing eval changes** (`scripts/skill-graph-routing-eval.js`, retrieval baselines) | `docs/ROUTING-METRICS.md`, `docs/recommended-skills.md`, retrieval baselines under `evals/retrieval-baseline-*.json` |
-| **Skill audit loop or checklist** (`scripts/skill-audit.js`, `lib/audit/*`) | `SKILL_AUDIT_LOOP.md`, `SKILL_AUDIT_CHECKLIST.md`, `AGENTS.md` § Skill Audit Loop |
+| **Skill audit loop or checklist** (`scripts/skill-audit.js`, `lib/audit/*`) | `docs/SKILL_AUDIT_LOOP.md`, `docs/SKILL_AUDIT_CHECKLIST.md`, `AGENTS.md` § Skill Audit Loop |
 | **Marketplace publication tooling/queue** | `docs/marketplace-publication-queue.generated.md` (_generated_), per-snapshot `docs/marketplace-publication-priority-YYYY-MM-DD.md` if a new priority cut is published |
 | **Proposals** | `docs/proposals/*.md` (the proposal file itself); if accepted, follow through to the canonical doc and an ADR in the same change |
 | **Plans** | `docs/plans/*.md` (the plan file); when completed, move from active to `docs/_archived/` |
@@ -150,7 +150,7 @@ When a code or schema change lands, update the matching documentation rows in th
 | **New ADR** (architectural decision) | `docs/adr/NNNN-<slug>.md` (new), `CHANGELOG.md` if architecturally visible, `AGENTS.md` if governance changes |
 | **Schema, lint, manifest projection** | See `## Coupled Changes` above — tier-coordinated changes have stricter coupling rules than this table |
 | **README / public positioning** | `README.md`, `docs/positioning-vs-marketplaces.md`, `docs/ADOPTION.md` if adoption surface changes, `CHANGELOG.md` if user-visible |
-| **Quality doctrine, editing rules, audit anti-patterns** | `AGENTS.md` (this file), `docs/quality-doctrine.md`, `SKILL_AUDIT_CHECKLIST.md` |
+| **Quality doctrine, editing rules, audit anti-patterns** | `AGENTS.md` (this file), `docs/quality-doctrine.md`, `docs/SKILL_AUDIT_CHECKLIST.md` |
 | **Generated artifacts** (`docs/field-reference.generated.md`, `examples/skills.manifest.sample.json`, `docs/marketplace-publication-queue.generated.md`, `marketplace/skills/`) | _generated_ — do not hand-edit. Regenerate via the owning script (see `## Coupled Changes`) |
 
 **Stale-reference rule:** When renaming or deleting any file, command, flag, or URL referenced in this repo, grep `*.md`, `*.yml`, `*.json`, and `package.json` for the old name and fix every hit in the same commit. The `## Coupled Changes` rules enforce this for tier artifacts; this rule extends it to the rest of the surface.
@@ -222,7 +222,7 @@ The Skill Graph evaluates four layers; each has its own surface and its own defi
 
 ## Skill Audit Loop
 
-The audit loop is the disciplined sweep that validates a skill (or a batch of skills) against the Skill Metadata Protocol, drift baselines, retrieval evals, and the quality doctrine. Full contract: `SKILL_AUDIT_LOOP.md` plus `SKILL_AUDIT_CHECKLIST.md`. This section is the operational summary.
+The audit loop is the disciplined sweep that validates a skill (or a batch of skills) against the Skill Metadata Protocol, drift baselines, retrieval evals, and the quality doctrine. Full contract: `docs/SKILL_AUDIT_LOOP.md` plus `docs/SKILL_AUDIT_CHECKLIST.md`. This section is the operational summary.
 
 ### When to run the loop
 

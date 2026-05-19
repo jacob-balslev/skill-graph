@@ -138,7 +138,7 @@ The `not` clause rejects arrays where EVERY item starts with `!`.
    - Leave `paths` untouched; lint already rejects all-negation in v0.5.0.
 5. Update `docs/manifest-field-mapping.md` with a new § "Migration Note — v3 → v4" containing the transformations above.
 6. Update `docs/field-reference.md` for the changed fields.
-7. Update `SKILL_AUDIT_CHECKLIST.md` schema_version check.
+7. Update `docs/SKILL_AUDIT_CHECKLIST.md` schema_version check.
 8. Bump `CHANGELOG.md` root `schema_version` reference to `4`.
 9. Run migrate on all 8 starters + template. Regenerate manifest. Re-run drift sentinel with new hash key scheme.
 10. Run full lint + manifest validation + audit sweep.
