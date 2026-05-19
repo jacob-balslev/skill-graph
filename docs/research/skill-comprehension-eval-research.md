@@ -53,7 +53,7 @@ The report does not propose a new schema version, does not redesign lint or drif
 
 ## 2. What the repo currently evaluates
 
-The Skill Graph's evaluation discipline is described in [`AGENTS.MD` § Evaluation Discipline (lines 143–189)](/Users/jacobbalslev/Development/skill-graph/AGENTS.MD). It names four layers, each with its own definition of "good":
+The Skill Graph's evaluation discipline is described in [`AGENTS.md` § Evaluation Discipline (lines 143–189)](/Users/jacobbalslev/Development/skill-graph/AGENTS.md). It names four layers, each with its own definition of "good":
 
 | Layer | Question | Surface | Deterministic? |
 |---|---|---|---|
@@ -171,7 +171,7 @@ The result: a skill author who fills the `concept` block does not know what a co
 
 ### 3.2 No verbatim-copy detector
 
-A failure mode the protocol's quality doctrine warns against — "evals that paraphrase the skill body back to itself" ([`AGENTS.MD` line 186](/Users/jacobbalslev/Development/skill-graph/AGENTS.MD)) — has no test. The current eval files frequently use prompts like:
+A failure mode the protocol's quality doctrine warns against — "evals that paraphrase the skill body back to itself" ([`AGENTS.md` line 186](/Users/jacobbalslev/Development/skill-graph/AGENTS.md)) — has no test. The current eval files frequently use prompts like:
 
 > "According to the X skill's Y section, what is the correct primitive…"
 > (e.g. [`examples/evals/a11y.json:8-16`](/Users/jacobbalslev/Development/skill-graph/examples/evals/a11y.json))
@@ -1045,7 +1045,7 @@ The 10 cases cover all 9 rubric dimensions:
 
 Transfer mix: 6 near-transfer (C1, C3, C4, C7-#1, C8, C9), 4 far-transfer (C2, C5, C6, C7-#2). The schema's heaviest-weighted dimensions (mental_model 1.5, boundary 1.5) both have far-transfer coverage. Misconception has two cases — one near (the Zod question, a domain-internal misconception) and one far (the C++ comparison, a cross-language misconception), exercising the misconception primitive across surface variations.
 
-The minimum threshold (`AGENTS.MD § Evaluation Discipline`: "≥7 realistic scenarios per skill") is exceeded; this file would also satisfy the existing audit-loop's Eval dimension if the grader is updated to accept the comprehension-extension keys.
+The minimum threshold (`AGENTS.md § Evaluation Discipline`: "≥7 realistic scenarios per skill") is exceeded; this file would also satisfy the existing audit-loop's Eval dimension if the grader is updated to accept the comprehension-extension keys.
 
 ### 6.4 What this worked example does NOT cover
 
@@ -1169,7 +1169,7 @@ Update [`SKILL_AUDIT_CHECKLIST.md`](https://github.com/jacob-balslev/skill-audit
 
 **Effort.** ~half day.
 
-**Change.** Add a new section to `docs/skill-metadata-protocol.md` and `docs/field-reference.md § concept` explaining the rubric. Cross-reference from `AGENTS.MD § Evaluation Discipline` so the protocol-level discipline is discoverable. Add the new optional eval-file keys (`comprehension_dimension`, `concept_field`, `transfer`, `expected_behaviors`) to `docs/field-reference.md` with the same field-level treatment as existing keys.
+**Change.** Add a new section to `docs/skill-metadata-protocol.md` and `docs/field-reference.md § concept` explaining the rubric. Cross-reference from `AGENTS.md § Evaluation Discipline` so the protocol-level discipline is discoverable. Add the new optional eval-file keys (`comprehension_dimension`, `concept_field`, `transfer`, `expected_behaviors`) to `docs/field-reference.md` with the same field-level treatment as existing keys.
 
 **Why this is leverage-8.** Without documentation, the rubric is folklore. With documentation in the canonical reference doc, authors discover it during their normal skill-authoring flow.
 
@@ -1397,7 +1397,7 @@ Recommendation, not decision: defer until R3 ships. Once the grader runs and pro
 
 This report examined the following **24 repo files** (23 inside `skill-graph/` plus 1 in the parent `Development/skills/` workspace, added in the 2026-05-16 revision):
 
-1. [`/Users/jacobbalslev/Development/skill-graph/AGENTS.MD`](/Users/jacobbalslev/Development/skill-graph/AGENTS.MD) — full read; especially §§ Evaluation Discipline, Skill Audit Loop, What the Skill Graph Is
+1. [`/Users/jacobbalslev/Development/skill-graph/AGENTS.md`](/Users/jacobbalslev/Development/skill-graph/AGENTS.md) — full read; especially §§ Evaluation Discipline, Skill Audit Loop, What the Skill Graph Is
 2. [`https://github.com/jacob-balslev/skill-metadata-protocol`](https://github.com/jacob-balslev/skill-metadata-protocol) — full read
 3. [`https://github.com/jacob-balslev/skill-audit-loop/blob/main/SKILL_AUDIT_LOOP.md`](https://github.com/jacob-balslev/skill-audit-loop/blob/main/SKILL_AUDIT_LOOP.md) — full read
 4. [`https://github.com/jacob-balslev/skill-audit-loop/blob/main/SKILL_AUDIT_CHECKLIST.md`](https://github.com/jacob-balslev/skill-audit-loop/blob/main/SKILL_AUDIT_CHECKLIST.md) — full read
