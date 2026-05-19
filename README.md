@@ -59,12 +59,20 @@ graph TD
 
 ### Pick the right doc
 
+Two onboarding paths, by need:
+
+- **"I want to author my first skill in 30 minutes."** → [`docs/QUICKSTART-30MIN.md`](docs/QUICKSTART-30MIN.md) — literal terminal walkthrough: clone, install, fill in the template, lint, route a query, record the drift baseline. Use this when you'd rather try the tooling than read about it.
+- **"I want to understand the model before I commit."** → [`docs/PRIMER.md`](docs/PRIMER.md) — conceptual primer: what the protocol is, when to adopt it, the four orthogonal classification axes, the routing model, and what Skill Graph is *not*. Use this when you'd rather build the mental model first.
+
+The QUICKSTART points at the PRIMER for the "why"; the PRIMER points at the QUICKSTART for the "how". Read either first, then loop back.
+
+For everything else:
+
 | If you want to… | Start here |
 |---|---|
 | **Install the CLI** | [Quick Start](#quick-start) below — `npm install -g @skill-graph/cli` |
 | **Install the public skill library** | [`jacob-balslev/skills`](https://github.com/jacob-balslev/skills) — `npx skills add jacob-balslev/skills` |
 | **Understand the `SKILL.md` frontmatter contract** | [`docs/SKILL_METADATA_PROTOCOL.md`](docs/SKILL_METADATA_PROTOCOL.md) — the normative spec |
-| **Author a new skill** | [`docs/PRIMER.md`](docs/PRIMER.md) and [`examples/skill-metadata-template.md`](examples/skill-metadata-template.md) |
 | **Audit an existing skill library** | [`docs/SKILL_AUDIT_LOOP.md`](docs/SKILL_AUDIT_LOOP.md) — the audit procedure |
 | **Look up a specific field** | [`docs/field-reference.md`](docs/field-reference.md) |
 | **Plan adoption in a new repo** | [`docs/ADOPTION.md`](docs/ADOPTION.md) and [`docs/CONFORMANCE.md`](docs/CONFORMANCE.md) |
