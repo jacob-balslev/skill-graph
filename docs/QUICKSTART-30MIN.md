@@ -10,7 +10,7 @@
 |---|---|---|
 | M0–M2 | Clone the repo and install | The repo runs with zero external dependencies |
 | M3–M7 | Copy the template into your first skill directory | The authoring flow is copy → rename → adapt → strip → verify |
-| M8–M11 | Fill in the 13 required v4 fields for `markdown-post-frontmatter-review` | Why each field exists and what it commits you to |
+| M8–M11 | Fill in the 13 required v6 fields for `markdown-post-frontmatter-review` | Why each field exists and what it commits you to |
 | M12–M15 | Lint your first skill | Lint output is the primary debugging surface |
 | M16–M19 | Create a second skill (`post-archive-rebuild`) with a `relations.depends_on` link | The graph is real — relations enforce that `depends_on` targets exist |
 | M20–M24 | Break the relation deliberately and watch lint catch it | The contract fails loud, not silent |
@@ -63,9 +63,9 @@ The template lints clean as-is, so you can incrementally edit and re-lint to cat
 
 ---
 
-## M8–M11: Fill in the 13 required v4 fields
+## M8–M11: Fill in the 13 required v6 fields
 
-The 13 required v4 fields are: `schema_version`, `name`, `description`, `version`, `type`, `category`, `scope`, `owner`, `freshness`, `drift_check`, `eval_artifacts`, `eval_state`, `routing_eval`. The template has all 13 — you're replacing values, not adding fields.
+The 13 required v6 fields are: `schema_version`, `name`, `description`, `version`, `type`, `category`, `scope`, `owner`, `freshness`, `drift_check`, `eval_artifacts`, `eval_state`, `routing_eval`. The template has all 13 — you're replacing values, not adding fields.
 
 For `markdown-post-frontmatter-review`, the values look like:
 
