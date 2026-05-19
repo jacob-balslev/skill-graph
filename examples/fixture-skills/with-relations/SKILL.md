@@ -67,17 +67,22 @@ surface.
 ## Verification
 
 ```bash
-node scripts/skill-lint.js --path examples/fixture-skills/with-relations
-# expected: 0 errors
-node scripts/skill-lint.js --path examples/fixture-skills
+node scripts/skill-lint.js examples/fixture-skills
 # expected: 0 errors across all four fixtures with relations resolved
 ```
 
 Lint must resolve every relation target from the union of configured roots
-plus the explicit `--path` set. In a hermetic package-test environment
-(no sibling skills clone), the four fixtures in this directory form a closed
-cross-reference set: every `relations.*` target above names another fixture
-that lives in the same directory.
+plus the directory scanned. In a hermetic package-test environment (no sibling
+skills clone), the four fixtures in this directory form a closed cross-reference
+set: every `relations.*` target above names another fixture that lives in the
+same directory.
+
+**Important:** scan the parent `examples/fixture-skills/` directory, not the
+individual `with-relations/` directory. A single-fixture scan only loads that
+one SKILL.md into the known-skill set, so the relation targets pointing at
+sibling fixtures (`minimal-capability`, `with-grounding`, `comprehension-full`)
+fail to resolve. This is a known resolver-semantics gap — see the suite-scan
+form above as the canonical verification for fixtures with sibling relations.
 
 ## Do NOT Use When
 
