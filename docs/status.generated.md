@@ -1,6 +1,6 @@
 # Skill Graph — Generated Status
 
-> **Generated:** 2026-05-19T03:11:32.179Z
+> **Generated:** 2026-05-19T03:15:14.675Z
 > **Generator:** `node scripts/build-status-doc.js` (regenerate; never hand-edit)
 >
 > This file is the single-source-of-truth status snapshot for the project's
@@ -13,7 +13,7 @@
 | Field | Value | Source |
 |---|---|---|
 | Package name | `@skill-graph/cli` | `package.json` |
-| Package version | `0.5.7` | `package.json` |
+| Package version | `0.5.8` | `package.json` |
 | Node engine | `>=20.0.0` | `package.json` |
 | Active schema version | `6` | `schemas/skill.schema.json` |
 | Skill count (manifest) | `145` | `skills.manifest.json` |
@@ -23,10 +23,10 @@
 
 | Check | Status | Duration | Last line |
 |---|---|---|---|
-| check-markdown-links | ✅ PASS | 150 ms | OK   markdown links (245 file(s)) |
-| check-protocol-consistency | ✅ PASS | 112 ms | PASS: all protocol consistency checks passed. 0 warning(s). |
-| check-doc-drift | ✅ PASS | 59 ms | OK   doc drift sentinel: 59 active doc(s) scanned against schema v6 |
-| check-mirror-freeze | ✅ PASS | 50 ms | OK   mirror freeze: 50 file(s) scanned across 2 mirror(s); no active-source/package claims found. |
+| check-markdown-links | ✅ PASS | 188 ms | OK   markdown links (245 file(s)) |
+| check-protocol-consistency | ✅ PASS | 114 ms | PASS: all protocol consistency checks passed. 0 warning(s). |
+| check-doc-drift | ✅ PASS | 61 ms | OK   doc drift sentinel: 59 active doc(s) scanned against schema v6 |
+| check-mirror-freeze | ✅ PASS | 61 ms | OK   mirror freeze: 50 file(s) scanned across 2 mirror(s); no active-source/package claims found. |
 
 ## How to refresh
 
