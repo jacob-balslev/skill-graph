@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-05-18T20:30:00Z",
+  "generated_at": "2026-05-19T02:13:13Z",
   "schema_version": 4,
   "skills": [
     {
@@ -10395,16 +10395,17 @@
           "I need to connect external IDs from one platform to canonical IDs in our system operationally",
           "I need the broader representation choice between graph, frames, rules, or hybrid knowledge systems",
           "I need to analyze icon metaphors, color connotation, and UI sign systems",
-          "rename this function across all call-sites in the repo"
+          "rename this function across all call-sites in the repo",
+          "design the full taxonomy, facets, and assignment rules for this category system"
         ],
         "examples": [
-          "our codebase uses customer, client, buyer, and user in different modules — which relation analysis tells us whether this is synonymy, near-synonymy, or distinct domain language?",
-          "a new graph schema uses related_to for every edge — which semantic relation types should replace it so traversal and reasoning stay meaningful?",
+          "our codebase uses customer, client, buyer, and user in different modules -- which relation analysis tells us whether this is synonymy, near-synonymy, or distinct domain language?",
+          "a new graph schema uses related_to for every edge -- which semantic relation types should replace it so traversal and reasoning stay meaningful?",
           "is a refund a kind of payment, part of a payment, or the result of a payment action?",
-          "two skills seem close: one owns structure design and one owns assignment into that structure — is that adjacency, a boundary, or a deeper taxonomic relation?",
-          "the word status appears across payments, orders, and fulfillment — how should relation analysis expose the polysemy and guide disambiguation?",
+          "two skills seem close: one owns structure design and one owns assignment into that structure -- is that adjacency, a boundary, or a deeper taxonomic relation?",
+          "the word status appears across payments, orders, and fulfillment -- how should relation analysis expose the polysemy and guide disambiguation?",
           "type these knowledge-graph edges so traversal is meaningful instead of generic",
-          "test whether 'every line item is an order' passes the IS-A substitution test"
+          "test whether every line item is an order passes the IS-A substitution test"
         ],
         "keywords": [
           "semantic relations",
@@ -10422,34 +10423,57 @@
           "typed-edge taxonomy",
           "conceptual-relation analysis",
           "adjacency-vs-boundary disambiguation",
-          "generic related-to anti-pattern"
+          "generic related-to anti-pattern",
+          "SKOS broader narrower related",
+          "WordNet semantic relations",
+          "FrameNet frame elements"
         ]
       },
       "allowed-tools": "Read Grep",
       "category": "foundations",
       "compatibility": {
-        "notes": "Vocabulary-layer skill, stack- and storage-agnostic. The relation taxonomy and the substitution / property tests apply to any knowledge graph, concept map, taxonomy, or naming system; downstream implementation skills (ontology, ER modeling, relational mapping) consume the typed relations defined here."
+        "notes": "Vocabulary-layer skill, stack- and storage-agnostic. The relation taxonomy and the substitution / property tests apply to any knowledge graph, concept map, taxonomy, naming system, or conceptual model; downstream implementation skills such as ontology-modeling, taxonomy-design, entity-relationship-modeling, and relational mapping consume the typed relations defined here."
       },
       "concept": {
-        "analogy": "|",
-        "boundary": "|",
-        "definition": "Semantic relations are the *typed connections* between concepts in a meaning structure: IS-A (hypernymy/hyponymy), PART-OF (holonymy/meronymy), synonymy, antonymy, polysemy, homonymy, metonymy, and the thematic role relations (agent, patient, instrument, location, source, goal, cause, result). Drawn from lexical semantics (Lyons, Cruse), Princeton WordNet, the W3C SKOS vocabulary, and cognitive-semantics work on thematic roles (Fillmore 1968, Jackendoff 1990), it treats every edge in a knowledge graph, concept map, or hierarchy as a relation of a *named kind* rather than a generic association.",
-        "mental_model": "|",
-        "misconception": "|",
-        "purpose": "|",
-        "taxonomy": "|"
+        "analogy": "Semantic relations are road types on a map: motorway, bridge, one-way street, and roundabout each permit different movement. Labelling every road as connector loses the rules that make navigation possible.",
+        "boundary": "It does not build the full conceptual model, choose the knowledge-representation paradigm, design a taxonomy, formalize an ontology, implement database relationships, or solve linguistic form and register questions.",
+        "definition": "Semantic relations are typed connections between concepts in a meaning structure: IS-A, PART-OF, synonymy, antonymy, polysemy, homonymy, metonymy, causal relations, thematic roles, and relation properties such as symmetry and transitivity.",
+        "mental_model": "Treat every edge as a claim with a named kind and testable behavior. A typed edge says how traversal, inheritance, substitution, role assignment, or inference should work; a vague edge only says two things are nearby.",
+        "misconception": "The common mistake is believing relation labels are optional decoration. In practice, confusing IS-A with PART-OF, synonymy with polysemy, or actor with instrument changes what readers and tools infer.",
+        "purpose": "The purpose is to replace generic association with relation vocabulary that supports reasoning, retrieval, naming disambiguation, hierarchy validation, and clean boundaries between neighboring skills or concepts.",
+        "taxonomy": "Relation families include taxonomic relations such as hypernymy and hyponymy; mereological relations such as holonymy and meronymy; associative lexical relations such as synonymy, antonymy, polysemy, homonymy, and metonymy; thematic roles such as agent, patient, instrument, source, goal, cause, and result; and formal properties such as symmetry, asymmetry, transitivity, reflexivity, and irreflexivity."
       },
       "description": "Use when typing edges in a knowledge graph or concept map, resolving synonym/antonym/polysemy/homonym confusion, testing whether a connection is IS-A, PART-OF, causal, thematic, or vague, explaining adjacent concepts, or auditing whether hierarchy and skill-boundary decisions use the wrong relation type. Covers taxonomic, associative, and thematic relations plus symmetry, asymmetry, transitivity, reflexivity, and irreflexivity. Do NOT use for formal ontology axioms with reasoning constraints, database foreign-key or junction-table design, or operational data correspondence across systems.",
       "domain": "foundations/semantics",
+      "grounding": {
+        "domain_object": "Semantic relation typing for concept edges, lexical sense relations, knowledge-organization links, thematic roles, and relation-property checks",
+        "evidence_priority": "equal",
+        "failure_modes": [
+          "generic_related_to_edges_collapse_relation_meaning",
+          "is_a_part_of_conflation_breaks_inheritance_reasoning",
+          "synonym_polysemy_homonymy_confusion_drives_wrong_rename_or_flattening",
+          "relation_properties_left_implicit",
+          "thematic_roles_conflate_actor_instrument_cause_or_goal",
+          "relation_typing_overowns_formal_ontology_taxonomy_or_database_design",
+          "publishability_scan_false_positive_from_customer_specific_examples"
+        ],
+        "grounding_mode": "universal",
+        "truth_sources": [
+          "https://wordnet.princeton.edu/",
+          "https://www.w3.org/TR/skos-reference/",
+          "https://www.w3.org/TR/owl2-primer/",
+          "https://framenet.icsi.berkeley.edu/WhatIsFrameNet"
+        ]
+      },
       "health": {
         "comprehension_state": "present",
         "drift_check": {
-          "last_verified": "2026-05-16"
+          "last_verified": "2026-05-19"
         },
         "eval_artifacts": "planned",
         "eval_state": "unverified",
-        "freshness": "2026-05-16",
-        "has_grounding": false,
+        "freshness": "2026-05-19",
+        "has_grounding": true,
         "has_relations": true,
         "lifecycle": {
           "review_cadence": "quarterly",
@@ -10471,55 +10495,78 @@
       "relations": {
         "boundary": [
           {
-            "reason": "linguistics owns the rules of word form (morphology, polysemy resolution at the identifier level, audience register); semantic-relations owns the typing of meaning connections between concepts (IS-A, PART-OF, thematic roles, relation properties) — the same 'what's the relationship between these two terms?' prompt routes by whether the lens is the term form/morphology or the typed connection between meanings",
+            "reason": "linguistics owns word form, morphology, register, and identifier-level phrasing; semantic-relations owns the typed meaning connection between concepts such as IS-A, PART-OF, causal, thematic, synonymy, polysemy, and homonymy.",
             "skill": "linguistics"
           },
           {
-            "reason": "conceptual-modeling builds the full concept structure (which entities, which attributes, which relationships exist); semantic-relations supplies the relation-typing vocabulary used inside that structure (whether a relationship is taxonomic, mereological, thematic, causal) — the same 'model these concepts' prompt routes by whether the user wants the structure built or the relation types named",
+            "reason": "conceptual-modeling builds the full pre-implementation domain structure of entities, attributes, relationships, and cardinality; semantic-relations supplies the relation-type vocabulary used inside or around that structure.",
             "skill": "conceptual-modeling"
           },
           {
-            "reason": "knowledge-modeling chooses the representation paradigm (graph, frames, rules, hybrid) for a knowledge surface; semantic-relations chooses the relation vocabulary used inside whatever paradigm is picked — the same 'design how to represent this knowledge' prompt routes by whether the trigger is the representation choice or the relation typing",
+            "reason": "knowledge-modeling chooses the representation paradigm such as graph, frame, rules, concept map, or hybrid; semantic-relations chooses the edge vocabulary inside whichever representation is selected.",
             "skill": "knowledge-modeling"
+          },
+          {
+            "reason": "ontology-modeling formalizes classes, properties, axioms, constraints, and reasoning semantics; semantic-relations is the pre-formal relation-typing layer and must not imply OWL/RDFS/SHACL commitments by itself.",
+            "skill": "ontology-modeling"
+          },
+          {
+            "reason": "taxonomy-design governs browse/category hierarchies, facets, assignment rules, and SKOS-style classification; semantic-relations only tests whether a single relation is hierarchy, association, part-whole, thematic role, or another typed edge.",
+            "skill": "taxonomy-design"
+          },
+          {
+            "reason": "entity-relationship-modeling owns physical or logical database relationships, keys, junction tables, and persistence constraints; semantic-relations owns conceptual meaning relations before schema implementation.",
+            "skill": "entity-relationship-modeling"
           }
         ],
         "related": [
           "linguistics",
           "pattern-recognition",
-          "semantic-center"
+          "semantic-center",
+          "conceptual-modeling",
+          "knowledge-modeling",
+          "ontology-modeling",
+          "taxonomy-design"
         ],
         "verify_with": [
           "linguistics",
+          "taxonomy-design",
+          "ontology-modeling",
           "code-review"
         ]
       },
       "scope": "portable",
       "stability": "experimental",
       "type": "capability",
-      "version": "1.1.0"
+      "version": "1.2.0"
     },
     {
       "activation": {
         "anti_examples": [
           "should onboarding be hyphenated, and how does English compound morphology affect that decision?",
-          "what does margin mean in finance reporting versus CSS layout — give me the canonical definition?",
-          "what casing should a new database timestamp column use — kebab, snake, or camel?",
-          "audit whether this button has the correct aria-label and focus semantics for screen readers",
+          "what casing should a new database timestamp column use -- kebab, snake, or camel?",
+          "rename this function and update every call-site across the repo",
+          "type the relation between refund and payment as IS-A, PART-OF, causal, or thematic",
+          "draft the empty-state copy for a freshly connected storefront with no orders yet",
           "decide whether these entities should live in a strict hierarchy or a faceted taxonomy",
-          "draft the empty-state copy for a freshly connected storefront with no orders yet"
+          "audit whether this button has the correct aria-label and focus semantics for screen readers",
+          "should we squash or rebase this feature branch before release?"
         ],
         "examples": [
-          "a function named process(data) actually reconciles revenue with production cost — what semantic rename would make the operation self-explanatory without reading the implementation?",
-          "our API returns HTTP 200 with { success: false, error: 'User not found' } — is that syntactically valid but semantically wrong, and what should the response signal be instead?",
-          "we named a token --light-blue and now dark mode plus rebranding broke its meaning — what semantic token pattern should replace it?",
-          "a variable called provider could mean payment, fulfillment, or auth in three different modules — how should semantics resolve that ambiguity?",
-          "I need to choose between feat(billing): add email notifications and chore(billing): add email notifications — which commit message is semantically correct?",
-          "should this ID be a branded type or a plain string, and what does parse-don't-validate mean for it?",
-          "audit this database schema for unitless financial columns and timestamp-naming drift"
+          "a function named process(data) actually reconciles revenue with production cost -- what semantic rename would make the operation self-explanatory without reading the implementation?",
+          "our API returns HTTP 200 with an error payload for a failed request -- is that syntactically valid but semantically wrong, and what should the response signal be instead?",
+          "we named a token --light-blue and now dark mode plus rebranding broke its meaning -- what semantic token pattern should replace it?",
+          "a variable called provider could mean payment, fulfillment, or auth in three different modules -- how should semantics resolve that ambiguity?",
+          "I need to choose between feat(billing): add email notifications and chore(billing): add email notifications -- which commit type communicates the change correctly?",
+          "should this ID be a branded type or a plain string, and what does parse-dont-validate mean for it?",
+          "audit this schema for unitless financial columns and timestamp-naming drift",
+          "this UI state uses color only to distinguish warning from success -- what semantic signal is missing?"
         ],
         "keywords": [
           "semantic naming",
           "semantic drift detection",
+          "meaning encoding",
+          "names as contracts",
           "branded type design",
           "semantic versioning rules",
           "conventional commit type choice",
@@ -10530,38 +10577,67 @@
           "semantic affordance naming",
           "semantic UI signal",
           "semantic API contract",
-          "parse-do-not-validate pattern",
+          "parse-dont-validate pattern",
           "three-layer token architecture",
-          "meaning-encoding identifier",
           "semantic-vs-syntactic distinction",
-          "cargo-cult naming anti-pattern"
+          "cargo-cult naming anti-pattern",
+          "status code semantics",
+          "semantic design tokens"
         ]
       },
       "allowed-tools": "Read Grep",
       "category": "foundations",
       "compatibility": {
-        "notes": "Cross-domain naming and meaning skill, stack-agnostic. The naming-smells catalogue, SemVer rules, conventional-commit format, three-layer token architecture, HTTP-status semantics, REST/GraphQL conventions, and anti-pattern catalog apply to any codebase; example identifiers use generic e-commerce framings — substitute the equivalents from your domain."
+        "notes": "Cross-domain naming and meaning skill, stack-agnostic. The naming-smells catalogue, SemVer rules, conventional-commit format, semantic-token architecture, HTTP-status semantics, REST/GraphQL conventions, semantic type patterns, and anti-pattern catalog apply to any codebase; examples use generic commerce/order language and should be substituted for the user's domain."
       },
       "concept": {
-        "analogy": "|",
-        "boundary": "|",
-        "definition": "Semantics — applied to software — is the discipline of *meaning encoding* in identifiers and signals: function names, variable names, design tokens, HTTP status codes, version numbers, commit messages, branded types, and the small textual artefacts that communicate intent to humans and machines. Drawing from Domain-Driven Design's *ubiquitous language* (Evans 2003), Don Norman's affordance theory, semantic versioning, and the broader tradition that treats names as contracts, it commits to the view that every visible identifier is a micro-decision whose meaning compounds across the codebase.",
-        "mental_model": "|",
-        "misconception": "|",
-        "purpose": "|",
-        "taxonomy": "|"
+        "analogy": "Semantics is like road signage: a sign is small compared with the road, but if it points to the wrong destination, every later decision built on that sign is at risk.",
+        "boundary": "It does not decide casing formats, word morphology, audience register, rename mechanics, relation types between concepts, UI-copy patterns, taxonomy structure, accessibility compliance, or git history shape.",
+        "definition": "Semantics applied to software is the discipline of encoding meaning in names and signals: identifiers, status codes, version numbers, commit types, design tokens, UI signifiers, API resources, and semantic types.",
+        "mental_model": "Treat every visible name or signal as a contract between a sign, the thing it refers to, and the convention readers use to decode it. Semantic drift happens when the thing changes but the signal does not.",
+        "misconception": "Good semantics is not taste or clever wording. It is evidence-backed alignment between the words/signals a system exposes and the behavior, domain concept, or compatibility promise those words/signals represent.",
+        "purpose": "It reduces translation tax, prevents misleading signals, and makes intent legible to humans, agents, tools, and downstream systems before they inspect implementation details.",
+        "taxonomy": "Core surfaces include code names, database names, API names, HTTP status signals, SemVer bumps, Conventional Commit types, design-token layers, semantic UI signifiers, branded or refined types, and anti-patterns such as generic names, stale names, appearance-based names, and syntactically valid but semantically false responses."
       },
-      "description": "Use when naming artifacts across code, APIs, design tokens, commits, HTTP/status signals, UI labels, error codes, or branded types, especially when a name feels ambiguous or misleading. Covers cross-domain meaning-encoding: naming smells, DDD ubiquitous language, SemVer, conventional commits, branded types, semantic design tokens/CSS/APIs, semantic UI affordances, and naming anti-patterns. Do NOT use for word morphology/polysemy (use linguistics), casing formats (use naming-conventions), typed concept relations (use semantic-relations), or in-product UI-text patterns (use microcopy).",
+      "description": "Use when choosing or auditing the meaning encoded by names and signals across code, APIs, design tokens, commits, versions, HTTP responses, UI labels, error codes, branded types, and domain terms, especially when a name feels ambiguous, misleading, or semantically stale. Covers meaning-encoding decisions: naming smells, DDD ubiquitous language, SemVer, Conventional Commits type choice, branded/semantic types, parse-don't-validate, semantic design tokens/CSS/API signals, semantic UI affordances, and anti-patterns where syntax is valid but the signal lies. Do NOT use for word morphology or audience register (use linguistics), casing/format conventions or rename mechanics (use naming-conventions or refactor), typed concept-edge analysis (use semantic-relations), in-product UI-copy patterns (use microcopy), classification structure (use taxonomy-design), accessibility compliance (use a11y), or git history shape (use version-control).",
       "domain": "foundations/semantics",
+      "grounding": {
+        "domain_object": "Cross-domain meaning encoding in software names, status signals, versions, commits, APIs, design tokens, UI signals, and semantic types",
+        "evidence_priority": "equal",
+        "failure_modes": [
+          "identifier_name_still_matches_syntax_but_not_behavior",
+          "domain_language_drift_creates_translation_tax",
+          "http_status_code_contradicts_response_body",
+          "version_bump_understates_api_breakage",
+          "commit_type_hides_feature_or_breaking_change",
+          "design_token_name_coupled_to_appearance_instead_of_purpose",
+          "primitive_type_allows_id_or_unit_mixups",
+          "color_is_the_only_state_signal",
+          "concept_block_contains_placeholder_values",
+          "semantics_overowns_morphology_relation_typing_or_microcopy_work"
+        ],
+        "grounding_mode": "universal",
+        "truth_sources": [
+          "https://martinfowler.com/bliki/UbiquitousLanguage.html",
+          "https://hilton.org.uk/blog/naming-smells",
+          "https://semver.org/",
+          "https://www.conventionalcommits.org/en/v1.0.0/",
+          "https://www.rfc-editor.org/rfc/rfc9110.html",
+          "https://www.designtokens.org/tr/drafts/format/",
+          "https://www.w3.org/WAI/WCAG22/Understanding/use-of-color.html",
+          "https://www.typescriptlang.org/docs/handbook/type-compatibility.html",
+          "https://lexi-lambda.github.io/blog/2019/11/05/parse-don-t-validate/"
+        ]
+      },
       "health": {
         "comprehension_state": "present",
         "drift_check": {
-          "last_verified": "2026-05-16"
+          "last_verified": "2026-05-19"
         },
         "eval_artifacts": "planned",
         "eval_state": "unverified",
-        "freshness": "2026-05-16",
-        "has_grounding": false,
+        "freshness": "2026-05-19",
+        "has_grounding": true,
         "has_relations": true,
         "lifecycle": {
           "review_cadence": "quarterly",
@@ -10583,28 +10659,46 @@
       "relations": {
         "boundary": [
           {
-            "reason": "linguistics owns word-form rules (morphology, compound-word ordering, abbreviation policy, audience register, blame-free phrasing); semantics owns meaning encoding (what the name communicates, semantic drift, branded types, HTTP-status semantics, SemVer signaling) — the same 'is this name good?' prompt routes by whether the trigger is the form of the word or the meaning the name encodes",
+            "reason": "linguistics owns word-form rules, polysemy phrasing, morphology, audience register, and blame-free wording; semantics owns what a name or signal communicates about the underlying concept or behavior.",
             "skill": "linguistics"
           },
           {
-            "reason": "naming-conventions owns the deterministic casing/format choice per artifact kind (kebab vs camel vs snake vs Pascal); semantics owns the meaning encoding behind the name — the same 'what should I call this?' prompt routes by whether the user wants the format rule or the meaning-encoding decision",
+            "reason": "naming-conventions owns casing, prefix/suffix conventions, and rename mechanics per artifact kind; semantics owns whether the chosen words encode the right meaning before any casing rule is applied.",
             "skill": "naming-conventions"
           },
           {
-            "reason": "semantic-relations owns the typed-connection vocabulary between concepts (IS-A, PART-OF, thematic roles); semantics owns the meaning encoding for an individual identifier or signal — the same 'what does this mean?' prompt routes by whether the trigger is the relation between things or the encoding of one thing",
+            "reason": "semantic-relations owns typed connections between concepts such as IS-A, PART-OF, causal, and thematic relations; semantics owns the meaning encoded by one identifier, token, status, or signal.",
             "skill": "semantic-relations"
           },
           {
-            "reason": "microcopy owns specific in-product UI-text patterns (button labels, empty states, tooltips, dialogs, toasts); semantics owns the underlying meaning-encoding rules that apply to any name or signal — the same 'rewrite this UI text' prompt routes by whether the trigger is the UX-pattern surface or the cross-domain meaning rule",
+            "reason": "microcopy owns concrete UI-text patterns such as button labels, empty states, dialogs, validation, and toasts; semantics owns the cross-domain meaning rule those words must preserve.",
             "skill": "microcopy"
+          },
+          {
+            "reason": "taxonomy-design owns classification structures, facets, and category governance; semantics owns the names and signals inside or around that structure.",
+            "skill": "taxonomy-design"
+          },
+          {
+            "reason": "a11y owns accessibility compliance and assistive-technology behavior; semantics can flag a missing non-color signal but a11y verifies the actual accessibility contract.",
+            "skill": "a11y"
+          },
+          {
+            "reason": "version-control owns branch, commit, tag, and release-history shape; semantics owns the meaning encoded by version numbers and conventional-commit type choice.",
+            "skill": "version-control"
           }
         ],
         "related": [
           "linguistics",
+          "naming-conventions",
           "semantic-relations",
-          "microcopy"
+          "microcopy",
+          "semantic-center",
+          "conceptual-modeling",
+          "taxonomy-design"
         ],
         "verify_with": [
+          "naming-conventions",
+          "semantic-relations",
           "a11y",
           "code-review"
         ]
@@ -10612,7 +10706,7 @@
       "scope": "portable",
       "stability": "experimental",
       "type": "capability",
-      "version": "1.1.0"
+      "version": "1.2.0"
     },
     {
       "activation": {
@@ -11517,7 +11611,7 @@
             "scripts/skill-graph-routing-eval.js": "fffac2858863662bde6bc54c56bb77a219ae93f626e0c8d5886566f998181deb"
           }
         },
-        "drift_detected": false,
+        "drift_detected": true,
         "eval_artifacts": "present",
         "eval_state": "passing",
         "freshness": "2026-04-18",
