@@ -201,6 +201,23 @@ Note: skill-graph evolve is not yet standalone-compatible. It depends on
     script: 'scripts/verify-skill-md-export.js',
     help: `Usage: skill-graph export:verify-skill-md [path]\n\nAlias for 'export-verify'. Verify exported skills against the plain SKILL.md export shape.\n`,
   },
+  'eval-staleness': {
+    script: 'lib/audit/eval-staleness-checker.js',
+    help: `Usage: skill-graph eval-staleness [options]
+
+Check eval artifacts for stale file-path, line-range, and symbol claims.
+
+Options:
+  --skill <name>   Check only one skill's eval artifact.
+  --json           Emit JSON output.
+  --all            Check all evals, not just substance:"domain".
+
+Examples:
+  skill-graph eval-staleness
+  skill-graph eval-staleness --skill graph-audit
+  skill-graph eval-staleness --all --json
+`,
+  },
   'marketplace-export': {
     script: 'scripts/export-marketplace-skills.js',
     help: `Usage: skill-graph marketplace-export [options]\n\nGenerate and validate the public marketplace export surface (marketplace/ tree).\n\nOptions:\n  --output <dir>    Marketplace output root (default: marketplace).\n  --check           Validate only; fail if generated files are stale.\n`,
@@ -260,6 +277,7 @@ Additional commands (retained for backward compatibility):
   overlap          Detect duplicate activation signals across skills
   routing-eval     Run routing examples / anti_examples through the router
   export-verify    Verify exported skills against the plain SKILL.md export shape
+  eval-staleness   Check eval artifacts for stale path and symbol claims
   marketplace-export
                    Alias for export
   protocol-check   Check cross-artifact protocol consistency
@@ -271,6 +289,7 @@ Examples:
   skill-graph audit my-skill --graded
   skill-graph route "audit my skills for schema conformance"
   skill-graph drift --record --apply skills/graph-audit
+  skill-graph eval-staleness
   skill-graph export
   skill-graph doctor
   skill-graph evolve --top 5 --max-cycles 3

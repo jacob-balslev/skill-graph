@@ -277,6 +277,7 @@ node scripts/check-markdown-links.js
 node scripts/generate-manifest.js --include-template --validate-only
 node scripts/skill-graph-routing-eval.js --manifest examples/skills.manifest.sample.json --only-asserted
 node scripts/verify-skill-md-export.js
+node lib/audit/eval-staleness-checker.js
 node scripts/skill-overlap.js
 node scripts/skill-graph-drift.js
 node bin/skill-graph.js --help

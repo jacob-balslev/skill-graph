@@ -113,7 +113,7 @@
     },
     {
       "id": 9,
-      "prompt": "An agent edits `src/components/Modal.tsx`. The a11y skill declares `paths: [\"**/*.{html,tsx,jsx,vue,svelte}\", \"!**/*.test.{ts,tsx,js,jsx}\"]`. No other skill matches this path. No trigger label is declared by the caller. According to the skill-router's Routing Rules priority order (surface 2 — file path), which skill wins and why does path-match-with-negation-exclusion produce a unique winner here before keyword matching is consulted?",
+      "prompt": "An agent edits a React modal component file, and the a11y skill declares `paths: [\"**/*.{html,tsx,jsx,vue,svelte}\", \"!**/*.test.{ts,tsx,js,jsx}\"]`. No other skill matches this component-path pattern. No trigger label is declared by the caller. According to the skill-router's Routing Rules priority order (surface 2 — file path), which skill wins and why does path-match-with-negation-exclusion produce a unique winner here before keyword matching is consulted?",
       "dimension": "application",
       "substance": "domain",
       "calibration": "process",
@@ -139,7 +139,7 @@
     },
     {
       "id": 11,
-      "prompt": "A query arrives with trigger label `debugging-skill` (matches: debugging), touches `src/components/Modal.tsx` (path-matches: a11y), and uses the phrase \"decide what to test\" (keyword-matches: testing-strategy). THREE different skills win on THREE different surfaces. According to the Routing Rules priority ordering, which skill does the router actually return and why does the chain not consult surfaces 2 and 3 even though they have distinct winners? What failure mode would a naive multi-surface-vote implementation produce here?",
+      "prompt": "A query arrives with trigger label `debugging-skill` (matches: debugging), touches a React modal component file (path-matches: a11y), and uses the phrase \"decide what to test\" (keyword-matches: testing-strategy). THREE different skills win on THREE different surfaces. According to the Routing Rules priority ordering, which skill does the router actually return and why does the chain not consult surfaces 2 and 3 even though they have distinct winners? What failure mode would a naive multi-surface-vote implementation produce here?",
       "dimension": "application",
       "substance": "contradiction-check",
       "calibration": "process",

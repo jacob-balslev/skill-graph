@@ -350,6 +350,7 @@ skill-graph lint                     # Validate all SKILL.md files
 skill-graph audit my-skill           # Seed or run a single-skill audit
 skill-graph route "schema drift"     # Select skills for a query
 skill-graph drift                    # Check truth-source hashes
+skill-graph eval-staleness           # Check eval file/path/symbol claims
 skill-graph export                   # Generate marketplace export surface
 skill-graph evolve --top 5           # PREVIEW: continuous improvement loop (monorepo-only — see Note below)
 ```
@@ -368,6 +369,7 @@ Run `skill-graph --help` to see all commands (including legacy aliases).
 | `scripts/skill-graph-route.js` | Reference router that explains selected, co-loaded, and excluded skills. |
 | `scripts/skill-graph-routing-eval.js` | Checks `examples` and `anti_examples` against router behavior. |
 | `scripts/skill-graph-drift.js` | Hashes `grounding.truth_sources` and reports drift, broken sources, stale skills, or missing baselines. |
+| `lib/audit/eval-staleness-checker.js` | Checks `examples/evals/*.json` for stale file-path, line-range, and symbol claims using the configured skill roots. |
 | `scripts/skill-overlap.js` | Finds overlapping skill ownership and routing ambiguity. |
 | `scripts/skill-audit.js` | Generates audit artifacts and optional graded review prompts. |
 | `scripts/export-skill.js` | Exports protocol-enriched skills back to plain `SKILL.md` shape. |
