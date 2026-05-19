@@ -6,6 +6,24 @@
 
 A plain `SKILL.md` gives an agent a procedure to load. The Skill Metadata Protocol adds the structured frontmatter contract. Skill Graph turns those declarations into a compiled manifest, routing map, drift sentinel, overlap detector, audit loop, and export path back to the plain `SKILL.md` format.
 
+## Is this for me?
+
+**Yes, if** you have **more than ~5 skills** that have started to depend on, verify, or exclude one another; you want **deterministic checks** for skill correctness (schema, paths, eval health) rather than only LLM-as-grader; you want a **single audit loop** that produces a per-skill fingerprint (`audit_verdict`, `eval_score`, `drift_status`) you ship in the skill's own frontmatter; or you want **graph queries** over the library ("what depends on this?", "what's the boundary between X and Y?", "which skills verify this one?").
+
+**No, if** you have 1–3 skills and a plain folder is enough; you want a hosted skill marketplace ([Smithery](https://smithery.ai), [agentskills.io](https://agentskills.io)); you want an agent runtime (Claude Code, Cursor, Codex); or you want a tool-execution platform ([Composio](https://docs.composio.dev), your runtime's tool layer).
+
+Full positioning vs. MCP, A2A, Anthropic Skills, Smithery, and Composio: [`docs/positioning.md`](docs/positioning.md).
+
+## What makes this different
+
+The mechanism is a **Karpathy-style keep-or-revert audit loop** ([autoresearch](https://github.com/karpathy/autoresearch)) applied to skill libraries instead of training scripts:
+
+- **One field, one commit, one keep-or-revert decision.**
+- Every change has a hard pass/fail gate — a deterministic check script that turns red or green.
+- Failed changes auto-revert. The lesson is recorded; the field's truth is preserved.
+
+The protocol's typed fields are the substrate that makes deterministic gates possible. The audit loop ([`docs/SKILL_AUDIT_LOOP.md`](docs/SKILL_AUDIT_LOOP.md)) is the mechanism. The quality bar that governs every change — what "improve" means, when it's safe to remove, how to enrich without dropping coverage — is codified in [`docs/quality-doctrine.md`](docs/quality-doctrine.md). Together they produce a library that drifts less, even as it grows.
+
 ## The ecosystem
 
 <p align="center">
