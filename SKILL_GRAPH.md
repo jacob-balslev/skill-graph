@@ -110,9 +110,7 @@ Scripts that police Tier 1 (lint, consistency) or compile Tier 1's output (manif
 
 | File | Role |
 |---|---|
-| `scripts/skill-lint.js` | Eleven-check per-skill validator. Schema validation, parent-directory check, relation-target existence, eval coherence, archetype sections, routing quality, cross-schema parity, sample manifest conformance, generator parity, migration warnings. |
-| `scripts/lint/check-archetype-sections.js` | Archetype-aware H2 section validator. Errors on missing required sections per archetype. |
-| `scripts/lint/check-routing-quality.js` | Routing quality heuristics. R1: keywords required for codebase-scope or routing_bundles skills. R2: description must not be duplicated verbatim in `## Coverage`. |
+| `scripts/skill-lint.js` | Four-check external-mandate validator: YAML parse, `name` field (≤64 chars, kebab-case), `description` field (≤1024 chars per Anthropic Agent Skills cap), parent directory equals `name`. Reduced from the previous 11-check pipeline in commit `2bd8e64` (2026-05-19) per the audit-doctrine cleanup — project-internal checks (relation targets, eval coherence, schema parity, archetype sections, routing quality, stability promotion, etc.) moved out of lint. |
 | `scripts/lint/format-code-frame.js` | Babel/Rust-style diagnostic formatter. |
 | `scripts/lib/parse-frontmatter.js` | Minimal YAML parser. Handles quoted keys, block sequences, nested objects, block sequences of objects (v3 `boundary` / `depends_on` shape). |
 

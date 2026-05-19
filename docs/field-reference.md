@@ -166,7 +166,7 @@ type: capability
 
 **When NOT to use.** Do not invent new type values. If none of the four archetypes fit, use `capability` as the closest and note the variation in the `## Coverage` section.
 
-**Lint check.** `scripts/skill-lint.js` enforces the archetype section map: missing required H2 sections produce an error; H2 sections present but containing fewer than 50 non-whitespace characters produce a warning. See `scripts/lint/check-archetype-sections.js`.
+**Lint check.** Previously enforced by `scripts/lint/check-archetype-sections.js`; removed in commit `2bd8e64` (2026-05-19) per the audit-doctrine cleanup. Body section structure is a project-internal style preference and is no longer lint-gated. The archetype section map remains the recommended shape; authors apply judgment.
 
 ---
 

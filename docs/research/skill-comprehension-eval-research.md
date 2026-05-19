@@ -146,7 +146,7 @@ The repo today evaluates:
 - **Whether eval files exist** when `eval_artifacts: present` and whether their `skill_name` matches a skill (lint enforces; see [`scripts/skill-lint.js:414`](/Users/jacobbalslev/Development/skill-graph/scripts/skill-lint.js)).
 - **Whether eval `truth_sources` resolve** to real files, valid line ranges, and existing anchors (D2 check; see [`scripts/skill-lint.js:586`](/Users/jacobbalslev/Development/skill-graph/scripts/skill-lint.js)).
 - **Whether `activation.examples` route to this skill** and `activation.anti_examples` route away from it (positive/negative routing; see [`scripts/skill-graph-routing-eval.js`](/Users/jacobbalslev/Development/skill-graph/scripts/skill-graph-routing-eval.js)).
-- **Whether the body is structurally complete** against the archetype (see [`scripts/lint/check-archetype-sections.js`](/Users/jacobbalslev/Development/skill-graph/scripts/lint/check-archetype-sections.js)).
+- **Whether the body is structurally complete** against the archetype (previously lint-enforced via `check-archetype-sections.js`; removed in commit `2bd8e64`, 2026-05-19 — now author judgment).
 - **Whether the audit grader can judge each of seven scorecard dimensions** from the skill body + truth sources + neighbors + (for eval) attached eval artifact (see [`scripts/lib/audit-prompt-builder.js`](/Users/jacobbalslev/Development/skill-graph/scripts/lib/audit-prompt-builder.js)).
 
 What the repo today **does not evaluate** — the focus of §3 — is **whether an agent actually learns the subject from the skill**.
@@ -200,7 +200,7 @@ The `concept.taxonomy` field is required to enumerate nearby concepts with their
 
 ### 3.7 No Verification-checklist application test
 
-Every `capability` and `workflow` skill is required to have a `## Verification` section (enforced by [`scripts/lint/check-archetype-sections.js`](/Users/jacobbalslev/Development/skill-graph/scripts/lint/check-archetype-sections.js)). The Verification section is the skill's authored answer to "after applying this skill, what evidence confirms the skill was applied correctly?" Eval cases occasionally reference Verification (e.g. `examples/evals/comprehension.json:174-181` — the dimension is `rule_conflict`, the prompt asks whether a doc passing Verification but failing the Philosophy test is acceptable). But no case poses a fresh artifact and asks the agent to run the Verification checklist against it unprompted. This is a comprehension test the body already authors and the eval surface does not redeem.
+Every `capability` and `workflow` skill is recommended to have a `## Verification` section per the archetype section map (previously lint-enforced via `check-archetype-sections.js`; removed in commit `2bd8e64`, 2026-05-19 — now author judgment). The Verification section is the skill's authored answer to "after applying this skill, what evidence confirms the skill was applied correctly?" Eval cases occasionally reference Verification (e.g. `examples/evals/comprehension.json:174-181` — the dimension is `rule_conflict`, the prompt asks whether a doc passing Verification but failing the Philosophy test is acceptable). But no case poses a fresh artifact and asks the agent to run the Verification checklist against it unprompted. This is a comprehension test the body already authors and the eval surface does not redeem.
 
 ### 3.8 No negative-boundary refusal test
 

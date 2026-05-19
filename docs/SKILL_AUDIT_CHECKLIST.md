@@ -133,7 +133,7 @@ Run this section when the skill is repo-grounded or implementation-aware.
 
 - [ ] the skill has a clear `Coverage` section
 - [ ] the skill has a clear `Philosophy` section
-- [ ] the skill has a clear `Verification` section (required for `capability` and `workflow` archetypes per `docs/skill-metadata-protocol.md § Archetype Section Map`; enforced by `scripts/lint/check-archetype-sections.js`)
+- [ ] the skill has a clear `Verification` section (recommended for `capability` and `workflow` archetypes per `docs/skill-metadata-protocol.md § Archetype Section Map`; not lint-enforced — body section structure is author judgment per the 2026-05-19 audit-doctrine cleanup)
 - [ ] the skill has at least one concrete decision table, checklist, or routing rule
 - [ ] the skill contains negative bounds (`Do NOT Use When` or equivalent)
 - [ ] the skill does not contain generic model-native filler

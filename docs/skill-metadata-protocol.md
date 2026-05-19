@@ -458,7 +458,7 @@ For the concrete v2→v3 mapping tables, see `docs/manifest-field-mapping.md § 
 
 ## Stability Promotion Criteria (SH-6109)
 
-`stability: stable` signals that a skill's content is settled and suitable for production dependence. Lint check 14 (`scripts/lint/check-stability-promotion.js`) emits **WARN** (never ERROR) when a skill declares `stability: stable` without meeting the following five criteria. All criteria are evaluated independently — failures are reported for every unmet criterion, not just the first.
+`stability: stable` signals that a skill's content is settled and suitable for production dependence. The promotion criteria below are documented requirements; they were previously lint-enforced via `check-stability-promotion.js` but that check was removed in commit `2bd8e64` (2026-05-19) per the audit-doctrine cleanup — `stability` is a project-internal field, and lint is now scoped to external (Anthropic / OpenAI) mandates only. The criteria still define what `stable` means; they're now enforced by author judgment + the application-eval pipeline (gate 9) rather than by lint.
 
 A skill qualifies for `stability: stable` when it meets all five of the following:
 
@@ -476,4 +476,4 @@ A skill qualifies for `stability: stable` when it meets all five of the followin
 
 **To promote a skill:** Satisfy each criterion, then change `stability: experimental` to `stability: stable`. The lint run will emit no stability-promotion warnings once all five criteria are met.
 
-**Implementation:** `scripts/lint/check-stability-promotion.js`. Integrated into `scripts/skill-lint.js` as check 14 (warn-only track; also promoted to errors under `--strict`).
+**Implementation:** previously enforced by `scripts/lint/check-stability-promotion.js` (removed in commit `2bd8e64`, 2026-05-19). The criteria are now documented requirements rather than lint-gated; promotion is author judgment, audited by reading the Health Block fields directly.
