@@ -319,10 +319,12 @@ skill-graph audit my-skill           # Seed or run a single-skill audit
 skill-graph route "schema drift"     # Select skills for a query
 skill-graph drift                    # Check truth-source hashes
 skill-graph export                   # Generate marketplace export surface
-skill-graph evolve --top 5           # Run the continuous improvement loop
+skill-graph evolve --top 5           # PREVIEW: continuous improvement loop (monorepo-only — see Note below)
 ```
 
 Run `skill-graph --help` to see all commands (including legacy aliases).
+
+> **Note on `evolve` (PREVIEW, not standalone-compatible).** `skill-graph evolve` depends on `lib/audit-shared/auto-improve.js` and several parent-repo scripts (`scripts/run-skill-improvement-loop.js`, `scripts/skill-auto-create.js`, `scripts/dispatch-solver.js`, `agent-orchestration/logs/`) that ship only in the source Development monorepo, not in the published `@skill-graph/cli` package. The CLI prints a clear error and exits when those deps are missing. Standalone refactor tracked in [SH-6138](https://linear.app/sales-hub/issue/SH-6138) (parent EPIC SH-6132). Until then, run from the source repo where the deps are available. Use `audit`, `lint`, `route`, and `drift` (all standalone) for the read-only Karpathy operations.
 
 ## What You Get
 

@@ -226,7 +226,7 @@ Commands:
   route <query>    Select and explain skills for a natural-language query
   drift            Check or record grounding truth-source hashes (drift sentinel)
   export           Generate and validate the public marketplace export surface
-  evolve           Run the continuous skill-improvement loop (Karpathy-style)
+  evolve           [PREVIEW · monorepo-only] Continuous Karpathy-style improvement loop (depends on parent-repo scripts; see SH-6138)
 
 Additional commands (retained for backward compatibility):
   manifest         Generate or validate a skills.manifest.json
