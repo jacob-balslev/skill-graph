@@ -1,0 +1,39 @@
+{
+  "$schema": "https://raw.githubusercontent.com/devcontainers/spec/main/schemas/devContainer.schema.json",
+  "name": "Skill Graph",
+  "image": "mcr.microsoft.com/devcontainers/javascript-node:20",
+
+  "features": {
+    "ghcr.io/devcontainers/features/github-cli:1": {}
+  },
+
+  "remoteEnv": {
+    "SKILL_GRAPH_WORKSPACE": "${containerWorkspaceFolder}"
+  },
+
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "yzhang.markdown-all-in-one",
+        "esbenp.prettier-vscode",
+        "redhat.vscode-yaml"
+      ],
+      "settings": {
+        "files.associations": {
+          "*.SKILL.md": "markdown",
+          "SKILL.md": "markdown"
+        },
+        "yaml.schemas": {
+          "./schemas/skill.v6.schema.json": ["skills/**/SKILL.md"]
+        }
+      }
+    }
+  },
+
+  "postCreateCommand": "bash .devcontainer/post-create.sh",
+  "postAttachCommand": "bash .devcontainer/post-attach.sh",
+
+  "forwardPorts": [],
+
+  "remoteUser": "node"
+}

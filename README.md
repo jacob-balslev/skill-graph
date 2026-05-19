@@ -307,6 +307,12 @@ npm install --global @skill-graph/cli
 skill-graph --help
 ```
 
+Or skip install entirely and open the repo in a pre-configured GitHub Codespace — Node 20, `skill-graph` linked globally, `doctor` smoke-run on first boot, suggested next commands shown on attach:
+
+[![Open in GitHub Codespaces](https://github.com/codespaces/badge.svg)](https://codespaces.new/jacob-balslev/skill-graph)
+
+The devcontainer lives at [`.devcontainer/devcontainer.json`](.devcontainer/devcontainer.json); first-boot logic is in [`.devcontainer/post-create.sh`](.devcontainer/post-create.sh).
+
 The tooling operates against a skill library configured via [`.skill-graph/config.json`](.skill-graph/config.json) → `workspace.skill_roots`. Post-2026-05-18 consolidation, the shipped config points at the public [`jacob-balslev/skills`](https://github.com/jacob-balslev/skills) repo (canonical 145-skill library). Clone the canonical skills as a sibling of this repo and the tooling resolves automatically — no env-vars needed:
 
 ```bash
