@@ -45,7 +45,7 @@ node scripts/skill-lint.js --path examples/fixture-skills/minimal-capability
 
 ## Do NOT Use When
 
-- You need to exercise codebase grounding — use [`with-grounding`](../with-grounding/SKILL.md).
-- You need to exercise typed relations — use [`with-relations`](../with-relations/SKILL.md).
-- You need to exercise flat Understanding fields or the Health Block — use [`comprehension-full`](../comprehension-full/SKILL.md).
+- You need to exercise codebase grounding — see the `with-grounding` planned fixture in [`../README.md`](../README.md).
+- You need to exercise typed relations — see the `with-relations` planned fixture in [`../README.md`](../README.md).
+- You need to exercise flat Understanding fields or the Health Block — see the `comprehension-full` planned fixture in [`../README.md`](../README.md).
 - You need a real production-grade authoring example — use a canonical skill from `skills/`.

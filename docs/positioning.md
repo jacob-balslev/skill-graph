@@ -28,7 +28,7 @@ Skill Graph is not a competitor to MCP, A2A, Anthropic Skills, Smithery, or Comp
 | Project | What it is | What Skill Graph is in that frame |
 |---|---|---|
 | **[Anthropic Skills](https://docs.anthropic.com/en/docs/claude-code/skills)** | A discovery + loading convention: agent-runtime auto-loads `SKILL.md` files from a directory and decides what to invoke. | Skill Graph **extends** the `SKILL.md` shape with structured metadata (relations, grounding, eval health) so a library of 100+ skills stays coherent. A plain `SKILL.md` still loads everywhere; Skill Graph adds validation, drift checks, and graph queries on top. |
-| **[Agent Skills spec](https://agentskills.my/specification)** | A portable `SKILL.md` packaging format with a draft cross-runtime contract. | Skill Graph **emits** Agent-Skills-compatible exports (see [`skill-graph export`](../README.md#install)). The Skill Metadata Protocol adds typed relations and audit fields the base spec does not require, but the export is plain. |
+| **[Agent Skills spec](https://agentskills.my/specification)** | A portable `SKILL.md` packaging format with a draft cross-runtime contract. | Skill Graph **emits** Agent-Skills-compatible exports (see [`skill-graph export`](../README.md#quick-start)). The Skill Metadata Protocol adds typed relations and audit fields the base spec does not require, but the export is plain. |
 | **[Model Context Protocol (MCP)](https://modelcontextprotocol.io)** | A *runtime* protocol: how an agent client calls a tool server (function calling, structured tools, resources, prompts). | Skill Graph is **build-time and authoring-time**, not runtime. Skills can describe how an agent should use an MCP server (in their body or `relations.depends_on`), but Skill Graph itself does not implement MCP. |
 | **[Agent-to-Agent (A2A)](https://google.github.io/A2A/latest/specification/)** | A *runtime* protocol: how one agent delegates a task to another agent and exchanges capability cards. | Skill Graph's metadata could serve as the capability descriptor an A2A agent advertises, but Skill Graph does not implement A2A delegation, transport, or task lifecycle. |
 | **[Smithery](https://smithery.ai)** | A *registry*: searchable directory of MCP servers and agent skills with install confidence and compatibility signals. | Skill Graph's marketplace export pipeline (`marketplace/skills/`) is one upstream that *feeds* a registry like Smithery; Skill Graph itself is the authoring source, not the registry. |
@@ -81,7 +81,7 @@ The runtime layer answers "how does this skill execute?" The author/audit-time l
 
 ## Related reading
 
-- [`SKILL_METADATA_PROTOCOL.md`](../SKILL_METADATA_PROTOCOL.md) — the contract.
+- [`docs/SKILL_METADATA_PROTOCOL.md`](SKILL_METADATA_PROTOCOL.md) — the contract.
 - [`SKILL_AUDIT_LOOP.md`](SKILL_AUDIT_LOOP.md) — the four operations (audit, improve, evaluate, evolve).
 - [`docs/quality-doctrine.md`](quality-doctrine.md) — what "improve" means in this discipline.
 - [`docs/adr/0009-sibling-repo-deprecation.md`](adr/0009-sibling-repo-deprecation.md) — why the protocol, audit, and CLI live in one repo now.
