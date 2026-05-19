@@ -213,6 +213,30 @@ Note: skill-graph evolve is not yet standalone-compatible. It depends on
     script: 'scripts/check-protocol-consistency.js',
     help: `Usage: skill-graph protocol-check [options]\n\nCheck cross-artifact protocol consistency across the C1-C8 invariants:\n\n  C1 — Field-set parity (field-reference.md vs skill.schema.json)\n  C2 — Authored-to-generated parity (skill.schema.json -> manifest.schema.json)\n  C3 — Artifact-root convention\n  C4 — Sample manifest correctness\n  C5 — Example truth invariants\n  C6 — Versioned schema parity (skill.schema.json vs skill.v6.schema.json)\n  C7 — Generated field-reference parity\n  C8 — JSON-LD context coverage (schema fields vs skill.context.jsonld)\n\nOptions:\n  --verbose   Print per-field diagnostics for each failed check.\n\nExit codes: 0 on PASS; non-zero on any FAIL.\n`,
   },
+  doctor:  {
+    inline: true,
+    help: `Usage: skill-graph doctor [options]
+
+Run every deterministic check in one pass and print a single summary table.
+This is the recommended first command when filing a bug report or onboarding
+a new install — it surfaces the project's complete trust surface at a glance.
+
+Checks executed (in order):
+  links              scripts/check-markdown-links.js
+  protocol           scripts/check-protocol-consistency.js
+  drift              scripts/check-doc-drift.js
+  mirror-freeze      scripts/check-mirror-freeze.js
+  lint               scripts/skill-lint.js
+  manifest           scripts/generate-manifest.js --validate-only
+
+Options:
+  --json             Emit a JSON summary instead of the human table.
+  --bail             Stop at the first failure instead of running every check.
+  --skip <name>      Skip a check by short name (repeatable). Example: --skip lint
+
+Exit codes: 0 if every check PASS; 1 if any check FAIL.
+`,
+  },
 };
 
 function printHelp() {
@@ -227,6 +251,9 @@ Commands:
   drift            Check or record grounding truth-source hashes (drift sentinel)
   export           Generate and validate the public marketplace export surface
   evolve           [PREVIEW · monorepo-only] Continuous Karpathy-style improvement loop (depends on parent-repo scripts; see SH-6138)
+
+Diagnostics:
+  doctor           Run every deterministic check in one pass (recommended for bug reports)
 
 Additional commands (retained for backward compatibility):
   manifest         Generate or validate a skills.manifest.json
@@ -245,6 +272,7 @@ Examples:
   skill-graph route "audit my skills for schema conformance"
   skill-graph drift --record --apply skills/graph-audit
   skill-graph export
+  skill-graph doctor
   skill-graph evolve --top 5 --max-cycles 3
 `);
 }
@@ -327,6 +355,93 @@ Examples:
 }
 
 // ---------------------------------------------------------------------------
+// `doctor` — run every deterministic check in one pass
+// ---------------------------------------------------------------------------
+// Aggregates the project's trust-surface checks behind one command so a
+// reader (or bug-report filer) has a single number to verify.
+
+const DOCTOR_CHECKS = [
+  { name: 'links',          script: 'scripts/check-markdown-links.js' },
+  { name: 'protocol',       script: 'scripts/check-protocol-consistency.js' },
+  { name: 'drift',          script: 'scripts/check-doc-drift.js' },
+  { name: 'mirror-freeze',  script: 'scripts/check-mirror-freeze.js' },
+  { name: 'lint',           script: 'scripts/skill-lint.js' },
+  { name: 'manifest',       script: 'scripts/generate-manifest.js', args: ['--validate-only'] },
+];
+
+function runDoctor(args) {
+  if (args.includes('--help') || args.includes('-h')) {
+    process.stdout.write(COMMANDS.doctor.help);
+    process.exit(0);
+  }
+
+  const asJson = args.includes('--json');
+  const bail = args.includes('--bail');
+  const skipList = [];
+  for (let i = 0; i < args.length; i++) {
+    if (args[i] === '--skip' && args[i + 1]) skipList.push(args[i + 1]);
+  }
+
+  const results = [];
+  for (const check of DOCTOR_CHECKS) {
+    if (skipList.includes(check.name)) {
+      results.push({ ...check, status: 'SKIP', exit_code: null, duration_ms: 0, tail: '' });
+      continue;
+    }
+    const scriptPath = path.join(REPO_ROOT, check.script);
+    if (!fs.existsSync(scriptPath)) {
+      results.push({ ...check, status: 'MISSING', exit_code: null, duration_ms: 0, tail: 'script not found' });
+      if (bail) break;
+      continue;
+    }
+    const t0 = Date.now();
+    const r = spawnSync('node', [scriptPath, ...(check.args || [])], {
+      cwd: REPO_ROOT,
+      encoding: 'utf8',
+      timeout: 120_000,
+    });
+    const duration_ms = Date.now() - t0;
+    const combined = (r.stdout || '') + (r.stderr || '');
+    const tail = combined.trim().split('\n').slice(-1)[0] || '';
+    const status = r.error ? 'ERROR' : r.status === 0 ? 'PASS' : 'FAIL';
+    results.push({
+      ...check,
+      status,
+      exit_code: r.status,
+      duration_ms,
+      tail: tail.slice(0, 240),
+    });
+    if (bail && status !== 'PASS' && status !== 'SKIP') break;
+  }
+
+  if (asJson) {
+    process.stdout.write(JSON.stringify({ checks: results }, null, 2) + '\n');
+  } else {
+    const namePad = Math.max(...DOCTOR_CHECKS.map(c => c.name.length));
+    process.stdout.write(`\nskill-graph doctor — ${results.length} check(s)\n\n`);
+    for (const r of results) {
+      const badge = r.status === 'PASS'
+        ? '[32mPASS[0m'
+        : r.status === 'SKIP'
+          ? '[2mSKIP[0m'
+          : `[31m${r.status}[0m`;
+      const padded = r.name.padEnd(namePad);
+      const time = r.duration_ms ? `${r.duration_ms}ms`.padStart(6) : '     —';
+      process.stdout.write(`  ${badge}  ${padded}  ${time}  ${r.tail}\n`);
+    }
+    const failed = results.filter(r => r.status !== 'PASS' && r.status !== 'SKIP');
+    process.stdout.write(
+      failed.length === 0
+        ? `\nAll ${results.length - results.filter(r => r.status === 'SKIP').length} check(s) PASS.\n`
+        : `\n${failed.length} check(s) failed: ${failed.map(f => f.name).join(', ')}\n`
+    );
+  }
+
+  const anyFail = results.some(r => r.status !== 'PASS' && r.status !== 'SKIP');
+  process.exit(anyFail ? 1 : 0);
+}
+
+// ---------------------------------------------------------------------------
 // Main dispatcher
 // ---------------------------------------------------------------------------
 
@@ -348,7 +463,8 @@ function main() {
 
   // Inline subcommands run in-process.
   if (entry.inline) {
-    if (command === 'init') { runInit(args); }
+    if (command === 'init') { runInit(args); return; }
+    if (command === 'doctor') { runDoctor(args); return; }
     // (future inline commands added here)
     return;
   }
