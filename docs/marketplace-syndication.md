@@ -119,6 +119,30 @@ Before publishing or asking a marketplace to index the library:
 - Confirm ignored local artifacts are not staged.
 - Review generated exports for secrets, private paths, telemetry, customer data, personal data, and accidental local-only research.
 
+## Curation Pipeline (Updated 2026-05-19 — SH-6127)
+
+ADR 0008 freezes the legacy outer skill surface (`~/Development/skills/<name>/`) and makes the nested OSS surface (`~/Development/skills/skills/<category>/<name>/`) the active Skill Graph library. Curation is therefore a selective promotion workflow, not a mass migration.
+
+| Stage | Gate | Artifact |
+|---|---|---|
+| Candidate discovery | Identify outer-surface skills that may be useful outside the local workspace | `docs/marketplace-skill-candidate-list.md`, `data/publication-classification.json` |
+| Privacy screening | Exclude personal data, private paths, customer/project identifiers, local runtime details, and token/API-key-like strings from row-level public docs | Privacy Gate in `docs/marketplace-skill-candidate-list.md` |
+| Scope screening | Exclude Sales Hub-coupled skills and personal-infra skills from public export | `classification: sales-hub-bound` / `personal-infra` in `data/publication-classification.json` |
+| Generalization | Rewrite eligible ideas as portable skills instead of copying private source directly | `source: rewrite`, `port+sanitize`, or `port` in `data/publication-classification.json` |
+| v6 authoring | Land promoted skills directly in the nested v6 library; do not codemod the frozen outer surface | `~/Development/skills/skills/<category>/<name>/SKILL.md` |
+| Queue generation | Rebuild the publication queue from the ledger after classification edits | `node scripts/skill/build-skill-audit-worklist.js --write` → `docs/marketplace-publication-queue.generated.md` |
+| Export verification | Generate and verify the plain marketplace surface before publication | `node scripts/export-marketplace-skills.js --check`, `node scripts/verify-skill-md-export.js --plain marketplace/skills` |
+
+Promotion criteria are all required:
+
+- **Non-PII:** no personal data, customer references, production identifiers, real emails, local user paths, or token-like strings.
+- **Non-Sales-Hub:** not coupled to Sales Hub routes, schemas, tenant data, product doctrine, or private integration assumptions.
+- **Generalizable:** useful to consumers outside this monorepo without preserving local operating context.
+- **v6-compliant on arrival:** authored directly into the nested Skill Metadata Protocol v6 surface with current frontmatter, eval state, and routing metadata.
+- **Publication-ledger entry:** classification, tier, source, sanitization requirement, demand signal, and notes recorded in `data/publication-classification.json`.
+
+Do not treat `needs_sanitization: yes` as publishable work already complete. It means the idea can be promoted only after a rewrite or sanitization pass produces a clean nested v6 skill and export verification passes.
+
 ## Gap Discovery Loop
 
 Run this loop periodically, especially before outreach or a release.
