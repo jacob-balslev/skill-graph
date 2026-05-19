@@ -10,11 +10,12 @@
 
 | Document | Purpose |
 |---|---|
-| `docs/PRIMER.md` (this file) | Conceptual introduction: what Skill Graph is, when to adopt it, how the metadata composes |
+| `docs/PRIMER.md` (this file) | Conceptual introduction: what Skill Graph is, when to adopt it, how the metadata composes (Diátaxis: *explanation*) |
+| [`docs/QUICKSTART-30MIN.md`](QUICKSTART-30MIN.md) | Hands-on tutorial: author your first skill in 30 minutes — clone, install, fill in the template, lint, route, record the drift baseline (Diátaxis: *tutorial*). Read this if you'd rather try the tooling first; the PRIMER is the *why* behind the *how* the QUICKSTART teaches. |
 | [`README.md`](../README.md) | Project overview, quick start, five-authority-tier tour |
 | [`SKILL_GRAPH.md`](../SKILL_GRAPH.md) | Repo organisation: five **authority tiers** (schema / explanation / enforcement / consumer / specimen) and the invariants CI enforces |
 | [`docs/skill-metadata-protocol.md`](skill-metadata-protocol.md) | Archetype section map, requiredness groups, schema strictness rules |
-| [`docs/field-reference.md`](field-reference.md) | Per-field semantics for all 40 current v4 top-level fields |
+| [`docs/field-reference.md`](field-reference.md) | Per-field semantics for all current v6 top-level fields |
 | [`docs/field-decision-guide.md`](field-decision-guide.md) | Decision tables for `scope`, `relations.*`, eval-health, `portability`, `workspace_tags` |
 | [`docs/manifest-field-mapping.md`](manifest-field-mapping.md) | The authored → generated bridge: rename map, loss policy, migration notes |
 | [SKILL.md specification](https://agentskills.io/specification) | The base standard Skill Metadata Protocol extends |
