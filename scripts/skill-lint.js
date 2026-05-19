@@ -89,11 +89,9 @@ const { parseFrontmatter, normalizeFrontmatter } = require('./lib/parse-frontmat
 const { checkAliasParity } = require('./lib/alias-contract');
 const { loadWorkspaceConfig, resolveSchemaPath, resolveSkillRoots, resolveTruthSourcePath, workspaceRoot } = require('./lib/roots');
 const { formatCodeFrame, locateYamlKey, locateH2Section } = require('./lint/format-code-frame');
-const { checkArchetypeSections } = require('./lint/check-archetype-sections');
 const { checkRoutingQuality } = require('./lint/check-routing-quality');
 const { checkRoutingEval } = require('./lint/check-routing-eval');
 const { checkCategoryEnum } = require('./lint/check-category-enum');
-const { checkStabilityPromotion } = require('./lint/check-stability-promotion');
 
 const REPO_ROOT = workspaceRoot();
 const TEMPLATE_PATH = path.join(REPO_ROOT, 'examples', 'skill-metadata-template.md');
@@ -304,26 +302,15 @@ function validateAgainstSchema(fm, schema) {
     if (props[key]) checkField(key, value, props[key]);
   }
 
-  // Conditional rules from allOf
-  if (fm.type === 'overlay' && !fm.extends) {
-    errors.push(`type: overlay requires extends field`);
-  }
-  // v0.5.0: enforce the reverse — extends is overlay-only. The schema documents
-  // this rule in docs/field-reference.md:492-509 but earlier versions only
-  // enforced the forward direction (overlay → requires extends), silently
-  // allowing extends on non-overlay skills.
-  if (fm.type && fm.type !== 'overlay' && fm.extends) {
-    errors.push(`extends is only valid on type: overlay (got type: ${JSON.stringify(fm.type)})`);
-  }
-  if (fm.scope === 'codebase' && !fm.grounding) {
-    errors.push(`scope: codebase requires grounding field`);
-  }
-  if (fm.stability === 'deprecated' && !fm.superseded_by) {
-    errors.push(`stability: deprecated requires superseded_by field`);
-  }
-  if (fm.comprehension_state === 'present' && !fm.concept) {
-    errors.push(`comprehension_state: present requires concept field`);
-  }
+  // Project-internal conditional cross-field rules removed 2026-05-19 per the
+  // skill-audit doctrine: form gates must not produce structural_verdict: FAIL
+  // for things outside the external (Anthropic Agent Skills / OpenAI tool-use)
+  // contract. The removed rules enforced project type-system constraints:
+  //   - type: overlay <=> extends
+  //   - scope: codebase requires grounding
+  //   - stability: deprecated requires superseded_by
+  //   - comprehension_state: present requires concept
+  // These remain as schema-doc guidance but no longer block lint.
 
   return errors;
 }
@@ -392,39 +379,10 @@ function checkRelationTargets(fm, knownSkillNames) {
  *
  * Returns warning records (not errors).
  */
-function checkRelationDoubleDeclarations(fm) {
-  const warnings = [];
-  const rel = fm.relations || {};
-
-  function targetName(t) {
-    if (typeof t === 'string') return t;
-    if (t && typeof t === 'object' && typeof t.skill === 'string') return t.skill;
-    return null;
-  }
-
-  function targetSet(arr) {
-    if (!Array.isArray(arr)) return new Set();
-    const out = new Set();
-    for (const t of arr) {
-      const n = targetName(t);
-      if (n) out.add(n);
-    }
-    return out;
-  }
-
-  // adjacent (deprecated) vs related (preferred) — same SKOS mapping per ADR 0001
-  const adjacentTargets = targetSet(rel.adjacent);
-  const relatedTargets = targetSet(rel.related);
-  for (const name of adjacentTargets) {
-    if (relatedTargets.has(name)) {
-      warnings.push({
-        message: `relations: "${name}" appears in both "adjacent" (deprecated) and "related" (preferred) — drop the "adjacent" entry to avoid double-counting in the manifest. See ADR 0001.`,
-      });
-    }
-  }
-
-  return warnings;
-}
+// checkRelationDoubleDeclarations removed 2026-05-19 per the skill-audit
+// doctrine: an "adjacent" + "related" double-declaration is a project type-
+// system artifact (ADR 0001 alias migration), not an Anthropic / OpenAI
+// contract violation. Manifest-time dedup can handle it deterministically.
 
 function checkEvalCoherence(filePath, fm) {
   // eval_artifacts: present requires a real eval artifact.
@@ -738,24 +696,10 @@ function checkGroundingTruthSources(fm) {
 // (`.`, `!`, `?`) followed by whitespace or end-of-string; ignores trailing
 // punctuation. Warning severity because the "rule" is a style convention, not
 // a contract failure.
-function checkDescriptionLength(fm) {
-  const warnings = [];
-  const desc = fm && fm.description;
-  if (typeof desc !== 'string' || desc.trim().length === 0) return warnings;
-
-  // Split on sentence boundaries. A sentence terminator is one of . ! ? followed
-  // by whitespace-or-end-of-string. Strip trailing terminator on the last segment.
-  const parts = desc
-    .replace(/\s+/g, ' ')
-    .split(/(?<=[.!?])\s+/)
-    .map(s => s.trim())
-    .filter(s => s.length > 0);
-  const sentenceCount = parts.length;
-  if (sentenceCount > 3) {
-    warnings.push(`description: ${sentenceCount} sentences exceeds the ≤3 sentence routing-contract cap. Move scope detail into ## Coverage; keep description a pure "use when / covers / do NOT use" signal.`);
-  }
-  return warnings;
-}
+// checkDescriptionLength removed 2026-05-19 per the skill-audit doctrine:
+// the ≤3-sentence rule is a project routing-contract preference, not an
+// external (Anthropic / OpenAI) constraint. Anthropic Agent Skills caps
+// description at 1024 chars — that cap is enforced at export time, not here.
 
 // v0.5.0: guard against `paths` that consist only of negation patterns.
 // Such a list matches nothing (negations only subtract from prior includes).
@@ -1170,19 +1114,6 @@ function main() {
       }
     }
 
-    // Double-declaration detection across deprecated/preferred alias pairs (ADR 0001 Decision #1).
-    // Authors who write the same target under both `adjacent` and `related` produce duplicate
-    // entries in the manifest; lint nudges them to drop the deprecated entry.
-    if (relationHygiene && fm.relations && typeof fm.relations === 'object') {
-      const doubles = checkRelationDoubleDeclarations(fm);
-      for (const w of doubles) {
-        emitWarning(relPath, text, 'relations', w.message, {
-          help: 'Drop the deprecated entry; the preferred name carries the same SKOS mapping.',
-          noColor,
-        });
-      }
-    }
-
     // ----------------------------------------------------------------
     // Collect errors from all per-file checks.
     // ----------------------------------------------------------------
@@ -1201,46 +1132,33 @@ function main() {
     const rawWarnings = [
       ...evalResult.warnings,
       ...(relationHygiene ? relationSemanticsResult.warnings : []),
-      ...checkDescriptionLength(fm),
     ];
 
-    // Archetype-aware section check (check 10).
-    const archetypeResult = checkArchetypeSections({ filePath: relPath, sourceText: text, fm });
-
-    // Routing quality check (check 11).
+    // Routing quality check (R1 only — R2 description-verbatim-in-Coverage
+    // removed 2026-05-19 as internal style preference).
     const routingResult = checkRoutingQuality({ filePath: relPath, sourceText: text, fm });
 
-    // Routing-eval check (check 12). Only fires when routing_eval: present.
+    // Routing-eval check. Only fires when routing_eval: present.
     const routingEvalResult = checkRoutingEval({ filePath: relPath, sourceText: text, fm });
 
-    // Category-enum check (check 13). Enforces the 6-value canonical category set.
+    // Category-enum check. Enforces the 6-value canonical category set.
     const categoryEnumResult = checkCategoryEnum({ filePath: relPath, sourceText: text, fm });
-
-    // Stability promotion gate (check 14). Warns when stability: stable is
-    // declared without meeting all five promotion criteria. WARN level only —
-    // never contributes to fileErrors.
-    const stabilityPromotionResult = checkStabilityPromotion({ filePath: relPath, sourceText: text, fm });
 
     // Promote warnings to errors when --strict is active.
     const fileErrors = [
       ...rawErrors.map(msg => ({ msg, line: null, column: null, help: null })),
-      ...archetypeResult.errors.map(e => ({ msg: e.message, line: e.line, column: e.column, help: e.help })),
       ...routingResult.errors.map(e => ({ msg: e.message, line: e.line, column: e.column, help: e.help })),
       ...routingEvalResult.errors.map(e => ({ msg: e.message, line: e.line, column: e.column, help: e.help })),
       ...categoryEnumResult.errors.map(e => ({ msg: e.message, line: e.line, column: e.column, help: e.help })),
       ...(strict ? [
         ...rawWarnings.map(msg => ({ msg: `[promoted from warn] ${msg}`, line: null, column: null, help: null })),
-        ...archetypeResult.warnings.map(w => ({ msg: `[promoted from warn] ${w.message}`, line: w.line, column: w.column, help: w.help })),
         ...routingResult.warnings.map(w => ({ msg: `[promoted from warn] ${w.message}`, line: w.line, column: w.column, help: w.help })),
-        ...stabilityPromotionResult.warnings.map(w => ({ msg: `[promoted from warn] ${w.message}`, line: w.line, column: w.column, help: w.help })),
       ] : []),
     ];
 
     const fileWarnings = strict ? [] : [
       ...rawWarnings.map(msg => ({ message: msg, line: null, column: null, help: null })),
-      ...archetypeResult.warnings,
       ...routingResult.warnings,
-      ...stabilityPromotionResult.warnings,
     ];
 
     // Tier label per file: template + starter skills are all Tier 5 specimens.

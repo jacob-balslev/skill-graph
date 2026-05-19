@@ -80,21 +80,9 @@ function checkRoutingQuality(opts) {
     });
   }
 
-  // ------------------------------------------------------------------ R2
-  // Warn: description text appears verbatim inside ## Coverage section.
-  const description = typeof fm.description === 'string' ? fm.description.trim() : '';
-  if (description.length > 20) {
-    const coverageContent = extractSectionContent(sourceText, 'Coverage');
-    if (coverageContent !== null && coverageContent.includes(description)) {
-      const sectionLine = locateH2InBody(sourceText, 'Coverage');
-      warnings.push({
-        message: 'description text appears verbatim in ## Coverage — the two layers have collapsed into one',
-        line:    sectionLine ? sectionLine.line : 1,
-        column:  1,
-        help:    'The description is the routing contract (≤3 sentences). ## Coverage is a bulleted scope map. Rewrite ## Coverage as a topic list, removing the copied description sentence. See docs/skill-metadata-protocol.md § Semantic layer discipline.',
-      });
-    }
-  }
+  // R2 (description verbatim in ## Coverage) removed 2026-05-19 per the
+  // skill-audit doctrine: anti-copy-paste style preference, not an external
+  // contract violation.
 
   return { errors, warnings };
 }
