@@ -540,7 +540,7 @@ find skills -name SKILL.md -exec sed -i '' 's/schema_version: "4"/schema_version
 
 | What changed | v4 form | v5 form |
 |---|---|---|
-| Schema version | `schema_version: 4` | `schema_version: 5` |
+| Schema version | `schema_version` was `4` | `schema_version` is `5` |
 | Schema file | `schemas/skill.v4.schema.json` (open-ended `category` string) | `schemas/skill.v5.schema.json` (closed `category` enum of 6 values) |
 | `category` enum | open-ended string; values included `knowledge`, `frontend`, `ai-engineering`, `integration`, `integrations`, `data`, `workflow`, `security` | closed enum: `foundations` \| `engineering` \| `design` \| `quality` \| `agent` \| `product` |
 | `foundations` gate | implicit | explicit anti-junk-drawer rule: target 8–15 skills; cannot default here; must clear epistemic-precondition test |
@@ -557,7 +557,7 @@ Run the codemod to migrate in place: `node scripts/migrate-skill-v3-to-v4.js <pa
 
 | What changed | v3 form | v4 form |
 |---|---|---|
-| Schema version | `schema_version: 3` | `schema_version: 4` |
+| Schema version | `schema_version` was `3` | `schema_version` was bumped to `4` |
 | Flat browse shelf | `browse_category: engineering` | `category: engineering` |
 | Hierarchical path | `category: engineering/api-design` or `category_path: engineering/api-design` | `domain: engineering/api-design` |
 | Workspace relevance tags | `project_tags: [...]` | `workspace_tags: [...]` |

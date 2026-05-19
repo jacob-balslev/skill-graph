@@ -302,7 +302,7 @@ The `skill-metadata-template` starter (`examples/skill-metadata-template.md`) is
 
 ```yaml
 ---
-schema_version: 4
+schema_version: 6
 name: skill-metadata-template
 description: "Authoring template for new Skill Metadata Protocol skills. ..."
 version: 1.0.0

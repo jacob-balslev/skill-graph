@@ -34,7 +34,7 @@ The schema is the single source of truth for shape; this doc is the source of tr
 
 **Example.**
 ```yaml
-schema_version: 4
+schema_version: 6
 ```
 
 **When to use.** Always — this is a required field.
