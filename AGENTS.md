@@ -117,7 +117,7 @@ Claims of quality require verification. If a change says links work, routing wor
 When touching one artifact, update the matching tier artifacts in the same change.
 
 - If you change `schemas/skill.schema.json`, also update `schemas/skill.v6.schema.json` (the pinned copy of the current contract — see `npm run protocol:check § C6`) and any prior pinned versions only when intentionally backporting, plus `docs/field-reference.md`, `docs/skill-metadata-protocol.md`, `SKILL_METADATA_PROTOCOL.md` when relevant, `docs/manifest-field-mapping.md`, and `examples/skill-metadata-template.md` when affected. Regenerate `docs/field-reference.generated.md` with `node scripts/build-field-reference.js` in the same commit (enforced by `protocol:check § C7`).
-- If you change `schemas/manifest.schema.json`, also update `schemas/manifest.v5.schema.json` (the pinned copy of the current contract), `docs/manifest-field-mapping.md`, and `scripts/generate-manifest.js` if projection logic changes.
+- If you change `schemas/manifest.schema.json`, also update `schemas/manifest.v6.schema.json` (the pinned copy of the current contract), `docs/manifest-field-mapping.md`, and `scripts/generate-manifest.js` if projection logic changes.
 - If you change `scripts/generate-manifest.js`, regenerate `examples/skills.manifest.sample.json`.
 - If you change `scripts/skill-lint.js`, run it against every skill and the template. Update sample manifest or drift baselines when lint-affecting sources are part of `drift_check.truth_source_hashes`.
 - If you change a Tier 2 protocol doc, check sibling Tier 2 docs for drift. The overview, field reference, decision guide, and manifest mapping must tell one story.
