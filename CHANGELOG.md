@@ -4,7 +4,7 @@ All notable changes to Skill Graph are recorded here.
 
 The format is based on [Keep a Changelog 1.1.0](https://keepachangelog.com/en/1.1.0/) and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-Skill Graph versions describe the contract at each checkpoint in the git history and are how consumers pin. Beginning with 0.5.0, the repository is package-ready as `@skill-graph/cli` with the `skill-graph` binary. `schema_version` in the JSON Schemas tracks contract shape (currently `6` — owned by [skill-metadata-protocol](https://github.com/jacob-balslev/skill-metadata-protocol); see [ADR 0007](https://github.com/jacob-balslev/skill-metadata-protocol/blob/main/docs/adr/0007-version-source-of-truth.md) for the cross-repo source-of-truth model); this changelog tracks the library as a whole (tooling + starters + docs).
+Skill Graph versions describe the contract at each checkpoint in the git history and are how consumers pin. Beginning with 0.5.0, the repository is package-ready as `@skill-graph/cli` with the `skill-graph` binary. `schema_version` in the JSON Schemas tracks contract shape (currently `6` — owned by `@skill-graph/cli` post-consolidation; see [ADR 0009](docs/adr/0009-sibling-repo-deprecation.md) for the consolidation addendum and the post-2026-05-18 source-of-truth model. The dual-versioning rationale historically lived in `skill-metadata-protocol/docs/adr/0007-version-source-of-truth.md`, which is preserved in the now docs-only mirror at `jacob-balslev/skill-metadata-protocol` for inbound-link stability); this changelog tracks the library as a whole (tooling + starters + docs).
 
 ## [Unreleased]
 
