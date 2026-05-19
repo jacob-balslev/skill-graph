@@ -423,15 +423,13 @@ Skill Graph is not:
 
 It is a structured protocol and reference toolchain for making skills easier to route, cluster, verify, maintain, and port.
 
-## External Context
+## Where Skill Graph fits
 
-Skill Metadata Protocol is designed to sit next to existing agent-context conventions, not replace them:
+Skill Graph sits **above** plain `SKILL.md` files and **beside** runtime protocols like MCP and A2A. It is an **authoring + audit-time** project, not a runtime. Full positioning with explicit comparisons against [Anthropic Skills](https://docs.anthropic.com/en/docs/claude-code/skills), [the Agent Skills spec](https://agentskills.io/specification), [MCP](https://modelcontextprotocol.io), [A2A](https://google.github.io/A2A/latest/specification/), [Smithery](https://smithery.ai), [Composio](https://docs.composio.dev), and [AGENTS.md](https://agents.md/) lives in [**`docs/positioning.md`**](docs/positioning.md) — it names what Skill Graph is **not** before naming what it **is**.
 
-- [SKILL.md format reference](https://agentskills.io/specification) describes the portable base skill layout used by multiple agent runtimes.
-- [AGENTS.md](https://agents.md/) and [Codex AGENTS.md docs](https://developers.openai.com/codex/guides/agents-md) define always-on repository instructions.
-- [Claude Code memory docs](https://code.claude.com/docs/en/memory) document one memory model for persistent context.
-- [Model Context Protocol](https://github.com/modelcontextprotocol/modelcontextprotocol) and [OpenTelemetry Specification](https://github.com/open-telemetry/opentelemetry-specification) are useful examples of protocol-first repos that separate spec, schema, docs, and reference tooling.
-- The project framing was also discussed in [GitHub Discussion #1](https://github.com/jacob-balslev/skill-graph/discussions/1) and the linked [Bluesky thread](https://bsky.app/profile/did:plc:dydxbat6yyyhjfaln22sx66t/post/3mln2lefdi22u).
+One-line summary: most agent-skills projects answer *"how does the agent find / load / call / dispatch / publish a skill?"* Skill Graph answers *"how do you keep a library of skills correct over time?"* The unique mechanism is the **Karpathy keep-or-revert audit loop** applied to skill libraries instead of training scripts (see [Skill Audit Loop](#skill-audit-loop) below and [`docs/quality-doctrine.md`](docs/quality-doctrine.md) for the quality bar that doctrine enforces).
+
+For project framing context, see [GitHub Discussion #1](https://github.com/jacob-balslev/skill-graph/discussions/1) and the linked [Bluesky thread](https://bsky.app/profile/did:plc:dydxbat6yyyhjfaln22sx66t/post/3mln2lefdi22u).
 
 ## Status
 
