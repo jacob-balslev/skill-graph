@@ -180,6 +180,16 @@ Coupled doc updates (per `AGENTS.md` § Coupled Changes):
 - It does not retire the comprehension grader entirely. Demotion (cheap model + baseline-skip) is in scope; deletion is not.
 - It does not modify lint behaviour in this commit. The lint demotion (external-constraint vs internal-style reclassification) is a follow-up tracked in Linear.
 
+## Addendum 2026-05-20 — comprehension and application are BOTH quality signals
+
+User ruling (2026-05-20), resolving "is comprehension demoted, or is the Understanding layer the standard?": **both are important.** This affirms — it does not reverse — the original decision:
+
+- `application_verdict` remains the aggregate "is this skill good?" signal (behaviour change on real artifacts). This addendum does not promote comprehension to a co-equal *certification*.
+- `comprehension_verdict` is **not** demoted to irrelevance. It is the required standard for the case the application layer cannot cheaply cover: **project-invented and repo-specific concepts** where the foundation model has no training prior. For framework concepts (CLT, Toulmin, FMEA, …) it still early-skips via `SKIPPED_BASELINE_HIGH` and is genuinely optional.
+- Practical reading: a skill is "good" when `application_verdict == APPLICABLE`; a repo-specific skill is *additionally* untrustworthy if its `comprehension_verdict` is `SHALLOW`/`REDUNDANT`. Neither verdict is dropped; "both important" = comprehension where the prior is absent, application everywhere.
+
+**Concrete enabler gap (verified 2026-05-20):** gate 8 only appends to `agent-orchestration/logs/comprehension-history.jsonl` (`scripts/skill/evaluate-skill.js` ~line 890) and never writes `comprehension_verdict` back to frontmatter — so the field reads `UNVERIFIED` corpus-wide regardless of grader output. To operationalize "comprehension is a signal," gate 8 needs a `--write-verdict` path that stamps `comprehension_verdict` (parallel to `skill-lint.js` → `structural_verdict` and drift → `truth_verdict`). Until then comprehension is measured but not persisted as a verdict. Tracked as a follow-up.
+
 ## Sources
 
 - `~/Development/.roundtable/skill-audit-2026-05-19/SYNTHESIS.md` — full diagnosis and decision rationale (§§1–7).
