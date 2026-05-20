@@ -10,6 +10,17 @@ read  →  fix  →  test  →  next
 
 That's it. One field at a time, keep or revert based on a single measurable signal, then move on. The discipline comes from Karpathy's auto-improvement loop: one editable asset, one scalar metric, one time box. The "read before changing" framing comes from Design Thinking. The structure here is the cheapest expression of both.
 
+## Audit Doctrine — Intent and Teaching, Not Arbitrary Lint
+
+The loop exists to answer one question about each skill: **does it still teach an agent to do the thing it claims to teach?** Every operation and verdict below serves that question. We evaluate each skill on two axes:
+
+1. **Intent fidelity** — does the skill's content deliver what its `description` / `scope` / routing contract promises? A skill whose body has drifted from its own stated purpose fails here, even if every path it cites still resolves.
+2. **Teaching efficacy** — does the skill actually change and improve an agent's behavior on the topic? This is the real quality signal. A skill that is structurally perfect but teaches nothing — or teaches it badly — is a weak skill. Under the four-verdict Health Block (schema v7, [ADR 0011](adr/0011-split-audit-verdict-into-four-verdicts.md)), `application_verdict` is where this is certified against real artifacts.
+
+The audit is **not a lint-test factory.** We do not invent arbitrary internal structural checks to manufacture findings, and an empty findings report on a genuinely good skill is a **PASS** — not a failure to find work. `lint_verdict` / `structural_verdict` cover form, schema validity, and external marketplace mandates only — a **floor the skill must clear**, never the target it aims at. Passing lint says the skill is well-formed; it says nothing about whether the skill teaches well.
+
+> Note: the operation tables below predate the v6→v7 verdict split and still describe the single `audit_verdict`. Read them through the doctrine above — `application_verdict` (behavior change) is the quality signal that `audit_verdict` used to conflate with form and drift.
+
 ## The Four Operations
 
 Every action in this loop falls into one of four operations. Each writes to a specific set of flat fields in the Skill Metadata Protocol v6 (see `skill-metadata-protocol/schemas/skill.v6.schema.json`).
