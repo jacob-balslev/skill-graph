@@ -8,7 +8,7 @@
 
 The skill-graph tooling repo and its sibling `skills` library repo need a formal cadence for running the Skill Audit Loop. Without a documented cadence, audits happen ad-hoc, P2+ findings accumulate without tracking, and there is no shared understanding of what "audited" means for a skill.
 
-The Skill Audit Loop specification (`docs/SKILL_AUDIT_LOOP.md`) already defines the four operations (`audit`, `improve`, `evaluate`, `evolve`) and a generic cadence table. This ADR adds the concrete operational contract for this project:
+The Skill Audit Loop specification (`SKILL_AUDIT_LOOP.md`) already defines the four operations (`audit`, `improve`, `evaluate`, `evolve`) and a generic cadence table. This ADR adds the concrete operational contract for this project:
 
 - Who triggers audits
 - What the pass criteria are

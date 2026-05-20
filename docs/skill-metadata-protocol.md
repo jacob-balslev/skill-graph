@@ -1,6 +1,6 @@
 # Skill Metadata Protocol Rationale
 
-This is the rationale and deep explanation for the Skill Metadata Protocol. For normative authoring rules, start with [`SKILL_METADATA_PROTOCOL.md`](https://github.com/jacob-balslev/skill-metadata-protocol); this document explains why the protocol has this shape and how the pieces fit together.
+This is the rationale and deep explanation for the Skill Metadata Protocol. For normative authoring rules, start with [`SKILL_METADATA_PROTOCOL.md`](../SKILL_METADATA_PROTOCOL.md) (in this repo's root); this document explains why the protocol has this shape and how the pieces fit together.
 
 Skill Metadata Protocol is the **skill-level contract** for AI SKILL.md. It defines the structured relevance metadata a skill should declare: activation signals, taxonomy, project/file scope, sibling-skill relations, grounding, drift checks, eval state, and portability.
 

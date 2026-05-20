@@ -9,7 +9,7 @@
 
 This document is the top-level public contract for the Skill Metadata Protocol frontmatter format — the **normative spec**. It defines which fields are required, what each field means in operational terms, which fields are authored by humans vs computed by tooling, and how to migrate from older schema versions. Skill Graph is the library-level system that consumes this contract. The prose is terse and boundary-aware: every clause is a rule a consumer or author can verify against the schema and against `scripts/skill-lint.js`.
 
-**Companion docs by genre.** This contract is the *what*. The *why* — design rationale, archetype semantics, OntoClean rigidity, the eval-health triple's orthogonality, the JSON-LD W3C mappings, and the philosophical posture behind the field choices — lives in [`skill-metadata-protocol.md`](skill-metadata-protocol.md). The two docs are coordinated and grow together: a normative rule that lacks a "why" is fragile; a "why" that lacks a normative rule is vapourware. If you are authoring a SKILL.md, you read this file. If you are deciding whether to add a field to the schema, you read both.
+**Companion docs by genre.** This contract is the *what*. The *why* — design rationale, archetype semantics, OntoClean rigidity, the eval-health triple's orthogonality, the JSON-LD W3C mappings, and the philosophical posture behind the field choices — lives in [`skill-metadata-protocol.md`](docs/skill-metadata-protocol.md). The two docs are coordinated and grow together: a normative rule that lacks a "why" is fragile; a "why" that lacks a normative rule is vapourware. If you are authoring a SKILL.md, you read this file. If you are deciding whether to add a field to the schema, you read both.
 
 ---
 
@@ -319,7 +319,7 @@ Seven flat top-level fields that record a skill's audit fingerprint in its own f
 **`audit_verdict`** *(DEPRECATED in v7)*
 - Pre-v7 single aggregate verdict, replaced by the four discrete verdicts above.
 - Enum (historical): `PASS` | `PASS_WITH_FIXES` | `PARTIAL` | `FAIL` | `UNKNOWN`.
-- The v7 codemod (`scripts/migrate-skill-v6-to-v7.js`) strips this field. See [ADR 0011](adr/0011-split-audit-verdict-into-four-verdicts.md) and [`migrations/v6-to-v7.md`](migrations/v6-to-v7.md).
+- The v7 codemod (`scripts/migrate-skill-v6-to-v7.js`) strips this field. See [ADR 0011](docs/adr/0011-split-audit-verdict-into-four-verdicts.md) and [`migrations/v6-to-v7.md`](docs/migrations/v6-to-v7.md).
 
 **`eval_score`**
 - Latest aggregate eval grade on a 0.0–5.0 scale.
@@ -536,7 +536,7 @@ Some legacy scope and type values are normalized by the manifest generator to th
 
 ### v5 -> v6 (current)
 
-Detailed migration guide: [`migrations/v5-to-v6.md`](migrations/v5-to-v6.md).
+Detailed migration guide: [`migrations/v5-to-v6.md`](docs/migrations/v5-to-v6.md).
 
 The codemod for the schema_version bump (after authoring the flat Understanding fields):
 
@@ -558,7 +558,7 @@ The legacy nested `concept` block remains accepted in v6 for v5 skills not yet m
 
 ### v4 -> v5 (previous)
 
-Detailed migration guide: [`migrations/v4-to-v5.md`](migrations/v4-to-v5.md).
+Detailed migration guide: [`migrations/v4-to-v5.md`](docs/migrations/v4-to-v5.md).
 
 The codemod for the schema_version bump (after re-routing categories):
 

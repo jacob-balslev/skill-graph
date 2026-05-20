@@ -41,7 +41,7 @@ Description is exactly 9 words — fits the ≤10 limit. "Audit-loop-grounded" i
 ```markdown
 **What this is:** A 145-skill SKILL.md library exported from the [`skill-graph`](https://github.com/jacob-balslev/skill-graph) authoring + audit-time toolchain. Every skill ships with typed frontmatter (Skill Metadata Protocol v6), passes a 6-check `doctor` gate (lint, manifest, drift sentinel, mirror-freeze, links, protocol), and is re-grounded against its truth sources on a Karpathy-style keep-or-revert audit loop.
 
-**Why it fits the curation bar:** The collection is not bulk-generated. Each skill is hand-authored, lint-validated, and goes through a documented audit loop ([`docs/SKILL_AUDIT_LOOP.md`](https://github.com/jacob-balslev/skill-graph/blob/main/docs/SKILL_AUDIT_LOOP.md)). The repo's primary use is internal but the export pipeline (`scripts/export-marketplace-skills.js`) explicitly produces plain Agent-Skills-format `SKILL.md` files for the public.
+**Why it fits the curation bar:** The collection is not bulk-generated. Each skill is hand-authored, lint-validated, and goes through a documented audit loop ([`SKILL_AUDIT_LOOP.md`](https://github.com/jacob-balslev/skill-graph/blob/main/SKILL_AUDIT_LOOP.md)). The repo's primary use is internal but the export pipeline (`scripts/export-marketplace-skills.js`) explicitly produces plain Agent-Skills-format `SKILL.md` files for the public.
 
 **Compatible with:** Claude Code, Cursor, Codex, OpenCode (any Agent Skills runtime that reads SKILL.md).
 
@@ -79,7 +79,7 @@ The extension is fully backwards-compatible with the base Agent Skills spec — 
 
 1. **The four-archetype model** (`capability` / `workflow` / `router` / `overlay`) for skill type-tagging — does this match patterns you see in your own library?
 2. **The `relations.*` predicates** (`related` / `boundary` / `verify_with` / `depends_on`) for typed edges between skills — would something like this fit upstream in the base spec?
-3. **The keep-or-revert audit loop** ([`docs/SKILL_AUDIT_LOOP.md`](https://github.com/jacob-balslev/skill-graph/blob/main/docs/SKILL_AUDIT_LOOP.md)) — has anyone else built drift-detection over SKILL.md files? I haven't found public prior art.
+3. **The keep-or-revert audit loop** ([`SKILL_AUDIT_LOOP.md`](https://github.com/jacob-balslev/skill-graph/blob/main/SKILL_AUDIT_LOOP.md)) — has anyone else built drift-detection over SKILL.md files? I haven't found public prior art.
 
 I'm not asking to upstream anything — the protocol's whole point is to be a thin layer on top of your spec so authors can choose to adopt it without giving up Agent Skills compatibility. But I'd value pattern-matching against your team's experience curating the official library.
 

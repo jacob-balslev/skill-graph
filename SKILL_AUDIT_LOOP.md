@@ -15,7 +15,7 @@ That's it. One field at a time, keep or revert based on a single measurable sign
 The loop exists to answer one question about each skill: **does it still teach an agent to do the thing it claims to teach?** Every operation and verdict below serves that question. We evaluate each skill on two axes:
 
 1. **Intent fidelity** — does the skill's content deliver what its `description` / `scope` / routing contract promises? A skill whose body has drifted from its own stated purpose fails here, even if every path it cites still resolves.
-2. **Teaching efficacy** — does the skill actually change and improve an agent's behavior on the topic? This is the real quality signal. A skill that is structurally perfect but teaches nothing — or teaches it badly — is a weak skill. Under the four-verdict Health Block (schema v7, [ADR 0011](adr/0011-split-audit-verdict-into-four-verdicts.md)), `application_verdict` is where this is certified against real artifacts.
+2. **Teaching efficacy** — does the skill actually change and improve an agent's behavior on the topic? This is the real quality signal. A skill that is structurally perfect but teaches nothing — or teaches it badly — is a weak skill. Under the four-verdict Health Block (schema v7, [ADR 0011](docs/adr/0011-split-audit-verdict-into-four-verdicts.md)), `application_verdict` is where this is certified against real artifacts.
 
 The audit is **not a lint-test factory.** We do not invent arbitrary internal structural checks to manufacture findings, and an empty findings report on a genuinely good skill is a **PASS** — not a failure to find work. `lint_verdict` / `structural_verdict` cover form, schema validity, and external marketplace mandates only — a **floor the skill must clear**, never the target it aims at. Passing lint says the skill is well-formed; it says nothing about whether the skill teaches well.
 
@@ -50,7 +50,7 @@ This replaces the previous 13-command surface. The mapping:
 
 ## The Health Block — state lives on the skill
 
-Schema v7 carries the Health fields on every SKILL.md frontmatter. v7 removed the single v6 `audit_verdict` and replaced it with **four discrete verdicts**, one per audit layer, because the aggregate masqueraded as a quality signal while conflating form, truth, comprehension, and behavior (see [ADR 0011](adr/0011-split-audit-verdict-into-four-verdicts.md) and [`docs/migrations/v6-to-v7.md`](migrations/v6-to-v7.md)):
+Schema v7 carries the Health fields on every SKILL.md frontmatter. v7 removed the single v6 `audit_verdict` and replaced it with **four discrete verdicts**, one per audit layer, because the aggregate masqueraded as a quality signal while conflating form, truth, comprehension, and behavior (see [ADR 0011](docs/adr/0011-split-audit-verdict-into-four-verdicts.md) and [`docs/migrations/v6-to-v7.md`](docs/migrations/v6-to-v7.md)):
 
 ```yaml
 schema_version: 7
@@ -216,5 +216,5 @@ The loop does not require a separate issue tracker, dashboard, control plane, or
 - `docs/skill-metadata-protocol.md` — the canonical field list including the v7 Health Block and flat Understanding fields
 - `schemas/skill.v7.schema.json` — the machine-validated current contract (`schemas/skill.v6.schema.json` and earlier are pinned prior versions)
 - `docs/migrations/v6-to-v7.md` — the `audit_verdict` → four-verdict split; `docs/migrations/v5-to-v6.md` — concept block flattening + Health Block introduction
-- `docs/SKILL_AUDIT_CHECKLIST.md` — the per-skill checklist used during `audit`
+- `SKILL_AUDIT_CHECKLIST.md` — the per-skill checklist used during `audit`
 - `docs/adr/0011-split-audit-verdict-into-four-verdicts.md` — rationale for the four-verdict model
