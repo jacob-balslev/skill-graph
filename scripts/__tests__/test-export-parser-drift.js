@@ -139,9 +139,8 @@ try {
     { cwd: REPO_ROOT, encoding: 'utf8' }
   );
   const output = `${result.stdout}\n${result.stderr}`;
-  assert(result.status === 1, 'lint should fail for missing conditional fields');
-  assertIncludes(output, 'stability: deprecated requires superseded_by field', 'lint should enforce deprecated replacement');
-  assertIncludes(output, 'comprehension_state: present requires concept field', 'lint should enforce concept block');
+  assert(result.status === 0, 'external-mandate lint should not fail on project-internal conditional fields');
+  assertIncludes(output, '0 error(s)', 'lint should preserve external-mandate-only behavior');
 } finally {
   fs.rmSync(tempRoot, { recursive: true, force: true });
 }

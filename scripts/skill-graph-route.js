@@ -103,6 +103,14 @@ function tokenize(text) {
     .filter(t => t.length >= 2 && !STOPWORDS.has(t));
 }
 
+function normalizePhrase(text) {
+  return String(text || '')
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, ' ')
+    .trim()
+    .replace(/\s+/g, ' ');
+}
+
 /**
  * Score a skill's activation against a query. Higher is better.
  *
@@ -118,7 +126,7 @@ function tokenize(text) {
  * Returns { score, matchedBecause } where matchedBecause is a short tag list
  * used to explain the routing decision back to the user.
  */
-function scoreSkill(skill, queryTokens, pathArg) {
+function scoreSkill(skill, queryTokens, pathArg, rawQuery) {
   let score = 0;
   const reasons = [];
 
@@ -127,11 +135,18 @@ function scoreSkill(skill, queryTokens, pathArg) {
   const keywords = activation.keywords || [];
   const paths = activation.paths || [];
 
-  // Triggers: exact match on the entire query OR on any word boundary.
+  // Triggers: exact match on the full raw query OR on any retained query token.
+  // Full-sentence triggers must compare against the raw query, not the
+  // stopword-stripped token string, otherwise exact routing-eval prompts lose
+  // the very words that make them exact.
   const queryJoined = queryTokens.join(' ');
+  const normalizedQuery = normalizePhrase(rawQuery);
   for (const trigger of triggers) {
-    const t = String(trigger).toLowerCase();
+    const t = normalizePhrase(trigger);
     if (t === queryJoined || queryTokens.includes(t)) {
+      score += 5;
+      reasons.push(`trigger:${t}`);
+    } else if (t && t === normalizedQuery) {
       score += 5;
       reasons.push(`trigger:${t}`);
     }
@@ -384,7 +399,7 @@ function routeSkills(manifest, options) {
       excludedByProject.push({ skill, reason: projectCheck.reason });
       continue;
     }
-    const { score, reasons } = scoreSkill(skill, queryTokens, pathArg);
+    const { score, reasons } = scoreSkill(skill, queryTokens, pathArg, query);
     if (score > 0) {
       scored.push({ skill, score, reasons, role: 'match', projectMatch: projectCheck.reason });
     }
