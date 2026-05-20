@@ -173,7 +173,7 @@ allowed-tools   # space-separated tool allowlist
 - A browse facet — answers the single question: *Where should a human browse to find this skill first?*
 - Renamed from v3 `browse_category`; use `category` in all v4+ skills.
 - For hierarchical taxonomy, use the optional `domain` field with slash-delimited segments.
-- **Closed enum as of schema_version 5** (retained in v6); enforced at the schema level by `enum` constraint in `schemas/skill.v6.schema.json` AND at the lint level by `scripts/lint/check-category-enum.js`. Framed as a browse facet, not ontology truth. Cross-cutting truth lives in `relations.related`. The six values:
+- **Closed enum as of schema_version 5** (retained in v7); enforced at the schema level by `enum` constraint in `schemas/skill.v7.schema.json` AND at the lint level by `scripts/lint/check-category-enum.js`. Framed as a browse facet, not ontology truth. Cross-cutting truth lives in `relations.related`. The six values:
 
   | Value | Definition |
   |---|---|
@@ -496,11 +496,12 @@ mental_model, purpose, boundary, analogy, misconception,
 concept
 ```
 
-**Loop-written fields (v6+, Health Block):**
+**Loop-written fields (v7+, Health Block):**
 
 ```
 # Stamped by `audit` / `improve` / `evaluate` — do not hand-author
-last_audited, last_changed, audit_verdict, eval_score, eval_failed_ids,
+last_audited, last_changed, structural_verdict, truth_verdict,
+comprehension_verdict, application_verdict, eval_score, eval_failed_ids,
 lint_verdict, drift_status
 ```
 
@@ -535,7 +536,25 @@ Some legacy scope and type values are normalized by the manifest generator to th
 
 ## Migration Notes
 
-### v5 -> v6 (current)
+### v6 -> v7 (current)
+
+Detailed migration guide: [`migrations/v6-to-v7.md`](docs/migrations/v6-to-v7.md).
+
+Run the codemod to migrate in place:
+
+```bash
+node scripts/migrate-skill-v6-to-v7.js --apply <path>
+```
+
+| What changed | v6 form | v7 form |
+|---|---|---|
+| Schema version | `schema_version: 6` | `schema_version: 7` |
+| Schema file | `schemas/skill.v6.schema.json` | `schemas/skill.v7.schema.json` (v4, v5, and v6 schemas remain for back-compat reads via `normalizeFrontmatter()`) |
+| Health Block verdict | single aggregate `audit_verdict` | four independent verdicts: `structural_verdict`, `truth_verdict`, `comprehension_verdict`, `application_verdict` |
+| Quality signal | `audit_verdict` could conflate form, truth, comprehension, and behavior | `application_verdict == APPLICABLE` is the positive behavior certification; Integrity Gate fields are required floors, not usefulness proof |
+| Migration default | aggregate verdict retained | `audit_verdict` removed; `comprehension_verdict` and `application_verdict` default to `UNVERIFIED` until the matching graders run |
+
+### v5 -> v6 (previous)
 
 Detailed migration guide: [`migrations/v5-to-v6.md`](docs/migrations/v5-to-v6.md).
 
@@ -636,4 +655,4 @@ The contract enforces the following invariants. Any change to the schema or tool
 
 ---
 
-*See `docs/skill-metadata-protocol.md` for full design rationale, overlay composition precedence, and schema versioning policy. See `docs/field-reference.md` for one section per field with examples. See `schemas/skill.v6.schema.json` for the machine-enforceable version of this contract.*
+*See `docs/skill-metadata-protocol.md` for full design rationale, overlay composition precedence, and schema versioning policy. See `docs/field-reference.md` for one section per field with examples. See `schemas/skill.v7.schema.json` for the machine-enforceable version of this contract.*

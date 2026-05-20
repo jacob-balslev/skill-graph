@@ -19,6 +19,17 @@ The loop exists to answer one question about each skill: **does it still teach a
 
 The audit is **not a lint-test factory.** We do not invent arbitrary internal structural checks to manufacture findings, and an empty findings report on a genuinely good skill is a **PASS** — not a failure to find work. `lint_verdict` / `structural_verdict` cover form, schema validity, and external marketplace mandates only — a **floor the skill must clear**, never the target it aims at. Passing lint says the skill is well-formed; it says nothing about whether the skill teaches well.
 
+### Two Gates, One Quality Claim
+
+The loop has two gates. They must not be blended into one PASS/FAIL label:
+
+| Gate | What it proves | Evidence | Health fields |
+|---|---|---|---|
+| **Integrity Gate** | The skill is structurally valid, grounded, routable, and export-safe. | Deterministic CI-safe checks: schema/frontmatter, manifest, links, export shape, relation targets, routing assertions, overlap, and drift. | `structural_verdict`, `truth_verdict`, `lint_verdict`, `drift_status` |
+| **Behavior Gate** | The skill changes agent behavior in the way it claims. | Behavioral evals against realistic positives, hard negatives, prior failures, and boundary cases. | `comprehension_verdict`, `application_verdict`, `eval_score`, `eval_failed_ids` |
+
+The Integrity Gate is required before release because broken metadata poisons the graph. It never certifies skill usefulness. The Behavior Gate is what certifies teaching efficacy; a skill with `application_verdict: UNVERIFIED` is honest, but it is not yet proven useful. A skill is audit-complete only when the Integrity Gate passes and the Behavior Gate is either passed or explicitly left `UNVERIFIED` / `NA` with evidence explaining why behavioral certification was not run.
+
 ## The Four Operations
 
 Every action in this loop falls into one of four operations. Each writes to a specific set of flat fields in the Skill Metadata Protocol v7 (see `schemas/skill.v7.schema.json`).
@@ -76,10 +87,10 @@ The same skill's body still gets `audits/<skill-name>/findings.md` and `verdict.
 
 The five-phase shape survives, but it lives entirely inside the `audit` operation as its internal pipeline, and each phase now writes a layer-scoped verdict instead of one aggregate. Users see one `audit` command. Internally:
 
-1. **Deterministic** (always) — `skill-lint.js` runs schema validation, relation-target existence, eval coherence, archetype section presence, routing quality. Writes `lint_verdict`, which rolls up into `structural_verdict`. Only **external-constraint** violations (1024-char description limit, missing required fields, invalid YAML, Anthropic Agent Skills required-fields schema) set `structural_verdict: FAIL`; internal style preferences are warnings only and never fail the verdict.
-2. **Drift** (always) — `skill-graph-drift.js` against declared `grounding.truth_sources`. Writes `drift_status`, which rolls up into `truth_verdict` (`OK → PASS`, `DRIFT → DRIFT`, `BROKEN → BROKEN`, else `UNVERIFIED`).
-3. **Graded — comprehension** (only under `--graded`, gate 8, demoted) — runs the comprehension grader. Writes `comprehension_verdict`. `SKIPPED_BASELINE_HIGH` is the expected verdict for a concept the foundation model already knows.
-4. **Graded — application** (only under `--graded` and when an application eval exists, gate 9) — checks whether loading the skill changes agent behavior on real artifacts. Writes `application_verdict` — the real quality signal.
+1. **Integrity Gate — structural** (always) — `skill-lint.js` runs canonical-source validation and related deterministic checks. Writes `lint_verdict`, which rolls up into `structural_verdict`. Only external-format or canonical-source violations set `structural_verdict: FAIL`; internal style preferences are warnings only and never fail the verdict.
+2. **Integrity Gate — truth** (always) — `skill-graph-drift.js` checks declared `grounding.truth_sources`. Writes `drift_status`, which rolls up into `truth_verdict` (`OK → PASS`, `DRIFT → DRIFT`, `BROKEN → BROKEN`, else `UNVERIFIED`).
+3. **Behavior Gate — comprehension** (only under `--graded`, gate 8, demoted) — runs the comprehension grader. Writes `comprehension_verdict`. `SKIPPED_BASELINE_HIGH` is the expected verdict for a concept the foundation model already knows.
+4. **Behavior Gate — application** (only under `--graded` and when an application eval exists, gate 9) — checks whether loading the skill changes agent behavior on real artifacts. Writes `application_verdict` — the real quality signal.
 5. **Stamp** — writes `last_audited` to today's ISO date.
 
 This is deterministic plumbing. The user runs `audit <skill>`; the internal pipeline does its work; the four verdicts plus the retained `lint_verdict`/`drift_status` signals record the result in the frontmatter.

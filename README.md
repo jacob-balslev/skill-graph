@@ -8,7 +8,7 @@ A plain `SKILL.md` gives an agent a procedure to load. The Skill Metadata Protoc
 
 ## Is this for me?
 
-**Yes, if** you have **more than ~5 skills** that have started to depend on, verify, or exclude one another; you want **deterministic checks** for skill correctness (schema, paths, eval health) rather than only LLM-as-grader; you want a **single audit loop** that produces a per-skill fingerprint (`audit_verdict`, `eval_score`, `drift_status`) you ship in the skill's own frontmatter; or you want **graph queries** over the library ("what depends on this?", "what's the boundary between X and Y?", "which skills verify this one?").
+**Yes, if** you have **more than ~5 skills** that have started to depend on, verify, or exclude one another; you want **deterministic checks** for skill correctness (schema, paths, eval health) rather than only LLM-as-grader; you want a **single audit loop** that reports the Integrity Gate separately from the Behavior Gate via per-skill Health Block fields (`structural_verdict`, `truth_verdict`, `comprehension_verdict`, `application_verdict`, `eval_score`, `drift_status`); or you want **graph queries** over the library ("what depends on this?", "what's the boundary between X and Y?", "which skills verify this one?").
 
 **No, if** you have 1–3 skills and a plain folder is enough; you want a hosted skill marketplace ([Smithery](https://smithery.ai), [agentskills.io](https://agentskills.io)); you want an agent runtime (Claude Code, Cursor, Codex); or you want a tool-execution platform ([Composio](https://docs.composio.dev), your runtime's tool layer).
 
@@ -278,13 +278,13 @@ For skills, the loop is:
 
 1. Pick a skill or project area.
 2. Gather evidence: the `SKILL.md`, eval files, manifest entry, related skills, and `grounding.truth_sources`.
-3. Run deterministic checks first: schema lint, relation integrity, manifest validation, routing evals, overlap checks, and drift checks.
-4. Audit the skill as a contract: activation, boundaries, taxonomy, grounding, examples, anti-examples, and verification partners.
+3. Run the **Integrity Gate** first: schema lint, relation integrity, manifest validation, routing assertions, overlap checks, export checks, and drift checks.
+4. Run the **Behavior Gate** when certification is needed: realistic positive evals, hard negatives, prior failure regressions, and boundary cases that show whether the skill changes agent behavior.
 5. Fix the skill or its metadata when the evidence supports the change.
 6. Re-run checks and record the new state.
 7. Move to the next skill or loop back if the fix changed the graph.
 
-This is not "self-improving skills" as a slogan. It is a re-grounding loop with evidence, constraints, and repeatable checks.
+This is not "self-improving skills" as a slogan. It is a re-grounding loop with evidence, constraints, and repeatable checks. The Integrity Gate proves the skill is safe for the graph; the Behavior Gate proves the skill is useful to an agent.
 
 ## Quick Start
 

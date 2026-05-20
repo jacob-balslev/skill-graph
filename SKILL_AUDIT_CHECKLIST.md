@@ -6,18 +6,28 @@ This is the canonical checklist for auditing a single skill in Skill Graph.
 
 Use this checklist to answer 3 questions:
 
-1. Is the skill structurally valid?
-2. Is the skill semantically correct?
+1. Does the skill pass the **Integrity Gate** — structurally valid, grounded, routable, and export-safe?
+2. Does the skill pass the **Behavior Gate** — proven to change agent behavior on realistic prompts, hard negatives, prior failures, and boundary cases?
 3. Is the skill useful enough to keep loading?
 
 ## Audit Outputs
 
 A complete audit should produce:
 
-1. pass/fail verdict
-2. findings list
-3. required fixes
-4. updated metadata or content when drift is confirmed
+1. Integrity Gate result
+2. Behavior Gate result
+3. findings list
+4. required fixes
+5. updated metadata or content when drift is confirmed
+
+## Gate Model
+
+Do not collapse these gates into one label. A skill can be valid and still unproven.
+
+| Gate | Checklist sections | Passing means | Does not prove |
+|---|---|---|---|
+| **Integrity Gate** | 1, 2, 3, 4, 7, 8 | The skill is well-formed, grounded, routable, relation-safe, and safe to export. | That the skill improves agent behavior. |
+| **Behavior Gate** | 5, 6 plus behavioral eval artifacts | The skill teaches the intended behavior under realistic positives, hard negatives, prior failures, and boundary cases. | That metadata or export surfaces are clean. |
 
 ## Standard Artifact Names
 
@@ -191,8 +201,10 @@ A skill audit is complete when:
 
 1. every checklist section was reviewed
 2. every finding has severity and evidence
-3. confirmed drift was fixed or explicitly deferred
-4. the Health Block verdicts are populated or explicitly left `UNVERIFIED` with evidence:
+3. the Integrity Gate result is explicit
+4. the Behavior Gate result is explicit, even when left `UNVERIFIED` / `NA`
+5. confirmed drift was fixed or explicitly deferred
+6. the Health Block verdicts are populated or explicitly left `UNVERIFIED` with evidence:
    - `structural_verdict`
    - `truth_verdict`
    - `comprehension_verdict`
