@@ -5,11 +5,33 @@ license: MIT
 compatibility: "Git-centric. Patterns translate to other DAG-based version-control systems (Mercurial, Jujutsu) with tool-specific syntax substitutions. Centralized systems (SVN, CVS) lack cheap branching and most of this skill's discipline does not apply."
 allowed-tools: Read Grep Bash Edit
 metadata:
-  metadata: "{\"schema_version\":6,\"version\":\"1.0.0\",\"type\":\"capability\",\"category\":\"engineering\",\"domain\":\"engineering/version-control\",\"scope\":\"portable\",\"owner\":\"skill-graph-maintainer\",\"freshness\":\"2026-05-06\",\"drift_check\":\"{\\\\\\\"last_verified\\\\\\\":\\\\\\\"2026-05-06\\\\\\\"}\",\"eval_artifacts\":\"planned\",\"eval_state\":\"unverified\",\"routing_eval\":\"absent\",\"stability\":\"experimental\",\"keywords\":\"[\\\\\\\"version control\\\\\\\",\\\\\\\"git workflow\\\\\\\",\\\\\\\"branching strategy\\\\\\\",\\\\\\\"trunk-based development\\\\\\\",\\\\\\\"git flow\\\\\\\",\\\\\\\"short-lived branch\\\\\\\",\\\\\\\"feature branch\\\\\\\",\\\\\\\"merge vs rebase\\\\\\\",\\\\\\\"linear history\\\\\\\",\\\\\\\"atomic commit\\\\\\\",\\\\\\\"squash commit\\\\\\\",\\\\\\\"cherry-pick\\\\\\\",\\\\\\\"release tag\\\\\\\",\\\\\\\"annotated tag\\\\\\\",\\\\\\\"SemVer release\\\\\\\",\\\\\\\"hotfix branch\\\\\\\",\\\\\\\"git worktree\\\\\\\",\\\\\\\"parallel branch development\\\\\\\",\\\\\\\"commit provenance\\\\\\\",\\\\\\\"merge conflict resolution\\\\\\\",\\\\\\\"protected branch\\\\\\\"]\",\"examples\":\"[\\\\\\\"set up trunk-based development for a four-person team\\\\\\\",\\\\\\\"the main branch has 50 merge commits before release — clean up the history\\\\\\\",\\\\\\\"two agents are working in the same repo and clobbering each other's uncommitted changes — set up worktrees\\\\\\\",\\\\\\\"tag the v1.2.0 release with provenance back to the closing tracker milestone\\\\\\\",\\\\\\\"the feature branch is two weeks old and three weeks behind main — rebase or recreate?\\\\\\\",\\\\\\\"design the hotfix workflow for an urgent production patch off a release tag\\\\\\\",\\\\\\\"every commit must link back to a tracker ticket — what's the right enforcement layer?\\\\\\\",\\\\\\\"should we squash, rebase, or merge when integrating a feature branch?\\\\\\\"]\",\"anti_examples\":\"[\\\\\\\"draft a Conventional Commits message for this change\\\\\\\",\\\\\\\"the release pipeline failed at the tag-creation step — find out why\\\\\\\",\\\\\\\"review this PR before we merge it\\\\\\\",\\\\\\\"explain our git policy to new contributors in the docs\\\\\\\",\\\\\\\"decide if this branching-rule change needs a regression test\\\\\\\",\\\\\\\"refactor the git helper scripts in our tooling repo\\\\\\\"]\",\"relations\":\"{\\\\\\\"boundary\\\\\\\":[{\\\\\\\"skill\\\\\\\":\\\\\\\"code-review\\\\\\\",\\\\\\\"reason\\\\\\\":\\\\\\\"code-review evaluates the *content* of a change before merge; version-control owns the *shape* of history that change leaves behind\\\\\\\"},{\\\\\\\"skill\\\\\\\":\\\\\\\"refactor\\\\\\\",\\\\\\\"reason\\\\\\\":\\\\\\\"refactor reorganizes code without changing external behavior; version-control reorganizes history without changing the code's content (rebase, squash, cherry-pick)\\\\\\\"},{\\\\\\\"skill\\\\\\\":\\\\\\\"naming-conventions\\\\\\\",\\\\\\\"reason\\\\\\\":\\\\\\\"naming-conventions owns commit-message wording (Conventional Commits prefix, scope, subject); version-control owns commit *boundaries* (what counts as one commit) and history *shape*\\\\\\\"}],\\\\\\\"related\\\\\\\":[\\\\\\\"code-review\\\\\\\",\\\\\\\"refactor\\\\\\\",\\\\\\\"naming-conventions\\\\\\\",\\\\\\\"debugging\\\\\\\"],\\\\\\\"verify_with\\\\\\\":[\\\\\\\"code-review\\\\\\\"]}\",\"portability\":\"{\\\\\\\"readiness\\\\\\\":\\\\\\\"scripted\\\\\\\",\\\\\\\"targets\\\\\\\":[\\\\\\\"skill-md\\\\\\\"]}\",\"lifecycle\":\"{\\\\\\\"stale_after_days\\\\\\\":90,\\\\\\\"review_cadence\\\\\\\":\\\\\\\"quarterly\\\\\\\"}\",\"skill_graph_source_repo\":\"https://github.com/jacob-balslev/skill-graph\",\"skill_graph_protocol\":\"Skill Metadata Protocol v5\",\"skill_graph_project\":\"Skill Graph\",\"skill_graph_canonical_skill\":\"skills/version-control/SKILL.md\"}"
+  schema_version: "7"
+  version: "1.0.0"
+  type: capability
+  category: engineering
+  domain: engineering/version-control
+  scope: portable
+  owner: skill-graph-maintainer
+  freshness: "2026-05-06"
+  drift_check: "{\"last_verified\":\"2026-05-06\"}"
+  eval_artifacts: planned
+  eval_state: unverified
+  routing_eval: absent
+  stability: experimental
+  keywords: "[\"version control\",\"git workflow\",\"branching strategy\",\"trunk-based development\",\"git flow\",\"short-lived branch\",\"feature branch\",\"merge vs rebase\",\"linear history\",\"atomic commit\",\"squash commit\",\"cherry-pick\",\"release tag\",\"annotated tag\",\"SemVer release\",\"hotfix branch\",\"git worktree\",\"parallel branch development\",\"commit provenance\",\"merge conflict resolution\",\"protected branch\"]"
+  examples: "[\"set up trunk-based development for a four-person team\",\"the main branch has 50 merge commits before release — clean up the history\",\"two agents are working in the same repo and clobbering each other's uncommitted changes — set up worktrees\",\"tag the v1.2.0 release with provenance back to the closing tracker milestone\",\"the feature branch is two weeks old and three weeks behind main — rebase or recreate?\",\"design the hotfix workflow for an urgent production patch off a release tag\",\"every commit must link back to a tracker ticket — what's the right enforcement layer?\",\"should we squash, rebase, or merge when integrating a feature branch?\"]"
+  anti_examples: "[\"draft a Conventional Commits message for this change\",\"the release pipeline failed at the tag-creation step — find out why\",\"review this PR before we merge it\",\"explain our git policy to new contributors in the docs\",\"decide if this branching-rule change needs a regression test\",\"refactor the git helper scripts in our tooling repo\"]"
+  relations: "{\"boundary\":[{\"skill\":\"code-review\",\"reason\":\"code-review evaluates the *content* of a change before merge; version-control owns the *shape* of history that change leaves behind\"},{\"skill\":\"refactor\",\"reason\":\"refactor reorganizes code without changing external behavior; version-control reorganizes history without changing the code's content (rebase, squash, cherry-pick)\"},{\"skill\":\"naming-conventions\",\"reason\":\"naming-conventions owns commit-message wording (Conventional Commits prefix, scope, subject); version-control owns commit *boundaries* (what counts as one commit) and history *shape*\"}],\"related\":[\"code-review\",\"refactor\",\"naming-conventions\",\"debugging\"],\"verify_with\":[\"code-review\"]}"
+  portability: "{\"readiness\":\"scripted\",\"targets\":[\"skill-md\"]}"
+  lifecycle: "{\"stale_after_days\":90,\"review_cadence\":\"quarterly\"}"
+  structural_verdict: UNVERIFIED
+  truth_verdict: UNVERIFIED
+  comprehension_verdict: UNVERIFIED
+  application_verdict: UNVERIFIED
   skill_graph_source_repo: "https://github.com/jacob-balslev/skill-graph"
-  skill_graph_protocol: Skill Metadata Protocol v4
+  skill_graph_protocol: Skill Metadata Protocol v7
   skill_graph_project: Skill Graph
-  skill_graph_canonical_skill: skills/version-control/SKILL.md
+  skill_graph_canonical_skill: skills/engineering/version-control/SKILL.md
 ---
 
 # Version Control
@@ -168,10 +190,18 @@ The defence:
 
 ```bash
 # Right — for tracked files: build a temporary index from these paths only
-git commit --only -- path/one path/two -m "..."
+git commit --only -m "..." -- path/one path/two
 
 # Right — for new files: add first, then commit with --only
 git add path/one path/two
+git commit --only -m "..." -- path/one path/two
+
+# Right — for multi-line messages: use -F with a temp file
+printf 'subject\n\nbody\n' > /tmp/msg
+git commit --only -F /tmp/msg -- path/one path/two
+
+# Wrong — `-m` AFTER `--` is parsed as a pathspec, not a flag.
+# git fails with: error: pathspec '-m' did not match any file(s) known to git
 git commit --only -- path/one path/two -m "..."
 
 # Wrong — picks up whatever a parallel session has staged
@@ -180,6 +210,8 @@ git commit -m "..."
 ```
 
 `--only` builds a transient index containing only the listed paths and commits from that. Whatever a parallel session has in the real index is left untouched for that session to commit. The safety window closes at the `git commit --only` call, not at the `git add`.
+
+**Flag ordering rule:** Everything after `--` is a path to git. Put `-m`, `-F`, and other flags BEFORE `--`, paths AFTER it. Both Tier 1 solvers in the 2026-05-18 post-v0.5.7 skill-graph cleanup hit the `-m`-after-`--` failure; Issue 3 worked around with `-F /tmp/file`.
 
 After every commit, verify the file list:
 

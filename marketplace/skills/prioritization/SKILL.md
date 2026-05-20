@@ -5,11 +5,32 @@ license: MIT
 compatibility: "Markdown, Git, agent-skill runtimes"
 allowed-tools: Read Grep Bash
 metadata:
-  metadata: "{\"schema_version\":6,\"version\":\"1.0.0\",\"type\":\"capability\",\"category\":\"quality\",\"domain\":\"quality/doctrine\",\"scope\":\"reference\",\"owner\":\"skill-graph-maintainer\",\"freshness\":\"2026-03-27\",\"drift_check\":\"{\\\\\\\"last_verified\\\\\\\":\\\\\\\"2026-03-27\\\\\\\"}\",\"eval_artifacts\":\"planned\",\"eval_state\":\"unverified\",\"routing_eval\":\"absent\",\"stability\":\"experimental\",\"keywords\":\"[\\\\\\\"prioritization\\\\\\\",\\\\\\\"RICE\\\\\\\",\\\\\\\"ICE\\\\\\\",\\\\\\\"MoSCoW\\\\\\\",\\\\\\\"RICE-A\\\\\\\",\\\\\\\"AI ambiguity\\\\\\\",\\\\\\\"feature ranking\\\\\\\",\\\\\\\"research prioritization\\\\\\\",\\\\\\\"backlog management\\\\\\\",\\\\\\\"MVP scope\\\\\\\"]\",\"triggers\":\"[\\\\\\\"prioritization-skill\\\\\\\",\\\\\\\"roadmap-skill\\\\\\\",\\\\\\\"priority-planning-mode\\\\\\\"]\",\"relations\":\"{\\\\\\\"related\\\\\\\":[\\\\\\\"constraint-awareness\\\\\\\"]}\",\"portability\":\"{\\\\\\\"readiness\\\\\\\":\\\\\\\"scripted\\\\\\\",\\\\\\\"targets\\\\\\\":[\\\\\\\"skill-md\\\\\\\"]}\",\"lifecycle\":\"{\\\\\\\"stale_after_days\\\\\\\":90,\\\\\\\"review_cadence\\\\\\\":\\\\\\\"quarterly\\\\\\\"}\",\"skill_graph_source_repo\":\"https://github.com/jacob-balslev/skill-graph\",\"skill_graph_protocol\":\"Skill Metadata Protocol v5\",\"skill_graph_project\":\"Skill Graph\",\"skill_graph_canonical_skill\":\"skills/prioritization/SKILL.md\"}"
+  schema_version: "7"
+  version: "1.0.0"
+  type: capability
+  category: quality
+  domain: quality/doctrine
+  scope: reference
+  owner: skill-graph-maintainer
+  freshness: "2026-03-27"
+  drift_check: "{\"last_verified\":\"2026-03-27\"}"
+  eval_artifacts: planned
+  eval_state: unverified
+  routing_eval: absent
+  stability: experimental
+  keywords: "[\"prioritization\",\"RICE\",\"ICE\",\"MoSCoW\",\"RICE-A\",\"AI ambiguity\",\"feature ranking\",\"research prioritization\",\"backlog management\",\"MVP scope\"]"
+  triggers: "[\"prioritization-skill\",\"roadmap-skill\",\"priority-planning-mode\"]"
+  relations: "{\"related\":[\"constraint-awareness\"]}"
+  portability: "{\"readiness\":\"scripted\",\"targets\":[\"skill-md\"]}"
+  lifecycle: "{\"stale_after_days\":90,\"review_cadence\":\"quarterly\"}"
+  structural_verdict: UNVERIFIED
+  truth_verdict: UNVERIFIED
+  comprehension_verdict: UNVERIFIED
+  application_verdict: UNVERIFIED
   skill_graph_source_repo: "https://github.com/jacob-balslev/skill-graph"
-  skill_graph_protocol: Skill Metadata Protocol v4
+  skill_graph_protocol: Skill Metadata Protocol v7
   skill_graph_project: Skill Graph
-  skill_graph_canonical_skill: skills/prioritization/SKILL.md
+  skill_graph_canonical_skill: skills/quality/prioritization/SKILL.md
 ---
 # Prioritization
 

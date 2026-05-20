@@ -5,11 +5,41 @@ license: MIT
 compatibility: "Provider-agnostic; principles apply across Claude, GPT, Gemini, and open-weight models. Layer mapping varies by harness (Claude Code, OpenCode, Cursor, Continue, Aider) but the five-layer abstraction holds."
 allowed-tools: Read Grep Bash Edit
 metadata:
-  metadata: "{\"schema_version\":6,\"version\":\"1.0.0\",\"type\":\"capability\",\"category\":\"agent\",\"domain\":\"agent/context\",\"scope\":\"portable\",\"owner\":\"skill-graph-maintainer\",\"freshness\":\"2026-05-06\",\"drift_check\":\"{\\\\\\\"last_verified\\\\\\\":\\\\\\\"2026-05-06\\\\\\\"}\",\"eval_artifacts\":\"planned\",\"eval_state\":\"unverified\",\"routing_eval\":\"absent\",\"stability\":\"experimental\",\"keywords\":\"[\\\\\\\"context engineering\\\\\\\",\\\\\\\"context failure\\\\\\\",\\\\\\\"agent context\\\\\\\",\\\\\\\"context quality\\\\\\\",\\\\\\\"context design\\\\\\\",\\\\\\\"missing context\\\\\\\",\\\\\\\"stale context\\\\\\\",\\\\\\\"wrong context\\\\\\\",\\\\\\\"overwhelming context\\\\\\\",\\\\\\\"context window\\\\\\\",\\\\\\\"context utilization\\\\\\\",\\\\\\\"injection precision\\\\\\\",\\\\\\\"injection recall\\\\\\\",\\\\\\\"frequent intentional compaction\\\\\\\",\\\\\\\"FIC\\\\\\\",\\\\\\\"context compaction\\\\\\\",\\\\\\\"subagent delegation\\\\\\\",\\\\\\\"context stack\\\\\\\",\\\\\\\"context layers\\\\\\\",\\\\\\\"skill injection\\\\\\\",\\\\\\\"context engineering stack\\\\\\\",\\\\\\\"agent failure diagnosis\\\\\\\",\\\\\\\"why did the agent fail\\\\\\\"]\",\"examples\":\"[\\\\\\\"the agent ignored the instruction and used the wrong query helper — was the right skill loaded?\\\\\\\",\\\\\\\"we keep getting generic answers from the agent even though the skill has the answer — what's wrong?\\\\\\\",\\\\\\\"I want to design which skills get injected for which prompts — where do I start?\\\\\\\",\\\\\\\"the agent's quality drops in long sessions — when should I compact?\\\\\\\",\\\\\\\"diagnose this agent failure: it had the file open but produced wrong output anyway\\\\\\\",\\\\\\\"we have 200 skills and the agent picks the wrong ones — fix the injection\\\\\\\",\\\\\\\"should I read this 5K-line file directly or delegate to a subagent?\\\\\\\",\\\\\\\"audit our context pipeline — what's loaded when, and is any of it stale?\\\\\\\"]\",\"anti_examples\":\"[\\\\\\\"improve this prompt's wording to get better outputs\\\\\\\",\\\\\\\"scaffold a new SKILL.md for our team's deploy procedure\\\\\\\",\\\\\\\"the router picked the wrong skill for this query — debug it\\\\\\\",\\\\\\\"review this AI-generated PR for correctness\\\\\\\",\\\\\\\"write a doc explaining our agent system to a new joiner\\\\\\\",\\\\\\\"investigate why production crashed at 3am\\\\\\\"]\",\"relations\":\"{\\\\\\\"boundary\\\\\\\":[{\\\\\\\"skill\\\\\\\":\\\\\\\"prompt-craft\\\\\\\",\\\\\\\"reason\\\\\\\":\\\\\\\"prompt-craft writes the wording of one instruction; context-engineering shapes the entire surrounding payload (rules, memory, skills, file reads) that the prompt sits inside\\\\\\\"},{\\\\\\\"skill\\\\\\\":\\\\\\\"skill-scaffold\\\\\\\",\\\\\\\"reason\\\\\\\":\\\\\\\"skill-scaffold authors the structure of a single SKILL.md file; context-engineering decides which skills should exist, get loaded, and reach the model in the first place\\\\\\\"},{\\\\\\\"skill\\\\\\\":\\\\\\\"skill-router\\\\\\\",\\\\\\\"reason\\\\\\\":\\\\\\\"skill-router is the runtime mechanism that selects skills for a query; context-engineering is the design discipline behind the entire context stack the router operates within\\\\\\\"}],\\\\\\\"related\\\\\\\":[\\\\\\\"prompt-craft\\\\\\\",\\\\\\\"skill-router\\\\\\\"],\\\\\\\"verify_with\\\\\\\":[\\\\\\\"code-review\\\\\\\"]}\",\"portability\":\"{\\\\\\\"readiness\\\\\\\":\\\\\\\"scripted\\\\\\\",\\\\\\\"targets\\\\\\\":[\\\\\\\"skill-md\\\\\\\"]}\",\"lifecycle\":\"{\\\\\\\"stale_after_days\\\\\\\":90,\\\\\\\"review_cadence\\\\\\\":\\\\\\\"quarterly\\\\\\\"}\",\"skill_graph_source_repo\":\"https://github.com/jacob-balslev/skill-graph\",\"skill_graph_protocol\":\"Skill Metadata Protocol v5\",\"skill_graph_project\":\"Skill Graph\",\"skill_graph_canonical_skill\":\"skills/context-engineering/SKILL.md\"}"
+  schema_version: "7"
+  version: "1.1.0"
+  type: capability
+  category: agent
+  domain: agent/context
+  scope: portable
+  owner: skill-graph-maintainer
+  freshness: "2026-05-18"
+  drift_check: "{\"last_verified\":\"2026-05-18\"}"
+  eval_artifacts: planned
+  eval_state: unverified
+  routing_eval: absent
+  comprehension_state: present
+  stability: experimental
+  keywords: "[\"context engineering\",\"context failure\",\"agent context\",\"context quality\",\"context design\",\"missing context\",\"stale context\",\"wrong context\",\"overwhelming context\",\"context window\",\"context rot\",\"context utilization\",\"injection precision\",\"injection recall\",\"frequent intentional compaction\",\"FIC\",\"context compaction\",\"tool result clearing\",\"agent memory\",\"just in time context\",\"subagent delegation\",\"context stack\",\"context layers\",\"skill injection\",\"context engineering stack\",\"agent failure diagnosis\",\"why did the agent fail\"]"
+  examples: "[\"the agent ignored the instruction and used the wrong query helper — was the right skill loaded?\",\"we keep getting generic answers from the agent even though the skill has the answer — what's wrong?\",\"I want to design which skills get injected for which prompts — where do I start?\",\"the agent's quality drops in long sessions — when should I compact?\",\"diagnose this agent failure: it had the file open but produced wrong output anyway\",\"we have 200 skills and the agent picks the wrong ones — fix the injection\",\"should I read this 5K-line file directly or delegate to a subagent?\",\"audit our context pipeline — what's loaded when, and is any of it stale?\"]"
+  anti_examples: "[\"improve this prompt's wording to get better outputs\",\"scaffold a new SKILL.md for our team's deploy procedure\",\"the router picked the wrong skill for this query — debug it\",\"review this AI-generated PR for correctness\",\"write a doc explaining our agent system to a new joiner\",\"investigate why production crashed at 3am\"]"
+  relations: "{\"boundary\":[{\"skill\":\"prompt-craft\",\"reason\":\"prompt-craft writes the wording of one instruction; context-engineering shapes the entire surrounding payload (rules, memory, skills, file reads) that the prompt sits inside\"},{\"skill\":\"skill-scaffold\",\"reason\":\"skill-scaffold authors the structure of a single SKILL.md file; context-engineering decides which skills should exist, get loaded, and reach the model in the first place\"},{\"skill\":\"skill-router\",\"reason\":\"skill-router is the runtime mechanism that selects skills for a query; context-engineering is the design discipline behind the entire context stack the router operates within\"}],\"related\":[\"prompt-craft\",\"skill-router\"],\"verify_with\":[\"code-review\"]}"
+  grounding: "{\"domain_object\":\"Context engineering for LLM agents\",\"grounding_mode\":\"hybrid\",\"truth_sources\":[\"https://www.anthropic.com/engineering/effective-context-engineering-for-ai-agents\",\"https://platform.claude.com/docs/en/build-with-claude/context-windows\",\"https://platform.claude.com/cookbook/tool-use-context-engineering-context-engineering-tools\",\"https://www.ibm.com/think/topics/context-engineering\",\"https://arxiv.org/abs/2510.26493\"],\"failure_modes\":[\"context_window_treated_as_unlimited\",\"prompt_wording_treated_as_context_design\",\"retrieval_dump_replaces_selection\",\"tool_results_accumulate_without_clearing\",\"stale_memory_overrides_current_evidence\"],\"evidence_priority\":\"equal\"}"
+  portability: "{\"readiness\":\"scripted\",\"targets\":[\"skill-md\"]}"
+  lifecycle: "{\"stale_after_days\":90,\"review_cadence\":\"quarterly\"}"
+  mental_model: "Context engineering is the discipline of compiling the smallest sufficient, highest-signal working set for an LLM at each step: instructions, memory, retrieved facts, tool outputs, examples, conversation history, and task metadata. The primitives are selection, structure, sequencing, compaction, freshness, provenance, and isolation. More context is not automatically better; every token either supports the next decision or competes with the signal the model should attend to."
+  purpose: "This skill exists because many agent failures look like reasoning failures but come from a bad informational environment: the right fact was absent, stale memory won over current evidence, irrelevant retrieval buried the signal, or raw tool output accumulated after its value expired. It gives teams a way to design and debug the context pipeline instead of endlessly rewriting prompts."
+  boundary: "This skill does not write the wording of a single prompt, author a new SKILL.md, or decide the router result for one query. It also does not promise that context engineering fixes every model error. Use it when the failure or design question concerns what information reaches the model, how it is structured, when it is refreshed, and what should be withheld, summarized, delegated, or cleared."
+  analogy: "Context engineering is like packing a surgical tray: success depends less on owning every possible instrument and more on putting the right clean tools in the right order before the operation starts."
+  misconception: "The common mistake is treating context engineering as prompt stuffing: retrieve everything, paste every rule, keep every tool result, and hope the model sorts it out. That creates context pollution. Good context engineering is selective, source-aware, time-aware, and willing to remove information once it no longer helps."
+  concept: "{\"definition\":\"Context engineering is the practice of designing and maintaining the information environment an LLM sees at inference time so the model receives the right instructions, memory, retrieved knowledge, tool outputs, examples, and task state in usable form.\",\"mental_model\":\"Treat each model call as a context compile step. The compile output should be sufficient for the next decision, small enough to preserve attention, fresh enough to be trusted, and structured enough for the model to distinguish rules from evidence and current facts from historical notes.\",\"purpose\":\"It prevents agent failures caused by missing, stale, wrong, or overwhelming context, and gives teams a diagnostic vocabulary for fixing the context pipeline rather than blaming the model or endlessly polishing prompt wording.\",\"boundary\":\"It is not prompt wording, single-skill authoring, per-query routing, generic code review, or runtime incident debugging. It owns the information payload surrounding those surfaces: selection, structure, sequencing, memory, retrieval, compaction, delegation, and tool-result lifecycle.\",\"taxonomy\":\"Core levers include context selection, context structuring, context sequencing, context compression, memory integration, retrieval strategy, tool-result clearing, provenance tracking, and subagent isolation.\",\"analogy\":\"Context engineering is like packing a surgical tray: success depends less on owning every possible instrument and more on putting the right clean tools in the right order before the operation starts.\",\"misconception\":\"More context is not automatically safer. Prompt stuffing, broad retrieval dumps, stale memory, and unbounded tool transcripts can make an agent less reliable by drowning the useful signal.\"}"
+  structural_verdict: UNVERIFIED
+  truth_verdict: UNVERIFIED
+  comprehension_verdict: UNVERIFIED
+  application_verdict: UNVERIFIED
   skill_graph_source_repo: "https://github.com/jacob-balslev/skill-graph"
-  skill_graph_protocol: Skill Metadata Protocol v4
+  skill_graph_protocol: Skill Metadata Protocol v7
   skill_graph_project: Skill Graph
-  skill_graph_canonical_skill: skills/context-engineering/SKILL.md
+  skill_graph_canonical_skill: skills/agent/context/context-engineering/SKILL.md
 ---
 
 # Context Engineering
@@ -20,6 +50,7 @@ metadata:
 - The five-layer context stack: system prompt, persistent memory, always-loaded rules, injected skills, agent prompt — what each layer does and how each can fail
 - The four context failure modes: missing, stale, wrong, overwhelming — diagnostic questions for each, table of symptoms, and prevention strategies
 - Four context quality metrics: injection precision, injection recall, context utilization, freshness score — definitions, healthy ranges, and how to measure each
+- Context-compilation levers: selection, structuring, sequencing, compaction, memory integration, retrieval, provenance, and tool-result clearing
 - Frequent Intentional Compaction (FIC): proactive compaction at task boundaries, target utilization range, and the difference between planned and forced compaction
 - Subagent delegation pattern: when to delegate context-heavy investigation to a subagent so the main agent receives a summary instead of raw evidence
 - Debugging decision tree: how to diagnose any agent failure by walking from missing-context through overwhelming-context before blaming the model
@@ -30,6 +61,8 @@ metadata:
 The model is a reasoning engine that reasons over whatever is in its context window. If the context is wrong, the reasoning is correct but the conclusion is wrong. This means most agent failures are context failures, not model failures.
 
 Without this discipline, teams blame the model for mistakes caused by missing keywords, stale skill content, or an overwhelmed window. Context engineering provides the diagnostic framework to identify *why* an agent produced a wrong answer and the design principles to prevent recurrence. It treats the context window as a deliberate design surface — not a dumping ground — so that the model's native reasoning produces the correct output without heroic prompting.
+
+Current agent literature converges on the same lesson: context is finite working memory, not a warehouse. Anthropic frames context engineering as curating the optimal set of tokens across instructions, tools, MCP, external data, and message history; Anthropic's API docs warn that more context is not automatically better because recall can degrade as token count grows; IBM describes context engineering as selecting, structuring, compressing, sequencing, and integrating tool or memory information so agents can reason over the right facts. Those sources all point to the same practical rule: every context item needs a job.
 
 > Most agent failures are context failures, not model failures. Context engineering is the discipline of designing what information the model sees, when it sees it, and in what form — so that the model's native reasoning produces the correct output without heroic prompting.
 
@@ -54,6 +87,8 @@ Layer 1 — System prompt         (foundational identity, non-negotiable rules, 
 ```
 
 Each layer adds context. Each layer can introduce failure. The context engineer's job is to ensure the right information reaches the right layer at the right time.
+
+The five layers are the stable scaffolding. Around them sits the runtime payload: retrieved documents, tool results, examples, summaries, temporary notes, and conversation history. Treat that payload as a compiled artifact. It should be rebuilt for the current step, not treated as a permanent archive.
 
 | Layer | Loaded when | Failure mode if broken |
 |-------|-------------|-----------------------|
@@ -210,6 +245,8 @@ FIC is a proactive context-management strategy. Instead of waiting for the windo
 
 The forced compact is dangerous because it is uncontrolled — you lose whatever the compaction algorithm decides is least important, which may include critical task context.
 
+Compaction is only one lever. Long-running agents also need memory and tool-result clearing. Memory stores durable notes outside the context window and retrieves them later when relevant. Tool-result clearing removes raw outputs after their useful summary or citation has been captured. The rule is simple: preserve decisions, evidence, and open constraints; clear raw material whose job is done.
+
 ### FIC Anti-Patterns
 
 | Anti-pattern | Why it fails | Fix |
@@ -274,8 +311,10 @@ Was the prompt itself ambiguous or underspecified?
    NO
     │
     ▼
-Genuine model reasoning failure (rare; try a different model or add chain-of-thought)
+Genuine model reasoning failure (rare; try a different model or add observable reasoning scaffolds)
 ```
+
+Prefer observable scaffolds when you reach the final branch: smaller tasks, explicit intermediate artifacts, checks, tests, or a stronger model. Do not mask a context failure by asking for more private reasoning.
 
 ### Failure analysis template
 
@@ -307,6 +346,16 @@ Use this checklist when designing a new skill, debugging a failure, or auditing 
 - [ ] Injection recall is above 90% (most needed skills are injected)
 - [ ] Context-heavy investigations are delegated to subagents so the main agent receives summaries, not raw evidence
 - [ ] Always-loaded rules contain only universal guardrails; domain-specific guidance lives in skills
+- [ ] Raw tool results have been summarized, cited, or cleared once they are no longer needed
+- [ ] Retrieved context records source, date, and relevance so stale or wrong inputs can be traced
+
+## Source Notes
+
+- [Anthropic's effective context engineering guide](https://www.anthropic.com/engineering/effective-context-engineering-for-ai-agents) frames context engineering as curating the token set around agents, including tools, MCP, external data, and history.
+- [Anthropic's context-window docs](https://platform.claude.com/docs/en/build-with-claude/context-windows) describe the context window as working memory and warn that larger context does not automatically improve recall.
+- [Anthropic's context-engineering cookbook](https://platform.claude.com/cookbook/tool-use-context-engineering-context-engineering-tools) distinguishes compaction, memory, and tool-result clearing for long-running agents.
+- [IBM's context engineering overview](https://www.ibm.com/think/topics/context-engineering) names selection, structuring, prompt design, compression, sequencing, and tool or memory integration as core steps.
+- [Context Engineering 2.0](https://arxiv.org/abs/2510.26493) situates the concept historically and argues for systematic context-engineering practice in AI systems.
 
 ## Do NOT Use When
 

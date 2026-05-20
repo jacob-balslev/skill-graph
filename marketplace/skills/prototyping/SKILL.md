@@ -3,11 +3,31 @@ name: prototyping
 description: "Use when building an artifact whose purpose is to answer a specific question — paper sketch, wireframe, clickable mockup, wizard-of-oz, role-play, service prototype, or code spike — at the lowest fidelity sufficient to produce that learning. Do NOT use for production-grade component construction, design-system contribution, or building the actual ship-ready feature — those are design-module-composition and engineering implementation."
 license: CC-BY-4.0
 metadata:
-  metadata: "{\"schema_version\":6,\"version\":\"1.0.0\",\"type\":\"capability\",\"category\":\"design\",\"scope\":\"portable\",\"owner\":\"skill-graph-maintainer\",\"freshness\":\"2026-05-12\",\"drift_check\":\"{\\\\\\\"last_verified\\\\\\\":\\\\\\\"2026-05-12\\\\\\\"}\",\"eval_artifacts\":\"planned\",\"eval_state\":\"unverified\",\"routing_eval\":\"absent\",\"stability\":\"experimental\",\"keywords\":\"[\\\\\\\"paper prototype\\\\\\\",\\\\\\\"low fidelity prototype\\\\\\\",\\\\\\\"clickable prototype\\\\\\\",\\\\\\\"wizard of oz\\\\\\\",\\\\\\\"role play prototype\\\\\\\",\\\\\\\"service prototype\\\\\\\",\\\\\\\"code spike\\\\\\\",\\\\\\\"learning goal\\\\\\\",\\\\\\\"fidelity matching\\\\\\\",\\\\\\\"throwaway prototype\\\\\\\",\\\\\\\"sacrificial concept\\\\\\\",\\\\\\\"prototype to learn\\\\\\\",\\\\\\\"rough and right\\\\\\\"]\",\"triggers\":\"[\\\\\\\"prototype this\\\\\\\",\\\\\\\"wizard of oz\\\\\\\",\\\\\\\"paper prototype\\\\\\\",\\\\\\\"clickable mockup\\\\\\\",\\\\\\\"what fidelity\\\\\\\"]\",\"examples\":\"[\\\\\\\"Pick the right fidelity for a prototype that tests whether users will trust an AI-suggested category.\\\\\\\",\\\\\\\"Plan a wizard-of-oz study where a human acts as the recommendation engine.\\\\\\\",\\\\\\\"Sketch a role-play prototype for a service-desk interaction before any UI is built.\\\\\\\",\\\\\\\"Decide between a paper prototype and a Figma clickable for this onboarding test.\\\\\\\"]\",\"anti_examples\":\"[\\\\\\\"Build the production React component for the new dashboard widget.\\\\\\\",\\\\\\\"Add this component to the design system library.\\\\\\\",\\\\\\\"Write the migration script for the production database.\\\\\\\"]\",\"relations\":\"{\\\\\\\"related\\\\\\\":[\\\\\\\"ideation\\\\\\\",\\\\\\\"usability-testing\\\\\\\",\\\\\\\"design-thinking\\\\\\\"],\\\\\\\"boundary\\\\\\\":[{\\\\\\\"skill\\\\\\\":\\\\\\\"design-module-composition\\\\\\\",\\\\\\\"reason\\\\\\\":\\\\\\\"design-module-composition produces durable design-system components meant to ship and be reused. prototyping produces disposable artifacts whose only purpose is learning — different lifecycle, different quality bar, different audience.\\\\\\\"},{\\\\\\\"skill\\\\\\\":\\\\\\\"interaction-patterns\\\\\\\",\\\\\\\"reason\\\\\\\":\\\\\\\"interaction-patterns is a reference catalog of established UI behaviors. prototyping is the activity of building a thing to test a question — it may use interaction patterns but is not itself a pattern library.\\\\\\\"}]}\",\"skill_graph_source_repo\":\"https://github.com/jacob-balslev/skill-graph\",\"skill_graph_protocol\":\"Skill Metadata Protocol v5\",\"skill_graph_project\":\"Skill Graph\",\"skill_graph_canonical_skill\":\"skills/prototyping/SKILL.md\"}"
+  schema_version: "7"
+  version: "1.0.0"
+  type: capability
+  category: design
+  scope: portable
+  owner: skill-graph-maintainer
+  freshness: "2026-05-12"
+  drift_check: "{\"last_verified\":\"2026-05-12\"}"
+  eval_artifacts: planned
+  eval_state: unverified
+  routing_eval: absent
+  stability: experimental
+  keywords: "[\"paper prototype\",\"low fidelity prototype\",\"clickable prototype\",\"wizard of oz\",\"role play prototype\",\"service prototype\",\"code spike\",\"learning goal\",\"fidelity matching\",\"throwaway prototype\",\"sacrificial concept\",\"prototype to learn\",\"rough and right\"]"
+  triggers: "[\"prototype this\",\"wizard of oz\",\"paper prototype\",\"clickable mockup\",\"what fidelity\"]"
+  examples: "[\"Pick the right fidelity for a prototype that tests whether users will trust an AI-suggested category.\",\"Plan a wizard-of-oz study where a human acts as the recommendation engine.\",\"Sketch a role-play prototype for a service-desk interaction before any UI is built.\",\"Decide between a paper prototype and a Figma clickable for this onboarding test.\"]"
+  anti_examples: "[\"Build the production React component for the new dashboard widget.\",\"Add this component to the design system library.\",\"Write the migration script for the production database.\"]"
+  relations: "{\"related\":[\"ideation\",\"usability-testing\",\"design-thinking\"],\"boundary\":[{\"skill\":\"design-module-composition\",\"reason\":\"design-module-composition produces durable design-system components meant to ship and be reused. prototyping produces disposable artifacts whose only purpose is learning — different lifecycle, different quality bar, different audience.\"},{\"skill\":\"interaction-patterns\",\"reason\":\"interaction-patterns is a reference catalog of established UI behaviors. prototyping is the activity of building a thing to test a question — it may use interaction patterns but is not itself a pattern library.\"}]}"
+  structural_verdict: UNVERIFIED
+  truth_verdict: UNVERIFIED
+  comprehension_verdict: UNVERIFIED
+  application_verdict: UNVERIFIED
   skill_graph_source_repo: "https://github.com/jacob-balslev/skill-graph"
-  skill_graph_protocol: Skill Metadata Protocol v4
+  skill_graph_protocol: Skill Metadata Protocol v7
   skill_graph_project: Skill Graph
-  skill_graph_canonical_skill: skills/prototyping/SKILL.md
+  skill_graph_canonical_skill: skills/design/prototyping/SKILL.md
 ---
 
 # Prototyping

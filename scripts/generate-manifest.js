@@ -33,7 +33,7 @@ const path = require('path');
 const crypto = require('crypto');
 const { parseFrontmatter, normalizeFrontmatter } = require('./lib/parse-frontmatter');
 const { checkAliasParity } = require('./lib/alias-contract');
-const { resolveSchemaPath, workspaceRoot } = require('./lib/roots');
+const { collectSkillFilesFromRoots, resolveSchemaPath, workspaceRoot } = require('./lib/roots');
 
 const REPO_ROOT = workspaceRoot();
 const DEFAULT_SKILLS_DIR = path.join(REPO_ROOT, 'skills');
@@ -278,6 +278,12 @@ function buildSkillEntry(fm, filePath, skillId, project) {
   if (fm.domain !== undefined && fm.domain !== null) {
     entry.domain = fm.domain;
   }
+  if (Array.isArray(fm.secondary_categories) && fm.secondary_categories.length > 0) {
+    entry.secondary_categories = fm.secondary_categories;
+  }
+  if (fm.marketplace_tier !== undefined && fm.marketplace_tier !== null) {
+    entry.marketplace_tier = fm.marketplace_tier;
+  }
   if (fm.stability !== undefined && fm.stability !== null) {
     entry.stability = fm.stability;
   }
@@ -400,6 +406,21 @@ function buildSkillEntry(fm, filePath, skillId, project) {
   }
   if (fm.runtime_telemetry !== undefined && fm.runtime_telemetry !== null && typeof fm.runtime_telemetry === 'object') {
     health.runtime_telemetry = fm.runtime_telemetry;
+  }
+  for (const field of [
+    'last_audited',
+    'last_changed',
+    'structural_verdict',
+    'truth_verdict',
+    'comprehension_verdict',
+    'application_verdict',
+    'audit_verdict',
+    'eval_score',
+    'eval_failed_ids',
+    'lint_verdict',
+    'drift_status',
+  ]) {
+    if (fm[field] !== undefined && fm[field] !== null) health[field] = fm[field];
   }
   health.has_grounding = (entry.grounding !== undefined && entry.grounding !== null);
   health.has_relations = (entry.relations !== undefined && Object.keys(entry.relations).length > 0);
@@ -562,33 +583,13 @@ function collectSources(args, skillRoots) {
   const sources = [];
   const seen = new Set();
 
-  // Recursive walker (added 2026-05-18 for category folder structure).
-  // Skills now live at `<root>/<category>/[<domain>/]<name>/SKILL.md`,
-  // not the flat `<root>/<name>/SKILL.md`. Recurse up to 3 levels;
-  // stop descending once a SKILL.md is found in a directory.
-  function walkForSkillMd(dir, depth, project) {
-    if (depth > 3) return;
-    for (const name of fs.readdirSync(dir).sort()) {
-      if (name.startsWith('_') || name.startsWith('.')) continue;
-      const entry = path.join(dir, name);
-      if (!fs.statSync(entry).isDirectory()) continue;
-      const skillMd = path.join(entry, 'SKILL.md');
-      if (fs.existsSync(skillMd)) {
-        if (!seen.has(skillMd)) {
-          sources.push({ filePath: skillMd, skillId: name, project });
-          seen.add(skillMd);
-        }
-      } else {
-        walkForSkillMd(entry, depth + 1, project);
-      }
+  for (const source of collectSkillFilesFromRoots(skillRoots)) {
+    if (!seen.has(source.filePath)) {
+      const text = fs.readFileSync(source.filePath, 'utf8');
+      const fm = normalizeFrontmatter(parseFrontmatter(text));
+      sources.push({ filePath: source.filePath, skillId: fm?.name || path.basename(path.dirname(source.filePath)), project: source.project });
+      seen.add(source.filePath);
     }
-  }
-
-  for (const { absPath, project } of skillRoots) {
-    if (!fs.existsSync(absPath)) continue;
-    const stat = fs.statSync(absPath);
-    if (!stat.isDirectory()) continue;
-    walkForSkillMd(absPath, 0, project);
   }
 
   if (includeTemplate && fs.existsSync(TEMPLATE_PATH) && !seen.has(TEMPLATE_PATH)) {
@@ -744,6 +745,9 @@ function main() {
 
   const validationErrors = validate(sortedManifest, manifestSchema);
   if (validationErrors.length > 0) {
+    if (outputPath) {
+      fs.writeFileSync(outputPath, JSON.stringify(sortedManifest, null, 2) + '\n', 'utf8');
+    }
     console.error('FAIL manifest validation:');
     for (const e of validationErrors) console.error(`  - ${e}`);
     process.exit(1);

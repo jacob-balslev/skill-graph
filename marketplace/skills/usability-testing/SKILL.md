@@ -3,11 +3,31 @@ name: usability-testing
 description: "Use when observing real users attempting tasks on a prototype or live product to surface usability issues — moderated or unmoderated, think-aloud protocol, task scenarios, severity rating, sample sizing per Nielsen's heuristics. Do NOT use for automated test suites, code coverage analysis, CI pipelines, unit/integration testing, or any engineering verification — those are testing-strategy concerns, not human-behavior observation."
 license: CC-BY-4.0
 metadata:
-  metadata: "{\"schema_version\":6,\"version\":\"1.0.0\",\"type\":\"capability\",\"category\":\"design\",\"scope\":\"portable\",\"owner\":\"skill-graph-maintainer\",\"freshness\":\"2026-05-12\",\"drift_check\":\"{\\\\\\\"last_verified\\\\\\\":\\\\\\\"2026-05-12\\\\\\\"}\",\"eval_artifacts\":\"planned\",\"eval_state\":\"unverified\",\"routing_eval\":\"absent\",\"stability\":\"experimental\",\"keywords\":\"[\\\\\\\"think aloud protocol\\\\\\\",\\\\\\\"task scenario\\\\\\\",\\\\\\\"moderated usability test\\\\\\\",\\\\\\\"unmoderated test\\\\\\\",\\\\\\\"severity rating\\\\\\\",\\\\\\\"five user rule\\\\\\\",\\\\\\\"formative testing\\\\\\\",\\\\\\\"summative testing\\\\\\\",\\\\\\\"hallway test\\\\\\\",\\\\\\\"moderator neutrality\\\\\\\",\\\\\\\"usability heuristics\\\\\\\",\\\\\\\"SUS score\\\\\\\",\\\\\\\"task success rate\\\\\\\",\\\\\\\"critical incident\\\\\\\"]\",\"triggers\":\"[\\\\\\\"usability test\\\\\\\",\\\\\\\"think aloud\\\\\\\",\\\\\\\"test this prototype\\\\\\\",\\\\\\\"task scenarios\\\\\\\",\\\\\\\"test with users\\\\\\\"]\",\"examples\":\"[\\\\\\\"Write three task scenarios for a usability test of this onboarding flow.\\\\\\\",\\\\\\\"How many participants do I need for a formative round on this prototype?\\\\\\\",\\\\\\\"Review my moderator script for neutrality and leading prompts.\\\\\\\",\\\\\\\"Rate the severity of these eight usability findings using Nielsen's scale.\\\\\\\"]\",\"anti_examples\":\"[\\\\\\\"Add unit tests for the order-total calculation function.\\\\\\\",\\\\\\\"Set up the CI pipeline for the new repo.\\\\\\\",\\\\\\\"Run a load test against the checkout API.\\\\\\\"]\",\"relations\":\"{\\\\\\\"related\\\\\\\":[\\\\\\\"prototyping\\\\\\\",\\\\\\\"user-research\\\\\\\",\\\\\\\"research-synthesis\\\\\\\",\\\\\\\"design-thinking\\\\\\\"],\\\\\\\"boundary\\\\\\\":[{\\\\\\\"skill\\\\\\\":\\\\\\\"testing-strategy\\\\\\\",\\\\\\\"reason\\\\\\\":\\\\\\\"testing-strategy is an engineering practice for automated test suites that verify code behavior against specifications. usability-testing is a research practice for observing humans interacting with artifacts. The shared word 'testing' is the only thing in common.\\\\\\\"},{\\\\\\\"skill\\\\\\\":\\\\\\\"a11y\\\\\\\",\\\\\\\"reason\\\\\\\":\\\\\\\"a11y covers accessibility conformance criteria (WCAG, screen reader behavior, keyboard operability). usability-testing can include accessibility-focused sessions but its scope is broader and its method is empirical observation rather than spec conformance.\\\\\\\"}]}\",\"skill_graph_source_repo\":\"https://github.com/jacob-balslev/skill-graph\",\"skill_graph_protocol\":\"Skill Metadata Protocol v5\",\"skill_graph_project\":\"Skill Graph\",\"skill_graph_canonical_skill\":\"skills/usability-testing/SKILL.md\"}"
+  schema_version: "7"
+  version: "1.0.0"
+  type: capability
+  category: design
+  scope: portable
+  owner: skill-graph-maintainer
+  freshness: "2026-05-12"
+  drift_check: "{\"last_verified\":\"2026-05-12\"}"
+  eval_artifacts: planned
+  eval_state: unverified
+  routing_eval: absent
+  stability: experimental
+  keywords: "[\"think aloud protocol\",\"task scenario\",\"moderated usability test\",\"unmoderated test\",\"severity rating\",\"five user rule\",\"formative testing\",\"summative testing\",\"hallway test\",\"moderator neutrality\",\"usability heuristics\",\"SUS score\",\"task success rate\",\"critical incident\"]"
+  triggers: "[\"usability test\",\"think aloud\",\"test this prototype\",\"task scenarios\",\"test with users\"]"
+  examples: "[\"Write three task scenarios for a usability test of this onboarding flow.\",\"How many participants do I need for a formative round on this prototype?\",\"Review my moderator script for neutrality and leading prompts.\",\"Rate the severity of these eight usability findings using Nielsen's scale.\"]"
+  anti_examples: "[\"Add unit tests for the order-total calculation function.\",\"Set up the CI pipeline for the new repo.\",\"Run a load test against the checkout API.\"]"
+  relations: "{\"related\":[\"prototyping\",\"user-research\",\"research-synthesis\",\"design-thinking\"],\"boundary\":[{\"skill\":\"testing-strategy\",\"reason\":\"testing-strategy is an engineering practice for automated test suites that verify code behavior against specifications. usability-testing is a research practice for observing humans interacting with artifacts. The shared word 'testing' is the only thing in common.\"},{\"skill\":\"a11y\",\"reason\":\"a11y covers accessibility conformance criteria (WCAG, screen reader behavior, keyboard operability). usability-testing can include accessibility-focused sessions but its scope is broader and its method is empirical observation rather than spec conformance.\"}]}"
+  structural_verdict: UNVERIFIED
+  truth_verdict: UNVERIFIED
+  comprehension_verdict: UNVERIFIED
+  application_verdict: UNVERIFIED
   skill_graph_source_repo: "https://github.com/jacob-balslev/skill-graph"
-  skill_graph_protocol: Skill Metadata Protocol v4
+  skill_graph_protocol: Skill Metadata Protocol v7
   skill_graph_project: Skill Graph
-  skill_graph_canonical_skill: skills/usability-testing/SKILL.md
+  skill_graph_canonical_skill: skills/design/usability-testing/SKILL.md
 ---
 
 # Usability Testing

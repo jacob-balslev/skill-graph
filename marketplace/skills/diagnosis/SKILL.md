@@ -5,11 +5,34 @@ license: MIT
 compatibility: "Language- and stack-agnostic. The classification taxonomy, evidence protocol, and confidence ladder apply to any software failure investigation; specific technique names (git bisect, EXPLAIN plans, HMAC verification) are illustrative — substitute the equivalents of your stack."
 allowed-tools: Read Grep
 metadata:
-  metadata: "{\"schema_version\":6,\"version\":\"1.0.0\",\"type\":\"capability\",\"category\":\"engineering\",\"domain\":\"engineering/debugging\",\"scope\":\"portable\",\"owner\":\"skill-graph-maintainer\",\"freshness\":\"2026-05-06\",\"drift_check\":\"{\\\\\\\"last_verified\\\\\\\":\\\\\\\"2026-05-06\\\\\\\"}\",\"eval_artifacts\":\"planned\",\"eval_state\":\"unverified\",\"routing_eval\":\"absent\",\"stability\":\"experimental\",\"keywords\":\"[\\\\\\\"diagnostic triage software failure\\\\\\\",\\\\\\\"symptom classification taxonomy\\\\\\\",\\\\\\\"what kind of bug is this\\\\\\\",\\\\\\\"which debugging approach\\\\\\\",\\\\\\\"diagnostic routing framework\\\\\\\",\\\\\\\"evidence collection before hypothesis\\\\\\\",\\\\\\\"confidence ladder debugging\\\\\\\",\\\\\\\"escalation criteria debugging\\\\\\\",\\\\\\\"cascade vs coincidence failure\\\\\\\",\\\\\\\"environment ghost\\\\\\\",\\\\\\\"failure not converging\\\\\\\",\\\\\\\"misclassified symptom debugging\\\\\\\",\\\\\\\"stuck at level 1 diagnosis\\\\\\\",\\\\\\\"debug technique selection matrix\\\\\\\",\\\\\\\"configuration vs code error\\\\\\\",\\\\\\\"timing vs logic error\\\\\\\",\\\\\\\"integration boundary failure\\\\\\\",\\\\\\\"data integrity vs logic error\\\\\\\"]\",\"examples\":\"[\\\\\\\"the agent has been chasing this bug for 30 minutes — what's the structural fix?\\\\\\\",\\\\\\\"the symptoms span data integrity and UI rendering — which is the root cause?\\\\\\\",\\\\\\\"the build fails locally but passes in CI — how do I diagnose that class first?\\\\\\\",\\\\\\\"I have a stack trace and an unhandled exception — what's the cheapest technique?\\\\\\\",\\\\\\\"intermittent failure that doesn't reproduce on retry — which class is this?\\\\\\\",\\\\\\\"we ran profiling, instrumentation, and bisect — none converge. What did we misclassify?\\\\\\\",\\\\\\\"two engineers disagree on whether this is a config issue or a logic error — what evidence settles it?\\\\\\\"]\",\"anti_examples\":\"[\\\\\\\"actually execute scientific-method debugging on this stack trace\\\\\\\",\\\\\\\"review this AI-generated PR for correctness\\\\\\\",\\\\\\\"scan this repo for OWASP top 10 vulnerabilities\\\\\\\",\\\\\\\"design observability instrumentation for this service\\\\\\\",\\\\\\\"decide which agent should pick up this ticket\\\\\\\",\\\\\\\"what's the right test pyramid for this feature\\\\\\\"]\",\"relations\":\"{\\\\\\\"boundary\\\\\\\":[{\\\\\\\"skill\\\\\\\":\\\\\\\"debugging\\\\\\\",\\\\\\\"reason\\\\\\\":\\\\\\\"debugging is the *execution* phase (run a chosen technique against an already-classified failure); diagnosis is the *triage* phase before debugging — classify first, then debug\\\\\\\"},{\\\\\\\"skill\\\\\\\":\\\\\\\"code-review\\\\\\\",\\\\\\\"reason\\\\\\\":\\\\\\\"code-review evaluates code for quality / correctness in advance; diagnosis investigates an already-broken behavior\\\\\\\"},{\\\\\\\"skill\\\\\\\":\\\\\\\"owasp-security\\\\\\\",\\\\\\\"reason\\\\\\\":\\\\\\\"owasp-security is a domain-specific scan against a known threat list; diagnosis is the cross-domain triage that routes to security investigation only when symptoms point there\\\\\\\"},{\\\\\\\"skill\\\\\\\":\\\\\\\"testing-strategy\\\\\\\",\\\\\\\"reason\\\\\\\":\\\\\\\"testing-strategy decides what to test proactively; diagnosis decides how to investigate after a test (or production) has revealed a failure\\\\\\\"}],\\\\\\\"related\\\\\\\":[\\\\\\\"debugging\\\\\\\",\\\\\\\"error-tracking\\\\\\\",\\\\\\\"code-review\\\\\\\"],\\\\\\\"verify_with\\\\\\\":[\\\\\\\"debugging\\\\\\\"]}\",\"portability\":\"{\\\\\\\"readiness\\\\\\\":\\\\\\\"scripted\\\\\\\",\\\\\\\"targets\\\\\\\":[\\\\\\\"skill-md\\\\\\\"]}\",\"lifecycle\":\"{\\\\\\\"stale_after_days\\\\\\\":365,\\\\\\\"review_cadence\\\\\\\":\\\\\\\"quarterly\\\\\\\"}\",\"skill_graph_source_repo\":\"https://github.com/jacob-balslev/skill-graph\",\"skill_graph_protocol\":\"Skill Metadata Protocol v5\",\"skill_graph_project\":\"Skill Graph\",\"skill_graph_canonical_skill\":\"skills/diagnosis/SKILL.md\"}"
+  schema_version: "7"
+  version: "1.1.0"
+  type: capability
+  category: engineering
+  domain: engineering/debugging
+  scope: portable
+  owner: skill-graph-maintainer
+  freshness: "2026-05-18"
+  drift_check: "{\"last_verified\":\"2026-05-18\"}"
+  eval_artifacts: planned
+  eval_state: unverified
+  routing_eval: absent
+  stability: experimental
+  keywords: "[\"diagnostic triage software failure\",\"symptom classification taxonomy\",\"what kind of bug is this\",\"which debugging approach\",\"diagnostic routing framework\",\"evidence collection before hypothesis\",\"confidence ladder debugging\",\"escalation criteria debugging\",\"cascade vs coincidence failure\",\"environment ghost\",\"failure not converging\",\"misclassified symptom debugging\",\"stuck at level 1 diagnosis\",\"debug technique selection matrix\",\"configuration vs code error\",\"timing vs logic error\",\"integration boundary failure\",\"data integrity vs logic error\"]"
+  examples: "[\"the agent has been chasing this bug for 30 minutes — what's the structural fix?\",\"the symptoms span data integrity and UI rendering — which is the root cause?\",\"the build fails locally but passes in CI — how do I diagnose that class first?\",\"I have a stack trace and an unhandled exception — what's the cheapest technique?\",\"intermittent failure that doesn't reproduce on retry — which class is this?\",\"we ran profiling, instrumentation, and bisect — none converge. What did we misclassify?\",\"two engineers disagree on whether this is a config issue or a logic error — what evidence settles it?\"]"
+  anti_examples: "[\"actually execute scientific-method debugging on this stack trace\",\"review this AI-generated PR for correctness\",\"scan this repo for OWASP top 10 vulnerabilities\",\"design observability instrumentation for this service\",\"decide which agent should pick up this ticket\",\"what's the right test pyramid for this feature\"]"
+  relations: "{\"boundary\":[{\"skill\":\"debugging\",\"reason\":\"debugging is the *execution* phase (run a chosen technique against an already-classified failure); diagnosis is the *triage* phase before debugging — classify first, then debug\"},{\"skill\":\"code-review\",\"reason\":\"code-review evaluates code for quality / correctness in advance; diagnosis investigates an already-broken behavior\"},{\"skill\":\"owasp-security\",\"reason\":\"owasp-security is a domain-specific scan against a known threat list; diagnosis is the cross-domain triage that routes to security investigation only when symptoms point there\"},{\"skill\":\"testing-strategy\",\"reason\":\"testing-strategy decides what to test proactively; diagnosis decides how to investigate after a test (or production) has revealed a failure\"}],\"related\":[\"debugging\",\"error-tracking\",\"code-review\"],\"verify_with\":[\"debugging\"]}"
+  grounding: "{\"domain_object\":\"Portable software-failure diagnostic triage: evidence collection, symptom classification, technique selection, confidence tracking, escalation, and sensitive diagnostic evidence handling\",\"grounding_mode\":\"universal\",\"truth_sources\":[\"https://sre.google/sre-book/effective-troubleshooting/\",\"https://git-scm.com/docs/git-bisect\",\"https://stackoverflow.com/help/minimal-reproducible-example\",\"https://developer.chrome.com/docs/devtools/performance/overview\",\"https://www.postgresql.org/docs/current/sql-explain.html\",\"https://cheatsheetseries.owasp.org/cheatsheets/Logging_Cheat_Sheet.html\",\"https://opentelemetry.io/docs/security/handling-sensitive-data/\"],\"failure_modes\":[\"fixing_before_classification\",\"hypothesis_without_baseline_evidence\",\"wrong_technique_for_problem_class\",\"confidence_inflation_without_verification\",\"stuck_state_not_escalated_or_reclassified\",\"diagnostic_evidence_captures_sensitive_or_secret_data\",\"eval_or_routing_claim_inflated_without_run\"],\"evidence_priority\":\"equal\"}"
+  portability: "{\"readiness\":\"scripted\",\"targets\":[\"skill-md\"]}"
+  lifecycle: "{\"stale_after_days\":365,\"review_cadence\":\"quarterly\"}"
+  structural_verdict: UNVERIFIED
+  truth_verdict: UNVERIFIED
+  comprehension_verdict: UNVERIFIED
+  application_verdict: UNVERIFIED
   skill_graph_source_repo: "https://github.com/jacob-balslev/skill-graph"
-  skill_graph_protocol: Skill Metadata Protocol v4
+  skill_graph_protocol: Skill Metadata Protocol v7
   skill_graph_project: Skill Graph
-  skill_graph_canonical_skill: skills/diagnosis/SKILL.md
+  skill_graph_canonical_skill: skills/engineering/diagnosis/SKILL.md
 ---
 
 # Diagnosis
@@ -20,9 +43,9 @@ The triage-first framework that classifies a software failure into a _problem cl
 
 ## Philosophy
 
-Debugging fails most often not because the engineer lacks skill, but because the wrong methodology is applied to the problem class. A timing bug needs different tools than a data-integrity bug. A multi-tenant leak needs different thinking than a rendering glitch. The most expensive debugging mistake is spending 30 minutes applying scientific-method debugging to what is actually a configuration error discoverable in 2 minutes.
+Debugging fails most often not because the engineer lacks skill, but because the wrong methodology is applied to the problem class. A timing bug needs different tools than a data-integrity bug. A scope leak needs different thinking than a rendering glitch. The most expensive debugging mistake is spending 30 minutes applying scientific-method debugging to what is actually a configuration error discoverable in 2 minutes.
 
-This skill is the triage _nurse_, not the surgeon. A nurse does not treat the patient — they take vital signs, route to cardiology or neurology, and escalate to the attending physician when criteria are met. Software diagnosis works the same way: collect evidence, classify the symptom, route to the right specialist technique, and pivot when convergence stalls. The 2–5 minute cost of triage is always smaller than the 30-minute cost of misdiagnosis. Skipping triage because "the cause is obvious" fails roughly 60% of the time on non-trivial bugs (confirmation bias) — even seasoned engineers benefit from making the classification step explicit.
+This skill is the triage _nurse_, not the surgeon. A nurse does not treat the patient — they take vital signs, route to cardiology or neurology, and escalate to the attending physician when criteria are met. Software diagnosis works the same way: collect evidence, classify the symptom, route to the right specialist technique, and pivot when convergence stalls. The small cost of triage is almost always smaller than the cost of chasing a plausible but wrong cause. Skipping triage because "the cause is obvious" is a confirmation-bias trap; even seasoned engineers benefit from making the classification step explicit.
 
 ## 1. The Diagnostic Triage Protocol
 
@@ -36,7 +59,19 @@ Before debugging, diagnose which _kind_ of problem you have. The class determine
 5. If not converging after 3 attempts, escalate (Section 6)
 ```
 
-**Rule:** never start fixing before completing steps 1–3. The cost of misclassification exceeds the cost of five minutes of triage every time.
+**Rule:** never start fixing before completing steps 1–3. The cost of misclassification often exceeds the cost of a short triage pass, and the written classification gives the next person something concrete to challenge.
+
+### Diagnosis vs debugging handoff
+
+| Surface | Diagnosis owns | Handoff signal | Next owner |
+| --- | --- | --- | --- |
+| Failure triage | Evidence collection, symptom class, technique choice, confidence level, escalation trigger | The failure has a primary class, a chosen technique, and enough evidence to run it | `debugging` |
+| Root-cause execution | Reproduction, scope reduction, instrumentation, hypothesis testing, fix verification, regression test | The selected technique has started producing falsifiable evidence | `debugging` |
+| Error capture pipeline | Whether the failure was captured, sanitized, and made observable | The problem is "this error was not reported or was reported unsafely" | `error-tracking` |
+| Pre-merge quality review | Whether the code is risky before a known failure exists | The question is about correctness risk, maintainability, or review feedback rather than an observed symptom | `code-review` |
+| Security investigation | Threat-model-specific analysis against an attack class | Evidence points at auth, authorization, injection, secret exposure, or data exposure | `owasp-security` |
+
+Treat the handoff as a contract, not a vague recommendation. Diagnosis does not fix the bug; it decides which investigation path is justified by evidence.
 
 ## 2. Symptom-Classification Taxonomy
 
@@ -89,6 +124,10 @@ Is there a stack trace or error message?
 
 Before forming any hypothesis, collect baseline evidence. The class determines the additional evidence needed beyond the universal set.
 
+### Evidence safety rule
+
+Diagnostic notes, logs, screenshots, and repro snippets often contain more sensitive information than the final fix. Collect enough evidence to classify the failure, but redact or replace personal data, credentials, session tokens, raw request bodies, and secret-bearing headers before copying evidence into a shared note, issue, audit artifact, or skill. Prefer internal opaque IDs, hashes, synthetic examples, and minimal reproductions over real payload dumps.
+
 ### Universal evidence (always collect)
 
 | Evidence                            | How to collect                                               | Why                                      |
@@ -114,6 +153,20 @@ Before forming any hypothesis, collect baseline evidence. The class determines t
 
 **Rule:** if you cannot fill the universal evidence table, you are not ready to hypothesize. Collect first, think second.
 
+### Evidence ledger
+
+Use an evidence ledger when the investigation has more than one plausible class. This keeps assumptions separate from observations and prevents confidence inflation.
+
+| Field | Record | Example |
+| --- | --- | --- |
+| Observation | Raw fact, redacted if sensitive | `POST /webhook` returns 401 in staging only |
+| Source | Where the fact came from | Deployment log, stack trace, profile, sanitized request sample |
+| Class signal | Which class it supports | Configuration, Integration, Security |
+| Contradiction | Which class it weakens | Logic Error: same code path passes locally |
+| Next test | Cheapest falsification step | Compare staging and local signing secret metadata without exposing the secret |
+
+If an observation changes the likely class, update the class explicitly. Silent reclassification is how investigations drift into mythology.
+
 ## 4. Technique-Selection Matrix
 
 Once the symptom is classified, pick the cheapest technique that could resolve the class.
@@ -133,11 +186,13 @@ Once the symptom is classified, pick the cheapest technique that could resolve t
 
 Always start with the cheapest technique that could resolve the class:
 
-1. **Read the error** (~30 s) — solves ~40% of runtime crashes
-2. **Check the environment** (~1 min) — solves ~30% of configuration issues
-3. **Trace the data flow** (~5 min) — solves ~50% of logic / data errors
-4. **Isolate with MRE** (~10 min) — solves most of what remains
-5. **Instrument and observe** (~10+ min) — last resort for timing / intermittent failures
+1. **Read the error** (~30 s) — cheapest first pass for runtime crashes
+2. **Check the environment** (~1 min) — cheapest first pass for configuration issues
+3. **Trace the data flow** (~5 min) — cheapest first pass for logic / data errors
+4. **Isolate with MRE** (~10 min) — useful when too many variables remain in play
+5. **Instrument and observe** (~10+ min) — necessary when timing / intermittent failures cannot be reproduced directly
+
+The percentages are intentionally absent. This skill is a routing framework, not a benchmark claim. Use local incident history or an actual eval corpus before making quantified success-rate claims.
 
 ## 5. The Diagnostic Confidence Ladder
 
@@ -157,6 +212,17 @@ As evidence accumulates, confidence in the diagnosis should increase _monotonica
 - **Stuck at level 1 for > 10 min** → likely misclassification; re-run the classification tree
 - **Stuck at level 2 for > 15 min** → the problem may be cross-domain; check whether multiple classes apply
 - **Oscillating between levels** → stop. Write down what you _know_ vs what you're _assuming_. The assumption is wrong.
+
+### Reclassification rule
+
+Classification is provisional until the evidence keeps moving the confidence ladder upward. Re-run the classification tree when any of these happens:
+
+| Signal | Meaning | Required action |
+| --- | --- | --- |
+| The selected technique produces no new evidence | The class may be wrong or the evidence prerequisite is missing | Re-check Section 3, then choose the next cheapest class-compatible technique |
+| A contradiction appears | The current class does not explain all observations | Split observation from assumption in the evidence ledger and reclassify |
+| Confidence decreases after a test | The hypothesis was falsified, not "almost right" | Record the falsification and move down the ladder before continuing |
+| Two classes stay equally plausible | The failure may be a Cascade or Coincidence | Test the earliest shared data-flow point, then split symptoms if one fix does not affect both |
 
 ## 6. Escalation Criteria
 
@@ -227,7 +293,8 @@ Staging:  fails   (runtime 20.9,  CI env vars, migrated DB)
 | Fixing before diagnosing                   | Treats the symptom; root cause persists                 | Complete the triage protocol first               |
 | Hypothesis without evidence                | Confirmation bias drives you toward your guess          | Collect universal evidence before any hypothesis |
 | Changing multiple variables at once        | Cannot determine which change had the effect            | One variable at a time                           |
-| Assuming the obvious cause                 | The obvious cause is wrong ~60% of the time             | Verify with evidence even when "obvious"         |
+| Assuming the obvious cause                 | "Obvious" often means "familiar," not "verified"       | Verify with evidence even when "obvious"         |
+| Copying raw sensitive data into evidence   | The diagnostic artifact becomes a privacy or secret leak | Redact, synthesize, hash, or replace with opaque IDs |
 | Debugging by `printf` without a hypothesis | Random instrumentation wastes time                      | Instrument to test a _specific_ hypothesis       |
 | Applying the wrong class's technique       | Performance profiling won't find a logic error          | Re-classify if the technique isn't converging    |
 | Escalating too early                       | Hasn't gathered enough evidence for a useful escalation | Fill the evidence table before escalating        |
@@ -259,25 +326,39 @@ Use this template to structure a diagnostic session. It prevents skipping steps.
 - [ ] Reproduction steps (minimal)
 - [ ] Last-known-good state
 - [ ] Environment facts
+- [ ] Sensitive evidence redacted or replaced with safe identifiers
 - [ ] Class-specific evidence: [list]
 
-### 4. Hypotheses Tested
+### 4. Evidence Ledger
+
+| Observation | Source | Class signal | Contradiction | Next test |
+| ----------- | ------ | ------------ | ------------- | --------- |
+|             |        |              |               |           |
+
+### 5. Hypotheses Tested
 
 | #   | Hypothesis | Test | Result | Confidence after |
 | --- | ---------- | ---- | ------ | ---------------- |
 | 1   |            |      |        |                  |
 
-### 5. Resolution
+### 6. Resolution
 
 - Root cause: [one sentence]
 - Fix: [what was changed]
 - Prevention: [test / guard / doc added]
 ```
 
+## Grounding and Evaluation State
+
+This skill is grounded in public troubleshooting and diagnostic-practice references: Google SRE troubleshooting guidance, `git bisect` documentation for regression bisection, Stack Overflow MRE guidance for isolation, Chrome DevTools and PostgreSQL EXPLAIN docs for measurement/profiling examples, OWASP logging guidance for diagnostic event capture, and OpenTelemetry sensitive-data guidance for safe telemetry handling.
+
+The current eval metadata remains intentionally conservative: `eval_artifacts: planned`, `eval_state: unverified`, and `routing_eval: absent`. Do not mark this skill verified or routing-present until a real comprehension eval and routing eval include `diagnosis` and pass in the same change.
+
 ## Verification
 
 - [ ] The symptom was classified before any debugging technique was chosen
 - [ ] Baseline evidence was collected before any hypothesis was formed
+- [ ] Sensitive or secret-bearing evidence was redacted, synthesized, hashed, or replaced with opaque IDs before sharing
 - [ ] The cheapest technique that could resolve this class was tried first
 - [ ] Confidence increased monotonically — or the symptom was re-classified the moment it didn't
 - [ ] If the approach was changed, the reason was documented (which signal triggered the switch)

@@ -5,11 +5,33 @@ license: MIT
 compatibility: "Portable technology-selection discipline for application frameworks, libraries, SDKs, platforms, runtimes, data stores, and agent tooling."
 allowed-tools: Read Grep
 metadata:
-  metadata: "{\"schema_version\":6,\"version\":\"1.0.0\",\"type\":\"capability\",\"category\":\"engineering\",\"domain\":\"architecture/technology-selection\",\"scope\":\"portable\",\"owner\":\"skill-graph-maintainer\",\"freshness\":\"2026-05-11\",\"drift_check\":\"{\\\\\\\"last_verified\\\\\\\":\\\\\\\"2026-05-11\\\\\\\"}\",\"eval_artifacts\":\"present\",\"eval_state\":\"unverified\",\"routing_eval\":\"absent\",\"stability\":\"experimental\",\"keywords\":\"[\\\\\\\"framework fit\\\\\\\",\\\\\\\"technology selection\\\\\\\",\\\\\\\"library choice\\\\\\\",\\\\\\\"SDK evaluation\\\\\\\",\\\\\\\"platform evaluation\\\\\\\",\\\\\\\"migration cost\\\\\\\",\\\\\\\"exit cost\\\\\\\",\\\\\\\"operability\\\\\\\",\\\\\\\"ecosystem maturity\\\\\\\",\\\\\\\"build vs buy\\\\\\\"]\",\"examples\":\"[\\\\\\\"should we use Next.js server actions, route handlers, or a separate API service for this workflow?\\\\\\\",\\\\\\\"evaluate whether adding this charting library is worth it\\\\\\\",\\\\\\\"compare Supabase, Firebase, and custom Postgres for this project under real constraints\\\\\\\",\\\\\\\"we want to replace this framework - what fit analysis should happen before an ADR?\\\\\\\"]\",\"anti_examples\":\"[\\\\\\\"audit installed packages for duplication and supply-chain risk\\\\\\\",\\\\\\\"write the ADR after we chose the framework\\\\\\\",\\\\\\\"implement this feature in the framework we already selected\\\\\\\",\\\\\\\"profile a slow page and optimize bottlenecks\\\\\\\"]\",\"relations\":\"{\\\\\\\"boundary\\\\\\\":[{\\\\\\\"skill\\\\\\\":\\\\\\\"dependency-architecture\\\\\\\",\\\\\\\"reason\\\\\\\":\\\\\\\"dependency-architecture governs dependency graph shape and package boundaries; framework-fit-analysis evaluates a candidate technology decision\\\\\\\"},{\\\\\\\"skill\\\\\\\":\\\\\\\"architecture-decision-records\\\\\\\",\\\\\\\"reason\\\\\\\":\\\\\\\"architecture-decision-records records accepted decisions; framework-fit-analysis compares options before acceptance\\\\\\\"},{\\\\\\\"skill\\\\\\\":\\\\\\\"performance-engineering\\\\\\\",\\\\\\\"reason\\\\\\\":\\\\\\\"performance-engineering measures and optimizes actual behavior; framework-fit-analysis weighs expected performance among selection criteria\\\\\\\"},{\\\\\\\"skill\\\\\\\":\\\\\\\"refactor\\\\\\\",\\\\\\\"reason\\\\\\\":\\\\\\\"refactor changes existing code structure; framework-fit-analysis decides whether a larger technology shift is justified\\\\\\\"}],\\\\\\\"related\\\\\\\":[\\\\\\\"architecture-decision-records\\\\\\\",\\\\\\\"dependency-architecture\\\\\\\",\\\\\\\"performance-engineering\\\\\\\",\\\\\\\"owasp-security\\\\\\\"],\\\\\\\"verify_with\\\\\\\":[\\\\\\\"architecture-decision-records\\\\\\\",\\\\\\\"dependency-architecture\\\\\\\"]}\",\"portability\":\"{\\\\\\\"readiness\\\\\\\":\\\\\\\"scripted\\\\\\\",\\\\\\\"targets\\\\\\\":[\\\\\\\"skill-md\\\\\\\"]}\",\"lifecycle\":\"{\\\\\\\"stale_after_days\\\\\\\":180,\\\\\\\"review_cadence\\\\\\\":\\\\\\\"quarterly\\\\\\\"}\",\"skill_graph_source_repo\":\"https://github.com/jacob-balslev/skill-graph\",\"skill_graph_protocol\":\"Skill Metadata Protocol v5\",\"skill_graph_project\":\"Skill Graph\",\"skill_graph_canonical_skill\":\"skills/framework-fit-analysis/SKILL.md\"}"
+  schema_version: "7"
+  version: "1.0.0"
+  type: capability
+  category: engineering
+  domain: architecture/technology-selection
+  scope: portable
+  owner: skill-graph-maintainer
+  freshness: "2026-05-11"
+  drift_check: "{\"last_verified\":\"2026-05-11\"}"
+  eval_artifacts: present
+  eval_state: unverified
+  routing_eval: absent
+  stability: experimental
+  keywords: "[\"framework fit\",\"technology selection\",\"library choice\",\"SDK evaluation\",\"platform evaluation\",\"migration cost\",\"exit cost\",\"operability\",\"ecosystem maturity\",\"build vs buy\"]"
+  examples: "[\"should we use Next.js server actions, route handlers, or a separate API service for this workflow?\",\"evaluate whether adding this charting library is worth it\",\"compare Supabase, Firebase, and custom Postgres for this project under real constraints\",\"we want to replace this framework - what fit analysis should happen before an ADR?\"]"
+  anti_examples: "[\"audit installed packages for duplication and supply-chain risk\",\"write the ADR after we chose the framework\",\"implement this feature in the framework we already selected\",\"profile a slow page and optimize bottlenecks\"]"
+  relations: "{\"boundary\":[{\"skill\":\"dependency-architecture\",\"reason\":\"dependency-architecture governs dependency graph shape and package boundaries; framework-fit-analysis evaluates a candidate technology decision\"},{\"skill\":\"architecture-decision-records\",\"reason\":\"architecture-decision-records records accepted decisions; framework-fit-analysis compares options before acceptance\"},{\"skill\":\"performance-engineering\",\"reason\":\"performance-engineering measures and optimizes actual behavior; framework-fit-analysis weighs expected performance among selection criteria\"},{\"skill\":\"refactor\",\"reason\":\"refactor changes existing code structure; framework-fit-analysis decides whether a larger technology shift is justified\"}],\"related\":[\"architecture-decision-records\",\"dependency-architecture\",\"performance-engineering\",\"owasp-security\"],\"verify_with\":[\"architecture-decision-records\",\"dependency-architecture\"]}"
+  portability: "{\"readiness\":\"scripted\",\"targets\":[\"skill-md\"]}"
+  lifecycle: "{\"stale_after_days\":180,\"review_cadence\":\"quarterly\"}"
+  structural_verdict: UNVERIFIED
+  truth_verdict: UNVERIFIED
+  comprehension_verdict: UNVERIFIED
+  application_verdict: UNVERIFIED
   skill_graph_source_repo: "https://github.com/jacob-balslev/skill-graph"
-  skill_graph_protocol: Skill Metadata Protocol v4
+  skill_graph_protocol: Skill Metadata Protocol v7
   skill_graph_project: Skill Graph
-  skill_graph_canonical_skill: skills/framework-fit-analysis/SKILL.md
+  skill_graph_canonical_skill: skills/engineering/framework-fit-analysis/SKILL.md
 ---
 
 # Framework Fit Analysis

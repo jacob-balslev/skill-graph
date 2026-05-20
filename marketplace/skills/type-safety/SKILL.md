@@ -4,11 +4,39 @@ description: "Use when reasoning about types as a quality property of code: what
 license: MIT
 allowed-tools: Read Grep
 metadata:
-  metadata: "{\"schema_version\":6,\"version\":\"1.0.0\",\"type\":\"capability\",\"category\":\"quality\",\"domain\":\"quality/types\",\"scope\":\"reference\",\"owner\":\"skill-graph-maintainer\",\"freshness\":\"2026-05-15\",\"drift_check\":\"{\\\\\\\"last_verified\\\\\\\":\\\\\\\"2026-05-15\\\\\\\"}\",\"eval_artifacts\":\"planned\",\"eval_state\":\"unverified\",\"routing_eval\":\"absent\",\"comprehension_state\":\"present\",\"stability\":\"experimental\",\"keywords\":\"[\\\\\\\"type safety\\\\\\\",\\\\\\\"TypeScript\\\\\\\",\\\\\\\"sound type system\\\\\\\",\\\\\\\"unsound type system\\\\\\\",\\\\\\\"structural typing\\\\\\\",\\\\\\\"nominal typing\\\\\\\",\\\\\\\"type narrowing\\\\\\\",\\\\\\\"exhaustiveness check\\\\\\\",\\\\\\\"gradual typing\\\\\\\",\\\\\\\"runtime boundary\\\\\\\"]\",\"triggers\":\"[\\\\\\\"is this type-safe\\\\\\\",\\\\\\\"should this be `any` or `unknown`\\\\\\\",\\\\\\\"exhaustiveness check\\\\\\\",\\\\\\\"narrowing\\\\\\\",\\\\\\\"where does validation belong\\\\\\\"]\",\"examples\":\"[\\\\\\\"review whether this discriminated union has an exhaustiveness check at the switch\\\\\\\",\\\\\\\"decide whether to use `any` or `unknown` for this third-party JSON payload\\\\\\\",\\\\\\\"explain why TypeScript's `as` cast doesn't actually validate at runtime\\\\\\\",\\\\\\\"design where Zod (or any validator) parses at the application boundary\\\\\\\"]\",\"anti_examples\":\"[\\\\\\\"implement HMAC verification for an inbound webhook (use webhook-integration)\\\\\\\",\\\\\\\"design the JSON shape of an API endpoint (use api-design)\\\\\\\",\\\\\\\"choose between Postgres column types (use data-modeling)\\\\\\\"]\",\"relations\":\"{\\\\\\\"related\\\\\\\":[\\\\\\\"api-design\\\\\\\",\\\\\\\"testing-strategy\\\\\\\",\\\\\\\"code-review\\\\\\\"],\\\\\\\"boundary\\\\\\\":[{\\\\\\\"skill\\\\\\\":\\\\\\\"api-design\\\\\\\",\\\\\\\"reason\\\\\\\":\\\\\\\"api-design owns the external request/response surface; type-safety owns the discipline of expressing internal program correctness as types.\\\\\\\"},{\\\\\\\"skill\\\\\\\":\\\\\\\"testing-strategy\\\\\\\",\\\\\\\"reason\\\\\\\":\\\\\\\"testing-strategy owns the runtime verification of behavior; type-safety owns the compile-time verification of structure. They cover different failure modes.\\\\\\\"},{\\\\\\\"skill\\\\\\\":\\\\\\\"data-modeling\\\\\\\",\\\\\\\"reason\\\\\\\":\\\\\\\"data-modeling owns persistence and entity shape; type-safety owns the in-memory type contracts that consume that shape.\\\\\\\"}],\\\\\\\"verify_with\\\\\\\":[\\\\\\\"testing-strategy\\\\\\\",\\\\\\\"code-review\\\\\\\"]}\",\"mental_model\":\"|\",\"purpose\":\"|\",\"boundary\":\"|\",\"analogy\":\"Type safety is to programs what a passport check is to international travel — the document (type annotation) certifies identity within the issuing country's records, but on the way through customs (the I/O boundary), the document is re-verified against the actual traveler, and any mismatch is rejected before they enter the trusted zone.\",\"misconception\":\"|\",\"concept\":\"{\\\\\\\"definition\\\\\\\":\\\\\\\"Type safety is the property of a program in which type errors — operations applied to values of the wrong kind — are detected before they cause incorrect behavior. A type system provides type safety to the extent that it formally rules out classes of errors at compile time. A sound type system rules out all errors of the kinds it tracks; an unsound system rules out some but allows others through escape hatches.\\\\\\\",\\\\\\\"mental_model\\\\\\\":\\\\\\\"|\\\\\\\",\\\\\\\"purpose\\\\\\\":\\\\\\\"|\\\\\\\",\\\\\\\"boundary\\\\\\\":\\\\\\\"|\\\\\\\",\\\\\\\"taxonomy\\\\\\\":\\\\\\\"|\\\\\\\",\\\\\\\"analogy\\\\\\\":\\\\\\\"|\\\\\\\",\\\\\\\"misconception\\\\\\\":\\\\\\\"|\\\\\\\"}\",\"skill_graph_source_repo\":\"https://github.com/jacob-balslev/skill-graph\",\"skill_graph_protocol\":\"Skill Metadata Protocol v5\",\"skill_graph_project\":\"Skill Graph\",\"skill_graph_canonical_skill\":\"skills/type-safety/SKILL.md\"}"
+  schema_version: "7"
+  version: "1.0.0"
+  type: capability
+  category: quality
+  domain: quality/types
+  scope: reference
+  owner: skill-graph-maintainer
+  freshness: "2026-05-15"
+  drift_check: "{\"last_verified\":\"2026-05-15\"}"
+  eval_artifacts: planned
+  eval_state: unverified
+  routing_eval: absent
+  comprehension_state: present
+  stability: experimental
+  keywords: "[\"type safety\",\"TypeScript\",\"sound type system\",\"unsound type system\",\"structural typing\",\"nominal typing\",\"type narrowing\",\"exhaustiveness check\",\"gradual typing\",\"runtime boundary\"]"
+  triggers: "[\"is this type-safe\",\"should this be `any` or `unknown`\",\"exhaustiveness check\",\"narrowing\",\"where does validation belong\"]"
+  examples: "[\"review whether this discriminated union has an exhaustiveness check at the switch\",\"decide whether to use `any` or `unknown` for this third-party JSON payload\",\"explain why TypeScript's `as` cast doesn't actually validate at runtime\",\"design where Zod (or any validator) parses at the application boundary\"]"
+  anti_examples: "[\"implement HMAC verification for an inbound webhook (use webhook-integration)\",\"design the JSON shape of an API endpoint (use api-design)\",\"choose between Postgres column types (use data-modeling)\"]"
+  relations: "{\"related\":[\"api-design\",\"testing-strategy\",\"code-review\"],\"boundary\":[{\"skill\":\"api-design\",\"reason\":\"api-design owns the external request/response surface; type-safety owns the discipline of expressing internal program correctness as types.\"},{\"skill\":\"testing-strategy\",\"reason\":\"testing-strategy owns the runtime verification of behavior; type-safety owns the compile-time verification of structure. They cover different failure modes.\"},{\"skill\":\"data-modeling\",\"reason\":\"data-modeling owns persistence and entity shape; type-safety owns the in-memory type contracts that consume that shape.\"}],\"verify_with\":[\"testing-strategy\",\"code-review\"]}"
+  mental_model: "|"
+  purpose: "|"
+  boundary: "|"
+  analogy: "Type safety is to programs what a passport check is to international travel — the document (type annotation) certifies identity within the issuing country's records, but on the way through customs (the I/O boundary), the document is re-verified against the actual traveler, and any mismatch is rejected before they enter the trusted zone."
+  misconception: "|"
+  concept: "{\"definition\":\"Type safety is the property of a program in which type errors — operations applied to values of the wrong kind — are detected before they cause incorrect behavior. A type system provides type safety to the extent that it formally rules out classes of errors at compile time. A sound type system rules out all errors of the kinds it tracks; an unsound system rules out some but allows others through escape hatches.\",\"mental_model\":\"|\",\"purpose\":\"|\",\"boundary\":\"|\",\"taxonomy\":\"|\",\"analogy\":\"|\",\"misconception\":\"|\"}"
+  structural_verdict: UNVERIFIED
+  truth_verdict: UNVERIFIED
+  comprehension_verdict: UNVERIFIED
+  application_verdict: UNVERIFIED
   skill_graph_source_repo: "https://github.com/jacob-balslev/skill-graph"
-  skill_graph_protocol: Skill Metadata Protocol v4
+  skill_graph_protocol: Skill Metadata Protocol v7
   skill_graph_project: Skill Graph
-  skill_graph_canonical_skill: skills/type-safety/SKILL.md
+  skill_graph_canonical_skill: skills/quality/type-safety/SKILL.md
 ---
 
 # Type Safety

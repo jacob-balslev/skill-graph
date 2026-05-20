@@ -5,11 +5,33 @@ license: MIT
 compatibility: "Portable IA guidance for apps, documentation, dashboards, admin tools, and skill libraries."
 allowed-tools: Read Grep
 metadata:
-  metadata: "{\"schema_version\":6,\"version\":\"1.0.0\",\"type\":\"capability\",\"category\":\"design\",\"domain\":\"design/information-architecture\",\"scope\":\"portable\",\"owner\":\"skill-graph-maintainer\",\"freshness\":\"2026-05-11\",\"drift_check\":\"{\\\\\\\"last_verified\\\\\\\":\\\\\\\"2026-05-11\\\\\\\"}\",\"eval_artifacts\":\"present\",\"eval_state\":\"unverified\",\"routing_eval\":\"absent\",\"stability\":\"experimental\",\"keywords\":\"[\\\\\\\"information architecture\\\\\\\",\\\\\\\"navigation structure\\\\\\\",\\\\\\\"sitemap\\\\\\\",\\\\\\\"wayfinding\\\\\\\",\\\\\\\"page hierarchy\\\\\\\",\\\\\\\"docs architecture\\\\\\\",\\\\\\\"labeling system\\\\\\\",\\\\\\\"content grouping\\\\\\\",\\\\\\\"findability\\\\\\\",\\\\\\\"content model\\\\\\\"]\",\"examples\":\"[\\\\\\\"our docs have good content but nobody can find the setup instructions - how should the IA change?\\\\\\\",\\\\\\\"design the navigation and page hierarchy for this admin app\\\\\\\",\\\\\\\"these dashboard sections overlap and users do not know where to look first\\\\\\\",\\\\\\\"should this be a top-level nav item, a tab, a filter, or a page section?\\\\\\\"]\",\"anti_examples\":\"[\\\\\\\"make the category taxonomy and assignment rules for this skill library\\\\\\\",\\\\\\\"define design tokens, component APIs, and theming rules\\\\\\\",\\\\\\\"rewrite this tooltip and empty-state copy\\\\\\\",\\\\\\\"audit keyboard accessibility and ARIA semantics\\\\\\\"]\",\"relations\":\"{\\\\\\\"boundary\\\\\\\":[{\\\\\\\"skill\\\\\\\":\\\\\\\"taxonomy-design\\\\\\\",\\\\\\\"reason\\\\\\\":\\\\\\\"taxonomy-design governs classification systems; information-architecture arranges user-facing information paths\\\\\\\"},{\\\\\\\"skill\\\\\\\":\\\\\\\"design-system-architecture\\\\\\\",\\\\\\\"reason\\\\\\\":\\\\\\\"design-system-architecture owns component and token systems; information-architecture owns navigation and content structure\\\\\\\"},{\\\\\\\"skill\\\\\\\":\\\\\\\"layout-composition\\\\\\\",\\\\\\\"reason\\\\\\\":\\\\\\\"layout-composition owns structure inside a page or screen; information-architecture owns cross-page organization and wayfinding\\\\\\\"},{\\\\\\\"skill\\\\\\\":\\\\\\\"microcopy\\\\\\\",\\\\\\\"reason\\\\\\\":\\\\\\\"microcopy owns sentence-level UI text; information-architecture owns placement and hierarchy\\\\\\\"},{\\\\\\\"skill\\\\\\\":\\\\\\\"a11y\\\\\\\",\\\\\\\"reason\\\\\\\":\\\\\\\"a11y owns accessibility compliance; information-architecture can create structures that a11y later verifies\\\\\\\"}],\\\\\\\"related\\\\\\\":[\\\\\\\"taxonomy-design\\\\\\\",\\\\\\\"task-analysis\\\\\\\",\\\\\\\"design-system-architecture\\\\\\\",\\\\\\\"layout-composition\\\\\\\"],\\\\\\\"verify_with\\\\\\\":[\\\\\\\"task-analysis\\\\\\\",\\\\\\\"a11y\\\\\\\"]}\",\"portability\":\"{\\\\\\\"readiness\\\\\\\":\\\\\\\"scripted\\\\\\\",\\\\\\\"targets\\\\\\\":[\\\\\\\"skill-md\\\\\\\"]}\",\"lifecycle\":\"{\\\\\\\"stale_after_days\\\\\\\":365,\\\\\\\"review_cadence\\\\\\\":\\\\\\\"quarterly\\\\\\\"}\",\"skill_graph_source_repo\":\"https://github.com/jacob-balslev/skill-graph\",\"skill_graph_protocol\":\"Skill Metadata Protocol v5\",\"skill_graph_project\":\"Skill Graph\",\"skill_graph_canonical_skill\":\"skills/information-architecture/SKILL.md\"}"
+  schema_version: "7"
+  version: "1.0.0"
+  type: capability
+  category: design
+  domain: design/information-architecture
+  scope: portable
+  owner: skill-graph-maintainer
+  freshness: "2026-05-11"
+  drift_check: "{\"last_verified\":\"2026-05-11\"}"
+  eval_artifacts: present
+  eval_state: unverified
+  routing_eval: absent
+  stability: experimental
+  keywords: "[\"information architecture\",\"navigation structure\",\"sitemap\",\"wayfinding\",\"page hierarchy\",\"docs architecture\",\"labeling system\",\"content grouping\",\"findability\",\"content model\"]"
+  examples: "[\"our docs have good content but nobody can find the setup instructions - how should the IA change?\",\"design the navigation and page hierarchy for this admin app\",\"these dashboard sections overlap and users do not know where to look first\",\"should this be a top-level nav item, a tab, a filter, or a page section?\"]"
+  anti_examples: "[\"make the category taxonomy and assignment rules for this skill library\",\"define design tokens, component APIs, and theming rules\",\"rewrite this tooltip and empty-state copy\",\"audit keyboard accessibility and ARIA semantics\"]"
+  relations: "{\"boundary\":[{\"skill\":\"taxonomy-design\",\"reason\":\"taxonomy-design governs classification systems; information-architecture arranges user-facing information paths\"},{\"skill\":\"design-system-architecture\",\"reason\":\"design-system-architecture owns component and token systems; information-architecture owns navigation and content structure\"},{\"skill\":\"layout-composition\",\"reason\":\"layout-composition owns structure inside a page or screen; information-architecture owns cross-page organization and wayfinding\"},{\"skill\":\"microcopy\",\"reason\":\"microcopy owns sentence-level UI text; information-architecture owns placement and hierarchy\"},{\"skill\":\"a11y\",\"reason\":\"a11y owns accessibility compliance; information-architecture can create structures that a11y later verifies\"}],\"related\":[\"taxonomy-design\",\"task-analysis\",\"design-system-architecture\",\"layout-composition\"],\"verify_with\":[\"task-analysis\",\"a11y\"]}"
+  portability: "{\"readiness\":\"scripted\",\"targets\":[\"skill-md\"]}"
+  lifecycle: "{\"stale_after_days\":365,\"review_cadence\":\"quarterly\"}"
+  structural_verdict: UNVERIFIED
+  truth_verdict: UNVERIFIED
+  comprehension_verdict: UNVERIFIED
+  application_verdict: UNVERIFIED
   skill_graph_source_repo: "https://github.com/jacob-balslev/skill-graph"
-  skill_graph_protocol: Skill Metadata Protocol v4
+  skill_graph_protocol: Skill Metadata Protocol v7
   skill_graph_project: Skill Graph
-  skill_graph_canonical_skill: skills/information-architecture/SKILL.md
+  skill_graph_canonical_skill: skills/design/information-architecture/SKILL.md
 ---
 
 # Information Architecture

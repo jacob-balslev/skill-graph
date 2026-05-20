@@ -3,11 +3,31 @@ name: design-module-composition
 description: "Use when designing reusable component modules — composition patterns, compound components, slot/children APIs, render props, headless component contracts, and the choice between configuration and composition. Do NOT use for application-level architecture, single-use feature components, or visual styling decisions."
 license: CC-BY-4.0
 metadata:
-  metadata: "{\"schema_version\":6,\"version\":\"1.0.0\",\"type\":\"capability\",\"category\":\"design\",\"scope\":\"portable\",\"owner\":\"skill-graph-maintainer\",\"freshness\":\"2026-05-12\",\"drift_check\":\"{\\\\\\\"last_verified\\\\\\\":\\\\\\\"2026-05-12\\\\\\\"}\",\"eval_artifacts\":\"planned\",\"eval_state\":\"unverified\",\"routing_eval\":\"absent\",\"stability\":\"experimental\",\"keywords\":\"[\\\\\\\"component composition\\\\\\\",\\\\\\\"compound components\\\\\\\",\\\\\\\"slot api\\\\\\\",\\\\\\\"headless components\\\\\\\",\\\\\\\"render props\\\\\\\",\\\\\\\"polymorphic components\\\\\\\",\\\\\\\"asChild pattern\\\\\\\",\\\\\\\"children as api\\\\\\\",\\\\\\\"composition over configuration\\\\\\\",\\\\\\\"component contract design\\\\\\\",\\\\\\\"component module patterns\\\\\\\",\\\\\\\"selectable rows sortable columns\\\\\\\",\\\\\\\"primitives composites templates\\\\\\\"]\",\"triggers\":\"[\\\\\\\"compound component\\\\\\\",\\\\\\\"composition over configuration\\\\\\\",\\\\\\\"headless component\\\\\\\",\\\\\\\"slot pattern\\\\\\\",\\\\\\\"asChild\\\\\\\"]\",\"examples\":\"[\\\\\\\"Design a Dialog component whose trigger, content, and close button are addressable by consumers\\\\\\\",\\\\\\\"Refactor a Card with 14 boolean props into a composition-based API\\\\\\\",\\\\\\\"Build a headless table primitive that exposes state and behavior without imposing markup\\\\\\\"]\",\"anti_examples\":\"[\\\\\\\"Choose the border radius value for cards\\\\\\\",\\\\\\\"Decide where the OrderDetailPage component lives in the folder structure\\\\\\\",\\\\\\\"Pick the brand font for headings\\\\\\\"]\",\"relations\":\"{\\\\\\\"related\\\\\\\":[\\\\\\\"design-system-architecture\\\\\\\",\\\\\\\"frontend-architecture\\\\\\\",\\\\\\\"interaction-patterns\\\\\\\",\\\\\\\"a11y\\\\\\\"],\\\\\\\"boundary\\\\\\\":[{\\\\\\\"skill\\\\\\\":\\\\\\\"frontend-architecture\\\\\\\",\\\\\\\"reason\\\\\\\":\\\\\\\"frontend-architecture covers application-level organization; this skill covers the internal API of a reusable module that the application composes.\\\\\\\"},{\\\\\\\"skill\\\\\\\":\\\\\\\"a11y\\\\\\\",\\\\\\\"reason\\\\\\\":\\\\\\\"Composition choices affect accessibility (focus management, ARIA wiring); when the question is whether a pattern meets WCAG requirements, hand off to a11y.\\\\\\\"}]}\",\"skill_graph_source_repo\":\"https://github.com/jacob-balslev/skill-graph\",\"skill_graph_protocol\":\"Skill Metadata Protocol v5\",\"skill_graph_project\":\"Skill Graph\",\"skill_graph_canonical_skill\":\"skills/design-module-composition/SKILL.md\"}"
+  schema_version: "7"
+  version: "1.0.0"
+  type: capability
+  category: design
+  scope: portable
+  owner: skill-graph-maintainer
+  freshness: "2026-05-12"
+  drift_check: "{\"last_verified\":\"2026-05-12\"}"
+  eval_artifacts: planned
+  eval_state: unverified
+  routing_eval: absent
+  stability: experimental
+  keywords: "[\"component composition\",\"compound components\",\"slot api\",\"headless components\",\"render props\",\"polymorphic components\",\"asChild pattern\",\"children as api\",\"composition over configuration\",\"component contract design\",\"component module patterns\",\"selectable rows sortable columns\",\"primitives composites templates\"]"
+  triggers: "[\"compound component\",\"composition over configuration\",\"headless component\",\"slot pattern\",\"asChild\"]"
+  examples: "[\"Design a Dialog component whose trigger, content, and close button are addressable by consumers\",\"Refactor a Card with 14 boolean props into a composition-based API\",\"Build a headless table primitive that exposes state and behavior without imposing markup\"]"
+  anti_examples: "[\"Choose the border radius value for cards\",\"Decide where the OrderDetailPage component lives in the folder structure\",\"Pick the brand font for headings\"]"
+  relations: "{\"related\":[\"design-system-architecture\",\"frontend-architecture\",\"interaction-patterns\",\"a11y\"],\"boundary\":[{\"skill\":\"frontend-architecture\",\"reason\":\"frontend-architecture covers application-level organization; this skill covers the internal API of a reusable module that the application composes.\"},{\"skill\":\"a11y\",\"reason\":\"Composition choices affect accessibility (focus management, ARIA wiring); when the question is whether a pattern meets WCAG requirements, hand off to a11y.\"}]}"
+  structural_verdict: UNVERIFIED
+  truth_verdict: UNVERIFIED
+  comprehension_verdict: UNVERIFIED
+  application_verdict: UNVERIFIED
   skill_graph_source_repo: "https://github.com/jacob-balslev/skill-graph"
-  skill_graph_protocol: Skill Metadata Protocol v4
+  skill_graph_protocol: Skill Metadata Protocol v7
   skill_graph_project: Skill Graph
-  skill_graph_canonical_skill: skills/design-module-composition/SKILL.md
+  skill_graph_canonical_skill: skills/design/design-module-composition/SKILL.md
 ---
 
 # Design Module Composition

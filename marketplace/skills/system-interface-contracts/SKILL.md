@@ -5,11 +5,33 @@ license: MIT
 compatibility: "Portable contract-design discipline across code modules, services, queues, APIs, webhooks, jobs, and agent interfaces."
 allowed-tools: Read Grep
 metadata:
-  metadata: "{\"schema_version\":6,\"version\":\"1.0.0\",\"type\":\"capability\",\"category\":\"engineering\",\"domain\":\"architecture/contracts\",\"scope\":\"portable\",\"owner\":\"skill-graph-maintainer\",\"freshness\":\"2026-05-11\",\"drift_check\":\"{\\\\\\\"last_verified\\\\\\\":\\\\\\\"2026-05-11\\\\\\\"}\",\"eval_artifacts\":\"present\",\"eval_state\":\"unverified\",\"routing_eval\":\"absent\",\"stability\":\"experimental\",\"keywords\":\"[\\\\\\\"interface contract\\\\\\\",\\\\\\\"system boundary\\\\\\\",\\\\\\\"contract design\\\\\\\",\\\\\\\"compatibility contract\\\\\\\",\\\\\\\"input output invariant\\\\\\\",\\\\\\\"event schema\\\\\\\",\\\\\\\"module boundary\\\\\\\",\\\\\\\"idempotency contract\\\\\\\",\\\\\\\"versioning contract\\\\\\\",\\\\\\\"error contract\\\\\\\"]\",\"examples\":\"[\\\\\\\"define the contract between the ingestion job and the dashboard view layer\\\\\\\",\\\\\\\"what invariants must this event producer and consumer share?\\\\\\\",\\\\\\\"review this module boundary for missing ownership and compatibility rules\\\\\\\",\\\\\\\"we need an interface contract before several agents implement opposite sides of the boundary\\\\\\\"]\",\"anti_examples\":\"[\\\\\\\"design the REST endpoints, status codes, and pagination\\\\\\\",\\\\\\\"create database tables and constraints\\\\\\\",\\\\\\\"investigate why this existing integration is failing in production\\\\\\\",\\\\\\\"write an ADR after the interface decision has already been accepted\\\\\\\"]\",\"relations\":\"{\\\\\\\"boundary\\\\\\\":[{\\\\\\\"skill\\\\\\\":\\\\\\\"api-design\\\\\\\",\\\\\\\"reason\\\\\\\":\\\\\\\"api-design owns REST/API surface shape; system-interface-contracts owns the broader boundary contract across any interface type\\\\\\\"},{\\\\\\\"skill\\\\\\\":\\\\\\\"event-contract-design\\\\\\\",\\\\\\\"reason\\\\\\\":\\\\\\\"event-contract-design owns asynchronous event envelopes, schemas, topics, and compatibility; system-interface-contracts owns the broader boundary discipline\\\\\\\"},{\\\\\\\"skill\\\\\\\":\\\\\\\"data-modeling\\\\\\\",\\\\\\\"reason\\\\\\\":\\\\\\\"data-modeling owns stored data structure; system-interface-contracts owns producer/consumer expectations and compatibility\\\\\\\"},{\\\\\\\"skill\\\\\\\":\\\\\\\"debugging\\\\\\\",\\\\\\\"reason\\\\\\\":\\\\\\\"debugging investigates a known failure; system-interface-contracts prevents ambiguous boundary behavior before failure\\\\\\\"},{\\\\\\\"skill\\\\\\\":\\\\\\\"architecture-decision-records\\\\\\\",\\\\\\\"reason\\\\\\\":\\\\\\\"architecture-decision-records records the adopted contract decision; this skill designs the contract\\\\\\\"}],\\\\\\\"related\\\\\\\":[\\\\\\\"bounded-context-mapping\\\\\\\",\\\\\\\"api-design\\\\\\\",\\\\\\\"event-storming\\\\\\\",\\\\\\\"event-contract-design\\\\\\\",\\\\\\\"state-machine-modeling\\\\\\\"],\\\\\\\"verify_with\\\\\\\":[\\\\\\\"testing-strategy\\\\\\\",\\\\\\\"code-review\\\\\\\"]}\",\"portability\":\"{\\\\\\\"readiness\\\\\\\":\\\\\\\"scripted\\\\\\\",\\\\\\\"targets\\\\\\\":[\\\\\\\"skill-md\\\\\\\"]}\",\"lifecycle\":\"{\\\\\\\"stale_after_days\\\\\\\":365,\\\\\\\"review_cadence\\\\\\\":\\\\\\\"quarterly\\\\\\\"}\",\"skill_graph_source_repo\":\"https://github.com/jacob-balslev/skill-graph\",\"skill_graph_protocol\":\"Skill Metadata Protocol v5\",\"skill_graph_project\":\"Skill Graph\",\"skill_graph_canonical_skill\":\"skills/system-interface-contracts/SKILL.md\"}"
+  schema_version: "7"
+  version: "1.0.0"
+  type: capability
+  category: engineering
+  domain: architecture/contracts
+  scope: portable
+  owner: skill-graph-maintainer
+  freshness: "2026-05-11"
+  drift_check: "{\"last_verified\":\"2026-05-11\"}"
+  eval_artifacts: present
+  eval_state: unverified
+  routing_eval: absent
+  stability: experimental
+  keywords: "[\"interface contract\",\"system boundary\",\"contract design\",\"compatibility contract\",\"input output invariant\",\"event schema\",\"module boundary\",\"idempotency contract\",\"versioning contract\",\"error contract\"]"
+  examples: "[\"define the contract between the ingestion job and the dashboard view layer\",\"what invariants must this event producer and consumer share?\",\"review this module boundary for missing ownership and compatibility rules\",\"we need an interface contract before several agents implement opposite sides of the boundary\"]"
+  anti_examples: "[\"design the REST endpoints, status codes, and pagination\",\"create database tables and constraints\",\"investigate why this existing integration is failing in production\",\"write an ADR after the interface decision has already been accepted\"]"
+  relations: "{\"boundary\":[{\"skill\":\"api-design\",\"reason\":\"api-design owns REST/API surface shape; system-interface-contracts owns the broader boundary contract across any interface type\"},{\"skill\":\"event-contract-design\",\"reason\":\"event-contract-design owns asynchronous event envelopes, schemas, topics, and compatibility; system-interface-contracts owns the broader boundary discipline\"},{\"skill\":\"data-modeling\",\"reason\":\"data-modeling owns stored data structure; system-interface-contracts owns producer/consumer expectations and compatibility\"},{\"skill\":\"debugging\",\"reason\":\"debugging investigates a known failure; system-interface-contracts prevents ambiguous boundary behavior before failure\"},{\"skill\":\"architecture-decision-records\",\"reason\":\"architecture-decision-records records the adopted contract decision; this skill designs the contract\"}],\"related\":[\"bounded-context-mapping\",\"api-design\",\"event-storming\",\"event-contract-design\",\"state-machine-modeling\"],\"verify_with\":[\"testing-strategy\",\"code-review\"]}"
+  portability: "{\"readiness\":\"scripted\",\"targets\":[\"skill-md\"]}"
+  lifecycle: "{\"stale_after_days\":365,\"review_cadence\":\"quarterly\"}"
+  structural_verdict: UNVERIFIED
+  truth_verdict: UNVERIFIED
+  comprehension_verdict: UNVERIFIED
+  application_verdict: UNVERIFIED
   skill_graph_source_repo: "https://github.com/jacob-balslev/skill-graph"
-  skill_graph_protocol: Skill Metadata Protocol v4
+  skill_graph_protocol: Skill Metadata Protocol v7
   skill_graph_project: Skill Graph
-  skill_graph_canonical_skill: skills/system-interface-contracts/SKILL.md
+  skill_graph_canonical_skill: skills/engineering/system-interface-contracts/SKILL.md
 ---
 
 # System Interface Contracts

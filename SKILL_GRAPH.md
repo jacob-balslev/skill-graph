@@ -62,13 +62,15 @@ A sixth set of files — `README.md`, `CHANGELOG.md`, `CONTRIBUTING.md`, `LICENS
 
 | File | Role |
 |---|---|
-| `schemas/skill.schema.json` | The frontmatter schema. Unversioned — tracks latest (v6 today; the file's `$id` self-declares `skill.v6.schema.json`). |
-| `schemas/manifest.schema.json` | The compiled-manifest schema. Unversioned — tracks latest (v6 today; the manifest contract advanced to v6 alongside the skill schema, adding Health Block fields such as `audit_verdict`). |
-| `schemas/skill.v6.schema.json` | Pinned v6 copy of the current skill contract. Consumers that want the current contract validate against this file. |
+| `schemas/skill.schema.json` | The frontmatter schema. Unversioned — tracks latest (v7 today; the file's `$id` self-declares `skill.v7.schema.json`). |
+| `schemas/manifest.schema.json` | The compiled-manifest schema. Unversioned — tracks latest (v7 today; the manifest contract carries the four Health Block verdicts). |
+| `schemas/skill.v7.schema.json` | Pinned v7 copy of the current skill contract. Consumers that want the current contract validate against this file. |
+| `schemas/manifest.v7.schema.json` | Pinned v7 copy of the current manifest contract. |
+| `schemas/skill.v6.schema.json` | Frozen pinned v6 copy for consumers still migrating from v6 to v7. |
 | `schemas/skill.v5.schema.json` | Frozen pinned v5 copy for consumers still migrating from v5 to v6. |
 | `schemas/skill.v4.schema.json` | Frozen pinned v4 copy for consumers still migrating from v4 to v5 / v6. |
 | `schemas/skill.v3.schema.json` | Frozen pinned v3 copy for consumers still migrating to v4. |
-| `schemas/manifest.v6.schema.json` | Pinned v6 copy of the current manifest contract. |
+| `schemas/manifest.v6.schema.json` | Frozen pinned v6 manifest copy. |
 | `schemas/manifest.v5.schema.json` | Frozen pinned v5 manifest copy. |
 | `schemas/manifest.v4.schema.json` | Frozen pinned v4 manifest copy. |
 | `schemas/manifest.v3.schema.json` | Frozen pinned v3 manifest copy. |

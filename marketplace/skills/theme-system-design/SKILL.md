@@ -3,11 +3,31 @@ name: theme-system-design
 description: "Use when designing a theme system — design tokens, semantic token layering, CSS custom property strategy, runtime theme switching, and theme contract guarantees. Do NOT use for one-off color choices, brand-only palette work, or framework-specific styling-library configuration."
 license: CC-BY-4.0
 metadata:
-  metadata: "{\"schema_version\":6,\"version\":\"1.0.0\",\"type\":\"capability\",\"category\":\"design\",\"scope\":\"portable\",\"owner\":\"skill-graph-maintainer\",\"freshness\":\"2026-05-12\",\"drift_check\":\"{\\\\\\\"last_verified\\\\\\\":\\\\\\\"2026-05-12\\\\\\\"}\",\"eval_artifacts\":\"planned\",\"eval_state\":\"unverified\",\"routing_eval\":\"absent\",\"stability\":\"experimental\",\"keywords\":\"[\\\\\\\"theme token contract\\\\\\\",\\\\\\\"theme semantic layer\\\\\\\",\\\\\\\"theme variables\\\\\\\",\\\\\\\"css custom properties\\\\\\\",\\\\\\\"runtime theme switching\\\\\\\",\\\\\\\"token tiers\\\\\\\",\\\\\\\"theme contract\\\\\\\",\\\\\\\"design tokens community group\\\\\\\",\\\\\\\"theme parity\\\\\\\",\\\\\\\"token naming\\\\\\\",\\\\\\\"reference tokens\\\\\\\",\\\\\\\"system tokens\\\\\\\"]\",\"triggers\":\"[\\\\\\\"theme system\\\\\\\",\\\\\\\"design tokens\\\\\\\",\\\\\\\"theme switching\\\\\\\",\\\\\\\"css variables for theming\\\\\\\",\\\\\\\"token architecture\\\\\\\"]\",\"examples\":\"[\\\\\\\"Design a three-tier token system (reference → system → component) for a multi-brand product\\\\\\\",\\\\\\\"Add a third theme to an existing two-theme system without breaking the component contracts\\\\\\\",\\\\\\\"Move from hard-coded colors to CSS custom properties with runtime switching\\\\\\\"]\",\"anti_examples\":\"[\\\\\\\"Choose the exact hex value for the brand's primary blue\\\\\\\",\\\\\\\"Configure Tailwind's content array and purge settings\\\\\\\",\\\\\\\"Implement the dark mode toggle interaction\\\\\\\"]\",\"relations\":\"{\\\\\\\"related\\\\\\\":[\\\\\\\"color-system-design\\\\\\\",\\\\\\\"design-system-architecture\\\\\\\",\\\\\\\"visual-design-foundations\\\\\\\",\\\\\\\"dark-mode-implementation\\\\\\\"],\\\\\\\"boundary\\\\\\\":[{\\\\\\\"skill\\\\\\\":\\\\\\\"color-system-design\\\\\\\",\\\\\\\"reason\\\\\\\":\\\\\\\"color-system-design produces the palette and the semantic color decisions; this skill structures how those decisions become tokens and reach components.\\\\\\\"},{\\\\\\\"skill\\\\\\\":\\\\\\\"dark-mode-implementation\\\\\\\",\\\\\\\"reason\\\\\\\":\\\\\\\"dark-mode-implementation handles preference detection, asset swapping, and image handling; this skill defines the token layer that makes dark mode trivial to add.\\\\\\\"}]}\",\"skill_graph_source_repo\":\"https://github.com/jacob-balslev/skill-graph\",\"skill_graph_protocol\":\"Skill Metadata Protocol v5\",\"skill_graph_project\":\"Skill Graph\",\"skill_graph_canonical_skill\":\"skills/theme-system-design/SKILL.md\"}"
+  schema_version: "7"
+  version: "1.0.0"
+  type: capability
+  category: design
+  scope: portable
+  owner: skill-graph-maintainer
+  freshness: "2026-05-12"
+  drift_check: "{\"last_verified\":\"2026-05-12\"}"
+  eval_artifacts: planned
+  eval_state: unverified
+  routing_eval: absent
+  stability: experimental
+  keywords: "[\"theme token contract\",\"theme semantic layer\",\"theme variables\",\"css custom properties\",\"runtime theme switching\",\"token tiers\",\"theme contract\",\"design tokens community group\",\"theme parity\",\"token naming\",\"reference tokens\",\"system tokens\"]"
+  triggers: "[\"theme system\",\"design tokens\",\"theme switching\",\"css variables for theming\",\"token architecture\"]"
+  examples: "[\"Design a three-tier token system (reference → system → component) for a multi-brand product\",\"Add a third theme to an existing two-theme system without breaking the component contracts\",\"Move from hard-coded colors to CSS custom properties with runtime switching\"]"
+  anti_examples: "[\"Choose the exact hex value for the brand's primary blue\",\"Configure Tailwind's content array and purge settings\",\"Implement the dark mode toggle interaction\"]"
+  relations: "{\"related\":[\"color-system-design\",\"design-system-architecture\",\"visual-design-foundations\",\"dark-mode-implementation\"],\"boundary\":[{\"skill\":\"color-system-design\",\"reason\":\"color-system-design produces the palette and the semantic color decisions; this skill structures how those decisions become tokens and reach components.\"},{\"skill\":\"dark-mode-implementation\",\"reason\":\"dark-mode-implementation handles preference detection, asset swapping, and image handling; this skill defines the token layer that makes dark mode trivial to add.\"}]}"
+  structural_verdict: UNVERIFIED
+  truth_verdict: UNVERIFIED
+  comprehension_verdict: UNVERIFIED
+  application_verdict: UNVERIFIED
   skill_graph_source_repo: "https://github.com/jacob-balslev/skill-graph"
-  skill_graph_protocol: Skill Metadata Protocol v4
+  skill_graph_protocol: Skill Metadata Protocol v7
   skill_graph_project: Skill Graph
-  skill_graph_canonical_skill: skills/theme-system-design/SKILL.md
+  skill_graph_canonical_skill: skills/design/theme-system-design/SKILL.md
 ---
 
 # Theme System Design

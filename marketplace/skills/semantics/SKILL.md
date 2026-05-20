@@ -1,15 +1,45 @@
 ---
 name: semantics
-description: "Use when naming artifacts across code, APIs, design tokens, commits, HTTP/status signals, UI labels, error codes, or branded types, especially when a name feels ambiguous or misleading. Covers cross-domain meaning-encoding: naming smells, DDD ubiquitous language, SemVer, conventional commits, branded types, semantic design tokens/CSS/APIs, semantic UI affordances, and naming anti-patterns. Do NOT use for word morphology/polysemy (use linguistics), casing formats (use naming-conventions), typed concept relations (use semantic-relations), or in-product UI-text patterns (use microcopy)."
+description: "Use when choosing or auditing the meaning encoded by names and signals across code, APIs, design tokens, commits, versions, HTTP responses, UI labels, error codes, branded types, and domain terms, especially when a name feels ambiguous, misleading, or semantically stale. Covers meaning-encoding decisions: naming smells, DDD ubiquitous language, SemVer, Conventional Commits type choice, branded/semantic types, parse-don't-validate, semantic design tokens/CSS/API signals, semantic UI affordances, and anti-patterns where syntax is valid but the signal lies. Do NOT use for word morphology or audience register (use linguistics), casing/format conventions or rename mechanics (use naming-conventions or refactor), typed concept-edge analysis (use semantic-relations), in-product UI-copy patterns (use microcopy), classification structure (use taxonomy-design), accessibility compliance (use a11y), or git history shape (use version-control)."
 license: MIT
-compatibility: "Cross-domain naming and meaning skill, stack-agnostic. The naming-smells catalogue, SemVer rules, conventional-commit format, three-layer token architecture, HTTP-status semantics, REST/GraphQL conventions, and anti-pattern catalog apply to any codebase; example identifiers use generic e-commerce framings — substitute the equivalents from your domain."
+compatibility: "Cross-domain naming and meaning skill, stack-agnostic. The naming-smells catalogue, SemVer rules, conventional-commit format, semantic-token architecture, HTTP-status semantics, REST/GraphQL conventions, semantic type patterns, and anti-pattern catalog apply to any codebase; examples use generic commerce/order language and should be substituted for the user's domain."
 allowed-tools: Read Grep
 metadata:
-  metadata: "{\"schema_version\":6,\"version\":\"1.1.0\",\"type\":\"capability\",\"category\":\"foundations\",\"domain\":\"foundations/semantics\",\"scope\":\"portable\",\"owner\":\"skill-graph-maintainer\",\"freshness\":\"2026-05-16\",\"drift_check\":\"{\\\\\\\"last_verified\\\\\\\":\\\\\\\"2026-05-16\\\\\\\"}\",\"eval_artifacts\":\"planned\",\"eval_state\":\"unverified\",\"routing_eval\":\"absent\",\"comprehension_state\":\"present\",\"stability\":\"experimental\",\"keywords\":\"[\\\\\\\"semantic naming\\\\\\\",\\\\\\\"semantic drift detection\\\\\\\",\\\\\\\"branded type design\\\\\\\",\\\\\\\"semantic versioning rules\\\\\\\",\\\\\\\"conventional commit type choice\\\\\\\",\\\\\\\"HTTP status semantic signaling\\\\\\\",\\\\\\\"design-token semantic layer\\\\\\\",\\\\\\\"naming smells catalogue\\\\\\\",\\\\\\\"DDD ubiquitous language\\\\\\\",\\\\\\\"semantic affordance naming\\\\\\\",\\\\\\\"semantic UI signal\\\\\\\",\\\\\\\"semantic API contract\\\\\\\",\\\\\\\"parse-do-not-validate pattern\\\\\\\",\\\\\\\"three-layer token architecture\\\\\\\",\\\\\\\"meaning-encoding identifier\\\\\\\",\\\\\\\"semantic-vs-syntactic distinction\\\\\\\",\\\\\\\"cargo-cult naming anti-pattern\\\\\\\"]\",\"examples\":\"[\\\\\\\"a function named process(data) actually reconciles revenue with production cost — what semantic rename would make the operation self-explanatory without reading the implementation?\\\\\\\",\\\\\\\"our API returns HTTP 200 with { success: false, error: 'User not found' } — is that syntactically valid but semantically wrong, and what should the response signal be instead?\\\\\\\",\\\\\\\"we named a token --light-blue and now dark mode plus rebranding broke its meaning — what semantic token pattern should replace it?\\\\\\\",\\\\\\\"a variable called provider could mean payment, fulfillment, or auth in three different modules — how should semantics resolve that ambiguity?\\\\\\\",\\\\\\\"I need to choose between feat(billing): add email notifications and chore(billing): add email notifications — which commit message is semantically correct?\\\\\\\",\\\\\\\"should this ID be a branded type or a plain string, and what does parse-don't-validate mean for it?\\\\\\\",\\\\\\\"audit this database schema for unitless financial columns and timestamp-naming drift\\\\\\\"]\",\"anti_examples\":\"[\\\\\\\"should onboarding be hyphenated, and how does English compound morphology affect that decision?\\\\\\\",\\\\\\\"what does margin mean in finance reporting versus CSS layout — give me the canonical definition?\\\\\\\",\\\\\\\"what casing should a new database timestamp column use — kebab, snake, or camel?\\\\\\\",\\\\\\\"audit whether this button has the correct aria-label and focus semantics for screen readers\\\\\\\",\\\\\\\"decide whether these entities should live in a strict hierarchy or a faceted taxonomy\\\\\\\",\\\\\\\"draft the empty-state copy for a freshly connected storefront with no orders yet\\\\\\\"]\",\"relations\":\"{\\\\\\\"boundary\\\\\\\":[{\\\\\\\"skill\\\\\\\":\\\\\\\"linguistics\\\\\\\",\\\\\\\"reason\\\\\\\":\\\\\\\"linguistics owns word-form rules (morphology, compound-word ordering, abbreviation policy, audience register, blame-free phrasing); semantics owns meaning encoding (what the name communicates, semantic drift, branded types, HTTP-status semantics, SemVer signaling) — the same 'is this name good?' prompt routes by whether the trigger is the form of the word or the meaning the name encodes\\\\\\\"},{\\\\\\\"skill\\\\\\\":\\\\\\\"naming-conventions\\\\\\\",\\\\\\\"reason\\\\\\\":\\\\\\\"naming-conventions owns the deterministic casing/format choice per artifact kind (kebab vs camel vs snake vs Pascal); semantics owns the meaning encoding behind the name — the same 'what should I call this?' prompt routes by whether the user wants the format rule or the meaning-encoding decision\\\\\\\"},{\\\\\\\"skill\\\\\\\":\\\\\\\"semantic-relations\\\\\\\",\\\\\\\"reason\\\\\\\":\\\\\\\"semantic-relations owns the typed-connection vocabulary between concepts (IS-A, PART-OF, thematic roles); semantics owns the meaning encoding for an individual identifier or signal — the same 'what does this mean?' prompt routes by whether the trigger is the relation between things or the encoding of one thing\\\\\\\"},{\\\\\\\"skill\\\\\\\":\\\\\\\"microcopy\\\\\\\",\\\\\\\"reason\\\\\\\":\\\\\\\"microcopy owns specific in-product UI-text patterns (button labels, empty states, tooltips, dialogs, toasts); semantics owns the underlying meaning-encoding rules that apply to any name or signal — the same 'rewrite this UI text' prompt routes by whether the trigger is the UX-pattern surface or the cross-domain meaning rule\\\\\\\"}],\\\\\\\"related\\\\\\\":[\\\\\\\"linguistics\\\\\\\",\\\\\\\"semantic-relations\\\\\\\",\\\\\\\"microcopy\\\\\\\"],\\\\\\\"verify_with\\\\\\\":[\\\\\\\"a11y\\\\\\\",\\\\\\\"code-review\\\\\\\"]}\",\"portability\":\"{\\\\\\\"readiness\\\\\\\":\\\\\\\"scripted\\\\\\\",\\\\\\\"targets\\\\\\\":[\\\\\\\"skill-md\\\\\\\"]}\",\"lifecycle\":\"{\\\\\\\"stale_after_days\\\\\\\":365,\\\\\\\"review_cadence\\\\\\\":\\\\\\\"quarterly\\\\\\\"}\",\"mental_model\":\"|\",\"purpose\":\"|\",\"boundary\":\"|\",\"analogy\":\"Semantics is to code what road signage is to driving — the sign isn't the road, but bad signage causes crashes even when the road is fine. A `--light-blue` token that breaks on dark mode is the equivalent of 'Turn Left at the Big Tree' as a road sign: it worked when the tree was there; the semantics depended on the world, not the sign system.\",\"misconception\":\"|\",\"concept\":\"{\\\\\\\"definition\\\\\\\":\\\\\\\"Semantics — applied to software — is the discipline of *meaning encoding* in identifiers and signals: function names, variable names, design tokens, HTTP status codes, version numbers, commit messages, branded types, and the small textual artefacts that communicate intent to humans and machines. Drawing from Domain-Driven Design's *ubiquitous language* (Evans 2003), Don Norman's affordance theory, semantic versioning, and the broader tradition that treats names as contracts, it commits to the view that every visible identifier is a micro-decision whose meaning compounds across the codebase.\\\\\\\",\\\\\\\"mental_model\\\\\\\":\\\\\\\"|\\\\\\\",\\\\\\\"purpose\\\\\\\":\\\\\\\"|\\\\\\\",\\\\\\\"boundary\\\\\\\":\\\\\\\"|\\\\\\\",\\\\\\\"taxonomy\\\\\\\":\\\\\\\"|\\\\\\\",\\\\\\\"analogy\\\\\\\":\\\\\\\"|\\\\\\\",\\\\\\\"misconception\\\\\\\":\\\\\\\"|\\\\\\\"}\",\"skill_graph_source_repo\":\"https://github.com/jacob-balslev/skill-graph\",\"skill_graph_protocol\":\"Skill Metadata Protocol v5\",\"skill_graph_project\":\"Skill Graph\",\"skill_graph_canonical_skill\":\"skills/semantics/SKILL.md\"}"
+  schema_version: "7"
+  version: "1.2.0"
+  type: capability
+  category: foundations
+  domain: foundations/semantics
+  scope: portable
+  owner: skill-graph-maintainer
+  freshness: "2026-05-19"
+  drift_check: "{\"last_verified\":\"2026-05-19\"}"
+  eval_artifacts: planned
+  eval_state: unverified
+  routing_eval: absent
+  comprehension_state: present
+  stability: experimental
+  keywords: "[\"semantic naming\",\"semantic drift detection\",\"meaning encoding\",\"names as contracts\",\"branded type design\",\"semantic versioning rules\",\"conventional commit type choice\",\"HTTP status semantic signaling\",\"design-token semantic layer\",\"naming smells catalogue\",\"DDD ubiquitous language\",\"semantic affordance naming\",\"semantic UI signal\",\"semantic API contract\",\"parse-dont-validate pattern\",\"three-layer token architecture\",\"semantic-vs-syntactic distinction\",\"cargo-cult naming anti-pattern\",\"status code semantics\",\"semantic design tokens\"]"
+  examples: "[\"a function named process(data) actually reconciles revenue with production cost -- what semantic rename would make the operation self-explanatory without reading the implementation?\",\"our API returns HTTP 200 with an error payload for a failed request -- is that syntactically valid but semantically wrong, and what should the response signal be instead?\",\"we named a token --light-blue and now dark mode plus rebranding broke its meaning -- what semantic token pattern should replace it?\",\"a variable called provider could mean payment, fulfillment, or auth in three different modules -- how should semantics resolve that ambiguity?\",\"I need to choose between feat(billing): add email notifications and chore(billing): add email notifications -- which commit type communicates the change correctly?\",\"should this ID be a branded type or a plain string, and what does parse-dont-validate mean for it?\",\"audit this schema for unitless financial columns and timestamp-naming drift\",\"this UI state uses color only to distinguish warning from success -- what semantic signal is missing?\"]"
+  anti_examples: "[\"should onboarding be hyphenated, and how does English compound morphology affect that decision?\",\"what casing should a new database timestamp column use -- kebab, snake, or camel?\",\"rename this function and update every call-site across the repo\",\"type the relation between refund and payment as IS-A, PART-OF, causal, or thematic\",\"draft the empty-state copy for a freshly connected storefront with no orders yet\",\"decide whether these entities should live in a strict hierarchy or a faceted taxonomy\",\"audit whether this button has the correct aria-label and focus semantics for screen readers\",\"should we squash or rebase this feature branch before release?\"]"
+  relations: "{\"boundary\":[{\"skill\":\"linguistics\",\"reason\":\"linguistics owns word-form rules, polysemy phrasing, morphology, audience register, and blame-free wording; semantics owns what a name or signal communicates about the underlying concept or behavior.\"},{\"skill\":\"naming-conventions\",\"reason\":\"naming-conventions owns casing, prefix/suffix conventions, and rename mechanics per artifact kind; semantics owns whether the chosen words encode the right meaning before any casing rule is applied.\"},{\"skill\":\"semantic-relations\",\"reason\":\"semantic-relations owns typed connections between concepts such as IS-A, PART-OF, causal, and thematic relations; semantics owns the meaning encoded by one identifier, token, status, or signal.\"},{\"skill\":\"microcopy\",\"reason\":\"microcopy owns concrete UI-text patterns such as button labels, empty states, dialogs, validation, and toasts; semantics owns the cross-domain meaning rule those words must preserve.\"},{\"skill\":\"taxonomy-design\",\"reason\":\"taxonomy-design owns classification structures, facets, and category governance; semantics owns the names and signals inside or around that structure.\"},{\"skill\":\"a11y\",\"reason\":\"a11y owns accessibility compliance and assistive-technology behavior; semantics can flag a missing non-color signal but a11y verifies the actual accessibility contract.\"},{\"skill\":\"version-control\",\"reason\":\"version-control owns branch, commit, tag, and release-history shape; semantics owns the meaning encoded by version numbers and conventional-commit type choice.\"}],\"related\":[\"linguistics\",\"naming-conventions\",\"semantic-relations\",\"microcopy\",\"semantic-center\",\"conceptual-modeling\",\"taxonomy-design\"],\"verify_with\":[\"naming-conventions\",\"semantic-relations\",\"a11y\",\"code-review\"]}"
+  grounding: "{\"domain_object\":\"Cross-domain meaning encoding in software names, status signals, versions, commits, APIs, design tokens, UI signals, and semantic types\",\"grounding_mode\":\"universal\",\"truth_sources\":[\"https://martinfowler.com/bliki/UbiquitousLanguage.html\",\"https://hilton.org.uk/blog/naming-smells\",\"https://semver.org/\",\"https://www.conventionalcommits.org/en/v1.0.0/\",\"https://www.rfc-editor.org/rfc/rfc9110.html\",\"https://www.designtokens.org/tr/drafts/format/\",\"https://www.w3.org/WAI/WCAG22/Understanding/use-of-color.html\",\"https://www.typescriptlang.org/docs/handbook/type-compatibility.html\",\"https://lexi-lambda.github.io/blog/2019/11/05/parse-don-t-validate/\"],\"failure_modes\":[\"identifier_name_still_matches_syntax_but_not_behavior\",\"domain_language_drift_creates_translation_tax\",\"http_status_code_contradicts_response_body\",\"version_bump_understates_api_breakage\",\"commit_type_hides_feature_or_breaking_change\",\"design_token_name_coupled_to_appearance_instead_of_purpose\",\"primitive_type_allows_id_or_unit_mixups\",\"color_is_the_only_state_signal\",\"concept_block_contains_placeholder_values\",\"semantics_overowns_morphology_relation_typing_or_microcopy_work\"],\"evidence_priority\":\"equal\"}"
+  portability: "{\"readiness\":\"scripted\",\"targets\":[\"skill-md\"]}"
+  lifecycle: "{\"stale_after_days\":365,\"review_cadence\":\"quarterly\"}"
+  mental_model: "Semantics in software is meaning encoding: every name, status code, version number, commit type, token, and typed value is a sign that points at a referent under a convention. Good semantics keeps the sign, referent, and convention aligned as the system changes."
+  purpose: "Make meaning a first-class artifact so readers, tools, APIs, and users can infer what something is, why it exists, and what signal it sends without opening implementation details or tribal context."
+  boundary: "This skill owns the meaning encoded by one identifier, signal, token, version, status, or type. It does not own word morphology, casing rules, rename mechanics, typed relation analysis between concepts, UI-copy pattern writing, taxonomy governance, accessibility compliance, or git history shape."
+  analogy: "Semantics is road signage for software: the sign is not the road, but wrong signage sends people and machines down the wrong path even when the underlying road is structurally sound."
+  misconception: "The common mistake is treating naming and signaling as polish. A name that lies, a version number that understates a breaking change, or a 200 response that reports request failure is a behavioral defect because downstream readers and tools act on the signal."
+  concept: "{\"definition\":\"Semantics applied to software is the discipline of encoding meaning in names and signals: identifiers, status codes, version numbers, commit types, design tokens, UI signifiers, API resources, and semantic types.\",\"mental_model\":\"Treat every visible name or signal as a contract between a sign, the thing it refers to, and the convention readers use to decode it. Semantic drift happens when the thing changes but the signal does not.\",\"purpose\":\"It reduces translation tax, prevents misleading signals, and makes intent legible to humans, agents, tools, and downstream systems before they inspect implementation details.\",\"boundary\":\"It does not decide casing formats, word morphology, audience register, rename mechanics, relation types between concepts, UI-copy patterns, taxonomy structure, accessibility compliance, or git history shape.\",\"taxonomy\":\"Core surfaces include code names, database names, API names, HTTP status signals, SemVer bumps, Conventional Commit types, design-token layers, semantic UI signifiers, branded or refined types, and anti-patterns such as generic names, stale names, appearance-based names, and syntactically valid but semantically false responses.\",\"analogy\":\"Semantics is like road signage: a sign is small compared with the road, but if it points to the wrong destination, every later decision built on that sign is at risk.\",\"misconception\":\"Good semantics is not taste or clever wording. It is evidence-backed alignment between the words/signals a system exposes and the behavior, domain concept, or compatibility promise those words/signals represent.\"}"
+  structural_verdict: UNVERIFIED
+  truth_verdict: UNVERIFIED
+  comprehension_verdict: UNVERIFIED
+  application_verdict: UNVERIFIED
   skill_graph_source_repo: "https://github.com/jacob-balslev/skill-graph"
-  skill_graph_protocol: Skill Metadata Protocol v4
+  skill_graph_protocol: Skill Metadata Protocol v7
   skill_graph_project: Skill Graph
-  skill_graph_canonical_skill: skills/semantics/SKILL.md
+  skill_graph_canonical_skill: skills/foundations/semantics/semantics/SKILL.md
 ---
 
 # Semantics
@@ -39,13 +69,26 @@ The mental model: a `Sign` (the name) acquires meaning from its `Referent` (what
 
 ## When to Use
 
-- Naming variables, functions, classes, files, or database columns
-- Designing API endpoints, error codes, or status systems
-- Choosing CSS class names or design-token names
-- Writing commit messages or versioning releases
-- Designing UI labels, error messages, or microcopy quality bars
-- Modeling data with domain language and branded types
-- Reviewing code for naming quality
+- Choosing semantically truthful names for variables, functions, classes, files, database columns, events, and types.
+- Auditing whether a name still matches the behavior, domain concept, unit, or compatibility promise it now represents.
+- Designing API resource names, error-code families, HTTP status semantics, or response envelopes.
+- Choosing semantic CSS classes, design-token names, or token layers that survive rebrand, dark mode, and component reuse.
+- Choosing Conventional Commit type/scope or SemVer bump based on the meaning of a change.
+- Modeling domain language with branded/refined types or parse-don't-validate boundaries.
+- Reviewing UI labels, colors, affordances, and status indicators for meaning alignment before microcopy or a11y checks.
+- Reviewing code for naming quality when the problem is the meaning encoded by a name, not the mechanical rename.
+
+## Boundary Routing
+
+| User need | Use | Why |
+|---|---|---|
+| Word form, compound order, abbreviation policy, audience register, or blame-free phrasing | linguistics | Linguistics owns language form and register; semantics owns the meaning encoded by a signal. |
+| Casing format, prefix/suffix convention, or rename mechanics across call sites | naming-conventions or refactor | Naming conventions and refactor own mechanical consistency; semantics decides whether the words are truthful. |
+| Relation type between two concepts | semantic-relations | Semantic-relations owns IS-A, PART-OF, causal, thematic, synonymy, polysemy, and graph-edge typing. |
+| Functional UI text pattern | microcopy | Microcopy owns button labels, empty states, dialogs, tooltips, validation, and toast text. |
+| Classification structure, facets, or category assignment rules | taxonomy-design | Taxonomy owns the structure; semantics owns the names and signals inside it. |
+| Accessibility compliance or assistive-technology behavior | a11y | Semantics can detect a missing non-color signal; a11y verifies the accessible contract. |
+| Branching, rebasing, commit boundaries, release tags, or history shape | version-control | Version-control owns repository history; semantics owns version/commit meaning. |
 
 ---
 
@@ -53,7 +96,7 @@ The mental model: a `Sign` (the name) acquires meaning from its `Referent` (what
 
 ### The Fundamental Principle
 
-A name must encode **what** something is and **why** it exists. The reader should never need to read the implementation to understand the purpose.
+A name must encode **what** something is, **why** it exists, and what contract it exposes to readers or tools. The reader should not need to open the implementation to distinguish the domain concept, unit, side effect, lifecycle state, or compatibility signal.
 
 ### Rules
 
@@ -253,7 +296,7 @@ Semantic UI ensures signifiers match affordances: clickable things look clickabl
 
 | Color | Western Meaning | Risk |
 |-------|----------------|------|
-| Red | Danger, error, stop, loss | Green/red pair fails for ~8% of males (deuteranopia) |
+| Red | Danger, error, stop, loss | Color-only distinction fails for users with color-vision differences |
 | Green | Success, go, profit, safe | See above |
 | Yellow / Amber | Warning, caution, pending | Low contrast on white backgrounds |
 | Blue | Information, link, trust | Overloaded — can mean anything neutral |
@@ -293,7 +336,7 @@ For the full UX-text pattern catalog (button label rules, empty-state structure,
 | 4xx | Client error | Client's fault |
 | 5xx | Server error | Server's fault |
 
-**Never return HTTP 200 with an error body.** The status code IS the semantic signal.
+**Do not report a failed HTTP request as 200 merely because the transport succeeded.** RFC 9110 defines 200 as request success; if the request failed, the status code should carry that failure class. Domain-level partial success can still use a typed success payload when the request itself truly succeeded.
 
 ### GraphQL Naming
 
@@ -316,6 +359,16 @@ For the full UX-text pattern catalog (button label rules, empty-state structure,
 | **Cargo-cult naming** (copying patterns without understanding) | All domains | Every name must be justified for *this* context |
 
 ---
+
+## Source Notes
+
+- Fowler's Ubiquitous Language article grounds the domain-language rule: terms used by developers and domain experts must be rigorous enough for software because ambiguity turns into design defects.
+- Hilton's naming-smells catalog grounds the smell list and the default remediation: rename when a name is meaningless, abstract, numeric-suffixed, abbreviated, vague, type-encoded, or simply wrong.
+- SemVer and Conventional Commits ground compatibility signaling: version bumps and commit types communicate machine-readable change meaning, not decoration.
+- RFC 9110 grounds HTTP status codes as semantics for request outcome and response meaning.
+- The Design Tokens Community Group format grounds tokens as named values with aliases; semantic-token guidance here adds the practical purpose layer on top of that interoperable naming model.
+- WCAG Use of Color grounds the non-color signal rule: color cannot be the only way to convey state, action, response, or distinction.
+- TypeScript's structural type system and the parse-don't-validate pattern ground semantic/refined type advice: parse once into a value whose type preserves the knowledge the parser gained.
 
 ## Verification
 
@@ -344,10 +397,11 @@ SEMANTICS CHECK
 | Instead, use | Why |
 |---|---|
 | `linguistics` | Word morphology, compound-word ordering, polysemy resolution at the identifier level, audience register, blame-free phrasing. Linguistics owns the form rules; semantics owns the meaning encoding. |
-| `naming-conventions` | Deciding the casing format for an artifact kind (kebab vs camel vs snake vs Pascal). Naming-conventions owns the convention; semantics owns the meaning encoding under it. |
+| `naming-conventions` | Deciding casing format, prefix/suffix convention, or rename coordination. Naming-conventions owns the convention and mechanics; semantics owns the meaning encoded under it. |
 | `semantic-relations` | Typing the connection *between* two concepts (IS-A, PART-OF, thematic, causal). Semantic-relations owns the relation vocabulary; semantics owns the encoding of one identifier or signal. |
 | `microcopy` | The specific UX-text pattern (button labels, empty states, tooltips, dialogs, toasts). Microcopy owns the patterns; semantics owns the cross-domain meaning rule applied to many surfaces. |
-| `a11y` | Accessibility-label auditing (aria-label correctness, focus-state semantics, screen-reader announcement). A11y owns accessibility contracts; semantics owns naming-quality contracts. |
+| `a11y` | Accessibility-label auditing, focus-state semantics, contrast, screen-reader announcement, or WCAG compliance. Semantics can flag missing non-color meaning; a11y verifies accessibility. |
+| `version-control` | Branching, rebasing, commit boundaries, release tags, hotfix flow, or history shape. Semantics owns version and commit meaning; version-control owns repository history. |
 | `code-review` | Reviewing a specific PR for correctness, security, or quality across many concerns. Code-review uses semantics as one input; it does not own the meaning rules. |
 | (a glossary skill) | Defining the canonical meaning of a domain term. A glossary owns the definition; semantics owns the consistent application of the definition in names and signals. |
 | (a taxonomy skill) | Designing the classification structure itself (hierarchy vs facet, IS-A vs PART-OF tree shape). Taxonomy owns the structure; semantics owns the names inside it. |
@@ -358,9 +412,9 @@ SEMANTICS CHECK
 - Norman, D. A. (2013). *The Design of Everyday Things* (Revised and Expanded Edition). Basic Books. The foundational affordance / signifier framework; applied directly to the discipline of matching identifier names to actual behavior.
 - Hilton, P. (2017). ["Naming Smells."](https://hilton.org.uk/blog/naming-smells) Seven categories of names that destroy readability: meaningless, abstract, numeric-suffix, abbreviation, vague-verb, type-encoded, weasel-suffix. The practitioner reference for naming review.
 - Preston-Werner, T. [Semantic Versioning 2.0.0](https://semver.org/). The normative specification for MAJOR.MINOR.PATCH; the convention that makes API-compatibility intent machine-readable across package ecosystems.
-- [Conventional Commits 1.0.0](https://www.conventionalcommits.org/). The specification for `type(scope): description` commit messages; the foundation for automated changelog generation and SemVer-from-commits tooling.
-- King, A. (2019). ["Parse, don't validate."](https://lexi-lambda.github.io/blog/2019/11/05/parse-don-t-validate/) The reference statement of the parse-don't-validate pattern; encode meaning in types rather than checking it at use sites.
-- IETF. [RFC 9110: HTTP Semantics](https://datatracker.ietf.org/doc/html/rfc9110). The normative specification of HTTP status code semantics (2xx / 4xx / 5xx) and the body-vs-status separation of concerns.
+- [Conventional Commits 1.0.0](https://www.conventionalcommits.org/en/v1.0.0/). The specification for `type(scope): description` commit messages; the foundation for automated changelog generation and SemVer-from-commits tooling.
+- King, A. (2019). ["Parse, don't validate."](https://lexi-lambda.github.io/blog/2019/11/05/parse-don-t-validate/) The reference statement of the parse-don't-validate pattern; preserve knowledge gained during parsing in a stronger type instead of throwing it away after a boolean check.
+- IETF. [RFC 9110: HTTP Semantics](https://www.rfc-editor.org/rfc/rfc9110.html). The normative specification of HTTP status-code classes, 200 OK, client-error responses, and server-error responses.
 - Martin, R. C. (2008). *Clean Code: A Handbook of Agile Software Craftsmanship*. Prentice Hall. Chapter 2 ("Meaningful Names") is one of the most widely cited practitioner statements of naming discipline.
-- Fowler, M. (2010). ["DomainLanguage."](https://martinfowler.com/bliki/DomainLanguage.html) The bridge between DDD's ubiquitous-language principle and day-to-day engineering practice.
-- Hejlsberg, A., et al. Microsoft. [TypeScript Handbook — Branded Types pattern](https://www.typescriptlang.org/docs/handbook/2/everyday-types.html). The implementation surface for branded types and other meaning-encoding patterns in TypeScript.
+- Fowler, M. (2006). ["Ubiquitous Language."](https://martinfowler.com/bliki/UbiquitousLanguage.html) The bridge between DDD's ubiquitous-language principle and day-to-day engineering practice.
+- Microsoft. [TypeScript Handbook — Type Compatibility](https://www.typescriptlang.org/docs/handbook/type-compatibility.html). Grounds TypeScript structural typing; branded/refined types are a common pattern layered on top when structural compatibility is too permissive for domain identifiers.

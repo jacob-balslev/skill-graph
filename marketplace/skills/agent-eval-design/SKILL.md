@@ -5,11 +5,33 @@ license: MIT
 compatibility: "Portable eval-design discipline for agent workflows, skill routers, prompt systems, and tool-use policies."
 allowed-tools: Read Grep
 metadata:
-  metadata: "{\"schema_version\":6,\"version\":\"1.0.0\",\"type\":\"capability\",\"category\":\"quality\",\"domain\":\"ai-engineering/evaluation\",\"scope\":\"portable\",\"owner\":\"skill-graph-maintainer\",\"freshness\":\"2026-05-11\",\"drift_check\":\"{\\\\\\\"last_verified\\\\\\\":\\\\\\\"2026-05-11\\\\\\\"}\",\"eval_artifacts\":\"planned\",\"eval_state\":\"unverified\",\"routing_eval\":\"absent\",\"stability\":\"experimental\",\"keywords\":\"[\\\\\\\"agent eval\\\\\\\",\\\\\\\"AI eval design\\\\\\\",\\\\\\\"skill routing eval\\\\\\\",\\\\\\\"eval rubric\\\\\\\",\\\\\\\"hard negatives\\\\\\\",\\\\\\\"grader design\\\\\\\",\\\\\\\"regression eval\\\\\\\",\\\\\\\"trace evaluation\\\\\\\",\\\\\\\"acceptance threshold\\\\\\\",\\\\\\\"prompt eval\\\\\\\"]\",\"examples\":\"[\\\\\\\"design an eval set for whether this skill routes correctly against near-miss prompts\\\\\\\",\\\\\\\"create a rubric for judging agent outputs on grounded project knowledge extraction\\\\\\\",\\\\\\\"what hard negatives should test this router before we mark routing_eval present?\\\\\\\",\\\\\\\"turn these agent failure traces into regression eval cases\\\\\\\"]\",\"anti_examples\":\"[\\\\\\\"plan unit, integration, and e2e tests for this product feature\\\\\\\",\\\\\\\"run the skill graph lint and overlap tooling\\\\\\\",\\\\\\\"debug why yesterday's agent run failed\\\\\\\",\\\\\\\"write production code to fix this failing test\\\\\\\"]\",\"relations\":\"{\\\\\\\"boundary\\\\\\\":[{\\\\\\\"skill\\\\\\\":\\\\\\\"testing-strategy\\\\\\\",\\\\\\\"reason\\\\\\\":\\\\\\\"testing-strategy plans software tests; agent-eval-design designs behavioral evals for AI agents and skills\\\\\\\"},{\\\\\\\"skill\\\\\\\":\\\\\\\"skill-infrastructure\\\\\\\",\\\\\\\"reason\\\\\\\":\\\\\\\"skill-infrastructure owns library health tooling; agent-eval-design owns eval content and grading design\\\\\\\"},{\\\\\\\"skill\\\\\\\":\\\\\\\"debugging\\\\\\\",\\\\\\\"reason\\\\\\\":\\\\\\\"debugging investigates a live failure; agent-eval-design turns patterns into future evals\\\\\\\"},{\\\\\\\"skill\\\\\\\":\\\\\\\"code-review\\\\\\\",\\\\\\\"reason\\\\\\\":\\\\\\\"code-review evaluates diffs; agent-eval-design evaluates agent behavior\\\\\\\"}],\\\\\\\"related\\\\\\\":[\\\\\\\"skill-router\\\\\\\",\\\\\\\"context-engineering\\\\\\\",\\\\\\\"testing-strategy\\\\\\\",\\\\\\\"skill-infrastructure\\\\\\\"],\\\\\\\"verify_with\\\\\\\":[\\\\\\\"testing-strategy\\\\\\\",\\\\\\\"skill-infrastructure\\\\\\\"]}\",\"portability\":\"{\\\\\\\"readiness\\\\\\\":\\\\\\\"scripted\\\\\\\",\\\\\\\"targets\\\\\\\":[\\\\\\\"skill-md\\\\\\\"]}\",\"lifecycle\":\"{\\\\\\\"stale_after_days\\\\\\\":365,\\\\\\\"review_cadence\\\\\\\":\\\\\\\"quarterly\\\\\\\"}\",\"skill_graph_source_repo\":\"https://github.com/jacob-balslev/skill-graph\",\"skill_graph_protocol\":\"Skill Metadata Protocol v5\",\"skill_graph_project\":\"Skill Graph\",\"skill_graph_canonical_skill\":\"skills/agent-eval-design/SKILL.md\"}"
+  schema_version: "7"
+  version: "1.0.0"
+  type: capability
+  category: quality
+  domain: ai-engineering/evaluation
+  scope: portable
+  owner: skill-graph-maintainer
+  freshness: "2026-05-11"
+  drift_check: "{\"last_verified\":\"2026-05-11\"}"
+  eval_artifacts: planned
+  eval_state: unverified
+  routing_eval: absent
+  stability: experimental
+  keywords: "[\"agent eval\",\"AI eval design\",\"skill routing eval\",\"eval rubric\",\"hard negatives\",\"grader design\",\"regression eval\",\"trace evaluation\",\"acceptance threshold\",\"prompt eval\"]"
+  examples: "[\"design an eval set for whether this skill routes correctly against near-miss prompts\",\"create a rubric for judging agent outputs on grounded project knowledge extraction\",\"what hard negatives should test this router before we mark routing_eval present?\",\"turn these agent failure traces into regression eval cases\"]"
+  anti_examples: "[\"plan unit, integration, and e2e tests for this product feature\",\"run the skill graph lint and overlap tooling\",\"debug why yesterday's agent run failed\",\"write production code to fix this failing test\"]"
+  relations: "{\"boundary\":[{\"skill\":\"testing-strategy\",\"reason\":\"testing-strategy plans software tests; agent-eval-design designs behavioral evals for AI agents and skills\"},{\"skill\":\"skill-infrastructure\",\"reason\":\"skill-infrastructure owns library health tooling; agent-eval-design owns eval content and grading design\"},{\"skill\":\"debugging\",\"reason\":\"debugging investigates a live failure; agent-eval-design turns patterns into future evals\"},{\"skill\":\"code-review\",\"reason\":\"code-review evaluates diffs; agent-eval-design evaluates agent behavior\"}],\"related\":[\"skill-router\",\"context-engineering\",\"testing-strategy\",\"skill-infrastructure\"],\"verify_with\":[\"testing-strategy\",\"skill-infrastructure\"]}"
+  portability: "{\"readiness\":\"scripted\",\"targets\":[\"skill-md\"]}"
+  lifecycle: "{\"stale_after_days\":365,\"review_cadence\":\"quarterly\"}"
+  structural_verdict: UNVERIFIED
+  truth_verdict: UNVERIFIED
+  comprehension_verdict: UNVERIFIED
+  application_verdict: UNVERIFIED
   skill_graph_source_repo: "https://github.com/jacob-balslev/skill-graph"
-  skill_graph_protocol: Skill Metadata Protocol v4
+  skill_graph_protocol: Skill Metadata Protocol v7
   skill_graph_project: Skill Graph
-  skill_graph_canonical_skill: skills/agent-eval-design/SKILL.md
+  skill_graph_canonical_skill: skills/quality/agent-eval-design/SKILL.md
 ---
 
 # Agent Eval Design

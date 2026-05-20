@@ -72,6 +72,48 @@ function resolveSkillRoots(root = workspaceRoot(), workspace = loadWorkspaceConf
     .filter(Boolean);
 }
 
+function walkSkillFiles(rootDir, options = {}) {
+  const maxDepth = Number.isFinite(options.maxDepth) ? options.maxDepth : 6;
+  const results = [];
+  if (!rootDir || !fs.existsSync(rootDir)) return results;
+
+  function walk(dir, depth) {
+    if (depth > maxDepth) return;
+    const skillMd = path.join(dir, 'SKILL.md');
+    if (fs.existsSync(skillMd)) {
+      results.push(skillMd);
+      return;
+    }
+
+    for (const entry of fs.readdirSync(dir, { withFileTypes: true })) {
+      if (!entry.isDirectory()) continue;
+      if (entry.name.startsWith('_') || entry.name.startsWith('.')) continue;
+      walk(path.join(dir, entry.name), depth + 1);
+    }
+  }
+
+  walk(path.resolve(rootDir), 0);
+  return results.sort((a, b) => a.localeCompare(b));
+}
+
+function collectSkillFilesFromRoots(roots, options = {}) {
+  const files = [];
+  const seen = new Set();
+  for (const root of roots || []) {
+    for (const filePath of walkSkillFiles(root.absPath, options)) {
+      const key = path.resolve(filePath);
+      if (seen.has(key)) continue;
+      seen.add(key);
+      files.push({ filePath: key, project: root.project || null, root: root.absPath });
+    }
+  }
+  return files;
+}
+
+function collectSkillFiles(root = workspaceRoot(), workspace = loadWorkspaceConfig(root), options = {}) {
+  return collectSkillFilesFromRoots(resolveSkillRoots(root, workspace), options);
+}
+
 /**
  * Resolve a truth_source-style workspace-relative path against the configured
  * skill library, falling back to the repo root for back-compat.
@@ -111,9 +153,12 @@ function resolveTruthSourcePath(relPath, repoRoot, skillRoots) {
 module.exports = {
   packageRoot,
   workspaceRoot,
+  collectSkillFiles,
+  collectSkillFilesFromRoots,
   loadWorkspaceConfig,
   resolvePackagedOrWorkspacePath,
   resolveSchemaPath,
   resolveSkillRoots,
   resolveTruthSourcePath,
+  walkSkillFiles,
 };

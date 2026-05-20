@@ -5,11 +5,32 @@ license: MIT
 compatibility: Language-agnostic
 allowed-tools: Read Grep Bash Edit
 metadata:
-  metadata: "{\"schema_version\":6,\"version\":\"1.0.0\",\"type\":\"capability\",\"category\":\"engineering\",\"scope\":\"portable\",\"owner\":\"skill-graph-maintainer\",\"freshness\":\"2026-05-04\",\"drift_check\":\"{\\\\\\\"last_verified\\\\\\\":\\\\\\\"2026-05-04\\\\\\\"}\",\"eval_artifacts\":\"planned\",\"eval_state\":\"unverified\",\"routing_eval\":\"absent\",\"stability\":\"experimental\",\"keywords\":\"[\\\\\\\"naming\\\\\\\",\\\\\\\"naming convention\\\\\\\",\\\\\\\"name a file\\\\\\\",\\\\\\\"name a function\\\\\\\",\\\\\\\"name a variable\\\\\\\",\\\\\\\"name a type\\\\\\\",\\\\\\\"rename\\\\\\\",\\\\\\\"identifier\\\\\\\",\\\\\\\"kebab case\\\\\\\",\\\\\\\"camel case\\\\\\\",\\\\\\\"snake case\\\\\\\",\\\\\\\"pascal case\\\\\\\",\\\\\\\"abbreviation\\\\\\\",\\\\\\\"prefix suffix\\\\\\\",\\\\\\\"what to call this\\\\\\\",\\\\\\\"this name doesn't fit\\\\\\\",\\\\\\\"the name lies\\\\\\\",\\\\\\\"misleading name\\\\\\\"]\",\"examples\":\"[\\\\\\\"what should I name this util that converts between order shapes?\\\\\\\",\\\\\\\"is `isValidUser` or `validateUser` the right name for this guard?\\\\\\\",\\\\\\\"this function is called `getThing` but it also writes to disk — rename it\\\\\\\",\\\\\\\"kebab-case or snake_case for a new database column?\\\\\\\",\\\\\\\"the type is called `Result` but it's specifically the order-pricing result — rename\\\\\\\",\\\\\\\"should I prefix this hook with `use` or just call it `subscribeOrders`?\\\\\\\",\\\\\\\"we have `User` and `UserAccount` and `AccountUser` — which means what?\\\\\\\",\\\\\\\"rename plan: this column was called `created` but it stores the ship date\\\\\\\"]\",\"anti_examples\":\"[\\\\\\\"refactor this 200-line function into smaller pieces\\\\\\\",\\\\\\\"write a doc explaining our naming conventions\\\\\\\",\\\\\\\"review this PR's naming choices\\\\\\\",\\\\\\\"the variable named `userIsActive` is logging the wrong value\\\\\\\",\\\\\\\"scaffold a new skill that teaches naming conventions\\\\\\\"]\",\"relations\":\"{\\\\\\\"boundary\\\\\\\":[{\\\\\\\"skill\\\\\\\":\\\\\\\"refactor\\\\\\\",\\\\\\\"reason\\\\\\\":\\\\\\\"refactor reshapes existing code structure; naming-conventions decides what an artifact should be CALLED, before or independently of restructuring\\\\\\\"},{\\\\\\\"skill\\\\\\\":\\\\\\\"code-review\\\\\\\",\\\\\\\"reason\\\\\\\":\\\\\\\"code-review evaluates a diff holistically; naming-conventions is the focused naming-decision skill invoked during authoring\\\\\\\"},{\\\\\\\"skill\\\\\\\":\\\\\\\"debugging\\\\\\\",\\\\\\\"reason\\\\\\\":\\\\\\\"debugging chases observed wrong behaviour; naming-conventions catches names that LIE about their meaning before the bug ships\\\\\\\"}],\\\\\\\"related\\\\\\\":[\\\\\\\"refactor\\\\\\\"],\\\\\\\"verify_with\\\\\\\":[\\\\\\\"code-review\\\\\\\"]}\",\"portability\":\"{\\\\\\\"readiness\\\\\\\":\\\\\\\"scripted\\\\\\\",\\\\\\\"targets\\\\\\\":[\\\\\\\"skill-md\\\\\\\"]}\",\"lifecycle\":\"{\\\\\\\"stale_after_days\\\\\\\":365,\\\\\\\"review_cadence\\\\\\\":\\\\\\\"quarterly\\\\\\\"}\",\"skill_graph_source_repo\":\"https://github.com/jacob-balslev/skill-graph\",\"skill_graph_protocol\":\"Skill Metadata Protocol v5\",\"skill_graph_project\":\"Skill Graph\",\"skill_graph_canonical_skill\":\"skills/naming-conventions/SKILL.md\"}"
+  schema_version: "7"
+  version: "1.0.0"
+  type: capability
+  category: engineering
+  scope: portable
+  owner: skill-graph-maintainer
+  freshness: "2026-05-04"
+  drift_check: "{\"last_verified\":\"2026-05-04\"}"
+  eval_artifacts: planned
+  eval_state: unverified
+  routing_eval: absent
+  stability: experimental
+  keywords: "[\"naming\",\"naming convention\",\"name a file\",\"name a function\",\"name a variable\",\"name a type\",\"rename\",\"identifier\",\"kebab case\",\"camel case\",\"snake case\",\"pascal case\",\"abbreviation\",\"prefix suffix\",\"what to call this\",\"this name doesn't fit\",\"the name lies\",\"misleading name\"]"
+  examples: "[\"what should I name this util that converts between order shapes?\",\"is `isValidUser` or `validateUser` the right name for this guard?\",\"this function is called `getThing` but it also writes to disk — rename it\",\"kebab-case or snake_case for a new database column?\",\"the type is called `Result` but it's specifically the order-pricing result — rename\",\"should I prefix this hook with `use` or just call it `subscribeOrders`?\",\"we have `User` and `UserAccount` and `AccountUser` — which means what?\",\"rename plan: this column was called `created` but it stores the ship date\"]"
+  anti_examples: "[\"refactor this 200-line function into smaller pieces\",\"write a doc explaining our naming conventions\",\"review this PR's naming choices\",\"the variable named `userIsActive` is logging the wrong value\",\"scaffold a new skill that teaches naming conventions\"]"
+  relations: "{\"boundary\":[{\"skill\":\"refactor\",\"reason\":\"refactor reshapes existing code structure; naming-conventions decides what an artifact should be CALLED, before or independently of restructuring\"},{\"skill\":\"code-review\",\"reason\":\"code-review evaluates a diff holistically; naming-conventions is the focused naming-decision skill invoked during authoring\"},{\"skill\":\"debugging\",\"reason\":\"debugging chases observed wrong behaviour; naming-conventions catches names that LIE about their meaning before the bug ships\"}],\"related\":[\"refactor\"],\"verify_with\":[\"code-review\"]}"
+  portability: "{\"readiness\":\"scripted\",\"targets\":[\"skill-md\"]}"
+  lifecycle: "{\"stale_after_days\":365,\"review_cadence\":\"quarterly\"}"
+  structural_verdict: UNVERIFIED
+  truth_verdict: UNVERIFIED
+  comprehension_verdict: UNVERIFIED
+  application_verdict: UNVERIFIED
   skill_graph_source_repo: "https://github.com/jacob-balslev/skill-graph"
-  skill_graph_protocol: Skill Metadata Protocol v4
+  skill_graph_protocol: Skill Metadata Protocol v7
   skill_graph_project: Skill Graph
-  skill_graph_canonical_skill: skills/naming-conventions/SKILL.md
+  skill_graph_canonical_skill: skills/engineering/naming-conventions/SKILL.md
 ---
 
 # Naming Conventions

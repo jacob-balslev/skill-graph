@@ -394,6 +394,28 @@ function normalizeFrontmatter(fm) {
   const normalized = { ...fm };
   delete normalized.metadata;
 
+  function normalizeSpecialField(key, value) {
+    if (key === 'eval_score') {
+      const score = Number(value);
+      return Number.isFinite(score) ? score : value;
+    }
+    if (key === 'eval_failed_ids') {
+      if (Array.isArray(value)) return value.map(String);
+      if (typeof value === 'string') {
+        const trimmed = value.trim();
+        if (trimmed.startsWith('[') && trimmed.endsWith(']')) {
+          try {
+            const parsed = JSON.parse(trimmed.replace(/\\"/g, '"').replace(/\\\\/g, '\\'));
+            return Array.isArray(parsed) ? parsed.map(String) : value;
+          } catch (_err) {
+            return value;
+          }
+        }
+      }
+    }
+    return value;
+  }
+
   for (const [key, rawValue] of Object.entries(metadata)) {
     if (EXPORT_PROVENANCE_FIELDS.has(key)) continue;
     // Top-level wins. Authors who explicitly set both forms get the
@@ -420,7 +442,28 @@ function normalizeFrontmatter(fm) {
         }
       }
     }
-    normalized[key] = rawValue;
+    if (key === 'eval_score') {
+      const score = Number(rawValue);
+      normalized[key] = Number.isFinite(score) ? score : rawValue;
+      continue;
+    }
+    if (key === 'eval_failed_ids' && typeof rawValue === 'string') {
+      const trimmed = rawValue.trim();
+      if (trimmed.startsWith('[') && trimmed.endsWith(']')) {
+        try {
+          const parsed = JSON.parse(trimmed.replace(/\\"/g, '"').replace(/\\\\/g, '\\'));
+          normalized[key] = Array.isArray(parsed) ? parsed.map(String) : rawValue;
+          continue;
+        } catch (_err) {
+          // Fall through and keep the raw string.
+        }
+      }
+    }
+    normalized[key] = normalizeSpecialField(key, rawValue);
+  }
+
+  for (const key of ['eval_score', 'eval_failed_ids']) {
+    if (key in normalized) normalized[key] = normalizeSpecialField(key, normalized[key]);
   }
 
   return normalized;

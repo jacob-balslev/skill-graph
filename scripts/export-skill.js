@@ -30,7 +30,7 @@
 
 const fs = require('fs');
 const path = require('path');
-const { parseFrontmatter } = require('./lib/parse-frontmatter');
+const { normalizeFrontmatter, parseFrontmatter } = require('./lib/parse-frontmatter');
 
 // Plain SKILL.md fields that stay at the top level of the output.
 // Order matters for the generated YAML - base fields appear first.
@@ -80,6 +80,24 @@ const SKILL_GRAPH_EXTENSION_FIELDS = new Set([
   'routing_bundles',
   'lifecycle',
   'runtime_telemetry',
+  'secondary_categories',
+  'marketplace_tier',
+  'last_audited',
+  'last_changed',
+  'structural_verdict',
+  'truth_verdict',
+  'comprehension_verdict',
+  'application_verdict',
+  'audit_verdict',
+  'eval_score',
+  'eval_failed_ids',
+  'lint_verdict',
+  'drift_status',
+  'mental_model',
+  'purpose',
+  'boundary',
+  'analogy',
+  'misconception',
   'extends',
   'allowed_tools',
 ]);
@@ -276,7 +294,7 @@ function extractBody(text) {
 }
 
 function buildExportedSkill(text, options = {}) {
-  const fm = parseFrontmatter(text);
+  const fm = normalizeFrontmatter(parseFrontmatter(text));
   if (!fm) return null;
   const exportFm = { ...fm };
   if (options.description) exportFm.description = options.description;

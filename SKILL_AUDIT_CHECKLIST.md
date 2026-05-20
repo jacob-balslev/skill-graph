@@ -87,7 +87,7 @@ Required dimension rows:
 
 ### 1. Frontmatter validity
 
-- [ ] `schema_version` exists and equals `6` (integer; the string `"6"` is tolerated for hand-rolled YAML for back-compat — see `schemas/skill.v6.schema.json`)
+- [ ] `schema_version` exists and equals `7` (integer; the string `"7"` is tolerated for hand-rolled YAML for back-compat — see `schemas/skill.v7.schema.json`)
 - [ ] `name` exists and matches the intended skill identifier
 - [ ] `description` exists and is specific enough to route from
 - [ ] `version` exists
@@ -192,8 +192,8 @@ A skill audit is complete when:
 1. every checklist section was reviewed
 2. every finding has severity and evidence
 3. confirmed drift was fixed or explicitly deferred
-4. the final verdict is one of:
-   - PASS
-   - PASS WITH FIXES
-   - PARTIAL
-   - FAIL
+4. the Health Block verdicts are populated or explicitly left `UNVERIFIED` with evidence:
+   - `structural_verdict`
+   - `truth_verdict`
+   - `comprehension_verdict`
+   - `application_verdict`

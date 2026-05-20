@@ -5,11 +5,41 @@ license: MIT
 compatibility: "Provider-agnostic; abstract tool capabilities map to concrete tools across Claude Code, Cursor, Copilot, OpenCode, Aider, Continue. Specific tool names in this skill (read_file, grep_search, run_in_terminal, apply_patch) are concrete examples — substitute the equivalent in your harness."
 allowed-tools: Read Grep Bash Edit
 metadata:
-  metadata: "{\"schema_version\":6,\"version\":\"1.0.0\",\"type\":\"capability\",\"category\":\"engineering\",\"domain\":\"ai-engineering/tool-use\",\"scope\":\"portable\",\"owner\":\"skill-graph-maintainer\",\"freshness\":\"2026-05-06\",\"drift_check\":\"{\\\\\\\"last_verified\\\\\\\":\\\\\\\"2026-05-06\\\\\\\"}\",\"eval_artifacts\":\"planned\",\"eval_state\":\"unverified\",\"routing_eval\":\"absent\",\"stability\":\"experimental\",\"keywords\":\"[\\\\\\\"tool call optimization\\\\\\\",\\\\\\\"reduce tool calls\\\\\\\",\\\\\\\"too many tool calls\\\\\\\",\\\\\\\"script vs tool call\\\\\\\",\\\\\\\"batching tool calls\\\\\\\",\\\\\\\"parallel tool calls\\\\\\\",\\\\\\\"parallelize calls\\\\\\\",\\\\\\\"independent calls\\\\\\\",\\\\\\\"redundant reads\\\\\\\",\\\\\\\"re-reading file\\\\\\\",\\\\\\\"tool selection\\\\\\\",\\\\\\\"which tool to use\\\\\\\",\\\\\\\"grep before read\\\\\\\",\\\\\\\"file search before grep\\\\\\\",\\\\\\\"bulk edit script\\\\\\\",\\\\\\\"poka-yoke tool design\\\\\\\",\\\\\\\"subagent delegation for tool efficiency\\\\\\\",\\\\\\\"context-efficient tool use\\\\\\\",\\\\\\\"cost per tool call\\\\\\\",\\\\\\\"tool call benchmark\\\\\\\",\\\\\\\"agent efficiency\\\\\\\",\\\\\\\"token efficiency per call\\\\\\\"]\",\"examples\":\"[\\\\\\\"the agent made 17 read_file calls when 3 greps would have done — what should it have done?\\\\\\\",\\\\\\\"we're renaming a variable across 40 files — script or tool calls?\\\\\\\",\\\\\\\"the agent re-reads the same file three times in one task — fix the policy\\\\\\\",\\\\\\\"should I batch these reads into one message or wait for each result?\\\\\\\",\\\\\\\"design a tool-use protocol for our new agent harness — what rules matter?\\\\\\\",\\\\\\\"the context window is filling with verbose terminal output — how do I cut it?\\\\\\\",\\\\\\\"is it worth delegating this exploratory search to a subagent?\\\\\\\",\\\\\\\"what's a reasonable tool-call budget for a single-file bug fix?\\\\\\\"]\",\"anti_examples\":\"[\\\\\\\"improve this prompt's wording to get better outputs\\\\\\\",\\\\\\\"design what skills get loaded for which prompts\\\\\\\",\\\\\\\"the test suite is failing after my change — find the cause\\\\\\\",\\\\\\\"extract this repeated string-concat into a helper function\\\\\\\",\\\\\\\"scaffold a new SKILL.md for our team's tool-use rules\\\\\\\",\\\\\\\"review this AI-generated PR for correctness\\\\\\\"]\",\"relations\":\"{\\\\\\\"boundary\\\\\\\":[{\\\\\\\"skill\\\\\\\":\\\\\\\"context-engineering\\\\\\\",\\\\\\\"reason\\\\\\\":\\\\\\\"context-engineering designs the entire information stack reaching the model; tool-call-strategy owns the per-call efficiency decisions inside that stack\\\\\\\"},{\\\\\\\"skill\\\\\\\":\\\\\\\"prompt-craft\\\\\\\",\\\\\\\"reason\\\\\\\":\\\\\\\"prompt-craft writes the wording of one instruction; tool-call-strategy decides which external operations the agent should invoke around that instruction\\\\\\\"},{\\\\\\\"skill\\\\\\\":\\\\\\\"debugging\\\\\\\",\\\\\\\"reason\\\\\\\":\\\\\\\"debugging chases a specific runtime failure; tool-call-strategy is about the efficiency profile of healthy tool use\\\\\\\"},{\\\\\\\"skill\\\\\\\":\\\\\\\"refactor\\\\\\\",\\\\\\\"reason\\\\\\\":\\\\\\\"refactor owns behaviour-preserving code transformations as the deliverable; tool-call-strategy decides whether to deliver that transformation through 50 tool calls or one script\\\\\\\"}],\\\\\\\"related\\\\\\\":[\\\\\\\"context-engineering\\\\\\\",\\\\\\\"refactor\\\\\\\",\\\\\\\"prompt-craft\\\\\\\"],\\\\\\\"verify_with\\\\\\\":[\\\\\\\"code-review\\\\\\\"]}\",\"portability\":\"{\\\\\\\"readiness\\\\\\\":\\\\\\\"scripted\\\\\\\",\\\\\\\"targets\\\\\\\":[\\\\\\\"skill-md\\\\\\\"]}\",\"lifecycle\":\"{\\\\\\\"stale_after_days\\\\\\\":90,\\\\\\\"review_cadence\\\\\\\":\\\\\\\"quarterly\\\\\\\"}\",\"skill_graph_source_repo\":\"https://github.com/jacob-balslev/skill-graph\",\"skill_graph_protocol\":\"Skill Metadata Protocol v5\",\"skill_graph_project\":\"Skill Graph\",\"skill_graph_canonical_skill\":\"skills/tool-call-strategy/SKILL.md\"}"
+  schema_version: "7"
+  version: "1.1.0"
+  type: capability
+  category: engineering
+  domain: ai-engineering/tool-use
+  scope: portable
+  owner: skill-graph-maintainer
+  freshness: "2026-05-18"
+  drift_check: "{\"last_verified\":\"2026-05-18\"}"
+  eval_artifacts: planned
+  eval_state: unverified
+  routing_eval: absent
+  comprehension_state: present
+  stability: experimental
+  keywords: "[\"tool call optimization\",\"reduce tool calls\",\"too many tool calls\",\"script vs tool call\",\"batching tool calls\",\"parallel tool calls\",\"parallelize calls\",\"independent calls\",\"redundant reads\",\"re-reading file\",\"tool selection\",\"which tool to use\",\"grep before read\",\"file search before grep\",\"bulk edit script\",\"poka-yoke tool design\",\"subagent delegation for tool efficiency\",\"context-efficient tool use\",\"cost per tool call\",\"tool call benchmark\",\"agent efficiency\",\"token efficiency per call\"]"
+  examples: "[\"the agent made 17 read_file calls when 3 greps would have done — what should it have done?\",\"we're renaming a variable across 40 files — script or tool calls?\",\"the agent re-reads the same file three times in one task — fix the policy\",\"should I batch these reads into one message or wait for each result?\",\"design a tool-use protocol for our new agent harness — what rules matter?\",\"the context window is filling with verbose terminal output — how do I cut it?\",\"is it worth delegating this exploratory search to a subagent?\",\"what's a reasonable tool-call budget for a single-file bug fix?\"]"
+  anti_examples: "[\"improve this prompt's wording to get better outputs\",\"design what skills get loaded for which prompts\",\"the test suite is failing after my change — find the cause\",\"extract this repeated string-concat into a helper function\",\"scaffold a new SKILL.md for our team's tool-use rules\",\"review this AI-generated PR for correctness\"]"
+  relations: "{\"boundary\":[{\"skill\":\"context-engineering\",\"reason\":\"context-engineering designs the entire information stack reaching the model; tool-call-strategy owns the per-call efficiency decisions inside that stack\"},{\"skill\":\"prompt-craft\",\"reason\":\"prompt-craft writes the wording of one instruction; tool-call-strategy decides which external operations the agent should invoke around that instruction\"},{\"skill\":\"debugging\",\"reason\":\"debugging chases a specific runtime failure; tool-call-strategy is about the efficiency profile of healthy tool use\"},{\"skill\":\"refactor\",\"reason\":\"refactor owns behaviour-preserving code transformations as the deliverable; tool-call-strategy decides whether to deliver that transformation through 50 tool calls or one script\"}],\"related\":[\"context-engineering\",\"refactor\",\"prompt-craft\"],\"verify_with\":[\"code-review\"]}"
+  grounding: "{\"domain_object\":\"Efficient tool-call strategy for LLM coding agents\",\"grounding_mode\":\"hybrid\",\"truth_sources\":[\"https://developers.openai.com/api/docs/guides/function-calling\",\"https://platform.claude.com/docs/en/agents-and-tools/tool-use/overview\",\"https://platform.claude.com/docs/en/agents-and-tools/tool-use/manage-tool-context\",\"https://github.com/jacob-balslev/skills/blob/main/skills/tool-call-flow/SKILL.md\",\"https://github.com/jacob-balslev/skills/blob/main/skills/context-engineering/SKILL.md\"],\"failure_modes\":[\"tool_call_minimization_without_verification\",\"serial_calls_when_parallel_independent\",\"shell_bulk_work_without_reviewable_diff\",\"verbose_outputs_pollute_context\",\"same_result_refetched_from_conversation\"],\"evidence_priority\":\"equal\"}"
+  portability: "{\"readiness\":\"scripted\",\"targets\":[\"skill-md\"]}"
+  lifecycle: "{\"stale_after_days\":90,\"review_cadence\":\"quarterly\"}"
+  mental_model: "Tool-call strategy is the query planner for an agent's external actions. Treat every call as an expensive, stateful evidence-acquisition operation with three costs: latency, tokens, and context pollution. The goal is sufficient evidence with minimum noise: pick the narrowest tool that can answer the question, batch independent calls, keep dependent calls sequential, use scripts for deterministic bulk work, preserve reviewability for edits, and stop re-fetching facts already present in the conversation."
+  purpose: "This skill prevents agents from wasting time and context with redundant reads, serial searches, unbounded terminal output, or hand-driven N+1 edits while also preventing the opposite failure of under-calling and hallucinating. It gives a portable decision framework for choosing tools, scripts, batching, subagents, and output-shaping patterns."
+  boundary: "This skill decides when, how many, and which external operations an already-running agent should use. It does not describe the protocol mechanics of tool-call messages, the whole context stack around the agent, prompt wording, runtime failure debugging, or the correctness mechanics of a refactor deliverable."
+  analogy: "Tool-call strategy is like planning queries against a slow, expensive database: ask the smallest question that returns the needed evidence, combine independent queries when possible, avoid repeating a query whose result is already in hand, and use set-based operations for bulk deterministic work."
+  misconception: "The common mistake is treating efficiency as fewer calls at all costs. Good strategy is not tool abstinence; it is evidence discipline. A necessary verification call is cheap compared with a hallucinated answer, while an unbounded log dump or a repeated file read can make every later decision worse."
+  concept: "{\"definition\":\"Tool-call strategy is the discipline of choosing, batching, sequencing, and shaping an agent's external operations so each call produces enough evidence for the next decision without unnecessary latency, token cost, or context pollution.\",\"mental_model\":\"Treat tool use as query planning for an expensive, persistent evidence stream. Each call should have a specific information need, a bounded expected result, and a clear reason it cannot be satisfied from existing context. Independent calls can run together; dependent calls wait; deterministic bulk work moves into scripts; judgment-dependent work stays in the agent loop.\",\"purpose\":\"It keeps agents fast and accurate by preventing redundant reads, serial round trips, noisy outputs, and manual N+1 edits while preserving enough verification to avoid hallucination.\",\"boundary\":\"It is not the tool-call protocol itself, prompt wording, whole-context architecture, runtime debugging, or refactor methodology. It owns per-call efficiency choices inside those broader workflows.\",\"taxonomy\":\"Core levers include tool selection, script-vs-call gating, batching and parallelization, dependency detection, redundancy checks, output bounding, subagent isolation, and reviewable edit strategy.\",\"analogy\":\"Tool-call strategy is like planning queries against a slow, expensive database: ask the smallest question that returns the needed evidence, combine independent queries when possible, avoid repeating a query whose result is already in hand, and use set-based operations for bulk deterministic work.\",\"misconception\":\"Fewer calls is not automatically better. The correct target is sufficient evidence with minimal noise; skipping a needed check is worse than making one more focused call.\"}"
+  structural_verdict: UNVERIFIED
+  truth_verdict: UNVERIFIED
+  comprehension_verdict: UNVERIFIED
+  application_verdict: UNVERIFIED
   skill_graph_source_repo: "https://github.com/jacob-balslev/skill-graph"
-  skill_graph_protocol: Skill Metadata Protocol v4
+  skill_graph_protocol: Skill Metadata Protocol v7
   skill_graph_project: Skill Graph
-  skill_graph_canonical_skill: skills/tool-call-strategy/SKILL.md
+  skill_graph_canonical_skill: skills/engineering/tool-call-strategy/SKILL.md
 ---
 
 # Tool Call Strategy
@@ -18,10 +48,10 @@ metadata:
 
 - The three costs of every tool call: token cost (schema overhead and result size), latency cost (round-trip and decision time), context pollution (results persist in attention window)
 - The script-vs-call decision gate: deterministic bulk work belongs in a script; reasoning-dependent work belongs in individual tool calls with the agent in the loop
-- Tool selection decision tree: file-search vs content-search vs targeted-read vs full-read, the dedicated-tool-over-shell rule, and the harness-agnostic capability map
+- Tool selection decision tree: file-search vs content-search vs targeted-read vs full-read, harness-native structured tools vs shell fallback, and the harness-agnostic capability map
 - Batching independent calls in a single message vs sequential round-trips, and the dependency-detection heuristic
 - Redundancy avoidance: the conversation-as-cache mental model, recognising re-reads, re-searches, and re-runs
-- Context-efficient patterns: targeted line ranges, summarised verification output, dedicated-tool defaults
+- Context-efficient patterns: targeted line ranges, bounded verification output, dedicated-tool defaults, provenance notes, and tool-result lifecycle
 - Subagent delegation for context protection: when exploration belongs in a disposable subagent context vs the main session
 - The poka-yoke principle: design tool usage to prevent mistakes, not just optimise speed
 - Cost benchmark heuristics: rough call-count ranges per task type and the "stop and reconsider" red flag
@@ -44,14 +74,18 @@ The optimal strategy is not "minimise calls." Under-calling causes hallucination
 
 **The compound effect:** five unnecessary reads do not just cost five times the tokens — they push useful context further from the attention window, degrading the quality of subsequent reasoning. Context is not just a budget; it is a signal-to-noise ratio.
 
+## Source Notes
+
+This skill treats vendor tool protocols as evidence for the strategy, not as its whole scope. OpenAI's function-calling guide frames tool calling as a multi-step conversation where the application supplies tools, executes requested calls, and returns outputs for the next model turn; it also notes that large tool surfaces consume context and can be narrowed with mechanisms such as tool search or allowed-tool subsets. Anthropic's tool-use docs describe the same model/runtime separation and document parallel tool use for independent work plus context-management patterns for keeping tool output from overwhelming the conversation. Those protocol facts support the portable strategy here: plan calls, keep independent work parallel, keep dependent work sequential, and shape tool outputs as first-class context.
+
 ## Harness-Agnostic Tool Capability Map
 
 Every modern coding-agent harness exposes the same five abstract tool capabilities under different concrete names. Substitute your harness's equivalents when applying this skill.
 
 | Abstract capability | Claude Code | Cursor / Copilot / Continue | OpenCode | Shell-only fallback |
 |---|---|---|---|---|
-| File-pattern search (find files by name/path glob) | `Glob` | `file_search` | `glob` | `find` |
-| Content search (find text inside files) | `Grep` | `grep_search` | `grep` | `grep -r`, `rg` |
+| File-pattern search (find files by name/path glob) | `Glob` | `file_search` | `glob` | `rg --files`, then `find` |
+| Content search (find text inside files) | `Grep` | `grep_search` | `grep` | `rg`, then `grep -r` |
 | Targeted read (read specific lines of a file) | `Read` (with `offset`/`limit`) | `read_file` (with line range) | `read` | `sed -n 'A,Bp'` |
 | Diff-based edit (modify part of a file) | `Edit` / `MultiEdit` | `replace_string_in_file` / `apply_patch` | `edit` | `sed -i` (avoid) |
 | Shell execution (run an arbitrary command) | `Bash` | `run_in_terminal` | `bash` | direct shell |
@@ -97,7 +131,7 @@ Choose the right tool for the information need. Wrong tool choice is the largest
 
 ```
 Need to find files by name or path pattern?
-  → file-pattern search (NOT shell `find`, NOT shell `ls`)
+  → file-pattern search; if shell is the available search surface, use `rg --files` before `find`
 
 Need to find content inside files?
   → Need the matching lines themselves?
@@ -119,8 +153,8 @@ Need to modify a file?
                 NO  → diff-based edit
 
 Need to run a command?
-  → Is there a dedicated tool for this? (read tool instead of `cat`/`head`/`tail`, content search instead of `grep`)
-        YES → use the dedicated tool
+  → Is there a structured harness tool for this? (read tool, content search, file-pattern search)
+        YES → use the structured tool
         NO  → shell execution
 ```
 
@@ -128,9 +162,9 @@ Need to run a command?
 
 | Rule | Why |
 |---|---|
-| Never use shell execution to read files with `cat`, `head`, `tail` | The dedicated read tool is purpose-built, shows line numbers, handles images/PDFs |
-| Never use shell execution for `grep` or `rg` file searches | The dedicated content search has optimised permissions and structured output |
-| Never use shell execution for `find` to discover files | The file-pattern search (glob) is faster and returns sorted results |
+| Prefer structured read/search tools when the harness provides them | They usually return line numbers, respect workspace permissions, and keep output easier to inspect |
+| In shell-first harnesses, prefer `rg` and `rg --files` before `grep -r`, `find`, or `ls` | Ripgrep is faster, has better defaults for code search, and makes it easier to narrow output |
+| Use `head`, `tail`, or line-range reads to bound output, not as a blind substitute for targeted search | Output shaping protects context; blind file dumping pollutes it |
 | Never default to inline `sed` or `awk` edits in shell | Prefer diff-based edits for reviewable changes; reserve raw `sed` for cases where a script would be disproportionate |
 | Content search before full read | Content search returns only matching lines; full read returns the entire file |
 | File-pattern search before content search | If you know the file pattern, narrow the search space first |
@@ -216,6 +250,15 @@ Before every tool call, answer: *"Is this information already in my context from
 | Check types | `pnpm typecheck 2>&1 \| head -30` | Unbounded typecheck output |
 | Run multiple checks | `pnpm lint && pnpm typecheck && pnpm test` (one call) | Three separate shell calls |
 
+### For tool-result lifecycle
+
+| Need | Efficient pattern | Wasteful pattern |
+|---|---|---|
+| Preserve evidence | Summarise the result with file paths, line numbers, command names, and pass/fail status | Keep a full raw transcript in the main context after the useful facts have been extracted |
+| Retry after failure | Change one variable before retrying and record what changed | Re-run the identical failing call hoping for a different result |
+| Continue after broad exploration | Compact to the decision, evidence path, and open questions | Carry every exploratory hit forward as if it were still active context |
+| Hand off to a user or reviewer | Report the smallest reproducible command and the decisive lines | Paste unbounded logs with no interpretation |
+
 ## Subagent Delegation for Context Protection
 
 Subagents run in separate contexts. Use them to prevent context pollution from exploratory work.
@@ -277,6 +320,8 @@ After applying this skill, verify:
 - [ ] No re-reads or re-searches for information already in context
 - [ ] Targeted reads with explicit line ranges were used for large files
 - [ ] Verbose command outputs were piped through `head` or `tail`
+- [ ] Tool results were summarised into durable evidence and raw verbose output was not carried forward unnecessarily
+- [ ] Shell fallback used fast, narrow search/read commands when structured harness tools were unavailable
 - [ ] Total tool calls fall within the benchmark range for this task type, or there is a documented reason they exceed it
 - [ ] Subagents were used for context-heavy exploration, not for trivial single calls
 

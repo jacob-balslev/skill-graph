@@ -5,11 +5,33 @@ license: MIT
 compatibility: "PostgreSQL 12+ (covers concurrent index, NOT VALID foreign keys, generated columns). Connection examples target raw `psql` and the unpooled side of any PgBouncer-style pooler. Branching examples reference `neonctl` as one provider — substitute the equivalent CLI for Supabase, Xata, or self-hosted clones if your platform supports branched databases."
 allowed-tools: Read Grep Bash Edit
 metadata:
-  metadata: "{\"schema_version\":6,\"version\":\"1.0.0\",\"type\":\"capability\",\"category\":\"engineering\",\"domain\":\"data/migrations\",\"scope\":\"portable\",\"owner\":\"skill-graph-maintainer\",\"freshness\":\"2026-05-06\",\"drift_check\":\"{\\\\\\\"last_verified\\\\\\\":\\\\\\\"2026-05-06\\\\\\\"}\",\"eval_artifacts\":\"present\",\"eval_state\":\"unverified\",\"routing_eval\":\"absent\",\"stability\":\"experimental\",\"keywords\":\"[\\\\\\\"database migration\\\\\\\",\\\\\\\"schema migration\\\\\\\",\\\\\\\"zero-downtime migration\\\\\\\",\\\\\\\"DDL migration\\\\\\\",\\\\\\\"raw SQL migration\\\\\\\",\\\\\\\"Postgres DDL\\\\\\\",\\\\\\\"alter table production\\\\\\\",\\\\\\\"expand contract migration\\\\\\\",\\\\\\\"concurrent index creation\\\\\\\",\\\\\\\"migration rollback\\\\\\\",\\\\\\\"add column nullable\\\\\\\",\\\\\\\"rename column zero downtime\\\\\\\",\\\\\\\"batched backfill\\\\\\\",\\\\\\\"non-constant default\\\\\\\",\\\\\\\"NOT VALID foreign key\\\\\\\",\\\\\\\"branched database migration\\\\\\\",\\\\\\\"point-in-time restore\\\\\\\",\\\\\\\"DDL transaction\\\\\\\"]\",\"examples\":\"[\\\\\\\"add a nullable column to a 50M-row orders table without taking downtime\\\\\\\",\\\\\\\"rename the `display_name` column to `username` while the app is live\\\\\\\",\\\\\\\"create a btree index on a 100M-row table without locking writes\\\\\\\",\\\\\\\"the migration takes ACCESS EXCLUSIVE — how do I avoid the lock?\\\\\\\",\\\\\\\"add a foreign key to a 10M-row table without blocking writes\\\\\\\",\\\\\\\"should I use ADD COLUMN ... NOT NULL DEFAULT 0 in this migration?\\\\\\\",\\\\\\\"write a rollback strategy for this schema change in case production breaks\\\\\\\",\\\\\\\"split the migration into expand and contract phases across two deploys\\\\\\\"]\",\"anti_examples\":\"[\\\\\\\"design the row-level-security model for our new tenant table\\\\\\\",\\\\\\\"the migration crashed in production — find the root cause\\\\\\\",\\\\\\\"explain our migration conventions in the contributor docs\\\\\\\",\\\\\\\"refactor the migration runner helper for clarity\\\\\\\",\\\\\\\"decide whether this column rename needs an automated regression test\\\\\\\",\\\\\\\"review this AI-generated DDL diff for correctness\\\\\\\"]\",\"relations\":\"{\\\\\\\"boundary\\\\\\\":[{\\\\\\\"skill\\\\\\\":\\\\\\\"debugging\\\\\\\",\\\\\\\"reason\\\\\\\":\\\\\\\"debugging chases an observed migration failure; database-migration plans the safe DDL path forward before execution\\\\\\\"},{\\\\\\\"skill\\\\\\\":\\\\\\\"refactor\\\\\\\",\\\\\\\"reason\\\\\\\":\\\\\\\"refactor is behavior-preserving code reorganization; database-migration is schema mutation that may require coordinated code changes across two or more deploys\\\\\\\"},{\\\\\\\"skill\\\\\\\":\\\\\\\"testing-strategy\\\\\\\",\\\\\\\"reason\\\\\\\":\\\\\\\"testing-strategy decides what deserves a regression test; database-migration owns the verification dance that runs before, during, and after applying DDL\\\\\\\"}],\\\\\\\"related\\\\\\\":[\\\\\\\"testing-strategy\\\\\\\",\\\\\\\"debugging\\\\\\\",\\\\\\\"owasp-security\\\\\\\"],\\\\\\\"verify_with\\\\\\\":[\\\\\\\"testing-strategy\\\\\\\",\\\\\\\"code-review\\\\\\\"]}\",\"portability\":\"{\\\\\\\"readiness\\\\\\\":\\\\\\\"scripted\\\\\\\",\\\\\\\"targets\\\\\\\":[\\\\\\\"skill-md\\\\\\\"]}\",\"lifecycle\":\"{\\\\\\\"stale_after_days\\\\\\\":90,\\\\\\\"review_cadence\\\\\\\":\\\\\\\"quarterly\\\\\\\"}\",\"skill_graph_source_repo\":\"https://github.com/jacob-balslev/skill-graph\",\"skill_graph_protocol\":\"Skill Metadata Protocol v5\",\"skill_graph_project\":\"Skill Graph\",\"skill_graph_canonical_skill\":\"skills/database-migration/SKILL.md\"}"
+  schema_version: "7"
+  version: "1.0.0"
+  type: capability
+  category: engineering
+  domain: data/migrations
+  scope: portable
+  owner: skill-graph-maintainer
+  freshness: "2026-05-06"
+  drift_check: "{\"last_verified\":\"2026-05-06\"}"
+  eval_artifacts: present
+  eval_state: unverified
+  routing_eval: absent
+  stability: experimental
+  keywords: "[\"database migration\",\"schema migration\",\"zero-downtime migration\",\"DDL migration\",\"raw SQL migration\",\"Postgres DDL\",\"alter table production\",\"expand contract migration\",\"concurrent index creation\",\"migration rollback\",\"add column nullable\",\"rename column zero downtime\",\"batched backfill\",\"non-constant default\",\"NOT VALID foreign key\",\"branched database migration\",\"point-in-time restore\",\"DDL transaction\"]"
+  examples: "[\"add a nullable column to a 50M-row orders table without taking downtime\",\"rename the `display_name` column to `username` while the app is live\",\"create a btree index on a 100M-row table without locking writes\",\"the migration takes ACCESS EXCLUSIVE — how do I avoid the lock?\",\"add a foreign key to a 10M-row table without blocking writes\",\"should I use ADD COLUMN ... NOT NULL DEFAULT 0 in this migration?\",\"write a rollback strategy for this schema change in case production breaks\",\"split the migration into expand and contract phases across two deploys\"]"
+  anti_examples: "[\"design the row-level-security model for our new tenant table\",\"the migration crashed in production — find the root cause\",\"explain our migration conventions in the contributor docs\",\"refactor the migration runner helper for clarity\",\"decide whether this column rename needs an automated regression test\",\"review this AI-generated DDL diff for correctness\"]"
+  relations: "{\"boundary\":[{\"skill\":\"debugging\",\"reason\":\"debugging chases an observed migration failure; database-migration plans the safe DDL path forward before execution\"},{\"skill\":\"refactor\",\"reason\":\"refactor is behavior-preserving code reorganization; database-migration is schema mutation that may require coordinated code changes across two or more deploys\"},{\"skill\":\"testing-strategy\",\"reason\":\"testing-strategy decides what deserves a regression test; database-migration owns the verification dance that runs before, during, and after applying DDL\"}],\"related\":[\"testing-strategy\",\"debugging\",\"owasp-security\"],\"verify_with\":[\"testing-strategy\",\"code-review\"]}"
+  portability: "{\"readiness\":\"scripted\",\"targets\":[\"skill-md\"]}"
+  lifecycle: "{\"stale_after_days\":90,\"review_cadence\":\"quarterly\"}"
+  structural_verdict: UNVERIFIED
+  truth_verdict: UNVERIFIED
+  comprehension_verdict: UNVERIFIED
+  application_verdict: UNVERIFIED
   skill_graph_source_repo: "https://github.com/jacob-balslev/skill-graph"
-  skill_graph_protocol: Skill Metadata Protocol v4
+  skill_graph_protocol: Skill Metadata Protocol v7
   skill_graph_project: Skill Graph
-  skill_graph_canonical_skill: skills/database-migration/SKILL.md
+  skill_graph_canonical_skill: skills/engineering/database-migration/SKILL.md
 ---
 
 # Database Migration

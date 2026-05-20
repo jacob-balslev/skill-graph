@@ -5,11 +5,33 @@ license: MIT
 compatibility: "Portable API design guidance for REST-like HTTP APIs, route handlers, internal APIs, and documented JSON contracts."
 allowed-tools: Read Grep
 metadata:
-  metadata: "{\"schema_version\":6,\"version\":\"1.0.0\",\"type\":\"capability\",\"category\":\"engineering\",\"domain\":\"engineering/api-design\",\"scope\":\"portable\",\"owner\":\"skill-graph-maintainer\",\"freshness\":\"2026-05-11\",\"drift_check\":\"{\\\\\\\"last_verified\\\\\\\":\\\\\\\"2026-05-11\\\\\\\"}\",\"eval_artifacts\":\"present\",\"eval_state\":\"unverified\",\"routing_eval\":\"absent\",\"stability\":\"experimental\",\"keywords\":\"[\\\\\\\"API design\\\\\\\",\\\\\\\"REST API\\\\\\\",\\\\\\\"endpoint design\\\\\\\",\\\\\\\"request response schema\\\\\\\",\\\\\\\"status codes\\\\\\\",\\\\\\\"pagination\\\\\\\",\\\\\\\"filtering\\\\\\\",\\\\\\\"idempotency\\\\\\\",\\\\\\\"API versioning\\\\\\\",\\\\\\\"error envelope\\\\\\\"]\",\"examples\":\"[\\\\\\\"design the API for listing orders with filters, pagination, and stable errors\\\\\\\",\\\\\\\"review this route contract before frontend and backend implement it separately\\\\\\\",\\\\\\\"should this operation be a resource update, an action endpoint, or an async job?\\\\\\\",\\\\\\\"define API versioning and idempotency for this create endpoint\\\\\\\"]\",\"anti_examples\":\"[\\\\\\\"define the broader contract between a job, service, and dashboard\\\\\\\",\\\\\\\"design database tables, foreign keys, and views\\\\\\\",\\\\\\\"implement provider webhook signature verification and retry behavior\\\\\\\",\\\\\\\"debug why this endpoint is returning 500\\\\\\\"]\",\"relations\":\"{\\\\\\\"boundary\\\\\\\":[{\\\\\\\"skill\\\\\\\":\\\\\\\"system-interface-contracts\\\\\\\",\\\\\\\"reason\\\\\\\":\\\\\\\"system-interface-contracts owns interface contracts across any boundary; api-design owns API endpoint shape and HTTP semantics\\\\\\\"},{\\\\\\\"skill\\\\\\\":\\\\\\\"event-contract-design\\\\\\\",\\\\\\\"reason\\\\\\\":\\\\\\\"event-contract-design owns asynchronous event and message contracts; api-design owns HTTP request/response surfaces\\\\\\\"},{\\\\\\\"skill\\\\\\\":\\\\\\\"data-modeling\\\\\\\",\\\\\\\"reason\\\\\\\":\\\\\\\"data-modeling owns persistence shape; api-design owns external representation and operation shape\\\\\\\"},{\\\\\\\"skill\\\\\\\":\\\\\\\"webhook-integration\\\\\\\",\\\\\\\"reason\\\\\\\":\\\\\\\"webhook-integration owns inbound provider webhooks; api-design owns APIs the system exposes or calls by contract\\\\\\\"},{\\\\\\\"skill\\\\\\\":\\\\\\\"debugging\\\\\\\",\\\\\\\"reason\\\\\\\":\\\\\\\"debugging owns known endpoint failures; api-design owns pre-implementation surface design\\\\\\\"}],\\\\\\\"related\\\\\\\":[\\\\\\\"system-interface-contracts\\\\\\\",\\\\\\\"data-modeling\\\\\\\",\\\\\\\"testing-strategy\\\\\\\",\\\\\\\"webhook-integration\\\\\\\",\\\\\\\"event-contract-design\\\\\\\"],\\\\\\\"verify_with\\\\\\\":[\\\\\\\"testing-strategy\\\\\\\",\\\\\\\"code-review\\\\\\\"]}\",\"portability\":\"{\\\\\\\"readiness\\\\\\\":\\\\\\\"scripted\\\\\\\",\\\\\\\"targets\\\\\\\":[\\\\\\\"skill-md\\\\\\\"]}\",\"lifecycle\":\"{\\\\\\\"stale_after_days\\\\\\\":365,\\\\\\\"review_cadence\\\\\\\":\\\\\\\"quarterly\\\\\\\"}\",\"skill_graph_source_repo\":\"https://github.com/jacob-balslev/skill-graph\",\"skill_graph_protocol\":\"Skill Metadata Protocol v5\",\"skill_graph_project\":\"Skill Graph\",\"skill_graph_canonical_skill\":\"skills/api-design/SKILL.md\"}"
+  schema_version: "7"
+  version: "1.0.0"
+  type: capability
+  category: engineering
+  domain: engineering/api-design
+  scope: portable
+  owner: skill-graph-maintainer
+  freshness: "2026-05-11"
+  drift_check: "{\"last_verified\":\"2026-05-11\"}"
+  eval_artifacts: present
+  eval_state: unverified
+  routing_eval: absent
+  stability: experimental
+  keywords: "[\"API design\",\"REST API\",\"endpoint design\",\"request response schema\",\"status codes\",\"pagination\",\"filtering\",\"idempotency\",\"API versioning\",\"error envelope\"]"
+  examples: "[\"design the API for listing orders with filters, pagination, and stable errors\",\"review this route contract before frontend and backend implement it separately\",\"should this operation be a resource update, an action endpoint, or an async job?\",\"define API versioning and idempotency for this create endpoint\"]"
+  anti_examples: "[\"define the broader contract between a job, service, and dashboard\",\"design database tables, foreign keys, and views\",\"implement provider webhook signature verification and retry behavior\",\"debug why this endpoint is returning 500\"]"
+  relations: "{\"boundary\":[{\"skill\":\"system-interface-contracts\",\"reason\":\"system-interface-contracts owns interface contracts across any boundary; api-design owns API endpoint shape and HTTP semantics\"},{\"skill\":\"event-contract-design\",\"reason\":\"event-contract-design owns asynchronous event and message contracts; api-design owns HTTP request/response surfaces\"},{\"skill\":\"data-modeling\",\"reason\":\"data-modeling owns persistence shape; api-design owns external representation and operation shape\"},{\"skill\":\"webhook-integration\",\"reason\":\"webhook-integration owns inbound provider webhooks; api-design owns APIs the system exposes or calls by contract\"},{\"skill\":\"debugging\",\"reason\":\"debugging owns known endpoint failures; api-design owns pre-implementation surface design\"}],\"related\":[\"system-interface-contracts\",\"data-modeling\",\"testing-strategy\",\"webhook-integration\",\"event-contract-design\"],\"verify_with\":[\"testing-strategy\",\"code-review\"]}"
+  portability: "{\"readiness\":\"scripted\",\"targets\":[\"skill-md\"]}"
+  lifecycle: "{\"stale_after_days\":365,\"review_cadence\":\"quarterly\"}"
+  structural_verdict: UNVERIFIED
+  truth_verdict: UNVERIFIED
+  comprehension_verdict: UNVERIFIED
+  application_verdict: UNVERIFIED
   skill_graph_source_repo: "https://github.com/jacob-balslev/skill-graph"
-  skill_graph_protocol: Skill Metadata Protocol v4
+  skill_graph_protocol: Skill Metadata Protocol v7
   skill_graph_project: Skill Graph
-  skill_graph_canonical_skill: skills/api-design/SKILL.md
+  skill_graph_canonical_skill: skills/engineering/api-design/SKILL.md
 ---
 
 # API Design

@@ -5,11 +5,33 @@ license: MIT
 compatibility: Portable feedback-state design for web and app UI. Applies before framework-specific implementation and after task or interaction pattern selection.
 allowed-tools: Read Grep
 metadata:
-  metadata: "{\"schema_version\":6,\"version\":\"1.0.0\",\"type\":\"capability\",\"category\":\"design\",\"domain\":\"design/interaction\",\"scope\":\"portable\",\"owner\":\"skill-graph-maintainer\",\"freshness\":\"2026-05-11\",\"drift_check\":\"{\\\\\\\"last_verified\\\\\\\":\\\\\\\"2026-05-11\\\\\\\"}\",\"eval_artifacts\":\"present\",\"eval_state\":\"unverified\",\"routing_eval\":\"absent\",\"stability\":\"experimental\",\"keywords\":\"[\\\\\\\"interaction-feedback\\\\\\\",\\\\\\\"feedback-state staging\\\\\\\",\\\\\\\"optimistic ui\\\\\\\",\\\\\\\"pending state\\\\\\\",\\\\\\\"retry feedback\\\\\\\",\\\\\\\"undo feedback\\\\\\\",\\\\\\\"perceived latency\\\\\\\",\\\\\\\"long-running action feedback\\\\\\\",\\\\\\\"skeleton loading\\\\\\\"]\",\"examples\":\"[\\\\\\\"design loading, success, error, and retry feedback for this async action\\\\\\\",\\\\\\\"should this save be optimistic, pending, blocked, or undoable?\\\\\\\",\\\\\\\"the sync takes 30 seconds - what should users see at each stage?\\\\\\\",\\\\\\\"add feedback states so the UI does not feel frozen after clicking Export\\\\\\\"]\",\"anti_examples\":\"[\\\\\\\"rewrite the toast and validation text\\\\\\\",\\\\\\\"make sure the status update is announced to screen readers\\\\\\\",\\\\\\\"model the order lifecycle and legal transitions\\\\\\\",\\\\\\\"profile the endpoint that makes this action slow\\\\\\\"]\",\"relations\":\"{\\\\\\\"boundary\\\\\\\":[{\\\\\\\"skill\\\\\\\":\\\\\\\"microcopy\\\\\\\",\\\\\\\"reason\\\\\\\":\\\\\\\"microcopy owns the words inside feedback states; interaction-feedback owns timing, placement, persistence, and recovery behavior\\\\\\\"},{\\\\\\\"skill\\\\\\\":\\\\\\\"a11y\\\\\\\",\\\\\\\"reason\\\\\\\":\\\\\\\"a11y owns assistive-technology announcement mechanics; interaction-feedback owns the visible and behavioral feedback model\\\\\\\"},{\\\\\\\"skill\\\\\\\":\\\\\\\"state-machine-modeling\\\\\\\",\\\\\\\"reason\\\\\\\":\\\\\\\"state-machine-modeling owns business lifecycle legality; interaction-feedback owns the UI representation of pending, success, failure, and recovery\\\\\\\"},{\\\\\\\"skill\\\\\\\":\\\\\\\"performance-engineering\\\\\\\",\\\\\\\"reason\\\\\\\":\\\\\\\"performance-engineering reduces measured latency; interaction-feedback communicates latency and state honestly\\\\\\\"}],\\\\\\\"related\\\\\\\":[\\\\\\\"interaction-patterns\\\\\\\",\\\\\\\"microcopy\\\\\\\",\\\\\\\"task-analysis\\\\\\\",\\\\\\\"a11y\\\\\\\",\\\\\\\"performance-engineering\\\\\\\"],\\\\\\\"verify_with\\\\\\\":[\\\\\\\"a11y\\\\\\\",\\\\\\\"microcopy\\\\\\\"]}\",\"portability\":\"{\\\\\\\"readiness\\\\\\\":\\\\\\\"scripted\\\\\\\",\\\\\\\"targets\\\\\\\":[\\\\\\\"skill-md\\\\\\\"]}\",\"lifecycle\":\"{\\\\\\\"stale_after_days\\\\\\\":365,\\\\\\\"review_cadence\\\\\\\":\\\\\\\"quarterly\\\\\\\"}\",\"skill_graph_source_repo\":\"https://github.com/jacob-balslev/skill-graph\",\"skill_graph_protocol\":\"Skill Metadata Protocol v5\",\"skill_graph_project\":\"Skill Graph\",\"skill_graph_canonical_skill\":\"skills/interaction-feedback/SKILL.md\"}"
+  schema_version: "7"
+  version: "1.0.0"
+  type: capability
+  category: design
+  domain: design/interaction
+  scope: portable
+  owner: skill-graph-maintainer
+  freshness: "2026-05-11"
+  drift_check: "{\"last_verified\":\"2026-05-11\"}"
+  eval_artifacts: present
+  eval_state: unverified
+  routing_eval: absent
+  stability: experimental
+  keywords: "[\"interaction-feedback\",\"feedback-state staging\",\"optimistic ui\",\"pending state\",\"retry feedback\",\"undo feedback\",\"perceived latency\",\"long-running action feedback\",\"skeleton loading\"]"
+  examples: "[\"design loading, success, error, and retry feedback for this async action\",\"should this save be optimistic, pending, blocked, or undoable?\",\"the sync takes 30 seconds - what should users see at each stage?\",\"add feedback states so the UI does not feel frozen after clicking Export\"]"
+  anti_examples: "[\"rewrite the toast and validation text\",\"make sure the status update is announced to screen readers\",\"model the order lifecycle and legal transitions\",\"profile the endpoint that makes this action slow\"]"
+  relations: "{\"boundary\":[{\"skill\":\"microcopy\",\"reason\":\"microcopy owns the words inside feedback states; interaction-feedback owns timing, placement, persistence, and recovery behavior\"},{\"skill\":\"a11y\",\"reason\":\"a11y owns assistive-technology announcement mechanics; interaction-feedback owns the visible and behavioral feedback model\"},{\"skill\":\"state-machine-modeling\",\"reason\":\"state-machine-modeling owns business lifecycle legality; interaction-feedback owns the UI representation of pending, success, failure, and recovery\"},{\"skill\":\"performance-engineering\",\"reason\":\"performance-engineering reduces measured latency; interaction-feedback communicates latency and state honestly\"}],\"related\":[\"interaction-patterns\",\"microcopy\",\"task-analysis\",\"a11y\",\"performance-engineering\"],\"verify_with\":[\"a11y\",\"microcopy\"]}"
+  portability: "{\"readiness\":\"scripted\",\"targets\":[\"skill-md\"]}"
+  lifecycle: "{\"stale_after_days\":365,\"review_cadence\":\"quarterly\"}"
+  structural_verdict: UNVERIFIED
+  truth_verdict: UNVERIFIED
+  comprehension_verdict: UNVERIFIED
+  application_verdict: UNVERIFIED
   skill_graph_source_repo: "https://github.com/jacob-balslev/skill-graph"
-  skill_graph_protocol: Skill Metadata Protocol v4
+  skill_graph_protocol: Skill Metadata Protocol v7
   skill_graph_project: Skill Graph
-  skill_graph_canonical_skill: skills/interaction-feedback/SKILL.md
+  skill_graph_canonical_skill: skills/design/interaction-feedback/SKILL.md
 ---
 
 # Interaction Feedback

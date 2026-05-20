@@ -5,11 +5,33 @@ license: MIT
 compatibility: "Portable observability modeling discipline for applications, integrations, jobs, queues, APIs, and agent workflows."
 allowed-tools: Read Grep
 metadata:
-  metadata: "{\"schema_version\":6,\"version\":\"1.0.0\",\"type\":\"capability\",\"category\":\"engineering\",\"domain\":\"engineering/observability\",\"scope\":\"portable\",\"owner\":\"skill-graph-maintainer\",\"freshness\":\"2026-05-11\",\"drift_check\":\"{\\\\\\\"last_verified\\\\\\\":\\\\\\\"2026-05-11\\\\\\\"}\",\"eval_artifacts\":\"present\",\"eval_state\":\"unverified\",\"routing_eval\":\"absent\",\"stability\":\"experimental\",\"keywords\":\"[\\\\\\\"observability modeling\\\\\\\",\\\\\\\"telemetry design\\\\\\\",\\\\\\\"logs metrics traces\\\\\\\",\\\\\\\"SLO\\\\\\\",\\\\\\\"spans\\\\\\\",\\\\\\\"correlation id\\\\\\\",\\\\\\\"diagnostic events\\\\\\\",\\\\\\\"alert design\\\\\\\",\\\\\\\"instrumentation model\\\\\\\"]\",\"examples\":\"[\\\\\\\"design telemetry for this ingestion pipeline so failures can be diagnosed later\\\\\\\",\\\\\\\"which logs, metrics, spans, and correlation IDs should this interface contract require?\\\\\\\",\\\\\\\"model observability for a background job before adding alerts\\\\\\\",\\\\\\\"turn these diagnostic questions into events and metrics\\\\\\\"]\",\"anti_examples\":\"[\\\\\\\"set up Sentry error tracking for this app\\\\\\\",\\\\\\\"profile and optimize a slow endpoint\\\\\\\",\\\\\\\"debug the current production incident\\\\\\\",\\\\\\\"write application tests for this feature\\\\\\\"]\",\"relations\":\"{\\\\\\\"boundary\\\\\\\":[{\\\\\\\"skill\\\\\\\":\\\\\\\"error-tracking\\\\\\\",\\\\\\\"reason\\\\\\\":\\\\\\\"error-tracking owns error-capture setup and handling; observability-modeling owns the broader telemetry schema\\\\\\\"},{\\\\\\\"skill\\\\\\\":\\\\\\\"event-contract-design\\\\\\\",\\\\\\\"reason\\\\\\\":\\\\\\\"event-contract-design owns published business event contracts; observability-modeling owns telemetry events, spans, metrics, and logs for diagnosability\\\\\\\"},{\\\\\\\"skill\\\\\\\":\\\\\\\"performance-engineering\\\\\\\",\\\\\\\"reason\\\\\\\":\\\\\\\"performance-engineering improves measured performance; observability-modeling defines the signals needed to measure and diagnose\\\\\\\"},{\\\\\\\"skill\\\\\\\":\\\\\\\"debugging\\\\\\\",\\\\\\\"reason\\\\\\\":\\\\\\\"debugging investigates a current failure; observability-modeling designs future diagnosability\\\\\\\"},{\\\\\\\"skill\\\\\\\":\\\\\\\"testing-strategy\\\\\\\",\\\\\\\"reason\\\\\\\":\\\\\\\"testing-strategy proves behavior in tests; observability-modeling proves runtime diagnosability\\\\\\\"}],\\\\\\\"related\\\\\\\":[\\\\\\\"error-tracking\\\\\\\",\\\\\\\"performance-engineering\\\\\\\",\\\\\\\"system-interface-contracts\\\\\\\",\\\\\\\"event-contract-design\\\\\\\",\\\\\\\"debugging\\\\\\\"],\\\\\\\"verify_with\\\\\\\":[\\\\\\\"error-tracking\\\\\\\",\\\\\\\"debugging\\\\\\\"]}\",\"portability\":\"{\\\\\\\"readiness\\\\\\\":\\\\\\\"scripted\\\\\\\",\\\\\\\"targets\\\\\\\":[\\\\\\\"skill-md\\\\\\\"]}\",\"lifecycle\":\"{\\\\\\\"stale_after_days\\\\\\\":365,\\\\\\\"review_cadence\\\\\\\":\\\\\\\"quarterly\\\\\\\"}\",\"skill_graph_source_repo\":\"https://github.com/jacob-balslev/skill-graph\",\"skill_graph_protocol\":\"Skill Metadata Protocol v5\",\"skill_graph_project\":\"Skill Graph\",\"skill_graph_canonical_skill\":\"skills/observability-modeling/SKILL.md\"}"
+  schema_version: "7"
+  version: "1.0.0"
+  type: capability
+  category: engineering
+  domain: engineering/observability
+  scope: portable
+  owner: skill-graph-maintainer
+  freshness: "2026-05-11"
+  drift_check: "{\"last_verified\":\"2026-05-11\"}"
+  eval_artifacts: present
+  eval_state: unverified
+  routing_eval: absent
+  stability: experimental
+  keywords: "[\"observability modeling\",\"telemetry design\",\"logs metrics traces\",\"SLO\",\"spans\",\"correlation id\",\"diagnostic events\",\"alert design\",\"instrumentation model\"]"
+  examples: "[\"design telemetry for this ingestion pipeline so failures can be diagnosed later\",\"which logs, metrics, spans, and correlation IDs should this interface contract require?\",\"model observability for a background job before adding alerts\",\"turn these diagnostic questions into events and metrics\"]"
+  anti_examples: "[\"set up Sentry error tracking for this app\",\"profile and optimize a slow endpoint\",\"debug the current production incident\",\"write application tests for this feature\"]"
+  relations: "{\"boundary\":[{\"skill\":\"error-tracking\",\"reason\":\"error-tracking owns error-capture setup and handling; observability-modeling owns the broader telemetry schema\"},{\"skill\":\"event-contract-design\",\"reason\":\"event-contract-design owns published business event contracts; observability-modeling owns telemetry events, spans, metrics, and logs for diagnosability\"},{\"skill\":\"performance-engineering\",\"reason\":\"performance-engineering improves measured performance; observability-modeling defines the signals needed to measure and diagnose\"},{\"skill\":\"debugging\",\"reason\":\"debugging investigates a current failure; observability-modeling designs future diagnosability\"},{\"skill\":\"testing-strategy\",\"reason\":\"testing-strategy proves behavior in tests; observability-modeling proves runtime diagnosability\"}],\"related\":[\"error-tracking\",\"performance-engineering\",\"system-interface-contracts\",\"event-contract-design\",\"debugging\"],\"verify_with\":[\"error-tracking\",\"debugging\"]}"
+  portability: "{\"readiness\":\"scripted\",\"targets\":[\"skill-md\"]}"
+  lifecycle: "{\"stale_after_days\":365,\"review_cadence\":\"quarterly\"}"
+  structural_verdict: UNVERIFIED
+  truth_verdict: UNVERIFIED
+  comprehension_verdict: UNVERIFIED
+  application_verdict: UNVERIFIED
   skill_graph_source_repo: "https://github.com/jacob-balslev/skill-graph"
-  skill_graph_protocol: Skill Metadata Protocol v4
+  skill_graph_protocol: Skill Metadata Protocol v7
   skill_graph_project: Skill Graph
-  skill_graph_canonical_skill: skills/observability-modeling/SKILL.md
+  skill_graph_canonical_skill: skills/engineering/observability-modeling/SKILL.md
 ---
 
 # Observability Modeling

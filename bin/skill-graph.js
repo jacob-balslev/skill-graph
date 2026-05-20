@@ -197,6 +197,10 @@ Note: skill-graph evolve is not yet standalone-compatible. It depends on
     script: 'scripts/verify-skill-md-export.js',
     help: `Usage: skill-graph export-verify [path]\n\nVerify exported skills under marketplace/skills/ against the plain SKILL.md export shape contract.\n\nDefault path: marketplace/skills\n`,
   },
+  'verify-skill-md': {
+    script: 'scripts/verify-skill-md-export.js',
+    help: `Usage: skill-graph verify-skill-md [path]\n\nAlias for 'export-verify'. Verify exported skills against the plain SKILL.md export shape.\n`,
+  },
   'export:verify-skill-md': {
     script: 'scripts/verify-skill-md-export.js',
     help: `Usage: skill-graph export:verify-skill-md [path]\n\nAlias for 'export-verify'. Verify exported skills against the plain SKILL.md export shape.\n`,
@@ -416,6 +420,11 @@ function runDoctor(args) {
     const t0 = Date.now();
     const r = spawnSync('node', [scriptPath, ...(check.args || [])], {
       cwd: REPO_ROOT,
+      env: {
+        ...process.env,
+        SKILL_GRAPH_PACKAGE_ROOT: REPO_ROOT,
+        SKILL_GRAPH_WORKSPACE: REPO_ROOT,
+      },
       encoding: 'utf8',
       timeout: 120_000,
     });

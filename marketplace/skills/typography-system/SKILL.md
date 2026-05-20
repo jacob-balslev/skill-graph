@@ -3,11 +3,31 @@ name: typography-system
 description: "Use when designing a typography system — typeface selection and pairing, modular type scale, vertical rhythm, line-height and measure rules, and web font delivery (subsetting, font-display, variable fonts). Do NOT use for body copy writing, single-headline font pairing, or non-text design tokens."
 license: CC-BY-4.0
 metadata:
-  metadata: "{\"schema_version\":6,\"version\":\"1.0.0\",\"type\":\"capability\",\"category\":\"design\",\"scope\":\"portable\",\"owner\":\"skill-graph-maintainer\",\"freshness\":\"2026-05-12\",\"drift_check\":\"{\\\\\\\"last_verified\\\\\\\":\\\\\\\"2026-05-12\\\\\\\"}\",\"eval_artifacts\":\"planned\",\"eval_state\":\"unverified\",\"routing_eval\":\"absent\",\"stability\":\"experimental\",\"keywords\":\"[\\\\\\\"type scale\\\\\\\",\\\\\\\"typeface pairing\\\\\\\",\\\\\\\"vertical rhythm\\\\\\\",\\\\\\\"line height\\\\\\\",\\\\\\\"measure line length\\\\\\\",\\\\\\\"web font delivery\\\\\\\",\\\\\\\"variable fonts\\\\\\\",\\\\\\\"font-display swap\\\\\\\",\\\\\\\"font subsetting\\\\\\\",\\\\\\\"modular scale\\\\\\\",\\\\\\\"typographic tokens\\\\\\\",\\\\\\\"opentype features\\\\\\\"]\",\"triggers\":\"[\\\\\\\"typography system\\\\\\\",\\\\\\\"type scale\\\\\\\",\\\\\\\"font pairing\\\\\\\",\\\\\\\"variable fonts\\\\\\\",\\\\\\\"vertical rhythm\\\\\\\"]\",\"examples\":\"[\\\\\\\"Build a type scale with seven steps using a 1.25 ratio and assign each step to a semantic token (display, h1, body, caption)\\\\\\\",\\\\\\\"Pair a serif display face with a sans-serif text face and document when to use each\\\\\\\",\\\\\\\"Self-host a variable font with WOFF2 subsetting and font-display: swap\\\\\\\"]\",\"anti_examples\":\"[\\\\\\\"Write the headline copy for the landing page\\\\\\\",\\\\\\\"Pick the brand's primary color\\\\\\\",\\\\\\\"Decide where the headline component lives in the folder structure\\\\\\\"]\",\"relations\":\"{\\\\\\\"related\\\\\\\":[\\\\\\\"visual-hierarchy\\\\\\\",\\\\\\\"visual-design-foundations\\\\\\\",\\\\\\\"theme-system-design\\\\\\\",\\\\\\\"layout-composition\\\\\\\"],\\\\\\\"boundary\\\\\\\":[{\\\\\\\"skill\\\\\\\":\\\\\\\"visual-hierarchy\\\\\\\",\\\\\\\"reason\\\\\\\":\\\\\\\"visual-hierarchy decides how to deploy type as an ordering signal on a given surface; this skill defines the scale and faces that get deployed.\\\\\\\"},{\\\\\\\"skill\\\\\\\":\\\\\\\"theme-system-design\\\\\\\",\\\\\\\"reason\\\\\\\":\\\\\\\"theme-system-design covers how typography tokens are layered and switched; this skill produces the typographic decisions inside them.\\\\\\\"}]}\",\"skill_graph_source_repo\":\"https://github.com/jacob-balslev/skill-graph\",\"skill_graph_protocol\":\"Skill Metadata Protocol v5\",\"skill_graph_project\":\"Skill Graph\",\"skill_graph_canonical_skill\":\"skills/typography-system/SKILL.md\"}"
+  schema_version: "7"
+  version: "1.0.0"
+  type: capability
+  category: design
+  scope: portable
+  owner: skill-graph-maintainer
+  freshness: "2026-05-12"
+  drift_check: "{\"last_verified\":\"2026-05-12\"}"
+  eval_artifacts: planned
+  eval_state: unverified
+  routing_eval: absent
+  stability: experimental
+  keywords: "[\"type scale\",\"typeface pairing\",\"vertical rhythm\",\"line height\",\"measure line length\",\"web font delivery\",\"variable fonts\",\"font-display swap\",\"font subsetting\",\"modular scale\",\"typographic tokens\",\"opentype features\"]"
+  triggers: "[\"typography system\",\"type scale\",\"font pairing\",\"variable fonts\",\"vertical rhythm\"]"
+  examples: "[\"Build a type scale with seven steps using a 1.25 ratio and assign each step to a semantic token (display, h1, body, caption)\",\"Pair a serif display face with a sans-serif text face and document when to use each\",\"Self-host a variable font with WOFF2 subsetting and font-display: swap\"]"
+  anti_examples: "[\"Write the headline copy for the landing page\",\"Pick the brand's primary color\",\"Decide where the headline component lives in the folder structure\"]"
+  relations: "{\"related\":[\"visual-hierarchy\",\"visual-design-foundations\",\"theme-system-design\",\"layout-composition\"],\"boundary\":[{\"skill\":\"visual-hierarchy\",\"reason\":\"visual-hierarchy decides how to deploy type as an ordering signal on a given surface; this skill defines the scale and faces that get deployed.\"},{\"skill\":\"theme-system-design\",\"reason\":\"theme-system-design covers how typography tokens are layered and switched; this skill produces the typographic decisions inside them.\"}]}"
+  structural_verdict: UNVERIFIED
+  truth_verdict: UNVERIFIED
+  comprehension_verdict: UNVERIFIED
+  application_verdict: UNVERIFIED
   skill_graph_source_repo: "https://github.com/jacob-balslev/skill-graph"
-  skill_graph_protocol: Skill Metadata Protocol v4
+  skill_graph_protocol: Skill Metadata Protocol v7
   skill_graph_project: Skill Graph
-  skill_graph_canonical_skill: skills/typography-system/SKILL.md
+  skill_graph_canonical_skill: skills/design/typography-system/SKILL.md
 ---
 
 # Typography System

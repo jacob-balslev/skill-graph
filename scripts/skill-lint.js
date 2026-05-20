@@ -1,10 +1,12 @@
 #!/usr/bin/env node
 /**
- * Skill Graph lint tool — minimal external-mandate gate.
+ * Skill Graph lint tool — minimal canonical-source gate.
  *
  * Per the skill-audit doctrine (ADR 0011 / SYNTHESIS §6 / 2026-05-19 user
- * directive): lint exists ONLY to enforce constraints we do not control —
- * Anthropic Agent Skills marketplace format and OpenAI tool-use schema.
+ * directive): lint exists ONLY to enforce canonical-source constraints that
+ * apply to Skill Metadata Protocol authoring. Export-specific constraints for
+ * plain Agent Skills / skills.sh are enforced by the marketplace export tools,
+ * not by this canonical-source linter.
  * Project-internal schema fields, routing topology, eval coherence, schema
  * parity, and other infrastructure invariants belong in single-purpose
  * tools (drift sentinel, manifest validator, routing engine), NOT here.
@@ -15,12 +17,9 @@
  * The four checks below are the entire contract:
  *
  *   1. Valid YAML frontmatter (parser invariant; every consumer needs this)
- *   2. `name` field present, string, kebab-case, ≤64 chars
- *      → Anthropic Agent Skills marketplace + OpenAI tool-use function-name cap
- *   3. `description` field present, string, non-empty, ≤1024 chars
- *      → Anthropic Agent Skills marketplace cap
- *   4. Parent directory name equals `name` field
- *      → Anthropic Agent Skills `<name>/SKILL.md` directory contract
+ *   2. `name` field present, string, Skill Metadata Protocol identifier shape
+ *   3. `description` field present, string, non-empty
+ *   4. Parent directory name equals the last `name` segment
  *
  * Exit 0 on success, 1 on any failure.
  *
@@ -42,7 +41,7 @@
 const fs = require('fs');
 const path = require('path');
 const { parseFrontmatter, normalizeFrontmatter } = require('./lib/parse-frontmatter');
-const { loadWorkspaceConfig, resolveSkillRoots, workspaceRoot } = require('./lib/roots');
+const { collectSkillFilesFromRoots, loadWorkspaceConfig, resolveSkillRoots, workspaceRoot } = require('./lib/roots');
 const { formatCodeFrame, locateYamlKey } = require('./lint/format-code-frame');
 
 const REPO_ROOT = workspaceRoot();
@@ -50,9 +49,8 @@ const TEMPLATE_PATH = path.join(REPO_ROOT, 'examples', 'skill-metadata-template.
 const WORKSPACE_CONFIG = loadWorkspaceConfig(REPO_ROOT, msg => process.stderr.write(`WARN ${msg}\n`));
 const SKILL_ROOTS = resolveSkillRoots(REPO_ROOT, WORKSPACE_CONFIG);
 
-// Anthropic Agent Skills marketplace caps.
-const NAME_MAX_CHARS = 64;
-const DESCRIPTION_MAX_CHARS = 1024;
+// Canonical Skill Metadata Protocol identifier shape. Plain Agent Skills export
+// has a stricter hyphen-only/64-char contract; that is enforced by export tools.
 const NAME_PATTERN = /^[a-z0-9]+(?:[-/:][a-z0-9]+)*$/;
 
 // ---------------------------------------------------------------------------
@@ -61,37 +59,34 @@ const NAME_PATTERN = /^[a-z0-9]+(?:[-/:][a-z0-9]+)*$/;
 
 /**
  * Check 1 — `name` field.
- * Anthropic Agent Skills marketplace requires a non-empty kebab-case name.
- * OpenAI tool-use schema additionally caps function names at 64 chars.
+ * Canonical Skill Metadata Protocol allows `/` and `:` for namespaced names;
+ * export normalizes those to plain Agent Skills-compatible names.
  */
 function checkName(fm) {
   const errors = [];
   if (!fm.name) {
-    errors.push({ field: 'name', msg: '`name` field is required (Anthropic Agent Skills + OpenAI tool-use mandate)' });
+    errors.push({ field: 'name', msg: '`name` field is required' });
     return errors;
   }
   if (typeof fm.name !== 'string') {
     errors.push({ field: 'name', msg: `\`name\` must be a string (got ${typeof fm.name})` });
     return errors;
   }
-  if (fm.name.length > NAME_MAX_CHARS) {
-    errors.push({ field: 'name', msg: `\`name\` length ${fm.name.length} exceeds the ${NAME_MAX_CHARS}-char cap (OpenAI tool-use function-name limit)` });
-  }
   if (!NAME_PATTERN.test(fm.name)) {
-    errors.push({ field: 'name', msg: `\`name\` "${fm.name}" must be lowercase kebab-case (a-z, 0-9, hyphen; "/" and ":" allowed for hierarchical/namespaced names)` });
+    errors.push({ field: 'name', msg: `\`name\` "${fm.name}" must be lowercase Skill Metadata Protocol identifier syntax (a-z, 0-9, hyphen, plus optional "/" and ":" namespace separators)` });
   }
   return errors;
 }
 
 /**
  * Check 2 — `description` field.
- * Anthropic Agent Skills marketplace requires a non-empty description and
- * rejects skills with descriptions over 1024 chars.
+ * Canonical source descriptions can be as rich as needed. Export-specific
+ * description caps are handled by export description overrides.
  */
 function checkDescription(fm) {
   const errors = [];
   if (!fm.description) {
-    errors.push({ field: 'description', msg: '`description` field is required (Anthropic Agent Skills marketplace mandate)' });
+    errors.push({ field: 'description', msg: '`description` field is required' });
     return errors;
   }
   if (typeof fm.description !== 'string') {
@@ -103,16 +98,13 @@ function checkDescription(fm) {
     errors.push({ field: 'description', msg: '`description` must be non-empty' });
     return errors;
   }
-  if (fm.description.length > DESCRIPTION_MAX_CHARS) {
-    errors.push({ field: 'description', msg: `\`description\` length ${fm.description.length} exceeds the ${DESCRIPTION_MAX_CHARS}-char Anthropic Agent Skills marketplace cap` });
-  }
   return errors;
 }
 
 /**
  * Check 3 — parent directory matches `name`.
- * Anthropic Agent Skills format requires the SKILL.md file to live at
- * `<name>/SKILL.md`. The loader resolves skills by directory name.
+ * Skill Metadata Protocol expects the skill directory to match the final
+ * segment of the local skill name.
  */
 function checkParentDirMatchesName(filePath, fm) {
   if (path.basename(filePath) !== 'SKILL.md') return [];
@@ -126,7 +118,7 @@ function checkParentDirMatchesName(filePath, fm) {
   if (parentDir !== lastSegment) {
     return [{
       field: 'name',
-      msg: `parent directory "${parentDir}" does not match \`name\` "${fm.name}" (Anthropic Agent Skills <name>/SKILL.md directory contract)`,
+      msg: `parent directory "${parentDir}" does not match final \`name\` segment "${lastSegment}"`,
     }];
   }
   return [];
@@ -136,35 +128,13 @@ function checkParentDirMatchesName(filePath, fm) {
 // File discovery
 // ---------------------------------------------------------------------------
 
-function collectSkillFilesFromRoot(rootDir, depth = 0) {
-  const files = [];
-  if (!fs.existsSync(rootDir)) return files;
-  if (depth > 3) return files;
-  for (const name of fs.readdirSync(rootDir)) {
-    if (name.startsWith('_') || name.startsWith('.')) continue;
-    const entryPath = path.join(rootDir, name);
-    if (!fs.statSync(entryPath).isDirectory()) continue;
-    const skillMd = path.join(entryPath, 'SKILL.md');
-    if (fs.existsSync(skillMd)) {
-      files.push(skillMd);
-    } else {
-      files.push(...collectSkillFilesFromRoot(entryPath, depth + 1));
-    }
-  }
-  return files;
-}
-
-function collectSkillFilesFromRoots(roots) {
-  return roots.flatMap(root => collectSkillFilesFromRoot(root.absPath));
-}
-
 function collectSkillFilesFromExplicitArg(arg) {
   const abs = path.resolve(arg);
   if (!fs.existsSync(abs)) return [];
   if (fs.statSync(abs).isDirectory()) {
     const directSkillMd = path.join(abs, 'SKILL.md');
     if (fs.existsSync(directSkillMd)) return [directSkillMd];
-    return collectSkillFilesFromRoot(abs);
+    return collectSkillFilesFromRoots([{ absPath: abs, project: null }]).map(entry => entry.filePath);
   }
   if (abs.endsWith('SKILL.md') || abs.endsWith('.md')) return [abs];
   return [];
@@ -179,7 +149,7 @@ function collectSkillFiles(args) {
       files.push(...collectSkillFilesFromExplicitArg(arg));
     }
   } else {
-    files.push(...collectSkillFilesFromRoots(SKILL_ROOTS));
+    files.push(...collectSkillFilesFromRoots(SKILL_ROOTS).map(entry => entry.filePath));
   }
   if (includeTemplate && fs.existsSync(TEMPLATE_PATH)) files.push(TEMPLATE_PATH);
   return files;
@@ -192,6 +162,7 @@ function collectSkillFiles(args) {
 function main() {
   const args = process.argv.slice(2);
   const noColor = args.includes('--no-color');
+  const jsonOut = args.includes('--json');
   const files = collectSkillFiles(args);
 
   if (files.length === 0) {
@@ -218,7 +189,9 @@ function main() {
       ...checkParentDirMatchesName(file, fm),
     ];
 
-    if (fileErrors.length === 0) {
+    if (jsonOut) {
+      // Render after all files are checked.
+    } else if (fileErrors.length === 0) {
       console.log(`OK   ${relPath}`);
     } else {
       console.error(`FAIL ${relPath}`);
@@ -238,7 +211,22 @@ function main() {
     }
   }
 
-  console.log(`\n${files.length} file(s) checked, ${totalErrors} error(s).`);
+  if (jsonOut) {
+    const results = files.map(file => {
+      const relPath = path.relative(REPO_ROOT, file);
+      const text = fs.readFileSync(file, 'utf8');
+      const fm = normalizeFrontmatter(parseFrontmatter(text));
+      const errors = fm ? [
+        ...checkName(fm),
+        ...checkDescription(fm),
+        ...checkParentDirMatchesName(file, fm),
+      ] : [{ field: 'frontmatter', msg: 'YAML frontmatter failed to parse' }];
+      return { file: relPath, ok: errors.length === 0, errors };
+    });
+    process.stdout.write(JSON.stringify({ files_checked: files.length, errors: totalErrors, results }, null, 2) + '\n');
+  } else {
+    console.log(`\n${files.length} file(s) checked, ${totalErrors} error(s).`);
+  }
   process.exit(totalErrors > 0 ? 1 : 0);
 }
 

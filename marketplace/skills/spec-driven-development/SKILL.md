@@ -1,144 +1,164 @@
 ---
 name: spec-driven-development
-description: "This skill provides Spec Driven Development (SDD) expertise for AI engineering: the Specify → Plan → Tasks → Implement lifecycle. Use when starting any non-trivial task, refactoring a core module, or when an agent loop has stalled due to ambiguous requirements. Do NOT use for one-line edits or README fixes."
+description: "Use when starting a non-trivial feature, refactor, or agent implementation that needs a written spec, plan, task breakdown, and verification path before code changes. Covers Spec Kit-style SDD phases, requirements-vs-plan separation, task traceability, review gates, and spec-compliance verification. Do NOT use for one-line edits, README-only fixes, post-implementation code review (use `code-review`), or test-level decisions (use `testing-strategy`)."
 license: MIT
 compatibility: "Markdown, Git, agent-skill runtimes"
 allowed-tools: Read Grep Bash
 metadata:
-  metadata: "{\"schema_version\":6,\"version\":\"1.0.0\",\"type\":\"workflow\",\"category\":\"engineering\",\"domain\":\"engineering/methodology\",\"scope\":\"reference\",\"owner\":\"skill-graph-maintainer\",\"freshness\":\"2026-03-28\",\"drift_check\":\"{\\\\\\\"last_verified\\\\\\\":\\\\\\\"2026-03-28\\\\\\\"}\",\"eval_artifacts\":\"planned\",\"eval_state\":\"unverified\",\"routing_eval\":\"absent\",\"stability\":\"experimental\",\"keywords\":\"[\\\\\\\"spec driven development\\\\\\\",\\\\\\\"SDD\\\\\\\",\\\\\\\"technical plan\\\\\\\",\\\\\\\"task decomposition\\\\\\\",\\\\\\\"specification\\\\\\\",\\\\\\\"architecture plan\\\\\\\",\\\\\\\"phase gates\\\\\\\",\\\\\\\"AI engineering methodology\\\\\\\"]\",\"triggers\":\"[\\\\\\\"sdd-skill\\\\\\\",\\\\\\\"planning-mode\\\\\\\",\\\\\\\"spec-driven-development\\\\\\\"]\",\"relations\":\"{\\\\\\\"verify_with\\\\\\\":[\\\\\\\"code-review\\\\\\\"]}\",\"portability\":\"{\\\\\\\"readiness\\\\\\\":\\\\\\\"scripted\\\\\\\",\\\\\\\"targets\\\\\\\":[\\\\\\\"skill-md\\\\\\\"]}\",\"lifecycle\":\"{\\\\\\\"stale_after_days\\\\\\\":90,\\\\\\\"review_cadence\\\\\\\":\\\\\\\"quarterly\\\\\\\"}\",\"skill_graph_source_repo\":\"https://github.com/jacob-balslev/skill-graph\",\"skill_graph_protocol\":\"Skill Metadata Protocol v5\",\"skill_graph_project\":\"Skill Graph\",\"skill_graph_canonical_skill\":\"skills/spec-driven-development/SKILL.md\"}"
+  schema_version: "7"
+  version: "1.1.0"
+  type: workflow
+  category: engineering
+  domain: engineering/methodology
+  scope: reference
+  owner: skill-graph-maintainer
+  freshness: "2026-05-18"
+  drift_check: "{\"last_verified\":\"2026-05-18\"}"
+  eval_artifacts: planned
+  eval_state: unverified
+  routing_eval: absent
+  stability: experimental
+  keywords: "[\"spec driven development\",\"SDD\",\"specification first\",\"technical plan\",\"task decomposition\",\"spec.md\",\"plan.md\",\"tasks.md\",\"requirements before code\",\"phase gates\",\"AI engineering methodology\"]"
+  triggers: "[\"sdd-skill\",\"planning-mode\",\"spec-driven-development\"]"
+  relations: "{\"boundary\":[{\"skill\":\"code-review\",\"reason\":\"code-review evaluates a concrete diff after implementation; spec-driven-development shapes the spec, plan, and task path before implementation\"},{\"skill\":\"testing-strategy\",\"reason\":\"testing-strategy decides the right test level and regression target; spec-driven-development only requires that the plan names verification evidence traceable to the spec\"}],\"related\":[\"testing-strategy\",\"evaluation\"],\"verify_with\":[\"code-review\",\"testing-strategy\"]}"
+  grounding: "{\"domain_object\":\"Spec-driven development workflow for AI-assisted engineering using specification, plan, task, implementation, and verification artifacts\",\"grounding_mode\":\"hybrid\",\"truth_sources\":[\"https://github.github.com/spec-kit/index.html\",\"https://github.github.com/spec-kit/reference/workflows.html\",\"https://github.com/github/spec-kit\",\"https://standards.ieee.org/ieee/29148/6937/\"],\"failure_modes\":[\"code_started_before_spec_or_plan\",\"implementation_plan_missing_architecture_contracts_or_tests\",\"tasks_not_traceable_to_plan_or_success_criteria\",\"verification_not_mapped_to_spec_requirements\",\"workflow_requires_vendor_specific_commands_when_plain_markdown_would_work\"],\"evidence_priority\":\"equal\"}"
+  portability: "{\"readiness\":\"scripted\",\"targets\":[\"skill-md\"]}"
+  lifecycle: "{\"stale_after_days\":90,\"review_cadence\":\"quarterly\"}"
+  structural_verdict: UNVERIFIED
+  truth_verdict: UNVERIFIED
+  comprehension_verdict: UNVERIFIED
+  application_verdict: UNVERIFIED
   skill_graph_source_repo: "https://github.com/jacob-balslev/skill-graph"
-  skill_graph_protocol: Skill Metadata Protocol v4
+  skill_graph_protocol: Skill Metadata Protocol v7
   skill_graph_project: Skill Graph
-  skill_graph_canonical_skill: skills/spec-driven-development/SKILL.md
+  skill_graph_canonical_skill: skills/engineering/spec-driven-development/SKILL.md
 ---
 # Spec Driven Development (SDD)
 
-## Domain Context
-
-**What is this skill?** This skill provides Spec Driven Development (SDD) expertise for AI engineering: the Specify → Plan → Tasks → Implement lifecycle. Use when starting any non-trivial task, refactoring a core module, or when an agent loop has stalled due to ambiguous requirements. Do NOT use for one-line edits or README fixes.
-
-## Workflow
-
-Use the ordered phases, checklists, and guardrails in the sections below as the canonical workflow for this skill. When multiple subsections describe steps, follow them in the order presented.
-
 ## Coverage
 
-The 5-phase SDD lifecycle (Specify, Plan, Decompose, Implement, Verify), spec.md and plan.md artifact authoring, atomic task decomposition (<10 min per task with topological ordering), verification gates (spec compliance, zero regressions, visual QA, doc updates), and the Build-Measure-Learn validation loop for post-implementation learning.
+- When to require SDD: non-trivial work, core-module refactors, ambiguous agent loops, cross-boundary changes, or any task where hidden requirements could be expensive after code exists.
+- Artifact chain: `spec.md` for what and why, `plan.md` for how, `tasks.md` for ordered work, implementation commits for execution, and a final verification report for spec compliance.
+- Phase discipline: specification before plan, plan before tasks, tasks before implementation, and verification before completion.
+- Traceability: each task and verification check maps back to a requirement, constraint, or success criterion.
+- Review gates: human approval when available, or an explicit documented rationale when autonomous work must proceed.
+- Scope control: if implementation discovers the spec or plan is wrong, update the upstream artifact before continuing.
+- Post-implementation learning: measure whether the change solved the problem when the task has a product, operational, or user-facing success metric.
 
 ## Philosophy
 
-AI agents default to implementation-first thinking: receive a prompt, start coding. This produces features that "work" but miss edge cases, violate constraints, and accumulate design debt. SDD exists because fixing a design flaw in Markdown costs 10x less than fixing it in a pull request. By forcing the Specify and Plan phases before any code is written, agents surface hidden dependencies, breaking changes, and security constraints while they are cheap to address. Observed failure: agents that skip specs produce code that passes tests but fails real-world scenarios the spec would have caught.
+AI agents default to implementation-first thinking: receive a prompt, start coding. That produces features that compile, pass narrow tests, and still miss the actual requirement. SDD makes the specification the source of truth and turns the plan, task list, implementation, and verification report into derived artifacts.
 
-> Spec Driven Development is the methodology of separating **"What"** (Specification) from **"How"** (Implementation). In the age of AI agents, SDD replaces "vibe coding" (iterative prompting without a plan) with systematic engineering.
+GitHub Spec Kit frames the core process as Spec → Plan → Tasks → Implement. This skill keeps that source shape and adds a final Verify gate because a skill application is not complete until the implementation is checked against the spec that justified it.
 
-## 1. The SDD Lifecycle
+The most important separation is **what** versus **how**. The spec names user value, constraints, non-goals, and success criteria. The plan names architecture, contracts, data flow, testing, and risk. Collapsing those two artifacts creates design debt before the first file is edited.
 
-Every non-trivial task follows these five phases:
+## Workflow
 
-| Phase | Agent Role | Output Artifact | Exit Criteria |
-|-------|------------|-----------------|---------------|
-| **1. Specify** | Researcher | `spec.md` | Human approval of requirements |
-| **2. Plan** | Architect | `plan.md` | Human approval of architecture |
-| **3. Decompose**| Project Manager | Linear Tasks | Tasks are atomic (<10 mins) |
-| **4. Implement**| Solver | Code + Tests | Tests pass, linting clear |
-| **5. Verify** | Validator | RESULT report | Spec compliance confirmed |
+Use this workflow in order. If a phase reveals that an earlier artifact is wrong, update the earlier artifact first and restart from there.
 
-**Rule**: Never start coding until the **Plan** phase is approved. Fixing a design flaw in Markdown is 10x cheaper than in a Pull Request.
+### 1. Decide Whether SDD Is Required
 
-## 2. The Specification (`spec.md`)
+Use the lightweight path only for small, local, reversible edits. Use SDD when any of these are true:
 
-The `spec.md` defines the intent, constraints, and success criteria.
+- More than one module, service, schema, public API, or user flow may change.
+- Requirements are ambiguous or conflict with existing behavior.
+- Security, privacy, accessibility, data integrity, or migration risk is present.
+- An agent loop has stalled because it keeps discovering new scope while coding.
 
-- **Requirements**: User stories and "Must-Haves"
-- **Constraints**: Architecture, security, and PII rules (GDPR)
-- **Success Criteria**: Observable behaviors that prove the task is "Done"
-- **Edge Cases**: Zero states, error states, and high-volume data handling
+### 2. Specify (`spec.md`)
+
+The specification defines the desired outcome without prescribing implementation mechanics.
+
+- Requirements: user-visible behavior, system behavior, and must-have outcomes.
+- Constraints: architecture boundaries, security/privacy rules, accessibility, performance, compatibility, and data handling.
+- Non-goals: what this change explicitly will not solve.
+- Success criteria: observable facts that prove the work is done.
+- Edge cases: zero states, failure states, concurrent access, volume limits, and rollback paths.
 
 > **Anti-pattern**: Describing implementation details (e.g., "Use a `for` loop") in the spec. The spec is for "What", not "How".
 
-## 3. The Technical Plan (`plan.md`)
+Exit gate: the spec is approved by the human owner, or the agent records why it is safe to proceed without explicit approval.
 
-The `plan.md` defines the implementation strategy and architecture.
+### 3. Plan (`plan.md`)
 
-- **Architecture**: Affected modules, new components, and DB schema changes
-- **Data Flow**: How data moves from input to storage to output
-- **API Contracts**: Request/Response shapes and status codes
-- **Testing Strategy**: Unit, integration, and E2E coverage targets
+The plan translates the spec into an implementation strategy.
 
-**Rule**: The plan must identify **hidden dependencies** and **breaking changes** before the first line of code is written.
+- Architecture: affected modules, new components, storage/schema changes, migration path, and rollback strategy.
+- Data flow: how data moves between inputs, processing, storage, outputs, and external systems.
+- Contracts: API request/response shapes, events, schemas, status codes, and compatibility promises.
+- Testing: evidence needed at unit, integration, contract, E2E, manual, or visual levels.
+- Risks: hidden dependencies, breaking changes, sequencing hazards, and observability needs.
 
-## 4. Task Decomposition
+Exit gate: the plan explains how every success criterion will be implemented and verified.
 
-Break the plan into atomic, testable tasks.
+### 4. Decompose (`tasks.md`)
 
-- **Atomic**: One behavioral change per task
-- **Time-bound**: Each task should take an agent <10 minutes to implement
-- **Verifiable**: Each task must have a verification step (e.g., run a specific test)
-- **Topological Order**: Respect dependencies (Task B depends on Task A)
+Break the plan into ordered, testable tasks.
 
-> **Source**: `skills/task-lifecycle/SKILL.md` task decomposition rules.
+- One behavioral change per task.
+- Each task names the spec requirement or plan section it satisfies.
+- Each task includes a verification command, check, or review step.
+- Dependencies are topologically ordered so prerequisite work appears first.
+- Parallel tasks are marked only when they can be executed without touching the same files or contracts.
 
-## 5. Verification Gates
+Exit gate: a reader can execute tasks in order without rediscovering architecture decisions.
+
+### 5. Implement
+
+Implement from `tasks.md`, not from memory.
+
+- Complete tasks in dependency order.
+- Keep each commit or patch scoped to the task it claims.
+- If a task exposes a wrong requirement, update `spec.md`; if it exposes a wrong design, update `plan.md`; then regenerate or adjust tasks.
+- Do not silently add scope just because the implementation made it convenient.
+- Keep tests, docs, and operational checks attached to the task that requires them.
+
+### 6. Verify
 
 Verification is the only path to finality.
 
-- **SDD spec-compliance**: Every "Must-Have" in the spec is demonstrably true
-- **Zero-regressions**: Existing tests still pass
-- **Visual-QA**: UI changes match design-tokens and `composition-theory`
-- **Doc-update**: AGENTS.md, CONTEXT.md, and relevant domain docs updated
+- Spec compliance: every must-have and success criterion has evidence.
+- Plan compliance: implementation follows the chosen architecture or documents an approved change.
+- Regression evidence: focused tests, lint/type checks, contract checks, or manual verification ran.
+- User-facing quality: UI, copy, accessibility, and visual behavior match the spec and the project design system.
+- Documentation: repo instructions, API docs, decisions, and runbooks are updated when the behavior or workflow changed.
+- Residual risk: any skipped check has a named reason and owner.
 
-## 6. Validate (Build-Measure-Learn)
+### 7. Learn
 
-After implementation, validate that the change actually solves the problem. This phase comes from Eric Ries's Lean Startup methodology.
+When the spec has a product, operational, or user-facing metric, measure whether the change solved the intended problem.
 
-### The BML Loop
-1. **Build** — Minimum viable implementation (already done in Phase 4)
-2. **Measure** — Collect data on whether the change achieved its goal
-   - Does the DORA rework rate stay stable or improve?
-   - Does user activation improve (if user-facing)?
-   - Does the target metric move in the right direction?
-3. **Learn** — Draw conclusions and decide next steps
-   - **Persevere** — The hypothesis was correct, continue investing
-   - **Pivot** — The hypothesis was wrong, change approach
-   - **Stop** — The problem isn't worth solving at this time
+- Define the success metric before implementation.
+- Confirm the measurement mechanism exists.
+- Collect enough evidence for the decision.
+- Record whether to continue, adjust, or stop.
 
-### Validation Checklist
-- [ ] Success metric defined before implementation (from the spec)
-- [ ] Measurement mechanism in place (analytics, telemetry, user feedback)
-- [ ] Data collected for at least one cycle
-- [ ] Decision documented (persevere/pivot/stop) in Linear or decision ledger
+Skip the learning loop for pure infrastructure chores, small bug fixes with a regression test, and cosmetic edits with no measurable hypothesis.
 
-### When to Skip Validation
-- Pure infrastructure/tooling changes (validate via tests instead)
-- Bug fixes (validate via regression test)
-- Cosmetic changes under 10 lines
-
-> Source: Eric Ries "The Lean Startup" (2011)
-
----
-
-## 7. Verification Checklist
+## Verification Checklist
 
 ```text
 SDD CHECK
 =========
-[ ] spec.md approved by human (or documented rationale)
-[ ] plan.md approved by human (or documented rationale)
-[ ] Tasks are atomic (<10 min execution)
-[ ] Dependencies are explicitly ordered
-[ ] No code written until Plan phase is complete
-[ ] Every task has an associated test case
-[ ] Final verification confirms ALL spec success criteria met
+[ ] spec.md exists or the fast-track rationale is documented
+[ ] spec.md separates requirements, constraints, non-goals, success criteria, and edge cases
+[ ] plan.md maps each success criterion to architecture, contracts, data flow, and verification evidence
+[ ] tasks.md is ordered, traceable, and verifiable
+[ ] No code was written before the plan gate, or the exception is documented
+[ ] Every implementation deviation updated the upstream spec or plan
+[ ] Final verification confirms all spec success criteria
+[ ] Eval, routing, or quality claims remain unverified unless the corresponding check actually ran
 ```
 
 ## Do NOT Use When
 
 | Instead of this skill | Use | Why |
 |---|---|---|
-| One-line edits, README fixes, or trivial changes | `effort` | Effort calibration determines when fast-track is appropriate |
-| Breaking a plan into atomic tasks with dependencies | `task` | Task skill owns decomposition mechanics and topological ordering |
-| Reviewing code quality after implementation | `code-review` | Code review owns post-implementation quality assessment |
-| Designing the UI layout and visual contracts | `design-execution` | Design execution owns the visual implementation doctrine |
+| One-line edits, README-only fixes, or trivial local changes | no dedicated skill | The SDD overhead is larger than the change risk |
+| Reviewing code quality after implementation | `code-review` | Code review owns diff-level correctness, risk, and merge-readiness assessment |
+| Deciding what level of automated or manual testing is appropriate | `testing-strategy` | Testing strategy owns test-level selection and regression targeting |
+| Holistic completion scoring after work is done | `evaluation` | Evaluation owns quality scoring and revision loops after implementation evidence exists |
 
 
 ## Verification
@@ -146,3 +166,4 @@ SDD CHECK
 After applying this skill, verify:
 - [ ] Changes follow the patterns documented above
 - [ ] No regressions in affected functionality
+- [ ] The final report names which spec criteria were satisfied and which checks produced evidence

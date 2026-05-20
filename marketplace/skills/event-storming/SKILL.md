@@ -5,11 +5,33 @@ license: MIT
 compatibility: "Portable event-storming discipline for product discovery, domain modeling, event-driven architecture, and workflow analysis."
 allowed-tools: Read Grep
 metadata:
-  metadata: "{\"schema_version\":6,\"version\":\"1.0.0\",\"type\":\"capability\",\"category\":\"engineering\",\"domain\":\"architecture/domain-discovery\",\"scope\":\"portable\",\"owner\":\"skill-graph-maintainer\",\"freshness\":\"2026-05-11\",\"drift_check\":\"{\\\\\\\"last_verified\\\\\\\":\\\\\\\"2026-05-11\\\\\\\"}\",\"eval_artifacts\":\"planned\",\"eval_state\":\"unverified\",\"routing_eval\":\"absent\",\"stability\":\"experimental\",\"keywords\":\"[\\\\\\\"event storming\\\\\\\",\\\\\\\"domain events\\\\\\\",\\\\\\\"commands\\\\\\\",\\\\\\\"aggregates\\\\\\\",\\\\\\\"policies\\\\\\\",\\\\\\\"read models\\\\\\\",\\\\\\\"temporal workflow\\\\\\\",\\\\\\\"event-driven discovery\\\\\\\",\\\\\\\"process modeling\\\\\\\"]\",\"examples\":\"[\\\\\\\"map the order lifecycle as domain events before we design tables or APIs\\\\\\\",\\\\\\\"which commands, policies, and external systems are hidden in this workflow?\\\\\\\",\\\\\\\"use event storming to find aggregate boundaries for fulfillment\\\\\\\",\\\\\\\"turn this incident-prone business process into events and decisions\\\\\\\"]\",\"anti_examples\":\"[\\\\\\\"implement Shopify webhook signature verification and idempotent retries\\\\\\\",\\\\\\\"draw the state machine for this one status field\\\\\\\",\\\\\\\"create a normalized data model and indexes\\\\\\\",\\\\\\\"write event-bus infrastructure code\\\\\\\",\\\\\\\"define the schema, topic, compatibility, and fixtures for a selected event\\\\\\\"]\",\"relations\":\"{\\\\\\\"boundary\\\\\\\":[{\\\\\\\"skill\\\\\\\":\\\\\\\"event-contract-design\\\\\\\",\\\\\\\"reason\\\\\\\":\\\\\\\"event-contract-design owns publishable event envelopes, schemas, topics, and compatibility; event-storming discovers the domain behavior before contract design\\\\\\\"},{\\\\\\\"skill\\\\\\\":\\\\\\\"webhook-integration\\\\\\\",\\\\\\\"reason\\\\\\\":\\\\\\\"webhook-integration implements inbound provider event handlers; event-storming discovers business-domain events before implementation\\\\\\\"},{\\\\\\\"skill\\\\\\\":\\\\\\\"state-machine-modeling\\\\\\\",\\\\\\\"reason\\\\\\\":\\\\\\\"state-machine-modeling formalizes states and transitions; event-storming discovers events, commands, policies, and aggregates\\\\\\\"},{\\\\\\\"skill\\\\\\\":\\\\\\\"data-modeling\\\\\\\",\\\\\\\"reason\\\\\\\":\\\\\\\"data-modeling designs stored data structures after domain events are understood\\\\\\\"},{\\\\\\\"skill\\\\\\\":\\\\\\\"api-design\\\\\\\",\\\\\\\"reason\\\\\\\":\\\\\\\"api-design shapes endpoint surfaces; event-storming discovers the domain behavior those surfaces expose\\\\\\\"}],\\\\\\\"related\\\\\\\":[\\\\\\\"bounded-context-mapping\\\\\\\",\\\\\\\"state-machine-modeling\\\\\\\",\\\\\\\"system-interface-contracts\\\\\\\",\\\\\\\"event-contract-design\\\\\\\",\\\\\\\"conceptual-modeling\\\\\\\"],\\\\\\\"verify_with\\\\\\\":[\\\\\\\"conceptual-modeling\\\\\\\",\\\\\\\"bounded-context-mapping\\\\\\\"]}\",\"portability\":\"{\\\\\\\"readiness\\\\\\\":\\\\\\\"scripted\\\\\\\",\\\\\\\"targets\\\\\\\":[\\\\\\\"skill-md\\\\\\\"]}\",\"lifecycle\":\"{\\\\\\\"stale_after_days\\\\\\\":365,\\\\\\\"review_cadence\\\\\\\":\\\\\\\"quarterly\\\\\\\"}\",\"skill_graph_source_repo\":\"https://github.com/jacob-balslev/skill-graph\",\"skill_graph_protocol\":\"Skill Metadata Protocol v5\",\"skill_graph_project\":\"Skill Graph\",\"skill_graph_canonical_skill\":\"skills/event-storming/SKILL.md\"}"
+  schema_version: "7"
+  version: "1.0.0"
+  type: capability
+  category: engineering
+  domain: architecture/domain-discovery
+  scope: portable
+  owner: skill-graph-maintainer
+  freshness: "2026-05-11"
+  drift_check: "{\"last_verified\":\"2026-05-11\"}"
+  eval_artifacts: planned
+  eval_state: unverified
+  routing_eval: absent
+  stability: experimental
+  keywords: "[\"event storming\",\"domain events\",\"commands\",\"aggregates\",\"policies\",\"read models\",\"temporal workflow\",\"event-driven discovery\",\"process modeling\"]"
+  examples: "[\"map the order lifecycle as domain events before we design tables or APIs\",\"which commands, policies, and external systems are hidden in this workflow?\",\"use event storming to find aggregate boundaries for fulfillment\",\"turn this incident-prone business process into events and decisions\"]"
+  anti_examples: "[\"implement Shopify webhook signature verification and idempotent retries\",\"draw the state machine for this one status field\",\"create a normalized data model and indexes\",\"write event-bus infrastructure code\",\"define the schema, topic, compatibility, and fixtures for a selected event\"]"
+  relations: "{\"boundary\":[{\"skill\":\"event-contract-design\",\"reason\":\"event-contract-design owns publishable event envelopes, schemas, topics, and compatibility; event-storming discovers the domain behavior before contract design\"},{\"skill\":\"webhook-integration\",\"reason\":\"webhook-integration implements inbound provider event handlers; event-storming discovers business-domain events before implementation\"},{\"skill\":\"state-machine-modeling\",\"reason\":\"state-machine-modeling formalizes states and transitions; event-storming discovers events, commands, policies, and aggregates\"},{\"skill\":\"data-modeling\",\"reason\":\"data-modeling designs stored data structures after domain events are understood\"},{\"skill\":\"api-design\",\"reason\":\"api-design shapes endpoint surfaces; event-storming discovers the domain behavior those surfaces expose\"}],\"related\":[\"bounded-context-mapping\",\"state-machine-modeling\",\"system-interface-contracts\",\"event-contract-design\",\"conceptual-modeling\"],\"verify_with\":[\"conceptual-modeling\",\"bounded-context-mapping\"]}"
+  portability: "{\"readiness\":\"scripted\",\"targets\":[\"skill-md\"]}"
+  lifecycle: "{\"stale_after_days\":365,\"review_cadence\":\"quarterly\"}"
+  structural_verdict: UNVERIFIED
+  truth_verdict: UNVERIFIED
+  comprehension_verdict: UNVERIFIED
+  application_verdict: UNVERIFIED
   skill_graph_source_repo: "https://github.com/jacob-balslev/skill-graph"
-  skill_graph_protocol: Skill Metadata Protocol v4
+  skill_graph_protocol: Skill Metadata Protocol v7
   skill_graph_project: Skill Graph
-  skill_graph_canonical_skill: skills/event-storming/SKILL.md
+  skill_graph_canonical_skill: skills/engineering/event-storming/SKILL.md
 ---
 
 # Event Storming

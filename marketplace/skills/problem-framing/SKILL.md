@@ -3,11 +3,31 @@ name: problem-framing
 description: "Use when a team is converging on solutions before agreeing on the problem, when a brief reads as a feature request, when symptoms and root needs are tangled, or when assumptions need surfacing before design work proceeds. Do NOT use for code-level bug triage, runtime failure diagnosis, or root-cause analysis of system errors — those are engineering investigation tasks, not design problem framing."
 license: CC-BY-4.0
 metadata:
-  metadata: "{\"schema_version\":6,\"version\":\"1.0.0\",\"type\":\"capability\",\"category\":\"design\",\"scope\":\"portable\",\"owner\":\"skill-graph-maintainer\",\"freshness\":\"2026-05-12\",\"drift_check\":\"{\\\\\\\"last_verified\\\\\\\":\\\\\\\"2026-05-12\\\\\\\"}\",\"eval_artifacts\":\"planned\",\"eval_state\":\"unverified\",\"routing_eval\":\"absent\",\"stability\":\"experimental\",\"keywords\":\"[\\\\\\\"how might we\\\\\\\",\\\\\\\"problem statement\\\\\\\",\\\\\\\"reframing\\\\\\\",\\\\\\\"assumption mapping\\\\\\\",\\\\\\\"root need\\\\\\\",\\\\\\\"symptom vs need\\\\\\\",\\\\\\\"point of view statement\\\\\\\",\\\\\\\"jobs to be done framing\\\\\\\",\\\\\\\"design challenge\\\\\\\",\\\\\\\"double diamond discover\\\\\\\",\\\\\\\"problem definition\\\\\\\",\\\\\\\"brief interrogation\\\\\\\",\\\\\\\"solution-first brief\\\\\\\"]\",\"triggers\":\"[\\\\\\\"frame this problem\\\\\\\",\\\\\\\"how might we\\\\\\\",\\\\\\\"write a problem statement\\\\\\\",\\\\\\\"this brief is a solution\\\\\\\",\\\\\\\"what are we actually solving\\\\\\\"]\",\"examples\":\"[\\\\\\\"We've been asked to 'add a chatbot' — help me reframe what we're actually solving for users.\\\\\\\",\\\\\\\"Draft three how-might-we statements from these synthesis insights.\\\\\\\",\\\\\\\"The PRD jumps straight to features; help me extract the underlying user problem.\\\\\\\",\\\\\\\"List the assumptions baked into this product brief and rank them by riskiness.\\\\\\\"]\",\"anti_examples\":\"[\\\\\\\"Find the bug causing the 500 error in the checkout endpoint.\\\\\\\",\\\\\\\"Why is the test suite flaky on CI?\\\\\\\",\\\\\\\"Classify whether this agent request is high-risk before executing.\\\\\\\"]\",\"relations\":\"{\\\\\\\"related\\\\\\\":[\\\\\\\"user-research\\\\\\\",\\\\\\\"ideation\\\\\\\",\\\\\\\"research-synthesis\\\\\\\",\\\\\\\"design-thinking\\\\\\\"],\\\\\\\"boundary\\\\\\\":[{\\\\\\\"skill\\\\\\\":\\\\\\\"problem-locating-solving\\\\\\\",\\\\\\\"reason\\\\\\\":\\\\\\\"problem-locating-solving handles bug localization in source code — concrete failure traced to a line or function. problem-framing handles ambiguous human/business problems where the question itself is unclear and there is no error to reproduce.\\\\\\\"},{\\\\\\\"skill\\\\\\\":\\\\\\\"diagnosis\\\\\\\",\\\\\\\"reason\\\\\\\":\\\\\\\"diagnosis handles failure triage of broken systems and incidents. problem-framing handles upstream definition of what a team should be working on at all.\\\\\\\"}]}\",\"skill_graph_source_repo\":\"https://github.com/jacob-balslev/skill-graph\",\"skill_graph_protocol\":\"Skill Metadata Protocol v5\",\"skill_graph_project\":\"Skill Graph\",\"skill_graph_canonical_skill\":\"skills/problem-framing/SKILL.md\"}"
+  schema_version: "7"
+  version: "1.0.0"
+  type: capability
+  category: design
+  scope: portable
+  owner: skill-graph-maintainer
+  freshness: "2026-05-12"
+  drift_check: "{\"last_verified\":\"2026-05-12\"}"
+  eval_artifacts: planned
+  eval_state: unverified
+  routing_eval: absent
+  stability: experimental
+  keywords: "[\"how might we\",\"problem statement\",\"reframing\",\"assumption mapping\",\"root need\",\"symptom vs need\",\"point of view statement\",\"jobs to be done framing\",\"design challenge\",\"double diamond discover\",\"problem definition\",\"brief interrogation\",\"solution-first brief\"]"
+  triggers: "[\"frame this problem\",\"how might we\",\"write a problem statement\",\"this brief is a solution\",\"what are we actually solving\"]"
+  examples: "[\"We've been asked to 'add a chatbot' — help me reframe what we're actually solving for users.\",\"Draft three how-might-we statements from these synthesis insights.\",\"The PRD jumps straight to features; help me extract the underlying user problem.\",\"List the assumptions baked into this product brief and rank them by riskiness.\"]"
+  anti_examples: "[\"Find the bug causing the 500 error in the checkout endpoint.\",\"Why is the test suite flaky on CI?\",\"Classify whether this agent request is high-risk before executing.\"]"
+  relations: "{\"related\":[\"user-research\",\"ideation\",\"research-synthesis\",\"design-thinking\"],\"boundary\":[{\"skill\":\"problem-locating-solving\",\"reason\":\"problem-locating-solving handles bug localization in source code — concrete failure traced to a line or function. problem-framing handles ambiguous human/business problems where the question itself is unclear and there is no error to reproduce.\"},{\"skill\":\"diagnosis\",\"reason\":\"diagnosis handles failure triage of broken systems and incidents. problem-framing handles upstream definition of what a team should be working on at all.\"}]}"
+  structural_verdict: UNVERIFIED
+  truth_verdict: UNVERIFIED
+  comprehension_verdict: UNVERIFIED
+  application_verdict: UNVERIFIED
   skill_graph_source_repo: "https://github.com/jacob-balslev/skill-graph"
-  skill_graph_protocol: Skill Metadata Protocol v4
+  skill_graph_protocol: Skill Metadata Protocol v7
   skill_graph_project: Skill Graph
-  skill_graph_canonical_skill: skills/problem-framing/SKILL.md
+  skill_graph_canonical_skill: skills/design/problem-framing/SKILL.md
 ---
 
 # Problem Framing

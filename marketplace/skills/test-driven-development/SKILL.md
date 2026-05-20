@@ -4,11 +4,42 @@ description: "Use when reasoning about Test-Driven Development as a design disci
 license: MIT
 allowed-tools: Read Grep
 metadata:
-  metadata: "{\"schema_version\":6,\"version\":\"1.0.0\",\"type\":\"capability\",\"category\":\"quality\",\"domain\":\"quality/testing\",\"scope\":\"reference\",\"owner\":\"skill-graph-maintainer\",\"freshness\":\"2026-05-16\",\"drift_check\":\"{\\\\\\\"last_verified\\\\\\\":\\\\\\\"2026-05-16\\\\\\\"}\",\"eval_artifacts\":\"planned\",\"eval_state\":\"unverified\",\"routing_eval\":\"absent\",\"comprehension_state\":\"present\",\"stability\":\"experimental\",\"keywords\":\"[\\\\\\\"test-driven development\\\\\\\",\\\\\\\"TDD\\\\\\\",\\\\\\\"red green refactor\\\\\\\",\\\\\\\"London school\\\\\\\",\\\\\\\"Detroit school\\\\\\\",\\\\\\\"Chicago school\\\\\\\",\\\\\\\"outside-in TDD\\\\\\\",\\\\\\\"inside-out TDD\\\\\\\",\\\\\\\"mockist\\\\\\\",\\\\\\\"classicist\\\\\\\",\\\\\\\"emergent design\\\\\\\",\\\\\\\"test-first\\\\\\\",\\\\\\\"design pressure\\\\\\\",\\\\\\\"GOOS\\\\\\\"]\",\"triggers\":\"[\\\\\\\"should we write tests first\\\\\\\",\\\\\\\"are mocks ruining the design\\\\\\\",\\\\\\\"is TDD worth it\\\\\\\",\\\\\\\"London school vs Detroit school\\\\\\\",\\\\\\\"the tests changed every refactor\\\\\\\"]\",\"examples\":\"[\\\\\\\"explain why writing the test first changes the design of the code under test\\\\\\\",\\\\\\\"decide between London-school (mocks-as-design) and Detroit-school (state-verification) TDD for a new module\\\\\\\",\\\\\\\"diagnose why the test suite is fragile under refactor — likely over-mocked interaction tests\\\\\\\",\\\\\\\"explain why high test coverage with TDD is a side effect, not the goal\\\\\\\"]\",\"anti_examples\":\"[\\\\\\\"construct a mock, stub, or spy (use test-doubles-design)\\\\\\\",\\\\\\\"decide what test levels (unit/integration/e2e) to invest in (use testing-strategy)\\\\\\\",\\\\\\\"iterate on LLM behavior using an eval suite (use eval-driven-development)\\\\\\\"]\",\"relations\":\"{\\\\\\\"related\\\\\\\":[\\\\\\\"testing-strategy\\\\\\\",\\\\\\\"test-doubles-design\\\\\\\",\\\\\\\"eval-driven-development\\\\\\\",\\\\\\\"refactor\\\\\\\",\\\\\\\"type-safety\\\\\\\"],\\\\\\\"boundary\\\\\\\":[{\\\\\\\"skill\\\\\\\":\\\\\\\"testing-strategy\\\\\\\",\\\\\\\"reason\\\\\\\":\\\\\\\"testing-strategy owns the question 'what should we test, at which level, with what evidence' for a given change; this skill owns the design discipline of writing the test before the code that satisfies it. The two compose — testing-strategy decides the surface; TDD prescribes the rhythm — but they answer different questions.\\\\\\\"},{\\\\\\\"skill\\\\\\\":\\\\\\\"test-doubles-design\\\\\\\",\\\\\\\"reason\\\\\\\":\\\\\\\"test-doubles-design owns mocks/stubs/fakes/spies as a construct; this skill owns the discipline that places them (London-school heavily, Detroit-school lightly). The schools differ on how much test-doubles design matters to the practice.\\\\\\\"},{\\\\\\\"skill\\\\\\\":\\\\\\\"eval-driven-development\\\\\\\",\\\\\\\"reason\\\\\\\":\\\\\\\"eval-driven-development owns the LLM analog of TDD where the unit of judgment is pass-rate over a sample rather than binary per-test pass/fail. The disciplines share the iteration-first-then-implement spirit but the math underneath differs.\\\\\\\"},{\\\\\\\"skill\\\\\\\":\\\\\\\"refactor\\\\\\\",\\\\\\\"reason\\\\\\\":\\\\\\\"refactor owns behavior-preserving structural change; this skill prescribes refactor as the third beat of red-green-refactor. The skills compose: TDD calls refactor on every green; refactor owns how to do it without breaking behavior.\\\\\\\"}],\\\\\\\"verify_with\\\\\\\":[\\\\\\\"testing-strategy\\\\\\\",\\\\\\\"refactor\\\\\\\"]}\",\"mental_model\":\"|\",\"purpose\":\"|\",\"boundary\":\"|\",\"analogy\":\"TDD is to code design what a piano teacher's metronome is to a student's playing — the rhythm is not the music, but it surfaces every uneven phrase, every rushed measure, every hesitation, in time to correct it before it ossifies into habit.\",\"misconception\":\"|\",\"concept\":\"{\\\\\\\"definition\\\\\\\":\\\\\\\"Test-Driven Development is a software design discipline in which the test for a behavior is written before the production code that satisfies the test, then production code is written until the test passes, then the code is restructured to improve its shape while the test continues to pass. The cycle — red (failing test), green (passing test), refactor (clean code, still passing) — is the unit of work, and the test suite is the design pressure that shapes the production code. TDD is not 'writing tests first' as a procedural rule; it is using the act of writing a test as the moment to design the interface, decompose the responsibility, and discover what the code should be. The tests are a beneficial side effect of doing design through the test-writing lens; mistaking the side effect for the purpose is the most common failure mode.\\\\\\\",\\\\\\\"mental_model\\\\\\\":\\\\\\\"|\\\\\\\",\\\\\\\"purpose\\\\\\\":\\\\\\\"|\\\\\\\",\\\\\\\"boundary\\\\\\\":\\\\\\\"|\\\\\\\",\\\\\\\"taxonomy\\\\\\\":\\\\\\\"|\\\\\\\",\\\\\\\"analogy\\\\\\\":\\\\\\\"|\\\\\\\",\\\\\\\"misconception\\\\\\\":\\\\\\\"|\\\\\\\"}\",\"skill_graph_source_repo\":\"https://github.com/jacob-balslev/skill-graph\",\"skill_graph_protocol\":\"Skill Metadata Protocol v5\",\"skill_graph_project\":\"Skill Graph\",\"skill_graph_canonical_skill\":\"skills/test-driven-development/SKILL.md\"}"
+  schema_version: "7"
+  version: "1.2.0"
+  type: capability
+  category: quality
+  domain: quality/testing
+  scope: reference
+  owner: skill-graph-maintainer
+  freshness: "2026-05-18"
+  drift_check: "{\"last_verified\":\"2026-05-18\"}"
+  eval_artifacts: planned
+  eval_state: unverified
+  routing_eval: absent
+  comprehension_state: present
+  stability: experimental
+  keywords: "[\"test-driven development\",\"TDD\",\"red green refactor\",\"London school\",\"Detroit school\",\"Chicago school\",\"outside-in TDD\",\"inside-out TDD\",\"mockist\",\"classicist\",\"emergent design\",\"test-first\",\"design pressure\",\"GOOS\"]"
+  triggers: "[\"should we write tests first\",\"are mocks ruining the design\",\"is TDD worth it\",\"London school vs Detroit school\",\"the tests changed every refactor\"]"
+  examples: "[\"explain why writing the test first changes the design of the code under test\",\"decide between London-school (mocks-as-design) and Detroit-school (state-verification) TDD for a new module\",\"diagnose why the test suite is fragile under refactor — likely over-mocked interaction tests\",\"explain why high test coverage with TDD is a side effect, not the goal\"]"
+  anti_examples: "[\"construct a mock, stub, or spy (use test-doubles-design)\",\"decide what test levels (unit/integration/e2e) to invest in (use testing-strategy)\",\"iterate on LLM behavior using an eval suite (use eval-driven-development)\"]"
+  relations: "{\"related\":[\"testing-strategy\",\"test-doubles-design\",\"eval-driven-development\",\"refactor\",\"type-safety\"],\"boundary\":[{\"skill\":\"testing-strategy\",\"reason\":\"testing-strategy owns the question 'what should we test, at which level, with what evidence' for a given change; this skill owns the design discipline of writing the test before the code that satisfies it. The two compose — testing-strategy decides the surface; TDD prescribes the rhythm — but they answer different questions.\"},{\"skill\":\"test-doubles-design\",\"reason\":\"test-doubles-design owns mocks/stubs/fakes/spies as a construct; this skill owns the discipline that places them (London-school heavily, Detroit-school lightly). The schools differ on how much test-doubles design matters to the practice.\"},{\"skill\":\"eval-driven-development\",\"reason\":\"eval-driven-development owns the LLM analog of TDD where the unit of judgment is pass-rate over a sample rather than binary per-test pass/fail. The disciplines share the iteration-first-then-implement spirit but the math underneath differs.\"},{\"skill\":\"refactor\",\"reason\":\"refactor owns behavior-preserving structural change; this skill prescribes refactor as the third beat of red-green-refactor. The skills compose: TDD calls refactor on every green; refactor owns how to do it without breaking behavior.\"}],\"verify_with\":[\"testing-strategy\",\"refactor\"]}"
+  grounding: "{\"domain_object\":\"Reference-grounded Test-Driven Development concept, school taxonomy, design-discipline mechanics, and empirical evidence boundaries\",\"grounding_mode\":\"universal\",\"truth_sources\":[\"https://martinfowler.com/bliki/TestDrivenDevelopment.html\",\"https://martinfowler.com/articles/mocksArentStubs.html\",\"https://link.springer.com/article/10.1007/s10664-008-9062-z\",\"https://ieeexplore.ieee.org/document/1423994\",\"https://ieeexplore.ieee.org/document/4493089\",\"https://doi.org/10.1016/j.infsof.2016.02.004\",\"https://dannorth.net/introducing-bdd/\"],\"failure_modes\":[\"treating_test_first_order_as_tdd_without_refactor_design_pressure\",\"over_specifying_interactions_so_tests_mirror_implementation\",\"choosing_london_or_detroit_school_accidentally\",\"using_tdd_as_a_substitute_for_testing_strategy\",\"treating_empirical_defect_reduction_numbers_as_guaranteed_outcomes\",\"claiming_eval_or_routing_verification_without_a_run\"],\"evidence_priority\":\"equal\"}"
+  mental_model: "|"
+  purpose: "|"
+  boundary: "|"
+  analogy: "TDD is to code design what a piano teacher's metronome is to a student's playing — the rhythm is not the music, but it surfaces every uneven phrase, every rushed measure, every hesitation, in time to correct it before it ossifies into habit."
+  misconception: "|"
+  concept: "{\"definition\":\"Test-Driven Development is a software design discipline in which the test for a behavior is written before the production code that satisfies it, the production code is written until the test passes, and the code is then refactored while the test suite stays green. The red-green-refactor cycle is the unit of work; the test suite is the design pressure that shapes the code.\",\"mental_model\":\"TDD applies pressure through short red-green-refactor loops. Red names one behavior before implementation, green proves the smallest production change satisfies it, and refactor improves the code and test shape without changing behavior. London-school TDD applies pressure through collaborator interactions and mocks; Detroit-school TDD applies pressure through observable state and sparse doubles; hybrid practice names which pressure is intentional.\",\"purpose\":\"TDD solves the problem of tests written after implementation merely mirroring the implementation. Writing the test first forces the interface, responsibility, and observable behavior to be designed before internal structure hardens. Regression coverage is a side effect; the primary purpose is design feedback while change is still cheap.\",\"boundary\":\"Testing-strategy chooses what level and scope deserves a test; TDD prescribes the rhythm inside that chosen surface. Test-doubles-design chooses the stand-ins used by tests; TDD chooses when and why tests are written. Refactor owns behavior-preserving restructuring; TDD invokes refactor as the third beat. Eval-driven-development is the LLM analog with statistical pass-rate rather than binary test pass/fail.\",\"taxonomy\":\"Prerequisite: testing-strategy selects the test surface. Composition: test-doubles-design supplies mocks, stubs, fakes, spies, and dummies when the chosen TDD school needs them. Phase relation: refactor is the third beat of each cycle. Alternative/analog: eval-driven-development adapts the iteration-first discipline to stochastic LLM systems.\",\"analogy\":\"TDD is to code design what a piano-teacher metronome is to a student performance: the rhythm is not the music, but it surfaces rushed measures and hesitations early enough to correct them before they become habit.\",\"misconception\":\"The common mistake is treating TDD as a mechanical rule to write tests first. Tests are not the point; they are the artifact of design through a test-shaped tool. A team that writes tests first but ignores design pressure gets the cost without the benefit.\"}"
+  portability: "{\"readiness\":\"scripted\",\"targets\":[\"skill-md\"]}"
+  lifecycle: "{\"stale_after_days\":180,\"review_cadence\":\"quarterly\"}"
+  structural_verdict: UNVERIFIED
+  truth_verdict: UNVERIFIED
+  comprehension_verdict: UNVERIFIED
+  application_verdict: UNVERIFIED
   skill_graph_source_repo: "https://github.com/jacob-balslev/skill-graph"
-  skill_graph_protocol: Skill Metadata Protocol v4
+  skill_graph_protocol: Skill Metadata Protocol v7
   skill_graph_project: Skill Graph
-  skill_graph_canonical_skill: skills/test-driven-development/SKILL.md
+  skill_graph_canonical_skill: skills/quality/testing/test-driven-development/SKILL.md
 ---
 
 # Test-Driven Development
@@ -49,9 +80,33 @@ Each cycle should fit in a few minutes — long cycles indicate either insuffici
 
 A practical heuristic: London-school suits services with rich collaboration (microservices, hexagonal architectures); Detroit-school suits state-rich domains (calculators, domain logic, parsers). Hybrid is the working norm.
 
+## When TDD Fits
+
+Use TDD when the next behavior can be named before the implementation exists and feedback can arrive quickly enough to shape the code. Do not force it onto exploration where the target behavior is still unknown; spike first, then restart with tests once the behavior is nameable.
+
+| Situation | TDD fit | Reason |
+|---|---|---|
+| New behavior with a clear externally observable contract | Strong | The failing test can state the desired behavior before implementation details exist |
+| Bug fix with a reproducible example | Strong | The regression test becomes the red step, then green proves the bug is fixed |
+| Refactor with behavior already pinned | Supporting | Use TDD for new seams discovered during the refactor, but the refactor skill owns behavior preservation |
+| Legacy code with no test harness | Characterize first | Golden-master or characterization tests may be needed before true TDD can begin safely |
+| Research spike, unfamiliar API, or unclear product behavior | Weak until clarified | Exploration is legitimate; TDD starts once the desired behavior can be expressed |
+| Visual polish or copy-only work | Usually weak | The feedback signal is often review, screenshot comparison, or usability judgment rather than binary test failure |
+
+## Failure Modes and Corrections
+
+| Failure mode | Symptom | Correction |
+|---|---|---|
+| Test-first without refactor | Red-green-next-red cycles pile up, design does not improve | Stop after green; refactor production and test code while the suite stays green |
+| Implementation-mirroring tests | Every internal rename or extraction breaks tests | Rewrite tests around observable behavior and natural boundaries |
+| Accidental school choice | Some tests mock every collaborator while others assert broad state with no rationale | Name the school per module and align doubles with the chosen design pressure |
+| Coverage Goodharting | Tests are added to satisfy a number but do not describe meaningful behavior | Use coverage as a smoke alarm, not the target; require a behavior or regression reason |
+| Slow cycles | A single red-green-refactor loop takes hours | Shrink the behavioral increment or decompose the production unit before continuing |
+| TDD used instead of testing strategy | The team writes tests first but still chooses the wrong level of test | Load `testing-strategy` first to choose unit/integration/contract/e2e surface, then apply TDD rhythm inside that surface |
+
 ## The Empirical Record
 
-Multiple controlled studies and one large industrial study converge on a consistent finding: TDD codebases have lower defect density at the cost of slightly longer initial development time.
+Multiple controlled studies and one large industrial study converge on a consistent directional finding: TDD codebases often show lower defect density at the cost of longer initial development time. Treat these numbers as evidence boundaries, not guarantees. The results depend on team discipline, cycle size, refactor quality, domain fit, and whether the team actually uses tests as design pressure rather than only as test-first paperwork.
 
 | Study | Finding |
 |---|---|
@@ -61,6 +116,10 @@ Multiple controlled studies and one large industrial study converge on a consist
 | Bissi et al. (2016) systematic review | 27 of 39 studies showed TDD improved internal quality; 18 of 23 showed external quality improvement |
 
 The trade is well-documented. Teams abandoning TDD often do so on the visible-cost side (the time spent writing tests) without measuring the invisible-saving side (defects not encountered, rework not required).
+
+## Evaluation State
+
+This public skill is reference-grounded and carries v6 understanding fields (`mental_model`, `purpose`, `boundary`, `analogy`, `misconception`), but its dedicated comprehension eval artifact is still planned. Keep `eval_artifacts: planned`, `eval_state: unverified`, and `routing_eval: absent` until a realistic eval suite exists, includes boundary/negative cases, runs in the same change, and produces evidence.
 
 ## Verification
 
@@ -91,6 +150,6 @@ After applying this skill, verify:
 - Nagappan, N., Maximilien, E. M., Bhat, T., & Williams, L. (2008). ["Realizing quality improvement through test driven development: results and experiences of four industrial teams"](https://link.springer.com/article/10.1007/s10664-008-9062-z). *Empirical Software Engineering*, 13(3), 289-302. The Microsoft/IBM industrial study showing 40-90% defect-density reduction.
 - Erdogmus, H., Morisio, M., & Torchiano, M. (2005). ["On the effectiveness of the test-first approach to programming"](https://ieeexplore.ieee.org/document/1423994). *IEEE Transactions on Software Engineering*, 31(3), 226-237. Controlled experiment on TDD's productivity and quality effects.
 - Janzen, D., & Saiedian, H. (2008). ["Does Test-Driven Development Really Improve Software Design Quality?"](https://ieeexplore.ieee.org/document/4493089). *IEEE Software*, 25(2). Meta-analysis on TDD's effect on code complexity, cohesion, and coupling.
-- Bissi, W., Serra Seca Neto, A. G., & Emer, M. C. F. P. (2016). ["The effects of test driven development on internal quality, external quality and productivity: A systematic review"](https://www.sciencedirect.com/science/article/abs/pii/S0950584916300903). *Information and Software Technology*, 74, 45-54. Systematic review of 27 controlled studies.
+- Bissi, W., Serra Seca Neto, A. G., & Emer, M. C. F. P. (2016). ["The effects of test driven development on internal quality, external quality and productivity: A systematic review"](https://doi.org/10.1016/j.infsof.2016.02.004). *Information and Software Technology*, 74, 45-54. Systematic review of controlled TDD studies.
 - Fowler, M. (2007). ["Mocks Aren't Stubs"](https://martinfowler.com/articles/mocksArentStubs.html). Practitioner-focused explanation of the London/Detroit school distinction and its consequences.
 - North, D. (2006). ["Introducing BDD"](https://dannorth.net/introducing-bdd/). The origin essay for Behavior-Driven Development as a vocabulary and tooling layer above TDD.

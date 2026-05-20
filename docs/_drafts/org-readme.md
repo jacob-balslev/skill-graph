@@ -29,7 +29,7 @@ I work on the machinery between an LLM and a useful coding agent. The thread acr
 
 ### [`skill-graph`](https://github.com/jacob-balslev/skill-graph) — Skill Metadata Protocol + audit-loop toolchain
 
-The authoring + audit-time contract for `SKILL.md` files. Typed frontmatter, a JSON Schema (`schema_version: 6`), a lint + manifest + router + drift sentinel, and a `doctor` subcommand that runs every deterministic gate in one pass. Ships as `@skill-graph/cli` on npm.
+The authoring + audit-time contract for `SKILL.md` files. Typed frontmatter, a JSON Schema (`schema_version: 7`), a lint + manifest + router + drift sentinel, and a `doctor` subcommand that runs every deterministic gate in one pass. Ships as `@skill-graph/cli` on npm.
 
 The differentiator: a Karpathy-style **keep-or-revert audit loop** applied to skill libraries instead of training scripts. Each edit ships as one field per commit with a hard pass/fail gate; if the gate fails, `git revert HEAD`. The loop is what keeps a library trustworthy as it crosses 100+ skills.
 

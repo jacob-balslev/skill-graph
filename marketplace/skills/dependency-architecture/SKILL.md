@@ -5,11 +5,33 @@ license: MIT
 compatibility: "Portable dependency architecture guidance for monorepos, package.json ecosystems, service boundaries, SDKs, and internal libraries."
 allowed-tools: Read Grep
 metadata:
-  metadata: "{\"schema_version\":6,\"version\":\"1.0.0\",\"type\":\"capability\",\"category\":\"engineering\",\"domain\":\"architecture/dependencies\",\"scope\":\"portable\",\"owner\":\"skill-graph-maintainer\",\"freshness\":\"2026-05-11\",\"drift_check\":\"{\\\\\\\"last_verified\\\\\\\":\\\\\\\"2026-05-11\\\\\\\"}\",\"eval_artifacts\":\"present\",\"eval_state\":\"unverified\",\"routing_eval\":\"absent\",\"stability\":\"experimental\",\"keywords\":\"[\\\\\\\"dependency architecture\\\\\\\",\\\\\\\"dependency graph\\\\\\\",\\\\\\\"package boundaries\\\\\\\",\\\\\\\"runtime dependency\\\\\\\",\\\\\\\"build dependency\\\\\\\",\\\\\\\"duplicate libraries\\\\\\\",\\\\\\\"supply chain risk\\\\\\\",\\\\\\\"adapter layer\\\\\\\",\\\\\\\"lock-in\\\\\\\",\\\\\\\"upgrade policy\\\\\\\"]\",\"examples\":\"[\\\\\\\"audit whether this repo has duplicate-purpose dependencies and unsafe package boundaries\\\\\\\",\\\\\\\"should this SDK be wrapped behind an adapter or imported everywhere?\\\\\\\",\\\\\\\"design dependency rules for packages in this monorepo\\\\\\\",\\\\\\\"evaluate dependency lock-in and upgrade risk before adding this library\\\\\\\"]\",\"anti_examples\":\"[\\\\\\\"choose between Next.js, Remix, and Astro for a new app\\\\\\\",\\\\\\\"scan dependencies only for known vulnerabilities\\\\\\\",\\\\\\\"refactor this module without changing dependency boundaries\\\\\\\",\\\\\\\"write an ADR after the dependency decision is accepted\\\\\\\"]\",\"relations\":\"{\\\\\\\"boundary\\\\\\\":[{\\\\\\\"skill\\\\\\\":\\\\\\\"framework-fit-analysis\\\\\\\",\\\\\\\"reason\\\\\\\":\\\\\\\"framework-fit-analysis evaluates major technology choices; dependency-architecture governs dependency graph structure and package boundaries\\\\\\\"},{\\\\\\\"skill\\\\\\\":\\\\\\\"owasp-security\\\\\\\",\\\\\\\"reason\\\\\\\":\\\\\\\"owasp-security owns vulnerability and security review; dependency-architecture includes supply-chain risk as one design dimension\\\\\\\"},{\\\\\\\"skill\\\\\\\":\\\\\\\"refactor\\\\\\\",\\\\\\\"reason\\\\\\\":\\\\\\\"refactor preserves behavior in code structure; dependency-architecture changes or audits dependency boundaries\\\\\\\"},{\\\\\\\"skill\\\\\\\":\\\\\\\"architecture-decision-records\\\\\\\",\\\\\\\"reason\\\\\\\":\\\\\\\"architecture-decision-records records accepted dependency decisions; dependency-architecture analyzes the dependency design\\\\\\\"}],\\\\\\\"related\\\\\\\":[\\\\\\\"framework-fit-analysis\\\\\\\",\\\\\\\"system-interface-contracts\\\\\\\",\\\\\\\"version-control\\\\\\\",\\\\\\\"owasp-security\\\\\\\"],\\\\\\\"verify_with\\\\\\\":[\\\\\\\"owasp-security\\\\\\\",\\\\\\\"code-review\\\\\\\"]}\",\"portability\":\"{\\\\\\\"readiness\\\\\\\":\\\\\\\"scripted\\\\\\\",\\\\\\\"targets\\\\\\\":[\\\\\\\"skill-md\\\\\\\"]}\",\"lifecycle\":\"{\\\\\\\"stale_after_days\\\\\\\":180,\\\\\\\"review_cadence\\\\\\\":\\\\\\\"quarterly\\\\\\\"}\",\"skill_graph_source_repo\":\"https://github.com/jacob-balslev/skill-graph\",\"skill_graph_protocol\":\"Skill Metadata Protocol v5\",\"skill_graph_project\":\"Skill Graph\",\"skill_graph_canonical_skill\":\"skills/dependency-architecture/SKILL.md\"}"
+  schema_version: "7"
+  version: "1.0.0"
+  type: capability
+  category: engineering
+  domain: architecture/dependencies
+  scope: portable
+  owner: skill-graph-maintainer
+  freshness: "2026-05-11"
+  drift_check: "{\"last_verified\":\"2026-05-11\"}"
+  eval_artifacts: present
+  eval_state: unverified
+  routing_eval: absent
+  stability: experimental
+  keywords: "[\"dependency architecture\",\"dependency graph\",\"package boundaries\",\"runtime dependency\",\"build dependency\",\"duplicate libraries\",\"supply chain risk\",\"adapter layer\",\"lock-in\",\"upgrade policy\"]"
+  examples: "[\"audit whether this repo has duplicate-purpose dependencies and unsafe package boundaries\",\"should this SDK be wrapped behind an adapter or imported everywhere?\",\"design dependency rules for packages in this monorepo\",\"evaluate dependency lock-in and upgrade risk before adding this library\"]"
+  anti_examples: "[\"choose between Next.js, Remix, and Astro for a new app\",\"scan dependencies only for known vulnerabilities\",\"refactor this module without changing dependency boundaries\",\"write an ADR after the dependency decision is accepted\"]"
+  relations: "{\"boundary\":[{\"skill\":\"framework-fit-analysis\",\"reason\":\"framework-fit-analysis evaluates major technology choices; dependency-architecture governs dependency graph structure and package boundaries\"},{\"skill\":\"owasp-security\",\"reason\":\"owasp-security owns vulnerability and security review; dependency-architecture includes supply-chain risk as one design dimension\"},{\"skill\":\"refactor\",\"reason\":\"refactor preserves behavior in code structure; dependency-architecture changes or audits dependency boundaries\"},{\"skill\":\"architecture-decision-records\",\"reason\":\"architecture-decision-records records accepted dependency decisions; dependency-architecture analyzes the dependency design\"}],\"related\":[\"framework-fit-analysis\",\"system-interface-contracts\",\"version-control\",\"owasp-security\"],\"verify_with\":[\"owasp-security\",\"code-review\"]}"
+  portability: "{\"readiness\":\"scripted\",\"targets\":[\"skill-md\"]}"
+  lifecycle: "{\"stale_after_days\":180,\"review_cadence\":\"quarterly\"}"
+  structural_verdict: UNVERIFIED
+  truth_verdict: UNVERIFIED
+  comprehension_verdict: UNVERIFIED
+  application_verdict: UNVERIFIED
   skill_graph_source_repo: "https://github.com/jacob-balslev/skill-graph"
-  skill_graph_protocol: Skill Metadata Protocol v4
+  skill_graph_protocol: Skill Metadata Protocol v7
   skill_graph_project: Skill Graph
-  skill_graph_canonical_skill: skills/dependency-architecture/SKILL.md
+  skill_graph_canonical_skill: skills/engineering/dependency-architecture/SKILL.md
 ---
 
 # Dependency Architecture

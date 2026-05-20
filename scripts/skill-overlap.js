@@ -40,7 +40,7 @@
 const fs = require('fs');
 const path = require('path');
 const { parseFrontmatter, normalizeFrontmatter } = require('./lib/parse-frontmatter');
-const { loadWorkspaceConfig, resolveSkillRoots, workspaceRoot } = require('./lib/roots');
+const { collectSkillFilesFromRoots, loadWorkspaceConfig, resolveSkillRoots, workspaceRoot } = require('./lib/roots');
 
 const REPO_ROOT = workspaceRoot();
 const TEMPLATE_PATH = path.join(REPO_ROOT, 'examples', 'skill-metadata-template.md');
@@ -64,30 +64,12 @@ function paint(s, color, enabled) {
 // Skill loading
 // ---------------------------------------------------------------------------
 
-function collectSkillFilesFromRoot(rootDir, depth = 0) {
-  const files = [];
-  if (!fs.existsSync(rootDir)) return files;
-  if (depth > 4) return files;
-
-  const direct = path.join(rootDir, 'SKILL.md');
-  if (fs.existsSync(direct)) return [direct];
-
-  for (const entry of fs.readdirSync(rootDir, { withFileTypes: true })) {
-    if (!entry.isDirectory()) continue;
-    if (entry.name.startsWith('_') || entry.name.startsWith('.')) continue;
-    files.push(...collectSkillFilesFromRoot(path.join(rootDir, entry.name), depth + 1));
-  }
-  return files;
-}
-
 function loadSkills(includeTemplate) {
   const skills = [];
-  for (const root of SKILL_ROOTS) {
-    for (const skillMd of collectSkillFilesFromRoot(root.absPath).sort()) {
-      const text = fs.readFileSync(skillMd, 'utf8');
-      const fm = normalizeFrontmatter(parseFrontmatter(text));
-      if (fm && fm.name) skills.push({ file: skillMd, fm });
-    }
+  for (const source of collectSkillFilesFromRoots(SKILL_ROOTS)) {
+    const text = fs.readFileSync(source.filePath, 'utf8');
+    const fm = normalizeFrontmatter(parseFrontmatter(text));
+    if (fm && fm.name) skills.push({ file: source.filePath, fm });
   }
   if (includeTemplate && fs.existsSync(TEMPLATE_PATH)) {
     const text = fs.readFileSync(TEMPLATE_PATH, 'utf8');
