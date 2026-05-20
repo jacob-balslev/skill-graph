@@ -4,7 +4,8 @@
  *
  * Reads the active schema_version from schemas/skill.schema.json and scans
  * active .md docs for stale references like `schema_version: 4`, `v4 today`,
- * `equals \`5\``, and similar patterns that would teach old contracts.
+ * `equals \`5\``, stale prose phrases like `v6 frontmatter` / `v5 protocol` /
+ * `v4 top-level fields`, and similar patterns that would teach old contracts.
  *
  * Allowlist:
  *   - Files under any `_archived/` segment (historical snapshots)
@@ -95,13 +96,26 @@ function buildPatterns(activeVersion) {
       version: v,
     });
   }
-  // Loose patterns reported only with --include-warn.
+  // Loose patterns reported only with --include-warn (advisory, non-failing).
   const warnPatterns = [];
   for (let v = 1; v < activeVersion; v++) {
     warnPatterns.push({
       kind: 'bare-version-token',
       regex: new RegExp(String.raw`\bv${v}\b(?!\s*-?to-?)`),
       version: v,
+      suppressInLegacyContext: true,
+    });
+    // Prose phrases that qualify a contract noun with a non-current version
+    // (e.g. "v6 frontmatter", "v5 protocol shape", "v4 top-level fields") —
+    // the drift class that produced the 2026-05-20 AGENTS.md/SKILL_GRAPH.md
+    // rot. Warn-class, not error: legitimately describing an old version as
+    // "legacy"/"back-compat"/"deprecated" is correct, not drift, so lines
+    // carrying legacy-context keywords are suppressed (see LEGACY_CONTEXT_RE).
+    warnPatterns.push({
+      kind: 'stale-version-phrase',
+      regex: new RegExp(String.raw`\bv${v}\s+(?:frontmatter|protocol|contract|schema|field|fields|top-level|shape)\b`, 'i'),
+      version: v,
+      suppressInLegacyContext: true,
     });
   }
   return { errorPatterns, warnPatterns };
@@ -136,6 +150,10 @@ function buildMigrationSectionMask(lines) {
   return mask;
 }
 
+// Lines that legitimately describe an old version as historical/back-compat
+// are not drift. Patterns flagged `suppressInLegacyContext` skip these.
+const LEGACY_CONTEXT_RE = /\b(legacy|deprecated|back-?compat|backward|historical|superseded|supersedes|retired|frozen|pinned|strict superset|allOf|anyOf|prior version|previous|earlier)\b/i;
+
 function scanFile(absPath, patterns) {
   const text = fs.readFileSync(absPath, 'utf8');
   const lines = text.split(/\r?\n/);
@@ -143,7 +161,9 @@ function scanFile(absPath, patterns) {
   const hits = [];
   lines.forEach((line, idx) => {
     if (migrationMask[idx]) return;
+    const legacyContext = LEGACY_CONTEXT_RE.test(line);
     for (const p of patterns) {
+      if (p.suppressInLegacyContext && legacyContext) continue;
       if (p.regex.test(line)) {
         hits.push({
           file: path.relative(REPO_ROOT, absPath),

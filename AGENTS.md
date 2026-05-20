@@ -376,7 +376,7 @@ If any new doc, script, README, or marketing surface emits one of these URLs as 
 
 ### Release sync — two-step protocol
 
-Publishing is a two-step sync because the canonical authoring repo and the canonical user-facing release repo are distinct:
+Publishing is a two-step sync because the **tooling repo** (this `skill-graph` repo — where the marketplace export is *generated*) and the **skills library repo** are distinct. Note the library repo is one repo wearing two hats: `jacob-balslev/skills` (local clone at `~/Development/skills/`) is **both** the canonical authoring source for `SKILL.md` files (the exporter reads it via `.skill-graph/config.json` → `skill_roots: ["../skills/skills"]`) **and** the public release repo published to skills.sh — it is not two separate skill repos. The two steps move content from this tooling repo's `marketplace/skills/` staging surface into that one library repo:
 
 1. **Generate the marketplace surface** in this repo: `node scripts/export-marketplace-skills.js`. Verify: `node scripts/export-marketplace-skills.js --check`. The exporter writes plain Agent Skills `SKILL.md` files to `marketplace/skills/`. `RELEASE_TARGET_REPO` in that script is `jacob-balslev/skills` — do not change without coordinating both repos.
 2. **Sync to the release repo** at `https://github.com/jacob-balslev/skills` (local clone at `~/Development/skills/`). Copy `marketplace/skills/.` into the release repo's `skills/` directory, refresh the release repo's `README.md` from `marketplace/README.md`, commit path-limited with `--only`, and push. The release repo's HEAD becomes the snapshot skills.sh indexes.
