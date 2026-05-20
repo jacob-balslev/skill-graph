@@ -107,6 +107,14 @@ Process:
 
 Example: if a plain `SKILL.md` marketplace caps `description`, generate a shorter export description while preserving the richer Skill Metadata Protocol routing contract in `skills/<name>/SKILL.md`.
 
+## Version Labels Are Earned, Not Bumped
+
+A version number asserts substantive conformance, not just a schema shape. Advancing `schema_version`, `skill_graph_protocol`, or any `vN` label is honest only after the content migration that version represents is actually done — v6 added the five flat Understanding fields + `comprehension_state`; v7 added the four-verdict Health Block. A codemod can bump `schema_version` (mechanical shape) corpus-wide, but it cannot author that content.
+
+- A label mismatch (e.g. `schema_version: 7` with `skill_graph_protocol: v5`) is **honest record-keeping**, not drift: the schema bump ran, the content migration did not. Resolve it by doing the migration, then advancing the label — never by editing the label alone.
+- A bulk `sed`/find-replace of `vN` → `vM` with no content change is **prohibited**. A backlog of skills on an older content label is migration work to schedule, not a string to replace.
+- Bumping a label without the work is fake-conformance — the same defect class as `eval_state: passing` without an `eval_last_run` receipt, or `application_verdict: APPLICABLE` without a gate-9 eval. The binding statement of this rule lives in `AGENTS.md § Version Labels Are Earned, Not Bumped`.
+
 ## Verification
 
 Do not claim quality without evidence. Before saying a change is complete, run the smallest meaningful check that proves the claim.
@@ -135,4 +143,5 @@ Before handing off any change that claims to improve quality:
 - [ ] Examples, anti-examples, boundaries, and edge cases are preserved or improved.
 - [ ] Claims of validity are backed by verification commands.
 - [ ] The canonical source remains richer than any syndication/export copy.
+- [ ] Version labels (`schema_version` / `skill_graph_protocol` / any `vN`) were advanced only alongside the matching content migration — never bumped alone.
 
