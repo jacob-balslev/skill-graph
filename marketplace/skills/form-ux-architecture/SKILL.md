@@ -5,11 +5,33 @@ license: MIT
 compatibility: Portable form UX guidance for web and app forms. Client-side validation improves UX; server-side validation remains mandatory for trust and security.
 allowed-tools: Read Grep
 metadata:
-  metadata: "{\"schema_version\":6,\"version\":\"1.0.0\",\"type\":\"capability\",\"category\":\"design\",\"domain\":\"design/ux\",\"scope\":\"portable\",\"owner\":\"skill-graph-maintainer\",\"freshness\":\"2026-05-11\",\"drift_check\":\"{\\\\\\\"last_verified\\\\\\\":\\\\\\\"2026-05-11\\\\\\\"}\",\"eval_artifacts\":\"present\",\"eval_state\":\"unverified\",\"routing_eval\":\"absent\",\"stability\":\"experimental\",\"keywords\":\"[\\\\\\\"form-ux\\\\\\\",\\\\\\\"form architecture\\\\\\\",\\\\\\\"validation timing\\\\\\\",\\\\\\\"client server validation\\\\\\\",\\\\\\\"field grouping\\\\\\\",\\\\\\\"submission lifecycle\\\\\\\",\\\\\\\"form recovery\\\\\\\",\\\\\\\"multi-step forms\\\\\\\",\\\\\\\"required optional fields\\\\\\\",\\\\\\\"empty state design\\\\\\\",\\\\\\\"no results state\\\\\\\"]\",\"examples\":\"[\\\\\\\"design the validation lifecycle for this signup form\\\\\\\",\\\\\\\"audit this checkout form for grouping, required fields, and recovery\\\\\\\",\\\\\\\"should this be one form, a wizard, or progressive disclosure?\\\\\\\",\\\\\\\"split client-side and server-side validation responsibilities for this form\\\\\\\"]\",\"anti_examples\":\"[\\\\\\\"add labels so assistive tech can read each field\\\\\\\",\\\\\\\"rewrite the inline validation messages\\\\\\\",\\\\\\\"define the request and response schema for the form submit endpoint\\\\\\\",\\\\\\\"model the database columns that store these inputs\\\\\\\"]\",\"relations\":\"{\\\\\\\"boundary\\\\\\\":[{\\\\\\\"skill\\\\\\\":\\\\\\\"a11y\\\\\\\",\\\\\\\"reason\\\\\\\":\\\\\\\"a11y owns labels, focus, fieldsets, errors, and assistive-tech behavior; form-ux-architecture owns form structure and validation lifecycle\\\\\\\"},{\\\\\\\"skill\\\\\\\":\\\\\\\"microcopy\\\\\\\",\\\\\\\"reason\\\\\\\":\\\\\\\"microcopy owns validation-message wording; form-ux-architecture owns when validation appears and how users recover\\\\\\\"},{\\\\\\\"skill\\\\\\\":\\\\\\\"api-design\\\\\\\",\\\\\\\"reason\\\\\\\":\\\\\\\"api-design owns submit endpoint schemas and error envelopes; form-ux-architecture owns the user-facing input and correction flow\\\\\\\"},{\\\\\\\"skill\\\\\\\":\\\\\\\"data-modeling\\\\\\\",\\\\\\\"reason\\\\\\\":\\\\\\\"data-modeling owns stored data shape; form-ux-architecture owns collection and correction before submission\\\\\\\"}],\\\\\\\"related\\\\\\\":[\\\\\\\"interaction-patterns\\\\\\\",\\\\\\\"interaction-feedback\\\\\\\",\\\\\\\"task-analysis\\\\\\\",\\\\\\\"a11y\\\\\\\",\\\\\\\"microcopy\\\\\\\"],\\\\\\\"verify_with\\\\\\\":[\\\\\\\"a11y\\\\\\\",\\\\\\\"microcopy\\\\\\\"]}\",\"portability\":\"{\\\\\\\"readiness\\\\\\\":\\\\\\\"scripted\\\\\\\",\\\\\\\"targets\\\\\\\":[\\\\\\\"skill-md\\\\\\\"]}\",\"lifecycle\":\"{\\\\\\\"stale_after_days\\\\\\\":365,\\\\\\\"review_cadence\\\\\\\":\\\\\\\"quarterly\\\\\\\"}\",\"skill_graph_source_repo\":\"https://github.com/jacob-balslev/skill-graph\",\"skill_graph_protocol\":\"Skill Metadata Protocol v5\",\"skill_graph_project\":\"Skill Graph\",\"skill_graph_canonical_skill\":\"skills/form-ux-architecture/SKILL.md\"}"
+  schema_version: "7"
+  version: "1.0.0"
+  type: capability
+  category: design
+  domain: design/ux
+  scope: portable
+  owner: skill-graph-maintainer
+  freshness: "2026-05-11"
+  drift_check: "{\"last_verified\":\"2026-05-11\"}"
+  eval_artifacts: present
+  eval_state: unverified
+  routing_eval: absent
+  stability: experimental
+  keywords: "[\"form-ux\",\"form architecture\",\"validation timing\",\"client server validation\",\"field grouping\",\"submission lifecycle\",\"form recovery\",\"multi-step forms\",\"required optional fields\",\"empty state design\",\"no results state\"]"
+  examples: "[\"design the validation lifecycle for this signup form\",\"audit this checkout form for grouping, required fields, and recovery\",\"should this be one form, a wizard, or progressive disclosure?\",\"split client-side and server-side validation responsibilities for this form\"]"
+  anti_examples: "[\"add labels so assistive tech can read each field\",\"rewrite the inline validation messages\",\"define the request and response schema for the form submit endpoint\",\"model the database columns that store these inputs\"]"
+  relations: "{\"boundary\":[{\"skill\":\"a11y\",\"reason\":\"a11y owns labels, focus, fieldsets, errors, and assistive-tech behavior; form-ux-architecture owns form structure and validation lifecycle\"},{\"skill\":\"microcopy\",\"reason\":\"microcopy owns validation-message wording; form-ux-architecture owns when validation appears and how users recover\"},{\"skill\":\"api-design\",\"reason\":\"api-design owns submit endpoint schemas and error envelopes; form-ux-architecture owns the user-facing input and correction flow\"},{\"skill\":\"data-modeling\",\"reason\":\"data-modeling owns stored data shape; form-ux-architecture owns collection and correction before submission\"}],\"related\":[\"interaction-patterns\",\"interaction-feedback\",\"task-analysis\",\"a11y\",\"microcopy\"],\"verify_with\":[\"a11y\",\"microcopy\"]}"
+  portability: "{\"readiness\":\"scripted\",\"targets\":[\"skill-md\"]}"
+  lifecycle: "{\"stale_after_days\":365,\"review_cadence\":\"quarterly\"}"
+  structural_verdict: UNVERIFIED
+  truth_verdict: UNVERIFIED
+  comprehension_verdict: UNVERIFIED
+  application_verdict: UNVERIFIED
   skill_graph_source_repo: "https://github.com/jacob-balslev/skill-graph"
-  skill_graph_protocol: Skill Metadata Protocol v4
+  skill_graph_protocol: Skill Metadata Protocol v7
   skill_graph_project: Skill Graph
-  skill_graph_canonical_skill: skills/form-ux-architecture/SKILL.md
+  skill_graph_canonical_skill: skills/design/form-ux-architecture/SKILL.md
 ---
 
 # Form UX Architecture

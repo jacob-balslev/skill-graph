@@ -19,8 +19,8 @@
 
 const fs = require('fs');
 const path = require('path');
-const { parseFrontmatter } = require('./lib/parse-frontmatter');
-const { workspaceRoot, loadWorkspaceConfig, resolveSkillRoots } = require('./lib/roots');
+const { normalizeFrontmatter, parseFrontmatter } = require('./lib/parse-frontmatter');
+const { collectSkillFilesFromRoots, workspaceRoot, loadWorkspaceConfig, resolveSkillRoots } = require('./lib/roots');
 const { buildExportedSkill } = require('./export-skill');
 
 const REPO_ROOT = workspaceRoot();
@@ -32,22 +32,6 @@ const TOP_LEVEL_FIELDS = new Set(['name', 'description', 'license', 'compatibili
 
 function repoRelative(filePath) {
   return path.relative(REPO_ROOT, filePath).split(path.sep).join('/');
-}
-
-function collectSkillFilesFromRoot(rootDir, depth = 0) {
-  const files = [];
-  if (!fs.existsSync(rootDir)) return files;
-  if (depth > 4) return files;
-
-  const direct = path.join(rootDir, 'SKILL.md');
-  if (fs.existsSync(direct)) return [direct];
-
-  for (const entry of fs.readdirSync(rootDir, { withFileTypes: true })) {
-    if (!entry.isDirectory()) continue;
-    if (entry.name.startsWith('_') || entry.name.startsWith('.')) continue;
-    files.push(...collectSkillFilesFromRoot(path.join(rootDir, entry.name), depth + 1));
-  }
-  return files;
 }
 
 function collectSkillFiles(inputs) {
@@ -64,7 +48,7 @@ function collectSkillFiles(inputs) {
     }
     if (!stat.isDirectory()) continue;
 
-    files.push(...collectSkillFilesFromRoot(abs));
+    files.push(...collectSkillFilesFromRoots([{ absPath: abs, project: null }]).map(entry => entry.filePath));
   }
 
   return files.sort((a, b) => repoRelative(a).localeCompare(repoRelative(b)));
@@ -125,7 +109,8 @@ function validateExportedFrontmatter(fm) {
 
 function verifySkillFile(skillMd, options = {}) {
   const sourceText = fs.readFileSync(skillMd, 'utf8');
-  const sourceFm = parseFrontmatter(sourceText);
+  const parsedFm = parseFrontmatter(sourceText);
+  const sourceFm = options.plain ? parsedFm : normalizeFrontmatter(parsedFm);
   if (!sourceFm) {
     return {
       file: repoRelative(skillMd),

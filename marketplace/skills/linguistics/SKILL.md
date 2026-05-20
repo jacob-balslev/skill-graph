@@ -1,22 +1,52 @@
 ---
 name: linguistics
-description: "Use when choosing names for files/functions/variables/types/columns, writing or reviewing UI copy/error/onboarding text, disambiguating overloaded terms, or matching tone to end-user/agent/developer audiences. Covers morphology, compound-word order, abbreviation policy, verb-noun rules, polysemy resolution, audience register, blame-free error-message structure, and cross-cultural product-copy awareness. Do NOT use for casing conventions (use naming-conventions), doc structure/type selection (use documentation), or call-site-wide renames (use refactor)."
+description: "Use when choosing semantically precise names for files/functions/variables/types/columns, resolving overloaded terms, reviewing error messages or UI copy for blame/register clarity, or adapting language for end-user/agent/developer/global-audience contexts. Covers morphology, compound-word order, abbreviation policy, verb-noun naming, polysemy qualification, audience register, blame-free error structure, and cross-cultural language awareness. Do NOT use for casing convention policy (use `naming-conventions`), call-site-wide renames (use `refactor`), docs/navigation structure (use `information-architecture`), specialized UI text pattern catalogs (use `microcopy`), or final prose humanization (use `writing-humanizer`)."
 license: MIT
-compatibility: "Provider-/runtime-/stack-agnostic. The morphology, polysemy, register, and error-message rules apply to any software product written in any human-spoken language; the casing-convention table is illustrative for typical OSS stacks (TypeScript, SQL, CSS, Python) — substitute the conventions of your own stack."
+compatibility: "Provider-, runtime-, stack-, and language-agnostic. The morphology, polysemy, register, and error-message rules apply to any software product; substitute the artifact conventions and project language of the local stack while preserving the meaning-level checks."
 allowed-tools: Read Grep
 metadata:
-  metadata: "{\"schema_version\":6,\"version\":\"1.1.0\",\"type\":\"capability\",\"category\":\"foundations\",\"domain\":\"foundations/language\",\"scope\":\"portable\",\"owner\":\"skill-graph-maintainer\",\"freshness\":\"2026-05-16\",\"drift_check\":\"{\\\\\\\"last_verified\\\\\\\":\\\\\\\"2026-05-16\\\\\\\"}\",\"eval_artifacts\":\"planned\",\"eval_state\":\"unverified\",\"routing_eval\":\"absent\",\"comprehension_state\":\"present\",\"stability\":\"experimental\",\"keywords\":\"[\\\\\\\"polysemy resolution\\\\\\\",\\\\\\\"polysemy map\\\\\\\",\\\\\\\"register selection\\\\\\\",\\\\\\\"audience register\\\\\\\",\\\\\\\"blame-free error wording\\\\\\\",\\\\\\\"three-part error structure\\\\\\\",\\\\\\\"morphology rules\\\\\\\",\\\\\\\"compound-word ordering\\\\\\\",\\\\\\\"abbreviation policy\\\\\\\",\\\\\\\"ambiguous identifier qualification\\\\\\\",\\\\\\\"linguistic precision\\\\\\\",\\\\\\\"register mismatch\\\\\\\",\\\\\\\"unqualified polysemous identifier\\\\\\\",\\\\\\\"error-message linguistics\\\\\\\",\\\\\\\"cross-cultural linguistic awareness\\\\\\\",\\\\\\\"verb-noun naming rule\\\\\\\",\\\\\\\"what-why-action error structure\\\\\\\"]\",\"examples\":\"[\\\\\\\"this variable is named provider but it could mean fulfillment, auth, or payment — what linguistic rule applies?\\\\\\\",\\\\\\\"rewrite this error message to be specific, blame-free, and actionable\\\\\\\",\\\\\\\"the word shipping means seller cost in one file and customer charge in another — how do we resolve the polysemy without a glossary cleanup?\\\\\\\",\\\\\\\"should this helper file be called utils.ts, helpers.ts, or something domain-specific?\\\\\\\",\\\\\\\"explain how to phrase the same finance concept for an end-user, an agent, and a developer\\\\\\\",\\\\\\\"audit this UI copy for register mismatch with the end-user audience\\\\\\\",\\\\\\\"when is an abbreviation acceptable in a code identifier?\\\\\\\"]\",\"anti_examples\":\"[\\\\\\\"decide kebab-case vs snake_case vs camelCase for new database columns\\\\\\\",\\\\\\\"restructure this doc into a tutorial format with progressive disclosure\\\\\\\",\\\\\\\"implement Intl.NumberFormat for DKK vs USD currency formatting\\\\\\\",\\\\\\\"give me the canonical definition of reconciliation in our domain\\\\\\\",\\\\\\\"review this PR for code quality and missing tests\\\\\\\",\\\\\\\"rename this function and update every call-site across the repo\\\\\\\"]\",\"relations\":\"{\\\\\\\"boundary\\\\\\\":[{\\\\\\\"skill\\\\\\\":\\\\\\\"naming-conventions\\\\\\\",\\\\\\\"reason\\\\\\\":\\\\\\\"naming-conventions owns the deterministic casing/format choice per artifact kind (kebab-case for files, camelCase for TS, snake_case for SQL); linguistics owns the linguistic rationale (morphology, polysemy resolution, register fit, blame-free copy) — the same 'help me name this' prompt routes by whether the user wants the convention itself or the linguistic basis behind it\\\\\\\"},{\\\\\\\"skill\\\\\\\":\\\\\\\"refactor\\\\\\\",\\\\\\\"reason\\\\\\\":\\\\\\\"refactor owns behavior-preserving structural change including rename mechanics across call sites; linguistics owns the linguistic decision of what the new name should be — the same 'rename this thing' prompt routes by whether the trigger is the rename mechanics or the naming choice itself\\\\\\\"}],\\\\\\\"related\\\\\\\":[\\\\\\\"prompt-craft\\\\\\\",\\\\\\\"intent-recognition\\\\\\\",\\\\\\\"code-review\\\\\\\"],\\\\\\\"verify_with\\\\\\\":[\\\\\\\"naming-conventions\\\\\\\",\\\\\\\"code-review\\\\\\\"]}\",\"portability\":\"{\\\\\\\"readiness\\\\\\\":\\\\\\\"scripted\\\\\\\",\\\\\\\"targets\\\\\\\":[\\\\\\\"skill-md\\\\\\\"]}\",\"lifecycle\":\"{\\\\\\\"stale_after_days\\\\\\\":365,\\\\\\\"review_cadence\\\\\\\":\\\\\\\"quarterly\\\\\\\"}\",\"mental_model\":\"|\",\"purpose\":\"|\",\"boundary\":\"|\",\"analogy\":\"Linguistics in software is to identifier names what civil engineering is to bridge geometry — the bridge holds up because the geometry obeys load-bearing rules, not because the bridge is artful; the rules don't make the bridge beautiful, but ignoring them makes the bridge fall down. A name like `handleContinue` is the equivalent of a beam sized by intuition: it might hold, but you've forfeited the proof that it will.\",\"misconception\":\"|\",\"concept\":\"{\\\\\\\"definition\\\\\\\":\\\\\\\"Linguistics applied to software is the discipline of using the rules of human language — morphology, semantics, pragmatics, sociolinguistics — to shape the words inside a software system: identifier names, type labels, error messages, UI copy, and documentation prose. Drawing from Saussure's signifier/signified distinction, Lyons's structural semantics, and Halliday's systemic-functional grammar, it treats every name and every visible string as a small linguistic artefact whose form determines whether the reader can decode the intended meaning quickly and reliably.\\\\\\\",\\\\\\\"mental_model\\\\\\\":\\\\\\\"|\\\\\\\",\\\\\\\"purpose\\\\\\\":\\\\\\\"|\\\\\\\",\\\\\\\"boundary\\\\\\\":\\\\\\\"|\\\\\\\",\\\\\\\"taxonomy\\\\\\\":\\\\\\\"|\\\\\\\",\\\\\\\"analogy\\\\\\\":\\\\\\\"|\\\\\\\",\\\\\\\"misconception\\\\\\\":\\\\\\\"|\\\\\\\"}\",\"skill_graph_source_repo\":\"https://github.com/jacob-balslev/skill-graph\",\"skill_graph_protocol\":\"Skill Metadata Protocol v5\",\"skill_graph_project\":\"Skill Graph\",\"skill_graph_canonical_skill\":\"skills/linguistics/SKILL.md\"}"
+  grounding: "{\"domain_object\":\"Linguistic precision for software identifiers, UI copy, error messages, technical documentation, and cross-cultural language choices\",\"grounding_mode\":\"universal\",\"truth_sources\":[\"https://developers.google.com/style/voice\",\"https://developers.google.com/style/tone\",\"https://developers.google.com/style/translation\",\"https://learn.microsoft.com/en-us/windows/apps/design/style/writing-style\",\"https://learn.microsoft.com/en-us/windows/win32/debug/error-message-guidelines\",\"https://www.w3.org/TR/WCAG22/\",\"https://www.nngroup.com/articles/ten-usability-heuristics/\",\"https://www.nngroup.com/articles/hostile-error-messages/\"],\"failure_modes\":[\"naming_taste_mistaken_for_linguistic_fit\",\"artifact_casing_policy_confused_with_semantic_naming\",\"polysemous_identifier_left_unqualified\",\"generic_handle_process_or_utils_names_hide_contracts\",\"error_copy_blames_user_or_hides_action\",\"agent_register_leaks_into_end_user_copy\",\"global_audience_copy_uses_idioms_jargon_or_untranslatable_phrasing\",\"linguistics_overowns_refactor_docs_ia_microcopy_or_i18n_implementation\"],\"evidence_priority\":\"equal\"}"
+  drift_check: "{\"last_verified\":\"2026-05-19\"}"
+  schema_version: "7"
+  version: "1.2.0"
+  type: capability
+  category: foundations
+  domain: foundations/language
+  scope: portable
+  owner: skill-graph-maintainer
+  freshness: "2026-05-19"
+  eval_artifacts: planned
+  eval_state: unverified
+  routing_eval: absent
+  comprehension_state: present
+  stability: experimental
+  keywords: "[\"linguistic precision\",\"software linguistics\",\"identifier morphology\",\"polysemy resolution\",\"polysemy map\",\"register selection\",\"audience register\",\"blame-free error wording\",\"what why action error structure\",\"compound-word ordering\",\"abbreviation policy\",\"ambiguous identifier qualification\",\"semantic naming\",\"global audience language\",\"cross-cultural language awareness\",\"verb-noun naming rule\",\"unqualified polysemous identifier\",\"error-message linguistics\"]"
+  examples: "[\"this variable is named provider but it could mean fulfillment, auth, or payment -- what linguistic rule applies?\",\"rewrite this error message to be specific, blame-free, and actionable\",\"the word shipping means seller cost in one file and customer charge in another -- how do we resolve the polysemy without a glossary cleanup?\",\"should this helper file be called utils.ts, helpers.ts, or something domain-specific?\",\"explain how to phrase the same finance concept for an end-user, an agent, and a developer\",\"audit this UI copy for register mismatch with the end-user audience\",\"when is an abbreviation acceptable in a code identifier?\",\"is this sentence clear for a global developer audience or full of idioms and ambiguous modifiers?\"]"
+  anti_examples: "[\"decide kebab-case vs snake_case vs camelCase for new database columns\",\"restructure this doc into a tutorial format with progressive disclosure\",\"implement Intl.NumberFormat for DKK vs USD currency formatting\",\"give me the canonical definition of reconciliation in our domain\",\"review this PR for code quality and missing tests\",\"rename this function and update every call-site across the repo\",\"rewrite this release note only to remove AI tells and vary sentence rhythm\"]"
+  relations: "{\"boundary\":[{\"skill\":\"naming-conventions\",\"reason\":\"naming-conventions owns artifact-specific casing, prefix/suffix policy, and deterministic convention choice; linguistics owns the meaning-level rationale behind morphology, polysemy resolution, register, and error wording.\"},{\"skill\":\"refactor\",\"reason\":\"refactor owns behavior-preserving rename mechanics across call sites; linguistics owns choosing a precise name before or during the rename.\"},{\"skill\":\"information-architecture\",\"reason\":\"information-architecture owns docs/navigation/page hierarchy and findability; linguistics owns sentence-level and identifier-level meaning inside that structure.\"},{\"skill\":\"microcopy\",\"reason\":\"microcopy owns specialized in-product UI-text patterns such as button, empty-state, tooltip, dialog, and toast structures; linguistics owns underlying language rules and register diagnostics.\"},{\"skill\":\"writing-humanizer\",\"reason\":\"writing-humanizer owns prose polish, AI-tell removal, and rhythm repair; linguistics owns morphology, semantic ambiguity, audience register, and blame-free error language.\"}],\"related\":[\"semantics\",\"writing-humanizer\",\"microcopy\",\"prompt-craft\",\"intent-recognition\",\"code-review\"],\"verify_with\":[\"naming-conventions\",\"code-review\",\"writing-humanizer\"]}"
+  portability: "{\"readiness\":\"scripted\",\"targets\":[\"skill-md\"]}"
+  lifecycle: "{\"stale_after_days\":365,\"review_cadence\":\"quarterly\"}"
+  mental_model: "|"
+  purpose: "|"
+  boundary: "|"
+  analogy: "Linguistics in software is grammar for the interface between people and systems: the syntax of a name or sentence should make the intended meaning easy to recover without hidden context."
+  misconception: "The common mistake is treating naming and wording as personal preference. Ambiguous words, weak compounds, blame-heavy error text, and wrong register create predictable comprehension failures; agreement inside one team does not make the language portable or clear."
+  concept: "{\"definition\":\"Linguistics applied to software is the discipline of using human-language structure, meaning, context, and audience register to shape code identifiers, labels, error messages, UI copy, and technical prose so readers can decode intent reliably.\",\"mental_model\":\"Treat every name or visible string as a small language artifact. Its form carries a contract: morphology makes the artifact parseable, semantics fixes what it means, pragmatics fits the situation, and register fits the audience.\",\"purpose\":\"The skill replaces taste-based naming and copy decisions with repeatable linguistic checks for ambiguity, misleading names, register mismatch, blame assignment, and cross-language readability.\",\"boundary\":\"It does not own casing convention policy, repo-wide rename mechanics, document information architecture, specialized UI microcopy pattern catalogs, final prose humanization, or locale-format implementation.\",\"taxonomy\":\"Foundations/language capability covering morphology, semantics, pragmatics, sociolinguistic register, error-message language, and cross-cultural language awareness for software surfaces.\",\"analogy\":\"It is grammar for the interface between people and software: the syntax of a name or sentence should make the intended meaning easy to recover without hidden context.\",\"misconception\":\"The common mistake is treating naming and wording as personal preference. Ambiguous words, weak compounds, blame-heavy error text, and wrong register create predictable comprehension failures.\"}"
+  structural_verdict: UNVERIFIED
+  truth_verdict: UNVERIFIED
+  comprehension_verdict: UNVERIFIED
+  application_verdict: UNVERIFIED
   skill_graph_source_repo: "https://github.com/jacob-balslev/skill-graph"
-  skill_graph_protocol: Skill Metadata Protocol v4
+  skill_graph_protocol: Skill Metadata Protocol v7
   skill_graph_project: Skill Graph
-  skill_graph_canonical_skill: skills/linguistics/SKILL.md
+  skill_graph_canonical_skill: skills/foundations/linguistics/SKILL.md
 ---
 
 # Linguistics
 
 ## Coverage
 
-Linguistic analysis patterns for software work — the rules that govern how names, labels, error messages, and copy are formed. Covers (1) **morphology**: casing conventions per artifact kind, compound-word head-first ordering, abbreviation decision tree, verb-noun naming patterns; (2) **polysemy resolution**: identifying ambiguous identifiers in a codebase and qualifying them with their domain (e.g., `provider` → `fulfillmentProvider` / `authProvider` / `paymentProvider`); (3) **register selection**: choosing the right tone, vocabulary, and sentence structure for end-users, agents, and developers; (4) **error-message linguistics**: the three-part What → Why → What-to-do structure with blame-free framing, specificity rules, and actionability; and (5) **cross-cultural linguistic awareness**: the linguistic facts (number structure, currency notation, grammatical gender, script direction) that shape internationalization decisions. Provides the *linguistic rationale* for these choices — not the casing convention itself, not the canonical term definition, not the i18n implementation.
+Linguistic analysis patterns for software work — the rules that govern how names, labels, error messages, and copy are formed. Covers (1) **morphology**: casing conventions per artifact kind, compound-word head-first ordering, abbreviation decision tree, verb-noun naming patterns; (2) **polysemy resolution**: identifying ambiguous identifiers in a codebase and qualifying them with their domain (e.g., `provider` → `fulfillmentProvider` / `authProvider` / `paymentProvider`); (3) **register selection**: choosing the right tone, vocabulary, and sentence structure for end-users, agents, and developers; (4) **error-message linguistics**: the three-part What → Why → What-to-do structure with blame-free framing, specificity rules, and actionability; and (5) **cross-cultural linguistic awareness**: the linguistic facts (number structure, currency notation, grammatical gender, script direction) that shape internationalization decisions. Provides the *linguistic rationale* for these choices — not the casing convention itself, not document/navigation structure, not specialized UI microcopy pattern catalogs, not final prose polish, not canonical term definition, and not i18n implementation.
 
 ## Philosophy
 
@@ -29,6 +59,18 @@ Three linguistic laws follow:
 3. **Audience determines form.** The same fact needs different words for an end-user, an agent, and a developer. Writing in the wrong register is a communication failure even when the facts are correct.
 
 The linguistic goal is to make meaning unambiguous *at the point of contact* — in the name itself, the message itself, the label itself — not in a glossary entry the reader has to look up.
+
+## Boundary Routing
+
+| Trigger | Use this skill? | Route |
+|---|---:|---|
+| Choosing the meaning-bearing words in an identifier, label, error, or agent-facing sentence | Yes | Apply morphology, polysemy, register, and blame-free language checks here. |
+| Choosing kebab-case vs camelCase vs snake_case or project-wide artifact naming convention | No | Use `naming-conventions`; return here only for semantic ambiguity or abbreviation judgment. |
+| Renaming a symbol across call sites or preserving behavior through a structural rename | No | Use `refactor`; this skill may supply the target name but not the mechanics. |
+| Structuring docs, navigation, page hierarchy, sitemap, or content grouping | No | Use `information-architecture`; this skill only audits wording inside the structure. |
+| Choosing a specialized button, empty-state, tooltip, dialog, or toast text pattern | Usually no | Use `microcopy`; return here for register, blame, ambiguity, or cross-cultural language concerns. |
+| Removing AI tells, improving prose rhythm, or polishing a release note/PR/doc paragraph | No | Use `writing-humanizer`; return here when the question is linguistic correctness rather than prose finish. |
+| Implementing locale-aware number/date/currency/plural behavior | No | Use the project i18n tooling and platform docs; this skill explains the language risk, not the implementation. |
 
 ---
 
@@ -120,7 +162,7 @@ Functions describe actions (verbs). Variables describe things (nouns). Mixing th
 | `delete` / `remove` | Destructive operations | `deleteAccount`, `removeLineItem` |
 | `handle` | Entry point for events/webhooks (and nothing else) | `handleIncomingWebhook` |
 | `process` | Multi-step pipeline execution | `processVerifiedWebhook` |
-| `extract` | Pull a subset from a larger structure | `extractOrderPii` |
+| `extract` | Pull a subset from a larger structure | `extractMatchingRecords` |
 | `format` | Produce a display string | `formatCurrencyDisplay` |
 | `build` | Assemble a complex object | `buildCanonicalOrder` |
 
@@ -398,7 +440,7 @@ LINGUISTICS I18N CHECK
 [ ] UI copy targets the audience's language and conventions, not the operator's
 [ ] Null financial values display as — or "unknown", never as $0.00 (null ≠ zero)
 [ ] Currency symbol or code is always present — bare numbers without units are linguistically incomplete
-[ ] Implementation details (Intl.NumberFormat, date locale, plural handling) are deferred to the i18n skill
+[ ] Implementation details (Intl.NumberFormat, date locale, plural handling) are deferred to project i18n tooling or platform docs
 ```
 
 ---
@@ -407,23 +449,31 @@ LINGUISTICS I18N CHECK
 
 | Instead, use | Why |
 |---|---|
-| `naming-conventions` | Deciding the casing format for an artifact kind (kebab vs camel vs snake). naming-conventions owns the convention; linguistics owns the linguistic basis (morphology, polysemy, register). |
-| `documentation` | Choosing a doc type, structuring a doc, or applying progressive disclosure. documentation owns doc architecture; linguistics owns the prose-form rules inside docs. |
-| `refactor` | Renaming a thing across many call sites or restructuring code without behavior change. refactor owns the rename mechanics; linguistics owns the linguistic decision of what the new name should be. |
-| `code-review` | Judging a specific PR or change for correctness, security, or quality. code-review uses linguistic feedback as one input; it does not own the linguistic rules. |
-| (a glossary skill) | Defining the canonical meaning of a domain term. A glossary owns the *definition*; linguistics owns the *consistent application* of definitions in names and copy. |
-| (a copywriting skill) | Drafting product messaging, marketing copy, or final user-facing CTA text. Copywriting owns the messaging; linguistics owns the structural form rules under that messaging. |
-| (an i18n skill) | Implementing locale-aware formatting (`Intl.NumberFormat`, date pickers, ICU plurals). i18n owns the implementation; linguistics owns the linguistic awareness behind it. |
+| `naming-conventions` | Deciding artifact casing or deterministic convention policy such as kebab-case, camelCase, snake_case, boolean prefixes, or env-var casing. Linguistics owns meaning, ambiguity, morphology rationale, and register. |
+| `refactor` | Renaming a thing across many call sites or restructuring code without behavior change. Refactor owns the mechanics; linguistics can supply the target wording. |
+| `information-architecture` | Choosing docs architecture, navigation, page hierarchy, sitemap shape, or content grouping. IA owns structure; linguistics owns wording inside a structure. |
+| `microcopy` | Selecting specialized UI text patterns for buttons, empty states, tooltips, dialogs, or toasts. Microcopy owns the pattern catalog; linguistics verifies ambiguity, register, and blame-free wording. |
+| `writing-humanizer` | Polishing prose, removing AI tells, varying rhythm, or making a draft sound less robotic while preserving truth. |
+| `code-review` | Judging a specific PR or change for correctness, security, tests, or maintainability. Code review may call this skill for naming/copy findings. |
+| A glossary or domain-modeling source | Defining the canonical meaning of a domain term. Linguistics applies definitions consistently in names and copy; it does not establish the domain ontology. |
+| Project i18n tooling or locale docs | Implementing `Intl.NumberFormat`, date pickers, ICU plurals, string extraction, bidirectional layout, or locale fallback. Linguistics explains the language risk behind those decisions. |
 
 ## Key Sources
 
-- Saussure, F. de (1916). *Cours de linguistique générale* / *Course in General Linguistics*. Payot. The foundational distinction between *signifier* and *signified*, and the principle that meaning lives in systems of contrast. The theoretical basis for treating identifier names as contracts.
-- Lyons, J. (1977). *Semantics* (2 vols.). Cambridge University Press. The canonical structural-semantics textbook; polysemy, synonymy, hyponymy, and the framework for analyzing word meaning systematically.
-- Cruse, D. A. (1986). *Lexical Semantics*. Cambridge University Press. Detailed treatment of word-level meaning relationships; the reference for understanding how polysemy works and how it can be resolved by qualification.
-- Halliday, M. A. K., & Matthiessen, C. M. I. M. (2014). *An Introduction to Functional Grammar* (4th ed.). Routledge. Systemic-functional grammar: language as meaning-making organized by *field*, *tenor*, and *mode*. The theoretical foundation for register selection by audience.
-- Grice, H. P. (1975). "Logic and Conversation." In *Syntax and Semantics, Vol. 3: Speech Acts*. Academic Press. The cooperative principle and the four maxims (quantity, quality, relation, manner); applied directly in error-message writing.
-- Searle, J. R. (1969). *Speech Acts: An Essay in the Philosophy of Language*. Cambridge University Press. Speech-act theory: what utterances *do*. Foundational for distinguishing reporting from accusing in error wording.
-- Austin, J. L. (1962). *How to Do Things with Words*. Oxford University Press. The original statement of performative utterances and locutionary/illocutionary/perlocutionary acts.
-- Williams, J. M., & Bizup, J. (2017). *Style: Lessons in Clarity and Grace* (12th ed.). Pearson. The leading modern style guide grounded in cognitive-linguistic principles; the practical descendant of structural linguistics for technical and public-facing prose.
-- Nielsen Norman Group. ["Error Message Guidelines"](https://www.nngroup.com/articles/error-message-guidelines/). Empirical UX-research statement of the what/why/what-to-do error structure and the blame-free framing rule.
-- W3C. [Web Content Accessibility Guidelines (WCAG) 2.2](https://www.w3.org/TR/WCAG22/) — Understandable principle. Linguistic accessibility requirements (reading level, plain language, unambiguous error identification) at the international-standards level.
+### Public Grounding Checked 2026-05-19
+
+- Google Developer Documentation Style Guide: [Active voice](https://developers.google.com/style/voice), [Voice and tone](https://developers.google.com/style/tone), and [Write for a global audience](https://developers.google.com/style/translation). Grounds active/passive actor clarity, conversational but direct developer register, short unambiguous sentences, terminology consistency, and global-audience translation constraints.
+- Microsoft Learn: [Writing style for Windows apps](https://learn.microsoft.com/en-us/windows/apps/design/style/writing-style) and [Error Message Guidelines](https://learn.microsoft.com/en-us/windows/win32/debug/error-message-guidelines). Grounds non-blaming error messages, clear next steps, active voice where useful, present-tense state descriptions, and avoiding generic one-size-fits-all errors.
+- W3C WCAG 2.2: [Input Assistance](https://www.w3.org/TR/WCAG22/#input-assistance) and related Understandable criteria. Grounds the requirement that detected input errors be identified and described in text, that labels/instructions exist when input is required, and that known correction suggestions be provided when safe.
+- Nielsen Norman Group: [10 Usability Heuristics](https://www.nngroup.com/articles/ten-usability-heuristics/) and [Hostile Patterns in Error Messages](https://www.nngroup.com/articles/hostile-error-messages/). Grounds user-language matching, consistency of words/actions, plain-language error recovery, avoiding premature error scolding, and reserving disruptive error styling for real errors.
+
+### Classical and Book Grounding
+
+- Saussure, F. de (1916). *Cours de linguistique générale* / *Course in General Linguistics*. Payot. Signifier/signified distinction and meaning by contrast; supports treating identifiers as meaning-bearing contracts.
+- Lyons, J. (1977). *Semantics* (2 vols.). Cambridge University Press. Structural semantics, polysemy, synonymy, hyponymy, and systematic analysis of word meaning.
+- Cruse, D. A. (1986). *Lexical Semantics*. Cambridge University Press. Word-level meaning relationships and polysemy resolution by qualification.
+- Halliday, M. A. K., & Matthiessen, C. M. I. M. (2014). *An Introduction to Functional Grammar* (4th ed.). Routledge. Systemic-functional grammar and register through field, tenor, and mode.
+- Grice, H. P. (1975). "Logic and Conversation." In *Syntax and Semantics, Vol. 3: Speech Acts*. Academic Press. Cooperative principle and maxims of quantity, quality, relation, and manner.
+- Searle, J. R. (1969). *Speech Acts: An Essay in the Philosophy of Language*. Cambridge University Press. Speech-act theory for distinguishing reporting, instructing, and accusing.
+- Austin, J. L. (1962). *How to Do Things with Words*. Oxford University Press. Performative utterances and locutionary/illocutionary/perlocutionary acts.
+- Williams, J. M., & Bizup, J. (2017). *Style: Lessons in Clarity and Grace* (12th ed.). Pearson. Cognitive-linguistic clarity principles for technical and public prose.

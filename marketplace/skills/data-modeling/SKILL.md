@@ -5,11 +5,33 @@ license: MIT
 compatibility: "Portable data-modeling discipline across relational, document, graph, event-sourced, and warehouse-style systems."
 allowed-tools: Read Grep
 metadata:
-  metadata: "{\"schema_version\":6,\"version\":\"1.0.0\",\"type\":\"capability\",\"category\":\"engineering\",\"domain\":\"data/modeling\",\"scope\":\"portable\",\"owner\":\"skill-graph-maintainer\",\"freshness\":\"2026-05-11\",\"drift_check\":\"{\\\\\\\"last_verified\\\\\\\":\\\\\\\"2026-05-11\\\\\\\"}\",\"eval_artifacts\":\"present\",\"eval_state\":\"unverified\",\"routing_eval\":\"absent\",\"stability\":\"experimental\",\"keywords\":\"[\\\\\\\"data modeling\\\\\\\",\\\\\\\"logical data model\\\\\\\",\\\\\\\"physical data model\\\\\\\",\\\\\\\"entity relationship\\\\\\\",\\\\\\\"normalization\\\\\\\",\\\\\\\"denormalization\\\\\\\",\\\\\\\"primary key\\\\\\\",\\\\\\\"foreign key\\\\\\\",\\\\\\\"schema design\\\\\\\",\\\\\\\"data provenance\\\\\\\",\\\\\\\"indexing implications\\\\\\\"]\",\"examples\":\"[\\\\\\\"turn this conceptual model into a logical schema with keys and constraints\\\\\\\",\\\\\\\"should this be normalized, denormalized, or materialized as a view?\\\\\\\",\\\\\\\"model provenance for revenue, cost, and refund fields\\\\\\\",\\\\\\\"choose identifiers and uniqueness constraints before writing the migration\\\\\\\"]\",\"anti_examples\":\"[\\\\\\\"identify business entities and relationships without implementation details\\\\\\\",\\\\\\\"write and apply the actual migration for an existing database\\\\\\\",\\\\\\\"define OWL/RDF class axioms and reasoning rules\\\\\\\",\\\\\\\"design REST endpoints for these resources\\\\\\\"]\",\"relations\":\"{\\\\\\\"boundary\\\\\\\":[{\\\\\\\"skill\\\\\\\":\\\\\\\"conceptual-modeling\\\\\\\",\\\\\\\"reason\\\\\\\":\\\\\\\"conceptual-modeling is implementation-neutral; data-modeling adds logical and physical data constraints\\\\\\\"},{\\\\\\\"skill\\\\\\\":\\\\\\\"database-migration\\\\\\\",\\\\\\\"reason\\\\\\\":\\\\\\\"database-migration changes an existing database; data-modeling decides the schema shape before migration\\\\\\\"},{\\\\\\\"skill\\\\\\\":\\\\\\\"ontology-modeling\\\\\\\",\\\\\\\"reason\\\\\\\":\\\\\\\"ontology-modeling formalizes meaning; data-modeling structures persisted data\\\\\\\"},{\\\\\\\"skill\\\\\\\":\\\\\\\"api-design\\\\\\\",\\\\\\\"reason\\\\\\\":\\\\\\\"api-design exposes resources and operations; data-modeling stores and constrains underlying data\\\\\\\"}],\\\\\\\"related\\\\\\\":[\\\\\\\"conceptual-modeling\\\\\\\",\\\\\\\"database-migration\\\\\\\",\\\\\\\"api-design\\\\\\\",\\\\\\\"state-machine-modeling\\\\\\\"],\\\\\\\"depends_on\\\\\\\":[\\\\\\\"conceptual-modeling\\\\\\\"],\\\\\\\"verify_with\\\\\\\":[\\\\\\\"database-migration\\\\\\\",\\\\\\\"testing-strategy\\\\\\\"]}\",\"portability\":\"{\\\\\\\"readiness\\\\\\\":\\\\\\\"scripted\\\\\\\",\\\\\\\"targets\\\\\\\":[\\\\\\\"skill-md\\\\\\\"]}\",\"lifecycle\":\"{\\\\\\\"stale_after_days\\\\\\\":365,\\\\\\\"review_cadence\\\\\\\":\\\\\\\"quarterly\\\\\\\"}\",\"skill_graph_source_repo\":\"https://github.com/jacob-balslev/skill-graph\",\"skill_graph_protocol\":\"Skill Metadata Protocol v5\",\"skill_graph_project\":\"Skill Graph\",\"skill_graph_canonical_skill\":\"skills/data-modeling/SKILL.md\"}"
+  schema_version: "7"
+  version: "1.0.0"
+  type: capability
+  category: engineering
+  domain: data/modeling
+  scope: portable
+  owner: skill-graph-maintainer
+  freshness: "2026-05-11"
+  drift_check: "{\"last_verified\":\"2026-05-11\"}"
+  eval_artifacts: present
+  eval_state: unverified
+  routing_eval: absent
+  stability: experimental
+  keywords: "[\"data modeling\",\"logical data model\",\"physical data model\",\"entity relationship\",\"normalization\",\"denormalization\",\"primary key\",\"foreign key\",\"schema design\",\"data provenance\",\"indexing implications\"]"
+  examples: "[\"turn this conceptual model into a logical schema with keys and constraints\",\"should this be normalized, denormalized, or materialized as a view?\",\"model provenance for revenue, cost, and refund fields\",\"choose identifiers and uniqueness constraints before writing the migration\"]"
+  anti_examples: "[\"identify business entities and relationships without implementation details\",\"write and apply the actual migration for an existing database\",\"define OWL/RDF class axioms and reasoning rules\",\"design REST endpoints for these resources\"]"
+  relations: "{\"boundary\":[{\"skill\":\"conceptual-modeling\",\"reason\":\"conceptual-modeling is implementation-neutral; data-modeling adds logical and physical data constraints\"},{\"skill\":\"database-migration\",\"reason\":\"database-migration changes an existing database; data-modeling decides the schema shape before migration\"},{\"skill\":\"ontology-modeling\",\"reason\":\"ontology-modeling formalizes meaning; data-modeling structures persisted data\"},{\"skill\":\"api-design\",\"reason\":\"api-design exposes resources and operations; data-modeling stores and constrains underlying data\"}],\"related\":[\"conceptual-modeling\",\"database-migration\",\"api-design\",\"state-machine-modeling\"],\"depends_on\":[\"conceptual-modeling\"],\"verify_with\":[\"database-migration\",\"testing-strategy\"]}"
+  portability: "{\"readiness\":\"scripted\",\"targets\":[\"skill-md\"]}"
+  lifecycle: "{\"stale_after_days\":365,\"review_cadence\":\"quarterly\"}"
+  structural_verdict: UNVERIFIED
+  truth_verdict: UNVERIFIED
+  comprehension_verdict: UNVERIFIED
+  application_verdict: UNVERIFIED
   skill_graph_source_repo: "https://github.com/jacob-balslev/skill-graph"
-  skill_graph_protocol: Skill Metadata Protocol v4
+  skill_graph_protocol: Skill Metadata Protocol v7
   skill_graph_project: Skill Graph
-  skill_graph_canonical_skill: skills/data-modeling/SKILL.md
+  skill_graph_canonical_skill: skills/engineering/data-modeling/SKILL.md
 ---
 
 # Data Modeling

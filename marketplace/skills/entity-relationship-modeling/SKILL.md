@@ -5,11 +5,32 @@ license: MIT
 compatibility: "Markdown, Git, agent-skill runtimes"
 allowed-tools: Read Grep Bash
 metadata:
-  metadata: "{\"schema_version\":6,\"version\":\"1.0.0\",\"type\":\"capability\",\"category\":\"engineering\",\"domain\":\"engineering/modeling\",\"scope\":\"portable\",\"owner\":\"skill-graph-maintainer\",\"freshness\":\"2026-03-29\",\"drift_check\":\"{\\\\\\\"last_verified\\\\\\\":\\\\\\\"2026-03-29\\\\\\\"}\",\"eval_artifacts\":\"planned\",\"eval_state\":\"unverified\",\"routing_eval\":\"absent\",\"stability\":\"experimental\",\"keywords\":\"[\\\\\\\"entity relationship\\\\\\\",\\\\\\\"ER diagram\\\\\\\",\\\\\\\"ER model\\\\\\\",\\\\\\\"database design\\\\\\\",\\\\\\\"schema design\\\\\\\",\\\\\\\"normalization\\\\\\\",\\\\\\\"foreign key\\\\\\\",\\\\\\\"primary key\\\\\\\",\\\\\\\"junction table\\\\\\\",\\\\\\\"database modeling\\\\\\\"]\",\"triggers\":\"[\\\\\\\"er-modeling-skill\\\\\\\",\\\\\\\"database-design-skill\\\\\\\"]\",\"relations\":\"{\\\\\\\"related\\\\\\\":[\\\\\\\"database-migration\\\\\\\"],\\\\\\\"boundary\\\\\\\":[\\\\\\\"conceptual-modeling\\\\\\\"],\\\\\\\"verify_with\\\\\\\":[\\\\\\\"code-review\\\\\\\"]}\",\"portability\":\"{\\\\\\\"readiness\\\\\\\":\\\\\\\"scripted\\\\\\\",\\\\\\\"targets\\\\\\\":[\\\\\\\"skill-md\\\\\\\"]}\",\"lifecycle\":\"{\\\\\\\"stale_after_days\\\\\\\":90,\\\\\\\"review_cadence\\\\\\\":\\\\\\\"quarterly\\\\\\\"}\",\"skill_graph_source_repo\":\"https://github.com/jacob-balslev/skill-graph\",\"skill_graph_protocol\":\"Skill Metadata Protocol v5\",\"skill_graph_project\":\"Skill Graph\",\"skill_graph_canonical_skill\":\"skills/entity-relationship-modeling/SKILL.md\"}"
+  schema_version: "7"
+  version: "1.0.0"
+  type: capability
+  category: engineering
+  domain: engineering/modeling
+  scope: portable
+  owner: skill-graph-maintainer
+  freshness: "2026-03-29"
+  drift_check: "{\"last_verified\":\"2026-03-29\"}"
+  eval_artifacts: planned
+  eval_state: unverified
+  routing_eval: absent
+  stability: experimental
+  keywords: "[\"entity relationship\",\"ER diagram\",\"ER model\",\"database design\",\"schema design\",\"normalization\",\"foreign key\",\"primary key\",\"junction table\",\"database modeling\"]"
+  triggers: "[\"er-modeling-skill\",\"database-design-skill\"]"
+  relations: "{\"related\":[\"database-migration\"],\"boundary\":[\"conceptual-modeling\"],\"verify_with\":[\"code-review\"]}"
+  portability: "{\"readiness\":\"scripted\",\"targets\":[\"skill-md\"]}"
+  lifecycle: "{\"stale_after_days\":90,\"review_cadence\":\"quarterly\"}"
+  structural_verdict: UNVERIFIED
+  truth_verdict: UNVERIFIED
+  comprehension_verdict: UNVERIFIED
+  application_verdict: UNVERIFIED
   skill_graph_source_repo: "https://github.com/jacob-balslev/skill-graph"
-  skill_graph_protocol: Skill Metadata Protocol v4
+  skill_graph_protocol: Skill Metadata Protocol v7
   skill_graph_project: Skill Graph
-  skill_graph_canonical_skill: skills/entity-relationship-modeling/SKILL.md
+  skill_graph_canonical_skill: skills/engineering/entity-relationship-modeling/SKILL.md
 ---
 # Entity-Relationship Modeling
 

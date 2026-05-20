@@ -5,11 +5,34 @@ license: MIT
 compatibility: "Applies to any web application codebase using TypeScript, React, and Next.js App Router. The cross-domain enforcement priorities (security, a11y, performance, design system, testing, DevOps, AI/LLM) are framework-agnostic; the Next.js section is specific to the App Router pattern."
 allowed-tools: Read Grep Bash
 metadata:
-  metadata: "{\"schema_version\":6,\"version\":\"1.2.0\",\"type\":\"capability\",\"category\":\"quality\",\"domain\":\"quality/cross-domain\",\"scope\":\"reference\",\"owner\":\"skill-graph-maintainer\",\"freshness\":\"2026-05-18\",\"drift_check\":\"{\\\\\\\"last_verified\\\\\\\":\\\\\\\"2026-05-18\\\\\\\",\\\\\\\"truth_source_hashes\\\\\\\":{}}\",\"eval_artifacts\":\"none\",\"eval_state\":\"unverified\",\"routing_eval\":\"absent\",\"stability\":\"stable\",\"keywords\":\"[\\\\\\\"best practice\\\\\\\",\\\\\\\"best practices\\\\\\\",\\\\\\\"code quality\\\\\\\",\\\\\\\"quality enforcement\\\\\\\",\\\\\\\"code review checklist\\\\\\\",\\\\\\\"OWASP\\\\\\\",\\\\\\\"WCAG\\\\\\\",\\\\\\\"Core Web Vitals\\\\\\\",\\\\\\\"SOLID principles\\\\\\\",\\\\\\\"clean code\\\\\\\",\\\\\\\"visual hierarchy\\\\\\\",\\\\\\\"typographic hierarchy\\\\\\\",\\\\\\\"color hierarchy\\\\\\\",\\\\\\\"UI composition\\\\\\\",\\\\\\\"cross-cutting concerns\\\\\\\",\\\\\\\"quality gate\\\\\\\",\\\\\\\"enforcement layer\\\\\\\"]\",\"examples\":\"[\\\\\\\"reviewing a pull request for correctness, security, and style\\\\\\\",\\\\\\\"creating a new React component and checking it against quality standards\\\\\\\",\\\\\\\"auditing an existing feature for WCAG compliance and performance regressions\\\\\\\",\\\\\\\"writing tests and verifying coverage shape (unit / integration / e2e pyramid)\\\\\\\",\\\\\\\"authoring a new skill and checking it has structured scope, evals, and examples\\\\\\\",\\\\\\\"adding a new Next.js Server Action and verifying it has Zod validation and auth check\\\\\\\"]\",\"anti_examples\":\"[\\\\\\\"reviewing PR feedback phrasing and comment classification (use code-review)\\\\\\\",\\\\\\\"choosing between requireAuth, requireOrgAuth, and withOrgAuth (use nextauth-patterns)\\\\\\\",\\\\\\\"implementing SQL injection prevention or webhook HMAC verification (use security-scanning)\\\\\\\",\\\\\\\"designing the APCA contrast ratio for a new color palette (use color-science)\\\\\\\",\\\\\\\"implementing the font loading strategy and vertical rhythm (use typography)\\\\\\\",\\\\\\\"deciding what quality means per artifact type — code vs skill vs prompt (use craft-doctrine)\\\\\\\"]\",\"relations\":\"{\\\\\\\"adjacent\\\\\\\":[\\\\\\\"code-review\\\\\\\",\\\\\\\"security-scanning\\\\\\\",\\\\\\\"a11y\\\\\\\",\\\\\\\"design-guide\\\\\\\",\\\\\\\"composition-theory\\\\\\\",\\\\\\\"color-science\\\\\\\",\\\\\\\"visual-design\\\\\\\",\\\\\\\"typography\\\\\\\",\\\\\\\"copywriting\\\\\\\",\\\\\\\"semantics\\\\\\\",\\\\\\\"ui-ux\\\\\\\",\\\\\\\"next-best-practices\\\\\\\"],\\\\\\\"boundary\\\\\\\":[],\\\\\\\"verify_with\\\\\\\":[\\\\\\\"code-review\\\\\\\",\\\\\\\"security-scanning\\\\\\\"]}\",\"grounding\":\"{\\\\\\\"domain_object\\\\\\\":\\\\\\\"Cross-cutting quality enforcement across 14 domains\\\\\\\",\\\\\\\"grounding_mode\\\\\\\":\\\\\\\"hybrid\\\\\\\",\\\\\\\"truth_sources\\\\\\\":[],\\\\\\\"failure_modes\\\\\\\":[\\\\\\\"specialist_boundary_gaps\\\\\\\",\\\\\\\"heading_hierarchy_violations\\\\\\\",\\\\\\\"hardcoded_values_bypass_token_system\\\\\\\",\\\\\\\"server_actions_treated_as_internal\\\\\\\",\\\\\\\"dead_tests_accumulate\\\\\\\"],\\\\\\\"evidence_priority\\\\\\\":\\\\\\\"general_knowledge_first\\\\\\\"}\",\"portability\":\"{\\\\\\\"readiness\\\\\\\":\\\\\\\"declared\\\\\\\",\\\\\\\"targets\\\\\\\":[\\\\\\\"skill-md\\\\\\\"]}\",\"lifecycle\":\"{\\\\\\\"stale_after_days\\\\\\\":180,\\\\\\\"review_cadence\\\\\\\":\\\\\\\"quarterly\\\\\\\"}\",\"skill_graph_source_repo\":\"https://github.com/jacob-balslev/skill-graph\",\"skill_graph_protocol\":\"Skill Metadata Protocol v6\",\"skill_graph_project\":\"Skill Graph\",\"skill_graph_canonical_skill\":\"skills/best-practice/SKILL.md\"}"
+  schema_version: "7"
+  version: "1.2.0"
+  type: capability
+  category: quality
+  domain: quality/cross-domain
+  scope: reference
+  owner: skill-graph-maintainer
+  freshness: "2026-05-18"
+  drift_check: "{\"last_verified\":\"2026-05-18\",\"truth_source_hashes\":{}}"
+  eval_artifacts: none
+  eval_state: unverified
+  routing_eval: absent
+  stability: stable
+  keywords: "[\"best practice\",\"best practices\",\"code quality\",\"quality enforcement\",\"code review checklist\",\"OWASP\",\"WCAG\",\"Core Web Vitals\",\"SOLID principles\",\"clean code\",\"visual hierarchy\",\"typographic hierarchy\",\"color hierarchy\",\"UI composition\",\"cross-cutting concerns\",\"quality gate\",\"enforcement layer\"]"
+  examples: "[\"reviewing a pull request for correctness, security, and style\",\"creating a new React component and checking it against quality standards\",\"auditing an existing feature for WCAG compliance and performance regressions\",\"writing tests and verifying coverage shape (unit / integration / e2e pyramid)\",\"authoring a new skill and checking it has structured scope, evals, and examples\",\"adding a new Next.js Server Action and verifying it has Zod validation and auth check\"]"
+  anti_examples: "[\"reviewing PR feedback phrasing and comment classification (use code-review)\",\"choosing between requireAuth, requireOrgAuth, and withOrgAuth (use nextauth-patterns)\",\"implementing SQL injection prevention or webhook HMAC verification (use security-scanning)\",\"designing the APCA contrast ratio for a new color palette (use color-science)\",\"implementing the font loading strategy and vertical rhythm (use typography)\",\"deciding what quality means per artifact type — code vs skill vs prompt (use craft-doctrine)\"]"
+  relations: "{\"adjacent\":[\"code-review\",\"security-scanning\",\"a11y\",\"design-guide\",\"composition-theory\",\"color-science\",\"visual-design\",\"typography\",\"copywriting\",\"semantics\",\"ui-ux\",\"next-best-practices\"],\"boundary\":[],\"verify_with\":[\"code-review\",\"security-scanning\"]}"
+  grounding: "{\"domain_object\":\"Cross-cutting quality enforcement across 14 domains\",\"grounding_mode\":\"hybrid\",\"truth_sources\":[],\"failure_modes\":[\"specialist_boundary_gaps\",\"heading_hierarchy_violations\",\"hardcoded_values_bypass_token_system\",\"server_actions_treated_as_internal\",\"dead_tests_accumulate\"],\"evidence_priority\":\"general_knowledge_first\"}"
+  portability: "{\"readiness\":\"declared\",\"targets\":[\"skill-md\"]}"
+  lifecycle: "{\"stale_after_days\":180,\"review_cadence\":\"quarterly\"}"
+  structural_verdict: UNVERIFIED
+  truth_verdict: UNVERIFIED
+  comprehension_verdict: UNVERIFIED
+  application_verdict: UNVERIFIED
   skill_graph_source_repo: "https://github.com/jacob-balslev/skill-graph"
-  skill_graph_protocol: Skill Metadata Protocol v4
+  skill_graph_protocol: Skill Metadata Protocol v7
   skill_graph_project: Skill Graph
-  skill_graph_canonical_skill: skills/best-practice/SKILL.md
+  skill_graph_canonical_skill: skills/quality/best-practice/SKILL.md
 ---
 
 # Best Practice — Cross-Cutting Quality Enforcement
@@ -61,7 +84,7 @@ As the baseline enforcement layer, this skill connects:
 |------|-------------|
 | Self-documenting names | If a name needs a comment, rename it |
 | Comments explain WHY | Code explains what; comments explain intent, gotchas, business rules |
-| ADRs for decisions | `/sales-hub/docs/adr/` — Context, Decision, Alternatives, Consequences |
+| ADRs for decisions | `docs/adr/` — Context, Decision, Alternatives, Consequences |
 | TSDoc on public APIs | `@param`, `@returns`, `@throws` on exported functions |
 | No stale TODOs | Every `// TODO` must reference a ticket: `// TODO(SH-1234)` |
 

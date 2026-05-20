@@ -5,11 +5,33 @@ license: MIT
 compatibility: "Portable layout and responsive-composition guidance for web apps, dashboards, documentation sites, admin tools, and mobile-first product surfaces."
 allowed-tools: Read Grep
 metadata:
-  metadata: "{\"schema_version\":6,\"version\":\"1.0.0\",\"type\":\"capability\",\"category\":\"design\",\"domain\":\"design/layout\",\"scope\":\"portable\",\"owner\":\"skill-graph-maintainer\",\"freshness\":\"2026-05-11\",\"drift_check\":\"{\\\\\\\"last_verified\\\\\\\":\\\\\\\"2026-05-11\\\\\\\"}\",\"eval_artifacts\":\"present\",\"eval_state\":\"unverified\",\"routing_eval\":\"absent\",\"stability\":\"experimental\",\"keywords\":\"[\\\\\\\"layout-composition\\\\\\\",\\\\\\\"responsive screen composition\\\\\\\",\\\\\\\"viewport hierarchy\\\\\\\",\\\\\\\"breakpoint selection\\\\\\\",\\\\\\\"grid flex composition\\\\\\\",\\\\\\\"stable dimensions\\\\\\\",\\\\\\\"scan pattern\\\\\\\",\\\\\\\"responsive media\\\\\\\",\\\\\\\"density planning\\\\\\\",\\\\\\\"whitespace balance\\\\\\\",\\\\\\\"negative space design\\\\\\\"]\",\"examples\":\"[\\\\\\\"turn this route hierarchy into a responsive section order\\\\\\\",\\\\\\\"decide whether this dashboard should use tabs, columns, or stacked sections on mobile\\\\\\\",\\\\\\\"the page works on desktop but the mobile scan path is broken\\\\\\\",\\\\\\\"choose grid tracks, breakpoints, and responsive media behavior for this screen\\\\\\\"]\",\"anti_examples\":\"[\\\\\\\"what is the user's top task for this route?\\\\\\\",\\\\\\\"design the global navigation and sitemap\\\\\\\",\\\\\\\"pick the color palette, type scale, and visual mood\\\\\\\",\\\\\\\"define component variants and semantic tokens\\\\\\\"]\",\"relations\":\"{\\\\\\\"boundary\\\\\\\":[{\\\\\\\"skill\\\\\\\":\\\\\\\"task-analysis\\\\\\\",\\\\\\\"reason\\\\\\\":\\\\\\\"task-analysis defines the user goal and first-viewport hierarchy contract; layout-composition turns that contract into responsive structure\\\\\\\"},{\\\\\\\"skill\\\\\\\":\\\\\\\"information-architecture\\\\\\\",\\\\\\\"reason\\\\\\\":\\\\\\\"information-architecture owns navigation and page grouping; layout-composition owns the structure inside a page or screen\\\\\\\"},{\\\\\\\"skill\\\\\\\":\\\\\\\"visual-design-foundations\\\\\\\",\\\\\\\"reason\\\\\\\":\\\\\\\"visual-design-foundations owns visual craft choices; layout-composition owns spatial structure and responsive behavior\\\\\\\"},{\\\\\\\"skill\\\\\\\":\\\\\\\"design-system-architecture\\\\\\\",\\\\\\\"reason\\\\\\\":\\\\\\\"design-system-architecture owns reusable component and token contracts; layout-composition uses those contracts on a concrete surface\\\\\\\"}],\\\\\\\"related\\\\\\\":[\\\\\\\"task-analysis\\\\\\\",\\\\\\\"information-architecture\\\\\\\",\\\\\\\"design-system-architecture\\\\\\\",\\\\\\\"a11y\\\\\\\",\\\\\\\"performance-engineering\\\\\\\"],\\\\\\\"verify_with\\\\\\\":[\\\\\\\"task-analysis\\\\\\\",\\\\\\\"a11y\\\\\\\"]}\",\"portability\":\"{\\\\\\\"readiness\\\\\\\":\\\\\\\"scripted\\\\\\\",\\\\\\\"targets\\\\\\\":[\\\\\\\"skill-md\\\\\\\"]}\",\"lifecycle\":\"{\\\\\\\"stale_after_days\\\\\\\":365,\\\\\\\"review_cadence\\\\\\\":\\\\\\\"quarterly\\\\\\\"}\",\"skill_graph_source_repo\":\"https://github.com/jacob-balslev/skill-graph\",\"skill_graph_protocol\":\"Skill Metadata Protocol v5\",\"skill_graph_project\":\"Skill Graph\",\"skill_graph_canonical_skill\":\"skills/layout-composition/SKILL.md\"}"
+  schema_version: "7"
+  version: "1.0.0"
+  type: capability
+  category: design
+  domain: design/layout
+  scope: portable
+  owner: skill-graph-maintainer
+  freshness: "2026-05-11"
+  drift_check: "{\"last_verified\":\"2026-05-11\"}"
+  eval_artifacts: present
+  eval_state: unverified
+  routing_eval: absent
+  stability: experimental
+  keywords: "[\"layout-composition\",\"responsive screen composition\",\"viewport hierarchy\",\"breakpoint selection\",\"grid flex composition\",\"stable dimensions\",\"scan pattern\",\"responsive media\",\"density planning\",\"whitespace balance\",\"negative space design\"]"
+  examples: "[\"turn this route hierarchy into a responsive section order\",\"decide whether this dashboard should use tabs, columns, or stacked sections on mobile\",\"the page works on desktop but the mobile scan path is broken\",\"choose grid tracks, breakpoints, and responsive media behavior for this screen\"]"
+  anti_examples: "[\"what is the user's top task for this route?\",\"design the global navigation and sitemap\",\"pick the color palette, type scale, and visual mood\",\"define component variants and semantic tokens\"]"
+  relations: "{\"boundary\":[{\"skill\":\"task-analysis\",\"reason\":\"task-analysis defines the user goal and first-viewport hierarchy contract; layout-composition turns that contract into responsive structure\"},{\"skill\":\"information-architecture\",\"reason\":\"information-architecture owns navigation and page grouping; layout-composition owns the structure inside a page or screen\"},{\"skill\":\"visual-design-foundations\",\"reason\":\"visual-design-foundations owns visual craft choices; layout-composition owns spatial structure and responsive behavior\"},{\"skill\":\"design-system-architecture\",\"reason\":\"design-system-architecture owns reusable component and token contracts; layout-composition uses those contracts on a concrete surface\"}],\"related\":[\"task-analysis\",\"information-architecture\",\"design-system-architecture\",\"a11y\",\"performance-engineering\"],\"verify_with\":[\"task-analysis\",\"a11y\"]}"
+  portability: "{\"readiness\":\"scripted\",\"targets\":[\"skill-md\"]}"
+  lifecycle: "{\"stale_after_days\":365,\"review_cadence\":\"quarterly\"}"
+  structural_verdict: UNVERIFIED
+  truth_verdict: UNVERIFIED
+  comprehension_verdict: UNVERIFIED
+  application_verdict: UNVERIFIED
   skill_graph_source_repo: "https://github.com/jacob-balslev/skill-graph"
-  skill_graph_protocol: Skill Metadata Protocol v4
+  skill_graph_protocol: Skill Metadata Protocol v7
   skill_graph_project: Skill Graph
-  skill_graph_canonical_skill: skills/layout-composition/SKILL.md
+  skill_graph_canonical_skill: skills/design/layout-composition/SKILL.md
 ---
 
 # Layout Composition

@@ -5,11 +5,33 @@ license: MIT
 compatibility: Language-agnostic; OWASP Top 10 2021 reference
 allowed-tools: Read Grep Bash
 metadata:
-  metadata: "{\"schema_version\":6,\"version\":\"1.0.0\",\"type\":\"capability\",\"category\":\"quality\",\"domain\":\"quality/security\",\"scope\":\"portable\",\"owner\":\"skill-graph-maintainer\",\"freshness\":\"2026-05-04\",\"drift_check\":\"{\\\\\\\"last_verified\\\\\\\":\\\\\\\"2026-05-04\\\\\\\"}\",\"eval_artifacts\":\"planned\",\"eval_state\":\"unverified\",\"routing_eval\":\"absent\",\"stability\":\"experimental\",\"keywords\":\"[\\\\\\\"security\\\\\\\",\\\\\\\"owasp\\\\\\\",\\\\\\\"owasp top 10\\\\\\\",\\\\\\\"vulnerability\\\\\\\",\\\\\\\"sql injection\\\\\\\",\\\\\\\"xss\\\\\\\",\\\\\\\"cross site scripting\\\\\\\",\\\\\\\"csrf\\\\\\\",\\\\\\\"authentication\\\\\\\",\\\\\\\"authorization\\\\\\\",\\\\\\\"access control\\\\\\\",\\\\\\\"broken access control\\\\\\\",\\\\\\\"secret in code\\\\\\\",\\\\\\\"insecure design\\\\\\\",\\\\\\\"cryptographic failure\\\\\\\",\\\\\\\"ssrf\\\\\\\",\\\\\\\"threat model\\\\\\\",\\\\\\\"security review\\\\\\\",\\\\\\\"dependency vulnerability\\\\\\\",\\\\\\\"audit code for security\\\\\\\",\\\\\\\"is this code safe\\\\\\\",\\\\\\\"detect security vulnerabilities\\\\\\\"]\",\"examples\":\"[\\\\\\\"audit this endpoint for SQL injection and XSS specifically\\\\\\\",\\\\\\\"this PR adds user input — what security checks should I run?\\\\\\\",\\\\\\\"threat-model this new file-upload feature\\\\\\\",\\\\\\\"review this auth flow against OWASP — is there a bypass?\\\\\\\",\\\\\\\"I'm building a search box — how do I prevent injection?\\\\\\\",\\\\\\\"the dependency scanner flagged 12 vulnerabilities — which ones matter?\\\\\\\",\\\\\\\"is this code path vulnerable to SSRF?\\\\\\\",\\\\\\\"review this access-control logic — can a non-admin escalate?\\\\\\\"]\",\"anti_examples\":\"[\\\\\\\"review this PR holistically\\\\\\\",\\\\\\\"production users are reporting an error — debug it\\\\\\\",\\\\\\\"write our company security policy doc\\\\\\\",\\\\\\\"scaffold a new skill teaching security review\\\\\\\",\\\\\\\"rename this auth function for clarity\\\\\\\"]\",\"relations\":\"{\\\\\\\"boundary\\\\\\\":[{\\\\\\\"skill\\\\\\\":\\\\\\\"code-review\\\\\\\",\\\\\\\"reason\\\\\\\":\\\\\\\"code-review is the holistic per-PR pass that includes security as one of many concerns; owasp-security is the security-specific deep audit\\\\\\\"},{\\\\\\\"skill\\\\\\\":\\\\\\\"debugging\\\\\\\",\\\\\\\"reason\\\\\\\":\\\\\\\"debugging chases a known failure (security or otherwise); owasp-security finds vulnerabilities BEFORE they are exploited in production\\\\\\\"},{\\\\\\\"skill\\\\\\\":\\\\\\\"testing-strategy\\\\\\\",\\\\\\\"reason\\\\\\\":\\\\\\\"testing-strategy decides what to test broadly; owasp-security defines security-specific test cases (auth bypass tests, injection tests, etc.) as a sub-concern\\\\\\\"}],\\\\\\\"related\\\\\\\":[\\\\\\\"code-review\\\\\\\",\\\\\\\"testing-strategy\\\\\\\"],\\\\\\\"verify_with\\\\\\\":[\\\\\\\"testing-strategy\\\\\\\",\\\\\\\"code-review\\\\\\\"]}\",\"portability\":\"{\\\\\\\"readiness\\\\\\\":\\\\\\\"scripted\\\\\\\",\\\\\\\"targets\\\\\\\":[\\\\\\\"skill-md\\\\\\\"]}\",\"lifecycle\":\"{\\\\\\\"stale_after_days\\\\\\\":180,\\\\\\\"review_cadence\\\\\\\":\\\\\\\"quarterly\\\\\\\"}\",\"skill_graph_source_repo\":\"https://github.com/jacob-balslev/skill-graph\",\"skill_graph_protocol\":\"Skill Metadata Protocol v5\",\"skill_graph_project\":\"Skill Graph\",\"skill_graph_canonical_skill\":\"skills/owasp-security/SKILL.md\"}"
+  schema_version: "7"
+  version: "1.0.0"
+  type: capability
+  category: quality
+  domain: quality/security
+  scope: portable
+  owner: skill-graph-maintainer
+  freshness: "2026-05-04"
+  drift_check: "{\"last_verified\":\"2026-05-04\"}"
+  eval_artifacts: planned
+  eval_state: unverified
+  routing_eval: absent
+  stability: experimental
+  keywords: "[\"security\",\"owasp\",\"owasp top 10\",\"vulnerability\",\"sql injection\",\"xss\",\"cross site scripting\",\"csrf\",\"authentication\",\"authorization\",\"access control\",\"broken access control\",\"secret in code\",\"insecure design\",\"cryptographic failure\",\"ssrf\",\"threat model\",\"security review\",\"dependency vulnerability\",\"audit code for security\",\"is this code safe\",\"detect security vulnerabilities\"]"
+  examples: "[\"audit this endpoint for SQL injection and XSS specifically\",\"this PR adds user input — what security checks should I run?\",\"threat-model this new file-upload feature\",\"review this auth flow against OWASP — is there a bypass?\",\"I'm building a search box — how do I prevent injection?\",\"the dependency scanner flagged 12 vulnerabilities — which ones matter?\",\"is this code path vulnerable to SSRF?\",\"review this access-control logic — can a non-admin escalate?\"]"
+  anti_examples: "[\"review this PR holistically\",\"production users are reporting an error — debug it\",\"write our company security policy doc\",\"scaffold a new skill teaching security review\",\"rename this auth function for clarity\"]"
+  relations: "{\"boundary\":[{\"skill\":\"code-review\",\"reason\":\"code-review is the holistic per-PR pass that includes security as one of many concerns; owasp-security is the security-specific deep audit\"},{\"skill\":\"debugging\",\"reason\":\"debugging chases a known failure (security or otherwise); owasp-security finds vulnerabilities BEFORE they are exploited in production\"},{\"skill\":\"testing-strategy\",\"reason\":\"testing-strategy decides what to test broadly; owasp-security defines security-specific test cases (auth bypass tests, injection tests, etc.) as a sub-concern\"}],\"related\":[\"code-review\",\"testing-strategy\"],\"verify_with\":[\"testing-strategy\",\"code-review\"]}"
+  portability: "{\"readiness\":\"scripted\",\"targets\":[\"skill-md\"]}"
+  lifecycle: "{\"stale_after_days\":180,\"review_cadence\":\"quarterly\"}"
+  structural_verdict: UNVERIFIED
+  truth_verdict: UNVERIFIED
+  comprehension_verdict: UNVERIFIED
+  application_verdict: UNVERIFIED
   skill_graph_source_repo: "https://github.com/jacob-balslev/skill-graph"
-  skill_graph_protocol: Skill Metadata Protocol v4
+  skill_graph_protocol: Skill Metadata Protocol v7
   skill_graph_project: Skill Graph
-  skill_graph_canonical_skill: skills/owasp-security/SKILL.md
+  skill_graph_canonical_skill: skills/quality/security/owasp-security/SKILL.md
 ---
 
 # OWASP Security

@@ -1,6 +1,6 @@
 # Skill Graph
 
-[![npm version](https://img.shields.io/npm/v/@skill-graph/cli?style=flat-square&logo=npm&color=cb3837)](https://www.npmjs.com/package/@skill-graph/cli) [![Schema v6](https://img.shields.io/badge/schema-v6-blueviolet?style=flat-square)](SKILL_METADATA_PROTOCOL.md) [![License Apache-2.0 + CC-BY-4.0](https://img.shields.io/badge/license-Apache--2.0%20%2B%20CC--BY--4.0-green?style=flat-square)](LICENSE) [![Exports SKILL.md](https://img.shields.io/badge/exports-SKILL.md-orange?style=flat-square)](https://agentskills.io/specification) [![CI](https://img.shields.io/github/actions/workflow/status/jacob-balslev/skill-graph/publish.yml?style=flat-square&label=CI)](https://github.com/jacob-balslev/skill-graph/actions) [![GitHub stars](https://img.shields.io/github/stars/jacob-balslev/skill-graph?style=flat-square&logo=github)](https://github.com/jacob-balslev/skill-graph/stargazers)
+[![npm version](https://img.shields.io/npm/v/@skill-graph/cli?style=flat-square&logo=npm&color=cb3837)](https://www.npmjs.com/package/@skill-graph/cli) [![Schema v7](https://img.shields.io/badge/schema-v7-blueviolet?style=flat-square)](SKILL_METADATA_PROTOCOL.md) [![License Apache-2.0 + CC-BY-4.0](https://img.shields.io/badge/license-Apache--2.0%20%2B%20CC--BY--4.0-green?style=flat-square)](LICENSE) [![Exports SKILL.md](https://img.shields.io/badge/exports-SKILL.md-orange?style=flat-square)](https://agentskills.io/specification) [![CI](https://img.shields.io/github/actions/workflow/status/jacob-balslev/skill-graph/publish.yml?style=flat-square&label=CI)](https://github.com/jacob-balslev/skill-graph/actions) [![GitHub stars](https://img.shields.io/github/stars/jacob-balslev/skill-graph?style=flat-square&logo=github)](https://github.com/jacob-balslev/skill-graph/stargazers)
 
 **The canonical home for structured `SKILL.md` libraries.** Skill spec, JSON schemas, lint, manifest compiler, router, drift sentinel, audit loop, and the export pipeline — all shipped as a single CLI.
 
@@ -78,7 +78,7 @@ For everything else:
 | **Plan adoption in a new repo** | [`docs/ADOPTION.md`](docs/ADOPTION.md) and [`docs/CONFORMANCE.md`](docs/CONFORMANCE.md) |
 | **Migrate from an older `schema_version`** | [`docs/migrations/`](docs/migrations/) |
 
-> **Surface scope:** The OSS-portable canonical library lives at `skills/skills/` (145 v6-compliant skills). A separate personal/Sales Hub surface at `skills/` (263 pre-v6) is frozen — new skills are curated into the OSS surface only when non-PII, non-Sales-Hub, and generalizable. See [ADR 0008](docs/adr/0008-skill-surface-split-and-curation-policy.md).
+> **Surface scope:** The OSS-portable canonical library lives at `skills/skills/` (146 v7-compliant skills). A separate personal/Sales Hub surface at `skills/` is frozen — new skills are curated into the OSS surface only when non-PII, non-Sales-Hub, and generalizable. See [ADR 0008](docs/adr/0008-skill-surface-split-and-curation-policy.md).
 
 ## How SKILL.md, Skill Metadata Protocol, and Skill Graph Differ
 
@@ -114,7 +114,7 @@ This is a compact example. The full authoring scaffold is [`examples/skill-metad
 
 ```yaml
 ---
-schema_version: 6
+schema_version: 7
 name: product-page-ux-review
 description: "Use when reviewing a product page's UX, visual hierarchy, interaction patterns, accessibility, and conversion-critical content. Do NOT use for backend Shopify API work, production incident debugging, or general copy editing outside the product-page experience."
 version: 1.0.0
@@ -471,7 +471,7 @@ For project framing context, see [GitHub Discussion #1](https://github.com/jacob
 
 ## Status
 
-Latest release: **`@skill-graph/cli@0.5.8`** (2026-05-19) — see [`CHANGELOG.md`](CHANGELOG.md). The current contract is `schema_version: 6` — see [`schemas/skill.v6.schema.json`](schemas/skill.v6.schema.json) for the authoritative shape and [`docs/migrations/v5-to-v6.md`](docs/migrations/v5-to-v6.md) for the migration procedure. The `schemas/` directory pins v2 through v6 for tooling that consumes the schemas directly. The unversioned `skill.schema.json` tracks v6.
+Latest release: **`@skill-graph/cli@0.5.8`** (2026-05-19) — see [`CHANGELOG.md`](CHANGELOG.md). The current contract is `schema_version: 7` — see [`schemas/skill.v7.schema.json`](schemas/skill.v7.schema.json) for the authoritative shape and [`docs/migrations/v6-to-v7.md`](docs/migrations/v6-to-v7.md) for the migration procedure. The `schemas/` directory pins v2 through v7 for tooling that consumes the schemas directly. The unversioned `skill.schema.json` tracks v7.
 
 ## Contributing & Trust
 

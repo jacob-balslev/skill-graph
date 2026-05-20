@@ -3,11 +3,32 @@ name: frontend-architecture
 description: "Use when organizing a frontend codebase — module boundaries, component layering, state ownership, data-flow direction, and the separation between feature code and shared primitives. Do NOT use for visual design decisions, specific framework migration tactics, or backend API contract design."
 license: CC-BY-4.0
 metadata:
-  metadata: "{\"schema_version\":6,\"version\":\"1.0.0\",\"type\":\"capability\",\"category\":\"engineering\",\"domain\":\"engineering/frontend\",\"scope\":\"portable\",\"owner\":\"skill-graph-maintainer\",\"freshness\":\"2026-05-12\",\"drift_check\":\"{\\\\\\\"last_verified\\\\\\\":\\\\\\\"2026-05-12\\\\\\\"}\",\"eval_artifacts\":\"planned\",\"eval_state\":\"unverified\",\"routing_eval\":\"absent\",\"stability\":\"experimental\",\"keywords\":\"[\\\\\\\"frontend architecture\\\\\\\",\\\\\\\"component boundaries\\\\\\\",\\\\\\\"module organization\\\\\\\",\\\\\\\"state management shape\\\\\\\",\\\\\\\"feature-sliced design\\\\\\\",\\\\\\\"container presentational\\\\\\\",\\\\\\\"data flow direction\\\\\\\",\\\\\\\"shared primitives\\\\\\\",\\\\\\\"component layering\\\\\\\",\\\\\\\"frontend folder structure\\\\\\\",\\\\\\\"colocation\\\\\\\",\\\\\\\"Next.js App Router structure\\\\\\\"]\",\"triggers\":\"[\\\\\\\"frontend architecture\\\\\\\",\\\\\\\"component boundaries\\\\\\\",\\\\\\\"folder structure\\\\\\\",\\\\\\\"state shape\\\\\\\",\\\\\\\"where should this code live\\\\\\\"]\",\"examples\":\"[\\\\\\\"Decide whether a new modal lives in the shared component library or inside a feature folder\\\\\\\",\\\\\\\"Reorganize a frontend that has mixed presentational components and data-fetching components in the same files\\\\\\\",\\\\\\\"Choose a state shape that doesn't force every consumer to re-render on unrelated changes\\\\\\\"]\",\"anti_examples\":\"[\\\\\\\"Pick the brand color palette for a marketing site\\\\\\\",\\\\\\\"Design the REST endpoint shape for the orders resource\\\\\\\",\\\\\\\"Decide whether to use CSS-in-JS or Tailwind\\\\\\\"]\",\"relations\":\"{\\\\\\\"related\\\\\\\":[\\\\\\\"design-system-architecture\\\\\\\",\\\\\\\"design-module-composition\\\\\\\",\\\\\\\"refactor\\\\\\\",\\\\\\\"testing-strategy\\\\\\\"],\\\\\\\"boundary\\\\\\\":[{\\\\\\\"skill\\\\\\\":\\\\\\\"design-system-architecture\\\\\\\",\\\\\\\"reason\\\\\\\":\\\\\\\"design-system-architecture covers token layering, primitive component contracts, and library publishing; this skill covers application-side organization that consumes those primitives.\\\\\\\"},{\\\\\\\"skill\\\\\\\":\\\\\\\"api-design\\\\\\\",\\\\\\\"reason\\\\\\\":\\\\\\\"API contract shape lives in api-design; this skill takes the API as given and structures the frontend around it.\\\\\\\"}]}\",\"skill_graph_source_repo\":\"https://github.com/jacob-balslev/skill-graph\",\"skill_graph_protocol\":\"Skill Metadata Protocol v5\",\"skill_graph_project\":\"Skill Graph\",\"skill_graph_canonical_skill\":\"skills/frontend-architecture/SKILL.md\"}"
+  schema_version: "7"
+  version: "1.0.0"
+  type: capability
+  category: engineering
+  domain: engineering/frontend
+  scope: portable
+  owner: skill-graph-maintainer
+  freshness: "2026-05-12"
+  drift_check: "{\"last_verified\":\"2026-05-12\"}"
+  eval_artifacts: planned
+  eval_state: unverified
+  routing_eval: absent
+  stability: experimental
+  keywords: "[\"frontend architecture\",\"component boundaries\",\"module organization\",\"state management shape\",\"feature-sliced design\",\"container presentational\",\"data flow direction\",\"shared primitives\",\"component layering\",\"frontend folder structure\",\"colocation\",\"Next.js App Router structure\"]"
+  triggers: "[\"frontend architecture\",\"component boundaries\",\"folder structure\",\"state shape\",\"where should this code live\"]"
+  examples: "[\"Decide whether a new modal lives in the shared component library or inside a feature folder\",\"Reorganize a frontend that has mixed presentational components and data-fetching components in the same files\",\"Choose a state shape that doesn't force every consumer to re-render on unrelated changes\"]"
+  anti_examples: "[\"Pick the brand color palette for a marketing site\",\"Design the REST endpoint shape for the orders resource\",\"Decide whether to use CSS-in-JS or Tailwind\"]"
+  relations: "{\"related\":[\"design-system-architecture\",\"design-module-composition\",\"refactor\",\"testing-strategy\"],\"boundary\":[{\"skill\":\"design-system-architecture\",\"reason\":\"design-system-architecture covers token layering, primitive component contracts, and library publishing; this skill covers application-side organization that consumes those primitives.\"},{\"skill\":\"api-design\",\"reason\":\"API contract shape lives in api-design; this skill takes the API as given and structures the frontend around it.\"}]}"
+  structural_verdict: UNVERIFIED
+  truth_verdict: UNVERIFIED
+  comprehension_verdict: UNVERIFIED
+  application_verdict: UNVERIFIED
   skill_graph_source_repo: "https://github.com/jacob-balslev/skill-graph"
-  skill_graph_protocol: Skill Metadata Protocol v4
+  skill_graph_protocol: Skill Metadata Protocol v7
   skill_graph_project: Skill Graph
-  skill_graph_canonical_skill: skills/frontend-architecture/SKILL.md
+  skill_graph_canonical_skill: skills/engineering/frontend/frontend-architecture/SKILL.md
 ---
 
 # Frontend Architecture

@@ -73,7 +73,7 @@ Most likely fit: **"Show and tell"** (if the category exists) or **"Ideas"** if 
 
 Hi Anthropic Skills team and community,
 
-I've been building [`skill-graph`](https://github.com/jacob-balslev/skill-graph) as an extension to the Agent Skills spec — a typed metadata protocol (`schema_version: 6`) plus a keep-or-revert audit loop that re-grounds each skill against its truth sources on a cadence. The published library is at [`jacob-balslev/skills`](https://github.com/jacob-balslev/skills) (145 skills, install with `npx skills add jacob-balslev/skills`).
+I've been building [`skill-graph`](https://github.com/jacob-balslev/skill-graph) as an extension to the Agent Skills spec — a typed metadata protocol (`schema_version: 7`) plus a keep-or-revert audit loop that re-grounds each skill against its truth sources on a cadence. The published library is at [`jacob-balslev/skills`](https://github.com/jacob-balslev/skills) (146 skills, install with `npx skills add jacob-balslev/skills`).
 
 The extension is fully backwards-compatible with the base Agent Skills spec — the published `SKILL.md` files are plain Agent Skills shape (the protocol metadata lives in the authoring repo, never in the export). I'd love feedback on a few specific things:
 

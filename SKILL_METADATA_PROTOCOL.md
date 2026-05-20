@@ -1,7 +1,8 @@
 # Skill Metadata Protocol
 
-> **Version:** 1.3.0 (schema_version 6, Skill Graph 0.6.0)
-> **Machine-readable schema:** `schemas/skill.v6.schema.json` (v4 and v5 schemas remain for back-compat reads via `normalizeFrontmatter()`)
+> **Version:** 1.4.0 (schema_version 7, Skill Graph 0.6.0)
+> **Machine-readable schema:** `schemas/skill.v7.schema.json` (v4, v5, and v6 schemas remain for back-compat reads via `normalizeFrontmatter()`)
+> **Migration from v6:** `docs/migrations/v6-to-v7.md`
 > **Migration from v5:** `docs/migrations/v5-to-v6.md`
 > **Migration from v4:** `docs/migrations/v4-to-v5.md`
 > **Detailed field reference:** `docs/field-reference.md`
@@ -34,7 +35,7 @@ This document is the top-level public contract for the Skill Metadata Protocol f
 
 ## Overview
 
-Every skill is a single `SKILL.md` file with a YAML frontmatter block. The frontmatter is validated by `skill-lint.js` against `schemas/skill.v6.schema.json`. The `generate-manifest.js` script reads frontmatter from all skill files and emits a single `skills.manifest.json`.
+Every skill is a single `SKILL.md` file with a YAML frontmatter block. The frontmatter is validated by `skill-lint.js` against `schemas/skill.v7.schema.json`. The `generate-manifest.js` script reads frontmatter from all skill files and emits a single `skills.manifest.json`.
 
 The contract has one runtime model: one `SKILL.md` per skill, one manifest, one lint pass. There is no closed/open split, no private control plane, and no enterprise-only fields.
 
@@ -48,7 +49,7 @@ All thirteen fields in this group are required. A skill missing any of them fail
 
 | Field | Type | Purpose |
 |---|---|---|
-| `schema_version` | integer `6` | Signals the contract version. Must be `6` for all v6 skills. See `docs/migrations/v5-to-v6.md`. |
+| `schema_version` | integer `7` | Signals the contract version. Must be `7` for all v7 skills. See `docs/migrations/v6-to-v7.md`. |
 | `name` | string | Stable identifier. Used for routing and `relations.*` targets. |
 | `description` | string (≥20 chars) | Routing contract — tells the router when to activate this skill. |
 | `version` | semver string | Skill content version (e.g. `1.2.0`). Bumped by the author. |
@@ -270,7 +271,7 @@ Required when `comprehension_state: present`. No protocol length cap on any of t
 
 **`concept`** (DEPRECATED in v6 — accepted for v5 back-compat)
 - Legacy nested teaching block with seven sub-fields: `definition`, `mental_model`, `purpose`, `boundary`, `taxonomy`, `analogy`, `misconception`.
-- Remains accepted for v5 skills not yet migrated. Lint emits a warning when `concept` is populated but the flat Understanding fields are absent and `schema_version: 6` is set.
+- Remains accepted for v5/v6 skills not yet migrated. Lint emits a warning when `concept` is populated but the flat Understanding fields are absent and the current schema version is set.
 - The comprehension grader reads either location; flat fields win when both are present.
 
 **`eval_last_run`**

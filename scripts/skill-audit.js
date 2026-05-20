@@ -42,10 +42,17 @@
 const fs   = require('fs');
 const path = require('path');
 const { spawnSync } = require('child_process');
-const { workspaceRoot } = require('./lib/roots');
+const { collectSkillFiles, workspaceRoot } = require('./lib/roots');
 
 const REPO_ROOT  = workspaceRoot();
-const SKILLS_DIR = path.join(REPO_ROOT, 'skills');
+const SKILL_FILES = collectSkillFiles(REPO_ROOT);
+
+function findSkillFile(skillName) {
+  return SKILL_FILES.find(entry => {
+    const base = path.basename(path.dirname(entry.filePath));
+    return base === skillName || entry.filePath.endsWith(`${path.sep}${skillName}${path.sep}SKILL.md`);
+  })?.filePath || null;
+}
 
 const {
   DIMENSIONS,
@@ -808,17 +815,13 @@ function main() {
     process.exit(1);
   }
 
-  const skillDir  = path.join(SKILLS_DIR, opts.skillName);
-  const skillFile = path.join(skillDir, 'SKILL.md');
-  if (!fs.existsSync(skillDir)) {
-    console.error(`error: skill directory not found: ${skillDir}`);
-    console.error(`       Available skills: ${fs.readdirSync(SKILLS_DIR).join(', ')}`);
+  const skillFile = findSkillFile(opts.skillName);
+  if (!skillFile) {
+    console.error(`error: skill not found in configured skill roots: ${opts.skillName}`);
+    console.error(`       Available skills: ${SKILL_FILES.map(entry => path.basename(path.dirname(entry.filePath))).join(', ')}`);
     process.exit(1);
   }
-  if (!fs.existsSync(skillFile)) {
-    console.error(`error: SKILL.md not found in ${skillDir}`);
-    process.exit(1);
-  }
+  const skillDir = path.dirname(skillFile);
 
   const outDir = path.join(opts.auditRoot, opts.skillName);
   const targetFiles = ['findings.md', 'verdict.md', 'scorecard.md'];

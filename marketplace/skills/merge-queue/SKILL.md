@@ -5,11 +5,32 @@ license: MIT
 compatibility: "Markdown, Git, agent-skill runtimes"
 allowed-tools: Read Grep Bash
 metadata:
-  metadata: "{\"schema_version\":6,\"version\":\"1.0.0\",\"type\":\"workflow\",\"category\":\"engineering\",\"domain\":\"engineering/git\",\"scope\":\"portable\",\"owner\":\"skill-graph-maintainer\",\"freshness\":\"2026-04-01\",\"drift_check\":\"{\\\\\\\"last_verified\\\\\\\":\\\\\\\"2026-04-01\\\\\\\"}\",\"eval_artifacts\":\"planned\",\"eval_state\":\"unverified\",\"routing_eval\":\"absent\",\"stability\":\"experimental\",\"keywords\":\"[\\\\\\\"merge queue\\\\\\\",\\\\\\\"atomic lock\\\\\\\",\\\\\\\"idempotency\\\\\\\",\\\\\\\"no-ff merge\\\\\\\",\\\\\\\"worktree cleanup\\\\\\\",\\\\\\\"agent branch\\\\\\\",\\\\\\\"master merge\\\\\\\"]\",\"triggers\":\"[\\\\\\\"merge-queue\\\\\\\",\\\\\\\"agent-merge\\\\\\\"]\",\"relations\":\"{\\\\\\\"related\\\\\\\":[\\\\\\\"version-control\\\\\\\"],\\\\\\\"boundary\\\\\\\":[\\\\\\\"version-control\\\\\\\"]}\",\"portability\":\"{\\\\\\\"readiness\\\\\\\":\\\\\\\"scripted\\\\\\\",\\\\\\\"targets\\\\\\\":[\\\\\\\"skill-md\\\\\\\"]}\",\"lifecycle\":\"{\\\\\\\"stale_after_days\\\\\\\":90,\\\\\\\"review_cadence\\\\\\\":\\\\\\\"quarterly\\\\\\\"}\",\"skill_graph_source_repo\":\"https://github.com/jacob-balslev/skill-graph\",\"skill_graph_protocol\":\"Skill Metadata Protocol v5\",\"skill_graph_project\":\"Skill Graph\",\"skill_graph_canonical_skill\":\"skills/merge-queue/SKILL.md\"}"
+  schema_version: "7"
+  version: "1.0.0"
+  type: workflow
+  category: engineering
+  domain: engineering/git
+  scope: portable
+  owner: skill-graph-maintainer
+  freshness: "2026-04-01"
+  drift_check: "{\"last_verified\":\"2026-04-01\"}"
+  eval_artifacts: planned
+  eval_state: unverified
+  routing_eval: absent
+  stability: experimental
+  keywords: "[\"merge queue\",\"atomic lock\",\"idempotency\",\"no-ff merge\",\"worktree cleanup\",\"agent branch\",\"master merge\"]"
+  triggers: "[\"merge-queue\",\"agent-merge\"]"
+  relations: "{\"related\":[\"version-control\"],\"boundary\":[\"version-control\"]}"
+  portability: "{\"readiness\":\"scripted\",\"targets\":[\"skill-md\"]}"
+  lifecycle: "{\"stale_after_days\":90,\"review_cadence\":\"quarterly\"}"
+  structural_verdict: UNVERIFIED
+  truth_verdict: UNVERIFIED
+  comprehension_verdict: UNVERIFIED
+  application_verdict: UNVERIFIED
   skill_graph_source_repo: "https://github.com/jacob-balslev/skill-graph"
-  skill_graph_protocol: Skill Metadata Protocol v4
+  skill_graph_protocol: Skill Metadata Protocol v7
   skill_graph_project: Skill Graph
-  skill_graph_canonical_skill: skills/merge-queue/SKILL.md
+  skill_graph_canonical_skill: skills/engineering/merge-queue/SKILL.md
 ---
 # Merge Queue (Serialized Commit Control)
 

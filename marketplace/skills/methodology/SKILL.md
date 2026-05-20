@@ -5,17 +5,42 @@ license: MIT
 compatibility: "Markdown, Git, agent-skill runtimes"
 allowed-tools: Read Grep Bash
 metadata:
-  metadata: "{\"schema_version\":6,\"version\":\"1.0.0\",\"type\":\"capability\",\"category\":\"quality\",\"domain\":\"quality/method\",\"scope\":\"reference\",\"owner\":\"skill-graph-maintainer\",\"freshness\":\"2026-04-01\",\"drift_check\":\"{\\\\\\\"last_verified\\\\\\\":\\\\\\\"2026-04-01\\\\\\\"}\",\"eval_artifacts\":\"planned\",\"eval_state\":\"unverified\",\"routing_eval\":\"absent\",\"stability\":\"experimental\",\"keywords\":\"[\\\\\\\"methodology\\\\\\\",\\\\\\\"method\\\\\\\",\\\\\\\"process\\\\\\\",\\\\\\\"formal methods\\\\\\\",\\\\\\\"cleanroom\\\\\\\",\\\\\\\"PSP\\\\\\\",\\\\\\\"TSP\\\\\\\",\\\\\\\"hypothesis driven\\\\\\\",\\\\\\\"DMAIC\\\\\\\",\\\\\\\"PDCA\\\\\\\",\\\\\\\"Deming\\\\\\\",\\\\\\\"quality gates\\\\\\\",\\\\\\\"checklist manifesto\\\\\\\",\\\\\\\"verification validation\\\\\\\",\\\\\\\"DO-178C\\\\\\\",\\\\\\\"V&V\\\\\\\",\\\\\\\"EDDOps\\\\\\\",\\\\\\\"defect prevention\\\\\\\",\\\\\\\"shift left\\\\\\\",\\\\\\\"evidence based\\\\\\\"]\",\"triggers\":\"[\\\\\\\"methodology-skill\\\\\\\"]\",\"portability\":\"{\\\\\\\"readiness\\\\\\\":\\\\\\\"scripted\\\\\\\",\\\\\\\"targets\\\\\\\":[\\\\\\\"skill-md\\\\\\\"]}\",\"lifecycle\":\"{\\\\\\\"stale_after_days\\\\\\\":90,\\\\\\\"review_cadence\\\\\\\":\\\\\\\"quarterly\\\\\\\"}\",\"skill_graph_source_repo\":\"https://github.com/jacob-balslev/skill-graph\",\"skill_graph_protocol\":\"Skill Metadata Protocol v5\",\"skill_graph_project\":\"Skill Graph\",\"skill_graph_canonical_skill\":\"skills/methodology/SKILL.md\"}"
+  schema_version: "7"
+  version: "1.1.0"
+  type: capability
+  category: quality
+  domain: quality/method
+  scope: reference
+  owner: skill-graph-maintainer
+  freshness: "2026-05-18"
+  drift_check: "{\"last_verified\":\"2026-05-18\"}"
+  eval_artifacts: planned
+  eval_state: unverified
+  routing_eval: absent
+  stability: experimental
+  keywords: "[\"methodology\",\"method\",\"process\",\"formal methods\",\"cleanroom\",\"PSP\",\"TSP\",\"hypothesis driven\",\"DMAIC\",\"PDCA\",\"Deming\",\"quality gates\",\"checklist manifesto\",\"verification validation\",\"DO-178C\",\"V&V\",\"EDDOps\",\"defect prevention\",\"shift left\",\"evidence based\"]"
+  triggers: "[\"methodology-skill\"]"
+  examples: "[\"design a verification protocol for this multi-step agent workflow before implementation starts\",\"turn these recurring agent failure modes into a checklist and hard quality gate\",\"explain why this process step exists instead of just telling the agent to follow it\",\"choose whether this task needs PDCA, DMAIC, hypothesis-driven development, or V&V-style traceability\",\"build a methodology-backed plan for preventing defects earlier in this skill audit loop\",\"convert a vague done checklist into binary gates with evidence receipts\"]"
+  anti_examples: "[\"review this PR and decide whether to approve it\",\"refactor this file while preserving behavior\",\"decide unit vs integration vs e2e coverage for this feature\",\"write the eval cases and grader rubric for this router\",\"block this dangerous git command or secret-bearing tool call\"]"
+  relations: "{\"boundary\":[{\"skill\":\"code-review\",\"reason\":\"code-review evaluates a concrete diff or PR; methodology designs the process and gates that make rigorous execution possible before a diff exists\"},{\"skill\":\"refactor\",\"reason\":\"refactor changes code structure while preserving behavior; methodology defines why and when a process should contain gates, traces, and feedback loops\"},{\"skill\":\"testing-strategy\",\"reason\":\"testing-strategy decides what software behavior deserves tests and at which level; methodology defines the broader quality-management frame behind verification gates\"},{\"skill\":\"agent-eval-design\",\"reason\":\"agent-eval-design authors agent eval cases, rubrics, and graders; methodology provides the process principles behind evidence-driven agent quality loops\"},{\"skill\":\"guardrails\",\"reason\":\"guardrails blocks or escalates high-risk tool actions at execution time; methodology designs the preventive process and checklist discipline around work\"}],\"related\":[\"best-practice\",\"agent-eval-design\",\"guardrails\",\"testing-strategy\",\"code-review\"],\"verify_with\":[\"best-practice\",\"agent-eval-design\"]}"
+  grounding: "{\"domain_object\":\"Reference methodology for rigorous agent work: methodology-method-process layering, defect prevention, PSP/TSP measurement, hypothesis-driven development, DMAIC/PDCA, checklist design, V&V, and evaluation-driven LLM agent operations\",\"grounding_mode\":\"universal\",\"truth_sources\":[\"https://voljournals.utk.edu/utk_harlan/18/\",\"https://www.sei.cmu.edu/library/the-team-software-process-tsp/\",\"https://www.sei.cmu.edu/library/team-software-process-tsp-and-personal-software-process-psp-materials/\",\"https://asq.org/Quality-resources/Dmaic\",\"https://asq.org/quality-resources/pdca-cycle\",\"https://www.who.int/publications/i/item/9789241598590\",\"https://www.nasa.gov/ivv-overview/\",\"https://www.nasa.gov/reference/system-engineering-handbook-appendix/\",\"https://barryoreilly.com/explore/blog/how-to-implement-hypothesis-driven-development/\",\"https://arxiv.org/abs/2411.13768\"],\"failure_modes\":[\"process_steps_followed_without_underlying_methodology\",\"quality_gate_treated_as_advisory\",\"verification_claim_without_evidence_receipt\",\"checklist_not_calibrated_to_known_failure_modes\",\"exact_cost_or_success_claim_made_without_source_or_eval\",\"non_public_neighbor_skill_used_as_public_boundary\",\"eval_or_routing_state_inflated_without_run\"],\"evidence_priority\":\"equal\"}"
+  portability: "{\"readiness\":\"scripted\",\"targets\":[\"skill-md\"]}"
+  lifecycle: "{\"stale_after_days\":90,\"review_cadence\":\"quarterly\"}"
+  structural_verdict: UNVERIFIED
+  truth_verdict: UNVERIFIED
+  comprehension_verdict: UNVERIFIED
+  application_verdict: UNVERIFIED
   skill_graph_source_repo: "https://github.com/jacob-balslev/skill-graph"
-  skill_graph_protocol: Skill Metadata Protocol v4
+  skill_graph_protocol: Skill Metadata Protocol v7
   skill_graph_project: Skill Graph
-  skill_graph_canonical_skill: skills/methodology/SKILL.md
+  skill_graph_canonical_skill: skills/quality/methodology/SKILL.md
 ---
+
 # Methodology
 
 ## Domain Context
 
-**What is this skill?** Provides the philosophical framework (methodology), specific techniques (methods), and ordered execution sequences (processes) that govern rigorous agent work. Covers the methodology-method-process stack, Cleanroom defect prevention, PSP/TSP measurement discipline, hypothesis-driven development, DMAIC quality management, aviation checklist design (Gawande), V&V frameworks (DO-178C/NASA), EDDOps for LLM agents, quality gates as hard stops, and the PDCA cycle for standardizing successes. Use when planning multi-step implementations, designing quality gates, establishing verification protocols, building agent checklists calibrated to known failure modes, or when an agent needs to understand WHY a process step exists (not just THAT it exists). Do NOT use for the specific behavioral rules of completeness and honesty (use methodical), quality definitions per artifact (use quality-doctrine), or generate-critique-revise loop mechanics (use self-review-pattern).
+**What is this skill?** Provides the philosophical framework (methodology), specific techniques (methods), and ordered execution sequences (processes) that govern rigorous agent work. Covers the methodology-method-process stack, Cleanroom defect prevention, PSP/TSP measurement discipline, hypothesis-driven development, DMAIC quality management, aviation checklist design (Gawande), V&V frameworks (NASA/IEEE-style independent verification and validation), EDDOps for LLM agents, quality gates as hard stops, and the PDCA cycle for standardizing successes. Use when planning multi-step implementations, designing quality gates, establishing verification protocols, building agent checklists calibrated to known failure modes, or when an agent needs to understand WHY a process step exists (not just THAT it exists). Do NOT use for concrete PR review (use `code-review`), behavior-preserving implementation changes (use `refactor`), test-level selection (use `testing-strategy`), eval-case design (use `agent-eval-design`), or high-risk tool-call blocking (use `guardrails`).
 
 ## Coverage
 
@@ -27,11 +52,20 @@ Agents default to executing process without methodology. They apply steps withou
 
 The academic distinction is load-bearing: **Methodology** is the philosophical framework — WHY you approach work a certain way. **Method** is a specific technique within the methodology. **Process** is the ordered sequence of steps executing a method. One process can contain multiple methods; one method can serve many processes. But without methodology, the agent has no basis for deciding when to apply extra rigor, when to challenge a process that seems wasteful, or when a shortcut is genuinely safe vs. when it compromises the underlying principle.
 
-This skill installs the WHY. The `methodical` skill installs the behavioral rules. Together they prevent both "knows the steps but skips them" (ineptitude) and "follows steps mechanically without understanding when they matter" (cargo culting).
+This skill installs the WHY. Adjacent quality skills install the execution surface: `code-review` evaluates concrete diffs, `testing-strategy` chooses test levels, `agent-eval-design` authors eval cases and graders, `guardrails` blocks high-risk actions, and `best-practice` catches cross-cutting quality gaps. Together they prevent both "knows the steps but skips them" (ineptitude) and "follows steps mechanically without understanding when they matter" (cargo culting).
 
-## Trio Boundaries
+## Methodology Boundaries
 
-methodology provides the *frameworks and principles* behind rigorous execution. It does NOT provide the specific behavioral rules for completeness and honesty — use `methodical` for that. It does NOT define what quality means per artifact type — use `quality-doctrine` for that. It does NOT provide the generate-critique-revise loop mechanics — use `self-review-pattern` for that.
+Methodology provides the *frameworks and principles* behind rigorous execution. It does not own every downstream execution surface.
+
+| Need | Use | Boundary |
+|---|---|---|
+| Design a rigorous process, checklist, or gate sequence | `methodology` | Owns why the gates exist and how they compose |
+| Review an actual diff or PR | `code-review` | Owns findings, severity, comments, and merge verdicts |
+| Decide what software behavior to test and at what level | `testing-strategy` | Owns test scope and level selection |
+| Design agent eval tasks, rubrics, hard negatives, or graders | `agent-eval-design` | Owns eval content and scoring design |
+| Block destructive, secret-bearing, or public side-effecting actions | `guardrails` | Owns action safety and escalation |
+| Catch cross-domain quality misses after specialist work | `best-practice` | Owns broad quality enforcement, not methodology selection |
 
 ---
 
@@ -62,16 +96,16 @@ Cleanroom software engineering (Harlan Mills, IBM) derives its name from semicon
 2. **Incremental implementation with quality gates.** Each increment is measured against pre-established standards. Failure to pass a gate triggers return to design. Work cannot advance past a failed gate.
 3. **Statistical testing as experiment.** Testing is a designed experiment with defined coverage, not ad-hoc verification.
 
-### The Defect Cost Theorem
+### The Defect-Cost Gradient
 
-| Phase Detected | Cost Multiplier |
+| Phase Found | Relative cost | Agent translation |
 |---|---|
-| During design | 1x |
-| During code review | 6-10x |
-| During testing | 25-100x |
-| In production | 100x+ |
+| During planning/design | Lowest | Clarify acceptance criteria, scope, and risk before implementation |
+| During self-review or code review | Higher | Fix a concrete diff before it lands |
+| During testing | Higher again | Debug implementation and test harness together |
+| After release or publication | Highest | Repair user impact, trust, documentation, and follow-on work |
 
-Source: IBM Systems Sciences Institute, widely cited.
+Exact multipliers vary by domain and evidence base. Do not quote universal defect-cost percentages from this skill. The methodology claim is ordinal: earlier prevention is cheaper and safer than late defect removal.
 
 **Translation to agent work:** Every pre-implementation check (acceptance criteria declared, existing patterns audited, assumptions externalized) prevents a post-task revision cycle. The PRE-TASK gate is not optional even when the task feels simple — simple tasks fail most often on defects that a pre-task check would have caught, because the agent doesn't bother checking assumptions it believes are obvious.
 
@@ -79,7 +113,7 @@ Source: IBM Systems Sciences Institute, widely cited.
 
 ## 3. PSP/TSP: Measurement at the Individual Level
 
-The Personal Software Process (Watts Humphrey, SEI/CMU) applies capability maturity principles to individual engineers. TSP teams missed target schedules by an average of only 6%, versus a one-third failure rate for unaided projects.
+The Personal Software Process (Watts Humphrey, SEI/CMU) applies capability maturity principles to individual engineers, while TSP extends process discipline to teams. SEI positions these materials around defined processes, personal/team measurement, quality control, and more precise cost/schedule commitments. Treat PSP/TSP as a measurement discipline, not as a guaranteed schedule-improvement number.
 
 ### PSP Phase Structure
 
@@ -218,7 +252,7 @@ A component can pass all token checks (verified) but solve the wrong UX problem 
 
 **Bidirectional traceability.** Every requirement traced to code implementing it, test verifying it, and test results confirming it. No requirement is "done" without the complete trace.
 
-**V&V accounts for 70% of total development effort** in safety-critical industries. This is not waste — it is the work. Agents that treat verification as overhead are misallocating effort. Implementation is cheap; ensuring it is correct is expensive and unavoidable.
+In safety-critical and mission-critical work, V&V is a first-class engineering activity, not a final polish pass. NASA's IV&V framing emphasizes correctness and quality throughout the SDLC, and NASA's systems-engineering guidance expects planned verification/validation flow, methods, matrices, and results. Agents that treat verification as overhead are misallocating effort. Implementation is cheap; ensuring it is correct is expensive and unavoidable.
 
 **Independent verification.** The implementer's mental model contaminates their verification — they verify against what they INTENDED, not what they BUILT. Independent verification catches the gap.
 
@@ -255,7 +289,7 @@ These patterns appear across all source disciplines and translate directly into 
 |---|---|---|---|
 | 1 | **Declare Before Act** | Cleanroom + PSP + HDD + Gawande | Externalize intent before implementation; catches wrong assumptions |
 | 2 | **Quality Gates Are Hard Stops** | Cleanroom + DMAIC + DO-178C | Binary, blocking, measurable; "mostly passes" does not exist |
-| 3 | **Defect Prevention at Earliest Phase** | Cleanroom cost theorem + shift-left | Upstream checks cost 1x; downstream costs cascade to 100x |
+| 3 | **Defect Prevention at Earliest Phase** | Cleanroom + shift-left | Earlier prevention is cheaper and safer than late defect removal |
 | 4 | **Evidence Replaces Belief** | HDD + PSP + V&V + EDDOps | Four components: criterion, test, observed result, comparison |
 | 5 | **Failure Modes Are Learnable** | PSP personalization + Gawande | Checklists calibrated to known failure modes, not generic |
 | 6 | **Methodology Must Be Internalized** | Deming Points 3, 14 | Quality designed in, not inspected in; compliance theater is not methodology |
@@ -275,8 +309,14 @@ These patterns appear across all source disciplines and translate directly into 
 | Self-certifying without structured evidence | V&V independence, EDDOps | Mental model contamination |
 | Skipping pre-task "because it's simple" | PSP planning, Gawande | Simple tasks fail on overlooked assumptions MORE often |
 | Only learning from failures, not successes | PDCA ACT phase, PSP post-mortem | Success patterns are lost; only error avoidance is encoded |
-| Treating verification as overhead | V&V (70% of effort), DMAIC Control | Verification IS the work, not an addition to it |
+| Treating verification as overhead | V&V, DMAIC Control | Verification IS the work, not an addition to it |
 | Vague completion criteria | DMAIC Define, HDD, DO-178C | Unmeasurable criteria cannot be verified |
+
+## Grounding and Evaluation State
+
+This skill is grounded in public methodology references: Mills et al. on Cleanroom software engineering, SEI PSP/TSP materials, ASQ DMAIC and PDCA resources, WHO checklist implementation guidance, NASA IV&V and systems-engineering V&V guidance, Barry O'Reilly's hypothesis-driven development framing, and the EDDOps arXiv paper for evaluation-driven LLM agent operations. The body also names historically important books and standards as bibliography, but those are not drift-hashable public URLs in this release artifact.
+
+The current eval metadata remains conservative: `eval_artifacts: planned`, `eval_state: unverified`, and `routing_eval: absent`. Do not mark this skill verified or routing-present until a real comprehension eval and routing eval include `methodology` and pass in the same change.
 
 ---
 
@@ -295,23 +335,26 @@ After applying this skill, verify:
 
 | Instead of this skill | Use | Why |
 |---|---|---|
-| Enforcing completeness and honesty rules | `methodical` | methodical has the 10 rules and anti-pattern catalog |
-| Defining what "better" means per artifact | `quality-doctrine` | quality-doctrine owns quality definitions |
-| Implementing generate-critique-revise loops | `self-review-pattern` | self-review-pattern owns the loop mechanics |
-| Sequencing task phases | `task-execution` | task-execution owns the workflow |
-| Designing agent governance policies | `agent-governance` | agent-governance owns policy and authority boundaries |
+| Reviewing a concrete diff or PR | `code-review` | code-review owns findings, severity, and merge verdicts |
+| Restructuring code while preserving behavior | `refactor` | refactor owns behavior-preserving implementation work |
+| Choosing unit/integration/contract/e2e coverage | `testing-strategy` | testing-strategy owns test-scope and test-level decisions |
+| Writing agent eval cases or grader rubrics | `agent-eval-design` | agent-eval-design owns eval task design and thresholds |
+| Blocking destructive or secret-bearing tool calls | `guardrails` | guardrails owns execution-time safety tripwires |
+| Cross-cutting quality enforcement after specialist work | `best-practice` | best-practice owns broad quality gates across domains |
 
 ## Key Sources
 
-- Mills, H. (1987). Cleanroom Software Engineering. IEEE Software.
-- Humphrey, W. (1995). A Discipline for Software Engineering (PSP). Addison-Wesley.
-- Humphrey, W. (2000). Introduction to the Team Software Process. SEI/CMU.
-- Gawande, A. (2009). The Checklist Manifesto. Metropolitan Books.
+- Mills, H., Dyer, M., and Linger, R. (1987). [Cleanroom Software Engineering](https://voljournals.utk.edu/utk_harlan/18/). IEEE Software.
+- Humphrey, W. (2000). [The Team Software Process (TSP)](https://www.sei.cmu.edu/library/the-team-software-process-tsp/). SEI/CMU.
+- CMU SEI. [Team Software Process (TSP) and Personal Software Process (PSP) Materials](https://www.sei.cmu.edu/library/team-software-process-tsp-and-personal-software-process-psp-materials/).
+- WHO. [Implementation manual: WHO surgical safety checklist](https://www.who.int/publications/i/item/9789241598590).
 - Boyd, J. (1976). OODA Loop. USAF.
 - Deming, W.E. (1986). Out of the Crisis. MIT Press.
 - DO-178C. Software Considerations in Airborne Systems and Equipment Certification.
 - IEEE 1012. Standard for System, Software, and Hardware Verification and Validation.
-- NASA (2014). Verification and Validation. Technical Reports Server.
-- EDDOps (2024). Evaluation-Driven Development of LLM Agents. arXiv:2411.13768.
-- Barry O'Reilly. Hypothesis-Driven Development.
-- Thoughtworks. How to Implement Hypothesis-Driven Development.
+- NASA. [IV&V Overview](https://www.nasa.gov/ivv-overview/).
+- NASA. [Systems Engineering Handbook Appendix: V&V Plan outline](https://www.nasa.gov/reference/system-engineering-handbook-appendix/).
+- ASQ. [DMAIC Process](https://asq.org/Quality-resources/Dmaic).
+- ASQ. [PDCA Cycle](https://asq.org/quality-resources/pdca-cycle).
+- Barry O'Reilly. [How to Implement Hypothesis-Driven Development](https://barryoreilly.com/explore/blog/how-to-implement-hypothesis-driven-development/).
+- Xia et al. [Evaluation-Driven Development and Operations of LLM Agents](https://arxiv.org/abs/2411.13768). arXiv:2411.13768.

@@ -5,11 +5,33 @@ license: MIT
 compatibility: "Portable state-machine discipline for product workflows, domain lifecycles, retries, background jobs, and UI flow control."
 allowed-tools: Read Grep
 metadata:
-  metadata: "{\"schema_version\":6,\"version\":\"1.0.0\",\"type\":\"capability\",\"category\":\"engineering\",\"domain\":\"modeling/state-machines\",\"scope\":\"portable\",\"owner\":\"skill-graph-maintainer\",\"freshness\":\"2026-05-11\",\"drift_check\":\"{\\\\\\\"last_verified\\\\\\\":\\\\\\\"2026-05-11\\\\\\\"}\",\"eval_artifacts\":\"planned\",\"eval_state\":\"unverified\",\"routing_eval\":\"absent\",\"stability\":\"experimental\",\"keywords\":\"[\\\\\\\"state machine\\\\\\\",\\\\\\\"state modeling\\\\\\\",\\\\\\\"lifecycle states\\\\\\\",\\\\\\\"transitions\\\\\\\",\\\\\\\"guards\\\\\\\",\\\\\\\"finite state machine\\\\\\\",\\\\\\\"invalid states\\\\\\\",\\\\\\\"status field\\\\\\\",\\\\\\\"workflow invariants\\\\\\\"]\",\"examples\":\"[\\\\\\\"model the order fulfillment status lifecycle so invalid transitions are impossible\\\\\\\",\\\\\\\"this status field keeps growing flags - should it become a state machine?\\\\\\\",\\\\\\\"define guards and side effects for onboarding steps\\\\\\\",\\\\\\\"find impossible states in this workflow before we implement it\\\\\\\"]\",\"anti_examples\":\"[\\\\\\\"discover the domain events and policies for the whole business process\\\\\\\",\\\\\\\"create database tables and constraints for this lifecycle\\\\\\\",\\\\\\\"instrument metrics and traces for an existing workflow\\\\\\\",\\\\\\\"debug why this job got stuck yesterday\\\\\\\"]\",\"relations\":\"{\\\\\\\"boundary\\\\\\\":[{\\\\\\\"skill\\\\\\\":\\\\\\\"event-storming\\\\\\\",\\\\\\\"reason\\\\\\\":\\\\\\\"event-storming discovers domain behavior broadly; state-machine-modeling formalizes a specific lifecycle\\\\\\\"},{\\\\\\\"skill\\\\\\\":\\\\\\\"data-modeling\\\\\\\",\\\\\\\"reason\\\\\\\":\\\\\\\"data-modeling persists state; state-machine-modeling defines legal state behavior\\\\\\\"},{\\\\\\\"skill\\\\\\\":\\\\\\\"observability-modeling\\\\\\\",\\\\\\\"reason\\\\\\\":\\\\\\\"observability-modeling instruments a lifecycle; state-machine-modeling defines the lifecycle itself\\\\\\\"},{\\\\\\\"skill\\\\\\\":\\\\\\\"debugging\\\\\\\",\\\\\\\"reason\\\\\\\":\\\\\\\"debugging investigates an observed stuck state; state-machine-modeling prevents invalid states by design\\\\\\\"}],\\\\\\\"related\\\\\\\":[\\\\\\\"event-storming\\\\\\\",\\\\\\\"system-interface-contracts\\\\\\\",\\\\\\\"testing-strategy\\\\\\\",\\\\\\\"api-design\\\\\\\"],\\\\\\\"verify_with\\\\\\\":[\\\\\\\"testing-strategy\\\\\\\",\\\\\\\"system-interface-contracts\\\\\\\"]}\",\"portability\":\"{\\\\\\\"readiness\\\\\\\":\\\\\\\"scripted\\\\\\\",\\\\\\\"targets\\\\\\\":[\\\\\\\"skill-md\\\\\\\"]}\",\"lifecycle\":\"{\\\\\\\"stale_after_days\\\\\\\":365,\\\\\\\"review_cadence\\\\\\\":\\\\\\\"quarterly\\\\\\\"}\",\"skill_graph_source_repo\":\"https://github.com/jacob-balslev/skill-graph\",\"skill_graph_protocol\":\"Skill Metadata Protocol v5\",\"skill_graph_project\":\"Skill Graph\",\"skill_graph_canonical_skill\":\"skills/state-machine-modeling/SKILL.md\"}"
+  schema_version: "7"
+  version: "1.0.0"
+  type: capability
+  category: engineering
+  domain: modeling/state-machines
+  scope: portable
+  owner: skill-graph-maintainer
+  freshness: "2026-05-11"
+  drift_check: "{\"last_verified\":\"2026-05-11\"}"
+  eval_artifacts: planned
+  eval_state: unverified
+  routing_eval: absent
+  stability: experimental
+  keywords: "[\"state machine\",\"state modeling\",\"lifecycle states\",\"transitions\",\"guards\",\"finite state machine\",\"invalid states\",\"status field\",\"workflow invariants\"]"
+  examples: "[\"model the order fulfillment status lifecycle so invalid transitions are impossible\",\"this status field keeps growing flags - should it become a state machine?\",\"define guards and side effects for onboarding steps\",\"find impossible states in this workflow before we implement it\"]"
+  anti_examples: "[\"discover the domain events and policies for the whole business process\",\"create database tables and constraints for this lifecycle\",\"instrument metrics and traces for an existing workflow\",\"debug why this job got stuck yesterday\"]"
+  relations: "{\"boundary\":[{\"skill\":\"event-storming\",\"reason\":\"event-storming discovers domain behavior broadly; state-machine-modeling formalizes a specific lifecycle\"},{\"skill\":\"data-modeling\",\"reason\":\"data-modeling persists state; state-machine-modeling defines legal state behavior\"},{\"skill\":\"observability-modeling\",\"reason\":\"observability-modeling instruments a lifecycle; state-machine-modeling defines the lifecycle itself\"},{\"skill\":\"debugging\",\"reason\":\"debugging investigates an observed stuck state; state-machine-modeling prevents invalid states by design\"}],\"related\":[\"event-storming\",\"system-interface-contracts\",\"testing-strategy\",\"api-design\"],\"verify_with\":[\"testing-strategy\",\"system-interface-contracts\"]}"
+  portability: "{\"readiness\":\"scripted\",\"targets\":[\"skill-md\"]}"
+  lifecycle: "{\"stale_after_days\":365,\"review_cadence\":\"quarterly\"}"
+  structural_verdict: UNVERIFIED
+  truth_verdict: UNVERIFIED
+  comprehension_verdict: UNVERIFIED
+  application_verdict: UNVERIFIED
   skill_graph_source_repo: "https://github.com/jacob-balslev/skill-graph"
-  skill_graph_protocol: Skill Metadata Protocol v4
+  skill_graph_protocol: Skill Metadata Protocol v7
   skill_graph_project: Skill Graph
-  skill_graph_canonical_skill: skills/state-machine-modeling/SKILL.md
+  skill_graph_canonical_skill: skills/engineering/state-machine-modeling/SKILL.md
 ---
 
 # State Machine Modeling

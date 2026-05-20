@@ -4,11 +4,39 @@ description: "Use when authoring any artifact that makes claims — skill conten
 license: MIT
 allowed-tools: Read Grep
 metadata:
-  metadata: "{\"schema_version\":6,\"version\":\"1.0.0\",\"type\":\"capability\",\"category\":\"foundations\",\"domain\":\"foundations/epistemics\",\"scope\":\"reference\",\"owner\":\"skill-graph-maintainer\",\"freshness\":\"2026-05-15\",\"drift_check\":\"{\\\\\\\"last_verified\\\\\\\":\\\\\\\"2026-05-15\\\\\\\"}\",\"eval_artifacts\":\"planned\",\"eval_state\":\"unverified\",\"routing_eval\":\"absent\",\"comprehension_state\":\"present\",\"stability\":\"experimental\",\"keywords\":\"[\\\\\\\"epistemic grounding\\\\\\\",\\\\\\\"claim grounding\\\\\\\",\\\\\\\"source citation\\\\\\\",\\\\\\\"RFC 2119 modality\\\\\\\",\\\\\\\"Toulmin argument\\\\\\\",\\\\\\\"evidence-based assertion\\\\\\\",\\\\\\\"hallucination prevention\\\\\\\",\\\\\\\"normative vocabulary\\\\\\\",\\\\\\\"warrant\\\\\\\",\\\\\\\"epistemic hedge\\\\\\\"]\",\"triggers\":\"[\\\\\\\"ground this claim\\\\\\\",\\\\\\\"cite a source\\\\\\\",\\\\\\\"MUST vs SHOULD\\\\\\\",\\\\\\\"is this verified\\\\\\\",\\\\\\\"how do you know that\\\\\\\"]\",\"examples\":\"[\\\\\\\"before stating that this library supports X, confirm against the actual docs\\\\\\\",\\\\\\\"rewrite this finding so each assertion either cites a file or is marked as inference\\\\\\\",\\\\\\\"should this be a MUST or a SHOULD? what's the strength of the claim?\\\\\\\",\\\\\\\"the agent reported 'fix works' but no test was run — flag the gap in grounding\\\\\\\"]\",\"anti_examples\":\"[\\\\\\\"verify every step of an audit task with concrete evidence (use methodology)\\\\\\\",\\\\\\\"decide which lint rule to add for a specific kind of drift (use skill-infrastructure)\\\\\\\",\\\\\\\"evaluate a finished SKILL.md against the comprehension grader (use evaluation)\\\\\\\"]\",\"relations\":\"{\\\\\\\"related\\\\\\\":[\\\\\\\"methodology\\\\\\\",\\\\\\\"semantics\\\\\\\"],\\\\\\\"boundary\\\\\\\":[{\\\\\\\"skill\\\\\\\":\\\\\\\"methodology\\\\\\\",\\\\\\\"reason\\\\\\\":\\\\\\\"methodology enforces output-level completeness and step-level evidence receipts; epistemic-grounding is the upstream discipline that decides what counts as evidence in the first place.\\\\\\\"},{\\\\\\\"skill\\\\\\\":\\\\\\\"semantics\\\\\\\",\\\\\\\"reason\\\\\\\":\\\\\\\"semantics owns the rules for naming and meaning-making; epistemic-grounding owns the rules for grounding a claim to a verifiable source.\\\\\\\"}],\\\\\\\"verify_with\\\\\\\":[\\\\\\\"methodology\\\\\\\",\\\\\\\"evaluation\\\\\\\"]}\",\"mental_model\":\"|\",\"purpose\":\"|\",\"boundary\":\"|\",\"analogy\":\"Epistemic grounding is to claims what double-entry bookkeeping is to financial transactions — every assertion has a corresponding source on the other side of the ledger, and any entry without its pair is a red flag in the audit.\",\"misconception\":\"|\",\"concept\":\"{\\\\\\\"definition\\\\\\\":\\\\\\\"Epistemic grounding is the discipline of binding every assertion to a verifiable source, marking the modality (strength) of the claim, and making the warrant (the inference from source to claim) explicit. It is the practice that turns a generated statement into a defended statement.\\\\\\\",\\\\\\\"mental_model\\\\\\\":\\\\\\\"|\\\\\\\",\\\\\\\"purpose\\\\\\\":\\\\\\\"|\\\\\\\",\\\\\\\"boundary\\\\\\\":\\\\\\\"|\\\\\\\",\\\\\\\"taxonomy\\\\\\\":\\\\\\\"|\\\\\\\",\\\\\\\"analogy\\\\\\\":\\\\\\\"|\\\\\\\",\\\\\\\"misconception\\\\\\\":\\\\\\\"|\\\\\\\"}\",\"skill_graph_source_repo\":\"https://github.com/jacob-balslev/skill-graph\",\"skill_graph_protocol\":\"Skill Metadata Protocol v5\",\"skill_graph_project\":\"Skill Graph\",\"skill_graph_canonical_skill\":\"skills/epistemic-grounding/SKILL.md\"}"
+  schema_version: "7"
+  version: "1.0.0"
+  type: capability
+  category: foundations
+  domain: foundations/epistemics
+  scope: reference
+  owner: skill-graph-maintainer
+  freshness: "2026-05-15"
+  drift_check: "{\"last_verified\":\"2026-05-15\"}"
+  eval_artifacts: planned
+  eval_state: unverified
+  routing_eval: absent
+  comprehension_state: present
+  stability: experimental
+  keywords: "[\"epistemic grounding\",\"claim grounding\",\"source citation\",\"RFC 2119 modality\",\"Toulmin argument\",\"evidence-based assertion\",\"hallucination prevention\",\"normative vocabulary\",\"warrant\",\"epistemic hedge\"]"
+  triggers: "[\"ground this claim\",\"cite a source\",\"MUST vs SHOULD\",\"is this verified\",\"how do you know that\"]"
+  examples: "[\"before stating that this library supports X, confirm against the actual docs\",\"rewrite this finding so each assertion either cites a file or is marked as inference\",\"should this be a MUST or a SHOULD? what's the strength of the claim?\",\"the agent reported 'fix works' but no test was run — flag the gap in grounding\"]"
+  anti_examples: "[\"verify every step of an audit task with concrete evidence (use methodology)\",\"decide which lint rule to add for a specific kind of drift (use skill-infrastructure)\",\"evaluate a finished SKILL.md against the comprehension grader (use evaluation)\"]"
+  relations: "{\"related\":[\"methodology\",\"semantics\"],\"boundary\":[{\"skill\":\"methodology\",\"reason\":\"methodology enforces output-level completeness and step-level evidence receipts; epistemic-grounding is the upstream discipline that decides what counts as evidence in the first place.\"},{\"skill\":\"semantics\",\"reason\":\"semantics owns the rules for naming and meaning-making; epistemic-grounding owns the rules for grounding a claim to a verifiable source.\"}],\"verify_with\":[\"methodology\",\"evaluation\"]}"
+  mental_model: "|"
+  purpose: "|"
+  boundary: "|"
+  analogy: "Epistemic grounding is to claims what double-entry bookkeeping is to financial transactions — every assertion has a corresponding source on the other side of the ledger, and any entry without its pair is a red flag in the audit."
+  misconception: "|"
+  concept: "{\"definition\":\"Epistemic grounding is the discipline of binding every assertion to a verifiable source, marking the modality (strength) of the claim, and making the warrant (the inference from source to claim) explicit. It is the practice that turns a generated statement into a defended statement.\",\"mental_model\":\"|\",\"purpose\":\"|\",\"boundary\":\"|\",\"taxonomy\":\"|\",\"analogy\":\"|\",\"misconception\":\"|\"}"
+  structural_verdict: UNVERIFIED
+  truth_verdict: UNVERIFIED
+  comprehension_verdict: UNVERIFIED
+  application_verdict: UNVERIFIED
   skill_graph_source_repo: "https://github.com/jacob-balslev/skill-graph"
-  skill_graph_protocol: Skill Metadata Protocol v4
+  skill_graph_protocol: Skill Metadata Protocol v7
   skill_graph_project: Skill Graph
-  skill_graph_canonical_skill: skills/epistemic-grounding/SKILL.md
+  skill_graph_canonical_skill: skills/foundations/epistemic-grounding/SKILL.md
 ---
 
 # Epistemic Grounding

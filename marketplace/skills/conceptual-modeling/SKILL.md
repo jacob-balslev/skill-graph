@@ -1,181 +1,247 @@
 ---
 name: conceptual-modeling
-description: "Use when translating business requirements into a structured domain model before database schemas, API endpoints, or DDD aggregates are named. Covers entities, attributes, relationships, cardinality, specialization/generalization, aggregation/composition, roles, abstraction levels, stakeholder validation, and modeling anti-patterns such as implementation leakage, god entities, phantom relationships, premature normalization, attribute-as-entity, and unnamed relationships. Do NOT use for database ER diagrams with keys and normalization, formal ontology axioms with OWL/RDFS, or DDD tactical design; use those dedicated skills instead."
+description: "Use when translating messy business requirements, stakeholder language, or early product ideas into an implementation-neutral domain model before database schemas, API endpoints, or DDD aggregates are named. Covers entities, attributes, named relationships, cardinality, identity criteria, specialization/generalization, aggregation/composition, reification, abstraction-level control, stakeholder validation, and modeling anti-patterns. Do NOT use for database ER diagrams with keys and normalization, formal ontology axioms with OWL/RDFS, or DDD tactical design; use those dedicated skills instead."
 license: MIT
-compatibility: "Domain- and language-agnostic. The conceptual / logical / physical ladder applies across relational, document, graph, and event-sourced systems."
+compatibility: "Domain- and language-agnostic. The conceptual / logical / physical ladder applies across relational, document, graph, event-sourced, and service-oriented systems. Examples use generic commerce and education nouns only as public, portable modeling examples."
 allowed-tools: Read Grep
 metadata:
-  metadata: "{\"schema_version\":6,\"version\":\"1.0.0\",\"type\":\"capability\",\"category\":\"engineering\",\"domain\":\"engineering/modeling\",\"scope\":\"portable\",\"owner\":\"skill-graph-maintainer\",\"freshness\":\"2026-05-06\",\"drift_check\":\"{\\\\\\\"last_verified\\\\\\\":\\\\\\\"2026-05-06\\\\\\\"}\",\"eval_artifacts\":\"planned\",\"eval_state\":\"unverified\",\"routing_eval\":\"absent\",\"stability\":\"experimental\",\"keywords\":\"[\\\\\\\"conceptual model\\\\\\\",\\\\\\\"conceptual modeling methodology\\\\\\\",\\\\\\\"domain abstraction\\\\\\\",\\\\\\\"entity relationship cardinality\\\\\\\",\\\\\\\"conceptual schema before implementation\\\\\\\",\\\\\\\"business model to system model\\\\\\\",\\\\\\\"generalization specialization\\\\\\\",\\\\\\\"aggregation composition relationship\\\\\\\",\\\\\\\"reify relationship to entity\\\\\\\",\\\\\\\"conceptual logical physical layers\\\\\\\",\\\\\\\"implementation leakage anti-pattern\\\\\\\",\\\\\\\"unnamed relationship anti-pattern\\\\\\\",\\\\\\\"god entity anti-pattern\\\\\\\",\\\\\\\"missing entity anti-pattern\\\\\\\",\\\\\\\"validate model with stakeholders\\\\\\\",\\\\\\\"UML class diagram conceptual\\\\\\\",\\\\\\\"role modeling pattern\\\\\\\",\\\\\\\"is-a vs has-a vs owns\\\\\\\"]\",\"examples\":\"[\\\\\\\"a stakeholder says 'users place orders that ship in multiple boxes' — how do I capture this as a model before naming tables?\\\\\\\",\\\\\\\"is a refund its own entity or just a payment status — what conceptual test decides that?\\\\\\\",\\\\\\\"two business stakeholders disagree on whether a cart and an order are the same thing — how should the conceptual model resolve that?\\\\\\\",\\\\\\\"our domain diagram already mentions UUIDs and cascade-delete — what anti-pattern is that and how do I pull it back?\\\\\\\",\\\\\\\"this relationship has a date, an amount, and a status — should it stay as a line between entities or become its own entity?\\\\\\\",\\\\\\\"should this attribute live on the Customer entity or on Order — what's the rule?\\\\\\\",\\\\\\\"we have Physical, Digital, and Subscription products — how do I model that as generalization without lying about totality?\\\\\\\"]\",\"anti_examples\":\"[\\\\\\\"give me the physical table design with PKs, FKs, and normalization forms\\\\\\\",\\\\\\\"I need OWL class axioms and reasoning constraints for these concepts\\\\\\\",\\\\\\\"build the DDD aggregate boundaries and anti-corruption layer\\\\\\\",\\\\\\\"what hypernymy / meronymy labels apply between these terms\\\\\\\",\\\\\\\"review this ORM model class for code correctness\\\\\\\",\\\\\\\"name the entities and fields once we agree on the conceptual model\\\\\\\"]\",\"relations\":\"{\\\\\\\"boundary\\\\\\\":[{\\\\\\\"skill\\\\\\\":\\\\\\\"code-review\\\\\\\",\\\\\\\"reason\\\\\\\":\\\\\\\"code-review evaluates implementation output; conceptual-modeling is the pre-implementation domain analysis above it\\\\\\\"},{\\\\\\\"skill\\\\\\\":\\\\\\\"naming-conventions\\\\\\\",\\\\\\\"reason\\\\\\\":\\\\\\\"naming-conventions decides what to call entities and fields; conceptual-modeling decides what entities and fields exist in the first place\\\\\\\"},{\\\\\\\"skill\\\\\\\":\\\\\\\"refactor\\\\\\\",\\\\\\\"reason\\\\\\\":\\\\\\\"refactor preserves behavior while restructuring code; conceptual-modeling restructures the domain abstraction itself, which usually requires non-behavior-preserving change\\\\\\\"}],\\\\\\\"related\\\\\\\":[\\\\\\\"naming-conventions\\\\\\\"],\\\\\\\"verify_with\\\\\\\":[]}\",\"portability\":\"{\\\\\\\"readiness\\\\\\\":\\\\\\\"scripted\\\\\\\",\\\\\\\"targets\\\\\\\":[\\\\\\\"skill-md\\\\\\\"]}\",\"lifecycle\":\"{\\\\\\\"stale_after_days\\\\\\\":365,\\\\\\\"review_cadence\\\\\\\":\\\\\\\"quarterly\\\\\\\"}\",\"skill_graph_source_repo\":\"https://github.com/jacob-balslev/skill-graph\",\"skill_graph_protocol\":\"Skill Metadata Protocol v5\",\"skill_graph_project\":\"Skill Graph\",\"skill_graph_canonical_skill\":\"skills/conceptual-modeling/SKILL.md\",\"skill_graph_export_description\":\"shortened for Agent Skills 1024-character description limit; canonical source keeps the full routing contract\",\"skill_graph_canonical_description_length\":\"1044\"}"
+  grounding: "{\"domain_object\":\"Implementation-neutral conceptual modeling for business domains before logical schema, physical database, ontology, API, or DDD tactical design\",\"grounding_mode\":\"universal\",\"truth_sources\":[\"https://doi.org/10.1145/320434.320440\",\"https://www.omg.org/spec/UML/2.5.1/PDF\",\"https://opentextbc.ca/dbdesign01/chapter/chapter-8-entity-relationship-model/\",\"https://www.ibm.com/think/topics/conceptual-data-model\"],\"failure_modes\":[\"implementation_leakage_turns_conceptual_model_into_physical_schema\",\"unnamed_relationships_hide_business_meaning\",\"cardinality_or_optionality_left_implicit\",\"identity_criteria_missing_for_entities\",\"relationship_with_attributes_not_reified\",\"generalization_claim_lies_about_disjointness_or_totality\",\"stakeholder_validation_skipped\",\"conceptual_model_overowns_ontology_data_modeling_or_ddd_design\"],\"evidence_priority\":\"equal\"}"
+  drift_check: "{\"last_verified\":\"2026-05-19\"}"
+  schema_version: "7"
+  version: "1.1.0"
+  type: capability
+  category: engineering
+  domain: engineering/modeling
+  scope: portable
+  owner: skill-graph-maintainer
+  freshness: "2026-05-19"
+  eval_artifacts: planned
+  eval_state: unverified
+  routing_eval: absent
+  comprehension_state: present
+  stability: experimental
+  keywords: "[\"conceptual model\",\"conceptual modeling methodology\",\"domain abstraction\",\"implementation neutral model\",\"business model to system model\",\"stakeholder validation\",\"entity identity criteria\",\"named relationship\",\"relationship cardinality\",\"reified relationship\",\"associative entity\",\"generalization specialization\",\"aggregation composition relationship\",\"conceptual logical physical layers\",\"implementation leakage anti-pattern\",\"unnamed relationship anti-pattern\",\"god entity anti-pattern\",\"missing entity anti-pattern\",\"attribute as entity anti-pattern\",\"conceptual schema before implementation\",\"UML class diagram conceptual\",\"role modeling pattern\",\"is-a vs part-of vs owns\"]"
+  examples: "[\"a stakeholder says users place orders that ship in multiple boxes -- how do I capture this as a model before naming tables?\",\"is a refund its own entity or just a payment status -- what conceptual test decides that?\",\"two business stakeholders disagree on whether a cart and an order are the same thing -- how should the conceptual model resolve that?\",\"our domain diagram already mentions UUIDs and cascade-delete -- what anti-pattern is that and how do I pull it back?\",\"this relationship has a date, an amount, and a status -- should it stay as a line between entities or become its own entity?\",\"should this attribute live on Customer or Order -- what is the rule?\",\"we have Physical, Digital, and Subscription products -- how do I model that as specialization without lying about totality?\"]"
+  anti_examples: "[\"give me the physical table design with PKs, FKs, and normalization forms\",\"turn this model into SQL migrations and index definitions\",\"I need OWL class axioms and reasoning constraints for these concepts\",\"build the DDD aggregate boundaries and anti-corruption layer\",\"what hypernymy or meronymy labels apply between these two terms\",\"review this ORM model class for code correctness\",\"name the entities and fields once we agree on the conceptual model\"]"
+  relations: "{\"boundary\":[{\"skill\":\"data-modeling\",\"reason\":\"data-modeling owns logical and physical persistence decisions such as keys, constraints, normalization, denormalization, provenance, and indexing; conceptual-modeling stays implementation-neutral and validates business meaning first.\"},{\"skill\":\"entity-relationship-modeling\",\"reason\":\"entity-relationship-modeling owns database-oriented ER notation, primary and foreign keys, junction tables, inheritance mapping, and SQL translation; conceptual-modeling owns pre-database entity, attribute, relationship, and cardinality discovery.\"},{\"skill\":\"ontology-modeling\",\"reason\":\"ontology-modeling formalizes classes, properties, axioms, validation shapes, and reasoning semantics; conceptual-modeling produces stakeholder-readable domain structure without OWL/RDFS/SHACL commitments.\"},{\"skill\":\"semantic-relations\",\"reason\":\"semantic-relations types individual meaning edges such as IS-A, PART-OF, synonymy, and thematic roles; conceptual-modeling assembles the full implementation-neutral domain model that may consume those relation tests.\"},{\"skill\":\"bounded-context-mapping\",\"reason\":\"bounded-context-mapping owns DDD context boundaries, translations, and anti-corruption layers; conceptual-modeling owns the concept inventory before tactical DDD boundaries are chosen.\"},{\"skill\":\"naming-conventions\",\"reason\":\"naming-conventions owns how settled concepts are named in code, schemas, or APIs; conceptual-modeling decides which concepts exist and what their identity and relationships are before naming.\"},{\"skill\":\"code-review\",\"reason\":\"code-review evaluates an implementation diff; conceptual-modeling happens upstream before code or schema review exists.\"}],\"related\":[\"data-modeling\",\"entity-relationship-modeling\",\"semantic-relations\",\"ontology-modeling\",\"taxonomy-design\",\"bounded-context-mapping\",\"naming-conventions\"],\"depends_on\":[],\"verify_with\":[\"semantic-relations\",\"data-modeling\",\"ontology-modeling\"]}"
+  portability: "{\"readiness\":\"scripted\",\"targets\":[\"skill-md\"]}"
+  lifecycle: "{\"stale_after_days\":365,\"review_cadence\":\"quarterly\"}"
+  mental_model: "|"
+  purpose: "|"
+  boundary: "|"
+  analogy: "Conceptual modeling is the architectural floor plan before engineering drawings: it says what rooms exist, how people move between them, and what must be connected, while leaving materials, wiring, and load calculations to later specialists."
+  misconception: "|"
+  concept: "{\"definition\":\"Conceptual modeling is the implementation-neutral discipline of representing a domain as entities, attributes, relationships, identity criteria, cardinalities, and abstraction boundaries that stakeholders can validate before technical design begins.\",\"mental_model\":\"Treat the conceptual model as a contract between stakeholder language and later system design. It must preserve business meaning while postponing storage, API, ontology, and DDD implementation choices.\",\"purpose\":\"It exposes hidden domain decisions early: what exists, what makes two things the same, how concepts relate, which relationships carry their own data, and which constraints are business truths rather than technical preferences.\",\"boundary\":\"It does not design physical database schemas, write migrations, define formal ontology axioms, choose aggregate boundaries, perform code review, or settle implementation naming once the model is already accepted.\",\"taxonomy\":\"Core moves include entity discovery, attribute placement, relationship naming, cardinality and optionality analysis, identity criteria, aggregation versus composition, specialization/generalization, reification of relationship concepts, abstraction-level policing, and stakeholder scenario validation.\",\"analogy\":\"It is the architectural floor plan before engineering drawings: useful because it is precise about the lived structure while still independent of materials and machinery.\",\"misconception\":\"A conceptual model is not informal hand-waving and not a premature table diagram. It should be business-readable, constraint-aware, and intentionally implementation-neutral.\"}"
+  structural_verdict: UNVERIFIED
+  truth_verdict: UNVERIFIED
+  comprehension_verdict: UNVERIFIED
+  application_verdict: UNVERIFIED
   skill_graph_source_repo: "https://github.com/jacob-balslev/skill-graph"
-  skill_graph_protocol: Skill Metadata Protocol v4
+  skill_graph_protocol: Skill Metadata Protocol v7
   skill_graph_project: Skill Graph
-  skill_graph_canonical_skill: skills/conceptual-modeling/SKILL.md
+  skill_graph_canonical_skill: skills/engineering/conceptual-modeling/SKILL.md
 ---
 
 # Conceptual Modeling
 
 ## Coverage
 
-Methodology for abstracting a real-world domain into a structured representation _before_ any database table, API endpoint, or aggregate boundary is named. Identifies entities (distinguishable things the business tracks), attributes (properties that describe an entity), and relationships (meaningful connections between entities). Specifies cardinality (1:1, 1:N, M:N, 0..1, 1..\*); distinguishes association from aggregation from composition; uses generalization / specialization with disjoint / overlapping and total / partial constraints; recognizes when an associative relationship needs to be reified into its own entity (e.g. an enrollment between Student and Course that carries grade and date). Walks the conceptual → logical → physical abstraction ladder. Validates models against business stakeholders' mental models via walk-through, scenario testing, negative testing, and terminology audit. Names the seven anti-patterns: implementation leakage, missing entity, god entity, phantom relationship, premature normalization, attribute-as-entity, unnamed relationship.
+Conceptual modeling translates real-world domain language into a structured, stakeholder-readable model before implementation details are allowed to enter. It covers:
+
+- Entity discovery: distinguishable things the domain tracks, with identity criteria for what makes two instances the same.
+- Attribute placement: properties that describe one entity, derived values, multi-valued attributes, and signals that an attribute is actually a missing entity.
+- Relationship modeling: named relationships, role labels, cardinality, optionality, direction, aggregation, composition, association, dependency, and relationship reification.
+- Specialization and generalization: subtype/supertype modeling with disjoint versus overlapping and total versus partial constraints.
+- Abstraction-level control: keeping conceptual models above logical schemas, physical storage, APIs, ontology axioms, and DDD tactical design.
+- Stakeholder validation: scenario walk-throughs, negative testing, terminology audits, and conflict resolution when different stakeholders use different concepts.
+- Anti-pattern detection: implementation leakage, missing entity, god entity, phantom relationship, premature normalization, attribute-as-entity, unnamed relationship, and over-formalization.
 
 ## Philosophy
 
-Every software system is a model of some real-world domain. The quality of that model determines whether the system helps or hinders its users. Without explicit conceptual modeling, the team jumps directly from requirements to code — encoding implicit assumptions that surface later as architectural debt. A requirement like "users can place orders" hides dozens of decisions: is a cart an order? can an order have multiple shipments? is a refund a new entity or a state of a payment? Conceptual modeling forces those decisions to the surface _before_ code exists, so rework happens on a whiteboard rather than across a migration.
+Every software system is a model of a domain. If the model is wrong, correct code faithfully automates the wrong understanding. Conceptual modeling exists to make the model explicit while change is still cheap. A requirement like "users can place orders" hides real decisions: is a cart an order, can one order split into many shipments, is a refund a payment state or a separate event, and who can validate those answers?
 
-The discipline is anti-rigid in a specific way. Conceptual modeling stays one layer _above_ logical modeling (tables, foreign keys, normalization) and one layer _above_ DDD tactical design (aggregates, bounded contexts, anti-corruption layers). The moment the model speaks of UUIDs, indexes, or cascade behavior, it has fallen into logical modeling. The moment it prescribes aggregates or anti-corruption layers, it has crossed into DDD. Conceptual modeling's job is earlier and narrower: capture the domain structure clearly enough that those later design layers can proceed without guessing about the business.
+The discipline is to stay deliberately one layer above implementation. The model should be precise enough that a stakeholder can reject it, but neutral enough that it does not smuggle in UUIDs, foreign keys, cascade rules, API routes, aggregate boundaries, or OWL axioms. Those downstream choices are important; they are just not conceptual modeling.
+
+A useful conceptual model is not decorative. It is a decision surface. Every entity, relationship name, cardinality, and subtype constraint should answer: "What would break in the business if this were modeled differently?"
+
+## Boundary Routing
+
+| User need | Use | Why |
+|---|---|---|
+| Discover business entities, attributes, relationships, identity, and cardinality before implementation | `conceptual-modeling` | This is the meaning-first layer. |
+| Translate a validated conceptual model into logical or physical storage design | `data-modeling` | Data modeling adds keys, constraints, provenance, normalization, denormalization, and indexing tradeoffs. |
+| Design database ER diagrams, tables, primary keys, foreign keys, junction tables, inheritance mapping, or SQL translation | `entity-relationship-modeling` | ER modeling is database-facing implementation design. |
+| Formalize classes, properties, axioms, SHACL shapes, OWL/RDFS semantics, or reasoning assumptions | `ontology-modeling` | Ontology modeling is machine-checkable semantic formalization. |
+| Decide whether one edge is IS-A, PART-OF, synonymy, causal, thematic, symmetric, or transitive | `semantic-relations` | Semantic relations supplies edge-type tests consumed by conceptual models. |
+| Decide DDD bounded contexts, aggregate boundaries, anti-corruption layers, or translation maps | `bounded-context-mapping` | DDD tactical design is downstream of the concept inventory. |
+| Choose final implementation names, casing, suffixes, or rename mechanics | `naming-conventions` | Naming follows a settled model; it should not decide the model. |
 
 ## 1. The Three-Level Architecture
 
-| Level          | Purpose                                          | Audience                                | Notation                                                       |
-| -------------- | ------------------------------------------------ | --------------------------------------- | -------------------------------------------------------------- |
-| **Conceptual** | What exists in the business domain               | Business stakeholders, product managers | Simplified UML class diagrams, entity lists, relationship maps |
-| **Logical**    | How the data is structured, platform-independent | Architects, senior developers           | Normalized schemas, interface contracts, type hierarchies      |
-| **Physical**   | How the data is stored and accessed              | Database engineers, backend developers  | SQL DDL, index strategies, partition schemes                   |
+| Level | Question | Audience | Output | Forbidden leakage |
+|---|---|---|---|---|
+| Conceptual | What exists and how does the business understand it? | Stakeholders, product, domain experts, senior builders | Entity list, relationship map, cardinality, business constraints | UUIDs, tables, indexes, framework names, API routes |
+| Logical | How should information be structured independent of one storage engine? | Architects, senior engineers | Types, schemas, constraints, interfaces, provenance | Vendor-specific DDL or performance tuning |
+| Physical | How is it stored and accessed in this system? | Database/backend engineers | SQL DDL, indexes, partitions, migrations, storage settings | Unvalidated business assumptions |
 
 Rules:
 
-- Always build conceptual _before_ logical. Jumping straight to physical (tables, columns) from raw requirements produces brittle, business-disconnected schemas that fail their first feature change.
-- Conceptual models must be readable by non-technical stakeholders. If a business user cannot validate the model, the model is too detailed.
-- Each level _adds_ implementation detail. None should _remove_ business meaning. If something disappears as you move down, the lower layer has dropped a constraint that the business actually has.
+- Build conceptual before logical. Jumping from raw requirements to tables usually preserves the first interpretation, not the correct interpretation.
+- Conceptual models must be readable by non-technical stakeholders. If a stakeholder cannot validate it, the model is too technical or too vague.
+- Each lower level may add implementation detail, but it must not remove business meaning.
+- When a model starts discussing storage, restore the abstraction boundary instead of pretending the physical choice is a business concept.
 
 ## 2. Core Modeling Constructs
 
-### 2.1 Entities and attributes
+### Entities and Identity
 
-| Element                    | Definition                                  | Modeling rule                                                                     |
-| -------------------------- | ------------------------------------------- | --------------------------------------------------------------------------------- |
-| **Entity**                 | A distinguishable thing the business tracks | Must have identity criteria — what makes two X's "the same"?                      |
-| **Attribute**              | A property that describes an entity         | Belongs to exactly one entity; if it's shared, you've discovered a missing entity |
-| **Derived attribute**      | A value computed from other attributes      | Mark explicitly; never store without documenting the derivation                   |
-| **Multi-valued attribute** | An attribute with multiple values           | Usually signals a missing child entity or collection                              |
-
-### 2.2 Relationships
-
-| Type                      | Notation (UML)                  | When to use                                                 |
-| ------------------------- | ------------------------------- | ----------------------------------------------------------- |
-| **Association**           | Plain line between entities     | Two entities are meaningfully connected                     |
-| **Aggregation** (has-a)   | Open diamond                    | Whole-part where parts can exist independently of the whole |
-| **Composition** (owns)    | Filled diamond                  | Whole-part where parts cannot exist without the whole       |
-| **Generalization** (is-a) | Triangle arrow toward supertype | Subtype inherits supertype properties                       |
-| **Dependency**            | Dashed arrow                    | One entity uses another without owning it                   |
-
-### 2.3 Cardinality
-
-| Pattern | Reading                    | Example                                                              |
-| ------- | -------------------------- | -------------------------------------------------------------------- |
-| 1:1     | Exactly one to exactly one | User has one Profile                                                 |
-| 1:N     | One to many                | Customer places many Orders                                          |
-| M:N     | Many to many               | Products belong to many Categories; Categories contain many Products |
-| 0..1    | Optional one               | Order may have zero or one Refund                                    |
-| 1..\*   | One or more (mandatory)    | Order has at least one LineItem                                      |
+| Element | Definition | Test |
+|---|---|---|
+| Entity | A distinguishable thing the domain tracks | Can stakeholders identify two separate instances? |
+| Identity criteria | The rule for deciding whether two references point to the same entity | If names or IDs change, can we still tell sameness? |
+| Attribute | A property that describes one entity | Does it make sense without the parent entity? |
+| Derived attribute | A value computed from other facts | Can we name the derivation source? |
+| Multi-valued attribute | A property with multiple values | Does each value need identity, lifecycle, or metadata? |
 
 Rules:
 
-- Every relationship must have explicit cardinality. Unmarked relationships are ambiguous and will be implemented incorrectly half the time.
-- M:N relationships in the conceptual model often become junction entities in the logical model — especially once they acquire their own attributes.
-- Optional vs mandatory is a _business_ decision, not a technical one. Validate with stakeholders who actually know which orders can ship without addresses.
+- Every entity needs identity criteria, not just a label. "Customer" is incomplete until the model says what makes two customer records the same real-world party.
+- Attributes belong to the entity whose meaning they describe. If an attribute is shared by many entities, changes independently, or carries its own lifecycle, it is probably a missing entity.
+- Derived attributes belong in the conceptual model only when the business names them. Mark them as derived so later layers do not treat them as independent facts.
+
+### Relationships
+
+| Type | When to use | Conceptual risk |
+|---|---|---|
+| Association | Two entities are meaningfully connected | Vague if unnamed |
+| Aggregation | Whole-part where parts can exist independently | Confusing ownership with loose grouping |
+| Composition | Whole-part where parts cannot exist without the whole | Overstating deletion/lifecycle semantics |
+| Generalization | Subtype inherits from supertype | Creating false IS-A claims |
+| Dependency | One concept uses or depends on another without owning it | Hiding an actor, trigger, or instrument role |
+
+Rules:
+
+- Every relationship must have a name or role phrase a stakeholder can read aloud.
+- Every relationship must state cardinality and optionality on both ends.
+- If a relationship has its own attributes, status, amount, date, actor, lifecycle, or identity, reify it into an entity.
+- Use `semantic-relations` when the relation type itself is unclear; use this skill to place that relation inside the full domain model.
+
+### Cardinality and Optionality
+
+| Pattern | Reading | Example |
+|---|---|---|
+| 1:1 | Exactly one to exactly one | User has one Profile |
+| 1:N | One to many | Customer places many Orders |
+| M:N | Many to many | Products belong to many Categories |
+| 0..1 | Optional one | Order may have zero or one Refund |
+| 1..* | One or more | Order has at least one LineItem |
+
+Rules:
+
+- Cardinality is a business decision before it is a database constraint. Validate it with people who know the domain.
+- Optionality is not a nullability shortcut. "May have zero" must mean the business permits absence.
+- M:N relationships are acceptable in conceptual models. They become junctions later only if the logical/physical layer needs that representation.
 
 ## 3. Generalization and Specialization
 
-### When to generalize (bottom-up)
+Use generalization when multiple entities share identity logic or behavior that stakeholders recognize under a common term. Use specialization when a common entity has durable subtype distinctions with different attributes, constraints, or lifecycle rules.
 
-- Multiple entities share roughly 70%+ of their attributes
-- Business users refer to them with a common name ("all our products, whether physical or digital")
-- Operations apply uniformly ("ship any order, regardless of type")
-
-### When to specialize (top-down)
-
-- A single entity has attributes or behaviors that apply only to some of its instances
-- Business rules differ by subtype ("digital products don't need shipping addresses")
-- The type distinction drives different processing paths
-
-### Specialization constraints
-
-| Constraint      | Meaning                                                    | Example                                                           |
-| --------------- | ---------------------------------------------------------- | ----------------------------------------------------------------- |
-| **Disjoint**    | An instance belongs to _exactly one_ subtype               | A payment is either a CardPayment or a BankTransfer, never both   |
-| **Overlapping** | An instance can belong to _multiple_ subtypes              | A user can be both a Seller and a Buyer                           |
-| **Total**       | Every supertype instance belongs to _at least one_ subtype | Every Product is either Physical or Digital — no untyped Products |
-| **Partial**     | Some supertype instances may not be specialized            | A User may not yet be a Seller or a Buyer                         |
-
-Each pair (disjoint vs overlapping) and (total vs partial) is independent — pick one from each pair for every generalization.
-
-## 4. Abstraction Strategies
-
-| Strategy           | When to use                           | Risk if skipped                                                                                                         |
-| ------------------ | ------------------------------------- | ----------------------------------------------------------------------------------------------------------------------- |
-| **Classification** | Grouping instances into types         | Too many ad-hoc types; inconsistent behavior                                                                            |
-| **Aggregation**    | Composing wholes from parts           | Flat structures that lose structural meaning                                                                            |
-| **Generalization** | Finding common supertypes             | Duplicated attributes and logic across subtypes                                                                         |
-| **Association**    | Connecting related entities           | Implicit relationships buried in code                                                                                   |
-| **Reification**    | Promoting a relationship to an entity | Important relationship attributes get lost (e.g., an Enrollment between Student and Course that carries grade and date) |
+| Constraint | Meaning | Example |
+|---|---|---|
+| Disjoint | One instance belongs to exactly one subtype | A payment is either CardPayment or BankTransfer, not both. |
+| Overlapping | One instance may belong to multiple subtypes | A user may be both Buyer and Seller. |
+| Total | Every supertype instance belongs to at least one subtype | Every Product is Physical or Digital. |
+| Partial | Some supertype instances may not be specialized | A User may not yet be Buyer or Seller. |
 
 Rules:
 
-- Reify a relationship when it has its _own_ attributes, lifecycle, or identity.
-- If an association carries a date, status, or amount, it is probably an entity in disguise.
+- Pick one from disjoint/overlapping and one from total/partial for every specialization.
+- Do not model roles as subtypes unless the role changes identity or durable structure. Buyer is often a role in a transaction, not a type of person.
+- Subtype models must survive counterexamples. If one valid example breaks the subtype rule, the conceptual model is overstating the domain.
 
-## 5. Validating the Model with Stakeholders
+## 4. Abstraction Strategies
 
-| Method                | What it catches                                                                                                    |
-| --------------------- | ------------------------------------------------------------------------------------------------------------------ |
-| **Walk-through**      | Read each relationship aloud: "A Customer places one or more Orders." If it sounds wrong, the model is wrong.      |
-| **Scenario testing**  | Trace a real business scenario through the model. Every step should map to a model element.                        |
-| **Negative testing**  | Try to represent something the business says is impossible. If the model permits it, a constraint is missing.      |
-| **Terminology audit** | Every entity name should match what business users actually call it. Rename to match — never the other way around. |
+| Strategy | Use when | Watch for |
+|---|---|---|
+| Classification | Grouping instances by stable type | Categories that are really temporary states |
+| Aggregation | Modeling wholes composed from parts | Parts that should be independently identifiable |
+| Generalization | Finding shared supertypes | False inheritance |
+| Association | Connecting independent entities | Unnamed lines with no business purpose |
+| Reification | Promoting a relationship to an entity | Losing relationship attributes such as date, amount, status, actor, or sequence |
+| Role modeling | Representing how an entity participates in an event | Mistaking a role for an entity subtype |
 
-If a business user can't read the model and recognise their own domain, the model is documentation theatre. Re-do it.
+A clean conceptual model often gets smaller after these strategies. Smaller is not the goal; clearer meaning is. If removal hides a business distinction, it is not cleanup.
+
+## 5. Validating the Model With Stakeholders
+
+| Method | What it catches |
+|---|---|
+| Walk-through | Read each relationship aloud: "A Customer places one or more Orders." If it sounds wrong, the model is wrong. |
+| Scenario testing | Trace a real business scenario through the model. Every step should map to a model element. |
+| Negative testing | Try to represent something the business says is impossible. If the model permits it, a constraint is missing. |
+| Terminology audit | Every entity and relationship label should match domain language or deliberately record an alias. |
+| Conflict interview | Ask two stakeholders to validate the same model and capture where their language diverges. |
+| Downstream rehearsal | Ask data, API, ontology, or DDD reviewers what decision they would make from the model; if they infer different things, the model is ambiguous. |
+
+If a stakeholder cannot read the model and recognize the domain, the model is documentation theater. Rework it until the disagreement is explicit.
 
 ## 6. Anti-Patterns
 
-| Anti-pattern                | Symptom                                                                    | Fix                                                                        |
-| --------------------------- | -------------------------------------------------------------------------- | -------------------------------------------------------------------------- |
-| **Implementation leakage**  | Conceptual model talks about tables, columns, indexes, foreign keys        | Strip all physical terminology; use entity / attribute / relationship      |
-| **Missing entity**          | An attribute stores a comma-separated list, encoded compound, or JSON blob | Extract into a proper entity with its own identity                         |
-| **God entity**              | One entity with 30+ attributes spanning multiple business concerns         | Decompose by business responsibility                                       |
-| **Phantom relationship**    | Two entities are connected and no one can explain why                      | Remove it — relationships must serve a stated business purpose             |
-| **Premature normalization** | The conceptual model is already in 3NF                                     | Normalization belongs in the logical model, not here                       |
-| **Attribute-as-entity**     | "Color" has its own entity with just a name attribute                      | Keep as an attribute or enum unless it has its own properties or lifecycle |
-| **Unnamed relationship**    | Lines between entities with no verb / role label                           | Every relationship needs a name a business user can validate               |
+| Anti-pattern | Symptom | Fix |
+|---|---|---|
+| Implementation leakage | Conceptual model mentions tables, columns, UUIDs, indexes, foreign keys, cascade rules, routes, serializers, or framework classes | Strip physical/logical terms and return to entities, attributes, relationships, and constraints |
+| Missing entity | An attribute stores a list, compound value, blob, or encoded string | Extract a proper entity with identity, lifecycle, and relationships |
+| God entity | One entity carries many unrelated responsibilities | Split by business responsibility and relationship structure |
+| Phantom relationship | Two entities are connected but no one can state the business meaning | Remove it or name the real relationship |
+| Premature normalization | Conceptual model already looks like 3NF | Move normalization to `data-modeling` or `entity-relationship-modeling` |
+| Attribute-as-entity | A simple value becomes an entity only because it appears in a diagram | Keep as an attribute or enum unless it has identity, properties, lifecycle, or relationships |
+| Unnamed relationship | Lines connect boxes without verbs or role labels | Name every relationship in stakeholder language |
+| False generalization | A subtype hierarchy fails real examples | Replace inheritance with roles, states, or associations |
+| Over-formalization | The model uses axioms, property domains/ranges, or reasoning assumptions before needed | Route to `ontology-modeling` only when machine-checkable semantics are required |
 
-## 7. From Conceptual to Implementation
+## 7. From Conceptual Model to Downstream Work
 
-The conceptual model is consumed by downstream layers. Track the typical translations so the conceptual model stays implementation-neutral:
+A conceptual model should hand off decisions without pretending to be the downstream artifact.
 
-| Conceptual element           | Logical / physical translation                                              |
-| ---------------------------- | --------------------------------------------------------------------------- |
-| Entity                       | Type / class / interface, database table, API resource                      |
-| Attribute                    | Property / field, database column                                           |
-| 1:N relationship             | Foreign key on the N side                                                   |
-| M:N relationship             | Junction table with two foreign keys (often itself an entity at this layer) |
-| Generalization (disjoint)    | Discriminated union, single-table inheritance, or class-table inheritance   |
-| Generalization (overlapping) | Multiple junction tables or role-based flags                                |
-| Composition                  | Cascade-delete on parent, nested API resource                               |
-| Aggregation                  | Set-null on parent, independent API resource                                |
-| Derived attribute            | Computed column, getter, or materialized view                               |
+| Conceptual element | Downstream consumer |
+|---|---|
+| Entity and identity criteria | Data model, API resource model, ontology class, aggregate candidate |
+| Attribute and derived attribute | Data field, computed value, validation shape, API representation |
+| Named relationship and cardinality | Foreign key, reference, event relation, ontology property, API link |
+| Reified relationship | Junction entity, event, transaction, association object |
+| Specialization constraints | Type hierarchy, discriminated union, inheritance mapping, class axioms |
+| Composition or aggregation | Lifecycle policy, deletion rule, nesting, ownership semantics |
 
-These translations are _informational_ — the conceptual model itself stays neutral. Naming the translations explicitly avoids the trap of authoring a "conceptual" model that has already pre-decided the physical layer.
+Do not erase the conceptual model after implementation starts. Keep it as the explanation of why later schema/API/ontology choices mean what they mean.
+
+## Source Notes
+
+- Peter Chen's 1976 ER paper grounds the idea that entities and relationships can model business meaning before storage mechanics dominate the design.
+- OMG UML 2.5.1 grounds class, association, aggregation, composition, generalization, multiplicity, and role notation used in many conceptual sketches.
+- Open textbook ER modeling material grounds the conceptual/logical/physical ladder and the practical entity/attribute/relationship vocabulary.
+- IBM's conceptual data model overview grounds the implementation-neutral purpose of conceptual models as stakeholder-facing representations before logical and physical modeling.
 
 ## Verification
 
-- [ ] Every relationship has a name (verb or role label) — not just lines between boxes
-- [ ] Cardinality is specified on every relationship (1:1, 1:N, M:N, 0..1, 1..\*)
-- [ ] Aggregation, composition, and plain association are explicitly distinguished where relevant
-- [ ] The model is free of physical terminology (no tables, columns, indexes, foreign keys, cascade, normalization)
-- [ ] Generalization / specialization uses the correct disjoint / overlapping and total / partial pair
-- [ ] Business stakeholders have read the model and validated it against their domain
-- [ ] No M:N relationship hides an entity-worthy junction concept (i.e., one with its own attributes)
-- [ ] No attribute stores compound, multi-valued, or encoded data
-- [ ] Every entity has explicit identity criteria — "what makes two X's the same"
-- [ ] Every entity name matches the term the business actually uses
+- [ ] Every entity has identity criteria: what makes two instances the same.
+- [ ] Every relationship has a stakeholder-readable name or role phrase.
+- [ ] Cardinality and optionality are specified on every relationship.
+- [ ] Aggregation, composition, and plain association are distinguished where lifecycle meaning matters.
+- [ ] Generalization/specialization states disjoint or overlapping and total or partial constraints.
+- [ ] Relationships with their own attributes, lifecycle, status, amount, date, actor, or sequence are reified.
+- [ ] The model is free of implementation leakage: no tables, columns, primary keys, indexes, cascade rules, routes, serializers, framework classes, or OWL axioms.
+- [ ] Stakeholders validated the model through scenarios and at least one negative test.
+- [ ] Terminology conflicts are recorded instead of silently normalized away.
+- [ ] Downstream handoff names which decisions belong to data modeling, ER modeling, ontology modeling, DDD, naming, or code review.
 
 ## Do NOT Use When
 
-| Use instead                                                | When                                                                                                                     |
-| ---------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------ |
-| A logical / physical modeling skill (database-specific ER) | You need PKs, FKs, normalization forms, index strategies — the layer below conceptual                                    |
-| An ontology skill                                          | You need OWL axioms, RDFS class hierarchies, formal reasoning constraints — the layer above human-readable conceptual    |
-| A DDD / domain-modeling skill                              | You need bounded-context boundaries, aggregates, anti-corruption layers — DDD tactical design                            |
-| `naming-conventions`                                       | The conceptual model is settled; you now need to decide what to _call_ the entities and fields in code                   |
-| `code-review`                                              | You are reviewing code that already implements the model — conceptual modeling is the upstream activity                  |
-| `documentation`                                            | You need to _describe_ an existing system in prose for a human reader, not abstract a new domain into a structured model |
+| Use instead | When |
+|---|---|
+| `data-modeling` | You need logical or physical storage design: keys, constraints, provenance, normalization, denormalization, indexing, or schema tradeoffs. |
+| `entity-relationship-modeling` | You need database-oriented ER diagrams, PK/FK decisions, junction tables, inheritance mapping, SQL translation, indexing, or database constraints. |
+| `ontology-modeling` | You need OWL/RDFS class axioms, SHACL shapes, property domains/ranges, disjointness constraints for reasoning, or machine-checkable semantics. |
+| `semantic-relations` | You only need to decide whether one relation is IS-A, PART-OF, causal, thematic, synonymy, polysemy, symmetric, or transitive. |
+| `bounded-context-mapping` | You need DDD bounded contexts, aggregate boundaries, anti-corruption layers, context maps, or translation policies. |
+| `naming-conventions` | The conceptual model is settled and you now need implementation names, casing, suffixes, or rename mechanics. |
+| `code-review` | You are reviewing code or schema that already implements the model. |

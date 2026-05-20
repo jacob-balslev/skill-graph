@@ -92,7 +92,7 @@ assert(
 );
 assert(
   exportedA11yFm.metadata.skill_graph_protocol === SKILL_GRAPH_PROTOCOL &&
-    SKILL_GRAPH_PROTOCOL === 'Skill Metadata Protocol v4',
+    SKILL_GRAPH_PROTOCOL === 'Skill Metadata Protocol v7',
   'marketplace export should preserve current Skill Metadata Protocol provenance'
 );
 assert(

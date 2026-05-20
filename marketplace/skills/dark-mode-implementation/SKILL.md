@@ -3,11 +3,32 @@ name: dark-mode-implementation
 description: "Use when implementing dark mode — prefers-color-scheme detection, theme persistence, flash-of-unstyled-theme prevention, color token mirroring, image and asset variants, and meta theme-color updates. Do NOT use for designing the dark palette itself, designing the token architecture, or generic theme-switching across more than two themes."
 license: CC-BY-4.0
 metadata:
-  metadata: "{\"schema_version\":6,\"version\":\"1.0.0\",\"type\":\"capability\",\"category\":\"design\",\"domain\":\"design/visual\",\"scope\":\"portable\",\"owner\":\"skill-graph-maintainer\",\"freshness\":\"2026-05-12\",\"drift_check\":\"{\\\\\\\"last_verified\\\\\\\":\\\\\\\"2026-05-12\\\\\\\"}\",\"eval_artifacts\":\"planned\",\"eval_state\":\"unverified\",\"routing_eval\":\"absent\",\"stability\":\"experimental\",\"keywords\":\"[\\\\\\\"dark mode\\\\\\\",\\\\\\\"prefers-color-scheme\\\\\\\",\\\\\\\"theme persistence\\\\\\\",\\\\\\\"flash of unstyled theme\\\\\\\",\\\\\\\"flash of incorrect theme\\\\\\\",\\\\\\\"color-scheme css property\\\\\\\",\\\\\\\"meta theme-color\\\\\\\",\\\\\\\"dark mode images\\\\\\\",\\\\\\\"picture source media\\\\\\\",\\\\\\\"system theme detection\\\\\\\",\\\\\\\"light dark css function\\\\\\\"]\",\"triggers\":\"[\\\\\\\"dark mode\\\\\\\",\\\\\\\"prefers-color-scheme\\\\\\\",\\\\\\\"light dark toggle\\\\\\\",\\\\\\\"system theme\\\\\\\",\\\\\\\"FOUC dark mode\\\\\\\"]\",\"examples\":\"[\\\\\\\"Add a dark mode toggle with system / light / dark options and persist the user's choice\\\\\\\",\\\\\\\"Eliminate the white flash that appears for a moment when a dark-mode user loads the page\\\\\\\",\\\\\\\"Provide dark variants of the marketing illustrations and the favicon\\\\\\\"]\",\"anti_examples\":\"[\\\\\\\"Pick the dark mode color palette values\\\\\\\",\\\\\\\"Design the three-tier token architecture\\\\\\\",\\\\\\\"Build a multi-brand theme system with five themes\\\\\\\"]\",\"relations\":\"{\\\\\\\"related\\\\\\\":[\\\\\\\"theme-system-design\\\\\\\",\\\\\\\"color-system-design\\\\\\\",\\\\\\\"a11y\\\\\\\",\\\\\\\"frontend-architecture\\\\\\\"],\\\\\\\"boundary\\\\\\\":[{\\\\\\\"skill\\\\\\\":\\\\\\\"theme-system-design\\\\\\\",\\\\\\\"reason\\\\\\\":\\\\\\\"theme-system-design defines the token layering that makes dark mode a token-mapping change; this skill handles the integration mechanics on top of that foundation.\\\\\\\"},{\\\\\\\"skill\\\\\\\":\\\\\\\"color-system-design\\\\\\\",\\\\\\\"reason\\\\\\\":\\\\\\\"The dark palette and its contrast pairings are color-system-design's responsibility; this skill consumes them.\\\\\\\"}]}\",\"skill_graph_source_repo\":\"https://github.com/jacob-balslev/skill-graph\",\"skill_graph_protocol\":\"Skill Metadata Protocol v5\",\"skill_graph_project\":\"Skill Graph\",\"skill_graph_canonical_skill\":\"skills/dark-mode-implementation/SKILL.md\"}"
+  schema_version: "7"
+  version: "1.0.0"
+  type: capability
+  category: design
+  domain: design/visual
+  scope: portable
+  owner: skill-graph-maintainer
+  freshness: "2026-05-12"
+  drift_check: "{\"last_verified\":\"2026-05-12\"}"
+  eval_artifacts: planned
+  eval_state: unverified
+  routing_eval: absent
+  stability: experimental
+  keywords: "[\"dark mode\",\"prefers-color-scheme\",\"theme persistence\",\"flash of unstyled theme\",\"flash of incorrect theme\",\"color-scheme css property\",\"meta theme-color\",\"dark mode images\",\"picture source media\",\"system theme detection\",\"light dark css function\"]"
+  triggers: "[\"dark mode\",\"prefers-color-scheme\",\"light dark toggle\",\"system theme\",\"FOUC dark mode\"]"
+  examples: "[\"Add a dark mode toggle with system / light / dark options and persist the user's choice\",\"Eliminate the white flash that appears for a moment when a dark-mode user loads the page\",\"Provide dark variants of the marketing illustrations and the favicon\"]"
+  anti_examples: "[\"Pick the dark mode color palette values\",\"Design the three-tier token architecture\",\"Build a multi-brand theme system with five themes\"]"
+  relations: "{\"related\":[\"theme-system-design\",\"color-system-design\",\"a11y\",\"frontend-architecture\"],\"boundary\":[{\"skill\":\"theme-system-design\",\"reason\":\"theme-system-design defines the token layering that makes dark mode a token-mapping change; this skill handles the integration mechanics on top of that foundation.\"},{\"skill\":\"color-system-design\",\"reason\":\"The dark palette and its contrast pairings are color-system-design's responsibility; this skill consumes them.\"}]}"
+  structural_verdict: UNVERIFIED
+  truth_verdict: UNVERIFIED
+  comprehension_verdict: UNVERIFIED
+  application_verdict: UNVERIFIED
   skill_graph_source_repo: "https://github.com/jacob-balslev/skill-graph"
-  skill_graph_protocol: Skill Metadata Protocol v4
+  skill_graph_protocol: Skill Metadata Protocol v7
   skill_graph_project: Skill Graph
-  skill_graph_canonical_skill: skills/dark-mode-implementation/SKILL.md
+  skill_graph_canonical_skill: skills/design/dark-mode-implementation/SKILL.md
 ---
 
 # Dark Mode Implementation

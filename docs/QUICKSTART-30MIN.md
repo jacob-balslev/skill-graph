@@ -63,14 +63,14 @@ The template lints clean as-is, so you can incrementally edit and re-lint to cat
 
 ---
 
-## M8–M11: Fill in the 13 required v6 fields
+## M8–M11: Fill in the 13 required v7 fields
 
-The 13 required v6 fields are: `schema_version`, `name`, `description`, `version`, `type`, `category`, `scope`, `owner`, `freshness`, `drift_check`, `eval_artifacts`, `eval_state`, `routing_eval`. The template has all 13 — you're replacing values, not adding fields.
+The 13 required v7 fields are: `schema_version`, `name`, `description`, `version`, `type`, `category`, `scope`, `owner`, `freshness`, `drift_check`, `eval_artifacts`, `eval_state`, `routing_eval`. The template has all 13 — you're replacing values, not adding fields.
 
 For `markdown-post-frontmatter-review`, the values look like:
 
 ```yaml
-schema_version: 6
+schema_version: 7
 name: markdown-post-frontmatter-review
 description: "Use when authoring or reviewing the YAML frontmatter of a markdown post — checking required fields (title, date, slug, tags), validating against the content schema, catching ambiguous date formats, and ensuring the slug matches the file path. Activate this skill whenever the task touches files under `content/posts/**/*.md` or the `parsePostFrontmatter()` helper — even if the user just says 'the post'. Do NOT use for general YAML schema design (use a different skill) or for chasing a specific build-time validation failure (use debugging)."
 version: 0.1.0
@@ -151,7 +151,7 @@ cp examples/skill-metadata-template.md skills/post-archive-rebuild/SKILL.md
 Edit `skills/post-archive-rebuild/SKILL.md` to set:
 
 ```yaml
-schema_version: 6
+schema_version: 7
 name: post-archive-rebuild
 description: "Use when re-indexing the post archive after one or more frontmatter fields have changed — walking every post, re-extracting the indexed fields, and writing the updated archive page. Activate this skill whenever the task says 'rebuild the archive' or mentions a post-index regeneration after a content edit. Do NOT use for routine authoring of a single post (use markdown-post-frontmatter-review)."
 version: 0.1.0

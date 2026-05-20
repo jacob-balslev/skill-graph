@@ -5,11 +5,33 @@ license: MIT
 compatibility: "Portable visual-design guidance for product UI, dashboards, docs, marketing-adjacent product surfaces, and design-system consumers. Does not replace brand-specific guidelines."
 allowed-tools: Read Grep
 metadata:
-  metadata: "{\"schema_version\":6,\"version\":\"1.0.0\",\"type\":\"capability\",\"category\":\"design\",\"domain\":\"design/visual\",\"scope\":\"portable\",\"owner\":\"skill-graph-maintainer\",\"freshness\":\"2026-05-11\",\"drift_check\":\"{\\\\\\\"last_verified\\\\\\\":\\\\\\\"2026-05-11\\\\\\\"}\",\"eval_artifacts\":\"present\",\"eval_state\":\"unverified\",\"routing_eval\":\"absent\",\"stability\":\"experimental\",\"keywords\":\"[\\\\\\\"visual-design\\\\\\\",\\\\\\\"visual craft\\\\\\\",\\\\\\\"palette direction\\\\\\\",\\\\\\\"typography direction\\\\\\\",\\\\\\\"spatial rhythm\\\\\\\",\\\\\\\"density rules\\\\\\\",\\\\\\\"elevation treatment\\\\\\\",\\\\\\\"motion feel\\\\\\\",\\\\\\\"brand fit\\\\\\\"]\",\"examples\":\"[\\\\\\\"pick a visual direction for this dashboard without changing the task structure\\\\\\\",\\\\\\\"audit color, typography, spacing, and hierarchy for this product page\\\\\\\",\\\\\\\"this UI feels flat and hard to scan - improve the visual hierarchy\\\\\\\",\\\\\\\"choose a restrained palette and type scale for an internal admin tool\\\\\\\"]\",\"anti_examples\":\"[\\\\\\\"what does this icon or badge color communicate to users?\\\\\\\",\\\\\\\"define semantic tokens and component variants\\\\\\\",\\\\\\\"decide the responsive section order and breakpoint behavior\\\\\\\",\\\\\\\"verify WCAG contrast, focus order, and screen-reader behavior\\\\\\\"]\",\"relations\":\"{\\\\\\\"boundary\\\\\\\":[{\\\\\\\"skill\\\\\\\":\\\\\\\"semiotics\\\\\\\",\\\\\\\"reason\\\\\\\":\\\\\\\"semiotics owns what visual signs mean; visual-design-foundations owns the craft choices that shape the surface\\\\\\\"},{\\\\\\\"skill\\\\\\\":\\\\\\\"design-system-architecture\\\\\\\",\\\\\\\"reason\\\\\\\":\\\\\\\"design-system-architecture owns reusable tokens and components; visual-design-foundations owns visual direction and craft on a surface\\\\\\\"},{\\\\\\\"skill\\\\\\\":\\\\\\\"layout-composition\\\\\\\",\\\\\\\"reason\\\\\\\":\\\\\\\"layout-composition owns responsive structure; visual-design-foundations owns palette, typography, rhythm, density, and polish\\\\\\\"},{\\\\\\\"skill\\\\\\\":\\\\\\\"a11y\\\\\\\",\\\\\\\"reason\\\\\\\":\\\\\\\"a11y owns accessibility compliance; visual-design-foundations can propose visual choices that a11y later verifies\\\\\\\"}],\\\\\\\"related\\\\\\\":[\\\\\\\"semiotics\\\\\\\",\\\\\\\"design-system-architecture\\\\\\\",\\\\\\\"layout-composition\\\\\\\",\\\\\\\"microcopy\\\\\\\",\\\\\\\"a11y\\\\\\\"],\\\\\\\"verify_with\\\\\\\":[\\\\\\\"a11y\\\\\\\",\\\\\\\"semiotics\\\\\\\"]}\",\"portability\":\"{\\\\\\\"readiness\\\\\\\":\\\\\\\"scripted\\\\\\\",\\\\\\\"targets\\\\\\\":[\\\\\\\"skill-md\\\\\\\"]}\",\"lifecycle\":\"{\\\\\\\"stale_after_days\\\\\\\":365,\\\\\\\"review_cadence\\\\\\\":\\\\\\\"quarterly\\\\\\\"}\",\"skill_graph_source_repo\":\"https://github.com/jacob-balslev/skill-graph\",\"skill_graph_protocol\":\"Skill Metadata Protocol v5\",\"skill_graph_project\":\"Skill Graph\",\"skill_graph_canonical_skill\":\"skills/visual-design-foundations/SKILL.md\"}"
+  schema_version: "7"
+  version: "1.0.0"
+  type: capability
+  category: design
+  domain: design/visual
+  scope: portable
+  owner: skill-graph-maintainer
+  freshness: "2026-05-11"
+  drift_check: "{\"last_verified\":\"2026-05-11\"}"
+  eval_artifacts: present
+  eval_state: unverified
+  routing_eval: absent
+  stability: experimental
+  keywords: "[\"visual-design\",\"visual craft\",\"palette direction\",\"typography direction\",\"spatial rhythm\",\"density rules\",\"elevation treatment\",\"motion feel\",\"brand fit\"]"
+  examples: "[\"pick a visual direction for this dashboard without changing the task structure\",\"audit color, typography, spacing, and hierarchy for this product page\",\"this UI feels flat and hard to scan - improve the visual hierarchy\",\"choose a restrained palette and type scale for an internal admin tool\"]"
+  anti_examples: "[\"what does this icon or badge color communicate to users?\",\"define semantic tokens and component variants\",\"decide the responsive section order and breakpoint behavior\",\"verify WCAG contrast, focus order, and screen-reader behavior\"]"
+  relations: "{\"boundary\":[{\"skill\":\"semiotics\",\"reason\":\"semiotics owns what visual signs mean; visual-design-foundations owns the craft choices that shape the surface\"},{\"skill\":\"design-system-architecture\",\"reason\":\"design-system-architecture owns reusable tokens and components; visual-design-foundations owns visual direction and craft on a surface\"},{\"skill\":\"layout-composition\",\"reason\":\"layout-composition owns responsive structure; visual-design-foundations owns palette, typography, rhythm, density, and polish\"},{\"skill\":\"a11y\",\"reason\":\"a11y owns accessibility compliance; visual-design-foundations can propose visual choices that a11y later verifies\"}],\"related\":[\"semiotics\",\"design-system-architecture\",\"layout-composition\",\"microcopy\",\"a11y\"],\"verify_with\":[\"a11y\",\"semiotics\"]}"
+  portability: "{\"readiness\":\"scripted\",\"targets\":[\"skill-md\"]}"
+  lifecycle: "{\"stale_after_days\":365,\"review_cadence\":\"quarterly\"}"
+  structural_verdict: UNVERIFIED
+  truth_verdict: UNVERIFIED
+  comprehension_verdict: UNVERIFIED
+  application_verdict: UNVERIFIED
   skill_graph_source_repo: "https://github.com/jacob-balslev/skill-graph"
-  skill_graph_protocol: Skill Metadata Protocol v4
+  skill_graph_protocol: Skill Metadata Protocol v7
   skill_graph_project: Skill Graph
-  skill_graph_canonical_skill: skills/visual-design-foundations/SKILL.md
+  skill_graph_canonical_skill: skills/design/visual-design-foundations/SKILL.md
 ---
 
 # Visual Design Foundations

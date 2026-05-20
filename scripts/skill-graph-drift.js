@@ -36,7 +36,7 @@ const fs = require('fs');
 const path = require('path');
 const crypto = require('crypto');
 const { parseFrontmatter } = require('./lib/parse-frontmatter');
-const { workspaceRoot, resolveTruthSourcePath } = require('./lib/roots');
+const { collectSkillFilesFromRoots, workspaceRoot, resolveTruthSourcePath } = require('./lib/roots');
 
 const REPO_ROOT = workspaceRoot();
 const DEFAULT_SKILLS_DIR = path.join(REPO_ROOT, 'skills');
@@ -384,15 +384,7 @@ function collectSkillFiles(args, roots) {
     return out;
   }
 
-  const out = [];
-  for (const { absPath } of roots) {
-    if (!fs.existsSync(absPath)) continue;
-    for (const name of fs.readdirSync(absPath).sort()) {
-      const skillMd = path.join(absPath, name, 'SKILL.md');
-      if (fs.existsSync(skillMd)) out.push(skillMd);
-    }
-  }
-  return out;
+  return collectSkillFilesFromRoots(roots).map(entry => entry.filePath);
 }
 
 function main() {

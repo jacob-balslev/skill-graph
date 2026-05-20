@@ -5,11 +5,33 @@ license: MIT
 compatibility: "Portable async-event contract guidance for queues, streams, pub/sub, internal events, outbound webhooks, and documented event-driven APIs."
 allowed-tools: Read Grep
 metadata:
-  metadata: "{\"schema_version\":6,\"version\":\"1.0.0\",\"type\":\"capability\",\"category\":\"engineering\",\"domain\":\"architecture/events\",\"scope\":\"portable\",\"owner\":\"skill-graph-maintainer\",\"freshness\":\"2026-05-11\",\"drift_check\":\"{\\\\\\\"last_verified\\\\\\\":\\\\\\\"2026-05-11\\\\\\\"}\",\"eval_artifacts\":\"present\",\"eval_state\":\"unverified\",\"routing_eval\":\"absent\",\"stability\":\"experimental\",\"keywords\":\"[\\\\\\\"event-contract\\\\\\\",\\\\\\\"async-api\\\\\\\",\\\\\\\"cloudevents\\\\\\\",\\\\\\\"event envelope\\\\\\\",\\\\\\\"topic naming\\\\\\\",\\\\\\\"async event schema\\\\\\\",\\\\\\\"event compatibility\\\\\\\",\\\\\\\"replay contract\\\\\\\",\\\\\\\"dead-letter behavior\\\\\\\",\\\\\\\"consumer fixtures\\\\\\\"]\",\"examples\":\"[\\\\\\\"design the event contract for publishing OrderPaid to downstream consumers\\\\\\\",\\\\\\\"define topic names, payload schema, idempotency, and versioning for this event stream\\\\\\\",\\\\\\\"review this outbound webhook event schema before customers integrate with it\\\\\\\",\\\\\\\"write the compatibility rules for consumers of these async messages\\\\\\\"]\",\"anti_examples\":\"[\\\\\\\"discover the domain events, commands, and policies in this business process\\\\\\\",\\\\\\\"define every boundary contract between services, jobs, and APIs\\\\\\\",\\\\\\\"verify inbound provider webhook signatures and retry behavior\\\\\\\",\\\\\\\"design REST endpoints, status codes, and pagination\\\\\\\"]\",\"relations\":\"{\\\\\\\"boundary\\\\\\\":[{\\\\\\\"skill\\\\\\\":\\\\\\\"event-storming\\\\\\\",\\\\\\\"reason\\\\\\\":\\\\\\\"event-storming discovers domain events and policies; event-contract-design turns selected events into publishable contracts\\\\\\\"},{\\\\\\\"skill\\\\\\\":\\\\\\\"system-interface-contracts\\\\\\\",\\\\\\\"reason\\\\\\\":\\\\\\\"system-interface-contracts owns broad boundary contracts; event-contract-design owns asynchronous message and event surfaces\\\\\\\"},{\\\\\\\"skill\\\\\\\":\\\\\\\"webhook-integration\\\\\\\",\\\\\\\"reason\\\\\\\":\\\\\\\"webhook-integration owns inbound third-party delivery mechanics; event-contract-design owns events this system publishes or documents for consumers\\\\\\\"},{\\\\\\\"skill\\\\\\\":\\\\\\\"api-design\\\\\\\",\\\\\\\"reason\\\\\\\":\\\\\\\"api-design owns HTTP resource and action surfaces; event-contract-design owns asynchronous event contracts\\\\\\\"}],\\\\\\\"related\\\\\\\":[\\\\\\\"event-storming\\\\\\\",\\\\\\\"system-interface-contracts\\\\\\\",\\\\\\\"observability-modeling\\\\\\\",\\\\\\\"state-machine-modeling\\\\\\\",\\\\\\\"data-modeling\\\\\\\"],\\\\\\\"verify_with\\\\\\\":[\\\\\\\"system-interface-contracts\\\\\\\",\\\\\\\"observability-modeling\\\\\\\"]}\",\"portability\":\"{\\\\\\\"readiness\\\\\\\":\\\\\\\"scripted\\\\\\\",\\\\\\\"targets\\\\\\\":[\\\\\\\"skill-md\\\\\\\"]}\",\"lifecycle\":\"{\\\\\\\"stale_after_days\\\\\\\":365,\\\\\\\"review_cadence\\\\\\\":\\\\\\\"quarterly\\\\\\\"}\",\"skill_graph_source_repo\":\"https://github.com/jacob-balslev/skill-graph\",\"skill_graph_protocol\":\"Skill Metadata Protocol v5\",\"skill_graph_project\":\"Skill Graph\",\"skill_graph_canonical_skill\":\"skills/event-contract-design/SKILL.md\"}"
+  schema_version: "7"
+  version: "1.0.0"
+  type: capability
+  category: engineering
+  domain: architecture/events
+  scope: portable
+  owner: skill-graph-maintainer
+  freshness: "2026-05-11"
+  drift_check: "{\"last_verified\":\"2026-05-11\"}"
+  eval_artifacts: present
+  eval_state: unverified
+  routing_eval: absent
+  stability: experimental
+  keywords: "[\"event-contract\",\"async-api\",\"cloudevents\",\"event envelope\",\"topic naming\",\"async event schema\",\"event compatibility\",\"replay contract\",\"dead-letter behavior\",\"consumer fixtures\"]"
+  examples: "[\"design the event contract for publishing OrderPaid to downstream consumers\",\"define topic names, payload schema, idempotency, and versioning for this event stream\",\"review this outbound webhook event schema before customers integrate with it\",\"write the compatibility rules for consumers of these async messages\"]"
+  anti_examples: "[\"discover the domain events, commands, and policies in this business process\",\"define every boundary contract between services, jobs, and APIs\",\"verify inbound provider webhook signatures and retry behavior\",\"design REST endpoints, status codes, and pagination\"]"
+  relations: "{\"boundary\":[{\"skill\":\"event-storming\",\"reason\":\"event-storming discovers domain events and policies; event-contract-design turns selected events into publishable contracts\"},{\"skill\":\"system-interface-contracts\",\"reason\":\"system-interface-contracts owns broad boundary contracts; event-contract-design owns asynchronous message and event surfaces\"},{\"skill\":\"webhook-integration\",\"reason\":\"webhook-integration owns inbound third-party delivery mechanics; event-contract-design owns events this system publishes or documents for consumers\"},{\"skill\":\"api-design\",\"reason\":\"api-design owns HTTP resource and action surfaces; event-contract-design owns asynchronous event contracts\"}],\"related\":[\"event-storming\",\"system-interface-contracts\",\"observability-modeling\",\"state-machine-modeling\",\"data-modeling\"],\"verify_with\":[\"system-interface-contracts\",\"observability-modeling\"]}"
+  portability: "{\"readiness\":\"scripted\",\"targets\":[\"skill-md\"]}"
+  lifecycle: "{\"stale_after_days\":365,\"review_cadence\":\"quarterly\"}"
+  structural_verdict: UNVERIFIED
+  truth_verdict: UNVERIFIED
+  comprehension_verdict: UNVERIFIED
+  application_verdict: UNVERIFIED
   skill_graph_source_repo: "https://github.com/jacob-balslev/skill-graph"
-  skill_graph_protocol: Skill Metadata Protocol v4
+  skill_graph_protocol: Skill Metadata Protocol v7
   skill_graph_project: Skill Graph
-  skill_graph_canonical_skill: skills/event-contract-design/SKILL.md
+  skill_graph_canonical_skill: skills/engineering/event-contract-design/SKILL.md
 ---
 
 # Event Contract Design

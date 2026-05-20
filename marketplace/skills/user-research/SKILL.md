@@ -3,11 +3,31 @@ name: user-research
 description: "Use when planning or conducting generative qualitative research with real users — interviews, contextual inquiry, ethnographic observation, diary studies — to learn what people do, think, and need in their own context. Do NOT use for analytics review, survey statistics, A/B test interpretation, or agent-side intent classification — those are different research practices entirely."
 license: CC-BY-4.0
 metadata:
-  metadata: "{\"schema_version\":6,\"version\":\"1.0.0\",\"type\":\"capability\",\"category\":\"design\",\"scope\":\"portable\",\"owner\":\"skill-graph-maintainer\",\"freshness\":\"2026-05-12\",\"drift_check\":\"{\\\\\\\"last_verified\\\\\\\":\\\\\\\"2026-05-12\\\\\\\"}\",\"eval_artifacts\":\"planned\",\"eval_state\":\"unverified\",\"routing_eval\":\"absent\",\"stability\":\"experimental\",\"keywords\":\"[\\\\\\\"user interviews\\\\\\\",\\\\\\\"contextual inquiry\\\\\\\",\\\\\\\"ethnographic observation\\\\\\\",\\\\\\\"diary study\\\\\\\",\\\\\\\"generative research\\\\\\\",\\\\\\\"qualitative research\\\\\\\",\\\\\\\"interview guide\\\\\\\",\\\\\\\"leading questions\\\\\\\",\\\\\\\"master-apprentice model\\\\\\\",\\\\\\\"in-context observation\\\\\\\",\\\\\\\"field study\\\\\\\",\\\\\\\"listening for needs\\\\\\\",\\\\\\\"five whys interview\\\\\\\"]\",\"triggers\":\"[\\\\\\\"interview users\\\\\\\",\\\\\\\"user research plan\\\\\\\",\\\\\\\"what to ask users\\\\\\\",\\\\\\\"contextual inquiry\\\\\\\",\\\\\\\"diary study\\\\\\\"]\",\"examples\":\"[\\\\\\\"Draft an interview guide for SMB founders adopting their first accounting software.\\\\\\\",\\\\\\\"How do I observe ICU nurses on shift without disturbing the workflow?\\\\\\\",\\\\\\\"Review my interview script for leading questions and solution-prompts.\\\\\\\",\\\\\\\"Plan a two-week diary study for commuters using public transit apps.\\\\\\\"]\",\"anti_examples\":\"[\\\\\\\"Analyze last quarter's NPS results and produce a dashboard.\\\\\\\",\\\\\\\"Classify whether this agent request from the user is high-risk before executing.\\\\\\\",\\\\\\\"Set up an A/B test of two onboarding flows.\\\\\\\"]\",\"relations\":\"{\\\\\\\"related\\\\\\\":[\\\\\\\"problem-framing\\\\\\\",\\\\\\\"research-synthesis\\\\\\\",\\\\\\\"usability-testing\\\\\\\",\\\\\\\"design-thinking\\\\\\\"],\\\\\\\"boundary\\\\\\\":[{\\\\\\\"skill\\\\\\\":\\\\\\\"intent-recognition\\\\\\\",\\\\\\\"reason\\\\\\\":\\\\\\\"intent-recognition classifies an agent request's risk level at runtime from the agent's perspective. user-research investigates real human users' goals, contexts, and needs through fieldwork — these are entirely different practices that share only the word 'intent'.\\\\\\\"},{\\\\\\\"skill\\\\\\\":\\\\\\\"usability-testing\\\\\\\",\\\\\\\"reason\\\\\\\":\\\\\\\"usability-testing is evaluative — it watches users attempt tasks on an artifact to find usability defects. user-research is generative — it studies users before any artifact exists, to discover needs and context.\\\\\\\"}]}\",\"skill_graph_source_repo\":\"https://github.com/jacob-balslev/skill-graph\",\"skill_graph_protocol\":\"Skill Metadata Protocol v5\",\"skill_graph_project\":\"Skill Graph\",\"skill_graph_canonical_skill\":\"skills/user-research/SKILL.md\"}"
+  schema_version: "7"
+  version: "1.0.0"
+  type: capability
+  category: design
+  scope: portable
+  owner: skill-graph-maintainer
+  freshness: "2026-05-12"
+  drift_check: "{\"last_verified\":\"2026-05-12\"}"
+  eval_artifacts: planned
+  eval_state: unverified
+  routing_eval: absent
+  stability: experimental
+  keywords: "[\"user interviews\",\"contextual inquiry\",\"ethnographic observation\",\"diary study\",\"generative research\",\"qualitative research\",\"interview guide\",\"leading questions\",\"master-apprentice model\",\"in-context observation\",\"field study\",\"listening for needs\",\"five whys interview\"]"
+  triggers: "[\"interview users\",\"user research plan\",\"what to ask users\",\"contextual inquiry\",\"diary study\"]"
+  examples: "[\"Draft an interview guide for SMB founders adopting their first accounting software.\",\"How do I observe ICU nurses on shift without disturbing the workflow?\",\"Review my interview script for leading questions and solution-prompts.\",\"Plan a two-week diary study for commuters using public transit apps.\"]"
+  anti_examples: "[\"Analyze last quarter's NPS results and produce a dashboard.\",\"Classify whether this agent request from the user is high-risk before executing.\",\"Set up an A/B test of two onboarding flows.\"]"
+  relations: "{\"related\":[\"problem-framing\",\"research-synthesis\",\"usability-testing\",\"design-thinking\"],\"boundary\":[{\"skill\":\"intent-recognition\",\"reason\":\"intent-recognition classifies an agent request's risk level at runtime from the agent's perspective. user-research investigates real human users' goals, contexts, and needs through fieldwork — these are entirely different practices that share only the word 'intent'.\"},{\"skill\":\"usability-testing\",\"reason\":\"usability-testing is evaluative — it watches users attempt tasks on an artifact to find usability defects. user-research is generative — it studies users before any artifact exists, to discover needs and context.\"}]}"
+  structural_verdict: UNVERIFIED
+  truth_verdict: UNVERIFIED
+  comprehension_verdict: UNVERIFIED
+  application_verdict: UNVERIFIED
   skill_graph_source_repo: "https://github.com/jacob-balslev/skill-graph"
-  skill_graph_protocol: Skill Metadata Protocol v4
+  skill_graph_protocol: Skill Metadata Protocol v7
   skill_graph_project: Skill Graph
-  skill_graph_canonical_skill: skills/user-research/SKILL.md
+  skill_graph_canonical_skill: skills/design/user-research/SKILL.md
 ---
 
 # User Research

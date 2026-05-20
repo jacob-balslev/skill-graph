@@ -5,11 +5,34 @@ license: MIT
 compatibility: "Provider- and runtime-agnostic. The autonomy-slider levels and quality-gate sequence apply to any LLM-coding harness (Claude Code, OpenCode, Cursor, Aider, Copilot Workspace, Continue) that supports a deterministic verify step between agent output and merge."
 allowed-tools: Read Grep
 metadata:
-  metadata: "{\"schema_version\":6,\"version\":\"1.0.0\",\"type\":\"capability\",\"category\":\"agent\",\"domain\":\"agent/concepts\",\"scope\":\"portable\",\"owner\":\"skill-graph-maintainer\",\"freshness\":\"2026-05-06\",\"drift_check\":\"{\\\\\\\"last_verified\\\\\\\":\\\\\\\"2026-05-06\\\\\\\"}\",\"eval_artifacts\":\"planned\",\"eval_state\":\"unverified\",\"routing_eval\":\"absent\",\"stability\":\"experimental\",\"keywords\":\"[\\\\\\\"software 3.0 concepts\\\\\\\",\\\\\\\"vibe coding\\\\\\\",\\\\\\\"agentic engineering doctrine\\\\\\\",\\\\\\\"autonomy slider\\\\\\\",\\\\\\\"prompt as code\\\\\\\",\\\\\\\"karpathy three eras\\\\\\\",\\\\\\\"autoresearch loop\\\\\\\",\\\\\\\"ai-generated code quality\\\\\\\",\\\\\\\"vibe hangover\\\\\\\",\\\\\\\"llm-native development\\\\\\\",\\\\\\\"software 1.0 vs 2.0 vs 3.0\\\\\\\",\\\\\\\"natural language programs\\\\\\\",\\\\\\\"agent productivity metrics\\\\\\\",\\\\\\\"rework rate\\\\\\\",\\\\\\\"agent completion rate\\\\\\\",\\\\\\\"quality gates ai code\\\\\\\",\\\\\\\"autonomy levels coding\\\\\\\",\\\\\\\"ai code security regression\\\\\\\"]\",\"examples\":\"[\\\\\\\"we keep accepting agent-generated code on first try and shipping bugs — what discipline replaces this?\\\\\\\",\\\\\\\"what autonomy level should I run for a security-sensitive change?\\\\\\\",\\\\\\\"does measuring lines-of-code per session make sense when an agent generates the code?\\\\\\\",\\\\\\\"the team is treating prompts and skill files like throwaway notes — what's the alternative framing?\\\\\\\",\\\\\\\"we want an auto-improve loop for our skill content — how do we constrain it so it doesn't regress?\\\\\\\",\\\\\\\"what's the conceptual difference between a vibe coding session and an agentic engineering session?\\\\\\\",\\\\\\\"AI-generated code is shipping with vulnerabilities — what gates should sit between agent output and production?\\\\\\\",\\\\\\\"how do I match autonomy level to the risk profile of the task?\\\\\\\"]\",\"anti_examples\":\"[\\\\\\\"improve this specific prompt for the grader\\\\\\\",\\\\\\\"review this AI-generated PR for correctness\\\\\\\",\\\\\\\"design the checkpoint state machine for our loop\\\\\\\",\\\\\\\"scaffold a new skill that codifies our coding doctrine\\\\\\\",\\\\\\\"the autonomous loop is stalling — debug it\\\\\\\"]\",\"relations\":\"{\\\\\\\"boundary\\\\\\\":[{\\\\\\\"skill\\\\\\\":\\\\\\\"prompt-craft\\\\\\\",\\\\\\\"reason\\\\\\\":\\\\\\\"prompt-craft is the per-prompt authoring discipline; ai-native-development is the meta-frame that explains why prompts are source code\\\\\\\"},{\\\\\\\"skill\\\\\\\":\\\\\\\"agent-engineering\\\\\\\",\\\\\\\"reason\\\\\\\":\\\\\\\"agent-engineering owns the production reliability discipline (orchestration, error budgets, observability); ai-native-development owns the conceptual model that motivates those concerns\\\\\\\"},{\\\\\\\"skill\\\\\\\":\\\\\\\"code-review\\\\\\\",\\\\\\\"reason\\\\\\\":\\\\\\\"code-review evaluates the AI-generated output; ai-native-development frames why that output exists and how to size the gates around it\\\\\\\"},{\\\\\\\"skill\\\\\\\":\\\\\\\"tool-call-strategy\\\\\\\",\\\\\\\"reason\\\\\\\":\\\\\\\"tool-call-strategy is the tactical layer for an agent's tool dispatch; ai-native-development is the conceptual layer above it\\\\\\\"}],\\\\\\\"related\\\\\\\":[\\\\\\\"prompt-craft\\\\\\\",\\\\\\\"agent-engineering\\\\\\\",\\\\\\\"code-review\\\\\\\",\\\\\\\"skill-router\\\\\\\"],\\\\\\\"verify_with\\\\\\\":[\\\\\\\"code-review\\\\\\\",\\\\\\\"testing-strategy\\\\\\\"]}\",\"portability\":\"{\\\\\\\"readiness\\\\\\\":\\\\\\\"scripted\\\\\\\",\\\\\\\"targets\\\\\\\":[\\\\\\\"skill-md\\\\\\\"]}\",\"lifecycle\":\"{\\\\\\\"stale_after_days\\\\\\\":180,\\\\\\\"review_cadence\\\\\\\":\\\\\\\"quarterly\\\\\\\"}\",\"skill_graph_source_repo\":\"https://github.com/jacob-balslev/skill-graph\",\"skill_graph_protocol\":\"Skill Metadata Protocol v5\",\"skill_graph_project\":\"Skill Graph\",\"skill_graph_canonical_skill\":\"skills/ai-native-development/SKILL.md\"}"
+  schema_version: "7"
+  version: "1.1.0"
+  type: capability
+  category: agent
+  domain: agent/concepts
+  scope: portable
+  owner: skill-graph-maintainer
+  freshness: "2026-05-18"
+  drift_check: "{\"last_verified\":\"2026-05-18\"}"
+  eval_artifacts: planned
+  eval_state: unverified
+  routing_eval: absent
+  stability: experimental
+  keywords: "[\"software 3.0 concepts\",\"vibe coding\",\"agentic engineering doctrine\",\"autonomy slider\",\"prompt as code\",\"karpathy three eras\",\"autoresearch loop\",\"ai-generated code quality\",\"vibe hangover\",\"llm-native development\",\"software 1.0 vs 2.0 vs 3.0\",\"natural language programs\",\"agent productivity metrics\",\"rework rate\",\"agent completion rate\",\"quality gates ai code\",\"autonomy levels coding\",\"ai code security regression\"]"
+  examples: "[\"we keep accepting agent-generated code on first try and shipping bugs — what discipline replaces this?\",\"what autonomy level should I run for a security-sensitive change?\",\"does measuring lines-of-code per session make sense when an agent generates the code?\",\"the team is treating prompts and skill files like throwaway notes — what's the alternative framing?\",\"we want an auto-improve loop for our skill content — how do we constrain it so it doesn't regress?\",\"what's the conceptual difference between a vibe coding session and an agentic engineering session?\",\"AI-generated code is shipping with vulnerabilities — what gates should sit between agent output and production?\",\"how do I match autonomy level to the risk profile of the task?\"]"
+  anti_examples: "[\"improve this specific prompt for the grader\",\"review this AI-generated PR for correctness\",\"design the checkpoint state machine for our loop\",\"scaffold a new skill that codifies our coding doctrine\",\"the autonomous loop is stalling — debug it\"]"
+  relations: "{\"boundary\":[{\"skill\":\"prompt-craft\",\"reason\":\"prompt-craft is the per-prompt authoring discipline; ai-native-development is the meta-frame that explains why prompts are source code\"},{\"skill\":\"agent-engineering\",\"reason\":\"agent-engineering owns the production reliability discipline (orchestration, error budgets, observability); ai-native-development owns the conceptual model that motivates those concerns\"},{\"skill\":\"code-review\",\"reason\":\"code-review evaluates the AI-generated output; ai-native-development frames why that output exists and how to size the gates around it\"},{\"skill\":\"tool-call-strategy\",\"reason\":\"tool-call-strategy is the tactical layer for an agent's tool dispatch; ai-native-development is the conceptual layer above it\"}],\"related\":[\"prompt-craft\",\"agent-engineering\",\"code-review\",\"skill-router\"],\"verify_with\":[\"code-review\",\"testing-strategy\"]}"
+  grounding: "{\"domain_object\":\"AI-native software development discipline for prompt-as-code workflows, agent autonomy calibration, metric-gated auto-improvement loops, and quality gates for AI-generated code\",\"grounding_mode\":\"hybrid\",\"truth_sources\":[\"https://www.youtube.com/watch?v=LCEmiRjPEtQ\",\"https://github.com/karpathy/autoresearch\",\"https://arxiv.org/abs/2211.03622\",\"https://arxiv.org/abs/2504.20814\",\"https://snyk.io/lp/secure-adoption-in-the-genai-era/\",\"https://owasp.org/www-project-top-10-for-large-language-model-applications/\"],\"failure_modes\":[\"unintentional_high_autonomy_for_high_risk_work\",\"accepting_ai_generated_code_without_review_or_tests\",\"treating_prompts_and_skills_as_throwaway_notes\",\"optimizing_agent_loops_against_multiple_moving_metrics\",\"citing_stale_ai_code_security_statistics_as_fixed_truth\",\"shipping_agentic_systems_without_prompt_injection_or_excessive_agency_controls\"],\"evidence_priority\":\"equal\"}"
+  portability: "{\"readiness\":\"scripted\",\"targets\":[\"skill-md\"]}"
+  lifecycle: "{\"stale_after_days\":180,\"review_cadence\":\"quarterly\"}"
+  structural_verdict: UNVERIFIED
+  truth_verdict: UNVERIFIED
+  comprehension_verdict: UNVERIFIED
+  application_verdict: UNVERIFIED
   skill_graph_source_repo: "https://github.com/jacob-balslev/skill-graph"
-  skill_graph_protocol: Skill Metadata Protocol v4
+  skill_graph_protocol: Skill Metadata Protocol v7
   skill_graph_project: Skill Graph
-  skill_graph_canonical_skill: skills/ai-native-development/SKILL.md
+  skill_graph_canonical_skill: skills/agent/ai-native-development/SKILL.md
 ---
 
 # AI-Native Development
@@ -211,16 +234,16 @@ The goal is to grow the numerator while shrinking the denominator. "Getting bett
 
 ## 6. The Vibe Hangover — Quality Gates as Compensation
 
-The rapid adoption of AI-assisted coding has produced measurable quality regressions. This data grounds the case for agentic engineering and gates over vibe coding.
+The rapid adoption of AI-assisted coding has produced enough security and quality evidence to make ungated acceptance irresponsible. The exact numbers move across models, tasks, prompts, and study designs, so treat the evidence as a risk signal rather than a permanent multiplier.
 
-### Reported findings
+### Current evidence shape
 
-| Source                                | Finding                                                                                                                         |
-| ------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------- |
-| Stanford / Microsoft study (2024)     | AI-assisted developers believe their code is more secure, but the code is ~1.7× more likely to contain security vulnerabilities |
-| GitClear (2025)                       | AI-generated code shows ~2.74× higher vulnerability rate than human-written equivalents                                         |
-| OWASP AI Security Guide (2024–25)     | New attack surface: prompt injection, training-data poisoning, model manipulation                                               |
-| Snyk State of AI Code Security (2025) | ≥56% of surveyed developers report at least one AI-introduced vulnerability reaching production                                 |
+| Source | Stable takeaway |
+| --- | --- |
+| Perry, Srivastava, Kumar, and Boneh, "Do Users Write More Insecure Code with AI Assistants?" | In a controlled security-task study, Codex-assisted participants wrote less secure code and were more likely to believe insecure answers were secure. |
+| "Secure Coding with AI -- From Detection to Repair" | Real-world GPT-generated snippets contained vulnerabilities, but newer models improved at detecting and repairing issues; the correct posture is review-and-repair, not blanket rejection or blind trust. |
+| Snyk secure adoption survey | Organizations are optimistic about AI coding tools while security practitioners report more concern and many teams skip basic preparation such as PoCs and developer training. |
+| OWASP Top 10 for LLM Applications | AI-native systems add security classes such as prompt injection, sensitive information disclosure, supply-chain risk, data/model poisoning, improper output handling, and excessive agency. |
 
 These numbers will move; the structural reason will not. AI-generated code has more vulnerabilities because:
 
@@ -228,6 +251,7 @@ These numbers will move; the structural reason will not. AI-generated code has m
 2. **Missing context.** The model does not know the deployment environment, threat model, or compliance requirements unless explicitly told.
 3. **Acceptance bias.** Developers scrutinize AI-generated code less than code they wrote themselves ("it looks reasonable").
 4. **Speed-vs-security trade-off.** Faster output encourages faster acceptance. Security review is slow and feels like friction.
+5. **Agentic attack surface.** Tool use, repository access, memory, and external context can turn prompt injection or excessive agency into real code, data, or infrastructure impact.
 
 ### The compensating gates
 
@@ -252,7 +276,7 @@ Agent generates code
 [Gate 5] Design / visual review (for UI changes)
       │
       ▼
-[Gate 6] Human spot-check (for autonomy < 5)
+[Gate 6] Human spot-check proportional to risk
       │
       ▼
 Production
@@ -260,7 +284,7 @@ Production
 
 **Rule:** no gate may be skipped under speed pressure. An agent that passes all gates is trustworthy on this change. An agent that bypasses gates is a liability regardless of how good the diff looks.
 
-The gates are also the _justification_ for higher autonomy. Without the gates, level 4 is reckless. With the gates, level 4 is responsible.
+The gates are also the _justification_ for higher autonomy. Without the gates, level 4 is reckless. With the gates, level 4 can be responsible for bounded work. Level 5 remains theoretical for production systems unless the organization has automatic rollback, runtime observability, security controls for agent tools, and an explicit human escalation path.
 
 ## 7. Operating Position
 
@@ -274,7 +298,8 @@ Moving down the slider is also legitimate: high-stakes work (production deployme
 
 - [ ] Prompts and skill specifications are treated as source code — versioned in git, reviewed before merge, covered by evals where useful
 - [ ] Every agent session operates at an _intentional_ autonomy level chosen for the task's risk, not the harness's default
-- [ ] Quality gates exist between agent output and production: type check, lint, automated tests, security scan, plus a human spot-check while autonomy is < 5
+- [ ] Quality gates exist between agent output and production: type check, lint, automated tests, security scan, plus human review proportional to task risk
+- [ ] LLM-application risks such as prompt injection, sensitive information disclosure, supply-chain risk, and excessive agency are considered when agents can read, write, or call tools
 - [ ] Productivity is measured by outcomes (tasks completed, rework rate, time-to-value), not by output volume (LoC, commit count)
 - [ ] Knowledge is captured durably (skill files, decision records, structured session summaries) rather than lost between sessions
 - [ ] Auto-improve loops are constrained per the AutoResearch pattern — one editable asset, one scalar metric, one time box

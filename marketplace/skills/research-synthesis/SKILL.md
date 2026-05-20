@@ -3,11 +3,31 @@ name: research-synthesis
 description: "Use when turning raw qualitative research output (interview transcripts, field notes, diary entries, observation logs) into themes, patterns, insight statements, and design-ready artifacts via affinity mapping, empathy maps, and jobs-to-be-done framing. Do NOT use for collecting new research, quantitative analysis, statistical inference, or summarizing a single document — synthesis specifically operates on a corpus of qualitative evidence."
 license: CC-BY-4.0
 metadata:
-  metadata: "{\"schema_version\":6,\"version\":\"1.0.0\",\"type\":\"capability\",\"category\":\"design\",\"scope\":\"portable\",\"owner\":\"skill-graph-maintainer\",\"freshness\":\"2026-05-12\",\"drift_check\":\"{\\\\\\\"last_verified\\\\\\\":\\\\\\\"2026-05-12\\\\\\\"}\",\"eval_artifacts\":\"planned\",\"eval_state\":\"unverified\",\"routing_eval\":\"absent\",\"stability\":\"experimental\",\"keywords\":\"[\\\\\\\"affinity mapping\\\\\\\",\\\\\\\"empathy map\\\\\\\",\\\\\\\"insight statement\\\\\\\",\\\\\\\"theme clustering\\\\\\\",\\\\\\\"jobs to be done synthesis\\\\\\\",\\\\\\\"qualitative coding\\\\\\\",\\\\\\\"research wall\\\\\\\",\\\\\\\"downloading research\\\\\\\",\\\\\\\"say think do feel\\\\\\\",\\\\\\\"persona drafting\\\\\\\",\\\\\\\"point of view\\\\\\\",\\\\\\\"sticky-note synthesis\\\\\\\",\\\\\\\"pattern extraction\\\\\\\"]\",\"triggers\":\"[\\\\\\\"synthesize research\\\\\\\",\\\\\\\"affinity map\\\\\\\",\\\\\\\"empathy map\\\\\\\",\\\\\\\"find themes in interviews\\\\\\\",\\\\\\\"insight statements\\\\\\\"]\",\"examples\":\"[\\\\\\\"Cluster these 14 interview transcripts into themes using affinity mapping.\\\\\\\",\\\\\\\"Build an empathy map for the 'first-time buyer' segment from these field notes.\\\\\\\",\\\\\\\"Turn this set of observations into three insight statements I can take into ideation.\\\\\\\",\\\\\\\"Draft a jobs-to-be-done statement from this user research corpus.\\\\\\\"]\",\"anti_examples\":\"[\\\\\\\"Run more interviews with five additional participants.\\\\\\\",\\\\\\\"Calculate the response rate of the survey.\\\\\\\",\\\\\\\"Summarize this single PDF document.\\\\\\\"]\",\"relations\":\"{\\\\\\\"related\\\\\\\":[\\\\\\\"user-research\\\\\\\",\\\\\\\"journey-mapping\\\\\\\",\\\\\\\"problem-framing\\\\\\\",\\\\\\\"design-thinking\\\\\\\"],\\\\\\\"boundary\\\\\\\":[{\\\\\\\"skill\\\\\\\":\\\\\\\"user-research\\\\\\\",\\\\\\\"reason\\\\\\\":\\\\\\\"user-research collects primary qualitative data. research-synthesis transforms that data into design-ready themes. Both are needed, in that order.\\\\\\\"},{\\\\\\\"skill\\\\\\\":\\\\\\\"conceptual-modeling\\\\\\\",\\\\\\\"reason\\\\\\\":\\\\\\\"conceptual-modeling synthesizes domain entities and their relationships for engineering. research-synthesis synthesizes human behavior and need patterns for design — different output shapes, different audiences.\\\\\\\"}]}\",\"skill_graph_source_repo\":\"https://github.com/jacob-balslev/skill-graph\",\"skill_graph_protocol\":\"Skill Metadata Protocol v5\",\"skill_graph_project\":\"Skill Graph\",\"skill_graph_canonical_skill\":\"skills/research-synthesis/SKILL.md\"}"
+  schema_version: "7"
+  version: "1.0.0"
+  type: capability
+  category: design
+  scope: portable
+  owner: skill-graph-maintainer
+  freshness: "2026-05-12"
+  drift_check: "{\"last_verified\":\"2026-05-12\"}"
+  eval_artifacts: planned
+  eval_state: unverified
+  routing_eval: absent
+  stability: experimental
+  keywords: "[\"affinity mapping\",\"empathy map\",\"insight statement\",\"theme clustering\",\"jobs to be done synthesis\",\"qualitative coding\",\"research wall\",\"downloading research\",\"say think do feel\",\"persona drafting\",\"point of view\",\"sticky-note synthesis\",\"pattern extraction\"]"
+  triggers: "[\"synthesize research\",\"affinity map\",\"empathy map\",\"find themes in interviews\",\"insight statements\"]"
+  examples: "[\"Cluster these 14 interview transcripts into themes using affinity mapping.\",\"Build an empathy map for the 'first-time buyer' segment from these field notes.\",\"Turn this set of observations into three insight statements I can take into ideation.\",\"Draft a jobs-to-be-done statement from this user research corpus.\"]"
+  anti_examples: "[\"Run more interviews with five additional participants.\",\"Calculate the response rate of the survey.\",\"Summarize this single PDF document.\"]"
+  relations: "{\"related\":[\"user-research\",\"journey-mapping\",\"problem-framing\",\"design-thinking\"],\"boundary\":[{\"skill\":\"user-research\",\"reason\":\"user-research collects primary qualitative data. research-synthesis transforms that data into design-ready themes. Both are needed, in that order.\"},{\"skill\":\"conceptual-modeling\",\"reason\":\"conceptual-modeling synthesizes domain entities and their relationships for engineering. research-synthesis synthesizes human behavior and need patterns for design — different output shapes, different audiences.\"}]}"
+  structural_verdict: UNVERIFIED
+  truth_verdict: UNVERIFIED
+  comprehension_verdict: UNVERIFIED
+  application_verdict: UNVERIFIED
   skill_graph_source_repo: "https://github.com/jacob-balslev/skill-graph"
-  skill_graph_protocol: Skill Metadata Protocol v4
+  skill_graph_protocol: Skill Metadata Protocol v7
   skill_graph_project: Skill Graph
-  skill_graph_canonical_skill: skills/research-synthesis/SKILL.md
+  skill_graph_canonical_skill: skills/design/research-synthesis/SKILL.md
 ---
 
 # Research Synthesis

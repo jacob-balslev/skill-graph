@@ -3,11 +3,31 @@ name: color-system-design
 description: "Use when designing a color system — palette construction, semantic color tokens, WCAG contrast ratios, perceptual uniformity in OKLCH/LCH, and light/dark mode parity. Do NOT use for single brand-color picks, runtime theme-switching mechanics, or non-color design tokens."
 license: CC-BY-4.0
 metadata:
-  metadata: "{\"schema_version\":6,\"version\":\"1.0.0\",\"type\":\"capability\",\"category\":\"design\",\"scope\":\"portable\",\"owner\":\"skill-graph-maintainer\",\"freshness\":\"2026-05-12\",\"drift_check\":\"{\\\\\\\"last_verified\\\\\\\":\\\\\\\"2026-05-12\\\\\\\"}\",\"eval_artifacts\":\"planned\",\"eval_state\":\"unverified\",\"routing_eval\":\"absent\",\"stability\":\"experimental\",\"keywords\":\"[\\\\\\\"color palette design\\\\\\\",\\\\\\\"semantic color tokens\\\\\\\",\\\\\\\"wcag contrast ratio\\\\\\\",\\\\\\\"apca contrast\\\\\\\",\\\\\\\"oklch color space\\\\\\\",\\\\\\\"perceptual uniformity\\\\\\\",\\\\\\\"color scales\\\\\\\",\\\\\\\"light dark parity\\\\\\\",\\\\\\\"color accessibility\\\\\\\",\\\\\\\"p3 color gamut\\\\\\\",\\\\\\\"color-mix\\\\\\\",\\\\\\\"color palette light dark mode\\\\\\\",\\\\\\\"pick color scheme\\\\\\\"]\",\"triggers\":\"[\\\\\\\"color system\\\\\\\",\\\\\\\"color palette\\\\\\\",\\\\\\\"color tokens\\\\\\\",\\\\\\\"wcag contrast\\\\\\\",\\\\\\\"oklch\\\\\\\"]\",\"examples\":\"[\\\\\\\"Build a 10-step color scale from a brand seed color with perceptually even lightness steps\\\\\\\",\\\\\\\"Map semantic intents (success, warning, danger, info) to scale colors with WCAG AA contrast against both light and dark surfaces\\\\\\\",\\\\\\\"Audit an existing palette for AA contrast failures and propose minimal changes\\\\\\\"]\",\"anti_examples\":\"[\\\\\\\"Pick the brand's primary color from scratch with no constraints\\\\\\\",\\\\\\\"Implement the prefers-color-scheme media query and toggle UI\\\\\\\",\\\\\\\"Choose spacing values for the layout grid\\\\\\\"]\",\"relations\":\"{\\\\\\\"related\\\\\\\":[\\\\\\\"theme-system-design\\\\\\\",\\\\\\\"dark-mode-implementation\\\\\\\",\\\\\\\"visual-design-foundations\\\\\\\",\\\\\\\"a11y\\\\\\\"],\\\\\\\"boundary\\\\\\\":[{\\\\\\\"skill\\\\\\\":\\\\\\\"theme-system-design\\\\\\\",\\\\\\\"reason\\\\\\\":\\\\\\\"theme-system-design structures how color decisions become tokens and reach components; this skill produces those color decisions.\\\\\\\"},{\\\\\\\"skill\\\\\\\":\\\\\\\"a11y\\\\\\\",\\\\\\\"reason\\\\\\\":\\\\\\\"a11y owns the WCAG criteria themselves; this skill applies them when constructing palettes and selecting pairings.\\\\\\\"}]}\",\"skill_graph_source_repo\":\"https://github.com/jacob-balslev/skill-graph\",\"skill_graph_protocol\":\"Skill Metadata Protocol v5\",\"skill_graph_project\":\"Skill Graph\",\"skill_graph_canonical_skill\":\"skills/color-system-design/SKILL.md\"}"
+  schema_version: "7"
+  version: "1.0.0"
+  type: capability
+  category: design
+  scope: portable
+  owner: skill-graph-maintainer
+  freshness: "2026-05-12"
+  drift_check: "{\"last_verified\":\"2026-05-12\"}"
+  eval_artifacts: planned
+  eval_state: unverified
+  routing_eval: absent
+  stability: experimental
+  keywords: "[\"color palette design\",\"semantic color tokens\",\"wcag contrast ratio\",\"apca contrast\",\"oklch color space\",\"perceptual uniformity\",\"color scales\",\"light dark parity\",\"color accessibility\",\"p3 color gamut\",\"color-mix\",\"color palette light dark mode\",\"pick color scheme\"]"
+  triggers: "[\"color system\",\"color palette\",\"color tokens\",\"wcag contrast\",\"oklch\"]"
+  examples: "[\"Build a 10-step color scale from a brand seed color with perceptually even lightness steps\",\"Map semantic intents (success, warning, danger, info) to scale colors with WCAG AA contrast against both light and dark surfaces\",\"Audit an existing palette for AA contrast failures and propose minimal changes\"]"
+  anti_examples: "[\"Pick the brand's primary color from scratch with no constraints\",\"Implement the prefers-color-scheme media query and toggle UI\",\"Choose spacing values for the layout grid\"]"
+  relations: "{\"related\":[\"theme-system-design\",\"dark-mode-implementation\",\"visual-design-foundations\",\"a11y\"],\"boundary\":[{\"skill\":\"theme-system-design\",\"reason\":\"theme-system-design structures how color decisions become tokens and reach components; this skill produces those color decisions.\"},{\"skill\":\"a11y\",\"reason\":\"a11y owns the WCAG criteria themselves; this skill applies them when constructing palettes and selecting pairings.\"}]}"
+  structural_verdict: UNVERIFIED
+  truth_verdict: UNVERIFIED
+  comprehension_verdict: UNVERIFIED
+  application_verdict: UNVERIFIED
   skill_graph_source_repo: "https://github.com/jacob-balslev/skill-graph"
-  skill_graph_protocol: Skill Metadata Protocol v4
+  skill_graph_protocol: Skill Metadata Protocol v7
   skill_graph_project: Skill Graph
-  skill_graph_canonical_skill: skills/color-system-design/SKILL.md
+  skill_graph_canonical_skill: skills/design/color-system-design/SKILL.md
 ---
 
 # Color System Design

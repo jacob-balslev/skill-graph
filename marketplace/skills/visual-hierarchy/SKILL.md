@@ -3,11 +3,31 @@ name: visual-hierarchy
 description: "Use when establishing visual hierarchy — type scale ratios, spacing rhythm, contrast as ordering signal, weight and size as importance, and the layered relationship between primary, secondary, and tertiary information. Do NOT use for content writing, information architecture, or specific color palette construction."
 license: CC-BY-4.0
 metadata:
-  metadata: "{\"schema_version\":6,\"version\":\"1.0.0\",\"type\":\"capability\",\"category\":\"design\",\"scope\":\"portable\",\"owner\":\"skill-graph-maintainer\",\"freshness\":\"2026-05-12\",\"drift_check\":\"{\\\\\\\"last_verified\\\\\\\":\\\\\\\"2026-05-12\\\\\\\"}\",\"eval_artifacts\":\"planned\",\"eval_state\":\"unverified\",\"routing_eval\":\"absent\",\"stability\":\"experimental\",\"keywords\":\"[\\\\\\\"visual hierarchy\\\\\\\",\\\\\\\"hierarchical type sizing\\\\\\\",\\\\\\\"proximity hierarchy\\\\\\\",\\\\\\\"contrast hierarchy\\\\\\\",\\\\\\\"importance ordering\\\\\\\",\\\\\\\"reading order\\\\\\\",\\\\\\\"focal point\\\\\\\",\\\\\\\"figure ground\\\\\\\",\\\\\\\"gestalt principles\\\\\\\",\\\\\\\"hierarchy through weight\\\\\\\",\\\\\\\"hierarchy through size\\\\\\\",\\\\\\\"button hierarchy\\\\\\\",\\\\\\\"primary secondary tertiary actions\\\\\\\"]\",\"triggers\":\"[\\\\\\\"visual hierarchy\\\\\\\",\\\\\\\"type as hierarchy\\\\\\\",\\\\\\\"what should the eye go to first\\\\\\\",\\\\\\\"establishing focus\\\\\\\",\\\\\\\"page hierarchy\\\\\\\"]\",\"examples\":\"[\\\\\\\"Decide the H1/H2/H3 size ratios and weight contrast for a long-form article layout\\\\\\\",\\\\\\\"Reduce visual noise on a dashboard where every element competes for attention\\\\\\\",\\\\\\\"Establish a clear primary call-to-action on a page with multiple secondary actions\\\\\\\"]\",\"anti_examples\":\"[\\\\\\\"Write the H1 copy that should appear at the top of the landing page\\\\\\\",\\\\\\\"Choose between sans-serif and serif typefaces for the brand\\\\\\\",\\\\\\\"Pick the brand's primary color\\\\\\\"]\",\"relations\":\"{\\\\\\\"related\\\\\\\":[\\\\\\\"typography-system\\\\\\\",\\\\\\\"color-system-design\\\\\\\",\\\\\\\"layout-composition\\\\\\\",\\\\\\\"visual-design-foundations\\\\\\\"],\\\\\\\"boundary\\\\\\\":[{\\\\\\\"skill\\\\\\\":\\\\\\\"typography-system\\\\\\\",\\\\\\\"reason\\\\\\\":\\\\\\\"typography-system defines the scale and the typefaces; this skill decides how to deploy them as hierarchy signals on a given surface.\\\\\\\"},{\\\\\\\"skill\\\\\\\":\\\\\\\"layout-composition\\\\\\\",\\\\\\\"reason\\\\\\\":\\\\\\\"layout-composition handles grid, alignment, and spatial structure; this skill handles the prioritization within a layout.\\\\\\\"}]}\",\"skill_graph_source_repo\":\"https://github.com/jacob-balslev/skill-graph\",\"skill_graph_protocol\":\"Skill Metadata Protocol v5\",\"skill_graph_project\":\"Skill Graph\",\"skill_graph_canonical_skill\":\"skills/visual-hierarchy/SKILL.md\"}"
+  schema_version: "7"
+  version: "1.0.0"
+  type: capability
+  category: design
+  scope: portable
+  owner: skill-graph-maintainer
+  freshness: "2026-05-12"
+  drift_check: "{\"last_verified\":\"2026-05-12\"}"
+  eval_artifacts: planned
+  eval_state: unverified
+  routing_eval: absent
+  stability: experimental
+  keywords: "[\"visual hierarchy\",\"hierarchical type sizing\",\"proximity hierarchy\",\"contrast hierarchy\",\"importance ordering\",\"reading order\",\"focal point\",\"figure ground\",\"gestalt principles\",\"hierarchy through weight\",\"hierarchy through size\",\"button hierarchy\",\"primary secondary tertiary actions\"]"
+  triggers: "[\"visual hierarchy\",\"type as hierarchy\",\"what should the eye go to first\",\"establishing focus\",\"page hierarchy\"]"
+  examples: "[\"Decide the H1/H2/H3 size ratios and weight contrast for a long-form article layout\",\"Reduce visual noise on a dashboard where every element competes for attention\",\"Establish a clear primary call-to-action on a page with multiple secondary actions\"]"
+  anti_examples: "[\"Write the H1 copy that should appear at the top of the landing page\",\"Choose between sans-serif and serif typefaces for the brand\",\"Pick the brand's primary color\"]"
+  relations: "{\"related\":[\"typography-system\",\"color-system-design\",\"layout-composition\",\"visual-design-foundations\"],\"boundary\":[{\"skill\":\"typography-system\",\"reason\":\"typography-system defines the scale and the typefaces; this skill decides how to deploy them as hierarchy signals on a given surface.\"},{\"skill\":\"layout-composition\",\"reason\":\"layout-composition handles grid, alignment, and spatial structure; this skill handles the prioritization within a layout.\"}]}"
+  structural_verdict: UNVERIFIED
+  truth_verdict: UNVERIFIED
+  comprehension_verdict: UNVERIFIED
+  application_verdict: UNVERIFIED
   skill_graph_source_repo: "https://github.com/jacob-balslev/skill-graph"
-  skill_graph_protocol: Skill Metadata Protocol v4
+  skill_graph_protocol: Skill Metadata Protocol v7
   skill_graph_project: Skill Graph
-  skill_graph_canonical_skill: skills/visual-hierarchy/SKILL.md
+  skill_graph_canonical_skill: skills/design/visual-hierarchy/SKILL.md
 ---
 
 # Visual Hierarchy

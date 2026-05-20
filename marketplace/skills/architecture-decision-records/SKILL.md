@@ -5,11 +5,33 @@ license: MIT
 compatibility: "Portable ADR discipline for Markdown decision logs, repo docs, design docs, and architecture governance."
 allowed-tools: Read Grep
 metadata:
-  metadata: "{\"schema_version\":6,\"version\":\"1.0.0\",\"type\":\"capability\",\"category\":\"engineering\",\"domain\":\"architecture/decision-records\",\"scope\":\"portable\",\"owner\":\"skill-graph-maintainer\",\"freshness\":\"2026-05-11\",\"drift_check\":\"{\\\\\\\"last_verified\\\\\\\":\\\\\\\"2026-05-11\\\\\\\"}\",\"eval_artifacts\":\"planned\",\"eval_state\":\"unverified\",\"routing_eval\":\"absent\",\"stability\":\"experimental\",\"keywords\":\"[\\\\\\\"ADR\\\\\\\",\\\\\\\"architecture decision record\\\\\\\",\\\\\\\"decision log\\\\\\\",\\\\\\\"technical decision\\\\\\\",\\\\\\\"decision consequences\\\\\\\",\\\\\\\"options rejected\\\\\\\",\\\\\\\"superseded ADR\\\\\\\",\\\\\\\"architectural rationale\\\\\\\",\\\\\\\"decision status\\\\\\\"]\",\"examples\":\"[\\\\\\\"write an ADR for choosing Postgres views as the source of truth\\\\\\\",\\\\\\\"review this architecture decision record for missing consequences and rejected options\\\\\\\",\\\\\\\"this decision changed - should we amend the ADR or supersede it?\\\\\\\",\\\\\\\"extract the decision from this long architecture discussion into a durable ADR\\\\\\\"]\",\"anti_examples\":\"[\\\\\\\"write a general README section explaining how this module works\\\\\\\",\\\\\\\"choose which framework we should use for this project\\\\\\\",\\\\\\\"review this PR for bugs and regressions\\\\\\\",\\\\\\\"design the interface contract between these two services\\\\\\\"]\",\"relations\":\"{\\\\\\\"boundary\\\\\\\":[{\\\\\\\"skill\\\\\\\":\\\\\\\"framework-fit-analysis\\\\\\\",\\\\\\\"reason\\\\\\\":\\\\\\\"framework-fit-analysis evaluates options before selection; architecture-decision-records records the selected option and tradeoffs\\\\\\\"},{\\\\\\\"skill\\\\\\\":\\\\\\\"code-review\\\\\\\",\\\\\\\"reason\\\\\\\":\\\\\\\"code-review evaluates a diff; architecture-decision-records evaluates the decision record\\\\\\\"},{\\\\\\\"skill\\\\\\\":\\\\\\\"system-interface-contracts\\\\\\\",\\\\\\\"reason\\\\\\\":\\\\\\\"system-interface-contracts designs boundaries and contracts; architecture-decision-records records the decision to adopt one\\\\\\\"}],\\\\\\\"related\\\\\\\":[\\\\\\\"framework-fit-analysis\\\\\\\",\\\\\\\"bounded-context-mapping\\\\\\\",\\\\\\\"system-interface-contracts\\\\\\\",\\\\\\\"dependency-architecture\\\\\\\"],\\\\\\\"verify_with\\\\\\\":[\\\\\\\"code-review\\\\\\\"]}\",\"portability\":\"{\\\\\\\"readiness\\\\\\\":\\\\\\\"scripted\\\\\\\",\\\\\\\"targets\\\\\\\":[\\\\\\\"skill-md\\\\\\\"]}\",\"lifecycle\":\"{\\\\\\\"stale_after_days\\\\\\\":365,\\\\\\\"review_cadence\\\\\\\":\\\\\\\"quarterly\\\\\\\"}\",\"skill_graph_source_repo\":\"https://github.com/jacob-balslev/skill-graph\",\"skill_graph_protocol\":\"Skill Metadata Protocol v5\",\"skill_graph_project\":\"Skill Graph\",\"skill_graph_canonical_skill\":\"skills/architecture-decision-records/SKILL.md\"}"
+  schema_version: "7"
+  version: "1.0.0"
+  type: capability
+  category: engineering
+  domain: architecture/decision-records
+  scope: portable
+  owner: skill-graph-maintainer
+  freshness: "2026-05-11"
+  drift_check: "{\"last_verified\":\"2026-05-11\"}"
+  eval_artifacts: planned
+  eval_state: unverified
+  routing_eval: absent
+  stability: experimental
+  keywords: "[\"ADR\",\"architecture decision record\",\"decision log\",\"technical decision\",\"decision consequences\",\"options rejected\",\"superseded ADR\",\"architectural rationale\",\"decision status\"]"
+  examples: "[\"write an ADR for choosing Postgres views as the source of truth\",\"review this architecture decision record for missing consequences and rejected options\",\"this decision changed - should we amend the ADR or supersede it?\",\"extract the decision from this long architecture discussion into a durable ADR\"]"
+  anti_examples: "[\"write a general README section explaining how this module works\",\"choose which framework we should use for this project\",\"review this PR for bugs and regressions\",\"design the interface contract between these two services\"]"
+  relations: "{\"boundary\":[{\"skill\":\"framework-fit-analysis\",\"reason\":\"framework-fit-analysis evaluates options before selection; architecture-decision-records records the selected option and tradeoffs\"},{\"skill\":\"code-review\",\"reason\":\"code-review evaluates a diff; architecture-decision-records evaluates the decision record\"},{\"skill\":\"system-interface-contracts\",\"reason\":\"system-interface-contracts designs boundaries and contracts; architecture-decision-records records the decision to adopt one\"}],\"related\":[\"framework-fit-analysis\",\"bounded-context-mapping\",\"system-interface-contracts\",\"dependency-architecture\"],\"verify_with\":[\"code-review\"]}"
+  portability: "{\"readiness\":\"scripted\",\"targets\":[\"skill-md\"]}"
+  lifecycle: "{\"stale_after_days\":365,\"review_cadence\":\"quarterly\"}"
+  structural_verdict: UNVERIFIED
+  truth_verdict: UNVERIFIED
+  comprehension_verdict: UNVERIFIED
+  application_verdict: UNVERIFIED
   skill_graph_source_repo: "https://github.com/jacob-balslev/skill-graph"
-  skill_graph_protocol: Skill Metadata Protocol v4
+  skill_graph_protocol: Skill Metadata Protocol v7
   skill_graph_project: Skill Graph
-  skill_graph_canonical_skill: skills/architecture-decision-records/SKILL.md
+  skill_graph_canonical_skill: skills/engineering/architecture-decision-records/SKILL.md
 ---
 
 # Architecture Decision Records

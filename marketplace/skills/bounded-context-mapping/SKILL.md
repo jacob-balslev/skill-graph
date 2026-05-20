@@ -5,11 +5,33 @@ license: MIT
 compatibility: "Portable DDD boundary-mapping discipline for monoliths, modular monoliths, services, event-driven systems, and agent workspaces."
 allowed-tools: Read Grep
 metadata:
-  metadata: "{\"schema_version\":6,\"version\":\"1.0.0\",\"type\":\"capability\",\"category\":\"engineering\",\"domain\":\"architecture/domain-boundaries\",\"scope\":\"portable\",\"owner\":\"skill-graph-maintainer\",\"freshness\":\"2026-05-11\",\"drift_check\":\"{\\\\\\\"last_verified\\\\\\\":\\\\\\\"2026-05-11\\\\\\\"}\",\"eval_artifacts\":\"planned\",\"eval_state\":\"unverified\",\"routing_eval\":\"absent\",\"stability\":\"experimental\",\"keywords\":\"[\\\\\\\"bounded context\\\\\\\",\\\\\\\"context map\\\\\\\",\\\\\\\"domain-driven design\\\\\\\",\\\\\\\"DDD boundary\\\\\\\",\\\\\\\"anti-corruption layer\\\\\\\",\\\\\\\"shared kernel\\\\\\\",\\\\\\\"upstream downstream\\\\\\\",\\\\\\\"conformist\\\\\\\",\\\\\\\"customer supplier\\\\\\\",\\\\\\\"domain boundary\\\\\\\"]\",\"examples\":\"[\\\\\\\"orders, fulfillment, payments, and support all use status differently - where should the bounded contexts be?\\\\\\\",\\\\\\\"map the upstream/downstream relationships before we split this module\\\\\\\",\\\\\\\"do we need an anti-corruption layer between our canonical order model and Shopify?\\\\\\\",\\\\\\\"which concepts belong to a shared kernel and which are context-local?\\\\\\\"]\",\"anti_examples\":\"[\\\\\\\"list entities, attributes, and cardinalities before any architecture decision\\\\\\\",\\\\\\\"create SQL tables, foreign keys, and indexes\\\\\\\",\\\\\\\"design REST routes and response envelopes\\\\\\\",\\\\\\\"write an ADR for the boundary decision after we already chose it\\\\\\\"]\",\"relations\":\"{\\\\\\\"boundary\\\\\\\":[{\\\\\\\"skill\\\\\\\":\\\\\\\"conceptual-modeling\\\\\\\",\\\\\\\"reason\\\\\\\":\\\\\\\"conceptual-modeling discovers domain structure before DDD boundary ownership is assigned\\\\\\\"},{\\\\\\\"skill\\\\\\\":\\\\\\\"data-modeling\\\\\\\",\\\\\\\"reason\\\\\\\":\\\\\\\"data-modeling owns persistence structure after context boundaries inform ownership\\\\\\\"},{\\\\\\\"skill\\\\\\\":\\\\\\\"api-design\\\\\\\",\\\\\\\"reason\\\\\\\":\\\\\\\"api-design owns external endpoint shape; bounded-context-mapping owns domain ownership and translation boundaries\\\\\\\"},{\\\\\\\"skill\\\\\\\":\\\\\\\"architecture-decision-records\\\\\\\",\\\\\\\"reason\\\\\\\":\\\\\\\"architecture-decision-records records a chosen decision; bounded-context-mapping analyzes the boundary before the decision is recorded\\\\\\\"}],\\\\\\\"related\\\\\\\":[\\\\\\\"event-storming\\\\\\\",\\\\\\\"system-interface-contracts\\\\\\\",\\\\\\\"conceptual-modeling\\\\\\\",\\\\\\\"architecture-decision-records\\\\\\\"],\\\\\\\"depends_on\\\\\\\":[\\\\\\\"conceptual-modeling\\\\\\\"],\\\\\\\"verify_with\\\\\\\":[\\\\\\\"semantic-relations\\\\\\\",\\\\\\\"system-interface-contracts\\\\\\\"]}\",\"portability\":\"{\\\\\\\"readiness\\\\\\\":\\\\\\\"scripted\\\\\\\",\\\\\\\"targets\\\\\\\":[\\\\\\\"skill-md\\\\\\\"]}\",\"lifecycle\":\"{\\\\\\\"stale_after_days\\\\\\\":365,\\\\\\\"review_cadence\\\\\\\":\\\\\\\"quarterly\\\\\\\"}\",\"skill_graph_source_repo\":\"https://github.com/jacob-balslev/skill-graph\",\"skill_graph_protocol\":\"Skill Metadata Protocol v5\",\"skill_graph_project\":\"Skill Graph\",\"skill_graph_canonical_skill\":\"skills/bounded-context-mapping/SKILL.md\"}"
+  schema_version: "7"
+  version: "1.0.0"
+  type: capability
+  category: engineering
+  domain: architecture/domain-boundaries
+  scope: portable
+  owner: skill-graph-maintainer
+  freshness: "2026-05-11"
+  drift_check: "{\"last_verified\":\"2026-05-11\"}"
+  eval_artifacts: planned
+  eval_state: unverified
+  routing_eval: absent
+  stability: experimental
+  keywords: "[\"bounded context\",\"context map\",\"domain-driven design\",\"DDD boundary\",\"anti-corruption layer\",\"shared kernel\",\"upstream downstream\",\"conformist\",\"customer supplier\",\"domain boundary\"]"
+  examples: "[\"orders, fulfillment, payments, and support all use status differently - where should the bounded contexts be?\",\"map the upstream/downstream relationships before we split this module\",\"do we need an anti-corruption layer between our canonical order model and Shopify?\",\"which concepts belong to a shared kernel and which are context-local?\"]"
+  anti_examples: "[\"list entities, attributes, and cardinalities before any architecture decision\",\"create SQL tables, foreign keys, and indexes\",\"design REST routes and response envelopes\",\"write an ADR for the boundary decision after we already chose it\"]"
+  relations: "{\"boundary\":[{\"skill\":\"conceptual-modeling\",\"reason\":\"conceptual-modeling discovers domain structure before DDD boundary ownership is assigned\"},{\"skill\":\"data-modeling\",\"reason\":\"data-modeling owns persistence structure after context boundaries inform ownership\"},{\"skill\":\"api-design\",\"reason\":\"api-design owns external endpoint shape; bounded-context-mapping owns domain ownership and translation boundaries\"},{\"skill\":\"architecture-decision-records\",\"reason\":\"architecture-decision-records records a chosen decision; bounded-context-mapping analyzes the boundary before the decision is recorded\"}],\"related\":[\"event-storming\",\"system-interface-contracts\",\"conceptual-modeling\",\"architecture-decision-records\"],\"depends_on\":[\"conceptual-modeling\"],\"verify_with\":[\"semantic-relations\",\"system-interface-contracts\"]}"
+  portability: "{\"readiness\":\"scripted\",\"targets\":[\"skill-md\"]}"
+  lifecycle: "{\"stale_after_days\":365,\"review_cadence\":\"quarterly\"}"
+  structural_verdict: UNVERIFIED
+  truth_verdict: UNVERIFIED
+  comprehension_verdict: UNVERIFIED
+  application_verdict: UNVERIFIED
   skill_graph_source_repo: "https://github.com/jacob-balslev/skill-graph"
-  skill_graph_protocol: Skill Metadata Protocol v4
+  skill_graph_protocol: Skill Metadata Protocol v7
   skill_graph_project: Skill Graph
-  skill_graph_canonical_skill: skills/bounded-context-mapping/SKILL.md
+  skill_graph_canonical_skill: skills/engineering/bounded-context-mapping/SKILL.md
 ---
 
 # Bounded Context Mapping

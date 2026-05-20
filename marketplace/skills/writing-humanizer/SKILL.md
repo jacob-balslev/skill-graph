@@ -2,14 +2,43 @@
 name: writing-humanizer
 description: "Use when writing or editing human-readable prose such as docs, PRs, issues, release notes, errors, UI copy, commits, tooltips, or support replies, especially when text sounds robotic, padded, monotonous, or overly formal. Covers AI-tell removal, active voice, hedging reduction, readability diagnosis, sentence rhythm, vocabulary variety, tone mapping, paragraph rhythm, bullets-vs-prose choice, and the 5-step humanization workflow. Do NOT use for documentation routing/type selection, code-identifier naming, or in-product UI-text pattern catalogs."
 license: MIT
-compatibility: "Stack-agnostic prose-humanization rules. The AI-tell catalog, voice-conversion decision tree, readability formulas, sentence-rhythm patterns, tone-mapping table, and detection-avoidance techniques apply to any human-readable text in any product domain — substitute the equivalents from your own audience and brand voice."
+compatibility: "Stack-agnostic prose-humanization rules. The AI-tell catalog, voice-conversion decision tree, readability formulas, sentence-rhythm patterns, tone-mapping table, and responsible prose-fingerprint guidance apply to any human-readable text in any product domain — substitute the equivalents from your own audience and brand voice."
 allowed-tools: Read Grep Edit
 metadata:
-  metadata: "{\"schema_version\":6,\"version\":\"1.0.0\",\"type\":\"capability\",\"category\":\"design\",\"domain\":\"design/content\",\"scope\":\"portable\",\"owner\":\"skill-graph-maintainer\",\"freshness\":\"2026-05-06\",\"drift_check\":\"{\\\\\\\"last_verified\\\\\\\":\\\\\\\"2026-05-06\\\\\\\"}\",\"eval_artifacts\":\"planned\",\"eval_state\":\"unverified\",\"routing_eval\":\"absent\",\"stability\":\"experimental\",\"keywords\":\"[\\\\\\\"AI-tell detection\\\\\\\",\\\\\\\"AI-tell removal\\\\\\\",\\\\\\\"prose humanization\\\\\\\",\\\\\\\"passive-to-active voice\\\\\\\",\\\\\\\"hedging-pattern removal\\\\\\\",\\\\\\\"readability scoring diagnosis\\\\\\\",\\\\\\\"sentence-rhythm pattern\\\\\\\",\\\\\\\"3-beat sentence variety\\\\\\\",\\\\\\\"hook-body-landing paragraph\\\\\\\",\\\\\\\"tone mapping framework\\\\\\\",\\\\\\\"AI-detection avoidance\\\\\\\",\\\\\\\"perplexity burstiness rule\\\\\\\",\\\\\\\"enumeration-trap anti-pattern\\\\\\\",\\\\\\\"hollow-intensifier removal\\\\\\\",\\\\\\\"jargon decision tree\\\\\\\",\\\\\\\"humanization 5-step workflow\\\\\\\"]\",\"examples\":\"[\\\\\\\"this PR description sounds AI-generated — strip the tells and rewrite it concisely\\\\\\\",\\\\\\\"rewrite this onboarding paragraph in the active voice with shorter average sentence length\\\\\\\",\\\\\\\"audit this release-notes draft for Tier 1 AI tells (delve, leverage, comprehensive, testament)\\\\\\\",\\\\\\\"this paragraph starts every sentence with The dashboard — rotate the openers and vary the rhythm\\\\\\\",\\\\\\\"humanize this error-message body so it stops sounding like a corporate FAQ\\\\\\\",\\\\\\\"drop the hollow intensifiers and over-qualification from this tooltip\\\\\\\",\\\\\\\"the docs team flagged this prose as robotic — apply the 5-step humanization workflow\\\\\\\"]\",\"anti_examples\":\"[\\\\\\\"decide kebab-case vs camelCase for this new database column\\\\\\\",\\\\\\\"draft the marketing headline for the pricing page with strong persuasion\\\\\\\",\\\\\\\"restructure this doc into a tutorial format with progressive disclosure\\\\\\\",\\\\\\\"rewrite this UI button label so it names the actual action instead of saying Submit\\\\\\\",\\\\\\\"rename this React component across all call-sites in the repo\\\\\\\",\\\\\\\"audit this WCAG 2.2 contrast violation on the dashboard\\\\\\\"]\",\"relations\":\"{\\\\\\\"boundary\\\\\\\":[{\\\\\\\"skill\\\\\\\":\\\\\\\"microcopy\\\\\\\",\\\\\\\"reason\\\\\\\":\\\\\\\"microcopy owns the specific in-product UX-text patterns (button labels, empty-state structure, tooltip rules, dialog rules, toast rules); writing-humanizer owns AI-tell removal and prose-rhythm rules across any human-readable text including but not limited to UI — the same 'rewrite this for humans' prompt routes by whether the surface is a specific UI pattern or any other prose\\\\\\\"},{\\\\\\\"skill\\\\\\\":\\\\\\\"linguistics\\\\\\\",\\\\\\\"reason\\\\\\\":\\\\\\\"linguistics owns the underlying language rules (morphology, polysemy, audience register as a general principle, blame-free framing); writing-humanizer owns the specific catalog of AI tells, the perplexity/burstiness fingerprint, and the 5-step humanization workflow — the same 'is this writing good?' prompt routes by whether the trigger is the linguistic rationale or the AI-fingerprint detection-and-fix\\\\\\\"}],\\\\\\\"related\\\\\\\":[\\\\\\\"linguistics\\\\\\\",\\\\\\\"microcopy\\\\\\\",\\\\\\\"semantics\\\\\\\"],\\\\\\\"verify_with\\\\\\\":[\\\\\\\"linguistics\\\\\\\"]}\",\"portability\":\"{\\\\\\\"readiness\\\\\\\":\\\\\\\"scripted\\\\\\\",\\\\\\\"targets\\\\\\\":[\\\\\\\"skill-md\\\\\\\"]}\",\"lifecycle\":\"{\\\\\\\"stale_after_days\\\\\\\":365,\\\\\\\"review_cadence\\\\\\\":\\\\\\\"quarterly\\\\\\\"}\",\"skill_graph_source_repo\":\"https://github.com/jacob-balslev/skill-graph\",\"skill_graph_protocol\":\"Skill Metadata Protocol v5\",\"skill_graph_project\":\"Skill Graph\",\"skill_graph_canonical_skill\":\"skills/writing-humanizer/SKILL.md\"}"
+  schema_version: "7"
+  version: "1.1.0"
+  type: capability
+  category: design
+  domain: design/content
+  scope: portable
+  owner: skill-graph-maintainer
+  freshness: "2026-05-18"
+  drift_check: "{\"last_verified\":\"2026-05-18\"}"
+  eval_artifacts: planned
+  eval_state: unverified
+  routing_eval: absent
+  comprehension_state: present
+  stability: experimental
+  keywords: "[\"AI-tell detection\",\"AI-tell removal\",\"prose humanization\",\"passive-to-active voice\",\"hedging-pattern removal\",\"readability scoring diagnosis\",\"sentence-rhythm pattern\",\"3-beat sentence variety\",\"hook-body-landing paragraph\",\"tone mapping framework\",\"AI detector limitations\",\"prose fingerprint cleanup\",\"perplexity burstiness caveat\",\"enumeration-trap anti-pattern\",\"hollow-intensifier removal\",\"jargon decision tree\",\"humanization 5-step workflow\"]"
+  examples: "[\"this PR description sounds AI-generated — strip the tells and rewrite it concisely\",\"rewrite this onboarding paragraph in the active voice with shorter average sentence length\",\"audit this release-notes draft for Tier 1 AI tells (delve, leverage, comprehensive, testament)\",\"this paragraph starts every sentence with The dashboard — rotate the openers and vary the rhythm\",\"humanize this error-message body so it stops sounding like a corporate FAQ\",\"drop the hollow intensifiers and over-qualification from this tooltip\",\"the docs team flagged this prose as robotic — apply the 5-step humanization workflow\"]"
+  anti_examples: "[\"decide kebab-case vs camelCase for this new database column\",\"draft the marketing headline for the pricing page with strong persuasion\",\"restructure this doc into a tutorial format with progressive disclosure\",\"rewrite this UI button label so it names the actual action instead of saying Submit\",\"rename this React component across all call-sites in the repo\",\"audit this WCAG 2.2 contrast violation on the dashboard\"]"
+  relations: "{\"boundary\":[{\"skill\":\"microcopy\",\"reason\":\"microcopy owns the specific in-product UX-text patterns (button labels, empty-state structure, tooltip rules, dialog rules, toast rules); writing-humanizer owns AI-tell removal and prose-rhythm rules across any human-readable text including but not limited to UI — the same 'rewrite this for humans' prompt routes by whether the surface is a specific UI pattern or any other prose\"},{\"skill\":\"linguistics\",\"reason\":\"linguistics owns the underlying language rules (morphology, polysemy, audience register as a general principle, blame-free framing); writing-humanizer owns the specific catalog of AI tells, the perplexity/burstiness fingerprint, and the 5-step humanization workflow — the same 'is this writing good?' prompt routes by whether the trigger is the linguistic rationale or the AI-fingerprint detection-and-fix\"}],\"related\":[\"linguistics\",\"microcopy\",\"semantics\"],\"verify_with\":[\"linguistics\"]}"
+  portability: "{\"readiness\":\"scripted\",\"targets\":[\"skill-md\"]}"
+  lifecycle: "{\"stale_after_days\":365,\"review_cadence\":\"quarterly\"}"
+  mental_model: "Writing humanization is prose-quality repair, not authorship laundering. The useful primitives are AI tells (predictable filler, hedging, passive voice, hollow intensifiers), readability signals (sentence length, paragraph density, jargon load), rhythm signals (opening-word variety, sentence-length variance, paragraph cadence), audience register, and evidence specificity. The workflow moves through those primitives in order: remove tells, clarify actors, improve readability, vary rhythm, then calibrate tone to the surface. Detector-related concepts such as perplexity and burstiness are treated as rough diagnostic signals, not proof of authorship."
+  purpose: "This skill exists because agent-written prose often carries visible artifacts of the model distribution: generic verbs, over-polished transitions, low-specificity claims, uniform paragraph shape, and needless hedging. Those artifacts make docs, PRs, UI copy, and support text feel less trustworthy even when the facts are correct. The skill replaces \\\"make it sound human\\\" as a vague style request with a repeatable edit pass that improves clarity, reader trust, and surface-appropriate tone while preserving technical accuracy."
+  boundary: "This skill does not prove whether text was written by a human or an AI, and it must not promise detector-proof output. AI-writing detectors are probabilistic and can produce false positives, especially on short, polished, or non-native-English text. Use this skill to make prose clearer, more specific, and less robotic; do not use it to misrepresent authorship, bypass academic or compliance review, design brand persuasion, choose documentation structure, or write specialized UI microcopy patterns."
+  analogy: "Writing humanization is like audio mastering: the recording may already contain the right notes, but mastering removes hiss, balances loudness, and restores dynamics so a listener can trust what they hear."
+  misconception: "The wrong mental model is that humanizing means adding slang, contractions, typos, or random sentence fragments until a detector score changes. That treats the detector as the audience. The real audience is the reader. Good humanization preserves truth, sharpens specificity, varies rhythm where it helps, and refuses edits that make the text less clear or less honest."
+  concept: "{\"definition\":\"Writing humanization is the discipline of turning robotic or AI-patterned prose into clear, direct, reader-trustworthy text while preserving truth and intent.\",\"mental_model\":\"Writing humanization is prose-quality repair, not authorship laundering. Its primitives are AI tells, readability signals, rhythm signals, audience register, evidence specificity, and detector-limit awareness.\",\"purpose\":\"The skill replaces vague requests to make writing sound human with a repeatable edit pass that improves clarity, specificity, rhythm, and trust across docs, PRs, UI-adjacent prose, and support text.\",\"boundary\":\"It does not prove authorship, promise detector-proof output, bypass review processes, design persuasive marketing, choose documentation structure, or own specialized UI microcopy patterns.\",\"taxonomy\":\"Design/content skill adjacent to linguistics, microcopy, and semantics; distinct from copywriting and documentation architecture.\",\"analogy\":\"Writing humanization is like audio mastering: the recording may already contain the right notes, but mastering removes hiss, balances loudness, and restores dynamics so a listener can trust what they hear.\",\"misconception\":\"Humanizing is not adding slang, contractions, typos, or random fragments until a detector score changes; the reader, not the detector, is the audience.\"}"
+  structural_verdict: UNVERIFIED
+  truth_verdict: UNVERIFIED
+  comprehension_verdict: UNVERIFIED
+  application_verdict: UNVERIFIED
   skill_graph_source_repo: "https://github.com/jacob-balslev/skill-graph"
-  skill_graph_protocol: Skill Metadata Protocol v4
+  skill_graph_protocol: Skill Metadata Protocol v7
   skill_graph_project: Skill Graph
-  skill_graph_canonical_skill: skills/writing-humanizer/SKILL.md
+  skill_graph_canonical_skill: skills/design/writing-humanizer/SKILL.md
 ---
 
 # Writing Humanizer
@@ -24,16 +53,16 @@ The full pipeline for transforming AI-generated or robotic text into clear, huma
 - **Sentence variety and rhythm** — the 3-beat short-long-medium pattern; sentence-structure variety checklist (declarative, compound, conditional, question+answer, fragment); opening-word rotation rule
 - **Vocabulary diversity** — repeat technical terms exactly, rotate generic verbs, avoid elegant variation; the abstract-vs-concrete table; the jargon decision tree
 - **Tone mapping** — the formal-to-casual spectrum (1–5) and a context-tone table covering API documentation, error messages, UI tooltips, commit messages, PR descriptions, release notes, issue bodies, onboarding copy, empty states, and marketing copy
-- **AI-detection avoidance** — perplexity (word predictability) and burstiness (sentence-length variance) techniques: sentence-length variance, unexpected word choices, idiomatic expressions, contractions, sentence fragments, rhetorical questions, first-person asides, specific numbers
+- **AI-detector limits and prose fingerprints** — how some detectors use probability signals such as perplexity and burstiness, why detector scores are not proof of authorship, and which clarity-preserving edits reduce robotic prose without gaming a review process
 - **Paragraph rhythm and structure** — paragraph-length rules per context, the hook-body-landing pattern, the bullets-vs-prose decision tree
 - **Anti-patterns** — over-qualification, repetitive transitions, the enumeration trap, hollow intensifiers
 - **The 5-step humanization workflow** — Tell Scan, Readability Check, Structural Rewrite, Rhythm Pass, Voice Calibration
 
 ## Philosophy
 
-AI-generated text has consistent, detectable failure modes: excessive hedging, passive voice, hollow superlatives, monotonous sentence structure, and vocabulary that signals machine authorship. Left unchecked, these patterns erode trust with human readers, trigger AI-detection tools, and produce text that is longer and less clear than necessary. Every agent in a system produces text that humans read, and every piece of that text reflects on the product.
+AI-generated text has consistent, detectable failure modes: excessive hedging, passive voice, hollow superlatives, monotonous sentence structure, and vocabulary that signals machine authorship. Left unchecked, these patterns erode trust with human readers, invite detector flags or editorial pushback, and produce text that is longer and less clear than necessary. Every agent in a system produces text that humans read, and every piece of that text reflects on the product.
 
-The mental model: human prose scores higher on **perplexity** (word unpredictability) and **burstiness** (sentence-length variance) than AI prose. The humanizer's job is to shift the linguistic fingerprint toward the human distribution *without sacrificing clarity*. Plain-language editing addressed the same underlying failure long before LLMs existed; this skill applies that discipline specifically to AI fingerprints.
+The mental model: many detector-style systems look for probability patterns such as **perplexity** (word predictability) and **burstiness** (sentence-length variance), but those signals are review clues, not authorship proof. The humanizer's job is to shift the prose toward clarity, specificity, and natural rhythm *without sacrificing honesty*. Plain-language editing addressed the same underlying failure long before LLMs existed; this skill applies that discipline to AI-era prose fingerprints.
 
 This skill is *not* about making text casual. A technical API doc can be fully humanized while staying formal. It is also not about adding contractions alone — structural uniformity is the stronger fingerprint. And it is not a substitute for copywriting; persuasion and conversion are separate concerns owned by a copywriting skill.
 
@@ -236,21 +265,23 @@ Legal/Compliance ←──── Technical Docs ←──── Product Copy ←
 
 ---
 
-## 7. AI-Detection Avoidance
+## 7. AI-Detector Limits and Prose Fingerprints
 
-AI detectors measure two properties: **perplexity** (word predictability) and **burstiness** (sentence-length variance). AI text is low-perplexity (predictable words) and low-burstiness (uniform sentence lengths).
+Treat AI-writing detector scores as probabilistic review signals, not proof. OpenAI retired its AI Text Classifier because of low accuracy and warned that classifiers should not be primary decision tools. Turnitin's own guidance suppresses low positive scores below its 20% threshold to reduce false positives. Stanford HAI reported that widely used detectors misclassified more than half of non-native-English TOEFL essays as AI-generated in one study.
 
-### Techniques That Increase Human-Likeness
+That does not mean detector-like signals are useless. Low-specificity prose, uniform sentence length, hollow intensifiers, and predictable transitions are still real writing problems. Fix them because they hurt readers, not because a score changed.
+
+### Clarity-Preserving Fingerprint Fixes
 
 | Technique | What It Does | Example |
 |-----------|--------------|---------|
-| **Sentence-length variance** | Raises burstiness score | Mix 5-word sentences with 25-word ones |
-| **Unexpected word choices** | Raises perplexity | "The API barks back a 403" vs. "The API returns a 403" |
+| **Sentence-length variance** | Restores rhythm without padding | Mix 5-word sentences with 25-word ones |
+| **Precise word choices** | Replaces generic probability-path wording | "The API rejects the token with a 403" vs. "The API returns an error" |
 | **Idiomatic expressions** | Raises perplexity | "That shipped" / "under the hood" / "the gotcha is..." |
 | **Contractions** | Natural speech pattern | "doesn't" not "does not"; "you'll" not "you will" |
 | **Sentence fragments** | Burstiness spike | "Not ideal." / "Three reasons." / "Here's why." |
 | **Rhetorical questions** | Pattern break | "Why does this matter?" before an explanation |
-| **First-person asides** | Personal voice signal | "(I ran into this on the webhook handler)" |
+| **Evidence-specific asides** | Personal or project-specific signal when true | "(This failed in the webhook handler during retry testing)" |
 | **Specific numbers / names** | Concrete detail | "The 847th order" vs. "a particular order" |
 
 ### What NOT to Do
@@ -259,6 +290,14 @@ AI detectors measure two properties: **perplexity** (word predictability) and **
 - Do **not** use obscure vocabulary just to raise perplexity.
 - Do **not** sacrifice clarity for detection avoidance — clarity always wins.
 - Do **not** apply these techniques to code comments or strict API docs (precision over personality there).
+- Do **not** promise that text will pass a detector, and do not claim human authorship when AI was materially involved.
+
+### Source Notes
+
+- [OpenAI's AI Text Classifier notice](https://openai.com/index/new-ai-classifier-for-indicating-ai-written-text/) says the tool is unavailable because of low accuracy and should not be used as a primary decision-making tool.
+- [Turnitin's AI Writing Report guidance](https://guides.turnitin.com/hc/en-us/articles/22774058814093-Using-the-AI-Writing-Report) suppresses scores above 0% and below 20% to reduce false-positive risk.
+- [Stanford HAI's detector-bias report](https://hai.stanford.edu/news/ai-detectors-biased-against-non-native-english-writers) documents elevated false positives for non-native-English writing.
+- [Digital.gov plain-language guidance](https://digital.gov/guides/plain-language/writing/) supports active voice, audience-first wording, and clear sentence structure as readability practices independent of AI detection.
 
 ---
 
@@ -365,6 +404,7 @@ Before finalizing any humanized text, confirm:
 - [ ] Tone matches the context (section 6 tone table)
 - [ ] Concrete details used instead of abstract claims (section 5)
 - [ ] No metacommentary in output ("Here is the humanized version:")
+- [ ] No claim that the output is detector-proof or human-authored when AI was materially involved
 
 ## Do NOT Use When
 

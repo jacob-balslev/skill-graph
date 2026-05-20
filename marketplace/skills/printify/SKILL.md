@@ -3,11 +3,32 @@ name: printify
 description: "Use when working with Printify — the print-on-demand REST API, catalog model (blueprints, print providers, variants, print areas), product creation and publish lifecycle to connected channels, order routing, shipping cost queries, and HMAC SHA-256 webhook verification. Do NOT use for non-Printify POD vendors, generic Shopify storefront work, or print-file (artwork) generation."
 license: CC-BY-4.0
 metadata:
-  metadata: "{\"schema_version\":6,\"version\":\"1.0.0\",\"type\":\"capability\",\"category\":\"engineering\",\"domain\":\"engineering/integrations\",\"scope\":\"portable\",\"owner\":\"skill-graph-maintainer\",\"freshness\":\"2026-05-12\",\"drift_check\":\"{\\\\\\\"last_verified\\\\\\\":\\\\\\\"2026-05-12\\\\\\\"}\",\"eval_artifacts\":\"planned\",\"eval_state\":\"unverified\",\"routing_eval\":\"absent\",\"stability\":\"experimental\",\"keywords\":\"[\\\\\\\"printify api\\\\\\\",\\\\\\\"print on demand\\\\\\\",\\\\\\\"printify blueprints\\\\\\\",\\\\\\\"printify print providers\\\\\\\",\\\\\\\"printify publish lifecycle\\\\\\\",\\\\\\\"printify webhooks\\\\\\\",\\\\\\\"printify variants\\\\\\\",\\\\\\\"printify shipping costs\\\\\\\",\\\\\\\"printify order routing\\\\\\\",\\\\\\\"print provider catalog\\\\\\\"]\",\"triggers\":\"[\\\\\\\"printify\\\\\\\",\\\\\\\"printify api\\\\\\\",\\\\\\\"printify webhook\\\\\\\",\\\\\\\"print on demand\\\\\\\"]\",\"examples\":\"[\\\\\\\"Create a Printify product from a blueprint + print provider + variant set and publish it to a connected Shopify store\\\\\\\",\\\\\\\"Handle a Printify order:updated webhook and reconcile fulfillment status\\\\\\\",\\\\\\\"Resolve shipping cost for a basket of Printify variants given a destination country\\\\\\\"]\",\"anti_examples\":\"[\\\\\\\"Generate the artwork PNG file that gets uploaded as a print file\\\\\\\",\\\\\\\"Implement the Shopify side of the Printify-to-Shopify sync\\\\\\\",\\\\\\\"Design a generic POD-vendor-agnostic product schema\\\\\\\"]\",\"relations\":\"{\\\\\\\"related\\\\\\\":[\\\\\\\"shopify\\\\\\\",\\\\\\\"webhook-integration\\\\\\\",\\\\\\\"api-design\\\\\\\"],\\\\\\\"boundary\\\\\\\":[{\\\\\\\"skill\\\\\\\":\\\\\\\"shopify\\\\\\\",\\\\\\\"reason\\\\\\\":\\\\\\\"Printify publishes to Shopify (and other channels) but the Shopify-side concerns — theme display, Shopify webhooks, Admin API — belong in the shopify skill.\\\\\\\"},{\\\\\\\"skill\\\\\\\":\\\\\\\"webhook-integration\\\\\\\",\\\\\\\"reason\\\\\\\":\\\\\\\"webhook-integration covers vendor-neutral signing/retry patterns; this skill handles Printify's specific event types and signature scheme.\\\\\\\"}]}\",\"skill_graph_source_repo\":\"https://github.com/jacob-balslev/skill-graph\",\"skill_graph_protocol\":\"Skill Metadata Protocol v5\",\"skill_graph_project\":\"Skill Graph\",\"skill_graph_canonical_skill\":\"skills/printify/SKILL.md\"}"
+  schema_version: "7"
+  version: "1.0.0"
+  type: capability
+  category: engineering
+  domain: engineering/integrations
+  scope: portable
+  owner: skill-graph-maintainer
+  freshness: "2026-05-12"
+  drift_check: "{\"last_verified\":\"2026-05-12\"}"
+  eval_artifacts: planned
+  eval_state: unverified
+  routing_eval: absent
+  stability: experimental
+  keywords: "[\"printify api\",\"print on demand\",\"printify blueprints\",\"printify print providers\",\"printify publish lifecycle\",\"printify webhooks\",\"printify variants\",\"printify shipping costs\",\"printify order routing\",\"print provider catalog\"]"
+  triggers: "[\"printify\",\"printify api\",\"printify webhook\",\"print on demand\"]"
+  examples: "[\"Create a Printify product from a blueprint + print provider + variant set and publish it to a connected Shopify store\",\"Handle a Printify order:updated webhook and reconcile fulfillment status\",\"Resolve shipping cost for a basket of Printify variants given a destination country\"]"
+  anti_examples: "[\"Generate the artwork PNG file that gets uploaded as a print file\",\"Implement the Shopify side of the Printify-to-Shopify sync\",\"Design a generic POD-vendor-agnostic product schema\"]"
+  relations: "{\"related\":[\"shopify\",\"webhook-integration\",\"api-design\"],\"boundary\":[{\"skill\":\"shopify\",\"reason\":\"Printify publishes to Shopify (and other channels) but the Shopify-side concerns — theme display, Shopify webhooks, Admin API — belong in the shopify skill.\"},{\"skill\":\"webhook-integration\",\"reason\":\"webhook-integration covers vendor-neutral signing/retry patterns; this skill handles Printify's specific event types and signature scheme.\"}]}"
+  structural_verdict: UNVERIFIED
+  truth_verdict: UNVERIFIED
+  comprehension_verdict: UNVERIFIED
+  application_verdict: UNVERIFIED
   skill_graph_source_repo: "https://github.com/jacob-balslev/skill-graph"
-  skill_graph_protocol: Skill Metadata Protocol v4
+  skill_graph_protocol: Skill Metadata Protocol v7
   skill_graph_project: Skill Graph
-  skill_graph_canonical_skill: skills/printify/SKILL.md
+  skill_graph_canonical_skill: skills/engineering/printify/SKILL.md
 ---
 
 # Printify

@@ -5,11 +5,41 @@ license: MIT
 compatibility: "Provider-agnostic. The zone model, 80% rule, persistence hierarchy, and token-reduction techniques apply across Anthropic, OpenAI, Google, and open-weight contexts of any size. Specific token figures are illustrative — substitute the figures of the model you actually run."
 allowed-tools: Read Grep
 metadata:
-  metadata: "{\"schema_version\":6,\"version\":\"1.0.0\",\"type\":\"capability\",\"category\":\"agent\",\"domain\":\"agent/context\",\"scope\":\"portable\",\"owner\":\"skill-graph-maintainer\",\"freshness\":\"2026-05-06\",\"drift_check\":\"{\\\\\\\"last_verified\\\\\\\":\\\\\\\"2026-05-06\\\\\\\"}\",\"eval_artifacts\":\"planned\",\"eval_state\":\"unverified\",\"routing_eval\":\"absent\",\"stability\":\"experimental\",\"keywords\":\"[\\\\\\\"context window management\\\\\\\",\\\\\\\"context budget allocation\\\\\\\",\\\\\\\"80% compaction rule\\\\\\\",\\\\\\\"context health states\\\\\\\",\\\\\\\"pre-compact hook\\\\\\\",\\\\\\\"post-compact recovery\\\\\\\",\\\\\\\"cross-session persistence hierarchy\\\\\\\",\\\\\\\"token consumption per operation\\\\\\\",\\\\\\\"deterministic cli vs mcp tool result tokens\\\\\\\",\\\\\\\"targeted file read offset limit\\\\\\\",\\\\\\\"progressive skill disclosure\\\\\\\",\\\\\\\"grep before reading files\\\\\\\",\\\\\\\"1M context window strategy\\\\\\\",\\\\\\\"200K context window strategy\\\\\\\",\\\\\\\"128K context window strategy\\\\\\\",\\\\\\\"checkpoint before compact\\\\\\\",\\\\\\\"continuation signal\\\\\\\",\\\\\\\"what survives compaction\\\\\\\"]\",\"examples\":\"[\\\\\\\"the agent's tool results are starting to truncate — what state are we in and what should I do next?\\\\\\\",\\\\\\\"I have a 1M-context model — does that mean I can ignore budget management?\\\\\\\",\\\\\\\"the session is at 75% context — should I compact now or finish the current operation first?\\\\\\\",\\\\\\\"I just compacted and lost the decision trail; what should the pre-compact hook have preserved?\\\\\\\",\\\\\\\"the agent reads 5 files looking for a function and burns 100K tokens — what's the right pattern?\\\\\\\",\\\\\\\"I'm running on a 128K-context model — what's the per-task budget I can plan against?\\\\\\\",\\\\\\\"what survives compaction and what doesn't, ranked from most to least durable?\\\\\\\",\\\\\\\"the skill payload is 30K and I haven't even read a file yet — how do I shrink it?\\\\\\\"]\",\"anti_examples\":\"[\\\\\\\"decide what context to load or drop in the working set\\\\\\\",\\\\\\\"design the multi-graph architecture for skills + docs + memory\\\\\\\",\\\\\\\"improve the prompt template the agent uses\\\\\\\",\\\\\\\"curate the durable memory index across sessions\\\\\\\",\\\\\\\"which skill should activate for this query\\\\\\\",\\\\\\\"review this AI-generated PR for correctness\\\\\\\",\\\\\\\"the README has drifted from the actual CLI flags — which wins?\\\\\\\",\\\\\\\"the docs have drifted from the code — which is canonical?\\\\\\\"]\",\"relations\":\"{\\\\\\\"boundary\\\\\\\":[{\\\\\\\"skill\\\\\\\":\\\\\\\"context-management\\\\\\\",\\\\\\\"reason\\\\\\\":\\\\\\\"context-management decides what to load and drop in the working set; context-window is the budget math underneath that decides how much fits and when to compact\\\\\\\"},{\\\\\\\"skill\\\\\\\":\\\\\\\"context-graph\\\\\\\",\\\\\\\"reason\\\\\\\":\\\\\\\"context-graph maps the static topology of skills / docs / memory; context-window is the runtime budget for the part of that topology that is actually loaded\\\\\\\"},{\\\\\\\"skill\\\\\\\":\\\\\\\"tool-call-strategy\\\\\\\",\\\\\\\"reason\\\\\\\":\\\\\\\"tool-call-strategy decides which tool to invoke; context-window decides how much budget the result of that tool is allowed to occupy\\\\\\\"},{\\\\\\\"skill\\\\\\\":\\\\\\\"prompt-craft\\\\\\\",\\\\\\\"reason\\\\\\\":\\\\\\\"prompt-craft is wording / structure of one prompt; context-window is the per-session budget the prompt and its results live within\\\\\\\"}],\\\\\\\"related\\\\\\\":[\\\\\\\"context-management\\\\\\\",\\\\\\\"context-graph\\\\\\\",\\\\\\\"tool-call-strategy\\\\\\\",\\\\\\\"context-engineering\\\\\\\"],\\\\\\\"verify_with\\\\\\\":[\\\\\\\"context-management\\\\\\\"]}\",\"portability\":\"{\\\\\\\"readiness\\\\\\\":\\\\\\\"scripted\\\\\\\",\\\\\\\"targets\\\\\\\":[\\\\\\\"skill-md\\\\\\\"]}\",\"lifecycle\":\"{\\\\\\\"stale_after_days\\\\\\\":180,\\\\\\\"review_cadence\\\\\\\":\\\\\\\"quarterly\\\\\\\"}\",\"skill_graph_source_repo\":\"https://github.com/jacob-balslev/skill-graph\",\"skill_graph_protocol\":\"Skill Metadata Protocol v5\",\"skill_graph_project\":\"Skill Graph\",\"skill_graph_canonical_skill\":\"skills/context-window/SKILL.md\",\"skill_graph_export_description\":\"shortened for Agent Skills 1024-character description limit; canonical source keeps the full routing contract\",\"skill_graph_canonical_description_length\":\"1352\"}"
+  schema_version: "7"
+  version: "1.1.0"
+  type: capability
+  category: agent
+  domain: agent/context
+  scope: portable
+  owner: skill-graph-maintainer
+  freshness: "2026-05-18"
+  drift_check: "{\"last_verified\":\"2026-05-18\"}"
+  eval_artifacts: planned
+  eval_state: unverified
+  routing_eval: absent
+  comprehension_state: present
+  stability: experimental
+  keywords: "[\"context window management\",\"context budget allocation\",\"80% compaction rule\",\"context health states\",\"pre-compact hook\",\"post-compact recovery\",\"cross-session persistence hierarchy\",\"token consumption per operation\",\"deterministic cli vs mcp tool result tokens\",\"targeted file read offset limit\",\"progressive skill disclosure\",\"grep before reading files\",\"1M context window strategy\",\"200K context window strategy\",\"128K context window strategy\",\"checkpoint before compact\",\"continuation signal\",\"what survives compaction\"]"
+  examples: "[\"the agent's tool results are starting to truncate — what state are we in and what should I do next?\",\"I have a 1M-context model — does that mean I can ignore budget management?\",\"the session is at 75% context — should I compact now or finish the current operation first?\",\"I just compacted and lost the decision trail; what should the pre-compact hook have preserved?\",\"the agent reads 5 files looking for a function and burns 100K tokens — what's the right pattern?\",\"I'm running on a 128K-context model — what's the per-task budget I can plan against?\",\"what survives compaction and what doesn't, ranked from most to least durable?\",\"the skill payload is 30K and I haven't even read a file yet — how do I shrink it?\"]"
+  anti_examples: "[\"decide what context to load or drop in the working set\",\"design the multi-graph architecture for skills + docs + memory\",\"improve the prompt template the agent uses\",\"curate the durable memory index across sessions\",\"which skill should activate for this query\",\"review this AI-generated PR for correctness\",\"the README has drifted from the actual CLI flags — which wins?\",\"the docs have drifted from the code — which is canonical?\"]"
+  relations: "{\"boundary\":[{\"skill\":\"context-management\",\"reason\":\"context-management decides what to load and drop in the working set; context-window is the budget math underneath that decides how much fits and when to compact\"},{\"skill\":\"context-graph\",\"reason\":\"context-graph maps the static topology of skills / docs / memory; context-window is the runtime budget for the part of that topology that is actually loaded\"},{\"skill\":\"tool-call-strategy\",\"reason\":\"tool-call-strategy decides which tool to invoke; context-window decides how much budget the result of that tool is allowed to occupy\"},{\"skill\":\"prompt-craft\",\"reason\":\"prompt-craft is wording / structure of one prompt; context-window is the per-session budget the prompt and its results live within\"}],\"related\":[\"context-management\",\"context-graph\",\"tool-call-strategy\",\"context-engineering\"],\"verify_with\":[\"context-management\"]}"
+  grounding: "{\"domain_object\":\"Runtime context-window budgeting and compaction discipline for LLM agents\",\"grounding_mode\":\"hybrid\",\"truth_sources\":[\"https://platform.claude.com/docs/en/build-with-claude/context-windows\",\"https://ai.google.dev/gemini-api/docs/long-context\",\"https://developers.openai.com/api/docs/models/compare\",\"https://github.com/jacob-balslev/skills/blob/main/skills/context-engineering/SKILL.md\",\"https://github.com/jacob-balslev/skills/blob/main/skills/context-management/SKILL.md\",\"https://github.com/jacob-balslev/skills/blob/main/skills/tool-call-strategy/SKILL.md\"],\"failure_modes\":[\"large_context_treated_as_unlimited\",\"output_headroom_not_reserved\",\"compaction_started_after_overflow\",\"mixed_git_tree_committed_before_compaction\",\"raw_tool_results_preserved_after_distillation\"],\"evidence_priority\":\"equal\"}"
+  portability: "{\"readiness\":\"scripted\",\"targets\":[\"skill-md\"]}"
+  lifecycle: "{\"stale_after_days\":180,\"review_cadence\":\"quarterly\"}"
+  mental_model: "A context window is finite working memory shared by instructions, tools, skills, conversation history, tool results, reasoning/output budget, and files. Budget management is a runtime accounting loop: know the model's actual limit, reserve output and recovery headroom, measure the active working set, compact or checkpoint before overflow, and promote durable state out of live context before it can be lost."
+  purpose: "This skill prevents long-running agent sessions from failing because they treated a large context window as unlimited, kept raw tool results after extracting facts, or began compaction too late to preserve the decision trail. It gives practical budget zones, health states, compaction timing, and recovery rules that compose with context-management and tool-call-strategy."
+  boundary: "This skill owns quantitative capacity planning and compaction timing. It does not decide which facts belong in the working set, design the context graph, write prompt wording, curate long-term memory, or choose the next tool; those skills consume its budget guidance."
+  analogy: "Context-window management is like scuba air management: a large tank lets you dive longer, but you still track pressure, reserve enough air for ascent, and surface before the gauge is empty."
+  misconception: "The common mistake is believing a larger window removes the need for discipline. Large windows expand the failure radius: bigger raw dumps, longer stale threads, and more expensive overflow. Good management keeps the window useful, not merely full."
+  concept: "{\"definition\":\"Context-window management is the practice of allocating and protecting the finite token budget available to an LLM call or agent session, including instructions, tool schemas, injected skills, conversation history, tool results, retrieved files, and output headroom.\",\"mental_model\":\"Treat the window as working memory with a gauge. Every added message, tool result, file slice, image, or reasoning/output allocation consumes capacity. The operating loop is measure, reserve headroom, narrow inputs, checkpoint durable state, compact before overflow, and rebuild selectively after compaction.\",\"purpose\":\"It keeps long-running agent work from losing state or degrading quality when the active context becomes too large, noisy, or close to the model limit.\",\"boundary\":\"It is budget math and compaction timing, not qualitative working-set selection, prompt writing, graph topology, memory curation, or per-tool choice. It tells neighboring skills how much room they have and when the session must checkpoint or compact.\",\"taxonomy\":\"Core levers include zone budgeting, health-state thresholds, output headroom, tool-result shaping, targeted reads, progressive skill disclosure, compaction checkpoints, persistence hierarchy, and model-class strategy.\",\"analogy\":\"Context-window management is like scuba air management: a large tank lets you dive longer, but you still track pressure, reserve enough air for ascent, and surface before the gauge is empty.\",\"misconception\":\"A 1M-token window is not infinite. It delays overflow but does not remove context pollution, stale assumptions, output-headroom needs, or the cost of raw dumps.\"}"
+  structural_verdict: UNVERIFIED
+  truth_verdict: UNVERIFIED
+  comprehension_verdict: UNVERIFIED
+  application_verdict: UNVERIFIED
   skill_graph_source_repo: "https://github.com/jacob-balslev/skill-graph"
-  skill_graph_protocol: Skill Metadata Protocol v4
+  skill_graph_protocol: Skill Metadata Protocol v7
   skill_graph_project: Skill Graph
-  skill_graph_canonical_skill: skills/context-window/SKILL.md
+  skill_graph_canonical_skill: skills/agent/context/context-window/SKILL.md
 ---
 
 # Context Window
@@ -25,6 +55,10 @@ The context window is the agent's _working memory_. Unlike human memory, it has 
 The trap of large windows is the assumption that they are _effectively_ unlimited. A 1M-token window feels infinite until a single 2000-line file read consumes 30K, three of those plus a long tool-result chain pushes past 200K, and the agent is at 60% before any real implementation has happened. The ceiling is real, and it is closer than the headline number suggests. Discipline at 200K is identical to discipline at 1M; only the absolute numbers move.
 
 The 80% rule exists because compaction is _itself_ an operation that needs budget. Hitting 100% mid-operation loses the operation. Compacting at 80% preserves it — the remaining 20% pays for the act of preserving.
+
+## Source Notes
+
+Current vendor docs agree on the central budget shape: the context window is a finite store for prior conversation and current-turn input, and output or thinking/tool-use behavior also competes for capacity in provider-specific ways. Anthropic's context-window docs describe conversation history accumulating across turns, 200K and 1M Claude classes, context awareness, tool-result and extended-thinking nuances, and server-side compaction / context editing options. Google's Gemini long-context guide frames long context as short-term memory, notes 1M+ token Gemini windows, and still recommends optimization techniques such as context caching for high-input workloads. OpenAI's model comparison docs expose model-specific context-window and max-output-token values, which is the operational reminder that planning must use the actual model selected at runtime, not a generic "frontier model" assumption.
 
 ## Zone Model
 
@@ -42,12 +76,14 @@ The exact share varies by model, harness, and task type. The zones are useful be
 
 Replace these illustrative figures with the actual figures of your runtime — they shift over time and across vendors.
 
-| Model class                                                  | Total context | Typical system overhead | Practical working budget |
-| ------------------------------------------------------------ | ------------- | ----------------------- | ------------------------ |
-| Frontier 1M-context (Anthropic Opus / Sonnet 1M tier)        | ~1,000,000    | ~70K                    | ~930K                    |
-| Frontier 200K-context (default tier of most frontier models) | ~200,000      | ~70K                    | ~130K                    |
-| Long-context Haiku class                                     | ~200,000      | ~50K                    | ~150K                    |
-| ~128K class (some OpenAI / open-weight)                      | ~128,000      | ~20K                    | ~108K                    |
+| Model class | Total context | Reserve first | Practical working budget |
+|---|---:|---:|---:|
+| 1M+ long-context class | ~1,000,000+ | output headroom + system/tool/schema overhead | model limit minus reserved output and fixed overhead |
+| 400K long-context class | ~400,000 | output headroom + system/tool/schema overhead | model limit minus reserved output and fixed overhead |
+| 200K long-context class | ~200,000 | output headroom + system/tool/schema overhead | model limit minus reserved output and fixed overhead |
+| ~128K class | ~128,000 | output headroom + system/tool/schema overhead | model limit minus reserved output and fixed overhead |
+
+Do not copy these classes into a capacity claim. Check the provider's model page for the exact model, then subtract: system prompt, tool schemas, always-loaded rules, injected skills, conversation history that must remain visible, and a realistic `max_tokens` / output reserve. A request that fits the input window can still fail the task if it leaves no room to answer.
 
 ## Context Health States
 
@@ -81,14 +117,14 @@ Hitting 100% mid-operation loses work. Compacting at 80% preserves it.
 
 Before triggering compaction:
 
-1. **Commit any uncommitted changes** — git work survives compaction; live context does not.
+1. **Durably checkpoint intended changes** — commit, stage, or write a patch/notes file for work you own; do not blanket-commit an unrelated dirty tree.
 2. **Write the continuation signal** — the next-session contract: active task, current question, remaining work.
 3. **Update any loop or task checkpoint** — advance the recorded phase to the actual phase.
 4. **Save critical state** — anything that cannot be re-derived from git history or files on disk goes into a durable artefact now.
 
 ### Pre-compact hook
 
-A pre-compact hook is the deterministic enforcer of the checklist. The hook captures, at minimum:
+A pre-compact hook, closeout script, or manual checklist is the deterministic enforcer of the checklist. It captures, at minimum:
 
 - The active task identifier and the current question
 - The agent mode / phase
@@ -96,7 +132,7 @@ A pre-compact hook is the deterministic enforcer of the checklist. The hook capt
 - The current context-health state
 - A small bag of custom state (whatever the runtime needs to resume)
 
-Any runtime that supports compaction without a pre-compact hook is _one accidental compaction away from losing the decision trail_. The hook is not optional infrastructure for any session that runs more than a few minutes.
+Any runtime that supports compaction without a checkpoint mechanism is _one accidental compaction away from losing the decision trail_. The mechanism can be a hook, a closeout command, or a human-run checklist, but it must be repeatable and fast.
 
 ### Post-compact recovery
 
@@ -187,19 +223,19 @@ The hierarchy drives the pre-compact checklist: anything that lives only at leve
 When starting a complex multi-step task:
 
 1. Break it into subtasks each of which can complete inside one context window
-2. After each subtask: commit + update checkpoint + write continuation signal
+2. After each subtask: checkpoint intended changes + update state + write continuation signal
 3. If a subtask risks exceeding the budget mid-flight, split further or read fewer files
 
-The rhythm is: small unit → commit → checkpoint → next unit. Compaction becomes a routine boundary instead of a crisis.
+The rhythm is: small unit → durable checkpoint → state update → next unit. Compaction becomes a routine boundary instead of a crisis.
 
 ## Per-Model-Class Strategies
 
-| Model class                                 | Typical task sizing                                     | Compaction cadence      | Key disciplines                                                         |
-| ------------------------------------------- | ------------------------------------------------------- | ----------------------- | ----------------------------------------------------------------------- |
-| 1M context (frontier Opus / Sonnet 1M tier) | 5–10 file reads + full implementation per session       | After 3–4 complex tasks | Progressive skill disclosure; targeted reads still required             |
-| 200K context (default frontier tier)        | 2–4 file reads + one focused implementation per session | After every 2 tasks     | Aggressive search-before-read; skill targeting; offset+limit reads      |
-| Long-context Haiku class                    | 2–3 file reads per task                                 | After every task        | Minimise skill payload; targeted labels only; commit between tasks      |
-| ~128K class                                 | 1 task per session                                      | Hard boundary           | Count-mode first; read only essentials; one verification step at a time |
+| Model class | Typical task sizing | Compaction cadence | Key disciplines |
+|---|---|---|---|
+| 1M+ context | Multiple focused reads and one substantial implementation or audit batch | After several logical units, or earlier if tool results get noisy | Progressive skill disclosure; targeted reads still required |
+| 400K context | A focused multi-file implementation or one medium audit batch | At each clean milestone | Reserve output headroom; narrow broad searches before reading |
+| 200K context | A focused implementation or audit item | After one to two logical units | Aggressive search-before-read; skill targeting; line-range reads |
+| ~128K class | One narrow task | Hard boundary | Count-mode first; read only essentials; one verification step at a time |
 
 A 1M window is not a license to ignore the rules — it just shifts the breaking point further out. Apply the same discipline; the budget math just lets you run longer between compactions.
 
@@ -218,13 +254,14 @@ A 1M window is not a license to ignore the rules — it just shifts the breaking
 ## Verification
 
 - [ ] The current context-health state has been correctly classified as `ok`, `compact`, or `exhausted` based on actual usage estimates
-- [ ] The pre-compact checklist has been followed before any compaction (commit, continuation signal, checkpoint, custom state)
-- [ ] A pre-compact hook is installed and runs deterministically — compaction is never invoked without it firing
+- [ ] The pre-compact checklist has been followed before any compaction (durable checkpoint, continuation signal, state update, custom state)
+- [ ] A pre-compact hook, closeout script, or manual checklist runs deterministically enough that compaction never happens without a checkpoint
 - [ ] File reads use `offset` + `limit` targeting for any file beyond ~200 lines
 - [ ] The session prefers deterministic CLI / scripted tool paths over heavy MCP-style result dumps where both exist
 - [ ] No compaction has been triggered at 100% — the 80% rule has been respected
 - [ ] What needs to survive the session has been promoted from live context to git / files / durable memory before any compaction
 - [ ] The active model's actual context budget (not assumed budget) is the planning baseline
+- [ ] Output / reasoning headroom is reserved before declaring the working set safe
 
 ## Do NOT Use When
 

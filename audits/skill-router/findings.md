@@ -40,9 +40,9 @@ ID: F3
 Severity: P3
 Surface: skills/skill-router/SKILL.md — metadata.skill_graph_protocol
 Category: Schema migration
-Problem: The `skill_graph_protocol` field says "Skill Metadata Protocol v5" but `schema_version` is 6.
-Evidence: `skill_graph_protocol: Skill Metadata Protocol v5` alongside `schema_version: 6`.
-Required action: Update to "Skill Metadata Protocol v6" in next skill edit.
+Problem: The `skill_graph_protocol` field says "Skill Metadata Protocol v5" but `schema_version` is 7.
+Evidence: `skill_graph_protocol: Skill Metadata Protocol v5` alongside `schema_version: 7`.
+Required action: Update to "Skill Metadata Protocol v7" in next skill edit.
 
 ID: F4
 Severity: P4
