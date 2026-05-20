@@ -174,9 +174,11 @@ Source ledger: `skill-graph/data/publication-classification.json`
 | 135 | `value-engineering` | 2 | port | no | niche | no | 76 | value engineering methodology |
 | 136 | `visual-design` | 2 | port | no | niche | no | 136 | dup of `visual-design-foundations` — merge |
 
-## Conflicts (53)
+## Conflicts (53) — RESOLVED 2026-05-20 (manual reconciliation; generator dangling)
 
-Ledger classification disagrees with manifest scope. Resolve before next publication batch.
+> **Resolved 2026-05-20 by evidence-based review of all 53 `SKILL.md` files.** Every one is `scope: operational|reference` — the "Manifest Scope: shared" column reflects shared-tree *location*, not publishable scope, so the mismatch was a false positive. **51 reference Sales Hub / Shopify / Stripe / customer data and stay `sales-hub-bound`; 2 (`cost-aggregation`, `system-watchdog`) were agent-orchestration personal-infra and were reclassified to `personal-infra`.** All 53 are confirmed **NON-publishable** and are already excluded by the marketplace export gate (`scope: operational`); they do **not** block the Tier-S publish set (which is disjoint from this list). Source of truth + full record: `data/publication-classification.json § conflict_resolution`.
+>
+> **Follow-ups (separate tasks):** (1) the worklist/queue generator shim `scripts/skill/build-skill-audit-worklist.js` is **dangling** — it `require()`s `skill-audit-loop/src/build-skill-audit-worklist.js`, which no longer exists (skill-audit-loop is an archived docs-only mirror per ADR 0009); this queue cannot be regenerated until the shim is repointed into `skill-graph`. (2) ~20–25 of the kept-excluded skills look generic with only incidental Sales Hub examples — candidates for a deliberate `port + sanitize → publishable` pass, but each needs a per-skill content review (an automated heuristic misclassified clear Sales Hub skills, so no skill was flipped toward publishable here). The table below is retained as the pre-resolution evidence snapshot.
 
 | Skill | Ledger | Manifest Scope | Reason |
 | --- | --- | --- | --- |

@@ -1,6 +1,6 @@
 {
   "schema_version": "1.0.0",
-  "last_updated": "2026-05-18T10:55:00.026Z",
+  "last_updated": "2026-05-20T20:40:55.061Z",
   "source_of_classifications": "skill-graph/docs/_archived/marketplace-publication-priority-2026-05-18.md",
   "description": "Per-skill publication classification + market-state attributes for the OSS marketplace surface. Seeded once from the 2026-05-18 priority doc; hand-edited going forward. Consumed by skill-audit-loop/src/build-skill-audit-worklist.js to build publicationQueue in the unified worklist JSON.",
   "classifications": {
@@ -1291,10 +1291,10 @@
       "notes": "References Sales-Hub-internal schemas/flows"
     },
     "cost-aggregation": {
-      "classification": "sales-hub-bound",
+      "classification": "personal-infra",
       "tier": null,
       "pop_score": null,
-      "notes": "References Sales-Hub-internal schemas/flows"
+      "notes": "Agent-orchestration cost tracking across this repo's model subscriptions (Claude MAX/Copilot/etc.); monorepo-specific, no external audience."
     },
     "credential-encryption": {
       "classification": "sales-hub-bound",
@@ -1495,10 +1495,10 @@
       "notes": "References Sales-Hub-internal schemas/flows"
     },
     "system-watchdog": {
-      "classification": "sales-hub-bound",
+      "classification": "personal-infra",
       "tier": null,
       "pop_score": null,
-      "notes": "References Sales-Hub-internal schemas/flows"
+      "notes": "Autonomous watchdog loop for this repo's agent orchestration (stale-claim release, loop monitoring); no external audience."
     },
     "temporal-data-patterns": {
       "classification": "sales-hub-bound",
@@ -1698,5 +1698,19 @@
       "pop_score": null,
       "notes": "Internal to ~/Development monorepo orchestration"
     }
+  },
+  "conflict_resolution": {
+    "resolved_at": "2026-05-20T20:40:55.061Z",
+    "by": "audit (Opus 4.7) — evidence-based content scan",
+    "scope": "The 53 ledger-vs-manifest conflicts flagged in marketplace-publication-queue.generated.md (ledger=sales-hub-bound vs queue \"shared\").",
+    "method": "Read every conflicting SKILL.md frontmatter+body. All 53 have scope: operational|reference (NOT shared); 51 reference Sales Hub / Shopify / Stripe / customer; 2 are agent-orchestration personal-infra. The queue \"shared\" value reflects shared-tree LOCATION, not publishable scope — a false-positive comparison.",
+    "outcome": "All 53 confirmed NON-publishable. The marketplace export gate already excludes them (scope: operational). They do NOT block the Tier-S publish set (which is disjoint from this list).",
+    "reclassified_sales_hub_bound_to_personal_infra": [
+      "cost-aggregation",
+      "system-watchdog"
+    ],
+    "kept_sales_hub_bound": 51,
+    "generator_note": "The queue/worklist generator shim scripts/skill/build-skill-audit-worklist.js points to skill-audit-loop/src/build-skill-audit-worklist.js, which is DANGLING (skill-audit-loop is an archived docs-only mirror per ADR 0009). Regeneration is unavailable; this ledger is the source of truth until the generator is repointed into skill-graph. Follow-up required.",
+    "future_work": "~20-25 of the kept-excluded skills appear generic with only incidental Sales Hub examples (candidates for a deliberate port+sanitize -> publishable pass). This split was NOT automated here: a heuristic misclassified clear Sales Hub skills (receipts, kpi-cards, page-cro, gdpr-compliance), so each candidate needs a per-skill content review + actual sanitization before any reclassification to publishable. No skill was flipped toward publishable in this pass (privacy-safe direction)."
   }
 }
