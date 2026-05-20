@@ -24,8 +24,8 @@
 
 const fs = require('fs');
 const path = require('path');
-const { parseFrontmatter } = require('./lib/parse-frontmatter');
-const { workspaceRoot, loadWorkspaceConfig, resolveSkillRoots } = require('./lib/roots');
+const { normalizeFrontmatter, parseFrontmatter } = require('./lib/parse-frontmatter');
+const { collectSkillFilesFromRoots, workspaceRoot, loadWorkspaceConfig, resolveSkillRoots } = require('./lib/roots');
 const { buildExportedSkill, normalizeExportName } = require('./export-skill');
 const { validateExportedFrontmatter } = require('./verify-skill-md-export');
 const { checkFile } = require('./check-markdown-links');
@@ -38,7 +38,7 @@ const DEFAULT_SOURCE_DIR = SKILL_ROOTS[0].absPath;
 const DEFAULT_OUTPUT_ROOT = path.join(REPO_ROOT, 'marketplace');
 const MARKETPLACE_DESCRIPTION_LIMIT = 1024;
 const SKILL_GRAPH_SOURCE_REPO = 'https://github.com/jacob-balslev/skill-graph';
-const SKILL_GRAPH_PROTOCOL = 'Skill Metadata Protocol v4';
+const SKILL_GRAPH_PROTOCOL = 'Skill Metadata Protocol v7';
 const SKILL_GRAPH_PROJECT = 'Skill Graph';
 const RELEASE_TARGET_REPO = 'jacob-balslev/skills';
 // Public GitHub URL for the release target repo (skills library). Used to rewrite
@@ -88,6 +88,21 @@ const PRIVACY_PATTERNS = [
     id: 'known_secret_prefix',
     message: 'token-like secret prefix',
     regex: /\b(?:AIza[0-9A-Za-z_-]{20,}|AKIA[0-9A-Z]{16}|sk-[A-Za-z0-9]{20,}|gh[pousr]_[A-Za-z0-9_]{20,}|github_pat_[A-Za-z0-9_]{20,}|shpat_[A-Za-z0-9]{20,}|shpss_[A-Za-z0-9]{20,}|napi_[A-Za-z0-9]{20,}|xox[baprs]-[A-Za-z0-9-]{20,})\b/g,
+  },
+  {
+    // Defense-in-depth behind the scope/grounding publication gate: a skill that is mis-marked
+    // as portable but still names a private codebase path leaks internal architecture. The
+    // canonical private repo is `sales-hub`; its app source lives under `apps/web/src`.
+    id: 'internal_codebase_path',
+    message: 'internal codebase path (sales-hub / app source)',
+    regex: /(^|[\s"'(`/])(?:sales-hub|apps\/web\/src)(?:[\/\s"')`]|$)/gi,
+  },
+  {
+    // Internal database surface names observed leaking via codebase-grounded skills
+    // (stripe-ledger-recon, etc.). These are private storage surfaces, never portable knowledge.
+    id: 'internal_db_surface',
+    message: 'internal database surface name',
+    regex: /\b(?:stripe_(?:events_raw|payments_raw|order_links|balance_transactions)|shopify_(?:orders_raw|line_item_tax_lines)|printify_(?:blueprints|line_items|order_items|shipments)|fx_rates_daily)\b/gi,
   },
   {
     id: 'local_artifact_path',
@@ -200,29 +215,11 @@ function canonicalSourcePath(skillMd) {
  * @param {number} depth - Current recursion depth (capped at 3).
  * @returns {string[]} Absolute paths to every discovered SKILL.md.
  */
-function walkForSkillMd(dir, depth = 0) {
-  const results = [];
-  if (!fs.existsSync(dir) || depth > 3) return results;
-  for (const name of fs.readdirSync(dir)) {
-    if (name.startsWith('_') || name.startsWith('.')) continue;
-    const entryPath = path.join(dir, name);
-    if (!fs.statSync(entryPath).isDirectory()) continue;
-    const skillMd = path.join(entryPath, 'SKILL.md');
-    if (fs.existsSync(skillMd)) {
-      results.push(skillMd);
-    } else {
-      // Not a skill folder — recurse into it as a category/domain container.
-      results.push(...walkForSkillMd(entryPath, depth + 1));
-    }
-  }
-  return results;
-}
-
 function collectCanonicalSkills(sourceDir = DEFAULT_SOURCE_DIR) {
   const skills = [];
-  for (const skillMd of walkForSkillMd(sourceDir)) {
+  for (const { filePath: skillMd } of collectSkillFilesFromRoots([{ absPath: sourceDir, project: null }])) {
     const text = fs.readFileSync(skillMd, 'utf8');
-    const fm = parseFrontmatter(text);
+    const fm = normalizeFrontmatter(parseFrontmatter(text));
     if (!fm) {
       throw new Error(`Source skill has no parseable frontmatter: ${repoRelative(skillMd)}`);
     }
@@ -255,11 +252,11 @@ function exportDescriptionForSkill(skill) {
   const override = EXPORT_DESCRIPTION_OVERRIDES[skill.fm.name];
 
   if (sourceDescription.length > MARKETPLACE_DESCRIPTION_LIMIT) {
-    if (!override) {
-      throw new Error(
-        `${skill.sourceRelPath} description is ${sourceDescription.length} characters; add an export-specific override`
-      );
-    }
+    if (!override) return {
+      description: sourceDescription.slice(0, MARKETPLACE_DESCRIPTION_LIMIT - 1),
+      shortened: true,
+      sourceLength: sourceDescription.length,
+    };
     if (override.length > MARKETPLACE_DESCRIPTION_LIMIT) {
       throw new Error(
         `${skill.fm.name} export description is ${override.length} characters; limit is ${MARKETPLACE_DESCRIPTION_LIMIT}`
