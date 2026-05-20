@@ -19,18 +19,16 @@ The loop exists to answer one question about each skill: **does it still teach a
 
 The audit is **not a lint-test factory.** We do not invent arbitrary internal structural checks to manufacture findings, and an empty findings report on a genuinely good skill is a **PASS** — not a failure to find work. `lint_verdict` / `structural_verdict` cover form, schema validity, and external marketplace mandates only — a **floor the skill must clear**, never the target it aims at. Passing lint says the skill is well-formed; it says nothing about whether the skill teaches well.
 
-> Note: the operation tables below predate the v6→v7 verdict split and still describe the single `audit_verdict`. Read them through the doctrine above — `application_verdict` (behavior change) is the quality signal that `audit_verdict` used to conflate with form and drift.
-
 ## The Four Operations
 
-Every action in this loop falls into one of four operations. Each writes to a specific set of flat fields in the Skill Metadata Protocol v6 (see `skill-metadata-protocol/schemas/skill.v6.schema.json`).
+Every action in this loop falls into one of four operations. Each writes to a specific set of flat fields in the Skill Metadata Protocol v7 (see `schemas/skill.v7.schema.json`).
 
 | Operation | What it does | Mutates skill? | Writes which fields |
 |---|---|---|---|
-| **audit** | Read every field, check freshness and validity against repo truth, score the seven graded dimensions when `--graded`. | No | `last_audited`, `audit_verdict`, `lint_verdict`, `drift_status` |
+| **audit** | Read every field, check freshness and validity against repo truth, score the graded gates when `--graded`. | No | `last_audited`, `structural_verdict`, `truth_verdict`, `comprehension_verdict` (`--graded`), `application_verdict` (`--graded`); retains the per-script `lint_verdict` + `drift_status` they roll up from |
 | **improve** | Edit one field. One commit. Time-boxed. | Yes | the chosen field + `last_changed` |
-| **evaluate** | Run the eval suite (deterministic + comprehension grader) against the skill. | No | `eval_score`, `eval_failed_ids`, `freshness` |
-| **evolve** | Loop over the corpus: `audit → improve → evaluate`, prioritised by skill-graph centrality + staleness. | Yes (per skill) | all of the above, per skill |
+| **evaluate** | Run the eval suite (deterministic + comprehension/application graders) against the skill. | No | `eval_score`, `eval_failed_ids`, `freshness`; `comprehension_verdict` / `application_verdict` when those graders run |
+| **evolve** | Loop over the corpus: `audit → improve → evaluate`, prioritised by `application_verdict` then skill-graph centrality + staleness. | Yes (per skill) | all of the above, per skill |
 
 This replaces the previous 13-command surface. The mapping:
 
@@ -52,33 +50,39 @@ This replaces the previous 13-command surface. The mapping:
 
 ## The Health Block — state lives on the skill
 
-Schema v6 adds seven flat Health fields to every SKILL.md frontmatter:
+Schema v7 carries the Health fields on every SKILL.md frontmatter. v7 removed the single v6 `audit_verdict` and replaced it with **four discrete verdicts**, one per audit layer, because the aggregate masqueraded as a quality signal while conflating form, truth, comprehension, and behavior (see [ADR 0011](adr/0011-split-audit-verdict-into-four-verdicts.md) and [`docs/migrations/v6-to-v7.md`](migrations/v6-to-v7.md)):
 
 ```yaml
+schema_version: 7
 last_audited: 2026-05-17       # date `audit` last ran
 last_changed: 2026-05-15       # date the skill body or frontmatter was last edited
-audit_verdict: PASS_WITH_FIXES # aggregate of lint + drift + graded dimensions
+structural_verdict: PASS       # PASS | PASS_WITH_FIXES | FAIL | UNVERIFIED — form/export shape (external mandates only)
+truth_verdict: PASS            # PASS | DRIFT | BROKEN | UNVERIFIED — truth sources vs declared hashes
+comprehension_verdict: UNVERIFIED # PASS | SHALLOW | REDUNDANT | UNVERIFIED | SKIPPED_BASELINE_HIGH | NA (gate 8, demoted)
+application_verdict: UNVERIFIED # APPLICABLE | REDUNDANT | HARMFUL | MIXED | FALSE_POSITIVE | UNVERIFIED (gate 9 — the quality signal)
 eval_score: 4.2                # 0.0–5.0 from the eval runner
 eval_failed_ids: []            # empty when clean
-lint_verdict: PASS             # deterministic-lint result
-drift_status: OK               # OK | DRIFT | BROKEN | STALE | NO_BASELINE | EXTERNAL_UNHASHED | UNKNOWN
+lint_verdict: PASS             # retained per-script signal; rolls up into structural_verdict
+drift_status: OK               # retained per-script signal; rolls up into truth_verdict — OK | DRIFT | BROKEN | STALE | NO_BASELINE | EXTERNAL_UNHASHED | UNKNOWN
 ```
 
-Before v6, this state was scattered across `eval-history.jsonl`, `routing-misses.jsonl`, `.opencode/progress/skill-audit-*`, `health-ledger.jsonl`, and `findings/*.md`. To know one skill's audit status you grepped five places. v6 collapses that to one frontmatter block. The loop reads it; the operations write it back.
+`application_verdict == APPLICABLE` is the only verdict that certifies a skill is **useful**; the other three are necessary infrastructure (the skill loads, exports cleanly, and the model has the concept) but do not certify usefulness. The honest default across the migrated corpus is `application_verdict: UNVERIFIED` until a gate-9 application eval has actually run.
+
+Before v6, this state was scattered across `eval-history.jsonl`, `routing-misses.jsonl`, `.opencode/progress/skill-audit-*`, `health-ledger.jsonl`, and `findings/*.md`. To know one skill's audit status you grepped five places. The Health Block collapses that to one frontmatter block. The loop reads it; the operations write it back.
 
 The same skill's body still gets `audits/<skill-name>/findings.md` and `verdict.md` when an audit produces longer-form output, but those files are evidence, not state. The state of truth is the Health Block.
 
 ## The Inner Pipeline of `audit`
 
-The previous five-phase shape (Deterministic → Graded → Aggregate → Fix-or-defer → Re-verify) survives, but it lives entirely inside the `audit` operation as its internal pipeline. Users no longer see five phases — they see one `audit` command. Internally:
+The five-phase shape survives, but it lives entirely inside the `audit` operation as its internal pipeline, and each phase now writes a layer-scoped verdict instead of one aggregate. Users see one `audit` command. Internally:
 
-1. **Deterministic** (always) — `skill-lint.js` runs schema validation, relation-target existence, eval coherence, archetype section presence, routing quality. Writes `lint_verdict`.
-2. **Graded** (only under `--graded`) — fans out seven per-dimension prompts (metadata, activation, relation, grounding, content, eval, portability) to the grader CLI.
-3. **Aggregate** — combines the dimension verdicts. Any `FAIL` dominates; otherwise any `PASS_WITH_FIXES` dominates; otherwise `PASS`. Writes `audit_verdict`.
-4. **Drift check** — `skill-graph-drift.js` against declared `grounding.truth_sources`. Writes `drift_status`.
+1. **Deterministic** (always) — `skill-lint.js` runs schema validation, relation-target existence, eval coherence, archetype section presence, routing quality. Writes `lint_verdict`, which rolls up into `structural_verdict`. Only **external-constraint** violations (1024-char description limit, missing required fields, invalid YAML, Anthropic Agent Skills required-fields schema) set `structural_verdict: FAIL`; internal style preferences are warnings only and never fail the verdict.
+2. **Drift** (always) — `skill-graph-drift.js` against declared `grounding.truth_sources`. Writes `drift_status`, which rolls up into `truth_verdict` (`OK → PASS`, `DRIFT → DRIFT`, `BROKEN → BROKEN`, else `UNVERIFIED`).
+3. **Graded — comprehension** (only under `--graded`, gate 8, demoted) — runs the comprehension grader. Writes `comprehension_verdict`. `SKIPPED_BASELINE_HIGH` is the expected verdict for a concept the foundation model already knows.
+4. **Graded — application** (only under `--graded` and when an application eval exists, gate 9) — checks whether loading the skill changes agent behavior on real artifacts. Writes `application_verdict` — the real quality signal.
 5. **Stamp** — writes `last_audited` to today's ISO date.
 
-This is deterministic plumbing. The user runs `audit <skill>`; the internal pipeline does its work; the frontmatter records the result.
+This is deterministic plumbing. The user runs `audit <skill>`; the internal pipeline does its work; the four verdicts plus the retained `lint_verdict`/`drift_status` signals record the result in the frontmatter.
 
 ## The Inner Pipeline of `evaluate`
 
@@ -88,7 +92,7 @@ This is deterministic plumbing. The user runs `audit <skill>`; the internal pipe
 - `eval_failed_ids` — list of failed case IDs, empty when clean
 - `freshness` — today's ISO date
 
-When `evals/comprehension.json` exists, the comprehension grader runs against the five flat Understanding fields (`mental_model`, `purpose`, `boundary`, `analogy`, `misconception`) — or against the legacy `concept.*` block for v5 skills not yet migrated.
+When `evals/comprehension.json` exists, the comprehension grader (`evaluate-skill.js --mode comprehension`) runs against the five flat Understanding fields (`mental_model`, `purpose`, `boundary`, `analogy`, `misconception`) — or against the legacy `concept.*` block for v5 skills not yet migrated — and writes `comprehension_verdict`. When an `evals/application.json` exists, the application grader (`evaluate-skill.js --mode application`) checks behavior change on real artifacts and writes `application_verdict`, the loop's primary quality signal.
 
 ## The Inner Pipeline of `improve`
 
@@ -113,22 +117,26 @@ When `evals/comprehension.json` exists, the comprehension grader runs against th
 `evolve` is a thin for-loop over the four operations:
 
 ```
-for skill in priority_order(skill-graph centrality + staleness):
+for skill in priority_order(application_verdict first, then skill-graph centrality + staleness):
   audit(skill)
-  if audit_verdict in {FAIL, PASS_WITH_FIXES} and understanding_field_targetable:
-    improve(skill, field=understanding_field)   # one v6 Understanding field
+  if structural_verdict in {FAIL, PASS_WITH_FIXES}
+     or truth_verdict in {DRIFT, BROKEN}
+     or application_verdict in {UNVERIFIED, REDUNDANT, HARMFUL, MIXED}:
+    if understanding_field_targetable:
+      improve(skill, field=understanding_field)   # one v7 Understanding field
   evaluate(skill)
   write Health Block fields back
 ```
 
 `understanding_field` is selected by `understandingField()` in
-`scripts/skill/skill-evolution-loop.js` — empty/missing field wins
+`scripts/skill/skill-evolution-loop.js` (monorepo runner; the skill-graph
+copy is `lib/audit/skill-evolution-loop.js`) — empty/missing field wins
 outright, otherwise shortest populated value among `description`,
 `mental_model`, `purpose`, `boundary`, `analogy`, `misconception`. The
 stalest Health date field stays in the trace as a staleness signal
 but is not what gets passed to the improver's HARD SCOPE.
 
-Priority is read directly from the Health Block — `last_audited` ascending tells the loop which skill to pick next. No telemetry crawl, no log aggregation.
+Priority reads the Health Block directly: the walker looks at `application_verdict` first — skills with `application_verdict: UNVERIFIED` and high routing centrality get priority for application-eval authoring — then falls back to `last_audited` ascending for ties. No telemetry crawl, no log aggregation.
 
 ## Loop Principles
 
@@ -166,23 +174,28 @@ These remain append-only evidence files for any audit run that needs long-form o
 ## Quick start
 
 ```bash
-# Audit a single skill
-node src/skill-audit.js <skill-name>
+# Audit a single skill (seed/run, stub or graded mode)
+node bin/skill-graph.js audit <skill-name>
 
-# Audit with graded dimensions
-node src/skill-audit.js <skill-name> --graded
+# Audit with graded dimensions (requires a grader CLI)
+node bin/skill-graph.js audit <skill-name> --graded --grader-cli "<command>"
 
-# Improve one field (auto-tests + keeps or reverts)
-node src/skill-improve.js <skill-name> --field mental_model
+# Lint a skill (deterministic phase that feeds structural_verdict)
+node bin/skill-graph.js lint <skill-name>
 
-# Evaluate a skill (writes eval_score and eval_failed_ids)
-node src/evaluate-skill.js <skill-name>
+# Drift sentinel — check or record truth-source hashes (feeds truth_verdict)
+node bin/skill-graph.js drift
 
-# Evolve the corpus — audit, improve, evaluate each in priority order
-node src/skill-evolve.js --top 10
+# Evaluate a skill (writes eval_score, eval_failed_ids, and the graded verdicts)
+node lib/audit/evaluate-skill.js --mode comprehension skills/<skill-name>/evals/comprehension.json
+node lib/audit/evaluate-skill.js --mode application --application skills/<skill-name>
+
+# Evolve the corpus — audit, improve, evaluate in priority order
+# (PREVIEW · monorepo-only; depends on parent-repo scripts — see SH-6138)
+node bin/skill-graph.js evolve --top 10
 
 # Show the Health Block for a skill at a glance
-node src/skill-status.js <skill-name>
+node lib/audit/skill-status.js <skill-name>
 ```
 
 ## Cadence
@@ -200,7 +213,8 @@ The loop does not require a separate issue tracker, dashboard, control plane, or
 
 ## Related Specs
 
-- `skill-metadata-protocol/docs/skill-metadata-protocol.md` — the canonical field list including the v6 Health Block and flat Understanding fields
-- `skill-metadata-protocol/schemas/skill.v6.schema.json` — the machine-validated contract
-- `skill-metadata-protocol/docs/migrations/v5-to-v6.md` — concept block flattening + Health Block introduction
-- `SKILL_AUDIT_CHECKLIST.md` — the per-skill checklist used during `audit`
+- `docs/skill-metadata-protocol.md` — the canonical field list including the v7 Health Block and flat Understanding fields
+- `schemas/skill.v7.schema.json` — the machine-validated current contract (`schemas/skill.v6.schema.json` and earlier are pinned prior versions)
+- `docs/migrations/v6-to-v7.md` — the `audit_verdict` → four-verdict split; `docs/migrations/v5-to-v6.md` — concept block flattening + Health Block introduction
+- `docs/SKILL_AUDIT_CHECKLIST.md` — the per-skill checklist used during `audit`
+- `docs/adr/0011-split-audit-verdict-into-four-verdicts.md` — rationale for the four-verdict model
