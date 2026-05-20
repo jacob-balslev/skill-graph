@@ -367,11 +367,11 @@ Treat that destination as the only valid answer to "where do users find our skil
 
 ### Stale URLs (do not reference as canonical, ever)
 
-These appeared during earlier publishing attempts. They are deprecated and tracked for removal in `vercel-labs/skills#1147`. The two GitHub repos behind #2 and #3 have been deleted upstream; the skills.sh rows remain as zombie cached metadata.
+These appeared during earlier publishing attempts. They are deprecated and tracked for removal in `vercel-labs/skills#1147`. **Verified 2026-05-20: all three rows are still LIVE and installable.** The GitHub repos behind #2 and #3 are confirmed deleted (HTTP 404), yet their skills.sh rows still serve content (34 and 27 skills) — **proving that deleting the GitHub source repo does NOT de-index the skills.sh row.** Repo deletion is a dead lever; only manual Vercel staff removal works (see "When skills.sh is wrong about us").
 
-1. `https://www.skills.sh/jacob-balslev/skill-graph/` — old direct-index of the authoring repo.
-2. `https://www.skills.sh/jacob-balslev/skill-graph-skills/` — old split export source (GitHub repo deleted).
-3. `https://www.skills.sh/jacob-balslev/skill-graph-skills-missing-1/` — old split export source (GitHub repo deleted).
+1. `https://www.skills.sh/jacob-balslev/skill-graph/` — old direct-index of the authoring repo (GitHub repo still exists; row live, ~39 skills).
+2. `https://www.skills.sh/jacob-balslev/skill-graph-skills/` — old split export source (GitHub repo deleted 404; row still live, 34 skills).
+3. `https://www.skills.sh/jacob-balslev/skill-graph-skills-missing-1/` — old split export source (GitHub repo deleted 404; row still live, 27 skills).
 
 If any new doc, script, README, or marketing surface emits one of these URLs as canonical, that is a doc bug. Fix it to the canonical URL above.
 
@@ -393,10 +393,19 @@ Before pushing a sync to `jacob-balslev/skills`:
 - Every exported marketplace description is ≤ the marketplace limit (`node scripts/export-marketplace-skills.js --check`).
 - No protocol frontmatter has leaked through — the release repo's skills are plain Agent Skills shape, not v5 protocol shape.
 - All references in this repo's docs, READMEs, and scripts to the public URL go to `https://www.skills.sh/jacob-balslev/skills/`; references to the GitHub release repo go to `https://github.com/jacob-balslev/skills`.
+- **No internal/codebase-scoped skills in the release tree.** `export-marketplace-skills.js` now enforces a publication gate: it excludes any skill with `scope: codebase|operational` or `grounding_mode: repo_specific|repo_internal` (logged to stderr as `EXCLUDED from marketplace export`), and `PRIVACY_PATTERNS` fails `--check` on `sales-hub/` paths and internal DB-surface names. Before pushing the release repo, also verify the working tree directly — `git ls-tree --name-only HEAD` must show only the curated `skills/` tree plus governance files, and `git rev-list --count origin/main..HEAD` plus a scan for `sales-hub/` / secret patterns must come back clean. (See the 2026-05-20 incident: 284 `scope: operational` internal skills were committed-but-unpushed in the release repo's local `main` and would have published on a `git push`; SH-6281 tracks the structural fix. An allowlist `.gitignore` now blocks `git add -A`, but a deliberate `git add <internal-dir>` could still bypass it — verify before every push.)
 
 ### When skills.sh is wrong about us
 
-The platform-side cleanup tracking the three stale rows is at `vercel-labs/skills#1147`. The user-facing escalation channel is the Vercel Community forum (e.g. https://community.vercel.com/t/removing-a-skill-from-the-skills-sh-list/35562 — `@quuu` is the staff contact who has historically performed removals). The skills.sh CLI has no `delete-source`/`reindex` command; the Discourse API requires login; the `skills.sh/api/v1/*` surface requires a `Bearer sk_live_...` key we do not hold. There is no automation path for source removal — coordinate via the issue and forum.
+The platform-side cleanup tracking the three stale rows is at `vercel-labs/skills#1147` — **open since 2026-05-14 with zero maintainer response** (verified 2026-05-20). The GitHub issue is the wrong/slow channel; removals actually happen in the **Vercel Community forum**.
+
+**The single working lever is manual removal by Vercel staff, requested in the forum.** `@quuu` (Andrew Qu) is both the forum staff contact who has historically performed removals (https://community.vercel.com/t/removing-a-skill-from-the-skills-sh-list/35562 — "what skill is it? I can remove it") **and the sole active maintainer of `vercel-labs/skills`** (20/20 most-recent commits). Escalate to him directly — forum reply tagging `@quuu`, and/or an `@quuu` mention on #1147. Same person, two doors.
+
+Dead ends, all verified — do not waste effort on them:
+- **Deleting the GitHub source repo does NOT de-index** the skills.sh row (proven: #2/#3 repos are 404 yet still serve skills).
+- **`metadata.internal: true` does NOT de-index** — Vercel staff (Anshuman Bhardwaj, 2026-04-28) confirmed it only skips default install (`INSTALL_INTERNAL_SKILLS=1` still pulls them).
+- **No self-service delist:** `npx skills remove --source` is a local uninstall, not a directory removal. The skills.sh CLI has no `delete-source`/`reindex`; the Discourse API requires login; `skills.sh/api/v1/*` needs a `Bearer sk_live_...` key we do not hold.
+- **Email is the wrong door:** Vercel has no general support email (`billing@`/`security@` only), and skills.sh is a `vercel-labs` side-project outside platform support — a ticket would bounce. `security@vercel.com` is only legitimate if framing an actual exposure.
 
 ## Public Release Hygiene
 
