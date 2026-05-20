@@ -21,7 +21,7 @@ directory alone, with no dependency on the sibling `../skills/skills/`
 canonical library. The four fixtures together exercise every conditional
 required rule in the v6 schema (`scope: codebase → grounding`,
 `comprehension_state: present → concept`) plus the lint rule that
-`scope: codebase` demands non-empty `keywords`. See [SH-6132](https://linear.app/sales-hub/issue/SH-6132) EPIC for context.
+`scope: codebase` demands non-empty `keywords`.
 
 ## Usage
 
