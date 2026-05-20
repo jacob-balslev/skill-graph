@@ -2,9 +2,9 @@
 
 > **Read this if:** you want to understand the library-level Skill Graph system: the tools, generated artifacts, authority tiers, and maintenance loops that operate on Skill Metadata Protocol records.
 
-Skill Graph is the library-level system around the [Skill Metadata Protocol](https://github.com/jacob-balslev/skill-metadata-protocol). The protocol defines what one `SKILL.md` must declare; Skill Graph supplies the manifest compiler, validator, router, drift sentinel, and export pipeline that make those declarations useful across many skills. The repo is organised in five authority tiers: each tier derives from the one above it, and tooling enforces the derivation automatically. When any two files appear to contradict each other, the tier with higher authority wins; the lower-tier file is a bug.
+Skill Graph is the library-level system around the [Skill Metadata Protocol](SKILL_METADATA_PROTOCOL.md). The protocol defines what one `SKILL.md` must declare; Skill Graph supplies the manifest compiler, validator, router, drift sentinel, and export pipeline that make those declarations useful across many skills. The repo is organised in five authority tiers: each tier derives from the one above it, and tooling enforces the derivation automatically. When any two files appear to contradict each other, the tier with higher authority wins; the lower-tier file is a bug.
 
-The three layers divide the work cleanly. The [Skill Metadata Protocol](https://github.com/jacob-balslev/skill-metadata-protocol) declares what each skill is grounded against — its `truth_sources`, `grounding_mode`, and `failure_modes`. Skill Graph operates across the whole library of those declarations, compiling, routing, clustering, and checking them. The [Skill Audit Loop](https://github.com/jacob-balslev/skill-audit-loop) is the separate repo that re-grounds each skill against its declared sources on a cadence, so the declarations the protocol captured stay true to the reality they point at.
+The three layers divide the work cleanly. The [Skill Metadata Protocol](SKILL_METADATA_PROTOCOL.md) declares what each skill is grounded against — its `truth_sources`, `grounding_mode`, and `failure_modes`. Skill Graph operates across the whole library of those declarations, compiling, routing, clustering, and checking them. The [Skill Audit Loop](SKILL_AUDIT_LOOP.md) is the maintenance discipline — now consolidated into this repo (per [ADR 0009](docs/adr/0009-sibling-repo-deprecation.md)) — that re-grounds each skill against its declared sources on a cadence, so the declarations the protocol captured stay true to the reality they point at.
 
 ---
 
@@ -92,7 +92,7 @@ Public docs that define or explain the protocol in prose. If a Tier 2 file disag
 |---|---|
 | [`SKILL_METADATA_PROTOCOL.md`](SKILL_METADATA_PROTOCOL.md) *(repo root)* | Normative spec: required fields, semantic rules, authored vs generated fields, migration notes. |
 | `docs/skill-metadata-protocol.md` | Rationale and deep explanation: archetype section map, requiredness groups, strictness rules, schema versioning policy, design tradeoffs. |
-| `docs/field-reference.md` | One section per authored field. All 40 current v4 top-level fields with purpose, rules, allowed values, examples. |
+| `docs/field-reference.md` | One section per authored field. All current v7 top-level fields with purpose, rules, allowed values, examples. |
 | `docs/field-decision-guide.md` | Decision tables for the hard choices: `scope`, `relations.*`, eval-health triple, `portability`, `workspace_tags`, and the "tag vs. category vs. routing_bundles" question. |
 | `docs/manifest-field-mapping.md` | The authored → generated bridge: rename map, loss policy, per-version migration notes, worked example. |
 
@@ -288,23 +288,24 @@ Concrete artifacts that show adopters what "good" looks like. Every specimen is 
 
 | File | Role |
 |---|---|
-| `examples/skill-metadata-template.md` | Self-referential authoring template. Its subject is skill authoring itself. Demonstrates the v4 field shape including object-shaped `drift_check`, `compatibility`, `boundary[{skill, reason}]`, and `lifecycle`. |
+| `examples/skill-metadata-template.md` | Self-referential authoring template. Its subject is skill authoring itself. Demonstrates the v7 field shape including object-shaped `drift_check`, `compatibility`, `boundary[{skill, reason}]`, `lifecycle`, the five flat Understanding fields, and the four-verdict Health Block. |
+| `examples/fixture-skills/` | Four in-repo specimen skills covering distinct shapes: `minimal-capability`, `with-grounding` (full `grounding` block + recorded `truth_source_hashes`), `with-relations`, and `comprehension-full` (populated Understanding fields). |
 | `examples/skills.manifest.sample.json` | Generator-produced sample. Drift-checked against live generator output by `skill-lint.js` check 8. |
 
 ### Starter skills
 
-The repo currently ships a larger `skills/` library. The eight starters below are the canonical specimen subset chosen to cover every archetype × scope combination that the schema permits:
+> **Location note (post-ADR-0009 consolidation):** this repo no longer ships a `skills/` tree. The canonical skill library lives in the sibling repo at `~/Development/skills/` (nested `<category>/[<domain>/]<name>/SKILL.md`, closed 6-category enum), with a plain-Agent-Skills export mirror under `marketplace/skills/`. In-repo specimens live in `examples/fixture-skills/`. The table below is a **historical archetype-coverage reference** describing the original eight-starter specimen set chosen to cover every archetype × scope combination the schema permits; `skills/<name>` paths are illustrative of that set, not current in-repo paths. Entries marked _(removed)_ are no longer in the library — the starter-graph diagram that follows still wires all eight and is pending a reauthor against the current fixtures.
 
 | Skill | `type` | `scope` | Unique thing it demonstrates |
 |---|---|---|---|
-| `skills/a11y` | capability | portable | Minimal routable capability, eval artifact present |
-| `skills/debugging` | workflow | portable | `## Workflow` section with numbered steps |
-| `skills/documentation` | capability | portable | Eval artifact + worked audit both shipped |
-| `skills/refactor` | workflow | portable | `relations.depends_on: [testing-strategy]` |
-| `skills/testing-strategy` | capability | portable | `routing_bundles: [quality]` |
-| `skills/skill-router` | router | portable | Router archetype with `## Routing Rules` |
-| `skills/lint-overlay` | overlay | portable | Overlay archetype with `extends` + `## Overlay Rules` |
-| `skills/graph-audit` | capability | codebase | **The only starter with a full `grounding` block and recorded `truth_source_hashes`.** |
+| `a11y` | capability | portable | Minimal routable capability, eval artifact present |
+| `debugging` | workflow | portable | `## Workflow` section with numbered steps |
+| `documentation` _(removed)_ | capability | portable | Eval artifact + worked audit both shipped |
+| `refactor` | workflow | portable | `relations.depends_on: [testing-strategy]` |
+| `testing-strategy` | capability | portable | `routing_bundles: [quality]` |
+| `skill-router` _(removed)_ | router | portable | Router archetype with `## Routing Rules` |
+| `lint-overlay` | overlay | portable | Overlay archetype with `extends` + `## Overlay Rules` |
+| `graph-audit` _(removed)_ | capability | codebase | Full `grounding` block + recorded `truth_source_hashes` (this shape now demonstrated by `examples/fixture-skills/with-grounding`). |
 
 ### Supporting artifacts
 
@@ -397,7 +398,7 @@ Every edge is verifiable. `node scripts/skill-lint.js` rejects dangling targets 
 | `LICENSE` | MIT. |
 | `.github/workflows/skill-graph-lint.yml` | CI: runs Tier 3 enforcement on every PR. |
 | `docs/integrations/github-actions.md` | Copy-paste CI snippet for adopters. |
-| [`skill-audit-loop` (separate repo)](https://github.com/jacob-balslev/skill-audit-loop) | 5-phase audit procedure and checklist — moved to its own repo. |
+| [`SKILL_AUDIT_LOOP.md`](SKILL_AUDIT_LOOP.md) + [`SKILL_AUDIT_CHECKLIST.md`](SKILL_AUDIT_CHECKLIST.md) | The audit discipline — four operations (`audit` / `improve` / `evaluate` / `evolve`); the older five-phase flow is now the inner pipeline of `audit`. Consolidated into this repo per [ADR 0009](docs/adr/0009-sibling-repo-deprecation.md); the standalone `skill-audit-loop` repo is an archived deprecation mirror. |
 | `docs/plans/multi-root-workspace.md` | Shipped v0.4.0 design doc. |
 | `docs/plans/scripts-roadmap.md` | Forward-looking script plan. |
 

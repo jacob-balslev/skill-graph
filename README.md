@@ -202,13 +202,15 @@ Skill Metadata Protocol uses several independent axes. They should not be collap
 | **Relations** | `relations.*` | many | Typed graph edges between skills. |
 | **Grounding** | `grounding.*` | conditional | Truth sources and failure modes for repo-grounded skills. |
 
-The schema uses `category` for the flat top-level shelf and `domain` for the hierarchical path. Adopters can choose their own values for `category`, `domain`, `workspace_tags`, and `routing_bundles`. This repo currently demonstrates the following values.
+The schema uses `category` for the flat top-level shelf and `domain` for the hierarchical path. `category` is the closed enum above; adopters choose their own `domain`, `workspace_tags`, and `routing_bundles` values. The canonical sibling library (`~/Development/skills/`) and the `examples/` specimens currently demonstrate the following `domain` / group values.
 
 ### Current Top-Level Categories
 
-These are the current `category` values across the shipped skills and specimen skills:
+`category` is a **closed enum of six** (since schema v5, current in v7), enforced by the schema and `scripts/lint/check-category-enum.js`:
 
-`content`, `design`, `engineering`, `frontend`, `integrations`, `knowledge`, `quality`, `security`
+`foundations`, `engineering`, `design`, `quality`, `agent`, `product`
+
+These are the values used across the canonical skill library (the sibling `~/Development/skills/` repo, nested `<category>/<name>/`) and the `examples/fixture-skills/` specimens. Cross-cutting fit is expressed via `relations.related`, never by adding a category value.
 
 ### Current Domain Paths
 
@@ -296,7 +298,7 @@ The public, ready-to-install skill library lives at [`jacob-balslev/skills`](htt
 npx skills add jacob-balslev/skills
 ```
 
-That repo holds 145+ canonical skills in plain Agent-Skills shape, indexed on `skills.sh`. You do not need to clone this `skill-graph` tooling repo to consume the skills.
+That repo holds 142 canonical skills in plain Agent-Skills shape, indexed on `skills.sh`. You do not need to clone this `skill-graph` tooling repo to consume the skills.
 
 ### Running the tooling (authors and maintainers)
 

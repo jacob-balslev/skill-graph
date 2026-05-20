@@ -75,7 +75,7 @@ For audit work, also read `SKILL_AUDIT_LOOP.md` and `SKILL_AUDIT_CHECKLIST.md`.
 - Public CLI entrypoint: `bin/skill-graph.js`.
 - Current public release checkpoint in docs: `0.5.8` on `2026-05-19` (Karpathy-loop Phase 2 release; see [`CHANGELOG.md`](CHANGELOG.md#058--2026-05-19)).
 - Current skill contract: `schema_version: 7` (four-verdict Health Block — `structural_verdict` / `truth_verdict` / `comprehension_verdict` / `application_verdict` replace the single v6 `audit_verdict`). The v6 aggregate-verdict field is removed because it conflated form, truth, comprehension, and behavior under one PASS/FAIL signal that masqueraded as quality; `application_verdict` is the new primary quality signal and certifies behavior change on real artifacts. See [ADR 0011](docs/adr/0011-split-audit-verdict-into-four-verdicts.md). Migrations v4→v5, v5→v6, and v6→v7 are all complete across the 284-active + 52-archived canonical workspace; see `docs/migrations/v4-to-v5.md`, `docs/migrations/v5-to-v6.md`, and `docs/migrations/v6-to-v7.md` for breaking-change matrices.
-- This repo is the **canonical consolidated implementation** post-2026-05-18 (commit `654b4df`; see [ADR 0009](docs/adr/0009-sibling-repo-deprecation.md) and SH-6137). Schemas, audit scripts, graders, eval fixtures, examples, and the protocol/audit canonical docs all live here. The canonical skill library (145 SKILL.md files) lives at `/Users/jacobbalslev/Development/skills/`. The previously separate `skill-metadata-protocol` and `skill-audit-loop` mirrors are preserved as docs-only deprecation mirrors — they were **archived (read-only) on GitHub on 2026-05-20** ([ADR 0009 § Update](docs/adr/0009-sibling-repo-deprecation.md)) and no longer carry active source code. `examples/` still holds specimen projects and per-skill comprehension evals.
+- This repo is the **canonical consolidated implementation** post-2026-05-18 (commit `654b4df`; see [ADR 0009](docs/adr/0009-sibling-repo-deprecation.md) and SH-6137). Schemas, audit scripts, graders, eval fixtures, examples, and the protocol/audit canonical docs all live here. The canonical skill library (142 `SKILL.md` files, verified 2026-05-20 via `find /Users/jacobbalslev/Development/skills/skills -name SKILL.md`) lives at `/Users/jacobbalslev/Development/skills/`. The previously separate `skill-metadata-protocol` and `skill-audit-loop` mirrors are preserved as docs-only deprecation mirrors — they were **archived (read-only) on GitHub on 2026-05-20** ([ADR 0009 § Update](docs/adr/0009-sibling-repo-deprecation.md)) and no longer carry active source code. `examples/` still holds specimen projects and per-skill comprehension evals.
 - Workspace config at `.skill-graph/config.json` points lint, manifest, drift, route, and truth_source resolution at the canonical sibling skills repo by default. `SKILL_GRAPH_WORKSPACE` env-var still overrides — useful when developers clone the canonical repo elsewhere. Truth_source paths starting with `skills/<name>/SKILL.md` are resolved via `scripts/lib/roots.js::resolveTruthSourcePath()`: skill-library-aware first, with REPO_ROOT fallback.
 
 ## What the Skill Graph Is
@@ -101,18 +101,17 @@ Core required axes:
 - `description` — routing contract: positive trigger phrases + explicit negative boundary (`Do NOT use for X (use that-skill).`).
 - `type` — `capability` (teaches domain) / `workflow` (enforces sequence) / `router` (directs) / `overlay` (adds local truth).
 - `scope` — `portable` (universal) / `reference` (vendor/spec-grounded) / `codebase` (this repo only; requires `grounding`).
-- `category` — current open enum; being closed in v5 to `{foundations, engineering, design, quality, agent, product}` (browse facet, not ontology truth).
+- `category` — closed enum (since v5, current in v7): `{foundations, engineering, design, quality, agent, product}` (browse facet, not ontology truth). Enforced by the schema `enum` and `scripts/lint/check-category-enum.js`.
 
-Concept-shape contract (when `comprehension_state: present`):
+Understanding-fields contract (when `comprehension_state: present`) — see `SKILL_METADATA_PROTOCOL.md` § Understanding for the binding rules:
 
-- Requires the 7-field `concept` block: `definition / mental_model / purpose / boundary / taxonomy / analogy / misconception`.
-- Requires `grounding.external_sources` with ≥2 non-repo references (paper, spec, canonical book, vendor doc with adopted industry standing). Single-vendor anchors are one source, not two.
-- Concept-block body must contain no repo-specific nouns (no Sales Hub, no orchestrator-ui, no internal file paths).
+- Requires the **five flat top-level Understanding fields** (v6+): `mental_model`, `purpose`, `boundary`, `analogy`, `misconception`. The legacy nested `concept` block (`definition / mental_model / purpose / boundary / taxonomy / analogy / misconception`) is deprecated and accepted only for v5 back-compat; flat fields win when both are present.
+- Understanding-field content must contain no repo-specific nouns (no Sales Hub, no orchestrator-ui, no internal file paths) — the concept being taught is universal, not repo-bound.
 
 Lifecycle fields that must remain truthful, not aspirational:
 
 - `freshness` and `drift_check.last_verified` — set when actually verified.
-- `eval_artifacts` (`present` / `planned` / `absent`) and `eval_state` (`verified` / `unverified`) — `verified` is a claim that requires evidence in the same change.
+- `eval_artifacts` (`present` / `planned` / `none`) and `eval_state` (`unverified` / `passing` / `monitored`) — `passing` is a claim that requires evidence (an `eval_last_run` receipt) in the same change.
 - `routing_eval` (`absent` / `present`) — has the skill been included in a routing eval against the retrieval baseline.
 
 Authoring a new skill always starts from `examples/skill-metadata-template.md`, never from a hand-typed frontmatter block.
@@ -163,7 +162,7 @@ Claims of quality require verification. If a change says links work, routing wor
 When touching one artifact, update the matching tier artifacts in the same change.
 
 - If you change `schemas/skill.schema.json`, also update `schemas/skill.v7.schema.json` (the pinned copy of the current contract — see `npm run protocol:check § C6`) and any prior pinned versions only when intentionally backporting, plus `docs/field-reference.md`, `docs/skill-metadata-protocol.md`, `SKILL_METADATA_PROTOCOL.md` when relevant, `docs/manifest-field-mapping.md`, and `examples/skill-metadata-template.md` when affected. Regenerate `docs/field-reference.generated.md` with `node scripts/build-field-reference.js` in the same commit (enforced by `protocol:check § C7`).
-- If you change `schemas/manifest.schema.json`, also update `schemas/manifest.v6.schema.json` (the pinned copy of the current contract), `docs/manifest-field-mapping.md`, and `scripts/generate-manifest.js` if projection logic changes.
+- If you change `schemas/manifest.schema.json`, also update `schemas/manifest.v7.schema.json` (the pinned copy of the current contract), `docs/manifest-field-mapping.md`, and `scripts/generate-manifest.js` if projection logic changes.
 - If you change `scripts/generate-manifest.js`, regenerate `examples/skills.manifest.sample.json`.
 - If you change `scripts/skill-lint.js`, run it against every skill and the template. Update sample manifest or drift baselines when lint-affecting sources are part of `drift_check.truth_source_hashes`.
 - If you change a Tier 2 protocol doc, check sibling Tier 2 docs for drift. The overview, field reference, decision guide, and manifest mapping must tell one story.
@@ -250,7 +249,7 @@ The Skill Graph evaluates four layers; each has its own surface and its own defi
 
 ### Truth and verification
 
-- `eval_state: verified` is a claim that the eval was run and passed in the same change. Setting `verified` without evidence is a doc lie and fails the No-Unverified-Claims rule.
+- `eval_state: passing` (or `monitored`) is a claim that the eval was run and passed in the same change. Setting `passing` without evidence (an `eval_last_run` receipt) is a doc lie and fails the No-Unverified-Claims rule.
 - `eval_state: unverified` is the correct default for a new skill until evals exist and pass.
 - `routing_eval: absent` is honest for a skill that has not yet appeared in a routing eval; flipping to `present` requires the eval to actually include the skill.
 - Drift baselines (`drift_check.truth_source_hashes`) must be re-recorded when truth sources intentionally change, and never silently bumped to mask drift.
@@ -262,7 +261,7 @@ The Skill Graph evaluates four layers; each has its own surface and its own defi
 | Eval with only positive expectations | Cannot detect filtering, softening, or scope reduction. |
 | Eval that paraphrases the skill body back to itself | Measures the skill's prose, not an agent's comprehension of it. |
 | Single-scenario eval | Below the ≥7 threshold; insufficient signal. |
-| `eval_state: verified` without re-running the eval in this change | Stale truth claim; fails the No-Unverified-Claims rule. |
+| `eval_state: passing` without re-running the eval in this change | Stale truth claim; fails the No-Unverified-Claims rule. |
 | Routing eval that excludes the skills under review | Self-confirming; not a real test. |
 | Using vibe judgments instead of the retrieval baseline | Migration claims need numeric comparison, not memory. |
 
@@ -290,7 +289,7 @@ For every audited skill, the loop produces evidence on:
 5. **Routing presence** — the skill is referenced in at least one routing eval that passes; `routing_eval` is honest.
 6. **Relations resolution** — every `relations.*` target exists in the configured roots; no dangling pointers.
 7. **Description hygiene** — positive trigger phrases present, explicit negative boundary present, marketplace description (if exported) ≤ the marketplace limit (currently 1024 chars).
-8. **Concept-shape gate (when `comprehension_state: present`)** — 7-field concept block populated, ≥2 non-repo external grounding sources, no repo-specific nouns in the concept body.
+8. **Understanding-fields gate (when `comprehension_state: present`)** — the five flat fields (`mental_model`, `purpose`, `boundary`, `analogy`, `misconception`) populated (legacy nested `concept` block accepted for v5 back-compat only), no repo-specific nouns in the Understanding-field content.
 
 ### Findings completeness
 
@@ -303,7 +302,7 @@ Findings carry a severity column drawn from a fixed schema — `CRITICAL` (contr
 - "Top 5 findings" or any subset framing — drops information the user must see.
 - Severity inflation/deflation to land at a desired total — distorts the priority signal.
 - Filing audit findings into Linear without first stating them in the report — splits truth across surfaces.
-- Marking a skill `eval_state: verified` as part of an audit without running the eval in the same change.
+- Marking a skill `eval_state: passing` as part of an audit without running the eval in the same change.
 - Marking a finding "fixed" inside the audit report — the audit is report-only; fixes are downstream tasks.
 
 ## Validation Commands
@@ -361,7 +360,7 @@ Treat that destination as the only valid answer to "where do users find our skil
 
 ### What `jacob-balslev/skill-graph` IS and IS NOT
 
-- `github.com/jacob-balslev/skill-graph` (this repo) **IS** the canonical consolidated Skill Graph repository per [ADR 0009](docs/adr/0009-sibling-repo-deprecation.md) (consolidated 2026-05-18, SH-6137). It owns the protocol contract (v6 frontmatter, JSON Schemas under `schemas/`), the lint and manifest compiler, the router, the drift sentinel, the export pipeline, the audit scripts and graders, and the per-skill comprehension evals. The canonical `skills/<name>/SKILL.md` source files still live in the sibling `skills` repo. The previously separate `skill-metadata-protocol` and `skill-audit-loop` mirrors are now docs-only deprecation mirrors and no longer carry active source.
+- `github.com/jacob-balslev/skill-graph` (this repo) **IS** the canonical consolidated Skill Graph repository per [ADR 0009](docs/adr/0009-sibling-repo-deprecation.md) (consolidated 2026-05-18, SH-6137). It owns the protocol contract (v7 frontmatter, JSON Schemas under `schemas/`), the lint and manifest compiler, the router, the drift sentinel, the export pipeline, the audit scripts and graders, and the per-skill comprehension evals. The canonical `skills/<name>/SKILL.md` source files still live in the sibling `skills` repo. The previously separate `skill-metadata-protocol` and `skill-audit-loop` mirrors are now docs-only deprecation mirrors and no longer carry active source.
 - `github.com/jacob-balslev/skill-graph` **IS NOT** a user-facing skills.sh source. The frontmatter is the protocol contract, not a plain Agent Skills marketplace export. Do not document, link, or instruct users to install from this repo. Do not let it surface as a user-facing skills.sh row.
 - The local `marketplace/skills/` directory in this repo is a **staging surface**, not a publication target. Its purpose is to produce the plain `SKILL.md` files that get synced to `jacob-balslev/skills`.
 
@@ -382,7 +381,7 @@ Publishing is a two-step sync because the canonical authoring repo and the canon
 1. **Generate the marketplace surface** in this repo: `node scripts/export-marketplace-skills.js`. Verify: `node scripts/export-marketplace-skills.js --check`. The exporter writes plain Agent Skills `SKILL.md` files to `marketplace/skills/`. `RELEASE_TARGET_REPO` in that script is `jacob-balslev/skills` — do not change without coordinating both repos.
 2. **Sync to the release repo** at `https://github.com/jacob-balslev/skills` (local clone at `~/Development/skills/`). Copy `marketplace/skills/.` into the release repo's `skills/` directory, refresh the release repo's `README.md` from `marketplace/README.md`, commit path-limited with `--only`, and push. The release repo's HEAD becomes the snapshot skills.sh indexes.
 
-The two-step sync is intentional. It prevents the authoring repo's v5 protocol frontmatter from leaking into the marketplace surface, and it keeps the user-facing release small and Agent-Skills-compatible.
+The two-step sync is intentional. It prevents the authoring repo's v7 protocol frontmatter from leaking into the marketplace surface, and it keeps the user-facing release small and Agent-Skills-compatible.
 
 ### Pre-release verification (in addition to Public Release Hygiene below)
 
@@ -391,7 +390,7 @@ Before pushing a sync to `jacob-balslev/skills`:
 - The two repos' skill counts match: `ls marketplace/skills/ | wc -l` (here) equals `ls skills/ | wc -l` (release repo) post-sync.
 - The release repo's `README.md` matches `marketplace/README.md` from this repo.
 - Every exported marketplace description is ≤ the marketplace limit (`node scripts/export-marketplace-skills.js --check`).
-- No protocol frontmatter has leaked through — the release repo's skills are plain Agent Skills shape, not v5 protocol shape.
+- No protocol frontmatter has leaked through — the release repo's skills are plain Agent Skills shape, not v7 protocol shape.
 - All references in this repo's docs, READMEs, and scripts to the public URL go to `https://www.skills.sh/jacob-balslev/skills/`; references to the GitHub release repo go to `https://github.com/jacob-balslev/skills`.
 - **No internal/codebase-scoped skills in the release tree.** `export-marketplace-skills.js` now enforces a publication gate: it excludes any skill with `scope: codebase|operational` or `grounding_mode: repo_specific|repo_internal` (logged to stderr as `EXCLUDED from marketplace export`), and `PRIVACY_PATTERNS` fails `--check` on `sales-hub/` paths and internal DB-surface names. Before pushing the release repo, also verify the working tree directly — `git ls-tree --name-only HEAD` must show only the curated `skills/` tree plus governance files, and `git rev-list --count origin/main..HEAD` plus a scan for `sales-hub/` / secret patterns must come back clean. (See the 2026-05-20 incident: 284 `scope: operational` internal skills were committed-but-unpushed in the release repo's local `main` and would have published on a `git push`; SH-6281 tracks the structural fix. An allowlist `.gitignore` now blocks `git add -A`, but a deliberate `git add <internal-dir>` could still bypass it — verify before every push.)
 
