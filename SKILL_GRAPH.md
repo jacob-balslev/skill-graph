@@ -38,7 +38,7 @@ flowchart LR
 <!-- Rendered copy for non-Mermaid viewers. Regenerate via: npx @mermaid-js/mermaid-cli -i <source> -o docs/images/system-model.png -->
 <img src="docs/images/system-model.png" alt="System model — SKILL.md is validated by skill-lint.js, compiled into skills.manifest.json, and audited by skill-audit.js which emits findings/verdict/scorecard artifacts" width="900" />
 
-**Legend.** Blue = authored input. Green = tooling. Yellow = output artifact. Solid arrows are the data flow. Every entity in this diagram has its own deep-dive diagram: [§ Anatomy](docs/skill-metadata-protocol.md#anatomy) for `SKILL.md`, [§ Loop at a Glance](https://github.com/jacob-balslev/skill-audit-loop/blob/main/SKILL_AUDIT_LOOP.md#loop-at-a-glance) for `skill-audit.js`, [§ Manifest Field Mapping](docs/manifest-field-mapping.md) for `skills.manifest.json`.
+**Legend.** Blue = authored input. Green = tooling. Yellow = output artifact. Solid arrows are the data flow. Every entity in this diagram has its own deep-dive diagram: [§ Anatomy](docs/skill-metadata-protocol.md#anatomy) for `SKILL.md`, [§ Loop at a Glance](SKILL_AUDIT_LOOP.md#loop-at-a-glance) for `skill-audit.js`, [§ Manifest Field Mapping](docs/manifest-field-mapping.md) for `skills.manifest.json`.
 
 ---
 
@@ -47,7 +47,7 @@ flowchart LR
 | Tier | Role | When it's truth | What enforces the derivation |
 |---|---|---|---|
 | **1. Schema** | `schemas/*.json` | Always. These are the machine-enforced rules. | — |
-| **2. Explanation** | `docs/*.md` describing the schema | Until the schema disagrees. | `check-protocol-consistency.js` C1, C2 |
+| **2. Explanation** | Root `SKILL_METADATA_PROTOCOL.md` / `SKILL_AUDIT_LOOP.md` / `SKILL_AUDIT_CHECKLIST.md` + `docs/*.md` describing the schema | Until the schema disagrees. | `check-protocol-consistency.js` C1, C2 |
 | **3. Enforcement** | `scripts/*.js` that police + compile + transform | Run-time only; their output must match Tier 1 | `skill-lint.js` checks 6, 7, 8 |
 | **4. Consumer** | `skill-graph-route`, `skill-graph-drift` | They USE Tier 1 to make decisions; they don't redefine anything | — |
 | **5. Specimens** | `examples/` + `skills/` starters | Illustrative only. If they break the schema, they're wrong. | `skill-lint.js` checks 1–4 |
@@ -88,7 +88,7 @@ Public docs that define or explain the protocol in prose. If a Tier 2 file disag
 
 | File | Role |
 |---|---|
-| [`skill-metadata-protocol`](https://github.com/jacob-balslev/skill-metadata-protocol) | Normative public spec (separate repo): required fields, semantic rules, authored vs generated fields, migration notes. |
+| [`SKILL_METADATA_PROTOCOL.md`](SKILL_METADATA_PROTOCOL.md) *(repo root)* | Normative spec: required fields, semantic rules, authored vs generated fields, migration notes. |
 | `docs/skill-metadata-protocol.md` | Rationale and deep explanation: archetype section map, requiredness groups, strictness rules, schema versioning policy, design tradeoffs. |
 | `docs/field-reference.md` | One section per authored field. All 40 current v4 top-level fields with purpose, rules, allowed values, examples. |
 | `docs/field-decision-guide.md` | Decision tables for the hard choices: `scope`, `relations.*`, eval-health triple, `portability`, `workspace_tags`, and the "tag vs. category vs. routing_bundles" question. |
@@ -437,7 +437,7 @@ When in doubt: if the file *defines* a constraint, it's Tier 1. If it *describes
 - [`docs/skill-metadata-protocol.md`](docs/skill-metadata-protocol.md) — the authoritative field-semantics doc; § Anatomy carries the Mermaid diagram of the SKILL.md three-layer composition (frontmatter × body × teaching layer).
 - [`docs/manifest-field-mapping.md`](docs/manifest-field-mapping.md) — the authored → generated bridge.
 - [`docs/field-decision-guide.md`](docs/field-decision-guide.md) — decision tables for hard field choices.
-- [`skill-audit-loop` repo](https://github.com/jacob-balslev/skill-audit-loop) — the repeatable audit loop (separate repo); `SKILL_AUDIT_LOOP.md` carries the Mermaid diagram of the five-phase flow (deterministic → graded → aggregate → fix → re-verify).
+- [`SKILL_AUDIT_LOOP.md`](SKILL_AUDIT_LOOP.md) *(repo root)* — the repeatable audit loop; carries the Mermaid diagram of the five-phase flow (deterministic → graded → aggregate → fix → re-verify).
 - [§ Tier 3 — Pipeline](#pipeline--how-a-skillmd-becomes-a-manifest-entry) — how `generate-manifest.js` projects authored frontmatter into the compiled manifest.
 - [§ Tier 4 — Drift sentinel state machine](#drift-sentinel--state-machine) — the five states a grounded skill sits in and what transitions them.
 - [§ Tier 4 — Routing harness](#routing-harness--per-skill-decision-path) — per-skill decision path that turns `routing_eval: present` from self-assertion into a lint-enforced claim.

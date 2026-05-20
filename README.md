@@ -1,6 +1,6 @@
 # Skill Graph
 
-[![npm version](https://img.shields.io/npm/v/@skill-graph/cli?style=flat-square&logo=npm&color=cb3837)](https://www.npmjs.com/package/@skill-graph/cli) [![Schema v6](https://img.shields.io/badge/schema-v6-blueviolet?style=flat-square)](docs/SKILL_METADATA_PROTOCOL.md) [![License Apache-2.0 + CC-BY-4.0](https://img.shields.io/badge/license-Apache--2.0%20%2B%20CC--BY--4.0-green?style=flat-square)](LICENSE) [![Exports SKILL.md](https://img.shields.io/badge/exports-SKILL.md-orange?style=flat-square)](https://agentskills.io/specification) [![CI](https://img.shields.io/github/actions/workflow/status/jacob-balslev/skill-graph/publish.yml?style=flat-square&label=CI)](https://github.com/jacob-balslev/skill-graph/actions) [![GitHub stars](https://img.shields.io/github/stars/jacob-balslev/skill-graph?style=flat-square&logo=github)](https://github.com/jacob-balslev/skill-graph/stargazers)
+[![npm version](https://img.shields.io/npm/v/@skill-graph/cli?style=flat-square&logo=npm&color=cb3837)](https://www.npmjs.com/package/@skill-graph/cli) [![Schema v6](https://img.shields.io/badge/schema-v6-blueviolet?style=flat-square)](SKILL_METADATA_PROTOCOL.md) [![License Apache-2.0 + CC-BY-4.0](https://img.shields.io/badge/license-Apache--2.0%20%2B%20CC--BY--4.0-green?style=flat-square)](LICENSE) [![Exports SKILL.md](https://img.shields.io/badge/exports-SKILL.md-orange?style=flat-square)](https://agentskills.io/specification) [![CI](https://img.shields.io/github/actions/workflow/status/jacob-balslev/skill-graph/publish.yml?style=flat-square&label=CI)](https://github.com/jacob-balslev/skill-graph/actions) [![GitHub stars](https://img.shields.io/github/stars/jacob-balslev/skill-graph?style=flat-square&logo=github)](https://github.com/jacob-balslev/skill-graph/stargazers)
 
 **The canonical home for structured `SKILL.md` libraries.** Skill spec, JSON schemas, lint, manifest compiler, router, drift sentinel, audit loop, and the export pipeline — all shipped as a single CLI.
 
@@ -22,7 +22,7 @@ The mechanism is a **Karpathy-style keep-or-revert audit loop** ([autoresearch](
 - Every change has a hard pass/fail gate — a deterministic check script that turns red or green.
 - Failed changes auto-revert. The lesson is recorded; the field's truth is preserved.
 
-The protocol's typed fields are the substrate that makes deterministic gates possible. The audit loop ([`docs/SKILL_AUDIT_LOOP.md`](docs/SKILL_AUDIT_LOOP.md)) is the mechanism. The quality bar that governs every change — what "improve" means, when it's safe to remove, how to enrich without dropping coverage — is codified in [`docs/quality-doctrine.md`](docs/quality-doctrine.md). Together they produce a library that drifts less, even as it grows.
+The protocol's typed fields are the substrate that makes deterministic gates possible. The audit loop ([`SKILL_AUDIT_LOOP.md`](SKILL_AUDIT_LOOP.md)) is the mechanism. The quality bar that governs every change — what "improve" means, when it's safe to remove, how to enrich without dropping coverage — is codified in [`docs/quality-doctrine.md`](docs/quality-doctrine.md). Together they produce a library that drifts less, even as it grows.
 
 ## The ecosystem
 
@@ -52,10 +52,10 @@ graph TD
 |------|-----|--------|---------|
 | **skill-graph** *(this repo)* | [`@skill-graph/cli`](https://www.npmjs.com/package/@skill-graph/cli) | **active** | Canonical home — protocol spec, schemas, CLI, lint, manifest, router, drift, audit loop, export |
 | **[skills](https://github.com/jacob-balslev/skills)** | — | **active** | Public open-source skill library (consumed via `npx skills add jacob-balslev/skills`) |
-| [skill-metadata-protocol](https://github.com/jacob-balslev/skill-metadata-protocol) | _(consolidated)_ | mirror | Historical docs-only mirror of the normative spec — content lives [here](docs/SKILL_METADATA_PROTOCOL.md) |
-| [skill-audit-loop](https://github.com/jacob-balslev/skill-audit-loop) | _(consolidated)_ | mirror | Historical docs-only mirror of the audit procedure — content lives [here](docs/SKILL_AUDIT_LOOP.md) |
+| [skill-metadata-protocol](https://github.com/jacob-balslev/skill-metadata-protocol) | _(consolidated)_ | mirror | Historical docs-only mirror of the normative spec — content lives [here](SKILL_METADATA_PROTOCOL.md) |
+| [skill-audit-loop](https://github.com/jacob-balslev/skill-audit-loop) | _(consolidated)_ | mirror | Historical docs-only mirror of the audit procedure — content lives [here](SKILL_AUDIT_LOOP.md) |
 
-> **Recent consolidation (2026-05-18):** Per [SH-6137](https://linear.app/sales-hub/issue/SH-6137) and [ADR 0009](docs/adr/0009-sibling-repo-deprecation.md), `@skill-graph/protocol` and `@skill-graph/audit` were merged into `@skill-graph/cli@0.5.6`. Schemas, audit scripts, graders, eval fixtures, examples, and the protocol/audit canonical docs now all live in this repo. The sibling repos are preserved as read-only mirrors so existing inbound links remain valid; they are not archived on GitHub.
+> **Recent consolidation (2026-05-18):** Per [SH-6137](https://linear.app/sales-hub/issue/SH-6137) and [ADR 0009](docs/adr/0009-sibling-repo-deprecation.md), `@skill-graph/protocol` and `@skill-graph/audit` were merged into `@skill-graph/cli@0.5.6`. Schemas, audit scripts, graders, eval fixtures, examples, and the protocol/audit canonical docs now all live in this repo. The sibling repos are preserved as read-only mirrors so existing inbound links remain valid; they were **archived on GitHub on 2026-05-20** (read-only, still publicly readable — see [ADR 0009 § Update](docs/adr/0009-sibling-repo-deprecation.md)).
 
 ### Pick the right doc
 
@@ -72,8 +72,8 @@ For everything else:
 |---|---|
 | **Install the CLI** | [Quick Start](#quick-start) below — `npm install -g @skill-graph/cli` |
 | **Install the public skill library** | [`jacob-balslev/skills`](https://github.com/jacob-balslev/skills) — `npx skills add jacob-balslev/skills` |
-| **Understand the `SKILL.md` frontmatter contract** | [`docs/SKILL_METADATA_PROTOCOL.md`](docs/SKILL_METADATA_PROTOCOL.md) — the normative spec |
-| **Audit an existing skill library** | [`docs/SKILL_AUDIT_LOOP.md`](docs/SKILL_AUDIT_LOOP.md) — the audit procedure |
+| **Understand the `SKILL.md` frontmatter contract** | [`SKILL_METADATA_PROTOCOL.md`](SKILL_METADATA_PROTOCOL.md) — the normative spec |
+| **Audit an existing skill library** | [`SKILL_AUDIT_LOOP.md`](SKILL_AUDIT_LOOP.md) — the audit procedure |
 | **Look up a specific field** | [`docs/field-reference.md`](docs/field-reference.md) |
 | **Plan adoption in a new repo** | [`docs/ADOPTION.md`](docs/ADOPTION.md) and [`docs/CONFORMANCE.md`](docs/CONFORMANCE.md) |
 | **Migrate from an older `schema_version`** | [`docs/migrations/`](docs/migrations/) |
@@ -380,9 +380,9 @@ Run `skill-graph --help` to see all commands (including legacy aliases).
 | Path | Purpose |
 |---|---|
 | [`SKILL_GRAPH.md`](SKILL_GRAPH.md) | Library-level system model and authority tiers. |
-| [`docs/SKILL_METADATA_PROTOCOL.md`](docs/SKILL_METADATA_PROTOCOL.md) | **Canonical** normative spec for the `SKILL.md` frontmatter contract. |
-| [`docs/SKILL_AUDIT_LOOP.md`](docs/SKILL_AUDIT_LOOP.md) | **Canonical** audit procedure (4 operations: audit, improve, evaluate, evolve). |
-| [`docs/SKILL_AUDIT_CHECKLIST.md`](docs/SKILL_AUDIT_CHECKLIST.md) | Per-skill audit checklist used during `audit`. |
+| [`SKILL_METADATA_PROTOCOL.md`](SKILL_METADATA_PROTOCOL.md) | **Canonical** normative spec for the `SKILL.md` frontmatter contract. |
+| [`SKILL_AUDIT_LOOP.md`](SKILL_AUDIT_LOOP.md) | **Canonical** audit procedure (4 operations: audit, improve, evaluate, evolve). |
+| [`SKILL_AUDIT_CHECKLIST.md`](SKILL_AUDIT_CHECKLIST.md) | Per-skill audit checklist used during `audit`. |
 | [`schemas/`](schemas/) | Skill and manifest JSON Schemas, including pinned v2 through v6; the unversioned mirror tracks v6. |
 | [`examples/skill-metadata-template.md`](examples/skill-metadata-template.md) | Copyable authoring template. |
 | [`examples/projects/markdown-static-site/`](examples/projects/markdown-static-site/) | Specimen project showing codebase-grounded skills. |
@@ -399,8 +399,8 @@ Run `skill-graph --help` to see all commands (including legacy aliases).
 | Repo | Status | Purpose |
 |---|---|---|
 | [`jacob-balslev/skills`](https://github.com/jacob-balslev/skills) | **active** | Public open-source 145-skill library. Distributed via `npx skills add jacob-balslev/skills`. |
-| [`jacob-balslev/skill-metadata-protocol`](https://github.com/jacob-balslev/skill-metadata-protocol) | mirror | Historical docs-only mirror of the protocol spec (kept for inbound-link stability). Canonical doc now in [`docs/SKILL_METADATA_PROTOCOL.md`](docs/SKILL_METADATA_PROTOCOL.md). |
-| [`jacob-balslev/skill-audit-loop`](https://github.com/jacob-balslev/skill-audit-loop) | mirror | Historical docs-only mirror of the audit workflow. Canonical doc now in [`docs/SKILL_AUDIT_LOOP.md`](docs/SKILL_AUDIT_LOOP.md). |
+| [`jacob-balslev/skill-metadata-protocol`](https://github.com/jacob-balslev/skill-metadata-protocol) | mirror | Historical docs-only mirror of the protocol spec (kept for inbound-link stability). Canonical doc now in [`SKILL_METADATA_PROTOCOL.md`](SKILL_METADATA_PROTOCOL.md). |
+| [`jacob-balslev/skill-audit-loop`](https://github.com/jacob-balslev/skill-audit-loop) | mirror | Historical docs-only mirror of the audit workflow. Canonical doc now in [`SKILL_AUDIT_LOOP.md`](SKILL_AUDIT_LOOP.md). |
 
 ## Releasing (Maintainers)
 

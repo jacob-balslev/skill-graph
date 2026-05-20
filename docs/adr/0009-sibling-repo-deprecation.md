@@ -1,6 +1,6 @@
 # ADR 0009 — Sibling Repo Deprecation (Consolidation Addendum)
 
-> Status: Accepted
+> Status: Accepted — **updated 2026-05-20 (repos now archived; see § Update)**
 > Date: 2026-05-18
 > Linear: SH-6132 / SH-6137
 
@@ -19,21 +19,30 @@ Both sibling repos become **docs-only mirrors** as of 2026-05-18:
 
 - Source files (schemas/, src/, shared/, graders/, examples/, package.json) are removed from both repos.
 - Canonical documents (SKILL_METADATA_PROTOCOL.md, SKILL_AUDIT_LOOP.md, SKILL_AUDIT_CHECKLIST.md, READMEs) are preserved for historical reference and inbound-link stability.
-- Repos are NOT archived on GitHub (Option B) — they remain publicly readable.
+- Repos are NOT archived on GitHub (Option B) — they remain publicly readable. *(Reversed 2026-05-20 — see § Update.)*
 - Deprecation banners are added to both READMEs pointing to `@skill-graph/cli`.
+
+## Update — 2026-05-20: repos archived (Option B → archive)
+
+The original decision kept the mirrors un-archived so they stayed publicly *and editably* readable. With the docs-only state stable for two weeks and no further mirror edits planned, both repos were **archived on GitHub** (`gh repo archive`) on 2026-05-20:
+
+- `jacob-balslev/skill-metadata-protocol` → `archived: true`
+- `jacob-balslev/skill-audit-loop` → `archived: true`
+
+Archiving makes each repo **read-only** while keeping it **publicly readable**, so all inbound links to READMEs and canonical docs remain valid — the original inbound-link-stability goal is preserved. The only change is that the mirrors can no longer be pushed to without first un-archiving. This supersedes the "NOT archived (Option B)" bullet above; the consequence "stay alive as read-only mirrors" now means *archived* read-only, not *live* read-only.
 
 ## Version source of truth (post-consolidation)
 
 The version source of truth for `schema_version` is now `@skill-graph/cli` — specifically the schemas bundled under `lib/schemas/` in the published package. ADR 0007 in `skill-metadata-protocol/docs/adr/0007-version-source-of-truth.md` documents the dual-versioning model; this ADR records the physical move.
 
 New consumers should install `@skill-graph/cli` and reference:
-- `https://github.com/jacob-balslev/skill-graph/blob/main/docs/SKILL_METADATA_PROTOCOL.md`
-- `https://github.com/jacob-balslev/skill-graph/blob/main/docs/SKILL_AUDIT_LOOP.md`
+- `https://github.com/jacob-balslev/skill-graph/blob/main/SKILL_METADATA_PROTOCOL.md`
+- `https://github.com/jacob-balslev/skill-graph/blob/main/SKILL_AUDIT_LOOP.md`
 - `https://www.npmjs.com/package/@skill-graph/cli`
 
 ## Consequences
 
-- `skill-metadata-protocol` and `skill-audit-loop` repos stay alive as read-only mirrors with deprecation banners.
+- `skill-metadata-protocol` and `skill-audit-loop` repos stay alive as **archived** read-only mirrors with deprecation banners (archived 2026-05-20 — see § Update).
 - All new schema evolution and audit tooling development happens in `skill-graph`.
 - External links to the sibling repos' README and canonical docs files remain valid.
 - Links to source files (schemas/, src/) in the sibling repos become 404s — consumers must migrate to `@skill-graph/cli`.
