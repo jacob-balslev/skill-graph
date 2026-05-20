@@ -16,6 +16,10 @@ Skill Graph versions describe the contract at each checkpoint in the git history
 
 - **Operational scripts updated for v7.** `scripts/skill/skill-evolution-loop.js` aggregates `lint_verdict` → `structural_verdict`, `drift_status` → `truth_verdict`, and writes all four verdicts on every audit run (`comprehension_verdict: UNVERIFIED` and `application_verdict: UNVERIFIED` by default until their respective graders run). `scripts/skill/skill-census.js` replaces `VALID_AUDIT_VERDICTS` with per-field enum validators. `scripts/skill/backfill-audit-state.js` derives `structural_verdict` from grade letter instead of `audit_verdict`. `skill-graph/lib/audit/skill-status.js` displays the four new verdicts in canonical Health Block order. Coupled doc updates land in the same commit per `AGENTS.md § Coupled Changes`.
 
+### Security
+
+- **Marketplace export publication gate.** `scripts/export-marketplace-skills.js` now refuses to export any skill grounded in a private/internal codebase: it excludes `scope: codebase|operational` and `grounding_mode: repo_specific|repo_internal` skills (logged as `EXCLUDED from marketplace export`), and adds internal-path and internal-DB-surface patterns to `PRIVACY_PATTERNS` so a mis-scoped "portable" skill still fails `--check`. This is the frontmatter-driven counterpart to the existing secret/path scanner — it cannot be defeated by a body that happens to avoid the regexes. See `AGENTS.md § Pre-release verification` and `§ When skills.sh is wrong about us`.
+
 ## [0.5.8] — 2026-05-19
 
 The "Karpathy-loop Phase 2" release. Ships the Phase 2 deterministic-drift sentinels, mirror-freeze linter, generated status doc, `doctor` subcommand, first hermetic test fixtures, and positioning + onboarding rework. Also absorbs the accumulated `[Unreleased]` backlog from 0.5.0 → 0.5.7 (publication-classification ledger, npm publish pipeline, stability-promotion lint check, schema_version 4 → 5 → 6 migrations, cross-repo version reconciliation, and the skill audit loop re-grounding reframe). The 33 Phase 1 truth-repair commits landed under 0.5.7 and are not re-listed here.
