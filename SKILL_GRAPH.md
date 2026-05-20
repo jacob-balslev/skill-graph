@@ -8,6 +8,38 @@ The three layers divide the work cleanly. The [Skill Metadata Protocol](SKILL_ME
 
 ---
 
+## Current State — single source of truth
+
+> This block is the canonical "what version / how many" reference. Other docs (`AGENTS.md`, `README.md`) should link here rather than restate these numbers, to avoid the drift that recurs when each doc carries its own copy.
+
+| Fact | Value | Source of truth |
+|---|---|---|
+| Schema version | **v7** (four-verdict Health Block) | `schemas/skill.schema.json` `title`; pinned `schemas/skill.v7.schema.json` |
+| Manifest version | **v7** | `schemas/manifest.v7.schema.json` |
+| Canonical skill count | **142** | live: `find ~/Development/skills/skills -name SKILL.md | wc -l` |
+| Canonical library location | sibling repo `jacob-balslev/skills` at `~/Development/skills/` | `.skill-graph/config.json` → `skill_roots: ["../skills/skills"]` |
+| This repo's role | tooling + protocol + schemas + docs (no `skills/` tree) | [ADR 0009](docs/adr/0009-sibling-repo-deprecation.md) |
+
+## Source vs Marketplace — why there are two `skills/` trees
+
+A common point of confusion: the canonical library and the in-repo `marketplace/skills/` look like duplicates (same count, similar frontmatter). They are not — they are the two ends of a publishing pipeline:
+
+```
+~/Development/skills/skills/<category>/<name>/SKILL.md   AUTHORING SOURCE (categorized, hand-edited, full v7 frontmatter)
+        │  scripts/export-marketplace-skills.js  (reads source, normalizes, applies publication gate)
+        ▼
+skill-graph/marketplace/skills/<name>/SKILL.md          GENERATED EXPORT (staging, never hand-edited)
+        │  two-step sync + git push
+        ▼
+github.com/jacob-balslev/skills  →  skills.sh           PUBLIC, installable
+```
+
+The export is **not** a copy. It (1) applies the **publication gate** — excludes `scope: codebase|operational` and `grounding_mode: repo_specific` skills and fails on private paths, so internal skills never publish; (2) **normalizes** the frontmatter (flattens the `compatibility` object, etc.); and (3) historically **flattened** the directory layout. Because the source library (`~/Development/skills/`) is *also* the public release repo (`jacob-balslev/skills`), source and release are the same repo; `marketplace/skills/` is the transform/staging buffer between this tooling repo and that one. They have the same count today only because no current skill trips the exclusion gate. See `AGENTS.md § Public Distribution` for the two-step sync protocol.
+
+> **Known drift (2026-05-20):** `marketplace/skills/` is currently *flat* (`<name>/`) while the source/release library is *nested* (`<category>/<name>/`, post-M1 restructure). The staging mirror predates the M1 restructure and is due for a regenerate (`node scripts/export-marketplace-skills.js`). The `ls marketplace/skills/ | wc -l == ls skills/ | wc -l` pre-release check in `AGENTS.md` assumes matching layouts and should be revisited alongside the regenerate.
+
+---
+
 ## System Model — how the pieces fit together
 
 > **The question this diagram answers:** "What are the moving parts of Skill Graph, and who talks to whom?"
@@ -294,7 +326,7 @@ Concrete artifacts that show adopters what "good" looks like. Every specimen is 
 
 ### Starter skills
 
-> **Location note (post-ADR-0009 consolidation):** this repo no longer ships a `skills/` tree. The canonical skill library lives in the sibling repo at `~/Development/skills/` (nested `<category>/[<domain>/]<name>/SKILL.md`, closed 6-category enum), with a plain-Agent-Skills export mirror under `marketplace/skills/`. In-repo specimens live in `examples/fixture-skills/`. The table below is a **historical archetype-coverage reference** describing the original eight-starter specimen set chosen to cover every archetype × scope combination the schema permits; `skills/<name>` paths are illustrative of that set, not current in-repo paths. Entries marked _(removed)_ are no longer in the library — the starter-graph diagram that follows still wires all eight and is pending a reauthor against the current fixtures.
+> **Location note (post-ADR-0009 consolidation):** this repo no longer ships a `skills/` tree. The canonical skill library lives in the sibling repo at `~/Development/skills/` (nested `<category>/[<domain>/]<name>/SKILL.md`, closed 6-category enum), with a plain-Agent-Skills export mirror under `marketplace/skills/`. In-repo specimens live in `examples/fixture-skills/`. The table below is a **historical archetype-coverage reference** describing the original eight-starter specimen set chosen to cover every archetype × scope combination the schema permits; `skills/<name>` paths are illustrative of that set, not current in-repo paths. Entries marked _(removed)_ are no longer in the library. The relations diagram further below has been reauthored against the four in-repo `examples/fixture-skills/` (see § The fixture graph).
 
 | Skill | `type` | `scope` | Unique thing it demonstrates |
 |---|---|---|---|
@@ -317,74 +349,42 @@ Concrete artifacts that show adopters what "good" looks like. Every specimen is 
 
 ---
 
-## The starter graph — how the eight starters relate
+## The fixture graph — how the four hermetic fixtures relate
 
-> **The question this diagram answers:** "Who verifies whom, depends on whom, and boundaries whom out across the eight starter skills?"
+> **The question this diagram answers:** "How do `relations.*` edges resolve, and why does a dangling target fail confidently?"
 
-The relations graph cuts across all five tiers — declared in Tier 5 SKILL.md frontmatter, validated by Tier 3 lint, and consumed by Tier 4 routing. This is the worst failure mode when it drifts silently: the router fails *confidently* because a dangling target looks like a valid one. The diagram below indexes every relation edge in the starters without duplicating any L1 data. The authoritative relation data lives once, in each SKILL.md's frontmatter; this diagram reads it.
+The relations graph cuts across all five tiers — declared in Tier 5 SKILL.md frontmatter, validated by Tier 3 lint, and consumed by Tier 4 routing. Its worst failure mode is silent drift: the router fails *confidently* because a dangling target looks like a valid one. The in-repo `examples/fixture-skills/` set is a **closed reference graph** — `with-relations` exercises all four `relations.*` edge types against the other three fixtures, so lint resolves every target from this directory alone, with no dependency on the sibling `../skills/skills/` canonical library. The diagram reads the authoritative edges from each fixture's frontmatter; it does not duplicate them.
+
+> These four are **v6-pinned hermetic test fixtures** (see `examples/fixture-skills/README.md`), not v7 style exemplars — their job is to exercise the schema's conditional-requiredness rules and the `{skill, reason}` relation shape, not to model a realistic skill domain. The full, realistic relations graph lives in the sibling canonical library (`~/Development/skills/`) and is what `scripts/skill-graph-route.js` traverses at request time.
 
 ```mermaid
 flowchart LR
-  A11Y["a11y<br/><i>capability · portable</i>"]
-  DBG["debugging<br/><i>workflow · portable</i>"]
-  DOC["documentation<br/><i>capability · portable</i>"]
-  GA["graph-audit<br/><i>capability · codebase</i>"]
-  LO["lint-overlay<br/><i>overlay · portable</i>"]
-  RF["refactor<br/><i>workflow · portable</i>"]
-  SR["skill-router<br/><i>router · portable</i>"]
-  TS["testing-strategy<br/><i>capability · portable</i>"]
-  ST(["skill-metadata-template<br/><i>specimen · reference</i>"])
+  MIN["minimal-capability<br/><i>capability · portable</i>"]
+  GR["with-grounding<br/><i>capability · codebase</i>"]
+  REL["with-relations<br/><i>capability · portable</i>"]
+  COMP["comprehension-full<br/><i>capability · portable</i>"]
 
   %% depends_on — thick solid, load-bearing
-  RF ==>|depends_on<br/>^1.0.0| TS
-  LO ==>|extends| TS
+  REL ==>|depends_on| MIN
 
   %% verify_with — dashed, co-load for confidence
-  A11Y -.->|verify_with| TS
-  DBG -.->|verify_with| TS
-  GA  -.->|verify_with| TS
-  RF  -.->|verify_with| TS
-  TS  -.->|verify_with| DBG
-  SR  -.->|verify_with| GA
-  ST  -.->|verify_with| DOC
+  REL -.->|verify_with| COMP
 
-  %% adjacent — thin undirected, suggested co-reading
-  DBG --- TS
-  DBG --- RF
+  %% related — thin, suggested co-reading
+  REL ---|related| MIN
 
   %% boundary — red, anti-ownership
-  A11Y -. boundary .-x RF
-  DBG  -. boundary .-x DOC
-  DOC  -. boundary .-x DBG
-  DOC  -. boundary .-x A11Y
-  DOC  -. boundary .-x RF
-  GA   -. boundary .-x DOC
-  LO   -. boundary .-x DBG
-  RF   -. boundary .-x DOC
-  SR   -. boundary .-x DOC
-  ST   -. boundary .-x RF
-  TS   -. boundary .-x DOC
+  REL -. boundary .-x GR
 
   classDef capability fill:#dbeafe,stroke:#2563eb,color:#1e3a8a
-  classDef workflow fill:#ecfdf5,stroke:#047857,color:#064e3b
-  classDef router fill:#fce7f3,stroke:#db2777,color:#831843
-  classDef overlay fill:#fef3c7,stroke:#d97706,color:#78350f,stroke-dasharray:4 2
-  classDef specimen fill:#f5f3ff,stroke:#7c3aed,color:#4c1d95
   classDef codebase stroke-width:3px
-  class A11Y,DOC,GA,TS capability
-  class DBG,RF workflow
-  class SR router
-  class LO overlay
-  class ST specimen
-  class GA codebase
+  class MIN,GR,REL,COMP capability
+  class GR codebase
 ```
 
-<!-- Rendered copy for non-Mermaid viewers. Source: docs/diagrams/starter-graph.mmd. Regenerate via: npx @mermaid-js/mermaid-cli -i docs/diagrams/starter-graph.mmd -o docs/images/starter-graph.png -b white --width 1600 -->
-<img src="docs/images/starter-graph.png" alt="Starter-skill relations graph — eight starters plus the template, with depends_on/extends (thick solid), verify_with (dashed), adjacent (thin undirected), and boundary (red anti-ownership) edges between them" width="1100" />
+**Legend.** All four fixtures are `capability`; node fill is blue. A thick node stroke marks `scope: codebase` — only `with-grounding` (which is why it carries the `grounding` block and recorded `truth_source_hashes`). Edge styles, all declared by `with-relations`: `==>` thick solid = `depends_on` (load-bearing — assumes `minimal-capability` lints clean); `-.->` dashed = `verify_with` (co-load `comprehension-full` for its Understanding fields); `---` thin = `related` (symmetric co-read with `minimal-capability`); `-. boundary .-x` red = `boundary` (anti-ownership — defer grounding/`scope: codebase` cases to `with-grounding`).
 
-**Legend.** Node fill encodes archetype: blue = capability, green = workflow, pink = router, yellow-dashed = overlay, purple = specimen. A thick node stroke marks `scope: codebase` — only `graph-audit`; every other starter is `portable` and the template is `reference`. Edge styles: `==>` thick solid = `depends_on` (load-bearing) or `extends` (overlay inheritance — semantically stronger than `depends_on`); `-.->` dashed = `verify_with` (co-load for confidence); `---` thin = `adjacent` (suggested co-reading, no dependency); `-. boundary .-x` red-dashed = `boundary` (anti-ownership — the router must route elsewhere).
-
-Every edge is verifiable. `node scripts/skill-lint.js` rejects dangling targets (see `skills/graph-audit/SKILL.md § Relation Integrity`); `node scripts/skill-graph-route.js` uses these edges at request time to decide which skill wins, which co-loads via `verify_with` or `depends_on`, and which is excluded via `boundary`. Regenerate the PNG when a starter is added or a relation block changes — the source is `docs/diagrams/starter-graph.mmd`.
+Every edge is verifiable. `node bin/skill-graph.js lint examples/fixture-skills/with-relations` rejects dangling targets; `node scripts/skill-graph-route.js` uses these edges at request time to decide which skill wins, which co-loads via `verify_with` or `depends_on`, and which is excluded via `boundary`.
 
 ---
 
@@ -444,5 +444,5 @@ When in doubt: if the file *defines* a constraint, it's Tier 1. If it *describes
 - [§ Tier 3 — Pipeline](#pipeline--how-a-skillmd-becomes-a-manifest-entry) — how `generate-manifest.js` projects authored frontmatter into the compiled manifest.
 - [§ Tier 4 — Drift sentinel state machine](#drift-sentinel--state-machine) — the five states a grounded skill sits in and what transitions them.
 - [§ Tier 4 — Routing harness](#routing-harness--per-skill-decision-path) — per-skill decision path that turns `routing_eval: present` from self-assertion into a lint-enforced claim.
-- [§ The starter graph](#the-starter-graph--how-the-eight-starters-relate) — Layer 7 indexed visually across all eight starters plus the template.
+- [§ The fixture graph](#the-fixture-graph--how-the-four-hermetic-fixtures-relate) — the four in-repo hermetic fixtures and their `relations.*` edges, indexed visually.
 - [`CHANGELOG.md`](CHANGELOG.md) — what shipped in each version.
