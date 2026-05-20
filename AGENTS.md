@@ -146,7 +146,18 @@ Before changing agent behavior instructions, quality rules, marketplace position
 
 Claims of quality require verification. If a change says links work, routing works, exports validate, descriptions fit a limit, or all findings are preserved, run the relevant command and report the result. If verification was not run, say so.
 
+## Version Labels Are Earned, Not Bumped
+
+A version number on a skill — `schema_version`, `skill_graph_protocol`, and any `vN` label — asserts that the skill's **content** meets that version's bar. Advancing the number is honest only after the substantive migration the version represents has actually been performed. Bumping a label without doing that work is fake-conformance: the same class of doc-lie as `eval_state: passing` without an `eval_last_run` receipt, or `application_verdict: APPLICABLE` without a gate-9 eval.
+
+- **`schema_version` is the mechanical shape; the content label is the substantive bar.** The `migrate-skill-vN-to-vM.js` codemods bump `schema_version` corpus-wide — a shape migration a script *can* do. The deeper content each version introduced is **not** something a codemod can author: v6 introduced the five flat Understanding fields (`mental_model`, `purpose`, `boundary`, `analogy`, `misconception`) + `comprehension_state`; v7 introduced the four-verdict Health Block. A skill only earns the v6/v7 content label when that content is actually present and reviewed.
+- **A label mismatch is HONEST, not drift.** A skill with `schema_version: 7` but `skill_graph_protocol: Skill Metadata Protocol v5` is correctly recording that the schema bump ran but the v6/v7 content migration did not (e.g., it has no Understanding fields). Do **not** "fix" this by editing the label. Fix it by doing the migration, then advancing the label — never the reverse. (Verified 2026-05-20: 115 source skills carry `v5` and 25 carry `v6`; the `v5` ones genuinely lack Understanding fields, the `v6` ones have them. The labels are accurate.)
+- **Never run a find-replace that changes only a version label.** A bulk `sed`/codemod of `vN` → `vM` across `SKILL.md` files with no content change is prohibited. A backlog of skills on an older content label is migration work to schedule, not a string to replace.
+- **Known tension to resolve:** `scripts/export-marketplace-skills.js` hardcodes `skill_graph_protocol: Skill Metadata Protocol v7` (`SKILL_GRAPH_PROTOCOL`, line 41) on **every** exported skill, regardless of the source content level. This conflates "exported by v7 tooling" with "content verified at v7." Until the field's meaning is pinned down, do not treat the exported `skill_graph_protocol` as a content-conformance signal.
+
 ## Editing Rules
+
+- Version labels are earned, not bumped — never advance `schema_version` / `skill_graph_protocol` / any `vN` label without the matching content migration (see § Version Labels Are Earned, Not Bumped).
 
 - Keep one logical change per commit or PR.
 - Preserve the current narrow scope: protocol, schemas, deterministic tooling, examples, docs, evals, audit artifacts, and portable `SKILL.md` export.
