@@ -18,7 +18,7 @@ Skill Graph is the **library-level system** that works with this protocol. It in
 
 | Document | Purpose |
 |---|---|
-| [`SKILL_METADATA_PROTOCOL.md`](https://github.com/jacob-balslev/skill-metadata-protocol) | Normative public spec: required fields, semantic rules, authored vs generated fields, migration notes |
+| [`SKILL_METADATA_PROTOCOL.md`](../SKILL_METADATA_PROTOCOL.md) | Normative public spec: required fields, semantic rules, authored vs generated fields, migration notes |
 | `docs/skill-metadata-protocol.md` (this file) | Rationale and deep explanation: archetype map, requiredness groups, schema strictness rules, design tradeoffs |
 | `docs/field-reference.md` | One section per authored field — purpose, rules, examples, when to use |
 | `docs/field-decision-guide.md` | Decision tables for `scope`, `relations.*`, and the eval-health fields (`eval_artifacts`, `eval_state`, `routing_eval`) / `portability` |
@@ -232,11 +232,11 @@ flowchart LR
 
 **Legend.** Blue = the file. Green = a required layer. Yellow dashed = an optional / specimen-only layer.
 
-### The 54 authored fields, grouped by purpose
+### Authored fields, grouped by purpose
 
-The YAML frontmatter has 54 top-level fields in the current v6 schema, including compatibility aliases that remain accepted for migration, the seven flat fields (5 Understanding + 7 Health) added in v6, and the two publication-facet fields (`secondary_categories`, `marketplace_tier`) added in the May 2026 skill-org reorganization. The schema is the authoritative source for types and requiredness (`schemas/skill.v6.schema.json`); the canonical per-field reference is [`docs/field-reference.md`](field-reference.md). The table below is a navigable index. `always` = required by the base schema; `if <condition>` = conditionally required; blank = optional enrichment.
+The YAML frontmatter uses the current v7 schema, including compatibility aliases that remain accepted for migration, the flat Understanding fields added in v6, the four-verdict Health Block added in v7, and the two publication-facet fields (`secondary_categories`, `marketplace_tier`) added in the May 2026 skill-org reorganization. The schema is the authoritative source for types and requiredness (`schemas/skill.v7.schema.json`); the canonical per-field reference is [`docs/field-reference.md`](field-reference.md). The table below is a navigable index. `always` = required by the base schema; `if <condition>` = conditionally required; blank = optional enrichment.
 
-**v6 simplification (2026-05-17).** v6 flattens the seven-field `concept` block to top-level so the Understanding fields read like every other field in the Protocol. It also adds the **Health block** — seven flat fields (`last_audited`, `last_changed`, `audit_verdict`, `eval_score`, `eval_failed_ids`, `lint_verdict`, `drift_status`) — so a skill's audit fingerprint lives in its own frontmatter instead of scattered across `eval-history.jsonl`, `health-ledger.jsonl`, and `.opencode/progress/skill-audit-*`. The Skill Audit Loop reads these flat Health fields directly; no log-file crawl required.
+**v6 simplification (2026-05-17).** v6 flattens the seven-field `concept` block to top-level so the Understanding fields read like every other field in the Protocol. It also adds the first flat **Health Block** so a skill's audit fingerprint lives in its own frontmatter instead of scattered across `eval-history.jsonl`, `health-ledger.jsonl`, and `.opencode/progress/skill-audit-*`. **v7 split (2026-05-19).** v7 replaces the single aggregate `audit_verdict` with four verdicts: `structural_verdict`, `truth_verdict`, `comprehension_verdict`, and `application_verdict`. The Skill Audit Loop reads these Health Block fields directly; no log-file crawl required.
 
 | Group | Field | Required? | Shape |
 |---|---|---|---|
@@ -245,7 +245,7 @@ The YAML frontmatter has 54 top-level fields in the current v6 schema, including
 | | [`description`](field-reference.md#description) | always | string |
 | | [`version`](field-reference.md#version) | always | semver string |
 | | [`owner`](field-reference.md#owner) | always | string |
-| **Classification** | [`schema_version`](field-reference.md#schema_version) | always | integer `4` |
+| **Classification** | [`schema_version`](field-reference.md#schema_version) | always | integer `7` |
 | | [`type`](field-reference.md#type) | always | `capability` \| `workflow` \| `router` \| `overlay` |
 | | [`scope`](field-reference.md#scope) | always | `codebase` \| `reference` \| `portable` |
 | | [`category`](field-reference.md#category) | always | string |
@@ -438,7 +438,7 @@ Skill Graph uses a single integer `schema_version` to signal contract evolution.
 
 1. **Breaking changes bump `schema_version`.** Renamed fields, removed fields, retyped fields, removed enum values, or tightened required-ness constraints bump the integer. Consumers must migrate or pin.
 2. **Additive changes do not bump.** New optional fields, new enum values that extend (not replace) an enum, and new checks in `scripts/skill-lint.js` that only affect warnings do not bump the version. Consumers on the prior minor release continue to pass.
-3. **Validate against the matching schema.** `schemas/skill.schema.json` and `schemas/manifest.schema.json` track the latest contract (v3 today). Pinned copies ship alongside them as `schemas/skill.v4.schema.json` and `schemas/manifest.v3.schema.json` — content-identical to the unversioned files except for `$id` and `title`. The prior-version pinned files (`schemas/skill.v2.schema.json`, `schemas/manifest.v2.schema.json`) remain in the repo for consumers pinned to v2. Consumers that want stability across a future v4 bump should validate against the versioned files; consumers that want to automatically follow the latest contract should validate against the unversioned files.
+3. **Validate against the matching schema.** `schemas/skill.schema.json` and `schemas/manifest.schema.json` track the latest contract (v7 today). Pinned copies ship alongside them as `schemas/skill.v7.schema.json` and `schemas/manifest.v6.schema.json` — content-identical to the unversioned files except for `$id` and `title`. Prior-version pinned files remain in the repo for back-compat reads. Consumers that want stability across future bumps should validate against the versioned files; consumers that want to automatically follow the latest contract should validate against the unversioned files.
 4. **One-version-overlap deprecation is preferred.** `scripts/skill-lint.js` emits warnings (not errors) for v2-specific patterns (scalar `drift_check`, scalar `compatibility`, `family` field name) during the v3 window. Authors get a warning window to migrate. Hard-error enum/shape changes — rejected by `additionalProperties: false` + type constraints in the schema itself — are paired with the friendlier lint warning so the error points at the rename.
 5. **Migration tooling ships with the bump.** The v3 bump ships `scripts/migrate-skill-v2-to-v3.js`, a line-based codemod that preserves author YAML style (comments, quoting, indentation). Future bumps follow the same pattern: one codemod per version, shipped in the same PR.
 
