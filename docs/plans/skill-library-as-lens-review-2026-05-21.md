@@ -164,6 +164,24 @@ Research that informed the fixes: `docs/research/design-review-best-practices-20
 ### Started — gate-9 application grader (batch 3, A1 foundation)
 - **A1 (in progress)** — confirmed gate 9 is unimplemented (no application grader prompt, no `evals/application.json`, no `--mode application` path). Authored the foundation: `lib/audit/graders/application-comparative-grader-prompt.md` (A/B with-skill-vs-baseline, CoT, boolean per-criterion → the 6-value `application_verdict` enum, BARS anchors, calibration gate) and a worked specimen `examples/evals/application.sample.json` for `database-migration` (incl. a FALSE_POSITIVE probe). **Remaining wiring:** the `evaluate-skill.js --mode application` execution path + reconciling the grader-prompt path divergence (`scripts/skill/graders/` vs `lib/audit/graders/` — finding A5) + calibration on a ~10-skill human-agreement set before any verdict certifies. Sibling-repo `skills/<name>/evals/application.json` authoring is the per-skill follow-on.
 
+### Linear Error Reports filed (2026-05-21, per /wrap Step 1b — every unsolved item tracked)
+| Ticket | Finding |
+|---|---|
+| SH-6302 | A1 — gate-9 application grader execution wiring |
+| SH-6303 | A2 — eval backlog (111/143 evals only planned) |
+| SH-6304 | A5 — duplicate walker + grader-prompt path divergence |
+| SH-6305 | G1 — routing eval covers 5.6% of corpus |
+| SH-6306 | P9 — relations.boundary name inverts its runtime mechanic |
+| SH-6307 | P11 — category balance + weak first-pass triple |
+| SH-6308 | P12 — router archetype unpopulated |
+| SH-6309 | P13 — stability near-uniform experimental |
+| SH-6310 | Marketplace surface stale (142 vs 143) |
+| SH-6311 | skill-infrastructure redundant diverged metadata.* grounding/drift_check |
+| SH-6312 | legacy — 5 skills reference removed graph-audit in relations |
+| SH-6313 | legacy — deprecated `adjacent` alias still in 3 skills |
+
+(Solved findings P1–P7, G2/G3/G7, G4/D1/D2, A3 are in the pushed commits, not refiled.)
+
 ### Corrected after verification (no change needed)
 - **G6** — NOT a defect. `bin/skill-graph.js:514-522` already gates `evolve` with a clear capability-unmet message AND exits 1. The original `exit:0` reading was a pipe artifact (`head`'s exit code). Stated plainly per the no-manufactured-defects guardrail.
 
