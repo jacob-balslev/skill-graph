@@ -21,6 +21,7 @@ metadata:
   primaryCategory: Agent System
   layerPrimary: meta
   routingRole: primary
+  comprehension_state: present
   mental_model: "A loop has five primitives: trigger, worker session, progress signal, stop condition, and safety cap. Ralph Wiggum keeps the stop condition in a Stop hook plus completion word, manage-loop keeps it in a continuation signal, and grind-loop keeps it in an external supervisor that respawns fresh sessions from status and exit evidence."
   purpose: "Autonomous loop patterns exist to prevent ad hoc respawn logic with no checkpoint, cap, or recovery owner. They let the system choose the smallest loop shape that can safely finish the work while preserving progress across session boundaries."
   boundary: "This is not command selection, task execution, inter-agent messaging, budget steering, or checkpoint implementation internals. Use ai-coding-agents for command choice, task-execution for the work inside an iteration, agent-to-agent or agent-messaging for communication, agent-control for steering, and agent-loop-infra for checkpoint mechanics."
