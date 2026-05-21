@@ -9,10 +9,22 @@
  *      the router cannot resolve (no semantic fallback for identical
  *      labels). Duplicates are hard errors.
  *
- *   2. keywords — semantic match. Some overlap is natural (e.g. both an
- *      a11y skill and a testing-strategy skill might reference "keyboard").
- *      Excessive overlap is a signal that activation will mis-fire;
- *      emitted as warnings for author review.
+ *   2. keywords — semantic match, and the RECALL substrate of the graph.
+ *      Shared keywords across related skills are EXPECTED and desirable: a
+ *      query about "foreign key" should reach both data-modeling and
+ *      entity-relationship-modeling, and the router disambiguates by score
+ *      plus the typed relation edges between them. A shared keyword is
+ *      therefore NOT a duplicate and NOT a defect — it is a prompt to confirm
+ *      the co-activating skills declare an explicit relations.boundary /
+ *      relations.related edge so the graph can route between them. Emitted as
+ *      advisory warnings for author review; never run under --strict in
+ *      `npm run verify`, so they block nothing.
+ *
+ *      CORRECT response to a shared-keyword pair: add or verify a relations
+ *      edge (boundary — "use that instead because…"; or related), or accept
+ *      it as legitimate shared vocabulary. WRONG response: deleting the
+ *      keyword from one skill to shrink this count — that strips recall and
+ *      degrades routing. Do not do it.
  *
  *   3. paths — glob match. Two skills claiming the same file surface
  *      will both activate when that surface is touched. Exact-string
@@ -129,15 +141,22 @@ function printReport({ triggerDups, keywordDups, pathDups, strict, useColor }) {
     for (const d of triggerDups) console.error(formatDuplicateLine('trigger', d, useColor));
   }
 
-  // Keywords — warning (or error in --strict).
+  // Keywords — advisory only (recall signal). Promoted to error in --strict.
   if (keywordDups.length === 0) {
-    console.log(paint('OK   ', C.green, useColor) + '[keywords]   no duplicate keyword entries');
+    console.log(paint('OK   ', C.green, useColor) + '[keywords]   no shared keyword entries');
   } else {
     const level = strict ? 'FAIL ' : 'WARN ';
     const levelColor = strict ? C.red : C.yellow;
     const stream = strict ? console.error : console.log;
-    stream.call(console, paint(level, levelColor, useColor) + `[keywords]   ${keywordDups.length} duplicate keyword(s)`);
+    stream.call(console, paint(level, levelColor, useColor) + `[keywords]   ${keywordDups.length} shared keyword(s) (recall signal — review relation edges, do NOT delete keywords)`);
     for (const d of keywordDups) stream.call(console, formatDuplicateLine('keyword', d, useColor));
+    // Inline guidance so the correct response is unmissable at the call site.
+    stream.call(console, paint('  → Shared keywords are RECALL, not duplicates: a query should be able to reach', C.dim, useColor));
+    stream.call(console, paint('    every skill that genuinely covers the term. The router disambiguates by score', C.dim, useColor));
+    stream.call(console, paint('    and by the typed relation edges between skills.', C.dim, useColor));
+    stream.call(console, paint('    FIX (if any): add or confirm a relations.boundary / relations.related edge', C.dim, useColor));
+    stream.call(console, paint('    between the listed skills — or accept it as legitimate shared vocabulary.', C.dim, useColor));
+    stream.call(console, paint('    Do NOT delete a keyword to shrink this count: that strips recall and degrades routing.', C.dim, useColor));
   }
 
   // Paths — warning (or error in --strict).
