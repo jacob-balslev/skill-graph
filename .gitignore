@@ -14,6 +14,12 @@ audits/sweep-ledger.jsonl
 .research/
 .roundtable/
 
+# Personal AI usage tracker — belongs only in the Development root, never in
+# this public tooling repo. It carries subscription cost / quota / billing data.
+# Ignored here so a `git add .` / commit-all snapshot can't re-introduce it
+# (SH-6142). The canonical, auto-generated copy lives at ~/Development/USAGE.md.
+USAGE.md
+
 # Node
 node_modules/
 
