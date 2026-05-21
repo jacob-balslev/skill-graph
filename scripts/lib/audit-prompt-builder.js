@@ -15,6 +15,7 @@
 const fs   = require('fs');
 const path = require('path');
 const { parseFrontmatter } = require('./parse-frontmatter');
+const { resolveSkillRoots, resolveTruthSourcePath } = require('./roots');
 
 // ---------------------------------------------------------------------------
 // Dimension registry
@@ -134,8 +135,17 @@ function collectContext(opts) {
     ? frontmatter.grounding.truth_sources
     : [];
 
+  // Truth sources are resolved against the configured skill roots, not blindly
+  // against repoRoot. Post-monorepo-split, the canonical skill library lives in
+  // a sibling repo (../skills/skills), so a `skills/…`-prefixed truth_source
+  // must resolve there — resolving it relative to the tooling repoRoot would
+  // emit a false "grounding drift" for every codebase-scoped skill. Tooling-repo
+  // paths (examples/evals/…, scripts/…) and URLs fall through to repoRoot
+  // resolution unchanged. (SH-6129)
+  const skillRoots = resolveSkillRoots(repoRoot);
+
   for (const relPath of declared) {
-    const abs = path.resolve(repoRoot, String(relPath));
+    const abs = resolveTruthSourcePath(String(relPath), repoRoot, skillRoots);
     if (!fs.existsSync(abs)) {
       truthSources.push({ path: relPath, content: '[file not found — grounding drift]', truncated: false });
       continue;
