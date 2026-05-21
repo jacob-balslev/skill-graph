@@ -398,7 +398,7 @@ The two-step sync is intentional. It prevents the authoring repo's v7 protocol f
 
 Before pushing a sync to `jacob-balslev/skills`:
 
-- The two repos' skill counts match: `ls marketplace/skills/ | wc -l` (here) equals `ls skills/ | wc -l` (release repo) post-sync.
+- The two repos' skill counts match: `find marketplace/skills -name SKILL.md | wc -l` (here) equals `find skills -name SKILL.md | wc -l` (release repo) post-sync. Use a recursive `SKILL.md` count, not `ls | wc -l`: `marketplace/skills/` is flat (`<name>/`) while the release library is nested by category (`<category>/<name>/`), so `ls | wc -l` counts incompatible top-level entries and never matches.
 - The release repo's `README.md` matches `marketplace/README.md` from this repo.
 - Every exported marketplace description is ≤ the marketplace limit (`node scripts/export-marketplace-skills.js --check`).
 - No protocol frontmatter has leaked through — the release repo's skills are plain Agent Skills shape, not v7 protocol shape.
