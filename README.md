@@ -298,7 +298,7 @@ The public, ready-to-install skill library lives at [`jacob-balslev/skills`](htt
 npx skills add jacob-balslev/skills
 ```
 
-That repo holds 142 canonical skills in plain Agent-Skills shape, indexed on `skills.sh`. You do not need to clone this `skill-graph` tooling repo to consume the skills.
+That repo holds 143 canonical skills in plain Agent-Skills shape, indexed on `skills.sh`. You do not need to clone this `skill-graph` tooling repo to consume the skills.
 
 ### Running the tooling (authors and maintainers)
 

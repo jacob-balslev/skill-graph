@@ -1,7 +1,7 @@
 {
-  "_comment": "JSON-LD @context for Skill Graph v4 frontmatter. Maps authored fields to W3C standard vocabularies so a Skill Graph SKILL.md can be projected into RDF/OWL/SKOS consumers without changing the authoring surface.",
-  "_version": "3.0.0",
-  "_schema_version_target": 6,
+  "_comment": "JSON-LD @context for Skill Graph v7 frontmatter. Maps authored fields to W3C standard vocabularies so a Skill Graph SKILL.md can be projected into RDF/OWL/SKOS consumers without changing the authoring surface.",
+  "_version": "3.1.0",
+  "_schema_version_target": 7,
   "_references": {
     "skos": "https://www.w3.org/TR/skos-reference/",
     "owl": "https://www.w3.org/TR/owl2-overview/",
@@ -14,7 +14,11 @@
   "_adr_anchors": {
     "0001": "Initial SKOS-aligned predicate set (related/broader/narrower additions; adjacent deprecation).",
     "0002": "JSON-LD @context coverage policy.",
-    "0006": "boundary stays canonical for routing-layer asymmetric handoff (sg:disjointOwnership); disjoint_with is a separate orthogonal relation for formal OWL class-disjointness (owl:disjointWith). Reverts the `boundary -> disjoint_with` rename proposed in ADR 0001 Decision #2."
+    "0006": "boundary stays canonical for routing-layer asymmetric handoff (sg:disjointOwnership); disjoint_with is a separate orthogonal relation for formal OWL class-disjointness (owl:disjointWith). Reverts the `boundary -> disjoint_with` rename proposed in ADR 0001 Decision #2.",
+    "0011": "Four-verdict Health Block (structural/truth/comprehension/application) replaces the single audit_verdict; audit_verdict retained for back-read of unmigrated v6 manifests."
+  },
+  "_term_collisions": {
+    "boundary": "The token `boundary` has TWO distinct senses: (1) the v6+ Understanding field (a string teaching the concept's edges) and (2) relations.boundary (the routing-layer anti-ownership predicate, an array). JSON-LD term resolution is by key, not by nesting depth, so a single global term cannot serve both. Resolved via a JSON-LD 1.1 property-scoped @context: top-level `boundary` -> sg:conceptBoundary (the Understanding string); `boundary` appearing inside `relations` -> sg:disjointOwnership (the routing predicate). See https://www.w3.org/TR/json-ld11/#scoped-contexts."
   },
   "@context": {
     "sg": "https://skillgraph.dev/vocab#",
@@ -45,7 +49,10 @@
       "@type": "xsd:date"
     },
     "stability": "sg:stability",
-    "marketplace_tier": "sg:marketplaceTier",
+    "marketplace_tier": {
+      "@id": "sg:marketplaceTier",
+      "_note": "NOT a v7 contract field. Retained only for back-read of legacy manifests. The v7 protocol has no marketplace_tier field."
+    },
     "superseded_by": {
       "@id": "prov:wasRevisionOf",
       "@type": "@id",
@@ -57,7 +64,8 @@
     "category": "sg:browseCategory",
     "secondary_categories": {
       "@id": "sg:secondaryCategories",
-      "@container": "@set"
+      "@container": "@set",
+      "_note": "NOT a v7 contract field. Retained only for back-read of legacy manifests. In v7, cross-category membership is expressed via relations.related (max 5), never a secondary_categories field. See SKILL_METADATA_PROTOCOL.md § Classification disambiguation rule 3."
     },
     "keywords": {
       "@id": "dcat:keyword",
@@ -81,7 +89,17 @@
     },
     "allowed-tools": "sg:allowedTools",
     "allowed_tools": "sg:allowedTools",
-    "relations": "sg:relations",
+    "relations": {
+      "@id": "sg:relations",
+      "@context": {
+        "_note": "Property-scoped context (JSON-LD 1.1). Within `relations`, the token `boundary` is the routing-layer anti-ownership predicate, NOT the Understanding-field string. See _term_collisions.boundary.",
+        "boundary": {
+          "@id": "sg:disjointOwnership",
+          "@container": "@set",
+          "_note": "Routing-layer asymmetric handoff — directional. Canonical name for wrong-skill routing protection. Maps to sg:disjointOwnership, a Skill-Graph-specific predicate intentionally weaker than OWL class-disjointness — it makes a routing claim, not a formal ontological one. See ADR 0006."
+        }
+      }
+    },
     "adjacent": {
       "@id": "skos:related",
       "@container": "@set",
@@ -103,9 +121,8 @@
       "_note": "Cross-skill specialisation — target is a more specific skill"
     },
     "boundary": {
-      "@id": "sg:disjointOwnership",
-      "@container": "@set",
-      "_note": "Routing-layer asymmetric handoff — directional. Canonical name for wrong-skill routing protection. Maps to sg:disjointOwnership, a Skill-Graph-specific predicate intentionally weaker than OWL class-disjointness — it makes a routing claim, not a formal ontological one. See ADR 0006."
+      "@id": "sg:conceptBoundary",
+      "_note": "v6+ Understanding field (string) — things commonly confused with the concept but that are NOT it, expressed as a mechanism. This is the TOP-LEVEL sense of `boundary`. The routing-layer relations.boundary predicate (sg:disjointOwnership) is defined separately via the property-scoped @context on `relations`. See _term_collisions.boundary and SKILL_METADATA_PROTOCOL.md § Understanding."
     },
     "disjoint_with": {
       "@id": "owl:disjointWith",
@@ -265,7 +282,7 @@
     "eval_score": {
       "@id": "sg:evalScore",
       "@type": "xsd:double",
-      "_note": "Health Block — numeric eval pass rate (0.0–1.0) from the most recent eval run (v6+)"
+      "_note": "Health Block — latest aggregate eval grade on a 0.0–5.0 scale (v6+). Written by evaluate-skill.js. NOT a 0.0–1.0 pass rate; see SKILL_METADATA_PROTOCOL.md § eval_score and SKILL_AUDIT_LOOP.md."
     },
     "eval_failed_ids": {
       "@id": "sg:evalFailedIds",
@@ -274,11 +291,11 @@
     },
     "lint_verdict": {
       "@id": "sg:lintVerdict",
-      "_note": "Health Block — pass | fail | warn result from the most recent lint run (v6+)"
+      "_note": "Health Block — PASS | FAIL | UNKNOWN from the most recent deterministic lint run (v6+). PASS means zero lint errors; warnings do not flip the verdict (there is no `warn` value). Rolls up into structural_verdict."
     },
     "drift_status": {
       "@id": "sg:driftStatus",
-      "_note": "Health Block — clean | drifted | unknown — whether truth sources have changed since last verified (v6+)"
+      "_note": "Health Block — OK | DRIFT | BROKEN | STALE | NO_BASELINE | EXTERNAL_UNHASHED | UNKNOWN, mirroring the skill-graph-drift.js sentinel verdicts (v6+). Rolls up into truth_verdict."
     },
     "mental_model": {
       "@id": "sg:mentalModel",
