@@ -5,7 +5,7 @@ Do not edit generated files here by hand; run `node scripts/export-marketplace-s
 
 Canonical source repo: https://github.com/jacob-balslev/skill-graph
 Release target repo: jacob-balslev/skills
-Generated public skills: 142
+Generated public skills: 143
 
 Each skill under `skills/<name>/SKILL.md` is a plain Agent Skills-compatible export.
 Protocol fields are preserved as string values under `metadata`, with factual Skill Graph provenance.

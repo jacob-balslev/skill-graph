@@ -20,7 +20,7 @@ metadata:
   stability: experimental
   keywords: "[\"entity relationship\",\"ER diagram\",\"ER model\",\"database design\",\"schema design\",\"normalization\",\"foreign key\",\"primary key\",\"junction table\",\"database modeling\"]"
   triggers: "[\"er-modeling-skill\",\"database-design-skill\"]"
-  relations: "{\"related\":[\"database-migration\"],\"boundary\":[\"conceptual-modeling\"],\"verify_with\":[\"code-review\"]}"
+  relations: "{\"related\":[\"database-migration\",\"data-modeling\"],\"boundary\":[\"conceptual-modeling\"],\"verify_with\":[\"code-review\"]}"
   portability: "{\"readiness\":\"scripted\",\"targets\":[\"skill-md\"]}"
   lifecycle: "{\"stale_after_days\":90,\"review_cadence\":\"quarterly\"}"
   structural_verdict: UNVERIFIED
