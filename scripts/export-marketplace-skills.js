@@ -29,6 +29,7 @@ const { collectSkillFilesFromRoots, workspaceRoot, loadWorkspaceConfig, resolveS
 const { buildExportedSkill, normalizeExportName } = require('./export-skill');
 const { validateExportedFrontmatter } = require('./verify-skill-md-export');
 const { checkFile } = require('./check-markdown-links');
+const { PRIVACY_PATTERNS, scanPrivacyText } = require('./lib/privacy-patterns');
 
 const REPO_ROOT = workspaceRoot();
 const WORKSPACE_CONFIG = loadWorkspaceConfig(REPO_ROOT, msg => process.stderr.write(`WARN ${msg}\n`));
@@ -58,70 +59,12 @@ const PROVENANCE_KEYS = [
 // enforces this and will throw if an override exists for an under-limit description.
 const EXPORT_DESCRIPTION_OVERRIDES = {};
 
-const PRIVACY_PATTERNS = [
-  {
-    id: 'windows_user_path',
-    message: 'local Windows user path',
-    regex: /\b[A-Za-z]:[\\/]+Users[\\/]+[^ \t\r\n"')]+/g,
-  },
-  {
-    id: 'posix_user_path',
-    message: 'local macOS user path',
-    regex: /(^|[\s"'(])\/Users\/[^ \t\r\n"')]+/g,
-  },
-  {
-    id: 'linux_home_path',
-    message: 'local Linux home path',
-    regex: /(^|[\s"'(])\/home\/[^\/\s"')]+\/[^ \t\r\n"')]+/g,
-  },
-  {
-    id: 'email_address',
-    message: 'email address',
-    regex: /\b[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}\b/gi,
-  },
-  {
-    id: 'private_key',
-    message: 'private key block',
-    regex: /-----BEGIN (?:RSA |DSA |EC |OPENSSH |PGP )?PRIVATE KEY-----/g,
-  },
-  {
-    id: 'known_secret_prefix',
-    message: 'token-like secret prefix',
-    regex: /\b(?:AIza[0-9A-Za-z_-]{20,}|AKIA[0-9A-Z]{16}|sk-[A-Za-z0-9]{20,}|gh[pousr]_[A-Za-z0-9_]{20,}|github_pat_[A-Za-z0-9_]{20,}|shpat_[A-Za-z0-9]{20,}|shpss_[A-Za-z0-9]{20,}|napi_[A-Za-z0-9]{20,}|xox[baprs]-[A-Za-z0-9-]{20,})\b/g,
-  },
-  {
-    // Defense-in-depth behind the scope/grounding publication gate: a skill that is mis-marked
-    // as portable but still names a private codebase path leaks internal architecture. The
-    // canonical private repo is `sales-hub`; its app source lives under `apps/web/src`.
-    id: 'internal_codebase_path',
-    message: 'internal codebase path (sales-hub / app source)',
-    regex: /(^|[\s"'(`/])(?:sales-hub|apps\/web\/src)(?:[\/\s"')`]|$)/gi,
-  },
-  {
-    // Internal database surface names observed leaking via codebase-grounded skills
-    // (stripe-ledger-recon, etc.). These are private storage surfaces, never portable knowledge.
-    id: 'internal_db_surface',
-    message: 'internal database surface name',
-    regex: /\b(?:stripe_(?:events_raw|payments_raw|order_links|balance_transactions)|shopify_(?:orders_raw|line_item_tax_lines)|printify_(?:blueprints|line_items|order_items|shipments)|fx_rates_daily)\b/gi,
-  },
-  {
-    id: 'local_artifact_path',
-    message: 'local-only artifact path',
-    regex: /(^|[\s"'(])(?:\.artifacts|\.research|\.roundtable|audits\/_state|audits\\_state)(?:[\/\\]|$)/gi,
-  },
-  {
-    id: 'private_project_name',
-    message: 'known private project name',
-    regex: /\b(?:placeholder-project-name|boardmeeting|free-oppression-data)\b/gi,
-  },
-];
+// PRIVACY_PATTERNS and scanPrivacyText are imported from ./lib/privacy-patterns —
+// the single source of truth shared with the pre-push hook (L3) and CI scan (L4).
+// Do not duplicate patterns here.
 
 function repoRelative(filePath) {
   return path.relative(REPO_ROOT, filePath).split(path.sep).join('/');
-}
-
-function lineForIndex(text, index) {
-  return text.slice(0, index).split(/\r?\n/).length;
 }
 
 function isExternalTarget(target) {
@@ -371,23 +314,18 @@ function collectGeneratedSkillFiles(outputRoot) {
   return files.sort((a, b) => repoRelative(a).localeCompare(repoRelative(b)));
 }
 
-function scanPrivacyText(text, filePath) {
-  const findings = [];
-  for (const pattern of PRIVACY_PATTERNS) {
-    pattern.regex.lastIndex = 0;
-    let match;
-    while ((match = pattern.regex.exec(text)) !== null) {
-      findings.push({
-        file: repoRelative(filePath),
-        line: lineForIndex(text, match.index),
-        id: pattern.id,
-        message: pattern.message,
-        match: String(match[0]).trim().slice(0, 120),
-      });
-      if (match.index === pattern.regex.lastIndex) pattern.regex.lastIndex++;
-    }
-  }
-  return findings;
+/**
+ * Scan `text` for privacy violations, normalising `filePath` to a repo-relative
+ * display form before storing it in each finding's `file` field.
+ *
+ * This is a thin wrapper around the shared `scanPrivacyText` from
+ * `./lib/privacy-patterns` that applies the repo-relative normalisation that
+ * the export pipeline uses for error messages. The shared function accepts
+ * any `filePath` string — callers that do not need normalisation can import
+ * the shared function directly.
+ */
+function scanPrivacyTextRepoRelative(text, filePath) {
+  return scanPrivacyText(text, repoRelative(filePath));
 }
 
 function validateGeneratedSurface(outputRoot, expectedSkills = null) {
@@ -409,7 +347,7 @@ function validateGeneratedSurface(outputRoot, expectedSkills = null) {
 
   for (const filePath of markdownFiles) {
     const text = fs.readFileSync(filePath, 'utf8');
-    privacyFindings.push(...scanPrivacyText(text, filePath));
+    privacyFindings.push(...scanPrivacyTextRepoRelative(text, filePath));
     for (const linkError of checkFile(filePath)) {
       markdownFailures.push({
         file: repoRelative(filePath),
