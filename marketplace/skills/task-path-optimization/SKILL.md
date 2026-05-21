@@ -16,7 +16,7 @@ metadata:
   anti_examples: "[\"reduce the number of tool calls in this read-heavy step\",\"troubleshoot why the deployment keeps timing out\",\"execute the implementation plan we already agreed on\"]"
   owner: claude
   freshness: "2026-05-18"
-  drift_check: "{\"last_verified\":\"2026-05-18\"}"
+  drift_check: "{\"last_verified\":\"2026-05-18\",\"truth_source_hashes\":{}}"
   layer: meta
   primaryCategory: Agent System
   layerPrimary: meta
@@ -27,7 +27,7 @@ metadata:
   boundary: "This skill chooses the approach before execution. It does not execute the implementation, debug a concrete failure, optimize individual tool calls, manage Linear issue lifecycle, or record durable architecture decisions."
   analogy: "Task path optimization is like choosing a route before a trip: walking across the street needs no map, crossing a city needs traffic awareness, and crossing a mountain range needs checkpoints and fallback routes."
   misconception: "The common mistake is treating more process as safer. The safest path is the smallest path that still handles ambiguity, dependency, risk, and verification."
-  relations: "{\"adjacent\":[\"task-lifecycle\",\"agents\",\"task-sizing\",\"sequential-thinking\",\"codebase-search\",\"task-execution\"],\"boundary\":[{\"skill\":\"tool-call-strategy\",\"reason\":\"tool-call-strategy owns tool-level efficiency such as reducing or batching individual tool calls; task-path-optimization owns the higher-level choice of execution approach\"},{\"skill\":\"diagnosis\",\"reason\":\"diagnosis owns systematic root-cause investigation of a concrete failure; task-path-optimization owns choosing the approach before work begins, not debugging a failure\"},{\"skill\":\"troubleshooting\",\"reason\":\"troubleshooting owns resolving a specific broken behavior; task-path-optimization owns selecting the execution path, not fixing a live fault\"},{\"skill\":\"spec-driven-development\",\"reason\":\"spec-driven-development owns writing and executing against a spec or plan; task-path-optimization owns the upstream plan-vs-act decision and approach selection, not executing the chosen plan\"}],\"verify_with\":[\"task-evaluation\",\"code-review\"]}"
+  relations: "{\"related\":[\"task-lifecycle\",\"agents\",\"task-sizing\",\"sequential-thinking\",\"codebase-search\",\"task-execution\"],\"boundary\":[{\"skill\":\"tool-call-strategy\",\"reason\":\"tool-call-strategy owns tool-level efficiency such as reducing or batching individual tool calls; task-path-optimization owns the higher-level choice of execution approach\"},{\"skill\":\"diagnosis\",\"reason\":\"diagnosis owns systematic root-cause investigation of a concrete failure; task-path-optimization owns choosing the approach before work begins, not debugging a failure\"},{\"skill\":\"troubleshooting\",\"reason\":\"troubleshooting owns resolving a specific broken behavior; task-path-optimization owns selecting the execution path, not fixing a live fault\"},{\"skill\":\"spec-driven-development\",\"reason\":\"spec-driven-development owns writing and executing against a spec or plan; task-path-optimization owns the upstream plan-vs-act decision and approach selection, not executing the chosen plan\"}],\"verify_with\":[\"task-evaluation\",\"code-review\"]}"
   structural_verdict: UNVERIFIED
   truth_verdict: UNVERIFIED
   comprehension_verdict: UNVERIFIED
