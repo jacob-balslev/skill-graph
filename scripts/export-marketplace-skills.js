@@ -63,6 +63,140 @@ const EXPORT_DESCRIPTION_OVERRIDES = {};
 // the single source of truth shared with the pre-push hook (L3) and CI scan (L4).
 // Do not duplicate patterns here.
 
+// ---------------------------------------------------------------------------
+// Root-resolution guard
+// ---------------------------------------------------------------------------
+// The exporter reads skills from the first configured skill root. When invoked
+// from the wrong CWD (e.g., the Development orchestration root instead of this
+// skill-graph repo root), root resolution silently falls back to the flat
+// operational copies under Development/skills/ — 244 scope:operational skills
+// that legitimately cite internal sales-hub/ paths. The resulting marketplace
+// surface fails the privacy gate, and any push to the release repo leaks
+// internal codebase references. This guard catches that mis-invocation BEFORE
+// generating the surface.
+//
+// Detection strategy (two signals, both checked):
+//
+//   1. PATH SIGNAL — if no .skill-graph/config.json was found at the resolved
+//      workspace root, the skill root defaulted to <root>/skills/. When this
+//      path exists but sits alongside a config-free workspace, it is very likely
+//      the flat operational directory. We emit a detailed error explaining the
+//      probable cause and the correct fix.
+//
+//   2. CONTENT SIGNAL — we sample up to GUARD_SAMPLE_SIZE skills from the
+//      resolved source root. If more than GUARD_OPERATIONAL_THRESHOLD of the
+//      sampled skills carry scope:operational or scope:codebase, the source is
+//      the internal library and we must refuse to generate. This catches
+//      renamed-but-mis-configured roots and future layout changes that the path
+//      signal alone might miss.
+//
+// Both checks run unconditionally; if either fires, the process exits 1 with
+// a message that names the bad path and explains the fix.
+// ---------------------------------------------------------------------------
+
+/** How many skills to sample for the content-based guard. */
+const GUARD_SAMPLE_SIZE = 20;
+
+/**
+ * Fraction of sampled skills that may carry scope:operational/codebase before
+ * the guard fires. The structured portable library (skills/skills/**) contains
+ * zero operational skills; the flat internal library is ~100% operational.
+ * 0.5 gives a generous margin that catches any realistic mis-configuration.
+ */
+const GUARD_OPERATIONAL_THRESHOLD = 0.5;
+
+/**
+ * Assert that `sourceDir` is the clean portable skill library, not the flat
+ * internal operational copies. Throws with a clear, actionable message if the
+ * resolved root looks wrong.
+ *
+ * Called from `collectCanonicalSkills()` before any skill text is read or
+ * marketplace files are generated.
+ *
+ * @param {string} sourceDir - Absolute path of the resolved primary skill root.
+ * @param {object|null} workspaceConfig - The parsed workspace config object (may be null).
+ * @throws {Error} If the source root resolves to a predominantly operational library.
+ */
+function assertSourceRootIsPortable(sourceDir, workspaceConfig) {
+  // --- Signal 1: no .skill-graph/config.json at the workspace root ----------
+  // When the config is missing the skill root defaults to <cwd>/skills/. If
+  // that happens to exist it is almost certainly the flat operational copies.
+  // (The correct invocation always finds .skill-graph/config.json at
+  // <skill-graph-repo>/ which points skill_roots at ../skills/skills.)
+  if (!workspaceConfig && fs.existsSync(sourceDir)) {
+    throw new Error(
+      `Root-resolution guard: no .skill-graph/config.json found at workspace root.\n` +
+      `  Resolved source root: ${sourceDir}\n` +
+      `  This is likely the flat internal operational skill copies, not the clean\n` +
+      `  portable library. Generating from this root would produce a leaky surface.\n` +
+      `\n` +
+      `  Fix: run this script from the skill-graph repo root, not from the\n` +
+      `  Development orchestration root:\n` +
+      `\n` +
+      `    cd /path/to/skill-graph\n` +
+      `    node scripts/export-marketplace-skills.js\n` +
+      `\n` +
+      `  Or set SKILL_GRAPH_WORKSPACE to the skill-graph repo root:\n` +
+      `    SKILL_GRAPH_WORKSPACE=/path/to/skill-graph node scripts/export-marketplace-skills.js`
+    );
+  }
+
+  // --- Signal 2: content probe — sample skills and count non-portable scope --
+  // Walk only the top levels needed to collect GUARD_SAMPLE_SIZE skills; avoid
+  // a full deep walk for speed. Re-use the same walker used by the real export.
+  if (!fs.existsSync(sourceDir)) return; // nothing to probe — let downstream handle missing dir
+
+  const samplePaths = [];
+  const walkForSample = (dir, depth) => {
+    if (samplePaths.length >= GUARD_SAMPLE_SIZE) return;
+    if (depth > 6) return;
+    const skillMd = path.join(dir, 'SKILL.md');
+    if (fs.existsSync(skillMd)) { samplePaths.push(skillMd); return; }
+    let entries;
+    try { entries = fs.readdirSync(dir, { withFileTypes: true }); } catch { return; }
+    for (const entry of entries) {
+      if (samplePaths.length >= GUARD_SAMPLE_SIZE) break;
+      if (!entry.isDirectory()) continue;
+      if (entry.name.startsWith('_') || entry.name.startsWith('.')) continue;
+      walkForSample(path.join(dir, entry.name), depth + 1);
+    }
+  };
+  walkForSample(sourceDir, 0);
+
+  if (samplePaths.length === 0) return; // empty dir — let downstream error handle
+
+  const { parseFrontmatter: _parseFm } = require('./lib/parse-frontmatter');
+  let operationalCount = 0;
+  for (const skillMd of samplePaths) {
+    try {
+      const text = fs.readFileSync(skillMd, 'utf8');
+      const fm = _parseFm(text);
+      const scope = fm && (fm.scope || (fm.metadata && fm.metadata.scope));
+      if (scope === 'operational' || scope === 'codebase') operationalCount++;
+    } catch { /* skip unreadable files */ }
+  }
+
+  const operationalFraction = operationalCount / samplePaths.length;
+  if (operationalFraction > GUARD_OPERATIONAL_THRESHOLD) {
+    throw new Error(
+      `Root-resolution guard: resolved source root appears to be the internal operational\n` +
+      `  skill library (${operationalCount}/${samplePaths.length} sampled skills have scope:operational/codebase).\n` +
+      `  Resolved source root: ${sourceDir}\n` +
+      `  Generating from this root would include internal sales-hub/ references and fail\n` +
+      `  the privacy gate. The marketplace export must run against the clean portable library.\n` +
+      `\n` +
+      `  Fix: run this script from the skill-graph repo root, not from the\n` +
+      `  Development orchestration root:\n` +
+      `\n` +
+      `    cd /path/to/skill-graph\n` +
+      `    node scripts/export-marketplace-skills.js\n` +
+      `\n` +
+      `  Or set SKILL_GRAPH_WORKSPACE to the skill-graph repo root:\n` +
+      `    SKILL_GRAPH_WORKSPACE=/path/to/skill-graph node scripts/export-marketplace-skills.js`
+    );
+  }
+}
+
 function repoRelative(filePath) {
   return path.relative(REPO_ROOT, filePath).split(path.sep).join('/');
 }
@@ -159,6 +293,12 @@ function canonicalSourcePath(skillMd) {
  * @returns {string[]} Absolute paths to every discovered SKILL.md.
  */
 function collectCanonicalSkills(sourceDir = DEFAULT_SOURCE_DIR) {
+  // Guard: fail fast if the source root resolves to the internal operational
+  // copies rather than the clean portable library. Pass the workspace config
+  // so the guard can distinguish "no config (wrong CWD)" from "config found
+  // but points at a bad root" (caught by the content probe).
+  assertSourceRootIsPortable(sourceDir, WORKSPACE_CONFIG);
+
   const skills = [];
   for (const { filePath: skillMd } of collectSkillFilesFromRoots([{ absPath: sourceDir, project: null }])) {
     const text = fs.readFileSync(skillMd, 'utf8');
@@ -551,6 +691,8 @@ function main() {
 
 module.exports = {
   EXPORT_DESCRIPTION_OVERRIDES,
+  GUARD_OPERATIONAL_THRESHOLD,
+  GUARD_SAMPLE_SIZE,
   MARKETPLACE_DESCRIPTION_LIMIT,
   PRIVACY_PATTERNS,
   PROVENANCE_KEYS,
@@ -558,6 +700,7 @@ module.exports = {
   SKILL_GRAPH_PROTOCOL,
   SKILL_GRAPH_PROJECT,
   SKILL_GRAPH_SOURCE_REPO,
+  assertSourceRootIsPortable,
   buildMarketplaceSkillText,
   collectCanonicalSkills,
   exportDescriptionForSkill,

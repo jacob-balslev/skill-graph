@@ -15,8 +15,11 @@ const path = require('path');
 const { workspaceRoot, loadWorkspaceConfig, resolveSkillRoots } = require('../lib/roots');
 const {
   EXPORT_DESCRIPTION_OVERRIDES,
+  GUARD_OPERATIONAL_THRESHOLD,
+  GUARD_SAMPLE_SIZE,
   MARKETPLACE_DESCRIPTION_LIMIT,
   SKILL_GRAPH_PROTOCOL,
+  assertSourceRootIsPortable,
   buildMarketplaceSkillText,
   collectCanonicalSkills,
   exportDescriptionForSkill,
@@ -114,5 +117,113 @@ const fakeSecret = 'sk-' + 'A'.repeat(24);
 const fakeLeak = `C:\\Users\\Example\\secret.txt\nperson@example.com\n${fakeSecret}`;
 const findings = scanPrivacyText(fakeLeak, path.join(REPO_ROOT, 'marketplace', 'skills', 'fake', 'SKILL.md'));
 assert(findings.length >= 3, 'privacy scan should detect paths, email addresses, and token-like values');
+
+// ---------------------------------------------------------------------------
+// Root-resolution guard tests (SH-6329)
+// ---------------------------------------------------------------------------
+// Guard constants should be exported and in range.
+assert(
+  typeof GUARD_SAMPLE_SIZE === 'number' && GUARD_SAMPLE_SIZE > 0,
+  'GUARD_SAMPLE_SIZE should be a positive number'
+);
+assert(
+  typeof GUARD_OPERATIONAL_THRESHOLD === 'number' &&
+    GUARD_OPERATIONAL_THRESHOLD > 0 &&
+    GUARD_OPERATIONAL_THRESHOLD < 1,
+  'GUARD_OPERATIONAL_THRESHOLD should be a fraction between 0 and 1'
+);
+
+// Signal 1: path guard — assertSourceRootIsPortable should throw when no
+// workspace config was found but the skill root dir exists (the "wrong CWD"
+// case). We simulate this by passing workspaceConfig=null with a sourceDir
+// that exists on disk (the REPO_ROOT itself always exists).
+let pathGuardFired = false;
+try {
+  assertSourceRootIsPortable(REPO_ROOT, null); // null config = no .skill-graph/config.json
+  // Only fires if REPO_ROOT happens to be a non-existent path — would be a test-env oddity.
+} catch (err) {
+  pathGuardFired = true;
+  assert(
+    err.message.includes('no .skill-graph/config.json found'),
+    `path guard error should mention missing config: ${err.message}`
+  );
+  assert(
+    err.message.includes('skill-graph repo root'),
+    `path guard error should mention fix (skill-graph repo root): ${err.message}`
+  );
+}
+assert(pathGuardFired, 'assertSourceRootIsPortable should throw when workspaceConfig is null and sourceDir exists');
+
+// Signal 2: content guard — build a temporary directory containing
+// predominantly scope:operational skills and verify the guard rejects it.
+const os = require('os');
+const tmpDir = fs.mkdtempSync(path.join(os.tmpdir(), 'sg-guard-test-'));
+try {
+  // Create GUARD_SAMPLE_SIZE + 1 fake skills all with scope:operational
+  const operationalFm = [
+    '---',
+    'name: fake-operational',
+    'description: "Fake internal skill for test."',
+    'scope: operational',
+    '---',
+    '',
+    '# Fake operational skill body',
+  ].join('\n');
+
+  const portableFm = [
+    '---',
+    'name: fake-portable',
+    'description: "Fake portable skill for test."',
+    'scope: portable',
+    '---',
+    '',
+    '# Fake portable skill body',
+  ].join('\n');
+
+  // Write more operational than portable so the fraction exceeds the threshold.
+  const numOperational = Math.ceil(GUARD_SAMPLE_SIZE * (GUARD_OPERATIONAL_THRESHOLD + 0.1)) + 1;
+  const numPortable = 1; // minority portable — total still > threshold operational
+
+  for (let i = 0; i < numOperational; i++) {
+    const skillDir = path.join(tmpDir, `operational-skill-${i}`);
+    fs.mkdirSync(skillDir);
+    fs.writeFileSync(path.join(skillDir, 'SKILL.md'), operationalFm.replace('fake-operational', `operational-skill-${i}`));
+  }
+  for (let i = 0; i < numPortable; i++) {
+    const skillDir = path.join(tmpDir, `portable-skill-${i}`);
+    fs.mkdirSync(skillDir);
+    fs.writeFileSync(path.join(skillDir, 'SKILL.md'), portableFm.replace('fake-portable', `portable-skill-${i}`));
+  }
+
+  // The guard should fire: workspaceConfig is non-null (so signal 1 is bypassed),
+  // but the content probe finds predominantly operational skills (signal 2).
+  let contentGuardFired = false;
+  try {
+    assertSourceRootIsPortable(tmpDir, { skill_roots: [tmpDir] }); // non-null config bypasses signal 1
+  } catch (err) {
+    contentGuardFired = true;
+    assert(
+      err.message.includes('scope:operational') || err.message.includes('operational'),
+      `content guard error should mention operational scope: ${err.message}`
+    );
+    assert(
+      err.message.includes('skill-graph repo root'),
+      `content guard error should mention fix (skill-graph repo root): ${err.message}`
+    );
+  }
+  assert(contentGuardFired, 'assertSourceRootIsPortable should throw when source root is predominantly operational');
+
+  // Guard should NOT fire for the actual clean portable library.
+  let cleanRootThrewUnexpectedly = false;
+  try {
+    assertSourceRootIsPortable(_sourceDir, loadWorkspaceConfig(_root));
+  } catch (err) {
+    cleanRootThrewUnexpectedly = true;
+    process.stderr.write(`FAIL guard should not fire for clean portable library: ${err.message}\n`);
+  }
+  assert(!cleanRootThrewUnexpectedly, 'assertSourceRootIsPortable should not throw for the clean portable library');
+} finally {
+  fs.rmSync(tmpDir, { recursive: true, force: true });
+}
 
 process.stdout.write('PASS test-marketplace-export: marketplace export gates covered\n');

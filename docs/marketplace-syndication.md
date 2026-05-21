@@ -104,7 +104,7 @@ Before publishing or asking a marketplace to index the library:
 - Use [`marketplace-release-agent-prompt.md`](marketplace-release-agent-prompt.md) when handing the export-surface implementation to another agent.
 - Run `npm run verify`.
 - Generate plain `SKILL.md` exports for the whole public library.
-- Generate the marketplace surface with `node scripts/export-marketplace-skills.js`.
+- Generate the marketplace surface with `node scripts/export-marketplace-skills.js`. **Run this from the skill-graph repo root** (not from the Development orchestration root) — the exporter contains a root-resolution guard that fails fast with an actionable error if the resolved source root looks like the internal flat operational copies (scope:operational). If the guard fires, set `SKILL_GRAPH_WORKSPACE=/path/to/skill-graph` or `cd` into the skill-graph repo before re-running. (Guard added 2026-05-22 — SH-6329.)
 - Verify the generated surface with `node scripts/export-marketplace-skills.js --check`.
 - Verify the generated plain shape with `node scripts/verify-skill-md-export.js --plain marketplace/skills`.
 - Run a privacy gate before creating row-level marketplace lists or export surfaces.
