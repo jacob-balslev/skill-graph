@@ -15,7 +15,7 @@
 const fs   = require('fs');
 const path = require('path');
 const { parseFrontmatter } = require('./parse-frontmatter');
-const { resolveSkillRoots, resolveTruthSourcePath } = require('./roots');
+const { resolveSkillRoots, resolveTruthSourcePath, collectSkillFiles } = require('./roots');
 
 // ---------------------------------------------------------------------------
 // Dimension registry
@@ -267,12 +267,39 @@ function collectNeighborSummaries({ frontmatter, repoRoot, charLimit }) {
 
   if (allTargets.size === 0) return [];
 
-  const skillsRoot = path.join(repoRoot, SKILLS_DIR_REL);
-  if (!fs.existsSync(skillsRoot)) return [];
+  // Build a name → SKILL.md path index by walking the configured skill roots
+  // recursively. This mirrors the SH-6129 fix for grounding.truth_sources: the
+  // canonical library lives at ../skills/skills/<category>/<name>/SKILL.md (a
+  // nested sibling layout), so a flat path.join(repoRoot, "skills", name,
+  // "SKILL.md") always misses and every neighbor summary is silently dropped.
+  // resolveSkillRoots + collectSkillFiles handle both the default flat layout
+  // and the configured nested sibling layout transparently. (SH-6317)
+  const skillFileEntries = collectSkillFiles(repoRoot);
+  const nameToSkillMd = new Map();
+  for (const entry of skillFileEntries) {
+    // Derive the skill name from the immediate parent directory of SKILL.md.
+    const skillName = path.basename(path.dirname(entry.filePath));
+    if (!nameToSkillMd.has(skillName)) {
+      nameToSkillMd.set(skillName, entry.filePath);
+    }
+  }
+  // Fallback: also check the flat repoRoot/skills/<name>/SKILL.md layout in
+  // case collectSkillFiles returns nothing (e.g., skill roots not configured).
+  // This keeps behaviour identical to the pre-fix code when the sibling library
+  // is absent, and satisfies the silent-skip-for-truly-missing contract.
+  if (nameToSkillMd.size === 0) {
+    const skillsRoot = path.join(repoRoot, SKILLS_DIR_REL);
+    if (!fs.existsSync(skillsRoot)) return [];
+  }
 
   const out = [];
   for (const name of Array.from(allTargets).sort()) {
-    const skillMd = path.join(skillsRoot, name, 'SKILL.md');
+    let skillMd = nameToSkillMd.get(name);
+    // If the index didn't find it, try the flat fallback layout so we still
+    // skip cleanly for skills that genuinely don't exist.
+    if (!skillMd) {
+      skillMd = path.join(repoRoot, SKILLS_DIR_REL, name, 'SKILL.md');
+    }
     if (!fs.existsSync(skillMd)) continue;
     let body;
     try {
