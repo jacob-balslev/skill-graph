@@ -131,6 +131,15 @@ Do not claim quality without evidence. Before saying a change is complete, run t
 
 If a check is relevant and not run, say that it was not run. Do not imply success from intent.
 
+### Reading `skill-overlap.js` output — shared keywords are recall, not defects
+
+Keyword overlap between related skills is **expected and desirable**. It is the recall substrate of the graph: a query about "foreign key" *should* reach both `data-modeling` and `entity-relationship-modeling`, and the router disambiguates by score plus the typed relation edges (`relations.boundary` / `related` / `verify_with`) between them. The overlap report is **advisory** — it is not run under `--strict` in `npm run verify`, so it blocks nothing.
+
+A reported shared keyword is a prompt to confirm the co-activating skills declare an explicit relation edge — **not** a defect count to drive to zero.
+
+- **Correct response:** add or verify a `relations.boundary` ("use that skill instead, because…") or `relations.related` edge between the listed skills, or accept it as legitimate shared vocabulary.
+- **Forbidden response:** deleting a keyword from one skill to shrink the count. That strips routing recall and makes the product worse. Only change a keyword when it is genuinely *mis-assigned* to a skill, never to satisfy the report. Duplicate `triggers` are the only hard error here; shared `keywords` and `paths` are review signals.
+
 ## Improvement Checklist
 
 Before handing off any change that claims to improve quality:
