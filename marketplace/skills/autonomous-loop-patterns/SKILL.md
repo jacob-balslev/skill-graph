@@ -16,18 +16,17 @@ metadata:
   anti_examples: "[\"design a multi-agent orchestrator-worker architecture with parallel subagents\",\"choose between chaining, routing, and parallelization agent patterns\",\"should I parallelize subagents or use an orchestrator-worker pattern\"]"
   owner: claude
   freshness: "2026-05-18"
-  drift_check: "{\"last_verified\":\"2026-05-18\"}"
+  drift_check: "{\"last_verified\":\"2026-05-18\",\"truth_source_hashes\":{}}"
   layer: meta
   primaryCategory: Agent System
   layerPrimary: meta
   routingRole: primary
-  comprehension_state: present
   mental_model: "A loop has five primitives: trigger, worker session, progress signal, stop condition, and safety cap. Ralph Wiggum keeps the stop condition in a Stop hook plus completion word, manage-loop keeps it in a continuation signal, and grind-loop keeps it in an external supervisor that respawns fresh sessions from status and exit evidence."
   purpose: "Autonomous loop patterns exist to prevent ad hoc respawn logic with no checkpoint, cap, or recovery owner. They let the system choose the smallest loop shape that can safely finish the work while preserving progress across session boundaries."
   boundary: "This is not command selection, task execution, inter-agent messaging, budget steering, or checkpoint implementation internals. Use ai-coding-agents for command choice, task-execution for the work inside an iteration, agent-to-agent or agent-messaging for communication, agent-control for steering, and agent-loop-infra for checkpoint mechanics."
   analogy: "Autonomous loop patterns are autopilot modes: each mode keeps moving, but each needs instruments, altitude limits, and a clear handoff back to the pilot."
   misconception: "The common mistake is treating autonomy as a loop that can run forever. A safe autonomous loop is defined by when it stops, what it persists, and how it proves progress between iterations."
-  relations: "{\"adjacent\":[\"agent-governance\",\"ai-native-development\",\"hook-patterns\",\"agent-observability\",\"orchestration\"],\"boundary\":[{\"skill\":\"ai-coding-agents\",\"reason\":\"ai-coding-agents owns which command or workflow to run such as /solve, /manage, /grind; autonomous-loop-patterns owns the loop control shape, not command selection\"},{\"skill\":\"linear\",\"reason\":\"linear owns task and issue lifecycle and tracking; autonomous-loop-patterns owns loop control, not work-item management\"},{\"skill\":\"task-execution\",\"reason\":\"task-execution owns the work performed inside one iteration; autonomous-loop-patterns owns when the loop continues, stops, caps, and respawns around that work\"},{\"skill\":\"agent-engineering\",\"reason\":\"agent-engineering owns multi-agent architecture selection such as orchestrator-worker, chaining, routing, and parallelization; autonomous-loop-patterns owns the single-loop control shape\"}],\"verify_with\":[\"agent-observability\",\"agent-control\"]}"
+  relations: "{\"related\":[\"agent-governance\",\"ai-native-development\",\"hook-patterns\",\"agent-observability\",\"orchestration\"],\"boundary\":[{\"skill\":\"ai-coding-agents\",\"reason\":\"ai-coding-agents owns which command or workflow to run such as /solve, /manage, /grind; autonomous-loop-patterns owns the loop control shape, not command selection\"},{\"skill\":\"linear\",\"reason\":\"linear owns task and issue lifecycle and tracking; autonomous-loop-patterns owns loop control, not work-item management\"},{\"skill\":\"task-execution\",\"reason\":\"task-execution owns the work performed inside one iteration; autonomous-loop-patterns owns when the loop continues, stops, caps, and respawns around that work\"},{\"skill\":\"agent-engineering\",\"reason\":\"agent-engineering owns multi-agent architecture selection such as orchestrator-worker, chaining, routing, and parallelization; autonomous-loop-patterns owns the single-loop control shape\"}],\"verify_with\":[\"agent-observability\",\"agent-control\"]}"
   structural_verdict: UNVERIFIED
   truth_verdict: UNVERIFIED
   comprehension_verdict: UNVERIFIED
