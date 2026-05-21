@@ -1,0 +1,104 @@
+{
+  "skill_name": "security-fundamentals",
+  "subject": "Foundational software security reasoning: threat modeling, trust boundaries, authn/authz, input validation, least privilege, secure defaults, and defense in depth",
+  "adjacent_concepts": [
+    "owasp-security",
+    "prompt-injection-defense",
+    "type-safety",
+    "webhook-integration"
+  ],
+  "grounding_note": "Truth sources cite the portable security-fundamentals SKILL.md. These evals test the design discipline upstream of specific vulnerability scans or provider integrations.",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "A team is designing a new endpoint that accepts user-controlled JSON. Which security-fundamentals questions should they answer before choosing implementation details?",
+      "dimension": "definition",
+      "substance": "domain",
+      "calibration": "semantic",
+      "truth_mode": "conceptual_correctness_plus_repo_application",
+      "skill_type": "concept",
+      "criticality": "high",
+      "truth_sources": [
+        "skills/quality/security/security-fundamentals/SKILL.md"
+      ]
+    },
+    {
+      "id": 2,
+      "prompt": "A developer says TypeScript types prove an inbound payload is safe. How should security-fundamentals distinguish compile-time shape from trust-boundary validation?",
+      "dimension": "boundary",
+      "substance": "contradiction-check",
+      "calibration": "semantic",
+      "truth_mode": "conceptual_correctness_plus_repo_application",
+      "skill_type": "concept",
+      "criticality": "high",
+      "truth_sources": [
+        "skills/quality/security/security-fundamentals/SKILL.md"
+      ]
+    },
+    {
+      "id": 3,
+      "prompt": "Explain the authn/authz distinction for a privileged mutation and where each check should run.",
+      "dimension": "application",
+      "substance": "domain",
+      "calibration": "semantic",
+      "truth_mode": "conceptual_correctness_plus_repo_application",
+      "skill_type": "concept",
+      "criticality": "high",
+      "truth_sources": [
+        "skills/quality/security/security-fundamentals/SKILL.md"
+      ]
+    },
+    {
+      "id": 4,
+      "prompt": "A feature proposal lists mitigations before identifying assets, adversaries, surfaces, or trust boundaries. What threat-modeling failure is this?",
+      "dimension": "mental_model",
+      "substance": "domain",
+      "calibration": "semantic",
+      "truth_mode": "conceptual_correctness_plus_repo_application",
+      "skill_type": "concept",
+      "criticality": "high",
+      "truth_sources": [
+        "skills/quality/security/security-fundamentals/SKILL.md"
+      ]
+    },
+    {
+      "id": 5,
+      "prompt": "A system defaults new service accounts to broad admin access because it is convenient during setup. Which Saltzer and Schroeder principles does this violate?",
+      "dimension": "application",
+      "substance": "domain",
+      "calibration": "semantic",
+      "truth_mode": "conceptual_correctness_plus_repo_application",
+      "skill_type": "concept",
+      "criticality": "normal",
+      "truth_sources": [
+        "skills/quality/security/security-fundamentals/SKILL.md"
+      ]
+    },
+    {
+      "id": 6,
+      "prompt": "A task asks for Shopify webhook HMAC verification and retry handling. Should security-fundamentals own the implementation details?",
+      "dimension": "boundary",
+      "substance": "contradiction-check",
+      "calibration": "semantic",
+      "truth_mode": "conceptual_correctness_plus_repo_application",
+      "skill_type": "concept",
+      "criticality": "normal",
+      "truth_sources": [
+        "skills/quality/security/security-fundamentals/SKILL.md"
+      ]
+    },
+    {
+      "id": 7,
+      "prompt": "A reviewer wants to run an OWASP vulnerability audit for SSRF, injection, and broken access control. How does security-fundamentals route that work?",
+      "dimension": "boundary",
+      "substance": "contradiction-check",
+      "calibration": "semantic",
+      "truth_mode": "conceptual_correctness_plus_repo_application",
+      "skill_type": "concept",
+      "criticality": "normal",
+      "truth_sources": [
+        "skills/quality/security/security-fundamentals/SKILL.md"
+      ]
+    }
+  ]
+}

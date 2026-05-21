@@ -1,0 +1,104 @@
+{
+  "skill_name": "skill-scaffold",
+  "subject": "Authoring a new SKILL.md against the Skill Metadata Protocol: frontmatter, archetype choice, body sections, teaching-layer removal, lint, and routing-eval honesty",
+  "adjacent_concepts": [
+    "skill-infrastructure",
+    "refactor",
+    "prompt-craft",
+    "testing-strategy"
+  ],
+  "grounding_note": "Truth sources cite the canonical skill-scaffold SKILL.md in the sibling skills repo. These evals cover authoring-time behavior, not library-wide health tooling.",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "A contributor is creating a new SKILL.md from scratch. What is the first authoring move, and why should they not hand-type the frontmatter?",
+      "dimension": "definition",
+      "substance": "domain",
+      "calibration": "semantic",
+      "truth_mode": "conceptual_correctness_plus_repo_application",
+      "skill_type": "concept",
+      "criticality": "high",
+      "truth_sources": [
+        "skills/agent/skill-system/skill-scaffold/SKILL.md"
+      ]
+    },
+    {
+      "id": 2,
+      "prompt": "How should an author choose between `capability` and `workflow` for a new skill, and what common mistake does the scaffold warn against?",
+      "dimension": "application",
+      "substance": "domain",
+      "calibration": "semantic",
+      "truth_mode": "conceptual_correctness_plus_repo_application",
+      "skill_type": "concept",
+      "criticality": "high",
+      "truth_sources": [
+        "skills/agent/skill-system/skill-scaffold/SKILL.md"
+      ]
+    },
+    {
+      "id": 3,
+      "prompt": "A new skill's `description` and `## Coverage` say the same thing in different words. What does skill-scaffold require the author to change?",
+      "dimension": "mental_model",
+      "substance": "contradiction-check",
+      "calibration": "semantic",
+      "truth_mode": "conceptual_correctness_plus_repo_application",
+      "skill_type": "concept",
+      "criticality": "high",
+      "truth_sources": [
+        "skills/agent/skill-system/skill-scaffold/SKILL.md"
+      ]
+    },
+    {
+      "id": 4,
+      "prompt": "A derived skill still contains `TEMPLATE NOTE` blocks after adaptation. Why is that a scaffold failure and what verification command does the skill recommend?",
+      "dimension": "application",
+      "substance": "domain",
+      "calibration": "process",
+      "truth_mode": "process_correctness",
+      "skill_type": "workflow",
+      "criticality": "high",
+      "truth_sources": [
+        "skills/agent/skill-system/skill-scaffold/SKILL.md"
+      ]
+    },
+    {
+      "id": 5,
+      "prompt": "A new skill has examples and anti_examples, but the routing eval has not been run. What should `routing_eval` say and when may it change?",
+      "dimension": "boundary",
+      "substance": "contradiction-check",
+      "calibration": "process",
+      "truth_mode": "process_correctness",
+      "skill_type": "workflow",
+      "criticality": "high",
+      "truth_sources": [
+        "skills/agent/skill-system/skill-scaffold/SKILL.md"
+      ]
+    },
+    {
+      "id": 6,
+      "prompt": "An author wants to use skill-scaffold to refactor an existing skill without changing its identity. Should skill-scaffold own that task?",
+      "dimension": "boundary",
+      "substance": "contradiction-check",
+      "calibration": "semantic",
+      "truth_mode": "conceptual_correctness_plus_repo_application",
+      "skill_type": "concept",
+      "criticality": "normal",
+      "truth_sources": [
+        "skills/agent/skill-system/skill-scaffold/SKILL.md"
+      ]
+    },
+    {
+      "id": 7,
+      "prompt": "A codebase-specific skill has no grounding block and no truth sources. Which scaffold fields should the author decide before publishing?",
+      "dimension": "application",
+      "substance": "domain",
+      "calibration": "semantic",
+      "truth_mode": "conceptual_correctness_plus_repo_application",
+      "skill_type": "concept",
+      "criticality": "normal",
+      "truth_sources": [
+        "skills/agent/skill-system/skill-scaffold/SKILL.md"
+      ]
+    }
+  ]
+}
