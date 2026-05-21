@@ -143,4 +143,31 @@ genuinely excellent shape; do not manufacture defects there.
 - **Findings completeness:** all 25 findings shown with a severity column; prioritization is separate and additive.
 - **No manufactured defects:** 5 explicit PASS findings recorded.
 - **Verify before claiming:** every row cites a command output or `file:line`.
-- **Report-only:** no schema/code/doc changes made; this file is the deliverable.
+- **Report-only:** the review (this file) was report-only; remediation below was a separate, user-authorized step.
+
+---
+
+## Resolution log (updated 2026-05-21 — remediation authorized by the user)
+
+Research that informed the fixes: `docs/research/design-review-best-practices-2026-05-21.md`.
+
+### Solved & committed (batch 1 — commit `bb69c6a`)
+- **P1** — `boundary` JSON-LD term collision fixed via a JSON-LD 1.1 property-scoped `@context` (`relations.boundary` → `sg:disjointOwnership`; top-level `boundary` → new `sg:conceptBoundary`). C8 still passes.
+- **P2, P3, P4, P7** — corrected stale JSON-LD `_note` enums/scale, context version metadata (→ v7), and annotated non-v7 terms.
+- **P5, P6** — documented the dual physical encoding + `normalizeFrontmatter` precedence + the `skill_graph_protocol` invisibility, in `SKILL_METADATA_PROTOCOL.md § Overview`.
+- **G4, D1** — skill count 142 → 143 across three docs; regenerated `skills.manifest.json` (local) + `docs/status.generated.md` (now 143/v7); prose now points at the generated status doc.
+- **D2** — protocol version string 0.6.0 → 0.5.8.
+
+### Solved & committed (batch 2)
+- **A3** — added an honest MLOps self-location to `SKILL_AUDIT_LOOP.md` (Integrity Gate ≈ L1, Behavior Gate ≈ L0; gate-9 has never run; path to L1).
+
+### Corrected after verification (no change needed)
+- **G6** — NOT a defect. `bin/skill-graph.js:514-522` already gates `evolve` with a clear capability-unmet message AND exits 1. The original `exit:0` reading was a pipe artifact (`head`'s exit code). Stated plainly per the no-manufactured-defects guardrail.
+
+### Deferred — separate work stream (reason stated, design captured)
+- **A1, A2** (HIGH/MED) — run the Behavior Gate (gate-8 on the 68 Understanding-eligible skills + a gate-9 application specimen) and the eval-authoring backlog. Requires model graders + the `evolve` walker (SH-6138, monorepo-only). Grader design captured in the research doc § 3. Honest constraint: must not stamp verdicts without receipts.
+- **G1, G2, G7, G3** — routing-coverage expansion, the showcase-query mis-route fix, the `data-modeling ↔ entity-relationship-modeling` relation edge, and the real `skill-infrastructure` drift re-record. All edit the **sibling public release repo** (`~/Development/skills/`) — a separate repo + separate commit + potential marketplace re-export; best done with that repo as the working context. Routing-eval design captured in the research doc § 2.
+- **A5** — confirm the two `skill-evolution-loop.js` copies are in sync (cross-repo verification).
+- **P9** — `relations.boundary` name-vs-mechanic inversion is already *documented* (`SKILL_METADATA_PROTOCOL.md:400`); fully reconciling it means renaming a relation predicate = a breaking schema change requiring a `schema_version` bump + migration. Out of scope for a non-breaking pass.
+- **P11, P12, P13** — low-severity clarity notes (category balance; `router`/`codebase` archetypes unpopulated; `stability` near-uniformly `experimental`). P13 specifically should NOT assert "intentional" without verifying intent.
+- **Marketplace surface** — `marketplace/README.md` shows 142 (one behind the 143-skill library). Regenerating is a deliberate release-sync action; fold into the next sync.
