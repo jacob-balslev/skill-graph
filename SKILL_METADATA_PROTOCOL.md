@@ -1,6 +1,6 @@
 # Skill Metadata Protocol
 
-> **Version:** 1.4.0 (schema_version 7, Skill Graph 0.6.0)
+> **Version:** 1.4.0 (schema_version 7, Skill Graph 0.5.8)
 > **Machine-readable schema:** `schemas/skill.v7.schema.json` (v4, v5, and v6 schemas remain for back-compat reads via `normalizeFrontmatter()`)
 > **Migration from v6:** `docs/migrations/v6-to-v7.md`
 > **Migration from v5:** `docs/migrations/v5-to-v6.md`
@@ -38,6 +38,17 @@ This document is the top-level public contract for the Skill Metadata Protocol f
 Every skill is a single `SKILL.md` file with a YAML frontmatter block. The frontmatter is validated by `skill-lint.js` against `schemas/skill.v7.schema.json`. The `generate-manifest.js` script reads frontmatter from all skill files and emits a single `skills.manifest.json`.
 
 The contract has one runtime model: one `SKILL.md` per skill, one manifest, one lint pass. There is no closed/open split, no private control plane, and no enterprise-only fields.
+
+### Two physical encodings, one logical contract
+
+The field tables in this document describe the **logical contract** — the field set, types, and semantics. That logical contract has **two valid physical encodings on disk**, and the tooling normalizes both before reading:
+
+| Encoding | Shape | Where it is used |
+|---|---|---|
+| **Protocol-native** | Every field a top-level YAML key; structured fields (`relations`, `drift_check`, `grounding`, …) are native YAML objects/arrays. | The shape the field tables below illustrate; produced by the authoring template. |
+| **Agent-Skills-compatible** | Only `name`, `description`, `license`, `compatibility`, `allowed-tools` at top level; **all other fields nested under a `metadata:` map, with objects and arrays JSON-string-encoded** (e.g. `relations: "{\"boundary\":[…]}"`). | The shape the **entire canonical library** at `~/Development/skills/` is authored in, because that repo is also the public Agent-Skills release repo (one repo, two hats — see `AGENTS.md § Public Distribution`). |
+
+`scripts/lib/parse-frontmatter.js::normalizeFrontmatter()` reconciles the two: it lifts `metadata.*` back to top level and `JSON.parse`s the stringified values, so `skill-lint.js`, `generate-manifest.js`, `skill-graph-route.js`, and `skill-graph-drift.js` all see the protocol-native shape regardless of which encoding the file uses. Two precedence rules apply: (1) a top-level field wins over a `metadata.*` field of the same name (the explicit author signal wins); (2) export-provenance keys (`skill_graph_source_repo`, `skill_graph_protocol`, `skill_graph_project`, `skill_graph_canonical_skill`, and the description-length book-keeping keys) are **stripped** during normalization and are not part of the contract — a consequence is that the `skill_graph_protocol` content-label is invisible to all deterministic tooling and is governed by human discipline only (see `AGENTS.md § Version Labels Are Earned, Not Bumped`). Round-tripping from the Agent-Skills shape back to protocol-native is lossy for rich types; keep the canonical source authoritative. See `docs/SKILL-MD-FORMAT-COMPATIBILITY.md`.
 
 ---
 
