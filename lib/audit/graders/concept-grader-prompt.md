@@ -1,6 +1,6 @@
 # Concept Comprehension Grader Prompt
 
-> Used by `scripts/skill/evaluate-skill.js --comprehension` to grade model responses against the 7-dimension Concept Comprehension rubric. See `docs/plans/concept-comprehension-layer.md` for the full design.
+> Used by `lib/audit/evaluate-skill.js --comprehension` to grade model responses against the 7-dimension Concept Comprehension rubric. See `docs/plans/concept-comprehension-layer.md` for the full design.
 > Grader model (pilot): **Opus 4.6** (`claude-opus-4-6`). Never use the same model for generation and grading.
 > Version: 1.0 — 2026-04-08
 
