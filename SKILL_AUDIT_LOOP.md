@@ -30,6 +30,15 @@ The loop has two gates. They must not be blended into one PASS/FAIL label:
 
 The Integrity Gate is required before release because broken metadata poisons the graph. It never certifies skill usefulness. The Behavior Gate is what certifies teaching efficacy; a skill with `application_verdict: UNVERIFIED` is honest, but it is not yet proven useful. A skill is audit-complete only when the Integrity Gate passes and the Behavior Gate is either passed or explicitly left `UNVERIFIED` / `NA` with evidence explaining why behavioral certification was not run.
 
+### Current maturity — honest self-location (2026-05-21)
+
+Mapping the loop onto Google's MLOps maturity model (Level 0 manual → Level 1 pipeline automation with continuous training → Level 2 CI/CD for the pipeline itself):
+
+- **Integrity Gate ≈ Level 1.** `lint` (→ `structural_verdict`) and `drift` (→ `truth_verdict`) run deterministically corpus-wide in CI; both verdicts are populated across all 143 skills.
+- **Behavior Gate ≈ Level 0.** `comprehension_verdict` and `application_verdict` are `UNVERIFIED` on **every** skill — the graders that would populate them have not yet run on a live skill (verified 2026-05-21 against the generated manifest). The "continuous training" analog of MLOps Level 1 — re-grading skills as the foundation model and the cited artifacts drift — is the discriminating capability the loop is built for but does not yet exercise.
+
+This is the honest state, not a defect to mask: `application_verdict: UNVERIFIED` is the correct default and must never be stamped to `APPLICABLE` without an `eval_last_run` receipt. The path to Level 1 for the Behavior Gate is a runnable `evolve` (the corpus-walker / CT loop, tracked standalone in SH-6138) plus at least one application grader wired into CI. Until then, two of the four Health Block verdicts are live and two are intentionally inert. See the gate-9 design notes in `docs/research/design-review-best-practices-2026-05-21.md § 3` (LLM-as-judge: boolean per-criterion checklist, CoT, calibrate to >85% human agreement, never stamp without a receipt).
+
 ## The Four Operations
 
 Every action in this loop falls into one of four operations. Each writes to a specific set of flat fields in the Skill Metadata Protocol v7 (see `schemas/skill.v7.schema.json`).
