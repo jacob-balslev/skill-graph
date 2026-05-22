@@ -25,6 +25,9 @@
  *   node scripts/skill-graph-routing-eval.js --only-asserted           # only skills with
  *                                                                        routing_eval: present
  *   node scripts/skill-graph-routing-eval.js --confusion-matrix         # expected vs actual
+ *   node scripts/skill-graph-routing-eval.js --baseline PATH           # run stratified baseline
+ *                                                                        and report Recall@1/3 +
+ *                                                                        routing_eval coverage
  *
  * Self-contained. Only uses Node built-ins — no external dependencies.
  * Exit 0 when every evaluated skill passes (or has no cases); exit 1 on
@@ -316,6 +319,125 @@ function truncate(s, n) {
 }
 
 // ---------------------------------------------------------------------------
+// Retrieval Baseline \u2014 Recall@1 / Recall@3 / Coverage
+// ---------------------------------------------------------------------------
+
+/**
+ * Evaluate a stratified retrieval baseline JSON file against the manifest.
+ *
+ * Baseline format (evals/retrieval-baseline-*.json):
+ *   { queries: [ { id, query, expected_skills: [string], category, rationale } ] }
+ *
+ * Returns a BaselineResult:
+ *   {
+ *     total: number,
+ *     recall_at_1: number,          // fraction [0..1]
+ *     recall_at_3: number,          // fraction [0..1]
+ *     coverage_present: number,     // skills with routing_eval: present
+ *     coverage_total: number,       // total skills in manifest
+ *     cases: [ { id, query, expected, top1, top3, hit_at_1, hit_at_3, category } ]
+ *   }
+ */
+function evaluateBaseline(manifest, baselinePath, todayISO) {
+  let baseline;
+  try {
+    baseline = JSON.parse(fs.readFileSync(baselinePath, 'utf8'));
+  } catch (e) {
+    throw new Error(`Cannot parse baseline file at ${baselinePath}: ${e.message}`);
+  }
+
+  const queries = Array.isArray(baseline.queries) ? baseline.queries : [];
+  if (queries.length === 0) {
+    throw new Error(`Baseline file has no queries array or it is empty: ${baselinePath}`);
+  }
+
+  const skills = Array.isArray(manifest.skills) ? manifest.skills : [];
+  const coveragePresent = skills.filter(s => s.health && s.health.routing_eval === 'present').length;
+  const coverageTotal = skills.length;
+
+  const cases = [];
+  let hitsAt1 = 0;
+  let hitsAt3 = 0;
+
+  for (const entry of queries) {
+    const id = entry.id || '?';
+    const query = entry.query || '';
+    const expected = Array.isArray(entry.expected_skills) ? entry.expected_skills : [];
+    const category = entry.category || 'unknown';
+
+    const result = routeSkills(manifest, {
+      query,
+      project: null,
+      maxResults: 3,
+      minEvalState: 'unverified',
+      pathArg: null,
+      todayISO,
+    });
+
+    const top3 = result.selected.slice(0, 3).map(s => s.skill.name);
+    const top1 = top3[0] || null;
+
+    // A "hit" is when any expected skill appears in the top-1 or top-3 position.
+    const hitAt1 = expected.some(e => e === top1);
+    const hitAt3 = expected.some(e => top3.includes(e));
+
+    if (hitAt1) hitsAt1++;
+    if (hitAt3) hitsAt3++;
+
+    cases.push({ id, query, expected, top1, top3, hit_at_1: hitAt1, hit_at_3: hitAt3, category });
+  }
+
+  const total = queries.length;
+  return {
+    total,
+    recall_at_1: total > 0 ? hitsAt1 / total : 0,
+    recall_at_3: total > 0 ? hitsAt3 / total : 0,
+    coverage_present: coveragePresent,
+    coverage_total: coverageTotal,
+    cases,
+  };
+}
+
+function renderBaselineResult(result, verbose) {
+  const lines = [];
+  const pct = v => `${(v * 100).toFixed(1)}%`;
+
+  lines.push('');
+  lines.push('RETRIEVAL BASELINE RESULTS');
+  lines.push(`  Queries evaluated : ${result.total}`);
+  lines.push(`  Recall@1          : ${pct(result.recall_at_1)}  (${result.cases.filter(c => c.hit_at_1).length}/${result.total})`);
+  lines.push(`  Recall@3          : ${pct(result.recall_at_3)}  (${result.cases.filter(c => c.hit_at_3).length}/${result.total})`);
+  lines.push(`  Coverage          : ${result.coverage_present}/${result.coverage_total} skills carry routing_eval: present`);
+
+  if (verbose) {
+    lines.push('');
+    lines.push('  MISSES (not in top-3):');
+    const misses = result.cases.filter(c => !c.hit_at_3);
+    if (misses.length === 0) {
+      lines.push('  (none \u2014 all queries hit within top-3)');
+    } else {
+      for (const c of misses) {
+        lines.push(`    MISS [${c.category}] ${c.id}`);
+        lines.push(`         Q: "${truncate(c.query, 80)}"`);
+        lines.push(`         expected: ${c.expected.join(', ')} | top-1: ${c.top1 || 'null'} | top-3: ${c.top3.join(', ') || 'none'}`);
+      }
+    }
+    lines.push('');
+    lines.push('  HITS@1-only (in top-3 but not top-1):');
+    const at3only = result.cases.filter(c => !c.hit_at_1 && c.hit_at_3);
+    if (at3only.length === 0) {
+      lines.push('  (none)');
+    } else {
+      for (const c of at3only) {
+        lines.push(`    @3 [${c.category}] ${c.id}: expected ${c.expected.join(', ')} | top-1: ${c.top1}`);
+      }
+    }
+  }
+
+  return lines.join('\n');
+}
+
+// ---------------------------------------------------------------------------
 // CLI
 // ---------------------------------------------------------------------------
 
@@ -332,6 +454,7 @@ function main() {
   const confusionMatrix = args.includes('--confusion-matrix');
   const skillFilter = argValue(args, '--skill');
   const manifestArg = argValue(args, '--manifest');
+  const baselineArg = argValue(args, '--baseline');
 
   const manifestPath = manifestArg
     ? path.resolve(manifestArg)
@@ -354,6 +477,24 @@ function main() {
   }
 
   const todayISO = new Date().toISOString().slice(0, 10);
+
+  // --baseline mode: run stratified retrieval baseline and report Recall@1/3 + coverage.
+  // This runs in addition to the per-skill activation eval, not instead of it.
+  let baselineResult = null;
+  if (baselineArg) {
+    const baselinePath = path.resolve(baselineArg);
+    if (!fs.existsSync(baselinePath)) {
+      console.error(`ERROR baseline not found: ${baselinePath}`);
+      process.exit(1);
+    }
+    try {
+      baselineResult = evaluateBaseline(manifest, baselinePath, todayISO);
+    } catch (e) {
+      console.error(`ERROR evaluating baseline: ${e.message}`);
+      process.exit(1);
+    }
+  }
+
   const skills = Array.isArray(manifest.skills) ? manifest.skills : [];
   let target = skills;
   if (skillFilter) target = target.filter(s => s.name === skillFilter);
@@ -367,12 +508,24 @@ function main() {
   const reports = target.map(s => evaluateSkill(manifest, s, todayISO));
   const matrix = confusionMatrix ? buildConfusionMatrix(reports) : null;
 
+  // Coverage summary (always computed; printed unless --quiet).
+  const coveragePresent = skills.filter(s => s.health && s.health.routing_eval === 'present').length;
+  const coverageTotal = skills.length;
+
   if (outputJson) {
-    process.stdout.write(JSON.stringify(matrix ? { reports, confusion_matrix: matrix } : { reports }, null, 2) + '\n');
+    const output = matrix ? { reports, confusion_matrix: matrix } : { reports };
+    if (baselineResult) output.baseline = baselineResult;
+    output.coverage = { present: coveragePresent, total: coverageTotal };
+    process.stdout.write(JSON.stringify(output, null, 2) + '\n');
   } else if (!quiet) {
-    const text = confusionMatrix
+    let text = confusionMatrix
       ? renderText(reports) + renderConfusionMatrix(matrix)
       : renderText(reports);
+    // Append coverage line after the skill summary.
+    text += `\nCoverage: ${coveragePresent}/${coverageTotal} skills carry routing_eval: present`;
+    if (baselineResult) {
+      text += renderBaselineResult(baselineResult, /* verbose */ true);
+    }
     process.stdout.write(text + '\n');
   }
 
@@ -388,6 +541,8 @@ module.exports = {
   evaluateNegative,
   extractBoundaryTargets,
   renderConfusionMatrix,
+  evaluateBaseline,
+  renderBaselineResult,
 };
 
 if (require.main === module) main();

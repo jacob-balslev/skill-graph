@@ -7,6 +7,62 @@ Routing quality is an information-retrieval problem. A clean skill graph is not
 proved by "the router felt right"; it is proved by held-out prompts, hard
 negatives, confusion pairs, and repeatable metrics.
 
+## Baseline Results (Updated 2026-05-22)
+
+**Baseline:** `evals/retrieval-baseline-v2.json` — 64 stratified queries across 5 categories
+(agent: 11, engineering: 26, quality: 12, design: 11, foundations: 4).
+
+| Metric | Value | Evidence |
+|---|---|---|
+| Queries evaluated | 64 | `node scripts/skill-graph-routing-eval.js --baseline evals/retrieval-baseline-v2.json` |
+| Recall@1 | **96.9%** (62/64) | 2 misses: `sharding-strategy`, `visual-design-foundations` |
+| Recall@3 | **100.0%** (64/64) | All queries hit within top-3 |
+| Coverage: `routing_eval: present` | 11/143 skills | 11 asserted; all 11 PASS in per-skill activation eval |
+
+**Per-skill activation eval (asserted skills only):**
+
+```
+node scripts/skill-graph-routing-eval.js --only-asserted --confusion-matrix
+```
+
+Result: 11/11 PASS, 0 FAIL — all positive cases route to the declared skill;
+all 39 negative cases route to a named boundary target (0 self-hits, 0 off-boundary hits).
+
+**Misses at Recall@1 (hit at Recall@3 only):**
+
+| Query ID | Expected skill | Actual top-1 |
+|---|---|---|
+| engineering-024 | `sharding-strategy` | `agent-engineering` |
+| design-008 | `visual-design-foundations` | `frontend-architecture` |
+
+These two skills are not eligible for `routing_eval: present` until the miss is resolved.
+All other 53 skills in the baseline (including the 11 already marked `present`) hit at Recall@1.
+
+**Baseline-covered skills eligible for `routing_eval: present`:**
+
+51 skills hit at Recall@1 in this baseline but are not yet marked `routing_eval: present`.
+Their canonical `SKILL.md` files live in the sibling `skills` repo
+(`~/Development/skills/skills/`). Flipping the label requires a commit in that repo;
+this metric doc records the eligibility so the flip can be done in a follow-on task.
+
+Eligible (51 skills, alphabetical):
+`acid-fundamentals`, `agent-engineering`, `ai-native-development`, `api-design`,
+`cap-theorem-tradeoffs`, `color-system-design`, `component-architecture`,
+`connection-pooling`, `constraint-awareness`, `context-engineering`, `contract-testing`,
+`dark-mode-implementation`, `data-modeling-fundamentals`, `database-migration`,
+`dependency-architecture`, `e2e-test-design`, `error-tracking`, `form-ux-architecture`,
+`generative-ui`, `information-architecture`, `interaction-feedback`, `mental-models`,
+`mutation-testing`, `ontology-modeling`, `owasp-security`, `pattern-recognition`,
+`performance-budgets`, `performance-testing`, `printify`, `project-knowledge-extraction`,
+`prompt-craft`, `prompt-injection-defense`, `prototyping`, `query-optimization`,
+`rendering-models`, `replication-patterns`, `route-handler-design`, `server-actions-design`,
+`server-components-design`, `shopify`, `snapshot-testing`, `state-machine-modeling`,
+`state-management`, `streaming-architecture`, `theme-system-design`, `tool-call-flow`,
+`tool-call-strategy`, `transaction-isolation`, `version-control`, `visual-hierarchy`,
+`webhook-integration`.
+
+---
+
 ## What To Measure
 
 | Metric | Meaning | Why it matters |
@@ -20,7 +76,13 @@ negatives, confusion pairs, and repeatable metrics.
 
 ## Current Harness
 
-Run all asserted routing evals:
+Run the stratified retrieval baseline (Recall@1 / Recall@3 / coverage):
+
+```bash
+node scripts/skill-graph-routing-eval.js --baseline evals/retrieval-baseline-v2.json
+```
+
+Run all asserted routing evals (per-skill activation examples / anti-examples):
 
 ```bash
 node scripts/skill-graph-routing-eval.js --only-asserted
