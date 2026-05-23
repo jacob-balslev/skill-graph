@@ -1,5 +1,7 @@
 # v4 Schema Bump — Historical Reference
 
+> **Archived:** 2026-05-23. Moved from `docs/plans/` — plan shipped; superseded by v5 migration.
+>
 > **Status:** Shipped and superseded by v5 (2026-05-16). v4 landed earlier in 2026; v5 closed the `category` field to a 6-value enum (`foundations` / `engineering` / `design` / `quality` / `agent` / `product`) and reframed it as a browse facet. See `docs/migrations/v4-to-v5.md` (in `skill-metadata-protocol`) for the v4→v5 migration matrix and `docs/plans/skill-taxonomy-v5-and-gap-fill.md` (in the Development repo) for the strategy that drove v5.
 >
 > The v4 bump itself was implemented via `scripts/migrate-skill-v3-to-v4.js` with pinned schema copies (`schemas/skill.v4.schema.json`, `schemas/manifest.v4.schema.json`) and migration notes in `docs/manifest-field-mapping.md`. The current pinned-version copies are `schemas/skill.v5.schema.json` and `schemas/manifest.v5.schema.json`.

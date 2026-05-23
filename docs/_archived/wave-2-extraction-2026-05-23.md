@@ -1,5 +1,7 @@
 # Wave 2 Extraction Plan
 
+> **Archived:** 2026-05-23. Moved from `docs/plans/` — extraction shipped; retained as sequencing rationale.
+
 Status: retained as sequencing rationale. The current repository has already shipped the universal Tier A and Tier B recommendations from `docs/recommended-skills.md`; this plan explains the broader extraction strategy that informed those choices.
 
 ## Goal

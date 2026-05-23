@@ -1,5 +1,7 @@
 # Marketplace P1 Public Migration Plan
 
+> **Archived:** 2026-05-23. Moved from `docs/plans/` — migration executed on 2026-05-14; plan complete.
+>
 > Status: execution plan for the 2026-05-14 skills.sh consolidation pass.
 
 ## Goal
