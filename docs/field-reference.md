@@ -941,6 +941,15 @@ eval:
 - Omit only for skills where stability is genuinely unknown at authoring time (migrate to a real value quickly).
 - A deprecated skill should add a note in `## Coverage` pointing to the replacement.
 
+**Pre-1.0 stance.** The library defaults all skills to `experimental` because the protocol and skill content are under active development. A near-uniform `experimental` distribution is intentional — it signals that the corpus as a whole is pre-1.0 and no stability guarantees are implied. Do not interpret a uniformly experimental corpus as an unmaintained field; it reflects a deliberate stance. Skills are promoted to `stable` only when all promotion criteria below are met. See `SKILL_METADATA_PROTOCOL.md § stability` for the normative spec.
+
+**Promotion to `stable` — minimum criteria:**
+1. `eval_state: passing` or `eval_state: monitored` — evals have been run and pass.
+2. `eval_score >= 4.0` — grader score meets the quality bar.
+3. `routing_eval: present` — the skill has been verified in a routing eval.
+4. `drift_check.last_verified` within 90 days — skill has been recently verified against truth sources.
+5. For `scope: codebase` skills: `grounding.truth_sources` must be non-empty.
+
 **Example.**
 ```yaml
 stability: stable
@@ -948,7 +957,7 @@ stability: stable
 
 **When to use.** For any skill intended to be used by others. Omit only if the skill is a draft that will be revised immediately.
 
-**When NOT to use.** Do not use `frozen` for skills that might still need maintenance — `stable` is the correct choice for mature, actively-owned skills.
+**When NOT to use.** Do not use `frozen` for skills that might still need maintenance — `stable` is the correct choice for mature, actively-owned skills. Do not promote to `stable` without meeting all five promotion criteria above.
 
 ---
 
