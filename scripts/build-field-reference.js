@@ -112,11 +112,10 @@ function renderField(name, prop, requiredSet) {
 
 function render(schema) {
   const requiredSet = new Set(schema.required || []);
-  const now = new Date().toISOString().slice(0, 10);
   const lines = [
     '# Skill Graph Field Reference (Generated)',
     '',
-    `> **Generated from** \`schemas/skill.schema.json\` on ${now} by \`scripts/build-field-reference.js\`.`,
+    '> **Generated from** `schemas/skill.schema.json` by `scripts/build-field-reference.js`.',
     '> **Do not edit by hand.** The canonical prose reference is [\`docs/field-reference.md\`](field-reference.md).',
     '> **Predicate glossary:** [\`docs/glossary.md\`](glossary.md).',
     '> **JSON-LD @context:** [\`schemas/skill.context.jsonld\`](../schemas/skill.context.jsonld).',
