@@ -1,6 +1,6 @@
 # Marketplace Publication Queue (generated)
 
-Generated: 2026-05-23T17:16:17.347Z
+Generated: 2026-05-23T17:21:56.722Z
 Schema: 2.0.0
 Generator: scripts/skill/build-skill-audit-worklist.js@0.4.0
 Source ledger: `skill-graph/data/publication-classification.json`
