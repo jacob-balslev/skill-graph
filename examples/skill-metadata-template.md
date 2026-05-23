@@ -280,7 +280,7 @@ A template teaches by example, not by placeholder. A concrete, internally consis
 |---|---|
 | `docs/skill-metadata-protocol.md` | Authoritative field semantics: required vs optional, conditional requiredness, relationship to the plain `SKILL.md` format, archetype section map |
 | `schemas/skill.schema.json` | Enforceable JSON Schema for the frontmatter protocol |
-| `../skill-audit-loop/SKILL_AUDIT_CHECKLIST.md` | The audit checklist every new skill should pass before commit (lives in the `skill-audit-loop` repo post-2026-05-16 monorepo split) |
+| `../SKILL_AUDIT_CHECKLIST.md` | The audit checklist every new skill should pass before commit |
 
 ## Verification
 
@@ -314,4 +314,4 @@ Use this checklist as the authoring gate before committing a skill adapted from 
 - `docs/skill-metadata-protocol.md § Example Template Rule` — the no-placeholder-sludge rule this template enforces
 - `docs/skill-metadata-protocol.md § Archetype section map` — required H2 sections per archetype
 - `docs/manifest-field-mapping.md § Migration Note — v2 → v3` — the field-name cleanup the v4 bump introduced
-- `../skill-audit-loop/SKILL_AUDIT_CHECKLIST.md` — the checklist this template's Verification section is derived from (lives in the `skill-audit-loop` repo post-2026-05-16 monorepo split)
+- `../SKILL_AUDIT_CHECKLIST.md` — the checklist this template's Verification section is derived from

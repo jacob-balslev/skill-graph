@@ -10,8 +10,8 @@
  * After this runs once the ledger is hand-edited going forward. Re-running is safe (overwrites with
  * the same content unless the source doc changes).
  *
- * Output is consumed by skill-audit-loop/src/build-skill-audit-worklist.js to build the
- * publicationQueue array in the unified worklist JSON.
+ * Output is consumed by scripts/skill/build-skill-audit-worklist.js (Development root) to build
+ * the publicationQueue array in the unified worklist JSON.
  *
  * Usage:
  *   node skill-graph/scripts/seed-publication-classification.js
@@ -110,7 +110,7 @@ function main() {
     schema_version: '1.0.0',
     last_updated: new Date().toISOString(),
     source_of_classifications: path.relative(REPO_ROOT, srcPath),
-    description: 'Per-skill publication classification + market-state attributes for the OSS marketplace surface. Seeded once from the 2026-05-18 priority doc; hand-edited going forward. Consumed by skill-audit-loop/src/build-skill-audit-worklist.js to build publicationQueue in the unified worklist JSON.',
+    description: 'Per-skill publication classification + market-state attributes for the OSS marketplace surface. Seeded once from the 2026-05-18 priority doc; hand-edited going forward. Consumed by scripts/skill/build-skill-audit-worklist.js (Development root) to build publicationQueue in the unified worklist JSON.',
     classifications: {
       publishable: 'Generic / portable; recommended for jacob-balslev/skills publication.',
       'sales-hub-bound': 'References internal schemas, Printify shop IDs, order_events, customer data, etc. Not publishable.',
