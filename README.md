@@ -78,7 +78,7 @@ For everything else:
 | **Plan adoption in a new repo** | [`docs/ADOPTION.md`](docs/ADOPTION.md) and [`docs/CONFORMANCE.md`](docs/CONFORMANCE.md) |
 | **Migrate from an older `schema_version`** | [`docs/migrations/`](docs/migrations/) |
 
-> **Surface scope:** The OSS-portable canonical library lives at `skills/skills/` (146 v7-compliant skills). A separate personal/Sales Hub surface at `skills/` is frozen — new skills are curated into the OSS surface only when non-PII, non-Sales-Hub, and generalizable. See [ADR 0008](docs/adr/0008-skill-surface-split-and-curation-policy.md).
+> **Surface scope:** The OSS-portable canonical library lives at `skills/skills/`; the live count is the single-source-of-truth value in [`SKILL_GRAPH.md § Current State`](SKILL_GRAPH.md#current-state) (per the AGENTS.md Doc Ownership Map — every other doc links rather than inlining). A separate personal/Sales Hub surface at `skills/` is frozen — new skills are curated into the OSS surface only when non-PII, non-Sales-Hub, and generalizable. See [ADR 0008](docs/adr/0008-skill-surface-split-and-curation-policy.md).
 
 ## How SKILL.md, Skill Metadata Protocol, and Skill Graph Differ
 
@@ -298,7 +298,7 @@ The public, ready-to-install skill library lives at [`jacob-balslev/skills`](htt
 npx skills add jacob-balslev/skills
 ```
 
-That repo holds 143 canonical skills in plain Agent-Skills shape, indexed on `skills.sh`. You do not need to clone this `skill-graph` tooling repo to consume the skills.
+That repo holds the canonical skill library in plain Agent-Skills shape (live count in [`SKILL_GRAPH.md § Current State`](SKILL_GRAPH.md#current-state)), indexed on `skills.sh`. You do not need to clone this `skill-graph` tooling repo to consume the skills.
 
 ### Running the tooling (authors and maintainers)
 
@@ -315,7 +315,7 @@ Or skip install entirely and open the repo in a pre-configured GitHub Codespace 
 
 The devcontainer lives at [`.devcontainer/devcontainer.json`](.devcontainer/devcontainer.json); first-boot logic is in [`.devcontainer/post-create.sh`](.devcontainer/post-create.sh).
 
-The tooling operates against a skill library configured via [`.skill-graph/config.json`](.skill-graph/config.json) → `workspace.skill_roots`. Post-2026-05-18 consolidation, the shipped config points at the public [`jacob-balslev/skills`](https://github.com/jacob-balslev/skills) repo (canonical 145-skill library). Clone the canonical skills as a sibling of this repo and the tooling resolves automatically — no env-vars needed:
+The tooling operates against a skill library configured via [`.skill-graph/config.json`](.skill-graph/config.json) → `workspace.skill_roots`. Post-2026-05-18 consolidation, the shipped config points at the public [`jacob-balslev/skills`](https://github.com/jacob-balslev/skills) repo — the canonical skill library, with the live count in [`SKILL_GRAPH.md § Current State`](SKILL_GRAPH.md#current-state). Clone the canonical skills as a sibling of this repo and the tooling resolves automatically — no env-vars needed:
 
 ```bash
 git clone https://github.com/jacob-balslev/skills.git ~/Development/skills
@@ -385,7 +385,7 @@ Run `skill-graph --help` to see all commands (including legacy aliases).
 | [`SKILL_METADATA_PROTOCOL.md`](SKILL_METADATA_PROTOCOL.md) | **Canonical** normative spec for the `SKILL.md` frontmatter contract. |
 | [`SKILL_AUDIT_LOOP.md`](SKILL_AUDIT_LOOP.md) | **Canonical** audit procedure (4 operations: audit, improve, evaluate, evolve). |
 | [`SKILL_AUDIT_CHECKLIST.md`](SKILL_AUDIT_CHECKLIST.md) | Per-skill audit checklist used during `audit`. |
-| [`schemas/`](schemas/) | Skill and manifest JSON Schemas, including pinned v2 through v6; the unversioned mirror tracks v6. |
+| [`schemas/`](schemas/) | Skill and manifest JSON Schemas, including pinned v2 through v7; the unversioned mirror tracks v7. |
 | [`examples/skill-metadata-template.md`](examples/skill-metadata-template.md) | Copyable authoring template. |
 | [`examples/projects/markdown-static-site/`](examples/projects/markdown-static-site/) | Specimen project showing codebase-grounded skills. |
 | [`docs/field-reference.md`](docs/field-reference.md) | Field-by-field reference. |
@@ -394,13 +394,13 @@ Run `skill-graph --help` to see all commands (including legacy aliases).
 | [`docs/SKILL-MD-FORMAT-COMPATIBILITY.md`](docs/SKILL-MD-FORMAT-COMPATIBILITY.md) | How export maps protocol-enriched skills back to plain `SKILL.md`. |
 | [`docs/marketplace-syndication.md`](docs/marketplace-syndication.md) | How to syndicate the full library to public `SKILL.md` marketplaces and mine gaps for new skills. |
 | [`docs/adr/`](docs/adr/) | Architecture Decision Records, including [ADR 0009 — sibling repo deprecation](docs/adr/0009-sibling-repo-deprecation.md). |
-| [`docs/migrations/`](docs/migrations/) | Per-bump author migration procedures (v4→v5, v5→v6). |
+| [`docs/migrations/`](docs/migrations/) | Per-bump author migration procedures (v4→v5, v5→v6, v6→v7). |
 
 **Related repos:**
 
 | Repo | Status | Purpose |
 |---|---|---|
-| [`jacob-balslev/skills`](https://github.com/jacob-balslev/skills) | **active** | Public open-source 145-skill library. Distributed via `npx skills add jacob-balslev/skills`. |
+| [`jacob-balslev/skills`](https://github.com/jacob-balslev/skills) | **active** | Public open-source canonical skill library — live count in [`SKILL_GRAPH.md § Current State`](SKILL_GRAPH.md#current-state). Distributed via `npx skills add jacob-balslev/skills`. |
 | [`jacob-balslev/skill-metadata-protocol`](https://github.com/jacob-balslev/skill-metadata-protocol) | mirror | Historical docs-only mirror of the protocol spec (kept for inbound-link stability). Canonical doc now in [`SKILL_METADATA_PROTOCOL.md`](SKILL_METADATA_PROTOCOL.md). |
 | [`jacob-balslev/skill-audit-loop`](https://github.com/jacob-balslev/skill-audit-loop) | mirror | Historical docs-only mirror of the audit workflow. Canonical doc now in [`SKILL_AUDIT_LOOP.md`](SKILL_AUDIT_LOOP.md). |
 
