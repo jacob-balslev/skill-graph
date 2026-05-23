@@ -87,7 +87,7 @@ The Skill Graph is a routable, evaluable, drift-checked knowledge graph of agent
 - `relations.verify_with` — "when this skill is applied, verify the result with that skill" (cross-check).
 - `relations.depends_on` — composition; "this skill assumes the reader has the other in scope."
 
-The graph is not a documentation pile. It is queried by routers, traversed by injection hooks, evaluated against retrieval baselines, and drift-checked against source-of-truth files. Two skills are "the same kind" iff they share a `category × type × scope` triple plus a head noun; the routing layer uses that triple as a first-pass discriminator before walking edges.
+The graph is not a documentation pile. It is queried by routers, traversed by injection hooks, evaluated against retrieval baselines, and drift-checked against source-of-truth files. Two skills are "the same kind" iff they share a `category × type × scope` triple plus a head noun; the routing layer uses that triple as a first-pass discriminator before walking edges. Note: in the current 144-skill corpus, ~94% of skills share `type: capability` and ~65% share `scope: portable`, so the triple provides broad stratum separation but not fine-grained routing precision — keyword score and relation edges carry the discriminating load. See `SKILL_METADATA_PROTOCOL.md` § Classification § `category` for the full distribution analysis and authoring implications (Updated 2026-05-23 — SH-6307).
 
 This shape is what distinguishes the Skill Graph from prompt libraries, agent-runtime config, hosted marketplaces, and personal memory systems. It is a protocol-and-tooling project that produces a navigable graph; consumers (routers, agent runtimes, hosted marketplaces) read from it but do not redefine it.
 
