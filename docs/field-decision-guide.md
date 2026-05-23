@@ -81,7 +81,7 @@ The distinction between these relation types is best illustrated by existing usa
 
 - **`depends_on`** — `refactor` declares `depends_on: [testing-strategy]` because refactoring without understanding test strategy is unsafe. The concepts are foundational to the skill's correctness.
 
-- **`verify_with`** — `graph-audit` declares `verify_with: [testing-strategy]` because running the graph-audit verification alongside testing-strategy evals materially increases confidence in the skill's claims. They are commonly used together in audit pipelines.
+- **`verify_with`** — `skill-infrastructure` declares `verify_with: [skill-scaffold]` because running skill library maintenance checks alongside skill authoring patterns materially increases confidence in the skill's claims. They are commonly used together in audit pipelines.
 
 - **`adjacent`** — `refactor` declares `adjacent: [debugging, testing-strategy]` because readers of the refactor skill would benefit from understanding debugging and testing approaches. These are topically related but not mandatory dependencies.
 

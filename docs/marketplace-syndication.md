@@ -195,13 +195,13 @@ These are hypotheses, not claims. Validate them with the gap loop before creatin
 
 | Candidate area | Why it may be useful | Likely Skill Graph shape |
 |---|---|---|
-| Skill registry hygiene | Marketplace users need to inspect third-party skills before installing them. | `capability`, portable, strong `relations.verify_with` to `security` and `graph-audit`. |
+| Skill registry hygiene | Marketplace users need to inspect third-party skills before installing them. | `capability`, portable, strong `relations.verify_with` to `security` and `skill-infrastructure`. |
 | Skill provenance review | Public registries need source, license, compatibility, and trust review. | `workflow`, portable, grounded in Agent Skills spec and Skill Graph export docs. |
 | Marketplace export packaging | Authors need to publish Skill Metadata Protocol skills as plain `SKILL.md`. | `workflow`, reference or portable, tied to `scripts/export-skill.js`. |
-| Skill gap analysis | Teams need to compare their library against marketplace demand. | `workflow`, portable, depends on `skill-router`, `graph-audit`, and `skill-infrastructure`. |
+| Skill gap analysis | Teams need to compare their library against marketplace demand. | `workflow`, portable, depends on `skill-router`, `skill-scaffold`, and `skill-infrastructure`. |
 | Skill install risk triage | Installing a public skill is supply-chain work, not only copy-paste. | `capability`, portable, verify with `owasp-security` and `dependency-architecture`. |
 | Cross-runtime compatibility notes | Skills may behave differently across Claude Code, Codex, Cursor, Windsurf, and others. | `capability`, portable, with conservative compatibility language. |
-| Skill library release checklist | A multi-skill library needs release hygiene before public distribution. | `workflow`, portable, depends on `version-control`, `documentation`, and `graph-audit`. |
+| Skill library release checklist | A multi-skill library needs release hygiene before public distribution. | `workflow`, portable, depends on `version-control`, `documentation`, and `skill-infrastructure`. |
 
 Do not create a new skill just because a keyword is popular. Create one when Skill Graph can provide a useful, maintainable contract with clear activation, boundaries, relations, and verification.
 

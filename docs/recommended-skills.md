@@ -26,7 +26,7 @@ These 12 skills form the credible baseline. Without them the library cannot hone
 |---:|---|---|---|---|---|
 | 1 | `skill-router` | shipped starter | router | reference | The entry point. Without a router skill, agents loading the library do not know how to dispatch among the rest. Demonstrates the unique value claim — graph-aware selection — at the same time. |
 | 2 | `skill-scaffold` | shipped | capability | reference | Without this, adopters cannot extend the library — they can only consume it. The whole "all humans and AI agents to use" mission requires that anyone can author a new skill correctly. This skill teaches the contract by example. |
-| 3 | `graph-audit` | shipped starter | workflow | reference | Library integrity matters as soon as you ship. Without this, drift accumulates silently. Operationally needed by anyone running the library more than 30 days. |
+| 3 | `skill-infrastructure` | shipped | capability | portable | Library integrity matters as soon as you ship. Without this, drift accumulates silently. Operationally needed by anyone running the library more than 30 days. Covers maintenance discipline, audit tooling, and health monitoring. |
 | 4 | `documentation` | shipped starter | capability | portable | Every codebase, every agent. The most cross-cutting skill in any library. |
 | 5 | `naming-conventions` | shipped | capability | portable | Affects every file, function, variable, column, route, token. The single most cross-cutting authoring concern in any codebase, used by humans and agents at every commit. |
 | 6 | `testing-strategy` | shipped starter | capability | portable | Universal need; pyramid/trophy/honeycomb decisions apply across stacks. |
@@ -120,7 +120,7 @@ The 4-reviewer board meeting at the 2026-05-04 multi-model synthesis (kept priva
 |---|---|---|
 | Opus | Graph density × archetype/scope coverage × meta-coherence | `agent-engineering`, `prompt-craft`, `context-engineering`, `taxonomy`, `domain-modeling`, `mcp-builder`, `naming-conventions`, `tool-call-strategy`, `human-in-the-loop`, `knowledge-graph` |
 | GPT-5.4 | Concrete external value (everyday engineering) | `a11y`, `documentation`, `code-review`, `testing-strategy`, `refactor`, `vulnerability`, `next-best-practices`, `react-best-practices`, `database-migration`, `webhook-integration` |
-| GPT-5.5 | Meta-maintenance (library health) | `skill-router`, `graph-audit`, `documentation`, `debugging`, `testing-strategy`, `refactor`, `skill-infrastructure`, `skill-scaffold`, `agent-engineering`, `tool-call-strategy` |
+| GPT-5.5 | Meta-maintenance (library health) | `skill-router`, `skill-infrastructure`, `documentation`, `debugging`, `testing-strategy`, `refactor`, `skill-scaffold`, `agent-engineering`, `tool-call-strategy` |
 
 Tier A here picks the **5-way intersection** across the three strategies plus the Tier-A-defining filter (universal relevance to humans and AI agents). Tier B picks the **3-way union** of items that 2 or 3 reviewers named but that don't pass the universal filter cleanly. Tier C is the residual — items that one strategy named but that are stack-, ecosystem-, or doctrine-specific.
 
