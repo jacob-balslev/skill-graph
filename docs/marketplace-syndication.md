@@ -90,10 +90,12 @@ Use string values so the result stays compatible with the base `SKILL.md` metada
 ```yaml
 metadata:
   skill_graph_source_repo: "https://github.com/jacob-balslev/skill-graph"
-  skill_graph_protocol: "Skill Metadata Protocol v4"
+  skill_graph_protocol: "Skill Metadata Protocol v7"
   skill_graph_project: "Skill Graph"
   skill_graph_canonical_skill: "skills/<name>/SKILL.md"
 ```
+
+The `skill_graph_protocol` value should reflect the current Skill Metadata Protocol version (`v7` as of this writing — see `SKILL_METADATA_PROTOCOL.md` header for the live value). Per [`AGENTS.md` § Version Labels Are Earned, Not Bumped](../AGENTS.md#version-labels-are-earned-not-bumped), this value is content-conformance — not export-tooling-version — and authoring a value above the source skill's actual `schema_version` is fake conformance. The known tension that `scripts/export-marketplace-skills.js` currently hardcodes a single value across all exports is documented in the same AGENTS.md section and tracked separately.
 
 If a generated export already nests protocol fields under `metadata`, keep these `skill_graph_*` keys alongside that export metadata. The purpose is provenance, not keyword stuffing.
 

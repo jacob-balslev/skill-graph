@@ -3,7 +3,7 @@
 > Status: **Accepted** — Option A (fix, not deprecate)
 > Date: 2026-05-23
 > Decided: 2026-05-23 by Jacob Balslev
-> Driver: [skill-corpus-scope-naming-audit-2026-05-23](../../../Development/docs/research/skill-corpus-scope-naming-audit-2026-05-23.md)
+> Driver: `skill-corpus-scope-naming-audit-2026-05-23.md` (in the sibling `Development/` repo at `/Users/jacobbalslev/Development/docs/research/skill-corpus-scope-naming-audit-2026-05-23.md` — cross-repo path, not a markdown link, so the in-repo link-check stays clean)
 > Authors: Claude Opus 4.7 (audit pass), corrected by user sign-off
 > Supersedes: nothing — first ADR on this dimension
 
