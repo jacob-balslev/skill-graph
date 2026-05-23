@@ -99,6 +99,65 @@ The `skill_graph_protocol` value should reflect the current Skill Metadata Proto
 
 If a generated export already nests protocol fields under `metadata`, keep these `skill_graph_*` keys alongside that export metadata. The purpose is provenance, not keyword stuffing.
 
+## Defense-in-Depth Privacy Gate (Updated 2026-05-23 — SH-6281)
+
+The public skills library (`jacob-balslev/skills`) is defended by four independent gate layers. No single layer failure causes a leak — two or more layers must fail simultaneously.
+
+**Architecture:** ADR 0012 — `docs/adr/0012-internal-skill-library-separation.md`
+
+| Layer | Where | What it blocks |
+|---|---|---|
+| **L1 — Working tree `.gitignore`** | `jacob-balslev/skills` `.gitignore` — allowlist model (`/*` + re-include only public-safe paths) | `git add -A` or `git add .` picks up internal content |
+| **L2 — Export pipeline scope gate** | `scripts/export-marketplace-skills.js` — excludes `scope: codebase\|operational` + `grounding_mode: repo_specific\|repo_internal`; scans generated surface for `PRIVACY_PATTERNS` | Internal skills flowing through the export pipeline |
+| **L3 — Pre-push hook** | `jacob-balslev/skills` repo: `hooks/pre-push` + `hooks/install.js` | Any push — scans changed `SKILL.md` files for `PRIVACY_PATTERNS` hits before the push leaves the local machine |
+| **L4 — CI workflow** | `jacob-balslev/skills` repo: `.github/workflows/privacy-scan.yml` + `scripts/ci-privacy-scan.js` | Any PR or push to `main` — runs the full-tree scan on the remote side |
+
+### Shared Pattern Library
+
+All four layers consume the same canonical privacy pattern set from:
+
+```
+skill-graph/scripts/lib/privacy-patterns.js
+```
+
+This module exports `PRIVACY_PATTERNS` (the pattern array), `scanPrivacyText` (text scanner), and `detectPrivacyViolations` (filesystem-level scanner). Any new internal path prefix, DB surface name, or project-specific identifier must be added **here** — all gate layers update automatically.
+
+Current pattern categories:
+- Local filesystem paths (Windows `C:\Users\`, macOS `/Users/`, Linux `/home/`)
+- Email addresses
+- Private key blocks and known API token prefixes
+- Internal codebase paths (`sales-hub`, `apps/web/src`)
+- Internal database surface names (`stripe_events_raw`, `shopify_orders_raw`, etc.)
+- Local-only artifact paths (`.artifacts/`, `.research/`, `.roundtable/`)
+- Known private project names
+
+### Installing the L3 Pre-Push Hook (One-Time, After Cloning)
+
+After cloning `jacob-balslev/skills`, run from the repo root:
+
+```bash
+node hooks/install.js
+```
+
+This copies `hooks/pre-push` → `.git/hooks/pre-push`. The hook resolves the shared privacy-patterns module from the sibling `skill-graph` repo at `../skill-graph/` (or from `SKILL_GRAPH_PATH` if set). If skill-graph is not found, the push is blocked until the path is fixed — this is intentional: a broken hook fails closed, not open.
+
+**Bypassing the hook via `git push --no-verify` is never acceptable.** The L4 CI gate will catch violations anyway, but a bypassed push leaves internal content in the public repo history until the CI gate fails and the commit is reverted.
+
+### Verifying the Gate
+
+```bash
+# L2 — Export pipeline scan (from skill-graph repo root):
+node scripts/export-marketplace-skills.js --check
+
+# L3 — Pre-push hook (dry-run equivalent — scan all SKILL.md files directly):
+SKILL_GRAPH_PATH=/path/to/skill-graph node skills/scripts/ci-privacy-scan.js
+
+# L4 — Same scan the CI workflow runs:
+cd skills && node scripts/ci-privacy-scan.js
+```
+
+All three should exit 0 before any push to `jacob-balslev/skills`.
+
 ## Marketplace Preparation Checklist
 
 Before publishing or asking a marketplace to index the library:
