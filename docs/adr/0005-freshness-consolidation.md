@@ -20,7 +20,7 @@ The external audit of 2026-04-20 flagged this as decomposable. Two problems:
 1. **Authors get confused.** `freshness` vs `drift_check.last_verified` is subtle — "editorial" vs "truth-source" review. In practice, most skills set them to the same date, and the distinction is rarely load-bearing.
 2. **Tools duplicate work.** The drift sentinel already reasons about `drift_check.last_verified + lifecycle.stale_after_days`. The `freshness` field is consulted by only one check (the >90-days editorial-review warning).
 
-## Decision (proposed)
+## Decision (accepted 2026-05-23)
 
 Collapse the three fields into two primitives in v4:
 
@@ -61,9 +61,9 @@ Collapse the three fields into two primitives in v4:
 - Whether to require `asserted_at` or make it optional. Today's `freshness` is required. Lean toward required.
 - The exact codemod conflict-resolution rule when `freshness` and `drift_check.last_verified` disagree by more than 30 days — use the later, or warn and ask?
 
-## Status: Proposed, not accepted
+## Status: Accepted (2026-05-23), implementation deferred
 
-This ADR exists to make the v4 direction visible and invite feedback before v4 work begins. No changes to the current schema. No action required from authors. Revisit when v4 planning starts.
+This ADR was accepted on 2026-05-23 (see header). The decision direction is committed. Implementation is intentionally deferred until v4 schema-bump work resumes — the freshness-field consolidation is a breaking change and lands as part of the next major schema migration, not as an incremental edit to the current v7 contract. Authors are not yet required to take action; the codemod (`scripts/migrate-v3-to-v4.js`) and v4 schema work are tracked separately. When v4 planning resumes, treat this ADR as the binding direction rather than as an open proposal.
 
 ## References
 
