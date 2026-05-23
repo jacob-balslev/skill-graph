@@ -1,8 +1,9 @@
 # ADR 0005 — Freshness Field Consolidation (Proposal for v4)
 
-- **Status:** Proposed (2026-04-20)
+- **Status:** Accepted (2026-05-23)
 - **Deciders:** Skill Graph maintainers
 - **Target:** v4 schema bump (breaking change)
+- **Decision date:** 2026-05-23 (accepted post-review, awaiting implementation post-Phase 2)
 
 ## Context
 
