@@ -182,6 +182,77 @@ When touching one artifact, update the matching tier artifacts in the same chang
 - If you introduce a new head noun in a skill name, update `docs/head-noun-glossary.md` in the same change. The glossary is a lint surface; adding a name with an unknown head noun without registering it produces a lint warning.
 - If a skill's marketplace description exceeds the 1024-char limit, add an `EXPORT_DESCRIPTION_OVERRIDES` entry in `scripts/export-marketplace-skills.js` *in the same change* — do not shorten the canonical description to fit the marketplace.
 
+## Doc Ownership Map
+
+**Use this when your task is "edit the canonical home of concept X" and you do not know which of the many doc files owns it.** This is a *concept → file* map. The companion `## Coupled Changes` table is *action → propagation* (what else to update when one artifact changes), and `## Document Routing Table` below is *change-class → docs* (which docs a change category touches). Three views, one purpose: collapse the 5+ doc files into a single decisive lookup so agents do not spend an entire turn budget figuring out where to land an edit.
+
+The structural rule behind this map: **prose lives in one place per concept.** If two files describe the same concept, one of them is the canonical owner and the other links back. Crossing this rule produces drift (the exact failure mode the 2026-05-23 boundary-semantics audit caught — four docs disagreed because none was declared canonical).
+
+### Per-field semantics (the most common rabbit hole)
+
+For any single Skill Metadata Protocol field (`name`, `description`, `type`, `scope`, `category`, `stability`, `freshness`, `eval_state`, `routing_eval`, `comprehension_state`, `relations.*`, `grounding.*`, etc.):
+
+| What you are editing about the field | Canonical owner | Notes |
+|---|---|---|
+| **Normative spec** — required/optional, allowed values, enum, gate condition, version label, what the field *means* in the protocol | `SKILL_METADATA_PROTOCOL.md` | The binding contract. If this and another doc disagree, this wins. |
+| **Per-field human authoring prose** — when to use it, value choice criteria, examples, anti-patterns, common mistakes | `docs/field-reference.md` | The 78k authoring guide. Single biggest doc; agents lose half a turn budget here. Use anchor links when referencing from other docs. |
+| **Decision logic between values** — "should I pick `portable` vs `codebase`?", "when is `stability: stable` earned?", branching decision trees | `docs/field-decision-guide.md` | Decision tables only. Do not duplicate decision logic from `field-reference.md`; link to it. |
+| **Why the field exists** — design rationale, rejected alternatives, migration history that *justifies* the field's shape | `docs/field-rationale.md` | "Why this field, not the other thing." Edit when the field's purpose changes, not when its value semantics change. |
+| **Generated type/enum mirror** | `docs/field-reference.generated.md` | **NEVER hand-edit.** Run `node scripts/build-field-reference.js`. Source of truth is `schemas/skill.schema.json`. |
+| **Source-to-manifest projection** — how the authored value lands in the generated manifest | `docs/manifest-field-mapping.md` | Edit only when `scripts/generate-manifest.js` projection logic changes. |
+| **One-liner mention in the AGENTS.md Quick Reference** | `AGENTS.md` § Skill Metadata Protocol — Quick Reference | Keep to one bullet per field. Never put full prose here; link to `field-reference.md`. |
+| **Glossary entry** for the field name itself | `docs/glossary.md` | One-line definition; link to the canonical detail. |
+
+**Default answer for "where do I edit field X's criteria":** the normative one-liner goes in `SKILL_METADATA_PROTOCOL.md`, the authoring prose goes in `docs/field-reference.md`, and `docs/field-decision-guide.md` is updated only if the change introduces a new decision branch. The other field-* docs are touched only if their specific axis (rationale, generated mirror, manifest projection) is what changed.
+
+### Other concept areas
+
+| Concept area | Canonical owner | Use for |
+|---|---|---|
+| **Archetypes** (`capability` / `workflow` / `router` / `overlay`) — what they teach, when each applies, eval shape per archetype | `docs/skill-metadata-protocol.md` § Archetypes | Cross-link from `field-reference.md § type`. |
+| **Migration narrative** (v4→v5, v5→v6, v6→v7) — what each version added, breaking changes, codemod usage | `docs/migrations/vN-to-vM.md` (one file per migration) | New per-version migrations get a new file; do not append to AGENTS.md. |
+| **Authority tiers** (which file binds which) | `SKILL_GRAPH.md` § Authority Tiers | The map of "Tier 1 schemas → Tier 2 docs → Tier 3 scripts → Tier 4 consumers → Tier 5 examples." |
+| **Current corpus state** — verified counts (canonical skills, exported skills, worklist), build/health snapshot | `SKILL_GRAPH.md` § Current State + `docs/status.generated.md` | Single-source-of-truth count lives in `SKILL_GRAPH.md § Current State`. The generated status file mirrors it. Volatile counts must not be duplicated into AGENTS.md, README.md, or anywhere else — link instead. |
+| **Edges / relations semantics** (`related`, `boundary`, `verify_with`, `depends_on`) — the field-level mechanic | `SKILL_METADATA_PROTOCOL.md` § Relations | The boundary-semantics WARNING (2026-05-23) lives here; `AGENTS.md § What the Skill Graph Is` summarizes and links. |
+| **Audit loop procedure** (read → fix → test → next; the four operations; the two gates) | `SKILL_AUDIT_LOOP.md` | The four-verdict Health Block lives here. `AGENTS.md § Skill Audit Loop` summarizes and links. |
+| **Audit checklist items** (per-skill audit deliverable) | `SKILL_AUDIT_CHECKLIST.md` | Itemized checklist. Edit when an audit produces a new mandatory check. |
+| **Quality doctrine** (improve = enrich; preserve scope; organize-over-trim) | `docs/quality-doctrine.md` | `AGENTS.md § Quality Doctrine` is a summary; deeper doctrine lives in the docs file. |
+| **Marketplace export contract** (description limits, privacy filter, surface generation, sync protocol) | `docs/marketplace-syndication.md` + `AGENTS.md § Public Distribution` | `AGENTS.md` owns the canonical URL contract + skills.sh manual-removal escalation. The marketplace doc owns export pipeline detail and the post-publication runbook. |
+| **Routing eval** (baseline corpus, metrics, regression targets) | `docs/ROUTING-METRICS.md` | Edit when the baseline changes or a new metric is added. |
+| **Recommended skills** for a given task pattern | `docs/recommended-skills.md` | Curated lists; broken links here are release-blocking. |
+| **Field-name glossary** + head-noun registry | `docs/glossary.md` (concepts) + `docs/head-noun-glossary.md` (skill-name nouns) | New protocol concept → glossary; new skill name head noun → head-noun-glossary. |
+| **ADRs** (architectural decisions, repo lifecycle, schema deprecation) | `docs/adr/NNNN-<slug>.md` | One file per decision. Never inline an ADR into AGENTS.md; link to it. |
+| **Proposals** (in-flight, not yet decided) | `docs/proposals/*.md` | When accepted, follow through to canonical doc + ADR in the same change. |
+| **Plans** (active multi-step work) | `docs/plans/*.md` | Move to `docs/_archived/` on completion. |
+| **Research findings** (one-shot investigations) | `docs/research/*.md` | If findings drive a change, also update the affected canonical doc in the same commit. |
+| **Concept primer / onboarding narrative** | `docs/PRIMER.md` + `docs/QUICKSTART-30MIN.md` | Long-form teaching. Edit when the public mental model of the project shifts. |
+| **Positioning vs other systems** (prompt libraries, marketplaces, runtimes) | `docs/positioning.md` + `docs/positioning-vs-marketplaces.md` | Edit when external landscape shifts or our positioning changes. |
+| **CLI behavior + flags** | `bin/skill-graph.js` `--help` (source of truth) → mirror to `README.md` + `docs/QUICKSTART-30MIN.md` + `CHANGELOG.md` | `--help` output is authoritative; other docs cite it. |
+| **`AGENTS.md` itself** | Repo-wide rules, doctrine, this Doc Ownership Map, Document Routing Table, Public Distribution contract | Edit when *cross-cutting* rules change. Do NOT put per-field prose here. |
+
+### When two docs disagree
+
+If you find two docs giving different stories about the same concept, the precedence is:
+
+1. **Schema** (`schemas/*.json`) > any prose doc — the schema is the binding contract.
+2. **`SKILL_METADATA_PROTOCOL.md`** > other Tier 2 docs for normative spec language.
+3. **`docs/skill-metadata-protocol.md`** > `docs/field-reference.md` for archetype/migration/rationale narrative; `docs/field-reference.md` > `docs/skill-metadata-protocol.md` for per-field authoring prose.
+4. **`SKILL_AUDIT_LOOP.md`** > `AGENTS.md § Skill Audit Loop` summary.
+5. **`SKILL_GRAPH.md` § Current State** > any other doc for live corpus counts.
+
+The losing doc gets fixed in the same commit. Never leave the disagreement to be reconciled later — that is how the 2026-05-23 boundary-semantics drift happened (four docs each carrying their own version of the truth for months).
+
+### Anti-patterns
+
+| Anti-pattern | Why it fails |
+|---|---|
+| Adding new field prose to `AGENTS.md § Skill Metadata Protocol — Quick Reference` instead of `docs/field-reference.md` | Quick Reference is a one-liner index, not a prose home. Prose here drifts because the canonical file is somewhere else. |
+| Editing `docs/field-reference.generated.md` directly | Generated file — hand-edits are overwritten next time `build-field-reference.js` runs. |
+| Putting decision-tree logic in `field-reference.md` AND `field-decision-guide.md` | One canonical home. The other links. Two homes is two truths. |
+| Duplicating volatile corpus counts (144 skills, 284 active, etc.) into `README.md` / `AGENTS.md` / topic docs | `SKILL_GRAPH.md § Current State` is single-source-of-truth. Everywhere else links. Inline counts go stale within days. |
+| Creating a new top-level doc instead of finding the existing canonical home for the concept | Doubles the number of places the next agent has to check. If the concept genuinely has no home, propose a new home in an ADR before creating the file. |
+| Editing only the summary (e.g., `AGENTS.md § Skill Audit Loop`) without updating the canonical (`SKILL_AUDIT_LOOP.md`) | The summary drifts from the canonical. Always edit the canonical first, then re-summarize. |
+
 ## Document Routing Table
 
 When a code or schema change lands, update the matching documentation rows in the same commit. This table covers the broader doc surface; for tier-coordinated changes (schema, lint, manifest projection) the stricter coupling rules in `## Coupled Changes` above take precedence. Generated artifacts (marked _generated_) must be regenerated by their owning script — never hand-edited.
