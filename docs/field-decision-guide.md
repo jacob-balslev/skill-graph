@@ -85,7 +85,7 @@ The distinction between these relation types is best illustrated by existing usa
 
 - **`adjacent`** — `refactor` declares `adjacent: [debugging, testing-strategy]` because readers of the refactor skill would benefit from understanding debugging and testing approaches. These are topically related but not mandatory dependencies.
 
-- **`boundary`** — `refactor` declares `boundary: [documentation]` to prevent confusion. Documentation skills are not owned by refactor — they are a separate domain. This guards against incorrect skill activation.
+- **`boundary`** — `refactor` declares `boundary: [documentation]` to assert exclusive ownership of the refactor use-case over documentation. When refactor wins a query that also matched documentation, this entry excludes documentation from co-routing. **Note:** the field name implies "defer to documentation" but the mechanic is "exclude documentation when refactor wins." Write reason text using ownership framing: `"refactor owns this use-case exclusively; documentation does not."` See WARNING in `SKILL_METADATA_PROTOCOL.md § Relations § boundary`.
 
 When a skill extends another skill's base behavior (e.g., an overlay), use the `extends` field instead of relations.
 
@@ -96,7 +96,7 @@ relations:
   adjacent:
     - webhook-integration   # related: reader may want this context
   boundary:
-    - fulfillment           # not owned here: route to fulfillment skill
+    - fulfillment           # I own this exclusively over fulfillment; excludes fulfillment when I win
   verify_with:
     - test-coverage         # co-load during audits
   depends_on:

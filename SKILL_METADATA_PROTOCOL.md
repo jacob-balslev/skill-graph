@@ -270,7 +270,7 @@ Required when `comprehension_state: present`. No protocol length cap on any of t
 **`boundary`** (the Understanding field — distinct from `relations.boundary`)
 - Things commonly confused with the concept but that are NOT it. Express each difference as a *mechanism* (different primitives, different purpose, different scope) — not just different names.
 - Graded by the comprehension grader's `boundary` dimension (weight 1.5).
-- Field-name collision with `relations.boundary` is intentional and disambiguated by nesting depth: top-level `boundary` is a string teaching the concept's edges; `relations.boundary` is an array of skill-name handoff targets.
+- Field-name collision with `relations.boundary` is intentional and disambiguated by nesting depth: top-level `boundary` is a string teaching the concept's edges; `relations.boundary` is an array of skill-name exclusion targets (see § Relations § `boundary` — it excludes listed skills from co-routing when this skill wins, not defers to them).
 
 **`analogy`**
 - One-sentence analogy that preserves the core mechanism. Translate for a non-expert without breaking the structural relationship between primitives.
@@ -390,7 +390,7 @@ The `relations` block contains typed edges to sibling skills. All targets are va
 ```yaml
 relations:
   related:        # symmetric co-read relation (skos:related). v3.1 preferred name.
-  boundary:       # routing-layer anti-ownership handoff (sg:disjointOwnership).
+  boundary:       # routing-layer score-aware exclusion guard (sg:disjointOwnership). See warning below — does NOT defer to target.
   disjoint_with:  # formal class-disjointness assertion (owl:disjointWith).
   verify_with:    # skills to co-load for verification (prov:wasInformedBy).
   depends_on:     # skills this skill requires operationally or conceptually.
@@ -404,11 +404,22 @@ relations:
 - `adjacent` is a deprecated alias from v3.0. Use `related` in all new skills. Lint emits a warning on `adjacent`.
 
 **`boundary`** (the routing-layer field — distinct from the top-level Understanding `boundary` field)
-- Routing-layer anti-ownership handoff. Use to make explicit that this skill does NOT own the target concern and should hand near-miss prompts to another skill.
-- Items may be bare skill names or `{ skill, reason }` objects. Reasons are strongly recommended.
-- This is a Skill-Graph-specific routing predicate, not formal OWL class disjointness.
 
-**Runtime semantic — score-aware exclusion-on-tie.** The runtime router applies `relations.boundary[]` as `if (target.score >= declarer.score) skip target` — i.e. the declarer can exclude the target only when the declarer is *currently outscoring* it on the query. The semantic INVERTS the surface reading "I am NOT B; defer to B" — boundary entries protect the declarer's wins, not the target's wins. (Source: `skill-graph/scripts/skill-graph-route.js:548`.)
+> **WARNING — the field name inverts the runtime mechanic.**
+>
+> `boundary: [skill-B]` does **NOT** mean "defer to skill-B." It means "**exclude skill-B from co-routing results when this skill wins.**" The name suggests deference; the mechanic is exclusion. Always write `reason` text that reflects ownership ("I own this exclusively over skill-B"), never deference ("use skill-B instead"), because the latter will mislead the next author — skill-B is suppressed by this entry, not promoted.
+>
+> **Runtime semantic:** the router applies `relations.boundary[]` as `if (target.score >= declarer.score) skip target`. This means:
+> - The declarer can only exclude the target when the declarer is *currently outscoring* it on the query.
+> - Score ties also trigger exclusion, so authored boundaries break ties deterministically.
+> - A weaker-scoring skill cannot veto a stronger-scoring one.
+>
+> `boundary` entries protect the declarer's routing wins, not the target's. (Source: `skill-graph/scripts/skill-graph-route.js` Stage 5.)
+
+- Routing-layer exclusion guard. Use to assert that this skill owns a use-case exclusively and the listed skills should not co-route when this skill wins the query.
+- Items may be bare skill names or `{ skill, reason }` objects. Reasons are strongly recommended and must use ownership framing ("I own this exclusively over [skill]"), not deference framing ("use [skill] instead").
+- This is a Skill-Graph-specific routing predicate, not formal OWL class disjointness.
+- Same-domain only: see Cross-domain doctrine below.
 
 **Cross-domain boundary doctrine — SAME-DOMAIN ONLY.** Codified 2026-05-17 after the Tier C″ empirical sweep across 8 Wave 6 skills:
 
@@ -584,6 +595,7 @@ find skills -name SKILL.md -exec sed -i '' 's/schema_version: "5"/schema_version
 | Health Block | absent — audit fingerprint scattered across `eval-history.jsonl`, `routing-misses.jsonl`, `health-ledger.jsonl`, `.opencode/progress/skill-audit-*`, `findings/*.md` | seven flat top-level fields stamped by the audit loop: `last_audited`, `last_changed`, `audit_verdict`, `eval_score`, `eval_failed_ids`, `lint_verdict`, `drift_status` |
 | `comprehension_state: present` rule | required nested `concept` block | requires EITHER the five flat Understanding fields OR (for v5 back-compat) the nested `concept` block — enforced via `anyOf` clause in v6 schema's `allOf` rule |
 | Cross-domain `relations.boundary[]` | implicit "I am NOT B; defer to B" reading | codified as silent-failure risk; cross-domain entries belong in `anti_examples` + `relations.related` (see § Relations § `boundary`) |
+| `relations.boundary` reason-text convention | unrestricted prose (deference framing was common) | ownership framing required: "I own this exclusively over [skill]" not "use [skill] instead" — clarified 2026-05-23 (SH-6306); field name inverts runtime mechanic (see WARNING in § Relations § `boundary`) |
 
 The legacy nested `concept` block remains accepted in v6 for v5 skills not yet migrated. The comprehension grader reads either location; flat fields win when both are present.
 

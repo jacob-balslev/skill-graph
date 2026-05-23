@@ -83,7 +83,7 @@ For audit work, also read `SKILL_AUDIT_LOOP.md` and `SKILL_AUDIT_CHECKLIST.md`.
 The Skill Graph is a routable, evaluable, drift-checked knowledge graph of agent capabilities. Each node is a `SKILL.md` — frontmatter (the contract) plus body (the operational guidance). Each edge is one of:
 
 - `relations.related` — adjacency for browse and routing expansion.
-- `relations.boundary` — explicit "use that skill instead, because…" with a reason field.
+- `relations.boundary` — score-aware exclusion guard: when this skill wins a query, listed skills are suppressed from co-routing. **Note:** the field name reads as "defer to them" but the mechanic is "exclude them when I win." Use ownership reason-text ("I own this exclusively over X"), not deference ("use X instead"). See WARNING in `SKILL_METADATA_PROTOCOL.md` § Relations § `boundary`.
 - `relations.verify_with` — "when this skill is applied, verify the result with that skill" (cross-check).
 - `relations.depends_on` — composition; "this skill assumes the reader has the other in scope."
 

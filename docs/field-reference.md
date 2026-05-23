@@ -1342,7 +1342,7 @@ routing_bundles:
 
 **Boundary vs disjoint_with — the ADR 0006 split.** ADR 0001 originally proposed renaming `boundary` to `disjoint_with` and treating them as aliases. ADR 0006 reverses that: the two predicates operate at different semantic layers and the schema keeps them distinct.
 
-- `boundary` is a **routing-layer** claim. Skill A says "I am not the right answer for queries also matching B; route those to B." The router uses this for wrong-skill exclusion. Asymmetric; `reason` is strongly recommended; the canonical name for the everyday use case.
+- `boundary` is a **routing-layer exclusion guard**. When skill A wins a query, skills listed in A's `boundary[]` are excluded from co-routing results (if A outscores them). The field name implies "defer to B" but the mechanic is "exclude B when A wins" — write reason text that reflects ownership ("I own this exclusively over B"), not deference ("use B instead"). Asymmetric; `reason` is strongly recommended; the canonical name for the everyday use case. See the WARNING callout in `SKILL_METADATA_PROTOCOL.md § Relations § boundary`.
 - `disjoint_with` is a **formal class-theory** claim. A and B name disjoint conceptual classes; no entity can simultaneously be an instance of both. Maps to OWL `owl:disjointWith` for RDF consumers that reason about class membership. Rare in practice — most skill libraries never need this.
 
 If you are unsure which to use, you want `boundary`. Use `disjoint_with` only when you have an explicit reason to make a formal ontological claim that survives the JSON-LD projection into OWL.
