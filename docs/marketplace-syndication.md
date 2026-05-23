@@ -4,7 +4,7 @@
 >
 > **Status.** Working strategy. Update after each marketplace indexing experiment.
 >
-> **Last verified.** 2026-05-13.
+> **Last verified.** 2026-05-23.
 
 > **CLI vs skill library distribution:** This document covers skill library syndication — publishing `SKILL.md` files to registries like `skills.sh` and SkillsMP. CLI distribution via npm (`@skill-graph/cli`) is a separate concern: the CLI is published from this repo via the `.github/workflows/publish.yml` pipeline on `v*.*.*` tags. See `SH-6110` for install verification and the [Releasing section in README.md](../README.md#releasing-maintainers) for the release procedure.
 
@@ -118,6 +118,91 @@ Before publishing or asking a marketplace to index the library:
 - Add the `skills.sh` badge only after the install path works.
 - Confirm ignored local artifacts are not staged.
 - Review generated exports for secrets, private paths, telemetry, customer data, personal data, and accidental local-only research.
+
+**After pushing to the release repo:**
+- Verify indexing has happened: `curl -s "https://skills.sh/api/download/jacob-balslev/skills/a11y"` — expected to return a SKILL.md body (not `{"error":"not_found"}`).
+- If the download API returns `not_found`, skills.sh has not re-indexed the push. Follow the manual trigger procedure in **Post-Publication — Triggering skills.sh Indexing** below.
+- skills.sh does NOT auto-re-index on push — a maintainer request to @quuu on the Vercel Community forum is the only working lever.
+
+## Post-Publication — Triggering skills.sh Indexing (Updated 2026-05-23 — SH-6292)
+
+**skills.sh does not automatically re-index a GitHub repository when you push new skills.** Pushing to `jacob-balslev/skills` is necessary but not sufficient. The indexing pipeline is platform-controlled and requires a separate manual trigger after every push.
+
+### Root Cause
+
+skills.sh indexes repos through a one-time crawl that is triggered by the platform, not by a GitHub push webhook or CI event. Once a repo is indexed, subsequent pushes do not automatically schedule a re-crawl. There is no self-service re-index API (`skills.sh/api/v1/*` requires a `Bearer sk_live_...` key that library authors do not hold, and there is no `npx skills reindex` command).
+
+This was confirmed during the SH-6292 investigation: pushing 144 skills to `jacob-balslev/skills@main` (verified live on GitHub as of 2026-05-21) produced a page at `https://www.skills.sh/jacob-balslev/skills/` showing **0 skills** and `{"error":"not_found"}` on the download API.
+
+### Verification — Confirm Whether Indexing Has Happened
+
+After pushing to the release repo, run these three checks before concluding the release is live:
+
+```bash
+# 1. Confirm the GitHub release repo has the expected skill count
+gh api 'repos/jacob-balslev/skills/contents/skills' --jq '.[].name' | wc -l
+
+# 2. Confirm skills.sh has indexed the canonical source
+curl -s "https://skills.sh/api/download/jacob-balslev/skills/a11y"
+# Expected when indexed: returns a SKILL.md body
+# Actual when NOT indexed: {"error":"not_found"}
+
+# 3. Check skills.sh owner page to verify the row count matches
+# Visit: https://www.skills.sh/jacob-balslev/
+# Expected: one source row "jacob-balslev/skills" with the correct skill count
+# Actual when NOT indexed: 0 skills, or the row is absent
+```
+
+If check 2 returns `{"error":"not_found"}`, the release push succeeded but skills.sh has not indexed it yet. Proceed to the manual trigger below.
+
+### Manual Re-Index Trigger (Only Working Lever)
+
+There is no self-service re-index mechanism. The **only working lever** is a manual request to Vercel staff through the Vercel Community forum.
+
+**Contact:** `@quuu` (Andrew Qu) — skills.sh maintainer and sole active committer on `vercel-labs/skills`.
+
+**How to reach him (two doors, same person):**
+
+1. **Vercel Community forum** — reply to or create a thread, tag `@quuu` with the repo name and what action you need (index a new source, remove a stale source, or both). Prior successful removal example: https://community.vercel.com/t/removing-a-skill-from-the-skills-sh-list/35562
+
+2. **GitHub issue on `vercel-labs/skills`** — tag `@quuu` in a comment on the open cleanup tracking issue (currently https://github.com/vercel-labs/skills/issues/1147). Note: GitHub issue response has been slow (open since 2026-05-14 with no maintainer response as of 2026-05-20). Forum is faster.
+
+**What to include in the request:**
+
+```text
+Repo: jacob-balslev/skills
+Branch: main
+GitHub URL: https://github.com/jacob-balslev/skills
+Desired skills.sh URL: https://www.skills.sh/jacob-balslev/skills/
+Action needed: Please re-index this source. The repo has [N] skills under skills/<category>/<name>/SKILL.md
+  and was last pushed on [date]. The skills.sh page shows 0 skills and the download API returns
+  {"error":"not_found"} for skills that exist in the repo.
+```
+
+### Dead Ends — Do Not Waste Time On These
+
+All verified as non-functional during SH-6292 investigation:
+
+| Attempt | Why it does not work |
+|---|---|
+| Deleting and re-creating the GitHub release repo | Proven: skills.sh rows persist after repo deletion. The stale `jacob-balslev/skill-graph-skills` row still serves 34 skills from a 404 repo. |
+| `npx skills remove --source jacob-balslev/skills` | This is a local uninstall, not a registry de-index. Does not affect the platform-side row. |
+| Setting `metadata.internal: true` in SKILL.md | Vercel staff confirmed this only skips default install with `INSTALL_INTERNAL_SKILLS=1`. It does not de-index the source row. |
+| Pushing with an updated `README.md` or description | GitHub content changes are not re-crawled automatically. |
+| Emailing Vercel support | skills.sh is a `vercel-labs` side-project outside platform support scope. `billing@`/`security@` only handles billing and security. |
+| `skills.sh/api/v1/*` endpoints | Require a `Bearer sk_live_...` key that library authors do not hold. |
+
+### Stale Source Rows (As of 2026-05-23)
+
+Three old sources are live on skills.sh and should NOT be referenced as canonical. These require maintainer removal — the same forum/GitHub contact path applies:
+
+| Stale URL | Skills indexed | Status |
+|---|---:|---|
+| `https://www.skills.sh/jacob-balslev/skill-graph/` | ~39 | Old canonical repo indexed directly — GitHub repo still exists |
+| `https://www.skills.sh/jacob-balslev/skill-graph-skills/` | 34 | Old split export source — GitHub repo deleted (404), row still live |
+| `https://www.skills.sh/jacob-balslev/skill-graph-skills-missing-1/` | 27 | Old split export source — GitHub repo deleted (404), row still live |
+
+The cleanup request referencing all three rows is tracked at `vercel-labs/skills#1147`. See `docs/skills-sh-maintainer-cleanup-request.md` for the full brief to attach to the forum request.
 
 ## Curation Pipeline (Updated 2026-05-19 — SH-6127)
 
