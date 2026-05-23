@@ -193,37 +193,44 @@ archetype: capability
 
 ## `category`
 
-**Purpose.** Flat human browse bucket for discovery and grouping. Does not imply runtime behavior or evaluation logic. Renamed from v3 `browse_category` in v4 so the public browse axis has the obvious name.
+**Purpose.** Flat human browse bucket for discovery and grouping. Does not imply runtime behavior or evaluation logic. Renamed from v3 `browse_category` in v4 so the public browse axis has the obvious name; the value space was then closed to a six-value enum in v5 (retained in v7) to prevent the v3-era explosion of synonymous buckets.
 
 **Rules.**
-- Required.
-- Open-ended string; no enum is enforced.
-- Use stable, human-readable buckets.
-- Avoid one-off synonyms for the same idea (for example, pick `engineering` and stick to it; do not use `dev` in one skill and `engineering` in another).
-- For hierarchical taxonomy (`ecommerce/integrations/shopify`), use the optional `domain` field. `category` is flat on purpose.
+- **Required since schema_version 5** (retained in v7). Present in `required: [...]` of `schemas/skill.v7.schema.json`. A v5+ skill without `category` fails schema validation.
+- **Closed enum of six values** as of schema_version 5: `foundations` \| `engineering` \| `design` \| `quality` \| `agent` \| `product`. Any other value is rejected at the schema level AND at the lint level by `scripts/lint/check-category-enum.js`. (Pre-v5 open-ended values like `knowledge`, `frontend`, `integrations`, `security` were migrated to the six-value enum; see `docs/migrations/v4-to-v5.md`.)
+- For cross-cutting fit, list secondary categories via `relations.related` (max 5) — never by stuffing them into `category`.
+- For hierarchical taxonomy (`engineering/integrations/shopify`), use the optional `domain` field; `category` is flat on purpose and complements `domain` rather than substituting for it.
 
-**Recommended values.**
+**The six values and what they cover.**
 
 | Value | Use for |
 |---|---|
-| `knowledge` | Domain expertise, reference skills |
-| `engineering` | Code, architecture, infrastructure |
-| `frontend` | UI, CSS, component patterns |
-| `quality` | Testing, auditing, review |
-| `integrations` | External APIs, webhooks, data sync |
-| `security` | Security review and risk controls |
-| `design` | UX, research, visual, and product design |
+| `foundations` | Epistemics, grounding, verification, context engineering, reasoning — preconditions of competent agent or engineering work. Reserved; must clear the foundations gate (target 8–15 skills). |
+| `engineering` | Building software systems: APIs, data, infra, runtime, integrations. |
+| `design` | Visual, interaction, IA, content, motion — design as a discipline. |
+| `quality` | Cross-cutting non-functional properties: a11y, performance, security, type-safety, testing, observability. Properties of any artifact. |
+| `agent` | Agent-specific concepts: tool design, prompt design, agent state, orchestration, eval-driven dev. |
+| `product` | Prioritization, scope, MVP, PRDs, customer journey, positioning. |
+
+**Disambiguation rules** (apply in order; full text in `SKILL_METADATA_PROTOCOL.md § Classification`):
+
+1. *Primary surface* — what the skill is *about*, not what it *enables*.
+2. *Property vs subject* — properties (a11y, perf, security, testing, type-safety) → `quality`. How-to-build → `engineering` / `design` / `agent`.
+3. *Cross-pollination* — multi-fit skills list secondary categories via `relations.related` (max 5). Never via the `category` field itself.
+4. *`foundations` gate* — anti-junk-drawer. Membership requires (a) the skill teaches an epistemic precondition AND (b) it cannot be plausibly assigned to `agent`/`engineering`/`quality`/`design`.
 
 **Example.**
 ```yaml
-category: integrations
+category: engineering
 ```
 
-**When to use.** Always. Even if the bucket is unusual, populate it so the skill appears in browse indexes.
+**When to use.** Always. `category` is required and exactly one of the six enum values must be picked, even if the choice is awkward — pick the closest fit and disambiguate via `domain` or `relations.related`.
 
-**When NOT to use.** Do not use `category` for behavioral control; that is `type`'s job. Do not use it for activation-bundle membership; that is `routing_bundles`. Do not use it for hierarchical placement; that is `domain`.
+**When NOT to use.** Do not use `category` for behavioral control; that is `type`'s job. Do not use it for activation-bundle membership; that is `routing_bundles`. Do not use it for hierarchical placement; that is `domain`. Do not invent values outside the six-value enum.
 
-**Migration from v3.** The field name changed from `browse_category` to `category` in v4 (values unchanged). Run `node scripts/migrate-skill-v3-to-v4.js` for the automatic rename.
+**Migration from v3.** The field name changed from `browse_category` to `category` in v4 (values then still unconstrained). Run `node scripts/migrate-skill-v3-to-v4.js` for the automatic rename.
+
+**Migration from v4.** The closed six-value enum was introduced in v5 and retained in v6/v7. Skills carrying pre-v5 open-ended values (`knowledge`, `frontend`, `integrations`, `security`, `dev`, etc.) must be remapped to the enum — see `docs/migrations/v4-to-v5.md` for the mapping table and the codemod.
 
 ---
 

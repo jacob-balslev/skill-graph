@@ -181,9 +181,10 @@ allowed-tools   # space-separated tool allowlist
 - `portable` — cross-repo knowledge, intended for distribution via `portability.targets`.
 
 **`category`**
+- **Required since schema_version 5** (retained in v7); present in the `required: [...]` array of `schemas/skill.v7.schema.json`. Authoring a v5+ skill without `category` fails schema validation.
 - A browse facet — answers the single question: *Where should a human browse to find this skill first?*
 - Renamed from v3 `browse_category`; use `category` in all v4+ skills.
-- For hierarchical taxonomy, use the optional `domain` field with slash-delimited segments.
+- For hierarchical taxonomy, use the optional `domain` field with slash-delimited segments. `domain` complements `category`; it does not replace it.
 - **Closed enum as of schema_version 5** (retained in v7); enforced at the schema level by `enum` constraint in `schemas/skill.v7.schema.json` AND at the lint level by `scripts/lint/check-category-enum.js`. Framed as a browse facet, not ontology truth. Cross-cutting truth lives in `relations.related`. The six values:
 
   | Value | Definition |
@@ -229,10 +230,19 @@ allowed-tools   # space-separated tool allowlist
 - Complements `category`. Do not use it as a second flat shelf.
 
 **`stability`**
-- `experimental` — may change without notice; use with caution.
-- `stable` — follows semver; breaking changes bump `schema_version` or `version`.
+- `experimental` — may change without notice; use with caution. Default for all new skills.
+- `stable` — follows semver; breaking changes bump `schema_version` or `version`. See promotion criteria below.
 - `frozen` — no longer evolving; pinned for historical reference.
 - `deprecated` — replaced by another skill; `superseded_by` is required when this value is set.
+
+**Promotion to `stable` — minimum criteria (enforced warn-only by `scripts/lint/check-stability-promotion.js`):**
+1. `eval_state: passing` or `eval_state: monitored` — evals have been run and pass.
+2. `eval_score >= 4.0` — grader score meets the quality bar.
+3. `routing_eval: present` — the skill has been verified in a routing eval.
+4. `drift_check.last_verified` within 90 days — skill has been recently verified against truth sources.
+5. For `scope: codebase` skills: `grounding.truth_sources` must be non-empty.
+
+**Pre-1.0 stance:** The library defaults all skills to `experimental` because the protocol and skill content are under active development. Skills are promoted to `stable` only when all five criteria above are met. This is intentional — a uniform `experimental` default correctly signals that the corpus as a whole is pre-1.0 and no stability guarantees are implied. As the audit loop completes more skills, the `by_stability` distribution in the manifest will become a meaningful quality signal. (Updated 2026-05-23 — SH-6309)
 
 ### Health and Drift
 

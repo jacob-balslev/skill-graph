@@ -282,34 +282,34 @@ With a hypothetical two-project workspace config:
 
 ---
 
-## 5. Do I use `category`, `category`, `workspace_tags`, or `routing_bundles`?
+## 5. Do I use `category`, `domain`, `workspace_tags`, or `routing_bundles`?
 
 These four fields all group skills, but they answer different questions. Picking the wrong field creates misleading organization that corrodes routing quality. Use this table before adding any skill-grouping field:
 
 | Field | Answers the question | Shape | Primary consumer |
 |---|---|---|---|
-| `category` | What flat bucket does this skill live in for quick browsing? | single string (e.g., `integration`) | human browse UI, filter dropdowns |
-| `category` | Where does this skill sit in a hierarchy for tree browsing? | slash-delimited path (e.g., `ecommerce/integrations/shopify`) | folder-tree UI, docs site navigation |
+| `category` | What flat bucket does this skill live in for quick browsing? | single string from the closed v5+ enum: `foundations` \| `engineering` \| `design` \| `quality` \| `agent` \| `product` | human browse UI, filter dropdowns |
+| `domain` | Where does this skill sit in a hierarchy for tree browsing? | optional slash-delimited path (e.g., `engineering/integrations/shopify`) | folder-tree UI, docs site navigation |
 | `workspace_tags` | Which of my projects is this skill relevant to? | flat array (e.g., `[<project-a>, ecommerce]`) | router filter at routing time |
 | `routing_bundles` | Which batch-activation group does this skill belong to? | flat array (e.g., `[quality, security]`) | router batch-load by group label |
 
 ### Three rules that prevent misuse
 
-1. **Never use `category` for routing.** It's a browse index. If you find yourself writing "when the router sees `integration` it should load all X" — you want `routing_bundles`, not `category`.
+1. **Never use `category` for routing.** It's a browse index. If you find yourself writing "when the router sees `engineering` it should load all X" — you want `routing_bundles`, not `category`.
 
-2. **Never use `workspace_tags` for taxonomy.** It's a routing filter. If you find yourself tagging every skill with every project handle to build a grouping — you want `category` or `category`.
+2. **Never use `workspace_tags` for taxonomy.** It's a routing filter. If you find yourself tagging every skill with every project handle to build a grouping — you want `category` or `domain`.
 
-3. **Never use `category` to filter routing.** A hierarchy helps humans find skills. The router doesn't walk it. If you want the router to match `ecommerce/integrations/shopify` at query time, flatten it into `routing_bundles: [integrations]` or `workspace_tags: [ecommerce]`.
+3. **Never use `domain` to filter routing.** A hierarchy helps humans find skills. The router doesn't walk it. If you want the router to match `engineering/integrations/shopify` at query time, flatten it into `routing_bundles: [integrations]` or `workspace_tags: [ecommerce]`.
 
 ### Worked example
 
 A Shopify skill in a multi-project, large-library workspace:
 
 ```yaml
-category: integration        # "Where does it live in a flat browse UI?"
-category: ecommerce/integrations/shopify   # "Where in a tree?"
-workspace_tags: [ecommerce]           # "Which of my projects?"
-routing_bundles: [integrations]      # "Which batch-activation group?"
+category: engineering                          # "Where does it live in a flat browse UI?" (must be one of the 6 v5+ enum values)
+domain: engineering/integrations/shopify       # "Where in a tree?" (optional; complements category for hierarchical browsing)
+workspace_tags: [ecommerce]                    # "Which of my projects?"
+routing_bundles: [integrations]                # "Which batch-activation group?"
 ```
 
-Each field does a distinct job. None is redundant with the others. A smaller library can omit `category` entirely; a single-project workspace can omit `workspace_tags`; a library with no batch-activation pattern can omit `routing_bundles`. `category` is always present because it is required.
+Each field does a distinct job. None is redundant with the others. A single-project workspace can omit `workspace_tags`; a library with no batch-activation pattern can omit `routing_bundles`; a library that does not need a hierarchical browse view can omit `domain`. `category` is always present because it is required by the v7 schema (enforced by `enum` in `schemas/skill.v7.schema.json` and `scripts/lint/check-category-enum.js`).
