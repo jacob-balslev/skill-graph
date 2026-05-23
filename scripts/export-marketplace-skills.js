@@ -306,6 +306,57 @@ function collectCanonicalSkills(sourceDir = DEFAULT_SOURCE_DIR) {
     if (!fm) {
       throw new Error(`Source skill has no parseable frontmatter: ${repoRelative(skillMd)}`);
     }
+
+    // Block export for skills that have failed external-mandate checks.
+    //
+    // structural_verdict: FAIL means the skill violated at least one of the four
+    // external mandates checked by skill-lint.js: YAML parse, name field present,
+    // description <=1024 chars, and parent-directory match. A structurally broken
+    // skill must not reach the marketplace until those violations are corrected.
+    //
+    // Today the corpus is uniformly UNVERIFIED, so this block is inert until
+    // audit runs populate the field. That is correct and expected behavior —
+    // land the wiring now so it activates as audits run.
+    if (fm.structural_verdict === 'FAIL') {
+      throw new Error(
+        `Export blocked: ${repoRelative(skillMd)} has structural_verdict: FAIL.\n` +
+        `  One or more external mandates failed for this skill (YAML parse, name field,\n` +
+        `  description length <=1024, or parent-directory match). Fix the violations\n` +
+        `  and re-run the audit to clear structural_verdict before exporting.`
+      );
+    }
+
+    // Exclude skills that are codebase-scoped or internal-only.
+    //
+    // scope: codebase — skill is grounded in a specific codebase and not portable.
+    // scope: operational — skill is an internal workflow doc, not a public teaching skill.
+    //
+    // Skills with grounding_mode: repo_specific or repo_internal BUT scope: portable are
+    // not excluded here — the privacy scanner (run by --check) catches any private content
+    // that leaks into the body. A portable skill may reference tooling files in the skill-graph
+    // repo (e.g., skill-router referencing scripts/skill-graph-route.js) without being
+    // inherently private.
+    //
+    // These skills are excluded with a stderr notice so maintainers can audit the list.
+    // They remain in the skills library for local use; only the marketplace surface is gated.
+    const fmScope = fm.scope;
+    const groundingMode = fm.grounding && fm.grounding.grounding_mode;
+    const EXCLUDED_SCOPES = new Set(['codebase', 'operational']);
+    // Also exclude skills with codebase-bound grounding even if scope is not set,
+    // when the grounding_mode signals repo-internal content that cannot be published.
+    // Only apply to skills whose scope is NOT portable or reference (i.e., it is unset
+    // or explicitly internal).
+    const isPortableOrReference = fmScope === 'portable' || fmScope === 'reference';
+    const EXCLUDED_GROUNDING_MODES = new Set(['repo_specific', 'repo_internal']);
+    const excludeByGrounding = !isPortableOrReference && EXCLUDED_GROUNDING_MODES.has(groundingMode);
+    if (EXCLUDED_SCOPES.has(fmScope) || excludeByGrounding) {
+      process.stderr.write(
+        `EXCLUDED from marketplace export: ${repoRelative(skillMd)}` +
+        ` (scope: ${fmScope || 'unset'}, grounding_mode: ${groundingMode || 'none'})\n`
+      );
+      continue;
+    }
+
     skills.push({
       sourcePath: skillMd,
       // sourceRelPath: skill-graph-repo-relative path — used for link rewriting (filesystem context).
