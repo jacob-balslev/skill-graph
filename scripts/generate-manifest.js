@@ -271,6 +271,18 @@ function buildSkillEntry(fm, filePath, skillId, project) {
     entry.archetype = fm.archetype;
   }
   entry.category = fm.category;
+  if (Array.isArray(fm.categories) && fm.categories.length > 0) {
+    entry.categories = fm.categories;
+  }
+  if (fm.primaryCategory !== undefined && fm.primaryCategory !== null) {
+    entry.primaryCategory = fm.primaryCategory;
+  }
+  if (fm.layerPrimary !== undefined && fm.layerPrimary !== null) {
+    entry.layerPrimary = fm.layerPrimary;
+  }
+  if (fm.routingRole !== undefined && fm.routingRole !== null) {
+    entry.routingRole = fm.routingRole;
+  }
   entry.scope = fm.scope;
   entry.owner = fm.owner;
 
@@ -674,7 +686,13 @@ function main() {
       continue;
     }
 
-    const fm = normalizeFrontmatter(parseFrontmatter(text));
+    const rawFrontmatter = parseFrontmatter(text);
+    const usesAgentSkillsEncoding =
+      rawFrontmatter &&
+      rawFrontmatter.metadata &&
+      typeof rawFrontmatter.metadata === 'object' &&
+      !Array.isArray(rawFrontmatter.metadata);
+    const fm = normalizeFrontmatter(rawFrontmatter);
     if (!fm) {
       errors.push(`${relPath}: no frontmatter found`);
       continue;
@@ -696,7 +714,7 @@ function main() {
     if (typeof fm.drift_check === 'string') {
       process.stderr.write(`WARN ${relPath}: scalar "drift_check" is deprecated in v3 — use an object with "last_verified" (run scripts/migrate-skill-v2-to-v3.js)\n`);
     }
-    if (typeof fm.compatibility === 'string') {
+    if (typeof fm.compatibility === 'string' && !usesAgentSkillsEncoding) {
       process.stderr.write(`WARN ${relPath}: scalar "compatibility" is deprecated in v3 — use an object with "runtimes"/"node"/"notes" (run scripts/migrate-skill-v2-to-v3.js)\n`);
     }
 

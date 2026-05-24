@@ -141,6 +141,16 @@
       ],
       "description": "Workspace alias for the primary browse home. Lowercase protocol values are accepted directly; title-case workspace labels normalize to `category` (`Meta Method` → `foundations`, `Technical Capability` → `engineering`, `Design & UX` → `design`, `Agent System` → `agent`, `Product Domain` → `product`). Optional in the protocol, required only by workspace policy when that repo opts in."
     },
+    "layerPrimary": {
+      "type": "string",
+      "pattern": "^[a-z0-9][a-z0-9-]*$",
+      "description": "Workspace routing facet for the primary architectural or concern layer (`meta`, `architecture`, `integration`, `operations`, `display`, `quality`, etc.). Orthogonal to `category`: use `category` for the human browse shelf and `layerPrimary` only when a workspace router or census explicitly consumes layer facets. The legacy `layer` field is not part of the v7 protocol."
+    },
+    "routingRole": {
+      "type": "string",
+      "pattern": "^[a-z0-9][a-z0-9-]*$",
+      "description": "Workspace routing facet describing how the skill participates in selection (`primary`, `router`, `verifier`, `gate`, etc.). Orthogonal to `type`: `type` says what kind of skill this is, while `routingRole` says how a workspace router should use it. Optional in portable protocol authoring."
+    },
     "scope": {
       "type": "string",
       "enum": [
@@ -255,10 +265,11 @@
         "SHALLOW",
         "REDUNDANT",
         "UNVERIFIED",
+        "PROVISIONAL",
         "SKIPPED_BASELINE_HIGH",
         "NA"
       ],
-      "description": "Comprehension-layer verdict produced by gate 8 (the comprehension grader on `evals/comprehension.json`). `PASS` (with-skill answers measurably deeper than baseline on the comprehension scenarios), `SHALLOW` (skill recites the concept but does not deepen agent understanding), `REDUNDANT` (baseline already saturated — skill adds no comprehension lift on this concept), `SKIPPED_BASELINE_HIGH` (early-skip — `avg_primary_baseline >= 1.0` after the first 2 evals so the dual-run was aborted; v7 demotion behavior), `NA` (skill carries no `evals/comprehension.json`), `UNVERIFIED` (initial state before any grader run since the v7 schema bump). Demoted in v7: never alone certifies a skill as useful — `application_verdict` is the aggregate-quality field. See docs/adr/0011-split-audit-verdict-into-four-verdicts.md."
+      "description": "Comprehension-layer verdict produced by gate 8 (the comprehension grader on `evals/comprehension.json`). `PASS` (with-skill answers measurably deeper than baseline; dual-run grader earned), `PROVISIONAL` (a single competent model ran the comprehension assessment and recorded a real result — lower confidence than `PASS` because not yet confirmed by the independent dual-run grader, but distinct from `UNVERIFIED` which means no assessment has run), `SHALLOW` (skill recites the concept but does not deepen agent understanding), `REDUNDANT` (baseline already saturated — skill adds no comprehension lift on this concept), `SKIPPED_BASELINE_HIGH` (early-skip — `avg_primary_baseline >= 1.0` after the first 2 evals so the dual-run was aborted; v7 demotion behavior), `NA` (skill carries no `evals/comprehension.json`), `UNVERIFIED` (initial state before any grader run since the v7 schema bump). Confidence hierarchy: `PASS (grader) > PROVISIONAL (single model) > UNVERIFIED (none)`. Demoted in v7: never alone certifies a skill as useful — `application_verdict` is the aggregate-quality field. See docs/adr/0011-split-audit-verdict-into-four-verdicts.md and .claude/rules/version-schema-contract.md § 5."
     },
     "application_verdict": {
       "type": "string",
@@ -293,7 +304,7 @@
         "FAIL",
         "UNKNOWN"
       ],
-      "description": "Result of the most recent canonical-source lint pass against this skill (`scripts/skill-lint.js`). The current lint gate checks valid frontmatter, identifier shape, non-empty description, and parent-directory/name alignment; broader schema, relation, routing, drift, export, and eval checks are separate tools. `PASS` means zero lint errors. `UNKNOWN` is the initial state."
+      "description": "Result of the most recent canonical-source schema lint pass against this skill (`scripts/skill-lint.js`). The current lint gate checks valid frontmatter, validation against `schemas/skill.schema.json`, identifier shape, non-empty description, and parent-directory/name alignment. Relation targets, routing quality, drift, export, and eval checks are separate tools. `PASS` means zero lint errors. `UNKNOWN` is the initial state."
     },
     "drift_status": {
       "type": "string",

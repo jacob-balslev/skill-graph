@@ -43,6 +43,8 @@ Every top-level authored field in `schemas/skill.schema.json` has exactly one en
 | 8 | `category` | copied through unchanged | Flat browse shelf. v4 rename of v3 `browse_category`; manifest schema enforces the same six-value enum as the authored skill schema. |
 | 8a | `categories` | copied through unchanged | Ordered category array. First entry is the primary and must match `category`; remaining entries are secondary browse homes. |
 | 8b | `primaryCategory` | copied through unchanged | Optional workspace alias for the primary category. Title-case workspace labels normalize to lowercase protocol values in downstream policy tooling. |
+| 8c | `layerPrimary` | copied through unchanged | Optional workspace routing/census layer facet. Orthogonal to `category`; the legacy `layer` field is not projected. |
+| 8d | `routingRole` | copied through unchanged | Optional workspace routing role facet (for example, `primary`, `router`, `verifier`, `gate`). |
 | 9 | `domain` | copied through unchanged | Optional slash-delimited domain path. v4 rename of v3 `category` / `category_path`. |
 | 10 | `scope` | copied through unchanged | `scope`. |
 | 11 | `owner` | copied through unchanged | `owner`. |

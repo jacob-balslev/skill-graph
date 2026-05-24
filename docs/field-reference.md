@@ -113,7 +113,7 @@ description: >
 
 **When NOT to use.** Do not expand beyond 3 sentences or copy-paste the `## Coverage` scope list here. The description and `## Coverage` are sibling layers of progressive disclosure, not duplicates.
 
-**Verification.** `scripts/skill-lint.js` enforces only canonical-source shape requirements. Description quality is verified through routing evals, review, and application verdicts rather than a deleted routing-quality lint module.
+**Verification.** `scripts/skill-lint.js` enforces the canonical-source schema gate, including required shape and non-empty description text. Description quality is verified through routing evals, review, and application verdicts rather than a deleted routing-quality lint module.
 
 ---
 
@@ -275,6 +275,48 @@ primaryCategory: Agent System
 **When to use.** Use only when a workspace's browse UI or census tooling still depends on the title-case alias.
 
 **When NOT to use.** Do not use `primaryCategory` as a substitute for a missing `category`; v7 requires `category`.
+
+---
+
+## `layerPrimary`
+
+**Purpose.** Workspace routing facet for the primary architectural or concern layer, such as `meta`, `architecture`, `integration`, `operations`, `display`, `quality`, `data`, `logic`, `security`, or `business`.
+
+**Rules.**
+- Optional in the portable protocol.
+- Lowercase kebab-case only.
+- Orthogonal to `category`: `category` is the human browse shelf; `layerPrimary` is a workspace routing/census facet.
+- Do not use the deprecated `layer` field. If a skill has both, migrate the value into `layerPrimary` and remove `layer`.
+
+**Example.**
+```yaml
+layerPrimary: integration
+```
+
+**When to use.** Use when a workspace router, census, or dashboard explicitly consumes architectural-layer facets.
+
+**When NOT to use.** Do not add it to public starter skills solely because `category` feels broad. Use `domain`, `keywords`, or `relations` for ordinary discovery precision.
+
+---
+
+## `routingRole`
+
+**Purpose.** Workspace routing facet describing how a router should use the skill, for example `primary`, `router`, `verifier`, or `gate`.
+
+**Rules.**
+- Optional in the portable protocol.
+- Lowercase kebab-case only.
+- Orthogonal to `type`: `type` says what kind of skill this is; `routingRole` says how the workspace router should treat it during selection.
+- Use concrete router behavior words, not vague quality labels.
+
+**Example.**
+```yaml
+routingRole: verifier
+```
+
+**When to use.** Use when a workspace has explicit routing lanes or verification co-load roles.
+
+**When NOT to use.** Do not use it to compensate for a weak `description`, missing `keywords`, or unclear `relations`; those remain the primary routing signals.
 
 ---
 
@@ -544,6 +586,7 @@ truth_verdict: PASS
 | Value | Meaning |
 |---|---|
 | `PASS` | Loading the skill produces a measurable comprehension delta on the comprehension scenarios |
+| `PROVISIONAL` | A single competent model ran the comprehension assessment; useful evidence, but lower confidence than the independent dual-run grader |
 | `SHALLOW` | The skill recites the concept but does not deepen agent understanding |
 | `REDUNDANT` | Baseline already saturated — the foundation model already knows the concept from training |
 | `SKIPPED_BASELINE_HIGH` | Early-skip: `avg_primary_baseline >= 1.0` after the first 2 evals, so the dual-run was aborted (v7 demotion behaviour) |
@@ -552,7 +595,7 @@ truth_verdict: PASS
 
 **Rules.**
 - Optional. Defaults to `UNVERIFIED` when absent.
-- Written by the comprehension grader (`scripts/skill/evaluate-skill.js --comprehension`); do not hand-author.
+- Written by the comprehension grader or a documented single-model dogfood audit; do not hand-author without evidence.
 - Demoted in v7: the comprehension grader runs on a cheap model (Haiku 4.5 / Gemini Flash) and exits early when baseline is already high. See ADR 0011 Change 3.
 - This verdict is advisory. It never alone determines a skill's usefulness — that authority lives on `application_verdict`.
 
@@ -644,13 +687,13 @@ eval_failed_ids: ["case-03", "case-07"]
 
 | Value | Meaning |
 |---|---|
-| `PASS` | Canonical-source lint gate passed |
-| `FAIL` | One or more canonical-source lint checks failed |
+| `PASS` | Canonical-source schema lint gate passed |
+| `FAIL` | One or more canonical-source schema lint checks failed |
 | `UNKNOWN` | No lint has been run or result is unavailable |
 
 **Rules.**
 - Optional. Defaults to `UNKNOWN` when absent.
-- Written by `scripts/skill-lint.js` or the audit loop's canonical-source lint phase.
+- Written by `scripts/skill-lint.js` or the audit loop's canonical-source schema lint phase.
 
 **Example.**
 ```yaml
@@ -1217,7 +1260,7 @@ allowed_tools: Read Grep Bash
 
 **Rules.**
 - Must be the `name` value of an existing skill in the library.
-- `scripts/skill-lint.js` verifies the target exists.
+- Relation-target existence is verified by graph/manifest review and routing audits, not by `scripts/skill-lint.js`.
 - Only valid when `type: overlay`. Setting `extends` on a non-overlay skill is an error.
 
 **Example.**
@@ -1385,7 +1428,7 @@ routing_bundles:
 
 **Rules.**
 - Object with up to seven optional keys: `related` (preferred) / `adjacent` (deprecated alias), `broader`, `narrower`, `boundary`, `disjoint_with`, `verify_with`, `depends_on`.
-- Every target must be the `name` of an existing skill. `scripts/skill-lint.js` rejects dangling targets across all seven keys.
+- Every target must be the `name` of an existing skill. Use graph/manifest review and routing audits to catch dangling targets across all seven keys; `scripts/skill-lint.js` validates schema shape, not graph existence.
 - Relations are directional from the skill that declares them (A `depends_on` B means A depends on B, not the reverse). `related` is symmetric by SKOS convention; `boundary` is asymmetric (A `boundary: B` does not imply B `boundary: A`).
 
 **Allowed keys.**

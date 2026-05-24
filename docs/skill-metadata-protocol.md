@@ -250,6 +250,10 @@ The YAML frontmatter uses the current v7 schema, including compatibility aliases
 | | [`type`](field-reference.md#type) | always | `capability` \| `workflow` \| `router` \| `overlay` |
 | | [`scope`](field-reference.md#scope) | always | `codebase` \| `reference` \| `portable` |
 | | [`category`](field-reference.md#category) | always | string |
+| | [`categories`](field-reference.md#categories) | | ordered category array; first item matches `category` |
+| | [`primaryCategory`](field-reference.md#primaryCategory) | | workspace alias for the primary category |
+| | [`layerPrimary`](field-reference.md#layerPrimary) | | workspace routing/census layer facet |
+| | [`routingRole`](field-reference.md#routingRole) | | workspace routing role facet |
 | | [`domain`](field-reference.md#domain) | | hierarchical path |
 | | [`secondary_categories`](field-reference.md#secondary_categories) | | string[] (max 2, drawn from the `category` enum; for marketplace cross-listing only — does not affect filesystem placement) |
 | | [`stability`](field-reference.md#stability) | | `experimental` \| `stable` \| `deprecated` |
@@ -263,7 +267,7 @@ The YAML frontmatter uses the current v7 schema, including compatibility aliases
 | | [`last_changed`](field-reference.md#last_changed) | | ISO date |
 | | [`structural_verdict`](field-reference.md#structural_verdict) | | `PASS` \| `PASS_WITH_FIXES` \| `FAIL` \| `UNVERIFIED` (v7+; form gate roll-up) |
 | | [`truth_verdict`](field-reference.md#truth_verdict) | | `PASS` \| `DRIFT` \| `BROKEN` \| `UNVERIFIED` (v7+; truth-source roll-up) |
-| | [`comprehension_verdict`](field-reference.md#comprehension_verdict) | | `PASS` \| `SHALLOW` \| `REDUNDANT` \| `UNVERIFIED` \| `SKIPPED_BASELINE_HIGH` \| `NA` (v7+; gate 8, demoted) |
+| | [`comprehension_verdict`](field-reference.md#comprehension_verdict) | | `PASS` \| `PROVISIONAL` \| `SHALLOW` \| `REDUNDANT` \| `UNVERIFIED` \| `SKIPPED_BASELINE_HIGH` \| `NA` (v7+; gate 8, demoted) |
 | | [`application_verdict`](field-reference.md#application_verdict) | | `APPLICABLE` \| `REDUNDANT` \| `HARMFUL` \| `MIXED` \| `FALSE_POSITIVE` \| `UNVERIFIED` \| `PROVISIONAL` (v7+; **primary quality signal**) |
 | | [`eval_score`](field-reference.md#eval_score) | | number 0.0–5.0 |
 | | [`eval_failed_ids`](field-reference.md#eval_failed_ids) | | string[] |
@@ -460,7 +464,7 @@ For the concrete v2→v3 mapping tables, see `docs/manifest-field-mapping.md § 
 
 ## Stability Promotion Criteria (SH-6109)
 
-`stability: stable` signals that a skill's content is settled and suitable for production dependence. The promotion criteria below are checked at **WARN level** (never ERROR) by `scripts/lint/check-stability-promotion.js`, exposed as `npm run stability:check` and wired into `npm run verify`. Run history: added as a `skill-lint.js` check in `7e0306d`, removed from `skill-lint.js` in `2bd8e64` (2026-05-19) when the lint surface narrowed to external Anthropic/OpenAI mandates only, library kept in place by `92978fb` (2026-05-20), CLI entrypoint + verify wiring added 2026-05-24. The script is intentionally separate from `skill-lint.js` because `stability` is a Skill Graph quality posture, not an external marketplace mandate. Final promotion remains author judgment, audited by the Health Block fields and the application-eval pipeline (gate 9); the gate just surfaces a warning when a skill claims `stability: stable` without meeting the five criteria.
+`stability: stable` signals that a skill's content is settled and suitable for production dependence. The promotion criteria below are checked at **WARN level** (never ERROR) by `scripts/lint/check-stability-promotion.js`, exposed as `npm run stability:check` and wired into `npm run verify`. Run history: added as a `skill-lint.js` check in `7e0306d`, removed from `skill-lint.js` in `2bd8e64` (2026-05-19) when the lint surface narrowed to canonical-source mandates, library kept in place by `92978fb` (2026-05-20), CLI entrypoint + verify wiring added 2026-05-24. The script is intentionally separate from `skill-lint.js` because `stability` is a Skill Graph quality posture, not a schema or external-format requirement. Final promotion remains author judgment, audited by the Health Block fields and the application-eval pipeline (gate 9); the gate just surfaces a warning when a skill claims `stability: stable` without meeting the five criteria.
 
 A skill qualifies for `stability: stable` when it meets all five of the following:
 

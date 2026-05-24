@@ -99,9 +99,9 @@ The same skill's body still gets `audits/<skill-name>/findings.md` and `verdict.
 
 The five-phase shape survives, but it lives entirely inside the `audit` operation as its internal pipeline, and each phase now writes a layer-scoped verdict instead of one aggregate. Users see one `audit` command. Internally:
 
-1. **Integrity Gate — structural** (always) — `skill-lint.js` runs the canonical-source lint gate. Companion protocol, manifest, link, export, and routing checks complete the structural pass. Writes `lint_verdict`, which rolls up into `structural_verdict`. Only external-format or canonical-source violations set `structural_verdict: FAIL`; internal style preferences are warnings only and never fail the verdict.
+1. **Integrity Gate — structural** (always) — `skill-lint.js` runs the canonical-source schema lint gate. Companion protocol, manifest, link, export, and routing checks complete the structural pass. Writes `lint_verdict`, which rolls up into `structural_verdict`. Only external-format or canonical-source violations set `structural_verdict: FAIL`; internal style preferences are warnings only and never fail the verdict.
 2. **Integrity Gate — truth** (always) — `skill-graph-drift.js` checks declared `grounding.truth_sources`. Writes `drift_status`, which rolls up into `truth_verdict` (`OK → PASS`, `DRIFT → DRIFT`, `BROKEN → BROKEN`, else `UNVERIFIED`).
-3. **Behavior Gate — comprehension** (only under `--graded`, gate 8, demoted) — runs the comprehension grader. Writes `comprehension_verdict`. `SKIPPED_BASELINE_HIGH` is the expected verdict for a concept the foundation model already knows.
+3. **Behavior Gate — comprehension** (only under `--graded`, gate 8, demoted) — runs the comprehension grader. Writes `comprehension_verdict`. `PROVISIONAL` records a single-model dogfood comprehension assessment; `SKIPPED_BASELINE_HIGH` is the expected verdict for a concept the foundation model already knows.
 4. **Behavior Gate — application** (only under `--graded` and when an application eval exists, gate 9) — checks whether loading the skill changes agent behavior on real artifacts. Writes `application_verdict` — the real quality signal.
 5. **Stamp** — writes `last_audited` to today's ISO date.
 

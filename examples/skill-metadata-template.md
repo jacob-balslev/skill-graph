@@ -65,7 +65,7 @@ drift_check:
 # to `planned` only as a temporary state — move to `present` once the artifact
 # ships. Set eval_state to `unverified` when no run has been recorded yet.
 #
-# routing_eval: `present` is harness-enforced, not lightweight-lint-enforced. Setting `present`
+# routing_eval: `present` is routing-harness-enforced, not schema-lint-enforced. Setting `present`
 # requires (1) populated `examples` + `anti_examples` below, AND (2) a passing
 # run of `node scripts/skill-graph-routing-eval.js --skill <name>`. Default to
 # `absent` when authoring; flip to `present` only after the harness agrees.
@@ -173,9 +173,8 @@ relations:
   # self-documenting.
   #
   # This scaffold ships with empty `boundary` and `verify_with` arrays because
-  # the skill-graph tooling repo has no peer skill library — lint resolves
-  # relation targets against `<workspace>/skills/`, which is intentionally
-  # empty here. In a real library, populate the arrays as shown in the
+  # the skill-graph tooling repo has no peer skill library. In a real library,
+  # populate the arrays as shown in the
   # commented example below (uncomment and replace with skills that exist in
   # YOUR workspace):
   #

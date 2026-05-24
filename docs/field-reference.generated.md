@@ -5,7 +5,7 @@
 > **Predicate glossary:** [`docs/glossary.md`](glossary.md).
 > **JSON-LD @context:** [`schemas/skill.context.jsonld`](../schemas/skill.context.jsonld).
 
-Schema version: **7** · Field count: **59** · Required: **13**
+Schema version: **7** · Field count: **61** · Required: **13**
 
 ---
 
@@ -134,6 +134,30 @@ Ordered category array. First entry is the primary and must match `category`; re
 Workspace alias for the primary browse home. Lowercase protocol values are accepted directly; title-case workspace labels normalize to `category` (`Meta Method` → `foundations`, `Technical Capability` → `engineering`, `Design & UX` → `design`, `Agent System` → `agent`, `Product Domain` → `product`). Optional in the protocol, required only by workspace policy when that repo opts in.
 
 **Full reference:** [`docs/field-reference.md#primaryCategory`](field-reference.md#primaryCategory)
+
+---
+
+### `layerPrimary` *(optional)*
+
+**Type:** string
+
+Workspace routing facet for the primary architectural or concern layer (`meta`, `architecture`, `integration`, `operations`, `display`, `quality`, etc.). Orthogonal to `category`: use `category` for the human browse shelf and `layerPrimary` only when a workspace router or census explicitly consumes layer facets. The legacy `layer` field is not part of the v7 protocol.
+
+**Pattern:** `^[a-z0-9][a-z0-9-]*$`
+
+**Full reference:** [`docs/field-reference.md#layerPrimary`](field-reference.md#layerPrimary)
+
+---
+
+### `routingRole` *(optional)*
+
+**Type:** string
+
+Workspace routing facet describing how the skill participates in selection (`primary`, `router`, `verifier`, `gate`, etc.). Orthogonal to `type`: `type` says what kind of skill this is, while `routingRole` says how a workspace router should use it. Optional in portable protocol authoring.
+
+**Pattern:** `^[a-z0-9][a-z0-9-]*$`
+
+**Full reference:** [`docs/field-reference.md#routingRole`](field-reference.md#routingRole)
 
 ---
 
@@ -315,7 +339,7 @@ Eval IDs that failed in the most recent run. Empty array when clean. Populated a
 
 **Type:** `PASS` | `FAIL` | `UNKNOWN`
 
-Result of the most recent canonical-source lint pass against this skill (`scripts/skill-lint.js`). The current lint gate checks valid frontmatter, identifier shape, non-empty description, and parent-directory/name alignment; broader schema, relation, routing, drift, export, and eval checks are separate tools. `PASS` means zero lint errors. `UNKNOWN` is the initial state.
+Result of the most recent canonical-source schema lint pass against this skill (`scripts/skill-lint.js`). The current lint gate checks valid frontmatter, validation against `schemas/skill.schema.json`, identifier shape, non-empty description, and parent-directory/name alignment. Relation targets, routing quality, drift, export, and eval checks are separate tools. `PASS` means zero lint errors. `UNKNOWN` is the initial state.
 
 **Full reference:** [`docs/field-reference.md#lint_verdict`](field-reference.md#lint_verdict)
 

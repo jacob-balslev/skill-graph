@@ -31,7 +31,7 @@ This document is the top-level public contract for the Skill Metadata Protocol f
 
 ## Overview
 
-Every skill is a single `SKILL.md` file with a YAML frontmatter block. The schema contract is `schemas/skill.schema.json`; deterministic verification is split across focused tools. `skill-lint.js` enforces the lightweight canonical-source gate (valid frontmatter, identifier shape, non-empty description, parent-directory/name alignment), while `check-protocol-consistency.js`, `check-category-enum.js`, `generate-manifest.js`, routing evals, drift checks, and export verification cover the broader protocol surface. The `generate-manifest.js` script reads frontmatter from all skill files and emits a single `skills.manifest.json`.
+Every skill is a single `SKILL.md` file with a YAML frontmatter block. The schema contract is `schemas/skill.schema.json`; deterministic verification is split across focused tools. `skill-lint.js` enforces the canonical-source schema gate (valid frontmatter, validation against `schemas/skill.schema.json`, identifier shape, non-empty description, parent-directory/name alignment), while `check-protocol-consistency.js`, `check-category-enum.js`, `generate-manifest.js`, routing evals, drift checks, and export verification cover the broader protocol surface. The `generate-manifest.js` script reads frontmatter from all skill files and emits a single `skills.manifest.json`.
 
 The contract has one runtime model: one `SKILL.md` per skill, one manifest, one lint pass. There is no closed/open split, no private control plane, and no enterprise-only fields.
 
@@ -52,7 +52,7 @@ The field tables in this document describe the **logical contract** — the fiel
 
 ### Required for all skills
 
-All thirteen fields in this group are required by the v7 schema and protocol contract. The lightweight `skill-lint.js` gate does not enforce every schema field; use the protocol/manifest/schema checks when validating the full contract.
+All thirteen fields in this group are required by the v7 schema and protocol contract. The `skill-lint.js` schema gate enforces the current schema shape; use the protocol, manifest, routing, drift, export, and eval checks for the rest of the full contract.
 
 | Field | Type | Purpose |
 |---|---|---|
@@ -72,7 +72,7 @@ All thirteen fields in this group are required by the v7 schema and protocol con
 
 ### Conditionally required
 
-These fields are required only when a specific condition is met. The first three are enforced by JSON-Schema `allOf` rules. The `keywords` rule is a routing-quality convention verified by review and routing evals rather than the lightweight canonical-source linter, since the schema cannot reason about routability intent.
+These fields are required only when a specific condition is met. The first three are enforced by JSON-Schema `allOf` rules and therefore by the schema lint gate. The `keywords` rule is a routing-quality convention verified by review and routing evals rather than by schema lint, since the schema cannot reason about routability intent.
 
 | Field | Required when | Enforced by |
 |---|---|---|
@@ -186,9 +186,13 @@ A skill can legitimately belong to more than one shelf — `webhook-integration`
 |---|---|---|---|
 | `category` | single enum string | v7: yes · v8: deprecated | The skill's primary category. Equals `categories[0]` when both are present. |
 | `categories` | ordered array of enum strings, min 1, max 5 | v7: optional · v8: required | First entry is the primary; remaining entries are secondaries the skill also covers. |
-  | `primaryCategory` | single enum string | optional alias | Workspace's parallel field name. Title-case workspace values (`Agent System`, `Technical Capability`, `Design & UX`, `Product Domain`, `Meta Method`) normalize to the lowercase enum below. |
+| `primaryCategory` | single enum string | optional alias | Workspace's parallel field name. Title-case workspace values (`Agent System`, `Technical Capability`, `Design & UX`, `Product Domain`, `Meta Method`) normalize to the lowercase enum below. |
+| `layerPrimary` | string facet | optional workspace facet | Primary architectural or concern layer consumed by workspace routers/census tooling; orthogonal to the browse category. |
+| `routingRole` | string facet | optional workspace facet | How a workspace router should use the skill (`primary`, `router`, `verifier`, `gate`, etc.); orthogonal to `type`. |
 
 When both `category` and `categories` are present, `categories[0]` MUST equal `category`; the JSON Schema now enforces that prefix rule. `primaryCategory` is a typed alias accepted by the schema for workspace policy, but protocol-native skills should prefer lowercase `category` / `categories`.
+
+`layerPrimary` and `routingRole` are workspace routing facets. They are not category aliases and do not create new browse shelves. If a task needs better activation precision, first improve `description`, `keywords`, examples, and `relations.*`; use these two facets only when a workspace router or census has a concrete consumer for them. The legacy `layer` field is not part of the v7 protocol.
 
 A browse facet — answers the single question for the primary slot: *Where should a human browse to find this skill first?* Hierarchical taxonomy uses the optional `domain` field with slash-delimited segments; `domain` complements `categories[0]`, it does not replace it.
 
@@ -374,7 +378,7 @@ Seven flat top-level fields that record a skill's audit fingerprint in its own f
 
 **`comprehension_verdict`** *(v7+)*
 - Comprehension-layer verdict (gate 8, demoted in v7 to a cheap smoke test).
-- Enum: `PASS` | `SHALLOW` | `REDUNDANT` | `UNVERIFIED` | `SKIPPED_BASELINE_HIGH` | `NA`.
+- Enum: `PASS` | `PROVISIONAL` | `SHALLOW` | `REDUNDANT` | `UNVERIFIED` | `SKIPPED_BASELINE_HIGH` | `NA`.
 - Written by the comprehension grader. Never alone certifies a skill — `application_verdict` is the aggregate-quality field.
 
 **`application_verdict`** *(v7+)* — **the primary quality signal**

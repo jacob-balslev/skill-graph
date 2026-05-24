@@ -165,11 +165,34 @@
             "description": "v3.1 preferred alias for `type`. Pass-through from authored frontmatter."
           },
           "category": {
-            "type": "string"
+            "type": "string",
+            "enum": [
+              "foundations",
+              "engineering",
+              "design",
+              "quality",
+              "agent",
+              "product"
+            ]
           },
           "secondary_categories": {
             "type": "array",
             "items": { "type": "string" }
+          },
+          "categories": {
+            "type": "array",
+            "items": { "type": "string" }
+          },
+          "primaryCategory": {
+            "type": "string"
+          },
+          "layerPrimary": {
+            "type": "string",
+            "description": "Workspace routing facet for the primary architectural or concern layer. Pass-through from authored frontmatter."
+          },
+          "routingRole": {
+            "type": "string",
+            "description": "Workspace routing facet describing how the skill participates in selection. Pass-through from authored frontmatter."
           },
           "domain": {
             "type": "string"
@@ -541,13 +564,27 @@
             "additionalProperties": false,
             "properties": {
               "eval_artifacts": {
-                "type": "string"
+                "type": "string",
+                "enum": [
+                  "none",
+                  "planned",
+                  "present"
+                ]
               },
               "eval_state": {
-                "type": "string"
+                "type": "string",
+                "enum": [
+                  "unverified",
+                  "passing",
+                  "monitored"
+                ]
               },
               "routing_eval": {
-                "type": "string"
+                "type": "string",
+                "enum": [
+                  "absent",
+                  "present"
+                ]
               },
               "eval_last_run": {
                 "type": "object",
@@ -747,10 +784,11 @@
                   "SHALLOW",
                   "REDUNDANT",
                   "UNVERIFIED",
+                  "PROVISIONAL",
                   "SKIPPED_BASELINE_HIGH",
                   "NA"
                 ],
-                "description": "Comprehension-layer verdict (gate 8, demoted in v7). Optional smoke test that the foundation model has the concept. `SKIPPED_BASELINE_HIGH` is the expected verdict for any concept the model already knows. Pass-through from authored frontmatter."
+                "description": "Comprehension-layer verdict (gate 8, demoted in v7). Optional smoke test that the foundation model has the concept. `PROVISIONAL` records a single-model dogfood comprehension assessment; `SKIPPED_BASELINE_HIGH` is the expected verdict for any concept the model already knows. Pass-through from authored frontmatter."
               },
               "application_verdict": {
                 "type": "string",
@@ -760,9 +798,10 @@
                   "HARMFUL",
                   "MIXED",
                   "FALSE_POSITIVE",
-                  "UNVERIFIED"
+                  "UNVERIFIED",
+                  "PROVISIONAL"
                 ],
-                "description": "Application-layer verdict (gate 9). The v7 primary quality signal — a skill is only behaviorally certified when this is `APPLICABLE`. Default `UNVERIFIED` for skills that have not been audited via the application grader. Pass-through from authored frontmatter."
+                "description": "Application-layer verdict (gate 9). The v7 primary quality signal — a skill is only behaviorally certified when this is `APPLICABLE`. `UNVERIFIED` means no application assessment has run; `PROVISIONAL` means one model found useful behavior without grader confirmation. Pass-through from authored frontmatter."
               },
               "audit_verdict": {
                 "type": "string",

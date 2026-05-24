@@ -186,6 +186,14 @@
           "primaryCategory": {
             "type": "string"
           },
+          "layerPrimary": {
+            "type": "string",
+            "description": "Workspace routing facet for the primary architectural or concern layer. Pass-through from authored frontmatter."
+          },
+          "routingRole": {
+            "type": "string",
+            "description": "Workspace routing facet describing how the skill participates in selection. Pass-through from authored frontmatter."
+          },
           "domain": {
             "type": "string"
           },
@@ -776,10 +784,11 @@
                   "SHALLOW",
                   "REDUNDANT",
                   "UNVERIFIED",
+                  "PROVISIONAL",
                   "SKIPPED_BASELINE_HIGH",
                   "NA"
                 ],
-                "description": "Comprehension-layer verdict (gate 8, demoted in v7). Optional smoke test that the foundation model has the concept. `SKIPPED_BASELINE_HIGH` is the expected verdict for any concept the model already knows. Pass-through from authored frontmatter."
+                "description": "Comprehension-layer verdict (gate 8, demoted in v7). Optional smoke test that the foundation model has the concept. `PROVISIONAL` records a single-model dogfood comprehension assessment; `SKIPPED_BASELINE_HIGH` is the expected verdict for any concept the model already knows. Pass-through from authored frontmatter."
               },
               "application_verdict": {
                 "type": "string",

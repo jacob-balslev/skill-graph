@@ -71,6 +71,14 @@
       "@id": "sg:primaryCategory",
       "_note": "Workspace alias for `categories[0]`. Title-case workspace values normalize to the lowercase enum on read. See SKILL_METADATA_PROTOCOL.md § Classification."
     },
+    "layerPrimary": {
+      "@id": "sg:layerPrimary",
+      "_note": "Workspace routing facet for the primary architectural or concern layer. Orthogonal to the human browse category."
+    },
+    "routingRole": {
+      "@id": "sg:routingRole",
+      "_note": "Workspace routing facet describing how a router should use the skill (primary, router, verifier, gate, etc.). Orthogonal to the skill archetype."
+    },
     "secondary_categories": {
       "@id": "sg:secondaryCategories",
       "@container": "@set",
@@ -278,11 +286,11 @@
     },
     "comprehension_verdict": {
       "@id": "sg:comprehensionVerdict",
-      "_note": "Health Block — comprehension grader verdict (gate 8, demoted in v7): PASS | SHALLOW | REDUNDANT | UNVERIFIED | SKIPPED_BASELINE_HIGH | NA"
+      "_note": "Health Block — comprehension grader verdict (gate 8, demoted in v7): PASS | PROVISIONAL | SHALLOW | REDUNDANT | UNVERIFIED | SKIPPED_BASELINE_HIGH | NA"
     },
     "application_verdict": {
       "@id": "sg:applicationVerdict",
-      "_note": "Health Block — application grader verdict (gate 9, v7 primary quality signal): APPLICABLE | REDUNDANT | HARMFUL | MIXED | FALSE_POSITIVE | UNVERIFIED. A skill is only behaviorally certified when this is APPLICABLE."
+      "_note": "Health Block — application grader verdict (gate 9, v7 primary quality signal): APPLICABLE | REDUNDANT | HARMFUL | MIXED | FALSE_POSITIVE | UNVERIFIED | PROVISIONAL. A skill is only behaviorally certified when this is APPLICABLE."
     },
     "audit_verdict": {
       "@id": "sg:auditVerdict",

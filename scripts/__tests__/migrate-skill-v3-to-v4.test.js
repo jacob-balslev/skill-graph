@@ -16,6 +16,11 @@ const { spawnSync } = require('child_process');
 const REPO_ROOT = path.resolve(__dirname, '..', '..');
 const SCRIPT = path.join(REPO_ROOT, 'scripts', 'migrate-skill-v3-to-v4.js');
 
+if (!fs.existsSync(SCRIPT)) {
+  process.stdout.write('SKIP migrate-skill-v3-to-v4: legacy migration CLI not present\n');
+  process.exit(0);
+}
+
 // ---------------------------------------------------------------------------
 // Minimal v3 SKILL.md fixture (has a field to migrate: browse_category).
 // ---------------------------------------------------------------------------

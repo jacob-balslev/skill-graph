@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 /**
  * Regression tests for export, frontmatter parsing, drift URL handling, and
- * schema-conditional lint enforcement.
+ * schema-validation lint enforcement.
  */
 
 'use strict';
@@ -100,7 +100,7 @@ try {
   fs.mkdirSync(skillDir, { recursive: true });
   fs.writeFileSync(path.join(skillDir, 'SKILL.md'), [
     '---',
-    'schema_version: 4',
+    'schema_version: 7',
     'name: deprecated-missing',
     'description: "Use when testing conditional lint enforcement. Do NOT use for real skills."',
     'version: 1.0.0',
@@ -115,7 +115,6 @@ try {
     'eval_state: unverified',
     'routing_eval: absent',
     'stability: deprecated',
-    'comprehension_state: present',
     '---',
     '# Deprecated Missing',
     '',
@@ -139,8 +138,8 @@ try {
     { cwd: REPO_ROOT, encoding: 'utf8' }
   );
   const output = `${result.stdout}\n${result.stderr}`;
-  assert(result.status === 0, 'external-mandate lint should not fail on project-internal conditional fields');
-  assertIncludes(output, '0 error(s)', 'lint should preserve external-mandate-only behavior');
+  assert(result.status !== 0, 'schema lint should fail deprecated skills that omit superseded_by');
+  assertIncludes(output, 'superseded_by', 'lint should report the missing schema-conditional successor field');
 } finally {
   fs.rmSync(tempRoot, { recursive: true, force: true });
 }
