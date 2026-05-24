@@ -94,22 +94,33 @@ git push origin main
 
 ## Pre-Push Gate
 
-The release repo has a privacy gate in `.git/hooks/pre-push` (installed from `hooks/pre-push`). It runs automatically before every push and blocks the push if any changed `SKILL.md` file contains privacy violations.
+The release repo has a privacy gate in `.githooks/pre-push`. It runs automatically before every push and blocks the push if any changed `SKILL.md` file contains privacy violations.
 
 The gate:
 
 1. Reads the list of SKILL.md files changed vs the remote tip.
-2. Runs `detectPrivacyViolations()` from `~/Development/skill-graph/scripts/lib/privacy-patterns.js`.
-3. Rejects the push if any violation is found, printing the violating file and match.
+2. Uses `git rev-parse --show-toplevel` to reliably find the repo root (fixes SH-6452).
+3. Runs `detectPrivacyViolations()` from `~/Development/skill-graph/scripts/lib/privacy-patterns.js`.
+4. Rejects the push if any violation is found, printing the violating file and match.
 
 **The gate requires `skill-graph` to be at the sibling path `~/Development/skill-graph/`.** If it cannot find the privacy-patterns module, it blocks the push with an install reminder rather than allowing the push through.
 
-To install the hook after a fresh clone of the release repo:
+To install the hook after a fresh clone of the release repo, configure git to use the `.githooks` directory:
 
 ```bash
 cd ~/Development/skills
-node hooks/install.js
+git config core.hooksPath .githooks
 ```
+
+Verify the hook is installed and working:
+
+```bash
+git push --dry-run
+```
+
+If there are no staged changes, the push will be a no-op. If you have changes in a SKILL.md file, the hook will validate them before the dry-run completes.
+
+**Why this fix (SH-6452):** The previous hook used `__dirname` to resolve the repo root, which failed when the hook ran because `__dirname` resolved to `.git/hooks/` instead of the repository root. The new version uses `git rev-parse --show-toplevel` instead, which is reliable and works correctly regardless of the script's location.
 
 ---
 
