@@ -1,6 +1,6 @@
 {
   "name": "@skill-graph/cli",
-  "version": "0.5.8",
+  "version": "0.5.9",
   "description": "Skill Graph — library-level tooling for SKILL.md libraries: lint, manifest compiler, router, drift sentinel, and export pipeline.",
   "type": "commonjs",
   "license": "Apache-2.0",
@@ -33,6 +33,7 @@
     "bin/",
     "docs/",
     "examples/",
+    "lib/",
     "schemas/",
     "scripts/",
     "marketplace/",
@@ -48,6 +49,7 @@
   "scripts": {
     "lint": "node scripts/skill-lint.js",
     "lint:template": "node scripts/skill-lint.js --include-template examples/skill-metadata-template.md",
+    "category:check": "node scripts/lint/check-category-enum.js --include-template",
     "protocol:check": "node scripts/check-protocol-consistency.js",
     "docs:links": "node scripts/check-markdown-links.js",
     "manifest:validate": "node scripts/generate-manifest.js --validate-only",
@@ -59,10 +61,10 @@
     "drift": "node scripts/skill-graph-drift.js",
     "status": "node scripts/build-status-doc.js",
     "status:check": "node scripts/build-status-doc.js --check",
-    "test:unit": "node scripts/__tests__/test-v3-1-skos-runtime.js && node scripts/__tests__/test-router-paths.js && node scripts/__tests__/test-v3-1-alias-contract.js && node scripts/__tests__/test-export-parser-drift.js && node scripts/__tests__/test-marketplace-export.js && node scripts/__tests__/test-eval-staleness-checker.js && node scripts/__tests__/test-stability-promotion.js && node scripts/__tests__/test-collect-neighbor-summaries.js && node scripts/__tests__/test-application-verdict-write-back.js && node bin/skill-graph.js --help",
+    "test:unit": "node scripts/__tests__/test-v3-1-skos-runtime.js && node scripts/__tests__/test-router-paths.js && node scripts/__tests__/test-v3-1-alias-contract.js && node scripts/__tests__/test-export-parser-drift.js && node scripts/__tests__/test-marketplace-export.js && node scripts/__tests__/test-eval-staleness-checker.js && node scripts/__tests__/test-stability-promotion.js && node scripts/__tests__/test-collect-neighbor-summaries.js && node scripts/__tests__/test-application-verdict-write-back.js && node scripts/__tests__/test-standalone-pipeline.js && node bin/skill-graph.js --help",
     "test:migrate": "node scripts/__tests__/migrate-skill-v3-to-v4.test.js && node scripts/__tests__/migrate-skill-v2-to-v3.test.js",
     "test": "npm run test:unit && npm run test:migrate",
-    "verify": "npm run lint && npm run lint:template && npm run protocol:check && npm run docs:links && npm run manifest:validate && npm run routing-eval && npm run export:verify-skill-md && npm run overlap && npm run test:unit"
+    "verify": "npm run lint && npm run lint:template && npm run category:check && npm run protocol:check && npm run docs:links && npm run manifest:validate && npm run routing-eval && npm run export:verify-skill-md && npm run overlap && npm run test:unit"
   },
   "dependencies": {},
   "devDependencies": {},

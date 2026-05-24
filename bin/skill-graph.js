@@ -71,12 +71,14 @@ Arguments:
 Options:
   --audit-root <path>   Output directory root (default: examples/audits/).
   --force               Overwrite existing audit artifacts.
+  --dry-run             Resolve skill and run lint without writing any files. Exit 0 on success.
   --graded              Enable the prompt-driven grader pass.
   --grader-cli <cmd>    Grader command (default: claude -p). Requires --graded.
   --grader-timeout <ms> Per-dimension grader timeout (default: 120000).
 
 Examples:
   skill-graph audit my-skill
+  skill-graph audit my-skill --dry-run
   skill-graph audit my-skill --graded
   skill-graph audit my-skill --graded --grader-cli "codex exec" --force
 `,
@@ -141,16 +143,24 @@ Examples:
   evolve:  {
     script: 'lib/audit/skill-evolution-loop.js',
     requires: ['lib/audit-shared/auto-improve.js'],
-    unmetMessage: `skill-graph evolve depends on lib/audit-shared/auto-improve.js, which is\n` +
-      `not yet bundled in this release. The script also reaches into parent-repo paths\n` +
-      `(scripts/run-skill-improvement-loop.js, scripts/skill-auto-create.js,\n` +
-      `scripts/dispatch-solver.js, agent-orchestration/logs/) that exist only in the\n` +
-      `source Development monorepo.\n\n` +
-      `Standalone-compatible refactor tracked in SH-6138 (parent EPIC SH-6132).\n` +
-      `Until then, run the loop from the source repo where these deps are available.`,
+    unmetMessage: `skill-graph evolve requires lib/audit-shared/auto-improve.js, which ships\n` +
+      `with @skill-graph/cli but must exist in the working directory.\n\n` +
+      `The cross-repo path escapes (REPO_ROOT refs to agent-orchestration/,\n` +
+      `scripts/run-skill-improvement-loop.js, etc.) were removed in SH-6138.\n` +
+      `evolve now operates standalone when lib/audit-shared/auto-improve.js is present.\n\n` +
+      `Required flags for standalone use:\n` +
+      `  --workspace-root <path>   Path to your skills workspace (defaults to cwd)\n` +
+      `  --skills-dir <path>       Path to your skill library directory\n` +
+      `  --output-dir <path>       Path where evolve writes improvement artifacts\n\n` +
+      `See: skill-graph evolve --help`,
     help: `Usage: skill-graph evolve [options]
 
 Run the continuous Karpathy-style skill-improvement loop.
+
+Required flags for standalone use (when run via npm install -g @skill-graph/cli):
+  --workspace-root <path>   Root of your skills workspace (default: cwd).
+  --skills-dir <path>       Directory containing your SKILL.md files (default: <workspace-root>/skills).
+  --output-dir <path>       Directory for evolve output artifacts (default: <workspace-root>/examples/audits).
 
 Options:
   --top <n>               Process top n items per cycle (default: 5).
@@ -166,17 +176,27 @@ Options:
   --pilot <skill>         Run in bounded pilot lane for a single skill.
   --actions <list>        Comma-separated action types to allow (default: all).
 
+Exit codes:
+  0   Loop completed successfully (or analyze-only finished).
+  1   Fatal error (missing required dep, unresolvable skill root, etc.).
+  2   Failure budget exceeded.
+
 Examples:
   skill-graph evolve --top 5 --max-cycles 3
   skill-graph evolve --continuous --max-cycles 20 --min-priority 5
   skill-graph evolve --auto-improve --max-cycles 3 --failure-budget 5
   skill-graph evolve --analyze-only
   skill-graph evolve --resume
+  skill-graph evolve --workspace-root /path/to/my-skills --skills-dir /path/to/my-skills/skills
 
-Note: skill-graph evolve is not yet standalone-compatible. It depends on
-      lib/audit-shared/auto-improve.js and several parent-repo scripts that
-      do not yet ship with @skill-graph/cli. Tracking the standalone refactor
-      in SH-6138. Until then, run the loop from the source Development repo.
+Standalone installation:
+  npm install -g @skill-graph/cli
+  skill-graph evolve --workspace-root $(pwd) --skills-dir $(pwd)/skills
+
+Note: evolve depends on lib/audit-shared/auto-improve.js (bundled with @skill-graph/cli).
+      Cross-repo path escapes were removed in SH-6138 — evolve now operates without
+      requiring the Development monorepo. Set SKILL_GRAPH_WORKSPACE or pass
+      --workspace-root to point at your skill library if it is not in the current directory.
 `,
   },
 
@@ -271,7 +291,7 @@ Commands:
   route <query>    Select and explain skills for a natural-language query
   drift            Check or record grounding truth-source hashes (drift sentinel)
   export           Generate and validate the public marketplace export surface
-  evolve           [PREVIEW · monorepo-only] Continuous Karpathy-style improvement loop (depends on parent-repo scripts; see SH-6138)
+  evolve           [PREVIEW] Continuous Karpathy-style skill-improvement loop (standalone; requires --workspace-root for non-cwd libraries)
 
 Diagnostics:
   doctor           Run every deterministic check in one pass (recommended for bug reports)
@@ -527,7 +547,10 @@ function main() {
     env: {
       ...process.env,
       SKILL_GRAPH_PACKAGE_ROOT: REPO_ROOT,
-      SKILL_GRAPH_WORKSPACE: process.cwd(),
+      // Prefer an explicit SKILL_GRAPH_WORKSPACE set by the caller (e.g. in tests
+      // or when the user invokes `SKILL_GRAPH_WORKSPACE=/my/skills skill-graph audit`).
+      // Fall back to the current working directory — the correct default for an installed CLI.
+      SKILL_GRAPH_WORKSPACE: process.env.SKILL_GRAPH_WORKSPACE || process.cwd(),
     },
     stdio: 'inherit',
   });

@@ -354,12 +354,73 @@ skill-graph route "schema drift"     # Select skills for a query
 skill-graph drift                    # Check truth-source hashes
 skill-graph eval-staleness           # Check eval file/path/symbol claims
 skill-graph export                   # Generate marketplace export surface
-skill-graph evolve --top 5           # PREVIEW: continuous improvement loop (monorepo-only — see Note below)
+skill-graph evolve --top 5           # PREVIEW: continuous improvement loop (standalone; see Standalone Installation section)
 ```
 
 Run `skill-graph --help` to see all commands (including legacy aliases).
 
-> **Note on `evolve` (PREVIEW, not standalone-compatible).** `skill-graph evolve` depends on `lib/audit-shared/auto-improve.js` and several parent-repo scripts (`scripts/run-skill-improvement-loop.js`, `scripts/skill-auto-create.js`, `scripts/dispatch-solver.js`, `agent-orchestration/logs/`) that ship only in the source Development monorepo, not in the published `@skill-graph/cli` package. The CLI prints a clear error and exits when those deps are missing. Standalone refactor tracked in [SH-6138](https://linear.app/sales-hub/issue/SH-6138) (parent EPIC SH-6132). Until then, run from the source repo where the deps are available. Use `audit`, `lint`, `route`, and `drift` (all standalone) for the read-only Karpathy operations.
+## Standalone Installation and Usage
+
+All subcommands except `evolve` work standalone out of the box after `npm install -g @skill-graph/cli`. The cross-repo path escapes in the `audit` and `evolve` pipeline were removed in SH-6138; the package no longer requires the Development monorepo to be present.
+
+### Quick standalone setup
+
+```bash
+npm install -g @skill-graph/cli
+
+# Point the CLI at your skill library — one of three ways:
+# 1. cd into your workspace (the CLI defaults SKILL_GRAPH_WORKSPACE to cwd)
+cd /path/to/my-skills && skill-graph lint
+
+# 2. Set SKILL_GRAPH_WORKSPACE explicitly
+SKILL_GRAPH_WORKSPACE=/path/to/my-skills skill-graph audit my-skill
+
+# 3. Add a .skill-graph/config.json to your workspace to configure skill_roots
+```
+
+### Supported CLI flags for standalone use
+
+| Command | Standalone flag | Purpose |
+|---|---|---|
+| `skill-graph audit <skill>` | `--dry-run` | Resolve skill and run lint without writing any files. Useful for smoke-testing a fresh install. |
+| `skill-graph audit <skill>` | `--audit-root <path>` | Write audit artifacts to a custom directory instead of `<workspace>/examples/audits/`. |
+| `skill-graph evolve` | `--workspace-root <path>` | Root of your skills workspace (defaults to cwd). |
+| `skill-graph evolve` | `--skills-dir <path>` | Directory containing your SKILL.md files (defaults to `<workspace-root>/skills`). |
+| `skill-graph evolve` | `--output-dir <path>` | Directory for evolve output artifacts (defaults to `<workspace-root>/examples/audits`). |
+| All commands | `SKILL_GRAPH_WORKSPACE` env var | Override workspace root globally — useful in CI pipelines or when your skill library is not in cwd. |
+
+### Smoke-testing a fresh install
+
+```bash
+# Install the CLI globally
+npm install -g @skill-graph/cli
+
+# Verify the audit pipeline resolves your skill without writing files (exit 0 = healthy)
+skill-graph audit <your-skill-name> --dry-run
+
+# Verify the evolve pipeline prints its help and exit codes
+skill-graph evolve --help
+```
+
+### evolve standalone requirements
+
+`skill-graph evolve` ships bundled with `lib/audit-shared/auto-improve.js` (included in the package). For standalone use, pass the required workspace flags:
+
+```bash
+skill-graph evolve \
+  --workspace-root /path/to/my-skills \
+  --skills-dir /path/to/my-skills/skills \
+  --output-dir /path/to/my-skills/audits \
+  --top 5 --max-cycles 3
+```
+
+Exit codes for `skill-graph evolve`:
+
+| Code | Meaning |
+|---|---|
+| `0` | Loop completed successfully (or `--analyze-only` finished). |
+| `1` | Fatal error (missing required dependency, unresolvable skill root, etc.). |
+| `2` | Failure budget exceeded (`--failure-budget`). |
 
 ## What You Get
 
