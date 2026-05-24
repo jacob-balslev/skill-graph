@@ -407,7 +407,7 @@ drift_check:
 
 ## `last_audited`
 
-**Purpose.** ISO date of the most recent audit run that produced a recorded verdict for this skill. Part of the v6 Health Block — a flat set of top-level fields that surface audit state without requiring readers to parse nested audit artifact files.
+**Purpose.** ISO date of the most recent audit run that produced a recorded verdict for this skill. Introduced with the v6 Health Block and retained in v7 — a flat set of top-level fields that surface audit state without requiring readers to parse nested audit artifact files.
 
 **Rules.**
 - Optional. ISO 8601 date string (`YYYY-MM-DD`).
@@ -427,7 +427,7 @@ last_audited: "2026-05-16"
 
 ## `last_changed`
 
-**Purpose.** ISO date of the last meaningful content change to the SKILL.md. Distinct from `freshness` (editorial review date) and `last_audited` (audit run date). Part of the v6 Health Block.
+**Purpose.** ISO date of the last meaningful content change to the SKILL.md. Distinct from `freshness` (editorial review date) and `last_audited` (audit run date). Introduced with the v6 Health Block and retained in v7.
 
 **Rules.**
 - Optional. ISO 8601 date string (`YYYY-MM-DD`).
@@ -561,7 +561,7 @@ application_verdict: APPLICABLE
 
 ## `eval_score`
 
-**Purpose.** Numeric score from the most recent eval run, on the 0.0–5.0 scale used by `scripts/skill-audit.js`. Part of the v6 Health Block.
+**Purpose.** Numeric score from the most recent eval run, on the 0.0–5.0 scale used by `scripts/skill-audit.js`. Introduced with the v6 Health Block and retained in v7.
 
 **Rules.**
 - Optional. Float, range 0.0–5.0.
@@ -577,7 +577,7 @@ eval_score: 4.2
 
 ## `eval_failed_ids`
 
-**Purpose.** List of eval case IDs that failed in the most recent eval run. Part of the v6 Health Block. Enables fast lookup of which specific cases a skill is failing without opening the full scorecard.
+**Purpose.** List of eval case IDs that failed in the most recent eval run. Introduced with the v6 Health Block and retained in v7. Enables fast lookup of which specific cases a skill is failing without opening the full scorecard.
 
 **Rules.**
 - Optional. Array of strings (eval case ID strings, matching `id` fields in the eval JSON).
@@ -593,7 +593,7 @@ eval_failed_ids: ["case-03", "case-07"]
 
 ## `lint_verdict`
 
-**Purpose.** The verdict from the most recent lint run against this skill. Part of the v6 Health Block.
+**Purpose.** The verdict from the most recent lint run against this skill. Introduced with the v6 Health Block and retained in v7 as the per-script signal that can roll up into `structural_verdict`.
 
 **Allowed values.**
 
@@ -616,7 +616,7 @@ lint_verdict: PASS
 
 ## `drift_status`
 
-**Purpose.** The result of the most recent drift check for this skill. Part of the v6 Health Block.
+**Purpose.** The result of the most recent drift check for this skill. Introduced with the v6 Health Block and retained in v7 as the per-script signal that can roll up into `truth_verdict`.
 
 **Allowed values.**
 

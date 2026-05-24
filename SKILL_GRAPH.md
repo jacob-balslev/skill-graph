@@ -15,8 +15,9 @@ The three layers divide the work cleanly. The [Skill Metadata Protocol](SKILL_ME
 | Fact | Value | Source of truth |
 |---|---|---|
 | Schema version | **v7** (four-verdict Health Block) | `schemas/skill.schema.json` `title`; pinned `schemas/skill.v7.schema.json` |
-| Manifest version | **v7** | `schemas/manifest.v7.schema.json` |
-| Canonical skill count | **144** (verified 2026-05-23) | live: `find ~/Development/skills/skills -name SKILL.md | wc -l`; generated mirror: `docs/status.generated.md` via `npm run status` |
+| Manifest schema file | **v7** | `schemas/manifest.v7.schema.json` |
+| Emitted manifest `schema_version` | **4** (back-compatible root contract) | `scripts/generate-manifest.js`; `schemas/manifest.v7.schema.json` `schema_version.const` |
+| Canonical skill count | **147** (verified 2026-05-24) | live: `find ~/Development/skills/skills -name SKILL.md | wc -l`; generated mirror: `docs/status.generated.md` via `npm run status` |
 | Canonical library location | sibling repo `jacob-balslev/skills` at `~/Development/skills/` | `.skill-graph/config.json` → `skill_roots: ["../skills/skills"]` |
 | This repo's role | tooling + protocol + schemas + docs (no `skills/` tree) | [ADR 0009](docs/adr/0009-sibling-repo-deprecation.md) |
 

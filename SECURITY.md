@@ -8,7 +8,7 @@ Report security issues privately via GitHub Security Advisories:
 
 Please do **not** open a public issue for security reports.
 
-If you cannot use GitHub Security Advisories, email **jacobbalslev@gmail.com** with the subject line `[security] skill-graph — <short description>`.
+If you cannot use GitHub Security Advisories, open a minimal public issue requesting an alternate private security channel. Do not include vulnerability details, secrets, reproduction payloads, or personal data in that public request.
 
 ## Response SLA
 

@@ -40,7 +40,7 @@
  *
  * Default mode is dry-run. Pass --apply to write changes.
  *
- * See: skill-metadata-protocol/docs/migrations/v5-to-v6.md
+ * See: docs/migrations/v5-to-v6.md
  */
 
 'use strict';

@@ -154,8 +154,8 @@ Three versions coexist in a manifest ecosystem:
 | Version | Lives in | Meaning |
 |---|---|---|
 | Authored skill `version` | Per-skill frontmatter `version` field | Version of the skill's content (e.g. `1.2.0` means the skill has been iterated twice since its initial publish). |
-| Authored skill schema version | Per-skill frontmatter `schema_version` field | Version of the `skill.schema.json` contract the skill was authored against. The active value is `6` (skill schema, advanced through v5 to v6 marketplace fields). |
-| Manifest schema version | Manifest root `schema_version` field | Version of the `manifest.schema.json` contract the manifest was generated against. `scripts/generate-manifest.js` emits `4` today, but the manifest schema contract itself has advanced to v6 (`schemas/manifest.v6.schema.json` adds Health Block fields such as `audit_verdict` alongside the skill-schema v5→v6 bump). The emitter has not yet been raised to v6; generated v4 manifests still validate because the v5/v6 schema changes were additive. |
+| Authored skill schema version | Per-skill frontmatter `schema_version` field | Version of the `skill.schema.json` contract the skill was authored against. The active value is `7` (four-verdict Health Block; see `docs/migrations/v6-to-v7.md`). |
+| Manifest schema version | Manifest root `schema_version` field | Version of the compiled manifest root contract. `scripts/generate-manifest.js` emits `4` today and `schemas/manifest.v7.schema.json` intentionally validates that value with `schema_version.const: 4`; the manifest schema file itself is v7 because the field set has advanced additively through v5-v7 without forcing a root-version bump for consumers. |
 
 ### When to bump `schema_version`
 

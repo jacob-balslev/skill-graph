@@ -6,7 +6,7 @@ By participating in this project — opening issues, submitting pull requests, j
 
 ## Enforcement
 
-Concerns can be reported privately to the maintainer at **jacobbalslev@gmail.com**. All reports will be reviewed and investigated promptly and fairly. The maintainer is obligated to respect the privacy and security of the reporter.
+Concerns should be reported through a private GitHub-maintainer channel when one is available. If no private channel is available, open a minimal public issue requesting a private moderation contact and do not include sensitive details or personal data in the public request. All reports will be reviewed and investigated promptly and fairly. The maintainer is obligated to respect the privacy and security of the reporter.
 
 For the full enforcement guidelines, see [Contributor Covenant 2.1 — Enforcement](https://www.contributor-covenant.org/version/2/1/code_of_conduct/#enforcement-guidelines).
 
