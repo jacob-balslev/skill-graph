@@ -82,3 +82,31 @@ module.exports = {
   STABLE_EVAL_SCORE_THRESHOLD,
   STABLE_DRIFT_MAX_DAYS,
 };
+
+if (require.main === module) {
+  const path = require('path');
+  const { parseFrontmatter } = require('../lib/parse-frontmatter');
+  const { collectSkillFiles } = require('../../lib/audit/roots');
+
+  const files = collectSkillFiles();
+  const today = new Date();
+  let skillsChecked = 0;
+  let warningCount = 0;
+
+  for (const entry of files) {
+    const fm = parseFrontmatter(require('fs').readFileSync(entry.filePath, 'utf8'));
+    if (!fm) continue;
+    skillsChecked += 1;
+    const { warnings } = checkStabilityPromotion({ fm, today });
+    if (warnings.length === 0) continue;
+    const rel = path.relative(process.cwd(), entry.filePath);
+    for (const w of warnings) {
+      process.stderr.write(`WARN ${rel}: ${w.message}\n`);
+      warningCount += 1;
+    }
+  }
+
+  const label = warningCount === 0 ? 'OK  ' : 'WARN';
+  process.stdout.write(`${label} stability promotion: ${skillsChecked} skill(s) checked; ${warningCount} warning(s).\n`);
+  process.exit(0);
+}
