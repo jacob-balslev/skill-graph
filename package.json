@@ -59,6 +59,8 @@
     "category:check": "node scripts/lint/check-category-enum.js --include-template",
     "protocol:check": "node scripts/check-protocol-consistency.js",
     "docs:links": "node scripts/check-markdown-links.js",
+    "docs:drift": "node scripts/check-doc-drift.js",
+    "mirror:freeze": "node scripts/check-mirror-freeze.js",
     "manifest:validate": "node scripts/generate-manifest.js --validate-only",
     "routing-eval": "node scripts/generate-manifest.js --output .skill-graph/_routing-eval.manifest.json && node scripts/skill-graph-routing-eval.js --manifest .skill-graph/_routing-eval.manifest.json --only-asserted",
     "export:verify-skill-md": "node scripts/verify-skill-md-export.js",
@@ -71,7 +73,7 @@
     "test:unit": "node scripts/__tests__/test-v3-1-skos-runtime.js && node scripts/__tests__/test-router-paths.js && node scripts/__tests__/test-v3-1-alias-contract.js && node scripts/__tests__/test-export-parser-drift.js && node scripts/__tests__/test-marketplace-export.js && node scripts/__tests__/test-eval-staleness-checker.js && node scripts/__tests__/test-stability-promotion.js && node scripts/__tests__/test-collect-neighbor-summaries.js && node scripts/__tests__/test-application-verdict-write-back.js && node scripts/__tests__/test-standalone-pipeline.js && node scripts/__tests__/test-structural-verdict-export-block.js && node bin/skill-graph.js --help",
     "test:migrate": "node scripts/__tests__/migrate-skill-v3-to-v4.test.js && node scripts/__tests__/migrate-skill-v2-to-v3.test.js",
     "test": "npm run test:unit && npm run test:migrate",
-    "verify": "npm run lint && npm run lint:template && npm run category:check && npm run protocol:check && npm run docs:links && npm run manifest:validate && npm run routing-eval && npm run export:verify-skill-md && npm run overlap && npm run test:unit"
+    "verify": "npm run lint && npm run lint:template && npm run category:check && npm run protocol:check && npm run docs:links && npm run docs:drift && npm run mirror:freeze && npm run manifest:validate && npm run routing-eval && npm run export:verify-skill-md && npm run overlap && npm run test:unit"
   },
   "dependencies": {},
   "devDependencies": {},
