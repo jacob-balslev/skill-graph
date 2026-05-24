@@ -113,7 +113,7 @@ These fields exist in `skills.manifest.json` with no authored counterpart:
 
 The v6 Health Block fields (`last_audited`, `last_changed`, `audit_verdict`, `eval_score`, `eval_failed_ids`, `lint_verdict`, `drift_status`) were added to the authored schema in commit `ecaf001` (v6 Health Block addition) but were not registered in the manifest schema or this mapping document until SH-6131 (2026-05-18). They are now flow-through fields grouped under `health.*` in the manifest, matching the pattern of other governance fields (`freshness`, `drift_check`, `eval_artifacts`, etc.).
 
-**v7 update (2026-05-19):** the single v6 `audit_verdict` is split into four discrete verdicts (`structural_verdict`, `truth_verdict`, `comprehension_verdict`, `application_verdict`). All four flow through `health.*` in the manifest. The legacy `health.audit_verdict` field is retained as optional for back-compat reads of unmigrated v6 manifests. See [ADR 0011](adr/0011-split-audit-verdict-into-four-verdicts.md) and [`migrations/v6-to-v7.md`](migrations/v6-to-v7.md).
+**v7 update (2026-05-19):** the single v6 `audit_verdict` is split into four discrete verdicts (`structural_verdict`, `truth_verdict`, `comprehension_verdict`, `application_verdict`). All four flow through `health.*` in the manifest. The legacy `health.audit_verdict` field is retained as optional for back-compat reads of unmigrated v6 manifests. See [ADR 0011](adr/0011-split-audit-verdict-into-four-verdicts.md). (The standalone `migrations/v6-to-v7.md` procedure was retired by [ADR 0014](adr/0014-canonical-only-schema-files.md); the narrative now lives in git history + ADR 0011.)
 
 ### Previously dropped, now restored
 
