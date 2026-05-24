@@ -124,7 +124,7 @@ last_changed            # ISO date — when the SKILL.md was last edited
 # v7 four-verdict Health Block (replaces the single v6 audit_verdict):
 structural_verdict      # PASS | PASS_WITH_FIXES | FAIL | UNVERIFIED (form roll-up, gates 1-2, 7)
 truth_verdict           # PASS | DRIFT | BROKEN | UNVERIFIED (truth roll-up, gates 3-6)
-comprehension_verdict   # PASS | SHALLOW | REDUNDANT | UNVERIFIED | SKIPPED_BASELINE_HIGH | NA
+comprehension_verdict   # PASS | SHALLOW | REDUNDANT | UNVERIFIED | PROVISIONAL | SKIPPED_BASELINE_HIGH | NA
                         # (gate 8, demoted in v7 — cheap smoke test only, never alone certifying)
 application_verdict     # APPLICABLE | REDUNDANT | HARMFUL | MIXED | FALSE_POSITIVE | UNVERIFIED | PROVISIONAL
                         # (gate 9, primary quality signal — a skill is only behaviorally certified

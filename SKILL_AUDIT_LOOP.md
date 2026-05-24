@@ -81,7 +81,7 @@ last_audited: 2026-05-17       # date `audit` last ran
 last_changed: 2026-05-15       # date the skill body or frontmatter was last edited
 structural_verdict: PASS       # PASS | PASS_WITH_FIXES | FAIL | UNVERIFIED — form/export shape (external mandates only)
 truth_verdict: PASS            # PASS | DRIFT | BROKEN | UNVERIFIED — truth sources vs declared hashes
-comprehension_verdict: UNVERIFIED # PASS | SHALLOW | REDUNDANT | UNVERIFIED | SKIPPED_BASELINE_HIGH | NA (gate 8, demoted)
+comprehension_verdict: UNVERIFIED # PASS | SHALLOW | REDUNDANT | UNVERIFIED | PROVISIONAL | SKIPPED_BASELINE_HIGH | NA (gate 8, demoted)
 application_verdict: UNVERIFIED # APPLICABLE | REDUNDANT | HARMFUL | MIXED | FALSE_POSITIVE | UNVERIFIED | PROVISIONAL (gate 9 — the quality signal)
 eval_score: 4.2                # 0.0–5.0 from the eval runner
 eval_failed_ids: []            # empty when clean
