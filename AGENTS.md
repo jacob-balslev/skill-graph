@@ -218,6 +218,7 @@ For any single Skill Metadata Protocol field (`name`, `description`, `type`, `sc
 | **Audit checklist items** (per-skill audit deliverable) | `SKILL_AUDIT_CHECKLIST.md` | Itemized checklist. Edit when an audit produces a new mandatory check. |
 | **Quality doctrine** (improve = enrich; preserve scope; organize-over-trim) | `docs/quality-doctrine.md` | `AGENTS.md § Quality Doctrine` is a summary; deeper doctrine lives in the docs file. |
 | **Marketplace export contract** (description limits, privacy filter, surface generation, sync protocol) | `docs/marketplace-syndication.md` + `AGENTS.md § Public Distribution` | `AGENTS.md` owns the canonical URL contract + skills.sh manual-removal escalation. The marketplace doc owns export pipeline detail and the post-publication runbook. |
+| **Publish workflow** (step-by-step export + release sync commands, pre-push gate, verification checklist) | `docs/publish-workflow.md` | Canonical how-to for running the two-step export+sync protocol. Updated 2026-05-24 (SH-6331). |
 | **Routing eval** (baseline corpus, metrics, regression targets) | `docs/ROUTING-METRICS.md` | Edit when the baseline changes or a new metric is added. |
 | **Recommended skills** for a given task pattern | `docs/recommended-skills.md` | Curated lists; broken links here are release-blocking. |
 | **Field-name glossary** + head-noun registry | `docs/glossary.md` (concepts) + `docs/head-noun-glossary.md` (skill-name nouns) | New protocol concept → glossary; new skill name head noun → head-noun-glossary. |
