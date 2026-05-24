@@ -42,7 +42,7 @@ const COMMANDS = {
     script: 'scripts/skill-lint.js',
     help: `Usage: skill-graph lint [<skill>] [options]
 
-Validate SKILL.md files against the lightweight canonical-source lint gate.
+Validate SKILL.md files against the canonical-source schema lint gate.
 
 Arguments:
   [<skill>]              Path or name of a specific skill to lint. If omitted, lints all configured skills.
@@ -286,7 +286,7 @@ function printHelp() {
 Commands:
   init             Scaffold a new SKILL.md from the official template
   add <slug>       Install a skill from the marketplace into your library
-  lint [skill]     Validate SKILL.md files against the canonical-source lint gate
+  lint [skill]     Validate SKILL.md files against the canonical-source schema lint gate
   audit <skill>    Seed or run a single-skill audit (stub or graded mode)
   route <query>    Select and explain skills for a natural-language query
   drift            Check or record grounding truth-source hashes (drift sentinel)

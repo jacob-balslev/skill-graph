@@ -426,7 +426,7 @@ Exit codes for `skill-graph evolve`:
 
 | Tool | Purpose |
 |---|---|
-| `scripts/skill-lint.js` | Lightweight canonical-source gate: valid frontmatter, identifier shape, non-empty description, and parent-directory/name alignment. Schema, routing, relation, drift, export, and eval checks live in the dedicated tools below. |
+| `scripts/skill-lint.js` | Canonical-source schema gate: valid frontmatter, `schemas/skill.schema.json` validation, identifier shape, non-empty description, and parent-directory/name alignment. Routing quality, relation existence, drift, export, and eval checks live in the dedicated tools below. |
 | `scripts/check-protocol-consistency.js` | Cross-artifact checks so schemas, docs, generated field references, and sample manifests stay aligned. |
 | `scripts/generate-manifest.js` | Compiles all skills into a deterministic manifest for routing and downstream tooling. |
 | `scripts/skill-graph-route.js` | Reference router that explains selected, co-loaded, and excluded skills. |

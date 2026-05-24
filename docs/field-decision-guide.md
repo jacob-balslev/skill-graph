@@ -37,7 +37,7 @@
 
 ### Important constraint
 
-`scope: codebase` requires a populated `grounding` block. The JSON schema enforces this; the lightweight `scripts/skill-lint.js` gate does not. If you choose `codebase`, populate `grounding` before committing and run the protocol/manifest checks for full-contract validation.
+`scope: codebase` requires a populated `grounding` block. The JSON schema enforces this, and `scripts/skill-lint.js` runs that schema gate. If you choose `codebase`, populate `grounding` before committing and run the protocol/manifest checks for full-contract validation.
 
 ### Migration from v1
 
@@ -105,7 +105,7 @@ relations:
 
 ### Validation
 
-All relation targets should be the `name` of an existing skill in the library. The lightweight `scripts/skill-lint.js` gate does not reject dangling targets; catch relation-target drift through manifest/routing review and audit findings.
+All relation targets should be the `name` of an existing skill in the library. `scripts/skill-lint.js` validates relation shape; catch relation-target drift through graph/manifest review, routing review, and audit findings.
 
 ---
 
@@ -129,7 +129,7 @@ Does an eval artifact file exist for this skill?
 |---|---|
 | `none` | No eval planned or authored. Rare — use sparingly. |
 | `planned` | Evals are intended but no artifact exists yet. Temporary state. |
-| `present` | At least one eval artifact exists on disk. Verify with the eval/audit tooling, not the lightweight lint gate. |
+| `present` | At least one eval artifact exists on disk. Verify the artifact with eval/audit tooling; the schema lint gate only validates the declared value. |
 
 #### `eval_state` — "has it been run and passed?"
 

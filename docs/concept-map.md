@@ -1,7 +1,7 @@
 # Skill Graph Concept Map
 
 > **Status:** Reality-aligned teaching reference as of **2026-04-20** (schema_version 4).
-> **Source of truth precedence:** `schemas/skill.v4.schema.json` > `docs/field-reference.md` > this file.
+> **Source of truth precedence:** `schemas/skill.schema.json` > `docs/field-reference.md` > this file.
 > **Purpose:** Explain the 40-field Skill Metadata Protocol frontmatter at a conceptual level without inventing structure that the schema does not actually enforce. If this file disagrees with the schema, the schema wins — fix this file.
 
 ## What kind of graph is this?
@@ -183,7 +183,7 @@ An earlier concept map (pre-2026-04-20) contained six inaccuracies now corrected
 
 ## References
 
-- `schemas/skill.v4.schema.json` — pinned v3 schema (source of truth for types and requiredness)
+- `schemas/skill.schema.json` — current canonical schema (source of truth for types and requiredness)
 - `schemas/skill.context.jsonld` — JSON-LD `@context` for W3C interoperability
 - `docs/skill-metadata-protocol.md` — requiredness groups, archetype section map, schema strictness
 - `docs/field-reference.md` — per-field semantics (authoritative prose)
