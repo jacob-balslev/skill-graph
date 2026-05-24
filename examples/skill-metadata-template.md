@@ -40,10 +40,10 @@ name: skill-metadata-template
 description: "Use when creating a new SKILL.md, adapting an existing skill to a different archetype, or teaching an author the canonical frontmatter and body structure. Covers schema-conformant frontmatter, archetype-aware body layout, semantic-layer discipline (description vs Coverage), teaching-layer mechanics (TEMPLATE NOTE blockquotes and YAML comments), and the authoring gate. Do NOT use when modifying an already-written skill (edit that skill directly) or when writing general technical documentation (use `docs-development`)."
 version: 1.0.0
 type: capability
-# TEMPLATE NOTE: category is the closed six-value enum introduced in v5 and retained in v7 — exactly one of:
+# TEMPLATE NOTE: category is the closed six-value enum — exactly one of:
 # foundations / engineering / design / quality / agent / product. See
-# docs/skill-metadata-protocol.md § Category and docs/migrations/v4-to-v5.md
-# for the migration mapping. The scaffold itself is an agent-system authoring
+# docs/skill-metadata-protocol.md § Category and SKILL_METADATA_PROTOCOL.md §
+# Classification for the full contract. The scaffold itself is an agent-system authoring
 # tool, hence `agent`; replace with the correct value for your subject when
 # adapting.
 category: agent
@@ -309,5 +309,5 @@ Use this checklist as the authoring gate before committing a skill adapted from 
 - `docs/skill-metadata-protocol.md § Relationship to the SKILL.md format` - how Skill Metadata Protocol extends the base format
 - `docs/skill-metadata-protocol.md § Example Template Rule` — the no-placeholder-sludge rule this template enforces
 - `docs/skill-metadata-protocol.md § Archetype section map` — required H2 sections per archetype
-- `docs/migrations/v6-to-v7.md` — the Health Block four-verdict split that current v7 skills use
+- `docs/adr/0011-split-audit-verdict-into-four-verdicts.md` — the Health Block four-verdict split that current v7 skills use
 - `../SKILL_AUDIT_CHECKLIST.md` — the checklist this template's Verification section is derived from
