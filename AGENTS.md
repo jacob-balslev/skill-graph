@@ -101,7 +101,7 @@ Core required axes:
 - `description` — routing contract: positive trigger phrases + explicit negative boundary (`Do NOT use for X (use that-skill).`).
 - `type` — `capability` (teaches domain) / `workflow` (enforces sequence) / `router` (directs) / `overlay` (adds local truth).
 - `scope` — `portable` (universal) / `reference` (vendor/spec-grounded) / `codebase` (this repo only; requires `grounding`).
-- `category` — closed enum (since v5, current in v7): `{foundations, engineering, design, quality, agent, product}` (browse facet, not ontology truth). Enforced by the schema `enum` and `scripts/lint/check-category-enum.js`.
+- `category` / `categories` / `primaryCategory` — ONE taxonomy, six closed values: `{foundations, engineering, design, quality, agent, product}`. `category` (v7-required, v8-deprecated) names the primary. `categories: [string]` (v7-optional, v8-required) is an ordered list of all that apply (primary first, secondaries after; max 5). `primaryCategory` is the workspace's parallel field name and the workspace title-case values (`Agent System`, `Technical Capability`, `Design & UX`, `Product Domain`, `Meta Method`) normalize to the lowercase enum on read. Closure justified by Miller's 7±2 browseability, MECE pressure on values, and the `foundations` anti-junk-drawer gate. To propose a 7th value: ADR + ≥10 primary-fit skills. Multi-fit secondaries belong in `categories[1..]`, not a new top-level value. See `SKILL_METADATA_PROTOCOL.md § Classification` for the full contract, the v7→v8 migration plan, and the workspace title-case → lowercase value mapping.
 
 Understanding-fields contract (when `comprehension_state: present`) — see `SKILL_METADATA_PROTOCOL.md` § Understanding for the binding rules:
 
