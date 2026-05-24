@@ -13,7 +13,7 @@ Schema version: **7** · Field count: **61** · Required: **13**
 
 **Type:** multiple — see schema
 
-Major contract shape version. Integer for v6+; string '7' tolerated for back-compat with hand-rolled YAML. Bumps when shape changes break consumers. v7 splits the single `audit_verdict` field from v6 into four discrete verdicts (`structural_verdict`, `truth_verdict`, `comprehension_verdict`, `application_verdict`) so the Health Block can carry independent verdicts for each layer of the skill-audit loop instead of compressing form, truth, comprehension, and behavior into one PASS/FAIL signal. See docs/migrations/v6-to-v7.md and docs/adr/0011-split-audit-verdict-into-four-verdicts.md.
+Major contract shape version. Integer for v6+; string '7' tolerated for back-compat with hand-rolled YAML. Bumps when shape changes break consumers. v7 splits the single `audit_verdict` field from v6 into four discrete verdicts (`structural_verdict`, `truth_verdict`, `comprehension_verdict`, `application_verdict`) so the Health Block can carry independent verdicts for each layer of the skill-audit loop instead of compressing form, truth, comprehension, and behavior into one PASS/FAIL signal. The v6→v7 migration narrative lives in git history (`git log -- schemas/skill.schema.json`) and docs/adr/0011-split-audit-verdict-into-four-verdicts.md.
 
 **Full reference:** [`docs/field-reference.md#schema_version`](field-reference.md#schema_version)
 
