@@ -28,7 +28,7 @@ The schema is the single source of truth for shape; this doc is the source of tr
 - Must be the integer `7` or the string `"7"` for all v7 skills.
 - Start every new skill at the current schema version. Do not downgrade.
 - The v6 → v7 bump split the single `audit_verdict` into `structural_verdict`, `truth_verdict`, `comprehension_verdict`, and `application_verdict`. Run `node scripts/migrate-skill-v6-to-v7.js` for the codemod.
-- Older migration notes live in `SKILL_METADATA_PROTOCOL.md § Migration Notes` and `docs/migrations/`; do not restate old versions here as the current contract.
+- Older migration notes live in `SKILL_METADATA_PROTOCOL.md § Migration Notes`; do not restate old versions here as the current contract.
 
 **Versioning semantics (policy).** The integer signals *breaking vs non-breaking* evolution. A minor/patch axis is intentionally not surfaced on this field; additive schema changes do not require consumers to migrate, so no version bump is emitted.
 
@@ -197,7 +197,7 @@ archetype: capability
 
 **Rules.**
 - **Required since schema_version 5** (retained in v7). Present in `required: [...]` of `schemas/skill.schema.json`. A v5+ skill without `category` fails schema validation.
-- **Closed enum of six values** as of schema_version 5: `foundations` \| `engineering` \| `design` \| `quality` \| `agent` \| `product`. Any other value is rejected at the schema level AND at the lint level by `scripts/lint/check-category-enum.js`. (Pre-v5 open-ended values like `knowledge`, `frontend`, `integrations`, `security` were migrated to the six-value enum; see `docs/migrations/v4-to-v5.md`.)
+- **Closed enum of six values** as of schema_version 5: `foundations` \| `engineering` \| `design` \| `quality` \| `agent` \| `product`. Any other value is rejected at the schema level AND at the lint level by `scripts/lint/check-category-enum.js`. (Pre-v5 open-ended values like `knowledge`, `frontend`, `integrations`, `security` were migrated to the six-value enum.)
 - For cross-cutting category fit, list secondary browse homes in `categories[1..]` (v7 optional, v8 planned required) or `secondary_categories` when the only need is marketplace cross-listing. Use `relations.related` for neighboring skills, not category membership.
 - For hierarchical taxonomy (`engineering/integrations/shopify`), use the optional `domain` field; `category` is flat on purpose and complements `domain` rather than substituting for it.
 
@@ -230,7 +230,7 @@ category: engineering
 
 **Migration from v3.** The field name changed from `browse_category` to `category` in v4 (values then still unconstrained). Run `node scripts/migrate-skill-v3-to-v4.js` for the automatic rename.
 
-**Migration from v4.** The closed six-value enum was introduced in v5 and retained in v6/v7. Skills carrying pre-v5 open-ended values (`knowledge`, `frontend`, `integrations`, `security`, `dev`, etc.) must be remapped to the enum — see `docs/migrations/v4-to-v5.md` for the mapping table and the codemod.
+**Migration from v4.** The closed six-value enum was introduced in v5 and retained in v6/v7. Skills carrying pre-v5 open-ended values (`knowledge`, `frontend`, `integrations`, `security`, `dev`, etc.) must be remapped to the enum — both the mapping table and the codemod live in git history (per ADR 0014).
 
 ---
 
@@ -639,7 +639,7 @@ application_verdict: APPLICABLE
 
 **Purpose.** DEPRECATED in v7. Pre-v7 single aggregate verdict. Replaced by four discrete verdicts (`structural_verdict`, `truth_verdict`, `comprehension_verdict`, `application_verdict`). See [ADR 0011](adr/0011-split-audit-verdict-into-four-verdicts.md).
 
-**Why deprecated.** The single field compressed four independent layers — form, truth, comprehension, behavior — into one PASS/FAIL signal that masqueraded as a quality verdict. A skill could be lint-clean (`audit_verdict: PASS`) while being behaviorally redundant or harmful, and the reader had no way to tell. The four-verdict split lets each layer surface independently. See `docs/migrations/v6-to-v7.md` for the migration procedure.
+**Why deprecated.** The single field compressed four independent layers — form, truth, comprehension, behavior — into one PASS/FAIL signal that masqueraded as a quality verdict. A skill could be lint-clean (`audit_verdict: PASS`) while being behaviorally redundant or harmful, and the reader had no way to tell. The four-verdict split lets each layer surface independently. See ADR 0014 (canonical-only schema files); the migration procedure lives in git history.
 
 **Read behavior post-v7.** Tools that read `audit_verdict` for back-compat on unmigrated v6 skills can continue to do so, but the canonical Health Block surface is the four discrete verdicts. The codemod at `scripts/migrate-skill-v6-to-v7.js` strips `audit_verdict` from migrated skills.
 

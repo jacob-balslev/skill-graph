@@ -158,7 +158,7 @@ Three versions coexist in a manifest ecosystem:
 | Version | Lives in | Meaning |
 |---|---|---|
 | Authored skill `version` | Per-skill frontmatter `version` field | Version of the skill's content (e.g. `1.2.0` means the skill has been iterated twice since its initial publish). |
-| Authored skill schema version | Per-skill frontmatter `schema_version` field | Version of the `skill.schema.json` contract the skill was authored against. The active value is `7` (four-verdict Health Block; see `docs/migrations/v6-to-v7.md`). |
+| Authored skill schema version | Per-skill frontmatter `schema_version` field | Version of the `skill.schema.json` contract the skill was authored against. The active value is `7` (four-verdict Health Block). |
 | Manifest schema version | Manifest root `schema_version` field | Version of the compiled manifest root contract. `scripts/generate-manifest.js` emits `4` today and `schemas/manifest.schema.json` intentionally validates that value with `schema_version.const: 4`; the manifest schema file itself is v7 because the field set has advanced additively through v5-v7 without forcing a root-version bump for consumers. |
 
 ### When to bump `schema_version`

@@ -210,7 +210,7 @@ For any single Skill Metadata Protocol field (`name`, `description`, `type`, `sc
 | Concept area | Canonical owner | Use for |
 |---|---|---|
 | **Archetypes** (`capability` / `workflow` / `router` / `overlay`) — what they teach, when each applies, eval shape per archetype | `docs/skill-metadata-protocol.md` § Archetypes | Cross-link from `field-reference.md § type`. |
-| **Migration narrative** (v4→v5, v5→v6, v6→v7) — what each version added, breaking changes, codemod usage | `docs/migrations/vN-to-vM.md` (one file per migration) | New per-version migrations get a new file; do not append to AGENTS.md. |
+| **Migration narrative** (v4→v5, v5→v6, v6→v7) — what each version added, breaking changes, codemod usage | git history of `schemas/skill.schema.json` plus the substantive ADR (e.g., ADR 0011 for v6→v7) | New per-version migrations get a new file; do not append to AGENTS.md. |
 | **Authority tiers** (which file binds which) | `SKILL_GRAPH.md` § Authority Tiers | The map of "Tier 1 schemas → Tier 2 docs → Tier 3 scripts → Tier 4 consumers → Tier 5 examples." |
 | **Current corpus state** — verified counts (canonical skills, exported skills, worklist), build/health snapshot | `SKILL_GRAPH.md` § Current State + `docs/status.generated.md` | Single-source-of-truth count lives in `SKILL_GRAPH.md § Current State`. The generated status file mirrors it. Volatile counts must not be duplicated into AGENTS.md, README.md, or anywhere else — link instead. |
 | **Edges / relations semantics** (`related`, `boundary`, `verify_with`, `depends_on`) — the field-level mechanic | `SKILL_METADATA_PROTOCOL.md` § Relations | The boundary-semantics WARNING (2026-05-23) lives here; `AGENTS.md § What the Skill Graph Is` summarizes and links. |
@@ -262,7 +262,7 @@ When a code or schema change lands, update the matching documentation rows in th
 |---|---|
 | **CLI behavior** (`bin/skill-graph.js`, new flag, new subcommand) | `README.md` § quick start, `docs/QUICKSTART-30MIN.md`, `CHANGELOG.md`, `--help` output |
 | **New script** in `scripts/` | `AGENTS.md` § Validation Commands (if user-runnable), `package.json` scripts (if exposed via `npm run`), `CHANGELOG.md` if user-facing |
-| **Migration script** (`scripts/migrate-skill-vN-to-vM.js`) | `docs/migrations/vN-to-vM.md` (new file), `CHANGELOG.md`, `AGENTS.md` § Project Shape if the active schema version advances |
+| **Migration script** (`scripts/migrate-skill-vN-to-vM.js`) | None — per ADR 0014, corpus-wide migrations are run once and the codemod retired; record the change in `CHANGELOG.md` and (if architecturally significant) write an ADR |
 | **GitHub Actions workflows** (`.github/workflows/*.yml`) | `AGENTS.md` § GitHub Actions if conventions changed, `CONTRIBUTING.md` § PR expectations if developer workflow affected |
 | **Marketplace export pipeline** (`scripts/export-marketplace-skills.js`, `scripts/verify-skill-md-export.js`) | `marketplace/README.md` (_generated_), `docs/marketplace-syndication.md`, `AGENTS.md` § Public Distribution. Never hand-edit `marketplace/skills/` — it regenerates from sibling `~/Development/skills/` |
 | **`marketplace/skills/<name>/SKILL.md`** (the mirror) | _generated_ — do not hand-edit. Edit the canonical source at `~/Development/skills/skills/<category>/<name>/SKILL.md` and re-run `node scripts/export-marketplace-skills.js` |

@@ -73,7 +73,7 @@ This replaces the previous 13-command surface. The mapping:
 
 ## The Health Block — state lives on the skill
 
-Schema v7 carries the Health fields on every SKILL.md frontmatter. v7 removed the single v6 `audit_verdict` and replaced it with **four discrete verdicts**, one per audit layer, because the aggregate masqueraded as a quality signal while conflating form, truth, comprehension, and behavior (see [ADR 0011](docs/adr/0011-split-audit-verdict-into-four-verdicts.md) and [`docs/migrations/v6-to-v7.md`](docs/migrations/v6-to-v7.md)):
+Schema v7 carries the Health fields on every SKILL.md frontmatter. v7 removed the single v6 `audit_verdict` and replaced it with **four discrete verdicts**, one per audit layer, because the aggregate masqueraded as a quality signal while conflating form, truth, comprehension, and behavior (see [ADR 0011](docs/adr/0011-split-audit-verdict-into-four-verdicts.md)):
 
 ```yaml
 schema_version: 7
@@ -238,6 +238,6 @@ The loop does not require a separate issue tracker, dashboard, control plane, or
 
 - `docs/skill-metadata-protocol.md` — the canonical field list including the v7 Health Block and flat Understanding fields
 - `schemas/skill.schema.json` — the machine-validated current contract (`schemas/skill.v6.schema.json` and earlier are pinned prior versions)
-- `docs/migrations/v6-to-v7.md` — the `audit_verdict` → four-verdict split; `docs/migrations/v5-to-v6.md` — concept block flattening + Health Block introduction
+- [ADR 0011](docs/adr/0011-split-audit-verdict-into-four-verdicts.md) — the audit_verdict → four-verdict split (per-version migration narrative now in git history per [ADR 0014](docs/adr/0014-canonical-only-schema-files.md))
 - `SKILL_AUDIT_CHECKLIST.md` — the per-skill checklist used during `audit`
 - `docs/adr/0011-split-audit-verdict-into-four-verdicts.md` — rationale for the four-verdict model

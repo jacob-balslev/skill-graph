@@ -76,7 +76,7 @@ For everything else:
 | **Audit an existing skill library** | [`SKILL_AUDIT_LOOP.md`](SKILL_AUDIT_LOOP.md) — the audit procedure |
 | **Look up a specific field** | [`docs/field-reference.md`](docs/field-reference.md) |
 | **Plan adoption in a new repo** | [`docs/ADOPTION.md`](docs/ADOPTION.md) and [`docs/CONFORMANCE.md`](docs/CONFORMANCE.md) |
-| **Migrate from an older `schema_version`** | [`docs/migrations/`](docs/migrations/) |
+| **Migrate from an older `schema_version`** | git history (per [ADR 0014](docs/adr/0014-canonical-only-schema-files.md)) |
 
 > **Surface scope:** The OSS-portable canonical library lives at `skills/skills/`; the live count is the single-source-of-truth value in [`SKILL_GRAPH.md § Current State`](SKILL_GRAPH.md#current-state--single-source-of-truth) (per the AGENTS.md Doc Ownership Map — every other doc links rather than inlining). A separate personal/Sales Hub surface at `skills/` is frozen — new skills are curated into the OSS surface only when non-PII, non-Sales-Hub, and generalizable. See [ADR 0008](docs/adr/0008-skill-surface-split-and-curation-policy.md).
 
@@ -462,7 +462,7 @@ Exit codes for `skill-graph evolve`:
 | [`docs/SKILL-MD-FORMAT-COMPATIBILITY.md`](docs/SKILL-MD-FORMAT-COMPATIBILITY.md) | How export maps protocol-enriched skills back to plain `SKILL.md`. |
 | [`docs/marketplace-syndication.md`](docs/marketplace-syndication.md) | Syndication workflow for public `SKILL.md` marketplaces. |
 | [`docs/adr/`](docs/adr/) | Architecture Decision Records, including [ADR 0009 — sibling repo deprecation](docs/adr/0009-sibling-repo-deprecation.md). |
-| [`docs/migrations/`](docs/migrations/) | Per-bump author migration procedures (v4→v5, v5→v6, v6→v7). |
+| git history (per [ADR 0014](docs/adr/0014-canonical-only-schema-files.md)) | Per-bump author migration procedures (v4→v5, v5→v6, v6→v7). |
 
 **Related repos:**
 
@@ -541,7 +541,7 @@ For project framing context, see [GitHub Discussion #1](https://github.com/jacob
 
 ## Status
 
-Latest release: **`@skill-graph/cli@0.5.9`** (2026-05-23) — see [`CHANGELOG.md`](CHANGELOG.md) and the generated [`docs/status.generated.md`](docs/status.generated.md). The current contract is `schema_version: 7` — see [`schemas/skill.schema.json`](schemas/skill.schema.json) for the authoritative shape and [`docs/migrations/v6-to-v7.md`](docs/migrations/v6-to-v7.md) for the migration procedure. The `schemas/` directory pins v2 through v7 for tooling that consumes the schemas directly. The unversioned `skill.schema.json` tracks v7.
+Latest release: **`@skill-graph/cli@0.5.9`** (2026-05-23) — see [`CHANGELOG.md`](CHANGELOG.md) and the generated [`docs/status.generated.md`](docs/status.generated.md). The current contract is `schema_version: 7` — see [`schemas/skill.schema.json`](schemas/skill.schema.json) for the authoritative shape for the migration procedure. The `schemas/` directory pins v2 through v7 for tooling that consumes the schemas directly. The unversioned `skill.schema.json` tracks v7.
 
 ## Contributing & Trust
 

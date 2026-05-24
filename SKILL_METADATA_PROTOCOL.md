@@ -56,7 +56,7 @@ All thirteen fields in this group are required by the v7 schema and protocol con
 
 | Field | Type | Purpose |
 |---|---|---|
-| `schema_version` | integer `7` | Signals the contract version. Must be `7` for all v7 skills. See `docs/migrations/v6-to-v7.md`. |
+| `schema_version` | integer `7` | Signals the contract version. Must be `7` for all v7 skills. Prior versions live in git history (see ADR 0014 — canonical-only schema files). |
 | `name` | string | Stable identifier. Used for routing and `relations.*` targets. |
 | `description` | string (≥20 chars) | Routing contract — tells the router when to activate this skill. |
 | `version` | semver string | Skill content version (e.g. `1.2.0`). Bumped by the author. |
@@ -390,7 +390,7 @@ Seven flat top-level fields that record a skill's audit fingerprint in its own f
 **`audit_verdict`** *(DEPRECATED in v7)*
 - Pre-v7 single aggregate verdict, replaced by the four discrete verdicts above.
 - Enum (historical): `PASS` | `PASS_WITH_FIXES` | `PARTIAL` | `FAIL` | `UNKNOWN`.
-- The v7 codemod (`scripts/migrate-skill-v6-to-v7.js`) strips this field. See [ADR 0011](docs/adr/0011-split-audit-verdict-into-four-verdicts.md) and [`migrations/v6-to-v7.md`](docs/migrations/v6-to-v7.md).
+- The v7 codemod (`scripts/migrate-skill-v6-to-v7.js`) strips this field. See [ADR 0011](docs/adr/0011-split-audit-verdict-into-four-verdicts.md).
 
 **`eval_score`**
 - Latest aggregate eval grade on a 0.0–5.0 scale.
