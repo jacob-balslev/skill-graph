@@ -62,6 +62,15 @@
     "archetype": "sg:archetype",
     "scope": "sg:scope",
     "category": "sg:browseCategory",
+    "categories": {
+      "@id": "sg:categories",
+      "@container": "@list",
+      "_note": "Ordered list — first entry is the primary category, remaining entries are secondaries. Same 6-value enum as `category`. v7 optional, v8 required. See SKILL_METADATA_PROTOCOL.md § Classification."
+    },
+    "primaryCategory": {
+      "@id": "sg:primaryCategory",
+      "_note": "Workspace alias for `categories[0]`. Title-case workspace values normalize to the lowercase enum on read. See SKILL_METADATA_PROTOCOL.md § Classification."
+    },
     "secondary_categories": {
       "@id": "sg:secondaryCategories",
       "@container": "@set",

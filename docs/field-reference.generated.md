@@ -5,7 +5,7 @@
 > **Predicate glossary:** [`docs/glossary.md`](glossary.md).
 > **JSON-LD @context:** [`schemas/skill.context.jsonld`](../schemas/skill.context.jsonld).
 
-Schema version: **7** · Field count: **57** · Required: **13**
+Schema version: **7** · Field count: **59** · Required: **13**
 
 ---
 
@@ -89,7 +89,7 @@ Archetype classifier (v3.1 preferred alias for `type`). When both are present th
 
 **Type:** `foundations` | `engineering` | `design` | `quality` | `agent` | `product`
 
-Browse facet — answers 'where should a human browse to find this skill first?' Not ontology truth. Closed enum of 6 values in v5: foundations | engineering | design | quality | agent | product. Cross-cutting truth lives in `relations.related`. For hierarchical sub-domain use `domain`. `foundations` is gated — see SKILL_METADATA_PROTOCOL.md § Classification.
+Browse facet — answers 'where should a human browse to find this skill first?' Not ontology truth. Closed enum of 6 values in v5: foundations | engineering | design | quality | agent | product. Cross-cutting category membership lives in `categories[1..]` (v7 optional, v8 planned required) or `secondary_categories` for marketplace cross-listing; skill-to-skill neighborhood lives in `relations.related`. For hierarchical sub-domain use `domain`. `foundations` is gated — see SKILL_METADATA_PROTOCOL.md § Classification.
 
 **Full reference:** [`docs/field-reference.md#category`](field-reference.md#category)
 
@@ -114,6 +114,26 @@ Hierarchical domain path using slash-delimited segments (e.g., `ecommerce/integr
 Additive tags for cross-listing in marketplace collections. Primary `category` is MECE and decides folder placement; `secondary_categories` lets a skill that genuinely serves two audiences (e.g., `playwright-cli` is primarily `quality` but also relevant to `engineering`) appear in additional marketplace collections without affecting filesystem layout. Max 2 entries to prevent dilution. Drawn from the same closed 6-enum as `category`; MUST NOT include the primary `category` value.
 
 **Full reference:** [`docs/field-reference.md#secondary_categories`](field-reference.md#secondary_categories)
+
+---
+
+### `categories` *(optional)*
+
+**Type:** array of string
+
+Ordered category array. First entry is the primary and must match `category`; remaining entries are secondary browse homes the skill also covers. Max 5, drawn from the same closed enum as `category`.
+
+**Full reference:** [`docs/field-reference.md#categories`](field-reference.md#categories)
+
+---
+
+### `primaryCategory` *(optional)*
+
+**Type:** `foundations` | `engineering` | `design` | `quality` | `agent` | `product` | `Meta Method` | `Technical Capability` | `Design & UX` | `Agent System` | `Product Domain`
+
+Workspace alias for the primary browse home. Lowercase protocol values are accepted directly; title-case workspace labels normalize to `category` (`Meta Method` → `foundations`, `Technical Capability` → `engineering`, `Design & UX` → `design`, `Agent System` → `agent`, `Product Domain` → `product`). Optional in the protocol, required only by workspace policy when that repo opts in.
+
+**Full reference:** [`docs/field-reference.md#primaryCategory`](field-reference.md#primaryCategory)
 
 ---
 
@@ -181,7 +201,7 @@ Drift-detection record for grounded skills. `last_verified` is the author's clai
 
 **Type:** `none` | `planned` | `present`
 
-Are eval artifacts present on disk for this skill? `none` (no evals planned), `planned` (eval intent declared but not yet shipped), `present` (eval JSON exists at `evals/<skill>.json` or similar). Lint enforces the `present` claim by requiring a real file. The `planned` state has a staleness guard — see lint check 6.
+Are eval artifacts present on disk for this skill? `none` (no evals planned), `planned` (eval intent declared but not yet shipped), `present` (eval JSON exists at `evals/<skill>.json` or similar). The `present` claim requires a real artifact and audit/eval receipt.
 
 **Full reference:** [`docs/field-reference.md#eval_artifacts`](field-reference.md#eval_artifacts)
 
@@ -201,7 +221,7 @@ What does the eval say about content quality? `unverified` (no eval has run), `p
 
 **Type:** `absent` | `present`
 
-Is routing / trigger coverage explicitly evaluated? `absent` (router behaviour is not part of the eval set), `present` (the skill's `examples[]` and `anti_examples[]` pass `scripts/skill-graph-routing-eval.js`). When `present`, lint check 12 requires the harness to agree. Honesty over green checkmarks — flip to `present` only after the harness PASSes. The nested `eval.routing_coverage` is the v3.1 preferred alias.
+Is routing / trigger coverage explicitly evaluated? `absent` (router behaviour is not part of the eval set), `present` (the skill's `examples[]` and `anti_examples[]` pass `scripts/skill-graph-routing-eval.js`). Honesty over green checkmarks — flip to `present` only after the harness PASSes. The nested `eval.routing_coverage` is the v3.1 preferred alias.
 
 **Full reference:** [`docs/field-reference.md#routing_eval`](field-reference.md#routing_eval)
 
@@ -263,9 +283,9 @@ Comprehension-layer verdict produced by gate 8 (the comprehension grader on `eva
 
 ### `application_verdict` *(optional)*
 
-**Type:** `APPLICABLE` | `REDUNDANT` | `HARMFUL` | `MIXED` | `FALSE_POSITIVE` | `UNVERIFIED`
+**Type:** `APPLICABLE` | `REDUNDANT` | `HARMFUL` | `MIXED` | `FALSE_POSITIVE` | `UNVERIFIED` | `PROVISIONAL`
 
-Application-layer verdict produced by gate 9 (the application grader on `evals/application.json`). `APPLICABLE` (loading the skill changes agent behavior on real artifacts in the expected direction — flags, fixes, generative trajectory), `REDUNDANT` (no behavioral delta — agent behaves the same with or without the skill loaded), `HARMFUL` (negative delta — agent makes worse decisions with the skill loaded; SkillsBench arXiv 2602.12670 found 19% of evaluated skills exhibit this), `MIXED` (delta varies across cases — some applicable, some redundant or false-positive), `FALSE_POSITIVE` (skill over-triggers — applies on cases where its expertise does not apply), `UNVERIFIED` (default for the v6→v7 corpus migration — no application audit has run on this skill yet). The aggregate-quality field in v7: a skill is only behaviorally certified when this verdict is `APPLICABLE`. See docs/adr/0011-split-audit-verdict-into-four-verdicts.md.
+Application-layer verdict produced by gate 9 (the application grader on `evals/application.json`). `APPLICABLE` (loading the skill changes agent behavior on real artifacts in the expected direction — flags, fixes, generative trajectory), `REDUNDANT` (no behavioral delta — agent behaves the same with or without the skill loaded), `HARMFUL` (negative delta — agent makes worse decisions with the skill loaded; SkillsBench arXiv 2602.12670 found 19% of evaluated skills exhibit this), `MIXED` (delta varies across cases — some applicable, some redundant or false-positive), `FALSE_POSITIVE` (skill over-triggers — applies on cases where its expertise does not apply), `UNVERIFIED` (no application assessment has run), `PROVISIONAL` (single-model dogfood audit found useful behavior but the independent application grader has not confirmed it). The aggregate-quality field in v7: a skill is only behaviorally certified when this verdict is `APPLICABLE`. See docs/adr/0011-split-audit-verdict-into-four-verdicts.md.
 
 **Full reference:** [`docs/field-reference.md#application_verdict`](field-reference.md#application_verdict)
 
@@ -295,7 +315,7 @@ Eval IDs that failed in the most recent run. Empty array when clean. Populated a
 
 **Type:** `PASS` | `FAIL` | `UNKNOWN`
 
-Result of the most recent deterministic-lint pass against this skill (`scripts/skill/skill-lint.js`). Schema validation, relation-target existence, archetype section presence, routing quality. `PASS` means zero lint errors; warnings do not flip the verdict. `UNKNOWN` is the initial state.
+Result of the most recent canonical-source lint pass against this skill (`scripts/skill-lint.js`). The current lint gate checks valid frontmatter, identifier shape, non-empty description, and parent-directory/name alignment; broader schema, relation, routing, drift, export, and eval checks are separate tools. `PASS` means zero lint errors. `UNKNOWN` is the initial state.
 
 **Full reference:** [`docs/field-reference.md#lint_verdict`](field-reference.md#lint_verdict)
 
@@ -595,7 +615,7 @@ Typed edges to sibling skills. Lint verifies every target exists. Predicate-to-W
 
 - `adjacent` *optional* — DEPRECATED ALIAS of `related`.
 - `related` *optional* — Symmetric associative relation (skos:related).
-- `boundary` *optional* — Anti-ownership / routing handoff edge — directional.
+- `boundary` *optional* — Score-aware routing exclusion edge — directional.
 - `disjoint_with` *optional* — Optional OWL class-disjointness assertion.
 - `broader` *optional* — Cross-skill generalisation (skos:broader).
 - `narrower` *optional* — Cross-skill specialisation (skos:narrower).

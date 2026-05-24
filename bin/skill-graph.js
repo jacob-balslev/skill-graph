@@ -42,14 +42,14 @@ const COMMANDS = {
     script: 'scripts/skill-lint.js',
     help: `Usage: skill-graph lint [<skill>] [options]
 
-Validate SKILL.md files against the Skill Metadata Protocol schema and lint rules.
+Validate SKILL.md files against the lightweight canonical-source lint gate.
 
 Arguments:
-  [<skill>]              Path or name of a specific skill to lint. If omitted, lints all skills.
+  [<skill>]              Path or name of a specific skill to lint. If omitted, lints all configured skills.
 
 Options:
   --include-template     Also lint examples/protocol/skill-metadata-template.md.
-  --path <dir>           Override the skills root directory.
+  --path <dir>           Override the skills root directory for name lookup or all-skill lint.
   --json                 Emit JSON output.
   --strict               Treat warnings as errors.
 
@@ -252,7 +252,7 @@ Examples:
   },
   'protocol-check': {
     script: 'scripts/check-protocol-consistency.js',
-    help: `Usage: skill-graph protocol-check [options]\n\nCheck cross-artifact protocol consistency across the C1-C8 invariants:\n\n  C1 — Field-set parity (field-reference.md vs skill.schema.json)\n  C2 — Authored-to-generated parity (skill.schema.json -> manifest.schema.json)\n  C3 — Artifact-root convention\n  C4 — Sample manifest correctness\n  C5 — Example truth invariants\n  C6 — Versioned schema parity (skill.schema.json vs skill.v6.schema.json)\n  C7 — Generated field-reference parity\n  C8 — JSON-LD context coverage (schema fields vs skill.context.jsonld)\n\nOptions:\n  --verbose   Print per-field diagnostics for each failed check.\n\nExit codes: 0 on PASS; non-zero on any FAIL.\n`,
+    help: `Usage: skill-graph protocol-check [options]\n\nCheck cross-artifact protocol consistency across the invariants:\n\n  C1 — Field-set parity (field-reference.md vs skill.schema.json)\n  C2 — Authored-to-generated parity (skill.schema.json -> manifest.schema.json)\n  C3 — Artifact-root convention\n  C4 — Sample manifest correctness\n  C5 — Example truth invariants\n  C6 — REMOVED 2026-05-24 (pinned schemas deleted; canonical-only repo)\n  C7 — Generated field-reference parity\n  C8 — JSON-LD context coverage (schema fields vs skill.context.jsonld)\n\nOptions:\n  --verbose   Print per-field diagnostics for each failed check.\n\nExit codes: 0 on PASS; non-zero on any FAIL.\n`,
   },
   doctor:  {
     inline: true,
@@ -286,7 +286,7 @@ function printHelp() {
 Commands:
   init             Scaffold a new SKILL.md from the official template
   add <slug>       Install a skill from the marketplace into your library
-  lint [skill]     Validate SKILL.md files against the schema and lint rules
+  lint [skill]     Validate SKILL.md files against the canonical-source lint gate
   audit <skill>    Seed or run a single-skill audit (stub or graded mode)
   route <query>    Select and explain skills for a natural-language query
   drift            Check or record grounding truth-source hashes (drift sentinel)
