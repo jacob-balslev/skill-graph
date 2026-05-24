@@ -2,13 +2,13 @@
 
 > **Scope.** This document is the authored-to-generated bridge for Skill Graph: it specifies exactly how every top-level field in a `SKILL.md` frontmatter block projects into the compiled `skills.manifest.json` that downstream tooling consumes.
 >
-> **Audience.** Authors of manifest generators and consumers of the manifest. If you are authoring a skill itself, read [`SKILL_METADATA_PROTOCOL.md`](https://github.com/jacob-balslev/skill-metadata-protocol) and [`docs/field-reference.md`](field-reference.md) instead. This document owns the transformation from authored to generated.
+> **Audience.** Authors of manifest generators and consumers of the manifest. If you are authoring a skill itself, read [`SKILL_METADATA_PROTOCOL.md`](../SKILL_METADATA_PROTOCOL.md) and [`docs/field-reference.md`](field-reference.md) instead. This document owns the transformation from authored to generated.
 >
 > **Authority.** `schemas/skill.schema.json` is the authored schema. `schemas/manifest.schema.json` is the generated manifest schema. This document explains the mapping between them and may not contradict either schema.
 
 ## Related documents
 
-- [`SKILL_METADATA_PROTOCOL.md`](https://github.com/jacob-balslev/skill-metadata-protocol) — normative public spec for the authored `SKILL.md` protocol.
+- [`SKILL_METADATA_PROTOCOL.md`](../SKILL_METADATA_PROTOCOL.md) — normative public spec for the authored `SKILL.md` protocol.
 - [`docs/field-reference.md`](field-reference.md) — per-field authoring reference.
 - [`docs/skill-metadata-protocol.md`](skill-metadata-protocol.md) — rationale and deep explanation.
 - [`schemas/skill.schema.json`](../schemas/skill.schema.json) — enforceable JSON Schema for authored frontmatter.
@@ -40,16 +40,18 @@ Every top-level authored field in `schemas/skill.schema.json` has exactly one en
 | 5 | `version` | copied through unchanged | `version`. |
 | 6 | `type` | copied through unchanged | `type`. |
 | 7 | `archetype` | copied through unchanged | Compatibility alias for `type`; duplicate declarations must match. |
-| 8 | `category` | copied through unchanged | Flat browse shelf. v4 rename of v3 `browse_category`. |
+| 8 | `category` | copied through unchanged | Flat browse shelf. v4 rename of v3 `browse_category`; manifest schema enforces the same six-value enum as the authored skill schema. |
+| 8a | `categories` | copied through unchanged | Ordered category array. First entry is the primary and must match `category`; remaining entries are secondary browse homes. |
+| 8b | `primaryCategory` | copied through unchanged | Optional workspace alias for the primary category. Title-case workspace labels normalize to lowercase protocol values in downstream policy tooling. |
 | 9 | `domain` | copied through unchanged | Optional slash-delimited domain path. v4 rename of v3 `category` / `category_path`. |
 | 10 | `scope` | copied through unchanged | `scope`. |
 | 11 | `owner` | copied through unchanged | `owner`. |
 | 12 | `freshness` | grouped under parent | `health.freshness`. |
 | 13 | `reviewed_at` | grouped under parent | `health.reviewed_at`; compatibility alias for `freshness`. |
 | 14 | `drift_check` | grouped under parent | `health.drift_check`. |
-| 15 | `eval_artifacts` | grouped under parent | `health.eval_artifacts`. |
-| 16 | `eval_state` | grouped under parent | `health.eval_state`. |
-| 17 | `routing_eval` | grouped under parent | `health.routing_eval`. |
+| 15 | `eval_artifacts` | grouped under parent | `health.eval_artifacts`; manifest schema enforces `none` / `planned` / `present`. |
+| 16 | `eval_state` | grouped under parent | `health.eval_state`; manifest schema enforces `unverified` / `passing` / `monitored`. |
+| 17 | `routing_eval` | grouped under parent | `health.routing_eval`; manifest schema enforces `absent` / `present`. |
 | 18 | `comprehension_state` | grouped under parent | `health.comprehension_state`. |
 | 19 | `concept` | copied through unchanged | `concept`; required when `comprehension_state: present`. |
 | 20 | `eval_last_run` | grouped under parent | `health.eval_last_run`. |
@@ -78,7 +80,7 @@ Every top-level authored field in `schemas/skill.schema.json` has exactly one en
 | 43a | `structural_verdict` | grouped under parent | `health.structural_verdict`. **v7+** Health Block field — form-layer verdict from gates 1–2, 7. Enum: `PASS`, `PASS_WITH_FIXES`, `FAIL`, `UNVERIFIED`. Replaces the structural slice of v6 `audit_verdict`. Pass-through from authored frontmatter. |
 | 43b | `truth_verdict` | grouped under parent | `health.truth_verdict`. **v7+** Health Block field — truth-layer verdict from gates 3–6. Enum: `PASS`, `DRIFT`, `BROKEN`, `UNVERIFIED`. Pass-through from authored frontmatter. |
 | 43c | `comprehension_verdict` | grouped under parent | `health.comprehension_verdict`. **v7+** Health Block field — comprehension-layer verdict from gate 8 (demoted in v7). Enum: `PASS`, `SHALLOW`, `REDUNDANT`, `UNVERIFIED`, `SKIPPED_BASELINE_HIGH`, `NA`. Pass-through from authored frontmatter. |
-| 43d | `application_verdict` | grouped under parent | `health.application_verdict`. **v7+** Health Block field — application-layer verdict from gate 9 (primary quality signal). Enum: `APPLICABLE`, `REDUNDANT`, `HARMFUL`, `MIXED`, `FALSE_POSITIVE`, `UNVERIFIED`. Pass-through from authored frontmatter. |
+| 43d | `application_verdict` | grouped under parent | `health.application_verdict`. **v7+** Health Block field — application-layer verdict from gate 9 (primary quality signal). Enum: `APPLICABLE`, `REDUNDANT`, `HARMFUL`, `MIXED`, `FALSE_POSITIVE`, `UNVERIFIED`, `PROVISIONAL`. Pass-through from authored frontmatter. |
 | 43e | `audit_verdict` *(deprecated in v7)* | grouped under parent | `health.audit_verdict`. v6 Health Block field — aggregate verdict (`PASS`, `PASS_WITH_FIXES`, `PARTIAL`, `FAIL`, `UNKNOWN`). DEPRECATED in v7; replaced by the four discrete verdicts above. Kept in the manifest schema for back-compat reads of unmigrated v6 manifests. See [ADR 0011](adr/0011-split-audit-verdict-into-four-verdicts.md). |
 | 44 | `eval_score` | grouped under parent | `health.eval_score`. v6 Health Block field — latest aggregate eval grade (0.0–5.0). Pass-through from authored frontmatter. |
 | 45 | `eval_failed_ids` | grouped under parent | `health.eval_failed_ids`. v6 Health Block field — eval IDs that failed in the most recent run. Pass-through from authored frontmatter. |
@@ -129,7 +131,7 @@ Four Agent-Skills base-standard fields and one Skill Graph classification field 
 |---|---|---|
 | *(none as of 2026-04-17)* | — | — |
 
-If a future change drops a field, the drop must be documented in this section with three pieces of information: (1) why the field is dropped, (2) which tool or transform could reconstruct it if a consumer later needs it, and (3) the ticket or commit that authorized the drop. `scripts/skill-lint.js` checks that every field declared in `schemas/skill.schema.json` either appears in `schemas/manifest.schema.json` or has a row in this table.
+If a future change drops a field, the drop must be documented in this section with three pieces of information: (1) why the field is dropped, (2) which tool or transform could reconstruct it if a consumer later needs it, and (3) the ticket or commit that authorized the drop. `scripts/check-protocol-consistency.js` checks that every field declared in `schemas/skill.schema.json` either appears in `schemas/manifest.schema.json` or has a row in this table.
 
 ### Loss-policy parity rule
 
@@ -137,7 +139,7 @@ The contract between authored and generated schemas is intentionally symmetric:
 
 - Every field in `schemas/skill.schema.json` must either appear in `schemas/manifest.schema.json` or appear in the current dropped-field list above.
 - Every field in `schemas/manifest.schema.json` must either have an authored source in the rename map above or be declared in "Generated-only manifest fields."
-- `scripts/skill-lint.js` enforces both directions. CI fails if either side drifts.
+- `scripts/check-protocol-consistency.js` enforces both directions. CI fails if either side drifts.
 
 This parity is what lets downstream consumers trust the manifest as the complete projection of the authored frontmatter. Without it, a consumer reading only the manifest would have to re-parse the authored source to recover dropped fields, defeating the entire point of compiling a manifest.
 
@@ -155,7 +157,7 @@ Three versions coexist in a manifest ecosystem:
 |---|---|---|
 | Authored skill `version` | Per-skill frontmatter `version` field | Version of the skill's content (e.g. `1.2.0` means the skill has been iterated twice since its initial publish). |
 | Authored skill schema version | Per-skill frontmatter `schema_version` field | Version of the `skill.schema.json` contract the skill was authored against. The active value is `7` (four-verdict Health Block; see `docs/migrations/v6-to-v7.md`). |
-| Manifest schema version | Manifest root `schema_version` field | Version of the compiled manifest root contract. `scripts/generate-manifest.js` emits `4` today and `schemas/manifest.v7.schema.json` intentionally validates that value with `schema_version.const: 4`; the manifest schema file itself is v7 because the field set has advanced additively through v5-v7 without forcing a root-version bump for consumers. |
+| Manifest schema version | Manifest root `schema_version` field | Version of the compiled manifest root contract. `scripts/generate-manifest.js` emits `4` today and `schemas/manifest.schema.json` intentionally validates that value with `schema_version.const: 4`; the manifest schema file itself is v7 because the field set has advanced additively through v5-v7 without forcing a root-version bump for consumers. |
 
 ### When to bump `schema_version`
 
@@ -185,7 +187,7 @@ Consumers that read `skills.manifest.json` should:
 When a major manifest schema change ships:
 
 1. The new schema is published with its new `schema_version`.
-2. `scripts/skill-lint.js` is updated to enforce the new contract.
+2. The schema/protocol verification tools are updated to enforce the new contract.
 3. A migration note lands in this document under a dated heading describing what changed and how consumers should adapt.
 4. The old schema file remains accessible by version for consumers pinning to the old contract during their migration window.
 
@@ -210,7 +212,7 @@ The v1 `eval_status` compressed three orthogonal concerns — artifact state, ru
 | `active` | `present` | `monitored` | `absent` |
 | `evals+trigger` | `present` | `passing` | `present` |
 
-All three v2 fields are required. The lint script verifies that `eval_artifacts: present` is backed by a real artifact under `examples/evals/` (the v1 `eval_status: evals` check moved to this field).
+All three v2 fields are required. `eval_artifacts: present` must be backed by a real artifact under `examples/evals/` or an equivalent eval location (the v1 `eval_status: evals` check moved to this field).
 
 **2. `portability.level` → `portability.readiness` and `portability.exports` → `portability.targets`.**
 
@@ -424,13 +426,13 @@ Each arrow corresponds to one row of the rename map.
 
 - `name` → `id` **and** `name` — the generator writes both. `id` is the stable reference used by other manifest entries (e.g. `relations.adjacent: ["documentation"]` refers to the `id` of another skill). `name` remains human-readable for display.
 - `name` → `path` — the generator records the source file path; this is the only way a consumer can trace a manifest entry back to its authored source without re-scanning the repo.
-- `description`, `version`, `type`, `category`, `scope`, `owner`, `stability` — straight copies, same keys, same shape. (v2 `family` was renamed to `browse_category` in v3, then to `category` in v4 — see § Migration Note — v2 → v3.)
+- `description`, `version`, `type`, `category`, `scope`, `owner`, `stability` — straight copies, same keys, same shape. `category` remains enum-checked in the manifest so invalid source values cannot hide behind projection. (v2 `family` was renamed to `browse_category` in v3, then to `category` in v4 — see § Migration Note — v2 → v3.)
 - `license`, `compatibility`, `allowed-tools` — straight copies (post-SH-5776). The three SKILL.md base-standard optional fields flow through unchanged; a consumer that only speaks SKILL.md sees them at the expected keys.
 - `triggers`, `keywords`, `paths` → `activation.triggers`, `activation.keywords`, `activation.paths` — three sibling authored fields are grouped under a single `activation` object. This matches the semantic: they are all activation signals. The grouping is a presentation choice, not a loss.
 - `relations` → `relations` — copied through with the full sub-key set (`adjacent`, `related`, `broader`, `narrower`, `boundary`, `disjoint_with`, `verify_with`, `depends_on`). Same shape on both sides.
 - `grounding` → `grounding` — copied through unchanged. The authored field was renamed from `domain_frame` to `grounding` in SH-5779 (2026-04-16), aligning the authored field name with its long-standing manifest projection key. The internal sub-field `evaluation_mode` was renamed to `grounding_mode` in the same change — the field describes the evidence source, not the execution mode.
 - `portability` → `portability` — copied through with the v2 sub-key set (`readiness`, `targets`). Renamed from v1 (`level`, `exports`) in SH-5784.
-- `freshness`, `drift_check`, `eval_artifacts`, `eval_state`, `routing_eval` → `health.freshness`, `health.drift_check`, `health.eval_artifacts`, `health.eval_state`, `health.routing_eval` — five sibling governance fields are grouped under a single `health` object. The three eval-health fields replaced the v1 `health.eval_status` in SH-5784. `has_grounding` and `has_relations` are generated boolean flags that summarize presence of the corresponding authored blocks, so a consumer can filter on "grounded skills" without re-parsing the full `grounding` object.
+- `freshness`, `drift_check`, `eval_artifacts`, `eval_state`, `routing_eval` → `health.freshness`, `health.drift_check`, `health.eval_artifacts`, `health.eval_state`, `health.routing_eval` — five sibling governance fields are grouped under a single `health` object. The three eval-health fields replaced the v1 `health.eval_status` in SH-5784 and stay enum-checked in the manifest. `has_grounding` and `has_relations` are generated boolean flags that summarize presence of the corresponding authored blocks, so a consumer can filter on "grounded skills" without re-parsing the full `grounding` object.
 
 ### What is deliberately absent from the projection
 

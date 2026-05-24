@@ -64,7 +64,7 @@
 - Files: `docs/field-decision-guide.md:315`, `SKILL_METADATA_PROTOCOL.md:184-227, 680`
 - Evidence: Decision guide line 315: "`category` is always present because it is required." SMP line 680 (v3→v4 migration table) lists `category` under "New optional fields." SMP line 184 says "A browse facet — answers the single question…" without explicitly stating required/optional in the prose, though the v5 closed-enum is enforced at schema + lint level (line 187).
 - Doc Ownership Map verdict: Normative status ("required vs optional") lives in `SKILL_METADATA_PROTOCOL.md` (Doc Ownership Map line 197). Decision guide should match.
-- Recommended fix: Confirm against `schemas/skill.v7.schema.json` whether `category` is in the `required: []` array; update SMP § Classification with an explicit "Required since v5" line; reconcile field-decision-guide reference. Phase 2 work.
+- Recommended fix: Confirm against `schemas/skill.schema.json` whether `category` is in the `required: []` array; update SMP § Classification with an explicit "Required since v5" line; reconcile field-decision-guide reference. Phase 2 work.
 
 ### MEDIUM — open from prior audit (still in-scope here)
 

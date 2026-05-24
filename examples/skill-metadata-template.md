@@ -1,5 +1,5 @@
 ---
-# yaml-language-server: $schema=https://skillgraph.dev/schemas/skill.v6.schema.json
+# yaml-language-server: $schema=https://skillgraph.dev/schemas/skill.schema.json
 #
 # ============================================================================
 # SCAFFOLD — this file is a skill template, not a production skill.
@@ -37,10 +37,10 @@ name: skill-metadata-template
 # Keep the description concise enough to route well, but do not treat runtime
 # wording guidelines as protocol limits.
 # for Anthropic's own guidance on pushy descriptions.
-description: "Use when creating a new SKILL.md, adapting an existing skill to a different archetype, or teaching an author the canonical frontmatter and body structure. Covers schema-conformant frontmatter, archetype-aware body layout, semantic-layer discipline (description vs Coverage), teaching-layer mechanics (TEMPLATE NOTE blockquotes and YAML comments), and the authoring gate. Do NOT use when modifying an already-written skill (edit that skill directly) or when writing general technical documentation (use the documentation skill)."
+description: "Use when creating a new SKILL.md, adapting an existing skill to a different archetype, or teaching an author the canonical frontmatter and body structure. Covers schema-conformant frontmatter, archetype-aware body layout, semantic-layer discipline (description vs Coverage), teaching-layer mechanics (TEMPLATE NOTE blockquotes and YAML comments), and the authoring gate. Do NOT use when modifying an already-written skill (edit that skill directly) or when writing general technical documentation (use `docs-development`)."
 version: 1.0.0
 type: capability
-# TEMPLATE NOTE: category is the closed v5 enum — exactly one of:
+# TEMPLATE NOTE: category is the closed six-value enum introduced in v5 and retained in v7 — exactly one of:
 # foundations / engineering / design / quality / agent / product. See
 # docs/skill-metadata-protocol.md § Category and docs/migrations/v4-to-v5.md
 # for the migration mapping. The scaffold itself is an agent-system authoring
@@ -65,12 +65,11 @@ drift_check:
 # to `planned` only as a temporary state — move to `present` once the artifact
 # ships. Set eval_state to `unverified` when no run has been recorded yet.
 #
-# routing_eval: `present` is LINT-ENFORCED since [Unreleased]. Setting `present`
+# routing_eval: `present` is harness-enforced, not lightweight-lint-enforced. Setting `present`
 # requires (1) populated `examples` + `anti_examples` below, AND (2) a passing
-# run of `node scripts/skill-graph-routing-eval.js --skill <name>`. Lint check
-# 12 surfaces each failing prompt. Default to `absent` when authoring; flip
-# to `present` only after the harness agrees. See docs/field-reference.md §
-# routing_eval for the full enforcement contract.
+# run of `node scripts/skill-graph-routing-eval.js --skill <name>`. Default to
+# `absent` when authoring; flip to `present` only after the harness agrees.
+# See docs/field-reference.md § routing_eval for the full enforcement contract.
 #
 # SCAFFOLD NOTE — on this specific file (`examples/skill-metadata-template.md`),
 # routing_eval MUST stay `absent` even though the harness happens to report
@@ -116,7 +115,7 @@ allowed-tools: Read Grep
 keywords:
   - how to write a SKILL.md file
   - SKILL.md frontmatter YAML
-  - Skill Metadata Protocol v4
+  - Skill Metadata Protocol v7
   - Skill Graph schema fields
   - skill archetype capability vs workflow
   - skill description routing contract
@@ -133,11 +132,11 @@ triggers:
 # glob. Remove this block if your skill is purely conceptual and has no file surface.
 #
 # Previous versions of this block also listed `skills/**/SKILL.md` but that glob is
-# owned by `graph-audit` (the audit tooling that verifies every SKILL.md against the
+# owned by `skill-infrastructure` (the audit tooling that verifies every SKILL.md against the
 # schema). Two skills claiming the same glob produces router ambiguity — the scope
-# tiebreaker (`codebase` > `reference`) picks graph-audit anyway, and reference-scope
+# tiebreaker (`codebase` > `reference`) picks skill-infrastructure anyway, and reference-scope
 # skills are looked-up rather than path-routed. Lesson: each path glob should map to
-# ONE canonical skill; `scripts/skill-overlap.js` surfaces duplicates as warnings.
+# ONE canonical skill; `scripts/skill-overlap.js` reports shared keyword recall as INFO.
 paths:
   - examples/skill-metadata-template.md
 # TEMPLATE NOTE: examples is new in v0.5.0. 2–5 realistic user prompts the skill
@@ -185,10 +184,10 @@ relations:
   #     reason: "refactor is behavior-preserving code modification, not skill authoring"
   #   - skill: skill-router
   #     reason: "skill-router dispatches between existing skills at request time; this template creates a NEW skill"
-  #   - skill: graph-audit
-  #     reason: "graph-audit verifies the authored metadata of an existing skill; this template is the authoring-time guide"
+  #   - skill: skill-infrastructure
+  #     reason: "skill-infrastructure verifies the authored metadata of an existing skill; this template is the authoring-time guide"
   # verify_with:
-  #   - documentation
+  #   - docs-development
   boundary: []
   verify_with: []
 # TEMPLATE NOTE: grounding is REQUIRED for grounded skills that make concrete
@@ -206,11 +205,8 @@ grounding:
         start: 480
         end: 590
       note: "Grounding schema shape"
-    # TEMPLATE NOTE: The canonical SKILL_AUDIT_CHECKLIST.md lives in the
-    # `skill-audit-loop` repo as of the 2026-05-16 monorepo split. The scaffold
-    # cannot anchor across repos, so the previous `SKILL_AUDIT_CHECKLIST.md`
-    # entry has been removed. See the `skill-audit-loop` README for the
-    # canonical authoring-gate checklist.
+    - path: SKILL_AUDIT_CHECKLIST.md
+      note: "Canonical authoring and audit checklist"
   failure_modes:
     - placeholder_sludge
     - cargo_cult_meta_sections
@@ -257,7 +253,7 @@ runtime_telemetry:
 
 > **TEMPLATE NOTE — HOW TO READ THIS FILE:** This file is a real, valid, schema-conformant Skill Metadata Protocol skill whose *subject* is skill authoring itself. Read it as a finished specimen of the contract, then adapt it by (1) renaming the identity, (2) rewriting `description`, `## Coverage`, `## Philosophy`, and `## Key Files` for your subject, (3) rewriting `## Verification` to be your skill's self-check, (4) removing any section or field that does not apply to your archetype, and (5) stripping the `> **TEMPLATE NOTE:**` blockquotes and `# TEMPLATE NOTE:` YAML comments — they are authoring scaffolding, never skill content. Never ship placeholder sludge (`your-skill-name`, `path/to/file`, `todo`). If a section does not apply, remove it — do not keep it and fill it with fake content.
 
-> **TEMPLATE NOTE — CONDITIONAL FIELDS:** `extends` is valid only when `type: overlay`. `routing_bundles` only applies when routing-group ownership is part of the skill contract. `triggers` and `paths` are shown because this template is both label-routable and file-activated; most skills need only one. `grounding` is REQUIRED for `scope: codebase` skills; remove the block entirely for `scope: portable` or `scope: reference`. `workspace_tags` is optional — omit for ambient / cross-project skills. `lifecycle` is optional — omit when staleness is not meaningful. `runtime_telemetry` is optional — omit when no feedback pipeline exists. Generated manifest health fields belong in `skills.manifest.json`, not in the authored `SKILL.md`.
+> **TEMPLATE NOTE — CONDITIONAL FIELDS:** `extends` is valid only when `type: overlay`. `routing_bundles` only applies when routing-group ownership is part of the skill contract. `triggers` and `paths` are shown because this template is both label-routable and file-activated; most skills need only one. `grounding` is REQUIRED for `scope: codebase` skills; remove the block entirely for `scope: portable` or `scope: reference`. `workspace_tags` is optional — omit for ambient / cross-project skills. `lifecycle` is optional — omit when staleness is not meaningful. `runtime_telemetry` is optional — omit when no feedback pipeline exists. Health Block fields live in the authored `SKILL.md`, but the audit/eval loop owns them; new-skill authors should leave them absent until a real audit or eval run writes evidence.
 
 ## Coverage
 
@@ -267,7 +263,7 @@ runtime_telemetry:
 - Archetype-driven body structure: which `## H2` sections each of the four archetypes (`capability`, `workflow`, `router`, `overlay`) must contain
 - Grounding via `grounding`: when a skill should declare truth sources and failure modes, and when it should stay `grounding_mode: universal`
 - drift evidence: when to record `drift_check.truth_source_hashes` and how the drift sentinel consumes them
-- v4 workspace tagging: when to add `workspace_tags`, when to leave a skill ambient, and how workspace semantic-tag mapping composes
+- Workspace tagging: when to add `workspace_tags`, when to leave a skill ambient, and how workspace semantic-tag mapping composes
 - Adapter workflow: how to strip a template down, how to detect and remove cargo-culted meta, and how to verify a new skill against `schemas/skill.schema.json` before committing
 
 ## Philosophy
@@ -305,7 +301,7 @@ Use this checklist as the authoring gate before committing a skill adapted from 
 | Instead of this template | Use | Why |
 |---|---|---|
 | `skill-metadata-template` | the target skill directly | Editing an existing skill is refactor-in-place, not authoring from a template |
-| `skill-metadata-template` | `documentation` | General technical writing is not skill authoring; use `documentation` for docs, guides, and specs |
+| `skill-metadata-template` | `docs-development` | General technical writing is not skill authoring; use `docs-development` for docs, guides, and specs |
 | `skill-metadata-template` | `docs/skill-metadata-protocol.md` | When you need the full field reference, read the contract document directly |
 
 ## References
@@ -313,5 +309,5 @@ Use this checklist as the authoring gate before committing a skill adapted from 
 - `docs/skill-metadata-protocol.md § Relationship to the SKILL.md format` - how Skill Metadata Protocol extends the base format
 - `docs/skill-metadata-protocol.md § Example Template Rule` — the no-placeholder-sludge rule this template enforces
 - `docs/skill-metadata-protocol.md § Archetype section map` — required H2 sections per archetype
-- `docs/manifest-field-mapping.md § Migration Note — v2 → v3` — the field-name cleanup the v4 bump introduced
+- `docs/migrations/v6-to-v7.md` — the Health Block four-verdict split that current v7 skills use
 - `../SKILL_AUDIT_CHECKLIST.md` — the checklist this template's Verification section is derived from

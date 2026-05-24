@@ -426,7 +426,7 @@ Exit codes for `skill-graph evolve`:
 
 | Tool | Purpose |
 |---|---|
-| `scripts/skill-lint.js` | Per-skill schema validation, relation target checks, eval coherence, required body sections, routing-quality checks. |
+| `scripts/skill-lint.js` | Lightweight canonical-source gate: valid frontmatter, identifier shape, non-empty description, and parent-directory/name alignment. Schema, routing, relation, drift, export, and eval checks live in the dedicated tools below. |
 | `scripts/check-protocol-consistency.js` | Cross-artifact checks so schemas, docs, generated field references, and sample manifests stay aligned. |
 | `scripts/generate-manifest.js` | Compiles all skills into a deterministic manifest for routing and downstream tooling. |
 | `scripts/skill-graph-route.js` | Reference router that explains selected, co-loaded, and excluded skills. |
@@ -541,7 +541,7 @@ For project framing context, see [GitHub Discussion #1](https://github.com/jacob
 
 ## Status
 
-Latest release: **`@skill-graph/cli@0.5.9`** (2026-05-23) — see [`CHANGELOG.md`](CHANGELOG.md) and the generated [`docs/status.generated.md`](docs/status.generated.md). The current contract is `schema_version: 7` — see [`schemas/skill.v7.schema.json`](schemas/skill.v7.schema.json) for the authoritative shape and [`docs/migrations/v6-to-v7.md`](docs/migrations/v6-to-v7.md) for the migration procedure. The `schemas/` directory pins v2 through v7 for tooling that consumes the schemas directly. The unversioned `skill.schema.json` tracks v7.
+Latest release: **`@skill-graph/cli@0.5.9`** (2026-05-23) — see [`CHANGELOG.md`](CHANGELOG.md) and the generated [`docs/status.generated.md`](docs/status.generated.md). The current contract is `schema_version: 7` — see [`schemas/skill.schema.json`](schemas/skill.schema.json) for the authoritative shape and [`docs/migrations/v6-to-v7.md`](docs/migrations/v6-to-v7.md) for the migration procedure. The `schemas/` directory pins v2 through v7 for tooling that consumes the schemas directly. The unversioned `skill.schema.json` tracks v7.
 
 ## Contributing & Trust
 

@@ -26,7 +26,7 @@ The loop has two gates. They must not be blended into one PASS/FAIL label:
 
 | Gate | What it proves | Evidence | Health fields |
 |---|---|---|---|
-| **Integrity Gate** | The skill is structurally valid, grounded, routable, and export-safe. | Deterministic CI-safe checks: schema/frontmatter, manifest, links, export shape, relation targets, routing assertions, overlap, and drift. | `structural_verdict`, `truth_verdict`, `lint_verdict`, `drift_status` |
+| **Integrity Gate** | The skill is structurally valid, grounded, routable, and export-safe. | Deterministic CI-safe checks: canonical-source lint, schema/protocol consistency, manifest, links, export shape, routing assertions, overlap, and drift. | `structural_verdict`, `truth_verdict`, `lint_verdict`, `drift_status` |
 | **Behavior Gate** | The skill changes agent behavior in the way it claims. | Behavioral evals against realistic positives, hard negatives, prior failures, and boundary cases. | `comprehension_verdict`, `application_verdict`, `eval_score`, `eval_failed_ids` |
 
 The Integrity Gate is required before release because broken metadata poisons the graph. It never certifies skill usefulness. The Behavior Gate is what certifies teaching efficacy; a skill with `application_verdict: UNVERIFIED` is honest, but it is not yet proven useful. A skill is audit-complete only when the Integrity Gate passes and the Behavior Gate is either passed or explicitly left `UNVERIFIED` / `NA` with evidence explaining why behavioral certification was not run.
@@ -42,14 +42,16 @@ This is the honest state, not a defect to mask: `application_verdict: UNVERIFIED
 
 ## The Four Operations
 
-Every action in this loop falls into one of four operations. Each writes to a specific set of flat fields in the Skill Metadata Protocol v7 (see `schemas/skill.v7.schema.json`).
+Every action in this loop falls into one of four operations. Each writes to a specific set of flat fields in the Skill Metadata Protocol v7 (see `schemas/skill.schema.json`).
 
-| Operation | What it does | Mutates skill? | Writes which fields |
+| Operation | What it does | Edits instructional content? | Writes which fields |
 |---|---|---|---|
-| **audit** | Read every field, check freshness and validity against repo truth, score the graded gates when `--graded`. | No | `last_audited`, `structural_verdict`, `truth_verdict`, `comprehension_verdict` (`--graded`), `application_verdict` (`--graded`); retains the per-script `lint_verdict` + `drift_status` they roll up from |
+| **audit** | Read every field, check freshness and validity against repo truth, score the graded gates when `--graded`. | No — writes Health Block fields only | `last_audited`, `structural_verdict`, `truth_verdict`, `comprehension_verdict` (`--graded`), `application_verdict` (`--graded`); retains the per-script `lint_verdict` + `drift_status` they roll up from |
 | **improve** | Edit one field. One commit. Time-boxed. | Yes | the chosen field + `last_changed` |
-| **evaluate** | Run the eval suite (deterministic + comprehension/application graders) against the skill. | No | `eval_score`, `eval_failed_ids`, `freshness`; `comprehension_verdict` / `application_verdict` when those graders run |
+| **evaluate** | Run the eval suite (deterministic + comprehension/application graders) against the skill. | No — writes eval/Health Block fields only | `eval_score`, `eval_failed_ids`, `freshness`; `comprehension_verdict` / `application_verdict` when those graders run |
 | **evolve** | Loop over the corpus: `audit → improve → evaluate`, prioritised by `application_verdict` then skill-graph centrality + staleness. | Yes (per skill) | all of the above, per skill |
+
+`audit` and `evaluate` may mutate frontmatter state because the Health Block lives on the skill. They do not rewrite the skill's instructional body or routing contract unless an explicit `improve` step follows.
 
 This replaces the previous 13-command surface. The mapping:
 
@@ -58,8 +60,8 @@ This replaces the previous 13-command surface. The mapping:
 | `audit:audit-skill` | `audit` |
 | `audit:domain-audit` | `audit --source-first` |
 | `audit:bidirectional-audit` | `audit --fix-code-too` |
-| `audit:deep-repo-audit` | `audit --scope repo` |
-| `audit:workspace-audit` | `audit --scope workspace` |
+| `audit:deep-repo-audit` | `evolve --workspace-root <repo> --skills-dir <repo>/skills --analyze-only` |
+| `audit:workspace-audit` | `evolve --workspace-root <workspace> --skills-dir <workspace>/skills --analyze-only` |
 | `audit:improve-skill` | `improve` |
 | `audit:auto-improve` | `improve --mode <adapter>` |
 | `audit:skill-fix` | `improve --lens <skill>` |
@@ -80,14 +82,14 @@ last_changed: 2026-05-15       # date the skill body or frontmatter was last edi
 structural_verdict: PASS       # PASS | PASS_WITH_FIXES | FAIL | UNVERIFIED — form/export shape (external mandates only)
 truth_verdict: PASS            # PASS | DRIFT | BROKEN | UNVERIFIED — truth sources vs declared hashes
 comprehension_verdict: UNVERIFIED # PASS | SHALLOW | REDUNDANT | UNVERIFIED | SKIPPED_BASELINE_HIGH | NA (gate 8, demoted)
-application_verdict: UNVERIFIED # APPLICABLE | REDUNDANT | HARMFUL | MIXED | FALSE_POSITIVE | UNVERIFIED (gate 9 — the quality signal)
+application_verdict: UNVERIFIED # APPLICABLE | REDUNDANT | HARMFUL | MIXED | FALSE_POSITIVE | UNVERIFIED | PROVISIONAL (gate 9 — the quality signal)
 eval_score: 4.2                # 0.0–5.0 from the eval runner
 eval_failed_ids: []            # empty when clean
 lint_verdict: PASS             # retained per-script signal; rolls up into structural_verdict
 drift_status: OK               # retained per-script signal; rolls up into truth_verdict — OK | DRIFT | BROKEN | STALE | NO_BASELINE | EXTERNAL_UNHASHED | UNKNOWN
 ```
 
-`application_verdict == APPLICABLE` is the only verdict that certifies a skill is **useful**; the other three are necessary infrastructure (the skill loads, exports cleanly, and the model has the concept) but do not certify usefulness. The honest default across the migrated corpus is `application_verdict: UNVERIFIED` until a gate-9 application eval has actually run.
+`application_verdict == APPLICABLE` is the only verdict that certifies a skill is **useful**; the other three are necessary infrastructure (the skill loads, exports cleanly, and the model has the concept) but do not certify usefulness. `PROVISIONAL` means one model assessed useful behavior without the independent application grader; `UNVERIFIED` means no application assessment has run.
 
 Before v6, this state was scattered across `eval-history.jsonl`, `routing-misses.jsonl`, `.opencode/progress/skill-audit-*`, `health-ledger.jsonl`, and `findings/*.md`. To know one skill's audit status you grepped five places. The Health Block collapses that to one frontmatter block. The loop reads it; the operations write it back.
 
@@ -97,7 +99,7 @@ The same skill's body still gets `audits/<skill-name>/findings.md` and `verdict.
 
 The five-phase shape survives, but it lives entirely inside the `audit` operation as its internal pipeline, and each phase now writes a layer-scoped verdict instead of one aggregate. Users see one `audit` command. Internally:
 
-1. **Integrity Gate — structural** (always) — `skill-lint.js` runs canonical-source validation and related deterministic checks. Writes `lint_verdict`, which rolls up into `structural_verdict`. Only external-format or canonical-source violations set `structural_verdict: FAIL`; internal style preferences are warnings only and never fail the verdict.
+1. **Integrity Gate — structural** (always) — `skill-lint.js` runs the canonical-source lint gate. Companion protocol, manifest, link, export, and routing checks complete the structural pass. Writes `lint_verdict`, which rolls up into `structural_verdict`. Only external-format or canonical-source violations set `structural_verdict: FAIL`; internal style preferences are warnings only and never fail the verdict.
 2. **Integrity Gate — truth** (always) — `skill-graph-drift.js` checks declared `grounding.truth_sources`. Writes `drift_status`, which rolls up into `truth_verdict` (`OK → PASS`, `DRIFT → DRIFT`, `BROKEN → BROKEN`, else `UNVERIFIED`).
 3. **Behavior Gate — comprehension** (only under `--graded`, gate 8, demoted) — runs the comprehension grader. Writes `comprehension_verdict`. `SKIPPED_BASELINE_HIGH` is the expected verdict for a concept the foundation model already knows.
 4. **Behavior Gate — application** (only under `--graded` and when an application eval exists, gate 9) — checks whether loading the skill changes agent behavior on real artifacts. Writes `application_verdict` — the real quality signal.
@@ -209,11 +211,11 @@ node bin/skill-graph.js drift
 
 # Evaluate a skill (writes eval_score, eval_failed_ids, and the graded verdicts)
 node lib/audit/evaluate-skill.js --mode comprehension skills/<skill-name>/evals/comprehension.json
-node lib/audit/evaluate-skill.js --mode application --application skills/<skill-name>
+node lib/audit/evaluate-skill.js --mode application --application skills/<skill-name> skills/<skill-name>/evals/application.json
 
 # Evolve the corpus — audit, improve, evaluate in priority order
-# (PREVIEW · monorepo-only; depends on parent-repo scripts — see SH-6138)
-node bin/skill-graph.js evolve --top 10
+# (PREVIEW · standalone path flags are required when the skill library is not cwd)
+node bin/skill-graph.js evolve --workspace-root <workspace> --skills-dir <workspace>/skills --top 10
 
 # Show the Health Block for a skill at a glance
 node lib/audit/skill-status.js <skill-name>
@@ -226,7 +228,7 @@ node lib/audit/skill-status.js <skill-name>
 | Every change | Deterministic `audit` runs in lint as part of CI |
 | Daily | `evolve --top 5` walks the five stalest skills |
 | Weekly | `audit --graded` for skills with `last_audited` older than 7 days and `category` in the high-centrality set |
-| Before release | `evolve --scope all` |
+| Before release | `evolve --workspace-root <workspace> --skills-dir <workspace>/skills --top <N>` |
 
 ## Non-Goals
 
@@ -235,7 +237,7 @@ The loop does not require a separate issue tracker, dashboard, control plane, or
 ## Related Specs
 
 - `docs/skill-metadata-protocol.md` — the canonical field list including the v7 Health Block and flat Understanding fields
-- `schemas/skill.v7.schema.json` — the machine-validated current contract (`schemas/skill.v6.schema.json` and earlier are pinned prior versions)
+- `schemas/skill.schema.json` — the machine-validated current contract (`schemas/skill.v6.schema.json` and earlier are pinned prior versions)
 - `docs/migrations/v6-to-v7.md` — the `audit_verdict` → four-verdict split; `docs/migrations/v5-to-v6.md` — concept block flattening + Health Block introduction
 - `SKILL_AUDIT_CHECKLIST.md` — the per-skill checklist used during `audit`
 - `docs/adr/0011-split-audit-verdict-into-four-verdicts.md` — rationale for the four-verdict model

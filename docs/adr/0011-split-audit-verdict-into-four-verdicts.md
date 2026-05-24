@@ -108,7 +108,7 @@ Replace the single `audit_verdict` with four flat top-level fields. Keep the oth
 
 - All 284 active skills + 52 archived skills get migrated to v7 shape. `application_verdict: UNVERIFIED` is the default for every skill — the honest state given gate 9 has never run.
 - The four operational scripts that write `audit_verdict` today (`scripts/skill/skill-evolution-loop.js`, `scripts/skill/skill-census.js`, `scripts/skill/backfill-audit-state.js`, `skill-graph/lib/audit/skill-status.js`) write the four new verdicts instead. `audit_verdict` is removed from the canonical schema and the migrator strips it from skill frontmatter.
-- The schema files (`skill.schema.json`, the new pinned `skill.v7.schema.json`), the JSON-LD context (`skill.context.jsonld`), the manifest schema (`manifest.schema.json`), the field reference (`docs/field-reference.md` + regenerated `field-reference.generated.md`), the protocol docs, the manifest field mapping, and the skill template all carry the v7 contract.
+- The schema files (`skill.schema.json`, the new pinned `skill.schema.json`), the JSON-LD context (`skill.context.jsonld`), the manifest schema (`manifest.schema.json`), the field reference (`docs/field-reference.md` + regenerated `field-reference.generated.md`), the protocol docs, the manifest field mapping, and the skill template all carry the v7 contract.
 - The marketplace export pipeline (`scripts/export-marketplace-skills.js`) projects the four verdicts into the manifest under `health.*` as today.
 - The migrator script supports `--reverse` for round-trip testing and emergency rollback. Reverse is lossy by construction (the four verdicts collapse back into one).
 
@@ -147,7 +147,7 @@ This decision is revisited when any of the following happens:
 This commit lands:
 
 - `skill-graph/schemas/skill.schema.json` — active contract bumped to v7. `audit_verdict` removed, four new verdict fields added with full descriptions.
-- `skill-graph/schemas/skill.v7.schema.json` — pinned snapshot of the v7 contract.
+- `skill-graph/schemas/skill.schema.json` — pinned snapshot of the v7 contract.
 - `skill-graph/schemas/skill.v6.schema.json` — unchanged (pinned v6 historical).
 - `skill-graph/scripts/migrate-skill-v6-to-v7.js` — codemod with `--apply`, `--dry-run`, `--reverse`. Migrates the canonical authoring source at `~/Development/skills/`; skips the marketplace mirror at `~/Development/skills/skills/` (regenerated post-migration).
 - `skill-graph/docs/migrations/v6-to-v7.md` — breaking-change matrix and migration procedure.

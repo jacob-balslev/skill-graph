@@ -14,9 +14,9 @@ The three layers divide the work cleanly. The [Skill Metadata Protocol](SKILL_ME
 
 | Fact | Value | Source of truth |
 |---|---|---|
-| Schema version | **v7** (four-verdict Health Block) | `schemas/skill.schema.json` `title`; pinned `schemas/skill.v7.schema.json` |
-| Manifest schema file | **v7** | `schemas/manifest.v7.schema.json` |
-| Emitted manifest `schema_version` | **4** (back-compatible root contract) | `scripts/generate-manifest.js`; `schemas/manifest.v7.schema.json` `schema_version.const` |
+| Schema version | **v7** (four-verdict Health Block) | `schemas/skill.schema.json` `title`; pinned `schemas/skill.schema.json` |
+| Manifest schema file | **v7** | `schemas/manifest.schema.json` |
+| Emitted manifest `schema_version` | **4** (back-compatible root contract) | `scripts/generate-manifest.js`; `schemas/manifest.schema.json` `schema_version.const` |
 | Canonical skill count | **147** (verified 2026-05-24) | live: `find ~/Development/skills/skills -name SKILL.md | wc -l`; generated mirror: `docs/status.generated.md` via `npm run status` |
 | Canonical library location | sibling repo `jacob-balslev/skills` at `~/Development/skills/` | `.skill-graph/config.json` → `skill_roots: ["../skills/skills"]` |
 | This repo's role | tooling + protocol + schemas + docs (no `skills/` tree) | [ADR 0009](docs/adr/0009-sibling-repo-deprecation.md) |
@@ -97,10 +97,10 @@ A sixth set of files — `README.md`, `CHANGELOG.md`, `CONTRIBUTING.md`, `LICENS
 
 | File | Role |
 |---|---|
-| `schemas/skill.schema.json` | The frontmatter schema. Unversioned — tracks latest (v7 today; the file's `$id` self-declares `skill.v7.schema.json`). |
+| `schemas/skill.schema.json` | The frontmatter schema. Unversioned — tracks latest (v7 today; the file's `$id` self-declares `skill.schema.json`). |
 | `schemas/manifest.schema.json` | The compiled-manifest schema. Unversioned — tracks latest (v7 today; the manifest contract carries the four Health Block verdicts). |
-| `schemas/skill.v7.schema.json` | Pinned v7 copy of the current skill contract. Consumers that want the current contract validate against this file. |
-| `schemas/manifest.v7.schema.json` | Pinned v7 copy of the current manifest contract. |
+| `schemas/skill.schema.json` | Pinned v7 copy of the current skill contract. Consumers that want the current contract validate against this file. |
+| `schemas/manifest.schema.json` | Pinned v7 copy of the current manifest contract. |
 | `schemas/skill.v6.schema.json` | Frozen pinned v6 copy for consumers still migrating from v6 to v7. |
 | `schemas/skill.v5.schema.json` | Frozen pinned v5 copy for consumers still migrating from v5 to v6. |
 | `schemas/skill.v4.schema.json` | Frozen pinned v4 copy for consumers still migrating from v4 to v5 / v6. |
@@ -147,7 +147,7 @@ Scripts that police Tier 1 (lint, consistency) or compile Tier 1's output (manif
 
 | File | Role |
 |---|---|
-| `scripts/skill-lint.js` | Four-check external-mandate validator: YAML parse, `name` field (≤64 chars, kebab-case), `description` field (≤1024 chars per Anthropic Agent Skills cap), parent directory equals `name`. Reduced from the previous 11-check pipeline in commit `2bd8e64` (2026-05-19) per the audit-doctrine cleanup — project-internal checks (relation targets, eval coherence, schema parity, archetype sections, routing quality, stability promotion, etc.) moved out of lint. |
+| `scripts/skill-lint.js` | Four-check canonical-source validator: YAML parse, `name` field using Skill Metadata Protocol identifier syntax, non-empty `description`, and parent directory matching the final `name` segment. Reduced from the previous broad lint pipeline in commit `2bd8e64` (2026-05-19) per the audit-doctrine cleanup — project-internal checks (relation targets, eval coherence, schema parity, archetype sections, routing quality, stability promotion, etc.) moved out of lint. |
 | `scripts/lint/format-code-frame.js` | Babel/Rust-style diagnostic formatter. |
 | `scripts/lib/parse-frontmatter.js` | Minimal YAML parser. Handles quoted keys, block sequences, nested objects, block sequences of objects (v3 `boundary` / `depends_on` shape). |
 
@@ -262,7 +262,7 @@ stateDiagram-v2
 
 > **The question this diagram answers:** "How does `skill-graph-routing-eval.js` decide whether a skill's `routing_eval: present` claim holds?"
 
-This is the rent-proof for the v0.5.0 `examples`, `anti_examples`, and `relations.boundary.{skill, reason}` fields. Without this harness those fields sit unverified in every SKILL.md — the router's retrieval behavior against them is asserted but never checked. With this harness every authored positive prompt and every authored negative prompt produces a concrete routing decision that the manifest can be graded against. Lint check 12 (`scripts/lint/check-routing-eval.js`) calls into `evaluateSkill()` per-file and refuses `routing_eval: present` unless every case is `PASS` or `COVERAGE_GAP`.
+This is the rent-proof for the v0.5.0 `examples`, `anti_examples`, and `relations.boundary.{skill, reason}` fields. Without this harness those fields sit unverified in every SKILL.md — the router's retrieval behavior against them is asserted but never checked. With this harness every authored positive prompt and every authored negative prompt produces a concrete routing decision that the manifest can be graded against. `scripts/skill-graph-routing-eval.js` is now the canonical gate for `routing_eval: present`; the earlier per-file lint wrapper was removed with the non-mandatory lint checks.
 
 ```mermaid
 flowchart LR
@@ -346,7 +346,7 @@ Concrete artifacts that show adopters what "good" looks like. Every specimen is 
 
 | Directory | Role |
 |---|---|
-| `examples/audits/` | Worked audit outputs (findings/verdict/scorecard) for `a11y`, `debugging`, `documentation`. |
+| `examples/audits/` | Worked audit outputs (findings/verdict/scorecard) for fixture and library skills, including historical starter-skill audits. |
 | `examples/evals/` | Eval fixtures for starter skills plus expanded routing and content-verification surfaces. |
 | `examples/exports/` | Five plain `SKILL.md` exports demonstrating Tier 3's `export-skill.js` transform. |
 

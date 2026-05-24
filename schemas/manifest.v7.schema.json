@@ -1,6 +1,6 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://skillgraph.dev/schemas/manifest.v7.schema.json",
+  "$id": "https://skillgraph.dev/schemas/manifest.schema.json",
   "title": "Skill Graph Manifest",
   "type": "object",
   "required": [
@@ -165,11 +165,26 @@
             "description": "v3.1 preferred alias for `type`. Pass-through from authored frontmatter."
           },
           "category": {
-            "type": "string"
+            "type": "string",
+            "enum": [
+              "foundations",
+              "engineering",
+              "design",
+              "quality",
+              "agent",
+              "product"
+            ]
           },
           "secondary_categories": {
             "type": "array",
             "items": { "type": "string" }
+          },
+          "categories": {
+            "type": "array",
+            "items": { "type": "string" }
+          },
+          "primaryCategory": {
+            "type": "string"
           },
           "domain": {
             "type": "string"
@@ -541,13 +556,27 @@
             "additionalProperties": false,
             "properties": {
               "eval_artifacts": {
-                "type": "string"
+                "type": "string",
+                "enum": [
+                  "none",
+                  "planned",
+                  "present"
+                ]
               },
               "eval_state": {
-                "type": "string"
+                "type": "string",
+                "enum": [
+                  "unverified",
+                  "passing",
+                  "monitored"
+                ]
               },
               "routing_eval": {
-                "type": "string"
+                "type": "string",
+                "enum": [
+                  "absent",
+                  "present"
+                ]
               },
               "eval_last_run": {
                 "type": "object",
@@ -760,9 +789,10 @@
                   "HARMFUL",
                   "MIXED",
                   "FALSE_POSITIVE",
-                  "UNVERIFIED"
+                  "UNVERIFIED",
+                  "PROVISIONAL"
                 ],
-                "description": "Application-layer verdict (gate 9). The v7 primary quality signal — a skill is only behaviorally certified when this is `APPLICABLE`. Default `UNVERIFIED` for skills that have not been audited via the application grader. Pass-through from authored frontmatter."
+                "description": "Application-layer verdict (gate 9). The v7 primary quality signal — a skill is only behaviorally certified when this is `APPLICABLE`. `UNVERIFIED` means no application assessment has run; `PROVISIONAL` means one model found useful behavior without grader confirmation. Pass-through from authored frontmatter."
               },
               "audit_verdict": {
                 "type": "string",

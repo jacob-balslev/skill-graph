@@ -18,7 +18,7 @@ A complete audit should produce:
 2. Behavior Gate result
 3. findings list
 4. required fixes
-5. updated metadata or content when drift is confirmed
+5. a remediation note; only `improve` or an explicitly requested fix mutates the skill or Health Block
 
 ## Gate Model
 
@@ -69,11 +69,14 @@ Required sections:
 
 1. `# Verdict`
 2. `## Skill`
-3. `## Final Verdict`
-4. `## Rationale`
-5. `## Follow-up State`
+3. `## Integrity Gate`
+4. `## Behavior Gate`
+5. `## Rationale`
+6. `## Follow-up State`
 
-`Final Verdict` must be exactly one of: `PASS`, `PASS WITH FIXES`, `PARTIAL`, `FAIL`.
+`Integrity Gate` must be exactly one of: `PASS`, `PASS_WITH_FIXES`, `FAIL`, `UNVERIFIED`.
+
+`Behavior Gate` must report the application-layer state: `APPLICABLE`, `REDUNDANT`, `HARMFUL`, `MIXED`, `FALSE_POSITIVE`, `UNVERIFIED`, or `PROVISIONAL`. Use `UNVERIFIED` with evidence when no application eval was run; use `PROVISIONAL` only for a single-model dogfood audit that still lacks grader confirmation.
 
 ### `scorecard.md`
 
@@ -97,17 +100,17 @@ Required dimension rows:
 
 ### 1. Frontmatter validity
 
-- [ ] `schema_version` exists and equals `7` (integer; the string `"7"` is tolerated for hand-rolled YAML for back-compat — see `schemas/skill.v7.schema.json`)
+- [ ] `schema_version` exists and equals `7` (integer; the string `"7"` is tolerated for hand-rolled YAML for back-compat — see `schemas/skill.schema.json`)
 - [ ] `name` exists and matches the intended skill identifier
 - [ ] `description` exists and is specific enough to route from
 - [ ] `version` exists
 - [ ] `type` is one of `capability`, `workflow`, `router`, `overlay`
-- [ ] `category` is one of the closed v5 enum: `foundations` / `engineering` / `design` / `quality` / `agent` / `product` (v5 — closed enum framed as browse facet; previously open-string in v3/v4; `family` in v2)
+- [ ] `category` is one of the closed six-value enum retained in v7: `foundations` / `engineering` / `design` / `quality` / `agent` / `product` (introduced in v5 as a browse facet; previously open-string in v3/v4; `family` in v2)
 - [ ] `scope` is one of `codebase`, `reference`, `portable`
 - [ ] `owner` exists
 - [ ] `freshness` exists
 - [ ] `drift_check` exists as an object with `last_verified` (v3+ — was scalar date in v2)
-- [ ] `eval_artifacts`, `eval_state`, `routing_eval` all exist (orthogonal triple — shipped in schema_version 2 under SH-5784, retained through v5)
+- [ ] `eval_artifacts`, `eval_state`, `routing_eval` all exist (orthogonal triple — shipped in schema_version 2 under SH-5784, retained through v7)
 - [ ] `extends` exists when `type: overlay`
 - [ ] `extends` is absent when `type` is not `overlay`
 
@@ -122,7 +125,7 @@ Required dimension rows:
 
 ### 3. Relation quality
 
-- [ ] `relations.adjacent` points to real neighboring skills
+- [ ] `relations.related` points to real neighboring skills (`relations.adjacent` is accepted only as a back-compat alias)
 - [ ] `relations.boundary` clearly prevents misuse
 - [ ] `relations.verify_with` names valid verification partners
 - [ ] `relations.depends_on` is only used where a real dependency exists

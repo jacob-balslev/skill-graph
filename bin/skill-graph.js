@@ -252,7 +252,7 @@ Examples:
   },
   'protocol-check': {
     script: 'scripts/check-protocol-consistency.js',
-    help: `Usage: skill-graph protocol-check [options]\n\nCheck cross-artifact protocol consistency across the invariants:\n\n  C1 — Field-set parity (field-reference.md vs skill.schema.json)\n  C2 — Authored-to-generated parity (skill.schema.json -> manifest.schema.json)\n  C3 — Artifact-root convention\n  C4 — Sample manifest correctness\n  C5 — Example truth invariants\n  C6 — REMOVED 2026-05-24 (pinned schemas deleted; canonical-only repo)\n  C7 — Generated field-reference parity\n  C8 — JSON-LD context coverage (schema fields vs skill.context.jsonld)\n\nOptions:\n  --verbose   Print per-field diagnostics for each failed check.\n\nExit codes: 0 on PASS; non-zero on any FAIL.\n`,
+    help: `Usage: skill-graph protocol-check [options]\n\nCheck cross-artifact protocol consistency across the invariants:\n\n  C1 — Field-set parity (field-reference.md vs skill.schema.json)\n  C2 — Authored-to-generated parity (skill.schema.json -> manifest.schema.json)\n  C3 — Artifact-root convention\n  C4 — Sample manifest correctness\n  C5 — Example truth invariants\n  C7 — Generated field-reference parity\n  C8 — JSON-LD context coverage (schema fields vs skill.context.jsonld)\n\nOptions:\n  --verbose   Print per-field diagnostics for each failed check.\n\nExit codes: 0 on PASS; non-zero on any FAIL.\n`,
   },
   doctor:  {
     inline: true,

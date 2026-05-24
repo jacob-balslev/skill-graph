@@ -154,7 +154,8 @@ These improve portability, discoverability, and health tracking, but are not req
 ```yaml
 paths
 workspace_tags
-category
+categories
+primaryCategory
 compatibility
 allowed-tools
 routing_bundles
@@ -234,7 +235,7 @@ flowchart LR
 
 ### Authored fields, grouped by purpose
 
-The YAML frontmatter uses the current v7 schema, including compatibility aliases that remain accepted for migration, the flat Understanding fields added in v6, the four-verdict Health Block added in v7, and the two publication-facet fields (`secondary_categories`, `marketplace_tier`) added in the May 2026 skill-org reorganization. The schema is the authoritative source for types and requiredness (`schemas/skill.v7.schema.json`); the canonical per-field reference is [`docs/field-reference.md`](field-reference.md). The table below is a navigable index. `always` = required by the base schema; `if <condition>` = conditionally required; blank = optional enrichment.
+The YAML frontmatter uses the current v7 schema, including compatibility aliases that remain accepted for migration, the flat Understanding fields added in v6, the four-verdict Health Block added in v7, and the two publication-facet fields (`secondary_categories`, `marketplace_tier`) added in the May 2026 skill-org reorganization. The schema is the authoritative source for types and requiredness (`schemas/skill.schema.json`); the canonical per-field reference is [`docs/field-reference.md`](field-reference.md). The table below is a navigable index. `always` = required by the base schema; `if <condition>` = conditionally required; blank = optional enrichment.
 
 **v6 simplification (2026-05-17).** v6 flattens the seven-field `concept` block to top-level so the Understanding fields read like every other field in the Protocol. It also adds the first flat **Health Block** so a skill's audit fingerprint lives in its own frontmatter instead of scattered across `eval-history.jsonl`, `health-ledger.jsonl`, and `.opencode/progress/skill-audit-*`. **v7 split (2026-05-19).** v7 replaces the single aggregate `audit_verdict` with four verdicts: `structural_verdict`, `truth_verdict`, `comprehension_verdict`, and `application_verdict`. The Skill Audit Loop reads these Health Block fields directly; no log-file crawl required.
 
@@ -263,7 +264,7 @@ The YAML frontmatter uses the current v7 schema, including compatibility aliases
 | | [`structural_verdict`](field-reference.md#structural_verdict) | | `PASS` \| `PASS_WITH_FIXES` \| `FAIL` \| `UNVERIFIED` (v7+; form gate roll-up) |
 | | [`truth_verdict`](field-reference.md#truth_verdict) | | `PASS` \| `DRIFT` \| `BROKEN` \| `UNVERIFIED` (v7+; truth-source roll-up) |
 | | [`comprehension_verdict`](field-reference.md#comprehension_verdict) | | `PASS` \| `SHALLOW` \| `REDUNDANT` \| `UNVERIFIED` \| `SKIPPED_BASELINE_HIGH` \| `NA` (v7+; gate 8, demoted) |
-| | [`application_verdict`](field-reference.md#application_verdict) | | `APPLICABLE` \| `REDUNDANT` \| `HARMFUL` \| `MIXED` \| `FALSE_POSITIVE` \| `UNVERIFIED` (v7+; **primary quality signal**) |
+| | [`application_verdict`](field-reference.md#application_verdict) | | `APPLICABLE` \| `REDUNDANT` \| `HARMFUL` \| `MIXED` \| `FALSE_POSITIVE` \| `UNVERIFIED` \| `PROVISIONAL` (v7+; **primary quality signal**) |
 | | [`eval_score`](field-reference.md#eval_score) | | number 0.0–5.0 |
 | | [`eval_failed_ids`](field-reference.md#eval_failed_ids) | | string[] |
 | | [`lint_verdict`](field-reference.md#lint_verdict) | | `PASS` \| `FAIL` \| `UNKNOWN` (per-script signal — `skill-lint.js`) |
@@ -315,9 +316,9 @@ The practical consequence is in **migration**: a rigid type cannot change at run
 The anti-rigid `overlay` is treated specially by the lint:
 
 - An overlay must declare `extends: <parent-skill-name>`.
-- The overlay's `## Coverage` should reference parent concepts (heuristic; lint check 14 OntoClean enforcement, ADR 0003).
+- The overlay's `## Coverage` should reference parent concepts (heuristic; OntoClean review, ADR 0003).
 - The overlay must NOT declare its own `relations.broader` or `relations.narrower` — those flow through `extends`.
-- Deleting the parent invalidates every overlay that extended it; lint surfaces the dangling reference.
+- Deleting the parent invalidates every overlay that extended it; audit/protocol review must surface the dangling reference.
 
 For cross-skill generalisation that is NOT existential dependency (i.e., the child is a coherent standalone skill that just happens to specialise a parent concept), use `relations.broader` instead of `extends`. `react-best-practices` has `broader: [frontend]` because react-best-practices remains coherent even if `frontend` were deleted; it is RIGID. The `extends`-vs-`broader` decision is the OntoClean test in everyday authoring.
 
@@ -337,13 +338,13 @@ Each axis has consumer-visible meaning. A consumer deciding whether to load a sk
 
 The orthogonality also expresses real states cleanly:
 
-- `eval_artifacts: planned + eval_state: unverified` — the author intends to ship evals but hasn't yet; the planned-staleness guard (lint check 6) warns when this sits longer than 180 days.
+- `eval_artifacts: planned + eval_state: unverified` — the author intends to ship evals but hasn't yet; planned-staleness review should surface when this sits too long.
 - `eval_artifacts: present + eval_state: passing + routing_eval: absent` — content quality is verified but the router has never been tested against this skill's `examples[]`. Common during the early life of a skill.
 - `eval_artifacts: present + eval_state: monitored + routing_eval: present` — fully verified along all three axes; the harness runs on a cadence and routing coverage is part of the eval set. The aspirational state.
 
-Note the asymmetry: `routing_eval` is binary (`absent` / `present`) because the harness either agrees or it doesn't — there is no "monitored routing eval" because lint check 12 enforces routing-eval agreement at every lint run. `eval_state` is ternary because content evals can run once (`passing`) or repeatedly (`monitored`), and the difference is consumer-visible.
+Note the asymmetry: `routing_eval` is binary (`absent` / `present`) because the harness either agrees or it doesn't — there is no "monitored routing eval" because the routing harness provides the concrete pass/fail receipt. `eval_state` is ternary because content evals can run once (`passing`) or repeatedly (`monitored`), and the difference is consumer-visible.
 
-The "honesty over green checkmarks" rule (documented at `docs/field-reference.md § routing_eval`) governs the `routing_eval` flip specifically: an author cannot ship `routing_eval: present` until `node scripts/skill-graph-routing-eval.js --skill <name>` returns verdict PASS. Lint check 12 refuses the commit otherwise. The OSS starter library currently sits at all-8-`present` (verified by `node scripts/skill-graph-routing-eval.js --only-asserted`).
+The "honesty over green checkmarks" rule (documented at `docs/field-reference.md § routing_eval`) governs the `routing_eval` flip specifically: an author cannot claim `routing_eval: present` until `node scripts/skill-graph-routing-eval.js --skill <name>` returns verdict PASS. The OSS starter library currently sits at all-8-`present` (verified by `node scripts/skill-graph-routing-eval.js --only-asserted`).
 
 For the field-by-field rationale and worked-example confusion-cases, see [`docs/field-rationale.md`](field-rationale.md).
 
@@ -371,7 +372,7 @@ The context is the source of truth for cross-vocabulary mapping. The most conseq
 | `grounding.truth_sources` | `dcterms:source` | Dublin Core | Source resources from which claims are derived |
 | `urn` | `@id` | RFC 8141 + JSON-LD | Globally-unique persistent identifier |
 
-The `boundary` vs `disjoint_with` split is the most semantically subtle entry. Per ADR 0006, `boundary` operates at the **routing layer** (the router uses it to redirect wrong-skill queries to the correct owner — asymmetric, directional) while `disjoint_with` operates at the **ontology layer** (formal class-disjointness — symmetric, reflexive). They are NOT aliases. Treating them as aliases — which ADR 0001 originally proposed — would force consumers to reason about routing claims as if they were ontological claims, which is unsound.
+The `boundary` vs `disjoint_with` split is the most semantically subtle entry. Per ADR 0006, `boundary` operates at the **routing layer** (the router uses it as a score-aware exclusion guard when the declaring skill wins or ties — asymmetric, directional) while `disjoint_with` operates at the **ontology layer** (formal class-disjointness — symmetric, reflexive). They are NOT aliases. Treating them as aliases — which ADR 0001 originally proposed — would force consumers to reason about routing claims as if they were ontological claims, which is unsound.
 
 The `@context` also declares the `owl` namespace (since the v1.1.0 update) so the `disjoint_with` mapping resolves cleanly. The `_adr_anchors` block in the context file explicitly cross-references ADRs 0001, 0002, and 0006 so future maintainers see the reasoning for the split mapping in-tree, not only in commit history.
 
@@ -437,23 +438,23 @@ See `docs/manifest-field-mapping.md` for the full rename map, loss policy, migra
 Skill Graph uses a single integer `schema_version` to signal authored skill contract evolution. Current authored skill version: **7** (bumped from 6 when the single aggregate `audit_verdict` split into the four Health Block layer verdicts). The five policy points together define when `schema_version` bumps, what consumers should expect, and where migration tooling lives:
 
 1. **Breaking changes bump `schema_version`.** Renamed fields, removed fields, retyped fields, removed enum values, or tightened required-ness constraints bump the integer. Consumers must migrate or pin.
-2. **Additive changes do not bump.** New optional fields, new enum values that extend (not replace) an enum, and new checks in `scripts/skill-lint.js` that only affect warnings do not bump the version. Consumers on the prior minor release continue to pass.
-3. **Validate against the matching schema.** `schemas/skill.schema.json` and `schemas/manifest.schema.json` track the latest contracts (v7 today). Pinned copies ship alongside them as `schemas/skill.v7.schema.json` and `schemas/manifest.v7.schema.json` — content-identical to the unversioned files except for `$id` and `title`. Prior-version pinned files remain in the repo for back-compat reads. Consumers that want stability across future bumps should validate against the versioned files; consumers that want to automatically follow the latest contract should validate against the unversioned files.
-4. **Manifest schema-file version and manifest root `schema_version` are separate surfaces.** The current manifest schema file is v7, but generated manifests still emit root field value `4` because v5-v7 manifest changes were additive for consumers. `schemas/manifest.v7.schema.json` validates that back-compatible root value explicitly.
-5. **One-version-overlap deprecation is preferred.** `scripts/skill-lint.js` emits warnings (not errors) during migration windows where a deprecated shape can still be interpreted safely. Authors get a warning window to migrate. Hard-error enum/shape changes — rejected by `additionalProperties: false` + type constraints in the schema itself — are paired with the friendlier lint warning so the error points at the rename.
+2. **Additive changes do not bump.** New optional fields, new enum values that extend (not replace) an enum, and new warning-only companion checks do not bump the version. Consumers on the prior minor release continue to pass.
+3. **Validate against the matching schema.** `schemas/skill.schema.json` and `schemas/manifest.schema.json` track the latest contracts (v7 today). Pinned copies ship alongside them as `schemas/skill.schema.json` and `schemas/manifest.schema.json` — content-identical to the unversioned files except for `$id` and `title`. Prior-version pinned files remain in the repo for back-compat reads. Consumers that want stability across future bumps should validate against the versioned files; consumers that want to automatically follow the latest contract should validate against the unversioned files.
+4. **Manifest schema-file version and manifest root `schema_version` are separate surfaces.** The current manifest schema file is v7, but generated manifests still emit root field value `4` because v5-v7 manifest changes were additive for consumers. `schemas/manifest.schema.json` validates that back-compatible root value explicitly.
+5. **One-version-overlap deprecation is preferred.** Companion checks emit warnings (not errors) during migration windows where a deprecated shape can still be interpreted safely. Authors get a warning window to migrate. Hard-error enum/shape changes are rejected by `additionalProperties: false` + type constraints in the schema itself, with migration docs pointing at the rename.
 6. **Migration tooling ships with the bump.** Each breaking bump ships a line-based codemod that preserves author YAML style (comments, quoting, indentation), such as `scripts/migrate-skill-v6-to-v7.js` for the four-verdict Health Block split.
 
 For the concrete v2→v3 mapping tables, see `docs/manifest-field-mapping.md § Migration Note — schema_version 2 → 3`. For the v1→v2 tables (historical), see the same document. For field-level before/after pairs, see `docs/field-decision-guide.md`.
 
 ### Health Block versioning (SH-6123)
 
-**Health Block fields are v6+.** The flat Health fields were introduced in v6 (`last_audited`, `last_changed`, `audit_verdict`, `eval_score`, `eval_failed_ids`, `lint_verdict`, `drift_status`) and expanded in v7 to split the single aggregate `audit_verdict` into four discrete verdicts (`structural_verdict`, `truth_verdict`, `comprehension_verdict`, `application_verdict`). The lint schema (`schemas/skill.schema.json`, which tracks the latest contract) rejects Health Block fields on any skill that lacks the matching `schema_version` because:
+**Health Block fields are v6+.** The flat Health fields were introduced in v6 (`last_audited`, `last_changed`, `audit_verdict`, `eval_score`, `eval_failed_ids`, `lint_verdict`, `drift_status`) and expanded in v7 to split the single aggregate `audit_verdict` into four discrete verdicts (`structural_verdict`, `truth_verdict`, `comprehension_verdict`, `application_verdict`). Full schema validation against `schemas/skill.schema.json` (which tracks the latest contract) rejects Health Block fields on any skill that lacks the matching `schema_version` because:
 
 - `schemas/skill.v5.schema.json` uses `additionalProperties: false` and does not define the Health Block properties.
 - `schemas/skill.v6.schema.json` defines the seven-field v6 Health Block but does not include the four v7 verdicts.
-- The lint always validates against `skill.schema.json` (the v7 contract). Skills on v5/v6 that contain Health Block fields must either be **bumped to v7** (via the appropriate migration script) or have the Health Block fields stripped.
+- The latest schema validates the v7 contract. Skills on v5/v6 that contain v7 Health Block fields must either be **bumped to v7** (via the appropriate migration script) or have the incompatible Health Block fields stripped.
 
-**Policy:** If the Skill Audit Loop walker stamps Health Block fields onto a skill whose frontmatter does not have `schema_version: 7`, the walker has written to the wrong schema tier. Correct the skill by running the v5→v6 migration script (`scripts/migrate-skill-v5-to-v6.js`) followed by the v6→v7 migration script (`scripts/migrate-skill-v6-to-v7.js`) rather than adding an exception to the lint schema. Health Block fields are not universally applicable across schema versions; they are a v6+ contract, and the four-verdict shape is v7+.
+**Policy:** If the Skill Audit Loop walker stamps Health Block fields onto a skill whose frontmatter does not have `schema_version: 7`, the walker has written to the wrong schema tier. Correct the skill by running the v5→v6 migration script (`scripts/migrate-skill-v5-to-v6.js`) followed by the v6→v7 migration script (`scripts/migrate-skill-v6-to-v7.js`) rather than adding an exception to the schema. Health Block fields are not universally applicable across schema versions; they are a v6+ contract, and the four-verdict shape is v7+.
 
 **v7 doctrine: form gates are demoted.** In v7, `structural_verdict: FAIL` is reserved for external-constraint violations only (Anthropic Agent Skills marketplace shape, required-fields, valid YAML). Internal style preferences (title length below the external limit, body section preferences, naming conventions beyond what the marketplace enforces) emit lint warnings but do not produce `FAIL`. See [ADR 0011](adr/0011-split-audit-verdict-into-four-verdicts.md) Change 2.
 
@@ -467,7 +468,7 @@ A skill qualifies for `stability: stable` when it meets all five of the followin
 |---|---|---|---|
 | 1 | Eval has been run | `eval_state` | Value is `passing` or `monitored` (not `unverified` or absent) |
 | 2 | Eval score meets quality bar | `eval_score` | ≥ 4.0 on the 0.0–5.0 audit scale (≡ 80%) |
-| 3 | Routing coverage evaluated | `routing_eval` | Value is `present` (harness verified by lint check 12) |
+| 3 | Routing coverage evaluated | `routing_eval` | Value is `present` with a passing `skill-graph-routing-eval.js` receipt |
 | 4 | Drift verified recently | `drift_check.last_verified` | ISO 8601 date within the last 90 days |
 | 5 | Truth sources declared | `grounding.truth_sources` | Non-empty array; exempt when `scope: portable` |
 

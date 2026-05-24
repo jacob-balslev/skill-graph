@@ -37,7 +37,7 @@
 
 ### Important constraint
 
-`scope: codebase` requires a populated `grounding` block. The schema enforces this — `scripts/skill-lint.js` will reject a codebase-scoped skill without grounding. If you choose `codebase`, populate `grounding` before committing.
+`scope: codebase` requires a populated `grounding` block. The JSON schema enforces this; the lightweight `scripts/skill-lint.js` gate does not. If you choose `codebase`, populate `grounding` before committing and run the protocol/manifest checks for full-contract validation.
 
 ### Migration from v1
 
@@ -70,7 +70,7 @@ The four relation keys serve distinct purposes. Using the wrong key creates misl
 
 | Field | Use when | Do NOT use when |
 |---|---|---|
-| `adjacent` | Another skill is useful next reading or common co-loading | You need ordering or verification |
+| `related` | Another skill is useful next reading or common co-loading | You need ordering or verification |
 | `boundary` | Users commonly confuse this skill with another | You only want related reading |
 | `verify_with` | A second skill materially increases confidence on the same task | The other skill is merely adjacent |
 | `depends_on` | This skill cannot be applied correctly before another one | You just want a recommended pairing |
@@ -83,7 +83,7 @@ The distinction between these relation types is best illustrated by existing usa
 
 - **`verify_with`** — `skill-infrastructure` declares `verify_with: [skill-scaffold]` because running skill library maintenance checks alongside skill authoring patterns materially increases confidence in the skill's claims. They are commonly used together in audit pipelines.
 
-- **`adjacent`** — `refactor` declares `adjacent: [debugging, testing-strategy]` because readers of the refactor skill would benefit from understanding debugging and testing approaches. These are topically related but not mandatory dependencies.
+- **`related`** — `refactor` can declare `related: [debugging, testing-strategy]` because readers of the refactor skill would benefit from understanding debugging and testing approaches. These are topically related but not mandatory dependencies. `adjacent` remains a back-compat alias, but new skills should use `related`.
 
 - **`boundary`** — `refactor` declares `boundary: [documentation]` to assert exclusive ownership of the refactor use-case over documentation. When refactor wins a query that also matched documentation, this entry excludes documentation from co-routing. **Note:** the field name implies "defer to documentation" but the mechanic is "exclude documentation when refactor wins." Write reason text using ownership framing: `"refactor owns this use-case exclusively; documentation does not."` See WARNING in `SKILL_METADATA_PROTOCOL.md § Relations § boundary`.
 
@@ -93,7 +93,7 @@ When a skill extends another skill's base behavior (e.g., an overlay), use the `
 
 ```yaml
 relations:
-  adjacent:
+  related:
     - webhook-integration   # related: reader may want this context
   boundary:
     - fulfillment           # I own this exclusively over fulfillment; excludes fulfillment when I win
@@ -105,7 +105,7 @@ relations:
 
 ### Validation
 
-All relation targets must be the `name` of an existing skill in the library. `scripts/skill-lint.js` rejects dangling targets (targets that point to non-existent skills).
+All relation targets should be the `name` of an existing skill in the library. The lightweight `scripts/skill-lint.js` gate does not reject dangling targets; catch relation-target drift through manifest/routing review and audit findings.
 
 ---
 
@@ -129,7 +129,7 @@ Does an eval artifact file exist for this skill?
 |---|---|
 | `none` | No eval planned or authored. Rare — use sparingly. |
 | `planned` | Evals are intended but no artifact exists yet. Temporary state. |
-| `present` | At least one eval artifact exists on disk. `scripts/skill-lint.js` verifies it. |
+| `present` | At least one eval artifact exists on disk. Verify with the eval/audit tooling, not the lightweight lint gate. |
 
 #### `eval_state` — "has it been run and passed?"
 
@@ -153,7 +153,7 @@ Have the evals been run and passed recently?
 | `absent` | Routing / trigger coverage is not evaluated for this skill. Default for most starters. |
 | `present` | Eval artifacts include routing assertions (does the skill activate for the right prompts?). |
 
-**Anti-pattern.** Do not set `eval_state: passing` without an actual passing run. Do not set `eval_artifacts: present` without a real file — the lint script checks. Do not claim `routing_eval: present` when the eval only checks content, not routing.
+**Anti-pattern.** Do not set `eval_state: passing` without an actual passing run. Do not set `eval_artifacts: present` without a real file. Do not claim `routing_eval: present` when the eval only checks content, not routing.
 
 ### Migration from v1
 
@@ -312,4 +312,4 @@ workspace_tags: [ecommerce]                    # "Which of my projects?"
 routing_bundles: [integrations]                # "Which batch-activation group?"
 ```
 
-Each field does a distinct job. None is redundant with the others. A single-project workspace can omit `workspace_tags`; a library with no batch-activation pattern can omit `routing_bundles`; a library that does not need a hierarchical browse view can omit `domain`. `category` is always present because it is required by the v7 schema (enforced by `enum` in `schemas/skill.v7.schema.json` and `scripts/lint/check-category-enum.js`).
+Each field does a distinct job. None is redundant with the others. A single-project workspace can omit `workspace_tags`; a library with no batch-activation pattern can omit `routing_bundles`; a library that does not need a hierarchical browse view can omit `domain`. `category` is always present because it is required by the v7 schema (enforced by `enum` in `schemas/skill.schema.json` and `scripts/lint/check-category-enum.js`).

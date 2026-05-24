@@ -13,7 +13,7 @@ The field reference is split across three coordinated documents. Use whichever f
 | Doc | Genre | When to read |
 |---|---|---|
 | [`field-reference.md`](field-reference.md) (this doc) | **Hand-curated prose reference.** Field-by-field, with worked examples, lint notes, and cross-cutting guidance. | When authoring or reviewing a SKILL.md and you want examples and "when to use" rules alongside the schema-canonical definition. |
-| [`field-reference.generated.md`](field-reference.generated.md) | **Auto-generated index.** Built from `schemas/skill.v7.schema.json` description strings by `scripts/build-field-reference.js`. Drift-free against the schema. | When you want the machine-guaranteed list of every field, every type, every pattern, every enum value. The fastest way to verify what the schema actually accepts today. |
+| [`field-reference.generated.md`](field-reference.generated.md) | **Auto-generated index.** Built from `schemas/skill.schema.json` description strings by `scripts/build-field-reference.js`. Drift-free against the schema. | When you want the machine-guaranteed list of every field, every type, every pattern, every enum value. The fastest way to verify what the schema actually accepts today. |
 | [`field-rationale.md`](field-rationale.md) | **Hand-authored "why this field" rationale.** Covers the ~10 fields whose meaning is non-obvious from the schema description (`scope`, `eval_artifacts`, `eval_state`, `routing_eval`, `relations.depends_on`, `relations.verify_with`, `relations.broader`, `grounding.evidence_priority`, `lifecycle.review_cadence`, `portability.readiness`). | When you understand *what* a field stores but want to know *why the field exists at all* and *what the common confusion looks like*. |
 
 The schema is the single source of truth for shape; this doc is the source of truth for prose; `field-rationale.md` is the source of truth for design intent. Lint check C7 (in `scripts/check-protocol-consistency.js`) verifies the generated index stays in sync with the schema description strings — running `node scripts/build-field-reference.js --check` against the live schema must succeed before commit.
@@ -25,10 +25,10 @@ The schema is the single source of truth for shape; this doc is the source of tr
 **Purpose.** Versions the contract so migration tooling can handle future schema changes deterministically.
 
 **Rules.**
-- Must be the integer `4` or the string `"4"` for all v4 skills.
+- Must be the integer `7` or the string `"7"` for all v7 skills.
 - Start every new skill at the current schema version. Do not downgrade.
-- The v3 -> v4 bump renamed `browse_category` -> `category`, `category` / `category_path` -> `domain`, `project_tags` -> `workspace_tags`, and `routing_groups` -> `routing_bundles`. Run `node scripts/migrate-skill-v3-to-v4.js` for a one-shot migration.
-- The v1 → v2 bump (SH-5784) changed the `scope` enum (`generic`→`portable`, `operational`→`codebase`), split `eval_status` into three orthogonal fields, renamed `portability.level`→`readiness` and `portability.exports`→`targets`, and renamed `route_bundles`→`routing_bundles`. See `docs/manifest-field-mapping.md § Migration Note — v1 → v2` for the historical map.
+- The v6 → v7 bump split the single `audit_verdict` into `structural_verdict`, `truth_verdict`, `comprehension_verdict`, and `application_verdict`. Run `node scripts/migrate-skill-v6-to-v7.js` for the codemod.
+- Older migration notes live in `SKILL_METADATA_PROTOCOL.md § Migration Notes` and `docs/migrations/`; do not restate old versions here as the current contract.
 
 **Versioning semantics (policy).** The integer signals *breaking vs non-breaking* evolution. A minor/patch axis is intentionally not surfaced on this field; additive schema changes do not require consumers to migrate, so no version bump is emitted.
 
@@ -113,7 +113,7 @@ description: >
 
 **When NOT to use.** Do not expand beyond 3 sentences or copy-paste the `## Coverage` scope list here. The description and `## Coverage` are sibling layers of progressive disclosure, not duplicates.
 
-**Lint check.** `scripts/skill-lint.js` warns when the description text appears verbatim inside the `## Coverage` section body — a signal that the two layers have collapsed. See `scripts/lint/check-routing-quality.js` (check R2).
+**Verification.** `scripts/skill-lint.js` enforces only canonical-source shape requirements. Description quality is verified through routing evals, review, and application verdicts rather than a deleted routing-quality lint module.
 
 ---
 
@@ -196,9 +196,9 @@ archetype: capability
 **Purpose.** Flat human browse bucket for discovery and grouping. Does not imply runtime behavior or evaluation logic. Renamed from v3 `browse_category` in v4 so the public browse axis has the obvious name; the value space was then closed to a six-value enum in v5 (retained in v7) to prevent the v3-era explosion of synonymous buckets.
 
 **Rules.**
-- **Required since schema_version 5** (retained in v7). Present in `required: [...]` of `schemas/skill.v7.schema.json`. A v5+ skill without `category` fails schema validation.
+- **Required since schema_version 5** (retained in v7). Present in `required: [...]` of `schemas/skill.schema.json`. A v5+ skill without `category` fails schema validation.
 - **Closed enum of six values** as of schema_version 5: `foundations` \| `engineering` \| `design` \| `quality` \| `agent` \| `product`. Any other value is rejected at the schema level AND at the lint level by `scripts/lint/check-category-enum.js`. (Pre-v5 open-ended values like `knowledge`, `frontend`, `integrations`, `security` were migrated to the six-value enum; see `docs/migrations/v4-to-v5.md`.)
-- For cross-cutting fit, list secondary categories via `relations.related` (max 5) — never by stuffing them into `category`.
+- For cross-cutting category fit, list secondary browse homes in `categories[1..]` (v7 optional, v8 planned required) or `secondary_categories` when the only need is marketplace cross-listing. Use `relations.related` for neighboring skills, not category membership.
 - For hierarchical taxonomy (`engineering/integrations/shopify`), use the optional `domain` field; `category` is flat on purpose and complements `domain` rather than substituting for it.
 
 **The six values and what they cover.**
@@ -216,7 +216,7 @@ archetype: capability
 
 1. *Primary surface* — what the skill is *about*, not what it *enables*.
 2. *Property vs subject* — properties (a11y, perf, security, testing, type-safety) → `quality`. How-to-build → `engineering` / `design` / `agent`.
-3. *Cross-pollination* — multi-fit skills list secondary categories via `relations.related` (max 5). Never via the `category` field itself.
+3. *Cross-pollination* — multi-fit skills list secondary browse homes via `categories[1..]` or marketplace-only `secondary_categories`. Never via the singular `category` field itself.
 4. *`foundations` gate* — anti-junk-drawer. Membership requires (a) the skill teaches an epistemic precondition AND (b) it cannot be plausibly assigned to `agent`/`engineering`/`quality`/`design`.
 
 **Example.**
@@ -224,13 +224,57 @@ archetype: capability
 category: engineering
 ```
 
-**When to use.** Always. `category` is required and exactly one of the six enum values must be picked, even if the choice is awkward — pick the closest fit and disambiguate via `domain` or `relations.related`.
+**When to use.** Always. `category` is required and exactly one of the six enum values must be picked, even if the choice is awkward — pick the closest fit and disambiguate via `domain`, `categories[1..]`, `secondary_categories`, or `relations.related` depending on whether the ambiguity is taxonomic, marketplace-facing, or skill-to-skill neighborhood.
 
 **When NOT to use.** Do not use `category` for behavioral control; that is `type`'s job. Do not use it for activation-bundle membership; that is `routing_bundles`. Do not use it for hierarchical placement; that is `domain`. Do not invent values outside the six-value enum.
 
 **Migration from v3.** The field name changed from `browse_category` to `category` in v4 (values then still unconstrained). Run `node scripts/migrate-skill-v3-to-v4.js` for the automatic rename.
 
 **Migration from v4.** The closed six-value enum was introduced in v5 and retained in v6/v7. Skills carrying pre-v5 open-ended values (`knowledge`, `frontend`, `integrations`, `security`, `dev`, etc.) must be remapped to the enum — see `docs/migrations/v4-to-v5.md` for the mapping table and the codemod.
+
+---
+
+## `categories`
+
+**Purpose.** Ordered category array for skills that need a primary browse home plus secondary browse homes. The first entry is the primary and must match `category`.
+
+**Rules.**
+- Optional in v7; planned required in v8.
+- Min 1, max 5, unique items.
+- Every item must use the same six-value enum as `category`: `foundations` | `engineering` | `design` | `quality` | `agent` | `product`.
+- When `category` is present, `categories[0]` must equal `category`; this is enforced in the v7 schema.
+
+**Example.**
+```yaml
+category: engineering
+categories: [engineering, quality]
+```
+
+**When to use.** Use when the skill genuinely belongs in more than one browse shelf. Keep the first value aligned with the main audience.
+
+**When NOT to use.** Do not use this as a tag bag. Use `relations.related` for skill neighbors, `workspace_tags` for project relevance, and `routing_bundles` for activation bundles.
+
+---
+
+## `primaryCategory`
+
+**Purpose.** Optional workspace alias for the primary browse home. Lowercase protocol values are accepted directly; title-case workspace labels normalize to protocol categories in local policy tooling.
+
+**Rules.**
+- Optional in the protocol.
+- Allowed lowercase values match `category`.
+- Allowed title-case aliases are `Meta Method`, `Technical Capability`, `Design & UX`, `Agent System`, and `Product Domain`.
+- Prefer `category` / `categories` in protocol-native authoring.
+
+**Example.**
+```yaml
+category: agent
+primaryCategory: Agent System
+```
+
+**When to use.** Use only when a workspace's browse UI or census tooling still depends on the title-case alias.
+
+**When NOT to use.** Do not use `primaryCategory` as a substitute for a missing `category`; v7 requires `category`.
 
 ---
 
@@ -533,6 +577,7 @@ comprehension_verdict: SKIPPED_BASELINE_HIGH
 | `MIXED` | Verdict varies across cases — some applicable, some redundant or false-positive |
 | `FALSE_POSITIVE` | The skill over-triggers — applies on cases where its expertise does not apply |
 | `UNVERIFIED` | Default for the v6→v7 corpus migration — no application audit has run on this skill yet |
+| `PROVISIONAL` | Single-model dogfood audit found useful behavior but the independent application grader has not confirmed it |
 
 **Rules.**
 - Optional. Defaults to `UNVERIFIED` when absent.
@@ -599,13 +644,13 @@ eval_failed_ids: ["case-03", "case-07"]
 
 | Value | Meaning |
 |---|---|
-| `PASS` | All lint checks passed |
-| `FAIL` | One or more lint checks failed |
+| `PASS` | Canonical-source lint gate passed |
+| `FAIL` | One or more canonical-source lint checks failed |
 | `UNKNOWN` | No lint has been run or result is unavailable |
 
 **Rules.**
 - Optional. Defaults to `UNKNOWN` when absent.
-- Written by `scripts/skill-lint.js` or the audit loop's Phase 1.
+- Written by `scripts/skill-lint.js` or the audit loop's canonical-source lint phase.
 
 **Example.**
 ```yaml
@@ -651,10 +696,10 @@ drift_status: OK
 |---|---|---|
 | `none` | No eval work started or planned | No eval artifact expected |
 | `planned` | Eval work intended but not yet authored | No eval artifact yet — temporary state |
-| `present` | One or more eval files exist on disk | `scripts/skill-lint.js` verifies a file under `examples/evals/` carries the skill's `skill_name` |
+| `present` | One or more eval files exist on disk | Verify with the eval/audit tooling and a concrete artifact path |
 
 **Rules.**
-- `present` requires a real eval artifact. The lint script rejects a mismatch.
+- `present` requires a real eval artifact. Do not set it without a file and receipt.
 - `planned` is a temporary state — move to `present` once artifacts ship.
 - `none` is reserved for skills where evals are genuinely not part of the plan (rare).
 
@@ -714,12 +759,12 @@ eval_state: passing
 - `present` implies the eval artifacts include routing or trigger assertions, not just content quality.
 - Most starter skills default to `absent` — routing coverage is a deeper authoring step.
 
-**Enforcement.** As of [Unreleased], `routing_eval: present` is a verifiable claim. The harness at `scripts/skill-graph-routing-eval.js` runs every `examples[]` entry through `skill-graph-route.js` and asserts the skill wins; runs every `anti_examples[]` entry and asserts the winner is NOT this skill AND (if non-null) is named in `relations.boundary[]`. A skill that declares `present` must satisfy two lint gates (check 12 in `scripts/skill-lint.js`):
+**Enforcement.** `routing_eval: present` is a verifiable claim. The harness at `scripts/skill-graph-routing-eval.js` runs every `examples[]` entry through `skill-graph-route.js` and asserts the skill wins; runs every `anti_examples[]` entry and asserts the winner is NOT this skill AND (if non-null) is named in `relations.boundary[]`. A skill that declares `present` must satisfy two harness gates:
 
 1. Both `examples` and `anti_examples` are populated — the harness needs prompts to evaluate.
 2. Running `node scripts/skill-graph-routing-eval.js --skill <name>` returns verdict `PASS` for the skill.
 
-A skill whose harness run contains any `FAIL` case cannot ship `present`; lint surfaces each failing prompt with the router's actual decision. A `COVERAGE_GAP` verdict (the anti-example correctly avoids this skill but no other skill absorbs it) is informational and does not block `present` — the anti-example did its job; the coverage-gap signal is for the next authoring iteration. Prefer `absent` until the harness agrees — honesty over green checkmarks.
+A skill whose harness run contains any `FAIL` case cannot honestly claim `present`; the routing-eval output surfaces each failing prompt with the router's actual decision. A `COVERAGE_GAP` verdict (the anti-example correctly avoids this skill but no other skill absorbs it) is informational and does not block `present` — the anti-example did its job; the coverage-gap signal is for the next authoring iteration. Prefer `absent` until the harness agrees — honesty over green checkmarks.
 
 **Current status of the starter library.** As of the `[Unreleased]` entry, all eight starters declare `routing_eval: present` and pass the harness 8-of-8 (verified by `node scripts/skill-graph-routing-eval.js --only-asserted`). Each starter's `examples[]` activate the skill correctly and each `anti_examples[]` route to the appropriate boundary owner. The route flips `present` were earned by tightening keywords, splitting `examples` from `anti_examples`, and populating `relations.boundary[]` with explicit handoff targets. New skills should default to `absent` until the harness agrees — honesty over green checkmarks remains the rule.
 
@@ -1094,7 +1139,7 @@ license: MIT
 
 **Purpose.** Declares environment requirements for skills that have specific runtime needs — target agent runtimes, Node.js version, and free-text notes for anything else.
 
-**Shape change in v3.** The v2 field was a free-text string up to 500 characters. The v3 field is a structured object so consumers can parse `runtimes` and `node` without heuristics. The scalar form is rejected as a type error under v3; run `node scripts/migrate-skill-v2-to-v3.js` to upgrade (the codemod moves the old string verbatim into `compatibility.notes`).
+**Shape in the logical contract.** Protocol-native frontmatter uses a structured object so consumers can parse `runtimes` and `node` without heuristics. The Agent-Skills-compatible physical encoding keeps `compatibility` as a top-level base-field string; `normalizeFrontmatter()` preserves that scalar while lifting the rest of `metadata:` back into protocol shape.
 
 **Rules.**
 - Object with up to three optional sub-fields.
@@ -1125,7 +1170,7 @@ compatibility:
 
 **When NOT to use.** Generic skills with no runtime dependencies — omit the field rather than setting it to an empty object.
 
-**Migration from v2.** The codemod (`scripts/migrate-skill-v2-to-v3.js`) transforms `compatibility: "<text>"` to `compatibility:\n  notes: "<text>"`. Authors move the string into `runtimes` / `node` manually when the structured form is more accurate.
+**Migration from v2.** In protocol-native source, the codemod (`scripts/migrate-skill-v2-to-v3.js`) transforms `compatibility: "<text>"` to `compatibility:\n  notes: "<text>"`. In Agent-Skills-compatible source, the scalar top-level base field is valid physical encoding; do not warn on it solely because the logical protocol-native shape is object-based.
 
 ---
 
@@ -1232,7 +1277,7 @@ keywords:
 
 **When NOT to use.** Keywords are not tags for browse taxonomy — that is `category` / `category`'s job. Do not add every possible synonym; keep to the 3–8 most likely search terms.
 
-**Lint check.** `scripts/skill-lint.js` errors when `keywords` is absent or empty for a skill with `scope: codebase` or a non-empty `routing_bundles` field. Those skills are designed to be discovered by keyword routers and cannot be omitted. See `scripts/lint/check-routing-quality.js` (check R1).
+**Verification.** Routers and routing-eval cases expose missing keyword coverage. The canonical linter no longer carries the removed routing-quality check module.
 
 ---
 
@@ -1330,7 +1375,7 @@ routing_bundles:
 
 **Migration from v1.** The v1 field name `route_bundles` is a hard error under the v2 schema. Rename the field to `routing_bundles`; values are unchanged.
 
-**Lint check.** `scripts/skill-lint.js` errors when a skill has a non-empty `routing_bundles` field but an absent or empty `keywords` field. A skill designed for group-based batch activation must also be discoverable by keyword-based routers. See `scripts/lint/check-routing-quality.js` (check R1).
+**Verification.** Keep `routing_bundles` and `keywords` coherent through manifest review and routing evals. The former `check-routing-quality.js` lint module is no longer part of the canonical-source linter.
 
 ---
 
@@ -1351,7 +1396,7 @@ routing_bundles:
 | `adjacent` *(deprecated alias of `related`)* | v3.0 name; still valid in v3.x. Lint warns. Removed in v4. | string | `skos:related` |
 | `broader` *(v3.1)* | Cross-skill generalisation — target is more general than this skill. Triggers Stage 4b parent recall in `scripts/skill-graph-route.js`. | string | `skos:broader` |
 | `narrower` *(v3.1)* | Cross-skill specialisation — target is more specific than this skill. Inverse of `broader`; not used to drive co-load (a parent match should not pull in arbitrary children). | string | `skos:narrower` |
-| `boundary` *(canonical, ADR 0006)* | Routing-layer asymmetric handoff — skills this skill explicitly does NOT own; the router uses this to redirect wrong-skill queries to the correct owner. | string OR `{skill, reason}` | `sg:disjointOwnership` |
+| `boundary` *(canonical, ADR 0006)* | Routing-layer score-aware exclusion guard — skills this skill suppresses from co-routing when this skill wins or ties. Not a defer-to-target pointer. | string OR `{skill, reason}` | `sg:disjointOwnership` |
 | `disjoint_with` *(v3.1, separate orthogonal relation per ADR 0006)* | Optional formal OWL class-disjointness assertion. Use only when authors genuinely want to claim that no entity can simultaneously be an instance of both classes. Rare; most authors only need `boundary`. | string OR `{skill, reason}` | `owl:disjointWith` |
 | `verify_with` | Skills that should be co-loaded for verification or that provide cross-checks | string | `prov:wasInformedBy` |
 | `depends_on` | Explicit dependency — this skill requires the target conceptually or operationally | string OR `{skill, min_version}` | `dcterms:requires` |

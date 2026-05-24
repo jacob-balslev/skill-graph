@@ -54,7 +54,7 @@ Compute, over all criteria:
 - `already`= criteria where both runs met it (model already knew — skill was redundant for this criterion).
 - `harm`   = any `with_skill_met=false` on a `guard` criterion where the with_skill run actively did the harmful thing the skill exists to prevent.
 
-Map to the six-value enum (the only legal values — match `schemas/skill.v7.schema.json`):
+Map to the six-value enum (the only legal values — match `schemas/skill.schema.json`):
 
 | Verdict | Behavioral anchor (assign the FIRST that matches, top-down) |
 |---|---|

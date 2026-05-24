@@ -1,29 +1,29 @@
 ---
 name: skill-scaffold
-description: "Use when creating a new SKILL.md from scratch, adapting an existing skill to a different archetype, or teaching another author the canonical Skill Metadata Protocol frontmatter and body structure. Covers schema-conformant frontmatter, archetype-aware body layout, semantic-layer discipline (description vs Coverage), teaching-layer mechanics (TEMPLATE NOTE blockquotes), the lint-first authoring gate, and the routing-eval honesty rule. Do NOT use when modifying an already-written skill (edit it directly), when writing general technical documentation (use `documentation`), or when fixing a malformed skill detected by lint (use `skill-infrastructure` for systematic library health, not authoring scaffold help)."
+description: "Use when creating a new SKILL.md from scratch, adapting an existing skill to a different archetype, or teaching another author the canonical Skill Metadata Protocol frontmatter and body structure. Covers schema-conformant frontmatter, archetype-aware body layout, semantic-layer discipline (description vs Coverage), teaching-layer mechanics (TEMPLATE NOTE blockquotes), the lint-first authoring gate, and the routing-eval honesty rule. Do NOT use when modifying an already-written skill (edit it directly), when writing general technical documentation (use `docs-development`), or when fixing a malformed skill detected by lint (use `skill-infrastructure` for systematic library health, not authoring scaffold help)."
 license: MIT
 compatibility: "Markdown, YAML, JSON Schema"
 allowed-tools: Read Grep Bash Write Edit
 metadata:
   schema_version: "7"
-  version: "1.1.0"
+  version: "1.1.1"
   type: capability
   category: agent
   domain: agent/skill-system
   scope: reference
   owner: skill-graph-maintainer
-  freshness: "2026-05-18"
-  drift_check: "{\"last_verified\":\"2026-05-18\"}"
-  eval_artifacts: present
+  freshness: "2026-05-24"
+  drift_check: "{\"last_verified\":\"2026-05-24\"}"
+  eval_artifacts: planned
   eval_state: unverified
-  routing_eval: present
+  routing_eval: absent
   comprehension_state: present
   stability: experimental
-  keywords: "[\"skill authoring\",\"new skill\",\"writing a skill\",\"skill scaffold\",\"skill template\",\"skill frontmatter\",\"skill metadata protocol v6\",\"skill graph contract\",\"capability or workflow\",\"description vs coverage\",\"archetype selection\",\"skill body layout\",\"teaching layer\",\"understanding fields\",\"health block\",\"placeholder sludge\",\"cargo cult meta sections\",\"lint first authoring\",\"routing eval honesty\"]"
-  examples: "[\"I'm writing a new skill from scratch — where do I start?\",\"For SKILL.md archetype selection, how do I pick between capability and workflow?\",\"what's the difference between description and the ## Coverage section?\",\"scaffold a new skill that teaches react component composition patterns\",\"I copied skill-metadata-template.md but my new skill won't pass lint — help\",\"draft frontmatter for a workflow skill that owns deployment rollback\",\"how do I strip teaching annotations from the template before commit?\",\"should I flip routing_eval to present on my new skill?\"]"
-  anti_examples: "[\"refactor an existing SKILL.md without changing behavior\",\"routing health: analyze a routing-miss log and close keyword gaps in a skill library\",\"improve this LLM prompt's wording for structured output\",\"review this pull request diff for correctness and regression risk\",\"write a unit integration and e2e test plan for a feature\"]"
-  relations: "{\"boundary\":[{\"skill\":\"refactor\",\"reason\":\"refactor is behaviour-preserving modification of existing code or skills; skill-scaffold creates a new skill from scratch\"},{\"skill\":\"skill-infrastructure\",\"reason\":\"skill-infrastructure runs health tooling across the entire skill library after authoring; skill-scaffold is the authoring-time guide for creating a single new skill before it joins the library\"},{\"skill\":\"prompt-craft\",\"reason\":\"prompt-craft improves LLM prompt wording and structured-output instructions; skill-scaffold authors SKILL.md metadata and body structure\"},{\"skill\":\"code-review\",\"reason\":\"code-review evaluates a concrete diff for correctness and regression risk; skill-scaffold creates a new skill's protocol-conformant skeleton\"},{\"skill\":\"testing-strategy\",\"reason\":\"testing-strategy chooses verification levels for software changes; skill-scaffold only covers the authoring gate for SKILL.md files\"}],\"related\":[\"naming-conventions\"],\"verify_with\":[]}"
-  grounding: "{\"domain_object\":\"Authoring a new SKILL.md against Skill Metadata Protocol v6\",\"grounding_mode\":\"hybrid\",\"truth_sources\":[\"https://github.com/jacob-balslev/skill-graph/blob/main/examples/skill-metadata-template.md\",\"https://github.com/jacob-balslev/skill-metadata-protocol/blob/main/SKILL_METADATA_PROTOCOL.md\",\"https://github.com/jacob-balslev/skill-metadata-protocol/blob/main/schemas/skill.v6.schema.json\",\"https://github.com/jacob-balslev/skill-metadata-protocol/blob/main/docs/field-reference.md\",\"https://github.com/jacob-balslev/skill-metadata-protocol/blob/main/docs/migrations/v5-to-v6.md\"],\"failure_modes\":[\"placeholder_sludge\",\"cargo_cult_meta_sections\",\"description_coverage_collapse\",\"authoring_gate_skipped\",\"inflated_routing_eval\",\"v5_v6_contract_drift\"],\"evidence_priority\":\"equal\"}"
+  keywords: "[\"skill authoring\",\"new skill\",\"writing a skill\",\"skill scaffold\",\"skill template\",\"skill frontmatter\",\"skill metadata protocol v7\",\"skill graph contract\",\"capability or workflow\",\"description vs coverage\",\"archetype selection\",\"skill body layout\",\"teaching layer\",\"understanding fields\",\"health block\",\"placeholder sludge\",\"cargo cult meta sections\",\"lint first authoring\",\"routing eval honesty\"]"
+  examples: "[\"I'm writing a new skill from scratch — where do I start?\",\"how do I pick between capability and workflow for my skill type?\",\"what's the difference between description and the ## Coverage section?\",\"scaffold a new skill that teaches react component composition patterns\",\"I copied skill-metadata-template.md but my new skill won't pass lint — help\",\"draft frontmatter for a workflow skill that owns deployment rollback\",\"how do I strip teaching annotations from the template before commit?\",\"should I flip routing_eval to present on my new skill?\"]"
+  anti_examples: "[\"refactor my existing skill to be more concise\",\"my skill's routing isn't activating — why?\",\"audit my skill library for stale frontmatter\",\"write a developer guide for the contributor docs\",\"review this skill's content for correctness\"]"
+  relations: "{\"boundary\":[{\"skill\":\"refactor\",\"reason\":\"refactor is behaviour-preserving modification of existing code or skills; skill-scaffold creates a new skill from scratch\"},{\"skill\":\"skill-router\",\"reason\":\"skill-router dispatches between existing skills at request time; skill-scaffold is the authoring-time guide for a NEW skill\"},{\"skill\":\"skill-infrastructure\",\"reason\":\"skill-infrastructure runs health tooling across the entire skill library after authoring; skill-scaffold is the authoring-time guide for creating a single new skill before it joins the library\"}],\"related\":[\"naming-conventions\"],\"verify_with\":[]}"
+  grounding: "{\"domain_object\":\"Authoring a new SKILL.md against Skill Metadata Protocol v7\",\"grounding_mode\":\"hybrid\",\"truth_sources\":[\"https://github.com/jacob-balslev/skill-graph/blob/main/examples/skill-metadata-template.md\",\"https://github.com/jacob-balslev/skill-graph/blob/main/SKILL_METADATA_PROTOCOL.md\",\"https://github.com/jacob-balslev/skill-graph/blob/main/schemas/skill.schema.json\",\"https://github.com/jacob-balslev/skill-graph/blob/main/docs/field-reference.md\",\"https://github.com/jacob-balslev/skill-graph/blob/main/docs/migrations/v6-to-v7.md\"],\"failure_modes\":[\"placeholder_sludge\",\"cargo_cult_meta_sections\",\"description_coverage_collapse\",\"authoring_gate_skipped\",\"inflated_routing_eval\",\"v6_v7_contract_drift\"],\"evidence_priority\":\"equal\"}"
   portability: "{\"readiness\":\"scripted\",\"targets\":[\"skill-md\"]}"
   lifecycle: "{\"stale_after_days\":180,\"review_cadence\":\"quarterly\"}"
   mental_model: "Skill scaffolding is protocol-backed authoring, not free-form prompt writing. The scaffold separates the routing contract, field contract, concept model, grounding evidence, body sections, and verification gates so a new skill becomes a routable graph node rather than a decorative Markdown file."
@@ -39,7 +39,7 @@ metadata:
   skill_graph_source_repo: "https://github.com/jacob-balslev/skill-graph"
   skill_graph_protocol: Skill Metadata Protocol v7
   skill_graph_project: Skill Graph
-  skill_graph_canonical_skill: skills/agent/skill-system/skill-scaffold/SKILL.md
+  skill_graph_canonical_skill: skills/skill-scaffold/SKILL.md
 ---
 
 # Skill Scaffold
@@ -47,9 +47,9 @@ metadata:
 ## Coverage
 
 - Authoring flow: copy → rename → adapt → strip teaching annotations → verify → commit
-- Frontmatter identity: `schema_version`, `name`, `description`, `version`, `type`, `category`, `scope`, `owner`, plus the eval-health triple and `drift_check` required by every Skill Metadata Protocol v6 skill
+- Frontmatter identity: `schema_version`, `name`, `description`, `version`, `type`, `category`, `scope`, `owner`, plus the eval-health triple and `drift_check` required by every Skill Metadata Protocol v7 skill
 - Archetype selection: how to pick between `capability`, `workflow`, `router`, and `overlay` and which `## H2` body sections each archetype requires
-- v6 understanding fields: when to add `comprehension_state`, `mental_model`, `purpose`, `boundary`, `analogy`, `misconception`, and when the legacy `concept` back-compat block is still useful
+- Understanding fields: when to add `comprehension_state`, `mental_model`, `purpose`, `boundary`, `analogy`, `misconception`, and when the legacy `concept` back-compat block is still useful
 - Semantic-layer discipline: how `description:` (≤ 3 sentences, pushy, boundary-aware routing contract) differs from `## Coverage` (bulleted scope map of distinct topics) and why each must stay in its own layer
 - Teaching-layer mechanics: how to use `> **TEMPLATE NOTE:**` blockquotes and `# TEMPLATE NOTE:` YAML comments to teach without cargo-culting meta sections into derived skills
 - Lint-first authoring gate: passing focused skill lint against your new skill before commit, every time, no exceptions
@@ -69,7 +69,7 @@ The six steps are non-negotiable; skipping any step produces a skill that lints 
 1. **Copy** the canonical template from the Skill Graph tooling repo's `examples/skill-metadata-template.md` to `skills/<your-skill-name>/SKILL.md`. Do not rename in-place; the template stays as the canonical specimen.
 2. **Rename** identity fields: `name`, `description`, `category` (if used), `keywords`, `examples`, `anti_examples`, `paths` (if applicable), and the body title. Every reference to "skill-metadata-template" should be gone.
 3. **Adapt** body sections to your skill's subject. Match the `## H2` layout to your declared archetype per `docs/skill-metadata-protocol.md § Archetype section map`. Remove sections that do not apply — do not keep them with placeholder content.
-4. **Decide understanding and grounding.** Add v6 understanding fields only when the skill needs concept transfer and the content is ready to be graded. Add `grounding.truth_sources` when the skill is anchored to a protocol, spec, codebase, or vendor/source document; use public URLs when the release repo does not contain the source files.
+4. **Decide understanding and grounding.** Add understanding fields only when the skill needs concept transfer and the content is ready to be graded. Add `grounding.truth_sources` when the skill is anchored to a protocol, spec, codebase, or vendor/source document; use public URLs when the release repo does not contain the source files.
 5. **Strip** every `> **TEMPLATE NOTE:**` body blockquote and every `# TEMPLATE NOTE:` YAML comment. They are authoring scaffolding; shipping them in a derived skill is the most common authoring mistake. Run `grep -n "TEMPLATE NOTE" skills/<your-skill>/SKILL.md` to confirm zero hits.
 6. **Verify** by running the gate sequence: focused `node scripts/skill-lint.js skills/<your-skill>` (must show 0 errors), `node scripts/check-protocol-consistency.js` for protocol-tier changes, and (if you populated `examples` and `anti_examples`) `node scripts/skill-graph-routing-eval.js --skill <your-skill>` (verdict PASS before flipping `routing_eval` to `present`).
 
@@ -103,7 +103,7 @@ If you can drop your `description` into `## Coverage` without changing meaning, 
 | Cargo-culted teaching layer | `> **TEMPLATE NOTE:**` blocks survive into derived skill | `grep -n "TEMPLATE NOTE" skills/<name>/SKILL.md` returns nothing |
 | Description-Coverage collapse | `description` and `## Coverage` say the same thing in different shapes | Rewrite description as routing contract, Coverage as scope map (see § Semantic-Layer Discipline) |
 | Inflated routing_eval | `routing_eval: present` set without running the harness | Default to `absent`. Flip to `present` only after `node scripts/skill-graph-routing-eval.js --skill <name>` returns PASS |
-| Stale protocol version | `schema_version: 6` paired with v4/v5 schema names or old concept-block advice | Update truth sources, protocol labels, understanding fields, and migration notes together |
+| Stale protocol version | `schema_version: 7` paired with v5/v6 schema names or old concept-block advice | Update truth sources, protocol labels, understanding fields, and migration notes together |
 | Wrong archetype | Skill body sections don't match `type:` | Re-pick archetype per § Archetype Selection; rewrite the body to match |
 | Anti-examples for skills that don't exist | `anti_examples` references skills not in the library | Either author those skills first or use existing starter names |
 | Lint-skipped commit | New skill is committed without focused lint | Run `node scripts/skill-lint.js skills/<name>` before every commit; fix all errors |
@@ -118,7 +118,7 @@ Use this checklist as the authoring gate before committing a skill. Every item m
 - [ ] `description:` is ≤ 3 sentences, contains pushy trigger phrases, and names an explicit negative boundary
 - [ ] `## Coverage` is a scope map of distinct topics, not a one-line restate of the description
 - [ ] `drift_check` is an object with `last_verified`; local `truth_source_hashes` are recorded only when the drift tool can compute them, while URL truth sources remain explicit but external-unhashed
-- [ ] v6 understanding fields are either honestly populated or omitted with `comprehension_state` absent
+- [ ] Understanding fields are either honestly populated or omitted with `comprehension_state` absent
 - [ ] `compatibility` is an object (not a free-text string) when present
 - [ ] `eval_artifacts`, `eval_state`, `routing_eval` reflect the actual skill state — no inflation
 - [ ] All `relations` entries point to skills that exist in the target repo; `boundary` entries with non-obvious rationale use the `{skill, reason}` form
@@ -132,7 +132,7 @@ Use this checklist as the authoring gate before committing a skill. Every item m
 
 | Use instead | When |
 |---|---|
-| `documentation` | Writing general technical documentation (guides, tutorials, references) — not a skill specifically |
+| `docs-development` | Writing general technical documentation (guides, tutorials, references) — not a skill specifically |
 | `refactor` | Modifying an existing skill's content while preserving its identity |
 | `skill-infrastructure` | Auditing the metadata health of skills already in the library |
 | `skill-router` | Diagnosing why a router doesn't activate an existing skill on a given query |

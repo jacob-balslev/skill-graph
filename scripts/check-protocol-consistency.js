@@ -29,10 +29,6 @@
  *              field; post-SH-5784 use eval_artifacts, eval_state, routing_eval).
  *         C5c: Scorecard portability rows must not use v1 sub-field names
  *              ("level" or "exports") -- use v2 names "readiness" and "targets".
- *   C6 -- REMOVED 2026-05-24. Pinned schemas (skill.v{N}.schema.json,
- *         manifest.v{N}.schema.json) were deleted as legacy bloat; the repo
- *         now ships one canonical schema per artifact, with prior versions in
- *         git history only.
  *   C7 -- Generated field-reference parity: docs/field-reference.generated.md
  *         must match live regeneration from the current canonical skill schema.
  *   C8 -- JSON-LD context coverage: every top-level authored schema field must
@@ -651,14 +647,7 @@ function checkC5ExampleTruthInvariants() {
 }
 
 // ---------------------------------------------------------------------------
-// C6 -- REMOVED 2026-05-24 (canonicalization).
 // ---------------------------------------------------------------------------
-// The pinned schemas/{skill,manifest}.v{N}.schema.json files were deleted as
-// legacy bloat. The repo now ships ONE canonical schema per artifact:
-// schemas/skill.schema.json and schemas/manifest.schema.json. Past schema
-// versions live in git history, not on disk. The `resolveCurrentSchemaVersion`
-// helper and `checkC6VersionedSchemaParity` function were removed along with
-// the parity check.
 
 // ---------------------------------------------------------------------------
 // C7 -- Generated field-reference parity
@@ -862,8 +851,6 @@ function main() {
   if (c5.length === 0) console.log('OK');
   else { console.log('FAIL'); for (const e of c5) { console.error(`  ERROR ${e}`); } }
   allErrors.push(...c5);
-
-  // C6 removed 2026-05-24 — pinned schemas deleted; canonical-only.
 
   // C7
   process.stdout.write('C7 Generated field-reference parity... ');

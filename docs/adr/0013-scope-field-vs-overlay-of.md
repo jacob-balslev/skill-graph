@@ -30,7 +30,7 @@ A full body-read audit of all 453 active `SKILL.md` files in the canonical libra
 
 ### Contradiction 1 — The `scope:` field has TWO incompatible enums
 
-- **Protocol enum** (`schemas/skill.v7.schema.json` + `SKILL_METADATA_PROTOCOL.md`): `[portable, reference, codebase]`
+- **Protocol enum** (`schemas/skill.schema.json` + `SKILL_METADATA_PROTOCOL.md`): `[portable, reference, codebase]`
 - **Workspace tooling enum** (`scripts/skill/skill-census.js` line 227, `VALID_SCOPES`): `[operational, reference, overlay, generic]`
 
 These overlap on `reference` only. The corpus follows the tooling — 234 skills (~52%) declare `scope: operational` and 29 (~7%) declare `scope: generic`. Zero skills declare `scope: codebase`. Two declare `portable`. Both surfaces validate-check their own declarations internally and pass; the conflict is invisible until you compare them.
@@ -124,7 +124,7 @@ Keep `scope:` as informational (no validation), but make path placement and `ove
 
 ## Accepted decision: Option A — fix the contract, normalize the corpus
 
-The audit evidence (453 active SKILL.md files, 277 in non-protocol enum after the parser-fix recount, 61 duplicate leaf-names, 12+ "## Sales Hub Override" bolt-ons) plus the project's mission (typed structure beyond `name + description`) point the same way. The contradiction between `schemas/skill.v7.schema.json` and `scripts/skill/skill-census.js` line 227 is a tier-1 fixable surface conflict, not a justification for downgrading the field.
+The audit evidence (453 active SKILL.md files, 277 in non-protocol enum after the parser-fix recount, 61 duplicate leaf-names, 12+ "## Sales Hub Override" bolt-ons) plus the project's mission (typed structure beyond `name + description`) point the same way. The contradiction between `schemas/skill.schema.json` and `scripts/skill/skill-census.js` line 227 is a tier-1 fixable surface conflict, not a justification for downgrading the field.
 
 The migration path (post-parser-fix data, 2026-05-23):
 
@@ -168,7 +168,7 @@ The migration path (post-parser-fix data, 2026-05-23):
 - **Audit-loop routing decisions:** `Development/.opencode/progress/audit-loop-routing.json`
 - **Routing-with-buckets enriched worklist:** `Development/.opencode/progress/skill-audit-worklist-with-buckets.json`
 - **Census tool with the conflicting enum:** `Development/scripts/skill/skill-census.js` line 227
-- **Protocol schema:** `schemas/skill.v7.schema.json`
+- **Protocol schema:** `schemas/skill.schema.json`
 - **Related ADRs:** [ADR 0011 — Split audit verdict into four verdicts](0011-split-audit-verdict-into-four-verdicts.md), [ADR 0009 — Sibling repo deprecation](0009-sibling-repo-deprecation.md)
 
 ## Open questions for the user

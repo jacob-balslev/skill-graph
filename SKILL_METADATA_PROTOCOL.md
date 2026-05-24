@@ -1,14 +1,11 @@
 # Skill Metadata Protocol
 
 > **Version:** 1.4.0 (schema_version 7, Skill Graph 0.5.9)
-> **Machine-readable schema:** `schemas/skill.v7.schema.json` (v4, v5, and v6 schemas remain for back-compat reads via `normalizeFrontmatter()`)
-> **Migration from v6:** `docs/migrations/v6-to-v7.md`
-> **Migration from v5:** `docs/migrations/v5-to-v6.md`
-> **Migration from v4:** `docs/migrations/v4-to-v5.md`
+> **Machine-readable schema:** `schemas/skill.schema.json`
 > **Detailed field reference:** `docs/field-reference.md`
 > **Full semantics + design rationale:** `docs/skill-metadata-protocol.md`
 
-This document is the top-level public contract for the Skill Metadata Protocol frontmatter format — the **normative spec**. It defines which fields are required, what each field means in operational terms, which fields are authored by humans vs computed by tooling, and how to migrate from older schema versions. Skill Graph is the library-level system that consumes this contract. The prose is terse and boundary-aware: every clause is a rule a consumer or author can verify against the schema and against `scripts/skill-lint.js`.
+This document is the top-level public contract for the Skill Metadata Protocol frontmatter format — the **normative spec**. It defines which fields are required, what each field means in operational terms, which fields are authored by humans vs computed by tooling, and how to migrate from older schema versions. Skill Graph is the library-level system that consumes this contract. The prose is terse and boundary-aware: every clause is a rule a consumer or author can verify against the schema and the focused Skill Graph verification tools.
 
 **Companion docs by genre.** This contract is the *what*. The *why* — design rationale, archetype semantics, OntoClean rigidity, the eval-health triple's orthogonality, the JSON-LD W3C mappings, and the philosophical posture behind the field choices — lives in [`skill-metadata-protocol.md`](docs/skill-metadata-protocol.md). The two docs are coordinated and grow together: a normative rule that lacks a "why" is fragile; a "why" that lacks a normative rule is vapourware. If you are authoring a SKILL.md, you read this file. If you are deciding whether to add a field to the schema, you read both.
 
@@ -28,14 +25,13 @@ This document is the top-level public contract for the Skill Metadata Protocol f
    - [Grounding](#grounding)
    - [Portability and Standards](#portability-and-standards)
 4. [Authored vs Generated Fields](#authored-vs-generated-fields)
-5. [Migration Notes](#migration-notes)
-6. [Design Constraints](#design-constraints)
+5. [Design Constraints](#design-constraints)
 
 ---
 
 ## Overview
 
-Every skill is a single `SKILL.md` file with a YAML frontmatter block. The frontmatter is validated by `skill-lint.js` against `schemas/skill.v7.schema.json`. The `generate-manifest.js` script reads frontmatter from all skill files and emits a single `skills.manifest.json`.
+Every skill is a single `SKILL.md` file with a YAML frontmatter block. The schema contract is `schemas/skill.schema.json`; deterministic verification is split across focused tools. `skill-lint.js` enforces the lightweight canonical-source gate (valid frontmatter, identifier shape, non-empty description, parent-directory/name alignment), while `check-protocol-consistency.js`, `check-category-enum.js`, `generate-manifest.js`, routing evals, drift checks, and export verification cover the broader protocol surface. The `generate-manifest.js` script reads frontmatter from all skill files and emits a single `skills.manifest.json`.
 
 The contract has one runtime model: one `SKILL.md` per skill, one manifest, one lint pass. There is no closed/open split, no private control plane, and no enterprise-only fields.
 
@@ -56,7 +52,7 @@ The field tables in this document describe the **logical contract** — the fiel
 
 ### Required for all skills
 
-All thirteen fields in this group are required. A skill missing any of them fails lint with an error.
+All thirteen fields in this group are required by the v7 schema and protocol contract. The lightweight `skill-lint.js` gate does not enforce every schema field; use the protocol/manifest/schema checks when validating the full contract.
 
 | Field | Type | Purpose |
 |---|---|---|
@@ -76,14 +72,14 @@ All thirteen fields in this group are required. A skill missing any of them fail
 
 ### Conditionally required
 
-These fields are required only when a specific condition is met. The first three are enforced by JSON-Schema `allOf` rules; the `keywords` rule is enforced by `scripts/skill-lint.js` (lint check R1) rather than the schema, since the schema cannot reason about routability intent.
+These fields are required only when a specific condition is met. The first three are enforced by JSON-Schema `allOf` rules. The `keywords` rule is a routing-quality convention verified by review and routing evals rather than the lightweight canonical-source linter, since the schema cannot reason about routability intent.
 
 | Field | Required when | Enforced by |
 |---|---|---|
 | `extends` | `type: overlay` | schema `allOf` |
 | `grounding` | `scope: codebase` | schema `allOf` |
 | `superseded_by` | `stability: deprecated` | schema `allOf` |
-| `keywords` | `scope: codebase` OR `routing_bundles` is set | `scripts/skill-lint.js` (lint check R1) |
+| `keywords` | `scope: codebase` OR `routing_bundles` is set | routing review / routing evals |
 
 ### Optional (strongly recommended)
 
@@ -130,7 +126,7 @@ structural_verdict      # PASS | PASS_WITH_FIXES | FAIL | UNVERIFIED (form roll-
 truth_verdict           # PASS | DRIFT | BROKEN | UNVERIFIED (truth roll-up, gates 3-6)
 comprehension_verdict   # PASS | SHALLOW | REDUNDANT | UNVERIFIED | SKIPPED_BASELINE_HIGH | NA
                         # (gate 8, demoted in v7 — cheap smoke test only, never alone certifying)
-application_verdict     # APPLICABLE | REDUNDANT | HARMFUL | MIXED | FALSE_POSITIVE | UNVERIFIED
+application_verdict     # APPLICABLE | REDUNDANT | HARMFUL | MIXED | FALSE_POSITIVE | UNVERIFIED | PROVISIONAL
                         # (gate 9, primary quality signal — a skill is only behaviorally certified
                         #  when this verdict is APPLICABLE)
 eval_score              # number 0.0–5.0 — latest aggregate eval grade
@@ -190,9 +186,9 @@ A skill can legitimately belong to more than one shelf — `webhook-integration`
 |---|---|---|---|
 | `category` | single enum string | v7: yes · v8: deprecated | The skill's primary category. Equals `categories[0]` when both are present. |
 | `categories` | ordered array of enum strings, min 1, max 5 | v7: optional · v8: required | First entry is the primary; remaining entries are secondaries the skill also covers. |
-| `primaryCategory` | single enum string | optional alias | Workspace's parallel field name. `normalizeFrontmatter()` reads it as equivalent to `categories[0]`. Title-case workspace values (`Agent System`, `Technical Capability`, `Design & UX`, `Product Domain`, `Meta Method`) normalize to the lowercase enum below. |
+  | `primaryCategory` | single enum string | optional alias | Workspace's parallel field name. Title-case workspace values (`Agent System`, `Technical Capability`, `Design & UX`, `Product Domain`, `Meta Method`) normalize to the lowercase enum below. |
 
-When both `category` and `categories` are present, `categories[0]` MUST equal `category`. Lint check `check-category-enum.js` flags disagreement. `primaryCategory` is read by `normalizeFrontmatter()` before the agreement check, so a skill that uses only the workspace-style `primaryCategory: Agent System` is equivalent to `category: agent` / `categories: [agent]` after normalization.
+When both `category` and `categories` are present, `categories[0]` MUST equal `category`; the JSON Schema now enforces that prefix rule. `primaryCategory` is a typed alias accepted by the schema for workspace policy, but protocol-native skills should prefer lowercase `category` / `categories`.
 
 A browse facet — answers the single question for the primary slot: *Where should a human browse to find this skill first?* Hierarchical taxonomy uses the optional `domain` field with slash-delimited segments; `domain` complements `categories[0]`, it does not replace it.
 
@@ -203,7 +199,7 @@ A browse facet — answers the single question for the primary slot: *Where shou
   | `foundations` | Epistemics, methodology, verification, reasoning, taxonomy, semantics — preconditions of competent agent or engineering work. Reserved category — must justify membership against the foundations gate; cannot default here. Target size 8–15 skills. | `Meta Method` (folds in) |
   | `engineering` | Building software systems: APIs, data, infra, runtime, integrations. | `Technical Capability` |
   | `design` | Visual, interaction, IA, content, motion — design as a discipline. | `Design & UX` |
-  | `quality` | Cross-cutting non-functional properties: a11y, performance, security, type-safety, testing, observability. Properties of any artifact. | (no workspace equivalent — add) |
+  | `quality` | Cross-cutting non-functional properties: a11y, performance, security, type-safety, testing, observability. Properties of any artifact. | lowercase alias only |
   | `agent` | Agent-specific concepts: tool design, prompt design, agent state, orchestration, eval-driven dev. | `Agent System` |
   | `product` | Prioritization, scope, MVP, PRDs, customer journey, positioning. | `Product Domain` |
 
@@ -383,9 +379,9 @@ Seven flat top-level fields that record a skill's audit fingerprint in its own f
 
 **`application_verdict`** *(v7+)* — **the primary quality signal**
 - Application-layer verdict (gate 9: behavioral change on real artifacts).
-- Enum: `APPLICABLE` | `REDUNDANT` | `HARMFUL` | `MIXED` | `FALSE_POSITIVE` | `UNVERIFIED`.
+- Enum: `APPLICABLE` | `REDUNDANT` | `HARMFUL` | `MIXED` | `FALSE_POSITIVE` | `UNVERIFIED` | `PROVISIONAL`.
 - Written by the application grader on `evals/application.json`. A skill is only behaviorally certified when this is `APPLICABLE`.
-- Default `UNVERIFIED` for the v6→v7 corpus — no skill has been audited via gate 9 yet.
+- `PROVISIONAL` records a single-model dogfood audit that found useful behavior but has not passed the independent application grader. Default `UNVERIFIED` means no application assessment has run.
 
 **`audit_verdict`** *(DEPRECATED in v7)*
 - Pre-v7 single aggregate verdict, replaced by the four discrete verdicts above.
@@ -432,7 +428,7 @@ Seven flat top-level fields that record a skill's audit fingerprint in its own f
 
 **`anti_examples`**
 - Negative-class activation examples — realistic prompts that look related but a DIFFERENT skill should handle.
-- Pair with `relations.disjoint_with` to name the skill that should activate instead.
+- Pair with `relations.boundary` only when the target is same-domain and this skill owns the query; otherwise use `relations.related` plus the `anti_examples` text.
 
 **`workspace_tags`**
 - Literal project handles or semantic tags identifying which projects this skill is relevant to.
@@ -460,7 +456,7 @@ relations:
 **`related`** (preferred) / `adjacent` (deprecated alias)
 - Symmetric associative relation. Use when two skills should be co-read because they cover the same surface from different angles.
 - Maximum 5 entries recommended to avoid hub-and-spoke clutter.
-- `adjacent` is a deprecated alias from v3.0. Use `related` in all new skills. Lint emits a warning on `adjacent`.
+- `adjacent` is a deprecated alias from v3.0. Use `related` in all new skills. Tooling still accepts `adjacent` for back-compat, but new authoring should not introduce it.
 
 **`boundary`** (the routing-layer field — distinct from the top-level Understanding `boundary` field)
 
@@ -613,116 +609,6 @@ Some legacy scope and type values are normalized by the manifest generator to th
 | `framework` (type) | `workflow` | Frameworks describe workflows |
 | `feedback` (type) | `overlay` | Feedback modifies other skills |
 
----
-
-## Migration Notes
-
-### v6 -> v7 (current)
-
-Detailed migration guide: [`migrations/v6-to-v7.md`](docs/migrations/v6-to-v7.md).
-
-Run the codemod to migrate in place:
-
-```bash
-node scripts/migrate-skill-v6-to-v7.js --apply <path>
-```
-
-| What changed | v6 form | v7 form |
-|---|---|---|
-| Schema version | `schema_version: 6` | `schema_version: 7` |
-| Schema file | `schemas/skill.v6.schema.json` | `schemas/skill.v7.schema.json` (v4, v5, and v6 schemas remain for back-compat reads via `normalizeFrontmatter()`) |
-| Health Block verdict | single aggregate `audit_verdict` | four independent verdicts: `structural_verdict`, `truth_verdict`, `comprehension_verdict`, `application_verdict` |
-| Quality signal | `audit_verdict` could conflate form, truth, comprehension, and behavior | `application_verdict == APPLICABLE` is the positive behavior certification; Integrity Gate fields are required floors, not usefulness proof |
-| Migration default | aggregate verdict retained | `audit_verdict` removed; `comprehension_verdict` and `application_verdict` default to `UNVERIFIED` until the matching graders run |
-
-### v5 -> v6 (previous)
-
-Detailed migration guide: [`migrations/v5-to-v6.md`](docs/migrations/v5-to-v6.md).
-
-The codemod for the schema_version bump (after authoring the flat Understanding fields):
-
-```bash
-cd /Users/jacobbalslev/Development/skills
-find skills -name SKILL.md -exec sed -i '' 's/schema_version: "5"/schema_version: "6"/g' {} +
-```
-
-| What changed | v5 form | v6 form |
-|---|---|---|
-| Schema version | `schema_version: 5` | `schema_version: 6` |
-| Schema file | `schemas/skill.v5.schema.json` | `schemas/skill.v6.schema.json` (v5 schema retained for back-compat reads) |
-| Concept teaching block | nested `concept: { definition, mental_model, purpose, boundary, taxonomy, analogy, misconception }` | five flat top-level fields: `mental_model`, `purpose`, `boundary`, `analogy`, `misconception`. `definition` is covered by `description`; `taxonomy` is covered by `category` + `relations.broader`. Body `## Concept Card` section: machine-readable subset migrated to frontmatter; body section retained as the human-readable rich-expansion form (see § Understanding fields above for the canonical relationship). |
-| Health Block | absent — audit fingerprint scattered across `eval-history.jsonl`, `routing-misses.jsonl`, `health-ledger.jsonl`, `.opencode/progress/skill-audit-*`, `findings/*.md` | seven flat top-level fields stamped by the audit loop: `last_audited`, `last_changed`, `audit_verdict`, `eval_score`, `eval_failed_ids`, `lint_verdict`, `drift_status` |
-| `comprehension_state: present` rule | required nested `concept` block | requires EITHER the five flat Understanding fields OR (for v5 back-compat) the nested `concept` block — enforced via `anyOf` clause in v6 schema's `allOf` rule |
-| Cross-domain `relations.boundary[]` | implicit "I am NOT B; defer to B" reading | codified as silent-failure risk; cross-domain entries belong in `anti_examples` + `relations.related` (see § Relations § `boundary`) |
-| `relations.boundary` reason-text convention | unrestricted prose (deference framing was common) | ownership framing required: "I own this exclusively over [skill]" not "use [skill] instead" — clarified 2026-05-23 (SH-6306); field name inverts runtime mechanic (see WARNING in § Relations § `boundary`) |
-
-The legacy nested `concept` block remains accepted in v6 for v5 skills not yet migrated. The comprehension grader reads either location; flat fields win when both are present.
-
-### v4 -> v5 (previous)
-
-Detailed migration guide: [`migrations/v4-to-v5.md`](docs/migrations/v4-to-v5.md).
-
-The codemod for the schema_version bump (after re-routing categories):
-
-```bash
-cd /Users/jacobbalslev/Development/skills
-find skills -name SKILL.md -exec sed -i '' 's/schema_version: "4"/schema_version: "5"/g' {} +
-```
-
-| What changed | v4 form | v5 form |
-|---|---|---|
-| Schema version | `schema_version` was `4` | `schema_version` is `5` |
-| Schema file | `schemas/skill.v4.schema.json` (open-ended `category` string) | `schemas/skill.v5.schema.json` (closed `category` enum of 6 values) |
-| `category` enum | open-ended string; values included `knowledge`, `frontend`, `ai-engineering`, `integration`, `integrations`, `data`, `workflow`, `security` | closed enum: `foundations` \| `engineering` \| `design` \| `quality` \| `agent` \| `product` |
-| `foundations` gate | implicit | explicit anti-junk-drawer rule: target 8–15 skills; cannot default here; must clear epistemic-precondition test |
-| `quality` framing | one of several categories | promoted to 6th category for property-as-category (a11y, perf, security, testing, type-safety, observability) per A′ Rule 2 |
-| `agent` naming | also seen as `ai-engineering` | canonical `agent` |
-| Concept-shape adoption | "social recognition" criterion | 4-condition evidence-based: scope ∈ {portable, reference} AND type = capability AND ≥2 external grounding sources AND concept block contains no repo-specific nouns |
-| Skill name policy | banned-verb-prefix lint | head-noun glossary (`docs/head-noun-glossary.md`) + `allowed_exceptions` registry (`docs/name-exceptions.yaml`) with citations |
-
-The v5 category enum was already applied across 137 live skills in skill-graph commit `210ac69` (2026-05-16). The Phase 0b sample-migration review at `skill-graph/docs/migration-sample-review.md` (2026-05-16) recorded 86.67% reviewer-agreement, passing the 85% gate.
-
-### v3 -> v4 (historical)
-
-Run the codemod to migrate in place: `node scripts/migrate-skill-v3-to-v4.js <path>`
-
-| What changed | v3 form | v4 form |
-|---|---|---|
-| Schema version | `schema_version` was `3` | `schema_version` was bumped to `4` |
-| Flat browse shelf | `browse_category: engineering` | `category: engineering` |
-| Hierarchical path | `category: engineering/api-design` or `category_path: engineering/api-design` | `domain: engineering/api-design` |
-| Workspace relevance tags | `project_tags: [...]` | `workspace_tags: [...]` |
-| Activation bundles | `routing_groups: [...]` | `routing_bundles: [...]` |
-
-The generated manifest keeps `skills[].project` as generated project-root ownership from `.skill-graph/config.json`. Do not author `project` in portable skill frontmatter; use `workspace_tags` for semantic relevance.
-
-### v2 -> v3 (historical)
-
-Run the codemod to migrate in place: `node scripts/migrate-skill-v2-to-v3.js <path>`
-
-| What changed | v2 form | v3 form |
-|---|---|---|
-| `drift_check` shape | scalar ISO date string | object `{ last_verified, truth_source_hashes? }` |
-| `compatibility` shape | free-text string | object `{ runtimes?, node?, notes? }` |
-| `family` field name | `family: engineering` | `browse_category: engineering` |
-| New optional fields | (none) | `category`, `project_tags`, `lifecycle`, `runtime_telemetry` |
-| Relation predicate names | `adjacent` canonical | `related` preferred; `adjacent` remains valid with lint warning. `boundary` stays canonical for routing-layer asymmetric handoff; `disjoint_with` is a separate formal OWL class-disjointness relation. |
-
-### v1 -> v2 (historical)
-
-| What changed | v1 form | v2 form |
-|---|---|---|
-| `scope` enum | `generic` / `operational` | `portable` / `codebase` |
-| Eval health | single `eval_status` field | `eval_artifacts`, `eval_state`, `routing_eval` |
-| `portability` shape | `portability.level`, `portability.exports` | `portability.readiness`, `portability.targets` |
-| Route groups | `route_groups` | `routing_groups` |
-
-### Compatibility aliases
-
-Some preferred v3.1 aliases remain accepted in v4 for compatibility: `archetype`, `reviewed_at`, `allowed_tools`, nested `eval.*`, `grounding.subject`, `grounding.claim_scope`, `compatibility.agent_runtimes`, `compatibility.node_version`, `portability.export_targets`, and `drift_check.verified_at`. When both forms are present, values must match.
-
----
-
 ## Design Constraints
 
 The contract enforces the following invariants. Any change to the schema or tooling that violates these invariants is a breaking change requiring a `schema_version` bump.
@@ -737,4 +623,4 @@ The contract enforces the following invariants. Any change to the schema or tool
 
 ---
 
-*See `docs/skill-metadata-protocol.md` for full design rationale, overlay composition precedence, and schema versioning policy. See `docs/field-reference.md` for one section per field with examples. See `schemas/skill.v7.schema.json` for the machine-enforceable version of this contract.*
+*See `docs/skill-metadata-protocol.md` for full design rationale, overlay composition precedence, and schema versioning policy. See `docs/field-reference.md` for one section per field with examples. See `schemas/skill.schema.json` for the machine-enforceable version of this contract.*
