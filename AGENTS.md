@@ -73,9 +73,9 @@ For audit work, also read `SKILL_AUDIT_LOOP.md` and `SKILL_AUDIT_CHECKLIST.md`.
 - Package manager recorded in `package.json`: `pnpm@9.15.0`.
 - The scripts use only Node built-ins today; there are no package dependencies.
 - Public CLI entrypoint: `bin/skill-graph.js`.
-- Current public release checkpoint in docs: `0.5.8` on `2026-05-19` (Karpathy-loop Phase 2 release; see [`CHANGELOG.md`](CHANGELOG.md#058--2026-05-19)).
+- Current public release checkpoint in docs: `0.5.9` on `2026-05-23` (audit library package-files release; see [`CHANGELOG.md`](CHANGELOG.md#059--2026-05-23)).
 - Current skill contract: `schema_version: 7` (four-verdict Health Block — `structural_verdict` / `truth_verdict` / `comprehension_verdict` / `application_verdict` replace the single v6 `audit_verdict`). The v6 aggregate-verdict field is removed because it conflated form, truth, comprehension, and behavior under one PASS/FAIL signal that masqueraded as quality; `application_verdict` is the new primary quality signal and certifies behavior change on real artifacts. See [ADR 0011](docs/adr/0011-split-audit-verdict-into-four-verdicts.md). Migrations v4→v5, v5→v6, and v6→v7 are all complete across the 284-active + 52-archived canonical workspace; see `docs/migrations/v4-to-v5.md`, `docs/migrations/v5-to-v6.md`, and `docs/migrations/v6-to-v7.md` for breaking-change matrices.
-- This repo is the **canonical consolidated implementation** post-2026-05-18 (commit `654b4df`; see [ADR 0009](docs/adr/0009-sibling-repo-deprecation.md) and SH-6137). Schemas, audit scripts, graders, eval fixtures, examples, and the protocol/audit canonical docs all live here. The canonical skill library (144 `SKILL.md` files, verified 2026-05-23 via `find /Users/jacobbalslev/Development/skills/skills -name SKILL.md`; `SKILL_GRAPH.md § Current State` is the single-source-of-truth count) lives at `/Users/jacobbalslev/Development/skills/`. The previously separate `skill-metadata-protocol` and `skill-audit-loop` mirrors are preserved as docs-only deprecation mirrors — they were **archived (read-only) on GitHub on 2026-05-20** ([ADR 0009 § Update](docs/adr/0009-sibling-repo-deprecation.md)) and no longer carry active source code. `examples/` still holds specimen projects and per-skill comprehension evals.
+- This repo is the **canonical consolidated implementation** post-2026-05-18 (commit `654b4df`; see [ADR 0009](docs/adr/0009-sibling-repo-deprecation.md) and SH-6137). Schemas, audit scripts, graders, eval fixtures, examples, and the protocol/audit canonical docs all live here. The canonical skill library lives at `/Users/jacobbalslev/Development/skills/`; `SKILL_GRAPH.md § Current State` is the single-source-of-truth count. The previously separate `skill-metadata-protocol` and `skill-audit-loop` mirrors are preserved as docs-only deprecation mirrors — they were **archived (read-only) on GitHub on 2026-05-20** ([ADR 0009 § Update](docs/adr/0009-sibling-repo-deprecation.md)) and no longer carry active source code. `examples/` still holds specimen projects and per-skill comprehension evals.
 - Workspace config at `.skill-graph/config.json` points lint, manifest, drift, route, and truth_source resolution at the canonical sibling skills repo by default. `SKILL_GRAPH_WORKSPACE` env-var still overrides — useful when developers clone the canonical repo elsewhere. Truth_source paths starting with `skills/<name>/SKILL.md` are resolved via `scripts/lib/roots.js::resolveTruthSourcePath()`: skill-library-aware first, with REPO_ROOT fallback.
 
 ## What the Skill Graph Is
@@ -87,7 +87,7 @@ The Skill Graph is a routable, evaluable, drift-checked knowledge graph of agent
 - `relations.verify_with` — "when this skill is applied, verify the result with that skill" (cross-check).
 - `relations.depends_on` — composition; "this skill assumes the reader has the other in scope."
 
-The graph is not a documentation pile. It is queried by routers, traversed by injection hooks, evaluated against retrieval baselines, and drift-checked against source-of-truth files. Two skills are "the same kind" iff they share a `category × type × scope` triple plus a head noun; the routing layer uses that triple as a first-pass discriminator before walking edges. Note: in the current 144-skill corpus, ~94% of skills share `type: capability` and ~65% share `scope: portable`, so the triple provides broad stratum separation but not fine-grained routing precision — keyword score and relation edges carry the discriminating load. See `SKILL_METADATA_PROTOCOL.md` § Classification § `category` for the full distribution analysis and authoring implications (Updated 2026-05-23 — SH-6307).
+The graph is not a documentation pile. It is queried by routers, traversed by injection hooks, evaluated against retrieval baselines, and drift-checked against source-of-truth files. Two skills are "the same kind" iff they share a `category × type × scope` triple plus a head noun; the routing layer uses that triple as a first-pass discriminator before walking edges. Note: in the current corpus, most skills share `type: capability` and `scope: portable`, so the triple provides broad stratum separation but not fine-grained routing precision — keyword score and relation edges carry the discriminating load. See `SKILL_METADATA_PROTOCOL.md` § Classification § `category` for the current distribution analysis and authoring implications.
 
 This shape is what distinguishes the Skill Graph from prompt libraries, agent-runtime config, hosted marketplaces, and personal memory systems. It is a protocol-and-tooling project that produces a navigable graph; consumers (routers, agent runtimes, hosted marketplaces) read from it but do not redefine it.
 
@@ -423,6 +423,46 @@ For audit scaffolding:
 node scripts/skill-audit.js <skill-name>
 node scripts/skill-audit.js <skill-name> --graded --grader-cli "<command>"
 ```
+
+One-shot umbrella entry point (recommended for bug reports and pre-PR sweeps):
+
+```bash
+node bin/skill-graph.js doctor
+```
+
+`doctor` runs every deterministic check in one pass — lint, protocol-check, manifest validate, routing-eval, export-verify, markdown links, overlap, and the unit smoke tests. Equivalent to `npm run verify` but invocable from any cwd that has the CLI installed.
+
+### Maintenance, historical, and on-demand scripts
+
+These live in `scripts/` but are intentionally not in `npm run verify`. They're either one-shot migration helpers (work already done; retained for audit history and as templates for future schema bumps), staged stubs awaiting follow-up work, or on-demand sentinels that produce no signal in CI for the common case.
+
+| Script | Status | Purpose |
+|---|---|---|
+| `scripts/backfill-schema-version.js` | Historical (job done) | Walks a skill tree, reports SKILL.md files missing `schema_version`, optionally backfills. Verified 2026-05-24: 0 of 147 canonical skills are missing the field. Retained as a template for future schema bumps; safe to invoke as `--dry-run` before a major migration. |
+| `scripts/build-retrieval-baseline.js` | Historical (v0 snapshot) | Phase-0a builder for `evals/retrieval-baseline-v0.json` per the Skill Graph v5 plan. The current live baseline is `evals/retrieval-baseline-v2.json`; this builder targets the v0 path and is retained as the historical generator. A successor `build-retrieval-baseline-v2.js` is the right next step if the v2 baseline needs to be regenerated from scratch. |
+| `scripts/marketplace-install.js` | Stub (SH-6110 pending) | Minimal stub for installing a skill from a remote registry (GitHub / npm). Full implementation tracked in SH-6110. Do not invoke against a live registry today; it is a placeholder for the install-verification surface referenced from `README.md` and `docs/marketplace-syndication.md`. |
+| `scripts/restructure-by-category.js` | Historical (job done) | One-shot script that moved the canonical sibling library (`~/Development/skills/skills/`) into the current `<category>/<name>/` nested layout, with a QUORUM=3 domain-sub-folder rule. The restructure is complete; the script is retained as the audit trail of the layout move. |
+| `scripts/seed-publication-classification.js` | Historical (one-shot) | Seeded `data/publication-classification.json` from `docs/_archived/marketplace-publication-priority-2026-05-18.md`. Classifications are hand-edited going forward; the JSON is consumed by `scripts/skill/build-skill-audit-worklist.js` in the parent Development repo to build the `publicationQueue`. |
+| `scripts/migrate-category-to-enum.js` | Historical (job done) | The v4→v5 content migration: per-skill explicit mapping of `category` onto the closed 6-value enum. Run before the v5 schema enum was closed. Retained as audit history of which skills moved between which categories. |
+| `scripts/check-mirror-freeze.js` | On-demand sentinel | Scans the two docs-only deprecation mirror repos (`../skill-metadata-protocol`, `../skill-audit-loop`) for active-source/package claims that would contradict their post-ADR-0009 archived status. Read-only; exits 1 on violations. Runs cleanly today; invoke before publishing if either mirror has been touched. |
+| `scripts/check-doc-drift.js` | On-demand sentinel | Schema-version drift sentinel for documentation — reads active `schema_version` from `schemas/skill.schema.json` and scans active `.md` docs for stale references (`schema_version: 4`, `v4 today`, etc.). Allowlists `_archived/`, `docs/migrations/`, `CHANGELOG.md`, `examples/`. Runs cleanly today; invoke before bumping the active schema version. |
+| `scripts/build-status-doc.js` | npm-only (`npm run status` / `npm run status:check`) | Regenerates `docs/status.generated.md` — the single-source mirror for live corpus counts referenced from `SKILL_GRAPH.md § Current State`. The `:check` variant fails CI when the generated doc drifts from live counts. |
+
+### Internal `lib/` layout
+
+The `lib/` tree carries the audit-loop runtime that ships with the `@skill-graph/cli` package. It is intentionally separate from `scripts/` because audit-loop code is bundled into the published CLI surface, whereas `scripts/` are repository-internal authoring/maintenance helpers.
+
+| Path | Purpose |
+|---|---|
+| `lib/audit/skill-audit.js`, `lib/audit/evaluate-skill.js`, `lib/audit/skill-status.js`, `lib/audit/skill-evolution-loop.js` | The four operations of the audit loop (`audit`, `evaluate`, `status`, `evolve`) called by `bin/skill-graph.js`. See `SKILL_AUDIT_LOOP.md`. |
+| `lib/audit/application-eval.js`, `lib/audit/batch-eval.js` | Gate-9 application grader runners. |
+| `lib/audit/eval-staleness-checker.js`, `lib/audit/eval-linter.js` | Eval-artifact hygiene: stale path/symbol detection + per-case schema validation. |
+| `lib/audit/run-skill-improvement-loop.js`, `lib/audit/skill-improvement-helpers.js`, `lib/audit/skill-test-runner.js`, `lib/audit/research-feedback.js`, `lib/audit/log-paths.js` | Inner-loop helpers for the `improve` and `evolve` operations. |
+| `lib/audit/parse-frontmatter.js`, `lib/audit/roots.js`, `lib/audit/audit-prompt-builder.js` | **Deliberate thin shims** that re-export the real implementation from `scripts/lib/` — they exist so audit code can `require('./<helper>')` without a relative path that escapes the `lib/audit/` boundary. The shim headers explicitly document this. Do NOT consolidate by deleting one side. |
+| `lib/audit/graders/concept-grader-prompt.md`, `lib/audit/graders/application-grader-prompt.md`, `lib/audit/graders/application-comparative-grader-prompt.md` | Externalised grader prompts referenced from the Health-Block writeback path. |
+| `lib/audit-shared/model-provider.js`, `lib/audit-shared/parse-args.js`, `lib/audit-shared/skill-frontmatter.js` | Cross-grader plumbing shared between the standalone CLI graders and the in-process audit runner. |
+
+`scripts/lib/` (the authoritative implementations behind the `lib/audit/` shims) holds: `parse-frontmatter.js`, `roots.js`, `audit-prompt-builder.js`, `alias-contract.js`, `mock-grader.js`, `privacy-patterns.js`. These six are required by the non-audit scripts (`skill-lint`, `generate-manifest`, `export-skill`, `skill-graph-route`, `skill-graph-drift`, `export-marketplace-skills`).
 
 ## GitHub Actions
 
