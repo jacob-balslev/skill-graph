@@ -1,6 +1,6 @@
 # Skill Metadata Protocol
 
-> **Version:** 1.4.0 (schema_version 7, Skill Graph 0.5.8)
+> **Version:** 1.4.0 (schema_version 7, Skill Graph 0.5.9)
 > **Machine-readable schema:** `schemas/skill.v7.schema.json` (v4, v5, and v6 schemas remain for back-compat reads via `normalizeFrontmatter()`)
 > **Migration from v6:** `docs/migrations/v6-to-v7.md`
 > **Migration from v5:** `docs/migrations/v5-to-v6.md`
@@ -65,7 +65,7 @@ All thirteen fields in this group are required. A skill missing any of them fail
 | `description` | string (≥20 chars) | Routing contract — tells the router when to activate this skill. |
 | `version` | semver string | Skill content version (e.g. `1.2.0`). Bumped by the author. |
 | `type` | enum | One of: `capability`, `workflow`, `router`, `overlay`. |
-| `category` | enum | Browse facet. One of: `foundations`, `engineering`, `design`, `quality`, `agent`, `product`. See § Classification for the foundations-gate. |
+| `category` | enum | Browse facet — the skill's *primary* category. One of: `foundations`, `engineering`, `design`, `quality`, `agent`, `product`. v7-required; v8 deprecates this in favor of `categories: [string]` (ordered, primary first). See § Classification for the unified taxonomy, the foundations-gate, and the v7→v8 migration plan. |
 | `scope` | enum | One of: `codebase`, `reference`, `portable`. |
 | `owner` | string | Team, username, or tool that is responsible for keeping this skill current. |
 | `freshness` | ISO date | Date the skill body was last reviewed or updated. |
@@ -102,6 +102,8 @@ relations       # typed edges to sibling skills
 These improve portability, discoverability, and health tracking but are not required for a valid skill.
 
 ```yaml
+categories      # string[] (v7 optional, v8 required) — ordered list, primary first, max 5. Same enum as `category`. See § Classification.
+primaryCategory # string (workspace alias) — equivalent to `categories[0]`. Normalized on read; title-case workspace values map to lowercase enum.
 urn             # globally unique URN
 domain          # hierarchical domain path (e.g. "ecommerce/integrations/shopify")
 paths           # glob[] — code surfaces this skill governs
@@ -138,7 +140,7 @@ drift_status            # OK | DRIFT | BROKEN | STALE | NO_BASELINE | EXTERNAL_U
 # audit_verdict         # DEPRECATED in v7 — the v6 single aggregate, replaced by the four verdicts above.
                         # Pre-v7 enum: PASS | PASS_WITH_FIXES | PARTIAL | FAIL | UNKNOWN. See docs/adr/0011-split-audit-verdict-into-four-verdicts.md.
 eval_last_run   # { at, status, runner?, model?, receipt?, receipt_hash? }
-compatibility   # { runtimes, node, notes }
+compatibility   # protocol-native: { runtimes, node, notes }; Agent-Skills-compatible physical encoding may keep the base-field string
 allowed-tools   # space-separated tool allowlist
 ```
 
@@ -180,45 +182,68 @@ allowed-tools   # space-separated tool allowlist
 - `reference` — general-purpose reference knowledge not tied to a specific codebase.
 - `portable` — cross-repo knowledge, intended for distribution via `portability.targets`.
 
-**`category`**
-- **Required since schema_version 5** (retained in v7); present in the `required: [...]` array of `schemas/skill.v7.schema.json`. Authoring a v5+ skill without `category` fails schema validation.
-- A browse facet — answers the single question: *Where should a human browse to find this skill first?*
-- Renamed from v3 `browse_category`; use `category` in all v4+ skills.
-- For hierarchical taxonomy, use the optional `domain` field with slash-delimited segments. `domain` complements `category`; it does not replace it.
-- **Closed enum as of schema_version 5** (retained in v7); enforced at the schema level by `enum` constraint in `schemas/skill.v7.schema.json` AND at the lint level by `scripts/lint/check-category-enum.js`. Framed as a browse facet, not ontology truth. Cross-cutting truth lives in `relations.related`. The six values:
+**`category` and `categories` — one taxonomy, primacy by order**
 
-  | Value | Definition |
-  |---|---|
-  | `foundations` | Epistemics, grounding, verification, context engineering, reasoning — preconditions of competent agent or engineering work. Reserved category — must justify membership against the foundations gate; cannot default here. Target size 8–15 skills. |
-  | `engineering` | Building software systems: APIs, data, infra, runtime, integrations. |
-  | `design` | Visual, interaction, IA, content, motion — design as a discipline. |
-  | `quality` | Cross-cutting non-functional properties: a11y, performance, security, type-safety, testing, observability. Properties of any artifact. |
-  | `agent` | Agent-specific concepts: tool design, prompt design, agent state, orchestration, eval-driven dev. |
-  | `product` | Prioritization, scope, MVP, PRDs, customer journey, positioning. |
+A skill can legitimately belong to more than one shelf — `webhook-integration` is primarily `engineering` and secondarily `quality` because reliable delivery is a cross-cutting non-functional property. To model that honestly without sacrificing closed-enum browseability, the protocol distinguishes the **primary** slot from the **full set** of categories the skill covers, but they read off the same 6-value enum. There is one taxonomy, never two.
 
-  **Disambiguation rules** (apply in order):
+| Field | Type | Required | Meaning |
+|---|---|---|---|
+| `category` | single enum string | v7: yes · v8: deprecated | The skill's primary category. Equals `categories[0]` when both are present. |
+| `categories` | ordered array of enum strings, min 1, max 5 | v7: optional · v8: required | First entry is the primary; remaining entries are secondaries the skill also covers. |
+| `primaryCategory` | single enum string | optional alias | Workspace's parallel field name. `normalizeFrontmatter()` reads it as equivalent to `categories[0]`. Title-case workspace values (`Agent System`, `Technical Capability`, `Design & UX`, `Product Domain`, `Meta Method`) normalize to the lowercase enum below. |
+
+When both `category` and `categories` are present, `categories[0]` MUST equal `category`. Lint check `check-category-enum.js` flags disagreement. `primaryCategory` is read by `normalizeFrontmatter()` before the agreement check, so a skill that uses only the workspace-style `primaryCategory: Agent System` is equivalent to `category: agent` / `categories: [agent]` after normalization.
+
+A browse facet — answers the single question for the primary slot: *Where should a human browse to find this skill first?* Hierarchical taxonomy uses the optional `domain` field with slash-delimited segments; `domain` complements `categories[0]`, it does not replace it.
+
+**The closed enum — 6 values shared by all three fields.**
+
+  | Value | Definition | Workspace title-case alias |
+  |---|---|---|
+  | `foundations` | Epistemics, methodology, verification, reasoning, taxonomy, semantics — preconditions of competent agent or engineering work. Reserved category — must justify membership against the foundations gate; cannot default here. Target size 8–15 skills. | `Meta Method` (folds in) |
+  | `engineering` | Building software systems: APIs, data, infra, runtime, integrations. | `Technical Capability` |
+  | `design` | Visual, interaction, IA, content, motion — design as a discipline. | `Design & UX` |
+  | `quality` | Cross-cutting non-functional properties: a11y, performance, security, type-safety, testing, observability. Properties of any artifact. | (no workspace equivalent — add) |
+  | `agent` | Agent-specific concepts: tool design, prompt design, agent state, orchestration, eval-driven dev. | `Agent System` |
+  | `product` | Prioritization, scope, MVP, PRDs, customer journey, positioning. | `Product Domain` |
+
+**Why the enum is closed at 6 values (not arbitrary).**
+1. **Browseability (Miller's 7±2).** Top-level shelves serve human navigation. Six shelves stay within working-memory capacity; twelve degrade browsing to search.
+2. **MECE pressure on individual values.** An open string enum invites synonym sprawl (`frontend / front-end / ui / web-ui / client-side` all naming the same shelf). Closure forces authors to pick an existing value or propose a new one via ADR — never one-off invention. Multi-assignment via `categories[]` solves the "this skill spans shelves" pressure without weakening per-value clarity.
+3. **Foundations anti-junk-drawer gate.** Without closure, `foundations` becomes the default fallback for ambiguous skills. The closed enum plus disambiguation rule #4 keep `foundations` to its intended size.
+
+**To propose a 7th value**, write an ADR in `docs/adr/` with (a) ≥10 existing skills that would label primarily under the new value, AND (b) evidence the value doesn't fit any existing category by the disambiguation rules. Without both, the proposal closes. Multi-fit secondaries belong in `categories[1..]`, not in a new top-level value.
+
+**Disambiguation rules** (apply in order to choose the *primary* slot):
   1. *Primary surface* — what the skill is *about*, not what it *enables*.
   2. *Property vs subject* — properties (a11y, perf, security, testing, type-safety) → `quality`. How-to-build → `engineering` / `design` / `agent`.
-  3. *Cross-pollination* — multi-fit skills list secondary categories via `relations.related` (max 5). Never via the `category` field itself.
+  3. *Multi-fit* — skills that legitimately span shelves set `categories: [primary, ...secondaries]` (max 5). Secondaries widen the browse net; they do NOT change the primary. Semantic adjacencies that are NOT category-shaped still live in `relations.related`.
   4. *`foundations` gate* — anti-junk-drawer. Membership requires (a) the skill teaches an epistemic precondition AND (b) it cannot be plausibly assigned to `agent`/`engineering`/`quality`/`design`. If `foundations` exceeds 20 entries, the gate has failed and the migration is misrouted.
 
-  **Routing triple observation (Updated 2026-05-23 — SH-6307).** The `category × type × scope` triple is documented in `AGENTS.md` as a "first-pass discriminator" that the routing layer uses before walking edges. In practice, the triple has *weak* discriminating power on the current 144-skill corpus and should be treated as a broad browse facet, not a routing workhorse. Verified distribution (2026-05-23, `skills.manifest.json` generated by `generate-manifest.js`):
+**Migration plan (v7 → v8).** v8 will:
+- Make `categories: [string]` required (min 1, max 5).
+- Deprecate the singular `category` field; normalizer treats `category: X` as `categories: [X]`.
+- Drop the workspace title-case `primaryCategory` values; the workspace migrates to the lowercase enum (codemod `scripts/migrate-skill-v7-to-v8.js`, planned).
+- The `primaryCategory` field NAME may remain as a back-compat alias for `categories[0]` if useful; the title-case VALUES are what's being retired.
+
+  **Routing triple observation (Updated 2026-05-24).** The `category × type × scope` triple is documented in `AGENTS.md` as a "first-pass discriminator" that the routing layer uses before walking edges. In practice, the triple has *weak* discriminating power on the current 147-skill corpus and should be treated as a broad browse facet, not a routing workhorse. Verified distribution (2026-05-24, `skills.manifest.json` generated by `generate-manifest.js`):
 
   | Axis | Value | Count | Share |
   |---|---|---|---|
-  | **category** | `engineering` | 60 | 42% |
+  | **category** | `engineering` | 59 | 40% |
   | | `quality` | 28 | 19% |
-  | | `design` | 26 | 18% |
-  | | `agent` | 16 | 11% |
-  | | `foundations` | 13 | 9% |
+  | | `design` | 28 | 19% |
+  | | `agent` | 17 | 12% |
+  | | `foundations` | 14 | 10% |
   | | `product` | 1 | <1% |
-  | **type** | `capability` | 135 | 94% |
-  | | `workflow` | 8 | 6% |
+  | **type** | `capability` | 136 | 93% |
+  | | `workflow` | 8 | 5% |
+  | | `router` | 2 | 1% |
   | | `overlay` | 1 | <1% |
-  | **scope** | `portable` | 94 | 65% |
-  | | `reference` | 50 | 35% |
+  | **scope** | `portable` | 98 | 67% |
+  | | `reference` | 49 | 33% |
 
-  Because ~94% of skills share `type: capability` and ~65% share `scope: portable`, the `type × scope` pair resolves most queries to the same stratum. Category alone provides 6 buckets over 144 skills (average 24 skills per bucket), which is a useful browse shelf but not useful routing precision. **The routing load is carried by keyword score, description match, and relation edges — not by the triple.** This is by design: `category` is a human navigation facet; `keywords`, `description`, `relations.*`, and the `domain` path field are the routing signals that actually discriminate.
+  Because ~93% of skills share `type: capability` and ~67% share `scope: portable`, the `type × scope` pair resolves most queries to the same stratum. Category alone provides 6 buckets over 147 skills (average about 25 skills per bucket), which is a useful browse shelf but not useful routing precision. **The routing load is carried by keyword score, description match, and relation edges — not by the triple.** This is by design: `category` is a human navigation facet; `keywords`, `description`, `relations.*`, and the `domain` path field are the routing signals that actually discriminate.
 
   **Implication for authors:** Choose `category` based on where a human would browse to discover this skill. Do not try to game `category` for routing — it will not help. For fine-grained routing or grouping, use `keywords` (fuzzy match), `routing_bundles` (explicit group membership), and `domain` (hierarchical sub-path like `engineering/api-design`). If the routing layer needs to distinguish two skills that share a category, the description and keywords are the correct knobs to turn.
 
