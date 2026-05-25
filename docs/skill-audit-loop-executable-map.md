@@ -37,7 +37,7 @@ Both columns "Script (canonical)" and "Script (root, legacy)" should converge to
 
 - Per ADR 0009 (sibling-repo deprecation), `skill-graph/` is the canonical implementation post-2026-05-18.
 - The root copies under `scripts/skill/` are legacy; SH-6198 tracks their deletion or delegation.
-- The `--application` entry point was canonicalized in commit `342a67f`, but the body still delegates to root. See `prompts/audits/skill-audit-loop-single-model.md` Step 6 notes.
+- The `--application` entry point was canonicalized in commit `342a67f`, but the body still delegates to root. See `skill-graph/audits/prompts/skill-audit-loop-single-model.md` Step 6 notes.
 - When the audit pipeline writes to a Health Block field, **verify which script wrote it** (root vs skill-graph): the legacy root script can still produce non-canonical verdicts.
 
 This duplication is a canonical/version-control issue, not a naming or teachability problem. The intervention is finishing ADR 0009, not renaming.
@@ -151,7 +151,7 @@ Single-model audits remain acceptable for low-centrality skills where a verifica
 3. **Behavior remains `UNVERIFIED` and still satisfies audit-complete** if it is explicit and evidenced. Doctrinally intentional at [../SKILL_AUDIT_LOOP.md:23-32](../SKILL_AUDIT_LOOP.md), but it is also a skip path if reviewers do not inspect the evidence.
 4. **The version-earned gate fail-opens when repository inspection is unavailable** (`scripts/skill/check-version-earned.js:35-40`).
 5. **Claim ownership checks fail open when git metadata is unavailable** (`scripts/skill/skill-audit-claim.js:158-159`, `:173-174`).
-6. **Baseline corpus lint errors are allowed during single-skill preflight.** Per `prompts/audits/skill-audit-loop-single-model.md:51-72`, baseline failures should not stop the run. If the baseline is not captured, new failures can hide in old noise.
+6. **Baseline corpus lint errors are allowed during single-skill preflight.** Per `skill-graph/audits/prompts/skill-audit-loop-single-model.md:51-72`, baseline failures should not stop the run. If the baseline is not captured, new failures can hide in old noise.
 7. **Application certification depends on calibration**, but the code path can still stamp a verdict receipt. The grader says results are advisory until calibrated and should not stamp `APPLICABLE` without a receipt at `skill-graph/lib/audit/graders/application-comparative-grader-prompt.md:77-83`; the evaluator writes `application_verdict` and `eval_last_run` when a mode result is available at `skill-graph/lib/audit/evaluate-skill.js:1442-1508`.
 8. **Completion is ledger-derived**, so artifacts without release can look like progress but not count.
 9. **Export blocks only structural failure, not behavior uncertainty.** Marketplace export at `skill-graph/scripts/export-marketplace-skills.js:314-324` blocks `structural_verdict: FAIL`; behavior `UNVERIFIED` is a quality risk rather than a hard export blocker.
