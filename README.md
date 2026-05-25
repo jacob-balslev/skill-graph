@@ -445,7 +445,7 @@ Exit codes for `skill-graph evolve`:
 | [`SKILL_GRAPH.md`](SKILL_GRAPH.md) | Library-level system model and authority tiers. |
 | [`SKILL_METADATA_PROTOCOL.md`](SKILL_METADATA_PROTOCOL.md) | **Canonical** normative spec for the `SKILL.md` frontmatter contract. |
 | [`SKILL_AUDIT_LOOP.md`](SKILL_AUDIT_LOOP.md) | **Canonical** audit procedure (4 operations: audit, improve, evaluate, evolve). |
-| [`SKILL_AUDIT_CHECKLIST.md`](SKILL_AUDIT_CHECKLIST.md) | Per-skill audit checklist used during `audit`. |
+| `SKILL_AUDIT_LOOP.md` § Part 2 — Per-Skill Audit Checklist | Per-skill audit checklist used during `audit`. |
 | [`AGENTS.md`](AGENTS.md) | Agent-facing repo guide (doctrine, doc routing, validation commands, `lib/` layout, public-distribution contract). `CLAUDE.md` imports it. |
 | [`CHANGELOG.md`](CHANGELOG.md) | Release notes for protocol, schemas, scripts, and CLI. |
 | [`schemas/`](schemas/) | Canonical-only JSON Schemas — `skill.schema.json` (the binding contract; `schema_version: 7` currently) + `manifest.schema.json` + `audits-manifest.schema.json` + `comprehension.schema.json`. Prior contract versions (v2-v6) live in git history per [ADR-0014](docs/adr/0014-canonical-only-schema-files.md). Also `skill.context.jsonld` and a `vocabulary/` namespace. |

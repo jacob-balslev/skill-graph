@@ -106,7 +106,7 @@ This distribution is heavily skewed toward two dimensions — `application` and 
 
 ### 2.3 The audit loop's content dimension
 
-The audit loop's `content` dimension (one of the seven scorecard rows) does include comprehension-shaped checks. From [`SKILL_AUDIT_CHECKLIST.md` § 5 (lines 132–141)](https://github.com/jacob-balslev/skill-graph/blob/main/SKILL_AUDIT_CHECKLIST.md):
+The audit loop's `content` dimension (one of the seven scorecard rows) does include comprehension-shaped checks. From [`SKILL_AUDIT_LOOP.md` § Part 2 § 5 (lines 132–141)](https://github.com/jacob-balslev/skill-graph/blob/main/SKILL_AUDIT_LOOP.md § Part 2 — Per-Skill Audit Checklist):
 
 - the skill has a clear Coverage section
 - the skill has a clear Philosophy section
@@ -1149,7 +1149,7 @@ Output: per-dimension table showing baseline pass-count, skill-loaded pass-count
 
 **Change.** Add an 8th dimension to the audit-loop's seven scorecard rows: `Comprehension quality`. Its `appliesWhen` predicate returns true iff `comprehension_state: present`. The dimension reads the comprehension scorecard (R3 output) and reports the same per-dimension verdicts.
 
-Update [`SKILL_AUDIT_CHECKLIST.md`](https://github.com/jacob-balslev/skill-graph/blob/main/SKILL_AUDIT_CHECKLIST.md) to add the new row to the artifact contract.
+Update `SKILL_AUDIT_LOOP.md` § Part 2 — Per-Skill Audit Checklist to add the new row to the artifact contract.
 
 **Why this is leverage-6.** It surfaces the comprehension grade in the existing audit artifact flow. Audits become 8-dimensional when the skill claims comprehension; they remain 7-dimensional when it doesn't.
 
@@ -1375,11 +1375,11 @@ The worked example uses it on every case. Authoring `expected_behaviors[]` is mo
 
 Recommendation: yes, required when `comprehension_dimension` is set. The behavior list is what makes the grader run reproducible; the `expected_reasoning` is a human-readable summary. Both serve different consumers.
 
-### 9.6 Q6 — Does the rubric belong in `SKILL_AUDIT_CHECKLIST.md`, `docs/skill-metadata-protocol.md`, or a new file?
+### 9.6 Q6 — Does the rubric belong in `SKILL_AUDIT_LOOP.md` § Part 2, `docs/skill-metadata-protocol.md`, or a new file?
 
 Options:
 
-- (a) Extend `SKILL_AUDIT_CHECKLIST.md` with a new 8th section. Pro: discoverable in the same place as the existing seven dimensions. Con: the checklist file is currently audit-shaped, not comprehension-shaped, and adding comprehension dilutes the focus.
+- (a) Extend `SKILL_AUDIT_LOOP.md` § Part 2 with a new 8th section. Pro: discoverable in the same place as the existing seven dimensions. Con: the checklist file is currently audit-shaped, not comprehension-shaped, and adding comprehension dilutes the focus.
 - (b) Add a new section to `docs/skill-metadata-protocol.md`. Pro: matches the protocol-shape. Con: the protocol doc is normative and the rubric is operational — slight genre mismatch.
 - (c) Create a new file `docs/comprehension-rubric.md`. Pro: clean separation; the file is the rubric's canonical location. Con: yet another doc to discover.
 
@@ -1400,7 +1400,7 @@ This report examined the following **24 repo files** (23 inside `skill-graph/` p
 1. [`/Users/jacobbalslev/Development/skill-graph/AGENTS.md`](/Users/jacobbalslev/Development/skill-graph/AGENTS.md) — full read; especially §§ Evaluation Discipline, Skill Audit Loop, What the Skill Graph Is
 2. [`https://github.com/jacob-balslev/skill-metadata-protocol`](https://github.com/jacob-balslev/skill-metadata-protocol) — full read
 3. [`https://github.com/jacob-balslev/skill-graph/blob/main/SKILL_AUDIT_LOOP.md`](https://github.com/jacob-balslev/skill-graph/blob/main/SKILL_AUDIT_LOOP.md) — full read
-4. [`https://github.com/jacob-balslev/skill-graph/blob/main/SKILL_AUDIT_CHECKLIST.md`](https://github.com/jacob-balslev/skill-graph/blob/main/SKILL_AUDIT_CHECKLIST.md) — full read
+4. [`https://github.com/jacob-balslev/skill-graph/blob/main/SKILL_AUDIT_LOOP.md § Part 2 — Per-Skill Audit Checklist`](https://github.com/jacob-balslev/skill-graph/blob/main/SKILL_AUDIT_LOOP.md § Part 2 — Per-Skill Audit Checklist) — full read
 5. [`/Users/jacobbalslev/Development/skill-graph/docs/quality-doctrine.md`](/Users/jacobbalslev/Development/skill-graph/docs/quality-doctrine.md) — full read
 6. [`/Users/jacobbalslev/Development/skill-graph/docs/field-reference.md`](/Users/jacobbalslev/Development/skill-graph/docs/field-reference.md) — read in full (1200 lines); focus on `comprehension_state`, `concept`, `eval_*`, `routing_eval` sections
 7. [`skills/type-safety/SKILL.md`](https://github.com/jacob-balslev/skills/blob/main/skills/type-safety/SKILL.md) — full read; used as worked example
@@ -1458,7 +1458,7 @@ This report cited the following **27 external sources** with working links (22 f
 
 - **Eval files** beyond the 7 read in full plus the partial of `a11y.json`. The remaining 23 of 31 files were not read end-to-end; their dimension distribution was instead captured via grep across all 31, which gave the dimension-frequency data in §2.2. Reading every file end-to-end was not necessary because (a) the dimension-frequency captured the structural picture, (b) the 7 read in full span the diverse archetypes (concept skill, workflow skill, overlay skill, comprehensive skill).
 - **The full text of the schemas** beyond the Understanding and legacy `concept` sections of `schemas/skill.schema.json`. The concept-block shape was load-bearing; the rest of the schema's role in this report is to host that block plus the optional `eval_last_run` shape, both of which were examined.
-- **The `examples/audits/*` worked-example artifacts**. Confirmed they exist (`a11y`, `debugging`, `documentation`) and that the artifact contract matches `SKILL_AUDIT_CHECKLIST.md`. The audit artifacts are output of the existing audit loop; they don't contain comprehension-shaped data and would not change the analysis.
+- **The `examples/audits/*` worked-example artifacts**. Confirmed they exist (`a11y`, `debugging`, `documentation`) and that the artifact contract matches `SKILL_AUDIT_LOOP.md` § Part 2. The audit artifacts are output of the existing audit loop; they don't contain comprehension-shaped data and would not change the analysis.
 - **BIG-bench paper full text via WebFetch**. The PDF returned binary; the [search-result summary](https://arxiv.org/abs/2206.04615) and the [GitHub README](https://github.com/google/BIG-bench) carried the design-principle content this report needed.
 - **Closed commercial eval platforms** (Braintrust, LangSmith, Weights & Biases Weave). Per the task brief, these are noted as options but the proposed framework works with the repo's existing file-based eval surface; reading their marketing pages would not add to the framework's design.
 

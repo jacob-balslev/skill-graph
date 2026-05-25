@@ -70,7 +70,7 @@ Target file:
 
 Purpose:
 
-- audit one skill at a time using `SKILL_AUDIT_CHECKLIST.md`
+- audit one skill at a time using `SKILL_AUDIT_LOOP.md` § Part 2
 - write findings, verdict, and scorecard artifacts
 - optionally run deterministic validation after fixes
 

@@ -92,7 +92,7 @@ function skillWithRelations(name, relatedName) {
  *     skill-graph/                    ← fake repoRoot
  *       .skill-graph/
  *         config.json                 ← points skill_roots at ../library/skills
- *       SKILL_AUDIT_CHECKLIST.md      ← stub (required by collectContext)
+ *       SKILL_AUDIT_LOOP.md § Part 2 — Per-Skill Audit Checklist      ← stub (required by collectContext)
  *       schemas/
  *         skill.schema.json           ← stub (required by collectContext)
  *       scripts/
@@ -116,7 +116,7 @@ function createFixtures() {
 
   // Stub files collectContext reads unconditionally.
   fs.writeFileSync(
-    path.join(repoRoot, 'SKILL_AUDIT_CHECKLIST.md'),
+    path.join(repoRoot, 'SKILL_AUDIT_LOOP.md § Part 2 — Per-Skill Audit Checklist'),
     '# Stub checklist\n'
   );
   fs.writeFileSync(
@@ -251,7 +251,7 @@ function cleanup(tmpDir) {
     const repoRoot = path.join(tmpDir, 'repo');
     fs.mkdirSync(path.join(repoRoot, 'schemas'), { recursive: true });
     fs.mkdirSync(path.join(repoRoot, 'scripts'), { recursive: true });
-    fs.writeFileSync(path.join(repoRoot, 'SKILL_AUDIT_CHECKLIST.md'), '# Stub\n');
+    fs.writeFileSync(path.join(repoRoot, 'SKILL_AUDIT_LOOP.md § Part 2 — Per-Skill Audit Checklist'), '# Stub\n');
     fs.writeFileSync(path.join(repoRoot, 'schemas', 'skill.schema.json'), '{}');
     fs.writeFileSync(path.join(repoRoot, 'scripts', 'export-skill.js'), "'use strict';\n");
 

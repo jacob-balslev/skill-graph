@@ -35,7 +35,7 @@ The brief's binary should be a **trinary**:
 
 | Category | Definition | Examples | Resolution |
 |---|---|---|---|
-| **(a) Pure project content** | Spec, schema, lint rule. No runtime path assumption. | `skill-graph/lib/audit/*`, `skill-graph/schemas/*`, `skill-graph/audits/per-skill-contract.md` | **Move into `skill-graph/`** (already done in ADRs 0009 + 0015). |
+| **(a) Pure project content** | Spec, schema, lint rule. No runtime path assumption. | `skill-graph/lib/audit/*`, `skill-graph/schemas/*`, `skill-graph/SKILL_AUDIT_LOOP.md#part-3--per-skill-audit-runbook` | **Move into `skill-graph/`** (already done in ADRs 0009 + 0015). |
 | **(b) Pure workspace orchestration** | Multi-project coordination. No skill-graph dependency. | `scripts/loop/loop-checkpoint.js`, `scripts/linear/*`, `agent-orchestration/hooks/skill-injector.py` (as runtime arm) | **Stay outside.** Not skill-graph content. |
 | **(c) Project-protocol scripts that operate over workspace-coordinated data** | Implement a project protocol, but coordinate workspace-level state. | `scripts/skill/skill-audit-paths.js`, `skill-audit-claim.js`, `skill-audit-ledger.js`, `build-skill-audit-worklist.js` | **Project owns the CONTRACT TYPE; workspace owns the INSTANCE.** Move the type into `skill-graph/schemas/`, leave the script at workspace level, document the dual citizenship. |
 
@@ -51,7 +51,7 @@ The same trinary applies to data: the `routing-config.json` *contract* (what fie
 | 2 | `.opencode/commands/skill-audit-merge-v1.md` | (a) project content | **Move** to `skill-graph/audits/merge-protocol.md`; add alias row in `audits/manifest.json`. | LOW-RISK / SECOND |
 | 3 | Audit-run artifacts (`.opencode/progress/skill-audits/`) | (c) project-protocol over workspace-coordinated data | **Project owns the layout contract** (move `skill-audit-paths.js` exports into `skill-graph/lib/audit/run-layout.js`); **workspace owns the instance directory** (`.opencode/progress/...` stays as the runtime path because concurrent claim atomicity needs workspace-level locks). Document in `skill-graph/AGENTS.md § Doc Ownership Map`. | MEDIUM / SEQUENCED |
 | 4 | `agent-orchestration/references/skill-routing-config.json` | (c) project-protocol over workspace-coordinated data | **Project owns the schema** (new `skill-graph/schemas/routing-config.schema.json` — validates shape, enums, required fields); **workspace owns the instance** (the file stays where the skill-injector hook reads it). | MEDIUM / SEQUENCED |
-| 5 | `agent-orchestration/logs/comprehension-*.jsonl` | (b) workspace telemetry, but with a project-defined contract | **Project owns the row schema** (per-skill-contract.md § 6b already defines it; promote to a schema file); **workspace owns the JSONL files** (they're append-only run output, telemetry shape). Project owns the drain protocol. | LOW / LAST |
+| 5 | `agent-orchestration/logs/comprehension-*.jsonl` | (b) workspace telemetry, but with a project-defined contract | **Project owns the row schema** (SKILL_AUDIT_LOOP.md § Part 3 — Per-Skill Audit Runbook § 6b already defines it; promote to a schema file); **workspace owns the JSONL files** (they're append-only run output, telemetry shape). Project owns the drain protocol. | LOW / LAST |
 
 ### What this does NOT change
 
@@ -83,7 +83,7 @@ Lowest-risk-first sequencing:
 3. **Audit-runs layout contract** (surface #3a) — extract `skill-audit-paths.js` constants into `skill-graph/lib/audit/run-layout.js`; leave the workspace script as a thin re-export. Validates the approach without moving any data.
 4. **Audit-runs path migration** (surface #3b) — defer until the layout contract has been in use for ≥ 1 audit cycle without drift.
 5. **Routing-config schema** (surface #4) — author `skill-graph/schemas/routing-config.schema.json`; add a one-shot validation pass; defer migration of the instance file pending evidence the schema covers all use cases.
-6. **Comprehension logs row schema** (surface #5) — promote `per-skill-contract.md § 6b` row format to a schema file; add a drain CLI subcommand.
+6. **Comprehension logs row schema** (surface #5) — promote `SKILL_AUDIT_LOOP.md § Part 3 — Per-Skill Audit Runbook § 6b` row format to a schema file; add a drain CLI subcommand.
 
 Each migration's commit message must:
 

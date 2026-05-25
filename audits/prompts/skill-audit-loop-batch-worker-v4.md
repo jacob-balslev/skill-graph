@@ -36,11 +36,11 @@ Read, in this order:
 3. /Users/jacobbalslev/Development/skill-graph/AGENTS.md
 4. /Users/jacobbalslev/Development/skill-graph/SKILL_GRAPH.md
 5. /Users/jacobbalslev/Development/skill-graph/SKILL_AUDIT_LOOP.md
-6. /Users/jacobbalslev/Development/skill-graph/SKILL_AUDIT_CHECKLIST.md
+6. /Users/jacobbalslev/Development/skill-graph/SKILL_AUDIT_LOOP.md § Part 2 — Per-Skill Audit Checklist
 7. /Users/jacobbalslev/Development/docs/reference/skill-audit-pipeline.md
 8. /Users/jacobbalslev/Development/.opencode/commands/skill-audit-loop.md
 9. /Users/jacobbalslev/Development/skill-graph/audits/prompts/skill-audit-loop-single-model.md
-10. /Users/jacobbalslev/Development/skill-graph/audits/per-skill-contract.md
+10. /Users/jacobbalslev/Development/skill-graph/SKILL_AUDIT_LOOP.md#part-3--per-skill-audit-runbook
 
 Load relevant project skills and universalSkills before execution. At minimum, load the audit/quality set named by the single-model prompt plus any universalSkills returned by local skill routing/injection tooling. Read the actual SKILL.md files directly.
 
@@ -184,7 +184,7 @@ See `.claude/rules/prompt-shape-structured-plus-novelty.md` for the general patt
 
 - Inner contract (v3): `skill-graph/audits/prompts/skill-audit-loop-single-model.md`
 - Codex autonomous worker: `skill-graph/audits/prompts/skill-audit-loop-codex-autonomous-v5.md`
-- Per-skill audit contract: `skill-graph/audits/per-skill-contract.md`
+- Per-skill audit contract: `skill-graph/SKILL_AUDIT_LOOP.md#part-3--per-skill-audit-runbook`
 - Multi-model merge flow (separate, NOT for this prompt): `.opencode/commands/skill-audit-merge-v1.md`
 - v2 multimodel protocol: `skill-graph/docs/skill-audit-multimodel-merge-v2.md`
 - Pattern doc: `.claude/rules/prompt-shape-structured-plus-novelty.md`

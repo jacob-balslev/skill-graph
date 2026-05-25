@@ -3,7 +3,7 @@
 > Type: Codex automation prompt for recurring, unattended Skill Audit Loop runs
 > Created: 2026-05-25
 > Supersedes for Codex automation: `skill-audit-loop-batch-worker-v4.md`
-> Inner contract: `skill-graph/audits/prompts/skill-audit-loop-single-model.md` (v3) plus `skill-graph/audits/per-skill-contract.md`
+> Inner contract: `skill-graph/audits/prompts/skill-audit-loop-single-model.md` (v3) plus `skill-graph/SKILL_AUDIT_LOOP.md#part-3--per-skill-audit-runbook`
 > Shape: scheduler-started batch worker + per-skill evidence artifacts + commit-before-release + automation memory
 
 ## When to use this prompt
@@ -79,7 +79,7 @@ Read these before claiming work:
 8. `/Users/jacobbalslev/Development/skill-graph/SKILL_AUDIT_LOOP.md`
 9. `/Users/jacobbalslev/Development/docs/reference/skill-audit-pipeline.md`
 10. `/Users/jacobbalslev/Development/skill-graph/audits/prompts/skill-audit-loop-single-model.md`
-11. `/Users/jacobbalslev/Development/skill-graph/audits/per-skill-contract.md`
+11. `/Users/jacobbalslev/Development/skill-graph/SKILL_AUDIT_LOOP.md#part-3--per-skill-audit-runbook`
 
 Load relevant skills from `SKILL-INDEX.md` and read their actual `SKILL.md` files. At
 minimum load:
@@ -323,5 +323,5 @@ data. Do not say the next loop has started; say the scheduler can start it on th
 - Interactive short run: `skill-graph/audits/prompts/skill-audit-loop-minimal-iteration.md`
 - Model-agnostic batch worker: `skill-graph/audits/prompts/skill-audit-loop-batch-worker-v4.md`
 - Inner single-model contract: `skill-graph/audits/prompts/skill-audit-loop-single-model.md`
-- Per-skill contract: `skill-graph/audits/per-skill-contract.md`
+- Per-skill contract: `skill-graph/SKILL_AUDIT_LOOP.md#part-3--per-skill-audit-runbook`
 - Active Codex automation memory: `$CODEX_HOME/automations/skill-audit-loop-3-0/memory.md`

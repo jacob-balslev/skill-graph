@@ -37,7 +37,7 @@ name: skill-metadata-template
 # Keep the description concise enough to route well, but do not treat runtime
 # wording guidelines as protocol limits.
 # for Anthropic's own guidance on pushy descriptions.
-description: "Use when creating a new SKILL.md, adapting an existing skill to a different archetype, or teaching an author the canonical frontmatter and body structure. Covers schema-conformant frontmatter, archetype-aware body layout, semantic-layer discipline (description vs Coverage), teaching-layer mechanics (TEMPLATE NOTE blockquotes and YAML comments), and the authoring gate. Do NOT use when modifying an already-written skill (edit that skill directly) or when writing general technical documentation (use the documentation skill)."
+description: "Use when creating a new SKILL.md, adapting an existing skill to a different archetype, or teaching an author the canonical frontmatter and body structure. Covers schema-conformant frontmatter, archetype-aware body layout, semantic-layer discipline (description vs Coverage), teaching-layer mechanics (TEMPLATE NOTE blockquotes and YAML comments), and the authoring gate. Do NOT use when modifying an already-written skill (edit that skill directly) or when writing general technical documentation (use `docs-development`)."
 version: 1.0.0
 type: capability
 category: knowledge
@@ -127,11 +127,11 @@ triggers:
 # glob. Remove this block if your skill is purely conceptual and has no file surface.
 #
 # Previous versions of this block also listed `skills/**/SKILL.md` but that glob is
-# owned by `graph-audit` (the audit tooling that verifies every SKILL.md against the
+# owned by `skill-infrastructure` (the audit tooling that verifies every SKILL.md against the
 # schema). Two skills claiming the same glob produces router ambiguity — the scope
-# tiebreaker (`codebase` > `reference`) picks graph-audit anyway, and reference-scope
+# tiebreaker (`codebase` > `reference`) picks skill-infrastructure anyway, and reference-scope
 # skills are looked-up rather than path-routed. Lesson: each path glob should map to
-# ONE canonical skill; `scripts/skill-overlap.js` surfaces duplicates as warnings.
+# ONE canonical skill; `scripts/skill-overlap.js` reports shared keyword recall as INFO.
 paths:
   - examples/skill-metadata-template.md
 # TEMPLATE NOTE: examples is new in v0.5.0. 2–5 realistic user prompts the skill
@@ -165,7 +165,7 @@ workspace_tags:
 relations:
   # TEMPLATE NOTE: boundary items may be bare skill names OR `{skill, reason}`
   # objects (v3). Reasons are strongly recommended — they make the boundary
-  # self-documenting. Adjacency has been removed here because `documentation`
+  # self-documenting. Adjacency has been removed here because `docs-development`
   # is already declared as `verify_with` — adjacent ("often used together")
   # would be redundant and asymmetric.
   boundary:
@@ -173,10 +173,10 @@ relations:
       reason: "refactor is behavior-preserving code modification, not skill authoring"
     - skill: skill-router
       reason: "skill-router dispatches between existing skills at request time; this template creates a NEW skill"
-    - skill: graph-audit
-      reason: "graph-audit verifies the authored metadata of an existing skill; this template is the authoring-time guide"
+    - skill: skill-infrastructure
+      reason: "skill-infrastructure verifies the authored metadata of an existing skill; this template is the authoring-time guide"
   verify_with:
-    - documentation
+    - docs-development
 # TEMPLATE NOTE: grounding is REQUIRED for grounded skills that make concrete
 # repo claims. Remove this entire block if your skill has grounding_mode: universal
 # and does not anchor to truth sources in the repo.
@@ -192,7 +192,7 @@ grounding:
         start: 480
         end: 590
       note: "Grounding schema shape"
-    - path: SKILL_AUDIT_CHECKLIST.md
+    - path: SKILL_AUDIT_LOOP.md § Part 2 — Per-Skill Audit Checklist
       anchor: canonical-checklist
       note: "Audit checklist this template supports"
   failure_modes:
@@ -264,7 +264,7 @@ A template teaches by example, not by placeholder. A concrete, internally consis
 |---|---|
 | `docs/skill-metadata-protocol.md` | Authoritative field semantics: required vs optional, conditional requiredness, relationship to the plain `SKILL.md` format, archetype section map |
 | `schemas/skill.schema.json` | Enforceable JSON Schema for the frontmatter protocol |
-| `SKILL_AUDIT_CHECKLIST.md` | The audit checklist every new skill should pass before commit |
+| `SKILL_AUDIT_LOOP.md` § Part 2 | The audit checklist every new skill should pass before commit |
 
 ## Verification
 
@@ -289,7 +289,7 @@ Use this checklist as the authoring gate before committing a skill adapted from 
 | Instead of this template | Use | Why |
 |---|---|---|
 | `skill-metadata-template` | the target skill directly | Editing an existing skill is refactor-in-place, not authoring from a template |
-| `skill-metadata-template` | `documentation` | General technical writing is not skill authoring; use `documentation` for docs, guides, and specs |
+| `skill-metadata-template` | `docs-development` | General technical writing is not skill authoring; use `docs-development` for docs, guides, and specs |
 | `skill-metadata-template` | `docs/skill-metadata-protocol.md` | When you need the full field reference, read the contract document directly |
 
 ## References
@@ -298,4 +298,4 @@ Use this checklist as the authoring gate before committing a skill adapted from 
 - `docs/skill-metadata-protocol.md § Example Template Rule` — the no-placeholder-sludge rule this template enforces
 - `docs/skill-metadata-protocol.md § Archetype section map` — required H2 sections per archetype
 - `docs/manifest-field-mapping.md § Migration Note — v2 → v3` — the field-name cleanup the v4 bump introduced
-- `SKILL_AUDIT_CHECKLIST.md` — the checklist this template's Verification section is derived from
+- `SKILL_AUDIT_LOOP.md` § Part 2 — the checklist this template's Verification section is derived from

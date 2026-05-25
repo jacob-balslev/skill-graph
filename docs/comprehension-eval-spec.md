@@ -61,7 +61,7 @@ The schema's `dimension` enum includes `misconception`; the corpus has not yet a
 
 ## Minimum vs. recommended
 
-- **Hard floor: 5 cases.** Per per-skill-contract.md § 4c. Below 5, the verifier fails with a dimension-coverage error.
+- **Hard floor: 5 cases.** Per SKILL_AUDIT_LOOP.md § Part 3 — Per-Skill Audit Runbook § 4c. Below 5, the verifier fails with a dimension-coverage error.
 - **Practitioner default: 7 cases**, one per rubric dimension. Catches per-dimension `SHALLOW` failures the 5-case minimum cannot.
 - **Robust: 9–12 cases.** Adds 2–5 application cases probing different novel scenarios.
 
@@ -124,7 +124,7 @@ The verifier walks every skill's most-recent verdicts; a graded comprehension_ve
 ## Related
 
 - [`skill-graph/SKILL_AUDIT_LOOP.md`](../SKILL_AUDIT_LOOP.md) — gate 8 (comprehension grader) doctrine.
-- [`skill-graph/audits/per-skill-contract.md`](../audits/per-skill-contract.md) § Step 4c — the audit-loop step that authors / refreshes this file.
+- [`skill-graph/SKILL_AUDIT_LOOP.md#part-3--per-skill-audit-runbook`](../SKILL_AUDIT_LOOP.md#part-3--per-skill-audit-runbook) § Step 4c — the audit-loop step that authors / refreshes this file.
 - [`skill-graph/lib/audit/graders/concept-grader-prompt.md`](../lib/audit/graders/concept-grader-prompt.md) — the grader the verdict is earned against.
 - ADR-0011 — four-verdict Health Block; defines `comprehension_verdict` semantics.
 - ADR-0015 — project-owned operational prompts; the verifier the schema gates.

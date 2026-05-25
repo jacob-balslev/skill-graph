@@ -199,7 +199,7 @@ node lib/audit/skill-status.js <skill-name>
 - [adr/0009-sibling-repo-deprecation.md](./adr/0009-sibling-repo-deprecation.md), why `skill-graph/` is canonical
 - [adr/0011-split-audit-verdict-into-four-verdicts.md](./adr/0011-split-audit-verdict-into-four-verdicts.md), why four verdicts instead of one
 - [adr/0014-canonical-only-schema-files.md](./adr/0014-canonical-only-schema-files.md), why prior schema versions live in git history only
-- `skill-graph/audits/per-skill-contract.md`, the active per-skill execution contract (project-owned per ADR 0015; moved 2026-05-25)
+- `skill-graph/SKILL_AUDIT_LOOP.md#part-3--per-skill-audit-runbook`, the active per-skill execution contract (project-owned per ADR 0015; moved 2026-05-25)
 - `.opencode/commands/skill-audit-loop.md`, the queue wrapper
 - `skill-graph/audits/prompts/skill-audit-loop-single-model.md`, the cross-CLI per-skill prompt (v3)
 - `skill-audit-multimodel-merge-v2.md`, the multi-model union-merge protocol

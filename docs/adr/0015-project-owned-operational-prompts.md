@@ -11,7 +11,7 @@
 
 1. `skill-graph` `d1665e3` (2026-05-25 earlier today) — relocate 4 Skill Audit Loop runner prompts from workspace `prompts/audits/` to `skill-graph/audits/prompts/`; leave thin pointer stubs at the old paths.
 2. `Development` (workspace root) `ddfcc2fa2` (same day) — rewrite `AGENTS.md § Shared Prompt Library` to document the project-owned-prompts convention; bump skill-graph gitlink.
-3. `skill-graph` `d9d131a` + `5b21f26` — move the per-skill audit contract from `.opencode/commands/skill-audit-prompt-v2.2.md` into `skill-graph/audits/per-skill-contract.md`, update all four runners' cross-references, add `skill-graph/audits/manifest.json` (machine-readable protocol index), add `skill-graph/scripts/check-audit-manifest.js` (false-canonicality verifier).
+3. `skill-graph` `d9d131a` + `5b21f26` — move the per-skill audit contract from `.opencode/commands/skill-audit-prompt-v2.2.md` into `skill-graph/SKILL_AUDIT_LOOP.md#part-3--per-skill-audit-runbook`, update all four runners' cross-references, add `skill-graph/audits/manifest.json` (machine-readable protocol index), add `skill-graph/scripts/check-audit-manifest.js` (false-canonicality verifier).
 4. `Development` (this commit's pair) — delete the legacy `.opencode/commands/skill-audit-prompt-v2.{1,2}.md` files, convert workspace command files to thin pointers, update CONTEXT.md and AGENTS.md and the .claude rule files to reference the new canonical path.
 
 ## Context
@@ -32,7 +32,7 @@ Two failure modes drove this ADR.
 | Layer | Location | Examples |
 |---|---|---|
 | **Project-owned operational prompts** | `<project>/audits/prompts/` (or analogous project-internal dir) | `skill-graph/audits/prompts/skill-audit-loop-{single-model,batch-worker-v4,codex-autonomous-v5,minimal-iteration}.md` |
-| **Project-owned per-skill / per-task contracts** | `<project>/audits/<contract-name>.md` | `skill-graph/audits/per-skill-contract.md` (was `.opencode/commands/skill-audit-prompt-v2.2.md`) |
+| **Project-owned per-skill / per-task contracts** | `<project>/audits/<contract-name>.md` | `skill-graph/SKILL_AUDIT_LOOP.md#part-3--per-skill-audit-runbook` (was `.opencode/commands/skill-audit-prompt-v2.2.md`) |
 | **Machine-readable protocol index** | `<project>/audits/manifest.json` | `skill-graph/audits/manifest.json` |
 | **Project-owned verifiers** | `<project>/scripts/check-*.js` | `skill-graph/scripts/check-audit-manifest.js` |
 | **Workspace slash-command resolvers** | `.claude/commands/`, `.opencode/commands/` | Thin pointers — at most a usage block + a redirect to the project-owned canonical |
@@ -43,7 +43,7 @@ The runtime-specific `.claude/commands/` and `.opencode/commands/` directories h
 ## Consequences
 
 **Positive:**
-- One grep target for the canonical contract (`skill-graph/audits/per-skill-contract.md`); no drift-by-multiplication.
+- One grep target for the canonical contract (`skill-graph/SKILL_AUDIT_LOOP.md#part-3--per-skill-audit-runbook`); no drift-by-multiplication.
 - `skill-graph/audits/manifest.json` declares the protocol's runners and required artifacts in machine-readable form. The verifier `skill-graph/scripts/check-audit-manifest.js` catches the May 22-25 failure mode (a verdict.md claiming PROVISIONAL/APPLICABLE/PASS for `comprehension_verdict` without `skills/<name>/evals/comprehension.json` on disk) — confirmed on the same 3 historical runs that surfaced the incident.
 - Slash commands continue to work via thin resolvers — `.claude/commands/audit/audit.md` and `.opencode/commands/audit-skill.md` discover and execute via `@file` include or direct reference.
 - Ownership is unambiguous: changes to the contract land in `skill-graph/` with the project they govern.
@@ -51,7 +51,7 @@ The runtime-specific `.claude/commands/` and `.opencode/commands/` directories h
 **Negative / accepted costs:**
 - Path indirection: agents reading a runner prompt now follow one extra hop to the canonical contract. Mitigated by the manifest making the relationship explicit.
 - Workspace docs (`CONTEXT.md`, `AGENTS.md`, `.claude/rules/*`, `.claude/references/loop-lifecycle.md`, etc.) had to be updated to point at the new path. This was a one-time migration; the project-owned convention prevents recurrence.
-- Runner files are not slimmed to the ideal "~50 lines each just operational shape" in this pass. They still contain inline verdict definitions, commit discipline, hard rules. This is **deliberate deferred work**: the runners are actively used by automation (Codex cron) and a heavy refactor introduces risk for limited gain. Future cleanup can extract the shared content; the present-day `per-skill-contract.md` is the authoritative source of truth either way.
+- Runner files are not slimmed to the ideal "~50 lines each just operational shape" in this pass. They still contain inline verdict definitions, commit discipline, hard rules. This is **deliberate deferred work**: the runners are actively used by automation (Codex cron) and a heavy refactor introduces risk for limited gain. Future cleanup can extract the shared content; the present-day `SKILL_AUDIT_LOOP.md` § Part 3 — Per-Skill Audit Runbook is the authoritative source of truth either way.
 
 ## Deferred work (not done in this ADR)
 
@@ -71,6 +71,6 @@ The runtime-specific `.claude/commands/` and `.opencode/commands/` directories h
 
 The grep verification from the brief's Step 7 returns the expected results:
 
-- `grep -rE 'prompts/audits/skill-audit-loop-|\.opencode/commands/skill-audit-prompt' skill-graph/audits/` — returns only the intentional history note in `per-skill-contract.md`.
+- `grep -rE 'prompts/audits/skill-audit-loop-|\.opencode/commands/skill-audit-prompt' skill-graph/audits/` — returns only the intentional history note in `SKILL_AUDIT_LOOP.md` § Part 3 — Per-Skill Audit Runbook.
 - The verifier `node skill-graph/scripts/check-audit-manifest.js` flags exactly the 3 May-incident runs (backend / mcp-builder / token-cost-estimation) and passes on every other run.
 - `git show --stat` on each commit matches the intended file list per `.claude/rules/multi-session-commits.md` § "always run --only path-limited."

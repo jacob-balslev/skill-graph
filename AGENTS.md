@@ -64,7 +64,7 @@ Read these files before changing behavior or docs:
 7. `CONTRIBUTING.md` - contribution boundaries, skill authoring workflow, PR expectations.
 8. `docs/quality-doctrine.md` - quality bar for scope preservation, readable names, compression, verification, and organization-over-trimming.
 
-For audit work, also read `SKILL_AUDIT_LOOP.md` and `SKILL_AUDIT_CHECKLIST.md`.
+For audit work, also read `SKILL_AUDIT_LOOP.md` and `SKILL_AUDIT_LOOP.md` § Part 2.
 
 ## Project Shape
 
@@ -142,7 +142,7 @@ Compression is allowed only when it preserves meaning and evidence. A valid comp
 
 When an external format imposes a hard limit, satisfy the limit in a generated/export-specific artifact and preserve the canonical Skill Metadata Protocol source. Document the constraint and point back to the full source instead of weakening the source artifact.
 
-Before changing agent behavior instructions, quality rules, marketplace positioning, or skill-library structure, load the relevant local skills from this repo and from the sibling Development skill library when available. At minimum, check the relevant Skill Graph skills (`semantics`, `information-architecture`, `context-engineering`, `skill-scaffold`, `skill-infrastructure`) and the live audit references (`SKILL_AUDIT_LOOP.md`, `SKILL_AUDIT_CHECKLIST.md`) when the task touches those concerns. Also check the broader Development skills that govern quality (`quality-doctrine`, `no-cutting-corners`, `compression`, `token-efficiency`).
+Before changing agent behavior instructions, quality rules, marketplace positioning, or skill-library structure, load the relevant local skills from this repo and from the sibling Development skill library when available. At minimum, check the relevant Skill Graph skills (`semantics`, `information-architecture`, `context-engineering`, `skill-scaffold`, `skill-infrastructure`) and the live audit references (`SKILL_AUDIT_LOOP.md`, `SKILL_AUDIT_LOOP.md` § Part 2) when the task touches those concerns. Also check the broader Development skills that govern quality (`quality-doctrine`, `no-cutting-corners`, `compression`, `token-efficiency`).
 
 Claims of quality require verification. If a change says links work, routing works, exports validate, descriptions fit a limit, or all findings are preserved, run the relevant command and report the result. If verification was not run, say so.
 
@@ -215,7 +215,7 @@ For any single Skill Metadata Protocol field (`name`, `description`, `type`, `sc
 | **Current corpus state** — verified counts (canonical skills, exported skills, worklist), build/health snapshot | `SKILL_GRAPH.md` § Current State + `docs/status.generated.md` | Single-source-of-truth count lives in `SKILL_GRAPH.md § Current State`. The generated status file mirrors it. Volatile counts must not be duplicated into AGENTS.md, README.md, or anywhere else — link instead. |
 | **Edges / relations semantics** (`related`, `boundary`, `verify_with`, `depends_on`) — the field-level mechanic | `SKILL_METADATA_PROTOCOL.md` § Relations | The boundary-semantics WARNING (2026-05-23) lives here; `AGENTS.md § What the Skill Graph Is` summarizes and links. |
 | **Audit loop procedure** (read → fix → test → next; the four operations; the two gates) | `SKILL_AUDIT_LOOP.md` | The four-verdict Health Block lives here. `AGENTS.md § Skill Audit Loop` summarizes and links. |
-| **Per-skill audit contract** (the binding execution contract; Steps 1-8 of the per-skill pass) | `audits/per-skill-contract.md` | Project-owned per ADR-0015. Workspace runtime slash commands (`.claude/commands/audit/*`, `.opencode/commands/audit-skill.md`) defer here. |
+| **Per-skill audit contract** (the binding execution contract; Steps 1-8 of the per-skill pass) | `SKILL_AUDIT_LOOP.md` § Part 3 — Per-Skill Audit Runbook | Project-owned per ADR-0015. Workspace runtime slash commands (`.claude/commands/audit/*`, `.opencode/commands/audit-skill.md`) defer here. |
 | **Audit-loop runner prompts** (interactive single-skill, autonomous batch worker, codex cron, minimal-iteration) | `audits/prompts/skill-audit-loop-*.md` | Project-owned per ADR-0015. Workspace `prompts/audits/skill-audit-loop-*.md` are back-compat pointer stubs only. |
 | **Machine-readable protocol index** (protocols, runners, required artifacts, runtime aliases) | `audits/manifest.json` + `schemas/audits-manifest.schema.json` (shape) | The verifier `scripts/check-audit-manifest.js` consumes this. Bumping `schema_version` is gated by the version-schema-contract rule. |
 | **Verdict semantics** (enums for all four Health Block fields, confidence tier ordering, comprehension/application disjointness rule) | `docs/verdict-semantics.md` | Canonical for verdict enums. AGENTS.md / SKILL_AUDIT_LOOP.md / pipeline doc carry one-line summaries that link here. ADR-0011 is the rationale; this doc is the spec. |
@@ -225,9 +225,9 @@ For any single Skill Metadata Protocol field (`name`, `description`, `type`, `sc
 | **Run-dir layout** (per-skill `runs/<run-id>/` structure, artifact filenames, claim atomicity) | `scripts/skill/skill-audit-paths.js` (current SoT) — to project-own contract per ADR-0016 surface #3 | Workspace script writes `.opencode/progress/skill-audits/<skill>/runs/<run-id>/...`. The layout CONTRACT is project-owned; the workspace path is runtime-coordinated. |
 | **Finding schema** (severity, evidence, scope, recommended action) | `docs/reference/skill-audit-pipeline.md` § Unified Finding Schema (workspace, planned to migrate per F30 in `.roundtable/skill-graph-restructure-review-2026-05-25/followup-tasks.md`) | Currently at workspace root; planned migration into `skill-graph/audits/`. |
 | **Grader prompts** (concept grader for gate 8, application grader for gate 9) | `lib/audit/graders/*-prompt.md` | Single canonical home post-2026-05-25 grader-prompt consolidation. Workspace `scripts/skill/graders/` copies are deprecated shims. |
-| **Slash-command runtime resolvers** | `.claude/commands/audit/*.md` and `.opencode/commands/audit-skill.md` (workspace runtime), aliased in `audits/manifest.json` § aliases | The slash-command UX surface (description, argument-hint, flags) is workspace-owned per ADR-0015. Substantive operational content defers to `audits/per-skill-contract.md`. |
+| **Slash-command runtime resolvers** | `.claude/commands/audit/*.md` and `.opencode/commands/audit-skill.md` (workspace runtime), aliased in `audits/manifest.json` § aliases | The slash-command UX surface (description, argument-hint, flags) is workspace-owned per ADR-0015. Substantive operational content defers to `SKILL_AUDIT_LOOP.md` § Part 3 — Per-Skill Audit Runbook. |
 | **Skill-injector routing config — shape** | `schemas/routing-config.schema.json` (project-owned per ADR-0016 surface #4) | The binding shape for `agent-orchestration/references/skill-routing-config.json` (instance file, cross-project orchestration). Type lives here; instance stays at consumer location. Validate via `node -e "..."` or ajv against the schema. |
-| **Audit checklist items** (per-skill audit deliverable) | `SKILL_AUDIT_CHECKLIST.md` | Itemized checklist. Edit when an audit produces a new mandatory check. |
+| **Audit checklist items** (per-skill audit deliverable) | `SKILL_AUDIT_LOOP.md` § Part 2 | Itemized checklist. Edit when an audit produces a new mandatory check. |
 | **Quality doctrine** (improve = enrich; preserve scope; organize-over-trim) | `docs/quality-doctrine.md` | `AGENTS.md § Quality Doctrine` is a summary; deeper doctrine lives in the docs file. |
 | **Marketplace export contract** (description limits, privacy filter, surface generation, sync protocol) | `docs/marketplace-syndication.md` + `AGENTS.md § Public Distribution` | `AGENTS.md` owns the canonical URL contract + skills.sh manual-removal escalation. The marketplace doc owns export pipeline detail and the post-publication runbook. |
 | **Publish workflow** (step-by-step export + release sync commands, pre-push gate, verification checklist) | `docs/publish-workflow.md` | Canonical how-to for running the two-step export+sync protocol. Updated 2026-05-24 (SH-6331). |
@@ -282,7 +282,7 @@ When a code or schema change lands, update the matching documentation rows in th
 | **Schema deprecation, repo split, sibling-repo lifecycle** | New ADR in `docs/adr/NNNN-<slug>.md`, `AGENTS.md` § Project Shape, `CHANGELOG.md`, `SKILL_GRAPH.md` if authority tiers change |
 | **Field semantics, head nouns, decision tables** | `docs/field-reference.md`, `docs/field-decision-guide.md`, `docs/field-rationale.md`, `docs/head-noun-glossary.md`, `docs/glossary.md`. Regenerate `docs/field-reference.generated.md` via `node scripts/build-field-reference.js` in the same commit (enforced by `protocol:check § C7`) |
 | **Routing eval changes** (`scripts/skill-graph-routing-eval.js`, retrieval baselines) | `docs/ROUTING-METRICS.md`, `docs/recommended-skills.md`, retrieval baselines under `evals/retrieval-baseline-*.json` |
-| **Skill audit loop or checklist** (`scripts/skill-audit.js`, `lib/audit/*`) | `SKILL_AUDIT_LOOP.md`, `SKILL_AUDIT_CHECKLIST.md`, `AGENTS.md` § Skill Audit Loop |
+| **Skill audit loop or checklist** (`scripts/skill-audit.js`, `lib/audit/*`) | `SKILL_AUDIT_LOOP.md`, `SKILL_AUDIT_LOOP.md` § Part 2, `AGENTS.md` § Skill Audit Loop |
 | **Marketplace publication tooling/queue** | `docs/marketplace-publication-queue.generated.md` (_generated_), per-snapshot `docs/marketplace-publication-priority-YYYY-MM-DD.md` if a new priority cut is published |
 | **Proposals** | `docs/proposals/*.md` (the proposal file itself); if accepted, follow through to the canonical doc and an ADR in the same change |
 | **Plans** | `docs/plans/*.md` (the plan file); when completed, move from active to `docs/_archived/` |
@@ -290,7 +290,7 @@ When a code or schema change lands, update the matching documentation rows in th
 | **New ADR** (architectural decision) | `docs/adr/NNNN-<slug>.md` (new), `CHANGELOG.md` if architecturally visible, `AGENTS.md` if governance changes |
 | **Schema, lint, manifest projection** | See `## Coupled Changes` above — tier-coordinated changes have stricter coupling rules than this table |
 | **README / public positioning** | `README.md`, `docs/positioning-vs-marketplaces.md`, `docs/ADOPTION.md` if adoption surface changes, `CHANGELOG.md` if user-visible |
-| **Quality doctrine, editing rules, audit anti-patterns** | `AGENTS.md` (this file), `docs/quality-doctrine.md`, `SKILL_AUDIT_CHECKLIST.md` |
+| **Quality doctrine, editing rules, audit anti-patterns** | `AGENTS.md` (this file), `docs/quality-doctrine.md`, `SKILL_AUDIT_LOOP.md` § Part 2 |
 | **Generated artifacts** (`docs/field-reference.generated.md`, `examples/skills.manifest.sample.json`, `docs/marketplace-publication-queue.generated.md`, `marketplace/skills/`) | _generated_ — do not hand-edit. Regenerate via the owning script (see `## Coupled Changes`) |
 
 **Stale-reference rule:** When renaming or deleting any file, command, flag, or URL referenced in this repo, grep `*.md`, `*.yml`, `*.json`, and `package.json` for the old name and fix every hit in the same commit. The `## Coupled Changes` rules enforce this for tier artifacts; this rule extends it to the rest of the surface.
@@ -362,7 +362,7 @@ The Skill Graph evaluates four layers; each has its own surface and its own defi
 
 ## Skill Audit Loop
 
-The audit loop is the disciplined sweep that validates a skill (or a batch of skills) against the Skill Metadata Protocol, drift baselines, retrieval evals, and the quality doctrine. Full contract: `SKILL_AUDIT_LOOP.md` plus `SKILL_AUDIT_CHECKLIST.md`. This section is the operational summary.
+The audit loop is the disciplined sweep that validates a skill (or a batch of skills) against the Skill Metadata Protocol, drift baselines, retrieval evals, and the quality doctrine. Full contract: `SKILL_AUDIT_LOOP.md` plus `SKILL_AUDIT_LOOP.md` § Part 2. This section is the operational summary.
 
 ### When to run the loop
 

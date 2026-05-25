@@ -18,7 +18,7 @@ The consolidation shipped in `@skill-graph/cli@0.5.6` (commit `654b4df`, publish
 Both sibling repos become **docs-only mirrors** as of 2026-05-18:
 
 - Source files (schemas/, src/, shared/, graders/, examples/, package.json) are removed from both repos.
-- Canonical documents (SKILL_METADATA_PROTOCOL.md, SKILL_AUDIT_LOOP.md, SKILL_AUDIT_CHECKLIST.md, READMEs) are preserved for historical reference and inbound-link stability.
+- Canonical documents (SKILL_METADATA_PROTOCOL.md, SKILL_AUDIT_LOOP.md, SKILL_AUDIT_LOOP.md § Part 2 — Per-Skill Audit Checklist, READMEs) are preserved for historical reference and inbound-link stability.
 - Repos are NOT archived on GitHub (Option B) — they remain publicly readable. *(Reversed 2026-05-20 — see § Update.)*
 - Deprecation banners are added to both READMEs pointing to `@skill-graph/cli`.
 

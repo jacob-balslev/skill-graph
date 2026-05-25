@@ -5,7 +5,7 @@
     {
       "id": "skill-audit-loop",
       "version": "v3+",
-      "canonical_path": "skill-graph/audits/per-skill-contract.md",
+      "canonical_path": "skill-graph/SKILL_AUDIT_LOOP.md#part-3--per-skill-audit-runbook",
       "runners": [
         {
           "id": "single-model",

@@ -204,7 +204,7 @@ grounding:
         start: 480
         end: 590
       note: "Grounding schema shape"
-    - path: SKILL_AUDIT_CHECKLIST.md
+    - path: SKILL_AUDIT_LOOP.md § Part 2 — Per-Skill Audit Checklist
       note: "Canonical authoring and audit checklist"
   failure_modes:
     - placeholder_sludge
@@ -275,7 +275,7 @@ A template teaches by example, not by placeholder. A concrete, internally consis
 |---|---|
 | `docs/skill-metadata-protocol.md` | Authoritative field semantics: required vs optional, conditional requiredness, relationship to the plain `SKILL.md` format, archetype section map |
 | `schemas/skill.schema.json` | Enforceable JSON Schema for the frontmatter protocol |
-| `../SKILL_AUDIT_CHECKLIST.md` | The audit checklist every new skill should pass before commit |
+| `../SKILL_AUDIT_LOOP.md#part-2--per-skill-audit-checklist` | The audit checklist every new skill should pass before commit |
 
 ## Verification
 
@@ -309,4 +309,4 @@ Use this checklist as the authoring gate before committing a skill adapted from 
 - `docs/skill-metadata-protocol.md § Example Template Rule` — the no-placeholder-sludge rule this template enforces
 - `docs/skill-metadata-protocol.md § Archetype section map` — required H2 sections per archetype
 - `docs/adr/0011-split-audit-verdict-into-four-verdicts.md` — the Health Block four-verdict split that current v7 skills use
-- `../SKILL_AUDIT_CHECKLIST.md` — the checklist this template's Verification section is derived from
+- `../SKILL_AUDIT_LOOP.md#part-2--per-skill-audit-checklist` — the checklist this template's Verification section is derived from

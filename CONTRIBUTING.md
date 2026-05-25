@@ -86,7 +86,7 @@ If you touched a Tier 2 doc (`docs/skill-metadata-protocol.md`, `docs/field-refe
 
 ## Audit workflow
 
-When auditing an existing skill, follow `SKILL_AUDIT_LOOP.md` for the 12-step process and `SKILL_AUDIT_CHECKLIST.md` for the per-skill checklist. See `SKILL_AUDIT_LOOP.md § Recommended Artifact Layout` for the authoritative two-tier artifact root convention (`examples/audits/<skill-name>/` for shipped worked examples; `audits/<skill-name>/` for downstream consumer output). The `examples/audits/documentation/` directory is the canonical worked example.
+When auditing an existing skill, follow `SKILL_AUDIT_LOOP.md` for the 12-step process and `SKILL_AUDIT_LOOP.md` § Part 2 for the per-skill checklist. See `SKILL_AUDIT_LOOP.md § Recommended Artifact Layout` for the authoritative two-tier artifact root convention (`examples/audits/<skill-name>/` for shipped worked examples; `audits/<skill-name>/` for downstream consumer output). The `examples/audits/documentation/` directory is the canonical worked example.
 
 To bootstrap an audit quickly, use the stub generator:
 

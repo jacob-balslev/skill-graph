@@ -397,7 +397,7 @@ The Skill Metadata Protocol schemas are intentionally strict.
 
 Skill Metadata Protocol is designed to work with:
 
-1. `SKILL_AUDIT_CHECKLIST.md`
+1. `SKILL_AUDIT_LOOP.md` § Part 2
 2. `SKILL_AUDIT_LOOP.md`
 
 The metadata must support three things cleanly:

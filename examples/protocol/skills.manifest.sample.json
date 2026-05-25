@@ -10354,7 +10354,7 @@
           {
             "anchor": "canonical-checklist",
             "note": "Audit checklist this template supports",
-            "path": "SKILL_AUDIT_CHECKLIST.md"
+            "path": "SKILL_AUDIT_LOOP.md#part-2--per-skill-audit-checklist"
           }
         ]
       },
@@ -10603,14 +10603,14 @@
           "examples/skill-metadata-template.md",
           "schemas/skill.v4.schema.json",
           "docs/skill-metadata-protocol.md",
-          "SKILL_AUDIT_CHECKLIST.md"
+          "SKILL_AUDIT_LOOP.md#part-2--per-skill-audit-checklist"
         ]
       },
       "health": {
         "drift_check": {
           "last_verified": "2026-05-14",
           "truth_source_hashes": {
-            "SKILL_AUDIT_CHECKLIST.md": "4056dcbee84a5d160b0d0e7c7f840279e9382bfccbdb31873da95cdf44c8f1af",
+            "SKILL_AUDIT_LOOP.md#part-2--per-skill-audit-checklist": "4056dcbee84a5d160b0d0e7c7f840279e9382bfccbdb31873da95cdf44c8f1af",
             "docs/skill-metadata-protocol.md": "08ad662c5f470fac337aa559dacd0b9e882be7df8d7918f20a5d4e3aaaaa2ed7",
             "examples/skill-metadata-template.md": "42b3185ebf53f9efc6a32977ee9408efce0957c0a7ed62cabca97cb83c33600a",
             "schemas/skill.v4.schema.json": "e83d6be8b1314488b39b8c7bec2784d6459980d3f9965be68ad1c9a53865622d"

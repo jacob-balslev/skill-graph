@@ -82,7 +82,7 @@ flowchart LR
 | Tier | Role | When it's truth | What enforces the derivation |
 |---|---|---|---|
 | **1. Schema** | `schemas/*.json` | Always. These are the machine-enforced rules. | — |
-| **2. Explanation** | Root `SKILL_METADATA_PROTOCOL.md` / `SKILL_AUDIT_LOOP.md` / `SKILL_AUDIT_CHECKLIST.md` + `docs/*.md` describing the schema | Until the schema disagrees. | `check-protocol-consistency.js` C1, C2 |
+| **2. Explanation** | Root `SKILL_METADATA_PROTOCOL.md` / `SKILL_AUDIT_LOOP.md` / `SKILL_AUDIT_LOOP.md` § Part 2 + `docs/*.md` describing the schema | Until the schema disagrees. | `check-protocol-consistency.js` C1, C2 |
 | **3. Enforcement** | `scripts/*.js` that police + compile + transform | Run-time only; their output must match Tier 1 | `skill-lint.js` checks 6, 7, 8 |
 | **4. Consumer** | `skill-graph-route`, `skill-graph-drift` | They USE Tier 1 to make decisions; they don't redefine anything | — |
 | **5. Specimens** | `examples/` + `skills/` starters | Illustrative only. If they break the schema, they're wrong. | `skill-lint.js` checks 1–4 |
@@ -390,7 +390,7 @@ Every edge is verifiable. `node bin/skill-graph.js lint examples/fixture-skills/
 | `LICENSE` | MIT. |
 | `.github/workflows/skill-graph-lint.yml` | CI: runs Tier 3 enforcement on every PR. |
 | `docs/integrations/github-actions.md` | Copy-paste CI snippet for adopters. |
-| [`SKILL_AUDIT_LOOP.md`](SKILL_AUDIT_LOOP.md) + [`SKILL_AUDIT_CHECKLIST.md`](SKILL_AUDIT_CHECKLIST.md) | The audit discipline — four operations (`audit` / `improve` / `evaluate` / `evolve`); the older five-phase flow is now the inner pipeline of `audit`. Consolidated into this repo per [ADR 0009](docs/adr/0009-sibling-repo-deprecation.md); the standalone `skill-audit-loop` repo is an archived deprecation mirror. |
+| [`SKILL_AUDIT_LOOP.md`](SKILL_AUDIT_LOOP.md) + `SKILL_AUDIT_LOOP.md` § Part 2 — Per-Skill Audit Checklist | The audit discipline — four operations (`audit` / `improve` / `evaluate` / `evolve`); the older five-phase flow is now the inner pipeline of `audit`. Consolidated into this repo per [ADR 0009](docs/adr/0009-sibling-repo-deprecation.md); the standalone `skill-audit-loop` repo is an archived deprecation mirror. |
 | `docs/plans/multi-root-workspace.md` | Shipped v0.4.0 design doc. |
 | `docs/plans/scripts-roadmap.md` | Forward-looking script plan. |
 

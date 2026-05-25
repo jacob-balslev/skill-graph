@@ -10,7 +10,7 @@
 
 ## Audit Mode
 
-Manual audit using `node scripts/skill-lint.js` (absolute path) + `node scripts/skill-graph-routing-eval.js` + body review against `SKILL_AUDIT_CHECKLIST.md`.
+Manual audit using `node scripts/skill-lint.js` (absolute path) + `node scripts/skill-graph-routing-eval.js` + body review against `SKILL_AUDIT_LOOP.md` § Part 2.
 
 > **Workspace note.** `node scripts/skill-audit.js skill-router` run via `SKILL_GRAPH_WORKSPACE=/...skills` reports 6 lint errors because truth-source paths (`scripts/skill-graph-route.js`, `examples/evals/skill-router.*`) exist in the `skill-graph` tooling repo, not the `skills` library repo. Running lint with the absolute path from the `skill-graph` workspace resolves all truth sources correctly and passes clean. The cross-repo resolution gap is a tool limitation — `skill-audit.js` hardcodes `SKILLS_DIR = path.join(REPO_ROOT, 'skills')` rather than using `resolveSkillRoots()`.
 

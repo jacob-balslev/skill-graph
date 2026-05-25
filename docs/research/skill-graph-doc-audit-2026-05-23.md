@@ -24,8 +24,8 @@
 
 **FINDING 3:** `examples/skill-metadata-template.md` cites the archived sibling as canonical
 - Files: `skill-graph/examples/skill-metadata-template.md:283, 317`
-- Issue: Both lines point new-skill authors at `../skill-audit-loop/SKILL_AUDIT_CHECKLIST.md` as the live checklist source. Per ADR 0009 the canonical checklist lives in-repo. Template is a leverage point — one fix prevents many downstream errors.
-- Fix: Update both references to `../SKILL_AUDIT_CHECKLIST.md` (in-repo); drop the "post-2026-05-16 monorepo split" framing.
+- Issue: Both lines point new-skill authors at `../skill-audit-loop/SKILL_AUDIT_LOOP.md § Part 2 — Per-Skill Audit Checklist` as the live checklist source. Per ADR 0009 the canonical checklist lives in-repo. Template is a leverage point — one fix prevents many downstream errors.
+- Fix: Update both references to `../SKILL_AUDIT_LOOP.md#part-2--per-skill-audit-checklist` (in-repo); drop the "post-2026-05-16 monorepo split" framing.
 
 ### MEDIUM
 
@@ -36,8 +36,8 @@
 
 **FINDING 4:** `integrations/github-actions.md` links to archived sibling repo's checklist
 - Files: `skill-graph/docs/integrations/github-actions.md:139`
-- Issue: Link is `https://github.com/jacob-balslev/skill-audit-loop/blob/main/SKILL_AUDIT_CHECKLIST.md`. The sibling is archived.
-- Fix: Change to `../SKILL_AUDIT_CHECKLIST.md` or the skill-graph GitHub equivalent.
+- Issue: Link is `https://github.com/jacob-balslev/skill-audit-loop/blob/main/SKILL_AUDIT_LOOP.md § Part 2 — Per-Skill Audit Checklist`. The sibling is archived.
+- Fix: Change to `../SKILL_AUDIT_LOOP.md#part-2--per-skill-audit-checklist` or the skill-graph GitHub equivalent.
 
 **FINDING 5:** `docs/_drafts/0.5.8-release-prep.md` never applied; still marked DRAFT after 0.5.8 shipped
 - Files: `skill-graph/docs/_drafts/0.5.8-release-prep.md:1-5`

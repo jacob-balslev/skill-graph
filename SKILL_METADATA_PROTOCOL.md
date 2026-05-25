@@ -17,7 +17,7 @@ This document is the top-level public contract for the Skill Metadata Protocol f
 2. [Required vs Optional Fields](#required-vs-optional-fields)
 3. [Semantic Rules by Field Group](#semantic-rules-by-field-group)
    - [Identity](#identity)
-   - [Classification](#classification)
+   - [Classification](#classification--the-5-axis-model)
    - [Health and Drift](#health-and-drift)
    - [Eval Health](#eval-health)
    - [Activation and Routing](#activation-and-routing)
@@ -345,7 +345,7 @@ The three eval-health fields are orthogonal — they measure different dimension
 
 Five flat top-level fields that teach the agent what the skill's subject *is*. They replace the v5 nested `concept` block (which retired the `definition` and `taxonomy` sub-fields: `definition` is now covered by `description`, `taxonomy` by `category` + `relations.broader`).
 
-**Relationship to the body `## Concept Card` section.** The five flat frontmatter fields are the **canonical machine-readable contract** — routers, evaluators, retrieval systems, and lint tools read them directly. The body `## Concept Card` section (per the per-skill audit contract's 7-bold-field format: `**What it is:**`, `**Mental model:**`, `**Why it exists:**`, `**What it is NOT:**`, `**Adjacent concepts:**`, `**One-line analogy:**`, `**Common misconception:**`) remains the operational **human-readable rich-expansion form** carrying content the 5 flat fields cannot hold (e.g. "Why it exists" rationale and "Adjacent concepts" cross-links). Both forms are supported in v7. The author owns the consistency: when both are present, the body Concept Card MUST agree with the frontmatter fields. The audit contract (`skill-graph/audits/per-skill-contract.md` § Step 4b) checks the body section's presence and field completeness; the schema enforces the frontmatter. Earlier protocol notes that called body Concept Card "retired in v6" reflected the migration of the *machine-readable subset* to frontmatter, not removal of the body section from authoring practice — which remains in active use across the corpus.
+**Relationship to the body `## Concept Card` section.** The five flat frontmatter fields are the **canonical machine-readable contract** — routers, evaluators, retrieval systems, and lint tools read them directly. The body `## Concept Card` section (per the per-skill audit contract's 7-bold-field format: `**What it is:**`, `**Mental model:**`, `**Why it exists:**`, `**What it is NOT:**`, `**Adjacent concepts:**`, `**One-line analogy:**`, `**Common misconception:**`) remains the operational **human-readable rich-expansion form** carrying content the 5 flat fields cannot hold (e.g. "Why it exists" rationale and "Adjacent concepts" cross-links). Both forms are supported in v7. The author owns the consistency: when both are present, the body Concept Card MUST agree with the frontmatter fields. The audit contract (`skill-graph/SKILL_AUDIT_LOOP.md#part-3--per-skill-audit-runbook` § Step 4b) checks the body section's presence and field completeness; the schema enforces the frontmatter. Earlier protocol notes that called body Concept Card "retired in v6" reflected the migration of the *machine-readable subset* to frontmatter, not removal of the body section from authoring practice — which remains in active use across the corpus.
 
 Required when `comprehension_state: present`. No protocol length cap on any of these — author each field as deeply as the concept requires.
 

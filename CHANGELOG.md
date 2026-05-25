@@ -8,7 +8,21 @@ Skill Graph versions describe the contract at each checkpoint in the git history
 
 ## [Unreleased]
 
-_No entries yet — the 2026-05-25 consolidation slice was cut as 0.5.10 below._
+### Added
+
+- **Skill Metadata Protocol v8 — 5-axis classification model** ([ADR 0017](docs/adr/0017-five-axis-classification-model.md)). Replaces the v7 `category` / `categories` / `primaryCategory` / `layerPrimary` / `routingRole` tangle with five orthogonal axes: `subject` (closed 9-enum), `operation` (closed 4-enum Bloom-grounded: know/do/decide/modify), `scope` (renamed values: `codebase`→`project`, `reference`→`workspace`, `portable` unchanged), `keywords` (capped at 10), `relations` (typed edges, unchanged). Schema accepts BOTH v7 and v8 frontmatter during the compatibility window — v7 skills validate unchanged; v8 skills additionally require `subject` and `operation`. All 147 SKILL.md files migrated to v8 in 9 per-subject batches via the new codemod (`scripts/migrate-skill-v7-to-v8.js`) + per-skill mapping artifact (`audits/migration-mapping-v7-to-v8.json`). Companion changes: router rank tables (`SCOPE_RANK`, new `OPERATION_RANK`), normalizer (still lifts `metadata.*` agnostically), manifest projection (`generate-manifest.js` now emits `subject`/`subjects`/`operation`), marketplace exporter (exclusion gate extended from `scope: codebase|operational` to `scope: codebase|operational|project`), and `docs/field-reference.md` per-field prose for the three new fields.
+
+### Changed
+
+- **Audit-doc consolidation** — `SKILL_AUDIT_CHECKLIST.md` (214 lines) and `audits/per-skill-contract.md` (274 lines) merged into `SKILL_AUDIT_LOOP.md` as **Part 2** (checklist) and **Part 3** (runbook). The two source files were deleted; existing cross-references (146 across docs, ADRs, runner prompts, manifest, scripts, examples) now point at the merged Loop's Part anchors. Eliminates the "is it the Checklist or the Worklist or the Contract?" confusion documented during the 2026-05-25 multi-model restructure review.
+
+### Migration notes
+
+- v8 is compatibility-mode: v7 frontmatter still validates, v7 skills are not forced to migrate immediately. v7 compatibility shims (schema acceptance of `category`/`type`/`codebase`/`reference`, router fallback ranks, manifest projection of v7 fields) will be removed in a future release after ≥4 weeks of v8 in production with zero regressions.
+- Skill-graph repo touched 9 files for tooling (schema, manifest schema, JSON-LD context, normalizer, router, manifest gen, exporter, codemod, lint check); the canonical library at `~/Development/skills/` was migrated in 9 per-subject batches (one git commit per subject).
+- `audits/per-skill-contract.md` references in tooling (audit-loop runner prompts, manifest.json, scripts) now read `SKILL_AUDIT_LOOP.md § Part 3 — Per-Skill Audit Runbook`. Markdown anchor: `#part-3--per-skill-audit-runbook`.
+
+## [0.5.10] — 2026-05-25
 
 ## [0.5.10] — 2026-05-25
 
