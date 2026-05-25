@@ -1,0 +1,91 @@
+{
+  "schema_version": 1,
+  "description": "Machine-readable index of Skill Audit Loop protocols, runners, and required per-skill run artifacts. The verifier at skill-graph/scripts/check-audit-manifest.js consumes this file. ADR 0015 documents the project-owned-prompts convention this serves.",
+  "protocols": [
+    {
+      "id": "skill-audit-loop",
+      "version": "v3+",
+      "canonical_path": "skill-graph/audits/per-skill-contract.md",
+      "runners": [
+        {
+          "id": "single-model",
+          "path": "skill-graph/audits/prompts/skill-audit-loop-single-model.md",
+          "mode": "interactive-single-skill",
+          "version": "v3"
+        },
+        {
+          "id": "batch-worker-v4",
+          "path": "skill-graph/audits/prompts/skill-audit-loop-batch-worker-v4.md",
+          "mode": "autonomous-batch-model-agnostic",
+          "version": "v4"
+        },
+        {
+          "id": "codex-autonomous-v5",
+          "path": "skill-graph/audits/prompts/skill-audit-loop-codex-autonomous-v5.md",
+          "mode": "autonomous-batch-codex-cron",
+          "version": "v5"
+        },
+        {
+          "id": "minimal-iteration",
+          "path": "skill-graph/audits/prompts/skill-audit-loop-minimal-iteration.md",
+          "mode": "interactive-short-batch",
+          "version": "1.0"
+        }
+      ],
+      "required_artifacts_per_skill": [
+        { "name": "catalog.json",       "required": true, "when": "always" },
+        { "name": "research.md",        "required": true, "when": "always" },
+        { "name": "findings.md",        "required": true, "when": "always" },
+        { "name": "scorecard.md",       "required": true, "when": "always" },
+        { "name": "verdict.md",         "required": true, "when": "always" },
+        { "name": "merge-ledger.md",    "required": true, "when": "always" },
+        { "name": "novelty-memo.md",    "required": true, "when": "runner.mode startswith 'autonomous-batch-'" },
+        { "name": "dissent.md",         "required": true, "when": "runner.id == 'codex-autonomous-v5'" },
+        {
+          "name": "comprehension.json",
+          "required": true,
+          "when": "skill.comprehension_verdict in ['PROVISIONAL','APPLICABLE','PASS','SHALLOW','REDUNDANT','MIXED','HARMFUL']",
+          "path": "skills/<name>/evals/comprehension.json",
+          "notes": "Any non-UNVERIFIED comprehension_verdict requires a gradeable, dimension-tagged comprehension.json on disk per the May 22-25 incident with backend/mcp-builder/token-cost-estimation."
+        }
+      ],
+      "aliases": [
+        {
+          "from": ".claude/commands/audit/audit.md",
+          "to": "skill-graph/audits/prompts/skill-audit-loop-single-model.md",
+          "notes": "Claude Code slash-command resolver."
+        },
+        {
+          "from": ".opencode/commands/audit-skill.md",
+          "to": "skill-graph/audits/prompts/skill-audit-loop-single-model.md",
+          "notes": "OpenCode slash-command resolver."
+        },
+        {
+          "from": ".opencode/commands/skill-audit-loop.md",
+          "to": "skill-graph/audits/prompts/skill-audit-loop-codex-autonomous-v5.md",
+          "notes": "OpenCode queue wrapper / launcher."
+        },
+        {
+          "from": "prompts/audits/skill-audit-loop-single-model.md",
+          "to": "skill-graph/audits/prompts/skill-audit-loop-single-model.md",
+          "notes": "Back-compat pointer stub at workspace prompts dir."
+        },
+        {
+          "from": "prompts/audits/skill-audit-loop-batch-worker-v4.md",
+          "to": "skill-graph/audits/prompts/skill-audit-loop-batch-worker-v4.md",
+          "notes": "Back-compat pointer stub."
+        },
+        {
+          "from": "prompts/audits/skill-audit-loop-codex-autonomous-v5.md",
+          "to": "skill-graph/audits/prompts/skill-audit-loop-codex-autonomous-v5.md",
+          "notes": "Back-compat pointer stub."
+        },
+        {
+          "from": "prompts/audits/skill-audit-loop-minimal-iteration.md",
+          "to": "skill-graph/audits/prompts/skill-audit-loop-minimal-iteration.md",
+          "notes": "Back-compat pointer stub."
+        }
+      ]
+    }
+  ]
+}
