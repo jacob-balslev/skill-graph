@@ -14,16 +14,17 @@ The three layers divide the work cleanly. The [Skill Metadata Protocol](SKILL_ME
 
 | Fact | Value | Source of truth |
 |---|---|---|
-| **Schema version enforced** | **v7 + v8 in compatibility mode** (`schema_version: 7\|8` both validate; v8 skills additionally require `subject` + `operation`; v7 `category.const` 6-enum retained for legacy validation branches) | `schemas/skill.schema.json` + [ADR-0017 § Landing strategy](docs/adr/0017-five-axis-classification-model.md) |
-| **Corpus v7/v8 distribution** | **v8: 147** · **v7: 1** (template) — corpus is effectively migrated; v7 sunset cleanup pending ≥4 weeks of stable v8 per ADR-0017 | `examples/skills.manifest.sample.json` → `summary.by_schema_version` |
+| **Schema version enforced** | **v7 + v8 in compatibility mode** (`schema_version: 7\|8` both validate; v8 skills additionally require `subject` + `operation`; v7 `category.const` 6-enum retained as the only category constraint) | `schemas/skill.schema.json` + [ADR-0017 § Landing strategy](docs/adr/0017-five-axis-classification-model.md) |
+| **Corpus v7/v8 distribution** | **All 146 source skills carry `schema_version: 7`** — corpus migration to `schema_version: 8` has NOT yet run. The v8 axes (`subject`, `operation`) are populated on most skills (under `metadata:` for nested-layout sources) but the `schema_version` integer is still 7. Migration runs require the codemod + version-earned gate. (Updated 2026-05-26 per SH-6481 SG-1.) | `grep -r "^  schema_version:" ~/Development/skills/skills \| awk -F: '{print $NF}' \| sort \| uniq -c` |
 | Manifest schema file | tracks v7 + v8 dual-emit | `schemas/manifest.schema.json` |
 | Emitted manifest `schema_version` | **4** (back-compatible root contract) | `scripts/generate-manifest.js`; `schemas/manifest.schema.json` `schema_version.const` |
 | Manifest summary facets | **dual emit** — v7 (`by_category` / `by_type`) and v8 (`by_subject` / `by_operation`) side-by-side, plus `by_schema_version` for migration tracking | `scripts/generate-manifest.js::computeSummary` |
-| Per-skill `schema_version` in manifest | **present** (all 148 skills, top-level field — added 2026-05-25 per F4 finding) | `scripts/generate-manifest.js::buildSkillEntry` |
-| Canonical skill count | **147** (verified 2026-05-24) | live: `find ~/Development/skills/skills -name SKILL.md \| wc -l`; generated mirror: `docs/status.generated.md` via `npm run status` |
+| Per-skill `schema_version` in manifest | **present** (top-level field on every skill entry — added 2026-05-25 per F4 finding) | `scripts/generate-manifest.js::buildSkillEntry` |
+| Canonical skill count | **146** SKILL.md in the canonical library; **147** when the protocol template is included. Verified 2026-05-26 by `find` + live manifest generation. | live: `find ~/Development/skills/skills -name SKILL.md \| wc -l` (146) and `node scripts/generate-manifest.js --include-template --validate-only` (147). Sample manifest at `examples/skills.manifest.sample.json` regenerates to match. |
+| Marketplace export count | **144** SKILL.md in `marketplace/skills/` — 2 skills excluded by the publication gate (`scope: codebase\|operational` filter). | live: `find skill-graph/marketplace/skills -name SKILL.md \| wc -l` |
 | Canonical library location | sibling repo `jacob-balslev/skills` at `~/Development/skills/` | `.skill-graph/config.json` → `skill_roots: ["../skills/skills"]` |
 | This repo's role | tooling + protocol + schemas + docs (no `skills/` tree) | [ADR 0009](docs/adr/0009-sibling-repo-deprecation.md) |
-| Audit Loop maturity | Integrity Gate ≈ MLOps L1; **Behavior Gate ≈ L0** — `application_verdict: UNVERIFIED` on all 147 skills | [`SKILL_AUDIT_LOOP.md:45-52`](SKILL_AUDIT_LOOP.md) |
+| Audit Loop maturity | Integrity Gate ≈ MLOps L1 (write-back wired into `skill-graph audit` as of 2026-05-25 per SH-6481 F14); **Behavior Gate ≈ L0** — `application_verdict: UNVERIFIED` on all 146 source skills until graders run | [`SKILL_AUDIT_LOOP.md:45-52`](SKILL_AUDIT_LOOP.md) |
 
 ## Source vs Marketplace — why there are two `skills/` trees
 

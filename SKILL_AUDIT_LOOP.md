@@ -280,7 +280,7 @@ A complete audit should produce:
 2. Behavior Gate result
 3. findings list
 4. required fixes
-5. a remediation note; only `improve` or an explicitly requested fix mutates the skill or Health Block
+5. a remediation note. **`audit` stamps the Integrity-layer Health Block fields back onto the skill** (`last_audited`, `lint_verdict`, `structural_verdict` — and `comprehension_verdict` / `application_verdict` when run with `--graded`). The skill's instructional body and routing contract are untouched; only `improve` (or an explicit auditor edit) mutates those. This matches Part 1 § The Four Operations — the operations write to a specific set of flat fields in the Health Block, and `audit` is one of them.
 
 ### Gate Model
 
@@ -367,7 +367,11 @@ Required dimension rows:
 - [ ] `description` exists and is specific enough to route from
 - [ ] `version` exists
 - [ ] `type` is one of `capability`, `workflow`, `router`, `overlay`
-- [ ] `category` is one of the closed six-value enum retained in v7: `foundations` / `engineering` / `design` / `quality` / `agent` / `product` (introduced in v5 as a browse facet; previously open-string in v3/v4; `family` in v2)
+- [ ] Classification axis is valid for the skill's `schema_version`:
+   - **v8 skills (target):** `subject` is one of the 9-value enum — `code-engineering` / `quality-assurance` / `frontend-ui` / `design-craft` / `agent-ops` / `product-domain` / `knowledge-organization` / `meta-methods` / `data-analytics`. `operation` is one of the 4-value Bloom-grounded enum — `know` / `do` / `decide` / `modify`. `scope` is one of `portable` / `workspace` / `project`. See `SKILL_METADATA_PROTOCOL.md § Classification — the 5-axis model` and [ADR-0017](docs/adr/0017-five-axis-classification-model.md).
+   - **v7 skills (sunset alias accepted during migration):** `category` is one of the closed six-value enum — `foundations` / `engineering` / `design` / `quality` / `agent` / `product`. `type` is one of `capability` / `workflow` / `router` / `overlay`. `scope` is one of `portable` / `reference` / `codebase` (the v7 `reference` aliases to v8 `workspace`; the v7 `codebase` aliases to v8 `project`).
+   - **Mixed-state skills:** A skill carrying BOTH the v8 axes AND the v7 legacy fields is valid during sunset; the v7→v8 normalizer in `scripts/lib/parse-frontmatter.js` reconciles them. Author intent (the top-level v8 fields, when present) wins over deprecated `metadata.*` mirrors.
+   - (`family` from v2 is fully retired and must not appear in active skills.)
 - [ ] `scope` is one of `codebase`, `reference`, `portable`
 - [ ] `owner` exists
 - [ ] `freshness` exists
@@ -512,10 +516,12 @@ A skill audit is complete when:
    # MODEL: your actual model (gpt-5.5 / opus / sonnet / gemini-3.1-pro / haiku / ...).
    ```
 1. Read `AGENTS.md`.
-2. Pick your **lane** by capability tier (see `.opencode/skill-audit-lanes.json`). A lane enforces a
-   `minTier`, so claim only one your model qualifies for (high = opus/gpt-5.5/gemini-3.1-pro;
-   mid = sonnet/gpt-5.4; cheap = haiku/gemini-flash). Lanes are model-agnostic above the floor — any
-   qualifying CLI may serve a lane and is attributed by its ACTUAL model.
+2. Pick your **lane** by capability tier (see `audits/lanes.json` — project-canonical per
+   [ADR-0016](docs/adr/0016-operational-data-ownership.md); the legacy `.opencode/skill-audit-lanes.json`
+   path is deprecated and being phased out). A lane enforces a `minTier`, so claim only one your model
+   qualifies for (high = opus/gpt-5.5/gemini-3.1-pro; mid = sonnet/gpt-5.4; cheap = haiku/gemini-flash).
+   Lanes are model-agnostic above the floor — any qualifying CLI may serve a lane and is attributed
+   by its ACTUAL model.
    ```bash
    node scripts/skill/skill-audit-claim.js lanes        # show lanes + minTier + live concurrency
    ```

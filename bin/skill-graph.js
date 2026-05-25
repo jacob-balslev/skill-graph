@@ -200,6 +200,25 @@ Note: evolve depends on lib/audit-shared/auto-improve.js (bundled with @skill-gr
 `,
   },
 
+  // ─── Spec subcommands added 2026-05-25 (SH-6481 F15/F16/SAL-3) ───────────
+  // The four operations docs (SKILL_AUDIT_LOOP.md § The Four Operations)
+  // promise audit / improve / evaluate / evolve. Before this commit the CLI
+  // exposed only audit + evolve and pointed users at raw lib/audit/* paths
+  // for the other two. These three dispatchers close the gap by delegating
+  // to existing runnable scripts; the docs and the CLI now agree.
+  improve: {
+    script: 'lib/audit/run-skill-improvement-loop.js',
+    help: `Usage: skill-graph improve [options]\n\nKarpathy keep-or-revert improvement loop for a single skill or asset list.\n\nOptions:\n  --skill <name>          Improve a single named skill.\n  --asset-id <id>         Improve one asset (skill or eval) by id.\n  --mode <adapter>        Auto-improve adapter (prompt-evolution, perf, docs, …).\n  --lens <other-skill>    Apply another skill as an audit lens against this one.\n  --time-box <sec>        Per-field time box (default 1200).\n  --dry-run               Preview the field edit and the eval delta without committing.\n\nNotes:\n  - improve is the only operation that mutates the skill's instructional body.\n  - It auto-calls evaluate after the edit and keeps OR reverts based on eval_score.\n  - Stamps last_changed; never stamps last_audited (use 'audit' for that).\n\nSee: SKILL_AUDIT_LOOP.md § The Inner Pipeline of improve\n`,
+  },
+  evaluate: {
+    script: 'lib/audit/evaluate-skill.js',
+    help: `Usage: skill-graph evaluate [options] <eval-file>\n\nRun the eval suite for one skill and stamp the result back into the SKILL.md Health Block.\n\nArguments:\n  <eval-file>                  Path to evals/<skill>.json (or comprehension.json / application.json).\n\nOptions:\n  --mode <comprehension|application>   Which grader to run.\n  --application <skill-dir>            Required with --mode application; the skill's directory.\n  --dry-run                            Print what would be stamped without writing.\n\nWrites (when not --dry-run):\n  - eval_score, eval_failed_ids, freshness on the skill's Health Block.\n  - comprehension_verdict (when --mode comprehension runs).\n  - application_verdict + eval_last_run (when --mode application runs — the\n    primary quality signal per SKILL_AUDIT_LOOP.md § Audit Doctrine).\n\nSee: SKILL_AUDIT_LOOP.md § The Inner Pipeline of evaluate\n`,
+  },
+  status: {
+    script: 'lib/audit/skill-status.js',
+    help: `Usage: skill-graph status <skill-name> [options]\n\nRead-only view of a skill's Health Block (loop-stamped frontmatter fields).\n\nArguments:\n  <skill-name>      Skill directory name.\n\nOptions:\n  --json            Emit JSON instead of a human-readable table.\n  --audit-root <p>  Root directory for SKILL.md lookup (default: auto-detect).\n\nExit codes:\n  0  Success (including the graceful no-Health-Block case).\n  1  Fatal error (manifest unreadable, unexpected parse failure).\n\nSee: SKILL_AUDIT_LOOP.md § The Health Block — state lives on the skill\n`,
+  },
+
   // ─── Legacy / additional subcommands (backward compat) ───────────────────
   manifest: {
     script: 'scripts/generate-manifest.js',
@@ -288,11 +307,16 @@ Commands:
   init             Scaffold a new SKILL.md from the official template
   add <slug>       Install a skill from the marketplace into your library
   lint [skill]     Validate SKILL.md files against the canonical-source schema lint gate
-  audit <skill>    Seed or run a single-skill audit (stub or graded mode)
+  audit <skill>    Run the Integrity Gate, write evidence artifacts, and stamp the Health Block (lint/structural verdicts)
+  improve          Karpathy keep-or-revert improvement loop for one skill or asset
+  evaluate         Run the eval suite for one skill and stamp comprehension_verdict / application_verdict
+  status <skill>   Print the Health Block for a skill (read-only)
   route <query>    Select and explain skills for a natural-language query
   drift            Check or record grounding truth-source hashes (drift sentinel)
   export           Generate and validate the public marketplace export surface
   evolve           [PREVIEW] Continuous Karpathy-style skill-improvement loop (standalone; requires --workspace-root for non-cwd libraries)
+
+The four operations (SKILL_AUDIT_LOOP.md § The Four Operations) are audit / improve / evaluate / evolve.
 
 Diagnostics:
   doctor           Run every deterministic check in one pass (recommended for bug reports)

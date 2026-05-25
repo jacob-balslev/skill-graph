@@ -12,25 +12,25 @@
 
 ## Migration state (v7→v8)
 
-This document was authored as the **target v8 spec** — but as of 2026-05-25 the migration is half-done across the corpus. The split:
+> **Updated 2026-05-25 (SH-6481 SMP-1 / SMP-2)** to match what the schema actually enforces. Earlier versions of this callout claimed the schema did not yet enforce v8 fields and authors could write "v8 only" — both untrue against the live schema. See `schemas/skill.schema.json:7-20` (global required) and `schemas/skill.schema.json` `allOf[11]` (the v8 conditional rule).
+
+The schema runs in **compatibility mode**: `schema_version: 7` and `schema_version: 8` both validate. The split between what the schema enforces and what each surface labels is:
 
 | Surface | State |
 |---|---|
 | **This doc (SKILL_METADATA_PROTOCOL.md)** | v8 — 5-axis classification fully described |
-| **Schema file (`schemas/skill.schema.json`)** | v7 — `category.const` values are the 6-enum (`foundations` / `engineering` / `design` / `quality` / `agent` / `product`); does NOT yet enforce the v8 9-value `subject` enum |
-| **Compiled manifest (`skills.manifest.json`) summary** | v7 — `by_category` / `by_type` / `by_scope` with v7 names |
-| **Audit Loop Part 2 checklist (`SKILL_AUDIT_LOOP.md`)** | v8 + v7 (both accepted post-2026-05-25 fix) |
-| **Source skills (147 canonical, 302 flat-layout)** | Mixed — nested-layout skills carry v8 fields under `metadata:`; flat-layout skills are v5-v7 |
-| **`SKILL_GRAPH.md § Current State`** | v7 (the single-source-of-truth count today) |
+| **Schema file (`schemas/skill.schema.json`)** | v7 + v8 dual-emit. The global `required` array enforces both `type` and `category` (v7 fields). When `schema_version: 8`, the schema's `allOf` adds `subject` and `operation` as required on top of the v7 baseline. v7 6-value `category` enum remains the only category constraint. |
+| **Compiled manifest (`skills.manifest.json`) summary** | Dual-emit per `SKILL_GRAPH.md § Current State` — v7 (`by_category` / `by_type`) and v8 (`by_subject` / `by_operation`) side-by-side |
+| **Audit Loop Part 2 checklist (`SKILL_AUDIT_LOOP.md`)** | v8 + v7 (both accepted) |
+| **Source skills (canonical library)** | v8: 147; v7 template: 1 (per `SKILL_GRAPH.md § Current State`) |
+| **`SKILL_GRAPH.md § Current State`** | The live single-source-of-truth count — link there, do not restate. |
 
-**What this means for authors:**
+**What this means for authors (CORRECTED):**
 
-- A skill written with **only v8 fields** (`subject` + `operation` + v8 scope names) will FAIL schema lint today because `category.const` does not yet include the v8 enum values.
-- During the sunset window, author **both** the v8 axes (target) and the v7 legacy aliases (currently enforced). The v7→v8 normalizer in `scripts/lib/parse-frontmatter.js::normalizeFrontmatter()` keeps both readable.
-- The v8 codemod (`scripts/migrate-skill-v7-to-v8.js`) populates BOTH on migrated skills.
-- This drift is honest, not a defect to mask — per `.claude/rules/version-schema-contract.md` "a label ahead of its content is HONEST drift to record, not to 'fix' by editing the label." The full v8 enforcement requires updating the schema constants, regenerating the sample manifest, and bumping `SKILL_GRAPH.md § Current State` — all in one coordinated change.
-
-The full migration plan + state is tracked in the workspace audit findings (2026-05-25). When this row in the table flips to "v8 — schema enforces 9-value `subject`," the migration-state callout at the top of this doc can be removed.
+- A skill **must** carry both the v7 legacy fields (`type`, `category`, `scope`) AND, if `schema_version: 8`, the v8 fields (`subject`, `operation`). v8-only authoring fails schema lint because `type` and `category` are in the schema's global `required` array.
+- The v7→v8 codemod (`scripts/migrate-skill-v7-to-v8.js`) populates BOTH on migrated skills. The normalizer in `scripts/lib/parse-frontmatter.js::normalizeFrontmatter()` reads either encoding.
+- The end-state — when `type`+`category` are removed from global required and `subject`+`operation` become globally required — requires a coordinated change of the schema's `required` array, `allOf` rules, codemod, sample manifest, and `SKILL_GRAPH.md § Current State`. That coordinated change has NOT shipped; until it does, **both v7 and v8 axes are required** on every new skill.
+- This is honest drift to record per `.claude/rules/version-schema-contract.md` ("a label ahead of its content is HONEST drift to record"). Editing this callout to claim authors can drop v7 fields would mask the gap, not close it.
 
 ---
 

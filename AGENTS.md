@@ -95,13 +95,25 @@ This shape is what distinguishes the Skill Graph from prompt libraries, agent-ru
 
 The Skill Metadata Protocol is the frontmatter contract every `SKILL.md` ships against. Treat this section as the working summary; `SKILL_METADATA_PROTOCOL.md` and `docs/field-reference.md` are the binding documents.
 
-Core required axes:
+Core required axes (v8-first; v7 legacy fields remain required during the sunset window — see `SKILL_METADATA_PROTOCOL.md § Migration state`):
+
+**v8 axes (additionally required when `schema_version: 8`):**
 
 - `name` — kebab-case, head-noun-anchored (see `docs/head-noun-glossary.md`); aligns with parent directory.
 - `description` — routing contract: positive trigger phrases + explicit negative boundary (`Do NOT use for X (use that-skill).`).
-- `type` — `capability` (teaches domain) / `workflow` (enforces sequence) / `router` (directs) / `overlay` (adds local truth).
-- `scope` — `portable` (universal) / `reference` (vendor/spec-grounded) / `codebase` (this repo only; requires `grounding`).
-- `category` / `categories` / `primaryCategory` — ONE taxonomy, six closed values: `{foundations, engineering, design, quality, agent, product}`. `category` (v7-required, v8-deprecated) names the primary. `categories: [string]` (v7-optional, v8-required) is an ordered list of all that apply (primary first, secondaries after; max 5). `primaryCategory` is the workspace's parallel field name and the workspace title-case values (`Agent System`, `Technical Capability`, `Design & UX`, `Product Domain`, `Meta Method`) normalize to the lowercase enum on read. Closure justified by Miller's 7±2 browseability, MECE pressure on values, and the `foundations` anti-junk-drawer gate. To propose a 7th value: ADR + ≥10 primary-fit skills. Multi-fit secondaries belong in `categories[1..]`, not a new top-level value. See `SKILL_METADATA_PROTOCOL.md § Classification` for the full contract, the v7→v8 migration plan, and the workspace title-case → lowercase value mapping.
+- `subject` — primary browse shelf, ONE of nine closed values: `code-engineering`, `quality-assurance`, `frontend-ui`, `design-craft`, `agent-ops`, `product-domain`, `knowledge-organization`, `meta-methods`, `data-analytics`. Each subject holds 5–25 skills; <5 = fold or recruit, >25 = subdivide via `domain`. To propose a 10th value: ADR + ≥5 primary-fit skills. See [ADR-0017](docs/adr/0017-five-axis-classification-model.md).
+- `operation` — cognitive operation, ONE of four Bloom-grounded values: `know` (declarative), `do` (procedural), `decide` (judgment), `modify` (context-injecting).
+- `scope` — deployment targeting, ONE of three values: `portable` (any project), `workspace` (this workspace only), `project` (one specific project; requires `grounding`). v7 aliases `codebase` → `project`, `reference` → `workspace` are accepted during the sunset window.
+- `subjects[]` (optional, max 2, primary first) covers polyhierarchy when a skill genuinely spans two browse shelves.
+
+**v7 legacy axes (still globally required by the schema; do not drop):**
+
+- `type` — `capability` (teaches domain) / `workflow` (enforces sequence) / `router` (directs) / `overlay` (adds local truth). v8 replacement: `operation`. Author both during sunset.
+- `category` — ONE of six closed values: `{foundations, engineering, design, quality, agent, product}`. v8 replacement: `subject`. Author both during sunset.
+- `categories: [string]` (v7-optional, v8-required) — ordered list (primary first, max 5). v8 replacement: `subjects[]`.
+- `primaryCategory` — workspace's parallel field name; workspace title-case values normalize to lowercase enum on read.
+
+Closure of `subject` (9) and `category` (6) is justified by Miller's 7±2 browseability + MECE pressure + the `foundations` / `knowledge-organization` anti-junk-drawer gate. See `SKILL_METADATA_PROTOCOL.md § Classification` for the disambiguation rules and the v7→v8 migration plan.
 
 Understanding-fields contract (when `comprehension_state: present`) — see `SKILL_METADATA_PROTOCOL.md` § Understanding for the binding rules:
 
@@ -220,13 +232,13 @@ For any single Skill Metadata Protocol field (`name`, `description`, `type`, `sc
 | **Machine-readable protocol index** (protocols, runners, required artifacts, runtime aliases) | `audits/manifest.json` + `schemas/audits-manifest.schema.json` (shape) | The verifier `scripts/check-audit-manifest.js` consumes this. Bumping `schema_version` is gated by the version-schema-contract rule. |
 | **Verdict semantics** (enums for all four Health Block fields, confidence tier ordering, comprehension/application disjointness rule) | `docs/verdict-semantics.md` | Canonical for verdict enums. AGENTS.md / SKILL_AUDIT_LOOP.md / pipeline doc carry one-line summaries that link here. ADR-0011 is the rationale; this doc is the spec. |
 | **Comprehension eval shape** (`evals/comprehension.json` per-case structure, 7 rubric dimensions, criticality + truth_mode enums) | `docs/comprehension-eval-spec.md` + `schemas/comprehension.schema.json` (binding) | The shape gate-8 graders evaluate against; the verifier requires this artifact when `comprehension_verdict ∈ {PROVISIONAL, PASS, SHALLOW, REDUNDANT}`. |
-| **Audit-loop operational data ownership** (the trinary classification: project content / workspace orchestration / project-protocol scripts over workspace-coordinated data) | `docs/adr/0016-operational-data-ownership.md` | Settles which side of the boundary new audit-loop surfaces belong to. ADR-0015 + ADR-0016 together cover spec + data ownership. |
-| **Audit lane configuration** (importance bands, model tier floor, concurrency caps) | `audits/lanes.json` (project canonical, post-ADR-0016 surface #1) — read by `scripts/skill/skill-audit-claim.js` | Migrated from `.opencode/skill-audit-lanes.json` per ADR-0016. |
-| **Run-dir layout** (per-skill `runs/<run-id>/` structure, artifact filenames, claim atomicity) | `scripts/skill/skill-audit-paths.js` (current SoT) — to project-own contract per ADR-0016 surface #3 | Workspace script writes `.opencode/progress/skill-audits/<skill>/runs/<run-id>/...`. The layout CONTRACT is project-owned; the workspace path is runtime-coordinated. |
+| **Audit-loop operational data ownership** (the trinary classification: project content / workspace orchestration / project-protocol scripts over workspace-coordinated data) | `docs/adr/0016-operational-data-ownership.md` **(Status: Proposed — sequencing deferred)** | Settles which side of the boundary new audit-loop surfaces belong to. ADR-0015 + ADR-0016 together cover spec + data ownership. The decision is settled in principle but per-surface migrations have not all shipped yet — do NOT cite ADR-0016 as if landed. |
+| **Audit lane configuration** (importance bands, model tier floor, concurrency caps) | `audits/lanes.json` (project canonical, **target** per ADR-0016 surface #1 — Proposed) — read by `scripts/skill/skill-audit-claim.js` | Migration from `.opencode/skill-audit-lanes.json` is part of the ADR-0016 sequencing; verify which path is live in your branch before editing. |
+| **Run-dir layout** (per-skill `runs/<run-id>/` structure, artifact filenames, claim atomicity) | `scripts/skill/skill-audit-paths.js` (current SoT) — to project-own contract per ADR-0016 surface #3 (Proposed) | Workspace script writes `.opencode/progress/skill-audits/<skill>/runs/<run-id>/...`. The layout CONTRACT is project-owned in the target ADR-0016 end-state; the workspace path is runtime-coordinated today. |
 | **Finding schema** (severity, evidence, scope, recommended action) | `docs/reference/skill-audit-pipeline.md` § Unified Finding Schema (workspace, planned to migrate per F30 in `.roundtable/skill-graph-restructure-review-2026-05-25/followup-tasks.md`) | Currently at workspace root; planned migration into `skill-graph/audits/`. |
 | **Grader prompts** (concept grader for gate 8, application grader for gate 9) | `lib/audit/graders/*-prompt.md` | Single canonical home post-2026-05-25 grader-prompt consolidation. Workspace `scripts/skill/graders/` copies are deprecated shims. |
 | **Slash-command runtime resolvers** | `.claude/commands/audit/*.md` and `.opencode/commands/audit-skill.md` (workspace runtime), aliased in `audits/manifest.json` § aliases | The slash-command UX surface (description, argument-hint, flags) is workspace-owned per ADR-0015. Substantive operational content defers to `SKILL_AUDIT_LOOP.md` § Part 3 — Per-Skill Audit Runbook. |
-| **Skill-injector routing config — shape** | `schemas/routing-config.schema.json` (project-owned per ADR-0016 surface #4) | The binding shape for `agent-orchestration/references/skill-routing-config.json` (instance file, cross-project orchestration). Type lives here; instance stays at consumer location. Validate via `node -e "..."` or ajv against the schema. |
+| **Skill-injector routing config — shape** | `schemas/routing-config.schema.json` (project-owned per ADR-0016 surface #4 — Proposed) | The binding shape for `agent-orchestration/references/skill-routing-config.json` (instance file, cross-project orchestration). Type lives here; instance stays at consumer location. Validate via `node -e "..."` or ajv against the schema. |
 | **Audit checklist items** (per-skill audit deliverable) | `SKILL_AUDIT_LOOP.md` § Part 2 | Itemized checklist. Edit when an audit produces a new mandatory check. |
 | **Quality doctrine** (improve = enrich; preserve scope; organize-over-trim) | `docs/quality-doctrine.md` | `AGENTS.md § Quality Doctrine` is a summary; deeper doctrine lives in the docs file. |
 | **Marketplace export contract** (description limits, privacy filter, surface generation, sync protocol) | `docs/marketplace-syndication.md` + `AGENTS.md § Public Distribution` | `AGENTS.md` owns the canonical URL contract + skills.sh manual-removal escalation. The marketplace doc owns export pipeline detail and the post-publication runbook. |
@@ -430,12 +442,20 @@ node scripts/skill-graph-route.js "audit my skills for schema conformance"
 node scripts/skill-graph-routing-eval.js --only-asserted --confusion-matrix
 ```
 
-For audit scaffolding:
+For audit scaffolding — prefer the CLI surface over raw script paths:
 
 ```bash
-node scripts/skill-audit.js <skill-name>
-node scripts/skill-audit.js <skill-name> --graded --grader-cli "<command>"
+# The four operations (audit / improve / evaluate / evolve) — see SKILL_AUDIT_LOOP.md.
+node bin/skill-graph.js audit <skill-name>                          # Integrity Gate + Health Block write-back
+node bin/skill-graph.js audit <skill-name> --graded --grader-cli "<command>"
+node bin/skill-graph.js improve --skill <skill-name>                # Karpathy keep-or-revert loop
+node bin/skill-graph.js evaluate --mode comprehension <eval-file>   # stamp comprehension_verdict
+node bin/skill-graph.js evaluate --mode application --application <skill-dir> <eval-file>  # stamp application_verdict
+node bin/skill-graph.js status <skill-name>                         # read-only Health Block view
+node bin/skill-graph.js evolve --top 5                              # corpus walker (audit → improve → evaluate)
 ```
+
+The CLI dispatchers delegate to `lib/audit/*.js` and pass arguments through verbatim. Calling the raw script paths still works (and is what the CLI invokes internally), but the CLI form is what the docs and `--help` reference.
 
 One-shot umbrella entry point (recommended for bug reports and pre-PR sweeps):
 
