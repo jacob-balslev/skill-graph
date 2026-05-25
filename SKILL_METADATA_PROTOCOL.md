@@ -388,7 +388,7 @@ Seven flat top-level fields that record a skill's audit fingerprint in its own f
 - Application-layer verdict (gate 9: behavioral change on real artifacts).
 - Enum: `APPLICABLE` | `REDUNDANT` | `HARMFUL` | `MIXED` | `FALSE_POSITIVE` | `UNVERIFIED` | `PROVISIONAL`.
 - Written by the application grader on `evals/application.json`. A skill is only behaviorally certified when this is `APPLICABLE`.
-- `PROVISIONAL` records a single-model dogfood audit that found useful behavior but has not passed the independent application grader. Default `UNVERIFIED` means no application assessment has run.
+- `PROVISIONAL` records a single-model self-assessment audit that found useful behavior but has not passed the independent application grader. Default `UNVERIFIED` means no application assessment has run.
 
 **`audit_verdict`** *(DEPRECATED in v7)*
 - Pre-v7 single aggregate verdict, replaced by the four discrete verdicts above.

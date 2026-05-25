@@ -94,7 +94,7 @@ any other model. The multi-model merge flow is separate and not for this prompt.
    - truth_verdict: PASS only when source-truth claims are verified and drift is fixed
    - comprehension_verdict: PROVISIONAL when your single-model self-assessment shows the skill
      teaches the dimensions. Never PASS without a dual-run grader receipt.
-   - application_verdict: PROVISIONAL when your dogfood shows the skill improved behavior.
+   - application_verdict: PROVISIONAL when your self-assessment shows the skill improved behavior.
      Never APPLICABLE without a dual-run grader receipt.
    - Use negative enums when warranted (SHALLOW, REDUNDANT, HARMFUL, MIXED).
 

@@ -212,7 +212,7 @@ Fix verified small or medium-risk drift in-session when the evidence is strong:
 - incomplete coverage/domain wording
 - outdated tool/API claims
 - weak or missing comprehension evals
-- directly related source/doc drift discovered by dogfood
+- directly related source/doc drift discovered by self-assessment
 
 Do not do broad rewrites, public/private repo boundary changes, mass regenerations, or unrelated
 cleanup in this loop. Record those as filed findings instead.
@@ -223,7 +223,7 @@ Earn verdicts from evidence:
 - `truth_verdict`: PASS only when repo/source truth claims are verified and fixed.
 - `comprehension_verdict`: PROVISIONAL when single-model self-assessment shows the skill teaches
   the eval dimensions. Never claim grader-verified PASS without a real grader receipt.
-- `application_verdict`: PROVISIONAL when dogfood shows the skill improved behavior. Never claim
+- `application_verdict`: PROVISIONAL when self-assessment shows the skill improved behavior. Never claim
   APPLICABLE without a real grader receipt.
 - Use negative enums when warranted: SHALLOW, REDUNDANT, HARMFUL, MIXED.
 

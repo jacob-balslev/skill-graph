@@ -8,7 +8,7 @@
 >
 > Last updated: 2026-05-22 (v3). v3 fixes a PREFLIGHT lint gate that hard-stopped automation runs
 > in a sparse/sandboxed worktree (env false-positive lint errors); the gate is now per-skill, not
-> a clean-corpus precondition. v3 also makes Step 8 (dogfood) auto-solve small/low-risk findings
+> a clean-corpus precondition. v3 also makes Step 8 (self-assessment) auto-solve small/low-risk findings
 > in-session and file only the larger ones to Linear as Audit Reports. RULE 0 added after a
 > Codex/GPT-5.5 run over-applied the repo's
 > multi-model merge guidance and wrongly spawned Gemini + Claude for a GPT-only audit. v2 fixes a
@@ -118,7 +118,7 @@ AUDIT + UPGRADE (run the full v2.2 contract, as YOU, one model)
             actually teaches enough to produce the correct answer. If yes → record PROVISIONAL.
             If it teaches the dimension shallowly or redundantly → record SHALLOW / REDUNDANT
             (and fix what you can in this commit).
-          * application_verdict: use your Step 8 dogfood — apply the upgraded skill to a
+          * application_verdict: use your Step 8 self-assessment — apply the upgraded skill to a
             realistic task and judge whether it changed agent behavior for the better. If yes
             → record PROVISIONAL. If redundant / harmful / mixed → record REDUNDANT / HARMFUL /
             MIXED.
@@ -171,11 +171,11 @@ VERIFY + COMMIT
    Operational (scope:operational) skills stay out of the public marketplace clone
    (skills/.git) — never `git add -f` them there.
 
-DOGFOOD + DOCUMENT
+self-assessment + DOCUMENT
 8. Apply the skill you just upgraded against the skill-graph repo as a real consumer would, to
    test its teaching efficacy. Surface ALL findings (canonical P0–P4 severity; show every
    finding, never a "top issues" subset). Route doc updates per the AGENTS.md Document Routing
-   Table. This dogfood IS your application assessment: judge whether applying the skill changed
+   Table. This self-assessment IS your application assessment: judge whether applying the skill changed
    agent behavior for the better and record the Step 6d `application_verdict` from it
    (PROVISIONAL if it helped; REDUNDANT / HARMFUL / MIXED if not) — do not leave it UNVERIFIED.
 
@@ -203,7 +203,7 @@ DOGFOOD + DOCUMENT
 9. Release YOUR claim and re-rank, then commit doc updates (same --only discipline):
      node scripts/skill/skill-audit-claim.js release <slug> --status completed \
         --structural PASS --truth PASS --comprehension PROVISIONAL --application PROVISIONAL
-   (PROVISIONAL = your single-model assessment from Step 6d + the Step 8 dogfood; use
+   (PROVISIONAL = your single-model assessment from Step 6d + the Step 8 self-assessment; use
    UNVERIFIED ONLY if you genuinely could not assess the dimension, and the negative enums
    — SHALLOW/REDUNDANT for comprehension, REDUNDANT/HARMFUL/MIXED for application — when your
    assessment was negative. Never record PASS/APPLICABLE without a dual-run grader receipt.)
@@ -266,7 +266,7 @@ the runner must not depend on a clean baseline to function.)
   automation in a sparse/sandboxed worktree (191 environmental false-positive lint errors). The
   preflight now only verifies the toolchain RUNS and captures BASELINE_ERRORS; the lint gate is
   per-skill (`skill-lint.js --skill <slug>`) plus "do not increase the baseline." A dirty corpus
-  baseline no longer blocks claiming a skill. Also reworked Step 8 (DOGFOOD) into an explicit
+  baseline no longer blocks claiming a skill. Also reworked Step 8 (self-assessment) into an explicit
   SOLVE-OR-FILE gate: small/low-risk findings (≤20 lines, 1 file, no architectural/cross-repo/
   risky surface) are FIXED IN-SESSION in the owning repo; everything else is FILED to Linear as
   an Audit Report (`Skill Graph,agent:error-report`). Every finding ends tagged FIXED-IN-SESSION

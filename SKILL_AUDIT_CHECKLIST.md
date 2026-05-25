@@ -76,7 +76,7 @@ Required sections:
 
 `Integrity Gate` must be exactly one of: `PASS`, `PASS_WITH_FIXES`, `FAIL`, `UNVERIFIED`.
 
-`Behavior Gate` must report the application-layer state: `APPLICABLE`, `REDUNDANT`, `HARMFUL`, `MIXED`, `FALSE_POSITIVE`, `UNVERIFIED`, or `PROVISIONAL`. Use `UNVERIFIED` with evidence when no application eval was run; use `PROVISIONAL` only for a single-model dogfood audit that still lacks grader confirmation.
+`Behavior Gate` must report the application-layer state: `APPLICABLE`, `REDUNDANT`, `HARMFUL`, `MIXED`, `FALSE_POSITIVE`, `UNVERIFIED`, or `PROVISIONAL`. Use `UNVERIFIED` with evidence when no application eval was run; use `PROVISIONAL` only for a single-model self-assessment audit that still lacks grader confirmation.
 
 ### `scorecard.md`
 

@@ -75,7 +75,7 @@ If a future skill carries a DISPLACEMENT finding with a `requiredAction: follow-
 | Value | Meaning | Earned by |
 |---|---|---|
 | `APPLICABLE` | Loading the skill changes agent behavior on real artifacts in the expected direction (flags, fixes, generative trajectory). | Independent dual-run grader. |
-| `PROVISIONAL` | Single-model dogfood audit found useful behavior but the independent application grader has not confirmed it. | Single-model audit run. |
+| `PROVISIONAL` | single-model self-assessment audit found useful behavior but the independent application grader has not confirmed it. | Single-model audit run. |
 | `REDUNDANT` | No behavioral delta — agent behaves the same with or without the skill loaded. | Grader. |
 | `HARMFUL` | Negative delta — agent makes worse decisions with the skill loaded. SkillsBench arXiv 2602.12670 found 19% of evaluated skills exhibit this. | Grader. |
 | `MIXED` | Delta varies across cases — some applicable, some redundant or false-positive. | Grader. |

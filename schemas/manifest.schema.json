@@ -788,7 +788,7 @@
                   "SKIPPED_BASELINE_HIGH",
                   "NA"
                 ],
-                "description": "Comprehension-layer verdict (gate 8, demoted in v7). Optional smoke test that the foundation model has the concept. `PROVISIONAL` records a single-model dogfood comprehension assessment; `SKIPPED_BASELINE_HIGH` is the expected verdict for any concept the model already knows. Pass-through from authored frontmatter."
+                "description": "Comprehension-layer verdict (gate 8, demoted in v7). Optional smoke test that the foundation model has the concept. `PROVISIONAL` records a single-model self-assessment; `SKIPPED_BASELINE_HIGH` is the expected verdict for any concept the model already knows. Pass-through from authored frontmatter."
               },
               "application_verdict": {
                 "type": "string",

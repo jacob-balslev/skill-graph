@@ -55,7 +55,7 @@ Scope rules:
 - Do not expand into unrelated sibling product/runtime repos from incidental routing-table references.
 - If a doc mentions another repo as an example, treat it as context only, not execution scope.
 - Verify claims against files on disk before editing. Do not trust stale pasted excerpts over current repository files.
-- Commit only the audited skill/eval fixes, directly related source/doc fixes discovered by dogfood, and audit artifacts needed for each run.
+- Commit only the audited skill/eval fixes, directly related source/doc fixes discovered by self-assessment, and audit artifacts needed for each run.
 
 Preflight once per automation wake:
 1. Read automation memory first.
@@ -106,7 +106,7 @@ Per-skill loop:
    - `structural_verdict`: PASS only when focused skill lint is clean.
    - `truth_verdict`: PASS only when source-truth claims are verified and drift is fixed.
    - `comprehension_verdict`: PROVISIONAL when single-model self-assessment shows the skill teaches the eval dimensions.
-   - `application_verdict`: PROVISIONAL when dogfood shows the skill improved behavior.
+   - `application_verdict`: PROVISIONAL when self-assessment shows the skill improved behavior.
    - Use negative enums when warranted. Do not claim grader-verified PASS/APPLICABLE without a real grader receipt.
    - (NEW in v4) If a real concern about the skill does not map to any of the four verdicts,
      record it in novelty-memo.md with `format_loss: true`. This is the signal that the verdict

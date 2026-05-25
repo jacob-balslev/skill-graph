@@ -598,7 +598,7 @@ truth_verdict: PASS
 
 **Rules.**
 - Optional. Defaults to `UNVERIFIED` when absent.
-- Written by the comprehension grader or a documented single-model dogfood audit; do not hand-author without evidence.
+- Written by the comprehension grader or a documented single-model self-assessment audit; do not hand-author without evidence.
 - Demoted in v7: the comprehension grader runs on a cheap model (Haiku 4.5 / Gemini Flash) and exits early when baseline is already high. See ADR 0011 Change 3.
 - This verdict is advisory. It never alone determines a skill's usefulness — that authority lives on `application_verdict`.
 
@@ -623,7 +623,7 @@ comprehension_verdict: SKIPPED_BASELINE_HIGH
 | `MIXED` | Verdict varies across cases — some applicable, some redundant or false-positive |
 | `FALSE_POSITIVE` | The skill over-triggers — applies on cases where its expertise does not apply |
 | `UNVERIFIED` | Default for the v6→v7 corpus migration — no application audit has run on this skill yet |
-| `PROVISIONAL` | Single-model dogfood audit found useful behavior but the independent application grader has not confirmed it |
+| `PROVISIONAL` | single-model self-assessment audit found useful behavior but the independent application grader has not confirmed it |
 
 **Rules.**
 - Optional. Defaults to `UNVERIFIED` when absent.
