@@ -14,11 +14,12 @@ The three layers divide the work cleanly. The [Skill Metadata Protocol](SKILL_ME
 
 | Fact | Value | Source of truth |
 |---|---|---|
-| **Schema version enforced** | **v7** (four-verdict Health Block; `category.const` is the 6-value v7 enum) | `schemas/skill.schema.json` |
-| **Schema version spec'd** | **v8** (5-axis classification — `subject` / `operation` / renamed `scope`) | `SKILL_METADATA_PROTOCOL.md § Classification` — DRAFT, ahead of the schema; see [§ Migration state (v7→v8)](SKILL_METADATA_PROTOCOL.md#migration-state-v7v8) |
-| Manifest schema file | **v7** | `schemas/manifest.schema.json` |
+| **Schema version enforced** | **v7 + v8 in compatibility mode** (`schema_version: 7\|8` both validate; v8 skills additionally require `subject` + `operation`; v7 `category.const` 6-enum retained for legacy validation branches) | `schemas/skill.schema.json` + [ADR-0017 § Landing strategy](docs/adr/0017-five-axis-classification-model.md) |
+| **Corpus v7/v8 distribution** | **v8: 147** · **v7: 1** (template) — corpus is effectively migrated; v7 sunset cleanup pending ≥4 weeks of stable v8 per ADR-0017 | `examples/skills.manifest.sample.json` → `summary.by_schema_version` |
+| Manifest schema file | tracks v7 + v8 dual-emit | `schemas/manifest.schema.json` |
 | Emitted manifest `schema_version` | **4** (back-compatible root contract) | `scripts/generate-manifest.js`; `schemas/manifest.schema.json` `schema_version.const` |
-| Manifest summary facets | **v7** — `by_category` / `by_type` / `by_scope` with v7 names | `scripts/generate-manifest.js`; v8 `by_subject` / `by_operation` not yet emitted |
+| Manifest summary facets | **dual emit** — v7 (`by_category` / `by_type`) and v8 (`by_subject` / `by_operation`) side-by-side, plus `by_schema_version` for migration tracking | `scripts/generate-manifest.js::computeSummary` |
+| Per-skill `schema_version` in manifest | **present** (all 148 skills, top-level field — added 2026-05-25 per F4 finding) | `scripts/generate-manifest.js::buildSkillEntry` |
 | Canonical skill count | **147** (verified 2026-05-24) | live: `find ~/Development/skills/skills -name SKILL.md \| wc -l`; generated mirror: `docs/status.generated.md` via `npm run status` |
 | Canonical library location | sibling repo `jacob-balslev/skills` at `~/Development/skills/` | `.skill-graph/config.json` → `skill_roots: ["../skills/skills"]` |
 | This repo's role | tooling + protocol + schemas + docs (no `skills/` tree) | [ADR 0009](docs/adr/0009-sibling-repo-deprecation.md) |
@@ -100,7 +101,7 @@ A sixth set of files — `README.md`, `CHANGELOG.md`, `CONTRIBUTING.md`, `LICENS
 
 | File | Role |
 |---|---|
-| `schemas/skill.schema.json` | The frontmatter schema — canonical-only per [ADR-0014](docs/adr/0014-canonical-only-schema-files.md). Tracks the current contract (`schema_version: 7` today). The file's `$id` (`https://skillgraph.dev/schemas/skill.schema.json`) is the stable identifier. |
+| `schemas/skill.schema.json` | The frontmatter schema — canonical-only per [ADR-0014](docs/adr/0014-canonical-only-schema-files.md). Currently accepts both `schema_version: 7` and `schema_version: 8` in compatibility mode (ADR-0017 § Landing strategy). The file's `$id` (`https://skillgraph.dev/schemas/skill.schema.json`) is the stable identifier. |
 | `schemas/manifest.schema.json` | The compiled-manifest schema — canonical-only. Tracks the current contract (carries the four Health Block verdicts under v7). |
 | `schemas/audits-manifest.schema.json` | The Skill Audit Loop manifest schema — binds the shape of `audits/manifest.json` (protocols, runners, required artifacts, runtime aliases). Authored 2026-05-25; closes the manifest version-discipline gap (Opus novelty memo #1). |
 | `schemas/comprehension.schema.json` | The comprehension-eval schema — binds the shape of `skills/<name>/evals/comprehension.json`, the artifact the gate-8 grader evaluates against. Authored 2026-05-25 to close the highest-priority canonicalization gap (Opus G2#3 CRITICAL). |

@@ -67,19 +67,45 @@
           "type": "integer",
           "minimum": 0
         },
+        "by_schema_version": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "description": "Per-frontmatter-version distribution. Keys are stringified integers (e.g. '7', '8'); unknown/missing skills bucket under 'unknown'. Lets consumers measure v7→v8 migration progress without re-walking the corpus."
+        },
         "by_type": {
           "type": "object",
           "additionalProperties": {
             "type": "integer",
             "minimum": 0
-          }
+          },
+          "description": "v7 axis (legacy). Retained during the v7→v8 compatibility window — see ADR-0017 § Landing strategy. Drops out after the v7 sunset."
+        },
+        "by_operation": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "description": "v8 axis. Bloom-grounded 4-enum: know/do/decide/modify. Mirror of by_type during compat-mode; the only one that survives the v7 sunset."
         },
         "by_category": {
           "type": "object",
           "additionalProperties": {
             "type": "integer",
             "minimum": 0
-          }
+          },
+          "description": "v7 axis (legacy). Retained during the v7→v8 compatibility window — see ADR-0017 § Landing strategy. Drops out after the v7 sunset."
+        },
+        "by_subject": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "description": "v8 axis. 9-value subject enum. Mirror of by_category during compat-mode; the only one that survives the v7 sunset."
         },
         "by_scope": {
           "type": "object",
@@ -130,6 +156,19 @@
           "project": {
             "type": "string",
             "description": "Literal handle of the project this skill was loaded from. Absent for skills loaded from a shared root without a project owner."
+          },
+          "schema_version": {
+            "oneOf": [
+              {
+                "type": "integer",
+                "enum": [7, 8]
+              },
+              {
+                "type": "string",
+                "enum": ["7", "8"]
+              }
+            ],
+            "description": "Pass-through of the skill's frontmatter schema_version (7|8 — see schemas/skill.schema.json § schema_version). Required so consumers can filter on the v7→v8 migration boundary without re-reading every SKILL.md. Projected by scripts/generate-manifest.js."
           },
           "name": {
             "type": "string"

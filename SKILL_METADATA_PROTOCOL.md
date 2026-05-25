@@ -392,7 +392,7 @@ Required when `comprehension_state: present`. No protocol length cap on any of t
 **`boundary`** (the Understanding field — distinct from `relations.boundary`)
 - Things commonly confused with the concept but that are NOT it. Express each difference as a *mechanism* (different primitives, different purpose, different scope) — not just different names.
 - Graded by the comprehension grader's `boundary` dimension (weight 1.5).
-- Field-name collision with `relations.boundary` is intentional and disambiguated by nesting depth: top-level `boundary` is a string teaching the concept's edges; `relations.boundary` is an array of skill-name exclusion targets (see § Relations § `boundary` — it excludes listed skills from co-routing when this skill wins, not defers to them).
+- Field-name collision with `relations.boundary` is documented but **not** intentional — both fields are renamed in v8.1 per [ADR-0018](docs/adr/0018-relations-boundary-semantic-inversion.md) (top-level `boundary` → `concept_boundary`; `relations.boundary` → `relations.suppresses`). Until then: top-level `boundary` is a string teaching the concept's edges; `relations.boundary` is an array of skill-name exclusion targets (see § Relations § `boundary` — it excludes listed skills from co-routing when this skill wins, not defers to them).
 
 **`analogy`**
 - One-sentence analogy that preserves the core mechanism. Translate for a non-expert without breaking the structural relationship between primitives.
@@ -527,7 +527,9 @@ relations:
 
 **`boundary`** (the routing-layer field — distinct from the top-level Understanding `boundary` field)
 
-> **WARNING — the field name inverts the runtime mechanic.**
+> **WARNING — the field name inverts the runtime mechanic.** This will be resolved in v8.1 by renaming the field to `relations.suppresses` (matching mechanic) and renaming the Understanding-`boundary` field to `concept_boundary` (resolving the name collision). See [ADR-0018](docs/adr/0018-relations-boundary-semantic-inversion.md) for the migration plan.
+>
+> Until v8.1 lands:
 >
 > `boundary: [skill-B]` does **NOT** mean "defer to skill-B." It means "**exclude skill-B from co-routing results when this skill wins.**" The name suggests deference; the mechanic is exclusion. Always write `reason` text that reflects ownership ("I own this exclusively over skill-B"), never deference ("use skill-B instead"), because the latter will mislead the next author — skill-B is suppressed by this entry, not promoted.
 >

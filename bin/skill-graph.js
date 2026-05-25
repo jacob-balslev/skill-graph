@@ -267,6 +267,7 @@ Checks executed (in order):
   protocol           scripts/check-protocol-consistency.js
   drift              scripts/check-doc-drift.js
   mirror-freeze      scripts/check-mirror-freeze.js
+  schema             scripts/check-schema-constants.js (v8 enum drift gate)
   lint               scripts/skill-lint.js
   manifest           scripts/generate-manifest.js --validate-only
 
@@ -408,6 +409,7 @@ const DOCTOR_CHECKS = [
   { name: 'protocol',       script: 'scripts/check-protocol-consistency.js' },
   { name: 'drift',          script: 'scripts/check-doc-drift.js' },
   { name: 'mirror-freeze',  script: 'scripts/check-mirror-freeze.js' },
+  { name: 'schema',         script: 'scripts/check-schema-constants.js' },
   { name: 'lint',           script: 'scripts/skill-lint.js' },
   { name: 'manifest',       script: 'scripts/generate-manifest.js', args: ['--validate-only'] },
 ];
