@@ -184,6 +184,6 @@ New in v2:
 - Benchmark spec: [model-contribution-benchmarks.md](./model-contribution-benchmarks.md)
 - Sibling consensus protocol: `/Users/jacobbalslev/Development/docs/consensus-review-protocol.md`
 - Audit doctrine: [SKILL_AUDIT_LOOP.md](../SKILL_AUDIT_LOOP.md)
-- Single-agent contract: `.opencode/commands/skill-audit-prompt-v2.2.md`
+- Single-agent contract: `skill-graph/audits/per-skill-contract.md`
 - Claim helper: `scripts/skill/skill-audit-claim.js`
 - 2026-05-24 roundtable session: `/Users/jacobbalslev/Development/.roundtable/skill-audit-2026-05-24/`
