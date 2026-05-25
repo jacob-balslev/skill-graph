@@ -227,8 +227,11 @@
             "enum": [
               "codebase",
               "reference",
-              "portable"
-            ]
+              "portable",
+              "project",
+              "workspace"
+            ],
+            "description": "Scope value (v7: codebase/reference/portable; v8 rename: project/workspace/portable). All 5 values accepted during the v7→v8 compatibility window."
           },
           "owner": {
             "type": "string"

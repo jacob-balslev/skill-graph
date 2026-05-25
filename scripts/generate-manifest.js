@@ -283,6 +283,19 @@ function buildSkillEntry(fm, filePath, skillId, project) {
   if (fm.routingRole !== undefined && fm.routingRole !== null) {
     entry.routingRole = fm.routingRole;
   }
+  // v8 classification fields (compatibility-mode landing): project these
+  // alongside the v7 category/categories/primaryCategory fields. Both v7 and
+  // v8 fields are pass-through during the migration window. See
+  // docs/adr/0017-five-axis-classification-model.md (planned).
+  if (fm.subject !== undefined && fm.subject !== null) {
+    entry.subject = fm.subject;
+  }
+  if (Array.isArray(fm.subjects) && fm.subjects.length > 0) {
+    entry.subjects = fm.subjects;
+  }
+  if (fm.operation !== undefined && fm.operation !== null) {
+    entry.operation = fm.operation;
+  }
   entry.scope = fm.scope;
   entry.owner = fm.owner;
 
