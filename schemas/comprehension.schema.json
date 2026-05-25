@@ -1,0 +1,99 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://skillgraph.dev/schemas/comprehension.schema.json",
+  "title": "Skill Comprehension Eval",
+  "description": "Binding shape for skills/<name>/evals/comprehension.json — the gradeable, dimension-tagged comprehension eval consumed by gate 8 (the comprehension grader) and the false-canonicality verifier at skill-graph/scripts/check-audit-manifest.js. v1 authored 2026-05-25 in response to the 2026-05-25 multi-model review surfacing this as the highest-priority canonicalization gap (Opus G2#3 CRITICAL; GPT-5.5 G3#1 PARTIAL). Provenance: ADR-0011 (four-verdict Health Block) defines comprehension_verdict; this schema defines the artifact the grader evaluates. The 7 rubric dimensions are observed in the live corpus (analogy / application / boundary / definition / mental_model / purpose / taxonomy) as of 2026-05-25.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["skill_name", "subject", "evals"],
+  "properties": {
+    "skill_name": {
+      "type": "string",
+      "pattern": "^[a-z][a-z0-9-]+$",
+      "description": "Kebab-case name; MUST match the parent directory name (e.g., 'methodical' for skills/methodical/evals/comprehension.json) and the `name:` field in the corresponding SKILL.md."
+    },
+    "subject": {
+      "type": "string",
+      "minLength": 1,
+      "description": "Human-readable subject of the skill (e.g., 'Methodical Execution', 'Bayesian Reasoning'). Used by the grader prompt as the concept under evaluation."
+    },
+    "adjacent_concepts": {
+      "type": "array",
+      "items": { "type": "string", "minLength": 1 },
+      "description": "Related skill names or concepts useful to the grader for boundary checks. Optional but recommended; e.g., ['intellectual honesty', 'quality-doctrine', 'self-review-pattern']."
+    },
+    "evals": {
+      "type": "array",
+      "minItems": 5,
+      "items": { "$ref": "#/$defs/eval_case" },
+      "description": "Per-dimension comprehension cases. Minimum 5 (the per-skill-contract.md § 4c floor). Practitioners typically author 7 covering all rubric dimensions. Below 5 fails the gate-8 floor; below 7 records a dimension-coverage warning."
+    }
+  },
+  "$defs": {
+    "eval_case": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "dimension", "prompt", "substance", "calibration", "truth_mode", "skill_type", "criticality"],
+      "properties": {
+        "id": {
+          "type": "integer",
+          "minimum": 1,
+          "description": "Stable integer identifier, unique within this file. The grader reports per-case results by id."
+        },
+        "dimension": {
+          "type": "string",
+          "enum": [
+            "definition",
+            "mental_model",
+            "purpose",
+            "boundary",
+            "taxonomy",
+            "analogy",
+            "application",
+            "misconception"
+          ],
+          "description": "Which comprehension rubric dimension this case targets. The 7 dimensions in active use as of 2026-05-25 are: definition, mental_model, purpose, boundary, taxonomy, analogy, application. The 8th value `misconception` mirrors the Understanding-field name from SKILL_METADATA_PROTOCOL.md § Understanding — currently unused in the corpus but reserved for future cases. Each rubric dimension SHOULD appear at least once across a 7-case set."
+        },
+        "prompt": {
+          "type": "string",
+          "minLength": 1,
+          "description": "The scenario / question the agent is asked to answer. Must require the skill's specific judgment (not pattern-matching or trivia). Negative expectations (what the answer must NOT say) are encoded in the grader rubric, not here."
+        },
+        "substance": {
+          "type": "string",
+          "enum": ["concept", "procedure", "boundary"],
+          "description": "What kind of knowledge the case probes. `concept` for definitional/principle cases; `procedure` for sequencing/workflow cases; `boundary` for owner/scope cases. Default for new cases: `concept`."
+        },
+        "calibration": {
+          "type": "string",
+          "enum": ["semantic", "exact-match", "structural"],
+          "description": "How the grader scores the answer. `semantic` (default) — paraphrase OK if the meaning is right; `exact-match` — specific tokens / numbers required; `structural` — answer must match a specified form (list, table, predicate)."
+        },
+        "truth_mode": {
+          "type": "string",
+          "enum": [
+            "conceptual_correctness",
+            "conceptual_correctness_plus_repo_application",
+            "spec_grounded",
+            "principle_grounded"
+          ],
+          "description": "What grounds the grader's correctness check. `conceptual_correctness` — universal principle, no repo grounding; `conceptual_correctness_plus_repo_application` (most common today) — universal principle PLUS check that the answer applies it to this repo; `spec_grounded` — answer must match a named external spec / standard; `principle_grounded` — answer must derive from a named first principle."
+        },
+        "skill_type": {
+          "type": "string",
+          "enum": ["concept", "procedure", "router", "overlay"],
+          "description": "Maps to the SKILL.md `type` field (capability=concept, workflow=procedure, router=router, overlay=overlay). Used by the grader to apply archetype-appropriate scoring."
+        },
+        "criticality": {
+          "type": "string",
+          "enum": ["critical", "high", "medium", "low"],
+          "description": "Per-case weight. `critical` cases are gate-blocking failures (a missed `critical` case alone can demote the comprehension_verdict to SHALLOW). `low` cases inform the grader but do not block. Default: `medium`."
+        },
+        "negative_expectation": {
+          "type": "string",
+          "description": "Optional explicit statement of what the answer must NOT say or do. Catches silent scope reduction and softened-failure responses per per-skill-contract.md § 4c. Recommended for `boundary` and `critical` cases."
+        }
+      }
+    }
+  }
+}

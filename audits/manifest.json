@@ -51,6 +51,16 @@
       ],
       "aliases": [
         {
+          "from": ".opencode/skill-audit-lanes.json",
+          "to": "skill-graph/audits/lanes.json",
+          "notes": "Lane configuration relocated to project-owned path per ADR-0016 surface #1 (2026-05-25). Consumer scripts/skill/skill-audit-claim.js reads the new path first with a fallback window."
+        },
+        {
+          "from": ".opencode/commands/skill-audit-merge-v1.md",
+          "to": "skill-graph/audits/merge-protocol.md",
+          "notes": "Multi-model merge protocol relocated to project-owned path per ADR-0016 surface #2 (2026-05-25). The workspace path retains a thin stub redirect for historical-artifact pointer stability."
+        },
+        {
           "from": ".claude/commands/audit/audit.md",
           "to": "skill-graph/audits/prompts/skill-audit-loop-single-model.md",
           "notes": "Claude Code slash-command resolver."

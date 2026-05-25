@@ -68,8 +68,8 @@ The lint output now prefixes each line with the source tier (see `SKILL_GRAPH.md
 
 | If you touched... | Also update... |
 |---|---|
-| `schemas/skill.schema.json` (Tier 1) | `schemas/skill.v3.schema.json` (must stay content-identical modulo `$id`/`title`), `docs/field-reference.md`, `docs/skill-metadata-protocol.md`, `docs/manifest-field-mapping.md` rename map, `examples/skill-metadata-template.md` if the change affects a required or strongly-recommended field |
-| `schemas/manifest.schema.json` (Tier 1) | `schemas/manifest.v3.schema.json`, `docs/manifest-field-mapping.md`, potentially `scripts/generate-manifest.js` projection logic |
+| `schemas/skill.schema.json` (Tier 1) | `docs/field-reference.md`, `docs/skill-metadata-protocol.md`, `docs/manifest-field-mapping.md` rename map, `examples/skill-metadata-template.md` if the change affects a required or strongly-recommended field. Per [ADR-0014](docs/adr/0014-canonical-only-schema-files.md), pinned prior-version schemas are NOT mirrored on disk — prior versions live in git history. |
+| `schemas/manifest.schema.json` (Tier 1) | `docs/manifest-field-mapping.md`, potentially `scripts/generate-manifest.js` projection logic. (No pinned `manifest.vN.schema.json` on disk per ADR-0014.) |
 | `scripts/generate-manifest.js` (Tier 3) | Regenerate `examples/skills.manifest.sample.json` so generator parity passes |
 | `scripts/skill-lint.js` (Tier 3) | Run against every starter + the template; update `examples/skills.manifest.sample.json` if the skill's `drift_check.truth_source_hashes` references the lint script |
 | Any Tier 5 starter skill with `grounding.truth_sources` | Re-record baselines with `node scripts/skill-graph-drift.js --record --apply skills/<name>` and regenerate the sample manifest |

@@ -97,25 +97,14 @@ A sixth set of files — `README.md`, `CHANGELOG.md`, `CONTRIBUTING.md`, `LICENS
 
 | File | Role |
 |---|---|
-| `schemas/skill.schema.json` | The frontmatter schema. Unversioned — tracks latest (v7 today; the file's `$id` self-declares `skill.schema.json`). |
-| `schemas/manifest.schema.json` | The compiled-manifest schema. Unversioned — tracks latest (v7 today; the manifest contract carries the four Health Block verdicts). |
-| `schemas/skill.schema.json` | Pinned v7 copy of the current skill contract. Consumers that want the current contract validate against this file. |
-| `schemas/manifest.schema.json` | Pinned v7 copy of the current manifest contract. |
-| `schemas/skill.v6.schema.json` | Frozen pinned v6 copy for consumers still migrating from v6 to v7. |
-| `schemas/skill.v5.schema.json` | Frozen pinned v5 copy for consumers still migrating from v5 to v6. |
-| `schemas/skill.v4.schema.json` | Frozen pinned v4 copy for consumers still migrating from v4 to v5 / v6. |
-| `schemas/skill.v3.schema.json` | Frozen pinned v3 copy for consumers still migrating to v4. |
-| `schemas/manifest.v6.schema.json` | Frozen pinned v6 manifest copy. |
-| `schemas/manifest.v5.schema.json` | Frozen pinned v5 manifest copy. |
-| `schemas/manifest.v4.schema.json` | Frozen pinned v4 manifest copy. |
-| `schemas/manifest.v3.schema.json` | Frozen pinned v3 manifest copy. |
-| `schemas/skill.v2.schema.json` | **Frozen.** Retained for consumers still on v2. Never updated. |
-| `schemas/manifest.v2.schema.json` | **Frozen.** Same rationale. |
+| `schemas/skill.schema.json` | The frontmatter schema — canonical-only per [ADR-0014](docs/adr/0014-canonical-only-schema-files.md). Tracks the current contract (`schema_version: 7` today). The file's `$id` (`https://skillgraph.dev/schemas/skill.schema.json`) is the stable identifier. |
+| `schemas/manifest.schema.json` | The compiled-manifest schema — canonical-only. Tracks the current contract (carries the four Health Block verdicts under v7). |
+| `schemas/audits-manifest.schema.json` | The Skill Audit Loop manifest schema — binds the shape of `audits/manifest.json` (protocols, runners, required artifacts, runtime aliases). Authored 2026-05-25; closes the manifest version-discipline gap (Opus novelty memo #1). |
+| `schemas/comprehension.schema.json` | The comprehension-eval schema — binds the shape of `skills/<name>/evals/comprehension.json`, the artifact the gate-8 grader evaluates against. Authored 2026-05-25 to close the highest-priority canonicalization gap (Opus G2#3 CRITICAL). |
 
-Two rules govern this tier:
+One rule governs this tier:
 
-1. **Pinned copies must match the unversioned file modulo `$id` and `title`.** Enforced by C6 in `check-protocol-consistency.js`. Drift is a CI failure.
-2. **Frozen prior-version schemas must exist** but are not parity-checked. Freezing is the whole point of pinning.
+1. **Canonical-only schemas.** Per [ADR-0014](docs/adr/0014-canonical-only-schema-files.md), prior contract versions (v2-v6) live in git history; they are NOT mirrored on disk. The C6 "Versioned schema parity" check is retired. An external consumer that needs to pin against a historical version resolves via `git show <commit>:schemas/skill.schema.json` or a `git tag schema-vN` if one exists — never a duplicate file in `main`.
 
 ---
 
@@ -412,7 +401,7 @@ Every edge is verifiable. `node bin/skill-graph.js lint examples/fixture-skills/
 Because the tiers are ordered, a tiny set of invariants holds the whole repo together:
 
 - **Tier 1 → Tier 2:** Every top-level property in `skill.schema.json` has a matching section in `field-reference.md`. (`check-protocol-consistency.js` C1.)
-- **Tier 1 → Tier 1 (pinned):** The current pinned schema is byte-identical to the unversioned schema modulo `$id` and `title`. (C6.)
+- **Tier 1 canonical-only:** Per [ADR-0014](docs/adr/0014-canonical-only-schema-files.md), `schemas/skill.schema.json` and `schemas/manifest.schema.json` are the only schema files on disk; prior contract versions live in git history. The C6 "Versioned schema parity" invariant is retired (there is no second pinned file to drift against).
 - **Tier 1 → Tier 3 (generator):** Every authored field has a documented projection into the manifest — copied, grouped, or dropped. No silent drops. (C2.)
 - **Tier 1 ↔ Tier 5 (sample manifest):** The committed sample manifest matches live generator output. (`skill-lint.js` check 8.)
 - **Tier 5 → Tier 1:** Every starter skill validates against the schema; every relation target exists; every eval_artifact declaration is backed by a real file. (`skill-lint.js` checks 1–5.)

@@ -17,7 +17,7 @@
 > rubric design and `scripts/skill/graders/concept-grader-prompt.md` for the grader
 > contract.
 
-> **Audit Doctrine.** We evaluate each skill on two things: (1) **fidelity to its declared intent** — does the content deliver what its `description`/routing contract promises — and (2) **teaching efficacy** — does the skill actually change and improve the agent's behavior on the topic (`application_verdict`, the real quality signal). Lint and structural checks are a **floor**, never the goal: never invent arbitrary internal lint tests to manufacture findings, and an empty findings report on a genuinely good skill is a PASS. Full doctrine: `docs/reference/skill-audit-pipeline.md` § Audit Doctrine.
+> **Audit Doctrine — link only.** The canonical doctrine is [`skill-graph/SKILL_AUDIT_LOOP.md` § Audit Doctrine — Intent and Teaching, Not Arbitrary Lint](../SKILL_AUDIT_LOOP.md#audit-doctrine--intent-and-teaching-not-arbitrary-lint). It evaluates each skill on three axes (intent fidelity, teaching efficacy, upstream currency) and `application_verdict` is the real quality signal. Lint is a floor, never the goal. Do not restate the doctrine here — link to it.
 
 ## Setup
 

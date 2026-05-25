@@ -1,0 +1,121 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://skillgraph.dev/schemas/audits-manifest.schema.json",
+  "title": "Skill Audit Loop Manifest",
+  "description": "Binding shape for skill-graph/audits/manifest.json — the machine-readable index of Skill Audit Loop protocols, runners, required per-skill run artifacts, and runtime aliases. Authored as part of the 2026-05-25 multi-model restructure review (closes Opus novelty memo #1 — the manifest's schema_version: 1 label had no content bar). Reader: skill-graph/scripts/check-audit-manifest.js. Provenance: ADR-0015 introduced the manifest; ADR-0016 sequences its evolution.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "description", "protocols"],
+  "properties": {
+    "schema_version": {
+      "oneOf": [
+        { "type": "integer", "const": 1 },
+        { "type": "string", "const": "1" }
+      ],
+      "description": "Audits-manifest contract version. v1 introduced by ADR-0015. Bumps when shape changes break check-audit-manifest.js consumers."
+    },
+    "description": {
+      "type": "string",
+      "description": "Human-readable purpose of this file. Must name the verifier that reads it and the governing ADR."
+    },
+    "protocols": {
+      "type": "array",
+      "minItems": 1,
+      "items": { "$ref": "#/$defs/protocol" },
+      "description": "One entry per protocol governed by this manifest. The Skill Audit Loop is the current sole protocol; the array shape supports future additions (e.g., a Skill Routing protocol manifest)."
+    }
+  },
+  "$defs": {
+    "protocol": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "version", "canonical_path", "runners", "required_artifacts_per_skill"],
+      "properties": {
+        "id": {
+          "type": "string",
+          "pattern": "^[a-z][a-z0-9-]+$",
+          "description": "Stable identifier (kebab-case). Used as a verifier-flag selector when multiple protocols live in this manifest."
+        },
+        "version": {
+          "type": "string",
+          "description": "Protocol contract version (e.g., 'v3+'). Distinct from this manifest's schema_version."
+        },
+        "canonical_path": {
+          "type": "string",
+          "pattern": "^skill-graph/",
+          "description": "Path to the protocol's binding contract document. MUST live inside skill-graph/ per ADR-0015 (project-owned operational prompts)."
+        },
+        "runners": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/runner" },
+          "description": "Operational runner prompts that execute the canonical contract. Each runner has a distinct mode (interactive-single-skill, autonomous-batch-*, etc.)."
+        },
+        "required_artifacts_per_skill": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/artifact_rule" },
+          "description": "Per-skill run artifacts the verifier enforces. Each entry has a name, required flag, and an optional `when` clause."
+        },
+        "aliases": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/alias" },
+          "description": "Workspace runtime → project canonical mappings. Used by slash-command resolvers (.claude/commands/, .opencode/commands/) and back-compat stubs (prompts/audits/)."
+        }
+      }
+    },
+    "runner": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "path", "mode", "version"],
+      "properties": {
+        "id": { "type": "string", "pattern": "^[a-z][a-z0-9-]+$" },
+        "path": { "type": "string", "pattern": "^skill-graph/audits/prompts/" },
+        "mode": {
+          "type": "string",
+          "enum": [
+            "interactive-single-skill",
+            "autonomous-batch-model-agnostic",
+            "autonomous-batch-codex-cron",
+            "interactive-short-batch"
+          ],
+          "description": "Execution mode the runner is shaped for. Mode names are stable; new modes require a manifest schema bump and a new enum value."
+        },
+        "version": { "type": "string" }
+      }
+    },
+    "artifact_rule": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["name", "required"],
+      "properties": {
+        "name": { "type": "string" },
+        "required": { "type": "boolean" },
+        "when": {
+          "type": "string",
+          "description": "Predicate over skill state (e.g., 'skill.comprehension_verdict in [PROVISIONAL,PASS,SHALLOW,REDUNDANT]') OR runner state (e.g., 'runner.mode startswith autonomous-batch-'). Free-form string; verifier-specific parser. Predicate values MUST come from the corresponding enum in skill-graph/schemas/skill.schema.json (e.g., comprehension_verdict and application_verdict enums are disjoint per ADR-0011 — see the 2026-05-25 enum-leak fix in check-audit-manifest.js)."
+        },
+        "path": {
+          "type": "string",
+          "description": "Workspace-relative path template (e.g., 'skills/<name>/evals/comprehension.json'). The `<name>` placeholder is the skill's directory name under skills/."
+        },
+        "notes": { "type": "string" }
+      }
+    },
+    "alias": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["from", "to"],
+      "properties": {
+        "from": {
+          "type": "string",
+          "description": "Workspace runtime location (e.g., '.claude/commands/audit/audit.md', 'prompts/audits/skill-audit-loop-single-model.md'). Anything that is NOT under skill-graph/."
+        },
+        "to": {
+          "type": "string",
+          "pattern": "^skill-graph/",
+          "description": "Project canonical the runtime location resolves to. MUST live inside skill-graph/."
+        },
+        "notes": { "type": "string" }
+      }
+    }
+  }
+}

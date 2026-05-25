@@ -237,7 +237,7 @@ The loop does not require a separate issue tracker, dashboard, control plane, or
 ## Related Specs
 
 - `docs/skill-metadata-protocol.md` — the canonical field list including the v7 Health Block and flat Understanding fields
-- `schemas/skill.schema.json` — the machine-validated current contract (`schemas/skill.v6.schema.json` and earlier are pinned prior versions)
+- `schemas/skill.schema.json` — the machine-validated current contract. Prior versions live in git history per [ADR-0014](docs/adr/0014-canonical-only-schema-files.md); the schema's `$id` (`https://skillgraph.dev/schemas/skill.schema.json`) is the stable identifier.
 - [ADR 0011](docs/adr/0011-split-audit-verdict-into-four-verdicts.md) — the audit_verdict → four-verdict split (per-version migration narrative now in git history per [ADR 0014](docs/adr/0014-canonical-only-schema-files.md))
 - `SKILL_AUDIT_CHECKLIST.md` — the per-skill checklist used during `audit`
 - `docs/adr/0011-split-audit-verdict-into-four-verdicts.md` — rationale for the four-verdict model

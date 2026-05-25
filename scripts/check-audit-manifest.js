@@ -113,6 +113,21 @@ function listSkillsWithRuns(progressDir) {
     .map((d) => d.name);
 }
 
+// Read the current SKILL.md Health Block. Returns the comprehension_verdict declared
+// in the SKILL.md frontmatter (durable state), or null if the file or field is missing.
+// This is the post-2026-05-25 resolution path: a per-run verdict.md may have stamped
+// PROVISIONAL without the artifact (the May 22-25 incident pattern), but if the SKILL.md
+// has since been honestly downgraded to UNVERIFIED, the run-level claim is superseded
+// and the verifier should not report a live failure for that resolved historical drift.
+function readSkillHealthBlock(skillsRoot, skill) {
+  const skillMd = path.join(skillsRoot, skill, 'SKILL.md');
+  if (!fs.existsSync(skillMd)) return { comprehension_verdict: null };
+  const text = fs.readFileSync(skillMd, 'utf8');
+  // Frontmatter parse — we only need comprehension_verdict, so read the first ~80 lines.
+  const m = text.match(/^comprehension_verdict:\s*([A-Z_]+)\s*$/m);
+  return { comprehension_verdict: m ? m[1].toUpperCase() : null };
+}
+
 function listRunsForSkill(progressDir, skill) {
   const runsDir = path.join(progressDir, skill, 'runs');
   if (!fs.existsSync(runsDir)) return [];
@@ -156,6 +171,14 @@ function main() {
       // into SKILL.md frontmatter.
       const comprehensionEnumLeak = verdicts.comprehension && GRADED_APPLICATION_VERDICTS.has(verdicts.comprehension);
 
+      // Read the current SKILL.md Health Block — if the durable state has been
+      // honestly downgraded to UNVERIFIED, treat the historical per-run claim as
+      // resolved-via-downgrade rather than a live failure.
+      const health = readSkillHealthBlock(skillsRoot, skill);
+      const currentHealthIsHonestlyDowngraded = claimsGraded &&
+        health.comprehension_verdict &&
+        !GRADED_COMPREHENSION_VERDICTS.has(health.comprehension_verdict);
+
       const entry = {
         skill,
         runId,
@@ -163,13 +186,14 @@ function main() {
         application_verdict: verdicts.application,
         comprehension_json_exists: comprehensionExists,
         comprehension_json_path: comprehensionPath,
+        skill_md_comprehension_verdict: health.comprehension_verdict,
       };
       checks.push(entry);
 
-      if (claimsGraded && !comprehensionExists) {
+      if (claimsGraded && !comprehensionExists && !currentHealthIsHonestlyDowngraded) {
         failures.push({
           ...entry,
-          reason: `Verdict claims comprehension=${verdicts.comprehension} but ${comprehensionPath} does not exist on disk. Per the May 22-25 incident root cause, any graded comprehension_verdict (PROVISIONAL/PASS/SHALLOW/REDUNDANT) requires a gradeable comprehension.json. Either author the comprehension.json (and re-run the assessment) or downgrade the verdict to UNVERIFIED.`,
+          reason: `Verdict claims comprehension=${verdicts.comprehension} but ${comprehensionPath} does not exist on disk, AND the current SKILL.md Health Block (comprehension_verdict=${health.comprehension_verdict || 'unknown'}) has not been honestly downgraded to UNVERIFIED. Per the May 22-25 incident root cause, any graded comprehension_verdict (PROVISIONAL/PASS/SHALLOW/REDUNDANT) requires a gradeable comprehension.json. Either author the comprehension.json (and re-run the assessment) or downgrade the SKILL.md verdict to UNVERIFIED — the verifier respects honest downgrade as the resolution path.`,
         });
       }
       if (comprehensionEnumLeak) {
