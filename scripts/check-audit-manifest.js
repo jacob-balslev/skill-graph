@@ -2,11 +2,17 @@
 // check-audit-manifest.js — verify Skill Audit Loop run artifacts against the manifest.
 //
 // What this enforces (the "false sense of canonicality" guard from GPT-5.5):
-//   A verdict.md may claim comprehension_verdict in {PROVISIONAL, APPLICABLE, PASS,
-//   SHALLOW, REDUNDANT, MIXED, HARMFUL} ONLY if skills/<name>/evals/comprehension.json
+//   A verdict.md may claim comprehension_verdict in the graded comprehension set
+//   {PROVISIONAL, PASS, SHALLOW, REDUNDANT} ONLY if skills/<name>/evals/comprehension.json
 //   exists on disk. The May 22-25 incident with `backend`, `mcp-builder`, and
 //   `token-cost-estimation` shipped PROVISIONAL stamps with no comprehension.json
 //   on disk — that is the failure mode this guard prevents.
+//
+//   Comprehension and application enums are DISJOINT per schemas/skill.schema.json:261-285
+//   and ADR 0011. APPLICABLE / MIXED / HARMFUL are application-verdict values and must
+//   never appear in the comprehension graded set (see GRADED_APPLICATION_VERDICTS below
+//   for the application-layer counterpart). The earlier mixed set leaked application
+//   enums into the comprehension check — fixed 2026-05-25.
 //
 // Walks: .opencode/progress/skill-audits/<skill>/runs/<run-id>/verdict.md
 // Reads: skill-graph/audits/manifest.json
@@ -31,8 +37,21 @@ const WORKSPACE_DEFAULT = path.resolve(__dirname, '..', '..');
 const REPO_ROOT = path.resolve(__dirname, '..');
 const MANIFEST_PATH = path.join(REPO_ROOT, 'audits', 'manifest.json');
 
+// Comprehension graded set (per schemas/skill.schema.json:261-272 + ADR 0011): values
+// that imply a comprehension grader actually ran and produced a result. UNVERIFIED (no
+// assessment), SKIPPED_BASELINE_HIGH (procedural early-skip), and NA (skill has no
+// comprehension.json by design) are explicitly NOT graded.
 const GRADED_COMPREHENSION_VERDICTS = new Set([
-  'PROVISIONAL', 'APPLICABLE', 'PASS', 'SHALLOW', 'REDUNDANT', 'MIXED', 'HARMFUL',
+  'PROVISIONAL', 'PASS', 'SHALLOW', 'REDUNDANT',
+]);
+
+// Application graded set (per schemas/skill.schema.json:274-285 + ADR 0011): kept
+// here so future application-artifact gates can reference the same authoritative
+// partition. Currently informational — the verifier only enforces comprehension
+// artifacts. Do not mix these values into GRADED_COMPREHENSION_VERDICTS; that was
+// the bug fixed on 2026-05-25.
+const GRADED_APPLICATION_VERDICTS = new Set([
+  'APPLICABLE', 'MIXED', 'HARMFUL',
 ]);
 
 function parseArgs(argv) {
@@ -130,6 +149,12 @@ function main() {
       const comprehensionPath = path.join(skillsRoot, skill, 'evals', 'comprehension.json');
       const comprehensionExists = fs.existsSync(comprehensionPath);
       const claimsGraded = verdicts.comprehension && GRADED_COMPREHENSION_VERDICTS.has(verdicts.comprehension);
+      // Category-error guard: a verdict.md that stamps an application-only enum
+      // (APPLICABLE/MIXED/HARMFUL) into the comprehension slot is malformed. The
+      // schema (schemas/skill.schema.json:261-285) keeps the two enums disjoint;
+      // surfacing this here catches the parser/author error before it propagates
+      // into SKILL.md frontmatter.
+      const comprehensionEnumLeak = verdicts.comprehension && GRADED_APPLICATION_VERDICTS.has(verdicts.comprehension);
 
       const entry = {
         skill,
@@ -144,7 +169,13 @@ function main() {
       if (claimsGraded && !comprehensionExists) {
         failures.push({
           ...entry,
-          reason: `Verdict claims comprehension=${verdicts.comprehension} but ${comprehensionPath} does not exist on disk. Per the May 22-25 incident root cause, any non-UNVERIFIED comprehension verdict requires a gradeable comprehension.json. Either author the comprehension.json (and re-run the assessment) or downgrade the verdict to UNVERIFIED.`,
+          reason: `Verdict claims comprehension=${verdicts.comprehension} but ${comprehensionPath} does not exist on disk. Per the May 22-25 incident root cause, any graded comprehension_verdict (PROVISIONAL/PASS/SHALLOW/REDUNDANT) requires a gradeable comprehension.json. Either author the comprehension.json (and re-run the assessment) or downgrade the verdict to UNVERIFIED.`,
+        });
+      }
+      if (comprehensionEnumLeak) {
+        failures.push({
+          ...entry,
+          reason: `Verdict has comprehension_verdict=${verdicts.comprehension}, but that value is an application-layer enum (per schemas/skill.schema.json:274-285 and ADR 0011). The comprehension and application enum sets are disjoint. Either correct the verdict to use a comprehension-layer value (PASS/SHALLOW/REDUNDANT/PROVISIONAL/UNVERIFIED/SKIPPED_BASELINE_HIGH/NA) or move this value into the application_verdict slot.`,
         });
       }
     }

@@ -44,9 +44,9 @@
         {
           "name": "comprehension.json",
           "required": true,
-          "when": "skill.comprehension_verdict in ['PROVISIONAL','APPLICABLE','PASS','SHALLOW','REDUNDANT','MIXED','HARMFUL']",
+          "when": "skill.comprehension_verdict in ['PROVISIONAL','PASS','SHALLOW','REDUNDANT']",
           "path": "skills/<name>/evals/comprehension.json",
-          "notes": "Any non-UNVERIFIED comprehension_verdict requires a gradeable, dimension-tagged comprehension.json on disk per the May 22-25 incident with backend/mcp-builder/token-cost-estimation."
+          "notes": "Any graded comprehension_verdict (PROVISIONAL/PASS/SHALLOW/REDUNDANT) requires a gradeable, dimension-tagged comprehension.json on disk per the May 22-25 incident with backend/mcp-builder/token-cost-estimation. Comprehension enums per schemas/skill.schema.json:261-272 are disjoint from application enums (APPLICABLE/MIXED/HARMFUL/FALSE_POSITIVE) — those belong to application_verdict and have their own artifact (evals/application.json), not comprehension.json. SKIPPED_BASELINE_HIGH (procedural early-skip), UNVERIFIED (no assessment), and NA (no artifact intended) are explicitly NOT graded and require no artifact."
         }
       ],
       "aliases": [
