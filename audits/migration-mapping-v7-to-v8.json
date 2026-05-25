@@ -1,0 +1,3834 @@
+{
+  "generated_at": "2026-05-25T12:50:07.921Z",
+  "generator": "scripts/migrate-skill-v7-to-v8.js",
+  "plan": "/Users/jacobbalslev/.claude-profiles/jacobbalslev01/plans/we-should-clearly-look-wondrous-firefly.md",
+  "summary": {
+    "total": 147,
+    "successful": 147,
+    "errors": 0,
+    "by_confidence": {
+      "high": 0,
+      "medium": 147,
+      "low": 0
+    },
+    "by_proposed_subject": {
+      "frontend-ui": 34,
+      "data-analytics": 29,
+      "code-engineering": 18,
+      "quality-assurance": 18,
+      "agent-ops": 17,
+      "product-domain": 11,
+      "knowledge-organization": 8,
+      "design-craft": 7,
+      "meta-methods": 5
+    },
+    "by_proposed_operation": {
+      "know": 98,
+      "do": 46,
+      "decide": 2,
+      "modify": 1
+    }
+  },
+  "proposals": [
+    {
+      "skill": "a11y",
+      "path": "../skills/skills/quality/a11y/SKILL.md",
+      "current": {
+        "schema_version": 7,
+        "category": "quality",
+        "type": "capability",
+        "scope": "portable",
+        "domain": "quality/accessibility",
+        "keywords_count": 24
+      },
+      "proposed": {
+        "schema_version": 8,
+        "subject": "quality-assurance",
+        "operation": "know",
+        "scope": "portable",
+        "keywords_count_post": 10
+      },
+      "confidence": "medium",
+      "reasoning": {
+        "subject": "category: quality → quality-assurance (direct mapping)",
+        "operation": "type: capability + no strong workflow signal → know (default for capability)",
+        "scope": "scope: portable (unchanged)",
+        "keywords": "24 keywords > 10, capped to first 10"
+      }
+    },
+    {
+      "skill": "acid-fundamentals",
+      "path": "../skills/skills/engineering/data/acid-fundamentals/SKILL.md",
+      "current": {
+        "schema_version": 7,
+        "category": "engineering",
+        "type": "capability",
+        "scope": "reference",
+        "domain": "engineering/data",
+        "keywords_count": 10
+      },
+      "proposed": {
+        "schema_version": 8,
+        "subject": "code-engineering",
+        "operation": "know",
+        "scope": "workspace",
+        "keywords_count_post": 10
+      },
+      "confidence": "medium",
+      "reasoning": {
+        "subject": "category: engineering + no specialization → code-engineering (default)",
+        "operation": "type: capability + no strong workflow signal → know (default for capability)",
+        "scope": "scope: reference → workspace (v8 rename)",
+        "keywords": "10 keywords ≤ 10, no cap"
+      }
+    },
+    {
+      "skill": "agent-engineering",
+      "path": "../skills/skills/engineering/agent-engineering/SKILL.md",
+      "current": {
+        "schema_version": 7,
+        "category": "engineering",
+        "type": "capability",
+        "scope": "portable",
+        "domain": "ai-engineering/architecture",
+        "keywords_count": 35
+      },
+      "proposed": {
+        "schema_version": 8,
+        "subject": "data-analytics",
+        "operation": "do",
+        "scope": "portable",
+        "keywords_count_post": 10
+      },
+      "confidence": "medium",
+      "reasoning": {
+        "subject": "category: engineering + data-analytics (observability) → data-analytics",
+        "operation": "type: capability + workflow-keyword presence (lifecycle, audit) → do",
+        "scope": "scope: portable (unchanged)",
+        "keywords": "35 keywords > 10, capped to first 10"
+      }
+    },
+    {
+      "skill": "agent-eval-design",
+      "path": "../skills/skills/quality/agent-eval-design/SKILL.md",
+      "current": {
+        "schema_version": 7,
+        "category": "quality",
+        "type": "capability",
+        "scope": "portable",
+        "domain": "ai-engineering/evaluation",
+        "keywords_count": 10
+      },
+      "proposed": {
+        "schema_version": 8,
+        "subject": "quality-assurance",
+        "operation": "know",
+        "scope": "portable",
+        "keywords_count_post": 10
+      },
+      "confidence": "medium",
+      "reasoning": {
+        "subject": "category: quality → quality-assurance (direct mapping)",
+        "operation": "type: capability + no strong workflow signal → know (default for capability)",
+        "scope": "scope: portable (unchanged)",
+        "keywords": "10 keywords ≤ 10, no cap"
+      }
+    },
+    {
+      "skill": "ai-native-development",
+      "path": "../skills/skills/agent/ai-native-development/SKILL.md",
+      "current": {
+        "schema_version": 7,
+        "category": "agent",
+        "type": "capability",
+        "scope": "portable",
+        "domain": "agent/concepts",
+        "keywords_count": 18
+      },
+      "proposed": {
+        "schema_version": 8,
+        "subject": "agent-ops",
+        "operation": "know",
+        "scope": "portable",
+        "keywords_count_post": 10
+      },
+      "confidence": "medium",
+      "reasoning": {
+        "subject": "category: agent → agent-ops (direct mapping)",
+        "operation": "type: capability + no strong workflow signal → know (default for capability)",
+        "scope": "scope: portable (unchanged)",
+        "keywords": "18 keywords > 10, capped to first 10"
+      }
+    },
+    {
+      "skill": "api-design",
+      "path": "../skills/skills/engineering/api-design/SKILL.md",
+      "current": {
+        "schema_version": 7,
+        "category": "engineering",
+        "type": "capability",
+        "scope": "portable",
+        "domain": "engineering/api-design",
+        "keywords_count": 10
+      },
+      "proposed": {
+        "schema_version": 8,
+        "subject": "product-domain",
+        "operation": "know",
+        "scope": "portable",
+        "keywords_count_post": 10
+      },
+      "confidence": "medium",
+      "reasoning": {
+        "subject": "category: engineering + vendor-integration (webhook) → product-domain",
+        "operation": "type: capability + no strong workflow signal → know (default for capability)",
+        "scope": "scope: portable (unchanged)",
+        "keywords": "10 keywords ≤ 10, no cap"
+      }
+    },
+    {
+      "skill": "architecture-decision-records",
+      "path": "../skills/skills/engineering/architecture-decision-records/SKILL.md",
+      "current": {
+        "schema_version": 7,
+        "category": "engineering",
+        "type": "capability",
+        "scope": "portable",
+        "domain": "architecture/decision-records",
+        "keywords_count": 9
+      },
+      "proposed": {
+        "schema_version": 8,
+        "subject": "code-engineering",
+        "operation": "know",
+        "scope": "portable",
+        "keywords_count_post": 9
+      },
+      "confidence": "medium",
+      "reasoning": {
+        "subject": "category: engineering + no specialization → code-engineering (default)",
+        "operation": "type: capability + no strong workflow signal → know (default for capability)",
+        "scope": "scope: portable (unchanged)",
+        "keywords": "9 keywords ≤ 10, no cap"
+      }
+    },
+    {
+      "skill": "autonomous-loop-patterns",
+      "path": "../skills/skills/agent/autonomous-loop-patterns/SKILL.md",
+      "current": {
+        "schema_version": 7,
+        "category": "agent",
+        "type": "capability",
+        "scope": "portable",
+        "keywords_count": 7
+      },
+      "proposed": {
+        "schema_version": 8,
+        "subject": "agent-ops",
+        "operation": "know",
+        "scope": "portable",
+        "keywords_count_post": 7
+      },
+      "confidence": "medium",
+      "reasoning": {
+        "subject": "category: agent → agent-ops (direct mapping)",
+        "operation": "type: capability + no strong workflow signal → know (default for capability)",
+        "scope": "scope: portable (unchanged)",
+        "keywords": "7 keywords ≤ 10, no cap"
+      }
+    },
+    {
+      "skill": "background-jobs",
+      "path": "../skills/skills/engineering/background-jobs/SKILL.md",
+      "current": {
+        "schema_version": 7,
+        "category": "engineering",
+        "type": "capability",
+        "scope": "portable",
+        "domain": "engineering/async",
+        "keywords_count": 3
+      },
+      "proposed": {
+        "schema_version": 8,
+        "subject": "data-analytics",
+        "operation": "do",
+        "scope": "portable",
+        "keywords_count_post": 3
+      },
+      "confidence": "medium",
+      "reasoning": {
+        "subject": "category: engineering + data-analytics (report) → data-analytics",
+        "operation": "type: capability + workflow-keyword presence (process, implement) → do",
+        "scope": "scope: portable (unchanged)",
+        "keywords": "3 keywords ≤ 10, no cap"
+      }
+    },
+    {
+      "skill": "best-practice",
+      "path": "../skills/skills/quality/best-practice/SKILL.md",
+      "current": {
+        "schema_version": 7,
+        "category": "quality",
+        "type": "capability",
+        "scope": "reference",
+        "domain": "quality/cross-domain",
+        "keywords_count": 17
+      },
+      "proposed": {
+        "schema_version": 8,
+        "subject": "data-analytics",
+        "operation": "know",
+        "scope": "workspace",
+        "keywords_count_post": 10
+      },
+      "confidence": "medium",
+      "reasoning": {
+        "subject": "category: quality + data-analytics keyword → data-analytics",
+        "operation": "type: capability + no strong workflow signal → know (default for capability)",
+        "scope": "scope: reference → workspace (v8 rename)",
+        "keywords": "17 keywords > 10, capped to first 10"
+      }
+    },
+    {
+      "skill": "bounded-context-mapping",
+      "path": "../skills/skills/engineering/bounded-context-mapping/SKILL.md",
+      "current": {
+        "schema_version": 7,
+        "category": "engineering",
+        "type": "capability",
+        "scope": "portable",
+        "domain": "architecture/domain-boundaries",
+        "keywords_count": 10
+      },
+      "proposed": {
+        "schema_version": 8,
+        "subject": "code-engineering",
+        "operation": "know",
+        "scope": "portable",
+        "keywords_count_post": 10
+      },
+      "confidence": "medium",
+      "reasoning": {
+        "subject": "category: engineering + no specialization → code-engineering (default)",
+        "operation": "type: capability + no strong workflow signal → know (default for capability)",
+        "scope": "scope: portable (unchanged)",
+        "keywords": "10 keywords ≤ 10, no cap"
+      }
+    },
+    {
+      "skill": "cap-theorem-tradeoffs",
+      "path": "../skills/skills/engineering/data/cap-theorem-tradeoffs/SKILL.md",
+      "current": {
+        "schema_version": 7,
+        "category": "engineering",
+        "type": "capability",
+        "scope": "reference",
+        "domain": "engineering/data",
+        "keywords_count": 10
+      },
+      "proposed": {
+        "schema_version": 8,
+        "subject": "data-analytics",
+        "operation": "know",
+        "scope": "workspace",
+        "keywords_count_post": 10
+      },
+      "confidence": "medium",
+      "reasoning": {
+        "subject": "category: engineering + data-analytics (log) → data-analytics",
+        "operation": "type: capability + no strong workflow signal → know (default for capability)",
+        "scope": "scope: reference → workspace (v8 rename)",
+        "keywords": "10 keywords ≤ 10, no cap"
+      }
+    },
+    {
+      "skill": "client-server-boundary",
+      "path": "../skills/skills/engineering/frontend/client-server-boundary/SKILL.md",
+      "current": {
+        "schema_version": 7,
+        "category": "engineering",
+        "type": "capability",
+        "scope": "reference",
+        "domain": "engineering/frontend",
+        "keywords_count": 12
+      },
+      "proposed": {
+        "schema_version": 8,
+        "subject": "frontend-ui",
+        "operation": "do",
+        "scope": "workspace",
+        "keywords_count_post": 10
+      },
+      "confidence": "medium",
+      "reasoning": {
+        "subject": "category: engineering + frontend (frontend, ui) → frontend-ui",
+        "operation": "type: capability + workflow-keyword presence (sequence, protocol, how to) → do",
+        "scope": "scope: reference → workspace (v8 rename)",
+        "keywords": "12 keywords > 10, capped to first 10"
+      }
+    },
+    {
+      "skill": "code-review",
+      "path": "../skills/skills/quality/code-review/SKILL.md",
+      "current": {
+        "schema_version": 7,
+        "category": "quality",
+        "type": "workflow",
+        "scope": "portable",
+        "keywords_count": 15
+      },
+      "proposed": {
+        "schema_version": 8,
+        "subject": "quality-assurance",
+        "operation": "do",
+        "scope": "portable",
+        "keywords_count_post": 10
+      },
+      "confidence": "medium",
+      "reasoning": {
+        "subject": "category: quality → quality-assurance (direct mapping)",
+        "operation": "type: workflow → do (direct mapping per plan)",
+        "scope": "scope: portable (unchanged)",
+        "keywords": "15 keywords > 10, capped to first 10"
+      }
+    },
+    {
+      "skill": "cognitive-load-theory",
+      "path": "../skills/skills/quality/cognitive-load-theory/SKILL.md",
+      "current": {
+        "schema_version": 7,
+        "category": "quality",
+        "type": "capability",
+        "scope": "portable",
+        "domain": "quality/cognition",
+        "keywords_count": 14
+      },
+      "proposed": {
+        "schema_version": 8,
+        "subject": "data-analytics",
+        "operation": "know",
+        "scope": "portable",
+        "keywords_count_post": 10
+      },
+      "confidence": "medium",
+      "reasoning": {
+        "subject": "category: quality + data-analytics keyword → data-analytics",
+        "operation": "type: capability + no strong workflow signal → know (default for capability)",
+        "scope": "scope: portable (unchanged)",
+        "keywords": "14 keywords > 10, capped to first 10"
+      }
+    },
+    {
+      "skill": "color-system-design",
+      "path": "../skills/skills/design/color-system-design/SKILL.md",
+      "current": {
+        "schema_version": 7,
+        "category": "design",
+        "type": "capability",
+        "scope": "portable",
+        "keywords_count": 13
+      },
+      "proposed": {
+        "schema_version": 8,
+        "subject": "design-craft",
+        "operation": "know",
+        "scope": "portable",
+        "keywords_count_post": 10
+      },
+      "confidence": "medium",
+      "reasoning": {
+        "subject": "category: design + no frontend tilt → design-craft",
+        "operation": "type: capability + no strong workflow signal → know (default for capability)",
+        "scope": "scope: portable (unchanged)",
+        "keywords": "13 keywords > 10, capped to first 10"
+      }
+    },
+    {
+      "skill": "component-architecture",
+      "path": "../skills/skills/design/component-architecture/SKILL.md",
+      "current": {
+        "schema_version": 7,
+        "category": "design",
+        "type": "capability",
+        "scope": "reference",
+        "domain": "design/component-systems",
+        "keywords_count": 18
+      },
+      "proposed": {
+        "schema_version": 8,
+        "subject": "frontend-ui",
+        "operation": "know",
+        "scope": "workspace",
+        "keywords_count_post": 10
+      },
+      "confidence": "medium",
+      "reasoning": {
+        "subject": "category: design + frontend keyword (component) → frontend-ui",
+        "operation": "type: capability + no strong workflow signal → know (default for capability)",
+        "scope": "scope: reference → workspace (v8 rename)",
+        "keywords": "18 keywords > 10, capped to first 10"
+      }
+    },
+    {
+      "skill": "compression",
+      "path": "../skills/skills/engineering/data/compression/SKILL.md",
+      "current": {
+        "schema_version": 7,
+        "category": "engineering",
+        "type": "capability",
+        "scope": "portable",
+        "domain": "engineering/data",
+        "keywords_count": 9
+      },
+      "proposed": {
+        "schema_version": 8,
+        "subject": "code-engineering",
+        "operation": "know",
+        "scope": "portable",
+        "keywords_count_post": 9
+      },
+      "confidence": "medium",
+      "reasoning": {
+        "subject": "category: engineering + no specialization → code-engineering (default)",
+        "operation": "type: capability + no strong workflow signal → know (default for capability)",
+        "scope": "scope: portable (unchanged)",
+        "keywords": "9 keywords ≤ 10, no cap"
+      }
+    },
+    {
+      "skill": "conceptual-modeling",
+      "path": "../skills/skills/engineering/conceptual-modeling/SKILL.md",
+      "current": {
+        "schema_version": 7,
+        "category": "engineering",
+        "type": "capability",
+        "scope": "portable",
+        "domain": "engineering/modeling",
+        "keywords_count": 23
+      },
+      "proposed": {
+        "schema_version": 8,
+        "subject": "data-analytics",
+        "operation": "know",
+        "scope": "portable",
+        "keywords_count_post": 10
+      },
+      "confidence": "medium",
+      "reasoning": {
+        "subject": "category: engineering + data-analytics (log) → data-analytics",
+        "operation": "type: capability + no strong workflow signal → know (default for capability)",
+        "scope": "scope: portable (unchanged)",
+        "keywords": "23 keywords > 10, capped to first 10"
+      }
+    },
+    {
+      "skill": "connection-pooling",
+      "path": "../skills/skills/engineering/data/connection-pooling/SKILL.md",
+      "current": {
+        "schema_version": 7,
+        "category": "engineering",
+        "type": "capability",
+        "scope": "reference",
+        "domain": "engineering/data",
+        "keywords_count": 12
+      },
+      "proposed": {
+        "schema_version": 8,
+        "subject": "code-engineering",
+        "operation": "do",
+        "scope": "workspace",
+        "keywords_count_post": 10
+      },
+      "confidence": "medium",
+      "reasoning": {
+        "subject": "category: engineering + no specialization → code-engineering (default)",
+        "operation": "type: capability + workflow-keyword presence (procedure, perform) → do",
+        "scope": "scope: reference → workspace (v8 rename)",
+        "keywords": "12 keywords > 10, capped to first 10"
+      }
+    },
+    {
+      "skill": "constraint-awareness",
+      "path": "../skills/skills/foundations/constraint-awareness/SKILL.md",
+      "current": {
+        "schema_version": 7,
+        "category": "foundations",
+        "type": "capability",
+        "scope": "portable",
+        "domain": "foundations/strategy",
+        "keywords_count": 18
+      },
+      "proposed": {
+        "schema_version": 8,
+        "subject": "meta-methods",
+        "operation": "do",
+        "scope": "portable",
+        "keywords_count_post": 10
+      },
+      "confidence": "medium",
+      "reasoning": {
+        "subject": "category: foundations + no KO keyword → meta-methods (default)",
+        "operation": "type: capability + workflow-keyword presence (process, audit) → do",
+        "scope": "scope: portable (unchanged)",
+        "keywords": "18 keywords > 10, capped to first 10"
+      }
+    },
+    {
+      "skill": "content-monitor",
+      "path": "../skills/skills/agent/content-monitor/SKILL.md",
+      "current": {
+        "schema_version": 7,
+        "category": "agent",
+        "type": "capability",
+        "scope": "portable",
+        "domain": "agent/ops",
+        "keywords_count": 16
+      },
+      "proposed": {
+        "schema_version": 8,
+        "subject": "agent-ops",
+        "operation": "know",
+        "scope": "portable",
+        "keywords_count_post": 10
+      },
+      "confidence": "medium",
+      "reasoning": {
+        "subject": "category: agent → agent-ops (direct mapping)",
+        "operation": "type: capability + no strong workflow signal → know (default for capability)",
+        "scope": "scope: portable (unchanged)",
+        "keywords": "16 keywords > 10, capped to first 10"
+      }
+    },
+    {
+      "skill": "context-engineering",
+      "path": "../skills/skills/agent/context/context-engineering/SKILL.md",
+      "current": {
+        "schema_version": 7,
+        "category": "agent",
+        "type": "capability",
+        "scope": "portable",
+        "domain": "agent/context",
+        "keywords_count": 27
+      },
+      "proposed": {
+        "schema_version": 8,
+        "subject": "agent-ops",
+        "operation": "know",
+        "scope": "portable",
+        "keywords_count_post": 10
+      },
+      "confidence": "medium",
+      "reasoning": {
+        "subject": "category: agent → agent-ops (direct mapping)",
+        "operation": "type: capability + no strong workflow signal → know (default for capability)",
+        "scope": "scope: portable (unchanged)",
+        "keywords": "27 keywords > 10, capped to first 10"
+      }
+    },
+    {
+      "skill": "context-graph",
+      "path": "../skills/skills/agent/context/context-graph/SKILL.md",
+      "current": {
+        "schema_version": 7,
+        "category": "agent",
+        "type": "capability",
+        "scope": "portable",
+        "domain": "agent/context",
+        "keywords_count": 18
+      },
+      "proposed": {
+        "schema_version": 8,
+        "subject": "agent-ops",
+        "operation": "know",
+        "scope": "portable",
+        "keywords_count_post": 10
+      },
+      "confidence": "medium",
+      "reasoning": {
+        "subject": "category: agent → agent-ops (direct mapping)",
+        "operation": "type: capability + no strong workflow signal → know (default for capability)",
+        "scope": "scope: portable (unchanged)",
+        "keywords": "18 keywords > 10, capped to first 10"
+      }
+    },
+    {
+      "skill": "context-management",
+      "path": "../skills/skills/agent/context/context-management/SKILL.md",
+      "current": {
+        "schema_version": 7,
+        "category": "agent",
+        "type": "capability",
+        "scope": "portable",
+        "domain": "agent/context",
+        "keywords_count": 18
+      },
+      "proposed": {
+        "schema_version": 8,
+        "subject": "agent-ops",
+        "operation": "know",
+        "scope": "portable",
+        "keywords_count_post": 10
+      },
+      "confidence": "medium",
+      "reasoning": {
+        "subject": "category: agent → agent-ops (direct mapping)",
+        "operation": "type: capability + no strong workflow signal → know (default for capability)",
+        "scope": "scope: portable (unchanged)",
+        "keywords": "18 keywords > 10, capped to first 10"
+      }
+    },
+    {
+      "skill": "context-window",
+      "path": "../skills/skills/agent/context/context-window/SKILL.md",
+      "current": {
+        "schema_version": 7,
+        "category": "agent",
+        "type": "capability",
+        "scope": "portable",
+        "domain": "agent/context",
+        "keywords_count": 18
+      },
+      "proposed": {
+        "schema_version": 8,
+        "subject": "agent-ops",
+        "operation": "know",
+        "scope": "portable",
+        "keywords_count_post": 10
+      },
+      "confidence": "medium",
+      "reasoning": {
+        "subject": "category: agent → agent-ops (direct mapping)",
+        "operation": "type: capability + no strong workflow signal → know (default for capability)",
+        "scope": "scope: portable (unchanged)",
+        "keywords": "18 keywords > 10, capped to first 10"
+      }
+    },
+    {
+      "skill": "contract-testing",
+      "path": "../skills/skills/quality/testing/contract-testing/SKILL.md",
+      "current": {
+        "schema_version": 7,
+        "category": "quality",
+        "type": "capability",
+        "scope": "reference",
+        "domain": "quality/testing",
+        "keywords_count": 10
+      },
+      "proposed": {
+        "schema_version": 8,
+        "subject": "quality-assurance",
+        "operation": "know",
+        "scope": "workspace",
+        "keywords_count_post": 10
+      },
+      "confidence": "medium",
+      "reasoning": {
+        "subject": "category: quality → quality-assurance (direct mapping)",
+        "operation": "type: capability + no strong workflow signal → know (default for capability)",
+        "scope": "scope: reference → workspace (v8 rename)",
+        "keywords": "10 keywords ≤ 10, no cap"
+      }
+    },
+    {
+      "skill": "cron-scheduling",
+      "path": "../skills/skills/engineering/cron-scheduling/SKILL.md",
+      "current": {
+        "schema_version": 7,
+        "category": "engineering",
+        "type": "capability",
+        "scope": "portable",
+        "domain": "engineering/scheduling",
+        "keywords_count": 3
+      },
+      "proposed": {
+        "schema_version": 8,
+        "subject": "data-analytics",
+        "operation": "know",
+        "scope": "portable",
+        "keywords_count_post": 3
+      },
+      "confidence": "medium",
+      "reasoning": {
+        "subject": "category: engineering + data-analytics (log) → data-analytics",
+        "operation": "type: capability + no strong workflow signal → know (default for capability)",
+        "scope": "scope: portable (unchanged)",
+        "keywords": "3 keywords ≤ 10, no cap"
+      }
+    },
+    {
+      "skill": "dark-mode-implementation",
+      "path": "../skills/skills/design/dark-mode-implementation/SKILL.md",
+      "current": {
+        "schema_version": 7,
+        "category": "design",
+        "type": "capability",
+        "scope": "portable",
+        "domain": "design/visual",
+        "keywords_count": 11
+      },
+      "proposed": {
+        "schema_version": 8,
+        "subject": "design-craft",
+        "operation": "know",
+        "scope": "portable",
+        "keywords_count_post": 10
+      },
+      "confidence": "medium",
+      "reasoning": {
+        "subject": "category: design + no frontend tilt → design-craft",
+        "operation": "type: capability + no strong workflow signal → know (default for capability)",
+        "scope": "scope: portable (unchanged)",
+        "keywords": "11 keywords > 10, capped to first 10"
+      }
+    },
+    {
+      "skill": "data-modeling",
+      "path": "../skills/skills/engineering/data-modeling/SKILL.md",
+      "current": {
+        "schema_version": 7,
+        "category": "engineering",
+        "type": "capability",
+        "scope": "portable",
+        "domain": "data/modeling",
+        "keywords_count": 11
+      },
+      "proposed": {
+        "schema_version": 8,
+        "subject": "data-analytics",
+        "operation": "do",
+        "scope": "portable",
+        "keywords_count_post": 10
+      },
+      "confidence": "medium",
+      "reasoning": {
+        "subject": "category: engineering + data-analytics (log) → data-analytics",
+        "operation": "type: capability + workflow-keyword presence (lifecycle, implement) → do",
+        "scope": "scope: portable (unchanged)",
+        "keywords": "11 keywords > 10, capped to first 10"
+      }
+    },
+    {
+      "skill": "data-modeling-fundamentals",
+      "path": "../skills/skills/engineering/data/data-modeling-fundamentals/SKILL.md",
+      "current": {
+        "schema_version": 7,
+        "category": "engineering",
+        "type": "capability",
+        "scope": "reference",
+        "domain": "engineering/data",
+        "keywords_count": 17
+      },
+      "proposed": {
+        "schema_version": 8,
+        "subject": "code-engineering",
+        "operation": "do",
+        "scope": "workspace",
+        "keywords_count_post": 10
+      },
+      "confidence": "medium",
+      "reasoning": {
+        "subject": "category: engineering + no specialization → code-engineering (default)",
+        "operation": "type: capability + workflow-keyword presence (sequence, apply) → do",
+        "scope": "scope: reference → workspace (v8 rename)",
+        "keywords": "17 keywords > 10, capped to first 10"
+      }
+    },
+    {
+      "skill": "database-migration",
+      "path": "../skills/skills/engineering/database-migration/SKILL.md",
+      "current": {
+        "schema_version": 7,
+        "category": "engineering",
+        "type": "capability",
+        "scope": "portable",
+        "domain": "data/migrations",
+        "keywords_count": 18
+      },
+      "proposed": {
+        "schema_version": 8,
+        "subject": "code-engineering",
+        "operation": "do",
+        "scope": "portable",
+        "keywords_count_post": 10
+      },
+      "confidence": "medium",
+      "reasoning": {
+        "subject": "category: engineering + no specialization → code-engineering (default)",
+        "operation": "type: capability + workflow-keyword presence (workflow, apply) → do",
+        "scope": "scope: portable (unchanged)",
+        "keywords": "18 keywords > 10, capped to first 10"
+      }
+    },
+    {
+      "skill": "debugging",
+      "path": "../skills/skills/engineering/debugging/SKILL.md",
+      "current": {
+        "schema_version": 7,
+        "category": "engineering",
+        "type": "workflow",
+        "scope": "portable",
+        "keywords_count": 30
+      },
+      "proposed": {
+        "schema_version": 8,
+        "subject": "code-engineering",
+        "operation": "do",
+        "scope": "portable",
+        "keywords_count_post": 10
+      },
+      "confidence": "medium",
+      "reasoning": {
+        "subject": "category: engineering + no specialization → code-engineering (default)",
+        "operation": "type: workflow → do (direct mapping per plan)",
+        "scope": "scope: portable (unchanged)",
+        "keywords": "30 keywords > 10, capped to first 10"
+      }
+    },
+    {
+      "skill": "dependency-architecture",
+      "path": "../skills/skills/engineering/dependency-architecture/SKILL.md",
+      "current": {
+        "schema_version": 7,
+        "category": "engineering",
+        "type": "capability",
+        "scope": "portable",
+        "domain": "architecture/dependencies",
+        "keywords_count": 10
+      },
+      "proposed": {
+        "schema_version": 8,
+        "subject": "code-engineering",
+        "operation": "know",
+        "scope": "portable",
+        "keywords_count_post": 10
+      },
+      "confidence": "medium",
+      "reasoning": {
+        "subject": "category: engineering + no specialization → code-engineering (default)",
+        "operation": "type: capability + no strong workflow signal → know (default for capability)",
+        "scope": "scope: portable (unchanged)",
+        "keywords": "10 keywords ≤ 10, no cap"
+      }
+    },
+    {
+      "skill": "design-module-composition",
+      "path": "../skills/skills/design/design-module-composition/SKILL.md",
+      "current": {
+        "schema_version": 7,
+        "category": "design",
+        "type": "capability",
+        "scope": "portable",
+        "keywords_count": 13
+      },
+      "proposed": {
+        "schema_version": 8,
+        "subject": "frontend-ui",
+        "operation": "know",
+        "scope": "portable",
+        "keywords_count_post": 10
+      },
+      "confidence": "medium",
+      "reasoning": {
+        "subject": "category: design + frontend keyword (component) → frontend-ui",
+        "operation": "type: capability + no strong workflow signal → know (default for capability)",
+        "scope": "scope: portable (unchanged)",
+        "keywords": "13 keywords > 10, capped to first 10"
+      }
+    },
+    {
+      "skill": "design-system-architecture",
+      "path": "../skills/skills/design/design-system-architecture/SKILL.md",
+      "current": {
+        "schema_version": 7,
+        "category": "design",
+        "type": "capability",
+        "scope": "portable",
+        "domain": "design/system",
+        "keywords_count": 15
+      },
+      "proposed": {
+        "schema_version": 8,
+        "subject": "frontend-ui",
+        "operation": "know",
+        "scope": "portable",
+        "keywords_count_post": 10
+      },
+      "confidence": "medium",
+      "reasoning": {
+        "subject": "category: design + frontend keyword (ui, component) → frontend-ui",
+        "operation": "type: capability + no strong workflow signal → know (default for capability)",
+        "scope": "scope: portable (unchanged)",
+        "keywords": "15 keywords > 10, capped to first 10"
+      }
+    },
+    {
+      "skill": "design-thinking",
+      "path": "../skills/skills/design/design-thinking/SKILL.md",
+      "current": {
+        "schema_version": 7,
+        "category": "design",
+        "type": "capability",
+        "scope": "portable",
+        "keywords_count": 13
+      },
+      "proposed": {
+        "schema_version": 8,
+        "subject": "design-craft",
+        "operation": "know",
+        "scope": "portable",
+        "keywords_count_post": 10
+      },
+      "confidence": "medium",
+      "reasoning": {
+        "subject": "category: design + no frontend tilt → design-craft",
+        "operation": "type: capability + no strong workflow signal → know (default for capability)",
+        "scope": "scope: portable (unchanged)",
+        "keywords": "13 keywords > 10, capped to first 10"
+      }
+    },
+    {
+      "skill": "diagnosis",
+      "path": "../skills/skills/engineering/diagnosis/SKILL.md",
+      "current": {
+        "schema_version": 7,
+        "category": "engineering",
+        "type": "capability",
+        "scope": "portable",
+        "domain": "engineering/debugging",
+        "keywords_count": 18
+      },
+      "proposed": {
+        "schema_version": 8,
+        "subject": "data-analytics",
+        "operation": "know",
+        "scope": "portable",
+        "keywords_count_post": 10
+      },
+      "confidence": "medium",
+      "reasoning": {
+        "subject": "category: engineering + data-analytics (observability) → data-analytics",
+        "operation": "type: capability + no strong workflow signal → know (default for capability)",
+        "scope": "scope: portable (unchanged)",
+        "keywords": "18 keywords > 10, capped to first 10"
+      }
+    },
+    {
+      "skill": "diff-analysis",
+      "path": "../skills/skills/quality/diff-analysis/SKILL.md",
+      "current": {
+        "schema_version": 7,
+        "category": "quality",
+        "type": "capability",
+        "scope": "portable",
+        "domain": "quality/doctrine",
+        "keywords_count": 6
+      },
+      "proposed": {
+        "schema_version": 8,
+        "subject": "quality-assurance",
+        "operation": "know",
+        "scope": "portable",
+        "keywords_count_post": 6
+      },
+      "confidence": "medium",
+      "reasoning": {
+        "subject": "category: quality → quality-assurance (direct mapping)",
+        "operation": "type: capability + no strong workflow signal → know (default for capability)",
+        "scope": "scope: portable (unchanged)",
+        "keywords": "6 keywords ≤ 10, no cap"
+      }
+    },
+    {
+      "skill": "e2e-test-design",
+      "path": "../skills/skills/quality/testing/e2e-test-design/SKILL.md",
+      "current": {
+        "schema_version": 7,
+        "category": "quality",
+        "type": "capability",
+        "scope": "reference",
+        "domain": "quality/testing",
+        "keywords_count": 11
+      },
+      "proposed": {
+        "schema_version": 8,
+        "subject": "quality-assurance",
+        "operation": "know",
+        "scope": "workspace",
+        "keywords_count_post": 10
+      },
+      "confidence": "medium",
+      "reasoning": {
+        "subject": "category: quality → quality-assurance (direct mapping)",
+        "operation": "type: capability + no strong workflow signal → know (default for capability)",
+        "scope": "scope: reference → workspace (v8 rename)",
+        "keywords": "11 keywords > 10, capped to first 10"
+      }
+    },
+    {
+      "skill": "entity-relationship-modeling",
+      "path": "../skills/skills/engineering/entity-relationship-modeling/SKILL.md",
+      "current": {
+        "schema_version": 7,
+        "category": "engineering",
+        "type": "capability",
+        "scope": "portable",
+        "domain": "engineering/modeling",
+        "keywords_count": 10
+      },
+      "proposed": {
+        "schema_version": 8,
+        "subject": "data-analytics",
+        "operation": "know",
+        "scope": "portable",
+        "keywords_count_post": 10
+      },
+      "confidence": "medium",
+      "reasoning": {
+        "subject": "category: engineering + data-analytics (log) → data-analytics",
+        "operation": "type: capability + no strong workflow signal → know (default for capability)",
+        "scope": "scope: portable (unchanged)",
+        "keywords": "10 keywords ≤ 10, no cap"
+      }
+    },
+    {
+      "skill": "epistemic-grounding",
+      "path": "../skills/skills/foundations/epistemic-grounding/SKILL.md",
+      "current": {
+        "schema_version": 7,
+        "category": "foundations",
+        "type": "capability",
+        "scope": "reference",
+        "domain": "foundations/epistemics",
+        "keywords_count": 10
+      },
+      "proposed": {
+        "schema_version": 8,
+        "subject": "meta-methods",
+        "operation": "do",
+        "scope": "workspace",
+        "keywords_count_post": 10
+      },
+      "confidence": "medium",
+      "reasoning": {
+        "subject": "category: foundations + no KO keyword → meta-methods (default)",
+        "operation": "type: capability + workflow-keyword presence (protocol, audit) → do",
+        "scope": "scope: reference → workspace (v8 rename)",
+        "keywords": "10 keywords ≤ 10, no cap"
+      }
+    },
+    {
+      "skill": "error-boundary",
+      "path": "../skills/skills/engineering/frontend/error-boundary/SKILL.md",
+      "current": {
+        "schema_version": 7,
+        "category": "engineering",
+        "type": "capability",
+        "scope": "reference",
+        "domain": "engineering/frontend",
+        "keywords_count": 16
+      },
+      "proposed": {
+        "schema_version": 8,
+        "subject": "frontend-ui",
+        "operation": "do",
+        "scope": "workspace",
+        "keywords_count_post": 10
+      },
+      "confidence": "medium",
+      "reasoning": {
+        "subject": "category: engineering + frontend (frontend, react) → frontend-ui",
+        "operation": "type: capability + workflow-keyword presence (lifecycle, how to) → do",
+        "scope": "scope: reference → workspace (v8 rename)",
+        "keywords": "16 keywords > 10, capped to first 10"
+      }
+    },
+    {
+      "skill": "error-tracking",
+      "path": "../skills/skills/engineering/error-tracking/SKILL.md",
+      "current": {
+        "schema_version": 7,
+        "category": "engineering",
+        "type": "capability",
+        "scope": "portable",
+        "domain": "engineering/observability",
+        "keywords_count": 20
+      },
+      "proposed": {
+        "schema_version": 8,
+        "subject": "frontend-ui",
+        "operation": "know",
+        "scope": "portable",
+        "keywords_count_post": 10
+      },
+      "confidence": "medium",
+      "reasoning": {
+        "subject": "category: engineering + frontend (component, interaction) → frontend-ui",
+        "operation": "type: capability + no strong workflow signal → know (default for capability)",
+        "scope": "scope: portable (unchanged)",
+        "keywords": "20 keywords > 10, capped to first 10"
+      }
+    },
+    {
+      "skill": "eval-driven-development",
+      "path": "../skills/skills/agent/eval-driven-development/SKILL.md",
+      "current": {
+        "schema_version": 7,
+        "category": "agent",
+        "type": "capability",
+        "scope": "reference",
+        "domain": "agent/evaluation",
+        "keywords_count": 15
+      },
+      "proposed": {
+        "schema_version": 8,
+        "subject": "agent-ops",
+        "operation": "know",
+        "scope": "workspace",
+        "keywords_count_post": 10
+      },
+      "confidence": "medium",
+      "reasoning": {
+        "subject": "category: agent → agent-ops (direct mapping)",
+        "operation": "type: capability + no strong workflow signal → know (default for capability)",
+        "scope": "scope: reference → workspace (v8 rename)",
+        "keywords": "15 keywords > 10, capped to first 10"
+      }
+    },
+    {
+      "skill": "evaluation",
+      "path": "../skills/skills/engineering/evaluation/SKILL.md",
+      "current": {
+        "schema_version": 7,
+        "category": "engineering",
+        "type": "capability",
+        "scope": "portable",
+        "domain": "engineering/evaluation",
+        "keywords_count": 18
+      },
+      "proposed": {
+        "schema_version": 8,
+        "subject": "data-analytics",
+        "operation": "do",
+        "scope": "portable",
+        "keywords_count_post": 10
+      },
+      "confidence": "medium",
+      "reasoning": {
+        "subject": "category: engineering + data-analytics (log) → data-analytics",
+        "operation": "type: capability + workflow-keyword presence (process, implement) → do",
+        "scope": "scope: portable (unchanged)",
+        "keywords": "18 keywords > 10, capped to first 10"
+      }
+    },
+    {
+      "skill": "event-contract-design",
+      "path": "../skills/skills/engineering/event-contract-design/SKILL.md",
+      "current": {
+        "schema_version": 7,
+        "category": "engineering",
+        "type": "capability",
+        "scope": "portable",
+        "domain": "architecture/events",
+        "keywords_count": 10
+      },
+      "proposed": {
+        "schema_version": 8,
+        "subject": "product-domain",
+        "operation": "know",
+        "scope": "portable",
+        "keywords_count_post": 10
+      },
+      "confidence": "medium",
+      "reasoning": {
+        "subject": "category: engineering + vendor-integration (webhook) → product-domain",
+        "operation": "type: capability + no strong workflow signal → know (default for capability)",
+        "scope": "scope: portable (unchanged)",
+        "keywords": "10 keywords ≤ 10, no cap"
+      }
+    },
+    {
+      "skill": "event-storming",
+      "path": "../skills/skills/engineering/event-storming/SKILL.md",
+      "current": {
+        "schema_version": 7,
+        "category": "engineering",
+        "type": "capability",
+        "scope": "portable",
+        "domain": "architecture/domain-discovery",
+        "keywords_count": 9
+      },
+      "proposed": {
+        "schema_version": 8,
+        "subject": "product-domain",
+        "operation": "do",
+        "scope": "portable",
+        "keywords_count_post": 9
+      },
+      "confidence": "medium",
+      "reasoning": {
+        "subject": "category: engineering + vendor-integration (webhook) → product-domain",
+        "operation": "type: capability + workflow-keyword presence (workflow, implement) → do",
+        "scope": "scope: portable (unchanged)",
+        "keywords": "9 keywords ≤ 10, no cap"
+      }
+    },
+    {
+      "skill": "form-ux-architecture",
+      "path": "../skills/skills/design/form-ux-architecture/SKILL.md",
+      "current": {
+        "schema_version": 7,
+        "category": "design",
+        "type": "capability",
+        "scope": "portable",
+        "domain": "design/ux",
+        "keywords_count": 11
+      },
+      "proposed": {
+        "schema_version": 8,
+        "subject": "frontend-ui",
+        "operation": "do",
+        "scope": "portable",
+        "keywords_count_post": 10
+      },
+      "confidence": "medium",
+      "reasoning": {
+        "subject": "category: design + frontend keyword (ui, a11y) → frontend-ui",
+        "operation": "type: capability + workflow-keyword presence (lifecycle, audit) → do",
+        "scope": "scope: portable (unchanged)",
+        "keywords": "11 keywords > 10, capped to first 10"
+      }
+    },
+    {
+      "skill": "framework-fit-analysis",
+      "path": "../skills/skills/engineering/framework-fit-analysis/SKILL.md",
+      "current": {
+        "schema_version": 7,
+        "category": "engineering",
+        "type": "capability",
+        "scope": "portable",
+        "domain": "architecture/technology-selection",
+        "keywords_count": 10
+      },
+      "proposed": {
+        "schema_version": 8,
+        "subject": "data-analytics",
+        "operation": "do",
+        "scope": "portable",
+        "keywords_count_post": 10
+      },
+      "confidence": "medium",
+      "reasoning": {
+        "subject": "category: engineering + data-analytics (log) → data-analytics",
+        "operation": "type: capability + workflow-keyword presence (perform, implement) → do",
+        "scope": "scope: portable (unchanged)",
+        "keywords": "10 keywords ≤ 10, no cap"
+      }
+    },
+    {
+      "skill": "frontend-architecture",
+      "path": "../skills/skills/engineering/frontend/frontend-architecture/SKILL.md",
+      "current": {
+        "schema_version": 7,
+        "category": "engineering",
+        "type": "capability",
+        "scope": "portable",
+        "domain": "engineering/frontend",
+        "keywords_count": 12
+      },
+      "proposed": {
+        "schema_version": 8,
+        "subject": "frontend-ui",
+        "operation": "know",
+        "scope": "portable",
+        "keywords_count_post": 10
+      },
+      "confidence": "medium",
+      "reasoning": {
+        "subject": "category: engineering + frontend (frontend, component) → frontend-ui",
+        "operation": "type: capability + no strong workflow signal → know (default for capability)",
+        "scope": "scope: portable (unchanged)",
+        "keywords": "12 keywords > 10, capped to first 10"
+      }
+    },
+    {
+      "skill": "generative-ui",
+      "path": "../skills/skills/agent/generative-ui/SKILL.md",
+      "current": {
+        "schema_version": 7,
+        "category": "agent",
+        "type": "capability",
+        "scope": "reference",
+        "domain": "agent/ui",
+        "keywords_count": 11
+      },
+      "proposed": {
+        "schema_version": 8,
+        "subject": "agent-ops",
+        "operation": "do",
+        "scope": "workspace",
+        "keywords_count_post": 10
+      },
+      "confidence": "medium",
+      "reasoning": {
+        "subject": "category: agent → agent-ops (direct mapping)",
+        "operation": "type: capability + workflow-keyword presence (protocol, pipeline) → do",
+        "scope": "scope: reference → workspace (v8 rename)",
+        "keywords": "11 keywords > 10, capped to first 10"
+      }
+    },
+    {
+      "skill": "graph-audit",
+      "path": "../skills/skills/quality/graph-audit/SKILL.md",
+      "current": {
+        "schema_version": 7,
+        "category": "quality",
+        "type": "capability",
+        "scope": "codebase",
+        "domain": "quality/audit",
+        "keywords_count": 10
+      },
+      "proposed": {
+        "schema_version": 8,
+        "subject": "quality-assurance",
+        "operation": "know",
+        "scope": "project",
+        "keywords_count_post": 10
+      },
+      "confidence": "medium",
+      "reasoning": {
+        "subject": "category: quality → quality-assurance (direct mapping)",
+        "operation": "type: capability + no strong workflow signal → know (default for capability)",
+        "scope": "scope: codebase → project (v8 rename)",
+        "keywords": "10 keywords ≤ 10, no cap"
+      }
+    },
+    {
+      "skill": "guardrails",
+      "path": "../skills/skills/quality/guardrails/SKILL.md",
+      "current": {
+        "schema_version": 7,
+        "category": "quality",
+        "type": "capability",
+        "scope": "portable",
+        "domain": "quality/safety",
+        "keywords_count": 17
+      },
+      "proposed": {
+        "schema_version": 8,
+        "subject": "quality-assurance",
+        "operation": "know",
+        "scope": "portable",
+        "keywords_count_post": 10
+      },
+      "confidence": "medium",
+      "reasoning": {
+        "subject": "category: quality → quality-assurance (direct mapping)",
+        "operation": "type: capability + no strong workflow signal → know (default for capability)",
+        "scope": "scope: portable (unchanged)",
+        "keywords": "17 keywords > 10, capped to first 10"
+      }
+    },
+    {
+      "skill": "hooks-patterns",
+      "path": "../skills/skills/engineering/frontend/hooks-patterns/SKILL.md",
+      "current": {
+        "schema_version": 7,
+        "category": "engineering",
+        "type": "capability",
+        "scope": "reference",
+        "domain": "engineering/frontend",
+        "keywords_count": 13
+      },
+      "proposed": {
+        "schema_version": 8,
+        "subject": "frontend-ui",
+        "operation": "know",
+        "scope": "workspace",
+        "keywords_count_post": 10
+      },
+      "confidence": "medium",
+      "reasoning": {
+        "subject": "category: engineering + frontend (frontend, react) → frontend-ui",
+        "operation": "type: capability + no strong workflow signal → know (default for capability)",
+        "scope": "scope: reference → workspace (v8 rename)",
+        "keywords": "13 keywords > 10, capped to first 10"
+      }
+    },
+    {
+      "skill": "http-semantics",
+      "path": "../skills/skills/engineering/http-semantics/SKILL.md",
+      "current": {
+        "schema_version": 7,
+        "category": "engineering",
+        "type": "capability",
+        "scope": "reference",
+        "domain": "engineering/protocol",
+        "keywords_count": 10
+      },
+      "proposed": {
+        "schema_version": 8,
+        "subject": "product-domain",
+        "operation": "know",
+        "scope": "workspace",
+        "keywords_count_post": 10
+      },
+      "confidence": "medium",
+      "reasoning": {
+        "subject": "category: engineering + vendor-integration (webhook) → product-domain",
+        "operation": "type: capability + no strong workflow signal → know (default for capability)",
+        "scope": "scope: reference → workspace (v8 rename)",
+        "keywords": "10 keywords ≤ 10, no cap"
+      }
+    },
+    {
+      "skill": "ideation",
+      "path": "../skills/skills/design/ideation/SKILL.md",
+      "current": {
+        "schema_version": 7,
+        "category": "design",
+        "type": "capability",
+        "scope": "portable",
+        "keywords_count": 14
+      },
+      "proposed": {
+        "schema_version": 8,
+        "subject": "frontend-ui",
+        "operation": "know",
+        "scope": "portable",
+        "keywords_count_post": 10
+      },
+      "confidence": "medium",
+      "reasoning": {
+        "subject": "category: design + frontend keyword (ui) → frontend-ui",
+        "operation": "type: capability + no strong workflow signal → know (default for capability)",
+        "scope": "scope: portable (unchanged)",
+        "keywords": "14 keywords > 10, capped to first 10"
+      }
+    },
+    {
+      "skill": "indexing-strategy",
+      "path": "../skills/skills/engineering/data/indexing-strategy/SKILL.md",
+      "current": {
+        "schema_version": 7,
+        "category": "engineering",
+        "type": "capability",
+        "scope": "reference",
+        "domain": "engineering/data",
+        "keywords_count": 14
+      },
+      "proposed": {
+        "schema_version": 8,
+        "subject": "data-analytics",
+        "operation": "know",
+        "scope": "workspace",
+        "keywords_count_post": 10
+      },
+      "confidence": "medium",
+      "reasoning": {
+        "subject": "category: engineering + data-analytics (log) → data-analytics",
+        "operation": "type: capability + no strong workflow signal → know (default for capability)",
+        "scope": "scope: reference → workspace (v8 rename)",
+        "keywords": "14 keywords > 10, capped to first 10"
+      }
+    },
+    {
+      "skill": "information-architecture",
+      "path": "../skills/skills/design/information-architecture/SKILL.md",
+      "current": {
+        "schema_version": 7,
+        "category": "design",
+        "type": "capability",
+        "scope": "portable",
+        "domain": "design/information-architecture",
+        "keywords_count": 10
+      },
+      "proposed": {
+        "schema_version": 8,
+        "subject": "frontend-ui",
+        "operation": "know",
+        "scope": "portable",
+        "keywords_count_post": 10
+      },
+      "confidence": "medium",
+      "reasoning": {
+        "subject": "category: design + frontend keyword (ui, component) → frontend-ui",
+        "operation": "type: capability + no strong workflow signal → know (default for capability)",
+        "scope": "scope: portable (unchanged)",
+        "keywords": "10 keywords ≤ 10, no cap"
+      }
+    },
+    {
+      "skill": "integration-test-design",
+      "path": "../skills/skills/quality/testing/integration-test-design/SKILL.md",
+      "current": {
+        "schema_version": 7,
+        "category": "quality",
+        "type": "capability",
+        "scope": "reference",
+        "domain": "quality/testing",
+        "keywords_count": 10
+      },
+      "proposed": {
+        "schema_version": 8,
+        "subject": "quality-assurance",
+        "operation": "do",
+        "scope": "workspace",
+        "keywords_count_post": 10
+      },
+      "confidence": "medium",
+      "reasoning": {
+        "subject": "category: quality → quality-assurance (direct mapping)",
+        "operation": "type: capability + workflow-keyword presence (process, lifecycle) → do",
+        "scope": "scope: reference → workspace (v8 rename)",
+        "keywords": "10 keywords ≤ 10, no cap"
+      }
+    },
+    {
+      "skill": "intent-recognition",
+      "path": "../skills/skills/engineering/intent-recognition/SKILL.md",
+      "current": {
+        "schema_version": 7,
+        "category": "engineering",
+        "type": "capability",
+        "scope": "portable",
+        "domain": "ai-engineering/safety",
+        "keywords_count": 18
+      },
+      "proposed": {
+        "schema_version": 8,
+        "subject": "code-engineering",
+        "operation": "know",
+        "scope": "portable",
+        "keywords_count_post": 10
+      },
+      "confidence": "medium",
+      "reasoning": {
+        "subject": "category: engineering + no specialization → code-engineering (default)",
+        "operation": "type: capability + no strong workflow signal → know (default for capability)",
+        "scope": "scope: portable (unchanged)",
+        "keywords": "18 keywords > 10, capped to first 10"
+      }
+    },
+    {
+      "skill": "interaction-feedback",
+      "path": "../skills/skills/design/interaction-feedback/SKILL.md",
+      "current": {
+        "schema_version": 7,
+        "category": "design",
+        "type": "capability",
+        "scope": "portable",
+        "domain": "design/interaction",
+        "keywords_count": 9
+      },
+      "proposed": {
+        "schema_version": 8,
+        "subject": "frontend-ui",
+        "operation": "do",
+        "scope": "portable",
+        "keywords_count_post": 9
+      },
+      "confidence": "medium",
+      "reasoning": {
+        "subject": "category: design + frontend keyword (ui, interaction) → frontend-ui",
+        "operation": "type: capability + workflow-keyword presence (lifecycle, perform) → do",
+        "scope": "scope: portable (unchanged)",
+        "keywords": "9 keywords ≤ 10, no cap"
+      }
+    },
+    {
+      "skill": "interaction-patterns",
+      "path": "../skills/skills/design/interaction-patterns/SKILL.md",
+      "current": {
+        "schema_version": 7,
+        "category": "design",
+        "type": "capability",
+        "scope": "portable",
+        "domain": "design/interaction",
+        "keywords_count": 12
+      },
+      "proposed": {
+        "schema_version": 8,
+        "subject": "frontend-ui",
+        "operation": "know",
+        "scope": "portable",
+        "keywords_count_post": 10
+      },
+      "confidence": "medium",
+      "reasoning": {
+        "subject": "category: design + frontend keyword (ui, component) → frontend-ui",
+        "operation": "type: capability + no strong workflow signal → know (default for capability)",
+        "scope": "scope: portable (unchanged)",
+        "keywords": "12 keywords > 10, capped to first 10"
+      }
+    },
+    {
+      "skill": "journey-mapping",
+      "path": "../skills/skills/design/journey-mapping/SKILL.md",
+      "current": {
+        "schema_version": 7,
+        "category": "design",
+        "type": "capability",
+        "scope": "portable",
+        "keywords_count": 13
+      },
+      "proposed": {
+        "schema_version": 8,
+        "subject": "frontend-ui",
+        "operation": "know",
+        "scope": "portable",
+        "keywords_count_post": 10
+      },
+      "confidence": "medium",
+      "reasoning": {
+        "subject": "category: design + frontend keyword (ui) → frontend-ui",
+        "operation": "type: capability + no strong workflow signal → know (default for capability)",
+        "scope": "scope: portable (unchanged)",
+        "keywords": "13 keywords > 10, capped to first 10"
+      }
+    },
+    {
+      "skill": "keywords",
+      "path": "../skills/skills/product/keywords/SKILL.md",
+      "current": {
+        "schema_version": 7,
+        "category": "product",
+        "type": "capability",
+        "scope": "portable",
+        "domain": "product/search",
+        "keywords_count": 23
+      },
+      "proposed": {
+        "schema_version": 8,
+        "subject": "product-domain",
+        "operation": "know",
+        "scope": "portable",
+        "keywords_count_post": 10
+      },
+      "confidence": "medium",
+      "reasoning": {
+        "subject": "category: product → product-domain (direct mapping)",
+        "operation": "type: capability + no strong workflow signal → know (default for capability)",
+        "scope": "scope: portable (unchanged)",
+        "keywords": "23 keywords > 10, capped to first 10"
+      }
+    },
+    {
+      "skill": "knowledge-modeling",
+      "path": "../skills/skills/foundations/knowledge-modeling/SKILL.md",
+      "current": {
+        "schema_version": 7,
+        "category": "foundations",
+        "type": "capability",
+        "scope": "portable",
+        "domain": "foundations/knowledge",
+        "keywords_count": 18
+      },
+      "proposed": {
+        "schema_version": 8,
+        "subject": "knowledge-organization",
+        "operation": "know",
+        "scope": "portable",
+        "keywords_count_post": 10
+      },
+      "confidence": "medium",
+      "reasoning": {
+        "subject": "category: foundations + KO keyword (taxonomy, ontology) → knowledge-organization",
+        "operation": "type: capability + no strong workflow signal → know (default for capability)",
+        "scope": "scope: portable (unchanged)",
+        "keywords": "18 keywords > 10, capped to first 10"
+      }
+    },
+    {
+      "skill": "layout-composition",
+      "path": "../skills/skills/design/layout-composition/SKILL.md",
+      "current": {
+        "schema_version": 7,
+        "category": "design",
+        "type": "capability",
+        "scope": "portable",
+        "domain": "design/layout",
+        "keywords_count": 11
+      },
+      "proposed": {
+        "schema_version": 8,
+        "subject": "frontend-ui",
+        "operation": "know",
+        "scope": "portable",
+        "keywords_count_post": 10
+      },
+      "confidence": "medium",
+      "reasoning": {
+        "subject": "category: design + frontend keyword (component, layout) → frontend-ui",
+        "operation": "type: capability + no strong workflow signal → know (default for capability)",
+        "scope": "scope: portable (unchanged)",
+        "keywords": "11 keywords > 10, capped to first 10"
+      }
+    },
+    {
+      "skill": "linguistics",
+      "path": "../skills/skills/foundations/linguistics/SKILL.md",
+      "current": {
+        "schema_version": 7,
+        "category": "foundations",
+        "type": "capability",
+        "scope": "portable",
+        "domain": "foundations/language",
+        "keywords_count": 18
+      },
+      "proposed": {
+        "schema_version": 8,
+        "subject": "knowledge-organization",
+        "operation": "know",
+        "scope": "portable",
+        "keywords_count_post": 10
+      },
+      "confidence": "medium",
+      "reasoning": {
+        "subject": "category: foundations + KO keyword (naming, linguistics) → knowledge-organization",
+        "operation": "type: capability + no strong workflow signal → know (default for capability)",
+        "scope": "scope: portable (unchanged)",
+        "keywords": "18 keywords > 10, capped to first 10"
+      }
+    },
+    {
+      "skill": "lint-overlay",
+      "path": "../skills/skills/quality/lint-overlay/SKILL.md",
+      "current": {
+        "schema_version": 7,
+        "category": "quality",
+        "type": "overlay",
+        "scope": "portable",
+        "keywords_count": 25
+      },
+      "proposed": {
+        "schema_version": 8,
+        "subject": "quality-assurance",
+        "operation": "modify",
+        "scope": "portable",
+        "keywords_count_post": 10
+      },
+      "confidence": "medium",
+      "reasoning": {
+        "subject": "category: quality → quality-assurance (direct mapping)",
+        "operation": "type: overlay → modify (direct mapping per plan)",
+        "scope": "scope: portable (unchanged)",
+        "keywords": "25 keywords > 10, capped to first 10"
+      }
+    },
+    {
+      "skill": "mental-models",
+      "path": "../skills/skills/foundations/mental-models/SKILL.md",
+      "current": {
+        "schema_version": 7,
+        "category": "foundations",
+        "type": "capability",
+        "scope": "reference",
+        "domain": "foundations/mental-models",
+        "keywords_count": 17
+      },
+      "proposed": {
+        "schema_version": 8,
+        "subject": "meta-methods",
+        "operation": "know",
+        "scope": "workspace",
+        "keywords_count_post": 10
+      },
+      "confidence": "medium",
+      "reasoning": {
+        "subject": "category: foundations + no KO keyword → meta-methods (default)",
+        "operation": "type: capability + no strong workflow signal → know (default for capability)",
+        "scope": "scope: reference → workspace (v8 rename)",
+        "keywords": "17 keywords > 10, capped to first 10"
+      }
+    },
+    {
+      "skill": "merge-queue",
+      "path": "../skills/skills/engineering/merge-queue/SKILL.md",
+      "current": {
+        "schema_version": 7,
+        "category": "engineering",
+        "type": "workflow",
+        "scope": "portable",
+        "domain": "engineering/git",
+        "keywords_count": 7
+      },
+      "proposed": {
+        "schema_version": 8,
+        "subject": "code-engineering",
+        "operation": "do",
+        "scope": "portable",
+        "keywords_count_post": 7
+      },
+      "confidence": "medium",
+      "reasoning": {
+        "subject": "category: engineering + no specialization → code-engineering (default)",
+        "operation": "type: workflow → do (direct mapping per plan)",
+        "scope": "scope: portable (unchanged)",
+        "keywords": "7 keywords ≤ 10, no cap"
+      }
+    },
+    {
+      "skill": "methodology",
+      "path": "../skills/skills/quality/methodology/SKILL.md",
+      "current": {
+        "schema_version": 7,
+        "category": "quality",
+        "type": "capability",
+        "scope": "reference",
+        "domain": "quality/method",
+        "keywords_count": 20
+      },
+      "proposed": {
+        "schema_version": 8,
+        "subject": "data-analytics",
+        "operation": "do",
+        "scope": "workspace",
+        "keywords_count_post": 10
+      },
+      "confidence": "medium",
+      "reasoning": {
+        "subject": "category: quality + data-analytics keyword → data-analytics",
+        "operation": "type: capability + workflow-keyword presence (process, checklist, protocol) → do",
+        "scope": "scope: reference → workspace (v8 rename)",
+        "keywords": "20 keywords > 10, capped to first 10"
+      }
+    },
+    {
+      "skill": "microcopy",
+      "path": "../skills/skills/design/microcopy/SKILL.md",
+      "current": {
+        "schema_version": 7,
+        "category": "design",
+        "type": "capability",
+        "scope": "portable",
+        "domain": "design/ux",
+        "keywords_count": 16
+      },
+      "proposed": {
+        "schema_version": 8,
+        "subject": "frontend-ui",
+        "operation": "do",
+        "scope": "portable",
+        "keywords_count_post": 10
+      },
+      "confidence": "medium",
+      "reasoning": {
+        "subject": "category: design + frontend keyword (ui) → frontend-ui",
+        "operation": "type: capability + workflow-keyword presence (sequence, guide) → do",
+        "scope": "scope: portable (unchanged)",
+        "keywords": "16 keywords > 10, capped to first 10"
+      }
+    },
+    {
+      "skill": "middleware-patterns",
+      "path": "../skills/skills/engineering/frontend/middleware-patterns/SKILL.md",
+      "current": {
+        "schema_version": 7,
+        "category": "engineering",
+        "type": "capability",
+        "scope": "reference",
+        "domain": "engineering/frontend",
+        "keywords_count": 14
+      },
+      "proposed": {
+        "schema_version": 8,
+        "subject": "frontend-ui",
+        "operation": "do",
+        "scope": "workspace",
+        "keywords_count_post": 10
+      },
+      "confidence": "medium",
+      "reasoning": {
+        "subject": "category: engineering + frontend (frontend, next) → frontend-ui",
+        "operation": "type: capability + workflow-keyword presence (perform, apply) → do",
+        "scope": "scope: reference → workspace (v8 rename)",
+        "keywords": "14 keywords > 10, capped to first 10"
+      }
+    },
+    {
+      "skill": "mobile-responsive-ux",
+      "path": "../skills/skills/design/mobile-responsive-ux/SKILL.md",
+      "current": {
+        "schema_version": 7,
+        "category": "design",
+        "type": "capability",
+        "scope": "portable",
+        "domain": "design/display",
+        "keywords_count": 3
+      },
+      "proposed": {
+        "schema_version": 8,
+        "subject": "frontend-ui",
+        "operation": "know",
+        "scope": "portable",
+        "keywords_count_post": 3
+      },
+      "confidence": "medium",
+      "reasoning": {
+        "subject": "category: design + frontend keyword (ui, layout) → frontend-ui",
+        "operation": "type: capability + no strong workflow signal → know (default for capability)",
+        "scope": "scope: portable (unchanged)",
+        "keywords": "3 keywords ≤ 10, no cap"
+      }
+    },
+    {
+      "skill": "mutation-testing",
+      "path": "../skills/skills/quality/testing/mutation-testing/SKILL.md",
+      "current": {
+        "schema_version": 7,
+        "category": "quality",
+        "type": "capability",
+        "scope": "reference",
+        "domain": "quality/testing",
+        "keywords_count": 12
+      },
+      "proposed": {
+        "schema_version": 8,
+        "subject": "data-analytics",
+        "operation": "know",
+        "scope": "workspace",
+        "keywords_count_post": 10
+      },
+      "confidence": "medium",
+      "reasoning": {
+        "subject": "category: quality + data-analytics keyword → data-analytics",
+        "operation": "type: capability + no strong workflow signal → know (default for capability)",
+        "scope": "scope: reference → workspace (v8 rename)",
+        "keywords": "12 keywords > 10, capped to first 10"
+      }
+    },
+    {
+      "skill": "naming-conventions",
+      "path": "../skills/skills/engineering/naming-conventions/SKILL.md",
+      "current": {
+        "schema_version": 7,
+        "category": "engineering",
+        "type": "capability",
+        "scope": "portable",
+        "keywords_count": 18
+      },
+      "proposed": {
+        "schema_version": 8,
+        "subject": "data-analytics",
+        "operation": "know",
+        "scope": "portable",
+        "keywords_count_post": 10
+      },
+      "confidence": "medium",
+      "reasoning": {
+        "subject": "category: engineering + data-analytics (log) → data-analytics",
+        "operation": "type: capability + no strong workflow signal → know (default for capability)",
+        "scope": "scope: portable (unchanged)",
+        "keywords": "18 keywords > 10, capped to first 10"
+      }
+    },
+    {
+      "skill": "observability-modeling",
+      "path": "../skills/skills/engineering/observability-modeling/SKILL.md",
+      "current": {
+        "schema_version": 7,
+        "category": "engineering",
+        "type": "capability",
+        "scope": "portable",
+        "domain": "engineering/observability",
+        "keywords_count": 9
+      },
+      "proposed": {
+        "schema_version": 8,
+        "subject": "data-analytics",
+        "operation": "do",
+        "scope": "portable",
+        "keywords_count_post": 9
+      },
+      "confidence": "medium",
+      "reasoning": {
+        "subject": "category: engineering + data-analytics (metric, observability) → data-analytics",
+        "operation": "type: capability + workflow-keyword presence (perform, implement) → do",
+        "scope": "scope: portable (unchanged)",
+        "keywords": "9 keywords ≤ 10, no cap"
+      }
+    },
+    {
+      "skill": "ontology-modeling",
+      "path": "../skills/skills/foundations/ontology-modeling/SKILL.md",
+      "current": {
+        "schema_version": 7,
+        "category": "foundations",
+        "type": "capability",
+        "scope": "portable",
+        "domain": "foundations/ontology",
+        "keywords_count": 12
+      },
+      "proposed": {
+        "schema_version": 8,
+        "subject": "knowledge-organization",
+        "operation": "know",
+        "scope": "portable",
+        "keywords_count_post": 10
+      },
+      "confidence": "medium",
+      "reasoning": {
+        "subject": "category: foundations + KO keyword (taxonomy, semantics) → knowledge-organization",
+        "operation": "type: capability + no strong workflow signal → know (default for capability)",
+        "scope": "scope: portable (unchanged)",
+        "keywords": "12 keywords > 10, capped to first 10"
+      }
+    },
+    {
+      "skill": "owasp-security",
+      "path": "../skills/skills/quality/security/owasp-security/SKILL.md",
+      "current": {
+        "schema_version": 7,
+        "category": "quality",
+        "type": "capability",
+        "scope": "portable",
+        "domain": "quality/security",
+        "keywords_count": 22
+      },
+      "proposed": {
+        "schema_version": 8,
+        "subject": "data-analytics",
+        "operation": "do",
+        "scope": "portable",
+        "keywords_count_post": 10
+      },
+      "confidence": "medium",
+      "reasoning": {
+        "subject": "category: quality + data-analytics keyword → data-analytics",
+        "operation": "type: capability + workflow-keyword presence (audit, implement) → do",
+        "scope": "scope: portable (unchanged)",
+        "keywords": "22 keywords > 10, capped to first 10"
+      }
+    },
+    {
+      "skill": "pattern-recognition",
+      "path": "../skills/skills/foundations/pattern-recognition/SKILL.md",
+      "current": {
+        "schema_version": 7,
+        "category": "foundations",
+        "type": "capability",
+        "scope": "portable",
+        "domain": "foundations/cognition",
+        "keywords_count": 18
+      },
+      "proposed": {
+        "schema_version": 8,
+        "subject": "knowledge-organization",
+        "operation": "do",
+        "scope": "portable",
+        "keywords_count_post": 10
+      },
+      "confidence": "medium",
+      "reasoning": {
+        "subject": "category: foundations + KO keyword (classification) → knowledge-organization",
+        "operation": "type: capability + workflow-keyword presence (lifecycle, audit) → do",
+        "scope": "scope: portable (unchanged)",
+        "keywords": "18 keywords > 10, capped to first 10"
+      }
+    },
+    {
+      "skill": "performance-budgets",
+      "path": "../skills/skills/quality/performance-budgets/SKILL.md",
+      "current": {
+        "schema_version": 7,
+        "category": "quality",
+        "type": "capability",
+        "scope": "reference",
+        "domain": "quality/performance",
+        "keywords_count": 14
+      },
+      "proposed": {
+        "schema_version": 8,
+        "subject": "data-analytics",
+        "operation": "do",
+        "scope": "workspace",
+        "keywords_count_post": 10
+      },
+      "confidence": "medium",
+      "reasoning": {
+        "subject": "category: quality + data-analytics keyword → data-analytics",
+        "operation": "type: capability + workflow-keyword presence (sequence, perform) → do",
+        "scope": "scope: reference → workspace (v8 rename)",
+        "keywords": "14 keywords > 10, capped to first 10"
+      }
+    },
+    {
+      "skill": "performance-engineering",
+      "path": "../skills/skills/quality/performance-engineering/SKILL.md",
+      "current": {
+        "schema_version": 7,
+        "category": "quality",
+        "type": "capability",
+        "scope": "portable",
+        "domain": "quality/performance",
+        "keywords_count": 10
+      },
+      "proposed": {
+        "schema_version": 8,
+        "subject": "data-analytics",
+        "operation": "know",
+        "scope": "portable",
+        "keywords_count_post": 10
+      },
+      "confidence": "medium",
+      "reasoning": {
+        "subject": "category: quality + data-analytics keyword → data-analytics",
+        "operation": "type: capability + no strong workflow signal → know (default for capability)",
+        "scope": "scope: portable (unchanged)",
+        "keywords": "10 keywords ≤ 10, no cap"
+      }
+    },
+    {
+      "skill": "performance-testing",
+      "path": "../skills/skills/quality/testing/performance-testing/SKILL.md",
+      "current": {
+        "schema_version": 7,
+        "category": "quality",
+        "type": "capability",
+        "scope": "reference",
+        "domain": "quality/testing",
+        "keywords_count": 15
+      },
+      "proposed": {
+        "schema_version": 8,
+        "subject": "data-analytics",
+        "operation": "know",
+        "scope": "workspace",
+        "keywords_count_post": 10
+      },
+      "confidence": "medium",
+      "reasoning": {
+        "subject": "category: quality + data-analytics keyword → data-analytics",
+        "operation": "type: capability + no strong workflow signal → know (default for capability)",
+        "scope": "scope: reference → workspace (v8 rename)",
+        "keywords": "15 keywords > 10, capped to first 10"
+      }
+    },
+    {
+      "skill": "postgres-rls",
+      "path": "../skills/skills/engineering/postgres-rls/SKILL.md",
+      "current": {
+        "schema_version": 7,
+        "category": "engineering",
+        "type": "capability",
+        "scope": "codebase",
+        "domain": "engineering/database-security",
+        "keywords_count": 20
+      },
+      "proposed": {
+        "schema_version": 8,
+        "subject": "frontend-ui",
+        "operation": "do",
+        "scope": "project",
+        "keywords_count_post": 10
+      },
+      "confidence": "medium",
+      "reasoning": {
+        "subject": "category: engineering + frontend (next, ui) → frontend-ui",
+        "operation": "type: capability + workflow-keyword presence (guide, audit, implement) → do",
+        "scope": "scope: codebase → project (v8 rename)",
+        "keywords": "20 keywords > 10, capped to first 10"
+      }
+    },
+    {
+      "skill": "printify",
+      "path": "../skills/skills/engineering/printify/SKILL.md",
+      "current": {
+        "schema_version": 7,
+        "category": "engineering",
+        "type": "capability",
+        "scope": "portable",
+        "domain": "engineering/integrations",
+        "keywords_count": 10
+      },
+      "proposed": {
+        "schema_version": 8,
+        "subject": "product-domain",
+        "operation": "know",
+        "scope": "portable",
+        "keywords_count_post": 10
+      },
+      "confidence": "medium",
+      "reasoning": {
+        "subject": "category: engineering + vendor-integration (shopify, printify) → product-domain",
+        "operation": "type: capability + no strong workflow signal → know (default for capability)",
+        "scope": "scope: portable (unchanged)",
+        "keywords": "10 keywords ≤ 10, no cap"
+      }
+    },
+    {
+      "skill": "prioritization",
+      "path": "../skills/skills/quality/prioritization/SKILL.md",
+      "current": {
+        "schema_version": 7,
+        "category": "quality",
+        "type": "capability",
+        "scope": "reference",
+        "domain": "quality/doctrine",
+        "keywords_count": 10
+      },
+      "proposed": {
+        "schema_version": 8,
+        "subject": "data-analytics",
+        "operation": "know",
+        "scope": "workspace",
+        "keywords_count_post": 10
+      },
+      "confidence": "medium",
+      "reasoning": {
+        "subject": "category: quality + data-analytics keyword → data-analytics",
+        "operation": "type: capability + no strong workflow signal → know (default for capability)",
+        "scope": "scope: reference → workspace (v8 rename)",
+        "keywords": "10 keywords ≤ 10, no cap"
+      }
+    },
+    {
+      "skill": "problem-approach-router",
+      "path": "../skills/skills/foundations/problem-approach-router/SKILL.md",
+      "current": {
+        "schema_version": 7,
+        "category": "foundations",
+        "type": "router",
+        "scope": "portable",
+        "domain": "foundations/meta",
+        "keywords_count": 14
+      },
+      "proposed": {
+        "schema_version": 8,
+        "subject": "meta-methods",
+        "operation": "decide",
+        "scope": "portable",
+        "keywords_count_post": 10
+      },
+      "confidence": "medium",
+      "reasoning": {
+        "subject": "category: foundations + no KO keyword → meta-methods (default)",
+        "operation": "type: router → decide (direct mapping per plan)",
+        "scope": "scope: portable (unchanged)",
+        "keywords": "14 keywords > 10, capped to first 10"
+      }
+    },
+    {
+      "skill": "problem-framing",
+      "path": "../skills/skills/design/problem-framing/SKILL.md",
+      "current": {
+        "schema_version": 7,
+        "category": "design",
+        "type": "capability",
+        "scope": "portable",
+        "keywords_count": 13
+      },
+      "proposed": {
+        "schema_version": 8,
+        "subject": "design-craft",
+        "operation": "know",
+        "scope": "portable",
+        "keywords_count_post": 10
+      },
+      "confidence": "medium",
+      "reasoning": {
+        "subject": "category: design + no frontend tilt → design-craft",
+        "operation": "type: capability + no strong workflow signal → know (default for capability)",
+        "scope": "scope: portable (unchanged)",
+        "keywords": "13 keywords > 10, capped to first 10"
+      }
+    },
+    {
+      "skill": "problem-locating-solving",
+      "path": "../skills/skills/engineering/problem-locating-solving/SKILL.md",
+      "current": {
+        "schema_version": 7,
+        "category": "engineering",
+        "type": "workflow",
+        "scope": "portable",
+        "domain": "engineering/debugging",
+        "keywords_count": 19
+      },
+      "proposed": {
+        "schema_version": 8,
+        "subject": "code-engineering",
+        "operation": "do",
+        "scope": "portable",
+        "keywords_count_post": 10
+      },
+      "confidence": "medium",
+      "reasoning": {
+        "subject": "category: engineering + no specialization → code-engineering (default)",
+        "operation": "type: workflow → do (direct mapping per plan)",
+        "scope": "scope: portable (unchanged)",
+        "keywords": "19 keywords > 10, capped to first 10"
+      }
+    },
+    {
+      "skill": "project-knowledge-extraction",
+      "path": "../skills/skills/agent/project-knowledge-extraction/SKILL.md",
+      "current": {
+        "schema_version": 7,
+        "category": "agent",
+        "type": "capability",
+        "scope": "portable",
+        "domain": "agent/knowledge",
+        "keywords_count": 10
+      },
+      "proposed": {
+        "schema_version": 8,
+        "subject": "agent-ops",
+        "operation": "know",
+        "scope": "portable",
+        "keywords_count_post": 10
+      },
+      "confidence": "medium",
+      "reasoning": {
+        "subject": "category: agent → agent-ops (direct mapping)",
+        "operation": "type: capability + no strong workflow signal → know (default for capability)",
+        "scope": "scope: portable (unchanged)",
+        "keywords": "10 keywords ≤ 10, no cap"
+      }
+    },
+    {
+      "skill": "prompt-craft",
+      "path": "../skills/skills/agent/prompt-craft/SKILL.md",
+      "current": {
+        "schema_version": 7,
+        "category": "agent",
+        "type": "capability",
+        "scope": "portable",
+        "domain": "agent/prompts",
+        "keywords_count": 22
+      },
+      "proposed": {
+        "schema_version": 8,
+        "subject": "agent-ops",
+        "operation": "know",
+        "scope": "portable",
+        "keywords_count_post": 10
+      },
+      "confidence": "medium",
+      "reasoning": {
+        "subject": "category: agent → agent-ops (direct mapping)",
+        "operation": "type: capability + no strong workflow signal → know (default for capability)",
+        "scope": "scope: portable (unchanged)",
+        "keywords": "22 keywords > 10, capped to first 10"
+      }
+    },
+    {
+      "skill": "prompt-injection-defense",
+      "path": "../skills/skills/quality/security/prompt-injection-defense/SKILL.md",
+      "current": {
+        "schema_version": 7,
+        "category": "quality",
+        "type": "capability",
+        "scope": "reference",
+        "domain": "quality/security",
+        "keywords_count": 15
+      },
+      "proposed": {
+        "schema_version": 8,
+        "subject": "quality-assurance",
+        "operation": "know",
+        "scope": "workspace",
+        "keywords_count_post": 10
+      },
+      "confidence": "medium",
+      "reasoning": {
+        "subject": "category: quality → quality-assurance (direct mapping)",
+        "operation": "type: capability + no strong workflow signal → know (default for capability)",
+        "scope": "scope: reference → workspace (v8 rename)",
+        "keywords": "15 keywords > 10, capped to first 10"
+      }
+    },
+    {
+      "skill": "property-based-testing",
+      "path": "../skills/skills/quality/testing/property-based-testing/SKILL.md",
+      "current": {
+        "schema_version": 7,
+        "category": "quality",
+        "type": "capability",
+        "scope": "reference",
+        "domain": "quality/testing",
+        "keywords_count": 13
+      },
+      "proposed": {
+        "schema_version": 8,
+        "subject": "data-analytics",
+        "operation": "know",
+        "scope": "workspace",
+        "keywords_count_post": 10
+      },
+      "confidence": "medium",
+      "reasoning": {
+        "subject": "category: quality + data-analytics keyword → data-analytics",
+        "operation": "type: capability + no strong workflow signal → know (default for capability)",
+        "scope": "scope: reference → workspace (v8 rename)",
+        "keywords": "13 keywords > 10, capped to first 10"
+      }
+    },
+    {
+      "skill": "prototyping",
+      "path": "../skills/skills/design/prototyping/SKILL.md",
+      "current": {
+        "schema_version": 7,
+        "category": "design",
+        "type": "capability",
+        "scope": "portable",
+        "keywords_count": 13
+      },
+      "proposed": {
+        "schema_version": 8,
+        "subject": "frontend-ui",
+        "operation": "know",
+        "scope": "portable",
+        "keywords_count_post": 10
+      },
+      "confidence": "medium",
+      "reasoning": {
+        "subject": "category: design + frontend keyword (ui, component) → frontend-ui",
+        "operation": "type: capability + no strong workflow signal → know (default for capability)",
+        "scope": "scope: portable (unchanged)",
+        "keywords": "13 keywords > 10, capped to first 10"
+      }
+    },
+    {
+      "skill": "query-optimization",
+      "path": "../skills/skills/engineering/data/query-optimization/SKILL.md",
+      "current": {
+        "schema_version": 7,
+        "category": "engineering",
+        "type": "capability",
+        "scope": "reference",
+        "domain": "engineering/data",
+        "keywords_count": 13
+      },
+      "proposed": {
+        "schema_version": 8,
+        "subject": "data-analytics",
+        "operation": "do",
+        "scope": "workspace",
+        "keywords_count_post": 10
+      },
+      "confidence": "medium",
+      "reasoning": {
+        "subject": "category: engineering + data-analytics (log) → data-analytics",
+        "operation": "type: capability + workflow-keyword presence (procedure, execute) → do",
+        "scope": "scope: reference → workspace (v8 rename)",
+        "keywords": "13 keywords > 10, capped to first 10"
+      }
+    },
+    {
+      "skill": "real-time-updates",
+      "path": "../skills/skills/engineering/real-time-updates/SKILL.md",
+      "current": {
+        "schema_version": 7,
+        "category": "engineering",
+        "type": "capability",
+        "scope": "portable",
+        "domain": "engineering/realtime",
+        "keywords_count": 4
+      },
+      "proposed": {
+        "schema_version": 8,
+        "subject": "product-domain",
+        "operation": "know",
+        "scope": "portable",
+        "keywords_count_post": 4
+      },
+      "confidence": "medium",
+      "reasoning": {
+        "subject": "category: engineering + vendor-integration (webhook) → product-domain",
+        "operation": "type: capability + no strong workflow signal → know (default for capability)",
+        "scope": "scope: portable (unchanged)",
+        "keywords": "4 keywords ≤ 10, no cap"
+      }
+    },
+    {
+      "skill": "ref-patterns",
+      "path": "../skills/skills/engineering/frontend/ref-patterns/SKILL.md",
+      "current": {
+        "schema_version": 7,
+        "category": "engineering",
+        "type": "capability",
+        "scope": "reference",
+        "domain": "engineering/frontend",
+        "keywords_count": 14
+      },
+      "proposed": {
+        "schema_version": 8,
+        "subject": "frontend-ui",
+        "operation": "know",
+        "scope": "workspace",
+        "keywords_count_post": 10
+      },
+      "confidence": "medium",
+      "reasoning": {
+        "subject": "category: engineering + frontend (frontend, react) → frontend-ui",
+        "operation": "type: capability + no strong workflow signal → know (default for capability)",
+        "scope": "scope: reference → workspace (v8 rename)",
+        "keywords": "14 keywords > 10, capped to first 10"
+      }
+    },
+    {
+      "skill": "refactor",
+      "path": "../skills/skills/engineering/refactor/SKILL.md",
+      "current": {
+        "schema_version": 7,
+        "category": "engineering",
+        "type": "workflow",
+        "scope": "portable",
+        "keywords_count": 26
+      },
+      "proposed": {
+        "schema_version": 8,
+        "subject": "code-engineering",
+        "operation": "do",
+        "scope": "portable",
+        "keywords_count_post": 10
+      },
+      "confidence": "medium",
+      "reasoning": {
+        "subject": "category: engineering + no specialization → code-engineering (default)",
+        "operation": "type: workflow → do (direct mapping per plan)",
+        "scope": "scope: portable (unchanged)",
+        "keywords": "26 keywords > 10, capped to first 10"
+      }
+    },
+    {
+      "skill": "rendering-models",
+      "path": "../skills/skills/engineering/frontend/rendering-models/SKILL.md",
+      "current": {
+        "schema_version": 7,
+        "category": "engineering",
+        "type": "capability",
+        "scope": "reference",
+        "domain": "engineering/frontend",
+        "keywords_count": 13
+      },
+      "proposed": {
+        "schema_version": 8,
+        "subject": "frontend-ui",
+        "operation": "know",
+        "scope": "workspace",
+        "keywords_count_post": 10
+      },
+      "confidence": "medium",
+      "reasoning": {
+        "subject": "category: engineering + frontend (frontend, react) → frontend-ui",
+        "operation": "type: capability + no strong workflow signal → know (default for capability)",
+        "scope": "scope: reference → workspace (v8 rename)",
+        "keywords": "13 keywords > 10, capped to first 10"
+      }
+    },
+    {
+      "skill": "replication-patterns",
+      "path": "../skills/skills/engineering/data/replication-patterns/SKILL.md",
+      "current": {
+        "schema_version": 7,
+        "category": "engineering",
+        "type": "capability",
+        "scope": "reference",
+        "domain": "engineering/data",
+        "keywords_count": 13
+      },
+      "proposed": {
+        "schema_version": 8,
+        "subject": "data-analytics",
+        "operation": "know",
+        "scope": "workspace",
+        "keywords_count_post": 10
+      },
+      "confidence": "medium",
+      "reasoning": {
+        "subject": "category: engineering + data-analytics (log) → data-analytics",
+        "operation": "type: capability + no strong workflow signal → know (default for capability)",
+        "scope": "scope: reference → workspace (v8 rename)",
+        "keywords": "13 keywords > 10, capped to first 10"
+      }
+    },
+    {
+      "skill": "research-synthesis",
+      "path": "../skills/skills/design/research-synthesis/SKILL.md",
+      "current": {
+        "schema_version": 7,
+        "category": "design",
+        "type": "capability",
+        "scope": "portable",
+        "keywords_count": 13
+      },
+      "proposed": {
+        "schema_version": 8,
+        "subject": "design-craft",
+        "operation": "know",
+        "scope": "portable",
+        "keywords_count_post": 10
+      },
+      "confidence": "medium",
+      "reasoning": {
+        "subject": "category: design + no frontend tilt → design-craft",
+        "operation": "type: capability + no strong workflow signal → know (default for capability)",
+        "scope": "scope: portable (unchanged)",
+        "keywords": "13 keywords > 10, capped to first 10"
+      }
+    },
+    {
+      "skill": "route-handler-design",
+      "path": "../skills/skills/engineering/frontend/route-handler-design/SKILL.md",
+      "current": {
+        "schema_version": 7,
+        "category": "engineering",
+        "type": "capability",
+        "scope": "reference",
+        "domain": "engineering/frontend",
+        "keywords_count": 14
+      },
+      "proposed": {
+        "schema_version": 8,
+        "subject": "product-domain",
+        "operation": "do",
+        "scope": "workspace",
+        "keywords_count_post": 10
+      },
+      "confidence": "medium",
+      "reasoning": {
+        "subject": "category: engineering + vendor-integration (webhook) → product-domain",
+        "operation": "type: capability + workflow-keyword presence (process, how to) → do",
+        "scope": "scope: reference → workspace (v8 rename)",
+        "keywords": "14 keywords > 10, capped to first 10"
+      }
+    },
+    {
+      "skill": "schema-evolution",
+      "path": "../skills/skills/engineering/data/schema-evolution/SKILL.md",
+      "current": {
+        "schema_version": 7,
+        "category": "engineering",
+        "type": "capability",
+        "scope": "reference",
+        "domain": "engineering/data",
+        "keywords_count": 11
+      },
+      "proposed": {
+        "schema_version": 8,
+        "subject": "data-analytics",
+        "operation": "know",
+        "scope": "workspace",
+        "keywords_count_post": 10
+      },
+      "confidence": "medium",
+      "reasoning": {
+        "subject": "category: engineering + data-analytics (log) → data-analytics",
+        "operation": "type: capability + no strong workflow signal → know (default for capability)",
+        "scope": "scope: reference → workspace (v8 rename)",
+        "keywords": "11 keywords > 10, capped to first 10"
+      }
+    },
+    {
+      "skill": "security-fundamentals",
+      "path": "../skills/skills/quality/security/security-fundamentals/SKILL.md",
+      "current": {
+        "schema_version": 7,
+        "category": "quality",
+        "type": "capability",
+        "scope": "reference",
+        "domain": "quality/security",
+        "keywords_count": 16
+      },
+      "proposed": {
+        "schema_version": 8,
+        "subject": "quality-assurance",
+        "operation": "do",
+        "scope": "workspace",
+        "keywords_count_post": 10
+      },
+      "confidence": "medium",
+      "reasoning": {
+        "subject": "category: quality → quality-assurance (direct mapping)",
+        "operation": "type: capability + workflow-keyword presence (how to, implement) → do",
+        "scope": "scope: reference → workspace (v8 rename)",
+        "keywords": "16 keywords > 10, capped to first 10"
+      }
+    },
+    {
+      "skill": "semantic-center",
+      "path": "../skills/skills/foundations/semantics/semantic-center/SKILL.md",
+      "current": {
+        "schema_version": 7,
+        "category": "foundations",
+        "type": "workflow",
+        "scope": "portable",
+        "domain": "foundations/semantics",
+        "keywords_count": 19
+      },
+      "proposed": {
+        "schema_version": 8,
+        "subject": "knowledge-organization",
+        "operation": "do",
+        "scope": "portable",
+        "keywords_count_post": 10
+      },
+      "confidence": "medium",
+      "reasoning": {
+        "subject": "category: foundations + KO keyword (semantics) → knowledge-organization",
+        "operation": "type: workflow → do (direct mapping per plan)",
+        "scope": "scope: portable (unchanged)",
+        "keywords": "19 keywords > 10, capped to first 10"
+      }
+    },
+    {
+      "skill": "semantic-relations",
+      "path": "../skills/skills/foundations/semantics/semantic-relations/SKILL.md",
+      "current": {
+        "schema_version": 7,
+        "category": "foundations",
+        "type": "capability",
+        "scope": "portable",
+        "domain": "foundations/semantics",
+        "keywords_count": 19
+      },
+      "proposed": {
+        "schema_version": 8,
+        "subject": "knowledge-organization",
+        "operation": "know",
+        "scope": "portable",
+        "keywords_count_post": 10
+      },
+      "confidence": "medium",
+      "reasoning": {
+        "subject": "category: foundations + KO keyword (semantics, ontology) → knowledge-organization",
+        "operation": "type: capability + no strong workflow signal → know (default for capability)",
+        "scope": "scope: portable (unchanged)",
+        "keywords": "19 keywords > 10, capped to first 10"
+      }
+    },
+    {
+      "skill": "semantics",
+      "path": "../skills/skills/foundations/semantics/semantics/SKILL.md",
+      "current": {
+        "schema_version": 7,
+        "category": "foundations",
+        "type": "capability",
+        "scope": "portable",
+        "domain": "foundations/semantics",
+        "keywords_count": 20
+      },
+      "proposed": {
+        "schema_version": 8,
+        "subject": "knowledge-organization",
+        "operation": "know",
+        "scope": "portable",
+        "keywords_count_post": 10
+      },
+      "confidence": "medium",
+      "reasoning": {
+        "subject": "category: foundations + KO keyword (taxonomy, semantics) → knowledge-organization",
+        "operation": "type: capability + no strong workflow signal → know (default for capability)",
+        "scope": "scope: portable (unchanged)",
+        "keywords": "20 keywords > 10, capped to first 10"
+      }
+    },
+    {
+      "skill": "semiotics",
+      "path": "../skills/skills/design/semiotics/SKILL.md",
+      "current": {
+        "schema_version": 7,
+        "category": "design",
+        "type": "capability",
+        "scope": "portable",
+        "domain": "design/semantics",
+        "keywords_count": 16
+      },
+      "proposed": {
+        "schema_version": 8,
+        "subject": "frontend-ui",
+        "operation": "know",
+        "scope": "portable",
+        "keywords_count_post": 10
+      },
+      "confidence": "medium",
+      "reasoning": {
+        "subject": "category: design + frontend keyword (ui, a11y) → frontend-ui",
+        "operation": "type: capability + no strong workflow signal → know (default for capability)",
+        "scope": "scope: portable (unchanged)",
+        "keywords": "16 keywords > 10, capped to first 10"
+      }
+    },
+    {
+      "skill": "seo-strategy",
+      "path": "../skills/skills/quality/seo-strategy/SKILL.md",
+      "current": {
+        "schema_version": 7,
+        "category": "quality",
+        "type": "capability",
+        "scope": "portable",
+        "domain": "quality/display",
+        "keywords_count": 17
+      },
+      "proposed": {
+        "schema_version": 8,
+        "subject": "quality-assurance",
+        "operation": "know",
+        "scope": "portable",
+        "keywords_count_post": 10
+      },
+      "confidence": "medium",
+      "reasoning": {
+        "subject": "category: quality → quality-assurance (direct mapping)",
+        "operation": "type: capability + no strong workflow signal → know (default for capability)",
+        "scope": "scope: portable (unchanged)",
+        "keywords": "17 keywords > 10, capped to first 10"
+      }
+    },
+    {
+      "skill": "server-actions-design",
+      "path": "../skills/skills/engineering/frontend/server-actions-design/SKILL.md",
+      "current": {
+        "schema_version": 7,
+        "category": "engineering",
+        "type": "capability",
+        "scope": "reference",
+        "domain": "engineering/frontend",
+        "keywords_count": 12
+      },
+      "proposed": {
+        "schema_version": 8,
+        "subject": "frontend-ui",
+        "operation": "know",
+        "scope": "workspace",
+        "keywords_count_post": 10
+      },
+      "confidence": "medium",
+      "reasoning": {
+        "subject": "category: engineering + frontend (frontend, react) → frontend-ui",
+        "operation": "type: capability + no strong workflow signal → know (default for capability)",
+        "scope": "scope: reference → workspace (v8 rename)",
+        "keywords": "12 keywords > 10, capped to first 10"
+      }
+    },
+    {
+      "skill": "server-components-design",
+      "path": "../skills/skills/engineering/frontend/server-components-design/SKILL.md",
+      "current": {
+        "schema_version": 7,
+        "category": "engineering",
+        "type": "capability",
+        "scope": "reference",
+        "domain": "engineering/frontend",
+        "keywords_count": 10
+      },
+      "proposed": {
+        "schema_version": 8,
+        "subject": "frontend-ui",
+        "operation": "know",
+        "scope": "workspace",
+        "keywords_count_post": 10
+      },
+      "confidence": "medium",
+      "reasoning": {
+        "subject": "category: engineering + frontend (frontend, react) → frontend-ui",
+        "operation": "type: capability + no strong workflow signal → know (default for capability)",
+        "scope": "scope: reference → workspace (v8 rename)",
+        "keywords": "10 keywords ≤ 10, no cap"
+      }
+    },
+    {
+      "skill": "sharding-strategy",
+      "path": "../skills/skills/engineering/data/sharding-strategy/SKILL.md",
+      "current": {
+        "schema_version": 7,
+        "category": "engineering",
+        "type": "capability",
+        "scope": "reference",
+        "domain": "engineering/data",
+        "keywords_count": 10
+      },
+      "proposed": {
+        "schema_version": 8,
+        "subject": "code-engineering",
+        "operation": "know",
+        "scope": "workspace",
+        "keywords_count_post": 10
+      },
+      "confidence": "medium",
+      "reasoning": {
+        "subject": "category: engineering + no specialization → code-engineering (default)",
+        "operation": "type: capability + no strong workflow signal → know (default for capability)",
+        "scope": "scope: reference → workspace (v8 rename)",
+        "keywords": "10 keywords ≤ 10, no cap"
+      }
+    },
+    {
+      "skill": "shopify",
+      "path": "../skills/skills/engineering/shopify/SKILL.md",
+      "current": {
+        "schema_version": 7,
+        "category": "engineering",
+        "type": "capability",
+        "scope": "portable",
+        "domain": "engineering/integrations",
+        "keywords_count": 11
+      },
+      "proposed": {
+        "schema_version": 8,
+        "subject": "product-domain",
+        "operation": "know",
+        "scope": "portable",
+        "keywords_count_post": 10
+      },
+      "confidence": "medium",
+      "reasoning": {
+        "subject": "category: engineering + vendor-integration (shopify, webhook) → product-domain",
+        "operation": "type: capability + no strong workflow signal → know (default for capability)",
+        "scope": "scope: portable (unchanged)",
+        "keywords": "11 keywords > 10, capped to first 10"
+      }
+    },
+    {
+      "skill": "skill-infrastructure",
+      "path": "../skills/skills/agent/skill-system/skill-infrastructure/SKILL.md",
+      "current": {
+        "schema_version": 7,
+        "category": "agent",
+        "type": "capability",
+        "scope": "portable",
+        "domain": "agent/skill-system",
+        "keywords_count": 31
+      },
+      "proposed": {
+        "schema_version": 8,
+        "subject": "agent-ops",
+        "operation": "do",
+        "scope": "portable",
+        "keywords_count_post": 10
+      },
+      "confidence": "medium",
+      "reasoning": {
+        "subject": "category: agent → agent-ops (direct mapping)",
+        "operation": "type: capability + workflow-keyword presence (workflow, protocol, audit) → do",
+        "scope": "scope: portable (unchanged)",
+        "keywords": "31 keywords > 10, capped to first 10"
+      }
+    },
+    {
+      "skill": "skill-router",
+      "path": "../skills/skills/agent/skill-system/skill-router/SKILL.md",
+      "current": {
+        "schema_version": 7,
+        "category": "agent",
+        "type": "router",
+        "scope": "portable",
+        "domain": "agent/skill-system",
+        "keywords_count": 25
+      },
+      "proposed": {
+        "schema_version": 8,
+        "subject": "agent-ops",
+        "operation": "decide",
+        "scope": "portable",
+        "keywords_count_post": 10
+      },
+      "confidence": "medium",
+      "reasoning": {
+        "subject": "category: agent → agent-ops (direct mapping)",
+        "operation": "type: router → decide (direct mapping per plan)",
+        "scope": "scope: portable (unchanged)",
+        "keywords": "25 keywords > 10, capped to first 10"
+      }
+    },
+    {
+      "skill": "skill-scaffold",
+      "path": "../skills/skills/agent/skill-system/skill-scaffold/SKILL.md",
+      "current": {
+        "schema_version": 7,
+        "category": "agent",
+        "type": "capability",
+        "scope": "reference",
+        "domain": "agent/skill-system",
+        "keywords_count": 19
+      },
+      "proposed": {
+        "schema_version": 8,
+        "subject": "agent-ops",
+        "operation": "know",
+        "scope": "workspace",
+        "keywords_count_post": 10
+      },
+      "confidence": "medium",
+      "reasoning": {
+        "subject": "category: agent → agent-ops (direct mapping)",
+        "operation": "type: capability + no strong workflow signal → know (default for capability)",
+        "scope": "scope: reference → workspace (v8 rename)",
+        "keywords": "19 keywords > 10, capped to first 10"
+      }
+    },
+    {
+      "skill": "snapshot-testing",
+      "path": "../skills/skills/quality/testing/snapshot-testing/SKILL.md",
+      "current": {
+        "schema_version": 7,
+        "category": "quality",
+        "type": "capability",
+        "scope": "reference",
+        "domain": "quality/testing",
+        "keywords_count": 12
+      },
+      "proposed": {
+        "schema_version": 8,
+        "subject": "quality-assurance",
+        "operation": "know",
+        "scope": "workspace",
+        "keywords_count_post": 10
+      },
+      "confidence": "medium",
+      "reasoning": {
+        "subject": "category: quality → quality-assurance (direct mapping)",
+        "operation": "type: capability + no strong workflow signal → know (default for capability)",
+        "scope": "scope: reference → workspace (v8 rename)",
+        "keywords": "12 keywords > 10, capped to first 10"
+      }
+    },
+    {
+      "skill": "spec-driven-development",
+      "path": "../skills/skills/engineering/spec-driven-development/SKILL.md",
+      "current": {
+        "schema_version": 7,
+        "category": "engineering",
+        "type": "workflow",
+        "scope": "reference",
+        "domain": "engineering/methodology",
+        "keywords_count": 11
+      },
+      "proposed": {
+        "schema_version": 8,
+        "subject": "data-analytics",
+        "operation": "do",
+        "scope": "workspace",
+        "keywords_count_post": 10
+      },
+      "confidence": "medium",
+      "reasoning": {
+        "subject": "category: engineering + data-analytics (log) → data-analytics",
+        "operation": "type: workflow → do (direct mapping per plan)",
+        "scope": "scope: reference → workspace (v8 rename)",
+        "keywords": "11 keywords > 10, capped to first 10"
+      }
+    },
+    {
+      "skill": "state-machine-modeling",
+      "path": "../skills/skills/engineering/state-machine-modeling/SKILL.md",
+      "current": {
+        "schema_version": 7,
+        "category": "engineering",
+        "type": "capability",
+        "scope": "portable",
+        "domain": "modeling/state-machines",
+        "keywords_count": 9
+      },
+      "proposed": {
+        "schema_version": 8,
+        "subject": "data-analytics",
+        "operation": "do",
+        "scope": "portable",
+        "keywords_count_post": 9
+      },
+      "confidence": "medium",
+      "reasoning": {
+        "subject": "category: engineering + data-analytics (observability) → data-analytics",
+        "operation": "type: capability + workflow-keyword presence (workflow, lifecycle) → do",
+        "scope": "scope: portable (unchanged)",
+        "keywords": "9 keywords ≤ 10, no cap"
+      }
+    },
+    {
+      "skill": "state-management",
+      "path": "../skills/skills/engineering/frontend/state-management/SKILL.md",
+      "current": {
+        "schema_version": 7,
+        "category": "engineering",
+        "type": "capability",
+        "scope": "reference",
+        "domain": "engineering/frontend",
+        "keywords_count": 18
+      },
+      "proposed": {
+        "schema_version": 8,
+        "subject": "frontend-ui",
+        "operation": "know",
+        "scope": "workspace",
+        "keywords_count_post": 10
+      },
+      "confidence": "medium",
+      "reasoning": {
+        "subject": "category: engineering + frontend (frontend, react) → frontend-ui",
+        "operation": "type: capability + no strong workflow signal → know (default for capability)",
+        "scope": "scope: reference → workspace (v8 rename)",
+        "keywords": "18 keywords > 10, capped to first 10"
+      }
+    },
+    {
+      "skill": "streaming-architecture",
+      "path": "../skills/skills/engineering/streaming-architecture/SKILL.md",
+      "current": {
+        "schema_version": 7,
+        "category": "engineering",
+        "type": "capability",
+        "scope": "reference",
+        "domain": "engineering/realtime",
+        "keywords_count": 17
+      },
+      "proposed": {
+        "schema_version": 8,
+        "subject": "frontend-ui",
+        "operation": "do",
+        "scope": "workspace",
+        "keywords_count_post": 10
+      },
+      "confidence": "medium",
+      "reasoning": {
+        "subject": "category: engineering + frontend (react, component) → frontend-ui",
+        "operation": "type: capability + workflow-keyword presence (sequence, protocol) → do",
+        "scope": "scope: reference → workspace (v8 rename)",
+        "keywords": "17 keywords > 10, capped to first 10"
+      }
+    },
+    {
+      "skill": "stripe-ledger-recon",
+      "path": "../skills/skills/engineering/stripe-ledger-recon/SKILL.md",
+      "current": {
+        "schema_version": 7,
+        "category": "engineering",
+        "type": "capability",
+        "scope": "codebase",
+        "keywords_count": 8
+      },
+      "proposed": {
+        "schema_version": 8,
+        "subject": "product-domain",
+        "operation": "do",
+        "scope": "project",
+        "keywords_count_post": 8
+      },
+      "confidence": "medium",
+      "reasoning": {
+        "subject": "category: engineering + vendor-integration (shopify, stripe) → product-domain",
+        "operation": "type: capability + workflow-keyword presence (lifecycle, implement) → do",
+        "scope": "scope: codebase → project (v8 rename)",
+        "keywords": "8 keywords ≤ 10, no cap"
+      }
+    },
+    {
+      "skill": "summarization",
+      "path": "../skills/skills/agent/summarization/SKILL.md",
+      "current": {
+        "schema_version": 7,
+        "category": "agent",
+        "type": "capability",
+        "scope": "reference",
+        "domain": "agent/cognition",
+        "keywords_count": 12
+      },
+      "proposed": {
+        "schema_version": 8,
+        "subject": "agent-ops",
+        "operation": "know",
+        "scope": "workspace",
+        "keywords_count_post": 10
+      },
+      "confidence": "medium",
+      "reasoning": {
+        "subject": "category: agent → agent-ops (direct mapping)",
+        "operation": "type: capability + no strong workflow signal → know (default for capability)",
+        "scope": "scope: reference → workspace (v8 rename)",
+        "keywords": "12 keywords > 10, capped to first 10"
+      }
+    },
+    {
+      "skill": "suspense-patterns",
+      "path": "../skills/skills/engineering/frontend/suspense-patterns/SKILL.md",
+      "current": {
+        "schema_version": 7,
+        "category": "engineering",
+        "type": "capability",
+        "scope": "reference",
+        "domain": "engineering/frontend",
+        "keywords_count": 11
+      },
+      "proposed": {
+        "schema_version": 8,
+        "subject": "frontend-ui",
+        "operation": "know",
+        "scope": "workspace",
+        "keywords_count_post": 10
+      },
+      "confidence": "medium",
+      "reasoning": {
+        "subject": "category: engineering + frontend (frontend, react) → frontend-ui",
+        "operation": "type: capability + no strong workflow signal → know (default for capability)",
+        "scope": "scope: reference → workspace (v8 rename)",
+        "keywords": "11 keywords > 10, capped to first 10"
+      }
+    },
+    {
+      "skill": "system-interface-contracts",
+      "path": "../skills/skills/engineering/system-interface-contracts/SKILL.md",
+      "current": {
+        "schema_version": 7,
+        "category": "engineering",
+        "type": "capability",
+        "scope": "portable",
+        "domain": "architecture/contracts",
+        "keywords_count": 10
+      },
+      "proposed": {
+        "schema_version": 8,
+        "subject": "code-engineering",
+        "operation": "know",
+        "scope": "portable",
+        "keywords_count_post": 10
+      },
+      "confidence": "medium",
+      "reasoning": {
+        "subject": "category: engineering + no specialization → code-engineering (default)",
+        "operation": "type: capability + no strong workflow signal → know (default for capability)",
+        "scope": "scope: portable (unchanged)",
+        "keywords": "10 keywords ≤ 10, no cap"
+      }
+    },
+    {
+      "skill": "task-analysis",
+      "path": "../skills/skills/foundations/task-analysis/SKILL.md",
+      "current": {
+        "schema_version": 7,
+        "category": "foundations",
+        "type": "workflow",
+        "scope": "portable",
+        "domain": "foundations/analysis",
+        "keywords_count": 18
+      },
+      "proposed": {
+        "schema_version": 8,
+        "subject": "meta-methods",
+        "operation": "do",
+        "scope": "portable",
+        "keywords_count_post": 10
+      },
+      "confidence": "medium",
+      "reasoning": {
+        "subject": "category: foundations + no KO keyword → meta-methods (default)",
+        "operation": "type: workflow → do (direct mapping per plan)",
+        "scope": "scope: portable (unchanged)",
+        "keywords": "18 keywords > 10, capped to first 10"
+      }
+    },
+    {
+      "skill": "task-path-optimization",
+      "path": "../skills/skills/agent/task-path-optimization/SKILL.md",
+      "current": {
+        "schema_version": 7,
+        "category": "agent",
+        "type": "capability",
+        "scope": "portable",
+        "keywords_count": 13
+      },
+      "proposed": {
+        "schema_version": 8,
+        "subject": "agent-ops",
+        "operation": "know",
+        "scope": "portable",
+        "keywords_count_post": 10
+      },
+      "confidence": "medium",
+      "reasoning": {
+        "subject": "category: agent → agent-ops (direct mapping)",
+        "operation": "type: capability + no strong workflow signal → know (default for capability)",
+        "scope": "scope: portable (unchanged)",
+        "keywords": "13 keywords > 10, capped to first 10"
+      }
+    },
+    {
+      "skill": "taxonomy-design",
+      "path": "../skills/skills/foundations/taxonomy-design/SKILL.md",
+      "current": {
+        "schema_version": 7,
+        "category": "foundations",
+        "type": "capability",
+        "scope": "portable",
+        "domain": "foundations/classification",
+        "keywords_count": 11
+      },
+      "proposed": {
+        "schema_version": 8,
+        "subject": "knowledge-organization",
+        "operation": "know",
+        "scope": "portable",
+        "keywords_count_post": 10
+      },
+      "confidence": "medium",
+      "reasoning": {
+        "subject": "category: foundations + KO keyword (taxonomy, ontology) → knowledge-organization",
+        "operation": "type: capability + no strong workflow signal → know (default for capability)",
+        "scope": "scope: portable (unchanged)",
+        "keywords": "11 keywords > 10, capped to first 10"
+      }
+    },
+    {
+      "skill": "test-coverage-strategy",
+      "path": "../skills/skills/quality/testing/test-coverage-strategy/SKILL.md",
+      "current": {
+        "schema_version": 7,
+        "category": "quality",
+        "type": "capability",
+        "scope": "reference",
+        "domain": "quality/testing",
+        "keywords_count": 12
+      },
+      "proposed": {
+        "schema_version": 8,
+        "subject": "data-analytics",
+        "operation": "know",
+        "scope": "workspace",
+        "keywords_count_post": 10
+      },
+      "confidence": "medium",
+      "reasoning": {
+        "subject": "category: quality + data-analytics keyword → data-analytics",
+        "operation": "type: capability + no strong workflow signal → know (default for capability)",
+        "scope": "scope: reference → workspace (v8 rename)",
+        "keywords": "12 keywords > 10, capped to first 10"
+      }
+    },
+    {
+      "skill": "test-doubles-design",
+      "path": "../skills/skills/quality/testing/test-doubles-design/SKILL.md",
+      "current": {
+        "schema_version": 7,
+        "category": "quality",
+        "type": "capability",
+        "scope": "reference",
+        "domain": "quality/testing",
+        "keywords_count": 16
+      },
+      "proposed": {
+        "schema_version": 8,
+        "subject": "quality-assurance",
+        "operation": "know",
+        "scope": "workspace",
+        "keywords_count_post": 10
+      },
+      "confidence": "medium",
+      "reasoning": {
+        "subject": "category: quality → quality-assurance (direct mapping)",
+        "operation": "type: capability + no strong workflow signal → know (default for capability)",
+        "scope": "scope: reference → workspace (v8 rename)",
+        "keywords": "16 keywords > 10, capped to first 10"
+      }
+    },
+    {
+      "skill": "test-driven-development",
+      "path": "../skills/skills/quality/testing/test-driven-development/SKILL.md",
+      "current": {
+        "schema_version": 7,
+        "category": "quality",
+        "type": "capability",
+        "scope": "reference",
+        "domain": "quality/testing",
+        "keywords_count": 14
+      },
+      "proposed": {
+        "schema_version": 8,
+        "subject": "quality-assurance",
+        "operation": "do",
+        "scope": "workspace",
+        "keywords_count_post": 10
+      },
+      "confidence": "medium",
+      "reasoning": {
+        "subject": "category: quality → quality-assurance (direct mapping)",
+        "operation": "type: capability + workflow-keyword presence (workflow, process, implement) → do",
+        "scope": "scope: reference → workspace (v8 rename)",
+        "keywords": "14 keywords > 10, capped to first 10"
+      }
+    },
+    {
+      "skill": "testing-strategy",
+      "path": "../skills/skills/quality/testing-strategy/SKILL.md",
+      "current": {
+        "schema_version": 7,
+        "category": "quality",
+        "type": "capability",
+        "scope": "portable",
+        "keywords_count": 25
+      },
+      "proposed": {
+        "schema_version": 8,
+        "subject": "quality-assurance",
+        "operation": "know",
+        "scope": "portable",
+        "keywords_count_post": 10
+      },
+      "confidence": "medium",
+      "reasoning": {
+        "subject": "category: quality → quality-assurance (direct mapping)",
+        "operation": "type: capability + no strong workflow signal → know (default for capability)",
+        "scope": "scope: portable (unchanged)",
+        "keywords": "25 keywords > 10, capped to first 10"
+      }
+    },
+    {
+      "skill": "theme-system-design",
+      "path": "../skills/skills/design/theme-system-design/SKILL.md",
+      "current": {
+        "schema_version": 7,
+        "category": "design",
+        "type": "capability",
+        "scope": "portable",
+        "keywords_count": 12
+      },
+      "proposed": {
+        "schema_version": 8,
+        "subject": "frontend-ui",
+        "operation": "know",
+        "scope": "portable",
+        "keywords_count_post": 10
+      },
+      "confidence": "medium",
+      "reasoning": {
+        "subject": "category: design + frontend keyword (css) → frontend-ui",
+        "operation": "type: capability + no strong workflow signal → know (default for capability)",
+        "scope": "scope: portable (unchanged)",
+        "keywords": "12 keywords > 10, capped to first 10"
+      }
+    },
+    {
+      "skill": "tool-call-flow",
+      "path": "../skills/skills/agent/tool-call-flow/SKILL.md",
+      "current": {
+        "schema_version": 7,
+        "category": "agent",
+        "type": "capability",
+        "scope": "reference",
+        "domain": "agent/protocol",
+        "keywords_count": 14
+      },
+      "proposed": {
+        "schema_version": 8,
+        "subject": "agent-ops",
+        "operation": "do",
+        "scope": "workspace",
+        "keywords_count_post": 10
+      },
+      "confidence": "medium",
+      "reasoning": {
+        "subject": "category: agent → agent-ops (direct mapping)",
+        "operation": "type: capability + workflow-keyword presence (protocol, execute) → do",
+        "scope": "scope: reference → workspace (v8 rename)",
+        "keywords": "14 keywords > 10, capped to first 10"
+      }
+    },
+    {
+      "skill": "tool-call-strategy",
+      "path": "../skills/skills/engineering/tool-call-strategy/SKILL.md",
+      "current": {
+        "schema_version": 7,
+        "category": "engineering",
+        "type": "capability",
+        "scope": "portable",
+        "domain": "ai-engineering/tool-use",
+        "keywords_count": 22
+      },
+      "proposed": {
+        "schema_version": 8,
+        "subject": "code-engineering",
+        "operation": "know",
+        "scope": "portable",
+        "keywords_count_post": 10
+      },
+      "confidence": "medium",
+      "reasoning": {
+        "subject": "category: engineering + no specialization → code-engineering (default)",
+        "operation": "type: capability + no strong workflow signal → know (default for capability)",
+        "scope": "scope: portable (unchanged)",
+        "keywords": "22 keywords > 10, capped to first 10"
+      }
+    },
+    {
+      "skill": "transaction-isolation",
+      "path": "../skills/skills/engineering/data/transaction-isolation/SKILL.md",
+      "current": {
+        "schema_version": 7,
+        "category": "engineering",
+        "type": "capability",
+        "scope": "reference",
+        "domain": "engineering/data",
+        "keywords_count": 13
+      },
+      "proposed": {
+        "schema_version": 8,
+        "subject": "code-engineering",
+        "operation": "do",
+        "scope": "workspace",
+        "keywords_count_post": 10
+      },
+      "confidence": "medium",
+      "reasoning": {
+        "subject": "category: engineering + no specialization → code-engineering (default)",
+        "operation": "type: capability + workflow-keyword presence (how to, perform, implement) → do",
+        "scope": "scope: reference → workspace (v8 rename)",
+        "keywords": "13 keywords > 10, capped to first 10"
+      }
+    },
+    {
+      "skill": "type-safety",
+      "path": "../skills/skills/quality/type-safety/SKILL.md",
+      "current": {
+        "schema_version": 7,
+        "category": "quality",
+        "type": "capability",
+        "scope": "reference",
+        "domain": "quality/types",
+        "keywords_count": 10
+      },
+      "proposed": {
+        "schema_version": 8,
+        "subject": "quality-assurance",
+        "operation": "know",
+        "scope": "workspace",
+        "keywords_count_post": 10
+      },
+      "confidence": "medium",
+      "reasoning": {
+        "subject": "category: quality → quality-assurance (direct mapping)",
+        "operation": "type: capability + no strong workflow signal → know (default for capability)",
+        "scope": "scope: reference → workspace (v8 rename)",
+        "keywords": "10 keywords ≤ 10, no cap"
+      }
+    },
+    {
+      "skill": "typography-system",
+      "path": "../skills/skills/design/typography-system/SKILL.md",
+      "current": {
+        "schema_version": 7,
+        "category": "design",
+        "type": "capability",
+        "scope": "portable",
+        "keywords_count": 12
+      },
+      "proposed": {
+        "schema_version": 8,
+        "subject": "design-craft",
+        "operation": "know",
+        "scope": "portable",
+        "keywords_count_post": 10
+      },
+      "confidence": "medium",
+      "reasoning": {
+        "subject": "category: design + no frontend tilt → design-craft",
+        "operation": "type: capability + no strong workflow signal → know (default for capability)",
+        "scope": "scope: portable (unchanged)",
+        "keywords": "12 keywords > 10, capped to first 10"
+      }
+    },
+    {
+      "skill": "usability-testing",
+      "path": "../skills/skills/design/usability-testing/SKILL.md",
+      "current": {
+        "schema_version": 7,
+        "category": "design",
+        "type": "capability",
+        "scope": "portable",
+        "keywords_count": 14
+      },
+      "proposed": {
+        "schema_version": 8,
+        "subject": "frontend-ui",
+        "operation": "do",
+        "scope": "portable",
+        "keywords_count_post": 10
+      },
+      "confidence": "medium",
+      "reasoning": {
+        "subject": "category: design + frontend keyword (ui) → frontend-ui",
+        "operation": "type: capability + workflow-keyword presence (protocol, pipeline) → do",
+        "scope": "scope: portable (unchanged)",
+        "keywords": "14 keywords > 10, capped to first 10"
+      }
+    },
+    {
+      "skill": "user-research",
+      "path": "../skills/skills/design/user-research/SKILL.md",
+      "current": {
+        "schema_version": 7,
+        "category": "design",
+        "type": "capability",
+        "scope": "portable",
+        "keywords_count": 13
+      },
+      "proposed": {
+        "schema_version": 8,
+        "subject": "frontend-ui",
+        "operation": "know",
+        "scope": "portable",
+        "keywords_count_post": 10
+      },
+      "confidence": "medium",
+      "reasoning": {
+        "subject": "category: design + frontend keyword (ui) → frontend-ui",
+        "operation": "type: capability + no strong workflow signal → know (default for capability)",
+        "scope": "scope: portable (unchanged)",
+        "keywords": "13 keywords > 10, capped to first 10"
+      }
+    },
+    {
+      "skill": "vercel-composition-patterns",
+      "path": "../skills/skills/engineering/frontend/vercel-composition-patterns/SKILL.md",
+      "current": {
+        "schema_version": 7,
+        "category": "engineering",
+        "type": "capability",
+        "scope": "portable",
+        "domain": "engineering/frontend",
+        "keywords_count": 8
+      },
+      "proposed": {
+        "schema_version": 8,
+        "subject": "frontend-ui",
+        "operation": "know",
+        "scope": "portable",
+        "keywords_count_post": 8
+      },
+      "confidence": "medium",
+      "reasoning": {
+        "subject": "category: engineering + frontend (frontend, react) → frontend-ui",
+        "operation": "type: capability + no strong workflow signal → know (default for capability)",
+        "scope": "scope: portable (unchanged)",
+        "keywords": "8 keywords ≤ 10, no cap"
+      }
+    },
+    {
+      "skill": "version-control",
+      "path": "../skills/skills/engineering/version-control/SKILL.md",
+      "current": {
+        "schema_version": 7,
+        "category": "engineering",
+        "type": "capability",
+        "scope": "portable",
+        "domain": "engineering/version-control",
+        "keywords_count": 21
+      },
+      "proposed": {
+        "schema_version": 8,
+        "subject": "code-engineering",
+        "operation": "do",
+        "scope": "portable",
+        "keywords_count_post": 10
+      },
+      "confidence": "medium",
+      "reasoning": {
+        "subject": "category: engineering + no specialization → code-engineering (default)",
+        "operation": "type: capability + workflow-keyword presence (pipeline, lifecycle) → do",
+        "scope": "scope: portable (unchanged)",
+        "keywords": "21 keywords > 10, capped to first 10"
+      }
+    },
+    {
+      "skill": "visual-design-foundations",
+      "path": "../skills/skills/design/visual-design-foundations/SKILL.md",
+      "current": {
+        "schema_version": 7,
+        "category": "design",
+        "type": "capability",
+        "scope": "portable",
+        "domain": "design/visual",
+        "keywords_count": 9
+      },
+      "proposed": {
+        "schema_version": 8,
+        "subject": "frontend-ui",
+        "operation": "know",
+        "scope": "portable",
+        "keywords_count_post": 9
+      },
+      "confidence": "medium",
+      "reasoning": {
+        "subject": "category: design + frontend keyword (component, layout) → frontend-ui",
+        "operation": "type: capability + no strong workflow signal → know (default for capability)",
+        "scope": "scope: portable (unchanged)",
+        "keywords": "9 keywords ≤ 10, no cap"
+      }
+    },
+    {
+      "skill": "visual-hierarchy",
+      "path": "../skills/skills/design/visual-hierarchy/SKILL.md",
+      "current": {
+        "schema_version": 7,
+        "category": "design",
+        "type": "capability",
+        "scope": "portable",
+        "keywords_count": 13
+      },
+      "proposed": {
+        "schema_version": 8,
+        "subject": "design-craft",
+        "operation": "know",
+        "scope": "portable",
+        "keywords_count_post": 10
+      },
+      "confidence": "medium",
+      "reasoning": {
+        "subject": "category: design + no frontend tilt → design-craft",
+        "operation": "type: capability + no strong workflow signal → know (default for capability)",
+        "scope": "scope: portable (unchanged)",
+        "keywords": "13 keywords > 10, capped to first 10"
+      }
+    },
+    {
+      "skill": "webhook-integration",
+      "path": "../skills/skills/engineering/webhook-integration/SKILL.md",
+      "current": {
+        "schema_version": 7,
+        "category": "engineering",
+        "type": "capability",
+        "scope": "portable",
+        "domain": "integrations/webhooks",
+        "keywords_count": 18
+      },
+      "proposed": {
+        "schema_version": 8,
+        "subject": "product-domain",
+        "operation": "do",
+        "scope": "portable",
+        "keywords_count_post": 10
+      },
+      "confidence": "medium",
+      "reasoning": {
+        "subject": "category: engineering + vendor-integration (webhook) → product-domain",
+        "operation": "type: capability + workflow-keyword presence (pipeline, implement) → do",
+        "scope": "scope: portable (unchanged)",
+        "keywords": "18 keywords > 10, capped to first 10"
+      }
+    },
+    {
+      "skill": "writing-humanizer",
+      "path": "../skills/skills/design/writing-humanizer/SKILL.md",
+      "current": {
+        "schema_version": 7,
+        "category": "design",
+        "type": "capability",
+        "scope": "portable",
+        "domain": "design/content",
+        "keywords_count": 17
+      },
+      "proposed": {
+        "schema_version": 8,
+        "subject": "frontend-ui",
+        "operation": "know",
+        "scope": "portable",
+        "keywords_count_post": 10
+      },
+      "confidence": "medium",
+      "reasoning": {
+        "subject": "category: design + frontend keyword (ui) → frontend-ui",
+        "operation": "type: capability + no strong workflow signal → know (default for capability)",
+        "scope": "scope: portable (unchanged)",
+        "keywords": "17 keywords > 10, capped to first 10"
+      }
+    }
+  ]
+}
