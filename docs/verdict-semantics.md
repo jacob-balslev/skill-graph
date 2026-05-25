@@ -26,6 +26,16 @@ This doc REPLACES the verdict-semantics restatements that previously lived (drif
 
 **`application_verdict` is the primary quality signal.** A skill is only behaviorally certified when this verdict is `APPLICABLE`. The other three are necessary infrastructure but never sufficient. See ADR-0011 for the rationale (replaces the v6 aggregate `audit_verdict`).
 
+### Why there is no fifth `displacement_verdict` (the 2026-05-25 decision)
+
+The audit doctrine evaluates each skill on **three axes** ([`SKILL_AUDIT_LOOP.md:13-21`](../SKILL_AUDIT_LOOP.md)): intent fidelity, teaching efficacy, and **upstream currency (anti-displacement)**. But the Health Block only carries **four verdict fields**, one per gate-output layer. There is intentionally **no fifth `displacement_verdict` / `upstream_verdict`** field. Why:
+
+- **Displacement is recorded as a FINDING, not a verdict.** Per [`audits/per-skill-contract.md:102, :176`](../audits/per-skill-contract.md), the upstream-displacement check writes a `category: DISPLACEMENT` finding when a recent first-party / platform / OSS release makes the skill's approach obsolete or strictly worse than a native capability. The finding carries one of three recommendations: **deprecate** (native fully supersedes) / **fold** (merge the still-useful delta into a broader skill) / **reframe-to-the-delta** (rewrite to teach only what the native does NOT).
+- **Findings ≠ verdicts.** A verdict is a roll-up the four gates produce on every run. A finding is a per-issue record the human + curator triage. Displacement is well-suited to be a finding because: (a) it requires human judgment on the deprecate/fold/reframe call, never auto-deletion (per [`.claude/rules/code-preservation.md`](../../.claude/rules/code-preservation.md)); (b) "no displacement found" is the common valid result, which would clutter a verdict slot with `UNVERIFIED` / `N/A` noise; (c) displacement is an external-world signal (vendor releases), not a property of the skill the gates can measure directly.
+- **The 2026-05-25 multi-model review surfaced this question** ([`.roundtable/skill-graph-restructure-review-2026-05-25/followup-tasks.md`](../../.roundtable/skill-graph-restructure-review-2026-05-25/followup-tasks.md) § F36). Resolved here: 3 axes for doctrine, 4 verdicts for Health Block, 1 finding-category for displacement output. The mismatch in counts (3 vs 4) is not drift; it reflects that two gates (structural + truth) cover one axis (intent fidelity's foundation), one gate (comprehension) covers one axis (teaching efficacy's depth), one gate (application) covers teaching efficacy's behavior change, and the third doctrinal axis (upstream currency) intentionally bypasses the gate model.
+
+If a future skill carries a DISPLACEMENT finding with a `requiredAction: follow-up` and the curator accepts a `deprecate` recommendation, that becomes a separate action (a deletion PR with explicit user sign-off) — never a verdict change in the Health Block.
+
 ## Per-field enums
 
 ### `structural_verdict`

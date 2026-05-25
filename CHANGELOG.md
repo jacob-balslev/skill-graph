@@ -8,6 +8,12 @@ Skill Graph versions describe the contract at each checkpoint in the git history
 
 ## [Unreleased]
 
+_No entries yet — the 2026-05-25 consolidation slice was cut as 0.5.10 below._
+
+## [0.5.10] — 2026-05-25
+
+The "canonical-shape sweep" release. Closes the 2026-05-25 multi-model restructure review backlog (51 commits, 22 distinct entries) with: ADR-0014 / ADR-0015 / ADR-0016 fully recorded; canonical homes for verdict semantics, comprehension eval shape, audits-manifest shape, and skill-routing-config shape; lane config + merge protocol relocated under `skill-graph/audits/`; the false-canonicality verifier hardened (enum split + resolution-via-downgrade); workspace zombies archived (`.claude/commands/audit-loop.md`, `.opencode/commands/skill-audit-opencode.md`); the 3 May 22-25 incident skills (`backend`, `mcp-builder`, `token-cost-estimation`) resolved via honest SKILL.md downgrade to `comprehension_verdict: UNVERIFIED`; and the upstream-currency third-axis question recorded as "stays as finding category, no fifth verdict slot."
+
 ### Added
 
 - **ADR 0016 — Operational data ownership.** Proposes the trinary classification for operational data (pure project content / pure workspace orchestration / project-protocol scripts that operate over workspace-coordinated data) that resolves the post-ADR-0015 ambiguity about audit-runs, lane config, routing config, and comprehension logs. Sequences 5 per-surface migrations lowest-risk-first. Records Opus's "trinary not binary" dissent as the binding model so future ownership questions are answered by category, not by ad-hoc judgment. See [`docs/adr/0016-operational-data-ownership.md`](docs/adr/0016-operational-data-ownership.md). Synthesized from the 2026-05-25 multi-model restructure review at `.roundtable/skill-graph-restructure-review-2026-05-25/`.

@@ -1,0 +1,128 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://skillgraph.dev/schemas/routing-config.schema.json",
+  "title": "Skill Routing Config",
+  "description": "Binding shape for the skill-injector routing config consumed by agent-orchestration/hooks/skill-injector.py and scripts/skill/skill-router.js. Authored 2026-05-25 as the project-owned half of the ADR-0016 surface #4 resolution (the 'project owns the type, workspace owns the instance' split): the instance file lives at agent-orchestration/references/skill-routing-config.json because the consumers are cross-project (the skill-injector hook is workspace orchestration), but the SHAPE the file must satisfy is project-owned and lives here. Provenance: D2 in .roundtable/skill-graph-restructure-review-2026-05-25/merged-review.md.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "universalSkills",
+    "skillAliases",
+    "injection_caps",
+    "labelMap",
+    "keywordMap",
+    "bundleTypes",
+    "bundles"
+  ],
+  "properties": {
+    "_doc": {
+      "description": "Free-form documentation block. Authors use either a string or a numbered-key object holding paragraph chunks. The shape is intentionally permissive — only the routing tables are normatively constrained.",
+      "oneOf": [
+        { "type": "string" },
+        { "type": "object" }
+      ]
+    },
+    "universalSkills": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/skill_name" },
+      "description": "Skills the injector ALWAYS includes regardless of label/keyword match. Use sparingly — every universal skill consumes a slot in the per-model injection_cap."
+    },
+    "skillAliases": {
+      "type": "object",
+      "patternProperties": {
+        "^[a-z][a-z0-9-]+$": { "$ref": "#/$defs/skill_name" }
+      },
+      "additionalProperties": {
+        "type": "string",
+        "description": "An alias's value may be a skill name OR (for the _doc key) a description string."
+      },
+      "description": "Legacy / synonym names that should resolve to an existing skill without rewriting every historical label/keyword entry at once. Key = alias; value = canonical skill name."
+    },
+    "injection_caps": {
+      "type": "object",
+      "additionalProperties": {
+        "oneOf": [
+          { "type": "integer", "minimum": 0, "maximum": 20 },
+          { "type": "string" }
+        ]
+      },
+      "description": "Model-aware injection caps (SH-5013). Max primary skills injected per model — lower-context models get fewer. Integer values are caps; the `_doc` key holds a description string. Known model keys: opus / sonnet / haiku / flash / gpt-5.4 / gemini / minimax / nemotron."
+    },
+    "modelLabels": {
+      "type": "array",
+      "items": { "type": "string" },
+      "description": "Display names for the agent models the router knows about. Stable order; UI surfaces index into this array."
+    },
+    "labelMap": {
+      "type": "object",
+      "additionalProperties": {
+        "type": "array",
+        "items": { "$ref": "#/$defs/skill_name" }
+      },
+      "description": "Map from Linear task labels (or other tag systems) to the skills that should be injected when the label is present. Key = label string; value = array of skill names."
+    },
+    "keywordMap": {
+      "type": "object",
+      "additionalProperties": {
+        "type": "array",
+        "items": { "$ref": "#/$defs/skill_name" }
+      },
+      "description": "Map from trigger keywords / phrases (slash commands, common natural-language phrases) to skills. Key = keyword (may contain spaces / slashes); value = array of skill names."
+    },
+    "bundleTypes": {
+      "type": "object",
+      "additionalProperties": {
+        "type": "string",
+        "enum": ["workflow-bundle", "routing-bundle"]
+      },
+      "description": "Map from bundle-trigger keyword to bundle category. `workflow-bundle` triggers the full sequenced workflow; `routing-bundle` triggers a routing-only group. Key = keyword; value = category."
+    },
+    "bundles": {
+      "type": "object",
+      "additionalProperties": {
+        "type": "array",
+        "items": { "$ref": "#/$defs/skill_name" }
+      },
+      "description": "Map from bundle name to the source skills that compose it. Key = bundle name (must align with a `bundleTypes` entry or be referenceable from `labelMap`/`keywordMap`); value = array of skill names."
+    },
+    "compositeBundles": {
+      "type": "object",
+      "additionalProperties": {
+        "oneOf": [
+          { "type": "string" },
+          { "$ref": "#/$defs/composite_bundle" }
+        ]
+      },
+      "description": "Composite skill bundles (SH-5014). When a task matches a triggerKeyword, the bundle's SKILL.md is injected INSTEAD of the individual `replaces` skills. The `_doc` key holds a description string; every other key is a composite-bundle name."
+    }
+  },
+  "$defs": {
+    "skill_name": {
+      "type": "string",
+      "pattern": "^[a-z][a-z0-9-]+$",
+      "description": "Kebab-case skill name. Must resolve to an existing SKILL.md under the workspace skills/ tree (or be the alias source). Validated by scripts/skill/skill-router.js + the manifest census."
+    },
+    "composite_bundle": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["path", "replaces", "triggerKeywords"],
+      "properties": {
+        "path": {
+          "type": "string",
+          "pattern": "^skills/_bundles/",
+          "description": "Path to the composite bundle's SKILL.md, e.g. `skills/_bundles/naming-decision/SKILL.md`."
+        },
+        "replaces": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/skill_name" },
+          "description": "Source skills the composite bundle subsumes. When the bundle injects, these are skipped to avoid double-load."
+        },
+        "triggerKeywords": {
+          "type": "array",
+          "items": { "type": "string", "minLength": 1 },
+          "description": "Keywords / phrases that select this composite over the individual source skills."
+        }
+      }
+    }
+  }
+}

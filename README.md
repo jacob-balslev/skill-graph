@@ -541,7 +541,7 @@ For project framing context, see [GitHub Discussion #1](https://github.com/jacob
 
 ## Status
 
-Latest release: **`@skill-graph/cli@0.5.9`** (2026-05-23) — see [`CHANGELOG.md`](CHANGELOG.md) and the generated [`docs/status.generated.md`](docs/status.generated.md). The current contract is `schema_version: 7` — see [`schemas/skill.schema.json`](schemas/skill.schema.json) for the authoritative shape. Per [ADR-0014](docs/adr/0014-canonical-only-schema-files.md) (canonical-only schema files), only `schema.json` lives on disk; prior contract versions (v2-v6) are recoverable from git history (`git show <commit>:schemas/skill.schema.json`) and external consumers pinning a historical version should resolve against a tag rather than a duplicate file. The schema's `$id` (`https://skillgraph.dev/schemas/skill.schema.json`) is the stable identifier.
+Latest release: **`@skill-graph/cli@0.5.10`** (2026-05-25) — the "canonical-shape sweep" release closing the 2026-05-25 multi-model restructure review backlog. See [`CHANGELOG.md`](CHANGELOG.md) and the generated [`docs/status.generated.md`](docs/status.generated.md). The current contract is `schema_version: 7` — see [`schemas/skill.schema.json`](schemas/skill.schema.json) for the authoritative shape. Per [ADR-0014](docs/adr/0014-canonical-only-schema-files.md) (canonical-only schema files), only `schema.json` lives on disk; prior contract versions (v2-v6) are recoverable from git history (`git show <commit>:schemas/skill.schema.json`) and external consumers pinning a historical version should resolve against a tag rather than a duplicate file. The schema's `$id` (`https://skillgraph.dev/schemas/skill.schema.json`) is the stable identifier.
 
 ## Contributing & Trust
 
