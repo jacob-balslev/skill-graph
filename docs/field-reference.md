@@ -417,13 +417,16 @@ owner: maintainer
 
 ## `freshness`
 
-**Purpose.** Records when the skill content was last meaningfully reviewed or updated. Drives staleness detection in audit tooling.
+**Purpose.** Records when the author last **reviewed** the skill's content for accuracy. This is the **reviewer's footprint**, NOT the editor's footprint — the Health Block field [`last_changed`](#last_changed) is loop-stamped on every SKILL.md edit and serves the editor-footprint role. The two are intentionally distinct: a skill can be edited without a fresh review (cosmetic fix) or reviewed without an edit (the author re-read and confirmed it still holds).
+
+Drives staleness detection in audit tooling.
 
 **Rules.**
 - ISO 8601 date string (`YYYY-MM-DD`).
-- Update this field whenever the skill body or frontmatter is substantively revised.
-- Cosmetic edits (typos, formatting) do not require a `freshness` bump.
+- Bump this field when the author **reviews the content for accuracy** — including substantive revisions, but also a pure re-review that confirms the skill still holds.
+- Cosmetic edits (typos, formatting) should NOT bump `freshness` — they affect `last_changed` only. The distinction is "did the author re-verify accuracy?" — typos do not require re-verification.
 - A `freshness` date more than 90 days old is a signal for re-review.
+- **Interpretation for agents:** `freshness` is the author's "I reviewed this on X" claim. For "when was the file last touched," read `last_changed`. For "when did the audit loop last run," read `last_audited`.
 
 **Example.**
 ```yaml

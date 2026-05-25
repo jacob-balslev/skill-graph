@@ -272,8 +272,11 @@ A browse facet — answers the single question for the primary slot: *Where shou
 ### Health and Drift
 
 **`freshness`**
-- ISO date of the last review or content update.
+- ISO date the author last **reviewed** the skill's content. This is the **reviewer's footprint**, NOT the editor's footprint.
+- Set by the author when they verify the skill is still accurate. The Health Block field [`last_changed`](#health-block-v6-flat--written-by-the-audit-loop) records when the SKILL.md was last **edited** (loop-stamped); the two are intentionally distinct because a skill can be edited without a fresh review (e.g. a typo fix) and reviewed without an edit (the author re-read and confirmed it still holds).
 - Not computed; the author sets it. It is an authored claim, not a hash.
+- Cosmetic edits (typo, formatting) should NOT bump `freshness` — they bump `last_changed` only. Substantive review or content update should bump `freshness`.
+- Agents reading `freshness` should interpret it as "the author asserts they reviewed this on date X," NOT as "the file was last touched on date X" — for that, read `last_changed`.
 
 **`drift_check`**
 - Object with `last_verified` (ISO date, required) and `truth_source_hashes` (optional).
