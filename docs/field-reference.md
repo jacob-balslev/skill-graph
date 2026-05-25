@@ -141,6 +141,8 @@ version: 1.0.0
 
 ## `type`
 
+> **v7 legacy field — replaced by [`operation`](#operation) in v8.** The v8 schema renames `type` to `operation` and tightens the enum from 4 archetype values (`capability`/`workflow`/`router`/`overlay`) to 4 Bloom-grounded cognitive operations (`know`/`do`/`decide`/`modify`). v7 `type` is retained for back-compat during the sunset window; the normalizer maps the value forward when only `type` is present. New skills should author `operation` only. See [ADR 0017](adr/0017-five-axis-classification-model.md).
+
 **Purpose.** Defines the behavioral archetype. The archetype determines which body H2 sections are required, how the skill is loaded by a router, and which schema conditionals apply.
 
 **Allowed values.**
@@ -172,6 +174,8 @@ type: capability
 
 ## `archetype`
 
+> **v7 legacy field — replaced by [`operation`](#operation) in v8.** `archetype` was the v3.1 preferred alias for `type`; both are now v7-legacy under v8. The replacement axis is `operation` (Bloom-grounded: `know`/`do`/`decide`/`modify`). See [ADR 0017](adr/0017-five-axis-classification-model.md).
+
 **Purpose.** v3.1 preferred alias for `type`. Identical enum and semantics; the rename resolves sign-drift between the schema (`type`) and the doc body / ADR 0003 (which already say "archetype" everywhere) and removes a generic-name anti-pattern.
 
 **Allowed values.** Identical to `type`: `capability`, `workflow`, `router`, `overlay`.
@@ -192,6 +196,8 @@ archetype: capability
 ---
 
 ## `category`
+
+> **v7 legacy field — replaced by [`subject`](#subject) in v8.** The v8 schema renames `category` to `subject` and expands the enum from 6 values to 9 (`code-engineering`/`quality-assurance`/`frontend-ui`/`design-craft`/`agent-ops`/`product-domain`/`knowledge-organization`/`meta-methods`/`data-analytics`) to provide better discriminating power (the v7 6-value enum had ~40% of skills under `engineering` alone). For polyhierarchy use [`subjects[]`](#subjects) (max 2 entries). v7 `category` is retained for back-compat during the sunset window. New skills should author `subject` only. See [ADR 0017](adr/0017-five-axis-classification-model.md).
 
 **Purpose.** Flat human browse bucket for discovery and grouping. Does not imply runtime behavior or evaluation logic. Renamed from v3 `browse_category` in v4 so the public browse axis has the obvious name; the value space was then closed to a six-value enum in v5 (retained in v7) to prevent the v3-era explosion of synonymous buckets.
 
@@ -258,6 +264,8 @@ categories: [engineering, quality]
 
 ## `primaryCategory`
 
+> **v7 legacy field — replaced by [`subject`](#subject) in v8.** `primaryCategory` was the workspace alias for `category`; both are v7-legacy under v8. The replacement axis is `subject` (9-enum) with optional [`subjects[]`](#subjects) for polyhierarchy. The workspace title-case → lowercase enum normalization is preserved by the v7→v8 normalizer. See [ADR 0017](adr/0017-five-axis-classification-model.md).
+
 **Purpose.** Optional workspace alias for the primary browse home. Lowercase protocol values are accepted directly; title-case workspace labels normalize to protocol categories in local policy tooling.
 
 **Rules.**
@@ -280,6 +288,8 @@ primaryCategory: Agent System
 
 ## `layerPrimary`
 
+> **v7 legacy workspace facet — no direct v8 replacement.** The v8 5-axis model intentionally omits a "layer" axis; cross-cutting layer concerns are expressed through `subject` + `domain` (slash-delimited path) when needed. `layerPrimary` is retained as a v7 workspace metadata field for legacy routing/census tooling that still keys on it; new skills should omit it and rely on the 5-axis classification. See [ADR 0017](adr/0017-five-axis-classification-model.md).
+
 **Purpose.** Workspace routing facet for the primary architectural or concern layer, such as `meta`, `architecture`, `integration`, `operations`, `display`, `quality`, `data`, `logic`, `security`, or `business`.
 
 **Rules.**
@@ -300,6 +310,8 @@ layerPrimary: integration
 ---
 
 ## `routingRole`
+
+> **v7 legacy workspace facet — no direct v8 replacement.** The v8 5-axis model expresses router treatment through [`operation`](#operation) (what the skill enables an agent to do) plus relation edges (`broader`/`related`/`depends_on`); a separate routing-role axis was found to overlap with these and was dropped. `routingRole` is retained as a v7 workspace metadata field for legacy router tooling that still keys on it; new skills should omit it. See [ADR 0017](adr/0017-five-axis-classification-model.md).
 
 **Purpose.** Workspace routing facet describing how a router should use the skill, for example `primary`, `router`, `verifier`, or `gate`.
 

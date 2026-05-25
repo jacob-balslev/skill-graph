@@ -1,9 +1,10 @@
 # Skill Metadata Protocol
 
-> **Version:** 1.4.0 (schema_version 7, Skill Graph 0.5.9)
+> **Version:** 1.5.0 (schema_version 8, Skill Graph 0.5.10)
 > **Machine-readable schema:** `schemas/skill.schema.json`
 > **Detailed field reference:** `docs/field-reference.md`
 > **Full semantics + design rationale:** `docs/skill-metadata-protocol.md`
+> **v8 design rationale:** `docs/adr/0017-five-axis-classification-model.md`
 
 This document is the top-level public contract for the Skill Metadata Protocol frontmatter format — the **normative spec**. It defines which fields are required, what each field means in operational terms, which fields are authored by humans vs computed by tooling, and how to migrate from older schema versions. Skill Graph is the library-level system that consumes this contract. The prose is terse and boundary-aware: every clause is a rule a consumer or author can verify against the schema and the focused Skill Graph verification tools.
 
@@ -52,23 +53,25 @@ The field tables in this document describe the **logical contract** — the fiel
 
 ### Required for all skills
 
-All thirteen fields in this group are required by the v7 schema and protocol contract. The `skill-lint.js` schema gate enforces the current schema shape; use the protocol, manifest, routing, drift, export, and eval checks for the rest of the full contract.
+The v8 contract requires twelve canonical fields plus the v8 5-axis classification. The `skill-lint.js` schema gate enforces the current schema shape; use the protocol, manifest, routing, drift, export, and eval checks for the rest of the full contract.
 
 | Field | Type | Purpose |
 |---|---|---|
-| `schema_version` | integer `7` | Signals the contract version. Must be `7` for all v7 skills. Prior versions live in git history (see ADR 0014 — canonical-only schema files). |
+| `schema_version` | integer `8` | Signals the contract version. Must be `8` for v8 skills (per ADR 0017 — five-axis classification model). v7 skills carry `7` and are migrated by `scripts/migrate-skill-v7-to-v8.js`. Prior versions live in git history (see ADR 0014 — canonical-only schema files). |
 | `name` | string | Stable identifier. Used for routing and `relations.*` targets. |
 | `description` | string (≥20 chars) | Routing contract — tells the router when to activate this skill. |
 | `version` | semver string | Skill content version (e.g. `1.2.0`). Bumped by the author. |
-| `type` | enum | One of: `capability`, `workflow`, `router`, `overlay`. |
-| `category` | enum | Browse facet — the skill's *primary* category. One of: `foundations`, `engineering`, `design`, `quality`, `agent`, `product`. v7-required; v8 deprecates this in favor of `categories: [string]` (ordered, primary first). See § Classification for the unified taxonomy, the foundations-gate, and the v7→v8 migration plan. |
-| `scope` | enum | One of: `codebase`, `reference`, `portable`. |
+| `subject` | enum (9 closed values) | **v8 axis 1** — Primary browse shelf and routing seed. One of: `code-engineering`, `quality-assurance`, `frontend-ui`, `design-craft`, `agent-ops`, `product-domain`, `knowledge-organization`, `meta-methods`, `data-analytics`. See § Classification — the 5-axis model § Axis 1. |
+| `operation` | enum (4 closed values, Bloom-grounded) | **v8 axis 2** — Cognitive operation enabled by loading this skill. One of: `know` (declarative content), `do` (procedural how-to), `decide` (judgment/triage), `modify` (transformative edit). Replaces v7's `type` field. See § Classification § Axis 2. |
+| `scope` | enum (3 closed values, renamed in v8) | **v8 axis 3** — Deployment targeting. One of: `portable` (any project), `workspace` (this workspace only), `project` (one specific project; requires `grounding`). v7 aliases `scope: codebase` → `project` and `scope: reference` → `workspace` are accepted during the sunset. See § Classification § Axis 3. |
 | `owner` | string | Team, username, or tool that is responsible for keeping this skill current. |
 | `freshness` | ISO date | Date the skill body was last reviewed or updated. |
 | `drift_check` | object | Contains `last_verified` (ISO date) and optional `truth_source_hashes`. |
 | `eval_artifacts` | enum | One of: `none`, `planned`, `present`. |
 | `eval_state` | enum | One of: `unverified`, `passing`, `monitored`. |
 | `routing_eval` | enum | One of: `absent`, `present`. |
+
+**v7 legacy required fields (retained, deprecated):** `type` (mapped from `operation`) and `category` (mapped from `subject`) are accepted by the schema during the v7 sunset window. Their values continue to be normalized so existing tooling reads consistent metadata; new skills should author the v8 axes only. See § Classification § Migration map for the field-by-field mapping.
 
 ### Conditionally required
 
