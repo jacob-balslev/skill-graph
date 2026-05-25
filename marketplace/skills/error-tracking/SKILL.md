@@ -5,10 +5,12 @@ license: MIT
 compatibility: "Tracker-agnostic. The patterns target any exception-reporting SDK with a `captureException` / `captureMessage` / `addBreadcrumb` shape — Sentry, Rollbar, Bugsnag, Honeybadger, Datadog Errors, Application Insights. Examples are framed in React + Next.js because that is the most common surface; analogous primitives exist in Vue (`errorCaptured`), Svelte (error stores), Remix (`ErrorBoundary`), Nuxt (`error.vue`), and any framework with framework-level error hooks."
 allowed-tools: Read Grep Bash Edit
 metadata:
-  schema_version: "7"
+  schema_version: "8"
   version: "1.1.0"
   type: capability
+  operation: know
   category: engineering
+  subject: code-engineering
   domain: engineering/observability
   scope: portable
   owner: skill-graph-maintainer
@@ -18,7 +20,7 @@ metadata:
   eval_state: unverified
   routing_eval: absent
   stability: experimental
-  keywords: "[\"error tracking\",\"exception reporting\",\"error reporting\",\"error boundary\",\"React ErrorBoundary\",\"route error boundary\",\"global error boundary\",\"error tracker SDK\",\"Sentry integration\",\"captureException wrapper\",\"captureMessage wrapper\",\"addBreadcrumb wrapper\",\"set user context error\",\"PII sanitization error payload\",\"environment-aware error reporting\",\"dev logger prod tracker\",\"error digest deduplication\",\"catastrophic failure capture\",\"reportError wrapper\",\"error tracking provider\"]"
+  keywords: "[\"error tracking\",\"exception reporting\",\"error reporting\",\"error boundary\",\"React ErrorBoundary\",\"route error boundary\",\"global error boundary\",\"error tracker SDK\",\"Sentry integration\",\"captureException wrapper\"]"
   examples: "[\"set up exception reporting for a new React + Next.js application\",\"add a route-level error boundary that recovers gracefully and still reports\",\"the error tracker is showing customer emails in event payloads — fix the PII leak\",\"wrap captureException in a centralized reporter that adds environment gating\",\"audit the error pipeline — confirm every layer eventually reaches the tracker\",\"decide where error boundaries should live: component, section, route, or app-global\",\"implement PII sanitization for error payloads before they hit the tracker SDK\",\"set user context (internal id, org id, role) on errors without sending email or name\"]"
   anti_examples: "[\"design accessible error-message copy and recovery UI for the 404 page\",\"the boundary fired but the tracker shows no event — root-cause it\",\"explain our error-tracking architecture in the contributor docs\",\"review this AI-generated error handler for correctness\",\"decide if the new error path needs an integration regression test\",\"design our overall PII storage and retention policy across the system\",\"refactor the error-helper module for clarity\"]"
   relations: "{\"boundary\":[{\"skill\":\"debugging\",\"reason\":\"debugging chases an observed failure already in the tracker; error-tracking designs the pipeline that captures and routes failures in the first place\"},{\"skill\":\"owasp-security\",\"reason\":\"owasp-security owns the cross-cutting PII and credential-handling policy; error-tracking owns the request-time sanitization that error payloads pass through before leaving the application\"},{\"skill\":\"a11y\",\"reason\":\"a11y owns the user-visible error UX (message copy, focus management, screen-reader announcements); error-tracking owns the engineering pipeline behind the error boundary\"},{\"skill\":\"refactor\",\"reason\":\"refactor reorganizes existing code while preserving behavior; error-tracking changes the *behavior* of the error pipeline (where it reports, what it sanitizes, how layers compose)\"}],\"related\":[\"debugging\",\"owasp-security\",\"a11y\",\"code-review\",\"testing-strategy\"],\"verify_with\":[\"code-review\",\"testing-strategy\"]}"

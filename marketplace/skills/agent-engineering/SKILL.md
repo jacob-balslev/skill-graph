@@ -5,10 +5,12 @@ license: MIT
 compatibility: "Provider- and harness-agnostic. Patterns apply across Claude Code, Cursor, Copilot, OpenCode, Aider, Continue, custom Anthropic/OpenAI/Google SDK loops, and self-hosted multi-agent systems. Specific filenames in this skill (continuation.json, claim.lock, session-logs.jsonl) are example artefacts -- substitute your harness's equivalents."
 allowed-tools: Read Grep Bash Edit Write
 metadata:
-  schema_version: "7"
+  schema_version: "8"
   version: "1.1.0"
   type: capability
+  operation: do
   category: engineering
+  subject: code-engineering
   domain: ai-engineering/architecture
   scope: portable
   owner: skill-graph-maintainer
@@ -19,7 +21,7 @@ metadata:
   routing_eval: absent
   comprehension_state: present
   stability: experimental
-  keywords: "[\"agent engineering\",\"agentic engineering\",\"multi-agent systems\",\"production agent system\",\"orchestration patterns\",\"orchestrator worker\",\"fan-out merge\",\"consensus pattern\",\"evaluator optimizer\",\"sequential chain\",\"two-pass pattern\",\"task decomposition\",\"delegation overhead\",\"claim lock\",\"claim race\",\"silent stall\",\"stall detection\",\"safety caps\",\"iteration limit\",\"cost budget\",\"agent idempotency guard\",\"failure recovery\",\"retry backoff\",\"escalation path\",\"context rot\",\"god agent\",\"runaway loop\",\"ghost claim\",\"telephone game\",\"file-based coordination\",\"agent continuation protocol\",\"exit code protocol\",\"heartbeat\",\"flow engineering\",\"software 3.0 agent systems\"]"
+  keywords: "[\"agent engineering\",\"agentic engineering\",\"multi-agent systems\",\"production agent system\",\"orchestration patterns\",\"orchestrator worker\",\"fan-out merge\",\"consensus pattern\",\"evaluator optimizer\",\"sequential chain\"]"
   examples: "[\"we want to fan out 40 classification subtasks to subagents — what coordination pattern should we use and what are the failure modes?\",\"two of our agents claimed the same task and produced duplicate PRs — what atomicity guarantee prevents this?\",\"the orchestrator burns 6x the budget we planned every Tuesday — where do we add cost visibility and caps?\",\"an agent loop ran for four hours without progress before anyone noticed — how do we detect silent stalls?\",\"we keep getting context-contamination bugs where agent B uses stale output from agent A's failed run — fix the protocol\",\"audit this agent loop and tell me whether it's production-ready or still a demo\",\"is consensus-of-three worth the 3x cost for security-critical decisions, or is two-pass cheaper and good enough?\",\"design the lifecycle for a long-running autonomous agent that survives crashes mid-task\"]"
   anti_examples: "[\"improve this prompt's wording to get better outputs\",\"the agent made 17 read calls when 3 greps would have done\",\"design what skills get loaded for which prompts\",\"scaffold a new SKILL.md for our orchestration runbook\",\"review this AI-generated PR for correctness\",\"the test suite is failing after my change — find the cause\",\"draft an architecture note explaining why we chose Postgres\"]"
   relations: "{\"boundary\":[{\"skill\":\"prompt-craft\",\"reason\":\"prompt-craft optimises a single LLM call's wording; agent-engineering optimises the entire system that composes many calls into a workflow\"},{\"skill\":\"tool-call-strategy\",\"reason\":\"tool-call-strategy owns per-call efficiency decisions inside one agent; agent-engineering owns the multi-agent architecture those calls run within\"},{\"skill\":\"context-engineering\",\"reason\":\"context-engineering owns what reaches a single agent's context window; agent-engineering owns the system architecture that decides which agent runs at all\"},{\"skill\":\"context-window\",\"reason\":\"context-window owns token-budget thresholds and compaction timing; agent-engineering uses those signals as one part of lifecycle and coordination design\"},{\"skill\":\"debugging\",\"reason\":\"debugging chases a specific runtime failure; agent-engineering is about preventing classes of coordination failure through architecture\"},{\"skill\":\"architecture-decision-records\",\"reason\":\"architecture-decision-records records and explains decisions; agent-engineering designs the agent-system architecture being decided\"}],\"related\":[\"context-engineering\",\"context-window\",\"tool-call-strategy\",\"prompt-craft\",\"summarization\"],\"verify_with\":[\"testing-strategy\",\"code-review\"]}"

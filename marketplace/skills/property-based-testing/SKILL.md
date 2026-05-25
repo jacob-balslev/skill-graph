@@ -4,12 +4,14 @@ description: "Use when reasoning about tests that specify universal properties o
 license: MIT
 allowed-tools: Read Grep
 metadata:
-  schema_version: "7"
+  schema_version: "8"
   version: "1.0.0"
   type: capability
+  operation: know
   category: quality
+  subject: quality-assurance
   domain: quality/testing
-  scope: reference
+  scope: workspace
   owner: skill-graph-maintainer
   freshness: "2026-05-16"
   drift_check: "{\"last_verified\":\"2026-05-16\"}"
@@ -18,7 +20,7 @@ metadata:
   routing_eval: absent
   comprehension_state: present
   stability: experimental
-  keywords: "[\"property-based testing\",\"PBT\",\"QuickCheck\",\"Hypothesis\",\"fast-check\",\"generator\",\"shrinker\",\"forall\",\"invariant\",\"round-trip property\",\"oracle property\",\"random testing\",\"generative testing\"]"
+  keywords: "[\"property-based testing\",\"PBT\",\"QuickCheck\",\"Hypothesis\",\"fast-check\",\"generator\",\"shrinker\",\"forall\",\"invariant\",\"round-trip property\"]"
   triggers: "[\"should this be a property test\",\"what's an invariant for this function\",\"the bug only happens on weird inputs\",\"QuickCheck or fast-check\",\"how do we test all possible cases\"]"
   examples: "[\"design property-based tests for a sorting function that exercise the universal contract\",\"decide which functions in a parser deserve property tests vs example tests\",\"diagnose a property test that finds a real bug but the shrunk input is large — likely a poorly-shrinkable generator\",\"explain the round-trip property for an encode/decode pair\"]"
   anti_examples: "[\"specify one concrete input-output case (use example-based tests; see testing-strategy)\",\"fuzz for crashes and memory safety (use fuzz-testing)\",\"measure whether tests would catch a defect (use mutation-testing)\"]"

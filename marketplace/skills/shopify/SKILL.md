@@ -3,10 +3,12 @@ name: shopify
 description: "Use when working with Shopify — Admin API, Storefront API, OAuth scopes, HMAC SHA-256 webhook verification, GraphQL query-cost handling, Online Store 2.0 themes (sections, blocks, Liquid), metafields and metaobjects, and App Proxy. Do NOT use for generic e-commerce design, non-Shopify storefronts, or internal event-contract design."
 license: CC-BY-4.0
 metadata:
-  schema_version: "7"
+  schema_version: "8"
   version: "1.0.0"
   type: capability
+  operation: know
   category: engineering
+  subject: product-domain
   domain: engineering/integrations
   scope: portable
   owner: skill-graph-maintainer
@@ -16,7 +18,7 @@ metadata:
   eval_state: unverified
   routing_eval: absent
   stability: experimental
-  keywords: "[\"shopify admin api\",\"shopify storefront api\",\"shopify webhooks\",\"shopify oauth scopes\",\"shopify hmac verification\",\"online store 2.0 sections\",\"liquid templates\",\"shopify graphql query cost\",\"shopify metafields\",\"shopify rate limits\",\"shopify app proxy\"]"
+  keywords: "[\"shopify admin api\",\"shopify storefront api\",\"shopify webhooks\",\"shopify oauth scopes\",\"shopify hmac verification\",\"online store 2.0 sections\",\"liquid templates\",\"shopify graphql query cost\",\"shopify metafields\",\"shopify rate limits\"]"
   triggers: "[\"shopify\",\"shopify webhook\",\"shopify api\",\"shopify theme\",\"shopify app\"]"
   examples: "[\"Verify an incoming Shopify webhook by computing HMAC SHA-256 over the raw body and comparing against the X-Shopify-Hmac-Sha256 header\",\"Query the Shopify Admin GraphQL API for product variants with their metafields and handle query cost throttling\",\"Build an Online Store 2.0 section schema with block types and dynamic settings\"]"
   anti_examples: "[\"Design the event payload schema for our internal order-processing pipeline\",\"Implement Stripe Connect onboarding for a marketplace\",\"Refactor a generic shopping cart component that isn't Shopify-specific\"]"

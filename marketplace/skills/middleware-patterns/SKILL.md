@@ -1,15 +1,17 @@
 ---
 name: middleware-patterns
-description: "Use when designing or reviewing Next.js middleware (`middleware.ts`): cross-cutting request/response transforms before route resolution, Edge Runtime constraints, `matcher` config, `NextRequest`/`NextResponse`, response shapes (`next`, `rewrite`, `redirect`, direct response), auth gates, locale routing, A/B rewrites, header or CSP nonce injection, geo-routing, bot blocking, and performance discipline for code every matched request pays for. Do NOT use for per-route endpoint logic (use route-handler-design), internal UI mutations (use server-actions-design), abstract HTTP semantics (use http-semantics), CSP/security-policy design (use security-fundamentals), or streaming-system design (use streaming-architecture)."
+description: "Use when designing or reviewing Next.js middleware: the single middleware.ts request preprocessor, Edge Runtime constraints, matcher config, NextRequest/NextResponse APIs, redirects, rewrites, pass-through responses, direct responses, auth gates, locale routing, A/B rewrites, security-header delivery, geo routing, bot blocking, and request ID injection. Use for fast cross-cutting request concerns that apply across many routes. Do NOT use for per-route API handlers, Server Actions, HTTP semantics, full security policy design, streaming logic, or webhook signature handling."
 license: MIT
 allowed-tools: Read Grep
 metadata:
-  schema_version: "7"
+  schema_version: "8"
   version: "1.0.0"
   type: capability
+  operation: do
   category: engineering
+  subject: frontend-ui
   domain: engineering/frontend
-  scope: reference
+  scope: workspace
   owner: skill-graph-maintainer
   freshness: "2026-05-17"
   drift_check: "{\"last_verified\":\"2026-05-17\"}"
@@ -18,7 +20,7 @@ metadata:
   routing_eval: absent
   comprehension_state: present
   stability: experimental
-  keywords: "[\"Next.js middleware\",\"middleware.ts file\",\"NextRequest NextResponse\",\"matcher config middleware\",\"Edge Runtime constraints\",\"NextResponse.redirect rewrite next\",\"auth check before route\",\"locale routing i18n middleware\",\"A/B testing variant rewrite\",\"CSP nonce middleware\",\"geo-routing X-Vercel-IP-Country\",\"request header injection\",\"bot blocking middleware\",\"middleware cookie set\"]"
+  keywords: "[\"Next.js middleware\",\"middleware.ts file\",\"NextRequest NextResponse\",\"matcher config middleware\",\"Edge Runtime constraints\",\"NextResponse.redirect rewrite next\",\"auth check before route\",\"locale routing i18n middleware\",\"A/B testing variant rewrite\",\"CSP nonce middleware\"]"
   triggers: "[\"how do I redirect unauthenticated users to login in Next.js\",\"how do I run code before every request in Next.js\",\"how do I set security headers globally in Next.js\",\"how do I do locale routing in App Router\",\"how do I do an A/B test with rewrites\",\"why does my middleware run on static assets\",\"can middleware do a database query\",\"how do I generate a CSP nonce per request\"]"
   examples: "[\"design middleware that redirects unauthenticated users to /login while letting public routes through, configured via a matcher\",\"add a middleware that generates a per-request CSP nonce and injects it into both the request and response headers\",\"implement locale routing that detects Accept-Language and rewrites /about to /en/about for new visitors\",\"add bot blocking that returns 403 for known scraper user-agents while letting search-engine bots through\",\"tune a middleware that runs on every request down to 5ms so it stops adding latency to image fetches\"]"
   anti_examples: "[\"implement a /api/posts POST endpoint (use route-handler-design)\",\"implement a delete-comment mutation triggered from a form button (use server-actions-design)\",\"explain what an HTTP 308 means vs 307 (use http-semantics)\",\"design the full CSP policy and the rest of the security-header strategy (use security-fundamentals)\",\"design a long-lived SSE stream from middleware (use streaming-architecture)\",\"design the CSP policy, threat model, or OWASP audit for a system (use security-fundamentals)\",\"decide what an HTTP method, status code, or header should mean per RFC 9110 (use http-semantics)\",\"design signature verification, idempotency, or retry semantics for vendor webhooks (use webhook-integration)\"]"
@@ -37,6 +39,8 @@ metadata:
   skill_graph_protocol: Skill Metadata Protocol v7
   skill_graph_project: Skill Graph
   skill_graph_canonical_skill: skills/engineering/frontend/middleware-patterns/SKILL.md
+  skill_graph_export_description: shortened for Agent Skills 1024-character description limit; canonical source keeps the full routing contract
+  skill_graph_canonical_description_length: "1178"
 ---
 
 # Middleware Patterns

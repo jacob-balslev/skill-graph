@@ -4,12 +4,14 @@ description: "Use when reasoning about the line at which execution context chang
 license: MIT
 allowed-tools: Read Grep
 metadata:
-  schema_version: "7"
+  schema_version: "8"
   version: "1.0.0"
   type: capability
+  operation: do
   category: engineering
+  subject: frontend-ui
   domain: engineering/frontend
-  scope: reference
+  scope: workspace
   owner: skill-graph-maintainer
   freshness: "2026-05-15"
   drift_check: "{\"last_verified\":\"2026-05-15\"}"
@@ -18,7 +20,7 @@ metadata:
   routing_eval: absent
   comprehension_state: present
   stability: experimental
-  keywords: "[\"client server boundary\",\"serialization boundary\",\"use client directive\",\"use server directive\",\"React Server Components\",\"server actions\",\"RPC\",\"serializable types\",\"structured clone\",\"secret leakage\",\"client bundle\",\"hydration boundary\"]"
+  keywords: "[\"client server boundary\",\"serialization boundary\",\"use client directive\",\"use server directive\",\"React Server Components\",\"server actions\",\"RPC\",\"serializable types\",\"structured clone\",\"secret leakage\"]"
   triggers: "[\"can I pass this function as a prop\",\"why is my server-only module in the client bundle\",\"what does 'use client' actually do\",\"is it safe to put this secret in a server component\",\"why won't this Date / Map / class serialize\"]"
   examples: "[\"decide whether a piece of data must cross the network or can stay server-only\",\"diagnose why a component marked as a server component is being shipped to the client\",\"review whether secrets in server code can leak through serialized props\",\"design which functions are exposed as server actions and which stay internal\"]"
   anti_examples: "[\"decide whether a route should be SSG or SSR (use rendering-models)\",\"design HTTP authentication headers (use http-semantics)\",\"design the JSON shape of an API response body (use api-design)\"]"

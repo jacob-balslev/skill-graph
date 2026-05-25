@@ -4,12 +4,14 @@ description: "Use when reasoning about systems that pass untrusted content to a 
 license: MIT
 allowed-tools: Read Grep
 metadata:
-  schema_version: "7"
+  schema_version: "8"
   version: "1.0.0"
   type: capability
+  operation: know
   category: quality
+  subject: quality-assurance
   domain: quality/security
-  scope: reference
+  scope: workspace
   owner: skill-graph-maintainer
   freshness: "2026-05-16"
   drift_check: "{\"last_verified\":\"2026-05-16\"}"
@@ -18,7 +20,7 @@ metadata:
   routing_eval: absent
   comprehension_state: present
   stability: experimental
-  keywords: "[\"prompt injection\",\"indirect prompt injection\",\"LLM01\",\"OWASP LLM\",\"data exfiltration\",\"tool abuse\",\"untrusted content\",\"RAG injection\",\"markdown image exfiltration\",\"jailbreak\",\"instruction confusion\",\"principle of least authority\",\"dual LLM pattern\",\"prompt injection attack\",\"inject instructions into context\"]"
+  keywords: "[\"prompt injection\",\"indirect prompt injection\",\"LLM01\",\"OWASP LLM\",\"data exfiltration\",\"tool abuse\",\"untrusted content\",\"RAG injection\",\"markdown image exfiltration\",\"jailbreak\"]"
   triggers: "[\"is this an injection vector\",\"how do we stop the model from following commands in user input\",\"the model is treating retrieved content as commands\",\"is RAG safe\",\"can the model exfiltrate data via a tool call\"]"
   examples: "[\"review whether retrieved documents in a RAG pipeline can override the system prompt\",\"design the boundary between a planning agent and an execution agent so injected commands cannot trigger destructive tool calls\",\"explain why a content filter that blocks one canonical attack phrase does not stop the broader class\",\"decide what tools an agent reading email attachments may invoke without human confirmation\"]"
   anti_examples: "[\"design the JSON shape of a tool's parameters (use tool-call-flow)\",\"harden an HTTP API against SQL injection or XSS (use api-security)\",\"audit a model's refusal behavior on disallowed content (use model-safety)\"]"

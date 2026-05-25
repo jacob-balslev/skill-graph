@@ -5,10 +5,12 @@ license: MIT
 compatibility: "Portable dependency architecture guidance for monorepos, package.json ecosystems, service boundaries, SDKs, and internal libraries."
 allowed-tools: Read Grep
 metadata:
-  schema_version: "7"
+  schema_version: "8"
   version: "1.0.0"
   type: capability
+  operation: know
   category: engineering
+  subject: code-engineering
   domain: architecture/dependencies
   scope: portable
   owner: skill-graph-maintainer

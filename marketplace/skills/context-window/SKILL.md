@@ -5,10 +5,12 @@ license: MIT
 compatibility: "Provider-agnostic. The zone model, 80% rule, persistence hierarchy, and token-reduction techniques apply across Anthropic, OpenAI, Google, and open-weight contexts of any size. Specific token figures are illustrative — substitute the figures of the model you actually run."
 allowed-tools: Read Grep
 metadata:
-  schema_version: "7"
+  schema_version: "8"
   version: "1.1.0"
   type: capability
+  operation: know
   category: agent
+  subject: agent-ops
   domain: agent/context
   scope: portable
   owner: skill-graph-maintainer
@@ -19,7 +21,7 @@ metadata:
   routing_eval: absent
   comprehension_state: present
   stability: experimental
-  keywords: "[\"context window management\",\"context budget allocation\",\"80% compaction rule\",\"context health states\",\"pre-compact hook\",\"post-compact recovery\",\"cross-session persistence hierarchy\",\"token consumption per operation\",\"deterministic cli vs mcp tool result tokens\",\"targeted file read offset limit\",\"progressive skill disclosure\",\"grep before reading files\",\"1M context window strategy\",\"200K context window strategy\",\"128K context window strategy\",\"checkpoint before compact\",\"continuation signal\",\"what survives compaction\"]"
+  keywords: "[\"context window management\",\"context budget allocation\",\"80% compaction rule\",\"context health states\",\"pre-compact hook\",\"post-compact recovery\",\"cross-session persistence hierarchy\",\"token consumption per operation\",\"deterministic cli vs mcp tool result tokens\",\"targeted file read offset limit\"]"
   examples: "[\"the agent's tool results are starting to truncate — what state are we in and what should I do next?\",\"I have a 1M-context model — does that mean I can ignore budget management?\",\"the session is at 75% context — should I compact now or finish the current operation first?\",\"I just compacted and lost the decision trail; what should the pre-compact hook have preserved?\",\"the agent reads 5 files looking for a function and burns 100K tokens — what's the right pattern?\",\"I'm running on a 128K-context model — what's the per-task budget I can plan against?\",\"what survives compaction and what doesn't, ranked from most to least durable?\",\"the skill payload is 30K and I haven't even read a file yet — how do I shrink it?\"]"
   anti_examples: "[\"decide what context to load or drop in the working set\",\"design the multi-graph architecture for skills + docs + memory\",\"improve the prompt template the agent uses\",\"curate the durable memory index across sessions\",\"which skill should activate for this query\",\"review this AI-generated PR for correctness\",\"the README has drifted from the actual CLI flags — which wins?\",\"the docs have drifted from the code — which is canonical?\"]"
   relations: "{\"boundary\":[{\"skill\":\"context-management\",\"reason\":\"context-management decides what to load and drop in the working set; context-window is the budget math underneath that decides how much fits and when to compact\"},{\"skill\":\"context-graph\",\"reason\":\"context-graph maps the static topology of skills / docs / memory; context-window is the runtime budget for the part of that topology that is actually loaded\"},{\"skill\":\"tool-call-strategy\",\"reason\":\"tool-call-strategy decides which tool to invoke; context-window decides how much budget the result of that tool is allowed to occupy\"},{\"skill\":\"prompt-craft\",\"reason\":\"prompt-craft is wording / structure of one prompt; context-window is the per-session budget the prompt and its results live within\"}],\"related\":[\"context-management\",\"context-graph\",\"tool-call-strategy\",\"context-engineering\"],\"verify_with\":[\"context-management\"]}"

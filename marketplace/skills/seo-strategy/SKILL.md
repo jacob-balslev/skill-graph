@@ -5,10 +5,12 @@ license: MIT
 compatibility: "Markdown, Git, agent-skill runtimes"
 allowed-tools: Read Grep Bash
 metadata:
-  schema_version: "7"
+  schema_version: "8"
   version: "1.0.0"
   type: capability
+  operation: know
   category: quality
+  subject: quality-assurance
   domain: quality/display
   scope: portable
   owner: skill-graph-maintainer
@@ -18,7 +20,7 @@ metadata:
   eval_state: unverified
   routing_eval: absent
   stability: experimental
-  keywords: "[\"seo strategy\",\"programmatic seo\",\"content strategy\",\"comparison page\",\"alternative page\",\"schema markup\",\"structured data\",\"ai seo\",\"marketplace seo\",\"etsy seo\",\"amazon seo\",\"shopify seo\",\"product page seo\",\"e-e-a-t\",\"topical authority\",\"blog cluster\",\"ai overview\"]"
+  keywords: "[\"seo strategy\",\"programmatic seo\",\"content strategy\",\"comparison page\",\"alternative page\",\"schema markup\",\"structured data\",\"ai seo\",\"marketplace seo\",\"etsy seo\"]"
   triggers: "[\"seo-strategy-skill\",\"seo-skill\",\"programmatic-seo-skill\"]"
   relations: "{\"related\":[\"keywords\"]}"
   portability: "{\"readiness\":\"scripted\",\"targets\":[\"skill-md\"]}"

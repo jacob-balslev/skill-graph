@@ -5,10 +5,12 @@ license: MIT
 compatibility: "Portable layout and responsive-composition guidance for web apps, dashboards, documentation sites, admin tools, and mobile-first product surfaces."
 allowed-tools: Read Grep
 metadata:
-  schema_version: "7"
+  schema_version: "8"
   version: "1.0.0"
   type: capability
+  operation: know
   category: design
+  subject: frontend-ui
   domain: design/layout
   scope: portable
   owner: skill-graph-maintainer
@@ -18,7 +20,7 @@ metadata:
   eval_state: unverified
   routing_eval: absent
   stability: experimental
-  keywords: "[\"layout-composition\",\"responsive screen composition\",\"viewport hierarchy\",\"breakpoint selection\",\"grid flex composition\",\"stable dimensions\",\"scan pattern\",\"responsive media\",\"density planning\",\"whitespace balance\",\"negative space design\"]"
+  keywords: "[\"layout-composition\",\"responsive screen composition\",\"viewport hierarchy\",\"breakpoint selection\",\"grid flex composition\",\"stable dimensions\",\"scan pattern\",\"responsive media\",\"density planning\",\"whitespace balance\"]"
   examples: "[\"turn this route hierarchy into a responsive section order\",\"decide whether this dashboard should use tabs, columns, or stacked sections on mobile\",\"the page works on desktop but the mobile scan path is broken\",\"choose grid tracks, breakpoints, and responsive media behavior for this screen\"]"
   anti_examples: "[\"what is the user's top task for this route?\",\"design the global navigation and sitemap\",\"pick the color palette, type scale, and visual mood\",\"define component variants and semantic tokens\"]"
   relations: "{\"boundary\":[{\"skill\":\"task-analysis\",\"reason\":\"task-analysis defines the user goal and first-viewport hierarchy contract; layout-composition turns that contract into responsive structure\"},{\"skill\":\"information-architecture\",\"reason\":\"information-architecture owns navigation and page grouping; layout-composition owns the structure inside a page or screen\"},{\"skill\":\"visual-design-foundations\",\"reason\":\"visual-design-foundations owns visual craft choices; layout-composition owns spatial structure and responsive behavior\"},{\"skill\":\"design-system-architecture\",\"reason\":\"design-system-architecture owns reusable component and token contracts; layout-composition uses those contracts on a concrete surface\"}],\"related\":[\"task-analysis\",\"information-architecture\",\"design-system-architecture\",\"a11y\",\"performance-engineering\"],\"verify_with\":[\"task-analysis\",\"a11y\"]}"

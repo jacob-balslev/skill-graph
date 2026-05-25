@@ -4,12 +4,14 @@ description: "Use when designing or reviewing React Suspense usage: where to pla
 license: MIT
 allowed-tools: Read Grep
 metadata:
-  schema_version: "7"
+  schema_version: "8"
   version: "1.0.0"
   type: capability
+  operation: know
   category: engineering
+  subject: frontend-ui
   domain: engineering/frontend
-  scope: reference
+  scope: workspace
   owner: skill-graph-maintainer
   freshness: "2026-05-16"
   drift_check: "{\"last_verified\":\"2026-05-16\"}"
@@ -18,7 +20,7 @@ metadata:
   routing_eval: absent
   comprehension_state: present
   stability: experimental
-  keywords: "[\"React Suspense\",\"Suspense boundary\",\"streaming HTML\",\"loading.tsx Next.js\",\"useTransition\",\"startTransition\",\"use hook React 19\",\"error boundary with Suspense\",\"Suspense waterfall\",\"parallel data fetching\",\"granular loading states\"]"
+  keywords: "[\"React Suspense\",\"Suspense boundary\",\"streaming HTML\",\"loading.tsx Next.js\",\"useTransition\",\"startTransition\",\"use hook React 19\",\"error boundary with Suspense\",\"Suspense waterfall\",\"parallel data fetching\"]"
   triggers: "[\"where should I put the Suspense boundary\",\"why is my page waiting for the slowest query\",\"how do I show partial loading states\",\"Suspense vs loading.tsx\",\"do I need useTransition here\",\"error boundary not catching\",\"data is waterfalling instead of parallel\"]"
   examples: "[\"design a dashboard that streams three independent widgets in as their data resolves, with skeleton fallbacks for each\",\"decide whether a tab switch should use useTransition or a top-level Suspense fallback\",\"diagnose why a Suspense boundary is showing its fallback on every prop change\",\"pair a Suspense boundary with an ErrorBoundary so failed fetches show an error UI while successful ones stream in\"]"
   anti_examples: "[\"choose between Server Components and Client Components (use server-components-design)\",\"design the dependency array for a useEffect that fetches data (use hooks-patterns)\",\"pick the streaming protocol for an LLM response (use streaming-architecture)\",\"decide between SSR and SSG for a marketing page (use rendering-models)\",\"design the streaming protocol itself — SSE, HTTP/2, chunked transfer-encoding (use streaming-architecture)\"]"

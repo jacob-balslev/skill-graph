@@ -5,10 +5,12 @@ license: MIT
 compatibility: "Provider-agnostic. Examples reference HMAC-SHA256 (the dominant scheme), SDK-style verification helpers (Stripe-style, where the provider ships a library that takes raw body + header + secret), and round-trip verification APIs (PayPal-style, where the receiver POSTs the event back to the provider for validation). Substitute each provider's specific header names, hashing algorithm, and retry-status-code contract from their docs."
 allowed-tools: Read Grep Bash Edit
 metadata:
-  schema_version: "7"
+  schema_version: "8"
   version: "1.0.0"
   type: capability
+  operation: do
   category: engineering
+  subject: product-domain
   domain: integrations/webhooks
   scope: portable
   owner: skill-graph-maintainer
@@ -18,7 +20,7 @@ metadata:
   eval_state: unverified
   routing_eval: absent
   stability: experimental
-  keywords: "[\"webhook handler\",\"webhook signature\",\"webhook signature verification\",\"HMAC webhook\",\"timing-safe comparison\",\"duplicate webhook delivery\",\"webhook idempotency\",\"idempotency key\",\"webhook retry\",\"retry contract\",\"webhook 200 vs 500\",\"replay attack webhook\",\"webhook quarantine\",\"raw payload archive\",\"webhook canonical mapping\",\"PII capture window\",\"webhook secret rotation\",\"inbound event handler\"]"
+  keywords: "[\"webhook handler\",\"webhook signature\",\"webhook signature verification\",\"HMAC webhook\",\"timing-safe comparison\",\"duplicate webhook delivery\",\"webhook idempotency\",\"idempotency key\",\"webhook retry\",\"retry contract\"]"
   examples: "[\"implement signature verification for a new third-party webhook handler\",\"the same webhook event is being processed twice — fix the idempotency\",\"should I return 200 or 500 when a webhook handler hits a database error?\",\"the provider keeps retrying a webhook we already accepted — what's wrong with our 200 path?\",\"design a quarantine path for webhooks that fail signature verification\",\"extract a stable idempotency key from this provider's webhook payload\",\"reject all webhook deliveries with an invalid HMAC, log them for audit\",\"the provider deletes customer data 30 days after order — how do I capture PII safely on first delivery?\"]"
   anti_examples: "[\"design our outbound webhook product (we want to deliver events to customers)\",\"the production webhook is failing — find the root cause\",\"explain our webhook patterns in the contributor docs\",\"review this AI-generated webhook handler for correctness\",\"refactor the webhook handler helpers for clarity\",\"decide whether this webhook needs an integration test\",\"design the secret-rotation policy for our integration credentials\"]"
   relations: "{\"boundary\":[{\"skill\":\"event-contract-design\",\"reason\":\"event-contract-design owns outbound event and webhook contracts; webhook-integration owns inbound third-party handler mechanics\"},{\"skill\":\"debugging\",\"reason\":\"debugging chases an observed handler failure with reproduction; webhook-integration plans the safe handler shape before deployment\"},{\"skill\":\"refactor\",\"reason\":\"refactor is behavior-preserving cleanup; webhook-integration is the contract-enforcement layer that decides what behavior the handler must preserve\"},{\"skill\":\"owasp-security\",\"reason\":\"owasp-security owns the secret-storage and rotation policy; webhook-integration owns the per-request signature-verification mechanics that consume those secrets\"},{\"skill\":\"testing-strategy\",\"reason\":\"testing-strategy decides what deserves a regression test; webhook-integration defines the failure modes (replay, signature mismatch, duplicate delivery) those tests target\"}],\"related\":[\"testing-strategy\",\"debugging\",\"owasp-security\",\"code-review\",\"event-contract-design\"],\"verify_with\":[\"testing-strategy\",\"code-review\"]}"

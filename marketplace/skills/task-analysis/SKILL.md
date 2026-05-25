@@ -5,10 +5,12 @@ license: MIT
 compatibility: "Stack-agnostic. The actor / scenario / top-task model, the five friction dimensions, the breakpoint taxonomy, and the primary / secondary / supporting hierarchy apply to any UI under review; persona / journey YAML files are illustrative — substitute the equivalents (Notion, Confluence, in-repo Markdown, Figma annotations) of your team."
 allowed-tools: Read Grep
 metadata:
-  schema_version: "7"
+  schema_version: "8"
   version: "1.0.0"
   type: workflow
+  operation: do
   category: foundations
+  subject: meta-methods
   domain: foundations/analysis
   scope: portable
   owner: skill-graph-maintainer
@@ -18,7 +20,7 @@ metadata:
   eval_state: unverified
   routing_eval: absent
   stability: experimental
-  keywords: "[\"top task analysis\",\"goal-driven UX review\",\"route audit workflow\",\"onboarding flow analysis\",\"task friction scoring\",\"five friction dimensions\",\"dead-end detection\",\"hidden next-step diagnosis\",\"hierarchy contract first viewport\",\"actor and scenario identification\",\"subtask sequencing skip paths\",\"flow breakpoint taxonomy\",\"mobile-only friction\",\"role-permission confusion\",\"time-to-value analysis\",\"task vs goal distinction\",\"excessive branching detection\",\"persona-journey route mapping\"]"
+  keywords: "[\"top task analysis\",\"goal-driven UX review\",\"route audit workflow\",\"onboarding flow analysis\",\"task friction scoring\",\"five friction dimensions\",\"dead-end detection\",\"hidden next-step diagnosis\",\"hierarchy contract first viewport\",\"actor and scenario identification\"]"
   examples: "[\"this onboarding flow feels confusing — analyze the task structure\",\"audit this dashboard route for whether it supports the user's top task\",\"what should be above the fold on this page?\",\"users keep abandoning this wizard at step 3 — find the breakpoint\",\"decide what belongs in the first viewport for this analytics page\",\"diagnose why this multi-step setup has too many decisions\",\"the team disagrees on what the top task is for this route — settle it\"]"
   anti_examples: "[\"review this PR for code quality\",\"audit this UI for WCAG 2.2 violations\",\"decide the CSS grid layout for this hero section\",\"pick the right colors for this status badge\",\"build the navigation taxonomy for the whole product\",\"should we use a dropdown or a stepper here\"]"
   relations: "{\"boundary\":[{\"skill\":\"code-review\",\"reason\":\"code-review judges the quality and correctness of a specific change at PR scope; task-analysis judges whether a route's structure supports the user's top task — same 'review this page' prompt routes by whether the lens is code or user goal\"},{\"skill\":\"a11y\",\"reason\":\"a11y is accessibility QA against WCAG / ARIA / keyboard / screen-reader contracts on an existing UI; task-analysis is goal-driven decomposition of what the UI must support — same 'review this UI' prompt routes by whether the trigger is accessibility compliance or user-task fit\"},{\"skill\":\"layout-composition\",\"reason\":\"layout-composition owns responsive section order, grids, and scan patterns; task-analysis stops at the first-viewport hierarchy contract\"},{\"skill\":\"visual-design-foundations\",\"reason\":\"visual-design-foundations owns visual craft; task-analysis owns whether the route supports the user's goal\"},{\"skill\":\"interaction-patterns\",\"reason\":\"interaction-patterns owns control-pattern selection; task-analysis identifies the decision or action that the pattern must support\"},{\"skill\":\"interaction-feedback\",\"reason\":\"interaction-feedback owns loading, progress, success, error, retry, and undo behavior; task-analysis identifies where feedback is needed\"},{\"skill\":\"information-architecture\",\"reason\":\"information-architecture owns navigation and page grouping across a product; task-analysis owns one route or flow\"}],\"related\":[\"diagnosis\",\"pattern-recognition\",\"information-architecture\",\"layout-composition\",\"interaction-patterns\",\"interaction-feedback\"],\"verify_with\":[\"a11y\"]}"

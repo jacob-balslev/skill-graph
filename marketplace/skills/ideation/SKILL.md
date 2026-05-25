@@ -3,10 +3,12 @@ name: ideation
 description: "Use when generating a wide range of solution concepts before converging on a direction, running structured idea-generation sessions, breaking out of solution fixation, or moving from divergent to convergent selection with explicit criteria. Do NOT use for collaborative engineering domain discovery (event-storming), solo deep technical design, or making final go/no-go investment decisions — those require different methods."
 license: CC-BY-4.0
 metadata:
-  schema_version: "7"
+  schema_version: "8"
   version: "1.0.0"
   type: capability
+  operation: know
   category: design
+  subject: design-craft
   scope: portable
   owner: skill-graph-maintainer
   freshness: "2026-05-12"
@@ -15,7 +17,7 @@ metadata:
   eval_state: unverified
   routing_eval: absent
   stability: experimental
-  keywords: "[\"crazy 8s\",\"brainstorming\",\"SCAMPER\",\"worst possible idea\",\"headlines from the future\",\"dot voting\",\"NUF test\",\"divergent thinking\",\"convergent thinking\",\"ideation workshop\",\"impact effort matrix\",\"weighted decision matrix\",\"suspended judgment\",\"design sprint sketch\"]"
+  keywords: "[\"crazy 8s\",\"brainstorming\",\"SCAMPER\",\"worst possible idea\",\"headlines from the future\",\"dot voting\",\"NUF test\",\"divergent thinking\",\"convergent thinking\",\"ideation workshop\"]"
   triggers: "[\"brainstorm\",\"ideation session\",\"crazy 8s\",\"generate concepts\",\"narrow down ideas\"]"
   examples: "[\"Run a crazy-8s round on this how-might-we statement and produce a divergent set.\",\"Apply SCAMPER to this existing feature to generate variant concepts.\",\"Use dot voting and an impact/effort matrix to converge on three concepts to prototype.\",\"Help me set up a worst-possible-idea round to break the team out of solution fixation.\"]"
   anti_examples: "[\"Decide whether to invest in this feature for the next quarter.\",\"Model the bounded contexts for the order-fulfillment domain.\",\"Write the production code for the selected concept.\"]"

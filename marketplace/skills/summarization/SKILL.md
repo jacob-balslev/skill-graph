@@ -5,12 +5,14 @@ license: MIT
 compatibility: "Markdown, Git, agent-skill runtimes"
 allowed-tools: Read Grep Bash
 metadata:
-  schema_version: "7"
+  schema_version: "8"
   version: "1.1.0"
   type: capability
+  operation: know
   category: agent
+  subject: agent-ops
   domain: agent/cognition
-  scope: reference
+  scope: workspace
   owner: skill-graph-maintainer
   freshness: "2026-05-18"
   drift_check: "{\"last_verified\":\"2026-05-18\"}"
@@ -19,7 +21,7 @@ metadata:
   routing_eval: absent
   comprehension_state: present
   stability: experimental
-  keywords: "[\"summarization\",\"summary\",\"TLDR\",\"executive summary\",\"condensation\",\"abstract\",\"distill\",\"key findings\",\"brief\",\"compress text\",\"context handoff\",\"progressive summarization\"]"
+  keywords: "[\"summarization\",\"summary\",\"TLDR\",\"executive summary\",\"condensation\",\"abstract\",\"distill\",\"key findings\",\"brief\",\"compress text\"]"
   triggers: "[\"summarization-skill\",\"summary-skill\"]"
   relations: "{\"related\":[\"context-management\",\"context-window\",\"writing-humanizer\"],\"boundary\":[{\"skill\":\"compression\",\"reason\":\"compression owns byte, payload, and storage compression; summarization owns semantic prose condensation\"},{\"skill\":\"context-window\",\"reason\":\"context-window owns token-budget math and compaction triggers; summarization is one technique for shrinking prose after the budget decision is made\"},{\"skill\":\"context-management\",\"reason\":\"context-management decides what belongs in the active working set; summarization condenses selected material into a usable form\"},{\"skill\":\"writing-humanizer\",\"reason\":\"writing-humanizer repairs tone and AI-patterned prose; summarization decides what meaning to preserve and what to omit\"},{\"skill\":\"evaluation\",\"reason\":\"evaluation scores work quality; summarization may report scores but does not define the rubric\"}],\"verify_with\":[\"evaluation\",\"writing-humanizer\"]}"
   grounding: "{\"domain_object\":\"Prose summarization and agent handoff condensation\",\"grounding_mode\":\"hybrid\",\"truth_sources\":[\"https://owl.purdue.edu/owl/research_and_citation/using_research/quoting_paraphrasing_and_summarizing/index.html\",\"https://fortelabs.com/blog/progressive-summarization-a-practical-technique-for-designing-discoverable-notes/\",\"https://arxiv.org/abs/2204.09519\",\"https://github.com/jacob-balslev/skills/blob/main/skills/agent/context/context-management/SKILL.md\",\"https://github.com/jacob-balslev/skills/blob/main/skills/agent/context/context-window/SKILL.md\",\"https://github.com/jacob-balslev/skills/blob/main/skills/design/writing-humanizer/SKILL.md\"],\"failure_modes\":[\"summary_drops_decisive_evidence\",\"summary_introduces_new_claims\",\"audit_summary_hides_findings\",\"handoff_omits_next_step\",\"style_polish_overrides_meaning_preservation\"],\"evidence_priority\":\"equal\"}"

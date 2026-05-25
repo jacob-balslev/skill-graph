@@ -110,7 +110,7 @@ Completion is **ledger-derived, not file-presence-derived.** `build-skill-audit-
 
 ## Lanes (partitioned, attributable dispatch)
 
-From `.opencode/skill-audit-lanes.json` (schema: `scripts/schemas/skill-audit-lanes.schema.json`).
+From `audits/lanes.json` (schema: `schemas/skill-audit-lanes.schema.json`) — project-canonical per [ADR-0016](adr/0016-operational-data-ownership.md); migrated from the legacy workspace `.opencode/skill-audit-lanes.json` path.
 
 | Lane | Bands | Op | minTier | Max concurrency |
 |---|---|---|---|---|

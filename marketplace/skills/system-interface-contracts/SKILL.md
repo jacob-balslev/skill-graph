@@ -5,10 +5,12 @@ license: MIT
 compatibility: "Portable contract-design discipline across code modules, services, queues, APIs, webhooks, jobs, and agent interfaces."
 allowed-tools: Read Grep
 metadata:
-  schema_version: "7"
+  schema_version: "8"
   version: "1.0.0"
   type: capability
+  operation: know
   category: engineering
+  subject: code-engineering
   domain: architecture/contracts
   scope: portable
   owner: skill-graph-maintainer

@@ -3,10 +3,12 @@ name: usability-testing
 description: "Use when observing real users attempting tasks on a prototype or live product to surface usability issues — moderated or unmoderated, think-aloud protocol, task scenarios, severity rating, sample sizing per Nielsen's heuristics. Do NOT use for automated test suites, code coverage analysis, CI pipelines, unit/integration testing, or any engineering verification — those are testing-strategy concerns, not human-behavior observation."
 license: CC-BY-4.0
 metadata:
-  schema_version: "7"
+  schema_version: "8"
   version: "1.0.0"
   type: capability
+  operation: do
   category: design
+  subject: design-craft
   scope: portable
   owner: skill-graph-maintainer
   freshness: "2026-05-12"
@@ -15,7 +17,7 @@ metadata:
   eval_state: unverified
   routing_eval: absent
   stability: experimental
-  keywords: "[\"think aloud protocol\",\"task scenario\",\"moderated usability test\",\"unmoderated test\",\"severity rating\",\"five user rule\",\"formative testing\",\"summative testing\",\"hallway test\",\"moderator neutrality\",\"usability heuristics\",\"SUS score\",\"task success rate\",\"critical incident\"]"
+  keywords: "[\"think aloud protocol\",\"task scenario\",\"moderated usability test\",\"unmoderated test\",\"severity rating\",\"five user rule\",\"formative testing\",\"summative testing\",\"hallway test\",\"moderator neutrality\"]"
   triggers: "[\"usability test\",\"think aloud\",\"test this prototype\",\"task scenarios\",\"test with users\"]"
   examples: "[\"Write three task scenarios for a usability test of this onboarding flow.\",\"How many participants do I need for a formative round on this prototype?\",\"Review my moderator script for neutrality and leading prompts.\",\"Rate the severity of these eight usability findings using Nielsen's scale.\"]"
   anti_examples: "[\"Add unit tests for the order-total calculation function.\",\"Set up the CI pipeline for the new repo.\",\"Run a load test against the checkout API.\"]"

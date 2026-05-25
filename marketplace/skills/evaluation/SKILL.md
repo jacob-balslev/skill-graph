@@ -5,10 +5,12 @@ license: MIT
 compatibility: "Portable completion-evaluation discipline for AI agent work, documentation, skill upgrades, and software deliverables. It assumes the evaluator can inspect the request, artifact, changed files or report, and verification evidence; substitute local tools and acceptance criteria as needed."
 allowed-tools: Read Grep Bash
 metadata:
-  schema_version: "7"
+  schema_version: "8"
   version: "1.1.0"
   type: capability
+  operation: do
   category: engineering
+  subject: code-engineering
   domain: engineering/evaluation
   scope: portable
   owner: skill-graph-maintainer
@@ -19,7 +21,7 @@ metadata:
   routing_eval: absent
   comprehension_state: present
   stability: experimental
-  keywords: "[\"evaluation\",\"quality gate\",\"deliverable review\",\"completion review\",\"evidence-based score\",\"skeptical critic\",\"score 1-5\",\"evaluation revision loop\",\"acceptance criteria review\",\"done gate\",\"artifact scorecard\",\"gap analysis\",\"quality verdict\",\"verification evidence\",\"score ceiling\",\"agent output evaluation\",\"final answer review\",\"rubric scoring\"]"
+  keywords: "[\"evaluation\",\"quality gate\",\"deliverable review\",\"completion review\",\"evidence-based score\",\"skeptical critic\",\"score 1-5\",\"evaluation revision loop\",\"acceptance criteria review\",\"done gate\"]"
   triggers: "[\"evaluation-skill\",\"critic-loop-skill\",\"quality-gate-skill\"]"
   examples: "[\"score this completed agent task against the original request, changed files, tests, and remaining risks before we call it done\",\"act as a skeptical critic and tell me whether this deliverable is actually complete or only technically working\",\"run a completion gate on this implementation: what is the 1-5 score, what evidence supports it, and what must be revised?\",\"evaluate whether this documentation update satisfies the acceptance criteria and preserves all required information\",\"after the focused checks pass, decide whether the skill upgrade can be marked complete without inflating eval claims\",\"review the final artifact and produce a scorecard with blockers, required revisions, residual risks, and verification evidence\"]"
   anti_examples: "[\"design a new eval dataset, grader, and hard negatives for this router\",\"review this pull request line by line for bugs and security issues\",\"choose unit versus integration versus end-to-end tests for this feature\",\"design the whole implementation methodology and quality gate sequence before work starts\",\"debug why the existing run failed in production\",\"author a new SKILL.md from scratch\"]"

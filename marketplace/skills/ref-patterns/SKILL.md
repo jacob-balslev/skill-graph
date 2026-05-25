@@ -1,15 +1,17 @@
 ---
 name: ref-patterns
-description: "Use when designing or reviewing React ref usage: `useRef` for DOM access and mutable instance values, ref callbacks, `forwardRef`, React 19 ref-as-prop, `useImperativeHandle`, ref forwarding through compound primitives, and the distinction between refs as non-reactive mutable handles and state as render-driving data. Do NOT use for broader hook discipline (use hooks-patterns), component-library layering (use component-architecture), state ownership decisions (use state-management), client/server serialization boundaries (use client-server-boundary), or form validation/state UX (use form-ux-architecture)."
+description: "Use when designing or reviewing React ref usage: refs as mutable handles that survive renders without triggering them, useRef for DOM access and instance values, ref callbacks for mount/unmount hooks, forwardRef and React 19 ref-as-prop, useImperativeHandle for controlled imperative APIs, and ref forwarding through compound-component primitives such as Radix Slot. Use for focus, measurement, animation, third-party DOM integration, and sparse imperative APIs; never as a substitute for reactive state. Do NOT use for the broader hook discipline (use react-hooks-patterns), state ownership decisions (use state-management), component-layering strategy (use component-architecture), Client/Server serialization boundaries (use client-server-boundary), or form validation UX (use form-ux-architecture)."
 license: MIT
 allowed-tools: Read Grep
 metadata:
-  schema_version: "7"
+  schema_version: "8"
   version: "1.0.0"
   type: capability
+  operation: know
   category: engineering
+  subject: frontend-ui
   domain: engineering/frontend
-  scope: reference
+  scope: workspace
   owner: skill-graph-maintainer
   freshness: "2026-05-17"
   drift_check: "{\"last_verified\":\"2026-05-17\"}"
@@ -18,7 +20,7 @@ metadata:
   routing_eval: absent
   comprehension_state: present
   stability: experimental
-  keywords: "[\"useRef hook\",\"forwardRef\",\"useImperativeHandle\",\"ref callback\",\"DOM ref React\",\"ref forwarding compound component\",\"React 19 ref as prop\",\"mutable ref vs state\",\"current property ref\",\"Radix Slot ref forwarding\",\"focus management ref\",\"measure DOM node ref\",\"third-party DOM library ref integration\",\"escape hatch ref\"]"
+  keywords: "[\"useRef hook\",\"forwardRef\",\"useImperativeHandle\",\"ref callback\",\"DOM ref React\",\"ref forwarding compound component\",\"React 19 ref as prop\",\"mutable ref vs state\",\"current property ref\",\"Radix Slot ref forwarding\"]"
   triggers: "[\"how do I focus an input on mount\",\"how do I pass a ref through a wrapper component\",\"do I still need forwardRef in React 19\",\"when should I use a ref instead of state\",\"how do I expose a method like open or close to the parent\",\"how do I measure a DOM element\",\"why is my ref.current null on first render\",\"how do I integrate a non-React DOM library\"]"
   examples: "[\"design a Modal component that exposes open() and close() to the parent via useImperativeHandle so the parent can trigger it imperatively without lifting full state\",\"forward a ref through a styled Button wrapper to the underlying <button> element using React 19 ref-as-prop (or forwardRef on React 18 and earlier)\",\"integrate a third-party chart library that needs a DOM container by handing it a ref callback that initializes on mount and tears down on unmount\",\"replace a useState that nobody reads in render with a useRef because the value drives an imperative side effect (interval id, latest-args closure) not the render output\",\"audit a component that uses a ref to read 'current form values' instead of reading from controlled state — usually a sign the wrong primitive was chosen\"]"
   anti_examples: "[\"design the Rules of Hooks and dependency-array discipline for useEffect (use hooks-patterns)\",\"decide whether the form state lives in URL, server, client, or persistent storage (use state-management)\",\"design the headless-vs-styled layering of a component library (use component-architecture)\",\"explain how 'use client' marks a component boundary (use client-server-boundary)\",\"design the validation-state UX of an input (use form-ux-architecture)\",\"design the layering and API surface of a cross-product component library (use component-architecture)\",\"design the validation states, layout, and microcopy of a form (use form-ux-architecture)\"]"
@@ -37,6 +39,8 @@ metadata:
   skill_graph_protocol: Skill Metadata Protocol v7
   skill_graph_project: Skill Graph
   skill_graph_canonical_skill: skills/engineering/frontend/ref-patterns/SKILL.md
+  skill_graph_export_description: shortened for Agent Skills 1024-character description limit; canonical source keeps the full routing contract
+  skill_graph_canonical_description_length: "1311"
 ---
 
 # Ref Patterns

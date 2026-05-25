@@ -4,12 +4,14 @@ description: "Use when deciding where state lives, how it propagates, and how it
 license: MIT
 allowed-tools: Read Grep
 metadata:
-  schema_version: "7"
+  schema_version: "8"
   version: "1.0.0"
   type: capability
+  operation: know
   category: engineering
+  subject: frontend-ui
   domain: engineering/frontend
-  scope: reference
+  scope: workspace
   owner: skill-graph-maintainer
   freshness: "2026-05-16"
   drift_check: "{\"last_verified\":\"2026-05-16\"}"
@@ -18,7 +20,7 @@ metadata:
   routing_eval: absent
   comprehension_state: present
   stability: experimental
-  keywords: "[\"state management\",\"state colocation\",\"lifting state\",\"state derivation\",\"single source of truth\",\"server state\",\"client state\",\"URL state\",\"persistent state\",\"ephemeral state\",\"global state\",\"prop drilling\",\"state sprawl\",\"optimistic update\",\"cache invalidation\",\"state ownership\",\"list state filtering sorting pagination\",\"state across routes\"]"
+  keywords: "[\"state management\",\"state colocation\",\"lifting state\",\"state derivation\",\"single source of truth\",\"server state\",\"client state\",\"URL state\",\"persistent state\",\"ephemeral state\"]"
   triggers: "[\"where should this state live\",\"should this be in component state or global\",\"I have state across multiple routes\",\"this prop is drilled through 5 components\",\"is this server state or client state\",\"should this be in the URL\"]"
   examples: "[\"decide where the filter/sort/page state for a data table should live\",\"decide whether a piece of state should be in the URL, component state, or persistent storage\",\"diagnose whether a piece of duplicated state is a real performance need or accidental sprawl\",\"structure state for a form that spans multiple steps and survives navigation\"]"
   anti_examples: "[\"implement a specific Redux reducer (tactical, library-specific)\",\"design the JSON shape of an API response (use api-design)\",\"model the state transitions of a multi-step workflow (use state-machine-modeling)\",\"configure HTTP cache headers on the server (use rendering-models or http-semantics)\"]"

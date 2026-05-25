@@ -4,12 +4,14 @@ description: "Use when diagnosing and tuning a specific slow query in a relation
 license: MIT
 allowed-tools: Read Grep
 metadata:
-  schema_version: "7"
+  schema_version: "8"
   version: "1.0.0"
   type: capability
+  operation: do
   category: engineering
+  subject: code-engineering
   domain: engineering/data
-  scope: reference
+  scope: workspace
   owner: skill-graph-maintainer
   freshness: "2026-05-16"
   drift_check: "{\"last_verified\":\"2026-05-16\"}"
@@ -18,7 +20,7 @@ metadata:
   routing_eval: absent
   comprehension_state: present
   stability: experimental
-  keywords: "[\"query optimization\",\"query planner\",\"EXPLAIN\",\"EXPLAIN ANALYZE\",\"sequential scan\",\"index scan\",\"nested loop\",\"hash join\",\"merge join\",\"query rewriting\",\"statistics\",\"planner cost model\",\"cardinality estimation\"]"
+  keywords: "[\"query optimization\",\"query planner\",\"EXPLAIN\",\"EXPLAIN ANALYZE\",\"sequential scan\",\"index scan\",\"nested loop\",\"hash join\",\"merge join\",\"query rewriting\"]"
   triggers: "[\"this query is slow\",\"EXPLAIN ANALYZE output\",\"why isn't the planner using the index\",\"join order optimization\",\"subquery vs join\"]"
   examples: "[\"diagnose a query that takes 8 seconds and identify the plan node responsible\",\"rewrite a slow correlated subquery as a join to enable a faster plan\",\"explain why ANALYZE on a recently-changed table can change the planner's decisions\",\"decide whether to add an index, rewrite the query, or accept the cost\"]"
   anti_examples: "[\"design which indexes to maintain on a new schema (use indexing-strategy)\",\"choose a database schema (use data-modeling)\",\"decide isolation level for a workload (use transaction-isolation)\"]"

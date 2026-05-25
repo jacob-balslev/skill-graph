@@ -5,10 +5,12 @@ license: MIT
 compatibility: "Markdown, Git, any web stack"
 allowed-tools: Read Grep
 metadata:
-  schema_version: "7"
+  schema_version: "8"
   version: "1.0.0"
   type: capability
+  operation: know
   category: quality
+  subject: quality-assurance
   domain: quality/accessibility
   scope: portable
   owner: skill-graph-maintainer
@@ -18,7 +20,7 @@ metadata:
   eval_state: passing
   routing_eval: present
   stability: experimental
-  keywords: "[\"accessibility\",\"a11y\",\"keyboard navigation\",\"screen reader\",\"focus management\",\"keyboard not working\",\"tab order\",\"missing aria label\",\"screen reader says\",\"reduced motion\",\"high contrast\",\"semantic html\",\"form labels\",\"form fields\",\"aria-label\",\"assistive tech\",\"assistive technology\",\"accessible labels\",\"proper labels\",\"keyboard trapped\",\"focus trap\",\"escape key not working\",\"modal keyboard trap\",\"dialog keyboard trap\"]"
+  keywords: "[\"accessibility\",\"a11y\",\"keyboard navigation\",\"screen reader\",\"focus management\",\"keyboard not working\",\"tab order\",\"missing aria label\",\"screen reader says\",\"reduced motion\"]"
   triggers: "[\"a11y-skill\"]"
   paths: "[\"**/*.{html,tsx,jsx,vue,svelte}\",\"**/*.css\",\"!**/*.test.{ts,tsx,js,jsx}\",\"!**/dist/**\",\"!**/node_modules/**\"]"
   examples: "[\"this modal is keyboard-trapped — users can't Escape to close it\",\"screen reader doesn't announce when the form validation state changes\",\"add proper labels to these form fields so assistive tech can read them\",\"review this dropdown menu for arrow-key navigation and focus return\"]"

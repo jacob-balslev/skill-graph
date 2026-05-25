@@ -4,12 +4,14 @@ description: "Use when reasoning about the protocol-level cycle by which a langu
 license: MIT
 allowed-tools: Read Grep
 metadata:
-  schema_version: "7"
+  schema_version: "8"
   version: "1.0.0"
   type: capability
+  operation: do
   category: agent
+  subject: agent-ops
   domain: agent/protocol
-  scope: reference
+  scope: workspace
   owner: skill-graph-maintainer
   freshness: "2026-05-15"
   drift_check: "{\"last_verified\":\"2026-05-15\"}"
@@ -18,7 +20,7 @@ metadata:
   routing_eval: absent
   comprehension_state: present
   stability: experimental
-  keywords: "[\"tool call\",\"tool use\",\"function calling\",\"MCP\",\"Model Context Protocol\",\"tool result\",\"parallel tool calls\",\"tool schema\",\"JSON Schema\",\"assistant turn\",\"tool runtime\",\"tool router\",\"tool definitions\",\"agent calling tools\"]"
+  keywords: "[\"tool call\",\"tool use\",\"function calling\",\"MCP\",\"Model Context Protocol\",\"tool result\",\"parallel tool calls\",\"tool schema\",\"JSON Schema\",\"assistant turn\"]"
   triggers: "[\"how does tool calling actually work\",\"what's the message shape for a tool result\",\"MCP vs function calling vs Anthropic tools\",\"can the model call tools in parallel\",\"where do tool errors live in the message history\"]"
   examples: "[\"design the message-shape contract between a model and a tool runtime\",\"explain why a tool result must be appended to the message history before the next assistant turn\",\"decide whether to expose a capability as a tool, an MCP server, or an inline API\",\"diagnose why a model keeps re-calling the same tool with the same arguments\"]"
   anti_examples: "[\"decide whether to call a tool or write a script (use tool-call-strategy)\",\"choose a multi-agent coordination pattern (use agent-engineering)\",\"design an eval suite that tests tool-call correctness (use agent-eval-design)\"]"

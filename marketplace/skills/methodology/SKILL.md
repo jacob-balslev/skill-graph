@@ -5,12 +5,14 @@ license: MIT
 compatibility: "Markdown, Git, agent-skill runtimes"
 allowed-tools: Read Grep Bash
 metadata:
-  schema_version: "7"
+  schema_version: "8"
   version: "1.1.0"
   type: capability
+  operation: do
   category: quality
+  subject: quality-assurance
   domain: quality/method
-  scope: reference
+  scope: workspace
   owner: skill-graph-maintainer
   freshness: "2026-05-18"
   drift_check: "{\"last_verified\":\"2026-05-18\"}"
@@ -18,7 +20,7 @@ metadata:
   eval_state: unverified
   routing_eval: absent
   stability: experimental
-  keywords: "[\"methodology\",\"method\",\"process\",\"formal methods\",\"cleanroom\",\"PSP\",\"TSP\",\"hypothesis driven\",\"DMAIC\",\"PDCA\",\"Deming\",\"quality gates\",\"checklist manifesto\",\"verification validation\",\"DO-178C\",\"V&V\",\"EDDOps\",\"defect prevention\",\"shift left\",\"evidence based\"]"
+  keywords: "[\"methodology\",\"method\",\"process\",\"formal methods\",\"cleanroom\",\"PSP\",\"TSP\",\"hypothesis driven\",\"DMAIC\",\"PDCA\"]"
   triggers: "[\"methodology-skill\"]"
   examples: "[\"design a verification protocol for this multi-step agent workflow before implementation starts\",\"turn these recurring agent failure modes into a checklist and hard quality gate\",\"explain why this process step exists instead of just telling the agent to follow it\",\"choose whether this task needs PDCA, DMAIC, hypothesis-driven development, or V&V-style traceability\",\"build a methodology-backed plan for preventing defects earlier in this skill audit loop\",\"convert a vague done checklist into binary gates with evidence receipts\"]"
   anti_examples: "[\"review this PR and decide whether to approve it\",\"refactor this file while preserving behavior\",\"decide unit vs integration vs e2e coverage for this feature\",\"write the eval cases and grader rubric for this router\",\"block this dangerous git command or secret-bearing tool call\"]"

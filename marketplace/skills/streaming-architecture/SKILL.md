@@ -4,12 +4,14 @@ description: "Use when reasoning about systems that emit a sequence of values ov
 license: MIT
 allowed-tools: Read Grep
 metadata:
-  schema_version: "7"
+  schema_version: "8"
   version: "1.0.0"
   type: capability
+  operation: do
   category: engineering
+  subject: frontend-ui
   domain: engineering/realtime
-  scope: reference
+  scope: workspace
   owner: skill-graph-maintainer
   freshness: "2026-05-16"
   drift_check: "{\"last_verified\":\"2026-05-16\"}"
@@ -18,7 +20,7 @@ metadata:
   routing_eval: absent
   comprehension_state: present
   stability: experimental
-  keywords: "[\"streaming\",\"stream\",\"backpressure\",\"SSE\",\"server-sent events\",\"chunked transfer\",\"HTTP/2\",\"WebSocket\",\"WHATWG Streams\",\"ReadableStream\",\"TransformStream\",\"gRPC streaming\",\"RSC streaming\",\"flow control\",\"reactive streams\",\"streaming model output to browser\",\"stream LLM response\"]"
+  keywords: "[\"streaming\",\"stream\",\"backpressure\",\"SSE\",\"server-sent events\",\"chunked transfer\",\"HTTP/2\",\"WebSocket\",\"WHATWG Streams\",\"ReadableStream\"]"
   triggers: "[\"how should this endpoint stream\",\"should this be SSE or WebSocket\",\"is the consumer slow\",\"what's the backpressure story\",\"partial result delivery\"]"
   examples: "[\"design the response shape for an endpoint that returns 50,000 rows incrementally\",\"decide between SSE and WebSocket for a live progress feed\",\"diagnose why a fast producer is exhausting memory when the consumer falls behind\",\"explain why an RSC-streamed page renders out of order and how the boundary resolves\"]"
   anti_examples: "[\"design the JSON shape of a single response payload (use api-design)\",\"implement the model→tool message-history protocol (use tool-call-flow)\",\"design pub-sub topic structure (use event-driven-architecture)\"]"

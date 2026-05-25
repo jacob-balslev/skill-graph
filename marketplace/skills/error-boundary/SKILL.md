@@ -4,12 +4,14 @@ description: "Use when designing or reviewing React error boundaries: what an er
 license: MIT
 allowed-tools: Read Grep
 metadata:
-  schema_version: "7"
+  schema_version: "8"
   version: "1.0.0"
   type: capability
+  operation: do
   category: engineering
+  subject: frontend-ui
   domain: engineering/frontend
-  scope: reference
+  scope: workspace
   owner: skill-graph-maintainer
   freshness: "2026-05-16"
   drift_check: "{\"last_verified\":\"2026-05-16\"}"
@@ -18,7 +20,7 @@ metadata:
   routing_eval: absent
   comprehension_state: present
   stability: experimental
-  keywords: "[\"React Error Boundary\",\"componentDidCatch\",\"getDerivedStateFromError\",\"react-error-boundary library\",\"Next.js error.tsx\",\"global-error.tsx\",\"error boundary granularity\",\"resetKeys\",\"error boundary with Suspense\",\"caught render error\",\"uncaught event handler error\",\"catch errors in React component tree\",\"show fallback UI when component crashes\",\"where to place error boundaries\",\"React component crash recovery\",\"error.tsx route segment fallback\"]"
+  keywords: "[\"React Error Boundary\",\"componentDidCatch\",\"getDerivedStateFromError\",\"react-error-boundary library\",\"Next.js error.tsx\",\"global-error.tsx\",\"error boundary granularity\",\"resetKeys\",\"error boundary with Suspense\",\"caught render error\"]"
   triggers: "[\"my error boundary isn't catching errors\",\"do I need an error boundary here\",\"why does the whole page crash on one component error\",\"how do I recover from a caught error\",\"error.tsx vs global-error.tsx\",\"why doesn't this catch async errors\"]"
   examples: "[\"design a route-segment error.tsx for a dashboard so one failing widget doesn't blank the whole page\",\"diagnose why a click-handler crash bypasses the error boundary and propagates to window.onerror\",\"pair an error boundary with a Suspense boundary so failed fetches show error UI while successful ones stream in\",\"integrate an error boundary with Sentry so caught errors are reported with the component tree context\"]"
   anti_examples: "[\"design where to place Suspense fallback boundaries (use suspense-patterns)\",\"design the API response contract for a 500 error (use api-design)\",\"set up Sentry SDK initialization (use error-tracking)\",\"handle a Promise rejection in an event handler (use code-review for the local try/catch pattern)\",\"configure the Sentry, Datadog, or other error-tracking SDK and dashboards (use error-tracking)\"]"

@@ -7,10 +7,12 @@ allowed-tools: Read Grep
 metadata:
   grounding: "{\"domain_object\":\"Implementation-neutral conceptual modeling for business domains before logical schema, physical database, ontology, API, or DDD tactical design\",\"grounding_mode\":\"universal\",\"truth_sources\":[\"https://doi.org/10.1145/320434.320440\",\"https://www.omg.org/spec/UML/2.5.1/PDF\",\"https://opentextbc.ca/dbdesign01/chapter/chapter-8-entity-relationship-model/\",\"https://www.ibm.com/think/topics/conceptual-data-model\"],\"failure_modes\":[\"implementation_leakage_turns_conceptual_model_into_physical_schema\",\"unnamed_relationships_hide_business_meaning\",\"cardinality_or_optionality_left_implicit\",\"identity_criteria_missing_for_entities\",\"relationship_with_attributes_not_reified\",\"generalization_claim_lies_about_disjointness_or_totality\",\"stakeholder_validation_skipped\",\"conceptual_model_overowns_ontology_data_modeling_or_ddd_design\"],\"evidence_priority\":\"equal\"}"
   drift_check: "{\"last_verified\":\"2026-05-19\"}"
-  schema_version: "7"
+  schema_version: "8"
   version: "1.1.0"
   type: capability
+  operation: know
   category: engineering
+  subject: code-engineering
   domain: engineering/modeling
   scope: portable
   owner: skill-graph-maintainer

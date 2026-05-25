@@ -5,10 +5,12 @@ license: MIT
 compatibility: "Markdown, Git, agent-skill runtimes"
 allowed-tools: Read Grep Bash
 metadata:
-  schema_version: "7"
+  schema_version: "8"
   version: "1.0.0"
   type: capability
+  operation: do
   category: engineering
+  subject: code-engineering
   domain: engineering/async
   scope: portable
   owner: skill-graph-maintainer

@@ -3,10 +3,12 @@ name: journey-mapping
 description: "Use when mapping a user's experience across multiple touchpoints and time, surfacing emotional peaks and troughs, identifying opportunity moments in a cross-channel flow, or aligning a team on the end-to-end experience including back-stage support processes. Do NOT use for decomposing a single screen into UI steps (use task-analysis) or for drawing back-end service architecture diagrams — journey maps describe human experience, not system topology."
 license: CC-BY-4.0
 metadata:
-  schema_version: "7"
+  schema_version: "8"
   version: "1.0.0"
   type: capability
+  operation: know
   category: design
+  subject: design-craft
   scope: portable
   owner: skill-graph-maintainer
   freshness: "2026-05-12"
@@ -15,7 +17,7 @@ metadata:
   eval_state: unverified
   routing_eval: absent
   stability: experimental
-  keywords: "[\"customer journey map\",\"user journey\",\"service blueprint\",\"touchpoint\",\"moments of truth\",\"experience map\",\"front-stage back-stage\",\"emotional curve\",\"opportunity areas\",\"pain points\",\"cross-channel experience\",\"end-to-end journey\",\"onboarding journey\"]"
+  keywords: "[\"customer journey map\",\"user journey\",\"service blueprint\",\"touchpoint\",\"moments of truth\",\"experience map\",\"front-stage back-stage\",\"emotional curve\",\"opportunity areas\",\"pain points\"]"
   triggers: "[\"journey map\",\"service blueprint\",\"map the user experience\",\"customer journey\",\"touchpoints\"]"
   examples: "[\"Build a journey map for first-time tax filers from awareness through filing to refund.\",\"Add a service-blueprint layer below this journey map showing the back-stage support steps.\",\"Identify the emotional low points in this onboarding journey and the opportunities at each.\",\"Map the cross-channel experience of returning an online order to a physical store.\"]"
   anti_examples: "[\"Break down the steps a user takes inside the upload modal.\",\"Draw the microservice call graph for the checkout API.\",\"Diagram the database schema for the order entity.\"]"

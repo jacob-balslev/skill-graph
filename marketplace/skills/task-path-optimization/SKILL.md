@@ -2,11 +2,13 @@
 name: task-path-optimization
 description: "This skill provides decision frameworks for choosing the optimal execution path before starting work: plan-vs-act gates, agent architecture selection (chaining, routing, parallelization, orchestrator-worker, evaluator-optimizer), scope management heuristics, critical-path analysis across task networks, and context budget awareness. Use when deciding how to approach a task (plan first vs act immediately), decomposing complex work into parallelizable subtasks, choosing between subagent patterns, or when a task has failed twice and needs a fresh approach. Do NOT use for executing the chosen plan (use task-execution), debugging failures (use troubleshooting or diagnosis), or tool-level efficiency (use tool-call-strategy)."
 metadata:
-  schema_version: "7"
+  schema_version: "8"
   version: "1.1.0"
   type: capability
+  operation: know
   scope: portable
   category: agent
+  subject: agent-ops
   eval_artifacts: present
   eval_state: passing
   routing_eval: present
@@ -17,7 +19,6 @@ metadata:
   owner: claude
   freshness: "2026-05-18"
   drift_check: "{\"last_verified\":\"2026-05-18\",\"truth_source_hashes\":{}}"
-  layer: meta
   primaryCategory: Agent System
   layerPrimary: meta
   routingRole: primary

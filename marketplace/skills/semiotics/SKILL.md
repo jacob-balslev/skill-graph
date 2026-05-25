@@ -5,10 +5,12 @@ license: MIT
 compatibility: "Stack-agnostic sign-system analysis. The Peirce / Saussure / Barthes models, color-as-sign rules, iconography principles, and affordance taxonomy apply to any UI; example surfaces use generic e-commerce framings — substitute the equivalents from your domain."
 allowed-tools: Read Grep
 metadata:
-  schema_version: "7"
+  schema_version: "8"
   version: "1.2.0"
   type: capability
+  operation: know
   category: design
+  subject: design-craft
   domain: design/semantics
   scope: portable
   owner: skill-graph-maintainer
@@ -19,7 +21,7 @@ metadata:
   routing_eval: absent
   comprehension_state: present
   stability: experimental
-  keywords: "[\"sign-system analysis\",\"icon polysemy\",\"signifier signified mapping\",\"denotation versus connotation\",\"affordance signifier match\",\"icon-index-symbol trichotomy\",\"visual metaphor clarity\",\"color connotation audit\",\"cross-surface sign drift\",\"semiotic coherence audit\",\"anti-affordance design\",\"icon-system consistency\",\"abstract-mark opacity\",\"sign-conflict detection\",\"visual-meaning audit\",\"code-and-api semiotics\"]"
+  keywords: "[\"sign-system analysis\",\"icon polysemy\",\"signifier signified mapping\",\"denotation versus connotation\",\"affordance signifier match\",\"icon-index-symbol trichotomy\",\"visual metaphor clarity\",\"color connotation audit\",\"cross-surface sign drift\",\"semiotic coherence audit\"]"
   examples: "[\"our dashboard uses green for both revenue increase and cost increase, so users read both as good — what semiotic failure is that and how should we correct it?\",\"we use a gear icon for settings on one page and preferences on another — is this just a naming issue, or an interface sign conflict?\",\"a disabled button still looks clickable because only the color changed — which signifier or affordance rule is failing?\",\"we need an icon for reconciliation in a financial workflow — which metaphors are available, and when must text stay paired with the icon?\",\"an API function is named processData() — from a sign-system perspective, what is wrong with that name?\",\"audit this status-badge color system for denotation vs connotation conflicts\",\"explain why users keep clicking a non-interactive label that looks like a link\"]"
   anti_examples: "[\"I need formal class hierarchies, axioms, and what-exists rules for our knowledge base\",\"I need physical database schema design and relationship constraints\",\"I need the relation type between two concepts — synonymy, polysemy, or meronymy\",\"draft the exact wording for a button label or tooltip after the sign system is chosen\",\"give me the live color-token values, APCA contrast math, and palette enforcement\",\"explain the morphology rule behind verb-first function names\"]"
   relations: "{\"boundary\":[{\"skill\":\"semantics\",\"reason\":\"semantics owns meaning encoding for individual textual identifiers and signals (function names, design tokens, HTTP status codes, branded types, SemVer, conventional commits); semiotics owns sign-system analysis for visual + textual sign systems (icons, color as sign, affordances, signifier/signified mappings) — the same 'what does this mean?' prompt routes by whether the trigger is one identifier's encoding or a multi-channel sign system\"},{\"skill\":\"microcopy\",\"reason\":\"microcopy owns the actual UI wording (button labels, empty states, tooltips, dialogs); semiotics owns the sign-system reasoning that determines what the words and accompanying visual signs should communicate — the same 'fix this UI element' prompt routes by whether the trigger is the wording itself or the sign system the wording sits inside\"},{\"skill\":\"semantic-relations\",\"reason\":\"semantic-relations owns the typed connections between concepts (IS-A, PART-OF, thematic roles); semiotics owns the signifier-to-signified mapping in interface and naming surfaces — the same 'how does this relate to that?' prompt routes by whether the trigger is a conceptual relation type or a sign-system relationship\"},{\"skill\":\"visual-design-foundations\",\"reason\":\"visual-design-foundations owns visual craft decisions such as palette, type, spacing, and hierarchy; semiotics owns what those signs communicate\"}],\"related\":[\"linguistics\",\"a11y\",\"intent-recognition\",\"visual-design-foundations\"],\"verify_with\":[\"a11y\",\"code-review\"]}"

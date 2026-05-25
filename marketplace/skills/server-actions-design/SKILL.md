@@ -4,12 +4,14 @@ description: "Use when designing or reviewing Server Actions: the 'use server' d
 license: MIT
 allowed-tools: Read Grep
 metadata:
-  schema_version: "7"
+  schema_version: "8"
   version: "1.0.0"
   type: capability
+  operation: know
   category: engineering
+  subject: frontend-ui
   domain: engineering/frontend
-  scope: reference
+  scope: workspace
   owner: skill-graph-maintainer
   freshness: "2026-05-16"
   drift_check: "{\"last_verified\":\"2026-05-16\"}"
@@ -18,7 +20,7 @@ metadata:
   routing_eval: absent
   comprehension_state: present
   stability: experimental
-  keywords: "[\"Server Actions\",\"Server Function declaration\",\"form action attribute\",\"useActionState\",\"useFormStatus\",\"forms that work without JavaScript\",\"revalidatePath\",\"revalidateTag\",\"server mutation Next.js\",\"validate Server Action inputs\",\"bound arguments Server Action\",\"redirect after action\"]"
+  keywords: "[\"Server Actions\",\"Server Function declaration\",\"form action attribute\",\"useActionState\",\"useFormStatus\",\"forms that work without JavaScript\",\"revalidatePath\",\"revalidateTag\",\"server mutation Next.js\",\"validate Server Action inputs\"]"
   triggers: "[\"how do I submit a form to the server\",\"do I need an API route for this mutation\",\"how do I call a server function from a button\",\"why is my Server Action exposed as an endpoint\",\"useActionState vs useFormState\",\"how do I revalidate after mutation\",\"can Server Actions run in event handlers\"]"
   examples: "[\"design a 'create comment' form using Server Actions plus useActionState so it works without JavaScript and reports server-side validation errors\",\"decide whether a delete button should call a Server Action or an API route\",\"audit a Server Action for missing authorization (the function looks like a normal call but is publicly invokable)\",\"design the revalidation strategy for a mutation that affects multiple cached routes\"]"
   anti_examples: "[\"design a Server Component that reads data on render (use server-components-design)\",\"design a public REST API consumed by mobile clients (use api-design)\",\"choose between SSR and SSG (use rendering-models)\",\"design the visual UX of a form's validation states (use form-ux-architecture)\",\"design the visual states and accessibility of a form (use form-ux-architecture)\",\"design a public HTTP contract for mobile, third-party, or server-to-server callers (use api-design)\"]"

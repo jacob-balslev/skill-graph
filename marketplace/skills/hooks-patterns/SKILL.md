@@ -4,12 +4,14 @@ description: "Use when reasoning about React Hooks as a discipline: when a rende
 license: MIT
 allowed-tools: Read Grep
 metadata:
-  schema_version: "7"
+  schema_version: "8"
   version: "1.0.0"
   type: capability
+  operation: know
   category: engineering
+  subject: frontend-ui
   domain: engineering/frontend
-  scope: reference
+  scope: workspace
   owner: skill-graph-maintainer
   freshness: "2026-05-16"
   drift_check: "{\"last_verified\":\"2026-05-16\"}"
@@ -18,7 +20,7 @@ metadata:
   routing_eval: absent
   comprehension_state: present
   stability: experimental
-  keywords: "[\"React Hooks\",\"Rules of Hooks\",\"useEffect dependencies\",\"useState\",\"useMemo when not to\",\"useCallback footgun\",\"custom hooks extraction\",\"derived state\",\"stale closure\",\"effect cleanup\",\"React 18 automatic batching\",\"concurrent rendering\",\"useEvent useEffectEvent\"]"
+  keywords: "[\"React Hooks\",\"Rules of Hooks\",\"useEffect dependencies\",\"useState\",\"useMemo when not to\",\"useCallback footgun\",\"custom hooks extraction\",\"derived state\",\"stale closure\",\"effect cleanup\"]"
   triggers: "[\"is this hook safe to call here\",\"why does my useEffect run twice\",\"do I need useMemo here\",\"dependency array warning\",\"should this be state or derived\",\"extract this into a custom hook\"]"
   examples: "[\"review a useEffect whose dependency array is missing a variable and decide whether to add it, hoist the value, or rethink whether an effect is needed at all\",\"decide whether a derived value should live in useState plus useEffect, or simply be computed during render\",\"explain why the Rules of Hooks are a compile-time invariant, not just a convention\",\"audit a component for unnecessary useMemo / useCallback wrappers that don't actually prevent rerenders\"]"
   anti_examples: "[\"choose between Server Components and Client Components for a new page (use client-server-boundary)\",\"decide where the application's order list lives in memory across routes (use state-management)\",\"design the public API of a reusable component library primitive (use component-architecture)\",\"pick between SSR, SSG, and ISR for a route (use rendering-models)\",\"decide how to layer primitives, composites, and product-specific components (use component-architecture)\"]"

@@ -4,12 +4,14 @@ description: "Use when reasoning about building language-model-integrated system
 license: MIT
 allowed-tools: Read Grep
 metadata:
-  schema_version: "7"
+  schema_version: "8"
   version: "1.0.0"
   type: capability
+  operation: know
   category: agent
+  subject: agent-ops
   domain: agent/evaluation
-  scope: reference
+  scope: workspace
   owner: skill-graph-maintainer
   freshness: "2026-05-16"
   drift_check: "{\"last_verified\":\"2026-05-16\"}"
@@ -18,7 +20,7 @@ metadata:
   routing_eval: absent
   comprehension_state: present
   stability: experimental
-  keywords: "[\"eval-driven development\",\"LLM evals\",\"evaluation harness\",\"benchmark\",\"HumanEval\",\"MMLU\",\"BIG-bench\",\"GAIA\",\"LLM-as-judge\",\"model-graded eval\",\"pass rate\",\"regression budget\",\"Goodhart's law\",\"golden dataset\",\"reference-free eval\"]"
+  keywords: "[\"eval-driven development\",\"LLM evals\",\"evaluation harness\",\"benchmark\",\"HumanEval\",\"MMLU\",\"BIG-bench\",\"GAIA\",\"LLM-as-judge\",\"model-graded eval\"]"
   triggers: "[\"how do we know this prompt change improved things\",\"should this be an eval or a unit test\",\"the model passes the benchmark but fails in production\",\"what should we measure\",\"the LLM-as-judge gives different scores each run\"]"
   examples: "[\"design an offline eval suite for an LLM-integrated summarization feature before writing the prompt\",\"decide between programmatic grading, model-graded judgment, and human review for a freeform-output eval\",\"explain why MMLU score is a poor predictor of a domain-specific assistant's quality\",\"structure an iteration loop where each prompt change is gated by a regression budget\"]"
   anti_examples: "[\"write unit tests for a deterministic data transformation (use testing-strategy)\",\"set up production alerting on API error rates (use observability)\",\"interpret a specific benchmark's leaderboard (use benchmarking-engine)\"]"

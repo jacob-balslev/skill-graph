@@ -5,10 +5,12 @@ license: MIT
 compatibility: "Portable DDD boundary-mapping discipline for monoliths, modular monoliths, services, event-driven systems, and agent workspaces."
 allowed-tools: Read Grep
 metadata:
-  schema_version: "7"
+  schema_version: "8"
   version: "1.0.0"
   type: capability
+  operation: know
   category: engineering
+  subject: code-engineering
   domain: architecture/domain-boundaries
   scope: portable
   owner: skill-graph-maintainer

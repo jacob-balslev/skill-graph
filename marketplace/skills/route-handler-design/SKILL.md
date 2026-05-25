@@ -1,15 +1,17 @@
 ---
 name: route-handler-design
-description: "Use when designing or reviewing Next.js App Router Route Handlers (`route.ts`): choosing Route Handler vs Server Action/Server Component, method exports, Web `Request`/`Response`, body parsing, GET caching and opt-outs, dynamic params, search params, CORS, Edge vs Node runtime, streaming responses, status/header discipline, errors, and webhook endpoint shape where raw-body signature verification matters. Do NOT use for internal UI mutations (use server-actions-design), broader REST contracts (use api-design), abstract HTTP semantics (use http-semantics), cross-route preprocessing (use middleware-patterns), or full webhook reliability design (use webhook-integration)."
+description: "Use when designing or reviewing Next.js App Router Route Handlers: route.ts file placement, HTTP method exports, Web Request/Response APIs, body parsing, GET caching and opt-outs, dynamic segments, search params, CORS, Edge vs Node runtime choice, streaming responses, status and header discipline, error responses, and webhook endpoint shape. Use when the caller is mobile, third-party, webhook, server-to-server, cross-origin, or otherwise not your own typed UI. Do NOT use for internal UI mutations, broad API design, abstract HTTP semantics, request preprocessing, or full webhook reliability design."
 license: MIT
 allowed-tools: Read Grep
 metadata:
-  schema_version: "7"
+  schema_version: "8"
   version: "1.0.0"
   type: capability
+  operation: do
   category: engineering
+  subject: product-domain
   domain: engineering/frontend
-  scope: reference
+  scope: workspace
   owner: skill-graph-maintainer
   freshness: "2026-05-17"
   drift_check: "{\"last_verified\":\"2026-05-17\"}"
@@ -18,7 +20,7 @@ metadata:
   routing_eval: absent
   comprehension_state: present
   stability: experimental
-  keywords: "[\"Next.js Route Handler\",\"route.ts file\",\"API endpoint via route.ts\",\"GET POST PUT DELETE export\",\"Web Request Response API\",\"NextRequest NextResponse\",\"request.json formData parsing\",\"dynamic force-dynamic segment config\",\"revalidate Route Handler\",\"Edge runtime vs Node runtime\",\"ReadableStream response Next.js\",\"webhook endpoint in route.ts\",\"CORS Route Handler\",\"Response.json HTTP status\"]"
+  keywords: "[\"Next.js Route Handler\",\"route.ts file\",\"API endpoint via route.ts\",\"GET POST PUT DELETE export\",\"Web Request Response API\",\"NextRequest NextResponse\",\"request.json formData parsing\",\"dynamic force-dynamic segment config\",\"revalidate Route Handler\",\"Edge runtime vs Node runtime\"]"
   triggers: "[\"how do I expose an API endpoint in Next.js App Router\",\"when should I use a Route Handler instead of a Server Action\",\"how do I receive a webhook in Next.js\",\"how do I return a streaming response from an API route\",\"how do I parse a JSON body in route.ts\",\"why is my Route Handler GET cached\",\"how do I set CORS headers on a Next.js API route\",\"Edge runtime vs Node runtime for an API route\"]"
   examples: "[\"design the route.ts that receives a Stripe webhook — verify signature before parsing the body, return 200 immediately, queue the heavy work\",\"decide whether a 'export user data' endpoint should be a Route Handler or a Server Action\",\"add CORS to a Route Handler that mobile clients call from a different origin\",\"opt a GET Route Handler out of the default static cache because it depends on the request user\",\"return a streaming binary response (PDF generation, large CSV export) from a Route Handler\"]"
   anti_examples: "[\"design an internal create-comment form mutation triggered only from this app's UI (use server-actions-design)\",\"define the REST contract and resource model for a v2 public API (use api-design)\",\"explain what an HTTP 422 means vs 400 (use http-semantics)\",\"add an auth check that runs before every protected route (use middleware-patterns)\",\"design the idempotency-key + retry + dead-letter-queue strategy for a webhook (use webhook-integration)\",\"design the resource model, versioning, pagination, or error envelope of an HTTP API (use api-design)\",\"decide what an HTTP method, status code, or header should mean per RFC 9110 (use http-semantics)\",\"design signature verification, idempotency keys, retry semantics, or dead-letter queues for vendor webhooks (use webhook-integration)\",\"design a cross-cutting streaming model with Web Streams, SSE, or backpressure (use streaming-architecture)\"]"
@@ -37,6 +39,8 @@ metadata:
   skill_graph_protocol: Skill Metadata Protocol v7
   skill_graph_project: Skill Graph
   skill_graph_canonical_skill: skills/engineering/frontend/route-handler-design/SKILL.md
+  skill_graph_export_description: shortened for Agent Skills 1024-character description limit; canonical source keeps the full routing contract
+  skill_graph_canonical_description_length: "1299"
 ---
 
 # Route Handler Design

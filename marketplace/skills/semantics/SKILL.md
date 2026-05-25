@@ -5,10 +5,12 @@ license: MIT
 compatibility: "Cross-domain naming and meaning skill, stack-agnostic. The naming-smells catalogue, SemVer rules, conventional-commit format, semantic-token architecture, HTTP-status semantics, REST/GraphQL conventions, semantic type patterns, and anti-pattern catalog apply to any codebase; examples use generic commerce/order language and should be substituted for the user's domain."
 allowed-tools: Read Grep
 metadata:
-  schema_version: "7"
+  schema_version: "8"
   version: "1.2.0"
   type: capability
+  operation: know
   category: foundations
+  subject: knowledge-organization
   domain: foundations/semantics
   scope: portable
   owner: skill-graph-maintainer

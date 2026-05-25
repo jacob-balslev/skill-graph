@@ -5,10 +5,12 @@ license: MIT
 compatibility: "Provider-agnostic; abstract tool capabilities map to concrete tools across Claude Code, Cursor, Copilot, OpenCode, Aider, Continue. Specific tool names in this skill (read_file, grep_search, run_in_terminal, apply_patch) are concrete examples — substitute the equivalent in your harness."
 allowed-tools: Read Grep Bash Edit
 metadata:
-  schema_version: "7"
+  schema_version: "8"
   version: "1.1.0"
   type: capability
+  operation: know
   category: engineering
+  subject: code-engineering
   domain: ai-engineering/tool-use
   scope: portable
   owner: skill-graph-maintainer
@@ -19,7 +21,7 @@ metadata:
   routing_eval: absent
   comprehension_state: present
   stability: experimental
-  keywords: "[\"tool call optimization\",\"reduce tool calls\",\"too many tool calls\",\"script vs tool call\",\"batching tool calls\",\"parallel tool calls\",\"parallelize calls\",\"independent calls\",\"redundant reads\",\"re-reading file\",\"tool selection\",\"which tool to use\",\"grep before read\",\"file search before grep\",\"bulk edit script\",\"poka-yoke tool design\",\"subagent delegation for tool efficiency\",\"context-efficient tool use\",\"cost per tool call\",\"tool call benchmark\",\"agent efficiency\",\"token efficiency per call\"]"
+  keywords: "[\"tool call optimization\",\"reduce tool calls\",\"too many tool calls\",\"script vs tool call\",\"batching tool calls\",\"parallel tool calls\",\"parallelize calls\",\"independent calls\",\"redundant reads\",\"re-reading file\"]"
   examples: "[\"the agent made 17 read_file calls when 3 greps would have done — what should it have done?\",\"we're renaming a variable across 40 files — script or tool calls?\",\"the agent re-reads the same file three times in one task — fix the policy\",\"should I batch these reads into one message or wait for each result?\",\"design a tool-use protocol for our new agent harness — what rules matter?\",\"the context window is filling with verbose terminal output — how do I cut it?\",\"is it worth delegating this exploratory search to a subagent?\",\"what's a reasonable tool-call budget for a single-file bug fix?\"]"
   anti_examples: "[\"improve this prompt's wording to get better outputs\",\"design what skills get loaded for which prompts\",\"the test suite is failing after my change — find the cause\",\"extract this repeated string-concat into a helper function\",\"scaffold a new SKILL.md for our team's tool-use rules\",\"review this AI-generated PR for correctness\"]"
   relations: "{\"boundary\":[{\"skill\":\"context-engineering\",\"reason\":\"context-engineering designs the entire information stack reaching the model; tool-call-strategy owns the per-call efficiency decisions inside that stack\"},{\"skill\":\"prompt-craft\",\"reason\":\"prompt-craft writes the wording of one instruction; tool-call-strategy decides which external operations the agent should invoke around that instruction\"},{\"skill\":\"debugging\",\"reason\":\"debugging chases a specific runtime failure; tool-call-strategy is about the efficiency profile of healthy tool use\"},{\"skill\":\"refactor\",\"reason\":\"refactor owns behaviour-preserving code transformations as the deliverable; tool-call-strategy decides whether to deliver that transformation through 50 tool calls or one script\"}],\"related\":[\"context-engineering\",\"refactor\",\"prompt-craft\"],\"verify_with\":[\"code-review\"]}"

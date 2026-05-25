@@ -4,12 +4,14 @@ description: "Use when authoring any artifact that makes claims — skill conten
 license: MIT
 allowed-tools: Read Grep
 metadata:
-  schema_version: "7"
+  schema_version: "8"
   version: "1.0.0"
   type: capability
+  operation: do
   category: foundations
+  subject: meta-methods
   domain: foundations/epistemics
-  scope: reference
+  scope: workspace
   owner: skill-graph-maintainer
   freshness: "2026-05-15"
   drift_check: "{\"last_verified\":\"2026-05-15\"}"

@@ -4,12 +4,14 @@ description: "Use when declaring, measuring, or enforcing performance thresholds
 license: MIT
 allowed-tools: Read Grep
 metadata:
-  schema_version: "7"
+  schema_version: "8"
   version: "1.0.0"
   type: capability
+  operation: do
   category: quality
+  subject: data-analytics
   domain: quality/performance
-  scope: reference
+  scope: workspace
   owner: skill-graph-maintainer
   freshness: "2026-05-15"
   drift_check: "{\"last_verified\":\"2026-05-15\"}"
@@ -18,7 +20,7 @@ metadata:
   routing_eval: absent
   comprehension_state: present
   stability: experimental
-  keywords: "[\"performance budget\",\"Core Web Vitals\",\"LCP\",\"INP\",\"CLS\",\"RAIL model\",\"Lighthouse budgets\",\"lab metrics\",\"field metrics\",\"p75 performance\",\"bundle size budget\",\"request count budget\",\"performance regression\",\"budget breach\"]"
+  keywords: "[\"performance budget\",\"Core Web Vitals\",\"LCP\",\"INP\",\"CLS\",\"RAIL model\",\"Lighthouse budgets\",\"lab metrics\",\"field metrics\",\"p75 performance\"]"
   triggers: "[\"how fast does this page need to be\",\"what's a good LCP target\",\"should this fail the build\",\"why is the Lighthouse score different from real users\",\"we need a performance budget\"]"
   examples: "[\"set a Core Web Vitals budget for a marketing landing page and enforce it in CI\",\"explain why a green Lighthouse score still produced bad real-user performance\",\"decide between INP and FID as the interaction-responsiveness metric\",\"design a per-route budget table that distinguishes static pages from logged-in dashboards\"]"
   anti_examples: "[\"profile a specific slow query and decide what to fix (use performance-engineering)\",\"choose between SSG and SSR for a route (use rendering-models)\",\"design telemetry spans and traces (use observability-modeling)\"]"

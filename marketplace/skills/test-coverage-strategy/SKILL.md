@@ -4,12 +4,14 @@ description: "Use when reasoning about code coverage as a strategic measurement 
 license: MIT
 allowed-tools: Read Grep
 metadata:
-  schema_version: "7"
+  schema_version: "8"
   version: "1.0.0"
   type: capability
+  operation: know
   category: quality
+  subject: quality-assurance
   domain: quality/testing
-  scope: reference
+  scope: workspace
   owner: skill-graph-maintainer
   freshness: "2026-05-16"
   drift_check: "{\"last_verified\":\"2026-05-16\"}"
@@ -18,7 +20,7 @@ metadata:
   routing_eval: absent
   comprehension_state: present
   stability: experimental
-  keywords: "[\"code coverage\",\"line coverage\",\"branch coverage\",\"decision coverage\",\"condition coverage\",\"MC/DC\",\"modified condition decision coverage\",\"path coverage\",\"coverage as target\",\"Goodhart on coverage\",\"covered vs tested\",\"DO-178C\"]"
+  keywords: "[\"code coverage\",\"line coverage\",\"branch coverage\",\"decision coverage\",\"condition coverage\",\"MC/DC\",\"modified condition decision coverage\",\"path coverage\",\"coverage as target\",\"Goodhart on coverage\"]"
   triggers: "[\"what coverage target should we set\",\"is 100% coverage the goal\",\"is this line covered or tested\",\"should we add tests for these uncovered lines\",\"branch vs line coverage\"]"
   examples: "[\"set a coverage policy for a service that distinguishes 'covered' from 'tested'\",\"explain why a 100% line coverage gate may be worse than an 80% branch coverage gate\",\"diagnose a high-coverage test suite that still misses bugs — likely a granularity mismatch\",\"decide when to upgrade from branch coverage to MC/DC for safety-critical code\"]"
   anti_examples: "[\"choose test levels (unit/integration/e2e) for a project (use testing-strategy)\",\"use mutation testing to evaluate test-suite quality (use mutation-testing)\",\"configure Istanbul, Jest coverage, or JaCoCo (tool documentation)\"]"

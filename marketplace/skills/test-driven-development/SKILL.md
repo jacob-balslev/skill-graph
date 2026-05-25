@@ -4,12 +4,14 @@ description: "Use when reasoning about Test-Driven Development as a design disci
 license: MIT
 allowed-tools: Read Grep
 metadata:
-  schema_version: "7"
+  schema_version: "8"
   version: "1.2.0"
   type: capability
+  operation: do
   category: quality
+  subject: quality-assurance
   domain: quality/testing
-  scope: reference
+  scope: workspace
   owner: skill-graph-maintainer
   freshness: "2026-05-18"
   drift_check: "{\"last_verified\":\"2026-05-18\"}"
@@ -18,7 +20,7 @@ metadata:
   routing_eval: absent
   comprehension_state: present
   stability: experimental
-  keywords: "[\"test-driven development\",\"TDD\",\"red green refactor\",\"London school\",\"Detroit school\",\"Chicago school\",\"outside-in TDD\",\"inside-out TDD\",\"mockist\",\"classicist\",\"emergent design\",\"test-first\",\"design pressure\",\"GOOS\"]"
+  keywords: "[\"test-driven development\",\"TDD\",\"red green refactor\",\"London school\",\"Detroit school\",\"Chicago school\",\"outside-in TDD\",\"inside-out TDD\",\"mockist\",\"classicist\"]"
   triggers: "[\"should we write tests first\",\"are mocks ruining the design\",\"is TDD worth it\",\"London school vs Detroit school\",\"the tests changed every refactor\"]"
   examples: "[\"explain why writing the test first changes the design of the code under test\",\"decide between London-school (mocks-as-design) and Detroit-school (state-verification) TDD for a new module\",\"diagnose why the test suite is fragile under refactor — likely over-mocked interaction tests\",\"explain why high test coverage with TDD is a side effect, not the goal\"]"
   anti_examples: "[\"construct a mock, stub, or spy (use test-doubles-design)\",\"decide what test levels (unit/integration/e2e) to invest in (use testing-strategy)\",\"iterate on LLM behavior using an eval suite (use eval-driven-development)\"]"

@@ -4,12 +4,14 @@ description: "Use when reasoning about how a database schema changes over time w
 license: MIT
 allowed-tools: Read Grep
 metadata:
-  schema_version: "7"
+  schema_version: "8"
   version: "1.0.0"
   type: capability
+  operation: know
   category: engineering
+  subject: code-engineering
   domain: engineering/data
-  scope: reference
+  scope: workspace
   owner: skill-graph-maintainer
   freshness: "2026-05-16"
   drift_check: "{\"last_verified\":\"2026-05-16\"}"
@@ -18,7 +20,7 @@ metadata:
   routing_eval: absent
   comprehension_state: present
   stability: experimental
-  keywords: "[\"schema evolution\",\"expand contract\",\"parallel change\",\"zero-downtime migration\",\"backwards compatibility\",\"rolling deploy\",\"dual write\",\"dual read\",\"schema versioning\",\"additive change\",\"destructive change\"]"
+  keywords: "[\"schema evolution\",\"expand contract\",\"parallel change\",\"zero-downtime migration\",\"backwards compatibility\",\"rolling deploy\",\"dual write\",\"dual read\",\"schema versioning\",\"additive change\"]"
   triggers: "[\"how do we rename this column without downtime\",\"expand contract\",\"is this migration safe\",\"schema versioning\",\"backwards compatibility for database\"]"
   examples: "[\"design the expand-contract sequence to rename a column from `name` to `full_name` across a deployed system\",\"decide whether to add a NOT NULL column with a default or with a separate backfill phase\",\"diagnose a deploy that broke because the schema change shipped before the code change\",\"explain why drop-column is the third phase of expand-contract, not the first\"]"
   relations: "{\"related\":[\"data-modeling\",\"database-migration\",\"indexing-strategy\",\"acid-fundamentals\"],\"boundary\":[{\"skill\":\"data-modeling\",\"reason\":\"data-modeling owns the design of a schema at a point in time; this skill owns how that schema changes between points in time. The two compose: data-modeling decides the target shape; this skill decides the safe path from current to target.\"},{\"skill\":\"database-migration\",\"reason\":\"database-migration owns the mechanics of applying one migration (ALTER TABLE, batched backfill, CONCURRENTLY indexes, unpooled connections); this skill owns the multi-step sequence of migrations and the deploy-coordination discipline that makes the sequence safe.\"},{\"skill\":\"indexing-strategy\",\"reason\":\"indexing-strategy owns which indexes the database has; this skill owns how the index set evolves over time. Adding or removing an index is one type of schema change governed by this skill's discipline.\"}],\"verify_with\":[\"data-modeling\",\"database-migration\"]}"

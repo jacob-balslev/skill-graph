@@ -5,10 +5,12 @@ license: MIT
 compatibility: "Portable visual-design guidance for product UI, dashboards, docs, marketing-adjacent product surfaces, and design-system consumers. Does not replace brand-specific guidelines."
 allowed-tools: Read Grep
 metadata:
-  schema_version: "7"
+  schema_version: "8"
   version: "1.0.0"
   type: capability
+  operation: know
   category: design
+  subject: frontend-ui
   domain: design/visual
   scope: portable
   owner: skill-graph-maintainer

@@ -4,12 +4,14 @@ description: "Use when designing end-to-end tests that exercise a user-visible p
 license: MIT
 allowed-tools: Read Grep
 metadata:
-  schema_version: "7"
+  schema_version: "8"
   version: "1.0.0"
   type: capability
+  operation: know
   category: quality
+  subject: quality-assurance
   domain: quality/testing
-  scope: reference
+  scope: workspace
   owner: skill-graph-maintainer
   freshness: "2026-05-16"
   drift_check: "{\"last_verified\":\"2026-05-16\"}"
@@ -18,7 +20,7 @@ metadata:
   routing_eval: absent
   comprehension_state: present
   stability: experimental
-  keywords: "[\"end-to-end testing\",\"e2e test\",\"user journey test\",\"Playwright\",\"Cypress\",\"Selenium\",\"page object\",\"test flake\",\"wait strategy\",\"trace test\",\"smoke test\"]"
+  keywords: "[\"end-to-end testing\",\"e2e test\",\"user journey test\",\"Playwright\",\"Cypress\",\"Selenium\",\"page object\",\"test flake\",\"wait strategy\",\"trace test\"]"
   triggers: "[\"do we need e2e tests\",\"the e2e tests are flaky\",\"Playwright vs Cypress\",\"how many e2e tests is too many\",\"page object pattern\"]"
   examples: "[\"design an e2e test suite for an onboarding journey: signup → email verify → first action\",\"decide which user journeys deserve e2e coverage vs integration-test coverage\",\"diagnose flaky e2e tests — usually wait-strategy or test-data problems\",\"explain why fewer e2e tests with higher load-bearing value beats many e2e tests with low value\"]"
   anti_examples: "[\"test internal seams of the system (use integration-test-design)\",\"test a single component in isolation (use testing-strategy + test-doubles-design)\",\"verify a service's contract against consumers (use contract-testing)\"]"

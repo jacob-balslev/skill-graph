@@ -5,10 +5,12 @@ license: MIT
 compatibility: "Language- and stack-agnostic. The recognition loop, clustering method, eval pipeline, and 5-Whys ladder apply to any codebase; the grep patterns and example detection rules are illustrative — substitute the equivalents of your stack."
 allowed-tools: Read Grep
 metadata:
-  schema_version: "7"
+  schema_version: "8"
   version: "1.2.0"
   type: capability
+  operation: do
   category: foundations
+  subject: meta-methods
   domain: foundations/cognition
   scope: portable
   owner: skill-graph-maintainer
@@ -19,10 +21,10 @@ metadata:
   routing_eval: absent
   comprehension_state: present
   stability: experimental
-  keywords: "[\"recurring code pattern detection\",\"anti-pattern audit\",\"convention drift detection\",\"error cluster triage\",\"normalize-then-hash error grouping\",\"five-whys root cause ladder\",\"eval as pattern test\",\"heading hierarchy violation\",\"design token drift\",\"null-vs-zero domain encoding\",\"integer encoding for monetary amounts\",\"source-rank trust hierarchy\",\"stale detection rule pruning\",\"migrated convention dual detection\",\"pattern lifecycle states\",\"false-positive exclusion discipline\",\"three-instance threshold codify\",\"symptom loop fix churn\"]"
+  keywords: "[\"recurring code pattern detection\",\"anti-pattern audit\",\"convention drift detection\",\"error cluster triage\",\"normalize-then-hash error grouping\",\"five-whys root cause ladder\",\"eval as pattern test\",\"heading hierarchy violation\",\"design token drift\",\"null-vs-zero domain encoding\"]"
   examples: "[\"I keep seeing the same null-pointer crash in three different files — what's the systemic fix?\",\"audit this codebase for hardcoded colors instead of design tokens\",\"cluster the errors from this session log into root-cause buckets\",\"I've fixed this bug five times in five different places — how do I codify a detection rule?\",\"the agent keeps treating null and zero as the same thing in financial calculations — flag the pattern class\",\"every PR introduces a new convention violation — what's the lint rule that would prevent it?\",\"the same Linear ticket keeps reappearing under different titles — how do I deduplicate?\"]"
   anti_examples: "[\"review this code for semantic correctness\",\"find where the user-auth helper is defined\",\"design a MECE classification taxonomy for our error catalogue\",\"investigate why this single failing test is breaking\",\"trigger an alert when CPU exceeds 80% for 5 minutes\",\"rewrite this function to be cleaner\"]"
-  relations: "{\"boundary\":[{\"skill\":\"debugging\",\"reason\":\"debugging fixes one specific bug; pattern-recognition identifies the recurring class behind many bugs and proposes a structural fix that prevents the whole class — same recurring-bug prompt routes to debugging for the immediate fix and to pattern-recognition for the systemic rule\"},{\"skill\":\"code-review\",\"reason\":\"code-review judges quality of a specific change at PR scope; pattern-recognition systematically detects recurring structural issues across the entire codebase — same 'recurring violation in PRs' prompt routes to code-review for blocking that PR and to pattern-recognition for adding a lint rule\"}],\"related\":[\"refactor\",\"naming-conventions\",\"lint-overlay\",\"diagnosis\"],\"verify_with\":[\"context-graph\",\"graph-audit\",\"tool-call-strategy\"]}"
+  relations: "{\"boundary\":[{\"skill\":\"debugging\",\"reason\":\"debugging fixes one specific bug; pattern-recognition identifies the recurring class behind many bugs and proposes a structural fix that prevents the whole class — same recurring-bug prompt routes to debugging for the immediate fix and to pattern-recognition for the systemic rule\"},{\"skill\":\"code-review\",\"reason\":\"code-review judges quality of a specific change at PR scope; pattern-recognition systematically detects recurring structural issues across the entire codebase — same 'recurring violation in PRs' prompt routes to code-review for blocking that PR and to pattern-recognition for adding a lint rule\"}],\"related\":[\"refactor\",\"naming-conventions\",\"lint-overlay\",\"diagnosis\"],\"verify_with\":[\"context-graph\",\"skill-infrastructure\",\"tool-call-strategy\"]}"
   portability: "{\"readiness\":\"scripted\",\"targets\":[\"skill-md\"]}"
   lifecycle: "{\"stale_after_days\":365,\"review_cadence\":\"quarterly\"}"
   mental_model: "|"
@@ -489,7 +491,7 @@ Before codifying a pattern, confirm:
 | `refactor` | Restructuring code once a pattern is identified. Refactor enacts the change; pattern-recognition decides what needs changing. |
 | `naming-conventions` | Establishing or auditing the naming rules themselves. Naming-conventions owns the rules; pattern-recognition detects violations of those rules. |
 | `lint-overlay` | Adding the lint rule that automates pattern detection. Lint-overlay owns the rule machinery; pattern-recognition decides which patterns warrant a rule. |
-| `graph-audit` | Performing dependency and structural audits across the codebase graph. Graph-audit owns the structural perspective; pattern-recognition owns the recurring-violation perspective. |
+| `skill-infrastructure` | Performing dependency and structural audits across the skill library graph. Skill-infrastructure owns the structural health-tooling perspective; pattern-recognition owns the recurring-violation perspective. |
 | `tool-call-strategy` | Deciding which tool (Grep / Glob / Read) to reach for during a scan. Tool-call-strategy owns the tool selection; pattern-recognition owns the analysis of what the tools find. |
 
 ## Key Sources

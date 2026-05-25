@@ -5,10 +5,12 @@ license: MIT
 compatibility: "Stack-agnostic UX-writing patterns. The button-label, empty-state, tooltip, dialog, loading, validation, and toast rules apply to any web, mobile, or desktop UI; example product copy uses generic e-commerce framings (storefront, fulfillment partner, orders) — substitute the equivalents from your own product domain."
 allowed-tools: Read Grep
 metadata:
-  schema_version: "7"
+  schema_version: "8"
   version: "1.0.0"
   type: capability
+  operation: do
   category: design
+  subject: design-craft
   domain: design/ux
   scope: portable
   owner: skill-graph-maintainer
@@ -18,7 +20,7 @@ metadata:
   eval_state: unverified
   routing_eval: absent
   stability: experimental
-  keywords: "[\"button label microcopy\",\"empty-state copy\",\"tooltip text rule\",\"confirmation dialog wording\",\"inline validation message\",\"toast notification copy\",\"placeholder text rule\",\"loading-state messaging\",\"functional UI text\",\"ux writing patterns\",\"destructive-action confirmation copy\",\"permission request copy\",\"onboarding step copy\",\"microcopy verb-first button\",\"acknowledge-explain-guide empty state\",\"blame-free toast wording\"]"
+  keywords: "[\"button label microcopy\",\"empty-state copy\",\"tooltip text rule\",\"confirmation dialog wording\",\"inline validation message\",\"toast notification copy\",\"placeholder text rule\",\"loading-state messaging\",\"functional UI text\",\"ux writing patterns\"]"
   examples: "[\"rewrite this button label so it names the actual action instead of saying Submit\",\"what should the empty state say when a user has no orders yet?\",\"draft tooltip text for a production-cost field that explains what it means in one sentence\",\"this destructive confirmation dialog says OK — what should the button label be instead?\",\"the inline validation message says Invalid input — make it specific and actionable\",\"draft a toast message for a successful order export with undo\",\"what should the loading state say when a sync takes longer than 10 seconds?\"]"
   anti_examples: "[\"write the marketing headline for the pricing page\",\"review this WCAG 2.2 contrast violation on the dashboard\",\"explain the morphology rule behind verb-first function names\",\"restructure this help-center article into a tutorial\",\"decide the kebab-case format for this new CSS class\",\"rename this React component across all call-sites\"]"
   relations: "{\"boundary\":[{\"skill\":\"linguistics\",\"reason\":\"linguistics owns the underlying language rules (morphology, polysemy, audience register, blame-free framing as a general principle); microcopy owns the specific UI-text patterns where those rules apply (button label rule, empty-state structure, tooltip rule, confirmation-dialog rule) — the same 'rewrite this UI text' prompt routes by whether the user wants the linguistic rationale or the concrete UX-writing pattern\"},{\"skill\":\"a11y\",\"reason\":\"a11y owns the accessibility contracts that govern how copy is announced (aria-live regions, aria-label fallbacks, screen-reader semantics); microcopy owns the words themselves — the same 'fix this UI text' prompt routes by whether the trigger is accessibility compliance or copy quality\"},{\"skill\":\"interaction-feedback\",\"reason\":\"interaction-feedback owns when, where, and how feedback states appear; microcopy owns the words inside those states\"}],\"related\":[\"linguistics\",\"task-analysis\",\"intent-recognition\",\"interaction-feedback\",\"form-ux-architecture\"],\"verify_with\":[\"linguistics\",\"a11y\"]}"

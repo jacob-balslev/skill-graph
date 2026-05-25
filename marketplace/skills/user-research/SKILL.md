@@ -3,10 +3,12 @@ name: user-research
 description: "Use when planning or conducting generative qualitative research with real users — interviews, contextual inquiry, ethnographic observation, diary studies — to learn what people do, think, and need in their own context. Do NOT use for analytics review, survey statistics, A/B test interpretation, or agent-side intent classification — those are different research practices entirely."
 license: CC-BY-4.0
 metadata:
-  schema_version: "7"
+  schema_version: "8"
   version: "1.0.0"
   type: capability
+  operation: know
   category: design
+  subject: design-craft
   scope: portable
   owner: skill-graph-maintainer
   freshness: "2026-05-12"
@@ -15,7 +17,7 @@ metadata:
   eval_state: unverified
   routing_eval: absent
   stability: experimental
-  keywords: "[\"user interviews\",\"contextual inquiry\",\"ethnographic observation\",\"diary study\",\"generative research\",\"qualitative research\",\"interview guide\",\"leading questions\",\"master-apprentice model\",\"in-context observation\",\"field study\",\"listening for needs\",\"five whys interview\"]"
+  keywords: "[\"user interviews\",\"contextual inquiry\",\"ethnographic observation\",\"diary study\",\"generative research\",\"qualitative research\",\"interview guide\",\"leading questions\",\"master-apprentice model\",\"in-context observation\"]"
   triggers: "[\"interview users\",\"user research plan\",\"what to ask users\",\"contextual inquiry\",\"diary study\"]"
   examples: "[\"Draft an interview guide for SMB founders adopting their first accounting software.\",\"How do I observe ICU nurses on shift without disturbing the workflow?\",\"Review my interview script for leading questions and solution-prompts.\",\"Plan a two-week diary study for commuters using public transit apps.\"]"
   anti_examples: "[\"Analyze last quarter's NPS results and produce a dashboard.\",\"Classify whether this agent request from the user is high-risk before executing.\",\"Set up an A/B test of two onboarding flows.\"]"

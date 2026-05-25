@@ -4,12 +4,14 @@ description: "Use when reasoning about the I in ACID — the isolation level a d
 license: MIT
 allowed-tools: Read Grep
 metadata:
-  schema_version: "7"
+  schema_version: "8"
   version: "1.0.0"
   type: capability
+  operation: do
   category: engineering
+  subject: code-engineering
   domain: engineering/data
-  scope: reference
+  scope: workspace
   owner: skill-graph-maintainer
   freshness: "2026-05-16"
   drift_check: "{\"last_verified\":\"2026-05-16\"}"
@@ -18,7 +20,7 @@ metadata:
   routing_eval: absent
   comprehension_state: present
   stability: experimental
-  keywords: "[\"isolation level\",\"read committed\",\"repeatable read\",\"serializable\",\"snapshot isolation\",\"SSI\",\"MVCC\",\"dirty read\",\"non-repeatable read\",\"phantom read\",\"write skew\",\"lost update\",\"Berenson\"]"
+  keywords: "[\"isolation level\",\"read committed\",\"repeatable read\",\"serializable\",\"snapshot isolation\",\"SSI\",\"MVCC\",\"dirty read\",\"non-repeatable read\",\"phantom read\"]"
   triggers: "[\"what isolation level do we need\",\"is read committed enough\",\"what's write skew\",\"MVCC vs locking\",\"Postgres serializable vs MySQL serializable\"]"
   examples: "[\"choose an isolation level for a workload that has concurrent balance-decrement operations\",\"diagnose a data-correctness bug caused by an anomaly the chosen isolation level permits\",\"explain the difference between snapshot isolation and full serializability\",\"decide whether to use SELECT FOR UPDATE or upgrade isolation level\"]"
   anti_examples: "[\"explain the four ACID properties (use acid-fundamentals)\",\"reason about distributed-replica consistency under partition (use cap-theorem-tradeoffs)\",\"tune a slow query (use query-optimization)\"]"

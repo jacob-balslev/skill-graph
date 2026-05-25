@@ -5,12 +5,14 @@ license: MIT
 compatibility: "Markdown, Git, agent-skill runtimes"
 allowed-tools: Read Grep Bash
 metadata:
-  schema_version: "7"
+  schema_version: "8"
   version: "1.0.0"
   type: capability
+  operation: know
   category: quality
+  subject: quality-assurance
   domain: quality/doctrine
-  scope: reference
+  scope: workspace
   owner: skill-graph-maintainer
   freshness: "2026-03-27"
   drift_check: "{\"last_verified\":\"2026-03-27\"}"

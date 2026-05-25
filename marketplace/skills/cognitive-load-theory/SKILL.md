@@ -5,10 +5,12 @@ license: MIT
 compatibility: "Markdown, Git, any agent-skill runtime"
 allowed-tools: Read Grep
 metadata:
-  schema_version: "7"
+  schema_version: "8"
   version: "1.0.0"
   type: capability
+  operation: know
   category: quality
+  subject: quality-assurance
   domain: quality/cognition
   scope: portable
   owner: skill-graph-maintainer
@@ -18,7 +20,7 @@ metadata:
   eval_state: unverified
   routing_eval: absent
   stability: experimental
-  keywords: "[\"cognitive load theory\",\"working memory\",\"intrinsic load\",\"extraneous load\",\"germane load\",\"chunking\",\"segmentation\",\"schema formation\",\"Sweller\",\"prompt design\",\"skill writing\",\"documentation load\",\"dashboard cognitive budget\",\"information design\"]"
+  keywords: "[\"cognitive load theory\",\"working memory\",\"intrinsic load\",\"extraneous load\",\"germane load\",\"chunking\",\"segmentation\",\"schema formation\",\"Sweller\",\"prompt design\"]"
   triggers: "[\"cognitive-load-skill\",\"working-memory-skill\",\"clt-skill\"]"
   relations: "{\"adjacent\":[\"teaching-patterns\",\"context-window\",\"compression\",\"editorial-standards\",\"prompt-craft\"],\"boundary\":[{\"skill\":\"context-management\",\"reason\":\"context-management owns retrieval and session working-set design; CLT owns the cognitive-load taxonomy applied to authored content\"},{\"skill\":\"memory-gardener\",\"reason\":\"memory-gardener owns memory pruning and consolidation; CLT owns the cognitive-load framing for what to keep vs cut\"}],\"verify_with\":[\"context-management\",\"teaching-patterns\",\"best-practice\"]}"
   structural_verdict: UNVERIFIED

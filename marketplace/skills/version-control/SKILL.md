@@ -5,10 +5,12 @@ license: MIT
 compatibility: "Git-centric. Patterns translate to other DAG-based version-control systems (Mercurial, Jujutsu) with tool-specific syntax substitutions. Centralized systems (SVN, CVS) lack cheap branching and most of this skill's discipline does not apply."
 allowed-tools: Read Grep Bash Edit
 metadata:
-  schema_version: "7"
+  schema_version: "8"
   version: "1.0.0"
   type: capability
+  operation: do
   category: engineering
+  subject: code-engineering
   domain: engineering/version-control
   scope: portable
   owner: skill-graph-maintainer
@@ -18,7 +20,7 @@ metadata:
   eval_state: unverified
   routing_eval: absent
   stability: experimental
-  keywords: "[\"version control\",\"git workflow\",\"branching strategy\",\"trunk-based development\",\"git flow\",\"short-lived branch\",\"feature branch\",\"merge vs rebase\",\"linear history\",\"atomic commit\",\"squash commit\",\"cherry-pick\",\"release tag\",\"annotated tag\",\"SemVer release\",\"hotfix branch\",\"git worktree\",\"parallel branch development\",\"commit provenance\",\"merge conflict resolution\",\"protected branch\"]"
+  keywords: "[\"version control\",\"git workflow\",\"branching strategy\",\"trunk-based development\",\"git flow\",\"short-lived branch\",\"feature branch\",\"merge vs rebase\",\"linear history\",\"atomic commit\"]"
   examples: "[\"set up trunk-based development for a four-person team\",\"the main branch has 50 merge commits before release — clean up the history\",\"two agents are working in the same repo and clobbering each other's uncommitted changes — set up worktrees\",\"tag the v1.2.0 release with provenance back to the closing tracker milestone\",\"the feature branch is two weeks old and three weeks behind main — rebase or recreate?\",\"design the hotfix workflow for an urgent production patch off a release tag\",\"every commit must link back to a tracker ticket — what's the right enforcement layer?\",\"should we squash, rebase, or merge when integrating a feature branch?\"]"
   anti_examples: "[\"draft a Conventional Commits message for this change\",\"the release pipeline failed at the tag-creation step — find out why\",\"review this PR before we merge it\",\"explain our git policy to new contributors in the docs\",\"decide if this branching-rule change needs a regression test\",\"refactor the git helper scripts in our tooling repo\"]"
   relations: "{\"boundary\":[{\"skill\":\"code-review\",\"reason\":\"code-review evaluates the *content* of a change before merge; version-control owns the *shape* of history that change leaves behind\"},{\"skill\":\"refactor\",\"reason\":\"refactor reorganizes code without changing external behavior; version-control reorganizes history without changing the code's content (rebase, squash, cherry-pick)\"},{\"skill\":\"naming-conventions\",\"reason\":\"naming-conventions owns commit-message wording (Conventional Commits prefix, scope, subject); version-control owns commit *boundaries* (what counts as one commit) and history *shape*\"}],\"related\":[\"code-review\",\"refactor\",\"naming-conventions\",\"debugging\"],\"verify_with\":[\"code-review\"]}"

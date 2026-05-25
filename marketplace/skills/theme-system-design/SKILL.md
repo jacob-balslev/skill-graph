@@ -3,10 +3,12 @@ name: theme-system-design
 description: "Use when designing a theme system — design tokens, semantic token layering, CSS custom property strategy, runtime theme switching, and theme contract guarantees. Do NOT use for one-off color choices, brand-only palette work, or framework-specific styling-library configuration."
 license: CC-BY-4.0
 metadata:
-  schema_version: "7"
+  schema_version: "8"
   version: "1.0.0"
   type: capability
+  operation: know
   category: design
+  subject: frontend-ui
   scope: portable
   owner: skill-graph-maintainer
   freshness: "2026-05-12"
@@ -15,7 +17,7 @@ metadata:
   eval_state: unverified
   routing_eval: absent
   stability: experimental
-  keywords: "[\"theme token contract\",\"theme semantic layer\",\"theme variables\",\"css custom properties\",\"runtime theme switching\",\"token tiers\",\"theme contract\",\"design tokens community group\",\"theme parity\",\"token naming\",\"reference tokens\",\"system tokens\"]"
+  keywords: "[\"theme token contract\",\"theme semantic layer\",\"theme variables\",\"css custom properties\",\"runtime theme switching\",\"token tiers\",\"theme contract\",\"design tokens community group\",\"theme parity\",\"token naming\"]"
   triggers: "[\"theme system\",\"design tokens\",\"theme switching\",\"css variables for theming\",\"token architecture\"]"
   examples: "[\"Design a three-tier token system (reference → system → component) for a multi-brand product\",\"Add a third theme to an existing two-theme system without breaking the component contracts\",\"Move from hard-coded colors to CSS custom properties with runtime switching\"]"
   anti_examples: "[\"Choose the exact hex value for the brand's primary blue\",\"Configure Tailwind's content array and purge settings\",\"Implement the dark mode toggle interaction\"]"

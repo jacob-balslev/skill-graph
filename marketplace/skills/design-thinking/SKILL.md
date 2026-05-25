@@ -3,10 +3,12 @@ name: design-thinking
 description: "Use when orchestrating a full human-centered design process across discovery, definition, ideation, prototyping, and testing — when uncertain which stage of the arc a team is in, when deciding whether to loop back, or when routing to the right stage-specific sibling skill. Do NOT use for single-stage execution (go directly to problem-framing, user-research, research-synthesis, journey-mapping, ideation, prototyping, or usability-testing) or for engineering domain discovery (use event-storming)."
 license: CC-BY-4.0
 metadata:
-  schema_version: "7"
+  schema_version: "8"
   version: "1.0.0"
   type: capability
+  operation: know
   category: design
+  subject: design-craft
   scope: portable
   owner: skill-graph-maintainer
   freshness: "2026-05-12"
@@ -15,7 +17,7 @@ metadata:
   eval_state: unverified
   routing_eval: absent
   stability: experimental
-  keywords: "[\"design thinking process\",\"double diamond\",\"five stage design process\",\"empathize define ideate prototype test\",\"human centered design\",\"Stanford d.school\",\"IDEO method\",\"design sprint\",\"discover define develop deliver\",\"looping back\",\"stage routing\",\"MIT Sloan design thinking\",\"Tim Brown HBR\"]"
+  keywords: "[\"design thinking process\",\"double diamond\",\"five stage design process\",\"empathize define ideate prototype test\",\"human centered design\",\"Stanford d.school\",\"IDEO method\",\"design sprint\",\"discover define develop deliver\",\"looping back\"]"
   triggers: "[\"design thinking\",\"human-centered design\",\"double diamond\",\"which stage\",\"design process\"]"
   examples: "[\"We have user interviews done but no synthesis yet — which design-thinking stage are we in and what's next?\",\"Plan a full design-thinking arc for a four-week project on rural healthcare access.\",\"We just finished a usability test and three findings broke our framing — should we loop back to define?\",\"Route this brief to the right stage-specific skill: 'help us figure out what to build for new homeowners'.\"]"
   anti_examples: "[\"Run a single crazy-8s round on this specific how-might-we.\",\"Write the React component for the dashboard widget.\",\"Model the bounded contexts for the order-fulfillment domain.\"]"

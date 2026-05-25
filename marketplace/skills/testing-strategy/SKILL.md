@@ -5,10 +5,12 @@ license: MIT
 compatibility: "Markdown, Git, any codebase"
 allowed-tools: Read Grep Bash
 metadata:
-  schema_version: "7"
+  schema_version: "8"
   version: "1.0.0"
   type: capability
+  operation: know
   category: quality
+  subject: quality-assurance
   scope: portable
   owner: skill-graph-maintainer
   freshness: "2026-04-18"
@@ -17,7 +19,7 @@ metadata:
   eval_state: passing
   routing_eval: present
   stability: experimental
-  keywords: "[\"testing strategy\",\"what to test\",\"what not to test\",\"which test level\",\"test scope\",\"effort vs risk\",\"regression target\",\"failure case coverage\",\"test plan\",\"do I need a test\",\"should I test this\",\"unit or integration\",\"test coverage\",\"pin this behavior\",\"plan test coverage\",\"plan coverage\",\"needs an automated test\",\"automated test\",\"manual QA coverage\",\"passes manual QA\",\"test level decision\",\"right test level\",\"correct test level\",\"test level for webhook\",\"test level for handler\"]"
+  keywords: "[\"testing strategy\",\"what to test\",\"what not to test\",\"which test level\",\"test scope\",\"effort vs risk\",\"regression target\",\"failure case coverage\",\"test plan\",\"do I need a test\"]"
   triggers: "[\"testing-skill\"]"
   routing_bundles: "[\"quality\"]"
   examples: "[\"do I need a unit test for this pure formatter or is integration enough?\",\"what's the right test level for a webhook handler that talks to Stripe?\",\"the feature passes manual QA — does it need an automated test?\",\"pin this regression so the same bug can't slip through again\"]"

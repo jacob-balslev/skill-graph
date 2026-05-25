@@ -4,12 +4,14 @@ description: "Use when reasoning about the pattern where a language model emits,
 license: MIT
 allowed-tools: Read Grep
 metadata:
-  schema_version: "7"
+  schema_version: "8"
   version: "1.0.0"
   type: capability
+  operation: do
   category: agent
+  subject: agent-ops
   domain: agent/ui
-  scope: reference
+  scope: workspace
   owner: skill-graph-maintainer
   freshness: "2026-05-16"
   drift_check: "{\"last_verified\":\"2026-05-16\"}"
@@ -18,7 +20,7 @@ metadata:
   routing_eval: absent
   comprehension_state: present
   stability: experimental
-  keywords: "[\"generative UI\",\"generative interface\",\"structured output\",\"component schema\",\"typed UI spec\",\"JSON Schema\",\"function calling UI\",\"RSC streaming UI\",\"model-rendered components\",\"assistant UI\",\"chat UI components\"]"
+  keywords: "[\"generative UI\",\"generative interface\",\"structured output\",\"component schema\",\"typed UI spec\",\"JSON Schema\",\"function calling UI\",\"RSC streaming UI\",\"model-rendered components\",\"assistant UI\"]"
   triggers: "[\"the assistant should show a chart not a paragraph\",\"how does the model render a card\",\"structured output for UI\",\"is it safe to render what the model returned\",\"should this be a tool call or a UI emission\"]"
   examples: "[\"design the component schema for an assistant that can render a date picker, a chart, or a confirmation card depending on the question\",\"decide whether the model should emit a UI spec or call a tool that returns prerendered HTML\",\"explain why the model's output must be schema-validated before rendering\",\"design the interaction loop so a user clicking a button in a model-rendered card produces a follow-up turn the model can reason about\"]"
   anti_examples: "[\"design the JSON shape of an HTTP API endpoint (use api-design)\",\"decide the page-level rendering model (CSR vs SSR vs RSC) (use rendering-models)\",\"design the design-system component library itself (use design-system-architecture)\"]"

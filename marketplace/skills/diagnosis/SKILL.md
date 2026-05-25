@@ -5,10 +5,12 @@ license: MIT
 compatibility: "Language- and stack-agnostic. The classification taxonomy, evidence protocol, and confidence ladder apply to any software failure investigation; specific technique names (git bisect, EXPLAIN plans, HMAC verification) are illustrative — substitute the equivalents of your stack."
 allowed-tools: Read Grep
 metadata:
-  schema_version: "7"
+  schema_version: "8"
   version: "1.1.0"
   type: capability
+  operation: know
   category: engineering
+  subject: code-engineering
   domain: engineering/debugging
   scope: portable
   owner: skill-graph-maintainer
@@ -18,7 +20,7 @@ metadata:
   eval_state: unverified
   routing_eval: absent
   stability: experimental
-  keywords: "[\"diagnostic triage software failure\",\"symptom classification taxonomy\",\"what kind of bug is this\",\"which debugging approach\",\"diagnostic routing framework\",\"evidence collection before hypothesis\",\"confidence ladder debugging\",\"escalation criteria debugging\",\"cascade vs coincidence failure\",\"environment ghost\",\"failure not converging\",\"misclassified symptom debugging\",\"stuck at level 1 diagnosis\",\"debug technique selection matrix\",\"configuration vs code error\",\"timing vs logic error\",\"integration boundary failure\",\"data integrity vs logic error\"]"
+  keywords: "[\"diagnostic triage software failure\",\"symptom classification taxonomy\",\"what kind of bug is this\",\"which debugging approach\",\"diagnostic routing framework\",\"evidence collection before hypothesis\",\"confidence ladder debugging\",\"escalation criteria debugging\",\"cascade vs coincidence failure\",\"environment ghost\"]"
   examples: "[\"the agent has been chasing this bug for 30 minutes — what's the structural fix?\",\"the symptoms span data integrity and UI rendering — which is the root cause?\",\"the build fails locally but passes in CI — how do I diagnose that class first?\",\"I have a stack trace and an unhandled exception — what's the cheapest technique?\",\"intermittent failure that doesn't reproduce on retry — which class is this?\",\"we ran profiling, instrumentation, and bisect — none converge. What did we misclassify?\",\"two engineers disagree on whether this is a config issue or a logic error — what evidence settles it?\"]"
   anti_examples: "[\"actually execute scientific-method debugging on this stack trace\",\"review this AI-generated PR for correctness\",\"scan this repo for OWASP top 10 vulnerabilities\",\"design observability instrumentation for this service\",\"decide which agent should pick up this ticket\",\"what's the right test pyramid for this feature\"]"
   relations: "{\"boundary\":[{\"skill\":\"debugging\",\"reason\":\"debugging is the *execution* phase (run a chosen technique against an already-classified failure); diagnosis is the *triage* phase before debugging — classify first, then debug\"},{\"skill\":\"code-review\",\"reason\":\"code-review evaluates code for quality / correctness in advance; diagnosis investigates an already-broken behavior\"},{\"skill\":\"owasp-security\",\"reason\":\"owasp-security is a domain-specific scan against a known threat list; diagnosis is the cross-domain triage that routes to security investigation only when symptoms point there\"},{\"skill\":\"testing-strategy\",\"reason\":\"testing-strategy decides what to test proactively; diagnosis decides how to investigate after a test (or production) has revealed a failure\"}],\"related\":[\"debugging\",\"error-tracking\",\"code-review\"],\"verify_with\":[\"debugging\"]}"

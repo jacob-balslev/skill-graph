@@ -3,10 +3,12 @@ name: research-synthesis
 description: "Use when turning raw qualitative research output (interview transcripts, field notes, diary entries, observation logs) into themes, patterns, insight statements, and design-ready artifacts via affinity mapping, empathy maps, and jobs-to-be-done framing. Do NOT use for collecting new research, quantitative analysis, statistical inference, or summarizing a single document — synthesis specifically operates on a corpus of qualitative evidence."
 license: CC-BY-4.0
 metadata:
-  schema_version: "7"
+  schema_version: "8"
   version: "1.0.0"
   type: capability
+  operation: know
   category: design
+  subject: design-craft
   scope: portable
   owner: skill-graph-maintainer
   freshness: "2026-05-12"
@@ -15,7 +17,7 @@ metadata:
   eval_state: unverified
   routing_eval: absent
   stability: experimental
-  keywords: "[\"affinity mapping\",\"empathy map\",\"insight statement\",\"theme clustering\",\"jobs to be done synthesis\",\"qualitative coding\",\"research wall\",\"downloading research\",\"say think do feel\",\"persona drafting\",\"point of view\",\"sticky-note synthesis\",\"pattern extraction\"]"
+  keywords: "[\"affinity mapping\",\"empathy map\",\"insight statement\",\"theme clustering\",\"jobs to be done synthesis\",\"qualitative coding\",\"research wall\",\"downloading research\",\"say think do feel\",\"persona drafting\"]"
   triggers: "[\"synthesize research\",\"affinity map\",\"empathy map\",\"find themes in interviews\",\"insight statements\"]"
   examples: "[\"Cluster these 14 interview transcripts into themes using affinity mapping.\",\"Build an empathy map for the 'first-time buyer' segment from these field notes.\",\"Turn this set of observations into three insight statements I can take into ideation.\",\"Draft a jobs-to-be-done statement from this user research corpus.\"]"
   anti_examples: "[\"Run more interviews with five additional participants.\",\"Calculate the response rate of the survey.\",\"Summarize this single PDF document.\"]"

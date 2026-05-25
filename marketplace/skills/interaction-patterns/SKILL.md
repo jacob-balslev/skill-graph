@@ -5,10 +5,12 @@ license: MIT
 compatibility: Portable interaction-pattern guidance for web and app UI. Pattern choices should be checked against platform conventions and accessible-widget guidance before implementation.
 allowed-tools: Read Grep
 metadata:
-  schema_version: "7"
+  schema_version: "8"
   version: "1.0.0"
   type: capability
+  operation: know
   category: design
+  subject: design-craft
   domain: design/interaction
   scope: portable
   owner: skill-graph-maintainer
@@ -18,10 +20,10 @@ metadata:
   eval_state: unverified
   routing_eval: present
   stability: experimental
-  keywords: "[\"interaction-patterns\",\"control pattern selection\",\"dropdown combobox choice\",\"modal inline edit choice\",\"tabs accordion choice\",\"bulk selection pattern\",\"command menu pattern\",\"disclosure pattern\",\"gesture alternative\",\"modal vs panel choice\",\"pagination vs infinite scroll\",\"tooltip vs popover\"]"
+  keywords: "[\"interaction-patterns\",\"control pattern selection\",\"dropdown combobox choice\",\"modal inline edit choice\",\"tabs accordion choice\",\"bulk selection pattern\",\"command menu pattern\",\"disclosure pattern\",\"gesture alternative\",\"modal vs panel choice\"]"
   examples: "[\"should this control be a dropdown, combobox, radio group, or stepper?\",\"choose the interaction pattern for bulk editing rows in this table\",\"this modal interrupts the flow - should the edit be inline instead?\",\"decide whether these settings belong in tabs, accordion sections, or separate pages\"]"
   anti_examples: "[\"audit this combobox for ARIA roles and keyboard support\",\"define the user's top task before choosing controls\",\"add skeleton loading and optimistic feedback to this action\",\"define the component props, variants, slots, and token contract\"]"
-  relations: "{\"boundary\":[{\"skill\":\"a11y\",\"reason\":\"a11y verifies accessibility semantics and keyboard behavior; interaction-patterns chooses the user-facing pattern before implementation\"},{\"skill\":\"task-analysis\",\"reason\":\"task-analysis identifies what the user is trying to accomplish; interaction-patterns chooses the control pattern that supports it\"},{\"skill\":\"spec-driven-development\",\"reason\":\"spec-driven-development decomposes implementation scope and task sequencing; interaction-patterns chooses the user-facing control pattern only after the user task is known\"},{\"skill\":\"interaction-feedback\",\"reason\":\"interaction-feedback owns feedback states after an action; interaction-patterns owns the primary control and flow shape\"},{\"skill\":\"design-system-architecture\",\"reason\":\"design-system-architecture owns reusable component APIs; interaction-patterns decides which pattern is appropriate for a surface\"},{\"skill\":\"design-module-composition\",\"reason\":\"design-module-composition owns component props, variants, slots, and token contracts; interaction-patterns owns choosing the user-facing control pattern\"},{\"skill\":\"component-architecture\",\"reason\":\"component-architecture owns the component-library layering question (primitives, composites, product-specific) and headless/styled, controlled/uncontrolled splits; interaction-patterns owns choosing the user-facing control pattern before any component is designed\"}],\"related\":[\"layout-composition\",\"form-ux-architecture\",\"microcopy\",\"semiotics\",\"a11y\"],\"verify_with\":[\"a11y\",\"task-analysis\"]}"
+  relations: "{\"boundary\":[{\"skill\":\"a11y\",\"reason\":\"a11y verifies accessibility semantics and keyboard behavior; interaction-patterns chooses the user-facing pattern before implementation\"},{\"skill\":\"task-analysis\",\"reason\":\"task-analysis identifies what the user is trying to accomplish; interaction-patterns chooses the control pattern that supports it\"},{\"skill\":\"interaction-feedback\",\"reason\":\"interaction-feedback owns feedback states after an action; interaction-patterns owns the primary control and flow shape\"},{\"skill\":\"design-system-architecture\",\"reason\":\"design-system-architecture owns reusable component APIs; interaction-patterns decides which pattern is appropriate for a surface\"},{\"skill\":\"design-module-composition\",\"reason\":\"design-module-composition owns component props, variants, slots, and token contracts; interaction-patterns owns choosing the user-facing control pattern\"},{\"skill\":\"component-architecture\",\"reason\":\"component-architecture owns the component-library layering question (primitives, composites, product-specific) and headless/styled, controlled/uncontrolled splits; interaction-patterns owns choosing the user-facing control pattern before any component is designed\"}],\"related\":[\"layout-composition\",\"form-ux-architecture\",\"microcopy\",\"semiotics\",\"a11y\"],\"verify_with\":[\"a11y\",\"task-analysis\"]}"
   portability: "{\"readiness\":\"scripted\",\"targets\":[\"skill-md\"]}"
   lifecycle: "{\"stale_after_days\":365,\"review_cadence\":\"quarterly\"}"
   structural_verdict: UNVERIFIED

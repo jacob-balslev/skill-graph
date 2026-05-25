@@ -7,10 +7,12 @@ allowed-tools: Read Grep
 metadata:
   grounding: "{\"domain_object\":\"Semantic-center analysis for explaining one unit of analysis through a single load-bearing part plus typed supporting relations\",\"grounding_mode\":\"universal\",\"truth_sources\":[\"https://networkx.org/documentation/stable/reference/algorithms/centrality.html\",\"https://www.w3.org/TR/skos-reference/\",\"https://www.barbaraminto.com/\"],\"failure_modes\":[\"everything_is_important_flattening\",\"visibility_recency_or_sequence_mistaken_for_structural_importance\",\"relation_map_uses_proximity_or_chronology_without_a_stronger_relation\",\"multiple_primary_parts_hidden_as_parallel_key_points\",\"semantic_center_analysis_overowns_task_prioritization_formal_modeling_or_implementation\"],\"evidence_priority\":\"equal\"}"
   drift_check: "{\"last_verified\":\"2026-05-19\"}"
-  schema_version: "7"
+  schema_version: "8"
   version: "1.2.0"
   type: workflow
+  operation: do
   category: foundations
+  subject: knowledge-organization
   domain: foundations/semantics
   scope: portable
   owner: skill-graph-maintainer

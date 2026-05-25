@@ -4,12 +4,14 @@ description: "Use when reasoning about how a system, user, or designer's interna
 license: MIT
 allowed-tools: Read Grep
 metadata:
-  schema_version: "7"
+  schema_version: "8"
   version: "1.0.0"
   type: capability
+  operation: know
   category: foundations
+  subject: meta-methods
   domain: foundations/mental-models
-  scope: reference
+  scope: workspace
   owner: skill-graph-maintainer
   freshness: "2026-05-16"
   drift_check: "{\"last_verified\":\"2026-05-16\"}"
@@ -18,7 +20,7 @@ metadata:
   routing_eval: absent
   comprehension_state: present
   stability: experimental
-  keywords: "[\"mental models\",\"mental model\",\"gulf of execution\",\"gulf of evaluation\",\"user model\",\"system model\",\"designer model\",\"conceptual model\",\"metaphor\",\"analogy\",\"model-system fit\",\"hidden invariant\",\"model drift\",\"shared understanding\",\"cognitive tool\",\"progressive disclosure\",\"race conditions in concurrent code\"]"
+  keywords: "[\"mental models\",\"mental model\",\"gulf of execution\",\"gulf of evaluation\",\"user model\",\"system model\",\"designer model\",\"conceptual model\",\"metaphor\",\"analogy\"]"
   triggers: "[\"how do I think about\",\"users expect X but the system does Y\",\"this is confusing\",\"the user's model doesn't match\",\"why is this surprising\",\"what's the right metaphor\"]"
   examples: "[\"users keep trying to drag a row to reorder but the table doesn't support drag — diagnose the model mismatch\",\"explain why race conditions across parallel tool calls are hard for developers to anticipate\",\"decide on the right metaphor for a feature that combines folders and tags\",\"the team disagrees on what 'workspace' means in the product — surface the divergent mental models\"]"
   anti_examples: "[\"draw the boxes-and-arrows diagram of the system (use knowledge-modeling)\",\"name the React hook for managing form state (tactical implementation choice)\",\"write user-research interview questions (use user-research)\",\"teach a junior engineer about distributed-systems consistency models (use teaching-patterns)\"]"

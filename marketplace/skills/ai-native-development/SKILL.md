@@ -5,10 +5,12 @@ license: MIT
 compatibility: "Provider- and runtime-agnostic. The autonomy-slider levels and quality-gate sequence apply to any LLM-coding harness (Claude Code, OpenCode, Cursor, Aider, Copilot Workspace, Continue) that supports a deterministic verify step between agent output and merge."
 allowed-tools: Read Grep
 metadata:
-  schema_version: "7"
+  schema_version: "8"
   version: "1.1.0"
   type: capability
+  operation: know
   category: agent
+  subject: agent-ops
   domain: agent/concepts
   scope: portable
   owner: skill-graph-maintainer
@@ -18,7 +20,7 @@ metadata:
   eval_state: unverified
   routing_eval: absent
   stability: experimental
-  keywords: "[\"software 3.0 concepts\",\"vibe coding\",\"agentic engineering doctrine\",\"autonomy slider\",\"prompt as code\",\"karpathy three eras\",\"autoresearch loop\",\"ai-generated code quality\",\"vibe hangover\",\"llm-native development\",\"software 1.0 vs 2.0 vs 3.0\",\"natural language programs\",\"agent productivity metrics\",\"rework rate\",\"agent completion rate\",\"quality gates ai code\",\"autonomy levels coding\",\"ai code security regression\"]"
+  keywords: "[\"software 3.0 concepts\",\"vibe coding\",\"agentic engineering doctrine\",\"autonomy slider\",\"prompt as code\",\"karpathy three eras\",\"autoresearch loop\",\"ai-generated code quality\",\"vibe hangover\",\"llm-native development\"]"
   examples: "[\"we keep accepting agent-generated code on first try and shipping bugs — what discipline replaces this?\",\"what autonomy level should I run for a security-sensitive change?\",\"does measuring lines-of-code per session make sense when an agent generates the code?\",\"the team is treating prompts and skill files like throwaway notes — what's the alternative framing?\",\"we want an auto-improve loop for our skill content — how do we constrain it so it doesn't regress?\",\"what's the conceptual difference between a vibe coding session and an agentic engineering session?\",\"AI-generated code is shipping with vulnerabilities — what gates should sit between agent output and production?\",\"how do I match autonomy level to the risk profile of the task?\"]"
   anti_examples: "[\"improve this specific prompt for the grader\",\"review this AI-generated PR for correctness\",\"design the checkpoint state machine for our loop\",\"scaffold a new skill that codifies our coding doctrine\",\"the autonomous loop is stalling — debug it\"]"
   relations: "{\"boundary\":[{\"skill\":\"prompt-craft\",\"reason\":\"prompt-craft is the per-prompt authoring discipline; ai-native-development is the meta-frame that explains why prompts are source code\"},{\"skill\":\"agent-engineering\",\"reason\":\"agent-engineering owns the production reliability discipline (orchestration, error budgets, observability); ai-native-development owns the conceptual model that motivates those concerns\"},{\"skill\":\"code-review\",\"reason\":\"code-review evaluates the AI-generated output; ai-native-development frames why that output exists and how to size the gates around it\"},{\"skill\":\"tool-call-strategy\",\"reason\":\"tool-call-strategy is the tactical layer for an agent's tool dispatch; ai-native-development is the conceptual layer above it\"}],\"related\":[\"prompt-craft\",\"agent-engineering\",\"code-review\",\"skill-router\"],\"verify_with\":[\"code-review\",\"testing-strategy\"]}"

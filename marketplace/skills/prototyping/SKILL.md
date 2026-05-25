@@ -3,10 +3,12 @@ name: prototyping
 description: "Use when building an artifact whose purpose is to answer a specific question — paper sketch, wireframe, clickable mockup, wizard-of-oz, role-play, service prototype, or code spike — at the lowest fidelity sufficient to produce that learning. Do NOT use for production-grade component construction, design-system contribution, or building the actual ship-ready feature — those are design-module-composition and engineering implementation."
 license: CC-BY-4.0
 metadata:
-  schema_version: "7"
+  schema_version: "8"
   version: "1.0.0"
   type: capability
+  operation: know
   category: design
+  subject: design-craft
   scope: portable
   owner: skill-graph-maintainer
   freshness: "2026-05-12"
@@ -15,7 +17,7 @@ metadata:
   eval_state: unverified
   routing_eval: absent
   stability: experimental
-  keywords: "[\"paper prototype\",\"low fidelity prototype\",\"clickable prototype\",\"wizard of oz\",\"role play prototype\",\"service prototype\",\"code spike\",\"learning goal\",\"fidelity matching\",\"throwaway prototype\",\"sacrificial concept\",\"prototype to learn\",\"rough and right\"]"
+  keywords: "[\"paper prototype\",\"low fidelity prototype\",\"clickable prototype\",\"wizard of oz\",\"role play prototype\",\"service prototype\",\"code spike\",\"learning goal\",\"fidelity matching\",\"throwaway prototype\"]"
   triggers: "[\"prototype this\",\"wizard of oz\",\"paper prototype\",\"clickable mockup\",\"what fidelity\"]"
   examples: "[\"Pick the right fidelity for a prototype that tests whether users will trust an AI-suggested category.\",\"Plan a wizard-of-oz study where a human acts as the recommendation engine.\",\"Sketch a role-play prototype for a service-desk interaction before any UI is built.\",\"Decide between a paper prototype and a Figma clickable for this onboarding test.\"]"
   anti_examples: "[\"Build the production React component for the new dashboard widget.\",\"Add this component to the design system library.\",\"Write the migration script for the production database.\"]"

@@ -4,12 +4,14 @@ description: "Use when reasoning about how an application manages its database c
 license: MIT
 allowed-tools: Read Grep
 metadata:
-  schema_version: "7"
+  schema_version: "8"
   version: "1.0.0"
   type: capability
+  operation: do
   category: engineering
+  subject: code-engineering
   domain: engineering/data
-  scope: reference
+  scope: workspace
   owner: skill-graph-maintainer
   freshness: "2026-05-16"
   drift_check: "{\"last_verified\":\"2026-05-16\"}"
@@ -18,7 +20,7 @@ metadata:
   routing_eval: absent
   comprehension_state: present
   stability: experimental
-  keywords: "[\"connection pooling\",\"PgBouncer\",\"HikariCP\",\"pool sizing\",\"session pooling\",\"transaction pooling\",\"statement pooling\",\"prepared statements\",\"idle in transaction\",\"Little's Law\",\"max_connections\",\"serverless databases\"]"
+  keywords: "[\"connection pooling\",\"PgBouncer\",\"HikariCP\",\"pool sizing\",\"session pooling\",\"transaction pooling\",\"statement pooling\",\"prepared statements\",\"idle in transaction\",\"Little's Law\"]"
   triggers: "[\"what should max pool size be\",\"PgBouncer transaction mode\",\"too many connections error\",\"connection exhaustion\",\"prepared statements not working with PgBouncer\"]"
   examples: "[\"size a connection pool for a workload with N application servers and M cores per database\",\"diagnose why a workload is bottlenecked on connections rather than query performance\",\"decide between PgBouncer session mode and transaction mode for an application\",\"explain why HikariCP recommends small pools instead of large ones\"]"
   anti_examples: "[\"tune a slow query (use query-optimization)\",\"design indexes (use indexing-strategy)\",\"route reads to a replica (use replication-patterns)\",\"design partitioning across shards (use sharding-strategy)\"]"

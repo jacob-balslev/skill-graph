@@ -3,10 +3,12 @@ name: design-module-composition
 description: "Use when designing reusable component modules — composition patterns, compound components, slot/children APIs, render props, headless component contracts, and the choice between configuration and composition. Do NOT use for application-level architecture, single-use feature components, or visual styling decisions."
 license: CC-BY-4.0
 metadata:
-  schema_version: "7"
+  schema_version: "8"
   version: "1.0.0"
   type: capability
+  operation: know
   category: design
+  subject: design-craft
   scope: portable
   owner: skill-graph-maintainer
   freshness: "2026-05-12"
@@ -15,7 +17,7 @@ metadata:
   eval_state: unverified
   routing_eval: absent
   stability: experimental
-  keywords: "[\"component composition\",\"compound components\",\"slot api\",\"headless components\",\"render props\",\"polymorphic components\",\"asChild pattern\",\"children as api\",\"composition over configuration\",\"component contract design\",\"component module patterns\",\"selectable rows sortable columns\",\"primitives composites templates\"]"
+  keywords: "[\"component composition\",\"compound components\",\"slot api\",\"headless components\",\"render props\",\"polymorphic components\",\"asChild pattern\",\"children as api\",\"composition over configuration\",\"component contract design\"]"
   triggers: "[\"compound component\",\"composition over configuration\",\"headless component\",\"slot pattern\",\"asChild\"]"
   examples: "[\"Design a Dialog component whose trigger, content, and close button are addressable by consumers\",\"Refactor a Card with 14 boolean props into a composition-based API\",\"Build a headless table primitive that exposes state and behavior without imposing markup\"]"
   anti_examples: "[\"Choose the border radius value for cards\",\"Decide where the OrderDetailPage component lives in the folder structure\",\"Pick the brand font for headings\"]"

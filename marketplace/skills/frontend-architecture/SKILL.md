@@ -3,10 +3,12 @@ name: frontend-architecture
 description: "Use when organizing a frontend codebase — module boundaries, component layering, state ownership, data-flow direction, and the separation between feature code and shared primitives. Do NOT use for visual design decisions, specific framework migration tactics, or backend API contract design."
 license: CC-BY-4.0
 metadata:
-  schema_version: "7"
+  schema_version: "8"
   version: "1.0.0"
   type: capability
+  operation: know
   category: engineering
+  subject: frontend-ui
   domain: engineering/frontend
   scope: portable
   owner: skill-graph-maintainer
@@ -16,7 +18,7 @@ metadata:
   eval_state: unverified
   routing_eval: absent
   stability: experimental
-  keywords: "[\"frontend architecture\",\"component boundaries\",\"module organization\",\"state management shape\",\"feature-sliced design\",\"container presentational\",\"data flow direction\",\"shared primitives\",\"component layering\",\"frontend folder structure\",\"colocation\",\"Next.js App Router structure\"]"
+  keywords: "[\"frontend architecture\",\"component boundaries\",\"module organization\",\"state management shape\",\"feature-sliced design\",\"container presentational\",\"data flow direction\",\"shared primitives\",\"component layering\",\"frontend folder structure\"]"
   triggers: "[\"frontend architecture\",\"component boundaries\",\"folder structure\",\"state shape\",\"where should this code live\"]"
   examples: "[\"Decide whether a new modal lives in the shared component library or inside a feature folder\",\"Reorganize a frontend that has mixed presentational components and data-fetching components in the same files\",\"Choose a state shape that doesn't force every consumer to re-render on unrelated changes\"]"
   anti_examples: "[\"Pick the brand color palette for a marketing site\",\"Design the REST endpoint shape for the orders resource\",\"Decide whether to use CSS-in-JS or Tailwind\"]"

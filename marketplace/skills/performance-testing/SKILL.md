@@ -4,12 +4,14 @@ description: "Use when measuring a system's non-functional properties — latenc
 license: MIT
 allowed-tools: Read Grep
 metadata:
-  schema_version: "7"
+  schema_version: "8"
   version: "1.0.0"
   type: capability
+  operation: know
   category: quality
+  subject: quality-assurance
   domain: quality/testing
-  scope: reference
+  scope: workspace
   owner: skill-graph-maintainer
   freshness: "2026-05-16"
   drift_check: "{\"last_verified\":\"2026-05-16\"}"
@@ -18,7 +20,7 @@ metadata:
   routing_eval: absent
   comprehension_state: present
   stability: experimental
-  keywords: "[\"performance testing\",\"load testing\",\"stress testing\",\"soak testing\",\"spike testing\",\"breakpoint test\",\"k6\",\"JMeter\",\"Locust\",\"Gatling\",\"latency percentile\",\"p95\",\"p99\",\"SLO\",\"throughput\"]"
+  keywords: "[\"performance testing\",\"load testing\",\"stress testing\",\"soak testing\",\"spike testing\",\"breakpoint test\",\"k6\",\"JMeter\",\"Locust\",\"Gatling\"]"
   triggers: "[\"what should our load test do\",\"p95 vs average latency\",\"k6 vs JMeter vs Locust\",\"is the system fast enough\",\"stress test or load test\"]"
   examples: "[\"design a load test for an API endpoint that verifies the p95 SLO at expected production traffic\",\"decide between load, stress, and soak tests for a new service before launch\",\"diagnose a soak test failure that only appears after 4 hours — likely a leak\",\"explain why average latency is the wrong metric for user experience\"]"
   anti_examples: "[\"measure production traffic latency in real time (use observability)\",\"benchmark a single function in isolation (use language benchmark tools)\",\"inject failures into a production system (use chaos-engineering)\"]"

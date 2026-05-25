@@ -4,12 +4,14 @@ description: "Use when reasoning about snapshot testing as a tactical technique:
 license: MIT
 allowed-tools: Read Grep
 metadata:
-  schema_version: "7"
+  schema_version: "8"
   version: "1.0.0"
   type: capability
+  operation: know
   category: quality
+  subject: quality-assurance
   domain: quality/testing
-  scope: reference
+  scope: workspace
   owner: skill-graph-maintainer
   freshness: "2026-05-16"
   drift_check: "{\"last_verified\":\"2026-05-16\"}"
@@ -18,7 +20,7 @@ metadata:
   routing_eval: absent
   comprehension_state: present
   stability: experimental
-  keywords: "[\"snapshot testing\",\"golden file\",\"characterization test\",\"approval testing\",\"visual regression\",\"Chromatic\",\"Percy\",\"Storybook\",\"Jest snapshot\",\"DOM snapshot\",\"image snapshot\",\"approval cycle\"]"
+  keywords: "[\"snapshot testing\",\"golden file\",\"characterization test\",\"approval testing\",\"visual regression\",\"Chromatic\",\"Percy\",\"Storybook\",\"Jest snapshot\",\"DOM snapshot\"]"
   triggers: "[\"should this be a snapshot test\",\"the snapshot keeps changing\",\"is visual regression testing the same thing\",\"should we auto-update snapshots\",\"snapshot file is too big\"]"
   examples: "[\"decide whether a rendered component is a candidate for a snapshot test or for behavioral tests\",\"diagnose a test suite where every PR updates snapshot files — likely snapshot churn from non-stable inputs\",\"explain why auto-updating snapshots without review removes the testing value\",\"design an approval cycle for a visual regression suite (Chromatic / Percy)\"]"
   anti_examples: "[\"specify the exact return value of a calculation (use example tests under testing-strategy)\",\"verify a universal property like sort correctness (use property-based-testing)\",\"design end-to-end user journey tests (use e2e-test-design)\"]"

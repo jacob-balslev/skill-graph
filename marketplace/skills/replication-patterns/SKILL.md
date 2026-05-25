@@ -4,12 +4,14 @@ description: "Use when designing how a database keeps multiple copies of its dat
 license: MIT
 allowed-tools: Read Grep
 metadata:
-  schema_version: "7"
+  schema_version: "8"
   version: "1.0.0"
   type: capability
+  operation: know
   category: engineering
+  subject: code-engineering
   domain: engineering/data
-  scope: reference
+  scope: workspace
   owner: skill-graph-maintainer
   freshness: "2026-05-16"
   drift_check: "{\"last_verified\":\"2026-05-16\"}"
@@ -18,7 +20,7 @@ metadata:
   routing_eval: absent
   comprehension_state: present
   stability: experimental
-  keywords: "[\"replication\",\"primary replica\",\"multi-leader\",\"leaderless\",\"quorum\",\"synchronous replication\",\"asynchronous replication\",\"replication lag\",\"read-after-write\",\"failover\",\"split brain\",\"log shipping\",\"WAL streaming\"]"
+  keywords: "[\"replication\",\"primary replica\",\"multi-leader\",\"leaderless\",\"quorum\",\"synchronous replication\",\"asynchronous replication\",\"replication lag\",\"read-after-write\",\"failover\"]"
   triggers: "[\"single-leader vs multi-leader\",\"synchronous vs async replication\",\"what happens on failover\",\"split brain\",\"read-after-write consistency\"]"
   examples: "[\"design replication topology for a service with one region writing and three regions reading\",\"decide between synchronous and asynchronous replication given a target RPO\",\"diagnose stale reads after a write — likely replication lag without read-after-write handling\",\"explain the split-brain risk in multi-leader replication\"]"
   anti_examples: "[\"horizontally partition data across nodes (use sharding-strategy)\",\"reason about the CAP theorem abstractly (use cap-theorem-tradeoffs)\",\"explain ACID properties (use acid-fundamentals)\"]"

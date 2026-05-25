@@ -3,10 +3,12 @@ name: dark-mode-implementation
 description: "Use when implementing dark mode — prefers-color-scheme detection, theme persistence, flash-of-unstyled-theme prevention, color token mirroring, image and asset variants, and meta theme-color updates. Do NOT use for designing the dark palette itself, designing the token architecture, or generic theme-switching across more than two themes."
 license: CC-BY-4.0
 metadata:
-  schema_version: "7"
+  schema_version: "8"
   version: "1.0.0"
   type: capability
+  operation: know
   category: design
+  subject: design-craft
   domain: design/visual
   scope: portable
   owner: skill-graph-maintainer
@@ -16,7 +18,7 @@ metadata:
   eval_state: unverified
   routing_eval: absent
   stability: experimental
-  keywords: "[\"dark mode\",\"prefers-color-scheme\",\"theme persistence\",\"flash of unstyled theme\",\"flash of incorrect theme\",\"color-scheme css property\",\"meta theme-color\",\"dark mode images\",\"picture source media\",\"system theme detection\",\"light dark css function\"]"
+  keywords: "[\"dark mode\",\"prefers-color-scheme\",\"theme persistence\",\"flash of unstyled theme\",\"flash of incorrect theme\",\"color-scheme css property\",\"meta theme-color\",\"dark mode images\",\"picture source media\",\"system theme detection\"]"
   triggers: "[\"dark mode\",\"prefers-color-scheme\",\"light dark toggle\",\"system theme\",\"FOUC dark mode\"]"
   examples: "[\"Add a dark mode toggle with system / light / dark options and persist the user's choice\",\"Eliminate the white flash that appears for a moment when a dark-mode user loads the page\",\"Provide dark variants of the marketing illustrations and the favicon\"]"
   anti_examples: "[\"Pick the dark mode color palette values\",\"Design the three-tier token architecture\",\"Build a multi-brand theme system with five themes\"]"

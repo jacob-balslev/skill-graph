@@ -5,10 +5,12 @@ license: MIT
 compatibility: "Operating-model-agnostic. Applies whether the constraint is a single solo developer operating multiple agents, a small team where one senior engineer reviews everything, or a larger team where review capacity is the limiting factor. The framework adapts as the constraint identity changes."
 allowed-tools: Read Grep
 metadata:
-  schema_version: "7"
+  schema_version: "8"
   version: "1.1.0"
   type: capability
+  operation: do
   category: foundations
+  subject: meta-methods
   domain: foundations/strategy
   scope: portable
   owner: skill-graph-maintainer
@@ -19,7 +21,7 @@ metadata:
   routing_eval: absent
   comprehension_state: present
   stability: experimental
-  keywords: "[\"theory of constraints\",\"goldratt five focusing steps\",\"bottleneck identification\",\"constraint of an ai-coding system\",\"human attention as constraint\",\"cost structure inversion ai\",\"what to automate vs keep manual\",\"batch decisions not interrupt\",\"options not questions\",\"constraint-aware process design\",\"attention budget\",\"reduce demand on the bottleneck\",\"elevate the constraint\",\"subordinate to the constraint\",\"constraint shift over time\",\"rework rate as constraint signal\",\"false dependency on the human\",\"over-engineering anti-pattern constraint\"]"
+  keywords: "[\"theory of constraints\",\"goldratt five focusing steps\",\"bottleneck identification\",\"constraint of an ai-coding system\",\"human attention as constraint\",\"cost structure inversion ai\",\"what to automate vs keep manual\",\"batch decisions not interrupt\",\"options not questions\",\"constraint-aware process design\"]"
   examples: "[\"we keep adding tooling and the agent throughput isn't going up — what TOC step are we missing?\",\"should this approval gate stay in the loop or be replaced by an automated check?\",\"the agents keep asking me clarifying questions and I'm answering 30 a day — what's the structural fix?\",\"we're considering a 4-model review panel on every architectural decision — does that subordinate to or overload the constraint?\",\"code production used to be the bottleneck; what does the new bottleneck look like once agents do all the typing?\",\"is this proposed automation a constraint-elevator or a non-constraint optimization that won't move throughput?\",\"the rework rate climbed from 12% to 24% over the quarter — which constraint step does that point at?\"]"
   anti_examples: "[\"what's the ICE / RICE score for this initiative against five others\",\"estimate the effort tier for this ticket\",\"route this debugging task to the cheapest model that can solve it\",\"review this AI-generated PR for correctness\",\"design the production reliability layer for our agent system\"]"
   relations: "{\"boundary\":[{\"skill\":\"ai-native-development\",\"reason\":\"ai-native-development is the conceptual frame for AI-coding (eras, autonomy slider, vibe vs agentic); constraint-awareness is the prioritization lens applied within that frame\"},{\"skill\":\"agent-engineering\",\"reason\":\"agent-engineering owns production reliability patterns (orchestration, error budgets, observability); constraint-awareness owns *which* of those to invest in based on where the bottleneck currently is\"},{\"skill\":\"code-review\",\"reason\":\"code-review evaluates one piece of work; constraint-awareness reasons about whether the review gate itself is the bottleneck\"},{\"skill\":\"tool-call-strategy\",\"reason\":\"tool-call-strategy decides per-action which tool an agent calls; constraint-awareness decides per-process whether that whole class of action should require human intervention at all\"}],\"related\":[\"ai-native-development\",\"agent-engineering\",\"code-review\"]}"

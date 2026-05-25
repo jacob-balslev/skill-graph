@@ -1,10 +1,38 @@
 # Skill Metadata Protocol
 
-> **Version:** 1.5.0 (schema_version 8, Skill Graph 0.5.10)
+> **Spec version:** 1.5.0 (target `schema_version: 8`, Skill Graph 0.5.10)
+> **Currently enforced by `schemas/skill.schema.json`:** `schema_version: 7` (6-value `category` enum). The v8 5-axis classification is SPEC'D below but the schema's `category.const` values still constrain to v7 today — see [§ Migration state (v7→v8)](#migration-state-v7v8) before authoring against v8 fields.
+> **Single source of truth for "what is enforced today":** [`SKILL_GRAPH.md § Current State`](SKILL_GRAPH.md#current-state--single-source-of-truth) — link there from any doc that needs the live answer; do not restate.
 > **Machine-readable schema:** `schemas/skill.schema.json`
 > **Detailed field reference:** `docs/field-reference.md`
 > **Full semantics + design rationale:** `docs/skill-metadata-protocol.md`
 > **v8 design rationale:** `docs/adr/0017-five-axis-classification-model.md`
+
+---
+
+## Migration state (v7→v8)
+
+This document was authored as the **target v8 spec** — but as of 2026-05-25 the migration is half-done across the corpus. The split:
+
+| Surface | State |
+|---|---|
+| **This doc (SKILL_METADATA_PROTOCOL.md)** | v8 — 5-axis classification fully described |
+| **Schema file (`schemas/skill.schema.json`)** | v7 — `category.const` values are the 6-enum (`foundations` / `engineering` / `design` / `quality` / `agent` / `product`); does NOT yet enforce the v8 9-value `subject` enum |
+| **Compiled manifest (`skills.manifest.json`) summary** | v7 — `by_category` / `by_type` / `by_scope` with v7 names |
+| **Audit Loop Part 2 checklist (`SKILL_AUDIT_LOOP.md`)** | v8 + v7 (both accepted post-2026-05-25 fix) |
+| **Source skills (147 canonical, 302 flat-layout)** | Mixed — nested-layout skills carry v8 fields under `metadata:`; flat-layout skills are v5-v7 |
+| **`SKILL_GRAPH.md § Current State`** | v7 (the single-source-of-truth count today) |
+
+**What this means for authors:**
+
+- A skill written with **only v8 fields** (`subject` + `operation` + v8 scope names) will FAIL schema lint today because `category.const` does not yet include the v8 enum values.
+- During the sunset window, author **both** the v8 axes (target) and the v7 legacy aliases (currently enforced). The v7→v8 normalizer in `scripts/lib/parse-frontmatter.js::normalizeFrontmatter()` keeps both readable.
+- The v8 codemod (`scripts/migrate-skill-v7-to-v8.js`) populates BOTH on migrated skills.
+- This drift is honest, not a defect to mask — per `.claude/rules/version-schema-contract.md` "a label ahead of its content is HONEST drift to record, not to 'fix' by editing the label." The full v8 enforcement requires updating the schema constants, regenerating the sample manifest, and bumping `SKILL_GRAPH.md § Current State` — all in one coordinated change.
+
+The full migration plan + state is tracked in the workspace audit findings (2026-05-25). When this row in the table flips to "v8 — schema enforces 9-value `subject`," the migration-state callout at the top of this doc can be removed.
+
+---
 
 This document is the top-level public contract for the Skill Metadata Protocol frontmatter format — the **normative spec**. It defines which fields are required, what each field means in operational terms, which fields are authored by humans vs computed by tooling, and how to migrate from older schema versions. Skill Graph is the library-level system that consumes this contract. The prose is terse and boundary-aware: every clause is a rule a consumer or author can verify against the schema and the focused Skill Graph verification tools.
 

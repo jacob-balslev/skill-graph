@@ -5,10 +5,12 @@ license: MIT
 compatibility: "Markdown, Git, any codebase"
 allowed-tools: Read Grep Bash
 metadata:
-  schema_version: "7"
+  schema_version: "8"
   version: "1.0.0"
   type: workflow
+  operation: do
   category: engineering
+  subject: code-engineering
   scope: portable
   owner: skill-graph-maintainer
   freshness: "2026-04-18"
@@ -17,7 +19,7 @@ metadata:
   eval_state: passing
   routing_eval: present
   stability: experimental
-  keywords: "[\"debugging\",\"reproduce failure\",\"reproduce bug\",\"failing test\",\"root cause\",\"symptom vs cause\",\"minimum reproduction\",\"bisect\",\"what caused it\",\"my tests are failing\",\"why is this broken\",\"it broke in production\",\"cannot reproduce\",\"test passes locally\",\"stack trace\",\"used to work\",\"worked yesterday\",\"what changed\",\"was working before\",\"agent stuck\",\"stuck in a loop\",\"stuck in loop\",\"blocking my commit\",\"blocking the build\",\"specific error\",\"specific failure\",\"diagnose failure\",\"error blocking\",\"broke the build\",\"broke build\"]"
+  keywords: "[\"debugging\",\"reproduce failure\",\"reproduce bug\",\"failing test\",\"root cause\",\"symptom vs cause\",\"minimum reproduction\",\"bisect\",\"what caused it\",\"my tests are failing\"]"
   triggers: "[\"debugging-skill\"]"
   examples: "[\"my tests pass locally but fail in CI — why?\",\"this function used to work yesterday; what changed?\",\"reproduce this Stripe webhook failure from production logs\",\"I see the symptom but can't find the root cause of this nil panic\"]"
   anti_examples: "[\"plan test coverage for a new feature\",\"document what this function does for future readers\",\"refactor this messy code while the test suite is green\"]"

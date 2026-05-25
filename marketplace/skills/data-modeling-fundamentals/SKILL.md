@@ -4,12 +4,14 @@ description: "Use when reasoning about the foundational theory beneath data mode
 license: MIT
 allowed-tools: Read Grep
 metadata:
-  schema_version: "7"
+  schema_version: "8"
   version: "1.0.0"
   type: capability
+  operation: do
   category: engineering
+  subject: code-engineering
   domain: engineering/data
-  scope: reference
+  scope: workspace
   owner: skill-graph-maintainer
   freshness: "2026-05-16"
   drift_check: "{\"last_verified\":\"2026-05-16\"}"
@@ -18,7 +20,7 @@ metadata:
   routing_eval: absent
   comprehension_state: present
   stability: experimental
-  keywords: "[\"relational model\",\"Codd\",\"normalization\",\"normal forms\",\"functional dependency\",\"1NF\",\"2NF\",\"3NF\",\"BCNF\",\"4NF\",\"5NF\",\"entity-relationship model\",\"Chen\",\"relational algebra\",\"denormalization\",\"immutable data model\",\"event sourcing\"]"
+  keywords: "[\"relational model\",\"Codd\",\"normalization\",\"normal forms\",\"functional dependency\",\"1NF\",\"2NF\",\"3NF\",\"BCNF\",\"4NF\"]"
   triggers: "[\"what normal form is this\",\"should this be normalized or denormalized\",\"explain functional dependencies\",\"relational vs document model\",\"Codd's rules\"]"
   examples: "[\"explain why a table is in 2NF but not 3NF and what change would bring it to 3NF\",\"decide whether a workload's read pattern justifies denormalization against the theoretical baseline\",\"compare the relational, document, and event-sourced models at the conceptual level for a given domain\",\"trace a functional-dependency closure to find a candidate key\"]"
   anti_examples: "[\"design the practical schema for a new persistence layer (use data-modeling)\",\"apply an expand-contract migration to change an existing schema (use schema-evolution)\",\"choose which indexes to maintain (use indexing-strategy)\",\"discover business entities without implementation details (use conceptual-modeling)\"]"

@@ -5,10 +5,12 @@ license: MIT
 compatibility: "Markdown, Git, agent-skill runtimes"
 allowed-tools: Read Grep Bash
 metadata:
-  schema_version: "7"
+  schema_version: "8"
   version: "1.0.0"
   type: capability
+  operation: know
   category: agent
+  subject: agent-ops
   domain: agent/ops
   scope: portable
   owner: skill-graph-maintainer
@@ -18,7 +20,7 @@ metadata:
   eval_state: unverified
   routing_eval: absent
   stability: experimental
-  keywords: "[\"content monitor\",\"github trending\",\"blog monitor\",\"intelligence brief\",\"youtube monitor\",\"awesome list\",\"trend tracking\",\"content pipeline\",\"content-monitor\",\"rss feed\",\"content discovery\",\"hacker news\",\"changelog tracking\",\"arxiv papers\",\"podcast monitor\",\"release tracking\"]"
+  keywords: "[\"content monitor\",\"github trending\",\"blog monitor\",\"intelligence brief\",\"youtube monitor\",\"awesome list\",\"trend tracking\",\"content pipeline\",\"content-monitor\",\"rss feed\"]"
   triggers: "[\"content-monitor-skill\",\"research-mode\"]"
   relations: "{\"boundary\":[\"keywords\",\"seo-strategy\"],\"verify_with\":[\"evaluation\"]}"
   portability: "{\"readiness\":\"scripted\",\"targets\":[\"skill-md\"]}"

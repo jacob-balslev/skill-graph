@@ -4,12 +4,14 @@ description: "Use when reasoning about how a web UI is produced and delivered: c
 license: MIT
 allowed-tools: Read Grep
 metadata:
-  schema_version: "7"
+  schema_version: "8"
   version: "1.0.0"
   type: capability
+  operation: know
   category: engineering
+  subject: frontend-ui
   domain: engineering/frontend
-  scope: reference
+  scope: workspace
   owner: skill-graph-maintainer
   freshness: "2026-05-15"
   drift_check: "{\"last_verified\":\"2026-05-15\"}"
@@ -18,7 +20,7 @@ metadata:
   routing_eval: absent
   comprehension_state: present
   stability: experimental
-  keywords: "[\"rendering model\",\"CSR\",\"SSR\",\"SSG\",\"ISR\",\"React Server Components\",\"RSC\",\"streaming SSR\",\"edge rendering\",\"partial prerendering\",\"hydration\",\"time to interactive\",\"first contentful paint\"]"
+  keywords: "[\"rendering model\",\"CSR\",\"SSR\",\"SSG\",\"ISR\",\"React Server Components\",\"RSC\",\"streaming SSR\",\"edge rendering\",\"partial prerendering\"]"
   triggers: "[\"should this page be server-rendered\",\"static or dynamic\",\"what's the difference between SSR and RSC\",\"why is this page slow to first paint\",\"should this be a client component\"]"
   examples: "[\"decide whether a product page should be SSG with revalidation or SSR\",\"explain why a marketing page is fast but a dashboard is slow despite both 'server rendering'\",\"choose between streaming SSR and a loading skeleton\",\"diagnose why a server component re-renders on every navigation\"]"
   anti_examples: "[\"organize the folder structure of a frontend codebase (use frontend-architecture)\",\"decide what types can cross the network boundary (use client-server-boundary)\",\"design HTTP cache headers (use http-semantics)\"]"

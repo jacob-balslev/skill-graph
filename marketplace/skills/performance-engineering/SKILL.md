@@ -5,10 +5,12 @@ license: MIT
 compatibility: "Portable performance discipline for frontend, backend, databases, jobs, APIs, and agent tooling."
 allowed-tools: Read Grep
 metadata:
-  schema_version: "7"
+  schema_version: "8"
   version: "1.0.0"
   type: capability
+  operation: know
   category: quality
+  subject: data-analytics
   domain: quality/performance
   scope: portable
   owner: skill-graph-maintainer

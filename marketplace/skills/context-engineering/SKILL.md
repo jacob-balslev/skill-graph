@@ -1,14 +1,16 @@
 ---
 name: context-engineering
-description: "Use when designing what information reaches an LLM agent before it reasons — system prompt, persistent memory, always-loaded rules, injected skills, and the user prompt — or when diagnosing why an agent produced a wrong answer despite a clear instruction. Covers the four context failure modes (missing, stale, wrong, overwhelming), the five-layer context stack, four context quality metrics (injection precision and recall, utilization, freshness), the Frequent Intentional Compaction (FIC) protocol, subagent delegation for context-heavy work, and the failure-mode decision tree. Do NOT use for prompt wording (use `prompt-craft`), authoring a new SKILL.md (use `skill-scaffold`), or auditing routing-config coverage or routing health (use `skill-infrastructure`)."
+description: "Use when designing what information reaches an LLM agent before it reasons — system prompt, persistent memory, always-loaded rules, injected skills, and the user prompt — or when diagnosing why an agent produced a wrong answer despite a clear instruction. Covers the four context failure modes (missing, stale, wrong, overwhelming), the five-layer context stack, four context quality metrics (injection precision and recall, utilization, freshness), the Frequent Intentional Compaction (FIC) protocol, subagent delegation for context-heavy work, and the failure-mode decision tree. Do NOT use for prompt wording (use `prompt-craft`), authoring a new SKILL.md (use `skill-scaffold`), or deciding which skill the router activates for a given query (use `skill-router`)."
 license: MIT
 compatibility: "Provider-agnostic; principles apply across Claude, GPT, Gemini, and open-weight models. Layer mapping varies by harness (Claude Code, OpenCode, Cursor, Continue, Aider) but the five-layer abstraction holds."
 allowed-tools: Read Grep Bash Edit
 metadata:
-  schema_version: "7"
+  schema_version: "8"
   version: "1.1.0"
   type: capability
+  operation: know
   category: agent
+  subject: agent-ops
   domain: agent/context
   scope: portable
   owner: skill-graph-maintainer
@@ -19,10 +21,10 @@ metadata:
   routing_eval: absent
   comprehension_state: present
   stability: experimental
-  keywords: "[\"context engineering\",\"context failure\",\"agent context\",\"context quality\",\"context design\",\"missing context\",\"stale context\",\"wrong context\",\"overwhelming context\",\"context window\",\"context rot\",\"context utilization\",\"injection precision\",\"injection recall\",\"frequent intentional compaction\",\"FIC\",\"context compaction\",\"tool result clearing\",\"agent memory\",\"just in time context\",\"subagent delegation\",\"context stack\",\"context layers\",\"skill injection\",\"context engineering stack\",\"agent failure diagnosis\",\"why did the agent fail\"]"
+  keywords: "[\"context engineering\",\"context failure\",\"agent context\",\"context quality\",\"context design\",\"missing context\",\"stale context\",\"wrong context\",\"overwhelming context\",\"context window\"]"
   examples: "[\"the agent ignored the instruction and used the wrong query helper — was the right skill loaded?\",\"we keep getting generic answers from the agent even though the skill has the answer — what's wrong?\",\"I want to design which skills get injected for which prompts — where do I start?\",\"the agent's quality drops in long sessions — when should I compact?\",\"diagnose this agent failure: it had the file open but produced wrong output anyway\",\"we have 200 skills and the agent picks the wrong ones — fix the injection\",\"should I read this 5K-line file directly or delegate to a subagent?\",\"audit our context pipeline — what's loaded when, and is any of it stale?\"]"
   anti_examples: "[\"improve this prompt's wording to get better outputs\",\"scaffold a new SKILL.md for our team's deploy procedure\",\"the router picked the wrong skill for this query — debug it\",\"review this AI-generated PR for correctness\",\"write a doc explaining our agent system to a new joiner\",\"investigate why production crashed at 3am\"]"
-  relations: "{\"boundary\":[{\"skill\":\"prompt-craft\",\"reason\":\"prompt-craft writes the wording of one instruction; context-engineering shapes the entire surrounding payload (rules, memory, skills, file reads) that the prompt sits inside\"},{\"skill\":\"skill-scaffold\",\"reason\":\"skill-scaffold authors the structure of a single SKILL.md file; context-engineering decides which skills should exist, get loaded, and reach the model in the first place\"},{\"skill\":\"skill-infrastructure\",\"reason\":\"skill-infrastructure owns the routing-config coverage and routing-health tooling that governs which skills are eligible to activate; context-engineering is the design discipline behind the entire context stack.\"}],\"related\":[\"prompt-craft\",\"skill-infrastructure\"],\"verify_with\":[\"code-review\"]}"
+  relations: "{\"boundary\":[{\"skill\":\"prompt-craft\",\"reason\":\"prompt-craft writes the wording of one instruction; context-engineering shapes the entire surrounding payload (rules, memory, skills, file reads) that the prompt sits inside\"},{\"skill\":\"skill-scaffold\",\"reason\":\"skill-scaffold authors the structure of a single SKILL.md file; context-engineering decides which skills should exist, get loaded, and reach the model in the first place\"},{\"skill\":\"skill-router\",\"reason\":\"skill-router is the runtime mechanism that selects skills for a query; context-engineering is the design discipline behind the entire context stack the router operates within\"}],\"related\":[\"prompt-craft\",\"skill-router\"],\"verify_with\":[\"code-review\"]}"
   grounding: "{\"domain_object\":\"Context engineering for LLM agents\",\"grounding_mode\":\"hybrid\",\"truth_sources\":[\"https://www.anthropic.com/engineering/effective-context-engineering-for-ai-agents\",\"https://platform.claude.com/docs/en/build-with-claude/context-windows\",\"https://platform.claude.com/cookbook/tool-use-context-engineering-context-engineering-tools\",\"https://www.ibm.com/think/topics/context-engineering\",\"https://arxiv.org/abs/2510.26493\"],\"failure_modes\":[\"context_window_treated_as_unlimited\",\"prompt_wording_treated_as_context_design\",\"retrieval_dump_replaces_selection\",\"tool_results_accumulate_without_clearing\",\"stale_memory_overrides_current_evidence\"],\"evidence_priority\":\"equal\"}"
   portability: "{\"readiness\":\"scripted\",\"targets\":[\"skill-md\"]}"
   lifecycle: "{\"stale_after_days\":90,\"review_cadence\":\"quarterly\"}"
@@ -363,7 +365,7 @@ Use this checklist when designing a new skill, debugging a failure, or auditing 
 |---|---|
 | `prompt-craft` | The fix is in the wording of one instruction (clarity, format, few-shot examples), not the surrounding stack |
 | `skill-scaffold` | Authoring or restructuring a single SKILL.md file (the contract, not the system around it) |
-| `skill-infrastructure` | Auditing routing-config coverage or routing health — skill-infrastructure owns the tooling that governs which skills are eligible to activate |
+| `skill-router` | Debugging which skill the router activates for a specific query — that is a routing-mechanism question, not a context-design question |
 | `code-review` | Reviewing AI-generated code for correctness, security, or style |
 | `documentation` | Writing prose for a human reader about how the agent system works |
 | `debugging` | Investigating a runtime production failure that is not specifically an agent context failure |

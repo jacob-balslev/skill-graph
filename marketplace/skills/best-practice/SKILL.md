@@ -5,12 +5,14 @@ license: MIT
 compatibility: "Applies to any web application codebase using TypeScript, React, and Next.js App Router. The cross-domain enforcement priorities (security, a11y, performance, design system, testing, DevOps, AI/LLM) are framework-agnostic; the Next.js section is specific to the App Router pattern."
 allowed-tools: Read Grep Bash
 metadata:
-  schema_version: "7"
+  schema_version: "8"
   version: "1.2.0"
   type: capability
+  operation: know
   category: quality
+  subject: quality-assurance
   domain: quality/cross-domain
-  scope: reference
+  scope: workspace
   owner: skill-graph-maintainer
   freshness: "2026-05-18"
   drift_check: "{\"last_verified\":\"2026-05-18\",\"truth_source_hashes\":{}}"
@@ -18,7 +20,7 @@ metadata:
   eval_state: unverified
   routing_eval: absent
   stability: stable
-  keywords: "[\"best practice\",\"best practices\",\"code quality\",\"quality enforcement\",\"code review checklist\",\"OWASP\",\"WCAG\",\"Core Web Vitals\",\"SOLID principles\",\"clean code\",\"visual hierarchy\",\"typographic hierarchy\",\"color hierarchy\",\"UI composition\",\"cross-cutting concerns\",\"quality gate\",\"enforcement layer\"]"
+  keywords: "[\"best practice\",\"best practices\",\"code quality\",\"quality enforcement\",\"code review checklist\",\"OWASP\",\"WCAG\",\"Core Web Vitals\",\"SOLID principles\",\"clean code\"]"
   examples: "[\"reviewing a pull request for correctness, security, and style\",\"creating a new React component and checking it against quality standards\",\"auditing an existing feature for WCAG compliance and performance regressions\",\"writing tests and verifying coverage shape (unit / integration / e2e pyramid)\",\"authoring a new skill and checking it has structured scope, evals, and examples\",\"adding a new Next.js Server Action and verifying it has Zod validation and auth check\"]"
   anti_examples: "[\"reviewing PR feedback phrasing and comment classification (use code-review)\",\"choosing between requireAuth, requireOrgAuth, and withOrgAuth (use nextauth-patterns)\",\"implementing SQL injection prevention or webhook HMAC verification (use security-scanning)\",\"designing the APCA contrast ratio for a new color palette (use color-science)\",\"implementing the font loading strategy and vertical rhythm (use typography)\",\"deciding what quality means per artifact type — code vs skill vs prompt (use craft-doctrine)\"]"
   relations: "{\"adjacent\":[\"code-review\",\"security-scanning\",\"a11y\",\"design-guide\",\"composition-theory\",\"color-science\",\"visual-design\",\"typography\",\"copywriting\",\"semantics\",\"ui-ux\",\"next-best-practices\"],\"boundary\":[],\"verify_with\":[\"code-review\",\"security-scanning\"]}"
@@ -86,7 +88,7 @@ As the baseline enforcement layer, this skill connects:
 | Comments explain WHY | Code explains what; comments explain intent, gotchas, business rules |
 | ADRs for decisions | `docs/adr/` — Context, Decision, Alternatives, Consequences |
 | TSDoc on public APIs | `@param`, `@returns`, `@throws` on exported functions |
-| No stale TODOs | Every `// TODO` must reference a ticket: `// TODO(SH-1234)` |
+| No stale TODOs | Every `// TODO` must reference a tracker ticket |
 
 > See adr for ADR creation methodology. See doc-updater for the documentation update protocol.
 

@@ -5,10 +5,12 @@ license: MIT
 compatibility: "Portable eval-design discipline for agent workflows, skill routers, prompt systems, and tool-use policies."
 allowed-tools: Read Grep
 metadata:
-  schema_version: "7"
+  schema_version: "8"
   version: "1.0.0"
   type: capability
+  operation: know
   category: quality
+  subject: quality-assurance
   domain: ai-engineering/evaluation
   scope: portable
   owner: skill-graph-maintainer

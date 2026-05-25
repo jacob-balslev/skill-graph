@@ -3,10 +3,12 @@ name: visual-hierarchy
 description: "Use when establishing visual hierarchy — type scale ratios, spacing rhythm, contrast as ordering signal, weight and size as importance, and the layered relationship between primary, secondary, and tertiary information. Do NOT use for content writing, information architecture, or specific color palette construction."
 license: CC-BY-4.0
 metadata:
-  schema_version: "7"
+  schema_version: "8"
   version: "1.0.0"
   type: capability
+  operation: know
   category: design
+  subject: design-craft
   scope: portable
   owner: skill-graph-maintainer
   freshness: "2026-05-12"
@@ -15,7 +17,7 @@ metadata:
   eval_state: unverified
   routing_eval: absent
   stability: experimental
-  keywords: "[\"visual hierarchy\",\"hierarchical type sizing\",\"proximity hierarchy\",\"contrast hierarchy\",\"importance ordering\",\"reading order\",\"focal point\",\"figure ground\",\"gestalt principles\",\"hierarchy through weight\",\"hierarchy through size\",\"button hierarchy\",\"primary secondary tertiary actions\"]"
+  keywords: "[\"visual hierarchy\",\"hierarchical type sizing\",\"proximity hierarchy\",\"contrast hierarchy\",\"importance ordering\",\"reading order\",\"focal point\",\"figure ground\",\"gestalt principles\",\"hierarchy through weight\"]"
   triggers: "[\"visual hierarchy\",\"type as hierarchy\",\"what should the eye go to first\",\"establishing focus\",\"page hierarchy\"]"
   examples: "[\"Decide the H1/H2/H3 size ratios and weight contrast for a long-form article layout\",\"Reduce visual noise on a dashboard where every element competes for attention\",\"Establish a clear primary call-to-action on a page with multiple secondary actions\"]"
   anti_examples: "[\"Write the H1 copy that should appear at the top of the landing page\",\"Choose between sans-serif and serif typefaces for the brand\",\"Pick the brand's primary color\"]"

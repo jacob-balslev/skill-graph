@@ -3,10 +3,12 @@ name: problem-framing
 description: "Use when a team is converging on solutions before agreeing on the problem, when a brief reads as a feature request, when symptoms and root needs are tangled, or when assumptions need surfacing before design work proceeds. Do NOT use for code-level bug triage, runtime failure diagnosis, or root-cause analysis of system errors — those are engineering investigation tasks, not design problem framing."
 license: CC-BY-4.0
 metadata:
-  schema_version: "7"
+  schema_version: "8"
   version: "1.0.0"
   type: capability
+  operation: know
   category: design
+  subject: design-craft
   scope: portable
   owner: skill-graph-maintainer
   freshness: "2026-05-12"
@@ -15,7 +17,7 @@ metadata:
   eval_state: unverified
   routing_eval: absent
   stability: experimental
-  keywords: "[\"how might we\",\"problem statement\",\"reframing\",\"assumption mapping\",\"root need\",\"symptom vs need\",\"point of view statement\",\"jobs to be done framing\",\"design challenge\",\"double diamond discover\",\"problem definition\",\"brief interrogation\",\"solution-first brief\"]"
+  keywords: "[\"how might we\",\"problem statement\",\"reframing\",\"assumption mapping\",\"root need\",\"symptom vs need\",\"point of view statement\",\"jobs to be done framing\",\"design challenge\",\"double diamond discover\"]"
   triggers: "[\"frame this problem\",\"how might we\",\"write a problem statement\",\"this brief is a solution\",\"what are we actually solving\"]"
   examples: "[\"We've been asked to 'add a chatbot' — help me reframe what we're actually solving for users.\",\"Draft three how-might-we statements from these synthesis insights.\",\"The PRD jumps straight to features; help me extract the underlying user problem.\",\"List the assumptions baked into this product brief and rank them by riskiness.\"]"
   anti_examples: "[\"Find the bug causing the 500 error in the checkout endpoint.\",\"Why is the test suite flaky on CI?\",\"Classify whether this agent request is high-risk before executing.\"]"

@@ -5,10 +5,12 @@ license: MIT
 compatibility: "Vocabulary-layer skill, stack- and storage-agnostic. The relation taxonomy and the substitution / property tests apply to any knowledge graph, concept map, taxonomy, naming system, or conceptual model; downstream implementation skills such as ontology-modeling, taxonomy-design, entity-relationship-modeling, and relational mapping consume the typed relations defined here."
 allowed-tools: Read Grep
 metadata:
-  schema_version: "7"
+  schema_version: "8"
   version: "1.2.0"
   type: capability
+  operation: know
   category: foundations
+  subject: knowledge-organization
   domain: foundations/semantics
   scope: portable
   owner: skill-graph-maintainer

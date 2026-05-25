@@ -7,10 +7,12 @@ allowed-tools: Read Grep Bash
 metadata:
   grounding: "{\"domain_object\":\"Keyword research, intent mapping, topical clustering, and marketplace/search field translation for public e-commerce, marketplace, SaaS, and content surfaces\",\"grounding_mode\":\"universal\",\"truth_sources\":[\"https://help.etsy.com/hc/en-gb/articles/360000336307-How-to-Use-Tags-to-Get-Found-in-Search\",\"https://help.etsy.com/hc/en-us/articles/115015628707-How-to-Create-a-Listing\",\"https://sellercentral.amazon.com/seller-forums/discussions/t/923d53dc-a182-4475-a164-6b2500dbaf2d\",\"https://sellercentral.amazon.com/seller-forums/discussions/t/b2b15728-0d43-453e-974f-59eb63f73059/\",\"https://developers.google.com/search/docs/appearance/title-link\",\"https://developers.google.com/search/docs/appearance/snippet\",\"https://help.shopify.com/en/manual/promoting-marketing/seo/adding-keywords\",\"https://help.shopify.com/en/manual/promoting-marketing/seo/seo-overview\"],\"failure_modes\":[\"keyword_stuffing_mistaken_for_strategy\",\"platform_field_limits_drift_silently\",\"marketplace_tags_padded_with_irrelevant_terms\",\"amazon_search_terms_repeat_title_or_brand_fields\",\"shopify_keyword_guidance_ignores_readability\",\"intent_mapping_skipped_before_page_or_listing_targeting\",\"cannibalization_collapses_distinct_search_intents\",\"rank_tracking_claims_made_without_baseline_or_cadence\",\"keyword_skill_overowns_seo_implementation_finished_prose_or_information_architecture\"],\"evidence_priority\":\"equal\"}"
   drift_check: "{\"last_verified\":\"2026-05-19\"}"
-  schema_version: "7"
+  schema_version: "8"
   version: "1.2.0"
   type: capability
+  operation: know
   category: product
+  subject: product-domain
   domain: product/search
   scope: portable
   owner: skill-graph-maintainer

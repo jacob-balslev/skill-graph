@@ -7,10 +7,12 @@ allowed-tools: Read Grep
 metadata:
   grounding: "{\"domain_object\":\"Linguistic precision for software identifiers, UI copy, error messages, technical documentation, and cross-cultural language choices\",\"grounding_mode\":\"universal\",\"truth_sources\":[\"https://developers.google.com/style/voice\",\"https://developers.google.com/style/tone\",\"https://developers.google.com/style/translation\",\"https://learn.microsoft.com/en-us/windows/apps/design/style/writing-style\",\"https://learn.microsoft.com/en-us/windows/win32/debug/error-message-guidelines\",\"https://www.w3.org/TR/WCAG22/\",\"https://www.nngroup.com/articles/ten-usability-heuristics/\",\"https://www.nngroup.com/articles/hostile-error-messages/\"],\"failure_modes\":[\"naming_taste_mistaken_for_linguistic_fit\",\"artifact_casing_policy_confused_with_semantic_naming\",\"polysemous_identifier_left_unqualified\",\"generic_handle_process_or_utils_names_hide_contracts\",\"error_copy_blames_user_or_hides_action\",\"agent_register_leaks_into_end_user_copy\",\"global_audience_copy_uses_idioms_jargon_or_untranslatable_phrasing\",\"linguistics_overowns_refactor_docs_ia_microcopy_or_i18n_implementation\"],\"evidence_priority\":\"equal\"}"
   drift_check: "{\"last_verified\":\"2026-05-19\"}"
-  schema_version: "7"
+  schema_version: "8"
   version: "1.2.0"
   type: capability
+  operation: know
   category: foundations
+  subject: knowledge-organization
   domain: foundations/language
   scope: portable
   owner: skill-graph-maintainer
@@ -162,7 +164,7 @@ Functions describe actions (verbs). Variables describe things (nouns). Mixing th
 | `delete` / `remove` | Destructive operations | `deleteAccount`, `removeLineItem` |
 | `handle` | Entry point for events/webhooks (and nothing else) | `handleIncomingWebhook` |
 | `process` | Multi-step pipeline execution | `processVerifiedWebhook` |
-| `extract` | Pull a subset from a larger structure | `extractMatchingRecords` |
+| `extract` | Pull a subset from a larger structure | `extractOrderPii` |
 | `format` | Produce a display string | `formatCurrencyDisplay` |
 | `build` | Assemble a complex object | `buildCanonicalOrder` |
 

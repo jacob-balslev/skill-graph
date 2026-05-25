@@ -14,12 +14,15 @@ The three layers divide the work cleanly. The [Skill Metadata Protocol](SKILL_ME
 
 | Fact | Value | Source of truth |
 |---|---|---|
-| Schema version | **v7** (four-verdict Health Block) | `schemas/skill.schema.json` `title`; pinned `schemas/skill.schema.json` |
+| **Schema version enforced** | **v7** (four-verdict Health Block; `category.const` is the 6-value v7 enum) | `schemas/skill.schema.json` |
+| **Schema version spec'd** | **v8** (5-axis classification — `subject` / `operation` / renamed `scope`) | `SKILL_METADATA_PROTOCOL.md § Classification` — DRAFT, ahead of the schema; see [§ Migration state (v7→v8)](SKILL_METADATA_PROTOCOL.md#migration-state-v7v8) |
 | Manifest schema file | **v7** | `schemas/manifest.schema.json` |
 | Emitted manifest `schema_version` | **4** (back-compatible root contract) | `scripts/generate-manifest.js`; `schemas/manifest.schema.json` `schema_version.const` |
-| Canonical skill count | **147** (verified 2026-05-24) | live: `find ~/Development/skills/skills -name SKILL.md | wc -l`; generated mirror: `docs/status.generated.md` via `npm run status` |
+| Manifest summary facets | **v7** — `by_category` / `by_type` / `by_scope` with v7 names | `scripts/generate-manifest.js`; v8 `by_subject` / `by_operation` not yet emitted |
+| Canonical skill count | **147** (verified 2026-05-24) | live: `find ~/Development/skills/skills -name SKILL.md \| wc -l`; generated mirror: `docs/status.generated.md` via `npm run status` |
 | Canonical library location | sibling repo `jacob-balslev/skills` at `~/Development/skills/` | `.skill-graph/config.json` → `skill_roots: ["../skills/skills"]` |
 | This repo's role | tooling + protocol + schemas + docs (no `skills/` tree) | [ADR 0009](docs/adr/0009-sibling-repo-deprecation.md) |
+| Audit Loop maturity | Integrity Gate ≈ MLOps L1; **Behavior Gate ≈ L0** — `application_verdict: UNVERIFIED` on all 147 skills | [`SKILL_AUDIT_LOOP.md:45-52`](SKILL_AUDIT_LOOP.md) |
 
 ## Source vs Marketplace — why there are two `skills/` trees
 

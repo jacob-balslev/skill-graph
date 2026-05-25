@@ -4,12 +4,14 @@ description: "Use when designing indexes for a relational or NoSQL database: the
 license: MIT
 allowed-tools: Read Grep
 metadata:
-  schema_version: "7"
+  schema_version: "8"
   version: "1.0.0"
   type: capability
+  operation: know
   category: engineering
+  subject: code-engineering
   domain: engineering/data
-  scope: reference
+  scope: workspace
   owner: skill-graph-maintainer
   freshness: "2026-05-16"
   drift_check: "{\"last_verified\":\"2026-05-16\"}"
@@ -18,7 +20,7 @@ metadata:
   routing_eval: absent
   comprehension_state: present
   stability: experimental
-  keywords: "[\"indexing\",\"index\",\"B-tree\",\"hash index\",\"bitmap index\",\"GIN\",\"GiST\",\"BRIN\",\"LSM\",\"composite index\",\"covering index\",\"partial index\",\"filtered index\",\"index selectivity\"]"
+  keywords: "[\"indexing\",\"index\",\"B-tree\",\"hash index\",\"bitmap index\",\"GIN\",\"GiST\",\"BRIN\",\"LSM\",\"composite index\"]"
   triggers: "[\"should I add an index\",\"which columns to index\",\"B-tree vs hash\",\"is this index being used\",\"composite index column order\"]"
   examples: "[\"design indexes for a table with high-volume reads on user_id and date-range queries\",\"decide between a B-tree index and a partial index for a small subset of rows\",\"diagnose a query that ignores an existing index — likely a selectivity or type-coercion issue\",\"explain why adding a sixth index to a write-heavy table is usually wrong\"]"
   anti_examples: "[\"diagnose why this specific query is slow (use query-optimization)\",\"choose a database schema (use data-modeling)\",\"decide how to partition data across nodes (use sharding-strategy)\"]"

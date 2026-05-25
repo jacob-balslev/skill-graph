@@ -5,10 +5,12 @@ license: MIT
 compatibility: "Runtime-agnostic. The four-tier classification, target-content rule, and Identify/Confirm/Verify sequence apply to any agent harness with tool execution — Claude Code, OpenCode, Cursor, Aider, Copilot Workspace, custom MCP-based agents, or any LLM with shell access."
 allowed-tools: Read Grep
 metadata:
-  schema_version: "7"
+  schema_version: "8"
   version: "1.0.0"
   type: capability
+  operation: know
   category: engineering
+  subject: frontend-ui
   domain: ai-engineering/safety
   scope: portable
   owner: skill-graph-maintainer
@@ -18,7 +20,7 @@ metadata:
   eval_state: unverified
   routing_eval: absent
   stability: experimental
-  keywords: "[\"intent recognition\",\"pre-execution risk classification\",\"four tier action taxonomy\",\"passive read reconnaissance modification destructive\",\"identify confirm verify sequence\",\"destructive operation classification\",\"credential read is reconnaissance\",\"git reset hard is destructive\",\"force push is destructive\",\"lockfile install is high impact\",\"non-destructive alternative\",\"agent action risk assessment\",\"tool call pre-execution gate\",\"reading dotenv is not passive\",\"history rewriting is irreversible\",\"state-changing tool call\",\"agent safety pre-execution\",\"target content elevates tier\"]"
+  keywords: "[\"intent recognition\",\"pre-execution risk classification\",\"four tier action taxonomy\",\"passive read reconnaissance modification destructive\",\"identify confirm verify sequence\",\"destructive operation classification\",\"credential read is reconnaissance\",\"git reset hard is destructive\",\"force push is destructive\",\"lockfile install is high impact\"]"
   examples: "[\"the agent is about to run `git reset --hard` — what tier is this and what's the safer alternative?\",\"is reading the `.env` file a Passive operation since nothing mutates?\",\"I'm about to install a new package — what tier does that fit and why?\",\"force-push to main looks like 'just a push' — should I classify it as Modification?\",\"before running `DELETE FROM orders WHERE …`, what's the verification sequence?\",\"the agent classified everything as Modification because there's no exception for credentials\",\"what trigger phrases should activate this skill in our harness?\"]"
   anti_examples: "[\"design the deterministic safety hook that blocks destructive commands\",\"decide whether to use a switch or a chain of ifs\",\"actually execute the migration after we've classified the risk\",\"scan this repo for OWASP top 10 vulnerabilities\",\"review this AI-generated PR for correctness\",\"the loop is stalling — what's the steering signal\"]"
   relations: "{\"boundary\":[{\"skill\":\"owasp-security\",\"reason\":\"owasp-security is a domain audit against a known threat list; intent-recognition is the per-action risk classification that runs immediately before a tool call regardless of domain\"},{\"skill\":\"debugging\",\"reason\":\"debugging investigates a failure that has already happened; intent-recognition prevents one class of failure (destructive action mis-classification) from happening at all\"},{\"skill\":\"code-review\",\"reason\":\"code-review evaluates code-quality of an artefact; intent-recognition evaluates risk of an action about to be performed by a tool\"},{\"skill\":\"version-control\",\"reason\":\"version-control owns the discipline of using git well; intent-recognition specifically classifies which git commands are safe vs destructive at the moment of execution\"},{\"skill\":\"testing-strategy\",\"reason\":\"testing-strategy decides what to test proactively; intent-recognition gates one specific tool call from firing without classification\"}],\"related\":[\"owasp-security\",\"version-control\",\"debugging\"],\"verify_with\":[\"owasp-security\"]}"

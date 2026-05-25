@@ -4,12 +4,14 @@ description: "Use when structuring a component library or design system for reus
 license: MIT
 allowed-tools: Read Grep
 metadata:
-  schema_version: "7"
+  schema_version: "8"
   version: "1.0.0"
   type: capability
+  operation: know
   category: design
+  subject: design-craft
   domain: design/component-systems
-  scope: reference
+  scope: workspace
   owner: skill-graph-maintainer
   freshness: "2026-05-16"
   drift_check: "{\"last_verified\":\"2026-05-16\"}"
@@ -18,7 +20,7 @@ metadata:
   routing_eval: absent
   comprehension_state: present
   stability: experimental
-  keywords: "[\"component library design\",\"atomic design layering\",\"component primitives\",\"component composites\",\"compound components\",\"polymorphic component\",\"asChild prop\",\"headless component\",\"styled component\",\"controlled component\",\"uncontrolled component\",\"ref forwarding\",\"render props\",\"component slots\",\"compose components\",\"component prop API\",\"component reuse across products\",\"decomposing a large component to maintain it\"]"
+  keywords: "[\"component library design\",\"atomic design layering\",\"component primitives\",\"component composites\",\"compound components\",\"polymorphic component\",\"asChild prop\",\"headless component\",\"styled component\",\"controlled component\"]"
   triggers: "[\"structure components for reuse\",\"how do I design this component API\",\"controlled or uncontrolled\",\"should I use props or composition\",\"compound component pattern\",\"headless vs styled\",\"primitive vs composite\"]"
   examples: "[\"design the API surface for a Dialog component that must work in multiple products with different visual languages\",\"decide whether a Form component should be controlled, uncontrolled, or both\",\"structure a component library so primitives can be themed without rewriting the composites\",\"refactor a 30-prop component into a compound API that surfaces the right primitives\"]"
   anti_examples: "[\"decide where the form's state lives across page navigations (use state-management)\",\"pick the design tokens for color and spacing (use visual-design-foundations)\",\"decide how a single product's modules are wired together internally (use design-module-composition)\",\"implement a specific React hook for form management (library docs / tactical decision)\",\"decide where state lives across the app — server, client UI, URL, or persistent (use state-management)\",\"design the application-level folder structure, routing, build, and deployment (use frontend-architecture)\"]"
