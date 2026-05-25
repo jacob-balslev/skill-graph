@@ -41,12 +41,29 @@ function readActiveSchemaVersion() {
   const schema = JSON.parse(fs.readFileSync(SKILL_SCHEMA_PATH, 'utf8'));
   const sv = schema?.properties?.schema_version;
   if (!sv) throw new Error(`Cannot resolve schema_version constraint in ${SKILL_SCHEMA_PATH}`);
-  // schema may be `{ const: N }` or `{ oneOf: [{ const: N }, { const: "N" }] }`
+  // Supported shapes (in order of historical evolution):
+  //   { const: N }                                — single-version contract (pre-v7)
+  //   { oneOf: [{ const: N }, { const: "N" }] }  — single-version w/ string back-compat (v7)
+  //   { oneOf: [{ enum: [N, M] }, { enum: ["N", "M"] }] }  — multi-version compatibility
+  //                                                window (v7+v8 during the v7→v8
+  //                                                migration).
+  // For doc-drift purposes, return the LOWEST still-supported version (the floor).
+  // Anything below the floor is stale; anything at-or-above is still actively
+  // supported and references to it are NOT drift. Without this, a compatibility-
+  // window release would incorrectly flag all v7 references as stale even though
+  // v7 frontmatter still validates against the v8-window schema.
   if (typeof sv.const === 'number') return sv.const;
   if (Array.isArray(sv.oneOf)) {
+    const ints = [];
     for (const branch of sv.oneOf) {
-      if (typeof branch.const === 'number') return branch.const;
+      if (typeof branch.const === 'number') ints.push(branch.const);
+      if (Array.isArray(branch.enum)) {
+        for (const v of branch.enum) {
+          if (typeof v === 'number') ints.push(v);
+        }
+      }
     }
+    if (ints.length > 0) return Math.min(...ints);
   }
   throw new Error(`Unsupported schema_version shape in ${SKILL_SCHEMA_PATH}`);
 }

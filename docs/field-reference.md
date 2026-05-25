@@ -344,6 +344,97 @@ secondary_categories: [engineering]
 
 ---
 
+## `subject`
+
+> Introduced in v8 (compatibility-mode landing). Required when `schema_version: 8`; optional/absent on v7 skills during the migration window.
+
+**Purpose.** v8 primary classification — what the skill teaches. Closed 9-value enum, replacing v7's combined `category` + `categories[0]` + `primaryCategory` fields. Driven by the v7→v8 restructure plan (compatibility-mode landing) and informed by the 2026-05-25 Phase 1 audit which found `category` overcrowded (engineering=40%) and the workspace-alias fields (`primaryCategory`/`layerPrimary`/`routingRole`) <1.5% adopted.
+
+**Rules.**
+- **Required when `schema_version: 8`.** Optional/absent on v7 skills during the migration window.
+- **Closed 9-value enum:** `agent-ops` \| `code-engineering` \| `frontend-ui` \| `design-craft` \| `data-analytics` \| `quality-assurance` \| `meta-methods` \| `knowledge-organization` \| `product-domain`.
+- **Balance rule:** each subject must hold 5–25 skills. <5 = fold or recruit; >25 = subdivide via `domain` slash-path. Replaces v7's `foundations`-only gate.
+- v7→v8 mapping is NOT 1:1. v7 `engineering` may map to `code-engineering`, `frontend-ui`, or `data-analytics` depending on content; the codemod proposes mappings for review.
+- For polyhierarchy (skills that legitimately span two subjects), use `subjects[]` array (primary first, optional secondary).
+
+**Example.**
+```yaml
+subject: code-engineering
+```
+
+**When to use.** Always on v8 skills. Pick the single best primary; cross-cutting fit goes into `subjects[1]` (max 1 secondary).
+
+**Subject definitions.**
+- `agent-ops` — agent orchestration, dispatch, lifecycle, multi-agent comms.
+- `code-engineering` — backend, APIs, libraries, infrastructure, runtime.
+- `frontend-ui` — UI components, layout, interaction, web framework specifics.
+- `design-craft` — visual design, typography, brand, motion, design tokens.
+- `data-analytics` — data viz, analytics, observability, financial display.
+- `quality-assurance` — testing, a11y, perf, security, type-safety.
+- `meta-methods` — methodology, reasoning, verification, decision frameworks.
+- `knowledge-organization` — taxonomy, semantics, classification, glossaries, ontology.
+- `product-domain` — domain-specific (Shopify, Stripe, fulfillment, integrations).
+
+See `docs/adr/0017-five-axis-classification-model.md` for rationale and the v7→v8 mapping codemod design.
+
+---
+
+## `subjects`
+
+> Introduced in v8. Optional polyhierarchy companion to `subject`.
+
+**Purpose.** Ordered subject array for v8 polyhierarchy — when a skill genuinely spans two browse shelves. Tighter than v7's `categories[]` (max 5) to enforce that polyhierarchy is the exception, not the default.
+
+**Rules.**
+- Optional. When present, `subjects[0]` MUST equal `subject` (mirrors v7's `category`/`categories[0]` prefix rule).
+- Max 2 entries.
+- Drawn from the same closed 9-enum as `subject`.
+- Use when a skill genuinely teaches a primary subject AND meaningfully covers a secondary. Example: `webhook-integration` is primarily `code-engineering` and secondarily `quality-assurance` because reliable delivery is a quality property.
+- Do NOT use for semantic adjacency that isn't shelf-level — `relations.related` covers that.
+
+**Example.**
+```yaml
+subject: code-engineering
+subjects: [code-engineering, quality-assurance]
+```
+
+**When NOT to use.** Skills that fit one subject cleanly. Adding a forced secondary dilutes the polyhierarchy signal.
+
+---
+
+## `operation`
+
+> Introduced in v8. Required when `schema_version: 8`; optional/absent on v7 skills during the migration window.
+
+**Purpose.** v8 cognitive operation classifier — what kind of cognitive operation loading this skill enables. Bloom-grounded. Replaces v7's `type` (which is 93% `capability` and provides almost no discriminating power per the 2026-05-25 audit).
+
+**Rules.**
+- **Required when `schema_version: 8`.** Optional/absent on v7 skills during the migration window.
+- **Closed 4-value enum:**
+  - `know` — declarative knowledge: concepts, vocabulary, reference material. (Bloom: Remember/Understand)
+  - `do` — procedural knowledge: step-by-step execution of a task. (Bloom: Apply)
+  - `decide` — routing/judgment: choosing between options, dispatching other skills. (Bloom: Analyze/Evaluate)
+  - `modify` — context injection: shapes how other skills execute without executing itself. (corresponds to v7's `overlay` archetype but framed as an operation, not a kind of file)
+
+**v7→v8 mapping** (codemod heuristic, HITL for ambiguous):
+- `type: capability` → `operation: know` or `operation: do` (heuristic based on workflow-keyword presence)
+- `type: workflow` → `operation: do`
+- `type: router` → `operation: decide`
+- `type: overlay` → `operation: modify`
+
+**Predicted v8 distribution** (per GPT-5.5 critique 2026-05-25): know 35–45%, do 25–35%, decide 20–30%, modify 1–3%. Significant improvement over v7's 93% `type: capability` concentration.
+
+**Example.**
+```yaml
+operation: do
+```
+
+**When to use.** Always on v8 skills. The choice should reflect what an agent will primarily DO with the skill loaded — recall facts (`know`), execute a sequence (`do`), make a routing decision (`decide`), or modify another skill's context (`modify`).
+
+See `docs/adr/0017-five-axis-classification-model.md` for the rationale and codemod design.
+
+---
+
 ## `domain`
 
 **Purpose.** Hierarchical domain path as slash-delimited segments. Complements `category`: flat bucket and tree path answer different questions. A UI or docs site uses `domain` to render a folder tree; a filter UI uses `category` for quick grouping.

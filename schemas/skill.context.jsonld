@@ -71,6 +71,19 @@
       "@id": "sg:primaryCategory",
       "_note": "Workspace alias for `categories[0]`. Title-case workspace values normalize to the lowercase enum on read. See SKILL_METADATA_PROTOCOL.md § Classification."
     },
+    "subject": {
+      "@id": "sg:subject",
+      "_note": "v8 primary classification — what the skill teaches. Closed 9-value enum (agent-ops, code-engineering, frontend-ui, design-craft, data-analytics, quality-assurance, meta-methods, knowledge-organization, product-domain). Replaces v7's `category` + `categories[0]` + `primaryCategory`. See docs/adr/0017-five-axis-classification-model.md."
+    },
+    "subjects": {
+      "@id": "sg:subjects",
+      "@container": "@list",
+      "_note": "v8 polyhierarchy ordered list — first entry is the primary subject (matches `subject`), second is optional secondary. Max 2 entries to keep polyhierarchy the exception, not the default."
+    },
+    "operation": {
+      "@id": "sg:operation",
+      "_note": "v8 cognitive operation classifier — Bloom-grounded: know (declarative), do (procedural), decide (judgment/routing), modify (context injection). Replaces v7's `type` which is 93% `capability` and provides no discriminating power."
+    },
     "layerPrimary": {
       "@id": "sg:layerPrimary",
       "_note": "Workspace routing facet for the primary architectural or concern layer. Orthogonal to the human browse category."

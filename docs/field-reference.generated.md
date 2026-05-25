@@ -5,7 +5,7 @@
 > **Predicate glossary:** [`docs/glossary.md`](glossary.md).
 > **JSON-LD @context:** [`schemas/skill.context.jsonld`](../schemas/skill.context.jsonld).
 
-Schema version: **7** · Field count: **61** · Required: **13**
+Schema version: **unknown** · Field count: **64** · Required: **13**
 
 ---
 
@@ -13,7 +13,7 @@ Schema version: **7** · Field count: **61** · Required: **13**
 
 **Type:** multiple — see schema
 
-Major contract shape version. Integer for v6+; string '7' tolerated for back-compat with hand-rolled YAML. Bumps when shape changes break consumers. v7 splits the single `audit_verdict` field from v6 into four discrete verdicts (`structural_verdict`, `truth_verdict`, `comprehension_verdict`, `application_verdict`) so the Health Block can carry independent verdicts for each layer of the skill-audit loop instead of compressing form, truth, comprehension, and behavior into one PASS/FAIL signal. The v6→v7 migration narrative lives in git history (`git log -- schemas/skill.schema.json`) and docs/adr/0011-split-audit-verdict-into-four-verdicts.md.
+Major contract shape version. Integer for v6+; string '7'/'8' tolerated for back-compat with hand-rolled YAML. Bumps when shape changes break consumers. v7 splits the single `audit_verdict` field from v6 into four discrete verdicts (`structural_verdict`, `truth_verdict`, `comprehension_verdict`, `application_verdict`) so the Health Block can carry independent verdicts for each layer of the skill-audit loop instead of compressing form, truth, comprehension, and behavior into one PASS/FAIL signal. v8 introduces the 5-axis classification model (subject/operation/scope/keywords/relations) and renames `category` → `subject`, `type` → `operation`, `scope: codebase` → `scope: project`, `scope: reference` → `scope: workspace`. v8 schema accepts v7 frontmatter unchanged during the migration window (compatibility mode); v7 skills are not forced to migrate until the v7 compatibility shims are removed in a future cleanup. See docs/adr/0011-split-audit-verdict-into-four-verdicts.md (v6→v7) and docs/adr/0017-five-axis-classification-model.md (v7→v8, planned).
 
 **Full reference:** [`docs/field-reference.md#schema_version`](field-reference.md#schema_version)
 
@@ -127,6 +127,36 @@ Ordered category array. First entry is the primary and must match `category`; re
 
 ---
 
+### `subject` *(optional)*
+
+**Type:** `agent-ops` | `code-engineering` | `frontend-ui` | `design-craft` | `data-analytics` | `quality-assurance` | `meta-methods` | `knowledge-organization` | `product-domain`
+
+v8 primary classification — what the skill teaches. Closed 9-value enum (down from v1 plan's 10-12 per GPT-5.5 critique). Replaces v7's `category` + `categories[0]` + `primaryCategory`. Balance rule: each subject must hold 5-25 skills. <5 = fold or recruit; >25 = subdivide via `domain` slash-path. v7→v8 mapping is NOT 1:1 (e.g. v7 `engineering` may map to `code-engineering`, `frontend-ui`, or `data-analytics` depending on content); the codemod proposes mappings for review. During the v7→v8 migration window, v7 skills retain `category` and skip `subject`; v8 skills require `subject`. See docs/adr/0017-five-axis-classification-model.md.
+
+**Full reference:** [`docs/field-reference.md#subject`](field-reference.md#subject)
+
+---
+
+### `subjects` *(optional)*
+
+**Type:** array of string
+
+Ordered subject array (v8 polyhierarchy). First entry is the primary and must match `subject`; second entry (optional) is a secondary subject for skills that genuinely span shelves (e.g. `webhook-integration` is primarily `code-engineering` and secondarily `quality-assurance`). Max 2 entries — narrower than v7's `categories` max of 5 to enforce that polyhierarchy is the exception, not the default. Drawn from the same closed 9-enum as `subject`.
+
+**Full reference:** [`docs/field-reference.md#subjects`](field-reference.md#subjects)
+
+---
+
+### `operation` *(optional)*
+
+**Type:** `know` | `do` | `decide` | `modify`
+
+v8 cognitive operation classifier — what kind of cognitive operation loading this skill enables. Bloom-grounded. `know` = declarative knowledge (concepts, vocabulary, reference material — Bloom: Remember/Understand). `do` = procedural knowledge (step-by-step execution — Bloom: Apply). `decide` = routing/judgment (choosing between options, dispatching other skills — Bloom: Analyze/Evaluate). `modify` = context injection (shapes how other skills execute without executing itself — corresponds to v7's `overlay` archetype but framed as an operation, not a kind of file). Replaces v7's `type` (which is 93% `capability` and provides almost no discriminating power). v7→v8 mapping: `capability` → `know` or `do` (codemod heuristic via workflow-keyword presence; HITL for ambiguous); `workflow` → `do`; `router` → `decide`; `overlay` → `modify`. Predicted v8 distribution per GPT-5.5: know 35-45%, do 25-35%, decide 20-30%, modify 1-3%. See docs/adr/0017-five-axis-classification-model.md.
+
+**Full reference:** [`docs/field-reference.md#operation`](field-reference.md#operation)
+
+---
+
 ### `primaryCategory` *(optional)*
 
 **Type:** `foundations` | `engineering` | `design` | `quality` | `agent` | `product` | `Meta Method` | `Technical Capability` | `Design & UX` | `Agent System` | `Product Domain`
@@ -163,9 +193,9 @@ Workspace routing facet describing how the skill participates in selection (`pri
 
 ### `scope` *(required)*
 
-**Type:** `codebase` | `reference` | `portable`
+**Type:** `codebase` | `reference` | `portable` | `project` | `workspace`
 
-Where this skill applies. `codebase` — coupled to a specific repo's code/conventions; `reference` — pure knowledge (no repo coupling); `portable` — repo-agnostic patterns. Drives multi-project overlay decisions and informs the router's project-fit check.
+Where this skill applies. v7 values: `codebase` (coupled to a specific repo's code/conventions), `reference` (pure knowledge, no repo coupling), `portable` (repo-agnostic patterns). v8 values: `project` (replaces `codebase` — matches monorepo reality better), `workspace` (replaces `reference` — matches actual usage in multi-repo workspaces), `portable` (unchanged). During the v7→v8 migration window, all five values validate; v7 skills keep their old values until the codemod runs. Drives multi-project overlay decisions and informs the router's project-fit check.
 
 **Full reference:** [`docs/field-reference.md#scope`](field-reference.md#scope)
 

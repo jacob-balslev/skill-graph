@@ -186,6 +186,31 @@
           "primaryCategory": {
             "type": "string"
           },
+          "subject": {
+            "type": "string",
+            "enum": [
+              "agent-ops",
+              "code-engineering",
+              "frontend-ui",
+              "design-craft",
+              "data-analytics",
+              "quality-assurance",
+              "meta-methods",
+              "knowledge-organization",
+              "product-domain"
+            ],
+            "description": "v8 primary classification — what the skill teaches. See schemas/skill.schema.json § subject."
+          },
+          "subjects": {
+            "type": "array",
+            "items": { "type": "string" },
+            "description": "v8 polyhierarchy ordered list. First entry matches `subject`. Pass-through from authored frontmatter."
+          },
+          "operation": {
+            "type": "string",
+            "enum": ["know", "do", "decide", "modify"],
+            "description": "v8 cognitive operation classifier — Bloom-grounded. Replaces v7's `type`. See schemas/skill.schema.json § operation."
+          },
           "layerPrimary": {
             "type": "string",
             "description": "Workspace routing facet for the primary architectural or concern layer. Pass-through from authored frontmatter."
