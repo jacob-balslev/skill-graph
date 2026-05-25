@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-05-25T12:50:07.921Z",
+  "generated_at": "2026-05-25T13:41:41.775Z",
   "generator": "scripts/migrate-skill-v7-to-v8.js",
   "plan": "/Users/jacobbalslev/.claude-profiles/jacobbalslev01/plans/we-should-clearly-look-wondrous-firefly.md",
   "summary": {
@@ -12,15 +12,15 @@
       "low": 0
     },
     "by_proposed_subject": {
-      "frontend-ui": 34,
-      "data-analytics": 29,
-      "code-engineering": 18,
-      "quality-assurance": 18,
+      "code-engineering": 36,
+      "quality-assurance": 27,
+      "design-craft": 20,
+      "frontend-ui": 20,
       "agent-ops": 17,
       "product-domain": 11,
-      "knowledge-organization": 8,
-      "design-craft": 7,
-      "meta-methods": 5
+      "knowledge-organization": 7,
+      "meta-methods": 6,
+      "data-analytics": 3
     },
     "by_proposed_operation": {
       "know": 98,
@@ -95,14 +95,14 @@
       },
       "proposed": {
         "schema_version": 8,
-        "subject": "data-analytics",
+        "subject": "code-engineering",
         "operation": "do",
         "scope": "portable",
         "keywords_count_post": 10
       },
       "confidence": "medium",
       "reasoning": {
-        "subject": "category: engineering + data-analytics (observability) → data-analytics",
+        "subject": "category: engineering + no specialization → code-engineering (default)",
         "operation": "type: capability + workflow-keyword presence (lifecycle, audit) → do",
         "scope": "scope: portable (unchanged)",
         "keywords": "35 keywords > 10, capped to first 10"
@@ -250,14 +250,14 @@
       },
       "proposed": {
         "schema_version": 8,
-        "subject": "data-analytics",
+        "subject": "code-engineering",
         "operation": "do",
         "scope": "portable",
         "keywords_count_post": 3
       },
       "confidence": "medium",
       "reasoning": {
-        "subject": "category: engineering + data-analytics (report) → data-analytics",
+        "subject": "category: engineering + no specialization → code-engineering (default)",
         "operation": "type: capability + workflow-keyword presence (process, implement) → do",
         "scope": "scope: portable (unchanged)",
         "keywords": "3 keywords ≤ 10, no cap"
@@ -276,14 +276,14 @@
       },
       "proposed": {
         "schema_version": 8,
-        "subject": "data-analytics",
+        "subject": "quality-assurance",
         "operation": "know",
         "scope": "workspace",
         "keywords_count_post": 10
       },
       "confidence": "medium",
       "reasoning": {
-        "subject": "category: quality + data-analytics keyword → data-analytics",
+        "subject": "category: quality → quality-assurance (direct mapping)",
         "operation": "type: capability + no strong workflow signal → know (default for capability)",
         "scope": "scope: reference → workspace (v8 rename)",
         "keywords": "17 keywords > 10, capped to first 10"
@@ -328,14 +328,14 @@
       },
       "proposed": {
         "schema_version": 8,
-        "subject": "data-analytics",
+        "subject": "code-engineering",
         "operation": "know",
         "scope": "workspace",
         "keywords_count_post": 10
       },
       "confidence": "medium",
       "reasoning": {
-        "subject": "category: engineering + data-analytics (log) → data-analytics",
+        "subject": "category: engineering + no specialization → code-engineering (default)",
         "operation": "type: capability + no strong workflow signal → know (default for capability)",
         "scope": "scope: reference → workspace (v8 rename)",
         "keywords": "10 keywords ≤ 10, no cap"
@@ -361,7 +361,7 @@
       },
       "confidence": "medium",
       "reasoning": {
-        "subject": "category: engineering + frontend (frontend, ui) → frontend-ui",
+        "subject": "category: engineering + frontend (frontend) → frontend-ui",
         "operation": "type: capability + workflow-keyword presence (sequence, protocol, how to) → do",
         "scope": "scope: reference → workspace (v8 rename)",
         "keywords": "12 keywords > 10, capped to first 10"
@@ -405,14 +405,14 @@
       },
       "proposed": {
         "schema_version": 8,
-        "subject": "data-analytics",
+        "subject": "quality-assurance",
         "operation": "know",
         "scope": "portable",
         "keywords_count_post": 10
       },
       "confidence": "medium",
       "reasoning": {
-        "subject": "category: quality + data-analytics keyword → data-analytics",
+        "subject": "category: quality → quality-assurance (direct mapping)",
         "operation": "type: capability + no strong workflow signal → know (default for capability)",
         "scope": "scope: portable (unchanged)",
         "keywords": "14 keywords > 10, capped to first 10"
@@ -456,14 +456,14 @@
       },
       "proposed": {
         "schema_version": 8,
-        "subject": "frontend-ui",
+        "subject": "design-craft",
         "operation": "know",
         "scope": "workspace",
         "keywords_count_post": 10
       },
       "confidence": "medium",
       "reasoning": {
-        "subject": "category: design + frontend keyword (component) → frontend-ui",
+        "subject": "category: design + no frontend tilt → design-craft",
         "operation": "type: capability + no strong workflow signal → know (default for capability)",
         "scope": "scope: reference → workspace (v8 rename)",
         "keywords": "18 keywords > 10, capped to first 10"
@@ -508,14 +508,14 @@
       },
       "proposed": {
         "schema_version": 8,
-        "subject": "data-analytics",
+        "subject": "code-engineering",
         "operation": "know",
         "scope": "portable",
         "keywords_count_post": 10
       },
       "confidence": "medium",
       "reasoning": {
-        "subject": "category: engineering + data-analytics (log) → data-analytics",
+        "subject": "category: engineering + no specialization → code-engineering (default)",
         "operation": "type: capability + no strong workflow signal → know (default for capability)",
         "scope": "scope: portable (unchanged)",
         "keywords": "23 keywords > 10, capped to first 10"
@@ -742,14 +742,14 @@
       },
       "proposed": {
         "schema_version": 8,
-        "subject": "data-analytics",
+        "subject": "code-engineering",
         "operation": "know",
         "scope": "portable",
         "keywords_count_post": 3
       },
       "confidence": "medium",
       "reasoning": {
-        "subject": "category: engineering + data-analytics (log) → data-analytics",
+        "subject": "category: engineering + no specialization → code-engineering (default)",
         "operation": "type: capability + no strong workflow signal → know (default for capability)",
         "scope": "scope: portable (unchanged)",
         "keywords": "3 keywords ≤ 10, no cap"
@@ -794,14 +794,14 @@
       },
       "proposed": {
         "schema_version": 8,
-        "subject": "data-analytics",
+        "subject": "code-engineering",
         "operation": "do",
         "scope": "portable",
         "keywords_count_post": 10
       },
       "confidence": "medium",
       "reasoning": {
-        "subject": "category: engineering + data-analytics (log) → data-analytics",
+        "subject": "category: engineering + no specialization → code-engineering (default)",
         "operation": "type: capability + workflow-keyword presence (lifecycle, implement) → do",
         "scope": "scope: portable (unchanged)",
         "keywords": "11 keywords > 10, capped to first 10"
@@ -922,14 +922,14 @@
       },
       "proposed": {
         "schema_version": 8,
-        "subject": "frontend-ui",
+        "subject": "design-craft",
         "operation": "know",
         "scope": "portable",
         "keywords_count_post": 10
       },
       "confidence": "medium",
       "reasoning": {
-        "subject": "category: design + frontend keyword (component) → frontend-ui",
+        "subject": "category: design + no frontend tilt → design-craft",
         "operation": "type: capability + no strong workflow signal → know (default for capability)",
         "scope": "scope: portable (unchanged)",
         "keywords": "13 keywords > 10, capped to first 10"
@@ -955,7 +955,7 @@
       },
       "confidence": "medium",
       "reasoning": {
-        "subject": "category: design + frontend keyword (ui, component) → frontend-ui",
+        "subject": "category: design + frontend keyword (layout) → frontend-ui",
         "operation": "type: capability + no strong workflow signal → know (default for capability)",
         "scope": "scope: portable (unchanged)",
         "keywords": "15 keywords > 10, capped to first 10"
@@ -999,14 +999,14 @@
       },
       "proposed": {
         "schema_version": 8,
-        "subject": "data-analytics",
+        "subject": "code-engineering",
         "operation": "know",
         "scope": "portable",
         "keywords_count_post": 10
       },
       "confidence": "medium",
       "reasoning": {
-        "subject": "category: engineering + data-analytics (observability) → data-analytics",
+        "subject": "category: engineering + no specialization → code-engineering (default)",
         "operation": "type: capability + no strong workflow signal → know (default for capability)",
         "scope": "scope: portable (unchanged)",
         "keywords": "18 keywords > 10, capped to first 10"
@@ -1077,14 +1077,14 @@
       },
       "proposed": {
         "schema_version": 8,
-        "subject": "data-analytics",
+        "subject": "code-engineering",
         "operation": "know",
         "scope": "portable",
         "keywords_count_post": 10
       },
       "confidence": "medium",
       "reasoning": {
-        "subject": "category: engineering + data-analytics (log) → data-analytics",
+        "subject": "category: engineering + no specialization → code-engineering (default)",
         "operation": "type: capability + no strong workflow signal → know (default for capability)",
         "scope": "scope: portable (unchanged)",
         "keywords": "10 keywords ≤ 10, no cap"
@@ -1155,14 +1155,14 @@
       },
       "proposed": {
         "schema_version": 8,
-        "subject": "frontend-ui",
+        "subject": "code-engineering",
         "operation": "know",
         "scope": "portable",
         "keywords_count_post": 10
       },
       "confidence": "medium",
       "reasoning": {
-        "subject": "category: engineering + frontend (component, interaction) → frontend-ui",
+        "subject": "category: engineering + no specialization → code-engineering (default)",
         "operation": "type: capability + no strong workflow signal → know (default for capability)",
         "scope": "scope: portable (unchanged)",
         "keywords": "20 keywords > 10, capped to first 10"
@@ -1207,14 +1207,14 @@
       },
       "proposed": {
         "schema_version": 8,
-        "subject": "data-analytics",
+        "subject": "code-engineering",
         "operation": "do",
         "scope": "portable",
         "keywords_count_post": 10
       },
       "confidence": "medium",
       "reasoning": {
-        "subject": "category: engineering + data-analytics (log) → data-analytics",
+        "subject": "category: engineering + no specialization → code-engineering (default)",
         "operation": "type: capability + workflow-keyword presence (process, implement) → do",
         "scope": "scope: portable (unchanged)",
         "keywords": "18 keywords > 10, capped to first 10"
@@ -1285,14 +1285,14 @@
       },
       "proposed": {
         "schema_version": 8,
-        "subject": "frontend-ui",
+        "subject": "design-craft",
         "operation": "do",
         "scope": "portable",
         "keywords_count_post": 10
       },
       "confidence": "medium",
       "reasoning": {
-        "subject": "category: design + frontend keyword (ui, a11y) → frontend-ui",
+        "subject": "category: design + no frontend tilt → design-craft",
         "operation": "type: capability + workflow-keyword presence (lifecycle, audit) → do",
         "scope": "scope: portable (unchanged)",
         "keywords": "11 keywords > 10, capped to first 10"
@@ -1311,14 +1311,14 @@
       },
       "proposed": {
         "schema_version": 8,
-        "subject": "data-analytics",
+        "subject": "code-engineering",
         "operation": "do",
         "scope": "portable",
         "keywords_count_post": 10
       },
       "confidence": "medium",
       "reasoning": {
-        "subject": "category: engineering + data-analytics (log) → data-analytics",
+        "subject": "category: engineering + no specialization → code-engineering (default)",
         "operation": "type: capability + workflow-keyword presence (perform, implement) → do",
         "scope": "scope: portable (unchanged)",
         "keywords": "10 keywords ≤ 10, no cap"
@@ -1344,7 +1344,7 @@
       },
       "confidence": "medium",
       "reasoning": {
-        "subject": "category: engineering + frontend (frontend, component) → frontend-ui",
+        "subject": "category: engineering + frontend (frontend) → frontend-ui",
         "operation": "type: capability + no strong workflow signal → know (default for capability)",
         "scope": "scope: portable (unchanged)",
         "keywords": "12 keywords > 10, capped to first 10"
@@ -1492,14 +1492,14 @@
       },
       "proposed": {
         "schema_version": 8,
-        "subject": "frontend-ui",
+        "subject": "design-craft",
         "operation": "know",
         "scope": "portable",
         "keywords_count_post": 10
       },
       "confidence": "medium",
       "reasoning": {
-        "subject": "category: design + frontend keyword (ui) → frontend-ui",
+        "subject": "category: design + no frontend tilt → design-craft",
         "operation": "type: capability + no strong workflow signal → know (default for capability)",
         "scope": "scope: portable (unchanged)",
         "keywords": "14 keywords > 10, capped to first 10"
@@ -1518,14 +1518,14 @@
       },
       "proposed": {
         "schema_version": 8,
-        "subject": "data-analytics",
+        "subject": "code-engineering",
         "operation": "know",
         "scope": "workspace",
         "keywords_count_post": 10
       },
       "confidence": "medium",
       "reasoning": {
-        "subject": "category: engineering + data-analytics (log) → data-analytics",
+        "subject": "category: engineering + no specialization → code-engineering (default)",
         "operation": "type: capability + no strong workflow signal → know (default for capability)",
         "scope": "scope: reference → workspace (v8 rename)",
         "keywords": "14 keywords > 10, capped to first 10"
@@ -1551,7 +1551,7 @@
       },
       "confidence": "medium",
       "reasoning": {
-        "subject": "category: design + frontend keyword (ui, component) → frontend-ui",
+        "subject": "category: design + frontend keyword (layout) → frontend-ui",
         "operation": "type: capability + no strong workflow signal → know (default for capability)",
         "scope": "scope: portable (unchanged)",
         "keywords": "10 keywords ≤ 10, no cap"
@@ -1596,14 +1596,14 @@
       },
       "proposed": {
         "schema_version": 8,
-        "subject": "code-engineering",
+        "subject": "frontend-ui",
         "operation": "know",
         "scope": "portable",
         "keywords_count_post": 10
       },
       "confidence": "medium",
       "reasoning": {
-        "subject": "category: engineering + no specialization → code-engineering (default)",
+        "subject": "category: engineering + frontend (react) → frontend-ui",
         "operation": "type: capability + no strong workflow signal → know (default for capability)",
         "scope": "scope: portable (unchanged)",
         "keywords": "18 keywords > 10, capped to first 10"
@@ -1622,14 +1622,14 @@
       },
       "proposed": {
         "schema_version": 8,
-        "subject": "frontend-ui",
+        "subject": "design-craft",
         "operation": "do",
         "scope": "portable",
         "keywords_count_post": 9
       },
       "confidence": "medium",
       "reasoning": {
-        "subject": "category: design + frontend keyword (ui, interaction) → frontend-ui",
+        "subject": "category: design + no frontend tilt → design-craft",
         "operation": "type: capability + workflow-keyword presence (lifecycle, perform) → do",
         "scope": "scope: portable (unchanged)",
         "keywords": "9 keywords ≤ 10, no cap"
@@ -1648,14 +1648,14 @@
       },
       "proposed": {
         "schema_version": 8,
-        "subject": "frontend-ui",
+        "subject": "design-craft",
         "operation": "know",
         "scope": "portable",
         "keywords_count_post": 10
       },
       "confidence": "medium",
       "reasoning": {
-        "subject": "category: design + frontend keyword (ui, component) → frontend-ui",
+        "subject": "category: design + no frontend tilt → design-craft",
         "operation": "type: capability + no strong workflow signal → know (default for capability)",
         "scope": "scope: portable (unchanged)",
         "keywords": "12 keywords > 10, capped to first 10"
@@ -1673,14 +1673,14 @@
       },
       "proposed": {
         "schema_version": 8,
-        "subject": "frontend-ui",
+        "subject": "design-craft",
         "operation": "know",
         "scope": "portable",
         "keywords_count_post": 10
       },
       "confidence": "medium",
       "reasoning": {
-        "subject": "category: design + frontend keyword (ui) → frontend-ui",
+        "subject": "category: design + no frontend tilt → design-craft",
         "operation": "type: capability + no strong workflow signal → know (default for capability)",
         "scope": "scope: portable (unchanged)",
         "keywords": "13 keywords > 10, capped to first 10"
@@ -1758,7 +1758,7 @@
       },
       "confidence": "medium",
       "reasoning": {
-        "subject": "category: design + frontend keyword (component, layout) → frontend-ui",
+        "subject": "category: design + frontend keyword (layout) → frontend-ui",
         "operation": "type: capability + no strong workflow signal → know (default for capability)",
         "scope": "scope: portable (unchanged)",
         "keywords": "11 keywords > 10, capped to first 10"
@@ -1784,7 +1784,7 @@
       },
       "confidence": "medium",
       "reasoning": {
-        "subject": "category: foundations + KO keyword (naming, linguistics) → knowledge-organization",
+        "subject": "category: foundations + KO keyword (naming-conventions, linguistics) → knowledge-organization",
         "operation": "type: capability + no strong workflow signal → know (default for capability)",
         "scope": "scope: portable (unchanged)",
         "keywords": "18 keywords > 10, capped to first 10"
@@ -1880,14 +1880,14 @@
       },
       "proposed": {
         "schema_version": 8,
-        "subject": "data-analytics",
+        "subject": "quality-assurance",
         "operation": "do",
         "scope": "workspace",
         "keywords_count_post": 10
       },
       "confidence": "medium",
       "reasoning": {
-        "subject": "category: quality + data-analytics keyword → data-analytics",
+        "subject": "category: quality → quality-assurance (direct mapping)",
         "operation": "type: capability + workflow-keyword presence (process, checklist, protocol) → do",
         "scope": "scope: reference → workspace (v8 rename)",
         "keywords": "20 keywords > 10, capped to first 10"
@@ -1906,14 +1906,14 @@
       },
       "proposed": {
         "schema_version": 8,
-        "subject": "frontend-ui",
+        "subject": "design-craft",
         "operation": "do",
         "scope": "portable",
         "keywords_count_post": 10
       },
       "confidence": "medium",
       "reasoning": {
-        "subject": "category: design + frontend keyword (ui) → frontend-ui",
+        "subject": "category: design + no frontend tilt → design-craft",
         "operation": "type: capability + workflow-keyword presence (sequence, guide) → do",
         "scope": "scope: portable (unchanged)",
         "keywords": "16 keywords > 10, capped to first 10"
@@ -1939,7 +1939,7 @@
       },
       "confidence": "medium",
       "reasoning": {
-        "subject": "category: engineering + frontend (frontend, next) → frontend-ui",
+        "subject": "category: engineering + frontend (frontend, next.js) → frontend-ui",
         "operation": "type: capability + workflow-keyword presence (perform, apply) → do",
         "scope": "scope: reference → workspace (v8 rename)",
         "keywords": "14 keywords > 10, capped to first 10"
@@ -1965,7 +1965,7 @@
       },
       "confidence": "medium",
       "reasoning": {
-        "subject": "category: design + frontend keyword (ui, layout) → frontend-ui",
+        "subject": "category: design + frontend keyword (layout) → frontend-ui",
         "operation": "type: capability + no strong workflow signal → know (default for capability)",
         "scope": "scope: portable (unchanged)",
         "keywords": "3 keywords ≤ 10, no cap"
@@ -1984,14 +1984,14 @@
       },
       "proposed": {
         "schema_version": 8,
-        "subject": "data-analytics",
+        "subject": "quality-assurance",
         "operation": "know",
         "scope": "workspace",
         "keywords_count_post": 10
       },
       "confidence": "medium",
       "reasoning": {
-        "subject": "category: quality + data-analytics keyword → data-analytics",
+        "subject": "category: quality → quality-assurance (direct mapping)",
         "operation": "type: capability + no strong workflow signal → know (default for capability)",
         "scope": "scope: reference → workspace (v8 rename)",
         "keywords": "12 keywords > 10, capped to first 10"
@@ -2009,14 +2009,14 @@
       },
       "proposed": {
         "schema_version": 8,
-        "subject": "data-analytics",
+        "subject": "code-engineering",
         "operation": "know",
         "scope": "portable",
         "keywords_count_post": 10
       },
       "confidence": "medium",
       "reasoning": {
-        "subject": "category: engineering + data-analytics (log) → data-analytics",
+        "subject": "category: engineering + no specialization → code-engineering (default)",
         "operation": "type: capability + no strong workflow signal → know (default for capability)",
         "scope": "scope: portable (unchanged)",
         "keywords": "18 keywords > 10, capped to first 10"
@@ -2042,7 +2042,7 @@
       },
       "confidence": "medium",
       "reasoning": {
-        "subject": "category: engineering + data-analytics (metric, observability) → data-analytics",
+        "subject": "category: engineering + data-analytics (observability, telemetry) → data-analytics",
         "operation": "type: capability + workflow-keyword presence (perform, implement) → do",
         "scope": "scope: portable (unchanged)",
         "keywords": "9 keywords ≤ 10, no cap"
@@ -2087,14 +2087,14 @@
       },
       "proposed": {
         "schema_version": 8,
-        "subject": "data-analytics",
+        "subject": "quality-assurance",
         "operation": "do",
         "scope": "portable",
         "keywords_count_post": 10
       },
       "confidence": "medium",
       "reasoning": {
-        "subject": "category: quality + data-analytics keyword → data-analytics",
+        "subject": "category: quality → quality-assurance (direct mapping)",
         "operation": "type: capability + workflow-keyword presence (audit, implement) → do",
         "scope": "scope: portable (unchanged)",
         "keywords": "22 keywords > 10, capped to first 10"
@@ -2113,14 +2113,14 @@
       },
       "proposed": {
         "schema_version": 8,
-        "subject": "knowledge-organization",
+        "subject": "meta-methods",
         "operation": "do",
         "scope": "portable",
         "keywords_count_post": 10
       },
       "confidence": "medium",
       "reasoning": {
-        "subject": "category: foundations + KO keyword (classification) → knowledge-organization",
+        "subject": "category: foundations + no KO keyword → meta-methods (default)",
         "operation": "type: capability + workflow-keyword presence (lifecycle, audit) → do",
         "scope": "scope: portable (unchanged)",
         "keywords": "18 keywords > 10, capped to first 10"
@@ -2146,7 +2146,7 @@
       },
       "confidence": "medium",
       "reasoning": {
-        "subject": "category: quality + data-analytics keyword → data-analytics",
+        "subject": "category: quality + strong data-analytics signal (observability, telemetry) → data-analytics",
         "operation": "type: capability + workflow-keyword presence (sequence, perform) → do",
         "scope": "scope: reference → workspace (v8 rename)",
         "keywords": "14 keywords > 10, capped to first 10"
@@ -2172,7 +2172,7 @@
       },
       "confidence": "medium",
       "reasoning": {
-        "subject": "category: quality + data-analytics keyword → data-analytics",
+        "subject": "category: quality + strong data-analytics signal (observability, telemetry) → data-analytics",
         "operation": "type: capability + no strong workflow signal → know (default for capability)",
         "scope": "scope: portable (unchanged)",
         "keywords": "10 keywords ≤ 10, no cap"
@@ -2191,14 +2191,14 @@
       },
       "proposed": {
         "schema_version": 8,
-        "subject": "data-analytics",
+        "subject": "quality-assurance",
         "operation": "know",
         "scope": "workspace",
         "keywords_count_post": 10
       },
       "confidence": "medium",
       "reasoning": {
-        "subject": "category: quality + data-analytics keyword → data-analytics",
+        "subject": "category: quality → quality-assurance (direct mapping)",
         "operation": "type: capability + no strong workflow signal → know (default for capability)",
         "scope": "scope: reference → workspace (v8 rename)",
         "keywords": "15 keywords > 10, capped to first 10"
@@ -2217,14 +2217,14 @@
       },
       "proposed": {
         "schema_version": 8,
-        "subject": "frontend-ui",
+        "subject": "code-engineering",
         "operation": "do",
         "scope": "project",
         "keywords_count_post": 10
       },
       "confidence": "medium",
       "reasoning": {
-        "subject": "category: engineering + frontend (next, ui) → frontend-ui",
+        "subject": "category: engineering + no specialization → code-engineering (default)",
         "operation": "type: capability + workflow-keyword presence (guide, audit, implement) → do",
         "scope": "scope: codebase → project (v8 rename)",
         "keywords": "20 keywords > 10, capped to first 10"
@@ -2269,14 +2269,14 @@
       },
       "proposed": {
         "schema_version": 8,
-        "subject": "data-analytics",
+        "subject": "quality-assurance",
         "operation": "know",
         "scope": "workspace",
         "keywords_count_post": 10
       },
       "confidence": "medium",
       "reasoning": {
-        "subject": "category: quality + data-analytics keyword → data-analytics",
+        "subject": "category: quality → quality-assurance (direct mapping)",
         "operation": "type: capability + no strong workflow signal → know (default for capability)",
         "scope": "scope: reference → workspace (v8 rename)",
         "keywords": "10 keywords ≤ 10, no cap"
@@ -2450,14 +2450,14 @@
       },
       "proposed": {
         "schema_version": 8,
-        "subject": "data-analytics",
+        "subject": "quality-assurance",
         "operation": "know",
         "scope": "workspace",
         "keywords_count_post": 10
       },
       "confidence": "medium",
       "reasoning": {
-        "subject": "category: quality + data-analytics keyword → data-analytics",
+        "subject": "category: quality → quality-assurance (direct mapping)",
         "operation": "type: capability + no strong workflow signal → know (default for capability)",
         "scope": "scope: reference → workspace (v8 rename)",
         "keywords": "13 keywords > 10, capped to first 10"
@@ -2475,14 +2475,14 @@
       },
       "proposed": {
         "schema_version": 8,
-        "subject": "frontend-ui",
+        "subject": "design-craft",
         "operation": "know",
         "scope": "portable",
         "keywords_count_post": 10
       },
       "confidence": "medium",
       "reasoning": {
-        "subject": "category: design + frontend keyword (ui, component) → frontend-ui",
+        "subject": "category: design + no frontend tilt → design-craft",
         "operation": "type: capability + no strong workflow signal → know (default for capability)",
         "scope": "scope: portable (unchanged)",
         "keywords": "13 keywords > 10, capped to first 10"
@@ -2501,14 +2501,14 @@
       },
       "proposed": {
         "schema_version": 8,
-        "subject": "data-analytics",
+        "subject": "code-engineering",
         "operation": "do",
         "scope": "workspace",
         "keywords_count_post": 10
       },
       "confidence": "medium",
       "reasoning": {
-        "subject": "category: engineering + data-analytics (log) → data-analytics",
+        "subject": "category: engineering + no specialization → code-engineering (default)",
         "operation": "type: capability + workflow-keyword presence (procedure, execute) → do",
         "scope": "scope: reference → workspace (v8 rename)",
         "keywords": "13 keywords > 10, capped to first 10"
@@ -2630,14 +2630,14 @@
       },
       "proposed": {
         "schema_version": 8,
-        "subject": "data-analytics",
+        "subject": "code-engineering",
         "operation": "know",
         "scope": "workspace",
         "keywords_count_post": 10
       },
       "confidence": "medium",
       "reasoning": {
-        "subject": "category: engineering + data-analytics (log) → data-analytics",
+        "subject": "category: engineering + no specialization → code-engineering (default)",
         "operation": "type: capability + no strong workflow signal → know (default for capability)",
         "scope": "scope: reference → workspace (v8 rename)",
         "keywords": "13 keywords > 10, capped to first 10"
@@ -2707,14 +2707,14 @@
       },
       "proposed": {
         "schema_version": 8,
-        "subject": "data-analytics",
+        "subject": "code-engineering",
         "operation": "know",
         "scope": "workspace",
         "keywords_count_post": 10
       },
       "confidence": "medium",
       "reasoning": {
-        "subject": "category: engineering + data-analytics (log) → data-analytics",
+        "subject": "category: engineering + no specialization → code-engineering (default)",
         "operation": "type: capability + no strong workflow signal → know (default for capability)",
         "scope": "scope: reference → workspace (v8 rename)",
         "keywords": "11 keywords > 10, capped to first 10"
@@ -2837,14 +2837,14 @@
       },
       "proposed": {
         "schema_version": 8,
-        "subject": "frontend-ui",
+        "subject": "design-craft",
         "operation": "know",
         "scope": "portable",
         "keywords_count_post": 10
       },
       "confidence": "medium",
       "reasoning": {
-        "subject": "category: design + frontend keyword (ui, a11y) → frontend-ui",
+        "subject": "category: design + no frontend tilt → design-craft",
         "operation": "type: capability + no strong workflow signal → know (default for capability)",
         "scope": "scope: portable (unchanged)",
         "keywords": "16 keywords > 10, capped to first 10"
@@ -3097,14 +3097,14 @@
       },
       "proposed": {
         "schema_version": 8,
-        "subject": "data-analytics",
+        "subject": "code-engineering",
         "operation": "do",
         "scope": "workspace",
         "keywords_count_post": 10
       },
       "confidence": "medium",
       "reasoning": {
-        "subject": "category: engineering + data-analytics (log) → data-analytics",
+        "subject": "category: engineering + no specialization → code-engineering (default)",
         "operation": "type: workflow → do (direct mapping per plan)",
         "scope": "scope: reference → workspace (v8 rename)",
         "keywords": "11 keywords > 10, capped to first 10"
@@ -3123,14 +3123,14 @@
       },
       "proposed": {
         "schema_version": 8,
-        "subject": "data-analytics",
+        "subject": "code-engineering",
         "operation": "do",
         "scope": "portable",
         "keywords_count_post": 9
       },
       "confidence": "medium",
       "reasoning": {
-        "subject": "category: engineering + data-analytics (observability) → data-analytics",
+        "subject": "category: engineering + no specialization → code-engineering (default)",
         "operation": "type: capability + workflow-keyword presence (workflow, lifecycle) → do",
         "scope": "scope: portable (unchanged)",
         "keywords": "9 keywords ≤ 10, no cap"
@@ -3182,7 +3182,7 @@
       },
       "confidence": "medium",
       "reasoning": {
-        "subject": "category: engineering + frontend (react, component) → frontend-ui",
+        "subject": "category: engineering + frontend (react) → frontend-ui",
         "operation": "type: capability + workflow-keyword presence (sequence, protocol) → do",
         "scope": "scope: reference → workspace (v8 rename)",
         "keywords": "17 keywords > 10, capped to first 10"
@@ -3381,14 +3381,14 @@
       },
       "proposed": {
         "schema_version": 8,
-        "subject": "data-analytics",
+        "subject": "quality-assurance",
         "operation": "know",
         "scope": "workspace",
         "keywords_count_post": 10
       },
       "confidence": "medium",
       "reasoning": {
-        "subject": "category: quality + data-analytics keyword → data-analytics",
+        "subject": "category: quality → quality-assurance (direct mapping)",
         "operation": "type: capability + no strong workflow signal → know (default for capability)",
         "scope": "scope: reference → workspace (v8 rename)",
         "keywords": "12 keywords > 10, capped to first 10"
@@ -3637,14 +3637,14 @@
       },
       "proposed": {
         "schema_version": 8,
-        "subject": "frontend-ui",
+        "subject": "design-craft",
         "operation": "do",
         "scope": "portable",
         "keywords_count_post": 10
       },
       "confidence": "medium",
       "reasoning": {
-        "subject": "category: design + frontend keyword (ui) → frontend-ui",
+        "subject": "category: design + no frontend tilt → design-craft",
         "operation": "type: capability + workflow-keyword presence (protocol, pipeline) → do",
         "scope": "scope: portable (unchanged)",
         "keywords": "14 keywords > 10, capped to first 10"
@@ -3662,14 +3662,14 @@
       },
       "proposed": {
         "schema_version": 8,
-        "subject": "frontend-ui",
+        "subject": "design-craft",
         "operation": "know",
         "scope": "portable",
         "keywords_count_post": 10
       },
       "confidence": "medium",
       "reasoning": {
-        "subject": "category: design + frontend keyword (ui) → frontend-ui",
+        "subject": "category: design + no frontend tilt → design-craft",
         "operation": "type: capability + no strong workflow signal → know (default for capability)",
         "scope": "scope: portable (unchanged)",
         "keywords": "13 keywords > 10, capped to first 10"
@@ -3747,7 +3747,7 @@
       },
       "confidence": "medium",
       "reasoning": {
-        "subject": "category: design + frontend keyword (component, layout) → frontend-ui",
+        "subject": "category: design + frontend keyword (layout) → frontend-ui",
         "operation": "type: capability + no strong workflow signal → know (default for capability)",
         "scope": "scope: portable (unchanged)",
         "keywords": "9 keywords ≤ 10, no cap"
@@ -3817,14 +3817,14 @@
       },
       "proposed": {
         "schema_version": 8,
-        "subject": "frontend-ui",
+        "subject": "design-craft",
         "operation": "know",
         "scope": "portable",
         "keywords_count_post": 10
       },
       "confidence": "medium",
       "reasoning": {
-        "subject": "category: design + frontend keyword (ui) → frontend-ui",
+        "subject": "category: design + no frontend tilt → design-craft",
         "operation": "type: capability + no strong workflow signal → know (default for capability)",
         "scope": "scope: portable (unchanged)",
         "keywords": "17 keywords > 10, capped to first 10"

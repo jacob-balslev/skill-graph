@@ -56,18 +56,28 @@ const PRODUCT_DOMAIN_KEYWORDS = [
 ];
 
 const KNOWLEDGE_ORG_KEYWORDS = [
-  'taxonomy', 'semantics', 'ontology', 'classification', 'glossary',
-  'naming', 'linguistics', 'category', 'categorization',
+  // Tightened 2026-05-25 v2: dropped 'classification', 'category',
+  // 'categorization' (too generic — matched many engineering/quality skills).
+  // Retained only domain-of-knowledge-organization terms.
+  'taxonomy', 'semantics', 'ontology', 'glossary',
+  'naming-conventions', 'linguistics', 'controlled vocabulary',
 ];
 
 const FRONTEND_KEYWORDS = [
-  'frontend', 'react', 'next', 'ui', 'component', 'layout', 'css', 'scss',
-  'tailwind', 'radix', 'shadcn', 'tsx', 'jsx', 'interaction', 'a11y', 'browser',
+  'frontend', 'react', 'next.js', 'next js', 'nextjs', 'ui component',
+  'layout', 'css', 'scss', 'tailwind', 'radix', 'shadcn',
+  'tsx', 'jsx', 'interaction design', 'browser automation',
+  // Tightened 2026-05-25 v2: dropped bare 'ui', 'component', 'browser', 'next', 'interaction', 'a11y'
+  // (too generic — matched many backend/quality/methodology skills).
 ];
 
 const DATA_ANALYTICS_KEYWORDS = [
-  'data viz', 'dataviz', 'analytics', 'kpi', 'metric', 'chart', 'dashboard',
-  'observability', 'log', 'telemetry', 'financial', 'report',
+  // Tightened 2026-05-25 v2: dropped 'log', 'report' (too generic —
+  // matched skills like blameless-postmortem, cap-theorem-tradeoffs,
+  // background-jobs, best-practice that aren't analytics).
+  'data viz', 'dataviz', 'analytics', 'kpi card', 'kpi formula',
+  'chart widget', 'dashboard', 'observability', 'telemetry',
+  'financial display', 'financial allocation', 'data-table',
 ];
 
 function inferOperation(currentType, description, name) {
@@ -102,8 +112,13 @@ function inferSubject(currentCategory, currentDomain, description, name) {
     return { value: 'agent-ops', confidence: 'high', reason: 'category: agent → agent-ops (direct mapping)' };
   }
   if (currentCategory === 'quality') {
-    if (DATA_ANALYTICS_KEYWORDS.some(kw => haystack.includes(kw))) {
-      return { value: 'data-analytics', confidence: 'medium', reason: 'category: quality + data-analytics keyword → data-analytics' };
+    // Tightened 2026-05-25 v2: require ≥2 data-analytics hits to defect from
+    // quality-assurance. The first pass routed `best-practice` and
+    // `cognitive-load-theory` to data-analytics on weak single-keyword
+    // matches; both are clearly quality/meta concerns.
+    const daHits = DATA_ANALYTICS_KEYWORDS.filter(kw => haystack.includes(kw));
+    if (daHits.length >= 2) {
+      return { value: 'data-analytics', confidence: 'medium', reason: `category: quality + strong data-analytics signal (${daHits.slice(0, 2).join(', ')}) → data-analytics` };
     }
     return { value: 'quality-assurance', confidence: 'high', reason: 'category: quality → quality-assurance (direct mapping)' };
   }
@@ -133,11 +148,13 @@ function inferSubject(currentCategory, currentDomain, description, name) {
       return { value: 'product-domain', confidence: 'medium', reason: `category: engineering + vendor-integration (${pdHits.slice(0, 2).join(', ')}) → product-domain` };
     }
     const feHits = FRONTEND_KEYWORDS.filter(kw => haystack.includes(kw));
-    if (feHits.length >= 2) {
+    if (feHits.length >= 1) {
       return { value: 'frontend-ui', confidence: 'medium', reason: `category: engineering + frontend (${feHits.slice(0, 2).join(', ')}) → frontend-ui` };
     }
     const daHits = DATA_ANALYTICS_KEYWORDS.filter(kw => haystack.includes(kw));
-    if (daHits.length >= 1) {
+    // Tightened 2026-05-25 v2: require ≥2 hits for engineering→data-analytics
+    // (was ≥1, which produced 17 false positives in the first pass).
+    if (daHits.length >= 2) {
       return { value: 'data-analytics', confidence: 'medium', reason: `category: engineering + data-analytics (${daHits.slice(0, 2).join(', ')}) → data-analytics` };
     }
     return { value: 'code-engineering', confidence: 'medium', reason: 'category: engineering + no specialization → code-engineering (default)' };
