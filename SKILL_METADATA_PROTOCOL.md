@@ -10,27 +10,7 @@
 
 ---
 
-## Migration state (v7→v8)
-
-> **Updated 2026-05-25 (SH-6481 SMP-1 / SMP-2)** to match what the schema actually enforces. Earlier versions of this callout claimed the schema did not yet enforce v8 fields and authors could write "v8 only" — both untrue against the live schema. See `schemas/skill.schema.json:7-20` (global required) and `schemas/skill.schema.json` `allOf[11]` (the v8 conditional rule).
-
-The schema runs in **compatibility mode**: `schema_version: 7` and `schema_version: 8` both validate. The split between what the schema enforces and what each surface labels is:
-
-| Surface | State |
-|---|---|
-| **This doc (SKILL_METADATA_PROTOCOL.md)** | v8 — 5-axis classification fully described |
-| **Schema file (`schemas/skill.schema.json`)** | v7 + v8 dual-emit. The global `required` array enforces both `type` and `category` (v7 fields). When `schema_version: 8`, the schema's `allOf` adds `subject` and `operation` as required on top of the v7 baseline. v7 6-value `category` enum remains the only category constraint. |
-| **Compiled manifest (`skills.manifest.json`) summary** | Dual-emit per `SKILL_GRAPH.md § Current State` — v7 (`by_category` / `by_type`) and v8 (`by_subject` / `by_operation`) side-by-side |
-| **Audit Loop Part 2 checklist (`SKILL_AUDIT_LOOP.md`)** | v8 + v7 (both accepted) |
-| **Source skills (canonical library)** | v8: 147; v7 template: 1 (per `SKILL_GRAPH.md § Current State`) |
-| **`SKILL_GRAPH.md § Current State`** | The live single-source-of-truth count — link there, do not restate. |
-
-**What this means for authors (CORRECTED):**
-
-- A skill **must** carry both the v7 legacy fields (`type`, `category`, `scope`) AND, if `schema_version: 8`, the v8 fields (`subject`, `operation`). v8-only authoring fails schema lint because `type` and `category` are in the schema's global `required` array.
-- The v7→v8 codemod (`scripts/migrate-skill-v7-to-v8.js`) populates BOTH on migrated skills. The normalizer in `scripts/lib/parse-frontmatter.js::normalizeFrontmatter()` reads either encoding.
-- The end-state — when `type`+`category` are removed from global required and `subject`+`operation` become globally required — requires a coordinated change of the schema's `required` array, `allOf` rules, codemod, sample manifest, and `SKILL_GRAPH.md § Current State`. That coordinated change has NOT shipped; until it does, **both v7 and v8 axes are required** on every new skill.
-- This is honest drift to record per `.claude/rules/version-schema-contract.md` ("a label ahead of its content is HONEST drift to record"). Editing this callout to claim authors can drop v7 fields would mask the gap, not close it.
+> **Author shortcut (TL;DR for the v7→v8 migration state):** Author BOTH v7 and v8 axes on every new skill — v8-only fails schema lint until the coordinated v7-removal lands. The full migration-state explanation is at the END of this doc (§ Migration state) so the axes themselves come first.
 
 ---
 
@@ -75,6 +55,35 @@ The field tables in this document describe the **logical contract** — the fiel
 
 `scripts/lib/parse-frontmatter.js::normalizeFrontmatter()` reconciles the two: it lifts `metadata.*` back to top level and `JSON.parse`s the stringified values, so `skill-lint.js`, `generate-manifest.js`, `skill-graph-route.js`, and `skill-graph-drift.js` all see the protocol-native shape regardless of which encoding the file uses. Two precedence rules apply: (1) a top-level field wins over a `metadata.*` field of the same name (the explicit author signal wins); (2) export-provenance keys (`skill_graph_source_repo`, `skill_graph_protocol`, `skill_graph_project`, `skill_graph_canonical_skill`, and the description-length book-keeping keys) are **stripped** during normalization and are not part of the contract — a consequence is that the `skill_graph_protocol` content-label is invisible to all deterministic tooling and is governed by human discipline only (see `AGENTS.md § Version Labels Are Earned, Not Bumped`). Round-tripping from the Agent-Skills shape back to protocol-native is lossy for rich types; keep the canonical source authoritative. See `docs/SKILL-MD-FORMAT-COMPATIBILITY.md`.
 
+### One repo, two hats — the canonical library
+
+The on-disk skill library at `~/Development/skills/` is **one physical repo wearing two hats**:
+
+1. **Hat 1 — Canonical authoring source.** The protocol-toolchain in `skill-graph/` reads SKILL.md files from this repo (via `.skill-graph/config.json` → `skill_roots: ["../skills/skills"]`) to run lint, manifest generation, routing, drift checks, and audits. The frontmatter shape here is the **Agent-Skills-compatible nested encoding** (everything under `metadata:`) because hat 2 requires it.
+2. **Hat 2 — Public Agent-Skills release.** The same repo is published to `https://github.com/jacob-balslev/skills` and indexed at `https://www.skills.sh/jacob-balslev/skills/`. The Agent-Skills format only honours `name`, `description`, `license`, `compatibility`, `allowed-tools` at the top level; everything richer must be nested under `metadata:`. The full publish protocol is in `skill-graph/AGENTS.md § Public Distribution — Canonical URL Contract`.
+
+Authors of new skills should write the **nested encoding** so the file works under both hats simultaneously. The protocol-native flat shape is the spec's illustrative form; the on-disk reality is nested. The normalizer keeps deterministic tooling reading one logical contract from both shapes.
+
+### Where does my skill live? (decision tree)
+
+Map the v8 `subject` axis to the on-disk directory under `~/Development/skills/skills/`:
+
+| If `subject:` is… | Directory | Notes |
+|---|---|---|
+| `code-engineering` | `skills/engineering/<name>/` | Largest shelf (25%). Subdivide via `domain:` (frontend / backend / infrastructure / build) when >25 skills. |
+| `quality-assurance` | `skills/quality/<name>/` | Audit, testing, security, performance, accessibility. |
+| `frontend-ui` | `skills/engineering/frontend/<name>/` OR `skills/design/<name>/` | Frontend implementation lives under engineering; UX/visual lives under design. Boundary fuzzy — pick by `operation:` (`do` → engineering; `decide` → design). |
+| `design-craft` | `skills/design/<name>/` | Information architecture, composition, typography, UX research. |
+| `agent-ops` | `skills/agent/<name>/` | Agent orchestration, skill system itself, multi-agent coordination. |
+| `product-domain` | `skills/product/<name>/` | Product-shaped knowledge: e-commerce, billing, integrations, customer workflows. |
+| `knowledge-organization` | `skills/foundations/<name>/` | Information architecture for *the skill library itself* — head nouns, taxonomy, glossary. |
+| `meta-methods` | `skills/foundations/<name>/` | Cross-cutting methodology: methodical reasoning, no-cutting-corners, code-preservation. |
+| `data-analytics` | `skills/quality/<name>/` (until population grows) | Smallest shelf (2%) — folded into quality until it earns its own root per the >5-skills rule in ADR-0017. |
+
+**Naming convention.** Directory name = skill `name:` value (kebab-case, head-noun-anchored). The `skill-lint.js` parent-dir alignment check enforces this.
+
+> The current 6-directory canonical library layout (`agent / design / engineering / foundations / product / quality`) is the v7 6-enum carried forward. Per F23 in the 2026-05-25 audit, full v8-axis reorganization (9 directories matching `subject`) is on the roadmap — until that codemod lands, the table above is the authoritative subject→directory map.
+
 ---
 
 ## Required vs Optional Fields
@@ -91,7 +100,7 @@ The v8 contract requires twelve canonical fields plus the v8 5-axis classificati
 | `version` | semver string | Skill content version (e.g. `1.2.0`). Bumped by the author. |
 | `subject` | enum (9 closed values) | **v8 axis 1** — Primary browse shelf and routing seed. One of: `code-engineering`, `quality-assurance`, `frontend-ui`, `design-craft`, `agent-ops`, `product-domain`, `knowledge-organization`, `meta-methods`, `data-analytics`. See § Classification — the 5-axis model § Axis 1. |
 | `operation` | enum (4 closed values, Bloom-grounded) | **v8 axis 2** — Cognitive operation enabled by loading this skill. One of: `know` (declarative content), `do` (procedural how-to), `decide` (judgment/triage), `modify` (transformative edit). Replaces v7's `type` field. See § Classification § Axis 2. |
-| `scope` | enum (3 closed values, renamed in v8) | **v8 axis 3** — Deployment targeting. One of: `portable` (any project), `workspace` (this workspace only), `project` (one specific project; requires `grounding`). v7 aliases `scope: codebase` → `project` and `scope: reference` → `workspace` are accepted during the sunset. See § Classification § Axis 3. |
+| `scope` | enum (3 closed values, renamed in v8) | **v8 axis 3** — Deployment targeting. One of: `portable` (any project), `workspace` (this workspace only), `project` (one specific project; requires `grounding`). v7→v8 alias normalization (`codebase`→`project`, `reference`→`workspace`) is documented in ONE canonical place: § Classification § Axis 3. Do not restate elsewhere. |
 | `owner` | string | Team, username, or tool that is responsible for keeping this skill current. |
 | `freshness` | ISO date | Date the skill body was last reviewed or updated. |
 | `drift_check` | object | Contains `last_verified` (ISO date) and optional `truth_source_hashes`. |
@@ -122,6 +131,13 @@ license         # SPDX identifier (e.g. MIT, Apache-2.0)
 keywords        # string[] — semantic phrases for discovery
 triggers        # string[] — exact match activation phrases
 relations       # typed edges to sibling skills
+                # ⚠ relations.boundary is INVERSE to its name — it EXCLUDES the
+                # listed skills from co-routing when THIS skill wins (it does
+                # NOT defer to them). Write reason text as ownership
+                # ("I own this exclusively over X"), never deference
+                # ("use X instead"). Renamed to relations.suppresses in v8.1
+                # per ADR-0018. See § Relations § `boundary` for the full
+                # WARNING and rationale.
 ```
 
 ### Optional (enrichment)
@@ -677,6 +693,29 @@ Some legacy scope and type values are normalized by the manifest generator to th
 | `domain` (type) | `capability` | Domain knowledge is a capability |
 | `framework` (type) | `workflow` | Frameworks describe workflows |
 | `feedback` (type) | `overlay` | Feedback modifies other skills |
+
+---
+
+## Migration state (v7→v8)
+
+> **Updated 2026-05-25 (SH-6481 SMP-1 / SMP-2)** to match what the schema actually enforces. Earlier versions of this callout claimed the schema did not yet enforce v8 fields and authors could write "v8 only" — both untrue against the live schema. See `schemas/skill.schema.json:7-20` (global required) and `schemas/skill.schema.json` `allOf[11]` (the v8 conditional rule).
+
+The schema runs in **compatibility mode**: `schema_version: 7` and `schema_version: 8` both validate. The split between what the schema enforces and what each surface labels is:
+
+| Surface | State |
+|---|---|
+| **This doc (SKILL_METADATA_PROTOCOL.md)** | v8 — 5-axis classification fully described |
+| **Schema file (`schemas/skill.schema.json`)** | v7 + v8 dual-emit. The global `required` array enforces both `type` and `category` (v7 fields). When `schema_version: 8`, the schema's `allOf` adds `subject` and `operation` as required on top of the v7 baseline. v7 6-value `category` enum remains the only category constraint. |
+| **Compiled manifest (`skills.manifest.json`) summary** | Dual-emit per `SKILL_GRAPH.md § Current State` — v7 (`by_category` / `by_type`) and v8 (`by_subject` / `by_operation`) side-by-side |
+| **Audit Loop Part 2 checklist (`SKILL_AUDIT_LOOP.md`)** | v8 + v7 (both accepted) |
+| **Source skills (canonical library)** | Per `SKILL_GRAPH.md § Current State` — single source of truth; do not restate the count here. |
+
+**What this means for authors (CORRECTED):**
+
+- A skill **must** carry both the v7 legacy fields (`type`, `category`, `scope`) AND, if `schema_version: 8`, the v8 fields (`subject`, `operation`). v8-only authoring fails schema lint because `type` and `category` are in the schema's global `required` array.
+- The v7→v8 codemod (`scripts/migrate-skill-v7-to-v8.js`) populates BOTH on migrated skills. The normalizer in `scripts/lib/parse-frontmatter.js::normalizeFrontmatter()` reads either encoding.
+- The end-state — when `type`+`category` are removed from global required and `subject`+`operation` become globally required — requires a coordinated change of the schema's `required` array, `allOf` rules, codemod, sample manifest, and `SKILL_GRAPH.md § Current State`. That coordinated change has NOT shipped; until it does, **both v7 and v8 axes are required** on every new skill.
+- This is honest drift to record per `.claude/rules/version-schema-contract.md` ("a label ahead of its content is HONEST drift to record"). Editing this callout to claim authors can drop v7 fields would mask the gap, not close it.
 
 ## Design Constraints
 

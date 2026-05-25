@@ -64,23 +64,26 @@ Every action in this loop falls into one of four operations. Each writes to a sp
 
 `audit` and `evaluate` may mutate frontmatter state because the Health Block lives on the skill. They do not rewrite the skill's instructional body or routing contract unless an explicit `improve` step follows.
 
-This replaces the previous 13-command surface. The mapping:
+This replaces the previous 13-command surface with **4 canonical operations + 2 utility commands** (6 files total under `.claude/commands/audit/`). The 4 canonical are the four operations in the table above; the 2 utilities are `discover` (creates new skills from a keyword matrix — separate concern from the read-fix-test-next loop) and `merge` (multi-model union-curate merge — only used in roundtable sessions, not in normal solo audits). The mapping:
 
-| Old command | New |
-|---|---|
-| `audit:audit-skill` | `audit` |
-| `audit:domain-audit` | `audit --source-first` |
-| `audit:bidirectional-audit` | `audit --fix-code-too` |
-| `audit:deep-repo-audit` | `evolve --workspace-root <repo> --skills-dir <repo>/skills --analyze-only` |
-| `audit:workspace-audit` | `evolve --workspace-root <workspace> --skills-dir <workspace>/skills --analyze-only` |
-| `audit:improve-skill` | `improve` |
-| `audit:auto-improve` | `improve --mode <adapter>` |
-| `audit:skill-fix` | `improve --lens <skill>` |
-| `audit:evaluate-skill` | `evaluate` |
-| `audit:improve-eval` | DELETED (was byte-equivalent duplicate of `evaluate-skill`) |
-| `audit:skill-evolution` | `evolve` |
-| `audit:skill-discovery` | retained — creates new skills, separate concern |
-| `audit:feedback` | moved to `design:feedback` — visual loop, not skill audit |
+| Old command | New | Surface |
+|---|---|---|
+| `audit:audit-skill` | `audit` | canonical operation |
+| `audit:domain-audit` | `audit --source-first` | canonical operation |
+| `audit:bidirectional-audit` | `audit --fix-code-too` | canonical operation |
+| `audit:deep-repo-audit` | `evolve --workspace-root <repo> --skills-dir <repo>/skills --analyze-only` | canonical operation |
+| `audit:workspace-audit` | `evolve --workspace-root <workspace> --skills-dir <workspace>/skills --analyze-only` | canonical operation |
+| `audit:improve-skill` | `improve` | canonical operation |
+| `audit:auto-improve` | `improve --mode <adapter>` | canonical operation |
+| `audit:skill-fix` | `improve --lens <skill>` | canonical operation |
+| `audit:evaluate-skill` | `evaluate` | canonical operation |
+| `audit:improve-eval` | DELETED (was byte-equivalent duplicate of `evaluate-skill`) | — |
+| `audit:skill-evolution` | `evolve` | canonical operation |
+| `audit:skill-discovery` | `discover` | utility — creates new skills from keyword matrix |
+| `audit:feedback` | moved to `design:feedback` — visual loop, not skill audit | — |
+| _(new in 2026-05)_ | `merge` | utility — multi-model union-curate merge |
+
+> **On the "5-command" framing.** Earlier prose called this a "5-command surface" — counting `audit / improve / evaluate / evolve / discover`. The actual file count under `.claude/commands/audit/` is **6** because `merge.md` was added later. The honest framing: **4 canonical operations (audit/improve/evaluate/evolve) + 2 utilities (discover/merge)**. Use that phrasing in new docs.
 
 ## The Health Block — state lives on the skill
 
@@ -271,6 +274,17 @@ Use this checklist to answer 3 questions:
 1. Does the skill pass the **Integrity Gate** — structurally valid, grounded, routable, and export-safe?
 2. Does the skill pass the **Behavior Gate** — proven to change agent behavior on realistic prompts, hard negatives, prior failures, and boundary cases?
 3. Is the skill useful enough to keep loading?
+
+### Two named modes — Diagnostic vs Remediation
+
+Every concrete audit run is one of two named modes. The protocol below is identical for both; what differs is the operator's intent and the follow-up. Be explicit in the verdict.md `## Follow-up State` field about which mode the run was.
+
+| Mode | When to use | What `audit` does | What follow-up looks like |
+|---|---|---|---|
+| **Diagnostic audit (report-only)** | First sweep, pre-release scan, multi-model roundtable, anything where you want the verdict before deciding on fixes. | Runs lint + drift + (optionally graded) phases, stamps the Integrity-layer Health Block fields (`last_audited`, `lint_verdict`, `structural_verdict`, `truth_verdict`), writes findings/verdict/scorecard artifacts. **Does NOT mutate the skill body or commit.** | Operator decides whether to file the findings as Linear tasks for later remediation, hand off to `improve`, or close as "no action — skill is healthy." The audit is a read step. |
+| **Remediation audit (fix + commit)** | Targeted run when a specific finding is known and the operator has commit-budget to fix it now. Typically preceded by an `improve --field <name>` step that landed the fix; the audit-after-improve confirms the verdict moved. | Same Integrity-layer write-back, same artifacts. The auditor then runs `improve` (or makes the explicit edit), re-runs `audit` to confirm the verdict change, and commits skill source + Health Block stamp + audit artifacts together in one path-limited commit. | Verdict.md `## Follow-up State` records `Fixes applied — <skill>:<field> at <commit-sha>`. |
+
+The mode is operator intent, not a CLI flag. Diagnostic-only doctrine has the audit produce evidence and stop. Remediation doctrine has the audit fold into a `read → fix → test → next` Karpathy cycle.
 
 ### Audit Outputs
 

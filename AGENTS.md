@@ -51,6 +51,23 @@ There are three named things. Keep them distinct; never collapse one into anothe
 
 **Trunk and leaf.** The mission is relevance-at-scale: the **Protocol** makes relevance explicit, the **Graph** makes it queryable, and the **Audit Loop** keeps it true. Routing the right teaching-skill is the trunk; auditing whether that skill teaches well is the leaf the explicit structure enables. Do not mistake the audit mechanism for the mission.
 
+### What each command writes (so the three layers stay distinct)
+
+The three layers above describe **roles**; this table is the operational counterpart — which command writes to which surface. Use when debugging "why didn't field X get stamped?" or "which command should I run to refresh Y?" The Health Block fields appear in skill frontmatter; the artifacts appear under `audits/<skill>/`.
+
+| Operation | Reads | Writes to SKILL.md frontmatter | Writes artifacts |
+|---|---|---|---|
+| `audit` (Integrity Gate, no flags) | skill source + truth_sources | `last_audited`, `lint_verdict`, `structural_verdict`, `truth_verdict` | `audits/<skill>/{findings,verdict,scorecard}.md` |
+| `audit --graded` | + grader CLI | + `comprehension_verdict`, `application_verdict` (when their evals exist) | graded scorecard rows |
+| `evaluate --mode comprehension` | `evals/comprehension.json` | `eval_score`, `eval_failed_ids`, `freshness`, `comprehension_verdict` | grader receipt under `eval-history/` |
+| `evaluate --mode application` | `evals/application.json` + skill body | `eval_score`, `eval_failed_ids`, `freshness`, `application_verdict` | grader receipt + before/after diff |
+| `improve --field <name>` | skill body, last `evaluate` result | `last_changed`, possibly `eval_score` (post-keep) | commit + revert log when `eval_score` drops |
+| `evolve --top N` | Health Block priority queue | (delegates to audit/improve/evaluate per cycle) | per-cycle aggregate under `audits/_state/` |
+| `drift` (standalone) | `grounding.truth_sources` + recorded hashes | `drift_status` (per-script signal, separate from `truth_verdict` rollup) | none — exit code is the signal |
+| `lint` (standalone) | schema + skill source | none (read-only diagnostic) | none — stderr is the signal |
+
+**Two integrity surfaces.** The audit operation runs both `lint` and `drift` inline (the rollup feeds `structural_verdict` and `truth_verdict`). The standalone `lint` / `drift` commands exist for fast iteration when authoring a single skill or when re-running just one phase — they do NOT write back to the Health Block.
+
 ## Start Here
 
 Read these files before changing behavior or docs:

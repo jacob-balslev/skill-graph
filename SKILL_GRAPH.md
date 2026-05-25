@@ -28,17 +28,30 @@ The three layers divide the work cleanly. The [Skill Metadata Protocol](SKILL_ME
 
 ## Source vs Marketplace — why there are two `skills/` trees
 
-A common point of confusion: the canonical library and the in-repo `marketplace/skills/` look like duplicates (same count, similar frontmatter). They are not — they are the two ends of a publishing pipeline:
+A common point of confusion: the canonical library and the in-repo `marketplace/skills/` look like duplicates (same count, similar frontmatter). They are not — they are the two ends of a publishing pipeline AND the source library is one repo wearing two hats:
 
 ```
-~/Development/skills/skills/<category>/<name>/SKILL.md   AUTHORING SOURCE (categorized, hand-edited, full v7 frontmatter)
-        │  scripts/export-marketplace-skills.js  (reads source, normalizes, applies publication gate)
-        ▼
-skill-graph/marketplace/skills/<name>/SKILL.md          GENERATED EXPORT (staging, never hand-edited)
-        │  two-step sync + git push
-        ▼
-github.com/jacob-balslev/skills  →  skills.sh           PUBLIC, installable
+                                ┌── HAT 1: canonical authoring source
+                                │        (read by skill-graph tooling
+                                │         via .skill-graph/config.json
+                                │         → skill_roots: ["../skills/skills"])
+                                │
+   ~/Development/skills/  ──────┤
+   (one physical repo)          │
+                                └── HAT 2: public Agent-Skills release
+                                         (published to github.com/jacob-balslev/skills,
+                                          indexed at skills.sh/jacob-balslev/skills)
+
+   ~/Development/skills/skills/<category>/<name>/SKILL.md   AUTHORING SOURCE (nested, hand-edited)
+           │  scripts/export-marketplace-skills.js  (reads source, normalizes, applies publication gate)
+           ▼
+   skill-graph/marketplace/skills/<name>/SKILL.md          GENERATED EXPORT (staging, never hand-edited; flat)
+           │  two-step sync: copy marketplace/skills/* into ~/Development/skills/skills/, commit, push
+           ▼
+   github.com/jacob-balslev/skills  →  skills.sh           PUBLIC, installable
 ```
+
+**The two-hat insight:** the AUTHORING SOURCE and the PUBLIC RELEASE are the **same physical repo**. The pipeline above pushes the staging buffer (`skill-graph/marketplace/skills/`) into that repo, so writing to skill-graph and pushing the canonical library both eventually update `github.com/jacob-balslev/skills`. The `marketplace/` directory is the transform buffer between this tooling repo and the library repo, not a separate publication target.
 
 The export is **not** a copy. It (1) applies the **publication gate** — excludes `scope: codebase|operational` and `grounding_mode: repo_specific` skills and fails on private paths, so internal skills never publish; (2) **normalizes** the frontmatter (flattens the `compatibility` object, etc.); and (3) historically **flattened** the directory layout. Because the source library (`~/Development/skills/`) is *also* the public release repo (`jacob-balslev/skills`), source and release are the same repo; `marketplace/skills/` is the transform/staging buffer between this tooling repo and that one. They have the same count today only because no current skill trips the exclusion gate. See `AGENTS.md § Public Distribution` for the two-step sync protocol.
 
@@ -56,29 +69,33 @@ Before drilling into the five authority tiers, orient yourself on the five runti
 
 ```mermaid
 flowchart LR
-  Skill["<b>SKILL.md</b><br/>authored file<br/>frontmatter + body"]
+  Skill["<b>SKILL.md</b><br/>authored file<br/>frontmatter + body + Health Block"]
   Linter["<b>skill-lint.js</b><br/>deterministic validator"]
+  Drift["<b>skill-graph-drift.js</b><br/>truth-source sentinel"]
   Manifest["<b>skills.manifest.json</b><br/>compiled artifact"]
-  Auditor["<b>skill-audit.js</b><br/>stub · graded"]
+  Auditor["<b>skill-audit.js</b><br/>runs lint + drift inline · stub · graded"]
   Artifacts["<b>audits/&lt;skill&gt;/</b><br/>findings · verdict · scorecard"]
 
   Skill -->|validated by| Linter
+  Skill -->|hashes checked by| Drift
   Skill -->|compiled into| Manifest
   Linter -->|seeds findings for| Auditor
+  Drift -->|seeds truth_verdict for| Auditor
   Auditor -->|emits| Artifacts
+  Auditor -->|stamps Health Block| Skill
 
   classDef author fill:#dbeafe,stroke:#2563eb,color:#1e3a8a
   classDef tool fill:#ecfdf5,stroke:#047857,color:#064e3b
   classDef artifact fill:#fef3c7,stroke:#d97706,color:#78350f
   class Skill author
-  class Linter,Auditor,Manifest tool
+  class Linter,Drift,Auditor,Manifest tool
   class Artifacts artifact
 ```
 
 <!-- Rendered copy for non-Mermaid viewers. Regenerate via: npx @mermaid-js/mermaid-cli -i <source> -o docs/images/system-model.png -->
-<img src="docs/images/system-model.png" alt="System model — SKILL.md is validated by skill-lint.js, compiled into skills.manifest.json, and audited by skill-audit.js which emits findings/verdict/scorecard artifacts" width="900" />
+<img src="docs/images/system-model.png" alt="System model — SKILL.md is validated by skill-lint.js, drift-checked by skill-graph-drift.js, compiled into skills.manifest.json, and audited by skill-audit.js which emits findings/verdict/scorecard artifacts AND stamps the Health Block back onto SKILL.md" width="900" />
 
-**Legend.** Blue = authored input. Green = tooling. Yellow = output artifact. Solid arrows are the data flow. Every entity in this diagram has its own deep-dive diagram: [§ Anatomy](docs/skill-metadata-protocol.md#anatomy) for `SKILL.md`, [§ The Four Operations](SKILL_AUDIT_LOOP.md#the-four-operations) for `skill-audit.js`, [§ Manifest Field Mapping](docs/manifest-field-mapping.md) for `skills.manifest.json`.
+**Legend.** Blue = authored input. Green = tooling. Yellow = output artifact. Solid arrows are the data flow. The `stamps Health Block` arrow (added 2026-05-25 per SH-6481 F14) closes the loop — the Auditor's verdicts land on the skill itself (`last_audited`, `lint_verdict`, `structural_verdict`, `truth_verdict`), so the state-of-truth lives in the skill, not in a side artifact. Every entity in this diagram has its own deep-dive diagram: [§ Anatomy](docs/skill-metadata-protocol.md#anatomy) for `SKILL.md`, [§ The Four Operations](SKILL_AUDIT_LOOP.md#the-four-operations) for `skill-audit.js`, [§ Manifest Field Mapping](docs/manifest-field-mapping.md) for `skills.manifest.json`.
 
 ---
 
@@ -323,18 +340,20 @@ Concrete artifacts that show adopters what "good" looks like. Every specimen is 
 
 ### Starter skills
 
-> **Location note (post-ADR-0009 consolidation):** this repo no longer ships a `skills/` tree. The canonical skill library lives in the sibling repo at `~/Development/skills/` (nested `<category>/[<domain>/]<name>/SKILL.md`, closed 6-category enum), with a plain-Agent-Skills export mirror under `marketplace/skills/`. In-repo specimens live in `examples/fixture-skills/`. The table below is a **historical archetype-coverage reference** describing the original eight-starter specimen set chosen to cover every archetype × scope combination the schema permits; `skills/<name>` paths are illustrative of that set, not current in-repo paths. Entries marked _(removed)_ are no longer in the library. The relations diagram further below has been reauthored against the four in-repo `examples/fixture-skills/` (see § The fixture graph).
+> **Location note (post-ADR-0009 consolidation):** this repo no longer ships a `skills/` tree. The canonical skill library lives in the sibling repo at `~/Development/skills/` (nested `<category>/[<domain>/]<name>/SKILL.md`, closed 6-category enum), with a plain-Agent-Skills export mirror under `marketplace/skills/`. In-repo specimens live in `examples/fixture-skills/`. The table below is a **historical archetype-coverage reference** describing the original eight-starter specimen set chosen to cover every archetype × scope combination the schema permits; `skills/<name>` paths are illustrative of that set, not current in-repo paths. Entries marked _(archive)_ are no longer in the in-repo specimen set — their archetype coverage moved to `examples/fixture-skills/`. The relations diagram further below has been reauthored against the four in-repo `examples/fixture-skills/` (see § The fixture graph).
 
-| Skill | `type` | `scope` | Unique thing it demonstrates |
+> **v8 archetype labelling.** `type` in this table is the v7 label retained for archive readability. The v8 equivalent is `operation` (Bloom-grounded): `capability → know`/`do`, `workflow → do` (with sequence), `router → decide`, `overlay → modify`. Both v7 and v8 axes are required on real skills today (per `SKILL_METADATA_PROTOCOL.md § Migration state`); this table shows v7 only for brevity.
+
+| Skill | `type` (v7) / `operation` (v8) | `scope` | Unique thing it demonstrates |
 |---|---|---|---|
-| `a11y` | capability | portable | Minimal routable capability, eval artifact present |
-| `debugging` | workflow | portable | `## Workflow` section with numbered steps |
-| `documentation` _(removed)_ | capability | portable | Eval artifact + worked audit both shipped |
-| `refactor` | workflow | portable | `relations.depends_on: [testing-strategy]` |
-| `testing-strategy` | capability | portable | `routing_bundles: [quality]` |
-| `skill-router` _(removed)_ | router | portable | Router archetype with `## Routing Rules` |
-| `lint-overlay` | overlay | portable | Overlay archetype with `extends` + `## Overlay Rules` |
-| `graph-audit` _(removed)_ | capability | codebase | Full `grounding` block + recorded `truth_source_hashes` (this shape now demonstrated by `examples/fixture-skills/with-grounding`). |
+| `a11y` | capability / `know` | portable | Minimal routable capability, eval artifact present |
+| `debugging` | workflow / `do` | portable | `## Workflow` section with numbered steps |
+| `documentation` _(archive)_ | capability / `know` | portable | Eval artifact + worked audit both shipped — archetype coverage now in `examples/fixture-skills/` |
+| `refactor` | workflow / `do` | portable | `relations.depends_on: [testing-strategy]` |
+| `testing-strategy` | capability / `decide` | portable | `routing_bundles: [quality]` |
+| `skill-router` _(archive)_ | router / `decide` | portable | Router archetype with `## Routing Rules` — archetype coverage now in `examples/fixture-skills/` |
+| `lint-overlay` | overlay / `modify` | portable | Overlay archetype with `extends` + `## Overlay Rules` |
+| `graph-audit` _(archive)_ | capability / `know` | codebase / `project` | Full `grounding` block + recorded `truth_source_hashes` (this shape now demonstrated by `examples/fixture-skills/with-grounding`). |
 
 ### Supporting artifacts
 
