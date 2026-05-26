@@ -1,6 +1,6 @@
 ---
 name: ideation
-description: "Use when generating a wide range of solution concepts before converging on a direction, running structured idea-generation sessions, breaking out of solution fixation, or moving from divergent to convergent selection with explicit criteria. Do NOT use for collaborative engineering domain discovery (event-storming), solo deep technical design, or making final go/no-go investment decisions — those require different methods."
+description: "Use when generating a wide range of solution concepts before converging on a direction, running structured idea-generation sessions, breaking out of solution fixation, or moving from divergent to convergent selection with explicit criteria. Do NOT use for collaborative engineering domain discovery (event-storming), solo deep technical design, or making final go/no-go investment decisions — those require different methods. Do NOT use for Decide whether to invest in this feature for the next quarter. Do NOT use for Model the bounded contexts for the order-fulfillment domain. Do NOT use for Write the production code for the selected concept."
 license: CC-BY-4.0
 metadata:
   schema_version: "8"
@@ -30,6 +30,7 @@ metadata:
   skill_graph_protocol: Skill Metadata Protocol v7
   skill_graph_project: Skill Graph
   skill_graph_canonical_skill: skills/design-craft/ideation/SKILL.md
+  skill_graph_export_description_projection: anti_examples
 ---
 
 # Ideation

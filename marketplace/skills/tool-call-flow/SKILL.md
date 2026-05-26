@@ -1,6 +1,6 @@
 ---
 name: tool-call-flow
-description: "Use when reasoning about the protocol-level cycle by which a language model uses external tools: the four phases (declaration, request, execution, continuation), the message-history state model that ties them together, the structural differences between vendor protocols (Anthropic tool-use, OpenAI function-calling, MCP) and how they compose, parallel vs sequential tool calls, error handling and retries inside the cycle, and the separation between the model (which produces structured intent) and the runtime (which executes the intent and routes results back). Do NOT use for the decision of when and how many tool calls to make (use tool-call-strategy), agent-system architecture and coordination patterns (use agent-engineering), prompt wording (use prompt-craft), or the design of evals for tool-use behavior (use agent-eval-design)."
+description: "Use when reasoning about the protocol-level cycle by which a language model uses external tools: the four phases (declaration, request, execution, continuation), the message-history state model that ties them together, the structural differences between vendor protocols (Anthropic tool-use, OpenAI function-calling, MCP) and how they compose, parallel vs sequential tool calls, error handling and retries inside the cycle, and the separation between the model (which produces structured intent) and the runtime (which executes the intent and routes results back). Do NOT use for the decision of when and how many tool calls to make (use tool-call-strategy), agent-system architecture and coordination patterns (use agent-engineering), prompt wording (use prompt-craft), or the design of evals for tool-use behavior (use agent-eval-design). Do NOT use for the external API surface (use api-design). Do NOT use for the serialization frontier between server and client code (use client-server-boundary)."
 license: MIT
 allowed-tools: Read Grep
 metadata:
@@ -39,6 +39,7 @@ metadata:
   skill_graph_protocol: Skill Metadata Protocol v7
   skill_graph_project: Skill Graph
   skill_graph_canonical_skill: skills/agent-ops/tool-call-flow/SKILL.md
+  skill_graph_export_description_projection: boundary
 ---
 
 # Tool-Call Flow

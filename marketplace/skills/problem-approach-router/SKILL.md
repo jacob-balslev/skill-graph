@@ -1,6 +1,6 @@
 ---
 name: problem-approach-router
-description: "Use when facing a new problem and unsure which problem-solving methodology or foundational skill to apply first. Routes between first-principles-thinking, pattern-recognition, mental-models, constraint-awareness, and task-analysis by classifying the problem type. Activate before choosing any other foundational skill. Do NOT use to execute the selected approach (use the specific routed skill directly), for implementation work (use the relevant engineering skill), or when the correct approach is already known."
+description: "Use when facing a new problem and unsure which problem-solving methodology or foundational skill to apply first. Routes between first-principles-thinking, pattern-recognition, mental-models, constraint-awareness, and task-analysis by classifying the problem type. Activate before choosing any other foundational skill. Do NOT use to execute the selected approach (use the specific routed skill directly), for implementation work (use the relevant engineering skill), or when the correct approach is already known. Do NOT use for actually apply first-principles thinking to this specific problem. Do NOT use for analyze why this pattern keeps recurring in the codebase. Do NOT use for break down the constraints on this engineering decision. Do NOT use for map the mental model for this domain concept. Do NOT use for implement the algorithm we already decided on. Do NOT use for choose a testing strategy for this feature."
 license: MIT
 compatibility: "Domain-agnostic dispatch. The routing table applies to any problem a human or agent faces — software, design, product, or strategy. The skill names in the Routing Rules refer to sibling skills in the foundations category."
 allowed-tools: Read Grep
@@ -35,6 +35,7 @@ metadata:
   skill_graph_protocol: Skill Metadata Protocol v7
   skill_graph_project: Skill Graph
   skill_graph_canonical_skill: skills/meta-methods/problem-approach-router/SKILL.md
+  skill_graph_export_description_projection: anti_examples
 ---
 
 # Problem Approach Router

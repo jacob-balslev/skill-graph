@@ -1,6 +1,6 @@
 ---
 name: visual-hierarchy
-description: "Use when establishing visual hierarchy — type scale ratios, spacing rhythm, contrast as ordering signal, weight and size as importance, and the layered relationship between primary, secondary, and tertiary information. Do NOT use for content writing, information architecture, or specific color palette construction."
+description: "Use when establishing visual hierarchy — type scale ratios, spacing rhythm, contrast as ordering signal, weight and size as importance, and the layered relationship between primary, secondary, and tertiary information. Do NOT use for content writing, information architecture, or specific color palette construction. Do NOT use for Write the H1 copy that should appear at the top of the landing page. Do NOT use for Choose between sans-serif and serif typefaces for the brand. Do NOT use for Pick the brand's primary color."
 license: CC-BY-4.0
 metadata:
   schema_version: "8"
@@ -30,6 +30,7 @@ metadata:
   skill_graph_protocol: Skill Metadata Protocol v7
   skill_graph_project: Skill Graph
   skill_graph_canonical_skill: skills/design-craft/visual-hierarchy/SKILL.md
+  skill_graph_export_description_projection: anti_examples
 ---
 
 # Visual Hierarchy

@@ -1,6 +1,6 @@
 ---
 name: intent-recognition
-description: "Use BEFORE any tool call that could modify state, touch sensitive targets, rewrite history, install dependencies, publish packages, or expose credentials/environment data. Classifies intent into Passive/Read, Reconnaissance, Modification, or Destructive/Irreversible using operation type plus target sensitivity, then runs Identify / Confirm / Verify before action. Do NOT use for deciding what code to write, executing already-classified work, reactive post-execution guardrails, or defining upstream governance policy."
+description: "Use BEFORE any tool call that could modify state, touch sensitive targets, rewrite history, install dependencies, publish packages, or expose credentials/environment data. Classifies intent into Passive/Read, Reconnaissance, Modification, or Destructive/Irreversible using operation type plus target sensitivity, then runs Identify / Confirm / Verify before action. Do NOT use for deciding what code to write, executing already-classified work, reactive post-execution guardrails, or defining upstream governance policy. Do NOT use for design the deterministic safety hook that blocks destructive commands. Do NOT use for decide whether to use a switch or a chain of ifs. Do NOT use for actually execute the migration after we've classified the risk. Do NOT use for scan this repo for OWASP top 10 vulnerabilities. Do NOT use for review this AI-generated PR for correctness. Do NOT use for the loop is stalling — what's the steering signal. Do NOT use for the discipline of using git well (use version-control)."
 license: MIT
 compatibility: "Runtime-agnostic. The four-tier classification, target-content rule, and Identify/Confirm/Verify sequence apply to any agent harness with tool execution — Claude Code, OpenCode, Cursor, Aider, Copilot Workspace, custom MCP-based agents, or any LLM with shell access."
 allowed-tools: Read Grep
@@ -34,6 +34,7 @@ metadata:
   skill_graph_protocol: Skill Metadata Protocol v7
   skill_graph_project: Skill Graph
   skill_graph_canonical_skill: skills/frontend-ui/intent-recognition/SKILL.md
+  skill_graph_export_description_projection: anti_examples+boundary
 ---
 
 # Intent Recognition

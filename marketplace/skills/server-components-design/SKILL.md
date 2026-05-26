@@ -1,6 +1,6 @@
 ---
 name: server-components-design
-description: "Use when designing or reviewing React Server Components: what an RSC can do (async, data fetching, server-only imports) versus what it cannot (state, effects, event handlers, browser APIs), where to draw the server/client boundary in the tree, and how RSC composes with Suspense to stream content without a separate API layer. Covers Next.js App Router as the canonical implementation, but the discipline is framework-agnostic. Do NOT use for the 'use client' directive mechanics (use client-server-boundary), hook discipline on Client Components (use hooks-patterns), rendering strategy choice (use rendering-models), or the server-action mutation surface (use server-actions-design when authored)."
+description: "Use when designing or reviewing React Server Components: what an RSC can do (async, data fetching, server-only imports) versus what it cannot (state, effects, event handlers, browser APIs), where to draw the server/client boundary in the tree, and how RSC composes with Suspense to stream content without a separate API layer. Covers Next.js App Router as the canonical implementation, but the discipline is framework-agnostic. Do NOT use for the 'use client' directive mechanics (use client-server-boundary), hook discipline on Client Components (use hooks-patterns), rendering strategy choice (use rendering-models), or the server-action mutation surface (use server-actions-design when authored). Do NOT use for add a click handler to an existing component (use hooks-patterns and client-server-boundary). Do NOT use for build the form-submission mutation flow (use server-actions-design when authored). Do NOT use for design the public API for a third-party integration (use api-design)."
 license: MIT
 allowed-tools: Read Grep
 metadata:
@@ -39,6 +39,7 @@ metadata:
   skill_graph_protocol: Skill Metadata Protocol v7
   skill_graph_project: Skill Graph
   skill_graph_canonical_skill: skills/frontend-ui/server-components-design/SKILL.md
+  skill_graph_export_description_projection: anti_examples
 ---
 
 # Server Components Design

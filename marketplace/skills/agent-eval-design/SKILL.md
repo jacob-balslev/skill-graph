@@ -1,6 +1,6 @@
 ---
 name: agent-eval-design
-description: "Use when designing evaluations for AI agents, skills, routers, prompts, tool-use policies, or multi-step workflows: task sets, rubrics, graders, hard negatives, regression cases, traces, and acceptance thresholds. Do NOT use for application test planning (use `testing-strategy`), skill-library health tooling (use `skill-infrastructure`), or live debugging of a failed run (use `debugging`)."
+description: "Use when designing evaluations for AI agents, skills, routers, prompts, tool-use policies, or multi-step workflows: task sets, rubrics, graders, hard negatives, regression cases, traces, and acceptance thresholds. Do NOT use for application test planning (use `testing-strategy`), skill-library health tooling (use `skill-infrastructure`), or live debugging of a failed run (use `debugging`). Do NOT use for plan unit, integration, and e2e tests for this product feature. Do NOT use for run the skill graph lint and overlap tooling. Do NOT use for debug why yesterday's agent run failed. Do NOT use for write production code to fix this failing test. Do NOT use for library health tooling (use skill-infrastructure)."
 license: MIT
 compatibility: "Portable eval-design discipline for agent workflows, skill routers, prompt systems, and tool-use policies."
 allowed-tools: Read Grep
@@ -34,6 +34,7 @@ metadata:
   skill_graph_protocol: Skill Metadata Protocol v7
   skill_graph_project: Skill Graph
   skill_graph_canonical_skill: skills/quality-assurance/agent-eval-design/SKILL.md
+  skill_graph_export_description_projection: anti_examples+boundary
 ---
 
 # Agent Eval Design

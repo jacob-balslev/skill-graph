@@ -1,6 +1,6 @@
 ---
 name: problem-framing
-description: "Use when a team is converging on solutions before agreeing on the problem, when a brief reads as a feature request, when symptoms and root needs are tangled, or when assumptions need surfacing before design work proceeds. Do NOT use for code-level bug triage, runtime failure diagnosis, or root-cause analysis of system errors — those are engineering investigation tasks, not design problem framing."
+description: "Use when a team is converging on solutions before agreeing on the problem, when a brief reads as a feature request, when symptoms and root needs are tangled, or when assumptions need surfacing before design work proceeds. Do NOT use for code-level bug triage, runtime failure diagnosis, or root-cause analysis of system errors — those are engineering investigation tasks, not design problem framing. Do NOT use for Find the bug causing the 500 error in the checkout endpoint. Do NOT use for Why is the test suite flaky on CI? Do NOT use for Classify whether this agent request is high-risk before executing."
 license: CC-BY-4.0
 metadata:
   schema_version: "8"
@@ -30,6 +30,7 @@ metadata:
   skill_graph_protocol: Skill Metadata Protocol v7
   skill_graph_project: Skill Graph
   skill_graph_canonical_skill: skills/design-craft/problem-framing/SKILL.md
+  skill_graph_export_description_projection: anti_examples
 ---
 
 # Problem Framing

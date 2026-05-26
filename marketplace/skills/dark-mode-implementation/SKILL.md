@@ -1,6 +1,6 @@
 ---
 name: dark-mode-implementation
-description: "Use when implementing dark mode — prefers-color-scheme detection, theme persistence, flash-of-unstyled-theme prevention, color token mirroring, image and asset variants, and meta theme-color updates. Do NOT use for designing the dark palette itself, designing the token architecture, or generic theme-switching across more than two themes."
+description: "Use when implementing dark mode — prefers-color-scheme detection, theme persistence, flash-of-unstyled-theme prevention, color token mirroring, image and asset variants, and meta theme-color updates. Do NOT use for designing the dark palette itself, designing the token architecture, or generic theme-switching across more than two themes. Do NOT use for Pick the dark mode color palette values. Do NOT use for Design the three-tier token architecture. Do NOT use for Build a multi-brand theme system with five themes."
 license: CC-BY-4.0
 metadata:
   schema_version: "8"
@@ -31,6 +31,7 @@ metadata:
   skill_graph_protocol: Skill Metadata Protocol v7
   skill_graph_project: Skill Graph
   skill_graph_canonical_skill: skills/design-craft/dark-mode-implementation/SKILL.md
+  skill_graph_export_description_projection: anti_examples
 ---
 
 # Dark Mode Implementation

@@ -1,6 +1,6 @@
 ---
 name: prompt-craft
-description: "Use when writing, tightening, evaluating, or repairing an LLM prompt or reusable prompt template for completion, agent dispatch, grading, structured extraction, tool use, or prompt-engineered workflows. Covers instruction hierarchy, message roles, context placement, few-shot examples, structured output, positive constraints, reasoning guidance, prompt-injection resistance, provider differences, and eval-driven iteration. Do NOT use for whole context-system design (use context-engineering), eval dataset or grader design (use agent-eval-design), reviewing generated code (use code-review), authoring SKILL.md files (use skill-scaffold), choosing which skill or agent should activate (use skill-router), or root-causing a deployed failure after outputs already exist (use debugging)."
+description: "Use when writing, tightening, evaluating, or repairing an LLM prompt or reusable prompt template for completion, agent dispatch, grading, structured extraction, tool use, or prompt-engineered workflows. Covers instruction hierarchy, message roles, context placement, few-shot examples, structured output, positive constraints, reasoning guidance, prompt-injection resistance, provider differences, and eval-driven iteration. Do NOT use for whole context-system design (use context-engineering), eval dataset or grader design (use agent-eval-design), reviewing generated code (use code-review), authoring SKILL.md files (use skill-scaffold), choosing which skill or agent should activate (use skill-router), or root-causing a deployed failure after outputs already exist (use debugging). Do NOT use for review this AI-generated PR for correctness. Do NOT use for scaffold a new skill that teaches prompt engineering."
 license: MIT
 compatibility: "Provider-agnostic prompt-design discipline for OpenAI, Anthropic, Google Gemini, open-weight models, and agent runtimes; provider-specific APIs, role names, structured-output features, and reasoning controls must be checked before implementation."
 allowed-tools: Read Grep Bash Edit
@@ -43,6 +43,8 @@ metadata:
   skill_graph_protocol: Skill Metadata Protocol v7
   skill_graph_project: Skill Graph
   skill_graph_canonical_skill: skills/agent-ops/prompt-craft/SKILL.md
+  skill_graph_export_description_projection: anti_examples
+  skill_graph_export_description_projection_truncated: "true"
 ---
 
 # Prompt Craft

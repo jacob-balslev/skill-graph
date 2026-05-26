@@ -1,34 +1,31 @@
 ---
 name: autonomous-loop-patterns
-description: "This skill consolidates autonomous AI agent loop patterns: the Ralph Wiggum exit-code-2 pattern, our manage-loop (manage-continuation.json + manage-loop-hook.py), grind-loop.sh supervisor, completion detection strategies, safety caps, stall detection, and the tradeoffs between simple loops and sophisticated orchestration. Use when designing or debugging autonomous agent loops, choosing between loop approaches, or implementing safety limits. Do NOT use for choosing which command to run (use ai-coding-agents) or for task management (use linear)."
+description: "Use when designing, reviewing, or debugging an autonomous AI agent loop: repeated agent execution, completion signals, checkpoints, supervisor respawn, stall detection, safety caps, and human handoff rules. Covers the core loop patterns from simple bounded runs through sentinel-based continuation, checkpoint-resume, and external supervisor loops. Do NOT use for choosing a specific agent product command (use agent-engineering or the product's docs), writing ordinary task instructions (use prompt-craft), or optimizing individual tool calls (use tool-call-strategy). Do NOT use for full production agent-system architecture (use agent-engineering)."
 metadata:
-  schema_version: "8"
+  schema_version: "7"
   type: capability
   operation: know
-  version: "1.2.0"
+  subject: agent-ops
+  version: "1.3.0"
   scope: portable
   category: agent
-  subject: agent-ops
+  domain: agent/loop-design
   eval_artifacts: present
-  eval_state: passing
-  routing_eval: present
-  triggers: "[\"autonomous-loop-skill\",\"loop-patterns-skill\"]"
-  keywords: "[\"autonomous loop\",\"ralph wiggum\",\"grind loop\",\"manage loop\",\"agent respawn\",\"completion detection\",\"safety cap\"]"
-  examples: "[\"design an autonomous loop with a safety cap and completion detection\",\"what completion detection and safety cap should an autonomous loop use\",\"manage loop continuation signal vs ralph wiggum stop hook for an autonomous agent\",\"how does the grind loop supervisor respawn fresh sessions until completion\"]"
-  anti_examples: "[\"design a multi-agent orchestrator-worker architecture with parallel subagents\",\"choose between chaining, routing, and parallelization agent patterns\",\"should I parallelize subagents or use an orchestrator-worker pattern\"]"
-  owner: claude
-  freshness: "2026-05-18"
-  drift_check: "{\"last_verified\":\"2026-05-18\",\"truth_source_hashes\":{}}"
-  primaryCategory: Agent System
-  layerPrimary: meta
-  routingRole: primary
+  eval_state: unverified
+  routing_eval: absent
+  triggers: "[\"autonomous-loop-skill\",\"loop-patterns-skill\",\"agent-loop-design\"]"
+  keywords: "[\"autonomous agent loop\",\"agent loop pattern\",\"completion signal\",\"checkpoint resume loop\",\"supervisor respawn\",\"stall detection\",\"safety cap\",\"agent watchdog\",\"human handoff\"]"
+  owner: skill-graph-maintainer
+  freshness: "2026-05-21"
+  drift_check: "{\"last_verified\":\"2026-05-21\"}"
+  stability: experimental
   comprehension_state: present
-  mental_model: "A loop has five primitives: trigger, worker session, progress signal, stop condition, and safety cap. Ralph Wiggum keeps the stop condition in a Stop hook plus completion word, manage-loop keeps it in a continuation signal, and grind-loop keeps it in an external supervisor that respawns fresh sessions from status and exit evidence."
-  purpose: "Autonomous loop patterns exist to prevent ad hoc respawn logic with no checkpoint, cap, or recovery owner. They let the system choose the smallest loop shape that can safely finish the work while preserving progress across session boundaries."
-  boundary: "This is not command selection, task execution, inter-agent messaging, budget steering, or checkpoint implementation internals. Use ai-coding-agents for command choice, task-execution for the work inside an iteration, agent-to-agent or agent-messaging for communication, agent-control for steering, and agent-loop-infra for checkpoint mechanics."
-  analogy: "Autonomous loop patterns are autopilot modes: each mode keeps moving, but each needs instruments, altitude limits, and a clear handoff back to the pilot."
-  misconception: "The common mistake is treating autonomy as a loop that can run forever. A safe autonomous loop is defined by when it stops, what it persists, and how it proves progress between iterations."
-  relations: "{\"related\":[\"agent-governance\",\"ai-native-development\",\"hook-patterns\",\"agent-observability\",\"orchestration\"],\"boundary\":[{\"skill\":\"ai-coding-agents\",\"reason\":\"ai-coding-agents owns which command or workflow to run such as /solve, /manage, /grind; autonomous-loop-patterns owns the loop control shape, not command selection\"},{\"skill\":\"linear\",\"reason\":\"linear owns task and issue lifecycle and tracking; autonomous-loop-patterns owns loop control, not work-item management\"},{\"skill\":\"task-execution\",\"reason\":\"task-execution owns the work performed inside one iteration; autonomous-loop-patterns owns when the loop continues, stops, caps, and respawns around that work\"},{\"skill\":\"agent-engineering\",\"reason\":\"agent-engineering owns multi-agent architecture selection such as orchestrator-worker, chaining, routing, and parallelization; autonomous-loop-patterns owns the single-loop control shape\"}],\"verify_with\":[\"agent-observability\",\"agent-control\"]}"
+  mental_model: "An autonomous loop has six primitives: a trigger, a worker agent, a progress signal, a stop condition, durable state, and a safety cap. Different loop patterns place those primitives in different owners: a bounded run keeps them in the prompt and runtime limit, a sentinel loop keeps the stop condition in a completion marker, a checkpoint loop persists state between sessions, and a supervisor loop keeps restart and timeout policy outside the worker."
+  purpose: "Autonomous loop patterns replace improvised keep-going instructions with explicit control design. They solve the failure mode where an agent keeps retrying without a stop rule, loses progress after a restart, or appears active while making no useful progress."
+  boundary: "This skill owns loop control shape, not the work performed inside each iteration. Use prompt-craft for the wording of a single worker prompt, tool-call-strategy for per-tool efficiency, agent-engineering for broader multi-agent system architecture, context-management for what context to load, and observability-modeling for telemetry schema design."
+  analogy: "An autonomous loop is an autopilot mode: it can keep flying, but only because it has instruments, altitude limits, a route, and a clear handoff back to a pilot."
+  misconception: "The common mistake is treating autonomy as permission to run forever. A safe loop is defined by when it stops, what state it writes, what evidence proves progress, and what cap forces human review."
+  relations: "{\"related\":[\"agent-engineering\",\"prompt-craft\",\"tool-call-strategy\",\"context-management\",\"observability-modeling\"],\"boundary\":[{\"skill\":\"prompt-craft\",\"reason\":\"Prompt-craft owns the wording of one worker instruction; this skill owns the loop control shape around repeated worker execution.\"},{\"skill\":\"tool-call-strategy\",\"reason\":\"Tool-call-strategy owns per-call efficiency inside an agent; this skill owns whether and how the agent repeats across iterations.\"},{\"skill\":\"agent-engineering\",\"reason\":\"Agent-engineering owns full production agent-system architecture; this skill owns the narrower loop-pattern decision and safety checklist.\"}],\"verify_with\":[\"agent-engineering\",\"observability-modeling\"]}"
   structural_verdict: UNVERIFIED
   truth_verdict: UNVERIFIED
   comprehension_verdict: UNVERIFIED
@@ -37,324 +34,272 @@ metadata:
   skill_graph_protocol: Skill Metadata Protocol v7
   skill_graph_project: Skill Graph
   skill_graph_canonical_skill: skills/agent-ops/autonomous-loop-patterns/SKILL.md
+  skill_graph_export_description_projection: boundary
 ---
 
 # Autonomous Loop Patterns
 
-## Concept Card
-
-**What it is:** Autonomous loop patterns are reusable control shapes for running an agent repeatedly until an explicit stop condition is reached. They define how a session continues, stops, checkpoints, respawns, and avoids runaway behavior.
-
-**Mental model:** A loop has five primitives: a trigger, a worker session, a progress signal, a stop condition, and a safety cap. Ralph Wiggum puts the stop condition in a Stop hook and completion word. Manage-loop puts it in a continuation signal. Grind-loop puts it in an external supervisor that respawns fresh sessions based on status files and exit outcomes.
-
-**Why it exists:** Without named loop patterns, agents invent ad hoc respawn logic that has no checkpoint, no cap, and no clear owner for recovery. These patterns let the system choose the smallest loop that can safely finish the work.
-
-**What it is NOT:** It is not command selection, task execution, inter-agent messaging, or budget steering. Those are handled by `ai-coding-agents`, `task-execution`, `agent-to-agent`, and `agent-control`.
-
-**Adjacent concepts:** Hook patterns provide lifecycle intercepts, loop infrastructure provides checkpoint mechanics, agent control provides steering and abort signals, and observability provides evidence that a loop is progressing.
-
-**One-line analogy:** Autonomous loop patterns are autopilot modes: each mode keeps moving, but each needs instruments, altitude limits, and a clear handoff back to the pilot.
-
-**Common misconception:** A loop is not safer because it can run forever. A safe autonomous loop is defined by when it stops, what it persists, and how it proves progress between iterations.
-
-## Domain Context
-
-**What is this skill?** This skill consolidates autonomous AI agent loop patterns: the Ralph Wiggum exit-code-2 pattern, our manage-loop (manage-continuation.json + manage-loop-hook.py), grind-loop.sh supervisor, completion detection strategies, safety caps, stall detection, and the tradeoffs between simple loops and sophisticated orchestration. Use when designing or debugging autonomous agent loops, choosing between loop approaches, or implementing safety limits. Do NOT use for choosing which command to run (use ai-coding-agents) or for task management (use linear).
-
-## Key Files
-
-| File | Purpose |
-|---|---|
-| `scripts/hooks/manage-loop-hook.py` | Stop hook that reads the continuation signal, validates it against schema, enforces max iterations, and decides continue vs stop. |
-| `scripts/schemas/manage-continuation.schema.json` | Canonical continuation-signal shape (`should_continue`, `remaining_tasks`, `context_health`, `iteration`, `max_iterations`). |
-| `scripts/hooks/wrap-gate-hook.py` | PreToolUse workflow gate that reads instance-aware continuation signals and blocks claims after the wrap threshold is reached. |
-| `scripts/hooks/context-health-hook.py` | Updates continuation-signal `context_health` for Ghostty tab agents at warning/critical context thresholds. |
-| `scripts/loop/grind-loop.sh` | Supervisor for solo/manage/pretriaged modes; owns respawn, status files, bad-exit caps, claim locks, and instance suffixes. |
-| `scripts/loop/loop-supervisor.js` | Checkpoint staleness monitor for registered loops and phase thresholds. |
-| `scripts/agent/agent-events.js` | Emits structured JSONL lifecycle telemetry for loop/task observability. |
-| `.claude/settings.json` | Project hook registration, including `Stop` and `PreToolUse` hook wiring. |
 ## Coverage
 
-This skill covers the three autonomous loop architectures used in the Development repo: Ralph Wiggum (completion-word + Stop hook pattern), the manage-loop (continuation signal + `manage-loop-hook.py`), and `grind-loop.sh` (external supervisor with instance isolation and fresh-session respawn). It also covers completion detection strategies ranked by reliability, current continuation-signal behavior, stall detection and recovery signals, safety mechanisms (iteration caps, context health checks, wrap-gate enforcement, bad-exit caps, claim-lock TTL), the decision tree for choosing a pattern, and the prompt contract for completion-word-based loops. Runtime state files are generated under the agent-memory directory only while loops run; do not list them as stable source files.
+- Core primitives of an autonomous agent loop: trigger, worker agent, progress signal, stop condition, durable state, and safety cap.
+- Pattern selection across bounded single-run loops, sentinel continuation loops, checkpoint-resume loops, and external supervisor loops.
+- Completion signal design: explicit done markers, tracker state, exit status, persisted status files, and observable progress evidence.
+- Safety design: iteration limits, consecutive-error limits, elapsed-time limits, budget limits, context-health exits, and human handoff thresholds.
+- Stall detection and recovery: heartbeat age, unchanged work state, repeated failures, repeated plan churn, and supervisor escalation.
+- Checkpoint and handoff contracts: what state must persist between runs and what state must never live only in agent memory.
+- Anti-patterns that make autonomous loops unsafe: unbounded retry, prompt-only reliability, hidden mutable state, and silent respawn storms.
 
 ## Philosophy
 
-Without this skill, agents build loops that lack termination guarantees, skip safety caps, or reinvent patterns already proven in this repo. The most common failure mode is over-engineering: agents build manage-loop complexity for tasks that only need Ralph Wiggum. The second failure mode is missing safety caps entirely, leading to runaway loops that consume context budget without making progress. This skill exists to make the three-pattern landscape legible so agents pick the simplest adequate pattern and wire in the correct safety mechanisms from the start.
+An autonomous agent loop is not just an agent being told to continue. It is a control system. The agent is one component; the loop decides when to run it again, what evidence proves progress, what state survives a crash, and when a human must take over.
 
-> Use this skill when designing or debugging autonomous agent loops, choosing between loop approaches, or implementing safety caps and stall detection.
+The smallest safe loop is usually better than the most powerful loop. A one-off task with a clear finish condition does not need a queue supervisor. A multi-session backlog should not rely on a single completion word. A long-running unattended process must not depend on the worker agent remembering its own state.
 
-## Cross-Domain Synergy
-Autonomous loops power the continuous execution engine:
-- **agent-governance**: Dictates how many actions a loop can take before hitting trust ceilings, enforcing the max iterations or mutation caps documented here.
-- **ai-coding-agents**: Exposes the user-facing CLI commands (`/manage-auto`, `/grind`) that internally trigger these specific loop architectures.
-- **hook-patterns**: Implements the actual exit-signal (e.g., Ralph Wiggum) intercepts that make these loops function mechanically.
+The quality bar is explicit termination plus recoverable state. If a loop cannot answer "why did this run again?", "what changed since the last iteration?", and "what stops it from running forever?", it is not an autonomous loop. It is an uncapped retry.
 
-## 1. When this skill applies
+## The Six Primitives
 
-| Use this skill for... | Use something else for... |
-|---|---|
-| choosing between Ralph Wiggum, manage-loop, or grind-loop | choosing which repo command to run for a task (`ai-coding-agents`) |
-| understanding how completion detection works in each loop | creating or updating Linear issues (`linear`) |
-| implementing stall detection or iteration safety caps | implementing the task itself (`task-execution`) |
-| debugging a loop that is not terminating or resuming correctly | |
+| Primitive | Question it answers | Examples |
+|---|---|---|
+| Trigger | What starts the next iteration? | User request, queue item, scheduler tick, failed verification |
+| Worker agent | Who performs one unit of work? | A coding agent, reviewer agent, data extractor, browser runner |
+| Progress signal | How do we know anything changed? | Commit, test result, status update, artifact write, metric delta |
+| Stop condition | What means the loop is done? | Empty queue, completion marker, passing gate, explicit human stop |
+| Durable state | What survives crash or context reset? | Checkpoint file, issue comment, job record, append-only log |
+| Safety cap | What forces review when progress fails? | Max iterations, max consecutive errors, elapsed-time cap, budget cap |
 
-## 2. The three loop patterns at a glance
+Design the primitives first. Tooling choices come second.
 
-| Pattern | Complexity | Best for | Safety mechanism |
+## Pattern Catalog
+
+| Pattern | Best for | Stop owner | State owner | Main risk |
+|---|---|---|---|---|
+| Bounded single-run loop | One clear task that should finish in one session | Runtime limit or final verification gate | The current run plus final artifact | Agent tries to continue after the task is already done |
+| Sentinel continuation loop | Small repeated task with a precise done marker | Completion marker checked by a wrapper or hook | Transcript plus optional counter | Completion marker appears accidentally or never appears |
+| Checkpoint-resume loop | Multi-session work where context may reset | Checkpoint state and remaining-work count | Durable checkpoint | Stale checkpoint causes repeated or skipped work |
+| Supervisor respawn loop | Long-running unattended throughput | External supervisor | Status files, queue, and logs | Respawn storm after repeated failure |
+| Human-gated loop | Risky work with side effects or unclear requirements | Human approval gate | Review record and approved next action | Loop waits without making the escalation visible |
+
+## Pattern 1: Bounded Single-Run Loop
+
+Use this for a single task with a concrete finish condition. The prompt names the deliverable, the runtime enforces a hard limit, and verification decides whether the run is done.
+
+Use when:
+
+- The work has one primary deliverable.
+- The done condition can be verified inside one run.
+- Failure is reviewable from the final artifact and logs.
+- Restarting from scratch would not lose meaningful progress.
+
+Required safeguards:
+
+- A hard iteration or elapsed-time limit.
+- A final verification command or acceptance gate.
+- A clear final status: done, blocked, or failed.
+
+Do not use this for long backlogs, stateful migrations, or tasks where partial progress must be resumed.
+
+## Pattern 2: Sentinel Continuation Loop
+
+A sentinel loop repeats until the worker emits a precise completion marker, or until a wrapper decides the marker is absent and starts another turn. Some teams call this the Ralph Wiggum pattern: the runtime keeps going until the agent says the exact stop phrase.
+
+Prompt contract:
+
+```text
+Do the task described below.
+
+Completion condition: all requested changes are implemented and verification passes.
+
+When and only when the completion condition is true, output this exact marker:
+TASK_COMPLETE_9F3A
+
+If the task is blocked, output BLOCKED with the reason instead.
+Do not output the completion marker in code, examples, logs, or explanations.
+```
+
+Use when:
+
+- The task is small enough that repeated turns stay understandable.
+- The completion condition is easy to state as a marker contract.
+- A wrapper can count iterations and stop after a cap.
+
+Required safeguards:
+
+- Use an uncommon marker, not a word like "done".
+- Count iterations outside the model.
+- Stop on a blocked marker instead of continuing forever.
+- Keep the marker out of code snippets and examples.
+
+Do not use this when the task spans many sessions, requires durable queue state, or has high-risk side effects.
+
+## Pattern 3: Checkpoint-Resume Loop
+
+A checkpoint loop persists the state needed to resume later. The worker writes a checkpoint at the end of each run. The next run reads it, verifies it against current reality, and continues.
+
+Minimum checkpoint contract:
+
+```json
+{
+  "objective": "short stable goal",
+  "iteration": 3,
+  "max_iterations": 10,
+  "remaining_work": ["item-a", "item-b"],
+  "completed_work": ["item-0"],
+  "last_verified_evidence": "test name or artifact reference",
+  "context_health": "ok | degraded | exhausted",
+  "next_action": "the first action for the next run",
+  "stop_reason": null
+}
+```
+
+Use when:
+
+- The work cannot safely fit in one context window.
+- Partial progress must survive a restart.
+- The loop must decide whether work remains before starting another run.
+- A fresh run may need a compact handoff instead of full history.
+
+Required safeguards:
+
+- Write checkpoints atomically where the platform supports it.
+- Treat checkpoint state as a cache; verify current reality before acting.
+- Stop when context health is exhausted, even if work remains.
+- Include the next action so the next run does not rediscover the plan.
+
+Do not store the only copy of progress in model memory or chat history.
+
+## Pattern 4: Supervisor Respawn Loop
+
+A supervisor loop runs outside the worker agent. It starts a worker, watches status and timeout signals, records the result, and decides whether to spawn another worker.
+
+Use when:
+
+- Many independent work items need unattended throughput.
+- Each worker should start with fresh context.
+- The supervisor can own queue selection, timeout, and retry policy.
+- Workers may fail independently without ending the whole process.
+
+Required safeguards:
+
+- Per-worker timeout.
+- Consecutive-error cap.
+- Queue item lock or claim before work starts.
+- Status write on success, failure, blocked, and timeout.
+- Supervisor log that explains every respawn decision.
+
+Do not let a supervisor respawn a worker after repeated identical failures without changing state, backoff, or escalation.
+
+## Completion Signals Ranked
+
+| Signal | Reliability | Use it for | Failure mode |
 |---|---|---|---|
-| **Ralph Wiggum** | ~20 lines | Mechanical, single-pass tasks | Completion word in prompt |
-| **Manage-loop** | ~150 lines of Python | Multi-task backlog with Linear integration | 10-iteration cap + health check |
-| **grind-loop.sh** | ~200 lines of bash | Parallel throughput, worktree isolation | Instance-aware + per-session cap |
+| Authoritative tracker state | High | Queue and backlog loops | Tracker update omitted or duplicated |
+| Passing verification gate | High | Coding, data, or document loops | Gate is too shallow or not rerun |
+| Explicit sentinel marker | Medium-high | Small repeated tasks | Marker appears accidentally or never appears |
+| Durable checkpoint says no work remains | Medium | Checkpoint loops | Checkpoint is stale |
+| Process exit code | Medium | Supervisor loops | Exit code lacks semantic detail |
+| Absence of new output | Low | Last-resort stall hint only | Quiet work and stalled work look the same |
 
-Use the simplest pattern that meets the requirement. Ralph Wiggum is underrated.
+Prefer authoritative tracker state and verification gates when available. Use sentinel markers for small loops. Use absence of output only as a stall warning, never as proof of completion.
 
-## 3. Pattern 1 — Ralph Wiggum (exit code 2 + stop hook)
+## Safety Caps
 
-Named after the Simpsons character who just keeps going until something stops him. The pattern is widely adopted in the Claude Code community because it requires almost no infrastructure.
+Every autonomous loop needs at least one cap. Unattended loops usually need several.
 
-### How it works
-
-1. The stop hook reads Claude's last response text.
-2. If the text contains the completion word (e.g., "TASK_COMPLETE"), the hook exits with code `0`, ending the session.
-3. If the text does NOT contain the completion word, the hook exits with code `2`.
-4. Exit code `2` from a stop hook signals Claude Code to continue — a new turn starts automatically.
-5. Claude keeps iterating until the completion word appears.
-
-### Minimal implementation
-
-```python
-# .claude/hooks/stop.py
-import sys
-import json
-
-data = json.loads(sys.stdin.read())
-transcript = data.get("transcript", [])
-last_message = transcript[-1]["content"] if transcript else ""
-
-if "TASK_COMPLETE" in last_message:
-    sys.exit(0)   # Done — stop the session
-else:
-    sys.exit(2)   # Not done — keep going
-```
-
-### Prompt contract
-
-The agent prompt must:
-1. Describe the task
-2. Describe the completion condition precisely
-3. Instruct the agent to output the completion word when done
-
-```
-Implement the following changes to the CSV export feature:
-[task details]
-
-When you have committed all changes and verified they pass, output the exact word TASK_COMPLETE.
-Do not output TASK_COMPLETE until the commit exists and verification passes.
-```
-
-### When Ralph Wiggum is the right choice
-
-- Single well-defined task with a clear done condition
-- No Linear integration needed
-- No need for cross-session state
-- Task fits in one context window
-- Low risk — agent makes decisions that are easy to review in git
-
-### Risks
-
-- No iteration cap by default. Add one if the task could loop indefinitely:
-
-```python
-iteration = data.get("iteration", 0)
-if iteration > 15:
-    print("Safety cap reached", file=sys.stderr)
-    sys.exit(0)
-```
-
-- The completion word can appear accidentally in code output. Choose an uncommon sentinel, not "done" or "complete".
-
-## 4. Pattern 2 — Manage-loop (manage-continuation.json)
-
-The manage-loop powers `/manage-auto` and `/grind`. It is a checkpoint/resume architecture: the task-manager agent writes state to a JSON file at the end of each session, and a Python hook reads it to decide whether to continue.
-
-### How it works
-
-```
-Session N
-  task-manager claims tasks, executes solvers, marks Done
-  at session end: writes manage-continuation.json
-  stop hook reads the file
-    should_continue == true AND remaining_tasks > 0 → block (new session)
-    should_continue == false → exit(0) (stop)
-    iteration >= cap → exit(0)
-
-Session N+1
-  task-manager reads manage-continuation.json for context
-  continues from where session N left off
-```
-
-### manage-continuation.json schema
-
-> The continuation signal schema is canonically defined in `agent-to-agent`. See that skill for the full field list and context health states. The summary relevant to loop mechanics: `should_continue: boolean` gates loop continuation; `context_health` is the task-manager's self-assessment (`ok`, `compact`, `exhausted`). When `exhausted`, the loop terminates even if tasks remain — a compact context produces bad code.
-
-### manage-loop-hook.py
-
-Located at `scripts/hooks/manage-loop-hook.py`. Key behaviors:
-
-- Reads the default continuation signal from the agent-memory directory
-- Validates required fields with `scripts/schemas/manage-continuation.schema.json`
-- Uses `mode` as the gate; only `manage`, `grind`, and `solo` opt into continuation
-- Clears the signal when `should_continue` is false, the iteration cap is reached, or no tasks remain
-- Approves stop for `context_health: "compact"` or `"exhausted"` and marks the signal with `needs_new_session` / `needs_compaction` when work remains
-- Blocks stop only when healthy context remains and `remaining_tasks > 0`
-
-### Self-retrospective
-
-Between sessions, the task-manager writes a brief retrospective to Linear — what was completed, what is blocked, what the next session should tackle first. This replaces the need for a human to manually review progress between iterations.
-
-### When manage-loop is the right choice
-
-- Multi-task backlog (5+ tasks)
-- Linear integration required (claim, done, comment)
-- Tasks have dependencies that need ordering
-- Session context degrades after 3-4 tasks and fresh context is needed
-
-### Wrap-gate enforcement
-
-The wrap-gate hook (`scripts/hooks/wrap-gate-hook.py`) enforces that the task-manager runs `/wrap` between tasks. It:
-1. On `linear-cli.js done`, `done-batch`, or equivalent `linearis` Done update — writes an instance-aware `wrap-required` marker
-2. Tracks `tasks_since_wrap` and reads `max_tasks_before_wrap` from the continuation signal (default: 3)
-3. Allows claims below the threshold and blocks claims once the threshold is reached
-4. Session start cleanup removes stale wrap markers
-
-This prevents long manage/grind runs from claiming indefinitely without closeout while avoiding the overhead of forcing `/wrap` after every tiny task.
-
-## 5. Pattern 3 — grind-loop.sh (supervisor)
-
-The `grind-loop.sh` supervisor architecture (instance isolation via `GRIND_INSTANCE`, restart behavior, per-session budget control, consecutive-error cap, worktree compatibility) is canonically documented in `agent-loop-infra`. Read that skill for the full implementation reference.
-
-**When grind-loop is the right choice** (from this skill's perspective): maximum throughput via parallel instances, long-running unattended backlog clearing, task context short enough for one-task-per-session, and git worktree isolation needed to prevent concurrent-edit conflicts. Choose manage-loop instead when you need cross-session checkpoint/resume with Linear integration and structured handoff.
-
-## 6. Completion detection strategies
-
-Every loop needs a reliable signal that work is done. Here are the strategies in order of reliability:
-
-| Strategy | Reliability | Notes |
+| Cap | Prevents | Typical default |
 |---|---|---|
-| **Linear status check** | High | Query Linear for remaining `In Progress` or `Ready` tasks. Reliable if the agent marks done correctly. |
-| **Completion word in output** | High | Ralph Wiggum pattern. Reliable if the agent follows the prompt contract. |
-| **Exit code from stop hook** | High | Deterministic. The hook decides based on output content. |
-| **Status file check** | Medium | `grind-loop.sh` reads generated `solo-status*.json` files. Reliable if the agent writes them consistently. |
-| **Remaining task count in JSON** | Medium | Reads `remaining_tasks` from continuation file. Can be stale if session crashes mid-write. |
-| **Absence of new commits** | Low | Heuristic only. An agent might think without committing. |
+| Max iterations | Endless continue loops | 5-15 iterations, lower for risky work |
+| Consecutive errors | Respawn storms | Stop after 3 repeated failures |
+| Elapsed time | Long silent runs | Based on expected phase duration |
+| Work item lock age | Zombie ownership | Expire only after evidence of worker death |
+| Context health | Low-quality late-session changes | Stop and hand off at exhausted context |
+| Budget | Runaway cost | Small initial budget, staged increase |
 
-Prefer Linear status as the task-level ground truth. Use status files, continuation signals, and checkpoints for loop mechanics, then reconcile against Linear on session start before dispatching more task work.
+The cap must be enforced outside the worker when possible. A model instruction that says "do not loop forever" is not a cap.
 
-## 7. Stall detection
+## Stall Detection
 
-A loop is stalled when it keeps running but is not making progress. Common causes:
+A loop is stalled when it keeps consuming iterations without improving the durable state.
 
-1. Agent is thinking in circles without committing
-2. A test is consistently failing and the agent cannot fix it
-3. Agent is blocked on an ambiguous requirement
-4. The Linear task is already Done but the loop did not detect it
+Common stall signals:
 
-### Detection heuristics
+- Same work item repeated across several iterations.
+- No new durable artifact after an iteration that claimed progress.
+- Same verification failure appears repeatedly.
+- The worker rewrites the plan but does not execute it.
+- Heartbeat or status timestamp is older than the expected phase duration.
+- Supervisor respawns the same failing task without backoff or escalation.
 
-```python
-# Stall indicators to check between iterations
-def is_stalled(state):
-    # No new commits since last iteration
-    if state.new_commits_this_iteration == 0:
-        return True, "No commits — agent may be stuck"
+Recovery sequence:
 
-    # Same task claimed 3+ iterations in a row
-    if state.last_three_tasks_all_same():
-        return True, "Same task claimed repeatedly — likely blocked"
+1. Stop the current worker or refuse the next respawn.
+2. Preserve the latest checkpoint, logs, and verification output.
+3. Classify the stall: unclear requirement, failing dependency, repeated bug, or loop-control error.
+4. Escalate to human review when the next action requires judgment.
+5. Restart only after changing the state that caused the stall.
 
-    # Linear task not advancing state
-    if state.task_status_unchanged_for_n_iterations(3):
-        return True, "Task status unchanged — agent may not be marking progress"
+Do not recover from a stall by only increasing the iteration limit.
 
-    return False, None
-```
+## Pattern Selection
 
-Current repo mechanisms are more specific than the generic heuristic:
+Use this decision table before implementing loop control.
 
-| Mechanism | Current source | What it detects |
-|---|---|---|
-| Status-file watchdog | `scripts/loop/grind-loop.sh` | Child process finished after writing a non-`running` result, or timed out. |
-| Bad-exit streaks | `scripts/loop/grind-loop.sh` | Solo/manage sessions that crash or exit without usable status three times in a row. |
-| Claim-lock TTL | `scripts/loop/grind-loop.sh` | Parallel instances that left stale claim locks older than the TTL. |
-| Checkpoint staleness | `scripts/loop/loop-supervisor.js` | Registered loops whose checkpoint phase has not updated within its threshold. |
-
-### Recovery actions
-
-| Stall type | Recovery action |
+| Situation | Recommended pattern |
 |---|---|
-| Status-file timeout | Let `grind-loop.sh` kill the process tree, then inspect status and logs before respawn. |
-| Repeated bad exits | Stop after the configured streak cap and write the loop abort file. |
-| Stale claim lock | Remove only after TTL verification, then allow another instance to claim. |
-| Stale checkpoint | Run `loop-supervisor.js status` and recover through `loop-checkpoint.js` before restarting. |
-| Ambiguous requirement | Post a comment on the task, move it back to planning/Ready as appropriate, and stop the loop. |
+| One task, one artifact, clear verification | Bounded single-run loop |
+| One task that may need a few more turns | Sentinel continuation loop |
+| Multiple related steps that may exceed context | Checkpoint-resume loop |
+| Many independent queue items | Supervisor respawn loop |
+| Side effects, approvals, or unclear requirements | Human-gated loop |
+| Unknown done condition | Do not loop yet; define the stop condition first |
 
-## 8. Safety mechanisms summary
+The rule of thumb: choose the simplest pattern that can stop safely and resume correctly.
 
-| Mechanism | Pattern | Where |
+## Implementation Checklist
+
+Before shipping an autonomous loop, answer these questions in writing:
+
+- What exactly starts one iteration?
+- What exactly proves the iteration made progress?
+- What exactly means the whole loop is done?
+- Where is state written so it survives restart?
+- What cap stops repeated failure?
+- How does a human see why the loop stopped?
+- Which operation is safe to retry, and which requires approval?
+
+If any answer is "the agent will remember", the design is not ready.
+
+## Anti-Patterns
+
+| Anti-pattern | Why it fails | Safer replacement |
 |---|---|---|
-| Completion word | Ralph Wiggum | Stop hook reads transcript |
-| Iteration cap | Manage-loop | `manage-loop-hook.py` (default: 10) |
-| Context health check | Manage-loop | Task-manager self-reports `context_health` |
-| Wrap-gate enforcement | Manage-loop | `wrap-gate-hook.py` blocks claims without `/wrap` |
-| Bad-exit cap | grind-loop | Bash counters in `grind-loop.sh` stop solo/manage after 3 bad exits |
-| Instance isolation | grind-loop | `GRIND_INSTANCE` env var |
-| Checkpoint staleness | Registered loops | `loop-supervisor.js` reads checkpoint phase thresholds |
-
-## 9. Choosing a pattern — decision tree
-
-```
-Is the task mechanical with a clear done condition?
-├── Yes → Will it fit in one context window?
-│   ├── Yes → Ralph Wiggum (simplest)
-│   └── No → Manage-loop (checkpoint/resume)
-└── No → Is it a multi-task backlog with Linear integration?
-    ├── Yes → Manage-loop or grind-loop
-    │   └── Need parallel throughput?
-    │       ├── Yes → grind-loop (multiple instances)
-    │       └── No → Manage-loop (single orchestrated session)
-    └── No → Define the done condition first, then choose a pattern
-```
-
-When in doubt, start with Ralph Wiggum. It is simpler to debug, easier to inspect, and covers more use cases than it appears.
-
-## 10. References
-
-- Stop hook pattern: `.claude/settings.json` → `hooks.Stop`
-- Manage-loop hook: `scripts/hooks/manage-loop-hook.py`
-- Continuation schema: `scripts/schemas/manage-continuation.schema.json`
-- Wrap-gate hook: `scripts/hooks/wrap-gate-hook.py`
-- Grind-loop supervisor: `scripts/loop/grind-loop.sh`
-- Loop staleness monitor: `scripts/loop/loop-supervisor.js`
-- Observability events: `scripts/agent/agent-events.js`
-- Runtime-generated continuation/status files use `manage-continuation` and `solo-status` prefixes under the agent-memory directory and may be absent when loops are idle.
+| Unbounded continue prompt | The model can retry forever without new evidence | External iteration cap plus blocked state |
+| Prompt-only reliability | The model is both worker and watchdog | Runtime or supervisor enforces caps |
+| Hidden progress in chat history | Restart loses the work state | Durable checkpoint or tracker update |
+| Completion by silence | Quiet output is indistinguishable from a hang | Explicit done, blocked, failed, or timed-out state |
+| Respawn without state change | Repeats the same failure | Backoff, classify, and escalate |
+| One giant worker context | Context rot degrades decisions | Fresh worker per item or checkpoint handoff |
+| Human gate buried in logs | Review never happens | Explicit approval state and visible stop reason |
 
 ## Verification
 
 After applying this skill, verify:
-- [ ] The chosen loop pattern is the simplest that meets the requirement (Ralph Wiggum before manage-loop before grind-loop)
-- [ ] A safety cap exists — iteration limit, consecutive error limit, or context health check
-- [ ] The completion detection strategy is defined and the prompt contract includes the completion word if using Ralph Wiggum
-- [ ] Stall detection is wired in for any loop expected to run more than 3 iterations unattended
-- [ ] The wrap-gate is not bypassed — `/wrap` runs between tasks in manage-loop flows
-- [ ] For grind-loop: `GRIND_INSTANCE` env var is set when running parallel instances
-- [ ] Observability events are emitted via `scripts/agent/agent-events.js` so loop progress is visible
+
+- [ ] The chosen pattern is the simplest one that can safely stop and resume.
+- [ ] The loop has an explicit stop condition and an explicit blocked condition.
+- [ ] At least one safety cap is enforced outside the worker agent.
+- [ ] Durable state records objective, iteration, remaining work, latest evidence, and next action.
+- [ ] Stall detection can identify repeated work, repeated failure, stale heartbeat, or no durable progress.
+- [ ] Completion is based on tracker state, verification output, or a precise marker, not silence.
+- [ ] Human handoff is visible when the loop reaches a cap or a judgment boundary.
 
 ## Do NOT Use When
 
-| Instead of this skill | Use | Why |
-|---|---|---|
-| Choosing which CLI command to run | `ai-coding-agents` | That skill owns the `/manage`, `/grind`, `/solve` command reference |
-| Creating or updating Linear issues from within a loop | `linear` | Linear skill owns issue lifecycle; this skill only covers loop mechanics |
-| Implementing the task itself inside a loop iteration | `task-execution` | Task-execution owns the research-implement-verify protocol per task |
-| Wiring up hook code (PreToolUse, PostToolUse, Stop) | `hook-patterns` | Hook-patterns owns the hook lifecycle; this skill only references hooks as loop components |
-| Setting budget caps or model routing for loop agents | `agent-control` | Agent-control owns the control plane including budget and safety caps at the system level |
+| Use instead | When |
+|---|---|
+| `agent-engineering` | Designing the full production agent system, including model routing, multi-agent coordination, and rollout policy |
+| `prompt-craft` | Writing the exact instruction for one agent run or one worker prompt |
+| `tool-call-strategy` | Optimizing how many tools one agent calls inside a single iteration |
+| `context-management` | Deciding what information belongs in one worker's context |
+| `observability-modeling` | Designing event names, spans, metrics, and trace attributes for the loop |
+| Product-specific docs | Choosing a slash command, IDE feature, or hosted-agent setting in a particular tool |

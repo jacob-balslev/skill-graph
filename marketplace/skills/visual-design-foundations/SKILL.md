@@ -1,6 +1,6 @@
 ---
 name: visual-design-foundations
-description: "Use when designing or auditing visual craft: color palette, typography, spacing, elevation, rhythm, density, visual hierarchy, brand fit, contrast intent, and motion feel. Do NOT use for sign-system meaning (use `semiotics`), token/component architecture (use `design-system-architecture`), responsive structure (use `layout-composition`), or accessibility compliance (use `a11y`)."
+description: "Use when designing or auditing visual craft: color palette, typography, spacing, elevation, rhythm, density, visual hierarchy, brand fit, contrast intent, and motion feel. Do NOT use for sign-system meaning (use `semiotics`), token/component architecture (use `design-system-architecture`), responsive structure (use `layout-composition`), or accessibility compliance (use `a11y`). Do NOT use for what does this icon or badge color communicate to users? Do NOT use for define semantic tokens and component variants. Do NOT use for decide the responsive section order and breakpoint behavior. Do NOT use for verify WCAG contrast, focus order, and screen-reader behavior. Do NOT use for what visual signs mean (use semiotics). Do NOT use for reusable tokens and components (use design-system-architecture). Do NOT use for responsive structure (use layout-composition). Do NOT use for accessibility compliance (use a11y)."
 license: MIT
 compatibility: "Portable visual-design guidance for product UI, dashboards, docs, marketing-adjacent product surfaces, and design-system consumers. Does not replace brand-specific guidelines."
 allowed-tools: Read Grep
@@ -34,6 +34,7 @@ metadata:
   skill_graph_protocol: Skill Metadata Protocol v7
   skill_graph_project: Skill Graph
   skill_graph_canonical_skill: skills/frontend-ui/visual-design-foundations/SKILL.md
+  skill_graph_export_description_projection: anti_examples+boundary
 ---
 
 # Visual Design Foundations

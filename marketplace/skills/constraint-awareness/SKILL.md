@@ -1,6 +1,6 @@
 ---
 name: constraint-awareness
-description: "Use when prioritizing work in an AI-assisted codebase, designing agent autonomy levels, deciding what to automate vs keep manual, or evaluating whether a process/tool adds value. Covers Theory of Constraints for AI-era engineering: cheap code production, human review/validation/decision bottlenecks, Five Focusing Steps, constraint-aware process design, attention audits, and constraint-shift modeling. Do NOT use for task-effort estimation, backlog scoring with RICE/WSJF/ICE, or routing a task to a specific model."
+description: "Use when prioritizing work in an AI-assisted codebase, designing agent autonomy levels, deciding what to automate vs keep manual, or evaluating whether a process/tool adds value. Covers Theory of Constraints for AI-era engineering: cheap code production, human review/validation/decision bottlenecks, Five Focusing Steps, constraint-aware process design, attention audits, and constraint-shift modeling. Do NOT use for task-effort estimation, backlog scoring with RICE/WSJF/ICE, or routing a task to a specific model. Do NOT use for what's the ICE / RICE score for this initiative against five others. Do NOT use for estimate the effort tier for this ticket. Do NOT use for route this debugging task to the cheapest model that can solve it. Do NOT use for review this AI-generated PR for correctness. Do NOT use for design the production reliability layer for our agent system. Do NOT use for production reliability patterns (orchestration, error budgets, observability) (use agent-engineering)."
 license: MIT
 compatibility: "Operating-model-agnostic. Applies whether the constraint is a single solo developer operating multiple agents, a small team where one senior engineer reviews everything, or a larger team where review capacity is the limiting factor. The framework adapts as the constraint identity changes."
 allowed-tools: Read Grep
@@ -41,6 +41,7 @@ metadata:
   skill_graph_protocol: Skill Metadata Protocol v7
   skill_graph_project: Skill Graph
   skill_graph_canonical_skill: skills/meta-methods/constraint-awareness/SKILL.md
+  skill_graph_export_description_projection: anti_examples+boundary
 ---
 
 # Constraint Awareness

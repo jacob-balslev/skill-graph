@@ -1,6 +1,6 @@
 ---
 name: bounded-context-mapping
-description: "Use when drawing Domain-Driven Design boundaries: bounded contexts, context maps, ownership seams, upstream/downstream relationships, anti-corruption layers, shared kernels, and translation boundaries. Do NOT use for pre-DDD entity discovery (use `conceptual-modeling`), database schema design (use `data-modeling`), or HTTP endpoint design (use `api-design`)."
+description: "Use when drawing Domain-Driven Design boundaries: bounded contexts, context maps, ownership seams, upstream/downstream relationships, anti-corruption layers, shared kernels, and translation boundaries. Do NOT use for pre-DDD entity discovery (use `conceptual-modeling`), database schema design (use `data-modeling`), or HTTP endpoint design (use `api-design`). Do NOT use for list entities, attributes, and cardinalities before any architecture decision. Do NOT use for create SQL tables, foreign keys, and indexes. Do NOT use for design REST routes and response envelopes. Do NOT use for write an ADR for the boundary decision after we already chose it. Do NOT use for persistence structure after context boundaries inform ownership (use data-modeling). Do NOT use for external endpoint shape (use api-design)."
 license: MIT
 compatibility: "Portable DDD boundary-mapping discipline for monoliths, modular monoliths, services, event-driven systems, and agent workspaces."
 allowed-tools: Read Grep
@@ -34,6 +34,7 @@ metadata:
   skill_graph_protocol: Skill Metadata Protocol v7
   skill_graph_project: Skill Graph
   skill_graph_canonical_skill: skills/code-engineering/bounded-context-mapping/SKILL.md
+  skill_graph_export_description_projection: anti_examples+boundary
 ---
 
 # Bounded Context Mapping

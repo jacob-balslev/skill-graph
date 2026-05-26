@@ -1,6 +1,6 @@
 ---
 name: skill-router
-description: "Use when routing an agent request across multiple skills, building or auditing a routing table, detecting routing coverage gaps, or answering questions like 'which skill handles this?', 'who routes X?', or 'why did skill A activate instead of B?'. Covers trigger-label matching, file-path matching, keyword matching, description-based semantic matching, scope/type tiebreakers, and coverage-gap detection. Do NOT use when the target skill is already known (load it directly), when authoring a new skill (use `skill-metadata-template` instead), or when evaluating a SINGLE skill's quality (use `graph-audit`)."
+description: "Use when routing an agent request across multiple skills, building or auditing a routing table, detecting routing coverage gaps, or answering questions like 'which skill handles this?', 'who routes X?', or 'why did skill A activate instead of B?'. Covers trigger-label matching, file-path matching, keyword matching, description-based semantic matching, scope/type tiebreakers, and coverage-gap detection. Do NOT use when the target skill is already known (load it directly), when authoring a new skill (use `skill-metadata-template` instead), or when evaluating a SINGLE skill's quality (use `graph-audit`). Do NOT use for audit the graph-audit skill for schema conformance. Do NOT use for write a guide explaining how our routing works. Do NOT use for reproduce this routing mis-dispatch from production logs. Do NOT use for the design of Next (use middleware-patterns)."
 license: MIT
 compatibility: "Markdown, YAML, any agent runtime"
 allowed-tools: Read Grep
@@ -21,9 +21,9 @@ metadata:
   eval_state: passing
   routing_eval: present
   stability: experimental
-  keywords: "[\"skill routing\",\"skill dispatch\",\"keyword routing\",\"route skill\",\"which skill to use\",\"skill selector\",\"routing table\",\"coverage gap\",\"ambiguous skill activation\",\"skill activate\"]"
+  keywords: "[\"skill routing\",\"skill dispatch\",\"keyword routing\",\"route skill\",\"which skill to use\",\"skill selector\",\"routing table\",\"coverage gap\",\"ambiguous skill activation\",\"skill activate\",\"agent request routing\",\"skill activation decision\",\"which skill should fire\",\"skill selection for request\",\"skill library coverage\",\"skill dispatch logic\",\"agent request to skill mapping\"]"
   triggers: "[\"skill-router\"]"
-  examples: "[\"activate the right skill for this agent request: 'my tests are failing in CI'\",\"build a routing table that covers every agent request type we see\",\"why did the documentation skill activate when the user asked about a11y?\",\"find the coverage gaps — which agent requests match no skill at all?\"]"
+  examples: "[\"given an agent request, choose which skill should fire — what's the skill dispatch logic?\",\"build the skill-routing decision table covering every agent request type we see\",\"why did the documentation skill activate when the user asked about a11y?\",\"find the skill-library coverage gaps — which agent requests match no skill at all?\"]"
   anti_examples: "[\"audit the graph-audit skill for schema conformance\",\"write a guide explaining how our routing works\",\"reproduce this routing mis-dispatch from production logs\"]"
   relations: "{\"boundary\":[{\"skill\":\"graph-audit\",\"reason\":\"graph-audit verifies ONE skill's metadata; skill-router chooses BETWEEN skills at request time\"},{\"skill\":\"debugging\",\"reason\":\"debugging reproduces a specific routing mis-dispatch from evidence; skill-router designs the routing table itself\"},{\"skill\":\"skill-infrastructure\",\"reason\":\"skill-infrastructure analyses routing-miss patterns across the whole library to find systemic gaps; skill-router authors the routing logic for one library at a time\"},{\"skill\":\"middleware-patterns\",\"reason\":\"middleware-patterns owns the design of Next.js middleware (request/response transforms, edge runtime, matchers); skill-router owns agent skill dispatch. Writing a guide explaining 'how our routing works' is documentation about Next.js middleware patterns, not an agent skill routing exercise.\"}],\"verify_with\":[\"graph-audit\"]}"
   portability: "{\"readiness\":\"scripted\",\"targets\":[\"skill-md\"]}"
@@ -35,6 +35,7 @@ metadata:
   skill_graph_protocol: Skill Metadata Protocol v7
   skill_graph_project: Skill Graph
   skill_graph_canonical_skill: skills/agent-ops/skill-router/SKILL.md
+  skill_graph_export_description_projection: anti_examples+boundary
 ---
 
 # Skill Router

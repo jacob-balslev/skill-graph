@@ -1,21 +1,21 @@
 ---
 name: acid-fundamentals
-description: "Use when reasoning about the four ACID properties of database transactions — Atomicity, Consistency, Isolation, Durability — as foundational concepts beneath any transactional system: what each property formally guarantees, the difference between the property the database claims and the property the application gets (depending on isolation level, replication mode, and configuration), the relationship between ACID and BASE (the alternative model in many NoSQL systems), why 'C' is the most contested letter (database consistency vs application invariants), and the historical record (Härder & Reuter 1983, the Gray-Reuter transaction model, Gray's Turing lecture). Do NOT use for choosing isolation levels for a specific workload (use transaction-isolation), distributed-system CAP tradeoffs (use cap-theorem-tradeoffs), database query design (use query-optimization), or zero-downtime migration mechanics (use database-migration)."
+description: "Use when reasoning about the four ACID properties of database transactions — Atomicity, Consistency, Isolation, Durability — as foundational concepts beneath any transactional system: what each property formally guarantees, the difference between the property the database claims and the property the application gets (depending on isolation level, replication mode, and configuration), the relationship between ACID and BASE (the alternative model in many NoSQL systems), why 'C' is the most contested letter (database consistency vs application invariants), and the historical record (Härder & Reuter 1983, the Gray-Reuter transaction model, Gray's Turing lecture). Do NOT use for choosing isolation levels for a specific workload (use transaction-isolation), distributed-system CAP tradeoffs (use cap-theorem-tradeoffs), database query design (use query-optimization), or zero-downtime migration mechanics (use database-migration). Do NOT use for design a database schema (use data-modeling)."
 license: MIT
 allowed-tools: Read Grep
 metadata:
-  schema_version: "8"
-  version: "1.0.0"
+  schema_version: "7"
+  version: "1.1.0"
   type: capability
   operation: know
-  category: engineering
   subject: code-engineering
+  category: engineering
   domain: engineering/data
-  scope: workspace
+  scope: reference
   owner: skill-graph-maintainer
-  freshness: "2026-05-16"
+  freshness: "2026-05-21"
   drift_check: "{\"last_verified\":\"2026-05-16\"}"
-  eval_artifacts: planned
+  eval_artifacts: present
   eval_state: unverified
   routing_eval: absent
   comprehension_state: present
@@ -39,6 +39,8 @@ metadata:
   skill_graph_protocol: Skill Metadata Protocol v7
   skill_graph_project: Skill Graph
   skill_graph_canonical_skill: skills/code-engineering/acid-fundamentals/SKILL.md
+  skill_graph_export_description_projection: anti_examples+boundary
+  skill_graph_export_description_projection_truncated: "true"
 ---
 
 # ACID Fundamentals
@@ -96,7 +98,7 @@ Three configuration knobs that change what your database actually guarantees:
 | Knob | Default in Postgres | Effect when changed |
 |---|---|---|
 | `synchronous_commit` | `on` (durable) | `off` → commit acknowledged before WAL flush; last few commits lost on crash |
-| Isolation level | `read committed` | `serializable` is strongest; `read uncommitted` allows dirty reads |
+| Isolation level | `read committed` | `serializable` is strongest; Postgres maps `read uncommitted` to read committed, while some engines permit dirty reads |
 | Replication mode | none | Synchronous replication = D guarantees include replica; async = primary-only |
 
 Knowing your production configuration — not assuming the default — is operational hygiene.

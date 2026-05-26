@@ -1,6 +1,6 @@
 ---
 name: security-fundamentals
-description: "Use when reasoning about the security properties any application must satisfy: threat modeling (assets, threats, adversaries, surfaces), Saltzer and Schroeder's eight design principles (1975), input validation discipline, authentication vs authorization, secrets handling, secure-by-default, least-privilege, the OWASP Top 10 as recurring vulnerability classes, and defense in depth. Covers cross-cutting decisions about trust boundaries, where validation belongs, where authn/authz checks live, and how to bound blast radius. Do NOT use for LLM-specific prompt-injection (use prompt-injection-defense), cryptographic primitive implementation (use vendor libs), security-scanning tools (use security-scanning), credential-encryption schemes (use credential-encryption), GDPR/regulatory compliance (use gdpr-compliance), or the social/organizational side of security (out of scope)."
+description: "Use when reasoning about the security properties any application must satisfy: threat modeling (assets, threats, adversaries, surfaces), Saltzer and Schroeder's eight design principles (1975), input validation discipline, authentication vs authorization, secrets handling, secure-by-default, least-privilege, the OWASP Top 10 as recurring vulnerability classes, and defense in depth. Covers cross-cutting decisions about trust boundaries, where validation belongs, where authn/authz checks live, and how to bound blast radius. Do NOT use for LLM-specific prompt-injection (use prompt-injection-defense), cryptographic primitive implementation (use vendor libs), security-scanning tools (use security-scanning), credential-encryption schemes (use credential-encryption), GDPR/regulatory compliance (use gdpr-compliance), or the social/organizational side of security (out of scope). Do NOT use for implement HMAC verification for a Shopify webhook (use webhook-integration)."
 license: MIT
 allowed-tools: Read Grep
 metadata:
@@ -39,6 +39,8 @@ metadata:
   skill_graph_protocol: Skill Metadata Protocol v7
   skill_graph_project: Skill Graph
   skill_graph_canonical_skill: skills/quality-assurance/security-fundamentals/SKILL.md
+  skill_graph_export_description_projection: anti_examples+boundary
+  skill_graph_export_description_projection_truncated: "true"
 ---
 
 # Security Fundamentals

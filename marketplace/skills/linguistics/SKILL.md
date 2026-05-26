@@ -1,6 +1,6 @@
 ---
 name: linguistics
-description: "Use when choosing semantically precise names for files/functions/variables/types/columns, resolving overloaded terms, reviewing error messages or UI copy for blame/register clarity, or adapting language for end-user/agent/developer/global-audience contexts. Covers morphology, compound-word order, abbreviation policy, verb-noun naming, polysemy qualification, audience register, blame-free error structure, and cross-cultural language awareness. Do NOT use for casing convention policy (use `naming-conventions`), call-site-wide renames (use `refactor`), docs/navigation structure (use `information-architecture`), specialized UI text pattern catalogs (use `microcopy`), or final prose humanization (use `writing-humanizer`)."
+description: "Use when choosing semantically precise names for files/functions/variables/types/columns, resolving overloaded terms, reviewing error messages or UI copy for blame/register clarity, or adapting language for end-user/agent/developer/global-audience contexts. Covers morphology, compound-word order, abbreviation policy, verb-noun naming, polysemy qualification, audience register, blame-free error structure, and cross-cultural language awareness. Do NOT use for casing convention policy (use `naming-conventions`), call-site-wide renames (use `refactor`), docs/navigation structure (use `information-architecture`), specialized UI text pattern catalogs (use `microcopy`), or final prose humanization (use `writing-humanizer`). Do NOT use for decide kebab-case vs snake_case vs camelCase for new database columns. Do NOT use for restructure this doc into a tutorial format with progressive disclosure. Do NOT use for implement Intl.NumberFormat for DKK vs USD currency formatting."
 license: MIT
 compatibility: "Provider-, runtime-, stack-, and language-agnostic. The morphology, polysemy, register, and error-message rules apply to any software product; substitute the artifact conventions and project language of the local stack while preserving the meaning-level checks."
 allowed-tools: Read Grep
@@ -42,6 +42,8 @@ metadata:
   skill_graph_protocol: Skill Metadata Protocol v7
   skill_graph_project: Skill Graph
   skill_graph_canonical_skill: skills/knowledge-organization/linguistics/SKILL.md
+  skill_graph_export_description_projection: anti_examples+boundary
+  skill_graph_export_description_projection_truncated: "true"
 ---
 
 # Linguistics

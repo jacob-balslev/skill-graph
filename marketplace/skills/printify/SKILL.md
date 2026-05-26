@@ -1,6 +1,6 @@
 ---
 name: printify
-description: "Use when working with Printify — the print-on-demand REST API, catalog model (blueprints, print providers, variants, print areas), product creation and publish lifecycle to connected channels, order routing, shipping cost queries, and HMAC SHA-256 webhook verification. Do NOT use for non-Printify POD vendors, generic Shopify storefront work, or print-file (artwork) generation."
+description: "Use when working with Printify — the print-on-demand REST API, catalog model (blueprints, print providers, variants, print areas), product creation and publish lifecycle to connected channels, order routing, shipping cost queries, and HMAC SHA-256 webhook verification. Do NOT use for non-Printify POD vendors, generic Shopify storefront work, or print-file (artwork) generation. Do NOT use for Generate the artwork PNG file that gets uploaded as a print file. Do NOT use for Implement the Shopify side of the Printify-to-Shopify sync. Do NOT use for Design a generic POD-vendor-agnostic product schema."
 license: CC-BY-4.0
 metadata:
   schema_version: "8"
@@ -31,6 +31,7 @@ metadata:
   skill_graph_protocol: Skill Metadata Protocol v7
   skill_graph_project: Skill Graph
   skill_graph_canonical_skill: skills/product-domain/printify/SKILL.md
+  skill_graph_export_description_projection: anti_examples
 ---
 
 # Printify

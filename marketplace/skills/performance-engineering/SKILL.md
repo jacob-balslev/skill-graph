@@ -1,6 +1,6 @@
 ---
 name: performance-engineering
-description: "Use when measuring, diagnosing, budgeting, or improving performance: latency, throughput, Core Web Vitals, database queries, caching, bundle size, concurrency, resource use, and regression prevention. Do NOT use for telemetry schema design alone (use `observability-modeling`), error capture setup (use `error-tracking`), or premature micro-optimization without a measured bottleneck."
+description: "Use when measuring, diagnosing, budgeting, or improving performance: latency, throughput, Core Web Vitals, database queries, caching, bundle size, concurrency, resource use, and regression prevention. Do NOT use for telemetry schema design alone (use `observability-modeling`), error capture setup (use `error-tracking`), or premature micro-optimization without a measured bottleneck. Do NOT use for design logs, spans, metrics, and correlation IDs before implementation. Do NOT use for set up Sentry and error redaction. Do NOT use for make random micro-optimizations without measurements. Do NOT use for write general unit tests for this feature."
 license: MIT
 compatibility: "Portable performance discipline for frontend, backend, databases, jobs, APIs, and agent tooling."
 allowed-tools: Read Grep
@@ -34,6 +34,7 @@ metadata:
   skill_graph_protocol: Skill Metadata Protocol v7
   skill_graph_project: Skill Graph
   skill_graph_canonical_skill: skills/data-analytics/performance-engineering/SKILL.md
+  skill_graph_export_description_projection: anti_examples
 ---
 
 # Performance Engineering

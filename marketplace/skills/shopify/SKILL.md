@@ -1,6 +1,6 @@
 ---
 name: shopify
-description: "Use when working with Shopify — Admin API, Storefront API, OAuth scopes, HMAC SHA-256 webhook verification, GraphQL query-cost handling, Online Store 2.0 themes (sections, blocks, Liquid), metafields and metaobjects, and App Proxy. Do NOT use for generic e-commerce design, non-Shopify storefronts, or internal event-contract design."
+description: "Use when working with Shopify — Admin API, Storefront API, OAuth scopes, HMAC SHA-256 webhook verification, GraphQL query-cost handling, Online Store 2.0 themes (sections, blocks, Liquid), metafields and metaobjects, and App Proxy. Do NOT use for generic e-commerce design, non-Shopify storefronts, or internal event-contract design. Do NOT use for Design the event payload schema for our internal order-processing pipeline. Do NOT use for Implement Stripe Connect onboarding for a marketplace. Do NOT use for Refactor a generic shopping cart component that isn't Shopify-specific."
 license: CC-BY-4.0
 metadata:
   schema_version: "8"
@@ -31,6 +31,7 @@ metadata:
   skill_graph_protocol: Skill Metadata Protocol v7
   skill_graph_project: Skill Graph
   skill_graph_canonical_skill: skills/product-domain/shopify/SKILL.md
+  skill_graph_export_description_projection: anti_examples
 ---
 
 # Shopify

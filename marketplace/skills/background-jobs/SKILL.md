@@ -1,30 +1,38 @@
 ---
 name: background-jobs
-description: "This skill provides background job patterns for web applications: job queue architecture, long-running sync operations, progress tracking and reporting, failure handling and retry, job prioritization, and concurrency management. Load when implementing async processing, building job queues, designing progress indicators for long operations, or handling failure recovery for background work."
+description: "Use when moving slow or failure-prone work out of a request path, designing job queues, retries, checkpoints, progress reporting, cancellation, or worker concurrency. Covers inline-vs-background decisions, queue contracts, state machines, idempotency, retry/backoff, progress signals, worker leases, and user-visible completion reporting. Do NOT use for time-based schedule design (use `cron-scheduling`), live browser transport choice (use `real-time-updates`), or async message schema ownership (use `event-contract-design`). Do NOT use for choose the cron expression for a daily run. Do NOT use for design an SSE or WebSocket browser update channel. Do NOT use for define an event envelope and topic naming standard. Do NOT use for debug why this already-running worker crashed. Do NOT use for model the database schema for the business entity being processed. Do NOT use for when recurring work starts (use cron-scheduling). Do NOT use for browser freshness transports (use real-time-updates)."
 license: MIT
-compatibility: "Markdown, Git, agent-skill runtimes"
+compatibility: "Portable background job design guidance for web apps, APIs, workers, serverless functions, and queue-backed systems. Specific queue products differ; verify platform limits before production rollout."
 allowed-tools: Read Grep Bash
 metadata:
-  schema_version: "8"
-  version: "1.0.0"
+  schema_version: "7"
+  version: "1.1.0"
   type: capability
-  operation: do
-  category: engineering
+  operation: know
   subject: code-engineering
-  domain: engineering/async
+  category: engineering
+  domain: engineering/async/background-jobs
   scope: portable
   owner: skill-graph-maintainer
-  freshness: "2026-03-29"
-  drift_check: "{\"last_verified\":\"2026-03-29\"}"
-  eval_artifacts: planned
+  freshness: "2026-05-21"
+  drift_check: "{\"last_verified\":\"2026-05-21\"}"
+  eval_artifacts: present
   eval_state: unverified
   routing_eval: absent
-  stability: experimental
-  keywords: "[\"background-jobs\",\"background\",\"jobs\"]"
+  stability: stable
+  keywords: "[\"background jobs\",\"job queue\",\"worker queue\",\"async processing\",\"long-running task\",\"retry backoff\",\"dead letter queue\",\"job progress\",\"checkpointing\",\"worker concurrency\",\"idempotent job\",\"queue lease\",\"job cancellation\"]"
   triggers: "[\"background-jobs-skill\",\"job-queue-skill\",\"async-processing-skill\",\"long-running-task-skill\",\"worker-pattern-skill\"]"
-  relations: "{\"related\":[\"cron-scheduling\"],\"boundary\":[\"real-time-updates\"]}"
+  examples: "[\"move this report generation out of the API handler and still show progress\",\"design a queue-backed import job that can resume after failure\",\"choose retry and dead-letter behavior for a worker\",\"avoid duplicate processing when a job is enqueued twice\",\"add cancellation and progress to a long-running export\"]"
+  anti_examples: "[\"choose the cron expression for a daily run\",\"design an SSE or WebSocket browser update channel\",\"define an event envelope and topic naming standard\",\"debug why this already-running worker crashed\",\"model the database schema for the business entity being processed\"]"
+  relations: "{\"related\":[\"cron-scheduling\",\"real-time-updates\",\"observability-modeling\",\"event-contract-design\"],\"boundary\":[{\"skill\":\"cron-scheduling\",\"reason\":\"cron-scheduling owns when recurring work starts; background-jobs owns how queued work executes after it starts\"},{\"skill\":\"real-time-updates\",\"reason\":\"real-time-updates owns browser freshness transports; background-jobs only defines progress state and completion signals\"},{\"skill\":\"event-contract-design\",\"reason\":\"event-contract-design owns async event envelope compatibility; background-jobs owns worker execution semantics\"}],\"verify_with\":[\"observability-modeling\",\"testing-strategy\"]}"
   portability: "{\"readiness\":\"scripted\",\"targets\":[\"skill-md\"]}"
-  lifecycle: "{\"stale_after_days\":90,\"review_cadence\":\"quarterly\"}"
+  lifecycle: "{\"stale_after_days\":180,\"review_cadence\":\"quarterly\"}"
+  comprehension_state: present
+  mental_model: "A background job system has five primitives: a producer records durable work, a queue orders and deduplicates it, a worker leases and executes it, a state store records progress and outcomes, and a notification path tells humans or systems what changed. Reliability comes from making each primitive explicit instead of hiding long work inside a request handler."
+  purpose: "Background jobs keep interactive requests short while preserving reliable processing for slow, retryable, or batch-oriented work. They replace timeout-prone inline execution and untracked fire-and-forget calls with durable state, resumable progress, controlled concurrency, and observable outcomes."
+  boundary: "This skill is not schedule design, browser push transport design, event schema design, or incident debugging. It begins after work has been requested and ends with execution state, retry, progress, completion, cancellation, and failure handling."
+  analogy: "A background job is a numbered work order in a shop: the front desk accepts the request, the workshop picks it up when capacity exists, and the status board shows where it is."
+  misconception: "Putting work in a worker is not enough. Without durable state, idempotency, progress, retry policy, and observability, a background job is just an invisible request handler with a longer timeout."
   structural_verdict: UNVERIFIED
   truth_verdict: UNVERIFIED
   comprehension_verdict: UNVERIFIED
@@ -33,256 +41,250 @@ metadata:
   skill_graph_protocol: Skill Metadata Protocol v7
   skill_graph_project: Skill Graph
   skill_graph_canonical_skill: skills/code-engineering/background-jobs/SKILL.md
+  skill_graph_export_description_projection: anti_examples+boundary
+  skill_graph_export_description_projection_truncated: "true"
 ---
-# Background Jobs Skill
 
-## Domain Context
-
-**What is this skill?** This skill provides background job patterns for web applications: job queue architecture, long-running sync operations, progress tracking and reporting, failure handling and retry, job prioritization, and concurrency management. Load when implementing async processing, building job queues, designing progress indicators for long operations, or handling failure recovery for background work.
-> If it takes longer than 10 seconds, it does not belong in a request handler. Move it to a background job with progress tracking.
+# Background Jobs
 
 ## Coverage
 
-This skill covers job queue architecture (push-based vs pull-based, priority queues), long-running operation patterns (sync jobs, data migrations, bulk operations), progress tracking and reporting (percentage, stage-based, ETA estimation), failure handling and retry strategies (exponential backoff, dead letter queues, partial failure recovery), job prioritization and concurrency control, the decision framework for inline vs background execution, and user-facing progress communication patterns.
+- Inline-vs-background execution decisions for web requests, API routes, workers, and serverless functions.
+- Durable job contracts: job identity, payload, state, priority, ownership, attempts, progress, result, and failure record.
+- Queue and worker patterns: push queues, pull queues, leases, deduplication, priority, rate control, and concurrency limits.
+- Reliability patterns: idempotency keys, retry classification, exponential backoff with jitter, checkpoints, dead-letter handling, and partial failure recovery.
+- User-visible progress: stage names, percentages, timestamps, cancellation, completion notification, and stale status handling.
+- Verification: proving long work left the request path without losing observability or recovery paths.
 
 ## Philosophy
 
-Background jobs are the mechanism that separates a responsive user interface from reliable data processing. The web request lifecycle imposes hard time limits (Vercel: 60-300s, Lambda: 15min), but real-world operations — syncing 50,000 orders, generating monthly reports, reconciling financial data — can take minutes or hours. Agents frequently make two mistakes: putting long operations in request handlers (causing timeouts and poor UX) or moving operations to background jobs without progress tracking (leaving users staring at a spinner with no feedback). Both destroy user trust. This skill enforces the discipline of moving heavy work out of the request path while keeping the user informed of progress.
+Background jobs are not just "run this later." They are a reliability boundary between interactive work and processing work. A request handler is optimized for short, synchronous feedback. A worker is optimized for durable execution, retries, checkpoints, and controlled resource use.
 
-## Architecture
+The most common failure is moving code into a worker while keeping request-handler assumptions: no durable state, no idempotency, no progress, no cancellation, and no evidence of completion. That makes the system feel faster only until the first timeout, duplicate enqueue, or partial failure. A good job design makes the execution contract visible before choosing a queue product.
 
-### Execution Model Decision
+## Execution Decision Gate
 
-| Question | If Yes | If No |
-|----------|--------|-------|
-| Does the user need the result immediately? | Keep inline (< 10s) | Background job |
-| Can the operation fail partially? | Background with checkpoint | Simple background |
-| Does the user need progress updates? | Background + progress tracking | Fire-and-forget |
-| Could the operation take > 60 seconds? | Always background | Inline may work |
-| Is the operation triggered by multiple sources? | Job queue with deduplication | Direct invocation OK |
+Use this gate before adding a queue. If any answer in the right column is true, design a background job instead of inline request work.
 
-### Job Queue Architecture
+| Question | Inline request is acceptable when | Background job is required when |
+|---|---|---|
+| Duration | Work predictably completes within a few seconds | Work can exceed the request budget or has unbounded input size |
+| Failure shape | Failure is atomic and easy to show immediately | Failure can be partial, transient, or recoverable |
+| User feedback | The caller needs the result before continuing | The caller can continue with progress or later completion |
+| Retry safety | Retrying the request is harmless and visible | Retrying needs idempotency, checkpointing, or backoff |
+| Resource use | Work uses normal request resources | Work may saturate CPU, memory, database connections, or external limits |
+| Coordination | One request owns the whole operation | Many producers, workers, or duplicate triggers can touch the same work |
 
-```
-Producer (API route, webhook, cron)
-  |
-  v
-Queue (database table, Redis, Inngest)
-  |
-  v
-Worker (Inngest function, serverless fn, dedicated process)
-  |
-  v
-Result Store (database, cache)
-  |
-  v
-Notification (SSE, polling, email)
-```
+**Rule of thumb:** if you need progress, checkpointing, retry classification, cancellation, concurrency control, or delayed completion, you are already designing a background job.
 
-**Queue implementation options for serverless environments:**
+## Job Contract
 
-| Option | Pros | Cons | Best For |
-|--------|------|------|----------|
-| **Inngest** | Step functions, retry, dashboard, concurrency control | Vendor dependency | Complex multi-step workflows |
-| **Database table** | No extra infra, transactional with app data | Polling required, no built-in retry | Simple job tracking |
-| **Vercel KV / Redis** | Fast, pub/sub capable | Separate data store, no built-in retry | High-throughput simple jobs |
-| **SQS / Cloud Tasks** | Managed, scalable, dead letter queues | Extra infrastructure, more complex | High-volume production systems |
+Every background job needs a durable contract. The exact storage can be a database row, queue message plus result table, workflow engine state, or object store record, but the same fields need clear ownership.
 
-### Job State Machine
+| Field | Purpose | Failure if omitted |
+|---|---|---|
+| Job ID | Stable handle for status, logs, and support | Cannot find or correlate work after enqueue |
+| Type | Routes to the correct handler | Workers need payload guessing or brittle branching |
+| Payload | Immutable input to the handler | Retries run against changing state by accident |
+| Idempotency key | Deduplicates repeated enqueue attempts | Duplicate processing and double side effects |
+| Status | Communicates lifecycle state | Work disappears into a black box |
+| Attempts and max attempts | Controls retry lifecycle | Infinite retry loops or premature dead-lettering |
+| Progress | Shows percentage, count, stage, or checkpoint | Humans see a spinner with no useful signal |
+| Result | Records output or pointer to output | Completion cannot be consumed reliably |
+| Failure reason | Records actionable failure class | Operators see failed without knowing why |
+| Lease or lock | Ensures one worker owns an active job | Two workers process the same job concurrently |
 
-Every background job follows this state lifecycle:
+### State Machine
 
-```
-PENDING -> RUNNING -> COMPLETED
-                   -> FAILED -> RETRYING -> RUNNING
-                                         -> DEAD (max retries exceeded)
-           -> CANCELLED (user-initiated)
+Keep states few and explicit:
+
+```text
+queued -> running -> succeeded
+                  -> retry_waiting -> running
+                  -> failed
+                  -> cancelled
 ```
 
-**Database schema pattern:**
+Use `failed` for terminal failure after retry policy is exhausted. Use `cancelled` only when the system intentionally stops work. Do not collapse retryable and terminal failures into one ambiguous error state.
 
-```sql
-CREATE TABLE background_jobs (
-  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-  org_id UUID NOT NULL REFERENCES organizations(id),
-  type VARCHAR(100) NOT NULL,           -- 'order-sync', 'report-generation'
-  status VARCHAR(20) NOT NULL DEFAULT 'pending',
-  priority INTEGER NOT NULL DEFAULT 5,  -- 1 = highest, 10 = lowest
-  payload JSONB NOT NULL DEFAULT '{}',
-  progress_pct SMALLINT DEFAULT 0,      -- 0-100
-  progress_message TEXT,                -- 'Processing order 1,234 of 5,000'
-  result JSONB,                         -- Output data on completion
-  error_message TEXT,                   -- Error details on failure
-  attempts INTEGER NOT NULL DEFAULT 0,
-  max_attempts INTEGER NOT NULL DEFAULT 3,
-  started_at TIMESTAMPTZ,
-  completed_at TIMESTAMPTZ,
-  created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
-  updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
-);
+## Queue And Worker Patterns
 
-CREATE INDEX idx_jobs_status_priority ON background_jobs(status, priority)
-  WHERE status IN ('pending', 'running');
-```
+| Pattern | Use when | Watch out for |
+|---|---|---|
+| Database-backed queue | You need simple durability near app data and moderate volume | Polling cadence, lock contention, cleanup of old rows |
+| Managed queue | You need high throughput, delayed retry, and dead-letter support | Message visibility timeouts and at-least-once delivery |
+| Workflow engine | You need multi-step orchestration, step retries, or human-visible traces | Vendor lock-in and over-modeling simple jobs |
+| In-process worker | You need low-latency local processing in a persistent service | Process restarts lose work unless the queue is durable |
+| Fire-and-forget task | Work is non-critical and safe to lose | Most product work is not actually safe to lose |
 
-## Implementation Patterns
+### Lease-Based Pull Worker
 
-### 1. Progress Tracking
-
-For any operation processing N items, track progress at regular intervals:
+Use a lease when workers pull from a shared store. The lease prevents two workers from processing the same job while still letting another worker recover abandoned work after the lease expires.
 
 ```typescript
-async function processOrders(jobId: string, orders: Order[]) {
-  const total = orders.length;
-  for (let i = 0; i < total; i++) {
-    await processOrder(orders[i]);
-
-    // Update progress every 10 items or every 5 seconds (whichever comes first)
-    if (i % 10 === 0 || i === total - 1) {
-      await updateJobProgress(jobId, {
-        progress_pct: Math.round(((i + 1) / total) * 100),
-        progress_message: `Processing order ${i + 1} of ${total}`,
-      });
-    }
-  }
-}
-```
-
-**Progress reporting to the UI:**
-
-| Method | Latency | Complexity | Best For |
-|--------|---------|------------|----------|
-| **Polling** | 2-5s | Low | Simple progress bars, MVP |
-| **SSE** | Real-time | Medium | Dashboard live updates |
-| **WebSocket** | Real-time | High | Bidirectional control (pause/cancel) |
-
-### 2. Retry with Exponential Backoff
-
-```typescript
-function getRetryDelay(attempt: number): number {
-  // Base: 1s, 2s, 4s, 8s, 16s... capped at 5 minutes
-  const baseDelay = 1000;
-  const maxDelay = 5 * 60 * 1000;
-  const delay = Math.min(baseDelay * Math.pow(2, attempt), maxDelay);
-  // Add jitter to prevent thundering herd
-  return delay + Math.random() * 1000;
-}
-```
-
-**Retry decision matrix:**
-
-| Error Type | Retry? | Max Attempts | Example |
-|-----------|--------|--------------|---------|
-| Transient (network timeout, 503) | Yes | 3-5 | API rate limit, temporary outage |
-| Rate limit (429) | Yes, with backoff | 3 | Shopify API throttle |
-| Client error (400, 404) | No | 0 | Bad data, missing resource |
-| Auth error (401, 403) | No | 0 | Expired credentials |
-| Partial success | Resume from checkpoint | 3 | 3,000 of 5,000 orders processed |
-
-### 3. Checkpointing for Long Operations
-
-Operations processing thousands of items must checkpoint progress so retries resume from the last successful point, not restart from zero:
-
-```typescript
-async function syncAllOrders(jobId: string) {
-  // Resume from last checkpoint if retrying
-  const checkpoint = await getCheckpoint(jobId);
-  const cursor = checkpoint?.lastCursor || null;
-
-  let page = await fetchOrders({ after: cursor });
-  while (page.hasMore) {
-    await processOrderBatch(page.orders);
-    await saveCheckpoint(jobId, { lastCursor: page.cursor });
-    page = await fetchOrders({ after: page.cursor });
-  }
-}
-```
-
-### 4. Job Prioritization
-
-Not all background jobs are equal. A user-initiated export should complete before a scheduled overnight sync:
-
-| Priority | Level | Examples | Target Completion |
-|----------|-------|---------|-------------------|
-| 1 (Critical) | User-blocked | Data export, report generation user is waiting for | < 30 seconds |
-| 3 (High) | User-initiated | Bulk order sync after store connect | < 5 minutes |
-| 5 (Normal) | System | Scheduled daily sync, digest compilation | < 30 minutes |
-| 8 (Low) | Maintenance | Data cleanup, index rebuild | < 24 hours |
-
-### 5. Concurrency Control
-
-Prevent resource exhaustion by limiting concurrent job execution:
-
-```typescript
-// Inngest pattern
-export const orderSync = inngest.createFunction(
-  {
-    id: 'order-sync',
-    concurrency: {
-      limit: 5,           // Max 5 concurrent syncs across all orgs
-      key: 'event.data.orgId', // Max 1 sync per org
+async function claimNextJob(workerId: string) {
+  return updateOneJob(
+    {
+      status: "queued",
+      runAfter: { lte: new Date() },
     },
-  },
-  { event: 'orders/sync.requested' },
-  async ({ event, step }) => { /* ... */ }
-);
+    {
+      status: "running",
+      leaseOwner: workerId,
+      leaseExpiresAt: new Date(Date.now() + 5 * 60 * 1000),
+      startedAt: new Date(),
+    },
+    { sort: { priority: 1, createdAt: 1 } },
+  );
+}
 ```
 
-### 6. User-Facing Progress Communication
+## Reliability Patterns
 
-| Job Duration | UX Pattern | Example |
-|-------------|------------|---------|
-| < 5s | Inline loading state | Button spinner |
-| 5-30s | Progress bar with percentage | "Syncing orders... 45%" |
-| 30s-5min | Progress bar + stage indicator | "Step 2 of 4: Calculating margins" |
-| > 5min | Background notification + email on complete | "We'll email you when your export is ready" |
+### Idempotency
 
-## Anti-Patterns
+Background workers must assume at-least-once execution. A retry, duplicate enqueue, worker crash, or lease expiry can run the same logical job more than once.
 
-1. **Long operations in request handlers.** Putting a 50,000-order sync in an API route handler. The request will timeout, the user gets an error, and partial work may corrupt data.
+Use an idempotency key that represents the logical work, not the physical attempt:
 
-2. **Fire-and-forget without tracking.** Dispatching a background job with no way to check its status. The user refreshes the page and has no idea if the operation completed, failed, or is still running.
+```typescript
+const idempotencyKey = `report:${workspaceId}:${periodStart}:${periodEnd}`;
 
-3. **Restarting from zero on retry.** A job that processed 4,000 of 5,000 orders before failing should resume from order 4,001, not restart. Without checkpointing, retries waste time and may cause duplicate processing.
+await enqueueJob({
+  type: "report.generate",
+  idempotencyKey,
+  payload: { workspaceId, periodStart, periodEnd },
+});
+```
 
-4. **No concurrency limits.** Allowing unlimited concurrent sync jobs. If 100 users trigger syncs simultaneously, the database connection pool is exhausted and all jobs fail.
+The worker should also make side effects idempotent. Deduplicating enqueue is helpful but not sufficient because messages can be delivered more than once.
 
-5. **Identical retry timing.** Retrying failed jobs at fixed intervals (e.g., every 5 seconds). When an external API is down, all retries hit simultaneously (thundering herd). Use exponential backoff with jitter.
+### Retry Classification
 
-6. **Progress updates on every item.** Updating the progress database row for every single item in a 50,000-item batch. This creates 50,000 database writes. Update every N items or every T seconds.
+Not every failure deserves a retry.
 
-7. **Mixing job queue with business logic.** Putting order validation, margin calculation, and email sending in the job queue infrastructure code. The queue manages execution; business logic belongs in service functions.
+| Failure class | Retry? | Handling |
+|---|---|---|
+| Transient network or service unavailable | Yes | Exponential backoff with jitter |
+| Rate limited | Yes | Respect retry-after signals when available |
+| Validation error | No | Mark terminal failure and expose the fixable input issue |
+| Missing permission | No | Mark terminal failure and request operator action |
+| Partial progress | Yes | Resume from checkpoint instead of restarting |
+| Unknown failure | Limited | Retry a small number of times, then dead-letter with context |
 
-## Key Files
+Use jitter so a shared outage does not cause every worker to retry at the same moment:
 
-When working in a project with background jobs:
+```typescript
+function retryDelayMs(attempt: number) {
+  const base = 1000;
+  const cap = 5 * 60 * 1000;
+  const exponential = Math.min(base * 2 ** attempt, cap);
+  const jitter = Math.floor(Math.random() * base);
+  return exponential + jitter;
+}
+```
 
-- Inngest function definitions — step functions with retry and concurrency
-- `background_jobs` table (if database-backed queue) — job tracking schema
-- API routes for job status polling — `GET /api/jobs/[id]/status`
-- SSE endpoints for real-time progress — `GET /api/jobs/[id]/progress`
-- Job type registry — mapping job types to handler functions
+### Checkpointing
+
+Long jobs need resumable checkpoints. A checkpoint should identify the last committed unit of work, not just a percentage.
+
+```typescript
+async function processPages(jobId: string) {
+  let cursor = await loadCheckpoint(jobId);
+
+  while (true) {
+    const page = await fetchNextPage(cursor);
+    if (page.items.length === 0) break;
+
+    await processBatch(page.items);
+    cursor = page.nextCursor;
+    await saveCheckpoint(jobId, cursor);
+    await updateProgress(jobId, { stage: "processing", processed: page.totalProcessed });
+  }
+}
+```
+
+### Progress Throttling
+
+Progress writes are product value only when they communicate meaningful change. Updating progress after every item in a large batch can overload the same database or cache the job is trying to use.
+
+Use one of these gates:
+
+- Update every N items.
+- Update every T seconds.
+- Update when the stage changes.
+- Update at completion or terminal failure.
+
+## User-Facing Progress
+
+The UI does not need internal worker details. It needs a stable status contract.
+
+| Duration | Progress contract | UX expectation |
+|---|---|---|
+| Under 5 seconds | Pending state only | Inline spinner or disabled action |
+| 5-30 seconds | Status plus short message | Progress bar or step label |
+| 30 seconds-5 minutes | Status, stage, count, and cancel option when safe | Dedicated progress panel or status row |
+| Over 5 minutes | Durable status page plus completion signal | User can leave and return later |
+
+Avoid fake precision. If you do not know the denominator, report stages or processed counts instead of a misleading percentage.
+
+## Concurrency And Priority
+
+Concurrency limits protect shared resources. Define at least one limit before shipping a worker:
+
+| Limit | Protects | Example |
+|---|---|---|
+| Global worker concurrency | CPU, memory, queue pressure | Max 10 running jobs total |
+| Per-workspace concurrency | Fairness and duplicate work | Max 1 import per workspace |
+| Per-job-type concurrency | Hot paths and external services | Max 3 report renders |
+| Rate limit | External calls or expensive writes | Max 100 requests per minute |
+
+Priority should reorder queued work, not bypass safety. A high-priority job still needs idempotency, leases, and retry policy.
+
+## Observability
+
+Background jobs need enough telemetry to answer four questions without reading code:
+
+- Was the job enqueued?
+- Did a worker claim it?
+- What progress or checkpoint was last committed?
+- Did it succeed, fail terminally, retry, or get cancelled?
+
+Log job ID, type, attempt number, state transitions, duration, failure class, and queue latency. Emit metrics for queue depth, age of oldest queued job, success rate, retry rate, terminal failure rate, and worker saturation. Trace multi-step jobs when a single user action fans out into several worker operations.
 
 ## Verification
 
 After applying this skill, verify:
-- [ ] No request handler performs operations that could exceed 30 seconds
-- [ ] Every background job has a trackable status (pending/running/completed/failed)
-- [ ] Progress is reported to the user for operations exceeding 5 seconds
-- [ ] Retry logic uses exponential backoff with jitter
-- [ ] Long operations checkpoint progress for resumable retries
-- [ ] Concurrency limits prevent resource exhaustion
-- [ ] Failed jobs surface errors through monitoring, not silent swallowing
+
+- [ ] Long or unbounded work is outside the interactive request path.
+- [ ] Every enqueued job has a durable status that can be queried after refresh or worker restart.
+- [ ] The job contract includes idempotency, attempts, progress, result, and failure reason.
+- [ ] Retry policy distinguishes transient, rate-limit, validation, permission, partial-progress, and unknown failures.
+- [ ] Backoff includes jitter or an equivalent herd-prevention mechanism.
+- [ ] Long jobs checkpoint the last committed unit of work.
+- [ ] Progress updates are throttled by item count, time, stage, or completion.
+- [ ] Worker concurrency is bounded globally and at any needed fairness boundary.
+- [ ] Terminal failure and cancellation are visible to users or operators.
+- [ ] Tests or manual probes cover duplicate enqueue, retry, resume, and terminal failure behavior.
 
 ## Do NOT Use When
 
-| Instead of this skill | Use | Why |
+| Use instead | When |
+|---|---|
+| `cron-scheduling` | You are choosing when recurring work starts, validating cron expressions, or preventing overlap in a scheduled trigger. |
+| `real-time-updates` | You are choosing polling, Server-Sent Events, or WebSocket transport for browser freshness. |
+| `event-contract-design` | You are defining async event envelopes, topic names, replay semantics, or producer/consumer compatibility. |
+| `observability-modeling` | You are designing telemetry vocabulary across logs, metrics, traces, and alerts without changing job execution behavior. |
+| `debugging` | A deployed worker or queue is already failing and needs root-cause investigation. |
+
+## Anti-Patterns
+
+| Anti-pattern | Why it fails | Better pattern |
 |---|---|---|
-| Scheduling recurring jobs by time | `cron-scheduling` | Cron covers time-based triggers; this skill covers job execution patterns |
-| Inngest-specific event orchestration | `inngest-orchestration` | Inngest has its own patterns beyond generic job queues |
-| Data synchronization strategy | `data-sync` | Data sync covers the what (webhook, polling, reconciliation); this covers the how (queue, retry, progress) |
-| Real-time UI updates | `real-time-updates` | Real-time covers push-to-UI patterns; this covers backend job execution |
-
----
-
-*Version 1.0.0 -- 2026-03-29. Initial creation.*
+| Long work in a request handler | Timeouts and partial side effects are user-visible failures | Enqueue durable work and return a job ID |
+| Fire-and-forget without a status record | No one can tell whether work ran, failed, or is still pending | Store job state and expose status |
+| Retrying every failure | Validation and permission failures waste capacity and hide real action items | Classify failures before retrying |
+| Restarting from zero after partial progress | Retries get slower and can duplicate side effects | Save checkpoints at committed boundaries |
+| Unlimited workers | Shared resources get saturated during spikes | Bound concurrency and add leases |
+| Progress update per item | Progress tracking becomes the bottleneck | Throttle progress writes |
+| Queue code owns domain rules | Worker infrastructure becomes hard to test and reuse | Keep domain logic in services; workers orchestrate execution |

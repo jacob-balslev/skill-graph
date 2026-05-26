@@ -1,6 +1,6 @@
 ---
 name: indexing-strategy
-description: "Use when designing indexes for a relational or NoSQL database: the index-as-precomputed-search-structure mental model, the catalog of structures (B-tree, hash, bitmap, GIN/GiST, BRIN, LSM-tree), the matching of structures to access patterns (equality, range, prefix, contains, geospatial), composite indexes and column order, covering indexes, partial / filtered indexes, the maintenance cost of every index (write amplification, storage, lock impact), and the rules for when to add an index, when not to, and when to drop one. Do NOT use for tuning a slow query (use query-optimization), choosing isolation levels (use transaction-isolation), schema design (use data-modeling), or distributed-data partitioning (use sharding-strategy)."
+description: "Use when designing indexes for a relational or NoSQL database: the index-as-precomputed-search-structure mental model, the catalog of structures (B-tree, hash, bitmap, GIN/GiST, BRIN, LSM-tree), the matching of structures to access patterns (equality, range, prefix, contains, geospatial), composite indexes and column order, covering indexes, partial / filtered indexes, the maintenance cost of every index (write amplification, storage, lock impact), and the rules for when to add an index, when not to, and when to drop one. Do NOT use for tuning a slow query (use query-optimization), choosing isolation levels (use transaction-isolation), schema design (use data-modeling), or distributed-data partitioning (use sharding-strategy). Do NOT use for how the database changes shape over time (use schema-evolution)."
 license: MIT
 allowed-tools: Read Grep
 metadata:
@@ -39,6 +39,7 @@ metadata:
   skill_graph_protocol: Skill Metadata Protocol v7
   skill_graph_project: Skill Graph
   skill_graph_canonical_skill: skills/code-engineering/indexing-strategy/SKILL.md
+  skill_graph_export_description_projection: boundary
 ---
 
 # Indexing Strategy

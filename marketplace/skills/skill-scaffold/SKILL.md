@@ -1,6 +1,6 @@
 ---
 name: skill-scaffold
-description: "Use when creating a new SKILL.md from scratch, adapting an existing skill to a different archetype, or teaching another author the canonical Skill Metadata Protocol frontmatter and body structure. Covers schema-conformant frontmatter, archetype-aware body layout, semantic-layer discipline (description vs Coverage), teaching-layer mechanics (TEMPLATE NOTE blockquotes), the focused authoring gates, and the routing-eval honesty rule. Do NOT use when modifying an already-written skill (edit it directly), when writing general technical documentation (use `docs-development`), or when fixing a malformed skill detected by health tooling (use `skill-infrastructure` for systematic library health, not authoring scaffold help)."
+description: "Use when creating a new SKILL.md from scratch, adapting an existing skill to a different archetype, or teaching another author the canonical Skill Metadata Protocol frontmatter and body structure. Covers schema-conformant frontmatter, archetype-aware body layout, semantic-layer discipline (description vs Coverage), teaching-layer mechanics (TEMPLATE NOTE blockquotes), the focused authoring gates, and the routing-eval honesty rule. Do NOT use when modifying an already-written skill (edit it directly), when writing general technical documentation (use `docs-development`), or when fixing a malformed skill detected by health tooling (use `skill-infrastructure` for systematic library health, not authoring scaffold help). Do NOT use for refactor my existing skill to be more concise. Do NOT use for my skill's routing isn't activating — why? Do NOT use for audit my skill library for stale frontmatter. Do NOT use for write a developer guide for the contributor docs."
 license: MIT
 compatibility: "Markdown, YAML, JSON Schema"
 allowed-tools: Read Grep Bash Write Edit
@@ -42,6 +42,8 @@ metadata:
   skill_graph_protocol: Skill Metadata Protocol v7
   skill_graph_project: Skill Graph
   skill_graph_canonical_skill: skills/agent-ops/skill-scaffold/SKILL.md
+  skill_graph_export_description_projection: anti_examples
+  skill_graph_export_description_projection_truncated: "true"
 ---
 
 # Skill Scaffold

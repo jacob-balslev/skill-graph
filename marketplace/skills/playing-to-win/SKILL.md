@@ -1,6 +1,6 @@
 ---
 name: playing-to-win
-description: "Use when turning a vague business strategy, product strategy, market-entry decision, or initiative plan into an integrated Playing to Win strategy cascade: winning aspiration, where to play, how to win, must-have capabilities, and management systems. Covers Lafley/Martin choice-making, fit across the five choices, trade-off pressure, reverse tests, capability-system alignment, and the difference between strategy and planning. Do NOT use for competitive-industry structure analysis (use a five-forces skill when available), generic backlog scoring (use prioritization), or broad process-gate design (use methodology)."
+description: "Use when turning a vague business strategy, product strategy, market-entry decision, or initiative plan into an integrated Playing to Win strategy cascade: winning aspiration, where to play, how to win, must-have capabilities, and management systems. Covers Lafley/Martin choice-making, fit across the five choices, trade-off pressure, reverse tests, capability-system alignment, and the difference between strategy and planning. Do NOT use for competitive-industry structure analysis (use a five-forces skill when available), generic backlog scoring (use prioritization), or broad process-gate design (use methodology). Do NOT use for analyze whether this industry has attractive supplier power and threat of substitutes. Do NOT use for score these ten backlog items by impact and effort. Do NOT use for design a quality gate process for this multi-step implementation. Do NOT use for write OKRs for this strategy after it has already been chosen."
 license: MIT
 compatibility: "Markdown, strategy memos, product strategy, executive decision-making"
 allowed-tools: Read Grep
@@ -17,7 +17,7 @@ metadata:
   scope: portable
   owner: skill-graph-maintainer
   freshness: "2026-05-26"
-  drift_check: "{\"last_verified\":\"2026-05-26\",\"truth_source_hashes\":{\"skills/foundations/playing-to-win/references/playing-to-win-sources.md\":\"893c99345dc9ee846548ff71f3b1cea07bdf5286c3ab10429705f9b139cb4599\",\"skills/foundations/playing-to-win/references/upstream-displacement-2026-05-26.md\":\"c47197db5053b744d57abd323670098df4f555171a0ad9d5324adf259b445403\"}}"
+  drift_check: "{\"last_verified\":\"2026-05-26\",\"truth_source_hashes\":{\"skills/meta-methods/playing-to-win/references/playing-to-win-sources.md\":\"893c99345dc9ee846548ff71f3b1cea07bdf5286c3ab10429705f9b139cb4599\",\"skills/meta-methods/playing-to-win/references/upstream-displacement-2026-05-26.md\":\"c47197db5053b744d57abd323670098df4f555171a0ad9d5324adf259b445403\"}}"
   eval_artifacts: present
   eval_state: unverified
   routing_eval: absent
@@ -27,7 +27,7 @@ metadata:
   examples: "[\"turn this vague growth plan into a Playing to Win cascade\",\"we need a product strategy for a narrow segment; help choose where to play and how to win\",\"our strategy doc has goals and initiatives but no trade-offs; apply Lafley/Martin\",\"pressure-test whether these capabilities actually support our how-to-win choice\",\"rewrite this market-entry plan as winning aspiration, where to play, how to win, capabilities, and systems\"]"
   anti_examples: "[\"analyze whether this industry has attractive supplier power and threat of substitutes\",\"score these ten backlog items by impact and effort\",\"design a quality gate process for this multi-step implementation\",\"write OKRs for this strategy after it has already been chosen\"]"
   relations: "{\"boundary\":[{\"skill\":\"prioritization\",\"reason\":\"prioritization scores a queue of work; playing-to-win owns the upstream integrated strategy choices that decide what work should exist\"},{\"skill\":\"framework-fit-analysis\",\"reason\":\"framework-fit-analysis selects among methods; playing-to-win applies one specific strategy-cascade method once selected\"},{\"skill\":\"methodology\",\"reason\":\"methodology designs rigorous process and verification gates; playing-to-win owns competitive and organizational strategy choices\"}],\"related\":[\"constraint-awareness\",\"methodology\",\"framework-fit-analysis\"],\"verify_with\":[\"methodology\",\"epistemic-grounding\"]}"
-  grounding: "{\"domain_object\":\"Playing to Win strategy cascade by A.G. Lafley and Roger L. Martin\",\"grounding_mode\":\"universal\",\"truth_sources\":[\"https://hbr.org/books/playing-to-win\",\"https://hbr.org/webinar/2013/04/a-playbook-for-winning\",\"https://www-2.rotman.utoronto.ca/insightshub/strategy-value-creation/playing-to-win-how-strategy-re\",\"skills/foundations/playing-to-win/references/playing-to-win-sources.md\",\"skills/foundations/playing-to-win/references/upstream-displacement-2026-05-26.md\"],\"failure_modes\":[\"goal_list_without_choice\",\"where_to_play_too_broad\",\"how_to_win_not_differentiated\",\"capabilities_not_tied_to_advantage\",\"management_systems_missing\",\"cascade_choices_do_not_reinforce\",\"strategy_confused_with_planning\"],\"evidence_priority\":\"general_knowledge_first\"}"
+  grounding: "{\"domain_object\":\"Playing to Win strategy cascade by A.G. Lafley and Roger L. Martin\",\"grounding_mode\":\"universal\",\"truth_sources\":[\"https://hbr.org/books/playing-to-win\",\"https://hbr.org/webinar/2013/04/a-playbook-for-winning\",\"https://www-2.rotman.utoronto.ca/insightshub/strategy-value-creation/playing-to-win-how-strategy-re\",\"skills/meta-methods/playing-to-win/references/playing-to-win-sources.md\",\"skills/meta-methods/playing-to-win/references/upstream-displacement-2026-05-26.md\"],\"failure_modes\":[\"goal_list_without_choice\",\"where_to_play_too_broad\",\"how_to_win_not_differentiated\",\"capabilities_not_tied_to_advantage\",\"management_systems_missing\",\"cascade_choices_do_not_reinforce\",\"strategy_confused_with_planning\"],\"evidence_priority\":\"general_knowledge_first\"}"
   portability: "{\"readiness\":\"scripted\",\"targets\":[\"skill-md\"]}"
   lifecycle: "{\"stale_after_days\":365,\"review_cadence\":\"quarterly\"}"
   mental_model: "Playing to Win treats strategy as five mutually reinforcing choices, not as a plan, goal list, or analysis deck. The primitives are a winning aspiration, a chosen playing field, a differentiated way to win there, the capabilities required to deliver that advantage, and the management systems that build and sustain those capabilities. The cascade works only when the answers fit together and force trade-offs."
@@ -43,6 +43,7 @@ metadata:
   skill_graph_protocol: Skill Metadata Protocol v7
   skill_graph_project: Skill Graph
   skill_graph_canonical_skill: skills/meta-methods/playing-to-win/SKILL.md
+  skill_graph_export_description_projection: anti_examples
 ---
 
 # Playing to Win

@@ -1,6 +1,6 @@
 ---
 name: lint-overlay
-description: "Use when adding or enforcing lint rules as part of a test or verification plan. Extends testing-strategy with lint-specific guidance: rule selection, gate placement, failure triage, and migration planning when introducing rules to an existing codebase. Do NOT use standalone — load the base testing-strategy skill alongside it — and do NOT use for chasing a specific lint failure in one file (that is debugging)."
+description: "Use when adding or enforcing lint rules as part of a test or verification plan. Extends testing-strategy with lint-specific guidance: rule selection, gate placement, failure triage, and migration planning when introducing rules to an existing codebase. Do NOT use standalone — load the base testing-strategy skill alongside it — and do NOT use for chasing a specific lint failure in one file (that is debugging). Do NOT use for decide whether to unit-test or integration-test this handler. Do NOT use for extract this repeated code pattern into a shared util. Do NOT use for the design of integration-level tests including the unit-vs-integration choice (use integration-test-design). Do NOT use for detecting and naming repeated patterns in code (use pattern-recognition)."
 license: MIT
 compatibility: "Markdown, Git, any codebase with a lint tool"
 allowed-tools: Read Grep Bash
@@ -20,11 +20,11 @@ metadata:
   routing_eval: present
   stability: experimental
   extends: testing-strategy
-  keywords: "[\"lint\",\"linting\",\"lint rules\",\"lint integration\",\"static analysis\",\"eslint\",\"format check\",\"add eslint rule\",\"lint is failing\",\"add lint check\"]"
+  keywords: "[\"lint\",\"linting\",\"lint rules\",\"lint integration\",\"static analysis\",\"eslint\",\"format check\",\"add eslint rule\",\"lint is failing\",\"add lint check\",\"noImplicitAny\",\"phased lint rollout\",\"lint rule migration\",\"pre-commit lint\",\"ci lint gate\",\"lint rule violations\"]"
   triggers: "[\"lint-overlay\"]"
   examples: "[\"plan ESLint rule introduction for a monorepo that has never had linting\",\"which lint rules should block CI and which should warn-only for now?\",\"migrate these legacy noImplicitAny violations in phased gates\",\"decide whether this new rule runs pre-commit or in CI only\"]"
-  anti_examples: "[\"this specific ESLint error is blocking my commit — why?\",\"decide whether to unit-test or integration-test this handler\",\"extract this repeated code pattern into a shared util\"]"
-  relations: "{\"boundary\":[{\"skill\":\"debugging\",\"reason\":\"debugging fixes a specific failing lint result; lint-overlay plans rule selection and gate placement\"},{\"skill\":\"refactor\",\"reason\":\"refactor changes behavior-preserving code shape; lint-overlay is verification-plan authoring, not code modification\"},{\"skill\":\"testing-strategy\",\"reason\":\"base testing-strategy owns unit-vs-integration scope selection; lint-overlay extends it only for lint-specific gate placement\"}]}"
+  anti_examples: "[\"decide whether to unit-test or integration-test this handler\",\"extract this repeated code pattern into a shared util\"]"
+  relations: "{\"boundary\":[{\"skill\":\"debugging\",\"reason\":\"debugging fixes a specific failing lint result; lint-overlay plans rule selection and gate placement\"},{\"skill\":\"refactor\",\"reason\":\"refactor changes behavior-preserving code shape; lint-overlay is verification-plan authoring, not code modification\"},{\"skill\":\"testing-strategy\",\"reason\":\"base testing-strategy owns unit-vs-integration scope selection; lint-overlay extends it only for lint-specific gate placement\"},{\"skill\":\"integration-test-design\",\"reason\":\"integration-test-design owns the design of integration-level tests including the unit-vs-integration choice; lint-overlay owns lint-rule rollout and CI gate placement — deciding test level is a testing concern, not a lint concern\"},{\"skill\":\"pattern-recognition\",\"reason\":\"pattern-recognition owns detecting and naming repeated patterns in code; lint-overlay owns lint-rule planning — extracting repeated code into a shared util is a refactor/pattern-extraction task, not a lint-rule decision\"}]}"
   grounding: "{\"domain_object\":\"Lint-specific verification planning in the Skill Graph starter library\",\"grounding_mode\":\"hybrid\",\"truth_sources\":[\"scripts/skill-lint.js\",\"scripts/lint/check-routing-quality.js\",\"scripts/lint/check-routing-eval.js\",\"examples/evals/lint-overlay.json\",\"skills/testing-strategy/SKILL.md\"],\"failure_modes\":[\"lint_failure_triaged_as_strategy_problem\",\"overlay_loaded_without_base_testing_strategy\",\"rule_migration_lacks_gate_placement\",\"routing_eval_claim_not_backed_by_harness\"],\"evidence_priority\":\"repo_code_first\"}"
   portability: "{\"readiness\":\"scripted\",\"targets\":[\"skill-md\"]}"
   structural_verdict: UNVERIFIED
@@ -35,6 +35,7 @@ metadata:
   skill_graph_protocol: Skill Metadata Protocol v7
   skill_graph_project: Skill Graph
   skill_graph_canonical_skill: skills/quality-assurance/lint-overlay/SKILL.md
+  skill_graph_export_description_projection: anti_examples+boundary
 ---
 
 # Lint Overlay

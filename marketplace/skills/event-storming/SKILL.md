@@ -1,6 +1,6 @@
 ---
 name: event-storming
-description: "Use when discovering a domain through events, commands, actors, policies, aggregates, read models, external systems, and temporal workflows before implementation. Do NOT use for event schema/topic contracts (use `event-contract-design`), webhook handler implementation (use `webhook-integration`), generic state transition modeling (use `state-machine-modeling`), or persistence schema design (use `data-modeling`)."
+description: "Use when discovering a domain through events, commands, actors, policies, aggregates, read models, external systems, and temporal workflows before implementation. Do NOT use for event schema/topic contracts (use `event-contract-design`), webhook handler implementation (use `webhook-integration`), generic state transition modeling (use `state-machine-modeling`), or persistence schema design (use `data-modeling`). Do NOT use for implement Shopify webhook signature verification and idempotent retries. Do NOT use for draw the state machine for this one status field. Do NOT use for create a normalized data model and indexes. Do NOT use for write event-bus infrastructure code. Do NOT use for define the schema, topic, compatibility, and fixtures for a selected event. Do NOT use for publishable event envelopes, schemas, topics, and compatibility (use event-contract-design)."
 license: MIT
 compatibility: "Portable event-storming discipline for product discovery, domain modeling, event-driven architecture, and workflow analysis."
 allowed-tools: Read Grep
@@ -34,6 +34,7 @@ metadata:
   skill_graph_protocol: Skill Metadata Protocol v7
   skill_graph_project: Skill Graph
   skill_graph_canonical_skill: skills/product-domain/event-storming/SKILL.md
+  skill_graph_export_description_projection: anti_examples+boundary
 ---
 
 # Event Storming

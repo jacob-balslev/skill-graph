@@ -1,6 +1,6 @@
 ---
 name: user-research
-description: "Use when planning or conducting generative qualitative research with real users — interviews, contextual inquiry, ethnographic observation, diary studies — to learn what people do, think, and need in their own context. Do NOT use for analytics review, survey statistics, A/B test interpretation, or agent-side intent classification — those are different research practices entirely."
+description: "Use when planning or conducting generative qualitative research with real users — interviews, contextual inquiry, ethnographic observation, diary studies — to learn what people do, think, and need in their own context. Do NOT use for analytics review, survey statistics, A/B test interpretation, or agent-side intent classification — those are different research practices entirely. Do NOT use for Analyze last quarter's NPS results and produce a dashboard. Do NOT use for Classify whether this agent request from the user is high-risk before executing. Do NOT use for Set up an A/B test of two onboarding flows."
 license: CC-BY-4.0
 metadata:
   schema_version: "8"
@@ -30,6 +30,7 @@ metadata:
   skill_graph_protocol: Skill Metadata Protocol v7
   skill_graph_project: Skill Graph
   skill_graph_canonical_skill: skills/design-craft/user-research/SKILL.md
+  skill_graph_export_description_projection: anti_examples
 ---
 
 # User Research

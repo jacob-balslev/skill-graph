@@ -1,6 +1,6 @@
 ---
 name: api-design
-description: "Use when designing or reviewing API surfaces: resources/actions, request and response schemas, status codes, pagination, filtering, idempotency, versioning, auth boundaries, and error envelopes. Do NOT use for non-HTTP system contracts (use `system-interface-contracts`), async event contracts (use `event-contract-design`), database design (use `data-modeling`), or inbound provider webhook mechanics (use `webhook-integration`)."
+description: "Use when designing or reviewing API surfaces: resources/actions, request and response schemas, status codes, pagination, filtering, idempotency, versioning, auth boundaries, and error envelopes. Do NOT use for non-HTTP system contracts (use `system-interface-contracts`), async event contracts (use `event-contract-design`), database design (use `data-modeling`), or inbound provider webhook mechanics (use `webhook-integration`). Do NOT use for define the broader contract between a job, service, and dashboard. Do NOT use for design database tables, foreign keys, and views. Do NOT use for implement provider webhook signature verification and retry behavior. Do NOT use for debug why this endpoint is returning 500. Do NOT use for interface contracts across any boundary (use system-interface-contracts). Do NOT use for asynchronous event and message contracts (use event-contract-design). Do NOT use for persistence shape (use data-modeling). Do NOT use for inbound provider webhooks (use webhook-integration)."
 license: MIT
 compatibility: "Portable API design guidance for REST-like HTTP APIs, route handlers, internal APIs, and documented JSON contracts."
 allowed-tools: Read Grep
@@ -34,6 +34,8 @@ metadata:
   skill_graph_protocol: Skill Metadata Protocol v7
   skill_graph_project: Skill Graph
   skill_graph_canonical_skill: skills/product-domain/api-design/SKILL.md
+  skill_graph_export_description_projection: anti_examples+boundary
+  skill_graph_export_description_projection_truncated: "true"
 ---
 
 # API Design

@@ -1,6 +1,6 @@
 ---
 name: middleware-patterns
-description: "Use when designing or reviewing Next.js middleware: the single middleware.ts request preprocessor, Edge Runtime constraints, matcher config, NextRequest/NextResponse APIs, redirects, rewrites, pass-through responses, direct responses, auth gates, locale routing, A/B rewrites, security-header delivery, geo routing, bot blocking, and request ID injection. Use for fast cross-cutting request concerns that apply across many routes. Do NOT use for per-route API handlers, Server Actions, HTTP semantics, full security policy design, streaming logic, or webhook signature handling."
+description: "Use when designing or reviewing Next.js middleware: the single middleware.ts request preprocessor, Edge Runtime constraints, matcher config, NextRequest/NextResponse APIs, redirects, rewrites, pass-through responses, direct responses, auth gates, locale routing, A/B rewrites, security-header delivery, geo routing, bot blocking, and request ID injection. Use for fast cross-cutting request concerns that apply across many routes. Do NOT use for per-route API handlers, Server Actions, HTTP semantics, full security policy design, streaming logic, or webhook signature handling. Do NOT use for implement a /api/posts POST endpoint (use route-handler-design). Do NOT use for implement a delete-comment mutation triggered from a form button (use server-actions-design). Do NOT use for explain what an HTTP 308 means vs 307 (use http-semantics). Do NOT use for design the full CSP policy and the rest of the security-header strategy (use security-fundamentals)."
 license: MIT
 allowed-tools: Read Grep
 metadata:
@@ -41,6 +41,8 @@ metadata:
   skill_graph_canonical_skill: skills/frontend-ui/middleware-patterns/SKILL.md
   skill_graph_export_description: shortened for Agent Skills 1024-character description limit; canonical source keeps the full routing contract
   skill_graph_canonical_description_length: "1178"
+  skill_graph_export_description_projection: anti_examples+boundary
+  skill_graph_export_description_projection_truncated: "true"
 ---
 
 # Middleware Patterns

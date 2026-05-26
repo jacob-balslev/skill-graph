@@ -1,6 +1,6 @@
 ---
 name: methodology
-description: "Use when planning multi-step implementations, designing quality gates, establishing verification protocols, or building agent checklists calibrated to known failure modes. Covers methodology/method/process distinctions, Cleanroom, PSP/TSP, hypothesis-driven development, DMAIC, checklist design, V&V frameworks, EDDOps, quality gates, and PDCA. Do NOT use for code-review verdicts (use `code-review`), behavior-preserving implementation work (use `refactor`), or test strategy (use `testing-strategy`)."
+description: "Use when planning multi-step implementations, designing quality gates, establishing verification protocols, or building agent checklists calibrated to known failure modes. Covers methodology/method/process distinctions, Cleanroom, PSP/TSP, hypothesis-driven development, DMAIC, checklist design, V&V frameworks, EDDOps, quality gates, and PDCA. Do NOT use for code-review verdicts (use `code-review`), behavior-preserving implementation work (use `refactor`), or test strategy (use `testing-strategy`). Do NOT use for review this PR and decide whether to approve it. Do NOT use for refactor this file while preserving behavior. Do NOT use for decide unit vs integration vs e2e coverage for this feature. Do NOT use for write the eval cases and grader rubric for this router. Do NOT use for block this dangerous git command or secret-bearing tool call."
 license: MIT
 compatibility: "Markdown, Git, agent-skill runtimes"
 allowed-tools: Read Grep Bash
@@ -36,6 +36,7 @@ metadata:
   skill_graph_protocol: Skill Metadata Protocol v7
   skill_graph_project: Skill Graph
   skill_graph_canonical_skill: skills/quality-assurance/methodology/SKILL.md
+  skill_graph_export_description_projection: anti_examples
 ---
 
 # Methodology

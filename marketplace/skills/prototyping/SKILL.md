@@ -1,6 +1,6 @@
 ---
 name: prototyping
-description: "Use when building an artifact whose purpose is to answer a specific question — paper sketch, wireframe, clickable mockup, wizard-of-oz, role-play, service prototype, or code spike — at the lowest fidelity sufficient to produce that learning. Do NOT use for production-grade component construction, design-system contribution, or building the actual ship-ready feature — those are design-module-composition and engineering implementation."
+description: "Use when building an artifact whose purpose is to answer a specific question — paper sketch, wireframe, clickable mockup, wizard-of-oz, role-play, service prototype, or code spike — at the lowest fidelity sufficient to produce that learning. Do NOT use for production-grade component construction, design-system contribution, or building the actual ship-ready feature — those are design-module-composition and engineering implementation. Do NOT use for Build the production React component for the new dashboard widget. Do NOT use for Add this component to the design system library. Do NOT use for Write the migration script for the production database."
 license: CC-BY-4.0
 metadata:
   schema_version: "8"
@@ -30,6 +30,7 @@ metadata:
   skill_graph_protocol: Skill Metadata Protocol v7
   skill_graph_project: Skill Graph
   skill_graph_canonical_skill: skills/design-craft/prototyping/SKILL.md
+  skill_graph_export_description_projection: anti_examples
 ---
 
 # Prototyping

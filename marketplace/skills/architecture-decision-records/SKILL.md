@@ -1,6 +1,6 @@
 ---
 name: architecture-decision-records
-description: "Use when writing, reviewing, or updating Architecture Decision Records: context, decision, options rejected, consequences, status, supersession, and follow-up verification. Do NOT use for general documentation prose (use `documentation`), code review findings (use `code-review`), or choosing between frameworks before a decision exists (use `framework-fit-analysis`)."
+description: "Use when writing, reviewing, or updating Architecture Decision Records: context, decision, options rejected, consequences, status, supersession, and follow-up verification. Do NOT use for general documentation prose (use `documentation`), code review findings (use `code-review`), or choosing between frameworks before a decision exists (use `framework-fit-analysis`). Do NOT use for write a general README section explaining how this module works. Do NOT use for choose which framework we should use for this project. Do NOT use for review this PR for bugs and regressions. Do NOT use for design the interface contract between these two services."
 license: MIT
 compatibility: "Portable ADR discipline for Markdown decision logs, repo docs, design docs, and architecture governance."
 allowed-tools: Read Grep
@@ -34,6 +34,7 @@ metadata:
   skill_graph_protocol: Skill Metadata Protocol v7
   skill_graph_project: Skill Graph
   skill_graph_canonical_skill: skills/code-engineering/architecture-decision-records/SKILL.md
+  skill_graph_export_description_projection: anti_examples
 ---
 
 # Architecture Decision Records

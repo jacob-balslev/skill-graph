@@ -1,6 +1,6 @@
 ---
 name: color-system-design
-description: "Use when designing a color system — palette construction, semantic color tokens, WCAG contrast ratios, perceptual uniformity in OKLCH/LCH, and light/dark mode parity. Do NOT use for single brand-color picks, runtime theme-switching mechanics, or non-color design tokens."
+description: "Use when designing a color system — palette construction, semantic color tokens, WCAG contrast ratios, perceptual uniformity in OKLCH/LCH, and light/dark mode parity. Do NOT use for single brand-color picks, runtime theme-switching mechanics, or non-color design tokens. Do NOT use for Pick the brand's primary color from scratch with no constraints. Do NOT use for Implement the prefers-color-scheme media query and toggle UI. Do NOT use for Choose spacing values for the layout grid. Do NOT use for the WCAG criteria themselves (use a11y)."
 license: CC-BY-4.0
 metadata:
   schema_version: "8"
@@ -30,6 +30,7 @@ metadata:
   skill_graph_protocol: Skill Metadata Protocol v7
   skill_graph_project: Skill Graph
   skill_graph_canonical_skill: skills/design-craft/color-system-design/SKILL.md
+  skill_graph_export_description_projection: anti_examples+boundary
 ---
 
 # Color System Design

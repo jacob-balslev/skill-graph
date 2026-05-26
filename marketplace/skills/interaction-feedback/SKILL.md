@@ -1,6 +1,6 @@
 ---
 name: interaction-feedback
-description: "Use when designing UI feedback around user actions and system state: loading, skeletons, optimistic updates, progress, success, errors, empty states, retries, disabled/pending states, autosave, undo, and perceived latency. Do NOT use for the words inside feedback (use `microcopy`), accessibility announcement mechanics (use `a11y`), business lifecycle modeling (use `state-machine-modeling`), or performance optimization (use `performance-engineering`)."
+description: "Use when designing UI feedback around user actions and system state: loading, skeletons, optimistic updates, progress, success, errors, empty states, retries, disabled/pending states, autosave, undo, and perceived latency. Do NOT use for the words inside feedback (use `microcopy`), accessibility announcement mechanics (use `a11y`), business lifecycle modeling (use `state-machine-modeling`), or performance optimization (use `performance-engineering`). Do NOT use for rewrite the toast and validation text. Do NOT use for make sure the status update is announced to screen readers. Do NOT use for model the order lifecycle and legal transitions. Do NOT use for profile the endpoint that makes this action slow. Do NOT use for the words inside feedback states (use microcopy). Do NOT use for assistive-technology announcement mechanics (use a11y). Do NOT use for business lifecycle legality (use state-machine-modeling)."
 license: MIT
 compatibility: Portable feedback-state design for web and app UI. Applies before framework-specific implementation and after task or interaction pattern selection.
 allowed-tools: Read Grep
@@ -34,6 +34,7 @@ metadata:
   skill_graph_protocol: Skill Metadata Protocol v7
   skill_graph_project: Skill Graph
   skill_graph_canonical_skill: skills/design-craft/interaction-feedback/SKILL.md
+  skill_graph_export_description_projection: anti_examples+boundary
 ---
 
 # Interaction Feedback

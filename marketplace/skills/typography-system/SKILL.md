@@ -1,6 +1,6 @@
 ---
 name: typography-system
-description: "Use when designing a typography system — typeface selection and pairing, modular type scale, vertical rhythm, line-height and measure rules, and web font delivery (subsetting, font-display, variable fonts). Do NOT use for body copy writing, single-headline font pairing, or non-text design tokens."
+description: "Use when designing a typography system — typeface selection and pairing, modular type scale, vertical rhythm, line-height and measure rules, and web font delivery (subsetting, font-display, variable fonts). Do NOT use for body copy writing, single-headline font pairing, or non-text design tokens. Do NOT use for Write the headline copy for the landing page. Do NOT use for Pick the brand's primary color. Do NOT use for Decide where the headline component lives in the folder structure."
 license: CC-BY-4.0
 metadata:
   schema_version: "8"
@@ -30,6 +30,7 @@ metadata:
   skill_graph_protocol: Skill Metadata Protocol v7
   skill_graph_project: Skill Graph
   skill_graph_canonical_skill: skills/design-craft/typography-system/SKILL.md
+  skill_graph_export_description_projection: anti_examples
 ---
 
 # Typography System

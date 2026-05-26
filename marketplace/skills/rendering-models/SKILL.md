@@ -1,6 +1,6 @@
 ---
 name: rendering-models
-description: "Use when reasoning about how a web UI is produced and delivered: client-side rendering, server-side rendering, static-site generation, incremental static regeneration, React Server Components, streaming SSR, edge rendering, and partial prerendering. Covers the time × place grid (build/request/stream/interaction × server/edge/client), the trade-offs between first-paint latency and time-to-interactive, the relationship between rendering and hydration, and how a route's content profile (dynamic / static / personalized) maps to a model. Do NOT use for organizing the frontend codebase (use frontend-architecture), the serialization frontier between server and client code (use client-server-boundary), the wire protocol itself (use http-semantics), or specific deploy-platform composition patterns (use vercel-composition-patterns)."
+description: "Use when reasoning about how a web UI is produced and delivered: client-side rendering, server-side rendering, static-site generation, incremental static regeneration, React Server Components, streaming SSR, edge rendering, and partial prerendering. Covers the time × place grid (build/request/stream/interaction × server/edge/client), the trade-offs between first-paint latency and time-to-interactive, the relationship between rendering and hydration, and how a route's content profile (dynamic / static / personalized) maps to a model. Do NOT use for organizing the frontend codebase (use frontend-architecture), the serialization frontier between server and client code (use client-server-boundary), the wire protocol itself (use http-semantics), or specific deploy-platform composition patterns (use vercel-composition-patterns). Do NOT use for measurement, profiling, and optimization across the stack (use performance-engineering)."
 license: MIT
 allowed-tools: Read Grep
 metadata:
@@ -39,6 +39,7 @@ metadata:
   skill_graph_protocol: Skill Metadata Protocol v7
   skill_graph_project: Skill Graph
   skill_graph_canonical_skill: skills/frontend-ui/rendering-models/SKILL.md
+  skill_graph_export_description_projection: boundary
 ---
 
 # Rendering Models

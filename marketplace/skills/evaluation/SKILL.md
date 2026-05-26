@@ -1,6 +1,6 @@
 ---
 name: evaluation
-description: "Use when scoring a completed agent task, implementation, document, skill upgrade, or other deliverable against the original request, acceptance criteria, verification evidence, quality rubric, and residual risks before calling it done. Covers skeptical critic review, 1-5 scoring, score ceilings, evidence sufficiency, finding/action capture, and the evaluation-revision loop. Do NOT use for designing eval datasets or graders (use agent-eval-design), line-by-line diff review (use code-review), choosing test levels (use testing-strategy), or designing the overall process and gates before work starts (use methodology)."
+description: "Use when scoring a completed agent task, implementation, document, skill upgrade, or other deliverable against the original request, acceptance criteria, verification evidence, quality rubric, and residual risks before calling it done. Covers skeptical critic review, 1-5 scoring, score ceilings, evidence sufficiency, finding/action capture, and the evaluation-revision loop. Do NOT use for designing eval datasets or graders (use agent-eval-design), line-by-line diff review (use code-review), choosing test levels (use testing-strategy), or designing the overall process and gates before work starts (use methodology). Do NOT use for design a new eval dataset, grader, and hard negatives for this router. Do NOT use for review this pull request line by line for bugs and security issues. Do NOT use for choose unit versus integration versus end-to-end tests for this feature. Do NOT use for design the whole implementation methodology and quality gate sequence before work starts."
 license: MIT
 compatibility: "Portable completion-evaluation discipline for AI agent work, documentation, skill upgrades, and software deliverables. It assumes the evaluator can inspect the request, artifact, changed files or report, and verification evidence; substitute local tools and acceptance criteria as needed."
 allowed-tools: Read Grep Bash
@@ -43,6 +43,8 @@ metadata:
   skill_graph_protocol: Skill Metadata Protocol v7
   skill_graph_project: Skill Graph
   skill_graph_canonical_skill: skills/code-engineering/evaluation/SKILL.md
+  skill_graph_export_description_projection: anti_examples
+  skill_graph_export_description_projection_truncated: "true"
 ---
 
 # Evaluation

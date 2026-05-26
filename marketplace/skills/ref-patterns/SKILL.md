@@ -1,6 +1,6 @@
 ---
 name: ref-patterns
-description: "Use when designing or reviewing React ref usage: refs as mutable handles that survive renders without triggering them, useRef for DOM access and instance values, ref callbacks for mount/unmount hooks, forwardRef and React 19 ref-as-prop, useImperativeHandle for controlled imperative APIs, and ref forwarding through compound-component primitives such as Radix Slot. Use for focus, measurement, animation, third-party DOM integration, and sparse imperative APIs; never as a substitute for reactive state. Do NOT use for the broader hook discipline (use react-hooks-patterns), state ownership decisions (use state-management), component-layering strategy (use component-architecture), Client/Server serialization boundaries (use client-server-boundary), or form validation UX (use form-ux-architecture)."
+description: "Use when designing or reviewing React ref usage: refs as mutable handles that survive renders without triggering them, useRef for DOM access and instance values, ref callbacks for mount/unmount hooks, forwardRef and React 19 ref-as-prop, useImperativeHandle for controlled imperative APIs, and ref forwarding through compound-component primitives such as Radix Slot. Use for focus, measurement, animation, third-party DOM integration, and sparse imperative APIs; never as a substitute for reactive state. Do NOT use for the broader hook discipline (use react-hooks-patterns), state ownership decisions (use state-management), component-layering strategy (use component-architecture), Client/Server serialization boundaries (use client-server-boundary), or form validation UX (use form-ux-architecture). Do NOT use for design the Rules of Hooks and dependency-array discipline for useEffect (use hooks-patterns)."
 license: MIT
 allowed-tools: Read Grep
 metadata:
@@ -41,6 +41,7 @@ metadata:
   skill_graph_canonical_skill: skills/frontend-ui/ref-patterns/SKILL.md
   skill_graph_export_description: shortened for Agent Skills 1024-character description limit; canonical source keeps the full routing contract
   skill_graph_canonical_description_length: "1311"
+  skill_graph_export_description_projection: anti_examples
 ---
 
 # Ref Patterns

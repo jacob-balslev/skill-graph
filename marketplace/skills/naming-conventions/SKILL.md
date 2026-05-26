@@ -1,6 +1,6 @@
 ---
 name: naming-conventions
-description: "Use when naming a new file, function, variable, type, route, database column, environment variable, or any other code or system artifact. Covers identifier morphology (verb-noun choice, plural vs singular, prefix/suffix conventions), kebab-case vs camelCase vs snake_case vs PascalCase per artifact kind, abbreviation rules, name-vs-path semantics, the rename-coordination workflow, and detection of names that lie. Do NOT use for content writing (use `documentation`), for restructuring already-named code (use `refactor`), or for human-language copy in product UI (separate skill, not in this library)."
+description: "Use when naming a new file, function, variable, type, route, database column, environment variable, or any other code or system artifact. Covers identifier morphology (verb-noun choice, plural vs singular, prefix/suffix conventions), kebab-case vs camelCase vs snake_case vs PascalCase per artifact kind, abbreviation rules, name-vs-path semantics, the rename-coordination workflow, and detection of names that lie. Do NOT use for content writing (use `documentation`), for restructuring already-named code (use `refactor`), or for human-language copy in product UI (separate skill, not in this library). Do NOT use for refactor this 200-line function into smaller pieces. Do NOT use for write a doc explaining our naming conventions. Do NOT use for review this PR's naming choices. Do NOT use for the variable named `userIsActive` is logging the wrong value. Do NOT use for scaffold a new skill that teaches naming conventions."
 license: MIT
 compatibility: Language-agnostic
 allowed-tools: Read Grep Bash Edit
@@ -33,6 +33,7 @@ metadata:
   skill_graph_protocol: Skill Metadata Protocol v7
   skill_graph_project: Skill Graph
   skill_graph_canonical_skill: skills/code-engineering/naming-conventions/SKILL.md
+  skill_graph_export_description_projection: anti_examples
 ---
 
 # Naming Conventions

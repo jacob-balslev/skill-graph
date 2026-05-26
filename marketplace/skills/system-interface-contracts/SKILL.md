@@ -1,6 +1,6 @@
 ---
 name: system-interface-contracts
-description: "Use when defining or reviewing contracts between systems, modules, services, agents, jobs, events, APIs, or teams: ownership, inputs, outputs, invariants, compatibility, errors, idempotency, and versioning. Do NOT use for REST resource design alone (use `api-design`), async event contract detail (use `event-contract-design`), database schemas (use `data-modeling`), or post-failure debugging (use `debugging`)."
+description: "Use when defining or reviewing contracts between systems, modules, services, agents, jobs, events, APIs, or teams: ownership, inputs, outputs, invariants, compatibility, errors, idempotency, and versioning. Do NOT use for REST resource design alone (use `api-design`), async event contract detail (use `event-contract-design`), database schemas (use `data-modeling`), or post-failure debugging (use `debugging`). Do NOT use for design the REST endpoints, status codes, and pagination. Do NOT use for create database tables and constraints. Do NOT use for investigate why this existing integration is failing in production. Do NOT use for write an ADR after the interface decision has already been accepted. Do NOT use for REST/API surface shape (use api-design). Do NOT use for asynchronous event envelopes, schemas, topics, and compatibility (use event-contract-design). Do NOT use for stored data structure (use data-modeling)."
 license: MIT
 compatibility: "Portable contract-design discipline across code modules, services, queues, APIs, webhooks, jobs, and agent interfaces."
 allowed-tools: Read Grep
@@ -34,6 +34,7 @@ metadata:
   skill_graph_protocol: Skill Metadata Protocol v7
   skill_graph_project: Skill Graph
   skill_graph_canonical_skill: skills/code-engineering/system-interface-contracts/SKILL.md
+  skill_graph_export_description_projection: anti_examples+boundary
 ---
 
 # System Interface Contracts

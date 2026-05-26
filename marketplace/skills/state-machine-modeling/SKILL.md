@@ -1,6 +1,6 @@
 ---
 name: state-machine-modeling
-description: "Use when modeling lifecycle states, transitions, guards, events, side effects, invalid states, retries, and state invariants for workflows or domain objects. Do NOT use for broad event discovery (use `event-storming`), database schema design (use `data-modeling`), or observability instrumentation after the lifecycle already exists (use `observability-modeling`)."
+description: "Use when modeling lifecycle states, transitions, guards, events, side effects, invalid states, retries, and state invariants for workflows or domain objects. Do NOT use for broad event discovery (use `event-storming`), database schema design (use `data-modeling`), or observability instrumentation after the lifecycle already exists (use `observability-modeling`). Do NOT use for discover the domain events and policies for the whole business process. Do NOT use for create database tables and constraints for this lifecycle. Do NOT use for instrument metrics and traces for an existing workflow. Do NOT use for debug why this job got stuck yesterday."
 license: MIT
 compatibility: "Portable state-machine discipline for product workflows, domain lifecycles, retries, background jobs, and UI flow control."
 allowed-tools: Read Grep
@@ -34,6 +34,7 @@ metadata:
   skill_graph_protocol: Skill Metadata Protocol v7
   skill_graph_project: Skill Graph
   skill_graph_canonical_skill: skills/code-engineering/state-machine-modeling/SKILL.md
+  skill_graph_export_description_projection: anti_examples
 ---
 
 # State Machine Modeling

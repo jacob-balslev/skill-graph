@@ -1,6 +1,6 @@
 ---
 name: streaming-architecture
-description: "Use when reasoning about systems that emit a sequence of values over time and consume them incrementally: the producer/stream/consumer/backpressure/termination primitives, the difference between streaming and request-response, the difference between streaming and pub-sub messaging, how WHATWG Streams, Server-Sent Events, HTTP chunked transfer, WebSockets, gRPC streaming, and React Server Component streaming compose, push vs pull backpressure, and the failure modes (slow consumer, abandoned consumer, partial-result correctness). Do NOT use for the message-history protocol between a model and a tool runtime (use tool-call-flow), for the realtime-update channel design (use websocket / SSE skills), for the specific encoding of token-by-token LLM output streaming (use llm-streaming if it exists; otherwise tool-call-flow), or for event-driven architecture and event sourcing (use event-driven-architecture)."
+description: "Use when reasoning about systems that emit a sequence of values over time and consume them incrementally: the producer/stream/consumer/backpressure/termination primitives, the difference between streaming and request-response, the difference between streaming and pub-sub messaging, how WHATWG Streams, Server-Sent Events, HTTP chunked transfer, WebSockets, gRPC streaming, and React Server Component streaming compose, push vs pull backpressure, and the failure modes (slow consumer, abandoned consumer, partial-result correctness). Do NOT use for the message-history protocol between a model and a tool runtime (use tool-call-flow), for the realtime-update channel design (use websocket / SSE skills), for the specific encoding of token-by-token LLM output streaming (use llm-streaming if it exists; otherwise tool-call-flow), or for event-driven architecture and event sourcing (use event-driven-architecture). Do NOT use for design the JSON shape of a single response payload (use api-design)."
 license: MIT
 allowed-tools: Read Grep
 metadata:
@@ -39,6 +39,8 @@ metadata:
   skill_graph_protocol: Skill Metadata Protocol v7
   skill_graph_project: Skill Graph
   skill_graph_canonical_skill: skills/frontend-ui/streaming-architecture/SKILL.md
+  skill_graph_export_description_projection: anti_examples+boundary
+  skill_graph_export_description_projection_truncated: "true"
 ---
 
 # Streaming Architecture

@@ -1,6 +1,6 @@
 ---
 name: framework-fit-analysis
-description: "Use when choosing, replacing, or justifying a framework, library, SDK, runtime, database, UI kit, or platform by fit: constraints, team skill, ecosystem maturity, migration cost, operability, performance, security, and exit cost. Do NOT use for routine dependency hygiene (use `dependency-architecture`), documenting an accepted decision (use `architecture-decision-records`), or framework-specific implementation work."
+description: "Use when choosing, replacing, or justifying a framework, library, SDK, runtime, database, UI kit, or platform by fit: constraints, team skill, ecosystem maturity, migration cost, operability, performance, security, and exit cost. Do NOT use for routine dependency hygiene (use `dependency-architecture`), documenting an accepted decision (use `architecture-decision-records`), or framework-specific implementation work. Do NOT use for audit installed packages for duplication and supply-chain risk. Do NOT use for write the ADR after we chose the framework. Do NOT use for implement this feature in the framework we already selected. Do NOT use for profile a slow page and optimize bottlenecks."
 license: MIT
 compatibility: "Portable technology-selection discipline for application frameworks, libraries, SDKs, platforms, runtimes, data stores, and agent tooling."
 allowed-tools: Read Grep
@@ -34,6 +34,7 @@ metadata:
   skill_graph_protocol: Skill Metadata Protocol v7
   skill_graph_project: Skill Graph
   skill_graph_canonical_skill: skills/code-engineering/framework-fit-analysis/SKILL.md
+  skill_graph_export_description_projection: anti_examples
 ---
 
 # Framework Fit Analysis

@@ -1,6 +1,6 @@
 ---
 name: observability-modeling
-description: "Use when designing telemetry semantics before or during implementation: logs, metrics, traces, events, spans, attributes, correlation IDs, SLOs, alert signals, and diagnostic questions. Do NOT use for domain/business event contracts (use `event-contract-design`), configuring an error tracker alone (use `error-tracking`), performance optimization (use `performance-engineering`), or debugging a current incident (use `debugging`)."
+description: "Use when designing telemetry semantics before or during implementation: logs, metrics, traces, events, spans, attributes, correlation IDs, SLOs, alert signals, and diagnostic questions. Do NOT use for domain/business event contracts (use `event-contract-design`), configuring an error tracker alone (use `error-tracking`), performance optimization (use `performance-engineering`), or debugging a current incident (use `debugging`). Do NOT use for set up Sentry error tracking for this app. Do NOT use for profile and optimize a slow endpoint. Do NOT use for debug the current production incident. Do NOT use for write application tests for this feature. Do NOT use for error-capture setup and handling (use error-tracking). Do NOT use for published business event contracts (use event-contract-design)."
 license: MIT
 compatibility: "Portable observability modeling discipline for applications, integrations, jobs, queues, APIs, and agent workflows."
 allowed-tools: Read Grep
@@ -34,6 +34,7 @@ metadata:
   skill_graph_protocol: Skill Metadata Protocol v7
   skill_graph_project: Skill Graph
   skill_graph_canonical_skill: skills/data-analytics/observability-modeling/SKILL.md
+  skill_graph_export_description_projection: anti_examples+boundary
 ---
 
 # Observability Modeling

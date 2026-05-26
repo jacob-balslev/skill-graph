@@ -1,6 +1,6 @@
 ---
 name: porters-five-forces
-description: "Use when analyzing an industry's competitive structure and profit pool using Porter's Five Forces: rivalry among existing competitors, threat of new entrants, bargaining power of suppliers, bargaining power of buyers, and threat of substitutes. Covers industry-boundary definition, force-by-force diagnostics, structural drivers, dynamic trends, profitability implications, strategic positioning options, and the distinction between industry attractiveness and firm-specific advantage. Do NOT use for creating an integrated strategy cascade (use playing-to-win), classifying durable moat sources (use Seven Powers when available), backlog scoring (use prioritization), or generic market sizing."
+description: "Use when analyzing an industry's competitive structure and profit pool using Porter's Five Forces: rivalry among existing competitors, threat of new entrants, bargaining power of suppliers, bargaining power of buyers, and threat of substitutes. Covers industry-boundary definition, force-by-force diagnostics, structural drivers, dynamic trends, profitability implications, strategic positioning options, and the distinction between industry attractiveness and firm-specific advantage. Do NOT use for creating an integrated strategy cascade (use playing-to-win), classifying durable moat sources (use Seven Powers when available), backlog scoring (use prioritization), or generic market sizing. Do NOT use for turn this vague product strategy into where-to-play and how-to-win choices. Do NOT use for rank these roadmap items by expected impact. Do NOT use for estimate the TAM for this market. Do NOT use for classify this company's durable moat source. Do NOT use for write OKRs for the chosen strategy."
 license: MIT
 compatibility: "Markdown, strategy memos, market-entry analysis, competitive strategy, executive decision-making"
 allowed-tools: Read Grep
@@ -43,6 +43,7 @@ metadata:
   skill_graph_protocol: Skill Metadata Protocol v7
   skill_graph_project: Skill Graph
   skill_graph_canonical_skill: skills/meta-methods/porters-five-forces/SKILL.md
+  skill_graph_export_description_projection: anti_examples
 ---
 
 # Porter's Five Forces

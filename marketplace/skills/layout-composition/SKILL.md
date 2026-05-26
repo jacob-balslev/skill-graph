@@ -1,6 +1,6 @@
 ---
 name: layout-composition
-description: "Use when deciding responsive page or screen structure: section order, scan pattern, grid/flex composition, breakpoints, viewport hierarchy, responsive media, and density. Do NOT use for user-goal decomposition (use `task-analysis`), navigation taxonomy (use `information-architecture`), visual polish (use `visual-design-foundations`), or component/token contracts (use `design-system-architecture`)."
+description: "Use when deciding responsive page or screen structure: section order, scan pattern, grid/flex composition, breakpoints, viewport hierarchy, responsive media, and density. Do NOT use for user-goal decomposition (use `task-analysis`), navigation taxonomy (use `information-architecture`), visual polish (use `visual-design-foundations`), or component/token contracts (use `design-system-architecture`). Do NOT use for what is the user's top task for this route? Do NOT use for design the global navigation and sitemap. Do NOT use for pick the color palette, type scale, and visual mood. Do NOT use for define component variants and semantic tokens. Do NOT use for navigation and page grouping (use information-architecture). Do NOT use for visual craft choices (use visual-design-foundations). Do NOT use for reusable component and token contracts (use design-system-architecture)."
 license: MIT
 compatibility: "Portable layout and responsive-composition guidance for web apps, dashboards, documentation sites, admin tools, and mobile-first product surfaces."
 allowed-tools: Read Grep
@@ -34,6 +34,7 @@ metadata:
   skill_graph_protocol: Skill Metadata Protocol v7
   skill_graph_project: Skill Graph
   skill_graph_canonical_skill: skills/frontend-ui/layout-composition/SKILL.md
+  skill_graph_export_description_projection: anti_examples+boundary
 ---
 
 # Layout Composition

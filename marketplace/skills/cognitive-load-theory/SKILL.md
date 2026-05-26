@@ -1,6 +1,6 @@
 ---
 name: cognitive-load-theory
-description: "Sweller's Cognitive Load Theory (CLT) for agents writing skill content, designing prompts, building UI/dashboards, and authoring documentation. Working memory holds roughly 4 chunks at a time; CLT classifies load into three types — intrinsic (irreducible task difficulty), extraneous (unnecessary load from poor presentation, ELIMINATE), and germane (load that builds schemas, PROMOTE). Use when writing a SKILL.md body (does this section add extraneous load?), designing prompts (am I asking the model to hold too much at once?), building dashboards (what is the per-screen cognitive budget?), or authoring docs (is intrinsic load minimized via segmentation?). Do NOT use for retrieval and context-loading design (use context-management), prompt engineering tactics (use prompt-craft), or instructional design beyond what grounds the theory."
+description: "Sweller's Cognitive Load Theory (CLT) for agents writing skill content, designing prompts, building UI/dashboards, and authoring documentation. Working memory holds roughly 4 chunks at a time; CLT classifies load into three types — intrinsic (irreducible task difficulty), extraneous (unnecessary load from poor presentation, ELIMINATE), and germane (load that builds schemas, PROMOTE). Use when writing a SKILL.md body (does this section add extraneous load?), designing prompts (am I asking the model to hold too much at once?), building dashboards (what is the per-screen cognitive budget?), or authoring docs (is intrinsic load minimized via segmentation?). Do NOT use for retrieval and context-loading design (use context-management), prompt engineering tactics (use prompt-craft), or instructional design beyond what grounds the theory. Do NOT use for memory pruning and consolidation (use memory-gardener)."
 license: MIT
 compatibility: "Markdown, Git, any agent-skill runtime"
 allowed-tools: Read Grep
@@ -31,6 +31,7 @@ metadata:
   skill_graph_protocol: Skill Metadata Protocol v7
   skill_graph_project: Skill Graph
   skill_graph_canonical_skill: skills/quality-assurance/cognitive-load-theory/SKILL.md
+  skill_graph_export_description_projection: boundary
 ---
 
 ## Concept Card

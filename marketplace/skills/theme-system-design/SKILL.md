@@ -1,6 +1,6 @@
 ---
 name: theme-system-design
-description: "Use when designing a theme system — design tokens, semantic token layering, CSS custom property strategy, runtime theme switching, and theme contract guarantees. Do NOT use for one-off color choices, brand-only palette work, or framework-specific styling-library configuration."
+description: "Use when designing a theme system — design tokens, semantic token layering, CSS custom property strategy, runtime theme switching, and theme contract guarantees. Do NOT use for one-off color choices, brand-only palette work, or framework-specific styling-library configuration. Do NOT use for Choose the exact hex value for the brand's primary blue. Do NOT use for Configure Tailwind's content array and purge settings. Do NOT use for Implement the dark mode toggle interaction."
 license: CC-BY-4.0
 metadata:
   schema_version: "8"
@@ -30,6 +30,7 @@ metadata:
   skill_graph_protocol: Skill Metadata Protocol v7
   skill_graph_project: Skill Graph
   skill_graph_canonical_skill: skills/frontend-ui/theme-system-design/SKILL.md
+  skill_graph_export_description_projection: anti_examples
 ---
 
 # Theme System Design

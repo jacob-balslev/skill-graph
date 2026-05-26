@@ -1,6 +1,6 @@
 ---
 name: route-handler-design
-description: "Use when designing or reviewing Next.js App Router Route Handlers: route.ts file placement, HTTP method exports, Web Request/Response APIs, body parsing, GET caching and opt-outs, dynamic segments, search params, CORS, Edge vs Node runtime choice, streaming responses, status and header discipline, error responses, and webhook endpoint shape. Use when the caller is mobile, third-party, webhook, server-to-server, cross-origin, or otherwise not your own typed UI. Do NOT use for internal UI mutations, broad API design, abstract HTTP semantics, request preprocessing, or full webhook reliability design."
+description: "Use when designing or reviewing Next.js App Router Route Handlers: route.ts file placement, HTTP method exports, Web Request/Response APIs, body parsing, GET caching and opt-outs, dynamic segments, search params, CORS, Edge vs Node runtime choice, streaming responses, status and header discipline, error responses, and webhook endpoint shape. Use when the caller is mobile, third-party, webhook, server-to-server, cross-origin, or otherwise not your own typed UI. Do NOT use for internal UI mutations, broad API design, abstract HTTP semantics, request preprocessing, or full webhook reliability design. Do NOT use for design an internal create-comment form mutation triggered only from this app's UI (use server-actions-design). Do NOT use for define the REST contract and resource model for a v2 public API (use api-design). Do NOT use for explain what an HTTP 422 means vs 400 (use http-semantics). Do NOT use for add an auth check that runs before every protected route (use middleware-patterns)."
 license: MIT
 allowed-tools: Read Grep
 metadata:
@@ -41,6 +41,8 @@ metadata:
   skill_graph_canonical_skill: skills/product-domain/route-handler-design/SKILL.md
   skill_graph_export_description: shortened for Agent Skills 1024-character description limit; canonical source keeps the full routing contract
   skill_graph_canonical_description_length: "1299"
+  skill_graph_export_description_projection: anti_examples
+  skill_graph_export_description_projection_truncated: "true"
 ---
 
 # Route Handler Design

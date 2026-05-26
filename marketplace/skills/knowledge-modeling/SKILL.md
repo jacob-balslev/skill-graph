@@ -1,6 +1,6 @@
 ---
 name: knowledge-modeling
-description: "Use when choosing the representation paradigm for domain knowledge: knowledge graph, frame, production rule, semantic network, concept map, procedural ontology, or hybrid. Covers knowledge acquisition from tacit to explicit, graph design principles, validation types, lifecycle states, AI-agent context systems, skills as frames, routing as rules, memory as graph, and GraphRAG patterns such as entity-anchored retrieval, relationship-aware context, path reasoning, subgraph summaries, and hybrid vector+graph retrieval. Do NOT use for human-readable domain analysis (use `conceptual-modeling`), ER/database design (use `data-modeling`), pure taxonomy hierarchy (use `taxonomy-design`), formal ontology axioms (use `ontology-modeling`), exact semantic edge labels (use `semantic-relations`), or live skill-library tooling (use `skill-infrastructure`)."
+description: "Use when choosing the representation paradigm for domain knowledge: knowledge graph, frame, production rule, semantic network, concept map, procedural ontology, or hybrid. Covers knowledge acquisition from tacit to explicit, graph design principles, validation types, lifecycle states, AI-agent context systems, skills as frames, routing as rules, memory as graph, and GraphRAG patterns such as entity-anchored retrieval, relationship-aware context, path reasoning, subgraph summaries, and hybrid vector+graph retrieval. Do NOT use for human-readable domain analysis (use `conceptual-modeling`), ER/database design (use `data-modeling`), pure taxonomy hierarchy (use `taxonomy-design`), formal ontology axioms (use `ontology-modeling`), exact semantic edge labels (use `semantic-relations`), or live skill-library tooling (use `skill-infrastructure`). Do NOT use for design the database tables and foreign keys for this schema. Do NOT use for I just need a clean IS-A category hierarchy with no rules or graph behavior."
 license: MIT
 compatibility: "Theory-level skill. Applies to any AI-coding workspace that maintains structured knowledge artefacts: skill libraries, reference docs, decision records, runbooks, agent memory systems, RAG/GraphRAG pipelines."
 allowed-tools: Read Grep
@@ -42,6 +42,8 @@ metadata:
   skill_graph_protocol: Skill Metadata Protocol v7
   skill_graph_project: Skill Graph
   skill_graph_canonical_skill: skills/knowledge-organization/knowledge-modeling/SKILL.md
+  skill_graph_export_description_projection: anti_examples+boundary
+  skill_graph_export_description_projection_truncated: "true"
 ---
 
 # Knowledge Modeling

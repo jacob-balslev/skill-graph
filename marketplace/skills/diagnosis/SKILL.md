@@ -1,6 +1,6 @@
 ---
 name: diagnosis
-description: "Use when facing an unknown software failure, when symptoms point to different root causes, or when an initial debugging attempt has not converged. Provides a triage-first diagnostic routing framework: classify the failure, collect the right evidence, choose a technique, track confidence, and escalate when stuck. Do NOT use for executing scientific debugging after triage (use `debugging`), code-quality review (use `code-review`), or proactive observability setup."
+description: "Use when facing an unknown software failure, when symptoms point to different root causes, or when an initial debugging attempt has not converged. Provides a triage-first diagnostic routing framework: classify the failure, collect the right evidence, choose a technique, track confidence, and escalate when stuck. Do NOT use for executing scientific debugging after triage (use `debugging`), code-quality review (use `code-review`), or proactive observability setup. Do NOT use for actually execute scientific-method debugging on this stack trace. Do NOT use for review this AI-generated PR for correctness. Do NOT use for scan this repo for OWASP top 10 vulnerabilities. Do NOT use for design observability instrumentation for this service. Do NOT use for decide which agent should pick up this ticket. Do NOT use for what's the right test pyramid for this feature."
 license: MIT
 compatibility: "Language- and stack-agnostic. The classification taxonomy, evidence protocol, and confidence ladder apply to any software failure investigation; specific technique names (git bisect, EXPLAIN plans, HMAC verification) are illustrative — substitute the equivalents of your stack."
 allowed-tools: Read Grep
@@ -35,6 +35,7 @@ metadata:
   skill_graph_protocol: Skill Metadata Protocol v7
   skill_graph_project: Skill Graph
   skill_graph_canonical_skill: skills/code-engineering/diagnosis/SKILL.md
+  skill_graph_export_description_projection: anti_examples
 ---
 
 # Diagnosis

@@ -1,6 +1,6 @@
 ---
 name: ontology-modeling
-description: "Use when formalizing domain meaning with classes, properties, constraints, RDF/OWL-style semantics, SHACL-like validation shapes, or reasoning-ready axioms. Do NOT use for simple category trees (use `taxonomy-design`), pre-implementation business entity sketches (use `conceptual-modeling`), database schemas (use `data-modeling`), or broad representation choice (use `knowledge-modeling`)."
+description: "Use when formalizing domain meaning with classes, properties, constraints, RDF/OWL-style semantics, SHACL-like validation shapes, or reasoning-ready axioms. Do NOT use for simple category trees (use `taxonomy-design`), pre-implementation business entity sketches (use `conceptual-modeling`), database schemas (use `data-modeling`), or broad representation choice (use `knowledge-modeling`). Do NOT use for make a simple browse category tree for skills. Do NOT use for identify the business entities and relationships before implementation. Do NOT use for design the SQL tables, keys, and indexes. Do NOT use for choose whether this knowledge belongs in rules, frames, a graph, or a hybrid. Do NOT use for informal classification and facets (use taxonomy-design). Do NOT use for persistence structure and constraints (use data-modeling)."
 license: MIT
 compatibility: "Portable ontology modeling guidance; implementation can be Markdown, RDF, JSON-LD, OWL, SHACL, or an internal schema language."
 allowed-tools: Read Grep
@@ -41,6 +41,7 @@ metadata:
   skill_graph_protocol: Skill Metadata Protocol v7
   skill_graph_project: Skill Graph
   skill_graph_canonical_skill: skills/knowledge-organization/ontology-modeling/SKILL.md
+  skill_graph_export_description_projection: anti_examples+boundary
 ---
 
 # Ontology Modeling

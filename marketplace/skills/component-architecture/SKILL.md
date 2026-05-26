@@ -1,6 +1,6 @@
 ---
 name: component-architecture
-description: "Use when structuring a component library or design system for reuse across products, themes, and teams: layering of primitives, composites, and product-specific assemblies; component API design (props, polymorphism, compound components, render props vs hooks vs slots); the open-closed principle for component evolution; the headless/styled split for theming; controlled vs uncontrolled state contracts; ref forwarding and imperative escape hatches; composition over configuration trade-offs; and the cross-product reuse problem. Do NOT use for within-product module composition (use design-module-composition), design system meta-architecture (use design-system-architecture), the visual language itself (use visual-design-foundations or tokens), tactical hooks (library docs), or state-management decisions that are not component-API-shaped (use state-management)."
+description: "Use when structuring a component library or design system for reuse across products, themes, and teams: layering of primitives, composites, and product-specific assemblies; component API design (props, polymorphism, compound components, render props vs hooks vs slots); the open-closed principle for component evolution; the headless/styled split for theming; controlled vs uncontrolled state contracts; ref forwarding and imperative escape hatches; composition over configuration trade-offs; and the cross-product reuse problem. Do NOT use for within-product module composition (use design-module-composition), design system meta-architecture (use design-system-architecture), the visual language itself (use visual-design-foundations or tokens), tactical hooks (library docs), or state-management decisions that are not component-API-shaped (use state-management). Do NOT use for pick the design tokens for color and spacing (use visual-design-foundations)."
 license: MIT
 allowed-tools: Read Grep
 metadata:
@@ -39,6 +39,8 @@ metadata:
   skill_graph_protocol: Skill Metadata Protocol v7
   skill_graph_project: Skill Graph
   skill_graph_canonical_skill: skills/design-craft/component-architecture/SKILL.md
+  skill_graph_export_description_projection: anti_examples
+  skill_graph_export_description_projection_truncated: "true"
 ---
 
 # Component Architecture

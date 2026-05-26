@@ -1,6 +1,6 @@
 ---
 name: design-module-composition
-description: "Use when designing reusable component modules — composition patterns, compound components, slot/children APIs, render props, headless component contracts, and the choice between configuration and composition. Do NOT use for application-level architecture, single-use feature components, or visual styling decisions."
+description: "Use when designing reusable component modules — composition patterns, compound components, slot/children APIs, render props, headless component contracts, and the choice between configuration and composition. Do NOT use for application-level architecture, single-use feature components, or visual styling decisions. Do NOT use for Choose the border radius value for cards. Do NOT use for Decide where the OrderDetailPage component lives in the folder structure. Do NOT use for Pick the brand font for headings."
 license: CC-BY-4.0
 metadata:
   schema_version: "8"
@@ -30,6 +30,7 @@ metadata:
   skill_graph_protocol: Skill Metadata Protocol v7
   skill_graph_project: Skill Graph
   skill_graph_canonical_skill: skills/design-craft/design-module-composition/SKILL.md
+  skill_graph_export_description_projection: anti_examples
 ---
 
 # Design Module Composition

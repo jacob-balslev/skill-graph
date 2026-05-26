@@ -1,6 +1,6 @@
 ---
 name: best-practice
-description: "Cross-cutting best practices enforcement across code, templates, skills, prompts, scripts, documentation, pages, and design. The enforcement layer that catches violations any specialist might miss. Do NOT use for deep code review methodology (use code-review), auth guard selection (use nextauth-patterns), SQL injection prevention (use security-scanning), PII masking (use gdpr-compliance), accessibility implementation depth (use a11y), or financial semantics (use code-logic)."
+description: "Cross-cutting best practices enforcement across code, templates, skills, prompts, scripts, documentation, pages, and design. The enforcement layer that catches violations any specialist might miss. Do NOT use for deep code review methodology (use code-review), auth guard selection (use nextauth-patterns), SQL injection prevention (use security-scanning), PII masking (use gdpr-compliance), accessibility implementation depth (use a11y), or financial semantics (use code-logic). Do NOT use for designing the APCA contrast ratio for a new color palette (use color-science). Do NOT use for implementing the font loading strategy and vertical rhythm (use typography). Do NOT use for deciding what quality means per artifact type — code vs skill vs prompt (use craft-doctrine)."
 license: MIT
 compatibility: "Applies to any web application codebase using TypeScript, React, and Next.js App Router. The cross-domain enforcement priorities (security, a11y, performance, design system, testing, DevOps, AI/LLM) are framework-agnostic; the Next.js section is specific to the App Router pattern."
 allowed-tools: Read Grep Bash
@@ -35,6 +35,7 @@ metadata:
   skill_graph_protocol: Skill Metadata Protocol v7
   skill_graph_project: Skill Graph
   skill_graph_canonical_skill: skills/quality-assurance/best-practice/SKILL.md
+  skill_graph_export_description_projection: anti_examples
 ---
 
 # Best Practice — Cross-Cutting Quality Enforcement

@@ -1,6 +1,6 @@
 ---
 name: client-server-boundary
-description: "Use when reasoning about the line at which execution context changes between a server runtime and a client runtime: what values can cross via serialization, what cannot, the directives that mark transitions (`'use client'`, `'use server'`), the difference between server-rendered HTML and a serialized component tree, the trust model that treats client input as adversarial, and the consequences of leaking server-only modules into client bundles. Do NOT use for when and where the UI is produced (use rendering-models), the HTTP wire protocol itself (use http-semantics), how to organize the frontend codebase (use frontend-architecture), or how to design the JSON shape of an API endpoint (use api-design)."
+description: "Use when reasoning about the line at which execution context changes between a server runtime and a client runtime: what values can cross via serialization, what cannot, the directives that mark transitions (`'use client'`, `'use server'`), the difference between server-rendered HTML and a serialized component tree, the trust model that treats client input as adversarial, and the consequences of leaking server-only modules into client bundles. Do NOT use for when and where the UI is produced (use rendering-models), the HTTP wire protocol itself (use http-semantics), how to organize the frontend codebase (use frontend-architecture), or how to design the JSON shape of an API endpoint (use api-design). Do NOT use for the discipline of compile-time type checking (use type-safety)."
 license: MIT
 allowed-tools: Read Grep
 metadata:
@@ -39,6 +39,7 @@ metadata:
   skill_graph_protocol: Skill Metadata Protocol v7
   skill_graph_project: Skill Graph
   skill_graph_canonical_skill: skills/frontend-ui/client-server-boundary/SKILL.md
+  skill_graph_export_description_projection: boundary
 ---
 
 # Client-Server Boundary

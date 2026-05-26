@@ -1,6 +1,6 @@
 ---
 name: design-system-architecture
-description: "Use when designing or auditing a design system's architecture: token taxonomy, semantic tokens, component APIs, theming, accessibility contracts, documentation, governance, and migration strategy. Do NOT use for information hierarchy and navigation (use `information-architecture`), page-specific layout (use `layout-composition`), visual craft direction (use `visual-design-foundations`), sentence-level UI copy (use `microcopy`), or accessibility-only audits (use `a11y`)."
+description: "Use when designing or auditing a design system's architecture: token taxonomy, semantic tokens, component APIs, theming, accessibility contracts, documentation, governance, and migration strategy. Do NOT use for information hierarchy and navigation (use `information-architecture`), page-specific layout (use `layout-composition`), visual craft direction (use `visual-design-foundations`), sentence-level UI copy (use `microcopy`), or accessibility-only audits (use `a11y`). Do NOT use for organize pages, nav, sitemap, and wayfinding. Do NOT use for rewrite the empty-state text and tooltip labels. Do NOT use for add aria-labels and keyboard behavior to this component. Do NOT use for draft an architecture note explaining why we chose Postgres over DynamoDB. Do NOT use for navigation and content structure (use information-architecture). Do NOT use for UI text patterns (use microcopy). Do NOT use for page-specific responsive structure (use layout-composition)."
 license: MIT
 compatibility: "Portable design-system architecture guidance for web and app component systems, token systems, and multi-theme UI libraries."
 allowed-tools: Read Grep
@@ -34,6 +34,8 @@ metadata:
   skill_graph_protocol: Skill Metadata Protocol v7
   skill_graph_project: Skill Graph
   skill_graph_canonical_skill: skills/frontend-ui/design-system-architecture/SKILL.md
+  skill_graph_export_description_projection: anti_examples+boundary
+  skill_graph_export_description_projection_truncated: "true"
 ---
 
 # Design System Architecture

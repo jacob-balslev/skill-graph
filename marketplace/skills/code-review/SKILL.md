@@ -1,6 +1,6 @@
 ---
 name: code-review
-description: "Use when reviewing a pull request, diff, or proposed code change for correctness, clarity, security, performance, and conformance to project conventions — whether the author is a human, an AI agent, or a peer. Covers the pre-review fact-gathering pass, the read-order strategy (tests first, then implementation, then call sites), the severity-grading rubric, the comment-phrasing discipline, and the no-rubber-stamp rule for AI-generated diffs. Do NOT use for AUTHORING the code (use `refactor` for behaviour-preserving changes or `skill-scaffold` for new skills), for chasing a known bug after merge (use `debugging`), or for security-only audits (use `owasp-security` for vulnerability-focused review)."
+description: "Use when reviewing a pull request, diff, or proposed code change for correctness, clarity, security, performance, and conformance to project conventions — whether the author is a human, an AI agent, or a peer. Covers the pre-review fact-gathering pass, the read-order strategy (tests first, then implementation, then call sites), the severity-grading rubric, the comment-phrasing discipline, and the no-rubber-stamp rule for AI-generated diffs. Do NOT use for AUTHORING the code (use `refactor` for behaviour-preserving changes or `skill-scaffold` for new skills), for chasing a known bug after merge (use `debugging`), or for security-only audits (use `owasp-security` for vulnerability-focused review). Do NOT use for fix this bug that production users are reporting. Do NOT use for refactor this 200-line function into smaller pieces. Do NOT use for scaffold a new skill that teaches code review. Do NOT use for write a guide explaining our review conventions."
 license: MIT
 compatibility: Language-agnostic; assumes a diff or PR as input
 allowed-tools: Read Grep Bash
@@ -33,6 +33,8 @@ metadata:
   skill_graph_protocol: Skill Metadata Protocol v7
   skill_graph_project: Skill Graph
   skill_graph_canonical_skill: skills/quality-assurance/code-review/SKILL.md
+  skill_graph_export_description_projection: anti_examples
+  skill_graph_export_description_projection_truncated: "true"
 ---
 
 # Code Review

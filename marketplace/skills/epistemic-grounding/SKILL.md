@@ -1,6 +1,6 @@
 ---
 name: epistemic-grounding
-description: "Use when authoring any artifact that makes claims — skill content, documentation, audit findings, architecture proposals, code review comments. Covers the discipline of grounding every claim to a verifiable source, distinguishing verified-by-evidence from inferred-from-context, using normative vocabulary precisely (RFC 2119 MUST/SHOULD/MAY), and structuring arguments so the warrant from data to claim is visible to a reader. Do NOT use for verification protocol mechanics in this repo (use the verification-protocol rule file), for output-completeness enforcement (use methodology), or for self-scoring on a 1-5 scale (use self-evaluation)."
+description: "Use when authoring any artifact that makes claims — skill content, documentation, audit findings, architecture proposals, code review comments. Covers the discipline of grounding every claim to a verifiable source, distinguishing verified-by-evidence from inferred-from-context, using normative vocabulary precisely (RFC 2119 MUST/SHOULD/MAY), and structuring arguments so the warrant from data to claim is visible to a reader. Do NOT use for verification protocol mechanics in this repo (use the verification-protocol rule file), for output-completeness enforcement (use methodology), or for self-scoring on a 1-5 scale (use self-evaluation). Do NOT use for decide which lint rule to add for a specific kind of drift (use skill-infrastructure). Do NOT use for evaluate a finished SKILL.md against the comprehension grader (use evaluation). Do NOT use for the rules for naming and meaning-making (use semantics)."
 license: MIT
 allowed-tools: Read Grep
 metadata:
@@ -39,6 +39,7 @@ metadata:
   skill_graph_protocol: Skill Metadata Protocol v7
   skill_graph_project: Skill Graph
   skill_graph_canonical_skill: skills/meta-methods/epistemic-grounding/SKILL.md
+  skill_graph_export_description_projection: anti_examples+boundary
 ---
 
 # Epistemic Grounding

@@ -1,6 +1,6 @@
 ---
 name: prompt-injection-defense
-description: "Use when reasoning about systems that pass untrusted content to a language model: the data-vs-instruction collapse that makes this attack class a structural property of LLMs rather than a fixable bug, the direct/indirect/exfiltration/action-trigger taxonomy, the role of every untrusted surface (RAG retrievals, tool results, attachments, web content, document parsing, user-provided text), why content filters and improved system prompts do not solve it, and the defense-in-depth measures that do (capability constraint, content origin tracking, separate planning and execution stages, human-in-the-loop gates, principle-of-least-authority for tools). Do NOT use for jailbreaking and policy circumvention (use model-safety), for general API security (use api-security), for runtime input validation patterns (use type-safety + api-design), or for the protocol cycle of tool calls (use tool-call-flow)."
+description: "Use when reasoning about systems that pass untrusted content to a language model: the data-vs-instruction collapse that makes this attack class a structural property of LLMs rather than a fixable bug, the direct/indirect/exfiltration/action-trigger taxonomy, the role of every untrusted surface (RAG retrievals, tool results, attachments, web content, document parsing, user-provided text), why content filters and improved system prompts do not solve it, and the defense-in-depth measures that do (capability constraint, content origin tracking, separate planning and execution stages, human-in-the-loop gates, principle-of-least-authority for tools). Do NOT use for jailbreaking and policy circumvention (use model-safety), for general API security (use api-security), for runtime input validation patterns (use type-safety + api-design), or for the protocol cycle of tool calls (use tool-call-flow). Do NOT use for preventing type errors at compile time (use type-safety)."
 license: MIT
 allowed-tools: Read Grep
 metadata:
@@ -39,6 +39,8 @@ metadata:
   skill_graph_protocol: Skill Metadata Protocol v7
   skill_graph_project: Skill Graph
   skill_graph_canonical_skill: skills/quality-assurance/prompt-injection-defense/SKILL.md
+  skill_graph_export_description_projection: boundary
+  skill_graph_export_description_projection_truncated: "true"
 ---
 
 # Prompt-Injection Defense

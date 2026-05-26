@@ -1,6 +1,6 @@
 ---
 name: error-boundary
-description: "Use when designing or reviewing React error boundaries: what an error boundary catches (rendering errors, lifecycle errors, constructor errors) and what it does not (event handler errors, async errors, SSR errors, errors in the boundary itself), why React still requires class components for error boundaries, how to place boundaries by granularity (page / feature / leaf), how error boundaries pair with Suspense, the reset-and-recover pattern (resetKeys, error.reset), the Next.js error.tsx route-segment convention, and how to integrate boundaries with error reporting (Sentry, observability). Covers React 18+ and Next.js App Router. Do NOT use for Suspense boundary placement (use suspense-patterns), for general error-handling discipline (try/catch in async code, validation errors), for backend error contracts (use api-design), or for observability infrastructure (use error-tracking)."
+description: "Use when designing or reviewing React error boundaries: what an error boundary catches (rendering errors, lifecycle errors, constructor errors) and what it does not (event handler errors, async errors, SSR errors, errors in the boundary itself), why React still requires class components for error boundaries, how to place boundaries by granularity (page / feature / leaf), how error boundaries pair with Suspense, the reset-and-recover pattern (resetKeys, error.reset), the Next.js error.tsx route-segment convention, and how to integrate boundaries with error reporting (Sentry, observability). Covers React 18+ and Next.js App Router. Do NOT use for Suspense boundary placement (use suspense-patterns), for general error-handling discipline (try/catch in async code, validation errors), for backend error contracts (use api-design), or for observability infrastructure (use error-tracking). Do NOT use for handle a Promise rejection in an event handler (use code-review for the local try/catch pattern)."
 license: MIT
 allowed-tools: Read Grep
 metadata:
@@ -39,6 +39,7 @@ metadata:
   skill_graph_protocol: Skill Metadata Protocol v7
   skill_graph_project: Skill Graph
   skill_graph_canonical_skill: skills/frontend-ui/error-boundary/SKILL.md
+  skill_graph_export_description_projection: anti_examples
 ---
 
 # Error Boundary

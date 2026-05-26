@@ -1,6 +1,6 @@
 ---
 name: frontend-architecture
-description: "Use when organizing a frontend codebase — module boundaries, component layering, state ownership, data-flow direction, and the separation between feature code and shared primitives. Do NOT use for visual design decisions, specific framework migration tactics, or backend API contract design."
+description: "Use when organizing a frontend codebase — module boundaries, component layering, state ownership, data-flow direction, and the separation between feature code and shared primitives. Do NOT use for visual design decisions, specific framework migration tactics, or backend API contract design. Do NOT use for Pick the brand color palette for a marketing site. Do NOT use for Design the REST endpoint shape for the orders resource. Do NOT use for Decide whether to use CSS-in-JS or Tailwind."
 license: CC-BY-4.0
 metadata:
   schema_version: "8"
@@ -31,6 +31,7 @@ metadata:
   skill_graph_protocol: Skill Metadata Protocol v7
   skill_graph_project: Skill Graph
   skill_graph_canonical_skill: skills/frontend-ui/frontend-architecture/SKILL.md
+  skill_graph_export_description_projection: anti_examples
 ---
 
 # Frontend Architecture

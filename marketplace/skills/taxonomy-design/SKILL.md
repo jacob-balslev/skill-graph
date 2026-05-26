@@ -1,6 +1,6 @@
 ---
 name: taxonomy-design
-description: "Use when designing a controlled classification system: category trees, facets, browse taxonomies, SKOS broader/narrower relationships, tagging rules, and duplicate-category cleanup. Do NOT use for formal ontology axioms with reasoning constraints (use `ontology-modeling`), broad knowledge-representation choice (use `knowledge-modeling`), or one-off edge typing (use `semantic-relations`)."
+description: "Use when designing a controlled classification system: category trees, facets, browse taxonomies, SKOS broader/narrower relationships, tagging rules, and duplicate-category cleanup. Do NOT use for formal ontology axioms with reasoning constraints (use `ontology-modeling`), broad knowledge-representation choice (use `knowledge-modeling`), or one-off edge typing (use `semantic-relations`). Do NOT use for define OWL class restrictions and property domains for this knowledge base. Do NOT use for decide whether this knowledge should be represented as a graph, frame, rules, or hybrid. Do NOT use for type this single relation as meronymy, causality, synonymy, or thematic role. Do NOT use for write user-facing labels for this navigation item. Do NOT use for formal axioms and reasoning semantics (use ontology-modeling)."
 license: MIT
 compatibility: "Portable taxonomy design discipline for skill libraries, product information architecture, documentation trees, and knowledge graphs."
 allowed-tools: Read Grep
@@ -41,6 +41,7 @@ metadata:
   skill_graph_protocol: Skill Metadata Protocol v7
   skill_graph_project: Skill Graph
   skill_graph_canonical_skill: skills/knowledge-organization/taxonomy-design/SKILL.md
+  skill_graph_export_description_projection: anti_examples+boundary
 ---
 
 # Taxonomy Design

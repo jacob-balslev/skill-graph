@@ -1,6 +1,6 @@
 ---
 name: information-architecture
-description: "Use when structuring information for findability: navigation, page hierarchy, docs architecture, sitemap shape, labeling systems, wayfinding, and content grouping. Do NOT use for formal category-governance work (use `taxonomy-design`), responsive page composition (use `layout-composition`), component/token architecture (use `design-system-architecture`), or sentence-level UI text (use `microcopy`)."
+description: "Use when structuring information for findability: navigation, page hierarchy, docs architecture, sitemap shape, labeling systems, wayfinding, and content grouping. Do NOT use for formal category-governance work (use `taxonomy-design`), responsive page composition (use `layout-composition`), component/token architecture (use `design-system-architecture`), or sentence-level UI text (use `microcopy`). Do NOT use for make the category taxonomy and assignment rules for this skill library. Do NOT use for define design tokens, component APIs, and theming rules. Do NOT use for rewrite this tooltip and empty-state copy. Do NOT use for audit keyboard accessibility and ARIA semantics. Do NOT use for component and token systems (use design-system-architecture). Do NOT use for structure inside a page or screen (use layout-composition). Do NOT use for sentence-level UI text (use microcopy). Do NOT use for accessibility compliance (use a11y)."
 license: MIT
 compatibility: "Portable IA guidance for apps, documentation, dashboards, admin tools, and skill libraries."
 allowed-tools: Read Grep
@@ -34,6 +34,7 @@ metadata:
   skill_graph_protocol: Skill Metadata Protocol v7
   skill_graph_project: Skill Graph
   skill_graph_canonical_skill: skills/frontend-ui/information-architecture/SKILL.md
+  skill_graph_export_description_projection: anti_examples+boundary
 ---
 
 # Information Architecture

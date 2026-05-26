@@ -1,6 +1,6 @@
 ---
 name: keywords
-description: "Use when doing keyword research, mapping search intent, building topical clusters, choosing terms for product or marketplace listings, detecting cannibalization, or translating query demand into page/listing targets. Covers seed expansion, intent classification, clustering, platform field translation for Etsy, Amazon, Shopify, SaaS/content sites, long-tail marketplace strategy, cannibalization resolution, and rank-tracking cadence. Do NOT use for building SEO pages or schema strategy (use `seo-strategy`), writing the finished prose (use `writing-humanizer`), or designing navigation/page hierarchy (use `information-architecture`)."
+description: "Use when doing keyword research, mapping search intent, building topical clusters, choosing terms for product or marketplace listings, detecting cannibalization, or translating query demand into page/listing targets. Covers seed expansion, intent classification, clustering, platform field translation for Etsy, Amazon, Shopify, SaaS/content sites, long-tail marketplace strategy, cannibalization resolution, and rank-tracking cadence. Do NOT use for building SEO pages or schema strategy (use `seo-strategy`), writing the finished prose (use `writing-humanizer`), or designing navigation/page hierarchy (use `information-architecture`). Do NOT use for build the SEO landing page, JSON-LD schema, and internal-linking plan from these keywords. Do NOT use for rewrite the product description so it sounds more human and on-brand. Do NOT use for design the site navigation and decide which categories become top-level menu items. Do NOT use for audit Core Web Vitals or crawlability problems."
 license: MIT
 compatibility: Portable keyword research and marketplace keyword-mapping guidance. Platform limits and field names can drift; verify against current marketplace docs before high-stakes listing work.
 allowed-tools: Read Grep Bash
@@ -43,6 +43,8 @@ metadata:
   skill_graph_protocol: Skill Metadata Protocol v7
   skill_graph_project: Skill Graph
   skill_graph_canonical_skill: skills/product-domain/keywords/SKILL.md
+  skill_graph_export_description_projection: anti_examples+boundary
+  skill_graph_export_description_projection_truncated: "true"
 ---
 
 # Keywords

@@ -1,6 +1,6 @@
 ---
 name: dependency-architecture
-description: "Use when designing or auditing dependency structure: package boundaries, runtime vs build dependencies, adapter layers, duplicate-purpose libraries, supply-chain risk, upgrade policy, lock-in, and dependency graph health. Do NOT use for choosing a major framework (use `framework-fit-analysis`), vulnerability-only review (use `owasp-security`), or routine refactoring without dependency boundary changes (use `refactor`)."
+description: "Use when designing or auditing dependency structure: package boundaries, runtime vs build dependencies, adapter layers, duplicate-purpose libraries, supply-chain risk, upgrade policy, lock-in, and dependency graph health. Do NOT use for choosing a major framework (use `framework-fit-analysis`), vulnerability-only review (use `owasp-security`), or routine refactoring without dependency boundary changes (use `refactor`). Do NOT use for choose between Next.js, Remix, and Astro for a new app. Do NOT use for scan dependencies only for known vulnerabilities. Do NOT use for refactor this module without changing dependency boundaries. Do NOT use for write an ADR after the dependency decision is accepted. Do NOT use for vulnerability and security review (use owasp-security)."
 license: MIT
 compatibility: "Portable dependency architecture guidance for monorepos, package.json ecosystems, service boundaries, SDKs, and internal libraries."
 allowed-tools: Read Grep
@@ -34,6 +34,7 @@ metadata:
   skill_graph_protocol: Skill Metadata Protocol v7
   skill_graph_project: Skill Graph
   skill_graph_canonical_skill: skills/code-engineering/dependency-architecture/SKILL.md
+  skill_graph_export_description_projection: anti_examples+boundary
 ---
 
 # Dependency Architecture

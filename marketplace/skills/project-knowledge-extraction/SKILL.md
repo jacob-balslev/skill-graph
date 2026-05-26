@@ -1,6 +1,6 @@
 ---
 name: project-knowledge-extraction
-description: "Use when extracting durable project knowledge from code, docs, issues, incidents, reports, screenshots, or conversations into reusable context such as skills, ADRs, glossaries, context docs, or memory. Do NOT use for writing a new skill contract (use `skill-scaffold`), maintaining library tooling (use `skill-infrastructure`), or generic documentation polish (use `documentation`)."
+description: "Use when extracting durable project knowledge from code, docs, issues, incidents, reports, screenshots, or conversations into reusable context such as skills, ADRs, glossaries, context docs, or memory. Do NOT use for writing a new skill contract (use `skill-scaffold`), maintaining library tooling (use `skill-infrastructure`), or generic documentation polish (use `documentation`). Do NOT use for create a new SKILL.md from the Skill Metadata Protocol template. Do NOT use for run the skill library health tooling and overlap detector. Do NOT use for rewrite this README to sound better. Do NOT use for decide which skill should route for this exact prompt."
 license: MIT
 compatibility: Portable extraction workflow for turning project evidence into durable agent context without hallucinated project claims.
 allowed-tools: Read Grep
@@ -35,6 +35,7 @@ metadata:
   skill_graph_protocol: Skill Metadata Protocol v7
   skill_graph_project: Skill Graph
   skill_graph_canonical_skill: skills/agent-ops/project-knowledge-extraction/SKILL.md
+  skill_graph_export_description_projection: anti_examples
 ---
 
 # Project Knowledge Extraction
