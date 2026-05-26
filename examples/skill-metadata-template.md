@@ -6,9 +6,35 @@
 # ============================================================================
 #
 # Adopters COPY this file to `skills/<new-name>/SKILL.md` and then edit it to
-# author a new skill. Every `# TEMPLATE NOTE:` YAML comment and every
-# `> **TEMPLATE NOTE:**` body blockquote is authoring scaffolding that MUST be
-# stripped from the derived copy before shipping.
+# author a new skill. Two distinct comment conventions live in this template
+# — they have OPPOSITE lifecycles, do not confuse them:
+#
+#   1. Field-purpose comments — short blocks (typically 2-4 lines) immediately
+#      above each field, naming what the field is, its allowed values, and
+#      when-to-use. Example:
+#
+#        # operation: cognitive operation enabled (Bloom-grounded). 1 of 4.
+#        # know (declarative) / do (procedural) / decide (judgment) /
+#        # modify (context-injection).
+#        operation: know
+#
+#      → **STAY in the derived skill.** These are the design intent at the
+#        point of authoring. Cold-start agents and human authors read them
+#        instead of opening `docs/field-reference.md`. Do NOT strip these.
+#        Canonical source for field-purpose content is `docs/field-reference.md`;
+#        the inline comment is the abridged summary. See
+#        `SKILL_METADATA_PROTOCOL.md § Inline field comments — the authoring convention`.
+#
+#   2. `# TEMPLATE NOTE:` comments — authoring scaffolding about HOW to use
+#      the template itself, OR about this specific scaffold (e.g., why
+#      `routing_eval` stays `absent` on the template). Example:
+#
+#        # TEMPLATE NOTE: Be pushy in your description — Claude tends to
+#        # under-trigger skills, so descriptions should read as commands...
+#
+#      → **STRIPPED on derivation.** Run `grep -n "TEMPLATE NOTE" <derived>`
+#        before commit; the result MUST be zero hits. Every `# TEMPLATE NOTE:`
+#        line and every `> **TEMPLATE NOTE:**` body blockquote is removed.
 #
 # Field values here are deliberate authoring-time defaults, not aspirational
 # targets. In particular `eval_artifacts: planned`, `eval_state: unverified`,
@@ -60,28 +86,37 @@ freshness: "2026-04-17"
 # --record --apply <skill-dir>`.
 drift_check:
   last_verified: "2026-04-17"
-# TEMPLATE NOTE: eval_artifacts, eval_state, and routing_eval are the three
-# orthogonal eval-health axes introduced in schema_version 2. Set eval_artifacts
-# to `planned` only as a temporary state — move to `present` once the artifact
-# ships. Set eval_state to `unverified` when no run has been recorded yet.
-#
-# routing_eval: `present` is routing-harness-enforced, not schema-lint-enforced. Setting `present`
-# requires (1) populated `examples` + `anti_examples` below, AND (2) a passing
-# run of `node scripts/skill-graph-routing-eval.js --skill <name>`. Default to
-# `absent` when authoring; flip to `present` only after the harness agrees.
-# See docs/field-reference.md § routing_eval for the full enforcement contract.
-#
-# SCAFFOLD NOTE — on this specific file (`examples/skill-metadata-template.md`),
-# routing_eval MUST stay `absent` even though the harness happens to report
-# every case passing. The scaffold's job is to model the correct authoring-
-# time default for a brand-new un-verified skill. If this line were flipped
-# to `present`, every skill copy-pasted from the scaffold would inherit a
-# false attestation until the author noticed and downgraded. In your
-# derived copy, leave this line `absent` at first commit; flip it to
-# `present` only after `node scripts/skill-graph-routing-eval.js --skill
-# <your-skill-name>` exits 0 on YOUR skill's own examples + anti_examples.
+# === Eval-health: three orthogonal axes ===
+# Introduced in schema_version 2 to split what v1's single `eval_status` enum
+# collapsed. The three fields answer three different questions and must NOT
+# be collapsed back into a boolean. See docs/field-rationale.md § eval_artifacts
+# + § eval_state + § routing_eval for the design rationale.
+
+# eval_artifacts: disk-truth — does an eval file exist on disk?
+# none (no intent) / planned (intent declared, no file yet) / present (file exists).
+# `planned` is a temporary state; move to `present` once the artifact ships.
+# ADR-0005 staleness guard: `planned` past `lifecycle.stale_after_days` warns.
 eval_artifacts: planned
+
+# eval_state: runtime-truth — has the eval been run and passed?
+# unverified (no run yet, or no file) / passing (one-shot green) / monitored (cadenced green).
+# `monitored` is strictly stronger than `passing` — advance here when continuous
+# cadence runs against this skill. Forward state, not aspirational.
 eval_state: unverified
+
+# routing_eval: routing-coverage — is the skill's activation verified by the harness?
+# absent (not verified) / present (gated by lint check 12; harness must exit 0).
+# `present` requires populated `examples` + `anti_examples` (below) AND a passing
+# run of `node scripts/skill-graph-routing-eval.js --skill <name>`. See
+# docs/field-reference.md § routing_eval for the full enforcement contract.
+#
+# TEMPLATE NOTE: on THIS scaffold, routing_eval MUST stay `absent` even though
+# the harness happens to report every case passing. The scaffold's job is to
+# model the correct authoring-time default for a brand-new un-verified skill.
+# If flipped to `present`, every skill copy-pasted from the scaffold would
+# inherit a false attestation until the author noticed and downgraded. In your
+# derived copy, leave this line `absent` at first commit; flip to `present` only
+# after the harness exits 0 on YOUR skill's own examples + anti_examples.
 routing_eval: absent
 # TEMPLATE NOTE: Optional. Populate eval_last_run only after the skill has a
 # real eval receipt (scorecard, grader history, CI run). Leave it absent for a

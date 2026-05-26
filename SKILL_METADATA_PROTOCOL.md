@@ -86,6 +86,62 @@ Map the v8 `subject` axis to the on-disk directory under `~/Development/skills/s
 
 > **Layout history.** Pre-2026-05-26 the canonical library used a v7 6-directory layout (`agent / design / engineering / foundations / product / quality`) with v8 subjects living only in frontmatter. F23 from the 2026-05-25 audit (SH-6481) recommended flattening to v8 subject names; the codemod ran 2026-05-26 (`/tmp/migrate-skill-layout-v7-to-v8.js`, 148 git-mv operations + 1 manual move for the untracked `playing-to-win` skill). Pre-reorg paths are reachable via git history.
 
+### Inline field comments — the authoring convention
+
+**Every authored frontmatter field carries a YAML comment block (`#`) immediately above it.** The comment names: (a) what the field is, (b) allowed values or type, (c) when-to-use in one line. **These comments STAY in the production SKILL.md** — they are not scaffolding to strip. Cold-start agents and human authors decode the frontmatter at the point of contact, not three docs away. Co-located documentation is the discipline that prevents the "this field looks like dead code, let me propose deleting it" failure mode — most fields with low corpus adoption (`eval_state: monitored` at 0%, `operation: modify` at <1%) are forward-looking or genuinely scoped, and the comment makes that intent visible.
+
+**Two distinct comment styles coexist in the template — they have opposite lifecycles. Do not confuse them.**
+
+| Style | Lifecycle | Example | Purpose |
+|---|---|---|---|
+| **Field-purpose comment** | **STAYS in the production skill.** | `# operation: cognitive op an agent will primarily DO with this skill loaded.`<br>`# know (declarative) / do (procedural) / decide (judgment) / modify (context-inject)` | Authoritative-by-co-location documentation of what the field is for, its allowed values, and when to pick each value. The reader does not need to open `docs/field-reference.md` to understand the frontmatter. |
+| **`# TEMPLATE NOTE:` comment** | **STRIPPED on derivation.** | `# TEMPLATE NOTE: be pushy in your description — Claude tends to under-trigger skills...` | Authoring scaffolding that only lives in `examples/skill-metadata-template.md`. Derived skills MUST strip every line beginning with `# TEMPLATE NOTE:` before commit (verified with `grep -n "TEMPLATE NOTE" <derived-skill>` returning zero hits). |
+
+**Source of truth** for the content of a field-purpose comment is `docs/field-reference.md`. The inline comment is an abridged summary (purpose + enum + when-to-use). When the comment and the reference doc disagree, the reference doc wins and the comment gets corrected. The discipline mirrors how JSDoc / TSDoc summaries point at canonical type definitions — the comment is a fast lookup, not a parallel truth.
+
+**Worked example** — what a complete field section looks like in a derived SKILL.md:
+
+```yaml
+metadata:
+  # === v8 Classification (5-axis model — see ADR-0017) ===
+
+  # subject: primary browse shelf — what the skill teaches. One of nine closed values:
+  # code-engineering / quality-assurance / frontend-ui / design-craft / agent-ops /
+  # product-domain / knowledge-organization / meta-methods / data-analytics.
+  subject: meta-methods
+
+  # operation: cognitive operation enabled (Bloom-grounded). One of four closed values:
+  # know (declarative — concepts, vocabulary, reference) /
+  # do (procedural — step-by-step execution) /
+  # decide (judgment — choosing, dispatching) /
+  # modify (context injection — shapes how other skills execute).
+  operation: know
+
+  # scope: deployment targeting. One of three closed values:
+  # portable (any project) / workspace (this workspace only) /
+  # project (one specific repo; requires populated `grounding` block).
+  scope: portable
+
+  # === Eval-health (three orthogonal axes — never collapse to boolean) ===
+
+  # eval_artifacts: disk-truth — does an eval file exist on disk?
+  # none (no intent) / planned (intent declared, no file yet) / present (file exists).
+  eval_artifacts: planned
+
+  # eval_state: runtime-truth — has the eval been run and passed?
+  # unverified (no run yet) / passing (one-shot green) / monitored (cadenced green).
+  # `monitored` is a forward state — advance here when continuous cadence runs.
+  eval_state: unverified
+
+  # routing_eval: routing-coverage — is the skill's activation verified by the harness?
+  # absent (not verified) / present (gated by lint check 12; harness must exit 0).
+  routing_eval: absent
+```
+
+**The convention applies to all three named layers** of the skill system: the Skill Metadata Protocol (this contract), the Skill Graph (the library-level system), and the Skill Audit Loop (the maintenance discipline). Templates and authored skills under any of those layers carry field-purpose comments by default. The template `examples/skill-metadata-template.md` is the canonical specimen; derived skills inherit the field-purpose comments (and strip the `# TEMPLATE NOTE:` lines) per the workflow in `skill-scaffold` (`~/Development/skills/skills/agent-ops/skill-scaffold/SKILL.md`).
+
+**Why this exists.** The 2026-05-26 cleanup session surfaced the exact failure mode this convention prevents: a cold-start agent read the schema's distribution of `eval_state` values (`unverified: 144 / passing: 7 / monitored: 0`) and proposed cutting `monitored` as "dead value" — because the field's design intent (a forward state for cadenced runs) lived only in `docs/field-rationale.md`, three reads away from where the field actually appeared. With co-located comments, that intent is visible at the point where the field is read. The cost of reading the field-purpose comment is one screenful of YAML; the cost of NOT having it is an entire session of misguided cut-proposals.
+
 ---
 
 ## Required vs Optional Fields
