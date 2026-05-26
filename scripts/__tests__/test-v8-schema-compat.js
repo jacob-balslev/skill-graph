@@ -1,19 +1,23 @@
 #!/usr/bin/env node
 /**
- * Test: v7→v8 schema compatibility window.
+ * Test: v8 schema contract (v7→v8 phase ended 2026-05-26).
  *
- * Guards the v8 introduction of the 5-axis classification model (subject,
- * subjects, operation, scope with project/workspace) against regressing v7
- * frontmatter, and verifies the new v8-required-fields allOf rule fires.
+ * The v7→v8 compatibility window closed on 2026-05-26 — subject + operation
+ * (the v8 axes) are now in the schema's global required array. The v7 fields
+ * (type, category) remain DEFINED as optional properties for back-compat with
+ * skills that still carry them, but are no longer required by the schema.
  *
- * Per the v7→v8 restructure plan (compatibility mode landing):
- *   - v7 frontmatter (current 147-skill corpus) validates unchanged.
- *   - v8 frontmatter requires subject + operation in addition to v7 fields.
- *   - scope: project|workspace validates alongside codebase|reference|portable
- *     during the migration window.
+ * This test verifies:
+ *   - v8 frontmatter (subject + operation present) validates.
+ *   - v7-only frontmatter (no subject/operation) now FAILS validation — the
+ *     schema's global required array refuses it. Any skill that still lacks
+ *     v8 axes is CONTENT-mode migration work for the audit loop.
+ *   - scope: project|workspace + legacy codebase|reference|portable all
+ *     validate.
  *   - subjects[0] must equal subject when both are present.
+ *   - scope: project requires grounding (parity with v7 scope: codebase).
  *
- * See docs/adr/0017-five-axis-classification-model.md (planned).
+ * See docs/adr/0017-five-axis-classification-model.md.
  */
 
 'use strict';
@@ -110,11 +114,12 @@ function check(name, fn) {
   }
 }
 
-// Minimal valid v7 frontmatter (the current shape).
-const v7Base = {
+// Legacy v7-only frontmatter (no subject/operation). Post-2026-05-26 this
+// SHAPE no longer validates — subject + operation are globally required.
+const v7OnlyBase = {
   schema_version: 7,
   name: 'test-skill',
-  description: 'A test skill for v7→v8 compat checks. Use when verifying schema validation. Do NOT use for production.',
+  description: 'A test skill for v8 schema checks. Use when verifying schema validation. Do NOT use for production.',
   version: '1.0.0',
   type: 'capability',
   category: 'engineering',
@@ -127,17 +132,41 @@ const v7Base = {
   routing_eval: 'absent',
 };
 
-// Minimal valid v8 frontmatter (carries BOTH v7 and v8 fields during compat window).
+// Minimal valid v8 frontmatter. v7 legacy fields (type, category) MAY still
+// be present for back-compat but are no longer required.
 const v8Base = {
-  ...v7Base,
+  ...v7OnlyBase,
   schema_version: 8,
   subject: 'code-engineering',
   operation: 'know',
 };
 
-check('v7 frontmatter validates unchanged', () => {
-  const errors = validate(v7Base, SCHEMA);
-  if (errors.length > 0) throw new Error(`v7 base failed: ${errors.join('; ')}`);
+check('v7-only frontmatter (no subject/operation) now fails validation', () => {
+  // Post-2026-05-26: the v7→v8 compatibility window closed. The schema's
+  // global required array now demands subject + operation regardless of
+  // schema_version. v7-only skills are CONTENT-mode migration work.
+  const errors = validate(v7OnlyBase, SCHEMA);
+  if (errors.length === 0) throw new Error('v7-only frontmatter should have failed (v7→v8 phase ended)');
+  if (!errors.some(e => e.includes("missing key 'subject'"))) {
+    throw new Error(`expected missing-subject error, got: ${errors.join('; ')}`);
+  }
+});
+
+check('v8 frontmatter (with v7 legacy fields still present) validates', () => {
+  // The v7 fields (type, category) are no longer required but remain defined
+  // as optional properties — skills still carrying them validate fine.
+  const errors = validate(v8Base, SCHEMA);
+  if (errors.length > 0) throw new Error(`v8 base with legacy fields failed: ${errors.join('; ')}`);
+});
+
+check('v8 frontmatter without v7 legacy fields validates (v8-only authoring works)', () => {
+  // The cleanest v8 authoring path: no type, no category. After the phase
+  // ended, this is the recommended shape for new skills.
+  const v8Pure = { ...v8Base };
+  delete v8Pure.type;
+  delete v8Pure.category;
+  const errors = validate(v8Pure, SCHEMA);
+  if (errors.length > 0) throw new Error(`v8 without v7 legacy fields failed: ${errors.join('; ')}`);
 });
 
 check('v8 frontmatter with subject+operation validates', () => {
@@ -205,9 +234,11 @@ check('scope: workspace validates (v8 rename)', () => {
   if (errors.length > 0) throw new Error(`scope:workspace failed: ${errors.join('; ')}`);
 });
 
-check('scope: codebase still validates (v7 backcompat)', () => {
-  const v7Codebase = {
-    ...v7Base,
+check('scope: codebase still validates as legacy alias (with v8 axes + grounding)', () => {
+  // scope: codebase remains a legacy alias for scope: project. A v8 skill
+  // can still declare it; it carries grounding the same way.
+  const v8Codebase = {
+    ...v8Base,
     scope: 'codebase',
     grounding: {
       domain_object: 'test',
@@ -217,7 +248,7 @@ check('scope: codebase still validates (v7 backcompat)', () => {
       evidence_priority: 'equal',
     },
   };
-  const errors = validate(v7Codebase, SCHEMA);
+  const errors = validate(v8Codebase, SCHEMA);
   if (errors.length > 0) throw new Error(`scope:codebase failed: ${errors.join('; ')}`);
 });
 
@@ -247,13 +278,15 @@ check('subjects array with valid entries validates', () => {
 // here doesn't implement maxItems. The real corpus check happens when an
 // authored skill runs through skill-lint as part of `npm run verify`.
 
-check('v7 schema_version string "7" still valid (back-compat)', () => {
-  const v7Str = { ...v7Base, schema_version: '7' };
-  const errors = validate(v7Str, SCHEMA);
+check('schema_version string "7" still tolerated (back-compat for hand-rolled YAML)', () => {
+  // A skill that declares schema_version: "7" as a string (instead of int)
+  // still validates the version field — but it ALSO needs v8 axes now.
+  const v8WithStringSchemaVersion = { ...v8Base, schema_version: '7' };
+  const errors = validate(v8WithStringSchemaVersion, SCHEMA);
   if (errors.length > 0) throw new Error(`schema_version string "7" failed: ${errors.join('; ')}`);
 });
 
-check('v8 schema_version string "8" valid (parity with v7)', () => {
+check('schema_version string "8" valid (parity with int)', () => {
   const v8Str = { ...v8Base, schema_version: '8' };
   const errors = validate(v8Str, SCHEMA);
   if (errors.length > 0) throw new Error(`schema_version string "8" failed: ${errors.join('; ')}`);

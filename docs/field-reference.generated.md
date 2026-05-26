@@ -13,7 +13,7 @@ Schema version: **unknown** · Field count: **64** · Required: **13**
 
 **Type:** multiple — see schema
 
-Major contract shape version. Integer for v6+; string '7'/'8' tolerated for back-compat with hand-rolled YAML. Bumps when shape changes break consumers. v7 splits the single `audit_verdict` field from v6 into four discrete verdicts (`structural_verdict`, `truth_verdict`, `comprehension_verdict`, `application_verdict`) so the Health Block can carry independent verdicts for each layer of the skill-audit loop instead of compressing form, truth, comprehension, and behavior into one PASS/FAIL signal. v8 introduces the 5-axis classification model (subject/operation/scope/keywords/relations) and renames `category` → `subject`, `type` → `operation`, `scope: codebase` → `scope: project`, `scope: reference` → `scope: workspace`. v8 schema accepts v7 frontmatter unchanged during the migration window (compatibility mode); v7 skills are not forced to migrate until the v7 compatibility shims are removed in a future cleanup. See docs/adr/0011-split-audit-verdict-into-four-verdicts.md (v6→v7) and docs/adr/0017-five-axis-classification-model.md (v7→v8, planned).
+Major contract shape version. Integer for v6+; string '7'/'8' tolerated for back-compat with hand-rolled YAML. Bumps when shape changes break consumers. v7 splits the single `audit_verdict` field from v6 into four discrete verdicts (`structural_verdict`, `truth_verdict`, `comprehension_verdict`, `application_verdict`) so the Health Block can carry independent verdicts for each layer of the skill-audit loop instead of compressing form, truth, comprehension, and behavior into one PASS/FAIL signal. v8 introduces the 5-axis classification model (subject/operation/scope/keywords/relations) and renames `category` → `subject`, `type` → `operation`, `scope: codebase` → `scope: project`, `scope: reference` → `scope: workspace`. The schema now globally requires the v8 axes (subject + operation); the v7 fields (type, category) remain defined as optional properties for back-compat with skills that still carry them, but are no longer required. Migration of any individual skill that still lacks v8 axes is a CONTENT-mode concern handled per-skill through the audit loop. See docs/adr/0011-split-audit-verdict-into-four-verdicts.md (v6→v7) and docs/adr/0017-five-axis-classification-model.md (v7→v8).
 
 **Full reference:** [`docs/field-reference.md#schema_version`](field-reference.md#schema_version)
 
@@ -65,7 +65,7 @@ Skill content version (semver). Bumps when the SKILL.md body or contract changes
 
 ---
 
-### `type` *(required)*
+### `type` *(optional)*
 
 **Type:** `capability` | `workflow` | `router` | `overlay`
 
@@ -85,7 +85,7 @@ Archetype classifier (v3.1 preferred alias for `type`). When both are present th
 
 ---
 
-### `category` *(required)*
+### `category` *(optional)*
 
 **Type:** `foundations` | `engineering` | `design` | `quality` | `agent` | `product`
 
@@ -127,7 +127,7 @@ Ordered category array. First entry is the primary and must match `category`; re
 
 ---
 
-### `subject` *(optional)*
+### `subject` *(required)*
 
 **Type:** `agent-ops` | `code-engineering` | `frontend-ui` | `design-craft` | `data-analytics` | `quality-assurance` | `meta-methods` | `knowledge-organization` | `product-domain`
 
@@ -147,7 +147,7 @@ Ordered subject array (v8 polyhierarchy). First entry is the primary and must ma
 
 ---
 
-### `operation` *(optional)*
+### `operation` *(required)*
 
 **Type:** `know` | `do` | `decide` | `modify`
 

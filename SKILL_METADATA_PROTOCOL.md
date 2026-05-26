@@ -12,7 +12,7 @@
 
 ---
 
-> **Author shortcut (TL;DR for the v7→v8 migration state):** Author BOTH v7 and v8 axes on every new skill — v8-only fails schema lint until the coordinated v7-removal lands. The full migration-state explanation is at the END of this doc (§ Migration state) so the axes themselves come first.
+> **Author shortcut (TL;DR — v7→v8 phase ended 2026-05-26):** Author the v8 axes (`subject`, `operation`, `scope`). The v7 fields (`type`, `category`) are no longer required by the schema — they remain accepted as optional back-compat properties but new skills can omit them. Full schema-contract explanation at the END of this doc (§ Schema contract).
 
 ---
 
@@ -110,7 +110,7 @@ The v8 contract requires twelve canonical fields plus the v8 5-axis classificati
 | `eval_state` | enum | One of: `unverified`, `passing`, `monitored`. |
 | `routing_eval` | enum | One of: `absent`, `present`. |
 
-**v7 legacy required fields (retained, deprecated):** `type` (mapped from `operation`) and `category` (mapped from `subject`) are still required by the schema during the v7 sunset window. Their values continue to be normalized so existing tooling reads consistent metadata; new skills must author **both** the v7 fields and the v8 axes until the coordinated v7-removal lands. See § Classification § Migration map for the field-by-field mapping.
+**v7 legacy fields (no longer required, retained as optional for back-compat — phase ended 2026-05-26):** `type` and `category` are no longer in the schema's global required array. They remain defined as optional properties so skills that still carry them validate cleanly, and the `category.const` 6-enum still constrains their values when present. **New skills do not need to declare them.** See § Classification § Migration map for the v7→v8 field-by-field mapping if you're maintaining a legacy skill.
 
 ### Conditionally required
 
@@ -216,7 +216,7 @@ allowed-tools   # space-separated tool allowlist
 
 ### Classification — the 5-axis model
 
-> **v8 status (2026-05-26 compatibility migration active).** The canonical source library now carries the v8 classification fields while the schema still requires the v7 legacy fields (`category`, `type`) during the sunset window. Scope alias normalization is owned by Axis 3 below. New skills must author both v7 and v8 axes until `SKILL_GRAPH.md § Current State` says the v7-removal has landed. See [ADR 0017](docs/adr/0017-five-axis-classification-model.md).
+> **v8 status (v7→v8 phase ended 2026-05-26).** The schema's global required array now mandates the v8 axes (`subject`, `operation`, `scope`). The v7 fields (`type`, `category`) are no longer required — they remain defined as optional properties for back-compat with skills that still carry them, and the `category.const` 6-enum still constrains their values when declared. Scope alias normalization is owned by Axis 3 below. **New skills author the v8 axes only**; the v7 fields are optional. See [ADR 0017](docs/adr/0017-five-axis-classification-model.md).
 
 Skills are classified on **five orthogonal axes**, each with a focused purpose. The axis names are deliberate: `subject` answers "what does this skill teach?", `operation` answers "what does it enable an agent to do?", `scope` answers "where does it apply?", `keywords` covers fuzzy activation, and `relations` covers typed edges to other skills.
 
@@ -699,26 +699,23 @@ Some legacy scope and type values are normalized by the manifest generator to th
 
 ---
 
-## Migration state (v7→v8)
+## Schema contract (v7→v8 phase ended 2026-05-26)
 
-> **Updated 2026-05-25 (SH-6481 SMP-1 / SMP-2)** to match what the schema actually enforces. Earlier versions of this callout claimed the schema did not yet enforce v8 fields and authors could write "v8 only" — both untrue against the live schema. See `schemas/skill.schema.json:7-20` (global required) and `schemas/skill.schema.json` `allOf[11]` (the v8 conditional rule).
-
-The schema runs in **compatibility mode**: `schema_version: 7` and `schema_version: 8` both validate. The split between what the schema enforces and what each surface labels is:
+> **The v7→v8 compatibility phase ended 2026-05-26.** The schema's global `required` array now mandates `subject` + `operation` (v8 axes). The v7 fields (`type`, `category`) remain DEFINED as optional properties for back-compat with skills that still carry them, but are no longer required. v8-only authoring is the supported authoring path going forward. See `schemas/skill.schema.json:7-21` (global required) for the current contract.
 
 | Surface | State |
 |---|---|
-| **This doc (SKILL_METADATA_PROTOCOL.md)** | v8 — 5-axis classification fully described |
-| **Schema file (`schemas/skill.schema.json`)** | v7 + v8 dual-emit. The global `required` array enforces both `type` and `category` (v7 fields). When `schema_version: 8`, the schema's `allOf` adds `subject` and `operation` as required on top of the v7 baseline. v7 6-value `category` enum remains the only category constraint. |
-| **Compiled manifest (`skills.manifest.json`) summary** | Dual-emit per `SKILL_GRAPH.md § Current State` — v7 (`by_category` / `by_type`) and v8 (`by_subject` / `by_operation`) side-by-side |
-| **Audit Loop Part 2 checklist (`SKILL_AUDIT_LOOP.md`)** | v8 + v7 (both accepted) |
-| **Source skills (canonical library)** | Per `SKILL_GRAPH.md § Current State` — single source of truth; do not restate the count here. |
+| **This doc (SKILL_METADATA_PROTOCOL.md)** | v8 — 5-axis classification |
+| **Schema file (`schemas/skill.schema.json`)** | v8. Global required: `subject`, `operation`, `scope`, plus the identity/lifecycle/eval-health fields. v7 fields (`type`, `category`) defined as optional properties; the `category.const` 6-enum still constrains values when authors choose to declare it. |
+| **Compiled manifest (`skills.manifest.json`) summary** | v8-primary (`by_subject` / `by_operation`); v7 facets (`by_category` / `by_type`) retained as observational telemetry for skills that still carry the legacy fields. |
+| **Audit Loop checklist (`SKILL_AUDIT_LOOP.md` § Part 2)** | v8 |
 
-**What this means for authors (CORRECTED):**
+**What this means for authors:**
 
-- A skill **must** carry both the v7 legacy fields (`type`, `category`, `scope`) AND, if `schema_version: 8`, the v8 fields (`subject`, `operation`). v8-only authoring fails schema lint because `type` and `category` are in the schema's global `required` array.
-- The v7→v8 codemod (`scripts/migrate-skill-v7-to-v8.js`) populates BOTH on migrated skills. The normalizer in `scripts/lib/parse-frontmatter.js::normalizeFrontmatter()` reads either encoding.
-- The end-state — when `type`+`category` are removed from global required and `subject`+`operation` become globally required — requires a coordinated change of the schema's `required` array, `allOf` rules, codemod, sample manifest, and `SKILL_GRAPH.md § Current State`. That coordinated change has NOT shipped; until it does, **both v7 and v8 axes are required** on every new skill.
-- This is honest drift to record per `.claude/rules/version-schema-contract.md` ("a label ahead of its content is HONEST drift to record"). Editing this callout to claim authors can drop v7 fields would mask the gap, not close it.
+- A new skill MUST declare the v8 axes: `subject` (9-enum), `operation` (4-enum, Bloom-grounded), `scope` (3-enum). See § Classification — the 5-axis model.
+- A new skill MAY omit the v7 fields (`type`, `category`). They remain accepted if you choose to declare them (e.g., for tooling that still reads the older facets), but they are no longer required by the schema.
+- Skills authored before 2026-05-26 that still lack v8 axes will fail lint. Migration of those skills is **CONTENT-mode work** handled per-skill through the audit loop (`/audit:audit`, `/audit:evolve`) — see `skill-graph/AGENTS.md § Work Modes — SYSTEM vs CONTENT`. The schema's correctness is independent of how many individual skills currently comply.
+- The v7→v8 codemod (`scripts/migrate-skill-v7-to-v8.js`) remains available for skills that need it; the normalizer in `scripts/lib/parse-frontmatter.js::normalizeFrontmatter()` continues to read either encoding (nested `metadata:` or flat).
 
 ## Design Constraints
 
