@@ -76,10 +76,10 @@ The three layers above describe **roles**; this table is the operational counter
 | `evaluate --mode application` | `evals/application.json` + skill body | `eval_score`, `eval_failed_ids`, `freshness`, `application_verdict` | grader receipt + before/after diff |
 | `improve --field <name>` | skill body, last `evaluate` result | `last_changed`, possibly `eval_score` (post-keep) | commit + revert log when `eval_score` drops |
 | `evolve --top N` | Health Block priority queue | (delegates to audit/improve/evaluate per cycle) | per-cycle aggregate under `audits/_state/` |
-| `drift` (standalone) | `grounding.truth_sources` + recorded hashes | `drift_status` (per-script signal, separate from `truth_verdict` rollup) | none — exit code is the signal |
+| `drift` (standalone) | `grounding.truth_sources` + recorded hashes | `drift_status` (per-script signal) when invoked with `--write-verdict`; default check run is read-only and only emits an exit code | none — exit code is the signal |
 | `lint` (standalone) | schema + skill source | none (read-only diagnostic) | none — stderr is the signal |
 
-**Two integrity surfaces.** The audit operation runs both `lint` and `drift` inline (the rollup feeds `structural_verdict` and `truth_verdict`). The standalone `lint` / `drift` commands exist for fast iteration when authoring a single skill or when re-running just one phase — they do NOT write back to the Health Block.
+**Two integrity surfaces.** The audit operation runs both `lint` and `drift` inline (the rollup feeds `structural_verdict` and `truth_verdict`). The standalone `lint` / `drift` commands exist for fast iteration when authoring a single skill or when re-running just one phase — they do NOT roll up to `truth_verdict` or `structural_verdict`. Standalone `drift --write-verdict` is the explicit opt-in that stamps the per-script `drift_status` field (the only Health Block field a standalone command may touch); other Health Block fields are only written by the `audit` / `improve` / `evaluate` operations.
 
 ## Work Modes — SYSTEM vs CONTENT
 

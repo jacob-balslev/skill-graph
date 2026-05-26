@@ -25,6 +25,7 @@
  *   node scripts/skill-graph-drift.js --json                 # JSON output
  *   node scripts/skill-graph-drift.js --record skills/shopify          # preview YAML
  *   node scripts/skill-graph-drift.js --record --apply skills/shopify  # write in place
+ *   node scripts/skill-graph-drift.js --write-verdict        # stamp drift_status on every checked skill
  *
  * Self-contained. Only uses Node built-ins — no external dependencies.
  * Exit 0 when no DRIFT or BROKEN; 1 otherwise. STALE, NO_BASELINE, and
@@ -38,6 +39,7 @@ const path = require('path');
 const crypto = require('crypto');
 const { parseFrontmatter, normalizeFrontmatter } = require('./lib/parse-frontmatter');
 const { collectSkillFilesFromRoots, workspaceRoot, resolveTruthSourcePath } = require('./lib/roots');
+const { updateFrontmatterField } = require('../lib/audit-shared/skill-frontmatter');
 
 const REPO_ROOT = workspaceRoot();
 const DEFAULT_SKILLS_DIR = path.join(REPO_ROOT, 'skills');
@@ -388,11 +390,42 @@ function collectSkillFiles(args, roots) {
   return collectSkillFilesFromRoots(roots).map(entry => entry.filePath);
 }
 
+// Map per-skill drift report status to the schema-valid drift_status enum.
+// The script's own UNGROUNDED / NO_FRONTMATTER outputs are not in the
+// schema enum (UNGROUNDED skills have no truth sources to drift on; NO_FRONTMATTER
+// can't be parsed). Both return null so the writer skips them.
+function mapDriftStatusForWrite(status) {
+  switch (status) {
+    case 'OK':
+    case 'DRIFT':
+    case 'BROKEN':
+    case 'STALE':
+    case 'NO_BASELINE':
+    case 'EXTERNAL_UNHASHED':
+      return status;
+    case 'UNGROUNDED':
+    case 'NO_FRONTMATTER':
+      return null;
+    default:
+      return 'UNKNOWN';
+  }
+}
+
+function writeDriftStatus(skillMdPath, driftStatus) {
+  if (!driftStatus) return false;
+  const content = fs.readFileSync(skillMdPath, 'utf8');
+  const updated = updateFrontmatterField(content, 'drift_status', driftStatus);
+  if (updated === content) return false;
+  fs.writeFileSync(skillMdPath, updated);
+  return true;
+}
+
 function main() {
   const args = process.argv.slice(2);
   const outputJson = args.includes('--json');
   const record = args.includes('--record');
   const apply = args.includes('--apply');
+  const writeVerdict = args.includes('--write-verdict');
 
   const workspace = loadWorkspaceConfig();
   const roots = resolveSkillRoots(workspace);
@@ -404,6 +437,34 @@ function main() {
   }
 
   const reports = files.map(f => checkSkill(f, roots));
+
+  // -------------------------------------------------------------------------
+  // Write-verdict mode: stamp drift_status onto each skill's SKILL.md
+  // frontmatter (AGENTS.md § What each command writes — `drift (standalone)`
+  // → `drift_status`). Opt-in to avoid surprise mutations on a pure check run.
+  // Skips UNGROUNDED / NO_FRONTMATTER (not schema-valid for drift_status).
+  // Closes audit finding B1 (system-audit-2026-05-27).
+  // -------------------------------------------------------------------------
+  if (writeVerdict) {
+    let writes = 0;
+    let skipped = 0;
+    let failed = 0;
+    for (let i = 0; i < reports.length; i++) {
+      const report = reports[i];
+      const skillMdPath = files[i];
+      const mapped = mapDriftStatusForWrite(report.status);
+      if (mapped === null) { skipped++; continue; }
+      try {
+        const didWrite = writeDriftStatus(skillMdPath, mapped);
+        if (didWrite) writes++;
+        else skipped++;
+      } catch (e) {
+        console.error(`FAIL write drift_status for ${report.skill}: ${e.message}`);
+        failed++;
+      }
+    }
+    console.log(`\ndrift_status written to ${writes} skill(s); ${skipped} unchanged/skipped; ${failed} failed`);
+  }
 
   // -------------------------------------------------------------------------
   // Record mode
