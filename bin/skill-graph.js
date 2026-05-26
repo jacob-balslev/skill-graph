@@ -230,7 +230,7 @@ Note: evolve depends on lib/audit-shared/auto-improve.js (bundled with @skill-gr
   },
   'routing-eval': {
     script: 'scripts/skill-graph-routing-eval.js',
-    help: `Usage: skill-graph routing-eval [options]\n\nRun the routing examples and anti_examples from each skill's frontmatter through the live router.\n\nOptions:\n  --manifest <path>     Pre-built manifest to use (default: generate one).\n  --only-asserted       Only run examples with asserted expected skills.\n`,
+    help: `Usage: skill-graph routing-eval [options]\n\nRun the routing examples and anti_examples from each skill's frontmatter through the live router.\n\nWhen --manifest is not given, regenerates a fresh manifest to .skill-graph/_routing-eval-cli.manifest.json before running, so the eval never reads stale local manifest state.\n\nOptions:\n  --manifest <path>     Use an existing manifest at <path> instead of regenerating.\n  --only-asserted       Only run examples with asserted expected skills.\n  --skill <name>        Evaluate one skill only.\n  --json                Emit structured JSON output.\n  --quiet               Exit-code only (CI).\n  --confusion-matrix    Print expected-vs-actual confusion matrix.\n  --baseline <path>     Run stratified retrieval baseline and report Recall@1/3.\n`,
   },
   'export-verify': {
     script: 'scripts/verify-skill-md-export.js',

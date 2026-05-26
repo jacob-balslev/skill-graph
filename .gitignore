@@ -30,4 +30,5 @@ node_modules/
 .vscode/
 .idea/
 .skill-graph/_routing-eval.manifest.json
+.skill-graph/_routing-eval-cli.manifest.json
 skills.manifest.json

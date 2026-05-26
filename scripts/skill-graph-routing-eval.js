@@ -38,6 +38,7 @@
 
 const fs = require('fs');
 const path = require('path');
+const { execFileSync } = require('child_process');
 const { routeSkills } = require('./skill-graph-route');
 const { packageRoot, workspaceRoot } = require('./lib/roots');
 
@@ -46,6 +47,7 @@ const PACKAGE_ROOT = packageRoot();
 const DEFAULT_MANIFEST = path.join(REPO_ROOT, 'skills.manifest.json');
 const SAMPLE_MANIFEST = path.join(REPO_ROOT, 'examples', 'skills.manifest.sample.json');
 const PACKAGE_SAMPLE_MANIFEST = path.join(PACKAGE_ROOT, 'examples', 'skills.manifest.sample.json');
+const CLI_FRESH_MANIFEST = path.join(REPO_ROOT, '.skill-graph', '_routing-eval-cli.manifest.json');
 
 // ---------------------------------------------------------------------------
 // Case evaluators
@@ -456,16 +458,39 @@ function main() {
   const manifestArg = argValue(args, '--manifest');
   const baselineArg = argValue(args, '--baseline');
 
-  const manifestPath = manifestArg
-    ? path.resolve(manifestArg)
-    : (fs.existsSync(DEFAULT_MANIFEST)
-        ? DEFAULT_MANIFEST
-        : (fs.existsSync(SAMPLE_MANIFEST) ? SAMPLE_MANIFEST : PACKAGE_SAMPLE_MANIFEST));
-
-  if (!fs.existsSync(manifestPath)) {
-    console.error(`ERROR manifest not found: ${manifestPath}`);
-    console.error('Run `node scripts/generate-manifest.js --output skills.manifest.json` first, or pass --manifest <path>.');
-    process.exit(1);
+  let manifestPath;
+  if (manifestArg) {
+    manifestPath = path.resolve(manifestArg);
+    if (!fs.existsSync(manifestPath)) {
+      console.error(`ERROR manifest not found: ${manifestPath}`);
+      process.exit(1);
+    }
+  } else {
+    // No --manifest: regenerate fresh to avoid stale-manifest false-fails.
+    // The committed/local skills.manifest.json is gitignored and drifts between
+    // runs; reading it here used to yield confusing 9/9 routing failures that
+    // were purely staleness, not real regressions. (Audit B5, 2026-05-27.)
+    const generator = path.join(REPO_ROOT, 'scripts', 'generate-manifest.js');
+    if (fs.existsSync(generator)) {
+      try {
+        fs.mkdirSync(path.dirname(CLI_FRESH_MANIFEST), { recursive: true });
+        execFileSync(process.execPath, [generator, '--output', CLI_FRESH_MANIFEST], { stdio: 'pipe' });
+        manifestPath = CLI_FRESH_MANIFEST;
+      } catch (e) {
+        // Fall back to whatever was committed/sampled if generation fails.
+        console.error(`WARN auto-generate failed (${e.message}); falling back to existing manifest`);
+        manifestPath = fs.existsSync(DEFAULT_MANIFEST)
+          ? DEFAULT_MANIFEST
+          : (fs.existsSync(SAMPLE_MANIFEST) ? SAMPLE_MANIFEST : PACKAGE_SAMPLE_MANIFEST);
+      }
+    } else {
+      manifestPath = fs.existsSync(SAMPLE_MANIFEST) ? SAMPLE_MANIFEST : PACKAGE_SAMPLE_MANIFEST;
+    }
+    if (!fs.existsSync(manifestPath)) {
+      console.error(`ERROR manifest not found: ${manifestPath}`);
+      console.error('Pass --manifest <path> or run from a Skill Graph checkout.');
+      process.exit(1);
+    }
   }
 
   let manifest;
