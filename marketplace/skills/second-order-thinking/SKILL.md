@@ -8,6 +8,8 @@ metadata:
   version: "1.0.0"
   type: capability
   category: foundations
+  subject: meta-methods
+  operation: decide
   domain: foundations/reasoning
   scope: portable
   owner: skill-graph-maintainer
@@ -35,7 +37,6 @@ metadata:
   comprehension_verdict: UNVERIFIED
   application_verdict: UNVERIFIED
   skill_graph_source_repo: "https://github.com/jacob-balslev/skill-graph"
-  skill_graph_protocol: Skill Metadata Protocol v7
   skill_graph_project: Skill Graph
   skill_graph_canonical_skill: skills/meta-methods/second-order-thinking/SKILL.md
   skill_graph_export_description_projection: anti_examples

@@ -31,7 +31,6 @@ metadata:
   comprehension_verdict: UNVERIFIED
   application_verdict: UNVERIFIED
   skill_graph_source_repo: "https://github.com/jacob-balslev/skill-graph"
-  skill_graph_protocol: Skill Metadata Protocol v7
   skill_graph_project: Skill Graph
   skill_graph_canonical_skill: skills/product-domain/webhook-integration/SKILL.md
   skill_graph_export_description_projection: anti_examples+boundary

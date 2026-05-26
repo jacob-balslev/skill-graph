@@ -14,7 +14,7 @@ metadata:
   domain: agent/skill-system
   scope: workspace
   owner: skill-graph-maintainer
-  freshness: "2026-05-18"
+  freshness: "2026-05-26"
   drift_check: "{\"last_verified\":\"2026-05-18\"}"
   eval_artifacts: planned
   eval_state: unverified
@@ -39,7 +39,6 @@ metadata:
   comprehension_verdict: UNVERIFIED
   application_verdict: UNVERIFIED
   skill_graph_source_repo: "https://github.com/jacob-balslev/skill-graph"
-  skill_graph_protocol: Skill Metadata Protocol v7
   skill_graph_project: Skill Graph
   skill_graph_canonical_skill: skills/agent-ops/skill-scaffold/SKILL.md
   skill_graph_export_description_projection: anti_examples
@@ -50,12 +49,12 @@ metadata:
 
 ## Coverage
 
-- Authoring flow: copy → rename → adapt → strip teaching annotations → verify → commit
+- Authoring flow: copy → rename → adapt → strip authoring scaffolding (`# TEMPLATE NOTE:` lines and `> **TEMPLATE NOTE:**` blockquotes only; keep field-purpose comments) → verify → commit
 - Frontmatter identity: `schema_version`, `name`, `description`, `version`, `type`, `category`, `scope`, `owner`, plus the eval-health triple and `drift_check` required by every Skill Metadata Protocol v7 skill
 - Archetype selection: how to pick between `capability`, `workflow`, `router`, and `overlay` and which `## H2` body sections each archetype requires
 - v6+ understanding fields: when to add `comprehension_state`, `mental_model`, `purpose`, `boundary`, `analogy`, `misconception`, and when the legacy `concept` back-compat block is still useful
 - Semantic-layer discipline: how `description:` (≤ 3 sentences, pushy, boundary-aware routing contract) differs from `## Coverage` (bulleted scope map of distinct topics) and why each must stay in its own layer
-- Teaching-layer mechanics: how to use `> **TEMPLATE NOTE:**` blockquotes and `# TEMPLATE NOTE:` YAML comments to teach without cargo-culting meta sections into derived skills
+- Teaching-layer mechanics: two distinct comment conventions with opposite lifecycles — `# TEMPLATE NOTE:` lines and `> **TEMPLATE NOTE:**` blockquotes are authoring scaffolding (strip on derivation), while field-purpose comments (no `TEMPLATE NOTE:` prefix; sit above each field documenting its purpose, allowed values, and when-to-use) are co-located documentation (keep in production). See `~/Development/skill-graph/SKILL_METADATA_PROTOCOL.md § Inline field comments — the authoring convention`
 - Focused authoring gates: passing lightweight skill lint, then running protocol/routing checks that match the fields you changed
 - Routing-eval honesty: defaulting to `routing_eval: absent` and only flipping to `present` after `node scripts/skill-graph-routing-eval.js --skill <name>` exits 0
 - Grounding declarations: when to populate `grounding.truth_sources`, when URL truth sources are acceptable, and how local truth-source hashes differ from external references
@@ -74,7 +73,13 @@ The six steps are non-negotiable; skipping any step produces a skill that lints 
 2. **Rename** identity fields: `name`, `description`, `category` (if used), `keywords`, `examples`, `anti_examples`, `paths` (if applicable), and the body title. Every reference to "skill-metadata-template" should be gone.
 3. **Adapt** body sections to your skill's subject. Match the `## H2` layout to your declared archetype per `docs/skill-metadata-protocol.md § Archetype section map`. Remove sections that do not apply — do not keep them with placeholder content.
 4. **Decide understanding and grounding.** Add v6+ understanding fields only when the skill needs concept transfer and the content is ready to be graded. Add `grounding.truth_sources` when the skill is anchored to a protocol, spec, codebase, or vendor/source document; use public URLs when the release repo does not contain the source files.
-5. **Strip** every `> **TEMPLATE NOTE:**` body blockquote and every `# TEMPLATE NOTE:` YAML comment. They are authoring scaffolding; shipping them in a derived skill is the most common authoring mistake. Run `grep -n "TEMPLATE NOTE" skills/<your-skill>/SKILL.md` to confirm zero hits.
+5. **Strip authoring scaffolding while preserving field-purpose comments.** The template carries two distinct comment conventions with opposite lifecycles (see `~/Development/skill-graph/SKILL_METADATA_PROTOCOL.md § Inline field comments — the authoring convention`):
+   - **STRIP** every `> **TEMPLATE NOTE:**` body blockquote and every YAML comment line beginning with `# TEMPLATE NOTE:`. These are scaffolding *about the template itself* — guidance about how to use the template — never field semantics. Shipping them in a derived skill is the most common authoring mistake.
+   - **KEEP** every YAML comment line that documents a field's purpose, allowed values, or when-to-use. These have no `TEMPLATE NOTE:` prefix and read like `# operation: cognitive operation an agent will primarily DO with this skill loaded.` followed by the enum values. They are co-located documentation, not scaffolding. They stay so the derived skill's frontmatter is self-explanatory to readers and to cold-start agents who would otherwise have to open `~/Development/skill-graph/docs/field-reference.md` to decode each field.
+
+   Verification (both must hold):
+   - `grep -n "TEMPLATE NOTE" skills/<your-skill>/SKILL.md` returns zero hits — scaffolding stripped.
+   - `grep -c "^\s*#" skills/<your-skill>/SKILL.md` returns a count similar to the template's (roughly 30-50 depending on which optional fields you kept) — field-purpose comments preserved.
 6. **Verify** by running the gate sequence: focused `node scripts/skill-lint.js skills/<your-skill>` (must show 0 errors), `node scripts/check-protocol-consistency.js` for protocol-tier changes, and (if you populated `examples` and `anti_examples`) `node scripts/skill-graph-routing-eval.js --skill <your-skill>` (verdict PASS before flipping `routing_eval` to `present`).
 
 ## Archetype Selection
@@ -127,7 +132,8 @@ Use this checklist as the authoring gate before committing a skill. Every item m
 - [ ] `eval_artifacts`, `eval_state`, `routing_eval` reflect the actual skill state — no inflation
 - [ ] All `relations` entries point to skills that exist in the target repo; `boundary` entries with non-obvious rationale use the `{skill, reason}` form
 - [ ] No placeholder sludge (`your-skill-name`, `path/to/file`, `todo`) remains
-- [ ] No `> **TEMPLATE NOTE:**` blockquotes or `# TEMPLATE NOTE:` YAML comments remain
+- [ ] No `> **TEMPLATE NOTE:**` blockquotes or `# TEMPLATE NOTE:` YAML comments remain — scaffolding fully stripped (`grep -n "TEMPLATE NOTE" skills/<name>/SKILL.md` returns zero hits)
+- [ ] Field-purpose comments above each frontmatter field PRESERVED — the derived skill carries the same kind of `# fieldname: purpose / allowed values` comment block the template had for each retained field. `grep -c "^\s*#" skills/<name>/SKILL.md` is roughly the same magnitude as the template's, not zero
 - [ ] `node scripts/skill-lint.js skills/<name>` returns 0 errors against the new skill
 - [ ] `node scripts/check-protocol-consistency.js` passes C1-C7
 - [ ] If `routing_eval: present`, `node scripts/skill-graph-routing-eval.js --skill <name>` returns verdict PASS

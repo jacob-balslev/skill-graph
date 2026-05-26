@@ -6,12 +6,14 @@ allowed-tools: Read Grep
 metadata:
   schema_version: "7"
   version: "1.0.0"
+  subject: meta-methods
+  operation: know
+  scope: portable
+  domain: foundations/reasoning
   type: capability
   category: foundations
-  domain: foundations/reasoning
-  scope: portable
   owner: skill-graph-maintainer
-  freshness: "2026-05-20"
+  freshness: "2026-05-26"
   drift_check: "{\"last_verified\":\"2026-05-20\"}"
   eval_artifacts: present
   eval_state: unverified
@@ -35,7 +37,6 @@ metadata:
   comprehension_verdict: UNVERIFIED
   application_verdict: UNVERIFIED
   skill_graph_source_repo: "https://github.com/jacob-balslev/skill-graph"
-  skill_graph_protocol: Skill Metadata Protocol v7
   skill_graph_project: Skill Graph
   skill_graph_canonical_skill: skills/meta-methods/first-principles-thinking/SKILL.md
   skill_graph_export_description_projection: anti_examples
