@@ -38,7 +38,7 @@ metadata:
   skill_graph_source_repo: "https://github.com/jacob-balslev/skill-graph"
   skill_graph_protocol: Skill Metadata Protocol v7
   skill_graph_project: Skill Graph
-  skill_graph_canonical_skill: skills/engineering/frontend/hooks-patterns/SKILL.md
+  skill_graph_canonical_skill: skills/frontend-ui/hooks-patterns/SKILL.md
 ---
 
 # Hooks Patterns

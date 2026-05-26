@@ -66,23 +66,23 @@ Authors of new skills should write the **nested encoding** so the file works und
 
 ### Where does my skill live? (decision tree)
 
-Map the v8 `subject` axis to the on-disk directory under `~/Development/skills/skills/`:
+Map the v8 `subject` axis to the on-disk directory under `~/Development/skills/skills/`. **Updated 2026-05-26 — F23 reorg landed; directory names now match v8 subjects 1:1.** The 47 previously-nested skills (e.g., `engineering/data/<name>/`, `agent/context/<name>/`) were flattened to `<v8-subject>/<name>/`:
 
 | If `subject:` is… | Directory | Notes |
 |---|---|---|
-| `code-engineering` | `skills/engineering/<name>/` | Largest shelf (25%). Subdivide via `domain:` (frontend / backend / infrastructure / build) when >25 skills. |
-| `quality-assurance` | `skills/quality/<name>/` | Audit, testing, security, performance, accessibility. |
-| `frontend-ui` | `skills/engineering/frontend/<name>/` OR `skills/design/<name>/` | Frontend implementation lives under engineering; UX/visual lives under design. Boundary fuzzy — pick by `operation:` (`do` → engineering; `decide` → design). |
-| `design-craft` | `skills/design/<name>/` | Information architecture, composition, typography, UX research. |
-| `agent-ops` | `skills/agent/<name>/` | Agent orchestration, skill system itself, multi-agent coordination. |
-| `product-domain` | `skills/product/<name>/` | Product-shaped knowledge: e-commerce, billing, integrations, customer workflows. |
-| `knowledge-organization` | `skills/foundations/<name>/` | Information architecture for *the skill library itself* — head nouns, taxonomy, glossary. |
-| `meta-methods` | `skills/foundations/<name>/` | Cross-cutting methodology: methodical reasoning, no-cutting-corners, code-preservation. |
-| `data-analytics` | `skills/quality/<name>/` (until population grows) | Smallest shelf (2%) — folded into quality until it earns its own root per the >5-skills rule in ADR-0017. |
+| `code-engineering` | `skills/code-engineering/<name>/` | Largest shelf (36 skills, 25%). Subdivide via `domain:` (frontend / backend / infrastructure / build) when >25 skills. |
+| `quality-assurance` | `skills/quality-assurance/<name>/` | Audit, testing, security, performance, accessibility (27 skills, 18%). |
+| `frontend-ui` | `skills/frontend-ui/<name>/` | Frontend implementation (rendering, hooks, styling, components, layout) (20 skills, 13%). Boundary with `design-craft`: pick by `operation:` (`do` → frontend-ui; `decide` → design-craft). |
+| `design-craft` | `skills/design-craft/<name>/` | Information architecture, composition, typography, UX research (20 skills, 13%). |
+| `agent-ops` | `skills/agent-ops/<name>/` | Agent orchestration, skill system itself, multi-agent coordination (17 skills, 11%). |
+| `product-domain` | `skills/product-domain/<name>/` | Product-shaped knowledge: e-commerce, billing, integrations, customer workflows (11 skills, 7%). |
+| `meta-methods` | `skills/meta-methods/<name>/` | Cross-cutting methodology: methodical reasoning, no-cutting-corners, code-preservation (8 skills, 5%). |
+| `knowledge-organization` | `skills/knowledge-organization/<name>/` | Information architecture for *the skill library itself* — head nouns, taxonomy, glossary (7 skills, 5%). |
+| `data-analytics` | `skills/data-analytics/<name>/` | Quantitative analysis, modeling, statistics (3 skills, 2%). Smallest shelf — earns its own root per the v8 design even at <5 skills because category cleanliness > population threshold. |
 
 **Naming convention.** Directory name = skill `name:` value (kebab-case, head-noun-anchored). The `skill-lint.js` parent-dir alignment check enforces this.
 
-> The current 6-directory canonical library layout (`agent / design / engineering / foundations / product / quality`) is the v7 6-enum carried forward. Per F23 in the 2026-05-25 audit, full v8-axis reorganization (9 directories matching `subject`) is on the roadmap — until that codemod lands, the table above is the authoritative subject→directory map.
+> **Layout history.** Pre-2026-05-26 the canonical library used a v7 6-directory layout (`agent / design / engineering / foundations / product / quality`) with v8 subjects living only in frontmatter. F23 from the 2026-05-25 audit (SH-6481) recommended flattening to v8 subject names; the codemod ran 2026-05-26 (`/tmp/migrate-skill-layout-v7-to-v8.js`, 148 git-mv operations + 1 manual move for the untracked `playing-to-win` skill). Pre-reorg paths are reachable via git history.
 
 ---
 

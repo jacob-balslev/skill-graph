@@ -32,7 +32,7 @@ metadata:
   skill_graph_source_repo: "https://github.com/jacob-balslev/skill-graph"
   skill_graph_protocol: Skill Metadata Protocol v7
   skill_graph_project: Skill Graph
-  skill_graph_canonical_skill: skills/quality/diff-analysis/SKILL.md
+  skill_graph_canonical_skill: skills/quality-assurance/diff-analysis/SKILL.md
 ---
 # Diff Analysis
 

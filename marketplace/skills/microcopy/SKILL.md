@@ -33,7 +33,7 @@ metadata:
   skill_graph_source_repo: "https://github.com/jacob-balslev/skill-graph"
   skill_graph_protocol: Skill Metadata Protocol v7
   skill_graph_project: Skill Graph
-  skill_graph_canonical_skill: skills/design/microcopy/SKILL.md
+  skill_graph_canonical_skill: skills/design-craft/microcopy/SKILL.md
 ---
 
 # Microcopy
