@@ -8,36 +8,36 @@
 
 ## 1. Which `scope` do I use?
 
-`scope` tells routers and auditors whether your skill is portable, documentation-backed, or grounded in a specific codebase.
+`scope` tells routers and auditors whether your skill is portable, workspace-specific, or grounded in one specific project.
 
 ### Decision table
 
 | Situation | Correct `scope` |
 |---|---|
 | Skill applies across any codebase or team with no repo-specific claims | `portable` |
-| Skill is primarily a reference for a contract, spec, or document (e.g., "Skill Metadata Protocol for this repo") | `reference` |
-| Skill makes concrete claims about files, APIs, or behavior in a specific codebase | `codebase` |
+| Skill is primarily a workspace-local reference for a contract, spec, or document (e.g., "Skill Metadata Protocol for this repo") | `workspace` |
+| Skill makes concrete claims about files, APIs, or behavior in one specific project | `project` |
 | Skill is a starter or template that could be copied into any project | `portable` |
-| Skill references specific file paths, function names, or deployment details | `codebase` |
+| Skill references specific file paths, function names, or deployment details | `project` |
 | Skill documents abstract methodology (testing strategy, refactoring patterns) | `portable` |
 
 ### Diagnostic questions
 
 **Q: Does my skill say "in `src/integrations/shopify/client.ts`" or similar?**
-→ `codebase`
+→ `project`
 
 **Q: Does my skill say "in the codebase" without naming specific files?**
 → `portable`
 
 **Q: Is my skill's primary purpose to be a reference for a contract document (like a schema or this Skill Metadata Protocol)?**
-→ `reference`
+→ `workspace`
 
 **Q: Would this skill work unchanged if copied into a completely different project?**
-→ `portable` (if yes), `codebase` (if no)
+→ `portable` (if yes), `project` (if no)
 
 ### Important constraint
 
-`scope: codebase` requires a populated `grounding` block. The JSON schema enforces this, and `scripts/skill-lint.js` runs that schema gate. If you choose `codebase`, populate `grounding` before committing and run the protocol/manifest checks for full-contract validation.
+`scope: project` requires a populated `grounding` block. The JSON schema also accepts legacy `scope: codebase` during the v7 sunset window and applies the same grounding requirement. If you choose `project`, populate `grounding` before committing and run the protocol/manifest checks for full-contract validation.
 
 ### Migration from v1
 
@@ -49,11 +49,11 @@ The v1 scope values (`generic`, `operational`) were renamed in schema_version 2 
 # Correct: skill about abstract testing patterns
 scope: portable
 
-# Correct: skill that references this repo's protocol documents
-scope: reference
+# Correct: workspace-local reference for this repo's protocol documents
+scope: workspace
 
-# Correct: skill that covers Shopify integration in a specific codebase
-scope: codebase
+# Correct: skill that covers Shopify integration in a specific project
+scope: project
 grounding:
   domain_object: Shopify integration behavior
   grounding_mode: repo_specific
@@ -180,7 +180,7 @@ The `readiness` field is operational, not ordinal. Each value says something con
 
 **Quick heuristic:**
 - `scope: portable` with no repo paths AND export script covers at least one target → `readiness: scripted`
-- `scope: codebase` with concrete repo paths AND no export tooling yet → `readiness: declared`
+- `scope: project` with concrete repo paths AND no export tooling yet → `readiness: declared`
 - Export tooling ran AND the output was loaded into the target runtime AND passed a smoke test → `readiness: verified`
 
 ### `portability.targets` decision

@@ -4,8 +4,9 @@
  *
  * Walks every skill with a `grounding.truth_sources` list, hashes each source
  * file, and compares against the stored
- * `drift_check.truth_source_hashes` baseline. Reports four states:
+ * `drift_check.truth_source_hashes` baseline. Reports these states:
  *
+ *   - OK              all declared local truth sources match recorded hashes
  *   - DRIFT           truth source has changed since last verification
  *   - STALE           `drift_check.last_verified` is older than lifecycle.stale_after_days
  *   - BROKEN          a declared local truth source file does not exist
@@ -35,7 +36,7 @@
 const fs = require('fs');
 const path = require('path');
 const crypto = require('crypto');
-const { parseFrontmatter } = require('./lib/parse-frontmatter');
+const { parseFrontmatter, normalizeFrontmatter } = require('./lib/parse-frontmatter');
 const { collectSkillFilesFromRoots, workspaceRoot, resolveTruthSourcePath } = require('./lib/roots');
 
 const REPO_ROOT = workspaceRoot();
@@ -194,7 +195,7 @@ function sha256TruthSource(src, skillRoots = []) {
 function checkSkill(skillMdPath, skillRoots = []) {
   const rel = path.relative(REPO_ROOT, skillMdPath);
   const text = fs.readFileSync(skillMdPath, 'utf8');
-  const fm = parseFrontmatter(text);
+  const fm = normalizeFrontmatter(parseFrontmatter(text));
 
   if (!fm) {
     return { skill: rel, status: 'NO_FRONTMATTER', details: 'cannot parse frontmatter', truth_sources: [] };
@@ -227,7 +228,7 @@ function checkSkill(skillMdPath, skillRoots = []) {
     else if (liveHash === null) { entryStatus = 'BROKEN'; anyBroken = true; }
     else if (!recorded) { entryStatus = 'NO_BASELINE'; anyMissingHash = true; }
     else if (liveHash !== recorded) { entryStatus = 'DRIFT'; anyDrift = true; }
-    else { entryStatus = 'CLEAN'; }
+    else { entryStatus = 'OK'; }
 
     truthSources.push({
       source: sourceKey,
@@ -259,7 +260,7 @@ function checkSkill(skillMdPath, skillRoots = []) {
   else if (stale) status = 'STALE';
   else if (anyMissingHash) status = 'NO_BASELINE';
   else if (anyExternal) status = 'EXTERNAL_UNHASHED';
-  else status = 'CLEAN';
+  else status = 'OK';
 
   return {
     skill: name,
@@ -443,11 +444,11 @@ function main() {
     for (const r of reports) statusCounts[r.status] = (statusCounts[r.status] || 0) + 1;
 
     for (const r of reports) {
-      if (r.status === 'UNGROUNDED' || r.status === 'CLEAN') continue;
+      if (r.status === 'UNGROUNDED' || r.status === 'OK') continue;
       const staleInfo = r.stale ? `  (stale ${r.days_since_verified}d / limit ${r.stale_after_days}d)` : '';
       console.log(`${r.status.padEnd(13)} ${r.skill}${staleInfo}`);
       for (const ts of r.truth_sources) {
-        if (ts.status !== 'CLEAN') {
+        if (ts.status !== 'OK') {
           console.log(`  ${ts.status.padEnd(13)} ${ts.source}`);
         }
       }

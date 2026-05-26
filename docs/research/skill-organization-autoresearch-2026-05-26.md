@@ -6,7 +6,7 @@
 > this file captures the session-specific reasoning, the open questions,
 > and the unfinished work for the next session to pick up.
 >
-> Companion plan: [`docs/plans/skill-organization-karpathy-loop-2026-05-26.md`](../../../../docs/plans/skill-organization-karpathy-loop-2026-05-26.md) (workspace `docs/plans/PLANS.md` index).
+> Companion plan: [`docs/plans/skill-organization-karpathy-loop-2026-05-26.md`](../../../docs/plans/skill-organization-karpathy-loop-2026-05-26.md) (workspace `docs/plans/PLANS.md` index).
 
 ---
 
@@ -193,7 +193,7 @@ guards`.
 
 ## Plan-traceable execution log
 
-- [Plan](../../../../docs/plans/skill-organization-karpathy-loop-2026-05-26.md) Phase 1: complete (commit `2985b88` in skill-graph)
+- [Plan](../../../docs/plans/skill-organization-karpathy-loop-2026-05-26.md) Phase 1: complete (commit `2985b88` in skill-graph)
 - Plan Phase 2: pilot `methodical` (commit `7ba44d9` in skills), then codemod sweep (`52c546e`), then 3-skill revert (`02e137f`)
 - Plan Phase 3: complete (post-sweep snapshot at `audits/post-phase2a-2026-05-26/`; 51 improved / 99 same / 0 net-regressed)
 - Plan Phase 4: this commit (canonical doc updates)

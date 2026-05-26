@@ -1,7 +1,7 @@
 # Migration Sample Review — v4 → v5 Category Enum
 
 > **Status:** Active. Created 2026-05-16.
-> **Plan:** [`/Users/jacobbalslev/Development/docs/plans/skill-taxonomy-v5-and-gap-fill.md`](../../docs/plans/skill-taxonomy-v5-and-gap-fill.md) § Phase 0b.
+> **Plan:** [`docs/plans/skill-taxonomy-v5-and-gap-fill.md`](../../docs/plans/skill-taxonomy-v5-and-gap-fill.md) § Phase 0b.
 > **Gate verdict:** **PASS** — 26 of 30 assignments agree (86.67% ≥ 85% threshold). Phase 1 schema bump is unblocked, with four specific revisions recommended below.
 
 ## Method
@@ -126,7 +126,7 @@ Then re-run the routing-eval to confirm no `routing_eval: present` skill loses i
 
 ```bash
 # Re-extract pre-migration categories
-cd /Users/jacobbalslev/Development/skill-graph
+cd <workspace>/skill-graph
 git ls-tree -r --name-only 210ac69^ | grep -E '^skills/[^/]+/SKILL\.md$' | while read f; do
   skill=$(echo "$f" | sed 's|skills/||; s|/SKILL.md||')
   cat=$(git show "210ac69^:$f" | grep -E '^category:' | head -1 | awk '{print $2}')

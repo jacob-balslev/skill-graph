@@ -105,7 +105,7 @@ The full critique response is preserved at `/tmp/gpt55-critique-response.md` for
 
 ## References
 
-- Plan: `/Users/jacobbalslev/.claude-profiles/jacobbalslev01/plans/we-should-clearly-look-wondrous-firefly.md`
+- Plan: workspace-local v7 to v8 migration plan, `we-should-clearly-look-wondrous-firefly.md`
 - Codemod: `scripts/migrate-skill-v7-to-v8.js`
 - Mapping artifact: `audits/migration-mapping-v7-to-v8.json`
 - Schema: `schemas/skill.schema.json` (extended `schema_version` to `[7, 8]`, added `subject`/`subjects`/`operation` properties + allOf rule for v8-required fields)

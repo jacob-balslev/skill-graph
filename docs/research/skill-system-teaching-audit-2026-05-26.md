@@ -456,3 +456,39 @@ Existing Linear tasks cover these groups: SH-6516, SH-6517, SH-6518, SH-6519, SH
 ## Claim Check
 
 I verified every operational claim in this report with a local command, file read, Linear query, or official external source. I did not verify Context7 because no Context7 tool was available in this Codex session; that limitation is itself recorded as F18.
+
+## Follow-Up Solve Pass
+
+Date: 2026-05-26
+Solver: Codex
+
+Status after implementation:
+
+| Finding | Status | Receipt |
+|---|---|---|
+| F1 | Improved | Live counts in Skill Graph docs were refreshed or redirected toward generated/current-state sources. |
+| F2 | Done | `SKILL_METADATA_PROTOCOL.md` now consistently teaches v7 + v8 compatibility authoring until v7 removal lands. Linear: SH-6526 Done. |
+| F3 | Done | `docs/field-decision-guide.md` now teaches `portable` / `workspace` / `project` with v7 aliases explicitly compatibility-only. Linear: SH-6487 Done. |
+| F4 | Done | `skill-lint` now enforces `subjects[0] === subject` as a custom lint invariant. Linear: SH-6527 Done. |
+| F5 | Done | Drift clean status now emits `OK`; legacy `CLEAN` is treated only as historical compatibility. Linear: SH-6528 Done. |
+| F6 | Done | `skill-lint` and audit subprocesses resolve schema/template files from the package root when run against copied workspaces. Linear: SH-6529 Done. |
+| F7 | Done | Audit no longer stamps PASS when lint exits non-zero without parseable diagnostics; dry-run exits non-zero on normalized lint errors. Linear: SH-6530 Done. |
+| F8 | Done | Seed audit artifacts are explicitly titled incomplete/TODO until human or graded pass completes. Linear: SH-6531 Done. |
+| F9 | Done | CLI help and docs now describe the current `audits/` default paths. |
+| F10 | Done | `doctor` docs now describe a fast deterministic smoke subset, not full verification. Linear: SH-6491 Done. |
+| F11 | Done | Routing metadata was repaired. `npm run verify` reports routing-eval 9 PASS, 0 FAIL, 0 SKIP. Linear: SH-6516 through SH-6524 Done. |
+| F12 | Smoke seed done; corpus backlog open | Added 5 concrete `application.json` artifacts for `skill-infrastructure`, `skill-router`, `debugging`, `testing-strategy`, and `a11y`; all five pass `evaluate-skill.js --mode application --dry-run`. The corpus-wide SH-6483 backlog remains open for first-5 comprehension artifacts, real grader runs, verdict stamping, and Phase 1 batching. |
+| F13 | Done | `evolve --analyze-only` now records fallback/error details instead of silently treating a missing analyzer as normal. |
+| F14 | Done | Health Block writeback now preserves nested `metadata:` encoding when adding missing scalar fields. Linear: SH-6532 Done. |
+| F15 | Improved | Core docs now more clearly separate protocol/tooling repo, canonical source library, and marketplace/export surface. |
+| F16 | Done | 120 open Skill Audit Loop legacy-command issues were labeled `legacy-needs-review` and `needs-fresh-AC`; SH-6487, SH-6491, SH-6496, and SH-6520 were closed where directly resolved. |
+| F17 | Blocked | Package privacy scan and `npm publish --dry-run` pass for `@skill-graph/cli@0.5.10`, but real publish is blocked by npm auth: `npm whoami --cache /private/tmp/skill-graph-npm-cache` returned E401 Unauthorized. Linear: SH-6533 remains Ready with `blocker-credentials`. |
+| F18 | Done | Onboarding now documents a non-Context7 fallback for Codex/non-Claude runtimes. Linear: SH-6534 Done. |
+
+Verification receipts from the solve pass:
+
+- `npm run verify` passed after the changes.
+- `npm pack --dry-run --json --cache /private/tmp/skill-graph-npm-cache` produced 415 publishable files and excluded `docs/research/`, `docs/_drafts/`, and `docs/_archived/`.
+- A publishable-file scan found no `/Users/jacobbalslev` paths, obvious secret tokens, or private-key headers in the npm package file set.
+- `npm publish --dry-run --cache /private/tmp/skill-graph-npm-cache` completed for `@skill-graph/cli@0.5.10`.
+- `npm whoami --cache /private/tmp/skill-graph-npm-cache` returned E401 Unauthorized, so no real npm publish was performed.

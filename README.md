@@ -121,7 +121,7 @@ version: 1.0.0
 type: capability
 category: design
 domain: design/ux
-scope: codebase
+scope: project
 owner: design-platform
 freshness: "2026-05-13"
 drift_check:
@@ -194,7 +194,7 @@ Skill Metadata Protocol uses several independent axes. They should not be collap
 | Axis | Field | Cardinality | Use |
 |---|---|---:|---|
 | **Archetype** | `type` | one | Skill shape: `capability`, `workflow`, `router`, or `overlay`. |
-| **Scope** | `scope` | one | Where it applies: `portable`, `codebase`, or `reference`. |
+| **Scope** | `scope` | one | Where it applies: `portable`, `workspace`, or `project` (with `reference`/`codebase` accepted as v7 aliases during sunset). |
 | **Top-level category** | `category` | one | Flat top-level shelf for browsing. |
 | **Domain path** | `domain` | zero or one | Slash-delimited hierarchy, such as `design/ux` or `architecture/events`. |
 | **Project group** | `workspace_tags` | many | Which project families, workspaces, or product areas this skill applies to. |
@@ -383,10 +383,10 @@ SKILL_GRAPH_WORKSPACE=/path/to/my-skills skill-graph audit my-skill
 | Command | Standalone flag | Purpose |
 |---|---|---|
 | `skill-graph audit <skill>` | `--dry-run` | Resolve skill and run lint without writing any files. Useful for smoke-testing a fresh install. |
-| `skill-graph audit <skill>` | `--audit-root <path>` | Write audit artifacts to a custom directory instead of `<workspace>/examples/audits/`. |
+| `skill-graph audit <skill>` | `--audit-root <path>` | Write audit artifacts to a custom directory instead of `<workspace>/audits/`. |
 | `skill-graph evolve` | `--workspace-root <path>` | Root of your skills workspace (defaults to cwd). |
 | `skill-graph evolve` | `--skills-dir <path>` | Directory containing your SKILL.md files (defaults to `<workspace-root>/skills`). |
-| `skill-graph evolve` | `--output-dir <path>` | Directory for evolve output artifacts (defaults to `<workspace-root>/examples/audits`). |
+| `skill-graph evolve` | `--output-dir <path>` | Directory for evolve output artifacts (defaults to `<workspace-root>/audits`). |
 | All commands | `SKILL_GRAPH_WORKSPACE` env var | Override workspace root globally — useful in CI pipelines or when your skill library is not in cwd. |
 
 ### Smoke-testing a fresh install

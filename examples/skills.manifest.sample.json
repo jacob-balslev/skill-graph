@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-05-26T07:26:30.735Z",
+  "generated_at": "2026-05-26T10:35:13.865Z",
   "schema_version": 4,
   "skills": [
     {
@@ -15,16 +15,16 @@
           "review this dropdown menu for arrow-key navigation and focus return"
         ],
         "keywords": [
-          "accessibility",
-          "a11y",
-          "keyboard navigation",
           "screen reader",
-          "focus management",
-          "keyboard not working",
-          "tab order",
-          "missing aria label",
-          "screen reader says",
-          "reduced motion"
+          "announce",
+          "validation state",
+          "form labels",
+          "assistive tech",
+          "ARIA roles",
+          "keyboard support",
+          "arrow key",
+          "navigation",
+          "focus return"
         ],
         "paths": [
           "**/*.{html,tsx,jsx,vue,svelte}",
@@ -82,6 +82,10 @@
           {
             "reason": "diagnosis classifies failure symptoms (Logic / Runtime / Performance / etc.) for triage; a11y owns assistive-tech behavior. The phrase 'rewrite this error message...' is a documentation/UX concern, not a diagnosis or a11y concern — diagnosis is named here so the router excludes it from a11y's positive scope.",
             "skill": "diagnosis"
+          },
+          {
+            "reason": "linguistics owns reading-level, audience-register, and wording rationale; a11y owns assistive-technology behavior and accessibility semantics. Rewriting an error message for reading level is language work, not an accessibility implementation task.",
+            "skill": "linguistics"
           },
           {
             "reason": "visual-design-foundations owns palette, typography, spacing, and visual craft; a11y owns whether the resulting interaction is perceivable, operable, understandable, and robust",
@@ -166,9 +170,9 @@
         "drift_check": {
           "last_verified": "2026-05-16"
         },
-        "eval_artifacts": "planned",
+        "eval_artifacts": "present",
         "eval_state": "unverified",
-        "freshness": "2026-05-16",
+        "freshness": "2026-05-21",
         "has_grounding": false,
         "has_relations": true,
         "routing_eval": "absent",
@@ -211,12 +215,12 @@
           "cap-theorem-tradeoffs"
         ]
       },
-      "schema_version": 8,
-      "scope": "workspace",
+      "schema_version": 7,
+      "scope": "reference",
       "stability": "experimental",
       "subject": "code-engineering",
       "type": "capability",
-      "version": "1.0.0"
+      "version": "1.1.0"
     },
     {
       "activation": {
@@ -266,7 +270,7 @@
         "purpose": "It turns ad hoc prompt-and-tool demos into systems that can run unattended, survive crashes, coordinate multiple agents, control cost, and produce verifiable outcomes.",
         "taxonomy": "Core areas include lifecycle management, task decomposition, coordination patterns, handoff protocols, observability, cost controls, idempotency, failure recovery, safety caps, claim locks, and staged rollout."
       },
-      "description": "Use when designing or evaluating a production AI agent system, choosing a multi-agent coordination pattern (orchestrator/worker, fan-out, consensus, sequential chain, evaluator/optimizer), diagnosing coordination failures (claim races, silent stalls, context contamination, runaway loops), or auditing whether an agent loop is truly production-ready. Covers the four pillars (architecture and lifecycle, task decomposition, coordination patterns, production reliability), the six reliability requirements (observability, cost budgets, idempotency, failure recovery, safety caps, claim locks), the delegation decision framework with overhead crossover, and the most common anti-patterns. Do NOT use for prompt wording (use `prompt-craft`), per-call tool efficiency (use `tool-call-strategy`), context-stack design within a single agent (use `context-engineering`), or runtime debugging of a deployed system (use `debugging`).",
+      "description": "Use when designing or evaluating a production AI agent system, choosing a multi-agent coordination pattern (orchestrator/worker, fan-out, consensus, sequential chain, evaluator/optimizer), diagnosing coordination failures (claim races, silent stalls, context contamination, runaway loops), or auditing whether an agent loop is truly production-ready. Do NOT use for prompt wording (use `prompt-craft`), per-call tool efficiency (use `tool-call-strategy`), context-stack design within a single agent (use `context-engineering`), or runtime debugging of a deployed system (use `debugging`). Covers the four pillars (architecture and lifecycle, task decomposition, coordination patterns, production reliability), the six reliability requirements (observability, cost budgets, idempotency, failure recovery, safety caps, claim locks), the delegation decision framework with overhead crossover, and the most common anti-patterns.",
       "domain": "ai-engineering/architecture",
       "grounding": {
         "domain_object": "Production AI agent system architecture and multi-agent coordination",
@@ -505,7 +509,7 @@
       "compatibility": {
         "notes": "Provider- and runtime-agnostic. The autonomy-slider levels and quality-gate sequence apply to any LLM-coding harness (Claude Code, OpenCode, Cursor, Aider, Copilot Workspace, Continue) that supports a deterministic verify step between agent output and merge."
       },
-      "description": "Use when reasoning about agent autonomy levels, designing auto-improve loops, evaluating AI-generated code quality, or measuring agent productivity in an LLM-assisted codebase. Covers Karpathy's three eras of software (1.0 explicit / 2.0 learned / 3.0 natural-language), the vibe-coding-vs-agentic-engineering distinction, the 0–5 autonomy slider with task-type recommendations, the one-asset / one-metric / one-time-box AutoResearch loop, Software 3.0 productivity metrics, and the documented quality regressions of ungated AI-generated code (the 'vibe hangover'). Do NOT use for choosing a specific autonomy-loop topology (use `agent-engineering`), for the per-prompt authoring discipline (use `prompt-craft`), or for reviewing the AI-generated code that comes out of a Software 3.0 workflow (use `code-review`).",
+      "description": "Use when reasoning about agent autonomy levels, designing auto-improve loops, evaluating AI-generated code quality, or measuring agent productivity in an LLM-assisted codebase. Do NOT use for choosing a specific autonomy-loop topology (use `agent-engineering`), for the per-prompt authoring discipline (use `prompt-craft`), or for reviewing the AI-generated code that comes out of a Software 3.0 workflow (use `code-review`). Covers Karpathy's three eras of software (1.0 explicit / 2.0 learned / 3.0 natural-language), the vibe-coding-vs-agentic-engineering distinction, the 0–5 autonomy slider with task-type recommendations, the one-asset / one-metric / one-time-box AutoResearch loop, Software 3.0 productivity metrics, and the documented quality regressions of ungated AI-generated code (the 'vibe hangover').",
       "domain": "agent/concepts",
       "grounding": {
         "domain_object": "AI-native software development discipline for prompt-as-code workflows, agent autonomy calibration, metric-gated auto-improvement loops, and quality gates for AI-generated code",
@@ -801,101 +805,111 @@
     },
     {
       "activation": {
-        "anti_examples": [
-          "design a multi-agent orchestrator-worker architecture with parallel subagents",
-          "choose between chaining, routing, and parallelization agent patterns",
-          "should I parallelize subagents or use an orchestrator-worker pattern"
-        ],
-        "examples": [
-          "design an autonomous loop with a safety cap and completion detection",
-          "what completion detection and safety cap should an autonomous loop use",
-          "manage loop continuation signal vs ralph wiggum stop hook for an autonomous agent",
-          "how does the grind loop supervisor respawn fresh sessions until completion"
-        ],
         "keywords": [
-          "autonomous loop",
-          "ralph wiggum",
-          "grind loop",
-          "manage loop",
-          "agent respawn",
-          "completion detection",
-          "safety cap"
+          "autonomous agent loop",
+          "agent loop pattern",
+          "completion signal",
+          "checkpoint resume loop",
+          "supervisor respawn",
+          "stall detection",
+          "safety cap",
+          "agent watchdog",
+          "human handoff"
         ],
         "triggers": [
           "autonomous-loop-skill",
-          "loop-patterns-skill"
+          "loop-patterns-skill",
+          "agent-loop-design"
         ]
       },
       "category": "agent",
-      "description": "This skill consolidates autonomous AI agent loop patterns: the Ralph Wiggum exit-code-2 pattern, our manage-loop (manage-continuation.json + manage-loop-hook.py), grind-loop.sh supervisor, completion detection strategies, safety caps, stall detection, and the tradeoffs between simple loops and sophisticated orchestration. Use when designing or debugging autonomous agent loops, choosing between loop approaches, or implementing safety limits. Do NOT use for choosing which command to run (use ai-coding-agents) or for task management (use linear).",
+      "description": "Use when designing, reviewing, or debugging an autonomous AI agent loop: repeated agent execution, completion signals, checkpoints, supervisor respawn, stall detection, safety caps, and human handoff rules. Do NOT use for choosing a specific agent product command (use agent-engineering or the product's docs), writing ordinary task instructions (use prompt-craft), or optimizing individual tool calls (use tool-call-strategy). Covers the core loop patterns from simple bounded runs through sentinel-based continuation, checkpoint-resume, and external supervisor loops.",
+      "domain": "agent/loop-design",
       "health": {
         "application_verdict": "UNVERIFIED",
         "comprehension_state": "present",
         "comprehension_verdict": "UNVERIFIED",
         "drift_check": {
-          "last_verified": "2026-05-18",
-          "truth_source_hashes": {}
+          "last_verified": "2026-05-21"
         },
         "eval_artifacts": "present",
-        "eval_state": "passing",
-        "freshness": "2026-05-18",
+        "eval_state": "unverified",
+        "freshness": "2026-05-21",
         "has_grounding": false,
         "has_relations": true,
-        "routing_eval": "present",
+        "routing_eval": "absent",
         "structural_verdict": "UNVERIFIED",
         "truth_verdict": "UNVERIFIED"
       },
       "id": "autonomous-loop-patterns",
-      "layerPrimary": "meta",
       "name": "autonomous-loop-patterns",
       "operation": "know",
-      "owner": "claude",
+      "owner": "skill-graph-maintainer",
       "path": "../skills/skills/agent-ops/autonomous-loop-patterns/SKILL.md",
-      "primaryCategory": "Agent System",
       "relations": {
         "boundary": [
           {
-            "reason": "ai-coding-agents owns which command or workflow to run such as /solve, /manage, /grind; autonomous-loop-patterns owns the loop control shape, not command selection",
-            "skill": "ai-coding-agents"
+            "reason": "Prompt-craft owns the wording of one worker instruction; this skill owns the loop control shape around repeated worker execution.",
+            "skill": "prompt-craft"
           },
           {
-            "reason": "linear owns task and issue lifecycle and tracking; autonomous-loop-patterns owns loop control, not work-item management",
-            "skill": "linear"
+            "reason": "Tool-call-strategy owns per-call efficiency inside an agent; this skill owns whether and how the agent repeats across iterations.",
+            "skill": "tool-call-strategy"
           },
           {
-            "reason": "task-execution owns the work performed inside one iteration; autonomous-loop-patterns owns when the loop continues, stops, caps, and respawns around that work",
-            "skill": "task-execution"
-          },
-          {
-            "reason": "agent-engineering owns multi-agent architecture selection such as orchestrator-worker, chaining, routing, and parallelization; autonomous-loop-patterns owns the single-loop control shape",
+            "reason": "Agent-engineering owns full production agent-system architecture; this skill owns the narrower loop-pattern decision and safety checklist.",
             "skill": "agent-engineering"
           }
         ],
         "related": [
-          "agent-governance",
-          "ai-native-development",
-          "hook-patterns",
-          "agent-observability",
-          "orchestration"
+          "agent-engineering",
+          "prompt-craft",
+          "tool-call-strategy",
+          "context-management",
+          "observability-modeling"
         ],
         "verify_with": [
-          "agent-observability",
-          "agent-control"
+          "agent-engineering",
+          "observability-modeling"
         ]
       },
-      "routingRole": "primary",
-      "schema_version": 8,
+      "schema_version": 7,
       "scope": "portable",
+      "stability": "experimental",
       "subject": "agent-ops",
       "type": "capability",
-      "version": "1.2.0"
+      "version": "1.3.0"
     },
     {
       "activation": {
+        "anti_examples": [
+          "choose the cron expression for a daily run",
+          "design an SSE or WebSocket browser update channel",
+          "define an event envelope and topic naming standard",
+          "debug why this already-running worker crashed",
+          "model the database schema for the business entity being processed"
+        ],
+        "examples": [
+          "move this report generation out of the API handler and still show progress",
+          "design a queue-backed import job that can resume after failure",
+          "choose retry and dead-letter behavior for a worker",
+          "avoid duplicate processing when a job is enqueued twice",
+          "add cancellation and progress to a long-running export"
+        ],
         "keywords": [
-          "background-jobs",
-          "background",
-          "jobs"
+          "background jobs",
+          "job queue",
+          "worker queue",
+          "async processing",
+          "long-running task",
+          "retry backoff",
+          "dead letter queue",
+          "job progress",
+          "checkpointing",
+          "worker concurrency",
+          "idempotent job",
+          "queue lease",
+          "job cancellation"
         ],
         "triggers": [
           "background-jobs-skill",
@@ -908,24 +922,25 @@
       "allowed-tools": "Read Grep Bash",
       "category": "engineering",
       "compatibility": {
-        "notes": "Markdown, Git, agent-skill runtimes"
+        "notes": "Portable background job design guidance for web apps, APIs, workers, serverless functions, and queue-backed systems. Specific queue products differ; verify platform limits before production rollout."
       },
-      "description": "This skill provides background job patterns for web applications: job queue architecture, long-running sync operations, progress tracking and reporting, failure handling and retry, job prioritization, and concurrency management. Load when implementing async processing, building job queues, designing progress indicators for long operations, or handling failure recovery for background work.",
-      "domain": "engineering/async",
+      "description": "Use when moving slow or failure-prone work out of a request path, designing job queues, retries, checkpoints, progress reporting, cancellation, or worker concurrency. Do NOT use for time-based schedule design (use `cron-scheduling`), live browser transport choice (use `real-time-updates`), or async message schema ownership (use `event-contract-design`). Covers inline-vs-background decisions, queue contracts, state machines, idempotency, retry/backoff, progress signals, worker leases, and user-visible completion reporting.",
+      "domain": "engineering/async/background-jobs",
       "health": {
         "application_verdict": "UNVERIFIED",
+        "comprehension_state": "present",
         "comprehension_verdict": "UNVERIFIED",
         "drift_check": {
-          "last_verified": "2026-03-29"
+          "last_verified": "2026-05-21"
         },
-        "eval_artifacts": "planned",
+        "eval_artifacts": "present",
         "eval_state": "unverified",
-        "freshness": "2026-03-29",
+        "freshness": "2026-05-21",
         "has_grounding": false,
         "has_relations": true,
         "lifecycle": {
           "review_cadence": "quarterly",
-          "stale_after_days": 90
+          "stale_after_days": 180
         },
         "routing_eval": "absent",
         "structural_verdict": "UNVERIFIED",
@@ -934,7 +949,7 @@
       "id": "background-jobs",
       "license": "MIT",
       "name": "background-jobs",
-      "operation": "do",
+      "operation": "know",
       "owner": "skill-graph-maintainer",
       "path": "../skills/skills/code-engineering/background-jobs/SKILL.md",
       "portability": {
@@ -945,16 +960,163 @@
       },
       "relations": {
         "boundary": [
-          "real-time-updates"
+          {
+            "reason": "cron-scheduling owns when recurring work starts; background-jobs owns how queued work executes after it starts",
+            "skill": "cron-scheduling"
+          },
+          {
+            "reason": "real-time-updates owns browser freshness transports; background-jobs only defines progress state and completion signals",
+            "skill": "real-time-updates"
+          },
+          {
+            "reason": "event-contract-design owns async event envelope compatibility; background-jobs owns worker execution semantics",
+            "skill": "event-contract-design"
+          }
         ],
         "related": [
-          "cron-scheduling"
+          "cron-scheduling",
+          "real-time-updates",
+          "observability-modeling",
+          "event-contract-design"
+        ],
+        "verify_with": [
+          "observability-modeling",
+          "testing-strategy"
+        ]
+      },
+      "schema_version": 7,
+      "scope": "portable",
+      "stability": "stable",
+      "subject": "code-engineering",
+      "type": "capability",
+      "version": "1.1.0"
+    },
+    {
+      "activation": {
+        "anti_examples": [
+          "calculate the expected value of these three options",
+          "turn this growth plan into a strategy cascade",
+          "analyze supplier power and substitutes in this industry",
+          "rank these roadmap items by impact and effort",
+          "build a statistical model from a dataset"
+        ],
+        "examples": [
+          "use Bayesian reasoning to update our confidence after this new evidence",
+          "we have a rare bug signal; account for the base rate before concluding the cause",
+          "separate prior, likelihood, and posterior for this diagnosis",
+          "how should this customer interview change our belief in the product hypothesis?",
+          "calibrate my confidence instead of giving a binary yes/no answer"
+        ],
+        "keywords": [
+          "bayesian reasoning",
+          "bayes theorem",
+          "bayesian update",
+          "base rate",
+          "prior probability",
+          "posterior probability",
+          "likelihood ratio",
+          "evidence strength",
+          "confidence calibration",
+          "probabilistic reasoning"
+        ]
+      },
+      "allowed-tools": "Read Grep",
+      "category": "foundations",
+      "compatibility": {
+        "notes": "Markdown, decision memos, diagnostic reasoning, research synthesis, forecasting, agent confidence calibration"
+      },
+      "description": "Use when updating beliefs, forecasts, diagnoses, or decision assumptions under uncertainty using Bayesian reasoning: priors/base rates, likelihood, evidence strength, posterior direction, and residual uncertainty. Do NOT use for expected monetary value calculations, strategy-cascade choices (use playing-to-win), industry-structure analysis (use porters-five-forces), or generic task prioritization (use prioritization). Covers base-rate discipline, likelihood-vs-posterior separation, independent evidence updates, natural-frequency examples, confidence calibration, and when to stop at qualitative probability instead of fake precision.",
+      "domain": "foundations/decision-quality",
+      "grounding": {
+        "domain_object": "Bayesian reasoning for decision-making under uncertainty",
+        "evidence_priority": "general_knowledge_first",
+        "failure_modes": [
+          "base_rate_neglect",
+          "likelihood_confused_with_posterior",
+          "anecdote_overweighted",
+          "correlated_evidence_double_counted",
+          "prior_hidden_or_smuggled",
+          "false_precision_from_weak_inputs",
+          "binary_answer_given_under_uncertainty"
+        ],
+        "grounding_mode": "universal",
+        "truth_sources": [
+          "https://plato.stanford.edu/entries/bayes-theorem/",
+          "https://plato.stanford.edu/entries/epistemology-bayesian/",
+          "https://pubmed.ncbi.nlm.nih.gov/17835457/",
+          "skills/meta-methods/bayesian-reasoning/references/bayesian-reasoning-sources.md",
+          "skills/meta-methods/bayesian-reasoning/references/upstream-displacement-2026-05-26.md"
+        ]
+      },
+      "health": {
+        "application_verdict": "UNVERIFIED",
+        "comprehension_state": "present",
+        "comprehension_verdict": "UNVERIFIED",
+        "drift_check": {
+          "last_verified": "2026-05-26",
+          "truth_source_hashes": {
+            "skills/meta-methods/bayesian-reasoning/references/bayesian-reasoning-sources.md": "64efb763c7b63802a0ed16080d20cbc147600090f114cbd498153bf2618e05b3",
+            "skills/meta-methods/bayesian-reasoning/references/upstream-displacement-2026-05-26.md": "ec0ddfb8bf6a254b9ad4e107d29c40ab33ca24a7524f1cba1560e2847dfa7baa"
+          }
+        },
+        "drift_detected": true,
+        "eval_artifacts": "present",
+        "eval_state": "unverified",
+        "freshness": "2026-05-26",
+        "has_grounding": true,
+        "has_relations": true,
+        "last_audited": "2026-05-26",
+        "lifecycle": {
+          "review_cadence": "quarterly",
+          "stale_after_days": 365
+        },
+        "lint_verdict": "PASS",
+        "routing_eval": "absent",
+        "structural_verdict": "PASS",
+        "truth_verdict": "UNVERIFIED"
+      },
+      "id": "bayesian-reasoning",
+      "license": "MIT",
+      "name": "bayesian-reasoning",
+      "operation": "do",
+      "owner": "skill-graph-maintainer",
+      "path": "../skills/skills/meta-methods/bayesian-reasoning/SKILL.md",
+      "portability": {
+        "readiness": "scripted",
+        "targets": [
+          "skill-md"
+        ]
+      },
+      "relations": {
+        "boundary": [
+          {
+            "reason": "prioritization ranks work items or options; bayesian-reasoning owns updating probability beliefs before a ranking or decision uses them",
+            "skill": "prioritization"
+          },
+          {
+            "reason": "playing-to-win owns integrated strategy choices; bayesian-reasoning owns uncertainty updates about assumptions, evidence, and confidence",
+            "skill": "playing-to-win"
+          },
+          {
+            "reason": "porters-five-forces owns industry-structure diagnosis; bayesian-reasoning owns how new evidence changes belief strength",
+            "skill": "porters-five-forces"
+          }
+        ],
+        "related": [
+          "mental-models",
+          "constraint-awareness",
+          "epistemic-grounding",
+          "problem-approach-router"
+        ],
+        "verify_with": [
+          "epistemic-grounding",
+          "methodology"
         ]
       },
       "schema_version": 8,
       "scope": "portable",
-      "stability": "experimental",
-      "subject": "code-engineering",
+      "stability": "stable",
+      "subject": "meta-methods",
       "type": "capability",
       "version": "1.0.0"
     },
@@ -1421,7 +1583,7 @@
       "compatibility": {
         "notes": "Language-agnostic; assumes a diff or PR as input"
       },
-      "description": "Use when reviewing a pull request, diff, or proposed code change for correctness, clarity, security, performance, and conformance to project conventions — whether the author is a human, an AI agent, or a peer. Covers the pre-review fact-gathering pass, the read-order strategy (tests first, then implementation, then call sites), the severity-grading rubric, the comment-phrasing discipline, and the no-rubber-stamp rule for AI-generated diffs. Do NOT use for AUTHORING the code (use `refactor` for behaviour-preserving changes or `skill-scaffold` for new skills), for chasing a known bug after merge (use `debugging`), or for security-only audits (use `owasp-security` for vulnerability-focused review).",
+      "description": "Use when reviewing a pull request, diff, or proposed code change for correctness, clarity, security, performance, and conformance to project conventions — whether the author is a human, an AI agent, or a peer. Do NOT use for AUTHORING the code (use `refactor` for behaviour-preserving changes or `skill-scaffold` for new skills), for chasing a known bug after merge (use `debugging`), or for security-only audits (use `owasp-security` for vulnerability-focused review). Covers the pre-review fact-gathering pass, the read-order strategy (tests first, then implementation, then call sites), the severity-grading rubric, the comment-phrasing discipline, and the no-rubber-stamp rule for AI-generated diffs.",
       "health": {
         "application_verdict": "UNVERIFIED",
         "comprehension_verdict": "UNVERIFIED",
@@ -1513,7 +1675,7 @@
       "compatibility": {
         "notes": "Markdown, Git, any agent-skill runtime"
       },
-      "description": "Sweller's Cognitive Load Theory (CLT) for agents writing skill content, designing prompts, building UI/dashboards, and authoring documentation. Working memory holds roughly 4 chunks at a time; CLT classifies load into three types — intrinsic (irreducible task difficulty), extraneous (unnecessary load from poor presentation, ELIMINATE), and germane (load that builds schemas, PROMOTE). Use when writing a SKILL.md body (does this section add extraneous load?), designing prompts (am I asking the model to hold too much at once?), building dashboards (what is the per-screen cognitive budget?), or authoring docs (is intrinsic load minimized via segmentation?). Do NOT use for retrieval and context-loading design (use context-management), prompt engineering tactics (use prompt-craft), or instructional design beyond what grounds the theory.",
+      "description": "Use when writing a SKILL.md body (does this section add extraneous load?), designing prompts (am I asking the model to hold too much at once?), building dashboards (what is the per-screen cognitive budget?), or authoring docs (is intrinsic load minimized via segmentation?). Do NOT use for retrieval and context-loading design (use context-management), prompt engineering tactics (use prompt-craft), or instructional design beyond what grounds the theory. Sweller's Cognitive Load Theory (CLT) for agents writing skill content, designing prompts, building UI/dashboards, and authoring documentation. Working memory holds roughly 4 chunks at a time; CLT classifies load into three types — intrinsic (irreducible task difficulty), extraneous (unnecessary load from poor presentation, ELIMINATE), and germane (load that builds schemas, PROMOTE).",
       "domain": "quality/cognition",
       "health": {
         "application_verdict": "UNVERIFIED",
@@ -1889,7 +2051,7 @@
         "purpose": "It exposes hidden domain decisions early: what exists, what makes two things the same, how concepts relate, which relationships carry their own data, and which constraints are business truths rather than technical preferences.",
         "taxonomy": "Core moves include entity discovery, attribute placement, relationship naming, cardinality and optionality analysis, identity criteria, aggregation versus composition, specialization/generalization, reification of relationship concepts, abstraction-level policing, and stakeholder scenario validation."
       },
-      "description": "Use when translating messy business requirements, stakeholder language, or early product ideas into an implementation-neutral domain model before database schemas, API endpoints, or DDD aggregates are named. Covers entities, attributes, named relationships, cardinality, identity criteria, specialization/generalization, aggregation/composition, reification, abstraction-level control, stakeholder validation, and modeling anti-patterns. Do NOT use for database ER diagrams with keys and normalization, formal ontology axioms with OWL/RDFS, or DDD tactical design; use those dedicated skills instead.",
+      "description": "Use when translating messy business requirements, stakeholder language, or early product ideas into an implementation-neutral domain model before database schemas, API endpoints, or DDD aggregates are named. Do NOT use for database ER diagrams with keys and normalization, formal ontology axioms with OWL/RDFS, or DDD tactical design; use those dedicated skills instead. Covers entities, attributes, named relationships, cardinality, identity criteria, specialization/generalization, aggregation/composition, reification, abstraction-level control, stakeholder validation, and modeling anti-patterns.",
       "domain": "engineering/modeling",
       "grounding": {
         "domain_object": "Implementation-neutral conceptual modeling for business domains before logical schema, physical database, ontology, API, or DDD tactical design",
@@ -2148,7 +2310,7 @@
         "purpose": "|",
         "taxonomy": "|"
       },
-      "description": "Use when prioritizing work in an AI-assisted codebase, designing agent autonomy levels, deciding what to automate vs keep manual, or evaluating whether a process/tool adds value. Covers Theory of Constraints for AI-era engineering: cheap code production, human review/validation/decision bottlenecks, Five Focusing Steps, constraint-aware process design, attention audits, and constraint-shift modeling. Do NOT use for task-effort estimation, backlog scoring with RICE/WSJF/ICE, or routing a task to a specific model.",
+      "description": "Use when prioritizing work in an AI-assisted codebase, designing agent autonomy levels, deciding what to automate vs keep manual, or evaluating whether a process/tool adds value. Do NOT use for task-effort estimation, backlog scoring with RICE/WSJF/ICE, or routing a task to a specific model. Covers Theory of Constraints for AI-era engineering: cheap code production, human review/validation/decision bottlenecks, Five Focusing Steps, constraint-aware process design, attention audits, and constraint-shift modeling.",
       "domain": "foundations/strategy",
       "health": {
         "application_verdict": "UNVERIFIED",
@@ -2238,7 +2400,7 @@
       "compatibility": {
         "notes": "Markdown, Git, agent-skill runtimes"
       },
-      "description": "Use when building or operating multi-source intelligence pipelines across video, GitHub, Reddit, curated lists, search, and RSS feeds. Covers source adapters, discovery/transcription/summarization/evaluation phases, deduplication, schedules, model-stage choice, and actionable brief generation. Do NOT use for SEO keyword research (use `keywords`) or competitive product analysis (use `user-research`).",
+      "description": "Use when building or operating multi-source intelligence pipelines across video, GitHub, Reddit, curated lists, search, and RSS feeds. Do NOT use for SEO keyword research (use `keywords`) or competitive product analysis (use `user-research`). Covers source adapters, discovery/transcription/summarization/evaluation phases, deduplication, schedules, model-stage choice, and actionable brief generation.",
       "domain": "agent/ops",
       "health": {
         "application_verdict": "UNVERIFIED",
@@ -2334,7 +2496,7 @@
         "purpose": "It prevents agent failures caused by missing, stale, wrong, or overwhelming context, and gives teams a diagnostic vocabulary for fixing the context pipeline rather than blaming the model or endlessly polishing prompt wording.",
         "taxonomy": "Core levers include context selection, context structuring, context sequencing, context compression, memory integration, retrieval strategy, tool-result clearing, provenance tracking, and subagent isolation."
       },
-      "description": "Use when designing what information reaches an LLM agent before it reasons — system prompt, persistent memory, always-loaded rules, injected skills, and the user prompt — or when diagnosing why an agent produced a wrong answer despite a clear instruction. Covers the four context failure modes (missing, stale, wrong, overwhelming), the five-layer context stack, four context quality metrics (injection precision and recall, utilization, freshness), the Frequent Intentional Compaction (FIC) protocol, subagent delegation for context-heavy work, and the failure-mode decision tree. Do NOT use for prompt wording (use `prompt-craft`), authoring a new SKILL.md (use `skill-scaffold`), or deciding which skill the router activates for a given query (use `skill-router`).",
+      "description": "Use when designing what information reaches an LLM agent before it reasons — system prompt, persistent memory, always-loaded rules, injected skills, and the user prompt — or when diagnosing why an agent produced a wrong answer despite a clear instruction. Do NOT use for prompt wording (use `prompt-craft`), authoring a new SKILL.md (use `skill-scaffold`), or deciding which skill the router activates for a given query (use `skill-router`). Covers the four context failure modes (missing, stale, wrong, overwhelming), the five-layer context stack, four context quality metrics (injection precision and recall, utilization, freshness), the Frequent Intentional Compaction (FIC) protocol, subagent delegation for context-heavy work, and the failure-mode decision tree.",
       "domain": "agent/context",
       "grounding": {
         "domain_object": "Context engineering for LLM agents",
@@ -2463,7 +2625,7 @@
         "purpose": "It solves the flat-library failure mode where useful knowledge exists but agents cannot find it unless the user names it directly. The replacement is explicit topology: authored relations, deterministic synthesis signals, health metrics, and propagation checks that make relevance discoverable and drift visible.",
         "taxonomy": "Main graph families are skill knowledge graphs, document routing graphs, memory indexes, and script or command registries. Main edge concerns are typed meaning, reachability, reciprocity, degree caps, cross-graph propagation, and deterministic rebuild signals."
       },
-      "description": "Use when designing or auditing the multi-graph context architecture of an AI-coding workspace: skill graph, document routing graph, memory index, script registry, and the cross-graph edges between them. Covers edge typing, orphan detection, connectivity health, deterministic graph synthesis signals, change-propagation checks, and drift or hub-and-spoke anti-patterns. Do NOT use for authoring one SKILL.md (use `skill-scaffold`), validating one skill (use `skill-infrastructure`), live routing decisions (use `skill-router`), context-window budgeting (use `context-window`), or session load/drop choices (use `context-management`).",
+      "description": "Use when designing or auditing the multi-graph context architecture of an AI-coding workspace: skill graph, document routing graph, memory index, script registry, and the cross-graph edges between them. Do NOT use for authoring one SKILL.md (use `skill-scaffold`), validating one skill (use `skill-infrastructure`), live routing decisions (use `skill-router`), context-window budgeting (use `context-window`), or session load/drop choices (use `context-management`). Covers edge typing, orphan detection, connectivity health, deterministic graph synthesis signals, change-propagation checks, and drift or hub-and-spoke anti-patterns.",
       "domain": "agent/context",
       "grounding": {
         "domain_object": "Agent workspace context topology and discovery model",
@@ -2584,7 +2746,7 @@
       "compatibility": {
         "notes": "Runtime-agnostic. The intake-triage / loop / drift / handoff discipline applies to any LLM-coding harness regardless of context window size or compaction implementation."
       },
-      "description": "Use when deciding what to load into an active agent session, recovering from context drift, preparing compaction or restart, distilling raw inputs into a working summary, or writing a handoff another agent can resume quickly. Covers intake triage, the six-step context-management loop, working-set shaping, evidence-first loading, drift signals, anti-drift rules, compaction-ready handoffs, and selective rebuild after context loss. Do NOT use for token math (use `context-window`), prompt wording (use `prompt-craft`), persistent memory curation, or multi-graph context architecture (use `context-graph`).",
+      "description": "Use when deciding what to load into an active agent session, recovering from context drift, preparing compaction or restart, distilling raw inputs into a working summary, or writing a handoff another agent can resume quickly. Do NOT use for token math (use `context-window`), prompt wording (use `prompt-craft`), persistent memory curation, or multi-graph context architecture (use `context-graph`). Covers intake triage, the six-step context-management loop, working-set shaping, evidence-first loading, drift signals, anti-drift rules, compaction-ready handoffs, and selective rebuild after context loss.",
       "domain": "agent/context",
       "health": {
         "application_verdict": "UNVERIFIED",
@@ -2701,7 +2863,7 @@
         "purpose": "It keeps long-running agent work from losing state or degrading quality when the active context becomes too large, noisy, or close to the model limit.",
         "taxonomy": "Core levers include zone budgeting, health-state thresholds, output headroom, tool-result shaping, targeted reads, progressive skill disclosure, compaction checkpoints, persistence hierarchy, and model-class strategy."
       },
-      "description": "Use when allocating context-window budget across system, skill-injection, working, and output zones; monitoring context health; deciding when to compact; preserving state before compaction; recovering after compaction; or choosing strategies for 1M, 200K, or 128K context windows. Covers zone budgets, practical model-budget tables, the 80% compaction rule, pre/post-compact protocols, persistence hierarchy, operation token costs, and token-reduction techniques. Do NOT use for deciding what information belongs in the working set (use `context-management`), prompt design (use `prompt-craft`), graph architecture (use `context-graph`), or memory curation.",
+      "description": "Use when allocating context-window budget across system, skill-injection, working, and output zones; monitoring context health; deciding when to compact; preserving state before compaction; recovering after compaction; or choosing strategies for 1M, 200K, or 128K context windows. Do NOT use for deciding what information belongs in the working set (use `context-management`), prompt design (use `prompt-craft`), graph architecture (use `context-graph`), or memory curation. Covers zone budgets, practical model-budget tables, the 80% compaction rule, pre/post-compact protocols, persistence hierarchy, operation token costs, and token-reduction techniques.",
       "domain": "agent/context",
       "grounding": {
         "domain_object": "Runtime context-window budgeting and compaction discipline for LLM agents",
@@ -2835,7 +2997,7 @@
         "purpose": "|",
         "taxonomy": "|"
       },
-      "description": "Use when verifying the interface between two services or components by capturing the consumer's expectations as a contract artifact and verifying the provider satisfies it. Covers the consumer-driven contracts pattern (Fowler 2006; Pact), the contrast with schema-only validation (OpenAPI/JSON Schema captures shape, not behavioral expectations), the broker as the integration point between consumer and provider deploy schedules, two-phase verification (consumer-side mocks; provider-side replay), the difference between contract testing (verifies the interface) and integration testing (verifies the implementation through it), and how contract tests replace brittle cross-service e2e. Do NOT use for in-system integration (use `integration-test-design`), full user-journey testing (use `e2e-test-design`), single-unit testing (use `testing-strategy` + `test-doubles-design`), or pure OpenAPI schema validation (API-spec tooling).",
+      "description": "Use when verifying the interface between two services or components by capturing the consumer's expectations as a contract artifact and verifying the provider satisfies it. Do NOT use for in-system integration (use `integration-test-design`), full user-journey testing (use `e2e-test-design`), single-unit testing (use `testing-strategy` + `test-doubles-design`), or pure OpenAPI schema validation (API-spec tooling). Covers the consumer-driven contracts pattern (Fowler 2006; Pact), the contrast with schema-only validation (OpenAPI/JSON Schema captures shape, not behavioral expectations), the broker as the integration point between consumer and provider deploy schedules, two-phase verification (consumer-side mocks; provider-side replay), the difference between contract testing (verifies the interface) and integration testing (verifies the implementation through it), and how contract tests replace brittle cross-service e2e.",
       "domain": "quality/testing",
       "health": {
         "application_verdict": "UNVERIFIED",
@@ -3139,7 +3301,8 @@
           "conceptual-modeling",
           "database-migration",
           "api-design",
-          "state-machine-modeling"
+          "state-machine-modeling",
+          "entity-relationship-modeling"
         ],
         "verify_with": [
           "database-migration",
@@ -3297,7 +3460,7 @@
       "compatibility": {
         "notes": "PostgreSQL 12+ (covers concurrent index, NOT VALID foreign keys, generated columns). Connection examples target raw `psql` and the unpooled side of any PgBouncer-style pooler. Branching examples reference `neonctl` as one provider — substitute the equivalent CLI for Supabase, Xata, or self-hosted clones if your platform supports branched databases."
       },
-      "description": "Use when planning or applying a raw-SQL database migration to a live PostgreSQL database — adding columns, renaming columns or tables, changing types, creating indexes, adding foreign keys, or running data backfills. Covers zero-downtime patterns (expand / contract, batched backfill, NOT VALID foreign keys, CONCURRENTLY indexes), the unpooled-connection requirement for DDL, branched-database workflows, and rollback strategy. Do NOT use for ORM-managed migrations driven by Prisma/Drizzle/TypeORM CLI scaffolding (the generation rules are tool-specific), for chasing a migration that has already failed in production (use `debugging`), or for designing the row-level-security model itself (use `owasp-security`).",
+      "description": "Use when planning or applying a raw-SQL database migration to a live PostgreSQL database — adding columns, renaming columns or tables, changing types, creating indexes, adding foreign keys, or running data backfills. Do NOT use for ORM-managed migrations driven by Prisma/Drizzle/TypeORM CLI scaffolding (the generation rules are tool-specific), for chasing a migration that has already failed in production (use `debugging`), or for designing the row-level-security model itself (use `owasp-security`). Covers zero-downtime patterns (expand / contract, batched backfill, NOT VALID foreign keys, CONCURRENTLY indexes), the unpooled-connection requirement for DDL, branched-database workflows, and rollback strategy.",
       "domain": "data/migrations",
       "health": {
         "application_verdict": "UNVERIFIED",
@@ -3376,16 +3539,16 @@
           "I see the symptom but can't find the root cause of this nil panic"
         ],
         "keywords": [
-          "debugging",
           "reproduce failure",
-          "reproduce bug",
-          "failing test",
+          "tests fail CI",
           "root cause",
-          "symptom vs cause",
-          "minimum reproduction",
-          "bisect",
-          "what caused it",
-          "my tests are failing"
+          "symptom",
+          "nil panic",
+          "used to work",
+          "yesterday",
+          "what changed",
+          "failing after edit break",
+          "lint failure"
         ],
         "triggers": [
           "debugging-skill"
@@ -3396,7 +3559,7 @@
       "compatibility": {
         "notes": "Markdown, Git, any codebase"
       },
-      "description": "Use when behavior is broken, a test is failing, or runtime output contradicts expectations. Covers failure reproduction, scope reduction by bisection, evidence capture at the moment of failure, root-cause isolation (not symptom patching), fix verification against the same evidence path, and regression-test creation. Do NOT use for feature planning, architectural design, or behavior-preserving refactor.",
+      "description": "Use when behavior is broken, a test is failing, or runtime output contradicts expectations. Do NOT use for feature planning, architectural design, or behavior-preserving refactor. Covers failure reproduction, scope reduction by bisection, evidence capture at the moment of failure, root-cause isolation (not symptom patching), fix verification against the same evidence path, and regression-test creation.",
       "health": {
         "application_verdict": "UNVERIFIED",
         "comprehension_verdict": "UNVERIFIED",
@@ -3857,12 +4020,12 @@
           "symptom classification taxonomy",
           "what kind of bug is this",
           "which debugging approach",
+          "deployment timeout troubleshooting",
           "diagnostic routing framework",
           "evidence collection before hypothesis",
           "confidence ladder debugging",
           "escalation criteria debugging",
-          "cascade vs coincidence failure",
-          "environment ghost"
+          "cascade vs coincidence failure"
         ]
       },
       "allowed-tools": "Read Grep",
@@ -3870,7 +4033,7 @@
       "compatibility": {
         "notes": "Language- and stack-agnostic. The classification taxonomy, evidence protocol, and confidence ladder apply to any software failure investigation; specific technique names (git bisect, EXPLAIN plans, HMAC verification) are illustrative — substitute the equivalents of your stack."
       },
-      "description": "Use when facing an unknown software failure, when symptoms point to different root causes, or when an initial debugging attempt has not converged. Provides a triage-first diagnostic routing framework: classify the failure, collect the right evidence, choose a technique, track confidence, and escalate when stuck. Do NOT use for executing scientific debugging after triage (use `debugging`), code-quality review (use `code-review`), or proactive observability setup.",
+      "description": "Use when facing an unknown software failure, when symptoms point to different root causes, or when an initial debugging attempt has not converged. Do NOT use for executing scientific debugging after triage (use `debugging`), code-quality review (use `code-review`), or proactive observability setup. Provides a triage-first diagnostic routing framework: classify the failure, collect the right evidence, choose a technique, track confidence, and escalate when stuck.",
       "domain": "engineering/debugging",
       "grounding": {
         "domain_object": "Portable software-failure diagnostic triage: evidence collection, symptom classification, technique selection, confidence tracking, escalation, and sensitive diagnostic evidence handling",
@@ -3980,7 +4143,7 @@
       "compatibility": {
         "notes": "Markdown, Git, agent-skill runtimes"
       },
-      "description": "Use when analyzing `git diff`, reviewing a patch before commit, or explaining what a changeset does. Covers unified diff anatomy, hunk interpretation, semantic-vs-formatting separation, blast-radius tracing, hidden-risk scanning, and intent-vs-diff comparison. Do NOT use for full code-review verdicts (use `code-review`), git workflow decisions (use `version-control`), or visual diffs.",
+      "description": "Use when analyzing `git diff`, reviewing a patch before commit, or explaining what a changeset does. Do NOT use for full code-review verdicts (use `code-review`), git workflow decisions (use `version-control`), or visual diffs. Covers unified diff anatomy, hunk interpretation, semantic-vs-formatting separation, blast-radius tracing, hidden-risk scanning, and intent-vs-diff comparison.",
       "domain": "quality/doctrine",
       "health": {
         "application_verdict": "UNVERIFIED",
@@ -4162,7 +4325,7 @@
       "compatibility": {
         "notes": "Markdown, Git, agent-skill runtimes"
       },
-      "description": "Use when designing database tables, reviewing schema changes, planning migrations, or translating conceptual models into physical database structures. Covers ER notation, entity/attribute/key design, normalization and denormalization, junction tables, inheritance mapping, temporal modeling, ER-to-SQL translation, indexing, and constraints. Do NOT use for conceptual domain analysis (use `conceptual-modeling`), formal ontology (use `ontology`), or cross-system API contracts (use `system-interface-contracts`).",
+      "description": "Use when designing database tables, reviewing schema changes, planning migrations, or translating conceptual models into physical database structures. Do NOT use for conceptual domain analysis (use `conceptual-modeling`), formal ontology (use `ontology`), or cross-system API contracts (use `system-interface-contracts`). Covers ER notation, entity/attribute/key design, normalization and denormalization, junction tables, inheritance mapping, temporal modeling, ER-to-SQL translation, indexing, and constraints.",
       "domain": "engineering/modeling",
       "health": {
         "application_verdict": "UNVERIFIED",
@@ -4200,7 +4363,8 @@
           "conceptual-modeling"
         ],
         "related": [
-          "database-migration"
+          "database-migration",
+          "data-modeling"
         ],
         "verify_with": [
           "code-review"
@@ -4257,7 +4421,7 @@
         "purpose": "|",
         "taxonomy": "|"
       },
-      "description": "Use when authoring any artifact that makes claims — skill content, documentation, audit findings, architecture proposals, code review comments. Covers the discipline of grounding every claim to a verifiable source, distinguishing verified-by-evidence from inferred-from-context, using normative vocabulary precisely (RFC 2119 MUST/SHOULD/MAY), and structuring arguments so the warrant from data to claim is visible to a reader. Do NOT use for verification protocol mechanics in this repo (use the verification-protocol rule file), for output-completeness enforcement (use methodology), or for self-scoring on a 1-5 scale (use self-evaluation).",
+      "description": "Use when authoring any artifact that makes claims — skill content, documentation, audit findings, architecture proposals, code review comments. Do NOT use for verification protocol mechanics in this repo (use the verification-protocol rule file), for output-completeness enforcement (use methodology), or for self-scoring on a 1-5 scale (use self-evaluation). Covers the discipline of grounding every claim to a verifiable source, distinguishing verified-by-evidence from inferred-from-context, using normative vocabulary precisely (RFC 2119 MUST/SHOULD/MAY), and structuring arguments so the warrant from data to claim is visible to a reader.",
       "domain": "foundations/epistemics",
       "health": {
         "application_verdict": "UNVERIFIED",
@@ -4355,7 +4519,7 @@
         "purpose": "|",
         "taxonomy": "|"
       },
-      "description": "Use when designing or reviewing React error boundaries: what an error boundary catches (rendering errors, lifecycle errors, constructor errors) and what it does not (event handler errors, async errors, SSR errors, errors in the boundary itself), why React still requires class components for error boundaries, how to place boundaries by granularity (page / feature / leaf), how error boundaries pair with Suspense, the reset-and-recover pattern (resetKeys, error.reset), the Next.js error.tsx route-segment convention, and how to integrate boundaries with error reporting (Sentry, observability). Covers React 18+ and Next.js App Router. Do NOT use for Suspense boundary placement (use suspense-patterns), for general error-handling discipline (try/catch in async code, validation errors), for backend error contracts (use api-design), or for observability infrastructure (use error-tracking).",
+      "description": "Use when designing or reviewing React error boundaries: what an error boundary catches (rendering errors, lifecycle errors, constructor errors) and what it does not (event handler errors, async errors, SSR errors, errors in the boundary itself), why React still requires class components for error boundaries, how to place boundaries by granularity (page / feature / leaf), how error boundaries pair with Suspense, the reset-and-recover pattern (resetKeys, error.reset), the Next.js error.tsx route-segment convention, and how to integrate boundaries with error reporting (Sentry, observability). Do NOT use for Suspense boundary placement (use suspense-patterns), for general error-handling discipline (try/catch in async code, validation errors), for backend error contracts (use api-design), or for observability infrastructure (use error-tracking). Covers React 18+ and Next.js App Router.",
       "domain": "engineering/frontend",
       "health": {
         "application_verdict": "UNVERIFIED",
@@ -4447,7 +4611,7 @@
       "compatibility": {
         "notes": "Tracker-agnostic. The patterns target any exception-reporting SDK with a `captureException` / `captureMessage` / `addBreadcrumb` shape — Sentry, Rollbar, Bugsnag, Honeybadger, Datadog Errors, Application Insights. Examples are framed in React + Next.js because that is the most common surface; analogous primitives exist in Vue (`errorCaptured`), Svelte (error stores), Remix (`ErrorBoundary`), Nuxt (`error.vue`), and any framework with framework-level error hooks."
       },
-      "description": "Use when designing or extending an application exception-reporting pipeline: error boundary placement, tracker SDK wrappers, sanitized reporting calls, environment gating, user context without PII leaks, breadcrumbs, and verification that each layer reports correctly. Covers component, route, global, and manual capture surfaces plus central `reportError`/`reportMessage` patterns. Do NOT use for the visual error UX shown to users (use `a11y` and interaction skills), chasing one captured error (use `debugging`), or broad privacy and retention policy (use `owasp-security`).",
+      "description": "Use when designing or extending an application exception-reporting pipeline: error boundary placement, tracker SDK wrappers, sanitized reporting calls, environment gating, user context without PII leaks, breadcrumbs, and verification that each layer reports correctly. Do NOT use for the visual error UX shown to users (use `a11y` and interaction skills), chasing one captured error (use `debugging`), or broad privacy and retention policy (use `owasp-security`). Covers component, route, global, and manual capture surfaces plus central `reportError`/`reportMessage` patterns.",
       "domain": "engineering/observability",
       "grounding": {
         "domain_object": "Application exception-reporting pipeline design across boundaries, tracker wrappers, sanitization, user context, breadcrumbs, and environment gates",
@@ -4698,7 +4862,7 @@
         "purpose": "It prevents optimistic done claims by forcing visible scores, score ceilings, missing-evidence callouts, required revisions, and a final accept or block decision.",
         "taxonomy": "Core evaluation surfaces are acceptance fit, evidence sufficiency, artifact quality, risk handling, regression protection, portability, and reporting completeness. Common graders are checklist, rubric, exact or code-based checks, trace inspection, human review, and LLM-as-judge with calibration."
       },
-      "description": "Use when scoring a completed agent task, implementation, document, skill upgrade, or other deliverable against the original request, acceptance criteria, verification evidence, quality rubric, and residual risks before calling it done. Covers skeptical critic review, 1-5 scoring, score ceilings, evidence sufficiency, finding/action capture, and the evaluation-revision loop. Do NOT use for designing eval datasets or graders (use agent-eval-design), line-by-line diff review (use code-review), choosing test levels (use testing-strategy), or designing the overall process and gates before work starts (use methodology).",
+      "description": "Use when scoring a completed agent task, implementation, document, skill upgrade, or other deliverable against the original request, acceptance criteria, verification evidence, quality rubric, and residual risks before calling it done. Do NOT use for designing eval datasets or graders (use agent-eval-design), line-by-line diff review (use code-review), choosing test levels (use testing-strategy), or designing the overall process and gates before work starts (use methodology). Covers skeptical critic review, 1-5 scoring, score ceilings, evidence sufficiency, finding/action capture, and the evaluation-revision loop.",
       "domain": "engineering/evaluation",
       "grounding": {
         "domain_object": "Evidence-based evaluation of agent outputs, deliverables, and completion claims",
@@ -5008,6 +5172,94 @@
     {
       "activation": {
         "anti_examples": [
+          "This incident happened yesterday. Find the root cause.",
+          "Update the probability after new evidence arrives.",
+          "Score these options by expected monetary value.",
+          "Imagine this plan failed and list why."
+        ],
+        "examples": [
+          "We keep copying the old pricing model. Rebuild the problem from first principles.",
+          "This architecture decision is full of assumptions. What facts and constraints are actually irreducible?",
+          "Everyone says this workflow needs five steps, but why? Strip it to fundamentals.",
+          "The analogy to competitors is misleading. Derive the design from user needs and constraints instead."
+        ],
+        "keywords": [
+          "first principles thinking",
+          "first principle",
+          "irreducible premise",
+          "assumption stripping",
+          "rebuild from fundamentals",
+          "primitive constraints",
+          "axiomatic reasoning",
+          "inherited assumptions",
+          "reasoning from basics",
+          "ab initio reasoning"
+        ],
+        "triggers": [
+          "reason from first principles",
+          "rebuild this from fundamentals",
+          "strip the assumptions",
+          "what are the primitive truths here",
+          "stop reasoning by analogy"
+        ]
+      },
+      "allowed-tools": "Read Grep",
+      "category": "foundations",
+      "description": "Use when a problem is trapped inside inherited assumptions, copied convention, analogy, or local optimization and needs to be rebuilt from irreducible premises. Do NOT use for root-cause analysis of an observed failure (use debugging or problem-locating-solving), formal argument grounding (use epistemic-grounding), domain entity modeling (use conceptual-modeling), or recurring issue clustering (use pattern-recognition). Covers decomposition to primitives, assumption stripping, primitive tests, reconstruction from constraints, derivation chains, and reality checks.",
+      "domain": "foundations/reasoning",
+      "health": {
+        "application_verdict": "UNVERIFIED",
+        "comprehension_state": "present",
+        "comprehension_verdict": "UNVERIFIED",
+        "drift_check": {
+          "last_verified": "2026-05-20"
+        },
+        "eval_artifacts": "present",
+        "eval_state": "unverified",
+        "freshness": "2026-05-20",
+        "has_grounding": false,
+        "has_relations": true,
+        "lifecycle": {
+          "review_cadence": "quarterly",
+          "stale_after_days": 365
+        },
+        "routing_eval": "absent",
+        "structural_verdict": "UNVERIFIED",
+        "truth_verdict": "UNVERIFIED"
+      },
+      "id": "first-principles-thinking",
+      "license": "MIT",
+      "name": "first-principles-thinking",
+      "owner": "skill-graph-maintainer",
+      "path": "../skills/skills/meta-methods/first-principles-thinking/SKILL.md",
+      "portability": {
+        "readiness": "declared",
+        "targets": [
+          "skill-md"
+        ]
+      },
+      "relations": {
+        "related": [
+          "epistemic-grounding",
+          "conceptual-modeling",
+          "mental-models",
+          "pattern-recognition",
+          "debugging"
+        ],
+        "verify_with": [
+          "epistemic-grounding",
+          "conceptual-modeling"
+        ]
+      },
+      "schema_version": 7,
+      "scope": "portable",
+      "stability": "experimental",
+      "type": "capability",
+      "version": "1.0.0"
+    },
+    {
+      "activation": {
+        "anti_examples": [
           "add labels so assistive tech can read each field",
           "rewrite the inline validation messages",
           "define the request and response schema for the form submit endpoint",
@@ -5028,8 +5280,8 @@
           "submission lifecycle",
           "form recovery",
           "multi-step forms",
-          "required optional fields",
-          "empty state design"
+          "required optional inputs",
+          "error recovery flow"
         ]
       },
       "allowed-tools": "Read Grep",
@@ -5413,18 +5665,18 @@
         "examples": [
           "audit all skills for schema conformance and broken relation targets",
           "the manifest sample drifted from the generator — find the mismatch",
-          "check that every `scope: codebase` skill has a populated grounding block",
+          "check that every `scope: project` skill has a populated grounding block",
           "which skills declare a relations target that doesn't exist in the library?"
         ],
         "keywords": [
           "skill audit",
           "manifest audit",
           "schema validation",
-          "skill consistency",
+          "relation target missing",
           "graph audit",
           "metadata check",
           "skill frontmatter check",
-          "broken relation",
+          "broken relation target",
           "skill drift",
           "audit my skills"
         ],
@@ -5442,7 +5694,7 @@
       "compatibility": {
         "notes": "Markdown, JSON Schema, Node.js"
       },
-      "description": "Use when checking that every SKILL.md conforms to the schema, that manifest entries match authored frontmatter, or that relation targets point at real sibling skills. Covers schema conformance, manifest sync, relation integrity, eval-artifact coherence, grounding presence, and name-directory parity. Do NOT use for general code review, runtime agent debugging, or auditing non-skill files.",
+      "description": "Use when checking that every SKILL.md conforms to the schema, that manifest entries match authored frontmatter, or that relation targets point at real sibling skills. Do NOT use for general code review, runtime agent debugging, or auditing non-skill files. Covers schema conformance, manifest sync, relation integrity, eval-artifact coherence, grounding presence, and name-directory parity.",
       "domain": "quality/audit",
       "grounding": {
         "domain_object": "Skill Metadata Protocol and Skill Graph manifest consistency",
@@ -5511,6 +5763,18 @@
             "skill": "debugging"
           },
           {
+            "reason": "client-server-boundary owns frontend import and execution-boundary failures; graph-audit owns skill metadata graph integrity, not application import-cycle diagnosis",
+            "skill": "client-server-boundary"
+          },
+          {
+            "reason": "autonomous-loop-patterns owns runtime agent-loop stalls and control-flow safeguards; graph-audit owns static skill graph metadata checks",
+            "skill": "autonomous-loop-patterns"
+          },
+          {
+            "reason": "replication-patterns owns explanatory system-design patterns such as pipeline replication and data flow; graph-audit owns whether skill metadata and generated manifests are consistent",
+            "skill": "replication-patterns"
+          },
+          {
             "reason": "eval-driven-development owns LLM eval iteration discipline and writing reference documentation; graph-audit is read-only static verification of skill metadata schemas — writing an explanatory doc about a pipeline is documentation work, not a schema audit",
             "skill": "eval-driven-development"
           }
@@ -5552,7 +5816,7 @@
       "compatibility": {
         "notes": "Markdown, Git, agent-skill runtimes"
       },
-      "description": "Use when planning or executing agent/tool operations that touch protected files, credentials, destructive git commands, destructive SQL, PII, secrets, deployments, package publication, or irreversible system mutations. Covers proactive safety policy, tool-call tripwires, blocking vs advisory enforcement, secret-exposure prevention, and excessive-agency containment. Do NOT use for application input validation, routine git workflow design, migration authoring, or general code correctness review (use `code-review`, `version-control`, or `database-migration`).",
+      "description": "Use when planning or executing agent/tool operations that touch protected files, credentials, destructive git commands, destructive SQL, PII, secrets, deployments, package publication, or irreversible system mutations. Do NOT use for application input validation, routine git workflow design, migration authoring, or general code correctness review (use `code-review`, `version-control`, or `database-migration`). Covers proactive safety policy, tool-call tripwires, blocking vs advisory enforcement, secret-exposure prevention, and excessive-agency containment.",
       "domain": "quality/safety",
       "grounding": {
         "domain_object": "Agent and tool-call safety guardrails for destructive operations, secret exposure prevention, excessive-agency containment, and irreversible system mutations",
@@ -5685,7 +5949,7 @@
         "purpose": "|",
         "taxonomy": "|"
       },
-      "description": "Use when reasoning about React Hooks as a discipline: when a render is the right shape for state, why the Rules of Hooks exist as a compile-time invariant, how the dependency array encodes a contract between closure and rerender, when useEffect is the wrong primitive, the distinction between derived state and stored state, when to extract a custom hook, and when memoization (useMemo, useCallback) is a footgun rather than a fix. Covers React 18+ semantics including automatic batching and concurrent rendering. Do NOT use for general React rendering models (use rendering-models), for the client/server boundary (use client-server-boundary), for component composition (use component-architecture), or for state location decisions across the application (use state-management).",
+      "description": "Use when reasoning about React Hooks as a discipline: when a render is the right shape for state, why the Rules of Hooks exist as a compile-time invariant, how the dependency array encodes a contract between closure and rerender, when useEffect is the wrong primitive, the distinction between derived state and stored state, when to extract a custom hook, and when memoization (useMemo, useCallback) is a footgun rather than a fix. Do NOT use for general React rendering models (use rendering-models), for the client/server boundary (use client-server-boundary), for component composition (use component-architecture), or for state location decisions across the application (use state-management). Covers React 18+ semantics including automatic batching and concurrent rendering.",
       "domain": "engineering/frontend",
       "health": {
         "application_verdict": "UNVERIFIED",
@@ -5782,7 +6046,7 @@
         "purpose": "|",
         "taxonomy": "|"
       },
-      "description": "Use when designing or reviewing HTTP-based systems where method semantics, status codes, idempotency, safe methods, conditional requests, content negotiation, caching headers, or representation metadata are load-bearing. Covers the RFC 9110/9111/9112 contract layer below any specific framework. Do NOT use for API surface shape and route taxonomy (use api-design), for WebSocket or SSE bidirectional streams (use streaming-architecture skill when available), for vendor-specific webhook signing (use webhook-integration), or for transport-level concerns like TLS or QUIC (use platform-level documentation).",
+      "description": "Use when designing or reviewing HTTP-based systems where method semantics, status codes, idempotency, safe methods, conditional requests, content negotiation, caching headers, or representation metadata are load-bearing. Do NOT use for API surface shape and route taxonomy (use api-design), for WebSocket or SSE bidirectional streams (use streaming-architecture skill when available), for vendor-specific webhook signing (use webhook-integration), or for transport-level concerns like TLS or QUIC (use platform-level documentation). Covers the RFC 9110/9111/9112 contract layer below any specific framework.",
       "domain": "engineering/protocol",
       "health": {
         "application_verdict": "UNVERIFIED",
@@ -6556,6 +6820,93 @@
     {
       "activation": {
         "anti_examples": [
+          "Break this pricing model down to irreducible assumptions.",
+          "This incident already happened; find the root cause.",
+          "Score every webhook failure mode with severity, occurrence, and detectability.",
+          "Facilitate a team pre-mortem session with independent written generation."
+        ],
+        "examples": [
+          "We want activation to improve. Invert the goal and identify what would make users abandon onboarding.",
+          "Before we commit to this launch plan, ask how it could fail and what safeguards follow.",
+          "Test the opposite hypothesis: what if the metric increase is actually bad?",
+          "What actions would guarantee this project misses the deadline?"
+        ],
+        "keywords": [
+          "inversion thinking",
+          "invert the goal",
+          "reverse the problem",
+          "failure path",
+          "opposite hypothesis",
+          "obstacle first",
+          "what would make this fail",
+          "avoid failure",
+          "anti-goal",
+          "reverse reasoning"
+        ],
+        "triggers": [
+          "invert this plan",
+          "how could this fail",
+          "what would guarantee failure",
+          "reason from the opposite",
+          "avoid the worst outcome"
+        ]
+      },
+      "allowed-tools": "Read Grep",
+      "category": "foundations",
+      "description": "Use when a goal, plan, design, strategy, or assumption should be examined by reversing it: ask how to guarantee failure, how the opposite could be true, or what would have to happen for the desired outcome not to occur. Do NOT use for decomposing a problem to irreducible premises (use first-principles-thinking), post-failure root-cause analysis (use debugging), recurring failure clustering (use pattern-recognition), or claim/source grounding (use epistemic-grounding). Covers objective reversal, failure-path enumeration, obstacle-first planning, opposite-hypothesis testing, and prevention design.",
+      "domain": "foundations/reasoning",
+      "health": {
+        "application_verdict": "UNVERIFIED",
+        "comprehension_state": "present",
+        "comprehension_verdict": "UNVERIFIED",
+        "drift_check": {
+          "last_verified": "2026-05-21"
+        },
+        "eval_artifacts": "present",
+        "eval_state": "unverified",
+        "freshness": "2026-05-21",
+        "has_grounding": false,
+        "has_relations": true,
+        "lifecycle": {
+          "review_cadence": "quarterly",
+          "stale_after_days": 365
+        },
+        "routing_eval": "absent",
+        "structural_verdict": "UNVERIFIED",
+        "truth_verdict": "UNVERIFIED"
+      },
+      "id": "inversion",
+      "license": "MIT",
+      "name": "inversion",
+      "owner": "skill-graph-maintainer",
+      "path": "../skills/skills/meta-methods/inversion/SKILL.md",
+      "portability": {
+        "readiness": "declared",
+        "targets": [
+          "skill-md"
+        ]
+      },
+      "relations": {
+        "related": [
+          "first-principles-thinking",
+          "epistemic-grounding",
+          "pattern-recognition",
+          "debugging"
+        ],
+        "verify_with": [
+          "epistemic-grounding",
+          "first-principles-thinking"
+        ]
+      },
+      "schema_version": 7,
+      "scope": "portable",
+      "stability": "experimental",
+      "type": "capability",
+      "version": "1.0.0"
+    },
+    {
+      "activation": {
+        "anti_examples": [
           "Break down the steps a user takes inside the upload modal.",
           "Draw the microservice call graph for the checkout API.",
           "Diagram the database schema for the order entity."
@@ -6697,7 +7048,7 @@
         "purpose": "It helps agents and teams choose what to target before building pages or writing copy, avoid cannibalization, respect marketplace limits, and measure whether keyword changes improved discovery.",
         "taxonomy": "Core moves include seed expansion, query-source capture, volume/difficulty/context review, intent classification, SERP or marketplace result inspection, semantic clustering, page/listing assignment, platform field translation, cannibalization checks, and rank tracking."
       },
-      "description": "Use when doing keyword research, mapping search intent, building topical clusters, choosing terms for product or marketplace listings, detecting cannibalization, or translating query demand into page/listing targets. Covers seed expansion, intent classification, clustering, platform field translation for Etsy, Amazon, Shopify, SaaS/content sites, long-tail marketplace strategy, cannibalization resolution, and rank-tracking cadence. Do NOT use for building SEO pages or schema strategy (use `seo-strategy`), writing the finished prose (use `writing-humanizer`), or designing navigation/page hierarchy (use `information-architecture`).",
+      "description": "Use when doing keyword research, mapping search intent, building topical clusters, choosing terms for product or marketplace listings, detecting cannibalization, or translating query demand into page/listing targets. Do NOT use for building SEO pages or schema strategy (use `seo-strategy`), writing the finished prose (use `writing-humanizer`), or designing navigation/page hierarchy (use `information-architecture`). Covers seed expansion, intent classification, clustering, platform field translation for Etsy, Amazon, Shopify, SaaS/content sites, long-tail marketplace strategy, cannibalization resolution, and rank-tracking cadence.",
       "domain": "product/search",
       "grounding": {
         "domain_object": "Keyword research, intent mapping, topical clustering, and marketplace/search field translation for public e-commerce, marketplace, SaaS, and content surfaces",
@@ -6835,7 +7186,7 @@
         "purpose": "It prevents teams from treating all structured text as equivalent. The goal is to make agent and product knowledge explicit enough to retrieve, reason over, validate, update, and retire without over-formalizing beyond the system's real needs.",
         "taxonomy": "Core paradigms include knowledge graphs, frames, semantic networks, production rules, concept maps, procedural knowledge ontologies, and hybrids. Core lifecycle stages include create, validate, publish, use, monitor, update, and retire."
       },
-      "description": "Use when choosing the representation paradigm for domain knowledge: knowledge graph, frame, production rule, semantic network, concept map, procedural ontology, or hybrid. Covers knowledge acquisition from tacit to explicit, graph design principles, validation types, lifecycle states, AI-agent context systems, skills as frames, routing as rules, memory as graph, and GraphRAG patterns such as entity-anchored retrieval, relationship-aware context, path reasoning, subgraph summaries, and hybrid vector+graph retrieval. Do NOT use for human-readable domain analysis (use `conceptual-modeling`), ER/database design (use `data-modeling`), pure taxonomy hierarchy (use `taxonomy-design`), formal ontology axioms (use `ontology-modeling`), exact semantic edge labels (use `semantic-relations`), or live skill-library tooling (use `skill-infrastructure`).",
+      "description": "Use when choosing the representation paradigm for domain knowledge: knowledge graph, frame, production rule, semantic network, concept map, procedural ontology, or hybrid. Do NOT use for human-readable domain analysis (use `conceptual-modeling`), ER/database design (use `data-modeling`), pure taxonomy hierarchy (use `taxonomy-design`), formal ontology axioms (use `ontology-modeling`), exact semantic edge labels (use `semantic-relations`), or live skill-library tooling (use `skill-infrastructure`). Covers knowledge acquisition from tacit to explicit, graph design principles, validation types, lifecycle states, AI-agent context systems, skills as frames, routing as rules, memory as graph, and GraphRAG patterns such as entity-anchored retrieval, relationship-aware context, path reasoning, subgraph summaries, and hybrid vector+graph retrieval.",
       "domain": "foundations/knowledge",
       "grounding": {
         "domain_object": "Knowledge representation paradigm choice and GraphRAG-ready knowledge modeling",
@@ -7099,7 +7450,7 @@
         "purpose": "The skill replaces taste-based naming and copy decisions with repeatable linguistic checks for ambiguity, misleading names, register mismatch, blame assignment, and cross-language readability.",
         "taxonomy": "Foundations/language capability covering morphology, semantics, pragmatics, sociolinguistic register, error-message language, and cross-cultural language awareness for software surfaces."
       },
-      "description": "Use when choosing semantically precise names for files/functions/variables/types/columns, resolving overloaded terms, reviewing error messages or UI copy for blame/register clarity, or adapting language for end-user/agent/developer/global-audience contexts. Covers morphology, compound-word order, abbreviation policy, verb-noun naming, polysemy qualification, audience register, blame-free error structure, and cross-cultural language awareness. Do NOT use for casing convention policy (use `naming-conventions`), call-site-wide renames (use `refactor`), docs/navigation structure (use `information-architecture`), specialized UI text pattern catalogs (use `microcopy`), or final prose humanization (use `writing-humanizer`).",
+      "description": "Use when choosing semantically precise names for files/functions/variables/types/columns, resolving overloaded terms, reviewing error messages or UI copy for blame/register clarity, or adapting language for end-user/agent/developer/global-audience contexts. Do NOT use for casing convention policy (use `naming-conventions`), call-site-wide renames (use `refactor`), docs/navigation structure (use `information-architecture`), specialized UI text pattern catalogs (use `microcopy`), or final prose humanization (use `writing-humanizer`). Covers morphology, compound-word order, abbreviation policy, verb-noun naming, polysemy qualification, audience register, blame-free error structure, and cross-cultural language awareness.",
       "domain": "foundations/language",
       "grounding": {
         "domain_object": "Linguistic precision for software identifiers, UI copy, error messages, technical documentation, and cross-cultural language choices",
@@ -7205,7 +7556,7 @@
     {
       "activation": {
         "anti_examples": [
-          "this specific ESLint error is blocking my commit — why?",
+          "reproduce this lint failure from the commit log",
           "decide whether to unit-test or integration-test this handler",
           "extract this repeated code pattern into a shared util"
         ],
@@ -7222,9 +7573,9 @@
           "lint integration",
           "static analysis",
           "eslint",
-          "format check",
+          "legacy noimplicitany phased migration",
+          "pre-commit CI lint gate",
           "add eslint rule",
-          "lint is failing",
           "add lint check"
         ],
         "triggers": [
@@ -7236,7 +7587,7 @@
       "compatibility": {
         "notes": "Markdown, Git, any codebase with a lint tool"
       },
-      "description": "Use when adding or enforcing lint rules as part of a test or verification plan. Extends testing-strategy with lint-specific guidance: rule selection, gate placement, failure triage, and migration planning when introducing rules to an existing codebase. Do NOT use standalone — load the base testing-strategy skill alongside it — and do NOT use for chasing a specific lint failure in one file (that is debugging).",
+      "description": "Use when adding or enforcing lint rules as part of a test or verification plan. Do NOT use standalone — load the base testing-strategy skill alongside it — and do NOT use for chasing a specific lint failure in one file (that is debugging). Extends testing-strategy with lint-specific guidance: rule selection, gate placement, failure triage, and migration planning when introducing rules to an existing codebase.",
       "extends": "testing-strategy",
       "grounding": {
         "domain_object": "Lint-specific verification planning in the Skill Graph starter library",
@@ -7302,6 +7653,14 @@
             "skill": "refactor"
           },
           {
+            "reason": "integration-test-design owns unit-vs-integration boundary decisions once the question is about a concrete handler; lint-overlay only decides lint-rule gate placement",
+            "skill": "integration-test-design"
+          },
+          {
+            "reason": "pattern-recognition identifies repeated code shapes and conceptual motifs; lint-overlay owns static-analysis gate design, not extraction of repeated implementation patterns",
+            "skill": "pattern-recognition"
+          },
+          {
             "reason": "base testing-strategy owns unit-vs-integration scope selection; lint-overlay extends it only for lint-specific gate placement",
             "skill": "testing-strategy"
           }
@@ -7360,7 +7719,7 @@
         "purpose": "|",
         "taxonomy": "|"
       },
-      "description": "Use when reasoning about how a system, user, or designer's internal model of behavior may diverge from reality — applies across UX, distributed systems, type systems, API design, and team collaboration. Covers the three-model frame (designer / system image / user), the two gulfs (execution and evaluation), analogy and metaphor as model-seeding, the five failure modes (transfer, overgeneralization, underspecification, drift, invariant blindness), the surface/operational/architectural/domain layering, and the discipline of validating a model against the system it claims to represent. Do NOT use for the visual representation of a model (use knowledge-modeling), for the formal-domain entities-attributes-relationships of conceptual modeling (use conceptual-modeling), for cognitive biases in decision-making (out of scope), or for empirically eliciting user models via research methods (use user-research).",
+      "description": "Use when reasoning about how a system, user, or designer's internal model of behavior may diverge from reality — applies across UX, distributed systems, type systems, API design, and team collaboration. Do NOT use for the visual representation of a model (use knowledge-modeling), for the formal-domain entities-attributes-relationships of conceptual modeling (use conceptual-modeling), for cognitive biases in decision-making (out of scope), or for empirically eliciting user models via research methods (use user-research). Covers the three-model frame (designer / system image / user), the two gulfs (execution and evaluation), analogy and metaphor as model-seeding, the five failure modes (transfer, overgeneralization, underspecification, drift, invariant blindness), the surface/operational/architectural/domain layering, and the discipline of validating a model against the system it claims to represent.",
       "domain": "foundations/mental-models",
       "health": {
         "application_verdict": "UNVERIFIED",
@@ -7505,7 +7864,7 @@
         ]
       },
       "category": "foundations",
-      "description": "Enforces disciplined, complete, step-by-step execution that prevents the LLM failure modes of scope reduction, finding filtering, step skipping, assumed verification, and sycophantic output compression. Provides the explanatory model for WHY agents fail at completeness (RLHF training rewards shorter, cleaner, more positive outputs — 58% sycophancy rate measured in frontier models) and the structural countermeasures: pre-task declarations, step-level evidence receipts, generation/criticism separation, explicit completeness claims, and anti-pattern detection. Use when executing audits, producing reports, creating Linear tasks from findings, verifying acceptance criteria, or any task where completeness and honesty matter more than brevity. Do NOT use for task workflow sequencing (use task-execution), quality definitions per artifact type (use quality-doctrine), or the generate-critique-revise loop mechanics (use self-review-pattern).",
+      "description": "Use when executing audits, producing reports, creating Linear tasks from findings, verifying acceptance criteria, or any task where completeness and intellectual honesty matter more than brevity. Do NOT use for workflow sequencing (use task-execution) or per-artifact quality definitions (use quality-doctrine). Enforces disciplined, complete, step-by-step execution that prevents the LLM failure modes of scope reduction, finding filtering, step skipping, assumed verification, and sycophantic output compression. Provides the explanatory model for WHY agents fail at completeness (RLHF rewards shorter, cleaner, more positive outputs — 58% sycophancy rate measured in frontier models) and the structural countermeasures: pre-task declarations, step-level evidence receipts, generation/criticism separation, explicit completeness claims, and anti-pattern detection.",
       "health": {
         "application_verdict": "UNVERIFIED",
         "comprehension_state": "present",
@@ -7734,7 +8093,7 @@
       "compatibility": {
         "notes": "Stack-agnostic UX-writing patterns. The button-label, empty-state, tooltip, dialog, loading, validation, and toast rules apply to any web, mobile, or desktop UI; example product copy uses generic e-commerce framings (storefront, fulfillment partner, orders) — substitute the equivalents from your own product domain."
       },
-      "description": "Use when writing or reviewing functional UI text: button labels, empty states, tooltips, dialogs, placeholders, loading/progress messages, toasts, inline validation, permission copy, or onboarding steps. Covers interface-copy patterns such as verb-first action labels, acknowledge-explain-guide empty states, one-sentence tooltips, consequence-first confirmations, progressive loading language, and blur/fix validation messages. Do NOT use for marketing persuasion, documentation prose/guide structure, feedback-state staging, or general linguistic rationale behind wording.",
+      "description": "Use when writing or reviewing functional UI text: button labels, empty states, tooltips, dialogs, placeholders, loading/progress messages, toasts, inline validation, permission copy, or onboarding steps. Do NOT use for marketing persuasion, documentation prose/guide structure, feedback-state staging, or general linguistic rationale behind wording. Covers interface-copy patterns such as verb-first action labels, acknowledge-explain-guide empty states, one-sentence tooltips, consequence-first confirmations, progressive loading language, and blur/fix validation messages.",
       "domain": "design/ux",
       "health": {
         "application_verdict": "UNVERIFIED",
@@ -8117,7 +8476,7 @@
       "compatibility": {
         "notes": "Language-agnostic"
       },
-      "description": "Use when naming a new file, function, variable, type, route, database column, environment variable, or any other code or system artifact. Covers identifier morphology (verb-noun choice, plural vs singular, prefix/suffix conventions), kebab-case vs camelCase vs snake_case vs PascalCase per artifact kind, abbreviation rules, name-vs-path semantics, the rename-coordination workflow, and detection of names that lie. Do NOT use for content writing (use `documentation`), for restructuring already-named code (use `refactor`), or for human-language copy in product UI (separate skill, not in this library).",
+      "description": "Use when naming a new file, function, variable, type, route, database column, environment variable, or any other code or system artifact. Do NOT use for content writing (use `documentation`), for restructuring already-named code (use `refactor`), or for human-language copy in product UI (separate skill, not in this library). Covers identifier morphology (verb-noun choice, plural vs singular, prefix/suffix conventions), kebab-case vs camelCase vs snake_case vs PascalCase per artifact kind, abbreviation rules, name-vs-path semantics, the rename-coordination workflow, and detection of names that lie.",
       "health": {
         "application_verdict": "UNVERIFIED",
         "comprehension_verdict": "UNVERIFIED",
@@ -8435,7 +8794,7 @@
       "compatibility": {
         "notes": "Language-agnostic; OWASP Top 10 2021 reference"
       },
-      "description": "Use when reviewing code for security vulnerabilities, threat-modelling a new feature, implementing authentication or authorization, handling user input, or auditing a codebase against the OWASP Top 10 (2021). Covers injection (SQL, NoSQL, command, LDAP, XSS), broken access control, cryptographic failures, insecure design, security misconfiguration, vulnerable dependencies, identification and authentication failures, software and data integrity failures, logging and monitoring failures, and server-side request forgery. Do NOT use for general code review (use `code-review` for the holistic per-PR pass), for chasing a known production bug (use `debugging`), or for writing a security policy doc (use `documentation`).",
+      "description": "Use when reviewing code for security vulnerabilities, threat-modelling a new feature, implementing authentication or authorization, handling user input, or auditing a codebase against the OWASP Top 10 (2021). Do NOT use for general code review (use `code-review` for the holistic per-PR pass), for chasing a known production bug (use `debugging`), or for writing a security policy doc (use `documentation`). Covers injection (SQL, NoSQL, command, LDAP, XSS), broken access control, cryptographic failures, insecure design, security misconfiguration, vulnerable dependencies, identification and authentication failures, software and data integrity failures, logging and monitoring failures, and server-side request forgery.",
       "domain": "quality/security",
       "health": {
         "application_verdict": "UNVERIFIED",
@@ -8545,7 +8904,7 @@
         "purpose": "|",
         "taxonomy": "|"
       },
-      "description": "Use when auditing for recurring issues, clustering errors, detecting drift from conventions, or when an agent keeps fixing symptoms instead of root causes. Covers the Observe -> Cluster -> Name -> Codify -> Detect -> Prevent loop, grep-based audits, normalize-then-hash error clustering, board-health patterns, design-token and heading drift, domain-encoding patterns, eval-as-pattern-tests, 5 Whys, pattern lifecycle states, and drift traps. Do NOT use for one-off bug localization without recurrence, or for designing the classification system itself; this skill detects violations of conventions that already exist.",
+      "description": "Use when auditing for recurring issues, clustering errors, detecting drift from conventions, or when an agent keeps fixing symptoms instead of root causes. Do NOT use for one-off bug localization without recurrence, or for designing the classification system itself; this skill detects violations of conventions that already exist. Covers the Observe -> Cluster -> Name -> Codify -> Detect -> Prevent loop, grep-based audits, normalize-then-hash error clustering, board-health patterns, design-token and heading drift, domain-encoding patterns, eval-as-pattern-tests, 5 Whys, pattern lifecycle states, and drift traps.",
       "domain": "foundations/cognition",
       "health": {
         "application_verdict": "UNVERIFIED",
@@ -8653,7 +9012,7 @@
         "purpose": "|",
         "taxonomy": "|"
       },
-      "description": "Use when declaring, measuring, or enforcing performance thresholds as a quality contract rather than as an aspirational target. Covers the three budget axes (time, size, count), the four governing properties of a real budget (metric, threshold, percentile, consequence), the Core Web Vitals set (LCP, INP, CLS), the RAIL model, Lighthouse budgets.json, lab vs field measurement, and the discipline of treating budget breach as a build or deploy failure rather than a tracked metric. Do NOT use for the activity of profiling and optimizing a specific slow path (use performance-engineering), the choice of rendering model that bounds achievable budgets (use rendering-models), or the design of observability and telemetry signals (use observability-modeling).",
+      "description": "Use when declaring, measuring, or enforcing performance thresholds as a quality contract rather than as an aspirational target. Do NOT use for the activity of profiling and optimizing a specific slow path (use performance-engineering), the choice of rendering model that bounds achievable budgets (use rendering-models), or the design of observability and telemetry signals (use observability-modeling). Covers the three budget axes (time, size, count), the four governing properties of a real budget (metric, threshold, percentile, consequence), the Core Web Vitals set (LCP, INP, CLS), the RAIL model, Lighthouse budgets.json, lab vs field measurement, and the discipline of treating budget breach as a build or deploy failure rather than a tracked metric.",
       "domain": "quality/performance",
       "health": {
         "application_verdict": "UNVERIFIED",
@@ -8861,7 +9220,7 @@
         "purpose": "|",
         "taxonomy": "|"
       },
-      "description": "Use when measuring a system's non-functional properties — latency, throughput, error rate, resource utilization — by running it under controlled load and verifying against explicit SLO thresholds. Covers the five primitives (load profile, workload, latency metric, throughput metric, SLO target), the load-shape taxonomy (smoke, load, stress, spike, soak, breakpoint), the latency-percentile vocabulary (p50, p95, p99, p99.9) and why average latency misleads, the tool ecosystem (k6, JMeter, Locust, Gatling, Vegeta), and the offline-vs-observability distinction. Do NOT use for the optimization activity itself (use `performance-engineering`), declaring the threshold contract (use `performance-budgets`), runtime measurement of deployed systems (use `observability` or `error-tracking`), microbenchmarks of single functions (language benchmark tools), chaos engineering (use `chaos-engineering`), or test-suite quality measurement (use `mutation-testing`).",
+      "description": "Use when measuring a system's non-functional properties — latency, throughput, error rate, resource utilization — by running it under controlled load and verifying against explicit SLO thresholds. Do NOT use for the optimization activity itself (use `performance-engineering`), declaring the threshold contract (use `performance-budgets`), runtime measurement of deployed systems (use `observability` or `error-tracking`), microbenchmarks of single functions (language benchmark tools), chaos engineering (use `chaos-engineering`), or test-suite quality measurement (use `mutation-testing`). Covers the five primitives (load profile, workload, latency metric, throughput metric, SLO target), the load-shape taxonomy (smoke, load, stress, spike, soak, breakpoint), the latency-percentile vocabulary (p50, p95, p99, p99.9) and why average latency misleads, the tool ecosystem (k6, JMeter, Locust, Gatling, Vegeta), and the offline-vs-observability distinction.",
       "domain": "quality/testing",
       "health": {
         "application_verdict": "UNVERIFIED",
@@ -8961,7 +9320,7 @@
       "compatibility": {
         "notes": "Markdown, strategy memos, product strategy, executive decision-making"
       },
-      "description": "Use when turning a vague business strategy, product strategy, market-entry decision, or initiative plan into an integrated Playing to Win strategy cascade: winning aspiration, where to play, how to win, must-have capabilities, and management systems. Covers Lafley/Martin choice-making, fit across the five choices, trade-off pressure, reverse tests, capability-system alignment, and the difference between strategy and planning. Do NOT use for competitive-industry structure analysis (use a five-forces skill when available), generic backlog scoring (use prioritization), or broad process-gate design (use methodology).",
+      "description": "Use when turning a vague business strategy, product strategy, market-entry decision, or initiative plan into an integrated Playing to Win strategy cascade: winning aspiration, where to play, how to win, must-have capabilities, and management systems. Do NOT use for competitive-industry structure analysis (use a five-forces skill when available), generic backlog scoring (use prioritization), or broad process-gate design (use methodology). Covers Lafley/Martin choice-making, fit across the five choices, trade-off pressure, reverse tests, capability-system alignment, and the difference between strategy and planning.",
       "domain": "foundations/strategy",
       "grounding": {
         "domain_object": "Playing to Win strategy cascade by A.G. Lafley and Roger L. Martin",
@@ -8980,8 +9339,8 @@
           "https://hbr.org/books/playing-to-win",
           "https://hbr.org/webinar/2013/04/a-playbook-for-winning",
           "https://www-2.rotman.utoronto.ca/insightshub/strategy-value-creation/playing-to-win-how-strategy-re",
-          "skills/foundations/playing-to-win/references/playing-to-win-sources.md",
-          "skills/foundations/playing-to-win/references/upstream-displacement-2026-05-26.md"
+          "skills/meta-methods/playing-to-win/references/playing-to-win-sources.md",
+          "skills/meta-methods/playing-to-win/references/upstream-displacement-2026-05-26.md"
         ]
       },
       "health": {
@@ -8991,8 +9350,8 @@
         "drift_check": {
           "last_verified": "2026-05-26",
           "truth_source_hashes": {
-            "skills/foundations/playing-to-win/references/playing-to-win-sources.md": "893c99345dc9ee846548ff71f3b1cea07bdf5286c3ab10429705f9b139cb4599",
-            "skills/foundations/playing-to-win/references/upstream-displacement-2026-05-26.md": "c47197db5053b744d57abd323670098df4f555171a0ad9d5324adf259b445403"
+            "skills/meta-methods/playing-to-win/references/playing-to-win-sources.md": "893c99345dc9ee846548ff71f3b1cea07bdf5286c3ab10429705f9b139cb4599",
+            "skills/meta-methods/playing-to-win/references/upstream-displacement-2026-05-26.md": "c47197db5053b744d57abd323670098df4f555171a0ad9d5324adf259b445403"
           }
         },
         "drift_detected": true,
@@ -9090,7 +9449,7 @@
       "compatibility": {
         "notes": "Markdown, strategy memos, market-entry analysis, competitive strategy, executive decision-making"
       },
-      "description": "Use when analyzing an industry's competitive structure and profit pool using Porter's Five Forces: rivalry among existing competitors, threat of new entrants, bargaining power of suppliers, bargaining power of buyers, and threat of substitutes. Covers industry-boundary definition, force-by-force diagnostics, structural drivers, dynamic trends, profitability implications, strategic positioning options, and the distinction between industry attractiveness and firm-specific advantage. Do NOT use for creating an integrated strategy cascade (use playing-to-win), classifying durable moat sources (use Seven Powers when available), backlog scoring (use prioritization), or generic market sizing.",
+      "description": "Use when analyzing an industry's competitive structure and profit pool using Porter's Five Forces: rivalry among existing competitors, threat of new entrants, bargaining power of suppliers, bargaining power of buyers, and threat of substitutes. Do NOT use for creating an integrated strategy cascade (use playing-to-win), classifying durable moat sources (use Seven Powers when available), backlog scoring (use prioritization), or generic market sizing. Covers industry-boundary definition, force-by-force diagnostics, structural drivers, dynamic trends, profitability implications, strategic positioning options, and the distinction between industry attractiveness and firm-specific advantage.",
       "domain": "foundations/strategy",
       "grounding": {
         "domain_object": "Porter's Five Forces competitive strategy framework",
@@ -9108,8 +9467,8 @@
         "truth_sources": [
           "https://www.isc.hbs.edu/strategy/business-strategy/Pages/the-five-forces.aspx",
           "https://hbr.org/2008/01/the-five-competitive-forces-that-shape-strategy",
-          "skills/foundations/porters-five-forces/references/porters-five-forces-sources.md",
-          "skills/foundations/porters-five-forces/references/upstream-displacement-2026-05-26.md"
+          "skills/meta-methods/porters-five-forces/references/porters-five-forces-sources.md",
+          "skills/meta-methods/porters-five-forces/references/upstream-displacement-2026-05-26.md"
         ]
       },
       "health": {
@@ -9119,8 +9478,8 @@
         "drift_check": {
           "last_verified": "2026-05-26",
           "truth_source_hashes": {
-            "skills/foundations/porters-five-forces/references/porters-five-forces-sources.md": "66c6fd769ae91f3815b7c34e4fe2c80809b12203bf4e2c5c05220517b4746511",
-            "skills/foundations/porters-five-forces/references/upstream-displacement-2026-05-26.md": "eab1270c9ca85a16946d067291a2e74d4effa88ea1649a7f2c3de3914e515b8c"
+            "skills/meta-methods/porters-five-forces/references/porters-five-forces-sources.md": "66c6fd769ae91f3815b7c34e4fe2c80809b12203bf4e2c5c05220517b4746511",
+            "skills/meta-methods/porters-five-forces/references/upstream-displacement-2026-05-26.md": "eab1270c9ca85a16946d067291a2e74d4effa88ea1649a7f2c3de3914e515b8c"
           }
         },
         "drift_detected": true,
@@ -9183,133 +9542,6 @@
       "subject": "meta-methods",
       "type": "capability",
       "version": "1.0.0"
-    },
-    {
-      "activation": {
-        "anti_examples": [
-          "implementing application-level auth guards (requireAuth, requireOrgAuth) — use nextauth-patterns",
-          "choosing when to use orgQuery() vs query() in application code — use multi-tenancy-rls",
-          "implementing CSRF protection or webhook HMAC verification — use security-scanning",
-          "designing the overall multi-tenant data architecture — use data-architect",
-          "designing row-level access control in non-PostgreSQL databases"
-        ],
-        "examples": [
-          "adding RLS to a new table — what statements are required and in what order?",
-          "auditing our existing RLS migrations for missing FORCE or WITH CHECK",
-          "implementing a view on an RLS-protected table in PostgreSQL 15+",
-          "debugging a cross-tenant data leak in a multi-tenant SaaS system",
-          "ensuring connection pool context (SET LOCAL) does not leak tenant state between requests",
-          "reviewing a migration that enables RLS to check for superuser and owner bypass risks",
-          "verifying that materialized views over RLS tables are documented as security-sensitive"
-        ],
-        "keywords": [
-          "rls",
-          "row-level-security",
-          "postgres",
-          "tenant-isolation",
-          "org-id",
-          "security-policy",
-          "set-local",
-          "view-bypass",
-          "migration",
-          "multi-tenant"
-        ]
-      },
-      "allowed-tools": "Read Grep Glob Bash",
-      "category": "engineering",
-      "compatibility": {
-        "notes": "Targets PostgreSQL 15+ with Neon serverless driver. The security_invoker view pattern requires PG15+. The SET LOCAL / set_config(key, val, true) pattern applies to any connection-pooled PostgreSQL setup. Core ENABLE+FORCE+USING+WITH CHECK rules are PG version-independent."
-      },
-      "description": "Guides agents implementing or auditing PostgreSQL Row Level Security in a multi-tenant SaaS codebase. Covers ENABLE+FORCE pairing, USING+WITH CHECK policies, view bypass via security_invoker, SET LOCAL for connection pool safety, superuser/owner bypass detection, and materialized view risks. Do NOT use for application-level authorization logic (use nextauth-patterns), non-PostgreSQL databases, or application query tier questions (use multi-tenancy-rls for orgQuery() usage).",
-      "domain": "engineering/database-security",
-      "grounding": {
-        "domain_object": "PostgreSQL Row Level Security implementation in Sales Hub",
-        "evidence_priority": "repo_code_first",
-        "failure_modes": [
-          "security_leak",
-          "incorrect_isolation",
-          "missing_force_rls",
-          "missing_with_check",
-          "superuser_bypass",
-          "connection_pool_context_leakage",
-          "view_security_invoker_missing"
-        ],
-        "grounding_mode": "repo_specific",
-        "truth_sources": [
-          "../sales-hub/apps/web/src/lib/db.ts",
-          "../sales-hub/db/migrations/20260218_rls_hardening.sql",
-          "../sales-hub/db/migrations/20260314_rls_expansion.sql",
-          "../sales-hub/db/migrations/20260314_rls_with_check_and_security_invoker.sql",
-          "../sales-hub/db/migrations/20260315_enable_rls_all.sql"
-        ]
-      },
-      "health": {
-        "application_verdict": "UNVERIFIED",
-        "comprehension_verdict": "UNVERIFIED",
-        "drift_check": {
-          "last_verified": "2026-05-18",
-          "truth_source_hashes": {
-            "../sales-hub/apps/web/src/lib/db.ts": "d1d9988d1da4545c58f76b5f44dbd12d5323409b777920d31d5f496db31ad7cb",
-            "../sales-hub/db/migrations/20260218_rls_hardening.sql": "b5fb6dc74e78a3fb7e77c669af4e4b4303a4e995eaf4993cb6bdcbe7bdca424f",
-            "../sales-hub/db/migrations/20260314_rls_expansion.sql": "406e2c419b09a6866f10c508e4ff6dc1f7a1ee82b788c5e2515186561c30ffb5",
-            "../sales-hub/db/migrations/20260314_rls_with_check_and_security_invoker.sql": "2edcb51debd4ab4e7306eb6f8908c7a725217b19962e1429728e911fc57e88fb",
-            "../sales-hub/db/migrations/20260315_enable_rls_all.sql": "c8de6823684f84b54376284a3a51bb6b52e38acd4f5c29664be26e89e5d39570"
-          }
-        },
-        "drift_detected": false,
-        "eval_artifacts": "none",
-        "eval_state": "unverified",
-        "freshness": "2026-05-18",
-        "has_grounding": true,
-        "has_relations": true,
-        "lifecycle": {
-          "review_cadence": "quarterly",
-          "stale_after_days": 90
-        },
-        "routing_eval": "absent",
-        "structural_verdict": "UNVERIFIED",
-        "truth_verdict": "UNVERIFIED"
-      },
-      "id": "postgres-rls",
-      "license": "MIT",
-      "name": "postgres-rls",
-      "operation": "do",
-      "owner": "skill-graph-maintainer",
-      "path": "../skills/skills/code-engineering/postgres-rls/SKILL.md",
-      "portability": {
-        "readiness": "declared",
-        "targets": [
-          "skill-md"
-        ]
-      },
-      "relations": {
-        "adjacent": [
-          "database-migration",
-          "security-scanning",
-          "data-architect",
-          "guardrails"
-        ],
-        "boundary": [
-          {
-            "reason": "nextauth-patterns owns application-level authorization (requireAuth, requireOrgAuth, withOrgAuth); postgres-rls owns database-level isolation via PostgreSQL RLS policies",
-            "skill": "nextauth-patterns"
-          },
-          {
-            "reason": "multi-tenancy-rls owns the application query tier (orgQuery, query, withAppSession usage patterns); postgres-rls owns the PostgreSQL server-side RLS policy implementation",
-            "skill": "multi-tenancy-rls"
-          }
-        ],
-        "verify_with": [
-          "security-scanning",
-          "database-migration"
-        ]
-      },
-      "schema_version": 8,
-      "scope": "project",
-      "stability": "stable",
-      "subject": "code-engineering",
-      "type": "capability",
-      "version": "1.1.0"
     },
     {
       "activation": {
@@ -9502,7 +9734,7 @@
       "compatibility": {
         "notes": "Domain-agnostic dispatch. The routing table applies to any problem a human or agent faces — software, design, product, or strategy. The skill names in the Routing Rules refer to sibling skills in the foundations category."
       },
-      "description": "Use when facing a new problem and unsure which problem-solving methodology or foundational skill to apply first. Routes between first-principles-thinking, pattern-recognition, mental-models, constraint-awareness, and task-analysis by classifying the problem type. Activate before choosing any other foundational skill. Do NOT use to execute the selected approach (use the specific routed skill directly), for implementation work (use the relevant engineering skill), or when the correct approach is already known.",
+      "description": "Use when facing a new problem and unsure which problem-solving methodology or foundational skill to apply first. Do NOT use to execute the selected approach (use the specific routed skill directly), for implementation work (use the relevant engineering skill), or when the correct approach is already known. Routes between first-principles-thinking, pattern-recognition, mental-models, constraint-awareness, and task-analysis by classifying the problem type. Activate before choosing any other foundational skill.",
       "domain": "foundations/meta",
       "health": {
         "application_verdict": "UNVERIFIED",
@@ -9691,7 +9923,7 @@
       "compatibility": {
         "notes": "Language- and stack-agnostic. The locate-to-solve loop, boundary-localization techniques, and verification rules apply to any software bug investigation; specific tool names (binary search, git bisect, MRE) are illustrative — substitute the equivalents of your stack."
       },
-      "description": "Use when locating a bug in an unfamiliar codebase, tracing a failure from symptom to source, or choosing between candidate fixes after the symptom is observed but before a patch lands. Covers the locate-to-solve workflow: problem-statement contract, search-space reduction, boundary-based fault localization, good-vs-bad path comparison, binary search through a call chain, minimal repro, root-cause isolation, fix option comparison, blast-radius review, and post-fix verification. Do NOT use for broad task planning once the bug is localized, test-pyramid design, or performance forensics.",
+      "description": "Use when locating a bug in an unfamiliar codebase, tracing a failure from symptom to source, or choosing between candidate fixes after the symptom is observed but before a patch lands. Do NOT use for broad task planning once the bug is localized, test-pyramid design, or performance forensics. Covers the locate-to-solve workflow: problem-statement contract, search-space reduction, boundary-based fault localization, good-vs-bad path comparison, binary search through a call chain, minimal repro, root-cause isolation, fix option comparison, blast-radius review, and post-fix verification.",
       "domain": "engineering/debugging",
       "health": {
         "application_verdict": "UNVERIFIED",
@@ -9947,7 +10179,7 @@
         "purpose": "It turns vague intent into inspectable instructions with clear task framing, input boundaries, output shape, safety constraints, and revision evidence.",
         "taxonomy": "Core surfaces are instruction authority, role and tone, task statement, context and retrieval payload, constraints, examples, variable input delimitation, output format, tool-use instructions, safety boundaries, provider controls, and eval-linked revision."
       },
-      "description": "Use when writing, tightening, evaluating, or repairing an LLM prompt or reusable prompt template for completion, agent dispatch, grading, structured extraction, tool use, or prompt-engineered workflows. Covers instruction hierarchy, message roles, context placement, few-shot examples, structured output, positive constraints, reasoning guidance, prompt-injection resistance, provider differences, and eval-driven iteration. Do NOT use for whole context-system design (use context-engineering), eval dataset or grader design (use agent-eval-design), reviewing generated code (use code-review), authoring SKILL.md files (use skill-scaffold), choosing which skill or agent should activate (use skill-router), or root-causing a deployed failure after outputs already exist (use debugging).",
+      "description": "Use when writing, tightening, evaluating, or repairing an LLM prompt or reusable prompt template for completion, agent dispatch, grading, structured extraction, tool use, or prompt-engineered workflows. Do NOT use for whole context-system design (use context-engineering), eval dataset or grader design (use agent-eval-design), reviewing generated code (use code-review), authoring SKILL.md files (use skill-scaffold), choosing which skill or agent should activate (use skill-router), or root-causing a deployed failure after outputs already exist (use debugging). Covers instruction hierarchy, message roles, context placement, few-shot examples, structured output, positive constraints, reasoning guidance, prompt-injection resistance, provider differences, and eval-driven iteration.",
       "domain": "agent/prompts",
       "grounding": {
         "domain_object": "Portable LLM prompt design, instruction hierarchy, structured-output prompting, adversarial-input boundaries, and eval-driven prompt iteration",
@@ -10440,16 +10672,40 @@
     },
     {
       "activation": {
+        "anti_examples": [
+          "design the backpressure protocol for an HTTP stream",
+          "choose the cron expression for a daily refresh",
+          "move a slow export into a queue and define retry policy",
+          "debug a deployed stream outage",
+          "design an outbound event schema and topic naming standard"
+        ],
+        "examples": [
+          "choose between polling, SSE, and WebSocket for a dashboard",
+          "show when data is stale without disrupting the user",
+          "design reconnect and catch-up behavior after an EventSource disconnect",
+          "add optimistic UI with rollback for a reversible action",
+          "avoid multiple components polling the same resource"
+        ],
         "keywords": [
-          "real-time-updates",
-          "real",
-          "time",
-          "updates"
+          "real-time updates",
+          "live dashboard",
+          "browser freshness",
+          "stale data indicator",
+          "Server-Sent Events",
+          "SSE",
+          "WebSocket",
+          "adaptive polling",
+          "optimistic update",
+          "reconnect catch-up",
+          "new data banner",
+          "live notification",
+          "push updates",
+          "freshness timestamp"
         ],
         "triggers": [
           "real-time-updates-skill",
           "live-data-skill",
-          "push-updates-skill",
+          "browser-freshness-skill",
           "dashboard-refresh-skill",
           "stale-data-skill"
         ]
@@ -10457,24 +10713,25 @@
       "allowed-tools": "Read Grep Bash",
       "category": "engineering",
       "compatibility": {
-        "notes": "Markdown, Git, agent-skill runtimes"
+        "notes": "Portable browser freshness guidance for web applications. Transport limits vary by hosting platform, proxy, browser, and runtime; verify those limits before production rollout."
       },
-      "description": "This skill provides live data update patterns for web applications: webhook-to-UI push patterns, Server-Sent Events for dashboard updates, polling fallback strategies, optimistic updates, and stale data indicators. Load when implementing live dashboards, push notifications to the browser, real-time data refresh, or deciding between SSE, WebSocket, and polling.",
-      "domain": "engineering/realtime",
+      "description": "Use when designing browser freshness for live dashboards, notifications, progress views, or data that can change after initial render. Do NOT use for low-level stream/backpressure protocol design (use `streaming-architecture`), recurring schedule design (use `cron-scheduling`), or background worker execution semantics (use `background-jobs`). Covers transport choice among polling, Server-Sent Events, and bidirectional sockets; webhook-to-UI propagation; optimistic updates; stale-data indicators; reconnect and catch-up behavior; and avoiding disruptive auto-refresh.",
+      "domain": "engineering/realtime/browser-freshness",
       "health": {
         "application_verdict": "UNVERIFIED",
+        "comprehension_state": "present",
         "comprehension_verdict": "UNVERIFIED",
         "drift_check": {
-          "last_verified": "2026-03-29"
+          "last_verified": "2026-05-21"
         },
-        "eval_artifacts": "planned",
+        "eval_artifacts": "present",
         "eval_state": "unverified",
-        "freshness": "2026-03-29",
+        "freshness": "2026-05-21",
         "has_grounding": false,
         "has_relations": true,
         "lifecycle": {
           "review_cadence": "quarterly",
-          "stale_after_days": 90
+          "stale_after_days": 180
         },
         "routing_eval": "absent",
         "structural_verdict": "UNVERIFIED",
@@ -10494,19 +10751,36 @@
       },
       "relations": {
         "boundary": [
+          {
+            "reason": "streaming-architecture owns producer, stream, consumer, backpressure, termination, and low-level protocol semantics; real-time-updates owns browser freshness UX and transport selection.",
+            "skill": "streaming-architecture"
+          },
+          {
+            "reason": "background-jobs owns durable worker execution and progress state; real-time-updates owns how browser views learn about that state.",
+            "skill": "background-jobs"
+          },
+          {
+            "reason": "cron-scheduling owns recurring trigger timing; real-time-updates owns user-visible freshness after data exists.",
+            "skill": "cron-scheduling"
+          }
+        ],
+        "related": [
+          "streaming-architecture",
           "background-jobs",
-          "cron-scheduling"
+          "cron-scheduling",
+          "interaction-feedback"
         ],
         "verify_with": [
-          "interaction-feedback"
+          "interaction-feedback",
+          "streaming-architecture"
         ]
       },
-      "schema_version": 8,
+      "schema_version": 7,
       "scope": "portable",
-      "stability": "experimental",
+      "stability": "stable",
       "subject": "product-domain",
       "type": "capability",
-      "version": "1.0.0"
+      "version": "1.1.0"
     },
     {
       "activation": {
@@ -10633,12 +10907,12 @@
         ],
         "keywords": [
           "refactor",
-          "cleanup",
-          "simplify",
-          "extract function",
+          "decompose function",
+          "extract repeated code",
+          "extract duplicated validation",
           "reduce duplication",
-          "clean this up",
-          "simplify this",
+          "messy code",
+          "test suite green",
           "rename this",
           "split this file",
           "too long function"
@@ -10652,7 +10926,7 @@
       "compatibility": {
         "notes": "Markdown, Git, any codebase"
       },
-      "description": "Use when reorganizing existing code without changing external behavior — extracting functions, reducing duplication, renaming for clarity, splitting modules, or tightening structure. Covers behavior preservation, duplication reduction, decomposition, naming improvements, structural reorganization, and before/after verification. Do NOT use for bug investigation, adding new product behavior, or writing documentation (even when the docs describe the refactored code).",
+      "description": "Use when reorganizing existing code without changing external behavior — extracting functions, reducing duplication, renaming for clarity, splitting modules, or tightening structure. Do NOT use for bug investigation, adding new product behavior, or writing documentation (even when the docs describe the refactored code). Covers behavior preservation, duplication reduction, decomposition, naming improvements, structural reorganization, and before/after verification.",
       "health": {
         "application_verdict": "UNVERIFIED",
         "comprehension_verdict": "UNVERIFIED",
@@ -10685,6 +10959,10 @@
           {
             "reason": "debugging chases an observed failure; refactor runs only with a green test suite and preserves behavior",
             "skill": "debugging"
+          },
+          {
+            "reason": "semantics owns the meaning encoded by explanatory language, names, and architecture notes; refactor owns behavior-preserving code restructuring, not writing team-facing explanations",
+            "skill": "semantics"
           },
           {
             "reason": "tool-call-flow owns the protocol-level cycle of model→runtime tool invocation including retry encoding inside the cycle; refactor only restructures the surrounding code while preserving behavior. The anti_example about a function retrying three times is a tool-call/runtime concern, not a refactor concern.",
@@ -10764,7 +11042,7 @@
         "purpose": "|",
         "taxonomy": "|"
       },
-      "description": "Use when reasoning about how a web UI is produced and delivered: client-side rendering, server-side rendering, static-site generation, incremental static regeneration, React Server Components, streaming SSR, edge rendering, and partial prerendering. Covers the time × place grid (build/request/stream/interaction × server/edge/client), the trade-offs between first-paint latency and time-to-interactive, the relationship between rendering and hydration, and how a route's content profile (dynamic / static / personalized) maps to a model. Do NOT use for organizing the frontend codebase (use frontend-architecture), the serialization frontier between server and client code (use client-server-boundary), the wire protocol itself (use http-semantics), or specific deploy-platform composition patterns (use vercel-composition-patterns).",
+      "description": "Use when reasoning about how a web UI is produced and delivered: client-side rendering, server-side rendering, static-site generation, incremental static regeneration, React Server Components, streaming SSR, edge rendering, and partial prerendering. Do NOT use for organizing the frontend codebase (use frontend-architecture), the serialization frontier between server and client code (use client-server-boundary), the wire protocol itself (use http-semantics), or specific deploy-platform composition patterns (use vercel-composition-patterns). Covers the time × place grid (build/request/stream/interaction × server/edge/client), the trade-offs between first-paint latency and time-to-interactive, the relationship between rendering and hydration, and how a route's content profile (dynamic / static / personalized) maps to a model.",
       "domain": "engineering/frontend",
       "health": {
         "application_verdict": "UNVERIFIED",
@@ -11222,6 +11500,94 @@
     {
       "activation": {
         "anti_examples": [
+          "Invert this plan and list how to make it fail.",
+          "Break this strategy into irreducible premises.",
+          "The same issue appears in many files; cluster the pattern.",
+          "Find the highest leverage point in this system."
+        ],
+        "examples": [
+          "If we add a usage cap, what happens next for users, support, and revenue?",
+          "This metric target looks good immediately. What second-order effects could make it harmful?",
+          "Before changing the review process, think through how agents and reviewers will respond.",
+          "What delayed effects will this cost-cutting decision create?"
+        ],
+        "keywords": [
+          "second-order thinking",
+          "second order effects",
+          "downstream consequences",
+          "and then what",
+          "unintended consequences",
+          "delayed effects",
+          "feedback loops",
+          "incentive response",
+          "compounding effects",
+          "time horizon analysis"
+        ],
+        "triggers": [
+          "and then what",
+          "what are the second-order effects",
+          "what happens next",
+          "think through downstream consequences",
+          "what incentives does this change"
+        ]
+      },
+      "allowed-tools": "Read Grep",
+      "category": "foundations",
+      "description": "Use when a decision, intervention, policy, product change, metric target, or system fix needs analysis beyond the immediate effect: ask what happens next, how actors respond, what incentives change, and what delayed or compounding consequences follow. Do NOT use for reversing a goal to find failure paths (use inversion), decomposing assumptions to primitives (use first-principles-thinking), recurring issue clustering (use pattern-recognition), or system leverage-level diagnosis (use meadows-leverage-points when available). Covers consequence chains, time horizons, stakeholder reactions, feedback loops, second- and third-order effects, and guardrail design.",
+      "domain": "foundations/reasoning",
+      "health": {
+        "application_verdict": "UNVERIFIED",
+        "comprehension_state": "present",
+        "comprehension_verdict": "UNVERIFIED",
+        "drift_check": {
+          "last_verified": "2026-05-21"
+        },
+        "eval_artifacts": "present",
+        "eval_state": "unverified",
+        "freshness": "2026-05-21",
+        "has_grounding": false,
+        "has_relations": true,
+        "lifecycle": {
+          "review_cadence": "quarterly",
+          "stale_after_days": 365
+        },
+        "routing_eval": "absent",
+        "structural_verdict": "UNVERIFIED",
+        "truth_verdict": "UNVERIFIED"
+      },
+      "id": "second-order-thinking",
+      "license": "MIT",
+      "name": "second-order-thinking",
+      "owner": "skill-graph-maintainer",
+      "path": "../skills/skills/meta-methods/second-order-thinking/SKILL.md",
+      "portability": {
+        "readiness": "declared",
+        "targets": [
+          "skill-md"
+        ]
+      },
+      "relations": {
+        "related": [
+          "inversion",
+          "first-principles-thinking",
+          "mental-models",
+          "constraint-awareness",
+          "pattern-recognition"
+        ],
+        "verify_with": [
+          "epistemic-grounding",
+          "mental-models"
+        ]
+      },
+      "schema_version": 7,
+      "scope": "portable",
+      "stability": "experimental",
+      "type": "capability",
+      "version": "1.0.0"
+    },
+    {
+      "activation": {
+        "anti_examples": [
           "implement HMAC verification for a Shopify webhook (use webhook-integration)",
           "configure a SAST scanner for the CI pipeline (use security-scanning)",
           "store an OAuth refresh token in an encrypted column (use credential-encryption)",
@@ -11267,7 +11633,7 @@
         "purpose": "|",
         "taxonomy": "|"
       },
-      "description": "Use when reasoning about the security properties any application must satisfy: threat modeling (assets, threats, adversaries, surfaces), Saltzer and Schroeder's eight design principles (1975), input validation discipline, authentication vs authorization, secrets handling, secure-by-default, least-privilege, the OWASP Top 10 as recurring vulnerability classes, and defense in depth. Covers cross-cutting decisions about trust boundaries, where validation belongs, where authn/authz checks live, and how to bound blast radius. Do NOT use for LLM-specific prompt-injection (use prompt-injection-defense), cryptographic primitive implementation (use vendor libs), security-scanning tools (use security-scanning), credential-encryption schemes (use credential-encryption), GDPR/regulatory compliance (use gdpr-compliance), or the social/organizational side of security (out of scope).",
+      "description": "Use when reasoning about the security properties any application must satisfy: threat modeling (assets, threats, adversaries, surfaces), Saltzer and Schroeder's eight design principles (1975), input validation discipline, authentication vs authorization, secrets handling, secure-by-default, least-privilege, the OWASP Top 10 as recurring vulnerability classes, and defense in depth. Do NOT use for LLM-specific prompt-injection (use prompt-injection-defense), cryptographic primitive implementation (use vendor libs), security-scanning tools (use security-scanning), credential-encryption schemes (use credential-encryption), GDPR/regulatory compliance (use gdpr-compliance), or the social/organizational side of security (out of scope). Covers cross-cutting decisions about trust boundaries, where validation belongs, where authn/authz checks live, and how to bound blast radius.",
       "domain": "quality/security",
       "health": {
         "application_verdict": "UNVERIFIED",
@@ -11384,7 +11750,7 @@
         "purpose": "It prevents flat list explanations and chronology-only walkthroughs by forcing one-primary reduction plus explicit relation mapping.",
         "taxonomy": "Workflow steps: classify unit, choose primary part, map secondary parts, produce structured output, reduce to one sentence. Primary-part tests: removal, governance, purpose, weight, decision. Relation families: dependency, input/output, containment, source/consumer, cause/effect, authority, trigger/result, semantic grouping, constraint/enabler, sequence, contrast."
       },
-      "description": "Use when you need to explain how parts of a system, feature, concept, page, workflow, or problem connect; identify the single most important part of something; untangle dense dependencies into a core plus typed relations; or answer 'what is the load-bearing part?' without drifting into implementation or task prioritization. Provides a five-step workflow — classify the unit of analysis, find the single primary part using removal/governance/purpose/weight/decision tests, map secondary parts via typed relations (dependency, input/output, parent/child, owner/owned, cause/effect, constraint/enabler, and others), produce a structured output, and reduce the whole to one final sentence — that forces explanation through one-primary reduction rather than flat lists or chronology. Do NOT use for implementation work (use the relevant domain skill), choosing what to do next (use a prioritization skill), or formal architectural-ownership design (use a domain-modeling skill).",
+      "description": "Use when you need to explain how parts of a system, feature, concept, page, workflow, or problem connect; identify the single most important part of something; untangle dense dependencies into a core plus typed relations; or answer 'what is the load-bearing part?' without drifting into implementation or task prioritization. Do NOT use for implementation work (use the relevant domain skill), choosing what to do next (use a prioritization skill), or formal architectural-ownership design (use a domain-modeling skill). Provides a five-step workflow — classify the unit of analysis, find the single primary part using removal/governance/purpose/weight/decision tests, map secondary parts via typed relations (dependency, input/output, parent/child, owner/owned, cause/effect, constraint/enabler, and others), produce a structured output, and reduce the whole to one final sentence — that forces explanation through one-primary reduction rather than flat lists or chronology.",
       "domain": "foundations/semantics",
       "grounding": {
         "domain_object": "Semantic-center analysis for explaining one unit of analysis through a single load-bearing part plus typed supporting relations",
@@ -11528,7 +11894,7 @@
         "purpose": "The purpose is to replace generic association with relation vocabulary that supports reasoning, retrieval, naming disambiguation, hierarchy validation, and clean boundaries between neighboring skills or concepts.",
         "taxonomy": "Relation families include taxonomic relations such as hypernymy and hyponymy; mereological relations such as holonymy and meronymy; associative lexical relations such as synonymy, antonymy, polysemy, homonymy, and metonymy; thematic roles such as agent, patient, instrument, source, goal, cause, and result; and formal properties such as symmetry, asymmetry, transitivity, reflexivity, and irreflexivity."
       },
-      "description": "Use when typing edges in a knowledge graph or concept map, resolving synonym/antonym/polysemy/homonym confusion, testing whether a connection is IS-A, PART-OF, causal, thematic, or vague, explaining adjacent concepts, or auditing whether hierarchy and skill-boundary decisions use the wrong relation type. Covers taxonomic, associative, and thematic relations plus symmetry, asymmetry, transitivity, reflexivity, and irreflexivity. Do NOT use for formal ontology axioms with reasoning constraints, database foreign-key or junction-table design, or operational data correspondence across systems.",
+      "description": "Use when typing edges in a knowledge graph or concept map, resolving synonym/antonym/polysemy/homonym confusion, testing whether a connection is IS-A, PART-OF, causal, thematic, or vague, explaining adjacent concepts, or auditing whether hierarchy and skill-boundary decisions use the wrong relation type. Do NOT use for formal ontology axioms with reasoning constraints, database foreign-key or junction-table design, or operational data correspondence across systems. Covers taxonomic, associative, and thematic relations plus symmetry, asymmetry, transitivity, reflexivity, and irreflexivity.",
       "domain": "foundations/semantics",
       "grounding": {
         "domain_object": "Semantic relation typing for concept edges, lexical sense relations, knowledge-organization links, thematic roles, and relation-property checks",
@@ -11691,7 +12057,7 @@
         "purpose": "It reduces translation tax, prevents misleading signals, and makes intent legible to humans, agents, tools, and downstream systems before they inspect implementation details.",
         "taxonomy": "Core surfaces include code names, database names, API names, HTTP status signals, SemVer bumps, Conventional Commit types, design-token layers, semantic UI signifiers, branded or refined types, and anti-patterns such as generic names, stale names, appearance-based names, and syntactically valid but semantically false responses."
       },
-      "description": "Use when choosing or auditing the meaning encoded by names and signals across code, APIs, design tokens, commits, versions, HTTP responses, UI labels, error codes, branded types, and domain terms, especially when a name feels ambiguous, misleading, or semantically stale. Covers meaning-encoding decisions: naming smells, DDD ubiquitous language, SemVer, Conventional Commits type choice, branded/semantic types, parse-don't-validate, semantic design tokens/CSS/API signals, semantic UI affordances, and anti-patterns where syntax is valid but the signal lies. Do NOT use for word morphology or audience register (use linguistics), casing/format conventions or rename mechanics (use naming-conventions or refactor), typed concept-edge analysis (use semantic-relations), in-product UI-copy patterns (use microcopy), classification structure (use taxonomy-design), accessibility compliance (use a11y), or git history shape (use version-control).",
+      "description": "Use when choosing or auditing the meaning encoded by names and signals across code, APIs, design tokens, commits, versions, HTTP responses, UI labels, error codes, branded types, and domain terms, especially when a name feels ambiguous, misleading, or semantically stale. Do NOT use for word morphology or audience register (use linguistics), casing/format conventions or rename mechanics (use naming-conventions or refactor), typed concept-edge analysis (use semantic-relations), in-product UI-copy patterns (use microcopy), classification structure (use taxonomy-design), accessibility compliance (use a11y), or git history shape (use version-control). Covers meaning-encoding decisions: naming smells, DDD ubiquitous language, SemVer, Conventional Commits type choice, branded/semantic types, parse-don't-validate, semantic design tokens/CSS/API signals, semantic UI affordances, and anti-patterns where syntax is valid but the signal lies.",
       "domain": "foundations/semantics",
       "grounding": {
         "domain_object": "Cross-domain meaning encoding in software names, status signals, versions, commits, APIs, design tokens, UI signals, and semantic types",
@@ -11853,7 +12219,7 @@
         "purpose": "It makes implicit communication explicit before users misread the product. The goal is to prevent sign drift, color-only state signaling, icon polysemy, misleading affordances, and code/API names that force readers to inspect implementation before they understand intent.",
         "taxonomy": "Core lenses include Peircean icon/index/symbol, Saussurean signifier/signified, Barthesian denotation/connotation/myth, affordance/signifier/anti-affordance, color-as-sign, shape/position channels, icon-system coherence, and code/API signifiers."
       },
-      "description": "Use when designing or auditing icon systems, colors/badges/shapes, visual metaphors, interface signs, or naming-plus-visual surfaces that users misread. Covers semiotic reasoning across icon/index/symbol, signifier/signified, denotation/connotation/myth, color/shape/position/iconography, affordances, code/API signifiers, and semiotic-coherence audits. Do NOT use for actual UI wording (use `microcopy`), palette/typography craft (use `visual-design-foundations`), accessibility or contrast compliance (use `a11y`), formal class hierarchies, or word morphology rules.",
+      "description": "Use when designing or auditing icon systems, colors/badges/shapes, visual metaphors, interface signs, or naming-plus-visual surfaces that users misread. Do NOT use for actual UI wording (use `microcopy`), palette/typography craft (use `visual-design-foundations`), accessibility or contrast compliance (use `a11y`), formal class hierarchies, or word morphology rules. Covers semiotic reasoning across icon/index/symbol, signifier/signified, denotation/connotation/myth, color/shape/position/iconography, affordances, code/API signifiers, and semiotic-coherence audits.",
       "domain": "design/semantics",
       "grounding": {
         "domain_object": "Interface sign-system analysis for icons, color, badges, affordances, visual metaphors, and code/API signifiers",
@@ -12063,7 +12429,7 @@
         "purpose": "|",
         "taxonomy": "|"
       },
-      "description": "Use when designing or reviewing Server Actions: the 'use server' directive contract, how a server-side function becomes invokable from the browser without an API route, form integration via the `action` attribute, the React 19 hooks useActionState / useFormStatus, progressive enhancement (works without JS), server-side validation and authorization as mandatory rather than optional, revalidation primitives (revalidatePath, revalidateTag, redirect), error handling and bound arguments, and the security boundary that makes Server Actions a public endpoint despite their function-like syntax. Covers Next.js App Router as the canonical implementation. Do NOT use for read-path data fetching with RSC (use server-components-design), for the broader 'use client' / 'use server' boundary semantics (use client-server-boundary), for designing externally-facing API contracts (use api-design), or for form UX patterns at the component level (use form-ux-architecture).",
+      "description": "Use when designing or reviewing Server Actions: the 'use server' directive contract, how a server-side function becomes invokable from the browser without an API route, form integration via the `action` attribute, the React 19 hooks useActionState / useFormStatus, progressive enhancement (works without JS), server-side validation and authorization as mandatory rather than optional, revalidation primitives (revalidatePath, revalidateTag, redirect), error handling and bound arguments, and the security boundary that makes Server Actions a public endpoint despite their function-like syntax. Do NOT use for read-path data fetching with RSC (use server-components-design), for the broader 'use client' / 'use server' boundary semantics (use client-server-boundary), for designing externally-facing API contracts (use api-design), or for form UX patterns at the component level (use form-ux-architecture). Covers Next.js App Router as the canonical implementation.",
       "domain": "engineering/frontend",
       "health": {
         "application_verdict": "UNVERIFIED",
@@ -12163,7 +12529,7 @@
         "purpose": "|",
         "taxonomy": "|"
       },
-      "description": "Use when designing or reviewing React Server Components: what an RSC can do (async, data fetching, server-only imports) versus what it cannot (state, effects, event handlers, browser APIs), where to draw the server/client boundary in the tree, and how RSC composes with Suspense to stream content without a separate API layer. Covers Next.js App Router as the canonical implementation, but the discipline is framework-agnostic. Do NOT use for the 'use client' directive mechanics (use client-server-boundary), hook discipline on Client Components (use hooks-patterns), rendering strategy choice (use rendering-models), or the server-action mutation surface (use server-actions-design when authored).",
+      "description": "Use when designing or reviewing React Server Components: what an RSC can do (async, data fetching, server-only imports) versus what it cannot (state, effects, event handlers, browser APIs), where to draw the server/client boundary in the tree, and how RSC composes with Suspense to stream content without a separate API layer. Do NOT use for the 'use client' directive mechanics (use client-server-boundary), hook discipline on Client Components (use hooks-patterns), rendering strategy choice (use rendering-models), or the server-action mutation surface (use server-actions-design when authored). Covers Next.js App Router as the canonical implementation, but the discipline is framework-agnostic.",
       "domain": "engineering/frontend",
       "health": {
         "application_verdict": "UNVERIFIED",
@@ -12218,6 +12584,134 @@
       "scope": "workspace",
       "stability": "experimental",
       "subject": "frontend-ui",
+      "type": "capability",
+      "version": "1.0.0"
+    },
+    {
+      "activation": {
+        "anti_examples": [
+          "analyze the attractiveness of this industry using entrants, suppliers, buyers, substitutes, and rivalry",
+          "turn this market-entry plan into a winning aspiration, where to play, how to win, capabilities, and systems",
+          "rank these roadmap items by impact and effort",
+          "make a SWOT table for this company"
+        ],
+        "examples": [
+          "assess whether this startup has a real Seven Powers moat",
+          "which of Helmer's powers could apply to this business model?",
+          "test if our claimed network effects are actually power",
+          "separate branding from ordinary brand awareness in this strategy memo",
+          "does this incumbent face counter-positioning from a new entrant?"
+        ],
+        "keywords": [
+          "seven powers",
+          "7 powers",
+          "Hamilton Helmer",
+          "strategic power",
+          "durable moat",
+          "scale economies",
+          "network economies",
+          "counter-positioning",
+          "switching costs",
+          "process power"
+        ]
+      },
+      "allowed-tools": "Read Grep",
+      "category": "foundations",
+      "compatibility": {
+        "notes": "Markdown, strategy memos, investment diligence, product strategy, market-entry analysis, moat diagnosis"
+      },
+      "description": "Use when diagnosing whether a business has, can build, or is falsely claiming durable strategic power using Hamilton Helmer's Seven Powers: scale economies, network economies, counter-positioning, switching costs, branding, cornered resource, and process power. Do NOT use for industry-structure analysis alone (use porters-five-forces), integrated strategy-cascade formulation (use playing-to-win), generic prioritization, or surface-level SWOT lists. Covers power as benefit plus barrier, moat-source classification, power progression by company phase, false-positive checks, and strategy implications.",
+      "domain": "foundations/strategy",
+      "grounding": {
+        "domain_object": "Hamilton Helmer's Seven Powers strategy framework",
+        "evidence_priority": "general_knowledge_first",
+        "failure_modes": [
+          "growth_confused_with_power",
+          "benefit_without_barrier",
+          "barrier_without_customer_value",
+          "network_effects_claimed_from_usage_only",
+          "brand_awareness_confused_with_branding_power",
+          "temporary_execution_edge_confused_with_process_power",
+          "industry_attractiveness_confused_with_firm_power"
+        ],
+        "grounding_mode": "universal",
+        "truth_sources": [
+          "https://7powers.com/",
+          "https://7powers.com/synopsis/",
+          "https://7powers.com/foreword/",
+          "skills/meta-methods/seven-powers/references/seven-powers-sources.md",
+          "skills/meta-methods/seven-powers/references/upstream-displacement-2026-05-26.md"
+        ]
+      },
+      "health": {
+        "application_verdict": "UNVERIFIED",
+        "comprehension_state": "present",
+        "comprehension_verdict": "UNVERIFIED",
+        "drift_check": {
+          "last_verified": "2026-05-26",
+          "truth_source_hashes": {
+            "skills/meta-methods/seven-powers/references/seven-powers-sources.md": "79e4fbfeaf37dd1e98ee0946f642fb88722885896537bd8476096fc8232e052f",
+            "skills/meta-methods/seven-powers/references/upstream-displacement-2026-05-26.md": "c0790ff7d3ec7fa29ebda3c60d5fa0a5c7d5fac4ddb52a0153f1455c31259d60"
+          }
+        },
+        "drift_detected": true,
+        "eval_artifacts": "present",
+        "eval_state": "unverified",
+        "freshness": "2026-05-26",
+        "has_grounding": true,
+        "has_relations": true,
+        "last_audited": "2026-05-26",
+        "lifecycle": {
+          "review_cadence": "quarterly",
+          "stale_after_days": 365
+        },
+        "lint_verdict": "PASS",
+        "routing_eval": "absent",
+        "structural_verdict": "PASS",
+        "truth_verdict": "UNVERIFIED"
+      },
+      "id": "seven-powers",
+      "license": "MIT",
+      "name": "seven-powers",
+      "operation": "do",
+      "owner": "skill-graph-maintainer",
+      "path": "../skills/skills/meta-methods/seven-powers/SKILL.md",
+      "portability": {
+        "readiness": "scripted",
+        "targets": [
+          "skill-md"
+        ]
+      },
+      "relations": {
+        "boundary": [
+          {
+            "reason": "porters-five-forces owns industry-structure and profit-pool pressure; seven-powers owns firm-level durable power sources that can let one company earn persistent differential returns",
+            "skill": "porters-five-forces"
+          },
+          {
+            "reason": "playing-to-win owns integrated strategy choices across aspiration, arena, advantage, capabilities, and systems; seven-powers owns classifying and testing the specific moat mechanism that may support how-to-win",
+            "skill": "playing-to-win"
+          },
+          {
+            "reason": "prioritization ranks work or options; seven-powers owns whether the proposed strategy creates a durable power with both benefit and barrier",
+            "skill": "prioritization"
+          }
+        ],
+        "related": [
+          "constraint-awareness",
+          "framework-fit-analysis",
+          "epistemic-grounding",
+          "bayesian-reasoning"
+        ],
+        "verify_with": [
+          "methodology",
+          "epistemic-grounding"
+        ]
+      },
+      "schema_version": 8,
+      "scope": "portable",
+      "stability": "stable",
+      "subject": "meta-methods",
       "type": "capability",
       "version": "1.0.0"
     },
@@ -12439,7 +12933,28 @@
           "frontmatter validation",
           "imperative conflict",
           "skill overlap detection",
-          "skill conflict"
+          "skill conflict",
+          "routing gap",
+          "routing miss",
+          "routing health",
+          "eval threshold",
+          "eval minimum",
+          "contradiction check",
+          "negative expectation",
+          "drift sentinel",
+          "truth source hash",
+          "mirror parity",
+          "skill graph health",
+          "production skill library",
+          "skill linter",
+          "skill quality gate",
+          "phantom ref",
+          "schema conformance",
+          "audit skills",
+          "audit my skills",
+          "skill schema conformance",
+          "skill schema validation",
+          "audit skill metadata"
         ]
       },
       "allowed-tools": "Read Grep Bash Edit Write",
@@ -12447,7 +12962,7 @@
       "compatibility": {
         "notes": "Library- and harness-agnostic. Patterns apply to any skill-style library (Skill Graph, Claude skills, Cursor rules, custom in-house skill systems). Specific tool names in this skill (skill-lint, generate-manifest, routing-eval, drift-sentinel) are concrete examples from the Skill Graph reference implementation -- substitute your library's equivalents."
       },
-      "description": "Use when designing the deterministic health-tooling layer for a skill library, diagnosing why an existing library is decaying invisibly, deciding which categories of automated check to add (inventory, protocol consistency, conflict detection, routing health, drift sentinel), debugging eval-threshold violations across many skills at once, auditing whether a skill-system has the safety nets a production library needs, or planning schema, relation, routing, drift, and export checks across a whole skill library. Covers the five categories of skill-health tooling, the library-as-database mental model, eval quality patterns (minimum thresholds, contradiction-check pattern, negative-expectation requirement), maintenance workflows triggered by batch skill changes, and the anti-patterns that cause skill libraries to decay until agents loading them get worse over time. Do NOT use for authoring an individual SKILL.md (use `skill-scaffold`), or for general lint rule selection across a codebase (use `lint-overlay`).",
+      "description": "Use when designing the deterministic health-tooling layer for a skill library, diagnosing why an existing library is decaying invisibly, deciding which categories of automated check to add (inventory, protocol consistency, conflict detection, routing health, drift sentinel), debugging eval-threshold violations across many skills at once, or auditing whether a skill-system has the safety nets a production library needs. Do NOT use for authoring an individual SKILL.md (use `skill-scaffold`), for running the conformance audit on the Skill Graph repo itself (use `graph-audit`), or for general lint rule selection across a codebase (use `lint-overlay`). Covers the five categories of skill-health tooling, the library-as-database mental model, eval quality patterns (minimum thresholds, contradiction-check pattern, negative-expectation requirement), maintenance workflows triggered by batch skill changes, and the anti-patterns that cause skill libraries to decay until agents loading them get worse over time.",
       "domain": "agent/skill-system",
       "grounding": {
         "domain_object": "Deterministic health tooling for Skill Graph libraries",
@@ -12523,12 +13038,17 @@
             "skill": "skill-scaffold"
           },
           {
+            "reason": "graph-audit is the operational audit of one specific library (Skill Graph), scope: codebase; skill-infrastructure is the portable discipline of designing health tooling for any skill library",
+            "skill": "graph-audit"
+          },
+          {
             "reason": "lint-overlay covers lint-rule selection and gate placement for general codebases; skill-infrastructure covers the skill-system-specific tooling category that includes lint but extends to overlap, routing-gap, drift, and mirror-parity",
             "skill": "lint-overlay"
           }
         ],
         "related": [
           "skill-scaffold",
+          "graph-audit",
           "testing-strategy"
         ],
         "verify_with": [
@@ -12536,7 +13056,7 @@
           "code-review"
         ]
       },
-      "schema_version": 8,
+      "schema_version": 7,
       "scope": "portable",
       "stability": "experimental",
       "subject": "agent-ops",
@@ -12668,14 +13188,14 @@
         "keywords": [
           "skill routing",
           "skill dispatch",
-          "keyword routing",
-          "route skill",
+          "agent request routing",
+          "activate right skill",
           "which skill to use",
-          "skill selector",
           "routing table",
-          "coverage gap",
+          "agent request coverage gap",
           "ambiguous skill activation",
-          "skill activate"
+          "skill activate",
+          "coverage gap"
         ],
         "triggers": [
           "skill-router"
@@ -12686,7 +13206,7 @@
       "compatibility": {
         "notes": "Markdown, YAML, any agent runtime"
       },
-      "description": "Use when routing an agent request across multiple skills, building or auditing a routing table, detecting routing coverage gaps, or answering questions like 'which skill handles this?', 'who routes X?', or 'why did skill A activate instead of B?'. Covers trigger-label matching, file-path matching, keyword matching, description-based semantic matching, scope/type tiebreakers, and coverage-gap detection. Do NOT use when the target skill is already known (load it directly), when authoring a new skill (use `skill-metadata-template` instead), or when evaluating a SINGLE skill's quality (use `graph-audit`).",
+      "description": "Use when routing an agent request across multiple skills, building or auditing a routing table, detecting routing coverage gaps, or answering questions like 'which skill handles this?', 'who routes X?', or 'why did skill A activate instead of B?'. Do NOT use when the target skill is already known (load it directly), when authoring a new skill (use `skill-metadata-template` instead), or when evaluating a SINGLE skill's quality (use `graph-audit`). Covers trigger-label matching, file-path matching, keyword matching, description-based semantic matching, scope/type tiebreakers, and coverage-gap detection.",
       "domain": "agent/skill-system",
       "grounding": {
         "domain_object": "Skill Graph reference routing behavior",
@@ -12815,7 +13335,7 @@
         "purpose": "It prevents cargo-culted templates, vague activation text, false eval claims, dangling relation targets, and stale schema assumptions from entering a skill library.",
         "taxonomy": "Authoring workflow adjacent to skill-router, skill-infrastructure, and naming-conventions; distinct because it happens before a skill is fully authored."
       },
-      "description": "Use when creating a new SKILL.md from scratch, adapting an existing skill to a different archetype, or teaching another author the canonical Skill Metadata Protocol frontmatter and body structure. Covers schema-conformant frontmatter, archetype-aware body layout, semantic-layer discipline (description vs Coverage), teaching-layer mechanics (TEMPLATE NOTE blockquotes), the focused authoring gates, and the routing-eval honesty rule. Do NOT use when modifying an already-written skill (edit it directly), when writing general technical documentation (use `docs-development`), or when fixing a malformed skill detected by health tooling (use `skill-infrastructure` for systematic library health, not authoring scaffold help).",
+      "description": "Use when creating a new SKILL.md from scratch, adapting an existing skill to a different archetype, or teaching another author the canonical Skill Metadata Protocol frontmatter and body structure. Do NOT use when modifying an already-written skill (edit it directly), when writing general technical documentation (use `docs-development`), or when fixing a malformed skill detected by health tooling (use `skill-infrastructure` for systematic library health, not authoring scaffold help). Covers schema-conformant frontmatter, archetype-aware body layout, semantic-layer discipline (description vs Coverage), teaching-layer mechanics (TEMPLATE NOTE blockquotes), the focused authoring gates, and the routing-eval honesty rule.",
       "domain": "agent/skill-system",
       "grounding": {
         "domain_object": "Authoring a new SKILL.md against Skill Metadata Protocol v7",
@@ -13024,7 +13544,7 @@
       "compatibility": {
         "notes": "Markdown, Git, agent-skill runtimes"
       },
-      "description": "Use when starting a non-trivial feature, refactor, or agent implementation that needs a written spec, plan, task breakdown, and verification path before code changes. Covers Spec Kit-style SDD phases, requirements-vs-plan separation, task traceability, review gates, and spec-compliance verification. Do NOT use for one-line edits, README-only fixes, post-implementation code review (use `code-review`), or test-level decisions (use `testing-strategy`).",
+      "description": "Use when starting a non-trivial feature, refactor, or agent implementation that needs a written spec, plan, task breakdown, and verification path before code changes. Do NOT use for one-line edits, README-only fixes, post-implementation code review (use `code-review`), or test-level decisions (use `testing-strategy`). Covers Spec Kit-style SDD phases, requirements-vs-plan separation, task traceability, review gates, and spec-compliance verification.",
       "domain": "engineering/methodology",
       "grounding": {
         "domain_object": "Spec-driven development workflow for AI-assisted engineering using specification, plan, task, implementation, and verification artifacts",
@@ -13249,7 +13769,7 @@
         "purpose": "|",
         "taxonomy": "|"
       },
-      "description": "Use when deciding where state lives, how it propagates, and how it composes: local component state vs lifted/shared state vs application state, server state vs client state, URL as state, persistent state, derived state, and the cross-cutting decision of who owns which piece. Covers state colocation, lifting up, derivation vs duplication, single source of truth, optimistic updates, server-state cache invalidation (React Query/SWR model), URL state for deep-linking, and anti-patterns like prop-drilling, state sprawl, and global-state-by-default. Do NOT use for specific state library choice (Redux vs Zustand — tactical), data fetching mechanics (use api-design or rendering-models), client/server boundary (use client-server-boundary), distributed system state (use replication-patterns), or finite state machines (use state-machine-modeling).",
+      "description": "Use when deciding where state lives, how it propagates, and how it composes: local component state vs lifted/shared state vs application state, server state vs client state, URL as state, persistent state, derived state, and the cross-cutting decision of who owns which piece. Do NOT use for specific state library choice (Redux vs Zustand — tactical), data fetching mechanics (use api-design or rendering-models), client/server boundary (use client-server-boundary), distributed system state (use replication-patterns), or finite state machines (use state-machine-modeling). Covers state colocation, lifting up, derivation vs duplication, single source of truth, optimistic updates, server-state cache invalidation (React Query/SWR model), URL state for deep-linking, and anti-patterns like prop-drilling, state sprawl, and global-state-by-default.",
       "domain": "engineering/frontend",
       "health": {
         "application_verdict": "UNVERIFIED",
@@ -13420,108 +13940,6 @@
     {
       "activation": {
         "keywords": [
-          "stripeEventMapper",
-          "stripe-event-mapper",
-          "stripe event mapper",
-          "stripe webhook event",
-          "stripe_order_links",
-          "payout reconciliation",
-          "payout matching",
-          "balance transaction"
-        ],
-        "triggers": [
-          "stripe-skill",
-          "reconciliation-skill",
-          "payment-skill",
-          "stripe-fee-skill",
-          "stripe-webhook-skill",
-          "stripe-refund-skill",
-          "stripe-dispute-skill",
-          "payment-reconciliation-skill"
-        ]
-      },
-      "category": "engineering",
-      "description": "Stripe payment reconciliation for Sales Hub: webhook lifecycle (signature verification, idempotency, PII-redacted raw event storage, order linking, ledger projection, normalization queueing), fee allocation from balance transactions, refund/dispute handling, currency conversion via fx_rates_daily, GDPR erasure, and the gateway allocator registry. Covers stripe_events_raw, stripe_payments_raw, stripe_order_links, and the `stripe_balance_transactions` fee-allocation read path used by jobs. Use when reconciling Stripe charges against platform orders, allocating Stripe fees to order line items, handling refunds or disputes from Stripe, debugging stripe_order_links mismatches, implementing payment-to-order linkage, or building financial event views. Do NOT use for Shopify Payments fee allocation (use shopify / gateway-specific finance logic), full 8-component profit formula (use data-reconciliation skill), or subscription billing management (use billing-subscription).",
-      "grounding": {
-        "domain_object": "Stripe payment reconciliation for Sales Hub: webhook lifecycle, signature verification, raw event storage, order linking, ledger projection, and fee allocation.",
-        "evidence_priority": "equal",
-        "failure_modes": [
-          "stale_api_version",
-          "webhook_format_drift",
-          "fee_allocation_logic_change"
-        ],
-        "grounding_mode": "hybrid",
-        "truth_sources": [
-          {
-            "note": "Stripe webhook signature verification contract.",
-            "path": "https://docs.stripe.com/webhooks/signatures"
-          },
-          {
-            "note": "Stripe balance transaction contract for balance movement and payout evidence.",
-            "path": "https://docs.stripe.com/api/balance_transactions"
-          },
-          {
-            "note": "Sales Hub webhook ingestion, redaction, idempotency, and processing implementation.",
-            "path": "sales-hub/apps/web/src/app/api/webhooks/stripe/route.ts"
-          },
-          {
-            "note": "Sales Hub fee allocation read path for Stripe balance transactions.",
-            "path": "sales-hub/packages/jobs/src/jobs/stripe_fee_allocate_from_balance.ts"
-          }
-        ]
-      },
-      "health": {
-        "application_verdict": "UNVERIFIED",
-        "comprehension_verdict": "UNVERIFIED",
-        "drift_check": {
-          "last_verified": "2026-05-18",
-          "truth_source_hashes": {}
-        },
-        "drift_detected": false,
-        "eval_artifacts": "present",
-        "eval_failed_ids": [
-          "6"
-        ],
-        "eval_score": 4,
-        "eval_state": "passing",
-        "freshness": "2026-05-18",
-        "has_grounding": true,
-        "has_relations": true,
-        "last_audited": "2026-05-18",
-        "routing_eval": "present",
-        "structural_verdict": "UNVERIFIED",
-        "truth_verdict": "UNVERIFIED"
-      },
-      "id": "stripe-ledger-recon",
-      "name": "stripe-ledger-recon",
-      "operation": "do",
-      "owner": "claude",
-      "path": "../skills/skills/product-domain/stripe-ledger-recon/SKILL.md",
-      "relations": {
-        "boundary": [
-          "webhook-integration",
-          "entity-resolution",
-          "shopify"
-        ],
-        "related": [
-          "deterministic",
-          "data-reconciliation",
-          "financial-allocation",
-          "feature-gating"
-        ],
-        "verify_with": [
-          "feature-gating"
-        ]
-      },
-      "schema_version": 8,
-      "scope": "project",
-      "subject": "product-domain",
-      "type": "capability",
-      "version": "3.0.0"
-    },
-    {
-      "activation": {
-        "keywords": [
           "summarization",
           "summary",
           "TLDR",
@@ -13552,7 +13970,7 @@
         "purpose": "It turns long agent outputs, research notes, audit reports, and handoff materials into usable briefs without losing the facts a successor needs to trust or continue the work.",
         "taxonomy": "Core forms include TLDR, executive summary, brief, condensed report, progressive summary, agent handoff, research-to-memory note, and audit summary. Core methods include extractive, abstractive, synthesis, evidence-linking, and priority grouping."
       },
-      "description": "Use when condensing prose while preserving meaning: session findings, wrap reports, research briefs, executive summaries, TLDRs, agent handoffs, progressive summaries, audit summaries, and long-document distillation. Covers extractive vs abstractive summarization, what to keep vs drop, evidence preservation, summary levels, handoff summaries, and audit-report condensation without hiding findings. Do NOT use for byte/data compression algorithms (use `compression`), context-window budget math or compaction triggers (use `context-window`), working-set selection (use `context-management`), prose tone repair (use `writing-humanizer`), or quality scoring (use `evaluation`).",
+      "description": "Use when condensing prose while preserving meaning: session findings, wrap reports, research briefs, executive summaries, TLDRs, agent handoffs, progressive summaries, audit summaries, and long-document distillation. Do NOT use for byte/data compression algorithms (use `compression`), context-window budget math or compaction triggers (use `context-window`), working-set selection (use `context-management`), prose tone repair (use `writing-humanizer`), or quality scoring (use `evaluation`). Covers extractive vs abstractive summarization, what to keep vs drop, evidence preservation, summary levels, handoff summaries, and audit-report condensation without hiding findings.",
       "domain": "agent/cognition",
       "grounding": {
         "domain_object": "Prose summarization and agent handoff condensation",
@@ -13569,9 +13987,9 @@
           "https://owl.purdue.edu/owl/research_and_citation/using_research/quoting_paraphrasing_and_summarizing/index.html",
           "https://fortelabs.com/blog/progressive-summarization-a-practical-technique-for-designing-discoverable-notes/",
           "https://arxiv.org/abs/2204.09519",
-          "https://github.com/jacob-balslev/skills/blob/main/skills/agent/context/context-management/SKILL.md",
-          "https://github.com/jacob-balslev/skills/blob/main/skills/agent/context/context-window/SKILL.md",
-          "https://github.com/jacob-balslev/skills/blob/main/skills/design/writing-humanizer/SKILL.md"
+          "https://github.com/jacob-balslev/skills/blob/main/skills/agent-ops/context-management/SKILL.md",
+          "https://github.com/jacob-balslev/skills/blob/main/skills/agent-ops/context-window/SKILL.md",
+          "https://github.com/jacob-balslev/skills/blob/main/skills/design-craft/writing-humanizer/SKILL.md"
         ]
       },
       "health": {
@@ -13694,7 +14112,7 @@
         "purpose": "|",
         "taxonomy": "|"
       },
-      "description": "Use when designing or reviewing React Suspense usage: where to place Suspense boundaries to control loading granularity, the difference between Suspense for data fetching and Suspense for code splitting, how Suspense interacts with Server Components for streaming HTML, how error boundaries pair with Suspense (and why they must be distinct components), the relationship between Suspense and React's transition APIs (useTransition, startTransition), and the design rules that prevent waterfall fetches, layout shift, and SEO regressions. Covers React 18+ and 19's `use` hook for unwrapping Promises in Client Components. Do NOT use for general React rendering strategy choice (use rendering-models), for the underlying hook primitives (use hooks-patterns), for streaming protocols beyond Suspense (use streaming-architecture), or for Server Component design (use server-components-design).",
+      "description": "Use when designing or reviewing React Suspense usage: where to place Suspense boundaries to control loading granularity, the difference between Suspense for data fetching and Suspense for code splitting, how Suspense interacts with Server Components for streaming HTML, how error boundaries pair with Suspense (and why they must be distinct components), the relationship between Suspense and React's transition APIs (useTransition, startTransition), and the design rules that prevent waterfall fetches, layout shift, and SEO regressions. Do NOT use for general React rendering strategy choice (use rendering-models), for the underlying hook primitives (use hooks-patterns), for streaming protocols beyond Suspense (use streaming-architecture), or for Server Component design (use server-components-design). Covers React 18+ and 19's `use` hook for unwrapping Promises in Client Components.",
       "domain": "engineering/frontend",
       "health": {
         "application_verdict": "UNVERIFIED",
@@ -13875,11 +14293,11 @@
         ],
         "keywords": [
           "top task analysis",
+          "define top task before controls",
           "goal-driven UX review",
           "route audit workflow",
           "onboarding flow analysis",
           "task friction scoring",
-          "five friction dimensions",
           "dead-end detection",
           "hidden next-step diagnosis",
           "hierarchy contract first viewport",
@@ -13891,7 +14309,7 @@
       "compatibility": {
         "notes": "Stack-agnostic. The actor / scenario / top-task model, the five friction dimensions, the breakpoint taxonomy, and the primary / secondary / supporting hierarchy apply to any UI under review; persona / journey YAML files are illustrative — substitute the equivalents (Notion, Confluence, in-repo Markdown, Figma annotations) of your team."
       },
-      "description": "Use when auditing a route, defining a route contract, reviewing onboarding or setup flows, diagnosing why a page feels confusing, or when the user asks about top tasks, time-to-value, branching, dead ends, or task complexity. Provides goal-driven UX analysis that turns vague critique into explicit goal -> task -> subtask decomposition and a primary / secondary / supporting hierarchy contract for the first viewport. Do NOT use for control-pattern choice (use `interaction-patterns`), visual craft (use `visual-design-foundations`), responsive layout (use `layout-composition`), or accessibility-only QA (use `a11y`).",
+      "description": "Use when auditing a route, defining a route contract, reviewing onboarding or setup flows, diagnosing why a page feels confusing, or when the user asks about top tasks, time-to-value, branching, dead ends, or task complexity. Do NOT use for control-pattern choice (use `interaction-patterns`), visual craft (use `visual-design-foundations`), responsive layout (use `layout-composition`), or accessibility-only QA (use `a11y`). Provides goal-driven UX analysis that turns vague critique into explicit goal -> task -> subtask decomposition and a primary / secondary / supporting hierarchy contract for the first viewport.",
       "domain": "foundations/analysis",
       "health": {
         "application_verdict": "UNVERIFIED",
@@ -14009,7 +14427,7 @@
         ]
       },
       "category": "agent",
-      "description": "This skill provides decision frameworks for choosing the optimal execution path before starting work: plan-vs-act gates, agent architecture selection (chaining, routing, parallelization, orchestrator-worker, evaluator-optimizer), scope management heuristics, critical-path analysis across task networks, and context budget awareness. Use when deciding how to approach a task (plan first vs act immediately), decomposing complex work into parallelizable subtasks, choosing between subagent patterns, or when a task has failed twice and needs a fresh approach. Do NOT use for executing the chosen plan (use task-execution), debugging failures (use troubleshooting or diagnosis), or tool-level efficiency (use tool-call-strategy).",
+      "description": "Use when deciding how to approach a task (plan first vs act immediately), decomposing complex work into parallelizable subtasks, choosing between subagent patterns, or when a task has failed twice and needs a fresh approach. Do NOT use for executing the chosen plan (use task-execution), debugging failures (use troubleshooting or diagnosis), or tool-level efficiency (use tool-call-strategy). This skill provides decision frameworks for choosing the optimal execution path before starting work: plan-vs-act gates, agent architecture selection (chaining, routing, parallelization, orchestrator-worker, evaluator-optimizer), scope management heuristics, critical-path analysis across task networks, and context budget awareness.",
       "health": {
         "application_verdict": "UNVERIFIED",
         "comprehension_state": "present",
@@ -14532,7 +14950,7 @@
       "activation": {
         "anti_examples": [
           "my existing test is failing — why?",
-          "write a testing-patterns guide for the contributor docs",
+          "make this inline validation message specific and actionable",
           "clean up this duplicated test setup across three files"
         ],
         "examples": [
@@ -14544,13 +14962,13 @@
         "keywords": [
           "testing strategy",
           "what to test",
-          "what not to test",
-          "which test level",
+          "coverage plan",
+          "feature test",
+          "unit or integration test level",
           "test scope",
           "effort vs risk",
-          "regression target",
-          "failure case coverage",
-          "test plan",
+          "regression test target",
+          "pin regression bug",
           "do I need a test"
         ],
         "triggers": [
@@ -14562,7 +14980,7 @@
       "compatibility": {
         "notes": "Markdown, Git, any codebase"
       },
-      "description": "Use when planning tests for a bug fix, feature, or refactor — deciding what deserves a test, at which level, with what evidence. Covers test-scope decisions, test-level selection (unit / integration / contract / e2e), effort-to-risk matching, regression targeting, evidence quality, and failure-case coverage. Do NOT use for chasing a known failure (that is `debugging`), for pure doc writing (that is `documentation`), or for conceptual architecture discussion with no verification target (no dedicated skill — treat as strategy, not testing).",
+      "description": "Use when planning tests for a bug fix, feature, or refactor — deciding what deserves a test, at which level, with what evidence. Do NOT use for chasing a known failure (that is `debugging`), for pure doc writing (that is `documentation`), or for conceptual architecture discussion with no verification target (no dedicated skill — treat as strategy, not testing). Covers test-scope decisions, test-level selection (unit / integration / contract / e2e), effort-to-risk matching, regression targeting, evidence quality, and failure-case coverage.",
       "health": {
         "application_verdict": "UNVERIFIED",
         "comprehension_verdict": "UNVERIFIED",
@@ -14605,7 +15023,7 @@
             "skill": "integration-test-design"
           },
           {
-            "reason": "microcopy owns functional UI text and contributor-facing writing; testing-strategy decides what and how to test. Writing a testing-patterns guide for contributor docs is a documentation/writing task owned by microcopy, not a test-scope decision.",
+            "reason": "microcopy owns inline validation wording and functional UI text; testing-strategy decides what and how to test. Making an inline validation message specific and actionable is copy work, not a test-scope decision.",
             "skill": "microcopy"
           }
         ],
@@ -14856,7 +15274,7 @@
         "purpose": "It keeps agents fast and accurate by preventing redundant reads, serial round trips, noisy outputs, and manual N+1 edits while preserving enough verification to avoid hallucination.",
         "taxonomy": "Core levers include tool selection, script-vs-call gating, batching and parallelization, dependency detection, redundancy checks, output bounding, subagent isolation, and reviewable edit strategy."
       },
-      "description": "Use when an agent is making too many tool calls, when context is filling from verbose tool outputs, when the same operation could be a script instead of N individual calls, or when designing a tool-use protocol for a new agent or harness. Covers the three costs of every call (token, latency, context pollution), the script-vs-call decision gate, tool-selection decision trees (file-search vs content-search vs targeted-read vs full-read), call batching and parallelization, redundancy avoidance, the poka-yoke principle, subagent delegation for context protection, and cost-benchmark heuristics by task type. Do NOT use for prompt wording (use `prompt-craft`), broader context stack design across the five layers (use `context-engineering`), runtime tool failures or production debugging (use `debugging`), or behaviour-preserving refactor mechanics (use `refactor`).",
+      "description": "Use when an agent is making too many tool calls, when context is filling from verbose tool outputs, when the same operation could be a script instead of N individual calls, or when designing a tool-use protocol for a new agent or harness. Do NOT use for prompt wording (use `prompt-craft`), broader context stack design across the five layers (use `context-engineering`), runtime tool failures or production debugging (use `debugging`), or behaviour-preserving refactor mechanics (use `refactor`). Covers the three costs of every call (token, latency, context pollution), the script-vs-call decision gate, tool-selection decision trees (file-search vs content-search vs targeted-read vs full-read), call batching and parallelization, redundancy avoidance, the poka-yoke principle, subagent delegation for context protection, and cost-benchmark heuristics by task type.",
       "domain": "ai-engineering/tool-use",
       "grounding": {
         "domain_object": "Efficient tool-call strategy for LLM coding agents",
@@ -15093,7 +15511,7 @@
         "purpose": "|",
         "taxonomy": "|"
       },
-      "description": "Use when reasoning about types as a quality property of code: what guarantees the type system actually provides, the difference between sound and unsound systems, structural vs nominal typing, type narrowing and exhaustiveness, the runtime/compile-time boundary, and where validation must happen because the type system cannot. Covers TypeScript, Flow, Hindley-Milner languages, and gradual typing in general. Do NOT use for runtime input validation library choice (use api-design for API surface validation; use individual library docs for library mechanics), for SQL type mapping (use data-modeling), or for type system implementation (compilers — out of scope).",
+      "description": "Use when reasoning about types as a quality property of code: what guarantees the type system actually provides, the difference between sound and unsound systems, structural vs nominal typing, type narrowing and exhaustiveness, the runtime/compile-time boundary, and where validation must happen because the type system cannot. Do NOT use for runtime input validation library choice (use api-design for API surface validation; use individual library docs for library mechanics), for SQL type mapping (use data-modeling), or for type system implementation (compilers — out of scope). Covers TypeScript, Flow, Hindley-Milner languages, and gradual typing in general.",
       "domain": "quality/types",
       "health": {
         "application_verdict": "UNVERIFIED",
@@ -15499,7 +15917,7 @@
       "compatibility": {
         "notes": "Git-centric. Patterns translate to other DAG-based version-control systems (Mercurial, Jujutsu) with tool-specific syntax substitutions. Centralized systems (SVN, CVS) lack cheap branching and most of this skill's discipline does not apply."
       },
-      "description": "Use when designing or maintaining the shape of a repository's git history — choosing a branching model, deciding rebase vs merge, sizing commits, linking commits to tracker tickets, tagging releases, running parallel work across worktrees, and resolving the merge conflicts that arise from any of the above. Covers trunk-based development, short-lived feature branches, atomic commit discipline, linear-history conventions (rebase + squash), release tagging with annotated tags and SemVer, hotfix flows from tags, and worktree lifecycle for parallel agents or contributors. Do NOT use for the words inside the commit message (Conventional Commits format, identifier naming — use `naming-conventions`), for chasing a release-pipeline failure (use `debugging`), or for reviewing a PR's content (use `code-review`).",
+      "description": "Use when designing or maintaining the shape of a repository's git history — choosing a branching model, deciding rebase vs merge, sizing commits, linking commits to tracker tickets, tagging releases, running parallel work across worktrees, and resolving the merge conflicts that arise from any of the above. Do NOT use for the words inside the commit message (Conventional Commits format, identifier naming — use `naming-conventions`), for chasing a release-pipeline failure (use `debugging`), or for reviewing a PR's content (use `code-review`). Covers trunk-based development, short-lived feature branches, atomic commit discipline, linear-history conventions (rebase + squash), release tagging with annotated tags and SemVer, hotfix flows from tags, and worktree lifecycle for parallel agents or contributors.",
       "domain": "engineering/version-control",
       "health": {
         "application_verdict": "UNVERIFIED",
@@ -15785,7 +16203,7 @@
       "compatibility": {
         "notes": "Provider-agnostic. Examples reference HMAC-SHA256 (the dominant scheme), SDK-style verification helpers (Stripe-style, where the provider ships a library that takes raw body + header + secret), and round-trip verification APIs (PayPal-style, where the receiver POSTs the event back to the provider for validation). Substitute each provider's specific header names, hashing algorithm, and retry-status-code contract from their docs."
       },
-      "description": "Use when implementing or reviewing an inbound webhook handler for any third-party provider - verifying signatures, deduplicating retries, choosing the right HTTP status code for retry vs no-retry, persisting raw payloads before canonical mapping, and quarantining unverifiable events. Covers signature schemes, idempotency patterns, provider retry contracts, raw-then-canonical pipelines, quarantine, secret rotation, and PII-capture timing. Do NOT use for outbound webhook publishing (use `event-contract-design`), general background-job orchestration, or chasing a webhook handler that has already failed in production (use `debugging`).",
+      "description": "Use when implementing or reviewing an inbound webhook handler for any third-party provider - verifying signatures, deduplicating retries, choosing the right HTTP status code for retry vs no-retry, persisting raw payloads before canonical mapping, and quarantining unverifiable events. Do NOT use for outbound webhook publishing (use `event-contract-design`), general background-job orchestration, or chasing a webhook handler that has already failed in production (use `debugging`). Covers signature schemes, idempotency patterns, provider retry contracts, raw-then-canonical pipelines, quarantine, secret rotation, and PII-capture timing.",
       "domain": "integrations/webhooks",
       "health": {
         "application_verdict": "UNVERIFIED",
@@ -15906,7 +16324,7 @@
         "purpose": "The skill replaces vague requests to make writing sound human with a repeatable edit pass that improves clarity, specificity, rhythm, and trust across docs, PRs, UI-adjacent prose, and support text.",
         "taxonomy": "Design/content skill adjacent to linguistics, microcopy, and semantics; distinct from copywriting and documentation architecture."
       },
-      "description": "Use when writing or editing human-readable prose such as docs, PRs, issues, release notes, errors, UI copy, commits, tooltips, or support replies, especially when text sounds robotic, padded, monotonous, or overly formal. Covers AI-tell removal, active voice, hedging reduction, readability diagnosis, sentence rhythm, vocabulary variety, tone mapping, paragraph rhythm, bullets-vs-prose choice, and the 5-step humanization workflow. Do NOT use for documentation routing/type selection, code-identifier naming, or in-product UI-text pattern catalogs.",
+      "description": "Use when writing or editing human-readable prose such as docs, PRs, issues, release notes, errors, UI copy, commits, tooltips, or support replies, especially when text sounds robotic, padded, monotonous, or overly formal. Do NOT use for documentation routing/type selection, code-identifier naming, or in-product UI-text pattern catalogs. Covers AI-tell removal, active voice, hedging reduction, readability diagnosis, sentence rhythm, vocabulary variety, tone mapping, paragraph rhythm, bullets-vs-prose choice, and the 5-step humanization workflow.",
       "domain": "design/content",
       "health": {
         "application_verdict": "UNVERIFIED",
@@ -15972,49 +16390,49 @@
     "by_category": {
       "agent": 18,
       "design": 26,
-      "engineering": 61,
-      "foundations": 16,
+      "engineering": 59,
+      "foundations": 21,
       "product": 1,
       "quality": 29
     },
     "by_operation": {
       "decide": 2,
-      "do": 49,
-      "know": 98,
+      "do": 48,
+      "know": 99,
       "modify": 1
     },
     "by_schema_version": {
-      "7": 2,
-      "8": 149
+      "7": 10,
+      "8": 144
     },
     "by_scope": {
-      "portable": 97,
-      "project": 3,
-      "reference": 1,
-      "workspace": 50
+      "portable": 102,
+      "project": 1,
+      "reference": 2,
+      "workspace": 49
     },
     "by_stability": {
-      "experimental": 142,
-      "stable": 5
+      "experimental": 144,
+      "stable": 8
     },
     "by_subject": {
       "agent-ops": 17,
-      "code-engineering": 36,
+      "code-engineering": 35,
       "data-analytics": 3,
       "design-craft": 20,
       "frontend-ui": 20,
       "knowledge-organization": 7,
-      "meta-methods": 9,
-      "product-domain": 11,
+      "meta-methods": 11,
+      "product-domain": 10,
       "quality-assurance": 27
     },
     "by_type": {
-      "capability": 140,
+      "capability": 143,
       "overlay": 1,
       "router": 2,
       "workflow": 8
     },
-    "total_skills": 151
+    "total_skills": 154
   },
   "workspace": {
     "skill_roots": [

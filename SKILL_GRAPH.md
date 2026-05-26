@@ -15,16 +15,16 @@ The three layers divide the work cleanly. The [Skill Metadata Protocol](SKILL_ME
 | Fact | Value | Source of truth |
 |---|---|---|
 | **Schema version enforced** | **v7 + v8 in compatibility mode** (`schema_version: 7\|8` both validate; v8 skills additionally require `subject` + `operation`; v7 `category.const` 6-enum retained as the only category constraint) | `schemas/skill.schema.json` + [ADR-0017 § Landing strategy](docs/adr/0017-five-axis-classification-model.md) |
-| **Corpus v7/v8 distribution** | **All 146 source skills carry `schema_version: 7`** — corpus migration to `schema_version: 8` has NOT yet run. The v8 axes (`subject`, `operation`) are populated on most skills (under `metadata:` for nested-layout sources) but the `schema_version` integer is still 7. Migration runs require the codemod + version-earned gate. (Updated 2026-05-26 per SH-6481 SG-1.) | `grep -r "^  schema_version:" ~/Development/skills/skills \| awk -F: '{print $NF}' \| sort \| uniq -c` |
+| **Corpus v7/v8 distribution** | **144 source skills carry `schema_version: 8`; 9 source skills carry `schema_version: 7`**. The v8 axes (`subject`, `operation`) are populated through the compatibility migration, but v7 legacy fields (`type`, `category`) remain required until the v7 sunset removal lands. Verified 2026-05-26 from live manifest generation. | `node scripts/generate-manifest.js --output /tmp/manifest.json` then inspect `summary.by_schema_version` |
 | Manifest schema file | tracks v7 + v8 dual-emit | `schemas/manifest.schema.json` |
 | Emitted manifest `schema_version` | **4** (back-compatible root contract) | `scripts/generate-manifest.js`; `schemas/manifest.schema.json` `schema_version.const` |
 | Manifest summary facets | **dual emit** — v7 (`by_category` / `by_type`) and v8 (`by_subject` / `by_operation`) side-by-side, plus `by_schema_version` for migration tracking | `scripts/generate-manifest.js::computeSummary` |
 | Per-skill `schema_version` in manifest | **present** (top-level field on every skill entry — added 2026-05-25 per F4 finding) | `scripts/generate-manifest.js::buildSkillEntry` |
-| Canonical skill count | **146** SKILL.md in the canonical library; **147** when the protocol template is included. Verified 2026-05-26 by `find` + live manifest generation. | live: `find ~/Development/skills/skills -name SKILL.md \| wc -l` (146) and `node scripts/generate-manifest.js --include-template --validate-only` (147). Sample manifest at `examples/skills.manifest.sample.json` regenerates to match. |
-| Marketplace export count | **144** SKILL.md in `marketplace/skills/` — 2 skills excluded by the publication gate (`scope: codebase\|operational` filter). | live: `find skill-graph/marketplace/skills -name SKILL.md \| wc -l` |
+| Canonical skill count | **153** SKILL.md in the canonical library; **154** when the protocol template is included. Verified 2026-05-26 by `find` + live manifest generation. | live: `find ~/Development/skills/skills -name SKILL.md \| wc -l` (153) and `node scripts/generate-manifest.js --include-template --validate-only` (154). |
+| Marketplace export count | **147** SKILL.md in `marketplace/skills/`; the publication gate excludes repo-specific/internal skills (`scope: project` or legacy `scope: codebase`, plus internal grounding modes). | live: `find skill-graph/marketplace/skills -name SKILL.md \| wc -l` |
 | Canonical library location | sibling repo `jacob-balslev/skills` at `~/Development/skills/` | `.skill-graph/config.json` → `skill_roots: ["../skills/skills"]` |
 | This repo's role | tooling + protocol + schemas + docs (no `skills/` tree) | [ADR 0009](docs/adr/0009-sibling-repo-deprecation.md) |
-| Audit Loop maturity | Integrity Gate ≈ MLOps L1 (write-back wired into `skill-graph audit` as of 2026-05-25 per SH-6481 F14); **Behavior Gate ≈ L0** — `application_verdict: UNVERIFIED` on all 146 source skills until graders run | [`SKILL_AUDIT_LOOP.md:45-52`](SKILL_AUDIT_LOOP.md) |
+| Audit Loop maturity | Integrity Gate ≈ MLOps L1 (write-back wired into `skill-graph audit` as of 2026-05-25 per SH-6481 F14); **Behavior Gate data remains sparse** — application verdicts stay `UNVERIFIED` until `evals/application.json` artifacts are authored and graders run. | [`SKILL_AUDIT_LOOP.md:45-52`](SKILL_AUDIT_LOOP.md) |
 
 ## Source vs Marketplace — why there are two `skills/` trees
 
@@ -53,7 +53,7 @@ A common point of confusion: the canonical library and the in-repo `marketplace/
 
 **The two-hat insight:** the AUTHORING SOURCE and the PUBLIC RELEASE are the **same physical repo**. The pipeline above pushes the staging buffer (`skill-graph/marketplace/skills/`) into that repo, so writing to skill-graph and pushing the canonical library both eventually update `github.com/jacob-balslev/skills`. The `marketplace/` directory is the transform buffer between this tooling repo and the library repo, not a separate publication target.
 
-The export is **not** a copy. It (1) applies the **publication gate** — excludes `scope: codebase|operational` and `grounding_mode: repo_specific` skills and fails on private paths, so internal skills never publish; (2) **normalizes** the frontmatter (flattens the `compatibility` object, etc.); and (3) historically **flattened** the directory layout. Because the source library (`~/Development/skills/`) is *also* the public release repo (`jacob-balslev/skills`), source and release are the same repo; `marketplace/skills/` is the transform/staging buffer between this tooling repo and that one. They have the same count today only because no current skill trips the exclusion gate. See `AGENTS.md § Public Distribution` for the two-step sync protocol.
+The export is **not** a copy. It (1) applies the **publication gate** — excludes `scope: project` (plus legacy `scope: codebase|operational`) and `grounding_mode: repo_specific` skills and fails on private paths, so internal skills never publish; (2) **normalizes** the frontmatter (flattens the `compatibility` object, etc.); and (3) historically **flattened** the directory layout. Because the source library (`~/Development/skills/`) is *also* the public release repo (`jacob-balslev/skills`), source and release are the same repo; `marketplace/skills/` is the transform/staging buffer between this tooling repo and that one. See `AGENTS.md § Public Distribution` for the two-step sync protocol.
 
 > **Layout note (verified 2026-05-20):** the export is self-consistent — `node scripts/export-marketplace-skills.js --check` is clean and a write run is a no-op (0 files changed). `marketplace/skills/` uses a **flat** `<name>/` layout (the plain Agent Skills publish shape) while the authoring/release library is **nested** `<category>/<name>/`. These layouts intentionally differ — authoring organization vs publish shape — so the flat export is current, not stale. One thing to confirm: the `ls marketplace/skills/ | wc -l == ls skills/ | wc -l` pre-release check in `AGENTS.md` compares top-level entry counts, which differ between a flat and a nested tree; that check should compare recursive `SKILL.md` counts instead.
 
@@ -359,7 +359,8 @@ Concrete artifacts that show adopters what "good" looks like. Every specimen is 
 
 | Directory | Role |
 |---|---|
-| `examples/audits/` | Worked audit outputs (findings/verdict/scorecard) for fixture and library skills, including historical starter-skill audits. |
+| `audits/` | Current per-skill audit outputs (`findings.md`, `verdict.md`, `scorecard.md`) emitted by `skill-graph audit`. |
+| `examples/audits/` | Historical worked audit outputs retained as examples only. New audit runs should not write here. |
 | `examples/evals/` | Eval fixtures for starter skills plus expanded routing and content-verification surfaces. |
 | `examples/exports/` | Five plain `SKILL.md` exports demonstrating Tier 3's `export-skill.js` transform. |
 
@@ -376,7 +377,7 @@ The relations graph cuts across all five tiers — declared in Tier 5 SKILL.md f
 ```mermaid
 flowchart LR
   MIN["minimal-capability<br/><i>capability · portable</i>"]
-  GR["with-grounding<br/><i>capability · codebase</i>"]
+  GR["with-grounding<br/><i>capability · project</i>"]
   REL["with-relations<br/><i>capability · portable</i>"]
   COMP["comprehension-full<br/><i>capability · portable</i>"]
 
@@ -393,12 +394,12 @@ flowchart LR
   REL -. boundary .-x GR
 
   classDef capability fill:#dbeafe,stroke:#2563eb,color:#1e3a8a
-  classDef codebase stroke-width:3px
+  classDef project stroke-width:3px
   class MIN,GR,REL,COMP capability
-  class GR codebase
+  class GR project
 ```
 
-**Legend.** All four fixtures are `capability`; node fill is blue. A thick node stroke marks `scope: codebase` — only `with-grounding` (which is why it carries the `grounding` block and recorded `truth_source_hashes`). Edge styles, all declared by `with-relations`: `==>` thick solid = `depends_on` (load-bearing — assumes `minimal-capability` lints clean); `-.->` dashed = `verify_with` (co-load `comprehension-full` for its Understanding fields); `---` thin = `related` (symmetric co-read with `minimal-capability`); `-. boundary .-x` red = `boundary` (anti-ownership — defer grounding/`scope: codebase` cases to `with-grounding`).
+**Legend.** All four fixtures are `capability`; node fill is blue. A thick node stroke marks `scope: project` (legacy fixtures may still show `scope: codebase` as the accepted v7 alias) — only `with-grounding` carries the `grounding` block and recorded `truth_source_hashes`. Edge styles, all declared by `with-relations`: `==>` thick solid = `depends_on` (load-bearing — assumes `minimal-capability` lints clean); `-.->` dashed = `verify_with` (co-load `comprehension-full` for its Understanding fields); `---` thin = `related` (symmetric co-read with `minimal-capability`); `-. boundary .-x` red = `boundary` (anti-ownership — excludes grounding/project-scope cases from co-routing when `with-relations` wins).
 
 Every edge is verifiable. `node bin/skill-graph.js lint examples/fixture-skills/with-relations` rejects dangling targets; `node scripts/skill-graph-route.js` uses these edges at request time to decide which skill wins, which co-loads via `verify_with` or `depends_on`, and which is excluded via `boundary`.
 

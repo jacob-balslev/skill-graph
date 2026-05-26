@@ -3,7 +3,7 @@
 > Type: Reference (protocol)
 > Status: v2 (2026-05-24). Additive extension of [v1 (2026-05-21)](./skill-audit-multimodel-merge.md). v1 callers keep working.
 > Companion: [model-contribution-benchmarks.md](./model-contribution-benchmarks.md) (measurement spec).
-> Source roundtable: `/Users/jacobbalslev/Development/.roundtable/skill-audit-2026-05-24/` (brief + responses from GPT-5.5 and Gemini 3.1 Pro + retrospective on 05-19).
+> Source roundtable: `<workspace>/.roundtable/skill-audit-2026-05-24/` (brief + responses from GPT-5.5 and Gemini 3.1 Pro + retrospective on 05-19).
 
 ## Why v2 exists
 
@@ -182,8 +182,8 @@ New in v2:
 
 - v1 protocol: [skill-audit-multimodel-merge.md](./skill-audit-multimodel-merge.md)
 - Benchmark spec: [model-contribution-benchmarks.md](./model-contribution-benchmarks.md)
-- Sibling consensus protocol: `/Users/jacobbalslev/Development/docs/consensus-review-protocol.md`
+- Sibling consensus protocol: `<workspace>/docs/consensus-review-protocol.md`
 - Audit doctrine: [SKILL_AUDIT_LOOP.md](../SKILL_AUDIT_LOOP.md)
 - Single-agent contract: `skill-graph/SKILL_AUDIT_LOOP.md#part-3--per-skill-audit-runbook`
 - Claim helper: `scripts/skill/skill-audit-claim.js`
-- 2026-05-24 roundtable session: `/Users/jacobbalslev/Development/.roundtable/skill-audit-2026-05-24/`
+- 2026-05-24 roundtable session: `<workspace>/.roundtable/skill-audit-2026-05-24/`

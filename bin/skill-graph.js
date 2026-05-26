@@ -69,7 +69,7 @@ Arguments:
   <skill-name>       Skill directory name (relative to workspace skill roots).
 
 Options:
-  --audit-root <path>   Output directory root (default: examples/audits/).
+  --audit-root <path>   Output directory root (default: audits/).
   --force               Overwrite existing audit artifacts.
   --dry-run             Resolve skill and run lint without writing any files. Exit 0 on success.
   --graded              Enable the prompt-driven grader pass.
@@ -160,7 +160,7 @@ Run the continuous Karpathy-style skill-improvement loop.
 Required flags for standalone use (when run via npm install -g @skill-graph/cli):
   --workspace-root <path>   Root of your skills workspace (default: cwd).
   --skills-dir <path>       Directory containing your SKILL.md files (default: <workspace-root>/skills).
-  --output-dir <path>       Directory for evolve output artifacts (default: <workspace-root>/examples/audits).
+  --output-dir <path>       Directory for evolve output artifacts (default: <workspace-root>/audits).
 
 Options:
   --top <n>               Process top n items per cycle (default: 5).
@@ -277,9 +277,9 @@ Examples:
     inline: true,
     help: `Usage: skill-graph doctor [options]
 
-Run every deterministic check in one pass and print a single summary table.
+Run the fast deterministic smoke checks in one pass and print a single summary table.
 This is the recommended first command when filing a bug report or onboarding
-a new install — it surfaces the project's complete trust surface at a glance.
+a new install — it surfaces the core install and protocol health at a glance.
 
 Checks executed (in order):
   links              scripts/check-markdown-links.js
@@ -319,7 +319,7 @@ Commands:
 The four operations (SKILL_AUDIT_LOOP.md § The Four Operations) are audit / improve / evaluate / evolve.
 
 Diagnostics:
-  doctor           Run every deterministic check in one pass (recommended for bug reports)
+  doctor           Run fast deterministic smoke checks in one pass (recommended for bug reports)
 
 Additional commands (retained for backward compatibility):
   manifest         Generate or validate a skills.manifest.json
@@ -423,10 +423,11 @@ Examples:
 }
 
 // ---------------------------------------------------------------------------
-// `doctor` — run every deterministic check in one pass
+// `doctor` — run the fast deterministic smoke-check subset in one pass
 // ---------------------------------------------------------------------------
-// Aggregates the project's trust-surface checks behind one command so a
-// reader (or bug-report filer) has a single number to verify.
+// Aggregates the project's fast install/protocol checks behind one command so a
+// reader (or bug-report filer) has an immediate health signal. Full verification
+// remains `npm run verify`.
 
 const DOCTOR_CHECKS = [
   { name: 'links',          script: 'scripts/check-markdown-links.js' },

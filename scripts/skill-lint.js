@@ -18,10 +18,12 @@
  *
  *   1. Valid YAML frontmatter (parser invariant; every consumer needs this)
  *   2. Frontmatter validates against schemas/skill.schema.json (canonical;
- *      pinned schemas removed 2026-05-24)
+ *      resolved from the package root when the caller workspace has no local
+ *      schema copy)
  *   3. `name` field uses Skill Metadata Protocol identifier shape
  *   4. `description` field is non-empty
  *   5. Parent directory name equals the last `name` segment
+ *   6. `subjects[0]` matches `subject` when both v8 fields are present
  *
  * Exit 0 on success, 1 on any failure.
  *
@@ -45,12 +47,23 @@
 const fs = require('fs');
 const path = require('path');
 const { parseFrontmatter, normalizeFrontmatter } = require('./lib/parse-frontmatter');
-const { collectSkillFilesFromRoots, loadWorkspaceConfig, resolveSkillRoots, workspaceRoot } = require('./lib/roots');
+const {
+  collectSkillFilesFromRoots,
+  loadWorkspaceConfig,
+  packageRoot,
+  resolveSchemaPath,
+  resolveSkillRoots,
+  workspaceRoot,
+} = require('./lib/roots');
 const { formatCodeFrame, locateYamlKey } = require('./lint/format-code-frame');
 
 const REPO_ROOT = workspaceRoot();
-const TEMPLATE_PATH = path.join(REPO_ROOT, 'examples', 'skill-metadata-template.md');
-const SCHEMA_PATH = path.join(REPO_ROOT, 'schemas', 'skill.schema.json');
+const PACKAGE_ROOT = packageRoot();
+const TEMPLATE_PATH = [
+  path.join(REPO_ROOT, 'examples', 'skill-metadata-template.md'),
+  path.join(PACKAGE_ROOT, 'examples', 'skill-metadata-template.md'),
+].find(candidate => fs.existsSync(candidate)) || path.join(PACKAGE_ROOT, 'examples', 'skill-metadata-template.md');
+const SCHEMA_PATH = resolveSchemaPath(REPO_ROOT, 'skill.schema.json');
 const WORKSPACE_CONFIG = loadWorkspaceConfig(REPO_ROOT, msg => process.stderr.write(`WARN ${msg}\n`));
 const SKILL_ROOTS = resolveSkillRoots(REPO_ROOT, WORKSPACE_CONFIG);
 const SKILL_SCHEMA = JSON.parse(fs.readFileSync(SCHEMA_PATH, 'utf8'));
@@ -77,6 +90,14 @@ function displayValue(value) {
 function pathToField(pointer) {
   if (!pointer || pointer === '/') return 'frontmatter';
   return pointer.replace(/^\//, '').replace(/\//g, '.');
+}
+
+function displaySchemaPath() {
+  const relToWorkspace = path.relative(REPO_ROOT, SCHEMA_PATH);
+  if (!relToWorkspace.startsWith('..') && !path.isAbsolute(relToWorkspace)) return relToWorkspace;
+  const relToPackage = path.relative(PACKAGE_ROOT, SCHEMA_PATH);
+  if (!relToPackage.startsWith('..') && !path.isAbsolute(relToPackage)) return `package:${relToPackage}`;
+  return SCHEMA_PATH;
 }
 
 function sameJson(a, b) {
@@ -175,7 +196,7 @@ function validateWithSchema(value, schema, pointer = '', errors = []) {
         if (!(requiredField in value)) {
           errors.push({
             field: requiredField,
-            msg: `required-missing: \`${requiredField}\` is required by ${path.relative(REPO_ROOT, SCHEMA_PATH)}`,
+            msg: `required-missing: \`${requiredField}\` is required by ${displaySchemaPath()}`,
           });
         }
       }
@@ -193,7 +214,7 @@ function validateWithSchema(value, schema, pointer = '', errors = []) {
         if (!allowed.has(key)) {
           errors.push({
             field: key,
-            msg: `additionalProperty: \`${key}\` is not declared in ${path.relative(REPO_ROOT, SCHEMA_PATH)}`,
+            msg: `additionalProperty: \`${key}\` is not declared in ${displaySchemaPath()}`,
           });
         }
       }
@@ -361,6 +382,22 @@ function checkParentDirMatchesName(filePath, fm) {
   return [];
 }
 
+/**
+ * Check 4 — v8 subject polyhierarchy invariant.
+ * JSON Schema draft-2020-12 cannot express "array first item equals sibling
+ * scalar" without non-portable extensions, so the canonical-source linter owns
+ * this cross-field invariant.
+ */
+function checkSubjectsPrimaryMatchesSubject(fm) {
+  if (!fm || typeof fm.subject !== 'string') return [];
+  if (!Array.isArray(fm.subjects) || fm.subjects.length === 0) return [];
+  if (fm.subjects[0] === fm.subject) return [];
+  return [{
+    field: 'subjects',
+    msg: `\`subjects[0]\` must match \`subject\` (expected "${fm.subject}", got "${fm.subjects[0]}")`,
+  }];
+}
+
 // ---------------------------------------------------------------------------
 // File discovery
 // ---------------------------------------------------------------------------
@@ -477,6 +514,7 @@ function lintFile(file) {
     ...checkName(fm),
     ...checkDescription(fm),
     ...checkParentDirMatchesName(file, fm),
+    ...checkSubjectsPrimaryMatchesSubject(fm),
   ];
 
   return {

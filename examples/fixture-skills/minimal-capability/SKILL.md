@@ -1,10 +1,12 @@
 ---
-schema_version: 6
+schema_version: 8
 name: minimal-capability
-description: "Use as the smallest v6-conformant capability fixture for skill-graph package tests. Activate this skill when verifying that lint, manifest generation, and routing accept the bare-minimum required v6 frontmatter. Do NOT use as a production skill (use a real capability skill from the canonical library)."
+description: "Use as the smallest v8-compat capability fixture for skill-graph package tests. Activate this skill when verifying that lint, manifest generation, and routing accept the bare-minimum required frontmatter. Do NOT use as a production skill (use a real capability skill from the canonical library)."
 version: 1.0.0
 type: capability
+operation: know
 category: engineering
+subject: code-engineering
 scope: portable
 owner: skill-graph-fixture-suite
 freshness: "2026-05-19"
@@ -19,19 +21,19 @@ license: Apache-2.0
 
 # Minimal Capability Fixture
 
-This fixture exercises the bare-minimum required v6 frontmatter. It contains
+This fixture exercises the bare-minimum required v8-compatible frontmatter. It contains
 only the required fields, the recommended stability + license fields, and the
 four capability-archetype body sections.
 
 ## Coverage
 
-The 13 required v6 frontmatter fields, plus `stability` and `license`. No
+The required v8 compatibility-window frontmatter fields, plus `stability` and `license`. No
 optional fields, no relations, no grounding, no Understanding fields, no
 Health Block.
 
 ## Philosophy
 
-The simplest possible v6 skill should still pass lint. If this fixture ever
+The simplest possible v8-compatible skill should still pass lint. If this fixture ever
 starts failing lint without a deliberate schema change, the lint check has
 regressed or grown a new required field that this fixture should adopt
 together with the canonical library.

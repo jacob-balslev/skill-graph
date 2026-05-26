@@ -3,7 +3,7 @@
 > Status: Complete · 2026-05-16 · Phase 0c gate verdict **PASS**
 > Author: Opus 4.7 continuation session, post-Phase-1 v5 schema bump
 > Closes the Phase 0 gate trio (0a retrieval baseline · 0b sample-migration review · 0c consumer audit).
-> Reference: [`docs/plans/skill-taxonomy-v5-and-gap-fill.md`](/Users/jacobbalslev/Development/docs/plans/skill-taxonomy-v5-and-gap-fill.md) § Phase 0c
+> Reference: `../docs/plans/skill-taxonomy-v5-and-gap-fill.md` § Phase 0c
 
 ## Brief
 
@@ -11,10 +11,10 @@ Per the v5 plan: grep every file in `skill-graph/scripts/` and `Development/scri
 
 ## Key finding up front
 
-**The v5 `category` closed enum cannot break any current Development consumer**, because the v5 137-skill library at `/Development/skills/skills/<name>/SKILL.md` and the v3 282-skill broader library at `/Development/skills/<name>/SKILL.md` are **physically separate directories with separate schemas, read by separate tooling**.
+**The v5 `category` closed enum cannot break any current Development consumer**, because the v5 137-skill library at `<workspace>/skills/skills/<name>/SKILL.md` and the v3 282-skill broader library at `<workspace>/skills/<name>/SKILL.md` are **physically separate directories with separate schemas, read by separate tooling**.
 
 ```
-/Users/jacobbalslev/Development/skills/
+<workspace>/skills/
 ├── <282 v3 skills>/SKILL.md       ← read by Development/scripts/skill/* (v3 schema: type/family/layer)
 ├── _meta/                          ← v3 registry / docs
 ├── _archived/
@@ -30,7 +30,7 @@ Phase 5 (broader-library migration) will eventually merge these schemas; at that
 
 ```bash
 # Skill-graph (v5) consumers
-cd /Users/jacobbalslev/Development/skill-graph
+cd <workspace>/skill-graph
 grep -rn --include='*.js' --include='*.ts' --include='*.mjs' \
   -E '(\.category|\["category"\]|\.domain|\.family)' scripts/
 
@@ -40,7 +40,7 @@ grep -rn --include='*.js' --include='*.ts' --include='*.mjs' \
   scripts/
 
 # Development workspace
-cd /Users/jacobbalslev/Development
+cd <workspace>
 grep -rn --include='*.js' --include='*.ts' --include='*.mjs' \
   -E '(\.category|\["category"\]|\.domain|\.family)' \
   scripts/skill/ scripts/docs/ scripts/lib/ scripts/infra/ scripts/memory/
@@ -158,11 +158,11 @@ Phase 1 (schema bump) landed clean. Phase 5 (broader library migration) is unblo
 
 ## Critical files referenced
 
-- `/Users/jacobbalslev/Development/skill-graph/scripts/skill-lint.js`
-- `/Users/jacobbalslev/Development/skill-graph/scripts/lint/check-category-enum.js`
-- `/Users/jacobbalslev/Development/skill-graph/scripts/generate-manifest.js`
-- `/Users/jacobbalslev/Development/skill-graph/scripts/migrate-category-to-enum.js`
-- `/Users/jacobbalslev/Development/skill-graph/schemas/skill.schema.json`
-- `/Users/jacobbalslev/Development/scripts/skill/skill-census.js`
-- `/Users/jacobbalslev/Development/scripts/shared/workspace-paths.js`
-- `/Users/jacobbalslev/Development/docs/plans/skill-taxonomy-v5-and-gap-fill.md`
+- `skill-graph/scripts/skill-lint.js`
+- `skill-graph/scripts/lint/check-category-enum.js`
+- `skill-graph/scripts/generate-manifest.js`
+- `skill-graph/scripts/migrate-category-to-enum.js`
+- `skill-graph/schemas/skill.schema.json`
+- `scripts/skill/skill-census.js`
+- `scripts/shared/workspace-paths.js`
+- `docs/plans/skill-taxonomy-v5-and-gap-fill.md`

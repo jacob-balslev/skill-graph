@@ -2,7 +2,7 @@
 
 > Type: Reference (measurement spec)
 > Status: v1 (2026-05-24). Companion to [skill-audit-multimodel-merge-v2.md](./skill-audit-multimodel-merge-v2.md).
-> Source: 2026-05-24 roundtable at `/Users/jacobbalslev/Development/.roundtable/skill-audit-2026-05-24/` (responses from GPT-5.5 and Gemini 3.1 Pro), plus `research-2026-state-of-art.md` (14 sources, 2024-2026).
+> Source: 2026-05-24 roundtable at `<workspace>/.roundtable/skill-audit-2026-05-24/` (responses from GPT-5.5 and Gemini 3.1 Pro), plus `research-2026-state-of-art.md` (14 sources, 2024-2026).
 
 ## Purpose
 
@@ -152,6 +152,6 @@ A future v3 should consider:
 
 - v2 protocol: [skill-audit-multimodel-merge-v2.md](./skill-audit-multimodel-merge-v2.md)
 - v1 protocol: [skill-audit-multimodel-merge.md](./skill-audit-multimodel-merge.md)
-- 2026-05-24 roundtable: `/Users/jacobbalslev/Development/.roundtable/skill-audit-2026-05-24/`
-- 2026-05-24 research file: `/Users/jacobbalslev/Development/.roundtable/skill-audit-2026-05-24/research-2026-state-of-art.md`
-- Retrospective: `/Users/jacobbalslev/Development/.roundtable/skill-audit-2026-05-24/retrospective-2026-05-19.md`
+- 2026-05-24 roundtable: `<workspace>/.roundtable/skill-audit-2026-05-24/`
+- 2026-05-24 research file: `<workspace>/.roundtable/skill-audit-2026-05-24/research-2026-state-of-art.md`
+- Retrospective: `<workspace>/.roundtable/skill-audit-2026-05-24/retrospective-2026-05-19.md`

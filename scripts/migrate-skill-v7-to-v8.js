@@ -8,7 +8,7 @@
  * keywords cap at 10.
  *
  * Driven by the v7→v8 restructure plan (compatibility-mode landing):
- *   /Users/jacobbalslev/.claude-profiles/jacobbalslev01/plans/we-should-clearly-look-wondrous-firefly.md
+ *   workspace-local plan: we-should-clearly-look-wondrous-firefly.md
  *
  * Architectural rule (per the plan's Phase 3 HITL gate): in dry-run mode,
  * write ONLY the per-skill mapping artifact (migration-mapping-v7-to-v8.json).
@@ -178,6 +178,165 @@ function inferKeywordsCap(currentKeywords) {
   return { value: arr.slice(0, 10), confidence: 'medium', reason: `${arr.length} keywords > 10, capped to first 10` };
 }
 
+// ---------------------------------------------------------------------------
+// Phase 4: apply a single batch (one subject at a time)
+// ---------------------------------------------------------------------------
+
+function loadArtifactSummary() {
+  if (!fs.existsSync(ARTIFACT_PATH)) {
+    throw new Error(`Artifact missing: ${ARTIFACT_PATH}. Run dry-run first.`);
+  }
+  const artifact = JSON.parse(fs.readFileSync(ARTIFACT_PATH, 'utf8'));
+  return artifact.summary.by_proposed_subject;
+}
+
+/**
+ * Apply v7→v8 frontmatter edits to one SKILL.md file in place.
+ *
+ * Edits applied (per the per-skill proposal in the artifact):
+ *   1. `schema_version: 7` → `schema_version: 8`
+ *   2. INSERT `subject: <value>` immediately after `category: ...` line
+ *   3. INSERT `operation: <value>` immediately after `type: ...` line
+ *   4. Update `scope: codebase` → `scope: project`, `scope: reference` → `scope: workspace`
+ *   5. Cap keywords[] if it exceeds 10 (truncate from end)
+ *
+ * The file uses either Agent-Skills-compatible encoding (everything nested
+ * under `metadata:`) or protocol-native (top-level fields). This function
+ * detects which by checking for the `metadata:` line, and uses the appropriate
+ * indentation.
+ *
+ * Compatibility mode: existing v7 fields (category, type, codebase/reference)
+ * are PRESERVED. New v8 fields are ADDED. This is per the plan's compatibility-
+ * mode landing rule: v8 skills carry both v7 and v8 fields during the
+ * migration window.
+ */
+function applyV8EditsToFile(skillPath, proposal) {
+  const raw = fs.readFileSync(skillPath, 'utf8');
+  const lines = raw.split('\n');
+  const isAgentSkillsEncoding = lines.some(l => /^metadata:\s*$/.test(l));
+  const indent = isAgentSkillsEncoding ? '  ' : '';
+
+  let changedFields = [];
+
+  // 1. schema_version bump.
+  for (let i = 0; i < lines.length; i++) {
+    if (new RegExp(`^${indent}schema_version: 7$`).test(lines[i])) {
+      lines[i] = `${indent}schema_version: 8`;
+      changedFields.push('schema_version: 7→8');
+      break;
+    }
+  }
+
+  // 2. Insert subject after category line (only if not already present).
+  const subjectAlreadyPresent = lines.some(l => new RegExp(`^${indent}subject:`).test(l));
+  if (!subjectAlreadyPresent) {
+    for (let i = 0; i < lines.length; i++) {
+      if (new RegExp(`^${indent}category:`).test(lines[i])) {
+        lines.splice(i + 1, 0, `${indent}subject: ${proposal.proposed.subject}`);
+        changedFields.push(`+subject: ${proposal.proposed.subject}`);
+        break;
+      }
+    }
+  }
+
+  // 3. Insert operation after type line (only if not already present).
+  const operationAlreadyPresent = lines.some(l => new RegExp(`^${indent}operation:`).test(l));
+  if (!operationAlreadyPresent) {
+    for (let i = 0; i < lines.length; i++) {
+      if (new RegExp(`^${indent}type:`).test(lines[i])) {
+        lines.splice(i + 1, 0, `${indent}operation: ${proposal.proposed.operation}`);
+        changedFields.push(`+operation: ${proposal.proposed.operation}`);
+        break;
+      }
+    }
+  }
+
+  // 4. Scope rename (codebase → project, reference → workspace).
+  if (proposal.current.scope !== proposal.proposed.scope) {
+    for (let i = 0; i < lines.length; i++) {
+      if (new RegExp(`^${indent}scope: ${proposal.current.scope}$`).test(lines[i])) {
+        lines[i] = `${indent}scope: ${proposal.proposed.scope}`;
+        changedFields.push(`scope: ${proposal.current.scope}→${proposal.proposed.scope}`);
+        break;
+      }
+    }
+  }
+
+  // 5. Keyword cap (truncate to 10).
+  if (proposal.current.keywords_count > proposal.proposed.keywords_count_post) {
+    for (let i = 0; i < lines.length; i++) {
+      const m = lines[i].match(new RegExp(`^${indent}keywords: "(\\[.+\\])"$`));
+      if (m) {
+        try {
+          const arr = JSON.parse(m[1].replace(/\\"/g, '"').replace(/\\\\/g, '\\'));
+          if (Array.isArray(arr) && arr.length > 10) {
+            const capped = arr.slice(0, 10);
+            const reJsonString = JSON.stringify(capped).replace(/"/g, '\\"');
+            lines[i] = `${indent}keywords: "${reJsonString}"`;
+            changedFields.push(`keywords: ${arr.length}→10`);
+          }
+        } catch (_err) { /* leave unchanged */ }
+        break;
+      }
+      // Plain YAML array form (protocol-native).
+      const m2 = lines[i].match(new RegExp(`^${indent}keywords:\\s*\\[(.+)\\]$`));
+      if (m2 && i === 0) {
+        // Skip — too risky to handle inline-flow arrays at top level.
+      }
+    }
+  }
+
+  const newContent = lines.join('\n');
+  if (newContent === raw) return { changed: false, fields: [] };
+
+  fs.writeFileSync(skillPath, newContent);
+  return { changed: true, fields: changedFields };
+}
+
+function applyBatch(subject) {
+  if (!fs.existsSync(ARTIFACT_PATH)) {
+    console.error(`FATAL: Artifact missing: ${ARTIFACT_PATH}. Run dry-run first.`);
+    process.exit(2);
+  }
+  const artifact = JSON.parse(fs.readFileSync(ARTIFACT_PATH, 'utf8'));
+  const batch = artifact.proposals.filter(p => !p.error && p.proposed.subject === subject);
+  if (batch.length === 0) {
+    console.error(`No skills in batch '${subject}'.`);
+    process.exit(1);
+  }
+
+  console.log(`Applying batch '${subject}' (${batch.length} skill(s)) ...`);
+  const results = [];
+  for (const proposal of batch) {
+    const fullPath = path.resolve(REPO_ROOT, proposal.path);
+    if (!fs.existsSync(fullPath)) {
+      console.error(`  SKIP ${proposal.skill}: file not found at ${proposal.path}`);
+      results.push({ skill: proposal.skill, status: 'skip', reason: 'file not found' });
+      continue;
+    }
+    try {
+      const res = applyV8EditsToFile(fullPath, proposal);
+      if (res.changed) {
+        console.log(`  ✓ ${proposal.skill}: ${res.fields.join(', ')}`);
+        results.push({ skill: proposal.skill, status: 'ok', fields: res.fields });
+      } else {
+        console.log(`  · ${proposal.skill}: no changes (already v8?)`);
+        results.push({ skill: proposal.skill, status: 'noop' });
+      }
+    } catch (err) {
+      console.error(`  ✗ ${proposal.skill}: ${err.message}`);
+      results.push({ skill: proposal.skill, status: 'error', error: err.message });
+    }
+  }
+
+  const ok = results.filter(r => r.status === 'ok').length;
+  const noop = results.filter(r => r.status === 'noop').length;
+  const err = results.filter(r => r.status === 'error').length;
+  const skip = results.filter(r => r.status === 'skip').length;
+  console.log(`\nBatch '${subject}' complete: ${ok} updated, ${noop} no-op, ${skip} skipped, ${err} errors`);
+  console.log(`Next: review the diff with 'git diff -- skills/' in ~/Development/skills/, then path-limited commit.`);
+}
+
 function proposeForSkill(skillPath) {
   const raw = fs.readFileSync(skillPath, 'utf8');
   const parsed = parseFrontmatter(raw);
@@ -247,11 +406,16 @@ function main() {
   const batchArg = batchIdx >= 0 ? argv[batchIdx + 1] : null;
 
   if (apply) {
-    console.error('FATAL: --apply mode is intentionally not yet implemented.');
-    console.error('       Phase 3 of the v7→v8 plan ships ONLY the dry-run mapping artifact.');
-    console.error('       The user reviews the artifact, flips ambiguous rows, and AUTHORIZES');
-    console.error('       per-batch application in Phase 4. Re-run without --apply.');
-    process.exit(2);
+    // Phase 4 apply mode: reads the existing artifact and applies the proposed
+    // changes to one batch. REQUIRES --batch <subject> to scope the apply;
+    // refuses to mutate all 147 skills in one call.
+    if (!batchArg) {
+      console.error('FATAL: --apply requires --batch <subject> to scope the migration.');
+      console.error('       Apply one subject at a time so each batch is a separate, reviewable commit.');
+      console.error(`       Available subjects: ${Object.keys(loadArtifactSummary()).join(', ')}`);
+      process.exit(2);
+    }
+    return applyBatch(batchArg);
   }
 
   const skillRoots = resolveSkillRoots();
@@ -295,7 +459,7 @@ function main() {
   const artifact = {
     generated_at: new Date().toISOString(),
     generator: 'scripts/migrate-skill-v7-to-v8.js',
-    plan: '/Users/jacobbalslev/.claude-profiles/jacobbalslev01/plans/we-should-clearly-look-wondrous-firefly.md',
+    plan: 'workspace-local plan: we-should-clearly-look-wondrous-firefly.md',
     summary: {
       total,
       successful: ok,

@@ -100,7 +100,7 @@ The v8 contract requires twelve canonical fields plus the v8 5-axis classificati
 | `version` | semver string | Skill content version (e.g. `1.2.0`). Bumped by the author. |
 | `subject` | enum (9 closed values) | **v8 axis 1** — Primary browse shelf and routing seed. One of: `code-engineering`, `quality-assurance`, `frontend-ui`, `design-craft`, `agent-ops`, `product-domain`, `knowledge-organization`, `meta-methods`, `data-analytics`. See § Classification — the 5-axis model § Axis 1. |
 | `operation` | enum (4 closed values, Bloom-grounded) | **v8 axis 2** — Cognitive operation enabled by loading this skill. One of: `know` (declarative content), `do` (procedural how-to), `decide` (judgment/triage), `modify` (transformative edit). Replaces v7's `type` field. See § Classification § Axis 2. |
-| `scope` | enum (3 closed values, renamed in v8) | **v8 axis 3** — Deployment targeting. One of: `portable` (any project), `workspace` (this workspace only), `project` (one specific project; requires `grounding`). v7→v8 alias normalization (`codebase`→`project`, `reference`→`workspace`) is documented in ONE canonical place: § Classification § Axis 3. Do not restate elsewhere. |
+| `scope` | enum (3 closed values, renamed in v8) | **v8 axis 3** — Deployment targeting. One of: `portable` (any project), `workspace` (this workspace only), `project` (one specific project; requires `grounding`). Legacy alias normalization is owned by § Classification § Axis 3. |
 | `owner` | string | Team, username, or tool that is responsible for keeping this skill current. |
 | `freshness` | ISO date | Date the skill body was last reviewed or updated. |
 | `drift_check` | object | Contains `last_verified` (ISO date) and optional `truth_source_hashes`. |
@@ -108,7 +108,7 @@ The v8 contract requires twelve canonical fields plus the v8 5-axis classificati
 | `eval_state` | enum | One of: `unverified`, `passing`, `monitored`. |
 | `routing_eval` | enum | One of: `absent`, `present`. |
 
-**v7 legacy required fields (retained, deprecated):** `type` (mapped from `operation`) and `category` (mapped from `subject`) are accepted by the schema during the v7 sunset window. Their values continue to be normalized so existing tooling reads consistent metadata; new skills should author the v8 axes only. See § Classification § Migration map for the field-by-field mapping.
+**v7 legacy required fields (retained, deprecated):** `type` (mapped from `operation`) and `category` (mapped from `subject`) are still required by the schema during the v7 sunset window. Their values continue to be normalized so existing tooling reads consistent metadata; new skills must author **both** the v7 fields and the v8 axes until the coordinated v7-removal lands. See § Classification § Migration map for the field-by-field mapping.
 
 ### Conditionally required
 
@@ -117,9 +117,9 @@ These fields are required only when a specific condition is met. The first three
 | Field | Required when | Enforced by |
 |---|---|---|
 | `extends` | `type: overlay` | schema `allOf` |
-| `grounding` | `scope: codebase` | schema `allOf` |
+| `grounding` | `scope: project` (or legacy alias `scope: codebase`) | schema `allOf` |
 | `superseded_by` | `stability: deprecated` | schema `allOf` |
-| `keywords` | `scope: codebase` OR `routing_bundles` is set | routing review / routing evals |
+| `keywords` | `scope: project` (or legacy alias `scope: codebase`) OR `routing_bundles` is set | routing review / routing evals |
 
 ### Optional (strongly recommended)
 
@@ -215,7 +215,7 @@ allowed-tools   # space-separated tool allowlist
 
 ### Classification — the 5-axis model
 
-> **v8 status (2026-05-25 migration complete).** All 147 skills now carry the v8 classification fields. The v7 fields (`category`, `categories`, `primaryCategory`, `layerPrimary`, `routingRole`, plus the renamed `scope` values `codebase`/`reference`) are retained for compatibility but are deprecated — they will be removed after the v7 sunset window. New skills should author v8 fields only. See [ADR 0017](docs/adr/0017-five-axis-classification-model.md).
+> **v8 status (2026-05-26 compatibility migration active).** The canonical source library now carries the v8 classification fields while the schema still requires the v7 legacy fields (`category`, `type`) during the sunset window. Scope alias normalization is owned by Axis 3 below. New skills must author both v7 and v8 axes until `SKILL_GRAPH.md § Current State` says the v7-removal has landed. See [ADR 0017](docs/adr/0017-five-axis-classification-model.md).
 
 Skills are classified on **five orthogonal axes**, each with a focused purpose. The axis names are deliberate: `subject` answers "what does this skill teach?", `operation` answers "what does it enable an agent to do?", `scope` answers "where does it apply?", `keywords` covers fuzzy activation, and `relations` covers typed edges to other skills.
 
@@ -233,17 +233,17 @@ The optional `subjects[]` array (max 2 entries, primary first) covers polyhierar
 
 The primary browse shelf and routing seed. Balance rule: each subject holds 5–25 skills; <5 = fold or recruit, >25 = subdivide via `domain`.
 
-| Value | Description | Verified count (post-v8 migration) |
+| Value | Description | Verified count (live manifest, 2026-05-26) |
 |---|---|---|
 | `agent-ops` | Agent orchestration, dispatch, lifecycle, multi-agent comms | 17 |
-| `code-engineering` | Backend, APIs, libraries, infrastructure, runtime | 36 |
+| `code-engineering` | Backend, APIs, libraries, infrastructure, runtime | 35 |
 | `frontend-ui` | UI components, layout, interaction, web framework specifics | 20 |
 | `design-craft` | Visual design, typography, brand, motion, design tokens | 20 |
 | `data-analytics` | Data viz, analytics, observability, financial display | 3 |
 | `quality-assurance` | Testing, a11y, perf, security, type-safety | 27 |
-| `meta-methods` | Methodology, reasoning, verification, decision frameworks | 6 |
+| `meta-methods` | Methodology, reasoning, verification, decision frameworks | 11 |
 | `knowledge-organization` | Taxonomy, semantics, classification, glossaries, ontology | 7 |
-| `product-domain` | Domain-specific (Shopify, Stripe, fulfillment, integrations) | 11 |
+| `product-domain` | Domain-specific (Shopify, Stripe, fulfillment, integrations) | 10 |
 
 **To propose a 10th subject value**: write an ADR in `docs/adr/` with (a) ≥5 existing skills that would label primarily under it, AND (b) evidence the value doesn't fit any existing subject by the disambiguation rules. Multi-fit secondaries belong in `subjects[1]`, not in a new top-level value.
 
@@ -258,7 +258,7 @@ What cognitive operation loading this skill enables. Replaces v7's `type` field 
 | `decide` | Analyze/Evaluate | Routing/judgment — choosing between options, dispatching other skills |
 | `modify` | (cross-cutting) | Context injection — shapes how other skills execute without executing itself |
 
-Verified post-migration distribution: `know` 98 (67%), `do` 46 (31%), `decide` 2 (1%), `modify` 1 (1%).
+Verified live-manifest distribution (2026-05-26): `know` 99, `do` 48, `decide` 2, `modify` 1.
 
 #### Axis 3 — `scope` (3 values, renamed in v8)
 
@@ -268,7 +268,7 @@ Verified post-migration distribution: `know` 98 (67%), `do` 46 (31%), `decide` 2
 | `workspace` | `reference` (renamed) | Cross-repo knowledge in a multi-repo workspace |
 | `project` | `codebase` (renamed) | Coupled to a specific repo; requires `grounding` block |
 
-All five values (the 3 v8 + 2 v7 legacy aliases) validate during the compatibility window. After v7 sunset, the legacy aliases are removed. Verified post-migration distribution: `portable` 95, `workspace` 49, `project` 3.
+All five values (the 3 v8 + 2 v7 legacy aliases) validate during the compatibility window. After v7 sunset, the legacy aliases are removed. Verified live-manifest distribution (2026-05-26): `portable` 102, `workspace` 49, `project` 1, `reference` 1.
 
 #### Axis 4 — `keywords` (≤10 capped)
 
@@ -284,7 +284,7 @@ The graph layer. Six edge types, cycle-checked on `depends_on` + `broader` + `na
 
 ### v7 Legacy Fields (compatibility-window holdovers)
 
-The following v7 fields remain in the schema for the duration of the v7→v8 compatibility window. Authors of new skills should use the v8 fields instead. The v7 codemod (`scripts/migrate-skill-v7-to-v8.js`) populates BOTH v7 and v8 fields on migrated skills so existing tooling continues to read either.
+The following v7 fields remain in the schema for the duration of the v7→v8 compatibility window. Authors of new skills must author both the v7 compatibility fields and the v8 fields until the schema removes the v7 requiredness. The v7 codemod (`scripts/migrate-skill-v7-to-v8.js`) populates BOTH v7 and v8 fields on migrated skills so existing tooling continues to read either.
 
 | Legacy field | v8 replacement | Status |
 |---|---|---|
@@ -294,11 +294,10 @@ The following v7 fields remain in the schema for the duration of the v7→v8 com
 | `layerPrimary` | dropped (1.4% adoption — orphaned workspace facet) | Retained, deprecated |
 | `routingRole` | dropped (1.4% adoption — orphaned workspace facet) | Retained, deprecated |
 | `type` | `operation` | Retained, deprecated |
-| `scope: codebase` | `scope: project` | Retained as an alias |
-| `scope: reference` | `scope: workspace` | Retained as an alias |
+| legacy `scope` aliases | see § Classification § Axis 3 | Retained during sunset |
 | `family`, `layer` | dropped before v7 | Already retired |
 
-#### Verified distribution for `category`/`type`/`scope` (pre-v8, 2026-05-24 audit)
+#### Historical distribution for `category`/`type`/`scope` (pre-v8, 2026-05-24 audit)
 
 These distributions motivated the v8 redesign. The v7 axes had weak discriminating power: 93% of skills shared `type: capability` and 67% shared `scope: portable`, leaving the routing load entirely on keywords/relations/description rather than the classification triple.
 
@@ -317,7 +316,9 @@ These distributions motivated the v8 redesign. The v7 axes had weak discriminati
 | **scope** (v7) | `portable` | 98 | 67% |
 | | `reference` | 49 | 33% |
 
-The v8 `subject` axis spreads `engineering`'s 40% across three subjects (`code-engineering`, `frontend-ui`, `data-analytics`) and the `operation` axis splits `capability`'s 93% via Bloom-grounded distinctions — restoring useful discriminating power to the classification.
+These are retained as design evidence, not current live counts. For current counts, use `SKILL_GRAPH.md § Current State` or generate a manifest and inspect `summary`.
+
+The v8 `subject` axis spreads `engineering`'s former 40% across three subjects (`code-engineering`, `frontend-ui`, `data-analytics`) and the `operation` axis splits `capability`'s former 93% via Bloom-grounded distinctions — restoring useful discriminating power to the classification.
 
 #### Disambiguation rules (apply in order when choosing v8 `subject` for a new skill)
 
@@ -342,7 +343,7 @@ The v8 `subject` axis spreads `engineering`'s 40% across three subjects (`code-e
 2. `eval_score >= 4.0` — grader score meets the quality bar.
 3. `routing_eval: present` — the skill has been verified in a routing eval.
 4. `drift_check.last_verified` within 90 days — skill has been recently verified against truth sources.
-5. For `scope: codebase` skills: `grounding.truth_sources` must be non-empty.
+5. For `scope: project` skills (and legacy `scope: codebase` aliases): `grounding.truth_sources` must be non-empty.
 
 **Pre-1.0 stance:** The library defaults all skills to `experimental` because the protocol and skill content are under active development. Skills are promoted to `stable` only when all five criteria above are met. This is intentional — a uniform `experimental` default correctly signals that the corpus as a whole is pre-1.0 and no stability guarantees are implied. As the audit loop completes more skills, the `by_stability` distribution in the manifest will become a meaningful quality signal. (Updated 2026-05-23 — SH-6309)
 
@@ -587,7 +588,7 @@ Authors who introduce a cross-domain `boundary[]` entry must move it to `anti_ex
 
 ### Grounding
 
-Required when `scope: codebase`. Describes where the skill's claims are anchored in the codebase.
+Required for project-scoped skills. See § Classification § Axis 3 for legacy scope aliases. Describes where the skill's claims are anchored in a specific project.
 
 ```yaml
 grounding:
@@ -687,7 +688,7 @@ Some legacy scope and type values are normalized by the manifest generator to th
 
 | Legacy value | Normalized to | Reason |
 |---|---|---|
-| `operational` (scope) | `codebase` | Operational = repo-specific |
+| `operational` (scope) | `project` | Operational = repo-specific |
 | `overlay` (scope) | `portable` | Overlay skills are cross-repo |
 | `generic` (scope) | `portable` | Generic = cross-repo applicable |
 | `doctrine` (type) | `capability` | A doctrine skill is a capability |

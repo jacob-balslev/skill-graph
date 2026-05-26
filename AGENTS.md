@@ -225,7 +225,7 @@ For any single Skill Metadata Protocol field (`name`, `description`, `type`, `sc
 |---|---|---|
 | **Normative spec** — required/optional, allowed values, enum, gate condition, version label, what the field *means* in the protocol | `SKILL_METADATA_PROTOCOL.md` | The binding contract. If this and another doc disagree, this wins. |
 | **Per-field human authoring prose** — when to use it, value choice criteria, examples, anti-patterns, common mistakes | `docs/field-reference.md` | The 78k authoring guide. Single biggest doc; agents lose half a turn budget here. Use anchor links when referencing from other docs. |
-| **Decision logic between values** — "should I pick `portable` vs `codebase`?", "when is `stability: stable` earned?", branching decision trees | `docs/field-decision-guide.md` | Decision tables only. Do not duplicate decision logic from `field-reference.md`; link to it. |
+| **Decision logic between values** — "should I pick `portable` vs `project`?", "when is `stability: stable` earned?", branching decision trees | `docs/field-decision-guide.md` | Decision tables only. Do not duplicate decision logic from `field-reference.md`; link to it. |
 | **Why the field exists** — design rationale, rejected alternatives, migration history that *justifies* the field's shape | `docs/field-rationale.md` | "Why this field, not the other thing." Edit when the field's purpose changes, not when its value semantics change. |
 | **Generated type/enum mirror** | `docs/field-reference.generated.md` | **NEVER hand-edit.** Run `node scripts/build-field-reference.js`. Source of truth is `schemas/skill.schema.json`. |
 | **Source-to-manifest projection** — how the authored value lands in the generated manifest | `docs/manifest-field-mapping.md` | Edit only when `scripts/generate-manifest.js` projection logic changes. |
@@ -335,8 +335,8 @@ For non-trivial new skills, write a short spec and plan first as described in `C
 - Keep `name:` lowercase and aligned with the parent directory.
 - Write `description:` as a routing contract: clear positive trigger plus explicit negative boundary.
 - Pick `type` honestly: `capability`, `workflow`, `router`, or `overlay`.
-- Pick `scope` honestly: `portable`, `reference`, or `codebase`.
-- Add `grounding` for `scope: codebase`.
+- Pick `scope` honestly: `portable`, `workspace`, or `project` (legacy aliases `reference` and `codebase` still validate during sunset).
+- Add `grounding` for `scope: project` or legacy `scope: codebase`.
 - Point every `relations.*` target at an existing sibling skill.
 - Keep `eval_artifacts`, `eval_state`, and `routing_eval` truthful.
 - Remove template teaching comments before committing a derived skill.
@@ -357,7 +357,7 @@ The Skill Graph evaluates four layers; each has its own surface and its own defi
 ### What a good comprehension eval looks like
 
 - **≥7 realistic scenarios** per skill — not trivia, not pattern-matching, not single-line "is this X" prompts. Each scenario should require the skill's specific judgment to answer correctly.
-- **Repo-grounded** when the skill is `scope: codebase`; spec/standard-grounded when `scope: reference`; principle-grounded when `scope: portable`.
+- **Project-grounded** when the skill is `scope: project` (or legacy `scope: codebase`); workspace/spec grounded when `scope: workspace` (or legacy `scope: reference`); principle-grounded when `scope: portable`.
 - **At least one negative expectation per eval** — what the answer must *not* say or do. Negative expectations catch silent scope reduction and softened-failure responses.
 - **Archetype-matched coverage:**
   - `capability` evals test domain correctness, scope boundaries, anti-pattern recognition.
@@ -511,7 +511,7 @@ One-shot umbrella entry point (recommended for bug reports and pre-PR sweeps):
 node bin/skill-graph.js doctor
 ```
 
-`doctor` runs every deterministic check in one pass — lint, protocol-check, manifest validate, routing-eval, export-verify, markdown links, overlap, and the unit smoke tests. Equivalent to `npm run verify` but invocable from any cwd that has the CLI installed.
+`doctor` runs the fast deterministic smoke subset — markdown links, protocol-check, doc drift, mirror freeze, schema constants, lint, and manifest validate. It is intentionally **not** equivalent to `npm run verify`; full verification still requires `npm run verify` from this repo because that also runs routing eval, export verification, overlap, and unit smoke tests.
 
 ### Internal `lib/` layout
 
@@ -569,7 +569,7 @@ Before pushing a sync to `jacob-balslev/skills`:
 - Every exported marketplace description is ≤ the marketplace limit (`node scripts/export-marketplace-skills.js --check`).
 - No protocol frontmatter has leaked through — the release repo's skills are plain Agent Skills shape, not v7 protocol shape.
 - All references in this repo's docs, READMEs, and scripts to the public URL go to `https://www.skills.sh/jacob-balslev/skills/`; references to the GitHub release repo go to `https://github.com/jacob-balslev/skills`.
-- **No internal/codebase-scoped skills in the release tree.** `export-marketplace-skills.js` now enforces a publication gate: it excludes any skill with `scope: codebase|operational` or `grounding_mode: repo_specific|repo_internal` (logged to stderr as `EXCLUDED from marketplace export`), and `PRIVACY_PATTERNS` fails `--check` on `sales-hub/` paths and internal DB-surface names. Before pushing the release repo, also verify the working tree directly — `git ls-tree --name-only HEAD` must show only the curated `skills/` tree plus governance files, and `git rev-list --count origin/main..HEAD` plus a scan for `sales-hub/` / secret patterns must come back clean. (See the 2026-05-20 incident: 284 `scope: operational` internal skills were committed-but-unpushed in the release repo's local `main` and would have published on a `git push`; SH-6281 tracks the structural fix. An allowlist `.gitignore` now blocks `git add -A`, but a deliberate `git add <internal-dir>` could still bypass it — verify before every push.)
+- **No internal/project-scoped skills in the release tree.** `export-marketplace-skills.js` now enforces a publication gate: it excludes any skill with `scope: project` (or legacy `scope: codebase|operational`) or `grounding_mode: repo_specific|repo_internal` (logged to stderr as `EXCLUDED from marketplace export`), and `PRIVACY_PATTERNS` fails `--check` on `sales-hub/` paths and internal DB-surface names. Before pushing the release repo, also verify the working tree directly — `git ls-tree --name-only HEAD` must show only the curated `skills/` tree plus governance files, and `git rev-list --count origin/main..HEAD` plus a scan for `sales-hub/` / secret patterns must come back clean. (See the 2026-05-20 incident: 284 `scope: operational` internal skills were committed-but-unpushed in the release repo's local `main` and would have published on a `git push`; SH-6281 tracks the structural fix. An allowlist `.gitignore` now blocks `git add -A`, but a deliberate `git add <internal-dir>` could still bypass it — verify before every push.)
 
 ### When skills.sh is wrong about us
 

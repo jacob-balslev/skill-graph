@@ -1,52 +1,67 @@
 {
-  "_doc": "Worked specimen of a gate-9 application eval (the schema consumed by evaluate-skill.js --mode application and graded by lib/audit/graders/application-comparative-grader-prompt.md). Demonstrates the A/B comparative shape for the canonical `database-migration` skill. Authored 2026-05-21 as the foundation for finding A1 of docs/plans/skill-library-as-lens-review-2026-05-21.md. NOT yet executed — execution requires the grader CLI + the --mode application wiring.",
-  "skill": "database-migration",
+  "_doc": "Worked specimen of a gate-9 application eval consumed by evaluate-skill.js --mode application and graded by lib/audit/graders/application-comparative-grader-prompt.md. Demonstrates the executable cases[] shape for the canonical database-migration skill. This sample is illustrative; live per-skill application evals belong under <skill>/evals/application.json.",
+  "skill_name": "database-migration",
+  "subject": "safe production database migrations",
   "mode": "application",
   "schema_version": 1,
-  "scenarios": [
+  "cases": [
     {
-      "id": "dbm-app-1",
-      "task": "Add a non-null `status` column with a default to the live, 80M-row `orders` table without taking write downtime. Produce the migration SQL and the deploy sequence.",
-      "artifact_kind": "task_prompt",
-      "artifact": "Table: orders (~80M rows, high write throughput). Requirement: add `status text not null default 'pending'`. Postgres 15, behind PgBouncer (transaction pooling).",
-      "scope_trigger": "raw-SQL migration on a live PostgreSQL table — squarely inside database-migration's declared scope.",
-      "criteria": [
-        { "id": "c1", "polarity": "positive", "behavior": "Splits into expand → contract phases (add nullable/defaulted column first, backfill, then enforce), rather than a single statement." },
-        { "id": "c2", "polarity": "guard", "behavior": "Does NOT emit `ADD COLUMN ... NOT NULL DEFAULT` as one blocking statement that rewrites/locks the 80M-row table." },
-        { "id": "c3", "polarity": "positive", "behavior": "Backfills in batches rather than a single `UPDATE` over all 80M rows." },
-        { "id": "c4", "polarity": "positive", "behavior": "Requires DDL on the unpooled/direct connection (not the PgBouncer transaction-pooled port)." },
-        { "id": "c5", "polarity": "positive", "behavior": "Provides a rollback / contract-phase plan across two deploys." }
+      "id": 1,
+      "scenario_type": "live-schema-change",
+      "criticality": "critical",
+      "red_herring": false,
+      "scenario": "Add a non-null status column with a default to the live, 80M-row orders table without taking write downtime.",
+      "context": "Table: orders (~80M rows, high write throughput). Requirement: add status text not null default 'pending'. Postgres 15, behind PgBouncer transaction pooling.",
+      "question": "Produce the migration SQL and deploy sequence.",
+      "expected_flags": [
+        "A single blocking ALTER with NOT NULL DEFAULT can rewrite or lock a large live table.",
+        "DDL must run on a direct/unpooled connection, not the PgBouncer transaction-pooled port."
       ],
-      "negative_expectations": [
-        "Must NOT claim a single ALTER is safe at this row count because there is a default.",
-        "Must NOT ignore the pooled-connection constraint for DDL."
+      "expected_fix_hints": [
+        "Use an expand-contract sequence: add nullable/defaulted column, backfill in batches, then enforce NOT NULL after verification.",
+        "Split the rollout across deploys and include rollback/contract-phase handling."
+      ],
+      "absent_signals": [
+        "Do not claim ADD COLUMN ... NOT NULL DEFAULT is safe merely because there is a default.",
+        "Do not ignore the pooled-connection constraint."
       ]
     },
     {
-      "id": "dbm-app-2",
-      "task": "Add a foreign key from `order_items.order_id` to `orders.id` on a 10M-row table without blocking writes.",
-      "artifact_kind": "task_prompt",
-      "artifact": "Tables: order_items (~10M rows), orders. Add FK order_items.order_id -> orders.id. Live traffic.",
-      "scope_trigger": "adding a foreign key to a large live table — inside scope.",
-      "criteria": [
-        { "id": "c1", "polarity": "positive", "behavior": "Adds the constraint as `NOT VALID` first, then `VALIDATE CONSTRAINT` in a separate step." },
-        { "id": "c2", "polarity": "guard", "behavior": "Does NOT add the FK in a single validated statement that takes a long lock / full table scan under an ACCESS EXCLUSIVE lock." }
+      "id": 2,
+      "scenario_type": "foreign-key-validation",
+      "criticality": "high",
+      "red_herring": false,
+      "scenario": "Add a foreign key from order_items.order_id to orders.id on a 10M-row live table without blocking writes.",
+      "context": "Tables: order_items (~10M rows) and orders. Live traffic continues during the rollout.",
+      "question": "What migration sequence should be used?",
+      "expected_flags": [
+        "Adding a fully validated foreign key inline on a large live table can take an unsafe lock and scan.",
+        "Validation should be decoupled from constraint creation."
       ],
-      "negative_expectations": [
-        "Must NOT recommend a plain `ADD CONSTRAINT ... FOREIGN KEY` validated inline on a 10M-row live table."
+      "expected_fix_hints": [
+        "Add the constraint as NOT VALID first.",
+        "Run VALIDATE CONSTRAINT in a separate step after checking data quality and operational timing."
+      ],
+      "absent_signals": [
+        "Do not recommend a plain ADD CONSTRAINT ... FOREIGN KEY validated inline on a 10M-row live table."
       ]
     },
     {
-      "id": "dbm-app-neg-1",
-      "task": "Refactor the React `<OrderTable>` component to use a virtualized list for performance.",
-      "artifact_kind": "task_prompt",
-      "artifact": "components/OrderTable.tsx renders 5,000 rows; scrolling janks. Make it smooth.",
-      "scope_trigger": "FALSE-POSITIVE PROBE — front-end component perf, NOT a database migration. database-migration should NOT meaningfully change behavior here; expected verdict for this scenario in isolation is FALSE_POSITIVE if the skill activates and steers the answer toward DDL.",
-      "criteria": [
-        { "id": "c1", "polarity": "guard", "behavior": "Loading database-migration does NOT push the answer toward SQL/DDL or away from the correct front-end virtualization solution." }
+      "id": 3,
+      "scenario_type": "frontend-performance-red-herring",
+      "criticality": "normal",
+      "red_herring": true,
+      "scenario": "Refactor the React OrderTable component to use a virtualized list for performance.",
+      "context": "components/OrderTable.tsx renders 5,000 rows and scrolling janks.",
+      "question": "How should the implementation be improved?",
+      "expected_flags": [
+        "This is a front-end rendering performance task, not a database migration task."
       ],
-      "negative_expectations": [
-        "Must NOT inject migration/DDL advice into a front-end virtualization task."
+      "expected_fix_hints": [
+        "Route to frontend performance/rendering guidance rather than SQL/DDL migration guidance."
+      ],
+      "absent_signals": [
+        "Must not inject migration or DDL advice into a front-end virtualization task."
       ]
     }
   ]
