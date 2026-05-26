@@ -165,11 +165,38 @@ check('v8 frontmatter missing operation fails', () => {
   }
 });
 
-check('scope: project validates (v8 rename)', () => {
-  const v8Project = { ...v8Base, scope: 'project', grounding: undefined };
-  delete v8Project.grounding;
+check('scope: project validates when grounding present (v8 rename)', () => {
+  // SH-6550: scope: project now requires grounding (parity with v7 scope: codebase).
+  // The schema's allOf rule was updated 2026-05-26 to require grounding on BOTH
+  // scope: codebase (v7) and scope: project (v8) — the docs always claimed this;
+  // the schema rule was missing the v8 alias before this fix.
+  const v8Project = {
+    ...v8Base,
+    scope: 'project',
+    grounding: {
+      domain_object: 'test',
+      grounding_mode: 'repo_specific',
+      truth_sources: [],
+      failure_modes: [],
+      evidence_priority: 'repo_code_first',
+    },
+  };
   const errors = validate(v8Project, SCHEMA);
-  if (errors.length > 0) throw new Error(`scope:project failed: ${errors.join('; ')}`);
+  if (errors.length > 0) throw new Error(`scope:project with grounding failed: ${errors.join('; ')}`);
+});
+
+check('scope: project WITHOUT grounding fails (v8 parity with v7 codebase)', () => {
+  // SH-6550: the inverse — scope: project without grounding must now FAIL,
+  // matching the existing v7 scope: codebase behavior.
+  const v8ProjectNoGrounding = { ...v8Base, scope: 'project' };
+  delete v8ProjectNoGrounding.grounding;
+  const errors = validate(v8ProjectNoGrounding, SCHEMA);
+  if (errors.length === 0) {
+    throw new Error('scope:project without grounding should have failed validation (SH-6550)');
+  }
+  if (!errors.some(e => e.includes("missing key 'grounding'") || e.includes('grounding'))) {
+    throw new Error(`expected missing-grounding error, got: ${errors.join('; ')}`);
+  }
 });
 
 check('scope: workspace validates (v8 rename)', () => {

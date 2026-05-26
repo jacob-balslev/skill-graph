@@ -118,10 +118,14 @@ schema_version: 7
 name: product-page-ux-review
 description: "Use when reviewing a product page's UX, visual hierarchy, interaction patterns, accessibility, and conversion-critical content. Do NOT use for backend Shopify API work, production incident debugging, or general copy editing outside the product-page experience."
 version: 1.0.0
+# v7 axes (still globally required by the schema)
 type: capability
 category: design
 domain: design/ux
 scope: project
+# v8 axes (additionally required when schema_version: 8 — author both during sunset)
+subject: design-craft
+operation: decide
 owner: design-platform
 freshness: "2026-05-13"
 drift_check:

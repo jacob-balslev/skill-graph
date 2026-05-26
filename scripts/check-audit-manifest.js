@@ -138,6 +138,34 @@ function listRunsForSkill(progressDir, skill) {
     .reverse();
 }
 
+// SH-6548: post-F23 the canonical library uses a nested layout
+// (~/Development/skills/skills/<subject>/<skill>/), not flat
+// (~/Development/skills/<skill>/). Resolve comprehension.json by checking
+// both shapes — flat first (back-compat for legacy deployments), then
+// nested via a recursive walk under <workspace>/skills/skills/.
+function resolveComprehensionPath(workspace, skill) {
+  const skillsRoot = path.join(workspace, 'skills');
+  // Try the flat layout first (matches legacy ~/Development/skills/<skill>/).
+  const flatPath = path.join(skillsRoot, skill, 'evals', 'comprehension.json');
+  if (fs.existsSync(flatPath)) return { path: flatPath, exists: true };
+  // Then the nested canonical layout (~/Development/skills/skills/<subject>/<skill>/).
+  const nestedRoot = path.join(skillsRoot, 'skills');
+  if (fs.existsSync(nestedRoot)) {
+    try {
+      const subjects = fs.readdirSync(nestedRoot, { withFileTypes: true })
+        .filter(d => d.isDirectory())
+        .map(d => d.name);
+      for (const subject of subjects) {
+        const nestedPath = path.join(nestedRoot, subject, skill, 'evals', 'comprehension.json');
+        if (fs.existsSync(nestedPath)) return { path: nestedPath, exists: true };
+      }
+    } catch (_) { /* fall through to MISSING */ }
+  }
+  // Truly missing — return the expected nested-canonical-shape path for the
+  // failure message; the message will tell the reader where the file SHOULD live.
+  return { path: flatPath, exists: false };
+}
+
 function main() {
   const args = parseArgs(process.argv.slice(2));
   const manifest = loadManifest();
@@ -161,8 +189,9 @@ function main() {
         checks.push({ skill, runId, status: 'unreadable', error: String(err.message || err) });
         continue;
       }
-      const comprehensionPath = path.join(skillsRoot, skill, 'evals', 'comprehension.json');
-      const comprehensionExists = fs.existsSync(comprehensionPath);
+      const resolved = resolveComprehensionPath(args.workspace, skill);
+      const comprehensionPath = resolved.path;
+      const comprehensionExists = resolved.exists;
       const claimsGraded = verdicts.comprehension && GRADED_COMPREHENSION_VERDICTS.has(verdicts.comprehension);
       // Category-error guard: a verdict.md that stamps an application-only enum
       // (APPLICABLE/MIXED/HARMFUL) into the comprehension slot is malformed. The

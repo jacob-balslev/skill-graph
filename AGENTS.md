@@ -5,6 +5,19 @@
 
 This repo defines the Skill Metadata Protocol and the Skill Graph reference toolchain. Treat it as a protocol/schema/tooling project, not as an agent runtime, hosted marketplace, persistent memory system, or prompt library.
 
+## TL;DR Index — read these sections FIRST for these task types
+
+| Task type | Read these sections first |
+|---|---|
+| **First time on this repo** | `~/Development/SKILL-SYSTEM-CHEAT-SHEET.md` (1 page) — workspace-level operator's manual for the three layers. |
+| **Authoring or editing any SKILL.md** | **STOP.** § "Work Modes — SYSTEM vs CONTENT" below. CONTENT mode runs ONLY via `/audit:audit | improve | evaluate | evolve`. Ad-hoc SKILL.md edits outside that loop are banned. |
+| **Editing the schema / audit script / audit prompt / protocol doc** | § "Work Modes" + § "Editing Rules" + § "Version Labels Are Earned, Not Bumped" |
+| **Per-field semantics (`name`, `description`, `scope`, etc.)** | § "Doc Ownership Map" → routes to `docs/field-reference.md` and 70+ other concept owners |
+| **Current state (counts, version, audit-loop maturity)** | `SKILL_GRAPH.md` § Current State — single source of truth |
+| **Per-skill audit checklist + runbook** | `SKILL_AUDIT_LOOP.md` § Part 2 (checklist) + § Part 3 (binding runbook) |
+| **Publishing to skills.sh** | § "Public Distribution — Canonical URL Contract" |
+| **Anything else** | § "Mission and Vision" (below) → § "Editing Rules" → § "Validation Commands" |
+
 <!-- SKILL-GRAPH-CHARTER v1 — CANONICAL SOURCE. This Mission/Vision + Three-Layers
      block is mirrored verbatim into every active Skill Graph project repo's AGENTS.md
      (currently: skill-graph, skills). If you change it here, update the mirrors in the

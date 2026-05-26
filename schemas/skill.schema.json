@@ -1133,7 +1133,7 @@
       "if": {
         "properties": {
           "scope": {
-            "const": "codebase"
+            "enum": ["codebase", "project"]
           }
         },
         "required": [
