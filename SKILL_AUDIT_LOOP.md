@@ -31,6 +31,23 @@ The loop exists to answer one question about each skill: **does it still teach a
 
 The audit is **not a lint-test factory.** We do not invent arbitrary internal structural checks to manufacture findings, and an empty findings report on a genuinely good skill is a **PASS** — not a failure to find work. `lint_verdict` / `structural_verdict` cover form, schema validity, and external marketplace mandates only — a **floor the skill must clear**, never the target it aims at. Passing lint says the skill is well-formed; it says nothing about whether the skill teaches well.
 
+### Anti-overfit guards for corpus-level improvement loops (added 2026-05-26)
+
+When the audit loop is driven across the corpus by a deterministic codemod or autonomous agent rather than one-skill-at-a-time human review, the Karpathy keep-or-revert discipline MUST be enforced at the per-skill level — not just the corpus level. The 2026-05-26 description-density sweep (`docs/plans/skill-organization-karpathy-loop-2026-05-26.md`) surfaced the exact failure mode this rule prevents:
+
+- Corpus mean: density 31.7 → 42.0 (clear improvement at the aggregate).
+- 51 skills improved, 99 unchanged, **3 skills (`compression`, `methodology`, `prioritization`) regressed** because the deterministic reorder pushed keyword-dense content past the 250-char cap. The corpus-mean improvement masked the per-skill regressions.
+
+Mandatory guards for any corpus-touching improvement loop:
+
+1. **Per-skill keep-or-revert, not corpus-mean keep-or-revert.** A score that improves the mean is not sufficient — each individual skill's score must not drop. Tools that batch-apply must pre-score each skill, simulate the change, score again, and revert per-skill on any net regression.
+2. **Frozen anchor first.** Before any skill is touched, snapshot the routing-eval baseline (`evals/retrieval-baseline-frozen-YYYY-MM-DD.json`). Compare against the frozen anchor, never against a moving baseline.
+3. **Corpus-mean regression check between batches.** After every N skills processed (recommend ≤ 20), re-run the frozen-baseline routing-eval. If R@1 drops > 0.5pp, STOP — do not continue the batch.
+4. **Plateau-breaker.** Cap edit attempts per skill at 5. After 5 stale attempts (no improvement), park the skill for human review rather than continuing automated rewrites that may overfit the scalar metric.
+5. **Multi-dimensional health check.** Improving one dimension (description density) must not regress another (keyword visibility, routing precision, comprehension verdict). Score against the full 7-dimension organization scorecard or equivalent multi-axis check.
+
+These guards are themselves anti-Shopify-ThemeRunner discipline (per the 2026-05-19 incident where a Karpathy autoresearch loop produced a 53% speedup Lütke called "probably overfit"). The rule reduces to: *define the metric before the agent touches a file; verify the metric cannot be gamed; check per-skill before declaring corpus-wide success.*
+
 ### Two Gates, One Quality Claim
 
 The loop has two gates. They must not be blended into one PASS/FAIL label:

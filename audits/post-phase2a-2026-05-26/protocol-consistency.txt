@@ -1,0 +1,11 @@
+Running protocol consistency checks...
+
+C1 Field-set parity... OK
+C2 Authored-to-generated parity... OK
+C3 Artifact-root convention... OK
+C4 Sample manifest correctness... OK
+C5 Example truth invariants... OK
+C7 Generated field-reference parity... OK
+C8 JSON-LD context coverage... OK
+
+PASS: all protocol consistency checks passed. 0 warning(s).

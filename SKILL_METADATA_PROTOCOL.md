@@ -203,6 +203,7 @@ allowed-tools   # space-separated tool allowlist
 - Lead with a trigger clause: `"Use when…"` or `"Activates for…"`.
 - Include an explicit negative boundary: `"Do NOT use for…"`.
 - Keep this focused on routing. The `## Coverage` section inside the body carries the full scope detail.
+- **Both clauses MUST land in the first 250 characters.** Claude Code v2.1.86+ imposed an undocumented 250-character display cap on the `/skills` system reminder listing (verified: [claude-code #40121](https://github.com/anthropics/claude-code/issues/40121), [#44780](https://github.com/anthropics/claude-code/issues/44780)). Characters 251-1024 are silently invisible to auto-invocation — a skill whose disambiguation lands at char 300 will not auto-fire even when it should. Verify with `node scripts/check-description-density.js --skill <name>`; aim for a `density_score ≥ 50`. Total length up to the protocol maximum of 1024 chars remains valid for human-readable rationale, marketplace export, and downstream tooling that reads the full field — only auto-invocation is capped.
 
 **`version`**
 - Semver format: `x.y.z`. Bumped when the skill's instructional content changes.
