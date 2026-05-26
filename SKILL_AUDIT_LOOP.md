@@ -42,14 +42,19 @@ The loop has two gates. They must not be blended into one PASS/FAIL label:
 
 The Integrity Gate is required before release because broken metadata poisons the graph. It never certifies skill usefulness. The Behavior Gate is what certifies teaching efficacy; a skill with `application_verdict: UNVERIFIED` is honest, but it is not yet proven useful. A skill is audit-complete only when the Integrity Gate passes and the Behavior Gate is either passed or explicitly left `UNVERIFIED` / `NA` with evidence explaining why behavioral certification was not run.
 
-### Current maturity — honest self-location (2026-05-24)
+### Current maturity — honest self-location (updated 2026-05-26 post-F14)
 
-Mapping the loop onto Google's MLOps maturity model (Level 0 manual → Level 1 pipeline automation with continuous training → Level 2 CI/CD for the pipeline itself):
+Mapping the loop onto Google's MLOps maturity model (Level 0 manual → Level 1 pipeline automation with continuous training → Level 2 CI/CD for the pipeline itself). **The two gates are at different maturity tiers for different reasons — do not bundle them as "both at L0":**
 
-- **Integrity tooling ≈ Level 1; Integrity verdict write-back ≈ Level 0.** `lint`, `manifest:validate`, `routing-eval`, `export:verify-skill-md`, `overlap`, and unit tests run deterministically corpus-wide in CI, but the generated manifest still reports `structural_verdict: UNVERIFIED` and `truth_verdict: UNVERIFIED` on all 147 skills until audit write-back records those layer verdicts.
-- **Behavior Gate ≈ Level 0.** `comprehension_verdict` and `application_verdict` are `UNVERIFIED` on **every** skill — the graders that would populate them have not yet run on a live skill (verified 2026-05-24 against `examples/skills.manifest.sample.json`). The "continuous training" analog of MLOps Level 1 — re-grading skills as the foundation model and the cited artifacts drift — is the discriminating capability the loop is built for but does not yet exercise.
+- **Integrity Gate ≈ Level 1 (runner + write-back both complete).** `lint`, `manifest:validate`, `routing-eval`, `export:verify-skill-md`, `overlap`, and unit tests run deterministically corpus-wide in CI. Verdict write-back is wired post-F14 (commit `fbdf598`, 2026-05-25): `audit` now lands `last_audited`, `lint_verdict`, `structural_verdict`, and `truth_verdict` onto the skill's Health Block. As of 2026-05-26, the gate is operationally complete — pending only a corpus-wide first-run sweep to advance every skill from `UNVERIFIED` to its real verdict.
+- **Behavior Gate runner ≈ Level 1; Behavior Gate eval *data* ≈ Level 0.** This is the key asymmetry the prior framing hid. The runner — `evaluate-skill.js` — IS wired to write `comprehension_verdict` and `application_verdict` to the Health Block (`evaluate-skill.js:1443-1508`, uses `updateFrontmatterField`). What's missing is the eval **artifacts**: only ~12/147 skills have `comprehension.json`; 0/147 have `application.json`. Authoring the ~290 missing eval artifacts is the L0→L1 lift, not building the runner.
 
-This is the honest state, not a defect to mask: `application_verdict: UNVERIFIED` is the correct default and must never be stamped to `APPLICABLE` without an `eval_last_run` receipt. The path to Level 1 for the Behavior Gate is a runnable `evolve` (the corpus-walker / CT loop, tracked standalone in SH-6138) plus at least one application grader wired into CI. Until then, the deterministic checks are live, while the four Health Block verdict fields remain intentionally unearned unless an audit/eval run writes evidence. See the gate-9 design notes in `docs/research/design-review-best-practices-2026-05-21.md § 3` (LLM-as-judge: boolean per-criterion checklist, CoT, calibrate to >85% human agreement, never stamp without a receipt).
+This distinction matters operationally:
+
+- **Integrity work today** = run the corpus-wide first sweep; the next `evolve` run lands real verdicts on every skill.
+- **Behavior work today** = author eval data per skill; runner is ready and waits on the data.
+
+`application_verdict: UNVERIFIED` is still the correct default and must never be stamped to `APPLICABLE` without an `eval_last_run` receipt. The path to Level 1 for the Behavior Gate is the ~290 eval artifacts plus at least one application grader wired into CI (tracked standalone in SH-6138). See the gate-9 design notes in `docs/research/design-review-best-practices-2026-05-21.md § 3` (LLM-as-judge: boolean per-criterion checklist, CoT, calibrate to >85% human agreement, never stamp without a receipt).
 
 ## The Four Operations
 

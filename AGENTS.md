@@ -400,11 +400,22 @@ The audit loop is the disciplined sweep that validates a skill (or a batch of sk
 - When the routing eval shows a regression that points at specific skills.
 - On a recurring cadence for the active library (typically per cycle).
 
+### Two operating modes (added 2026-05-26 per SH-6505)
+
+The audit operation has two valid modes — they are not in tension:
+
+| Mode | When to use | Effect | Canonical contract |
+|---|---|---|---|
+| **Diagnostic audit (report-only)** | First sweep, pre-release scan, multi-model roundtable, anything where you want the verdict before deciding on fixes. | Runs lint + drift + (optionally graded) phases, stamps the Integrity-layer Health Block fields, writes findings/verdict/scorecard artifacts. Does NOT mutate skill body or commit. | `SKILL_AUDIT_LOOP.md § Part 3` — Mode table row 1 |
+| **Remediation audit (fix + commit)** | Targeted run after `improve --field <name>` lands a fix; the audit confirms the verdict moved. | Same Integrity write-back + artifacts; the auditor then runs `improve` (or makes the explicit edit), re-audits to confirm, and commits skill + Health Block + artifacts together in one path-limited commit. | `SKILL_AUDIT_LOOP.md § Part 3` — Mode table row 2 |
+
+The summary below covers the diagnostic flow (the more common case in a clean sweep). For the remediation runbook see `SKILL_AUDIT_LOOP.md § Part 3 — Per-Skill Audit Runbook`.
+
 ### What the loop must produce
 
-A complete report — never a stepping stone to fixes. The audit deliverable is the report itself; remediation is a separate task created from the report.
+In **diagnostic mode**, the deliverable is a complete report. Remediation is a downstream task. In **remediation mode**, the deliverable is the report + the fix commit in one pass. Both modes preserve every finding — neither drops information.
 
-For every audited skill, the loop produces evidence on:
+For every audited skill (in either mode), the loop produces evidence on:
 
 1. **Schema conformance** — `node scripts/skill-lint.js skills/<name>/SKILL.md` clean, no warnings hidden behind filters.
 2. **Manifest parity** — the skill round-trips through `scripts/generate-manifest.js` without drift.
@@ -427,7 +438,7 @@ Findings carry a severity column drawn from a fixed schema — `CRITICAL` (contr
 - Severity inflation/deflation to land at a desired total — distorts the priority signal.
 - Filing audit findings into Linear without first stating them in the report — splits truth across surfaces.
 - Marking a skill `eval_state: passing` as part of an audit without running the eval in the same change.
-- Marking a finding "fixed" inside the audit report — the audit is report-only; fixes are downstream tasks.
+- Marking a finding "fixed" inside a **diagnostic** audit report — diagnostic mode is report-only; fixes belong in a downstream task or in a **remediation** audit (which commits the fix in the same pass, see § Two operating modes).
 
 ## Validation Commands
 
