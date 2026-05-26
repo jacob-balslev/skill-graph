@@ -28,9 +28,9 @@ function readJson(relPath) {
   return JSON.parse(fs.readFileSync(path.join(REPO_ROOT, relPath), 'utf8'));
 }
 
-function runCheck(scriptRelPath, label) {
+function runCheck(scriptRelPath, label, extraArgs = []) {
   const t0 = Date.now();
-  const r = spawnSync('node', [scriptRelPath], {
+  const r = spawnSync('node', [scriptRelPath, ...extraArgs], {
     cwd: REPO_ROOT,
     encoding: 'utf8',
     timeout: 60_000,
@@ -167,6 +167,12 @@ function main() {
     runCheck('scripts/check-protocol-consistency.js', 'check-protocol-consistency'),
     runCheck('scripts/check-doc-drift.js', 'check-doc-drift'),
     runCheck('scripts/check-mirror-freeze.js', 'check-mirror-freeze'),
+    runCheck('scripts/export-marketplace-skills.js', 'marketplace-export-check', ['--check']),
+    // NOTE: skill-graph-drift.js and check-audit-manifest.js are intentionally
+    // NOT surfaced here — they are gated by CONTENT-side audit-loop work
+    // (audit findings H9 and H10, 2026-05-27). Surface them once the per-skill
+    // drift baselines are re-recorded and the comprehension.json artifacts are
+    // committed for the 15 graded-comprehension claims.
   ];
 
   const state = { pkg, schema_version, skill_count, mirror_status, generated_at, checks };
