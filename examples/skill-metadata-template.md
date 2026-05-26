@@ -49,7 +49,10 @@
 # routable in day-to-day skill dispatch — `scope: reference` keeps it out of
 # the normal routing pool.
 # ============================================================================
-schema_version: 7
+# schema_version: protocol contract version this skill conforms to.
+# Integer 7 or 8. v8 is canonical (2026-05-26 — v7 classification fields
+# deprecated). v7 still validates against the schema's `required` array.
+schema_version: 8
 name: skill-metadata-template
 # TEMPLATE NOTE: Be pushy in your description — Claude tends to under-trigger
 # skills, so descriptions should read as commands ("Use when X", "Activate
@@ -65,25 +68,52 @@ name: skill-metadata-template
 # for Anthropic's own guidance on pushy descriptions.
 description: "Use when creating a new SKILL.md, adapting an existing skill to a different archetype, or teaching an author the canonical frontmatter and body structure. Covers schema-conformant frontmatter, archetype-aware body layout, semantic-layer discipline (description vs Coverage), teaching-layer mechanics (TEMPLATE NOTE blockquotes and YAML comments), and the authoring gate. Do NOT use when modifying an already-written skill (edit that skill directly) or when writing general technical documentation (use `docs-development`)."
 version: 1.0.0
-type: capability
-# TEMPLATE NOTE: category is the closed six-value enum — exactly one of:
-# foundations / engineering / design / quality / agent / product. See
-# docs/skill-metadata-protocol.md § Category and SKILL_METADATA_PROTOCOL.md §
-# Classification for the full contract. The scaffold itself is an agent-system authoring
-# tool, hence `agent`; replace with the correct value for your subject when
-# adapting.
-category: agent
-# TEMPLATE NOTE: domain is the OPTIONAL hierarchical domain path (slash-
-# delimited, lowercase kebab-case segments). Use it only when the skill library
-# is large enough that a tree structure helps readers find related skills.
-# Remove this line entirely when the flat `category` above is sufficient.
+
+# === v8 Classification (5-axis model — see ADR-0017) ===
+
+# subject: primary browse shelf — what the skill teaches. One of nine closed values:
+# code-engineering / quality-assurance / frontend-ui / design-craft / agent-ops /
+# product-domain / knowledge-organization / meta-methods / data-analytics.
+subject: agent-ops
+
+# operation: cognitive operation enabled (Bloom-grounded). One of four closed values:
+# know (declarative — concepts, vocabulary, reference) /
+# do (procedural — step-by-step execution) /
+# decide (judgment — choosing, dispatching) /
+# modify (context injection — shapes how other skills execute).
+operation: know
+
+# scope: deployment targeting. One of three closed values:
+# portable (any project) / workspace (this workspace only) /
+# project (one specific repo; requires populated `grounding` block).
+# Legacy v7 aliases `reference` → `workspace` and `codebase` → `project` still validate.
+scope: workspace
+
+# domain: optional hierarchical sub-path within `subject`.
+# Slash-delimited lowercase kebab-case segments (e.g., `agent/skill-system`).
+# Use only when the library is large enough that a tree structure helps readers
+# find related skills. Remove this line entirely when the flat `subject` is sufficient.
 domain: agent/skill-system
-scope: reference
+
+# === v7 Classification (DEPRECATED 2026-05-26 — kept for back-compat only) ===
+# Authors of NEW skills must NOT carry `type` / `category` / `categories`
+# / `primaryCategory` / `layerPrimary` / `routingRole`. The schema currently
+# still accepts them as optional properties pending schema-level removal.
+# When adapting this template, DELETE this section + the two fields below.
+
+# type: v7 classification — DEPRECATED, replaced by `operation`.
+# Legacy values: capability / workflow / router / overlay.
+type: capability
+
+# category: v7 classification — DEPRECATED, replaced by `subject`.
+# Legacy values: foundations / engineering / design / quality / agent / product.
+category: agent
+
 owner: skill-graph-maintainer
 freshness: "2026-04-17"
-# TEMPLATE NOTE: drift_check is an object. `last_verified` is required.
-# `truth_source_hashes` is optional — record it with `node scripts/skill-graph-drift.js
-# --record --apply <skill-dir>`.
+# drift_check: truth-source verification record. Object with required
+# `last_verified` (ISO date) and optional `truth_source_hashes`.
+# Record hashes with: `node scripts/skill-graph-drift.js --record --apply <skill-dir>`.
 drift_check:
   last_verified: "2026-04-17"
 # === Eval-health: three orthogonal axes ===
@@ -118,35 +148,34 @@ eval_state: unverified
 # derived copy, leave this line `absent` at first commit; flip to `present` only
 # after the harness exits 0 on YOUR skill's own examples + anti_examples.
 routing_eval: absent
-# TEMPLATE NOTE: Optional. Populate eval_last_run only after the skill has a
-# real eval receipt (scorecard, grader history, CI run). Leave it absent for a
-# brand-new skill with eval_state: unverified.
+# eval_last_run: optional eval receipt. Shape:
+#   { at, status, runner?, model?, receipt?, receipt_hash? }
+# Populate ONLY after the skill has a real eval run (scorecard, grader history,
+# CI). Leave commented-out for a brand-new skill with eval_state: unverified.
 # eval_last_run:
 #   at: "2026-05-12T09:30:00Z"
 #   status: pass
 #   runner: "node scripts/skill-audit.js --graded"
 #   receipt: "examples/audits/<skill>/scorecard.md"
-# TEMPLATE NOTE: stability values are `experimental` / `stable` / `frozen` /
-# `deprecated`. When you move a skill to `deprecated`, the schema's `allOf`
-# rule REQUIRES you to also add `superseded_by: <replacement-skill-name>` —
-# without it the skill fails validation. A deprecated + superseded skill looks
-# like:
-#
-#   stability: deprecated
-#   superseded_by: new-skill-name
-#
-# The replacement must be a real skill in the same library. Omit `superseded_by`
-# for any stability other than `deprecated`. See `docs/field-reference.md §
-# superseded_by` for the full rules and the schema's `allOf` enforcement.
+# stability: lifecycle marker. One of:
+# experimental (active development) / stable (production-ready) /
+# frozen (no further changes expected) / deprecated.
+# When `deprecated`, schema's allOf REQUIRES `superseded_by: <real-skill-name>`
+# pointing at an existing skill — otherwise validation fails. Omit
+# `superseded_by` for any other stability value. See docs/field-reference.md
+# § superseded_by for the full allOf contract.
 stability: stable
 license: MIT
-# TEMPLATE NOTE: compatibility is an object. Prefer structured fields
-# (`runtimes`, `node`) over free-text `notes`.
+# compatibility: runtime compatibility object. Prefer structured fields
+# (`runtimes`, `node`) over free-text `notes`. Some Agent-Skills encoders
+# still accept a top-level string `compatibility:` — the protocol-native
+# shape is always the object.
 compatibility:
   notes: "Markdown, YAML, JSON Schema"
 allowed-tools: Read Grep
-# TEMPLATE NOTE: keywords are the pushy activation surface for authoring tasks.
-# Keep terms that a human would type when starting a new skill.
+# keywords: pushy activation surface — array of semantic phrases the router
+# tokenizes for fuzzy matching. v8 cap: max 10. Keep terms a user would
+# actually type when starting a task in this skill's domain.
 keywords:
   - how to write a SKILL.md file
   - SKILL.md frontmatter YAML
@@ -161,45 +190,44 @@ keywords:
 # Remove this block if your skill activates only by keyword or path matching.
 triggers:
   - skill-metadata-template
-# TEMPLATE NOTE: paths is present because this template is the entry point whenever
-# examples/skill-metadata-template.md itself is touched. the protocol supports gitignore-style negation —
-# e.g. `- "!skills/experimental/**"` excludes a subdirectory from an otherwise broad
-# glob. Remove this block if your skill is purely conceptual and has no file surface.
+# paths: glob array of code surfaces this skill governs. Supports gitignore-
+# style negation (e.g., `- "!skills/experimental/**"`). Each glob should map
+# to ONE canonical skill — overlapping globs produce router ambiguity that
+# the scope tiebreaker resolves arbitrarily. `scripts/skill-overlap.js`
+# reports shared keyword recall as INFO. Omit this block if the skill is
+# purely conceptual with no file surface.
 #
-# Previous versions of this block also listed `skills/**/SKILL.md` but that glob is
-# owned by `skill-infrastructure` (the audit tooling that verifies every SKILL.md against the
-# schema). Two skills claiming the same glob produces router ambiguity — the scope
-# tiebreaker (`codebase` > `reference`) picks skill-infrastructure anyway, and reference-scope
-# skills are looked-up rather than path-routed. Lesson: each path glob should map to
-# ONE canonical skill; `scripts/skill-overlap.js` reports shared keyword recall as INFO.
+# TEMPLATE NOTE: paths is present here because this template is the entry
+# point whenever examples/skill-metadata-template.md is touched. Previous
+# versions also listed `skills/**/SKILL.md` but that glob is owned by
+# `skill-infrastructure`; tiebreaker picks it anyway.
 paths:
   - examples/skill-metadata-template.md
-# TEMPLATE NOTE: examples is new in v0.5.0. 2–5 realistic user prompts the skill
-# SHOULD activate for. Improves retrieval recall over keywords alone. Write in
-# the user's voice, not imperative abstract form. See docs/field-reference.md §
-# examples for full guidance. Omit this block for purely label-routed skills.
+# examples: 2-5 realistic user prompts the skill SHOULD activate for.
+# Written in the user's voice, not imperative abstract form. Improves
+# retrieval recall beyond keywords alone. Omit for purely label-routed skills.
+# Introduced in v0.5.0. See docs/field-reference.md § examples.
 examples:
   - "I'm writing a new skill from scratch — where do I start?"
   - "how do I pick between capability and workflow for my skill type?"
   - "what's the difference between description and the ## Coverage section?"
-# TEMPLATE NOTE: anti_examples names near-miss prompts that should route ELSEWHERE.
-# Pair with relations.boundary to tell the router which skill owns the confusable
-# territory. Leave this block absent until you have seen the router misfire —
-# speculative anti_examples rarely match reality. See docs/field-reference.md §
-# anti_examples.
+# anti_examples: near-miss prompts that should route ELSEWHERE.
+# Pair with relations.boundary to tell the router which skill owns the
+# confusable territory. Leave absent until you have SEEN the router misfire;
+# speculative anti_examples rarely match reality.
+# See docs/field-reference.md § anti_examples.
 anti_examples:
   - "refactor this skill to be more concise"           # → refactor, not authoring
   - "my skill's routing isn't activating — why?"       # → skill-router, not template
-# TEMPLATE NOTE: workspace_tags replaces v3 project_tags. Omit it for ambient / cross-project
-# skills (the common case). Add literal project handles or semantic tags when
-# the skill is relevant to a subset of projects in a multi-project workspace.
-# See docs/field-decision-guide.md § 4 for the full decision tree.
+# workspace_tags: array of project handles or semantic tags. Replaces v3
+# `project_tags`. Omit for ambient / cross-project skills (the common case).
+# Add literal handles or semantic tags when the skill is relevant to a subset
+# of projects in a multi-project workspace. Workspace config at
+# `.skill-graph/config.json` maps literal handles to tag sets, so one
+# semantic tag reaches many projects. See docs/field-decision-guide.md § 4.
 #
-# Example — this template is useful across every skill-authoring project, but
-# the semantic tag scopes it to the Skill Graph authoring workflow rather than
-# arbitrary project docs. A workspace config at `.skill-graph/config.json` can
-# map your literal project handles to tag sets that include `skill-authoring`,
-# so one tag reaches many projects.
+# TEMPLATE NOTE: this scaffold uses `skill-authoring` (semantic) because the
+# template applies across every skill-authoring project.
 workspace_tags:
   - skill-authoring
 relations:
@@ -224,9 +252,10 @@ relations:
   #   - docs-development
   boundary: []
   verify_with: []
-# TEMPLATE NOTE: grounding is REQUIRED for grounded skills that make concrete
-# repo claims. Remove this entire block if your skill has grounding_mode: universal
-# and does not anchor to truth sources in the repo.
+# grounding: required when `scope: project` (or legacy alias `scope: codebase`).
+# Declares the truth sources the skill anchors to (files, schemas, vendor docs)
+# and the failure modes those sources prevent. Omit this entire block when the
+# skill is universal-knowledge (grounding_mode: universal is implicit by absence).
 grounding:
   domain_object: Skill authoring for the Skill Metadata Protocol frontmatter
   grounding_mode: repo_specific
@@ -247,32 +276,32 @@ grounding:
     - description_coverage_collapse
     - authoring_gate_skipped
   evidence_priority: repo_code_first
-# TEMPLATE NOTE: portability declares which external agent runtimes this skill is
-# known to work on. `readiness` is the operational rating: `declared` (claim only),
-# `scripted` (export tooling exists), or `verified` (proven with a receipt). `targets`
-# is the list of destination runtimes. Today the supported portable target is `skill-md`
-# (see `schemas/skill.schema.json`). Other runtimes (cursor, windsurf, copilot, agents-md)
-# were removed from the enum in 0.3.0 pending working transforms — re-add via RFC if
-# adoption pressure appears. Remove this block if the skill is internal-only.
+# portability: external-runtime export claims. Object with:
+#   readiness — `declared` (claim only) / `scripted` (export tooling exists) /
+#               `verified` (proven with a receipt artifact).
+#   targets   — array; currently only `skill-md` is in the enum.
+# Other runtimes (cursor, windsurf, copilot, agents-md) were removed in 0.3.0
+# pending working transforms; re-add via RFC + matching transform.
+# Omit this block if the skill is internal-only.
 portability:
   readiness: scripted
   targets:
     - skill-md
-# TEMPLATE NOTE: lifecycle declares maintenance policy for the drift sentinel.
-# `stale_after_days` flags the skill as STALE when more than N days have passed
-# since `drift_check.last_verified`. Integration skills (third-party APIs) want
-# shorter values; pure-concept skills want longer. Omit if staleness is not
-# meaningful for your skill.
+# lifecycle: maintenance policy for the drift sentinel.
+# `stale_after_days` — skill flagged STALE when N days have passed since
+#                      `drift_check.last_verified`. Integration skills (third-
+#                      party APIs) want shorter; pure-concept skills longer.
+# `review_cadence`   — process commitment, not a calendar fact — don't lie.
+# Omit this block if staleness is not meaningful for your skill.
 lifecycle:
   stale_after_days: 180
   review_cadence: quarterly
-# TEMPLATE NOTE: runtime_telemetry is optional. It points at a JSONL feed of
-# real-world success/failure receipts so consumers can corroborate or override
-# `eval_state`. Omit the entire block when no feedback pipeline exists — the
-# skill is still graded on authored `eval_state` and `eval_artifacts`.
-# Each run receipt should carry at minimum `{ timestamp, skill, outcome }`.
-# `metrics.sample_size` and `metrics.success_rate` are the aggregate summary;
+# runtime_telemetry: optional pointer to a JSONL feed of real-world success
+# /failure receipts so consumers can corroborate or override `eval_state`.
+# Each receipt carries at minimum `{ timestamp, skill, outcome }`.
+# `metrics.sample_size` + `metrics.success_rate` are aggregate summaries;
 # consumers may compute their own from the raw feed.
+# Omit the entire block when no feedback pipeline exists.
 runtime_telemetry:
   feedback_source: .skill-graph/telemetry/skill-metadata-template.jsonl
   last_updated: "2026-04-17"
@@ -285,7 +314,7 @@ runtime_telemetry:
 
 > **SCAFFOLD — NOT A PRODUCTION SKILL.** This file is the starting point authors copy when creating a new skill. It lives at `examples/skill-metadata-template.md` deliberately; production skills live at `skills/<name>/SKILL.md`. The authoring flow is: copy → rename → adapt → strip teaching annotations → verify → commit. Until you have completed those steps, the file you are editing is a *scaffold*, not a skill.
 
-> **TEMPLATE NOTE — HOW TO READ THIS FILE:** This file is a real, valid, schema-conformant Skill Metadata Protocol skill whose *subject* is skill authoring itself. Read it as a finished specimen of the contract, then adapt it by (1) renaming the identity, (2) rewriting `description`, `## Coverage`, `## Philosophy of the skill`, and `## Key Files` for your subject, (3) rewriting `## Verification` to be your skill's self-check, (4) removing any section or field that does not apply to your archetype, and (5) stripping the `> **TEMPLATE NOTE:**` blockquotes and `# TEMPLATE NOTE:` YAML comments — they are authoring scaffolding, never skill content. Never ship placeholder sludge (`your-skill-name`, `path/to/file`, `todo`). If a section does not apply, remove it — do not keep it and fill it with fake content. (Section headings renamed 2026-05-26: `## Philosophy` → `## Philosophy of the skill`; `## Concept Card` → `## Concept of the skill`.)
+> **TEMPLATE NOTE — HOW TO READ THIS FILE:** This file is a real, valid, schema-conformant Skill Metadata Protocol skill whose *subject* is skill authoring itself. Read it as a finished specimen of the contract, then adapt it by (1) renaming the identity, (2) rewriting `description`, `## Coverage`, `## Philosophy of the skill`, and `## Key Files` for your subject, (3) rewriting `## Verification` to be your skill's self-check, (4) removing any section or field that does not apply to your archetype, and (5) stripping ONLY the **`# TEMPLATE NOTE:` YAML comments and `> **TEMPLATE NOTE:**` body blockquotes** (authoring scaffolding) — the **field-purpose comments STAY** in your derived skill (they are co-located documentation, not scaffolding). Verify with `grep -n "TEMPLATE NOTE" <derived-skill>` returning zero hits AND `grep -c "^\s*#" <derived-skill>` showing the field-purpose comments are preserved. Never ship placeholder sludge (`your-skill-name`, `path/to/file`, `todo`). If a section does not apply, remove it — do not keep it and fill it with fake content. (Section headings renamed 2026-05-26: `## Philosophy` → `## Philosophy of the skill`; `## Concept Card` → `## Concept of the skill`.) Convention spec: `SKILL_METADATA_PROTOCOL.md § Inline field comments — the authoring convention`.
 
 > **TEMPLATE NOTE — CONDITIONAL FIELDS:** `extends` is valid only when `type: overlay`. `routing_bundles` only applies when routing-group ownership is part of the skill contract. `triggers` and `paths` are shown because this template is both label-routable and file-activated; most skills need only one. `grounding` is REQUIRED for `scope: codebase` skills; remove the block entirely for `scope: portable` or `scope: reference`. `workspace_tags` is optional — omit for ambient / cross-project skills. `lifecycle` is optional — omit when staleness is not meaningful. `runtime_telemetry` is optional — omit when no feedback pipeline exists. Health Block fields live in the authored `SKILL.md`, but the audit/eval loop owns them; new-skill authors should leave them absent until a real audit or eval run writes evidence.
 
@@ -293,7 +322,7 @@ runtime_telemetry:
 
 - Frontmatter identity: `name`, `description`, `version`, `type`, `category`, `scope`, `owner`, and the governance fields required by every Skill Metadata Protocol skill
 - Semantic layer discipline: how `description:` (routing contract, ≤ 3 sentences) differs from `## Coverage` (scope map, bulleted topic list) and why each must stay in its own layer
-- Teaching-layer delivery: how to use `> **TEMPLATE NOTE:**` blockquotes and `# TEMPLATE NOTE:` YAML comments to teach authors without cargo-culting meta sections into every new skill
+- Teaching-layer delivery: the two-convention rule — **field-purpose comments** (no prefix, STAY in derived skills) vs **`# TEMPLATE NOTE:` comments** and `> **TEMPLATE NOTE:**` blockquotes (authoring scaffolding, STRIPPED on derivation). See `SKILL_METADATA_PROTOCOL.md § Inline field comments — the authoring convention`
 - Archetype-driven body structure: which `## H2` sections each of the four archetypes (`capability`, `workflow`, `router`, `overlay`) must contain
 - Grounding via `grounding`: when a skill should declare truth sources and failure modes, and when it should stay `grounding_mode: universal`
 - drift evidence: when to record `drift_check.truth_source_hashes` and how the drift sentinel consumes them
