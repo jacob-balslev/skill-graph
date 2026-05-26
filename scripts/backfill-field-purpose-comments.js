@@ -289,20 +289,23 @@ const SECTION_DIVIDERS = {
   mental_model: '# === v6+ Understanding fields (when comprehension_state: present) ===',
 };
 
-// Indentation used for the metadata block (the canonical encoding).
-const METADATA_INDENT = '  ';
+// Two indentations are supported (two physical encodings, one logical contract
+// per SKILL_METADATA_PROTOCOL.md § Two physical encodings):
+//   - Nested encoding (Agent-Skills-compatible): every field under `metadata:`
+//     at 2-space indent. The canonical library uses this.
+//   - Flat top-level encoding (protocol-native illustrative form): every field
+//     at root level (indent 0). A small number of skills still use this.
+// The codemod auto-detects which encoding the file uses and picks the right
+// indent for both matching field declarations and inserting comment lines.
+const NESTED_INDENT = '  ';
+const FLAT_INDENT = '';
 
-// Match a field declaration line at metadata indent: e.g. `  schema_version: 7`
-// or `  relations:` (followed by structured value on next lines) or
-// `  relations: "{\"boundary\":[...]}"` (Agent-Skills-compatible stringified).
-const FIELD_DECLARATION_RE = new RegExp(
-  '^' + METADATA_INDENT + '([a-z_][a-z0-9_-]*):'
-);
-
-// Returns the field name from a line if it's a metadata-level field declaration,
-// otherwise null. Skips lines that are clearly continuations (list items, etc.).
-function fieldNameOf(line) {
-  const m = line.match(FIELD_DECLARATION_RE);
+// Returns the field name from a line if it's a field declaration at the given
+// indent, otherwise null. Builds the regex from the indent so it works for both
+// encodings.
+function fieldNameOf(line, indent) {
+  const re = new RegExp('^' + indent + '([a-z_][a-z0-9_-]*):');
+  const m = line.match(re);
   if (!m) return null;
   return m[1];
 }
@@ -340,23 +343,25 @@ function processFile(filePath, options) {
     return { changed: false, reason: 'no closing frontmatter ---', output: src };
   }
 
-  // Locate the `metadata:` line inside the frontmatter (top-level, indent 0).
+  // Detect encoding: nested (with `metadata:` block) or flat top-level.
+  // Walk position starts AFTER the encoding-defining line: metadataLine+1 for
+  // nested, or 1 (right after the opening ---) for flat.
   let metadataLine = -1;
   for (let i = 1; i < endIdx; i++) {
     if (lines[i] === 'metadata:') { metadataLine = i; break; }
   }
-  if (metadataLine === -1) {
-    return { changed: false, reason: 'no top-level `metadata:` block', output: src };
-  }
+  const isNested = metadataLine !== -1;
+  const indent = isNested ? NESTED_INDENT : FLAT_INDENT;
+  const startIdx = isNested ? metadataLine + 1 : 1;
 
-  // Walk lines [metadataLine + 1, endIdx) and insert comment blocks.
-  const out = lines.slice(0, metadataLine + 1);
+  // Walk lines [startIdx, endIdx) and insert comment blocks.
+  const out = lines.slice(0, startIdx);
   const seenSections = new Set();
 
-  let i = metadataLine + 1;
+  let i = startIdx;
   while (i < endIdx) {
     const line = lines[i];
-    const fieldName = fieldNameOf(line);
+    const fieldName = fieldNameOf(line, indent);
 
     if (fieldName && FIELD_COMMENTS[fieldName]) {
       // Check whether the line ABOVE (in already-emitted output) is already a comment.
@@ -371,13 +376,13 @@ function processFile(filePath, options) {
           if (out.length > 0 && !isBlankLine(out[out.length - 1])) {
             out.push('');
           }
-          out.push(METADATA_INDENT + SECTION_DIVIDERS[fieldName]);
+          out.push(indent + SECTION_DIVIDERS[fieldName]);
           seenSections.add(fieldName);
         }
 
-        // Insert the field's comment block at metadata indent.
+        // Insert the field's comment block at the encoding's indent.
         for (const c of FIELD_COMMENTS[fieldName]) {
-          out.push(METADATA_INDENT + c);
+          out.push(indent + c);
         }
       }
     }
