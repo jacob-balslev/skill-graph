@@ -70,15 +70,15 @@ The required v8 fields are: `schema_version`, `name`, `description`, `version`, 
 For `markdown-post-frontmatter-review`, the values look like:
 
 ```yaml
-schema_version: 7
+schema_version: 8
 name: markdown-post-frontmatter-review
 description: "Use when authoring or reviewing the YAML frontmatter of a markdown post — checking required fields (title, date, slug, tags), validating against the content schema, catching ambiguous date formats, and ensuring the slug matches the file path. Activate this skill whenever the task touches files under `content/posts/**/*.md` or the `parsePostFrontmatter()` helper — even if the user just says 'the post'. Do NOT use for general YAML schema design (use a different skill) or for chasing a specific build-time validation failure (use debugging)."
 version: 0.1.0
 
-# v7 axes (still globally required by the schema)
-type: capability
-category: engineering    # one of: foundations | engineering | design | quality | agent | product
-scope: project           # v8 name; legacy alias `codebase` still validates
+# v8 5-axis classification (required)
+subject: code-engineering
+operation: decide
+scope: project
 
 # v8 axes (additionally required when schema_version: 8; safe to author on v7 too)
 subject: code-engineering   # one of the 9-enum v8 subjects
@@ -158,14 +158,14 @@ cp examples/skill-metadata-template.md skills/post-archive-rebuild/SKILL.md
 Edit `skills/post-archive-rebuild/SKILL.md` to set:
 
 ```yaml
-schema_version: 7
+schema_version: 8
 name: post-archive-rebuild
 description: "Use when re-indexing the post archive after one or more frontmatter fields have changed — walking every post, re-extracting the indexed fields, and writing the updated archive page. Activate this skill whenever the task says 'rebuild the archive' or mentions a post-index regeneration after a content edit. Do NOT use for routine authoring of a single post (use markdown-post-frontmatter-review)."
 version: 0.1.0
 
-# v7 axes
-type: workflow
-category: engineering    # one of: foundations | engineering | design | quality | agent | product
+# v8 5-axis classification (required)
+subject: code-engineering
+operation: do
 scope: portable
 
 # v8 axes (dual-author per Migration state)

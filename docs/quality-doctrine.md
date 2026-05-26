@@ -111,7 +111,7 @@ Example: if a plain `SKILL.md` marketplace caps `description`, generate a shorte
 
 A version number asserts substantive conformance, not just a schema shape. Advancing `schema_version`, `skill_graph_protocol`, or any `vN` label is honest only after the content migration that version represents is actually done — v6 added the five flat Understanding fields + `comprehension_state`; v7 added the four-verdict Health Block. A codemod can bump `schema_version` (mechanical shape) corpus-wide, but it cannot author that content.
 
-- A label mismatch (e.g. `schema_version: 7` with `skill_graph_protocol: v5`) is **honest record-keeping**, not drift: the schema bump ran, the content migration did not. Resolve it by doing the migration, then advancing the label — never by editing the label alone.
+- A label mismatch (e.g. `schema_version: 8` with `skill_graph_protocol: v5`) is **honest record-keeping**, not drift: the schema bump ran, the content migration did not. Resolve it by doing the migration, then advancing the label — never by editing the label alone.
 - A bulk `sed`/find-replace of `vN` → `vM` with no content change is **prohibited**. A backlog of skills on an older content label is migration work to schedule, not a string to replace.
 - Bumping a label without the work is fake-conformance — the same defect class as `eval_state: passing` without an `eval_last_run` receipt, or `application_verdict: APPLICABLE` without a gate-9 eval. The binding statement of this rule lives in `AGENTS.md § Version Labels Are Earned, Not Bumped`.
 
@@ -133,9 +133,9 @@ If a check is relevant and not run, say that it was not run. Do not imply succes
 
 ### Reading `skill-overlap.js` output — shared keywords are recall, not defects
 
-Keyword overlap between related skills is **expected and desirable**. It is the recall substrate of the graph: a query about "foreign key" *should* reach both `data-modeling` and `entity-relationship-modeling`, and the router disambiguates by score plus the typed relation edges (`relations.boundary` / `related` / `verify_with`) between them. The overlap report is **advisory** — it is not run under `--strict` in `npm run verify`, so it blocks nothing.
+Keyword overlap between related skills is **expected and desirable**. It is the recall substrate of the graph: a query about "foreign key" *should* reach both `data-modeling` and `entity-relationship-modeling`, and the router disambiguates by score plus the typed relation edges (`relations.boundary` / `related` / `verify_with`) between them. The overlap report prints shared keywords as **INFO**, not warnings, because shared vocabulary is normal graph density.
 
-A reported shared keyword is a prompt to confirm the co-activating skills declare an explicit relation edge — **not** a defect count to drive to zero.
+A reported shared keyword requires no action by itself. If real routing ambiguity appears, confirm the co-activating skills declare an explicit relation edge. It is **not** a defect count to drive to zero.
 
 - **Correct response:** add or verify a `relations.boundary` ("use that skill instead, because…") or `relations.related` edge between the listed skills, or accept it as legitimate shared vocabulary.
 - **Forbidden response:** deleting a keyword from one skill to shrink the count. That strips routing recall and makes the product worse. Only change a keyword when it is genuinely *mis-assigned* to a skill, never to satisfy the report. Duplicate `triggers` are the only hard error here; shared `keywords` and `paths` are review signals.
@@ -153,4 +153,3 @@ Before handing off any change that claims to improve quality:
 - [ ] Claims of validity are backed by verification commands.
 - [ ] The canonical source remains richer than any syndication/export copy.
 - [ ] Version labels (`schema_version` / `skill_graph_protocol` / any `vN`) were advanced only alongside the matching content migration — never bumped alone.
-

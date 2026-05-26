@@ -312,14 +312,14 @@ The `skill-metadata-template` starter (`examples/skill-metadata-template.md`) is
 
 ```yaml
 ---
-schema_version: 7
+schema_version: 8
 name: skill-metadata-template
 description: "Authoring template for new Skill Metadata Protocol skills. ..."
 version: 1.0.0
-type: capability
-category: knowledge
+subject: knowledge-organization
+operation: know
 domain: skill-system/authoring
-scope: reference
+scope: workspace
 owner: maintainer
 freshness: "2026-04-17"
 drift_check:

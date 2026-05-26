@@ -58,7 +58,7 @@ This distinction matters operationally:
 
 ## The Four Operations
 
-Every action in this loop falls into one of four operations. Each writes to a specific set of flat fields in the Skill Metadata Protocol v7 (see `schemas/skill.schema.json`).
+Every action in this loop falls into one of four operations. Each writes to a specific set of flat fields in the skill's Health Block (see `schemas/skill.schema.json`).
 
 | Operation | What it does | Edits instructional content? | Writes which fields |
 |---|---|---|---|
@@ -416,17 +416,16 @@ Required dimension rows:
 
 ### 1. Frontmatter validity
 
-- [ ] `schema_version` exists and equals `7` or `8` (integer; string variants `"7"` / `"8"` are tolerated for hand-rolled YAML — see `schemas/skill.schema.json`). v8 is canonical post-2026-05-26.
+- [ ] `schema_version` exists and equals `8` (the canonical contract post-2026-05-26 v7→v8 phase end). The schema also validates `7` as a deprecated back-compat read for legacy skills that have not yet migrated; do not author `7` on new skills. String variants `"8"` / `"7"` are tolerated for hand-rolled YAML — see `schemas/skill.schema.json`.
 - [ ] `name` exists and matches the intended skill identifier
 - [ ] `description` exists and is specific enough to route from
 - [ ] `version` exists
-- [ ] `type` is one of `capability`, `workflow`, `router`, `overlay`
-- [ ] Classification axis is valid for the skill's `schema_version`:
-   - **v8 skills (target):** `subject` is one of the 9-value enum — `code-engineering` / `quality-assurance` / `frontend-ui` / `design-craft` / `agent-ops` / `product-domain` / `knowledge-organization` / `meta-methods` / `data-analytics`. `operation` is one of the 4-value Bloom-grounded enum — `know` / `do` / `decide` / `modify`. `scope` is one of `portable` / `workspace` / `project`. See `SKILL_METADATA_PROTOCOL.md § Classification — the 5-axis model` and [ADR-0017](docs/adr/0017-five-axis-classification-model.md).
-   - **v7 skills (sunset alias accepted during migration):** `category` is one of the closed six-value enum — `foundations` / `engineering` / `design` / `quality` / `agent` / `product`. `type` is one of `capability` / `workflow` / `router` / `overlay`. `scope` is one of `portable` / `reference` / `codebase` (the v7 `reference` aliases to v8 `workspace`; the v7 `codebase` aliases to v8 `project`).
-   - **Mixed-state skills:** A skill carrying BOTH the v8 axes AND the v7 legacy fields is valid during sunset; the v7→v8 normalizer in `scripts/lib/parse-frontmatter.js` reconciles them. Author intent (the top-level v8 fields, when present) wins over deprecated `metadata.*` mirrors.
-   - (`family` from v2 is fully retired and must not appear in active skills.)
-- [ ] `scope` is one of `portable`, `workspace`, `project` (legacy aliases `reference` and `codebase` are accepted during the v7 sunset window)
+- [ ] **v8 classification axes are present and valid:**
+   - `subject` is one of the 9-value enum — `code-engineering` / `quality-assurance` / `frontend-ui` / `design-craft` / `agent-ops` / `product-domain` / `knowledge-organization` / `meta-methods` / `data-analytics`.
+   - `operation` is one of the 4-value Bloom-grounded enum — `know` / `do` / `decide` / `modify`.
+   - `scope` is one of `portable` / `workspace` / `project`.
+   - See `SKILL_METADATA_PROTOCOL.md § Classification — the 5-axis model` and [ADR-0017](docs/adr/0017-five-axis-classification-model.md).
+- [ ] If the skill still carries v7 classification fields (`type`, `category`, `categories`, `primaryCategory`, `layerPrimary`, `routingRole`) or v7 scope aliases (`reference`, `codebase`): these are **deprecated** back-compat reads only. The audit may note them as migration-pending; do not author them on new skills. (`family` and `layer` from earlier versions are fully retired and must not appear.)
 - [ ] `owner` exists
 - [ ] `freshness` exists
 - [ ] `drift_check` exists as an object with `last_verified` (v3+ — was scalar date in v2)

@@ -2,7 +2,7 @@
 
 > **Read this if:** you author SKILL.md and your library is large enough that skills have started to depend on, verify, or exclude one another. This primer is the conceptual introduction to Skill Metadata Protocol and Skill Graph. It is *explanation* documentation — it answers *what* and *why*. For reference material see `docs/field-reference.md`; for procedures see `CONTRIBUTING.md` and `SKILL_AUDIT_LOOP.md`; for decision tables see `docs/field-decision-guide.md`.
 
-**Status.** Stable for `schema_version: 7`.
+**Status.** Stable for `schema_version: 8` (v7→v8 phase ended 2026-05-26; v7 classification fields are deprecated back-compat reads).
 **Audience.** Skill authors who need skills to declare their relevance: which area they cover, which angle they take, which project or stack they fit, which taxonomy / semantic cluster they belong to, and how they should be tested or reverified. Library size is a proxy for this — these questions usually start around 5 skills, sometimes earlier if you have multiple projects, sometimes later for a single small project.
 **Prerequisites.** Working familiarity with the [SKILL.md specification](https://agentskills.io/specification), including `SKILL.md` layout and the progressive-disclosure loading model.
 
@@ -260,7 +260,7 @@ The claim that authored edges buy the consumer something needs proof. This secti
 
 ```yaml
 ---
-schema_version: 7
+schema_version: 8
 name: my-skill
 description: "Use when <concrete situation>. Covers <A, B, C>. Do NOT use for <D, E>."
 ---
@@ -277,11 +277,11 @@ The `refactor` starter skill reduced to its load-bearing fields:
 
 ```yaml
 ---
-schema_version: 7
+schema_version: 8
 name: refactor
 description: "Use when reorganizing existing code without changing external behavior..."
-type: workflow
-category: engineering
+subject: code-engineering
+operation: do
 scope: portable
 eval_state: passing
 relations:

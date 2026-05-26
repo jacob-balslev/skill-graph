@@ -78,13 +78,13 @@ Expected: zero errors, zero warnings. If warnings appear (e.g. legacy field valu
 
 ```yaml
 ---
-schema_version: 7
+schema_version: 8
 name: example-protocol-native
 description: "Use when explaining how to apply Conway's Law to API boundary design. Activates for prompts mentioning team topologies, organizational coupling, or domain ownership boundaries. Do NOT use for individual service-design questions (use api-design) or for static org charts (use org-modeling)."
 version: 0.1.0
-type: capability
-category: foundations
-scope: reference
+subject: meta-methods
+operation: know
+scope: workspace
 owner: example-author
 freshness: "2026-05-24"
 drift_check:
@@ -127,11 +127,11 @@ description: "Use when explaining how to apply Conway's Law to API boundary desi
 license: MIT
 allowed-tools: Read Grep
 metadata:
-  schema_version: 7
+  schema_version: 8
   version: 0.1.0
-  type: capability
-  category: foundations
-  scope: reference
+  subject: meta-methods
+  operation: know
+  scope: workspace
   owner: example-author
   freshness: "2026-05-24"
   drift_check: "{\"last_verified\":\"2026-05-24\"}"

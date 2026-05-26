@@ -58,7 +58,7 @@ The fields you pay for cluster into 8 semantic purposes (Identity, Classificatio
 For the full conceptual primer read [`PRIMER.md`](PRIMER.md). To migrate your first skill from a valid plain `SKILL.md` file:
 
 1. **Copy the template** — `cp examples/skill-metadata-template.md skills/<your-skill>/SKILL.md`. The template is a real, valid, schema-conformant Skill Metadata Protocol skill whose subject is skill authoring itself; adapt by rewriting identity, description, body, and verification.
-2. **Add the 13 required Skill Metadata Protocol fields** — `schema_version: 7`, `version`, `type`, `category`, `scope`, `owner`, `freshness`, `drift_check`, `eval_artifacts`, `eval_state`, `routing_eval`, plus your existing `name` and `description`. The template inline-comments each field.
+2. **Add the required Skill Metadata Protocol fields** — `schema_version: 8`, `version`, `subject` (9-enum), `operation` (4-enum), `scope`, `owner`, `freshness`, `drift_check`, `eval_artifacts`, `eval_state`, `routing_eval`, plus your existing `name` and `description`. The template inline-comments each field. (The v7 classification fields `type`, `category`, `categories`, `primaryCategory`, `layerPrimary`, `routingRole` are deprecated — do not author them on new skills.)
 3. **Strip the teaching annotations** — every `> **TEMPLATE NOTE:**` blockquote and `# TEMPLATE NOTE:` YAML comment must be removed before commit.
 4. **Validate locally:**
    ```bash

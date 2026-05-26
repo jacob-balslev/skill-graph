@@ -47,11 +47,12 @@ function readActiveSchemaVersion() {
   //   { oneOf: [{ enum: [N, M] }, { enum: ["N", "M"] }] }  — multi-version compatibility
   //                                                window (v7+v8 during the v7→v8
   //                                                migration).
-  // For doc-drift purposes, return the LOWEST still-supported version (the floor).
-  // Anything below the floor is stale; anything at-or-above is still actively
-  // supported and references to it are NOT drift. Without this, a compatibility-
-  // window release would incorrectly flag all v7 references as stale even though
-  // v7 frontmatter still validates against the v8-window schema.
+  // For doc-drift purposes, return the CANONICAL (highest) version. Older
+  // versions in the enum are accepted by the schema as deprecated back-compat
+  // reads, NOT as a current authoring path — references to them in current-
+  // state docs are drift. Legitimate historical context (migrations, CHANGELOG,
+  // _archived/, examples, ADRs that describe the migration itself) is
+  // allowlisted in isAllowlisted() below.
   if (typeof sv.const === 'number') return sv.const;
   if (Array.isArray(sv.oneOf)) {
     const ints = [];
@@ -63,7 +64,7 @@ function readActiveSchemaVersion() {
         }
       }
     }
-    if (ints.length > 0) return Math.min(...ints);
+    if (ints.length > 0) return Math.max(...ints);
   }
   throw new Error(`Unsupported schema_version shape in ${SKILL_SCHEMA_PATH}`);
 }
@@ -71,7 +72,11 @@ function readActiveSchemaVersion() {
 function isAllowlisted(absPath) {
   const rel = path.relative(REPO_ROOT, absPath).split(path.sep);
   if (rel.some(seg => seg === '_archived')) return true;
+  if (rel.some(seg => seg === '_drafts')) return true;
+  if (rel[0] === 'audits') return true;
   if (rel[0] === 'docs' && rel[1] === 'migrations') return true;
+  if (rel[0] === 'docs' && rel[1] === 'adr') return true;
+  if (rel[0] === 'docs' && rel[1] === 'research') return true;
   if (rel[0] === 'examples') return true;
   if (path.basename(absPath) === 'CHANGELOG.md') return true;
   const base = path.basename(absPath).toLowerCase();

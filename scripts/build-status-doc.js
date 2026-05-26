@@ -10,7 +10,7 @@
  *
  * Usage:
  *   node scripts/build-status-doc.js               # write docs/status.generated.md
- *   node scripts/build-status-doc.js --check       # print summary, exit non-zero on drift
+ *   node scripts/build-status-doc.js --check       # run checks and print summary; do not write
  *   node scripts/build-status-doc.js --stdout      # print to stdout, do not write file
  *   node scripts/build-status-doc.js --no-checks   # skip check execution (just version + count)
  */
@@ -52,9 +52,21 @@ function runCheck(scriptRelPath, label) {
 function readSchemaVersion() {
   const schema = readJson('schemas/skill.schema.json');
   const sv = schema?.properties?.schema_version;
-  if (typeof sv?.const === 'number') return sv.const;
+  // const-shaped (older schemas): single value
+  if (typeof sv?.const === 'number') return String(sv.const);
+  // oneOf with const branches: pick the highest const
   if (Array.isArray(sv?.oneOf)) {
-    for (const b of sv.oneOf) if (typeof b.const === 'number') return b.const;
+    const consts = sv.oneOf.map(b => b?.const).filter(c => typeof c === 'number');
+    if (consts.length > 0) return String(Math.max(...consts));
+    // oneOf with enum branches (current shape — integer + string back-compat enums)
+    const allValues = sv.oneOf.flatMap(b => Array.isArray(b?.enum) ? b.enum : []);
+    const numeric = allValues.map(v => Number(v)).filter(n => Number.isFinite(n));
+    if (numeric.length > 0) return String(Math.max(...numeric));
+  }
+  // enum-shaped (no oneOf wrapper)
+  if (Array.isArray(sv?.enum)) {
+    const numeric = sv.enum.map(v => Number(v)).filter(n => Number.isFinite(n));
+    if (numeric.length > 0) return String(Math.max(...numeric));
   }
   return 'unknown';
 }
@@ -128,6 +140,14 @@ The reader is now one URL away from the truth.
 `;
 }
 
+// Strip time-varying fields so --check can compare rendered output against the
+// on-disk file without false positives from regeneration noise.
+function normalizeForCompare(markdown) {
+  return markdown
+    .replace(/^> \*\*Generated:\*\* .+$/m, '> **Generated:** <stripped>')
+    .replace(/\| \d+ ms \|/g, '| <stripped> ms |');
+}
+
 function main() {
   const argv = process.argv.slice(2);
   const opts = {
@@ -157,18 +177,39 @@ function main() {
     process.exit(0);
   }
 
-  fs.writeFileSync(OUTPUT_PATH, markdown);
+  if (!opts.check) {
+    fs.writeFileSync(OUTPUT_PATH, markdown);
+  }
 
-  const failed = checks.filter(c => c.status !== 'PASS' && c.status !== 'SKIP');
-  if (opts.check && failed.length > 0) {
-    process.stderr.write(
-      `FAIL build-status-doc: ${failed.length} check(s) not passing — see docs/status.generated.md\n`
+  // --check has two failure modes: (1) underlying checks failing, (2) on-disk
+  // status doc is stale relative to what would be regenerated right now.
+  const failures = [];
+
+  const failedChecks = checks.filter(c => c.status !== 'PASS' && c.status !== 'SKIP');
+  if (opts.check && failedChecks.length > 0) {
+    failures.push(`${failedChecks.length} check(s) not passing: ${failedChecks.map(c => c.label).join(', ')}`);
+  }
+
+  if (opts.check && fs.existsSync(OUTPUT_PATH)) {
+    const onDisk = fs.readFileSync(OUTPUT_PATH, 'utf8');
+    if (normalizeForCompare(onDisk) !== normalizeForCompare(markdown)) {
+      failures.push(
+        `${path.relative(REPO_ROOT, OUTPUT_PATH)} is stale relative to current state — run \`node scripts/build-status-doc.js\` to regenerate and commit the result.`
+      );
+    }
+  } else if (opts.check && !fs.existsSync(OUTPUT_PATH)) {
+    failures.push(
+      `${path.relative(REPO_ROOT, OUTPUT_PATH)} does not exist — run \`node scripts/build-status-doc.js\` to generate it.`
     );
+  }
+
+  if (failures.length > 0) {
+    for (const msg of failures) process.stderr.write(`FAIL build-status-doc: ${msg}\n`);
     process.exit(1);
   }
 
   process.stdout.write(
-    `OK   wrote ${path.relative(REPO_ROOT, OUTPUT_PATH)} (${pkg.name}@${pkg.version}, schema v${schema_version}, ${skill_count ?? '?'} skills, ${checks.length} checks)\n`
+    `OK   ${opts.check ? 'checked' : 'wrote'} ${path.relative(REPO_ROOT, OUTPUT_PATH)} (${pkg.name}@${pkg.version}, schema v${schema_version}, ${skill_count ?? '?'} skills, ${checks.length} checks)\n`
   );
 }
 

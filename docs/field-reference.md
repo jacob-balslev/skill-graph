@@ -34,7 +34,7 @@ The schema is the single source of truth for shape; this doc is the source of tr
 
 **Example.**
 ```yaml
-schema_version: 7
+schema_version: 8
 ```
 
 **When to use.** Always — this is a required field.
@@ -141,7 +141,7 @@ version: 1.0.0
 
 ## `type`
 
-> **v7 legacy field — replaced by [`operation`](#operation) in v8.** The v8 schema renames `type` to `operation` and tightens the enum from 4 archetype values (`capability`/`workflow`/`router`/`overlay`) to 4 Bloom-grounded cognitive operations (`know`/`do`/`decide`/`modify`). v7 `type` is retained for back-compat during the sunset window; the normalizer maps the value forward when only `type` is present. New skills should author `operation` only. See [ADR 0017](adr/0017-five-axis-classification-model.md).
+> **v7 legacy field — DEPRECATED. Replaced by [`operation`](#operation) in v8 (v7→v8 phase ended 2026-05-26).** The v8 schema renames `type` to `operation` and tightens the enum from 4 archetype values (`capability`/`workflow`/`router`/`overlay`) to 4 Bloom-grounded cognitive operations (`know`/`do`/`decide`/`modify`). The schema retains `type` as an optional back-compat property only; schema-level removal is pending. The normalizer maps the value forward when only `type` is present. New skills MUST author `operation` only. See [ADR 0017](adr/0017-five-axis-classification-model.md).
 
 **Purpose.** Defines the behavioral archetype. The archetype determines which body H2 sections are required, how the skill is loaded by a router, and which schema conditionals apply.
 
@@ -197,7 +197,7 @@ archetype: capability
 
 ## `category`
 
-> **v7 legacy field — replaced by [`subject`](#subject) in v8.** The v8 schema renames `category` to `subject` and expands the enum from 6 values to 9 (`code-engineering`/`quality-assurance`/`frontend-ui`/`design-craft`/`agent-ops`/`product-domain`/`knowledge-organization`/`meta-methods`/`data-analytics`) to provide better discriminating power (the v7 6-value enum had ~40% of skills under `engineering` alone). For polyhierarchy use [`subjects[]`](#subjects) (max 2 entries). v7 `category` is retained for back-compat during the sunset window. New skills should author `subject` only. See [ADR 0017](adr/0017-five-axis-classification-model.md).
+> **v7 legacy field — DEPRECATED. Replaced by [`subject`](#subject) in v8 (v7→v8 phase ended 2026-05-26).** The v8 schema renames `category` to `subject` and expands the enum from 6 values to 9 (`code-engineering`/`quality-assurance`/`frontend-ui`/`design-craft`/`agent-ops`/`product-domain`/`knowledge-organization`/`meta-methods`/`data-analytics`) to provide better discriminating power. For polyhierarchy use [`subjects[]`](#subjects) (max 2 entries). The schema retains `category` as an optional back-compat property only; schema-level removal is pending. New skills MUST author `subject` only. See [ADR 0017](adr/0017-five-axis-classification-model.md).
 
 **Purpose.** Flat human browse bucket for discovery and grouping. Does not imply runtime behavior or evaluation logic. Renamed from v3 `browse_category` in v4 so the public browse axis has the obvious name; the value space was then closed to a six-value enum in v5 (retained in v7) to prevent the v3-era explosion of synonymous buckets.
 

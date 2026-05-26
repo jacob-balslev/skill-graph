@@ -174,7 +174,7 @@ For audit work, also read `SKILL_AUDIT_LOOP.md` and `SKILL_AUDIT_LOOP.md` § Par
 - The scripts use only Node built-ins today; there are no package dependencies.
 - Public CLI entrypoint: `bin/skill-graph.js`.
 - Current public release checkpoint in docs: `0.5.10` on `2026-05-25` (the "canonical-shape sweep" release; ADR-0014/0015/0016 fully landed and the 2026-05-25 multi-model restructure review backlog closed; see [`CHANGELOG.md`](CHANGELOG.md#0510--2026-05-25)).
-- Current skill contract: `schema_version: 7` (four-verdict Health Block — `structural_verdict` / `truth_verdict` / `comprehension_verdict` / `application_verdict` replace the single v6 `audit_verdict`). The v6 aggregate-verdict field is removed because it conflated form, truth, comprehension, and behavior under one PASS/FAIL signal that masqueraded as quality; `application_verdict` is the new primary quality signal and certifies behavior change on real artifacts. See [ADR 0011](docs/adr/0011-split-audit-verdict-into-four-verdicts.md). Corpus counts are generated, not hand-maintained here; use `SKILL_GRAPH.md § Current State`, `docs/status.generated.md`, or `node scripts/generate-manifest.js --validate-only` for the current number.
+- Current skill contract: see [`SKILL_GRAPH.md § Current State`](SKILL_GRAPH.md#current-state--single-source-of-truth) — single source of truth for schema version, axes required, audit-loop maturity, and corpus counts. The four-verdict Health Block (`structural_verdict` / `truth_verdict` / `comprehension_verdict` / `application_verdict`) replaces the single v6 `audit_verdict` per [ADR 0011](docs/adr/0011-split-audit-verdict-into-four-verdicts.md); `application_verdict` is the primary quality signal and certifies behavior change on real artifacts.
 - This repo is the **canonical consolidated implementation** post-2026-05-18 (commit `654b4df`; see [ADR 0009](docs/adr/0009-sibling-repo-deprecation.md) and SH-6137). Schemas, audit scripts, graders, eval fixtures, examples, and the protocol/audit canonical docs all live here. The canonical skill library lives at `/Users/jacobbalslev/Development/skills/`; `SKILL_GRAPH.md § Current State` is the single-source-of-truth count. The previously separate `skill-metadata-protocol` and `skill-audit-loop` mirrors are preserved as docs-only deprecation mirrors — they were **archived (read-only) on GitHub on 2026-05-20** ([ADR 0009 § Update](docs/adr/0009-sibling-repo-deprecation.md)) and no longer carry active source code. `examples/` still holds specimen projects and per-skill comprehension evals.
 - Workspace config at `.skill-graph/config.json` points lint, manifest, drift, route, and truth_source resolution at the canonical sibling skills repo by default. `SKILL_GRAPH_WORKSPACE` env-var still overrides — useful when developers clone the canonical repo elsewhere. Truth_source paths starting with `skills/<name>/SKILL.md` are resolved via `scripts/lib/roots.js::resolveTruthSourcePath()`: skill-library-aware first, with REPO_ROOT fallback.
 
@@ -195,25 +195,18 @@ This shape is what distinguishes the Skill Graph from prompt libraries, agent-ru
 
 The Skill Metadata Protocol is the frontmatter contract every `SKILL.md` ships against. Treat this section as the working summary; `SKILL_METADATA_PROTOCOL.md` and `docs/field-reference.md` are the binding documents.
 
-Core required axes (v8-first; v7 legacy fields remain required during the sunset window — see `SKILL_METADATA_PROTOCOL.md § Migration state`):
-
-**v8 axes (additionally required when `schema_version: 8`):**
+Core required axes (v8 5-axis classification — see `SKILL_METADATA_PROTOCOL.md § Schema contract`):
 
 - `name` — kebab-case, head-noun-anchored (see `docs/head-noun-glossary.md`); aligns with parent directory.
 - `description` — routing contract: positive trigger phrases + explicit negative boundary (`Do NOT use for X (use that-skill).`).
 - `subject` — primary browse shelf, ONE of nine closed values: `code-engineering`, `quality-assurance`, `frontend-ui`, `design-craft`, `agent-ops`, `product-domain`, `knowledge-organization`, `meta-methods`, `data-analytics`. Each subject holds 5–25 skills; <5 = fold or recruit, >25 = subdivide via `domain`. To propose a 10th value: ADR + ≥5 primary-fit skills. See [ADR-0017](docs/adr/0017-five-axis-classification-model.md).
 - `operation` — cognitive operation, ONE of four Bloom-grounded values: `know` (declarative), `do` (procedural), `decide` (judgment), `modify` (context-injecting).
-- `scope` — deployment targeting, ONE of three values: `portable` (any project), `workspace` (this workspace only), `project` (one specific project; requires `grounding`). v7 aliases `codebase` → `project`, `reference` → `workspace` are accepted during the sunset window.
+- `scope` — deployment targeting, ONE of three values: `portable` (any project), `workspace` (this workspace only), `project` (one specific project; requires `grounding`). Legacy v7 aliases `codebase` → `project`, `reference` → `workspace` validate as deprecated back-compat.
 - `subjects[]` (optional, max 2, primary first) covers polyhierarchy when a skill genuinely spans two browse shelves.
 
-**v7 legacy axes (still globally required by the schema; do not drop):**
+**v7 classification fields are deprecated** — `type`, `category`, `categories[]`, `primaryCategory`, `layerPrimary`, `routingRole`. The schema retains them as optional back-compat properties only; do not author on new skills. See `SKILL_METADATA_PROTOCOL.md § v7 Legacy Fields (deprecated)`.
 
-- `type` — `capability` (teaches domain) / `workflow` (enforces sequence) / `router` (directs) / `overlay` (adds local truth). v8 replacement: `operation`. Author both during sunset.
-- `category` — ONE of six closed values: `{foundations, engineering, design, quality, agent, product}`. v8 replacement: `subject`. Author both during sunset.
-- `categories: [string]` (v7-optional, v8-required) — ordered list (primary first, max 5). v8 replacement: `subjects[]`.
-- `primaryCategory` — workspace's parallel field name; workspace title-case values normalize to lowercase enum on read.
-
-Closure of `subject` (9) and `category` (6) is justified by Miller's 7±2 browseability + MECE pressure + the `foundations` / `knowledge-organization` anti-junk-drawer gate. See `SKILL_METADATA_PROTOCOL.md § Classification` for the disambiguation rules and the v7→v8 migration plan.
+Closure of `subject` (9 values) is justified by Miller's 7±2 browseability + MECE pressure + the `foundations` / `knowledge-organization` anti-junk-drawer gate. See `SKILL_METADATA_PROTOCOL.md § Classification` for the disambiguation rules.
 
 Understanding-fields contract (when `comprehension_state: present`) — see `SKILL_METADATA_PROTOCOL.md` § Understanding for the binding rules:
 
@@ -274,10 +267,9 @@ Canonical text: workspace `~/Development/AGENTS.md` § Non-Negotiable Standards 
 
 A version number on a skill — `schema_version`, `skill_graph_protocol`, and any `vN` label — asserts that the skill's **content** meets that version's bar. Advancing the number is honest only after the substantive migration the version represents has actually been performed. Bumping a label without doing that work is fake-conformance: the same class of doc-lie as `eval_state: passing` without an `eval_last_run` receipt, or `application_verdict: APPLICABLE` without a gate-9 eval.
 
-- **`schema_version` is the mechanical shape; the content label is the substantive bar.** The `migrate-skill-vN-to-vM.js` codemods bump `schema_version` corpus-wide — a shape migration a script *can* do. The deeper content each version introduced is **not** something a codemod can author: v6 introduced the five flat Understanding fields (`mental_model`, `purpose`, `boundary`, `analogy`, `misconception`) + `comprehension_state`; v7 introduced the four-verdict Health Block. A skill only earns the v6/v7 content label when that content is actually present and reviewed.
-- **A label mismatch is HONEST, not drift.** A skill with `schema_version: 7` but `skill_graph_protocol: Skill Metadata Protocol v5` is correctly recording that the schema bump ran but the v6/v7 content migration did not (e.g., it has no Understanding fields). Do **not** "fix" this by editing the label. Fix it by doing the migration, then advancing the label — never the reverse. (Verified 2026-05-20: 115 source skills carry `v5` and 25 carry `v6`; the `v5` ones genuinely lack Understanding fields, the `v6` ones have them. The labels are accurate.)
-- **Never run a find-replace that changes only a version label.** A bulk `sed`/codemod of `vN` → `vM` across `SKILL.md` files with no content change is prohibited. A backlog of skills on an older content label is migration work to schedule, not a string to replace.
-- **Known tension to resolve:** `scripts/export-marketplace-skills.js` hardcodes `skill_graph_protocol: Skill Metadata Protocol v7` (`SKILL_GRAPH_PROTOCOL`, line 41) on **every** exported skill, regardless of the source content level. This conflates "exported by v7 tooling" with "content verified at v7." Until the field's meaning is pinned down, do not treat the exported `skill_graph_protocol` as a content-conformance signal.
+- **`schema_version` is the mechanical shape; the content label is the substantive bar.** The `migrate-skill-vN-to-vM.js` codemods bump `schema_version` corpus-wide — a shape migration a script *can* do. The deeper content each version introduced is **not** something a codemod can author: v6 introduced the five flat Understanding fields (`mental_model`, `purpose`, `boundary`, `analogy`, `misconception`) + `comprehension_state`; v7 introduced the four-verdict Health Block; v8 introduced the 5-axis classification (`subject` / `operation` / `scope` + `keywords` / `relations`). A skill only earns the content label when that content is actually present and reviewed.
+- **A label mismatch is HONEST, not drift.** A skill with `schema_version: 8` but `skill_graph_protocol` recording an older content label is correctly recording that the schema bump ran but the deeper content migration did not. Do **not** "fix" this by editing the label. Fix it by doing the migration through `/audit:*`, then advancing the label — never the reverse.
+- **Never run a find-replace that changes only a version label.** A bulk `sed`/codemod of `vN` → `vM` across `SKILL.md` files with no content change is prohibited. A backlog of skills on an older content label is migration work for the audit loop to drain, not a string to replace.
 
 ## Editing Rules
 
@@ -542,6 +534,15 @@ Use the full repo verification before handing off substantive changes:
 ```bash
 npm run verify
 ```
+
+### Separate gates not in `npm run verify`
+
+These gates run independently because their failure modes are CONTENT-drift, not SYSTEM-correctness. A green `npm run verify` does NOT imply they pass; agents and CI must run them explicitly.
+
+| Gate | Command | What it catches | Why it's separate |
+|---|---|---|---|
+| **Audit-evidence consistency** | `npm run audit-manifest:check` (or `node scripts/check-audit-manifest.js`) | Historical verdict records that claim a graded comprehension/application verdict without the backing `evals/comprehension.json` / `evals/application.json` artifact | Mismatches are CONTENT-debt — the audit loop downgrades them to `UNVERIFIED` per-skill. Wiring this into `npm run verify` would force the verify suite red until all historical verdicts are reconciled, blocking unrelated SYSTEM work. Tracked at the SH-6548 follow-up. |
+| **Status doc freshness** | `npm run status:check` | `docs/status.generated.md` is out of date relative to the current package version / schema / skill count / check states | Status doc is generated; running this gate before commit catches stale snapshots. |
 
 Useful focused checks:
 

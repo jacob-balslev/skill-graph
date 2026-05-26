@@ -339,9 +339,9 @@ The graph layer. Six edge types, cycle-checked on `depends_on` + `broader` + `na
 
 ---
 
-### v7 Legacy Fields (compatibility-window holdovers)
+### v7 Legacy Fields (deprecated)
 
-The following v7 fields remain in the schema for the duration of the v7→v8 compatibility window. Authors of new skills must author both the v7 compatibility fields and the v8 fields until the schema removes the v7 requiredness. The v7 codemod (`scripts/migrate-skill-v7-to-v8.js`) populates BOTH v7 and v8 fields on migrated skills so existing tooling continues to read either.
+The v7 classification fields are **deprecated**. New skills author the v8 axes (`subject`, `operation`, `scope`) only. The schema retains these fields as optional back-compat properties so existing skills validate while the audit loop drains them; schema-level removal is pending. Do not author them on new skills, and do not "fix" a skill that still carries them outside an `/audit:*` run — corpus migration flows one skill at a time through the audit loop, with Health Block evidence, per `skill-graph/AGENTS.md § Work Modes`.
 
 | Legacy field | v8 replacement | Status |
 |---|---|---|
