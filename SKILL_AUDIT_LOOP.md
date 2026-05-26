@@ -96,18 +96,55 @@ This replaces the previous 13-command surface with **4 canonical operations + 2 
 
 Schema v7 carries the Health fields on every SKILL.md frontmatter. v7 removed the single v6 `audit_verdict` and replaced it with **four discrete verdicts**, one per audit layer, because the aggregate masqueraded as a quality signal while conflating form, truth, comprehension, and behavior (see [ADR 0011](docs/adr/0011-split-audit-verdict-into-four-verdicts.md)):
 
+The Health Block uses the **inline field-purpose comment convention** (see `SKILL_METADATA_PROTOCOL.md § Inline field comments — the authoring convention`): every field carries a comment block above it naming purpose + allowed values. The convention is identical for hand-authored fields and audit-loop-written fields — readers should not need to leave the file to decode the verdict.
+
 ```yaml
-schema_version: 7
-last_audited: 2026-05-17       # date `audit` last ran
-last_changed: 2026-05-15       # date the skill body or frontmatter was last edited
-structural_verdict: PASS       # PASS | PASS_WITH_FIXES | FAIL | UNVERIFIED — form/export shape (external mandates only)
-truth_verdict: PASS            # PASS | DRIFT | BROKEN | UNVERIFIED — truth sources vs declared hashes
-comprehension_verdict: UNVERIFIED # PASS | SHALLOW | REDUNDANT | UNVERIFIED | PROVISIONAL | SKIPPED_BASELINE_HIGH | NA (gate 8, demoted)
-application_verdict: UNVERIFIED # APPLICABLE | REDUNDANT | HARMFUL | MIXED | FALSE_POSITIVE | UNVERIFIED | PROVISIONAL (gate 9 — the quality signal)
-eval_score: 4.2                # 0.0–5.0 from the eval runner
-eval_failed_ids: []            # empty when clean
-lint_verdict: PASS             # retained per-script signal; rolls up into structural_verdict
-drift_status: OK               # retained per-script signal; rolls up into truth_verdict — OK | DRIFT | BROKEN | STALE | NO_BASELINE | EXTERNAL_UNHASHED | UNKNOWN
+# schema_version: protocol contract version this skill conforms to.
+# Integer 7 or 8. v8 is canonical (2026-05-26).
+schema_version: 8
+
+# last_audited: ISO date `audit` last ran against this skill.
+# Written by the audit-loop on every audit run.
+last_audited: 2026-05-17
+
+# last_changed: ISO date the skill body or frontmatter was last edited.
+# Written by `improve` on accepted edits.
+last_changed: 2026-05-15
+
+# structural_verdict: form / export shape (gates 1-2, 7).
+# Enforces external mandates only (marketplace 1024-char limit, required fields,
+# valid YAML, etc.). Internal style preferences are warnings, not FAIL.
+# PASS / PASS_WITH_FIXES / FAIL / UNVERIFIED.
+structural_verdict: PASS
+
+# truth_verdict: truth sources vs declared hashes (gates 3-6).
+# PASS / DRIFT / BROKEN / UNVERIFIED.
+truth_verdict: PASS
+
+# comprehension_verdict: gate 8 — cheap recitation smoke test (demoted in v7).
+# NEVER alone certifies a skill. PASS / SHALLOW / REDUNDANT / UNVERIFIED /
+# PROVISIONAL / SKIPPED_BASELINE_HIGH / NA.
+comprehension_verdict: UNVERIFIED
+
+# application_verdict: gate 9 — the primary quality signal.
+# A skill is only behaviorally CERTIFIED USEFUL when this is APPLICABLE
+# (grader-confirmed). PROVISIONAL = one model self-assessed; UNVERIFIED = no grader run.
+# APPLICABLE / REDUNDANT / HARMFUL / MIXED / FALSE_POSITIVE / PROVISIONAL / UNVERIFIED.
+application_verdict: UNVERIFIED
+
+# eval_score: 0.0–5.0 aggregate from the eval runner. Written by `evaluate`.
+eval_score: 4.2
+
+# eval_failed_ids: array of failing eval IDs from the last run; empty when clean.
+eval_failed_ids: []
+
+# lint_verdict: per-script signal from skill-lint.js. Rolls up into structural_verdict.
+# PASS / FAIL / UNKNOWN.
+lint_verdict: PASS
+
+# drift_status: per-script signal from skill-graph-drift.js. Rolls up into truth_verdict.
+# OK / DRIFT / BROKEN / STALE / NO_BASELINE / EXTERNAL_UNHASHED / UNKNOWN.
+drift_status: OK
 ```
 
 `application_verdict == APPLICABLE` is the only verdict that certifies a skill is **useful**; the other three are necessary infrastructure (the skill loads, exports cleanly, and the model has the concept) but do not certify usefulness. `PROVISIONAL` means one model assessed useful behavior without the independent application grader; `UNVERIFIED` means no application assessment has run.
@@ -383,7 +420,7 @@ Required dimension rows:
 
 ### 1. Frontmatter validity
 
-- [ ] `schema_version` exists and equals `7` (integer; the string `"7"` is tolerated for hand-rolled YAML for back-compat — see `schemas/skill.schema.json`)
+- [ ] `schema_version` exists and equals `7` or `8` (integer; string variants `"7"` / `"8"` are tolerated for hand-rolled YAML — see `schemas/skill.schema.json`). v8 is canonical post-2026-05-26.
 - [ ] `name` exists and matches the intended skill identifier
 - [ ] `description` exists and is specific enough to route from
 - [ ] `version` exists
@@ -400,6 +437,7 @@ Required dimension rows:
 - [ ] `eval_artifacts`, `eval_state`, `routing_eval` all exist (orthogonal triple — shipped in schema_version 2 under SH-5784, retained through v7)
 - [ ] `extends` exists when `type: overlay`
 - [ ] `extends` is absent when `type` is not `overlay`
+- [ ] **Inline field-purpose comments present** above each authored field per the convention in `SKILL_METADATA_PROTOCOL.md § Inline field comments`. Strippable forms (`# TEMPLATE NOTE:` lines and `> **TEMPLATE NOTE:**` body blockquotes) are ABSENT from the production skill: `grep -n "TEMPLATE NOTE" <SKILL.md>` must return zero hits. Field-purpose comments (no `TEMPLATE NOTE:` prefix) are PRESENT and survive verification: `grep -c "^\s*#" <SKILL.md>` should be ≥ the field count, not zero.
 
 ### 2. Activation quality
 

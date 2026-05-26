@@ -334,7 +334,7 @@ Concrete artifacts that show adopters what "good" looks like. Every specimen is 
 
 | File | Role |
 |---|---|
-| `examples/skill-metadata-template.md` | Self-referential authoring template. Its subject is skill authoring itself. Demonstrates the v7 field shape including object-shaped `drift_check`, `compatibility`, `boundary[{skill, reason}]`, `lifecycle`, the five flat Understanding fields, and the four-verdict Health Block. |
+| `examples/skill-metadata-template.md` | Self-referential authoring template. Its subject is skill authoring itself. **Demonstrates the v8 5-axis classification (`subject` / `operation` / `scope`) and the inline field-purpose comment convention** (every authored field carries a comment block above it; strippable `# TEMPLATE NOTE:` lines are clearly distinguished from field-purpose comments that stay in derived skills — see `SKILL_METADATA_PROTOCOL.md § Inline field comments — the authoring convention`). Also demonstrates the v7-deprecated back-compat shape (`type` / `category` retained as optional with explicit deprecation comment), object-shaped `drift_check` / `compatibility` / `lifecycle`, `boundary[{skill, reason}]`, the five flat Understanding fields, and the four-verdict Health Block. |
 | `examples/fixture-skills/` | Four in-repo specimen skills covering distinct shapes: `minimal-capability`, `with-grounding` (full `grounding` block + recorded `truth_source_hashes`), `with-relations`, and `comprehension-full` (populated Understanding fields). |
 | `examples/skills.manifest.sample.json` | Generator-produced sample. Drift-checked against live generator output by `skill-lint.js` check 8. |
 
