@@ -1,0 +1,240 @@
+---
+name: second-order-thinking
+description: "Use when a decision, intervention, policy, product change, metric target, or system fix needs analysis beyond the immediate effect: ask what happens next, how actors respond, what incentives change, and what delayed or compounding consequences follow. Covers consequence chains, time horizons, stakeholder reactions, feedback loops, second- and third-order effects, and guardrail design. Do NOT use for reversing a goal to find failure paths (use inversion), decomposing assumptions to primitives (use first-principles-thinking), recurring issue clustering (use pattern-recognition), or system leverage-level diagnosis (use meadows-leverage-points when available). Do NOT use for Invert this plan and list how to make it fail. Do NOT use for Break this strategy into irreducible premises. Do NOT use for The same issue appears in many files; cluster the pattern. Do NOT use for Find the highest leverage point in this system."
+license: MIT
+allowed-tools: Read Grep
+metadata:
+  schema_version: "7"
+  version: "1.0.0"
+  type: capability
+  category: foundations
+  domain: foundations/reasoning
+  scope: portable
+  owner: skill-graph-maintainer
+  freshness: "2026-05-21"
+  drift_check: "{\"last_verified\":\"2026-05-21\"}"
+  eval_artifacts: present
+  eval_state: unverified
+  routing_eval: absent
+  comprehension_state: present
+  stability: experimental
+  keywords: "[\"second-order thinking\",\"second order effects\",\"downstream consequences\",\"and then what\",\"unintended consequences\",\"delayed effects\",\"feedback loops\",\"incentive response\",\"compounding effects\",\"time horizon analysis\"]"
+  triggers: "[\"and then what\",\"what are the second-order effects\",\"what happens next\",\"think through downstream consequences\",\"what incentives does this change\"]"
+  examples: "[\"If we add a usage cap, what happens next for users, support, and revenue?\",\"This metric target looks good immediately. What second-order effects could make it harmful?\",\"Before changing the review process, think through how agents and reviewers will respond.\",\"What delayed effects will this cost-cutting decision create?\"]"
+  anti_examples: "[\"Invert this plan and list how to make it fail.\",\"Break this strategy into irreducible premises.\",\"The same issue appears in many files; cluster the pattern.\",\"Find the highest leverage point in this system.\"]"
+  relations: "{\"related\":[\"inversion\",\"first-principles-thinking\",\"mental-models\",\"constraint-awareness\",\"pattern-recognition\"],\"verify_with\":[\"epistemic-grounding\",\"mental-models\"]}"
+  mental_model: "|"
+  purpose: "|"
+  boundary: "|"
+  analogy: "Second-order thinking is like playing chess beyond the current move: the obvious move matters less than the position it creates after everyone else responds."
+  misconception: "|"
+  portability: "{\"readiness\":\"declared\",\"targets\":[\"skill-md\"]}"
+  lifecycle: "{\"stale_after_days\":365,\"review_cadence\":\"quarterly\"}"
+  structural_verdict: UNVERIFIED
+  truth_verdict: UNVERIFIED
+  comprehension_verdict: UNVERIFIED
+  application_verdict: UNVERIFIED
+  skill_graph_source_repo: "https://github.com/jacob-balslev/skill-graph"
+  skill_graph_protocol: Skill Metadata Protocol v7
+  skill_graph_project: Skill Graph
+  skill_graph_canonical_skill: skills/meta-methods/second-order-thinking/SKILL.md
+  skill_graph_export_description_projection: anti_examples
+---
+
+## Concept Card
+
+**What it is:** Second-order thinking is the discipline of evaluating what happens after the immediate result of a decision: actor responses, delayed effects, feedback loops, displaced costs, and compounding consequences.
+
+**Mental model:** Every action creates a first-order effect, then the system responds. The second-order thinker asks "and then what?" until the important later effects, incentives, and time delays are visible enough to decide.
+
+**Why it exists:** Many bad decisions are first-order good. They fix the visible symptom while creating hidden debt, worse incentives, delayed risk, or a shifted burden elsewhere in the system.
+
+**What it is NOT:** It is not inversion, not first-principles decomposition, not generic risk brainstorming, not a mandate to model infinite hypotheticals, and not a substitute for evidence.
+
+**Adjacent concepts:** inversion, first-principles thinking, mental models, constraint awareness, pattern recognition, leverage points.
+
+**One-line analogy:** Second-order thinking is chess for decisions: do not judge the move until you have considered the position it creates after the response.
+
+**Common misconception:** The trap is treating more consequences as better analysis. Good second-order thinking traces fewer, more material consequence chains with explicit mechanisms.
+
+# Second-Order Thinking
+
+## Coverage
+
+Second-order thinking covers downstream consequence analysis for decisions, interventions, product changes, policies, processes, metrics, and system fixes. It includes first-, second-, and third-order effect mapping; time horizon checks; actor response modeling; incentive analysis; feedback-loop detection; displacement of costs or risks; and guardrail design for delayed effects.
+
+Use this skill when the question sounds like:
+
+- "What happens next?"
+- "What incentives does this create?"
+- "What will users, reviewers, competitors, or the system do in response?"
+- "Could this first-order improvement create a second-order problem?"
+- "What does this look like in ten days, ten months, or after repeated use?"
+
+## Philosophy
+
+The first effect is usually the easiest to see and the easiest to reward. A rule reduces one metric, a feature increases one conversion, a shortcut saves one hour, a price change increases one month's revenue. If the decision stops there, the system gets to respond unseen.
+
+Second-order thinking treats the visible first result as only the first move. Users adapt. Teams route around rules. Costs move to another queue. Quality decays after the shortcut compounds. A metric becomes a target and stops representing the value it was chosen to proxy.
+
+The goal is not paralysis. The goal is better action: change the decision, add a guardrail, choose a slower but more robust path, measure a delayed effect, or explicitly accept a consequence because the first-order benefit is worth it.
+
+## The Workflow
+
+### 1. State the intervention
+
+Name the proposed action clearly.
+
+Bad: "Improve review quality."
+
+Better: "Require every pull request to receive two human approvals before merge."
+
+### 2. Name the first-order effect
+
+State the immediate expected benefit.
+
+Examples:
+
+- fewer defects reach production
+- support volume drops this week
+- conversion increases on the signup page
+- queue depth decreases
+- cost per run falls
+
+### 3. Ask "and then what?"
+
+Trace second- and third-order effects.
+
+```text
+Intervention -> first-order effect -> actor/system response -> later effect
+```
+
+Example:
+
+```text
+Two required approvals -> fewer unreviewed changes -> reviewers become bottleneck -> PRs batch up -> authors make larger PRs -> review quality drops again
+```
+
+### 4. Model responses by actor
+
+For each affected actor, ask how their incentives or behavior change.
+
+| Actor | Response questions |
+|---|---|
+| Users | What workaround, avoidance, confusion, or new behavior does this create? |
+| Operators | What hidden work, alert fatigue, or queue pressure appears? |
+| Builders | What incentives does this create for scope, quality, or gaming? |
+| Competitors | How might they respond if the change is market-visible? |
+| Regulators or gatekeepers | What scrutiny, compliance, or policy response could follow? |
+| The system itself | Which feedback loops amplify or dampen the effect? |
+
+### 5. Check time horizons
+
+Use at least three horizons.
+
+| Horizon | Question |
+|---|---|
+| Immediate | What changes on first use or first release? |
+| Short term | What changes after repeated use or early adaptation? |
+| Long term | What compounds, decays, normalizes, or shifts equilibrium? |
+
+The exact timescale depends on domain. A user-flow change might use minutes, days, and months. A platform strategy might use quarters, years, and market cycles.
+
+### 6. Convert findings into decision changes
+
+Each material later effect needs one of these actions.
+
+| Action | Use when |
+|---|---|
+| Add guardrail | The first-order benefit is good but creates a known second-order risk. |
+| Add delayed metric | The harm appears later than the first-order win. |
+| Change incentive | Actors will rationally game or route around the intervention. |
+| Narrow scope | The effect is beneficial only in a subset of cases. |
+| Choose alternate path | The later cost dominates the immediate benefit. |
+| Accept explicitly | The later cost is real but worth paying. |
+
+## Common Patterns
+
+### Metric target backfire
+
+First order: target improves.
+
+Second order: actors optimize the target instead of the underlying value.
+
+Control: add guardrail metrics and inspect behavior, not only the target.
+
+### Bottleneck displacement
+
+First order: one queue gets faster.
+
+Second order: work piles up at the next constrained step.
+
+Control: identify the next bottleneck before celebrating throughput.
+
+### Hidden maintenance debt
+
+First order: a shortcut ships faster.
+
+Second order: every future change pays extra complexity.
+
+Control: name the debt and define the trigger for paying it down.
+
+### Incentive gaming
+
+First order: a rule creates compliance.
+
+Second order: actors satisfy the rule without satisfying the intent.
+
+Control: measure intent-level outcomes and sample for gaming.
+
+### Trust erosion
+
+First order: aggressive prompt, notification, or paywall increases conversion.
+
+Second order: trust, retention, or recommendation declines.
+
+Control: pair conversion metrics with long-term trust or retention signals.
+
+## Anti-Patterns
+
+| Anti-pattern | What it looks like | Correction |
+|---|---|---|
+| First-order win celebration | "The metric went up, so this worked." | Ask which value the metric represents and what changed later. |
+| Infinite hypotheticals | Listing remote possibilities with no mechanism | Keep only plausible material chains with named actors and causal links. |
+| No response model | Treating users or teams as static | Model how each actor adapts. |
+| No time horizon | Considering only launch day | Add short-term and long-term checks. |
+| One-sided consequence chain | Listing only harms or only benefits | Trace both positive and negative later effects. |
+| Unowned delayed metric | Saying "monitor later" without defining what, when, and why | Add a delayed metric with owner or accepted-risk rationale. |
+| Confusing with inversion | Asking only how to fail | Use inversion for failure reversal; use second-order thinking to trace forward responses. |
+
+## Verification
+
+After applying this skill, verify:
+
+- [ ] The intervention or decision is stated concretely.
+- [ ] The first-order effect is named separately from later effects.
+- [ ] At least one "and then what?" chain reaches a second-order response.
+- [ ] Affected actors and their incentives are considered.
+- [ ] At least three time horizons are checked.
+- [ ] Feedback loops, bottleneck displacement, or metric gaming are considered when relevant.
+- [ ] Material later effects become guardrails, delayed metrics, incentive changes, scope changes, alternate paths, or explicit accepted risks.
+- [ ] The output does not inflate remote hypotheticals without causal mechanisms.
+
+## Do NOT Use When
+
+| Use instead | When |
+|---|---|
+| `inversion` | You need to reverse the goal or claim to find failure paths. |
+| `first-principles-thinking` | You need to strip inherited assumptions and rebuild from primitives. |
+| `pattern-recognition` | You need to cluster repeated observed issues into a recurring pattern. |
+| `mental-models` | The central problem is how users or builders represent the system in their minds. |
+| `constraint-awareness` | The central question is where the throughput bottleneck sits and how to subordinate work to it. |
+| Dedicated leverage-point analysis | You need to locate the intervention level in a system hierarchy. |
+
+## Key Sources
+
+- Howard Marks' distinction between first-level and second-level thinking frames the skill as the move beyond obvious immediate conclusions into deeper, more complex consequence analysis.
+- Ray Dalio's warning about second- and third-order consequences captures the core failure mode: seizing the first attractive option without asking what follows.
+- Farnam Street's "And then what?" practice grounds the operational prompt: repeatedly ask what happens after the first effect.
+- Systems thinking and feedback-loop literature grounds the need to model interactions, adaptation, time delay, and compounding effects rather than isolated actions.
+- Goodhart-style metric failure grounds the metric-target backfire pattern: once a measure becomes a target, actors can improve the measure while damaging the underlying value.

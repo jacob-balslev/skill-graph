@@ -352,7 +352,7 @@ Rate any output (skill body, prompt, doc section, dashboard widget) against CLT:
 | drift_status | UNKNOWN |
 | freshness | 2026-05-19 |
 
-The four-verdict shape is per [ADR 0011](../../../../skill-graph/docs/adr/0011-split-audit-verdict-into-four-verdicts.md). All four verdicts default to `UNVERIFIED` on a fresh port; gates 1–8 and the application-eval pilot populate them in subsequent audits.
+The four-verdict shape is per [ADR 0011](https://github.com/jacob-balslev/skill-graph/blob/main/docs/adr/0011-split-audit-verdict-into-four-verdicts.md). All four verdicts default to `UNVERIFIED` on a fresh port; gates 1–8 and the application-eval pilot populate them in subsequent audits.
 
 ---
 
