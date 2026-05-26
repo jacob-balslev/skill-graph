@@ -1,0 +1,42 @@
+OK   [triggers]   no duplicate trigger labels
+INFO [keywords]   31 shared keyword(s) (expected recall signal — not warnings)
+  keyword "audit my skills"  —  in: skill-infrastructure, graph-audit
+  keyword "authentication"  —  in: owasp-security, security-fundamentals
+  keyword "authorization"  —  in: owasp-security, security-fundamentals
+  keyword "compound components"  —  in: component-architecture, design-module-composition
+  keyword "conceptual model"  —  in: conceptual-modeling, mental-models
+  keyword "context window"  —  in: context-engineering, compression
+  keyword "Core Web Vitals"  —  in: performance-budgets, performance-engineering, best-practice
+  keyword "entity relationship"  —  in: data-modeling, entity-relationship-modeling
+  keyword "error boundary with Suspense"  —  in: error-boundary, suspense-patterns
+  keyword "foreign key"  —  in: data-modeling, entity-relationship-modeling
+  keyword "idempotency"  —  in: merge-queue, api-design
+  keyword "JSON Schema"  —  in: generative-ui, tool-call-flow
+  keyword "mockist"  —  in: test-doubles-design, test-driven-development
+  keyword "NextRequest NextResponse"  —  in: middleware-patterns, route-handler-design
+  keyword "normalization"  —  in: data-modeling-fundamentals, data-modeling, entity-relationship-modeling
+  keyword "OWASP"  —  in: best-practice, owasp-security
+  keyword "parallel tool calls"  —  in: tool-call-flow, tool-call-strategy
+  keyword "performance budget"  —  in: performance-budgets, performance-engineering
+  keyword "primary key"  —  in: data-modeling, entity-relationship-modeling
+  keyword "prompt injection"  —  in: prompt-craft, prompt-injection-defense
+  keyword "React Server Components"  —  in: client-server-boundary, rendering-models, server-components-design
+  keyword "RSC"  —  in: rendering-models, server-components-design
+  keyword "schema design"  —  in: data-modeling, entity-relationship-modeling
+  keyword "semantic naming"  —  in: linguistics, semantics
+  keyword "server actions"  —  in: client-server-boundary, server-actions-design
+  keyword "server-sent events"  —  in: streaming-architecture, real-time-updates
+  keyword "SSE"  —  in: streaming-architecture, real-time-updates
+  keyword "structured output"  —  in: generative-ui, prompt-craft
+  keyword "task decomposition"  —  in: task-path-optimization, spec-driven-development
+  keyword "WebSocket"  —  in: streaming-architecture, real-time-updates
+  keyword "zero-downtime migration"  —  in: database-migration, schema-evolution
+  → Shared keywords are RECALL, not duplicates: a query should be able to reach
+    every skill that genuinely covers the term. The router disambiguates by score
+    and by the typed relation edges between skills.
+    No action is required just because a keyword is shared. If routing is ambiguous,
+    add or confirm a relations.boundary / relations.related edge. Do NOT delete a
+    keyword to shrink this count: that strips recall and degrades routing.
+OK   [paths]      no duplicate path globs
+
+153 skill(s) analyzed, 0 error(s), 31 info item(s).

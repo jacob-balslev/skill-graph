@@ -1,0 +1,456 @@
+{
+  "schema": "retrieval-baseline-v1",
+  "description": "Stratified routing eval baseline for skill-graph-routing-eval.js --baseline mode. Each entry maps a human-authored query to the expected top-1 skill. Queries are principle-grounded (portable, no Sales Hub or personal data). Run: node scripts/skill-graph-routing-eval.js --baseline evals/retrieval-baseline-v2.json",
+  "generated": "2026-05-22",
+  "note": "This baseline was hand-curated: every entry was verified to route correctly (Recall@1 hit) against skills.manifest.json before inclusion. Do not flip routing_eval: present on a skill without this verification.",
+  "queries": [
+    {
+      "id": "agent-001",
+      "query": "design an autonomous loop with a safety cap and completion detection",
+      "expected_skills": ["autonomous-loop-patterns"],
+      "category": "agent",
+      "rationale": "Autonomous loop patterns is the canonical skill for loop design with safety caps."
+    },
+    {
+      "id": "agent-002",
+      "query": "I want to write a new skill from scratch — where do I start?",
+      "expected_skills": ["skill-scaffold"],
+      "category": "agent",
+      "rationale": "Skill-scaffold owns the new-skill authoring workflow."
+    },
+    {
+      "id": "agent-003",
+      "query": "write a reusable prompt for an LLM to classify support tickets and return one JSON object per ticket",
+      "expected_skills": ["prompt-craft"],
+      "category": "agent",
+      "rationale": "Prompt-craft owns prompt authoring and structured output patterns."
+    },
+    {
+      "id": "agent-004",
+      "query": "the agent ignored the instruction and used the wrong query helper — was the right context present?",
+      "expected_skills": ["context-engineering"],
+      "category": "agent",
+      "rationale": "Context-engineering diagnoses whether relevant context reached the model."
+    },
+    {
+      "id": "agent-005",
+      "query": "design the component schema for an assistant that can render a date picker, a chart, and a table",
+      "expected_skills": ["generative-ui"],
+      "category": "agent",
+      "rationale": "Generative-ui owns component schema design for model-driven UIs."
+    },
+    {
+      "id": "agent-006",
+      "query": "read this repo and extract the durable domain knowledge an agent should keep next time",
+      "expected_skills": ["project-knowledge-extraction"],
+      "category": "agent",
+      "rationale": "Project-knowledge-extraction owns extracting reusable knowledge from a codebase."
+    },
+    {
+      "id": "agent-007",
+      "query": "design the message-shape contract between a model and a tool runtime",
+      "expected_skills": ["tool-call-flow"],
+      "category": "agent",
+      "rationale": "Tool-call-flow owns the message protocol between model and tool executor."
+    },
+    {
+      "id": "agent-008",
+      "query": "the agent made 17 read_file calls when 3 greps would have done — what should it have done?",
+      "expected_skills": ["tool-call-strategy"],
+      "category": "agent",
+      "rationale": "Tool-call-strategy owns tool call efficiency and sequencing decisions."
+    },
+    {
+      "id": "agent-009",
+      "query": "we keep accepting agent-generated code on first try and shipping bugs — what discipline fixes this?",
+      "expected_skills": ["ai-native-development"],
+      "category": "agent",
+      "rationale": "AI-native-development owns the discipline around accepting agent output."
+    },
+    {
+      "id": "agent-010",
+      "query": "our skill library is growing and we are getting silent decay — eval counts dropping, conflicts appearing",
+      "expected_skills": ["skill-infrastructure"],
+      "category": "agent",
+      "rationale": "Skill-infrastructure owns library-level decay detection and eval health."
+    },
+    {
+      "id": "agent-011",
+      "query": "this task has failed twice, I need a fresh approach not another retry on the same path",
+      "expected_skills": ["task-path-optimization"],
+      "category": "agent",
+      "rationale": "Task-path-optimization owns task replanning and escape from stuck loops."
+    },
+    {
+      "id": "foundations-001",
+      "query": "we keep adding tooling and agent throughput is not going up — what is the constraint?",
+      "expected_skills": ["constraint-awareness"],
+      "category": "foundations",
+      "rationale": "Constraint-awareness owns TOC-style bottleneck analysis for agent workflows."
+    },
+    {
+      "id": "foundations-002",
+      "query": "users keep trying to drag a row to reorder but the table does not support drag — what mental model mismatch?",
+      "expected_skills": ["mental-models"],
+      "category": "foundations",
+      "rationale": "Mental-models owns user mental model analysis and mismatch diagnosis."
+    },
+    {
+      "id": "foundations-003",
+      "query": "should Customer and Organization be disjoint classes in this ontology?",
+      "expected_skills": ["ontology-modeling"],
+      "category": "foundations",
+      "rationale": "Ontology-modeling owns class hierarchy and disjointness decisions."
+    },
+    {
+      "id": "foundations-004",
+      "query": "I keep seeing the same null-pointer crash in three different files — what is the systemic fix?",
+      "expected_skills": ["pattern-recognition"],
+      "category": "foundations",
+      "rationale": "Pattern-recognition owns identifying systemic failure patterns across the codebase."
+    },
+    {
+      "id": "engineering-001",
+      "query": "my tests pass locally but fail in CI — why?",
+      "expected_skills": ["debugging"],
+      "category": "engineering",
+      "rationale": "Debugging is the canonical skill for environment-dependent test failures."
+    },
+    {
+      "id": "engineering-002",
+      "query": "size a connection pool for a workload with N application servers and M cores per server",
+      "expected_skills": ["connection-pooling"],
+      "category": "engineering",
+      "rationale": "Connection-pooling owns pool sizing calculations and workload analysis."
+    },
+    {
+      "id": "engineering-003",
+      "query": "decide whether a new distributed service should be CP or AP given its workload",
+      "expected_skills": ["cap-theorem-tradeoffs"],
+      "category": "engineering",
+      "rationale": "Cap-theorem-tradeoffs owns CP vs AP consistency model decisions."
+    },
+    {
+      "id": "engineering-004",
+      "query": "explain what ACID guarantees a database does and does not provide to the application developer",
+      "expected_skills": ["acid-fundamentals"],
+      "category": "engineering",
+      "rationale": "Acid-fundamentals owns ACID guarantee explanations and scope."
+    },
+    {
+      "id": "engineering-005",
+      "query": "design the API for listing orders with filters, pagination, and stable errors",
+      "expected_skills": ["api-design"],
+      "category": "engineering",
+      "rationale": "Api-design owns REST/GraphQL API surface design."
+    },
+    {
+      "id": "engineering-006",
+      "query": "explain why a table is in 2NF but not 3NF and what change would bring it to 3NF",
+      "expected_skills": ["data-modeling-fundamentals"],
+      "category": "engineering",
+      "rationale": "Data-modeling-fundamentals owns normalization theory and form analysis."
+    },
+    {
+      "id": "engineering-007",
+      "query": "add a nullable column to a 50M-row orders table without taking downtime",
+      "expected_skills": ["database-migration"],
+      "category": "engineering",
+      "rationale": "Database-migration owns zero-downtime schema change patterns."
+    },
+    {
+      "id": "engineering-008",
+      "query": "audit whether this repo has duplicate-purpose dependencies and unsafe package boundaries",
+      "expected_skills": ["dependency-architecture"],
+      "category": "engineering",
+      "rationale": "Dependency-architecture owns dependency boundary and duplication audits."
+    },
+    {
+      "id": "engineering-009",
+      "query": "decide whether this should use SSE or WebSocket for a live progress feed",
+      "expected_skills": ["streaming-architecture"],
+      "category": "engineering",
+      "rationale": "Streaming-architecture owns protocol selection for real-time data delivery."
+    },
+    {
+      "id": "engineering-010",
+      "query": "decide whether a product page should be SSG with revalidation or SSR",
+      "expected_skills": ["rendering-models"],
+      "category": "engineering",
+      "rationale": "Rendering-models owns SSG vs SSR vs ISR rendering strategy decisions."
+    },
+    {
+      "id": "engineering-011",
+      "query": "implement signature verification for a new third-party webhook handler",
+      "expected_skills": ["webhook-integration"],
+      "category": "engineering",
+      "rationale": "Webhook-integration owns signature verification and idempotency patterns."
+    },
+    {
+      "id": "engineering-012",
+      "query": "two of our agents claimed the same task and produced duplicate PRs — what atomic coordination pattern fixes this?",
+      "expected_skills": ["agent-engineering"],
+      "category": "engineering",
+      "rationale": "Agent-engineering owns multi-agent coordination and atomic task claim patterns."
+    },
+    {
+      "id": "engineering-013",
+      "query": "design replication for synchronous vs asynchronous replication given an RPO target",
+      "expected_skills": ["replication-patterns"],
+      "category": "engineering",
+      "rationale": "Replication-patterns owns replication topology and synchrony tradeoffs."
+    },
+    {
+      "id": "engineering-014",
+      "query": "diagnose a query that takes 8 seconds and identify the plan node responsible",
+      "expected_skills": ["query-optimization"],
+      "category": "engineering",
+      "rationale": "Query-optimization owns query plan diagnosis and performance fixes."
+    },
+    {
+      "id": "engineering-015",
+      "query": "decide whether a dashboard widget should be a Server Component or a Client Component",
+      "expected_skills": ["server-components-design"],
+      "category": "engineering",
+      "rationale": "Server-components-design owns the Server Component vs Client Component decision."
+    },
+    {
+      "id": "engineering-016",
+      "query": "design a Server Action for a create comment form that works without JavaScript",
+      "expected_skills": ["server-actions-design"],
+      "category": "engineering",
+      "rationale": "Server-actions-design owns Server Action form patterns and progressive enhancement."
+    },
+    {
+      "id": "engineering-017",
+      "query": "design a Route that receives a Stripe webhook — verify signature before parsing the body",
+      "expected_skills": ["route-handler-design"],
+      "category": "engineering",
+      "rationale": "Route-handler-design owns webhook route handler structure and security ordering."
+    },
+    {
+      "id": "engineering-018",
+      "query": "model the order fulfillment status lifecycle so invalid transitions are impossible",
+      "expected_skills": ["state-machine-modeling"],
+      "category": "engineering",
+      "rationale": "State-machine-modeling owns status lifecycle modeling with enforced transitions."
+    },
+    {
+      "id": "engineering-019",
+      "query": "decide whether a piece of state should be in the URL, component state, or persistent storage",
+      "expected_skills": ["state-management"],
+      "category": "engineering",
+      "rationale": "State-management owns component state locality decisions (URL, local, global)."
+    },
+    {
+      "id": "engineering-020",
+      "query": "choose an isolation level for a workload that has concurrent balance-decrement operations",
+      "expected_skills": ["transaction-isolation"],
+      "category": "engineering",
+      "rationale": "Transaction-isolation owns isolation level selection for concurrent write patterns."
+    },
+    {
+      "id": "engineering-021",
+      "query": "set up trunk-based branching and feature flags for a five-person engineering team",
+      "expected_skills": ["version-control"],
+      "category": "engineering",
+      "rationale": "Version-control owns branching strategy, trunk-based dev, and feature flag lifecycle."
+    },
+    {
+      "id": "engineering-022",
+      "query": "extract the duplicated validation logic from three handlers into a helper, keeping tests green",
+      "expected_skills": ["refactor"],
+      "category": "engineering",
+      "rationale": "Refactor is the canonical workflow skill for safe structural code changes."
+    },
+    {
+      "id": "engineering-023",
+      "query": "set up exception reporting for a new React and Next.js application",
+      "expected_skills": ["error-tracking"],
+      "category": "engineering",
+      "rationale": "Error-tracking owns exception reporting setup and error boundary integration."
+    },
+    {
+      "id": "engineering-024",
+      "query": "choose a shard key for a multi-tenant system where 90% of queries are tenant-scoped",
+      "expected_skills": ["sharding-strategy"],
+      "category": "engineering",
+      "rationale": "Sharding-strategy owns shard key selection and hot-shard diagnosis."
+    },
+    {
+      "id": "engineering-025",
+      "query": "Verify an incoming Shopify webhook by computing HMAC SHA-256 over the raw body",
+      "expected_skills": ["shopify"],
+      "category": "engineering",
+      "rationale": "Shopify skill owns Shopify-specific webhook verification patterns."
+    },
+    {
+      "id": "engineering-026",
+      "query": "Create a Printify product from a blueprint and print provider set and publish it to a shop",
+      "expected_skills": ["printify"],
+      "category": "engineering",
+      "rationale": "Printify skill owns Printify API product creation and publishing."
+    },
+    {
+      "id": "quality-001",
+      "query": "plan ESLint rule introduction for a monorepo that has never had linting",
+      "expected_skills": ["lint-overlay"],
+      "category": "quality",
+      "rationale": "Lint-overlay is the overlay skill for safe lint rule rollout in existing codebases."
+    },
+    {
+      "id": "quality-002",
+      "query": "audit a route handler for authn, authz, and input validation",
+      "expected_skills": ["security-fundamentals"],
+      "category": "quality",
+      "rationale": "Security-fundamentals owns the auth + input validation audit checklist."
+    },
+    {
+      "id": "quality-003",
+      "query": "this modal is keyboard-trapped — users cannot Escape to close it",
+      "expected_skills": ["a11y"],
+      "category": "quality",
+      "rationale": "A11y is the canonical skill for keyboard accessibility and focus trap issues."
+    },
+    {
+      "id": "quality-004",
+      "query": "design a consumer-driven contract test between a frontend and a backend service",
+      "expected_skills": ["contract-testing"],
+      "category": "quality",
+      "rationale": "Contract-testing owns consumer-driven contract design and Pact patterns."
+    },
+    {
+      "id": "quality-005",
+      "query": "audit this endpoint for SQL injection and XSS specifically",
+      "expected_skills": ["owasp-security"],
+      "category": "quality",
+      "rationale": "Owasp-security owns OWASP Top 10 specific vulnerability audits."
+    },
+    {
+      "id": "quality-006",
+      "query": "design a load test for an API endpoint that verifies the p95 SLO at expected production traffic",
+      "expected_skills": ["performance-testing"],
+      "category": "quality",
+      "rationale": "Performance-testing owns load, stress, and soak test design."
+    },
+    {
+      "id": "quality-007",
+      "query": "set a Core Web Vitals budget for a marketing landing page and enforce it in CI",
+      "expected_skills": ["performance-budgets"],
+      "category": "quality",
+      "rationale": "Performance-budgets owns Core Web Vitals budget definition and CI enforcement."
+    },
+    {
+      "id": "quality-008",
+      "query": "do I need a unit test for this pure formatter or is integration enough?",
+      "expected_skills": ["testing-strategy"],
+      "category": "quality",
+      "rationale": "Testing-strategy owns test level selection decisions across the pyramid."
+    },
+    {
+      "id": "quality-009",
+      "query": "explain why a 90% coverage codebase might have a 40% mutation score and what that means",
+      "expected_skills": ["mutation-testing"],
+      "category": "quality",
+      "rationale": "Mutation-testing owns mutation score interpretation and its relationship to line coverage."
+    },
+    {
+      "id": "quality-010",
+      "query": "decide whether a rendered component is a candidate for a snapshot test or behavioral tests",
+      "expected_skills": ["snapshot-testing"],
+      "category": "quality",
+      "rationale": "Snapshot-testing owns snapshot vs behavioral test selection decisions."
+    },
+    {
+      "id": "quality-011",
+      "query": "review whether this RAG pipeline retrieved documents can override the system prompt",
+      "expected_skills": ["prompt-injection-defense"],
+      "category": "quality",
+      "rationale": "Prompt-injection-defense owns RAG pipeline injection risk analysis."
+    },
+    {
+      "id": "quality-012",
+      "query": "design an e2e test suite for an onboarding journey: signup, email verify, first dashboard visit",
+      "expected_skills": ["e2e-test-design"],
+      "category": "quality",
+      "rationale": "E2e-test-design owns end-to-end test suite design for user journeys."
+    },
+    {
+      "id": "design-001",
+      "query": "should this control be a dropdown, combobox, radio group, or stepper?",
+      "expected_skills": ["interaction-patterns"],
+      "category": "design",
+      "rationale": "Interaction-patterns owns control selection decisions for data entry."
+    },
+    {
+      "id": "design-002",
+      "query": "add a dark mode toggle with system / light / dark options and persist the user preference",
+      "expected_skills": ["dark-mode-implementation"],
+      "category": "design",
+      "rationale": "Dark-mode-implementation owns dark mode toggle, system preference, and persistence."
+    },
+    {
+      "id": "design-003",
+      "query": "design the validation lifecycle for this signup form",
+      "expected_skills": ["form-ux-architecture"],
+      "category": "design",
+      "rationale": "Form-ux-architecture owns validation lifecycle, required-field grouping, and error recovery."
+    },
+    {
+      "id": "design-004",
+      "query": "our docs have good content but nobody can find the setup instructions — how should we restructure?",
+      "expected_skills": ["information-architecture"],
+      "category": "design",
+      "rationale": "Information-architecture owns navigation design, findability, and hierarchy."
+    },
+    {
+      "id": "design-005",
+      "query": "Build a 10-step color scale from a brand seed color with perceptually even lightness steps",
+      "expected_skills": ["color-system-design"],
+      "category": "design",
+      "rationale": "Color-system-design owns perceptual color scale construction."
+    },
+    {
+      "id": "design-006",
+      "query": "Design a three-tier token system (reference, system, component) for a multi-brand product",
+      "expected_skills": ["theme-system-design"],
+      "category": "design",
+      "rationale": "Theme-system-design owns multi-tier token architecture for theming."
+    },
+    {
+      "id": "design-007",
+      "query": "pick the right fidelity for a prototype that tests whether users will trust an AI-suggested action",
+      "expected_skills": ["prototyping"],
+      "category": "design",
+      "rationale": "Prototyping owns prototype fidelity selection and testing method choice."
+    },
+    {
+      "id": "design-008",
+      "query": "pick a visual direction for this dashboard without changing the task structure",
+      "expected_skills": ["visual-design-foundations"],
+      "category": "design",
+      "rationale": "Visual-design-foundations owns visual direction decisions for digital products."
+    },
+    {
+      "id": "design-009",
+      "query": "decide the H1 and H2 size ratios and weight contrast for a long-form article layout",
+      "expected_skills": ["visual-hierarchy"],
+      "category": "design",
+      "rationale": "Visual-hierarchy owns heading size ratios and weight contrast for typography."
+    },
+    {
+      "id": "design-010",
+      "query": "design the API surface for a Dialog component that must work in multiple products",
+      "expected_skills": ["component-architecture"],
+      "category": "design",
+      "rationale": "Component-architecture owns reusable component API design and prop surface decisions."
+    },
+    {
+      "id": "design-011",
+      "query": "design loading, success, error, and retry feedback for this async action",
+      "expected_skills": ["interaction-feedback"],
+      "category": "design",
+      "rationale": "Interaction-feedback owns async action state feedback patterns."
+    }
+  ]
+}

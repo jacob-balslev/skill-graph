@@ -1,0 +1,3427 @@
+{
+  "summary": {
+    "manifest_path": "/Users/jacobbalslev/Development/skill-graph/skills.manifest.json",
+    "total_skills": 155,
+    "triggerable": 121,
+    "not_triggerable": 17,
+    "unknown_no_examples": 17,
+    "fail_rate": 0.123,
+    "notes": "17 skills cannot be scored — author activation.examples to enable triggerability check"
+  },
+  "results": [
+    {
+      "skill": "a11y",
+      "triggerable": false,
+      "total_scenarios": 3,
+      "top1_hits": 0,
+      "top3_hits": 0,
+      "hit_rate_top1": 0,
+      "hit_rate_top3": 0,
+      "failures": [
+        {
+          "scenario": "this modal is keyboard-trapped — users can't Escape to close it",
+          "top1": "interaction-patterns",
+          "top3_winners": [
+            "interaction-patterns",
+            "epistemic-grounding"
+          ]
+        },
+        {
+          "scenario": "screen reader doesn't announce when the form validation state changes",
+          "top1": "form-ux-architecture",
+          "top3_winners": [
+            "form-ux-architecture",
+            "server-actions-design",
+            "skill-infrastructure"
+          ]
+        },
+        {
+          "scenario": "add proper labels to these form fields so assistive tech can read them",
+          "top1": "form-ux-architecture",
+          "top3_winners": [
+            "form-ux-architecture",
+            "schema-evolution",
+            "lint-overlay"
+          ]
+        }
+      ]
+    },
+    {
+      "skill": "acid-fundamentals",
+      "triggerable": true,
+      "total_scenarios": 3,
+      "top1_hits": 3,
+      "top3_hits": 3,
+      "hit_rate_top1": 1,
+      "hit_rate_top3": 1,
+      "failures": []
+    },
+    {
+      "skill": "agent-engineering",
+      "triggerable": true,
+      "total_scenarios": 3,
+      "top1_hits": 1,
+      "top3_hits": 1,
+      "hit_rate_top1": 0.3333333333333333,
+      "hit_rate_top3": 0.3333333333333333,
+      "failures": [
+        {
+          "scenario": "two of our agents claimed the same task and produced duplicate PRs — what atomicity guarantee prevents this?",
+          "top1": "acid-fundamentals",
+          "top3_winners": [
+            "acid-fundamentals",
+            "spec-driven-development",
+            "task-analysis"
+          ]
+        },
+        {
+          "scenario": "the orchestrator burns 6x the budget we planned every Tuesday — where do we add cost visibility and caps?",
+          "top1": "performance-budgets",
+          "top3_winners": [
+            "performance-budgets",
+            "constraint-awareness",
+            "framework-fit-analysis"
+          ]
+        }
+      ]
+    },
+    {
+      "skill": "agent-eval-design",
+      "triggerable": true,
+      "total_scenarios": 3,
+      "top1_hits": 2,
+      "top3_hits": 3,
+      "hit_rate_top1": 0.6666666666666666,
+      "hit_rate_top3": 1,
+      "failures": [
+        {
+          "scenario": "create a rubric for judging agent outputs on grounded project knowledge extraction",
+          "top1": "project-knowledge-extraction",
+          "top3_winners": [
+            "project-knowledge-extraction",
+            "agent-eval-design",
+            "hooks-patterns"
+          ]
+        }
+      ]
+    },
+    {
+      "skill": "ai-native-development",
+      "triggerable": true,
+      "total_scenarios": 3,
+      "top1_hits": 1,
+      "top3_hits": 2,
+      "hit_rate_top1": 0.3333333333333333,
+      "hit_rate_top3": 0.6666666666666666,
+      "failures": [
+        {
+          "scenario": "what autonomy level should I run for a security-sensitive change?",
+          "top1": "postgres-rls",
+          "top3_winners": [
+            "postgres-rls",
+            "schema-evolution",
+            "security-fundamentals"
+          ]
+        },
+        {
+          "scenario": "does measuring lines-of-code per session make sense when an agent generates the code?",
+          "top1": "context-window",
+          "top3_winners": [
+            "context-window",
+            "project-knowledge-extraction",
+            "ai-native-development"
+          ]
+        }
+      ]
+    },
+    {
+      "skill": "api-design",
+      "triggerable": true,
+      "total_scenarios": 3,
+      "top1_hits": 1,
+      "top3_hits": 1,
+      "hit_rate_top1": 0.3333333333333333,
+      "hit_rate_top3": 0.3333333333333333,
+      "failures": [
+        {
+          "scenario": "review this route contract before frontend and backend implement it separately",
+          "top1": "task-analysis",
+          "top3_winners": [
+            "task-analysis",
+            "middleware-patterns",
+            "conceptual-modeling"
+          ]
+        },
+        {
+          "scenario": "should this operation be a resource update, an action endpoint, or an async job?",
+          "top1": "background-jobs",
+          "top3_winners": [
+            "background-jobs",
+            "intent-recognition",
+            "context-window"
+          ]
+        }
+      ]
+    },
+    {
+      "skill": "architecture-decision-records",
+      "triggerable": true,
+      "total_scenarios": 3,
+      "top1_hits": 2,
+      "top3_hits": 2,
+      "hit_rate_top1": 0.6666666666666666,
+      "hit_rate_top3": 0.6666666666666666,
+      "failures": [
+        {
+          "scenario": "write an ADR for choosing Postgres views as the source of truth",
+          "top1": "state-management",
+          "top3_winners": [
+            "state-management",
+            "skill-infrastructure",
+            "postgres-rls"
+          ]
+        }
+      ]
+    },
+    {
+      "skill": "autonomous-loop-patterns",
+      "triggerable": null,
+      "total_scenarios": 0,
+      "top1_hits": 0,
+      "top3_hits": 0,
+      "hit_rate_top1": null,
+      "hit_rate_top3": null,
+      "failures": [],
+      "note": "no activation.examples authored — UNKNOWN triggerability"
+    },
+    {
+      "skill": "background-jobs",
+      "triggerable": true,
+      "total_scenarios": 3,
+      "top1_hits": 2,
+      "top3_hits": 2,
+      "hit_rate_top1": 0.6666666666666666,
+      "hit_rate_top3": 0.6666666666666666,
+      "failures": [
+        {
+          "scenario": "move this report generation out of the API handler and still show progress",
+          "top1": "route-handler-design",
+          "top3_winners": [
+            "route-handler-design",
+            "server-components-design",
+            "printify"
+          ]
+        }
+      ]
+    },
+    {
+      "skill": "bayesian-reasoning",
+      "triggerable": true,
+      "total_scenarios": 3,
+      "top1_hits": 2,
+      "top3_hits": 3,
+      "hit_rate_top1": 0.6666666666666666,
+      "hit_rate_top3": 1,
+      "failures": [
+        {
+          "scenario": "we have a rare bug signal; account for the base rate before concluding the cause",
+          "top1": "diagnosis",
+          "top3_winners": [
+            "diagnosis",
+            "bayesian-reasoning",
+            "spec-driven-development"
+          ]
+        }
+      ]
+    },
+    {
+      "skill": "best-practice",
+      "triggerable": true,
+      "total_scenarios": 3,
+      "top1_hits": 1,
+      "top3_hits": 1,
+      "hit_rate_top1": 0.3333333333333333,
+      "hit_rate_top3": 0.3333333333333333,
+      "failures": [
+        {
+          "scenario": "reviewing a pull request for correctness, security, and style",
+          "top1": "postgres-rls",
+          "top3_winners": [
+            "postgres-rls",
+            "route-handler-design",
+            "security-fundamentals"
+          ]
+        },
+        {
+          "scenario": "creating a new React component and checking it against quality standards",
+          "top1": "ref-patterns",
+          "top3_winners": [
+            "ref-patterns",
+            "server-components-design",
+            "vercel-composition-patterns"
+          ]
+        }
+      ]
+    },
+    {
+      "skill": "bounded-context-mapping",
+      "triggerable": true,
+      "total_scenarios": 3,
+      "top1_hits": 1,
+      "top3_hits": 1,
+      "hit_rate_top1": 0.3333333333333333,
+      "hit_rate_top3": 0.3333333333333333,
+      "failures": [
+        {
+          "scenario": "orders, fulfillment, payments, and support all use status differently - where should the bounded contexts be?",
+          "top1": "suspense-patterns",
+          "top3_winners": [
+            "suspense-patterns",
+            "tool-call-flow",
+            "methodical"
+          ]
+        },
+        {
+          "scenario": "do we need an anti-corruption layer between our canonical order model and Shopify?",
+          "top1": "shopify",
+          "top3_winners": [
+            "shopify",
+            "conceptual-modeling",
+            "semantics"
+          ]
+        }
+      ]
+    },
+    {
+      "skill": "cap-theorem-tradeoffs",
+      "triggerable": true,
+      "total_scenarios": 3,
+      "top1_hits": 2,
+      "top3_hits": 2,
+      "hit_rate_top1": 0.6666666666666666,
+      "hit_rate_top3": 0.6666666666666666,
+      "failures": [
+        {
+          "scenario": "explain why CAP's C and ACID's C are different concepts despite sharing the letter",
+          "top1": "query-optimization",
+          "top3_winners": [
+            "query-optimization",
+            "ai-native-development",
+            "autonomous-loop-patterns"
+          ]
+        }
+      ]
+    },
+    {
+      "skill": "client-server-boundary",
+      "triggerable": false,
+      "total_scenarios": 3,
+      "top1_hits": 0,
+      "top3_hits": 1,
+      "hit_rate_top1": 0,
+      "hit_rate_top3": 0.3333333333333333,
+      "failures": [
+        {
+          "scenario": "decide whether a piece of data must cross the network or can stay server-only",
+          "top1": "server-components-design",
+          "top3_winners": [
+            "server-components-design",
+            "real-time-updates",
+            "integration-test-design"
+          ]
+        },
+        {
+          "scenario": "diagnose why a component marked as a server component is being shipped to the client",
+          "top1": "server-components-design",
+          "top3_winners": [
+            "server-components-design",
+            "state-management",
+            "form-ux-architecture"
+          ]
+        },
+        {
+          "scenario": "review whether secrets in server code can leak through serialized props",
+          "top1": "best-practice",
+          "top3_winners": [
+            "best-practice",
+            "code-review",
+            "client-server-boundary"
+          ]
+        }
+      ]
+    },
+    {
+      "skill": "code-review",
+      "triggerable": true,
+      "total_scenarios": 3,
+      "top1_hits": 2,
+      "top3_hits": 2,
+      "hit_rate_top1": 0.6666666666666666,
+      "hit_rate_top3": 0.6666666666666666,
+      "failures": [
+        {
+          "scenario": "review this PR for correctness and project conventions",
+          "top1": "best-practice",
+          "top3_winners": [
+            "best-practice",
+            "task-analysis",
+            "diff-analysis"
+          ]
+        }
+      ]
+    },
+    {
+      "skill": "cognitive-load-theory",
+      "triggerable": null,
+      "total_scenarios": 0,
+      "top1_hits": 0,
+      "top3_hits": 0,
+      "hit_rate_top1": null,
+      "hit_rate_top3": null,
+      "failures": [],
+      "note": "no activation.examples authored — UNKNOWN triggerability"
+    },
+    {
+      "skill": "color-system-design",
+      "triggerable": true,
+      "total_scenarios": 3,
+      "top1_hits": 3,
+      "top3_hits": 3,
+      "hit_rate_top1": 1,
+      "hit_rate_top3": 1,
+      "failures": []
+    },
+    {
+      "skill": "component-architecture",
+      "triggerable": true,
+      "total_scenarios": 3,
+      "top1_hits": 2,
+      "top3_hits": 3,
+      "hit_rate_top1": 0.6666666666666666,
+      "hit_rate_top3": 1,
+      "failures": [
+        {
+          "scenario": "design the API surface for a Dialog component that must work in multiple products with different visual languages",
+          "top1": "design-module-composition",
+          "top3_winners": [
+            "design-module-composition",
+            "design-system-architecture",
+            "component-architecture"
+          ]
+        }
+      ]
+    },
+    {
+      "skill": "compression",
+      "triggerable": null,
+      "total_scenarios": 0,
+      "top1_hits": 0,
+      "top3_hits": 0,
+      "hit_rate_top1": null,
+      "hit_rate_top3": null,
+      "failures": [],
+      "note": "no activation.examples authored — UNKNOWN triggerability"
+    },
+    {
+      "skill": "conceptual-modeling",
+      "triggerable": true,
+      "total_scenarios": 3,
+      "top1_hits": 3,
+      "top3_hits": 3,
+      "hit_rate_top1": 1,
+      "hit_rate_top3": 1,
+      "failures": []
+    },
+    {
+      "skill": "connection-pooling",
+      "triggerable": true,
+      "total_scenarios": 3,
+      "top1_hits": 1,
+      "top3_hits": 2,
+      "hit_rate_top1": 0.3333333333333333,
+      "hit_rate_top3": 0.6666666666666666,
+      "failures": [
+        {
+          "scenario": "size a connection pool for a workload with N application servers and M cores per database",
+          "top1": "performance-engineering",
+          "top3_winners": [
+            "performance-engineering",
+            "connection-pooling",
+            "context-window"
+          ]
+        },
+        {
+          "scenario": "diagnose why a workload is bottlenecked on connections rather than query performance",
+          "top1": "performance-testing",
+          "top3_winners": [
+            "performance-testing",
+            "query-optimization",
+            "sharding-strategy"
+          ]
+        }
+      ]
+    },
+    {
+      "skill": "constraint-awareness",
+      "triggerable": true,
+      "total_scenarios": 3,
+      "top1_hits": 1,
+      "top3_hits": 2,
+      "hit_rate_top1": 0.3333333333333333,
+      "hit_rate_top3": 0.6666666666666666,
+      "failures": [
+        {
+          "scenario": "we keep adding tooling and the agent throughput isn't going up — what TOC step are we missing?",
+          "top1": "context-engineering",
+          "top3_winners": [
+            "context-engineering",
+            "constraint-awareness",
+            "methodical"
+          ]
+        },
+        {
+          "scenario": "should this approval gate stay in the loop or be replaced by an automated check?",
+          "top1": "evaluation",
+          "top3_winners": [
+            "evaluation",
+            "autonomous-loop-patterns",
+            "middleware-patterns"
+          ]
+        }
+      ]
+    },
+    {
+      "skill": "content-monitor",
+      "triggerable": null,
+      "total_scenarios": 0,
+      "top1_hits": 0,
+      "top3_hits": 0,
+      "hit_rate_top1": null,
+      "hit_rate_top3": null,
+      "failures": [],
+      "note": "no activation.examples authored — UNKNOWN triggerability"
+    },
+    {
+      "skill": "context-engineering",
+      "triggerable": false,
+      "total_scenarios": 3,
+      "top1_hits": 0,
+      "top3_hits": 1,
+      "hit_rate_top1": 0,
+      "hit_rate_top3": 0.3333333333333333,
+      "failures": [
+        {
+          "scenario": "the agent ignored the instruction and used the wrong query helper — was the right skill loaded?",
+          "top1": "graph-audit",
+          "top3_winners": [
+            "graph-audit",
+            "query-optimization"
+          ]
+        },
+        {
+          "scenario": "we keep getting generic answers from the agent even though the skill has the answer — what's wrong?",
+          "top1": "agent-eval-design",
+          "top3_winners": [
+            "agent-eval-design",
+            "context-engineering",
+            "graph-audit"
+          ]
+        },
+        {
+          "scenario": "I want to design which skills get injected for which prompts — where do I start?",
+          "top1": "graph-audit",
+          "top3_winners": [
+            "graph-audit",
+            "component-architecture",
+            "route-handler-design"
+          ]
+        }
+      ]
+    },
+    {
+      "skill": "context-graph",
+      "triggerable": true,
+      "total_scenarios": 3,
+      "top1_hits": 1,
+      "top3_hits": 1,
+      "hit_rate_top1": 0.3333333333333333,
+      "hit_rate_top3": 0.3333333333333333,
+      "failures": [
+        {
+          "scenario": "we have ~300 skills but the agent never finds half of them — what's the diagnostic frame?",
+          "top1": "diagnosis",
+          "top3_winners": [
+            "diagnosis",
+            "semantic-relations",
+            "graph-audit"
+          ]
+        },
+        {
+          "scenario": "I changed a webhook handler — what's the discipline for tracing the impact across docs, skills, memory, and scripts?",
+          "top1": "project-knowledge-extraction",
+          "top3_winners": [
+            "project-knowledge-extraction",
+            "webhook-integration",
+            "graph-audit"
+          ]
+        }
+      ]
+    },
+    {
+      "skill": "context-management",
+      "triggerable": false,
+      "total_scenarios": 3,
+      "top1_hits": 0,
+      "top3_hits": 0,
+      "hit_rate_top1": 0,
+      "hit_rate_top3": 0,
+      "failures": [
+        {
+          "scenario": "the session feels noisy and I'm re-reading the same files — what discipline pulls it back?",
+          "top1": "connection-pooling",
+          "top3_winners": [
+            "connection-pooling",
+            "context-window",
+            "design-thinking"
+          ]
+        },
+        {
+          "scenario": "the agent keeps citing assumptions that were already disproven — how do I clear them out?",
+          "top1": "agent-engineering",
+          "top3_winners": [
+            "agent-engineering",
+            "test-driven-development",
+            "merge-queue"
+          ]
+        },
+        {
+          "scenario": "I'm about to compact — what do I need to preserve so the next session resumes correctly?",
+          "top1": "context-window",
+          "top3_winners": [
+            "context-window",
+            "connection-pooling",
+            "error-boundary"
+          ]
+        }
+      ]
+    },
+    {
+      "skill": "context-window",
+      "triggerable": true,
+      "total_scenarios": 3,
+      "top1_hits": 2,
+      "top3_hits": 3,
+      "hit_rate_top1": 0.6666666666666666,
+      "hit_rate_top3": 1,
+      "failures": [
+        {
+          "scenario": "the agent's tool results are starting to truncate — what state are we in and what should I do next?",
+          "top1": "error-boundary",
+          "top3_winners": [
+            "error-boundary",
+            "server-actions-design",
+            "context-window"
+          ]
+        }
+      ]
+    },
+    {
+      "skill": "contract-testing",
+      "triggerable": true,
+      "total_scenarios": 3,
+      "top1_hits": 2,
+      "top3_hits": 2,
+      "hit_rate_top1": 0.6666666666666666,
+      "hit_rate_top3": 0.6666666666666666,
+      "failures": [
+        {
+          "scenario": "decide whether to use Pact or schema-only validation for a new API",
+          "top1": "tool-call-flow",
+          "top3_winners": [
+            "tool-call-flow",
+            "conceptual-modeling",
+            "skill-infrastructure"
+          ]
+        }
+      ]
+    },
+    {
+      "skill": "cron-scheduling",
+      "triggerable": null,
+      "total_scenarios": 0,
+      "top1_hits": 0,
+      "top3_hits": 0,
+      "hit_rate_top1": null,
+      "hit_rate_top3": null,
+      "failures": [],
+      "note": "no activation.examples authored — UNKNOWN triggerability"
+    },
+    {
+      "skill": "dark-mode-implementation",
+      "triggerable": true,
+      "total_scenarios": 3,
+      "top1_hits": 2,
+      "top3_hits": 3,
+      "hit_rate_top1": 0.6666666666666666,
+      "hit_rate_top3": 1,
+      "failures": [
+        {
+          "scenario": "Provide dark variants of the marketing illustrations and the favicon",
+          "top1": "printify",
+          "top3_winners": [
+            "printify",
+            "dark-mode-implementation",
+            "contract-testing"
+          ]
+        }
+      ]
+    },
+    {
+      "skill": "data-modeling",
+      "triggerable": true,
+      "total_scenarios": 3,
+      "top1_hits": 1,
+      "top3_hits": 1,
+      "hit_rate_top1": 0.3333333333333333,
+      "hit_rate_top3": 0.3333333333333333,
+      "failures": [
+        {
+          "scenario": "turn this conceptual model into a logical schema with keys and constraints",
+          "top1": "conceptual-modeling",
+          "top3_winners": [
+            "conceptual-modeling",
+            "tool-call-flow",
+            "generative-ui"
+          ]
+        },
+        {
+          "scenario": "should this be normalized, denormalized, or materialized as a view?",
+          "top1": "postgres-rls",
+          "top3_winners": [
+            "postgres-rls",
+            "problem-framing",
+            "best-practice"
+          ]
+        }
+      ]
+    },
+    {
+      "skill": "data-modeling-fundamentals",
+      "triggerable": true,
+      "total_scenarios": 3,
+      "top1_hits": 1,
+      "top3_hits": 1,
+      "hit_rate_top1": 0.3333333333333333,
+      "hit_rate_top3": 0.3333333333333333,
+      "failures": [
+        {
+          "scenario": "decide whether a workload's read pattern justifies denormalization against the theoretical baseline",
+          "top1": "writing-humanizer",
+          "top3_winners": [
+            "writing-humanizer",
+            "replication-patterns",
+            "schema-evolution"
+          ]
+        },
+        {
+          "scenario": "compare the relational, document, and event-sourced models at the conceptual level for a given domain",
+          "top1": "event-storming",
+          "top3_winners": [
+            "event-storming",
+            "mental-models",
+            "postgres-rls"
+          ]
+        }
+      ]
+    },
+    {
+      "skill": "database-migration",
+      "triggerable": true,
+      "total_scenarios": 3,
+      "top1_hits": 2,
+      "top3_hits": 2,
+      "hit_rate_top1": 0.6666666666666666,
+      "hit_rate_top3": 0.6666666666666666,
+      "failures": [
+        {
+          "scenario": "rename the `display_name` column to `username` while the app is live",
+          "top1": "naming-conventions",
+          "top3_winners": [
+            "naming-conventions",
+            "typography-system",
+            "server-components-design"
+          ]
+        }
+      ]
+    },
+    {
+      "skill": "debugging",
+      "triggerable": true,
+      "total_scenarios": 3,
+      "top1_hits": 1,
+      "top3_hits": 2,
+      "hit_rate_top1": 0.3333333333333333,
+      "hit_rate_top3": 0.6666666666666666,
+      "failures": [
+        {
+          "scenario": "this function used to work yesterday; what changed?",
+          "top1": "server-actions-design",
+          "top3_winners": [
+            "server-actions-design",
+            "naming-conventions"
+          ]
+        },
+        {
+          "scenario": "reproduce this Stripe webhook failure from production logs",
+          "top1": "stripe-ledger-recon",
+          "top3_winners": [
+            "stripe-ledger-recon",
+            "debugging",
+            "agent-engineering"
+          ]
+        }
+      ]
+    },
+    {
+      "skill": "dependency-architecture",
+      "triggerable": true,
+      "total_scenarios": 3,
+      "top1_hits": 1,
+      "top3_hits": 1,
+      "hit_rate_top1": 0.3333333333333333,
+      "hit_rate_top3": 0.3333333333333333,
+      "failures": [
+        {
+          "scenario": "should this SDK be wrapped behind an adapter or imported everywhere?",
+          "top1": "error-tracking",
+          "top3_winners": [
+            "error-tracking"
+          ]
+        },
+        {
+          "scenario": "design dependency rules for packages in this monorepo",
+          "top1": "semantics",
+          "top3_winners": [
+            "semantics",
+            "visual-design-foundations",
+            "component-architecture"
+          ]
+        }
+      ]
+    },
+    {
+      "skill": "design-module-composition",
+      "triggerable": true,
+      "total_scenarios": 3,
+      "top1_hits": 1,
+      "top3_hits": 1,
+      "hit_rate_top1": 0.3333333333333333,
+      "hit_rate_top3": 0.3333333333333333,
+      "failures": [
+        {
+          "scenario": "Design a Dialog component whose trigger, content, and close button are addressable by consumers",
+          "top1": "component-architecture",
+          "top3_winners": [
+            "component-architecture"
+          ]
+        },
+        {
+          "scenario": "Build a headless table primitive that exposes state and behavior without imposing markup",
+          "top1": "component-architecture",
+          "top3_winners": [
+            "component-architecture",
+            "ref-patterns",
+            "server-actions-design"
+          ]
+        }
+      ]
+    },
+    {
+      "skill": "design-system-architecture",
+      "triggerable": true,
+      "total_scenarios": 3,
+      "top1_hits": 1,
+      "top3_hits": 2,
+      "hit_rate_top1": 0.3333333333333333,
+      "hit_rate_top3": 0.6666666666666666,
+      "failures": [
+        {
+          "scenario": "define semantic tokens so charts, status colors, and surfaces do not hardcode raw colors",
+          "top1": "semantics",
+          "top3_winners": [
+            "semantics",
+            "design-system-architecture",
+            "theme-system-design"
+          ]
+        },
+        {
+          "scenario": "design the theming architecture before adding dark mode",
+          "top1": "dark-mode-implementation",
+          "top3_winners": [
+            "dark-mode-implementation",
+            "form-ux-architecture",
+            "frontend-architecture"
+          ]
+        }
+      ]
+    },
+    {
+      "skill": "design-thinking",
+      "triggerable": true,
+      "total_scenarios": 3,
+      "top1_hits": 2,
+      "top3_hits": 3,
+      "hit_rate_top1": 0.6666666666666666,
+      "hit_rate_top3": 1,
+      "failures": [
+        {
+          "scenario": "Plan a full design-thinking arc for a four-week project on rural healthcare access.",
+          "top1": "color-system-design",
+          "top3_winners": [
+            "color-system-design",
+            "design-thinking",
+            "form-ux-architecture"
+          ]
+        }
+      ]
+    },
+    {
+      "skill": "diagnosis",
+      "triggerable": false,
+      "total_scenarios": 3,
+      "top1_hits": 0,
+      "top3_hits": 0,
+      "hit_rate_top1": 0,
+      "hit_rate_top3": 0,
+      "failures": [
+        {
+          "scenario": "the agent has been chasing this bug for 30 minutes — what's the structural fix?",
+          "top1": "type-safety",
+          "top3_winners": [
+            "type-safety",
+            "merge-queue",
+            "semantic-center"
+          ]
+        },
+        {
+          "scenario": "the symptoms span data integrity and UI rendering — which is the root cause?",
+          "top1": "debugging",
+          "top3_winners": [
+            "debugging",
+            "pattern-recognition",
+            "integration-test-design"
+          ]
+        },
+        {
+          "scenario": "the build fails locally but passes in CI — how do I diagnose that class first?",
+          "top1": "first-principles-thinking",
+          "top3_winners": [
+            "first-principles-thinking",
+            "spec-driven-development",
+            "problem-locating-solving"
+          ]
+        }
+      ]
+    },
+    {
+      "skill": "diff-analysis",
+      "triggerable": null,
+      "total_scenarios": 0,
+      "top1_hits": 0,
+      "top3_hits": 0,
+      "hit_rate_top1": null,
+      "hit_rate_top3": null,
+      "failures": [],
+      "note": "no activation.examples authored — UNKNOWN triggerability"
+    },
+    {
+      "skill": "e2e-test-design",
+      "triggerable": true,
+      "total_scenarios": 3,
+      "top1_hits": 3,
+      "top3_hits": 3,
+      "hit_rate_top1": 1,
+      "hit_rate_top3": 1,
+      "failures": []
+    },
+    {
+      "skill": "entity-relationship-modeling",
+      "triggerable": null,
+      "total_scenarios": 0,
+      "top1_hits": 0,
+      "top3_hits": 0,
+      "hit_rate_top1": null,
+      "hit_rate_top3": null,
+      "failures": [],
+      "note": "no activation.examples authored — UNKNOWN triggerability"
+    },
+    {
+      "skill": "epistemic-grounding",
+      "triggerable": true,
+      "total_scenarios": 3,
+      "top1_hits": 1,
+      "top3_hits": 2,
+      "hit_rate_top1": 0.3333333333333333,
+      "hit_rate_top3": 0.6666666666666666,
+      "failures": [
+        {
+          "scenario": "before stating that this library supports X, confirm against the actual docs",
+          "top1": "spec-driven-development",
+          "top3_winners": [
+            "spec-driven-development",
+            "component-architecture",
+            "error-boundary"
+          ]
+        },
+        {
+          "scenario": "rewrite this finding so each assertion either cites a file or is marked as inference",
+          "top1": "middleware-patterns",
+          "top3_winners": [
+            "middleware-patterns",
+            "epistemic-grounding",
+            "snapshot-testing"
+          ]
+        }
+      ]
+    },
+    {
+      "skill": "error-boundary",
+      "triggerable": true,
+      "total_scenarios": 3,
+      "top1_hits": 2,
+      "top3_hits": 3,
+      "hit_rate_top1": 0.6666666666666666,
+      "hit_rate_top3": 1,
+      "failures": [
+        {
+          "scenario": "pair an error boundary with a Suspense boundary so failed fetches show error UI while successful ones stream in",
+          "top1": "suspense-patterns",
+          "top3_winners": [
+            "suspense-patterns",
+            "error-boundary",
+            "error-tracking"
+          ]
+        }
+      ]
+    },
+    {
+      "skill": "error-tracking",
+      "triggerable": true,
+      "total_scenarios": 3,
+      "top1_hits": 3,
+      "top3_hits": 3,
+      "hit_rate_top1": 1,
+      "hit_rate_top3": 1,
+      "failures": []
+    },
+    {
+      "skill": "eval-driven-development",
+      "triggerable": true,
+      "total_scenarios": 3,
+      "top1_hits": 1,
+      "top3_hits": 3,
+      "hit_rate_top1": 0.3333333333333333,
+      "hit_rate_top3": 1,
+      "failures": [
+        {
+          "scenario": "design an offline eval suite for an LLM-integrated summarization feature before writing the prompt",
+          "top1": "agent-eval-design",
+          "top3_winners": [
+            "agent-eval-design",
+            "eval-driven-development",
+            "ai-native-development"
+          ]
+        },
+        {
+          "scenario": "explain why MMLU score is a poor predictor of a domain-specific assistant's quality",
+          "top1": "evaluation",
+          "top3_winners": [
+            "evaluation",
+            "best-practice",
+            "eval-driven-development"
+          ]
+        }
+      ]
+    },
+    {
+      "skill": "evaluation",
+      "triggerable": true,
+      "total_scenarios": 3,
+      "top1_hits": 3,
+      "top3_hits": 3,
+      "hit_rate_top1": 1,
+      "hit_rate_top3": 1,
+      "failures": []
+    },
+    {
+      "skill": "event-contract-design",
+      "triggerable": false,
+      "total_scenarios": 3,
+      "top1_hits": 0,
+      "top3_hits": 1,
+      "hit_rate_top1": 0,
+      "hit_rate_top3": 0.3333333333333333,
+      "failures": [
+        {
+          "scenario": "design the event contract for publishing OrderPaid to downstream consumers",
+          "top1": "system-interface-contracts",
+          "top3_winners": [
+            "system-interface-contracts",
+            "bounded-context-mapping",
+            "semantics"
+          ]
+        },
+        {
+          "scenario": "define topic names, payload schema, idempotency, and versioning for this event stream",
+          "top1": "system-interface-contracts",
+          "top3_winners": [
+            "system-interface-contracts",
+            "schema-evolution",
+            "semantics"
+          ]
+        },
+        {
+          "scenario": "review this outbound webhook event schema before customers integrate with it",
+          "top1": "stripe-ledger-recon",
+          "top3_winners": [
+            "stripe-ledger-recon",
+            "event-contract-design",
+            "conceptual-modeling"
+          ]
+        }
+      ]
+    },
+    {
+      "skill": "event-storming",
+      "triggerable": true,
+      "total_scenarios": 3,
+      "top1_hits": 2,
+      "top3_hits": 2,
+      "hit_rate_top1": 0.6666666666666666,
+      "hit_rate_top3": 0.6666666666666666,
+      "failures": [
+        {
+          "scenario": "map the order lifecycle as domain events before we design tables or APIs",
+          "top1": "bounded-context-mapping",
+          "top3_winners": [
+            "bounded-context-mapping",
+            "form-ux-architecture",
+            "observability-modeling"
+          ]
+        }
+      ]
+    },
+    {
+      "skill": "first-principles-thinking",
+      "triggerable": true,
+      "total_scenarios": 3,
+      "top1_hits": 1,
+      "top3_hits": 2,
+      "hit_rate_top1": 0.3333333333333333,
+      "hit_rate_top3": 0.6666666666666666,
+      "failures": [
+        {
+          "scenario": "We keep copying the old pricing model. Rebuild the problem from first principles.",
+          "top1": "problem-approach-router",
+          "top3_winners": [
+            "problem-approach-router",
+            "inversion",
+            "conceptual-modeling"
+          ]
+        },
+        {
+          "scenario": "Everyone says this workflow needs five steps, but why? Strip it to fundamentals.",
+          "top1": "task-analysis",
+          "top3_winners": [
+            "task-analysis",
+            "constraint-awareness",
+            "first-principles-thinking"
+          ]
+        }
+      ]
+    },
+    {
+      "skill": "form-ux-architecture",
+      "triggerable": true,
+      "total_scenarios": 3,
+      "top1_hits": 2,
+      "top3_hits": 2,
+      "hit_rate_top1": 0.6666666666666666,
+      "hit_rate_top3": 0.6666666666666666,
+      "failures": [
+        {
+          "scenario": "should this be one form, a wizard, or progressive disclosure?",
+          "top1": "server-actions-design",
+          "top3_winners": [
+            "server-actions-design",
+            "semantic-center",
+            "context-management"
+          ]
+        }
+      ]
+    },
+    {
+      "skill": "framework-fit-analysis",
+      "triggerable": false,
+      "total_scenarios": 3,
+      "top1_hits": 0,
+      "top3_hits": 1,
+      "hit_rate_top1": 0,
+      "hit_rate_top3": 0.3333333333333333,
+      "failures": [
+        {
+          "scenario": "should we use Next.js server actions, route handlers, or a separate API service for this workflow?",
+          "top1": "server-components-design",
+          "top3_winners": [
+            "server-components-design",
+            "route-handler-design",
+            "task-analysis"
+          ]
+        },
+        {
+          "scenario": "evaluate whether adding this charting library is worth it",
+          "top1": "component-architecture",
+          "top3_winners": [
+            "component-architecture",
+            "error-boundary",
+            "framework-fit-analysis"
+          ]
+        },
+        {
+          "scenario": "compare Supabase, Firebase, and custom Postgres for this project under real constraints",
+          "top1": "postgres-rls",
+          "top3_winners": [
+            "postgres-rls",
+            "hooks-patterns",
+            "middleware-patterns"
+          ]
+        }
+      ]
+    },
+    {
+      "skill": "frontend-architecture",
+      "triggerable": true,
+      "total_scenarios": 3,
+      "top1_hits": 2,
+      "top3_hits": 3,
+      "hit_rate_top1": 0.6666666666666666,
+      "hit_rate_top3": 1,
+      "failures": [
+        {
+          "scenario": "Choose a state shape that doesn't force every consumer to re-render on unrelated changes",
+          "top1": "vercel-composition-patterns",
+          "top3_winners": [
+            "vercel-composition-patterns",
+            "error-boundary",
+            "frontend-architecture"
+          ]
+        }
+      ]
+    },
+    {
+      "skill": "generative-ui",
+      "triggerable": true,
+      "total_scenarios": 3,
+      "top1_hits": 3,
+      "top3_hits": 3,
+      "hit_rate_top1": 1,
+      "hit_rate_top3": 1,
+      "failures": []
+    },
+    {
+      "skill": "graph-audit",
+      "triggerable": true,
+      "total_scenarios": 3,
+      "top1_hits": 2,
+      "top3_hits": 2,
+      "hit_rate_top1": 0.6666666666666666,
+      "hit_rate_top3": 0.6666666666666666,
+      "failures": [
+        {
+          "scenario": "check that every `scope: codebase` skill has a populated grounding block",
+          "top1": "skill-infrastructure",
+          "top3_winners": [
+            "skill-infrastructure",
+            "epistemic-grounding",
+            "methodical"
+          ]
+        }
+      ]
+    },
+    {
+      "skill": "guardrails",
+      "triggerable": null,
+      "total_scenarios": 0,
+      "top1_hits": 0,
+      "top3_hits": 0,
+      "hit_rate_top1": null,
+      "hit_rate_top3": null,
+      "failures": [],
+      "note": "no activation.examples authored — UNKNOWN triggerability"
+    },
+    {
+      "skill": "hooks-patterns",
+      "triggerable": true,
+      "total_scenarios": 3,
+      "top1_hits": 3,
+      "top3_hits": 3,
+      "hit_rate_top1": 1,
+      "hit_rate_top3": 1,
+      "failures": []
+    },
+    {
+      "skill": "http-semantics",
+      "triggerable": false,
+      "total_scenarios": 3,
+      "top1_hits": 0,
+      "top3_hits": 1,
+      "hit_rate_top1": 0,
+      "hit_rate_top3": 0.3333333333333333,
+      "failures": [
+        {
+          "scenario": "decide whether bulk-update should be PUT or PATCH",
+          "top1": "route-handler-design",
+          "top3_winners": [
+            "route-handler-design",
+            "bayesian-reasoning",
+            "diff-analysis"
+          ]
+        },
+        {
+          "scenario": "explain why this endpoint should return 409 instead of 400",
+          "top1": "query-optimization",
+          "top3_winners": [
+            "query-optimization",
+            "route-handler-design",
+            "api-design"
+          ]
+        },
+        {
+          "scenario": "review whether this DELETE handler is truly idempotent",
+          "top1": "route-handler-design",
+          "top3_winners": [
+            "route-handler-design",
+            "best-practice",
+            "http-semantics"
+          ]
+        }
+      ]
+    },
+    {
+      "skill": "ideation",
+      "triggerable": true,
+      "total_scenarios": 3,
+      "top1_hits": 1,
+      "top3_hits": 2,
+      "hit_rate_top1": 0.3333333333333333,
+      "hit_rate_top3": 0.6666666666666666,
+      "failures": [
+        {
+          "scenario": "Apply SCAMPER to this existing feature to generate variant concepts.",
+          "top1": "ai-native-development",
+          "top3_winners": [
+            "ai-native-development",
+            "middleware-patterns",
+            "prioritization"
+          ]
+        },
+        {
+          "scenario": "Use dot voting and an impact/effort matrix to converge on three concepts to prototype.",
+          "top1": "ai-native-development",
+          "top3_winners": [
+            "ai-native-development",
+            "ideation",
+            "suspense-patterns"
+          ]
+        }
+      ]
+    },
+    {
+      "skill": "indexing-strategy",
+      "triggerable": true,
+      "total_scenarios": 3,
+      "top1_hits": 1,
+      "top3_hits": 1,
+      "hit_rate_top1": 0.3333333333333333,
+      "hit_rate_top3": 0.3333333333333333,
+      "failures": [
+        {
+          "scenario": "design indexes for a table with high-volume reads on user_id and date-range queries",
+          "top1": "entity-relationship-modeling",
+          "top3_winners": [
+            "entity-relationship-modeling",
+            "mental-models",
+            "semantics"
+          ]
+        },
+        {
+          "scenario": "diagnose a query that ignores an existing index — likely a selectivity or type-coercion issue",
+          "top1": "query-optimization",
+          "top3_winners": [
+            "query-optimization",
+            "sharding-strategy",
+            "type-safety"
+          ]
+        }
+      ]
+    },
+    {
+      "skill": "information-architecture",
+      "triggerable": true,
+      "total_scenarios": 3,
+      "top1_hits": 2,
+      "top3_hits": 2,
+      "hit_rate_top1": 0.6666666666666666,
+      "hit_rate_top3": 0.6666666666666666,
+      "failures": [
+        {
+          "scenario": "these dashboard sections overlap and users do not know where to look first",
+          "top1": "spec-driven-development",
+          "top3_winners": [
+            "spec-driven-development",
+            "problem-locating-solving",
+            "task-analysis"
+          ]
+        }
+      ]
+    },
+    {
+      "skill": "integration-test-design",
+      "triggerable": true,
+      "total_scenarios": 3,
+      "top1_hits": 3,
+      "top3_hits": 3,
+      "hit_rate_top1": 1,
+      "hit_rate_top3": 1,
+      "failures": []
+    },
+    {
+      "skill": "intent-recognition",
+      "triggerable": true,
+      "total_scenarios": 3,
+      "top1_hits": 3,
+      "top3_hits": 3,
+      "hit_rate_top1": 1,
+      "hit_rate_top3": 1,
+      "failures": []
+    },
+    {
+      "skill": "interaction-feedback",
+      "triggerable": true,
+      "total_scenarios": 3,
+      "top1_hits": 2,
+      "top3_hits": 2,
+      "hit_rate_top1": 0.6666666666666666,
+      "hit_rate_top3": 0.6666666666666666,
+      "failures": [
+        {
+          "scenario": "the sync takes 30 seconds - what should users see at each stage?",
+          "top1": "design-thinking",
+          "top3_winners": [
+            "design-thinking",
+            "journey-mapping",
+            "replication-patterns"
+          ]
+        }
+      ]
+    },
+    {
+      "skill": "interaction-patterns",
+      "triggerable": true,
+      "total_scenarios": 3,
+      "top1_hits": 3,
+      "top3_hits": 3,
+      "hit_rate_top1": 1,
+      "hit_rate_top3": 1,
+      "failures": []
+    },
+    {
+      "skill": "inversion",
+      "triggerable": true,
+      "total_scenarios": 3,
+      "top1_hits": 1,
+      "top3_hits": 2,
+      "hit_rate_top1": 0.3333333333333333,
+      "hit_rate_top3": 0.6666666666666666,
+      "failures": [
+        {
+          "scenario": "Before we commit to this launch plan, ask how it could fail and what safeguards follow.",
+          "top1": "spec-driven-development",
+          "top3_winners": [
+            "spec-driven-development",
+            "task-path-optimization",
+            "middleware-patterns"
+          ]
+        },
+        {
+          "scenario": "Test the opposite hypothesis: what if the metric increase is actually bad?",
+          "top1": "property-based-testing",
+          "top3_winners": [
+            "property-based-testing",
+            "inversion"
+          ]
+        }
+      ]
+    },
+    {
+      "skill": "journey-mapping",
+      "triggerable": true,
+      "total_scenarios": 3,
+      "top1_hits": 3,
+      "top3_hits": 3,
+      "hit_rate_top1": 1,
+      "hit_rate_top3": 1,
+      "failures": []
+    },
+    {
+      "skill": "keywords",
+      "triggerable": true,
+      "total_scenarios": 3,
+      "top1_hits": 2,
+      "top3_hits": 3,
+      "hit_rate_top1": 0.6666666666666666,
+      "hit_rate_top3": 1,
+      "failures": [
+        {
+          "scenario": "research keywords for a new product line before writing listings",
+          "top1": "skill-scaffold",
+          "top3_winners": [
+            "skill-scaffold",
+            "keywords",
+            "microcopy"
+          ]
+        }
+      ]
+    },
+    {
+      "skill": "knowledge-modeling",
+      "triggerable": true,
+      "total_scenarios": 3,
+      "top1_hits": 1,
+      "top3_hits": 1,
+      "hit_rate_top1": 0.3333333333333333,
+      "hit_rate_top3": 0.3333333333333333,
+      "failures": [
+        {
+          "scenario": "our skill library keeps adding prose but the agent can't reason over relationships — which representation should change?",
+          "top1": "skill-infrastructure",
+          "top3_winners": [
+            "skill-infrastructure",
+            "agent-eval-design"
+          ]
+        },
+        {
+          "scenario": "the agent retrieves topically similar passages but misses structurally related facts — is GraphRAG the right shift?",
+          "top1": "merge-queue",
+          "top3_winners": [
+            "merge-queue",
+            "agent-eval-design",
+            "autonomous-loop-patterns"
+          ]
+        }
+      ]
+    },
+    {
+      "skill": "layout-composition",
+      "triggerable": false,
+      "total_scenarios": 3,
+      "top1_hits": 0,
+      "top3_hits": 0,
+      "hit_rate_top1": 0,
+      "hit_rate_top3": 0,
+      "failures": [
+        {
+          "scenario": "turn this route hierarchy into a responsive section order",
+          "top1": "visual-hierarchy",
+          "top3_winners": [
+            "visual-hierarchy",
+            "stripe-ledger-recon",
+            "middleware-patterns"
+          ]
+        },
+        {
+          "scenario": "decide whether this dashboard should use tabs, columns, or stacked sections on mobile",
+          "top1": "suspense-patterns",
+          "top3_winners": [
+            "suspense-patterns",
+            "tool-call-flow",
+            "interaction-patterns"
+          ]
+        },
+        {
+          "scenario": "the page works on desktop but the mobile scan path is broken",
+          "top1": "graph-audit",
+          "top3_winners": [
+            "graph-audit",
+            "e2e-test-design",
+            "query-optimization"
+          ]
+        }
+      ]
+    },
+    {
+      "skill": "linguistics",
+      "triggerable": true,
+      "total_scenarios": 3,
+      "top1_hits": 3,
+      "top3_hits": 3,
+      "hit_rate_top1": 1,
+      "hit_rate_top3": 1,
+      "failures": []
+    },
+    {
+      "skill": "lint-overlay",
+      "triggerable": true,
+      "total_scenarios": 3,
+      "top1_hits": 2,
+      "top3_hits": 2,
+      "hit_rate_top1": 0.6666666666666666,
+      "hit_rate_top3": 0.6666666666666666,
+      "failures": [
+        {
+          "scenario": "migrate these legacy noImplicitAny violations in phased gates",
+          "top1": "spec-driven-development",
+          "top3_winners": [
+            "spec-driven-development",
+            "event-storming"
+          ]
+        }
+      ]
+    },
+    {
+      "skill": "mental-models",
+      "triggerable": true,
+      "total_scenarios": 3,
+      "top1_hits": 1,
+      "top3_hits": 1,
+      "hit_rate_top1": 0.3333333333333333,
+      "hit_rate_top3": 0.3333333333333333,
+      "failures": [
+        {
+          "scenario": "users keep trying to drag a row to reorder but the table doesn't support drag — diagnose the model mismatch",
+          "top1": "entity-relationship-modeling",
+          "top3_winners": [
+            "entity-relationship-modeling",
+            "postgres-rls",
+            "acid-fundamentals"
+          ]
+        },
+        {
+          "scenario": "explain why race conditions across parallel tool calls are hard for developers to anticipate",
+          "top1": "tool-call-strategy",
+          "top3_winners": [
+            "tool-call-strategy",
+            "tool-call-flow",
+            "agent-eval-design"
+          ]
+        }
+      ]
+    },
+    {
+      "skill": "merge-queue",
+      "triggerable": null,
+      "total_scenarios": 0,
+      "top1_hits": 0,
+      "top3_hits": 0,
+      "hit_rate_top1": null,
+      "hit_rate_top3": null,
+      "failures": [],
+      "note": "no activation.examples authored — UNKNOWN triggerability"
+    },
+    {
+      "skill": "methodical",
+      "triggerable": null,
+      "total_scenarios": 0,
+      "top1_hits": 0,
+      "top3_hits": 0,
+      "hit_rate_top1": null,
+      "hit_rate_top3": null,
+      "failures": [],
+      "note": "no activation.examples authored — UNKNOWN triggerability"
+    },
+    {
+      "skill": "methodology",
+      "triggerable": false,
+      "total_scenarios": 3,
+      "top1_hits": 0,
+      "top3_hits": 1,
+      "hit_rate_top1": 0,
+      "hit_rate_top3": 0.3333333333333333,
+      "failures": [
+        {
+          "scenario": "design a verification protocol for this multi-step agent workflow before implementation starts",
+          "top1": "form-ux-architecture",
+          "top3_winners": [
+            "form-ux-architecture",
+            "skill-scaffold",
+            "task-analysis"
+          ]
+        },
+        {
+          "scenario": "turn these recurring agent failure modes into a checklist and hard quality gate",
+          "top1": "context-engineering",
+          "top3_winners": [
+            "context-engineering",
+            "best-practice",
+            "evaluation"
+          ]
+        },
+        {
+          "scenario": "explain why this process step exists instead of just telling the agent to follow it",
+          "top1": "constraint-awareness",
+          "top3_winners": [
+            "constraint-awareness",
+            "methodical",
+            "methodology"
+          ]
+        }
+      ]
+    },
+    {
+      "skill": "microcopy",
+      "triggerable": true,
+      "total_scenarios": 3,
+      "top1_hits": 3,
+      "top3_hits": 3,
+      "hit_rate_top1": 1,
+      "hit_rate_top3": 1,
+      "failures": []
+    },
+    {
+      "skill": "middleware-patterns",
+      "triggerable": true,
+      "total_scenarios": 3,
+      "top1_hits": 3,
+      "top3_hits": 3,
+      "hit_rate_top1": 1,
+      "hit_rate_top3": 1,
+      "failures": []
+    },
+    {
+      "skill": "mobile-responsive-ux",
+      "triggerable": null,
+      "total_scenarios": 0,
+      "top1_hits": 0,
+      "top3_hits": 0,
+      "hit_rate_top1": null,
+      "hit_rate_top3": null,
+      "failures": [],
+      "note": "no activation.examples authored — UNKNOWN triggerability"
+    },
+    {
+      "skill": "mutation-testing",
+      "triggerable": true,
+      "total_scenarios": 3,
+      "top1_hits": 1,
+      "top3_hits": 2,
+      "hit_rate_top1": 0.3333333333333333,
+      "hit_rate_top3": 0.6666666666666666,
+      "failures": [
+        {
+          "scenario": "decide whether to run mutation testing on a critical financial module",
+          "top1": "middleware-patterns",
+          "top3_winners": [
+            "middleware-patterns",
+            "mutation-testing"
+          ]
+        },
+        {
+          "scenario": "diagnose surviving mutants in a calculation function and identify the missing assertion",
+          "top1": "epistemic-grounding",
+          "top3_winners": [
+            "epistemic-grounding",
+            "server-actions-design",
+            "refactor"
+          ]
+        }
+      ]
+    },
+    {
+      "skill": "naming-conventions",
+      "triggerable": true,
+      "total_scenarios": 3,
+      "top1_hits": 2,
+      "top3_hits": 3,
+      "hit_rate_top1": 0.6666666666666666,
+      "hit_rate_top3": 1,
+      "failures": [
+        {
+          "scenario": "what should I name this util that converts between order shapes?",
+          "top1": "stripe-ledger-recon",
+          "top3_winners": [
+            "stripe-ledger-recon",
+            "a11y",
+            "naming-conventions"
+          ]
+        }
+      ]
+    },
+    {
+      "skill": "observability-modeling",
+      "triggerable": true,
+      "total_scenarios": 3,
+      "top1_hits": 2,
+      "top3_hits": 3,
+      "hit_rate_top1": 0.6666666666666666,
+      "hit_rate_top3": 1,
+      "failures": [
+        {
+          "scenario": "model observability for a background job before adding alerts",
+          "top1": "background-jobs",
+          "top3_winners": [
+            "background-jobs",
+            "conceptual-modeling",
+            "observability-modeling"
+          ]
+        }
+      ]
+    },
+    {
+      "skill": "ontology-modeling",
+      "triggerable": true,
+      "total_scenarios": 3,
+      "top1_hits": 2,
+      "top3_hits": 2,
+      "hit_rate_top1": 0.6666666666666666,
+      "hit_rate_top3": 0.6666666666666666,
+      "failures": [
+        {
+          "scenario": "we need class and property definitions that another system can reason over, not just a human-readable diagram",
+          "top1": "conceptual-modeling",
+          "top3_winners": [
+            "conceptual-modeling",
+            "constraint-awareness",
+            "dark-mode-implementation"
+          ]
+        }
+      ]
+    },
+    {
+      "skill": "owasp-security",
+      "triggerable": true,
+      "total_scenarios": 3,
+      "top1_hits": 1,
+      "top3_hits": 1,
+      "hit_rate_top1": 0.3333333333333333,
+      "hit_rate_top3": 0.3333333333333333,
+      "failures": [
+        {
+          "scenario": "this PR adds user input — what security checks should I run?",
+          "top1": "security-fundamentals",
+          "top3_winners": [
+            "security-fundamentals",
+            "prompt-craft",
+            "postgres-rls"
+          ]
+        },
+        {
+          "scenario": "threat-model this new file-upload feature",
+          "top1": "security-fundamentals",
+          "top3_winners": [
+            "security-fundamentals",
+            "acid-fundamentals",
+            "data-modeling-fundamentals"
+          ]
+        }
+      ]
+    },
+    {
+      "skill": "pattern-recognition",
+      "triggerable": true,
+      "total_scenarios": 3,
+      "top1_hits": 1,
+      "top3_hits": 3,
+      "hit_rate_top1": 0.3333333333333333,
+      "hit_rate_top3": 1,
+      "failures": [
+        {
+          "scenario": "I keep seeing the same null-pointer crash in three different files — what's the systemic fix?",
+          "top1": "constraint-awareness",
+          "top3_winners": [
+            "constraint-awareness",
+            "guardrails",
+            "pattern-recognition"
+          ]
+        },
+        {
+          "scenario": "audit this codebase for hardcoded colors instead of design tokens",
+          "top1": "design-system-architecture",
+          "top3_winners": [
+            "design-system-architecture",
+            "color-system-design",
+            "pattern-recognition"
+          ]
+        }
+      ]
+    },
+    {
+      "skill": "performance-budgets",
+      "triggerable": true,
+      "total_scenarios": 3,
+      "top1_hits": 3,
+      "top3_hits": 3,
+      "hit_rate_top1": 1,
+      "hit_rate_top3": 1,
+      "failures": []
+    },
+    {
+      "skill": "performance-engineering",
+      "triggerable": false,
+      "total_scenarios": 3,
+      "top1_hits": 0,
+      "top3_hits": 0,
+      "hit_rate_top1": 0,
+      "hit_rate_top3": 0,
+      "failures": [
+        {
+          "scenario": "profile this slow dashboard and decide what to optimize first",
+          "top1": "spec-driven-development",
+          "top3_winners": [
+            "spec-driven-development",
+            "problem-locating-solving",
+            "task-analysis"
+          ]
+        },
+        {
+          "scenario": "set performance budgets for API latency, page load, and query time",
+          "top1": "performance-testing",
+          "top3_winners": [
+            "performance-testing",
+            "shopify",
+            "route-handler-design"
+          ]
+        },
+        {
+          "scenario": "review this change for likely N+1 queries, cache mistakes, or bundle growth",
+          "top1": "code-review",
+          "top3_winners": [
+            "code-review",
+            "diff-analysis",
+            "best-practice"
+          ]
+        }
+      ]
+    },
+    {
+      "skill": "performance-testing",
+      "triggerable": true,
+      "total_scenarios": 3,
+      "top1_hits": 2,
+      "top3_hits": 3,
+      "hit_rate_top1": 0.6666666666666666,
+      "hit_rate_top3": 1,
+      "failures": [
+        {
+          "scenario": "design a load test for an API endpoint that verifies the p95 SLO at expected production traffic",
+          "top1": "api-design",
+          "top3_winners": [
+            "api-design",
+            "design-module-composition",
+            "performance-testing"
+          ]
+        }
+      ]
+    },
+    {
+      "skill": "playing-to-win",
+      "triggerable": true,
+      "total_scenarios": 3,
+      "top1_hits": 3,
+      "top3_hits": 3,
+      "hit_rate_top1": 1,
+      "hit_rate_top3": 1,
+      "failures": []
+    },
+    {
+      "skill": "porters-five-forces",
+      "triggerable": true,
+      "total_scenarios": 3,
+      "top1_hits": 3,
+      "top3_hits": 3,
+      "hit_rate_top1": 1,
+      "hit_rate_top3": 1,
+      "failures": []
+    },
+    {
+      "skill": "postgres-rls",
+      "triggerable": true,
+      "total_scenarios": 3,
+      "top1_hits": 2,
+      "top3_hits": 3,
+      "hit_rate_top1": 0.6666666666666666,
+      "hit_rate_top3": 1,
+      "failures": [
+        {
+          "scenario": "auditing our existing RLS migrations for missing FORCE or WITH CHECK",
+          "top1": "graph-audit",
+          "top3_winners": [
+            "graph-audit",
+            "postgres-rls",
+            "property-based-testing"
+          ]
+        }
+      ]
+    },
+    {
+      "skill": "printify",
+      "triggerable": true,
+      "total_scenarios": 3,
+      "top1_hits": 3,
+      "top3_hits": 3,
+      "hit_rate_top1": 1,
+      "hit_rate_top3": 1,
+      "failures": []
+    },
+    {
+      "skill": "prioritization",
+      "triggerable": null,
+      "total_scenarios": 0,
+      "top1_hits": 0,
+      "top3_hits": 0,
+      "hit_rate_top1": null,
+      "hit_rate_top3": null,
+      "failures": [],
+      "note": "no activation.examples authored — UNKNOWN triggerability"
+    },
+    {
+      "skill": "problem-approach-router",
+      "triggerable": false,
+      "total_scenarios": 3,
+      "top1_hits": 0,
+      "top3_hits": 1,
+      "hit_rate_top1": 0,
+      "hit_rate_top3": 0.3333333333333333,
+      "failures": [
+        {
+          "scenario": "I have a completely novel problem nobody has solved before — where do I start?",
+          "top1": "spec-driven-development",
+          "top3_winners": [
+            "spec-driven-development",
+            "middleware-patterns",
+            "conceptual-modeling"
+          ]
+        },
+        {
+          "scenario": "the codebase has a recurring bug pattern — which foundational approach should I use?",
+          "top1": "pattern-recognition",
+          "top3_winners": [
+            "pattern-recognition",
+            "diagnosis",
+            "problem-approach-router"
+          ]
+        },
+        {
+          "scenario": "I need to explain a complex system to a stakeholder — which skill applies?",
+          "top1": "conceptual-modeling",
+          "top3_winners": [
+            "conceptual-modeling",
+            "skill-infrastructure",
+            "cap-theorem-tradeoffs"
+          ]
+        }
+      ]
+    },
+    {
+      "skill": "problem-framing",
+      "triggerable": false,
+      "total_scenarios": 3,
+      "top1_hits": 0,
+      "top3_hits": 0,
+      "hit_rate_top1": 0,
+      "hit_rate_top3": 0,
+      "failures": [
+        {
+          "scenario": "We've been asked to 'add a chatbot' — help me reframe what we're actually solving for users.",
+          "top1": "problem-approach-router",
+          "top3_winners": [
+            "problem-approach-router",
+            "lint-overlay",
+            "schema-evolution"
+          ]
+        },
+        {
+          "scenario": "Draft three how-might-we statements from these synthesis insights.",
+          "top1": "research-synthesis",
+          "top3_winners": [
+            "research-synthesis",
+            "connection-pooling",
+            "ai-native-development"
+          ]
+        },
+        {
+          "scenario": "The PRD jumps straight to features; help me extract the underlying user problem.",
+          "top1": "e2e-test-design",
+          "top3_winners": [
+            "e2e-test-design",
+            "mental-models",
+            "refactor"
+          ]
+        }
+      ]
+    },
+    {
+      "skill": "problem-locating-solving",
+      "triggerable": true,
+      "total_scenarios": 3,
+      "top1_hits": 2,
+      "top3_hits": 2,
+      "hit_rate_top1": 0.6666666666666666,
+      "hit_rate_top3": 0.6666666666666666,
+      "failures": [
+        {
+          "scenario": "this route returns 500 but I have no idea where the failure starts — walk me through finding the boundary",
+          "top1": "error-tracking",
+          "top3_winners": [
+            "error-tracking",
+            "client-server-boundary",
+            "error-boundary"
+          ]
+        }
+      ]
+    },
+    {
+      "skill": "project-knowledge-extraction",
+      "triggerable": true,
+      "total_scenarios": 3,
+      "top1_hits": 2,
+      "top3_hits": 2,
+      "hit_rate_top1": 0.6666666666666666,
+      "hit_rate_top3": 0.6666666666666666,
+      "failures": [
+        {
+          "scenario": "turn these incident notes into reusable context without copying noise",
+          "top1": "tool-call-flow",
+          "top3_winners": [
+            "tool-call-flow",
+            "server-actions-design",
+            "bounded-context-mapping"
+          ]
+        }
+      ]
+    },
+    {
+      "skill": "prompt-craft",
+      "triggerable": true,
+      "total_scenarios": 3,
+      "top1_hits": 2,
+      "top3_hits": 2,
+      "hit_rate_top1": 0.6666666666666666,
+      "hit_rate_top3": 0.6666666666666666,
+      "failures": [
+        {
+          "scenario": "how do I get the model to return strict JSON and retry safely when it does not?",
+          "top1": "generative-ui",
+          "top3_winners": [
+            "generative-ui",
+            "route-handler-design",
+            "performance-budgets"
+          ]
+        }
+      ]
+    },
+    {
+      "skill": "prompt-injection-defense",
+      "triggerable": true,
+      "total_scenarios": 3,
+      "top1_hits": 1,
+      "top3_hits": 2,
+      "hit_rate_top1": 0.3333333333333333,
+      "hit_rate_top3": 0.6666666666666666,
+      "failures": [
+        {
+          "scenario": "design the boundary between a planning agent and an execution agent so injected commands cannot trigger destructive tool calls",
+          "top1": "tool-call-flow",
+          "top3_winners": [
+            "tool-call-flow",
+            "agent-eval-design",
+            "bounded-context-mapping"
+          ]
+        },
+        {
+          "scenario": "explain why a content filter that blocks one canonical attack phrase does not stop the broader class",
+          "top1": "taxonomy-design",
+          "top3_winners": [
+            "taxonomy-design",
+            "prompt-injection-defense",
+            "query-optimization"
+          ]
+        }
+      ]
+    },
+    {
+      "skill": "property-based-testing",
+      "triggerable": true,
+      "total_scenarios": 3,
+      "top1_hits": 2,
+      "top3_hits": 2,
+      "hit_rate_top1": 0.6666666666666666,
+      "hit_rate_top3": 0.6666666666666666,
+      "failures": [
+        {
+          "scenario": "design property-based tests for a sorting function that exercise the universal contract",
+          "top1": "semantics",
+          "top3_winners": [
+            "semantics",
+            "system-interface-contracts",
+            "theme-system-design"
+          ]
+        }
+      ]
+    },
+    {
+      "skill": "prototyping",
+      "triggerable": true,
+      "total_scenarios": 3,
+      "top1_hits": 2,
+      "top3_hits": 2,
+      "hit_rate_top1": 0.6666666666666666,
+      "hit_rate_top3": 0.6666666666666666,
+      "failures": [
+        {
+          "scenario": "Plan a wizard-of-oz study where a human acts as the recommendation engine.",
+          "top1": "spec-driven-development",
+          "top3_winners": [
+            "spec-driven-development",
+            "autonomous-loop-patterns",
+            "constraint-awareness"
+          ]
+        }
+      ]
+    },
+    {
+      "skill": "query-optimization",
+      "triggerable": true,
+      "total_scenarios": 3,
+      "top1_hits": 3,
+      "top3_hits": 3,
+      "hit_rate_top1": 1,
+      "hit_rate_top3": 1,
+      "failures": []
+    },
+    {
+      "skill": "real-time-updates",
+      "triggerable": true,
+      "total_scenarios": 3,
+      "top1_hits": 2,
+      "top3_hits": 3,
+      "hit_rate_top1": 0.6666666666666666,
+      "hit_rate_top3": 1,
+      "failures": [
+        {
+          "scenario": "show when data is stale without disrupting the user",
+          "top1": "server-components-design",
+          "top3_winners": [
+            "server-components-design",
+            "real-time-updates"
+          ]
+        }
+      ]
+    },
+    {
+      "skill": "ref-patterns",
+      "triggerable": true,
+      "total_scenarios": 3,
+      "top1_hits": 3,
+      "top3_hits": 3,
+      "hit_rate_top1": 1,
+      "hit_rate_top3": 1,
+      "failures": []
+    },
+    {
+      "skill": "refactor",
+      "triggerable": false,
+      "total_scenarios": 3,
+      "top1_hits": 0,
+      "top3_hits": 0,
+      "hit_rate_top1": 0,
+      "hit_rate_top3": 0,
+      "failures": [
+        {
+          "scenario": "this 600-line function is hard to reason about — decompose it while keeping tests green",
+          "top1": "generative-ui",
+          "top3_winners": [
+            "generative-ui",
+            "server-actions-design",
+            "test-coverage-strategy"
+          ]
+        },
+        {
+          "scenario": "extract the duplicated validation logic from these three handlers into a helper",
+          "top1": "conceptual-modeling",
+          "top3_winners": [
+            "conceptual-modeling",
+            "graph-audit",
+            "security-fundamentals"
+          ]
+        },
+        {
+          "scenario": "rename this module from `utils` to something that describes what it actually does",
+          "top1": "frontend-architecture",
+          "top3_winners": [
+            "frontend-architecture",
+            "naming-conventions",
+            "system-interface-contracts"
+          ]
+        }
+      ]
+    },
+    {
+      "skill": "rendering-models",
+      "triggerable": true,
+      "total_scenarios": 3,
+      "top1_hits": 3,
+      "top3_hits": 3,
+      "hit_rate_top1": 1,
+      "hit_rate_top3": 1,
+      "failures": []
+    },
+    {
+      "skill": "replication-patterns",
+      "triggerable": true,
+      "total_scenarios": 3,
+      "top1_hits": 2,
+      "top3_hits": 2,
+      "hit_rate_top1": 0.6666666666666666,
+      "hit_rate_top3": 0.6666666666666666,
+      "failures": [
+        {
+          "scenario": "design replication topology for a service with one region writing and three regions reading",
+          "top1": "semantics",
+          "top3_winners": [
+            "semantics",
+            "component-architecture"
+          ]
+        }
+      ]
+    },
+    {
+      "skill": "research-synthesis",
+      "triggerable": false,
+      "total_scenarios": 3,
+      "top1_hits": 0,
+      "top3_hits": 1,
+      "hit_rate_top1": 0,
+      "hit_rate_top3": 0.3333333333333333,
+      "failures": [
+        {
+          "scenario": "Cluster these 14 interview transcripts into themes using affinity mapping.",
+          "top1": "keywords",
+          "top3_winners": [
+            "keywords",
+            "research-synthesis",
+            "pattern-recognition"
+          ]
+        },
+        {
+          "scenario": "Build an empathy map for the 'first-time buyer' segment from these field notes.",
+          "top1": "route-handler-design",
+          "top3_winners": [
+            "route-handler-design",
+            "dependency-architecture",
+            "first-principles-thinking"
+          ]
+        },
+        {
+          "scenario": "Turn this set of observations into three insight statements I can take into ideation.",
+          "top1": "context-management",
+          "top3_winners": [
+            "context-management",
+            "postgres-rls",
+            "connection-pooling"
+          ]
+        }
+      ]
+    },
+    {
+      "skill": "route-handler-design",
+      "triggerable": true,
+      "total_scenarios": 3,
+      "top1_hits": 2,
+      "top3_hits": 3,
+      "hit_rate_top1": 0.6666666666666666,
+      "hit_rate_top3": 1,
+      "failures": [
+        {
+          "scenario": "design the route.ts that receives a Stripe webhook — verify signature before parsing the body, return 200 immediately, queue the heavy work",
+          "top1": "stripe-ledger-recon",
+          "top3_winners": [
+            "stripe-ledger-recon",
+            "route-handler-design",
+            "merge-queue"
+          ]
+        }
+      ]
+    },
+    {
+      "skill": "schema-evolution",
+      "triggerable": true,
+      "total_scenarios": 3,
+      "top1_hits": 1,
+      "top3_hits": 1,
+      "hit_rate_top1": 0.3333333333333333,
+      "hit_rate_top3": 0.3333333333333333,
+      "failures": [
+        {
+          "scenario": "design the expand-contract sequence to rename a column from `name` to `full_name` across a deployed system",
+          "top1": "system-interface-contracts",
+          "top3_winners": [
+            "system-interface-contracts",
+            "semantics",
+            "constraint-awareness"
+          ]
+        },
+        {
+          "scenario": "decide whether to add a NOT NULL column with a default or with a separate backfill phase",
+          "top1": "pattern-recognition",
+          "top3_winners": [
+            "pattern-recognition",
+            "spec-driven-development",
+            "security-fundamentals"
+          ]
+        }
+      ]
+    },
+    {
+      "skill": "second-order-thinking",
+      "triggerable": true,
+      "total_scenarios": 3,
+      "top1_hits": 1,
+      "top3_hits": 1,
+      "hit_rate_top1": 0.3333333333333333,
+      "hit_rate_top3": 0.3333333333333333,
+      "failures": [
+        {
+          "scenario": "If we add a usage cap, what happens next for users, support, and revenue?",
+          "top1": "cap-theorem-tradeoffs",
+          "top3_winners": [
+            "cap-theorem-tradeoffs",
+            "error-boundary"
+          ]
+        },
+        {
+          "scenario": "Before changing the review process, think through how agents and reviewers will respond.",
+          "top1": "design-thinking",
+          "top3_winners": [
+            "design-thinking",
+            "spec-driven-development",
+            "best-practice"
+          ]
+        }
+      ]
+    },
+    {
+      "skill": "security-fundamentals",
+      "triggerable": true,
+      "total_scenarios": 3,
+      "top1_hits": 1,
+      "top3_hits": 1,
+      "hit_rate_top1": 0.3333333333333333,
+      "hit_rate_top3": 0.3333333333333333,
+      "failures": [
+        {
+          "scenario": "decide where to validate inbound data when the same shape comes in through multiple endpoints",
+          "top1": "frontend-architecture",
+          "top3_winners": [
+            "frontend-architecture",
+            "integration-test-design",
+            "prompt-injection-defense"
+          ]
+        },
+        {
+          "scenario": "decide whether a piece of data is a secret, a credential, or non-sensitive — and what handling each requires",
+          "top1": "integration-test-design",
+          "top3_winners": [
+            "integration-test-design",
+            "prompt-injection-defense",
+            "suspense-patterns"
+          ]
+        }
+      ]
+    },
+    {
+      "skill": "semantic-center",
+      "triggerable": true,
+      "total_scenarios": 3,
+      "top1_hits": 1,
+      "top3_hits": 2,
+      "hit_rate_top1": 0.3333333333333333,
+      "hit_rate_top3": 0.6666666666666666,
+      "failures": [
+        {
+          "scenario": "what is the most important part of this dashboard, and how do the surrounding widgets relate to it?",
+          "top1": "semantic-relations",
+          "top3_winners": [
+            "semantic-relations",
+            "semantic-center",
+            "real-time-updates"
+          ]
+        },
+        {
+          "scenario": "break down the access-control layer; what is the governing policy and how do the other parts depend on it?",
+          "top1": "dependency-architecture",
+          "top3_winners": [
+            "dependency-architecture",
+            "bounded-context-mapping",
+            "interaction-patterns"
+          ]
+        }
+      ]
+    },
+    {
+      "skill": "semantic-relations",
+      "triggerable": true,
+      "total_scenarios": 3,
+      "top1_hits": 2,
+      "top3_hits": 2,
+      "hit_rate_top1": 0.6666666666666666,
+      "hit_rate_top3": 0.6666666666666666,
+      "failures": [
+        {
+          "scenario": "is a refund a kind of payment, part of a payment, or the result of a payment action?",
+          "top1": "conceptual-modeling",
+          "top3_winners": [
+            "conceptual-modeling",
+            "context-window",
+            "server-actions-design"
+          ]
+        }
+      ]
+    },
+    {
+      "skill": "semantics",
+      "triggerable": true,
+      "total_scenarios": 3,
+      "top1_hits": 1,
+      "top3_hits": 2,
+      "hit_rate_top1": 0.3333333333333333,
+      "hit_rate_top3": 0.6666666666666666,
+      "failures": [
+        {
+          "scenario": "a function named process(data) actually reconciles revenue with production cost -- what semantic rename would make the operation self-explanatory without reading the implementation?",
+          "top1": "server-actions-design",
+          "top3_winners": [
+            "server-actions-design",
+            "refactor",
+            "conceptual-modeling"
+          ]
+        },
+        {
+          "scenario": "our API returns HTTP 200 with an error payload for a failed request -- is that syntactically valid but semantically wrong, and what should the response signal be instead?",
+          "top1": "api-design",
+          "top3_winners": [
+            "api-design",
+            "semantics",
+            "route-handler-design"
+          ]
+        }
+      ]
+    },
+    {
+      "skill": "semiotics",
+      "triggerable": true,
+      "total_scenarios": 3,
+      "top1_hits": 2,
+      "top3_hits": 2,
+      "hit_rate_top1": 0.6666666666666666,
+      "hit_rate_top3": 0.6666666666666666,
+      "failures": [
+        {
+          "scenario": "our dashboard uses green for both revenue increase and cost increase, so users read both as good — what semiotic failure is that and how should we correct it?",
+          "top1": "replication-patterns",
+          "top3_winners": [
+            "replication-patterns",
+            "schema-evolution",
+            "test-driven-development"
+          ]
+        }
+      ]
+    },
+    {
+      "skill": "seo-strategy",
+      "triggerable": null,
+      "total_scenarios": 0,
+      "top1_hits": 0,
+      "top3_hits": 0,
+      "hit_rate_top1": null,
+      "hit_rate_top3": null,
+      "failures": [],
+      "note": "no activation.examples authored — UNKNOWN triggerability"
+    },
+    {
+      "skill": "server-actions-design",
+      "triggerable": true,
+      "total_scenarios": 3,
+      "top1_hits": 2,
+      "top3_hits": 2,
+      "hit_rate_top1": 0.6666666666666666,
+      "hit_rate_top3": 0.6666666666666666,
+      "failures": [
+        {
+          "scenario": "decide whether a delete button should call a Server Action or an API route",
+          "top1": "route-handler-design",
+          "top3_winners": [
+            "route-handler-design",
+            "server-components-design"
+          ]
+        }
+      ]
+    },
+    {
+      "skill": "server-components-design",
+      "triggerable": true,
+      "total_scenarios": 3,
+      "top1_hits": 2,
+      "top3_hits": 2,
+      "hit_rate_top1": 0.6666666666666666,
+      "hit_rate_top3": 0.6666666666666666,
+      "failures": [
+        {
+          "scenario": "design a page where the layout fetches user data once and child widgets fetch their own data, with Suspense streaming each in",
+          "top1": "suspense-patterns",
+          "top3_winners": [
+            "suspense-patterns",
+            "e2e-test-design",
+            "data-modeling"
+          ]
+        }
+      ]
+    },
+    {
+      "skill": "seven-powers",
+      "triggerable": true,
+      "total_scenarios": 3,
+      "top1_hits": 2,
+      "top3_hits": 3,
+      "hit_rate_top1": 0.6666666666666666,
+      "hit_rate_top3": 1,
+      "failures": [
+        {
+          "scenario": "which of Helmer's powers could apply to this business model?",
+          "top1": "conceptual-modeling",
+          "top3_winners": [
+            "conceptual-modeling",
+            "seven-powers",
+            "acid-fundamentals"
+          ]
+        }
+      ]
+    },
+    {
+      "skill": "sharding-strategy",
+      "triggerable": true,
+      "total_scenarios": 3,
+      "top1_hits": 1,
+      "top3_hits": 3,
+      "hit_rate_top1": 0.3333333333333333,
+      "hit_rate_top3": 1,
+      "failures": [
+        {
+          "scenario": "choose a shard key for a multi-tenant system where 90% of queries are tenant-scoped",
+          "top1": "postgres-rls",
+          "top3_winners": [
+            "postgres-rls",
+            "agent-engineering",
+            "sharding-strategy"
+          ]
+        },
+        {
+          "scenario": "design the resharding strategy when adding nodes to a hash-sharded cluster",
+          "top1": "pattern-recognition",
+          "top3_winners": [
+            "pattern-recognition",
+            "sharding-strategy",
+            "keywords"
+          ]
+        }
+      ]
+    },
+    {
+      "skill": "shopify",
+      "triggerable": true,
+      "total_scenarios": 3,
+      "top1_hits": 3,
+      "top3_hits": 3,
+      "hit_rate_top1": 1,
+      "hit_rate_top3": 1,
+      "failures": []
+    },
+    {
+      "skill": "skill-infrastructure",
+      "triggerable": true,
+      "total_scenarios": 3,
+      "top1_hits": 2,
+      "top3_hits": 2,
+      "hit_rate_top1": 0.6666666666666666,
+      "hit_rate_top3": 0.6666666666666666,
+      "failures": [
+        {
+          "scenario": "we keep getting skill-router misses on real user queries — how do we surface and close routing gaps?",
+          "top1": "context-graph",
+          "top3_winners": [
+            "context-graph",
+            "problem-approach-router",
+            "agent-eval-design"
+          ]
+        }
+      ]
+    },
+    {
+      "skill": "skill-router",
+      "triggerable": true,
+      "total_scenarios": 3,
+      "top1_hits": 1,
+      "top3_hits": 3,
+      "hit_rate_top1": 0.3333333333333333,
+      "hit_rate_top3": 1,
+      "failures": [
+        {
+          "scenario": "activate the right skill for this agent request: 'my tests are failing in CI'",
+          "top1": "agent-eval-design",
+          "top3_winners": [
+            "agent-eval-design",
+            "skill-router",
+            "route-handler-design"
+          ]
+        },
+        {
+          "scenario": "build a routing table that covers every agent request type we see",
+          "top1": "agent-eval-design",
+          "top3_winners": [
+            "agent-eval-design",
+            "skill-router",
+            "type-safety"
+          ]
+        }
+      ]
+    },
+    {
+      "skill": "skill-scaffold",
+      "triggerable": true,
+      "total_scenarios": 3,
+      "top1_hits": 3,
+      "top3_hits": 3,
+      "hit_rate_top1": 1,
+      "hit_rate_top3": 1,
+      "failures": []
+    },
+    {
+      "skill": "snapshot-testing",
+      "triggerable": true,
+      "total_scenarios": 3,
+      "top1_hits": 2,
+      "top3_hits": 2,
+      "hit_rate_top1": 0.6666666666666666,
+      "hit_rate_top3": 0.6666666666666666,
+      "failures": [
+        {
+          "scenario": "explain why auto-updating snapshots without review removes the testing value",
+          "top1": "best-practice",
+          "top3_winners": [
+            "best-practice",
+            "middleware-patterns"
+          ]
+        }
+      ]
+    },
+    {
+      "skill": "spec-driven-development",
+      "triggerable": null,
+      "total_scenarios": 0,
+      "top1_hits": 0,
+      "top3_hits": 0,
+      "hit_rate_top1": null,
+      "hit_rate_top3": null,
+      "failures": [],
+      "note": "no activation.examples authored — UNKNOWN triggerability"
+    },
+    {
+      "skill": "state-machine-modeling",
+      "triggerable": true,
+      "total_scenarios": 3,
+      "top1_hits": 2,
+      "top3_hits": 2,
+      "hit_rate_top1": 0.6666666666666666,
+      "hit_rate_top3": 0.6666666666666666,
+      "failures": [
+        {
+          "scenario": "define guards and side effects for onboarding steps",
+          "top1": "server-components-design",
+          "top3_winners": [
+            "server-components-design",
+            "task-analysis",
+            "constraint-awareness"
+          ]
+        }
+      ]
+    },
+    {
+      "skill": "state-management",
+      "triggerable": true,
+      "total_scenarios": 3,
+      "top1_hits": 1,
+      "top3_hits": 1,
+      "hit_rate_top1": 0.3333333333333333,
+      "hit_rate_top3": 0.3333333333333333,
+      "failures": [
+        {
+          "scenario": "decide where the filter/sort/page state for a data table should live",
+          "top1": "frontend-architecture",
+          "top3_winners": [
+            "frontend-architecture",
+            "real-time-updates",
+            "seo-strategy"
+          ]
+        },
+        {
+          "scenario": "diagnose whether a piece of duplicated state is a real performance need or accidental sprawl",
+          "top1": "problem-framing",
+          "top3_winners": [
+            "problem-framing",
+            "performance-testing",
+            "ref-patterns"
+          ]
+        }
+      ]
+    },
+    {
+      "skill": "streaming-architecture",
+      "triggerable": false,
+      "total_scenarios": 3,
+      "top1_hits": 0,
+      "top3_hits": 0,
+      "hit_rate_top1": 0,
+      "hit_rate_top3": 0,
+      "failures": [
+        {
+          "scenario": "design the response shape for an endpoint that returns 50,000 rows incrementally",
+          "top1": "api-design",
+          "top3_winners": [
+            "api-design",
+            "route-handler-design",
+            "frontend-architecture"
+          ]
+        },
+        {
+          "scenario": "decide between SSE and WebSocket for a live progress feed",
+          "top1": "real-time-updates",
+          "top3_winners": [
+            "real-time-updates",
+            "content-monitor",
+            "epistemic-grounding"
+          ]
+        },
+        {
+          "scenario": "diagnose why a fast producer is exhausting memory when the consumer falls behind",
+          "top1": "contract-testing",
+          "top3_winners": [
+            "contract-testing",
+            "property-based-testing",
+            "cognitive-load-theory"
+          ]
+        }
+      ]
+    },
+    {
+      "skill": "stripe-ledger-recon",
+      "triggerable": null,
+      "total_scenarios": 0,
+      "top1_hits": 0,
+      "top3_hits": 0,
+      "hit_rate_top1": null,
+      "hit_rate_top3": null,
+      "failures": [],
+      "note": "no activation.examples authored — UNKNOWN triggerability"
+    },
+    {
+      "skill": "summarization",
+      "triggerable": null,
+      "total_scenarios": 0,
+      "top1_hits": 0,
+      "top3_hits": 0,
+      "hit_rate_top1": null,
+      "hit_rate_top3": null,
+      "failures": [],
+      "note": "no activation.examples authored — UNKNOWN triggerability"
+    },
+    {
+      "skill": "suspense-patterns",
+      "triggerable": true,
+      "total_scenarios": 3,
+      "top1_hits": 1,
+      "top3_hits": 1,
+      "hit_rate_top1": 0.3333333333333333,
+      "hit_rate_top3": 0.3333333333333333,
+      "failures": [
+        {
+          "scenario": "design a dashboard that streams three independent widgets in as their data resolves, with skeleton fallbacks for each",
+          "top1": "data-modeling",
+          "top3_winners": [
+            "data-modeling",
+            "frontend-architecture",
+            "real-time-updates"
+          ]
+        },
+        {
+          "scenario": "diagnose why a Suspense boundary is showing its fallback on every prop change",
+          "top1": "error-boundary",
+          "top3_winners": [
+            "error-boundary",
+            "semantic-relations",
+            "client-server-boundary"
+          ]
+        }
+      ]
+    },
+    {
+      "skill": "system-interface-contracts",
+      "triggerable": true,
+      "total_scenarios": 3,
+      "top1_hits": 1,
+      "top3_hits": 1,
+      "hit_rate_top1": 0.3333333333333333,
+      "hit_rate_top3": 0.3333333333333333,
+      "failures": [
+        {
+          "scenario": "define the contract between the ingestion job and the dashboard view layer",
+          "top1": "semantics",
+          "top3_winners": [
+            "semantics",
+            "theme-system-design",
+            "task-analysis"
+          ]
+        },
+        {
+          "scenario": "what invariants must this event producer and consumer share?",
+          "top1": "event-contract-design",
+          "top3_winners": [
+            "event-contract-design",
+            "stripe-ledger-recon",
+            "contract-testing"
+          ]
+        }
+      ]
+    },
+    {
+      "skill": "task-analysis",
+      "triggerable": true,
+      "total_scenarios": 3,
+      "top1_hits": 2,
+      "top3_hits": 2,
+      "hit_rate_top1": 0.6666666666666666,
+      "hit_rate_top3": 0.6666666666666666,
+      "failures": [
+        {
+          "scenario": "what should be above the fold on this page?",
+          "top1": "e2e-test-design",
+          "top3_winners": [
+            "e2e-test-design",
+            "information-architecture",
+            "seo-strategy"
+          ]
+        }
+      ]
+    },
+    {
+      "skill": "task-path-optimization",
+      "triggerable": true,
+      "total_scenarios": 3,
+      "top1_hits": 3,
+      "top3_hits": 3,
+      "hit_rate_top1": 1,
+      "hit_rate_top3": 1,
+      "failures": []
+    },
+    {
+      "skill": "taxonomy-design",
+      "triggerable": true,
+      "total_scenarios": 3,
+      "top1_hits": 2,
+      "top3_hits": 2,
+      "hit_rate_top1": 0.6666666666666666,
+      "hit_rate_top3": 0.6666666666666666,
+      "failures": [
+        {
+          "scenario": "build a clean category tree for these concepts without making every related term a parent-child relation",
+          "top1": "server-components-design",
+          "top3_winners": [
+            "server-components-design",
+            "semantic-relations",
+            "graph-audit"
+          ]
+        }
+      ]
+    },
+    {
+      "skill": "test-coverage-strategy",
+      "triggerable": true,
+      "total_scenarios": 3,
+      "top1_hits": 1,
+      "top3_hits": 2,
+      "hit_rate_top1": 0.3333333333333333,
+      "hit_rate_top3": 0.6666666666666666,
+      "failures": [
+        {
+          "scenario": "set a coverage policy for a service that distinguishes 'covered' from 'tested'",
+          "top1": "postgres-rls",
+          "top3_winners": [
+            "postgres-rls",
+            "skill-scaffold",
+            "test-coverage-strategy"
+          ]
+        },
+        {
+          "scenario": "diagnose a high-coverage test suite that still misses bugs — likely a granularity mismatch",
+          "top1": "testing-strategy",
+          "top3_winners": [
+            "testing-strategy",
+            "error-boundary"
+          ]
+        }
+      ]
+    },
+    {
+      "skill": "test-doubles-design",
+      "triggerable": true,
+      "total_scenarios": 3,
+      "top1_hits": 1,
+      "top3_hits": 1,
+      "hit_rate_top1": 0.3333333333333333,
+      "hit_rate_top3": 0.3333333333333333,
+      "failures": [
+        {
+          "scenario": "explain why over-mocking produces fragile tests that change with every refactor",
+          "top1": "query-optimization",
+          "top3_winners": [
+            "query-optimization",
+            "schema-evolution",
+            "test-driven-development"
+          ]
+        },
+        {
+          "scenario": "diagnose a passing test that mirrors the implementation rather than specifying behavior",
+          "top1": "performance-testing",
+          "top3_winners": [
+            "performance-testing"
+          ]
+        }
+      ]
+    },
+    {
+      "skill": "test-driven-development",
+      "triggerable": true,
+      "total_scenarios": 3,
+      "top1_hits": 1,
+      "top3_hits": 1,
+      "hit_rate_top1": 0.3333333333333333,
+      "hit_rate_top3": 0.3333333333333333,
+      "failures": [
+        {
+          "scenario": "explain why writing the test first changes the design of the code under test",
+          "top1": "pattern-recognition",
+          "top3_winners": [
+            "pattern-recognition",
+            "spec-driven-development",
+            "design-thinking"
+          ]
+        },
+        {
+          "scenario": "diagnose why the test suite is fragile under refactor — likely over-mocked interaction tests",
+          "top1": "debugging",
+          "top3_winners": [
+            "debugging",
+            "semantic-center",
+            "design-thinking"
+          ]
+        }
+      ]
+    },
+    {
+      "skill": "testing-strategy",
+      "triggerable": true,
+      "total_scenarios": 3,
+      "top1_hits": 1,
+      "top3_hits": 2,
+      "hit_rate_top1": 0.3333333333333333,
+      "hit_rate_top3": 0.6666666666666666,
+      "failures": [
+        {
+          "scenario": "do I need a unit test for this pure formatter or is integration enough?",
+          "top1": "performance-testing",
+          "top3_winners": [
+            "performance-testing"
+          ]
+        },
+        {
+          "scenario": "what's the right test level for a webhook handler that talks to Stripe?",
+          "top1": "stripe-ledger-recon",
+          "top3_winners": [
+            "stripe-ledger-recon",
+            "testing-strategy",
+            "e2e-test-design"
+          ]
+        }
+      ]
+    },
+    {
+      "skill": "theme-system-design",
+      "triggerable": true,
+      "total_scenarios": 3,
+      "top1_hits": 1,
+      "top3_hits": 1,
+      "hit_rate_top1": 0.3333333333333333,
+      "hit_rate_top3": 0.3333333333333333,
+      "failures": [
+        {
+          "scenario": "Design a three-tier token system (reference → system → component) for a multi-brand product",
+          "top1": "design-system-architecture",
+          "top3_winners": [
+            "design-system-architecture",
+            "semantics",
+            "agent-engineering"
+          ]
+        },
+        {
+          "scenario": "Add a third theme to an existing two-theme system without breaking the component contracts",
+          "top1": "server-components-design",
+          "top3_winners": [
+            "server-components-design",
+            "dark-mode-implementation",
+            "design-system-architecture"
+          ]
+        }
+      ]
+    },
+    {
+      "skill": "tool-call-flow",
+      "triggerable": true,
+      "total_scenarios": 3,
+      "top1_hits": 1,
+      "top3_hits": 3,
+      "hit_rate_top1": 0.3333333333333333,
+      "hit_rate_top3": 1,
+      "failures": [
+        {
+          "scenario": "design the message-shape contract between a model and a tool runtime",
+          "top1": "theme-system-design",
+          "top3_winners": [
+            "theme-system-design",
+            "tool-call-flow",
+            "data-modeling"
+          ]
+        },
+        {
+          "scenario": "decide whether to expose a capability as a tool, an MCP server, or an inline API",
+          "top1": "server-components-design",
+          "top3_winners": [
+            "server-components-design",
+            "tool-call-flow",
+            "context-window"
+          ]
+        }
+      ]
+    },
+    {
+      "skill": "tool-call-strategy",
+      "triggerable": true,
+      "total_scenarios": 3,
+      "top1_hits": 2,
+      "top3_hits": 2,
+      "hit_rate_top1": 0.6666666666666666,
+      "hit_rate_top3": 0.6666666666666666,
+      "failures": [
+        {
+          "scenario": "the agent re-reads the same file three times in one task — fix the policy",
+          "top1": "task-path-optimization",
+          "top3_winners": [
+            "task-path-optimization",
+            "ai-native-development",
+            "postgres-rls"
+          ]
+        }
+      ]
+    },
+    {
+      "skill": "transaction-isolation",
+      "triggerable": true,
+      "total_scenarios": 3,
+      "top1_hits": 1,
+      "top3_hits": 3,
+      "hit_rate_top1": 0.3333333333333333,
+      "hit_rate_top3": 1,
+      "failures": [
+        {
+          "scenario": "choose an isolation level for a workload that has concurrent balance-decrement operations",
+          "top1": "postgres-rls",
+          "top3_winners": [
+            "postgres-rls",
+            "transaction-isolation",
+            "stripe-ledger-recon"
+          ]
+        },
+        {
+          "scenario": "diagnose a data-correctness bug caused by an anomaly the chosen isolation level permits",
+          "top1": "postgres-rls",
+          "top3_winners": [
+            "postgres-rls",
+            "debugging",
+            "transaction-isolation"
+          ]
+        }
+      ]
+    },
+    {
+      "skill": "type-safety",
+      "triggerable": true,
+      "total_scenarios": 3,
+      "top1_hits": 1,
+      "top3_hits": 2,
+      "hit_rate_top1": 0.3333333333333333,
+      "hit_rate_top3": 0.6666666666666666,
+      "failures": [
+        {
+          "scenario": "review whether this discriminated union has an exhaustiveness check at the switch",
+          "top1": "best-practice",
+          "top3_winners": [
+            "best-practice",
+            "type-safety",
+            "graph-audit"
+          ]
+        },
+        {
+          "scenario": "decide whether to use `any` or `unknown` for this third-party JSON payload",
+          "top1": "tool-call-flow",
+          "top3_winners": [
+            "tool-call-flow",
+            "generative-ui",
+            "route-handler-design"
+          ]
+        }
+      ]
+    },
+    {
+      "skill": "typography-system",
+      "triggerable": true,
+      "total_scenarios": 3,
+      "top1_hits": 1,
+      "top3_hits": 3,
+      "hit_rate_top1": 0.3333333333333333,
+      "hit_rate_top3": 1,
+      "failures": [
+        {
+          "scenario": "Build a type scale with seven steps using a 1.25 ratio and assign each step to a semantic token (display, h1, body, caption)",
+          "top1": "semantics",
+          "top3_winners": [
+            "semantics",
+            "typography-system",
+            "color-system-design"
+          ]
+        },
+        {
+          "scenario": "Pair a serif display face with a sans-serif text face and document when to use each",
+          "top1": "tool-call-flow",
+          "top3_winners": [
+            "tool-call-flow",
+            "context-graph",
+            "typography-system"
+          ]
+        }
+      ]
+    },
+    {
+      "skill": "usability-testing",
+      "triggerable": true,
+      "total_scenarios": 3,
+      "top1_hits": 2,
+      "top3_hits": 2,
+      "hit_rate_top1": 0.6666666666666666,
+      "hit_rate_top3": 0.6666666666666666,
+      "failures": [
+        {
+          "scenario": "How many participants do I need for a formative round on this prototype?",
+          "top1": "property-based-testing",
+          "top3_winners": [
+            "property-based-testing",
+            "design-thinking",
+            "problem-framing"
+          ]
+        }
+      ]
+    },
+    {
+      "skill": "user-research",
+      "triggerable": true,
+      "total_scenarios": 3,
+      "top1_hits": 2,
+      "top3_hits": 2,
+      "hit_rate_top1": 0.6666666666666666,
+      "hit_rate_top3": 0.6666666666666666,
+      "failures": [
+        {
+          "scenario": "How do I observe ICU nurses on shift without disturbing the workflow?",
+          "top1": "server-actions-design",
+          "top3_winners": [
+            "server-actions-design",
+            "skill-scaffold",
+            "problem-locating-solving"
+          ]
+        }
+      ]
+    },
+    {
+      "skill": "vercel-composition-patterns",
+      "triggerable": null,
+      "total_scenarios": 0,
+      "top1_hits": 0,
+      "top3_hits": 0,
+      "hit_rate_top1": null,
+      "hit_rate_top3": null,
+      "failures": [],
+      "note": "no activation.examples authored — UNKNOWN triggerability"
+    },
+    {
+      "skill": "version-control",
+      "triggerable": true,
+      "total_scenarios": 3,
+      "top1_hits": 1,
+      "top3_hits": 1,
+      "hit_rate_top1": 0.3333333333333333,
+      "hit_rate_top3": 0.3333333333333333,
+      "failures": [
+        {
+          "scenario": "set up trunk-based development for a four-person team",
+          "top1": "context-management",
+          "top3_winners": [
+            "context-management",
+            "intent-recognition",
+            "postgres-rls"
+          ]
+        },
+        {
+          "scenario": "two agents are working in the same repo and clobbering each other's uncommitted changes — set up worktrees",
+          "top1": "context-management",
+          "top3_winners": [
+            "context-management",
+            "postgres-rls",
+            "a11y"
+          ]
+        }
+      ]
+    },
+    {
+      "skill": "visual-design-foundations",
+      "triggerable": false,
+      "total_scenarios": 3,
+      "top1_hits": 0,
+      "top3_hits": 1,
+      "hit_rate_top1": 0,
+      "hit_rate_top3": 0.3333333333333333,
+      "failures": [
+        {
+          "scenario": "pick a visual direction for this dashboard without changing the task structure",
+          "top1": "frontend-architecture",
+          "top3_winners": [
+            "frontend-architecture",
+            "visual-design-foundations",
+            "spec-driven-development"
+          ]
+        },
+        {
+          "scenario": "audit color, typography, spacing, and hierarchy for this product page",
+          "top1": "task-analysis",
+          "top3_winners": [
+            "task-analysis",
+            "pattern-recognition",
+            "semiotics"
+          ]
+        },
+        {
+          "scenario": "this UI feels flat and hard to scan - improve the visual hierarchy",
+          "top1": "prompt-craft",
+          "top3_winners": [
+            "prompt-craft",
+            "visual-hierarchy",
+            "query-optimization"
+          ]
+        }
+      ]
+    },
+    {
+      "skill": "visual-hierarchy",
+      "triggerable": true,
+      "total_scenarios": 3,
+      "top1_hits": 1,
+      "top3_hits": 1,
+      "hit_rate_top1": 0.3333333333333333,
+      "hit_rate_top3": 0.3333333333333333,
+      "failures": [
+        {
+          "scenario": "Reduce visual noise on a dashboard where every element competes for attention",
+          "top1": "snapshot-testing",
+          "top3_winners": [
+            "snapshot-testing",
+            "refactor",
+            "constraint-awareness"
+          ]
+        },
+        {
+          "scenario": "Establish a clear primary call-to-action on a page with multiple secondary actions",
+          "top1": "server-actions-design",
+          "top3_winners": [
+            "server-actions-design",
+            "e2e-test-design",
+            "replication-patterns"
+          ]
+        }
+      ]
+    },
+    {
+      "skill": "webhook-integration",
+      "triggerable": true,
+      "total_scenarios": 3,
+      "top1_hits": 2,
+      "top3_hits": 2,
+      "hit_rate_top1": 0.6666666666666666,
+      "hit_rate_top3": 0.6666666666666666,
+      "failures": [
+        {
+          "scenario": "the same webhook event is being processed twice — fix the idempotency",
+          "top1": "stripe-ledger-recon",
+          "top3_winners": [
+            "stripe-ledger-recon",
+            "system-interface-contracts",
+            "merge-queue"
+          ]
+        }
+      ]
+    },
+    {
+      "skill": "writing-humanizer",
+      "triggerable": true,
+      "total_scenarios": 3,
+      "top1_hits": 1,
+      "top3_hits": 1,
+      "hit_rate_top1": 0.3333333333333333,
+      "hit_rate_top3": 0.3333333333333333,
+      "failures": [
+        {
+          "scenario": "this PR description sounds AI-generated — strip the tells and rewrite it concisely",
+          "top1": "middleware-patterns",
+          "top3_winners": [
+            "middleware-patterns",
+            "skill-scaffold",
+            "ai-native-development"
+          ]
+        },
+        {
+          "scenario": "audit this release-notes draft for Tier 1 AI tells (delve, leverage, comprehensive, testament)",
+          "top1": "graph-audit",
+          "top3_winners": [
+            "graph-audit",
+            "task-analysis",
+            "design-system-architecture"
+          ]
+        }
+      ]
+    }
+  ]
+}

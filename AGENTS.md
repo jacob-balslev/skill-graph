@@ -463,6 +463,26 @@ node scripts/skill-graph-drift.js
 node bin/skill-graph.js --help
 ```
 
+For the Karpathy-style skill-organization loop (per `docs/plans/skill-organization-karpathy-loop-2026-05-26.md`):
+
+```bash
+# Description density vs claude-code #40121 / #44780 (the silent 250-char cap)
+node scripts/check-description-density.js --summary          # corpus mean
+node scripts/check-description-density.js --skill <name>     # single skill
+node scripts/check-description-density.js --json             # full JSON
+
+# Triggerability binary pre-gate (does the skill fire on its own examples?)
+node scripts/check-triggerability.js --summary               # corpus PASS/FAIL/UNKNOWN counts
+node scripts/check-triggerability.js --skill <name>          # single-skill verdict
+
+# v8 5-axis classification sanity check (ADR-0017): enum validity + body-claim match
+node scripts/check-subject-operation.js --summary            # corpus distribution
+node scripts/check-subject-operation.js --skill <name>       # single-skill mismatch report
+
+# Or all three at once:
+npm run organization:baseline
+```
+
 For routing diagnostics:
 
 ```bash
