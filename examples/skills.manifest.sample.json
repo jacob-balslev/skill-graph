@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-05-26T07:19:34.709Z",
+  "generated_at": "2026-05-26T07:26:30.735Z",
   "schema_version": 4,
   "skills": [
     {
@@ -9058,6 +9058,135 @@
     {
       "activation": {
         "anti_examples": [
+          "turn this vague product strategy into where-to-play and how-to-win choices",
+          "rank these roadmap items by expected impact",
+          "estimate the TAM for this market",
+          "classify this company's durable moat source",
+          "write OKRs for the chosen strategy"
+        ],
+        "examples": [
+          "analyze this market with Porter's Five Forces",
+          "which forces make this industry unattractive?",
+          "is supplier power or buyer power the bigger risk in this category?",
+          "we are entering a new market; diagnose industry structure before we choose a position",
+          "map how substitutes and new entrants could change the profit pool"
+        ],
+        "keywords": [
+          "porter five forces",
+          "porters five forces",
+          "five forces",
+          "industry structure",
+          "competitive forces",
+          "industry attractiveness",
+          "buyer power",
+          "supplier power",
+          "threat of entrants",
+          "threat of substitutes",
+          "competitive rivalry"
+        ]
+      },
+      "allowed-tools": "Read Grep",
+      "category": "foundations",
+      "compatibility": {
+        "notes": "Markdown, strategy memos, market-entry analysis, competitive strategy, executive decision-making"
+      },
+      "description": "Use when analyzing an industry's competitive structure and profit pool using Porter's Five Forces: rivalry among existing competitors, threat of new entrants, bargaining power of suppliers, bargaining power of buyers, and threat of substitutes. Covers industry-boundary definition, force-by-force diagnostics, structural drivers, dynamic trends, profitability implications, strategic positioning options, and the distinction between industry attractiveness and firm-specific advantage. Do NOT use for creating an integrated strategy cascade (use playing-to-win), classifying durable moat sources (use Seven Powers when available), backlog scoring (use prioritization), or generic market sizing.",
+      "domain": "foundations/strategy",
+      "grounding": {
+        "domain_object": "Porter's Five Forces competitive strategy framework",
+        "evidence_priority": "general_knowledge_first",
+        "failure_modes": [
+          "industry_boundary_too_broad",
+          "direct_competitor_only_view",
+          "force_names_listed_without_drivers",
+          "firm_strength_confused_with_industry_structure",
+          "substitutes_confused_with_rivals",
+          "market_size_substituted_for_profitability",
+          "static_snapshot_ignores_trends"
+        ],
+        "grounding_mode": "universal",
+        "truth_sources": [
+          "https://www.isc.hbs.edu/strategy/business-strategy/Pages/the-five-forces.aspx",
+          "https://hbr.org/2008/01/the-five-competitive-forces-that-shape-strategy",
+          "skills/foundations/porters-five-forces/references/porters-five-forces-sources.md",
+          "skills/foundations/porters-five-forces/references/upstream-displacement-2026-05-26.md"
+        ]
+      },
+      "health": {
+        "application_verdict": "UNVERIFIED",
+        "comprehension_state": "present",
+        "comprehension_verdict": "UNVERIFIED",
+        "drift_check": {
+          "last_verified": "2026-05-26",
+          "truth_source_hashes": {
+            "skills/foundations/porters-five-forces/references/porters-five-forces-sources.md": "66c6fd769ae91f3815b7c34e4fe2c80809b12203bf4e2c5c05220517b4746511",
+            "skills/foundations/porters-five-forces/references/upstream-displacement-2026-05-26.md": "eab1270c9ca85a16946d067291a2e74d4effa88ea1649a7f2c3de3914e515b8c"
+          }
+        },
+        "drift_detected": true,
+        "eval_artifacts": "present",
+        "eval_state": "unverified",
+        "freshness": "2026-05-26",
+        "has_grounding": true,
+        "has_relations": true,
+        "last_audited": "2026-05-26",
+        "lifecycle": {
+          "review_cadence": "quarterly",
+          "stale_after_days": 365
+        },
+        "lint_verdict": "PASS",
+        "routing_eval": "absent",
+        "structural_verdict": "PASS",
+        "truth_verdict": "UNVERIFIED"
+      },
+      "id": "porters-five-forces",
+      "license": "MIT",
+      "name": "porters-five-forces",
+      "operation": "do",
+      "owner": "skill-graph-maintainer",
+      "path": "../skills/skills/meta-methods/porters-five-forces/SKILL.md",
+      "portability": {
+        "readiness": "scripted",
+        "targets": [
+          "skill-md"
+        ]
+      },
+      "relations": {
+        "boundary": [
+          {
+            "reason": "playing-to-win owns integrated strategy choices; porters-five-forces owns upstream industry-structure diagnosis",
+            "skill": "playing-to-win"
+          },
+          {
+            "reason": "prioritization scores tasks or options; porters-five-forces analyzes industry forces and profit-pool pressure",
+            "skill": "prioritization"
+          },
+          {
+            "reason": "framework-fit-analysis chooses among methods or technologies; porters-five-forces applies one specific competitive-structure framework",
+            "skill": "framework-fit-analysis"
+          }
+        ],
+        "related": [
+          "playing-to-win",
+          "constraint-awareness",
+          "epistemic-grounding",
+          "framework-fit-analysis"
+        ],
+        "verify_with": [
+          "epistemic-grounding",
+          "constraint-awareness"
+        ]
+      },
+      "schema_version": 8,
+      "scope": "portable",
+      "stability": "stable",
+      "subject": "meta-methods",
+      "type": "capability",
+      "version": "1.0.0"
+    },
+    {
+      "activation": {
+        "anti_examples": [
           "implementing application-level auth guards (requireAuth, requireOrgAuth) — use nextauth-patterns",
           "choosing when to use orgQuery() vs query() in application code — use multi-tenancy-rls",
           "implementing CSRF protection or webhook HMAC verification — use security-scanning",
@@ -15844,29 +15973,29 @@
       "agent": 18,
       "design": 26,
       "engineering": 61,
-      "foundations": 15,
+      "foundations": 16,
       "product": 1,
       "quality": 29
     },
     "by_operation": {
       "decide": 2,
-      "do": 48,
+      "do": 49,
       "know": 98,
       "modify": 1
     },
     "by_schema_version": {
       "7": 2,
-      "8": 148
+      "8": 149
     },
     "by_scope": {
-      "portable": 96,
+      "portable": 97,
       "project": 3,
       "reference": 1,
       "workspace": 50
     },
     "by_stability": {
       "experimental": 142,
-      "stable": 4
+      "stable": 5
     },
     "by_subject": {
       "agent-ops": 17,
@@ -15875,17 +16004,17 @@
       "design-craft": 20,
       "frontend-ui": 20,
       "knowledge-organization": 7,
-      "meta-methods": 8,
+      "meta-methods": 9,
       "product-domain": 11,
       "quality-assurance": 27
     },
     "by_type": {
-      "capability": 139,
+      "capability": 140,
       "overlay": 1,
       "router": 2,
       "workflow": 8
     },
-    "total_skills": 150
+    "total_skills": 151
   },
   "workspace": {
     "skill_roots": [
