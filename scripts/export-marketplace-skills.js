@@ -390,38 +390,202 @@ function provenanceForSkill(sourceRelPath) {
   };
 }
 
+// ---------------------------------------------------------------------------
+// Export-time description projection (added 2026-05-26)
+// ---------------------------------------------------------------------------
+// Anthropic's auto-invocation runtime only pre-loads `name + description` at
+// startup (https://platform.claude.com/docs/en/agents-and-tools/agent-skills/overview).
+// The negative-boundary signal carried by the workspace's typed fields
+// (anti_examples, relations.boundary) is invisible to it. This projection
+// synthesizes that signal into the exported description while keeping the
+// canonical SKILL.md source unchanged.
+//
+// Doctrine fit: AUGMENT, not REPLACE. Canonical descriptions still carry the
+// workspace-mandated `Do NOT use for X (use Y).` clause per
+// SKILL_METADATA_PROTOCOL.md § Identity. The projection appends additional
+// boundary entries the canonical clause did not name. Deduplication via
+// `collectMentionedSlugs` prevents stacking the same slug twice.
+//
+// Source plan: docs/plans/export-layer-description-projection-2026-05-26.md
+// ---------------------------------------------------------------------------
+
+const MENTIONED_SLUG_RE = /\(use ([a-z][a-z0-9-]*[a-z0-9])\)/g;
+const OWNS_CLAUSE_RE = /^[a-z][a-z0-9-]*[a-z0-9]\s+owns\s+([^;.]+?)(?:\s+where\s|\s+when\s|\s+that\s|[;.]|$)/i;
+
+/**
+ * Scan a description for `(use <slug>)` mentions so synthesis can skip slugs
+ * the canonical description already names. Without this, the exporter would
+ * stack `Do NOT use for X (use Y).` twice for the same boundary slug when
+ * the author chose to name it in canonical prose AND also added it to
+ * relations.boundary.
+ *
+ * @param {string} description Canonical or override description text.
+ * @returns {Set<string>} Slugs already mentioned via `(use <slug>)`.
+ */
+function collectMentionedSlugs(description) {
+  const slugs = new Set();
+  if (!description) return slugs;
+  MENTIONED_SLUG_RE.lastIndex = 0;
+  let m;
+  while ((m = MENTIONED_SLUG_RE.exec(description)) !== null) {
+    slugs.add(m[1]);
+  }
+  return slugs;
+}
+
+/**
+ * Extract the "owns X" clause from a relations.boundary reason string.
+ * E.g. "testing-strategy owns deterministic-software testing where every run
+ * is binary..." → "deterministic-software testing".
+ *
+ * @param {string} reason The reason field from a Shape B boundary entry.
+ * @returns {string|null} The owns clause, or null if no clean clause.
+ */
+function extractBoundaryOwnsClause(reason) {
+  if (!reason || typeof reason !== 'string') return null;
+  const m = OWNS_CLAUSE_RE.exec(reason);
+  if (!m) return null;
+  const clause = m[1].trim();
+  if (clause.length === 0 || clause.length > 120) return null;
+  return clause;
+}
+
+/**
+ * Synthesize a `Do NOT use for X (use Y).` tail from typed fields. Reads
+ * skill.fm.anti_examples and skill.fm.relations.boundary; dedupes against
+ * slugs already mentioned in the base description.
+ *
+ * Shape A boundary entries (bare slug, no reason) are skipped — the slug
+ * alone is too information-poor for a meaningful tail. To project a
+ * boundary entry, populate it as Shape B with an `owns` reason clause.
+ *
+ * @param {object} skill Skill record with .fm.
+ * @param {Set<string>} alreadyMentioned Slugs to dedupe against; mutated as
+ *   the function adds new slugs to prevent same-pass duplication between
+ *   anti_examples and boundary.
+ * @returns {{ tail: string, sources: Array<string> }}
+ */
+function synthesizeBoundaryTail(skill, alreadyMentioned) {
+  const tailParts = [];
+  const sources = new Set();
+
+  // anti_examples: array of strings that typically already carry `(use <slug>)`.
+  const antiExamples = Array.isArray(skill.fm.anti_examples) ? skill.fm.anti_examples : [];
+  for (const phrase of antiExamples) {
+    if (typeof phrase !== 'string') continue;
+    const trimmed = phrase.trim();
+    if (trimmed.length === 0) continue;
+    MENTIONED_SLUG_RE.lastIndex = 0;
+    const slugMatch = MENTIONED_SLUG_RE.exec(trimmed);
+    if (slugMatch && alreadyMentioned.has(slugMatch[1])) continue;
+    const terminated = /[.!?]$/.test(trimmed) ? trimmed : `${trimmed}.`;
+    tailParts.push(`Do NOT use for ${terminated}`);
+    if (slugMatch) alreadyMentioned.add(slugMatch[1]);
+    sources.add('anti_examples');
+  }
+
+  // relations.boundary: array of strings (Shape A) or objects { skill, reason } (Shape B).
+  const boundary = Array.isArray(skill.fm.relations && skill.fm.relations.boundary)
+    ? skill.fm.relations.boundary
+    : [];
+  for (const entry of boundary) {
+    if (typeof entry === 'string') continue; // Shape A: no reason — skip.
+    if (!entry || typeof entry !== 'object') continue;
+    const slug = entry.skill;
+    if (!slug || typeof slug !== 'string') continue;
+    if (alreadyMentioned.has(slug)) continue;
+    const owns = extractBoundaryOwnsClause(entry.reason);
+    if (!owns) continue;
+    tailParts.push(`Do NOT use for ${owns} (use ${slug}).`);
+    alreadyMentioned.add(slug);
+    sources.add('boundary');
+  }
+
+  if (tailParts.length === 0) return { tail: '', sources: [] };
+  return { tail: ' ' + tailParts.join(' '), sources: Array.from(sources).sort() };
+}
+
+/**
+ * Compose the exported description: base + projected tail, enforcing the
+ * 1024-char marketplace ceiling. The canonical/override base is never
+ * truncated; only the projected tail is truncated if needed (at the last
+ * sentence boundary that fits).
+ *
+ * @param {string} baseDescription
+ * @param {object} skill
+ * @returns {{ description: string, projection: string, projectionTruncated: boolean }}
+ */
+function applyExportProjection(baseDescription, skill) {
+  const mentioned = collectMentionedSlugs(baseDescription);
+  const { tail, sources } = synthesizeBoundaryTail(skill, mentioned);
+  if (tail.length === 0) {
+    return { description: baseDescription, projection: 'none', projectionTruncated: false };
+  }
+  const projection = sources.join('+');
+  const budget = MARKETPLACE_DESCRIPTION_LIMIT - baseDescription.length;
+  // Need at least " X." (3 chars) for any meaningful tail. Under that, skip.
+  if (budget < 3) {
+    process.stderr.write(
+      `PROJECTION SKIPPED for ${skill.fm.name}: base description is ${baseDescription.length} chars; no room under ${MARKETPLACE_DESCRIPTION_LIMIT} limit\n`
+    );
+    return { description: baseDescription, projection: 'none', projectionTruncated: true };
+  }
+  if (tail.length <= budget) {
+    return { description: baseDescription + tail, projection, projectionTruncated: false };
+  }
+  // Tail exceeds budget — truncate at the last sentence boundary that fits.
+  const truncated = tail.slice(0, budget);
+  const lastSentenceEnd = truncated.lastIndexOf('.');
+  const safeTail = lastSentenceEnd > 0 ? truncated.slice(0, lastSentenceEnd + 1) : '';
+  if (safeTail.length === 0) {
+    process.stderr.write(
+      `PROJECTION SKIPPED for ${skill.fm.name}: tail (${tail.length} chars) would not fit any complete sentence in remaining ${budget} chars\n`
+    );
+    return { description: baseDescription, projection: 'none', projectionTruncated: true };
+  }
+  process.stderr.write(
+    `PROJECTION TRUNCATED for ${skill.fm.name}: tail truncated from ${tail.length} to ${safeTail.length} chars to fit ${MARKETPLACE_DESCRIPTION_LIMIT} limit\n`
+  );
+  return { description: baseDescription + safeTail, projection, projectionTruncated: true };
+}
+
 function exportDescriptionForSkill(skill) {
   const sourceDescription = skill.fm.description || '';
   const override = EXPORT_DESCRIPTION_OVERRIDES[skill.fm.name];
 
+  let base;
+  let shortened;
   if (sourceDescription.length > MARKETPLACE_DESCRIPTION_LIMIT) {
-    if (!override) return {
-      description: sourceDescription.slice(0, MARKETPLACE_DESCRIPTION_LIMIT - 1),
-      shortened: true,
-      sourceLength: sourceDescription.length,
-    };
-    if (override.length > MARKETPLACE_DESCRIPTION_LIMIT) {
+    if (!override) {
+      base = sourceDescription.slice(0, MARKETPLACE_DESCRIPTION_LIMIT - 1);
+      shortened = true;
+    } else {
+      if (override.length > MARKETPLACE_DESCRIPTION_LIMIT) {
+        throw new Error(
+          `${skill.fm.name} export description is ${override.length} characters; limit is ${MARKETPLACE_DESCRIPTION_LIMIT}`
+        );
+      }
+      base = override;
+      shortened = true;
+    }
+  } else {
+    if (override) {
       throw new Error(
-        `${skill.fm.name} export description is ${override.length} characters; limit is ${MARKETPLACE_DESCRIPTION_LIMIT}`
+        `${skill.fm.name} has an export description override but the canonical description is within the limit`
       );
     }
-    return {
-      description: override,
-      shortened: true,
-      sourceLength: sourceDescription.length,
-    };
+    base = sourceDescription;
+    shortened = false;
   }
 
-  if (override) {
-    throw new Error(
-      `${skill.fm.name} has an export description override but the canonical description is within the limit`
-    );
-  }
+  const projected = applyExportProjection(base, skill);
 
   return {
-    description: sourceDescription,
-    shortened: false,
+    description: projected.description,
+    shortened,
     sourceLength: sourceDescription.length,
+    projection: projected.projection,
+    projectionTruncated: projected.projectionTruncated,
   };
 }
 
@@ -433,6 +597,12 @@ function buildMarketplaceSkillText(skill) {
   if (description.shortened) {
     metadata.skill_graph_export_description = 'shortened for Agent Skills 1024-character description limit; canonical source keeps the full routing contract';
     metadata.skill_graph_canonical_description_length = String(description.sourceLength);
+  }
+  if (description.projection && description.projection !== 'none') {
+    metadata.skill_graph_export_description_projection = description.projection;
+    if (description.projectionTruncated) {
+      metadata.skill_graph_export_description_projection_truncated = 'true';
+    }
   }
   const exported = buildExportedSkill(skill.text, {
     description: description.description,
@@ -760,13 +930,17 @@ module.exports = {
   SKILL_GRAPH_PROTOCOL,
   SKILL_GRAPH_PROJECT,
   SKILL_GRAPH_SOURCE_REPO,
+  applyExportProjection,
   assertSourceRootIsPortable,
   buildMarketplaceSkillText,
   collectCanonicalSkills,
+  collectMentionedSlugs,
   exportDescriptionForSkill,
+  extractBoundaryOwnsClause,
   provenanceForSkill,
   rewriteLocalMarkdownLinksToCanonicalRepo,
   scanPrivacyText,
+  synthesizeBoundaryTail,
   validateGeneratedSurface,
 };
 

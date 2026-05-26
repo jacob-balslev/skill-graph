@@ -99,6 +99,67 @@ The `skill_graph_protocol` value should reflect the current Skill Metadata Proto
 
 If a generated export already nests protocol fields under `metadata`, keep these `skill_graph_*` keys alongside that export metadata. The purpose is provenance, not keyword stuffing.
 
+## Export-Time Description Projection (Added 2026-05-26)
+
+> Plan: `docs/plans/export-layer-description-projection-2026-05-26.md`
+
+### Motivation — the two-router asymmetry
+
+The Skill Graph has two consumers of `description:` data and they read different things at routing time.
+
+| Consumer | What it sees at routing time | Where the boundary signal can live |
+|---|---|---|
+| Workspace router (`scripts/skill-graph-route.js`) | Full manifest: `description`, `keywords`, `triggers`, `anti_examples`, `relations.boundary`, `scope`, `type`, etc. | Typed fields (`anti_examples`, `relations.boundary`) — the router reads them directly. |
+| Anthropic auto-invocation runtime (claude.ai, claude-code, skills.sh) | **Only `name` + `description`** pre-loaded at startup; the SKILL.md body loads on-demand AFTER trigger; named fields are read by name, not position. (Per [Anthropic Agent Skills overview](https://platform.claude.com/docs/en/agents-and-tools/agent-skills/overview): "Claude loads this metadata at startup and includes it in the system prompt.") | The exported `description:` itself — typed fields are invisible at routing time. |
+
+The asymmetry: the workspace's typed-field discipline (`anti_examples`, `relations.boundary`) does the negative-boundary work natively for the workspace router but is invisible to Anthropic's auto-invocation runtime. Reordering frontmatter does NOT fix this — the runtime reads named fields by name, not position.
+
+### What the projection does
+
+`scripts/export-marketplace-skills.js` synthesizes a `Do NOT use for X (use Y).` tail into the exported `description:` from the canonical skill's typed fields. The canonical SKILL.md source is never modified.
+
+**Substrate read (in priority order):**
+
+1. **`anti_examples:`** — array of strings. Each phrase is projected as `Do NOT use for <phrase>.` Most anti-example phrases already carry a trailing `(use <slug>)` reference, so the projected sentence is well-formed.
+2. **`relations.boundary:`** — array of `{ skill, reason }` objects (Shape B) or bare slugs (Shape A). Only Shape B is projected: the `reason` is parsed for an `<slug> owns <X>` clause, and the projection becomes `Do NOT use for <X> (use <slug>).` Shape A is skipped silently — a bare slug carries too little context to compose meaningful prose; populate the `reason` field to make a boundary entry projectable.
+
+**Deduplication.** Before synthesizing, the projector scans the base description for `(use <slug>)` mentions. Any slug already named in the canonical/override description is excluded from the projected tail, so the same `(use <slug>)` reference is never stacked twice in the exported text. The dedupe set is shared across `anti_examples` and `relations.boundary` so cross-source duplication is also prevented.
+
+**Doctrine fit — augment, not replace.** The workspace's existing mandate that canonical descriptions include their own `Do NOT use for X (use Y).` clause (per `SKILL_METADATA_PROTOCOL.md` § Identity and `AGENTS.md` § Skill Metadata Protocol — Quick Reference) is unchanged. The projection runs **on top of** the canonical clause and only adds entries the canonical clause did not already name.
+
+### 1024-character ceiling enforcement
+
+The marketplace export must stay under `MARKETPLACE_DESCRIPTION_LIMIT = 1024` characters. The base description (canonical text, or the hand-written `EXPORT_DESCRIPTION_OVERRIDES` entry when the canonical is over-limit) is **never truncated**. Only the projected tail is truncated:
+
+- If the canonical/override base + full projection fits in 1024, the full projection lands.
+- If it does not fit, the projection is truncated at the last `.` (sentence boundary) that fits the remaining budget. The marketplace provenance metadata records `skill_graph_export_description_projection_truncated: "true"` for that skill.
+- If the base description leaves less than 3 chars of headroom, the projection is skipped entirely and a stderr warning logs the cause.
+
+### Provenance stamps
+
+When projection runs, the exported skill's `metadata` carries:
+
+```yaml
+metadata:
+  skill_graph_export_description_projection: "boundary" | "anti_examples" | "anti_examples+boundary"
+  # Present only when the projected tail was truncated to fit 1024 chars:
+  skill_graph_export_description_projection_truncated: "true"
+```
+
+When no projection runs (typed fields empty, or every projected slug was already named in the canonical description), no provenance stamp is added.
+
+### What stays canonical
+
+- SKILL.md source files are unchanged. The 158-skill canonical library is untouched by the projection.
+- The workspace router never sees the projected tail. It reads `anti_examples` and `relations.boundary` directly from the typed fields in the canonical source.
+- The protocol's typed-field discipline is preserved. Projection is a publish-time concern only.
+
+### Limits and known gaps
+
+- **`anti_examples` is corpus-empty today.** 1 of 158 skills (`task-path-optimization`) has `anti_examples` populated. Projection wires the read path so a future corpus-wide `anti_examples` population pass needs no exporter change.
+- **`relations.boundary` Shape A entries do not project.** A bare-slug entry (`boundary: [foo, bar]`) has no `reason:` clause to extract context from. ~50% of corpus boundary entries are Shape A; populate `reason:` to make them projectable.
+- **Slug-based dedupe is mechanical, not semantic.** If the canonical description mentions a concept by name (e.g., "Server Actions") but not by slug (`(use server-actions-design)`), the projector cannot tell and will project the boundary slug anyway. The result reads fine but technically duplicates the concept across canonical prose and projected tail. Reducing this is a separate, harder problem (semantic linking) — out of scope for this projection layer.
+
 ## Defense-in-Depth Privacy Gate (Updated 2026-05-23 — SH-6281)
 
 The public skills library (`jacob-balslev/skills`) is defended by four independent gate layers. No single layer failure causes a leak — two or more layers must fail simultaneously.
@@ -284,7 +345,7 @@ Promotion criteria are all required:
 - **Non-PII:** no personal data, customer references, production identifiers, real emails, local user paths, or token-like strings.
 - **Non-Sales-Hub:** not coupled to Sales Hub routes, schemas, tenant data, product doctrine, or private integration assumptions.
 - **Generalizable:** useful to consumers outside this monorepo without preserving local operating context.
-- **v6-compliant on arrival:** authored directly into the nested Skill Metadata Protocol v6 surface with current frontmatter, eval state, and routing metadata.
+- **v7-compliant on arrival:** authored directly into the nested Skill Metadata Protocol v7 surface with current frontmatter, eval state, and routing metadata.
 - **Publication-ledger entry:** classification, tier, source, sanitization requirement, demand signal, and notes recorded in `data/publication-classification.json`.
 
 Do not treat `needs_sanitization: yes` as publishable work already complete. It means the idea can be promoted only after a rewrite or sanitization pass produces a clean nested v6 skill and export verification passes.
@@ -347,7 +408,7 @@ These are hypotheses, not claims. Validate them with the gap loop before creatin
 | Skill gap analysis | Teams need to compare their library against marketplace demand. | `workflow`, portable, depends on `skill-router`, `skill-scaffold`, and `skill-infrastructure`. |
 | Skill install risk triage | Installing a public skill is supply-chain work, not only copy-paste. | `capability`, portable, verify with `owasp-security` and `dependency-architecture`. |
 | Cross-runtime compatibility notes | Skills may behave differently across Claude Code, Codex, Cursor, Windsurf, and others. | `capability`, portable, with conservative compatibility language. |
-| Skill library release checklist | A multi-skill library needs release hygiene before public distribution. | `workflow`, portable, depends on `version-control`, `documentation`, and `skill-infrastructure`. |
+| Skill library release checklist | A multi-skill library needs release hygiene before public distribution. | `workflow`, portable, depends on `version-control`, `docs-development`, and `skill-infrastructure`. |
 
 Do not create a new skill just because a keyword is popular. Create one when Skill Graph can provide a useful, maintainable contract with clear activation, boundaries, relations, and verification.
 
