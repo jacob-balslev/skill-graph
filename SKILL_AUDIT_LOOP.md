@@ -537,6 +537,13 @@ A skill audit is complete when:
 
 # Part 3 — Per-Skill Audit Runbook
 
+> **Audience & runtime — read before running any command below (added 2026-05-27 per audit B8).** Part 3 is an operational runbook that orchestrates `@skill-graph/cli` canonical scripts together with **workspace-orchestration scripts** that are NOT bundled in the npm package. If you installed `@skill-graph/cli` from npm and follow Part 3 verbatim, commands like `node scripts/skill/skill-audit-claim.js`, `scripts/skill/source-truth-catalog.js`, `scripts/skill/skill-census.js`, `scripts/skill/build-skill-audit-worklist.js`, and `scripts/skill/skill-test-runner.js` will fail with `Error: Cannot find module` — those scripts live in the canonical workspace tree at `~/Development/scripts/skill/` (lane claim atomicity, census, deep code probe, worklist build, test runner). They are deliberately workspace-side per ADR 0009 + ADR 0015 + ADR 0016 (Proposed). For standalone `@skill-graph/cli` consumers without the workspace orchestration layer:
+>
+> - Use the canonical CLI entrypoints: `skill-graph audit`, `skill-graph improve`, `skill-graph evaluate`, `skill-graph evolve` (defined in `bin/skill-graph.js`) — these wrap `lib/audit/*` and `scripts/skill-*.js` directly.
+> - `scripts/skill/skill-lint.js` → canonical is `scripts/skill-lint.js` (note the path: no `skill/` subdirectory).
+> - `scripts/skill/evaluate-skill.js` → canonical is `lib/audit/evaluate-skill.js`; the legacy workspace script is a thin delegator (ADR 0009 closure).
+> - The workspace-only tools (`skill-audit-claim`, `source-truth-catalog`, `skill-census`, `build-skill-audit-worklist`, `skill-test-runner`) currently have no canonical equivalents; they are part of the workspace orchestration surface tracked in ADR 0016 Proposed. The runbook below assumes you have them; if you don't, you can still run a substantially complete audit via `skill-graph audit <skill> --graded` and `skill-graph evaluate --mode comprehension`.
+
 ## Overview
 
 > Type: Per-skill audit contract — the binding "what every audit run must do" document
