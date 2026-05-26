@@ -12,7 +12,7 @@
 
 ---
 
-> **Author shortcut (TL;DR — v7→v8 phase ended 2026-05-26):** Author the v8 axes (`subject`, `operation`, `scope`). The v7 fields (`type`, `category`) are no longer required by the schema — they remain accepted as optional back-compat properties but new skills can omit them. Full schema-contract explanation at the END of this doc (§ Schema contract).
+> **Author shortcut (TL;DR — v8 is the canonical classification):** Author the v8 axes (`subject`, `operation`, `scope`). **The v7 classification (`type`, `category`, `categories`, `primaryCategory`, `layerPrimary`, `routingRole`) is DEPRECATED** — pending schema-level removal; do not author. Full schema-contract explanation at the END of this doc (§ Schema contract).
 
 ---
 
@@ -110,7 +110,7 @@ The v8 contract requires twelve canonical fields plus the v8 5-axis classificati
 | `eval_state` | enum | One of: `unverified`, `passing`, `monitored`. |
 | `routing_eval` | enum | One of: `absent`, `present`. |
 
-**v7 legacy fields (no longer required, retained as optional for back-compat — phase ended 2026-05-26):** `type` and `category` are no longer in the schema's global required array. They remain defined as optional properties so skills that still carry them validate cleanly, and the `category.const` 6-enum still constrains their values when present. **New skills do not need to declare them.** See § Classification § Migration map for the v7→v8 field-by-field mapping if you're maintaining a legacy skill.
+**v7 classification — DEPRECATED (phase ended 2026-05-26):** `type`, `category`, `categories`, `primaryCategory`, `layerPrimary`, `routingRole`. These fields are no longer required and **must not be authored on new skills**. The schema currently still accepts them as defined optional properties (skills carrying them validate cleanly) to avoid breaking the corpus while CONTENT-mode migration drains; schema-level removal is the planned next step. The `category.const` 6-enum still constrains their values when present. See § Classification § Migration map for the v7→v8 mapping when migrating legacy skills.
 
 ### Conditionally required
 
@@ -216,7 +216,7 @@ allowed-tools   # space-separated tool allowlist
 
 ### Classification — the 5-axis model
 
-> **v8 status (v7→v8 phase ended 2026-05-26).** The schema's global required array now mandates the v8 axes (`subject`, `operation`, `scope`). The v7 fields (`type`, `category`) are no longer required — they remain defined as optional properties for back-compat with skills that still carry them, and the `category.const` 6-enum still constrains their values when declared. Scope alias normalization is owned by Axis 3 below. **New skills author the v8 axes only**; the v7 fields are optional. See [ADR 0017](docs/adr/0017-five-axis-classification-model.md).
+> **v8 is the canonical classification (v7→v8 phase ended 2026-05-26).** The schema's global required array mandates `subject`, `operation`, `scope`. **The v7 classification (`type`, `category`, etc.) is DEPRECATED** — schema currently still accepts but does not require; pending schema-level removal. New skills author the v8 axes only. Scope alias normalization is owned by Axis 3 below. See [ADR 0017](docs/adr/0017-five-axis-classification-model.md).
 
 Skills are classified on **five orthogonal axes**, each with a focused purpose. The axis names are deliberate: `subject` answers "what does this skill teach?", `operation` answers "what does it enable an agent to do?", `scope` answers "where does it apply?", `keywords` covers fuzzy activation, and `relations` covers typed edges to other skills.
 
@@ -701,7 +701,7 @@ Some legacy scope and type values are normalized by the manifest generator to th
 
 ## Schema contract (v7→v8 phase ended 2026-05-26)
 
-> **The v7→v8 compatibility phase ended 2026-05-26.** The schema's global `required` array now mandates `subject` + `operation` (v8 axes). The v7 fields (`type`, `category`) remain DEFINED as optional properties for back-compat with skills that still carry them, but are no longer required. v8-only authoring is the supported authoring path going forward. See `schemas/skill.schema.json:7-21` (global required) for the current contract.
+> **v8 is the canonical classification (v7→v8 phase ended 2026-05-26).** The schema's global `required` array mandates `subject` + `operation` + `scope`. **The v7 classification (`type`, `category`, `categories`, `primaryCategory`, `layerPrimary`, `routingRole`) is DEPRECATED** — the schema currently still accepts them as defined optional properties to avoid breaking the corpus while CONTENT-mode migration drains; schema-level removal is the planned next step. v8-only authoring is the only supported authoring path going forward. See `schemas/skill.schema.json:7-21` for the current global required.
 
 | Surface | State |
 |---|---|
