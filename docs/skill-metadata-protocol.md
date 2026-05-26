@@ -97,8 +97,8 @@ Each skill archetype expects a specific set of body H2 sections. These are the m
 
 | Archetype | Required H2 sections | Example for a real project |
 |---|---|---|
-| `capability` | `## Coverage`, `## Philosophy`, `## Verification`, `## Do NOT Use When` | [`markdown-post-frontmatter-validation`](../examples/projects/markdown-static-site/skills/markdown-post-frontmatter-validation/SKILL.md) — codebase-grounded with full `grounding` block |
-| `workflow` | `## Coverage`, `## Philosophy`, `## Workflow`, `## Verification`, `## Do NOT Use When` | [`migrate-posts-to-v2-frontmatter`](../examples/projects/markdown-static-site/skills/migrate-posts-to-v2-frontmatter/SKILL.md) — codebase-grounded; demonstrates the four-phase add-required-field workflow with dry-run gate |
+| `capability` | `## Coverage`, `## Philosophy of the skill`, `## Verification`, `## Do NOT Use When` | [`markdown-post-frontmatter-validation`](../examples/projects/markdown-static-site/skills/markdown-post-frontmatter-validation/SKILL.md) — codebase-grounded with full `grounding` block |
+| `workflow` | `## Coverage`, `## Philosophy of the skill`, `## Workflow`, `## Verification`, `## Do NOT Use When` | [`migrate-posts-to-v2-frontmatter`](../examples/projects/markdown-static-site/skills/migrate-posts-to-v2-frontmatter/SKILL.md) — codebase-grounded; demonstrates the four-phase add-required-field workflow with dry-run gate |
 | `router` | `## Coverage`, `## Routing Rules`, `## Do NOT Use When` | [`content-source-router`](../examples/projects/markdown-static-site/skills/content-source-router/SKILL.md) — dispatches between local markdown / MDX / CMS-synced sources by file extension or content-path prefix |
 | `overlay` | `## Coverage`, `## Overlay Rules`, `## Extends` (name of the base skill), `## Do NOT Use When` | [`lint-overlay`](https://github.com/jacob-balslev/skills/blob/main/skills/lint-overlay/SKILL.md) extends [`testing-strategy`](https://github.com/jacob-balslev/skills/blob/main/skills/testing-strategy/SKILL.md) — adds lint-specific gate placement on top of the base verification framework |
 

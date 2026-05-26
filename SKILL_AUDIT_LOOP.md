@@ -432,7 +432,7 @@ Run this section when the skill is repo-grounded or implementation-aware.
 ### 5. Content quality
 
 - [ ] the skill has a clear `Coverage` section
-- [ ] the skill has a clear `Philosophy` section
+- [ ] the skill has a clear `## Philosophy of the skill` section (renamed 2026-05-26 from `## Philosophy`)
 - [ ] the skill has a clear `Verification` section (recommended for `capability` and `workflow` archetypes per `docs/skill-metadata-protocol.md § Archetype Section Map`; not lint-enforced — body section structure is author judgment per the 2026-05-19 audit-doctrine cleanup)
 - [ ] the skill has at least one concrete decision table, checklist, or routing rule
 - [ ] the skill contains negative bounds (`Do NOT Use When` or equivalent)
@@ -519,7 +519,7 @@ A skill audit is complete when:
 > already classified v2.1 as DELETE.
 >
 > Content lineage: merged from the previous v2.1 (deep code verification) + Concept
-> Comprehension Layer. Adds Concept Card presence/authoring, `comprehension.json`
+> Comprehension Layer. Adds "Concept of the skill" presence/authoring, `comprehension.json`
 > presence/authoring, dual-run grader invocation, and 3 scorecard dimensions over the
 > v2.1 baseline. See `docs/plans/concept-comprehension-layer.md` for the 7-dimension
 > rubric design and `scripts/skill/graders/concept-grader-prompt.md` for the grader
@@ -584,11 +584,11 @@ A skill audit is complete when:
    - Boundaries/adjacencies -> are neighbor-skill references current?
    - Eval relevance -> do evals test what the skill actually claims?
 
-4b. **Concept Card check**:
-   - Check the `## Concept Card` section exists immediately after frontmatter (grep for `^## Concept Card` at line ≤ 100). If missing, proceed to 4c — the fix happens in Step 5.
+4b. **"Concept of the skill" check** (renamed 2026-05-26 from ""Concept of the skill""):
+   - Check the `## Concept of the skill` section exists immediately after frontmatter (grep for `^## Concept of the skill` at line ≤ 100). If missing, proceed to 4c — the fix happens in Step 5. Skills still carrying the legacy `## "Concept of the skill"` heading fail the check; CONTENT-mode migration via the audit loop.
    - If present, verify all 7 required fields are present as bold labels: `**What it is:**`, `**Mental model:**`, `**Why it exists:**`, `**What it is NOT:**`, `**Adjacent concepts:**`, `**One-line analogy:**`, `**Common misconception:**`.
    - Word count is informational only — there is NO min/max limit. Aim for roughly 150–250 words as a writing guideline, but do not trim or pad a clear card to hit a number. The 7-fields-present check is the gate, not length.
-   - Confirm via census — if the skill appears in either list below, treat the Concept Card as drift and author/fix it in Step 5:
+   - Confirm via census — if the skill appears in either list below, treat the "Concept of the skill" as drift and author/fix it in Step 5:
      ```bash
      node scripts/skill/skill-census.js --json | jq '.conceptCard.skillsMissingConceptCard[] | select(.name=="<skill-slug>")'
      node scripts/skill/skill-census.js --json | jq '.conceptCard.skillsWithPartialCard[] | select(.name=="<skill-slug>")'
@@ -602,7 +602,7 @@ A skill audit is complete when:
    - If missing or under-specified, treat as drift and author in Step 5.
 
 5. **Fix drift** in skill/evals. If you find a real repo bug, fix that too. Test failures and security flags are code bugs, not skill drift.
-   - If Step 4b flagged a missing or partial Concept Card: author it now. Reference `skills/shopify/SKILL.md` lines 92–106 for the exact format. Place it immediately after the frontmatter's closing `---`, before `# <Title>`, and before every other section including Coverage and Philosophy. Word budget: ~150–250 is a guideline, NOT a limit — never trim or pad a clear card to hit a count. Philosophy is about THIS repo's skill file; Concept Card is about the universal subject — never copy text between the two sections.
+   - If Step 4b flagged a missing or partial "Concept of the skill": author it now. Reference `skills/shopify/SKILL.md` lines 92–106 for the exact format. Place it immediately after the frontmatter's closing `---`, before `# <Title>`, and before every other section including Coverage and `## Philosophy of the skill`. Word budget: ~150–250 is a guideline, NOT a limit — never trim or pad a clear card to hit a count. **`## Philosophy of the skill` is about the philosophy BEHIND the skill** — the underlying methodological stance, principles, or opinionated worldview the skill embodies. `## Concept of the skill` is about the universal subject. Never copy text between the two sections. (Updated 2026-05-26 — renamed `## Concept Card` → `## Concept of the skill` and `## Philosophy` → `## Philosophy of the skill`; earlier framing "Philosophy is about THIS repo's skill file" was redundant with `## Concept of the skill`'s `**Why it exists:**` field.)
    - If Step 4c flagged a missing or insufficient `evals/comprehension.json`: author it now. Use `skills/ontology/evals/comprehension.json` as the shape reference. Minimum 5 evals covering at least 5 of the 7 dimensions. Every eval has: `id`, `dimension` (one of `definition|mental_model|purpose|boundary|taxonomy|analogy|application`), `prompt`, `substance: "concept"`, `calibration: "semantic"`, `truth_mode: "conceptual_correctness_plus_repo_application"`, `skill_type: "concept"`, `criticality: "high"` (or `"critical"` for application-dimension evals).
 
 6. **Research** externally:
@@ -635,9 +635,9 @@ A skill audit is complete when:
    - **Do NOT use the legacy `raw_score / 14` shape as a pass bar.** It is no longer a fixed denominator (the grader can return `null` for unaddressed dimensions), and absolute thresholds against it are uncalibrated. The script still reports it as "Legacy unweighted raw-score avg" for trend tracking only.
    - **If the pass bar fails:**
      - If criterion 1 fails (run incomplete): the grader is broken or the network flaked. Re-run before changing the skill.
-     - If criterion 2 fails on `primary_delta_avg < 0`: the skill is actively hurting the model. Investigate the Concept Card for contradictions or wrong framing, fix, re-run.
-     - If criterion 2 fails on `avg_primary_with_skill < 1.0` AND baseline is low: the Concept Card is under-specified. Return to Step 5, rewrite, re-run.
-     - If criterion 3 fails: the skill teaches the primary dimension fine but neighbors are shallow. Add cross-dimension content to the Concept Card (mental model, boundaries, analogies).
+     - If criterion 2 fails on `primary_delta_avg < 0`: the skill is actively hurting the model. Investigate the "Concept of the skill" for contradictions or wrong framing, fix, re-run.
+     - If criterion 2 fails on `avg_primary_with_skill < 1.0` AND baseline is low: the "Concept of the skill" is under-specified. Return to Step 5, rewrite, re-run.
+     - If criterion 3 fails: the skill teaches the primary dimension fine but neighbors are shallow. Add cross-dimension content to the "Concept of the skill" (mental model, boundaries, analogies).
      - Cap retries at 2. After 2 failed retries, append to the follow-up queue `agent-orchestration/logs/comprehension-followup-queue.jsonl`:
      ```json
      {"skill": "<skill-slug>", "reason": "<which pass bar criterion failed and why>", "retries": 2, "primary_delta_avg": <number>, "avg_with_skill_score_ratio": <number>, "timestamp": "<ISO-8601>"}
@@ -677,12 +677,12 @@ A skill audit is complete when:
 
    | Dimension | Result |
    |---|---|
-   | Concept Card present | yes / no / partial (list missing fields) |
-   | Concept Card word count | `<N>` (informational only — no limit) |
+   | "Concept of the skill" present | yes / no / partial (list missing fields) |
+   | "Concept of the skill" word count | `<N>` (informational only — no limit) |
    | Comprehension evals | `<N>` covering `<N>/7` dimensions (pass/fail) |
    | Comprehension raw score | `<N>/14` (baseline) → `<N>/14` (with skill) |
    | Comprehension delta avg | `<±N.N>` — verdict: `skill_teaches` \| `skill_helps` \| `redundant` \| `fails_to_teach` \| `harmful` |
-   | Concept Card verdict | PASS / DRIFT / AUTHORED / REWRITTEN |
+   | "Concept of the skill" verdict | PASS / DRIFT / AUTHORED / REWRITTEN |
    | Upstream displacement | `none` \| `superseded-by <vendor/release + date + source url>` — recommend: deprecate \| fold \| reframe-to-delta |
 
 8. **Verify** (fixed checklist, every skill):
@@ -722,7 +722,7 @@ A skill audit is complete when:
 
     Path-limited staging (no `git add -A`; use `git commit --only -- <paths>`). Paths to include when they changed:
     ```
-    skills/<skill-slug>/SKILL.md                              (if Concept Card added or edited)
+    skills/<skill-slug>/SKILL.md                              (if "Concept of the skill" added or edited)
     skills/<skill-slug>/evals/comprehension.json              (if authored or edited)
     skills/<skill-slug>/evals/evals.json                      (if audited)
     skills/<skill-slug>/evals/eval-set.json                   (if audited)
@@ -738,7 +738,7 @@ A skill audit is complete when:
     docs(<skill-slug>): ground skill in repo truth + concept layer
 
     - Deep-code audit: <one line of what was fixed>
-    - Concept Card: AUTHORED | REWRITTEN | VERIFIED
+    - "Concept of the skill": AUTHORED | REWRITTEN | VERIFIED
     - Comprehension: raw <N>/14 → <N>/14 (delta +<N.N>) verdict=<category>
     ```
 12. **Advance checkpoint**:
@@ -749,7 +749,7 @@ A skill audit is complete when:
     Completion is already recorded by `release` (Step 10) in the run ledger — the worklist derives
     status from it on the next regenerate. The old `skill-audit-tracker.js done` (A/B/C batch) step is
     retired; do not call it.
-13. **/wrap** with: skill name, what fixed, runtime changed (y/n), tests pass/fail, security flags found, Concept Card status (PASS/DRIFT/AUTHORED/REWRITTEN), comprehension `delta_avg` and `verdict_category`, commit hash, next skill.
+13. **/wrap** with: skill name, what fixed, runtime changed (y/n), tests pass/fail, security flags found, "Concept of the skill" status (PASS/DRIFT/AUTHORED/REWRITTEN), comprehension `delta_avg` and `verdict_category`, commit hash, next skill.
 
 ### Then continue to next skill. Stop after 4 skills or when a real blocker appears.
 
@@ -772,7 +772,7 @@ node scripts/task/task-helpers.js build-continuation-prompt \
 - Don't touch skills owned by other sessions.
 - Always re-run `build-skill-audit-worklist.js --write` at session start (it re-ranks and may change the next target).
 - If blocked, report: skill name, exact blocker, why it prevents continuation.
-- Never author a Concept Card that copies text verbatim from Philosophy — Philosophy is about THIS repo's skill file; Concept Card is about the universal subject. If the two sections are the same, the skill is teaching the wrong thing.
+- Never author a `## Concept of the skill` that copies text verbatim from `## Philosophy of the skill` — `## Philosophy of the skill` is about the philosophy BEHIND the skill (the underlying methodological stance, principles, opinionated worldview the skill embodies); `## Concept of the skill` is about the universal subject. If the two sections are the same, the skill is teaching the wrong thing.
 - Do not pass legacy per-run model-selection flags. `evaluate-skill.js` rejects them.
 
 ### What NOT to include (lessons learned)
