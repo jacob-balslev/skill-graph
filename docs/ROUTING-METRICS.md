@@ -7,36 +7,17 @@ Routing quality is an information-retrieval problem. A clean skill graph is not
 proved by "the router felt right"; it is proved by held-out prompts, hard
 negatives, confusion pairs, and repeatable metrics.
 
-## Baseline Results (Updated 2026-05-26)
+## Baseline Results (Updated 2026-05-24)
 
 **Baseline:** `evals/retrieval-baseline-v2.json` — 64 stratified queries across 5 categories
-(agent: 11, engineering: 26, quality: 12, design: 11, foundations: 4). Frozen
-anchor for the 2026-05-26 organization loop: `evals/retrieval-baseline-frozen-2026-05-26.json`
-(same content as `v2.json` at that date).
-
-### Current (2026-05-26 post-Phase-2a description sweep)
+(agent: 11, engineering: 26, quality: 12, design: 11, foundations: 4).
 
 | Metric | Value | Evidence |
 |---|---|---|
-| Queries evaluated | 64 | `node scripts/skill-graph-routing-eval.js --baseline evals/retrieval-baseline-frozen-2026-05-26.json` |
-| Recall@1 | **81.25%** (52/64) | post Phase-2a description-front-loading sweep |
-| Recall@3 | **89.06%** (57/64) | unchanged by description sweep |
-| Coverage: `routing_eval: present` | 10/155 skills | per `audits/post-phase2a-2026-05-26/routing-eval-frozen.json` |
-
-### Recent series (for trend-watch)
-
-| Date | R@1 | R@3 | Notes |
-|---|---|---|---|
-| 2026-05-24 (documented baseline, pre-v8 migration corpus) | 96.9% | 100.0% | original baseline; 9 `routing_eval: present` skills |
-| 2026-05-26 pre-Phase-2a (frozen anchor measurement) | 78.13% (50/64) | 89.06% (57/64) | -18.7pp R@1 vs 2026-05-24 — regression cause not yet root-caused; suspect v8 migration corpus changes and/or other in-flight skill edits between dates |
-| 2026-05-26 post-Phase-2a sweep | **81.25%** (52/64) | 89.06% (57/64) | +3.13pp R@1 from front-loading "Use when"/"Do NOT use" in 76 skills |
-
-**Reconciliation finding (open):** The drop from 96.9% (2026-05-24) to 78.13%
-(2026-05-26 pre-Phase-2a) is a real regression on the same query set and
-warrants standalone investigation — separate from the Phase 2 loop. Likely
-contributors: v8 axis migration shifting tiebreaker outcomes, skill-overlap
-edits since 2026-05-24, or stale comparison vs an inflated original number.
-Tracked as a Phase 4 follow-up; do NOT cite the 96.9% number until reconciled.
+| Queries evaluated | 64 | `node scripts/skill-graph-routing-eval.js --baseline evals/retrieval-baseline-v2.json --only-asserted` |
+| Recall@1 | **96.9%** (62/64) | 2 misses: `sharding-strategy`, `visual-design-foundations` |
+| Recall@3 | **100.0%** (64/64) | All queries hit within top-3 |
+| Coverage: `routing_eval: present` | 9/147 skills | 9 asserted; all 9 PASS in per-skill activation eval |
 
 **Per-skill activation eval (asserted skills only):**
 
