@@ -1,5 +1,7 @@
 # Skill Audit Loop
 
+> **Work-mode rule (read FIRST).** Editing this document, the audit scripts, the audit slash-commands, the audit prompts, or the schemas is **SYSTEM work**. Running the audit loop against individual `SKILL.md` files (via `/audit:audit`, `/audit:improve`, `/audit:evaluate`, `/audit:evolve`) is **CONTENT work**. Do not mix them in the same task or commit. Full doctrine: [`AGENTS.md` § Work Modes — SYSTEM vs CONTENT](AGENTS.md#work-modes--system-vs-content).
+
 > **Document structure (consolidated 2026-05-25).** This file is the canonical home for the entire audit-loop surface in three parts:
 > - **Part 1 — Loop Doctrine & Operations** (below): doctrine, four operations, two gates, Health Block, inner pipelines, cadence.
 > - **Part 2 — Per-Skill Audit Checklist** (formerly `SKILL_AUDIT_LOOP.md` § Part 2): the canonical checklist used during `audit`, with severity model and artifact structure.

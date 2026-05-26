@@ -68,6 +68,74 @@ The three layers above describe **roles**; this table is the operational counter
 
 **Two integrity surfaces.** The audit operation runs both `lint` and `drift` inline (the rollup feeds `structural_verdict` and `truth_verdict`). The standalone `lint` / `drift` commands exist for fast iteration when authoring a single skill or when re-running just one phase — they do NOT write back to the Health Block.
 
+## Work Modes — SYSTEM vs CONTENT
+
+> **Read this BEFORE touching anything in this project.** Mixing SYSTEM and CONTENT work in one task or commit is the recurring failure mode that has cost the most time in this project's history. The user's rule, stated literally: *"We should never work on skills before we have the entire planned system as we want it. Then we can follow the contract of the version-controlled schema to upgrade the skills accordingly."*
+
+Skill Graph work splits cleanly into two modes. They are NOT interchangeable, and they are NOT to be mixed in the same task or the same commit.
+
+### The two modes
+
+**SYSTEM mode** changes how the library *works*. Edits to the protocol contract, schemas, audit loop infrastructure, scripts, prompt templates, audit slash-commands, or protocol/audit documentation. SYSTEM commits define and improve the machinery itself.
+
+**CONTENT mode** changes individual skills *through* the contract. Edits to specific `SKILL.md` files, their `comprehension.json` / `application.json` eval artifacts, their `references/`, and their Health Block stamps. CONTENT commits are the *output* of running the audit loop against the CURRENT contract — never an ad-hoc batch edit.
+
+### File allowlist
+
+| Mode | Allowed paths | Forbidden in this mode |
+|------|---------------|------------------------|
+| **SYSTEM** | `skill-graph/schemas/**`, `skill-graph/docs/**`, `skill-graph/audits/prompts/**`, `skill-graph/audits/_state/**`, `skill-graph/scripts/**`, `skill-graph/bin/**`, `skill-graph/SKILL_*.md`, `~/Development/scripts/skill/**`, `~/Development/.claude/commands/audit/**`, `~/Development/SKILL_METADATA_PROTOCOL.md`, `~/Development/SKILL_AUDIT_LOOP.md` | Any edit to `~/Development/skills/skills/**/SKILL.md` or per-skill artifacts (`comprehension.json`, `evals/`, `references/`, `skill-graph/audits/<skill-name>/**`). |
+| **CONTENT** | `~/Development/skills/skills/**/SKILL.md` and per-skill artifacts (`comprehension.json`, `evals/**`, `references/**`, `skill-graph/audits/<skill-name>/**`) | Any edit to schemas, audit prompts, audit scripts, audit slash-commands, or protocol docs. |
+
+CONTENT mode is entered ONLY via the audit loop slash-commands: `/audit:audit`, `/audit:improve`, `/audit:evaluate`, `/audit:evolve`. Manual ad-hoc SKILL.md edits outside that loop are banned by default — even when "fixing one quick thing" looks tempting.
+
+### Mode declaration is mandatory
+
+When asked to work on anything described as "Skill Graph", "Skill Metadata Protocol", "Skill Audit Loop", "the audit loop", or "skills", the agent's FIRST action is to ask the user via `AskUserQuestion` which mode applies — SYSTEM or CONTENT.
+
+**Narrow exceptions where asking is NOT required** (the mode is already named):
+
+- The user explicitly invokes one of `/audit:audit`, `/audit:improve`, `/audit:evaluate`, `/audit:evolve`. → CONTENT mode is implicit.
+- The user explicitly says "edit the schema", "fix the audit prompt", "update the protocol doc", "change the version-earned gate", "work on the audit script". → SYSTEM mode is implicit.
+- The user explicitly says "upgrade skill X to v8", "audit skill Y", "fix the broken eval on skill Z". → CONTENT mode is implicit (and must run via `/audit:*`, not ad-hoc edits).
+
+If a request can be read as ambiguous between the two modes, it IS ambiguous — ask. When in doubt, ask.
+
+### Cross-mode discoveries
+
+A SYSTEM task that uncovers a skill-content issue (a SKILL.md that's wrong, drifted, mis-classified) **files a Linear task** for the next audit-loop run on that skill. It does NOT fix the SKILL.md inline. The audit loop is how skills get fixed.
+
+A CONTENT task (running `/audit:*` against a skill) that uncovers a SYSTEM gap (a schema field missing, an audit prompt that omits an axis, a script that needs a new flag) **STOPS the audit**, reports to the user, and files a SYSTEM task. It does NOT patch the schema inline to "make the audit work today." Patching system inside a content commit is the precise failure mode this rule exists to prevent.
+
+### Sequencing principle (the strongest form)
+
+Until the planned system reaches the state the user wants, CONTENT work is paused except via the audit loop running against the *current* contract — and even then, ad-hoc skill edits outside `/audit:*` are forbidden. Schema bumps and protocol additions cascade to skills *through the contract* — the audit loop migrates skills per the version-earned gate (`~/Development/.claude/rules/version-schema-contract.md`), one skill at a time, with Health Block evidence. They do NOT cascade by way of a system commit that touches the schema and N SKILL.md files in the same diff.
+
+### Anti-patterns
+
+| Anti-pattern | Why it's a violation | What to do instead |
+|---|---|---|
+| Working on an audit prompt template and "just editing one SKILL.md to test the prompt" | SYSTEM task drifted into CONTENT. The test should run the prompt against an existing skill via `/audit:audit --pilot <skill>`, not by hand-editing the skill. | Test SYSTEM changes via the audit-loop entry points; the skill stays untouched. |
+| Bumping `schema_version` in `skill.schema.json` AND manually editing N SKILL.md files in the same commit | The version-earned gate exists precisely to refuse this. Cascades go through `/audit:evolve`, not a schema commit. | One SYSTEM commit bumps the schema. Then `/audit:evolve --top N` migrates skills, one commit per skill with Health Block evidence. |
+| Doing a protocol-doc update and "fixing one skill that already shows the new pattern" inline | The doc update is SYSTEM. The skill edit is CONTENT. They belong in two different tasks. | Commit the SYSTEM doc update alone. File a Linear task to migrate the example skill through `/audit:*`. |
+| Inside `/audit:audit`, noticing a schema gap and patching `skill.schema.json` inline | CONTENT task patching SYSTEM. The schema change is now committed alongside the audit's content writes — and probably without the SYSTEM-side reasoning, tests, or doc update it needs. | STOP the audit. File a SYSTEM Linear task with the gap. Resume the audit once the schema lands and is released. |
+| Asking the user "should I also tweak this script while I'm in here?" during a CONTENT session | Permission-asking is also a mode boundary signal. If the answer is yes, the task is two tasks. | Finish the CONTENT task as scoped. File the SYSTEM follow-up. |
+
+### Pre-commit warning
+
+`scripts/skill/check-work-mode-separation.js` runs as part of the workspace pre-commit hook (when `scripts/githooks/` is installed via `bash scripts/githooks/install.sh`). It classifies every staged file as SYSTEM, CONTENT, or NEUTRAL and prints a warning when a commit stages BOTH SYSTEM and CONTENT paths. The warning lists both sets, names this rule, and recommends splitting the commit. **Exit code is always 0** — this is a soft signal, not a block. The block is the version-earned gate (`check-version-earned.js`), which already enforces the harder rule (unearned schema bumps fail closed).
+
+The `/audit:*` commands set `AUDIT_LOOP=1` before staging their writes; the check honors that envvar and suppresses the warning, because the audit loop is the *one* legitimate path where coordinated SYSTEM-adjacent + CONTENT writes can co-occur (e.g., a per-skill audit artifact under `audits/<skill>/` IS content, even though its parent directory lives in the skill-graph tree).
+
+### Distribution and cross-references
+
+- **This section is the canonical doctrine.** It is referenced by:
+  - `~/Development/AGENTS.md` § Non-Negotiable Standards #16 (workspace-level summary for all agents; Codex, Claude, Copilot all read this)
+  - `~/Development/CLAUDE.md` § Context Files (Claude-specific entrypoint)
+  - `SKILL_AUDIT_LOOP.md` top-of-file (caught when an agent lands there directly)
+  - `SKILL_METADATA_PROTOCOL.md` top-of-file (same)
+- **OpenCode lanes** (`~/Development/.opencode/instructions/*`) do NOT auto-read AGENTS.md per their local convention. If an OpenCode lane is dispatched to Skill Graph work, the dispatcher must point it at this section explicitly.
+
 ## Start Here
 
 Read these files before changing behavior or docs:

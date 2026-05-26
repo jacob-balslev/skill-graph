@@ -1,5 +1,7 @@
 # Skill Metadata Protocol
 
+> **Work-mode rule (read FIRST).** Editing this document, the schemas it normalizes against, the audit prompts, or the audit/lint/drift scripts is **SYSTEM work**. Editing individual `SKILL.md` files to conform to this contract is **CONTENT work** that runs ONLY via `/audit:audit`, `/audit:improve`, `/audit:evaluate`, `/audit:evolve`. Do not mix them in the same task or commit. Full doctrine: [`AGENTS.md` § Work Modes — SYSTEM vs CONTENT](AGENTS.md#work-modes--system-vs-content).
+
 > **Spec version:** 1.5.0 (target `schema_version: 8`, Skill Graph 0.5.10)
 > **Currently enforced by `schemas/skill.schema.json`:** `schema_version: 7` (6-value `category` enum). The v8 5-axis classification is SPEC'D below but the schema's `category.const` values still constrain to v7 today — see [§ Migration state (v7→v8)](#migration-state-v7v8) before authoring against v8 fields.
 > **Single source of truth for "what is enforced today":** [`SKILL_GRAPH.md § Current State`](SKILL_GRAPH.md#current-state--single-source-of-truth) — link there from any doc that needs the live answer; do not restate.
