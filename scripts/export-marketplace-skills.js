@@ -39,16 +39,29 @@ const DEFAULT_SOURCE_DIR = SKILL_ROOTS[0].absPath;
 const DEFAULT_OUTPUT_ROOT = path.join(REPO_ROOT, 'marketplace');
 const MARKETPLACE_DESCRIPTION_LIMIT = 1024;
 const SKILL_GRAPH_SOURCE_REPO = 'https://github.com/jacob-balslev/skill-graph';
-const SKILL_GRAPH_PROTOCOL = 'Skill Metadata Protocol v7';
+// SKILL_GRAPH_PROTOCOL removed 2026-05-26 per F8 in
+// docs/reports/skill-system-understanding-teaching-docs-2026-05-26.md.
+// The previous `'Skill Metadata Protocol v7'` constant was stamped onto every
+// exported skill regardless of source content, producing a misleading
+// "content verified at v7" signal (documented as the conformance caveat in
+// SKILL_GRAPH.md § Source vs Marketplace). Per `.claude/rules/version-schema-contract.md`
+// ("version labels are EARNED, not bumped"), the honest fix is to stop emitting
+// the label; per-skill `schema_version` on the source SKILL.md is the real signal.
+// The `skill_graph_protocol` key remains in scripts/lib/parse-frontmatter.js
+// PROVENANCE_KEYS so historical marketplace exports still get their stale label
+// stripped on read while the corpus re-exports drain.
 const SKILL_GRAPH_PROJECT = 'Skill Graph';
 const RELEASE_TARGET_REPO = 'jacob-balslev/skills';
 // Public GitHub URL for the release target repo (skills library). Used to rewrite
 // relative cross-repo links that resolve into the sibling skills library.
 const SKILLS_LIBRARY_REPO = `https://github.com/${RELEASE_TARGET_REPO}`;
 
+// PROVENANCE_KEYS — keys the exporter emits as marketplace-export traceback.
+// `skill_graph_protocol` was removed 2026-05-26 per F8 (see SKILL_GRAPH_PROTOCOL
+// comment above). The remaining three keys carry useful traceback: source repo,
+// project name, canonical SKILL.md path.
 const PROVENANCE_KEYS = [
   'skill_graph_source_repo',
-  'skill_graph_protocol',
   'skill_graph_project',
   'skill_graph_canonical_skill',
 ];
@@ -382,9 +395,10 @@ function collectCanonicalSkills(sourceDir = DEFAULT_SOURCE_DIR) {
 }
 
 function provenanceForSkill(sourceRelPath) {
+  // `skill_graph_protocol` removed 2026-05-26 per F8 — see SKILL_GRAPH_PROTOCOL
+  // comment above. The honest schema-version signal is per-skill `schema_version`.
   return {
     skill_graph_source_repo: SKILL_GRAPH_SOURCE_REPO,
-    skill_graph_protocol: SKILL_GRAPH_PROTOCOL,
     skill_graph_project: SKILL_GRAPH_PROJECT,
     skill_graph_canonical_skill: sourceRelPath,
   };
@@ -927,7 +941,6 @@ module.exports = {
   PRIVACY_PATTERNS,
   PROVENANCE_KEYS,
   RELEASE_TARGET_REPO,
-  SKILL_GRAPH_PROTOCOL,
   SKILL_GRAPH_PROJECT,
   SKILL_GRAPH_SOURCE_REPO,
   applyExportProjection,

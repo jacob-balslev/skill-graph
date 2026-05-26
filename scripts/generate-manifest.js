@@ -438,6 +438,12 @@ function buildSkillEntry(fm, filePath, skillId, project) {
   if (fm.runtime_telemetry !== undefined && fm.runtime_telemetry !== null && typeof fm.runtime_telemetry === 'object') {
     health.runtime_telemetry = fm.runtime_telemetry;
   }
+  // Health Block fields lifted from frontmatter into the generated manifest's
+  // health object. `audit_verdict` is the DEPRECATED v6 single-aggregate field
+  // (replaced by the four discrete verdicts above in v7 per ADR-0011) — kept
+  // here for back-compat reads of skills that haven't been run through the
+  // v6→v7 codemod yet. Schema-level removal is tracked in SH-6557; this entry
+  // retires when that ticket lands. See lib/audit/skill-status.js:38-46.
   for (const field of [
     'last_audited',
     'last_changed',

@@ -2,8 +2,8 @@
 
 > **Work-mode rule (read FIRST).** Editing this document, the schemas it normalizes against, the audit prompts, or the audit/lint/drift scripts is **SYSTEM work**. Editing individual `SKILL.md` files to conform to this contract is **CONTENT work** that runs ONLY via `/audit:audit`, `/audit:improve`, `/audit:evaluate`, `/audit:evolve`. Do not mix them in the same task or commit. Full doctrine: [`AGENTS.md` § Work Modes — SYSTEM vs CONTENT](AGENTS.md#work-modes--system-vs-content).
 
-> **Spec version:** 1.5.0 (target `schema_version: 8`, Skill Graph 0.5.10)
-> **Currently enforced by `schemas/skill.schema.json`:** `schema_version: 7` (6-value `category` enum). The v8 5-axis classification is SPEC'D below but the schema's `category.const` values still constrain to v7 today — see [§ Migration state (v7→v8)](#migration-state-v7v8) before authoring against v8 fields.
+> **Spec version:** 1.5.0 (`schema_version: 8`, Skill Graph 0.5.10)
+> **Currently enforced by `schemas/skill.schema.json`:** v8 5-axis classification. The schema's global `required` array mandates `subject` + `operation` + `scope`. The v7 classification fields (`type`, `category`, `categories`, `primaryCategory`, `layerPrimary`, `routingRole`) are DEPRECATED but still defined as optional properties for back-compat reads — schema-level removal is the planned next step (SH-6557). The v7→v8 phase ended 2026-05-26; do not author v7 fields on new skills. See [§ Schema contract](#schema-contract-v7v8-phase-ended-2026-05-26) for the authoritative explanation.
 > **Single source of truth for "what is enforced today":** [`SKILL_GRAPH.md § Current State`](SKILL_GRAPH.md#current-state--single-source-of-truth) — link there from any doc that needs the live answer; do not restate.
 > **Machine-readable schema:** `schemas/skill.schema.json`
 > **Detailed field reference:** `docs/field-reference.md`

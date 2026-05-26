@@ -97,22 +97,23 @@ Skill Graph work splits cleanly into two modes. They are NOT interchangeable, an
 
 | Mode | Allowed paths | Forbidden in this mode |
 |------|---------------|------------------------|
-| **SYSTEM** | `skill-graph/schemas/**`, `skill-graph/docs/**`, `skill-graph/audits/prompts/**`, `skill-graph/audits/_state/**`, `skill-graph/scripts/**`, `skill-graph/bin/**`, `skill-graph/SKILL_*.md`, `~/Development/scripts/skill/**`, `~/Development/.claude/commands/audit/**`, `~/Development/SKILL_METADATA_PROTOCOL.md`, `~/Development/SKILL_AUDIT_LOOP.md` | Any edit to `~/Development/skills/skills/**/SKILL.md` or per-skill artifacts (`comprehension.json`, `evals/`, `references/`, `skill-graph/audits/<skill-name>/**`). |
+| **SYSTEM** | `skill-graph/schemas/**`, `skill-graph/docs/**`, `skill-graph/audits/prompts/**`, `skill-graph/audits/_state/**`, `skill-graph/scripts/**`, `skill-graph/bin/**`, `skill-graph/SKILL_*.md`, `~/Development/scripts/skill/**`, `~/Development/.claude/commands/audit/**` | Any edit to `~/Development/skills/skills/**/SKILL.md` or per-skill artifacts (`comprehension.json`, `evals/`, `references/`, `skill-graph/audits/<skill-name>/**`). |
 | **CONTENT** | `~/Development/skills/skills/**/SKILL.md` and per-skill artifacts (`comprehension.json`, `evals/**`, `references/**`, `skill-graph/audits/<skill-name>/**`) | Any edit to schemas, audit prompts, audit scripts, audit slash-commands, or protocol docs. |
 
 CONTENT mode is entered ONLY via the audit loop slash-commands: `/audit:audit`, `/audit:improve`, `/audit:evaluate`, `/audit:evolve`. Manual ad-hoc SKILL.md edits outside that loop are banned by default — even when "fixing one quick thing" looks tempting.
 
-### Mode declaration is mandatory
+### Mode declaration is mandatory (with one carve-out)
 
 When asked to work on anything described as "Skill Graph", "Skill Metadata Protocol", "Skill Audit Loop", "the audit loop", or "skills", the agent's FIRST action is to ask the user via `AskUserQuestion` which mode applies — SYSTEM or CONTENT.
 
-**Narrow exceptions where asking is NOT required** (the mode is already named):
+**Narrow exceptions where asking is NOT required** (the mode is already named, or no mode applies):
 
 - The user explicitly invokes one of `/audit:audit`, `/audit:improve`, `/audit:evaluate`, `/audit:evolve`. → CONTENT mode is implicit.
 - The user explicitly says "edit the schema", "fix the audit prompt", "update the protocol doc", "change the version-earned gate", "work on the audit script". → SYSTEM mode is implicit.
 - The user explicitly says "upgrade skill X to v8", "audit skill Y", "fix the broken eval on skill Z". → CONTENT mode is implicit (and must run via `/audit:*`, not ad-hoc edits).
+- **Analysis-only carve-out.** Read-only tasks that produce reports, audits, research notes, design reviews, or doc surveys without editing any schema, script, protocol doc, SKILL.md, or per-skill artifact do NOT require mode declaration. The two-mode rule exists to prevent SYSTEM/CONTENT *mixing*; analysis tasks edit neither, so there is nothing to mix. Asking in this case is the false-dichotomy form the `no-permission-asking-for-trivial-actions` rule warns against. The agent may proceed directly; the only output is the report.
 
-If a request can be read as ambiguous between the two modes, it IS ambiguous — ask. When in doubt, ask.
+If a request can be read as ambiguous between the two modes AND involves edits to either tree, it IS ambiguous — ask. When in doubt, ask.
 
 ### Cross-mode discoveries
 

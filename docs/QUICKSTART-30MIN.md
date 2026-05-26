@@ -63,9 +63,9 @@ The template lints clean as-is, so you can incrementally edit and re-lint to cat
 
 ---
 
-## M8–M11: Fill in the required fields (v7 + v8 dual-axis)
+## M8–M11: Fill in the required fields (v8 5-axis classification)
 
-The required v7 fields are: `schema_version`, `name`, `description`, `version`, `type`, `category`, `scope`, `owner`, `freshness`, `drift_check`, `eval_artifacts`, `eval_state`, `routing_eval`. The v8 5-axis classification adds two more (`subject`, `operation`) on top, with `scope` accepting renamed values. **During the v7→v8 sunset window the schema requires authors to populate BOTH axis sets** — see [`SKILL_METADATA_PROTOCOL.md` § Migration state](../SKILL_METADATA_PROTOCOL.md#migration-state-v7v8). The template has all of them — you're replacing values, not adding fields.
+The required v8 fields are: `schema_version`, `name`, `description`, `version`, `subject` (9-enum), `operation` (4-enum, Bloom-grounded), `scope` (`portable`/`workspace`/`project`), `owner`, `freshness`, `drift_check`, `eval_artifacts`, `eval_state`, `routing_eval`. **The v7 classification fields (`type`, `category`, `categories`, `primaryCategory`, `layerPrimary`, `routingRole`) are DEPRECATED** — schema accepts them as optional back-compat properties but new skills do not author them (the v7→v8 phase ended 2026-05-26; schema-level removal tracked in SH-6557). See [`SKILL_METADATA_PROTOCOL.md` § Schema contract](../SKILL_METADATA_PROTOCOL.md#schema-contract-v7v8-phase-ended-2026-05-26). The template has all current fields — you're replacing values, not adding fields.
 
 For `markdown-post-frontmatter-review`, the values look like:
 

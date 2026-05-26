@@ -88,6 +88,11 @@ const SKILL_GRAPH_EXTENSION_FIELDS = new Set([
   'truth_verdict',
   'comprehension_verdict',
   'application_verdict',
+  // `audit_verdict` is the DEPRECATED v6 single-aggregate field, replaced by the
+  // four discrete verdicts above in v7 (ADR-0011). Kept in this list for
+  // back-compat reads of skills that haven't been run through the v6→v7 codemod
+  // yet. Schema-level removal is tracked in SH-6557; this entry retires when that
+  // ticket lands. See lib/audit/skill-status.js:38-46 for the canonical comment.
   'audit_verdict',
   'eval_score',
   'eval_failed_ids',

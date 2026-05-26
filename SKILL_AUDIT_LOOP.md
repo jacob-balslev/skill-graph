@@ -2,12 +2,10 @@
 
 > **Work-mode rule (read FIRST).** Editing this document, the audit scripts, the audit slash-commands, the audit prompts, or the schemas is **SYSTEM work**. Running the audit loop against individual `SKILL.md` files (via `/audit:audit`, `/audit:improve`, `/audit:evaluate`, `/audit:evolve`) is **CONTENT work**. Do not mix them in the same task or commit. Full doctrine: [`AGENTS.md` § Work Modes — SYSTEM vs CONTENT](AGENTS.md#work-modes--system-vs-content).
 
-> **Document structure (consolidated 2026-05-25).** This file is the canonical home for the entire audit-loop surface in three parts:
-> - **Part 1 — Loop Doctrine & Operations** (below): doctrine, four operations, two gates, Health Block, inner pipelines, cadence.
-> - **Part 2 — Per-Skill Audit Checklist** (formerly `SKILL_AUDIT_LOOP.md` § Part 2): the canonical checklist used during `audit`, with severity model and artifact structure.
-> - **Part 3 — Per-Skill Audit Runbook** (formerly `SKILL_AUDIT_LOOP.md` § Part 3): the binding "what every audit run must do" execution contract, with 13 numbered steps from setup through `/wrap`.
->
-> The two previously-separate files were merged into this one to remove the "is it the Checklist or the Worklist or the Contract?" confusion. A single skill auditor opens ONE file and reads top-to-bottom — doctrine → checklist → runbook. Existing cross-references to the old paths now deep-link to the relevant Part anchors.
+> **Document structure.** Three parts, read top-to-bottom:
+> - **Part 1 — Loop Doctrine & Operations**: doctrine, four operations, two gates, Health Block, inner pipelines, cadence.
+> - **Part 2 — Per-Skill Audit Checklist**: the canonical checklist used during `audit`, with severity model and artifact structure.
+> - **Part 3 — Per-Skill Audit Runbook**: the binding "what every audit run must do" execution contract, with 13 numbered steps from setup through `/wrap`.
 
 ---
 
@@ -305,8 +303,6 @@ The loop does not require a separate issue tracker, dashboard, control plane, or
 
 # Part 2 — Per-Skill Audit Checklist
 
-> Absorbed into this file on 2026-05-25 from the standalone SKILL_AUDIT_LOOP.md § Part 2 — Per-Skill Audit Checklist. The previously-separate file is deleted; this section is the canonical home.
-
 ## Overview
 
 This is the canonical checklist for auditing a single skill in Skill Graph.
@@ -541,8 +537,6 @@ A skill audit is complete when:
 ---
 
 # Part 3 — Per-Skill Audit Runbook
-
-> Absorbed into this file on 2026-05-25 from the standalone SKILL_AUDIT_LOOP.md § Part 3. The previously-separate file is deleted; this section is the canonical home.
 
 ## Overview
 

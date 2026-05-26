@@ -18,7 +18,6 @@ const {
   GUARD_OPERATIONAL_THRESHOLD,
   GUARD_SAMPLE_SIZE,
   MARKETPLACE_DESCRIPTION_LIMIT,
-  SKILL_GRAPH_PROTOCOL,
   applyExportProjection,
   assertSourceRootIsPortable,
   buildMarketplaceSkillText,
@@ -97,10 +96,15 @@ assert(
   exportedA11yFm.metadata.skill_graph_canonical_skill === _expectedCanonicalSkill,
   `marketplace export should preserve canonical source path (expected: ${_expectedCanonicalSkill})`
 );
+// `skill_graph_protocol` removed 2026-05-26 per F8 — the field carried a
+// misleading "content verified at vN" implication on every export regardless
+// of source content. New exports must NOT emit this key; per-skill
+// `schema_version` is the honest signal. The normalizer's PROVENANCE_KEYS
+// in scripts/lib/parse-frontmatter.js still strips this key on read so
+// historical marketplace exports drain cleanly.
 assert(
-  exportedA11yFm.metadata.skill_graph_protocol === SKILL_GRAPH_PROTOCOL &&
-    SKILL_GRAPH_PROTOCOL === 'Skill Metadata Protocol v7',
-  'marketplace export should preserve current Skill Metadata Protocol provenance'
+  !('skill_graph_protocol' in (exportedA11yFm.metadata || {})),
+  'marketplace export must NOT emit `skill_graph_protocol` (removed 2026-05-26 per F8)'
 );
 assert(
   exportedA11y.includes('https://github.com/jacob-balslev/skill-graph/blob/main/examples/evals/a11y.json'),
