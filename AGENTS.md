@@ -257,6 +257,18 @@ Before changing agent behavior instructions, quality rules, marketplace position
 
 Claims of quality require verification. If a change says links work, routing works, exports validate, descriptions fit a limit, or all findings are preserved, run the relevant command and report the result. If verification was not run, say so.
 
+## No Invented Terminology — State Concepts in Plain Words
+
+When referring to a concept, rule, convention, pattern, or sequence in conversation or in code, state what it IS in plain words. Do NOT invent a label (e.g., "the two-convention rule", "the rollout sequence", "the strippable forms", "the convention") and then use that label as if the user already knows what it means. Every label you invent forces the user to remember an unstated mapping from your shorthand back to the actual concept — they cannot verify what you mean without scrolling back through the conversation.
+
+The corrective behavior: spell out the meaning in full every time you reference it, even if it adds 1-2 lines.
+
+- You MAY use names the user has authored: terms in this file, the workspace `AGENTS.md`, ADRs, schemas, canonical docs, memory files, or the user's own prose in the current session.
+- You may NOT use names you have authored yourself in this session as shorthand. A section title or doc-edit phrase YOU wrote during this session does NOT count as user-authored until the user has reviewed and accepted it.
+- If a concept is large enough to deserve a name, propose the name explicitly in conversation and wait for the user to adopt or reject it before using it as shorthand.
+
+Canonical text: workspace `~/Development/AGENTS.md` § Non-Negotiable Standards #17. Companion memory file: `~/.claude-profiles/jacobbalslev01/projects/-Users-jacobbalslev-Development/memory/no-invented-terminology-2026-05-26.md`.
+
 ## Version Labels Are Earned, Not Bumped
 
 A version number on a skill — `schema_version`, `skill_graph_protocol`, and any `vN` label — asserts that the skill's **content** meets that version's bar. Advancing the number is honest only after the substantive migration the version represents has actually been performed. Bumping a label without doing that work is fake-conformance: the same class of doc-lie as `eval_state: passing` without an `eval_last_run` receipt, or `application_verdict: APPLICABLE` without a gate-9 eval.
