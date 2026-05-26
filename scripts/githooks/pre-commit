@@ -1,0 +1,31 @@
+#!/usr/bin/env bash
+#
+# pre-commit — Skill-graph repo work-mode separation warning (tracked git hook).
+#
+# Enforces the SYSTEM vs CONTENT split for commits made INSIDE the skill-graph repo:
+#   - SYSTEM = schemas/, docs/, audits/prompts/, audits/_state/, scripts/, bin/, SKILL_*.md, etc.
+#   - CONTENT = audits/<skill-name>/ per-skill audit artifacts.
+#
+# Workspace-level SKILL.md commits are gated by the parent Development repo's hook
+# (~/Development/scripts/githooks/pre-commit), which carries the version-earned gate +
+# the workspace-level work-mode warning. This hook covers the skill-graph-repo-only corner case.
+#
+# Install: bash scripts/githooks/install.sh   (sets core.hooksPath -> scripts/githooks)
+#
+# Fail-open: if node or the check is unavailable, warn and PASS.
+
+set -u
+
+REPO_ROOT="$(git rev-parse --show-toplevel 2>/dev/null || pwd)"
+CHECK="$REPO_ROOT/scripts/check-work-mode-separation.js"
+
+if ! command -v node >/dev/null 2>&1; then
+  echo "pre-commit (skill-graph work-mode): node not found — skipping (fail-open)." >&2
+  exit 0
+fi
+
+if [ -f "$CHECK" ]; then
+  node "$CHECK" --staged || true   # always 0; belt-and-braces
+fi
+
+exit 0
