@@ -79,7 +79,11 @@
           ],
           "description": "Execution mode the runner is shaped for. Mode names are stable; new modes require a manifest schema bump and a new enum value."
         },
-        "version": { "type": "string" }
+        "version": {
+          "type": "string",
+          "pattern": "^(v?\\d+(\\.\\d+)*\\+?|\\d+\\.\\d+)$",
+          "description": "Runner contract version. Accepts shapes like 'v3', 'v3+', 'v4', 'v5', '1.0' (audit M8, 2026-05-27 — was free-form, allowed silent typos)."
+        }
       }
     },
     "artifact_rule": {
@@ -87,11 +91,16 @@
       "additionalProperties": false,
       "required": ["name", "required"],
       "properties": {
-        "name": { "type": "string" },
+        "name": {
+          "type": "string",
+          "pattern": "^[a-zA-Z0-9._-]+$",
+          "description": "Filename of the per-skill run artifact (audit M15, 2026-05-27). Restricted to filename-safe characters so a typo like 'findings .md' (stray space) fails schema validation rather than silently never matching on disk."
+        },
         "required": { "type": "boolean" },
         "when": {
           "type": "string",
-          "description": "Predicate over skill state (e.g., 'skill.comprehension_verdict in [PROVISIONAL,PASS,SHALLOW,REDUNDANT]') OR runner state (e.g., 'runner.mode startswith autonomous-batch-'). Free-form string; verifier-specific parser. Predicate values MUST come from the corresponding enum in skill-graph/schemas/skill.schema.json (e.g., comprehension_verdict and application_verdict enums are disjoint per ADR-0011 — see the 2026-05-25 enum-leak fix in check-audit-manifest.js)."
+          "pattern": "^(always|skill\\.[a-z_]+ +in +\\[.+\\]|skill\\.[a-z_]+ +== +'.+'|runner\\.(id|mode) +(==|startswith) +'.+')$",
+          "description": "Predicate over skill state (e.g., \"skill.comprehension_verdict in ['PROVISIONAL','PASS','SHALLOW','REDUNDANT']\") OR runner state (e.g., \"runner.mode startswith 'autonomous-batch-'\"). The schema pattern constrains the four supported shapes — `always`, `skill.<field> in [<list>]`, `skill.<field> == '<value>'`, or `runner.(id|mode) (==|startswith) '<value>'` (audit M15, 2026-05-27). Predicate values MUST come from the corresponding enum in skill-graph/schemas/skill.schema.json (e.g., comprehension_verdict and application_verdict enums are disjoint per ADR-0011 — see the 2026-05-25 enum-leak fix in check-audit-manifest.js)."
         },
         "path": {
           "type": "string",
