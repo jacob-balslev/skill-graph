@@ -249,16 +249,11 @@ The YAML frontmatter uses the current v7 schema, including compatibility aliases
 | | [`description`](field-reference.md#description) | always | string |
 | | [`version`](field-reference.md#version) | always | semver string |
 | | [`owner`](field-reference.md#owner) | always | string |
-| **Classification** | [`schema_version`](field-reference.md#schema_version) | always | integer `7` |
-| | [`type`](field-reference.md#type) | always | `capability` \| `workflow` \| `router` \| `overlay` |
-| | [`scope`](field-reference.md#scope) | always | `codebase` \| `reference` \| `portable` |
-| | [`category`](field-reference.md#category) | always | string |
-| | [`categories`](field-reference.md#categories) | | ordered category array; first item matches `category` |
-| | [`primaryCategory`](field-reference.md#primaryCategory) | | workspace alias for the primary category |
-| | [`layerPrimary`](field-reference.md#layerPrimary) | | workspace routing/census layer facet |
-| | [`routingRole`](field-reference.md#routingRole) | | workspace routing role facet |
-| | [`domain`](field-reference.md#domain) | | hierarchical path |
-| | [`secondary_categories`](field-reference.md#secondary_categories) | | string[] (max 2, drawn from the `category` enum; for marketplace cross-listing only — does not affect filesystem placement) |
+| **Classification** | [`schema_version`](field-reference.md#schema_version) | always | integer `8` |
+| | [`subject`](field-reference.md#subject) | always | closed 9-value enum — primary classification |
+| | [`subjects`](field-reference.md#subjects) | | ordered polyhierarchy array; first item matches `subject` (max 2) |
+| | [`scope`](field-reference.md#scope) | always | `portable` \| `workspace` \| `project` |
+| | [`domain`](field-reference.md#domain) | | hierarchical path subdividing `subject` |
 | | [`stability`](field-reference.md#stability) | | `experimental` \| `stable` \| `deprecated` |
 | | [`superseded_by`](field-reference.md#superseded_by) | if `stability: deprecated` | skill name |
 | | [`marketplace_tier`](field-reference.md#marketplace_tier) | | `S` \| `A` \| `B` \| `C` (omit for unpublished; sourced from publication-priority docs) |

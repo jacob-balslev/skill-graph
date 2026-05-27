@@ -346,7 +346,7 @@ The graph layer. Seven edge types — `related`, `boundary`, `disjoint_with`, `v
 
 **`freshness`**
 - ISO date the author last **reviewed** the skill's content. This is the **reviewer's footprint**, NOT the editor's footprint.
-- Set by the author when they verify the skill is still accurate. The Audit Status field [`last_changed`](#health-block-v6-flat--written-by-the-audit-loop) records when the SKILL.md was last **edited** (loop-stamped); the two are intentionally distinct because a skill can be edited without a fresh review (e.g. a typo fix) and reviewed without an edit (the author re-read and confirmed it still holds).
+- Set by the author when they verify the skill is still accurate. The Audit Status field [`last_changed`](#audit-status-v6-flat--written-by-the-audit-loop) records when the SKILL.md was last **edited** (loop-stamped); the two are intentionally distinct because a skill can be edited without a fresh review (e.g. a typo fix) and reviewed without an edit (the author re-read and confirmed it still holds).
 - Not computed; the author sets it. It is an authored claim, not a hash.
 - Cosmetic edits (typo, formatting) should NOT bump `freshness` — they bump `last_changed` only. Substantive review or content update should bump `freshness`.
 - Agents reading `freshness` should interpret it as "the author asserts they reviewed this on date X," NOT as "the file was last touched on date X" — for that, read `last_changed`.
