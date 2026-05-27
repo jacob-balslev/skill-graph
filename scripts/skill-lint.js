@@ -398,6 +398,70 @@ function checkSubjectsPrimaryMatchesSubject(fm) {
   }];
 }
 
+/**
+ * Check 5 — field-purpose comment presence (audit H8, advisory).
+ *
+ * SKILL_METADATA_PROTOCOL.md § Inline field comments mandates that every
+ * authored frontmatter field carries a YAML `#` comment block immediately
+ * above it (purpose + allowed values + when-to-use). The convention prevents
+ * the "this field looks like dead code, let me delete it" failure mode and
+ * keeps cold-start agents from needing to open docs/field-reference.md at
+ * the point of contact.
+ *
+ * Until backfill-field-purpose-comments.js has run corpus-wide, almost no
+ * skill carries these comments (survey 2026-05-27: 0/154 fully commented,
+ * 152/154 with no comments at all). To avoid breaking the verify chain on
+ * a CONTENT migration that has not yet drained, the check emits warnings
+ * (severity: 'warn'), not errors. The `--strict` flag exists but is
+ * advisory until the corpus catches up.
+ */
+function checkFieldPurposeComments(sourceText) {
+  const warnings = [];
+  if (typeof sourceText !== 'string') return warnings;
+  if (!sourceText.startsWith('---\n')) return warnings;
+
+  const lines = sourceText.split('\n');
+  const fmEnd = lines.indexOf('---', 1);
+  if (fmEnd < 0) return warnings;
+
+  const fmLines = lines.slice(1, fmEnd);
+  const TOP_LEVEL_FIELD = /^([a-zA-Z_][a-zA-Z0-9_]*):/;
+
+  // Skip the first authored field — there is no line above it inside the
+  // frontmatter block. The convention's "comment immediately above each field"
+  // shape can't apply to the first field without leaving a comment outside
+  // the frontmatter block, which is not the convention.
+  let seenFirstField = false;
+  let uncommentedFields = 0;
+  for (let i = 0; i < fmLines.length; i++) {
+    const line = fmLines[i];
+    const fieldMatch = line.match(TOP_LEVEL_FIELD);
+    if (!fieldMatch) continue;
+    if (!seenFirstField) { seenFirstField = true; continue; }
+
+    // Walk back through blank lines and comment lines to find the most
+    // recent non-blank line. A comment block can be 1-4 lines tall.
+    let hasComment = false;
+    for (let j = i - 1; j >= 0; j--) {
+      const prev = fmLines[j].trim();
+      if (prev === '') continue;
+      if (prev.startsWith('#')) { hasComment = true; break; }
+      break;
+    }
+    if (!hasComment) uncommentedFields++;
+  }
+
+  if (uncommentedFields > 0) {
+    warnings.push({
+      field: 'frontmatter',
+      severity: 'warn',
+      msg: `${uncommentedFields} top-level field(s) missing field-purpose comment (SKILL_METADATA_PROTOCOL.md § Inline field comments). Run \`node scripts/backfill-field-purpose-comments.js\` to add.`,
+    });
+  }
+
+  return warnings;
+}
+
 // ---------------------------------------------------------------------------
 // File discovery
 // ---------------------------------------------------------------------------
@@ -516,12 +580,14 @@ function lintFile(file) {
     ...checkParentDirMatchesName(file, fm),
     ...checkSubjectsPrimaryMatchesSubject(fm),
   ];
+  const warnings = checkFieldPurposeComments(text);
 
   return {
     file: relPath,
     ok: errors.length === 0,
     sourceText: text,
     errors,
+    warnings,
   };
 }
 
@@ -536,20 +602,24 @@ function main() {
 
   const results = files.map(lintFile);
   const totalErrors = results.reduce((sum, result) => sum + result.errors.length, 0);
+  const totalWarnings = results.reduce((sum, result) => sum + (result.warnings ? result.warnings.length : 0), 0);
 
   if (parsed.jsonOut) {
     process.stdout.write(JSON.stringify({
       files_checked: results.length,
       errors: totalErrors,
+      warnings: totalWarnings,
       results: results.map(({ sourceText, ...result }) => result),
     }, null, 2) + '\n');
   } else {
     for (const result of results) {
-      if (result.errors.length === 0) {
+      const hasErrors = result.errors.length > 0;
+      const hasWarnings = result.warnings && result.warnings.length > 0;
+      if (!hasErrors && !hasWarnings) {
         console.log(`OK   ${result.file}`);
         continue;
       }
-      console.error(`FAIL ${result.file}`);
+      console.error(`${hasErrors ? 'FAIL' : 'WARN'} ${result.file}`);
       for (const e of result.errors) {
         const lookupField = e.field === 'frontmatter' ? e.field : e.field.split('.')[0];
         const loc = locateYamlKey(result.sourceText, lookupField) || { line: 1, column: 1 };
@@ -563,10 +633,27 @@ function main() {
           noColor: parsed.noColor,
         }));
       }
+      for (const w of (result.warnings || [])) {
+        const lookupField = w.field === 'frontmatter' ? w.field : (w.field || 'frontmatter').split('.')[0];
+        const loc = locateYamlKey(result.sourceText, lookupField) || { line: 1, column: 1 };
+        process.stderr.write(formatCodeFrame({
+          filePath: result.file,
+          line: loc.line,
+          column: loc.column,
+          message: w.msg,
+          sourceText: result.sourceText,
+          severity: 'warning',
+          noColor: parsed.noColor,
+        }));
+      }
     }
-    console.log(`\n${files.length} file(s) checked, ${totalErrors} error(s).`);
+    console.log(`\n${files.length} file(s) checked, ${totalErrors} error(s), ${totalWarnings} warning(s).`);
   }
-  process.exit(totalErrors > 0 ? 1 : 0);
+  // Warnings never fail exit unless `--strict` is set (advisory by default —
+  // the field-purpose-comment check would otherwise break the verify chain on
+  // 152/154 skills that pre-date the backfill).
+  const strictWarnsFail = parsed.strict && totalWarnings > 0;
+  process.exit(totalErrors > 0 || strictWarnsFail ? 1 : 0);
 }
 
 main();
