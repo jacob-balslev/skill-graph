@@ -1233,6 +1233,36 @@
           }
         }
       }
+    },
+    {
+      "_comment": "Eval-state coherence (audit M5, 2026-05-27): a skill can only claim `eval_state: passing` when there are real evals on disk (`eval_artifacts: present`). `passing` without present artifacts is the same doc-lie shape as `application_verdict: APPLICABLE` without an eval_last_run receipt — the schema now refuses it.",
+      "if": {
+        "properties": {
+          "eval_state": { "const": "passing" }
+        },
+        "required": ["eval_state"]
+      },
+      "then": {
+        "properties": {
+          "eval_artifacts": { "const": "present" }
+        },
+        "required": ["eval_artifacts"]
+      }
+    },
+    {
+      "_comment": "Eval-state coherence (audit M5, 2026-05-27): `eval_state: monitored` is a forward state that means continuous cadenced runs are succeeding. It implies an eval suite exists; `eval_artifacts` must be `present`.",
+      "if": {
+        "properties": {
+          "eval_state": { "const": "monitored" }
+        },
+        "required": ["eval_state"]
+      },
+      "then": {
+        "properties": {
+          "eval_artifacts": { "const": "present" }
+        },
+        "required": ["eval_artifacts"]
+      }
     }
   ]
 }
