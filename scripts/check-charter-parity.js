@@ -85,21 +85,46 @@ function extractCharter(filePath) {
   return { state, version, body: body.join('\n').trim() };
 }
 
-// Find every AGENTS.md / CLAUDE.md / similar file under WORKSPACE_ROOT that might
-// carry a charter marker. We scope this to AGENTS.md only because that's what the
-// canonical declaration names; broader scanning would invite false positives.
+// Find every AGENTS.md / CLAUDE.md / similar file under WORKSPACE_ROOT that
+// might carry a charter marker. We scope this to AGENTS.md only because that's
+// what the canonical declaration names; broader scanning would invite false
+// positives. Discovery is dynamic — every top-level sibling under
+// WORKSPACE_ROOT is inspected for an AGENTS.md that carries the canonical
+// charter marker, so new mirrors added later don't silently escape parity
+// (audit M16 closure, 2026-05-27 — previous version hardcoded a 4-entry
+// candidate list which missed new mirrors). The canonical at REPO_ROOT is
+// always included whether or not it appears in the dynamic scan.
 function findChartersInWorkspace() {
   const results = [];
-  const candidates = [
-    path.join(REPO_ROOT, 'AGENTS.md'),
-    path.join(WORKSPACE_ROOT, 'skill-audit-loop', 'AGENTS.md'),
-    path.join(WORKSPACE_ROOT, 'skill-metadata-protocol', 'AGENTS.md'),
-    path.join(WORKSPACE_ROOT, 'skills', 'AGENTS.md'),
-  ];
-  for (const file of candidates) {
-    const charter = extractCharter(file);
-    if (charter) results.push({ file, ...charter });
+  const seen = new Set();
+
+  function tryCandidate(absPath) {
+    if (seen.has(absPath)) return;
+    seen.add(absPath);
+    const charter = extractCharter(absPath);
+    if (charter) results.push({ file: absPath, ...charter });
   }
+
+  // Canonical first, unconditionally.
+  tryCandidate(path.join(REPO_ROOT, 'AGENTS.md'));
+
+  // Dynamic discovery: every top-level sibling under WORKSPACE_ROOT whose
+  // AGENTS.md (a) exists and (b) carries the charter marker. We do NOT
+  // recurse — the charter mirror is always at the top of a sibling repo.
+  let entries = [];
+  try {
+    entries = fs.readdirSync(WORKSPACE_ROOT, { withFileTypes: true });
+  } catch {
+    // WORKSPACE_ROOT not accessible; fall back silently to canonical-only.
+    return results;
+  }
+  for (const entry of entries) {
+    if (!entry.isDirectory()) continue;
+    if (entry.name.startsWith('.')) continue;
+    const candidate = path.join(WORKSPACE_ROOT, entry.name, 'AGENTS.md');
+    if (fs.existsSync(candidate)) tryCandidate(candidate);
+  }
+
   return results;
 }
 
