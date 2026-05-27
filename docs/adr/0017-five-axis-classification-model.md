@@ -1,8 +1,16 @@
 # ADR-0017: Five-Axis Classification Model (Skill Metadata Protocol v8)
 
-> Status: Accepted (2026-05-25)
+> Status: Accepted (2026-05-25), partially superseded (2026-05-27)
 > Supersedes the v7 category/categories/primaryCategory/family/layer/layerPrimary/routingRole tangle.
 > Companion: [ADR 0011](0011-split-audit-verdict-into-four-verdicts.md) (Health Block split)
+>
+> ### Update — 2026-05-27: `operation` axis retired (commit f88603d)
+>
+> The `operation` axis (Bloom-grounded 4-enum: `know` / `do` / `decide` / `modify`) was retired from the live contract in commit `f88603d`. The current v8 classification carries `subject` + `scope` as the required axes, plus `subjects[]` (polyhierarchy, max 2), `keywords` (capped at 10), and `relations` (typed edges). This ADR's Decision table row 2 (`operation`), § Landing strategy step 4, and the operation-distribution figures in § Consequences are no longer in force.
+>
+> The "compatibility-mode" landing described in § Landing strategy is also obsolete: per [AGENTS.md § Major Version Is a Clean Cut](../../AGENTS.md), the live tree describes v8 only. The v7 → v8 cut is past-tense; v7 fields are deleted from the schema, the codemod history lives in git, and `git tag schema-v7` preserves the pre-cut contract for anyone needing it.
+>
+> This ADR remains the canonical record of the v8 model's design rationale (9-value `subject` enum, polyhierarchy choice, the `family`/`layer`/`primaryCategory`/`routingRole` removal). Read its body as historical context; for the current contract, read `schemas/skill.schema.json` and `SKILL_METADATA_PROTOCOL.md`.
 
 ## Context
 

@@ -2,8 +2,14 @@
 
 > Status: Accepted (2026-05-25)
 > Companion: [ADR 0017](0017-five-axis-classification-model.md) (Skill Metadata Protocol v8)
-> Target version: **v8.1** (breaking — rename within the v7 sunset window)
+> Target version: **v8.1** (breaking — rename, scheduled independently)
 > Source finding: 2026-05-25 multi-model restructure-review F8
+>
+> ### Update — 2026-05-27: temporal framing corrected
+>
+> The original body of this ADR describes the rename as landing "within the v7 sunset window" (three references). That framing is obsolete: per [AGENTS.md § Major Version Is a Clean Cut](../../AGENTS.md), the v7 → v8 cut is past-tense and no "sunset window" exists. The rename remains valid as a breaking v8.1 change; it is now scheduled independently of any sunset phase.
+>
+> Body text below is the historical record of the 2026-05-25 decision and is preserved as-authored. When reading § Landing strategy, mentally substitute "scheduled v8.1 PR" for every mention of "within the v7 sunset window" / "alongside the v7-field removal" / "during the v7 sunset" — the rename's correctness is unchanged; only the temporal frame is.
 
 ## Context
 
