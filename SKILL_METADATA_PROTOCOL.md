@@ -134,7 +134,10 @@ metadata:
   eval_state: unverified
 
   # routing_eval: routing-coverage — is the skill's activation verified by the harness?
-  # absent (not verified) / present (gated by lint check 12; harness must exit 0).
+  # absent (not verified) / present (harness `npm run routing-eval` must exit 0).
+  # `skill-lint.js` does NOT check this; the standalone routing-eval gate enforces it
+  # via the verify chain. (2026-05-27 H12 — earlier "gated by lint check 12" framing
+  # referred to a check removed in the 2026-05-19 lint reduction.)
   routing_eval: absent
 ```
 
@@ -582,7 +585,7 @@ Seven flat top-level fields that record a skill's audit fingerprint in its own f
 
 ### Relations
 
-The `relations` block contains typed edges to sibling skills. All targets are validated by lint — a broken target (skill that does not exist) is an error.
+The `relations` block contains typed edges to sibling skills. Schema validation (via `skills.manifest.json` generation and manifest:validate) catches broken targets — the manifest compiler refuses to emit a relation to a skill that does not exist. `skill-lint.js` itself does NOT walk relation targets (that check was removed in the 2026-05-19 lint reduction); rely on `npm run manifest:validate` for the relation-integrity guarantee.
 
 ```yaml
 relations:

@@ -428,8 +428,8 @@ Because the tiers are ordered, a tiny set of invariants holds the whole repo tog
 - **Tier 1 → Tier 2:** Every top-level property in `skill.schema.json` has a matching section in `field-reference.md`. (`check-protocol-consistency.js` C1.)
 - **Tier 1 canonical-only:** Per [ADR-0014](docs/adr/0014-canonical-only-schema-files.md), `schemas/skill.schema.json` and `schemas/manifest.schema.json` are the only schema files on disk; prior contract versions live in git history. The C6 "Versioned schema parity" invariant is retired (there is no second pinned file to drift against).
 - **Tier 1 → Tier 3 (generator):** Every authored field has a documented projection into the manifest — copied, grouped, or dropped. No silent drops. (C2.)
-- **Tier 1 ↔ Tier 5 (sample manifest):** The committed sample manifest matches live generator output. (`skill-lint.js` check 8.)
-- **Tier 5 → Tier 1:** Every starter skill validates against the schema; every relation target exists; every eval_artifact declaration is backed by a real file. (`skill-lint.js` checks 1–5.)
+- **Tier 1 ↔ Tier 5 (sample manifest):** The committed sample manifest matches live generator output. Enforced by `npm run manifest:validate`, not by `skill-lint.js`. (2026-05-27 H12 — the prior "skill-lint.js check 8" claim referred to a check removed in the 2026-05-19 lint reduction.)
+- **Tier 5 → Tier 1:** Every starter skill validates against the schema; every relation target exists; every eval_artifact declaration is backed by a real file. `skill-lint.js` enforces schema, name, description, parent-dir, and subjects-primary (checks 1–5 per its in-file inventory) plus the new advisory field-purpose-comment check (check 6); relation-target existence is enforced by the manifest compiler; eval_artifact backing is enforced by `eval-staleness-checker.js`.
 
 Break any one of these invariants and CI fails. That's why the tiering works: the enforcement tier (Tier 3) is literally the set of scripts that prove the upper and lower tiers agree.
 
