@@ -24,7 +24,7 @@ The three layers divide the work cleanly. The [Skill Metadata Protocol](SKILL_ME
 | Canonical library location | sibling repo `jacob-balslev/skills` at `~/Development/skills/` | `.skill-graph/config.json` → `skill_roots: ["../skills/skills"]` |
 | This repo's role | tooling + protocol + schemas + docs (no `skills/` tree) | [ADR 0009](docs/adr/0009-sibling-repo-deprecation.md) |
 | Audit Loop maturity | Integrity Gate ≈ MLOps L1 (write-back wired into `skill-graph audit` as of 2026-05-25 per SH-6481 F14); **Behavior Gate data remains sparse** — application verdicts stay `UNVERIFIED` until `evals/application.json` artifacts are authored and graders run. | [`SKILL_AUDIT_LOOP.md:45-52`](SKILL_AUDIT_LOOP.md) |
-| **Audit-ledger consistency** (separate red gate, not in `npm run verify`) | **`npm run audit-manifest:check` currently FAILS** — 15 historical graded-comprehension verdicts in `.opencode/progress/skill-audits/<skill>/runs/<run-id>/verdict.md` claim `PROVISIONAL`/`PASS` without a backing `evals/comprehension.json` artifact. Downgrading the SKILL.md Health Block to `comprehension_verdict: UNVERIFIED` resolves each (the gate respects honest downgrade per `scripts/check-audit-manifest.js:177-180`). Tracked as CONTENT follow-up at SH-6548. | `node scripts/check-audit-manifest.js` |
+| **Audit-ledger consistency** (separate red gate, not in `npm run verify`) | **`npm run audit-manifest:check` currently FAILS** — 15 historical graded-comprehension verdicts in `.opencode/progress/skill-audits/<skill>/runs/<run-id>/verdict.md` claim `PROVISIONAL`/`PASS` without a backing `evals/comprehension.json` artifact. Downgrading the SKILL.md Audit Status to `comprehension_verdict: UNVERIFIED` resolves each (the gate respects honest downgrade per `scripts/check-audit-manifest.js:177-180`). Tracked as CONTENT follow-up at SH-6548. | `node scripts/check-audit-manifest.js` |
 
 ## Source vs Marketplace — why there are two `skills/` trees
 
@@ -69,7 +69,7 @@ Before drilling into the five authority tiers, orient yourself on the five runti
 
 ```mermaid
 flowchart LR
-  Skill["<b>SKILL.md</b><br/>authored file<br/>frontmatter + body + Health Block"]
+  Skill["<b>SKILL.md</b><br/>authored file<br/>frontmatter + body + Audit Status"]
   Linter["<b>skill-lint.js</b><br/>deterministic validator"]
   Drift["<b>skill-graph-drift.js</b><br/>truth-source sentinel"]
   Manifest["<b>skills.manifest.json</b><br/>compiled artifact"]
@@ -82,7 +82,7 @@ flowchart LR
   Linter -->|seeds findings for| Auditor
   Drift -->|seeds truth_verdict for| Auditor
   Auditor -->|emits| Artifacts
-  Auditor -->|stamps Health Block| Skill
+  Auditor -->|stamps Audit Status| Skill
 
   classDef author fill:#dbeafe,stroke:#2563eb,color:#1e3a8a
   classDef tool fill:#ecfdf5,stroke:#047857,color:#064e3b
@@ -93,9 +93,9 @@ flowchart LR
 ```
 
 <!-- Rendered copy for non-Mermaid viewers. Regenerate via: npx @mermaid-js/mermaid-cli -i <source> -o docs/images/system-model.png -->
-<img src="docs/images/system-model.png" alt="System model — SKILL.md is validated by skill-lint.js, drift-checked by skill-graph-drift.js, compiled into skills.manifest.json, and audited by skill-audit.js which emits findings/verdict/scorecard artifacts AND stamps the Health Block back onto SKILL.md" width="900" />
+<img src="docs/images/system-model.png" alt="System model — SKILL.md is validated by skill-lint.js, drift-checked by skill-graph-drift.js, compiled into skills.manifest.json, and audited by skill-audit.js which emits findings/verdict/scorecard artifacts AND stamps the Audit Status back onto SKILL.md" width="900" />
 
-**Legend.** Blue = authored input. Green = tooling. Yellow = output artifact. Solid arrows are the data flow. The `stamps Health Block` arrow (added 2026-05-25 per SH-6481 F14) closes the loop — the Auditor's verdicts land on the skill itself (`last_audited`, `lint_verdict`, `structural_verdict`, `truth_verdict`), so the state-of-truth lives in the skill, not in a side artifact. Every entity in this diagram has its own deep-dive diagram: [§ Anatomy](docs/skill-metadata-protocol.md#anatomy) for `SKILL.md`, [§ The Four Operations](SKILL_AUDIT_LOOP.md#the-four-operations) for `skill-audit.js`, [§ Manifest Field Mapping](docs/manifest-field-mapping.md) for `skills.manifest.json`.
+**Legend.** Blue = authored input. Green = tooling. Yellow = output artifact. Solid arrows are the data flow. The `stamps Audit Status` arrow (added 2026-05-25 per SH-6481 F14) closes the loop — the Auditor's verdicts land on the skill itself (`last_audited`, `lint_verdict`, `structural_verdict`, `truth_verdict`), so the state-of-truth lives in the skill, not in a side artifact. Every entity in this diagram has its own deep-dive diagram: [§ Anatomy](docs/skill-metadata-protocol.md#anatomy) for `SKILL.md`, [§ The Four Operations](SKILL_AUDIT_LOOP.md#the-four-operations) for `skill-audit.js`, [§ Manifest Field Mapping](docs/manifest-field-mapping.md) for `skills.manifest.json`.
 
 ---
 
@@ -120,7 +120,7 @@ A sixth set of files — `README.md`, `CHANGELOG.md`, `CONTRIBUTING.md`, `LICENS
 | File | Role |
 |---|---|
 | `schemas/skill.schema.json` | The frontmatter schema — canonical-only per [ADR-0014](docs/adr/0014-canonical-only-schema-files.md). Current contract is v8 (v7→v8 phase ended 2026-05-26); the `schema_version` field accepts both integer `8` (canonical) and `7` (deprecated back-compat read) per ADR-0017 § Landing strategy. The file's `$id` (`https://skillgraph.dev/schemas/skill.schema.json`) is the stable identifier. |
-| `schemas/manifest.schema.json` | The compiled-manifest schema — canonical-only. Tracks the current contract (carries the four Health Block verdicts under v7). |
+| `schemas/manifest.schema.json` | The compiled-manifest schema — canonical-only. Tracks the current contract (carries the four Audit Status verdicts under v7). |
 | `schemas/audits-manifest.schema.json` | The Skill Audit Loop manifest schema — binds the shape of `audits/manifest.json` (protocols, runners, required artifacts, runtime aliases). Authored 2026-05-25; closes the manifest version-discipline gap (Opus novelty memo #1). |
 | `schemas/comprehension.schema.json` | The comprehension-eval schema — binds the shape of `skills/<name>/evals/comprehension.json`, the artifact the gate-8 grader evaluates against. Authored 2026-05-25 to close the highest-priority canonicalization gap (Opus G2#3 CRITICAL). |
 
@@ -139,7 +139,7 @@ Public docs that define or explain the protocol in prose. If a Tier 2 file disag
 | [`SKILL_METADATA_PROTOCOL.md`](SKILL_METADATA_PROTOCOL.md) *(repo root)* | Normative spec: required fields, semantic rules, authored vs generated fields, migration notes. |
 | `docs/skill-metadata-protocol.md` | Rationale and deep explanation: archetype section map, requiredness groups, strictness rules, schema versioning policy, design tradeoffs. |
 | `docs/field-reference.md` | One section per authored field. All current v7 top-level fields with purpose, rules, allowed values, examples. |
-| `docs/field-decision-guide.md` | Decision tables for the hard choices: `scope`, `relations.*`, eval-health triple, `portability`, `workspace_tags`, and the "tag vs. category vs. routing_bundles" question. |
+| `docs/field-decision-guide.md` | Decision tables for the hard choices: `scope`, `relations.*`, Evaluation Status, `portability`, `workspace_tags`, and the "tag vs. category vs. routing_bundles" question. |
 | `docs/manifest-field-mapping.md` | The authored → generated bridge: rename map, loss policy, per-version migration notes, worked example. |
 
 Three rules govern this tier:
@@ -334,7 +334,7 @@ Concrete artifacts that show adopters what "good" looks like. Every specimen is 
 
 | File | Role |
 |---|---|
-| `examples/skill-metadata-template.md` | Self-referential authoring template. Its subject is skill authoring itself. **Demonstrates the v8 5-axis classification (`subject` / `operation` / `scope`) and the inline field-purpose comment convention** (every authored field carries a comment block above it; strippable `# TEMPLATE NOTE:` lines are clearly distinguished from field-purpose comments that stay in derived skills — see `SKILL_METADATA_PROTOCOL.md § Inline field comments — the authoring convention`). Also demonstrates the v7-deprecated back-compat shape (`type` / `category` retained as optional with explicit deprecation comment), object-shaped `drift_check` / `compatibility` / `lifecycle`, `boundary[{skill, reason}]`, the five flat Understanding fields, and the four-verdict Health Block. |
+| `examples/skill-metadata-template.md` | Self-referential authoring template. Its subject is skill authoring itself. **Demonstrates the v8 5-axis classification (`subject` / `operation` / `scope`) and the inline field-purpose comment convention** (every authored field carries a comment block above it; strippable `# TEMPLATE NOTE:` lines are clearly distinguished from field-purpose comments that stay in derived skills — see `SKILL_METADATA_PROTOCOL.md § Inline field comments — the authoring convention`). Also demonstrates the v7-deprecated back-compat shape (`type` / `category` retained as optional with explicit deprecation comment), object-shaped `drift_check` / `compatibility` / `lifecycle`, `boundary[{skill, reason}]`, the five flat Understanding fields, and the four-verdict Audit Status. |
 | `examples/fixture-skills/` | Four in-repo specimen skills covering distinct shapes: `minimal-capability`, `with-grounding` (full `grounding` block + recorded `truth_source_hashes`), `with-relations`, and `comprehension-full` (populated Understanding fields). |
 | `examples/skills.manifest.sample.json` | Generator-produced sample. Drift-checked against live generator output by `skill-lint.js` check 8. |
 

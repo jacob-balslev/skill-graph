@@ -1,23 +1,21 @@
 #!/usr/bin/env node
 /**
- * Test: v8 schema contract (v7→v8 phase ended 2026-05-26).
+ * Test: v8 schema contract.
  *
- * The v7→v8 compatibility window closed on 2026-05-26 — subject + operation
- * (the v8 axes) are now in the schema's global required array. The v7 fields
- * (type, category) remain DEFINED as optional properties for back-compat with
- * skills that still carry them, but are no longer required by the schema.
+ * `subject` is the v8 classification axis in the schema's global required
+ * array. The v7 fields (type, category) remain DEFINED as optional properties
+ * for back-compat with skills that still carry them, but are no longer
+ * required by the schema.
  *
  * This test verifies:
- *   - v8 frontmatter (subject + operation present) validates.
- *   - v7-only frontmatter (no subject/operation) now FAILS validation — the
- *     schema's global required array refuses it. Any skill that still lacks
- *     v8 axes is CONTENT-mode migration work for the audit loop.
+ *   - v8 frontmatter (subject present) validates.
+ *   - v7-only frontmatter (no subject) now FAILS validation — the schema's
+ *     global required array refuses it. Any skill that still lacks the v8
+ *     axis is CONTENT-mode migration work for the audit loop.
  *   - scope: project|workspace + legacy codebase|reference|portable all
  *     validate.
  *   - subjects[0] must equal subject when both are present.
  *   - scope: project requires grounding (parity with v7 scope: codebase).
- *
- * See docs/adr/0017-five-axis-classification-model.md.
  */
 
 'use strict';
@@ -114,12 +112,12 @@ function check(name, fn) {
   }
 }
 
-// Legacy v7-only frontmatter (no subject/operation). Post-2026-05-26 this
-// SHAPE no longer validates — subject + operation are globally required.
+// Legacy v7-only frontmatter (no subject). This SHAPE no longer validates
+// — subject is globally required.
 const v7OnlyBase = {
   schema_version: 7,
   name: 'test-skill',
-  description: 'A test skill for v8 schema checks. Use when verifying schema validation. Do NOT use for production.',
+  description: 'A test skill for v8 schema checks.',
   version: '1.0.0',
   type: 'capability',
   category: 'engineering',
@@ -138,15 +136,13 @@ const v8Base = {
   ...v7OnlyBase,
   schema_version: 8,
   subject: 'code-engineering',
-  operation: 'know',
 };
 
-check('v7-only frontmatter (no subject/operation) now fails validation', () => {
-  // Post-2026-05-26: the v7→v8 compatibility window closed. The schema's
-  // global required array now demands subject + operation regardless of
+check('v7-only frontmatter (no subject) now fails validation', () => {
+  // The schema's global required array now demands subject regardless of
   // schema_version. v7-only skills are CONTENT-mode migration work.
   const errors = validate(v7OnlyBase, SCHEMA);
-  if (errors.length === 0) throw new Error('v7-only frontmatter should have failed (v7→v8 phase ended)');
+  if (errors.length === 0) throw new Error('v7-only frontmatter should have failed');
   if (!errors.some(e => e.includes("missing key 'subject'"))) {
     throw new Error(`expected missing-subject error, got: ${errors.join('; ')}`);
   }
@@ -160,18 +156,11 @@ check('v8 frontmatter (with v7 legacy fields still present) validates', () => {
 });
 
 check('v8 frontmatter without v7 legacy fields validates (v8-only authoring works)', () => {
-  // The cleanest v8 authoring path: no type, no category. After the phase
-  // ended, this is the recommended shape for new skills.
   const v8Pure = { ...v8Base };
   delete v8Pure.type;
   delete v8Pure.category;
   const errors = validate(v8Pure, SCHEMA);
   if (errors.length > 0) throw new Error(`v8 without v7 legacy fields failed: ${errors.join('; ')}`);
-});
-
-check('v8 frontmatter with subject+operation validates', () => {
-  const errors = validate(v8Base, SCHEMA);
-  if (errors.length > 0) throw new Error(`v8 base failed: ${errors.join('; ')}`);
 });
 
 check('v8 frontmatter missing subject fails', () => {
@@ -181,16 +170,6 @@ check('v8 frontmatter missing subject fails', () => {
   if (errors.length === 0) throw new Error('v8 missing subject should have failed validation');
   if (!errors.some(e => e.includes("missing key 'subject'"))) {
     throw new Error(`expected missing-subject error, got: ${errors.join('; ')}`);
-  }
-});
-
-check('v8 frontmatter missing operation fails', () => {
-  const broken = { ...v8Base };
-  delete broken.operation;
-  const errors = validate(broken, SCHEMA);
-  if (errors.length === 0) throw new Error('v8 missing operation should have failed validation');
-  if (!errors.some(e => e.includes("missing key 'operation'"))) {
-    throw new Error(`expected missing-operation error, got: ${errors.join('; ')}`);
   }
 });
 
@@ -259,12 +238,6 @@ check('subject: invalid value fails enum check', () => {
   if (!errors.some(e => e.includes('enum fail'))) {
     throw new Error(`expected enum error, got: ${errors.join('; ')}`);
   }
-});
-
-check('operation: invalid value fails enum check', () => {
-  const broken = { ...v8Base, operation: 'execute' };
-  const errors = validate(broken, SCHEMA);
-  if (errors.length === 0) throw new Error('invalid operation value should fail');
 });
 
 check('subjects array with valid entries validates', () => {

@@ -94,26 +94,35 @@ name: shopify
 
 ## `description`
 
-**Purpose.** The routing contract. Tells a router whether this skill should activate for a given query or label. It is pushy, specific, and boundary-aware.
+**Purpose.** A short description of what the skill is about. Identifies the subject; does not prescribe activation.
+
+Activation, trigger, and boundary semantics belong to the dedicated fields built for them:
+
+| Concern | Field |
+|---|---|
+| Semantic activation tokens | `keywords` |
+| Exact phrase / label triggers | `triggers` |
+| Realistic prompts the skill should activate for | `examples` |
+| Near-miss prompts that should activate a different skill | `anti_examples` |
+| File-surface activation | `paths` |
+| Routing-layer exclusion edges to other skills | `relations.boundary` |
+| Project-affiliation filter | `workspace_tags` |
 
 **Rules.**
-- Lead with trigger phrases ("Use when…", "Activates for…") rather than generic summaries.
-- Include an explicit negative boundary ("Do NOT use for…") so the router doesn't over-activate.
-- Do not repeat the `## Coverage` section body here — that belongs inside the skill body, not in the routing contract.
+- Describe what the skill is about. Keep it short and topical.
+- Do not pack routing prescriptions ("Use when…", "Do NOT use for…") into this field — those duplicate `examples` / `anti_examples` / `relations.boundary` in a less machine-readable form.
+- Do not repeat the `## Coverage` section body here.
 
 **Example.**
 ```yaml
-description: >
-  Shopify integration skill for API, webhook, and sync work. Use when the
-  task involves Shopify orders, products, webhooks, or the Shopify Admin API.
-  Do NOT use for general e-commerce patterns not tied to Shopify.
+description: "Shopify integration patterns covering the Admin API, webhook handling, and inventory sync."
 ```
 
 **When to use.** Always — required.
 
-**When NOT to use.** Do not expand beyond 3 sentences or copy-paste the `## Coverage` scope list here. The description and `## Coverage` are sibling layers of progressive disclosure, not duplicates.
+**When NOT to use.** N/A — required. Keep it short.
 
-**Verification.** `scripts/skill-lint.js` enforces the canonical-source schema gate, including required shape and non-empty description text. Description quality is verified through routing evals, review, and application verdicts rather than a deleted routing-quality lint module.
+**Verification.** `scripts/skill-lint.js` enforces the schema gate (required shape, non-empty text, no length cap). Activation quality is verified through routing evals on `examples` + `anti_examples` via `scripts/skill-graph-routing-eval.js`, not through inspection of `description` text.
 
 ---
 
@@ -414,36 +423,9 @@ subjects: [code-engineering, quality-assurance]
 
 ---
 
-## `operation`
+## `operation` *(removed)*
 
-> Introduced in v8. Required when `schema_version: 8`; optional/absent on v7 skills during the migration window.
-
-**Purpose.** v8 cognitive operation classifier — what kind of cognitive operation loading this skill enables. Bloom-grounded. Replaces v7's `type` (which is 93% `capability` and provides almost no discriminating power per the 2026-05-25 audit).
-
-**Rules.**
-- **Required when `schema_version: 8`.** Optional/absent on v7 skills during the migration window.
-- **Closed 4-value enum:**
-  - `know` — declarative knowledge: concepts, vocabulary, reference material. (Bloom: Remember/Understand)
-  - `do` — procedural knowledge: step-by-step execution of a task. (Bloom: Apply)
-  - `decide` — routing/judgment: choosing between options, dispatching other skills. (Bloom: Analyze/Evaluate)
-  - `modify` — context injection: shapes how other skills execute without executing itself. (corresponds to v7's `overlay` archetype but framed as an operation, not a kind of file)
-
-**v7→v8 mapping** (codemod heuristic, HITL for ambiguous):
-- `type: capability` → `operation: know` or `operation: do` (heuristic based on workflow-keyword presence)
-- `type: workflow` → `operation: do`
-- `type: router` → `operation: decide`
-- `type: overlay` → `operation: modify`
-
-**Predicted v8 distribution** (per GPT-5.5 critique 2026-05-25): know 35–45%, do 25–35%, decide 20–30%, modify 1–3%. Significant improvement over v7's 93% `type: capability` concentration.
-
-**Example.**
-```yaml
-operation: do
-```
-
-**When to use.** Always on v8 skills. The choice should reflect what an agent will primarily DO with the skill loaded — recall facts (`know`), execute a sequence (`do`), make a routing decision (`decide`), or modify another skill's context (`modify`).
-
-See `docs/adr/0017-five-axis-classification-model.md` for the rationale and codemod design.
+The `operation` field has been removed from the schema. Skills carrying `operation:` in frontmatter now fail validation under `additionalProperties: false`. Drain via the audit loop on a per-skill basis.
 
 ---
 
@@ -520,7 +502,7 @@ owner: maintainer
 
 ## `freshness`
 
-**Purpose.** Records when the author last **reviewed** the skill's content for accuracy. This is the **reviewer's footprint**, NOT the editor's footprint — the Health Block field [`last_changed`](#last_changed) is loop-stamped on every SKILL.md edit and serves the editor-footprint role. The two are intentionally distinct: a skill can be edited without a fresh review (cosmetic fix) or reviewed without an edit (the author re-read and confirmed it still holds).
+**Purpose.** Records when the author last **reviewed** the skill's content for accuracy. This is the **reviewer's footprint**, NOT the editor's footprint — the Audit Status field [`last_changed`](#last_changed) is loop-stamped on every SKILL.md edit and serves the editor-footprint role. The two are intentionally distinct: a skill can be edited without a fresh review (cosmetic fix) or reviewed without an edit (the author re-read and confirmed it still holds).
 
 Drives staleness detection in audit tooling.
 
@@ -599,7 +581,7 @@ drift_check:
 
 ## `last_audited`
 
-**Purpose.** ISO date of the most recent audit run that produced a recorded verdict for this skill. Introduced with the v6 Health Block and retained in v7 — a flat set of top-level fields that surface audit state without requiring readers to parse nested audit artifact files.
+**Purpose.** ISO date of the most recent audit run that produced a recorded verdict for this skill. Introduced with the v6 Audit Status and retained in v7 — a flat set of top-level fields that surface audit state without requiring readers to parse nested audit artifact files.
 
 **Rules.**
 - Optional. ISO 8601 date string (`YYYY-MM-DD`).
@@ -619,7 +601,7 @@ last_audited: "2026-05-16"
 
 ## `last_changed`
 
-**Purpose.** ISO date of the last meaningful content change to the SKILL.md. Distinct from `freshness` (editorial review date) and `last_audited` (audit run date). Introduced with the v6 Health Block and retained in v7.
+**Purpose.** ISO date of the last meaningful content change to the SKILL.md. Distinct from `freshness` (editorial review date) and `last_audited` (audit run date). Introduced with the v6 Audit Status and retained in v7.
 
 **Rules.**
 - Optional. ISO 8601 date string (`YYYY-MM-DD`).
@@ -635,7 +617,7 @@ last_changed: "2026-05-14"
 
 ## `structural_verdict`
 
-**Purpose.** Form-layer verdict produced by gates 1–2 and 7 of the skill-audit loop (schema lint, manifest census, concept-card shape). Part of the v7 Health Block. Replaces the structural slice of the v6 `audit_verdict` aggregate.
+**Purpose.** Form-layer verdict produced by gates 1–2 and 7 of the skill-audit loop (schema lint, manifest census, concept-card shape). Part of the v7 Audit Status. Replaces the structural slice of the v6 `audit_verdict` aggregate.
 
 **Allowed values.**
 
@@ -660,7 +642,7 @@ structural_verdict: PASS
 
 ## `truth_verdict`
 
-**Purpose.** Truth-layer verdict produced by gates 3–6 of the skill-audit loop (truth-source catalog, drift sentinel, test coverage, claim verification). Part of the v7 Health Block. Replaces the truth slice of the v6 `audit_verdict` aggregate.
+**Purpose.** Truth-layer verdict produced by gates 3–6 of the skill-audit loop (truth-source catalog, drift sentinel, test coverage, claim verification). Part of the v7 Audit Status. Replaces the truth slice of the v6 `audit_verdict` aggregate.
 
 **Allowed values.**
 
@@ -685,7 +667,7 @@ truth_verdict: PASS
 
 ## `comprehension_verdict`
 
-**Purpose.** Comprehension-layer verdict produced by gate 8 (the comprehension grader on `evals/comprehension.json`). Part of the v7 Health Block. Demoted in v7: never alone certifies a skill as useful.
+**Purpose.** Comprehension-layer verdict produced by gate 8 (the comprehension grader on `evals/comprehension.json`). Part of the v7 Audit Status. Demoted in v7: never alone certifies a skill as useful.
 
 **Allowed values.**
 
@@ -714,7 +696,7 @@ comprehension_verdict: SKIPPED_BASELINE_HIGH
 
 ## `application_verdict`
 
-**Purpose.** Application-layer verdict produced by gate 9 (the application grader on `evals/application.json`). Part of the v7 Health Block. The **primary quality signal** in v7 — a skill is only behaviorally certified when this is `APPLICABLE`.
+**Purpose.** Application-layer verdict produced by gate 9 (the application grader on `evals/application.json`). Part of the v7 Audit Status. The **primary quality signal** in v7 — a skill is only behaviorally certified when this is `APPLICABLE`.
 
 **Allowed values.**
 
@@ -747,7 +729,7 @@ application_verdict: APPLICABLE
 
 **Why deprecated.** The single field compressed four independent layers — form, truth, comprehension, behavior — into one PASS/FAIL signal that masqueraded as a quality verdict. A skill could be lint-clean (`audit_verdict: PASS`) while being behaviorally redundant or harmful, and the reader had no way to tell. The four-verdict split lets each layer surface independently. See ADR 0014 (canonical-only schema files); the migration procedure lives in git history.
 
-**Read behavior post-v7.** Tools that read `audit_verdict` for back-compat on unmigrated v6 skills can continue to do so, but the canonical Health Block surface is the four discrete verdicts. The codemod at `scripts/migrate-skill-v6-to-v7.js` strips `audit_verdict` from migrated skills.
+**Read behavior post-v7.** Tools that read `audit_verdict` for back-compat on unmigrated v6 skills can continue to do so, but the canonical Audit Status surface is the four discrete verdicts. The codemod at `scripts/migrate-skill-v6-to-v7.js` strips `audit_verdict` from migrated skills.
 
 **Pre-v7 allowed values (historical).** `PASS` | `PASS_WITH_FIXES` | `PARTIAL` | `FAIL` | `UNKNOWN`.
 
@@ -755,7 +737,7 @@ application_verdict: APPLICABLE
 
 ## `eval_score`
 
-**Purpose.** Numeric score from the most recent eval run, on the 0.0–5.0 scale used by `scripts/skill-audit.js`. Introduced with the v6 Health Block and retained in v7.
+**Purpose.** Numeric score from the most recent eval run, on the 0.0–5.0 scale used by `scripts/skill-audit.js`. Introduced with the v6 Audit Status and retained in v7.
 
 **Rules.**
 - Optional. Float, range 0.0–5.0.
@@ -771,7 +753,7 @@ eval_score: 4.2
 
 ## `eval_failed_ids`
 
-**Purpose.** List of eval case IDs that failed in the most recent eval run. Introduced with the v6 Health Block and retained in v7. Enables fast lookup of which specific cases a skill is failing without opening the full scorecard.
+**Purpose.** List of eval case IDs that failed in the most recent eval run. Introduced with the v6 Audit Status and retained in v7. Enables fast lookup of which specific cases a skill is failing without opening the full scorecard.
 
 **Rules.**
 - Optional. Array of strings (eval case ID strings, matching `id` fields in the eval JSON).
@@ -787,7 +769,7 @@ eval_failed_ids: ["case-03", "case-07"]
 
 ## `lint_verdict`
 
-**Purpose.** The verdict from the most recent lint run against this skill. Introduced with the v6 Health Block and retained in v7 as the per-script signal that can roll up into `structural_verdict`.
+**Purpose.** The verdict from the most recent lint run against this skill. Introduced with the v6 Audit Status and retained in v7 as the per-script signal that can roll up into `structural_verdict`.
 
 **Allowed values.**
 
@@ -810,7 +792,7 @@ lint_verdict: PASS
 
 ## `drift_status`
 
-**Purpose.** The result of the most recent drift check for this skill. Introduced with the v6 Health Block and retained in v7 as the per-script signal that can roll up into `truth_verdict`.
+**Purpose.** The result of the most recent drift check for this skill. Introduced with the v6 Audit Status and retained in v7 as the per-script signal that can roll up into `truth_verdict`.
 
 **Allowed values.**
 
@@ -1098,7 +1080,7 @@ eval_last_run:
 
 ## `eval`
 
-**Purpose.** v3.1 preferred nested form for the eval-health triple (`eval_artifacts` + `eval_state` + `routing_eval`). Aligns with the sibling-object pattern of `drift_check`, `grounding`, `lifecycle`, `portability`. Also resolves the head-first compound ambiguity of `routing_eval` (renamed to `routing_coverage`) and disambiguates `eval_state` from `routing_coverage` (renamed to `content_state`).
+**Purpose.** v3.1 preferred nested form for the Evaluation Status (`eval_artifacts` + `eval_state` + `routing_eval`). Aligns with the sibling-object pattern of `drift_check`, `grounding`, `lifecycle`, `portability`. Also resolves the head-first compound ambiguity of `routing_eval` (renamed to `routing_coverage`) and disambiguates `eval_state` from `routing_coverage` (renamed to `content_state`).
 
 **Shape.**
 ```yaml

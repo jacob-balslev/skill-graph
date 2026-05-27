@@ -49,7 +49,7 @@ If none of these apply, stay on plain [`SKILL.md`](https://agentskills.io/specif
 
 **Total time per skill on day 1: ~20-30 min. Steady-state after the library settles: ~10-15 min per new skill.**
 
-The fields you pay for cluster into 8 semantic purposes (Identity, Classification, Health, Eval Health, Activation & Routing, Relations, Grounding, Portability). The full anatomy is in [`skill-metadata-protocol.md § Anatomy`](skill-metadata-protocol.md).
+The fields you pay for cluster into 8 semantic purposes (Identity, Classification, Health, Evaluation Status, Activation & Routing, Relations, Grounding, Portability). The full anatomy is in [`skill-metadata-protocol.md § Anatomy`](skill-metadata-protocol.md).
 
 ## 5-minute quickstart
 

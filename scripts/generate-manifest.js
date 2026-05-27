@@ -299,9 +299,6 @@ function buildSkillEntry(fm, filePath, skillId, project) {
   if (Array.isArray(fm.subjects) && fm.subjects.length > 0) {
     entry.subjects = fm.subjects;
   }
-  if (fm.operation !== undefined && fm.operation !== null) {
-    entry.operation = fm.operation;
-  }
   entry.scope = fm.scope;
   entry.owner = fm.owner;
 
@@ -643,10 +640,10 @@ function collectSources(args, skillRoots) {
 /**
  * Compute summary aggregates over the skills array.
  *
- * v7→v8 compatibility-mode (ADR-0017): both the legacy v7 facets (`by_type`,
- * `by_category`) and the new v8 facets (`by_operation`, `by_subject`) are
- * emitted side-by-side so consumers can measure migration progress. After the
- * v7 sunset the legacy facets drop out.
+ * v7→v8 compatibility-mode (ADR-0017): the legacy v7 facets (`by_type`,
+ * `by_category`) and the new v8 facet (`by_subject`) are emitted side-by-side
+ * so consumers can measure migration progress. After the v7 sunset the legacy
+ * facets drop out.
  *
  * `by_schema_version` (added per 2026-05-25 F4 finding) lets consumers count
  * v7 vs v8 skills directly from the manifest. Missing schema_version buckets
@@ -656,7 +653,6 @@ function collectSources(args, skillRoots) {
 function computeSummary(skills) {
   const by_schema_version = {};
   const by_type = {};
-  const by_operation = {};
   const by_category = {};
   const by_subject = {};
   const by_scope = {};
@@ -670,7 +666,6 @@ function computeSummary(skills) {
     by_schema_version[ver] = (by_schema_version[ver] || 0) + 1;
 
     if (skill.type) by_type[skill.type] = (by_type[skill.type] || 0) + 1;
-    if (skill.operation) by_operation[skill.operation] = (by_operation[skill.operation] || 0) + 1;
     if (skill.category) by_category[skill.category] = (by_category[skill.category] || 0) + 1;
     if (skill.subject) by_subject[skill.subject] = (by_subject[skill.subject] || 0) + 1;
     if (skill.scope) by_scope[skill.scope] = (by_scope[skill.scope] || 0) + 1;
@@ -681,7 +676,6 @@ function computeSummary(skills) {
   const summary = { total_skills: skills.length };
   if (Object.keys(by_schema_version).length > 0) summary.by_schema_version = sortKeys(by_schema_version);
   if (Object.keys(by_type).length > 0) summary.by_type = sortKeys(by_type);
-  if (Object.keys(by_operation).length > 0) summary.by_operation = sortKeys(by_operation);
   if (Object.keys(by_category).length > 0) summary.by_category = sortKeys(by_category);
   if (Object.keys(by_subject).length > 0) summary.by_subject = sortKeys(by_subject);
   if (Object.keys(by_scope).length > 0) summary.by_scope = sortKeys(by_scope);

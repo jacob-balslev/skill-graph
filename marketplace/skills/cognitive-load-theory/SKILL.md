@@ -338,7 +338,7 @@ Rate any output (skill body, prompt, doc section, dashboard widget) against CLT:
 
 ---
 
-## Health Block
+## Audit Status
 
 | Field | Value |
 |-------|-------|

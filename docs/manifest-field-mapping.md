@@ -57,7 +57,7 @@ Every top-level authored field in `schemas/skill.schema.json` has exactly one en
 | 18 | `comprehension_state` | grouped under parent | `health.comprehension_state`. |
 | 19 | `concept` | copied through unchanged | `concept`; required when `comprehension_state: present`. |
 | 20 | `eval_last_run` | grouped under parent | `health.eval_last_run`. |
-| 21 | `eval` | grouped under parent | `health.eval`; nested compatibility form for the eval-health fields. |
+| 21 | `eval` | grouped under parent | `health.eval`; nested compatibility form for the Evaluation Status fields. |
 | 22 | `stability` | copied through unchanged | `stability`. |
 | 23 | `superseded_by` | copied through unchanged | `superseded_by`. |
 | 24 | `license` | copied through unchanged | `license`. |
@@ -77,17 +77,17 @@ Every top-level authored field in `schemas/skill.schema.json` has exactly one en
 | 38 | `portability` | copied through unchanged | `portability`. |
 | 39 | `lifecycle` | grouped under parent | `health.lifecycle`. |
 | 40 | `runtime_telemetry` | grouped under parent | `health.runtime_telemetry`. |
-| 41 | `last_audited` | grouped under parent | `health.last_audited`. v6 Health Block field — ISO date the `audit` command last ran. Pass-through from authored frontmatter. |
-| 42 | `last_changed` | grouped under parent | `health.last_changed`. v6 Health Block field — ISO date the SKILL.md was last edited. Pass-through from authored frontmatter. |
-| 43a | `structural_verdict` | grouped under parent | `health.structural_verdict`. **v7+** Health Block field — form-layer verdict from gates 1–2, 7. Enum: `PASS`, `PASS_WITH_FIXES`, `FAIL`, `UNVERIFIED`. Replaces the structural slice of v6 `audit_verdict`. Pass-through from authored frontmatter. |
-| 43b | `truth_verdict` | grouped under parent | `health.truth_verdict`. **v7+** Health Block field — truth-layer verdict from gates 3–6. Enum: `PASS`, `DRIFT`, `BROKEN`, `UNVERIFIED`. Pass-through from authored frontmatter. |
-| 43c | `comprehension_verdict` | grouped under parent | `health.comprehension_verdict`. **v7+** Health Block field — comprehension-layer verdict from gate 8 (demoted in v7). Enum: `PASS`, `SHALLOW`, `REDUNDANT`, `UNVERIFIED`, `SKIPPED_BASELINE_HIGH`, `NA`. Pass-through from authored frontmatter. |
-| 43d | `application_verdict` | grouped under parent | `health.application_verdict`. **v7+** Health Block field — application-layer verdict from gate 9 (primary quality signal). Enum: `APPLICABLE`, `REDUNDANT`, `HARMFUL`, `MIXED`, `FALSE_POSITIVE`, `UNVERIFIED`, `PROVISIONAL`. Pass-through from authored frontmatter. |
-| 43e | `audit_verdict` *(deprecated in v7)* | grouped under parent | `health.audit_verdict`. v6 Health Block field — aggregate verdict (`PASS`, `PASS_WITH_FIXES`, `PARTIAL`, `FAIL`, `UNKNOWN`). DEPRECATED in v7; replaced by the four discrete verdicts above. Kept in the manifest schema for back-compat reads of unmigrated v6 manifests. See [ADR 0011](adr/0011-split-audit-verdict-into-four-verdicts.md). |
-| 44 | `eval_score` | grouped under parent | `health.eval_score`. v6 Health Block field — latest aggregate eval grade (0.0–5.0). Pass-through from authored frontmatter. |
-| 45 | `eval_failed_ids` | grouped under parent | `health.eval_failed_ids`. v6 Health Block field — eval IDs that failed in the most recent run. Pass-through from authored frontmatter. |
-| 46 | `lint_verdict` | grouped under parent | `health.lint_verdict`. v6 Health Block field — result of the most recent lint pass (`PASS`, `FAIL`, `UNKNOWN`). Pass-through from authored frontmatter. |
-| 47 | `drift_status` | grouped under parent | `health.drift_status`. v6 Health Block field — current truth-source drift status sentinel. Pass-through from authored frontmatter. |
+| 41 | `last_audited` | grouped under parent | `health.last_audited`. v6 Audit Status field — ISO date the `audit` command last ran. Pass-through from authored frontmatter. |
+| 42 | `last_changed` | grouped under parent | `health.last_changed`. v6 Audit Status field — ISO date the SKILL.md was last edited. Pass-through from authored frontmatter. |
+| 43a | `structural_verdict` | grouped under parent | `health.structural_verdict`. **v7+** Audit Status field — form-layer verdict from gates 1–2, 7. Enum: `PASS`, `PASS_WITH_FIXES`, `FAIL`, `UNVERIFIED`. Replaces the structural slice of v6 `audit_verdict`. Pass-through from authored frontmatter. |
+| 43b | `truth_verdict` | grouped under parent | `health.truth_verdict`. **v7+** Audit Status field — truth-layer verdict from gates 3–6. Enum: `PASS`, `DRIFT`, `BROKEN`, `UNVERIFIED`. Pass-through from authored frontmatter. |
+| 43c | `comprehension_verdict` | grouped under parent | `health.comprehension_verdict`. **v7+** Audit Status field — comprehension-layer verdict from gate 8 (demoted in v7). Enum: `PASS`, `SHALLOW`, `REDUNDANT`, `UNVERIFIED`, `SKIPPED_BASELINE_HIGH`, `NA`. Pass-through from authored frontmatter. |
+| 43d | `application_verdict` | grouped under parent | `health.application_verdict`. **v7+** Audit Status field — application-layer verdict from gate 9 (primary quality signal). Enum: `APPLICABLE`, `REDUNDANT`, `HARMFUL`, `MIXED`, `FALSE_POSITIVE`, `UNVERIFIED`, `PROVISIONAL`. Pass-through from authored frontmatter. |
+| 43e | `audit_verdict` *(deprecated in v7)* | grouped under parent | `health.audit_verdict`. v6 Audit Status field — aggregate verdict (`PASS`, `PASS_WITH_FIXES`, `PARTIAL`, `FAIL`, `UNKNOWN`). DEPRECATED in v7; replaced by the four discrete verdicts above. Kept in the manifest schema for back-compat reads of unmigrated v6 manifests. See [ADR 0011](adr/0011-split-audit-verdict-into-four-verdicts.md). |
+| 44 | `eval_score` | grouped under parent | `health.eval_score`. v6 Audit Status field — latest aggregate eval grade (0.0–5.0). Pass-through from authored frontmatter. |
+| 45 | `eval_failed_ids` | grouped under parent | `health.eval_failed_ids`. v6 Audit Status field — eval IDs that failed in the most recent run. Pass-through from authored frontmatter. |
+| 46 | `lint_verdict` | grouped under parent | `health.lint_verdict`. v6 Audit Status field — result of the most recent lint pass (`PASS`, `FAIL`, `UNKNOWN`). Pass-through from authored frontmatter. |
+| 47 | `drift_status` | grouped under parent | `health.drift_status`. v6 Audit Status field — current truth-source drift status sentinel. Pass-through from authored frontmatter. |
 ### Generated-only manifest fields
 
 These fields exist in `skills.manifest.json` with no authored counterpart:
@@ -111,7 +111,7 @@ These fields exist in `skills.manifest.json` with no authored counterpart:
 
 **Current state (2026-05-18, post-SH-6131):** no authored top-level fields are dropped during manifest generation. Every field in `schemas/skill.schema.json` has a manifest projection in `schemas/manifest.schema.json`. This parity is enforced by `scripts/check-protocol-consistency.js` (C2 check) — CI fails if `manifest.schema.json` drops a field declared in the authored contract without a matching entry in this document's loss policy.
 
-The v6 Health Block fields (`last_audited`, `last_changed`, `audit_verdict`, `eval_score`, `eval_failed_ids`, `lint_verdict`, `drift_status`) were added to the authored schema in commit `ecaf001` (v6 Health Block addition) but were not registered in the manifest schema or this mapping document until SH-6131 (2026-05-18). They are now flow-through fields grouped under `health.*` in the manifest, matching the pattern of other governance fields (`freshness`, `drift_check`, `eval_artifacts`, etc.).
+The v6 Audit Status fields (`last_audited`, `last_changed`, `audit_verdict`, `eval_score`, `eval_failed_ids`, `lint_verdict`, `drift_status`) were added to the authored schema in commit `ecaf001` (v6 Audit Status addition) but were not registered in the manifest schema or this mapping document until SH-6131 (2026-05-18). They are now flow-through fields grouped under `health.*` in the manifest, matching the pattern of other governance fields (`freshness`, `drift_check`, `eval_artifacts`, etc.).
 
 **v7 update (2026-05-19):** the single v6 `audit_verdict` is split into four discrete verdicts (`structural_verdict`, `truth_verdict`, `comprehension_verdict`, `application_verdict`). All four flow through `health.*` in the manifest. The legacy `health.audit_verdict` field is retained as optional for back-compat reads of unmigrated v6 manifests. See [ADR 0011](adr/0011-split-audit-verdict-into-four-verdicts.md). (The standalone `migrations/v6-to-v7.md` procedure was retired by [ADR 0014](adr/0014-canonical-only-schema-files.md); the narrative now lives in git history + ADR 0011.)
 
@@ -158,7 +158,7 @@ Three versions coexist in a manifest ecosystem:
 | Version | Lives in | Meaning |
 |---|---|---|
 | Authored skill `version` | Per-skill frontmatter `version` field | Version of the skill's content (e.g. `1.2.0` means the skill has been iterated twice since its initial publish). |
-| Authored skill schema version | Per-skill frontmatter `schema_version` field | Version of the `skill.schema.json` contract the skill was authored against. The active value is `7` (four-verdict Health Block). |
+| Authored skill schema version | Per-skill frontmatter `schema_version` field | Version of the `skill.schema.json` contract the skill was authored against. The active value is `7` (four-verdict Audit Status). |
 | Manifest schema version | Manifest root `schema_version` field | Version of the compiled manifest root contract. `scripts/generate-manifest.js` emits `4` today and `schemas/manifest.schema.json` intentionally validates that value with `schema_version.const: 4`; the manifest schema file itself is v7 because the field set has advanced additively through v5-v7 without forcing a root-version bump for consumers. |
 
 ### When to bump `schema_version`
@@ -434,7 +434,7 @@ Each arrow corresponds to one row of the rename map.
 - `relations` → `relations` — copied through with the full sub-key set (`adjacent`, `related`, `broader`, `narrower`, `boundary`, `disjoint_with`, `verify_with`, `depends_on`). Same shape on both sides.
 - `grounding` → `grounding` — copied through unchanged. The authored field was renamed from `domain_frame` to `grounding` in SH-5779 (2026-04-16), aligning the authored field name with its long-standing manifest projection key. The internal sub-field `evaluation_mode` was renamed to `grounding_mode` in the same change — the field describes the evidence source, not the execution mode.
 - `portability` → `portability` — copied through with the v2 sub-key set (`readiness`, `targets`). Renamed from v1 (`level`, `exports`) in SH-5784.
-- `freshness`, `drift_check`, `eval_artifacts`, `eval_state`, `routing_eval` → `health.freshness`, `health.drift_check`, `health.eval_artifacts`, `health.eval_state`, `health.routing_eval` — five sibling governance fields are grouped under a single `health` object. The three eval-health fields replaced the v1 `health.eval_status` in SH-5784 and stay enum-checked in the manifest. `has_grounding` and `has_relations` are generated boolean flags that summarize presence of the corresponding authored blocks, so a consumer can filter on "grounded skills" without re-parsing the full `grounding` object.
+- `freshness`, `drift_check`, `eval_artifacts`, `eval_state`, `routing_eval` → `health.freshness`, `health.drift_check`, `health.eval_artifacts`, `health.eval_state`, `health.routing_eval` — five sibling governance fields are grouped under a single `health` object. The three Evaluation Status fields replaced the v1 `health.eval_status` in SH-5784 and stay enum-checked in the manifest. `has_grounding` and `has_relations` are generated boolean flags that summarize presence of the corresponding authored blocks, so a consumer can filter on "grounded skills" without re-parsing the full `grounding` object.
 
 ### What is deliberately absent from the projection
 

@@ -116,7 +116,7 @@ freshness: "2026-04-17"
 # Record hashes with: `node scripts/skill-graph-drift.js --record --apply <skill-dir>`.
 drift_check:
   last_verified: "2026-04-17"
-# === Eval-health: three orthogonal axes ===
+# === Evaluation Status: three orthogonal axes ===
 # Introduced in schema_version 2 to split what v1's single `eval_status` enum
 # collapsed. The three fields answer three different questions and must NOT
 # be collapsed back into a boolean. See docs/field-rationale.md § eval_artifacts
@@ -316,7 +316,7 @@ runtime_telemetry:
 
 > **TEMPLATE NOTE — HOW TO READ THIS FILE:** This file is a real, valid, schema-conformant Skill Metadata Protocol skill whose *subject* is skill authoring itself. Read it as a finished specimen of the contract, then adapt it by (1) renaming the identity, (2) rewriting `description`, `## Coverage`, `## Philosophy of the skill`, and `## Key Files` for your subject, (3) rewriting `## Verification` to be your skill's self-check, (4) removing any section or field that does not apply to your archetype, and (5) stripping ONLY the **`# TEMPLATE NOTE:` YAML comments and `> **TEMPLATE NOTE:**` body blockquotes** (authoring scaffolding) — the **field-purpose comments STAY** in your derived skill (they are co-located documentation, not scaffolding). Verify with `grep -n "TEMPLATE NOTE" <derived-skill>` returning zero hits AND `grep -c "^\s*#" <derived-skill>` showing the field-purpose comments are preserved. Never ship placeholder sludge (`your-skill-name`, `path/to/file`, `todo`). If a section does not apply, remove it — do not keep it and fill it with fake content. (Section headings renamed 2026-05-26: `## Philosophy` → `## Philosophy of the skill`; `## Concept Card` → `## Concept of the skill`.) Convention spec: `SKILL_METADATA_PROTOCOL.md § Inline field comments — the authoring convention`.
 
-> **TEMPLATE NOTE — CONDITIONAL FIELDS:** `extends` is valid only when `type: overlay`. `routing_bundles` only applies when routing-group ownership is part of the skill contract. `triggers` and `paths` are shown because this template is both label-routable and file-activated; most skills need only one. `grounding` is REQUIRED for `scope: project` skills (v8; legacy alias `scope: codebase` still validates); remove the block entirely for `scope: portable` or `scope: workspace` (v8; legacy alias `scope: reference`). `workspace_tags` is optional — omit for ambient / cross-project skills. `lifecycle` is optional — omit when staleness is not meaningful. `runtime_telemetry` is optional — omit when no feedback pipeline exists. Health Block fields live in the authored `SKILL.md`, but the audit/eval loop owns them; new-skill authors should leave them absent until a real audit or eval run writes evidence. (Updated 2026-05-27 per audit H14 — earlier framing used v7 `scope: codebase` / `scope: reference` names without the v8 mapping.)
+> **TEMPLATE NOTE — CONDITIONAL FIELDS:** `extends` is valid only when `type: overlay`. `routing_bundles` only applies when routing-group ownership is part of the skill contract. `triggers` and `paths` are shown because this template is both label-routable and file-activated; most skills need only one. `grounding` is REQUIRED for `scope: project` skills (v8; legacy alias `scope: codebase` still validates); remove the block entirely for `scope: portable` or `scope: workspace` (v8; legacy alias `scope: reference`). `workspace_tags` is optional — omit for ambient / cross-project skills. `lifecycle` is optional — omit when staleness is not meaningful. `runtime_telemetry` is optional — omit when no feedback pipeline exists. Audit Status fields live in the authored `SKILL.md`, but the audit/eval loop owns them; new-skill authors should leave them absent until a real audit or eval run writes evidence. (Updated 2026-05-27 per audit H14 — earlier framing used v7 `scope: codebase` / `scope: reference` names without the v8 mapping.)
 
 ## Coverage
 
@@ -372,5 +372,5 @@ Use this checklist as the authoring gate before committing a skill adapted from 
 - `docs/skill-metadata-protocol.md § Relationship to the SKILL.md format` - how Skill Metadata Protocol extends the base format
 - `docs/skill-metadata-protocol.md § Example Template Rule` — the no-placeholder-sludge rule this template enforces
 - `docs/skill-metadata-protocol.md § Archetype section map` — required H2 sections per archetype
-- `docs/adr/0011-split-audit-verdict-into-four-verdicts.md` — the Health Block four-verdict split that current v7 skills use
+- `docs/adr/0011-split-audit-verdict-into-four-verdicts.md` — the Audit Status four-verdict split that current v7 skills use
 - `../SKILL_AUDIT_LOOP.md#part-2--per-skill-audit-checklist` — the checklist this template's Verification section is derived from

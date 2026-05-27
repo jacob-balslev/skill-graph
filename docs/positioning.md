@@ -27,7 +27,7 @@ Skill Graph is not a competitor to MCP, A2A, Anthropic Skills, Smithery, or Comp
 
 | Project | What it is | What Skill Graph is in that frame |
 |---|---|---|
-| **[Anthropic Skills](https://docs.anthropic.com/en/docs/claude-code/skills)** | A discovery + loading convention: agent-runtime auto-loads `SKILL.md` files from a directory and decides what to invoke. | Skill Graph **extends** the `SKILL.md` shape with structured metadata (relations, grounding, eval health) so a library of 100+ skills stays coherent. A plain `SKILL.md` still loads everywhere; Skill Graph adds validation, drift checks, and graph queries on top. |
+| **[Anthropic Skills](https://docs.anthropic.com/en/docs/claude-code/skills)** | A discovery + loading convention: agent-runtime auto-loads `SKILL.md` files from a directory and decides what to invoke. | Skill Graph **extends** the `SKILL.md` shape with structured metadata (relations, grounding, Evaluation Status) so a library of 100+ skills stays coherent. A plain `SKILL.md` still loads everywhere; Skill Graph adds validation, drift checks, and graph queries on top. |
 | **[Agent Skills spec](https://agentskills.my/specification)** | A portable `SKILL.md` packaging format with a draft cross-runtime contract. | Skill Graph **emits** Agent-Skills-compatible exports (see [`skill-graph export`](../README.md#quick-start)). The Skill Metadata Protocol adds typed relations and audit fields the base spec does not require, but the export is plain. |
 | **[Model Context Protocol (MCP)](https://modelcontextprotocol.io)** | A *runtime* protocol: how an agent client calls a tool server (function calling, structured tools, resources, prompts). | Skill Graph is **build-time and authoring-time**, not runtime. Skills can describe how an agent should use an MCP server (in their body or `relations.depends_on`), but Skill Graph itself does not implement MCP. |
 | **[Agent-to-Agent (A2A)](https://google.github.io/A2A/latest/specification/)** | A *runtime* protocol: how one agent delegates a task to another agent and exchanges capability cards. | Skill Graph's metadata could serve as the capability descriptor an A2A agent advertises, but Skill Graph does not implement A2A delegation, transport, or task lifecycle. |
@@ -50,7 +50,7 @@ That discipline is the unique angle. The metadata schema is the substrate that m
 Reach for it when:
 
 - You have **more than ~5 skills** and they have started to depend on, verify, or exclude one another.
-- You want **deterministic checks** for skill correctness (schema, paths, eval health) and not just LLM-as-grader.
+- You want **deterministic checks** for skill correctness (schema, paths, Evaluation Status) and not just LLM-as-grader.
 - You want **graph queries** over the library — "what skills depend on this one?", "what's the boundary between X and Y?", "which skills verify this one?"
 - You want a **single audit loop** that produces a fingerprint per skill (`structural_verdict`, `truth_verdict`, `comprehension_verdict`, `application_verdict`, `eval_score`, `drift_status`) you can ship in the skill's own frontmatter.
 

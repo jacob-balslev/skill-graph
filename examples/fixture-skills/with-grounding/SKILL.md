@@ -45,7 +45,7 @@ routing-discoverable, drift-trackable v6 skill.
 The five required `grounding` sub-fields (`domain_object`, `grounding_mode`,
 `truth_sources`, `failure_modes`, `evidence_priority`), an object-shaped
 truth_source entry with `path` + `anchor` + `note`, and the non-empty
-`keywords` array that scope: codebase demands. No relations, no Health Block,
+`keywords` array that scope: codebase demands. No relations, no Audit Status,
 no Understanding fields.
 
 ## Philosophy

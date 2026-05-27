@@ -3,7 +3,7 @@
 > Type: Reference (binding spec)
 > Authored: 2026-05-25 (closes the highest-priority canonicalization gap from the 2026-05-25 multi-model review: Opus G2#3 CRITICAL, GPT-5.5 G3#1 PARTIAL)
 > Schema: [`skill-graph/schemas/comprehension.schema.json`](../schemas/comprehension.schema.json)
-> Provenance: ADR-0011 (four-verdict Health Block) defines `comprehension_verdict`; this doc defines the artifact the comprehension grader (gate 8) evaluates against; ADR-0015 + the false-canonicality verifier at `skill-graph/scripts/check-audit-manifest.js` enforce its presence when `comprehension_verdict ∈ {PROVISIONAL, PASS, SHALLOW, REDUNDANT}`.
+> Provenance: ADR-0011 (four-verdict Audit Status) defines `comprehension_verdict`; this doc defines the artifact the comprehension grader (gate 8) evaluates against; ADR-0015 + the false-canonicality verifier at `skill-graph/scripts/check-audit-manifest.js` enforce its presence when `comprehension_verdict ∈ {PROVISIONAL, PASS, SHALLOW, REDUNDANT}`.
 
 ## What this artifact is
 
@@ -126,6 +126,6 @@ The verifier walks every skill's most-recent verdicts; a graded comprehension_ve
 - [`skill-graph/SKILL_AUDIT_LOOP.md`](../SKILL_AUDIT_LOOP.md) — gate 8 (comprehension grader) doctrine.
 - [`skill-graph/SKILL_AUDIT_LOOP.md#part-3--per-skill-audit-runbook`](../SKILL_AUDIT_LOOP.md#part-3--per-skill-audit-runbook) § Step 4c — the audit-loop step that authors / refreshes this file.
 - [`skill-graph/lib/audit/graders/concept-grader-prompt.md`](../lib/audit/graders/concept-grader-prompt.md) — the grader the verdict is earned against.
-- ADR-0011 — four-verdict Health Block; defines `comprehension_verdict` semantics.
+- ADR-0011 — four-verdict Audit Status; defines `comprehension_verdict` semantics.
 - ADR-0015 — project-owned operational prompts; the verifier the schema gates.
 - `.claude/rules/version-schema-contract.md` § 5 — the `PROVISIONAL` vs `UNVERIFIED` confidence hierarchy this artifact's existence enables.

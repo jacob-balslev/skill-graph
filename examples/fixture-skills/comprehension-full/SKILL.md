@@ -44,7 +44,7 @@ either shape, and when both are present the flat fields must win.
 The five flat Understanding fields (v6 canonical) and the seven nested
 `concept` sub-fields (v5 back-compat) co-existing in one skill, plus
 `comprehension_state: present` to trigger the conditional requirement.
-No grounding (scope: portable), no relations, no Health Block.
+No grounding (scope: portable), no relations, no Audit Status.
 
 ## Philosophy
 

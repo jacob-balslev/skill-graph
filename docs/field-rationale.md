@@ -43,7 +43,7 @@ scope: portable
 
 ### Why this field exists
 
-`eval_artifacts` is the disk-truth axis of the eval-health triple: are there actual eval files at `evals/<skill>.json` (or similar)? It exists because three orthogonal questions about eval health needed to be representable separately:
+`eval_artifacts` is the disk-truth axis of the Evaluation Status: are there actual eval files at `evals/<skill>.json` (or similar)? It exists because three orthogonal questions about Evaluation Status needed to be representable separately:
 
 1. **Are eval files on disk?** — `eval_artifacts` (`none` / `planned` / `present`)
 2. **What does the eval say?** — `eval_state` (`unverified` / `passing` / `monitored`)
@@ -208,4 +208,4 @@ Do not use `readiness` as a second taxonomy for project fit. `scope: portable` p
 | Predicate semantics (relations) | [`glossary.md` § Relation predicates](glossary.md) |
 | Authoring template | [`../examples/skill-metadata-template.md`](../examples/skill-metadata-template.md) |
 | Why archetypes are rigid vs anti-rigid (OntoClean) | [`adr/0003-ontoclean-rigidity-tags.md`](adr/0003-ontoclean-rigidity-tags.md) |
-| Why the eval-health triple is orthogonal | [`adr/0001-predicate-set.md`](adr/0001-predicate-set.md) + [`adr/0006-revise-predicate-rename.md`](adr/0006-revise-predicate-rename.md) |
+| Why the Evaluation Status is orthogonal | [`adr/0001-predicate-set.md`](adr/0001-predicate-set.md) + [`adr/0006-revise-predicate-rename.md`](adr/0006-revise-predicate-rename.md) |

@@ -10,7 +10,7 @@ Skill Graph is the **library-level system** that works with this protocol. It in
 
 > **Migrating from an older schema?** Jump straight to the migration notes:
 > - **v7 → v8** — adopts the 5-axis classification model. Renames `category` → `subject`/`subjects[]` (now 9-enum: code-engineering, quality-assurance, frontend-ui, design-craft, agent-ops, product-domain, knowledge-organization, meta-methods, data-analytics), renames `type` → `operation` (now 4-enum: know/do/decide/modify, Bloom-grounded), renames `scope: codebase` → `project` and `scope: reference` → `workspace` (with v7 enum values kept as back-compat aliases). Caps `keywords` at 10 (truncated during migration to prevent keyword stuffing). **The v7→v8 phase ended 2026-05-26.** The schema's global `required` array now mandates the v8 axes (`subject` + `operation` + `scope`); the v7 fields (`type`, `category`, `categories`, `primaryCategory`, `layerPrimary`, `routingRole`) are DEPRECATED — schema currently still accepts them as optional properties to avoid breaking the corpus while CONTENT-mode migration drains (tracked in SH-6557). **New skills author the v8 axes only — do NOT author v7 fields.** See [`SKILL_METADATA_PROTOCOL.md` § Schema contract](../SKILL_METADATA_PROTOCOL.md#schema-contract-v7v8-phase-ended-2026-05-26) for the authoritative explanation, [`adr/0017-five-axis-classification-model.md`](adr/0017-five-axis-classification-model.md), and `scripts/migrate-skill-v7-to-v8.js` for legacy skills that need migration.
-> - **v6 → v7** — splits the single v6 `audit_verdict` field into four discrete Health Block verdicts (`structural_verdict`, `truth_verdict`, `comprehension_verdict`, `application_verdict`) so the audit fingerprint carries independent verdicts for each layer (form, truth, comprehension, behavior) instead of compressing them into one PASS/FAIL signal. `application_verdict` is the new primary quality signal — a skill is only behaviorally certified when this verdict is `APPLICABLE`. See [`adr/0011-split-audit-verdict-into-four-verdicts.md`](adr/0011-split-audit-verdict-into-four-verdicts.md). (The standalone `migrations/v6-to-v7.md` procedure was retired by [ADR 0014](adr/0014-canonical-only-schema-files.md); the narrative now lives in git history + ADR 0011.)
+> - **v6 → v7** — splits the single v6 `audit_verdict` field into four discrete Audit Status verdicts (`structural_verdict`, `truth_verdict`, `comprehension_verdict`, `application_verdict`) so the audit fingerprint carries independent verdicts for each layer (form, truth, comprehension, behavior) instead of compressing them into one PASS/FAIL signal. `application_verdict` is the new primary quality signal — a skill is only behaviorally certified when this verdict is `APPLICABLE`. See [`adr/0011-split-audit-verdict-into-four-verdicts.md`](adr/0011-split-audit-verdict-into-four-verdicts.md). (The standalone `migrations/v6-to-v7.md` procedure was retired by [ADR 0014](adr/0014-canonical-only-schema-files.md); the narrative now lives in git history + ADR 0011.)
 > - **v5 → v6** — flattens the `concept` block to top-level `mental_model`, `purpose`, `boundary`, `analogy`, `misconception`; adds the Health block (`last_audited`, `last_changed`, `audit_verdict` *[deprecated in v7]*, `eval_score`, `eval_failed_ids`, `lint_verdict`, `drift_status`) so a skill's audit fingerprint lives in its own frontmatter. Legacy `concept` block remains accepted for v5 skills not yet migrated. See `migrations/v5-to-v6.md`.
 > - **v4 → v5** — closes the `category` field to a 6-value enum
 > - [v2 → v3](manifest-field-mapping.md#migration-note--v2--v3-v040) — `drift_check` scalar → object, `compatibility` scalar → object, `family` → `category`, new optional fields
@@ -24,7 +24,7 @@ Skill Graph is the **library-level system** that works with this protocol. It in
 | [`SKILL_METADATA_PROTOCOL.md`](../SKILL_METADATA_PROTOCOL.md) | Normative public spec: required fields, semantic rules, authored vs generated fields, migration notes |
 | `docs/skill-metadata-protocol.md` (this file) | Rationale and deep explanation: archetype map, requiredness groups, schema strictness rules, design tradeoffs |
 | `docs/field-reference.md` | One section per authored field — purpose, rules, examples, when to use |
-| `docs/field-decision-guide.md` | Decision tables for `scope`, `relations.*`, and the eval-health fields (`eval_artifacts`, `eval_state`, `routing_eval`) / `portability` |
+| `docs/field-decision-guide.md` | Decision tables for `scope`, `relations.*`, and the Evaluation Status fields (`eval_artifacts`, `eval_state`, `routing_eval`) / `portability` |
 | `docs/concept-map.md` | Teaching map — 36 authored fields grouped by conceptual role; drift log vs earlier framings |
 | `docs/manifest-field-mapping.md` | Authored-to-generated bridge: rename map, loss policy, worked example |
 | `docs/adr/` | Architecture decision records — 0001 predicate set, 0002 JSON-LD @context, 0003 OntoClean rigidity tags, 0004 persistent identifiers |
@@ -238,9 +238,9 @@ flowchart LR
 
 ### Authored fields, grouped by purpose
 
-The YAML frontmatter uses the current v7 schema, including compatibility aliases that remain accepted for migration, the flat Understanding fields added in v6, the four-verdict Health Block added in v7, and the two publication-facet fields (`secondary_categories`, `marketplace_tier`) added in the May 2026 skill-org reorganization. The schema is the authoritative source for types and requiredness (`schemas/skill.schema.json`); the canonical per-field reference is [`docs/field-reference.md`](field-reference.md). The table below is a navigable index. `always` = required by the base schema; `if <condition>` = conditionally required; blank = optional enrichment.
+The YAML frontmatter uses the current v7 schema, including compatibility aliases that remain accepted for migration, the flat Understanding fields added in v6, the four-verdict Audit Status added in v7, and the two publication-facet fields (`secondary_categories`, `marketplace_tier`) added in the May 2026 skill-org reorganization. The schema is the authoritative source for types and requiredness (`schemas/skill.schema.json`); the canonical per-field reference is [`docs/field-reference.md`](field-reference.md). The table below is a navigable index. `always` = required by the base schema; `if <condition>` = conditionally required; blank = optional enrichment.
 
-**v6 simplification (2026-05-17).** v6 flattens the seven-field `concept` block to top-level so the Understanding fields read like every other field in the Protocol. It also adds the first flat **Health Block** so a skill's audit fingerprint lives in its own frontmatter instead of scattered across `eval-history.jsonl`, `health-ledger.jsonl`, and `.opencode/progress/skill-audit-*`. **v7 split (2026-05-19).** v7 replaces the single aggregate `audit_verdict` with four verdicts: `structural_verdict`, `truth_verdict`, `comprehension_verdict`, and `application_verdict`. The Skill Audit Loop reads these Health Block fields directly; no log-file crawl required.
+**v6 simplification (2026-05-17).** v6 flattens the seven-field `concept` block to top-level so the Understanding fields read like every other field in the Protocol. It also adds the first flat **Audit Status** so a skill's audit fingerprint lives in its own frontmatter instead of scattered across `eval-history.jsonl`, `health-ledger.jsonl`, and `.opencode/progress/skill-audit-*`. **v7 split (2026-05-19).** v7 replaces the single aggregate `audit_verdict` with four verdicts: `structural_verdict`, `truth_verdict`, `comprehension_verdict`, and `application_verdict`. The Skill Audit Loop reads these Audit Status fields directly; no log-file crawl required.
 
 | Group | Field | Required? | Shape |
 |---|---|---|---|
@@ -266,7 +266,7 @@ The YAML frontmatter uses the current v7 schema, including compatibility aliases
 | | [`drift_check`](field-reference.md#drift_check) | always | `{ last_verified, truth_source_hashes? }` |
 | | [`lifecycle`](field-reference.md#lifecycle) | | `{ stale_after_days, review_cadence }` |
 | | [`runtime_telemetry`](field-reference.md#runtime_telemetry) | | `{ feedback_source, metrics }` |
-| **Health Block** (v7+, flat) | [`last_audited`](field-reference.md#last_audited) | | ISO date |
+| **Audit Status** (v7+, flat) | [`last_audited`](field-reference.md#last_audited) | | ISO date |
 | | [`last_changed`](field-reference.md#last_changed) | | ISO date |
 | | [`structural_verdict`](field-reference.md#structural_verdict) | | `PASS` \| `PASS_WITH_FIXES` \| `FAIL` \| `UNVERIFIED` (v7+; form gate roll-up) |
 | | [`truth_verdict`](field-reference.md#truth_verdict) | | `PASS` \| `DRIFT` \| `BROKEN` \| `UNVERIFIED` (v7+; truth-source roll-up) |
@@ -277,7 +277,7 @@ The YAML frontmatter uses the current v7 schema, including compatibility aliases
 | | [`lint_verdict`](field-reference.md#lint_verdict) | | `PASS` \| `FAIL` \| `UNKNOWN` (per-script signal — `skill-lint.js`) |
 | | [`drift_status`](field-reference.md#drift_status) | | `OK` \| `DRIFT` \| `BROKEN` \| `STALE` \| `NO_BASELINE` \| `EXTERNAL_UNHASHED` \| `UNKNOWN` (per-script signal — `skill-graph-drift.js`) |
 | | [`audit_verdict`](field-reference.md#audit_verdict-deprecated) | | **DEPRECATED in v7** — `PASS` \| `PASS_WITH_FIXES` \| `PARTIAL` \| `FAIL` \| `UNKNOWN` (pre-v7 single aggregate; replaced by the four verdicts above) |
-| **Eval Health** (orthogonal triple) | [`eval_artifacts`](field-reference.md#eval_artifacts) | always | `present` \| `planned` \| `none` |
+| **Evaluation Status** (orthogonal triple) | [`eval_artifacts`](field-reference.md#eval_artifacts) | always | `present` \| `planned` \| `none` |
 | | [`eval_state`](field-reference.md#eval_state) | always | `unverified` \| `passing` \| `monitored` |
 | | [`routing_eval`](field-reference.md#routing_eval) | always | `present` \| `absent` |
 | | [`comprehension_state`](field-reference.md#comprehension_state) | | `present` \| `absent` |
@@ -331,9 +331,9 @@ For cross-skill generalisation that is NOT existential dependency (i.e., the chi
 
 **Read this when:** deciding `type:` for a new skill, deciding `extends:` vs `relations.broader:`, or judging whether a refactor that changes a skill's type is safe.
 
-## Why the eval-health triple is orthogonal (ADR 0001 + ADR 0006)
+## Why the Evaluation Status is orthogonal (ADR 0001 + ADR 0006)
 
-`eval_artifacts`, `eval_state`, and `routing_eval` are three fields that look like they could be one. They are deliberately separate because they answer three orthogonal questions about a skill's eval health:
+`eval_artifacts`, `eval_state`, and `routing_eval` are three fields that look like they could be one. They are deliberately separate because they answer three orthogonal questions about a skill's Evaluation Status:
 
 | Question | Field | Values |
 |---|---|---|
@@ -453,21 +453,21 @@ Skill Graph uses a single integer `schema_version` to signal authored skill cont
 
 For the concrete v2→v3 mapping tables, see `docs/manifest-field-mapping.md § Migration Note — schema_version 2 → 3`. For the v1→v2 tables (historical), see the same document. For field-level before/after pairs, see `docs/field-decision-guide.md`.
 
-### Health Block versioning (SH-6123)
+### Audit Status versioning (SH-6123)
 
-**Health Block fields are v6+.** The flat Health fields were introduced in v6 (`last_audited`, `last_changed`, `audit_verdict`, `eval_score`, `eval_failed_ids`, `lint_verdict`, `drift_status`) and expanded in v7 to split the single aggregate `audit_verdict` into four discrete verdicts (`structural_verdict`, `truth_verdict`, `comprehension_verdict`, `application_verdict`). Per ADR-0014, the canonical `schemas/skill.schema.json` validates the v7 contract; prior contract versions (v5/v6) live in git history. The historical compatibility points (for readers cross-checking older skills):
+**Audit Status fields are v6+.** The flat Health fields were introduced in v6 (`last_audited`, `last_changed`, `audit_verdict`, `eval_score`, `eval_failed_ids`, `lint_verdict`, `drift_status`) and expanded in v7 to split the single aggregate `audit_verdict` into four discrete verdicts (`structural_verdict`, `truth_verdict`, `comprehension_verdict`, `application_verdict`). Per ADR-0014, the canonical `schemas/skill.schema.json` validates the v7 contract; prior contract versions (v5/v6) live in git history. The historical compatibility points (for readers cross-checking older skills):
 
-- v5 used `additionalProperties: false` and did not define Health Block properties.
-- v6 defined the seven-field aggregate Health Block but did not include the four v7 verdicts.
-- v7 defines the four-verdict Health Block (`structural_verdict`, `truth_verdict`, `comprehension_verdict`, `application_verdict`). Skills on v5/v6 frontmatter that contain v7 Health Block fields are mid-migration: either bump them to v7 (the corresponding codemod ran once and retired per ADR-0014; for a stuck skill use `git show <retire-commit>:scripts/migrate-skill-v6-to-v7.js` to recover the codemod) or strip the incompatible fields.
+- v5 used `additionalProperties: false` and did not define Audit Status properties.
+- v6 defined the seven-field aggregate Audit Status but did not include the four v7 verdicts.
+- v7 defines the four-verdict Audit Status (`structural_verdict`, `truth_verdict`, `comprehension_verdict`, `application_verdict`). Skills on v5/v6 frontmatter that contain v7 Audit Status fields are mid-migration: either bump them to v7 (the corresponding codemod ran once and retired per ADR-0014; for a stuck skill use `git show <retire-commit>:scripts/migrate-skill-v6-to-v7.js` to recover the codemod) or strip the incompatible fields.
 
-**Policy:** If the Skill Audit Loop walker stamps Health Block fields onto a skill whose frontmatter declares a `schema_version` integer below 7 (v6 had a single aggregate `audit_verdict`, not the four-verdict block), the walker has written to the wrong schema tier. Correct the skill by migrating it to the current contract through the audit loop (per-version codemods retired alongside the pinned schemas per ADR-0014; the v5→v6, v6→v7, and v7→v8 transformations are documented in git history + the corresponding ADRs) rather than adding an exception to the schema. Health Block fields are not universally applicable across schema versions; they are a v6+ contract, the four-verdict shape is v7+, and the 5-axis classification is v8+.
+**Policy:** If the Skill Audit Loop walker stamps Audit Status fields onto a skill whose frontmatter declares a `schema_version` integer below 7 (v6 had a single aggregate `audit_verdict`, not the four-verdict block), the walker has written to the wrong schema tier. Correct the skill by migrating it to the current contract through the audit loop (per-version codemods retired alongside the pinned schemas per ADR-0014; the v5→v6, v6→v7, and v7→v8 transformations are documented in git history + the corresponding ADRs) rather than adding an exception to the schema. Audit Status fields are not universally applicable across schema versions; they are a v6+ contract, the four-verdict shape is v7+, and the 5-axis classification is v8+.
 
 **v7 doctrine: form gates are demoted.** In v7, `structural_verdict: FAIL` is reserved for external-constraint violations only (Anthropic Agent Skills marketplace shape, required-fields, valid YAML). Internal style preferences (title length below the external limit, body section preferences, naming conventions beyond what the marketplace enforces) emit lint warnings but do not produce `FAIL`. See [ADR 0011](adr/0011-split-audit-verdict-into-four-verdicts.md) Change 2.
 
 ## Stability Promotion Criteria (SH-6109)
 
-`stability: stable` signals that a skill's content is settled and suitable for production dependence. The promotion criteria below are checked at **WARN level** (never ERROR) by `scripts/lint/check-stability-promotion.js`, exposed as `npm run stability:check` and wired into `npm run verify`. Run history: added as a `skill-lint.js` check in `7e0306d`, removed from `skill-lint.js` in `2bd8e64` (2026-05-19) when the lint surface narrowed to canonical-source mandates, library kept in place by `92978fb` (2026-05-20), CLI entrypoint + verify wiring added 2026-05-24. The script is intentionally separate from `skill-lint.js` because `stability` is a Skill Graph quality posture, not a schema or external-format requirement. Final promotion remains author judgment, audited by the Health Block fields and the application-eval pipeline (gate 9); the gate just surfaces a warning when a skill claims `stability: stable` without meeting the five criteria.
+`stability: stable` signals that a skill's content is settled and suitable for production dependence. The promotion criteria below are checked at **WARN level** (never ERROR) by `scripts/lint/check-stability-promotion.js`, exposed as `npm run stability:check` and wired into `npm run verify`. Run history: added as a `skill-lint.js` check in `7e0306d`, removed from `skill-lint.js` in `2bd8e64` (2026-05-19) when the lint surface narrowed to canonical-source mandates, library kept in place by `92978fb` (2026-05-20), CLI entrypoint + verify wiring added 2026-05-24. The script is intentionally separate from `skill-lint.js` because `stability` is a Skill Graph quality posture, not a schema or external-format requirement. Final promotion remains author judgment, audited by the Audit Status fields and the application-eval pipeline (gate 9); the gate just surfaces a warning when a skill claims `stability: stable` without meeting the five criteria.
 
 A skill qualifies for `stability: stable` when it meets all five of the following:
 
@@ -485,4 +485,4 @@ A skill qualifies for `stability: stable` when it meets all five of the followin
 
 **To promote a skill:** Satisfy each criterion, then change `stability: experimental` to `stability: stable`. The lint run will emit no stability-promotion warnings once all five criteria are met.
 
-**Implementation:** `scripts/lint/check-stability-promotion.js` (library + CLI), wired as `npm run stability:check` inside `npm run verify`. Tests: `scripts/__tests__/test-stability-promotion.js` (8 cases). Final promotion is author judgment, audited by reading the Health Block fields directly; the gate surfaces premature-stable claims rather than blocking them.
+**Implementation:** `scripts/lint/check-stability-promotion.js` (library + CLI), wired as `npm run stability:check` inside `npm run verify`. Tests: `scripts/__tests__/test-stability-promotion.js` (8 cases). Final promotion is author judgment, audited by reading the Audit Status fields directly; the gate surfaces premature-stable claims rather than blocking them.

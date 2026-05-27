@@ -16,7 +16,7 @@
 | [`SKILL_GRAPH.md`](../SKILL_GRAPH.md) | Repo organisation: five **authority tiers** (schema / explanation / enforcement / consumer / specimen) and the invariants CI enforces |
 | [`docs/skill-metadata-protocol.md`](skill-metadata-protocol.md) | Archetype section map, requiredness groups, schema strictness rules |
 | [`docs/field-reference.md`](field-reference.md) | Per-field semantics for all current v7 top-level fields |
-| [`docs/field-decision-guide.md`](field-decision-guide.md) | Decision tables for `scope`, `relations.*`, eval-health, `portability`, `workspace_tags` |
+| [`docs/field-decision-guide.md`](field-decision-guide.md) | Decision tables for `scope`, `relations.*`, Evaluation Status, `portability`, `workspace_tags` |
 | [`docs/manifest-field-mapping.md`](manifest-field-mapping.md) | The authored → generated bridge: rename map, loss policy, migration notes |
 | [SKILL.md specification](https://agentskills.io/specification) | The base standard Skill Metadata Protocol extends |
 
@@ -193,9 +193,9 @@ Beyond the five metadata layers that express *meaning*, a library needs four ind
 
 | Axis | Field | Cardinality | Purpose |
 |---|---|---|---|
-| **Scope** | `scope` | Exactly one of `portable` \| `codebase` \| `reference` | *Where does this skill apply?* |
-| **Taxonomy (hierarchy)** | `category` + `category` | Exactly one position | *What kind of concern is this?* |
-| **Domain affiliation (tag)** | `workspace_tags` | Many-to-many | *Which kinds of project is this relevant to?* |
+| **Scope** | `scope` | Single value: `portable`, `codebase`, or `reference` | *Where does this skill apply?* |
+| **Taxonomy (hierarchy)** | `category` + `category` | Single position in the tree | *What kind of concern is this?* |
+| **Projects (tag)** | `workspace_tags` | Many-to-many | *Which kinds of project is this relevant to?* |
 | **Routing group (bundle)** | `routing_bundles` | Many-to-many | *Which router-query-time bundle does this skill join?* |
 
 The four axes compose without nesting. A single skill can be `scope: portable` with `category: engineering`, `domain: editor/linting/eslint-rules`, `workspace_tags: [ecommerce, b2b-saas]`, and `routing_bundles: [quality, linting]` — each axis carries a different shape of answer, and the router uses them for different things.
@@ -216,7 +216,7 @@ Scope is the first axis the router filters on and the only axis with body-struct
 
 Use `category` only when the library is big enough that a tree helps navigation. Smaller libraries stay flat on `category` alone.
 
-### 4.3 Domain affiliation — *which kinds of project is this relevant to?*
+### 4.3 Projects — *which kinds of project is this relevant to?*
 
 `workspace_tags` is a many-to-many coarse-grained affiliation tag. A skill declaring `workspace_tags: [ecommerce]` becomes available to every project whose workspace `.skill-graph/config.json` lists `ecommerce` among its `semantic_tags`. Two projects that both declare the `ecommerce` tag share that skill without either naming the other. Multi-root workspaces union their `skill_roots` into a single manifest with each skill stamped by its owning project handle.
 
@@ -269,7 +269,7 @@ description: "Use when <concrete situation>. Covers <A, B, C>. Do NOT use for <D
 Body content...
 ```
 
-This validates. It is also a Skill-Metadata-Protocol-enriched skill in name only — no relations, no grounding, no eval health — and it routes exactly as a plain SKILL.md skill does. Skill Graph does not penalise you for authoring minimally.
+This validates. It is also a Skill-Metadata-Protocol-enriched skill in name only — no relations, no grounding, no Evaluation Status — and it routes exactly as a plain SKILL.md skill does. Skill Graph does not penalise you for authoring minimally.
 
 ### 6.2 A skill that uses Layers 3 and 5
 

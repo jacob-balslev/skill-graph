@@ -15,7 +15,7 @@ optional `license`, optional `compatibility`, optional `metadata`, and optional
 
 | Source | Target | Automated? | Notes |
 |---|---|---|---|
-| Plain `SKILL.md` | Skill Metadata Protocol | No | Requires authoring the required protocol fields and deciding scope, eval health, relations, and grounding. |
+| Plain `SKILL.md` | Skill Metadata Protocol | No | Requires authoring the required protocol fields and deciding scope, Evaluation Status, relations, and grounding. |
 | Skill Metadata Protocol | Plain `SKILL.md` | Yes | `scripts/export-skill.js` writes a projected `SKILL.md` artifact. |
 | Exported `SKILL.md` | Skill Metadata Protocol | No | The export is lossy for rich types because `metadata` values are strings. Keep the source Skill Metadata Protocol file authoritative. |
 

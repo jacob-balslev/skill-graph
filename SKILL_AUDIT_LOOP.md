@@ -3,7 +3,7 @@
 > **Work-mode rule (read FIRST).** Editing this document, the audit scripts, the audit slash-commands, the audit prompts, or the schemas is **SYSTEM work**. Running the audit loop against individual `SKILL.md` files (via `/audit:audit`, `/audit:improve`, `/audit:evaluate`, `/audit:evolve`) is **CONTENT work**. Do not mix them in the same task or commit. Full doctrine: [`AGENTS.md` § Work Modes — SYSTEM vs CONTENT](AGENTS.md#work-modes--system-vs-content).
 
 > **Document structure.** Three parts, read top-to-bottom:
-> - **Part 1 — Loop Doctrine & Operations**: doctrine, four operations, two gates, Health Block, inner pipelines, cadence.
+> - **Part 1 — Loop Doctrine & Operations**: doctrine, four operations, two gates, Audit Status, inner pipelines, cadence.
 > - **Part 2 — Per-Skill Audit Checklist**: the canonical checklist used during `audit`, with severity model and artifact structure.
 > - **Part 3 — Per-Skill Audit Runbook**: the binding "what every audit run must do" execution contract, with 13 numbered steps from setup through `/wrap`.
 
@@ -26,7 +26,7 @@ That's it. One field at a time, keep or revert based on a single measurable sign
 The loop exists to answer one question about each skill: **does it still teach an agent to do the thing it claims to teach?** Every operation and verdict below serves that question. We evaluate each skill on three axes:
 
 1. **Intent fidelity** — does the skill's content deliver what its `description` / `scope` / routing contract promises? A skill whose body has drifted from its own stated purpose fails here, even if every path it cites still resolves.
-2. **Teaching efficacy** — does the skill actually change and improve an agent's behavior on the topic? This is the real quality signal. A skill that is structurally perfect but teaches nothing — or teaches it badly — is a weak skill. Under the four-verdict Health Block (schema v7, [ADR 0011](docs/adr/0011-split-audit-verdict-into-four-verdicts.md)), `application_verdict` is where this is certified against real artifacts.
+2. **Teaching efficacy** — does the skill actually change and improve an agent's behavior on the topic? This is the real quality signal. A skill that is structurally perfect but teaches nothing — or teaches it badly — is a weak skill. Under the four-verdict Audit Status (schema v7, [ADR 0011](docs/adr/0011-split-audit-verdict-into-four-verdicts.md)), `application_verdict` is where this is certified against real artifacts.
 3. **Upstream currency (anti-displacement)** — is the skill's approach still the best available, or has a recent first-party release (Anthropic / OpenAI), platform release (OpenCode), or widely-adopted open-source release made it obsolete or strictly worse than a native capability? The agentic ecosystem moves fast; a skill that teaches a workaround for something now solved natively is decayed even if it is internally accurate and teaches well. This axis is checked per skill in the operational audit prompt (`skill-graph/SKILL_AUDIT_LOOP.md#part-3--per-skill-audit-runbook` § Step 6-displacement), recorded as a `category: DISPLACEMENT` finding with a deprecate / fold / reframe-to-delta recommendation, and **never actioned by auto-deletion** — removal requires explicit user sign-off (`.claude/rules/code-preservation.md`).
 
 The audit is **not a lint-test factory.** We do not invent arbitrary internal structural checks to manufacture findings, and an empty findings report on a genuinely good skill is a **PASS** — not a failure to find work. `lint_verdict` / `structural_verdict` cover form, schema validity, and external marketplace mandates only — a **floor the skill must clear**, never the target it aims at. Passing lint says the skill is well-formed; it says nothing about whether the skill teaches well.
@@ -46,8 +46,8 @@ The Integrity Gate is required before release because broken metadata poisons th
 
 Mapping the loop onto Google's MLOps maturity model (Level 0 manual → Level 1 pipeline automation with continuous training → Level 2 CI/CD for the pipeline itself). **The two gates are at different maturity tiers for different reasons — do not bundle them as "both at L0":**
 
-- **Integrity Gate ≈ Level 1 (runner + write-back both complete).** `lint`, `manifest:validate`, `routing-eval`, `export:verify-skill-md`, `overlap`, and unit tests run deterministically corpus-wide in CI. Verdict write-back is wired post-F14 (commit `fbdf598`, 2026-05-25): `audit` now lands `last_audited`, `lint_verdict`, `structural_verdict`, and `truth_verdict` onto the skill's Health Block. As of 2026-05-26, the gate is operationally complete — pending only a corpus-wide first-run sweep to advance every skill from `UNVERIFIED` to its real verdict.
-- **Behavior Gate runner ≈ Level 1; Behavior Gate eval *data* ≈ Level 0.** This is the key asymmetry the prior framing hid. The runner — `evaluate-skill.js` — IS wired to write `comprehension_verdict` and `application_verdict` to the Health Block (`evaluate-skill.js:1443-1508`, uses `updateFrontmatterField`). What's missing is eval **coverage**: comprehension artifacts exist for only a minority of skills, and application artifacts are just beginning as worked, externally-anchored specimens. Authoring the missing eval artifacts is the L0→L1 lift, not building the runner. Verify live coverage with `find ~/Development/skills/skills -path '*/evals/comprehension.json' -o -path '*/evals/application.json'`.
+- **Integrity Gate ≈ Level 1 (runner + write-back both complete).** `lint`, `manifest:validate`, `routing-eval`, `export:verify-skill-md`, `overlap`, and unit tests run deterministically corpus-wide in CI. Verdict write-back is wired post-F14 (commit `fbdf598`, 2026-05-25): `audit` now lands `last_audited`, `lint_verdict`, `structural_verdict`, and `truth_verdict` onto the skill's Audit Status. As of 2026-05-26, the gate is operationally complete — pending only a corpus-wide first-run sweep to advance every skill from `UNVERIFIED` to its real verdict.
+- **Behavior Gate runner ≈ Level 1; Behavior Gate eval *data* ≈ Level 0.** This is the key asymmetry the prior framing hid. The runner — `evaluate-skill.js` — IS wired to write `comprehension_verdict` and `application_verdict` to the Audit Status (`evaluate-skill.js:1443-1508`, uses `updateFrontmatterField`). What's missing is eval **coverage**: comprehension artifacts exist for only a minority of skills, and application artifacts are just beginning as worked, externally-anchored specimens. Authoring the missing eval artifacts is the L0→L1 lift, not building the runner. Verify live coverage with `find ~/Development/skills/skills -path '*/evals/comprehension.json' -o -path '*/evals/application.json'`.
 
 This distinction matters operationally:
 
@@ -58,16 +58,16 @@ This distinction matters operationally:
 
 ## The Four Operations
 
-Every action in this loop falls into one of four operations. Each writes to a specific set of flat fields in the skill's Health Block (see `schemas/skill.schema.json`).
+Every action in this loop falls into one of four operations. Each writes to a specific set of flat fields in the skill's Audit Status (see `schemas/skill.schema.json`).
 
 | Operation | What it does | Edits instructional content? | Writes which fields |
 |---|---|---|---|
-| **audit** | Read every field, check freshness and validity against repo truth, score the graded gates when `--graded`. | No — writes Health Block fields only | `last_audited`, `structural_verdict`, `truth_verdict`, `comprehension_verdict` (`--graded`), `application_verdict` (`--graded`); retains the per-script `lint_verdict` + `drift_status` they roll up from |
+| **audit** | Read every field, check freshness and validity against repo truth, score the graded gates when `--graded`. | No — writes Audit Status fields only | `last_audited`, `structural_verdict`, `truth_verdict`, `comprehension_verdict` (`--graded`), `application_verdict` (`--graded`); retains the per-script `lint_verdict` + `drift_status` they roll up from |
 | **improve** | Edit one field. One commit. Time-boxed. | Yes | the chosen field + `last_changed` |
-| **evaluate** | Run the eval suite (deterministic + comprehension/application graders) against the skill. | No — writes eval/Health Block fields only | `eval_score`, `eval_failed_ids`, `freshness`; `comprehension_verdict` / `application_verdict` when those graders run |
+| **evaluate** | Run the eval suite (deterministic + comprehension/application graders) against the skill. | No — writes eval/Audit Status fields only | `eval_score`, `eval_failed_ids`, `freshness`; `comprehension_verdict` / `application_verdict` when those graders run |
 | **evolve** | Loop over the corpus: `audit → improve → evaluate`, prioritised by `application_verdict` then skill-graph centrality + staleness. | Yes (per skill) | all of the above, per skill |
 
-`audit` and `evaluate` may mutate frontmatter state because the Health Block lives on the skill. They do not rewrite the skill's instructional body or routing contract unless an explicit `improve` step follows.
+`audit` and `evaluate` may mutate frontmatter state because the Audit Status lives on the skill. They do not rewrite the skill's instructional body or routing contract unless an explicit `improve` step follows.
 
 This replaces the previous 13-command surface with **4 canonical operations + 2 utility commands** (6 files total under `.claude/commands/audit/`). The 4 canonical are the four operations in the table above; the 2 utilities are `discover` (creates new skills from a keyword matrix — separate concern from the read-fix-test-next loop) and `merge` (multi-model union-curate merge — only used in roundtable sessions, not in normal solo audits). The mapping:
 
@@ -90,11 +90,11 @@ This replaces the previous 13-command surface with **4 canonical operations + 2 
 
 > **On the "5-command" framing.** Earlier prose called this a "5-command surface" — counting `audit / improve / evaluate / evolve / discover`. The actual file count under `.claude/commands/audit/` is **6** because `merge.md` was added later. The honest framing: **4 canonical operations (audit/improve/evaluate/evolve) + 2 utilities (discover/merge)**. Use that phrasing in new docs.
 
-## The Health Block — state lives on the skill
+## The Audit Status — state lives on the skill
 
 Schema v7 carries the Health fields on every SKILL.md frontmatter. v7 removed the single v6 `audit_verdict` and replaced it with **four discrete verdicts**, one per audit layer, because the aggregate masqueraded as a quality signal while conflating form, truth, comprehension, and behavior (see [ADR 0011](docs/adr/0011-split-audit-verdict-into-four-verdicts.md)):
 
-The Health Block uses the **inline field-purpose comment convention** (see `SKILL_METADATA_PROTOCOL.md § Inline field comments — the authoring convention`): every field carries a comment block above it naming purpose + allowed values. The convention is identical for hand-authored fields and audit-loop-written fields — readers should not need to leave the file to decode the verdict.
+The Audit Status uses the **inline field-purpose comment convention** (see `SKILL_METADATA_PROTOCOL.md § Inline field comments — the authoring convention`): every field carries a comment block above it naming purpose + allowed values. The convention is identical for hand-authored fields and audit-loop-written fields — readers should not need to leave the file to decode the verdict.
 
 ```yaml
 # schema_version: protocol contract version this skill conforms to.
@@ -147,9 +147,9 @@ drift_status: OK
 
 `application_verdict == APPLICABLE` is the only verdict that certifies a skill is **useful**; the other three are necessary infrastructure (the skill loads, exports cleanly, and the model has the concept) but do not certify usefulness. `PROVISIONAL` means one model assessed useful behavior without the independent application grader; `UNVERIFIED` means no application assessment has run.
 
-Before v6, this state was scattered across `eval-history.jsonl`, `routing-misses.jsonl`, `.opencode/progress/skill-audit-*`, `health-ledger.jsonl`, and `findings/*.md`. To know one skill's audit status you grepped five places. The Health Block collapses that to one frontmatter block. The loop reads it; the operations write it back.
+Before v6, this state was scattered across `eval-history.jsonl`, `routing-misses.jsonl`, `.opencode/progress/skill-audit-*`, `health-ledger.jsonl`, and `findings/*.md`. To know one skill's audit status you grepped five places. The Audit Status collapses that to one frontmatter block. The loop reads it; the operations write it back.
 
-The same skill's body still gets `audits/<skill-name>/findings.md` and `verdict.md` when an audit produces longer-form output, but those files are evidence, not state. The state of truth is the Health Block.
+The same skill's body still gets `audits/<skill-name>/findings.md` and `verdict.md` when an audit produces longer-form output, but those files are evidence, not state. The state of truth is the Audit Status.
 
 ## The Inner Pipeline of `audit`
 
@@ -204,7 +204,7 @@ for skill in priority_order(application_verdict first, then skill-graph centrali
     if understanding_field_targetable:
       improve(skill, field=understanding_field)   # one v7 Understanding field
   evaluate(skill)
-  write Health Block fields back
+  write Audit Status fields back
 ```
 
 `understanding_field` is selected by `understandingField()` in
@@ -215,19 +215,19 @@ outright, otherwise shortest populated value among `description`,
 stalest Health date field stays in the trace as a staleness signal
 but is not what gets passed to the improver's HARD SCOPE.
 
-Priority reads the Health Block directly: the walker looks at `application_verdict` first — skills with `application_verdict: UNVERIFIED` and high routing centrality get priority for application-eval authoring — then falls back to `last_audited` ascending for ties. No telemetry crawl, no log aggregation.
+Priority reads the Audit Status directly: the walker looks at `application_verdict` first — skills with `application_verdict: UNVERIFIED` and high routing centrality get priority for application-eval authoring — then falls back to `last_audited` ascending for ties. No telemetry crawl, no log aggregation.
 
 ## Loop Principles
 
 1. **One skill, one field, one metric at a time.** Karpathy keep-or-revert pressure makes the loop tractable.
-2. **State lives in the artifact.** The Health Block is the source of truth; logs are append-only evidence.
+2. **State lives in the artifact.** The Audit Status is the source of truth; logs are append-only evidence.
 3. **Read before changing.** `audit` must run before `improve` is allowed to write.
 4. **Deterministic checks first; graded checks second.** Lint and drift are mechanical and trustworthy; graded scores are subject to model variance.
 5. **Fixes are tiny by default.** A field-sized change is the unit of work. Larger changes are decomposed into a sequence of field-sized improves.
 
 ## Loop Inputs
 
-1. `SKILL.md` (frontmatter is read; Health Block is read first)
+1. `SKILL.md` (frontmatter is read; Audit Status is read first)
 2. `evals/<skill>.json` and optional `evals/comprehension.json`
 3. The truth sources declared in `grounding.truth_sources`
 4. `skills.manifest.json` (generated by `skill-graph`)
@@ -235,9 +235,9 @@ Priority reads the Health Block directly: the walker looks at `application_verdi
 
 ## Loop Outputs
 
-Two kinds. The Health Block (state) and the audit artifacts (evidence):
+Two kinds. The Audit Status (state) and the audit artifacts (evidence):
 
-**Health Block** — written back into the skill's own frontmatter. This is the state.
+**Audit Status** — written back into the skill's own frontmatter. This is the state.
 
 **Audit artifacts** — under `audits/<skill-name>/`:
 
@@ -248,7 +248,7 @@ audits/<skill-name>/
     scorecard.md    ← per-dimension scores when --graded ran
 ```
 
-These remain append-only evidence files for any audit run that needs long-form output. The skill's Health Block lets a reader skip them entirely if all they need is the verdict.
+These remain append-only evidence files for any audit run that needs long-form output. The skill's Audit Status lets a reader skip them entirely if all they need is the verdict.
 
 ## Quick start
 
@@ -273,7 +273,7 @@ node lib/audit/evaluate-skill.js --mode application --application skills/<skill-
 # (PREVIEW · standalone path flags are required when the skill library is not cwd)
 node bin/skill-graph.js evolve --workspace-root <workspace> --skills-dir <workspace>/skills --top 10
 
-# Show the Health Block for a skill at a glance
+# Show the Audit Status for a skill at a glance
 node lib/audit/skill-status.js <skill-name>
 ```
 
@@ -292,9 +292,9 @@ The loop does not require a separate issue tracker, dashboard, control plane, or
 
 ## Related Specs
 
-- `docs/skill-metadata-protocol.md` — the canonical field list including the v7 Health Block and flat Understanding fields
+- `docs/skill-metadata-protocol.md` — the canonical field list including the v7 Audit Status and flat Understanding fields
 - `schemas/skill.schema.json` — the machine-validated current contract (v7 + v8 compat-window). Prior versions live in git history per [ADR-0014](docs/adr/0014-canonical-only-schema-files.md); the schema's `$id` (`https://skillgraph.dev/schemas/skill.schema.json`) is the stable identifier.
-- [ADR 0011](docs/adr/0011-split-audit-verdict-into-four-verdicts.md) — the `audit_verdict` → four-verdict split (rationale for the v7 Health Block)
+- [ADR 0011](docs/adr/0011-split-audit-verdict-into-four-verdicts.md) — the `audit_verdict` → four-verdict split (rationale for the v7 Audit Status)
 - [ADR 0017](docs/adr/0017-five-axis-classification-model.md) — the v7→v8 classification overhaul (subject + operation + scope rename)
 - **Part 2 below** — the per-skill audit checklist (formerly `SKILL_AUDIT_LOOP.md` § Part 2, deleted in the 2026-05-25 consolidation)
 - **Part 3 below** — the per-skill audit runbook (formerly `SKILL_AUDIT_LOOP.md` § Part 3, deleted in the 2026-05-25 consolidation)
@@ -321,8 +321,8 @@ Every concrete audit run is one of two named modes. The protocol below is identi
 
 | Mode | When to use | What `audit` does | What follow-up looks like |
 |---|---|---|---|
-| **Diagnostic audit (report-only)** | First sweep, pre-release scan, multi-model roundtable, anything where you want the verdict before deciding on fixes. | Runs lint + drift + (optionally graded) phases, stamps the Integrity-layer Health Block fields (`last_audited`, `lint_verdict`, `structural_verdict`, `truth_verdict`), writes findings/verdict/scorecard artifacts. **Does NOT mutate the skill body or commit.** | Operator decides whether to file the findings as Linear tasks for later remediation, hand off to `improve`, or close as "no action — skill is healthy." The audit is a read step. |
-| **Remediation audit (fix + commit)** | Targeted run when a specific finding is known and the operator has commit-budget to fix it now. Typically preceded by an `improve --field <name>` step that landed the fix; the audit-after-improve confirms the verdict moved. | Same Integrity-layer write-back, same artifacts. The auditor then runs `improve` (or makes the explicit edit), re-runs `audit` to confirm the verdict change, and commits skill source + Health Block stamp + audit artifacts together in one path-limited commit. | Verdict.md `## Follow-up State` records `Fixes applied — <skill>:<field> at <commit-sha>`. |
+| **Diagnostic audit (report-only)** | First sweep, pre-release scan, multi-model roundtable, anything where you want the verdict before deciding on fixes. | Runs lint + drift + (optionally graded) phases, stamps the Integrity-layer Audit Status fields (`last_audited`, `lint_verdict`, `structural_verdict`, `truth_verdict`), writes findings/verdict/scorecard artifacts. **Does NOT mutate the skill body or commit.** | Operator decides whether to file the findings as Linear tasks for later remediation, hand off to `improve`, or close as "no action — skill is healthy." The audit is a read step. |
+| **Remediation audit (fix + commit)** | Targeted run when a specific finding is known and the operator has commit-budget to fix it now. Typically preceded by an `improve --field <name>` step that landed the fix; the audit-after-improve confirms the verdict moved. | Same Integrity-layer write-back, same artifacts. The auditor then runs `improve` (or makes the explicit edit), re-runs `audit` to confirm the verdict change, and commits skill source + Audit Status stamp + audit artifacts together in one path-limited commit. | Verdict.md `## Follow-up State` records `Fixes applied — <skill>:<field> at <commit-sha>`. |
 
 The mode is operator intent, not a CLI flag. Diagnostic-only doctrine has the audit produce evidence and stop. Remediation doctrine has the audit fold into a `read → fix → test → next` Karpathy cycle.
 
@@ -334,7 +334,7 @@ A complete audit should produce:
 2. Behavior Gate result
 3. findings list
 4. required fixes
-5. a remediation note. **`audit` stamps the Integrity-layer Health Block fields back onto the skill** (`last_audited`, `lint_verdict`, `structural_verdict` — and `comprehension_verdict` / `application_verdict` when run with `--graded`). The skill's instructional body and routing contract are untouched; only `improve` (or an explicit auditor edit) mutates those. This matches Part 1 § The Four Operations — the operations write to a specific set of flat fields in the Health Block, and `audit` is one of them.
+5. a remediation note. **`audit` stamps the Integrity-layer Audit Status fields back onto the skill** (`last_audited`, `lint_verdict`, `structural_verdict` — and `comprehension_verdict` / `application_verdict` when run with `--graded`). The skill's instructional body and routing contract are untouched; only `improve` (or an explicit auditor edit) mutates those. This matches Part 1 § The Four Operations — the operations write to a specific set of flat fields in the Audit Status, and `audit` is one of them.
 
 ### Gate Model
 
@@ -527,7 +527,7 @@ A skill audit is complete when:
 3. the Integrity Gate result is explicit
 4. the Behavior Gate result is explicit, even when left `UNVERIFIED` / `NA`
 5. confirmed drift was fixed or explicitly deferred
-6. the Health Block verdicts are populated or explicitly left `UNVERIFIED` with evidence:
+6. the Audit Status verdicts are populated or explicitly left `UNVERIFIED` with evidence:
    - `structural_verdict`
    - `truth_verdict`
    - `comprehension_verdict`

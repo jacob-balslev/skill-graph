@@ -18,7 +18,7 @@
 
 This document is the top-level public contract for the Skill Metadata Protocol frontmatter format — the **normative spec**. It defines which fields are required, what each field means in operational terms, which fields are authored by humans vs computed by tooling, and how to migrate from older schema versions. Skill Graph is the library-level system that consumes this contract. The prose is terse and boundary-aware: every clause is a rule a consumer or author can verify against the schema and the focused Skill Graph verification tools.
 
-**Companion docs by genre.** This contract is the *what*. The *why* — design rationale, archetype semantics, OntoClean rigidity, the eval-health triple's orthogonality, the JSON-LD W3C mappings, and the philosophical posture behind the field choices — lives in [`skill-metadata-protocol.md`](docs/skill-metadata-protocol.md). The two docs are coordinated and grow together: a normative rule that lacks a "why" is fragile; a "why" that lacks a normative rule is vapourware. If you are authoring a SKILL.md, you read this file. If you are deciding whether to add a field to the schema, you read both.
+**Companion docs by genre.** This contract is the *what*. The *why* — design rationale, archetype semantics, OntoClean rigidity, the Evaluation Status's orthogonality, the JSON-LD W3C mappings, and the philosophical posture behind the field choices — lives in [`skill-metadata-protocol.md`](docs/skill-metadata-protocol.md). The two docs are coordinated and grow together: a normative rule that lacks a "why" is fragile; a "why" that lacks a normative rule is vapourware. If you are authoring a SKILL.md, you read this file. If you are deciding whether to add a field to the schema, you read both.
 
 ---
 
@@ -30,7 +30,7 @@ This document is the top-level public contract for the Skill Metadata Protocol f
    - [Identity](#identity)
    - [Classification](#classification--the-5-axis-model)
    - [Health and Drift](#health-and-drift)
-   - [Eval Health](#eval-health)
+   - [Evaluation Status](#Evaluation Status)
    - [Activation and Routing](#activation-and-routing)
    - [Relations](#relations)
    - [Grounding](#grounding)
@@ -122,7 +122,7 @@ metadata:
   # project (one specific repo; requires populated `grounding` block).
   scope: portable
 
-  # === Eval-health (three orthogonal axes — never collapse to boolean) ===
+  # === Evaluation Status (three orthogonal axes — never collapse to boolean) ===
 
   # eval_artifacts: disk-truth — does an eval file exist on disk?
   # none (no intent) / planned (intent declared, no file yet) / present (file exists).
@@ -226,10 +226,10 @@ boundary        # string — what this concept is NOT (with mechanism, not just 
 analogy         # string — one-sentence metaphor preserving the core mechanism
 misconception   # string — the wrong mental model people bring
 concept         # DEPRECATED in v6 — legacy v5 nested block; back-compat only
-# Health Block (v7+, flat) — written by the audit loop, not hand-authored
+# Audit Status (v7+, flat) — written by the audit loop, not hand-authored
 last_audited            # ISO date — when `audit` last ran
 last_changed            # ISO date — when the SKILL.md was last edited
-# v7 four-verdict Health Block (replaces the single v6 audit_verdict):
+# v7 four-verdict Audit Status (replaces the single v6 audit_verdict):
 structural_verdict      # PASS | PASS_WITH_FIXES | FAIL | UNVERIFIED (form roll-up, gates 1-2, 7)
 truth_verdict           # PASS | DRIFT | BROKEN | UNVERIFIED (truth roll-up, gates 3-6)
 comprehension_verdict   # PASS | SHALLOW | REDUNDANT | UNVERIFIED | PROVISIONAL | SKIPPED_BASELINE_HIGH | NA
@@ -344,7 +344,7 @@ The graph layer. Six edge types, cycle-checked on `depends_on` + `broader` + `na
 
 ### v7 Legacy Fields (deprecated)
 
-The v7 classification fields are **deprecated**. New skills author the v8 axes (`subject`, `operation`, `scope`) only. The schema retains these fields as optional back-compat properties so existing skills validate while the audit loop drains them; schema-level removal is pending. Do not author them on new skills, and do not "fix" a skill that still carries them outside an `/audit:*` run — corpus migration flows one skill at a time through the audit loop, with Health Block evidence, per `skill-graph/AGENTS.md § Work Modes`.
+The v7 classification fields are **deprecated**. New skills author the v8 axes (`subject`, `operation`, `scope`) only. The schema retains these fields as optional back-compat properties so existing skills validate while the audit loop drains them; schema-level removal is pending. Do not author them on new skills, and do not "fix" a skill that still carries them outside an `/audit:*` run — corpus migration flows one skill at a time through the audit loop, with Audit Status evidence, per `skill-graph/AGENTS.md § Work Modes`.
 
 | Legacy field | v8 replacement | Status |
 |---|---|---|
@@ -411,7 +411,7 @@ The v8 `subject` axis spreads `engineering`'s former 40% across three subjects (
 
 **`freshness`**
 - ISO date the author last **reviewed** the skill's content. This is the **reviewer's footprint**, NOT the editor's footprint.
-- Set by the author when they verify the skill is still accurate. The Health Block field [`last_changed`](#health-block-v6-flat--written-by-the-audit-loop) records when the SKILL.md was last **edited** (loop-stamped); the two are intentionally distinct because a skill can be edited without a fresh review (e.g. a typo fix) and reviewed without an edit (the author re-read and confirmed it still holds).
+- Set by the author when they verify the skill is still accurate. The Audit Status field [`last_changed`](#health-block-v6-flat--written-by-the-audit-loop) records when the SKILL.md was last **edited** (loop-stamped); the two are intentionally distinct because a skill can be edited without a fresh review (e.g. a typo fix) and reviewed without an edit (the author re-read and confirmed it still holds).
 - Not computed; the author sets it. It is an authored claim, not a hash.
 - Cosmetic edits (typo, formatting) should NOT bump `freshness` — they bump `last_changed` only. Substantive review or content update should bump `freshness`.
 - Agents reading `freshness` should interpret it as "the author asserts they reviewed this on date X," NOT as "the file was last touched on date X" — for that, read `last_changed`.
@@ -426,9 +426,9 @@ The v8 `subject` axis spreads `engineering`'s former 40% across three subjects (
 - `stale_after_days`: integer days after `drift_check.last_verified` at which the skill is flagged stale. Integration skills that wrap external APIs typically need shorter windows (30–90 days) than pure concept skills (180+ days).
 - `review_cadence`: one of `per-commit`, `weekly`, `quarterly`, `on-truth-source-change`.
 
-### Eval Health
+### Evaluation Status
 
-The three eval-health fields are orthogonal — they measure different dimensions.
+The three Evaluation Status fields are orthogonal — they measure different dimensions.
 
 **`eval_artifacts`** — Does an evaluation artifact exist?
 - `none`: no evals defined.
@@ -491,7 +491,7 @@ Required when `comprehension_state: present`. No protocol length cap on any of t
 - Optional sub-fields: `runner`, `model`, `receipt`, `receipt_hash`.
 - Use this to support `eval_state: passing` or `eval_state: monitored` with a concrete scorecard, grader history, or CI receipt.
 
-### Health Block (v6+, flat — written by the audit loop)
+### Audit Status (v6+, flat — written by the audit loop)
 
 Seven flat top-level fields that record a skill's audit fingerprint in its own frontmatter, replacing the scattered log-file model of v5 (`eval-history.jsonl`, `routing-misses.jsonl`, `.opencode/progress/skill-audit-*`, `health-ledger.jsonl`, `findings/*.md`). The Skill Audit Loop reads these directly; no log-file crawl required.
 
@@ -703,7 +703,7 @@ grounding:
 
 ### Authored in `SKILL.md` (human-written)
 
-The canonical fields in the frontmatter are authored by humans, with two exceptions: `drift_check.truth_source_hashes` is computed by the drift sentinel (`skill-graph drift --record --apply`), and the v7 **Health Block** fields (`last_audited`, `last_changed`, `structural_verdict`, `truth_verdict`, `comprehension_verdict`, `application_verdict`, `eval_score`, `eval_failed_ids`, `lint_verdict`, `drift_status`) are stamped automatically by the Skill Audit Loop's `audit`, `improve`, `evaluate`, and grader operations. Do not hand-author the Health Block — those values are owned by the loop and the dedicated graders (comprehension and application). The pre-v7 `audit_verdict` field is deprecated; the codemod (`scripts/migrate-skill-v6-to-v7.js`) strips it from migrated skills.
+The canonical fields in the frontmatter are authored by humans, with two exceptions: `drift_check.truth_source_hashes` is computed by the drift sentinel (`skill-graph drift --record --apply`), and the v7 **Audit Status** fields (`last_audited`, `last_changed`, `structural_verdict`, `truth_verdict`, `comprehension_verdict`, `application_verdict`, `eval_score`, `eval_failed_ids`, `lint_verdict`, `drift_status`) are stamped automatically by the Skill Audit Loop's `audit`, `improve`, `evaluate`, and grader operations. Do not hand-author the Audit Status — those values are owned by the loop and the dedicated graders (comprehension and application). The pre-v7 `audit_verdict` field is deprecated; the codemod (`scripts/migrate-skill-v6-to-v7.js`) strips it from migrated skills.
 
 **Human-authored fields:**
 
@@ -720,7 +720,7 @@ mental_model, purpose, boundary, analogy, misconception,
 concept
 ```
 
-**Loop-written fields (v7+, Health Block):**
+**Loop-written fields (v7+, Audit Status):**
 
 ```
 # Stamped by `audit` / `improve` / `evaluate` — do not hand-author
@@ -765,7 +765,7 @@ Some legacy scope and type values are normalized by the manifest generator to th
 | Surface | State |
 |---|---|
 | **This doc (SKILL_METADATA_PROTOCOL.md)** | v8 — 5-axis classification |
-| **Schema file (`schemas/skill.schema.json`)** | v8. Global required: `subject`, `operation`, `scope`, plus the identity/lifecycle/eval-health fields. v7 fields (`type`, `category`) defined as optional properties; the `category.const` 6-enum still constrains values when authors choose to declare it. |
+| **Schema file (`schemas/skill.schema.json`)** | v8. Global required: `subject`, `operation`, `scope`, plus the identity/lifecycle/Evaluation Status fields. v7 fields (`type`, `category`) defined as optional properties; the `category.const` 6-enum still constrains values when authors choose to declare it. |
 | **Compiled manifest (`skills.manifest.json`) summary** | v8-primary (`by_subject` / `by_operation`); v7 facets (`by_category` / `by_type`) retained as observational telemetry for skills that still carry the legacy fields. |
 | **Audit Loop checklist (`SKILL_AUDIT_LOOP.md` § Part 2)** | v8 |
 

@@ -12,9 +12,9 @@ The Skill Audit Loop is **Karpathy's auto-improvement loop** (one editable asset
 
 | Operation | What it does | Edits the body? | Writes which fields |
 |---|---|---|---|
-| **audit** | Read every field, check freshness and validity against repo truth, score graded gates when `--graded`. | No (Health Block only) | `last_audited`, `structural_verdict`, `truth_verdict`, `comprehension_verdict` (`--graded`), `application_verdict` (`--graded`) |
+| **audit** | Read every field, check freshness and validity against repo truth, score graded gates when `--graded`. | No (Audit Status only) | `last_audited`, `structural_verdict`, `truth_verdict`, `comprehension_verdict` (`--graded`), `application_verdict` (`--graded`) |
 | **improve** | Edit one field. One commit. Time-boxed. | Yes | The chosen field + `last_changed` |
-| **evaluate** | Run the eval suite (deterministic + comprehension/application graders). | No (eval/Health Block only) | `eval_score`, `eval_failed_ids`, `freshness`; `comprehension_verdict` / `application_verdict` when those graders run |
+| **evaluate** | Run the eval suite (deterministic + comprehension/application graders). | No (eval/Audit Status only) | `eval_score`, `eval_failed_ids`, `freshness`; `comprehension_verdict` / `application_verdict` when those graders run |
 | **evolve** | For-loop over the corpus: `audit → improve → evaluate`, prioritised by `application_verdict` then graph centrality + staleness. | Yes (per skill) | All of the above, per skill |
 
 The Karpathy keep-or-revert gate applies in `improve`: if `eval_score` does not improve (or regresses below threshold), the commit is reverted automatically. The loop records the failed attempt and moves to the next field. See [../SKILL_AUDIT_LOOP.md:120-137](../SKILL_AUDIT_LOOP.md).
@@ -38,7 +38,7 @@ Both columns "Script (canonical)" and "Script (root, legacy)" should converge to
 - Per ADR 0009 (sibling-repo deprecation), `skill-graph/` is the canonical implementation post-2026-05-18.
 - The root copies under `scripts/skill/` are legacy; SH-6198 tracks their deletion or delegation.
 - The `--application` entry point was canonicalized in commit `342a67f`, but the body still delegates to root. See `skill-graph/audits/prompts/skill-audit-loop-single-model.md` Step 6 notes.
-- When the audit pipeline writes to a Health Block field, **verify which script wrote it** (root vs skill-graph): the legacy root script can still produce non-canonical verdicts.
+- When the audit pipeline writes to a Audit Status field, **verify which script wrote it** (root vs skill-graph): the legacy root script can still produce non-canonical verdicts.
 
 This duplication is a canonical/version-control issue, not a naming or teachability problem. The intervention is finishing ADR 0009, not renaming.
 
@@ -78,7 +78,7 @@ for skill in priority_order(application_verdict first, then graph centrality + l
     if understanding_field_targetable:
       improve(skill, field=understanding_field)
   evaluate(skill)
-  write Health Block fields back
+  write Audit Status fields back
 ```
 
 Source: [../SKILL_AUDIT_LOOP.md:138-162](../SKILL_AUDIT_LOOP.md).
@@ -177,7 +177,7 @@ node lib/audit/evaluate-skill.js --mode application --application skills/<skill-
 # Evolve corpus (audit → improve → evaluate in priority order)
 node bin/skill-graph.js evolve --workspace-root <workspace> --skills-dir <workspace>/skills --top 10
 
-# Show Health Block for a skill at a glance
+# Show Audit Status for a skill at a glance
 node lib/audit/skill-status.js <skill-name>
 ```
 

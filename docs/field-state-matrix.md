@@ -126,7 +126,7 @@ All **human-authored**. Required as a group when `comprehension_state: present`.
 | `runtime_telemetry` | object | human-authored | Points at a JSONL feed of run receipts. Optional. |
 | `eval_last_run` | object | human-authored | Receipt for the most recent eval run. Supports `eval_state: passing` / `monitored` with a real receipt. |
 
-## Health Block (v7+, loop-written)
+## Audit Status (v7+, loop-written)
 
 The Skill Audit Loop owns these. **Do not hand-author.** Hand-edits are overwritten on the next `audit` run.
 
@@ -199,7 +199,7 @@ These are not separate fields; they are alternative spellings or values that the
 2. **Flat Understanding fields win over `concept` block.** When both are present, the comprehension grader reads the flat fields and ignores the nested block.
 3. **Authored `category` wins over `primaryCategory`.** When both are present, `categories[0]` MUST equal `category` (schema-enforced).
 4. **`structural_verdict` from canonical lint wins over root lint.** The root `scripts/skill/skill-lint.js` writes legacy `lint_verdict`; the canonical `skill-graph/scripts/skill-lint.js` writes the v7-aligned signal. Per ADR 0009 the canonical version is authoritative; see SH-6198 for the in-progress deprecation of the root copy.
-5. **Loop-written fields are not authored.** Hand-edits to Health Block fields are silently overwritten on the next `audit` run. If you need a different verdict, run the audit; do not edit the frontmatter.
+5. **Loop-written fields are not authored.** Hand-edits to Audit Status fields are silently overwritten on the next `audit` run. If you need a different verdict, run the audit; do not edit the frontmatter.
 
 ## Related
 

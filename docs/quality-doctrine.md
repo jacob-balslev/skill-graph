@@ -109,7 +109,7 @@ Example: if a plain `SKILL.md` marketplace caps `description`, generate a shorte
 
 ## Version Labels Are Earned, Not Bumped
 
-A version number asserts substantive conformance, not just a schema shape. Advancing `schema_version`, `skill_graph_protocol`, or any `vN` label is honest only after the content migration that version represents is actually done — v6 added the five flat Understanding fields + `comprehension_state`; v7 added the four-verdict Health Block. A codemod can bump `schema_version` (mechanical shape) corpus-wide, but it cannot author that content.
+A version number asserts substantive conformance, not just a schema shape. Advancing `schema_version`, `skill_graph_protocol`, or any `vN` label is honest only after the content migration that version represents is actually done — v6 added the five flat Understanding fields + `comprehension_state`; v7 added the four-verdict Audit Status. A codemod can bump `schema_version` (mechanical shape) corpus-wide, but it cannot author that content.
 
 - A label mismatch (e.g. `schema_version: 8` with `skill_graph_protocol: v5`) is **honest record-keeping**, not drift: the schema bump ran, the content migration did not. Resolve it by doing the migration, then advancing the label — never by editing the label alone.
 - A bulk `sed`/find-replace of `vN` → `vM` with no content change is **prohibited**. A backlog of skills on an older content label is migration work to schedule, not a string to replace.

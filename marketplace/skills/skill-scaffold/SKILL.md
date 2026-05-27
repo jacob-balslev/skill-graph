@@ -50,7 +50,7 @@ metadata:
 ## Coverage
 
 - Authoring flow: copy → rename → adapt → strip authoring scaffolding (`# TEMPLATE NOTE:` lines and `> **TEMPLATE NOTE:**` blockquotes only; keep field-purpose comments) → verify → commit
-- Frontmatter identity: `schema_version`, `name`, `description`, `version`, `type`, `category`, `scope`, `owner`, plus the eval-health triple and `drift_check` required by every Skill Metadata Protocol v7 skill
+- Frontmatter identity: `schema_version`, `name`, `description`, `version`, `type`, `category`, `scope`, `owner`, plus the Evaluation Status and `drift_check` required by every Skill Metadata Protocol v7 skill
 - Archetype selection: how to pick between `capability`, `workflow`, `router`, and `overlay` and which `## H2` body sections each archetype requires
 - v6+ understanding fields: when to add `comprehension_state`, `mental_model`, `purpose`, `boundary`, `analogy`, `misconception`, and when the legacy `concept` back-compat block is still useful
 - Semantic-layer discipline: how `description:` (≤ 3 sentences, pushy, boundary-aware routing contract) differs from `## Coverage` (bulleted scope map of distinct topics) and why each must stay in its own layer
@@ -112,7 +112,7 @@ If you can drop your `description` into `## Coverage` without changing meaning, 
 | Cargo-culted teaching layer | `> **TEMPLATE NOTE:**` blocks survive into derived skill | `grep -n "TEMPLATE NOTE" skills/<name>/SKILL.md` returns nothing |
 | Description-Coverage collapse | `description` and `## Coverage` say the same thing in different shapes | Rewrite description as routing contract, Coverage as scope map (see § Semantic-Layer Discipline) |
 | Inflated routing_eval | `routing_eval: present` set without running the harness | Default to `absent`. Flip to `present` only after `node scripts/skill-graph-routing-eval.js --skill <name>` returns PASS |
-| Stale protocol version | `schema_version: 7` paired with v5/v6 schema names, old concept-block advice, or the deprecated `audit_verdict` aggregate | Update truth sources, protocol labels, understanding fields, Health Block fields, and migration notes together |
+| Stale protocol version | `schema_version: 7` paired with v5/v6 schema names, old concept-block advice, or the deprecated `audit_verdict` aggregate | Update truth sources, protocol labels, understanding fields, Audit Status fields, and migration notes together |
 | Wrong archetype | Skill body sections don't match `type:` | Re-pick archetype per § Archetype Selection; rewrite the body to match |
 | Anti-examples for skills that don't exist | `anti_examples` references skills not in the library | Either author those skills first or use existing starter names |
 | Lint-skipped commit | New skill is committed without focused lint | Run `node scripts/skill-lint.js skills/<name>` before every commit; fix all errors |

@@ -60,7 +60,7 @@ Triggered only when the gating condition applies. Schema-enforced via `allOf`:
 
 ### Do NOT hand-author these (loop-written)
 
-The Health Block fields are stamped by `audit`, `improve`, `evaluate`, and the dedicated graders. Leave them absent on a new skill. They become `UNVERIFIED` automatically until an audit run writes evidence: `last_audited`, `last_changed`, `structural_verdict`, `truth_verdict`, `comprehension_verdict`, `application_verdict`, `eval_score`, `eval_failed_ids`, `lint_verdict`, `drift_status`.
+The Audit Status fields are stamped by `audit`, `improve`, `evaluate`, and the dedicated graders. Leave them absent on a new skill. They become `UNVERIFIED` automatically until an audit run writes evidence: `last_audited`, `last_changed`, `structural_verdict`, `truth_verdict`, `comprehension_verdict`, `application_verdict`, `eval_score`, `eval_failed_ids`, `lint_verdict`, `drift_status`.
 
 For the full state-by-state map of every field see [field-state-matrix.md](./field-state-matrix.md).
 
@@ -182,7 +182,7 @@ Neither blocks first commit. A new skill ships honestly as `eval_state: unverifi
 | Picking `foundations` because the skill feels meta | `category: foundations` when the skill could plausibly fit `engineering` / `agent` / `quality` | The `foundations` gate is anti-junk-drawer. Pick another category unless the skill teaches an epistemic precondition AND cannot be plausibly assigned elsewhere. |
 | Description is a summary, not a routing contract | "This skill teaches Conway's Law" | Rewrite as routing instructions: "Use when..." + "Do NOT use for..." with concrete examples. |
 | Setting `eval_state: passing` without a receipt | New skill optimistically claims passing evals | Default to `unverified`. Flip to `passing` only after a real grader run produces a receipt. Same rule for `routing_eval: present`. |
-| Stamping Health Block fields by hand | Author writes `structural_verdict: PASS` on first commit | Leave the Health Block absent. The audit loop writes those fields; hand-edits will be overwritten on the next `audit` run. |
+| Stamping Audit Status fields by hand | Author writes `structural_verdict: PASS` on first commit | Leave the Audit Status absent. The audit loop writes those fields; hand-edits will be overwritten on the next `audit` run. |
 | Cross-domain `boundary[]` entries | `boundary: [skill-from-different-category]` | Move to `anti_examples` + `relations.related`. The `boundary` field is for same-domain handoffs only (see `SKILL_METADATA_PROTOCOL.md § Cross-domain boundary doctrine`). |
 | Placeholder sludge | `your-skill-name`, `path/to/file`, `todo` leftover from the template | Strip all template scaffolding before commit. The verification checklist in the template covers this. |
 

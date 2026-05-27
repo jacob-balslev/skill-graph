@@ -55,7 +55,7 @@ freshness: "2026-04-17"
 drift_check:
   last_verified: "2026-04-17"
 # TEMPLATE NOTE: eval_artifacts, eval_state, and routing_eval are the three
-# orthogonal eval-health axes introduced in schema_version 2. Set eval_artifacts
+# orthogonal Evaluation Status axes introduced in schema_version 2. Set eval_artifacts
 # to `planned` only as a temporary state — move to `present` once the artifact
 # ships. Set eval_state to `unverified` when no run has been recorded yet.
 #

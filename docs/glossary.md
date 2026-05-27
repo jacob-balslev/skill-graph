@@ -134,7 +134,7 @@ Export tooling exists for at least one target. `scripts/export-skill.js` can tra
 
 Export tooling exists AND the exported output has been checked against the target runtime. A receipt artifact (test run, import check) proves the exported skill works.
 
-## Eval-health triple
+## Evaluation Status triple
 
 ### `eval_artifacts`
 

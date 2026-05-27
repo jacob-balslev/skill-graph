@@ -68,7 +68,7 @@ Whether the skill is fresh, verified, and monitored. The two required fields (`f
 
 Proposal for v4: collapse `freshness` + `drift_check.last_verified` + `lifecycle.stale_after_days` into two primitives (`asserted_at` + `stale_after`). Tracked in the v4 roadmap.
 
-### Eval health (5 fields, 3 required, 2 optional)
+### Evaluation Status (5 fields, 3 required, 2 optional)
 
 Three independent axes of eval status. A skill can be at any point in the 3×3×2 product of these enums.
 
@@ -179,7 +179,7 @@ An earlier concept map (pre-2026-04-20) contained six inaccuracies now corrected
 3. Described `drift_check` as a scalar date — corrected to object (v3 shape, schema-enforced).
 4. Called the axes "4 orthogonal" — corrected to "3 strictly orthogonal + 1 partially coupled".
 5. Stated the field count without distinguishing authored-vs-possible — clarified that the current schema has 36 canonical top-level authored fields, while aliases and nested sub-field counts are separate measures.
-6. Omitted the 6-field-required-for-all set (`category`, `freshness`, `drift_check`, `eval_artifacts`, `eval_state`, `routing_eval`) — restored and grouped under Health & drift and Eval health.
+6. Omitted the 6-field-required-for-all set (`category`, `freshness`, `drift_check`, `eval_artifacts`, `eval_state`, `routing_eval`) — restored and grouped under Health & drift and Evaluation Status.
 
 ## References
 

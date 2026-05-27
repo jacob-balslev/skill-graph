@@ -29,7 +29,7 @@ four capability-archetype body sections.
 
 The required v8 compatibility-window frontmatter fields, plus `stability` and `license`. No
 optional fields, no relations, no grounding, no Understanding fields, no
-Health Block.
+Audit Status.
 
 ## Philosophy
 
@@ -49,5 +49,5 @@ node scripts/skill-lint.js --path examples/fixture-skills/minimal-capability
 
 - You need to exercise codebase grounding — see the `with-grounding` planned fixture in [`../README.md`](../README.md).
 - You need to exercise typed relations — see the `with-relations` planned fixture in [`../README.md`](../README.md).
-- You need to exercise flat Understanding fields or the Health Block — see the `comprehension-full` planned fixture in [`../README.md`](../README.md).
+- You need to exercise flat Understanding fields or the Audit Status — see the `comprehension-full` planned fixture in [`../README.md`](../README.md).
 - You need a real production-grade authoring example — use a canonical skill from `skills/`.

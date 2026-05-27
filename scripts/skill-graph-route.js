@@ -84,15 +84,8 @@ const SCOPE_RANK = {
 /**
  * Type tiebreaker ranks (lower wins). Doctrine: workflow > capability >
  * router > overlay. Matches `skills/skill-router/SKILL.md § Type tiebreaker`.
- *
- * v8 compat (2026-05-25): the v8 `operation` field replaces `type` with
- * Bloom-grounded values (know/do/decide/modify). Map them to equivalent
- * v7 type ranks: do ≡ workflow (0), know ≡ capability (1), decide ≡ router (2),
- * modify ≡ overlay (3). The sort function falls back to `operation` when
- * `type` is undefined (a pure-v8 skill post-sunset).
  */
 const TYPE_RANK = { workflow: 0, capability: 1, router: 2, overlay: 3, _default: 99 };
-const OPERATION_RANK = { do: 0, know: 1, decide: 2, modify: 3, _default: 99 };
 
 const STOPWORDS = new Set([
   'a', 'an', 'the', 'this', 'that', 'these', 'those',
@@ -438,27 +431,21 @@ function routeSkills(manifest, options) {
   // `skills/skill-router/SKILL.md § Scope tiebreaker` and `§ Type tiebreaker`:
   //   1. Highest score wins.
   //   2. On a score tie, narrower scope wins: codebase ≡ project > reference ≡ workspace > portable.
-  //   3. On a scope tie, more specific type/operation wins: workflow ≡ do > capability ≡ know > router ≡ decide > overlay ≡ modify.
+  //   3. On a scope tie, more specific type wins: workflow > capability > router > overlay.
   //   4. On a complete tie, alphabetical by name (stable, deterministic output).
   //
-  // v8 compat (2026-05-25): the third tiebreaker prefers v7 `type` (still
-  // populated during the migration window) and falls back to v8 `operation`
-  // if `type` is absent. After v7 sunset the fallback becomes the primary
-  // path. SCOPE_RANK now contains both v7 (codebase/reference) and v8
-  // (project/workspace) values at the same rank.
-  function typeOrOperationRank(skill) {
+  // SCOPE_RANK contains both v7 (codebase/reference) and v8 (project/workspace)
+  // values at the same rank.
+  function typeRank(skill) {
     if (skill.type !== undefined) {
       return TYPE_RANK[skill.type] ?? TYPE_RANK._default;
-    }
-    if (skill.operation !== undefined) {
-      return OPERATION_RANK[skill.operation] ?? OPERATION_RANK._default;
     }
     return TYPE_RANK._default;
   }
   scored.sort((a, b) =>
     (b.score - a.score) ||
     (SCOPE_RANK[a.skill.scope] ?? SCOPE_RANK._default) - (SCOPE_RANK[b.skill.scope] ?? SCOPE_RANK._default) ||
-    typeOrOperationRank(a.skill) - typeOrOperationRank(b.skill) ||
+    typeRank(a.skill) - typeRank(b.skill) ||
     a.skill.name.localeCompare(b.skill.name)
   );
 

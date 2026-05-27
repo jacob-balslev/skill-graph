@@ -109,9 +109,9 @@ All relation targets should be the `name` of an existing skill in the library. `
 
 ---
 
-## 3. What eval-health and `portability` state do I choose?
+## 3. What Evaluation Status and `portability` state do I choose?
 
-### Eval-health state: the three orthogonal axes
+### Evaluation Status state: the three orthogonal axes
 
 Schema_version 2 (SH-5784) split the v1 `eval_status` enum into three orthogonal fields because the old enum mixed artifact state, runtime state, and routing coverage into a single ordinal. Each axis now has its own value.
 

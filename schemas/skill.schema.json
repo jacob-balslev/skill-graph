@@ -10,7 +10,6 @@
     "description",
     "version",
     "subject",
-    "operation",
     "scope",
     "owner",
     "freshness",
@@ -45,7 +44,7 @@
     },
     "description": {
       "type": "string",
-      "description": "The routing contract: tells a router whether this skill should activate for a given query. Pushy, specific, boundary-aware. Should include an explicit negative boundary so the router does not over-activate. No protocol length cap."
+      "description": "A short description of what the skill is about. Activation, trigger, and boundary semantics belong to the dedicated fields built for them: `keywords` and `triggers` for activation signals, `examples` and `anti_examples` for prompt-level coverage, and `relations.boundary` for routing-layer exclusion edges. Keep `description` descriptive, not prescriptive. No protocol length cap."
     },
     "version": {
       "type": "string",
@@ -159,16 +158,6 @@
         ]
       },
       "description": "Ordered subject array (v8 polyhierarchy). First entry is the primary and must match `subject`; second entry (optional) is a secondary subject for skills that genuinely span shelves (e.g. `webhook-integration` is primarily `code-engineering` and secondarily `quality-assurance`). Max 2 entries — narrower than v7's `categories` max of 5 to enforce that polyhierarchy is the exception, not the default. Drawn from the same closed 9-enum as `subject`."
-    },
-    "operation": {
-      "type": "string",
-      "enum": [
-        "know",
-        "do",
-        "decide",
-        "modify"
-      ],
-      "description": "v8 cognitive operation classifier — what kind of cognitive operation loading this skill enables. Bloom-grounded. `know` = declarative knowledge (concepts, vocabulary, reference material — Bloom: Remember/Understand). `do` = procedural knowledge (step-by-step execution — Bloom: Apply). `decide` = routing/judgment (choosing between options, dispatching other skills — Bloom: Analyze/Evaluate). `modify` = context injection (shapes how other skills execute without executing itself — corresponds to v7's `overlay` archetype but framed as an operation, not a kind of file). Replaces v7's `type` (which is 93% `capability` and provides almost no discriminating power). v7→v8 mapping: `capability` → `know` or `do` (codemod heuristic via workflow-keyword presence; HITL for ambiguous); `workflow` → `do`; `router` → `decide`; `overlay` → `modify`. Predicted v8 distribution per GPT-5.5: know 35-45%, do 25-35%, decide 20-30%, modify 1-3%. See docs/adr/0017-five-axis-classification-model.md."
     },
     "primaryCategory": {
       "type": "string",
@@ -483,7 +472,7 @@
     "eval": {
       "type": "object",
       "additionalProperties": false,
-      "description": "Nested eval-health record (v3.1 preferred alias for the sibling triple `eval_artifacts` / `eval_state` / `routing_eval`). When both the top-level and nested forms are present they must match. ",
+      "description": "Nested Evaluation Status record (v3.1 preferred alias for the sibling fields `eval_artifacts` / `eval_state` / `routing_eval`). When both the top-level and nested forms are present they must match. ",
       "properties": {
         "artifacts": {
           "type": "string",
