@@ -5,7 +5,7 @@
 > **Predicate glossary:** [`docs/glossary.md`](glossary.md).
 > **JSON-LD @context:** [`schemas/skill.context.jsonld`](../schemas/skill.context.jsonld).
 
-Schema version: **unknown** · Field count: **64** · Required: **13**
+Schema version: **unknown** · Field count: **55** · Required: **12**
 
 ---
 
@@ -13,7 +13,7 @@ Schema version: **unknown** · Field count: **64** · Required: **13**
 
 **Type:** multiple — see schema
 
-Major contract shape version. Integer for v6+; string '7'/'8' tolerated for back-compat with hand-rolled YAML — string form is documented-only-for-back-compat (audit L1, 2026-05-27): authors SHOULD write integer 7 or 8, the string form will be dropped no earlier than the schema bump that follows the v8→v9 phase. Until then, both forms validate. Bumps when shape changes break consumers. v7 split the single `audit_verdict` field from v6 into four discrete verdicts (`structural_verdict`, `truth_verdict`, `comprehension_verdict`, `application_verdict`). v8 introduced the 5-axis classification model and is the canonical classification (v7→v8 phase ended 2026-05-26). **The v7 classification fields (`type`, `category`, `categories`, `primaryCategory`, `layerPrimary`, `routingRole`) are DEPRECATED** — the schema currently still accepts them as defined optional properties to avoid breaking the corpus while CONTENT-mode migration drains; schema-level removal is the planned next step. New skills author the v8 axes only. Migration of any skill still carrying deprecated v7 fields is CONTENT-mode work handled per-skill through the audit loop. See docs/adr/0011-split-audit-verdict-into-four-verdicts.md (v6→v7) and docs/adr/0017-five-axis-classification-model.md (v7→v8).
+Major contract shape version. Integer for v6+; string '7'/'8' accepted for hand-rolled YAML parsers that emit numeric-looking strings (authors SHOULD write integer 7 or 8). Bumps when shape changes break consumers. v7 split the single `audit_verdict` field from v6 into four discrete verdicts (`structural_verdict`, `truth_verdict`, `comprehension_verdict`, `application_verdict`). v8 is the canonical classification: authored axes are `subject` + `scope`, polyhierarchy via `subjects[]` (max 2), activation via `keywords` / `triggers` / `examples` / `anti_examples`, and routing via `relations` (`related` / `boundary` / `verify_with` / `depends_on` / `broader` / `narrower` / `disjoint_with`). Prior versions live in git history — see `git tag --list 'schema-*'`. See docs/adr/0011-split-audit-verdict-into-four-verdicts.md (v6→v7) and docs/adr/0017-five-axis-classification-model.md (v7→v8, amended 2026-05-27).
 
 **Full reference:** [`docs/field-reference.md#schema_version`](field-reference.md#schema_version)
 
@@ -47,7 +47,7 @@ Optional globally-unique persistent identifier in the `urn:skill:<repo>:<skill-n
 
 **Type:** string
 
-The routing contract: tells a router whether this skill should activate for a given query. Pushy, specific, boundary-aware. Should include an explicit negative boundary so the router does not over-activate. No protocol length cap.
+A short description of what the skill is about. Activation, trigger, and boundary semantics belong to the dedicated fields built for them: `keywords` and `triggers` for activation signals, `examples` and `anti_examples` for prompt-level coverage, and `relations.boundary` for routing-layer exclusion edges. Keep `description` descriptive, not prescriptive. No protocol length cap.
 
 **Full reference:** [`docs/field-reference.md#description`](field-reference.md#description)
 
@@ -65,41 +65,11 @@ Skill content version (semver). Bumps when the SKILL.md body or contract changes
 
 ---
 
-### `type` *(optional)*
-
-**Type:** `capability` | `workflow` | `router` | `overlay`
-
-Archetype classifier — what kind of skill this is. `capability` (knows how to do something), `workflow` (orchestrates a sequence), `router` (dispatches to other skills), `overlay` (specialises a parent via `extends`). `archetype` is the supported alias.
-
-**Full reference:** [`docs/field-reference.md#type`](field-reference.md#type)
-
----
-
-### `archetype` *(optional)*
-
-**Type:** `capability` | `workflow` | `router` | `overlay`
-
-Archetype classifier (v3.1 preferred alias for `type`). When both are present they must match.
-
-**Full reference:** [`docs/field-reference.md#archetype`](field-reference.md#archetype)
-
----
-
-### `category` *(optional)*
-
-**Type:** `foundations` | `engineering` | `design` | `quality` | `agent` | `product`
-
-Browse facet — answers 'where should a human browse to find this skill first?' Not ontology truth. Closed enum of 6 values in v5: foundations | engineering | design | quality | agent | product. Cross-cutting category membership lives in `categories[1..]` (v7 optional, v8 planned required) or `secondary_categories` for marketplace cross-listing; skill-to-skill neighborhood lives in `relations.related`. For hierarchical sub-domain use `domain`. `foundations` is gated — see SKILL_METADATA_PROTOCOL.md § Classification.
-
-**Full reference:** [`docs/field-reference.md#category`](field-reference.md#category)
-
----
-
 ### `domain` *(optional)*
 
 **Type:** string
 
-Hierarchical domain path using slash-delimited segments (e.g., `ecommerce/integrations/shopify`). Complements `category`; the flat browse shelf and the domain tree answer different questions.
+Hierarchical domain path using slash-delimited segments (e.g., `ecommerce/integrations/shopify`). Complements `subject`: the flat browse shelf (`subject`) and the slash-delimited domain tree answer different questions. Use `domain` to subdivide a subject that holds many skills (the >25 rule per `subject`'s balance constraint).
 
 **Pattern:** `^[a-z0-9][a-z0-9-]*(/[a-z0-9][a-z0-9-]*)*$`
 
@@ -107,31 +77,11 @@ Hierarchical domain path using slash-delimited segments (e.g., `ecommerce/integr
 
 ---
 
-### `secondary_categories` *(optional)*
-
-**Type:** array of string
-
-Additive tags for cross-listing in marketplace collections. Primary `category` is MECE and decides folder placement; `secondary_categories` lets a skill that genuinely serves two audiences (e.g., `playwright-cli` is primarily `quality` but also relevant to `engineering`) appear in additional marketplace collections without affecting filesystem layout. Max 2 entries to prevent dilution. Drawn from the same closed 6-enum as `category`; MUST NOT include the primary `category` value.
-
-**Full reference:** [`docs/field-reference.md#secondary_categories`](field-reference.md#secondary_categories)
-
----
-
-### `categories` *(optional)*
-
-**Type:** array of string
-
-Ordered category array. First entry is the primary and must match `category`; remaining entries are secondary browse homes the skill also covers. Max 5, drawn from the same closed enum as `category`.
-
-**Full reference:** [`docs/field-reference.md#categories`](field-reference.md#categories)
-
----
-
 ### `subject` *(required)*
 
 **Type:** `agent-ops` | `code-engineering` | `frontend-ui` | `design-craft` | `data-analytics` | `quality-assurance` | `meta-methods` | `knowledge-organization` | `product-domain`
 
-v8 primary classification — what the skill teaches. Closed 9-value enum (down from v1 plan's 10-12 per GPT-5.5 critique). Replaces v7's `category` + `categories[0]` + `primaryCategory`. Balance rule: each subject must hold 5-25 skills. <5 = fold or recruit; >25 = subdivide via `domain` slash-path. v7→v8 mapping is NOT 1:1 (e.g. v7 `engineering` may map to `code-engineering`, `frontend-ui`, or `data-analytics` depending on content); the codemod proposes mappings for review. During the v7→v8 migration window, v7 skills retain `category` and skip `subject`; v8 skills require `subject`. See docs/adr/0017-five-axis-classification-model.md.
+Primary classification — what the skill teaches. Closed 9-value enum. Balance rule: each subject must hold 5-25 skills. <5 = fold or recruit; >25 = subdivide via `domain` slash-path. See docs/adr/0017-five-axis-classification-model.md.
 
 **Full reference:** [`docs/field-reference.md#subject`](field-reference.md#subject)
 
@@ -141,61 +91,17 @@ v8 primary classification — what the skill teaches. Closed 9-value enum (down 
 
 **Type:** array of string
 
-Ordered subject array (v8 polyhierarchy). First entry is the primary and must match `subject`; second entry (optional) is a secondary subject for skills that genuinely span shelves (e.g. `webhook-integration` is primarily `code-engineering` and secondarily `quality-assurance`). Max 2 entries — narrower than v7's `categories` max of 5 to enforce that polyhierarchy is the exception, not the default. Drawn from the same closed 9-enum as `subject`.
+Ordered subject array for polyhierarchy. First entry is the primary and must match `subject`; second entry (optional) is a secondary subject for skills that genuinely span shelves (e.g. `webhook-integration` is primarily `code-engineering` and secondarily `quality-assurance`). Max 2 entries to keep polyhierarchy the exception, not the default. Drawn from the same closed 9-enum as `subject`.
 
 **Full reference:** [`docs/field-reference.md#subjects`](field-reference.md#subjects)
 
 ---
 
-### `operation` *(required)*
-
-**Type:** `know` | `do` | `decide` | `modify`
-
-v8 cognitive operation classifier — what kind of cognitive operation loading this skill enables. Bloom-grounded. `know` = declarative knowledge (concepts, vocabulary, reference material — Bloom: Remember/Understand). `do` = procedural knowledge (step-by-step execution — Bloom: Apply). `decide` = routing/judgment (choosing between options, dispatching other skills — Bloom: Analyze/Evaluate). `modify` = context injection (shapes how other skills execute without executing itself — corresponds to v7's `overlay` archetype but framed as an operation, not a kind of file). Replaces v7's `type` (which is 93% `capability` and provides almost no discriminating power). v7→v8 mapping: `capability` → `know` or `do` (codemod heuristic via workflow-keyword presence; HITL for ambiguous); `workflow` → `do`; `router` → `decide`; `overlay` → `modify`. Predicted v8 distribution per GPT-5.5: know 35-45%, do 25-35%, decide 20-30%, modify 1-3%. See docs/adr/0017-five-axis-classification-model.md.
-
-**Full reference:** [`docs/field-reference.md#operation`](field-reference.md#operation)
-
----
-
-### `primaryCategory` *(optional)*
-
-**Type:** `foundations` | `engineering` | `design` | `quality` | `agent` | `product` | `Meta Method` | `Technical Capability` | `Design & UX` | `Agent System` | `Product Domain`
-
-Workspace alias for the primary browse home. Lowercase protocol values are accepted directly; title-case workspace labels normalize to `category` (`Meta Method` → `foundations`, `Technical Capability` → `engineering`, `Design & UX` → `design`, `Agent System` → `agent`, `Product Domain` → `product`). Optional in the protocol, required only by workspace policy when that repo opts in.
-
-**Full reference:** [`docs/field-reference.md#primaryCategory`](field-reference.md#primaryCategory)
-
----
-
-### `layerPrimary` *(optional)*
-
-**Type:** string
-
-Workspace routing facet for the primary architectural or concern layer (`meta`, `architecture`, `integration`, `operations`, `display`, `quality`, etc.). Orthogonal to `category`: use `category` for the human browse shelf and `layerPrimary` only when a workspace router or census explicitly consumes layer facets. The legacy `layer` field is not part of the v7 protocol.
-
-**Pattern:** `^[a-z0-9][a-z0-9-]*$`
-
-**Full reference:** [`docs/field-reference.md#layerPrimary`](field-reference.md#layerPrimary)
-
----
-
-### `routingRole` *(optional)*
-
-**Type:** string
-
-Workspace routing facet describing how the skill participates in selection (`primary`, `router`, `verifier`, `gate`, etc.). Orthogonal to `type`: `type` says what kind of skill this is, while `routingRole` says how a workspace router should use it. Optional in portable protocol authoring.
-
-**Pattern:** `^[a-z0-9][a-z0-9-]*$`
-
-**Full reference:** [`docs/field-reference.md#routingRole`](field-reference.md#routingRole)
-
----
-
 ### `scope` *(required)*
 
-**Type:** `codebase` | `reference` | `portable` | `project` | `workspace`
+**Type:** `portable` | `project` | `workspace`
 
-Where this skill applies. v7 values: `codebase` (coupled to a specific repo's code/conventions), `reference` (pure knowledge, no repo coupling), `portable` (repo-agnostic patterns). v8 values: `project` (replaces `codebase` — matches monorepo reality better), `workspace` (replaces `reference` — matches actual usage in multi-repo workspaces), `portable` (unchanged). During the v7→v8 migration window, all five values validate; v7 skills keep their old values until the codemod runs. Drives multi-project overlay decisions and informs the router's project-fit check.
+Deployment targeting — where this skill applies. `portable` (any project, repo-agnostic patterns), `project` (one specific project; requires `grounding`), `workspace` (this workspace only; multi-repo or shared environment). Drives multi-project overlay decisions and the router's project-fit check.
 
 **Full reference:** [`docs/field-reference.md#scope`](field-reference.md#scope)
 
@@ -488,7 +394,7 @@ Optional receipt for the most recent eval run. Complements `eval_state` so `pass
 
 **Type:** object
 
-Nested eval-health record (v3.1 preferred alias for the sibling triple `eval_artifacts` / `eval_state` / `routing_eval`). When both the top-level and nested forms are present they must match.
+Nested Evaluation Status record (v3.1 preferred alias for the sibling fields `eval_artifacts` / `eval_state` / `routing_eval`). When both the top-level and nested forms are present they must match.
 
 **Sub-fields:**
 
