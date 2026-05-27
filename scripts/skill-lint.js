@@ -192,11 +192,20 @@ function validateWithSchema(value, schema, pointer = '', errors = []) {
   if ((schema.required || schema.properties || schema.additionalProperties === false) &&
       value && typeof value === 'object' && !Array.isArray(value)) {
     if (Array.isArray(schema.required)) {
+      // v8 5-axis classification per ADR-0017. When one of these required axes
+      // is missing, surface the error with a named-axis label rather than the
+      // raw schema-validation pointer, so authors immediately know it is a v8
+      // conformance issue rather than a generic "missing property" — the cause
+      // of the "I don't understand which check fired" friction audit M3 named.
+      const V8_AXES = new Set(['subject', 'operation', 'scope']);
       for (const requiredField of schema.required) {
         if (!(requiredField in value)) {
+          const isV8Axis = V8_AXES.has(requiredField);
           errors.push({
             field: requiredField,
-            msg: `required-missing: \`${requiredField}\` is required by ${displaySchemaPath()}`,
+            msg: isV8Axis
+              ? `v8 axis missing: \`${requiredField}\` is one of the three required v8 5-axis classification fields (subject / operation / scope per ADR-0017). Add it via the field-purpose comment template in examples/skill-metadata-template.md.`
+              : `required-missing: \`${requiredField}\` is required by ${displaySchemaPath()}`,
           });
         }
       }
