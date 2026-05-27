@@ -1,7 +1,7 @@
 {
-  "_comment": "JSON-LD @context for Skill Graph v7 frontmatter. Maps authored fields to W3C standard vocabularies so a Skill Graph SKILL.md can be projected into RDF/OWL/SKOS consumers without changing the authoring surface.",
+  "_comment": "JSON-LD @context for Skill Graph v8 frontmatter (was v7 pre-2026-05-27 — H14 reconciliation). Maps authored fields to W3C standard vocabularies so a Skill Graph SKILL.md can be projected into RDF/OWL/SKOS consumers without changing the authoring surface. v8 authored fields (subject, operation, scope, keywords, relations) are projected through this context the same way v7 fields were; v7 fields remain projectable for back-compat.",
   "_version": "3.1.0",
-  "_schema_version_target": 7,
+  "_schema_version_target": 8,
   "_references": {
     "skos": "https://www.w3.org/TR/skos-reference/",
     "owl": "https://www.w3.org/TR/owl2-overview/",

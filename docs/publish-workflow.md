@@ -14,8 +14,8 @@ The Skill Graph ecosystem keeps authoring and publication separated:
 
 | Repo | Role | Path |
 |---|---|---|
-| `jacob-balslev/skill-graph` | Authoring repo — protocol contract, tooling, canonical `skills/<name>/SKILL.md` sources, staging surface (`marketplace/skills/`) | `~/Development/skill-graph/` |
-| `jacob-balslev/skills` | Release repo — plain Agent Skills `SKILL.md` files indexed by `skills.sh` | `~/Development/skills/` |
+| `jacob-balslev/skill-graph` | Tooling + protocol contract repo — protocol spec (`SKILL_METADATA_PROTOCOL.md`), audit-loop runbook, schemas, audit/eval/lint scripts, manifest compiler, drift sentinel, and the staging surface (`marketplace/skills/`). | `~/Development/skill-graph/` |
+| `jacob-balslev/skills` | Canonical SKILL.md library + release repo — the authoritative `skills/<category>/<name>/SKILL.md` source files, also published to `skills.sh` as the release surface. (Updated 2026-05-27 per audit H14 — pre-2026-05-18 framing put the canonical SKILL.md sources inside skill-graph; ADR 0009 consolidated tooling into skill-graph but kept the canonical skill library at `~/Development/skills/`.) | `~/Development/skills/` |
 
 The staging surface in `marketplace/skills/` is the bridge. The exporter reads from the canonical source and writes there; the publish step syncs it into the release repo.
 
