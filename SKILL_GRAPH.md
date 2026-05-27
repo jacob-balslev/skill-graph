@@ -14,13 +14,13 @@ The three layers divide the work cleanly. The [Skill Metadata Protocol](SKILL_ME
 
 | Fact | Value | Source of truth |
 |---|---|---|
-| **Schema version enforced** | **v8**. The schema's global `required` array mandates `subject` + `scope`. Do not author v7 fields (`type`, `category`, `categories`, `primaryCategory`, `layerPrimary`, `routingRole`). | `schemas/skill.schema.json` + [ADR-0017](docs/adr/0017-five-axis-classification-model.md) |
-| Manifest schema file | tracks v7 + v8 dual-emit | `schemas/manifest.schema.json` |
-| Emitted manifest `schema_version` | **4** (back-compatible root contract) | `scripts/generate-manifest.js`; `schemas/manifest.schema.json` `schema_version.const` |
-| Manifest summary facets | **dual emit** — v7 (`by_category` / `by_type`) and v8 (`by_subject` / `by_operation`) side-by-side, plus `by_schema_version` for migration tracking | `scripts/generate-manifest.js::computeSummary` |
+| **Schema version enforced** | **v8**. The schema's global `required` array mandates `subject` + `scope`. The prior contract (v7) lives in git history; retrieve via `git show schema-v7:schemas/skill.schema.json`. | `schemas/skill.schema.json` + [ADR-0017](docs/adr/0017-five-axis-classification-model.md) |
+| Manifest schema file | tracks the v8 contract; v7 fields are not declared | `schemas/manifest.schema.json` |
+| Emitted manifest `schema_version` | **4** (root manifest contract; orthogonal to per-skill `schema_version`) | `scripts/generate-manifest.js`; `schemas/manifest.schema.json` `schema_version.const` |
+| Manifest summary facets | `by_subject`, `by_scope`, `by_schema_version`, `by_stability`, `by_project` | `scripts/generate-manifest.js::computeSummary` |
 | Per-skill `schema_version` in manifest | **present** (top-level field on every skill entry — added 2026-05-25 per F4 finding) | `scripts/generate-manifest.js::buildSkillEntry` |
 | Canonical skill count | **153** SKILL.md in the canonical library; **154** when the protocol template is included. Verified 2026-05-26 by `find` + live manifest generation. | live: `find ~/Development/skills/skills -name SKILL.md \| wc -l` (153) and `node scripts/generate-manifest.js --include-template --validate-only` (154). |
-| Marketplace export count | **152** SKILL.md in `marketplace/skills/` (verified 2026-05-26); the publication gate excludes repo-specific/internal skills (`scope: project` or legacy `scope: codebase`, plus internal grounding modes). | live: `find skill-graph/marketplace/skills -name SKILL.md \| wc -l` |
+| Marketplace export count | **152** SKILL.md in `marketplace/skills/` (verified 2026-05-26); the publication gate excludes repo-specific/internal skills (`scope: project`, plus internal grounding modes). | live: `find skill-graph/marketplace/skills -name SKILL.md \| wc -l` |
 | Canonical library location | sibling repo `jacob-balslev/skills` at `~/Development/skills/` | `.skill-graph/config.json` → `skill_roots: ["../skills/skills"]` |
 | This repo's role | tooling + protocol + schemas + docs (no `skills/` tree) | [ADR 0009](docs/adr/0009-sibling-repo-deprecation.md) |
 | Audit Loop maturity | Integrity Gate ≈ MLOps L1 (write-back wired into `skill-graph audit` as of 2026-05-25 per SH-6481 F14); **Behavior Gate data remains sparse** — application verdicts stay `UNVERIFIED` until `evals/application.json` artifacts are authored and graders run. | [`SKILL_AUDIT_LOOP.md:45-52`](SKILL_AUDIT_LOOP.md) |

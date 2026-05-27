@@ -2,17 +2,18 @@
 
 > **Work-mode rule (read FIRST).** Editing this document, the schemas it normalizes against, the audit prompts, or the audit/lint/drift scripts is **SYSTEM work**. Editing individual `SKILL.md` files to conform to this contract is **CONTENT work** that runs ONLY via `/audit:audit`, `/audit:improve`, `/audit:evaluate`, `/audit:evolve`. Do not mix them in the same task or commit. Full doctrine: [`AGENTS.md` § Work Modes — SYSTEM vs CONTENT](AGENTS.md#work-modes--system-vs-content).
 
-> **Spec version:** 1.5.0 (`schema_version: 8`, Skill Graph 0.5.10)
-> **Currently enforced by `schemas/skill.schema.json`:** v8. The schema's global `required` array mandates `subject` + `scope`. v7 classification fields (`type`, `category`, `categories`, `primaryCategory`, `layerPrimary`, `routingRole`) are deprecated. Do not author v7 fields. See [§ Schema contract](#schema-contract).
+> **Spec version:** 1.6.0 (`schema_version: 8`, Skill Graph 0.5.10)
+> **Currently enforced by `schemas/skill.schema.json`:** v8. The schema's global `required` array mandates `subject` + `scope`. See [§ Schema contract](#schema-contract).
 > **Single source of truth for "what is enforced today":** [`SKILL_GRAPH.md § Current State`](SKILL_GRAPH.md#current-state--single-source-of-truth) — link there from any doc that needs the live answer; do not restate.
 > **Machine-readable schema:** `schemas/skill.schema.json`
 > **Detailed field reference:** `docs/field-reference.md`
 > **Full semantics + design rationale:** `docs/skill-metadata-protocol.md`
-> **v8 design rationale:** `docs/adr/0017-five-axis-classification-model.md`
+> **v8 design rationale:** `docs/adr/0017-five-axis-classification-model.md` (operation axis retired 2026-05-27, see amendment block)
+> **Prior contract:** retrievable via `git show schema-v7:schemas/skill.schema.json`
 
 ---
 
-> **Author shortcut (TL;DR — v8 is the canonical classification):** Author the v8 axes (`subject`, `operation`, `scope`). **The v7 classification (`type`, `category`, `categories`, `primaryCategory`, `layerPrimary`, `routingRole`) is DEPRECATED** — pending schema-level removal; do not author. Full schema-contract explanation at the END of this doc (§ Schema contract).
+> **Author shortcut (TL;DR):** Author `subject` (primary classification, 9-value enum) + `scope` (deployment targeting, 3-value enum). Polyhierarchy via `subjects[]` (max 2, primary first). Activation via `keywords` / `triggers` / `examples` / `anti_examples`. Routing via `relations` (`related` / `boundary` / `verify_with` / `depends_on` / `broader` / `narrower` / `disjoint_with`). Full schema-contract explanation at the END of this doc (§ Schema contract).
 
 ---
 
@@ -28,9 +29,9 @@ This document is the top-level public contract for the Skill Metadata Protocol f
 2. [Required vs Optional Fields](#required-vs-optional-fields)
 3. [Semantic Rules by Field Group](#semantic-rules-by-field-group)
    - [Identity](#identity)
-   - [Classification](#classification--the-5-axis-model)
+   - [Classification](#classification)
    - [Health and Drift](#health-and-drift)
-   - [Evaluation Status](#Evaluation Status)
+   - [Evaluation Status](#evaluation-status)
    - [Activation and Routing](#activation-and-routing)
    - [Relations](#relations)
    - [Grounding](#grounding)
@@ -42,7 +43,7 @@ This document is the top-level public contract for the Skill Metadata Protocol f
 
 ## Overview
 
-Every skill is a single `SKILL.md` file with a YAML frontmatter block. The schema contract is `schemas/skill.schema.json`; deterministic verification is split across focused tools. `skill-lint.js` enforces the canonical-source schema gate (valid frontmatter, validation against `schemas/skill.schema.json`, identifier shape, non-empty description, parent-directory/name alignment), while `check-protocol-consistency.js`, `check-category-enum.js`, `generate-manifest.js`, routing evals, drift checks, and export verification cover the broader protocol surface. The `generate-manifest.js` script reads frontmatter from all skill files and emits a single `skills.manifest.json`.
+Every skill is a single `SKILL.md` file with a YAML frontmatter block. The schema contract is `schemas/skill.schema.json`; deterministic verification is split across focused tools. `skill-lint.js` enforces the canonical-source schema gate (valid frontmatter, validation against `schemas/skill.schema.json`, identifier shape, non-empty description, parent-directory/name alignment), while `check-protocol-consistency.js`, `generate-manifest.js`, routing evals, drift checks, and export verification cover the broader protocol surface. The `generate-manifest.js` script reads frontmatter from all skill files and emits a single `skills.manifest.json`.
 
 The contract has one runtime model: one `SKILL.md` per skill, one manifest, one lint pass. There is no closed/open split, no private control plane, and no enterprise-only fields.
 
@@ -74,7 +75,7 @@ Map the v8 `subject` axis to the on-disk directory under `~/Development/skills/s
 |---|---|---|
 | `code-engineering` | `skills/code-engineering/<name>/` | Largest shelf (36 skills, 25%). Subdivide via `domain:` (frontend / backend / infrastructure / build) when >25 skills. |
 | `quality-assurance` | `skills/quality-assurance/<name>/` | Audit, testing, security, performance, accessibility (27 skills, 18%). |
-| `frontend-ui` | `skills/frontend-ui/<name>/` | Frontend implementation (rendering, hooks, styling, components, layout) (20 skills, 13%). Boundary with `design-craft`: pick by `operation:` (`do` → frontend-ui; `decide` → design-craft). |
+| `frontend-ui` | `skills/frontend-ui/<name>/` | Frontend implementation (rendering, hooks, styling, components, layout) (20 skills, 13%). Boundary with `design-craft`: pick by what the skill *teaches* — implementation patterns (rendering, state, props) → frontend-ui; design judgment (composition, hierarchy, typography) → design-craft. |
 | `design-craft` | `skills/design-craft/<name>/` | Information architecture, composition, typography, UX research (20 skills, 13%). |
 | `agent-ops` | `skills/agent-ops/<name>/` | Agent orchestration, skill system itself, multi-agent coordination (17 skills, 11%). |
 | `product-domain` | `skills/product-domain/<name>/` | Product-shaped knowledge: e-commerce, billing, integrations, customer workflows (11 skills, 7%). |
@@ -88,13 +89,13 @@ Map the v8 `subject` axis to the on-disk directory under `~/Development/skills/s
 
 ### Inline field comments — the authoring convention
 
-**Every authored frontmatter field carries a YAML comment block (`#`) immediately above it.** The comment names: (a) what the field is, (b) allowed values or type, (c) when-to-use in one line. **These comments STAY in the production SKILL.md** — they are not scaffolding to strip. Cold-start agents and human authors decode the frontmatter at the point of contact, not three docs away. Co-located documentation is the discipline that prevents the "this field looks like dead code, let me propose deleting it" failure mode — most fields with low corpus adoption (`eval_state: monitored` at 0%, `operation: modify` at <1%) are forward-looking or genuinely scoped, and the comment makes that intent visible.
+**Every authored frontmatter field carries a YAML comment block (`#`) immediately above it.** The comment names: (a) what the field is, (b) allowed values or type, (c) when-to-use in one line. **These comments STAY in the production SKILL.md** — they are not scaffolding to strip. Cold-start agents and human authors decode the frontmatter at the point of contact, not three docs away. Co-located documentation is the discipline that prevents the "this field looks like dead code, let me propose deleting it" failure mode — fields with low corpus adoption (e.g. `eval_state: monitored` at 0%) may be forward-looking or genuinely scoped, and the comment makes that intent visible.
 
 **Two distinct comment styles coexist in the template — they have opposite lifecycles. Do not confuse them.**
 
 | Style | Lifecycle | Example | Purpose |
 |---|---|---|---|
-| **Field-purpose comment** | **STAYS in the production skill.** | `# operation: cognitive op an agent will primarily DO with this skill loaded.`<br>`# know (declarative) / do (procedural) / decide (judgment) / modify (context-inject)` | Authoritative-by-co-location documentation of what the field is for, its allowed values, and when to pick each value. The reader does not need to open `docs/field-reference.md` to understand the frontmatter. |
+| **Field-purpose comment** | **STAYS in the production skill.** | `# subject: primary browse shelf — what the skill teaches.`<br>`# code-engineering / quality-assurance / frontend-ui / design-craft / agent-ops / ...` | Authoritative-by-co-location documentation of what the field is for, its allowed values, and when to pick each value. The reader does not need to open `docs/field-reference.md` to understand the frontmatter. |
 | **`# TEMPLATE NOTE:` comment** | **STRIPPED on derivation.** | `# TEMPLATE NOTE: be pushy in your description — Claude tends to under-trigger skills...` | Authoring scaffolding that only lives in `examples/skill-metadata-template.md`. Derived skills MUST strip every line beginning with `# TEMPLATE NOTE:` before commit (verified with `grep -n "TEMPLATE NOTE" <derived-skill>` returning zero hits). |
 
 **Source of truth** for the content of a field-purpose comment is `docs/field-reference.md`. The inline comment is an abridged summary (purpose + enum + when-to-use). When the comment and the reference doc disagree, the reference doc wins and the comment gets corrected. The discipline mirrors how JSDoc / TSDoc summaries point at canonical type definitions — the comment is a fast lookup, not a parallel truth.
@@ -103,19 +104,12 @@ Map the v8 `subject` axis to the on-disk directory under `~/Development/skills/s
 
 ```yaml
 metadata:
-  # === v8 Classification (5-axis model — see ADR-0017) ===
+  # === v8 Classification (subject + scope; polyhierarchy via subjects[]) — see ADR-0017 ===
 
   # subject: primary browse shelf — what the skill teaches. One of nine closed values:
   # code-engineering / quality-assurance / frontend-ui / design-craft / agent-ops /
   # product-domain / knowledge-organization / meta-methods / data-analytics.
   subject: meta-methods
-
-  # operation: cognitive operation enabled (Bloom-grounded). One of four closed values:
-  # know (declarative — concepts, vocabulary, reference) /
-  # do (procedural — step-by-step execution) /
-  # decide (judgment — choosing, dispatching) /
-  # modify (context injection — shapes how other skills execute).
-  operation: know
 
   # scope: deployment targeting. One of three closed values:
   # portable (any project) / workspace (this workspace only) /
@@ -151,17 +145,16 @@ metadata:
 
 ### Required for all skills
 
-The v8 contract requires twelve canonical fields plus the v8 5-axis classification. The `skill-lint.js` schema gate enforces the current schema shape; use the protocol, manifest, routing, drift, export, and eval checks for the rest of the full contract.
+The v8 contract requires eleven canonical fields plus the v8 classification axes (`subject` + `scope`). The `skill-lint.js` schema gate enforces the current schema shape; use the protocol, manifest, routing, drift, export, and eval checks for the rest of the full contract.
 
 | Field | Type | Purpose |
 |---|---|---|
-| `schema_version` | integer `8` | Signals the contract version. Must be `8` for v8 skills (per ADR 0017 — five-axis classification model). v7 skills carry `7` and are migrated by `scripts/migrate-skill-v7-to-v8.js`. Prior versions live in git history (see ADR 0014 — canonical-only schema files). |
+| `schema_version` | integer `8` | Signals the contract version. Prior versions live in git history (see ADR 0014 — canonical-only schema files, and `git tag --list 'schema-*'`). |
 | `name` | string | Stable identifier. Used for routing and `relations.*` targets. |
-| `description` | string (≥20 chars) | Routing contract — tells the router when to activate this skill. |
+| `description` | string | Short description of what the skill is about. Activation signals belong to `keywords`/`triggers`/`examples`/`anti_examples`; boundary semantics belong to `relations.boundary`. |
 | `version` | semver string | Skill content version (e.g. `1.2.0`). Bumped by the author. |
-| `subject` | enum (9 closed values) | **v8 axis 1** — Primary browse shelf and routing seed. One of: `code-engineering`, `quality-assurance`, `frontend-ui`, `design-craft`, `agent-ops`, `product-domain`, `knowledge-organization`, `meta-methods`, `data-analytics`. See § Classification — the 5-axis model § Axis 1. |
-| `operation` | enum (4 closed values, Bloom-grounded) | **v8 axis 2** — Cognitive operation enabled by loading this skill. One of: `know` (declarative content), `do` (procedural how-to), `decide` (judgment/triage), `modify` (transformative edit). Replaces v7's `type` field. See § Classification § Axis 2. |
-| `scope` | enum (3 closed values, renamed in v8) | **v8 axis 3** — Deployment targeting. One of: `portable` (any project), `workspace` (this workspace only), `project` (one specific project; requires `grounding`). Legacy alias normalization is owned by § Classification § Axis 3. |
+| `subject` | enum (9 closed values) | Primary classification — what the skill teaches. One of: `code-engineering`, `quality-assurance`, `frontend-ui`, `design-craft`, `agent-ops`, `product-domain`, `knowledge-organization`, `meta-methods`, `data-analytics`. See § Classification. |
+| `scope` | enum (3 closed values) | Deployment targeting. One of: `portable` (any project), `workspace` (this workspace only), `project` (one specific project; requires `grounding`). See § Classification. |
 | `owner` | string | Team, username, or tool that is responsible for keeping this skill current. |
 | `freshness` | ISO date | Date the skill body was last reviewed or updated. |
 | `drift_check` | object | Contains `last_verified` (ISO date) and optional `truth_source_hashes`. |
@@ -169,18 +162,15 @@ The v8 contract requires twelve canonical fields plus the v8 5-axis classificati
 | `eval_state` | enum | One of: `unverified`, `passing`, `monitored`. |
 | `routing_eval` | enum | One of: `absent`, `present`. |
 
-**v7 classification — deprecated:** `type`, `category`, `categories`, `primaryCategory`, `layerPrimary`, `routingRole`. Do not author v7 fields.
-
 ### Conditionally required
 
-These fields are required only when a specific condition is met. The first three are enforced by JSON-Schema `allOf` rules and therefore by the schema lint gate. The `keywords` rule is a routing-quality convention verified by review and routing evals rather than by schema lint, since the schema cannot reason about routability intent.
+These fields are required only when a specific condition is met. The first two are enforced by JSON-Schema `allOf` rules and therefore by the schema lint gate. The `keywords` rule is a routing-quality convention verified by review and routing evals rather than by schema lint, since the schema cannot reason about routability intent.
 
 | Field | Required when | Enforced by |
 |---|---|---|
-| `extends` | `type: overlay` | schema `allOf` |
-| `grounding` | `scope: project` (or legacy alias `scope: codebase`) | schema `allOf` |
+| `grounding` | `scope: project` | schema `allOf` |
 | `superseded_by` | `stability: deprecated` | schema `allOf` |
-| `keywords` | `scope: project` (or legacy alias `scope: codebase`) OR `routing_bundles` is set | routing review / routing evals |
+| `keywords` | `scope: project` OR `routing_bundles` is set | routing review / routing evals |
 
 ### Optional (strongly recommended)
 
@@ -206,8 +196,7 @@ relations       # typed edges to sibling skills
 These improve portability, discoverability, and health tracking but are not required for a valid skill.
 
 ```yaml
-categories      # string[] (v7 optional, v8 required) — ordered list, primary first, max 5. Same enum as `category`. See § Classification.
-primaryCategory # string (workspace alias) — equivalent to `categories[0]`. Normalized on read; title-case workspace values map to lowercase enum.
+subjects        # string[] (max 2, primary first) — polyhierarchy when a skill genuinely spans two browse shelves. Same enum as `subject`. See § Classification.
 urn             # globally unique URN
 domain          # hierarchical domain path (e.g. "ecommerce/integrations/shopify")
 paths           # glob[] — code surfaces this skill governs
@@ -273,114 +262,60 @@ allowed-tools   # space-separated tool allowlist
 - A team handle, GitHub username, or tool name (e.g. `skill-bot`).
 - Consumers use this to route review requests and alert on stale skills.
 
-### Classification — the 5-axis model
+### Classification
 
-> **v8 is the canonical classification (v7→v8 phase ended 2026-05-26).** The schema's global required array mandates `subject`, `operation`, `scope`. **The v7 classification (`type`, `category`, etc.) is DEPRECATED** — schema currently still accepts but does not require; pending schema-level removal. New skills author the v8 axes only. Scope alias normalization is owned by Axis 3 below. See [ADR 0017](docs/adr/0017-five-axis-classification-model.md).
+> **v8 is the canonical classification.** The schema's global `required` array mandates `subject` + `scope`. See [ADR 0017](docs/adr/0017-five-axis-classification-model.md) (operation axis retired 2026-05-27 — see ADR amendment block).
 
-Skills are classified on **five orthogonal axes**, each with a focused purpose. The axis names are deliberate: `subject` answers "what does this skill teach?", `operation` answers "what does it enable an agent to do?", `scope` answers "where does it apply?", `keywords` covers fuzzy activation, and `relations` covers typed edges to other skills.
+Skills are classified on three orthogonal authored facets — `subject` (what is taught), `scope` (where it applies), and `relations` (typed edges to other skills) — plus two activation surfaces (`keywords` for fuzzy match, `triggers`/`examples`/`anti_examples` for explicit signals). The optional `subjects[]` array (max 2 entries, primary first) covers polyhierarchy when a skill genuinely spans two browse shelves; the optional `domain` field (slash-delimited sub-path) provides finer-grained subdivision *within* a subject.
 
-| # | Axis | Type | Required (v8) | Purpose |
-|---|---|---|---|---|
-| 1 | **`subject`** | closed 9-enum | yes | Primary classification — what the skill teaches |
-| 2 | **`operation`** | closed 4-enum | yes | Cognitive operation — Bloom-grounded |
-| 3 | **`scope`** | closed 3-enum | yes | Deployment targeting |
-| 4 | **`keywords`** | ≤10 strings | recommended | Fuzzy agent activation |
-| 5 | **`relations`** | typed edges | recommended | Prerequisite + clustering graph |
+| Axis | Type | Required | Purpose |
+|---|---|---|---|
+| **`subject`** | closed 9-enum | yes | Primary classification — what the skill teaches |
+| **`scope`** | closed 3-enum | yes | Deployment targeting |
+| **`keywords`** | ≤10 strings | recommended | Fuzzy agent activation |
+| **`relations`** | typed edges | recommended | Prerequisite + clustering graph |
 
-The optional `subjects[]` array (max 2 entries, primary first) covers polyhierarchy when a skill genuinely spans two browse shelves. The optional `domain` field (slash-delimited sub-path) provides finer-grained subdivision *within* a subject.
-
-#### Axis 1 — `subject` (9 closed values)
+#### `subject` (9 closed values)
 
 The primary browse shelf and routing seed. Balance rule: each subject holds 5–25 skills; <5 = fold or recruit, >25 = subdivide via `domain`.
 
-| Value | Description | Verified count (live manifest, 2026-05-26) |
-|---|---|---|
-| `agent-ops` | Agent orchestration, dispatch, lifecycle, multi-agent comms | 17 |
-| `code-engineering` | Backend, APIs, libraries, infrastructure, runtime | 35 |
-| `frontend-ui` | UI components, layout, interaction, web framework specifics | 20 |
-| `design-craft` | Visual design, typography, brand, motion, design tokens | 20 |
-| `data-analytics` | Data viz, analytics, observability, financial display | 3 |
-| `quality-assurance` | Testing, a11y, perf, security, type-safety | 27 |
-| `meta-methods` | Methodology, reasoning, verification, decision frameworks | 11 |
-| `knowledge-organization` | Taxonomy, semantics, classification, glossaries, ontology | 7 |
-| `product-domain` | Domain-specific (Shopify, Stripe, fulfillment, integrations) | 10 |
+| Value | Description |
+|---|---|
+| `agent-ops` | Agent orchestration, dispatch, lifecycle, multi-agent comms |
+| `code-engineering` | Backend, APIs, libraries, infrastructure, runtime |
+| `frontend-ui` | UI components, layout, interaction, web framework specifics |
+| `design-craft` | Visual design, typography, brand, motion, design tokens |
+| `data-analytics` | Data viz, analytics, observability, financial display |
+| `quality-assurance` | Testing, a11y, perf, security, type-safety |
+| `meta-methods` | Methodology, reasoning, verification, decision frameworks |
+| `knowledge-organization` | Taxonomy, semantics, classification, glossaries, ontology |
+| `product-domain` | Domain-specific (Shopify, Stripe, fulfillment, integrations) |
+
+Live per-subject counts are in [`SKILL_GRAPH.md § Current State`](SKILL_GRAPH.md#current-state--single-source-of-truth); do not restate inline here.
 
 **To propose a 10th subject value**: write an ADR in `docs/adr/` with (a) ≥5 existing skills that would label primarily under it, AND (b) evidence the value doesn't fit any existing subject by the disambiguation rules. Multi-fit secondaries belong in `subjects[1]`, not in a new top-level value.
 
-#### Axis 2 — `operation` (4 closed values, Bloom-grounded)
+#### `scope` (3 closed values)
 
-What cognitive operation loading this skill enables. Replaces v7's `type` field (which was 93% `capability` and provided no discriminating power).
+Deployment targeting — where this skill applies.
 
-| Value | Bloom level | Means |
-|---|---|---|
-| `know` | Remember/Understand | Declarative knowledge — concepts, vocabulary, reference material |
-| `do` | Apply | Procedural knowledge — step-by-step execution of a task |
-| `decide` | Analyze/Evaluate | Routing/judgment — choosing between options, dispatching other skills |
-| `modify` | (cross-cutting) | Context injection — shapes how other skills execute without executing itself |
+| Value | Means |
+|---|---|
+| `portable` | Repo-agnostic patterns — applies to any project |
+| `workspace` | Cross-repo knowledge in a multi-repo workspace |
+| `project` | Coupled to a specific repo; requires populated `grounding` block |
 
-Verified live-manifest distribution (2026-05-26): `know` 99, `do` 48, `decide` 2, `modify` 1.
+#### `keywords` (≤10 capped)
 
-#### Axis 3 — `scope` (3 values, renamed in v8)
-
-| v8 value | v7 value | Means |
-|---|---|---|
-| `portable` | `portable` (unchanged) | Repo-agnostic patterns |
-| `workspace` | `reference` (renamed) | Cross-repo knowledge in a multi-repo workspace |
-| `project` | `codebase` (renamed) | Coupled to a specific repo; requires `grounding` block |
-
-Use the three v8 values: `portable`, `workspace`, `project`. Do not author `codebase` or `reference`.
-
-#### Axis 4 — `keywords` (≤10 capped)
-
-Semi-controlled vocabulary for fuzzy agent activation. The cap (max 10) was introduced in v8 to prevent keyword stuffing; the codemod truncated all skills that had >10 keywords during the v7→v8 migration.
+Semi-controlled vocabulary for fuzzy agent activation. The cap (max 10) prevents keyword stuffing.
 
 Required when `routing_eval: present`. Strongly recommended for any routable skill.
 
-#### Axis 5 — `relations` (typed edges)
+#### `relations` (typed edges)
 
-The graph layer. Six edge types, cycle-checked on `depends_on` + `broader` + `narrower`. See § Relations for the full edge contract.
+The graph layer. Seven edge types — `related`, `boundary`, `disjoint_with`, `verify_with`, `depends_on`, `broader`, `narrower` — cycle-checked on `depends_on` + `broader` + `narrower`. See § Relations for the full edge contract.
 
----
-
-### v7 Legacy Fields (deprecated)
-
-The v7 classification fields are deprecated. New skills author the v8 axes (`subject`, `scope`) only. Skills still carrying v7 fields are migrated one at a time through `/audit:*` per `skill-graph/AGENTS.md § Work Modes`.
-
-| Legacy field | v8 replacement | Status |
-|---|---|---|
-| `category` | `subject` | Retained, deprecated |
-| `categories[]` | `subjects[]` (max 2, vs v7's max 5) | Retained, deprecated |
-| `primaryCategory` | `subject` (with the lowercase enum) | Retained, deprecated |
-| `layerPrimary` | dropped (1.4% adoption — orphaned workspace facet) | Retained, deprecated |
-| `routingRole` | dropped (1.4% adoption — orphaned workspace facet) | Retained, deprecated |
-| `type` | `operation` | Retained, deprecated |
-| legacy `scope` aliases | see § Classification § Axis 3 | Retained during sunset |
-| `family`, `layer` | dropped before v7 | Already retired |
-
-#### Historical distribution for `category`/`type`/`scope` (pre-v8, 2026-05-24 audit)
-
-These distributions motivated the v8 redesign. The v7 axes had weak discriminating power: 93% of skills shared `type: capability` and 67% shared `scope: portable`, leaving the routing load entirely on keywords/relations/description rather than the classification triple.
-
-| Axis | Value | Count | Share |
-|---|---|---|---|
-| **category** (v7) | `engineering` | 59 | 40% |
-| | `quality` | 28 | 19% |
-| | `design` | 28 | 19% |
-| | `agent` | 17 | 12% |
-| | `foundations` | 14 | 10% |
-| | `product` | 1 | <1% |
-| **type** (v7) | `capability` | 136 | 93% |
-| | `workflow` | 8 | 5% |
-| | `router` | 2 | 1% |
-| | `overlay` | 1 | <1% |
-| **scope** (v7) | `portable` | 98 | 67% |
-| | `reference` | 49 | 33% |
-
-These are retained as design evidence, not current live counts. For current counts, use `SKILL_GRAPH.md § Current State` or generate a manifest and inspect `summary`.
-
-The v8 `subject` axis spreads `engineering`'s former 40% across three subjects (`code-engineering`, `frontend-ui`, `data-analytics`) and the `operation` axis splits `capability`'s former 93% via Bloom-grounded distinctions — restoring useful discriminating power to the classification.
-
-#### Disambiguation rules (apply in order when choosing v8 `subject` for a new skill)
+#### Disambiguation rules (apply in order when choosing `subject` for a new skill)
 
   1. *Primary surface* — what the skill is *about*, not what it *enables*.
   2. *Property vs subject* — properties (a11y, perf, security, testing, type-safety) → `quality-assurance`. How-to-build → `code-engineering` / `frontend-ui` / `design-craft` / `agent-ops`.
@@ -403,7 +338,7 @@ The v8 `subject` axis spreads `engineering`'s former 40% across three subjects (
 2. `eval_score >= 4.0` — grader score meets the quality bar.
 3. `routing_eval: present` — the skill has been verified in a routing eval.
 4. `drift_check.last_verified` within 90 days — skill has been recently verified against truth sources.
-5. For `scope: project` skills (and legacy `scope: codebase` aliases): `grounding.truth_sources` must be non-empty.
+5. For `scope: project` skills: `grounding.truth_sources` must be non-empty.
 
 **Pre-1.0 stance:** The library defaults all skills to `experimental` because the protocol and skill content are under active development. Skills are promoted to `stable` only when all five criteria above are met. This is intentional — a uniform `experimental` default correctly signals that the corpus as a whole is pre-1.0 and no stability guarantees are implied. As the audit loop completes more skills, the `by_stability` distribution in the manifest will become a meaningful quality signal. (Updated 2026-05-23 — SH-6309)
 
@@ -625,8 +560,8 @@ relations:
 
 **Cross-domain boundary doctrine — SAME-DOMAIN ONLY.** Codified 2026-05-17 after the Tier C″ empirical sweep across 8 Wave 6 skills:
 
-1. `boundary[]` entries should declare SAME-DOMAIN handoffs only (same `category` AND same `domain` sub-tree). Example: `engineering/frontend` ↔ `engineering/frontend` is fine; `engineering/frontend` ↔ `design/component-systems` is not.
-2. Cross-category or cross-sub-domain handoffs belong in `anti_examples` + `relations.related`, NOT in `boundary[]`. The `anti_examples` array preserves routing-visible documentation as wrong-use phrases; `relations.related` signals the semantic adjacency without invoking the score-aware exclusion mechanic.
+1. `boundary[]` entries should declare SAME-DOMAIN handoffs only (same `subject` AND same `domain` sub-tree). Example: `code-engineering/frontend` ↔ `code-engineering/frontend` is fine; `code-engineering/frontend` ↔ `design-craft/component-systems` is not.
+2. Cross-subject or cross-sub-domain handoffs belong in `anti_examples` + `relations.related`, NOT in `boundary[]`. The `anti_examples` array preserves routing-visible documentation as wrong-use phrases; `relations.related` signals the semantic adjacency without invoking the score-aware exclusion mechanic.
 3. Empirical justification: removing 16 cross-domain `boundary[]` entries across 8 skills caused **0 top-1 routing changes** on the 30-query baseline; only 3/30 low-confidence unmaskings of legitimate alternatives at score 3 surfaced. The cross-domain entries were performing silent low-confidence exclusion only — exactly the silent-failure risk the doctrine prevents.
 
 Authors who introduce a cross-domain `boundary[]` entry must move it to `anti_examples` + `relations.related` instead. Lint (planned, not yet implemented) will warn on cross-domain boundary declarations.
@@ -735,7 +670,7 @@ The manifest generator (`scripts/generate-manifest.js`) reads the authored front
 
 - `id` — derived from the skill's path relative to `skills/` (e.g. `task-execution`, or `<project>/design-review` in a multi-root workspace).
 - `path` — relative path to the `SKILL.md` file.
-- `summary` — aggregate counts (`total_skills`, `by_type`, `by_category`, `by_scope`, `by_stability`).
+- `summary` — aggregate counts (`total_skills`, `by_schema_version`, `by_subject`, `by_scope`, `by_stability`, `by_project`).
 - `generated_at` — ISO timestamp of when the manifest was generated.
 - `activation` — compiled block merging `triggers`, `keywords`, `paths`, `examples`, and `anti_examples` from frontmatter.
 - `health` — compiled block merging `eval_artifacts`, `eval_state`, `routing_eval`, `comprehension_state`, `eval_last_run`, `freshness`, and `drift_check`.
@@ -744,37 +679,32 @@ The manifest schema is at `schemas/manifest.schema.json`. For the complete autho
 
 ### Normalized during manifest generation
 
-Some legacy scope and type values are normalized by the manifest generator to the schema-valid enum. The normalization is deterministic and logged:
+Some legacy scope values are normalized by the manifest generator to the schema-valid v8 enum. The normalization is deterministic and logged:
 
 | Legacy value | Normalized to | Reason |
 |---|---|---|
 | `operational` (scope) | `project` | Operational = repo-specific |
 | `overlay` (scope) | `portable` | Overlay skills are cross-repo |
 | `generic` (scope) | `portable` | Generic = cross-repo applicable |
-| `doctrine` (type) | `capability` | A doctrine skill is a capability |
-| `domain` (type) | `capability` | Domain knowledge is a capability |
-| `framework` (type) | `workflow` | Frameworks describe workflows |
-| `feedback` (type) | `overlay` | Feedback modifies other skills |
 
 ---
 
 ## Schema contract
 
-> **v8 is the canonical classification.** The schema's global `required` array mandates `subject` + `scope`. v7 classification fields (`type`, `category`, `categories`, `primaryCategory`, `layerPrimary`, `routingRole`) are deprecated. Do not author v7 fields. See `schemas/skill.schema.json` for the global required array.
+> **v8 is the canonical classification.** The schema's global `required` array mandates `subject` + `scope`. The prior contract (v7 — with `type`, `category`, `categories`, `primaryCategory`, `layerPrimary`, `routingRole`, and a 4-value `operation` axis) lives in git history; retrieve via `git show schema-v7:schemas/skill.schema.json`. See `schemas/skill.schema.json` for the live contract.
 
 | Surface | State |
 |---|---|
-| **This doc (SKILL_METADATA_PROTOCOL.md)** | v8 — 5-axis classification |
-| **Schema file (`schemas/skill.schema.json`)** | v8. Global required: `subject`, `operation`, `scope`, plus the identity/lifecycle/Evaluation Status fields. v7 fields (`type`, `category`) defined as optional properties; the `category.const` 6-enum still constrains values when authors choose to declare it. |
-| **Compiled manifest (`skills.manifest.json`) summary** | v8-primary (`by_subject` / `by_operation`); v7 facets (`by_category` / `by_type`) retained as observational telemetry for skills that still carry the legacy fields. |
+| **This doc (SKILL_METADATA_PROTOCOL.md)** | v8 |
+| **Schema file (`schemas/skill.schema.json`)** | v8. Global required: `subject`, `scope`, plus identity/lifecycle/Evaluation Status fields. No v7 fields declared. |
+| **Compiled manifest (`skills.manifest.json`) summary** | v8 (`by_subject`, `by_scope`, `by_schema_version`, `by_stability`, `by_project`). |
 | **Audit Loop checklist (`SKILL_AUDIT_LOOP.md` § Part 2)** | v8 |
 
 **What this means for authors:**
 
-- A new skill MUST declare the v8 axes: `subject` (9-enum), `operation` (4-enum, Bloom-grounded), `scope` (3-enum). See § Classification — the 5-axis model.
-- A new skill MAY omit the v7 fields (`type`, `category`). They remain accepted if you choose to declare them (e.g., for tooling that still reads the older facets), but they are no longer required by the schema.
-- Skills authored before 2026-05-26 that still lack v8 axes will fail lint. Migration of those skills is **CONTENT-mode work** handled per-skill through the audit loop (`/audit:audit`, `/audit:evolve`) — see `skill-graph/AGENTS.md § Work Modes — SYSTEM vs CONTENT`. The schema's correctness is independent of how many individual skills currently comply.
-- The v7→v8 codemod (`scripts/migrate-skill-v7-to-v8.js`) remains available for skills that need it; the normalizer in `scripts/lib/parse-frontmatter.js::normalizeFrontmatter()` continues to read either encoding (nested `metadata:` or flat).
+- A new skill MUST declare the v8 axes: `subject` (9-enum) + `scope` (3-enum). Polyhierarchy via optional `subjects[]` (max 2). See § Classification.
+- Skills still carrying v7 classification fields fail lint against the live schema. Migration of those skills is **CONTENT-mode work** handled per-skill through the audit loop (`/audit:audit`, `/audit:evolve`) — see `skill-graph/AGENTS.md § Work Modes — SYSTEM vs CONTENT`. The schema's correctness is independent of how many individual skills currently comply.
+- The normalizer in `scripts/lib/parse-frontmatter.js::normalizeFrontmatter()` continues to read either physical encoding (nested `metadata:` or flat).
 
 ## Design Constraints
 

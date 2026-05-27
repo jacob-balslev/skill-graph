@@ -188,7 +188,7 @@ The Skill Graph is a routable, evaluable, drift-checked knowledge graph of agent
 - `relations.verify_with` — "when this skill is applied, verify the result with that skill" (cross-check).
 - `relations.depends_on` — composition; "this skill assumes the reader has the other in scope."
 
-The graph is not a documentation pile. It is queried by routers, traversed by injection hooks, evaluated against retrieval baselines, and drift-checked against source-of-truth files. Two skills are "the same kind" iff they share a `subject × operation × scope` triple plus a head noun (the v8 5-axis model per [ADR-0017](docs/adr/0017-five-axis-classification-model.md); pre-v8 the triple was `category × type × scope`). The routing layer uses that triple as a first-pass discriminator before walking edges. Note: in the current corpus, most skills share `operation: do` and `scope: portable`, so the triple provides broad stratum separation but not fine-grained routing precision — keyword score and relation edges carry the discriminating load. See `SKILL_METADATA_PROTOCOL.md` § Classification for the current distribution analysis and authoring implications.
+The graph is not a documentation pile. It is queried by routers, traversed by injection hooks, evaluated against retrieval baselines, and drift-checked against source-of-truth files. Two skills are "the same kind" iff they share a `subject × scope` pair plus a head noun (per [ADR-0017](docs/adr/0017-five-axis-classification-model.md), with the operation axis retired 2026-05-27). The routing layer uses that pair as a first-pass discriminator before walking edges. Note: in the current corpus, most skills share `scope: portable`, so the pair provides broad stratum separation but not fine-grained routing precision — keyword score and relation edges carry the discriminating load. See `SKILL_METADATA_PROTOCOL.md` § Classification for the current distribution analysis and authoring implications.
 
 This shape is what distinguishes the Skill Graph from prompt libraries, agent-runtime config, hosted marketplaces, and personal memory systems. It is a protocol-and-tooling project that produces a navigable graph; consumers (routers, agent runtimes, hosted marketplaces) read from it but do not redefine it.
 
@@ -196,16 +196,15 @@ This shape is what distinguishes the Skill Graph from prompt libraries, agent-ru
 
 The Skill Metadata Protocol is the frontmatter contract every `SKILL.md` ships against. Treat this section as the working summary; `SKILL_METADATA_PROTOCOL.md` and `docs/field-reference.md` are the binding documents.
 
-Core required axes (v8 5-axis classification — see `SKILL_METADATA_PROTOCOL.md § Schema contract`):
+Core required axes (v8 — see `SKILL_METADATA_PROTOCOL.md § Schema contract`):
 
 - `name` — kebab-case, head-noun-anchored (see `docs/head-noun-glossary.md`); aligns with parent directory.
-- `description` — routing contract: positive trigger phrases + explicit negative boundary (`Do NOT use for X (use that-skill).`).
+- `description` — short description of what the skill is about. Activation signals belong to `keywords`/`triggers`/`examples`/`anti_examples`; boundary semantics belong to `relations.boundary`.
 - `subject` — primary browse shelf, ONE of nine closed values: `code-engineering`, `quality-assurance`, `frontend-ui`, `design-craft`, `agent-ops`, `product-domain`, `knowledge-organization`, `meta-methods`, `data-analytics`. Each subject holds 5–25 skills; <5 = fold or recruit, >25 = subdivide via `domain`. To propose a 10th value: ADR + ≥5 primary-fit skills. See [ADR-0017](docs/adr/0017-five-axis-classification-model.md).
-- `operation` — cognitive operation, ONE of four Bloom-grounded values: `know` (declarative), `do` (procedural), `decide` (judgment), `modify` (context-injecting).
-- `scope` — deployment targeting, ONE of three values: `portable` (any project), `workspace` (this workspace only), `project` (one specific project; requires `grounding`). Do not author the v7 names `codebase` or `reference`.
+- `scope` — deployment targeting, ONE of three values: `portable` (any project), `workspace` (this workspace only), `project` (one specific project; requires `grounding`).
 - `subjects[]` (optional, max 2, primary first) covers polyhierarchy when a skill genuinely spans two browse shelves.
 
-**v7 classification fields are deprecated** — `type`, `category`, `categories[]`, `primaryCategory`, `layerPrimary`, `routingRole`. Do not author. See `SKILL_METADATA_PROTOCOL.md § v7 Legacy Fields (deprecated)`.
+Activation surfaces: `keywords` (≤10), `triggers` (exact), `examples` / `anti_examples` (positive/negative prompts). Routing edges live in `relations` (`related` / `boundary` / `verify_with` / `depends_on` / `broader` / `narrower` / `disjoint_with`).
 
 Closure of `subject` (9 values) is justified by Miller's 7±2 browseability + MECE pressure + the `foundations` / `knowledge-organization` anti-junk-drawer gate. See `SKILL_METADATA_PROTOCOL.md § Classification` for the disambiguation rules.
 
@@ -268,7 +267,7 @@ Canonical text: workspace `~/Development/AGENTS.md` § Non-Negotiable Standards 
 
 A version number on a skill — `schema_version`, `skill_graph_protocol`, and any `vN` label — asserts that the skill's **content** meets that version's bar. Advancing the number is honest only after the substantive migration the version represents has actually been performed. Bumping a label without doing that work is fake-conformance: the same class of doc-lie as `eval_state: passing` without an `eval_last_run` receipt, or `application_verdict: APPLICABLE` without a gate-9 eval.
 
-- **`schema_version` is the mechanical shape; the content label is the substantive bar.** The `migrate-skill-vN-to-vM.js` codemods bump `schema_version` corpus-wide — a shape migration a script *can* do. The deeper content each version introduced is **not** something a codemod can author: v6 introduced the five flat Understanding fields (`mental_model`, `purpose`, `boundary`, `analogy`, `misconception`) + `comprehension_state`; v7 introduced the four-verdict Audit Status; v8 introduced the 5-axis classification (`subject` / `operation` / `scope` + `keywords` / `relations`). A skill only earns the content label when that content is actually present and reviewed.
+- **`schema_version` is the mechanical shape; the content label is the substantive bar.** Migration codemods bump `schema_version` corpus-wide — a shape migration a script *can* do. The deeper content each version introduced is **not** something a codemod can author: v6 introduced the five flat Understanding fields (`mental_model`, `purpose`, `boundary`, `analogy`, `misconception`) + `comprehension_state`; v7 introduced the four-verdict Audit Status; v8 introduced the `subject` + `scope` classification with polyhierarchy via `subjects[]` (max 2), capped `keywords`, and the typed `relations` graph. A skill only earns the content label when that content is actually present and reviewed.
 - **A label mismatch is HONEST, not drift.** A skill with `schema_version: 8` but `skill_graph_protocol` recording an older content label is correctly recording that the schema bump ran but the deeper content migration did not. Do **not** "fix" this by editing the label. Fix it by doing the migration through `/audit:*`, then advancing the label — never the reverse.
 - **Never run a find-replace that changes only a version label.** A bulk `sed`/codemod of `vN` → `vM` across `SKILL.md` files with no content change is prohibited. A backlog of skills on an older content label is migration work for the audit loop, not a string to replace.
 

@@ -422,16 +422,13 @@ Required dimension rows:
 - [ ] `version` exists
 - [ ] **v8 classification axes are present and valid:**
    - `subject` is one of the 9-value enum — `code-engineering` / `quality-assurance` / `frontend-ui` / `design-craft` / `agent-ops` / `product-domain` / `knowledge-organization` / `meta-methods` / `data-analytics`.
-   - `operation` is one of the 4-value Bloom-grounded enum — `know` / `do` / `decide` / `modify`.
    - `scope` is one of `portable` / `workspace` / `project`.
-   - See `SKILL_METADATA_PROTOCOL.md § Classification — the 5-axis model` and [ADR-0017](docs/adr/0017-five-axis-classification-model.md).
-- [ ] If the skill still carries v7 classification fields (`type`, `category`, `categories`, `primaryCategory`, `layerPrimary`, `routingRole`) or v7 scope names (`reference`, `codebase`): file a finding to migrate the skill through `/audit:improve`. Do not author v7 fields on new skills. (`family` and `layer` from earlier versions are fully retired and must not appear.)
+   - See `SKILL_METADATA_PROTOCOL.md § Classification` and [ADR-0017](docs/adr/0017-five-axis-classification-model.md).
+- [ ] If the skill still carries fields that no longer exist in the live schema (e.g. v7 classification fields `type`, `category`, `categories`, `primaryCategory`, `layerPrimary`, `routingRole`, `operation`; or v7 scope names `reference`, `codebase`): file a CONTENT finding to migrate the skill through `/audit:improve`. The live schema rejects these via `additionalProperties: false` and the v8 scope enum.
 - [ ] `owner` exists
 - [ ] `freshness` exists
-- [ ] `drift_check` exists as an object with `last_verified` (v3+ — was scalar date in v2)
-- [ ] `eval_artifacts`, `eval_state`, `routing_eval` all exist (orthogonal triple — shipped in schema_version 2 under SH-5784, retained through v7)
-- [ ] `extends` exists when `type: overlay`
-- [ ] `extends` is absent when `type` is not `overlay`
+- [ ] `drift_check` exists as an object with `last_verified`
+- [ ] `eval_artifacts`, `eval_state`, `routing_eval` all exist (orthogonal triple — shipped in schema_version 2 under SH-5784, retained through v8)
 - [ ] **Inline field-purpose comments present** above each authored field per the convention in `SKILL_METADATA_PROTOCOL.md § Inline field comments`. Strippable forms (`# TEMPLATE NOTE:` lines and `> **TEMPLATE NOTE:**` body blockquotes) are ABSENT from the production skill: `grep -n "TEMPLATE NOTE" <SKILL.md>` must return zero hits. Field-purpose comments (no `TEMPLATE NOTE:` prefix) are PRESENT and survive verification: `grep -c "^\s*#" <SKILL.md>` should be ≥ the field count, not zero.
 
 ### 2. Activation quality
