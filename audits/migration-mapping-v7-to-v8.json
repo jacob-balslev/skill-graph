@@ -1,7 +1,8 @@
 {
   "generated_at": "2026-05-25T13:41:41.775Z",
   "generator": "scripts/migrate-skill-v7-to-v8.js",
-  "plan": "/Users/jacobbalslev/.claude-profiles/jacobbalslev01/plans/we-should-clearly-look-wondrous-firefly.md",
+  "plan": null,
+  "plan_note": "Updated 2026-05-27 (audit M14): the prior value pointed at /Users/jacobbalslev/.claude-profiles/jacobbalslev01/plans/we-should-clearly-look-wondrous-firefly.md, which is workspace-local user-only state and unresolvable in any other clone. The migration plan lives in the operator's local plans directory; this file is the codemod's run-output, not a pointer to where the plan was authored. Set this value via the codemod's --plan flag if the plan is committed to the repo.",
   "summary": {
     "total": 147,
     "successful": 147,
