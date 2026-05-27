@@ -14,7 +14,7 @@ The three layers divide the work cleanly. The [Skill Metadata Protocol](SKILL_ME
 
 | Fact | Value | Source of truth |
 |---|---|---|
-| **Schema version enforced** | **v8 only (v7→v8 phase ended 2026-05-26)**. The schema's global `required` array mandates `subject` + `operation` + `scope` (v8 axes). **The v7 classification (`type`, `category`, `categories`, `primaryCategory`, `layerPrimary`, `routingRole`) is DEPRECATED** — pending schema-level removal; do not author. Both integer values `7` and `8` still validate the `schema_version` field itself (for back-compat on legacy skills), but the SHAPE requirements are v8 across the board. Any skill that still lacks v8 axes OR still carries deprecated v7 classification is CONTENT-mode migration work for the audit loop. | `schemas/skill.schema.json` + [ADR-0017](docs/adr/0017-five-axis-classification-model.md) |
+| **Schema version enforced** | **v8**. The schema's global `required` array mandates `subject` + `scope`. Do not author v7 fields (`type`, `category`, `categories`, `primaryCategory`, `layerPrimary`, `routingRole`). | `schemas/skill.schema.json` + [ADR-0017](docs/adr/0017-five-axis-classification-model.md) |
 | Manifest schema file | tracks v7 + v8 dual-emit | `schemas/manifest.schema.json` |
 | Emitted manifest `schema_version` | **4** (back-compatible root contract) | `scripts/generate-manifest.js`; `schemas/manifest.schema.json` `schema_version.const` |
 | Manifest summary facets | **dual emit** — v7 (`by_category` / `by_type`) and v8 (`by_subject` / `by_operation`) side-by-side, plus `by_schema_version` for migration tracking | `scripts/generate-manifest.js::computeSummary` |
@@ -119,7 +119,7 @@ A sixth set of files — `README.md`, `CHANGELOG.md`, `CONTRIBUTING.md`, `LICENS
 
 | File | Role |
 |---|---|
-| `schemas/skill.schema.json` | The frontmatter schema — canonical-only per [ADR-0014](docs/adr/0014-canonical-only-schema-files.md). Current contract is v8 (v7→v8 phase ended 2026-05-26); the `schema_version` field accepts both integer `8` (canonical) and `7` (deprecated back-compat read) per ADR-0017 § Landing strategy. The file's `$id` (`https://skillgraph.dev/schemas/skill.schema.json`) is the stable identifier. |
+| `schemas/skill.schema.json` | The frontmatter schema — canonical-only per [ADR-0014](docs/adr/0014-canonical-only-schema-files.md). Current contract is v8. The file's `$id` (`https://skillgraph.dev/schemas/skill.schema.json`) is the stable identifier. |
 | `schemas/manifest.schema.json` | The compiled-manifest schema — canonical-only. Tracks the current contract (carries the four Audit Status verdicts under v7). |
 | `schemas/audits-manifest.schema.json` | The Skill Audit Loop manifest schema — binds the shape of `audits/manifest.json` (protocols, runners, required artifacts, runtime aliases). Authored 2026-05-25; closes the manifest version-discipline gap (Opus novelty memo #1). |
 | `schemas/comprehension.schema.json` | The comprehension-eval schema — binds the shape of `skills/<name>/evals/comprehension.json`, the artifact the gate-8 grader evaluates against. Authored 2026-05-25 to close the highest-priority canonicalization gap (Opus G2#3 CRITICAL). |
@@ -334,7 +334,7 @@ Concrete artifacts that show adopters what "good" looks like. Every specimen is 
 
 | File | Role |
 |---|---|
-| `examples/skill-metadata-template.md` | Self-referential authoring template. Its subject is skill authoring itself. **Demonstrates the v8 5-axis classification (`subject` / `operation` / `scope`) and the inline field-purpose comment convention** (every authored field carries a comment block above it; strippable `# TEMPLATE NOTE:` lines are clearly distinguished from field-purpose comments that stay in derived skills — see `SKILL_METADATA_PROTOCOL.md § Inline field comments — the authoring convention`). Also demonstrates the v7-deprecated back-compat shape (`type` / `category` retained as optional with explicit deprecation comment), object-shaped `drift_check` / `compatibility` / `lifecycle`, `boundary[{skill, reason}]`, the five flat Understanding fields, and the four-verdict Audit Status. |
+| `examples/skill-metadata-template.md` | Self-referential authoring template. Its subject is skill authoring itself. **Demonstrates the v8 classification (`subject` / `scope`) and the inline field-purpose comment convention** (every authored field carries a comment block above it; strippable `# TEMPLATE NOTE:` lines are clearly distinguished from field-purpose comments that stay in derived skills — see `SKILL_METADATA_PROTOCOL.md § Inline field comments — the authoring convention`). Also demonstrates object-shaped `drift_check` / `compatibility` / `lifecycle`, `boundary[{skill, reason}]`, the five flat Understanding fields, and the four-verdict Audit Status. |
 | `examples/fixture-skills/` | Four in-repo specimen skills covering distinct shapes: `minimal-capability`, `with-grounding` (full `grounding` block + recorded `truth_source_hashes`), `with-relations`, and `comprehension-full` (populated Understanding fields). |
 | `examples/skills.manifest.sample.json` | Generator-produced sample. Drift-checked against live generator output by `skill-lint.js` check 8. |
 

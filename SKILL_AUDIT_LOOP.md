@@ -416,7 +416,7 @@ Required dimension rows:
 
 ### 1. Frontmatter validity
 
-- [ ] `schema_version` exists and equals `8` (the canonical contract post-2026-05-26 v7→v8 phase end). The schema also validates `7` as a deprecated back-compat read for legacy skills that have not yet migrated; do not author `7` on new skills. String variants `"8"` / `"7"` are tolerated for hand-rolled YAML — see `schemas/skill.schema.json`.
+- [ ] `schema_version` exists and equals `8`. Do not author `7` on new skills. String variants `"8"` / `"7"` are tolerated for hand-rolled YAML — see `schemas/skill.schema.json`.
 - [ ] `name` exists and matches the intended skill identifier
 - [ ] `description` exists and is specific enough to route from
 - [ ] `version` exists
@@ -425,7 +425,7 @@ Required dimension rows:
    - `operation` is one of the 4-value Bloom-grounded enum — `know` / `do` / `decide` / `modify`.
    - `scope` is one of `portable` / `workspace` / `project`.
    - See `SKILL_METADATA_PROTOCOL.md § Classification — the 5-axis model` and [ADR-0017](docs/adr/0017-five-axis-classification-model.md).
-- [ ] If the skill still carries v7 classification fields (`type`, `category`, `categories`, `primaryCategory`, `layerPrimary`, `routingRole`) or v7 scope aliases (`reference`, `codebase`): these are **deprecated** back-compat reads only. The audit may note them as migration-pending; do not author them on new skills. (`family` and `layer` from earlier versions are fully retired and must not appear.)
+- [ ] If the skill still carries v7 classification fields (`type`, `category`, `categories`, `primaryCategory`, `layerPrimary`, `routingRole`) or v7 scope names (`reference`, `codebase`): file a finding to migrate the skill through `/audit:improve`. Do not author v7 fields on new skills. (`family` and `layer` from earlier versions are fully retired and must not appear.)
 - [ ] `owner` exists
 - [ ] `freshness` exists
 - [ ] `drift_check` exists as an object with `last_verified` (v3+ — was scalar date in v2)

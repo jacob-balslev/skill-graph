@@ -202,10 +202,10 @@ Core required axes (v8 5-axis classification — see `SKILL_METADATA_PROTOCOL.md
 - `description` — routing contract: positive trigger phrases + explicit negative boundary (`Do NOT use for X (use that-skill).`).
 - `subject` — primary browse shelf, ONE of nine closed values: `code-engineering`, `quality-assurance`, `frontend-ui`, `design-craft`, `agent-ops`, `product-domain`, `knowledge-organization`, `meta-methods`, `data-analytics`. Each subject holds 5–25 skills; <5 = fold or recruit, >25 = subdivide via `domain`. To propose a 10th value: ADR + ≥5 primary-fit skills. See [ADR-0017](docs/adr/0017-five-axis-classification-model.md).
 - `operation` — cognitive operation, ONE of four Bloom-grounded values: `know` (declarative), `do` (procedural), `decide` (judgment), `modify` (context-injecting).
-- `scope` — deployment targeting, ONE of three values: `portable` (any project), `workspace` (this workspace only), `project` (one specific project; requires `grounding`). Legacy v7 aliases `codebase` → `project`, `reference` → `workspace` validate as deprecated back-compat.
+- `scope` — deployment targeting, ONE of three values: `portable` (any project), `workspace` (this workspace only), `project` (one specific project; requires `grounding`). Do not author the v7 names `codebase` or `reference`.
 - `subjects[]` (optional, max 2, primary first) covers polyhierarchy when a skill genuinely spans two browse shelves.
 
-**v7 classification fields are deprecated** — `type`, `category`, `categories[]`, `primaryCategory`, `layerPrimary`, `routingRole`. The schema retains them as optional back-compat properties only; do not author on new skills. See `SKILL_METADATA_PROTOCOL.md § v7 Legacy Fields (deprecated)`.
+**v7 classification fields are deprecated** — `type`, `category`, `categories[]`, `primaryCategory`, `layerPrimary`, `routingRole`. Do not author. See `SKILL_METADATA_PROTOCOL.md § v7 Legacy Fields (deprecated)`.
 
 Closure of `subject` (9 values) is justified by Miller's 7±2 browseability + MECE pressure + the `foundations` / `knowledge-organization` anti-junk-drawer gate. See `SKILL_METADATA_PROTOCOL.md § Classification` for the disambiguation rules.
 
@@ -270,7 +270,59 @@ A version number on a skill — `schema_version`, `skill_graph_protocol`, and an
 
 - **`schema_version` is the mechanical shape; the content label is the substantive bar.** The `migrate-skill-vN-to-vM.js` codemods bump `schema_version` corpus-wide — a shape migration a script *can* do. The deeper content each version introduced is **not** something a codemod can author: v6 introduced the five flat Understanding fields (`mental_model`, `purpose`, `boundary`, `analogy`, `misconception`) + `comprehension_state`; v7 introduced the four-verdict Audit Status; v8 introduced the 5-axis classification (`subject` / `operation` / `scope` + `keywords` / `relations`). A skill only earns the content label when that content is actually present and reviewed.
 - **A label mismatch is HONEST, not drift.** A skill with `schema_version: 8` but `skill_graph_protocol` recording an older content label is correctly recording that the schema bump ran but the deeper content migration did not. Do **not** "fix" this by editing the label. Fix it by doing the migration through `/audit:*`, then advancing the label — never the reverse.
-- **Never run a find-replace that changes only a version label.** A bulk `sed`/codemod of `vN` → `vM` across `SKILL.md` files with no content change is prohibited. A backlog of skills on an older content label is migration work for the audit loop to drain, not a string to replace.
+- **Never run a find-replace that changes only a version label.** A bulk `sed`/codemod of `vN` → `vM` across `SKILL.md` files with no content change is prohibited. A backlog of skills on an older content label is migration work for the audit loop, not a string to replace.
+
+## Major Version Is a Clean Cut. Legacy Lives in Git, Not in the Tree.
+
+> Skill Graph is a **controlled monorepo**, not a public API with unknown external consumers. The schema describes the **current** version. Prior versions live in git tags, not in the tree.
+
+The industry default for schema evolution is **gradual deprecation** (deprecate → keep as optional → remove after long window). That pattern is correct for **published APIs with unknown external consumers** ([Protobuf best practices](https://protobuf.dev/best-practices/dos-donts/), [Stripe's date-based versioning](https://stripe.com/blog/api-versioning), [Conduktor schema evolution](https://www.conduktor.io/glossary/schema-evolution-best-practices)) because the schema author cannot coordinate every client's migration. It is **wrong** for Skill Graph because Skill Graph is not that shape of project.
+
+| Property | Skill Graph (this pattern) | Public API (gradual deprecation) |
+|---|---|---|
+| Consumers | One canonical corpus, owned by the project | Many unknown external accounts |
+| Coordination | Possible — schema + corpus migrate together | Impossible — clients migrate independently |
+| Compatibility-layer location | The **public exporter** (`scripts/export-marketplace-skills.js`) translates to the stable Agent-Skills format for external readers. The internal schema does not carry that burden. | Throughout the schema (Protobuf reserved tags, Stripe response-compat layer, etc.) |
+| Right pattern | **Clean cut** at major version | Gradual deprecation |
+
+Stripe's own framing names the principle: their core code "only writes code for the latest version and does not clutter the core business logic with if-else chains checking for old versions… Once the core logic generates a response in the modern format, the response compatibility layer takes over and transforms the data backward" ([averagedevs.com](https://www.averagedevs.com/blog/stripe-api-versioning-explained)). Skill Graph's analogue: the internal schema describes the current version, full stop. The exporter is the compatibility layer for external skills.sh consumers; the schema is not.
+
+### What happens on a major version bump (v(N-1) → v(N))
+
+1. **Rewrite the schema to v(N).** Delete v(N-1) field definitions, v(N-1) `allOf` rules, v(N-1) enum values, and v(N-1) description text. The schema is not a back-compat shim.
+2. **Run the migration codemod, then delete it.** v(N-1)→v(N) is a one-time event. The codemod is not permanent tooling. Its history lives in git.
+3. **Rewrite protocol / loop / graph docs to v(N).** No "deprecated v(N-1) fields" sections. No "during the sunset window" prose. No "do not author v(N-1)" rules — because v(N-1) is not part of the live contract.
+4. **Amend any superseded ADRs.** One-line block: `> Superseded by v(N) (<commit>, <date>). See AGENTS.md § Major Version Is a Clean Cut.`
+5. **CHANGELOG records the cut as past tense.** Single historical entry: "v(N-1) → v(N) ran on `<date>` in `<sha>`. Prior contract retrievable via `git show schema-v(N-1):schemas/skill.schema.json`."
+6. **Tag the prior contract.** `git tag schema-v(N-1) <last-pre-cut-sha>` so anyone needing the old contract can `git checkout` it.
+
+**Anyone needing v(N-1) reads git, not the live tree.**
+
+### Anti-patterns banned in this project
+
+| Anti-pattern | Why it fails | Do this instead |
+|---|---|---|
+| Schema retains v(N-1) fields as "deprecated optional" properties | The schema stops being a contract description and becomes a back-compat shim. Authors face two valid shapes and pick wrong. Lint surface widens for no live consumer. | Delete v(N-1) field definitions in the same commit v(N) becomes canonical. |
+| Docs say "v(N-1) fields are deprecated — do not author v(N-1)" | Gives v(N-1) mind-share in v(N) docs. Authors waste cognitive cycles on a non-existent contract. | Don't mention v(N-1) in active v(N) docs. CHANGELOG owns the historical record. |
+| Migration codemod kept in-tree after corpus migrates | Future agents read it and treat it as ongoing tooling. Confuses new authors who think v(N-1) is a current authoring path. | Delete the codemod once migration is done. Recover from git if ever re-needed. |
+| "Compatibility window," "sunset phase," "v(N-1) drain," "while corpus migrates" framing | Teaches a transition state that does not exist in a controlled monorepo. CONTENT state leaking into SYSTEM thinking. | Past-tense historical record only. "v(N-1)→v(N) ran on `<date>`." |
+| ADR-(N-1) left unamended after the schema cut | The decision register asserts a contract the live system no longer enforces. | One-line amendment block citing the supersession, on the original ADR. |
+| Authoring docs (PRIMER, QUICKSTART, field-reference, decision-guide) carrying v(N-1) sections | Onboarding paths teach an obsolete contract. New authors waste time. | Rewrite to v(N) only. v(N-1) authoring path does not exist post-cut. |
+
+### What stays after a cut
+
+- **CHANGELOG entries** (historical record; that is what CHANGELOG is for)
+- **ADR-(N-1)** with an amendment block citing the cut and pointing at the superseding ADR or AGENTS.md anchor
+- **Git tags** for prior contracts (`schema-v(N-1)`, `schema-v(N-2)`…)
+- **`scripts/export-marketplace-skills.js`** — the public-facing compatibility layer that absorbs the translation to the stable Agent-Skills shape
+
+Nothing else.
+
+### Cross-references
+
+- `~/Development/.claude/rules/version-schema-contract.md` — workspace-wide version-label discipline. The "Companion rule" there should be read alongside this section; the rule's text describing "keep deprecated fields as optional back-compat properties" is calibrated for the *public API* shape and does not govern this project's schema.
+- [ADR-0014](docs/adr/0014-canonical-only-schema-files.md) — the precedent: prior schema versions live in git history, not on disk as pinned copies. This section extends ADR-0014 from "no pinned-copy files on disk" to "no v(N-1) surface in the live tree at all."
+- [ADR-0009](docs/adr/0009-sibling-repo-deprecation.md) § Update — the amendment-block pattern this section codifies.
 
 ## Editing Rules
 

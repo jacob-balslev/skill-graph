@@ -3,7 +3,7 @@
 > **Work-mode rule (read FIRST).** Editing this document, the schemas it normalizes against, the audit prompts, or the audit/lint/drift scripts is **SYSTEM work**. Editing individual `SKILL.md` files to conform to this contract is **CONTENT work** that runs ONLY via `/audit:audit`, `/audit:improve`, `/audit:evaluate`, `/audit:evolve`. Do not mix them in the same task or commit. Full doctrine: [`AGENTS.md` § Work Modes — SYSTEM vs CONTENT](AGENTS.md#work-modes--system-vs-content).
 
 > **Spec version:** 1.5.0 (`schema_version: 8`, Skill Graph 0.5.10)
-> **Currently enforced by `schemas/skill.schema.json`:** v8 5-axis classification. The schema's global `required` array mandates `subject` + `operation` + `scope`. The v7 classification fields (`type`, `category`, `categories`, `primaryCategory`, `layerPrimary`, `routingRole`) are DEPRECATED but still defined as optional properties for back-compat reads — schema-level removal is the planned next step (SH-6557). The v7→v8 phase ended 2026-05-26; do not author v7 fields on new skills. See [§ Schema contract](#schema-contract-v7v8-phase-ended-2026-05-26) for the authoritative explanation.
+> **Currently enforced by `schemas/skill.schema.json`:** v8. The schema's global `required` array mandates `subject` + `scope`. v7 classification fields (`type`, `category`, `categories`, `primaryCategory`, `layerPrimary`, `routingRole`) are deprecated. Do not author v7 fields. See [§ Schema contract](#schema-contract).
 > **Single source of truth for "what is enforced today":** [`SKILL_GRAPH.md § Current State`](SKILL_GRAPH.md#current-state--single-source-of-truth) — link there from any doc that needs the live answer; do not restate.
 > **Machine-readable schema:** `schemas/skill.schema.json`
 > **Detailed field reference:** `docs/field-reference.md`
@@ -169,7 +169,7 @@ The v8 contract requires twelve canonical fields plus the v8 5-axis classificati
 | `eval_state` | enum | One of: `unverified`, `passing`, `monitored`. |
 | `routing_eval` | enum | One of: `absent`, `present`. |
 
-**v7 classification — DEPRECATED (phase ended 2026-05-26):** `type`, `category`, `categories`, `primaryCategory`, `layerPrimary`, `routingRole`. These fields are no longer required and **must not be authored on new skills**. The schema currently still accepts them as defined optional properties (skills carrying them validate cleanly) to avoid breaking the corpus while CONTENT-mode migration drains; schema-level removal is the planned next step. The `category.const` 6-enum still constrains their values when present. See § Classification § Migration map for the v7→v8 mapping when migrating legacy skills.
+**v7 classification — deprecated:** `type`, `category`, `categories`, `primaryCategory`, `layerPrimary`, `routingRole`. Do not author v7 fields.
 
 ### Conditionally required
 
@@ -328,7 +328,7 @@ Verified live-manifest distribution (2026-05-26): `know` 99, `do` 48, `decide` 2
 | `workspace` | `reference` (renamed) | Cross-repo knowledge in a multi-repo workspace |
 | `project` | `codebase` (renamed) | Coupled to a specific repo; requires `grounding` block |
 
-All five values (the 3 v8 + 2 v7 legacy aliases) validate during the compatibility window. After v7 sunset, the legacy aliases are removed. Verified live-manifest distribution (2026-05-26): `portable` 102, `workspace` 49, `project` 1, `reference` 1.
+Use the three v8 values: `portable`, `workspace`, `project`. Do not author `codebase` or `reference`.
 
 #### Axis 4 — `keywords` (≤10 capped)
 
@@ -344,7 +344,7 @@ The graph layer. Six edge types, cycle-checked on `depends_on` + `broader` + `na
 
 ### v7 Legacy Fields (deprecated)
 
-The v7 classification fields are **deprecated**. New skills author the v8 axes (`subject`, `operation`, `scope`) only. The schema retains these fields as optional back-compat properties so existing skills validate while the audit loop drains them; schema-level removal is pending. Do not author them on new skills, and do not "fix" a skill that still carries them outside an `/audit:*` run — corpus migration flows one skill at a time through the audit loop, with Audit Status evidence, per `skill-graph/AGENTS.md § Work Modes`.
+The v7 classification fields are deprecated. New skills author the v8 axes (`subject`, `scope`) only. Skills still carrying v7 fields are migrated one at a time through `/audit:*` per `skill-graph/AGENTS.md § Work Modes`.
 
 | Legacy field | v8 replacement | Status |
 |---|---|---|
@@ -758,9 +758,9 @@ Some legacy scope and type values are normalized by the manifest generator to th
 
 ---
 
-## Schema contract (v7→v8 phase ended 2026-05-26)
+## Schema contract
 
-> **v8 is the canonical classification (v7→v8 phase ended 2026-05-26).** The schema's global `required` array mandates `subject` + `operation` + `scope`. **The v7 classification (`type`, `category`, `categories`, `primaryCategory`, `layerPrimary`, `routingRole`) is DEPRECATED** — the schema currently still accepts them as defined optional properties to avoid breaking the corpus while CONTENT-mode migration drains; schema-level removal is the planned next step. v8-only authoring is the only supported authoring path going forward. See `schemas/skill.schema.json:7-21` for the current global required.
+> **v8 is the canonical classification.** The schema's global `required` array mandates `subject` + `scope`. v7 classification fields (`type`, `category`, `categories`, `primaryCategory`, `layerPrimary`, `routingRole`) are deprecated. Do not author v7 fields. See `schemas/skill.schema.json` for the global required array.
 
 | Surface | State |
 |---|---|
