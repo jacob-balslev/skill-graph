@@ -22,9 +22,11 @@ The Skill Audit Loop specification (`SKILL_AUDIT_LOOP.md`) already defines the f
 | Event | Action |
 |---|---|
 | Per skill edit (SKILL.md changes) | `node scripts/skill-lint.js <skill-path>` must pass as part of PR/commit gate |
-| Weekly (automated or manual) | `node scripts/skill-graph-routing-eval.js` across all skills with `routing_eval: present` |
+| Event-driven, **not** weekly (amended 2026-05-27 per audit M11) | `node scripts/skill-graph-routing-eval.js` runs (a) inside `npm run verify` on every PR/commit, (b) on any major SYSTEM-side change that could affect routing (e.g., the 2026-05-25 multi-model restructure review, the 2026-05-19 lint reduction). The 2026-05-25/26 audit cluster was the correct cadence for the work that drove it, not a deviation from a weekly rhythm. |
 | Before any stability promotion | Full `audit` for all skills in the promotion batch |
 | Per Linear task that touches a skill | Audit the affected skill before marking the task Done |
+
+**Cadence amendment 2026-05-27 (audit M11).** This ADR originally named a weekly rhythm. The actual practice — verified by surveying `docs/research/`: three audits on 2026-05-25 (Opus) and 2026-05-26 (Codex × 2), all triggered by the multi-model restructure review — is event-driven. Rather than retrofitting a weekly cron, this ADR is amended to accept the event-driven shape, because: (1) the verify-chain routing-eval already runs on every commit, which catches per-skill regressions inside the commit boundary, not at end-of-week; (2) a weekly cron would add work without adding signal, since most weeks have no skill-graph SYSTEM change worth re-routing; (3) the multi-model audit pattern of 2026-05-25/26 is the right shape for major restructures and should be repeated when the next one lands, not pre-scheduled. If a future operational gap shows that the event-driven shape misses skills that need re-routing review, file a new ADR that re-introduces a scheduled cron.
 
 ### Owner
 
