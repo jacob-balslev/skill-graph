@@ -33,19 +33,18 @@ These are enforced by `skill-lint.js` against `schemas/skill.schema.json`. A ski
 
 | # | Field | Type | Value rule |
 |---|---|---|---|
-| 1 | `schema_version` | integer | Always `7` for v7 skills. |
+| 1 | `schema_version` | integer | Always `8` for v8 skills (prior contract retrievable via `git show schema-v7:schemas/skill.schema.json`). |
 | 2 | `name` | string | Lowercase alphanumerics, hyphens, slashes, colons. Must match parent directory name. Used as routing target by other skills. |
-| 3 | `description` | string ≥ 20 chars | The routing contract. Lead with "Use when..." or "Activates for..." AND include "Do NOT use for..." (negative boundary). Write for the router, not for a human reader. |
+| 3 | `description` | string | Short description of what the skill is about. Activation signals belong to `keywords`/`triggers`/`examples`/`anti_examples`; boundary semantics belong to `relations.boundary`. |
 | 4 | `version` | semver | `x.y.z`. Bump when the skill's instructional content changes. Independent of `schema_version`. |
-| 5 | `type` | enum | One of: `capability` (most common), `workflow`, `router`, `overlay` (requires `extends`). |
-| 6 | `category` | enum | One of the closed 6: `foundations`, `engineering`, `design`, `quality`, `agent`, `product`. Pick where a human would browse to discover it, not for routing. |
-| 7 | `scope` | enum | One of: `codebase` (repo-specific, requires `grounding`), `reference` (general knowledge), `portable` (cross-repo). |
-| 8 | `owner` | string | Team handle, GitHub username, or tool name. Used for review routing and stale-skill alerts. |
-| 9 | `freshness` | ISO date | `YYYY-MM-DD`. Authored claim (not computed). When did you last review or update the body. |
-| 10 | `drift_check` | object | At minimum `{ last_verified: "YYYY-MM-DD" }`. `truth_source_hashes` is added later by `node scripts/skill-graph-drift.js --record --apply <skill-dir>`. |
-| 11 | `eval_artifacts` | enum | `none` / `planned` / `present`. Default `planned` for a new skill. Flip to `present` when an eval file exists. |
-| 12 | `eval_state` | enum | `unverified` / `passing` / `monitored`. Default `unverified` for a new skill. Flip to `passing` only after a real grader run. |
-| 13 | `routing_eval` | enum | `absent` / `present`. Default `absent`. Setting `present` requires populated `examples` + `anti_examples` AND a passing `node scripts/skill-graph-routing-eval.js --skill <name>` run. |
+| 5 | `subject` | enum | One of the closed 9-value enum: `code-engineering`, `quality-assurance`, `frontend-ui`, `design-craft`, `agent-ops`, `product-domain`, `knowledge-organization`, `meta-methods`, `data-analytics`. Primary classification — what the skill teaches. |
+| 6 | `scope` | enum | One of: `portable` (any project), `workspace` (this workspace only), `project` (repo-specific; requires `grounding`). |
+| 7 | `owner` | string | Team handle, GitHub username, or tool name. Used for review routing and stale-skill alerts. |
+| 8 | `freshness` | ISO date | `YYYY-MM-DD`. Authored claim (not computed). When did you last review or update the body. |
+| 9 | `drift_check` | object | At minimum `{ last_verified: "YYYY-MM-DD" }`. `truth_source_hashes` is added later by `node scripts/skill-graph-drift.js --record --apply <skill-dir>`. |
+| 10 | `eval_artifacts` | enum | `none` / `planned` / `present`. Default `planned` for a new skill. Flip to `present` when an eval file exists. |
+| 11 | `eval_state` | enum | `unverified` / `passing` / `monitored`. Default `unverified` for a new skill. Flip to `passing` only after a real grader run. |
+| 12 | `routing_eval` | enum | `absent` / `present`. Default `absent`. Setting `present` requires populated `examples` + `anti_examples` AND a passing `node scripts/skill-graph-routing-eval.js --skill <name>` run. |
 
 ### Conditional requirements
 
@@ -80,10 +79,9 @@ Expected: zero errors, zero warnings. If warnings appear (e.g. legacy field valu
 ---
 schema_version: 8
 name: example-protocol-native
-description: "Use when explaining how to apply Conway's Law to API boundary design. Activates for prompts mentioning team topologies, organizational coupling, or domain ownership boundaries. Do NOT use for individual service-design questions (use api-design) or for static org charts (use org-modeling)."
+description: "Conway's Law applied as a forward design constraint for API boundary placement — team topologies, organizational coupling, domain ownership boundaries."
 version: 0.1.0
 subject: meta-methods
-operation: know
 scope: workspace
 owner: example-author
 freshness: "2026-05-24"
@@ -130,7 +128,6 @@ metadata:
   schema_version: 8
   version: 0.1.0
   subject: meta-methods
-  operation: know
   scope: workspace
   owner: example-author
   freshness: "2026-05-24"
@@ -179,7 +176,7 @@ Neither blocks first commit. A new skill ships honestly as `eval_state: unverifi
 
 | Mistake | What it looks like | Fix |
 |---|---|---|
-| Picking `foundations` because the skill feels meta | `category: foundations` when the skill could plausibly fit `engineering` / `agent` / `quality` | The `foundations` gate is anti-junk-drawer. Pick another category unless the skill teaches an epistemic precondition AND cannot be plausibly assigned elsewhere. |
+| Picking `meta-methods` or `knowledge-organization` because the skill feels meta | `subject: meta-methods` when the skill could plausibly fit `code-engineering` / `agent-ops` / `quality-assurance` | These two subjects are anti-junk-drawer gates. Pick another subject unless the skill teaches methodology/reasoning (`meta-methods`) or taxonomy/semantics work (`knowledge-organization`) AND cannot be plausibly assigned elsewhere. |
 | Description is a summary, not a routing contract | "This skill teaches Conway's Law" | Rewrite as routing instructions: "Use when..." + "Do NOT use for..." with concrete examples. |
 | Setting `eval_state: passing` without a receipt | New skill optimistically claims passing evals | Default to `unverified`. Flip to `passing` only after a real grader run produces a receipt. Same rule for `routing_eval: present`. |
 | Stamping Audit Status fields by hand | Author writes `structural_verdict: PASS` on first commit | Leave the Audit Status absent. The audit loop writes those fields; hand-edits will be overwritten on the next `audit` run. |

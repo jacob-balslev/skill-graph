@@ -13,10 +13,11 @@
 #      above each field, naming what the field is, its allowed values, and
 #      when-to-use. Example:
 #
-#        # operation: cognitive operation enabled (Bloom-grounded). 1 of 4.
-#        # know (declarative) / do (procedural) / decide (judgment) /
-#        # modify (context-injection).
-#        operation: know
+#        # subject: primary browse shelf — what the skill teaches.
+#        # One of nine closed values: code-engineering / quality-assurance /
+#        # frontend-ui / design-craft / agent-ops / product-domain /
+#        # knowledge-organization / meta-methods / data-analytics.
+#        subject: agent-ops
 #
 #      → **STAY in the derived skill.** These are the design intent at the
 #        point of authoring. Cold-start agents and human authors read them
@@ -46,12 +47,12 @@
 # Build automation treats this file specially: the sample manifest
 # generator ingests it only under `--include-template`, and the library-wide
 # harness counts it as the 9th "skill" only when the flag is set. It is NOT
-# routable in day-to-day skill dispatch — `scope: reference` keeps it out of
+# routable in day-to-day skill dispatch — `scope: workspace` keeps it out of
 # the normal routing pool.
 # ============================================================================
 # schema_version: protocol contract version this skill conforms to.
-# Integer 7 or 8. v8 is canonical (2026-05-26 — v7 classification fields
-# deprecated). v7 still validates against the schema's `required` array.
+# Integer 8 (v8 is canonical; prior contract retrievable via
+# `git show schema-v7:schemas/skill.schema.json`).
 schema_version: 8
 name: skill-metadata-template
 # TEMPLATE NOTE: Be pushy in your description — Claude tends to under-trigger
@@ -69,24 +70,16 @@ name: skill-metadata-template
 description: "Use when creating a new SKILL.md, adapting an existing skill to a different archetype, or teaching an author the canonical frontmatter and body structure. Covers schema-conformant frontmatter, archetype-aware body layout, semantic-layer discipline (description vs Coverage), teaching-layer mechanics (TEMPLATE NOTE blockquotes and YAML comments), and the authoring gate. Do NOT use when modifying an already-written skill (edit that skill directly) or when writing general technical documentation (use `docs-development`)."
 version: 1.0.0
 
-# === v8 Classification (5-axis model — see ADR-0017) ===
+# === v8 Classification (subject + scope; polyhierarchy via subjects[]) — see ADR-0017 ===
 
 # subject: primary browse shelf — what the skill teaches. One of nine closed values:
 # code-engineering / quality-assurance / frontend-ui / design-craft / agent-ops /
 # product-domain / knowledge-organization / meta-methods / data-analytics.
 subject: agent-ops
 
-# operation: cognitive operation enabled (Bloom-grounded). One of four closed values:
-# know (declarative — concepts, vocabulary, reference) /
-# do (procedural — step-by-step execution) /
-# decide (judgment — choosing, dispatching) /
-# modify (context injection — shapes how other skills execute).
-operation: know
-
 # scope: deployment targeting. One of three closed values:
 # portable (any project) / workspace (this workspace only) /
 # project (one specific repo; requires populated `grounding` block).
-# Legacy v7 aliases `reference` → `workspace` and `codebase` → `project` still validate.
 scope: workspace
 
 # domain: optional hierarchical sub-path within `subject`.
@@ -94,20 +87,6 @@ scope: workspace
 # Use only when the library is large enough that a tree structure helps readers
 # find related skills. Remove this line entirely when the flat `subject` is sufficient.
 domain: agent/skill-system
-
-# === v7 Classification (DEPRECATED 2026-05-26 — kept for back-compat only) ===
-# Authors of NEW skills must NOT carry `type` / `category` / `categories`
-# / `primaryCategory` / `layerPrimary` / `routingRole`. The schema currently
-# still accepts them as optional properties pending schema-level removal.
-# When adapting this template, DELETE this section + the two fields below.
-
-# type: v7 classification — DEPRECATED, replaced by `operation`.
-# Legacy values: capability / workflow / router / overlay.
-type: capability
-
-# category: v7 classification — DEPRECATED, replaced by `subject`.
-# Legacy values: foundations / engineering / design / quality / agent / product.
-category: agent
 
 owner: skill-graph-maintainer
 freshness: "2026-04-17"

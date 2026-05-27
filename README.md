@@ -98,8 +98,8 @@ Skill Metadata Protocol makes these questions explicit:
 
 | Question | Protocol fields |
 |---|---|
-| What kind of skill is this? | `type`, `scope`, `version`, `owner` |
-| Where does it belong? | `category`, `domain`, `workspace_tags`, `routing_bundles` |
+| What kind of skill is this? | `subject`, `scope`, `version`, `owner` |
+| Where does it belong? | `subject`, `subjects[]`, `domain`, `workspace_tags`, `routing_bundles` |
 | When should it load? | `description`, `keywords`, `triggers`, `examples`, `anti_examples`, `paths` |
 | What is it near, dependent on, or not responsible for? | `relations.related`, `relations.depends_on`, `relations.verify_with`, `relations.boundary`, `relations.broader`, `relations.narrower` |
 | What evidence makes it true? | `grounding.truth_sources`, `grounding.failure_modes`, `grounding.evidence_priority` |
@@ -116,13 +116,12 @@ This is a compact example. The full authoring scaffold is [`examples/skill-metad
 ---
 schema_version: 8
 name: product-page-ux-review
-description: "Use when reviewing a product page's UX, visual hierarchy, interaction patterns, accessibility, and conversion-critical content. Do NOT use for backend Shopify API work, production incident debugging, or general copy editing outside the product-page experience."
+description: "Reviewing a product page's UX, visual hierarchy, interaction patterns, accessibility, and conversion-critical content."
 version: 1.0.0
-# v8 5-axis classification (required)
+# v8 classification (required)
 subject: design-craft
-operation: decide
 scope: project
-domain: design/ux
+domain: design-craft/ux
 owner: design-platform
 freshness: "2026-05-13"
 drift_check:
@@ -194,24 +193,22 @@ Skill Metadata Protocol uses several independent axes. They should not be collap
 
 | Axis | Field | Cardinality | Use |
 |---|---|---:|---|
-| **Archetype** | `type` | one | Skill shape: `capability`, `workflow`, `router`, or `overlay`. |
-| **Scope** | `scope` | one | Where it applies: `portable`, `workspace`, or `project` (with `reference`/`codebase` accepted as v7 aliases during sunset). |
-| **Top-level category** | `category` | one | Flat top-level shelf for browsing. |
-| **Domain path** | `domain` | zero or one | Slash-delimited hierarchy, such as `design/ux` or `architecture/events`. |
+| **Subject** | `subject` | one | Primary classification — what the skill teaches. Closed 9-value enum. |
+| **Polyhierarchy** | `subjects[]` | zero, one, or two | Optional secondary subject when a skill genuinely spans two browse shelves. `subjects[0]` matches `subject`. |
+| **Scope** | `scope` | one | Where it applies: `portable`, `workspace`, or `project`. |
+| **Domain path** | `domain` | zero or one | Slash-delimited hierarchy subdividing `subject`, such as `design-craft/ux` or `code-engineering/api-design`. |
 | **Project group** | `workspace_tags` | many | Which project families, workspaces, or product areas this skill applies to. |
 | **Routing group** | `routing_bundles` | many | Runtime bundles or dispatch groups. |
 | **Relations** | `relations.*` | many | Typed graph edges between skills. |
-| **Grounding** | `grounding.*` | conditional | Truth sources and failure modes for repo-grounded skills. |
+| **Grounding** | `grounding.*` | conditional | Truth sources and failure modes for repo-grounded skills (`scope: project`). |
 
-The schema uses `category` for the flat top-level shelf and `domain` for the hierarchical path. `category` is the closed enum above; adopters choose their own `domain`, `workspace_tags`, and `routing_bundles` values. The canonical sibling library (`~/Development/skills/`) and the `examples/` specimens currently demonstrate the following `domain` / group values.
+### Current Subjects
 
-### Current Top-Level Categories
+`subject` is a **closed enum of nine**, enforced by the schema:
 
-`category` is a **closed enum of six** (since schema v5, current in v7), enforced by the schema and `scripts/lint/check-category-enum.js`:
+`agent-ops`, `code-engineering`, `frontend-ui`, `design-craft`, `data-analytics`, `quality-assurance`, `meta-methods`, `knowledge-organization`, `product-domain`
 
-`foundations`, `engineering`, `design`, `quality`, `agent`, `product`
-
-These are the values used across the canonical skill library (the sibling `~/Development/skills/` repo, nested `<category>/<name>/`) and the `examples/fixture-skills/` specimens. Cross-cutting fit is expressed via `relations.related`, never by adding a category value.
+These are the values used across the canonical skill library (the sibling `~/Development/skills/` repo at `skills/<subject>/<name>/`) and the `examples/fixture-skills/` specimens. Cross-cutting fit is expressed via `subjects[]` (max 2) or `relations.related`, never by adding new subject values without an ADR.
 
 ### Current Domain Paths
 
@@ -249,7 +246,7 @@ Triangulation means selecting skills from multiple independent signals:
 | Signal | Example |
 |---|---|
 | **Project surface** | `workspace_tags: [shopify, frontend]`, `paths: components/product/**/*` |
-| **Top-level and domain category** | `category: design`, `domain: design/ux` |
+| **Subject and domain** | `subject: design-craft`, `domain: design-craft/ux` |
 | **Method or phase** | `design-thinking`, `user-research`, `ideation`, `prototyping`, `usability-testing` |
 | **Related skills** | `visual-hierarchy`, `color-system-design`, `typography-system`, `dark-mode-implementation` |
 | **Verification skills** | `a11y`, `testing-strategy`, `code-review` |
@@ -281,7 +278,7 @@ For skills, the loop is:
 
 1. Pick a skill or project area.
 2. Gather evidence: the `SKILL.md`, eval files, manifest entry, related skills, and `grounding.truth_sources`.
-3. Run the **Integrity Gate** first. The `npm run verify` chain runs: schema lint, category lint, protocol-consistency, doc-link + doc-drift, mirror freeze, charter parity, stability promotion, manifest validation, routing eval (regenerated each run), SKILL.md export shape, marketplace freshness, status doc freshness, overlap, and unit tests. **Drift sentinel** (`npm run drift`) and **audit-manifest verifier** (`npm run audit-manifest:check`) are run separately because they currently surface CONTENT-side debt that is being drained through the audit loop — see audit findings H9 and H10 (2026-05-27).
+3. Run the **Integrity Gate** first. The `npm run verify` chain runs: schema lint, protocol-consistency, doc-link + doc-drift, mirror freeze, charter parity, stability promotion, manifest validation, routing eval (regenerated each run), SKILL.md export shape, marketplace freshness, status doc freshness, overlap, and unit tests. **Drift sentinel** (`npm run drift`) and **audit-manifest verifier** (`npm run audit-manifest:check`) are run separately because they currently surface CONTENT-side debt that is being drained through the audit loop — see audit findings H9 and H10 (2026-05-27).
 4. Run the **Behavior Gate** when certification is needed: realistic positive evals, hard negatives, prior failure regressions, and boundary cases that show whether the skill changes agent behavior.
 5. Fix the skill or its metadata when the evidence supports the change.
 6. Re-run checks and record the new state.

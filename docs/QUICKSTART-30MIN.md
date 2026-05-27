@@ -63,26 +63,21 @@ The template lints clean as-is, so you can incrementally edit and re-lint to cat
 
 ---
 
-## M8–M11: Fill in the required fields (v8 5-axis classification)
+## M8–M11: Fill in the required fields (v8 classification)
 
-The required v8 fields are: `schema_version`, `name`, `description`, `version`, `subject` (9-enum), `operation` (4-enum, Bloom-grounded), `scope` (`portable`/`workspace`/`project`), `owner`, `freshness`, `drift_check`, `eval_artifacts`, `eval_state`, `routing_eval`. **The v7 classification fields (`type`, `category`, `categories`, `primaryCategory`, `layerPrimary`, `routingRole`) are DEPRECATED** — schema accepts them as optional back-compat properties but new skills do not author them (the v7→v8 phase ended 2026-05-26; schema-level removal tracked in SH-6557). See [`SKILL_METADATA_PROTOCOL.md` § Schema contract](../SKILL_METADATA_PROTOCOL.md#schema-contract-v7v8-phase-ended-2026-05-26). The template has all current fields — you're replacing values, not adding fields.
+The required v8 fields are: `schema_version`, `name`, `description`, `version`, `subject` (9-enum), `scope` (`portable`/`workspace`/`project`), `owner`, `freshness`, `drift_check`, `eval_artifacts`, `eval_state`, `routing_eval`. See [`SKILL_METADATA_PROTOCOL.md` § Schema contract](../SKILL_METADATA_PROTOCOL.md#schema-contract). The template has all current fields — you're replacing values, not adding fields.
 
 For `markdown-post-frontmatter-review`, the values look like:
 
 ```yaml
 schema_version: 8
 name: markdown-post-frontmatter-review
-description: "Use when authoring or reviewing the YAML frontmatter of a markdown post — checking required fields (title, date, slug, tags), validating against the content schema, catching ambiguous date formats, and ensuring the slug matches the file path. Activate this skill whenever the task touches files under `content/posts/**/*.md` or the `parsePostFrontmatter()` helper — even if the user just says 'the post'. Do NOT use for general YAML schema design (use a different skill) or for chasing a specific build-time validation failure (use debugging)."
+description: "Authoring and reviewing the YAML frontmatter of a markdown post — required fields (title, date, slug, tags), validation against the content schema, ambiguous date formats, slug/file-path alignment."
 version: 0.1.0
 
-# v8 5-axis classification (required)
+# v8 classification (required)
 subject: code-engineering
-operation: decide
 scope: project
-
-# v8 axes (additionally required when schema_version: 8; safe to author on v7 too)
-subject: code-engineering   # one of the 9-enum v8 subjects
-operation: do               # one of: know | do | decide | modify
 
 owner: <your-handle-or-team>
 freshness: "2026-05-06"
@@ -93,7 +88,7 @@ eval_state: unverified
 routing_eval: absent
 ```
 
-For `scope: project` (or legacy `scope: codebase`) you also need a `grounding` block — point it at the real content schema and template post in your repo:
+For `scope: project` you also need a `grounding` block — point it at the real content schema and template post in your repo:
 
 ```yaml
 grounding:
@@ -137,7 +132,7 @@ If a required field is missing, the failure looks like:
 
 ```
 FAIL skills/markdown-post-frontmatter-review/SKILL.md
-  ─ schema: must have required property 'category'
+  ─ schema: must have required property 'subject'
 
 1 file(s) checked, 1 error(s).
 ```
@@ -160,17 +155,12 @@ Edit `skills/post-archive-rebuild/SKILL.md` to set:
 ```yaml
 schema_version: 8
 name: post-archive-rebuild
-description: "Use when re-indexing the post archive after one or more frontmatter fields have changed — walking every post, re-extracting the indexed fields, and writing the updated archive page. Activate this skill whenever the task says 'rebuild the archive' or mentions a post-index regeneration after a content edit. Do NOT use for routine authoring of a single post (use markdown-post-frontmatter-review)."
+description: "Re-indexing the post archive after frontmatter changes — walking every post, re-extracting indexed fields, writing the updated archive page."
 version: 0.1.0
 
-# v8 5-axis classification (required)
+# v8 classification (required)
 subject: code-engineering
-operation: do
 scope: portable
-
-# v8 axes (dual-author per Migration state)
-subject: code-engineering
-operation: do
 
 owner: <your-handle>
 freshness: "2026-05-06"

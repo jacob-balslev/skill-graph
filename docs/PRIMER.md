@@ -2,7 +2,7 @@
 
 > **Read this if:** you author SKILL.md and your library is large enough that skills have started to depend on, verify, or exclude one another. This primer is the conceptual introduction to Skill Metadata Protocol and Skill Graph. It is *explanation* documentation — it answers *what* and *why*. For reference material see `docs/field-reference.md`; for procedures see `CONTRIBUTING.md` and `SKILL_AUDIT_LOOP.md`; for decision tables see `docs/field-decision-guide.md`.
 
-**Status.** Stable for `schema_version: 8` (v7→v8 phase ended 2026-05-26; v7 classification fields are deprecated back-compat reads).
+**Status.** Stable for `schema_version: 8`. The prior contract (v7) lives in git history; retrieve via `git show schema-v7:schemas/skill.schema.json`.
 **Audience.** Skill authors who need skills to declare their relevance: which area they cover, which angle they take, which project or stack they fit, which taxonomy / semantic cluster they belong to, and how they should be tested or reverified. Library size is a proxy for this — these questions usually start around 5 skills, sometimes earlier if you have multiple projects, sometimes later for a single small project.
 **Prerequisites.** Working familiarity with the [SKILL.md specification](https://agentskills.io/specification), including `SKILL.md` layout and the progressive-disclosure loading model.
 
@@ -193,28 +193,28 @@ Beyond the five metadata layers that express *meaning*, a library needs four ind
 
 | Axis | Field | Cardinality | Purpose |
 |---|---|---|---|
-| **Scope** | `scope` | Single value: `portable`, `codebase`, or `reference` | *Where does this skill apply?* |
-| **Taxonomy (hierarchy)** | `category` + `category` | Single position in the tree | *What kind of concern is this?* |
+| **Scope** | `scope` | Single value: `portable`, `workspace`, or `project` | *Where does this skill apply?* |
+| **Taxonomy (hierarchy)** | `subject` + `domain` | Single position in the tree | *What kind of concern is this?* |
 | **Projects (tag)** | `workspace_tags` | Many-to-many | *Which kinds of project is this relevant to?* |
 | **Routing group (bundle)** | `routing_bundles` | Many-to-many | *Which router-query-time bundle does this skill join?* |
 
-The four axes compose without nesting. A single skill can be `scope: portable` with `category: engineering`, `domain: editor/linting/eslint-rules`, `workspace_tags: [ecommerce, b2b-saas]`, and `routing_bundles: [quality, linting]` — each axis carries a different shape of answer, and the router uses them for different things.
+The four axes compose without nesting. A single skill can be `scope: portable` with `subject: code-engineering`, `domain: code-engineering/linting/eslint-rules`, `workspace_tags: [ecommerce, b2b-saas]`, and `routing_bundles: [quality, linting]` — each axis carries a different shape of answer, and the router uses them for different things.
 
 ### 4.1 Scope — *where does this apply?*
 
 Three values, chosen at authoring time and enforced by the schema:
 
 - **`portable`** — applies to any project. Most reusable skills (for example the starter `refactor` and `testing-strategy`) use this scope.
-- **`codebase`** — applies to a specific repo. Triggers Layer 5 (Grounding): `truth_sources` and `drift_check.truth_source_hashes` become required, so the skill is pinned to the real artifacts it describes and the drift sentinel can catch silent divergence.
-- **`reference`** — documentation-only. Kept out of the default routing pool (for example the `skill-metadata-template` scaffold). Opt in with `--include-template` when you deliberately want to route to it.
+- **`project`** — applies to a specific repo. Triggers Layer 5 (Grounding): `truth_sources` and `drift_check.truth_source_hashes` become required, so the skill is pinned to the real artifacts it describes and the drift sentinel can catch silent divergence.
+- **`workspace`** — cross-repo knowledge in a multi-repo workspace. Kept out of the default routing pool (for example the `skill-metadata-template` scaffold). Opt in with `--include-template` when you deliberately want to route to it.
 
-Scope is the first axis the router filters on and the only axis with body-structure implications (`grounding` is conditional on `scope: codebase`). For the full decision table, see `docs/field-decision-guide.md § 1. Which scope do I use?`.
+Scope is the first axis the router filters on and the only axis with body-structure implications (`grounding` is conditional on `scope: project`). For the full decision table, see `docs/field-decision-guide.md § 1. Which scope do I use?`.
 
 ### 4.2 Taxonomy — *what kind of concern is this?*
 
-`category` is the top-level shelf; `category` is the optional slash-delimited path beneath. Exactly one position per skill. Segments inherit meaning from the ones above them, so `editor/linting/eslint-rules` encodes a three-level kind-of hierarchy. This is the closest thing in the contract to a **taxonomical layer** in the classical sense — each skill sits at a unique address in a tree.
+`subject` is the top-level shelf (closed 9-value enum); `domain` is the optional slash-delimited path beneath. Exactly one position per skill. Segments inherit meaning from the ones above them, so `code-engineering/linting/eslint-rules` encodes a three-level kind-of hierarchy. This is the closest thing in the contract to a **taxonomical layer** in the classical sense — each skill sits at a unique address in a tree.
 
-Use `category` only when the library is big enough that a tree helps navigation. Smaller libraries stay flat on `category` alone.
+Use `domain` only when the library is big enough that a tree helps navigation. Smaller libraries stay flat on `subject` alone.
 
 ### 4.3 Projects — *which kinds of project is this relevant to?*
 
@@ -279,15 +279,21 @@ The `refactor` starter skill reduced to its load-bearing fields:
 ---
 schema_version: 8
 name: refactor
-description: "Use when reorganizing existing code without changing external behavior..."
+description: "Reorganizing existing code without changing external behavior."
+version: 1.0.0
 subject: code-engineering
-operation: do
 scope: portable
+owner: skill-graph-maintainer
+freshness: "2026-05-27"
+drift_check:
+  last_verified: "2026-05-27"
+eval_artifacts: present                   # M5 coherence: passing requires present
 eval_state: passing
+routing_eval: present
 relations:
-  depends_on: [testing-strategy]      # cannot refactor responsibly without a green suite
-  verify_with: [testing-strategy]     # re-run after the refactor to prove behavior preserved
-  boundary: [debugging, testing-strategy]  # these absorb prompts listed in anti_examples
+  depends_on: [testing-strategy]          # cannot refactor responsibly without a green suite
+  verify_with: [testing-strategy]         # re-run after the refactor to prove behavior preserved
+  boundary: [debugging, testing-strategy] # these absorb prompts listed in anti_examples
 ---
 ```
 
