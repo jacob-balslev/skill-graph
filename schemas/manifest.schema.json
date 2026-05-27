@@ -73,31 +73,7 @@
             "type": "integer",
             "minimum": 0
           },
-          "description": "Per-frontmatter-version distribution. Keys are stringified integers (e.g. '7', '8'); unknown/missing skills bucket under 'unknown'. Lets consumers measure v7→v8 migration progress without re-walking the corpus."
-        },
-        "by_type": {
-          "type": "object",
-          "additionalProperties": {
-            "type": "integer",
-            "minimum": 0
-          },
-          "description": "v7 axis (legacy). Retained during the v7→v8 compatibility window — see ADR-0017 § Landing strategy. Drops out after the v7 sunset."
-        },
-        "by_operation": {
-          "type": "object",
-          "additionalProperties": {
-            "type": "integer",
-            "minimum": 0
-          },
-          "description": "v8 axis. Bloom-grounded 4-enum: know/do/decide/modify. Mirror of by_type during compat-mode; the only one that survives the v7 sunset."
-        },
-        "by_category": {
-          "type": "object",
-          "additionalProperties": {
-            "type": "integer",
-            "minimum": 0
-          },
-          "description": "v7 axis (legacy). Retained during the v7→v8 compatibility window — see ADR-0017 § Landing strategy. Drops out after the v7 sunset."
+          "description": "Per-frontmatter-version distribution. Keys are stringified integers (e.g. '7', '8'); unknown/missing skills bucket under 'unknown'."
         },
         "by_subject": {
           "type": "object",
@@ -105,7 +81,7 @@
             "type": "integer",
             "minimum": 0
           },
-          "description": "v8 axis. 9-value subject enum. Mirror of by_category during compat-mode; the only one that survives the v7 sunset."
+          "description": "Per-subject distribution across the closed 9-value subject enum (see schemas/skill.schema.json § subject)."
         },
         "by_scope": {
           "type": "object",
@@ -141,8 +117,7 @@
           "name",
           "description",
           "version",
-          "type",
-          "category",
+          "subject",
           "scope",
           "owner"
         ],
@@ -168,7 +143,7 @@
                 "enum": ["7", "8"]
               }
             ],
-            "description": "Pass-through of the skill's frontmatter schema_version (7|8 — see schemas/skill.schema.json § schema_version). Required so consumers can filter on the v7→v8 migration boundary without re-reading every SKILL.md. Projected by scripts/generate-manifest.js."
+            "description": "Pass-through of the skill's frontmatter schema_version (see schemas/skill.schema.json § schema_version). Projected by scripts/generate-manifest.js."
           },
           "name": {
             "type": "string"
@@ -184,47 +159,6 @@
           "version": {
             "type": "string"
           },
-          "type": {
-            "type": "string",
-            "enum": [
-              "capability",
-              "workflow",
-              "router",
-              "overlay"
-            ]
-          },
-          "archetype": {
-            "type": "string",
-            "enum": [
-              "capability",
-              "workflow",
-              "router",
-              "overlay"
-            ],
-            "description": "v3.1 preferred alias for `type`. Pass-through from authored frontmatter."
-          },
-          "category": {
-            "type": "string",
-            "enum": [
-              "foundations",
-              "engineering",
-              "design",
-              "quality",
-              "agent",
-              "product"
-            ]
-          },
-          "secondary_categories": {
-            "type": "array",
-            "items": { "type": "string" }
-          },
-          "categories": {
-            "type": "array",
-            "items": { "type": "string" }
-          },
-          "primaryCategory": {
-            "type": "string"
-          },
           "subject": {
             "type": "string",
             "enum": [
@@ -238,25 +172,12 @@
               "knowledge-organization",
               "product-domain"
             ],
-            "description": "v8 primary classification — what the skill teaches. See schemas/skill.schema.json § subject."
+            "description": "Primary classification — what the skill teaches. See schemas/skill.schema.json § subject."
           },
           "subjects": {
             "type": "array",
             "items": { "type": "string" },
-            "description": "v8 polyhierarchy ordered list. First entry matches `subject`. Pass-through from authored frontmatter."
-          },
-          "operation": {
-            "type": "string",
-            "enum": ["know", "do", "decide", "modify"],
-            "description": "v8 cognitive operation classifier — Bloom-grounded. Replaces v7's `type`. See schemas/skill.schema.json § operation."
-          },
-          "layerPrimary": {
-            "type": "string",
-            "description": "Workspace routing facet for the primary architectural or concern layer. Pass-through from authored frontmatter."
-          },
-          "routingRole": {
-            "type": "string",
-            "description": "Workspace routing facet describing how the skill participates in selection. Pass-through from authored frontmatter."
+            "description": "Polyhierarchy ordered list. First entry matches `subject`. Pass-through from authored frontmatter."
           },
           "domain": {
             "type": "string"
@@ -264,13 +185,11 @@
           "scope": {
             "type": "string",
             "enum": [
-              "codebase",
-              "reference",
               "portable",
               "project",
               "workspace"
             ],
-            "description": "Scope value (v7: codebase/reference/portable; v8 rename: project/workspace/portable). All 5 values accepted during the v7→v8 compatibility window."
+            "description": "Deployment targeting (see schemas/skill.schema.json § scope)."
           },
           "owner": {
             "type": "string"

@@ -34,8 +34,13 @@
  *   C7 -- Generated field-reference parity: docs/field-reference.generated.md
  *         must match live regeneration from the current canonical skill schema.
  *   C8 -- JSON-LD context coverage: every top-level authored schema field must
- *         appear in schemas/skill.context.jsonld and every compact IRI prefix
- *         used there must be declared.
+ *         appear in schemas/skill.context.jsonld; every compact IRI prefix
+ *         used there must be declared; and every @context key (after stripping
+ *         namespace prefix declarations and underscore-prefixed metadata keys)
+ *         must correspond to a schema property at some depth — i.e. the
+ *         context cannot carry mappings for retired fields. This catches the
+ *         "context outlived the schema" drift that let `operation` ship as a
+ *         live JSON-LD term after the schema retired it (audit L1, G2).
  *
  * Usage:
  *   node scripts/check-protocol-consistency.js
@@ -756,11 +761,52 @@ function checkC8JsonLdContextCoverage() {
     );
   }
 
+  // Collect every property name anywhere in the schema (top-level + recursively
+  // nested under any object property). Used to detect @context terms that
+  // describe retired fields.
+  const allSchemaPropertyNames = new Set();
+  function collectPropertyNames(node) {
+    if (!node || typeof node !== 'object' || Array.isArray(node)) return;
+    if (node.properties && typeof node.properties === 'object') {
+      for (const [name, sub] of Object.entries(node.properties)) {
+        allSchemaPropertyNames.add(name);
+        collectPropertyNames(sub);
+      }
+    }
+    if (node.items) collectPropertyNames(node.items);
+    if (node.oneOf) node.oneOf.forEach(collectPropertyNames);
+    if (node.anyOf) node.anyOf.forEach(collectPropertyNames);
+    if (node.allOf) node.allOf.forEach(collectPropertyNames);
+    if (node.then) collectPropertyNames(node.then);
+    if (node.additionalProperties && typeof node.additionalProperties === 'object') {
+      collectPropertyNames(node.additionalProperties);
+    }
+  }
+  collectPropertyNames(schema);
+
   const declaredPrefixes = new Set();
   for (const [key, value] of Object.entries(context)) {
     if (typeof value === 'string' && /^https?:\/\//.test(value)) {
       declaredPrefixes.add(key);
     }
+  }
+
+  // Catch retired-field drift: @context keys that map nothing in the schema.
+  // Allowed: namespace prefix declarations, underscore-prefixed metadata keys,
+  // and `@`-prefixed JSON-LD keywords (none today, but futureproof).
+  const extras = [];
+  for (const key of contextKeys) {
+    if (key.startsWith('_') || key.startsWith('@')) continue;
+    if (declaredPrefixes.has(key)) continue;
+    if (allSchemaPropertyNames.has(key)) continue;
+    extras.push(key);
+  }
+  if (extras.length > 0) {
+    errors.push(
+      `C8 [schemas/skill.context.jsonld]: ${extras.length} @context key(s) do not correspond to any schema property at any depth — ` +
+      `retired-field drift, remove them: ` +
+      extras.map(f => `"${f}"`).join(', ')
+    );
   }
 
   const prefixUses = [];
@@ -799,7 +845,8 @@ function checkC8JsonLdContextCoverage() {
   if (VERBOSE && errors.length === 0) {
     console.log(
       `  C8: OK -- ${schemaFields.length} top-level schema fields covered; ` +
-      `${declaredPrefixes.size} namespace prefix(es) declared`
+      `${declaredPrefixes.size} namespace prefix(es) declared; ` +
+      `no retired-field drift in @context`
     );
   }
 

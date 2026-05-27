@@ -30,7 +30,7 @@
           "enum": ["7", "8"]
         }
       ],
-      "description": "Major contract shape version. Integer for v6+; string '7'/'8' tolerated for back-compat with hand-rolled YAML — string form is documented-only-for-back-compat (audit L1, 2026-05-27): authors SHOULD write integer 7 or 8, the string form will be dropped no earlier than the schema bump that follows the v8→v9 phase. Until then, both forms validate. Bumps when shape changes break consumers. v7 split the single `audit_verdict` field from v6 into four discrete verdicts (`structural_verdict`, `truth_verdict`, `comprehension_verdict`, `application_verdict`). v8 introduced the 5-axis classification model and is the canonical classification (v7→v8 phase ended 2026-05-26). **The v7 classification fields (`type`, `category`, `categories`, `primaryCategory`, `layerPrimary`, `routingRole`) are DEPRECATED** — the schema currently still accepts them as defined optional properties to avoid breaking the corpus while CONTENT-mode migration drains; schema-level removal is the planned next step. New skills author the v8 axes only. Migration of any skill still carrying deprecated v7 fields is CONTENT-mode work handled per-skill through the audit loop. See docs/adr/0011-split-audit-verdict-into-four-verdicts.md (v6→v7) and docs/adr/0017-five-axis-classification-model.md (v7→v8)."
+      "description": "Major contract shape version. Integer for v6+; string '7'/'8' accepted for hand-rolled YAML parsers that emit numeric-looking strings (authors SHOULD write integer 7 or 8). Bumps when shape changes break consumers. v7 split the single `audit_verdict` field from v6 into four discrete verdicts (`structural_verdict`, `truth_verdict`, `comprehension_verdict`, `application_verdict`). v8 is the canonical classification: authored axes are `subject` + `scope`, polyhierarchy via `subjects[]` (max 2), activation via `keywords` / `triggers` / `examples` / `anti_examples`, and routing via `relations` (`related` / `boundary` / `verify_with` / `depends_on` / `broader` / `narrower` / `disjoint_with`). Prior versions live in git history — see `git tag --list 'schema-*'`. See docs/adr/0011-split-audit-verdict-into-four-verdicts.md (v6→v7) and docs/adr/0017-five-axis-classification-model.md (v7→v8, amended 2026-05-27)."
     },
     "name": {
       "type": "string",
@@ -51,77 +51,10 @@
       "pattern": "^[0-9]+\\.[0-9]+\\.[0-9]+$",
       "description": "Skill content version (semver). Bumps when the SKILL.md body or contract changes meaningfully. Distinct from `schema_version` (the contract shape). Used by `relations.depends_on` for `min_version` constraints."
     },
-    "type": {
-      "type": "string",
-      "enum": [
-        "capability",
-        "workflow",
-        "router",
-        "overlay"
-      ],
-      "description": "Archetype classifier — what kind of skill this is. `capability` (knows how to do something), `workflow` (orchestrates a sequence), `router` (dispatches to other skills), `overlay` (specialises a parent via `extends`). `archetype` is the supported alias."
-    },
-    "archetype": {
-      "type": "string",
-      "enum": [
-        "capability",
-        "workflow",
-        "router",
-        "overlay"
-      ],
-      "description": "Archetype classifier (v3.1 preferred alias for `type`). When both are present they must match. "
-    },
-    "category": {
-      "type": "string",
-      "enum": [
-        "foundations",
-        "engineering",
-        "design",
-        "quality",
-        "agent",
-        "product"
-      ],
-      "description": "Browse facet — answers 'where should a human browse to find this skill first?' Not ontology truth. Closed enum of 6 values in v5: foundations | engineering | design | quality | agent | product. Cross-cutting category membership lives in `categories[1..]` (v7 optional, v8 planned required) or `secondary_categories` for marketplace cross-listing; skill-to-skill neighborhood lives in `relations.related`. For hierarchical sub-domain use `domain`. `foundations` is gated — see SKILL_METADATA_PROTOCOL.md § Classification."
-    },
     "domain": {
       "type": "string",
       "pattern": "^[a-z0-9][a-z0-9-]*(/[a-z0-9][a-z0-9-]*)*$",
-      "description": "Hierarchical domain path using slash-delimited segments (e.g., `ecommerce/integrations/shopify`). Complements `category`; the flat browse shelf and the domain tree answer different questions."
-    },
-    "secondary_categories": {
-      "type": "array",
-      "maxItems": 2,
-      "uniqueItems": true,
-      "items": {
-        "type": "string",
-        "enum": [
-          "foundations",
-          "engineering",
-          "design",
-          "quality",
-          "agent",
-          "product"
-        ]
-      },
-      "description": "Additive tags for cross-listing in marketplace collections. Primary `category` is MECE and decides folder placement; `secondary_categories` lets a skill that genuinely serves two audiences (e.g., `playwright-cli` is primarily `quality` but also relevant to `engineering`) appear in additional marketplace collections without affecting filesystem layout. Max 2 entries to prevent dilution. Drawn from the same closed 6-enum as `category`; MUST NOT include the primary `category` value."
-    },
-    "categories": {
-      "type": "array",
-      "minItems": 1,
-      "maxItems": 5,
-      "uniqueItems": true,
-      "items": {
-        "type": "string",
-        "enum": [
-          "foundations",
-          "engineering",
-          "design",
-          "quality",
-          "agent",
-          "product"
-        ]
-      },
-      "description": "Ordered category array. First entry is the primary and must match `category`; remaining entries are secondary browse homes the skill also covers. Max 5, drawn from the same closed enum as `category`."
+      "description": "Hierarchical domain path using slash-delimited segments (e.g., `ecommerce/integrations/shopify`). Complements `subject`: the flat browse shelf (`subject`) and the slash-delimited domain tree answer different questions. Use `domain` to subdivide a subject that holds many skills (the >25 rule per `subject`'s balance constraint)."
     },
     "subject": {
       "type": "string",
@@ -136,7 +69,7 @@
         "knowledge-organization",
         "product-domain"
       ],
-      "description": "v8 primary classification — what the skill teaches. Closed 9-value enum (down from v1 plan's 10-12 per GPT-5.5 critique). Replaces v7's `category` + `categories[0]` + `primaryCategory`. Balance rule: each subject must hold 5-25 skills. <5 = fold or recruit; >25 = subdivide via `domain` slash-path. v7→v8 mapping is NOT 1:1 (e.g. v7 `engineering` may map to `code-engineering`, `frontend-ui`, or `data-analytics` depending on content); the codemod proposes mappings for review. During the v7→v8 migration window, v7 skills retain `category` and skip `subject`; v8 skills require `subject`. See docs/adr/0017-five-axis-classification-model.md."
+      "description": "Primary classification — what the skill teaches. Closed 9-value enum. Balance rule: each subject must hold 5-25 skills. <5 = fold or recruit; >25 = subdivide via `domain` slash-path. See docs/adr/0017-five-axis-classification-model.md."
     },
     "subjects": {
       "type": "array",
@@ -157,45 +90,16 @@
           "product-domain"
         ]
       },
-      "description": "Ordered subject array (v8 polyhierarchy). First entry is the primary and must match `subject`; second entry (optional) is a secondary subject for skills that genuinely span shelves (e.g. `webhook-integration` is primarily `code-engineering` and secondarily `quality-assurance`). Max 2 entries — narrower than v7's `categories` max of 5 to enforce that polyhierarchy is the exception, not the default. Drawn from the same closed 9-enum as `subject`."
-    },
-    "primaryCategory": {
-      "type": "string",
-      "enum": [
-        "foundations",
-        "engineering",
-        "design",
-        "quality",
-        "agent",
-        "product",
-        "Meta Method",
-        "Technical Capability",
-        "Design & UX",
-        "Agent System",
-        "Product Domain"
-      ],
-      "description": "Workspace alias for the primary browse home. Lowercase protocol values are accepted directly; title-case workspace labels normalize to `category` (`Meta Method` → `foundations`, `Technical Capability` → `engineering`, `Design & UX` → `design`, `Agent System` → `agent`, `Product Domain` → `product`). Optional in the protocol, required only by workspace policy when that repo opts in."
-    },
-    "layerPrimary": {
-      "type": "string",
-      "pattern": "^[a-z0-9][a-z0-9-]*$",
-      "description": "Workspace routing facet for the primary architectural or concern layer (`meta`, `architecture`, `integration`, `operations`, `display`, `quality`, etc.). Orthogonal to `category`: use `category` for the human browse shelf and `layerPrimary` only when a workspace router or census explicitly consumes layer facets. The legacy `layer` field is not part of the v7 protocol."
-    },
-    "routingRole": {
-      "type": "string",
-      "pattern": "^[a-z0-9][a-z0-9-]*$",
-      "description": "Workspace routing facet describing how the skill participates in selection (`primary`, `router`, `verifier`, `gate`, etc.). Orthogonal to `type`: `type` says what kind of skill this is, while `routingRole` says how a workspace router should use it. Optional in portable protocol authoring."
+      "description": "Ordered subject array for polyhierarchy. First entry is the primary and must match `subject`; second entry (optional) is a secondary subject for skills that genuinely span shelves (e.g. `webhook-integration` is primarily `code-engineering` and secondarily `quality-assurance`). Max 2 entries to keep polyhierarchy the exception, not the default. Drawn from the same closed 9-enum as `subject`."
     },
     "scope": {
       "type": "string",
       "enum": [
-        "codebase",
-        "reference",
         "portable",
         "project",
         "workspace"
       ],
-      "description": "Where this skill applies. v7 values: `codebase` (coupled to a specific repo's code/conventions), `reference` (pure knowledge, no repo coupling), `portable` (repo-agnostic patterns). v8 values: `project` (replaces `codebase` — matches monorepo reality better), `workspace` (replaces `reference` — matches actual usage in multi-repo workspaces), `portable` (unchanged). During the v7→v8 migration window, all five values validate; v7 skills keep their old values until the codemod runs. Drives multi-project overlay decisions and informs the router's project-fit check."
+      "description": "Deployment targeting — where this skill applies. `portable` (any project, repo-agnostic patterns), `project` (one specific project; requires `grounding`), `workspace` (this workspace only; multi-repo or shared environment). Drives multi-project overlay decisions and the router's project-fit check."
     },
     "owner": {
       "type": "string",
@@ -961,172 +865,11 @@
   },
   "allOf": [
     {
-      "if": {
-        "properties": {
-          "category": {
-            "const": "foundations"
-          }
-        },
-        "required": [
-          "category",
-          "categories"
-        ]
-      },
-      "then": {
-        "properties": {
-          "categories": {
-            "prefixItems": [
-              {
-                "const": "foundations"
-              }
-            ]
-          }
-        }
-      }
-    },
-    {
-      "if": {
-        "properties": {
-          "category": {
-            "const": "engineering"
-          }
-        },
-        "required": [
-          "category",
-          "categories"
-        ]
-      },
-      "then": {
-        "properties": {
-          "categories": {
-            "prefixItems": [
-              {
-                "const": "engineering"
-              }
-            ]
-          }
-        }
-      }
-    },
-    {
-      "if": {
-        "properties": {
-          "category": {
-            "const": "design"
-          }
-        },
-        "required": [
-          "category",
-          "categories"
-        ]
-      },
-      "then": {
-        "properties": {
-          "categories": {
-            "prefixItems": [
-              {
-                "const": "design"
-              }
-            ]
-          }
-        }
-      }
-    },
-    {
-      "if": {
-        "properties": {
-          "category": {
-            "const": "quality"
-          }
-        },
-        "required": [
-          "category",
-          "categories"
-        ]
-      },
-      "then": {
-        "properties": {
-          "categories": {
-            "prefixItems": [
-              {
-                "const": "quality"
-              }
-            ]
-          }
-        }
-      }
-    },
-    {
-      "if": {
-        "properties": {
-          "category": {
-            "const": "agent"
-          }
-        },
-        "required": [
-          "category",
-          "categories"
-        ]
-      },
-      "then": {
-        "properties": {
-          "categories": {
-            "prefixItems": [
-              {
-                "const": "agent"
-              }
-            ]
-          }
-        }
-      }
-    },
-    {
-      "if": {
-        "properties": {
-          "category": {
-            "const": "product"
-          }
-        },
-        "required": [
-          "category",
-          "categories"
-        ]
-      },
-      "then": {
-        "properties": {
-          "categories": {
-            "prefixItems": [
-              {
-                "const": "product"
-              }
-            ]
-          }
-        }
-      }
-    },
-    {
-      "_comment": "extends is required only when type: overlay is explicitly declared. The required: [type] guard prevents this rule from firing when type is absent (which it can be, post-v7→v8 phase end — type is now an optional v7 legacy field).",
-      "if": {
-        "properties": {
-          "type": {
-            "const": "overlay"
-          }
-        },
-        "required": [
-          "type"
-        ]
-      },
-      "then": {
-        "required": [
-          "extends"
-        ]
-      }
-    },
-    {
+      "_comment": "scope: project requires a grounding block. Skills targeting one specific project must ground their claims in that project's truth sources.",
       "if": {
         "properties": {
           "scope": {
-            "enum": ["codebase", "project"]
+            "const": "project"
           }
         },
         "required": [
@@ -1137,27 +880,6 @@
         "required": [
           "grounding"
         ]
-      }
-    },
-    {
-      "if": {
-        "properties": {
-          "type": {
-            "not": {
-              "const": "overlay"
-            }
-          }
-        },
-        "required": [
-          "type"
-        ]
-      },
-      "then": {
-        "not": {
-          "required": [
-            "extends"
-          ]
-        }
       }
     },
     {
@@ -1208,7 +930,7 @@
       }
     },
     {
-      "_comment": "v8 prefix rule: when both subject (singular) and subjects (array) are present, subjects[0] MUST equal subject. Mirrors the existing v7 category/categories[0] prefix rule (lines ~925-1068 above). (Note: 2026-05-26 — the prior v8 conditional rule that required subject+operation only when schema_version: 8 was removed; subject+operation are now in the global required array.)",
+      "_comment": "Polyhierarchy prefix rule: when both subject (singular) and subjects (array) are present, subjects[0] MUST equal subject.",
       "if": {
         "required": [
           "subject",

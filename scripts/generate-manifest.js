@@ -272,30 +272,9 @@ function buildSkillEntry(fm, filePath, skillId, project) {
   }
   entry.description = fm.description;
   entry.version = fm.version;
-  entry.type = fm.type;
-  if (fm.archetype !== undefined && fm.archetype !== null) {
-    entry.archetype = fm.archetype;
-  }
-  entry.category = fm.category;
-  if (Array.isArray(fm.categories) && fm.categories.length > 0) {
-    entry.categories = fm.categories;
-  }
-  if (fm.primaryCategory !== undefined && fm.primaryCategory !== null) {
-    entry.primaryCategory = fm.primaryCategory;
-  }
-  if (fm.layerPrimary !== undefined && fm.layerPrimary !== null) {
-    entry.layerPrimary = fm.layerPrimary;
-  }
-  if (fm.routingRole !== undefined && fm.routingRole !== null) {
-    entry.routingRole = fm.routingRole;
-  }
-  // v8 classification fields (compatibility-mode landing): project these
-  // alongside the v7 category/categories/primaryCategory fields. Both v7 and
-  // v8 fields are pass-through during the migration window. See
-  // docs/adr/0017-five-axis-classification-model.md (planned).
-  if (fm.subject !== undefined && fm.subject !== null) {
-    entry.subject = fm.subject;
-  }
+  // v8 classification: subject + scope are required; subjects[] is optional polyhierarchy.
+  // See docs/adr/0017-five-axis-classification-model.md.
+  entry.subject = fm.subject;
   if (Array.isArray(fm.subjects) && fm.subjects.length > 0) {
     entry.subjects = fm.subjects;
   }
@@ -305,9 +284,6 @@ function buildSkillEntry(fm, filePath, skillId, project) {
   // --- Copied-through optional fields ---
   if (fm.domain !== undefined && fm.domain !== null) {
     entry.domain = fm.domain;
-  }
-  if (Array.isArray(fm.secondary_categories) && fm.secondary_categories.length > 0) {
-    entry.secondary_categories = fm.secondary_categories;
   }
   if (fm.marketplace_tier !== undefined && fm.marketplace_tier !== null) {
     entry.marketplace_tier = fm.marketplace_tier;
@@ -640,20 +616,16 @@ function collectSources(args, skillRoots) {
 /**
  * Compute summary aggregates over the skills array.
  *
- * v7→v8 compatibility-mode (ADR-0017): the legacy v7 facets (`by_type`,
- * `by_category`) and the new v8 facet (`by_subject`) are emitted side-by-side
- * so consumers can measure migration progress. After the v7 sunset the legacy
- * facets drop out.
+ * v8 facets: `by_subject` (classification), `by_scope` (deployment targeting),
+ * `by_stability` (lifecycle posture), `by_project` (workspace ownership).
  *
- * `by_schema_version` (added per 2026-05-25 F4 finding) lets consumers count
- * v7 vs v8 skills directly from the manifest. Missing schema_version buckets
- * under 'unknown' so the failure mode (skill on neither v7 nor v8) stays
- * visible instead of silently dropping out.
+ * `by_schema_version` lets consumers count v7-still vs v8-migrated skills
+ * directly from the manifest. Missing schema_version buckets under 'unknown'
+ * so the failure mode (skill on neither v7 nor v8) stays visible instead of
+ * silently dropping out.
  */
 function computeSummary(skills) {
   const by_schema_version = {};
-  const by_type = {};
-  const by_category = {};
   const by_subject = {};
   const by_scope = {};
   const by_stability = {};
@@ -665,8 +637,6 @@ function computeSummary(skills) {
       : String(skill.schema_version);
     by_schema_version[ver] = (by_schema_version[ver] || 0) + 1;
 
-    if (skill.type) by_type[skill.type] = (by_type[skill.type] || 0) + 1;
-    if (skill.category) by_category[skill.category] = (by_category[skill.category] || 0) + 1;
     if (skill.subject) by_subject[skill.subject] = (by_subject[skill.subject] || 0) + 1;
     if (skill.scope) by_scope[skill.scope] = (by_scope[skill.scope] || 0) + 1;
     if (skill.stability) by_stability[skill.stability] = (by_stability[skill.stability] || 0) + 1;
@@ -675,8 +645,6 @@ function computeSummary(skills) {
 
   const summary = { total_skills: skills.length };
   if (Object.keys(by_schema_version).length > 0) summary.by_schema_version = sortKeys(by_schema_version);
-  if (Object.keys(by_type).length > 0) summary.by_type = sortKeys(by_type);
-  if (Object.keys(by_category).length > 0) summary.by_category = sortKeys(by_category);
   if (Object.keys(by_subject).length > 0) summary.by_subject = sortKeys(by_subject);
   if (Object.keys(by_scope).length > 0) summary.by_scope = sortKeys(by_scope);
   if (Object.keys(by_stability).length > 0) summary.by_stability = sortKeys(by_stability);

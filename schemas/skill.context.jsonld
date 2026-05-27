@@ -1,5 +1,5 @@
 {
-  "_comment": "JSON-LD @context for Skill Graph v8 frontmatter (was v7 pre-2026-05-27 — H14 reconciliation). Maps authored fields to W3C standard vocabularies so a Skill Graph SKILL.md can be projected into RDF/OWL/SKOS consumers without changing the authoring surface. v8 authored fields (subject, operation, scope, keywords, relations) are projected through this context the same way v7 fields were; v7 fields remain projectable for back-compat.",
+  "_comment": "JSON-LD @context for Skill Graph v8 frontmatter. Maps authored fields to W3C standard vocabularies so a Skill Graph SKILL.md can be projected into RDF/OWL/SKOS consumers without changing the authoring surface. v8 authored fields (subject, scope, keywords, relations) are projected through this context.",
   "_version": "3.1.0",
   "_schema_version_target": 8,
   "_references": {
@@ -58,44 +58,15 @@
       "@type": "@id",
       "@reverse": false
     },
-    "type": "sg:archetype",
-    "archetype": "sg:archetype",
     "scope": "sg:scope",
-    "category": "sg:browseCategory",
-    "categories": {
-      "@id": "sg:categories",
-      "@container": "@list",
-      "_note": "Ordered list — first entry is the primary category, remaining entries are secondaries. Same 6-value enum as `category`. v7 optional, v8 required. See SKILL_METADATA_PROTOCOL.md § Classification."
-    },
-    "primaryCategory": {
-      "@id": "sg:primaryCategory",
-      "_note": "Workspace alias for `categories[0]`. Title-case workspace values normalize to the lowercase enum on read. See SKILL_METADATA_PROTOCOL.md § Classification."
-    },
     "subject": {
       "@id": "sg:subject",
-      "_note": "v8 primary classification — what the skill teaches. Closed 9-value enum (agent-ops, code-engineering, frontend-ui, design-craft, data-analytics, quality-assurance, meta-methods, knowledge-organization, product-domain). Replaces v7's `category` + `categories[0]` + `primaryCategory`. See docs/adr/0017-five-axis-classification-model.md."
+      "_note": "Primary classification — what the skill teaches. Closed 9-value enum (agent-ops, code-engineering, frontend-ui, design-craft, data-analytics, quality-assurance, meta-methods, knowledge-organization, product-domain). See docs/adr/0017-five-axis-classification-model.md."
     },
     "subjects": {
       "@id": "sg:subjects",
       "@container": "@list",
-      "_note": "v8 polyhierarchy ordered list — first entry is the primary subject (matches `subject`), second is optional secondary. Max 2 entries to keep polyhierarchy the exception, not the default."
-    },
-    "operation": {
-      "@id": "sg:operation",
-      "_note": "v8 cognitive operation classifier — Bloom-grounded: know (declarative), do (procedural), decide (judgment/routing), modify (context injection). Replaces v7's `type` which is 93% `capability` and provides no discriminating power."
-    },
-    "layerPrimary": {
-      "@id": "sg:layerPrimary",
-      "_note": "Workspace routing facet for the primary architectural or concern layer. Orthogonal to the human browse category."
-    },
-    "routingRole": {
-      "@id": "sg:routingRole",
-      "_note": "Workspace routing facet describing how a router should use the skill (primary, router, verifier, gate, etc.). Orthogonal to the skill archetype."
-    },
-    "secondary_categories": {
-      "@id": "sg:secondaryCategories",
-      "@container": "@set",
-      "_note": "NOT a v7 contract field. Retained only for back-read of legacy manifests. In v7, cross-category membership is expressed via relations.related (max 5), never a secondary_categories field. See SKILL_METADATA_PROTOCOL.md § Classification disambiguation rule 3."
+      "_note": "Polyhierarchy ordered list — first entry is the primary subject (matches `subject`), second is optional secondary. Max 2 entries to keep polyhierarchy the exception, not the default."
     },
     "keywords": {
       "@id": "dcat:keyword",
