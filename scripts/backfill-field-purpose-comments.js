@@ -89,13 +89,6 @@ const FIELD_COMMENTS = {
     '# code-engineering / quality-assurance / frontend-ui / design-craft / agent-ops /',
     '# product-domain / knowledge-organization / meta-methods / data-analytics.',
   ],
-  operation: [
-    '# operation: cognitive operation enabled (Bloom-grounded). One of four closed values:',
-    '# know (declarative — concepts, vocabulary, reference) /',
-    '# do (procedural — step-by-step execution) /',
-    '# decide (judgment — choosing, dispatching) /',
-    '# modify (context injection — shapes how other skills execute).',
-  ],
   scope: [
     '# scope: deployment targeting. One of three closed values:',
     '# portable (any project) / workspace (this workspace only) /',
@@ -104,14 +97,6 @@ const FIELD_COMMENTS = {
   domain: [
     '# domain: optional hierarchical sub-path within `subject`. Slash-delimited lowercase',
     '# kebab-case segments. Remove when flat `subject` is sufficient.',
-  ],
-  type: [
-    '# type: v7 classification — DEPRECATED, replaced by `operation`.',
-    '# Legacy values: capability / workflow / router / overlay.',
-  ],
-  category: [
-    '# category: v7 classification — DEPRECATED, replaced by `subject`.',
-    '# Legacy values: foundations / engineering / design / quality / agent / product.',
   ],
   owner: [
     '# owner: team handle, GitHub username, or tool name responsible for keeping this skill current.',
@@ -283,10 +268,9 @@ const FIELD_COMMENTS = {
 // they first appear. Map: fieldName -> divider line.
 // The divider is inserted BEFORE the field-purpose comment block.
 const SECTION_DIVIDERS = {
-  subject: '# === v8 Classification (5-axis model — see ADR-0017) ===',
-  type: '# === v7 Classification (DEPRECATED 2026-05-26 — kept for back-compat only) ===',
-  eval_artifacts: '# === Eval-health: three orthogonal axes ===',
-  mental_model: '# === v6+ Understanding fields (when comprehension_state: present) ===',
+  subject: '# === v8 Classification (subject + scope; polyhierarchy via subjects[]) — see ADR-0017 ===',
+  eval_artifacts: '# === Evaluation Status: three orthogonal axes ===',
+  mental_model: '# === Understanding fields (when comprehension_state: present) ===',
 };
 
 // Two indentations are supported (two physical encodings, one logical contract
