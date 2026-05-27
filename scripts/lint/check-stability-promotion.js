@@ -5,6 +5,22 @@
  * This helper is intentionally separate from `skill-lint.js`: stability is a
  * Skill Graph quality posture, not an external marketplace mandate. Callers can
  * use it when they want advisory warnings for premature `stability: stable`.
+ *
+ * ADVISORY exit semantics (audit H1, 2026-05-27):
+ *   - Default invocation exits 0 even when warnings are emitted; warnings
+ *     print to stderr and a `WARN` summary line goes to stdout.
+ *   - `--strict` flips the contract: exit 1 if any warning is emitted.
+ *   - The `stability:check` step in `npm run verify` runs with the default
+ *     (advisory) semantics. Use `--strict` only when you intend to block
+ *     a release / PR on stability-promotion warnings.
+ *   - When invoked through `npm run verify`, callers should treat any
+ *     `WARN stability promotion: N warning(s)` line in CI output as a
+ *     follow-up signal, not a gate failure.
+ *
+ * Why advisory by default: the warnings flag `stability: stable` claims
+ * that lack the matching eval_state / eval_score / routing_eval evidence.
+ * That is CONTENT-debt (drained per-skill via the audit loop), not a
+ * SYSTEM bug that should block every commit on every other skill.
  */
 
 'use strict';
@@ -108,5 +124,15 @@ if (require.main === module) {
 
   const label = warningCount === 0 ? 'OK  ' : 'WARN';
   process.stdout.write(`${label} stability promotion: ${skillsChecked} skill(s) checked; ${warningCount} warning(s).\n`);
+
+  // `--strict` flips advisory semantics: exit 1 when any warning fires.
+  // The default invocation (no `--strict`) keeps the prior advisory
+  // contract — exit 0 even with warnings — because the warnings flag
+  // CONTENT debt that is drained per-skill via the audit loop, not a
+  // SYSTEM bug that should block every commit. See header doc + audit H1.
+  const strict = process.argv.includes('--strict');
+  if (strict && warningCount > 0) {
+    process.exit(1);
+  }
   process.exit(0);
 }

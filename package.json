@@ -65,6 +65,7 @@
     "mirror:freeze": "node scripts/check-mirror-freeze.js",
     "charter:parity": "node scripts/check-charter-parity.js",
     "stability:check": "node scripts/lint/check-stability-promotion.js",
+    "stability:check:strict": "node scripts/lint/check-stability-promotion.js --strict",
     "manifest:validate": "node scripts/generate-manifest.js --validate-only",
     "audit-manifest:check": "node scripts/check-audit-manifest.js",
     "routing-eval": "node scripts/generate-manifest.js --output .skill-graph/_routing-eval.manifest.json && node scripts/skill-graph-routing-eval.js --manifest .skill-graph/_routing-eval.manifest.json --only-asserted",
