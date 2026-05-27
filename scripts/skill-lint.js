@@ -408,6 +408,54 @@ function checkSubjectsPrimaryMatchesSubject(fm) {
 }
 
 /**
+ * Check 5b — relations.boundary reason-text orientation (audit M4, advisory).
+ *
+ * SKILL_METADATA_PROTOCOL.md § Relations § boundary carries a WARNING that
+ * the field NAME reads "defer to them" but the MECHANIC is "exclude them
+ * when I win" — and recommends ownership reason-text ("I own X over them"),
+ * not deference ("use that-skill for X"). Authors who write the inverted
+ * phrasing produce semantically wrong relations that still validate.
+ *
+ * This check inspects each `relations.boundary[].reason` string for
+ * deference phrases and warns when found. The advisory warning lets the
+ * author rephrase before the inverted reason ships.
+ */
+function checkBoundaryReasonText(fm) {
+  const warnings = [];
+  if (!fm || typeof fm !== 'object' || !fm.relations) return warnings;
+  const boundary = fm.relations.boundary;
+  if (!Array.isArray(boundary)) return warnings;
+
+  // Deference phrases that imply "use that-skill for X" semantics. The
+  // mechanic is the opposite — boundary EXCLUDES the listed skills from
+  // co-routing when THIS skill wins — so deference wording inverts intent.
+  const INVERTED_PATTERNS = [
+    /\buse\s+\S+\s+(instead|for)\b/i,
+    /\bdefer to\b/i,
+    /\bowned by\b/i,
+    /\bthat-skill (owns|handles|covers)\b/i,
+  ];
+
+  for (const edge of boundary) {
+    if (!edge || typeof edge !== 'object') continue;
+    const reason = edge.reason;
+    if (typeof reason !== 'string') continue;
+    for (const pattern of INVERTED_PATTERNS) {
+      if (pattern.test(reason)) {
+        warnings.push({
+          field: 'relations.boundary',
+          severity: 'warn',
+          msg: `boundary reason reads as deference ("${reason.slice(0, 80)}${reason.length > 80 ? '…' : ''}") — recommend ownership phrasing ("I own X over ${edge.skill || 'the listed skill'}"). The boundary mechanic excludes the listed skill from co-routing when this skill wins; deference wording inverts the intent. See SKILL_METADATA_PROTOCOL.md § Relations § boundary WARNING.`,
+        });
+        break;
+      }
+    }
+  }
+
+  return warnings;
+}
+
+/**
  * Check 5 — field-purpose comment presence (audit H8, advisory).
  *
  * SKILL_METADATA_PROTOCOL.md § Inline field comments mandates that every
@@ -589,7 +637,10 @@ function lintFile(file) {
     ...checkParentDirMatchesName(file, fm),
     ...checkSubjectsPrimaryMatchesSubject(fm),
   ];
-  const warnings = checkFieldPurposeComments(text);
+  const warnings = [
+    ...checkFieldPurposeComments(text),
+    ...checkBoundaryReasonText(fm),
+  ];
 
   return {
     file: relPath,
