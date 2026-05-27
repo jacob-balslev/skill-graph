@@ -5,7 +5,7 @@
 > **Predicate glossary:** [`docs/glossary.md`](glossary.md).
 > **JSON-LD @context:** [`schemas/skill.context.jsonld`](../schemas/skill.context.jsonld).
 
-Schema version: **unknown** · Field count: **55** · Required: **12**
+Schema version: **unknown** · Field count: **57** · Required: **12**
 
 ---
 
@@ -13,7 +13,7 @@ Schema version: **unknown** · Field count: **55** · Required: **12**
 
 **Type:** multiple — see schema
 
-Major contract shape version. Integer for v6+; string '7'/'8' accepted for hand-rolled YAML parsers that emit numeric-looking strings (authors SHOULD write integer 7 or 8). Bumps when shape changes break consumers. v7 split the single `audit_verdict` field from v6 into four discrete verdicts (`structural_verdict`, `truth_verdict`, `comprehension_verdict`, `application_verdict`). v8 is the canonical classification: authored axes are `subject` + `scope`, polyhierarchy via `subjects[]` (max 2), activation via `keywords` / `triggers` / `examples` / `anti_examples`, and routing via `relations` (`related` / `boundary` / `verify_with` / `depends_on` / `broader` / `narrower` / `disjoint_with`). Prior versions live in git history — see `git tag --list 'schema-*'`. See docs/adr/0011-split-audit-verdict-into-four-verdicts.md (v6→v7) and docs/adr/0017-five-axis-classification-model.md (v7→v8, amended 2026-05-27).
+Major contract shape version. Integer 8 is canonical; integer 7 still accepted while pre-v8 skills migrate. Bumps when shape changes break consumers. v8 carries `subject` + `deployment_target` classification, free-text `scope`, `project[]` and `repo[]` belonging-entity fields, `taxonomy_domain` taxonomic sub-path, and `grounding.subject_matter`. Prior versions live in git history — see `git tag --list 'schema-*'`. See docs/adr/0017-five-axis-classification-model.md and its amendments.
 
 **Full reference:** [`docs/field-reference.md#schema_version`](field-reference.md#schema_version)
 
@@ -65,15 +65,15 @@ Skill content version (semver). Bumps when the SKILL.md body or contract changes
 
 ---
 
-### `domain` *(optional)*
+### `taxonomy_domain` *(optional)*
 
 **Type:** string
 
-Hierarchical domain path using slash-delimited segments (e.g., `ecommerce/integrations/shopify`). Complements `subject`: the flat browse shelf (`subject`) and the slash-delimited domain tree answer different questions. Use `domain` to subdivide a subject that holds many skills (the >25 rule per `subject`'s balance constraint).
+Hierarchical taxonomy sub-path using slash-delimited segments (e.g., `ecommerce/integrations/shopify`). Complements `subject`: the flat browse shelf (`subject`) and the slash-delimited taxonomy tree answer different questions. Use `taxonomy_domain` to subdivide a subject that holds many skills (the >25 rule per `subject`'s balance constraint). Renamed from `domain` to disambiguate from `grounding.subject_matter` (the grounding-block free-text label) and from cross-taxonomy routing doctrine prose. See the ADR-0017 amendment of 2026-05-27.
 
 **Pattern:** `^[a-z0-9][a-z0-9-]*(/[a-z0-9][a-z0-9-]*)*$`
 
-**Full reference:** [`docs/field-reference.md#domain`](field-reference.md#domain)
+**Full reference:** [`docs/field-reference.md#taxonomy_domain`](field-reference.md#taxonomy_domain)
 
 ---
 
@@ -97,13 +97,53 @@ Ordered subject array for polyhierarchy. First entry is the primary and must mat
 
 ---
 
-### `scope` *(required)*
+### `scope` *(optional)*
 
-**Type:** `portable` | `project` | `workspace`
+**Type:** string
 
-Deployment targeting — where this skill applies. `portable` (any project, repo-agnostic patterns), `project` (one specific project; requires `grounding`), `workspace` (this workspace only; multi-repo or shared environment). Drives multi-project overlay decisions and the router's project-fit check.
+PRD-style free-text scope statement — what this skill teaches and what it does not. Mirrors the body `## Coverage` plus `## Do NOT Use When` sections at the frontmatter level for fast scanning. Optional. NOT an enum: the deployment-targeting role moved to `deployment_target` (with the `workspace` value removed). See the ADR-0017 amendment of 2026-05-27.
 
 **Full reference:** [`docs/field-reference.md#scope`](field-reference.md#scope)
+
+---
+
+### `deployment_target` *(required)*
+
+**Type:** `portable` | `project`
+
+Deployment targeting — where this skill applies. `portable` (any project, repo-agnostic patterns), `project` (one specific project; requires `grounding`). Replaces the v8 `scope` enum; the `workspace` value is removed because no corpus skill needed a deployment state between `portable` and `project` — workspace-grounded skills migrate to `deployment_target: project` with explicit `project[]` membership. Drives multi-project overlay decisions and the router's project-fit check. See the ADR-0017 amendment of 2026-05-27.
+
+**Full reference:** [`docs/field-reference.md#deployment_target`](field-reference.md#deployment_target)
+
+---
+
+### `project` *(optional)*
+
+**Type:** array of object
+
+Projects this skill is linked to. Each entry has a kebab-case `handle` and a free-text `role` (suggested values: `source-of-truth`, `consumer`, `mirror`). Optional; absent = ambient / cross-project. Replaces the v8 `workspace_tags` field and makes project belonging-entity identity a first-class queryable axis. See the ADR-0017 amendment of 2026-05-27.
+
+**Item shape (object form):**
+
+- `handle` *required* — Kebab-case project handle (e.
+- `role` *optional* — Free-text role of this skill within the project.
+
+**Full reference:** [`docs/field-reference.md#project`](field-reference.md#project)
+
+---
+
+### `repo` *(optional)*
+
+**Type:** array of object
+
+Repos this skill is linked to. Each entry has a kebab-case `handle` and a canonical `url`. Optional; plural even though most skills today have one source repo, so federation is structurally ready without a future schema bump. Replaces the implicit identity encoded in URN compounds and stripped `skill_graph_source_repo` export-provenance keys. See the ADR-0017 amendment of 2026-05-27.
+
+**Item shape (object form):**
+
+- `handle` *required* — Kebab-case repo handle (e.
+- `url` *optional* — Canonical repository URL.
+
+**Full reference:** [`docs/field-reference.md#repo`](field-reference.md#repo)
 
 ---
 
@@ -215,7 +255,7 @@ ISO date (YYYY-MM-DD) the SKILL.md body or frontmatter was last edited. Written 
 
 **Type:** `PASS` | `PASS_WITH_FIXES` | `FAIL` | `UNVERIFIED`
 
-Structural-layer verdict produced by gates 1–2 and 7 of the skill-audit loop (schema lint, manifest census, concept-card shape). `PASS` (clean), `PASS_WITH_FIXES` (warnings present but no errors), `FAIL` (lint or schema errors), `UNVERIFIED` (no structural audit has run since the v7 schema bump). Replaces the structural slice of the v6 `audit_verdict` aggregate. Independent of `lint_verdict` (per-script signal); this is the audit-loop roll-up. See docs/adr/0011-split-audit-verdict-into-four-verdicts.md.
+Structural-layer verdict produced by gates 1–2 and 7 of the skill-audit loop (schema lint, manifest census, concept-card shape). `PASS` (clean), `PASS_WITH_FIXES` (warnings present but no errors), `FAIL` (lint or schema errors), `UNVERIFIED` (no structural audit has run yet). Independent of `lint_verdict` (per-script signal); this is the audit-loop roll-up. See docs/adr/0011-split-audit-verdict-into-four-verdicts.md.
 
 **Full reference:** [`docs/field-reference.md#structural_verdict`](field-reference.md#structural_verdict)
 
@@ -225,7 +265,7 @@ Structural-layer verdict produced by gates 1–2 and 7 of the skill-audit loop (
 
 **Type:** `PASS` | `DRIFT` | `BROKEN` | `UNVERIFIED`
 
-Truth-layer verdict produced by gates 3–6 of the skill-audit loop (truth-source catalog, drift sentinel, test coverage, claim verification). `PASS` (truth sources align with declared `last_verified` and hashes), `DRIFT` (truth sources changed since last_verified), `BROKEN` (declared truth sources missing or unreadable), `UNVERIFIED` (no truth audit has run since the v7 schema bump). Replaces the truth slice of the v6 `audit_verdict` aggregate. Independent of `drift_status` (per-script signal); this is the audit-loop roll-up. See docs/adr/0011-split-audit-verdict-into-four-verdicts.md.
+Truth-layer verdict produced by gates 3–6 of the skill-audit loop (truth-source catalog, drift sentinel, test coverage, claim verification). `PASS` (truth sources align with declared `last_verified` and hashes), `DRIFT` (truth sources changed since last_verified), `BROKEN` (declared truth sources missing or unreadable), `UNVERIFIED` (no truth audit has run yet). Independent of `drift_status` (per-script signal); this is the audit-loop roll-up. See docs/adr/0011-split-audit-verdict-into-four-verdicts.md.
 
 **Full reference:** [`docs/field-reference.md#truth_verdict`](field-reference.md#truth_verdict)
 
@@ -235,7 +275,7 @@ Truth-layer verdict produced by gates 3–6 of the skill-audit loop (truth-sourc
 
 **Type:** `PASS` | `SHALLOW` | `REDUNDANT` | `UNVERIFIED` | `PROVISIONAL` | `SKIPPED_BASELINE_HIGH` | `NA`
 
-Comprehension-layer verdict produced by gate 8 (the comprehension grader on `evals/comprehension.json`). `PASS` (with-skill answers measurably deeper than baseline; dual-run grader earned), `PROVISIONAL` (a single competent model ran the comprehension assessment and recorded a real result — lower confidence than `PASS` because not yet confirmed by the independent dual-run grader, but distinct from `UNVERIFIED` which means no assessment has run), `SHALLOW` (skill recites the concept but does not deepen agent understanding), `REDUNDANT` (baseline already saturated — skill adds no comprehension lift on this concept), `SKIPPED_BASELINE_HIGH` (early-skip — `avg_primary_baseline >= 1.0` after the first 2 evals so the dual-run was aborted; v7 demotion behavior), `NA` (skill carries no `evals/comprehension.json`), `UNVERIFIED` (initial state before any grader run since the v7 schema bump). Confidence hierarchy: `PASS (grader) > PROVISIONAL (single model) > UNVERIFIED (none)`. Demoted in v7: never alone certifies a skill as useful — `application_verdict` is the aggregate-quality field. See docs/adr/0011-split-audit-verdict-into-four-verdicts.md and .claude/rules/version-schema-contract.md § 5.
+Comprehension-layer verdict produced by gate 8 (the comprehension grader on `evals/comprehension.json`). `PASS` (with-skill answers measurably deeper than baseline; dual-run grader earned), `PROVISIONAL` (a single competent model ran the comprehension assessment and recorded a real result — lower confidence than `PASS` because not yet confirmed by the independent dual-run grader, but distinct from `UNVERIFIED` which means no assessment has run), `SHALLOW` (skill recites the concept but does not deepen agent understanding), `REDUNDANT` (baseline already saturated — skill adds no comprehension lift on this concept), `SKIPPED_BASELINE_HIGH` (early-skip — `avg_primary_baseline >= 1.0` after the first 2 evals so the dual-run was aborted), `NA` (skill carries no `evals/comprehension.json`), `UNVERIFIED` (initial state before any grader run). Confidence hierarchy: `PASS (grader) > PROVISIONAL (single model) > UNVERIFIED (none)`. Comprehension never alone certifies a skill as useful — `application_verdict` is the aggregate-quality field. See docs/adr/0011-split-audit-verdict-into-four-verdicts.md and .claude/rules/version-schema-contract.md § 5.
 
 **Full reference:** [`docs/field-reference.md#comprehension_verdict`](field-reference.md#comprehension_verdict)
 
@@ -245,7 +285,7 @@ Comprehension-layer verdict produced by gate 8 (the comprehension grader on `eva
 
 **Type:** `APPLICABLE` | `REDUNDANT` | `HARMFUL` | `MIXED` | `FALSE_POSITIVE` | `UNVERIFIED` | `PROVISIONAL`
 
-Application-layer verdict produced by gate 9 (the application grader on `evals/application.json`). `APPLICABLE` (loading the skill changes agent behavior on real artifacts in the expected direction — flags, fixes, generative trajectory), `REDUNDANT` (no behavioral delta — agent behaves the same with or without the skill loaded), `HARMFUL` (negative delta — agent makes worse decisions with the skill loaded; SkillsBench arXiv 2602.12670 found 19% of evaluated skills exhibit this), `MIXED` (delta varies across cases — some applicable, some redundant or false-positive), `FALSE_POSITIVE` (skill over-triggers — applies on cases where its expertise does not apply), `UNVERIFIED` (no application assessment has run), `PROVISIONAL` (single-model self-assessment audit found useful behavior but the independent application grader has not confirmed it). The aggregate-quality field in v7: a skill is only behaviorally certified when this verdict is `APPLICABLE`. See docs/adr/0011-split-audit-verdict-into-four-verdicts.md.
+Application-layer verdict produced by gate 9 (the application grader on `evals/application.json`). `APPLICABLE` (loading the skill changes agent behavior on real artifacts in the expected direction — flags, fixes, generative trajectory), `REDUNDANT` (no behavioral delta — agent behaves the same with or without the skill loaded), `HARMFUL` (negative delta — agent makes worse decisions with the skill loaded; SkillsBench arXiv 2602.12670 found 19% of evaluated skills exhibit this), `MIXED` (delta varies across cases — some applicable, some redundant or false-positive), `FALSE_POSITIVE` (skill over-triggers — applies on cases where its expertise does not apply), `UNVERIFIED` (no application assessment has run), `PROVISIONAL` (single-model self-assessment audit found useful behavior but the independent application grader has not confirmed it). This is the aggregate-quality field: a skill is only behaviorally certified when this verdict is `APPLICABLE`. See docs/adr/0011-split-audit-verdict-into-four-verdicts.md.
 
 **Full reference:** [`docs/field-reference.md#application_verdict`](field-reference.md#application_verdict)
 
@@ -305,7 +345,7 @@ Does this skill carry a comprehension eval (typically `evals/comprehension.json`
 
 **Type:** object
 
-DEPRECATED in v6: the seven sub-fields below are promoted to flat top-level fields (`mental_model`, `purpose`, `boundary`, `analogy`, `misconception`; `definition` is covered by `description`; `taxonomy` is covered by `category` + `relations.broader`). The nested block is retained for v5 backwards-compatibility but new skills should populate the flat fields instead. The comprehension grader reads either location; when both are present, the flat fields win.
+Legacy nested encoding of the Understanding fields. The current contract authors `mental_model`, `purpose`, `boundary`, `analogy`, and `misconception` as flat top-level fields; `description` covers the former `definition`; `relations.broader` covers the former `taxonomy`. The nested block is retained ONLY for skills that have not yet been migrated to the flat encoding; new skills MUST author the flat fields. The comprehension grader reads either location; when both are present, the flat fields win. Per AGENTS.md § Major Version Is a Clean Cut, structural removal of this block is CONTENT-mode work the audit loop drains per-skill.
 
 **Sub-fields:**
 
@@ -545,16 +585,6 @@ Glob patterns that identify code surfaces this skill governs. Patterns prefixed 
 
 ---
 
-### `workspace_tags` *(optional)*
-
-**Type:** array of string
-
-Literal workspace/project handles or semantic tags identifying which workspaces this skill is relevant to. Absent = ambient / cross-project. A workspace config at `.skill-graph/config.json` may map literal project handles to semantic tag sets so one skill tag matches many projects. Do not confuse this authored relevance field with generated manifest `project` ownership.
-
-**Full reference:** [`docs/field-reference.md#workspace_tags`](field-reference.md#workspace_tags)
-
----
-
 ### `routing_bundles` *(optional)*
 
 **Type:** array of string
@@ -573,7 +603,7 @@ Typed edges to sibling skills. Lint verifies every target exists. Predicate-to-W
 
 **Sub-fields:**
 
-- `adjacent` *optional* — DEPRECATED ALIAS of `related`.
+- `adjacent` *optional* — Legacy alias of `related` (skos:related).
 - `related` *optional* — Symmetric associative relation (skos:related).
 - `boundary` *optional* — Score-aware routing exclusion edge — directional.
 - `disjoint_with` *optional* — Optional OWL class-disjointness assertion.
@@ -594,8 +624,7 @@ Records what the skill is grounded against — the truth sources, the grounding 
 
 **Sub-fields:**
 
-- `domain_object` *required* — What the skill is about (e.
-- `subject` *optional* — What the skill is about (v3.
+- `subject_matter` *required* — Free-text label naming what the skill is grounded in (e.
 - `grounding_mode` *required* (`repo_specific` | `universal` | `hybrid`) — Whether the skill's claims are repo-specific, universal, or a hybrid.
 - `claim_scope` *optional* (`repo_specific` | `universal` | `hybrid`) — Whether the skill's claims are repo-specific, universal, or a hybrid (v3.
 - `truth_sources` *required* — Files, docs, or URLs that ground the skill's claims.
