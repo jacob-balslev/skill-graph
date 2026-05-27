@@ -26,7 +26,7 @@ That's it. One field at a time, keep or revert based on a single measurable sign
 The loop exists to answer one question about each skill: **does it still teach an agent to do the thing it claims to teach?** Every operation and verdict below serves that question. We evaluate each skill on three axes:
 
 1. **Intent fidelity** — does the skill's content deliver what its `description` / `scope` / routing contract promises? A skill whose body has drifted from its own stated purpose fails here, even if every path it cites still resolves.
-2. **Teaching efficacy** — does the skill actually change and improve an agent's behavior on the topic? This is the real quality signal. A skill that is structurally perfect but teaches nothing — or teaches it badly — is a weak skill. Under the four-verdict Audit Status (schema v7, [ADR 0011](docs/adr/0011-split-audit-verdict-into-four-verdicts.md)), `application_verdict` is where this is certified against real artifacts.
+2. **Teaching efficacy** — does the skill actually change and improve an agent's behavior on the topic? This is the real quality signal. A skill that is structurally perfect but teaches nothing — or teaches it badly — is a weak skill. Under the four-verdict Audit Status (rationale: [ADR 0011](docs/adr/0011-split-audit-verdict-into-four-verdicts.md)), `application_verdict` is where this is certified against real artifacts.
 3. **Upstream currency (anti-displacement)** — is the skill's approach still the best available, or has a recent first-party release (Anthropic / OpenAI), platform release (OpenCode), or widely-adopted open-source release made it obsolete or strictly worse than a native capability? The agentic ecosystem moves fast; a skill that teaches a workaround for something now solved natively is decayed even if it is internally accurate and teaches well. This axis is checked per skill in the operational audit prompt (`skill-graph/SKILL_AUDIT_LOOP.md#part-3--per-skill-audit-runbook` § Step 6-displacement), recorded as a `category: DISPLACEMENT` finding with a deprecate / fold / reframe-to-delta recommendation, and **never actioned by auto-deletion** — removal requires explicit user sign-off (`.claude/rules/code-preservation.md`).
 
 The audit is **not a lint-test factory.** We do not invent arbitrary internal structural checks to manufacture findings, and an empty findings report on a genuinely good skill is a **PASS** — not a failure to find work. `lint_verdict` / `structural_verdict` cover form, schema validity, and external marketplace mandates only — a **floor the skill must clear**, never the target it aims at. Passing lint says the skill is well-formed; it says nothing about whether the skill teaches well.
@@ -35,7 +35,7 @@ The audit is **not a lint-test factory.** We do not invent arbitrary internal st
 
 The loop has two gates. They must not be blended into one PASS/FAIL label:
 
-| Gate | What it proves | Evidence | Health fields |
+| Gate | What it proves | Evidence | Audit Status fields |
 |---|---|---|---|
 | **Integrity Gate** | The skill is structurally valid, grounded, routable, and export-safe. | Deterministic CI-safe checks: canonical-source lint, schema/protocol consistency, manifest, links, export shape, routing assertions, overlap, and drift. | `structural_verdict`, `truth_verdict`, `lint_verdict`, `drift_status` |
 | **Behavior Gate** | The skill changes agent behavior in the way it claims. | Behavioral evals against realistic positives, hard negatives, prior failures, and boundary cases. | `comprehension_verdict`, `application_verdict`, `eval_score`, `eval_failed_ids` |
@@ -92,7 +92,7 @@ This replaces the previous 13-command surface with **4 canonical operations + 2 
 
 ## The Audit Status — state lives on the skill
 
-Schema v7 carries the Health fields on every SKILL.md frontmatter. v7 removed the single v6 `audit_verdict` and replaced it with **four discrete verdicts**, one per audit layer, because the aggregate masqueraded as a quality signal while conflating form, truth, comprehension, and behavior (see [ADR 0011](docs/adr/0011-split-audit-verdict-into-four-verdicts.md)):
+The Audit Status carries **four discrete verdicts** on every SKILL.md frontmatter — one per audit layer. The split (introduced in v7 and retained through v8) replaced an earlier single aggregate that masqueraded as a quality signal while conflating form, truth, comprehension, and behavior (rationale: [ADR 0011](docs/adr/0011-split-audit-verdict-into-four-verdicts.md)):
 
 The Audit Status uses the **inline field-purpose comment convention** (see `SKILL_METADATA_PROTOCOL.md § Inline field comments — the authoring convention`): every field carries a comment block above it naming purpose + allowed values. The convention is identical for hand-authored fields and audit-loop-written fields — readers should not need to leave the file to decode the verdict.
 
@@ -119,7 +119,7 @@ structural_verdict: PASS
 # PASS / DRIFT / BROKEN / UNVERIFIED.
 truth_verdict: PASS
 
-# comprehension_verdict: gate 8 — cheap recitation smoke test (demoted in v7).
+# comprehension_verdict: gate 8 — cheap recitation smoke test (a smoke test only, never alone certifying).
 # NEVER alone certifies a skill. PASS / SHALLOW / REDUNDANT / UNVERIFIED /
 # PROVISIONAL / SKIPPED_BASELINE_HIGH / NA.
 comprehension_verdict: UNVERIFIED
@@ -202,7 +202,7 @@ for skill in priority_order(application_verdict first, then skill-graph centrali
      or truth_verdict in {DRIFT, BROKEN}
      or application_verdict in {UNVERIFIED, REDUNDANT, HARMFUL, MIXED}:
     if understanding_field_targetable:
-      improve(skill, field=understanding_field)   # one v7 Understanding field
+      improve(skill, field=understanding_field)   # one Understanding field
   evaluate(skill)
   write Audit Status fields back
 ```
@@ -292,10 +292,10 @@ The loop does not require a separate issue tracker, dashboard, control plane, or
 
 ## Related Specs
 
-- `docs/skill-metadata-protocol.md` — the canonical field list including the v7 Audit Status and flat Understanding fields
-- `schemas/skill.schema.json` — the machine-validated current contract (v7 + v8 compat-window). Prior versions live in git history per [ADR-0014](docs/adr/0014-canonical-only-schema-files.md); the schema's `$id` (`https://skillgraph.dev/schemas/skill.schema.json`) is the stable identifier.
-- [ADR 0011](docs/adr/0011-split-audit-verdict-into-four-verdicts.md) — the `audit_verdict` → four-verdict split (rationale for the v7 Audit Status)
-- [ADR 0017](docs/adr/0017-five-axis-classification-model.md) — the v7→v8 classification overhaul (subject + operation + scope rename)
+- `docs/skill-metadata-protocol.md` — the canonical field list including the Audit Status and flat Understanding fields
+- `schemas/skill.schema.json` — the machine-validated current contract (v8). Prior versions live in git history per [ADR-0014](docs/adr/0014-canonical-only-schema-files.md) and [AGENTS.md § Major Version Is a Clean Cut](AGENTS.md) (retrievable via `git show schema-v7:schemas/skill.schema.json`); the schema's `$id` (`https://skillgraph.dev/schemas/skill.schema.json`) is the stable identifier.
+- [ADR 0011](docs/adr/0011-split-audit-verdict-into-four-verdicts.md) — the `audit_verdict` → four-verdict split (rationale for the Audit Status's four-verdict shape)
+- [ADR 0017](docs/adr/0017-five-axis-classification-model.md) — the v7→v8 classification model, amended 2026-05-27 (`operation` axis retired, `scope` repurposed to free-text, `deployment_target` introduced as the closed-enum deployment axis, `domain` renamed to `taxonomy_domain`, `project[]` / `repo[]` belonging-entity fields added)
 - **Part 2 below** — the per-skill audit checklist (formerly `SKILL_AUDIT_LOOP.md` § Part 2, deleted in the 2026-05-25 consolidation)
 - **Part 3 below** — the per-skill audit runbook (formerly `SKILL_AUDIT_LOOP.md` § Part 3, deleted in the 2026-05-25 consolidation)
 
@@ -422,9 +422,12 @@ Required dimension rows:
 - [ ] `version` exists
 - [ ] **v8 classification axes are present and valid:**
    - `subject` is one of the 9-value enum — `code-engineering` / `quality-assurance` / `frontend-ui` / `design-craft` / `agent-ops` / `product-domain` / `knowledge-organization` / `meta-methods` / `data-analytics`.
-   - `scope` is one of `portable` / `workspace` / `project`.
-   - See `SKILL_METADATA_PROTOCOL.md § Classification` and [ADR-0017](docs/adr/0017-five-axis-classification-model.md).
-- [ ] If the skill still carries fields that no longer exist in the live schema (e.g. v7 classification fields `type`, `category`, `categories`, `primaryCategory`, `layerPrimary`, `routingRole`, `operation`; or v7 scope names `reference`, `codebase`): file a CONTENT finding to migrate the skill through `/audit:improve`. The live schema rejects these via `additionalProperties: false` and the v8 scope enum.
+   - `deployment_target` is one of the 2-value enum — `portable` (any project) or `project` (one specific project; requires `grounding.subject_matter` and a `project[]` belonging-entity reference).
+   - `scope` is present and free-text (PRD-style label — NOT an enum).
+   - `subjects[]` (optional, max 2, primary first) is used only when the skill genuinely spans two browse shelves.
+   - `taxonomy_domain` (optional, slash-delimited) is used to subdivide a `subject` that holds many skills.
+   - See `SKILL_METADATA_PROTOCOL.md § Classification` and [ADR-0017](docs/adr/0017-five-axis-classification-model.md) (and its 2026-05-27 amendment).
+- [ ] If the skill still carries fields that no longer exist in the live schema (e.g. v7 classification fields `type`, `category`, `categories`, `secondary_categories`, `primaryCategory`, `layerPrimary`, `routingRole`, `family`, `layer`, `archetype`; the initial v8 `operation` axis retired 2026-05-27; `eval_status`; `workspace_tags`; the retired scope-enum values `reference`/`codebase`/`workspace`; the legacy field name `domain` — renamed to `taxonomy_domain` in the 2026-05-27 amendment): file a CONTENT finding to migrate the skill through `/audit:improve`. The live schema rejects these via `additionalProperties: false`.
 - [ ] `owner` exists
 - [ ] `freshness` exists
 - [ ] `drift_check` exists as an object with `last_verified`

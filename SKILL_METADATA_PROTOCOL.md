@@ -215,14 +215,14 @@ boundary        # string — what this concept is NOT (with mechanism, not just 
 analogy         # string — one-sentence metaphor preserving the core mechanism
 misconception   # string — the wrong mental model people bring
 concept         # DEPRECATED in v6 — legacy v5 nested block; back-compat only
-# Audit Status (v7+, flat) — written by the audit loop, not hand-authored
+# Audit Status (flat) — written by the audit loop, not hand-authored
 last_audited            # ISO date — when `audit` last ran
 last_changed            # ISO date — when the SKILL.md was last edited
-# v7 four-verdict Audit Status (replaces the single v6 audit_verdict):
+# Four-verdict Audit Status:
 structural_verdict      # PASS | PASS_WITH_FIXES | FAIL | UNVERIFIED (form roll-up, gates 1-2, 7)
 truth_verdict           # PASS | DRIFT | BROKEN | UNVERIFIED (truth roll-up, gates 3-6)
 comprehension_verdict   # PASS | SHALLOW | REDUNDANT | UNVERIFIED | PROVISIONAL | SKIPPED_BASELINE_HIGH | NA
-                        # (gate 8, demoted in v7 — cheap smoke test only, never alone certifying)
+                        # (gate 8 — cheap smoke test only, never alone certifying)
 application_verdict     # APPLICABLE | REDUNDANT | HARMFUL | MIXED | FALSE_POSITIVE | UNVERIFIED | PROVISIONAL
                         # (gate 9, primary quality signal — a skill is only behaviorally certified
                         #  when this verdict is APPLICABLE)
@@ -230,8 +230,6 @@ eval_score              # number 0.0–5.0 — latest aggregate eval grade
 eval_failed_ids         # string[] — failing eval IDs (empty when clean)
 lint_verdict            # PASS | FAIL | UNKNOWN (per-script signal from skill-lint.js)
 drift_status            # OK | DRIFT | BROKEN | STALE | NO_BASELINE | EXTERNAL_UNHASHED | UNKNOWN (per-script signal from skill-graph-drift.js)
-# audit_verdict         # DEPRECATED in v7 — the v6 single aggregate, replaced by the four verdicts above.
-                        # Pre-v7 enum: PASS | PASS_WITH_FIXES | PARTIAL | FAIL | UNKNOWN. See docs/adr/0011-split-audit-verdict-into-four-verdicts.md.
 eval_last_run   # { at, status, runner?, model?, receipt?, receipt_hash? }
 compatibility   # protocol-native: { runtimes, node, notes }; Agent-Skills-compatible physical encoding may keep the base-field string
 allowed-tools   # space-separated tool allowlist
@@ -322,9 +320,9 @@ The graph layer. Seven edge types — `related`, `boundary`, `disjoint_with`, `v
   3. *Multi-fit* — skills that legitimately span two shelves set `subjects: [primary, secondary]` (max 2). Secondaries widen the browse net; they do NOT change the primary. Semantic adjacencies that are NOT subject-shaped still live in `relations.related`.
   4. *`meta-methods` and `knowledge-organization` gates* — anti-junk-drawer. `meta-methods` is for methodology/reasoning; `knowledge-organization` is for taxonomy/semantics/glossary work. Don't default here when the skill is really about engineering or quality.
 
-**`domain`** (unchanged from v7)
-- Optional slash-delimited path (e.g. `engineering/api-design`, `frontend/state`).
-- Subdivides a `subject` into finer-grained groups. Multiple skills sharing a `domain` form a natural cluster.
+**`taxonomy_domain`** (renamed from `domain` in the 2026-05-27 amendment to disambiguate from `grounding.subject_matter` and cross-taxonomy routing prose)
+- Optional slash-delimited taxonomy sub-path (e.g. `engineering/api-design`, `frontend/state`).
+- Subdivides a `subject` into finer-grained groups. Multiple skills sharing a `taxonomy_domain` form a natural cluster.
 - Do not use as a substitute for `subject`; do not invent new top-level subjects via the slash path.
 
 **`stability`**
@@ -442,31 +440,26 @@ Seven flat top-level fields that record a skill's audit fingerprint in its own f
 - Written automatically by `improve` operations.
 - Distinct from `freshness` (review claim) — `last_changed` is the editor's footprint, `freshness` is the reviewer's footprint.
 
-**`structural_verdict`** *(v7+)*
+**`structural_verdict`**
 - Form-layer verdict (gates 1–2, 7: schema lint, manifest census, concept-card shape).
 - Enum: `PASS` | `PASS_WITH_FIXES` | `FAIL` | `UNVERIFIED`.
 - Rolled up from `lint_verdict` by the audit loop. Only external-constraint violations (Anthropic Agent Skills marketplace shape, required-fields, valid YAML) produce `FAIL`; internal style preferences are lint warnings.
 
-**`truth_verdict`** *(v7+)*
+**`truth_verdict`**
 - Truth-layer verdict (gates 3–6: truth-source catalog, drift sentinel, test coverage, claim verification).
 - Enum: `PASS` | `DRIFT` | `BROKEN` | `UNVERIFIED`.
 - Rolled up from `drift_status` by the audit loop.
 
-**`comprehension_verdict`** *(v7+)*
-- Comprehension-layer verdict (gate 8, demoted in v7 to a cheap smoke test).
+**`comprehension_verdict`**
+- Comprehension-layer verdict (gate 8 — a cheap smoke test).
 - Enum: `PASS` | `PROVISIONAL` | `SHALLOW` | `REDUNDANT` | `UNVERIFIED` | `SKIPPED_BASELINE_HIGH` | `NA`.
 - Written by the comprehension grader. Never alone certifies a skill — `application_verdict` is the aggregate-quality field.
 
-**`application_verdict`** *(v7+)* — **the primary quality signal**
+**`application_verdict`** — **the primary quality signal**
 - Application-layer verdict (gate 9: behavioral change on real artifacts).
 - Enum: `APPLICABLE` | `REDUNDANT` | `HARMFUL` | `MIXED` | `FALSE_POSITIVE` | `UNVERIFIED` | `PROVISIONAL`.
 - Written by the application grader on `evals/application.json`. A skill is only behaviorally certified when this is `APPLICABLE`.
 - `PROVISIONAL` records a single-model self-assessment audit that found useful behavior but has not passed the independent application grader. Default `UNVERIFIED` means no application assessment has run.
-
-**`audit_verdict`** *(DEPRECATED in v7)*
-- Pre-v7 single aggregate verdict, replaced by the four discrete verdicts above.
-- Enum (historical): `PASS` | `PASS_WITH_FIXES` | `PARTIAL` | `FAIL` | `UNKNOWN`.
-- The v7 codemod (`scripts/migrate-skill-v6-to-v7.js`) strips this field. See [ADR 0011](docs/adr/0011-split-audit-verdict-into-four-verdicts.md).
 
 **`eval_score`**
 - Latest aggregate eval grade on a 0.0–5.0 scale.
@@ -638,24 +631,23 @@ grounding:
 
 ### Authored in `SKILL.md` (human-written)
 
-The canonical fields in the frontmatter are authored by humans, with two exceptions: `drift_check.truth_source_hashes` is computed by the drift sentinel (`skill-graph drift --record --apply`), and the v7 **Audit Status** fields (`last_audited`, `last_changed`, `structural_verdict`, `truth_verdict`, `comprehension_verdict`, `application_verdict`, `eval_score`, `eval_failed_ids`, `lint_verdict`, `drift_status`) are stamped automatically by the Skill Audit Loop's `audit`, `improve`, `evaluate`, and grader operations. Do not hand-author the Audit Status — those values are owned by the loop and the dedicated graders (comprehension and application). The pre-v7 `audit_verdict` field is deprecated; the codemod (`scripts/migrate-skill-v6-to-v7.js`) strips it from migrated skills.
+The canonical fields in the frontmatter are authored by humans, with two exceptions: `drift_check.truth_source_hashes` is computed by the drift sentinel (`skill-graph drift --record --apply`), and the **Audit Status** fields (`last_audited`, `last_changed`, `structural_verdict`, `truth_verdict`, `comprehension_verdict`, `application_verdict`, `eval_score`, `eval_failed_ids`, `lint_verdict`, `drift_status`) are stamped automatically by the Skill Audit Loop's `audit`, `improve`, `evaluate`, and grader operations. Do not hand-author the Audit Status — those values are owned by the loop and the dedicated graders (comprehension and application).
 
 **Human-authored fields:**
 
 ```
-schema_version, name, urn, description, version, type, category,
-domain, scope, owner, freshness, drift_check, eval_artifacts, eval_state,
-routing_eval, comprehension_state, eval_last_run, stability,
-superseded_by, license, compatibility, allowed-tools, extends, triggers,
-keywords, examples, anti_examples, paths, workspace_tags, routing_bundles,
-relations, grounding, portability, lifecycle, runtime_telemetry,
-# Understanding (v6+) — author these when comprehension_state: present
-mental_model, purpose, boundary, analogy, misconception,
-# Legacy v5 — accepted for back-compat
-concept
+schema_version, name, urn, description, version, subject, subjects,
+deployment_target, scope, taxonomy_domain, project, repo, owner,
+freshness, drift_check, eval_artifacts, eval_state, routing_eval,
+comprehension_state, eval_last_run, stability, superseded_by, license,
+compatibility, allowed-tools, extends, triggers, keywords, examples,
+anti_examples, paths, routing_bundles, relations, grounding,
+portability, lifecycle, runtime_telemetry,
+# Understanding fields — author these when comprehension_state: present
+mental_model, purpose, boundary, analogy, misconception
 ```
 
-**Loop-written fields (v7+, Audit Status):**
+**Loop-written fields (Audit Status):**
 
 ```
 # Stamped by `audit` / `improve` / `evaluate` — do not hand-author
@@ -691,13 +683,13 @@ Some legacy scope values are normalized by the manifest generator to the schema-
 
 ## Schema contract
 
-> **v8 is the canonical classification.** The schema's global `required` array mandates `subject` + `scope`. The prior contract (v7 — with `type`, `category`, `categories`, `primaryCategory`, `layerPrimary`, `routingRole`, and a 4-value `operation` axis) lives in git history; retrieve via `git show schema-v7:schemas/skill.schema.json`. See `schemas/skill.schema.json` for the live contract.
+> **v8 is the canonical classification.** The schema's global `required` array mandates `subject` (closed 9-enum browse shelf) + `deployment_target` (closed 2-enum `portable`/`project`). `scope` is required and free-text (PRD-style). The prior contract (v7 — with `type`, `category`, `categories`, `primaryCategory`, `layerPrimary`, `routingRole`) lives in git history; retrieve via `git show schema-v7:schemas/skill.schema.json`. Note the initial 2026-05-26 v8 design carried an `operation` axis and a closed-enum `scope` that were both reshaped by the 2026-05-27 amendment (operation retired, scope repurposed to free-text, deployment_target introduced) — see CHANGELOG and ADR-0017. See `schemas/skill.schema.json` for the live contract.
 
 | Surface | State |
 |---|---|
 | **This doc (SKILL_METADATA_PROTOCOL.md)** | v8 |
-| **Schema file (`schemas/skill.schema.json`)** | v8. Global required: `subject`, `scope`, plus identity/lifecycle/Evaluation Status fields. No v7 fields declared. |
-| **Compiled manifest (`skills.manifest.json`) summary** | v8 (`by_subject`, `by_scope`, `by_schema_version`, `by_stability`, `by_project`). |
+| **Schema file (`schemas/skill.schema.json`)** | v8. Global required: `subject`, `deployment_target`, `scope`, plus identity/lifecycle/Evaluation Status fields. No v7 fields declared. |
+| **Compiled manifest (`skills.manifest.json`) summary** | v8 (`by_subject`, `by_deployment_target`, `by_schema_version`, `by_stability`, `by_project`). |
 | **Audit Loop checklist (`SKILL_AUDIT_LOOP.md` § Part 2)** | v8 |
 
 **What this means for authors:**
