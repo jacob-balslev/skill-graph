@@ -24,12 +24,14 @@
 
 ## Cross-repo impact
 
-<!-- Does this change affect sibling repos? -->
+<!-- Does this change affect sibling repos? The protocol and audit-loop docs
+were consolidated into THIS repo on 2026-05-18 per ADR 0009; the previously
+separate `skill-metadata-protocol` and `skill-audit-loop` mirrors were
+archived (read-only on GitHub) on 2026-05-20. They are no longer active
+coordination targets. -->
 
 - [ ] No cross-repo impact
-- [ ] Requires a coordinated change in `skill-metadata-protocol`
-- [ ] Requires a coordinated change in `skill-audit-loop`
-- [ ] Requires a coordinated change in `skills`
+- [ ] Requires a coordinated change in `skills` (the canonical SKILL.md source repo)
 
 ## Breaking changes
 

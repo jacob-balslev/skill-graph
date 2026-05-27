@@ -41,9 +41,13 @@ body:
     id: ecosystem
     attributes:
       label: Cross-repo impact
-      description: Which sibling repos would also be affected by this change?
+      description: |
+        Which sibling repos would also be affected by this change? The
+        protocol spec and audit-loop runbook were consolidated into this
+        skill-graph repo on 2026-05-18 (ADR 0009); the separate
+        `skill-metadata-protocol` and `skill-audit-loop` repositories
+        were archived (read-only on GitHub) on 2026-05-20 and are not
+        active coordination targets.
       options:
-        - label: skill-metadata-protocol (schema / spec)
-        - label: skill-graph (tooling)
-        - label: skill-audit-loop (audit pipeline)
-        - label: skills (library content)
+        - label: skill-graph (tooling, protocol spec, audit-loop runbook — all in this repo)
+        - label: skills (library content — the canonical SKILL.md source)

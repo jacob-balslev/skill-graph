@@ -1,11 +1,11 @@
 blank_issues_enabled: false
 contact_links:
   - name: Skill Graph Discussions
-    url: https://github.com/jacob-balslev/skill-metadata-protocol/discussions
-    about: Ask questions, share ideas, discuss the protocol and the four-repo ecosystem.
+    url: https://github.com/jacob-balslev/skill-graph/discussions
+    about: Ask questions, share ideas, discuss the protocol and the audit loop.
   - name: Skill Metadata Protocol Spec
-    url: https://github.com/jacob-balslev/skill-metadata-protocol#readme
-    about: Read the protocol spec before opening a schema or routing-related issue.
+    url: https://github.com/jacob-balslev/skill-graph/blob/main/SKILL_METADATA_PROTOCOL.md
+    about: Read the protocol spec before opening a schema or routing-related issue. The spec was consolidated into this repo on 2026-05-18 per ADR 0009.
   - name: Security advisory
     url: https://github.com/jacob-balslev/skill-graph/security/advisories/new
     about: Report a security vulnerability privately (do NOT open a public issue).
