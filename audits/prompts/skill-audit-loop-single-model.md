@@ -93,9 +93,11 @@ AUDIT + UPGRADE (run the full v2.2 contract, as YOU, one model)
       resolve fine; and a "VALID_LOOPS has 12 but manifest has 14" mismatch that was
       correct repo-scoping, not a bug. Run the command before you call it drift.)
    c. Upgrade by MIGRATING CONTENT, not editing labels:
-      - Author the v6 Understanding fields in frontmatter — mental_model, purpose,
-        boundary, analogy, misconception — plus comprehension_state: present, AND a
-        matching `## Concept Card` body section (mirror the `agents` skill for shape).
+      - Author the five flat top-level Understanding fields in frontmatter
+        (introduced v6, canonical v8) — mental_model, purpose, boundary,
+        analogy, misconception — plus comprehension_state: present, AND a
+        matching `## Concept of the skill` body section (renamed from the
+        v6 `## Concept Card`; mirror the `agents` skill for shape).
       - Author/repair a GRADEABLE comprehension.json: dimension-tagged cases covering all
         seven dimensions in canonical order — definition, mental_model, purpose, boundary,
         taxonomy, analogy, application. (The legacy expectations[]-array shape is

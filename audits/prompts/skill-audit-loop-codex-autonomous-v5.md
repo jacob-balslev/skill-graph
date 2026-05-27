@@ -208,7 +208,7 @@ Rules:
 FIX POLICY
 Fix verified small or medium-risk drift in-session when the evidence is strong:
 - stale path or symbol references
-- missing Concept Card or flat Understanding fields
+- missing `## Concept of the skill` section (was `## Concept Card` pre-2026-05-26) or the five flat top-level Understanding fields (mental_model, purpose, boundary, analogy, misconception)
 - incomplete coverage/domain wording
 - outdated tool/API claims
 - weak or missing comprehension evals
