@@ -1,6 +1,6 @@
 # Skill Graph — Generated Status
 
-> **Generated:** 2026-05-27T00:20:29.625Z
+> **Generated:** 2026-05-27T00:21:33.272Z
 > **Generator:** `node scripts/build-status-doc.js` (regenerate; never hand-edit)
 >
 > This file is the single-source-of-truth status snapshot for the project's
@@ -23,11 +23,11 @@
 
 | Check | Status | Duration | Last line |
 |---|---|---|---|
-| check-markdown-links | ✅ PASS | 193 ms | OK   markdown links (296 file(s)) |
-| check-protocol-consistency | ✅ PASS | 109 ms | PASS: all protocol consistency checks passed. 0 warning(s). |
+| check-markdown-links | ✅ PASS | 193 ms | OK   markdown links (300 file(s)) |
+| check-protocol-consistency | ✅ PASS | 108 ms | PASS: all protocol consistency checks passed. 0 warning(s). |
 | check-doc-drift | ✅ PASS | 67 ms | OK   doc drift sentinel: 54 active doc(s) scanned against schema v8 |
 | check-mirror-freeze | ✅ PASS | 42 ms | OK   mirror freeze: 20 file(s) scanned across 2 mirror(s); no active-source/package claims found. |
-| marketplace-export-check | ❌ FAIL | 133 ms | FAIL missing exported skill expected-value |
+| marketplace-export-check | ❌ FAIL | 134 ms | FAIL missing exported skill expected-value |
 
 ## How to refresh
 
