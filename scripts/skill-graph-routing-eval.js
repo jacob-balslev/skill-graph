@@ -470,15 +470,29 @@ function main() {
     // The committed/local skills.manifest.json is gitignored and drifts between
     // runs; reading it here used to yield confusing 9/9 routing failures that
     // were purely staleness, not real regressions. (Audit B5, 2026-05-27.)
+    //
+    // generate-manifest exits non-zero on schema-validation warnings (e.g., a
+    // v8 skill missing legacy v7 `category` / `type`), but it STILL writes the
+    // output file. The eval doesn't need those v7 fields, so we prefer the
+    // freshly-written output to the stale on-disk manifest even when the
+    // generator's validation flagged warnings. Only fall back if the generator
+    // produced no file at all.
     const generator = path.join(REPO_ROOT, 'scripts', 'generate-manifest.js');
     if (fs.existsSync(generator)) {
+      fs.mkdirSync(path.dirname(CLI_FRESH_MANIFEST), { recursive: true });
       try {
-        fs.mkdirSync(path.dirname(CLI_FRESH_MANIFEST), { recursive: true });
         execFileSync(process.execPath, [generator, '--output', CLI_FRESH_MANIFEST], { stdio: 'pipe' });
+      } catch {
+        // Validation warning is fine if the file got written; surface a
+        // single-line note so operators see the warning without false-failing.
+        if (fs.existsSync(CLI_FRESH_MANIFEST)) {
+          console.error('WARN auto-generate emitted manifest validation warnings (CONTENT-debt expected during v7→v8); proceeding with the generated manifest');
+        }
+      }
+      if (fs.existsSync(CLI_FRESH_MANIFEST)) {
         manifestPath = CLI_FRESH_MANIFEST;
-      } catch (e) {
-        // Fall back to whatever was committed/sampled if generation fails.
-        console.error(`WARN auto-generate failed (${e.message}); falling back to existing manifest`);
+      } else {
+        console.error('WARN auto-generate failed to produce a manifest; falling back to existing manifest');
         manifestPath = fs.existsSync(DEFAULT_MANIFEST)
           ? DEFAULT_MANIFEST
           : (fs.existsSync(SAMPLE_MANIFEST) ? SAMPLE_MANIFEST : PACKAGE_SAMPLE_MANIFEST);
