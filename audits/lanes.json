@@ -1,5 +1,5 @@
 {
-  "schema_version": "2.0.0",
+  "schema_version": 2,
   "description": "Named audit lanes for the multi-CLI skill-audit fleet. A lane binds a set of importance bands to one operation, a CAPABILITY TIER floor (minTier), and a concurrency cap. An agent may claim a lane only if its ACTUAL runner model's tier (paths.modelTierName: opus/gpt55/gemini=high, sonnet/gpt54=mid, haiku/gemini-flash/minimax/nemotron=cheap) is >= the lane's minTier. The actual runner model — never a lane-fixed model — is what gets recorded in the lock and ledger, so any qualifying CLI (Claude Opus, GPT-5.5/Codex, Gemini 3.1 Pro) serves a critical lane with honest attribution. `preferredModels` is advisory routing guidance only. Changed 2.0.0 (2026-05-22): replaced the single forcing `model` field with `minTier` + `preferredModels` per the multi-model review (lanes were corrupting attribution by overwriting the runner's model). Relocated 2026-05-25 to skill-graph/audits/lanes.json (project-owned per ADR-0016 surface #1; the previous workspace path .opencode/skill-audit-lanes.json is deleted in the same commit).",
   "tiers": {
     "high": ["opus", "gpt55", "gemini-3.1-pro"],

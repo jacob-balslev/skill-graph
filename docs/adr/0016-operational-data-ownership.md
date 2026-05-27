@@ -1,13 +1,13 @@
 # ADR 0016 — Operational Data Ownership
 
-> Status: Proposed — 2026-05-25
+> Status: Accepted — 2026-05-27 (was Proposed 2026-05-25)
 > Linear: none (synthesis-driven; downstream of the 2026-05-25 multi-model restructure review)
 > Authors: Opus 4.7 session (2026-05-25) synthesizing the Opus + GPT-5.5 review at `.roundtable/skill-graph-restructure-review-2026-05-25/`
 > Related: ADR-0009 (sibling repo deprecation — source consolidation), ADR-0015 (project-owned operational prompts — spec consolidation), this ADR (operational-data consolidation).
 
 ## Status
 
-**Proposed.** The decision below is settled in principle; sequencing the per-surface migrations is deferred to future commits because each migration has its own coupled writer/reader update story. ADR-0015 § Deferred work explicitly punted this question to "a separate ADR" — this is that ADR.
+**Accepted 2026-05-27.** The trinary classification below (project content / workspace orchestration / project-protocol scripts over workspace-coordinated data) is the binding model for operational data and project-protocol scripts. P1 (lanes.json migration) shipped on 2026-05-25 — `audits/lanes.json` is the canonical lane configuration and the workspace `.opencode/skill-audit-lanes.json` was deleted in the same change. Surfaces P2–P7 are individually sequenced; the per-surface migrations land in their own commits because each carries a coupled writer/reader update story. Audit `system-audit-2026-05-27.md` § H7 noted the Proposed-but-unsequenced state; this status update reflects that P1 is in (per the lanes.json file at `audits/lanes.json`) and that "sequencing deferred" is the residual state, not the ADR's overall acceptance.
 
 ## Context
 
