@@ -2,13 +2,15 @@
 /**
  * Protocol consistency checker for Skill Graph.
  *
- * Runs 8 machine-detectable checks across the repo's protocol artifacts.
+ * Runs 7 machine-detectable checks across the repo's protocol artifacts.
  * These checks are complementary to skill-lint.js, which validates per-skill
  * schema correctness. This script validates cross-artifact consistency:
  * does the field reference doc match the schema? Does the manifest field mapping
  * accurately describe what the generator does? Is the sample manifest correct?
  *
- * The 8 checks:
+ * The 7 checks (C1, C2, C3, C4, C5, C7, C8 — C6 retired per ADR-0014, the
+ * versioned-schema-parity check; no second pinned schema file exists to
+ * drift against any longer):
  *   C1 -- Field-set parity: docs/field-reference.md section headers vs
  *         schemas/skill.schema.json top-level properties.
  *   C2 -- Authored-to-generated parity: every skill.schema.json property either

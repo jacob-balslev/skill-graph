@@ -166,7 +166,7 @@ Scripts that police Tier 1 (lint, consistency) or compile Tier 1's output (manif
 
 | File | Role |
 |---|---|
-| `scripts/check-protocol-consistency.js` | Eight checks (C1–C8): field-set parity, authored-to-generated parity, artifact-root convention, sample manifest correctness, example truth invariants, versioned schema parity, generated field-reference parity, JSON-LD context coverage. |
+| `scripts/check-protocol-consistency.js` | Seven checks (C1, C2, C3, C4, C5, C7, C8): field-set parity, authored-to-generated parity, artifact-root convention, sample manifest correctness, example truth invariants, generated field-reference parity, JSON-LD context coverage. (C6 versioned-schema-parity retired per ADR-0014; no pinned-copy file exists on disk any longer.) |
 
 ### Compilation and transformation
 
