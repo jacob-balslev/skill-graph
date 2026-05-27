@@ -37,7 +37,7 @@
 
 ### Important constraint
 
-`scope: project` requires a populated `grounding` block. The JSON schema also accepts legacy `scope: codebase` during the v7 sunset window and applies the same grounding requirement. If you choose `project`, populate `grounding` before committing and run the protocol/manifest checks for full-contract validation.
+`scope: project` requires a populated `grounding` block. Populate `grounding` before committing and run the protocol/manifest checks for full-contract validation.
 
 ### Migration from v1
 
@@ -282,34 +282,34 @@ With a hypothetical two-project workspace config:
 
 ---
 
-## 5. Do I use `category`, `domain`, `workspace_tags`, or `routing_bundles`?
+## 5. Do I use `subject`, `domain`, `workspace_tags`, or `routing_bundles`?
 
 These four fields all group skills, but they answer different questions. Picking the wrong field creates misleading organization that corrodes routing quality. Use this table before adding any skill-grouping field:
 
 | Field | Answers the question | Shape | Primary consumer |
 |---|---|---|---|
-| `category` | What flat bucket does this skill live in for quick browsing? | single string from the closed v5+ enum: `foundations` \| `engineering` \| `design` \| `quality` \| `agent` \| `product` | human browse UI, filter dropdowns |
-| `domain` | Where does this skill sit in a hierarchy for tree browsing? | optional slash-delimited path (e.g., `engineering/integrations/shopify`) | folder-tree UI, docs site navigation |
+| `subject` | What flat browse shelf does this skill live on? | single string from the closed 9-value enum (see `field-reference.md § subject`) | human browse UI, filter dropdowns, routing first-pass discriminator |
+| `domain` | Where does this skill sit in a hierarchy for tree browsing? | optional slash-delimited path (e.g., `code-engineering/integrations/shopify`) | folder-tree UI, docs site navigation |
 | `workspace_tags` | Which of my projects is this skill relevant to? | flat array (e.g., `[<project-a>, ecommerce]`) | router filter at routing time |
 | `routing_bundles` | Which batch-activation group does this skill belong to? | flat array (e.g., `[quality, security]`) | router batch-load by group label |
 
 ### Three rules that prevent misuse
 
-1. **Never use `category` for routing.** It's a browse index. If you find yourself writing "when the router sees `engineering` it should load all X" — you want `routing_bundles`, not `category`.
+1. **Never use `subject` for routing-bundle membership.** It's a browse shelf. If you find yourself writing "when the router sees `code-engineering` it should load all X" — you want `routing_bundles`, not `subject`.
 
-2. **Never use `workspace_tags` for taxonomy.** It's a routing filter. If you find yourself tagging every skill with every project handle to build a grouping — you want `category` or `domain`.
+2. **Never use `workspace_tags` for taxonomy.** It's a routing filter. If you find yourself tagging every skill with every project handle to build a grouping — you want `subject` or `domain`.
 
-3. **Never use `domain` to filter routing.** A hierarchy helps humans find skills. The router doesn't walk it. If you want the router to match `engineering/integrations/shopify` at query time, flatten it into `routing_bundles: [integrations]` or `workspace_tags: [ecommerce]`.
+3. **Never use `domain` to filter routing.** A hierarchy helps humans find skills. The router doesn't walk it. If you want the router to match `code-engineering/integrations/shopify` at query time, flatten it into `routing_bundles: [integrations]` or `workspace_tags: [ecommerce]`.
 
 ### Worked example
 
 A Shopify skill in a multi-project, large-library workspace:
 
 ```yaml
-category: engineering                          # "Where does it live in a flat browse UI?" (must be one of the 6 v5+ enum values)
-domain: engineering/integrations/shopify       # "Where in a tree?" (optional; complements category for hierarchical browsing)
-workspace_tags: [ecommerce]                    # "Which of my projects?"
-routing_bundles: [integrations]                # "Which batch-activation group?"
+subject: code-engineering                          # "Which flat browse shelf?" (one of the 9-value enum)
+domain: code-engineering/integrations/shopify      # "Where in a tree?" (optional; complements subject for hierarchical browsing)
+workspace_tags: [ecommerce]                        # "Which of my projects?"
+routing_bundles: [integrations]                    # "Which batch-activation group?"
 ```
 
-Each field does a distinct job. None is redundant with the others. A single-project workspace can omit `workspace_tags`; a library with no batch-activation pattern can omit `routing_bundles`; a library that does not need a hierarchical browse view can omit `domain`. `category` is always present because it is required by the v7 schema (enforced by `enum` in `schemas/skill.schema.json` and `scripts/lint/check-category-enum.js`).
+Each field does a distinct job. None is redundant with the others. A single-project workspace can omit `workspace_tags`; a library with no batch-activation pattern can omit `routing_bundles`; a library that does not need a hierarchical browse view can omit `domain`. `subject` is always present because it is required by the schema (enforced by `enum` in `schemas/skill.schema.json`).

@@ -33,19 +33,14 @@ Every top-level authored field in `schemas/skill.schema.json` has exactly one en
 
 | # | Authored field | Fate | Manifest projection |
 |---|---|---|---|
-| 1 | `schema_version` | copied through unchanged | Manifest-level `schema_version` at the root; not repeated per skill. |
+| 1 | `schema_version` | copied through unchanged | Manifest-level `schema_version` at the root; also pass-through per-skill so consumers can filter by contract version. |
 | 2 | `name` | copied through unchanged, with generated alias | Per-skill `name` plus generated `id`. |
 | 3 | `urn` | copied through unchanged | Optional persistent identifier. |
 | 4 | `description` | copied through unchanged | `description`. |
 | 5 | `version` | copied through unchanged | `version`. |
-| 6 | `type` | copied through unchanged | `type`. |
-| 7 | `archetype` | copied through unchanged | Compatibility alias for `type`; duplicate declarations must match. |
-| 8 | `category` | copied through unchanged | Flat browse shelf. v4 rename of v3 `browse_category`; manifest schema enforces the same six-value enum as the authored skill schema. |
-| 8a | `categories` | copied through unchanged | Ordered category array. First entry is the primary and must match `category`; remaining entries are secondary browse homes. |
-| 8b | `primaryCategory` | copied through unchanged | Optional workspace alias for the primary category. Title-case workspace labels normalize to lowercase protocol values in downstream policy tooling. |
-| 8c | `layerPrimary` | copied through unchanged | Optional workspace routing/census layer facet. Orthogonal to `category`; the legacy `layer` field is not projected. |
-| 8d | `routingRole` | copied through unchanged | Optional workspace routing role facet (for example, `primary`, `router`, `verifier`, `gate`). |
-| 9 | `domain` | copied through unchanged | Optional slash-delimited domain path. v4 rename of v3 `category` / `category_path`. |
+| 6 | `subject` | copied through unchanged | v8 primary classification — closed 9-value enum. See `schemas/skill.schema.json § subject`. |
+| 7 | `subjects` | copied through unchanged | Optional polyhierarchy — ordered array (max 2), `subjects[0]` matches `subject`. |
+| 8 | `domain` | copied through unchanged | Optional slash-delimited domain path subdividing `subject`. |
 | 10 | `scope` | copied through unchanged | `scope`. |
 | 11 | `owner` | copied through unchanged | `owner`. |
 | 12 | `freshness` | grouped under parent | `health.freshness`. |
@@ -97,7 +92,7 @@ These fields exist in `skills.manifest.json` with no authored counterpart:
 | `generated_at` | Timestamp written by the manifest generator at compile time. |
 | `workspace` | Echoed from `.skill-graph/config.json` when present — emits `skill_roots` and `projects` so consumers can resolve semantic tags without re-reading the config. New in v3. |
 | `summary.total_skills` | Count of entries in `skills[]`. |
-| `summary.by_type`, `summary.by_category`, `summary.by_scope`, `summary.by_stability`, `summary.by_project` | Rollup counts derived from the corresponding authored fields across all skills. `by_category` replaces v2's `by_family`; `by_project` is new in v3 and only present when workspace mode is active. |
+| `summary.by_subject`, `summary.by_scope`, `summary.by_schema_version`, `summary.by_stability`, `summary.by_project` | Rollup counts derived from the corresponding authored fields across all skills. `by_project` is only present when workspace mode is active. |
 | `skills[].id` | Stable identifier derived from `name`. Normalization rules live in the generator; `id` may be equal to `name` when no normalization is needed. |
 | `skills[].path` | Repo-relative path to the source `SKILL.md` file, written by the generator when it reads the file. |
 | `skills[].project` | Literal handle of the project root this skill was loaded from. Absent for skills loaded from a shared root without a project owner. New in v3. |
@@ -317,7 +312,6 @@ name: skill-metadata-template
 description: "Authoring template for new Skill Metadata Protocol skills. ..."
 version: 1.0.0
 subject: knowledge-organization
-operation: know
 domain: skill-system/authoring
 scope: workspace
 owner: maintainer

@@ -148,234 +148,14 @@ version: 1.0.0
 
 ---
 
-## `type`
-
-> **v7 legacy field — DEPRECATED. Replaced by [`operation`](#operation) in v8 (v7→v8 phase ended 2026-05-26).** The v8 schema renames `type` to `operation` and tightens the enum from 4 archetype values (`capability`/`workflow`/`router`/`overlay`) to 4 Bloom-grounded cognitive operations (`know`/`do`/`decide`/`modify`). The schema retains `type` as an optional back-compat property only; schema-level removal is pending. The normalizer maps the value forward when only `type` is present. New skills MUST author `operation` only. See [ADR 0017](adr/0017-five-axis-classification-model.md).
-
-**Purpose.** Defines the behavioral archetype. The archetype determines which body H2 sections are required, how the skill is loaded by a router, and which schema conditionals apply.
-
-**Allowed values.**
-
-| Value | Meaning |
-|---|---|
-| `capability` | A standalone functional skill — what the agent can do. Required sections: `## Coverage`, `## Philosophy`, `## Verification`, `## Do NOT Use When`. |
-| `workflow` | A step-by-step procedural skill. Adds `## Workflow` to the required sections. |
-| `router` | A skill that dispatches to other skills. Uses `## Routing Rules` instead of `## Workflow`. |
-| `overlay` | A skill that extends another skill. Requires `extends` and uses `## Overlay Rules` and `## Extends`. |
-
-**Rules.**
-- Keep `type` restricted to these four values.
-- Use `category` (flat bucket) or `category` (hierarchical path) for browse taxonomy, not `type`.
-- `overlay` type always requires the `extends` field.
-
-**Example.**
-```yaml
-type: capability
-```
-
-**When to use.** Always — required.
-
-**When NOT to use.** Do not invent new type values. If none of the four archetypes fit, use `capability` as the closest and note the variation in the `## Coverage` section.
-
-**Lint check.** Previously enforced by `scripts/lint/check-archetype-sections.js`; removed in commit `2bd8e64` (2026-05-19) per the audit-doctrine cleanup. Body section structure is a project-internal style preference and is no longer lint-gated. The archetype section map remains the recommended shape; authors apply judgment.
-
----
-
-## `archetype`
-
-> **v7 legacy field — replaced by [`operation`](#operation) in v8.** `archetype` was the v3.1 preferred alias for `type`; both are now v7-legacy under v8. The replacement axis is `operation` (Bloom-grounded: `know`/`do`/`decide`/`modify`). See [ADR 0017](adr/0017-five-axis-classification-model.md).
-
-**Purpose.** v3.1 preferred alias for `type`. Identical enum and semantics; the rename resolves sign-drift between the schema (`type`) and the doc body / ADR 0003 (which already say "archetype" everywhere) and removes a generic-name anti-pattern.
-
-**Allowed values.** Identical to `type`: `capability`, `workflow`, `router`, `overlay`.
-
-**Rules.**
-- When both `type` and `archetype` are present, they must match. The lint will warn on mismatch.
-- v3.x skills can set either form; v4 makes `archetype` canonical and removes `type`.
-
-**Example.**
-```yaml
-archetype: capability
-```
-
-**When to use.** Prefer `archetype` for new skills authored against the v3.1 contract. Existing skills do not need to migrate during v3.x.
-
-**Lint check.** Mismatch warning when both are set (planned). v4 will hard-error on `type`.
-
----
-
-## `category`
-
-> **v7 legacy field — DEPRECATED. Replaced by [`subject`](#subject) in v8 (v7→v8 phase ended 2026-05-26).** The v8 schema renames `category` to `subject` and expands the enum from 6 values to 9 (`code-engineering`/`quality-assurance`/`frontend-ui`/`design-craft`/`agent-ops`/`product-domain`/`knowledge-organization`/`meta-methods`/`data-analytics`) to provide better discriminating power. For polyhierarchy use [`subjects[]`](#subjects) (max 2 entries). The schema retains `category` as an optional back-compat property only; schema-level removal is pending. New skills MUST author `subject` only. See [ADR 0017](adr/0017-five-axis-classification-model.md).
-
-**Purpose.** Flat human browse bucket for discovery and grouping. Does not imply runtime behavior or evaluation logic. Renamed from v3 `browse_category` in v4 so the public browse axis has the obvious name; the value space was then closed to a six-value enum in v5 (retained in v7) to prevent the v3-era explosion of synonymous buckets.
-
-**Rules.**
-- **Required since schema_version 5** (retained in v7). Present in `required: [...]` of `schemas/skill.schema.json`. A v5+ skill without `category` fails schema validation.
-- **Closed enum of six values** as of schema_version 5: `foundations` \| `engineering` \| `design` \| `quality` \| `agent` \| `product`. Any other value is rejected at the schema level AND at the lint level by `scripts/lint/check-category-enum.js`. (Pre-v5 open-ended values like `knowledge`, `frontend`, `integrations`, `security` were migrated to the six-value enum.)
-- For cross-cutting category fit, list secondary browse homes in `categories[1..]` (v7 optional, v8 planned required) or `secondary_categories` when the only need is marketplace cross-listing. Use `relations.related` for neighboring skills, not category membership.
-- For hierarchical taxonomy (`engineering/integrations/shopify`), use the optional `domain` field; `category` is flat on purpose and complements `domain` rather than substituting for it.
-
-**The six values and what they cover.**
-
-| Value | Use for |
-|---|---|
-| `foundations` | Epistemics, grounding, verification, context engineering, reasoning — preconditions of competent agent or engineering work. Reserved; must clear the foundations gate (target 8–15 skills). |
-| `engineering` | Building software systems: APIs, data, infra, runtime, integrations. |
-| `design` | Visual, interaction, IA, content, motion — design as a discipline. |
-| `quality` | Cross-cutting non-functional properties: a11y, performance, security, type-safety, testing, observability. Properties of any artifact. |
-| `agent` | Agent-specific concepts: tool design, prompt design, agent state, orchestration, eval-driven dev. |
-| `product` | Prioritization, scope, MVP, PRDs, customer journey, positioning. |
-
-**Disambiguation rules** (apply in order; full text in `SKILL_METADATA_PROTOCOL.md § Classification`):
-
-1. *Primary surface* — what the skill is *about*, not what it *enables*.
-2. *Property vs subject* — properties (a11y, perf, security, testing, type-safety) → `quality`. How-to-build → `engineering` / `design` / `agent`.
-3. *Cross-pollination* — multi-fit skills list secondary browse homes via `categories[1..]` or marketplace-only `secondary_categories`. Never via the singular `category` field itself.
-4. *`foundations` gate* — anti-junk-drawer. Membership requires (a) the skill teaches an epistemic precondition AND (b) it cannot be plausibly assigned to `agent`/`engineering`/`quality`/`design`.
-
-**Example.**
-```yaml
-category: engineering
-```
-
-**When to use.** Always. `category` is required and exactly one of the six enum values must be picked, even if the choice is awkward — pick the closest fit and disambiguate via `domain`, `categories[1..]`, `secondary_categories`, or `relations.related` depending on whether the ambiguity is taxonomic, marketplace-facing, or skill-to-skill neighborhood.
-
-**When NOT to use.** Do not use `category` for behavioral control; that is `type`'s job. Do not use it for activation-bundle membership; that is `routing_bundles`. Do not use it for hierarchical placement; that is `domain`. Do not invent values outside the six-value enum.
-
-**Migration from v3.** The field name changed from `browse_category` to `category` in v4 (values then still unconstrained). Run `node scripts/migrate-skill-v3-to-v4.js` for the automatic rename.
-
-**Migration from v4.** The closed six-value enum was introduced in v5 and retained in v6/v7. Skills carrying pre-v5 open-ended values (`knowledge`, `frontend`, `integrations`, `security`, `dev`, etc.) must be remapped to the enum — both the mapping table and the codemod live in git history (per ADR 0014).
-
----
-
-## `categories`
-
-**Purpose.** Ordered category array for skills that need a primary browse home plus secondary browse homes. The first entry is the primary and must match `category`.
-
-**Rules.**
-- Optional in v7; planned required in v8.
-- Min 1, max 5, unique items.
-- Every item must use the same six-value enum as `category`: `foundations` | `engineering` | `design` | `quality` | `agent` | `product`.
-- When `category` is present, `categories[0]` must equal `category`; this is enforced in the v7 schema.
-
-**Example.**
-```yaml
-category: engineering
-categories: [engineering, quality]
-```
-
-**When to use.** Use when the skill genuinely belongs in more than one browse shelf. Keep the first value aligned with the main audience.
-
-**When NOT to use.** Do not use this as a tag bag. Use `relations.related` for skill neighbors, `workspace_tags` for project relevance, and `routing_bundles` for activation bundles.
-
----
-
-## `primaryCategory`
-
-> **v7 legacy field — replaced by [`subject`](#subject) in v8.** `primaryCategory` was the workspace alias for `category`; both are v7-legacy under v8. The replacement axis is `subject` (9-enum) with optional [`subjects[]`](#subjects) for polyhierarchy. The workspace title-case → lowercase enum normalization is preserved by the v7→v8 normalizer. See [ADR 0017](adr/0017-five-axis-classification-model.md).
-
-**Purpose.** Optional workspace alias for the primary browse home. Lowercase protocol values are accepted directly; title-case workspace labels normalize to protocol categories in local policy tooling.
-
-**Rules.**
-- Optional in the protocol.
-- Allowed lowercase values match `category`.
-- Allowed title-case aliases are `Meta Method`, `Technical Capability`, `Design & UX`, `Agent System`, and `Product Domain`.
-- Prefer `category` / `categories` in protocol-native authoring.
-
-**Example.**
-```yaml
-category: agent
-primaryCategory: Agent System
-```
-
-**When to use.** Use only when a workspace's browse UI or census tooling still depends on the title-case alias.
-
-**When NOT to use.** Do not use `primaryCategory` as a substitute for a missing `category`; v7 requires `category`.
-
----
-
-## `layerPrimary`
-
-> **v7 legacy workspace facet — no direct v8 replacement.** The v8 5-axis model intentionally omits a "layer" axis; cross-cutting layer concerns are expressed through `subject` + `domain` (slash-delimited path) when needed. `layerPrimary` is retained as a v7 workspace metadata field for legacy routing/census tooling that still keys on it; new skills should omit it and rely on the 5-axis classification. See [ADR 0017](adr/0017-five-axis-classification-model.md).
-
-**Purpose.** Workspace routing facet for the primary architectural or concern layer, such as `meta`, `architecture`, `integration`, `operations`, `display`, `quality`, `data`, `logic`, `security`, or `business`.
-
-**Rules.**
-- Optional in the portable protocol.
-- Lowercase kebab-case only.
-- Orthogonal to `category`: `category` is the human browse shelf; `layerPrimary` is a workspace routing/census facet.
-- Do not use the deprecated `layer` field. If a skill has both, migrate the value into `layerPrimary` and remove `layer`.
-
-**Example.**
-```yaml
-layerPrimary: integration
-```
-
-**When to use.** Use when a workspace router, census, or dashboard explicitly consumes architectural-layer facets.
-
-**When NOT to use.** Do not add it to public starter skills solely because `category` feels broad. Use `domain`, `keywords`, or `relations` for ordinary discovery precision.
-
----
-
-## `routingRole`
-
-> **v7 legacy workspace facet — no direct v8 replacement.** The v8 5-axis model expresses router treatment through [`operation`](#operation) (what the skill enables an agent to do) plus relation edges (`broader`/`related`/`depends_on`); a separate routing-role axis was found to overlap with these and was dropped. `routingRole` is retained as a v7 workspace metadata field for legacy router tooling that still keys on it; new skills should omit it. See [ADR 0017](adr/0017-five-axis-classification-model.md).
-
-**Purpose.** Workspace routing facet describing how a router should use the skill, for example `primary`, `router`, `verifier`, or `gate`.
-
-**Rules.**
-- Optional in the portable protocol.
-- Lowercase kebab-case only.
-- Orthogonal to `type`: `type` says what kind of skill this is; `routingRole` says how the workspace router should treat it during selection.
-- Use concrete router behavior words, not vague quality labels.
-
-**Example.**
-```yaml
-routingRole: verifier
-```
-
-**When to use.** Use when a workspace has explicit routing lanes or verification co-load roles.
-
-**When NOT to use.** Do not use it to compensate for a weak `description`, missing `keywords`, or unclear `relations`; those remain the primary routing signals.
-
----
-
-## `secondary_categories`
-
-**Purpose.** Additive cross-listing tags for marketplace collections. Primary `category` is MECE and decides folder placement; `secondary_categories` lets a skill that genuinely serves two audiences (e.g., `playwright-cli` is primarily `quality` but also relevant to `engineering`) appear in additional marketplace collections without affecting filesystem layout.
-
-**Rules.**
-
-- Optional. Omit if the primary `category` is sufficient.
-- Drawn from the same closed 6-enum as `category` (`foundations` | `engineering` | `design` | `quality` | `agent` | `product`).
-- Max 2 entries to prevent dilution.
-- MUST NOT include the primary `category` value.
-
-**Example.**
-
-```yaml
-category: quality
-secondary_categories: [engineering]
-```
-
-**When to use.** When a skill is genuinely useful in more than one browse bucket and you want it to surface in additional marketplace collections.
-
-**When NOT to use.** Do not stuff this field as a dumping ground for tags. Use `workspace_tags` or `routing_bundles` for non-marketplace classification.
-
----
-
 ## `subject`
 
-> Introduced in v8 (compatibility-mode landing). Required when `schema_version: 8`; optional/absent on v7 skills during the migration window.
-
-**Purpose.** v8 primary classification — what the skill teaches. Closed 9-value enum, replacing v7's combined `category` + `categories[0]` + `primaryCategory` fields. Driven by the v7→v8 restructure plan (compatibility-mode landing) and informed by the 2026-05-25 Phase 1 audit which found `category` overcrowded (engineering=40%) and the workspace-alias fields (`primaryCategory`/`layerPrimary`/`routingRole`) <1.5% adopted.
+**Purpose.** Primary classification — what the skill teaches. Closed 9-value enum. The v8 classification's main axis; routers and browse UIs key off it first.
 
 **Rules.**
-- **Required when `schema_version: 8`.** Optional/absent on v7 skills during the migration window.
+- **Required.** Every skill must declare a `subject`.
 - **Closed 9-value enum:** `agent-ops` \| `code-engineering` \| `frontend-ui` \| `design-craft` \| `data-analytics` \| `quality-assurance` \| `meta-methods` \| `knowledge-organization` \| `product-domain`.
-- **Balance rule:** each subject must hold 5–25 skills. <5 = fold or recruit; >25 = subdivide via `domain` slash-path. Replaces v7's `foundations`-only gate.
-- v7→v8 mapping is NOT 1:1. v7 `engineering` may map to `code-engineering`, `frontend-ui`, or `data-analytics` depending on content; the codemod proposes mappings for review.
+- **Balance rule:** each subject must hold 5–25 skills. <5 = fold or recruit; >25 = subdivide via `domain` slash-path.
 - For polyhierarchy (skills that legitimately span two subjects), use `subjects[]` array (primary first, optional secondary).
 
 **Example.**
@@ -383,7 +163,7 @@ secondary_categories: [engineering]
 subject: code-engineering
 ```
 
-**When to use.** Always on v8 skills. Pick the single best primary; cross-cutting fit goes into `subjects[1]` (max 1 secondary).
+**When to use.** Always. Pick the single best primary; cross-cutting fit goes into `subjects[1]` (max 1 secondary).
 
 **Subject definitions.**
 - `agent-ops` — agent orchestration, dispatch, lifecycle, multi-agent comms.
@@ -396,18 +176,16 @@ subject: code-engineering
 - `knowledge-organization` — taxonomy, semantics, classification, glossaries, ontology.
 - `product-domain` — domain-specific (Shopify, Stripe, fulfillment, integrations).
 
-See `docs/adr/0017-five-axis-classification-model.md` for rationale and the v7→v8 mapping codemod design.
+See `docs/adr/0017-five-axis-classification-model.md` for rationale.
 
 ---
 
 ## `subjects`
 
-> Introduced in v8. Optional polyhierarchy companion to `subject`.
-
-**Purpose.** Ordered subject array for v8 polyhierarchy — when a skill genuinely spans two browse shelves. Tighter than v7's `categories[]` (max 5) to enforce that polyhierarchy is the exception, not the default.
+**Purpose.** Ordered subject array for polyhierarchy — when a skill genuinely spans two browse shelves. Cap of 2 enforces that polyhierarchy is the exception, not the default.
 
 **Rules.**
-- Optional. When present, `subjects[0]` MUST equal `subject` (mirrors v7's `category`/`categories[0]` prefix rule).
+- Optional. When present, `subjects[0]` MUST equal `subject`.
 - Max 2 entries.
 - Drawn from the same closed 9-enum as `subject`.
 - Use when a skill genuinely teaches a primary subject AND meaningfully covers a secondary. Example: `webhook-integration` is primarily `code-engineering` and secondarily `quality-assurance` because reliable delivery is a quality property.
@@ -423,15 +201,9 @@ subjects: [code-engineering, quality-assurance]
 
 ---
 
-## `operation` *(removed)*
-
-The `operation` field has been removed from the schema. Skills carrying `operation:` in frontmatter now fail validation under `additionalProperties: false`. Drain via the audit loop on a per-skill basis.
-
----
-
 ## `domain`
 
-**Purpose.** Hierarchical domain path as slash-delimited segments. Complements `category`: flat bucket and tree path answer different questions. A UI or docs site uses `domain` to render a folder tree; a filter UI uses `category` for quick grouping.
+**Purpose.** Hierarchical domain path as slash-delimited segments. Complements `subject`: the flat browse shelf and the slash-delimited tree path answer different questions. A UI or docs site uses `domain` to render a folder tree; a filter UI uses `subject` for quick grouping.
 
 **Rules.**
 - Optional.
@@ -445,38 +217,36 @@ The `operation` field has been removed from the schema. Skills carrying `operati
 domain: ecommerce/integrations/shopify
 ```
 
-**When to use.** When the skill library is large enough that a tree structure helps readers find related skills. A library with fewer than 20 skills rarely benefits.
+**When to use.** When a `subject` holds many skills (>25 per the balance rule) and a slash-delimited subdivision helps readers find related skills.
 
-**When NOT to use.** Small skill libraries where `category` alone is sufficient. Skills where categorization is genuinely ambiguous should use `workspace_tags` or `routing_bundles` to attach flat semantic tags instead.
+**When NOT to use.** Small subjects where the flat shelf is sufficient. Skills where categorization is genuinely ambiguous should use `workspace_tags` or `routing_bundles` to attach flat semantic tags instead.
 
 ---
 
 ## `scope`
 
-**Purpose.** Indicates locality and usage mode. Tells the router and auditor whether the skill is fully portable, a documentation reference, or grounded in a specific codebase.
+**Purpose.** Deployment targeting. Tells the router and auditor where this skill applies.
 
 **Allowed values.**
 
 | Value | Meaning | Requires `grounding`? |
 |---|---|---|
-| `portable` | Fully portable, no repo-specific claims | No |
-| `reference` | Documentation-style skill grounded in protocol documents | No |
-| `codebase` | Grounded in a specific codebase or deployment | **Yes** (schema-enforced) |
+| `portable` | Repo-agnostic patterns — applies to any project | No |
+| `workspace` | Cross-repo knowledge in a multi-repo workspace | No |
+| `project` | Coupled to a specific repo or deployment | **Yes** (schema-enforced) |
 
 **Rules.**
-- `scope: codebase` triggers a schema `allOf` rule that requires the `grounding` block. Lint fails without it.
-- Do not use `overlay` as a scope value — use `type: overlay` and `extends` instead.
-- Choose `portable` for starter skills and broadly reusable skills.
-- The v1 names `generic` and `operational` were renamed in schema_version 2: `generic` → `portable` (the intent is "works anywhere"), and `operational` → `codebase` (the intent is "grounded in *this* codebase"). The v1 names are hard errors under the v2 schema.
+- `scope: project` triggers a schema `allOf` rule that requires the `grounding` block. Lint fails without it.
+- Choose `portable` for broadly reusable skills.
 
 **Example.**
 ```yaml
-scope: codebase
+scope: project
 ```
 
 **When to use.** Always — required.
 
-**When NOT to use.** Do not use `codebase` for skills that make no concrete repo claims — use `portable` instead.
+**When NOT to use.** Do not use `project` for skills that make no concrete repo claims — use `portable` instead.
 
 ---
 
