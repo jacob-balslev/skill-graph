@@ -28,34 +28,6 @@
       "type": "string",
       "format": "date-time"
     },
-    "workspace": {
-      "type": "object",
-      "additionalProperties": false,
-      "description": "Optional multi-root workspace metadata. Emitted when `.skill-graph/config.json` declares workspace projects. Consumers filter generated `skills[].project` ownership and authored `skills[].workspace_tags` relevance against this block.",
-      "properties": {
-        "projects": {
-          "type": "object",
-          "additionalProperties": {
-            "type": "object",
-            "additionalProperties": false,
-            "properties": {
-              "semantic_tags": {
-                "type": "array",
-                "items": {
-                  "type": "string"
-                }
-              }
-            }
-          }
-        },
-        "skill_roots": {
-          "type": "array",
-          "items": {
-            "type": "string"
-          }
-        }
-      }
-    },
     "summary": {
       "type": "object",
       "additionalProperties": false,
@@ -83,12 +55,13 @@
           },
           "description": "Per-subject distribution across the closed 9-value subject enum (see schemas/skill.schema.json § subject)."
         },
-        "by_scope": {
+        "by_deployment_target": {
           "type": "object",
           "additionalProperties": {
             "type": "integer",
             "minimum": 0
-          }
+          },
+          "description": "Per-deployment_target distribution across the closed 2-value deployment_target enum (see schemas/skill.schema.json § deployment_target). Renamed from `by_scope` — `scope` is now PRD-style free-text and not enum-bucketable."
         },
         "by_stability": {
           "type": "object",
@@ -103,6 +76,51 @@
             "type": "integer",
             "minimum": 0
           }
+        },
+        "by_structural_verdict": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "description": "Per-structural_verdict distribution. Buckets: PASS / PASS_WITH_FIXES / FAIL / UNVERIFIED (missing values default to UNVERIFIED). See skill-graph/docs/verdict-semantics.md."
+        },
+        "by_truth_verdict": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "description": "Per-truth_verdict distribution. Buckets: PASS / DRIFT / BROKEN / UNVERIFIED."
+        },
+        "by_comprehension_verdict": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "description": "Per-comprehension_verdict distribution. Buckets include SKIPPED_BASELINE_HIGH and NA — these are NOT comprehension-unassessed; they reflect the framework-vs-repo-specific carve-out per ADR-0011 § Addendum 2026-05-20."
+        },
+        "by_application_verdict": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "description": "Per-application_verdict distribution. The primary quality signal per ADR-0011. Buckets: APPLICABLE / PROVISIONAL / REDUNDANT / HARMFUL / MIXED / FALSE_POSITIVE / UNVERIFIED."
+        },
+        "by_audit_state": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "description": "Cumulative-gate state per ADR-0011 § Addendum 2026-05-27. Exactly one of: not_admitted / admitted_unassessed / assessed_provisional / assessed_graded. Answers the eligibility-vs-assessment-vs-certification question without consumers having to re-derive it from the four raw verdicts."
+        },
+        "harmful_skill_count": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "Count of skills where application_verdict == HARMFUL. Surfaced as a top-level convenience so the SkillsBench-19% case (skills that actively make agents worse) does not require grepping by_application_verdict keys."
         }
       }
     },
@@ -118,7 +136,7 @@
           "description",
           "version",
           "subject",
-          "scope",
+          "deployment_target",
           "owner"
         ],
         "properties": {
@@ -179,17 +197,58 @@
             "items": { "type": "string" },
             "description": "Polyhierarchy ordered list. First entry matches `subject`. Pass-through from authored frontmatter."
           },
-          "domain": {
-            "type": "string"
+          "taxonomy_domain": {
+            "type": "string",
+            "description": "Hierarchical taxonomy sub-path. Renamed from v8 `domain`. See schemas/skill.schema.json § taxonomy_domain."
           },
           "scope": {
             "type": "string",
+            "description": "PRD-style free-text scope statement (see schemas/skill.schema.json § scope).— no enum constraint."
+          },
+          "deployment_target": {
+            "type": "string",
             "enum": [
               "portable",
-              "project",
-              "workspace"
+              "project"
             ],
-            "description": "Deployment targeting (see schemas/skill.schema.json § scope)."
+            "description": "Deployment targeting (see schemas/skill.schema.json § deployment_target). replaces the original v8 `scope` enum; `workspace` value removed."
+          },
+          "project": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": ["handle"],
+              "properties": {
+                "handle": {
+                  "type": "string",
+                  "pattern": "^[a-z0-9][a-z0-9-]*$"
+                },
+                "role": {
+                  "type": "string"
+                }
+              }
+            },
+            "description": "Projects this skill is linked to. Pass-through from authored frontmatter (see schemas/skill.schema.json § project)."
+          },
+          "repo": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": ["handle"],
+              "properties": {
+                "handle": {
+                  "type": "string",
+                  "pattern": "^[a-z0-9][a-z0-9-]*$"
+                },
+                "url": {
+                  "type": "string",
+                  "format": "uri"
+                }
+              }
+            },
+            "description": "Repos this skill is linked to. Pass-through from authored frontmatter (see schemas/skill.schema.json § repo)."
           },
           "owner": {
             "type": "string"
@@ -213,12 +272,6 @@
           },
           "extends": {
             "type": "string"
-          },
-          "workspace_tags": {
-            "type": "array",
-            "items": {
-              "type": "string"
-            }
           },
           "activation": {
             "type": "object",
@@ -373,19 +426,16 @@
             "type": "object",
             "additionalProperties": false,
             "required": [
-              "domain_object",
+              "subject_matter",
               "grounding_mode",
               "truth_sources",
               "failure_modes",
               "evidence_priority"
             ],
             "properties": {
-              "domain_object": {
-                "type": "string"
-              },
-              "subject": {
+              "subject_matter": {
                 "type": "string",
-                "description": "v3.1 preferred alias for `domain_object`. Pass-through."
+                "description": "Free-text label naming what the skill is grounded in. Renamed from v8 `grounding.domain_object`. Pass-through."
               },
               "grounding_mode": {
                 "type": "string",

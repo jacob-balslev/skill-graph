@@ -8,12 +8,13 @@
  * result against `schemas/manifest.schema.json`, and emits the compiled
  * `skills.manifest.json`.
  *
- * Workspace mode: when `.skill-graph/config.json` exists at the repo
- * root and declares `workspace.skill_roots`, the generator walks every
- * declared root instead of the default `skills/` directory. Each skill entry
- * carries a `project` field identifying which root it came from. The manifest
- * gains a top-level `workspace` block that echoes the config's projects map
- * so consumers can resolve semantic tags without re-reading the config.
+ * Multi-root mode: when `.skill-graph/config.json` exists at the repo root and
+ * declares `skill_roots` (a top-level array of strings or `{path, project}`
+ * objects), the generator walks every declared root instead of the default
+ * `skills/` directory. The v8 `workspace.*` config wrapper and the emitted
+ * top-level `workspace` manifest block were both removed;
+ * per-skill belonging-entity identity now lives in the authored `project[]`
+ * and `repo[]` arrays.
  *
  * Usage:
  *   node scripts/generate-manifest.js                    # emit to stdout
@@ -68,14 +69,16 @@ function repoRelative(filePath) {
 // and no project ownership.
 // ---------------------------------------------------------------------------
 
-function loadWorkspaceConfig() {
+function loadRootsConfig() {
   if (!fs.existsSync(CONFIG_PATH)) return null;
   try {
     const raw = fs.readFileSync(CONFIG_PATH, 'utf8');
     const config = JSON.parse(raw);
     if (!config || typeof config !== 'object') return null;
-    if (!config.workspace || typeof config.workspace !== 'object') return null;
-    return config.workspace;
+    // skill_roots lives at the top level. The v8 `workspace.skill_roots`
+    // wrapper was removed (`workspace` vocabulary retirement).
+    if (!Array.isArray(config.skill_roots)) return null;
+    return { skill_roots: config.skill_roots };
   } catch (e) {
     process.stderr.write(`WARN .skill-graph/config.json: cannot parse — ${e.message}\n`);
     return null;
@@ -85,14 +88,14 @@ function loadWorkspaceConfig() {
 /**
  * Resolve the list of skill roots to walk.
  *
- * @param {object|null} workspace - Parsed workspace config (or null for single-root mode).
+ * @param {object|null} config - Parsed roots config (or null for single-root mode).
  * @returns {Array<{absPath: string, project: string|null}>}
  */
-function resolveSkillRoots(workspace) {
-  if (!workspace || !Array.isArray(workspace.skill_roots) || workspace.skill_roots.length === 0) {
+function resolveSkillRoots(config) {
+  if (!config || !Array.isArray(config.skill_roots) || config.skill_roots.length === 0) {
     return [{ absPath: DEFAULT_SKILLS_DIR, project: null }];
   }
-  return workspace.skill_roots
+  return config.skill_roots
     .map(entry => {
       if (typeof entry === 'string') {
         return { absPath: path.resolve(REPO_ROOT, entry), project: null };
@@ -246,7 +249,7 @@ function detectDrift(fm) {
  * @param {string|null} project - Project handle for multi-root mode, or null for shared.
  * @returns {object} Manifest skill entry object
  */
-function buildSkillEntry(fm, filePath, skillId, project) {
+function buildSkillEntry(fm, filePath, skillId, _projectFromRoot) {
   const aliasErrors = checkAliasParity(fm);
   if (aliasErrors.length > 0) {
     throw new Error(`alias contract violation: ${aliasErrors.join('; ')}`);
@@ -257,7 +260,11 @@ function buildSkillEntry(fm, filePath, skillId, project) {
   // --- Generated fields ---
   entry.id = skillId;
   entry.path = repoRelative(filePath);
-  if (project) entry.project = project;
+  // the legacy `entry.project = <string-from-config>` assignment is removed
+  //. Project belonging-entity identity is the authored `project[]`
+  // array (object-shape with `handle` + `role`). The `_projectFromRoot` parameter
+  // is preserved for back-compat in the function signature; new callers can
+  // pass null. See § Copied-through optional fields below.
 
   // --- Copied-through required fields ---
   entry.name = fm.name;
@@ -272,18 +279,27 @@ function buildSkillEntry(fm, filePath, skillId, project) {
   }
   entry.description = fm.description;
   entry.version = fm.version;
-  // v8 classification: subject + scope are required; subjects[] is optional polyhierarchy.
-  // See docs/adr/0017-five-axis-classification-model.md.
+  // Classification: subject + deployment_target are required; subjects[] is optional polyhierarchy.
+  // See the ADR-0017 amendment of 2026-05-27.
   entry.subject = fm.subject;
   if (Array.isArray(fm.subjects) && fm.subjects.length > 0) {
     entry.subjects = fm.subjects;
   }
-  entry.scope = fm.scope;
+  entry.deployment_target = fm.deployment_target;
+  if (fm.scope !== undefined && fm.scope !== null) {
+    entry.scope = fm.scope; // free-text PRD content, optional
+  }
   entry.owner = fm.owner;
 
   // --- Copied-through optional fields ---
-  if (fm.domain !== undefined && fm.domain !== null) {
-    entry.domain = fm.domain;
+  if (fm.taxonomy_domain !== undefined && fm.taxonomy_domain !== null) {
+    entry.taxonomy_domain = fm.taxonomy_domain;
+  }
+  if (Array.isArray(fm.project) && fm.project.length > 0) {
+    entry.project = fm.project;
+  }
+  if (Array.isArray(fm.repo) && fm.repo.length > 0) {
+    entry.repo = fm.repo;
   }
   if (fm.marketplace_tier !== undefined && fm.marketplace_tier !== null) {
     entry.marketplace_tier = fm.marketplace_tier;
@@ -312,9 +328,7 @@ function buildSkillEntry(fm, filePath, skillId, project) {
   if (fm.routing_bundles !== undefined && fm.routing_bundles !== null) {
     entry.routing_bundles = fm.routing_bundles;
   }
-  if (Array.isArray(fm.workspace_tags) && fm.workspace_tags.length > 0) {
-    entry.workspace_tags = fm.workspace_tags;
-  }
+  // workspace_tags removed. Use `project[]` for project-affiliation routing.
 
   // --- Grouped: activation (triggers + keywords + paths + examples + anti_examples) ---
   const activation = {};
@@ -613,23 +627,53 @@ function collectSources(args, skillRoots) {
   return sources;
 }
 
+// PASS sets for cumulative-gate classification per ADR-0011 § Addendum 2026-05-27.
+// Must stay aligned with lib/audit/skill-status.js::STRUCTURAL_PASS_VALUES.
+const STRUCTURAL_PASS_SET = new Set(['PASS', 'PASS_WITH_FIXES']);
+const TRUTH_PASS_SET = new Set(['PASS']);
+
+// Derive the cumulative-gate audit state for one manifest entry.
+// Buckets a skill into exactly one of: not_admitted / admitted_unassessed /
+// assessed_provisional / assessed_graded.
+// See docs/verdict-semantics.md for the canonical eligibility-vs-assessment doctrine.
+function deriveAuditState(skill) {
+  const health = skill && skill.health ? skill.health : {};
+  const admitted = STRUCTURAL_PASS_SET.has(health.structural_verdict)
+    && TRUTH_PASS_SET.has(health.truth_verdict);
+  if (!admitted) return 'not_admitted';
+  const av = health.application_verdict;
+  if (!av || av === 'UNVERIFIED') return 'admitted_unassessed';
+  if (av === 'PROVISIONAL') return 'assessed_provisional';
+  return 'assessed_graded';
+}
+
 /**
  * Compute summary aggregates over the skills array.
  *
- * v8 facets: `by_subject` (classification), `by_scope` (deployment targeting),
- * `by_stability` (lifecycle posture), `by_project` (workspace ownership).
+ * facets: `by_subject` (classification), `by_deployment_target` (deployment targeting),
+ * `by_stability` (lifecycle posture), `by_project` (project belonging-entity bucketed by handle).
  *
- * `by_schema_version` lets consumers count v7-still vs v8-migrated skills
- * directly from the manifest. Missing schema_version buckets under 'unknown'
- * so the failure mode (skill on neither v7 nor v8) stays visible instead of
- * silently dropping out.
+ * `by_schema_version` lets consumers count migration progress directly from the
+ * manifest. Missing schema_version buckets under 'unknown'.
+ *
+ * Per ADR-0011 § Addendum 2026-05-27, the four per-verdict facets plus the
+ * cumulative `by_audit_state` make eligibility-vs-assessment-vs-certification
+ * legible from the manifest without consumers having to re-derive it. The
+ * `harmful_skill_count` convenience field surfaces the SkillsBench-19% case
+ * (skills that make agents worse) without grepping facet keys.
  */
 function computeSummary(skills) {
   const by_schema_version = {};
   const by_subject = {};
-  const by_scope = {};
+  const by_deployment_target = {};
   const by_stability = {};
   const by_project = {};
+  const by_structural_verdict = {};
+  const by_truth_verdict = {};
+  const by_comprehension_verdict = {};
+  const by_application_verdict = {};
+  const by_audit_state = {};
+  let harmful_skill_count = 0;
 
   for (const skill of skills) {
     const ver = skill.schema_version === undefined || skill.schema_version === null
@@ -638,17 +682,49 @@ function computeSummary(skills) {
     by_schema_version[ver] = (by_schema_version[ver] || 0) + 1;
 
     if (skill.subject) by_subject[skill.subject] = (by_subject[skill.subject] || 0) + 1;
-    if (skill.scope) by_scope[skill.scope] = (by_scope[skill.scope] || 0) + 1;
+    if (skill.deployment_target) {
+      by_deployment_target[skill.deployment_target] = (by_deployment_target[skill.deployment_target] || 0) + 1;
+    }
     if (skill.stability) by_stability[skill.stability] = (by_stability[skill.stability] || 0) + 1;
-    if (skill.project) by_project[skill.project] = (by_project[skill.project] || 0) + 1;
+    // project is an array of objects with `handle`. Bucket by each handle.
+    if (Array.isArray(skill.project)) {
+      for (const entry of skill.project) {
+        const handle = entry && typeof entry.handle === 'string' ? entry.handle : null;
+        if (handle) by_project[handle] = (by_project[handle] || 0) + 1;
+      }
+    }
+
+    // Verdict facets per ADR-0011. Missing values bucket as 'UNVERIFIED' for the
+    // four-verdict shape; that's the honest default for unaudited skills per
+    // docs/verdict-semantics.md.
+    const h = skill.health || {};
+    const sv = h.structural_verdict || 'UNVERIFIED';
+    const tv = h.truth_verdict || 'UNVERIFIED';
+    const cv = h.comprehension_verdict || 'UNVERIFIED';
+    const av = h.application_verdict || 'UNVERIFIED';
+    by_structural_verdict[sv] = (by_structural_verdict[sv] || 0) + 1;
+    by_truth_verdict[tv] = (by_truth_verdict[tv] || 0) + 1;
+    by_comprehension_verdict[cv] = (by_comprehension_verdict[cv] || 0) + 1;
+    by_application_verdict[av] = (by_application_verdict[av] || 0) + 1;
+
+    if (av === 'HARMFUL') harmful_skill_count += 1;
+
+    const state = deriveAuditState(skill);
+    by_audit_state[state] = (by_audit_state[state] || 0) + 1;
   }
 
   const summary = { total_skills: skills.length };
   if (Object.keys(by_schema_version).length > 0) summary.by_schema_version = sortKeys(by_schema_version);
   if (Object.keys(by_subject).length > 0) summary.by_subject = sortKeys(by_subject);
-  if (Object.keys(by_scope).length > 0) summary.by_scope = sortKeys(by_scope);
+  if (Object.keys(by_deployment_target).length > 0) summary.by_deployment_target = sortKeys(by_deployment_target);
   if (Object.keys(by_stability).length > 0) summary.by_stability = sortKeys(by_stability);
   if (Object.keys(by_project).length > 0) summary.by_project = sortKeys(by_project);
+  if (Object.keys(by_structural_verdict).length > 0) summary.by_structural_verdict = sortKeys(by_structural_verdict);
+  if (Object.keys(by_truth_verdict).length > 0) summary.by_truth_verdict = sortKeys(by_truth_verdict);
+  if (Object.keys(by_comprehension_verdict).length > 0) summary.by_comprehension_verdict = sortKeys(by_comprehension_verdict);
+  if (Object.keys(by_application_verdict).length > 0) summary.by_application_verdict = sortKeys(by_application_verdict);
+  if (Object.keys(by_audit_state).length > 0) summary.by_audit_state = sortKeys(by_audit_state);
+  summary.harmful_skill_count = harmful_skill_count;
 
   return summary;
 }
@@ -673,9 +749,9 @@ function main() {
     process.exit(1);
   }
 
-  // Resolve workspace (multi-root or single-root).
-  const workspace = loadWorkspaceConfig();
-  const skillRoots = resolveSkillRoots(workspace);
+  // Resolve roots config (multi-root or single-root).
+  const rootsConfig = loadRootsConfig();
+  const skillRoots = resolveSkillRoots(rootsConfig);
 
   const sources = collectSources(args, skillRoots);
   if (sources.length === 0) {
@@ -755,19 +831,9 @@ function main() {
     skills: sortedEntries,
   };
 
-  // Emit workspace metadata block when a config is in effect.
-  if (workspace) {
-    const workspaceBlock = {};
-    if (Array.isArray(workspace.skill_roots)) {
-      workspaceBlock.skill_roots = workspace.skill_roots.map(e => typeof e === 'string' ? e : e.path);
-    }
-    if (workspace.projects && typeof workspace.projects === 'object') {
-      workspaceBlock.projects = workspace.projects;
-    }
-    if (Object.keys(workspaceBlock).length > 0) {
-      manifest.workspace = workspaceBlock;
-    }
-  }
+  // the top-level `workspace` manifest block is removed.
+  // Roots config is internal to the build pipeline; skill belonging-entity
+  // identity lives in per-skill `project[]` and `repo[]` arrays.
 
   const sortedManifest = sortKeys(manifest);
 

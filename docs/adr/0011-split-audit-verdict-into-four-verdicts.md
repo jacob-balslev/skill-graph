@@ -190,6 +190,35 @@ User ruling (2026-05-20), resolving "is comprehension demoted, or is the Underst
 
 **Concrete enabler gap (verified 2026-05-20):** gate 8 only appends to `agent-orchestration/logs/comprehension-history.jsonl` (`scripts/skill/evaluate-skill.js` ~line 890) and never writes `comprehension_verdict` back to frontmatter — so the field reads `UNVERIFIED` corpus-wide regardless of grader output. To operationalize "comprehension is a signal," gate 8 needs a `--write-verdict` path that stamps `comprehension_verdict` (parallel to `skill-lint.js` → `structural_verdict` and drift → `truth_verdict`). Until then comprehension is measured but not persisted as a verdict. Tracked as a follow-up.
 
+## Addendum 2026-05-27 — Eligibility vs Assessment; APPLICABLE Bounded by Eval Contract
+
+Diagnosed in conversation 2026-05-27: the v6→v7 verdict split (this ADR) fixed the verdict-layer conflation, but **the same conflation has recurred at the operational reporting layer**. A `structural_verdict: PASS` still reads as evidence of corpus health on every current dashboard surface, even though `application_verdict` (the only field that certifies usefulness) sits at `UNVERIFIED` corpus-wide because gate 9 has never run on a live skill. The sharper framing: lint is the **admission ticket**, not the **performance review**. The "floor vs target" language in the original decision implies a single continuous axis; the operationally useful framing splits it into two categorically different questions about a skill.
+
+This addendum makes two epistemic claims explicit. The canonical statements live in [`docs/verdict-semantics.md`](../verdict-semantics.md); this addendum carries the decision rationale.
+
+### Claim 1 — Eligibility is not assessment
+
+Structural and truth verdicts certify a skill is **eligible** for quality assessment. They do not constitute quality assessment itself. A skill with `structural_verdict: PASS` and `application_verdict: UNVERIFIED` is unassessed, not approved. Corpus reporting must distinguish eligibility from assessment, and an eligible-but-unassessed skill must be visually distinct from an eligible-and-certified one.
+
+### Claim 2 — APPLICABLE is bounded by its eval contract
+
+`application_verdict: APPLICABLE` certifies behavior change against the specific eval contract recorded at `evals/application.json@<git-sha>`, not universal quality. A skill graded against 5 weak cases is APPLICABLE in a weaker epistemic sense than one graded against 20 diverse cases anchored on real production failures and prior agent errors. The verdict label captures the grader output; the eval contract's scope, case count, and anchor sources determine the actual signal strength. Always read APPLICABLE alongside the eval contract's provenance, not as a standalone certification.
+
+### Why these aren't a new ADR
+
+These two claims are clarifications of the verdict split this ADR established, not a new independent decision. The original ADR's "necessary infrastructure but never sufficient" framing (Decision § Change 1) implicitly contains Claim 1; the "every application case must be human-authored from an external anchor" rule (§ Behavioral risk) implicitly contains Claim 2 as a procedural rule. This addendum makes both explicit as the underlying epistemic claims, so the doctrine + reporting layer can be built on them by name.
+
+### Practical reading
+
+- A corpus reporting "153 PASS" on structural is reporting eligibility, not approval. The honest equivalent today is "153 admitted, 0 quality-evaluated, 0 certified useful, 0 certified harmful."
+- An `application_verdict: APPLICABLE` claim should always be cited with the eval contract it was earned against (commit SHA + case count + anchor type). The verdict label alone is insufficient context.
+- The corpus dashboard model is **cumulative gates**, not orthogonal axes: every certified skill IS-A assessed skill; every assessed skill IS-A admitted skill. A skill cannot be certified without being assessed; cannot be assessed without being admitted.
+- The comprehension scope carve-out (Addendum 2026-05-20) interacts with assessment counts: framework-concept skills with `comprehension_verdict: SKIPPED_BASELINE_HIGH` are NOT comprehension-unassessed — comprehension legitimately doesn't apply to them. Reporting that buckets `SKIPPED_BASELINE_HIGH` into "unassessed" under-reports eval state on the ~80% of the corpus that teaches framework concepts.
+
+### Concrete enabler gap
+
+No current reporting surface (`skill-status.js`, `generate-manifest.js::computeSummary()`, `build-status-doc.js`, `check-audit-manifest.js`) distinguishes admission from assessment or surfaces the `HARMFUL` and `PROVISIONAL` outcomes by name. The doctrine sentences above land at the doctrine layer; the operational reporting changes are tracked separately and reuse existing facet-bucketing patterns (do not require new schema fields).
+
 ## Sources
 
 - `~/Development/.roundtable/skill-audit-2026-05-19/SYNTHESIS.md` — full diagnosis and decision rationale (§§1–7).

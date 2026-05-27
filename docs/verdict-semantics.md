@@ -26,6 +26,10 @@ This doc REPLACES the verdict-semantics restatements that previously lived (drif
 
 **`application_verdict` is the primary quality signal.** A skill is only behaviorally certified when this verdict is `APPLICABLE`. The other three are necessary infrastructure but never sufficient. See ADR-0011 for the rationale (replaces the v6 aggregate `audit_verdict`).
 
+**Eligibility is not assessment.** Structural and truth verdicts certify a skill is **eligible** for quality assessment. They do not constitute quality assessment itself. A skill with `structural_verdict: PASS` and `application_verdict: UNVERIFIED` is unassessed, not approved. Corpus reporting must distinguish eligibility from assessment, and an eligible-but-unassessed skill must be visually distinct from an eligible-and-certified one. See ADR-0011 § Addendum 2026-05-27 for the rationale.
+
+**APPLICABLE is bounded by its eval contract.** `application_verdict: APPLICABLE` certifies behavior change against the specific eval contract recorded at `evals/application.json@<git-sha>`, not universal quality. A skill graded against 5 weak cases is APPLICABLE in a weaker epistemic sense than one graded against 20 diverse cases anchored on real production failures and prior agent errors. The verdict label captures the grader output; the eval contract's scope, case count, and anchor sources determine the actual signal strength. Always read APPLICABLE alongside the eval contract's provenance, not as a standalone certification.
+
 ### Why there is no fifth `displacement_verdict` (the 2026-05-25 decision)
 
 The audit doctrine evaluates each skill on **three axes** ([`SKILL_AUDIT_LOOP.md:13-21`](../SKILL_AUDIT_LOOP.md)): intent fidelity, teaching efficacy, and **upstream currency (anti-displacement)**. But the Audit Status only carries **four verdict fields**, one per gate-output layer. There is intentionally **no fifth `displacement_verdict` / `upstream_verdict`** field. Why:
@@ -69,6 +73,8 @@ If a future skill carries a DISPLACEMENT finding with a `requiredAction: follow-
 | `UNVERIFIED` | Initial state before any grader run since the v7 schema bump. | Default for the v6→v7 corpus migration. |
 
 **Comprehension graded set:** `{PROVISIONAL, PASS, SHALLOW, REDUNDANT}`. The verifier at `skill-graph/scripts/check-audit-manifest.js` requires `skills/<name>/evals/comprehension.json` to exist on disk when `comprehension_verdict` is in this set.
+
+**Comprehension scope carve-out.** Gate 8 is the **required** behavior gate for skills teaching **project-invented or repository-specific concepts** where the foundation model has no training prior (e.g., repo internal conventions, custom frameworks, in-house DSLs). For framework concepts the model already knows (CLT, Toulmin, FMEA, OODA, design thinking, …), the grader early-skips via `SKIPPED_BASELINE_HIGH` and gate 8 is genuinely optional — `application_verdict` alone carries the quality signal. The carve-out lives in the verdict values themselves: `SKIPPED_BASELINE_HIGH` flags "framework-concept, comprehension legitimately doesn't apply"; `NA` flags "this skill ships no `comprehension.json` by design." Reporting that counts comprehension coverage must split these two values out of the unassessed bucket, or it will under-report eval state on framework-concept skills. Authority: ADR-0011 § Addendum 2026-05-20.
 
 ### `application_verdict` (gate 9)
 

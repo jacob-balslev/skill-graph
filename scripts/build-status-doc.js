@@ -78,14 +78,123 @@ function readSkillCount() {
   return Array.isArray(m.skills) ? m.skills.length : null;
 }
 
+// Pull the corpus-wide verdict facets out of the generated manifest. These
+// are written by scripts/generate-manifest.js::computeSummary() per ADR-0011
+// § Addendum 2026-05-27. Returns null when the manifest is missing or has
+// not yet been regenerated against the v9.X schema that introduced the
+// verdict facets — callers must tolerate that absence.
+function readManifestSummary() {
+  const manifestPath = path.join(REPO_ROOT, 'skills.manifest.json');
+  if (!fs.existsSync(manifestPath)) return null;
+  try {
+    const m = JSON.parse(fs.readFileSync(manifestPath, 'utf8'));
+    return m && typeof m.summary === 'object' ? m.summary : null;
+  } catch {
+    return null;
+  }
+}
+
 function readMirrorStatus() {
   const adrPath = path.join(REPO_ROOT, 'docs', 'adr', '0009-sibling-repo-deprecation.md');
   if (!fs.existsSync(adrPath)) return 'unknown';
   return 'docs-only mirrors per ADR 0009 (2026-05-18)';
 }
 
+// Render the Audit Health section from the manifest summary's verdict facets.
+// Per ADR-0011 § Addendum 2026-05-27, the doctrine is eligibility ≠ assessment ≠
+// certification. The three sub-tables below render exactly that split so a
+// reader can answer "how many are certified?" not "how many are passing?"
+function renderAuditHealthSection(summary, skillCount) {
+  if (!summary) {
+    return `## Audit Health
+
+> _Audit Health facets are not yet available — regenerate the manifest with the post-ADR-0011-addendum \`generate-manifest.js\` to populate \`by_audit_state\`, \`by_application_verdict\`, and \`harmful_skill_count\` in \`skills.manifest.json\`._
+
+`;
+  }
+
+  const state = summary.by_audit_state || {};
+  const apps = summary.by_application_verdict || {};
+  const compr = summary.by_comprehension_verdict || {};
+  const struc = summary.by_structural_verdict || {};
+  const truth = summary.by_truth_verdict || {};
+  const total = skillCount ?? summary.total_skills ?? 0;
+  const harmful = summary.harmful_skill_count ?? 0;
+
+  const get = (obj, key) => obj[key] || 0;
+  const notAdmitted = get(state, 'not_admitted');
+  const admittedUnassessed = get(state, 'admitted_unassessed');
+  const assessedProv = get(state, 'assessed_provisional');
+  const assessedGraded = get(state, 'assessed_graded');
+  const admitted = admittedUnassessed + assessedProv + assessedGraded;
+  const certifiedUseful = get(apps, 'APPLICABLE');
+
+  // Comprehension scope carve-out per ADR-0011 § Addendum 2026-05-20:
+  // SKIPPED_BASELINE_HIGH and NA are NOT comprehension-unassessed — they
+  // are the framework-concept and no-comprehension-layer-by-design cases.
+  const frameworkOrNa = get(compr, 'SKIPPED_BASELINE_HIGH') + get(compr, 'NA');
+  const comprUnassessed = get(compr, 'UNVERIFIED');
+  const comprGraded = total - frameworkOrNa - comprUnassessed;
+
+  const harmfulCallout = harmful > 0
+    ? `\n> **⚠️ HARMFUL skills detected:** \`${harmful}\` skill${harmful === 1 ? '' : 's'} carry \`application_verdict: HARMFUL\` — they make agents worse than running without the skill (SkillsBench arXiv 2602.12670 found 19% of evaluated skills fall in this band). These are not warnings to skim; they are removal candidates pending the deprecate/fold/reframe decision per \`code-preservation\` rules.\n`
+    : '';
+
+  return `## Audit Health
+
+> The three tables below answer **eligibility**, **assessment**, and **certification** as distinct questions (per [ADR-0011 § Addendum 2026-05-27](docs/adr/0011-split-audit-verdict-into-four-verdicts.md) and [\`docs/verdict-semantics.md\`](docs/verdict-semantics.md)). A skill passing structural and truth checks is **admitted** — eligible for assessment, not yet certified. Only \`application_verdict == APPLICABLE\` certifies useful behavior change.
+${harmfulCallout}
+### Admission (eligibility)
+
+| State | Count | What it means |
+|---|---|---|
+| Admitted | \`${admitted}\` / \`${total}\` | Structural + truth verdicts both PASS — skill is eligible for quality assessment. |
+| Not admitted | \`${notAdmitted}\` | Structural or truth gate failing — skill is not yet eligible. |
+
+Per-verdict breakdown:
+
+| Verdict | structural | truth |
+|---|---|---|
+| PASS | \`${get(struc, 'PASS')}\` | \`${get(truth, 'PASS')}\` |
+| PASS_WITH_FIXES | \`${get(struc, 'PASS_WITH_FIXES')}\` | — |
+| FAIL | \`${get(struc, 'FAIL')}\` | — |
+| DRIFT | — | \`${get(truth, 'DRIFT')}\` |
+| BROKEN | — | \`${get(truth, 'BROKEN')}\` |
+| UNVERIFIED | \`${get(struc, 'UNVERIFIED')}\` | \`${get(truth, 'UNVERIFIED')}\` |
+
+### Assessment (has the behavior gate run?)
+
+| State | Count | Confidence tier |
+|---|---|---|
+| Admitted, unassessed | \`${admittedUnassessed}\` | No gate 9 run — \`pending — eligible only\` |
+| Assessed (provisional) | \`${assessedProv}\` | Single-model assessment — awaiting dual-run grader |
+| Assessed (graded) | \`${assessedGraded}\` | Dual-run grader confirmed |
+
+Comprehension carve-out (per ADR-0011 § Addendum 2026-05-20):
+
+| State | Count | Note |
+|---|---|---|
+| Framework concept or no comprehension layer (\`SKIPPED_BASELINE_HIGH\` / \`NA\`) | \`${frameworkOrNa}\` | Comprehension legitimately does not apply — model already knows the concept or the skill ships none. |
+| Comprehension graded | \`${comprGraded}\` | Comprehension grader produced a real verdict. |
+| Comprehension unassessed | \`${comprUnassessed}\` | Repo-specific skill awaiting gate-8 run. |
+
+### Certification (the only number worth bragging about)
+
+| Outcome | Count |
+|---|---|
+| **APPLICABLE** (certified useful) | \`${certifiedUseful}\` |
+| PROVISIONAL (single-model APPLICABLE-equivalent) | \`${get(apps, 'PROVISIONAL')}\` |
+| REDUNDANT (no behavioral delta) | \`${get(apps, 'REDUNDANT')}\` |
+| MIXED (delta varies by case) | \`${get(apps, 'MIXED')}\` |
+| FALSE_POSITIVE (skill over-triggers) | \`${get(apps, 'FALSE_POSITIVE')}\` |
+| HARMFUL (makes agents worse) | \`${harmful}\` |
+| UNVERIFIED (no assessment) | \`${get(apps, 'UNVERIFIED')}\` |
+
+`;
+}
+
 function renderMarkdown(state) {
-  const { pkg, schema_version, skill_count, checks, generated_at, mirror_status } = state;
+  const { pkg, schema_version, skill_count, checks, generated_at, mirror_status, summary } = state;
   const checkRow = c => {
     const badge = c.status === 'PASS' ? '✅ PASS' : c.status === 'SKIP' ? '⏭️  SKIP' : '❌ ' + c.status;
     const detail = c.detail ? c.detail.replace(/\|/g, '\\|') : '';
@@ -119,7 +228,7 @@ function renderMarkdown(state) {
 |---|---|---|---|
 ${checks.map(checkRow).join('\n')}
 
-## How to refresh
+${renderAuditHealthSection(summary, skill_count)}## How to refresh
 
 \`\`\`bash
 node scripts/build-status-doc.js
@@ -159,6 +268,7 @@ function main() {
   const pkg = readJson('package.json');
   const schema_version = readSchemaVersion();
   const skill_count = readSkillCount();
+  const summary = readManifestSummary();
   const mirror_status = readMirrorStatus();
   const generated_at = new Date().toISOString();
 
@@ -175,7 +285,7 @@ function main() {
     // committed for the 15 graded-comprehension claims.
   ];
 
-  const state = { pkg, schema_version, skill_count, mirror_status, generated_at, checks };
+  const state = { pkg, schema_version, skill_count, summary, mirror_status, generated_at, checks };
   const markdown = renderMarkdown(state);
 
   if (opts.stdout) {
@@ -219,6 +329,6 @@ function main() {
   );
 }
 
-module.exports = { readSchemaVersion, readSkillCount, renderMarkdown, runCheck };
+module.exports = { readSchemaVersion, readSkillCount, readManifestSummary, renderMarkdown, renderAuditHealthSection, runCheck };
 
 if (require.main === module) main();

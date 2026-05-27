@@ -234,6 +234,23 @@ function main() {
     }
   }
 
+  // Corpus-wide application_verdict scan per ADR-0011 § Addendum 2026-05-27.
+  // HARMFUL is the SkillsBench-19% case the gate exists to catch — it must be
+  // loud, not buried in a generic facet. PROVISIONAL is real single-model
+  // signal awaiting dual-run confirmation; previously invisible because the
+  // verifier collapsed it into the broader graded-set check.
+  const manifestSkills = Array.isArray(manifest.skills) ? manifest.skills : [];
+  const harmful_skills = [];
+  const provisional_skills = [];
+  for (const entry of manifestSkills) {
+    const av = entry && entry.health && entry.health.application_verdict;
+    if (av === 'HARMFUL') {
+      harmful_skills.push({ name: entry.name || entry.id, path: entry.path || null });
+    } else if (av === 'PROVISIONAL') {
+      provisional_skills.push({ name: entry.name || entry.id, path: entry.path || null });
+    }
+  }
+
   if (args.json) {
     process.stdout.write(JSON.stringify({
       manifest_schema_version: manifest.schema_version,
@@ -241,6 +258,8 @@ function main() {
       failures: failures.length,
       failures_detail: failures,
       checks_detail: checks,
+      harmful_skills,
+      provisional_skills,
     }, null, 2) + '\n');
   } else {
     console.log(`[check-audit-manifest] checked ${checks.length} verdicts across ${skills.length} skills (limit=${args.limit}${args.strictAll ? ', strict-all' : ''})`);
@@ -251,6 +270,15 @@ function main() {
       for (const f of failures) {
         console.log(`  ${f.skill}/${f.runId}: comprehension=${f.comprehension_verdict}, missing ${path.relative(args.workspace, f.comprehension_json_path)}`);
       }
+    }
+    // Surface HARMFUL loudly even when failures.length === 0 — these are
+    // skills that make agents WORSE, not skills with missing artifacts.
+    if (harmful_skills.length > 0) {
+      console.log(`[check-audit-manifest] ⚠️  HARMFUL — ${harmful_skills.length} skill(s) carry application_verdict: HARMFUL (SkillsBench 19%-band):`);
+      for (const s of harmful_skills) console.log(`  ${s.name}`);
+    }
+    if (provisional_skills.length > 0) {
+      console.log(`[check-audit-manifest] PROVISIONAL — ${provisional_skills.length} skill(s) carry single-model application_verdict awaiting dual-run grader confirmation.`);
     }
   }
 
