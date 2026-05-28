@@ -9,6 +9,29 @@
 
 ---
 
+## Charter — Rules & Goal
+
+**Mission & Vision** are shared across all three layers (Skill Metadata Protocol, Skill Audit Loop, Skill Graph); the canonical statement is [`AGENTS.md § Mission and Vision`](AGENTS.md#mission-and-vision). This section records the **Audit Loop layer's** own Rules and Goal; the detailed mechanics live in Parts 1–3 below.
+
+### Rules
+
+1. **The loop has one shape:** `read → fix → test → next` — one field at a time, kept or reverted on a single measurable signal (Part 1).
+2. **Four per-skill operations:** `audit`, `improve`, `evaluate`, `evolve`. `discover` and `merge` are utilities, not replacements for the per-skill loop.
+3. **CONTENT work on a skill runs ONLY through `/audit:audit | improve | evaluate | evolve`.** Ad-hoc `SKILL.md` edits outside the loop are banned, and SYSTEM work is never mixed with CONTENT work in one task or commit.
+4. **Findings must be evidence-backed.** The audit is not a lint-test factory; never invent internal checks to manufacture findings, and an empty report on a genuinely good skill is a PASS.
+5. **Lint is a floor, not the quality bar.** Structural validity says the skill is well-formed; it says nothing about whether it teaches well.
+6. **Two gates, never blended:** the Integrity Gate proves the skill is structurally valid, grounded, routable, and export-safe; the Behavior Gate proves it changes agent behavior as claimed.
+7. **`application_verdict` is the primary quality signal.** `UNVERIFIED` is the honest state when no behavioral eval has run — not a defect. `APPLICABLE` is earned only from an eval receipt; never hand-stamped.
+8. **External framework / API / platform claims are checked against official primary sources** during an audit when those claims could have drifted (the upstream-currency / anti-displacement axis).
+9. **A displacement finding recommends deprecate / fold / reframe — never auto-deletion.** Removal requires explicit user sign-off.
+10. **Every finding is preserved in the report.** Prioritization is allowed after complete reporting; dropping findings is not.
+
+### Goal
+
+Make the skill library self-correcting without making it careless: every skill carries an honest status across structure, truth, comprehension, and application, and every change is kept only when evidence says it improved the skill. Near-term: complete the first corpus-wide Integrity Gate sweep so every skill advances from `UNVERIFIED` to its real verdict; author the missing comprehension/application eval artifacts (the Level 0 → Level 1 lift); and keep audit reports complete with all findings preserved.
+
+---
+
 # Part 1 — Loop Doctrine & Operations
 
 A skill is a contract about a subject. The contract is only true while the things it was written against still hold — the codebase drifts, the subject drifts, and the audit fingerprint in the skill's own frontmatter drifts with them. The Skill Audit Loop re-grounds a skill against current truth and records the result on the skill itself.
