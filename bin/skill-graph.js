@@ -72,6 +72,12 @@ Options:
   --audit-root <path>   Output directory root (default: audits/).
   --force               Overwrite existing audit artifacts.
   --dry-run             Resolve skill and run lint without writing any files. Exit 0 on success.
+                        With --fix, previews the migration instead of applying it.
+  --fix                 Deterministic Integrity-gate remediation. When lint finds shape
+                        violations, apply the v7->v8 frontmatter migration (remove retired
+                        fields, rename domain->taxonomy_domain & domain_object->subject_matter,
+                        drop enum scope, add deployment_target), regenerate field comments,
+                        and re-lint. No LLM, no evals, no keep-or-revert. Caller commits.
   --graded              Enable the prompt-driven grader pass.
   --grader-cli <cmd>    Grader command (default: claude -p). Requires --graded.
   --grader-timeout <ms> Per-dimension grader timeout (default: 120000).
@@ -79,6 +85,8 @@ Options:
 Examples:
   skill-graph audit my-skill
   skill-graph audit my-skill --dry-run
+  skill-graph audit my-skill --fix
+  skill-graph audit my-skill --dry-run --fix
   skill-graph audit my-skill --graded
   skill-graph audit my-skill --graded --grader-cli "codex exec" --force
 `,
