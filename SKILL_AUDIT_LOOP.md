@@ -584,7 +584,7 @@ A skill audit is complete when:
 > Comprehension Layer. Adds "Concept of the skill" presence/authoring, `comprehension.json`
 > presence/authoring, dual-run grader invocation, and 3 scorecard dimensions over the
 > v2.1 baseline. See `docs/plans/concept-comprehension-layer.md` for the 7-dimension
-> rubric design and `scripts/skill/graders/concept-grader-prompt.md` for the grader
+> rubric design and `lib/audit/graders/concept-grader-prompt.md` for the grader
 > contract.
 
 > **Audit Doctrine — link only.** The canonical doctrine is [`skill-graph/SKILL_AUDIT_LOOP.md` § Audit Doctrine — Intent and Teaching, Not Arbitrary Lint](#audit-doctrine--intent-and-teaching-not-arbitrary-lint). It evaluates each skill on three axes (intent fidelity, teaching efficacy, upstream currency) and `application_verdict` is the real quality signal. Lint is a floor, never the goal. Do not restate the doctrine here — link to it.

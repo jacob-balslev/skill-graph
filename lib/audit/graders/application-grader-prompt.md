@@ -2,7 +2,7 @@
 
 > Used by `scripts/skill/evaluate-skill.js --application` to grade whether a loaded skill changes what the candidate FLAGS / RECOMMENDS in a real scenario — not what the candidate understands definitionally. See `docs/plans/application-eval-architecture.md` for the full design.
 > **Model selection:** This script does NOT select models. The local claude CLI uses the operator's session model for both generator and grader. To use a different model for grader vs generator, run the grader from a different claude session. The "grader differs from generator" rule below is OPERATOR policy — not script policy.
-> **Sister grader:** `scripts/skill/graders/concept-grader-prompt.md` (concept comprehension layer — definitional understanding). The two layers are complementary; this layer measures operational behavior.
+> **Sister grader:** `lib/audit/graders/concept-grader-prompt.md` (concept comprehension layer — definitional understanding). The two layers are complementary; this layer measures operational behavior.
 > **Version:** 1.1 — 2026-05-17 (model coupling removed)
 
 ## Role
