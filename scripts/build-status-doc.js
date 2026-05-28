@@ -142,7 +142,7 @@ function renderAuditHealthSection(summary, skillCount) {
 
   return `## Audit Health
 
-> The three tables below answer **eligibility**, **assessment**, and **certification** as distinct questions (per [ADR-0011 § Addendum 2026-05-27](docs/adr/0011-split-audit-verdict-into-four-verdicts.md) and [\`docs/verdict-semantics.md\`](docs/verdict-semantics.md)). A skill passing structural and truth checks is **admitted** — eligible for assessment, not yet certified. Only \`application_verdict == APPLICABLE\` certifies useful behavior change.
+> The three tables below answer **eligibility**, **assessment**, and **certification** as distinct questions (per [ADR-0011 § Addendum 2026-05-27](adr/0011-split-audit-verdict-into-four-verdicts.md) and [\`docs/verdict-semantics.md\`](verdict-semantics.md)). A skill passing structural and truth checks is **admitted** — eligible for assessment, not yet certified. Only \`application_verdict == APPLICABLE\` certifies useful behavior change.
 ${harmfulCallout}
 ### Admission (eligibility)
 
