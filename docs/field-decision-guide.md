@@ -6,16 +6,15 @@
 
 ---
 
-## 1. Which `scope` do I use?
+## 1. Which `deployment_target` do I use?
 
-`scope` tells routers and auditors whether your skill is portable, workspace-specific, or grounded in one specific project.
+`deployment_target` tells routers and auditors whether your skill is portable across any project or anchored to one specific project.
 
 ### Decision table
 
-| Situation | Correct `scope` |
+| Situation | Correct `deployment_target` |
 |---|---|
 | Skill applies across any codebase or team with no repo-specific claims | `portable` |
-| Skill is primarily a workspace-local reference for a contract, spec, or document (e.g., "Skill Metadata Protocol for this repo") | `workspace` |
 | Skill makes concrete claims about files, APIs, or behavior in one specific project | `project` |
 | Skill is a starter or template that could be copied into any project | `portable` |
 | Skill references specific file paths, function names, or deployment details | `project` |
@@ -29,33 +28,30 @@
 **Q: Does my skill say "in the codebase" without naming specific files?**
 → `portable`
 
-**Q: Is my skill's primary purpose to be a reference for a contract document (like a schema or this Skill Metadata Protocol)?**
-→ `workspace`
-
 **Q: Would this skill work unchanged if copied into a completely different project?**
 → `portable` (if yes), `project` (if no)
 
 ### Important constraint
 
-`scope: project` requires a populated `grounding` block. Populate `grounding` before committing and run the protocol/manifest checks for full-contract validation.
+`deployment_target: project` requires a populated `grounding` block (schema-enforced). Populate `grounding.subject_matter` and the other grounding sub-fields before committing and run the protocol/manifest checks for full-contract validation. Also declare the project in `project[]` so consumers can resolve the project-fit axis.
 
-### Migration from v1
+### `scope` — the optional free-text companion
 
-The v1 scope values (`generic`, `operational`) were renamed in schema_version 2 (SH-5784) and are rejected as hard errors by the v2+ schemas. For the full v1 → v2 rename table see [`docs/field-reference.md § scope`](field-reference.md#scope); for the codemod that applies every v2 → v3 change automatically, see [`docs/manifest-field-mapping.md § Migration Note — v2 → v3`](manifest-field-mapping.md#migration-note--v2--v3-v040).
+`scope` is a separate, optional free-text field (not an enum). Use it for a PRD-style statement describing what this skill teaches and what it does not — for example, "Covers order reconciliation for the Sales Hub Shopify integration; does not cover payment disputes." It is not a routing enum and is not used to drive the project-fit filter. The deployment-targeting role belongs entirely to `deployment_target`.
 
 ### Examples
 
 ```yaml
 # Correct: skill about abstract testing patterns
-scope: portable
-
-# Correct: workspace-local reference for this repo's protocol documents
-scope: workspace
+deployment_target: portable
 
 # Correct: skill that covers Shopify integration in a specific project
-scope: project
+deployment_target: project
+project:
+  - handle: sales-hub
+    role: source-of-truth
 grounding:
-  domain_object: Shopify integration behavior
+  subject_matter: Shopify integration behavior in the Sales Hub repo
   grounding_mode: repo_specific
   # ...
 ```
@@ -179,8 +175,8 @@ The `readiness` field is operational, not ordinal. Each value says something con
 | `verified` | Export tooling exists AND the exported output has been verified in the target runtime with a receipt artifact. |
 
 **Quick heuristic:**
-- `scope: portable` with no repo paths AND export script covers at least one target → `readiness: scripted`
-- `scope: project` with concrete repo paths AND no export tooling yet → `readiness: declared`
+- `deployment_target: portable` with no repo paths AND export script covers at least one target → `readiness: scripted`
+- `deployment_target: project` with concrete repo paths AND no export tooling yet → `readiness: declared`
 - Export tooling ran AND the output was loaded into the target runtime AND passed a smoke test → `readiness: verified`
 
 ### `portability.targets` decision
@@ -215,101 +211,79 @@ portability:
 
 ---
 
-## 4. How do I tag a skill for multiple projects?
+## 4. How do I declare a skill's project membership?
 
-`workspace_tags` is the v3 mechanism for multi-project relevance. It is flat and composable — no hierarchy required. A workspace config at `.skill-graph/config.json` expands literal project handles into semantic tag sets, so one skill tag can match many projects.
+`project[]` is the v8 mechanism for anchoring a skill to one or more specific projects. Each entry carries a kebab-case `handle` and a free-text `role`. `repo[]` works the same way for repo-level anchoring. Both fields replace the old `workspace_tags` flat array.
 
 ### Decision table
 
-| Situation | Correct `workspace_tags` |
+| Situation | Correct `project[]` / `repo[]` usage |
 |---|---|
-| Skill applies to every project (cross-cutting concern) | Omit `workspace_tags` (ambient) |
-| Skill applies to one specific project and not reusable elsewhere | `[literal-project-handle]` |
-| Skill applies to several projects that share a technology / domain | Semantic tag(s) that the workspace config maps those projects to |
-| Skill applies to one project by literal handle AND to a semantic group | Both: `[literal-handle, semantic-tag]` |
-| Single-project workspace | Omit `workspace_tags` always |
-
-### Literal vs semantic tags
-
-| Tag style | Example | When to use |
-|---|---|---|
-| Literal | `<your-project-handle>` (whatever short kebab-case name you give a project in your workspace config) | Precise targeting. Couples the skill to a specific project name. Readable but brittle to renames. |
-| Semantic | `ecommerce`, `saas`, `b2b` | Reusable across projects. The workspace config declares which literal projects expand to which semantic tags, so one tag matches several projects. |
-
-**Prefer semantic when possible.** Literal handles work but they bind the skill to a project name. Semantic tags describe the domain and survive project renames.
+| Skill applies to every project (cross-cutting concern) | Omit `project[]` and `repo[]` (ambient) |
+| Skill is `deployment_target: project` for one specific project | `project: [{handle: "<project-handle>", role: "source-of-truth"}]` |
+| Skill is anchored to one specific repo (not necessarily one project) | `repo: [{handle: "<repo-slug>", url: "https://github.com/..."}]` |
+| Skill applies to multiple projects that share a technology | Declare each project in `project[]` with its own role |
+| Single-project workspace | Either omit (ambient) or declare the one project — your choice |
 
 ### Diagnostic questions
 
-**Q: Does my workspace have more than one project?**
-→ If no, omit `workspace_tags` always.
+**Q: Is this skill `deployment_target: project`?**
+→ Yes → declare `project[]` with the project handle. The router uses this for project-fit filtering.
 
 **Q: Is this skill a cross-cutting concern (GDPR, a11y, testing patterns, general coding rules)?**
-→ Omit `workspace_tags` — ambient.
+→ Omit `project[]` and `repo[]` — ambient.
 
-**Q: Does this skill reference a specific project's files or domain?**
-→ Tag with that project's literal handle OR its semantic tags.
-
-**Q: Would I want to reuse this skill if I cloned the current project pattern into a new project?**
-→ If yes, tag with semantic tags (so the new project can map its handle to those tags). If no, tag with the literal handle.
+**Q: Does this skill reference a specific repo's files or domain without being a single-project skill?**
+→ Use `repo[]` to anchor to the repo while keeping `deployment_target: portable` or `project` as appropriate.
 
 ### Example
 
 ```yaml
-# One specific project only — literal targeting
-workspace_tags: [<project-a>]
+# One specific project — project[] with role
+deployment_target: project
+project:
+  - handle: sales-hub
+    role: source-of-truth
 
-# Cross-ecommerce — semantic, applies to every project whose config maps to `ecommerce`
-workspace_tags: [ecommerce]
-
-# Explicit both — literal match on <project-a>, semantic match on any ecommerce project
-workspace_tags: [<project-a>, ecommerce]
+# Repo-anchored (e.g. cross-project docs skill anchored to one repo)
+repo:
+  - handle: skill-graph
+    url: https://github.com/jacob-balslev/skill-graph
 ```
-
-With a hypothetical two-project workspace config:
-
-```json
-{
-  "workspace": {
-    "projects": {
-      "<project-a>":  { "semantic_tags": ["ecommerce", "saas", "b2b"] },
-      "<project-b>":  { "semantic_tags": ["ecommerce", "b2c"] }
-    }
-  }
-}
-```
-
-(`<project-a>` and `<project-b>` are placeholders — adopters use whatever kebab-case handles they choose.) A skill with `workspace_tags: [ecommerce]` routes into both projects. A skill with `workspace_tags: [b2b]` routes only into the first. A skill with no `workspace_tags` routes into all projects (ambient).
 
 ---
 
-## 5. Do I use `subject`, `domain`, `workspace_tags`, or `routing_bundles`?
+## 5. Do I use `subject`, `taxonomy_domain`, `project[]`, or `routing_bundles`?
 
 These four fields all group skills, but they answer different questions. Picking the wrong field creates misleading organization that corrodes routing quality. Use this table before adding any skill-grouping field:
 
 | Field | Answers the question | Shape | Primary consumer |
 |---|---|---|---|
 | `subject` | What flat browse shelf does this skill live on? | single string from the closed 9-value enum (see `field-reference.md § subject`) | human browse UI, filter dropdowns, routing first-pass discriminator |
-| `domain` | Where does this skill sit in a hierarchy for tree browsing? | optional slash-delimited path (e.g., `code-engineering/integrations/shopify`) | folder-tree UI, docs site navigation |
-| `workspace_tags` | Which of my projects is this skill relevant to? | flat array (e.g., `[<project-a>, ecommerce]`) | router filter at routing time |
+| `taxonomy_domain` | Where does this skill sit in a hierarchy for tree browsing within its `subject`? | optional slash-delimited path (e.g., `code-engineering/integrations/shopify`) | folder-tree UI, docs site navigation |
+| `project[]` / `repo[]` | Which specific project(s) or repo(s) is this skill anchored to? | array of `{handle, role}` objects | router project-fit filter, manifest `by_project` rollup |
 | `routing_bundles` | Which batch-activation group does this skill belong to? | flat array (e.g., `[quality, security]`) | router batch-load by group label |
 
 ### Three rules that prevent misuse
 
 1. **Never use `subject` for routing-bundle membership.** It's a browse shelf. If you find yourself writing "when the router sees `code-engineering` it should load all X" — you want `routing_bundles`, not `subject`.
 
-2. **Never use `workspace_tags` for taxonomy.** It's a routing filter. If you find yourself tagging every skill with every project handle to build a grouping — you want `subject` or `domain`.
+2. **Never use `project[]` for taxonomy.** It's a project-fit filter for `deployment_target: project` skills. If you find yourself declaring every project handle to build a grouping — you want `subject` or `taxonomy_domain`.
 
-3. **Never use `domain` to filter routing.** A hierarchy helps humans find skills. The router doesn't walk it. If you want the router to match `code-engineering/integrations/shopify` at query time, flatten it into `routing_bundles: [integrations]` or `workspace_tags: [ecommerce]`.
+3. **Never use `taxonomy_domain` to filter routing.** A hierarchy helps humans find skills. The router doesn't walk it. If you want the router to match `code-engineering/integrations/shopify` at query time, flatten it into `routing_bundles: [integrations]` or declare the project in `project[]`.
 
 ### Worked example
 
-A Shopify skill in a multi-project, large-library workspace:
+A Shopify skill in a project-anchored, large-library workspace:
 
 ```yaml
-subject: code-engineering                          # "Which flat browse shelf?" (one of the 9-value enum)
-domain: code-engineering/integrations/shopify      # "Where in a tree?" (optional; complements subject for hierarchical browsing)
-workspace_tags: [ecommerce]                        # "Which of my projects?"
-routing_bundles: [integrations]                    # "Which batch-activation group?"
+subject: code-engineering                                    # "Which flat browse shelf?" (one of the 9-value enum)
+taxonomy_domain: code-engineering/integrations/shopify       # "Where in a tree?" (optional; complements subject for hierarchical browsing)
+deployment_target: project                                   # "Portable or project-specific?"
+project:
+  - handle: sales-hub                                        # "Which project?"
+    role: source-of-truth
+routing_bundles: [integrations]                              # "Which batch-activation group?"
 ```
 
-Each field does a distinct job. None is redundant with the others. A single-project workspace can omit `workspace_tags`; a library with no batch-activation pattern can omit `routing_bundles`; a library that does not need a hierarchical browse view can omit `domain`. `subject` is always present because it is required by the schema (enforced by `enum` in `schemas/skill.schema.json`).
+Each field does a distinct job. None is redundant with the others. A portable skill omits `project[]`; a library with no batch-activation pattern can omit `routing_bundles`; a library that does not need a hierarchical browse view can omit `taxonomy_domain`. `subject` is always present because it is required by the schema (enforced by `enum` in `schemas/skill.schema.json`), as is `deployment_target`.

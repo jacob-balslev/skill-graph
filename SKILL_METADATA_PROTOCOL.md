@@ -23,8 +23,32 @@ This document is the top-level public contract for the Skill Metadata Protocol f
 
 ---
 
+## Charter — Rules & Goal
+
+**Mission & Vision** are shared across all three layers (Skill Metadata Protocol, Skill Audit Loop, Skill Graph); the canonical statement is [`AGENTS.md § Mission and Vision`](AGENTS.md#mission-and-vision). This section records the **Protocol layer's** own Rules and Goal, so an agent editing this contract knows what it is bound by and what it is for.
+
+### Rules
+
+1. **The schema is the binding machine contract.** If this prose and `schemas/skill.schema.json` disagree, the schema wins and the prose is corrected — never the reverse.
+2. **Every authored skill declares the two required classification axes:** `subject` (closed 9-value enum) and `deployment_target` (closed 2-value enum: `portable` / `project`).
+3. **`scope` is an optional free-text statement** of what the skill teaches and what it does not. It is not an enum and never carries deployment-targeting values — that role belongs to `deployment_target`.
+4. **A `deployment_target: project` skill must declare a `grounding` block**, and that block names what it is grounded in via `grounding.subject_matter`.
+5. **Subdivide and affiliate with the current fields:** `taxonomy_domain` (slash-delimited) subdivides a crowded `subject`; `project[]` / `repo[]` carry belonging-entity references.
+6. **The canonical library is authored in the Agent-Skills-compatible nested encoding;** the normalizer reconciles the nested and flat encodings so every deterministic tool reads one logical contract.
+7. **`relations.boundary: [X]` means "exclude X from co-routing when this skill wins."** Write the reason as ownership ("I own this exclusively over X"), never as deference ("use X instead").
+8. **Version labels are earned by content, never bumped for convenience.** Advancing `schema_version` (or any `vN`) without doing the migration that version represents is fake conformance.
+9. **Audit Status fields are owned by the audit and evaluation tooling.** Never hand-stamp `application_verdict: APPLICABLE` (or any proof field) without an eval receipt.
+10. **Public exports must not leak repo-private paths, project secrets, PII, or internal-only doctrine.**
+
+### Goal
+
+Be the default open-source structure for project-relevant AI-agent skills: simple enough to author, strict enough to validate, and expressive enough to make a `SKILL.md` useful for a real codebase instead of a generic prompt snippet. Near-term: keep this doc, `schemas/skill.schema.json`, `schemas/manifest.schema.json`, and `docs/field-reference.md` in exact agreement, and keep the public skill shape Agent-Skills-compatible while preserving the richer local metadata that routing and audit depend on.
+
+---
+
 ## Contents
 
+0. [Charter — Rules & Goal](#charter--rules--goal)
 1. [Overview](#overview)
 2. [Required vs Optional Fields](#required-vs-optional-fields)
 3. [Semantic Rules by Field Group](#semantic-rules-by-field-group)
@@ -104,17 +128,20 @@ Map the v8 `subject` axis to the on-disk directory under `~/Development/skills/s
 
 ```yaml
 metadata:
-  # === v8 Classification (subject + scope; polyhierarchy via subjects[]) — see ADR-0017 ===
+  # === v8 Classification (subject + deployment_target; polyhierarchy via subjects[]) — see ADR-0017 ===
 
   # subject: primary browse shelf — what the skill teaches. One of nine closed values:
   # code-engineering / quality-assurance / frontend-ui / design-craft / agent-ops /
   # product-domain / knowledge-organization / meta-methods / data-analytics.
   subject: meta-methods
 
-  # scope: deployment targeting. One of three closed values:
-  # portable (any project) / workspace (this workspace only) /
-  # project (one specific repo; requires populated `grounding` block).
-  scope: portable
+  # deployment_target: deployment targeting. One of two closed values:
+  # portable (any project) / project (one specific project; requires a populated `grounding` block).
+  deployment_target: portable
+
+  # scope: OPTIONAL free-text PRD-style statement of what the skill teaches and what it does not.
+  # Not an enum (the deployment-targeting role belongs to `deployment_target`).
+  scope: "Teaches first-principles decomposition; not for routine refactors."
 
   # === Evaluation Status (three orthogonal axes — never collapse to boolean) ===
 
@@ -585,11 +612,11 @@ Authors who introduce a cross-domain `boundary[]` entry must move it to `anti_ex
 
 ### Grounding
 
-Required for project-scoped skills. See § Classification § Axis 3 for legacy scope aliases. Describes where the skill's claims are anchored in a specific project.
+Required when `deployment_target: project`. Describes where the skill's claims are anchored in a specific project.
 
 ```yaml
 grounding:
-  domain_object: string         # What the skill is about (e.g. "Shopify order sync")
+  subject_matter: string        # What the skill is grounded in (e.g. "Shopify order sync")
   grounding_mode: repo_specific | universal | hybrid
   truth_sources:                # Files whose content the skill depends on
     - path: src/path/to/file.ts

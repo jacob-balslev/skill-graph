@@ -8,33 +8,42 @@ Each section below has three parts: **Why this field exists**, **Common confusio
 
 ---
 
-## `scope`
+## `deployment_target`
 
 ### Why this field exists
 
-`scope` is the routing-layer signal that tells consumers (and humans) how transferable a skill is between projects. The three values map to three distinct relationships with the codebase:
+`deployment_target` is the routing-layer signal that tells consumers (and humans) how transferable a skill is between projects. The two values map to two distinct relationships with the codebase:
 
-- `codebase` — the skill is coupled to specific repo conventions, file paths, or proprietary terminology. Loading it in another repo would mislead the agent.
-- `reference` — the skill is pure knowledge with no repo coupling (e.g., `wcag-audit-patterns`, `next-best-practices`). Safe to load anywhere.
-- `portable` — the skill captures patterns that transfer between similar repos but may need light adaptation (e.g., `webhook-integration`, `database-migration`).
+- `portable` — the skill captures patterns that apply across any project with no repo-specific coupling (e.g., `testing-strategy`, `webhook-integration`). Safe to load anywhere.
+- `project` — the skill is coupled to specific repo conventions, file paths, or proprietary terminology of one project. Loading it in another repo would mislead the agent. Requires a populated `grounding` block and a `project[]` declaration.
 
-Without `scope`, a consumer cannot tell at glance whether a skill it inherited from another project is safe to use, or whether it's leaking assumptions from that project. The router uses `scope` together with `workspace_tags` to enforce project-fit — a `codebase` skill from project A is filtered out when serving project B even if the keywords match.
+Without `deployment_target`, a consumer cannot tell at a glance whether a skill inherited from another project is safe to use or is leaking assumptions. The router uses `deployment_target` together with `project[]` to enforce project-fit — a `project` skill for project A is filtered out when serving project B even if the keywords match.
+
+### `scope` — the free-text companion
+
+`scope` is a separate, optional free-text field for a PRD-style description of what the skill teaches and does not teach. It is not an enum and is not used for routing decisions. Use it to expand on the skill's boundaries in plain language for human readers.
 
 ### Common confusion
 
-Authors confuse `scope: portable` with "I haven't bothered to check yet" — using it as the default. The schema accepts that, but the routing decisions downstream are wrong if the skill actually depends on project-specific conventions. Default to `portable` only after a real check that the skill has no hidden repo coupling. When in doubt, use `codebase` and let the consumer relax the constraint explicitly.
+Authors previously used `scope: portable` as a lazy default without checking for hidden repo coupling. In v8, `deployment_target: portable` should still be set deliberately: only after a real check that the skill has no hidden coupling to a specific project. When in doubt, use `deployment_target: project` with the appropriate `grounding` and `project[]`.
 
 ### Worked example
 
 ```yaml
 # Coupled to a specific repo's table names + auth helpers
-scope: codebase
+deployment_target: project
+project:
+  - handle: sales-hub
+    role: source-of-truth
+grounding:
+  subject_matter: Sales Hub order reconciliation logic
+  grounding_mode: repo_specific
 
-# Universal patterns; safe to load in any web project
-scope: reference
+# Universal patterns; safe to load in any project
+deployment_target: portable
 
-# Pattern transfers but needs light adaptation
-scope: portable
+# Optional free-text description of what this specific skill covers/excludes
+scope: "Covers abstract testing strategy; does not cover project-specific test fixtures."
 ```
 
 ---
@@ -188,13 +197,13 @@ Three values are valid in v3: `repo_code_first` (repo evidence wins), `general_k
 
 ### Why this field exists
 
-`portability.readiness` exists because `scope` says where a skill applies, while readiness says how proven its export path is. A skill can be `scope: portable` and still have only a declared portability claim. Authors use `declared` for metadata-only portability, `scripted` when an export transform exists for at least one target, and `verified` when the exported output has been checked with a receipt.
+`portability.readiness` exists because `deployment_target` says where a skill applies, while readiness says how proven its export path is. A skill can be `deployment_target: portable` and still have only a declared portability claim. Authors use `declared` for metadata-only portability, `scripted` when an export transform exists for at least one target, and `verified` when the exported output has been checked with a receipt.
 
-Consumers use `readiness` together with `scope` to decide whether a skill is only theoretically portable, mechanically exportable, or already verified in a target runtime.
+Consumers use `readiness` together with `deployment_target` to decide whether a skill is only theoretically portable, mechanically exportable, or already verified in a target runtime.
 
 ### Common confusion
 
-Do not use `readiness` as a second taxonomy for project fit. `scope: portable` plus `portability.readiness: declared` is a valid state: the skill is intended to transfer, but no export verification exists yet. Move to `scripted` only when tooling exists, and to `verified` only when there is a concrete verification receipt.
+Do not use `readiness` as a second taxonomy for project fit. `deployment_target: portable` plus `portability.readiness: declared` is a valid state: the skill is intended to transfer, but no export verification exists yet. Move to `scripted` only when tooling exists, and to `verified` only when there is a concrete verification receipt.
 
 ---
 
@@ -204,7 +213,7 @@ Do not use `readiness` as a second taxonomy for project fit. `scope: portable` p
 |---|---|
 | Schema-canonical field definitions (auto-generated) | [`field-reference.generated.md`](field-reference.generated.md) |
 | Full prose reference with examples and lint notes | [`field-reference.md`](field-reference.md) |
-| Decision tree for taxonomy fields (`category`, `category`, `routing_bundles`, `workspace_tags`) | [`field-decision-guide.md`](field-decision-guide.md) |
+| Decision tree for taxonomy fields (`subject`, `taxonomy_domain`, `deployment_target`, `project[]`, `routing_bundles`) | [`field-decision-guide.md`](field-decision-guide.md) |
 | Predicate semantics (relations) | [`glossary.md` § Relation predicates](glossary.md) |
 | Authoring template | [`../examples/skill-metadata-template.md`](../examples/skill-metadata-template.md) |
 | Why archetypes are rigid vs anti-rigid (OntoClean) | [`adr/0003-ontoclean-rigidity-tags.md`](adr/0003-ontoclean-rigidity-tags.md) |

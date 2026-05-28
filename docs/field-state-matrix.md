@@ -15,19 +15,18 @@
 | **deprecated** | Was part of an older schema version. Still accepted for back-compat; should not be added to new skills. | n/a (legacy). | Phased out per the schema migration plan. |
 | **compatibility-alias** | An alternative name or value the normalizer maps to the canonical shape. Accepted on read; new skills should use the canonical form. | n/a (legacy / workspace convention). | Normalized at parse time. |
 
-## Required (13 fields, v7 schema gate)
+## Required (12 fields, v8 schema gate)
 
-All thirteen are **human-authored**. The schema lint gate (`skill-lint.js` against `schemas/skill.schema.json`) fails the skill if any are missing or malformed. Three of them are also **earned-with-receipt**: setting the attested state without the supporting artifact is dishonest.
+All twelve are **human-authored**. The schema lint gate (`skill-lint.js` against `schemas/skill.schema.json`) fails the skill if any are missing or malformed. Three of them are also **earned-with-receipt**: setting the attested state without the supporting artifact is dishonest.
 
 | Field | Type | State | Receipt expected when |
 |---|---|---|---|
-| `schema_version` | int | human-authored | n/a (constant `7` for v7 skills) |
+| `schema_version` | int | human-authored | n/a (canonical value is `8`) |
 | `name` | string | human-authored | n/a |
 | `description` | string ≥ 20 | human-authored | n/a |
 | `version` | semver | human-authored | n/a (author bumps on content change) |
-| `type` | enum | human-authored | n/a |
-| `category` | enum | human-authored | n/a |
-| `scope` | enum | human-authored | n/a |
+| `subject` | closed 9-enum | human-authored | n/a |
+| `deployment_target` | closed 2-enum | human-authored | n/a |
 | `owner` | string | human-authored | n/a |
 | `freshness` | ISO date | human-authored | n/a (authored review date, not computed) |
 | `drift_check.last_verified` | ISO date | human-authored | n/a |
@@ -43,9 +42,9 @@ Required only when the gating condition applies. All **human-authored**.
 | Field | Required when | Enforced by |
 |---|---|---|
 | `extends` | `type: overlay` | schema `allOf` |
-| `grounding` | `scope: codebase` | schema `allOf` |
+| `grounding` | `deployment_target: project` | schema `allOf` |
 | `superseded_by` | `stability: deprecated` | schema `allOf` |
-| `keywords` | `scope: codebase` OR `routing_bundles` is set | routing review / routing evals (not schema-enforced) |
+| `keywords` | `deployment_target: project` OR `routing_bundles` is set | routing review / routing evals (not schema-enforced) |
 
 ## Optional, strongly recommended (5 fields)
 
@@ -70,9 +69,10 @@ All **human-authored** unless tagged otherwise.
 | `paths` | glob[] | human-authored | Gitignore-style negations allowed; all-negation lists are rejected by lint. |
 | `examples` | string[] | human-authored | Positive activation examples in user voice. 2-5 recommended. |
 | `anti_examples` | string[] | human-authored | Negative class. Prompts that look related but a different skill should handle. |
-| `workspace_tags` | string[] | human-authored | Absent = ambient skill (applies across all projects). |
+| `project` | `{handle, role}[]` | human-authored | Belonging-entity references for `deployment_target: project` skills. Absent = ambient skill (applies across all projects). Replaces old `workspace_tags`. |
+| `repo` | `{handle, url}[]` | human-authored | Repo-level belonging-entity references. Complements `project[]`. |
 | `routing_bundles` | string[] | human-authored | Routing group memberships. |
-| `domain` | string | human-authored | Slash-delimited hierarchical path (e.g. `engineering/api-design`). Complements `category`. |
+| `taxonomy_domain` | string | human-authored | Slash-delimited hierarchical sub-path within a `subject` (e.g. `engineering/api-design`). Complements `subject`. Renamed from `domain`. |
 
 ### Classification (taxonomy)
 
@@ -97,11 +97,11 @@ All **human-authored**. Required as a group when `comprehension_state: present`.
 | `misconception` | string | human-authored | The wrong mental model people bring. Complements `boundary`; not directly graded. |
 | `concept` | object | **deprecated** | v5 nested teaching block. Accepted for v5/v6 back-compat. Lint warns when populated alongside missing flat fields. |
 
-### Grounding (required when scope: codebase)
+### Grounding (required when deployment_target: project)
 
 | Field | Type | State | Notes |
 |---|---|---|---|
-| `grounding.domain_object` | string | human-authored | What the skill is about. |
+| `grounding.subject_matter` | string | human-authored | Free-text label naming what the skill is grounded in (e.g., `Shopify order sync`). Renamed from `domain_object`. |
 | `grounding.grounding_mode` | enum | human-authored | `repo_specific` / `universal` / `hybrid`. |
 | `grounding.truth_sources` | array | human-authored | Object entries with `path`, optional `line_range`, optional `anchor`, optional `note` are preferred. |
 | `grounding.failure_modes` | string[] | human-authored | What goes wrong when applied incorrectly. |
@@ -159,7 +159,7 @@ The Skill Audit Loop owns these. **Do not hand-author.** Hand-edits are overwrit
 |---|---|
 | `id` | Derived from the skill's path relative to `skills/` (e.g. `task-execution`). |
 | `path` | Relative path to the `SKILL.md` file. |
-| `summary` | Aggregate counts (`total_skills`, `by_type`, `by_category`, `by_scope`, `by_stability`). |
+| `summary` | Aggregate counts (`total_skills`, `by_subject`, `by_deployment_target`, `by_schema_version`, `by_stability`, `by_project`). |
 | `generated_at` | ISO timestamp of when the manifest was generated. |
 | `activation` | Compiled block merging `triggers`, `keywords`, `paths`, `examples`, `anti_examples`. |
 | `health` | Compiled block merging `eval_artifacts`, `eval_state`, `routing_eval`, `comprehension_state`, `eval_last_run`, `freshness`, `drift_check`. |
@@ -173,22 +173,14 @@ For the complete authored-to-generated field rename map and loss policy see [man
 | `concept` (nested block) | The five flat Understanding fields (`mental_model`, `purpose`, `boundary`, `analogy`, `misconception`) | v5 legacy. Still accepted for back-compat. Lint warns when populated alongside missing flat fields. |
 | `audit_verdict` (single aggregate) | The four discrete v7 verdicts (`structural_verdict`, `truth_verdict`, `comprehension_verdict`, `application_verdict`) | Pre-v7 aggregate. v6→v7 codemod (`scripts/migrate-skill-v6-to-v7.js`) strips it. See [ADR 0011](./adr/0011-split-audit-verdict-into-four-verdicts.md). |
 | `relations.adjacent` | `relations.related` | Deprecated alias from v3.0. Tooling still accepts it. New authoring should use `related`. |
-| `eval_status` | The three v7 fields `eval_artifacts` + `eval_state` + `routing_eval` | Legacy single field replaced by the orthogonal triplet. |
+| `eval_status` | The orthogonal triplet `eval_artifacts` + `eval_state` + `routing_eval` | Legacy single field replaced by the orthogonal triplet. |
 
 ## Compatibility-alias (normalized at parse time)
 
-These are not separate fields; they are alternative spellings or values that the normalizer maps to canonical shape.
+The only alias normalization still performed is the two-physical-encoding reconciliation below. The v7 field/value aliases (`primaryCategory`; `scope: operational|overlay|generic`; `type: doctrine|domain|framework|feedback`) are NOT normalized under the v8 clean cut — those fields and values are not declared in the live schema, so a skill still carrying them fails lint (CONTENT-mode migration work for `/audit:*`, not an auto-fixed alias).
 
 | Alias | Canonical form | Normalized by |
 |---|---|---|
-| `primaryCategory` (title-case workspace values like `Agent System`) | `category` / `categories[0]` (lowercase enum) | `parse-frontmatter.js::normalizeFrontmatter()` |
-| `scope: operational` | `scope: codebase` | `generate-manifest.js` |
-| `scope: overlay` | `scope: portable` | `generate-manifest.js` |
-| `scope: generic` | `scope: portable` | `generate-manifest.js` |
-| `type: doctrine` | `type: capability` | `generate-manifest.js` |
-| `type: domain` | `type: capability` | `generate-manifest.js` |
-| `type: framework` | `type: workflow` | `generate-manifest.js` |
-| `type: feedback` | `type: overlay` | `generate-manifest.js` |
 | Agent-Skills-compatible encoding (nested `metadata:`, JSON-string-encoded structured fields) | Protocol-native (top-level YAML keys, native objects/arrays) | `parse-frontmatter.js::normalizeFrontmatter()` lifts `metadata.*` to top level and `JSON.parse`s stringified values |
 
 **Stripped during normalization (not part of the contract, authors never write these):** `skill_graph_source_repo`, `skill_graph_protocol`, `skill_graph_project`, `skill_graph_canonical_skill`, description-length book-keeping keys.

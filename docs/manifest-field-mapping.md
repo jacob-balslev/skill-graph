@@ -40,8 +40,9 @@ Every top-level authored field in `schemas/skill.schema.json` has exactly one en
 | 5 | `version` | copied through unchanged | `version`. |
 | 6 | `subject` | copied through unchanged | v8 primary classification — closed 9-value enum. See `schemas/skill.schema.json § subject`. |
 | 7 | `subjects` | copied through unchanged | Optional polyhierarchy — ordered array (max 2), `subjects[0]` matches `subject`. |
-| 8 | `domain` | copied through unchanged | Optional slash-delimited domain path subdividing `subject`. |
-| 10 | `scope` | copied through unchanged | `scope`. |
+| 8 | `taxonomy_domain` | copied through unchanged | Optional slash-delimited sub-path within a `subject` (e.g. `code-engineering/integrations/shopify`). Renamed from `domain`. |
+| 9 | `deployment_target` | copied through unchanged | Closed 2-enum: `portable` \| `project`. Drives project-fit filtering. |
+| 10 | `scope` | copied through unchanged | Optional free-text PRD-style statement. Not an enum. |
 | 11 | `owner` | copied through unchanged | `owner`. |
 | 12 | `freshness` | grouped under parent | `health.freshness`. |
 | 13 | `reviewed_at` | grouped under parent | `health.reviewed_at`; compatibility alias for `freshness`. |
@@ -65,7 +66,8 @@ Every top-level authored field in `schemas/skill.schema.json` has exactly one en
 | 31 | `examples` | grouped under parent | `activation.examples`. |
 | 32 | `anti_examples` | grouped under parent | `activation.anti_examples`. |
 | 33 | `paths` | grouped under parent | `activation.paths`. |
-| 34 | `workspace_tags` | copied through unchanged | Authored workspace/project relevance tags. v4 rename of v3 `project_tags`. |
+| 34a | `project` | copied through unchanged | Belonging-entity references for project-anchored skills. Array of `{handle, role}`. Replaces `workspace_tags`. |
+| 34b | `repo` | copied through unchanged | Repo-level belonging-entity references. Array of `{handle, url}`. |
 | 35 | `routing_bundles` | copied through unchanged | Activation-bundle tags. v4 rename of v3 `routing_groups`. |
 | 36 | `relations` | copied through unchanged | `relations`. |
 | 37 | `grounding` | copied through unchanged | `grounding`. |
@@ -92,7 +94,7 @@ These fields exist in `skills.manifest.json` with no authored counterpart:
 | `generated_at` | Timestamp written by the manifest generator at compile time. |
 | `workspace` | Echoed from `.skill-graph/config.json` when present — emits `skill_roots` and `projects` so consumers can resolve semantic tags without re-reading the config. New in v3. |
 | `summary.total_skills` | Count of entries in `skills[]`. |
-| `summary.by_subject`, `summary.by_scope`, `summary.by_schema_version`, `summary.by_stability`, `summary.by_project` | Rollup counts derived from the corresponding authored fields across all skills. `by_project` is only present when workspace mode is active. |
+| `summary.by_subject`, `summary.by_deployment_target`, `summary.by_schema_version`, `summary.by_stability`, `summary.by_project` | Rollup counts derived from the corresponding authored fields across all skills. `by_deployment_target` replaced `by_scope` when `scope` became free-text. `by_project` is only present when workspace mode is active. |
 | `skills[].id` | Stable identifier derived from `name`. Normalization rules live in the generator; `id` may be equal to `name` when no normalization is needed. |
 | `skills[].path` | Repo-relative path to the source `SKILL.md` file, written by the generator when it reads the file. |
 | `skills[].project` | Literal handle of the project root this skill was loaded from. Absent for skills loaded from a shared root without a project owner. New in v3. |
@@ -120,7 +122,7 @@ Four Agent-Skills base-standard fields and one Skill Graph classification field 
 | `compatibility` | Dropped as "belongs in a separate spec" | SKILL.md compatibility. The compatibility string declares runtime or environment requirements (e.g. `Markdown, YAML, JSON Schema` or `Python 3.11+`). Consumers route based on this. Without flow-through, consumers would have to re-parse the authored source. |
 | `allowed-tools` | Dropped as "a runtime concern, not metadata" | SKILL.md compatibility. The base standard defines `allowed-tools` as a frontmatter field that sandboxes tool use. The manifest is the canonical feed for runtime consumers; stripping `allowed-tools` would force consumers back to the authored file, defeating the purpose of compiling a manifest. |
 | `routing_bundles` (v1 name: `route_groups`) | Dropped as "superseded by `relations`" | Relations and routing groups encode different semantics. `relations` declares per-skill adjacencies; `routing_bundles` declares a classification tag (e.g. `quality`, `security`) that a routing layer can use to pick a skill family. They are complementary, not overlapping, and the router layer needs both. Field renamed to `routing_groups` in schema_version 2 (SH-5784), then to `routing_bundles` in schema_version 4. |
-| `domain_object` (inside `grounding`) | Dropped from the required-field set during an earlier schema tightening | Grounded skills anchor to a specific domain object (e.g. "Shopify order reconciliation," "Skill authoring for the Skill Metadata Protocol frontmatter"). Consumers use `domain_object` to decide whether a skill matches a task's subject. Dropping it left grounded skills ungrounded to consumers. SH-5776 restored it as a required sub-field. |
+| `subject_matter` (inside `grounding`, previously named `domain_object`) | Dropped from the required-field set during an earlier schema tightening | Grounded skills anchor to a specific subject (e.g. "Shopify order reconciliation," "Skill authoring for the Skill Metadata Protocol frontmatter"). Consumers use `subject_matter` to decide whether a skill matches a task's subject. Dropping it left grounded skills ungrounded to consumers. SH-5776 restored it as a required sub-field; v8 renamed the sub-field from `domain_object` to `subject_matter`. |
 
 ### Current dropped-field list
 
@@ -153,7 +155,7 @@ Three versions coexist in a manifest ecosystem:
 | Version | Lives in | Meaning |
 |---|---|---|
 | Authored skill `version` | Per-skill frontmatter `version` field | Version of the skill's content (e.g. `1.2.0` means the skill has been iterated twice since its initial publish). |
-| Authored skill schema version | Per-skill frontmatter `schema_version` field | Version of the `skill.schema.json` contract the skill was authored against. The active value is `7` (four-verdict Audit Status). |
+| Authored skill schema version | Per-skill frontmatter `schema_version` field | Version of the `skill.schema.json` contract the skill was authored against. The active value is `8` (`subject` + `deployment_target` classification, free-text `scope`, `taxonomy_domain`, `project[]`/`repo[]` belonging-entity references, `grounding.subject_matter`). |
 | Manifest schema version | Manifest root `schema_version` field | Version of the compiled manifest root contract. `scripts/generate-manifest.js` emits `4` today and `schemas/manifest.schema.json` intentionally validates that value with `schema_version.const: 4`; the manifest schema file itself is v7 because the field set has advanced additively through v5-v7 without forcing a root-version bump for consumers. |
 
 ### When to bump `schema_version`
@@ -312,8 +314,9 @@ name: skill-metadata-template
 description: "Authoring template for new Skill Metadata Protocol skills. ..."
 version: 1.0.0
 subject: knowledge-organization
-domain: skill-system/authoring
-scope: workspace
+deployment_target: project
+taxonomy_domain: skill-system/authoring
+scope: "Covers authoring a new Skill Metadata Protocol SKILL.md from scratch; does not cover the audit loop or manifest generation."
 owner: maintainer
 freshness: "2026-04-17"
 drift_check:
@@ -340,8 +343,11 @@ relations:
     - skill: refactor
       reason: "refactor is behavior-preserving code modification, not skill authoring"
   verify_with: [documentation]
+project:
+  - handle: skill-graph
+    role: source-of-truth
 grounding:
-  domain_object: Skill authoring for the Skill Metadata Protocol frontmatter
+  subject_matter: Skill authoring for the Skill Metadata Protocol frontmatter
   grounding_mode: repo_specific
   truth_sources:
     - docs/skill-metadata-protocol.md
@@ -368,10 +374,10 @@ lifecycle:
   "name": "skill-metadata-template",
   "description": "Authoring template for new Skill Metadata Protocol skills. ...",
   "version": "1.0.0",
-  "type": "capability",
-  "category": "knowledge",
-  "domain": "skill-system/authoring",
-  "scope": "reference",
+  "subject": "knowledge-organization",
+  "deployment_target": "project",
+  "taxonomy_domain": "skill-system/authoring",
+  "scope": "Covers authoring a new Skill Metadata Protocol SKILL.md from scratch; does not cover the audit loop or manifest generation.",
   "owner": "maintainer",
   "stability": "stable",
   "license": "MIT",
@@ -389,8 +395,9 @@ lifecycle:
     ],
     "verify_with": ["documentation"]
   },
+  "project": [{ "handle": "skill-graph", "role": "source-of-truth" }],
   "grounding": {
-    "domain_object": "Skill authoring for the Skill Metadata Protocol frontmatter",
+    "subject_matter": "Skill authoring for the Skill Metadata Protocol frontmatter",
     "grounding_mode": "repo_specific",
     "truth_sources": [
       "docs/skill-metadata-protocol.md",
@@ -422,11 +429,11 @@ Each arrow corresponds to one row of the rename map.
 
 - `name` → `id` **and** `name` — the generator writes both. `id` is the stable reference used by other manifest entries (e.g. `relations.adjacent: ["documentation"]` refers to the `id` of another skill). `name` remains human-readable for display.
 - `name` → `path` — the generator records the source file path; this is the only way a consumer can trace a manifest entry back to its authored source without re-scanning the repo.
-- `description`, `version`, `type`, `category`, `scope`, `owner`, `stability` — straight copies, same keys, same shape. `category` remains enum-checked in the manifest so invalid source values cannot hide behind projection. (v2 `family` was renamed to `browse_category` in v3, then to `category` in v4 — see § Migration Note — v2 → v3.)
+- `description`, `version`, `subject`, `deployment_target`, `scope`, `owner`, `stability` — straight copies, same keys, same shape. `subject` is enum-checked in the manifest (closed 9-value enum); `deployment_target` is enum-checked (closed 2-value enum: `portable`/`project`); `scope` is free-text, passed through unchanged. (Historical note: v2 `family` was renamed to `browse_category` in v3, then to `category` in v4, then replaced by `subject` + `deployment_target` in v8 — see § Migration Note — v2 → v3.)
 - `license`, `compatibility`, `allowed-tools` — straight copies (post-SH-5776). The three SKILL.md base-standard optional fields flow through unchanged; a consumer that only speaks SKILL.md sees them at the expected keys.
 - `triggers`, `keywords`, `paths` → `activation.triggers`, `activation.keywords`, `activation.paths` — three sibling authored fields are grouped under a single `activation` object. This matches the semantic: they are all activation signals. The grouping is a presentation choice, not a loss.
 - `relations` → `relations` — copied through with the full sub-key set (`adjacent`, `related`, `broader`, `narrower`, `boundary`, `disjoint_with`, `verify_with`, `depends_on`). Same shape on both sides.
-- `grounding` → `grounding` — copied through unchanged. The authored field was renamed from `domain_frame` to `grounding` in SH-5779 (2026-04-16), aligning the authored field name with its long-standing manifest projection key. The internal sub-field `evaluation_mode` was renamed to `grounding_mode` in the same change — the field describes the evidence source, not the execution mode.
+- `grounding` → `grounding` — copied through unchanged. The authored field was renamed from `domain_frame` to `grounding` in SH-5779 (2026-04-16), aligning the authored field name with its long-standing manifest projection key. The internal sub-field `evaluation_mode` was renamed to `grounding_mode` in the same change. The grounding sub-field `subject_matter` (renamed from `domain_object` in v8) is passed through unchanged inside the `grounding` block.
 - `portability` → `portability` — copied through with the v2 sub-key set (`readiness`, `targets`). Renamed from v1 (`level`, `exports`) in SH-5784.
 - `freshness`, `drift_check`, `eval_artifacts`, `eval_state`, `routing_eval` → `health.freshness`, `health.drift_check`, `health.eval_artifacts`, `health.eval_state`, `health.routing_eval` — five sibling governance fields are grouped under a single `health` object. The three Evaluation Status fields replaced the v1 `health.eval_status` in SH-5784 and stay enum-checked in the manifest. `has_grounding` and `has_relations` are generated boolean flags that summarize presence of the corresponding authored blocks, so a consumer can filter on "grounded skills" without re-parsing the full `grounding` object.
 
