@@ -192,12 +192,12 @@ function validateWithSchema(value, schema, pointer = '', errors = []) {
   if ((schema.required || schema.properties || schema.additionalProperties === false) &&
       value && typeof value === 'object' && !Array.isArray(value)) {
     if (Array.isArray(schema.required)) {
-      // v8 classification (subject + scope). When one of these required axes is
+      // v8 classification (subject + deployment_target). When one of these required axes is
       // missing, surface the error with a named-axis label rather than the raw
       // schema-validation pointer, so authors immediately know it is a v8
       // conformance issue rather than a generic "missing property" — the cause
       // of the "I don't understand which check fired" friction audit M3 named.
-      const V8_AXES = new Set(['subject', 'scope']);
+      const V8_AXES = new Set(['subject', 'deployment_target']);
       for (const requiredField of schema.required) {
         if (!(requiredField in value)) {
           const isV8Axis = V8_AXES.has(requiredField);

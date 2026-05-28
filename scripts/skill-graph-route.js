@@ -325,8 +325,8 @@ function boundaryReason(item) {
  *
  * 2026-05-27: the project-fit filter reads the per-skill
  * `project[]` array (object-shape entries with `handle` + optional `role`).
- * The v8 `workspace_tags` field + `workspace.projects` semantic-tag mapping
- * were removed; semantic expansion is gone.
+ * The pre-v8 `workspace_tags` field and its `workspace.projects` semantic-tag
+ * mapping are gone; the current contract uses `project[]` and `deployment_target`.
  *
  * A skill matches when:
  *   - it has no `project` array (ambient / cross-project), OR

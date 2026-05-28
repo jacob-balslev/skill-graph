@@ -280,7 +280,7 @@ const FIELD_COMMENTS = {
 // they first appear. Map: fieldName -> divider line.
 // The divider is inserted BEFORE the field-purpose comment block.
 const SECTION_DIVIDERS = {
-  subject: '# === v8 Classification (subject + scope; polyhierarchy via subjects[]) — see ADR-0017 ===',
+  subject: '# === v8 Classification (subject + deployment_target; polyhierarchy via subjects[]) — see ADR-0017 ===',
   eval_artifacts: '# === Evaluation Status: three orthogonal axes ===',
   mental_model: '# === Understanding fields (when comprehension_state: present) ===',
 };

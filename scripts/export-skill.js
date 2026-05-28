@@ -41,11 +41,14 @@ const SKILL_MD_BASE_FIELDS = ['name', 'description', 'license', 'compatibility',
 // explicit and auditable. Unknown fields that appear in the frontmatter but
 // are not in either list are placed under metadata: too (fail-safe).
 //
-// Updated for schema_version 4: `category` is the flat browse shelf,
-// `domain` is the hierarchical domain path, `workspace_tags` is authored
-// relevance, and `routing_bundles` is the activation-bundle field. The
-// legacy `family` remains in the set for back-compat with v2 skills during
-// the migration window.
+// Current v8 authored fields include: `subject` (primary browse shelf),
+// `deployment_target` (portable | project), `taxonomy_domain` (hierarchical
+// sub-path within subject), `project[]`/`repo[]` (belonging-entity references),
+// and `routing_bundles` (activation-bundle field). Pre-v8 fields `category`,
+// `domain`, and `family` remain in the set so the exporter can still read older
+// skills in the corpus without data loss. The removed `workspace_tags` is
+// intentionally NOT in the set — an older skill still carrying it falls through
+// to `metadata:` via the fail-safe described above.
 const SKILL_GRAPH_EXTENSION_FIELDS = new Set([
   'schema_version',
   'urn',

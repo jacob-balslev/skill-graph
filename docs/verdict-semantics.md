@@ -49,7 +49,7 @@ If a future skill carries a DISPLACEMENT finding with a `requiredAction: follow-
 | `PASS` | Lint clean, no warnings. |
 | `PASS_WITH_FIXES` | Warnings present but no errors. |
 | `FAIL` | Lint or schema errors. |
-| `UNVERIFIED` | No structural audit has run since the v7 schema bump. |
+| `UNVERIFIED` | No structural audit has run yet. |
 
 ### `truth_verdict`
 
@@ -58,7 +58,7 @@ If a future skill carries a DISPLACEMENT finding with a `requiredAction: follow-
 | `PASS` | Truth sources align with declared `last_verified` and hashes. |
 | `DRIFT` | Truth sources changed since `last_verified`. |
 | `BROKEN` | Declared truth sources missing or unreadable. |
-| `UNVERIFIED` | No truth audit has run since the v7 schema bump. |
+| `UNVERIFIED` | No truth audit has run yet. |
 
 ### `comprehension_verdict` (gate 8)
 
@@ -68,9 +68,9 @@ If a future skill carries a DISPLACEMENT finding with a `requiredAction: follow-
 | `PROVISIONAL` | A single competent model ran the comprehension assessment and recorded a real result. Lower confidence than `PASS` because not yet confirmed by the independent dual-run grader, but distinct from `UNVERIFIED` which means no assessment has run. | Single-model audit run. |
 | `SHALLOW` | Skill recites the concept but does not deepen agent understanding. | Grader (single or dual). |
 | `REDUNDANT` | Baseline already saturated — skill adds no comprehension lift. | Grader (single or dual). |
-| `SKIPPED_BASELINE_HIGH` | Early-skip: `avg_primary_baseline >= 1.0` after the first 2 evals so the dual-run was aborted. v7 demotion behavior. | Procedural — no grader signal. |
+| `SKIPPED_BASELINE_HIGH` | Early-skip: `avg_primary_baseline >= 1.0` after the first 2 evals so the dual-run was aborted. | Procedural — no grader signal. |
 | `NA` | Skill carries no `evals/comprehension.json` by design (the comprehension layer doesn't apply to this archetype). | Author's declaration. |
-| `UNVERIFIED` | Initial state before any grader run since the v7 schema bump. | Default for the v6→v7 corpus migration. |
+| `UNVERIFIED` | Initial state before any grader run. | Default for skills not yet assessed by the comprehension grader. |
 
 **Comprehension graded set:** `{PROVISIONAL, PASS, SHALLOW, REDUNDANT}`. The verifier at `skill-graph/scripts/check-audit-manifest.js` requires `skills/<name>/evals/comprehension.json` to exist on disk when `comprehension_verdict` is in this set.
 
@@ -122,7 +122,7 @@ PASS / APPLICABLE  >  PROVISIONAL  >  UNVERIFIED
 
 - **`PROVISIONAL` is NOT a failure.** It is a real, lower-confidence result. A skill recorded as `PROVISIONAL` was actually assessed by a competent single model that produced a real grader output. The independent dual-run grader has not yet confirmed it. See `.claude/rules/version-schema-contract.md` § 5 for the canonical statement.
 - **`UNVERIFIED` is honest absence.** No model ran the assessment. The skill has not been graded.
-- **Never present "carries the vN label" as "verified."** A skill that is "fully v7" but never assessed at all is still `UNVERIFIED` — but it becomes `PROVISIONAL` the moment a single model assesses it. Never stuck at `UNVERIFIED` out of process purity.
+- **Never present "carries the vN label" as "verified."** A skill that is "fully v8" but never assessed at all is still `UNVERIFIED` — but it becomes `PROVISIONAL` the moment a single model assesses it. Never stuck at `UNVERIFIED` out of process purity.
 - **The negative verdicts (`SHALLOW` / `REDUNDANT` / `HARMFUL` / `MIXED` / `FALSE_POSITIVE`) are also lower-confidence when produced by a single model**, but record the negative grader signal honestly. They are NOT downgraded to `PROVISIONAL` when single-model — the verdict label captures the grader output, the confidence tier is implicit in whether a dual-run confirmed it.
 
 ## How to update verdicts honestly

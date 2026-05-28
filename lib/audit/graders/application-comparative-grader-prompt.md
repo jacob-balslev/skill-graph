@@ -1,7 +1,7 @@
 # Application (Gate 9) Comparative Grader Prompt
 
 > Used by `evaluate-skill.js --mode application` to grade whether **loading a skill changes
-> agent behavior on a real artifact**. Writes `application_verdict` — the v7 primary quality
+> agent behavior on a real artifact**. Writes `application_verdict` — the primary quality
 > signal (ADR 0011). This is gate 9 of the Skill Audit Loop's Behavior Gate.
 >
 > **Status (2026-05-21):** prompt + eval schema authored as the foundation for the gate-9
