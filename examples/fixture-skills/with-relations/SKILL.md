@@ -1,11 +1,10 @@
 ---
-schema_version: 6
+schema_version: 8
 name: with-relations
-description: "Use as the v6-conformant fixture exercising all four typed relation predicates (related, boundary, verify_with, depends_on) using the {skill, reason} object shape. Activate this skill when verifying that lint resolves cross-fixture relation targets without a sibling skills clone. Do NOT use as a production skill (use a real capability skill from the canonical library)."
+description: "Use as the v8-conformant fixture exercising all four typed relation predicates (related, boundary, verify_with, depends_on) using the {skill, reason} object shape. Activate this skill when verifying that lint resolves cross-fixture relation targets without a sibling skills clone. Do NOT use as a production skill (use a real capability skill from the canonical library)."
 version: 1.0.0
-type: capability
-category: engineering
-scope: portable
+subject: knowledge-organization
+deployment_target: portable
 owner: skill-graph-fixture-suite
 freshness: "2026-05-19"
 relations:
@@ -32,7 +31,7 @@ license: Apache-2.0
 
 # With-Relations Fixture
 
-This fixture exercises every typed relation predicate in the v6 contract using
+This fixture exercises every typed relation predicate in the v8 contract using
 the canonical `{skill, reason}` object shape. Together with the sibling
 fixtures (`minimal-capability`, `with-grounding`, `comprehension-full`) it
 forms a closed cross-reference cluster — lint resolves every relation target

@@ -1,13 +1,12 @@
 ---
-# yaml-language-server: $schema=https://skillgraph.dev/schemas/skill.v6.schema.json
-schema_version: 6
+schema_version: 8
 name: migrate-orders-to-canonical-schema
 description: "Use when running migration 0004 that normalizes the orders table from a Stripe-specific shape (stripe_session_id, stripe_customer_id as top-level columns) to a canonical provider-agnostic shape (provider, provider_order_id, provider_customer_id). Covers the four-phase safe migration procedure — add nullable columns, backfill from existing data, validate, drop legacy columns — and the RLS policy update that must accompany the column rename. Do NOT use for unrelated schema migrations (write a fresh skill anchored to that migration's number), for designing a new canonical schema from scratch, or for the ongoing orgQuery access pattern (use postgres-rls-pattern)."
 version: 0.1.0
-type: workflow
-category: engineering
-domain: engineering/database
-scope: codebase
+subject: code-engineering
+deployment_target: project
+taxonomy_domain: engineering/database
+scope: "Four-phase orders-table migration for the saas-stripe-postgres example project — canonicalizes Stripe-specific column names to provider-agnostic names with RLS policy update."
 owner: saas-stripe-postgres-example
 freshness: "2026-05-18"
 drift_check:
@@ -61,7 +60,7 @@ relations:
   verify_with:
     - postgres-rls-pattern
 grounding:
-  domain_object: "Migration 0004 — the four-phase procedure that canonicalizes the orders table from Stripe-specific column names to provider-agnostic column names, with an RLS policy update in the same migration"
+  subject_matter: "Migration 0004 — the four-phase procedure that canonicalizes the orders table from Stripe-specific column names to provider-agnostic column names, with an RLS policy update in the same migration"
   grounding_mode: repo_specific
   truth_sources:
     - path: examples/projects/saas-stripe-postgres/db/migrations/0004_canonicalize_orders.sql
@@ -79,6 +78,9 @@ portability:
   readiness: scripted
   targets:
     - skill-md
+project:
+  - handle: saas-stripe-postgres
+    role: primary
 lifecycle:
   stale_after_days: 30
   review_cadence: quarterly

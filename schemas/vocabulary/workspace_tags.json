@@ -1,5 +1,5 @@
 {
-  "$comment": "Controlled vocabulary for the `workspace_tags` field. Adopters declare their own literal project handles in their workspace config (`.skill-graph/config.json`); only `skill-graph` (this repo) is shipped as a literal handle. Semantic tags below are illustrative categories cross-project tags commonly fall into. Extend with your own. Scope: soft-advisory; skill-lint.js emits WARNING (not error) for unknown tags.",
+  "$comment": "HISTORICAL — the `workspace_tags` field was REMOVED in the v8 clean cut. Belonging-entity references now use `project[]` / `repo[]` (see schemas/skill.schema.json). This vocabulary is retained ONLY as a reference for migrating pre-v8 skills that still carry `workspace_tags`; it is NOT part of the current authoring contract and no live tooling loads it. Original note (pre-v8): Controlled vocabulary for the `workspace_tags` field; adopters declared literal project handles in `.skill-graph/config.json`; semantic tags below were illustrative categories; soft-advisory (skill-lint.js emitted a WARNING for unknown tags).",
   "version": "2.0.0",
   "last_updated": "2026-05-14",
   "literal_project_handles": [

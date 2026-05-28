@@ -1,13 +1,12 @@
 ---
-# yaml-language-server: $schema=https://skillgraph.dev/schemas/skill.v4.schema.json
-schema_version: 4
+schema_version: 8
 name: migrate-posts-to-v2-frontmatter
 description: "Use when migrating every existing post in `content/posts/**/*.md` to the v2 frontmatter schema — adding the new required `summary` field, normalizing `tags` to the controlled vocabulary, converting bare-date `date` strings to ISO 8601 with timezone, and re-validating every post against the v2 schema before the next build runs. Activate this skill whenever the task references migration `0007-frontmatter-v2`, the v2 frontmatter rollout, or asks how to safely change a required-field set across a populated content tree without breaking the build. Do NOT use for unrelated migrations (use a generic content-migration skill or write a fresh one) or for general schema-design questions (use a schema-design skill)."
 version: 0.1.0
-type: workflow
-category: content
-domain: content/migrations
-scope: codebase
+subject: code-engineering
+deployment_target: project
+taxonomy_domain: content/migrations
+scope: "Four-phase frontmatter migration workflow for the markdown-static-site example project — add nullable field, backfill, human review, flip validator."
 owner: markdown-static-site-maintainer
 freshness: "2026-05-06"
 drift_check:
@@ -62,7 +61,7 @@ relations:
     - skill: testing-strategy
       min_version: "^1.0.0"
 grounding:
-  domain_object: "The 0007 frontmatter-v2 migration — a multi-step procedure that adds a required field, normalizes the tag vocabulary, converts bare-date strings to ISO 8601, and re-validates every post against the v2 schema before the validator is flipped"
+  subject_matter: "The 0007 frontmatter-v2 migration — a multi-step procedure that adds a required field, normalizes the tag vocabulary, converts bare-date strings to ISO 8601, and re-validates every post against the v2 schema before the validator is flipped"
   grounding_mode: repo_specific
   truth_sources:
     - scripts/migrate-frontmatter-v2.ts
@@ -79,10 +78,9 @@ portability:
   readiness: scripted
   targets:
     - skill-md
-workspace_tags:
-  - content
-  - static-site
-  - migrations
+project:
+  - handle: markdown-static-site
+    role: primary
 lifecycle:
   stale_after_days: 30
   review_cadence: quarterly

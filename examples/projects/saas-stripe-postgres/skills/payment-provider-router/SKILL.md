@@ -1,13 +1,11 @@
 ---
-# yaml-language-server: $schema=https://skillgraph.dev/schemas/skill.v6.schema.json
-schema_version: 6
+schema_version: 8
 name: payment-provider-router
 description: "Use when dispatching a verified payment event (Stripe webhook or future provider) to the correct downstream handler based on event type. Routes `checkout.session.completed` to subscription provisioning, `invoice.payment_failed` to dunning logic, and `customer.subscription.deleted` to cancellation. Do NOT use for signature verification of the incoming event (use stripe-webhook-signature-verification first) or for the actual subscription database writes (use the per-handler skill or postgres-rls-pattern)."
 version: 0.1.0
-type: router
-category: engineering
-domain: engineering/payments
-scope: portable
+subject: code-engineering
+deployment_target: portable
+taxonomy_domain: engineering/payments
 owner: saas-stripe-postgres-example
 freshness: "2026-05-18"
 drift_check:

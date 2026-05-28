@@ -1,13 +1,11 @@
 ---
-# yaml-language-server: $schema=https://skillgraph.dev/schemas/skill.v6.schema.json
-schema_version: 6
+schema_version: 8
 name: stripe-webhook-signature-verification
 description: "Use when validating incoming Stripe webhook requests in a Node.js or Next.js backend before processing any payment event. Verifies the `stripe-signature` header against `STRIPE_WEBHOOK_SECRET` using Stripe's HMAC-SHA256 scheme, and rejects replays older than 300 seconds. Do NOT use for general HTTP signature validation (use a generic crypto-signature skill), for processing the webhook payload after signature is confirmed (use payment-provider-router), or for Stripe API calls that are not webhook-driven."
 version: 0.1.0
-type: capability
-category: engineering
-domain: engineering/payments
-scope: portable
+subject: code-engineering
+deployment_target: portable
+taxonomy_domain: engineering/payments
 owner: saas-stripe-postgres-example
 freshness: "2026-05-18"
 drift_check:

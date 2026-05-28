@@ -1,13 +1,11 @@
 ---
-# yaml-language-server: $schema=https://skillgraph.dev/schemas/skill.v6.schema.json
-schema_version: 6
+schema_version: 8
 name: postgres-rls-pattern
 description: "Use when writing or reviewing Postgres queries in a multi-tenant SaaS where every table row must be scoped to a single organization. Enforces the FORCE ROW LEVEL SECURITY + USING + WITH CHECK triple on every tenant-bound table, and wraps application queries in an `orgQuery(orgId)` helper that sets `app.current_org_id` before each statement. Do NOT use for cross-org system queries such as billing cron jobs or admin panels (those bypass RLS intentionally via the service role); use a service-role query wrapper instead."
 version: 0.1.0
-type: capability
-category: engineering
-domain: engineering/database
-scope: portable
+subject: code-engineering
+deployment_target: portable
+taxonomy_domain: engineering/database
 owner: saas-stripe-postgres-example
 freshness: "2026-05-18"
 drift_check:

@@ -5,7 +5,6 @@ description: "Use as the smallest v8-compat capability fixture for skill-graph p
 version: 1.0.0
 subject: code-engineering
 deployment_target: portable
-scope: portable
 owner: skill-graph-fixture-suite
 freshness: "2026-05-19"
 drift_check:

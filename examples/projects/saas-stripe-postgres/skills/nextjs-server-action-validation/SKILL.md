@@ -1,13 +1,11 @@
 ---
-# yaml-language-server: $schema=https://skillgraph.dev/schemas/skill.v6.schema.json
-schema_version: 6
+schema_version: 8
 name: nextjs-server-action-validation
 description: "Use when writing a Next.js Server Action that accepts user-submitted form data, mutation parameters, or any client-originated input. Every Server Action is a public HTTP endpoint regardless of how it is called — validate with Zod and check authentication as the first two operations before touching the database. Do NOT use for GET route handlers or Server Components that fetch data (those have no user-supplied input); do NOT use for Stripe webhook handlers (use stripe-webhook-signature-verification instead)."
 version: 0.1.0
-type: capability
-category: engineering
-domain: engineering/web
-scope: portable
+subject: code-engineering
+deployment_target: portable
+taxonomy_domain: engineering/web
 owner: saas-stripe-postgres-example
 freshness: "2026-05-18"
 drift_check:

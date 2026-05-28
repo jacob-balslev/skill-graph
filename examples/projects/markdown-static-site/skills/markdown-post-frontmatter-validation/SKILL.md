@@ -1,13 +1,12 @@
 ---
-# yaml-language-server: $schema=https://skillgraph.dev/schemas/skill.v4.schema.json
-schema_version: 4
+schema_version: 8
 name: markdown-post-frontmatter-validation
 description: "Use when authoring or reviewing the frontmatter of a markdown post — checking required fields (title, date, slug, tags), validating against the content schema in `lib/content/schema.ts`, catching ambiguous date formats or tags not in the controlled vocabulary, and ensuring the slug matches the file path. Activate this skill whenever the task touches files under `content/posts/**/*.md`, the `parsePostFrontmatter()` helper, or any code path that reads YAML frontmatter from a content file. Do NOT use for general YAML schema design (use a generic schema-design skill) or for chasing a specific build-time validation failure (use debugging)."
 version: 0.1.0
-type: capability
-category: content
-domain: content/markdown/frontmatter
-scope: codebase
+subject: code-engineering
+deployment_target: project
+taxonomy_domain: content/markdown/frontmatter
+scope: "Markdown post frontmatter validation for the markdown-static-site example project — required fields, date format, slug consistency, controlled-vocabulary tagging."
 owner: markdown-static-site-maintainer
 freshness: "2026-05-06"
 drift_check:
@@ -63,7 +62,7 @@ relations:
   verify_with:
     - testing-strategy
 grounding:
-  domain_object: "Markdown post frontmatter — the YAML block at the top of every content file that drives the site's index, routing, and rendering"
+  subject_matter: "Markdown post frontmatter — the YAML block at the top of every content file that drives the site's index, routing, and rendering"
   grounding_mode: repo_specific
   truth_sources:
     - content/posts/_template.md
@@ -80,10 +79,9 @@ portability:
   readiness: scripted
   targets:
     - skill-md
-workspace_tags:
-  - content
-  - static-site
-  - markdown
+project:
+  - handle: markdown-static-site
+    role: primary
 lifecycle:
   stale_after_days: 90
   review_cadence: quarterly

@@ -1,13 +1,12 @@
 ---
-# yaml-language-server: $schema=https://skillgraph.dev/schemas/skill.v4.schema.json
-schema_version: 4
+schema_version: 8
 name: content-source-router
 description: "Use when dispatching a content-fetch task across the multiple sources the site reads from — local markdown under `content/`, MDX with React components under `content/mdx/`, and a headless-CMS sync under `lib/cms/`. Activate this skill whenever the task says 'render this content' or 'where does this post come from' without naming a specific source, or when adding a new source to the routing surface. Do NOT use for the actual rendering of one source (use the per-source skill — `markdown-post-frontmatter-validation`, an MDX rendering skill, or a CMS-sync skill) or for chasing a specific routing bug (use debugging)."
 version: 0.1.0
-type: router
-category: content
-domain: content/routing
-scope: codebase
+subject: code-engineering
+deployment_target: project
+taxonomy_domain: content/routing
+scope: "Content-source dispatch logic for the markdown-static-site example project — routes fetches between local markdown, MDX, and headless-CMS sources."
 owner: markdown-static-site-maintainer
 freshness: "2026-05-06"
 drift_check:
@@ -60,7 +59,7 @@ relations:
   verify_with:
     - graph-audit
 grounding:
-  domain_object: "Content source dispatch — the table that selects between local markdown, local MDX with React components, and headless-CMS-synced content based on file extension, content-path prefix, or explicit source hint"
+  subject_matter: "Content source dispatch — the table that selects between local markdown, local MDX with React components, and headless-CMS-synced content based on file extension, content-path prefix, or explicit source hint"
   grounding_mode: repo_specific
   truth_sources:
     - lib/content/router.ts
@@ -78,9 +77,9 @@ portability:
   readiness: scripted
   targets:
     - skill-md
-workspace_tags:
-  - content
-  - static-site
+project:
+  - handle: markdown-static-site
+    role: primary
 lifecycle:
   stale_after_days: 90
   review_cadence: quarterly

@@ -1,13 +1,12 @@
 ---
-# yaml-language-server: $schema=https://skillgraph.dev/schemas/skill.v4.schema.json
-schema_version: 4
+schema_version: 8
 name: image-optimization-pipeline-config
 description: "Use when authoring or reviewing the build-time image pipeline config — defining responsive srcset breakpoints, picking output formats (AVIF / WebP / JPEG fallback), tuning compression quality per format, and ensuring the pipeline never produces a lossy artifact for source PNGs with transparency. Activate this skill whenever the task touches `lib/images/pipeline.config.ts`, `scripts/build-images.ts`, or any code path that resizes or recompresses content images. Do NOT use for runtime image rendering choices (use a frontend skill) or for chasing a specific build failure (use debugging)."
 version: 0.1.0
-type: capability
-category: content
-domain: content/build/images
-scope: codebase
+subject: code-engineering
+deployment_target: project
+taxonomy_domain: content/build/images
+scope: "Build-time image pipeline configuration for the markdown-static-site example project — srcset breakpoints, format negotiation, transparency preservation, and idempotency."
 owner: markdown-static-site-maintainer
 freshness: "2026-05-06"
 drift_check:
@@ -62,7 +61,7 @@ relations:
   verify_with:
     - testing-strategy
 grounding:
-  domain_object: "Build-time image pipeline configuration — the resize/compress/format-negotiation rules that turn source images in `content/` into the responsive variants under `public/images/`"
+  subject_matter: "Build-time image pipeline configuration — the resize/compress/format-negotiation rules that turn source images in `content/` into the responsive variants under `public/images/`"
   grounding_mode: repo_specific
   truth_sources:
     - lib/images/pipeline.config.ts
@@ -79,10 +78,9 @@ portability:
   readiness: scripted
   targets:
     - skill-md
-workspace_tags:
-  - content
-  - static-site
-  - build-pipeline
+project:
+  - handle: markdown-static-site
+    role: primary
 lifecycle:
   stale_after_days: 90
   review_cadence: quarterly
