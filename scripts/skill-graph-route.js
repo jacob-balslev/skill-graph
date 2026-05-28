@@ -468,7 +468,7 @@ function routeSkills(manifest, options) {
       visited.add(depName);
       const depSkill = byName.get(depName);
       if (depSkill) {
-        const projectCheck = skillAppliesToProject(depSkill, project, workspace);
+        const projectCheck = skillAppliesToProject(depSkill, project);
         if (projectCheck.applies) {
           coLoaded.push({
             skill: depSkill,
@@ -492,7 +492,7 @@ function routeSkills(manifest, options) {
       if (!vName || selectedNames.has(vName)) continue;
       const vSkill = byName.get(vName);
       if (vSkill) {
-        const projectCheck = skillAppliesToProject(vSkill, project, workspace);
+        const projectCheck = skillAppliesToProject(vSkill, project);
         if (projectCheck.applies) {
           coLoaded.push({
             skill: vSkill,
@@ -531,7 +531,7 @@ function routeSkills(manifest, options) {
       if (!bName || selectedNames.has(bName)) continue;
       const bSkill = byName.get(bName);
       if (bSkill) {
-        const projectCheck = skillAppliesToProject(bSkill, project, workspace);
+        const projectCheck = skillAppliesToProject(bSkill, project);
         if (projectCheck.applies) {
           coLoaded.push({
             skill: bSkill,
