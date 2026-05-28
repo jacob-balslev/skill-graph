@@ -133,10 +133,9 @@ function createFixtures() {
   const librarySkillsRoot = path.join(tmpDir, 'library', 'skills');
 
   // Config pointing skill_roots at the sibling library.
+  // skill_roots is top-level since the 2026-05-27 config flatten.
   const config = {
-    workspace: {
-      skill_roots: [path.relative(repoRoot, librarySkillsRoot)],
-    },
+    skill_roots: [path.relative(repoRoot, librarySkillsRoot)],
   };
   fs.writeFileSync(
     path.join(repoRoot, '.skill-graph', 'config.json'),
