@@ -29,7 +29,7 @@ Skill Graph is the **library-level system** that works with this protocol. It in
 | `docs/manifest-field-mapping.md` | Authored-to-generated bridge: rename map, loss policy, worked example |
 | `docs/adr/` | Architecture decision records — 0001 predicate set, 0002 JSON-LD @context, 0003 OntoClean rigidity tags, 0004 persistent identifiers |
 | `schemas/skill.context.jsonld` | JSON-LD @context mapping every authored field to W3C vocabularies (SKOS, Dublin Core, PROV-O) |
-| `schemas/vocabulary/` | Controlled vocabularies for `keywords` (canonical + synonyms) and `workspace_tags` (literal handles + semantic tags) — advisory, surfaced as lint warnings |
+| `schemas/vocabulary/` | Controlled vocabularies for `keywords` (canonical + synonyms) and `project` handles — advisory, surfaced as lint warnings |
 
 ## Design Principles
 
@@ -87,7 +87,7 @@ A Skill-Metadata-Protocol-enriched `SKILL.md` is *not* automatically a valid SKI
 | `allowed-tools` | SKILL.md optional | Kept top-level as a space-separated string |
 | `metadata` | SKILL.md optional | Not used at the top level; the protocol promotes extensions to named fields |
 | `schema_version`, `version`, `type`, `category`, `scope`, `owner`, `freshness`, `drift_check`, `eval_artifacts`, `eval_state`, `routing_eval` | Skill Metadata Protocol extension | Required by the protocol; additive to the base |
-| `relations`, `grounding`, `portability`, `triggers`, `keywords`, `examples`, `anti_examples`, `paths`, `workspace_tags`, `domain`, `routing_bundles`, `lifecycle`, `runtime_telemetry`, `extends`, `stability`, `superseded_by` | Skill Metadata Protocol extension | Optional protocol enrichments; additive to the base |
+| `relations`, `grounding`, `portability`, `triggers`, `keywords`, `examples`, `anti_examples`, `paths`, `project`, `repo`, `taxonomy_domain`, `routing_bundles`, `lifecycle`, `runtime_telemetry`, `extends`, `stability`, `superseded_by` | Skill Metadata Protocol extension | Optional protocol enrichments; additive to the base |
 
 A Skill-Metadata-Protocol-enriched `SKILL.md` is **not** a valid SKILL.md file as authored, because the protocol requires fields the base standard does not define. An export transform can produce an SKILL.md-valid file by moving every protocol extension field under the standard `metadata:` key. The transform is implemented as `scripts/export-skill.js`.
 
@@ -147,7 +147,7 @@ triggers
 | Condition | Required field(s) |
 |---|---|
 | `type: overlay` | `extends` |
-| `scope: project` | `grounding` (schema-enforced) |
+| `deployment_target: project` | `grounding` (schema-enforced) |
 | Routable skills (label or language activation) | `keywords`; `triggers` and `paths` when routing explicitly depends on them |
 
 ### Optional enrichments
@@ -156,9 +156,10 @@ These improve portability, discoverability, and health tracking, but are not req
 
 ```yaml
 paths
-workspace_tags
-categories
-primaryCategory
+project
+repo
+taxonomy_domain
+subjects
 compatibility
 allowed-tools
 routing_bundles
@@ -292,7 +293,7 @@ The YAML frontmatter uses the current v7 schema, including compatibility aliases
 | | [`project`](field-reference.md#project) | | { handle, role }[] (replaces `workspace_tags`) |
 | | [`routing_bundles`](field-reference.md#routing_bundles) | | string[] |
 | **Relations** | [`relations`](field-reference.md#relations) | | `{ adjacent, related, broader, narrower, boundary, disjoint_with, verify_with, depends_on }` |
-| **Grounding** | [`grounding`](field-reference.md#grounding) | if `scope: project` | `{ domain_object, grounding_mode, truth_sources, failure_modes, evidence_priority }` |
+| **Grounding** | [`grounding`](field-reference.md#grounding) | if `deployment_target: project` | `{ subject_matter, grounding_mode, truth_sources, failure_modes, evidence_priority }` |
 | **Portability & Standards** | [`portability`](field-reference.md#portability) | | `{ readiness, targets }` |
 | | [`license`](field-reference.md#license) | | SPDX identifier |
 | | [`compatibility`](field-reference.md#compatibility) | | `{ runtimes?, node?, notes? }` |
