@@ -65,7 +65,7 @@ The template lints clean as-is, so you can incrementally edit and re-lint to cat
 
 ## M8–M11: Fill in the required fields (v8 classification)
 
-The required v8 fields are: `schema_version`, `name`, `description`, `version`, `subject` (9-enum), `scope` (`portable`/`workspace`/`project`), `owner`, `freshness`, `drift_check`, `eval_artifacts`, `eval_state`, `routing_eval`. See [`SKILL_METADATA_PROTOCOL.md` § Schema contract](../SKILL_METADATA_PROTOCOL.md#schema-contract). The template has all current fields — you're replacing values, not adding fields.
+The required v8 fields are: `schema_version`, `name`, `description`, `version`, `subject` (9-enum), `deployment_target` (`portable`/`project`), `scope` (free-text PRD-style description), `owner`, `freshness`, `drift_check`, `eval_artifacts`, `eval_state`, `routing_eval`. See [`SKILL_METADATA_PROTOCOL.md` § Schema contract](../SKILL_METADATA_PROTOCOL.md#schema-contract). The template has all current fields — you're replacing values, not adding fields.
 
 For `markdown-post-frontmatter-review`, the values look like:
 

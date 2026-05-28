@@ -189,12 +189,13 @@ Internal fields (`grounding`, `relations`, `mental_model`, `purpose`, `boundary`
 
 The exporter automatically excludes skills with:
 
-- `scope: codebase` or `scope: operational`
+- `deployment_target: project`
+- legacy closed-scope values `scope: codebase`, `scope: operational`, or `scope: project`
 - `grounding_mode: repo_specific` or `grounding_mode: repo_internal`
 - Any privacy pattern violation (see `scripts/lib/privacy-patterns.js`)
 - `structural_verdict: FAIL`
 
-As of 2026-05-24: 145-147 skills are exported (count grows as new portable skills are authored). Three codebase-scoped skills are permanently excluded.
+The exporter emits the live export count and the full excluded list on every run (`EXCLUDED from marketplace export: <path> (deployment_target: …, scope: …, grounding_mode: …)`). As of 2026-05-28, exactly two project-grounded skills are excluded by the `deployment_target: project` rule above — `agent-ops/skill-router` and `quality-assurance/graph-audit`, both carrying `grounding_mode: repo_specific`. The live exported-skill count is the single source of truth in `SKILL_GRAPH.md § Current State` and is not restated here to avoid drift.
 
 ---
 

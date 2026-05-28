@@ -5,6 +5,7 @@ description: "Use as the smallest v8-compat capability fixture for skill-graph p
 version: 1.0.0
 subject: code-engineering
 deployment_target: portable
+scope: "Minimal v8 schema fixture for validating lint, manifest generation, routing, and standalone audit smoke tests. Out: production skill guidance."
 owner: skill-graph-fixture-suite
 freshness: "2026-05-19"
 drift_check:
@@ -25,7 +26,7 @@ four capability-archetype body sections.
 ## Coverage
 
 The required v8 frontmatter fields, plus `stability` and `license`. No
-optional fields, no relations, no grounding, no Understanding fields, no
+optional relations, no grounding, no Understanding fields, no
 Audit Status.
 
 ## Philosophy

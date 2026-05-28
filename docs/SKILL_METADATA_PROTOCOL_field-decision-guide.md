@@ -35,9 +35,9 @@
 
 `deployment_target: project` requires a populated `grounding` block (schema-enforced). Populate `grounding.subject_matter` and the other grounding sub-fields before committing and run the protocol/manifest checks for full-contract validation. Also declare the project in `project[]` so consumers can resolve the project-fit axis.
 
-### `scope` — the optional free-text companion
+### `scope` — the required free-text companion
 
-`scope` is a separate, optional free-text field (not an enum). Use it for a PRD-style statement describing what this skill teaches and what it does not — for example, "Covers order reconciliation for the Sales Hub Shopify integration; does not cover payment disputes." It is not a routing enum and is not used to drive the project-fit filter. The deployment-targeting role belongs entirely to `deployment_target`.
+`scope` is a separate, required free-text field (not an enum). Use it for a PRD-style statement describing what this skill teaches and what it does not — for example, "Covers order reconciliation for the Sales Hub Shopify integration; does not cover payment disputes." It is not a routing enum and is not used to drive the project-fit filter. The deployment-targeting role belongs entirely to `deployment_target`.
 
 ### Examples
 
@@ -286,4 +286,4 @@ project:
 routing_bundles: [integrations]                              # "Which batch-activation group?"
 ```
 
-Each field does a distinct job. None is redundant with the others. A portable skill omits `project[]`; a library with no batch-activation pattern can omit `routing_bundles`; a library that does not need a hierarchical browse view can omit `taxonomy_domain`. `subject` is always present because it is required by the schema (enforced by `enum` in `schemas/SKILL_METADATA_PROTOCOL_schema.json`), as is `deployment_target`.
+Each field does a distinct job. None is redundant with the others. A portable skill omits `project[]`; a library with no batch-activation pattern can omit `routing_bundles`; a library that does not need a hierarchical browse view can omit `taxonomy_domain`. `subject`, `deployment_target`, and `scope` are always present because they are required by the schema.

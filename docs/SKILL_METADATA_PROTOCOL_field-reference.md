@@ -25,10 +25,10 @@ The schema is the single source of truth for shape; this doc is the source of tr
 **Purpose.** Versions the contract so migration tooling can handle future schema changes deterministically.
 
 **Rules.**
-- Must be the integer `7` or the string `"7"` for all v7 skills.
+- Must be the integer `8` or the string `"8"` for current skills.
 - Start every new skill at the current schema version. Do not downgrade.
-- The v6 → v7 bump split the single `audit_verdict` into `structural_verdict`, `truth_verdict`, `comprehension_verdict`, and `application_verdict`. Run `node scripts/migrate-skill-v6-to-v7.js` for the codemod.
-- Older migration notes live in `SKILL_METADATA_PROTOCOL.md § Migration Notes`; do not restate old versions here as the current contract.
+- Prior contract shapes, including v7, live in git history and are not accepted by the live schema.
+- Older migration notes live in `SKILL_METADATA_PROTOCOL.md § Schema contract`; do not restate old versions here as the current contract.
 
 **Versioning semantics (policy).** The integer signals *breaking vs non-breaking* evolution. A minor/patch axis is intentionally not surfaced on this field; additive schema changes do not require consumers to migrate, so no version bump is emitted.
 
@@ -232,7 +232,7 @@ taxonomy_domain: ecommerce/integrations/shopify
 **Repurpose.** Earlier, `scope` was a closed enum (`portable` / `workspace` / `project`) that classified deployment-targeting. The deployment-target role moved to the new required field `deployment_target` (with the `workspace` value removed); `scope` was repurposed to a free-text PRD-style field. The repurpose resolves the long-standing collision with the PRD sense of "in/out of scope" used freely in body prose. See the ADR-0017 amendment of 2026-05-27.
 
 **Rules.**
-- Optional. String. No enum constraint.
+- Required. String. No enum constraint.
 - One paragraph or two. Author what the skill teaches and what it explicitly does not teach.
 - Do not duplicate `description` (the routing contract) or `## Coverage` (the bulleted scope map). `scope:` is the at-a-glance complement — a reader scanning frontmatter sees what's in/out without opening the body.
 
@@ -241,9 +241,9 @@ taxonomy_domain: ecommerce/integrations/shopify
 scope: "Controlled classification systems with explicit retrieval-task analysis. Covers SKOS broader/narrower, facets, and the substitution test. Out: formal OWL axioms and reasoning constraints — use `ontology-modeling` for that."
 ```
 
-**When to use.** When the at-a-glance PRD framing is worth one frontmatter field. Routable consumer skills benefit most.
+**When to use.** Always. Make the statement short enough to scan but concrete enough to name what the skill does and does not teach.
 
-**When NOT to use.** When the body `## Coverage` and `## Do NOT Use When` sections already make the boundaries obvious, or for trivial skills where a one-line description suffices.
+**When NOT to use.** N/A under the current schema — required. For trivial skills, keep the statement concise.
 
 ---
 

@@ -1,6 +1,6 @@
 # Skill Graph Concept Map
 
-> **Status:** Reality-aligned teaching reference as of **2026-04-20** (schema_version 4).
+> **Status:** Reality-aligned teaching reference as of **2026-05-28** (schema_version 8).
 > **Source of truth precedence:** `schemas/SKILL_METADATA_PROTOCOL_schema.json` > `docs/SKILL_METADATA_PROTOCOL_field-reference.md` > this file.
 > **Purpose:** Explain the 40-field Skill Metadata Protocol frontmatter at a conceptual level without inventing structure that the schema does not actually enforce. If this file disagrees with the schema, the schema wins — fix this file.
 
@@ -16,16 +16,16 @@ Skill Graph does **not** promise:
 
 What it does promise: deterministic lint, manifest generation, relation-aware routing, drift detection against content-addressable truth sources, and portable export to SKILL.md.
 
-## The 40 authored fields — grouped by role
+## The 56 authored fields — grouped by role
 
-The fields split into eight conceptual groups. This grouping is a teaching aid only — the schema groups by *requiredness* (always required / required-for-archetype / required-for-scope / optional). See `docs/skill-metadata-protocol.md § Requiredness Groups` for the authoritative grouping.
+The fields split into conceptual groups. This grouping is a teaching aid only — the schema groups by requiredness and conditional rules. See `docs/skill-metadata-protocol.md § Requiredness Groups` for the authoritative grouping.
 
 The exact field count:
 
-- **39 top-level authored fields** — the number authors write in YAML frontmatter, including compatibility aliases.
-- **12 required-for-all fields** — every skill must populate these.
-- **4 conditionally-required fields** — unlocked by `deployment_target: project`, `stability: deprecated`, `comprehension_state: present`, plus `keywords` for routable skills.
-- **18 optional enrichment fields** — including the full nested sub-fields inside `relations`, `grounding`, `portability`, `compatibility`, `lifecycle`, `runtime_telemetry`, and concept/eval receipts.
+- **56 top-level authored fields** — the number authors may write in YAML frontmatter.
+- **13 required-for-all fields** — every skill must populate these: `schema_version`, `name`, `description`, `version`, `subject`, `deployment_target`, `scope`, `owner`, `freshness`, `drift_check`, `eval_artifacts`, `eval_state`, and `routing_eval`.
+- **Conditionally-required fields** — `grounding` when `deployment_target: project`, `superseded_by` when `stability: deprecated`, and the Understanding fields or `concept` when `comprehension_state: present`.
+- **Optional enrichment fields** — including nested sub-fields inside `relations`, `grounding`, `portability`, `compatibility`, `lifecycle`, `runtime_telemetry`, and concept/eval receipts.
 
 When you see "possible fields" counted anywhere, that is the count including nested sub-fields and v3.1 aliases individually. The 40 count refers to canonical top-level authored keys only.
 
@@ -67,7 +67,7 @@ Whether the skill is fresh, verified, and monitored. The two required fields (`f
 | `lifecycle` | one object (`stale_after_days?` + `review_cadence?`) | "How fast does this rot, and how often should it be re-verified?" | optional |
 | `runtime_telemetry` | one object (`feedback_source` + `metrics?`) | "What do real-world runs say about whether this works?" | optional |
 
-Proposal for v4: collapse `freshness` + `drift_check.last_verified` + `lifecycle.stale_after_days` into two primitives (`asserted_at` + `stale_after`). Tracked in the v4 roadmap.
+Historical proposal: collapse `freshness` + `drift_check.last_verified` + `lifecycle.stale_after_days` into two primitives (`asserted_at` + `stale_after`). That proposal did not land in v8; the current schema keeps the three-field shape above.
 
 ### Evaluation Status (5 fields, 3 required, 2 optional)
 
@@ -110,7 +110,7 @@ Typed edges to sibling skills. Lint verifies every target exists.
 | `broader` *(v3.1)* | many | Cross-skill generalisation — target is more general | `skos:broader` |
 | `narrower` *(v3.1)* | many | Cross-skill specialisation — target is more specific | `skos:narrower` |
 
-`adjacent` remains valid through v3.x as a deprecated alias of `related`; the v4 bump removes it in favour of the SKOS-aligned name. `boundary` remains canonical for routing-layer handoff. ADR 0001 records the `adjacent` rename; ADR 0006 records the `boundary` / `disjoint_with` split.
+`related` is the canonical broad association predicate. `boundary` records ownership exclusions for routing. ADR 0001 records the historical `adjacent` rename; ADR 0006 records the `boundary` / `disjoint_with` split.
 
 ### Grounding (1 object, 5 required sub-fields — conditional on `deployment_target: project`)
 
@@ -137,7 +137,7 @@ Artifact-level metadata.
 | `allowed-tools` | one space-separated string | Pre-approved tool allowlist |
 | `portability.readiness` | one enum | `declared` \| `scripted` \| `verified` — operational export readiness |
 | `portability.targets` | many, currently `["skill-md"]` only | Export destinations |
-| `urn` *(v3.1, optional)* | one | Global persistent identifier — `urn:skill:<repo>:<name>`. Target: required in v4. |
+| `urn` *(optional)* | one | Global persistent identifier — `urn:skill:<repo>:<name>`. |
 
 ## The four orthogonal classification axes (carefully qualified)
 

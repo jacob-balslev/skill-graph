@@ -1,25 +1,24 @@
 ---
 schema_version: 8
 name: with-relations
-description: "Use as the v8-conformant fixture exercising all four typed relation predicates (related, boundary, verify_with, depends_on) using the {skill, reason} object shape. Activate this skill when verifying that lint resolves cross-fixture relation targets without a sibling skills clone. Do NOT use as a production skill (use a real capability skill from the canonical library)."
+description: "Use as the v8-conformant fixture exercising typed relation predicates (related, boundary, verify_with, depends_on) using the live schema item shapes. Activate this skill when verifying that lint resolves cross-fixture relation targets without a sibling skills clone. Do NOT use as a production skill (use a real capability skill from the canonical library)."
 version: 1.0.0
 subject: knowledge-organization
 deployment_target: portable
+scope: "Hermetic v8 fixture for validating relation target resolution and relation item shapes. Out: production relation modeling guidance."
 owner: skill-graph-fixture-suite
 freshness: "2026-05-19"
 relations:
   related:
-    - skill: minimal-capability
-      reason: "Same fixture-suite kind (capability/portable) — minimal-capability is the bare-minimum baseline this fixture extends with relation edges."
+    - minimal-capability
   boundary:
     - skill: with-grounding
-      reason: "Use with-grounding instead when the test target is grounding-block requireds or scope: codebase keyword enforcement — this fixture is portable and groundless by design."
+      reason: "with-relations owns portable relation-shape fixture behavior over with-grounding, which owns project-grounded metadata fixture behavior."
   verify_with:
-    - skill: comprehension-full
-      reason: "When this fixture's relation edges are exercised in a routing-eval pass, comprehension-full provides the flat Understanding fields the grader reads against."
+    - comprehension-full
   depends_on:
     - skill: minimal-capability
-      reason: "Composition signal: this fixture assumes the lint passes for the minimal-capability baseline; if minimal-capability regresses, this fixture is meaningless until the baseline is repaired."
+      min_version: "1.0.0"
 drift_check:
   last_verified: "2026-05-19"
 eval_artifacts: none
@@ -31,8 +30,10 @@ license: Apache-2.0
 
 # With-Relations Fixture
 
-This fixture exercises every typed relation predicate in the v8 contract using
-the canonical `{skill, reason}` object shape. Together with the sibling
+This fixture exercises typed relation predicates in the v8 contract using
+the item shapes accepted by the live schema: bare strings for `related` and
+`verify_with`, `{skill, reason}` for `boundary`, and `{skill, min_version}` for
+`depends_on`. Together with the sibling
 fixtures (`minimal-capability`, `with-grounding`, `comprehension-full`) it
 forms a closed cross-reference cluster — lint resolves every relation target
 from the fixtures directory alone, with no dependency on the sibling
@@ -49,8 +50,10 @@ The four relation kinds with distinct semantics:
 | `verify_with` | Cross-check: when applied, verify with another | `comprehension-full` |
 | `depends_on` | Composition: this assumes the other is in scope | `minimal-capability` |
 
-Each entry carries a non-empty `reason` string — lint warns on relations that
-omit the reason field because routing decisions become unauditable without it.
+The `boundary` entry carries a non-empty ownership-framed `reason` string,
+because boundary reasons are projected into export descriptions and audited for
+orientation. The `depends_on` entry carries `min_version` to exercise the
+version-constrained dependency shape.
 
 ## Philosophy
 

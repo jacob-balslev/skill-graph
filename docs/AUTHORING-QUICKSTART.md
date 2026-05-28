@@ -2,7 +2,7 @@
 
 > Audience: anyone writing a single new SKILL.md for the first time.
 > Time: 10-15 minutes for a competent reader.
-> Scope: this is the **shortest path** from zero to a schema-valid, lint-passing v7 SKILL.md. For a full project-adoption walkthrough see [QUICKSTART-30MIN.md](./QUICKSTART-30MIN.md). For per-field semantics see [SKILL_METADATA_PROTOCOL_field-reference.md](./SKILL_METADATA_PROTOCOL_field-reference.md). For the full protocol see [../SKILL_METADATA_PROTOCOL.md](../SKILL_METADATA_PROTOCOL.md).
+> Scope: this is the **shortest path** from zero to a schema-valid, lint-passing v8 SKILL.md. For a full project-adoption walkthrough see [QUICKSTART-30MIN.md](./QUICKSTART-30MIN.md). For per-field semantics see [SKILL_METADATA_PROTOCOL_field-reference.md](./SKILL_METADATA_PROTOCOL_field-reference.md). For the full protocol see [../SKILL_METADATA_PROTOCOL.md](../SKILL_METADATA_PROTOCOL.md).
 
 ## Step 1, pick your encoding (the one decision you cannot skip)
 
@@ -39,7 +39,7 @@ These are enforced by `skill-lint.js` against `schemas/SKILL_METADATA_PROTOCOL_s
 | 4 | `version` | semver | `x.y.z`. Bump when the skill's instructional content changes. Independent of `schema_version`. |
 | 5 | `subject` | enum | One of the closed 9-value enum: `code-engineering`, `quality-assurance`, `frontend-ui`, `design-craft`, `agent-ops`, `product-domain`, `knowledge-organization`, `meta-methods`, `data-analytics`. Primary classification — what the skill teaches. |
 | 6 | `deployment_target` | enum | One of: `portable` (any project) or `project` (one specific project; requires `grounding`). |
-| 6a | `scope` | string | Optional free-text PRD-style description of the deployment context. Not an enum. |
+| 6a | `scope` | string | Required free-text PRD-style description of the deployment context. Not an enum. |
 | 7 | `owner` | string | Team handle, GitHub username, or tool name. Used for review routing and stale-skill alerts. |
 | 8 | `freshness` | ISO date | `YYYY-MM-DD`. Authored claim (not computed). When did you last review or update the body. |
 | 9 | `drift_check` | object | At minimum `{ last_verified: "YYYY-MM-DD" }`. `truth_source_hashes` is added later by `node scripts/skill-graph-drift.js --record --apply <skill-dir>`. |

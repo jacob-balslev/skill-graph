@@ -128,13 +128,14 @@ When `examples/skills.manifest.sample.json` is absent, generator parity is skipp
 
 The same checks run whether you install the npm package or vendor the script:
 
-1. Schema validation against `SKILL_METADATA_PROTOCOL_schema.json`
-2. Parent-directory-matches-name (SKILL.md compatibility)
-3. Relation target existence (linked skills must exist in the repo)
-4. Eval artifact coherence (`eval_artifacts: present` requires at least one eval file)
-5. Archetype-aware section validation (required H2 sections per archetype)
-6. Routing quality (keywords required for `scope: codebase` skills)
-7. SKILL.md export compatibility (when `export-verify` is run)
+1. Valid YAML frontmatter
+2. Schema validation against `SKILL_METADATA_PROTOCOL_schema.json`
+3. `name` field shape
+4. Non-empty `description`
+5. Parent directory name equals the final `name` segment
+6. `subjects[0]` matches `subject` when both fields are present
+
+Export compatibility is checked by the marketplace export tools, not by `skill-lint.js`.
 
 See `SKILL_AUDIT_LOOP.md` § Part 2 — Per-Skill Audit Checklist for the full list of what each check catches.
 

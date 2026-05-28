@@ -225,8 +225,9 @@ function readFileBounded(absPath, charLimit) {
  * relations. Each summary is `{name, type, scope, description}` — enough to
  * judge semantic neighborhood without embedding full sibling SKILL.md bodies.
  *
- * Supports v3 polymorphic relation items: `boundary`, `disjoint_with`, and
- * `depends_on` may be bare strings or `{skill, reason}` / `{skill, min_version}` objects.
+ * Supports polymorphic relation items: `boundary` and `disjoint_with` may be
+ * bare strings or `{skill, reason}` objects; `depends_on` may be a bare string
+ * or `{skill, min_version}` object.
  * The target name is extracted from both shapes identically to
  * `scripts/skill-lint.js#checkRelationTargets`.
  *

@@ -5,7 +5,7 @@
 > **Predicate glossary:** [`docs/glossary.md`](glossary.md).
 > **JSON-LD @context:** [`schemas/skill.context.jsonld`](../schemas/skill.context.jsonld).
 
-Schema version: **unknown** · Field count: **56** · Required: **12**
+Schema version: **unknown** · Field count: **56** · Required: **13**
 
 ---
 
@@ -13,7 +13,7 @@ Schema version: **unknown** · Field count: **56** · Required: **12**
 
 **Type:** multiple — see schema
 
-Major contract shape version. Integer 8 is canonical; integer 7 still accepted while pre-v8 skills migrate. Bumps when shape changes break consumers. v8 carries `subject` + `deployment_target` classification, free-text `scope`, `project[]` and `repo[]` belonging-entity fields, `taxonomy_domain` taxonomic sub-path, and `grounding.subject_matter`. Prior versions live in git history — see `git tag --list 'schema-*'`. See docs/adr/0017-five-axis-classification-model.md and its amendments.
+Major contract shape version. Integer 8 is the only accepted current value. v7 is a prior contract shape retrievable from git history, not an accepted live-schema value. Bumps when shape changes break consumers. v8 carries `subject` + `deployment_target` classification, required free-text `scope`, `project[]` and `repo[]` belonging-entity fields, `taxonomy_domain` taxonomic sub-path, and `grounding.subject_matter`. Prior versions live in git history — see `git tag --list 'schema-*'`. See docs/adr/0017-five-axis-classification-model.md and its amendments.
 
 **Full reference:** [`docs/SKILL_METADATA_PROTOCOL_field-reference.md#schema_version`](SKILL_METADATA_PROTOCOL_field-reference.md#schema_version)
 
@@ -97,11 +97,11 @@ Ordered subject array for polyhierarchy. First entry is the primary and must mat
 
 ---
 
-### `scope` *(optional)*
+### `scope` *(required)*
 
 **Type:** string
 
-PRD-style free-text scope statement — what this skill teaches and what it does not. Mirrors the body `## Coverage` plus `## Do NOT Use When` sections at the frontmatter level for fast scanning. Optional. NOT an enum: the deployment-targeting role moved to `deployment_target` (with the `workspace` value removed). See the ADR-0017 amendment of 2026-05-27.
+PRD-style free-text scope statement — what this skill teaches and what it does not. Mirrors the body `## Coverage` plus `## Do NOT Use When` sections at the frontmatter level for fast scanning. Required. NOT an enum: the deployment-targeting role moved to `deployment_target` (with the `workspace` value removed). See the ADR-0017 amendment of 2026-05-27.
 
 **Full reference:** [`docs/SKILL_METADATA_PROTOCOL_field-reference.md#scope`](SKILL_METADATA_PROTOCOL_field-reference.md#scope)
 

@@ -42,10 +42,10 @@ const MANIFEST_SCHEMA = path.join(REPO_ROOT, 'schemas', 'manifest.schema.json');
 
 const SPEC = {
   schema_version: {
-    // Integer 8 is canonical; 7 is still accepted while pre-v8 skills migrate.
-    // This is transitional acceptance, not a parallel authoring path.
-    integer: [7, 8],
-    string: ['7', '8'],
+    // v8 is the only accepted version; v7 is deprecated and rejected. A v7 skill
+    // fails validation and must migrate through the audit loop (CONTENT work).
+    integer: [8],
+    string: ['8'],
   },
   // v8 classification (ADR-0017 + 2026-05-27 amendment)
   v8_subject: [
@@ -60,6 +60,7 @@ const SPEC = {
     'product-domain',
   ],
   v8_deployment_target: ['portable', 'project'],
+  v8_required_fields: ['subject', 'deployment_target', 'scope'],
   // Health Block — ADR-0011 four-verdict split (current under v8)
   health_block_verdict_fields: [
     'structural_verdict',
@@ -102,6 +103,17 @@ function checkEnum(label, expected, actual) {
   return { label, ok: false, reason: parts.join(' | ') };
 }
 
+function checkRequiredFields(label, required, fields) {
+  if (!Array.isArray(required)) {
+    return { label, ok: false, reason: 'required missing or not an array' };
+  }
+  const missing = fields.filter(field => !required.includes(field));
+  if (missing.length === 0) {
+    return { label, ok: true };
+  }
+  return { label, ok: false, reason: `missing required field(s): ${missing.join(', ')}` };
+}
+
 // Assert a property exists, is a free-text string, and carries NO enum.
 // Guards against a retired enum (e.g. the removed v8 `scope` enum) being
 // re-introduced after the ADR-0017 2026-05-27 amendment made `scope` free-text.
@@ -124,6 +136,13 @@ function runChecks() {
   const manifest = readSchema(MANIFEST_SCHEMA);
 
   const skillProps = skill.properties || {};
+  const skillRequired = skill.required || [];
+  const manifestSkillRequired =
+    (manifest.properties &&
+      manifest.properties.skills &&
+      manifest.properties.skills.items &&
+      manifest.properties.skills.items.required) ||
+    [];
   const manifestSkillProps =
     (manifest.properties &&
       manifest.properties.skills &&
@@ -133,7 +152,7 @@ function runChecks() {
 
   const results = [];
 
-  // schema_version oneOf — verify integer + string branches both list [7, 8]
+  // schema_version oneOf — verify integer + string branches both list only v8
   const sv = skillProps.schema_version;
   if (!sv || !Array.isArray(sv.oneOf)) {
     results.push({ label: 'skill.schema schema_version.oneOf', ok: false, reason: 'missing or not an array' });
@@ -145,6 +164,7 @@ function runChecks() {
   }
 
   // v8 classification (ADR-0017 + 2026-05-27 amendment)
+  results.push(checkRequiredFields('skill.schema required v8 fields', skillRequired, SPEC.v8_required_fields));
   results.push(checkEnum('skill.schema subject (v8 9-enum)', SPEC.v8_subject, skillProps.subject && skillProps.subject.enum));
   if (skillProps.subjects && skillProps.subjects.items) {
     results.push(checkEnum('skill.schema subjects[].items (v8 9-enum)', SPEC.v8_subject, skillProps.subjects.items.enum));
@@ -155,11 +175,12 @@ function runChecks() {
   results.push(checkFreeText('skill.schema scope (free-text, no enum)', skillProps.scope));
 
   // Manifest mirrors: per-skill enum must match
+  results.push(checkRequiredFields('manifest.schema skills.required v8 fields', manifestSkillRequired, SPEC.v8_required_fields));
   results.push(checkEnum('manifest.schema skills.subject (v8 9-enum)', SPEC.v8_subject, manifestSkillProps.subject && manifestSkillProps.subject.enum));
   results.push(checkEnum('manifest.schema skills.deployment_target (v8 2-enum)', SPEC.v8_deployment_target, manifestSkillProps.deployment_target && manifestSkillProps.deployment_target.enum));
   results.push(checkFreeText('manifest.schema skills.scope (free-text, no enum)', manifestSkillProps.scope));
 
-  // schema_version pass-through on per-skill entry — must list both 7 and 8
+  // schema_version pass-through on per-skill entry — must list only v8
   const msv = manifestSkillProps.schema_version;
   if (!msv || !Array.isArray(msv.oneOf)) {
     results.push({ label: 'manifest.schema skills.schema_version', ok: false, reason: 'missing or not oneOf — see F4 (2026-05-25)' });

@@ -196,7 +196,7 @@ Skill Metadata Protocol uses several independent axes. They should not be collap
 | **Subject** | `subject` | one | Primary classification — what the skill teaches. Closed 9-value enum. |
 | **Polyhierarchy** | `subjects[]` | zero, one, or two | Optional secondary subject when a skill genuinely spans two browse shelves. `subjects[0]` matches `subject`. |
 | **Deployment target** | `deployment_target` | one | Where it deploys: `portable` (any project) or `project` (one specific project; requires `grounding`). |
-| **Scope** | `scope` | zero or one | Free-text PRD-style description of the deployment context. Not an enum. |
+| **Scope** | `scope` | one | Free-text PRD-style description of the deployment context. Not an enum. |
 | **Domain path** | `taxonomy_domain` | zero or one | Slash-delimited hierarchy subdividing `subject`, such as `design-craft/ux` or `code-engineering/api-design`. |
 | **Project belonging** | `project[]` | many | Belonging-entity references for `deployment_target: project` skills (handle + role). |
 | **Routing group** | `routing_bundles` | many | Runtime bundles or dispatch groups. |
@@ -540,7 +540,7 @@ For project framing context, see [GitHub Discussion #1](https://github.com/jacob
 
 ## Status
 
-Latest release: **`@skill-graph/cli@0.5.10`** (2026-05-25) — the "canonical-shape sweep" release closing the 2026-05-25 multi-model restructure review backlog. See [`CHANGELOG.md`](CHANGELOG.md) and the generated [`docs/status.generated.md`](docs/status.generated.md). The current contract is `schema_version: 8` (v7 classification fields are deprecated — see [`SKILL_GRAPH.md § Current State`](SKILL_GRAPH.md#current-state--single-source-of-truth) and [`schemas/SKILL_METADATA_PROTOCOL_schema.json`](schemas/SKILL_METADATA_PROTOCOL_schema.json) for the authoritative shape). Per [ADR-0014](docs/adr/0014-canonical-only-schema-files.md) (canonical-only schema files), only `SKILL_METADATA_PROTOCOL_schema.json` lives on disk; prior contract versions are recoverable from git history (`git show <commit>:schemas/SKILL_METADATA_PROTOCOL_schema.json`) and external consumers pinning a historical version should resolve against a tag rather than a duplicate file. The schema's `$id` (`https://skillgraph.dev/schemas/skill.schema.json`) is the stable identifier.
+Latest release: **`@skill-graph/cli@0.5.10`** (2026-05-25) — the "canonical-shape sweep" release closing the 2026-05-25 multi-model restructure review backlog. See [`CHANGELOG.md`](CHANGELOG.md) and the generated [`docs/status.generated.md`](docs/status.generated.md). The current contract is `schema_version: 8` (v7 classification fields are historical and rejected by the live schema — see [`SKILL_GRAPH.md § Current State`](SKILL_GRAPH.md#current-state--single-source-of-truth) and [`schemas/SKILL_METADATA_PROTOCOL_schema.json`](schemas/SKILL_METADATA_PROTOCOL_schema.json) for the authoritative shape). Per [ADR-0014](docs/adr/0014-canonical-only-schema-files.md) (canonical-only schema files), only `SKILL_METADATA_PROTOCOL_schema.json` lives on disk; prior contract versions are recoverable from git history (`git show <commit>:schemas/SKILL_METADATA_PROTOCOL_schema.json`) and external consumers pinning a historical version should resolve against a tag rather than a duplicate file. The schema's `$id` (`https://skillgraph.dev/schemas/skill.schema.json`) is the stable identifier.
 
 ## Contributing & Trust
 

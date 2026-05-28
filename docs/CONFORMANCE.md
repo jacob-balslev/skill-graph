@@ -23,7 +23,7 @@ grounding, evals, or team maintenance need the extra contract.
 |---|---|---|---|
 | L0 | Portable Skill | Valid plain `SKILL.md`: `name`, `description`, optional base fields. | `skills-ref validate <skill-dir>` |
 | L1 | Routable Skill | Valid Skill Metadata Protocol frontmatter with enough activation metadata to route and explain selection. | `node scripts/skill-lint.js <skill-dir>` |
-| L2 | Grounded Skill | L1 plus `grounding.truth_sources`, `scope: codebase` when appropriate, and a drift baseline. | `node scripts/skill-graph-drift.js <skill-dir>` |
+| L2 | Grounded Skill | L1 plus `deployment_target: project` when project-specific, `grounding.truth_sources`, and a drift baseline. | `node scripts/skill-graph-drift.js <skill-dir>` |
 | L3 | Audited Skill | L2 plus eval artifacts, routing examples / anti-examples, and receipts for claimed passing state. | `node scripts/skill-graph-routing-eval.js --skill <name>` |
 | L4 | Managed Skill | L3 plus CI, ownership, lifecycle cadence, workspace project mapping, and export verification. | `npm run verify` |
 

@@ -3,17 +3,17 @@
 > **Work-mode rule (read FIRST).** Editing this document, the schemas it normalizes against, the audit prompts, or the audit/lint/drift scripts is **SYSTEM work**. Editing individual `SKILL.md` files to conform to this contract is **CONTENT work** that runs ONLY via `/audit:audit`, `/audit:improve`, `/audit:evaluate`, `/audit:evolve`. Do not mix them in the same task or commit. Full doctrine: [`AGENTS.md` § Work Modes — SYSTEM vs CONTENT](AGENTS.md#work-modes--system-vs-content).
 
 > **Spec version:** 1.6.0 (`schema_version: 8`, Skill Graph 0.5.10)
-> **Currently enforced by `schemas/SKILL_METADATA_PROTOCOL_schema.json`:** v8. The schema's global `required` array mandates `subject` + `deployment_target` (`scope` is an optional free-text field). See [§ Schema contract](#schema-contract).
+> **Currently enforced by `schemas/SKILL_METADATA_PROTOCOL_schema.json`:** v8. The schema's global `required` array mandates `subject` + `deployment_target` + `scope` (`scope` is required free text, not an enum). See [§ Schema contract](#schema-contract).
 > **Single source of truth for "what is enforced today":** [`SKILL_GRAPH.md § Current State`](SKILL_GRAPH.md#current-state--single-source-of-truth) — link there from any doc that needs the live answer; do not restate.
 > **Machine-readable schema:** `schemas/SKILL_METADATA_PROTOCOL_schema.json`
 > **Detailed field reference:** `docs/SKILL_METADATA_PROTOCOL_field-reference.md`
 > **Full semantics + design rationale:** `docs/skill-metadata-protocol.md`
 > **v8 design rationale:** `docs/adr/0017-five-axis-classification-model.md` (operation axis retired 2026-05-27, see amendment block)
-> **Prior contract:** retrievable via `git show schema-v7:schemas/SKILL_METADATA_PROTOCOL_schema.json`
+> **Prior contract:** retrievable via `git show schema-v7:schemas/SKILL_METADATA_PROTOCOL_schema.json`; not accepted by the live schema.
 
 ---
 
-> **Author shortcut (TL;DR):** Author `subject` (primary classification, 9-value enum) + `deployment_target` (deployment targeting, 2-value enum: `portable` / `project`). Optionally add `scope` (free-text PRD-style statement of what the skill teaches and what it does not). Polyhierarchy via `subjects[]` (max 2, primary first). Activation via `keywords` / `triggers` / `examples` / `anti_examples`. Routing via `relations` (`related` / `boundary` / `verify_with` / `depends_on` / `broader` / `narrower` / `disjoint_with`). Full schema-contract explanation at the END of this doc (§ Schema contract).
+> **Author shortcut (TL;DR):** Author `subject` (primary classification, 9-value enum) + `deployment_target` (deployment targeting, 2-value enum: `portable` / `project`) + `scope` (free-text PRD-style statement of what the skill teaches and what it does not). Polyhierarchy via `subjects[]` (max 2, primary first). Activation via `keywords` / `triggers` / `examples` / `anti_examples`. Routing via `relations` (`related` / `boundary` / `verify_with` / `depends_on` / `broader` / `narrower` / `disjoint_with`). Full schema-contract explanation at the END of this doc (§ Schema contract).
 
 ---
 
@@ -31,7 +31,7 @@ This document is the top-level public contract for the Skill Metadata Protocol f
 
 1. **The schema is the binding machine contract.** If this prose and `schemas/SKILL_METADATA_PROTOCOL_schema.json` disagree, the schema wins and the prose is corrected — never the reverse.
 2. **Every authored skill declares the two required classification axes:** `subject` (closed 9-value enum) and `deployment_target` (closed 2-value enum: `portable` / `project`).
-3. **`scope` is an optional free-text statement** of what the skill teaches and what it does not. It is not an enum and never carries deployment-targeting values — that role belongs to `deployment_target`.
+3. **`scope` is a required free-text statement** of what the skill teaches and what it does not. It is not an enum and never carries deployment-targeting values — that role belongs to `deployment_target`.
 4. **A `deployment_target: project` skill must declare a `grounding` block**, and that block names what it is grounded in via `grounding.subject_matter`.
 5. **Subdivide and affiliate with the current fields:** `taxonomy_domain` (slash-delimited) subdivides a crowded `subject`; `project[]` / `repo[]` carry belonging-entity references.
 6. **The canonical library is authored in the Agent-Skills-compatible nested encoding;** the normalizer reconciles the nested and flat encodings so every deterministic tool reads one logical contract.
@@ -172,7 +172,7 @@ metadata:
 
 ### Required for all skills
 
-The v8 contract requires twelve canonical fields, including the v8 classification axes (`subject` + `deployment_target`). The `skill-lint.js` schema gate enforces the current schema shape; use the protocol, manifest, routing, drift, export, and eval checks for the rest of the full contract.
+The v8 contract requires thirteen canonical fields, including the v8 classification fields (`subject` + `deployment_target` + `scope`). The `skill-lint.js` schema gate enforces the current schema shape; use the protocol, manifest, routing, drift, export, and eval checks for the rest of the full contract.
 
 | Field | Type | Purpose |
 |---|---|---|
@@ -182,6 +182,7 @@ The v8 contract requires twelve canonical fields, including the v8 classificatio
 | `version` | semver string | Skill content version (e.g. `1.2.0`). Bumped by the author. |
 | `subject` | enum (9 closed values) | Primary classification — what the skill teaches. One of: `code-engineering`, `quality-assurance`, `frontend-ui`, `design-craft`, `agent-ops`, `product-domain`, `knowledge-organization`, `meta-methods`, `data-analytics`. See § Classification. |
 | `deployment_target` | enum (2 closed values) | Deployment targeting — where the skill applies. One of: `portable` (any project), `project` (one specific project; requires `grounding`). See § Classification. |
+| `scope` | string | PRD-style free-text statement of what the skill teaches and what it does not. Not an enum. |
 | `owner` | string | Team, username, or tool that is responsible for keeping this skill current. |
 | `freshness` | ISO date | Date the skill body was last reviewed or updated. |
 | `drift_check` | object | Contains `last_verified` (ISO date) and optional `truth_source_hashes`. |
@@ -191,12 +192,14 @@ The v8 contract requires twelve canonical fields, including the v8 classificatio
 
 ### Conditionally required
 
-These fields are required only when a specific condition is met. The first two are enforced by JSON-Schema `allOf` rules and therefore by the schema lint gate. The `keywords` rule is a routing-quality convention verified by review and routing evals rather than by schema lint, since the schema cannot reason about routability intent.
+These fields are required only when a specific condition is met. The schema gate enforces `grounding`, `superseded_by`, the comprehension-evidence shape, and the `eval_state` / `eval_artifacts` coherence rule. The `keywords` rule is a routing-quality convention verified by review and routing evals rather than by schema lint, since the schema cannot reason about routability intent.
 
 | Field | Required when | Enforced by |
 |---|---|---|
 | `grounding` | `deployment_target: project` | schema `allOf` |
 | `superseded_by` | `stability: deprecated` | schema `allOf` |
+| `mental_model` + `purpose` + `boundary` + `analogy` + `misconception`, or `concept` | `comprehension_state: present` | schema `allOf` / `anyOf` |
+| `eval_artifacts: present` | `eval_state: passing` or `eval_state: monitored` | schema `allOf` |
 | `keywords` | `deployment_target: project` OR `routing_bundles` is set | routing review / routing evals |
 
 ### Optional (strongly recommended)
@@ -204,7 +207,6 @@ These fields are required only when a specific condition is met. The first two a
 Not schema-required, but most useful skills include these:
 
 ```yaml
-scope           # free-text PRD-style statement of what the skill teaches and what it does not (optional, but strongly recommended)
 stability       # experimental | stable | frozen | deprecated
 license         # SPDX identifier (e.g. MIT, Apache-2.0)
 keywords        # string[] — semantic phrases for discovery
@@ -291,15 +293,15 @@ allowed-tools   # space-separated tool allowlist
 
 ### Classification
 
-> **v8 is the canonical classification.** The schema's global `required` array mandates `subject` + `deployment_target`; `scope` is an optional free-text field. See [ADR 0017](docs/adr/0017-five-axis-classification-model.md) (operation axis retired 2026-05-27 — see ADR amendment block).
+> **v8 is the canonical classification.** The schema's global `required` array mandates `subject` + `deployment_target` + `scope`; `scope` is required free text, not an enum. See [ADR 0017](docs/adr/0017-five-axis-classification-model.md) (operation axis retired 2026-05-27 — see ADR amendment block).
 
-Skills are classified on three orthogonal authored facets — `subject` (what is taught), `deployment_target` (where it applies), and `relations` (typed edges to other skills) — plus an optional free-text `scope` statement and two activation surfaces (`keywords` for fuzzy match, `triggers`/`examples`/`anti_examples` for explicit signals). The optional `subjects[]` array (max 2 entries, primary first) covers polyhierarchy when a skill genuinely spans two browse shelves; the optional `taxonomy_domain` field (slash-delimited sub-path) provides finer-grained subdivision *within* a subject.
+Skills are classified on three required authored facets — `subject` (what is taught), `deployment_target` (where it applies), and `scope` (what is in and out) — plus typed `relations` to other skills and two activation surfaces (`keywords` for fuzzy match, `triggers`/`examples`/`anti_examples` for explicit signals). The optional `subjects[]` array (max 2 entries, primary first) covers polyhierarchy when a skill genuinely spans two browse shelves; the optional `taxonomy_domain` field (slash-delimited sub-path) provides finer-grained subdivision *within* a subject.
 
 | Axis | Type | Required | Purpose |
 |---|---|---|---|
 | **`subject`** | closed 9-enum | yes | Primary classification — what the skill teaches |
 | **`deployment_target`** | closed 2-enum | yes | Deployment targeting — where the skill applies |
-| **`scope`** | free-text | no | PRD-style statement of what the skill teaches and what it does not |
+| **`scope`** | free-text | yes | PRD-style statement of what the skill teaches and what it does not |
 | **`keywords`** | ≤10 strings | recommended | Fuzzy agent activation |
 | **`relations`** | typed edges | recommended | Prerequisite + clustering graph |
 
@@ -334,9 +336,9 @@ Deployment targeting — where this skill applies.
 
 The initial 2026-05-26 v8 design carried a 3-enum `scope` (`portable` / `workspace` / `project`); the 2026-05-27 amendment removed the `workspace` value and moved deployment targeting to `deployment_target`. Workspace-grounded skills migrate to `deployment_target: project` with explicit `project[]` membership. See [ADR-0017](docs/adr/0017-five-axis-classification-model.md) amendment block.
 
-#### `scope` (free-text, optional)
+#### `scope` (free-text, required)
 
-A PRD-style statement of what the skill teaches and what it does not — mirrors the body `## Coverage` + `## Do NOT Use When` sections at the frontmatter level for fast scanning. NOT an enum; optional (strongly recommended for routable skills).
+A PRD-style statement of what the skill teaches and what it does not — mirrors the body `## Coverage` + `## Do NOT Use When` sections at the frontmatter level for fast scanning. NOT an enum; required on every current skill.
 
 #### `keywords` (≤10 capped)
 
@@ -415,12 +417,12 @@ The three Evaluation Status fields are orthogonal — they measure different dim
 **`comprehension_state`**
 - Optional comprehension-grading axis.
 - `absent` or omitted: no comprehension grading is declared.
-- `present`: the skill has comprehension grading and must populate either the **five flat Understanding fields** (`mental_model`, `purpose`, `boundary`, `analogy`, `misconception` — preferred in v6) OR the legacy nested `concept` block (v5 back-compat).
-- The v6 schema's `allOf` rule enforces this via an `anyOf` clause: at least one of the two shapes must be present. When both are present, the flat fields win.
+- `present`: the skill has comprehension grading and must populate either the **five flat Understanding fields** (`mental_model`, `purpose`, `boundary`, `analogy`, `misconception`) OR the legacy nested `concept` block.
+- The current schema's `allOf` rule enforces this via an `anyOf` clause: at least one of the two shapes must be present. When both are present, the flat fields win.
 
 ### Understanding (v6+, flat)
 
-Five flat top-level fields that teach the agent what the skill's subject *is*. They replace the v5 nested `concept` block (which retired the `definition` and `taxonomy` sub-fields: `definition` is now covered by `description`, `taxonomy` by `category` + `relations.broader`).
+Five flat top-level fields that teach the agent what the skill's subject *is*. They replace the v5 nested `concept` block (whose `definition` and `taxonomy` sub-fields are now covered by `description` and `relations.broader`).
 
 **Relationship to the body `## Concept of the skill` section.** The five flat frontmatter fields are the **canonical machine-readable contract** — routers, evaluators, retrieval systems, and lint tools read them directly. The body `## Concept of the skill` section (renamed 2026-05-26 from `## Concept Card`; per the per-skill audit contract's 7-bold-field format: `**What it is:**`, `**Mental model:**`, `**Why it exists:**`, `**What it is NOT:**`, `**Adjacent concepts:**`, `**One-line analogy:**`, `**Common misconception:**`) remains the operational **human-readable rich-expansion form** carrying content the 5 flat fields cannot hold (e.g. "Why it exists" rationale and "Adjacent concepts" cross-links). Both forms are supported in v7. The author owns the consistency: when both are present, the body `## Concept of the skill` MUST agree with the frontmatter fields. The audit contract (`skill-graph/SKILL_AUDIT_LOOP.md#part-3--per-skill-audit-runbook` § Step 4b) checks the body section's presence and field completeness; the schema enforces the frontmatter. Earlier protocol notes that called the body section "retired in v6" reflected the migration of the *machine-readable subset* to frontmatter, not removal of the body section from authoring practice — which remains in active use across the corpus. Skills still carrying the legacy `## Concept Card` heading are CONTENT-mode migration work routed through the audit loop.
 
@@ -709,18 +711,18 @@ The manifest schema is at `schemas/manifest.schema.json`. For the complete autho
 
 ## Schema contract
 
-> **v8 is the canonical classification.** The schema's global `required` array mandates `subject` (closed 9-enum browse shelf) + `deployment_target` (closed 2-enum `portable`/`project`). `scope` is an optional free-text field (PRD-style). The prior contract (v7 — with `type`, `category`, `categories`, `primaryCategory`, `layerPrimary`, `routingRole`) lives in git history; retrieve via `git show schema-v7:schemas/SKILL_METADATA_PROTOCOL_schema.json`. Note the initial 2026-05-26 v8 design carried an `operation` axis and a closed-enum `scope` that were both reshaped by the 2026-05-27 amendment (operation retired, scope repurposed to free-text, deployment_target introduced) — see CHANGELOG and ADR-0017. See `schemas/SKILL_METADATA_PROTOCOL_schema.json` for the live contract.
+> **v8 is the canonical classification.** The schema's global `required` array mandates `subject` (closed 9-enum browse shelf) + `deployment_target` (closed 2-enum `portable`/`project`) + `scope` (required free text). The prior contract (v7 — with `type`, `category`, `categories`, `primaryCategory`, `layerPrimary`, `routingRole`) lives in git history; retrieve via `git show schema-v7:schemas/SKILL_METADATA_PROTOCOL_schema.json`; it is not accepted by the live schema. Note the initial 2026-05-26 v8 design carried an `operation` axis and a closed-enum `scope` that were both reshaped by the 2026-05-27 amendment (operation retired, scope repurposed to free-text, deployment_target introduced) — see CHANGELOG and ADR-0017. See `schemas/SKILL_METADATA_PROTOCOL_schema.json` for the live contract.
 
 | Surface | State |
 |---|---|
 | **This doc (SKILL_METADATA_PROTOCOL.md)** | v8 |
-| **Schema file (`schemas/SKILL_METADATA_PROTOCOL_schema.json`)** | v8. Global required: `subject`, `deployment_target`, plus identity/lifecycle/Evaluation Status fields. `scope` is an optional free-text field. No v7 fields declared. |
+| **Schema file (`schemas/SKILL_METADATA_PROTOCOL_schema.json`)** | v8. Global required: `subject`, `deployment_target`, `scope`, plus identity/lifecycle/Evaluation Status fields. `scope` is required free text. No v7 fields declared. |
 | **Compiled manifest (`skills.manifest.json`) summary** | v8 (`by_subject`, `by_deployment_target`, `by_schema_version`, `by_stability`, `by_project`). |
 | **Audit Loop checklist (`SKILL_AUDIT_LOOP.md` § Part 2)** | v8 |
 
 **What this means for authors:**
 
-- A new skill MUST declare the v8 axes: `subject` (9-enum) + `deployment_target` (2-enum). `scope` (free-text) is optional but strongly recommended. Polyhierarchy via optional `subjects[]` (max 2). See § Classification.
+- A new skill MUST declare the v8 classification fields: `subject` (9-enum) + `deployment_target` (2-enum) + `scope` (required free text). Polyhierarchy via optional `subjects[]` (max 2). See § Classification.
 - Skills still carrying v7 classification fields fail lint against the live schema. Migration of those skills is **CONTENT-mode work** handled per-skill through the audit loop (`/audit:audit`, `/audit:evolve`) — see `skill-graph/AGENTS.md § Work Modes — SYSTEM vs CONTENT`. The schema's correctness is independent of how many individual skills currently comply.
 - The normalizer in `scripts/lib/parse-frontmatter.js::normalizeFrontmatter()` continues to read either physical encoding (nested `metadata:` or flat).
 

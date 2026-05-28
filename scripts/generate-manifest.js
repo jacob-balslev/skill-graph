@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 /**
- * Manifest generator for Skill Graph (schema_version 4).
+ * Manifest generator for Skill Graph (schema_version 8).
  *
  * Walks `skills/<name>/SKILL.md` (and optionally `examples/skill-metadata-template.md`),
  * applies the authored-to-generated rename map documented in
@@ -271,15 +271,14 @@ function buildSkillEntry(fm, filePath, skillId, _projectFromRoot) {
   if (fm.urn !== undefined && fm.urn !== null) {
     entry.urn = fm.urn;
   }
-  // Pass-through schema_version so consumers can filter on the v7→v8 migration
-  // boundary without re-reading every SKILL.md. Per the 2026-05-25 F4 finding,
-  // omitting this left all 147 skills indistinguishable to v7/v8-aware tooling.
+  // Pass-through schema_version so consumers can distinguish current v8 skills
+  // from invalid or historical fixtures without re-reading every SKILL.md.
   if (fm.schema_version !== undefined && fm.schema_version !== null) {
     entry.schema_version = fm.schema_version;
   }
   entry.description = fm.description;
   entry.version = fm.version;
-  // Classification: subject + deployment_target are required; subjects[] is optional polyhierarchy.
+  // Classification: subject + deployment_target + scope are required; subjects[] is optional polyhierarchy.
   // See the ADR-0017 amendment of 2026-05-27.
   entry.subject = fm.subject;
   if (Array.isArray(fm.subjects) && fm.subjects.length > 0) {
@@ -287,7 +286,7 @@ function buildSkillEntry(fm, filePath, skillId, _projectFromRoot) {
   }
   entry.deployment_target = fm.deployment_target;
   if (fm.scope !== undefined && fm.scope !== null) {
-    entry.scope = fm.scope; // free-text PRD content, optional
+    entry.scope = fm.scope; // required free-text PRD content
   }
   entry.owner = fm.owner;
 

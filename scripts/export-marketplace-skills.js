@@ -345,36 +345,32 @@ function collectCanonicalSkills(sourceDir = DEFAULT_SOURCE_DIR) {
       );
     }
 
-    // Exclude skills that are codebase-scoped or internal-only.
+    // Exclude skills that are project-grounded or internal-only.
     //
-    // scope: codebase / project — skill is grounded in a specific codebase and not portable.
-    //   (`project` is the v8 rename of `codebase`; both must be excluded during the
-    //    v7→v8 compatibility window per the v7→v8 restructure plan and the GPT-5.5
-    //    critique that flagged the missed rename in v1 of the plan.)
-    // scope: operational — skill is an internal workflow doc, not a public teaching skill.
+    // v8 uses `deployment_target: project` for skills anchored to one specific
+    // project. Legacy exports may still carry the old closed-scope values, so
+    // keep those as an additional exclusion guard until the audit loop drains
+    // every historical source.
     //
-    // Skills with grounding_mode: repo_specific or repo_internal BUT scope: portable/reference/workspace
-    // are not excluded here — the privacy scanner (run by --check) catches any private content
-    // that leaks into the body. A portable skill may reference tooling files in the skill-graph
-    // repo (e.g., skill-router referencing scripts/skill-graph-route.js) without being
-    // inherently private.
+    // Skills with grounding_mode: repo_specific or repo_internal are excluded
+    // even if another field claims portability. A portable skill may reference
+    // tooling files in this repo, but it should not declare repo-specific
+    // grounding.
     //
     // These skills are excluded with a stderr notice so maintainers can audit the list.
     // They remain in the skills library for local use; only the marketplace surface is gated.
+    const deploymentTarget = fm.deployment_target;
     const fmScope = fm.scope;
     const groundingMode = fm.grounding && fm.grounding.grounding_mode;
-    const EXCLUDED_SCOPES = new Set(['codebase', 'operational', 'project']);
-    // Also exclude skills with codebase-bound grounding even if scope is not set,
-    // when the grounding_mode signals repo-internal content that cannot be published.
-    // Only apply to skills whose scope is NOT portable / reference / workspace (i.e., it is unset
-    // or explicitly internal). `workspace` is the v8 rename of `reference`.
-    const isPortableOrReference = fmScope === 'portable' || fmScope === 'reference' || fmScope === 'workspace';
+    const EXCLUDED_LEGACY_SCOPES = new Set(['codebase', 'operational', 'project']);
     const EXCLUDED_GROUNDING_MODES = new Set(['repo_specific', 'repo_internal']);
-    const excludeByGrounding = !isPortableOrReference && EXCLUDED_GROUNDING_MODES.has(groundingMode);
-    if (EXCLUDED_SCOPES.has(fmScope) || excludeByGrounding) {
+    const excludeByDeploymentTarget = deploymentTarget === 'project';
+    const excludeByLegacyScope = EXCLUDED_LEGACY_SCOPES.has(fmScope);
+    const excludeByGrounding = EXCLUDED_GROUNDING_MODES.has(groundingMode);
+    if (excludeByDeploymentTarget || excludeByLegacyScope || excludeByGrounding) {
       process.stderr.write(
         `EXCLUDED from marketplace export: ${repoRelative(skillMd)}` +
-        ` (scope: ${fmScope || 'unset'}, grounding_mode: ${groundingMode || 'none'})\n`
+        ` (deployment_target: ${deploymentTarget || 'unset'}, scope: ${fmScope || 'unset'}, grounding_mode: ${groundingMode || 'none'})\n`
       );
       continue;
     }

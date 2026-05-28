@@ -15,7 +15,7 @@
 | [`README.md`](../README.md) | Project overview, quick start, five-authority-tier tour |
 | [`SKILL_GRAPH.md`](../SKILL_GRAPH.md) | Repo organisation: five **authority tiers** (schema / explanation / enforcement / consumer / specimen) and the invariants CI enforces |
 | [`docs/skill-metadata-protocol.md`](skill-metadata-protocol.md) | Archetype section map, requiredness groups, schema strictness rules |
-| [`docs/SKILL_METADATA_PROTOCOL_field-reference.md`](SKILL_METADATA_PROTOCOL_field-reference.md) | Per-field semantics for all current v7 top-level fields |
+| [`docs/SKILL_METADATA_PROTOCOL_field-reference.md`](SKILL_METADATA_PROTOCOL_field-reference.md) | Per-field semantics for all current v8 top-level fields |
 | [`docs/SKILL_METADATA_PROTOCOL_field-decision-guide.md`](SKILL_METADATA_PROTOCOL_field-decision-guide.md) | Decision tables for `deployment_target`, `scope`, `relations.*`, Evaluation Status, `portability`, `project[]` |
 | [`docs/manifest-field-mapping.md`](manifest-field-mapping.md) | The authored → generated bridge: rename map, loss policy, migration notes |
 | [SKILL.md specification](https://agentskills.io/specification) | The base standard Skill Metadata Protocol extends |

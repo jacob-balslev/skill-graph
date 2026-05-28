@@ -21,7 +21,7 @@ Without `deployment_target`, a consumer cannot tell at a glance whether a skill 
 
 ### `scope` — the free-text companion
 
-`scope` is a separate, optional free-text field for a PRD-style description of what the skill teaches and does not teach. It is not an enum and is not used for routing decisions. Use it to expand on the skill's boundaries in plain language for human readers.
+`scope` is a separate, required free-text field for a PRD-style description of what the skill teaches and does not teach. It is not an enum and is not used for routing decisions. Use it to state the skill's boundaries in plain language for human readers.
 
 ### Common confusion
 
@@ -42,7 +42,7 @@ grounding:
 # Universal patterns; safe to load in any project
 deployment_target: portable
 
-# Optional free-text description of what this specific skill covers/excludes
+# Required free-text description of what this specific skill covers/excludes
 scope: "Covers abstract testing strategy; does not cover project-specific test fixtures."
 ```
 

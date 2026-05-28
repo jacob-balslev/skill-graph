@@ -122,7 +122,8 @@ Do not claim quality without evidence. Before saying a change is complete, run t
 | Claim | Evidence |
 |---|---|
 | Markdown links work. | `node scripts/check-markdown-links.js` |
-| Skill metadata is valid. | `node scripts/skill-lint.js --include-template` |
+| Skill metadata is valid. | `node scripts/skill-lint.js <skill-or-root>` |
+| The shipped template is valid. | `node scripts/skill-lint.js examples/skill-metadata-template.md` |
 | Protocol docs and schemas agree. | `node scripts/check-protocol-consistency.js` |
 | Manifest generation still works. | `node scripts/generate-manifest.js --include-template --validate-only` |
 | Routing examples still hold. | `node scripts/skill-graph-routing-eval.js --manifest examples/skills.manifest.sample.json --only-asserted` |

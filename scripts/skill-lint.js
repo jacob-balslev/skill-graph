@@ -192,19 +192,19 @@ function validateWithSchema(value, schema, pointer = '', errors = []) {
   if ((schema.required || schema.properties || schema.additionalProperties === false) &&
       value && typeof value === 'object' && !Array.isArray(value)) {
     if (Array.isArray(schema.required)) {
-      // v8 classification (subject + deployment_target). When one of these required axes is
-      // missing, surface the error with a named-axis label rather than the raw
-      // schema-validation pointer, so authors immediately know it is a v8
-      // conformance issue rather than a generic "missing property" — the cause
-      // of the "I don't understand which check fired" friction audit M3 named.
-      const V8_AXES = new Set(['subject', 'deployment_target']);
+      // v8 classification fields. When one is missing, surface the error with
+      // a named label rather than the raw schema-validation pointer, so authors
+      // immediately know it is a v8 conformance issue rather than a generic
+      // "missing property" — the cause of the "I don't understand which check
+      // fired" friction audit M3 named.
+      const V8_CLASSIFICATION_FIELDS = new Set(['subject', 'deployment_target', 'scope']);
       for (const requiredField of schema.required) {
         if (!(requiredField in value)) {
-          const isV8Axis = V8_AXES.has(requiredField);
+          const isV8ClassificationField = V8_CLASSIFICATION_FIELDS.has(requiredField);
           errors.push({
             field: requiredField,
-            msg: isV8Axis
-              ? `v8 axis missing: \`${requiredField}\` is a required v8 classification axis. Add it via the field-purpose comment template in examples/skill-metadata-template.md.`
+            msg: isV8ClassificationField
+              ? `v8 classification field missing: \`${requiredField}\` is required by the v8 contract. Add it via the field-purpose comment template in examples/skill-metadata-template.md.`
               : `required-missing: \`${requiredField}\` is required by ${displaySchemaPath()}`,
           });
         }

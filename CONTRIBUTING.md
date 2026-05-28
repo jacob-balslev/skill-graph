@@ -50,8 +50,11 @@ This step exists because authoring a skill without a plan is the most common cau
 Run the full validation pass:
 
 ```bash
-# Lint every skill in the repo (11 checks per file)
-node scripts/skill-lint.js --include-template
+# Lint every skill in the repo.
+node scripts/skill-lint.js
+
+# Lint the shipped template directly.
+node scripts/skill-lint.js examples/skill-metadata-template.md
 
 # Cross-artifact protocol consistency (7 checks)
 node scripts/check-protocol-consistency.js
@@ -60,7 +63,7 @@ node scripts/check-protocol-consistency.js
 node scripts/generate-manifest.js --include-template --validate-only
 ```
 
-All three must exit 0. If the lint script reports an error, fix the underlying file — do not silence the error or edit the lint output.
+All checks that match your change scope must exit 0. If the lint script reports an error, fix the underlying file — do not silence the error or edit the lint output. During a schema-breaking SYSTEM change, corpus lint may remain red until the CONTENT audit loop drains each affected skill; do not patch individual `SKILL.md` files inside the SYSTEM commit to force it green.
 
 The lint output now prefixes each line with the source tier (see `SKILL_GRAPH.md`). Tier labels: `[T1↔T3]` for schema parity, `[T3↔T5]` for generator parity, `[T5 sample]` for the sample manifest, `[T5]` for skills and template. A failure at a particular tier tells you which file needs fixing first.
 

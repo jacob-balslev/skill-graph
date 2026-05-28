@@ -13,7 +13,7 @@
  * retired `domain_object`.
  *
  * This test verifies:
- *   - Minimal v8 frontmatter (subject + deployment_target) validates.
+ *   - Minimal v8 frontmatter (subject + deployment_target + scope) validates.
  *   - Legacy v7-shaped frontmatter (type/category, no subject/deployment_target)
  *     now FAILS — missing required axes AND additionalProperties violations.
  *     Any skill still carrying that shape is CONTENT-mode migration work.
@@ -21,10 +21,10 @@
  *     clean cut (additionalProperties).
  *   - Missing `subject` fails; missing `deployment_target` fails.
  *   - `deployment_target: project` requires grounding; without it, fails.
- *   - `scope` accepts any free-text string (no enum).
+ *   - `scope` is required free-text (no enum); a v8 skill without it fails.
  *   - grounding requires `subject_matter`; the retired `domain_object` fails.
- *   - schema_version int/string 7 and 8 are both tolerated while pre-v8 skills
- *     migrate (the only intentional cross-version tolerance left).
+ *   - schema_version accepts 8 only (int or string); v7 is deprecated and
+ *     rejected — a v7 skill fails validation and migrates through the audit loop.
  */
 
 'use strict';
@@ -149,6 +149,7 @@ const v8Base = {
   version: '1.0.0',
   subject: 'code-engineering',
   deployment_target: 'portable',
+  scope: 'Teaches the test subsystem; not for unrelated concerns.',
   owner: 'test-owner',
   freshness: '2026-05-25',
   drift_check: { last_verified: '2026-05-25' },
@@ -157,13 +158,13 @@ const v8Base = {
   routing_eval: 'absent',
 };
 
-check('minimal v8 frontmatter (subject + deployment_target) validates', () => {
+check('minimal v8 frontmatter (subject + deployment_target + scope) validates', () => {
   const errors = validate(v8Base, SCHEMA);
   if (errors.length > 0) throw new Error(`v8 base failed: ${errors.join('; ')}`);
 });
 
-check('legacy v7-shaped frontmatter fails (missing axes + retired fields)', () => {
-  // Missing subject + deployment_target (now required) AND carries the retired
+check('legacy v7-shaped frontmatter fails (missing v8 fields + retired fields)', () => {
+  // Missing subject + deployment_target + scope (now required) AND carries the retired
   // type/category fields (now additionalProperties violations).
   const errors = validate(v7Legacy, SCHEMA);
   if (errors.length === 0) throw new Error('v7-shaped frontmatter should have failed');
@@ -283,16 +284,16 @@ check('subjects array with valid entries validates', () => {
 // here doesn't implement maxItems. The real corpus check happens when an
 // authored skill runs through skill-lint as part of `npm run verify`.
 
-check('schema_version int 7 tolerated while pre-v8 skills migrate', () => {
+check('schema_version int 7 is rejected (v7 deprecated, clean cut to v8)', () => {
   const intSeven = { ...v8Base, schema_version: 7 };
   const errors = validate(intSeven, SCHEMA);
-  if (errors.length > 0) throw new Error(`schema_version int 7 failed: ${errors.join('; ')}`);
+  if (errors.length === 0) throw new Error('schema_version int 7 should now fail — v7 is deprecated');
 });
 
-check('schema_version string "7" tolerated (back-compat for hand-rolled YAML)', () => {
+check('schema_version string "7" is rejected (v7 deprecated, clean cut to v8)', () => {
   const strSeven = { ...v8Base, schema_version: '7' };
   const errors = validate(strSeven, SCHEMA);
-  if (errors.length > 0) throw new Error(`schema_version string "7" failed: ${errors.join('; ')}`);
+  if (errors.length === 0) throw new Error('schema_version string "7" should now fail — v7 is deprecated');
 });
 
 check('schema_version string "8" valid (parity with int)', () => {

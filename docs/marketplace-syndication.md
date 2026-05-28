@@ -90,12 +90,11 @@ Use string values so the result stays compatible with the base `SKILL.md` metada
 ```yaml
 metadata:
   skill_graph_source_repo: "https://github.com/jacob-balslev/skill-graph"
-  skill_graph_protocol: "Skill Metadata Protocol v7"
   skill_graph_project: "Skill Graph"
   skill_graph_canonical_skill: "skills/<name>/SKILL.md"
 ```
 
-The `skill_graph_protocol` value should reflect the current Skill Metadata Protocol version (`v7` as of this writing — see `SKILL_METADATA_PROTOCOL.md` header for the live value). Per [`AGENTS.md` § Version Labels Are Earned, Not Bumped](../AGENTS.md#version-labels-are-earned-not-bumped), this value is content-conformance — not export-tooling-version — and authoring a value above the source skill's actual `schema_version` is fake conformance. The known tension that `scripts/export-marketplace-skills.js` currently hardcodes a single value across all exports is documented in the same AGENTS.md section and tracked separately.
+Exported marketplace skills do not emit `skill_graph_protocol`; per-skill `schema_version` is the honest source contract signal. Per [`AGENTS.md` § Version Labels Are Earned, Not Bumped](../AGENTS.md#version-labels-are-earned-not-bumped), protocol/version labels must describe content conformance, not export-tooling version.
 
 If a generated export already nests protocol fields under `metadata`, keep these `skill_graph_*` keys alongside that export metadata. The purpose is provenance, not keyword stuffing.
 
@@ -169,7 +168,7 @@ The public skills library (`jacob-balslev/skills`) is defended by four independe
 | Layer | Where | What it blocks |
 |---|---|---|
 | **L1 — Working tree `.gitignore`** | `jacob-balslev/skills` `.gitignore` — allowlist model (`/*` + re-include only public-safe paths) | `git add -A` or `git add .` picks up internal content |
-| **L2 — Export pipeline scope gate** | `scripts/export-marketplace-skills.js` — excludes `scope: codebase\|operational` + `grounding_mode: repo_specific\|repo_internal`; scans generated surface for `PRIVACY_PATTERNS` | Internal skills flowing through the export pipeline |
+| **L2 — Export pipeline publication gate** | `scripts/export-marketplace-skills.js` — excludes `deployment_target: project`, legacy internal scope values, and `grounding_mode: repo_specific\|repo_internal`; scans generated surface for `PRIVACY_PATTERNS` | Internal skills flowing through the export pipeline |
 | **L3 — Pre-push hook** | `jacob-balslev/skills` repo: `hooks/pre-push` + `hooks/install.js` | Any push — scans changed `SKILL.md` files for `PRIVACY_PATTERNS` hits before the push leaves the local machine |
 | **L4 — CI workflow** | `jacob-balslev/skills` repo: `.github/workflows/privacy-scan.yml` + `scripts/ci-privacy-scan.js` | Any PR or push to `main` — runs the full-tree scan on the remote side |
 
@@ -336,7 +335,7 @@ ADR 0008 freezes the legacy outer skill surface (`~/Development/skills/<name>/`)
 | Privacy screening | Exclude personal data, private paths, customer/project identifiers, local runtime details, and token/API-key-like strings from row-level public docs | Privacy Gate in `docs/marketplace-skill-candidate-list.md` |
 | Scope screening | Exclude Sales Hub-coupled skills and personal-infra skills from public export | `classification: sales-hub-bound` / `personal-infra` in `data/publication-classification.json` |
 | Generalization | Rewrite eligible ideas as portable skills instead of copying private source directly | `source: rewrite`, `port+sanitize`, or `port` in `data/publication-classification.json` |
-| v6 authoring | Land promoted skills directly in the nested v6 library; do not codemod the frozen outer surface | `~/Development/skills/skills/<category>/<name>/SKILL.md` |
+| v8 authoring | Land promoted skills directly in the nested v8 library; do not codemod the frozen outer surface | `~/Development/skills/skills/<subject>/<name>/SKILL.md` |
 | Queue generation | Rebuild the publication queue from the ledger after classification edits | `node scripts/skill/build-skill-audit-worklist.js --write` → `docs/marketplace-publication-queue.generated.md` |
 | Export verification | Generate and verify the plain marketplace surface before publication | `node scripts/export-marketplace-skills.js --check`, `node scripts/verify-skill-md-export.js --plain marketplace/skills` |
 
@@ -345,10 +344,10 @@ Promotion criteria are all required:
 - **Non-PII:** no personal data, customer references, production identifiers, real emails, local user paths, or token-like strings.
 - **Non-Sales-Hub:** not coupled to Sales Hub routes, schemas, tenant data, product doctrine, or private integration assumptions.
 - **Generalizable:** useful to consumers outside this monorepo without preserving local operating context.
-- **v7-compliant on arrival:** authored directly into the nested Skill Metadata Protocol v7 surface with current frontmatter, eval state, and routing metadata.
+- **v8-compliant on arrival:** authored directly into the nested Skill Metadata Protocol v8 surface with current frontmatter, eval state, and routing metadata.
 - **Publication-ledger entry:** classification, tier, source, sanitization requirement, demand signal, and notes recorded in `data/publication-classification.json`.
 
-Do not treat `needs_sanitization: yes` as publishable work already complete. It means the idea can be promoted only after a rewrite or sanitization pass produces a clean nested v6 skill and export verification passes.
+Do not treat `needs_sanitization: yes` as publishable work already complete. It means the idea can be promoted only after a rewrite or sanitization pass produces a clean nested v8 skill and export verification passes.
 
 ## Gap Discovery Loop
 

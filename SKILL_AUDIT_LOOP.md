@@ -440,7 +440,7 @@ Required dimension rows:
 
 ### 1. Frontmatter validity
 
-- [ ] `schema_version` exists and equals `8`. Do not author `7` on new skills. String variants `"8"` / `"7"` are tolerated for hand-rolled YAML — see `schemas/SKILL_METADATA_PROTOCOL_schema.json`.
+- [ ] `schema_version` exists and equals `8`. Do not author `7`; the live schema rejects v7 and prior contracts live in git history — see `schemas/SKILL_METADATA_PROTOCOL_schema.json`.
 - [ ] `name` exists and matches the intended skill identifier
 - [ ] `description` exists and is specific enough to route from
 - [ ] `version` exists
@@ -561,7 +561,7 @@ A skill audit is complete when:
 
 # Part 3 — Per-Skill Audit Runbook
 
-> **Audience & runtime — read before running any command below (added 2026-05-27 per audit B8).** Part 3 is an operational runbook that orchestrates `@skill-graph/cli` canonical scripts together with **workspace-orchestration scripts** that are NOT bundled in the npm package. If you installed `@skill-graph/cli` from npm and follow Part 3 verbatim, commands like `node scripts/skill/skill-audit-claim.js`, `scripts/skill/source-truth-catalog.js`, `scripts/skill/skill-census.js`, `scripts/skill/build-skill-audit-worklist.js`, and `scripts/skill/skill-test-runner.js` will fail with `Error: Cannot find module` — those scripts live in the canonical workspace tree at `~/Development/scripts/skill/` (lane claim atomicity, census, deep code probe, worklist build, test runner). They are deliberately workspace-side per ADR 0009 + ADR 0015 + ADR 0016 (Proposed). For standalone `@skill-graph/cli` consumers without the workspace orchestration layer:
+> **Audience & runtime — read before running any command below (added 2026-05-27 per audit B8).** Part 3 is an operational runbook that orchestrates `@skill-graph/cli` canonical scripts together with **workspace-orchestration scripts** that are NOT bundled in the npm package. If you installed `@skill-graph/cli` from npm and follow Part 3 verbatim, commands like `node scripts/skill/skill-audit-claim.js`, `scripts/skill/source-truth-catalog.js`, `scripts/skill/skill-census.js`, `scripts/skill/build-skill-list.js`, and `scripts/skill/skill-test-runner.js` will fail with `Error: Cannot find module` — those scripts live in the canonical workspace tree at `~/Development/scripts/skill/` (lane claim atomicity, census, deep code probe, worklist build, test runner). They are deliberately workspace-side per ADR 0009 + ADR 0015 + ADR 0016 (Proposed). For standalone `@skill-graph/cli` consumers without the workspace orchestration layer:
 >
 > - Use the canonical CLI entrypoints: `skill-graph audit`, `skill-graph improve`, `skill-graph evaluate`, `skill-graph evolve` (defined in `bin/skill-graph.js`) — these wrap `lib/audit/*` and `scripts/skill-*.js` directly.
 > - `scripts/skill/skill-lint.js` → canonical is `scripts/skill-lint.js` (note the path: no `skill/` subdirectory).
@@ -750,7 +750,7 @@ A skill audit is complete when:
 8. **Verify** (fixed checklist, every skill):
    - `node scripts/skill/skill-census.js --json --write-manifest --write-docs`
    - `node scripts/skill/skill-lint.js`
-   - `node scripts/skill/build-skill-audit-worklist.js --write`
+   - `node scripts/skill/build-skill-list.js --write`
    - `node scripts/skill/skill-test-runner.js --skill <skill-slug> --json` (re-run if code was fixed)
    - If skill/eval files changed: formatting check on changed files
    - If runtime code changed: `npx pnpm run test` (scoped) + ESLint on changed files
@@ -832,7 +832,7 @@ node scripts/task/task-helpers.js build-continuation-prompt \
 - No `git add .` or `git add -A`.
 - Use a path-limited commit (`git commit --only -- <paths>`) when unrelated files are already staged.
 - Don't touch skills owned by other sessions.
-- Always re-run `build-skill-audit-worklist.js --write` at session start (it re-ranks and may change the next target).
+- Always re-run `build-skill-list.js --write` at session start (it re-ranks and may change the next target).
 - If blocked, report: skill name, exact blocker, why it prevents continuation.
 - Never author a `## Concept of the skill` that copies text verbatim from `## Philosophy of the skill` — `## Philosophy of the skill` is about the philosophy BEHIND the skill (the underlying methodological stance, principles, opinionated worldview the skill embodies); `## Concept of the skill` is about the universal subject. If the two sections are the same, the skill is teaching the wrong thing.
 - Do not pass legacy per-run model-selection flags. `evaluate-skill.js` rejects them.

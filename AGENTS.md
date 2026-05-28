@@ -201,7 +201,7 @@ Core required axes (v8 — see `SKILL_METADATA_PROTOCOL.md § Schema contract`):
 - `name` — kebab-case, head-noun-anchored (see `docs/head-noun-glossary.md`); aligns with parent directory.
 - `description` — short description of what the skill is about. Activation signals belong to `keywords`/`triggers`/`examples`/`anti_examples`; boundary semantics belong to `relations.boundary`.
 - `subject` — primary browse shelf, ONE of nine closed values: `code-engineering`, `quality-assurance`, `frontend-ui`, `design-craft`, `agent-ops`, `product-domain`, `knowledge-organization`, `meta-methods`, `data-analytics`. Each subject holds 5–25 skills; <5 = fold or recruit, >25 = subdivide via `taxonomy_domain`. To propose a 10th value: ADR + ≥5 primary-fit skills. See [ADR-0017](docs/adr/0017-five-axis-classification-model.md).
-- `deployment_target` — deployment targeting, ONE of two values: `portable` (any project), `project` (one specific project; requires `grounding`). The `scope` field is now an optional free-text PRD-style statement (the v8 `scope` enum's `workspace` value was removed 2026-05-27; see ADR-0017 amendment).
+- `deployment_target` — deployment targeting, ONE of two values: `portable` (any project), `project` (one specific project; requires `grounding`). The `scope` field is now a required free-text PRD-style statement (the v8 `scope` enum's `workspace` value was removed 2026-05-27; see ADR-0017 amendment).
 - `subjects[]` (optional, max 2, primary first) covers polyhierarchy when a skill genuinely spans two browse shelves.
 
 Activation surfaces: `keywords` (≤10), `triggers` (exact), `examples` / `anti_examples` (positive/negative prompts). Routing edges live in `relations` (`related` / `boundary` / `verify_with` / `depends_on` / `broader` / `narrower` / `disjoint_with`).
@@ -579,27 +579,32 @@ Findings carry a severity column drawn from a fixed schema — `CRITICAL` (contr
 Use the full repo verification before handing off substantive changes:
 
 ```bash
-npm run verify
+npm run verify          # full gate — includes corpus lint + manifest validation (CONTENT-inclusive)
+npm run verify:system   # SYSTEM-only gate — schema constants, protocol, docs, fixtures, marketplace, unit tests
 ```
 
-### Separate gates not in `npm run verify`
+**Which to run depends on your work mode.** `npm run verify:system` is the gate for **SYSTEM work** (schema, scripts, protocol docs, fixtures): it excludes the corpus gates (`lint`, `manifest:validate`, `routing-eval`, `export:verify-skill-md`) that go red purely because individual `skills/skills/**/SKILL.md` files have not yet been migrated to the current contract. A SYSTEM change is shippable when `verify:system` is green. `npm run verify` (the full gate) only goes green once the corpus has been migrated through the audit loop (CONTENT work) — do **not** relax the schema or skip a gate to force the full `verify` green while CONTENT migration is paused.
 
-These gates run independently because their failure modes are CONTENT-drift, not SYSTEM-correctness. A green `npm run verify` does NOT imply they pass; agents and CI must run them explicitly.
+### Separate gate not in `npm run verify`
+
+This gate runs independently because its failure mode is CONTENT-drift, not SYSTEM-correctness. A green `npm run verify` does NOT imply it passes; agents and CI must run it explicitly when touching audit artifacts.
 
 | Gate | Command | What it catches | Why it's separate |
 |---|---|---|---|
 | **Audit-evidence consistency** | `npm run audit-manifest:check` (or `node scripts/check-audit-manifest.js`) | Historical verdict records that claim a graded comprehension/application verdict without the backing `evals/comprehension.json` / `evals/application.json` artifact | Mismatches are CONTENT-debt — the audit loop downgrades them to `UNVERIFIED` per-skill. Wiring this into `npm run verify` would force the verify suite red until all historical verdicts are reconciled, blocking unrelated SYSTEM work. Tracked at the SH-6548 follow-up. |
-| **Status doc freshness** | `npm run status:check` | `docs/status.generated.md` is out of date relative to the current package version / schema / skill count / check states | Status doc is generated; running this gate before commit catches stale snapshots. |
 
 Useful focused checks:
 
 ```bash
-node scripts/skill-lint.js --include-template
+node scripts/skill-lint.js examples/skill-metadata-template.md
+node scripts/skill-lint.js --path examples/fixture-skills --no-color
 node scripts/check-protocol-consistency.js
 node scripts/check-markdown-links.js
 node scripts/generate-manifest.js --include-template --validate-only
 node scripts/skill-graph-routing-eval.js --manifest examples/skills.manifest.sample.json --only-asserted
 node scripts/verify-skill-md-export.js
+node scripts/export-marketplace-skills.js --check
+node scripts/build-status-doc.js --check
 node lib/audit/eval-staleness-checker.js
 node scripts/skill-overlap.js
 node scripts/skill-graph-drift.js

@@ -35,7 +35,7 @@ Make a large AI-agent skill library coherent, project-aware, auditable, and expo
 
 | Fact | Value | Source of truth |
 |---|---|---|
-| **Schema version enforced** | **v8**. The schema's global `required` array mandates `subject` + `deployment_target` (`scope` is an optional free-text field). The prior contract (v7) lives in git history; retrieve via `git show schema-v7:schemas/SKILL_METADATA_PROTOCOL_schema.json`. | `schemas/SKILL_METADATA_PROTOCOL_schema.json` + [ADR-0017](docs/adr/0017-five-axis-classification-model.md) |
+| **Schema version enforced** | **v8**. The schema's global `required` array mandates `subject` + `deployment_target` + `scope` (`scope` is required free text, not an enum). The prior contract (v7) lives in git history; retrieve via `git show schema-v7:schemas/SKILL_METADATA_PROTOCOL_schema.json`; it is not accepted by the live schema. | `schemas/SKILL_METADATA_PROTOCOL_schema.json` + [ADR-0017](docs/adr/0017-five-axis-classification-model.md) |
 | Manifest schema file | tracks the v8 contract; v7 fields are not declared | `schemas/manifest.schema.json` |
 | Emitted manifest `schema_version` | **4** (root manifest contract; orthogonal to per-skill `schema_version`) | `scripts/generate-manifest.js`; `schemas/manifest.schema.json` `schema_version.const` |
 | Manifest summary facets | `by_subject`, `by_deployment_target`, `by_schema_version`, `by_stability`, `by_project` | `scripts/generate-manifest.js::computeSummary` |
@@ -74,11 +74,11 @@ A common point of confusion: the canonical library and the in-repo `marketplace/
 
 **The two-hat insight:** the AUTHORING SOURCE and the PUBLIC RELEASE are the **same physical repo**. The pipeline above pushes the staging buffer (`skill-graph/marketplace/skills/`) into that repo, so writing to skill-graph and pushing the canonical library both eventually update `github.com/jacob-balslev/skills`. The `marketplace/` directory is the transform buffer between this tooling repo and the library repo, not a separate publication target.
 
-The export is **not** a copy. It (1) applies the **publication gate** — excludes `deployment_target: project` (plus legacy `scope: codebase|operational|project`) and `grounding_mode: repo_specific` skills and fails on private paths, so internal skills never publish; (2) **normalizes** the frontmatter (flattens the `compatibility` object, etc.); and (3) historically **flattened** the directory layout. Because the source library (`~/Development/skills/`) is *also* the public release repo (`jacob-balslev/skills`), source and release are the same repo; `marketplace/skills/` is the transform/staging buffer between this tooling repo and that one. See `AGENTS.md § Public Distribution` for the two-step sync protocol.
+The export is **not** a copy. It (1) applies the **publication gate** — excludes `deployment_target: project` (plus legacy `scope: codebase|operational|project`) and `grounding_mode: repo_specific|repo_internal` skills and fails on private paths, so internal skills never publish; (2) **normalizes** the frontmatter (flattens the `compatibility` object, etc.); and (3) historically **flattened** the directory layout. Because the source library (`~/Development/skills/`) is *also* the public release repo (`jacob-balslev/skills`), source and release are the same repo; `marketplace/skills/` is the transform/staging buffer between this tooling repo and that one. See `AGENTS.md § Public Distribution` for the two-step sync protocol.
 
-> **Layout note (re-verified 2026-05-27):** the export is self-consistent after a regenerate — `node scripts/export-marketplace-skills.js --check` is clean and a write run is a no-op (0 files changed). `marketplace/skills/` uses a **flat** `<name>/` layout (the plain Agent Skills publish shape) while the authoring/release library is **nested** `<category>/<name>/`. These layouts intentionally differ — authoring organization vs publish shape — so the flat export is current, not stale. **Freshness drift caveat:** because `marketplace:verify` is not currently part of `npm run verify`, freshness drift between source edits and marketplace regenerations is invisible to CI between runs — see audit finding B7 / H4 (2026-05-27). One thing to confirm: the `ls marketplace/skills/ | wc -l == ls skills/ | wc -l` pre-release check in `AGENTS.md` compares top-level entry counts, which differ between a flat and a nested tree; that check should compare recursive `SKILL.md` counts instead.
+> **Layout note (re-verified 2026-05-28):** the export is self-consistent after a regenerate — `node scripts/export-marketplace-skills.js --check` verifies the generated surface, and `npm run verify` includes `marketplace:verify`. `marketplace/skills/` uses a **flat** `<name>/` layout (the plain Agent Skills publish shape) while the authoring/release library is **nested** `<subject>/<name>/`. These layouts intentionally differ — authoring organization vs publish shape — so the flat export is current, not stale. Pre-release checks should compare recursive `SKILL.md` counts rather than top-level directory counts.
 
-> **Export-label note (2026-05-26):** `scripts/export-marketplace-skills.js` no longer stamps a `skill_graph_protocol` value on exported skills — the previous hardcoded `Skill Metadata Protocol v7` constant conflated "exported by v7 tooling" with "content verified at v7" and was removed. Exported skills preserve whatever `skill_graph_protocol` the source skill declared (which may be v5/v6/v7/v8 depending on when its content was last reviewed). See `AGENTS.md § Version Labels Are Earned, Not Bumped`.
+> **Export-label note (2026-05-26):** `scripts/export-marketplace-skills.js` no longer emits `skill_graph_protocol` on exported skills — the previous hardcoded `Skill Metadata Protocol v7` constant conflated "exported by v7 tooling" with "content verified at v7" and was removed. Per-skill `schema_version` is the honest source contract signal. See `AGENTS.md § Version Labels Are Earned, Not Bumped`.
 
 ---
 
@@ -397,10 +397,10 @@ The relations graph cuts across all five tiers — declared in Tier 5 SKILL.md f
 
 ```mermaid
 flowchart LR
-  MIN["minimal-capability<br/><i>capability · portable</i>"]
-  GR["with-grounding<br/><i>capability · project</i>"]
-  REL["with-relations<br/><i>capability · portable</i>"]
-  COMP["comprehension-full<br/><i>capability · portable</i>"]
+  MIN["minimal-capability<br/><i>code-engineering · portable</i>"]
+  GR["with-grounding<br/><i>knowledge-organization · project</i>"]
+  REL["with-relations<br/><i>knowledge-organization · portable</i>"]
+  COMP["comprehension-full<br/><i>knowledge-organization · portable</i>"]
 
   %% depends_on — thick solid, load-bearing
   REL ==>|depends_on| MIN
@@ -420,7 +420,7 @@ flowchart LR
   class GR project
 ```
 
-**Legend.** All four fixtures are `capability`; node fill is blue. A thick node stroke marks `scope: project` (legacy fixtures may still show `scope: codebase` as the accepted v7 alias) — only `with-grounding` carries the `grounding` block and recorded `truth_source_hashes`. Edge styles, all declared by `with-relations`: `==>` thick solid = `depends_on` (load-bearing — assumes `minimal-capability` lints clean); `-.->` dashed = `verify_with` (co-load `comprehension-full` for its Understanding fields); `---` thin = `related` (symmetric co-read with `minimal-capability`); `-. boundary .-x` red = `boundary` (anti-ownership — excludes grounding/project-scope cases from co-routing when `with-relations` wins).
+**Legend.** All four fixtures are hermetic v8 fixtures; node fill is blue. A thick node stroke marks `deployment_target: project` — only `with-grounding` carries the `grounding` block and recorded `truth_source_hashes`. Edge styles, all declared by `with-relations`: `==>` thick solid = `depends_on` (load-bearing — assumes `minimal-capability` lints clean); `-.->` dashed = `verify_with` (co-load `comprehension-full` for its Understanding fields); `---` thin = `related` (symmetric co-read with `minimal-capability`); `-. boundary .-x` red = `boundary` (anti-ownership — excludes grounding/project-target cases from co-routing when `with-relations` wins).
 
 Every edge is verifiable. `node bin/skill-graph.js lint examples/fixture-skills/with-relations` rejects dangling targets; `node scripts/skill-graph-route.js` uses these edges at request time to decide which skill wins, which co-loads via `verify_with` or `depends_on`, and which is excluded via `boundary`.
 

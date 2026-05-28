@@ -5,6 +5,7 @@ description: "Use as the v8-conformant fixture exercising the full Understanding
 version: 1.0.0
 subject: knowledge-organization
 deployment_target: portable
+scope: "Hermetic v8 fixture for validating the comprehension_state conditional rule, flat Understanding fields, and the legacy concept fallback. Out: production skill guidance."
 owner: skill-graph-fixture-suite
 freshness: "2026-05-19"
 comprehension_state: present

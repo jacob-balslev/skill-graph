@@ -449,5 +449,5 @@ After a generator change or a schema change, verify:
 - [ ] Every top-level field in `schemas/SKILL_METADATA_PROTOCOL_schema.json` appears in either the rename map above or the current dropped-field list.
 - [ ] Every field in `schemas/manifest.schema.json` appears in either the rename map or the "Generated-only manifest fields" list.
 - [ ] The worked example's JSON projection can be regenerated from its YAML frontmatter by applying only the transforms declared in the rename map.
-- [ ] `node scripts/skill-lint.js --include-template` exits 0 on the shipped template.
+- [ ] `node scripts/skill-lint.js examples/skill-metadata-template.md` exits 0 on the shipped template.
 - [ ] `examples/skills.manifest.sample.json` still matches the projection rules when regenerated from the current `skills/` library plus the template.

@@ -41,9 +41,9 @@ Primary Skill Graph sources read:
 - `SKILL_AUDIT_LOOP.md`
 - `README.md`
 - `CHANGELOG.md`
-- `schemas/skill.schema.json`
+- `schemas/SKILL_METADATA_PROTOCOL_schema.json`
 - `schemas/manifest.schema.json`
-- `docs/field-reference.md`
+- `docs/SKILL_METADATA_PROTOCOL_field-reference.md`
 - `docs/field-decision-guide.md`
 - `docs/field-state-matrix.md`
 - `docs/manifest-field-mapping.md`
@@ -78,17 +78,17 @@ Inventory scan:
 
 ## Current Contract Snapshot
 
-The binding machine contract is `schemas/skill.schema.json`. As of this report:
+The binding machine contract is `schemas/SKILL_METADATA_PROTOCOL_schema.json`. As of this report:
 
-- Required top-level fields are `schema_version`, `name`, `description`, `version`, `subject`, `deployment_target`, `owner`, `freshness`, `drift_check`, `eval_artifacts`, `eval_state`, and `routing_eval`.
+- Required top-level fields are `schema_version`, `name`, `description`, `version`, `subject`, `deployment_target`, `scope`, `owner`, `freshness`, `drift_check`, `eval_artifacts`, `eval_state`, and `routing_eval`.
 - `subject` is a closed 9-value enum: `agent-ops`, `code-engineering`, `frontend-ui`, `design-craft`, `data-analytics`, `quality-assurance`, `meta-methods`, `knowledge-organization`, `product-domain`.
 - `deployment_target` is a closed 2-value enum: `portable`, `project`.
-- `scope` is an optional free-text string. It is not the deployment targeting enum.
+- `scope` is a required free-text string. It is not the deployment targeting enum.
 - `deployment_target: project` requires `grounding`.
 - `grounding.subject_matter` is the current grounding field. `grounding.domain_object` is historical.
 - `manifest.schema.json` summarizes by `by_deployment_target`, not `by_scope`.
 
-The current contract is clearest in `SKILL_METADATA_PROTOCOL.md`, `schemas/skill.schema.json`, `schemas/manifest.schema.json`, `docs/field-reference.md`, and `examples/skill-metadata-template.md`.
+The current contract is clearest in `SKILL_METADATA_PROTOCOL.md`, `schemas/SKILL_METADATA_PROTOCOL_schema.json`, `schemas/manifest.schema.json`, `docs/SKILL_METADATA_PROTOCOL_field-reference.md`, and `examples/skill-metadata-template.md`.
 
 ## Skill Metadata Protocol
 
@@ -106,9 +106,9 @@ The ideal skill file reads like a teachable lesson and behaves like a typed inte
 
 ### Rules
 
-1. The schema is the binding machine contract. If prose and `schemas/skill.schema.json` disagree, the schema wins and the prose must be corrected.
-2. A current authored skill must use `subject` and `deployment_target` as the required classification fields.
-3. `scope` is a free-text statement of deployment scope and boundaries. It must not be described as `portable`, `workspace`, or `project`.
+1. The schema is the binding machine contract. If prose and `schemas/SKILL_METADATA_PROTOCOL_schema.json` disagree, the schema wins and the prose must be corrected.
+2. A current authored skill must use `subject`, `deployment_target`, and `scope` as required classification fields.
+3. `scope` is a required free-text statement of deployment scope and boundaries. It must not be described as `portable`, `workspace`, or `project`.
 4. `deployment_target` is the deployment targeting enum. It has exactly two current values: `portable` and `project`.
 5. Project-specific skills must declare grounding. In the current schema, `deployment_target: project` requires `grounding`.
 6. Use `grounding.subject_matter`, not `grounding.domain_object`, in current guidance and examples.
@@ -127,7 +127,7 @@ The goal of the Skill Metadata Protocol is to become the default open-source str
 Near-term goals:
 
 1. Finish the v8 documentation sweep so every current guide describes `deployment_target`, `taxonomy_domain`, `project[]`, `repo[]`, and `grounding.subject_matter`.
-2. Keep `SKILL_METADATA_PROTOCOL.md`, `schemas/skill.schema.json`, `schemas/manifest.schema.json`, and `docs/field-reference.md` in exact agreement.
+2. Keep `SKILL_METADATA_PROTOCOL.md`, `schemas/SKILL_METADATA_PROTOCOL_schema.json`, `schemas/manifest.schema.json`, and `docs/SKILL_METADATA_PROTOCOL_field-reference.md` in exact agreement.
 3. Regenerate or repair sample manifests and examples so protocol checks pass.
 4. Keep the public skill shape compatible with standard Agent Skills while preserving richer local metadata for routing and audit.
 
