@@ -200,8 +200,8 @@ Core required axes (v8 — see `SKILL_METADATA_PROTOCOL.md § Schema contract`):
 
 - `name` — kebab-case, head-noun-anchored (see `docs/head-noun-glossary.md`); aligns with parent directory.
 - `description` — short description of what the skill is about. Activation signals belong to `keywords`/`triggers`/`examples`/`anti_examples`; boundary semantics belong to `relations.boundary`.
-- `subject` — primary browse shelf, ONE of nine closed values: `code-engineering`, `quality-assurance`, `frontend-ui`, `design-craft`, `agent-ops`, `product-domain`, `knowledge-organization`, `meta-methods`, `data-analytics`. Each subject holds 5–25 skills; <5 = fold or recruit, >25 = subdivide via `domain`. To propose a 10th value: ADR + ≥5 primary-fit skills. See [ADR-0017](docs/adr/0017-five-axis-classification-model.md).
-- `scope` — deployment targeting, ONE of three values: `portable` (any project), `workspace` (this workspace only), `project` (one specific project; requires `grounding`).
+- `subject` — primary browse shelf, ONE of nine closed values: `code-engineering`, `quality-assurance`, `frontend-ui`, `design-craft`, `agent-ops`, `product-domain`, `knowledge-organization`, `meta-methods`, `data-analytics`. Each subject holds 5–25 skills; <5 = fold or recruit, >25 = subdivide via `taxonomy_domain`. To propose a 10th value: ADR + ≥5 primary-fit skills. See [ADR-0017](docs/adr/0017-five-axis-classification-model.md).
+- `deployment_target` — deployment targeting, ONE of two values: `portable` (any project), `project` (one specific project; requires `grounding`). The `scope` field is now an optional free-text PRD-style statement (the v8 `scope` enum's `workspace` value was removed 2026-05-27; see ADR-0017 amendment).
 - `subjects[]` (optional, max 2, primary first) covers polyhierarchy when a skill genuinely spans two browse shelves.
 
 Activation surfaces: `keywords` (≤10), `triggers` (exact), `examples` / `anti_examples` (positive/negative prompts). Routing edges live in `relations` (`related` / `boundary` / `verify_with` / `depends_on` / `broader` / `narrower` / `disjoint_with`).

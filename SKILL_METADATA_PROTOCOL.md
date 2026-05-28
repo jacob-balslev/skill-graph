@@ -671,7 +671,7 @@ The manifest generator (`scripts/generate-manifest.js`) reads the authored front
 
 - `id` — derived from the skill's path relative to `skills/` (e.g. `task-execution`, or `<project>/design-review` in a multi-root workspace).
 - `path` — relative path to the `SKILL.md` file.
-- `summary` — aggregate counts (`total_skills`, `by_schema_version`, `by_subject`, `by_scope`, `by_stability`, `by_project`).
+- `summary` — aggregate counts (`total_skills`, `by_schema_version`, `by_subject`, `by_deployment_target`, `by_stability`, `by_project`).
 - `generated_at` — ISO timestamp of when the manifest was generated.
 - `activation` — compiled block merging `triggers`, `keywords`, `paths`, `examples`, and `anti_examples` from frontmatter.
 - `health` — compiled block merging `eval_artifacts`, `eval_state`, `routing_eval`, `comprehension_state`, `eval_last_run`, `freshness`, and `drift_check`.

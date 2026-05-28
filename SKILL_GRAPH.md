@@ -14,13 +14,13 @@ The three layers divide the work cleanly. The [Skill Metadata Protocol](SKILL_ME
 
 | Fact | Value | Source of truth |
 |---|---|---|
-| **Schema version enforced** | **v8**. The schema's global `required` array mandates `subject` + `scope`. The prior contract (v7) lives in git history; retrieve via `git show schema-v7:schemas/skill.schema.json`. | `schemas/skill.schema.json` + [ADR-0017](docs/adr/0017-five-axis-classification-model.md) |
+| **Schema version enforced** | **v8**. The schema's global `required` array mandates `subject` + `deployment_target` (`scope` is an optional free-text field). The prior contract (v7) lives in git history; retrieve via `git show schema-v7:schemas/skill.schema.json`. | `schemas/skill.schema.json` + [ADR-0017](docs/adr/0017-five-axis-classification-model.md) |
 | Manifest schema file | tracks the v8 contract; v7 fields are not declared | `schemas/manifest.schema.json` |
 | Emitted manifest `schema_version` | **4** (root manifest contract; orthogonal to per-skill `schema_version`) | `scripts/generate-manifest.js`; `schemas/manifest.schema.json` `schema_version.const` |
-| Manifest summary facets | `by_subject`, `by_scope`, `by_schema_version`, `by_stability`, `by_project` | `scripts/generate-manifest.js::computeSummary` |
+| Manifest summary facets | `by_subject`, `by_deployment_target`, `by_schema_version`, `by_stability`, `by_project` | `scripts/generate-manifest.js::computeSummary` |
 | Per-skill `schema_version` in manifest | **present** (top-level field on every skill entry — added 2026-05-25 per F4 finding) | `scripts/generate-manifest.js::buildSkillEntry` |
-| Canonical skill count | **153** SKILL.md in the canonical library; **154** when the protocol template is included. Verified 2026-05-26 by `find` + live manifest generation. | live: `find ~/Development/skills/skills -name SKILL.md \| wc -l` (153) and `node scripts/generate-manifest.js --include-template --validate-only` (154). |
-| Marketplace export count | **152** SKILL.md in `marketplace/skills/` (verified 2026-05-26); the publication gate excludes repo-specific/internal skills (`scope: project`, plus internal grounding modes). | live: `find skill-graph/marketplace/skills -name SKILL.md \| wc -l` |
+| Canonical skill count | **155** SKILL.md in the canonical library; **156** when the protocol template is included. Verified 2026-05-28 by `find`. | live: `find ~/Development/skills/skills -name SKILL.md \| wc -l` (155) and `node scripts/generate-manifest.js --include-template --validate-only` (156). |
+| Marketplace export count | **153** SKILL.md in `marketplace/skills/` (verified 2026-05-28); the publication gate excludes repo-specific/internal skills (`deployment_target: project`, plus internal grounding modes). Currently `graph-audit` (`deployment_target: project`, `grounding_mode: repo_specific`) is the one gated exclusion; any further canonical−marketplace delta is export staleness pending the next `marketplace:export` run. | live: `find skill-graph/marketplace/skills -name SKILL.md \| wc -l` |
 | Canonical library location | sibling repo `jacob-balslev/skills` at `~/Development/skills/` | `.skill-graph/config.json` → `skill_roots: ["../skills/skills"]` |
 | This repo's role | tooling + protocol + schemas + docs (no `skills/` tree) | [ADR 0009](docs/adr/0009-sibling-repo-deprecation.md) |
 | Audit Loop maturity | Integrity Gate ≈ MLOps L1 (write-back wired into `skill-graph audit` as of 2026-05-25 per SH-6481 F14); **Behavior Gate data remains sparse** — application verdicts stay `UNVERIFIED` until `evals/application.json` artifacts are authored and graders run. | [`SKILL_AUDIT_LOOP.md:45-52`](SKILL_AUDIT_LOOP.md) |
@@ -53,7 +53,7 @@ A common point of confusion: the canonical library and the in-repo `marketplace/
 
 **The two-hat insight:** the AUTHORING SOURCE and the PUBLIC RELEASE are the **same physical repo**. The pipeline above pushes the staging buffer (`skill-graph/marketplace/skills/`) into that repo, so writing to skill-graph and pushing the canonical library both eventually update `github.com/jacob-balslev/skills`. The `marketplace/` directory is the transform buffer between this tooling repo and the library repo, not a separate publication target.
 
-The export is **not** a copy. It (1) applies the **publication gate** — excludes `scope: project` (plus legacy `scope: codebase|operational`) and `grounding_mode: repo_specific` skills and fails on private paths, so internal skills never publish; (2) **normalizes** the frontmatter (flattens the `compatibility` object, etc.); and (3) historically **flattened** the directory layout. Because the source library (`~/Development/skills/`) is *also* the public release repo (`jacob-balslev/skills`), source and release are the same repo; `marketplace/skills/` is the transform/staging buffer between this tooling repo and that one. See `AGENTS.md § Public Distribution` for the two-step sync protocol.
+The export is **not** a copy. It (1) applies the **publication gate** — excludes `deployment_target: project` (plus legacy `scope: codebase|operational|project`) and `grounding_mode: repo_specific` skills and fails on private paths, so internal skills never publish; (2) **normalizes** the frontmatter (flattens the `compatibility` object, etc.); and (3) historically **flattened** the directory layout. Because the source library (`~/Development/skills/`) is *also* the public release repo (`jacob-balslev/skills`), source and release are the same repo; `marketplace/skills/` is the transform/staging buffer between this tooling repo and that one. See `AGENTS.md § Public Distribution` for the two-step sync protocol.
 
 > **Layout note (re-verified 2026-05-27):** the export is self-consistent after a regenerate — `node scripts/export-marketplace-skills.js --check` is clean and a write run is a no-op (0 files changed). `marketplace/skills/` uses a **flat** `<name>/` layout (the plain Agent Skills publish shape) while the authoring/release library is **nested** `<category>/<name>/`. These layouts intentionally differ — authoring organization vs publish shape — so the flat export is current, not stale. **Freshness drift caveat:** because `marketplace:verify` is not currently part of `npm run verify`, freshness drift between source edits and marketplace regenerations is invisible to CI between runs — see audit finding B7 / H4 (2026-05-27). One thing to confirm: the `ls marketplace/skills/ | wc -l == ls skills/ | wc -l` pre-release check in `AGENTS.md` compares top-level entry counts, which differ between a flat and a nested tree; that check should compare recursive `SKILL.md` counts instead.
 
@@ -340,20 +340,20 @@ Concrete artifacts that show adopters what "good" looks like. Every specimen is 
 
 ### Starter skills
 
-> **Location note (post-ADR-0009 consolidation):** this repo no longer ships a `skills/` tree. The canonical skill library lives in the sibling repo at `~/Development/skills/` (nested `<category>/[<domain>/]<name>/SKILL.md`, closed 6-category enum), with a plain-Agent-Skills export mirror under `marketplace/skills/`. In-repo specimens live in `examples/fixture-skills/`. The table below is a **historical archetype-coverage reference** describing the original eight-starter specimen set chosen to cover every archetype × scope combination the schema permits; `skills/<name>` paths are illustrative of that set, not current in-repo paths. Entries marked _(archive)_ are no longer in the in-repo specimen set — their archetype coverage moved to `examples/fixture-skills/`. The relations diagram further below has been reauthored against the four in-repo `examples/fixture-skills/` (see § The fixture graph).
+> **Location note (post-ADR-0009 consolidation):** this repo no longer ships a `skills/` tree. The canonical skill library lives in the sibling repo at `~/Development/skills/` (nested `<subject>/[<taxonomy_domain>/]<name>/SKILL.md`, closed 9-subject enum), with a plain-Agent-Skills export mirror under `marketplace/skills/`. In-repo specimens live in `examples/fixture-skills/`. The table below is a **historical archetype-coverage reference** describing the original eight-starter specimen set chosen to cover every archetype × scope combination the schema permits; `skills/<name>` paths are illustrative of that set, not current in-repo paths. Entries marked _(archive)_ are no longer in the in-repo specimen set — their archetype coverage moved to `examples/fixture-skills/`. The relations diagram further below has been reauthored against the four in-repo `examples/fixture-skills/` (see § The fixture graph).
 
-> **v8 archetype labelling.** `type` in this table is the v7 label retained for archive readability. The v8 equivalent is `operation` (Bloom-grounded): `capability → know`/`do`, `workflow → do` (with sequence), `router → decide`, `overlay → modify`. Both v7 and v8 axes are required on real skills today (per `SKILL_METADATA_PROTOCOL.md § Migration state`); this table shows v7 only for brevity.
+> **Historical archetype labelling.** The `type` column below is the v7 archetype label (`capability` / `workflow` / `router` / `overlay`). Both the v7 `type` axis and the briefly-introduced v8 `operation` axis were **removed in v8** (ADR-0017 + its 2026-05-27 amendment) — v8 skills classify by `subject` + `deployment_target` with no archetype/operation axis. This table is retained only as a historical archetype-coverage reference.
 
-| Skill | `type` (v7) / `operation` (v8) | `scope` | Unique thing it demonstrates |
+| Skill | Archetype (v7 `type` — retired in v8) | `deployment_target` | Unique thing it demonstrates |
 |---|---|---|---|
-| `a11y` | capability / `know` | portable | Minimal routable capability, eval artifact present |
-| `debugging` | workflow / `do` | portable | `## Workflow` section with numbered steps |
-| `documentation` _(archive)_ | capability / `know` | portable | Eval artifact + worked audit both shipped — archetype coverage now in `examples/fixture-skills/` |
-| `refactor` | workflow / `do` | portable | `relations.depends_on: [testing-strategy]` |
-| `testing-strategy` | capability / `decide` | portable | `routing_bundles: [quality]` |
-| `skill-router` _(archive)_ | router / `decide` | portable | Router archetype with `## Routing Rules` — archetype coverage now in `examples/fixture-skills/` |
-| `lint-overlay` | overlay / `modify` | portable | Overlay archetype with `extends` + `## Overlay Rules` |
-| `graph-audit` _(archive)_ | capability / `know` | codebase / `project` | Full `grounding` block + recorded `truth_source_hashes` (this shape now demonstrated by `examples/fixture-skills/with-grounding`). |
+| `a11y` | capability | portable | Minimal routable capability, eval artifact present |
+| `debugging` | workflow | portable | `## Workflow` section with numbered steps |
+| `documentation` _(archive)_ | capability | portable | Eval artifact + worked audit both shipped — archetype coverage now in `examples/fixture-skills/` |
+| `refactor` | workflow | portable | `relations.depends_on: [testing-strategy]` |
+| `testing-strategy` | capability | portable | `routing_bundles: [quality]` |
+| `skill-router` _(archive)_ | router | portable | Router archetype with `## Routing Rules` — archetype coverage now in `examples/fixture-skills/` |
+| `lint-overlay` | overlay | portable | Overlay archetype with `extends` + `## Overlay Rules` |
+| `graph-audit` _(archive)_ | capability | project | Full `grounding` block + recorded `truth_source_hashes` (this shape now demonstrated by `examples/fixture-skills/with-grounding`). |
 
 ### Supporting artifacts
 

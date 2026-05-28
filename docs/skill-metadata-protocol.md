@@ -6,7 +6,7 @@ Skill Metadata Protocol is the **skill-level contract** for AI SKILL.md. It defi
 
 Skill Graph is the **library-level system** that works with this protocol. It indexes, routes, clusters, audits, and reverifies libraries of Skill-Metadata-Protocol-enriched skills.
 
-**Current contract: v8.** Every authored skill carries two required classification axes — `subject` (9-enum browse shelf) and `scope` (3-enum deployment targeting) — plus optional polyhierarchy (`subjects[]`, max 2), capped activation keywords (`keywords`, ≤10), and typed routing edges (`relations`). The v8 model replaces v7's `category`/`type`/`scope` triple (where 93% of skills shared `type: capability` and 67% shared `scope: portable`, leaving no useful discriminating power in the classification triple). See [`adr/0017-five-axis-classification-model.md`](adr/0017-five-axis-classification-model.md) for the design rationale; the `operation` axis defined in that ADR was retired 2026-05-27 (see the ADR's amendment block).
+**Current contract: v8.** Every authored skill carries two required classification axes — `subject` (9-enum browse shelf) and `deployment_target` (2-enum: `portable` / `project`) — plus an optional free-text `scope` statement, optional polyhierarchy (`subjects[]`, max 2), capped activation keywords (`keywords`, ≤10), and typed routing edges (`relations`). The v8 model replaces v7's `category`/`type`/`scope` triple (where 93% of skills shared `type: capability` and 67% shared `scope: portable`, leaving no useful discriminating power in the classification triple). See [`adr/0017-five-axis-classification-model.md`](adr/0017-five-axis-classification-model.md) for the design rationale; the `operation` axis defined in that ADR was retired 2026-05-27 (see the ADR's amendment block).
 
 > **Reading an older skill?** Historical migration notes for context:
 > - **v7 → v8 (clean cut on 2026-05-27)** — replaced v7's `category` / `type` / `scope` triple with `subject` (9-enum) + `scope` (3-enum: `portable` / `workspace` / `project`). Added polyhierarchy via `subjects[]` (max 2) and capped `keywords` at 10. The v7 classification fields (`type`, `category`, `categories`, `primaryCategory`, `layerPrimary`, `routingRole`) and the v7 scope values (`codebase`, `reference`) are not declared in the live schema. The prior contract is retrievable via `git show schema-v7:schemas/skill.schema.json`. Per [`AGENTS.md § Major Version Is a Clean Cut`](../AGENTS.md), the live tree describes v8 only; legacy skills carrying v7 fields are migrated per-skill through `/audit:*` (CONTENT-mode work).
@@ -252,7 +252,8 @@ The YAML frontmatter uses the current v7 schema, including compatibility aliases
 | **Classification** | [`schema_version`](field-reference.md#schema_version) | always | integer `8` |
 | | [`subject`](field-reference.md#subject) | always | closed 9-value enum — primary classification |
 | | [`subjects`](field-reference.md#subjects) | | ordered polyhierarchy array; first item matches `subject` (max 2) |
-| | [`scope`](field-reference.md#scope) | always | `portable` \| `workspace` \| `project` |
+| | [`deployment_target`](field-reference.md#deployment_target) | always | `portable` \| `project` |
+| | [`scope`](field-reference.md#scope) | | free-text PRD-style statement (optional) |
 | | [`taxonomy_domain`](field-reference.md#taxonomy_domain) | | hierarchical path subdividing `subject` |
 | | [`stability`](field-reference.md#stability) | | `experimental` \| `stable` \| `deprecated` |
 | | [`superseded_by`](field-reference.md#superseded_by) | if `stability: deprecated` | skill name |
@@ -297,7 +298,7 @@ The YAML frontmatter uses the current v7 schema, including compatibility aliases
 | | [`compatibility`](field-reference.md#compatibility) | | `{ runtimes?, node?, notes? }` |
 | | [`allowed-tools`](field-reference.md#allowed-tools) | | space-separated string |
 
-**Conditional requiredness in one line:** `keywords` when the skill is routable, `grounding` when `scope: project`, `superseded_by` when `stability: deprecated`. The schema enforces the latter two via `allOf`; lint enforces the `keywords` routability rule. For the decision tables that help you choose between `portable` / `workspace` / `project`, see [`docs/field-decision-guide.md`](field-decision-guide.md).
+**Conditional requiredness in one line:** `keywords` when the skill is routable, `grounding` when `deployment_target: project`, `superseded_by` when `stability: deprecated`. The schema enforces the latter two via `allOf`; lint enforces the `keywords` routability rule. For the decision tables that help you choose between `portable` / `project`, see [`docs/field-decision-guide.md`](field-decision-guide.md).
 
 ## Why archetypes are rigid vs anti-rigid (OntoClean per ADR 0003)
 
@@ -436,7 +437,7 @@ See `docs/manifest-field-mapping.md` for the full rename map, loss policy, migra
 
 ## Schema Versioning Policy
 
-Skill Graph uses a single integer `schema_version` to signal authored skill contract evolution. Current authored skill version: **8** (bumped from 7 when `subject` + `scope` replaced the v7 `type` / `category` / `scope` triple; v7's `operation` axis was further retired 2026-05-27). The prior contract lives in git history; retrieve via `git show schema-v7:schemas/skill.schema.json`. The five policy points together define when `schema_version` bumps, what consumers should expect, and where migration tooling lives:
+Skill Graph uses a single integer `schema_version` to signal authored skill contract evolution. Current authored skill version: **8** (bumped from 7 when `subject` + `deployment_target` replaced the v7 `type` / `category` / `scope` triple; the briefly-introduced v8 `operation` axis was further retired 2026-05-27, and `scope` was repurposed to optional free-text). The prior contract lives in git history; retrieve via `git show schema-v7:schemas/skill.schema.json`. The five policy points together define when `schema_version` bumps, what consumers should expect, and where migration tooling lives:
 
 1. **Breaking changes bump `schema_version`.** Renamed fields, removed fields, retyped fields, removed enum values, or tightened required-ness constraints bump the integer. Consumers must migrate or pin.
 2. **Additive changes do not bump.** New optional fields, new enum values that extend (not replace) an enum, and new warning-only companion checks do not bump the version. Consumers on the prior minor release continue to pass.
