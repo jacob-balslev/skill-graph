@@ -34,14 +34,16 @@ function resolveSchemaPath(root, fileName) {
   return resolvePackagedOrWorkspacePath(root, 'schemas', fileName);
 }
 
-function loadWorkspaceConfig(root = workspaceRoot(), onWarning = null) {
+function loadRootsConfig(root = workspaceRoot(), onWarning = null) {
   const configPath = path.join(root, '.skill-graph', 'config.json');
   if (!fs.existsSync(configPath)) return null;
   try {
     const config = JSON.parse(fs.readFileSync(configPath, 'utf8'));
     if (!config || typeof config !== 'object') return null;
-    if (!config.workspace || typeof config.workspace !== 'object') return null;
-    return config.workspace;
+    // skill_roots lives at the top level. The v8 `workspace.skill_roots`
+    // wrapper was removed (`workspace` vocabulary retirement).
+    if (!Array.isArray(config.skill_roots)) return null;
+    return { skill_roots: config.skill_roots };
   } catch (e) {
     if (typeof onWarning === 'function') {
       onWarning(`.skill-graph/config.json: cannot parse - ${e.message}`);
@@ -50,13 +52,17 @@ function loadWorkspaceConfig(root = workspaceRoot(), onWarning = null) {
   }
 }
 
-function resolveSkillRoots(root = workspaceRoot(), workspace = loadWorkspaceConfig(root)) {
+// Back-compat alias for callers that haven't been renamed yet. New code should
+// use loadRootsConfig directly.
+const loadWorkspaceConfig = loadRootsConfig;
+
+function resolveSkillRoots(root = workspaceRoot(), config = loadRootsConfig(root)) {
   const defaultRoot = { absPath: path.join(root, 'skills'), project: null };
-  if (!workspace || !Array.isArray(workspace.skill_roots) || workspace.skill_roots.length === 0) {
+  if (!config || !Array.isArray(config.skill_roots) || config.skill_roots.length === 0) {
     return [defaultRoot];
   }
 
-  return workspace.skill_roots
+  return config.skill_roots
     .map(entry => {
       if (typeof entry === 'string') {
         return { absPath: path.resolve(root, entry), project: null };
@@ -110,8 +116,8 @@ function collectSkillFilesFromRoots(roots, options = {}) {
   return files;
 }
 
-function collectSkillFiles(root = workspaceRoot(), workspace = loadWorkspaceConfig(root), options = {}) {
-  return collectSkillFilesFromRoots(resolveSkillRoots(root, workspace), options);
+function collectSkillFiles(root = workspaceRoot(), config = loadRootsConfig(root), options = {}) {
+  return collectSkillFilesFromRoots(resolveSkillRoots(root, config), options);
 }
 
 /**
@@ -155,7 +161,8 @@ module.exports = {
   workspaceRoot,
   collectSkillFiles,
   collectSkillFilesFromRoots,
-  loadWorkspaceConfig,
+  loadRootsConfig,
+  loadWorkspaceConfig, // back-compat alias for v8 callers; new code uses loadRootsConfig
   resolvePackagedOrWorkspacePath,
   resolveSchemaPath,
   resolveSkillRoots,

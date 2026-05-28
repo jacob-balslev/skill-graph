@@ -79,7 +79,7 @@ const path = require('path');
 const FIELD_COMMENTS = {
   schema_version: [
     '# schema_version: protocol contract version this skill conforms to.',
-    '# Integer 7 or 8. v8 is canonical (2026-05-26).',
+    '# Integer 8. Prior contract retrievable via `git show schema-v7:schemas/skill.schema.json`.',
   ],
   version: [
     '# version: skill content version (semver). Bumped when the instructional content changes.',
@@ -89,14 +89,30 @@ const FIELD_COMMENTS = {
     '# code-engineering / quality-assurance / frontend-ui / design-craft / agent-ops /',
     '# product-domain / knowledge-organization / meta-methods / data-analytics.',
   ],
-  scope: [
-    '# scope: deployment targeting. One of three closed values:',
-    '# portable (any project) / workspace (this workspace only) /',
-    '# project (one specific repo; requires populated `grounding` block).',
+  deployment_target: [
+    '# deployment_target: where this skill applies. One of two closed values:',
+    '# portable (any project, repo-agnostic) /',
+    '# project (one or more specific projects; requires populated `grounding` and `project[]`).',
   ],
-  domain: [
-    '# domain: optional hierarchical sub-path within `subject`. Slash-delimited lowercase',
-    '# kebab-case segments. Remove when flat `subject` is sufficient.',
+  scope: [
+    '# scope: PRD-style free-text statement of what the skill teaches and what it',
+    '# doesn\'t. Optional.— no enum constraint. Mirrors `## Coverage`',
+    '# plus `## Do NOT Use When` at the frontmatter level for fast scanning.',
+  ],
+  taxonomy_domain: [
+    '# taxonomy_domain: optional hierarchical sub-path within `subject`. Slash-delimited',
+    '# lowercase kebab-case segments. rename of the original v8 `domain`. Remove when the flat',
+    '# `subject` is sufficient.',
+  ],
+  project: [
+    '# project: projects this skill is linked to. Array of {handle, role} objects.',
+    '# Required pattern when `deployment_target: project`. Role values: source-of-truth,',
+    '# consumer, mirror. replaces the original v8 `workspace_tags`.',
+  ],
+  repo: [
+    '# repo: repos this skill is linked to. Array of {handle, url} objects. Plural even',
+    '# when most skills have one source repo (federation-ready). replaces the implicit',
+    '# URN repo-slug + stripped `skill_graph_source_repo` export-provenance.',
   ],
   owner: [
     '# owner: team handle, GitHub username, or tool name responsible for keeping this skill current.',
@@ -159,10 +175,6 @@ const FIELD_COMMENTS = {
     '# anti_examples: near-miss prompts that should route ELSEWHERE.',
     '# Pair with relations.boundary to indicate the confusable territory\'s owner.',
   ],
-  workspace_tags: [
-    '# workspace_tags: array of project handles or semantic tags. Omit for ambient',
-    '# cross-project skills. See docs/field-decision-guide.md § 4.',
-  ],
   routing_bundles: [
     '# routing_bundles: batch-activation group memberships. Router fires the whole bundle',
     '# when the bundle label matches. Distinct from workspace_tags (per-project filter).',
@@ -178,9 +190,9 @@ const FIELD_COMMENTS = {
     '# broader / narrower (SKOS-style generalization; broader drives co-load, narrower does not).',
   ],
   grounding: [
-    '# grounding: required when `scope: project` (or legacy alias `scope: codebase`).',
-    '# Declares the truth sources the skill anchors to and the failure modes those sources',
-    '# prevent. Omit when the skill is universal-knowledge.',
+    '# grounding: required when `deployment_target: project`. Declares the truth sources',
+    '# the skill anchors to and the failure modes those sources prevent. Omit when the',
+    '# skill is universal-knowledge. `subject_matter` replaces v8 `domain_object`.',
   ],
   portability: [
     '# portability: external-runtime export claims. Object with:',

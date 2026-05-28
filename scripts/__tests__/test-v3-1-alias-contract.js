@@ -31,11 +31,10 @@ const fm = {
   urn: 'urn:skill:skill-graph:alias-fixture',
   description: 'Fixture skill used to verify v3.1 alias pass-through and parity checks.',
   version: '1.0.0',
-  type: 'capability',
-  archetype: 'capability',
-  category: 'testing',
-  domain: 'skill-system/testing',
-  scope: 'portable',
+  subject: 'agent-ops',
+  deployment_target: 'portable',
+  taxonomy_domain: 'skill-system/testing',
+  scope: 'Free-text PRD-style scope statement for the alias fixture.',
   owner: 'skill-graph-maintainer',
   freshness: '2026-05-13',
   reviewed_at: '2026-05-13',
@@ -62,8 +61,7 @@ const fm = {
     node_version: '>=20',
   },
   grounding: {
-    domain_object: 'Alias contract',
-    subject: 'Alias contract',
+    subject_matter: 'Alias contract',
     grounding_mode: 'repo_specific',
     claim_scope: 'repo_specific',
     truth_sources: ['schemas/skill.schema.json'],
@@ -82,20 +80,19 @@ assert(parityErrors.length === 0, `fixture should satisfy alias parity, got: ${p
 
 const entry = buildSkillEntry(fm, FIXTURE_PATH, 'alias-fixture', null);
 assert(entry.urn === fm.urn, 'urn should pass through');
-assert(entry.archetype === fm.archetype, 'archetype alias should pass through');
-assert(entry.domain === fm.domain, 'domain should pass through');
+assert(entry.taxonomy_domain === fm.taxonomy_domain, 'taxonomy_domain should pass through');
 assert(entry.allowed_tools === fm.allowed_tools, 'allowed_tools alias should pass through');
 assert(entry.health.reviewed_at === fm.reviewed_at, 'reviewed_at alias should project to health.reviewed_at');
 assert(entry.health.eval && entry.health.eval.content_state === 'unverified', 'nested eval alias should project to health.eval');
 assert(entry.compatibility.agent_runtimes[0] === 'agent-runtime>=2.0', 'compatibility.agent_runtimes should pass through');
 assert(entry.compatibility.node_version === '>=20', 'compatibility.node_version should pass through');
-assert(entry.grounding.subject === 'Alias contract', 'grounding.subject should pass through');
+assert(entry.grounding.subject_matter === 'Alias contract', 'grounding.subject_matter should pass through');
 assert(entry.grounding.claim_scope === 'repo_specific', 'grounding.claim_scope should pass through');
 assert(entry.portability.export_targets[0] === 'skill-md', 'portability.export_targets should pass through');
 
-const mismatch = { ...fm, archetype: 'workflow' };
+const mismatch = { ...fm, reviewed_at: '2099-01-01' };
 const mismatchErrors = checkAliasParity(mismatch);
-assert(mismatchErrors.some(e => e.includes('archetype')), 'alias mismatch should be reported by lint helper');
+assert(mismatchErrors.some(e => e.includes('reviewed_at')), 'alias mismatch should be reported by lint helper');
 
 let threw = false;
 try {

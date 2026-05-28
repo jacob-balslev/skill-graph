@@ -9,7 +9,7 @@
  *
  *   - activation.keywords / activation.triggers — scoring signal
  *   - activation.paths                          — optional `--path` boost
- *   - workspace_tags + workspace.projects         — project-scope filter
+ *   - project[].handle                          — project-fit filter
  *   - relations.depends_on                      — transitive co-load
  *   - relations.boundary                        — anti-ownership exclusion
  *   - relations.verify_with                     — secondary co-load
@@ -61,22 +61,17 @@ const PACKAGE_SAMPLE_MANIFEST = path.join(PACKAGE_ROOT, 'examples', 'skills.mani
  * `docs/plans/routing-harness-followup.md` § M1.
  */
 /**
- * Scope tiebreaker ranks (lower wins). Doctrine: a skill bound to a specific
- * codebase is always more specific than a reference skill, which is always
- * more specific than a portable skill. Used in `routeSkills()` sort. Unknown
- * scopes fall back to `_default` so a manifest with a new scope value sorts
- * last rather than throwing.
+ * Deployment-target tiebreaker ranks (lower wins). Doctrine: a skill bound to
+ * a specific project is always more specific than a portable skill. Used in
+ * `routeSkills()` sort. Unknown values fall back to `_default` so a manifest
+ * with an unexpected value sorts last rather than throwing.
  *
- * v8 compat (2026-05-25): `project` is the v8 rename of `codebase`; `workspace`
- * is the v8 rename of `reference`. Both get the same rank as their v7
- * equivalent so mixed v7/v8 corpora sort identically during the migration
- * window. After v7 sunset, the v7 entries can be removed.
+ * (2026-05-27): renamed from `SCOPE_RANK`. The v8 `scope` enum
+ * was repurposed to PRD-style free-text; deployment-targeting moved to the new
+ * `deployment_target` field with the `workspace` value removed.
  */
-const SCOPE_RANK = {
-  codebase: 0,
-  project: 0,      // v8 alias of codebase
-  reference: 1,
-  workspace: 1,    // v8 alias of reference
+const DEPLOYMENT_TARGET_RANK = {
+  project: 0,
   portable: 2,
   _default: 99,
 };
@@ -326,27 +321,29 @@ function boundaryReason(item) {
 // ---------------------------------------------------------------------------
 
 /**
- * Decide whether a skill applies to a given project handle, using the
- * workspace config's semantic-tag mapping to expand the project into a set
- * of matchable tags.
+ * Decide whether a skill applies to a given project handle.
+ *
+ * 2026-05-27: the project-fit filter reads the per-skill
+ * `project[]` array (object-shape entries with `handle` + optional `role`).
+ * The v8 `workspace_tags` field + `workspace.projects` semantic-tag mapping
+ * were removed; semantic expansion is gone.
  *
  * A skill matches when:
- *   - it has no workspace_tags (ambient / cross-project), OR
- *   - any tag in workspace_tags matches the literal project handle, OR
- *   - any tag in workspace_tags matches one of the project's semantic_tags.
+ *   - it has no `project` array (ambient / cross-project), OR
+ *   - any entry's `handle` matches the literal project handle.
  */
-function skillAppliesToProject(skill, project, workspace) {
-  const tags = skill.workspace_tags || [];
-  if (tags.length === 0) return { applies: true, reason: 'ambient' };
+function skillAppliesToProject(skill, project /* unused workspace param removed */) {
+  const projects = Array.isArray(skill.project) ? skill.project : [];
+  if (projects.length === 0) return { applies: true, reason: 'ambient' };
   if (!project) return { applies: true, reason: 'no project filter active' };
 
-  if (tags.includes(project)) return { applies: true, reason: `literal:${project}` };
-
-  const semanticTags = (workspace && workspace.projects && workspace.projects[project] && workspace.projects[project].semantic_tags) || [];
-  for (const tag of tags) {
-    if (semanticTags.includes(tag)) return { applies: true, reason: `semantic:${tag}` };
+  for (const entry of projects) {
+    if (entry && typeof entry.handle === 'string' && entry.handle === project) {
+      return { applies: true, reason: `literal:${project}` };
+    }
   }
-  return { applies: false, reason: `workspace_tags [${tags.join(', ')}] exclude project "${project}"` };
+  const handles = projects.map(e => (e && e.handle) || '?').join(', ');
+  return { applies: false, reason: `project [${handles}] excludes project "${project}"` };
 }
 
 // ---------------------------------------------------------------------------
@@ -393,7 +390,7 @@ function routeSkills(manifest, options) {
   } = options;
 
   const skills = Array.isArray(manifest.skills) ? manifest.skills : [];
-  const workspace = manifest.workspace || null;
+  // manifest no longer carries a top-level `workspace` block .
   const queryTokens = tokenize(query);
 
   const byName = new Map();
@@ -406,7 +403,7 @@ function routeSkills(manifest, options) {
   const excludedByProject = [];
 
   for (const skill of skills) {
-    const projectCheck = skillAppliesToProject(skill, project, workspace);
+    const projectCheck = skillAppliesToProject(skill, project);
     if (!projectCheck.applies) {
       excludedByProject.push({ skill, reason: projectCheck.reason });
       continue;
@@ -428,14 +425,13 @@ function routeSkills(manifest, options) {
   }
 
   // Tiebreakers implement the doctrine documented in
-  // `skills/skill-router/SKILL.md § Scope tiebreaker` and `§ Type tiebreaker`:
+  // `skills/skill-router/SKILL.md § Deployment-target tiebreaker` and `§ Type tiebreaker`:
   //   1. Highest score wins.
-  //   2. On a score tie, narrower scope wins: codebase ≡ project > reference ≡ workspace > portable.
-  //   3. On a scope tie, more specific type wins: workflow > capability > router > overlay.
+  //   2. On a score tie, narrower deployment_target wins: project > portable.
+  //   3. On a deployment_target tie, more specific type wins: workflow > capability > router > overlay.
   //   4. On a complete tie, alphabetical by name (stable, deterministic output).
   //
-  // SCOPE_RANK contains both v7 (codebase/reference) and v8 (project/workspace)
-  // values at the same rank.
+  // (2026-05-27): DEPLOYMENT_TARGET_RANK replaces SCOPE_RANK.
   function typeRank(skill) {
     if (skill.type !== undefined) {
       return TYPE_RANK[skill.type] ?? TYPE_RANK._default;
@@ -444,7 +440,7 @@ function routeSkills(manifest, options) {
   }
   scored.sort((a, b) =>
     (b.score - a.score) ||
-    (SCOPE_RANK[a.skill.scope] ?? SCOPE_RANK._default) - (SCOPE_RANK[b.skill.scope] ?? SCOPE_RANK._default) ||
+    (DEPLOYMENT_TARGET_RANK[a.skill.deployment_target] ?? DEPLOYMENT_TARGET_RANK._default) - (DEPLOYMENT_TARGET_RANK[b.skill.deployment_target] ?? DEPLOYMENT_TARGET_RANK._default) ||
     typeRank(a.skill) - typeRank(b.skill) ||
     a.skill.name.localeCompare(b.skill.name)
   );

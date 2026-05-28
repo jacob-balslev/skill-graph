@@ -1,6 +1,6 @@
 {
-  "_comment": "JSON-LD @context for Skill Graph v8 frontmatter. Maps authored fields to W3C standard vocabularies so a Skill Graph SKILL.md can be projected into RDF/OWL/SKOS consumers without changing the authoring surface. v8 authored fields (subject, scope, keywords, relations) are projected through this context.",
-  "_version": "3.1.0",
+  "_comment": "JSON-LD @context for Skill Graph v8 frontmatter. Maps authored fields to W3C standard vocabularies so a Skill Graph SKILL.md can be projected into RDF/OWL/SKOS consumers without changing the authoring surface. v8 authored fields (subject, deployment_target, taxonomy_domain, scope, project, repo, keywords, relations, grounding.subject_matter) are projected through this context.",
+  "_version": "3.2.0",
   "_schema_version_target": 8,
   "_references": {
     "skos": "https://www.w3.org/TR/skos-reference/",
@@ -15,7 +15,8 @@
     "0001": "Initial SKOS-aligned predicate set (related/broader/narrower additions; adjacent deprecation).",
     "0002": "JSON-LD @context coverage policy.",
     "0006": "boundary stays canonical for routing-layer asymmetric handoff (sg:disjointOwnership); disjoint_with is a separate orthogonal relation for formal OWL class-disjointness (owl:disjointWith). Reverts the `boundary -> disjoint_with` rename proposed in ADR 0001 Decision #2.",
-    "0011": "Four-verdict Health Block (structural/truth/comprehension/application) replaces the single audit_verdict; audit_verdict retained for back-read of unmigrated v6 manifests."
+    "0011": "Four-verdict Health Block (structural/truth/comprehension/application) replaces the single audit_verdict; audit_verdict retained for back-read of unmigrated v6 manifests.",
+    "0017": "v8 entity-vocabulary completion: top-level `domain` renamed `taxonomy_domain`, `scope` repurposed as free-text PRD content, `deployment_target` enum split out (workspace value removed), `project[]` and `repo[]` added as belonging-entity fields, `workspace_tags` removed (finishing the original ADR-0017 promise), `grounding.domain_object` renamed `grounding.subject_matter`."
   },
   "_term_collisions": {
     "boundary": "The token `boundary` has TWO distinct senses: (1) the v6+ Understanding field (a string teaching the concept's edges) and (2) relations.boundary (the routing-layer anti-ownership predicate, an array). JSON-LD term resolution is by key, not by nesting depth, so a single global term cannot serve both. Resolved via a JSON-LD 1.1 property-scoped @context: top-level `boundary` -> sg:conceptBoundary (the Understanding string); `boundary` appearing inside `relations` -> sg:disjointOwnership (the routing predicate). See https://www.w3.org/TR/json-ld11/#scoped-contexts."
@@ -58,7 +59,27 @@
       "@type": "@id",
       "@reverse": false
     },
-    "scope": "sg:scope",
+    "scope": {
+      "@id": "sg:scope",
+      "_note": "v8: PRD-style free-text scope statement, no enum. The deployment-targeting role moved to `deployment_target`."
+    },
+    "deployment_target": {
+      "@id": "sg:deploymentTarget",
+      "_note": "v8: Deployment targeting. Closed 2-value enum (portable, project). Replaces the original v8 `scope` enum; the `workspace` value is removed."
+    },
+    "project": {
+      "@id": "sg:project",
+      "@container": "@set",
+      "_note": "v8: Projects this skill is linked to. Array of {handle, role} objects. Replaces the original v8 `workspace_tags`."
+    },
+    "repo": {
+      "@id": "sg:repo",
+      "@container": "@set",
+      "_note": "v8: Repos this skill is linked to. Array of {handle, url} objects. Replaces implicit URN repo-slug parsing."
+    },
+    "handle": "sg:entityHandle",
+    "role": "sg:projectRole",
+    "url": "@id",
     "subject": {
       "@id": "sg:subject",
       "_note": "Primary classification — what the skill teaches. Closed 9-value enum (agent-ops, code-engineering, frontend-ui, design-craft, data-analytics, quality-assurance, meta-methods, knowledge-organization, product-domain). See docs/adr/0017-five-axis-classification-model.md."
@@ -145,8 +166,7 @@
       "_note": "Overlay specialisation — PROV-O derivation relation"
     },
     "grounding": "sg:grounding",
-    "domain_object": "sg:domainObject",
-    "subject": "sg:domainObject",
+    "subject_matter": "sg:subjectMatter",
     "grounding_mode": "sg:groundingMode",
     "claim_scope": "sg:groundingMode",
     "truth_sources": {
@@ -238,13 +258,9 @@
       "@id": "@id",
       "_note": "Globally-unique persistent identifier (urn:skill:<repo>:<name>). Unlocks FAIR Findability. Optional in v3, recommended for v4."
     },
-    "domain": {
+    "taxonomy_domain": {
       "@id": "skos:broader",
-      "_note": "Hierarchical slash-delimited domain path projects to a chain of skos:broader edges in RDF output"
-    },
-    "workspace_tags": {
-      "@id": "dcterms:audience",
-      "@container": "@set"
+      "_note": "Hierarchical slash-delimited taxonomy path projects to a chain of skos:broader edges in RDF output. Renamed from the original v8 `domain`."
     },
     "routing_bundles": {
       "@id": "sg:routingBundle",

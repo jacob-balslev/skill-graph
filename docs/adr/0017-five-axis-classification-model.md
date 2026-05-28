@@ -4,6 +4,10 @@
 > Supersedes the v7 category/categories/primaryCategory/family/layer/layerPrimary/routingRole tangle.
 > Companion: [ADR 0011](0011-split-audit-verdict-into-four-verdicts.md) (Health Block split)
 >
+> ### Update — 2026-05-27: `workspace_tags` removal closed; entity vocabulary disambiguated
+>
+> The "Removed entirely" line of this ADR's Decision table named `workspace_tags` among the v8 removals. The field stayed in the live schema during the v7→v8 cut because the route filter still read it. A follow-up commit on 2026-05-27 finishes the removal as part of broader v8 entity-vocabulary disambiguation (top-level `domain` → `taxonomy_domain`; `scope` repurposed from closed enum to free-text PRD-style string; new required `deployment_target: portable|project` enum with the `workspace` value removed; new optional `project[]` and `repo[]` belonging-entity fields; `grounding.domain_object` → `grounding.subject_matter`). `schema_version` stays `8`. See the CHANGELOG entry for the full sweep.
+>
 > ### Update — 2026-05-27: `operation` axis retired (commit f88603d)
 >
 > The `operation` axis (Bloom-grounded 4-enum: `know` / `do` / `decide` / `modify`) was retired from the live contract in commit `f88603d`. The current v8 classification carries `subject` + `scope` as the required axes, plus `subjects[]` (polyhierarchy, max 2), `keywords` (capped at 10), and `relations` (typed edges). This ADR's Decision table row 2 (`operation`), § Landing strategy step 4, and the operation-distribution figures in § Consequences are no longer in force.

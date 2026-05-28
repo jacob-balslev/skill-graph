@@ -9,8 +9,11 @@
 
 'use strict';
 
+// v9 (2026-05-27 per ADR-0019): the `grounding.domain_object` <-> `grounding.subject`
+// alias pair was removed. The single canonical name is now `grounding.subject_matter`.
+// Other v3.1 alias pairs are preserved.
 const ALIAS_PAIRS = [
-  ['type', 'archetype'],
+  // ['type', 'archetype'] removed: both fields were dropped in the v7->v8 clean cut.
   ['freshness', 'reviewed_at'],
   ['drift_check.last_verified', 'drift_check.verified_at'],
   ['eval_artifacts', 'eval.artifacts'],
@@ -20,7 +23,6 @@ const ALIAS_PAIRS = [
   ['allowed-tools', 'allowed_tools'],
   ['compatibility.runtimes', 'compatibility.agent_runtimes'],
   ['compatibility.node', 'compatibility.node_version'],
-  ['grounding.domain_object', 'grounding.subject'],
   ['grounding.grounding_mode', 'grounding.claim_scope'],
   ['portability.targets', 'portability.export_targets'],
 ];

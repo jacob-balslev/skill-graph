@@ -53,6 +53,9 @@ function loadWorkspaceConfig() {
   if (!fs.existsSync(CONFIG_PATH)) return null;
   try {
     const raw = JSON.parse(fs.readFileSync(CONFIG_PATH, 'utf8'));
+    // skill_roots flattened to top level 2026-05-27; preserve the legacy
+    // { skill_roots } return shape, falling back to the old workspace wrapper.
+    if (raw && Array.isArray(raw.skill_roots)) return { skill_roots: raw.skill_roots };
     return (raw && raw.workspace) || null;
   } catch (e) {
     return null;

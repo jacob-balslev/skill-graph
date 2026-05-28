@@ -47,12 +47,14 @@
 # Build automation treats this file specially: the sample manifest
 # generator ingests it only under `--include-template`, and the library-wide
 # harness counts it as the 9th "skill" only when the flag is set. It is NOT
-# routable in day-to-day skill dispatch — `scope: workspace` keeps it out of
-# the normal routing pool.
+# routable in day-to-day skill dispatch — the workspace value was removed; the
+# template now declares `deployment_target: portable`. Authors who want the
+# skill linked to specific projects/repos add `project[]` and `repo[]`
+# explicitly.
 # ============================================================================
 # schema_version: protocol contract version this skill conforms to.
-# Integer 8 (v8 is canonical; prior contract retrievable via
-# `git show schema-v7:schemas/skill.schema.json`).
+# Integer 8. Prior contract retrievable via
+# `git show schema-v7:schemas/skill.schema.json`.
 schema_version: 8
 name: skill-metadata-template
 # TEMPLATE NOTE: Be pushy in your description — Claude tends to under-trigger
@@ -70,23 +72,43 @@ name: skill-metadata-template
 description: "Use when creating a new SKILL.md, adapting an existing skill to a different archetype, or teaching an author the canonical frontmatter and body structure. Covers schema-conformant frontmatter, archetype-aware body layout, semantic-layer discipline (description vs Coverage), teaching-layer mechanics (TEMPLATE NOTE blockquotes and YAML comments), and the authoring gate. Do NOT use when modifying an already-written skill (edit that skill directly) or when writing general technical documentation (use `docs-development`)."
 version: 1.0.0
 
-# === v8 Classification (subject + scope; polyhierarchy via subjects[]) — see ADR-0017 ===
+# === v8 Classification (subject + deployment_target; polyhierarchy via subjects[]) ===
+# See docs/adr/0017-five-axis-classification-model.md and its amendments.
 
 # subject: primary browse shelf — what the skill teaches. One of nine closed values:
 # code-engineering / quality-assurance / frontend-ui / design-craft / agent-ops /
 # product-domain / knowledge-organization / meta-methods / data-analytics.
 subject: agent-ops
 
-# scope: deployment targeting. One of three closed values:
-# portable (any project) / workspace (this workspace only) /
-# project (one specific repo; requires populated `grounding` block).
-scope: workspace
+# deployment_target: where this skill applies. One of two closed values:
+# portable (any project, repo-agnostic) /
+# project (one or more specific projects; requires populated `grounding` block
+# AND populated `project[]` array naming which projects).
+deployment_target: project
 
-# domain: optional hierarchical sub-path within `subject`.
+# scope: PRD-style free-text statement of what the skill teaches and what it
+# doesn't. Optional. Mirrors `## Coverage` plus `## Do NOT Use When` at the
+# frontmatter level for fast scanning.
+scope: "Authoring a new SKILL.md against Skill Metadata Protocol v8: frontmatter shape, archetype-aware body layout, semantic-layer discipline. Out: editing already-written skills (use `refactor`), general technical writing (use `docs-development`), or routing diagnosis (use `skill-router`)."
+
+# taxonomy_domain: optional hierarchical sub-path within `subject`.
 # Slash-delimited lowercase kebab-case segments (e.g., `agent/skill-system`).
 # Use only when the library is large enough that a tree structure helps readers
 # find related skills. Remove this line entirely when the flat `subject` is sufficient.
-domain: agent/skill-system
+taxonomy_domain: agent/skill-system
+
+# project: projects this skill is linked to. Array of {handle, role} objects.
+# Required pattern when `deployment_target: project`; suggested role values:
+# source-of-truth, consumer, mirror.
+project:
+  - handle: skill-graph
+    role: source-of-truth
+
+# repo: repos this skill is linked to. Array of {handle, url} objects.
+# Plural even when most skills have one source repo (federation-ready).
+repo:
+  - handle: skill-graph
+    url: https://github.com/jacob-balslev/skill-graph
 
 owner: skill-graph-maintainer
 freshness: "2026-04-17"
@@ -198,17 +220,8 @@ examples:
 anti_examples:
   - "refactor this skill to be more concise"           # → refactor, not authoring
   - "my skill's routing isn't activating — why?"       # → skill-router, not template
-# workspace_tags: array of project handles or semantic tags. Replaces v3
-# `project_tags`. Omit for ambient / cross-project skills (the common case).
-# Add literal handles or semantic tags when the skill is relevant to a subset
-# of projects in a multi-project workspace. Workspace config at
-# `.skill-graph/config.json` maps literal handles to tag sets, so one
-# semantic tag reaches many projects. See docs/field-decision-guide.md § 4.
-#
-# TEMPLATE NOTE: this scaffold uses `skill-authoring` (semantic) because the
-# template applies across every skill-authoring project.
-workspace_tags:
-  - skill-authoring
+# workspace_tags was removed. Project belonging-entity identity lives in the
+# `project[]` array near the top of the frontmatter.
 relations:
   # TEMPLATE NOTE: boundary items may be bare skill names OR `{skill, reason}`
   # objects (v3). Reasons are strongly recommended — they make the boundary
@@ -231,12 +244,13 @@ relations:
   #   - docs-development
   boundary: []
   verify_with: []
-# grounding: required when `scope: project` (or legacy alias `scope: codebase`).
-# Declares the truth sources the skill anchors to (files, schemas, vendor docs)
-# and the failure modes those sources prevent. Omit this entire block when the
-# skill is universal-knowledge (grounding_mode: universal is implicit by absence).
+# grounding: required when `deployment_target: project`. Declares the truth
+# sources the skill anchors to (files, schemas, vendor docs) and the failure
+# modes those sources prevent. Omit this entire block when the skill is
+# universal-knowledge (grounding_mode: universal is implicit by absence).
+# `subject_matter` replaces the earlier `domain_object`; the `subject` alias is retired.
 grounding:
-  domain_object: Skill authoring for the Skill Metadata Protocol frontmatter
+  subject_matter: Skill authoring for the Skill Metadata Protocol frontmatter
   grounding_mode: repo_specific
   truth_sources:
     - path: docs/skill-metadata-protocol.md
@@ -295,7 +309,7 @@ runtime_telemetry:
 
 > **TEMPLATE NOTE — HOW TO READ THIS FILE:** This file is a real, valid, schema-conformant Skill Metadata Protocol skill whose *subject* is skill authoring itself. Read it as a finished specimen of the contract, then adapt it by (1) renaming the identity, (2) rewriting `description`, `## Coverage`, `## Philosophy of the skill`, and `## Key Files` for your subject, (3) rewriting `## Verification` to be your skill's self-check, (4) removing any section or field that does not apply to your archetype, and (5) stripping ONLY the **`# TEMPLATE NOTE:` YAML comments and `> **TEMPLATE NOTE:**` body blockquotes** (authoring scaffolding) — the **field-purpose comments STAY** in your derived skill (they are co-located documentation, not scaffolding). Verify with `grep -n "TEMPLATE NOTE" <derived-skill>` returning zero hits AND `grep -c "^\s*#" <derived-skill>` showing the field-purpose comments are preserved. Never ship placeholder sludge (`your-skill-name`, `path/to/file`, `todo`). If a section does not apply, remove it — do not keep it and fill it with fake content. (Section headings renamed 2026-05-26: `## Philosophy` → `## Philosophy of the skill`; `## Concept Card` → `## Concept of the skill`.) Convention spec: `SKILL_METADATA_PROTOCOL.md § Inline field comments — the authoring convention`.
 
-> **TEMPLATE NOTE — CONDITIONAL FIELDS:** `extends` is valid only when `type: overlay`. `routing_bundles` only applies when routing-group ownership is part of the skill contract. `triggers` and `paths` are shown because this template is both label-routable and file-activated; most skills need only one. `grounding` is REQUIRED for `scope: project` skills (v8; legacy alias `scope: codebase` still validates); remove the block entirely for `scope: portable` or `scope: workspace` (v8; legacy alias `scope: reference`). `workspace_tags` is optional — omit for ambient / cross-project skills. `lifecycle` is optional — omit when staleness is not meaningful. `runtime_telemetry` is optional — omit when no feedback pipeline exists. Audit Status fields live in the authored `SKILL.md`, but the audit/eval loop owns them; new-skill authors should leave them absent until a real audit or eval run writes evidence. (Updated 2026-05-27 per audit H14 — earlier framing used v7 `scope: codebase` / `scope: reference` names without the v8 mapping.)
+> **TEMPLATE NOTE — CONDITIONAL FIELDS:** `extends` is valid only when `type: overlay`. `routing_bundles` only applies when routing-group ownership is part of the skill contract. `triggers` and `paths` are shown because this template is both label-routable and file-activated; most skills need only one. `grounding` is REQUIRED for `deployment_target: project` skills; remove the block entirely for `deployment_target: portable` skills (unless they ground in external specs, in which case set `grounding_mode: universal`). `project[]` and `repo[]` are optional but recommended; omit for ambient / cross-project skills. `lifecycle` is optional — omit when staleness is not meaningful. `runtime_telemetry` is optional — omit when no feedback pipeline exists. Audit Status fields live in the authored `SKILL.md`, but the audit/eval loop owns them; new-skill authors should leave them absent until a real audit or eval run writes evidence.
 
 ## Coverage
 
@@ -305,7 +319,7 @@ runtime_telemetry:
 - Archetype-driven body structure: which `## H2` sections each of the four archetypes (`capability`, `workflow`, `router`, `overlay`) must contain
 - Grounding via `grounding`: when a skill should declare truth sources and failure modes, and when it should stay `grounding_mode: universal`
 - drift evidence: when to record `drift_check.truth_source_hashes` and how the drift sentinel consumes them
-- Workspace tagging: when to add `workspace_tags`, when to leave a skill ambient, and how workspace semantic-tag mapping composes
+- Project belonging-entity tagging: when to populate `project[]` and `repo[]`, when to leave a skill ambient (omit both arrays), how `deployment_target` interacts with `project[]` membership
 - Adapter workflow: how to strip a template down, how to detect and remove cargo-culted meta, and how to verify a new skill against `schemas/skill.schema.json` before committing
 
 ## Philosophy of the skill
@@ -333,7 +347,7 @@ Use this checklist as the authoring gate before committing a skill adapted from 
 - [ ] `compatibility` is an object (not a free-text string) when present
 - [ ] `eval_artifacts` matches actual artifact presence (if `present`, an eval file exists under `examples/evals/` or alongside the skill); `eval_state` reflects whether a real passing run has been recorded; `routing_eval` reflects whether trigger/routing coverage is explicitly checked
 - [ ] All `relations` entries point to skills that exist in the target repo; `boundary` entries with unclear rationale use the `{skill, reason}` form
-- [ ] `workspace_tags` is present when the skill is project-specific OR absent when the skill is ambient — not left at a stale value
+- [ ] `project[]` is populated with `{handle, role}` entries when the skill is project-specific OR absent when the skill is ambient — same for `repo[]`. Not left with stale or placeholder handles.
 - [ ] No placeholder sludge (`your-skill-name`, `path/to/file`, `todo`) remains
 - [ ] No `> **TEMPLATE NOTE:**` blockquotes or `# TEMPLATE NOTE:` YAML comments remain in the adapted skill
 - [ ] The adapted skill validates against `schemas/skill.schema.json` as a real skill
