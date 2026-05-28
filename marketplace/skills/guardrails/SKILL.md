@@ -7,12 +7,9 @@ allowed-tools: Read Grep Bash
 metadata:
   schema_version: "8"
   version: "1.2.0"
-  type: capability
-  operation: know
-  category: quality
   subject: quality-assurance
-  domain: quality/safety
-  scope: portable
+  deployment_target: portable
+  taxonomy_domain: quality/safety
   owner: skill-graph-maintainer
   freshness: "2026-05-18"
   drift_check: "{\"last_verified\":\"2026-05-18\"}"
@@ -23,13 +20,15 @@ metadata:
   keywords: "[\"guardrails\",\"tool guardrails\",\"tripwire\",\"safety gate\",\"force push\",\"secret detection\",\"destructive action\",\"protected files\",\"circuit breaker\",\"excessive agency\"]"
   triggers: "[\"guardrails-skill\",\"tool-guardrails\",\"tripwire-skill\",\"agent-safety-guardrails\"]"
   relations: "{\"related\":[\"intent-recognition\",\"version-control\",\"database-migration\"],\"boundary\":[{\"skill\":\"code-review\",\"reason\":\"code-review evaluates a proposed code change; guardrails evaluates whether an agent/tool action should be blocked, confirmed, or allowed before side effects happen\"},{\"skill\":\"version-control\",\"reason\":\"version-control owns routine git hygiene; guardrails owns high-risk git tripwires such as force-push, hard reset, branch deletion, and history rewrite\"},{\"skill\":\"database-migration\",\"reason\":\"database-migration plans safe DDL and data migrations; guardrails blocks or escalates destructive SQL patterns at execution time\"}],\"verify_with\":[\"intent-recognition\",\"code-review\"]}"
-  grounding: "{\"domain_object\":\"Agent and tool-call safety guardrails for destructive operations, secret exposure prevention, excessive-agency containment, and irreversible system mutations\",\"grounding_mode\":\"hybrid\",\"truth_sources\":[\"https://openai.github.io/openai-agents-python/guardrails/\",\"https://owasp.org/www-project-top-10-for-large-language-model-applications/\",\"https://www.nist.gov/itl/ai-risk-management-framework\",\"https://nvlpubs.nist.gov/nistpubs/ai/NIST.AI.600-1.pdf\",\"https://docs.github.com/en/code-security/how-tos/secure-your-secrets/detect-secret-leaks\"],\"failure_modes\":[\"tool_call_runs_before_guardrail_completes\",\"agent_level_guardrail_misses_delegated_tool_call\",\"secret_pattern_committed_or_echoed\",\"force_push_or_hard_reset_destroys_work\",\"unbounded_sql_mutation_reaches_live_database\",\"excessive_agency_allows_unchecked_real_world_action\",\"guardrail_bypass_treated_as_normal_override\"],\"evidence_priority\":\"equal\"}"
+  grounding: "{\"subject_matter\":\"Agent and tool-call safety guardrails for destructive operations, secret exposure prevention, excessive-agency containment, and irreversible system mutations\",\"grounding_mode\":\"hybrid\",\"truth_sources\":[\"https://openai.github.io/openai-agents-python/guardrails/\",\"https://owasp.org/www-project-top-10-for-large-language-model-applications/\",\"https://www.nist.gov/itl/ai-risk-management-framework\",\"https://nvlpubs.nist.gov/nistpubs/ai/NIST.AI.600-1.pdf\",\"https://docs.github.com/en/code-security/how-tos/secure-your-secrets/detect-secret-leaks\"],\"failure_modes\":[\"tool_call_runs_before_guardrail_completes\",\"agent_level_guardrail_misses_delegated_tool_call\",\"secret_pattern_committed_or_echoed\",\"force_push_or_hard_reset_destroys_work\",\"unbounded_sql_mutation_reaches_live_database\",\"excessive_agency_allows_unchecked_real_world_action\",\"guardrail_bypass_treated_as_normal_override\"],\"evidence_priority\":\"equal\"}"
   portability: "{\"readiness\":\"scripted\",\"targets\":[\"skill-md\"]}"
   lifecycle: "{\"stale_after_days\":90,\"review_cadence\":\"quarterly\"}"
-  structural_verdict: UNVERIFIED
+  structural_verdict: PASS
   truth_verdict: UNVERIFIED
   comprehension_verdict: UNVERIFIED
   application_verdict: UNVERIFIED
+  last_audited: "2026-05-28"
+  lint_verdict: PASS
   skill_graph_source_repo: "https://github.com/jacob-balslev/skill-graph"
   skill_graph_project: Skill Graph
   skill_graph_canonical_skill: skills/quality-assurance/guardrails/SKILL.md

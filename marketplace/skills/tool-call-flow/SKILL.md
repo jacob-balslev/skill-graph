@@ -6,12 +6,9 @@ allowed-tools: Read Grep
 metadata:
   schema_version: "8"
   version: "1.0.0"
-  type: capability
-  operation: do
-  category: agent
   subject: agent-ops
-  domain: agent/protocol
-  scope: workspace
+  deployment_target: portable
+  taxonomy_domain: agent/protocol
   owner: skill-graph-maintainer
   freshness: "2026-05-15"
   drift_check: "{\"last_verified\":\"2026-05-15\"}"
@@ -31,10 +28,12 @@ metadata:
   analogy: "A tool-call flow is to a language model what a procurement system is to an executive — the executive does not personally drive to the supplier; they sign a typed purchase order, the procurement department validates the order, executes it, and returns the receipt with whatever was delivered or with a documented reason it could not be. The executive's signature is intent; the department's stamp is authorization; the receipt is the only state of the cycle that survives, and the next decision is made against that record."
   misconception: "|"
   concept: "{\"definition\":\"A tool-call flow is the multi-turn protocol by which a language model uses external capabilities. It has four phases — declaration (the runtime tells the model which tools exist and their parameter schemas), request (the model emits a structured tool-call message specifying tool name and arguments), execution (the runtime invokes the underlying capability and produces a result), continuation (the runtime appends the result to the message history and re-prompts the model, which either continues with another tool call or produces a final answer). The state of the cycle lives in the message history; the model is stateless across calls.\",\"mental_model\":\"|\",\"purpose\":\"|\",\"boundary\":\"|\",\"taxonomy\":\"|\",\"analogy\":\"|\",\"misconception\":\"|\"}"
-  structural_verdict: UNVERIFIED
-  truth_verdict: UNVERIFIED
+  structural_verdict: PASS
+  truth_verdict: PASS
   comprehension_verdict: UNVERIFIED
   application_verdict: UNVERIFIED
+  last_audited: "2026-05-28"
+  lint_verdict: PASS
   skill_graph_source_repo: "https://github.com/jacob-balslev/skill-graph"
   skill_graph_project: Skill Graph
   skill_graph_canonical_skill: skills/agent-ops/tool-call-flow/SKILL.md

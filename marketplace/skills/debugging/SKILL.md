@@ -7,11 +7,8 @@ allowed-tools: Read Grep Bash
 metadata:
   schema_version: "8"
   version: "1.0.0"
-  type: workflow
-  operation: do
-  category: engineering
   subject: code-engineering
-  scope: portable
+  deployment_target: portable
   owner: skill-graph-maintainer
   freshness: "2026-04-18"
   drift_check: "{\"last_verified\":\"2026-04-18\"}"
@@ -25,10 +22,12 @@ metadata:
   anti_examples: "[\"plan test coverage for a new feature\",\"document what this function does for future readers\",\"refactor this messy code while the test suite is green\"]"
   relations: "{\"boundary\":[{\"skill\":\"testing-strategy\",\"reason\":\"testing-strategy plans what to test before a failure exists; debugging chases a specific observed failure\"},{\"skill\":\"refactor\",\"reason\":\"refactor is behavior-preserving code change with green tests; debugging is invoked because tests or behavior are NOT green\"},{\"skill\":\"generative-ui\",\"reason\":\"generative-ui owns the model-emits-typed-UI-spec pattern for writing documentation or explanatory content; debugging owns chasing observed runtime failures, not writing documentation about functions\"},{\"skill\":\"test-driven-development\",\"reason\":\"test-driven-development owns writing test cases first as part of the spec-then-implement loop on green code; debugging owns chasing a specific observed failure on broken code — TDD operates pre-failure, debugging operates post-failure\"}],\"verify_with\":[\"testing-strategy\"]}"
   portability: "{\"readiness\":\"scripted\",\"targets\":[\"skill-md\"]}"
-  structural_verdict: UNVERIFIED
-  truth_verdict: UNVERIFIED
+  structural_verdict: PASS
+  truth_verdict: PASS
   comprehension_verdict: UNVERIFIED
   application_verdict: UNVERIFIED
+  last_audited: "2026-05-28"
+  lint_verdict: PASS
   skill_graph_source_repo: "https://github.com/jacob-balslev/skill-graph"
   skill_graph_project: Skill Graph
   skill_graph_canonical_skill: skills/code-engineering/debugging/SKILL.md

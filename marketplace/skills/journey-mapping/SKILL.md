@@ -5,11 +5,8 @@ license: CC-BY-4.0
 metadata:
   schema_version: "8"
   version: "1.0.0"
-  type: capability
-  operation: know
-  category: design
   subject: design-craft
-  scope: portable
+  deployment_target: portable
   owner: skill-graph-maintainer
   freshness: "2026-05-12"
   drift_check: "{\"last_verified\":\"2026-05-12\"}"
@@ -22,10 +19,12 @@ metadata:
   examples: "[\"Build a journey map for first-time tax filers from awareness through filing to refund.\",\"Add a service-blueprint layer below this journey map showing the back-stage support steps.\",\"Identify the emotional low points in this onboarding journey and the opportunities at each.\",\"Map the cross-channel experience of returning an online order to a physical store.\"]"
   anti_examples: "[\"Break down the steps a user takes inside the upload modal.\",\"Draw the microservice call graph for the checkout API.\",\"Diagram the database schema for the order entity.\"]"
   relations: "{\"related\":[\"research-synthesis\",\"information-architecture\",\"design-thinking\",\"problem-framing\"],\"boundary\":[{\"skill\":\"task-analysis\",\"reason\":\"task-analysis decomposes a single goal-directed task into ordered steps within one interface or session. journey-mapping spans many sessions, channels, and days, and includes emotional and contextual layers task-analysis does not.\"},{\"skill\":\"bounded-context-mapping\",\"reason\":\"bounded-context-mapping is an engineering practice for modeling DDD context boundaries. journey-mapping describes human experience across touchpoints — a similar diagrammatic instinct but unrelated output.\"}]}"
-  structural_verdict: UNVERIFIED
-  truth_verdict: UNVERIFIED
+  structural_verdict: PASS
+  truth_verdict: PASS
   comprehension_verdict: UNVERIFIED
   application_verdict: UNVERIFIED
+  last_audited: "2026-05-28"
+  lint_verdict: PASS
   skill_graph_source_repo: "https://github.com/jacob-balslev/skill-graph"
   skill_graph_project: Skill Graph
   skill_graph_canonical_skill: skills/design-craft/journey-mapping/SKILL.md

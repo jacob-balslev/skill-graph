@@ -7,12 +7,9 @@ allowed-tools: Read Grep
 metadata:
   schema_version: "8"
   version: "1.0.0"
-  type: workflow
-  operation: do
-  category: foundations
   subject: meta-methods
-  domain: foundations/analysis
-  scope: portable
+  deployment_target: portable
+  taxonomy_domain: foundations/analysis
   owner: skill-graph-maintainer
   freshness: "2026-05-06"
   drift_check: "{\"last_verified\":\"2026-05-06\"}"
@@ -26,10 +23,12 @@ metadata:
   relations: "{\"boundary\":[{\"skill\":\"code-review\",\"reason\":\"code-review judges the quality and correctness of a specific change at PR scope; task-analysis judges whether a route's structure supports the user's top task — same 'review this page' prompt routes by whether the lens is code or user goal\"},{\"skill\":\"a11y\",\"reason\":\"a11y is accessibility QA against WCAG / ARIA / keyboard / screen-reader contracts on an existing UI; task-analysis is goal-driven decomposition of what the UI must support — same 'review this UI' prompt routes by whether the trigger is accessibility compliance or user-task fit\"},{\"skill\":\"layout-composition\",\"reason\":\"layout-composition owns responsive section order, grids, and scan patterns; task-analysis stops at the first-viewport hierarchy contract\"},{\"skill\":\"visual-design-foundations\",\"reason\":\"visual-design-foundations owns visual craft; task-analysis owns whether the route supports the user's goal\"},{\"skill\":\"interaction-patterns\",\"reason\":\"interaction-patterns owns control-pattern selection; task-analysis identifies the decision or action that the pattern must support\"},{\"skill\":\"interaction-feedback\",\"reason\":\"interaction-feedback owns loading, progress, success, error, retry, and undo behavior; task-analysis identifies where feedback is needed\"},{\"skill\":\"information-architecture\",\"reason\":\"information-architecture owns navigation and page grouping across a product; task-analysis owns one route or flow\"}],\"related\":[\"diagnosis\",\"pattern-recognition\",\"information-architecture\",\"layout-composition\",\"interaction-patterns\",\"interaction-feedback\"],\"verify_with\":[\"a11y\"]}"
   portability: "{\"readiness\":\"scripted\",\"targets\":[\"skill-md\"]}"
   lifecycle: "{\"stale_after_days\":365,\"review_cadence\":\"quarterly\"}"
-  structural_verdict: UNVERIFIED
-  truth_verdict: UNVERIFIED
+  structural_verdict: PASS
+  truth_verdict: PASS
   comprehension_verdict: UNVERIFIED
   application_verdict: UNVERIFIED
+  last_audited: "2026-05-28"
+  lint_verdict: PASS
   skill_graph_source_repo: "https://github.com/jacob-balslev/skill-graph"
   skill_graph_project: Skill Graph
   skill_graph_canonical_skill: skills/meta-methods/task-analysis/SKILL.md

@@ -7,11 +7,8 @@ allowed-tools: Read Grep Bash Edit
 metadata:
   schema_version: "8"
   version: "1.0.0"
-  type: capability
-  operation: know
-  category: engineering
   subject: code-engineering
-  scope: portable
+  deployment_target: portable
   owner: skill-graph-maintainer
   freshness: "2026-05-04"
   drift_check: "{\"last_verified\":\"2026-05-04\"}"
@@ -25,10 +22,12 @@ metadata:
   relations: "{\"boundary\":[{\"skill\":\"refactor\",\"reason\":\"refactor reshapes existing code structure; naming-conventions decides what an artifact should be CALLED, before or independently of restructuring\"},{\"skill\":\"code-review\",\"reason\":\"code-review evaluates a diff holistically; naming-conventions is the focused naming-decision skill invoked during authoring\"},{\"skill\":\"debugging\",\"reason\":\"debugging chases observed wrong behaviour; naming-conventions catches names that LIE about their meaning before the bug ships\"}],\"related\":[\"refactor\"],\"verify_with\":[\"code-review\"]}"
   portability: "{\"readiness\":\"scripted\",\"targets\":[\"skill-md\"]}"
   lifecycle: "{\"stale_after_days\":365,\"review_cadence\":\"quarterly\"}"
-  structural_verdict: UNVERIFIED
-  truth_verdict: UNVERIFIED
+  structural_verdict: PASS
+  truth_verdict: PASS
   comprehension_verdict: UNVERIFIED
   application_verdict: UNVERIFIED
+  last_audited: "2026-05-28"
+  lint_verdict: PASS
   skill_graph_source_repo: "https://github.com/jacob-balslev/skill-graph"
   skill_graph_project: Skill Graph
   skill_graph_canonical_skill: skills/code-engineering/naming-conventions/SKILL.md

@@ -6,12 +6,9 @@ allowed-tools: Read Grep
 metadata:
   schema_version: "8"
   version: "1.0.0"
-  type: capability
-  operation: know
-  category: engineering
   subject: code-engineering
-  domain: engineering/data
-  scope: workspace
+  deployment_target: portable
+  taxonomy_domain: engineering/data
   owner: skill-graph-maintainer
   freshness: "2026-05-16"
   drift_check: "{\"last_verified\":\"2026-05-16\"}"
@@ -31,10 +28,12 @@ metadata:
   analogy: "Replication is to a database what mirror copies of a master photograph are to a museum's record — single-leader async is the photographer keeping the negative and printing copies as requested; single-leader sync is the conservator requiring two darkroom signatures before any print leaves the building; multi-leader is multiple authorized photographers in different cities each accepting submissions and reconciling at intervals; leaderless quorum is asking three of five archivists to vote on whether this print matches the master, accepting their verdict. Failover is replacing the negative-keeper when they retire; split brain is what happens when the agency forgets to revoke the old keeper's keys."
   misconception: "|"
   concept: "{\"definition\":\"Replication is the discipline of keeping multiple copies of the same data on multiple nodes so that the system can serve reads from any copy, survive the failure of any node, or both. The three foundational topologies are single-leader (primary-replica; one node accepts writes, others receive a stream of changes), multi-leader (multi-primary; multiple nodes accept writes and reconcile), and leaderless (quorum; clients write to a quorum of nodes directly). Each topology has its own consistency, availability, conflict-handling, and operational properties; choosing among them is choosing the system's CAP/PACELC position and accepting the operational complexity that comes with it. Synchronous vs asynchronous replication is an orthogonal choice within each topology, trading durability/consistency against latency. The discipline is matching the topology and the synchrony choice to the workload's actual requirements for read scaling, write availability, recovery point objective (RPO), and recovery time objective (RTO).\",\"mental_model\":\"|\",\"purpose\":\"|\",\"boundary\":\"|\",\"taxonomy\":\"|\",\"analogy\":\"|\",\"misconception\":\"|\"}"
-  structural_verdict: UNVERIFIED
-  truth_verdict: UNVERIFIED
+  structural_verdict: PASS
+  truth_verdict: PASS
   comprehension_verdict: UNVERIFIED
   application_verdict: UNVERIFIED
+  last_audited: "2026-05-28"
+  lint_verdict: PASS
   skill_graph_source_repo: "https://github.com/jacob-balslev/skill-graph"
   skill_graph_project: Skill Graph
   skill_graph_canonical_skill: skills/code-engineering/replication-patterns/SKILL.md

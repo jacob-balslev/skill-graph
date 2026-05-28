@@ -7,12 +7,9 @@ allowed-tools: Read Grep
 metadata:
   schema_version: "8"
   version: "1.0.0"
-  type: capability
-  operation: do
-  category: engineering
   subject: code-engineering
-  domain: modeling/state-machines
-  scope: portable
+  deployment_target: portable
+  taxonomy_domain: modeling/state-machines
   owner: skill-graph-maintainer
   freshness: "2026-05-11"
   drift_check: "{\"last_verified\":\"2026-05-11\"}"
@@ -26,10 +23,12 @@ metadata:
   relations: "{\"boundary\":[{\"skill\":\"event-storming\",\"reason\":\"event-storming discovers domain behavior broadly; state-machine-modeling formalizes a specific lifecycle\"},{\"skill\":\"data-modeling\",\"reason\":\"data-modeling persists state; state-machine-modeling defines legal state behavior\"},{\"skill\":\"observability-modeling\",\"reason\":\"observability-modeling instruments a lifecycle; state-machine-modeling defines the lifecycle itself\"},{\"skill\":\"debugging\",\"reason\":\"debugging investigates an observed stuck state; state-machine-modeling prevents invalid states by design\"}],\"related\":[\"event-storming\",\"system-interface-contracts\",\"testing-strategy\",\"api-design\"],\"verify_with\":[\"testing-strategy\",\"system-interface-contracts\"]}"
   portability: "{\"readiness\":\"scripted\",\"targets\":[\"skill-md\"]}"
   lifecycle: "{\"stale_after_days\":365,\"review_cadence\":\"quarterly\"}"
-  structural_verdict: UNVERIFIED
-  truth_verdict: UNVERIFIED
+  structural_verdict: PASS
+  truth_verdict: PASS
   comprehension_verdict: UNVERIFIED
   application_verdict: UNVERIFIED
+  last_audited: "2026-05-28"
+  lint_verdict: PASS
   skill_graph_source_repo: "https://github.com/jacob-balslev/skill-graph"
   skill_graph_project: Skill Graph
   skill_graph_canonical_skill: skills/code-engineering/state-machine-modeling/SKILL.md

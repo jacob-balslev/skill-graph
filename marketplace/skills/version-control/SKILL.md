@@ -7,12 +7,9 @@ allowed-tools: Read Grep Bash Edit
 metadata:
   schema_version: "8"
   version: "1.0.0"
-  type: capability
-  operation: do
-  category: engineering
   subject: code-engineering
-  domain: engineering/version-control
-  scope: portable
+  deployment_target: portable
+  taxonomy_domain: engineering/version-control
   owner: skill-graph-maintainer
   freshness: "2026-05-06"
   drift_check: "{\"last_verified\":\"2026-05-06\"}"
@@ -26,10 +23,12 @@ metadata:
   relations: "{\"boundary\":[{\"skill\":\"code-review\",\"reason\":\"code-review evaluates the *content* of a change before merge; version-control owns the *shape* of history that change leaves behind\"},{\"skill\":\"refactor\",\"reason\":\"refactor reorganizes code without changing external behavior; version-control reorganizes history without changing the code's content (rebase, squash, cherry-pick)\"},{\"skill\":\"naming-conventions\",\"reason\":\"naming-conventions owns commit-message wording (Conventional Commits prefix, scope, subject); version-control owns commit *boundaries* (what counts as one commit) and history *shape*\"}],\"related\":[\"code-review\",\"refactor\",\"naming-conventions\",\"debugging\"],\"verify_with\":[\"code-review\"]}"
   portability: "{\"readiness\":\"scripted\",\"targets\":[\"skill-md\"]}"
   lifecycle: "{\"stale_after_days\":90,\"review_cadence\":\"quarterly\"}"
-  structural_verdict: UNVERIFIED
-  truth_verdict: UNVERIFIED
+  structural_verdict: PASS
+  truth_verdict: PASS
   comprehension_verdict: UNVERIFIED
   application_verdict: UNVERIFIED
+  last_audited: "2026-05-28"
+  lint_verdict: PASS
   skill_graph_source_repo: "https://github.com/jacob-balslev/skill-graph"
   skill_graph_project: Skill Graph
   skill_graph_canonical_skill: skills/code-engineering/version-control/SKILL.md

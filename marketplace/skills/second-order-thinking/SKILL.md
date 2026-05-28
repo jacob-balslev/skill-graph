@@ -6,12 +6,9 @@ allowed-tools: Read Grep
 metadata:
   schema_version: "7"
   version: "1.0.0"
-  type: capability
-  category: foundations
   subject: meta-methods
-  operation: decide
-  domain: foundations/reasoning
-  scope: portable
+  deployment_target: portable
+  taxonomy_domain: foundations/reasoning
   owner: skill-graph-maintainer
   freshness: "2026-05-21"
   drift_check: "{\"last_verified\":\"2026-05-21\"}"
@@ -32,10 +29,12 @@ metadata:
   misconception: "|"
   portability: "{\"readiness\":\"declared\",\"targets\":[\"skill-md\"]}"
   lifecycle: "{\"stale_after_days\":365,\"review_cadence\":\"quarterly\"}"
-  structural_verdict: UNVERIFIED
-  truth_verdict: UNVERIFIED
+  structural_verdict: PASS
+  truth_verdict: PASS
   comprehension_verdict: UNVERIFIED
   application_verdict: UNVERIFIED
+  last_audited: "2026-05-28"
+  lint_verdict: PASS
   skill_graph_source_repo: "https://github.com/jacob-balslev/skill-graph"
   skill_graph_project: Skill Graph
   skill_graph_canonical_skill: skills/meta-methods/second-order-thinking/SKILL.md

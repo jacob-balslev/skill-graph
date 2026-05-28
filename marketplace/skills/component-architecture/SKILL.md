@@ -6,12 +6,9 @@ allowed-tools: Read Grep
 metadata:
   schema_version: "8"
   version: "1.0.0"
-  type: capability
-  operation: know
-  category: design
   subject: design-craft
-  domain: design/component-systems
-  scope: workspace
+  deployment_target: portable
+  taxonomy_domain: design/component-systems
   owner: skill-graph-maintainer
   freshness: "2026-05-16"
   drift_check: "{\"last_verified\":\"2026-05-16\"}"
@@ -31,10 +28,12 @@ metadata:
   analogy: "Component architecture is to a UI library what API design is to a backend service — the public contract is the only thing consumers see; every consumer depends on shape, behavior, and naming for things that may seem internal to the author; once a version ships, every prop and slot becomes a thing future versions must continue to support, just as every endpoint and field of a public API does. The headless/styled split is to component libraries what the data-plane/control-plane split is to distributed systems: separating the part that changes slowly (behavior, contracts) from the part that changes fast (visual treatment, theming)."
   misconception: "|"
   concept: "{\"definition\":\"Component architecture is the architectural discipline of structuring a library of UI components so that they can be reused across products, themes, and teams without each reuse requiring a rewrite. The discipline answers four interlocking questions: (1) at what LAYER does a given concern belong — primitive, composite, product-specific assembly; (2) what is the API SURFACE — which props, slots, refs, callbacks, render functions, and which are open for extension vs closed for modification; (3) what STATE CONTRACT does the component expose — controlled, uncontrolled, hybrid; (4) what THEMING and styling mechanism allows the component's behavior to remain stable while its visual language changes. The discipline is distinct from the visual design language itself (which colors, which type scale) and from within-product wiring (which screens compose which modules) — it is the architectural stratum that makes both possible by producing components whose API outlives any single product instance and any single visual treatment.\",\"mental_model\":\"|\",\"purpose\":\"|\",\"boundary\":\"|\",\"taxonomy\":\"|\",\"analogy\":\"|\",\"misconception\":\"|\"}"
-  structural_verdict: UNVERIFIED
-  truth_verdict: UNVERIFIED
+  structural_verdict: PASS
+  truth_verdict: PASS
   comprehension_verdict: UNVERIFIED
   application_verdict: UNVERIFIED
+  last_audited: "2026-05-28"
+  lint_verdict: PASS
   skill_graph_source_repo: "https://github.com/jacob-balslev/skill-graph"
   skill_graph_project: Skill Graph
   skill_graph_canonical_skill: skills/design-craft/component-architecture/SKILL.md

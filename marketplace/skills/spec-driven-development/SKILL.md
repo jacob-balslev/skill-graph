@@ -7,12 +7,9 @@ allowed-tools: Read Grep Bash
 metadata:
   schema_version: "8"
   version: "1.1.0"
-  type: workflow
-  operation: do
-  category: engineering
   subject: code-engineering
-  domain: engineering/methodology
-  scope: workspace
+  deployment_target: portable
+  taxonomy_domain: engineering/methodology
   owner: skill-graph-maintainer
   freshness: "2026-05-18"
   drift_check: "{\"last_verified\":\"2026-05-18\"}"
@@ -23,13 +20,15 @@ metadata:
   keywords: "[\"spec driven development\",\"SDD\",\"specification first\",\"technical plan\",\"task decomposition\",\"spec.md\",\"plan.md\",\"tasks.md\",\"requirements before code\",\"phase gates\"]"
   triggers: "[\"sdd-skill\",\"planning-mode\",\"spec-driven-development\"]"
   relations: "{\"boundary\":[{\"skill\":\"code-review\",\"reason\":\"code-review evaluates a concrete diff after implementation; spec-driven-development shapes the spec, plan, and task path before implementation\"},{\"skill\":\"testing-strategy\",\"reason\":\"testing-strategy decides the right test level and regression target; spec-driven-development only requires that the plan names verification evidence traceable to the spec\"}],\"related\":[\"testing-strategy\",\"evaluation\"],\"verify_with\":[\"code-review\",\"testing-strategy\"]}"
-  grounding: "{\"domain_object\":\"Spec-driven development workflow for AI-assisted engineering using specification, plan, task, implementation, and verification artifacts\",\"grounding_mode\":\"hybrid\",\"truth_sources\":[\"https://github.github.com/spec-kit/index.html\",\"https://github.github.com/spec-kit/reference/workflows.html\",\"https://github.com/github/spec-kit\",\"https://standards.ieee.org/ieee/29148/6937/\"],\"failure_modes\":[\"code_started_before_spec_or_plan\",\"implementation_plan_missing_architecture_contracts_or_tests\",\"tasks_not_traceable_to_plan_or_success_criteria\",\"verification_not_mapped_to_spec_requirements\",\"workflow_requires_vendor_specific_commands_when_plain_markdown_would_work\"],\"evidence_priority\":\"equal\"}"
+  grounding: "{\"subject_matter\":\"Spec-driven development workflow for AI-assisted engineering using specification, plan, task, implementation, and verification artifacts\",\"grounding_mode\":\"hybrid\",\"truth_sources\":[\"https://github.github.com/spec-kit/index.html\",\"https://github.github.com/spec-kit/reference/workflows.html\",\"https://github.com/github/spec-kit\",\"https://standards.ieee.org/ieee/29148/6937/\"],\"failure_modes\":[\"code_started_before_spec_or_plan\",\"implementation_plan_missing_architecture_contracts_or_tests\",\"tasks_not_traceable_to_plan_or_success_criteria\",\"verification_not_mapped_to_spec_requirements\",\"workflow_requires_vendor_specific_commands_when_plain_markdown_would_work\"],\"evidence_priority\":\"equal\"}"
   portability: "{\"readiness\":\"scripted\",\"targets\":[\"skill-md\"]}"
   lifecycle: "{\"stale_after_days\":90,\"review_cadence\":\"quarterly\"}"
-  structural_verdict: UNVERIFIED
+  structural_verdict: PASS
   truth_verdict: UNVERIFIED
   comprehension_verdict: UNVERIFIED
   application_verdict: UNVERIFIED
+  last_audited: "2026-05-28"
+  lint_verdict: PASS
   skill_graph_source_repo: "https://github.com/jacob-balslev/skill-graph"
   skill_graph_project: Skill Graph
   skill_graph_canonical_skill: skills/code-engineering/spec-driven-development/SKILL.md

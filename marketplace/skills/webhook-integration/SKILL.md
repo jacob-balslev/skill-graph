@@ -7,12 +7,9 @@ allowed-tools: Read Grep Bash Edit
 metadata:
   schema_version: "8"
   version: "1.0.0"
-  type: capability
-  operation: do
-  category: engineering
   subject: product-domain
-  domain: integrations/webhooks
-  scope: portable
+  deployment_target: portable
+  taxonomy_domain: integrations/webhooks
   owner: skill-graph-maintainer
   freshness: "2026-05-06"
   drift_check: "{\"last_verified\":\"2026-05-06\"}"
@@ -26,10 +23,12 @@ metadata:
   relations: "{\"boundary\":[{\"skill\":\"event-contract-design\",\"reason\":\"event-contract-design owns outbound event and webhook contracts; webhook-integration owns inbound third-party handler mechanics\"},{\"skill\":\"debugging\",\"reason\":\"debugging chases an observed handler failure with reproduction; webhook-integration plans the safe handler shape before deployment\"},{\"skill\":\"refactor\",\"reason\":\"refactor is behavior-preserving cleanup; webhook-integration is the contract-enforcement layer that decides what behavior the handler must preserve\"},{\"skill\":\"owasp-security\",\"reason\":\"owasp-security owns the secret-storage and rotation policy; webhook-integration owns the per-request signature-verification mechanics that consume those secrets\"},{\"skill\":\"testing-strategy\",\"reason\":\"testing-strategy decides what deserves a regression test; webhook-integration defines the failure modes (replay, signature mismatch, duplicate delivery) those tests target\"}],\"related\":[\"testing-strategy\",\"debugging\",\"owasp-security\",\"code-review\",\"event-contract-design\"],\"verify_with\":[\"testing-strategy\",\"code-review\"]}"
   portability: "{\"readiness\":\"scripted\",\"targets\":[\"skill-md\"]}"
   lifecycle: "{\"stale_after_days\":90,\"review_cadence\":\"quarterly\"}"
-  structural_verdict: UNVERIFIED
-  truth_verdict: UNVERIFIED
+  structural_verdict: PASS
+  truth_verdict: PASS
   comprehension_verdict: UNVERIFIED
   application_verdict: UNVERIFIED
+  last_audited: "2026-05-28"
+  lint_verdict: PASS
   skill_graph_source_repo: "https://github.com/jacob-balslev/skill-graph"
   skill_graph_project: Skill Graph
   skill_graph_canonical_skill: skills/product-domain/webhook-integration/SKILL.md

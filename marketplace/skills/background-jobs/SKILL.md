@@ -7,12 +7,9 @@ allowed-tools: Read Grep Bash
 metadata:
   schema_version: "7"
   version: "1.1.0"
-  type: capability
-  operation: know
   subject: code-engineering
-  category: engineering
-  domain: engineering/async/background-jobs
-  scope: portable
+  deployment_target: portable
+  taxonomy_domain: engineering/async/background-jobs
   owner: skill-graph-maintainer
   freshness: "2026-05-21"
   drift_check: "{\"last_verified\":\"2026-05-21\"}"
@@ -33,10 +30,12 @@ metadata:
   boundary: "This skill is not schedule design, browser push transport design, event schema design, or incident debugging. It begins after work has been requested and ends with execution state, retry, progress, completion, cancellation, and failure handling."
   analogy: "A background job is a numbered work order in a shop: the front desk accepts the request, the workshop picks it up when capacity exists, and the status board shows where it is."
   misconception: "Putting work in a worker is not enough. Without durable state, idempotency, progress, retry policy, and observability, a background job is just an invisible request handler with a longer timeout."
-  structural_verdict: UNVERIFIED
-  truth_verdict: UNVERIFIED
+  structural_verdict: PASS
+  truth_verdict: PASS
   comprehension_verdict: UNVERIFIED
   application_verdict: UNVERIFIED
+  last_audited: "2026-05-28"
+  lint_verdict: PASS
   skill_graph_source_repo: "https://github.com/jacob-balslev/skill-graph"
   skill_graph_project: Skill Graph
   skill_graph_canonical_skill: skills/code-engineering/background-jobs/SKILL.md

@@ -7,12 +7,9 @@ allowed-tools: Read Grep
 metadata:
   schema_version: "8"
   version: "1.0.0"
-  type: router
-  operation: decide
-  category: foundations
   subject: meta-methods
-  domain: foundations/meta
-  scope: portable
+  deployment_target: portable
+  taxonomy_domain: foundations/meta
   owner: skill-graph-maintainer
   freshness: "2026-05-23"
   drift_check: "{\"last_verified\":\"2026-05-23\"}"
@@ -27,10 +24,12 @@ metadata:
   relations: "{\"boundary\":[{\"skill\":\"first-principles-thinking\",\"reason\":\"first-principles-thinking executes the approach for novel, assumption-heavy problems; problem-approach-router routes to it — the router does not apply the method itself\"},{\"skill\":\"pattern-recognition\",\"reason\":\"pattern-recognition executes the approach for recurring or familiar problem shapes; problem-approach-router routes to it — the router does not apply the method itself\"},{\"skill\":\"mental-models\",\"reason\":\"mental-models executes the approach for system-understanding and explanation problems; problem-approach-router routes to it — the router does not apply the method itself\"},{\"skill\":\"constraint-awareness\",\"reason\":\"constraint-awareness executes the approach for constraint-dominated problems; problem-approach-router routes to it — the router does not apply the method itself\"},{\"skill\":\"task-analysis\",\"reason\":\"task-analysis executes the approach for workflow and user-goal decomposition problems; problem-approach-router routes to it — the router does not apply the method itself\"}],\"related\":[\"epistemic-grounding\",\"taxonomy-design\"]}"
   portability: "{\"readiness\":\"scripted\",\"targets\":[\"skill-md\"]}"
   lifecycle: "{\"stale_after_days\":365,\"review_cadence\":\"quarterly\"}"
-  structural_verdict: UNVERIFIED
-  truth_verdict: UNVERIFIED
+  structural_verdict: PASS
+  truth_verdict: PASS
   comprehension_verdict: UNVERIFIED
   application_verdict: UNVERIFIED
+  last_audited: "2026-05-28"
+  lint_verdict: PASS
   skill_graph_source_repo: "https://github.com/jacob-balslev/skill-graph"
   skill_graph_project: Skill Graph
   skill_graph_canonical_skill: skills/meta-methods/problem-approach-router/SKILL.md

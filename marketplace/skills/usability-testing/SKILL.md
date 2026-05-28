@@ -5,11 +5,8 @@ license: CC-BY-4.0
 metadata:
   schema_version: "8"
   version: "1.0.0"
-  type: capability
-  operation: do
-  category: design
   subject: design-craft
-  scope: portable
+  deployment_target: portable
   owner: skill-graph-maintainer
   freshness: "2026-05-12"
   drift_check: "{\"last_verified\":\"2026-05-12\"}"
@@ -22,10 +19,12 @@ metadata:
   examples: "[\"Write three task scenarios for a usability test of this onboarding flow.\",\"How many participants do I need for a formative round on this prototype?\",\"Review my moderator script for neutrality and leading prompts.\",\"Rate the severity of these eight usability findings using Nielsen's scale.\"]"
   anti_examples: "[\"Add unit tests for the order-total calculation function.\",\"Set up the CI pipeline for the new repo.\",\"Run a load test against the checkout API.\"]"
   relations: "{\"related\":[\"prototyping\",\"user-research\",\"research-synthesis\",\"design-thinking\"],\"boundary\":[{\"skill\":\"testing-strategy\",\"reason\":\"testing-strategy is an engineering practice for automated test suites that verify code behavior against specifications. usability-testing is a research practice for observing humans interacting with artifacts. The shared word 'testing' is the only thing in common.\"},{\"skill\":\"a11y\",\"reason\":\"a11y covers accessibility conformance criteria (WCAG, screen reader behavior, keyboard operability). usability-testing can include accessibility-focused sessions but its scope is broader and its method is empirical observation rather than spec conformance.\"}]}"
-  structural_verdict: UNVERIFIED
-  truth_verdict: UNVERIFIED
+  structural_verdict: PASS
+  truth_verdict: PASS
   comprehension_verdict: UNVERIFIED
   application_verdict: UNVERIFIED
+  last_audited: "2026-05-28"
+  lint_verdict: PASS
   skill_graph_source_repo: "https://github.com/jacob-balslev/skill-graph"
   skill_graph_project: Skill Graph
   skill_graph_canonical_skill: skills/design-craft/usability-testing/SKILL.md

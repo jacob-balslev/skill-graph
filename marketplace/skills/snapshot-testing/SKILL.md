@@ -6,12 +6,9 @@ allowed-tools: Read Grep
 metadata:
   schema_version: "8"
   version: "1.0.0"
-  type: capability
-  operation: know
-  category: quality
   subject: quality-assurance
-  domain: quality/testing
-  scope: workspace
+  deployment_target: portable
+  taxonomy_domain: quality/testing
   owner: skill-graph-maintainer
   freshness: "2026-05-16"
   drift_check: "{\"last_verified\":\"2026-05-16\"}"
@@ -31,10 +28,12 @@ metadata:
   analogy: "A snapshot test is to a piece of output what a wedding photograph is to a memory of the day — the photograph does not say what the wedding *should* have looked like, only what it did look like; on the next anniversary, you compare the room to the photograph and notice 'the curtains are different' (intentional — they were replaced) or 'the picture is crooked' (unintentional — fix it). A photograph filed away without anyone ever looking at it again is not a record; it is paper. A snapshot file the team auto-accepts via `-u` is the same."
   misconception: "|"
   concept: "{\"definition\":\"Snapshot testing is a tactical testing technique in which the output of a system under test is captured on a known-good run, stored as an artifact (the snapshot), and compared against fresh output on each subsequent test run. A mismatch is the test failure. The snapshot itself is the assertion — there is no hand-written claim about what the output should be; the claim is 'the output should equal what it was last time, until someone deliberately approves a new baseline.' The discipline is in the *approval cycle*: when the output legitimately changes, a human reviews the diff and accepts the new baseline; when the change is unexpected, the test failure surfaces the regression. A snapshot test without disciplined approval review is not a test; it is a record of whatever the output happened to be on the day the snapshot was last updated.\",\"mental_model\":\"|\",\"purpose\":\"|\",\"boundary\":\"|\",\"taxonomy\":\"|\",\"analogy\":\"|\",\"misconception\":\"|\"}"
-  structural_verdict: UNVERIFIED
-  truth_verdict: UNVERIFIED
+  structural_verdict: PASS
+  truth_verdict: PASS
   comprehension_verdict: UNVERIFIED
   application_verdict: UNVERIFIED
+  last_audited: "2026-05-28"
+  lint_verdict: PASS
   skill_graph_source_repo: "https://github.com/jacob-balslev/skill-graph"
   skill_graph_project: Skill Graph
   skill_graph_canonical_skill: skills/quality-assurance/snapshot-testing/SKILL.md

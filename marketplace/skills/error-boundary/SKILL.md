@@ -6,12 +6,9 @@ allowed-tools: Read Grep
 metadata:
   schema_version: "8"
   version: "1.0.0"
-  type: capability
-  operation: do
-  category: engineering
   subject: frontend-ui
-  domain: engineering/frontend
-  scope: workspace
+  deployment_target: portable
+  taxonomy_domain: engineering/frontend
   owner: skill-graph-maintainer
   freshness: "2026-05-16"
   drift_check: "{\"last_verified\":\"2026-05-16\"}"
@@ -31,10 +28,12 @@ metadata:
   analogy: "An error boundary is to React's component tree what a circuit breaker is to a building's electrical system — when a fault occurs in one circuit, the breaker for THAT circuit trips, isolating the fault so the rest of the building keeps running, while sub-panels still healthy on other circuits keep lights and outlets working. A single master breaker would protect against fault propagation but at the cost of darkening everything; the right granularity is one breaker per useful zone."
   misconception: "|"
   concept: "{\"definition\":\"An error boundary is a React component that catches JavaScript errors thrown anywhere in its descendant tree during rendering, in lifecycle methods, and in constructors — and renders a fallback UI instead of unmounting the broken subtree to the root. As of React 19 it must still be implemented as a class component using getDerivedStateFromError and/or componentDidCatch; function components cannot themselves be error boundaries (they can render one and provide its fallback). React's design choice: failure in a subtree should not require crashing the whole tree, but the boundary itself must be a stable component above the failure point.\",\"mental_model\":\"|\",\"purpose\":\"|\",\"boundary\":\"|\",\"taxonomy\":\"|\",\"analogy\":\"|\",\"misconception\":\"|\"}"
-  structural_verdict: UNVERIFIED
-  truth_verdict: UNVERIFIED
+  structural_verdict: PASS
+  truth_verdict: PASS
   comprehension_verdict: UNVERIFIED
   application_verdict: UNVERIFIED
+  last_audited: "2026-05-28"
+  lint_verdict: PASS
   skill_graph_source_repo: "https://github.com/jacob-balslev/skill-graph"
   skill_graph_project: Skill Graph
   skill_graph_canonical_skill: skills/frontend-ui/error-boundary/SKILL.md

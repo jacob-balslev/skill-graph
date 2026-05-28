@@ -6,12 +6,9 @@ allowed-tools: Read Grep
 metadata:
   schema_version: "8"
   version: "1.0.0"
-  type: capability
-  operation: do
-  category: foundations
   subject: meta-methods
-  domain: foundations/epistemics
-  scope: workspace
+  deployment_target: portable
+  taxonomy_domain: foundations/epistemics
   owner: skill-graph-maintainer
   freshness: "2026-05-15"
   drift_check: "{\"last_verified\":\"2026-05-15\"}"
@@ -31,10 +28,12 @@ metadata:
   analogy: "Epistemic grounding is to claims what double-entry bookkeeping is to financial transactions — every assertion has a corresponding source on the other side of the ledger, and any entry without its pair is a red flag in the audit."
   misconception: "|"
   concept: "{\"definition\":\"Epistemic grounding is the discipline of binding every assertion to a verifiable source, marking the modality (strength) of the claim, and making the warrant (the inference from source to claim) explicit. It is the practice that turns a generated statement into a defended statement.\",\"mental_model\":\"|\",\"purpose\":\"|\",\"boundary\":\"|\",\"taxonomy\":\"|\",\"analogy\":\"|\",\"misconception\":\"|\"}"
-  structural_verdict: UNVERIFIED
-  truth_verdict: UNVERIFIED
+  structural_verdict: PASS
+  truth_verdict: PASS
   comprehension_verdict: UNVERIFIED
   application_verdict: UNVERIFIED
+  last_audited: "2026-05-28"
+  lint_verdict: PASS
   skill_graph_source_repo: "https://github.com/jacob-balslev/skill-graph"
   skill_graph_project: Skill Graph
   skill_graph_canonical_skill: skills/meta-methods/epistemic-grounding/SKILL.md

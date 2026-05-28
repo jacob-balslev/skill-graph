@@ -7,12 +7,9 @@ allowed-tools: Read Grep
 metadata:
   schema_version: "8"
   version: "1.1.0"
-  type: capability
-  operation: know
-  category: engineering
   subject: code-engineering
-  domain: engineering/debugging
-  scope: portable
+  deployment_target: portable
+  taxonomy_domain: engineering/debugging
   owner: skill-graph-maintainer
   freshness: "2026-05-18"
   drift_check: "{\"last_verified\":\"2026-05-18\"}"
@@ -24,13 +21,15 @@ metadata:
   examples: "[\"the agent has been chasing this bug for 30 minutes — what's the structural fix?\",\"the symptoms span data integrity and UI rendering — which is the root cause?\",\"the build fails locally but passes in CI — how do I diagnose that class first?\",\"I have a stack trace and an unhandled exception — what's the cheapest technique?\",\"intermittent failure that doesn't reproduce on retry — which class is this?\",\"we ran profiling, instrumentation, and bisect — none converge. What did we misclassify?\",\"two engineers disagree on whether this is a config issue or a logic error — what evidence settles it?\"]"
   anti_examples: "[\"actually execute scientific-method debugging on this stack trace\",\"review this AI-generated PR for correctness\",\"scan this repo for OWASP top 10 vulnerabilities\",\"design observability instrumentation for this service\",\"decide which agent should pick up this ticket\",\"what's the right test pyramid for this feature\"]"
   relations: "{\"boundary\":[{\"skill\":\"debugging\",\"reason\":\"debugging is the *execution* phase (run a chosen technique against an already-classified failure); diagnosis is the *triage* phase before debugging — classify first, then debug\"},{\"skill\":\"code-review\",\"reason\":\"code-review evaluates code for quality / correctness in advance; diagnosis investigates an already-broken behavior\"},{\"skill\":\"owasp-security\",\"reason\":\"owasp-security is a domain-specific scan against a known threat list; diagnosis is the cross-domain triage that routes to security investigation only when symptoms point there\"},{\"skill\":\"testing-strategy\",\"reason\":\"testing-strategy decides what to test proactively; diagnosis decides how to investigate after a test (or production) has revealed a failure\"}],\"related\":[\"debugging\",\"error-tracking\",\"code-review\"],\"verify_with\":[\"debugging\"]}"
-  grounding: "{\"domain_object\":\"Portable software-failure diagnostic triage: evidence collection, symptom classification, technique selection, confidence tracking, escalation, and sensitive diagnostic evidence handling\",\"grounding_mode\":\"universal\",\"truth_sources\":[\"https://sre.google/sre-book/effective-troubleshooting/\",\"https://git-scm.com/docs/git-bisect\",\"https://stackoverflow.com/help/minimal-reproducible-example\",\"https://developer.chrome.com/docs/devtools/performance/overview\",\"https://www.postgresql.org/docs/current/sql-explain.html\",\"https://cheatsheetseries.owasp.org/cheatsheets/Logging_Cheat_Sheet.html\",\"https://opentelemetry.io/docs/security/handling-sensitive-data/\"],\"failure_modes\":[\"fixing_before_classification\",\"hypothesis_without_baseline_evidence\",\"wrong_technique_for_problem_class\",\"confidence_inflation_without_verification\",\"stuck_state_not_escalated_or_reclassified\",\"diagnostic_evidence_captures_sensitive_or_secret_data\",\"eval_or_routing_claim_inflated_without_run\"],\"evidence_priority\":\"equal\"}"
+  grounding: "{\"subject_matter\":\"Portable software-failure diagnostic triage: evidence collection, symptom classification, technique selection, confidence tracking, escalation, and sensitive diagnostic evidence handling\",\"grounding_mode\":\"universal\",\"truth_sources\":[\"https://sre.google/sre-book/effective-troubleshooting/\",\"https://git-scm.com/docs/git-bisect\",\"https://stackoverflow.com/help/minimal-reproducible-example\",\"https://developer.chrome.com/docs/devtools/performance/overview\",\"https://www.postgresql.org/docs/current/sql-explain.html\",\"https://cheatsheetseries.owasp.org/cheatsheets/Logging_Cheat_Sheet.html\",\"https://opentelemetry.io/docs/security/handling-sensitive-data/\"],\"failure_modes\":[\"fixing_before_classification\",\"hypothesis_without_baseline_evidence\",\"wrong_technique_for_problem_class\",\"confidence_inflation_without_verification\",\"stuck_state_not_escalated_or_reclassified\",\"diagnostic_evidence_captures_sensitive_or_secret_data\",\"eval_or_routing_claim_inflated_without_run\"],\"evidence_priority\":\"equal\"}"
   portability: "{\"readiness\":\"scripted\",\"targets\":[\"skill-md\"]}"
   lifecycle: "{\"stale_after_days\":365,\"review_cadence\":\"quarterly\"}"
-  structural_verdict: UNVERIFIED
+  structural_verdict: PASS
   truth_verdict: UNVERIFIED
   comprehension_verdict: UNVERIFIED
   application_verdict: UNVERIFIED
+  last_audited: "2026-05-28"
+  lint_verdict: PASS
   skill_graph_source_repo: "https://github.com/jacob-balslev/skill-graph"
   skill_graph_project: Skill Graph
   skill_graph_canonical_skill: skills/code-engineering/diagnosis/SKILL.md

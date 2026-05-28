@@ -7,12 +7,9 @@ allowed-tools: Read Grep Bash Edit
 metadata:
   schema_version: "8"
   version: "1.1.0"
-  type: capability
-  operation: know
-  category: agent
   subject: agent-ops
-  domain: agent/context
-  scope: portable
+  deployment_target: portable
+  taxonomy_domain: agent/context
   owner: skill-graph-maintainer
   freshness: "2026-05-18"
   drift_check: "{\"last_verified\":\"2026-05-18\"}"
@@ -25,7 +22,7 @@ metadata:
   examples: "[\"the agent ignored the instruction and used the wrong query helper — was the right skill loaded?\",\"we keep getting generic answers from the agent even though the skill has the answer — what's wrong?\",\"I want to design which skills get injected for which prompts — where do I start?\",\"the agent's quality drops in long sessions — when should I compact?\",\"diagnose this agent failure: it had the file open but produced wrong output anyway\",\"we have 200 skills and the agent picks the wrong ones — fix the injection\",\"should I read this 5K-line file directly or delegate to a subagent?\",\"audit our context pipeline — what's loaded when, and is any of it stale?\"]"
   anti_examples: "[\"improve this prompt's wording to get better outputs\",\"scaffold a new SKILL.md for our team's deploy procedure\",\"the router picked the wrong skill for this query — debug it\",\"review this AI-generated PR for correctness\",\"write a doc explaining our agent system to a new joiner\",\"investigate why production crashed at 3am\"]"
   relations: "{\"boundary\":[{\"skill\":\"prompt-craft\",\"reason\":\"prompt-craft writes the wording of one instruction; context-engineering shapes the entire surrounding payload (rules, memory, skills, file reads) that the prompt sits inside\"},{\"skill\":\"skill-scaffold\",\"reason\":\"skill-scaffold authors the structure of a single SKILL.md file; context-engineering decides which skills should exist, get loaded, and reach the model in the first place\"},{\"skill\":\"skill-router\",\"reason\":\"skill-router is the runtime mechanism that selects skills for a query; context-engineering is the design discipline behind the entire context stack the router operates within\"}],\"related\":[\"prompt-craft\",\"skill-router\"],\"verify_with\":[\"code-review\"]}"
-  grounding: "{\"domain_object\":\"Context engineering for LLM agents\",\"grounding_mode\":\"hybrid\",\"truth_sources\":[\"https://www.anthropic.com/engineering/effective-context-engineering-for-ai-agents\",\"https://platform.claude.com/docs/en/build-with-claude/context-windows\",\"https://platform.claude.com/cookbook/tool-use-context-engineering-context-engineering-tools\",\"https://www.ibm.com/think/topics/context-engineering\",\"https://arxiv.org/abs/2510.26493\"],\"failure_modes\":[\"context_window_treated_as_unlimited\",\"prompt_wording_treated_as_context_design\",\"retrieval_dump_replaces_selection\",\"tool_results_accumulate_without_clearing\",\"stale_memory_overrides_current_evidence\"],\"evidence_priority\":\"equal\"}"
+  grounding: "{\"subject_matter\":\"Context engineering for LLM agents\",\"grounding_mode\":\"hybrid\",\"truth_sources\":[\"https://www.anthropic.com/engineering/effective-context-engineering-for-ai-agents\",\"https://platform.claude.com/docs/en/build-with-claude/context-windows\",\"https://platform.claude.com/cookbook/tool-use-context-engineering-context-engineering-tools\",\"https://www.ibm.com/think/topics/context-engineering\",\"https://arxiv.org/abs/2510.26493\"],\"failure_modes\":[\"context_window_treated_as_unlimited\",\"prompt_wording_treated_as_context_design\",\"retrieval_dump_replaces_selection\",\"tool_results_accumulate_without_clearing\",\"stale_memory_overrides_current_evidence\"],\"evidence_priority\":\"equal\"}"
   portability: "{\"readiness\":\"scripted\",\"targets\":[\"skill-md\"]}"
   lifecycle: "{\"stale_after_days\":90,\"review_cadence\":\"quarterly\"}"
   mental_model: "Context engineering is the discipline of compiling the smallest sufficient, highest-signal working set for an LLM at each step: instructions, memory, retrieved facts, tool outputs, examples, conversation history, and task metadata. The primitives are selection, structure, sequencing, compaction, freshness, provenance, and isolation. More context is not automatically better; every token either supports the next decision or competes with the signal the model should attend to."
@@ -34,10 +31,12 @@ metadata:
   analogy: "Context engineering is like packing a surgical tray: success depends less on owning every possible instrument and more on putting the right clean tools in the right order before the operation starts."
   misconception: "The common mistake is treating context engineering as prompt stuffing: retrieve everything, paste every rule, keep every tool result, and hope the model sorts it out. That creates context pollution. Good context engineering is selective, source-aware, time-aware, and willing to remove information once it no longer helps."
   concept: "{\"definition\":\"Context engineering is the practice of designing and maintaining the information environment an LLM sees at inference time so the model receives the right instructions, memory, retrieved knowledge, tool outputs, examples, and task state in usable form.\",\"mental_model\":\"Treat each model call as a context compile step. The compile output should be sufficient for the next decision, small enough to preserve attention, fresh enough to be trusted, and structured enough for the model to distinguish rules from evidence and current facts from historical notes.\",\"purpose\":\"It prevents agent failures caused by missing, stale, wrong, or overwhelming context, and gives teams a diagnostic vocabulary for fixing the context pipeline rather than blaming the model or endlessly polishing prompt wording.\",\"boundary\":\"It is not prompt wording, single-skill authoring, per-query routing, generic code review, or runtime incident debugging. It owns the information payload surrounding those surfaces: selection, structure, sequencing, memory, retrieval, compaction, delegation, and tool-result lifecycle.\",\"taxonomy\":\"Core levers include context selection, context structuring, context sequencing, context compression, memory integration, retrieval strategy, tool-result clearing, provenance tracking, and subagent isolation.\",\"analogy\":\"Context engineering is like packing a surgical tray: success depends less on owning every possible instrument and more on putting the right clean tools in the right order before the operation starts.\",\"misconception\":\"More context is not automatically safer. Prompt stuffing, broad retrieval dumps, stale memory, and unbounded tool transcripts can make an agent less reliable by drowning the useful signal.\"}"
-  structural_verdict: UNVERIFIED
+  structural_verdict: PASS
   truth_verdict: UNVERIFIED
   comprehension_verdict: UNVERIFIED
   application_verdict: UNVERIFIED
+  last_audited: "2026-05-28"
+  lint_verdict: PASS
   skill_graph_source_repo: "https://github.com/jacob-balslev/skill-graph"
   skill_graph_project: Skill Graph
   skill_graph_canonical_skill: skills/agent-ops/context-engineering/SKILL.md

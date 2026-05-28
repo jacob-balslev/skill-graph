@@ -7,12 +7,9 @@ allowed-tools: Read Grep
 metadata:
   schema_version: "8"
   version: "1.0.0"
-  type: capability
-  operation: do
-  category: engineering
   subject: code-engineering
-  domain: data/modeling
-  scope: portable
+  deployment_target: portable
+  taxonomy_domain: data/modeling
   owner: skill-graph-maintainer
   freshness: "2026-05-11"
   drift_check: "{\"last_verified\":\"2026-05-11\"}"
@@ -26,10 +23,12 @@ metadata:
   relations: "{\"boundary\":[{\"skill\":\"conceptual-modeling\",\"reason\":\"conceptual-modeling is implementation-neutral; data-modeling adds logical and physical data constraints\"},{\"skill\":\"database-migration\",\"reason\":\"database-migration changes an existing database; data-modeling decides the schema shape before migration\"},{\"skill\":\"ontology-modeling\",\"reason\":\"ontology-modeling formalizes meaning; data-modeling structures persisted data\"},{\"skill\":\"api-design\",\"reason\":\"api-design exposes resources and operations; data-modeling stores and constrains underlying data\"}],\"related\":[\"conceptual-modeling\",\"database-migration\",\"api-design\",\"state-machine-modeling\",\"entity-relationship-modeling\"],\"depends_on\":[\"conceptual-modeling\"],\"verify_with\":[\"database-migration\",\"testing-strategy\"]}"
   portability: "{\"readiness\":\"scripted\",\"targets\":[\"skill-md\"]}"
   lifecycle: "{\"stale_after_days\":365,\"review_cadence\":\"quarterly\"}"
-  structural_verdict: UNVERIFIED
-  truth_verdict: UNVERIFIED
+  structural_verdict: PASS
+  truth_verdict: PASS
   comprehension_verdict: UNVERIFIED
   application_verdict: UNVERIFIED
+  last_audited: "2026-05-28"
+  lint_verdict: PASS
   skill_graph_source_repo: "https://github.com/jacob-balslev/skill-graph"
   skill_graph_project: Skill Graph
   skill_graph_canonical_skill: skills/code-engineering/data-modeling/SKILL.md

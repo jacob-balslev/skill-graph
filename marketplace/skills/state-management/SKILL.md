@@ -6,12 +6,9 @@ allowed-tools: Read Grep
 metadata:
   schema_version: "8"
   version: "1.0.0"
-  type: capability
-  operation: know
-  category: engineering
   subject: frontend-ui
-  domain: engineering/frontend
-  scope: workspace
+  deployment_target: portable
+  taxonomy_domain: engineering/frontend
   owner: skill-graph-maintainer
   freshness: "2026-05-16"
   drift_check: "{\"last_verified\":\"2026-05-16\"}"
@@ -31,10 +28,12 @@ metadata:
   analogy: "State management is to a frontend application what addressing is to a postal system — you do not ask 'should this letter exist?', you ask 'where does it live?', and the right destination depends entirely on the letter's kind: a registered package (server data with provable delivery), a postcard (URL state, public on the back), a private letter (client UI state, inside an envelope), a deed (persistent state, kept in the safe). One mailbox for everything produces predictable failures."
   misconception: "|"
   concept: "{\"definition\":\"State management is the architectural discipline of deciding, for each distinct piece of data that an application reads or writes, where that data lives, who owns it, how it propagates to the components that need it, and how it stays consistent across changes. The discipline is upstream of any specific state library: it asks 'should this be local, lifted, global, server-cached, URL-encoded, or persisted' before asking 'which library do I use to hold it.' State is not a single thing; it is a category with at least four distinct kinds (server state, client UI state, URL state, persistent state), each with different lifetimes, invalidation rules, and consistency requirements. The discipline is the recognition that treating all state the same — putting all of it in one global store, or scattering it across every component — produces the recurring frontend problems of prop drilling, stale data, broken back-buttons, and tests that pass while users are confused.\",\"mental_model\":\"|\",\"purpose\":\"|\",\"boundary\":\"|\",\"taxonomy\":\"|\",\"analogy\":\"|\",\"misconception\":\"|\"}"
-  structural_verdict: UNVERIFIED
-  truth_verdict: UNVERIFIED
+  structural_verdict: PASS
+  truth_verdict: PASS
   comprehension_verdict: UNVERIFIED
   application_verdict: UNVERIFIED
+  last_audited: "2026-05-28"
+  lint_verdict: PASS
   skill_graph_source_repo: "https://github.com/jacob-balslev/skill-graph"
   skill_graph_project: Skill Graph
   skill_graph_canonical_skill: skills/frontend-ui/state-management/SKILL.md

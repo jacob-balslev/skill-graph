@@ -7,12 +7,9 @@ allowed-tools: Read Grep Bash
 metadata:
   schema_version: "8"
   version: "1.1.0"
-  type: capability
-  operation: do
-  category: quality
   subject: quality-assurance
-  domain: quality/method
-  scope: workspace
+  deployment_target: portable
+  taxonomy_domain: quality/method
   owner: skill-graph-maintainer
   freshness: "2026-05-18"
   drift_check: "{\"last_verified\":\"2026-05-18\"}"
@@ -25,13 +22,15 @@ metadata:
   examples: "[\"design a verification protocol for this multi-step agent workflow before implementation starts\",\"turn these recurring agent failure modes into a checklist and hard quality gate\",\"explain why this process step exists instead of just telling the agent to follow it\",\"choose whether this task needs PDCA, DMAIC, hypothesis-driven development, or V&V-style traceability\",\"build a methodology-backed plan for preventing defects earlier in this skill audit loop\",\"convert a vague done checklist into binary gates with evidence receipts\"]"
   anti_examples: "[\"review this PR and decide whether to approve it\",\"refactor this file while preserving behavior\",\"decide unit vs integration vs e2e coverage for this feature\",\"write the eval cases and grader rubric for this router\",\"block this dangerous git command or secret-bearing tool call\"]"
   relations: "{\"boundary\":[{\"skill\":\"code-review\",\"reason\":\"code-review evaluates a concrete diff or PR; methodology designs the process and gates that make rigorous execution possible before a diff exists\"},{\"skill\":\"refactor\",\"reason\":\"refactor changes code structure while preserving behavior; methodology defines why and when a process should contain gates, traces, and feedback loops\"},{\"skill\":\"testing-strategy\",\"reason\":\"testing-strategy decides what software behavior deserves tests and at which level; methodology defines the broader quality-management frame behind verification gates\"},{\"skill\":\"agent-eval-design\",\"reason\":\"agent-eval-design authors agent eval cases, rubrics, and graders; methodology provides the process principles behind evidence-driven agent quality loops\"},{\"skill\":\"guardrails\",\"reason\":\"guardrails blocks or escalates high-risk tool actions at execution time; methodology designs the preventive process and checklist discipline around work\"}],\"related\":[\"best-practice\",\"agent-eval-design\",\"guardrails\",\"testing-strategy\",\"code-review\"],\"verify_with\":[\"best-practice\",\"agent-eval-design\"]}"
-  grounding: "{\"domain_object\":\"Reference methodology for rigorous agent work: methodology-method-process layering, defect prevention, PSP/TSP measurement, hypothesis-driven development, DMAIC/PDCA, checklist design, V&V, and evaluation-driven LLM agent operations\",\"grounding_mode\":\"universal\",\"truth_sources\":[\"https://voljournals.utk.edu/utk_harlan/18/\",\"https://www.sei.cmu.edu/library/the-team-software-process-tsp/\",\"https://www.sei.cmu.edu/library/team-software-process-tsp-and-personal-software-process-psp-materials/\",\"https://asq.org/Quality-resources/Dmaic\",\"https://asq.org/quality-resources/pdca-cycle\",\"https://www.who.int/publications/i/item/9789241598590\",\"https://www.nasa.gov/ivv-overview/\",\"https://www.nasa.gov/reference/system-engineering-handbook-appendix/\",\"https://barryoreilly.com/explore/blog/how-to-implement-hypothesis-driven-development/\",\"https://arxiv.org/abs/2411.13768\"],\"failure_modes\":[\"process_steps_followed_without_underlying_methodology\",\"quality_gate_treated_as_advisory\",\"verification_claim_without_evidence_receipt\",\"checklist_not_calibrated_to_known_failure_modes\",\"exact_cost_or_success_claim_made_without_source_or_eval\",\"non_public_neighbor_skill_used_as_public_boundary\",\"eval_or_routing_state_inflated_without_run\"],\"evidence_priority\":\"equal\"}"
+  grounding: "{\"subject_matter\":\"Reference methodology for rigorous agent work: methodology-method-process layering, defect prevention, PSP/TSP measurement, hypothesis-driven development, DMAIC/PDCA, checklist design, V&V, and evaluation-driven LLM agent operations\",\"grounding_mode\":\"universal\",\"truth_sources\":[\"https://voljournals.utk.edu/utk_harlan/18/\",\"https://www.sei.cmu.edu/library/the-team-software-process-tsp/\",\"https://www.sei.cmu.edu/library/team-software-process-tsp-and-personal-software-process-psp-materials/\",\"https://asq.org/Quality-resources/Dmaic\",\"https://asq.org/quality-resources/pdca-cycle\",\"https://www.who.int/publications/i/item/9789241598590\",\"https://www.nasa.gov/ivv-overview/\",\"https://www.nasa.gov/reference/system-engineering-handbook-appendix/\",\"https://barryoreilly.com/explore/blog/how-to-implement-hypothesis-driven-development/\",\"https://arxiv.org/abs/2411.13768\"],\"failure_modes\":[\"process_steps_followed_without_underlying_methodology\",\"quality_gate_treated_as_advisory\",\"verification_claim_without_evidence_receipt\",\"checklist_not_calibrated_to_known_failure_modes\",\"exact_cost_or_success_claim_made_without_source_or_eval\",\"non_public_neighbor_skill_used_as_public_boundary\",\"eval_or_routing_state_inflated_without_run\"],\"evidence_priority\":\"equal\"}"
   portability: "{\"readiness\":\"scripted\",\"targets\":[\"skill-md\"]}"
   lifecycle: "{\"stale_after_days\":90,\"review_cadence\":\"quarterly\"}"
-  structural_verdict: UNVERIFIED
+  structural_verdict: PASS
   truth_verdict: UNVERIFIED
   comprehension_verdict: UNVERIFIED
   application_verdict: UNVERIFIED
+  last_audited: "2026-05-28"
+  lint_verdict: PASS
   skill_graph_source_repo: "https://github.com/jacob-balslev/skill-graph"
   skill_graph_project: Skill Graph
   skill_graph_canonical_skill: skills/quality-assurance/methodology/SKILL.md

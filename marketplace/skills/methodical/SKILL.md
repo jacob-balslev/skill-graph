@@ -3,12 +3,9 @@ name: methodical
 description: "Enforces disciplined, complete, step-by-step execution that prevents the LLM failure modes of scope reduction, finding filtering, step skipping, assumed verification, and sycophantic output compression. Provides the explanatory model for WHY agents fail at completeness (RLHF training rewards shorter, cleaner, more positive outputs — 58% sycophancy rate measured in frontier models) and the structural countermeasures: pre-task declarations, step-level evidence receipts, generation/criticism separation, explicit completeness claims, and anti-pattern detection. Use when executing audits, producing reports, creating Linear tasks from findings, verifying acceptance criteria, or any task where completeness and honesty matter more than brevity. Do NOT use for task workflow sequencing (use task-execution), quality definitions per artifact type (use quality-doctrine), or the generate-critique-revise loop mechanics (use self-review-pattern)."
 metadata:
   schema_version: "7"
-  type: capability
-  operation: do
-  category: foundations
   subject: meta-methods
+  deployment_target: portable
   version: "1.0.0"
-  scope: workspace
   triggers: "[\"methodical-skill\",\"completeness-skill\"]"
   keywords: "[\"methodical\",\"completeness\",\"no filtering\",\"all findings\",\"step by step\",\"evidence receipt\",\"scope reduction\",\"sycophancy\",\"intellectual honesty\",\"no skipping\"]"
   owner: claude
@@ -17,12 +14,9 @@ metadata:
   eval_state: unverified
   routing_eval: absent
   drift_check: "{\"last_verified\":\"2026-04-01\"}"
-  primaryCategory: Meta Method
-  layerPrimary: quality
-  routingRole: primary
   lint_verdict: PASS
   drift_status: OK
-  last_audited: "2026-05-22"
+  last_audited: "2026-05-28"
   relations: "{\"adjacent\":[\"self-review-pattern\",\"editorial-standards\",\"methodology\",\"quality-doctrine\",\"self-evaluation\"],\"boundary\":[\"task-execution\",\"summarization\",\"context-management\"],\"verify_with\":[\"self-evaluation\",\"quality-doctrine\",\"agent-governance\"]}"
   comprehension_state: present
   mental_model: "LLMs are naturally sycophantic, lazy, and eager to summarize away complexity due to RLHF training. This skill provides the rigid System 2 scaffolding—checklists, evidence receipts, and separation of generation from critique—to force honest, exhaustive execution."

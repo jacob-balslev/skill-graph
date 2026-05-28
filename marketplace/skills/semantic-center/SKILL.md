@@ -5,16 +5,13 @@ license: MIT
 compatibility: "Domain-agnostic explanation method. The five-step workflow, primary-part tests, and typed-relation taxonomy apply to systems, features, modules, workflows, concepts, decisions, or problems in any stack — substitute the relevant domain vocabulary for the structural skeleton."
 allowed-tools: Read Grep
 metadata:
-  grounding: "{\"domain_object\":\"Semantic-center analysis for explaining one unit of analysis through a single load-bearing part plus typed supporting relations\",\"grounding_mode\":\"universal\",\"truth_sources\":[\"https://networkx.org/documentation/stable/reference/algorithms/centrality.html\",\"https://www.w3.org/TR/skos-reference/\",\"https://www.barbaraminto.com/\"],\"failure_modes\":[\"everything_is_important_flattening\",\"visibility_recency_or_sequence_mistaken_for_structural_importance\",\"relation_map_uses_proximity_or_chronology_without_a_stronger_relation\",\"multiple_primary_parts_hidden_as_parallel_key_points\",\"semantic_center_analysis_overowns_task_prioritization_formal_modeling_or_implementation\"],\"evidence_priority\":\"equal\"}"
+  grounding: "{\"subject_matter\":\"Semantic-center analysis for explaining one unit of analysis through a single load-bearing part plus typed supporting relations\",\"grounding_mode\":\"universal\",\"truth_sources\":[\"https://networkx.org/documentation/stable/reference/algorithms/centrality.html\",\"https://www.w3.org/TR/skos-reference/\",\"https://www.barbaraminto.com/\"],\"failure_modes\":[\"everything_is_important_flattening\",\"visibility_recency_or_sequence_mistaken_for_structural_importance\",\"relation_map_uses_proximity_or_chronology_without_a_stronger_relation\",\"multiple_primary_parts_hidden_as_parallel_key_points\",\"semantic_center_analysis_overowns_task_prioritization_formal_modeling_or_implementation\"],\"evidence_priority\":\"equal\"}"
   drift_check: "{\"last_verified\":\"2026-05-19\"}"
   schema_version: "8"
   version: "1.2.0"
-  type: workflow
-  operation: do
-  category: foundations
   subject: knowledge-organization
-  domain: foundations/semantics
-  scope: portable
+  deployment_target: portable
+  taxonomy_domain: foundations/semantics
   owner: skill-graph-maintainer
   freshness: "2026-05-19"
   eval_artifacts: planned
@@ -34,10 +31,12 @@ metadata:
   analogy: "Semantic-center analysis is like finding the load-bearing column in a room: furniture, paint, wiring, and fixtures all matter, but the explanation becomes useful only after the column that everything else depends on is named."
   misconception: "The common mistake is believing the semantic center is whatever is most visible or most recently discussed. Visibility is a UI fact, recency is a conversation fact, sequence is a timeline fact, and none of them alone proves structural importance."
   concept: "{\"definition\":\"Semantic-center analysis identifies the single load-bearing part of a system, feature, workflow, concept, decision, problem, or page, then maps all secondary parts by typed relations to that primary part.\",\"mental_model\":\"Treat the unit as a graph of parts. Choose one primary node using removal, governance, purpose, weight, or decision tests, then explain every other node by how it supports, constrains, feeds, depends on, or contrasts with that primary node.\",\"purpose\":\"It prevents flat list explanations and chronology-only walkthroughs by forcing one-primary reduction plus explicit relation mapping.\",\"boundary\":\"It does not implement, prioritize tasks, choose AI models, design formal domain models, perform code review, or replace precise semantic relation typing for one edge.\",\"taxonomy\":\"Workflow steps: classify unit, choose primary part, map secondary parts, produce structured output, reduce to one sentence. Primary-part tests: removal, governance, purpose, weight, decision. Relation families: dependency, input/output, containment, source/consumer, cause/effect, authority, trigger/result, semantic grouping, constraint/enabler, sequence, contrast.\",\"analogy\":\"It is finding the load-bearing column in a room: many visible parts matter, but the explanation becomes useful when the load-bearing part is named.\",\"misconception\":\"The common mistake is treating visibility, recency, sequence, or stakeholder emphasis as proof of centrality. They are signals, not tests.\"}"
-  structural_verdict: UNVERIFIED
+  structural_verdict: PASS
   truth_verdict: UNVERIFIED
   comprehension_verdict: UNVERIFIED
   application_verdict: UNVERIFIED
+  last_audited: "2026-05-28"
+  lint_verdict: PASS
   skill_graph_source_repo: "https://github.com/jacob-balslev/skill-graph"
   skill_graph_project: Skill Graph
   skill_graph_canonical_skill: skills/knowledge-organization/semantic-center/SKILL.md

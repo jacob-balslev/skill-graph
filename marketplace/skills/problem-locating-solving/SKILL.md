@@ -7,12 +7,9 @@ allowed-tools: Read Grep
 metadata:
   schema_version: "8"
   version: "1.0.0"
-  type: workflow
-  operation: do
-  category: engineering
   subject: code-engineering
-  domain: engineering/debugging
-  scope: portable
+  deployment_target: portable
+  taxonomy_domain: engineering/debugging
   owner: skill-graph-maintainer
   freshness: "2026-05-06"
   drift_check: "{\"last_verified\":\"2026-05-06\"}"
@@ -26,10 +23,12 @@ metadata:
   relations: "{\"boundary\":[{\"skill\":\"debugging\",\"reason\":\"debugging is the *execution* of one chosen technique against an already-localized bug; problem-locating-solving is the workflow that produces the localization — same 'I have a bug, what do I do?' prompt routes to debugging when the class is known and to problem-locating-solving when localization is needed first\"},{\"skill\":\"testing-strategy\",\"reason\":\"testing-strategy owns the framework for what tests to write to lock in the absence of a bug class (regression suite design, test pyramid, coverage strategy); problem-locating-solving uses a single verification test as one phase of its locate-to-fix workflow but does not own test design — same 'pin this regression' prompt routes to testing-strategy when the question is what test to write, not how to find the bug\"},{\"skill\":\"code-review\",\"reason\":\"code-review evaluates the quality and correctness of a specific change at PR scope (proactive); problem-locating-solving investigates already-broken behaviour (reactive) — both can apply to 'look at this code,' but the routing differs by whether a failure has already been observed\"},{\"skill\":\"refactor\",\"reason\":\"refactor restructures non-broken code for clarity or maintainability; problem-locating-solving finds and fixes broken code — same 'this code needs change' prompt routes by whether the trigger is a failure (locate) or a quality concern (refactor)\"}],\"related\":[\"pattern-recognition\",\"diagnosis\",\"lint-overlay\"],\"verify_with\":[\"tool-call-strategy\",\"context-graph\",\"skill-infrastructure\"]}"
   portability: "{\"readiness\":\"scripted\",\"targets\":[\"skill-md\"]}"
   lifecycle: "{\"stale_after_days\":365,\"review_cadence\":\"quarterly\"}"
-  structural_verdict: UNVERIFIED
-  truth_verdict: UNVERIFIED
+  structural_verdict: PASS
+  truth_verdict: PASS
   comprehension_verdict: UNVERIFIED
   application_verdict: UNVERIFIED
+  last_audited: "2026-05-28"
+  lint_verdict: PASS
   skill_graph_source_repo: "https://github.com/jacob-balslev/skill-graph"
   skill_graph_project: Skill Graph
   skill_graph_canonical_skill: skills/code-engineering/problem-locating-solving/SKILL.md

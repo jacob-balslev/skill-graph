@@ -7,12 +7,9 @@ allowed-tools: Read Grep
 metadata:
   schema_version: "8"
   version: "1.0.0"
-  type: capability
-  operation: know
-  category: agent
   subject: agent-ops
-  domain: agent/knowledge
-  scope: portable
+  deployment_target: portable
+  taxonomy_domain: agent/knowledge
   owner: skill-graph-maintainer
   freshness: "2026-05-11"
   drift_check: "{\"last_verified\":\"2026-05-13\",\"truth_source_hashes\":{\"docs/PRIMER.md\":\"e6bd99468c224fe4c9606e147c5db94dff889feeb9ca5d80084480039c7e9296\",\"docs/ADOPTION.md\":\"3a75c1a613ac0bdf0b4b56e567d8ec1f35a80252e68595e8d86bb0a5abdf1bfc\",\"docs/recommended-skills.md\":\"5c0201bd76cdc0310bb57ddc88565ffa41f47f3b41f489c0557cb7634ed16379\",\"skills/skill-scaffold/SKILL.md\":\"ea0e988de27bea1bb0868c153b4e6b2739895d180f857339b97202cc287262f7\",\"skills/context-graph/SKILL.md\":\"732a04f09f2f4362ee17a65bee24406715a773aefd78dbcdc37a4cb3a9f287a7\"}}"
@@ -24,13 +21,15 @@ metadata:
   examples: "[\"read this repo and extract the durable domain knowledge an agent should know next time\",\"turn these incident notes into reusable context without copying noise\",\"mine the code and docs for the true source-of-truth files and project vocabulary\",\"convert repeated discoveries from recent tasks into skills, ADRs, or context docs\"]"
   anti_examples: "[\"create a new SKILL.md from the Skill Metadata Protocol template\",\"run the skill library health tooling and overlap detector\",\"rewrite this README to sound better\",\"decide which skill should route for this exact prompt\"]"
   relations: "{\"boundary\":[{\"skill\":\"skill-scaffold\",\"reason\":\"skill-scaffold authors a specific skill contract; project-knowledge-extraction decides what durable knowledge should become a skill, ADR, context doc, or memory\"},{\"skill\":\"skill-infrastructure\",\"reason\":\"skill-infrastructure maintains library tooling; project-knowledge-extraction mines evidence into reusable knowledge artifacts\"},{\"skill\":\"skill-router\",\"reason\":\"skill-router dispatches a prompt to existing skills; project-knowledge-extraction creates or updates the knowledge base the router later uses\"}],\"related\":[\"knowledge-modeling\",\"context-graph\",\"architecture-decision-records\"],\"verify_with\":[\"knowledge-modeling\"]}"
-  grounding: "{\"domain_object\":\"Extracting durable project knowledge into Skill Graph context artifacts\",\"grounding_mode\":\"hybrid\",\"truth_sources\":[\"docs/PRIMER.md\",\"docs/ADOPTION.md\",\"docs/recommended-skills.md\",\"skills/skill-scaffold/SKILL.md\",\"skills/context-graph/SKILL.md\"],\"failure_modes\":[\"session_noise_promoted_to_durable_context\",\"project_claims_without_truth_sources\",\"artifact_type_chosen_before_evidence_is_classified\",\"extracted_knowledge_not_linked_into_graph\"],\"evidence_priority\":\"repo_code_first\"}"
+  grounding: "{\"subject_matter\":\"Extracting durable project knowledge into Skill Graph context artifacts\",\"grounding_mode\":\"hybrid\",\"truth_sources\":[\"docs/PRIMER.md\",\"docs/ADOPTION.md\",\"docs/recommended-skills.md\",\"skills/skill-scaffold/SKILL.md\",\"skills/context-graph/SKILL.md\"],\"failure_modes\":[\"session_noise_promoted_to_durable_context\",\"project_claims_without_truth_sources\",\"artifact_type_chosen_before_evidence_is_classified\",\"extracted_knowledge_not_linked_into_graph\"],\"evidence_priority\":\"repo_code_first\"}"
   portability: "{\"readiness\":\"scripted\",\"targets\":[\"skill-md\"]}"
   lifecycle: "{\"stale_after_days\":365,\"review_cadence\":\"quarterly\"}"
-  structural_verdict: UNVERIFIED
-  truth_verdict: UNVERIFIED
+  structural_verdict: PASS
+  truth_verdict: DRIFT
   comprehension_verdict: UNVERIFIED
   application_verdict: UNVERIFIED
+  last_audited: "2026-05-28"
+  lint_verdict: PASS
   skill_graph_source_repo: "https://github.com/jacob-balslev/skill-graph"
   skill_graph_project: Skill Graph
   skill_graph_canonical_skill: skills/agent-ops/project-knowledge-extraction/SKILL.md

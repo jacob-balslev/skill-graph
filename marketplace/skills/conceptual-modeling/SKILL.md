@@ -5,16 +5,13 @@ license: MIT
 compatibility: "Domain- and language-agnostic. The conceptual / logical / physical ladder applies across relational, document, graph, event-sourced, and service-oriented systems. Examples use generic commerce and education nouns only as public, portable modeling examples."
 allowed-tools: Read Grep
 metadata:
-  grounding: "{\"domain_object\":\"Implementation-neutral conceptual modeling for business domains before logical schema, physical database, ontology, API, or DDD tactical design\",\"grounding_mode\":\"universal\",\"truth_sources\":[\"https://doi.org/10.1145/320434.320440\",\"https://www.omg.org/spec/UML/2.5.1/PDF\",\"https://opentextbc.ca/dbdesign01/chapter/chapter-8-entity-relationship-model/\",\"https://www.ibm.com/think/topics/conceptual-data-model\"],\"failure_modes\":[\"implementation_leakage_turns_conceptual_model_into_physical_schema\",\"unnamed_relationships_hide_business_meaning\",\"cardinality_or_optionality_left_implicit\",\"identity_criteria_missing_for_entities\",\"relationship_with_attributes_not_reified\",\"generalization_claim_lies_about_disjointness_or_totality\",\"stakeholder_validation_skipped\",\"conceptual_model_overowns_ontology_data_modeling_or_ddd_design\"],\"evidence_priority\":\"equal\"}"
+  grounding: "{\"subject_matter\":\"Implementation-neutral conceptual modeling for business domains before logical schema, physical database, ontology, API, or DDD tactical design\",\"grounding_mode\":\"universal\",\"truth_sources\":[\"https://doi.org/10.1145/320434.320440\",\"https://www.omg.org/spec/UML/2.5.1/PDF\",\"https://opentextbc.ca/dbdesign01/chapter/chapter-8-entity-relationship-model/\",\"https://www.ibm.com/think/topics/conceptual-data-model\"],\"failure_modes\":[\"implementation_leakage_turns_conceptual_model_into_physical_schema\",\"unnamed_relationships_hide_business_meaning\",\"cardinality_or_optionality_left_implicit\",\"identity_criteria_missing_for_entities\",\"relationship_with_attributes_not_reified\",\"generalization_claim_lies_about_disjointness_or_totality\",\"stakeholder_validation_skipped\",\"conceptual_model_overowns_ontology_data_modeling_or_ddd_design\"],\"evidence_priority\":\"equal\"}"
   drift_check: "{\"last_verified\":\"2026-05-19\"}"
   schema_version: "8"
   version: "1.1.0"
-  type: capability
-  operation: know
-  category: engineering
   subject: code-engineering
-  domain: engineering/modeling
-  scope: portable
+  deployment_target: portable
+  taxonomy_domain: engineering/modeling
   owner: skill-graph-maintainer
   freshness: "2026-05-19"
   eval_artifacts: planned
@@ -34,10 +31,12 @@ metadata:
   analogy: "Conceptual modeling is the architectural floor plan before engineering drawings: it says what rooms exist, how people move between them, and what must be connected, while leaving materials, wiring, and load calculations to later specialists."
   misconception: "|"
   concept: "{\"definition\":\"Conceptual modeling is the implementation-neutral discipline of representing a domain as entities, attributes, relationships, identity criteria, cardinalities, and abstraction boundaries that stakeholders can validate before technical design begins.\",\"mental_model\":\"Treat the conceptual model as a contract between stakeholder language and later system design. It must preserve business meaning while postponing storage, API, ontology, and DDD implementation choices.\",\"purpose\":\"It exposes hidden domain decisions early: what exists, what makes two things the same, how concepts relate, which relationships carry their own data, and which constraints are business truths rather than technical preferences.\",\"boundary\":\"It does not design physical database schemas, write migrations, define formal ontology axioms, choose aggregate boundaries, perform code review, or settle implementation naming once the model is already accepted.\",\"taxonomy\":\"Core moves include entity discovery, attribute placement, relationship naming, cardinality and optionality analysis, identity criteria, aggregation versus composition, specialization/generalization, reification of relationship concepts, abstraction-level policing, and stakeholder scenario validation.\",\"analogy\":\"It is the architectural floor plan before engineering drawings: useful because it is precise about the lived structure while still independent of materials and machinery.\",\"misconception\":\"A conceptual model is not informal hand-waving and not a premature table diagram. It should be business-readable, constraint-aware, and intentionally implementation-neutral.\"}"
-  structural_verdict: UNVERIFIED
+  structural_verdict: PASS
   truth_verdict: UNVERIFIED
   comprehension_verdict: UNVERIFIED
   application_verdict: UNVERIFIED
+  last_audited: "2026-05-28"
+  lint_verdict: PASS
   skill_graph_source_repo: "https://github.com/jacob-balslev/skill-graph"
   skill_graph_project: Skill Graph
   skill_graph_canonical_skill: skills/code-engineering/conceptual-modeling/SKILL.md

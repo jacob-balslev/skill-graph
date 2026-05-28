@@ -7,11 +7,8 @@ allowed-tools: Read Grep Bash
 metadata:
   schema_version: "8"
   version: "1.0.0"
-  type: capability
-  operation: know
-  category: quality
   subject: quality-assurance
-  scope: portable
+  deployment_target: portable
   owner: skill-graph-maintainer
   freshness: "2026-04-18"
   drift_check: "{\"last_verified\":\"2026-04-18\"}"
@@ -26,10 +23,12 @@ metadata:
   anti_examples: "[\"my existing test is failing — why?\",\"write a testing-patterns guide for the contributor docs\",\"clean up this duplicated test setup across three files\"]"
   relations: "{\"boundary\":[{\"skill\":\"debugging\",\"reason\":\"debugging chases a specific observed failure; testing-strategy decides what to test BEFORE a failure exists\"},{\"skill\":\"refactor\",\"reason\":\"refactor reshapes code (including test setup) while preserving behavior; testing-strategy decides what coverage to author in the first place\"},{\"skill\":\"integration-test-design\",\"reason\":\"integration-test-design owns the design of integration-level tests including their setup and data lifecycle; the 'duplicated test setup across three files' anti_example has token overlap with integration-test setup discipline. testing-strategy decides what level a test should be; integration-test-design owns how to design integration tests once chosen.\"},{\"skill\":\"microcopy\",\"reason\":\"microcopy owns functional UI text and contributor-facing writing; testing-strategy decides what and how to test. Writing a testing-patterns guide for contributor docs is a documentation/writing task owned by microcopy, not a test-scope decision.\"},{\"skill\":\"middleware-patterns\",\"reason\":\"middleware-patterns owns the design of Next.js middleware (request/response transforms, edge runtime, matchers) including writing reference guides about middleware; testing-strategy decides what and how to test. Writing a 'testing-patterns guide' for contributor docs has token overlap with the patterns-guide vocabulary middleware-patterns discusses, not a test-scope decision.\"},{\"skill\":\"performance-engineering\",\"reason\":\"performance-engineering owns load, latency, and SLO-targeted optimization including the regression-on-perf testing discipline; testing-strategy decides what and how to test for correctness. Pinning a correctness regression is a test-coverage decision, not a perf-engineering decision — naming this boundary keeps the routing distinct.\"}],\"verify_with\":[\"debugging\"]}"
   portability: "{\"readiness\":\"scripted\",\"targets\":[\"skill-md\"]}"
-  structural_verdict: UNVERIFIED
-  truth_verdict: UNVERIFIED
+  structural_verdict: PASS
+  truth_verdict: PASS
   comprehension_verdict: UNVERIFIED
   application_verdict: UNVERIFIED
+  last_audited: "2026-05-28"
+  lint_verdict: PASS
   skill_graph_source_repo: "https://github.com/jacob-balslev/skill-graph"
   skill_graph_project: Skill Graph
   skill_graph_canonical_skill: skills/quality-assurance/testing-strategy/SKILL.md

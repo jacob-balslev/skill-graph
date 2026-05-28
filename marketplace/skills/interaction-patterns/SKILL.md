@@ -7,12 +7,9 @@ allowed-tools: Read Grep
 metadata:
   schema_version: "8"
   version: "1.0.0"
-  type: capability
-  operation: know
-  category: design
   subject: design-craft
-  domain: design/interaction
-  scope: portable
+  deployment_target: portable
+  taxonomy_domain: design/interaction
   owner: skill-graph-maintainer
   freshness: "2026-05-11"
   drift_check: "{\"last_verified\":\"2026-05-11\"}"
@@ -26,10 +23,12 @@ metadata:
   relations: "{\"boundary\":[{\"skill\":\"a11y\",\"reason\":\"a11y verifies accessibility semantics and keyboard behavior; interaction-patterns chooses the user-facing pattern before implementation\"},{\"skill\":\"task-analysis\",\"reason\":\"task-analysis identifies what the user is trying to accomplish; interaction-patterns chooses the control pattern that supports it\"},{\"skill\":\"interaction-feedback\",\"reason\":\"interaction-feedback owns feedback states after an action; interaction-patterns owns the primary control and flow shape\"},{\"skill\":\"design-system-architecture\",\"reason\":\"design-system-architecture owns reusable component APIs; interaction-patterns decides which pattern is appropriate for a surface\"},{\"skill\":\"design-module-composition\",\"reason\":\"design-module-composition owns component props, variants, slots, and token contracts; interaction-patterns owns choosing the user-facing control pattern\"},{\"skill\":\"component-architecture\",\"reason\":\"component-architecture owns the component-library layering question (primitives, composites, product-specific) and headless/styled, controlled/uncontrolled splits; interaction-patterns owns choosing the user-facing control pattern before any component is designed\"},{\"skill\":\"spec-driven-development\",\"reason\":\"spec-driven-development owns writing the user goal, top task, or spec BEFORE any design happens; interaction-patterns owns choosing the user-facing control pattern AFTER the task is already defined — not defining the task itself\"}],\"related\":[\"layout-composition\",\"form-ux-architecture\",\"microcopy\",\"semiotics\",\"a11y\"],\"verify_with\":[\"a11y\",\"task-analysis\"]}"
   portability: "{\"readiness\":\"scripted\",\"targets\":[\"skill-md\"]}"
   lifecycle: "{\"stale_after_days\":365,\"review_cadence\":\"quarterly\"}"
-  structural_verdict: UNVERIFIED
-  truth_verdict: UNVERIFIED
+  structural_verdict: PASS
+  truth_verdict: PASS
   comprehension_verdict: UNVERIFIED
   application_verdict: UNVERIFIED
+  last_audited: "2026-05-28"
+  lint_verdict: PASS
   skill_graph_source_repo: "https://github.com/jacob-balslev/skill-graph"
   skill_graph_project: Skill Graph
   skill_graph_canonical_skill: skills/design-craft/interaction-patterns/SKILL.md

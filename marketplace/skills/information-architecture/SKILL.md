@@ -7,12 +7,9 @@ allowed-tools: Read Grep
 metadata:
   schema_version: "8"
   version: "1.0.0"
-  type: capability
-  operation: know
-  category: design
   subject: frontend-ui
-  domain: design/information-architecture
-  scope: portable
+  deployment_target: portable
+  taxonomy_domain: design/information-architecture
   owner: skill-graph-maintainer
   freshness: "2026-05-11"
   drift_check: "{\"last_verified\":\"2026-05-11\"}"
@@ -26,10 +23,12 @@ metadata:
   relations: "{\"boundary\":[{\"skill\":\"taxonomy-design\",\"reason\":\"taxonomy-design governs classification systems; information-architecture arranges user-facing information paths\"},{\"skill\":\"design-system-architecture\",\"reason\":\"design-system-architecture owns component and token systems; information-architecture owns navigation and content structure\"},{\"skill\":\"layout-composition\",\"reason\":\"layout-composition owns structure inside a page or screen; information-architecture owns cross-page organization and wayfinding\"},{\"skill\":\"microcopy\",\"reason\":\"microcopy owns sentence-level UI text; information-architecture owns placement and hierarchy\"},{\"skill\":\"a11y\",\"reason\":\"a11y owns accessibility compliance; information-architecture can create structures that a11y later verifies\"}],\"related\":[\"taxonomy-design\",\"task-analysis\",\"design-system-architecture\",\"layout-composition\"],\"verify_with\":[\"task-analysis\",\"a11y\"]}"
   portability: "{\"readiness\":\"scripted\",\"targets\":[\"skill-md\"]}"
   lifecycle: "{\"stale_after_days\":365,\"review_cadence\":\"quarterly\"}"
-  structural_verdict: UNVERIFIED
-  truth_verdict: UNVERIFIED
+  structural_verdict: PASS
+  truth_verdict: PASS
   comprehension_verdict: UNVERIFIED
   application_verdict: UNVERIFIED
+  last_audited: "2026-05-28"
+  lint_verdict: PASS
   skill_graph_source_repo: "https://github.com/jacob-balslev/skill-graph"
   skill_graph_project: Skill Graph
   skill_graph_canonical_skill: skills/frontend-ui/information-architecture/SKILL.md

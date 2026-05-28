@@ -6,12 +6,9 @@ allowed-tools: Read Grep
 metadata:
   schema_version: "8"
   version: "1.0.0"
-  type: capability
-  operation: do
-  category: engineering
   subject: product-domain
-  domain: engineering/frontend
-  scope: workspace
+  deployment_target: portable
+  taxonomy_domain: engineering/frontend
   owner: skill-graph-maintainer
   freshness: "2026-05-17"
   drift_check: "{\"last_verified\":\"2026-05-17\"}"
@@ -31,10 +28,12 @@ metadata:
   analogy: "A Route Handler is to a Next.js app what a service window at a government office is to its workflow — different windows handle different services (`GET /posts`, `POST /comments`); each window has a posted sign saying which forms it accepts and what stamps it returns; you do not walk into the back office (Server Action) unless you work there. The window is the contract: filesystem path = window number, export name = service offered, function body = the clerk's actual work."
   misconception: "|"
   concept: "{\"definition\":\"A Next.js Route Handler is a file named route.ts (or route.js) under the app/ directory that exports one async function per HTTP method (GET, POST, PUT, PATCH, DELETE, HEAD, OPTIONS). Each export receives a standard Web Request object and returns a standard Web Response (or NextResponse, which extends it). The file's filesystem path defines the URL; the export name defines the method; the function body defines the handler. There is no Node-style req/res, no middleware chain, no per-method routing config — the file shape IS the contract.\",\"mental_model\":\"|\",\"purpose\":\"|\",\"boundary\":\"|\",\"taxonomy\":\"|\",\"analogy\":\"|\",\"misconception\":\"|\"}"
-  structural_verdict: UNVERIFIED
-  truth_verdict: UNVERIFIED
+  structural_verdict: PASS
+  truth_verdict: PASS
   comprehension_verdict: UNVERIFIED
   application_verdict: UNVERIFIED
+  last_audited: "2026-05-28"
+  lint_verdict: PASS
   skill_graph_source_repo: "https://github.com/jacob-balslev/skill-graph"
   skill_graph_project: Skill Graph
   skill_graph_canonical_skill: skills/product-domain/route-handler-design/SKILL.md

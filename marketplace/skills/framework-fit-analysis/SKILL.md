@@ -7,12 +7,9 @@ allowed-tools: Read Grep
 metadata:
   schema_version: "8"
   version: "1.0.0"
-  type: capability
-  operation: do
-  category: engineering
   subject: code-engineering
-  domain: architecture/technology-selection
-  scope: portable
+  deployment_target: portable
+  taxonomy_domain: architecture/technology-selection
   owner: skill-graph-maintainer
   freshness: "2026-05-11"
   drift_check: "{\"last_verified\":\"2026-05-11\"}"
@@ -26,10 +23,12 @@ metadata:
   relations: "{\"boundary\":[{\"skill\":\"dependency-architecture\",\"reason\":\"dependency-architecture governs dependency graph shape and package boundaries; framework-fit-analysis evaluates a candidate technology decision\"},{\"skill\":\"architecture-decision-records\",\"reason\":\"architecture-decision-records records accepted decisions; framework-fit-analysis compares options before acceptance\"},{\"skill\":\"performance-engineering\",\"reason\":\"performance-engineering measures and optimizes actual behavior; framework-fit-analysis weighs expected performance among selection criteria\"},{\"skill\":\"refactor\",\"reason\":\"refactor changes existing code structure; framework-fit-analysis decides whether a larger technology shift is justified\"}],\"related\":[\"architecture-decision-records\",\"dependency-architecture\",\"performance-engineering\",\"owasp-security\"],\"verify_with\":[\"architecture-decision-records\",\"dependency-architecture\"]}"
   portability: "{\"readiness\":\"scripted\",\"targets\":[\"skill-md\"]}"
   lifecycle: "{\"stale_after_days\":180,\"review_cadence\":\"quarterly\"}"
-  structural_verdict: UNVERIFIED
-  truth_verdict: UNVERIFIED
+  structural_verdict: PASS
+  truth_verdict: PASS
   comprehension_verdict: UNVERIFIED
   application_verdict: UNVERIFIED
+  last_audited: "2026-05-28"
+  lint_verdict: PASS
   skill_graph_source_repo: "https://github.com/jacob-balslev/skill-graph"
   skill_graph_project: Skill Graph
   skill_graph_canonical_skill: skills/code-engineering/framework-fit-analysis/SKILL.md

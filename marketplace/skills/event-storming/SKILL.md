@@ -7,12 +7,9 @@ allowed-tools: Read Grep
 metadata:
   schema_version: "8"
   version: "1.0.0"
-  type: capability
-  operation: do
-  category: engineering
   subject: product-domain
-  domain: architecture/domain-discovery
-  scope: portable
+  deployment_target: portable
+  taxonomy_domain: architecture/domain-discovery
   owner: skill-graph-maintainer
   freshness: "2026-05-11"
   drift_check: "{\"last_verified\":\"2026-05-11\"}"
@@ -26,10 +23,12 @@ metadata:
   relations: "{\"boundary\":[{\"skill\":\"event-contract-design\",\"reason\":\"event-contract-design owns publishable event envelopes, schemas, topics, and compatibility; event-storming discovers the domain behavior before contract design\"},{\"skill\":\"webhook-integration\",\"reason\":\"webhook-integration implements inbound provider event handlers; event-storming discovers business-domain events before implementation\"},{\"skill\":\"state-machine-modeling\",\"reason\":\"state-machine-modeling formalizes states and transitions; event-storming discovers events, commands, policies, and aggregates\"},{\"skill\":\"data-modeling\",\"reason\":\"data-modeling designs stored data structures after domain events are understood\"},{\"skill\":\"api-design\",\"reason\":\"api-design shapes endpoint surfaces; event-storming discovers the domain behavior those surfaces expose\"}],\"related\":[\"bounded-context-mapping\",\"state-machine-modeling\",\"system-interface-contracts\",\"event-contract-design\",\"conceptual-modeling\"],\"verify_with\":[\"conceptual-modeling\",\"bounded-context-mapping\"]}"
   portability: "{\"readiness\":\"scripted\",\"targets\":[\"skill-md\"]}"
   lifecycle: "{\"stale_after_days\":365,\"review_cadence\":\"quarterly\"}"
-  structural_verdict: UNVERIFIED
-  truth_verdict: UNVERIFIED
+  structural_verdict: PASS
+  truth_verdict: PASS
   comprehension_verdict: UNVERIFIED
   application_verdict: UNVERIFIED
+  last_audited: "2026-05-28"
+  lint_verdict: PASS
   skill_graph_source_repo: "https://github.com/jacob-balslev/skill-graph"
   skill_graph_project: Skill Graph
   skill_graph_canonical_skill: skills/product-domain/event-storming/SKILL.md

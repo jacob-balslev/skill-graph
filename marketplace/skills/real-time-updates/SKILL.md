@@ -7,12 +7,9 @@ allowed-tools: Read Grep Bash
 metadata:
   schema_version: "7"
   version: "1.1.0"
-  type: capability
-  operation: know
   subject: product-domain
-  category: engineering
-  domain: engineering/realtime/browser-freshness
-  scope: portable
+  deployment_target: portable
+  taxonomy_domain: engineering/realtime/browser-freshness
   owner: skill-graph-maintainer
   freshness: "2026-05-21"
   drift_check: "{\"last_verified\":\"2026-05-21\"}"
@@ -33,10 +30,12 @@ metadata:
   boundary: "This skill is not low-level streaming protocol design, worker queue design, schedule design, or incident debugging. It starts when a browser-facing view needs to stay fresh and ends with transport choice, subscription ownership, stale-state UX, reconnect recovery, and optimistic-update safety."
   analogy: "A real-time UI is a newsroom ticker: it needs a wire service, an editor that knows what changed, and a visible timestamp so readers know whether the headline is current."
   misconception: "The common mistake is treating real-time as a transport choice first. The actual design starts with the freshness promise: how current the view must be, what happens during disconnect, when updates are safe to apply automatically, and when the user needs control."
-  structural_verdict: UNVERIFIED
-  truth_verdict: UNVERIFIED
+  structural_verdict: PASS
+  truth_verdict: PASS
   comprehension_verdict: UNVERIFIED
   application_verdict: UNVERIFIED
+  last_audited: "2026-05-28"
+  lint_verdict: PASS
   skill_graph_source_repo: "https://github.com/jacob-balslev/skill-graph"
   skill_graph_project: Skill Graph
   skill_graph_canonical_skill: skills/product-domain/real-time-updates/SKILL.md

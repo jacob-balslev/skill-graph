@@ -5,12 +5,9 @@ license: CC-BY-4.0
 metadata:
   schema_version: "8"
   version: "1.0.0"
-  type: capability
-  operation: know
-  category: design
   subject: design-craft
-  domain: design/visual
-  scope: portable
+  deployment_target: portable
+  taxonomy_domain: design/visual
   owner: skill-graph-maintainer
   freshness: "2026-05-12"
   drift_check: "{\"last_verified\":\"2026-05-12\"}"
@@ -23,10 +20,12 @@ metadata:
   examples: "[\"Add a dark mode toggle with system / light / dark options and persist the user's choice\",\"Eliminate the white flash that appears for a moment when a dark-mode user loads the page\",\"Provide dark variants of the marketing illustrations and the favicon\"]"
   anti_examples: "[\"Pick the dark mode color palette values\",\"Design the three-tier token architecture\",\"Build a multi-brand theme system with five themes\"]"
   relations: "{\"related\":[\"theme-system-design\",\"color-system-design\",\"a11y\",\"frontend-architecture\"],\"boundary\":[{\"skill\":\"theme-system-design\",\"reason\":\"theme-system-design defines the token layering that makes dark mode a token-mapping change; this skill handles the integration mechanics on top of that foundation.\"},{\"skill\":\"color-system-design\",\"reason\":\"The dark palette and its contrast pairings are color-system-design's responsibility; this skill consumes them.\"}]}"
-  structural_verdict: UNVERIFIED
-  truth_verdict: UNVERIFIED
+  structural_verdict: PASS
+  truth_verdict: PASS
   comprehension_verdict: UNVERIFIED
   application_verdict: UNVERIFIED
+  last_audited: "2026-05-28"
+  lint_verdict: PASS
   skill_graph_source_repo: "https://github.com/jacob-balslev/skill-graph"
   skill_graph_project: Skill Graph
   skill_graph_canonical_skill: skills/design-craft/dark-mode-implementation/SKILL.md

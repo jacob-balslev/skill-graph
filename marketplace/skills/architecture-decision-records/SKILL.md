@@ -7,12 +7,9 @@ allowed-tools: Read Grep
 metadata:
   schema_version: "8"
   version: "1.0.0"
-  type: capability
-  operation: know
-  category: engineering
   subject: code-engineering
-  domain: architecture/decision-records
-  scope: portable
+  deployment_target: portable
+  taxonomy_domain: architecture/decision-records
   owner: skill-graph-maintainer
   freshness: "2026-05-11"
   drift_check: "{\"last_verified\":\"2026-05-11\"}"
@@ -26,10 +23,12 @@ metadata:
   relations: "{\"boundary\":[{\"skill\":\"framework-fit-analysis\",\"reason\":\"framework-fit-analysis evaluates options before selection; architecture-decision-records records the selected option and tradeoffs\"},{\"skill\":\"code-review\",\"reason\":\"code-review evaluates a diff; architecture-decision-records evaluates the decision record\"},{\"skill\":\"system-interface-contracts\",\"reason\":\"system-interface-contracts designs boundaries and contracts; architecture-decision-records records the decision to adopt one\"}],\"related\":[\"framework-fit-analysis\",\"bounded-context-mapping\",\"system-interface-contracts\",\"dependency-architecture\"],\"verify_with\":[\"code-review\"]}"
   portability: "{\"readiness\":\"scripted\",\"targets\":[\"skill-md\"]}"
   lifecycle: "{\"stale_after_days\":365,\"review_cadence\":\"quarterly\"}"
-  structural_verdict: UNVERIFIED
-  truth_verdict: UNVERIFIED
+  structural_verdict: PASS
+  truth_verdict: PASS
   comprehension_verdict: UNVERIFIED
   application_verdict: UNVERIFIED
+  last_audited: "2026-05-28"
+  lint_verdict: PASS
   skill_graph_source_repo: "https://github.com/jacob-balslev/skill-graph"
   skill_graph_project: Skill Graph
   skill_graph_canonical_skill: skills/code-engineering/architecture-decision-records/SKILL.md

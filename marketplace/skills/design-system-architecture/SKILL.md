@@ -7,12 +7,9 @@ allowed-tools: Read Grep
 metadata:
   schema_version: "8"
   version: "1.0.0"
-  type: capability
-  operation: know
-  category: design
   subject: frontend-ui
-  domain: design/system
-  scope: portable
+  deployment_target: portable
+  taxonomy_domain: design/system
   owner: skill-graph-maintainer
   freshness: "2026-05-11"
   drift_check: "{\"last_verified\":\"2026-05-11\"}"
@@ -26,10 +23,12 @@ metadata:
   relations: "{\"boundary\":[{\"skill\":\"information-architecture\",\"reason\":\"information-architecture owns navigation and content structure; design-system-architecture owns tokens and component systems\"},{\"skill\":\"microcopy\",\"reason\":\"microcopy owns UI text patterns; design-system-architecture owns reusable component and token contracts\"},{\"skill\":\"a11y\",\"reason\":\"a11y verifies accessibility behavior; design-system-architecture embeds accessibility contracts into components\"},{\"skill\":\"layout-composition\",\"reason\":\"layout-composition owns page-specific responsive structure; design-system-architecture owns reusable component and token rules\"},{\"skill\":\"visual-design-foundations\",\"reason\":\"visual-design-foundations owns surface-level visual craft; design-system-architecture owns reusable system contracts\"},{\"skill\":\"interaction-patterns\",\"reason\":\"interaction-patterns owns selecting the right pattern for a task; design-system-architecture owns reusable component APIs once the pattern belongs in the system\"},{\"skill\":\"refactor\",\"reason\":\"refactor restructures code behavior-preservingly; design-system-architecture changes the UI system contract\"}],\"related\":[\"a11y\",\"microcopy\",\"information-architecture\",\"semantics\",\"layout-composition\",\"visual-design-foundations\",\"interaction-patterns\"],\"verify_with\":[\"a11y\",\"code-review\"]}"
   portability: "{\"readiness\":\"scripted\",\"targets\":[\"skill-md\"]}"
   lifecycle: "{\"stale_after_days\":365,\"review_cadence\":\"quarterly\"}"
-  structural_verdict: UNVERIFIED
-  truth_verdict: UNVERIFIED
+  structural_verdict: PASS
+  truth_verdict: PASS
   comprehension_verdict: UNVERIFIED
   application_verdict: UNVERIFIED
+  last_audited: "2026-05-28"
+  lint_verdict: PASS
   skill_graph_source_repo: "https://github.com/jacob-balslev/skill-graph"
   skill_graph_project: Skill Graph
   skill_graph_canonical_skill: skills/frontend-ui/design-system-architecture/SKILL.md

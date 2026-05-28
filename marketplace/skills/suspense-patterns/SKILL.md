@@ -6,12 +6,9 @@ allowed-tools: Read Grep
 metadata:
   schema_version: "8"
   version: "1.0.0"
-  type: capability
-  operation: know
-  category: engineering
   subject: frontend-ui
-  domain: engineering/frontend
-  scope: workspace
+  deployment_target: portable
+  taxonomy_domain: engineering/frontend
   owner: skill-graph-maintainer
   freshness: "2026-05-16"
   drift_check: "{\"last_verified\":\"2026-05-16\"}"
@@ -31,10 +28,12 @@ metadata:
   analogy: "Suspense boundaries are to React's component tree what a restaurant's seating policy is to a multi-course meal — the policy decides whether courses arrive together (boundary around the whole meal, everyone waits for the slowest dish) or course-by-course (boundary per dish, each appears when ready). The component (the kitchen) just signals 'this course needs more time'; the boundary (the maître d') decides who waits for what and what placeholder shows in the meantime."
   misconception: "|"
   concept: "{\"definition\":\"A Suspense boundary is a React component that catches a thrown Promise (or, in RSC, an unresolved async render) from anywhere in its descendant tree and shows a fallback UI until the Promise resolves. It is a declarative loading-state mechanism: the consuming component requests data without knowing whether it is loading, and the ancestor Suspense boundary handles the rendering branch.\",\"mental_model\":\"|\",\"purpose\":\"|\",\"boundary\":\"|\",\"taxonomy\":\"|\",\"analogy\":\"|\",\"misconception\":\"|\"}"
-  structural_verdict: UNVERIFIED
-  truth_verdict: UNVERIFIED
+  structural_verdict: PASS
+  truth_verdict: PASS
   comprehension_verdict: UNVERIFIED
   application_verdict: UNVERIFIED
+  last_audited: "2026-05-28"
+  lint_verdict: PASS
   skill_graph_source_repo: "https://github.com/jacob-balslev/skill-graph"
   skill_graph_project: Skill Graph
   skill_graph_canonical_skill: skills/frontend-ui/suspense-patterns/SKILL.md

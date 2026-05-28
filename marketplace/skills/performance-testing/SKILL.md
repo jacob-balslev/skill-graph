@@ -6,12 +6,9 @@ allowed-tools: Read Grep
 metadata:
   schema_version: "8"
   version: "1.0.0"
-  type: capability
-  operation: know
-  category: quality
   subject: quality-assurance
-  domain: quality/testing
-  scope: workspace
+  deployment_target: portable
+  taxonomy_domain: quality/testing
   owner: skill-graph-maintainer
   freshness: "2026-05-16"
   drift_check: "{\"last_verified\":\"2026-05-16\"}"
@@ -31,10 +28,12 @@ metadata:
   analogy: "Performance testing is to a software system what a load-bearing inspection is to a bridge — you do not certify a bridge by walking across it (functional test) and concluding it works; you drive trucks of known weight across at increasing volumes, with strain gauges on every beam, and verify the deflection stays within spec under expected traffic, that the failure mode is graceful when overloaded (cracks before collapse), that nothing creeps over a long soak. A bridge whose 'average' load it can carry is 50 tonnes but whose p99 stressor reveals harmonic resonance at 80 tonnes is the bridge that fails on a windy day."
   misconception: "|"
   concept: "{\"definition\":\"Performance testing is the discipline of measuring a system's non-functional properties — latency, throughput, resource utilization, error rate under load — by running the system under controlled load conditions and observing the resulting metrics. Where functional tests answer 'does the system produce the right output?', performance tests answer 'does the system produce the right output *quickly enough* and at *sufficient scale*, while staying within resource budgets and error tolerances?'. The unit of judgment is whether the measured metrics meet defined acceptance thresholds (typically Service-Level Objectives expressed as percentiles, e.g., 'p95 latency below 200ms at 1,000 requests per second sustained for 30 minutes'). Performance testing is *controlled* and *offline*; observability is its production-runtime counterpart that measures the live system without imposed load.\",\"mental_model\":\"|\",\"purpose\":\"|\",\"boundary\":\"|\",\"taxonomy\":\"|\",\"analogy\":\"|\",\"misconception\":\"|\"}"
-  structural_verdict: UNVERIFIED
-  truth_verdict: UNVERIFIED
+  structural_verdict: PASS
+  truth_verdict: PASS
   comprehension_verdict: UNVERIFIED
   application_verdict: UNVERIFIED
+  last_audited: "2026-05-28"
+  lint_verdict: PASS
   skill_graph_source_repo: "https://github.com/jacob-balslev/skill-graph"
   skill_graph_project: Skill Graph
   skill_graph_canonical_skill: skills/quality-assurance/performance-testing/SKILL.md

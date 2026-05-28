@@ -5,16 +5,13 @@ license: MIT
 compatibility: "Markdown, strategy memos, investment diligence, product strategy, market-entry analysis, moat diagnosis"
 allowed-tools: Read Grep
 metadata:
-  last_audited: "2026-05-26"
+  last_audited: "2026-05-28"
   lint_verdict: PASS
   schema_version: "8"
   version: "1.0.0"
-  type: capability
-  operation: do
-  category: foundations
   subject: meta-methods
-  domain: foundations/strategy
-  scope: portable
+  deployment_target: portable
+  taxonomy_domain: foundations/strategy
   owner: skill-graph-maintainer
   freshness: "2026-05-26"
   drift_check: "{\"last_verified\":\"2026-05-26\",\"truth_source_hashes\":{\"skills/meta-methods/seven-powers/references/seven-powers-sources.md\":\"79e4fbfeaf37dd1e98ee0946f642fb88722885896537bd8476096fc8232e052f\",\"skills/meta-methods/seven-powers/references/upstream-displacement-2026-05-26.md\":\"c0790ff7d3ec7fa29ebda3c60d5fa0a5c7d5fac4ddb52a0153f1455c31259d60\"}}"
@@ -27,7 +24,7 @@ metadata:
   examples: "[\"assess whether this startup has a real Seven Powers moat\",\"which of Helmer's powers could apply to this business model?\",\"test if our claimed network effects are actually power\",\"separate branding from ordinary brand awareness in this strategy memo\",\"does this incumbent face counter-positioning from a new entrant?\"]"
   anti_examples: "[\"analyze the attractiveness of this industry using entrants, suppliers, buyers, substitutes, and rivalry\",\"turn this market-entry plan into a winning aspiration, where to play, how to win, capabilities, and systems\",\"rank these roadmap items by impact and effort\",\"make a SWOT table for this company\"]"
   relations: "{\"boundary\":[{\"skill\":\"porters-five-forces\",\"reason\":\"porters-five-forces owns industry-structure and profit-pool pressure; seven-powers owns firm-level durable power sources that can let one company earn persistent differential returns\"},{\"skill\":\"playing-to-win\",\"reason\":\"playing-to-win owns integrated strategy choices across aspiration, arena, advantage, capabilities, and systems; seven-powers owns classifying and testing the specific moat mechanism that may support how-to-win\"},{\"skill\":\"prioritization\",\"reason\":\"prioritization ranks work or options; seven-powers owns whether the proposed strategy creates a durable power with both benefit and barrier\"}],\"related\":[\"constraint-awareness\",\"framework-fit-analysis\",\"epistemic-grounding\",\"bayesian-reasoning\"],\"verify_with\":[\"methodology\",\"epistemic-grounding\"]}"
-  grounding: "{\"domain_object\":\"Hamilton Helmer's Seven Powers strategy framework\",\"grounding_mode\":\"universal\",\"truth_sources\":[\"https://7powers.com/\",\"https://7powers.com/synopsis/\",\"https://7powers.com/foreword/\",\"skills/meta-methods/seven-powers/references/seven-powers-sources.md\",\"skills/meta-methods/seven-powers/references/upstream-displacement-2026-05-26.md\"],\"failure_modes\":[\"growth_confused_with_power\",\"benefit_without_barrier\",\"barrier_without_customer_value\",\"network_effects_claimed_from_usage_only\",\"brand_awareness_confused_with_branding_power\",\"temporary_execution_edge_confused_with_process_power\",\"industry_attractiveness_confused_with_firm_power\"],\"evidence_priority\":\"general_knowledge_first\"}"
+  grounding: "{\"subject_matter\":\"Hamilton Helmer's Seven Powers strategy framework\",\"grounding_mode\":\"universal\",\"truth_sources\":[\"https://7powers.com/\",\"https://7powers.com/synopsis/\",\"https://7powers.com/foreword/\",\"skills/meta-methods/seven-powers/references/seven-powers-sources.md\",\"skills/meta-methods/seven-powers/references/upstream-displacement-2026-05-26.md\"],\"failure_modes\":[\"growth_confused_with_power\",\"benefit_without_barrier\",\"barrier_without_customer_value\",\"network_effects_claimed_from_usage_only\",\"brand_awareness_confused_with_branding_power\",\"temporary_execution_edge_confused_with_process_power\",\"industry_attractiveness_confused_with_firm_power\"],\"evidence_priority\":\"general_knowledge_first\"}"
   portability: "{\"readiness\":\"scripted\",\"targets\":[\"skill-md\"]}"
   lifecycle: "{\"stale_after_days\":365,\"review_cadence\":\"quarterly\"}"
   mental_model: "Seven Powers treats durable strategy as a specific mechanism that creates both benefit for the business and a barrier against competitors. The seven mechanisms are scale economies, network economies, counter-positioning, switching costs, branding, cornered resource, and process power. A power claim is weak unless it explains why the company benefits and why rivals cannot quickly copy, neutralize, or bid away that benefit."

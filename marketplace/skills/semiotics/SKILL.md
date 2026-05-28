@@ -7,12 +7,9 @@ allowed-tools: Read Grep
 metadata:
   schema_version: "8"
   version: "1.2.0"
-  type: capability
-  operation: know
-  category: design
   subject: design-craft
-  domain: design/semantics
-  scope: portable
+  deployment_target: portable
+  taxonomy_domain: design/semantics
   owner: skill-graph-maintainer
   freshness: "2026-05-18"
   drift_check: "{\"last_verified\":\"2026-05-18\"}"
@@ -33,11 +30,13 @@ metadata:
   analogy: "Semiotics is to interface design what choreography is to a play — the words are the script, but the actor's stance, hand position, gaze direction, and proximity to other actors are the choreography. A line that lands flat with the wrong choreography lands well with the right one; same words, different signs. A disabled button that uses only a paler color (signifier too quiet) is a stage actor whispering an exit cue the audience cannot hear."
   misconception: "|"
   concept: "{\"definition\":\"Semiotics is the study of sign systems: how signifiers such as icons, colors, shapes, positions, words, names, and interaction cues point to signified concepts, states, actions, or judgments through resemblance, causal trace, convention, and cultural association.\",\"mental_model\":\"Treat an interface as a layered sign system. Peirce helps classify icon, index, and symbol; Saussure separates signifier from signified; Barthes separates denotation, connotation, and myth; Norman's signifiers connect perceivable cues to expected action. A good surface aligns those layers so the user reads the intended meaning without extra inference.\",\"purpose\":\"It makes implicit communication explicit before users misread the product. The goal is to prevent sign drift, color-only state signaling, icon polysemy, misleading affordances, and code/API names that force readers to inspect implementation before they understand intent.\",\"boundary\":\"It owns sign-to-meaning analysis across visual and textual systems, not the final wording, visual craft, accessibility compliance, formal ontology, database modeling, or morphology rules.\",\"taxonomy\":\"Core lenses include Peircean icon/index/symbol, Saussurean signifier/signified, Barthesian denotation/connotation/myth, affordance/signifier/anti-affordance, color-as-sign, shape/position channels, icon-system coherence, and code/API signifiers.\",\"analogy\":\"Semiotics is like stage direction for an interface: the words matter, but gesture, placement, lighting, costume, and timing tell the audience what the scene means before anyone explains it.\",\"misconception\":\"The common mistake is treating sign-system failures as taste or polish. They are communication failures: if green signals good in one place and bad in another, or a non-interactive label looks clickable, the system is teaching users the wrong language.\"}"
-  grounding: "{\"domain_object\":\"Interface sign-system analysis for icons, color, badges, affordances, visual metaphors, and code/API signifiers\",\"grounding_mode\":\"universal\",\"truth_sources\":[\"https://plato.stanford.edu/archives/spr2024/entries/peirce-semiotics/\",\"https://openlibrary.org/books/OL23291521M/Course_in_general_linguistics.\",\"https://openlibrary.org/books/OL21215289M/Mythologies\",\"https://jnd.org/signifiers-not-affordances/\",\"https://www.nngroup.com/articles/icon-usability/\",\"https://www.w3.org/WAI/WCAG22/Understanding/use-of-color\"],\"failure_modes\":[\"icon_polysemy_masked_as_style_issue\",\"color_connotation_conflated_with_metric_direction\",\"disabled_state_lacks_anti_affordance\",\"abstract_icon_unpaired_before_convention_is_learned\",\"identifier_or_api_name_forces_reader_to_open_implementation\"],\"evidence_priority\":\"equal\"}"
-  structural_verdict: UNVERIFIED
+  grounding: "{\"subject_matter\":\"Interface sign-system analysis for icons, color, badges, affordances, visual metaphors, and code/API signifiers\",\"grounding_mode\":\"universal\",\"truth_sources\":[\"https://plato.stanford.edu/archives/spr2024/entries/peirce-semiotics/\",\"https://openlibrary.org/books/OL23291521M/Course_in_general_linguistics.\",\"https://openlibrary.org/books/OL21215289M/Mythologies\",\"https://jnd.org/signifiers-not-affordances/\",\"https://www.nngroup.com/articles/icon-usability/\",\"https://www.w3.org/WAI/WCAG22/Understanding/use-of-color\"],\"failure_modes\":[\"icon_polysemy_masked_as_style_issue\",\"color_connotation_conflated_with_metric_direction\",\"disabled_state_lacks_anti_affordance\",\"abstract_icon_unpaired_before_convention_is_learned\",\"identifier_or_api_name_forces_reader_to_open_implementation\"],\"evidence_priority\":\"equal\"}"
+  structural_verdict: PASS
   truth_verdict: UNVERIFIED
   comprehension_verdict: UNVERIFIED
   application_verdict: UNVERIFIED
+  last_audited: "2026-05-28"
+  lint_verdict: PASS
   skill_graph_source_repo: "https://github.com/jacob-balslev/skill-graph"
   skill_graph_project: Skill Graph
   skill_graph_canonical_skill: skills/design-craft/semiotics/SKILL.md

@@ -6,12 +6,9 @@ allowed-tools: Read Grep
 metadata:
   schema_version: "8"
   version: "1.0.0"
-  type: capability
-  operation: do
-  category: engineering
   subject: frontend-ui
-  domain: engineering/frontend
-  scope: workspace
+  deployment_target: portable
+  taxonomy_domain: engineering/frontend
   owner: skill-graph-maintainer
   freshness: "2026-05-17"
   drift_check: "{\"last_verified\":\"2026-05-17\"}"
@@ -31,10 +28,12 @@ metadata:
   analogy: "Middleware is to a Next.js app what a building's lobby concierge is to its offices — every visitor passes through the lobby before reaching any specific floor; the concierge can check ID badges (auth gate), redirect visitors to the right elevator (locale or A/B rewrite), hand out lanyards with security policies attached (CSP nonce, request-ID header), or turn away bad-faith visitors at the door (bot block). The concierge cannot do the work of any specific office (per-route business logic) — that happens after the visitor gets off the elevator — but they enforce the rules that apply to every floor."
   misconception: "|"
   concept: "{\"definition\":\"Next.js middleware is a single async function exported as default from `middleware.ts` at the project root that runs on the Edge Runtime before route resolution for every request matching its `matcher` config. It receives a `NextRequest` and returns a `NextResponse` (or implicitly `NextResponse.next()`), and can do four things: pass through (`next`), rewrite to a different internal path (`rewrite`), redirect to a different URL (`redirect`), or short-circuit with a direct response. It runs once per request before any page render, Server Component fetch, Server Action, or Route Handler executes — making it the only place to apply genuinely cross-cutting concerns without per-route ceremony.\",\"mental_model\":\"|\",\"purpose\":\"|\",\"boundary\":\"|\",\"taxonomy\":\"|\",\"analogy\":\"|\",\"misconception\":\"|\"}"
-  structural_verdict: UNVERIFIED
-  truth_verdict: UNVERIFIED
+  structural_verdict: PASS
+  truth_verdict: PASS
   comprehension_verdict: UNVERIFIED
   application_verdict: UNVERIFIED
+  last_audited: "2026-05-28"
+  lint_verdict: PASS
   skill_graph_source_repo: "https://github.com/jacob-balslev/skill-graph"
   skill_graph_project: Skill Graph
   skill_graph_canonical_skill: skills/frontend-ui/middleware-patterns/SKILL.md

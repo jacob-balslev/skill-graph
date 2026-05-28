@@ -6,12 +6,9 @@ allowed-tools: Read Grep
 metadata:
   schema_version: "8"
   version: "1.0.0"
-  type: capability
-  operation: do
-  category: agent
   subject: agent-ops
-  domain: agent/ui
-  scope: workspace
+  deployment_target: portable
+  taxonomy_domain: agent/ui
   owner: skill-graph-maintainer
   freshness: "2026-05-16"
   drift_check: "{\"last_verified\":\"2026-05-16\"}"
@@ -31,10 +28,12 @@ metadata:
   analogy: "Generative UI is to a model-rendered interface what a building's framework is to a tenant's customization — the architect (application) lays the structural floor plan, frames the walls, and provides a catalog of approved fixtures (component palette); the tenant (model) picks which fixtures to install where for this particular layout, but cannot punch new holes in load-bearing walls or wire fixtures that don't exist in the catalog. The freedom is in the composition; the safety is in the structure."
   misconception: "|"
   concept: "{\"definition\":\"Generative UI is the pattern in which a language model emits, as structured output constrained by a typed schema, a specification of a UI component or sub-tree that an application then renders for the user. The model's output is not a chat response, not a tool call asking for execution, and not raw code — it is a typed instance of a component-vocabulary schema. The application owns the rendering, the interaction layer, and the visual design; the model owns the choice of which components to compose and with what data. The pattern depends on three contracts holding simultaneously: the schema (the typed component vocabulary the model and application share), the generation constraint (the model's emission is restricted to valid instances of the schema), and the render policy (the application renders only what the schema describes, with no escape to model-authored markup or code).\",\"mental_model\":\"|\",\"purpose\":\"|\",\"boundary\":\"|\",\"taxonomy\":\"|\",\"analogy\":\"|\",\"misconception\":\"|\"}"
-  structural_verdict: UNVERIFIED
-  truth_verdict: UNVERIFIED
+  structural_verdict: PASS
+  truth_verdict: PASS
   comprehension_verdict: UNVERIFIED
   application_verdict: UNVERIFIED
+  last_audited: "2026-05-28"
+  lint_verdict: PASS
   skill_graph_source_repo: "https://github.com/jacob-balslev/skill-graph"
   skill_graph_project: Skill Graph
   skill_graph_canonical_skill: skills/agent-ops/generative-ui/SKILL.md

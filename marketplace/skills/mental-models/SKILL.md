@@ -6,12 +6,9 @@ allowed-tools: Read Grep
 metadata:
   schema_version: "8"
   version: "1.0.0"
-  type: capability
-  operation: know
-  category: foundations
   subject: meta-methods
-  domain: foundations/mental-models
-  scope: workspace
+  deployment_target: portable
+  taxonomy_domain: foundations/mental-models
   owner: skill-graph-maintainer
   freshness: "2026-05-16"
   drift_check: "{\"last_verified\":\"2026-05-16\"}"
@@ -31,10 +28,12 @@ metadata:
   analogy: "A mental model is to a system what a map is to a city — the map is not the territory, the map is useful precisely because it is smaller and selective, and a traveler navigating with the wrong map (a city map for a different city, an out-of-date map, a tourist map missing the metro) does not get lost because the map is 'wrong' but because the map's selectiveness does not match the route they need."
   misconception: "|"
   concept: "{\"definition\":\"A mental model is the internal representation a person carries of how a system, domain, or set of relationships behaves — used to predict outcomes, plan actions, and interpret feedback. Mental models are constructed (from experience, instruction, analogy, and inference), private (each mind holds its own), and partial (no model captures the full complexity of its referent). They are the cognitive scaffolding that makes the world tractable; they are also the silent source of most surprise, frustration, and bug-shaped misunderstanding. The discipline of mental-models is the explicit study of how these representations are built, where they diverge from the systems they represent, and how to bring multiple models into alignment when collaborators, users, and systems are working from different ones.\",\"mental_model\":\"|\",\"purpose\":\"|\",\"boundary\":\"|\",\"taxonomy\":\"|\",\"analogy\":\"|\",\"misconception\":\"|\"}"
-  structural_verdict: UNVERIFIED
-  truth_verdict: UNVERIFIED
+  structural_verdict: PASS
+  truth_verdict: PASS
   comprehension_verdict: UNVERIFIED
   application_verdict: UNVERIFIED
+  last_audited: "2026-05-28"
+  lint_verdict: PASS
   skill_graph_source_repo: "https://github.com/jacob-balslev/skill-graph"
   skill_graph_project: Skill Graph
   skill_graph_canonical_skill: skills/meta-methods/mental-models/SKILL.md

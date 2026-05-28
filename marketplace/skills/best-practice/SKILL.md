@@ -7,12 +7,9 @@ allowed-tools: Read Grep Bash
 metadata:
   schema_version: "8"
   version: "1.2.0"
-  type: capability
-  operation: know
-  category: quality
   subject: quality-assurance
-  domain: quality/cross-domain
-  scope: workspace
+  deployment_target: portable
+  taxonomy_domain: quality/cross-domain
   owner: skill-graph-maintainer
   freshness: "2026-05-18"
   drift_check: "{\"last_verified\":\"2026-05-18\",\"truth_source_hashes\":{}}"
@@ -24,13 +21,15 @@ metadata:
   examples: "[\"reviewing a pull request for correctness, security, and style\",\"creating a new React component and checking it against quality standards\",\"auditing an existing feature for WCAG compliance and performance regressions\",\"writing tests and verifying coverage shape (unit / integration / e2e pyramid)\",\"authoring a new skill and checking it has structured scope, evals, and examples\",\"adding a new Next.js Server Action and verifying it has Zod validation and auth check\"]"
   anti_examples: "[\"reviewing PR feedback phrasing and comment classification (use code-review)\",\"choosing between requireAuth, requireOrgAuth, and withOrgAuth (use nextauth-patterns)\",\"implementing SQL injection prevention or webhook HMAC verification (use security-scanning)\",\"designing the APCA contrast ratio for a new color palette (use color-science)\",\"implementing the font loading strategy and vertical rhythm (use typography)\",\"deciding what quality means per artifact type — code vs skill vs prompt (use craft-doctrine)\"]"
   relations: "{\"adjacent\":[\"code-review\",\"security-scanning\",\"a11y\",\"design-guide\",\"composition-theory\",\"color-science\",\"visual-design\",\"typography\",\"copywriting\",\"semantics\",\"ui-ux\",\"next-best-practices\"],\"boundary\":[],\"verify_with\":[\"code-review\",\"security-scanning\"]}"
-  grounding: "{\"domain_object\":\"Cross-cutting quality enforcement across 14 domains\",\"grounding_mode\":\"hybrid\",\"truth_sources\":[],\"failure_modes\":[\"specialist_boundary_gaps\",\"heading_hierarchy_violations\",\"hardcoded_values_bypass_token_system\",\"server_actions_treated_as_internal\",\"dead_tests_accumulate\"],\"evidence_priority\":\"general_knowledge_first\"}"
+  grounding: "{\"subject_matter\":\"Cross-cutting quality enforcement across 14 domains\",\"grounding_mode\":\"hybrid\",\"truth_sources\":[],\"failure_modes\":[\"specialist_boundary_gaps\",\"heading_hierarchy_violations\",\"hardcoded_values_bypass_token_system\",\"server_actions_treated_as_internal\",\"dead_tests_accumulate\"],\"evidence_priority\":\"general_knowledge_first\"}"
   portability: "{\"readiness\":\"declared\",\"targets\":[\"skill-md\"]}"
   lifecycle: "{\"stale_after_days\":180,\"review_cadence\":\"quarterly\"}"
-  structural_verdict: UNVERIFIED
-  truth_verdict: UNVERIFIED
+  structural_verdict: PASS
+  truth_verdict: PASS
   comprehension_verdict: UNVERIFIED
   application_verdict: UNVERIFIED
+  last_audited: "2026-05-28"
+  lint_verdict: PASS
   skill_graph_source_repo: "https://github.com/jacob-balslev/skill-graph"
   skill_graph_project: Skill Graph
   skill_graph_canonical_skill: skills/quality-assurance/best-practice/SKILL.md

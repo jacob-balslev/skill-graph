@@ -5,16 +5,13 @@ license: MIT
 compatibility: "Markdown, decision memos, diagnostic reasoning, research synthesis, forecasting, agent confidence calibration"
 allowed-tools: Read Grep
 metadata:
-  last_audited: "2026-05-26"
+  last_audited: "2026-05-28"
   lint_verdict: PASS
   schema_version: "8"
   version: "1.0.0"
-  type: capability
-  operation: do
-  category: foundations
   subject: meta-methods
-  domain: foundations/decision-quality
-  scope: portable
+  deployment_target: portable
+  taxonomy_domain: foundations/decision-quality
   owner: skill-graph-maintainer
   freshness: "2026-05-26"
   drift_check: "{\"last_verified\":\"2026-05-26\",\"truth_source_hashes\":{\"skills/meta-methods/bayesian-reasoning/references/bayesian-reasoning-sources.md\":\"64efb763c7b63802a0ed16080d20cbc147600090f114cbd498153bf2618e05b3\",\"skills/meta-methods/bayesian-reasoning/references/upstream-displacement-2026-05-26.md\":\"ec0ddfb8bf6a254b9ad4e107d29c40ab33ca24a7524f1cba1560e2847dfa7baa\"}}"
@@ -27,7 +24,7 @@ metadata:
   examples: "[\"use Bayesian reasoning to update our confidence after this new evidence\",\"we have a rare bug signal; account for the base rate before concluding the cause\",\"separate prior, likelihood, and posterior for this diagnosis\",\"how should this customer interview change our belief in the product hypothesis?\",\"calibrate my confidence instead of giving a binary yes/no answer\"]"
   anti_examples: "[\"calculate the expected value of these three options\",\"turn this growth plan into a strategy cascade\",\"analyze supplier power and substitutes in this industry\",\"rank these roadmap items by impact and effort\",\"build a statistical model from a dataset\"]"
   relations: "{\"boundary\":[{\"skill\":\"prioritization\",\"reason\":\"prioritization ranks work items or options; bayesian-reasoning owns updating probability beliefs before a ranking or decision uses them\"},{\"skill\":\"playing-to-win\",\"reason\":\"playing-to-win owns integrated strategy choices; bayesian-reasoning owns uncertainty updates about assumptions, evidence, and confidence\"},{\"skill\":\"porters-five-forces\",\"reason\":\"porters-five-forces owns industry-structure diagnosis; bayesian-reasoning owns how new evidence changes belief strength\"}],\"related\":[\"mental-models\",\"constraint-awareness\",\"epistemic-grounding\",\"problem-approach-router\"],\"verify_with\":[\"epistemic-grounding\",\"methodology\"]}"
-  grounding: "{\"domain_object\":\"Bayesian reasoning for decision-making under uncertainty\",\"grounding_mode\":\"universal\",\"truth_sources\":[\"https://plato.stanford.edu/entries/bayes-theorem/\",\"https://plato.stanford.edu/entries/epistemology-bayesian/\",\"https://pubmed.ncbi.nlm.nih.gov/17835457/\",\"skills/meta-methods/bayesian-reasoning/references/bayesian-reasoning-sources.md\",\"skills/meta-methods/bayesian-reasoning/references/upstream-displacement-2026-05-26.md\"],\"failure_modes\":[\"base_rate_neglect\",\"likelihood_confused_with_posterior\",\"anecdote_overweighted\",\"correlated_evidence_double_counted\",\"prior_hidden_or_smuggled\",\"false_precision_from_weak_inputs\",\"binary_answer_given_under_uncertainty\"],\"evidence_priority\":\"general_knowledge_first\"}"
+  grounding: "{\"subject_matter\":\"Bayesian reasoning for decision-making under uncertainty\",\"grounding_mode\":\"universal\",\"truth_sources\":[\"https://plato.stanford.edu/entries/bayes-theorem/\",\"https://plato.stanford.edu/entries/epistemology-bayesian/\",\"https://pubmed.ncbi.nlm.nih.gov/17835457/\",\"skills/meta-methods/bayesian-reasoning/references/bayesian-reasoning-sources.md\",\"skills/meta-methods/bayesian-reasoning/references/upstream-displacement-2026-05-26.md\"],\"failure_modes\":[\"base_rate_neglect\",\"likelihood_confused_with_posterior\",\"anecdote_overweighted\",\"correlated_evidence_double_counted\",\"prior_hidden_or_smuggled\",\"false_precision_from_weak_inputs\",\"binary_answer_given_under_uncertainty\"],\"evidence_priority\":\"general_knowledge_first\"}"
   portability: "{\"readiness\":\"scripted\",\"targets\":[\"skill-md\"]}"
   lifecycle: "{\"stale_after_days\":365,\"review_cadence\":\"quarterly\"}"
   mental_model: "Bayesian reasoning treats belief as a state that changes when evidence arrives. The primitives are a hypothesis, prior probability or base rate, evidence, likelihood of seeing that evidence if the hypothesis were true, likelihood of seeing it if the hypothesis were false, posterior belief, residual uncertainty, and update history. The key move is comparing how much better the evidence is explained by one hypothesis than by alternatives, then updating from the prior instead of starting from the vividness of the evidence."

@@ -7,12 +7,9 @@ allowed-tools: Read Grep
 metadata:
   schema_version: "8"
   version: "1.2.0"
-  type: capability
-  operation: do
-  category: foundations
   subject: meta-methods
-  domain: foundations/cognition
-  scope: portable
+  deployment_target: portable
+  taxonomy_domain: foundations/cognition
   owner: skill-graph-maintainer
   freshness: "2026-05-18"
   drift_check: "{\"last_verified\":\"2026-05-18\"}"
@@ -33,10 +30,12 @@ metadata:
   analogy: "Pattern recognition is to a codebase what epidemiology is to a city's public health — a doctor (debugging) treats one patient with one infection; the epidemiologist (this skill) notices that fourteen patients across three hospitals all have the same infection, traces it back to a contaminated water source (root cause), names the outbreak, prescribes a public-health intervention (lint rule, type constraint, architectural fix) that prevents the next thousand cases, and updates the surveillance protocol so the next outbreak is caught at three cases instead of fourteen."
   misconception: "|"
   concept: "{\"definition\":\"Pattern recognition is the cognitive and methodological discipline of identifying recurring structures across instances — separating signal from noise, naming the structure once detected, and elevating it into durable, transmissible knowledge. Drawing from Gestalt perception (Wertheimer 1923), expert intuition research (Klein 1998, Chase & Simon 1973), and the software-pattern tradition (Alexander 1977, Gamma et al. 1994), it treats pattern as a class noun: a regularity worth naming because it explains many observations through one structure.\",\"mental_model\":\"|\",\"purpose\":\"|\",\"boundary\":\"|\",\"taxonomy\":\"|\",\"analogy\":\"|\",\"misconception\":\"|\"}"
-  structural_verdict: UNVERIFIED
-  truth_verdict: UNVERIFIED
+  structural_verdict: PASS
+  truth_verdict: PASS
   comprehension_verdict: UNVERIFIED
   application_verdict: UNVERIFIED
+  last_audited: "2026-05-28"
+  lint_verdict: PASS
   skill_graph_source_repo: "https://github.com/jacob-balslev/skill-graph"
   skill_graph_project: Skill Graph
   skill_graph_canonical_skill: skills/meta-methods/pattern-recognition/SKILL.md

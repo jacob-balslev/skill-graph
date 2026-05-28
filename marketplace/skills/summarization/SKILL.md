@@ -7,12 +7,9 @@ allowed-tools: Read Grep Bash
 metadata:
   schema_version: "8"
   version: "1.1.0"
-  type: capability
-  operation: know
-  category: agent
   subject: agent-ops
-  domain: agent/cognition
-  scope: workspace
+  deployment_target: portable
+  taxonomy_domain: agent/cognition
   owner: skill-graph-maintainer
   freshness: "2026-05-18"
   drift_check: "{\"last_verified\":\"2026-05-18\"}"
@@ -24,7 +21,7 @@ metadata:
   keywords: "[\"summarization\",\"summary\",\"TLDR\",\"executive summary\",\"condensation\",\"abstract\",\"distill\",\"key findings\",\"brief\",\"compress text\"]"
   triggers: "[\"summarization-skill\",\"summary-skill\"]"
   relations: "{\"related\":[\"context-management\",\"context-window\",\"writing-humanizer\"],\"boundary\":[{\"skill\":\"compression\",\"reason\":\"compression owns byte, payload, and storage compression; summarization owns semantic prose condensation\"},{\"skill\":\"context-window\",\"reason\":\"context-window owns token-budget math and compaction triggers; summarization is one technique for shrinking prose after the budget decision is made\"},{\"skill\":\"context-management\",\"reason\":\"context-management decides what belongs in the active working set; summarization condenses selected material into a usable form\"},{\"skill\":\"writing-humanizer\",\"reason\":\"writing-humanizer repairs tone and AI-patterned prose; summarization decides what meaning to preserve and what to omit\"},{\"skill\":\"evaluation\",\"reason\":\"evaluation scores work quality; summarization may report scores but does not define the rubric\"}],\"verify_with\":[\"evaluation\",\"writing-humanizer\"]}"
-  grounding: "{\"domain_object\":\"Prose summarization and agent handoff condensation\",\"grounding_mode\":\"hybrid\",\"truth_sources\":[\"https://owl.purdue.edu/owl/research_and_citation/using_research/quoting_paraphrasing_and_summarizing/index.html\",\"https://fortelabs.com/blog/progressive-summarization-a-practical-technique-for-designing-discoverable-notes/\",\"https://arxiv.org/abs/2204.09519\",\"https://github.com/jacob-balslev/skills/blob/main/skills/agent-ops/context-management/SKILL.md\",\"https://github.com/jacob-balslev/skills/blob/main/skills/agent-ops/context-window/SKILL.md\",\"https://github.com/jacob-balslev/skills/blob/main/skills/design-craft/writing-humanizer/SKILL.md\"],\"failure_modes\":[\"summary_drops_decisive_evidence\",\"summary_introduces_new_claims\",\"audit_summary_hides_findings\",\"handoff_omits_next_step\",\"style_polish_overrides_meaning_preservation\"],\"evidence_priority\":\"equal\"}"
+  grounding: "{\"subject_matter\":\"Prose summarization and agent handoff condensation\",\"grounding_mode\":\"hybrid\",\"truth_sources\":[\"https://owl.purdue.edu/owl/research_and_citation/using_research/quoting_paraphrasing_and_summarizing/index.html\",\"https://fortelabs.com/blog/progressive-summarization-a-practical-technique-for-designing-discoverable-notes/\",\"https://arxiv.org/abs/2204.09519\",\"https://github.com/jacob-balslev/skills/blob/main/skills/agent-ops/context-management/SKILL.md\",\"https://github.com/jacob-balslev/skills/blob/main/skills/agent-ops/context-window/SKILL.md\",\"https://github.com/jacob-balslev/skills/blob/main/skills/design-craft/writing-humanizer/SKILL.md\"],\"failure_modes\":[\"summary_drops_decisive_evidence\",\"summary_introduces_new_claims\",\"audit_summary_hides_findings\",\"handoff_omits_next_step\",\"style_polish_overrides_meaning_preservation\"],\"evidence_priority\":\"equal\"}"
   portability: "{\"readiness\":\"scripted\",\"targets\":[\"skill-md\"]}"
   lifecycle: "{\"stale_after_days\":90,\"review_cadence\":\"quarterly\"}"
   mental_model: "Summarization is semantic compression: reduce a source to the smallest useful representation for a reader and task while preserving meaning, provenance, decisions, evidence, and next actions. It is lossy by design, so the quality question is not how short the summary is; it is whether the chosen loss is intentional, reversible through evidence links, and appropriate for the audience."
@@ -33,10 +30,12 @@ metadata:
   analogy: "Summarization is like packing an evidence suitcase for a trip: you cannot bring the whole room, so you choose the items the next person will actually need, label where they came from, and leave a map back to the rest."
   misconception: "The common mistake is treating summarization as proportional shortening: trim every section equally, remove evidence first, and keep the same shape at smaller size. Good summarization is selective and task-aware; it may keep one decisive paragraph intact and drop an entire low-value section."
   concept: "{\"definition\":\"Summarization is semantic compression of prose: creating a shorter artifact that preserves the source's main meaning, task-relevant evidence, decisions, and provenance while intentionally omitting lower-value detail.\",\"mental_model\":\"Treat every summary as a lossy transform with a declared audience and job. First choose the summary level, then preserve the causal chain and evidence links, then cut material whose absence will not harm the reader's next decision.\",\"purpose\":\"It turns long agent outputs, research notes, audit reports, and handoff materials into usable briefs without losing the facts a successor needs to trust or continue the work.\",\"boundary\":\"It is not byte compression, context-budget math, working-set selection, prose tone repair, or quality scoring. Those neighboring skills decide size constraints, context membership, style, and evaluation; summarization preserves meaning inside the chosen constraint.\",\"taxonomy\":\"Core forms include TLDR, executive summary, brief, condensed report, progressive summary, agent handoff, research-to-memory note, and audit summary. Core methods include extractive, abstractive, synthesis, evidence-linking, and priority grouping.\",\"analogy\":\"Summarization is like packing an evidence suitcase for a trip: you cannot bring the whole room, so you choose the items the next person will actually need, label where they came from, and leave a map back to the rest.\",\"misconception\":\"Shorter is not automatically better. A summary that drops the decisive evidence, hides findings, or invents a clean story is worse than the messy source.\"}"
-  structural_verdict: UNVERIFIED
+  structural_verdict: PASS
   truth_verdict: UNVERIFIED
   comprehension_verdict: UNVERIFIED
   application_verdict: UNVERIFIED
+  last_audited: "2026-05-28"
+  lint_verdict: PASS
   skill_graph_source_repo: "https://github.com/jacob-balslev/skill-graph"
   skill_graph_project: Skill Graph
   skill_graph_canonical_skill: skills/agent-ops/summarization/SKILL.md

@@ -7,12 +7,9 @@ allowed-tools: Read Grep Bash
 metadata:
   schema_version: "8"
   version: "1.0.0"
-  type: capability
-  operation: do
-  category: quality
   subject: quality-assurance
-  domain: quality/security
-  scope: portable
+  deployment_target: portable
+  taxonomy_domain: quality/security
   owner: skill-graph-maintainer
   freshness: "2026-05-04"
   drift_check: "{\"last_verified\":\"2026-05-04\"}"
@@ -26,10 +23,12 @@ metadata:
   relations: "{\"boundary\":[{\"skill\":\"code-review\",\"reason\":\"code-review is the holistic per-PR pass that includes security as one of many concerns; owasp-security is the security-specific deep audit\"},{\"skill\":\"debugging\",\"reason\":\"debugging chases a known failure (security or otherwise); owasp-security finds vulnerabilities BEFORE they are exploited in production\"},{\"skill\":\"testing-strategy\",\"reason\":\"testing-strategy decides what to test broadly; owasp-security defines security-specific test cases (auth bypass tests, injection tests, etc.) as a sub-concern\"}],\"related\":[\"code-review\",\"testing-strategy\"],\"verify_with\":[\"testing-strategy\",\"code-review\"]}"
   portability: "{\"readiness\":\"scripted\",\"targets\":[\"skill-md\"]}"
   lifecycle: "{\"stale_after_days\":180,\"review_cadence\":\"quarterly\"}"
-  structural_verdict: UNVERIFIED
-  truth_verdict: UNVERIFIED
+  structural_verdict: PASS
+  truth_verdict: PASS
   comprehension_verdict: UNVERIFIED
   application_verdict: UNVERIFIED
+  last_audited: "2026-05-28"
+  lint_verdict: PASS
   skill_graph_source_repo: "https://github.com/jacob-balslev/skill-graph"
   skill_graph_project: Skill Graph
   skill_graph_canonical_skill: skills/quality-assurance/owasp-security/SKILL.md

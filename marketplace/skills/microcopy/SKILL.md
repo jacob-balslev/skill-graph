@@ -7,12 +7,9 @@ allowed-tools: Read Grep
 metadata:
   schema_version: "8"
   version: "1.0.0"
-  type: capability
-  operation: do
-  category: design
   subject: design-craft
-  domain: design/ux
-  scope: portable
+  deployment_target: portable
+  taxonomy_domain: design/ux
   owner: skill-graph-maintainer
   freshness: "2026-05-06"
   drift_check: "{\"last_verified\":\"2026-05-06\"}"
@@ -26,10 +23,12 @@ metadata:
   relations: "{\"boundary\":[{\"skill\":\"linguistics\",\"reason\":\"linguistics owns the underlying language rules (morphology, polysemy, audience register, blame-free framing as a general principle); microcopy owns the specific UI-text patterns where those rules apply (button label rule, empty-state structure, tooltip rule, confirmation-dialog rule) — the same 'rewrite this UI text' prompt routes by whether the user wants the linguistic rationale or the concrete UX-writing pattern\"},{\"skill\":\"a11y\",\"reason\":\"a11y owns the accessibility contracts that govern how copy is announced (aria-live regions, aria-label fallbacks, screen-reader semantics); microcopy owns the words themselves — the same 'fix this UI text' prompt routes by whether the trigger is accessibility compliance or copy quality\"},{\"skill\":\"interaction-feedback\",\"reason\":\"interaction-feedback owns when, where, and how feedback states appear; microcopy owns the words inside those states\"}],\"related\":[\"linguistics\",\"task-analysis\",\"intent-recognition\",\"interaction-feedback\",\"form-ux-architecture\"],\"verify_with\":[\"linguistics\",\"a11y\"]}"
   portability: "{\"readiness\":\"scripted\",\"targets\":[\"skill-md\"]}"
   lifecycle: "{\"stale_after_days\":365,\"review_cadence\":\"quarterly\"}"
-  structural_verdict: UNVERIFIED
-  truth_verdict: UNVERIFIED
+  structural_verdict: PASS
+  truth_verdict: PASS
   comprehension_verdict: UNVERIFIED
   application_verdict: UNVERIFIED
+  last_audited: "2026-05-28"
+  lint_verdict: PASS
   skill_graph_source_repo: "https://github.com/jacob-balslev/skill-graph"
   skill_graph_project: Skill Graph
   skill_graph_canonical_skill: skills/design-craft/microcopy/SKILL.md

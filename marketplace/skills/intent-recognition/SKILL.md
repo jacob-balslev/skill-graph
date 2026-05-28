@@ -7,12 +7,9 @@ allowed-tools: Read Grep
 metadata:
   schema_version: "8"
   version: "1.0.0"
-  type: capability
-  operation: know
-  category: engineering
   subject: frontend-ui
-  domain: ai-engineering/safety
-  scope: portable
+  deployment_target: portable
+  taxonomy_domain: ai-engineering/safety
   owner: skill-graph-maintainer
   freshness: "2026-05-06"
   drift_check: "{\"last_verified\":\"2026-05-06\"}"
@@ -26,10 +23,12 @@ metadata:
   relations: "{\"boundary\":[{\"skill\":\"owasp-security\",\"reason\":\"owasp-security is a domain audit against a known threat list; intent-recognition is the per-action risk classification that runs immediately before a tool call regardless of domain\"},{\"skill\":\"debugging\",\"reason\":\"debugging investigates a failure that has already happened; intent-recognition prevents one class of failure (destructive action mis-classification) from happening at all\"},{\"skill\":\"code-review\",\"reason\":\"code-review evaluates code-quality of an artefact; intent-recognition evaluates risk of an action about to be performed by a tool\"},{\"skill\":\"version-control\",\"reason\":\"version-control owns the discipline of using git well; intent-recognition specifically classifies which git commands are safe vs destructive at the moment of execution\"},{\"skill\":\"testing-strategy\",\"reason\":\"testing-strategy decides what to test proactively; intent-recognition gates one specific tool call from firing without classification\"}],\"related\":[\"owasp-security\",\"version-control\",\"debugging\"],\"verify_with\":[\"owasp-security\"]}"
   portability: "{\"readiness\":\"scripted\",\"targets\":[\"skill-md\"]}"
   lifecycle: "{\"stale_after_days\":365,\"review_cadence\":\"quarterly\"}"
-  structural_verdict: UNVERIFIED
-  truth_verdict: UNVERIFIED
+  structural_verdict: PASS
+  truth_verdict: PASS
   comprehension_verdict: UNVERIFIED
   application_verdict: UNVERIFIED
+  last_audited: "2026-05-28"
+  lint_verdict: PASS
   skill_graph_source_repo: "https://github.com/jacob-balslev/skill-graph"
   skill_graph_project: Skill Graph
   skill_graph_canonical_skill: skills/frontend-ui/intent-recognition/SKILL.md

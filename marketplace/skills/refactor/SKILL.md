@@ -7,11 +7,8 @@ allowed-tools: Read Grep Bash
 metadata:
   schema_version: "8"
   version: "1.0.0"
-  type: workflow
-  operation: do
-  category: engineering
   subject: code-engineering
-  scope: portable
+  deployment_target: portable
   owner: skill-graph-maintainer
   freshness: "2026-04-18"
   drift_check: "{\"last_verified\":\"2026-04-18\"}"
@@ -25,10 +22,12 @@ metadata:
   anti_examples: "[\"the test is failing after my edit — what did I break?\",\"write an architecture note explaining this pattern for new team members\",\"reproduce why this function retries three times on transient network errors\"]"
   relations: "{\"boundary\":[{\"skill\":\"debugging\",\"reason\":\"debugging chases an observed failure; refactor runs only with a green test suite and preserves behavior\"},{\"skill\":\"tool-call-flow\",\"reason\":\"tool-call-flow owns the protocol-level cycle of model→runtime tool invocation including retry encoding inside the cycle; refactor only restructures the surrounding code while preserving behavior. The anti_example about a function retrying three times is a tool-call/runtime concern, not a refactor concern.\"},{\"skill\":\"generative-ui\",\"reason\":\"generative-ui owns the model-emits-typed-UI-spec pattern; refactor only restructures existing code while preserving behavior. The retries anti_example has token overlap with the model-output/runtime cycle vocabulary generative-ui discusses, so naming it here keeps the boundary explicit.\"},{\"skill\":\"context-graph\",\"reason\":\"context-graph owns the design and documentation of AI workspace graph architecture; refactor owns behavior-preserving code restructuring. Writing an architecture note for team members is documentation work, not a code refactor.\"},{\"skill\":\"error-boundary\",\"reason\":\"error-boundary owns React error boundary design and the mechanics of retry-on-error patterns; refactor owns behavior-preserving code restructuring. Reproducing or explaining retry behavior is a runtime/error-handling concern, not a refactor concern.\"},{\"skill\":\"performance-testing\",\"reason\":\"performance-testing owns load, latency, and regression-on-edit testing under realistic workloads; refactor owns behavior-preserving code restructuring. A test failing after an edit is a debugging/regression-investigation concern, not a refactor concern.\"},{\"skill\":\"semantics\",\"reason\":\"semantics owns naming discipline and ubiquitous-language documentation including architectural narrative; refactor owns behavior-preserving code restructuring. Writing an architecture note for team members is documentation work, not a code refactor.\"}],\"verify_with\":[\"testing-strategy\"],\"depends_on\":[{\"skill\":\"testing-strategy\",\"min_version\":\"^1.0.0\"}]}"
   portability: "{\"readiness\":\"scripted\",\"targets\":[\"skill-md\"]}"
-  structural_verdict: UNVERIFIED
-  truth_verdict: UNVERIFIED
+  structural_verdict: PASS
+  truth_verdict: PASS
   comprehension_verdict: UNVERIFIED
   application_verdict: UNVERIFIED
+  last_audited: "2026-05-28"
+  lint_verdict: PASS
   skill_graph_source_repo: "https://github.com/jacob-balslev/skill-graph"
   skill_graph_project: Skill Graph
   skill_graph_canonical_skill: skills/code-engineering/refactor/SKILL.md

@@ -7,12 +7,9 @@ allowed-tools: Read Grep Bash Write Edit
 metadata:
   schema_version: "8"
   version: "1.1.0"
-  type: capability
-  operation: know
-  category: agent
   subject: agent-ops
-  domain: agent/skill-system
-  scope: workspace
+  deployment_target: portable
+  taxonomy_domain: agent/skill-system
   owner: skill-graph-maintainer
   freshness: "2026-05-26"
   drift_check: "{\"last_verified\":\"2026-05-18\"}"
@@ -25,7 +22,7 @@ metadata:
   examples: "[\"I'm writing a new skill from scratch — where do I start?\",\"how do I pick between capability and workflow for my skill type?\",\"what's the difference between description and the ## Coverage section?\",\"scaffold a new skill that teaches react component composition patterns\",\"I copied skill-metadata-template.md but my new skill won't pass lint — help\",\"draft frontmatter for a workflow skill that owns deployment rollback\",\"how do I strip teaching annotations from the template before commit?\",\"should I flip routing_eval to present on my new skill?\"]"
   anti_examples: "[\"refactor my existing skill to be more concise\",\"my skill's routing isn't activating — why?\",\"audit my skill library for stale frontmatter\",\"write a developer guide for the contributor docs\",\"review this skill's content for correctness\"]"
   relations: "{\"boundary\":[{\"skill\":\"refactor\",\"reason\":\"refactor is behaviour-preserving modification of existing code or skills; skill-scaffold creates a new skill from scratch\"},{\"skill\":\"skill-router\",\"reason\":\"skill-router dispatches between existing skills at request time; skill-scaffold is the authoring-time guide for a NEW skill\"},{\"skill\":\"skill-infrastructure\",\"reason\":\"skill-infrastructure runs health tooling across the entire skill library after authoring; skill-scaffold is the authoring-time guide for creating a single new skill before it joins the library\"}],\"related\":[\"naming-conventions\"],\"verify_with\":[]}"
-  grounding: "{\"domain_object\":\"Authoring a new SKILL.md against Skill Metadata Protocol v7\",\"grounding_mode\":\"hybrid\",\"truth_sources\":[\"https://github.com/jacob-balslev/skill-graph/blob/main/examples/skill-metadata-template.md\",\"https://github.com/jacob-balslev/skill-graph/blob/main/SKILL_METADATA_PROTOCOL.md\",\"https://github.com/jacob-balslev/skill-graph/blob/main/schemas/skill.schema.json\",\"https://github.com/jacob-balslev/skill-graph/blob/main/docs/field-reference.md\"],\"failure_modes\":[\"placeholder_sludge\",\"cargo_cult_meta_sections\",\"description_coverage_collapse\",\"authoring_gate_skipped\",\"inflated_routing_eval\",\"v6_v7_contract_drift\"],\"evidence_priority\":\"equal\"}"
+  grounding: "{\"subject_matter\":\"Authoring a new SKILL.md against Skill Metadata Protocol v7\",\"grounding_mode\":\"hybrid\",\"truth_sources\":[\"https://github.com/jacob-balslev/skill-graph/blob/main/examples/skill-metadata-template.md\",\"https://github.com/jacob-balslev/skill-graph/blob/main/SKILL_METADATA_PROTOCOL.md\",\"https://github.com/jacob-balslev/skill-graph/blob/main/schemas/skill.schema.json\",\"https://github.com/jacob-balslev/skill-graph/blob/main/docs/field-reference.md\"],\"failure_modes\":[\"placeholder_sludge\",\"cargo_cult_meta_sections\",\"description_coverage_collapse\",\"authoring_gate_skipped\",\"inflated_routing_eval\",\"v6_v7_contract_drift\"],\"evidence_priority\":\"equal\"}"
   portability: "{\"readiness\":\"scripted\",\"targets\":[\"skill-md\"]}"
   lifecycle: "{\"stale_after_days\":180,\"review_cadence\":\"quarterly\"}"
   mental_model: "Skill scaffolding is protocol-backed authoring, not free-form prompt writing. The scaffold separates the routing contract, field contract, concept model, grounding evidence, body sections, and verification gates so a new skill becomes a routable graph node rather than a decorative Markdown file."
@@ -34,10 +31,12 @@ metadata:
   analogy: "A skill scaffold is like construction formwork: it gives the new structure its shape while the concrete sets, but the temporary braces must be removed before the finished building is occupied."
   misconception: "The common mistake is treating the template as copy text to fill in. A scaffold is an authoring instrument: fields must be chosen for the new skill, template notes must disappear, and every health or eval claim must match evidence from the current change."
   concept: "{\"definition\":\"Skill scaffolding is the protocol-backed process of creating a SKILL.md whose frontmatter, body sections, relations, grounding, and verification claims are coherent from the first commit.\",\"mental_model\":\"Think of a skill as a graph node with a routing contract, an instructional body, typed edges, evidence, and health state. Scaffolding is the work of shaping all five together before the node joins the graph.\",\"purpose\":\"It prevents cargo-culted templates, vague activation text, false eval claims, dangling relation targets, and stale schema assumptions from entering a skill library.\",\"boundary\":\"It is not routine editing, router debugging, static graph audit, general documentation, or domain-content review for an existing skill.\",\"taxonomy\":\"Authoring workflow adjacent to skill-router, skill-infrastructure, and naming-conventions; distinct because it happens before a skill is fully authored.\",\"analogy\":\"A skill scaffold is like construction formwork: it gives the new structure its shape while the concrete sets, but the temporary braces must be removed before the finished building is occupied.\",\"misconception\":\"The template is not copy text to fill in. It is an authoring instrument whose teaching layer must be removed and whose claims must be re-earned for the new skill.\"}"
-  structural_verdict: UNVERIFIED
+  structural_verdict: PASS
   truth_verdict: UNVERIFIED
   comprehension_verdict: UNVERIFIED
   application_verdict: UNVERIFIED
+  last_audited: "2026-05-28"
+  lint_verdict: PASS
   skill_graph_source_repo: "https://github.com/jacob-balslev/skill-graph"
   skill_graph_project: Skill Graph
   skill_graph_canonical_skill: skills/agent-ops/skill-scaffold/SKILL.md

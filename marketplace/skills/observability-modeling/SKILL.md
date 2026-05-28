@@ -7,12 +7,9 @@ allowed-tools: Read Grep
 metadata:
   schema_version: "8"
   version: "1.0.0"
-  type: capability
-  operation: do
-  category: engineering
   subject: data-analytics
-  domain: engineering/observability
-  scope: portable
+  deployment_target: portable
+  taxonomy_domain: engineering/observability
   owner: skill-graph-maintainer
   freshness: "2026-05-11"
   drift_check: "{\"last_verified\":\"2026-05-11\"}"
@@ -26,10 +23,12 @@ metadata:
   relations: "{\"boundary\":[{\"skill\":\"error-tracking\",\"reason\":\"error-tracking owns error-capture setup and handling; observability-modeling owns the broader telemetry schema\"},{\"skill\":\"event-contract-design\",\"reason\":\"event-contract-design owns published business event contracts; observability-modeling owns telemetry events, spans, metrics, and logs for diagnosability\"},{\"skill\":\"performance-engineering\",\"reason\":\"performance-engineering improves measured performance; observability-modeling defines the signals needed to measure and diagnose\"},{\"skill\":\"debugging\",\"reason\":\"debugging investigates a current failure; observability-modeling designs future diagnosability\"},{\"skill\":\"testing-strategy\",\"reason\":\"testing-strategy proves behavior in tests; observability-modeling proves runtime diagnosability\"}],\"related\":[\"error-tracking\",\"performance-engineering\",\"system-interface-contracts\",\"event-contract-design\",\"debugging\"],\"verify_with\":[\"error-tracking\",\"debugging\"]}"
   portability: "{\"readiness\":\"scripted\",\"targets\":[\"skill-md\"]}"
   lifecycle: "{\"stale_after_days\":365,\"review_cadence\":\"quarterly\"}"
-  structural_verdict: UNVERIFIED
-  truth_verdict: UNVERIFIED
+  structural_verdict: PASS
+  truth_verdict: PASS
   comprehension_verdict: UNVERIFIED
   application_verdict: UNVERIFIED
+  last_audited: "2026-05-28"
+  lint_verdict: PASS
   skill_graph_source_repo: "https://github.com/jacob-balslev/skill-graph"
   skill_graph_project: Skill Graph
   skill_graph_canonical_skill: skills/data-analytics/observability-modeling/SKILL.md

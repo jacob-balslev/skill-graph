@@ -6,12 +6,9 @@ allowed-tools: Read Grep
 metadata:
   schema_version: "8"
   version: "1.0.0"
-  type: capability
-  operation: know
-  category: engineering
   subject: frontend-ui
-  domain: engineering/frontend
-  scope: workspace
+  deployment_target: portable
+  taxonomy_domain: engineering/frontend
   owner: skill-graph-maintainer
   freshness: "2026-05-16"
   drift_check: "{\"last_verified\":\"2026-05-16\"}"
@@ -31,10 +28,12 @@ metadata:
   analogy: "Server Actions are to React mutations what stored procedures are to database access — the function looks like an ordinary call in client code, but the work happens on the privileged side of a trust boundary, with the same security implications: the caller controls the arguments, but cannot see the implementation; the implementation must validate every input and authorize every call as if the caller were a hostile script with curl, because functionally they could be."
   misconception: "|"
   concept: "{\"definition\":\"A Server Action is a JavaScript function marked with 'use server' (either at the module level or as the first line of the function body) that executes on the server but is invokable from the client. The bundler turns calls to it from Client Components into a network round-trip: arguments are serialized, the function runs server-side, the return value is serialized back. The function itself looks like an ordinary import in client code, which is the design's main strength and its main security trap — what looks like a function call is a public POST endpoint.\",\"mental_model\":\"|\",\"purpose\":\"|\",\"boundary\":\"|\",\"taxonomy\":\"|\",\"analogy\":\"|\",\"misconception\":\"|\"}"
-  structural_verdict: UNVERIFIED
-  truth_verdict: UNVERIFIED
+  structural_verdict: PASS
+  truth_verdict: PASS
   comprehension_verdict: UNVERIFIED
   application_verdict: UNVERIFIED
+  last_audited: "2026-05-28"
+  lint_verdict: PASS
   skill_graph_source_repo: "https://github.com/jacob-balslev/skill-graph"
   skill_graph_project: Skill Graph
   skill_graph_canonical_skill: skills/frontend-ui/server-actions-design/SKILL.md

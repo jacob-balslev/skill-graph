@@ -6,12 +6,9 @@ allowed-tools: Read Grep
 metadata:
   schema_version: "8"
   version: "1.0.0"
-  type: capability
-  operation: know
-  category: engineering
   subject: code-engineering
-  domain: engineering/data
-  scope: workspace
+  deployment_target: portable
+  taxonomy_domain: engineering/data
   owner: skill-graph-maintainer
   freshness: "2026-05-16"
   drift_check: "{\"last_verified\":\"2026-05-16\"}"
@@ -31,10 +28,12 @@ metadata:
   analogy: "Schema evolution is to a database what stage carpentry is to a Broadway musical — the show does not stop; you do not bolt a new staircase to the stage during the second act; you build the new staircase upstage while the old staircase serves the cast (expand), gradually rehearse the cast to use the new one while the old still works (migrate), and only after every performer has memorized the new route do you remove the old staircase (contract). Removing the old before everyone has migrated is the production-incident equivalent of a missed cue."
   misconception: "|"
   concept: "{\"definition\":\"Schema evolution is the discipline of changing a database schema over time in a way that keeps deployed application code working. The unit of work is a *change to the schema* (add a column, rename a column, change a type, add a constraint, drop a column) that must be applied to a database serving an application that does not stop running. The central technique is expand/contract (Ambler & Sadalage 2006; also called parallel change): introduce the new shape *additively* without removing the old shape (expand), migrate the application to use the new shape, then remove the old shape (contract). The discipline is the *ordering* across migrations and deploys, the backwards-and-forwards-compatibility envelope each intermediate state must satisfy, and the rollback discipline that keeps the system recoverable when any step fails. The mechanical execution of any single migration is the concern of database-migration; the *sequence* of migrations and their relationship to application deploys is this skill's concern.\",\"mental_model\":\"|\",\"purpose\":\"|\",\"boundary\":\"|\",\"taxonomy\":\"|\",\"analogy\":\"|\",\"misconception\":\"|\"}"
-  structural_verdict: UNVERIFIED
-  truth_verdict: UNVERIFIED
+  structural_verdict: PASS
+  truth_verdict: PASS
   comprehension_verdict: UNVERIFIED
   application_verdict: UNVERIFIED
+  last_audited: "2026-05-28"
+  lint_verdict: PASS
   skill_graph_source_repo: "https://github.com/jacob-balslev/skill-graph"
   skill_graph_project: Skill Graph
   skill_graph_canonical_skill: skills/code-engineering/schema-evolution/SKILL.md

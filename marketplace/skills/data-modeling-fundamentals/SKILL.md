@@ -6,12 +6,9 @@ allowed-tools: Read Grep
 metadata:
   schema_version: "8"
   version: "1.0.0"
-  type: capability
-  operation: do
-  category: engineering
   subject: code-engineering
-  domain: engineering/data
-  scope: workspace
+  deployment_target: portable
+  taxonomy_domain: engineering/data
   owner: skill-graph-maintainer
   freshness: "2026-05-16"
   drift_check: "{\"last_verified\":\"2026-05-16\"}"
@@ -31,10 +28,12 @@ metadata:
   analogy: "Data-modeling fundamentals is to schema design what Euclidean geometry is to architecture — the architect does not draw a right-angled wall by intuition each time; they draw it because the geometry guarantees stability and squares lock together. A schema in 3NF is the wall built to plumb, where every dependency is structural and no anomaly is hiding in the carpentry. Denormalization is the deliberate decision to cut a non-load-bearing wall for an open floor plan — defensible when the workload justifies it, indefensible when the cost is invisible."
   misconception: "|"
   concept: "{\"definition\":\"Data-modeling fundamentals is the body of formal theory beneath practical database design: Codd's relational model (1970), which represents data as relations (sets of tuples) and provides a closed algebra (selection, projection, join, union, intersection, difference, division) for querying them; the normal forms (1NF through 5NF and BCNF), each defined by the elimination of a specific class of dependency anomaly; the theory of functional dependencies and the closure algorithm used to derive normal-form membership and candidate keys; Chen's entity-relationship model (1976), which sits above the relational model as a higher-abstraction modeling layer that translates downward into relations; the principled justifications for normalization (avoid update, insert, delete anomalies) and for denormalization (workload-driven performance trade-offs against the normal-form baseline); and the alternative data models — document, graph, key-value, columnar, event-sourced — each of which can be characterized by what relational primitives it preserves, relaxes, or trades for a different access pattern. The skill is the *theory* a practitioner draws on when deciding what shape data should take and why; the practical application of that theory is `data-modeling`.\",\"mental_model\":\"|\",\"purpose\":\"|\",\"boundary\":\"|\",\"taxonomy\":\"|\",\"analogy\":\"|\",\"misconception\":\"|\"}"
-  structural_verdict: UNVERIFIED
-  truth_verdict: UNVERIFIED
+  structural_verdict: PASS
+  truth_verdict: PASS
   comprehension_verdict: UNVERIFIED
   application_verdict: UNVERIFIED
+  last_audited: "2026-05-28"
+  lint_verdict: PASS
   skill_graph_source_repo: "https://github.com/jacob-balslev/skill-graph"
   skill_graph_project: Skill Graph
   skill_graph_canonical_skill: skills/code-engineering/data-modeling-fundamentals/SKILL.md

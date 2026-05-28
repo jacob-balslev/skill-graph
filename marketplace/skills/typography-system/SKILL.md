@@ -5,11 +5,8 @@ license: CC-BY-4.0
 metadata:
   schema_version: "8"
   version: "1.0.0"
-  type: capability
-  operation: know
-  category: design
   subject: design-craft
-  scope: portable
+  deployment_target: portable
   owner: skill-graph-maintainer
   freshness: "2026-05-12"
   drift_check: "{\"last_verified\":\"2026-05-12\"}"
@@ -22,10 +19,12 @@ metadata:
   examples: "[\"Build a type scale with seven steps using a 1.25 ratio and assign each step to a semantic token (display, h1, body, caption)\",\"Pair a serif display face with a sans-serif text face and document when to use each\",\"Self-host a variable font with WOFF2 subsetting and font-display: swap\"]"
   anti_examples: "[\"Write the headline copy for the landing page\",\"Pick the brand's primary color\",\"Decide where the headline component lives in the folder structure\"]"
   relations: "{\"related\":[\"visual-hierarchy\",\"visual-design-foundations\",\"theme-system-design\",\"layout-composition\"],\"boundary\":[{\"skill\":\"visual-hierarchy\",\"reason\":\"visual-hierarchy decides how to deploy type as an ordering signal on a given surface; this skill defines the scale and faces that get deployed.\"},{\"skill\":\"theme-system-design\",\"reason\":\"theme-system-design covers how typography tokens are layered and switched; this skill produces the typographic decisions inside them.\"}]}"
-  structural_verdict: UNVERIFIED
-  truth_verdict: UNVERIFIED
+  structural_verdict: PASS
+  truth_verdict: PASS
   comprehension_verdict: UNVERIFIED
   application_verdict: UNVERIFIED
+  last_audited: "2026-05-28"
+  lint_verdict: PASS
   skill_graph_source_repo: "https://github.com/jacob-balslev/skill-graph"
   skill_graph_project: Skill Graph
   skill_graph_canonical_skill: skills/design-craft/typography-system/SKILL.md

@@ -5,16 +5,13 @@ license: MIT
 compatibility: "Library- and harness-agnostic. Patterns apply to any skill-style library (Skill Graph, Claude skills, Cursor rules, custom in-house skill systems). Specific tool names in this skill (skill-lint, generate-manifest, routing-eval, drift-sentinel) are concrete examples from the Skill Graph reference implementation -- substitute your library's equivalents."
 allowed-tools: Read Grep Bash Edit Write
 metadata:
-  grounding: "{\"domain_object\":\"Deterministic health tooling for Skill Graph libraries\",\"grounding_mode\":\"hybrid\",\"truth_sources\":[\"package.json\",\"bin/skill-graph.js\",\"scripts/skill-lint.js\",\"scripts/lib/roots.js\",\"scripts/check-protocol-consistency.js\",\"scripts/generate-manifest.js\",\"scripts/skill-graph-drift.js\",\"scripts/skill-overlap.js\",\"scripts/skill-graph-routing-eval.js\",\"docs/manifest-field-mapping.md\"],\"failure_modes\":[\"health_tooling_categories_missing_from_ci\",\"protocol_mapping_drift\",\"eval_thresholds_become_self_attested\",\"overlap_or_drift_checks_not_run_after_batch_changes\"],\"evidence_priority\":\"repo_code_first\"}"
+  grounding: "{\"subject_matter\":\"Deterministic health tooling for Skill Graph libraries\",\"grounding_mode\":\"hybrid\",\"truth_sources\":[\"package.json\",\"bin/skill-graph.js\",\"scripts/skill-lint.js\",\"scripts/lib/roots.js\",\"scripts/check-protocol-consistency.js\",\"scripts/generate-manifest.js\",\"scripts/skill-graph-drift.js\",\"scripts/skill-overlap.js\",\"scripts/skill-graph-routing-eval.js\",\"docs/manifest-field-mapping.md\"],\"failure_modes\":[\"health_tooling_categories_missing_from_ci\",\"protocol_mapping_drift\",\"eval_thresholds_become_self_attested\",\"overlap_or_drift_checks_not_run_after_batch_changes\"],\"evidence_priority\":\"repo_code_first\"}"
   drift_check: "{\"last_verified\":\"2026-05-21\",\"truth_source_hashes\":{\"package.json\":\"5e6f9585d5363327a58ecfb39822ebed6fe508c3a2db2d98ebf02c6da1a735ae\",\"bin/skill-graph.js\":\"d1e096d4de72032dc9c6de42faeef79b6e0cf92112cf9a7b6c2745683f2705ca\",\"scripts/skill-lint.js\":\"e24c1f950520eb350432f2213150552d7f0b23f251d18810d06ea244ceeafd4c\",\"scripts/lib/roots.js\":\"88d53b3dad82a2510ea74a9d18310fb24c5a8c7754fec893272a1075a1d82508\",\"scripts/check-protocol-consistency.js\":\"22f1f747b6b578e83ae371ac3f9af4b6906d94529f383d1785ed3303b4c5a008\",\"scripts/generate-manifest.js\":\"3db618ca6ee118d7ee5405ecd5806c8502a9e0c708688d559dc7a2f219c9294e\",\"scripts/skill-graph-drift.js\":\"ac4c0571274e5a71d495081732d7a773ef4fa761ca1512dd5621b67dee571ce2\",\"scripts/skill-overlap.js\":\"d5200a5ff88e82c5afdd482d191874511496bc6208882deb34be981c3db9d977\",\"scripts/skill-graph-routing-eval.js\":\"fffac2858863662bde6bc54c56bb77a219ae93f626e0c8d5886566f998181deb\",\"docs/manifest-field-mapping.md\":\"0f2488dcde5634b04f33ca543d99059819a1242aa43dffb6cce50c555240391a\"}}"
   schema_version: "7"
   version: "1.1.0"
-  type: capability
-  operation: do
   subject: agent-ops
-  category: agent
-  domain: agent/skill-system
-  scope: portable
+  deployment_target: portable
+  taxonomy_domain: agent/skill-system
   owner: skill-graph-maintainer
   freshness: "2026-05-18"
   eval_artifacts: present
@@ -27,10 +24,12 @@ metadata:
   relations: "{\"boundary\":[{\"skill\":\"skill-scaffold\",\"reason\":\"skill-scaffold owns authoring methodology for one new SKILL.md; skill-infrastructure owns the deterministic health-tooling layer that watches the entire library after authoring\"},{\"skill\":\"graph-audit\",\"reason\":\"graph-audit is the operational audit of one specific library (Skill Graph), scope: codebase; skill-infrastructure is the portable discipline of designing health tooling for any skill library\"},{\"skill\":\"lint-overlay\",\"reason\":\"lint-overlay covers lint-rule selection and gate placement for general codebases; skill-infrastructure covers the skill-system-specific tooling category that includes lint but extends to overlap, routing-gap, drift, and mirror-parity\"}],\"related\":[\"skill-scaffold\",\"graph-audit\",\"testing-strategy\"],\"verify_with\":[\"testing-strategy\",\"code-review\"]}"
   portability: "{\"readiness\":\"scripted\",\"targets\":[\"skill-md\"]}"
   lifecycle: "{\"stale_after_days\":90,\"review_cadence\":\"quarterly\"}"
-  structural_verdict: UNVERIFIED
-  truth_verdict: UNVERIFIED
+  structural_verdict: PASS
+  truth_verdict: DRIFT
   comprehension_verdict: UNVERIFIED
   application_verdict: UNVERIFIED
+  last_audited: "2026-05-28"
+  lint_verdict: PASS
   skill_graph_source_repo: "https://github.com/jacob-balslev/skill-graph"
   skill_graph_project: Skill Graph
   skill_graph_canonical_skill: skills/agent-ops/skill-infrastructure/SKILL.md

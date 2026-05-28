@@ -6,12 +6,9 @@ allowed-tools: Read Grep
 metadata:
   schema_version: "8"
   version: "1.0.0"
-  type: capability
-  operation: know
-  category: engineering
   subject: frontend-ui
-  domain: engineering/frontend
-  scope: workspace
+  deployment_target: portable
+  taxonomy_domain: engineering/frontend
   owner: skill-graph-maintainer
   freshness: "2026-05-15"
   drift_check: "{\"last_verified\":\"2026-05-15\"}"
@@ -31,10 +28,12 @@ metadata:
   analogy: "Rendering models are to web pages what cooking styles are to restaurant kitchens — the same ingredients (data, components, markup) get plated differently depending on whether the kitchen pre-cooks at dawn (SSG), cooks to order during service (SSR), streams courses out as they finish (streaming SSR), or hands raw ingredients to the diner to assemble themselves (CSR), and no one style is right for every menu item."
   misconception: "|"
   concept: "{\"definition\":\"A rendering model is the strategy by which a web user interface is produced and delivered, defined by two axes: when the work happens (build time, request time, response stream, or user interaction) and where it executes (server, edge, or client). The choice of model determines first-paint latency, time-to-interactive, server cost, cache behavior, and which content can be indexed by crawlers.\",\"mental_model\":\"|\",\"purpose\":\"|\",\"boundary\":\"|\",\"taxonomy\":\"|\",\"analogy\":\"|\",\"misconception\":\"|\"}"
-  structural_verdict: UNVERIFIED
-  truth_verdict: UNVERIFIED
+  structural_verdict: PASS
+  truth_verdict: PASS
   comprehension_verdict: UNVERIFIED
   application_verdict: UNVERIFIED
+  last_audited: "2026-05-28"
+  lint_verdict: PASS
   skill_graph_source_repo: "https://github.com/jacob-balslev/skill-graph"
   skill_graph_project: Skill Graph
   skill_graph_canonical_skill: skills/frontend-ui/rendering-models/SKILL.md

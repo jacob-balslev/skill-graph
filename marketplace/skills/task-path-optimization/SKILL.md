@@ -4,11 +4,8 @@ description: "This skill provides decision frameworks for choosing the optimal e
 metadata:
   schema_version: "8"
   version: "1.1.0"
-  type: capability
-  operation: know
-  scope: portable
-  category: agent
   subject: agent-ops
+  deployment_target: portable
   eval_artifacts: present
   eval_state: passing
   routing_eval: present
@@ -19,18 +16,17 @@ metadata:
   owner: claude
   freshness: "2026-05-18"
   drift_check: "{\"last_verified\":\"2026-05-18\",\"truth_source_hashes\":{}}"
-  primaryCategory: Agent System
-  layerPrimary: meta
-  routingRole: primary
   comprehension_state: present
   mental_model: "Task path optimization is route planning before execution: classify the task shape, choose the lightest sufficient approach, sequence dependencies, isolate exploration when context would get polluted, and switch strategy after repeated failure instead of pushing harder on a bad path."
   purpose: "This skill prevents agents from either coding too soon on ambiguous work or over-planning simple work. It makes the execution path an explicit decision so planning, delegation, parallelization, review, and context reset are used only when the task shape justifies them."
   boundary: "This skill chooses the approach before execution. It does not execute the implementation, debug a concrete failure, optimize individual tool calls, manage Linear issue lifecycle, or record durable architecture decisions."
   analogy: "Task path optimization is like choosing a route before a trip: walking across the street needs no map, crossing a city needs traffic awareness, and crossing a mountain range needs checkpoints and fallback routes."
   misconception: "The common mistake is treating more process as safer. The safest path is the smallest path that still handles ambiguity, dependency, risk, and verification."
+  last_audited: "2026-05-28"
+  lint_verdict: PASS
   relations: "{\"related\":[\"task-lifecycle\",\"agents\",\"task-sizing\",\"sequential-thinking\",\"codebase-search\",\"task-execution\"],\"boundary\":[{\"skill\":\"tool-call-strategy\",\"reason\":\"tool-call-strategy owns tool-level efficiency such as reducing or batching individual tool calls; task-path-optimization owns the higher-level choice of execution approach\"},{\"skill\":\"diagnosis\",\"reason\":\"diagnosis owns systematic root-cause investigation of a concrete failure; task-path-optimization owns choosing the approach before work begins, not debugging a failure\"},{\"skill\":\"troubleshooting\",\"reason\":\"troubleshooting owns resolving a specific broken behavior; task-path-optimization owns selecting the execution path, not fixing a live fault\"},{\"skill\":\"spec-driven-development\",\"reason\":\"spec-driven-development owns writing and executing against a spec or plan; task-path-optimization owns the upstream plan-vs-act decision and approach selection, not executing the chosen plan\"},{\"skill\":\"test-driven-development\",\"reason\":\"test-driven-development owns the test-first methodology of writing test cases ahead of implementation; task-path-optimization owns the higher-level choice of execution approach (plan-vs-act, agent architecture, decomposition) — not authoring tests or running them\"}],\"verify_with\":[\"task-evaluation\",\"code-review\"]}"
-  structural_verdict: UNVERIFIED
-  truth_verdict: UNVERIFIED
+  structural_verdict: PASS
+  truth_verdict: PASS
   comprehension_verdict: UNVERIFIED
   application_verdict: UNVERIFIED
   skill_graph_source_repo: "https://github.com/jacob-balslev/skill-graph"

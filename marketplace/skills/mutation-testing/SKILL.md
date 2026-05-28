@@ -6,12 +6,9 @@ allowed-tools: Read Grep
 metadata:
   schema_version: "8"
   version: "1.0.0"
-  type: capability
-  operation: know
-  category: quality
   subject: quality-assurance
-  domain: quality/testing
-  scope: workspace
+  deployment_target: portable
+  taxonomy_domain: quality/testing
   owner: skill-graph-maintainer
   freshness: "2026-05-16"
   drift_check: "{\"last_verified\":\"2026-05-16\"}"
@@ -31,10 +28,12 @@ metadata:
   analogy: "Mutation testing is to a test suite what a fire drill is to a building's evacuation plan — you do not measure preparedness by counting how many exits exist (coverage), you measure it by deliberately staging a fire and watching whether anyone notices in time (mutation kill rate). An exit that nobody walks through during the drill is not really an exit, regardless of how prominently it is signposted."
   misconception: "|"
   concept: "{\"definition\":\"Mutation testing is a behavioral test-suite quality measurement in which the production code is automatically modified by small, syntactically-valid changes (mutants) and the test suite is run against each modified version. If the test suite fails on a mutant, the mutant is 'killed' — the tests caught the change. If the test suite still passes, the mutant 'survived' — the tests did not catch the change, which means the tests do not actually verify the behavior at that code location. The mutation score is the ratio of killed mutants to total (excluding equivalent mutants, which produce no observable behavior change despite the syntactic modification). Unlike code coverage, which measures whether the tests *reach* a piece of code, mutation testing measures whether the tests *verify* it.\",\"mental_model\":\"|\",\"purpose\":\"|\",\"boundary\":\"|\",\"taxonomy\":\"|\",\"analogy\":\"|\",\"misconception\":\"|\"}"
-  structural_verdict: UNVERIFIED
-  truth_verdict: UNVERIFIED
+  structural_verdict: PASS
+  truth_verdict: PASS
   comprehension_verdict: UNVERIFIED
   application_verdict: UNVERIFIED
+  last_audited: "2026-05-28"
+  lint_verdict: PASS
   skill_graph_source_repo: "https://github.com/jacob-balslev/skill-graph"
   skill_graph_project: Skill Graph
   skill_graph_canonical_skill: skills/quality-assurance/mutation-testing/SKILL.md

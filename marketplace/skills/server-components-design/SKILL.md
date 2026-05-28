@@ -6,12 +6,9 @@ allowed-tools: Read Grep
 metadata:
   schema_version: "8"
   version: "1.0.0"
-  type: capability
-  operation: know
-  category: engineering
   subject: frontend-ui
-  domain: engineering/frontend
-  scope: workspace
+  deployment_target: portable
+  taxonomy_domain: engineering/frontend
   owner: skill-graph-maintainer
   freshness: "2026-05-16"
   drift_check: "{\"last_verified\":\"2026-05-16\"}"
@@ -31,10 +28,12 @@ metadata:
   analogy: "A Server Component is to a React tree what a printed page is to a book — the typesetter (server) sets the lead, presses the ink, and ships the printed page (RSC payload); the reader's table lamp (Client Component) is wired and switchable at the reader's end. You do not ship the typesetter to the reader's living room, and you do not ship the lamp's wiring to the printer — the boundary is where 'this never changes once it leaves my workshop' ends and 'this responds to who touches it' begins."
   misconception: "|"
   concept: "{\"definition\":\"A React Server Component is a component that runs only on the server, never ships to the browser as JavaScript, can be async, and can directly access server-side resources (databases, file system, secrets) — its output is serialized to a wire format (the RSC payload) and reconstituted into the client tree without a separate API layer. Server Components compose with Client Components in a single tree, but the directionality is one-way: a Server Component can render a Client Component, but a Client Component cannot import a Server Component as a child.\",\"mental_model\":\"|\",\"purpose\":\"|\",\"boundary\":\"|\",\"taxonomy\":\"|\",\"analogy\":\"|\",\"misconception\":\"|\"}"
-  structural_verdict: UNVERIFIED
-  truth_verdict: UNVERIFIED
+  structural_verdict: PASS
+  truth_verdict: PASS
   comprehension_verdict: UNVERIFIED
   application_verdict: UNVERIFIED
+  last_audited: "2026-05-28"
+  lint_verdict: PASS
   skill_graph_source_repo: "https://github.com/jacob-balslev/skill-graph"
   skill_graph_project: Skill Graph
   skill_graph_canonical_skill: skills/frontend-ui/server-components-design/SKILL.md

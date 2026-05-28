@@ -6,12 +6,9 @@ allowed-tools: Read Grep
 metadata:
   schema_version: "8"
   version: "1.0.0"
-  type: capability
-  operation: know
-  category: quality
   subject: quality-assurance
-  domain: quality/types
-  scope: workspace
+  deployment_target: portable
+  taxonomy_domain: quality/types
   owner: skill-graph-maintainer
   freshness: "2026-05-15"
   drift_check: "{\"last_verified\":\"2026-05-15\"}"
@@ -31,10 +28,12 @@ metadata:
   analogy: "Type safety is to programs what a passport check is to international travel — the document (type annotation) certifies identity within the issuing country's records, but on the way through customs (the I/O boundary), the document is re-verified against the actual traveler, and any mismatch is rejected before they enter the trusted zone."
   misconception: "|"
   concept: "{\"definition\":\"Type safety is the property of a program in which type errors — operations applied to values of the wrong kind — are detected before they cause incorrect behavior. A type system provides type safety to the extent that it formally rules out classes of errors at compile time. A sound type system rules out all errors of the kinds it tracks; an unsound system rules out some but allows others through escape hatches.\",\"mental_model\":\"|\",\"purpose\":\"|\",\"boundary\":\"|\",\"taxonomy\":\"|\",\"analogy\":\"|\",\"misconception\":\"|\"}"
-  structural_verdict: UNVERIFIED
-  truth_verdict: UNVERIFIED
+  structural_verdict: PASS
+  truth_verdict: PASS
   comprehension_verdict: UNVERIFIED
   application_verdict: UNVERIFIED
+  last_audited: "2026-05-28"
+  lint_verdict: PASS
   skill_graph_source_repo: "https://github.com/jacob-balslev/skill-graph"
   skill_graph_project: Skill Graph
   skill_graph_canonical_skill: skills/quality-assurance/type-safety/SKILL.md

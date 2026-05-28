@@ -5,12 +5,9 @@ license: CC-BY-4.0
 metadata:
   schema_version: "8"
   version: "1.0.0"
-  type: capability
-  operation: know
-  category: engineering
   subject: product-domain
-  domain: engineering/integrations
-  scope: portable
+  deployment_target: portable
+  taxonomy_domain: engineering/integrations
   owner: skill-graph-maintainer
   freshness: "2026-05-12"
   drift_check: "{\"last_verified\":\"2026-05-12\"}"
@@ -23,10 +20,12 @@ metadata:
   examples: "[\"Create a Printify product from a blueprint + print provider + variant set and publish it to a connected Shopify store\",\"Handle a Printify order:updated webhook and reconcile fulfillment status\",\"Resolve shipping cost for a basket of Printify variants given a destination country\"]"
   anti_examples: "[\"Generate the artwork PNG file that gets uploaded as a print file\",\"Implement the Shopify side of the Printify-to-Shopify sync\",\"Design a generic POD-vendor-agnostic product schema\"]"
   relations: "{\"related\":[\"shopify\",\"webhook-integration\",\"api-design\"],\"boundary\":[{\"skill\":\"shopify\",\"reason\":\"Printify publishes to Shopify (and other channels) but the Shopify-side concerns — theme display, Shopify webhooks, Admin API — belong in the shopify skill.\"},{\"skill\":\"webhook-integration\",\"reason\":\"webhook-integration covers vendor-neutral signing/retry patterns; this skill handles Printify's specific event types and signature scheme.\"}]}"
-  structural_verdict: UNVERIFIED
-  truth_verdict: UNVERIFIED
+  structural_verdict: PASS
+  truth_verdict: PASS
   comprehension_verdict: UNVERIFIED
   application_verdict: UNVERIFIED
+  last_audited: "2026-05-28"
+  lint_verdict: PASS
   skill_graph_source_repo: "https://github.com/jacob-balslev/skill-graph"
   skill_graph_project: Skill Graph
   skill_graph_canonical_skill: skills/product-domain/printify/SKILL.md

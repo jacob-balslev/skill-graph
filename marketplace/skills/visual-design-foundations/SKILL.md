@@ -7,12 +7,9 @@ allowed-tools: Read Grep
 metadata:
   schema_version: "8"
   version: "1.0.0"
-  type: capability
-  operation: know
-  category: design
   subject: frontend-ui
-  domain: design/visual
-  scope: portable
+  deployment_target: portable
+  taxonomy_domain: design/visual
   owner: skill-graph-maintainer
   freshness: "2026-05-11"
   drift_check: "{\"last_verified\":\"2026-05-11\"}"
@@ -26,10 +23,12 @@ metadata:
   relations: "{\"boundary\":[{\"skill\":\"semiotics\",\"reason\":\"semiotics owns what visual signs mean; visual-design-foundations owns the craft choices that shape the surface\"},{\"skill\":\"design-system-architecture\",\"reason\":\"design-system-architecture owns reusable tokens and components; visual-design-foundations owns visual direction and craft on a surface\"},{\"skill\":\"layout-composition\",\"reason\":\"layout-composition owns responsive structure; visual-design-foundations owns palette, typography, rhythm, density, and polish\"},{\"skill\":\"a11y\",\"reason\":\"a11y owns accessibility compliance; visual-design-foundations can propose visual choices that a11y later verifies\"}],\"related\":[\"semiotics\",\"design-system-architecture\",\"layout-composition\",\"microcopy\",\"a11y\"],\"verify_with\":[\"a11y\",\"semiotics\"]}"
   portability: "{\"readiness\":\"scripted\",\"targets\":[\"skill-md\"]}"
   lifecycle: "{\"stale_after_days\":365,\"review_cadence\":\"quarterly\"}"
-  structural_verdict: UNVERIFIED
-  truth_verdict: UNVERIFIED
+  structural_verdict: PASS
+  truth_verdict: PASS
   comprehension_verdict: UNVERIFIED
   application_verdict: UNVERIFIED
+  last_audited: "2026-05-28"
+  lint_verdict: PASS
   skill_graph_source_repo: "https://github.com/jacob-balslev/skill-graph"
   skill_graph_project: Skill Graph
   skill_graph_canonical_skill: skills/frontend-ui/visual-design-foundations/SKILL.md

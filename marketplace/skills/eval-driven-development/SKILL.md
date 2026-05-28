@@ -6,12 +6,9 @@ allowed-tools: Read Grep
 metadata:
   schema_version: "8"
   version: "1.0.0"
-  type: capability
-  operation: know
-  category: agent
   subject: agent-ops
-  domain: agent/evaluation
-  scope: workspace
+  deployment_target: portable
+  taxonomy_domain: agent/evaluation
   owner: skill-graph-maintainer
   freshness: "2026-05-16"
   drift_check: "{\"last_verified\":\"2026-05-16\"}"
@@ -31,10 +28,12 @@ metadata:
   analogy: "Eval-driven development is to LLM system engineering what crash-test ratings are to automotive safety — you do not ship a car based on how well it parked in your driveway; you ship it after a battery of standardized tests on representative crash scenarios, with the pass-rate against named criteria as the gating signal. A score of 4.3 stars across the suite is the only defensible claim of 'safer'; a developer's intuition that 'the new model feels smarter' is the unmeasured equivalent of 'I drove it home, it seemed fine.'"
   misconception: "|"
   concept: "{\"definition\":\"Eval-driven development is the practice of building language-model-integrated systems by writing evaluations before and alongside the system, where each evaluation defines a behavioral criterion the system must satisfy on a representative input set, and the suite's aggregated pass-rate signal gates every change to the prompt, model, retrieval, scaffolding, or tooling. Evals are the LLM analog of automated tests for deterministic software with one fundamental difference: LLM evals are statistical (pass-rate over a sampled population) rather than binary (pass/fail per run), because the system under test is itself stochastic. The discipline is the rigorous separation of generation (what the system produces) from judgment (how it is scored) with explicit accounting for the uncertainty in both.\",\"mental_model\":\"|\",\"purpose\":\"|\",\"boundary\":\"|\",\"taxonomy\":\"|\",\"analogy\":\"|\",\"misconception\":\"|\"}"
-  structural_verdict: UNVERIFIED
-  truth_verdict: UNVERIFIED
+  structural_verdict: PASS
+  truth_verdict: PASS
   comprehension_verdict: UNVERIFIED
   application_verdict: UNVERIFIED
+  last_audited: "2026-05-28"
+  lint_verdict: PASS
   skill_graph_source_repo: "https://github.com/jacob-balslev/skill-graph"
   skill_graph_project: Skill Graph
   skill_graph_canonical_skill: skills/agent-ops/eval-driven-development/SKILL.md

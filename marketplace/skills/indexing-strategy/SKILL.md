@@ -6,12 +6,9 @@ allowed-tools: Read Grep
 metadata:
   schema_version: "8"
   version: "1.0.0"
-  type: capability
-  operation: know
-  category: engineering
   subject: code-engineering
-  domain: engineering/data
-  scope: workspace
+  deployment_target: portable
+  taxonomy_domain: engineering/data
   owner: skill-graph-maintainer
   freshness: "2026-05-16"
   drift_check: "{\"last_verified\":\"2026-05-16\"}"
@@ -31,10 +28,12 @@ metadata:
   analogy: "An index is to a database what the back-of-the-book index is to a reference manual — you do not flip through every page to find every mention of 'Postgres'; you go to the I section, find the page numbers, and jump. Adding an index for every word in the book is technically possible and obviously wrong; the printer would still have to update every index every time the text changed, and the book would now spend most of its pages on indexes rather than content."
   misconception: "|"
   concept: "{\"definition\":\"Indexing strategy is the discipline of designing auxiliary data structures that let the database find rows quickly without scanning every row. An index is a precomputed lookup structure (B-tree, hash, bitmap, inverted index, LSM-tree, BRIN, GiST, GIN) that maps one or more column values to the rows containing those values. Every index speeds up some queries (those whose WHERE / JOIN / ORDER BY clauses match the index's structure) and slows down every write (the index must be updated on every INSERT, UPDATE that touches indexed columns, and DELETE). The strategic question is not 'which columns deserve an index' considered in isolation; it is the *whole-database* trade-off between read speed and write cost, given the actual access patterns the workload produces.\",\"mental_model\":\"|\",\"purpose\":\"|\",\"boundary\":\"|\",\"taxonomy\":\"|\",\"analogy\":\"|\",\"misconception\":\"|\"}"
-  structural_verdict: UNVERIFIED
-  truth_verdict: UNVERIFIED
+  structural_verdict: PASS
+  truth_verdict: PASS
   comprehension_verdict: UNVERIFIED
   application_verdict: UNVERIFIED
+  last_audited: "2026-05-28"
+  lint_verdict: PASS
   skill_graph_source_repo: "https://github.com/jacob-balslev/skill-graph"
   skill_graph_project: Skill Graph
   skill_graph_canonical_skill: skills/code-engineering/indexing-strategy/SKILL.md

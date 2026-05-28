@@ -7,12 +7,9 @@ allowed-tools: Read Grep
 metadata:
   schema_version: "8"
   version: "1.0.0"
-  type: capability
-  operation: know
-  category: quality
   subject: quality-assurance
-  domain: quality/cognition
-  scope: portable
+  deployment_target: portable
+  taxonomy_domain: quality/cognition
   owner: skill-graph-maintainer
   freshness: "2026-05-19"
   drift_check: "{\"last_verified\":\"2026-05-19\"}"
@@ -23,10 +20,12 @@ metadata:
   keywords: "[\"cognitive load theory\",\"working memory\",\"intrinsic load\",\"extraneous load\",\"germane load\",\"chunking\",\"segmentation\",\"schema formation\",\"Sweller\",\"prompt design\"]"
   triggers: "[\"cognitive-load-skill\",\"working-memory-skill\",\"clt-skill\"]"
   relations: "{\"adjacent\":[\"teaching-patterns\",\"context-window\",\"compression\",\"editorial-standards\",\"prompt-craft\"],\"boundary\":[{\"skill\":\"context-management\",\"reason\":\"context-management owns retrieval and session working-set design; CLT owns the cognitive-load taxonomy applied to authored content\"},{\"skill\":\"memory-gardener\",\"reason\":\"memory-gardener owns memory pruning and consolidation; CLT owns the cognitive-load framing for what to keep vs cut\"}],\"verify_with\":[\"context-management\",\"teaching-patterns\",\"best-practice\"]}"
-  structural_verdict: UNVERIFIED
-  truth_verdict: UNVERIFIED
+  structural_verdict: PASS
+  truth_verdict: PASS
   comprehension_verdict: UNVERIFIED
   application_verdict: UNVERIFIED
+  last_audited: "2026-05-28"
+  lint_verdict: PASS
   skill_graph_source_repo: "https://github.com/jacob-balslev/skill-graph"
   skill_graph_project: Skill Graph
   skill_graph_canonical_skill: skills/quality-assurance/cognitive-load-theory/SKILL.md

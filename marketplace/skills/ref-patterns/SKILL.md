@@ -6,12 +6,9 @@ allowed-tools: Read Grep
 metadata:
   schema_version: "8"
   version: "1.0.0"
-  type: capability
-  operation: know
-  category: engineering
   subject: frontend-ui
-  domain: engineering/frontend
-  scope: workspace
+  deployment_target: portable
+  taxonomy_domain: engineering/frontend
   owner: skill-graph-maintainer
   freshness: "2026-05-17"
   drift_check: "{\"last_verified\":\"2026-05-17\"}"
@@ -31,10 +28,12 @@ metadata:
   analogy: "A ref is to a React component what a static local variable is to a C function — it persists across calls (renders), reading it does not make the function 'depend on' it, writing to it does not change the function's signature or trigger any caller-visible event, and its single purpose is to hold the state that is not part of the function's interface. State, by contrast, is to the component what the function's return value is to the caller: every read participates in the contract, every change requires a re-evaluation."
   misconception: "|"
   concept: "{\"definition\":\"A React ref is a mutable object — `{ current: T }` — created by `useRef(initial)` that persists across renders without participating in the render cycle. Writing to `ref.current` does not trigger a re-render; reading from it does not subscribe the component to changes. The two canonical uses are (1) holding a reference to a DOM node so it can be focused, measured, or handed to a non-React library, and (2) holding a mutable value (an interval id, a latest-arguments closure, a previous-value snapshot) that drives side effects but is not part of what gets rendered. The design rule is: if the value should cause a re-render when it changes, it is state. If it should not, it is a ref.\",\"mental_model\":\"|\",\"purpose\":\"|\",\"boundary\":\"|\",\"taxonomy\":\"|\",\"analogy\":\"|\",\"misconception\":\"|\"}"
-  structural_verdict: UNVERIFIED
-  truth_verdict: UNVERIFIED
+  structural_verdict: PASS
+  truth_verdict: PASS
   comprehension_verdict: UNVERIFIED
   application_verdict: UNVERIFIED
+  last_audited: "2026-05-28"
+  lint_verdict: PASS
   skill_graph_source_repo: "https://github.com/jacob-balslev/skill-graph"
   skill_graph_project: Skill Graph
   skill_graph_canonical_skill: skills/frontend-ui/ref-patterns/SKILL.md

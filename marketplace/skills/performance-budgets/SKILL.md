@@ -6,12 +6,9 @@ allowed-tools: Read Grep
 metadata:
   schema_version: "8"
   version: "1.0.0"
-  type: capability
-  operation: do
-  category: quality
   subject: data-analytics
-  domain: quality/performance
-  scope: workspace
+  deployment_target: portable
+  taxonomy_domain: quality/performance
   owner: skill-graph-maintainer
   freshness: "2026-05-15"
   drift_check: "{\"last_verified\":\"2026-05-15\"}"
@@ -31,10 +28,12 @@ metadata:
   analogy: "A performance budget is to a web app what a calorie budget is to a diet — the calorie count of any single meal is information; the calorie budget is what you do about it when you exceed it. A diet that 'tracks' calories without consequence is description; a diet with a calorie *budget* is discipline. And a per-meal budget (per-route) catches drift earlier than a per-day total: by the time the day total breaches, the offending meal is hours behind you and harder to undo."
   misconception: "|"
   concept: "{\"definition\":\"A performance budget is a declared, measurable threshold for a user-affecting property of a system — load time, interaction latency, layout stability, bundle size, request count — treated as a contract the system must satisfy. A budget has four parts: the metric (what is measured), the threshold (the maximum or minimum acceptable value), the percentile (whose experience the threshold describes), and the consequence (what happens when the threshold is breached). Without all four, the number is an aspiration, not a budget.\",\"mental_model\":\"|\",\"purpose\":\"|\",\"boundary\":\"|\",\"taxonomy\":\"|\",\"analogy\":\"|\",\"misconception\":\"|\"}"
-  structural_verdict: UNVERIFIED
-  truth_verdict: UNVERIFIED
+  structural_verdict: PASS
+  truth_verdict: PASS
   comprehension_verdict: UNVERIFIED
   application_verdict: UNVERIFIED
+  last_audited: "2026-05-28"
+  lint_verdict: PASS
   skill_graph_source_repo: "https://github.com/jacob-balslev/skill-graph"
   skill_graph_project: Skill Graph
   skill_graph_canonical_skill: skills/data-analytics/performance-budgets/SKILL.md

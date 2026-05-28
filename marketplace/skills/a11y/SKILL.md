@@ -5,16 +5,13 @@ license: MIT
 compatibility: "Markdown, Git, any web stack"
 allowed-tools: Read Grep
 metadata:
-  last_audited: "2026-05-25"
+  last_audited: "2026-05-28"
   lint_verdict: PASS
   schema_version: "8"
   version: "1.0.0"
-  type: capability
-  operation: know
-  category: quality
   subject: quality-assurance
-  domain: quality/accessibility
-  scope: portable
+  deployment_target: portable
+  taxonomy_domain: quality/accessibility
   owner: skill-graph-maintainer
   freshness: "2026-04-18"
   drift_check: "{\"last_verified\":\"2026-04-18\"}"

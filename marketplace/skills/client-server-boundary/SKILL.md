@@ -6,12 +6,9 @@ allowed-tools: Read Grep
 metadata:
   schema_version: "8"
   version: "1.0.0"
-  type: capability
-  operation: do
-  category: engineering
   subject: frontend-ui
-  domain: engineering/frontend
-  scope: workspace
+  deployment_target: portable
+  taxonomy_domain: engineering/frontend
   owner: skill-graph-maintainer
   freshness: "2026-05-15"
   drift_check: "{\"last_verified\":\"2026-05-15\"}"
@@ -31,10 +28,12 @@ metadata:
   analogy: "The client-server boundary is to a unified codebase what an embassy boundary is to a city — both spaces exist in the same physical address, but inside the embassy the law of one country applies (server: full filesystem, secret access, database), outside the law of another applies (client: browser sandbox, no secrets), and everyone crossing must pass through documented customs (serialization) with their bags inspected (validation) and stamped (authentication)."
   misconception: "|"
   concept: "{\"definition\":\"The client-server boundary is the line in a unified codebase at which execution context changes — between a server runtime (full filesystem, secret access, database connections) and a client runtime (browser, no filesystem, no server secrets, untrusted by the server). Anything that crosses the boundary must be serialized: encoded as bytes on one side, decoded into a value on the other. The boundary is marked by directives, enforced by the framework, and made invisible to the developer who treats it correctly.\",\"mental_model\":\"|\",\"purpose\":\"|\",\"boundary\":\"|\",\"taxonomy\":\"|\",\"analogy\":\"|\",\"misconception\":\"|\"}"
-  structural_verdict: UNVERIFIED
-  truth_verdict: UNVERIFIED
+  structural_verdict: PASS
+  truth_verdict: PASS
   comprehension_verdict: UNVERIFIED
   application_verdict: UNVERIFIED
+  last_audited: "2026-05-28"
+  lint_verdict: PASS
   skill_graph_source_repo: "https://github.com/jacob-balslev/skill-graph"
   skill_graph_project: Skill Graph
   skill_graph_canonical_skill: skills/frontend-ui/client-server-boundary/SKILL.md

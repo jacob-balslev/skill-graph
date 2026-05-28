@@ -6,12 +6,9 @@ allowed-tools: Read Grep
 metadata:
   schema_version: "8"
   version: "1.0.0"
-  type: capability
-  operation: know
-  category: quality
   subject: quality-assurance
-  domain: quality/security
-  scope: workspace
+  deployment_target: portable
+  taxonomy_domain: quality/security
   owner: skill-graph-maintainer
   freshness: "2026-05-16"
   drift_check: "{\"last_verified\":\"2026-05-16\"}"
@@ -31,10 +28,12 @@ metadata:
   analogy: "Prompt injection defense is to LLM-integrated systems what blast walls are to fuel depots — you cannot prevent the fuel from being flammable (the structural property), so you do not try; you build the walls so that an ignition contains itself, the radius is bounded, and the rest of the depot survives. The walls are the architectural defense; the model's susceptibility is the fuel's flammability — a property of its physics, not a bug to fix."
   misconception: "|"
   concept: "{\"definition\":\"This attack class describes systems where untrusted content placed within a language model's input causes the model to follow attacker-controlled directives instead of, or in addition to, the application's legitimate ones. It is a structural property of how transformer-based language models consume their input — every token in the context window contributes to the next-token prediction, and the model has no reliable mechanism to distinguish 'directives from the application developer' from 'directives in a document the application happens to have loaded.' Defense, therefore, is not elimination of the vulnerability but architectural containment of its blast radius.\",\"mental_model\":\"|\",\"purpose\":\"|\",\"boundary\":\"|\",\"taxonomy\":\"|\",\"analogy\":\"|\",\"misconception\":\"|\"}"
-  structural_verdict: UNVERIFIED
-  truth_verdict: UNVERIFIED
+  structural_verdict: PASS
+  truth_verdict: PASS
   comprehension_verdict: UNVERIFIED
   application_verdict: UNVERIFIED
+  last_audited: "2026-05-28"
+  lint_verdict: PASS
   skill_graph_source_repo: "https://github.com/jacob-balslev/skill-graph"
   skill_graph_project: Skill Graph
   skill_graph_canonical_skill: skills/quality-assurance/prompt-injection-defense/SKILL.md

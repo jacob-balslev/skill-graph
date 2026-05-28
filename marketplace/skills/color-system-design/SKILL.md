@@ -5,11 +5,8 @@ license: CC-BY-4.0
 metadata:
   schema_version: "8"
   version: "1.0.0"
-  type: capability
-  operation: know
-  category: design
   subject: design-craft
-  scope: portable
+  deployment_target: portable
   owner: skill-graph-maintainer
   freshness: "2026-05-12"
   drift_check: "{\"last_verified\":\"2026-05-12\"}"
@@ -22,10 +19,12 @@ metadata:
   examples: "[\"Build a 10-step color scale from a brand seed color with perceptually even lightness steps\",\"Map semantic intents (success, warning, danger, info) to scale colors with WCAG AA contrast against both light and dark surfaces\",\"Audit an existing palette for AA contrast failures and propose minimal changes\"]"
   anti_examples: "[\"Pick the brand's primary color from scratch with no constraints\",\"Implement the prefers-color-scheme media query and toggle UI\",\"Choose spacing values for the layout grid\"]"
   relations: "{\"related\":[\"theme-system-design\",\"dark-mode-implementation\",\"visual-design-foundations\",\"a11y\"],\"boundary\":[{\"skill\":\"theme-system-design\",\"reason\":\"theme-system-design structures how color decisions become tokens and reach components; this skill produces those color decisions.\"},{\"skill\":\"a11y\",\"reason\":\"a11y owns the WCAG criteria themselves; this skill applies them when constructing palettes and selecting pairings.\"}]}"
-  structural_verdict: UNVERIFIED
-  truth_verdict: UNVERIFIED
+  structural_verdict: PASS
+  truth_verdict: PASS
   comprehension_verdict: UNVERIFIED
   application_verdict: UNVERIFIED
+  last_audited: "2026-05-28"
+  lint_verdict: PASS
   skill_graph_source_repo: "https://github.com/jacob-balslev/skill-graph"
   skill_graph_project: Skill Graph
   skill_graph_canonical_skill: skills/design-craft/color-system-design/SKILL.md

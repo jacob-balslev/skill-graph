@@ -6,12 +6,9 @@ allowed-tools: Read Grep
 metadata:
   schema_version: "8"
   version: "1.0.0"
-  type: capability
-  operation: know
-  category: quality
   subject: quality-assurance
-  domain: quality/testing
-  scope: workspace
+  deployment_target: portable
+  taxonomy_domain: quality/testing
   owner: skill-graph-maintainer
   freshness: "2026-05-16"
   drift_check: "{\"last_verified\":\"2026-05-16\"}"
@@ -31,10 +28,12 @@ metadata:
   analogy: "An e2e test is to a software system what a flight rehearsal is to a launch — you do not certify a rocket by testing each bolt in a clean room (units), nor by firing each engine in isolation (integration), nor by writing a specification of what the avionics should do (contract); you certify it by performing the entire launch sequence, with real fuel, against a real flight plan, with the actual crew, and you do this rarely because each rehearsal costs millions and ten high-fidelity rehearsals tell you more than a thousand quick ones."
   misconception: "|"
   concept: "{\"definition\":\"End-to-end (e2e) test design is the discipline of designing tests that exercise a complete user-visible path through the entire system — the UI, the application layer, the data layer, external integrations, and back. The unit of test is the *user journey*: a sequence of user actions and the observable outcomes the user experiences. E2e tests are the highest-scope tier of the test pyramid (or trophy) — the fewest in count, the slowest per test, the most user-meaningful per test. Their value is the confidence that the system, assembled, works for a real user task; their cost is real and growing with the system's complexity. The discipline of e2e test design is keeping the count small enough that the cost stays manageable while keeping the coverage broad enough that the tests are load-bearing evidence the system works for users.\",\"mental_model\":\"|\",\"purpose\":\"|\",\"boundary\":\"|\",\"taxonomy\":\"|\",\"analogy\":\"|\",\"misconception\":\"|\"}"
-  structural_verdict: UNVERIFIED
-  truth_verdict: UNVERIFIED
+  structural_verdict: PASS
+  truth_verdict: PASS
   comprehension_verdict: UNVERIFIED
   application_verdict: UNVERIFIED
+  last_audited: "2026-05-28"
+  lint_verdict: PASS
   skill_graph_source_repo: "https://github.com/jacob-balslev/skill-graph"
   skill_graph_project: Skill Graph
   skill_graph_canonical_skill: skills/quality-assurance/e2e-test-design/SKILL.md

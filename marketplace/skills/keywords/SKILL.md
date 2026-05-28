@@ -5,16 +5,13 @@ license: MIT
 compatibility: Portable keyword research and marketplace keyword-mapping guidance. Platform limits and field names can drift; verify against current marketplace docs before high-stakes listing work.
 allowed-tools: Read Grep Bash
 metadata:
-  grounding: "{\"domain_object\":\"Keyword research, intent mapping, topical clustering, and marketplace/search field translation for public e-commerce, marketplace, SaaS, and content surfaces\",\"grounding_mode\":\"universal\",\"truth_sources\":[\"https://help.etsy.com/hc/en-gb/articles/360000336307-How-to-Use-Tags-to-Get-Found-in-Search\",\"https://help.etsy.com/hc/en-us/articles/115015628707-How-to-Create-a-Listing\",\"https://sellercentral.amazon.com/seller-forums/discussions/t/923d53dc-a182-4475-a164-6b2500dbaf2d\",\"https://sellercentral.amazon.com/seller-forums/discussions/t/b2b15728-0d43-453e-974f-59eb63f73059/\",\"https://developers.google.com/search/docs/appearance/title-link\",\"https://developers.google.com/search/docs/appearance/snippet\",\"https://help.shopify.com/en/manual/promoting-marketing/seo/adding-keywords\",\"https://help.shopify.com/en/manual/promoting-marketing/seo/seo-overview\"],\"failure_modes\":[\"keyword_stuffing_mistaken_for_strategy\",\"platform_field_limits_drift_silently\",\"marketplace_tags_padded_with_irrelevant_terms\",\"amazon_search_terms_repeat_title_or_brand_fields\",\"shopify_keyword_guidance_ignores_readability\",\"intent_mapping_skipped_before_page_or_listing_targeting\",\"cannibalization_collapses_distinct_search_intents\",\"rank_tracking_claims_made_without_baseline_or_cadence\",\"keyword_skill_overowns_seo_implementation_finished_prose_or_information_architecture\"],\"evidence_priority\":\"equal\"}"
+  grounding: "{\"subject_matter\":\"Keyword research, intent mapping, topical clustering, and marketplace/search field translation for public e-commerce, marketplace, SaaS, and content surfaces\",\"grounding_mode\":\"universal\",\"truth_sources\":[\"https://help.etsy.com/hc/en-gb/articles/360000336307-How-to-Use-Tags-to-Get-Found-in-Search\",\"https://help.etsy.com/hc/en-us/articles/115015628707-How-to-Create-a-Listing\",\"https://sellercentral.amazon.com/seller-forums/discussions/t/923d53dc-a182-4475-a164-6b2500dbaf2d\",\"https://sellercentral.amazon.com/seller-forums/discussions/t/b2b15728-0d43-453e-974f-59eb63f73059/\",\"https://developers.google.com/search/docs/appearance/title-link\",\"https://developers.google.com/search/docs/appearance/snippet\",\"https://help.shopify.com/en/manual/promoting-marketing/seo/adding-keywords\",\"https://help.shopify.com/en/manual/promoting-marketing/seo/seo-overview\"],\"failure_modes\":[\"keyword_stuffing_mistaken_for_strategy\",\"platform_field_limits_drift_silently\",\"marketplace_tags_padded_with_irrelevant_terms\",\"amazon_search_terms_repeat_title_or_brand_fields\",\"shopify_keyword_guidance_ignores_readability\",\"intent_mapping_skipped_before_page_or_listing_targeting\",\"cannibalization_collapses_distinct_search_intents\",\"rank_tracking_claims_made_without_baseline_or_cadence\",\"keyword_skill_overowns_seo_implementation_finished_prose_or_information_architecture\"],\"evidence_priority\":\"equal\"}"
   drift_check: "{\"last_verified\":\"2026-05-19\"}"
   schema_version: "8"
   version: "1.2.0"
-  type: capability
-  operation: know
-  category: product
   subject: product-domain
-  domain: product/search
-  scope: portable
+  deployment_target: portable
+  taxonomy_domain: product/search
   owner: skill-graph-maintainer
   freshness: "2026-05-19"
   eval_artifacts: planned
@@ -35,10 +32,12 @@ metadata:
   analogy: "Keyword research is like translating customer demand into a shelf map: each phrase tells you where a shopper is looking, but the shelf still needs good products, labels, layout, and measurement."
   misconception: "The common mistake is treating keywords as magic words to repeat. Search systems reward relevance, clarity, and satisfaction signals; repeated or irrelevant terms can waste fields, confuse readers, and make pages compete with each other."
   concept: "{\"definition\":\"Keyword research is the practice of discovering search language, classifying the intent behind it, grouping related terms, assigning each group to the right page or listing surface, and tracking visibility after changes.\",\"mental_model\":\"Treat keywords as demand signals, not incantations. A query suggests intent, vocabulary, competition, and platform field constraints; the work is to translate that signal into one clear target per page or listing.\",\"purpose\":\"It helps agents and teams choose what to target before building pages or writing copy, avoid cannibalization, respect marketplace limits, and measure whether keyword changes improved discovery.\",\"boundary\":\"It does not implement SEO page architecture, write final copy, design information architecture, audit technical SEO, or promise ranking outcomes.\",\"taxonomy\":\"Core moves include seed expansion, query-source capture, volume/difficulty/context review, intent classification, SERP or marketplace result inspection, semantic clustering, page/listing assignment, platform field translation, cannibalization checks, and rank tracking.\",\"analogy\":\"It is a shelf map for demand: it shows which aisle shoppers search in and what label they expect, but it does not manufacture the product or guarantee the sale.\",\"misconception\":\"More keywords is not better. Better means the right query language mapped to the right surface with readable, policy-safe, non-duplicative usage.\"}"
-  structural_verdict: UNVERIFIED
+  structural_verdict: PASS
   truth_verdict: UNVERIFIED
   comprehension_verdict: UNVERIFIED
   application_verdict: UNVERIFIED
+  last_audited: "2026-05-28"
+  lint_verdict: PASS
   skill_graph_source_repo: "https://github.com/jacob-balslev/skill-graph"
   skill_graph_project: Skill Graph
   skill_graph_canonical_skill: skills/product-domain/keywords/SKILL.md

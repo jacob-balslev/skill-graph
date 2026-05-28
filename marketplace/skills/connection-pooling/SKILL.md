@@ -6,12 +6,9 @@ allowed-tools: Read Grep
 metadata:
   schema_version: "8"
   version: "1.0.0"
-  type: capability
-  operation: do
-  category: engineering
   subject: code-engineering
-  domain: engineering/data
-  scope: workspace
+  deployment_target: portable
+  taxonomy_domain: engineering/data
   owner: skill-graph-maintainer
   freshness: "2026-05-16"
   drift_check: "{\"last_verified\":\"2026-05-16\"}"
@@ -31,10 +28,12 @@ metadata:
   analogy: "A connection pool is to a database what a taxi rank is to an airport — every taxi has a standing cost (driver salary, fuel, parking space); a rank with too few taxis leaves passengers queuing on the curb; a rank with too many burns money on idle taxis and clogs the access road. The right number is the smallest that doesn't queue under peak arrival rate, sized by how long each taxi trip actually takes — and adding more taxis doesn't make the trips faster, it just lets more start at once."
   misconception: "|"
   concept: "{\"definition\":\"Connection pooling is the discipline of managing a finite set of database connections shared across many application threads, requests, or processes, because opening a database connection is expensive (network round-trips, authentication, session setup) and every open connection consumes server resources (a process or thread, memory for buffers and catalog state, locks on shared structures). The pool's job is to keep a small, sized-for-workload number of connections open, hand them out to application units of work for the brief time they need them, and return them to the pool. Pooling can happen at the application layer (in-process pool like HikariCP, pgx pool, node-postgres Pool) or at the proxy layer (an external service like PgBouncer or ProxySQL that multiplexes many client connections onto a smaller set of upstream database connections). The pooling mode (session, transaction, statement) determines what feature compatibility the pool preserves and what failure modes the application must handle. The pool size is a *throughput cap*, not a resource budget; sizing it correctly per Little's Law (concurrency = throughput × latency) is the central operational decision.\",\"mental_model\":\"|\",\"purpose\":\"|\",\"boundary\":\"|\",\"taxonomy\":\"|\",\"analogy\":\"|\",\"misconception\":\"|\"}"
-  structural_verdict: UNVERIFIED
-  truth_verdict: UNVERIFIED
+  structural_verdict: PASS
+  truth_verdict: PASS
   comprehension_verdict: UNVERIFIED
   application_verdict: UNVERIFIED
+  last_audited: "2026-05-28"
+  lint_verdict: PASS
   skill_graph_source_repo: "https://github.com/jacob-balslev/skill-graph"
   skill_graph_project: Skill Graph
   skill_graph_canonical_skill: skills/code-engineering/connection-pooling/SKILL.md

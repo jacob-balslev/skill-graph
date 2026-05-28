@@ -7,12 +7,9 @@ allowed-tools: Read Grep Bash Edit
 metadata:
   schema_version: "8"
   version: "1.1.0"
-  type: capability
-  operation: know
-  category: engineering
   subject: code-engineering
-  domain: engineering/observability
-  scope: portable
+  deployment_target: portable
+  taxonomy_domain: engineering/observability
   owner: skill-graph-maintainer
   freshness: "2026-05-18"
   drift_check: "{\"last_verified\":\"2026-05-18\"}"
@@ -24,13 +21,15 @@ metadata:
   examples: "[\"set up exception reporting for a new React + Next.js application\",\"add a route-level error boundary that recovers gracefully and still reports\",\"the error tracker is showing customer emails in event payloads — fix the PII leak\",\"wrap captureException in a centralized reporter that adds environment gating\",\"audit the error pipeline — confirm every layer eventually reaches the tracker\",\"decide where error boundaries should live: component, section, route, or app-global\",\"implement PII sanitization for error payloads before they hit the tracker SDK\",\"set user context (internal id, org id, role) on errors without sending email or name\"]"
   anti_examples: "[\"design accessible error-message copy and recovery UI for the 404 page\",\"the boundary fired but the tracker shows no event — root-cause it\",\"explain our error-tracking architecture in the contributor docs\",\"review this AI-generated error handler for correctness\",\"decide if the new error path needs an integration regression test\",\"design our overall PII storage and retention policy across the system\",\"refactor the error-helper module for clarity\"]"
   relations: "{\"boundary\":[{\"skill\":\"debugging\",\"reason\":\"debugging chases an observed failure already in the tracker; error-tracking designs the pipeline that captures and routes failures in the first place\"},{\"skill\":\"owasp-security\",\"reason\":\"owasp-security owns the cross-cutting PII and credential-handling policy; error-tracking owns the request-time sanitization that error payloads pass through before leaving the application\"},{\"skill\":\"a11y\",\"reason\":\"a11y owns the user-visible error UX (message copy, focus management, screen-reader announcements); error-tracking owns the engineering pipeline behind the error boundary\"},{\"skill\":\"refactor\",\"reason\":\"refactor reorganizes existing code while preserving behavior; error-tracking changes the *behavior* of the error pipeline (where it reports, what it sanitizes, how layers compose)\"}],\"related\":[\"debugging\",\"owasp-security\",\"a11y\",\"code-review\",\"testing-strategy\"],\"verify_with\":[\"code-review\",\"testing-strategy\"]}"
-  grounding: "{\"domain_object\":\"Application exception-reporting pipeline design across boundaries, tracker wrappers, sanitization, user context, breadcrumbs, and environment gates\",\"grounding_mode\":\"universal\",\"truth_sources\":[\"https://nextjs.org/docs/app/getting-started/error-handling\",\"https://docs.sentry.io/platforms/javascript/configuration/environments/\",\"https://docs.sentry.io/platforms/javascript/guides/koa/data-management/data-collected/\",\"https://cheatsheetseries.owasp.org/cheatsheets/Logging_Cheat_Sheet.html\"],\"failure_modes\":[\"route_fallback_renders_recovery_ui_but_never_reports\",\"manual_async_error_path_logs_locally_only\",\"payload_or_breadcrumb_leaks_pii_or_secrets\",\"tracker_sdk_imported_directly_at_many_call_sites\",\"user_context_uses_email_name_phone_or_ip_instead_of_internal_ids\",\"test_environment_bypasses_sanitization_wrapper\"],\"evidence_priority\":\"equal\"}"
+  grounding: "{\"subject_matter\":\"Application exception-reporting pipeline design across boundaries, tracker wrappers, sanitization, user context, breadcrumbs, and environment gates\",\"grounding_mode\":\"universal\",\"truth_sources\":[\"https://nextjs.org/docs/app/getting-started/error-handling\",\"https://docs.sentry.io/platforms/javascript/configuration/environments/\",\"https://docs.sentry.io/platforms/javascript/guides/koa/data-management/data-collected/\",\"https://cheatsheetseries.owasp.org/cheatsheets/Logging_Cheat_Sheet.html\"],\"failure_modes\":[\"route_fallback_renders_recovery_ui_but_never_reports\",\"manual_async_error_path_logs_locally_only\",\"payload_or_breadcrumb_leaks_pii_or_secrets\",\"tracker_sdk_imported_directly_at_many_call_sites\",\"user_context_uses_email_name_phone_or_ip_instead_of_internal_ids\",\"test_environment_bypasses_sanitization_wrapper\"],\"evidence_priority\":\"equal\"}"
   portability: "{\"readiness\":\"scripted\",\"targets\":[\"skill-md\"]}"
   lifecycle: "{\"stale_after_days\":90,\"review_cadence\":\"quarterly\"}"
-  structural_verdict: UNVERIFIED
+  structural_verdict: PASS
   truth_verdict: UNVERIFIED
   comprehension_verdict: UNVERIFIED
   application_verdict: UNVERIFIED
+  last_audited: "2026-05-28"
+  lint_verdict: PASS
   skill_graph_source_repo: "https://github.com/jacob-balslev/skill-graph"
   skill_graph_project: Skill Graph
   skill_graph_canonical_skill: skills/code-engineering/error-tracking/SKILL.md

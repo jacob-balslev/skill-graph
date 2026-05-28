@@ -5,11 +5,8 @@ license: CC-BY-4.0
 metadata:
   schema_version: "8"
   version: "1.0.0"
-  type: capability
-  operation: know
-  category: design
   subject: design-craft
-  scope: portable
+  deployment_target: portable
   owner: skill-graph-maintainer
   freshness: "2026-05-12"
   drift_check: "{\"last_verified\":\"2026-05-12\"}"
@@ -22,10 +19,12 @@ metadata:
   examples: "[\"We have user interviews done but no synthesis yet — which design-thinking stage are we in and what's next?\",\"Plan a full design-thinking arc for a four-week project on rural healthcare access.\",\"We just finished a usability test and three findings broke our framing — should we loop back to define?\",\"Route this brief to the right stage-specific skill: 'help us figure out what to build for new homeowners'.\"]"
   anti_examples: "[\"Run a single crazy-8s round on this specific how-might-we.\",\"Write the React component for the dashboard widget.\",\"Model the bounded contexts for the order-fulfillment domain.\"]"
   relations: "{\"related\":[\"problem-framing\",\"user-research\",\"research-synthesis\",\"journey-mapping\",\"ideation\",\"prototyping\",\"usability-testing\"],\"boundary\":[{\"skill\":\"event-storming\",\"reason\":\"event-storming is a collaborative engineering discovery practice for mapping domain events, commands, and aggregates with developers and domain experts. design-thinking orchestrates a human-centered design arc with users at the center. Both are 'discovery' practices but they differ in subject (system vs. human), participants, and output.\"},{\"skill\":\"problem-locating-solving\",\"reason\":\"problem-locating-solving handles concrete code-level bug localization. design-thinking handles the upstream open-ended question of what should be designed at all — different problem class entirely.\"}]}"
-  structural_verdict: UNVERIFIED
-  truth_verdict: UNVERIFIED
+  structural_verdict: PASS
+  truth_verdict: PASS
   comprehension_verdict: UNVERIFIED
   application_verdict: UNVERIFIED
+  last_audited: "2026-05-28"
+  lint_verdict: PASS
   skill_graph_source_repo: "https://github.com/jacob-balslev/skill-graph"
   skill_graph_project: Skill Graph
   skill_graph_canonical_skill: skills/design-craft/design-thinking/SKILL.md

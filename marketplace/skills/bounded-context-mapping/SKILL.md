@@ -7,12 +7,9 @@ allowed-tools: Read Grep
 metadata:
   schema_version: "8"
   version: "1.0.0"
-  type: capability
-  operation: know
-  category: engineering
   subject: code-engineering
-  domain: architecture/domain-boundaries
-  scope: portable
+  deployment_target: portable
+  taxonomy_domain: architecture/domain-boundaries
   owner: skill-graph-maintainer
   freshness: "2026-05-11"
   drift_check: "{\"last_verified\":\"2026-05-11\"}"
@@ -26,10 +23,12 @@ metadata:
   relations: "{\"boundary\":[{\"skill\":\"conceptual-modeling\",\"reason\":\"conceptual-modeling discovers domain structure before DDD boundary ownership is assigned\"},{\"skill\":\"data-modeling\",\"reason\":\"data-modeling owns persistence structure after context boundaries inform ownership\"},{\"skill\":\"api-design\",\"reason\":\"api-design owns external endpoint shape; bounded-context-mapping owns domain ownership and translation boundaries\"},{\"skill\":\"architecture-decision-records\",\"reason\":\"architecture-decision-records records a chosen decision; bounded-context-mapping analyzes the boundary before the decision is recorded\"}],\"related\":[\"event-storming\",\"system-interface-contracts\",\"conceptual-modeling\",\"architecture-decision-records\"],\"depends_on\":[\"conceptual-modeling\"],\"verify_with\":[\"semantic-relations\",\"system-interface-contracts\"]}"
   portability: "{\"readiness\":\"scripted\",\"targets\":[\"skill-md\"]}"
   lifecycle: "{\"stale_after_days\":365,\"review_cadence\":\"quarterly\"}"
-  structural_verdict: UNVERIFIED
-  truth_verdict: UNVERIFIED
+  structural_verdict: PASS
+  truth_verdict: PASS
   comprehension_verdict: UNVERIFIED
   application_verdict: UNVERIFIED
+  last_audited: "2026-05-28"
+  lint_verdict: PASS
   skill_graph_source_repo: "https://github.com/jacob-balslev/skill-graph"
   skill_graph_project: Skill Graph
   skill_graph_canonical_skill: skills/code-engineering/bounded-context-mapping/SKILL.md

@@ -6,12 +6,9 @@ allowed-tools: Read Grep
 metadata:
   schema_version: "8"
   version: "1.0.0"
-  type: capability
-  operation: know
-  category: engineering
   subject: code-engineering
-  domain: engineering/data
-  scope: workspace
+  deployment_target: portable
+  taxonomy_domain: engineering/data
   owner: skill-graph-maintainer
   freshness: "2026-05-16"
   drift_check: "{\"last_verified\":\"2026-05-16\"}"
@@ -31,10 +28,12 @@ metadata:
   analogy: "CAP is to a distributed database what the Heisenberg uncertainty principle is to physics — you cannot simultaneously have a fully consistent reading and a fully available reading when the network has partitioned, just as you cannot simultaneously measure a precise position and a precise momentum. The trade-off is not a limit of the engineering, it is a limit of the physics; pretending otherwise is the source of every 'CA' system that claims to defy CAP and chooses one side anyway on its first partition."
   misconception: "|"
   concept: "{\"definition\":\"CAP is the theorem (Brewer 2000 as a conjecture; Gilbert & Lynch 2002 as a formal proof) that, in a distributed data system, you cannot simultaneously guarantee all three of: Consistency (every read returns the most recent write or an error), Availability (every request receives a non-error response), Partition tolerance (the system continues despite arbitrary message loss between nodes). Since real-world networks can and do partition, P is not optional — the choice is between C and A *during a partition*. A CP system refuses to serve some requests during partition to preserve consistency; an AP system serves all requests but may return stale data. PACELC (Abadi 2010) extends CAP by naming the *Else* case: even without partition, the system must trade Latency against Consistency, because synchronous replication for strong consistency takes time. The discipline is choosing C-vs-A *intentionally per workload*, knowing that P is given by physics and that even outside partition, latency-vs-consistency is a continuous choice.\",\"mental_model\":\"|\",\"purpose\":\"|\",\"boundary\":\"|\",\"taxonomy\":\"|\",\"analogy\":\"|\",\"misconception\":\"|\"}"
-  structural_verdict: UNVERIFIED
-  truth_verdict: UNVERIFIED
+  structural_verdict: PASS
+  truth_verdict: PASS
   comprehension_verdict: UNVERIFIED
   application_verdict: UNVERIFIED
+  last_audited: "2026-05-28"
+  lint_verdict: PASS
   skill_graph_source_repo: "https://github.com/jacob-balslev/skill-graph"
   skill_graph_project: Skill Graph
   skill_graph_canonical_skill: skills/code-engineering/cap-theorem-tradeoffs/SKILL.md

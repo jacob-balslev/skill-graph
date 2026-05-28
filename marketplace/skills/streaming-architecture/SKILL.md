@@ -6,12 +6,9 @@ allowed-tools: Read Grep
 metadata:
   schema_version: "8"
   version: "1.0.0"
-  type: capability
-  operation: do
-  category: engineering
   subject: frontend-ui
-  domain: engineering/realtime
-  scope: workspace
+  deployment_target: portable
+  taxonomy_domain: engineering/realtime
   owner: skill-graph-maintainer
   freshness: "2026-05-16"
   drift_check: "{\"last_verified\":\"2026-05-16\"}"
@@ -31,10 +28,12 @@ metadata:
   analogy: "A streaming architecture is to data delivery what a conveyor belt is to a factory's order fulfillment — you do not wait for an entire shipment to be assembled before any piece leaves the warehouse; the belt moves boxes one at a time, the loading dock signals when it's full (backpressure), a final marker indicates the shipment is complete (termination), and the receiving truck can start unloading the first box while the last one is still being assembled. A conveyor with no full-dock signal flings boxes onto the floor; a conveyor with no end-marker keeps the truck driver waiting forever."
   misconception: "|"
   concept: "{\"definition\":\"A streaming architecture is one where a producer emits a sequence of values over time and a consumer processes them incrementally, with an explicit flow-control signal (backpressure) regulating the rate between them. The architecture decouples production speed from consumption speed and makes partial results observable before the producer finishes — or before the producer is even known to terminate.\",\"mental_model\":\"|\",\"purpose\":\"|\",\"boundary\":\"|\",\"taxonomy\":\"|\",\"analogy\":\"|\",\"misconception\":\"|\"}"
-  structural_verdict: UNVERIFIED
-  truth_verdict: UNVERIFIED
+  structural_verdict: PASS
+  truth_verdict: PASS
   comprehension_verdict: UNVERIFIED
   application_verdict: UNVERIFIED
+  last_audited: "2026-05-28"
+  lint_verdict: PASS
   skill_graph_source_repo: "https://github.com/jacob-balslev/skill-graph"
   skill_graph_project: Skill Graph
   skill_graph_canonical_skill: skills/frontend-ui/streaming-architecture/SKILL.md

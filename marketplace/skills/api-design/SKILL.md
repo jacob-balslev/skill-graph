@@ -7,12 +7,9 @@ allowed-tools: Read Grep
 metadata:
   schema_version: "8"
   version: "1.0.0"
-  type: capability
-  operation: know
-  category: engineering
   subject: product-domain
-  domain: engineering/api-design
-  scope: portable
+  deployment_target: portable
+  taxonomy_domain: engineering/api-design
   owner: skill-graph-maintainer
   freshness: "2026-05-11"
   drift_check: "{\"last_verified\":\"2026-05-11\"}"
@@ -26,10 +23,12 @@ metadata:
   relations: "{\"boundary\":[{\"skill\":\"system-interface-contracts\",\"reason\":\"system-interface-contracts owns interface contracts across any boundary; api-design owns API endpoint shape and HTTP semantics\"},{\"skill\":\"event-contract-design\",\"reason\":\"event-contract-design owns asynchronous event and message contracts; api-design owns HTTP request/response surfaces\"},{\"skill\":\"data-modeling\",\"reason\":\"data-modeling owns persistence shape; api-design owns external representation and operation shape\"},{\"skill\":\"webhook-integration\",\"reason\":\"webhook-integration owns inbound provider webhooks; api-design owns APIs the system exposes or calls by contract\"},{\"skill\":\"debugging\",\"reason\":\"debugging owns known endpoint failures; api-design owns pre-implementation surface design\"}],\"related\":[\"system-interface-contracts\",\"data-modeling\",\"testing-strategy\",\"webhook-integration\",\"event-contract-design\"],\"verify_with\":[\"testing-strategy\",\"code-review\"]}"
   portability: "{\"readiness\":\"scripted\",\"targets\":[\"skill-md\"]}"
   lifecycle: "{\"stale_after_days\":365,\"review_cadence\":\"quarterly\"}"
-  structural_verdict: UNVERIFIED
-  truth_verdict: UNVERIFIED
+  structural_verdict: PASS
+  truth_verdict: PASS
   comprehension_verdict: UNVERIFIED
   application_verdict: UNVERIFIED
+  last_audited: "2026-05-28"
+  lint_verdict: PASS
   skill_graph_source_repo: "https://github.com/jacob-balslev/skill-graph"
   skill_graph_project: Skill Graph
   skill_graph_canonical_skill: skills/product-domain/api-design/SKILL.md

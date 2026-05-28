@@ -7,12 +7,9 @@ allowed-tools: Read Grep
 metadata:
   schema_version: "8"
   version: "1.1.0"
-  type: capability
-  operation: do
-  category: foundations
   subject: meta-methods
-  domain: foundations/strategy
-  scope: portable
+  deployment_target: portable
+  taxonomy_domain: foundations/strategy
   owner: skill-graph-maintainer
   freshness: "2026-05-16"
   drift_check: "{\"last_verified\":\"2026-05-16\"}"
@@ -33,10 +30,12 @@ metadata:
   analogy: "Constraint awareness is to AI-coding what Drum-Buffer-Rope is to a factory floor — the slowest machine on the line sets the pace for the whole plant; speeding up the other machines just piles inventory in front of the bottleneck. Adding more agents to an AI-coding team where review bandwidth is the constraint is the same as buying faster CNC mills when the constraint is the inspection station — the parts pile up at inspection, the lead time gets worse, and the new mills look efficient locally while the whole shop ships less per day."
   misconception: "|"
   concept: "{\"definition\":\"Constraint awareness is the discipline of identifying the single resource that limits a system's throughput at any given time, and routing all improvement work through that resource. Drawn from Eliyahu Goldratt's Theory of Constraints (1984), it treats systems as throughput pipelines whose total output is bounded by their narrowest section — and treats local optimization of non-constraints as effort that produces no system-level gain.\",\"mental_model\":\"|\",\"purpose\":\"|\",\"boundary\":\"|\",\"taxonomy\":\"|\",\"analogy\":\"|\",\"misconception\":\"|\"}"
-  structural_verdict: UNVERIFIED
-  truth_verdict: UNVERIFIED
+  structural_verdict: PASS
+  truth_verdict: PASS
   comprehension_verdict: UNVERIFIED
   application_verdict: UNVERIFIED
+  last_audited: "2026-05-28"
+  lint_verdict: PASS
   skill_graph_source_repo: "https://github.com/jacob-balslev/skill-graph"
   skill_graph_project: Skill Graph
   skill_graph_canonical_skill: skills/meta-methods/constraint-awareness/SKILL.md

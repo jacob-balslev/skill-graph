@@ -6,12 +6,9 @@ allowed-tools: Read Grep
 metadata:
   schema_version: "8"
   version: "1.0.0"
-  type: capability
-  operation: do
-  category: quality
   subject: quality-assurance
-  domain: quality/security
-  scope: workspace
+  deployment_target: portable
+  taxonomy_domain: quality/security
   owner: skill-graph-maintainer
   freshness: "2026-05-16"
   drift_check: "{\"last_verified\":\"2026-05-16\"}"
@@ -31,10 +28,12 @@ metadata:
   analogy: "Security fundamentals is to a software system what structural engineering is to a building — load-bearing walls, fire egress, electrical isolation, foundation depth are not features added after the building works; they are properties of the design from the first sketch, and retrofitting them costs ten times more and produces worse results than designing them in. A building that survives an earthquake does so because of decisions made at the structural-engineering stage, not because of decorations added later."
   misconception: "|"
   concept: "{\"definition\":\"Security fundamentals are the cross-cutting design principles, threat-modeling discipline, and recurring vulnerability classes that determine whether a system can be trusted to handle data, identity, and authority safely under adversarial conditions. The discipline is upstream of any specific vulnerability or vendor tool: it asks 'what are we protecting,' 'from whom,' 'what could go wrong,' and 'what's the cost if it does' before any implementation choice is made. Security fundamentals are not a feature added after the system works; they are a property of the design from the first commit, encoded in trust boundaries, validation choices, default permissions, and the placement of authentication and authorization checks. The discipline acknowledges that perfect security is impossible (any system can be attacked given sufficient resources and time), so the goal is to make attacks expensive, traceable, and limited in blast radius — defense in depth rather than perimeter security, least privilege rather than convenience, secure defaults rather than opt-in protections.\",\"mental_model\":\"|\",\"purpose\":\"|\",\"boundary\":\"|\",\"taxonomy\":\"|\",\"analogy\":\"|\",\"misconception\":\"|\"}"
-  structural_verdict: UNVERIFIED
-  truth_verdict: UNVERIFIED
+  structural_verdict: PASS
+  truth_verdict: PASS
   comprehension_verdict: UNVERIFIED
   application_verdict: UNVERIFIED
+  last_audited: "2026-05-28"
+  lint_verdict: PASS
   skill_graph_source_repo: "https://github.com/jacob-balslev/skill-graph"
   skill_graph_project: Skill Graph
   skill_graph_canonical_skill: skills/quality-assurance/security-fundamentals/SKILL.md

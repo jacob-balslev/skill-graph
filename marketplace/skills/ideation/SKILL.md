@@ -5,11 +5,8 @@ license: CC-BY-4.0
 metadata:
   schema_version: "8"
   version: "1.0.0"
-  type: capability
-  operation: know
-  category: design
   subject: design-craft
-  scope: portable
+  deployment_target: portable
   owner: skill-graph-maintainer
   freshness: "2026-05-12"
   drift_check: "{\"last_verified\":\"2026-05-12\"}"
@@ -22,10 +19,12 @@ metadata:
   examples: "[\"Run a crazy-8s round on this how-might-we statement and produce a divergent set.\",\"Apply SCAMPER to this existing feature to generate variant concepts.\",\"Use dot voting and an impact/effort matrix to converge on three concepts to prototype.\",\"Help me set up a worst-possible-idea round to break the team out of solution fixation.\"]"
   anti_examples: "[\"Decide whether to invest in this feature for the next quarter.\",\"Model the bounded contexts for the order-fulfillment domain.\",\"Write the production code for the selected concept.\"]"
   relations: "{\"related\":[\"problem-framing\",\"prototyping\",\"design-thinking\"],\"boundary\":[{\"skill\":\"event-storming\",\"reason\":\"event-storming is a collaborative engineering discovery practice for mapping domain events and aggregates. ideation generates user-facing concept variants and applies divergent/convergent selection — different purpose, different output, different participants.\"},{\"skill\":\"conceptual-modeling\",\"reason\":\"conceptual-modeling produces a single best model of a domain. ideation deliberately produces many alternatives before selecting — opposite epistemic stance.\"}]}"
-  structural_verdict: UNVERIFIED
-  truth_verdict: UNVERIFIED
+  structural_verdict: PASS
+  truth_verdict: PASS
   comprehension_verdict: UNVERIFIED
   application_verdict: UNVERIFIED
+  last_audited: "2026-05-28"
+  lint_verdict: PASS
   skill_graph_source_repo: "https://github.com/jacob-balslev/skill-graph"
   skill_graph_project: Skill Graph
   skill_graph_canonical_skill: skills/design-craft/ideation/SKILL.md

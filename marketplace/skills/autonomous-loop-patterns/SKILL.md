@@ -3,13 +3,10 @@ name: autonomous-loop-patterns
 description: "Use when designing, reviewing, or debugging an autonomous AI agent loop: repeated agent execution, completion signals, checkpoints, supervisor respawn, stall detection, safety caps, and human handoff rules. Covers the core loop patterns from simple bounded runs through sentinel-based continuation, checkpoint-resume, and external supervisor loops. Do NOT use for choosing a specific agent product command (use agent-engineering or the product's docs), writing ordinary task instructions (use prompt-craft), or optimizing individual tool calls (use tool-call-strategy). Do NOT use for full production agent-system architecture (use agent-engineering)."
 metadata:
   schema_version: "7"
-  type: capability
-  operation: know
   subject: agent-ops
+  deployment_target: portable
   version: "1.3.0"
-  scope: portable
-  category: agent
-  domain: agent/loop-design
+  taxonomy_domain: agent/loop-design
   eval_artifacts: present
   eval_state: unverified
   routing_eval: absent
@@ -26,10 +23,12 @@ metadata:
   analogy: "An autonomous loop is an autopilot mode: it can keep flying, but only because it has instruments, altitude limits, a route, and a clear handoff back to a pilot."
   misconception: "The common mistake is treating autonomy as permission to run forever. A safe loop is defined by when it stops, what state it writes, what evidence proves progress, and what cap forces human review."
   relations: "{\"related\":[\"agent-engineering\",\"prompt-craft\",\"tool-call-strategy\",\"context-management\",\"observability-modeling\"],\"boundary\":[{\"skill\":\"prompt-craft\",\"reason\":\"Prompt-craft owns the wording of one worker instruction; this skill owns the loop control shape around repeated worker execution.\"},{\"skill\":\"tool-call-strategy\",\"reason\":\"Tool-call-strategy owns per-call efficiency inside an agent; this skill owns whether and how the agent repeats across iterations.\"},{\"skill\":\"agent-engineering\",\"reason\":\"Agent-engineering owns full production agent-system architecture; this skill owns the narrower loop-pattern decision and safety checklist.\"}],\"verify_with\":[\"agent-engineering\",\"observability-modeling\"]}"
-  structural_verdict: UNVERIFIED
-  truth_verdict: UNVERIFIED
+  structural_verdict: PASS
+  truth_verdict: PASS
   comprehension_verdict: UNVERIFIED
   application_verdict: UNVERIFIED
+  last_audited: "2026-05-28"
+  lint_verdict: PASS
   skill_graph_source_repo: "https://github.com/jacob-balslev/skill-graph"
   skill_graph_project: Skill Graph
   skill_graph_canonical_skill: skills/agent-ops/autonomous-loop-patterns/SKILL.md

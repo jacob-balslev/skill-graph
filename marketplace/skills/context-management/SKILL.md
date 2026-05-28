@@ -7,12 +7,9 @@ allowed-tools: Read Grep
 metadata:
   schema_version: "8"
   version: "1.0.0"
-  type: capability
-  operation: know
-  category: agent
   subject: agent-ops
-  domain: agent/context
-  scope: portable
+  deployment_target: portable
+  taxonomy_domain: agent/context
   owner: skill-graph-maintainer
   freshness: "2026-05-06"
   drift_check: "{\"last_verified\":\"2026-05-06\"}"
@@ -26,10 +23,12 @@ metadata:
   relations: "{\"boundary\":[{\"skill\":\"context-graph\",\"reason\":\"context-graph maps the static topology — what skills, docs, memory, scripts exist and how they connect; context-management is the live working-set discipline inside one running session\"},{\"skill\":\"prompt-craft\",\"reason\":\"prompt-craft is wording and structure of one prompt; context-management is the discipline of what enters, stays in, and exits the session around any prompt\"},{\"skill\":\"context-engineering\",\"reason\":\"context-engineering is the system-level design (injector quality, failure metrics); context-management is the per-session operating discipline within that system\"},{\"skill\":\"tool-call-strategy\",\"reason\":\"tool-call-strategy decides which tool to call next for the agent's job; context-management decides what context that decision should be made against\"}],\"related\":[\"context-engineering\",\"context-graph\",\"tool-call-strategy\"],\"verify_with\":[\"context-engineering\"]}"
   portability: "{\"readiness\":\"scripted\",\"targets\":[\"skill-md\"]}"
   lifecycle: "{\"stale_after_days\":365,\"review_cadence\":\"quarterly\"}"
-  structural_verdict: UNVERIFIED
-  truth_verdict: UNVERIFIED
+  structural_verdict: PASS
+  truth_verdict: PASS
   comprehension_verdict: UNVERIFIED
   application_verdict: UNVERIFIED
+  last_audited: "2026-05-28"
+  lint_verdict: PASS
   skill_graph_source_repo: "https://github.com/jacob-balslev/skill-graph"
   skill_graph_project: Skill Graph
   skill_graph_canonical_skill: skills/agent-ops/context-management/SKILL.md

@@ -5,11 +5,8 @@ license: CC-BY-4.0
 metadata:
   schema_version: "8"
   version: "1.0.0"
-  type: capability
-  operation: know
-  category: design
   subject: design-craft
-  scope: portable
+  deployment_target: portable
   owner: skill-graph-maintainer
   freshness: "2026-05-12"
   drift_check: "{\"last_verified\":\"2026-05-12\"}"
@@ -22,10 +19,12 @@ metadata:
   examples: "[\"We've been asked to 'add a chatbot' — help me reframe what we're actually solving for users.\",\"Draft three how-might-we statements from these synthesis insights.\",\"The PRD jumps straight to features; help me extract the underlying user problem.\",\"List the assumptions baked into this product brief and rank them by riskiness.\"]"
   anti_examples: "[\"Find the bug causing the 500 error in the checkout endpoint.\",\"Why is the test suite flaky on CI?\",\"Classify whether this agent request is high-risk before executing.\"]"
   relations: "{\"related\":[\"user-research\",\"ideation\",\"research-synthesis\",\"design-thinking\"],\"boundary\":[{\"skill\":\"problem-locating-solving\",\"reason\":\"problem-locating-solving handles bug localization in source code — concrete failure traced to a line or function. problem-framing handles ambiguous human/business problems where the question itself is unclear and there is no error to reproduce.\"},{\"skill\":\"diagnosis\",\"reason\":\"diagnosis handles failure triage of broken systems and incidents. problem-framing handles upstream definition of what a team should be working on at all.\"}]}"
-  structural_verdict: UNVERIFIED
-  truth_verdict: UNVERIFIED
+  structural_verdict: PASS
+  truth_verdict: PASS
   comprehension_verdict: UNVERIFIED
   application_verdict: UNVERIFIED
+  last_audited: "2026-05-28"
+  lint_verdict: PASS
   skill_graph_source_repo: "https://github.com/jacob-balslev/skill-graph"
   skill_graph_project: Skill Graph
   skill_graph_canonical_skill: skills/design-craft/problem-framing/SKILL.md

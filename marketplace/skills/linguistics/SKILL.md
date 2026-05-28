@@ -5,16 +5,13 @@ license: MIT
 compatibility: "Provider-, runtime-, stack-, and language-agnostic. The morphology, polysemy, register, and error-message rules apply to any software product; substitute the artifact conventions and project language of the local stack while preserving the meaning-level checks."
 allowed-tools: Read Grep
 metadata:
-  grounding: "{\"domain_object\":\"Linguistic precision for software identifiers, UI copy, error messages, technical documentation, and cross-cultural language choices\",\"grounding_mode\":\"universal\",\"truth_sources\":[\"https://developers.google.com/style/voice\",\"https://developers.google.com/style/tone\",\"https://developers.google.com/style/translation\",\"https://learn.microsoft.com/en-us/windows/apps/design/style/writing-style\",\"https://learn.microsoft.com/en-us/windows/win32/debug/error-message-guidelines\",\"https://www.w3.org/TR/WCAG22/\",\"https://www.nngroup.com/articles/ten-usability-heuristics/\",\"https://www.nngroup.com/articles/hostile-error-messages/\"],\"failure_modes\":[\"naming_taste_mistaken_for_linguistic_fit\",\"artifact_casing_policy_confused_with_semantic_naming\",\"polysemous_identifier_left_unqualified\",\"generic_handle_process_or_utils_names_hide_contracts\",\"error_copy_blames_user_or_hides_action\",\"agent_register_leaks_into_end_user_copy\",\"global_audience_copy_uses_idioms_jargon_or_untranslatable_phrasing\",\"linguistics_overowns_refactor_docs_ia_microcopy_or_i18n_implementation\"],\"evidence_priority\":\"equal\"}"
+  grounding: "{\"subject_matter\":\"Linguistic precision for software identifiers, UI copy, error messages, technical documentation, and cross-cultural language choices\",\"grounding_mode\":\"universal\",\"truth_sources\":[\"https://developers.google.com/style/voice\",\"https://developers.google.com/style/tone\",\"https://developers.google.com/style/translation\",\"https://learn.microsoft.com/en-us/windows/apps/design/style/writing-style\",\"https://learn.microsoft.com/en-us/windows/win32/debug/error-message-guidelines\",\"https://www.w3.org/TR/WCAG22/\",\"https://www.nngroup.com/articles/ten-usability-heuristics/\",\"https://www.nngroup.com/articles/hostile-error-messages/\"],\"failure_modes\":[\"naming_taste_mistaken_for_linguistic_fit\",\"artifact_casing_policy_confused_with_semantic_naming\",\"polysemous_identifier_left_unqualified\",\"generic_handle_process_or_utils_names_hide_contracts\",\"error_copy_blames_user_or_hides_action\",\"agent_register_leaks_into_end_user_copy\",\"global_audience_copy_uses_idioms_jargon_or_untranslatable_phrasing\",\"linguistics_overowns_refactor_docs_ia_microcopy_or_i18n_implementation\"],\"evidence_priority\":\"equal\"}"
   drift_check: "{\"last_verified\":\"2026-05-19\"}"
   schema_version: "8"
   version: "1.2.0"
-  type: capability
-  operation: know
-  category: foundations
   subject: knowledge-organization
-  domain: foundations/language
-  scope: portable
+  deployment_target: portable
+  taxonomy_domain: foundations/language
   owner: skill-graph-maintainer
   freshness: "2026-05-19"
   eval_artifacts: planned
@@ -34,10 +31,12 @@ metadata:
   analogy: "Linguistics in software is grammar for the interface between people and systems: the syntax of a name or sentence should make the intended meaning easy to recover without hidden context."
   misconception: "The common mistake is treating naming and wording as personal preference. Ambiguous words, weak compounds, blame-heavy error text, and wrong register create predictable comprehension failures; agreement inside one team does not make the language portable or clear."
   concept: "{\"definition\":\"Linguistics applied to software is the discipline of using human-language structure, meaning, context, and audience register to shape code identifiers, labels, error messages, UI copy, and technical prose so readers can decode intent reliably.\",\"mental_model\":\"Treat every name or visible string as a small language artifact. Its form carries a contract: morphology makes the artifact parseable, semantics fixes what it means, pragmatics fits the situation, and register fits the audience.\",\"purpose\":\"The skill replaces taste-based naming and copy decisions with repeatable linguistic checks for ambiguity, misleading names, register mismatch, blame assignment, and cross-language readability.\",\"boundary\":\"It does not own casing convention policy, repo-wide rename mechanics, document information architecture, specialized UI microcopy pattern catalogs, final prose humanization, or locale-format implementation.\",\"taxonomy\":\"Foundations/language capability covering morphology, semantics, pragmatics, sociolinguistic register, error-message language, and cross-cultural language awareness for software surfaces.\",\"analogy\":\"It is grammar for the interface between people and software: the syntax of a name or sentence should make the intended meaning easy to recover without hidden context.\",\"misconception\":\"The common mistake is treating naming and wording as personal preference. Ambiguous words, weak compounds, blame-heavy error text, and wrong register create predictable comprehension failures.\"}"
-  structural_verdict: UNVERIFIED
+  structural_verdict: PASS
   truth_verdict: UNVERIFIED
   comprehension_verdict: UNVERIFIED
   application_verdict: UNVERIFIED
+  last_audited: "2026-05-28"
+  lint_verdict: PASS
   skill_graph_source_repo: "https://github.com/jacob-balslev/skill-graph"
   skill_graph_project: Skill Graph
   skill_graph_canonical_skill: skills/knowledge-organization/linguistics/SKILL.md

@@ -6,12 +6,9 @@ allowed-tools: Read Grep
 metadata:
   schema_version: "8"
   version: "1.0.0"
-  type: capability
-  operation: know
-  category: engineering
   subject: frontend-ui
-  domain: engineering/frontend
-  scope: workspace
+  deployment_target: portable
+  taxonomy_domain: engineering/frontend
   owner: skill-graph-maintainer
   freshness: "2026-05-16"
   drift_check: "{\"last_verified\":\"2026-05-16\"}"
@@ -31,10 +28,12 @@ metadata:
   analogy: "Hooks are to function components what stack frames are to function calls — they let a function remember things across calls without breaking referential transparency from the outside, by tracking state in a slot array indexed by call order, and the Rules of Hooks are the same kind of invariant as 'do not goto into the middle of a stack frame': violating them produces undefined behavior masked by garbage collection rather than visible crashes."
   misconception: "|"
   concept: "{\"definition\":\"Hooks are the React primitives that let a function component participate in the render/commit lifecycle: subscribe to state, schedule effects, read context, and reference mutable values across renders. The Rules of Hooks — call at the top level, call only from React functions — are not style guidance but the precondition that lets React match each hook call to its slot in the fiber tree by call order alone.\",\"mental_model\":\"|\",\"purpose\":\"|\",\"boundary\":\"|\",\"taxonomy\":\"|\",\"analogy\":\"|\",\"misconception\":\"|\"}"
-  structural_verdict: UNVERIFIED
-  truth_verdict: UNVERIFIED
+  structural_verdict: PASS
+  truth_verdict: PASS
   comprehension_verdict: UNVERIFIED
   application_verdict: UNVERIFIED
+  last_audited: "2026-05-28"
+  lint_verdict: PASS
   skill_graph_source_repo: "https://github.com/jacob-balslev/skill-graph"
   skill_graph_project: Skill Graph
   skill_graph_canonical_skill: skills/frontend-ui/hooks-patterns/SKILL.md

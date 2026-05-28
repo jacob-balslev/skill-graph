@@ -5,11 +5,8 @@ license: CC-BY-4.0
 metadata:
   schema_version: "8"
   version: "1.0.0"
-  type: capability
-  operation: know
-  category: design
   subject: design-craft
-  scope: portable
+  deployment_target: portable
   owner: skill-graph-maintainer
   freshness: "2026-05-12"
   drift_check: "{\"last_verified\":\"2026-05-12\"}"
@@ -22,10 +19,12 @@ metadata:
   examples: "[\"Pick the right fidelity for a prototype that tests whether users will trust an AI-suggested category.\",\"Plan a wizard-of-oz study where a human acts as the recommendation engine.\",\"Sketch a role-play prototype for a service-desk interaction before any UI is built.\",\"Decide between a paper prototype and a Figma clickable for this onboarding test.\"]"
   anti_examples: "[\"Build the production React component for the new dashboard widget.\",\"Add this component to the design system library.\",\"Write the migration script for the production database.\"]"
   relations: "{\"related\":[\"ideation\",\"usability-testing\",\"design-thinking\"],\"boundary\":[{\"skill\":\"design-module-composition\",\"reason\":\"design-module-composition produces durable design-system components meant to ship and be reused. prototyping produces disposable artifacts whose only purpose is learning — different lifecycle, different quality bar, different audience.\"},{\"skill\":\"interaction-patterns\",\"reason\":\"interaction-patterns is a reference catalog of established UI behaviors. prototyping is the activity of building a thing to test a question — it may use interaction patterns but is not itself a pattern library.\"}]}"
-  structural_verdict: UNVERIFIED
-  truth_verdict: UNVERIFIED
+  structural_verdict: PASS
+  truth_verdict: PASS
   comprehension_verdict: UNVERIFIED
   application_verdict: UNVERIFIED
+  last_audited: "2026-05-28"
+  lint_verdict: PASS
   skill_graph_source_repo: "https://github.com/jacob-balslev/skill-graph"
   skill_graph_project: Skill Graph
   skill_graph_canonical_skill: skills/design-craft/prototyping/SKILL.md

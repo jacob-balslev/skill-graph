@@ -7,12 +7,9 @@ allowed-tools: Read Grep Edit
 metadata:
   schema_version: "8"
   version: "1.1.0"
-  type: capability
-  operation: know
-  category: design
   subject: design-craft
-  domain: design/content
-  scope: portable
+  deployment_target: portable
+  taxonomy_domain: design/content
   owner: skill-graph-maintainer
   freshness: "2026-05-18"
   drift_check: "{\"last_verified\":\"2026-05-18\"}"
@@ -33,10 +30,12 @@ metadata:
   analogy: "Writing humanization is like audio mastering: the recording may already contain the right notes, but mastering removes hiss, balances loudness, and restores dynamics so a listener can trust what they hear."
   misconception: "The wrong mental model is that humanizing means adding slang, contractions, typos, or random sentence fragments until a detector score changes. That treats the detector as the audience. The real audience is the reader. Good humanization preserves truth, sharpens specificity, varies rhythm where it helps, and refuses edits that make the text less clear or less honest."
   concept: "{\"definition\":\"Writing humanization is the discipline of turning robotic or AI-patterned prose into clear, direct, reader-trustworthy text while preserving truth and intent.\",\"mental_model\":\"Writing humanization is prose-quality repair, not authorship laundering. Its primitives are AI tells, readability signals, rhythm signals, audience register, evidence specificity, and detector-limit awareness.\",\"purpose\":\"The skill replaces vague requests to make writing sound human with a repeatable edit pass that improves clarity, specificity, rhythm, and trust across docs, PRs, UI-adjacent prose, and support text.\",\"boundary\":\"It does not prove authorship, promise detector-proof output, bypass review processes, design persuasive marketing, choose documentation structure, or own specialized UI microcopy patterns.\",\"taxonomy\":\"Design/content skill adjacent to linguistics, microcopy, and semantics; distinct from copywriting and documentation architecture.\",\"analogy\":\"Writing humanization is like audio mastering: the recording may already contain the right notes, but mastering removes hiss, balances loudness, and restores dynamics so a listener can trust what they hear.\",\"misconception\":\"Humanizing is not adding slang, contractions, typos, or random fragments until a detector score changes; the reader, not the detector, is the audience.\"}"
-  structural_verdict: UNVERIFIED
-  truth_verdict: UNVERIFIED
+  structural_verdict: PASS
+  truth_verdict: PASS
   comprehension_verdict: UNVERIFIED
   application_verdict: UNVERIFIED
+  last_audited: "2026-05-28"
+  lint_verdict: PASS
   skill_graph_source_repo: "https://github.com/jacob-balslev/skill-graph"
   skill_graph_project: Skill Graph
   skill_graph_canonical_skill: skills/design-craft/writing-humanizer/SKILL.md

@@ -7,12 +7,9 @@ allowed-tools: Read Grep Bash
 metadata:
   schema_version: "8"
   version: "1.1.0"
-  type: capability
-  operation: do
-  category: engineering
   subject: code-engineering
-  domain: engineering/evaluation
-  scope: portable
+  deployment_target: portable
+  taxonomy_domain: engineering/evaluation
   owner: skill-graph-maintainer
   freshness: "2026-05-18"
   drift_check: "{\"last_verified\":\"2026-05-18\"}"
@@ -26,7 +23,7 @@ metadata:
   examples: "[\"score this completed agent task against the original request, changed files, tests, and remaining risks before we call it done\",\"act as a skeptical critic and tell me whether this deliverable is actually complete or only technically working\",\"run a completion gate on this implementation: what is the 1-5 score, what evidence supports it, and what must be revised?\",\"evaluate whether this documentation update satisfies the acceptance criteria and preserves all required information\",\"after the focused checks pass, decide whether the skill upgrade can be marked complete without inflating eval claims\",\"review the final artifact and produce a scorecard with blockers, required revisions, residual risks, and verification evidence\"]"
   anti_examples: "[\"design a new eval dataset, grader, and hard negatives for this router\",\"review this pull request line by line for bugs and security issues\",\"choose unit versus integration versus end-to-end tests for this feature\",\"design the whole implementation methodology and quality gate sequence before work starts\",\"debug why the existing run failed in production\",\"author a new SKILL.md from scratch\"]"
   relations: "{\"boundary\":[{\"skill\":\"agent-eval-design\",\"reason\":\"agent-eval-design creates eval suites, graders, thresholds, and hard negatives; evaluation applies a completion rubric to a concrete artifact or finished task.\"},{\"skill\":\"code-review\",\"reason\":\"code-review inspects a diff for correctness, security, maintainability, and review comments; evaluation scores the whole deliverable against request, evidence, risks, and done criteria.\"},{\"skill\":\"testing-strategy\",\"reason\":\"testing-strategy decides what behavior deserves which test level; evaluation judges whether the delivered verification evidence is sufficient for the task risk.\"},{\"skill\":\"methodology\",\"reason\":\"methodology designs the process and gates before execution; evaluation is the gate applied to an artifact after work exists.\"},{\"skill\":\"skill-infrastructure\",\"reason\":\"skill-infrastructure runs deterministic health tooling across a skill library; evaluation is a human-readable scoring discipline for one deliverable.\"}],\"related\":[\"best-practice\",\"methodology\",\"agent-eval-design\",\"testing-strategy\",\"code-review\"],\"verify_with\":[\"code-review\",\"testing-strategy\",\"best-practice\"]}"
-  grounding: "{\"domain_object\":\"Evidence-based evaluation of agent outputs, deliverables, and completion claims\",\"grounding_mode\":\"universal\",\"truth_sources\":[\"https://github.com/openai/evals\",\"https://www.anthropic.com/engineering/demystifying-evals-for-ai-agents\",\"https://platform.claude.com/docs/en/test-and-evaluate/develop-tests\",\"https://adk.dev/evaluate/\",\"https://airc.nist.gov/\"],\"failure_modes\":[\"self_assessment_optimism_marks_incomplete_work_done\",\"tests_pass_treated_as_full_quality_evidence\",\"score_inflated_despite_missing_acceptance_criteria\",\"rubric_omits_negative_boundaries_or_residual_risks\",\"evaluation_confused_with_code_review_or_eval_dataset_design\",\"unverified_claims_enter_final_report\"],\"evidence_priority\":\"equal\"}"
+  grounding: "{\"subject_matter\":\"Evidence-based evaluation of agent outputs, deliverables, and completion claims\",\"grounding_mode\":\"universal\",\"truth_sources\":[\"https://github.com/openai/evals\",\"https://www.anthropic.com/engineering/demystifying-evals-for-ai-agents\",\"https://platform.claude.com/docs/en/test-and-evaluate/develop-tests\",\"https://adk.dev/evaluate/\",\"https://airc.nist.gov/\"],\"failure_modes\":[\"self_assessment_optimism_marks_incomplete_work_done\",\"tests_pass_treated_as_full_quality_evidence\",\"score_inflated_despite_missing_acceptance_criteria\",\"rubric_omits_negative_boundaries_or_residual_risks\",\"evaluation_confused_with_code_review_or_eval_dataset_design\",\"unverified_claims_enter_final_report\"],\"evidence_priority\":\"equal\"}"
   portability: "{\"readiness\":\"scripted\",\"targets\":[\"skill-md\"]}"
   lifecycle: "{\"stale_after_days\":90,\"review_cadence\":\"quarterly\"}"
   mental_model: "Evaluation is a gate, not a compliment: compare the requested outcome, produced artifact, evidence trail, and meaningful failure modes before deciding whether the work is done."
@@ -35,10 +32,12 @@ metadata:
   analogy: "Evaluation is an inspection gate at the end of a production line: passing one measurement is not enough if the product misses the order, lacks traceability, or carries a known risk."
   misconception: "Tests passing, lint passing, or a plausible final answer is not the same as completion. Completion requires fit to request, sufficient evidence, handled risks, and honest reporting."
   concept: "{\"definition\":\"Evaluation is the disciplined scoring of a concrete output against explicit goals, evidence, rubric criteria, and residual risks so a team can decide whether to accept, revise, or block the work.\",\"mental_model\":\"Treat evaluation as a gate, not a compliment. The evaluator compares the requested outcome, the produced artifact, the evidence trail, and the failure modes that would matter if the artifact shipped unchanged.\",\"purpose\":\"It prevents optimistic done claims by forcing visible scores, score ceilings, missing-evidence callouts, required revisions, and a final accept or block decision.\",\"boundary\":\"It does not design eval datasets, review code line by line, choose test levels before implementation, debug failures, or design the whole process. It scores an artifact or task result after evidence exists.\",\"taxonomy\":\"Core evaluation surfaces are acceptance fit, evidence sufficiency, artifact quality, risk handling, regression protection, portability, and reporting completeness. Common graders are checklist, rubric, exact or code-based checks, trace inspection, human review, and LLM-as-judge with calibration.\",\"analogy\":\"Evaluation is like an inspection gate at the end of a production line: passing one measurement is not enough if the product misses the order, lacks traceability, or carries a known safety risk.\",\"misconception\":\"The common mistake is treating evaluation as praise, taste, or a post-hoc score. Good evaluation is adversarial in the useful sense: it looks for the first honest reason the work is not done yet.\"}"
-  structural_verdict: UNVERIFIED
+  structural_verdict: PASS
   truth_verdict: UNVERIFIED
   comprehension_verdict: UNVERIFIED
   application_verdict: UNVERIFIED
+  last_audited: "2026-05-28"
+  lint_verdict: PASS
   skill_graph_source_repo: "https://github.com/jacob-balslev/skill-graph"
   skill_graph_project: Skill Graph
   skill_graph_canonical_skill: skills/code-engineering/evaluation/SKILL.md

@@ -7,12 +7,9 @@ allowed-tools: Read Grep
 metadata:
   schema_version: "8"
   version: "1.0.0"
-  type: capability
-  operation: know
-  category: engineering
   subject: product-domain
-  domain: architecture/events
-  scope: portable
+  deployment_target: portable
+  taxonomy_domain: architecture/events
   owner: skill-graph-maintainer
   freshness: "2026-05-11"
   drift_check: "{\"last_verified\":\"2026-05-11\"}"
@@ -26,10 +23,12 @@ metadata:
   relations: "{\"boundary\":[{\"skill\":\"event-storming\",\"reason\":\"event-storming discovers domain events and policies; event-contract-design turns selected events into publishable contracts\"},{\"skill\":\"system-interface-contracts\",\"reason\":\"system-interface-contracts owns broad boundary contracts; event-contract-design owns asynchronous message and event surfaces\"},{\"skill\":\"webhook-integration\",\"reason\":\"webhook-integration owns inbound third-party delivery mechanics; event-contract-design owns events this system publishes or documents for consumers\"},{\"skill\":\"api-design\",\"reason\":\"api-design owns HTTP resource and action surfaces; event-contract-design owns asynchronous event contracts\"}],\"related\":[\"event-storming\",\"system-interface-contracts\",\"observability-modeling\",\"state-machine-modeling\",\"data-modeling\"],\"verify_with\":[\"system-interface-contracts\",\"observability-modeling\"]}"
   portability: "{\"readiness\":\"scripted\",\"targets\":[\"skill-md\"]}"
   lifecycle: "{\"stale_after_days\":365,\"review_cadence\":\"quarterly\"}"
-  structural_verdict: UNVERIFIED
-  truth_verdict: UNVERIFIED
+  structural_verdict: PASS
+  truth_verdict: PASS
   comprehension_verdict: UNVERIFIED
   application_verdict: UNVERIFIED
+  last_audited: "2026-05-28"
+  lint_verdict: PASS
   skill_graph_source_repo: "https://github.com/jacob-balslev/skill-graph"
   skill_graph_project: Skill Graph
   skill_graph_canonical_skill: skills/product-domain/event-contract-design/SKILL.md

@@ -6,12 +6,9 @@ allowed-tools: Read Grep
 metadata:
   schema_version: "8"
   version: "1.0.0"
-  type: capability
-  operation: know
-  category: quality
   subject: quality-assurance
-  domain: quality/testing
-  scope: workspace
+  deployment_target: portable
+  taxonomy_domain: quality/testing
   owner: skill-graph-maintainer
   freshness: "2026-05-16"
   drift_check: "{\"last_verified\":\"2026-05-16\"}"
@@ -31,10 +28,12 @@ metadata:
   analogy: "A contract test is to a service interface what a lease is to a tenancy — the consumer writes down the specific obligations they depend on (utilities included, quiet hours, this exact rent), the landlord (provider) verifies independently that they can honor those obligations, and the lease in the broker's filing cabinet lets either party prove compatibility without re-negotiating from scratch each time one of them moves."
   misconception: "|"
   concept: "{\"definition\":\"Contract testing is the technique of verifying that an interface between a consumer and a provider — typically two services across a network boundary — works as both sides expect, by capturing the consumer's expectations as a *contract* artifact and then running that contract against both sides independently. The contract is consumer-driven: it expresses the specific interactions the consumer actually performs (this HTTP request → this response shape and content), not the full surface of the provider's API. The consumer side verifies its code by replaying the contract against a generated mock provider; the provider side verifies its implementation by replaying the contract against the real provider. When both verifications pass independently, the two sides are known to be compatible without ever running them together. The technique decouples deploy schedules between consumer and provider teams and replaces brittle cross-service end-to-end tests with focused interface verification.\",\"mental_model\":\"|\",\"purpose\":\"|\",\"boundary\":\"|\",\"taxonomy\":\"|\",\"analogy\":\"|\",\"misconception\":\"|\"}"
-  structural_verdict: UNVERIFIED
-  truth_verdict: UNVERIFIED
+  structural_verdict: PASS
+  truth_verdict: PASS
   comprehension_verdict: UNVERIFIED
   application_verdict: UNVERIFIED
+  last_audited: "2026-05-28"
+  lint_verdict: PASS
   skill_graph_source_repo: "https://github.com/jacob-balslev/skill-graph"
   skill_graph_project: Skill Graph
   skill_graph_canonical_skill: skills/quality-assurance/contract-testing/SKILL.md

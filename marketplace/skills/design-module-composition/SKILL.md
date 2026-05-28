@@ -5,11 +5,8 @@ license: CC-BY-4.0
 metadata:
   schema_version: "8"
   version: "1.0.0"
-  type: capability
-  operation: know
-  category: design
   subject: design-craft
-  scope: portable
+  deployment_target: portable
   owner: skill-graph-maintainer
   freshness: "2026-05-12"
   drift_check: "{\"last_verified\":\"2026-05-12\"}"
@@ -22,10 +19,12 @@ metadata:
   examples: "[\"Design a Dialog component whose trigger, content, and close button are addressable by consumers\",\"Refactor a Card with 14 boolean props into a composition-based API\",\"Build a headless table primitive that exposes state and behavior without imposing markup\"]"
   anti_examples: "[\"Choose the border radius value for cards\",\"Decide where the OrderDetailPage component lives in the folder structure\",\"Pick the brand font for headings\"]"
   relations: "{\"related\":[\"design-system-architecture\",\"frontend-architecture\",\"interaction-patterns\",\"a11y\"],\"boundary\":[{\"skill\":\"frontend-architecture\",\"reason\":\"frontend-architecture covers application-level organization; this skill covers the internal API of a reusable module that the application composes.\"},{\"skill\":\"a11y\",\"reason\":\"Composition choices affect accessibility (focus management, ARIA wiring); when the question is whether a pattern meets WCAG requirements, hand off to a11y.\"}]}"
-  structural_verdict: UNVERIFIED
-  truth_verdict: UNVERIFIED
+  structural_verdict: PASS
+  truth_verdict: PASS
   comprehension_verdict: UNVERIFIED
   application_verdict: UNVERIFIED
+  last_audited: "2026-05-28"
+  lint_verdict: PASS
   skill_graph_source_repo: "https://github.com/jacob-balslev/skill-graph"
   skill_graph_project: Skill Graph
   skill_graph_canonical_skill: skills/design-craft/design-module-composition/SKILL.md
