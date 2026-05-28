@@ -58,7 +58,7 @@ relations:
   verify_with:
     - stripe-webhook-signature-verification
 portability:
-  readiness: portable
+  readiness: scripted
   targets:
     - skill-md
 lifecycle:

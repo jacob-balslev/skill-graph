@@ -57,7 +57,7 @@ relations:
   verify_with:
     - migrate-orders-to-canonical-schema
 portability:
-  readiness: portable
+  readiness: scripted
   targets:
     - skill-md
 lifecycle:

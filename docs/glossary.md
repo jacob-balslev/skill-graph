@@ -96,7 +96,7 @@ The key OntoClean constraint: an anti-rigid property cannot subsume a rigid one.
 
 ### `repo_specific`
 
-Skill claims are grounded in a specific codebase. `scope: codebase` requires this mode or `hybrid`. `grounding.truth_sources` lists concrete file paths.
+Skill claims are grounded in a specific codebase. `deployment_target: project` skills use this mode or `hybrid`. `grounding.truth_sources` lists concrete file paths.
 
 ### `universal`
 
@@ -110,7 +110,7 @@ Skill claims blend `repo_specific` and `universal` grounding. Use when a framewo
 
 ### `repo_code_first`
 
-When repo code and general knowledge disagree, trust the repo code. Default for `scope: codebase` skills.
+When repo code and general knowledge disagree, trust the repo code. Default for `deployment_target: project` skills.
 
 ### `general_knowledge_first`
 

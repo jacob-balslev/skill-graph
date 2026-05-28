@@ -177,7 +177,7 @@ const FIELD_COMMENTS = {
   ],
   routing_bundles: [
     '# routing_bundles: batch-activation group memberships. Router fires the whole bundle',
-    '# when the bundle label matches. Distinct from workspace_tags (per-project filter).',
+    '# when the bundle label matches. Distinct from project[] (the per-project belonging filter).',
   ],
   relations: [
     '# relations: typed graph edges to sibling skills. Six edge types:',

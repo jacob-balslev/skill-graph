@@ -59,7 +59,7 @@ relations:
   verify_with:
     - nextjs-server-action-validation
 portability:
-  readiness: portable
+  readiness: scripted
   targets:
     - skill-md
 lifecycle:

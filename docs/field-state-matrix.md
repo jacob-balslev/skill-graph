@@ -35,13 +35,12 @@ All twelve are **human-authored**. The schema lint gate (`skill-lint.js` against
 | `eval_state` | enum | human-authored, **earned-with-receipt when `passing` or `monitored`** | `passing` requires a real grader run; `monitored` requires CI integration |
 | `routing_eval` | enum | human-authored, **earned-with-receipt when `present`** | `present` requires populated `examples` + `anti_examples` AND a passing `node scripts/skill-graph-routing-eval.js --skill <name>` run |
 
-## Conditionally required (4 fields, allOf-enforced)
+## Conditionally required (3 fields, allOf-enforced)
 
 Required only when the gating condition applies. All **human-authored**.
 
 | Field | Required when | Enforced by |
 |---|---|---|
-| `extends` | `type: overlay` | schema `allOf` |
 | `grounding` | `deployment_target: project` | schema `allOf` |
 | `superseded_by` | `stability: deprecated` | schema `allOf` |
 | `keywords` | `deployment_target: project` OR `routing_bundles` is set | routing review / routing evals (not schema-enforced) |
@@ -73,15 +72,15 @@ All **human-authored** unless tagged otherwise.
 | `repo` | `{handle, url}[]` | human-authored | Repo-level belonging-entity references. Complements `project[]`. |
 | `routing_bundles` | string[] | human-authored | Routing group memberships. |
 | `taxonomy_domain` | string | human-authored | Slash-delimited hierarchical sub-path within a `subject` (e.g. `engineering/api-design`). Complements `subject`. Renamed from `domain`. |
+| `extends` | string | human-authored | Names a base skill this one specialises. Declared but no longer schema-gated — the v7 `type: overlay` archetype that required it was removed in the v8 clean cut (see [ADR-0017](./adr/0017-five-axis-classification-model.md)). |
 
 ### Classification (taxonomy)
 
+`subject` and `deployment_target` are the required classification axes (see the Required table); `taxonomy_domain` (above) subdivides an over-subscribed subject. The one optional classification field:
+
 | Field | Type | State | Notes |
 |---|---|---|---|
-| `categories` | enum[] | human-authored | v7 optional, v8 required. Ordered, primary first, max 5. Same enum as `category`. |
-| `primaryCategory` | enum | **compatibility-alias** | Workspace alias for `categories[0]`. Title-case workspace values (`Agent System`, etc.) normalize to lowercase enum. |
-| `layerPrimary` | string | human-authored | Optional workspace routing facet. Not a category. |
-| `routingRole` | string | human-authored | Optional workspace routing facet (`primary`, `verifier`, etc.). Not a `type` alias. |
+| `subjects` | enum[] | human-authored | Polyhierarchy for skills that genuinely span two browse shelves. Max 2, primary first; the primary entry MUST equal `subject`. Same closed 9-enum as `subject`. |
 
 ### Understanding fields (v6+, flat)
 
@@ -189,9 +188,8 @@ The only alias normalization still performed is the two-physical-encoding reconc
 
 1. **Top-level wins over `metadata.*`.** When the same field appears in both, the top-level entry is the canonical signal. (Author overrode the nested default deliberately.)
 2. **Flat Understanding fields win over `concept` block.** When both are present, the comprehension grader reads the flat fields and ignores the nested block.
-3. **Authored `category` wins over `primaryCategory`.** When both are present, `categories[0]` MUST equal `category` (schema-enforced).
-4. **`structural_verdict` from canonical lint wins over root lint.** The root `scripts/skill/skill-lint.js` writes legacy `lint_verdict`; the canonical `skill-graph/scripts/skill-lint.js` writes the v7-aligned signal. Per ADR 0009 the canonical version is authoritative; see SH-6198 for the in-progress deprecation of the root copy.
-5. **Loop-written fields are not authored.** Hand-edits to Audit Status fields are silently overwritten on the next `audit` run. If you need a different verdict, run the audit; do not edit the frontmatter.
+3. **`structural_verdict` from canonical lint wins over root lint.** The root `scripts/skill/skill-lint.js` writes legacy `lint_verdict`; the canonical `skill-graph/scripts/skill-lint.js` writes the Audit-Status-aligned signal. Per ADR 0009 the canonical version is authoritative; see SH-6198 for the in-progress deprecation of the root copy.
+4. **Loop-written fields are not authored.** Hand-edits to Audit Status fields are silently overwritten on the next `audit` run. If you need a different verdict, run the audit; do not edit the frontmatter.
 
 ## Related
 

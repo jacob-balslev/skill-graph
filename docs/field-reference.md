@@ -473,7 +473,7 @@ last_changed: "2026-05-14"
 | `PASS` | Form gates passed cleanly |
 | `PASS_WITH_FIXES` | Form gates passed with warnings (not errors) |
 | `FAIL` | One or more form gates produced errors that block external-constraint compliance (Anthropic Agent Skills marketplace, OpenAI tool-use API) |
-| `UNVERIFIED` | No structural audit has run since the v7 schema bump |
+| `UNVERIFIED` | No structural audit has run for this skill yet |
 
 **Rules.**
 - Optional. Defaults to `UNVERIFIED` when absent.
@@ -498,7 +498,7 @@ structural_verdict: PASS
 | `PASS` | Truth sources align with declared `last_verified` and recorded hashes |
 | `DRIFT` | Truth sources changed since `last_verified` |
 | `BROKEN` | Declared truth sources missing or unreadable |
-| `UNVERIFIED` | No truth audit has run since the v7 schema bump |
+| `UNVERIFIED` | No truth audit has run for this skill yet |
 
 **Rules.**
 - Optional. Defaults to `UNVERIFIED` when absent.
@@ -971,7 +971,7 @@ eval:
 2. `eval_score >= 4.0` — grader score meets the quality bar.
 3. `routing_eval: present` — the skill has been verified in a routing eval.
 4. `drift_check.last_verified` within 90 days — skill has been recently verified against truth sources.
-5. For `scope: codebase` skills: `grounding.truth_sources` must be non-empty.
+5. For `deployment_target: project` skills: `grounding.truth_sources` must be non-empty.
 
 **Example.**
 ```yaml
@@ -1276,7 +1276,7 @@ paths:
   - src/webhooks/shopify.ts
 ```
 
-**When to use.** For `scope: codebase` skills that govern specific files or directories. Omit for portable or reference skills.
+**When to use.** For `deployment_target: project` skills that govern specific files or directories. Omit for portable skills.
 
 **When NOT to use.** Generic skills with no specific file surfaces. Do not add paths as aspirational documentation — only add paths the skill actively covers.
 
@@ -1457,7 +1457,7 @@ grounding:
 - `anchor` is checked by lint as either a Markdown heading slug or literal text in the file.
 - `drift_check.truth_source_hashes` uses the normalized key: `path` for whole-file sources, `path#Lstart-Lend` for line ranges, and `path#anchor` for anchor-only sources.
 
-**When to use.** Required for `scope: codebase`. Strongly recommended for any skill that makes concrete implementation claims, even if `scope` is `portable`.
+**When to use.** Required for `deployment_target: project`. Strongly recommended for any skill that makes concrete implementation claims, even if `deployment_target` is `portable`.
 
 **When NOT to use.** Portable skills with no specific codebase claims. Omit the entire block rather than populating it with placeholder values.
 

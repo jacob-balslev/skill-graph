@@ -48,7 +48,7 @@ Arguments:
   [<skill>]              Path or name of a specific skill to lint. If omitted, lints all configured skills.
 
 Options:
-  --include-template     Also lint examples/protocol/skill-metadata-template.md.
+  --include-template     Also lint examples/skill-metadata-template.md.
   --path <dir>           Override the skills root directory for name lookup or all-skill lint.
   --json                 Emit JSON output.
   --strict               Treat warnings as errors.
@@ -356,7 +356,7 @@ Examples:
 // ---------------------------------------------------------------------------
 // `init` — inline scaffolder
 // ---------------------------------------------------------------------------
-// Copies examples/protocol/skill-metadata-template.md into
+// Copies examples/skill-metadata-template.md into
 // skills/<slug>/SKILL.md in the caller's working directory (or SKILL.md in
 // the current directory if no slug is given).
 
@@ -384,7 +384,7 @@ Examples:
     process.exit(0);
   }
 
-  const templateSrc = path.join(REPO_ROOT, 'examples', 'protocol', 'skill-metadata-template.md');
+  const templateSrc = path.join(REPO_ROOT, 'examples', 'skill-metadata-template.md');
   if (!fs.existsSync(templateSrc)) {
     process.stderr.write(`Error: template not found at ${templateSrc}\n`);
     process.stderr.write('Is REPO_ROOT set correctly? (' + REPO_ROOT + ')\n');
@@ -421,7 +421,7 @@ Examples:
   process.stdout.write(`Created: ${destFile}\n`);
   if (slug) {
     process.stdout.write(`\nNext steps:\n`);
-    process.stdout.write(`  1. Edit ${destFile} — fill in name, description, domain_context, etc.\n`);
+    process.stdout.write(`  1. Edit ${destFile} — fill in name, description, subject, deployment_target, scope, etc.\n`);
     process.stdout.write(`  2. Strip all "# TEMPLATE NOTE:" comments and "> **TEMPLATE NOTE:**" blockquotes.\n`);
     process.stdout.write(`  3. Run: skill-graph lint ${slug}\n`);
   } else {
