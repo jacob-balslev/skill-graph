@@ -98,8 +98,8 @@ Skill Metadata Protocol makes these questions explicit:
 
 | Question | Protocol fields |
 |---|---|
-| What kind of skill is this? | `subject`, `scope`, `version`, `owner` |
-| Where does it belong? | `subject`, `subjects[]`, `domain`, `workspace_tags`, `routing_bundles` |
+| What kind of skill is this? | `subject`, `deployment_target`, `scope`, `version`, `owner` |
+| Where does it belong? | `subject`, `subjects[]`, `taxonomy_domain`, `project[]`, `routing_bundles` |
 | When should it load? | `description`, `keywords`, `triggers`, `examples`, `anti_examples`, `paths` |
 | What is it near, dependent on, or not responsible for? | `relations.related`, `relations.depends_on`, `relations.verify_with`, `relations.boundary`, `relations.broader`, `relations.narrower` |
 | What evidence makes it true? | `grounding.truth_sources`, `grounding.failure_modes`, `grounding.evidence_priority` |
@@ -120,8 +120,9 @@ description: "Reviewing a product page's UX, visual hierarchy, interaction patte
 version: 1.0.0
 # v8 classification (required)
 subject: design-craft
-scope: project
-domain: design-craft/ux
+deployment_target: project
+scope: "Shopify product page UX review for an ecommerce project"
+taxonomy_domain: design-craft/ux
 owner: design-platform
 freshness: "2026-05-13"
 drift_check:
@@ -141,10 +142,9 @@ examples:
 anti_examples:
   - "Fix the Shopify webhook signature validation failure."
   - "Diagnose why the checkout build failed in CI."
-workspace_tags:
-  - ecommerce
-  - shopify
-  - frontend
+project:
+  - handle: shopify-storefront
+    role: primary
 routing_bundles:
   - product-experience
 paths:
@@ -165,7 +165,7 @@ relations:
     - a11y
     - usability-testing
 grounding:
-  domain_object: Shopify product page UX surface
+  subject_matter: Shopify product page UX surface
   grounding_mode: repo_specific
   truth_sources:
     - path: app/products/[handle]/page.tsx
@@ -195,12 +195,13 @@ Skill Metadata Protocol uses several independent axes. They should not be collap
 |---|---|---:|---|
 | **Subject** | `subject` | one | Primary classification — what the skill teaches. Closed 9-value enum. |
 | **Polyhierarchy** | `subjects[]` | zero, one, or two | Optional secondary subject when a skill genuinely spans two browse shelves. `subjects[0]` matches `subject`. |
-| **Scope** | `scope` | one | Where it applies: `portable`, `workspace`, or `project`. |
-| **Domain path** | `domain` | zero or one | Slash-delimited hierarchy subdividing `subject`, such as `design-craft/ux` or `code-engineering/api-design`. |
-| **Project group** | `workspace_tags` | many | Which project families, workspaces, or product areas this skill applies to. |
+| **Deployment target** | `deployment_target` | one | Where it deploys: `portable` (any project) or `project` (one specific project; requires `grounding`). |
+| **Scope** | `scope` | zero or one | Free-text PRD-style description of the deployment context. Not an enum. |
+| **Domain path** | `taxonomy_domain` | zero or one | Slash-delimited hierarchy subdividing `subject`, such as `design-craft/ux` or `code-engineering/api-design`. |
+| **Project belonging** | `project[]` | many | Belonging-entity references for `deployment_target: project` skills (handle + role). |
 | **Routing group** | `routing_bundles` | many | Runtime bundles or dispatch groups. |
 | **Relations** | `relations.*` | many | Typed graph edges between skills. |
-| **Grounding** | `grounding.*` | conditional | Truth sources and failure modes for repo-grounded skills (`scope: project`). |
+| **Grounding** | `grounding.*` | conditional | Truth sources and failure modes for repo-grounded skills (`deployment_target: project`). |
 
 ### Current Subjects
 
@@ -227,7 +228,7 @@ These are the values used across the canonical skill library (the sibling `~/Dev
 
 ### Current Project And Routing Groups
 
-`workspace_tags` demonstrated in this repo:
+`taxonomy_domain` paths demonstrated in this repo (within `subject` shelves):
 
 `build-pipeline`, `content`, `markdown`, `migrations`, `skill-authoring`, `static-site`
 
@@ -245,8 +246,8 @@ Triangulation means selecting skills from multiple independent signals:
 
 | Signal | Example |
 |---|---|
-| **Project surface** | `workspace_tags: [shopify, frontend]`, `paths: components/product/**/*` |
-| **Subject and domain** | `subject: design-craft`, `domain: design-craft/ux` |
+| **Project surface** | `deployment_target: project`, `project: [{handle: shopify-storefront}]`, `paths: components/product/**/*` |
+| **Subject and domain** | `subject: design-craft`, `taxonomy_domain: design-craft/ux` |
 | **Method or phase** | `design-thinking`, `user-research`, `ideation`, `prototyping`, `usability-testing` |
 | **Related skills** | `visual-hierarchy`, `color-system-design`, `typography-system`, `dark-mode-implementation` |
 | **Verification skills** | `a11y`, `testing-strategy`, `code-review` |

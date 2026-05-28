@@ -35,7 +35,7 @@ Skill Metadata Protocol sits in the second category. Skill Graph sits in the thi
 | **Required fields** | 2 (`name`, `description`) | 13 in Skill Metadata Protocol; `name` and `description` remain the base bridge to SKILL.md |
 | **Relevance model** | Mostly lexical retrieval over `description` and tag fields | Area, angle, taxonomy, semantic relations, project fit, grounding, eval state, and file/path relevance |
 | **Drift detection** | None — staleness is invisible to the standard | SHA-256 baselines on `truth_sources`; the drift sentinel reports DRIFT / BROKEN / STALE / NO_BASELINE |
-| **Project scoping** | Folder structure or naming hacks | `workspace_tags` + workspace `semantic_tags` matching, no folder gymnastics |
+| **Project scoping** | Folder structure or naming hacks | `deployment_target: project` + `project[]` belonging references, no folder gymnastics |
 | **Eval awareness** | Not standardised | `eval_artifacts` + `eval_state` + `routing_eval` triple; routers can gate by quality |
 | **Inheritance** | None | `type: overlay` + `extends` for specialisation with schema-level body-section enforcement |
 | **Round-trip compatibility** | N/A | One-way export to base SKILL.md via `scripts/export-skill.js`; round-trip back requires re-authoring the lost fields |
@@ -55,7 +55,7 @@ Skill Metadata Protocol sits in the second category. Skill Graph sits in the thi
 | **What it does** | Public agent-skill library / marketplace that indexes skills from GitHub repositories | Skill Metadata Protocol describes imported or local skills; Skill Graph operates over the resulting library |
 | **Surface** | Discovery and installation (find a skill to install) | Relevance, structure, clustering, routing, testing, and re-verification inside your project |
 | **Hosted** | Yes — independent community-run service | No — the protocol and Skill Graph reference scripts run in your own repo |
-| **Per-skill structure** | Whatever the source repo authored | The 13 required + ~20 optional Skill Metadata Protocol fields |
+| **Per-skill structure** | Whatever the source repo authored | The 12 required + ~20 optional Skill Metadata Protocol fields |
 
 **When to use both:** install a skill from skillsmp.com -> adopt it into your library -> annotate the frontmatter with area, angle, taxonomy, project tags, relations, grounding, and eval metadata -> benefit from lint, routing, clustering, drift checks, and Karpathy-style iteration loops on top of the imported skill. In the other direction, syndicate the full Skill Graph starter library through plain `SKILL.md` exports so SkillsMP can discover the repo while the canonical Skill Metadata Protocol source stays here. The operating plan is [`docs/marketplace-syndication.md`](marketplace-syndication.md).
 
@@ -156,7 +156,7 @@ If you're trying to decide which tool to reach for:
 | Document repo conventions for any agent at session start | CLAUDE.md / AGENTS.md |
 | Detect when a skill's truth source has silently moved | **Skill Graph** (drift sentinel) |
 | Express that one skill depends on another | **Skill Graph** (`relations.depends_on`) |
-| Share some skills across two projects but not all | **Skill Graph** (multi-root workspace mode + `workspace_tags`) |
+| Share some skills across two projects but not all | **Skill Graph** (`deployment_target: portable` for shared skills, `deployment_target: project` + `project[]` for anchored skills) |
 
 If your need is in the **Skill Graph** rows, this contract is for you. If your need is in any other row, the named tool is the right primary fit; Skill Graph still complements it where the use cases overlap.
 

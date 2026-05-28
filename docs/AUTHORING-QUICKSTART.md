@@ -27,7 +27,7 @@ cp examples/skill-metadata-template.md skills/<your-skill-name>/SKILL.md
 
 The template at `examples/skill-metadata-template.md` is a real schema-conformant skill whose subject is skill authoring. Adapt by renaming identity, rewriting body sections, and stripping every `# TEMPLATE NOTE:` YAML comment and `> **TEMPLATE NOTE:**` body blockquote (those are scaffolding).
 
-## Step 3, fill the 13 required v7 fields
+## Step 3, fill the required v8 fields
 
 These are enforced by `skill-lint.js` against `schemas/skill.schema.json`. A skill missing any of these fails the structural gate.
 
@@ -38,7 +38,8 @@ These are enforced by `skill-lint.js` against `schemas/skill.schema.json`. A ski
 | 3 | `description` | string | Short description of what the skill is about. Activation signals belong to `keywords`/`triggers`/`examples`/`anti_examples`; boundary semantics belong to `relations.boundary`. |
 | 4 | `version` | semver | `x.y.z`. Bump when the skill's instructional content changes. Independent of `schema_version`. |
 | 5 | `subject` | enum | One of the closed 9-value enum: `code-engineering`, `quality-assurance`, `frontend-ui`, `design-craft`, `agent-ops`, `product-domain`, `knowledge-organization`, `meta-methods`, `data-analytics`. Primary classification — what the skill teaches. |
-| 6 | `scope` | enum | One of: `portable` (any project), `workspace` (this workspace only), `project` (repo-specific; requires `grounding`). |
+| 6 | `deployment_target` | enum | One of: `portable` (any project) or `project` (one specific project; requires `grounding`). |
+| 6a | `scope` | string | Optional free-text PRD-style description of the deployment context. Not an enum. |
 | 7 | `owner` | string | Team handle, GitHub username, or tool name. Used for review routing and stale-skill alerts. |
 | 8 | `freshness` | ISO date | `YYYY-MM-DD`. Authored claim (not computed). When did you last review or update the body. |
 | 9 | `drift_check` | object | At minimum `{ last_verified: "YYYY-MM-DD" }`. `truth_source_hashes` is added later by `node scripts/skill-graph-drift.js --record --apply <skill-dir>`. |
@@ -53,9 +54,9 @@ Triggered only when the gating condition applies. Schema-enforced via `allOf`:
 | Field | Required when |
 |---|---|
 | `extends` | `type: overlay` |
-| `grounding` | `scope: codebase` |
+| `grounding` | `deployment_target: project` |
 | `superseded_by` | `stability: deprecated` |
-| `keywords` | `scope: codebase` OR `routing_bundles` is set |
+| `keywords` | `deployment_target: project` OR `routing_bundles` is set |
 
 ### Do NOT hand-author these (loop-written)
 
@@ -82,7 +83,7 @@ name: example-protocol-native
 description: "Conway's Law applied as a forward design constraint for API boundary placement — team topologies, organizational coupling, domain ownership boundaries."
 version: 0.1.0
 subject: meta-methods
-scope: workspace
+deployment_target: portable
 owner: example-author
 freshness: "2026-05-24"
 drift_check:
@@ -128,7 +129,7 @@ metadata:
   schema_version: 8
   version: 0.1.0
   subject: meta-methods
-  scope: workspace
+  deployment_target: portable
   owner: example-author
   freshness: "2026-05-24"
   drift_check: "{\"last_verified\":\"2026-05-24\"}"
@@ -167,7 +168,7 @@ git commit --only -F /tmp/msg -- skills/<your-skill-name>/SKILL.md
 
 Two follow-ups, both optional at authoring time:
 
-- **Record truth hashes** if `scope: codebase` and you populated `grounding.truth_sources`: `node scripts/skill-graph-drift.js --record --apply skills/<your-skill-name>`. This makes the drift sentinel useful.
+- **Record truth hashes** if `deployment_target: project` and you populated `grounding.truth_sources`: `node scripts/skill-graph-drift.js --record --apply skills/<your-skill-name>`. This makes the drift sentinel useful.
 - **Author an eval** if you want the skill behaviorally certified: write `skills/<your-skill-name>/evals/comprehension.json` and run `node lib/audit/evaluate-skill.js --mode comprehension skills/<your-skill-name>/evals/comprehension.json`.
 
 Neither blocks first commit. A new skill ships honestly as `eval_state: unverified`, `application_verdict: UNVERIFIED` (default by absence).

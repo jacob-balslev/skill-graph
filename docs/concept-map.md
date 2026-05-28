@@ -23,8 +23,8 @@ The fields split into nine conceptual groups. This grouping is a teaching aid on
 The exact field count:
 
 - **40 top-level authored fields** — the number authors write in YAML frontmatter, including compatibility aliases.
-- **13 required-for-all fields** — every skill must populate these.
-- **5 conditionally-required fields** — unlocked by `type: overlay`, `scope: codebase`, `stability: deprecated`, `comprehension_state: present`, plus `keywords` for routable skills.
+- **12 required-for-all fields** — every skill must populate these.
+- **5 conditionally-required fields** — unlocked by `type: overlay`, `deployment_target: project`, `stability: deprecated`, `comprehension_state: present`, plus `keywords` for routable skills.
 - **18 optional enrichment fields** — including the full nested sub-fields inside `relations`, `grounding`, `portability`, `compatibility`, `lifecycle`, `runtime_telemetry`, and concept/eval receipts.
 
 When you see "possible fields" counted anywhere, that is the count including nested sub-fields and v3.1 aliases individually. The 40 count refers to canonical top-level authored keys only.
@@ -88,11 +88,11 @@ How the skill surfaces to a router. The three trigger fields (`triggers`, `keywo
 | Field | Cardinality | Role |
 |---|---|---|
 | `triggers` | many | Exact phrase or label triggers |
-| `keywords` | many | Semantic keywords for fuzzy matching — required when skill is routable (`scope: codebase` or non-empty `routing_bundles`) |
+| `keywords` | many | Semantic keywords for fuzzy matching — required when skill is routable (`deployment_target: project` or non-empty `routing_bundles`) |
 | `examples` | many | Positive-class activation prompts (few-shot retrieval targets) |
 | `anti_examples` | many | Negative-class prompts (hard negatives for boundary discrimination) |
 | `paths` | many glob patterns | File-surface activation |
-| `workspace_tags` | many | Project affiliation (literal handles or semantic tags) |
+| `project[]` | many | Project belonging references (handle + role) for `deployment_target: project` skills |
 | `routing_bundles` | many | Query-time overlapping bundles (`quality`, `integrations`) |
 
 ### Relations (one object, up to 8 predicate keys, each optional)
@@ -119,13 +119,13 @@ Typed edges to sibling skills. Lint verifies every target exists.
 
 Skill Graph supports single-parent inheritance only. For an overlay that needs to inherit concepts from two parents, express the secondary axis as `depends_on`. The OntoClean rigidity constraints for overlays are documented in ADR 0003.
 
-### Grounding (1 object, 5 required sub-fields — conditional on `scope: codebase`)
+### Grounding (1 object, 5 required sub-fields — conditional on `deployment_target: project`)
 
 Ties the skill to hashable artifacts and documents the trust hierarchy.
 
 | Sub-field | Cardinality | Role |
 |---|---|---|
-| `grounding.domain_object` | one | Primary artifact the skill describes |
+| `grounding.subject_matter` | one | Primary artifact or domain the skill describes |
 | `grounding.grounding_mode` | one enum | `repo_specific` \| `universal` \| `hybrid` |
 | `grounding.truth_sources` | many strings or anchored objects | Authoritative files, line ranges, or anchors |
 | `grounding.failure_modes` | many | Known degradation modes |
@@ -152,9 +152,10 @@ Skill Graph classifies along **three strictly-orthogonal axes plus one partially
 
 | Axis | Field | Orthogonality | Question |
 |---|---|---|---|
-| Scope | `scope` | Strict — `portable`/`reference`/`codebase` do not overlap | Where does this apply? |
-| Taxonomy | `category` + `category` | Strict — one flat bucket, one tree path | What kind of concern is this? |
-| Project affiliation | `workspace_tags` | Strict — multiple tags allowed, no hierarchy | Which projects use this? |
+| Deployment target | `deployment_target` | Strict — `portable`/`project` do not overlap | Where does this deploy? |
+| Scope | `scope` | Free-text, not an enum | PRD-style description of deployment context |
+| Taxonomy | `subject` + `taxonomy_domain` | Strict — one shelf, one optional tree path | What kind of concern is this? |
+| Project belonging | `project[]` | Strict — explicit belonging references, no hierarchy | Which specific project is this anchored to? |
 | Routing bundle | `routing_bundles` | **Partially coupled to taxonomy** — `quality`, `integrations`, etc. are often functions of *what the skill is*, not *when it fires* | Which query-time bundle does this join? |
 
 The taxonomy-vs-routing-group coupling is intentional for ergonomics (a router can say "load all `quality` skills") but means the fourth axis is not a strict Ranganathan facet. Keep the distinction in mind when adding routing groups: if the group is redundant with the skill's category, use the category alone.

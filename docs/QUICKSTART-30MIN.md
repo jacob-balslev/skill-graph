@@ -10,7 +10,7 @@
 |---|---|---|
 | M0–M2 | Clone the repo and install | The repo runs with zero external dependencies |
 | M3–M7 | Copy the template into your first skill directory | The authoring flow is copy → rename → adapt → strip → verify |
-| M8–M11 | Fill in the required v7 fields + v8 axes for `markdown-post-frontmatter-review` | Why each field exists and what it commits you to |
+| M8–M11 | Fill in the required v8 fields for `markdown-post-frontmatter-review` | Why each field exists and what it commits you to |
 | M12–M15 | Lint your first skill | Lint output is the primary debugging surface |
 | M16–M19 | Create a second skill (`post-archive-rebuild`) with a `relations.depends_on` link | The graph is real — relations enforce that `depends_on` targets exist |
 | M20–M24 | Break the relation deliberately and watch lint catch it | The contract fails loud, not silent |
@@ -77,7 +77,8 @@ version: 0.1.0
 
 # v8 classification (required)
 subject: code-engineering
-scope: project
+deployment_target: project
+scope: "Markdown post frontmatter review for a static-site content project"
 
 owner: <your-handle-or-team>
 freshness: "2026-05-06"
@@ -88,11 +89,11 @@ eval_state: unverified
 routing_eval: absent
 ```
 
-For `scope: project` you also need a `grounding` block — point it at the real content schema and template post in your repo:
+For `deployment_target: project` you also need a `grounding` block — point it at the real content schema and template post in your repo:
 
 ```yaml
 grounding:
-  domain_object: "Markdown post frontmatter — the YAML block at the top of every content file that drives the site's index, routing, and rendering"
+  subject_matter: "Markdown post frontmatter — the YAML block at the top of every content file that drives the site's index, routing, and rendering"
   grounding_mode: repo_specific
   truth_sources:
     - content/posts/_template.md
@@ -160,7 +161,7 @@ version: 0.1.0
 
 # v8 classification (required)
 subject: code-engineering
-scope: portable
+deployment_target: portable
 
 owner: <your-handle>
 freshness: "2026-05-06"
@@ -297,7 +298,7 @@ Expected:
 41 skill(s): 3 CLEAN, 38 UNGROUNDED
 ```
 
-(`UNGROUNDED` = skills with no `grounding` block; that's normal for `scope: portable` and `scope: reference` skills.)
+(`UNGROUNDED` = skills with no `grounding` block; that's normal for `deployment_target: portable` skills.)
 
 Now edit `lib/content/schema.ts` (any change — add a comment) and re-run drift:
 
