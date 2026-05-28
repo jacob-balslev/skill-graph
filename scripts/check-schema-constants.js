@@ -3,17 +3,23 @@
  * Schema constants drift check (doctor gate).
  *
  * Validates that `schemas/skill.schema.json` and `schemas/manifest.schema.json`
- * still carry the v7 + v8 enum values mandated by:
- *   - ADR-0011 (four-verdict Health Block — v7)
- *   - ADR-0017 (5-axis classification — v8: subject 9-enum, operation 4-enum, scope 5-enum during compat)
+ * carry the enum values mandated by:
+ *   - ADR-0011 (four-verdict Health Block)
+ *   - ADR-0017 + its 2026-05-27 amendment (v8 classification: `subject` 9-enum,
+ *     `deployment_target` 2-enum, and free-text `scope` with NO enum). The
+ *     amendment retired the `operation` axis, removed the `scope` enum, and
+ *     dropped the `category` and `type` axes. This checker asserts the
+ *     clean-cut v8 shape, not the retired one.
  *
  * Why this gate exists (per 2026-05-25 F14 finding): `doctor` historically
- * passed clean even when a v8 enum value was missing or extra, because the
+ * passed clean even when an enum value was missing or extra, because the
  * deterministic checks downstream (`skill-lint.js`, `protocol-check`) validate
  * SKILLS against the schema but do not validate the SCHEMA's constants against
- * the ADR. A typo in `subjects[].enum` would route the v8 corpus into a silent
- * acceptance hole — invalid values pass because the typo widens the enum, or
- * valid values fail because the typo shrinks it. This check closes that hole.
+ * the ADR. A typo in the `subject` / `subjects[]` / `deployment_target` enums
+ * would route the corpus into a silent acceptance hole — invalid values pass
+ * because the typo widens the enum, or valid values fail because it shrinks it.
+ * This check closes that hole, and also guards against a `scope` enum being
+ * re-introduced after the 2026-05-27 amendment made it free-text.
  *
  * Exit codes:
  *   0 — every spec-mandated enum value is present and no extras present
@@ -36,13 +42,12 @@ const MANIFEST_SCHEMA = path.join(REPO_ROOT, 'schemas', 'manifest.schema.json');
 
 const SPEC = {
   schema_version: {
+    // Integer 8 is canonical; 7 is still accepted while pre-v8 skills migrate.
+    // This is transitional acceptance, not a parallel authoring path.
     integer: [7, 8],
     string: ['7', '8'],
   },
-  // v7 classification (compat-mode — retained until v7 sunset)
-  v7_category: ['foundations', 'engineering', 'design', 'quality', 'agent', 'product'],
-  v7_type: ['capability', 'workflow', 'router', 'overlay'],
-  // v8 classification (ADR-0017)
+  // v8 classification (ADR-0017 + 2026-05-27 amendment)
   v8_subject: [
     'agent-ops',
     'code-engineering',
@@ -54,11 +59,9 @@ const SPEC = {
     'knowledge-organization',
     'product-domain',
   ],
-  v8_operation: ['know', 'do', 'decide', 'modify'],
-  // scope is dual-mode during the v7→v8 window: v7 names + v8 renames coexist
-  scope_compat: ['codebase', 'reference', 'portable', 'project', 'workspace'],
-  // Health Block — ADR-0011 four-verdict split
-  v7_verdict_fields: [
+  v8_deployment_target: ['portable', 'project'],
+  // Health Block — ADR-0011 four-verdict split (current under v8)
+  health_block_verdict_fields: [
     'structural_verdict',
     'truth_verdict',
     'comprehension_verdict',
@@ -99,6 +102,19 @@ function checkEnum(label, expected, actual) {
   return { label, ok: false, reason: parts.join(' | ') };
 }
 
+// Assert a property exists, is a free-text string, and carries NO enum.
+// Guards against a retired enum (e.g. the removed v8 `scope` enum) being
+// re-introduced after the ADR-0017 2026-05-27 amendment made `scope` free-text.
+function checkFreeText(label, def) {
+  if (!def || def.type !== 'string') {
+    return { label, ok: false, reason: 'property missing or not a string' };
+  }
+  if (Array.isArray(def.enum)) {
+    return { label, ok: false, reason: `must be free-text — found an enum: ${def.enum.join(', ')} (ADR-0017 2026-05-27 amendment removed the scope enum)` };
+  }
+  return { label, ok: true };
+}
+
 // ---------------------------------------------------------------------------
 // Checks
 // ---------------------------------------------------------------------------
@@ -128,26 +144,20 @@ function runChecks() {
     results.push(checkEnum('skill.schema schema_version (string)', SPEC.schema_version.string, strBranch && strBranch.enum));
   }
 
-  // v7 classification (compat-mode — must still be present)
-  results.push(checkEnum('skill.schema category (v7 6-enum, compat)', SPEC.v7_category, skillProps.category && skillProps.category.enum));
-  results.push(checkEnum('skill.schema type (v7 4-enum, compat)', SPEC.v7_type, skillProps.type && skillProps.type.enum));
-
-  // v8 classification (ADR-0017)
+  // v8 classification (ADR-0017 + 2026-05-27 amendment)
   results.push(checkEnum('skill.schema subject (v8 9-enum)', SPEC.v8_subject, skillProps.subject && skillProps.subject.enum));
-  results.push(checkEnum('skill.schema operation (v8 4-enum)', SPEC.v8_operation, skillProps.operation && skillProps.operation.enum));
   if (skillProps.subjects && skillProps.subjects.items) {
     results.push(checkEnum('skill.schema subjects[].items (v8 9-enum)', SPEC.v8_subject, skillProps.subjects.items.enum));
   }
+  results.push(checkEnum('skill.schema deployment_target (v8 2-enum)', SPEC.v8_deployment_target, skillProps.deployment_target && skillProps.deployment_target.enum));
 
-  // scope must accept both v7 + v8 names during the compat window
-  results.push(checkEnum('skill.schema scope (v7+v8 compat 5-enum)', SPEC.scope_compat, skillProps.scope && skillProps.scope.enum));
+  // scope is free-text under v8 — assert it carries NO enum (regression guard)
+  results.push(checkFreeText('skill.schema scope (free-text, no enum)', skillProps.scope));
 
   // Manifest mirrors: per-skill enum must match
-  results.push(checkEnum('manifest.schema skills.category (v7 6-enum, compat)', SPEC.v7_category, manifestSkillProps.category && manifestSkillProps.category.enum));
-  results.push(checkEnum('manifest.schema skills.type (v7 4-enum, compat)', SPEC.v7_type, manifestSkillProps.type && manifestSkillProps.type.enum));
   results.push(checkEnum('manifest.schema skills.subject (v8 9-enum)', SPEC.v8_subject, manifestSkillProps.subject && manifestSkillProps.subject.enum));
-  results.push(checkEnum('manifest.schema skills.operation (v8 4-enum)', SPEC.v8_operation, manifestSkillProps.operation && manifestSkillProps.operation.enum));
-  results.push(checkEnum('manifest.schema skills.scope (v7+v8 compat 5-enum)', SPEC.scope_compat, manifestSkillProps.scope && manifestSkillProps.scope.enum));
+  results.push(checkEnum('manifest.schema skills.deployment_target (v8 2-enum)', SPEC.v8_deployment_target, manifestSkillProps.deployment_target && manifestSkillProps.deployment_target.enum));
+  results.push(checkFreeText('manifest.schema skills.scope (free-text, no enum)', manifestSkillProps.scope));
 
   // schema_version pass-through on per-skill entry — must list both 7 and 8
   const msv = manifestSkillProps.schema_version;
@@ -160,8 +170,8 @@ function runChecks() {
     results.push(checkEnum('manifest.schema skills.schema_version (string)', SPEC.schema_version.string, strBranch && strBranch.enum));
   }
 
-  // v7 verdict fields must be declared (Health Block, ADR-0011)
-  for (const field of SPEC.v7_verdict_fields) {
+  // Health Block verdict fields must be declared (ADR-0011, current under v8)
+  for (const field of SPEC.health_block_verdict_fields) {
     const def = skillProps[field];
     results.push({
       label: `skill.schema Health Block field: ${field}`,
