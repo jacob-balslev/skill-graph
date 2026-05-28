@@ -106,7 +106,7 @@ Activation, trigger, and boundary semantics belong to the dedicated fields built
 | Near-miss prompts that should activate a different skill | `anti_examples` |
 | File-surface activation | `paths` |
 | Routing-layer exclusion edges to other skills | `relations.boundary` |
-| Project-affiliation filter | `workspace_tags` |
+| Project-affiliation filter | `project` |
 
 **Rules.**
 - Describe what the skill is about. Keep it short and topical.
@@ -201,52 +201,129 @@ subjects: [code-engineering, quality-assurance]
 
 ---
 
-## `domain`
+## `taxonomy_domain`
 
-**Purpose.** Hierarchical domain path as slash-delimited segments. Complements `subject`: the flat browse shelf and the slash-delimited tree path answer different questions. A UI or docs site uses `domain` to render a folder tree; a filter UI uses `subject` for quick grouping.
+**Purpose.** Hierarchical taxonomy sub-path as slash-delimited segments. Complements `subject`: the flat browse shelf and the slash-delimited tree path answer different questions. A UI or docs site uses `taxonomy_domain` to render a folder tree; a filter UI uses `subject` for quick grouping.
+
+**Rename.** Renamed from `domain` to disambiguate from `grounding.subject_matter` (the grounding-block free-text label) and from cross-taxonomy routing doctrine prose. The taxonomic role is preserved; the word `domain` survives in the field name to signal "this is the taxonomic axis." See the ADR-0017 amendment of 2026-05-27.
 
 **Rules.**
 - Optional.
 - Lowercase alphanumeric segments separated by `/` (for example, `ecommerce/integrations/shopify`).
 - Must match pattern `^[a-z0-9][a-z0-9-]*(/[a-z0-9][a-z0-9-]*)*$`.
 - Do not use absolute paths, leading `/`, trailing `/`, `.`, or `..`.
-- One skill, one path. Use `workspace_tags` or `routing_bundles` for secondary flat grouping.
+- One skill, one path. Use `routing_bundles` for secondary flat grouping.
 
 **Example.**
 ```yaml
-domain: ecommerce/integrations/shopify
+taxonomy_domain: ecommerce/integrations/shopify
 ```
 
 **When to use.** When a `subject` holds many skills (>25 per the balance rule) and a slash-delimited subdivision helps readers find related skills.
 
-**When NOT to use.** Small subjects where the flat shelf is sufficient. Skills where categorization is genuinely ambiguous should use `workspace_tags` or `routing_bundles` to attach flat semantic tags instead.
+**When NOT to use.** Small subjects where the flat shelf is sufficient. Skills where categorization is genuinely ambiguous should use `routing_bundles` to attach flat semantic tags instead.
 
 ---
 
 ## `scope`
 
-**Purpose.** Deployment targeting. Tells the router and auditor where this skill applies.
+**Purpose.** PRD-style free-text statement of what this skill teaches and what it does not. Mirrors the body `## Coverage` plus `## Do NOT Use When` sections at the frontmatter level for fast scanning.
+
+**Repurpose.** Earlier, `scope` was a closed enum (`portable` / `workspace` / `project`) that classified deployment-targeting. The deployment-target role moved to the new required field `deployment_target` (with the `workspace` value removed); `scope` was repurposed to a free-text PRD-style field. The repurpose resolves the long-standing collision with the PRD sense of "in/out of scope" used freely in body prose. See the ADR-0017 amendment of 2026-05-27.
+
+**Rules.**
+- Optional. String. No enum constraint.
+- One paragraph or two. Author what the skill teaches and what it explicitly does not teach.
+- Do not duplicate `description` (the routing contract) or `## Coverage` (the bulleted scope map). `scope:` is the at-a-glance complement — a reader scanning frontmatter sees what's in/out without opening the body.
+
+**Example.**
+```yaml
+scope: "Controlled classification systems with explicit retrieval-task analysis. Covers SKOS broader/narrower, facets, and the substitution test. Out: formal OWL axioms and reasoning constraints — use `ontology-modeling` for that."
+```
+
+**When to use.** When the at-a-glance PRD framing is worth one frontmatter field. Routable consumer skills benefit most.
+
+**When NOT to use.** When the body `## Coverage` and `## Do NOT Use When` sections already make the boundaries obvious, or for trivial skills where a one-line description suffices.
+
+---
+
+## `deployment_target`
+
+**Purpose.** Deployment targeting — where this skill applies. Tells the router and auditor whether the skill is repo-agnostic or coupled to one project.
+
+**History.** Replaces the earlier `scope` enum. The `workspace` value was removed. Skills previously tagged `scope: workspace` migrate to either `portable` or `project` based on author judgment per skill (the codemod refuses to infer the target). `project[]` and `repo[]` are authored independently.
 
 **Allowed values.**
 
 | Value | Meaning | Requires `grounding`? |
 |---|---|---|
 | `portable` | Repo-agnostic patterns — applies to any project | No |
-| `workspace` | Cross-repo knowledge in a multi-repo workspace | No |
-| `project` | Coupled to a specific repo or deployment | **Yes** (schema-enforced) |
+| `project` | Coupled to one or more specific projects | **Yes** (schema-enforced) |
 
 **Rules.**
-- `scope: project` triggers a schema `allOf` rule that requires the `grounding` block. Lint fails without it.
+- **Required.** Every skill must declare a `deployment_target`.
+- `deployment_target: project` triggers a schema `allOf` rule that requires the `grounding` block. Lint fails without it.
 - Choose `portable` for broadly reusable skills.
+- The associated `project[]` array names which projects the skill applies to (see below).
 
 **Example.**
 ```yaml
-scope: project
+deployment_target: project
+project:
+  - handle: skill-graph
+    role: source-of-truth
 ```
 
 **When to use.** Always — required.
 
 **When NOT to use.** Do not use `project` for skills that make no concrete repo claims — use `portable` instead.
+
+---
+
+## `project`
+
+**Purpose.** Projects this skill is linked to. Each entry is an object with a kebab-case `handle` and a free-text `role`. Replaces the v8 `workspace_tags` field and makes project belonging-entity identity a first-class queryable axis. The router's project-fit check reads this array directly.
+
+**Rules.**
+- Optional.
+- Array of objects. Each object has a required `handle` (kebab-case, matches `^[a-z0-9][a-z0-9-]*$`) and optional `role` (free-text).
+- Suggested `role` values: `source-of-truth`, `consumer`, `mirror`.
+- Absent = ambient / cross-project. The router treats such skills as applying to any project query.
+
+**Example.**
+```yaml
+project:
+  - handle: skill-graph
+    role: source-of-truth
+  - handle: jobsogning
+    role: consumer
+```
+
+**When to use.** When the skill is meaningfully coupled to one or more projects. Required in practice when `deployment_target: project` (the project[] array names *which* projects the deployment-target applies to).
+
+**When NOT to use.** Truly ambient `portable` skills with no project affiliation.
+
+---
+
+## `repo`
+
+**Purpose.** Repos this skill is linked to. Each entry is an object with a kebab-case `handle` and a canonical `url`. Plural even though most skills today have one source repo, so federation is structurally ready without a future schema bump. Replaces the implicit identity encoded in URN compounds (`urn:skill:<repo-slug>:<name>`) and the stripped `skill_graph_source_repo` export-provenance keys.
+
+**Rules.**
+- Optional.
+- Array of objects. Each object has a required `handle` (kebab-case) and optional `url` (canonical repository URL).
+- Most skills will list one entry. Multi-entry arrays support federation/mirror scenarios.
+
+**Example.**
+```yaml
+repo:
+  - handle: skill-graph
+    url: https://github.com/jacob-balslev/skill-graph
+```
+
+**When to use.** When the skill is sourced from a specific repo (the common case for project-targeted skills). Optional but recommended on portable skills too, since it makes belonging-entity identity queryable instead of buried in the URN.
+
+**When NOT to use.** Truly ambient skills with no source repo (rare).
 
 ---
 
@@ -1205,49 +1282,11 @@ paths:
 
 ---
 
-## `workspace_tags`
-
-**Purpose.** Declares which projects a skill is relevant to in a multi-project workspace. A skill without `workspace_tags` is ambient — it applies to every project. A skill with tags is filtered in or out by the router based on the active project.
-
-**Taxonomy note.** `workspace_tags` answers "which of my projects is this skill relevant to?" `category` answers "where does this belong in a browse tree?" `routing_bundles` answers "which batch-activation group is this in?" Three fields, three different jobs, no overlap.
-
-**Rules.**
-- Optional array of lowercase kebab-case tokens.
-- Each tag is either a literal project handle (whatever kebab-case name you give a project in your workspace config) or a semantic tag that multiple projects share (e.g., `ecommerce`, `saas`, `b2b`).
-- The workspace config at `.skill-graph/config.json` maps literal project handles to `semantic_tags`. A skill tagged with a semantic tag matches every project whose config expands to include that tag.
-- Absent `workspace_tags` means the skill is ambient — applies to every project. This is the default; use it for cross-cutting skills like GDPR, a11y, or test-driven-development.
-
-**Example.**
-```yaml
-# One specific project only — literal targeting
-workspace_tags: [<project-a>]
-
-# Cross-ecommerce — every project whose workspace config maps to `ecommerce`
-workspace_tags: [ecommerce]
-
-# Literal + semantic — precise match on <project-a>, semantic match on any ecommerce project
-workspace_tags: [<project-a>, ecommerce]
-```
-
-**Workspace config resolution.**
-
-```json
-// .skill-graph/config.json
-{
-  "workspace": {
-    "projects": {
-      "<project-a>":  { "semantic_tags": ["ecommerce", "saas"] },
-      "<project-b>":  { "semantic_tags": ["ecommerce", "b2c"] }
-    }
-  }
-}
-```
-
-A skill tagged `[ecommerce]` matches both projects. A skill tagged `[<project-a>]` only matches the first. A skill tagged `[saas]` only matches whichever projects' configs map to that semantic tag (the first, in this example).
-
-**When to use.** When the workspace has more than one project and a skill's scope is clearly bound to a subset. Tag with semantic tags whenever possible — literal project handles couple the skill to a project name that may change.
-
-**When NOT to use.** Single-project workspaces — omit the field. Cross-cutting skills that apply everywhere — omit the field. Do not use it as a substitute for `category` or `routing_bundles`; they answer different questions.
+<!-- workspace_tags REMOVED (see ADR-0017 amendment, 2026-05-27).
+     Use `project` (array of {handle, role}) for project belonging-entity identity.
+     The former workspace_tags field + workspace.projects semantic-tag mapping were
+     removed because the field had 0% corpus adoption and the semantic-tag
+     expansion never surfaced a routing-quality benefit. See § project above. -->
 
 ---
 
@@ -1374,11 +1413,13 @@ relations:
 
 ## `grounding`
 
-**Purpose.** Declares what the skill governs in the real world or codebase, and provides evidence anchors for repo-grounded verification. Required for `scope: codebase` skills.
+**Purpose.** Declares what the skill governs in the real world or codebase, and provides evidence anchors for repo-grounded verification. Required for `deployment_target: project` skills.
+
+**Rename.** `grounding.domain_object` was renamed to `grounding.subject_matter`; the v3.1 `grounding.subject` alias was retired. See the ADR-0017 amendment of 2026-05-27.
 
 **Rules.**
-- Object with five required sub-fields: `domain_object`, `grounding_mode`, `truth_sources`, `failure_modes`, `evidence_priority`.
-- Omit entirely for `scope: portable` and `scope: reference` skills.
+- Object with five required sub-fields: `subject_matter`, `grounding_mode`, `truth_sources`, `failure_modes`, `evidence_priority`.
+- Omit entirely for `deployment_target: portable` skills (unless you want to ground a portable skill in external specs — then keep `grounding_mode: universal`).
 - `grounding_mode` must be one of `repo_specific`, `universal`, or `hybrid`.
 - `evidence_priority` must be one of `repo_code_first`, `general_knowledge_first`, or `equal`.
 
@@ -1386,7 +1427,7 @@ relations:
 
 | Sub-field | Type | Meaning |
 |---|---|---|
-| `domain_object` | string | The real-world or codebase entity this skill governs (e.g., "Shopify integration behavior") |
+| `subject_matter` | string | The real-world or codebase entity this skill governs (e.g., "Shopify integration behavior"). Renamed from v8 `domain_object`. |
 | `grounding_mode` | enum | How the skill is grounded: `repo_specific` (one codebase), `universal` (language/framework), `hybrid` (both) |
 | `truth_sources` | string[] or object[] | Files, docs, URLs, or anchored source slices that are the ground truth for the skill's claims |
 | `failure_modes` | string[] | Known ways the skill can produce incorrect guidance if applied incorrectly |
@@ -1395,7 +1436,7 @@ relations:
 **Example.**
 ```yaml
 grounding:
-  domain_object: Shopify integration behavior
+  subject_matter: Shopify integration behavior
   grounding_mode: repo_specific
   truth_sources:
     - path: src/integrations/shopify/client.ts
