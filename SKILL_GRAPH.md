@@ -8,6 +8,27 @@ The three layers divide the work cleanly. The [Skill Metadata Protocol](SKILL_ME
 
 ---
 
+## Charter — Rules & Goal
+
+**Mission & Vision** are shared across all three layers (Skill Metadata Protocol, Skill Audit Loop, Skill Graph); the canonical statement is [`AGENTS.md § Mission and Vision`](AGENTS.md#mission-and-vision). This section records the **Library layer's** own Rules and Goal.
+
+### Rules
+
+1. **Skill Graph is build-time / authoring-time tooling** — not an agent runtime, a hosted marketplace, or a memory system. Consumers read from the graph; they do not redefine it.
+2. **Five authority tiers** — schema, explanation docs, enforcement/transformation tooling, consumer tooling, specimens. When two files contradict, the higher tier wins and the lower-tier file is the bug.
+3. **Doc ownership:** `SKILL_METADATA_PROTOCOL.md` owns normative protocol language; `SKILL_GRAPH.md` owns library-level architecture and the live Current State facts; `SKILL_AUDIT_LOOP.md` owns audit procedure and quality gates.
+4. **Generated files are never hand-edited when a generator owns them.** Source skills live in the canonical library; `marketplace/skills/` is generated staging output, not a source of truth.
+5. **Routing reads the current fields:** `subject`, `deployment_target`, `taxonomy_domain`, `project[]` / `repo[]`, the activation fields, `relations`, `grounding`, and eval status.
+6. **Public release output excludes project-private, repo-specific, secret-bearing, or GDPR-sensitive content** (the publication gate in `export-marketplace-skills.js`).
+7. **Refactors preserve useful domain intelligence;** compress only when nothing behaviorally important is dropped.
+8. **Documentation routes a concept to its owning file** rather than duplicating a stale summary — link to the Current State block below, never restate its numbers.
+
+### Goal
+
+Make a large AI-agent skill library coherent, project-aware, auditable, and exportable — so an agent or human can answer which skill applies, why, what grounds it, which skills relate, which must not co-route, and whether it has been proven useful. Near-term: keep docs, examples, tests, and schema-constant checks aligned with the v8 clean cut; keep `SKILL_GRAPH.md`, `AGENTS.md`, `README.md`, and the onboarding docs stating the same facts; and keep the router, manifest compiler, export pipeline, drift sentinel, and audit loop focused on the current fields.
+
+---
+
 ## Current State — single source of truth
 
 > This block is the canonical "what version / how many" reference. Other docs (`AGENTS.md`, `README.md`) should link here rather than restate these numbers, to avoid the drift that recurs when each doc carries its own copy.
@@ -139,7 +160,7 @@ Public docs that define or explain the protocol in prose. If a Tier 2 file disag
 | [`SKILL_METADATA_PROTOCOL.md`](SKILL_METADATA_PROTOCOL.md) *(repo root)* | Normative spec: required fields, semantic rules, authored vs generated fields, migration notes. |
 | `docs/skill-metadata-protocol.md` | Rationale and deep explanation: archetype section map, requiredness groups, strictness rules, schema versioning policy, design tradeoffs. |
 | `docs/field-reference.md` | One section per authored field. All current v7 top-level fields with purpose, rules, allowed values, examples. |
-| `docs/field-decision-guide.md` | Decision tables for the hard choices: `scope`, `relations.*`, Evaluation Status, `portability`, `workspace_tags`, and the "tag vs. category vs. routing_bundles" question. |
+| `docs/field-decision-guide.md` | Decision tables for the hard choices: `deployment_target`, `relations.*`, Evaluation Status, `portability`, `project[]` / `repo[]`, and the "taxonomy_domain vs. subject vs. routing_bundles" question. |
 | `docs/manifest-field-mapping.md` | The authored → generated bridge: rename map, loss policy, per-version migration notes, worked example. |
 
 Three rules govern this tier:
@@ -229,7 +250,7 @@ flowchart LR
 
 | File | Role |
 |---|---|
-| `scripts/skill-graph-route.js` | Graph-aware selector. Uses every unique Skill Graph field: `relations.depends_on` transitive closure, `relations.verify_with` co-loading, `relations.boundary` anti-ownership exclusion, `eval_state` quality gate, `lifecycle.stale_after_days` staleness annotation, `workspace_tags` filtering with workspace semantic-tag expansion. Emits per-skill reasons. |
+| `scripts/skill-graph-route.js` | Graph-aware selector. Uses every unique Skill Graph field: `relations.depends_on` transitive closure, `relations.verify_with` co-loading, `relations.boundary` anti-ownership exclusion, `eval_state` quality gate, `lifecycle.stale_after_days` staleness annotation, and `project[]` / `deployment_target` project-fit filtering. Emits per-skill reasons. |
 | `scripts/skill-graph-drift.js` | Drift sentinel. Hashes every `grounding.truth_sources` entry with SHA-256, including line-range and anchor object entries; compares against the recorded `drift_check.truth_source_hashes` baseline; reports DRIFT / BROKEN / STALE / NO_BASELINE. `--record --apply` updates the SKILL.md in place with fresh hashes. |
 
 These tools are the *proof* that Tier 1's schema earns its complexity. If you ever doubt whether `boundary` or `grounding.truth_sources` or `lifecycle` is worth the field count, run these scripts against a real skill library and watch them change routing decisions.

@@ -188,7 +188,7 @@ The Skill Graph is a routable, evaluable, drift-checked knowledge graph of agent
 - `relations.verify_with` — "when this skill is applied, verify the result with that skill" (cross-check).
 - `relations.depends_on` — composition; "this skill assumes the reader has the other in scope."
 
-The graph is not a documentation pile. It is queried by routers, traversed by injection hooks, evaluated against retrieval baselines, and drift-checked against source-of-truth files. Two skills are "the same kind" iff they share a `subject × scope` pair plus a head noun (per [ADR-0017](docs/adr/0017-five-axis-classification-model.md), with the operation axis retired 2026-05-27). The routing layer uses that pair as a first-pass discriminator before walking edges. Note: in the current corpus, most skills share `scope: portable`, so the pair provides broad stratum separation but not fine-grained routing precision — keyword score and relation edges carry the discriminating load. See `SKILL_METADATA_PROTOCOL.md` § Classification for the current distribution analysis and authoring implications.
+The graph is not a documentation pile. It is queried by routers, traversed by injection hooks, evaluated against retrieval baselines, and drift-checked against source-of-truth files. Two skills are "the same kind" iff they share a `subject × deployment_target` pair plus a head noun (per [ADR-0017](docs/adr/0017-five-axis-classification-model.md), with the operation axis retired 2026-05-27). The routing layer uses that pair as a first-pass discriminator before walking edges. Note: in the current corpus, most skills share `deployment_target: portable`, so the pair provides broad stratum separation but not fine-grained routing precision — keyword score and relation edges carry the discriminating load. See `SKILL_METADATA_PROTOCOL.md` § Classification for the current distribution analysis and authoring implications.
 
 This shape is what distinguishes the Skill Graph from prompt libraries, agent-runtime config, hosted marketplaces, and personal memory systems. It is a protocol-and-tooling project that produces a navigable graph; consumers (routers, agent runtimes, hosted marketplaces) read from it but do not redefine it.
 
@@ -475,7 +475,7 @@ For non-trivial new skills, write a short spec and plan first as described in `C
 - Write `description:` as a routing contract: clear positive trigger plus explicit negative boundary.
 - Pick `type` honestly: `capability`, `workflow`, `router`, or `overlay`.
 - Pick `scope` honestly: `portable`, `workspace`, or `project` (legacy aliases `reference` and `codebase` still validate during sunset).
-- Add `grounding` for `scope: project` or legacy `scope: codebase`.
+- Add `grounding` for `deployment_target: project` (and for any legacy unmigrated skill still carrying `scope: codebase`).
 - Point every `relations.*` target at an existing sibling skill.
 - Keep `eval_artifacts`, `eval_state`, and `routing_eval` truthful.
 - Remove template teaching comments before committing a derived skill.
@@ -496,7 +496,7 @@ The Skill Graph evaluates four layers; each has its own surface and its own defi
 ### What a good comprehension eval looks like
 
 - **≥7 realistic scenarios** per skill — not trivia, not pattern-matching, not single-line "is this X" prompts. Each scenario should require the skill's specific judgment to answer correctly.
-- **Project-grounded** when the skill is `scope: project` (or legacy `scope: codebase`); workspace/spec grounded when `scope: workspace` (or legacy `scope: reference`); principle-grounded when `scope: portable`.
+- **Project-grounded** when `deployment_target: project` (anchored to specific repo truth; or a legacy unmigrated skill still carrying `scope: codebase`); **principle-grounded** when `deployment_target: portable` (repo-agnostic patterns). A skill that blends both records `grounding_mode: hybrid`.
 - **At least one negative expectation per eval** — what the answer must *not* say or do. Negative expectations catch silent scope reduction and softened-failure responses.
 - **Archetype-matched coverage:**
   - `capability` evals test domain correctness, scope boundaries, anti-pattern recognition.
@@ -697,7 +697,7 @@ Before pushing a sync to `jacob-balslev/skills`:
 - Every exported marketplace description is ≤ the marketplace limit (`node scripts/export-marketplace-skills.js --check`).
 - No protocol frontmatter has leaked through — the release repo's skills are plain Agent Skills shape, not v8 protocol shape.
 - All references in this repo's docs, READMEs, and scripts to the public URL go to `https://www.skills.sh/jacob-balslev/skills/`; references to the GitHub release repo go to `https://github.com/jacob-balslev/skills`.
-- **No internal/project-scoped skills in the release tree.** `export-marketplace-skills.js` now enforces a publication gate: it excludes any skill with `scope: project` (or legacy `scope: codebase|operational`) or `grounding_mode: repo_specific|repo_internal` (logged to stderr as `EXCLUDED from marketplace export`), and `PRIVACY_PATTERNS` fails `--check` on `sales-hub/` paths and internal DB-surface names. Before pushing the release repo, also verify the working tree directly — `git ls-tree --name-only HEAD` must show only the curated `skills/` tree plus governance files, and `git rev-list --count origin/main..HEAD` plus a scan for `sales-hub/` / secret patterns must come back clean. (See the 2026-05-20 incident: 284 `scope: operational` internal skills were committed-but-unpushed in the release repo's local `main` and would have published on a `git push`; SH-6281 tracks the structural fix. An allowlist `.gitignore` now blocks `git add -A`, but a deliberate `git add <internal-dir>` could still bypass it — verify before every push.)
+- **No internal/project-scoped skills in the release tree.** `export-marketplace-skills.js` now enforces a publication gate: it excludes any skill with `deployment_target: project` (or legacy unmigrated `scope: codebase|operational`) or `grounding_mode: repo_specific|repo_internal` (logged to stderr as `EXCLUDED from marketplace export`), and `PRIVACY_PATTERNS` fails `--check` on `sales-hub/` paths and internal DB-surface names. Before pushing the release repo, also verify the working tree directly — `git ls-tree --name-only HEAD` must show only the curated `skills/` tree plus governance files, and `git rev-list --count origin/main..HEAD` plus a scan for `sales-hub/` / secret patterns must come back clean. (See the 2026-05-20 incident: 284 `scope: operational` internal skills were committed-but-unpushed in the release repo's local `main` and would have published on a `git push`; SH-6281 tracks the structural fix. An allowlist `.gitignore` now blocks `git add -A`, but a deliberate `git add <internal-dir>` could still bypass it — verify before every push.)
 
 ### When skills.sh is wrong about us
 
