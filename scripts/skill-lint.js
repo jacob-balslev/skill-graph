@@ -702,7 +702,7 @@ function main() {
           column: loc.column,
           message: w.msg,
           sourceText: result.sourceText,
-          severity: 'warning',
+          severity: 'warn',
           noColor: parsed.noColor,
         }));
       }

@@ -1,21 +1,30 @@
 #!/usr/bin/env node
 /**
- * Test: v8 schema contract.
+ * Test: v8 schema contract (clean cut — no v7 surface).
  *
- * `subject` is the v8 classification axis in the schema's global required
- * array. The v7 fields (type, category) remain DEFINED as optional properties
- * for back-compat with skills that still carry them, but are no longer
- * required by the schema.
+ * Per AGENTS.md § Major Version Is a Clean Cut, the live schema describes v8
+ * only. The v7 classification fields (`type`, `category`, `categories`,
+ * `primaryCategory`, …) are REMOVED — they are now `additionalProperties`
+ * violations, not "optional back-compat" properties. The v8 classification
+ * axes `subject` + `deployment_target` are both in the global required array;
+ * `scope` is free-text (its old enum, including `workspace`, is gone); and
+ * grounding is required when `deployment_target: project` (not keyed off
+ * `scope` anymore). Grounding's domain label is `subject_matter`, not the
+ * retired `domain_object`.
  *
  * This test verifies:
- *   - v8 frontmatter (subject present) validates.
- *   - v7-only frontmatter (no subject) now FAILS validation — the schema's
- *     global required array refuses it. Any skill that still lacks the v8
- *     axis is CONTENT-mode migration work for the audit loop.
- *   - scope: project|workspace + legacy codebase|reference|portable all
- *     validate.
- *   - subjects[0] must equal subject when both are present.
- *   - scope: project requires grounding (parity with v7 scope: codebase).
+ *   - Minimal v8 frontmatter (subject + deployment_target) validates.
+ *   - Legacy v7-shaped frontmatter (type/category, no subject/deployment_target)
+ *     now FAILS — missing required axes AND additionalProperties violations.
+ *     Any skill still carrying that shape is CONTENT-mode migration work.
+ *   - A v8 skill that re-adds a retired v7 field (type/category) FAILS the
+ *     clean cut (additionalProperties).
+ *   - Missing `subject` fails; missing `deployment_target` fails.
+ *   - `deployment_target: project` requires grounding; without it, fails.
+ *   - `scope` accepts any free-text string (no enum).
+ *   - grounding requires `subject_matter`; the retired `domain_object` fails.
+ *   - schema_version int/string 7 and 8 are both tolerated while pre-v8 skills
+ *     migrate (the only intentional cross-version tolerance left).
  */
 
 'use strict';
@@ -112,9 +121,10 @@ function check(name, fn) {
   }
 }
 
-// Legacy v7-only frontmatter (no subject). This SHAPE no longer validates
-// — subject is globally required.
-const v7OnlyBase = {
+// Legacy v7-shaped frontmatter: carries the retired type/category fields and
+// lacks BOTH v8 required axes (subject, deployment_target). This SHAPE no
+// longer validates — it is CONTENT-mode migration work for the audit loop.
+const v7Legacy = {
   schema_version: 7,
   name: 'test-skill',
   description: 'A test skill for v8 schema checks.',
@@ -130,37 +140,51 @@ const v7OnlyBase = {
   routing_eval: 'absent',
 };
 
-// Minimal valid v8 frontmatter. v7 legacy fields (type, category) MAY still
-// be present for back-compat but are no longer required.
+// Minimal valid v8 frontmatter — both required classification axes present,
+// no retired v7 fields. This is the clean-cut authoring shape.
 const v8Base = {
-  ...v7OnlyBase,
   schema_version: 8,
+  name: 'test-skill',
+  description: 'A test skill for v8 schema checks.',
+  version: '1.0.0',
   subject: 'code-engineering',
+  deployment_target: 'portable',
+  owner: 'test-owner',
+  freshness: '2026-05-25',
+  drift_check: { last_verified: '2026-05-25' },
+  eval_artifacts: 'none',
+  eval_state: 'unverified',
+  routing_eval: 'absent',
 };
 
-check('v7-only frontmatter (no subject) now fails validation', () => {
-  // The schema's global required array now demands subject regardless of
-  // schema_version. v7-only skills are CONTENT-mode migration work.
-  const errors = validate(v7OnlyBase, SCHEMA);
-  if (errors.length === 0) throw new Error('v7-only frontmatter should have failed');
+check('minimal v8 frontmatter (subject + deployment_target) validates', () => {
+  const errors = validate(v8Base, SCHEMA);
+  if (errors.length > 0) throw new Error(`v8 base failed: ${errors.join('; ')}`);
+});
+
+check('legacy v7-shaped frontmatter fails (missing axes + retired fields)', () => {
+  // Missing subject + deployment_target (now required) AND carries the retired
+  // type/category fields (now additionalProperties violations).
+  const errors = validate(v7Legacy, SCHEMA);
+  if (errors.length === 0) throw new Error('v7-shaped frontmatter should have failed');
   if (!errors.some(e => e.includes("missing key 'subject'"))) {
     throw new Error(`expected missing-subject error, got: ${errors.join('; ')}`);
   }
+  if (!errors.some(e => e.includes("missing key 'deployment_target'"))) {
+    throw new Error(`expected missing-deployment_target error, got: ${errors.join('; ')}`);
+  }
+  if (!errors.some(e => e.includes("unexpected key 'type'"))) {
+    throw new Error(`expected additionalProperties error on 'type', got: ${errors.join('; ')}`);
+  }
 });
 
-check('v8 frontmatter (with v7 legacy fields still present) validates', () => {
-  // The v7 fields (type, category) are no longer required but remain defined
-  // as optional properties — skills still carrying them validate fine.
-  const errors = validate(v8Base, SCHEMA);
-  if (errors.length > 0) throw new Error(`v8 base with legacy fields failed: ${errors.join('; ')}`);
-});
-
-check('v8 frontmatter without v7 legacy fields validates (v8-only authoring works)', () => {
-  const v8Pure = { ...v8Base };
-  delete v8Pure.type;
-  delete v8Pure.category;
-  const errors = validate(v8Pure, SCHEMA);
-  if (errors.length > 0) throw new Error(`v8 without v7 legacy fields failed: ${errors.join('; ')}`);
+check('v8 skill re-adding a retired v7 field (type/category) fails the clean cut', () => {
+  const withRetired = { ...v8Base, type: 'capability', category: 'engineering' };
+  const errors = validate(withRetired, SCHEMA);
+  if (errors.length === 0) throw new Error('retired v7 fields should fail additionalProperties');
+  if (!errors.some(e => e.includes("unexpected key 'type'") || e.includes("unexpected key 'category'"))) {
+    throw new Error(`expected additionalProperties error, got: ${errors.join('; ')}`);
+  }
 });
 
 check('v8 frontmatter missing subject fails', () => {
@@ -173,52 +197,57 @@ check('v8 frontmatter missing subject fails', () => {
   }
 });
 
-check('scope: project validates when grounding present (v8 rename)', () => {
-  // SH-6550: scope: project now requires grounding (parity with v7 scope: codebase).
-  // The schema's allOf rule was updated 2026-05-26 to require grounding on BOTH
-  // scope: codebase (v7) and scope: project (v8) — the docs always claimed this;
-  // the schema rule was missing the v8 alias before this fix.
-  const v8Project = {
+check('v8 frontmatter missing deployment_target fails', () => {
+  const broken = { ...v8Base };
+  delete broken.deployment_target;
+  const errors = validate(broken, SCHEMA);
+  if (errors.length === 0) throw new Error('v8 missing deployment_target should have failed validation');
+  if (!errors.some(e => e.includes("missing key 'deployment_target'"))) {
+    throw new Error(`expected missing-deployment_target error, got: ${errors.join('; ')}`);
+  }
+});
+
+check('deployment_target: project validates when grounding present', () => {
+  // The schema's allOf rule requires a grounding block when
+  // deployment_target === 'project'. grounding's domain label is subject_matter.
+  const projGrounded = {
     ...v8Base,
-    scope: 'project',
+    deployment_target: 'project',
     grounding: {
-      domain_object: 'test',
+      subject_matter: 'test subject matter',
       grounding_mode: 'repo_specific',
       truth_sources: [],
       failure_modes: [],
       evidence_priority: 'repo_code_first',
     },
   };
-  const errors = validate(v8Project, SCHEMA);
-  if (errors.length > 0) throw new Error(`scope:project with grounding failed: ${errors.join('; ')}`);
+  const errors = validate(projGrounded, SCHEMA);
+  if (errors.length > 0) throw new Error(`deployment_target:project with grounding failed: ${errors.join('; ')}`);
 });
 
-check('scope: project WITHOUT grounding fails (v8 parity with v7 codebase)', () => {
-  // SH-6550: the inverse — scope: project without grounding must now FAIL,
-  // matching the existing v7 scope: codebase behavior.
-  const v8ProjectNoGrounding = { ...v8Base, scope: 'project' };
-  delete v8ProjectNoGrounding.grounding;
-  const errors = validate(v8ProjectNoGrounding, SCHEMA);
+check('deployment_target: project WITHOUT grounding fails', () => {
+  const projNoGrounding = { ...v8Base, deployment_target: 'project' };
+  const errors = validate(projNoGrounding, SCHEMA);
   if (errors.length === 0) {
-    throw new Error('scope:project without grounding should have failed validation (SH-6550)');
+    throw new Error('deployment_target:project without grounding should have failed validation');
   }
   if (!errors.some(e => e.includes("missing key 'grounding'") || e.includes('grounding'))) {
     throw new Error(`expected missing-grounding error, got: ${errors.join('; ')}`);
   }
 });
 
-check('scope: workspace validates (v8 rename)', () => {
-  const v8Workspace = { ...v8Base, scope: 'workspace' };
-  const errors = validate(v8Workspace, SCHEMA);
-  if (errors.length > 0) throw new Error(`scope:workspace failed: ${errors.join('; ')}`);
+check('scope accepts any free-text string (no enum)', () => {
+  // scope is free-text in v8 — the old enum (portable/workspace/codebase/…) is
+  // gone; deployment_target carries the deployment-targeting role now.
+  const freeScope = { ...v8Base, scope: 'Teaches the Foo subsystem; not for Bar integrations.' };
+  const errors = validate(freeScope, SCHEMA);
+  if (errors.length > 0) throw new Error(`free-text scope failed: ${errors.join('; ')}`);
 });
 
-check('scope: codebase still validates as legacy alias (with v8 axes + grounding)', () => {
-  // scope: codebase remains a legacy alias for scope: project. A v8 skill
-  // can still declare it; it carries grounding the same way.
-  const v8Codebase = {
+check('grounding with retired domain_object key fails (subject_matter required)', () => {
+  const groundingOldKey = {
     ...v8Base,
-    scope: 'codebase',
+    deployment_target: 'project',
     grounding: {
       domain_object: 'test',
       grounding_mode: 'universal',
@@ -227,8 +256,11 @@ check('scope: codebase still validates as legacy alias (with v8 axes + grounding
       evidence_priority: 'equal',
     },
   };
-  const errors = validate(v8Codebase, SCHEMA);
-  if (errors.length > 0) throw new Error(`scope:codebase failed: ${errors.join('; ')}`);
+  const errors = validate(groundingOldKey, SCHEMA);
+  if (errors.length === 0) throw new Error('retired grounding.domain_object should fail');
+  if (!errors.some(e => e.includes("unexpected key 'domain_object'") || e.includes("missing key 'subject_matter'"))) {
+    throw new Error(`expected domain_object/subject_matter error, got: ${errors.join('; ')}`);
+  }
 });
 
 check('subject: invalid value fails enum check', () => {
@@ -241,7 +273,7 @@ check('subject: invalid value fails enum check', () => {
 });
 
 check('subjects array with valid entries validates', () => {
-  const withSubjects = { ...v8Base, subject: 'code-engineering', subjects: ['code-engineering', 'quality-assurance'] };
+  const withSubjects = { ...v8Base, subjects: ['code-engineering', 'quality-assurance'] };
   const errors = validate(withSubjects, SCHEMA);
   if (errors.length > 0) throw new Error(`subjects array failed: ${errors.join('; ')}`);
 });
@@ -251,17 +283,21 @@ check('subjects array with valid entries validates', () => {
 // here doesn't implement maxItems. The real corpus check happens when an
 // authored skill runs through skill-lint as part of `npm run verify`.
 
-check('schema_version string "7" still tolerated (back-compat for hand-rolled YAML)', () => {
-  // A skill that declares schema_version: "7" as a string (instead of int)
-  // still validates the version field — but it ALSO needs v8 axes now.
-  const v8WithStringSchemaVersion = { ...v8Base, schema_version: '7' };
-  const errors = validate(v8WithStringSchemaVersion, SCHEMA);
+check('schema_version int 7 tolerated while pre-v8 skills migrate', () => {
+  const intSeven = { ...v8Base, schema_version: 7 };
+  const errors = validate(intSeven, SCHEMA);
+  if (errors.length > 0) throw new Error(`schema_version int 7 failed: ${errors.join('; ')}`);
+});
+
+check('schema_version string "7" tolerated (back-compat for hand-rolled YAML)', () => {
+  const strSeven = { ...v8Base, schema_version: '7' };
+  const errors = validate(strSeven, SCHEMA);
   if (errors.length > 0) throw new Error(`schema_version string "7" failed: ${errors.join('; ')}`);
 });
 
 check('schema_version string "8" valid (parity with int)', () => {
-  const v8Str = { ...v8Base, schema_version: '8' };
-  const errors = validate(v8Str, SCHEMA);
+  const strEight = { ...v8Base, schema_version: '8' };
+  const errors = validate(strEight, SCHEMA);
   if (errors.length > 0) throw new Error(`schema_version string "8" failed: ${errors.join('; ')}`);
 });
 

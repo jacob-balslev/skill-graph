@@ -55,7 +55,7 @@ function colorize(text, colorCode, noColor) {
  * @param {string}   opts.message     - Short error description (no trailing period needed).
  * @param {string}   [opts.help]      - Optional help/fix hint shown after the frame.
  * @param {string}   opts.sourceText  - Full text of the file (used to extract the frame).
- * @param {'error'|'warn'} [opts.severity='error'] - Controls caret colour.
+ * @param {'error'|'warn'|'warning'} [opts.severity='error'] - Controls caret colour. `'warning'` is accepted as a synonym for `'warn'`.
  * @param {boolean}  [opts.noColor=false] - Suppress ANSI codes (CI / --no-color).
  * @param {number}   [opts.context=2]    - Lines of context above and below the target line.
  * @returns {string} Multi-line formatted diagnostic string.
@@ -87,9 +87,10 @@ function formatCodeFrame(opts) {
   // Width of the line-number gutter (right-aligned).
   const gutterWidth = String(lastLine + 1).length;
 
-  const caretColor = severity === 'warn' ? 'yellow' : 'red';
-  const labelColor = severity === 'warn' ? 'yellow' : 'red';
-  const label      = severity === 'warn' ? 'warn' : 'error';
+  const isWarn     = severity === 'warn' || severity === 'warning';
+  const caretColor = isWarn ? 'yellow' : 'red';
+  const labelColor = isWarn ? 'yellow' : 'red';
+  const label      = isWarn ? 'warn' : 'error';
 
   // Header: file:line:col
   const header = colorize(
@@ -143,8 +144,9 @@ function formatCodeFrame(opts) {
  * @private
  */
 function formatSimple({ filePath, line, column, message, help, severity, noColor }) {
-  const labelColor = severity === 'warn' ? 'yellow' : 'red';
-  const label      = severity === 'warn' ? 'warn' : 'error';
+  const isWarn     = severity === 'warn' || severity === 'warning';
+  const labelColor = isWarn ? 'yellow' : 'red';
+  const label      = isWarn ? 'warn' : 'error';
   const parts = [
     `${colorize(`[${label}]`, labelColor, noColor)} ${colorize(`${filePath}:${line}:${column}`, 'cyan', noColor)} ${message}`,
   ];

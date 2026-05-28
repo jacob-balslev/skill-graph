@@ -43,6 +43,17 @@ const RUNNERS = [
   'lib/audit/skill-test-runner.js',
 ];
 
+// Extra args appended in the unknown-flag check (loop 2) for runners whose
+// default (no-action) invocation does real, expensive work. batch-eval.js
+// treats a bare invocation as "evaluate the whole corpus" — now that it
+// resolves the configured skill library standalone-safely it actually finds
+// skills and would spawn grader subprocesses, blowing the 15s timeout. The
+// smoke test only verifies require/parse health, so --dry-run keeps that
+// intent (discovery + arg-parse still run) without launching real evals.
+const SAFE_EXTRA_ARGS = {
+  'lib/audit/batch-eval.js': ['--dry-run'],
+};
+
 // ── 1. node --check (syntax / immediate require failure) ────────────
 process.stdout.write('\n1. Syntax check via `node --check`\n');
 for (const rel of RUNNERS) {
@@ -56,7 +67,8 @@ for (const rel of RUNNERS) {
 // ── 2. Invocation with `--no-such-flag-xyz` doesn't panic on module/parse ──
 process.stdout.write('\n2. Unknown-flag invocation does not panic with require/parse errors\n');
 for (const rel of RUNNERS) {
-  const r = spawnSync('node', [path.join(REPO_ROOT, rel), '--no-such-flag-xyz'], {
+  const extra = SAFE_EXTRA_ARGS[rel] || [];
+  const r = spawnSync('node', [path.join(REPO_ROOT, rel), '--no-such-flag-xyz', ...extra], {
     encoding: 'utf8',
     timeout: 15000,
   });
