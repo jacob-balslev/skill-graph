@@ -72,14 +72,14 @@ const path = require('path');
 // Source of truth for the content of these blocks: the canonical specimen at
 // skill-graph/examples/skill-metadata-template.md (commit 7faadf9) and the
 // pilot at skills/meta-methods/first-principles-thinking/SKILL.md
-// (commit d6c13e4). When `docs/field-reference.md` and these blocks disagree,
+// (commit d6c13e4). When `docs/SKILL_METADATA_PROTOCOL_field-reference.md` and these blocks disagree,
 // the reference doc wins and these blocks get corrected (per the convention
 // established in d9fe52f).
 // -----------------------------------------------------------------------------
 const FIELD_COMMENTS = {
   schema_version: [
     '# schema_version: protocol contract version this skill conforms to.',
-    '# Integer 8. Prior contract retrievable via `git show schema-v7:schemas/skill.schema.json`.',
+    '# Integer 8. Prior contract retrievable via `git show schema-v7:schemas/SKILL_METADATA_PROTOCOL_schema.json`.',
   ],
   version: [
     '# version: skill content version (semver). Bumped when the instructional content changes.',

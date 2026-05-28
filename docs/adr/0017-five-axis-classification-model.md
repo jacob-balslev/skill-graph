@@ -14,7 +14,7 @@
 >
 > The "compatibility-mode" landing described in § Landing strategy is also obsolete: per [AGENTS.md § Major Version Is a Clean Cut](../../AGENTS.md), the live tree describes v8 only. The v7 → v8 cut is past-tense; v7 fields are deleted from the schema, the codemod history lives in git, and `git tag schema-v7` preserves the pre-cut contract for anyone needing it.
 >
-> This ADR remains the canonical record of the v8 model's design rationale (9-value `subject` enum, polyhierarchy choice, the `family`/`layer`/`primaryCategory`/`routingRole` removal). Read its body as historical context; for the current contract, read `schemas/skill.schema.json` and `SKILL_METADATA_PROTOCOL.md`.
+> This ADR remains the canonical record of the v8 model's design rationale (9-value `subject` enum, polyhierarchy choice, the `family`/`layer`/`primaryCategory`/`routingRole` removal). Read its body as historical context; for the current contract, read `schemas/SKILL_METADATA_PROTOCOL_schema.json` and `SKILL_METADATA_PROTOCOL.md`.
 
 ## Context
 
@@ -120,7 +120,7 @@ The full critique response is preserved at `/tmp/gpt55-critique-response.md` for
 - Plan: workspace-local v7 to v8 migration plan, `we-should-clearly-look-wondrous-firefly.md`
 - Codemod: `scripts/migrate-skill-v7-to-v8.js`
 - Mapping artifact: `audits/migration-mapping-v7-to-v8.json`
-- Schema: `schemas/skill.schema.json` (extended `schema_version` to `[7, 8]`, added `subject`/`subjects`/`operation` properties + allOf rule for v8-required fields)
+- Schema: `schemas/SKILL_METADATA_PROTOCOL_schema.json` (extended `schema_version` to `[7, 8]`, added `subject`/`subjects`/`operation` properties + allOf rule for v8-required fields)
 - Test: `scripts/__tests__/test-v8-schema-compat.js` (12 cases covering v7 unchanged, v8 required, scope rename, enum validation)
 - Library mapping: 147 SKILL.md files in `~/Development/skills/skills/` migrated across 9 per-subject batches
 - Companion ADR for audit-loop verdicts: [ADR 0011](0011-split-audit-verdict-into-four-verdicts.md)

@@ -2,7 +2,7 @@
 /**
  * Schema-version drift sentinel for documentation.
  *
- * Reads the active schema_version from schemas/skill.schema.json and scans
+ * Reads the active schema_version from schemas/SKILL_METADATA_PROTOCOL_schema.json and scans
  * active .md docs for stale references like `schema_version: 4`, `v4 today`,
  * `equals \`5\``, stale prose phrases like `v6 frontmatter` / `v5 protocol` /
  * `v4 top-level fields`, and similar patterns that would teach old contracts.
@@ -34,7 +34,7 @@ const path = require('path');
 const { workspaceRoot } = require('./lib/roots');
 
 const REPO_ROOT = workspaceRoot();
-const SKILL_SCHEMA_PATH = path.join(REPO_ROOT, 'schemas', 'skill.schema.json');
+const SKILL_SCHEMA_PATH = path.join(REPO_ROOT, 'schemas', 'SKILL_METADATA_PROTOCOL_schema.json');
 const IGNORED_DIRS = new Set(['.git', 'node_modules', '.artifacts', '.roundtable', 'marketplace']);
 
 function readActiveSchemaVersion() {

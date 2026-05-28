@@ -35,7 +35,7 @@
 
 The Skill Graph evaluates four orthogonal surfaces: **schema conformance** (lint), **manifest parity** (generator round-trip), **drift** (truth-source hashes), and **routing** (`activation.examples` and `activation.anti_examples` against the router). All four are mature and largely deterministic.
 
-A fifth surface — **comprehension quality** — is **declared but under-verified**. The protocol defines `comprehension_state: present`, requires the Understanding fields when present, and the schema documents per-field grader weights (`mental_model` and `boundary` at 1.5, `definition` / `purpose` / `taxonomy` at 1.0, `analogy` at 0.5, `misconception` not directly graded — see [`schemas/skill.schema.json`](/Users/jacobbalslev/Development/skill-graph/schemas/skill.schema.json)). No current gate proves that the agent's answer matches the `definition` field without copying it, or distinguishes "the agent retrieved a quote from the body" from "the agent reasoned about a fresh case using the skill's mental model."
+A fifth surface — **comprehension quality** — is **declared but under-verified**. The protocol defines `comprehension_state: present`, requires the Understanding fields when present, and the schema documents per-field grader weights (`mental_model` and `boundary` at 1.5, `definition` / `purpose` / `taxonomy` at 1.0, `analogy` at 0.5, `misconception` not directly graded — see [`schemas/SKILL_METADATA_PROTOCOL_schema.json`](/Users/jacobbalslev/Development/skill-graph/schemas/SKILL_METADATA_PROTOCOL_schema.json)). No current gate proves that the agent's answer matches the `definition` field without copying it, or distinguishes "the agent retrieved a quote from the body" from "the agent reasoned about a fresh case using the skill's mental model."
 
 The 31 eval files in `examples/evals/` use a rich per-case schema (`dimension`, `substance`, `calibration`, `truth_mode`, `skill_type`, `criticality`, `truth_sources`, optional `expected_reasoning`). But the dimension distribution skews heavily toward **routing-adjacent** measurement: 84 cases are tagged `application`, 62 are `boundary`, and only 10/11/7/2/1 cases respectively measure `definition` / `mental_model` / `purpose` / `rule_conflict` / `anti_pattern`. The concept-block grader weights are not represented in the data.
 
@@ -120,7 +120,7 @@ These are **structural** checks on the body, not behavioral checks on an agent. 
 
 ### 2.4 The `concept` block today
 
-The Understanding fields are defined in the schema at [`schemas/skill.schema.json`](/Users/jacobbalslev/Development/skill-graph/schemas/skill.schema.json). Each field carries an explicit grader weight in its description string:
+The Understanding fields are defined in the schema at [`schemas/SKILL_METADATA_PROTOCOL_schema.json`](/Users/jacobbalslev/Development/skill-graph/schemas/SKILL_METADATA_PROTOCOL_schema.json). Each field carries an explicit grader weight in its description string:
 
 | Field | Schema weight | Schema description (summary) |
 |---|---|---|
@@ -188,7 +188,7 @@ A genuine `mental_model` test would force far transfer: pose a scenario the body
 
 ### 3.4 No misconception inoculation test
 
-The `misconception` field is required when `comprehension_state: present`, and the schema notes it is "not directly graded; complements `boundary`" ([`schemas/skill.schema.json`](/Users/jacobbalslev/Development/skill-graph/schemas/skill.schema.json)). But "complements `boundary`" is not a measurement. A misconception eval would pose a prompt that **sounds like the misconception is correct** and check whether the agent corrects it unprompted. No eval case in the library does this. The closest is the comprehension.json file's `rule_conflict` dimension — two cases that pose a "should this rule bend?" question and check the agent's reasoning — but those probe rule-application under tension, not misconception-inoculation.
+The `misconception` field is required when `comprehension_state: present`, and the schema notes it is "not directly graded; complements `boundary`" ([`schemas/SKILL_METADATA_PROTOCOL_schema.json`](/Users/jacobbalslev/Development/skill-graph/schemas/SKILL_METADATA_PROTOCOL_schema.json)). But "complements `boundary`" is not a measurement. A misconception eval would pose a prompt that **sounds like the misconception is correct** and check whether the agent corrects it unprompted. No eval case in the library does this. The closest is the comprehension.json file's `rule_conflict` dimension — two cases that pose a "should this rule bend?" question and check the agent's reasoning — but those probe rule-application under tension, not misconception-inoculation.
 
 ### 3.5 No analogy-reuse / analogy-overreach probe
 
@@ -196,7 +196,7 @@ The `concept.analogy` field has grader weight 0.5 (lowest among the seven) and z
 
 ### 3.6 No taxonomy-navigation probe
 
-The legacy `concept.taxonomy` field enumerated nearby concepts with their relationship type (subset / alternative / prerequisite / composition / specialization). The current schema keeps that legacy block for compatibility and promotes most Understanding fields to top-level ([`schemas/skill.schema.json`](/Users/jacobbalslev/Development/skill-graph/schemas/skill.schema.json)). No eval case tests whether the agent can correctly classify a novel instance into the right relationship-type bucket. A genuine taxonomy test would pose a scenario involving a concept not enumerated in `taxonomy` and ask the agent to place it (e.g., for `type-safety`'s taxonomy that lists "sound", "unsound/gradual", "structural", "nominal", "dependent", "refinement", "narrowing", "validation": pose a question about a Haskell **GADT** — neither dependent nor refinement, but it composes types with constraints — and verify the agent reaches "extension of refinement-typing in the direction of dependent typing" rather than mis-placing it).
+The legacy `concept.taxonomy` field enumerated nearby concepts with their relationship type (subset / alternative / prerequisite / composition / specialization). The current schema keeps that legacy block for compatibility and promotes most Understanding fields to top-level ([`schemas/SKILL_METADATA_PROTOCOL_schema.json`](/Users/jacobbalslev/Development/skill-graph/schemas/SKILL_METADATA_PROTOCOL_schema.json)). No eval case tests whether the agent can correctly classify a novel instance into the right relationship-type bucket. A genuine taxonomy test would pose a scenario involving a concept not enumerated in `taxonomy` and ask the agent to place it (e.g., for `type-safety`'s taxonomy that lists "sound", "unsound/gradual", "structural", "nominal", "dependent", "refinement", "narrowing", "validation": pose a question about a Haskell **GADT** — neither dependent nor refinement, but it composes types with constraints — and verify the agent reaches "extension of refinement-typing in the direction of dependent typing" rather than mis-placing it).
 
 ### 3.7 No Verification-checklist application test
 
@@ -1091,7 +1091,7 @@ Reuse `parseDimensionResponse` and `aggregateVerdict` from the existing builder;
 
 **Effort.** ~2 days.
 
-**Change.** Continue consolidating the comprehension grader surface around the current audit/eval commands and schema contract ([`schemas/skill.schema.json`](/Users/jacobbalslev/Development/skill-graph/schemas/skill.schema.json)).
+**Change.** Continue consolidating the comprehension grader surface around the current audit/eval commands and schema contract ([`schemas/SKILL_METADATA_PROTOCOL_schema.json`](/Users/jacobbalslev/Development/skill-graph/schemas/SKILL_METADATA_PROTOCOL_schema.json)).
 
 The script's CLI shape:
 
@@ -1169,7 +1169,7 @@ Update `SKILL_AUDIT_LOOP.md` § Part 2 — Per-Skill Audit Checklist to add the 
 
 **Effort.** ~half day.
 
-**Change.** Add a new section to `docs/skill-metadata-protocol.md` and `docs/field-reference.md § concept` explaining the rubric. Cross-reference from `AGENTS.md § Evaluation Discipline` so the protocol-level discipline is discoverable. Add the new optional eval-file keys (`comprehension_dimension`, `concept_field`, `transfer`, `expected_behaviors`) to `docs/field-reference.md` with the same field-level treatment as existing keys.
+**Change.** Add a new section to `docs/skill-metadata-protocol.md` and `docs/SKILL_METADATA_PROTOCOL_field-reference.md § concept` explaining the rubric. Cross-reference from `AGENTS.md § Evaluation Discipline` so the protocol-level discipline is discoverable. Add the new optional eval-file keys (`comprehension_dimension`, `concept_field`, `transfer`, `expected_behaviors`) to `docs/SKILL_METADATA_PROTOCOL_field-reference.md` with the same field-level treatment as existing keys.
 
 **Why this is leverage-8.** Without documentation, the rubric is folklore. With documentation in the canonical reference doc, authors discover it during their normal skill-authoring flow.
 
@@ -1241,7 +1241,7 @@ The current dimension distribution (§2.2) is overwhelming evidence that without
 
 The rubric is criterion-referenced (binary per behavior). Over time, the grader model improves and standards may drift — a behavior that previously failed a strict grader might pass a more lenient one. Three mitigations:
 
-- **Pin the grader model in `eval_last_run`.** The schema already supports `model` in `eval_last_run` ([`schemas/skill.schema.json`](/Users/jacobbalslev/Development/skill-graph/schemas/skill.schema.json)). Authors record which grader produced the verdict.
+- **Pin the grader model in `eval_last_run`.** The schema already supports `model` in `eval_last_run` ([`schemas/SKILL_METADATA_PROTOCOL_schema.json`](/Users/jacobbalslev/Development/skill-graph/schemas/SKILL_METADATA_PROTOCOL_schema.json)). Authors record which grader produced the verdict.
 - **Re-run on grader bumps.** When the grader CLI's underlying model changes (e.g., Sonnet 4.6 → 4.7), trigger a re-run on the comprehension surface and surface the delta.
 - **Calibration cases.** Maintain a small set of cases with known-correct gold answers (authored by the maintainer) to detect grader drift. If the grader scores a gold case differently across model versions, the grader, not the skill, drifted.
 
@@ -1350,7 +1350,7 @@ But if the maintainer prefers to collapse — they should — the migration is m
 
 ### 9.2 Q2 — Does `concept.misconception` warrant its own grader weight (not just "complements `boundary`")?
 
-The schema says `misconception` is "not directly graded; complements `boundary`" ([`schemas/skill.schema.json`](/Users/jacobbalslev/Development/skill-graph/schemas/skill.schema.json)). The rubric proposes C7 (misconception inoculation) as a distinct dimension. Either:
+The schema says `misconception` is "not directly graded; complements `boundary`" ([`schemas/SKILL_METADATA_PROTOCOL_schema.json`](/Users/jacobbalslev/Development/skill-graph/schemas/SKILL_METADATA_PROTOCOL_schema.json)). The rubric proposes C7 (misconception inoculation) as a distinct dimension. Either:
 
 - (a) The schema description is wrong; `misconception` does deserve its own weight. Update the schema description to give it a weight (recommend 1.0 for parity with `definition` and `purpose`).
 - (b) The schema is right; C7 should be merged into C4 (boundary). Adjust the rubric to a single combined C4 dimension.
@@ -1402,7 +1402,7 @@ This report examined the following **24 repo files** (23 inside `skill-graph/` p
 3. [`https://github.com/jacob-balslev/skill-graph/blob/main/SKILL_AUDIT_LOOP.md`](https://github.com/jacob-balslev/skill-graph/blob/main/SKILL_AUDIT_LOOP.md) — full read
 4. [`https://github.com/jacob-balslev/skill-graph/blob/main/SKILL_AUDIT_LOOP.md § Part 2 — Per-Skill Audit Checklist`](https://github.com/jacob-balslev/skill-graph/blob/main/SKILL_AUDIT_LOOP.md § Part 2 — Per-Skill Audit Checklist) — full read
 5. [`/Users/jacobbalslev/Development/skill-graph/docs/quality-doctrine.md`](/Users/jacobbalslev/Development/skill-graph/docs/quality-doctrine.md) — full read
-6. [`/Users/jacobbalslev/Development/skill-graph/docs/field-reference.md`](/Users/jacobbalslev/Development/skill-graph/docs/field-reference.md) — read in full (1200 lines); focus on `comprehension_state`, `concept`, `eval_*`, `routing_eval` sections
+6. [`/Users/jacobbalslev/Development/skill-graph/docs/SKILL_METADATA_PROTOCOL_field-reference.md`](/Users/jacobbalslev/Development/skill-graph/docs/SKILL_METADATA_PROTOCOL_field-reference.md) — read in full (1200 lines); focus on `comprehension_state`, `concept`, `eval_*`, `routing_eval` sections
 7. [`skills/type-safety/SKILL.md`](https://github.com/jacob-balslev/skills/blob/main/skills/type-safety/SKILL.md) — full read; used as worked example
 8. [`skills/acid-fundamentals/SKILL.md`](https://github.com/jacob-balslev/skills/blob/main/skills/acid-fundamentals/SKILL.md) — full read; confirmed gold-standard concept block
 9. [`skills/methodology/SKILL.md`](https://github.com/jacob-balslev/skills/blob/main/skills/methodology/SKILL.md) — full read; note: comprehension_state not declared
@@ -1411,7 +1411,7 @@ This report examined the following **24 repo files** (23 inside `skill-graph/` p
 12. [`/Users/jacobbalslev/Development/skill-graph/scripts/skill-audit.js`](/Users/jacobbalslev/Development/skill-graph/scripts/skill-audit.js) — partial read (lines 1–350); confirmed seven-dimension audit shape
 13. [`/Users/jacobbalslev/Development/skill-graph/scripts/lib/audit-prompt-builder.js`](/Users/jacobbalslev/Development/skill-graph/scripts/lib/audit-prompt-builder.js) — partial read (lines 1–500 and 700–772); used as the template for the proposed comprehension-prompt-builder
 14. [`/Users/jacobbalslev/Development/skill-graph/scripts/skill-lint.js`](/Users/jacobbalslev/Development/skill-graph/scripts/skill-lint.js) — partial read (lines 414–620); confirmed `checkEvalCoherence` and `checkEvalTruthSourceRanges`
-15. [`/Users/jacobbalslev/Development/skill-graph/schemas/skill.schema.json`](/Users/jacobbalslev/Development/skill-graph/schemas/skill.schema.json) — read Understanding and legacy concept-block sections; confirmed per-field grader weights
+15. [`/Users/jacobbalslev/Development/skill-graph/schemas/SKILL_METADATA_PROTOCOL_schema.json`](/Users/jacobbalslev/Development/skill-graph/schemas/SKILL_METADATA_PROTOCOL_schema.json) — read Understanding and legacy concept-block sections; confirmed per-field grader weights
 16. `examples/evals/comprehension.json` — full read at research time; file has since been removed from the repo (the `documentation` skill's eval was renamed; comprehension cases now live in `examples/evals/type-safety.json`)
 17. [`/Users/jacobbalslev/Development/skill-graph/examples/evals/code-review.json`](/Users/jacobbalslev/Development/skill-graph/examples/evals/code-review.json) — full read
 18. [`/Users/jacobbalslev/Development/skill-graph/examples/evals/data-modeling.json`](/Users/jacobbalslev/Development/skill-graph/examples/evals/data-modeling.json) — full read
@@ -1457,7 +1457,7 @@ This report cited the following **27 external sources** with working links (22 f
 **Items intentionally excluded:**
 
 - **Eval files** beyond the 7 read in full plus the partial of `a11y.json`. The remaining 23 of 31 files were not read end-to-end; their dimension distribution was instead captured via grep across all 31, which gave the dimension-frequency data in §2.2. Reading every file end-to-end was not necessary because (a) the dimension-frequency captured the structural picture, (b) the 7 read in full span the diverse archetypes (concept skill, workflow skill, overlay skill, comprehensive skill).
-- **The full text of the schemas** beyond the Understanding and legacy `concept` sections of `schemas/skill.schema.json`. The concept-block shape was load-bearing; the rest of the schema's role in this report is to host that block plus the optional `eval_last_run` shape, both of which were examined.
+- **The full text of the schemas** beyond the Understanding and legacy `concept` sections of `schemas/SKILL_METADATA_PROTOCOL_schema.json`. The concept-block shape was load-bearing; the rest of the schema's role in this report is to host that block plus the optional `eval_last_run` shape, both of which were examined.
 - **The `examples/audits/*` worked-example artifacts**. Confirmed they exist (`a11y`, `debugging`, `documentation`) and that the artifact contract matches `SKILL_AUDIT_LOOP.md` § Part 2. The audit artifacts are output of the existing audit loop; they don't contain comprehension-shaped data and would not change the analysis.
 - **BIG-bench paper full text via WebFetch**. The PDF returned binary; the [search-result summary](https://arxiv.org/abs/2206.04615) and the [GitHub README](https://github.com/google/BIG-bench) carried the design-principle content this report needed.
 - **Closed commercial eval platforms** (Braintrust, LangSmith, Weights & Biases Weave). Per the task brief, these are noted as options but the proposed framework works with the repo's existing file-based eval surface; reading their marketing pages would not add to the framework's design.

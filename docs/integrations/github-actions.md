@@ -59,7 +59,7 @@ scripts/lint/                   → tools/skill-graph/lint/
 scripts/check-protocol-consistency.js  (optional) → tools/skill-graph/check-protocol-consistency.js
 scripts/generate-manifest.js    (optional) → tools/skill-graph/generate-manifest.js
 scripts/export-skill.js         (optional) → tools/skill-graph/export-skill.js
-schemas/skill.schema.json       → tools/skill-graph/schemas/skill.schema.json
+schemas/SKILL_METADATA_PROTOCOL_schema.json       → tools/skill-graph/schemas/SKILL_METADATA_PROTOCOL_schema.json
 schemas/manifest.schema.json    → tools/skill-graph/schemas/manifest.schema.json
 ```
 
@@ -128,7 +128,7 @@ When `examples/skills.manifest.sample.json` is absent, generator parity is skipp
 
 The same checks run whether you install the npm package or vendor the script:
 
-1. Schema validation against `skill.schema.json`
+1. Schema validation against `SKILL_METADATA_PROTOCOL_schema.json`
 2. Parent-directory-matches-name (SKILL.md compatibility)
 3. Relation target existence (linked skills must exist in the repo)
 4. Eval artifact coherence (`eval_artifacts: present` requires at least one eval file)

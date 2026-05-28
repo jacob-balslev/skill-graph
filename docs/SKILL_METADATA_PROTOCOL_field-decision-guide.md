@@ -1,7 +1,7 @@
 # Skill Graph Field Decision Guide
 
 > Decision tables for the three hardest field choices in a `SKILL.md` file.
-> For full field semantics and rules, see `docs/field-reference.md`.
+> For full field semantics and rules, see `docs/SKILL_METADATA_PROTOCOL_field-reference.md`.
 > For field groups and conditional requiredness, see `docs/skill-metadata-protocol.md`.
 
 ---
@@ -259,7 +259,7 @@ These four fields all group skills, but they answer different questions. Picking
 
 | Field | Answers the question | Shape | Primary consumer |
 |---|---|---|---|
-| `subject` | What flat browse shelf does this skill live on? | single string from the closed 9-value enum (see `field-reference.md § subject`) | human browse UI, filter dropdowns, routing first-pass discriminator |
+| `subject` | What flat browse shelf does this skill live on? | single string from the closed 9-value enum (see `SKILL_METADATA_PROTOCOL_field-reference.md § subject`) | human browse UI, filter dropdowns, routing first-pass discriminator |
 | `taxonomy_domain` | Where does this skill sit in a hierarchy for tree browsing within its `subject`? | optional slash-delimited path (e.g., `code-engineering/integrations/shopify`) | folder-tree UI, docs site navigation |
 | `project[]` / `repo[]` | Which specific project(s) or repo(s) is this skill anchored to? | array of `{handle, role}` objects | router project-fit filter, manifest `by_project` rollup |
 | `routing_bundles` | Which batch-activation group does this skill belong to? | flat array (e.g., `[quality, security]`) | router batch-load by group label |
@@ -286,4 +286,4 @@ project:
 routing_bundles: [integrations]                              # "Which batch-activation group?"
 ```
 
-Each field does a distinct job. None is redundant with the others. A portable skill omits `project[]`; a library with no batch-activation pattern can omit `routing_bundles`; a library that does not need a hierarchical browse view can omit `taxonomy_domain`. `subject` is always present because it is required by the schema (enforced by `enum` in `schemas/skill.schema.json`), as is `deployment_target`.
+Each field does a distinct job. None is redundant with the others. A portable skill omits `project[]`; a library with no batch-activation pattern can omit `routing_bundles`; a library that does not need a hierarchical browse view can omit `taxonomy_domain`. `subject` is always present because it is required by the schema (enforced by `enum` in `schemas/SKILL_METADATA_PROTOCOL_schema.json`), as is `deployment_target`.

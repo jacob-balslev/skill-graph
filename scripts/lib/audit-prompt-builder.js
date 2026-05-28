@@ -89,7 +89,7 @@ const DEFAULT_EVAL_ARTIFACT_CHAR_LIMIT = 12000;
 const DEFAULT_SCHEMA_CHAR_LIMIT = 20000;
 const DEFAULT_NEIGHBOR_CHAR_LIMIT = 800;
 const EVAL_ARTIFACTS_DIR_REL = path.join('examples', 'evals');
-const SCHEMA_REL = path.join('schemas', 'skill.schema.json');
+const SCHEMA_REL = path.join('schemas', 'SKILL_METADATA_PROTOCOL_schema.json');
 const SKILLS_DIR_REL = 'skills';
 const EXPORT_SCRIPT_REL = path.join('scripts', 'export-skill.js');
 

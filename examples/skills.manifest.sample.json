@@ -2564,7 +2564,7 @@
         "grounding_mode": "hybrid",
         "truth_sources": [
           "https://github.com/jacob-balslev/skill-graph/blob/main/SKILL_GRAPH.md",
-          "https://github.com/jacob-balslev/skill-graph/blob/main/docs/PRIMER.md",
+          "https://github.com/jacob-balslev/skill-graph/blob/main/docs/SKILL_METADATA_PROTOCOL_PRIMER.md",
           "https://github.com/jacob-balslev/skill-graph/blob/main/docs/concept-map.md",
           "https://github.com/jacob-balslev/skill-graph/blob/main/docs/diagrams/starter-graph.mmd",
           "https://github.com/jacob-balslev/skill-graph/blob/main/scripts/generate-manifest.js",
@@ -5688,7 +5688,7 @@
         ],
         "grounding_mode": "repo_specific",
         "truth_sources": [
-          "schemas/skill.schema.json",
+          "schemas/SKILL_METADATA_PROTOCOL_schema.json",
           "schemas/manifest.schema.json",
           "docs/skill-metadata-protocol.md",
           "scripts/skill-lint.js",
@@ -5708,7 +5708,7 @@
             "docs/skill-metadata-protocol.md": "300bbdaf87754298ca19e581b587d2fac901ab57b8c4c75d33e11bebc24a5fe4",
             "examples/evals/graph-audit.json": "4fc0fa157b363c9d5675112bfe860ed48a599d05c41720b387aa2d8798eab5a3",
             "schemas/manifest.schema.json": "94f2e990cc81b7a9aa26ea9855de1dbe1535a127feb5e5c74629c9e1dad2ee1a",
-            "schemas/skill.schema.json": "f9fc4fc8f61999c18d5c1c534f9642101b0ee7173f261e28f9470aeb03b68e5b",
+            "schemas/SKILL_METADATA_PROTOCOL_schema.json": "f9fc4fc8f61999c18d5c1c534f9642101b0ee7173f261e28f9470aeb03b68e5b",
             "scripts/check-protocol-consistency.js": "22f1f747b6b578e83ae371ac3f9af4b6906d94529f383d1785ed3303b4c5a008",
             "scripts/generate-manifest.js": "ec4ad89e21e44c272676846377679f59a272c193f0b0d448a7b6d881b0b9effc",
             "scripts/lib/alias-contract.js": "d2a9831fef1ab06d2ea37b9d41e000d8b3a9a327357b62063ad00102cd2763cf",
@@ -9902,7 +9902,7 @@
         ],
         "grounding_mode": "hybrid",
         "truth_sources": [
-          "docs/PRIMER.md",
+          "docs/SKILL_METADATA_PROTOCOL_PRIMER.md",
           "docs/ADOPTION.md",
           "docs/recommended-skills.md",
           "skills/skill-scaffold/SKILL.md",
@@ -9917,7 +9917,7 @@
           "last_verified": "2026-05-13",
           "truth_source_hashes": {
             "docs/ADOPTION.md": "3a75c1a613ac0bdf0b4b56e567d8ec1f35a80252e68595e8d86bb0a5abdf1bfc",
-            "docs/PRIMER.md": "e6bd99468c224fe4c9606e147c5db94dff889feeb9ca5d80084480039c7e9296",
+            "docs/SKILL_METADATA_PROTOCOL_PRIMER.md": "e6bd99468c224fe4c9606e147c5db94dff889feeb9ca5d80084480039c7e9296",
             "docs/recommended-skills.md": "5c0201bd76cdc0310bb57ddc88565ffa41f47f3b41f489c0557cb7634ed16379",
             "skills/context-graph/SKILL.md": "732a04f09f2f4362ee17a65bee24406715a773aefd78dbcdc37a4cb3a9f287a7",
             "skills/skill-scaffold/SKILL.md": "ea0e988de27bea1bb0868c153b4e6b2739895d180f857339b97202cc287262f7"
@@ -12917,7 +12917,7 @@
               "start": 480
             },
             "note": "Grounding schema shape",
-            "path": "schemas/skill.schema.json"
+            "path": "schemas/SKILL_METADATA_PROTOCOL_schema.json"
           },
           {
             "note": "Canonical authoring and audit checklist",
@@ -13148,8 +13148,8 @@
         "truth_sources": [
           "https://github.com/jacob-balslev/skill-graph/blob/main/examples/skill-metadata-template.md",
           "https://github.com/jacob-balslev/skill-graph/blob/main/SKILL_METADATA_PROTOCOL.md",
-          "https://github.com/jacob-balslev/skill-graph/blob/main/schemas/skill.schema.json",
-          "https://github.com/jacob-balslev/skill-graph/blob/main/docs/field-reference.md"
+          "https://github.com/jacob-balslev/skill-graph/blob/main/schemas/SKILL_METADATA_PROTOCOL_schema.json",
+          "https://github.com/jacob-balslev/skill-graph/blob/main/docs/SKILL_METADATA_PROTOCOL_field-reference.md"
         ],
         "subject_matter": "Authoring a new SKILL.md against Skill Metadata Protocol v7"
       },

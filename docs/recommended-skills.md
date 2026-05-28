@@ -142,8 +142,8 @@ Both decisions are the maintainer's. The recommendations above hold regardless.
 | Topic | Read |
 |---|---|
 | Should you adopt Skill Graph at all? | [`ADOPTION.md`](ADOPTION.md) |
-| Conceptual primer | [`PRIMER.md`](PRIMER.md) |
-| Field-by-field semantics | [`field-reference.md`](field-reference.md) |
+| Conceptual primer | [`SKILL_METADATA_PROTOCOL_PRIMER.md`](SKILL_METADATA_PROTOCOL_PRIMER.md) |
+| Field-by-field semantics | [`SKILL_METADATA_PROTOCOL_field-reference.md`](SKILL_METADATA_PROTOCOL_field-reference.md) |
 | Authoring template | [`../examples/skill-metadata-template.md`](../examples/skill-metadata-template.md) |
 | Architecture and authority tiers | [`SKILL_GRAPH.md`](../SKILL_GRAPH.md) |
 | Broader Wave 2 plan (graph-density-optimized) | [`_archived/wave-2-extraction-2026-05-23.md`](_archived/wave-2-extraction-2026-05-23.md) |

@@ -53,7 +53,7 @@
             "type": "integer",
             "minimum": 0
           },
-          "description": "Per-subject distribution across the closed 9-value subject enum (see schemas/skill.schema.json § subject)."
+          "description": "Per-subject distribution across the closed 9-value subject enum (see schemas/SKILL_METADATA_PROTOCOL_schema.json § subject)."
         },
         "by_deployment_target": {
           "type": "object",
@@ -61,7 +61,7 @@
             "type": "integer",
             "minimum": 0
           },
-          "description": "Per-deployment_target distribution across the closed 2-value deployment_target enum (see schemas/skill.schema.json § deployment_target). Renamed from `by_scope` — `scope` is now PRD-style free-text and not enum-bucketable."
+          "description": "Per-deployment_target distribution across the closed 2-value deployment_target enum (see schemas/SKILL_METADATA_PROTOCOL_schema.json § deployment_target). Renamed from `by_scope` — `scope` is now PRD-style free-text and not enum-bucketable."
         },
         "by_stability": {
           "type": "object",
@@ -161,7 +161,7 @@
                 "enum": ["7", "8"]
               }
             ],
-            "description": "Pass-through of the skill's frontmatter schema_version (see schemas/skill.schema.json § schema_version). Projected by scripts/generate-manifest.js."
+            "description": "Pass-through of the skill's frontmatter schema_version (see schemas/SKILL_METADATA_PROTOCOL_schema.json § schema_version). Projected by scripts/generate-manifest.js."
           },
           "name": {
             "type": "string"
@@ -190,7 +190,7 @@
               "knowledge-organization",
               "product-domain"
             ],
-            "description": "Primary classification — what the skill teaches. See schemas/skill.schema.json § subject."
+            "description": "Primary classification — what the skill teaches. See schemas/SKILL_METADATA_PROTOCOL_schema.json § subject."
           },
           "subjects": {
             "type": "array",
@@ -199,11 +199,11 @@
           },
           "taxonomy_domain": {
             "type": "string",
-            "description": "Hierarchical taxonomy sub-path. Renamed from v8 `domain`. See schemas/skill.schema.json § taxonomy_domain."
+            "description": "Hierarchical taxonomy sub-path. Renamed from v8 `domain`. See schemas/SKILL_METADATA_PROTOCOL_schema.json § taxonomy_domain."
           },
           "scope": {
             "type": "string",
-            "description": "PRD-style free-text scope statement (see schemas/skill.schema.json § scope).— no enum constraint."
+            "description": "PRD-style free-text scope statement (see schemas/SKILL_METADATA_PROTOCOL_schema.json § scope).— no enum constraint."
           },
           "deployment_target": {
             "type": "string",
@@ -211,7 +211,7 @@
               "portable",
               "project"
             ],
-            "description": "Deployment targeting (see schemas/skill.schema.json § deployment_target). replaces the original v8 `scope` enum; `workspace` value removed."
+            "description": "Deployment targeting (see schemas/SKILL_METADATA_PROTOCOL_schema.json § deployment_target). replaces the original v8 `scope` enum; `workspace` value removed."
           },
           "project": {
             "type": "array",
@@ -229,7 +229,7 @@
                 }
               }
             },
-            "description": "Projects this skill is linked to. Pass-through from authored frontmatter (see schemas/skill.schema.json § project)."
+            "description": "Projects this skill is linked to. Pass-through from authored frontmatter (see schemas/SKILL_METADATA_PROTOCOL_schema.json § project)."
           },
           "repo": {
             "type": "array",
@@ -248,7 +248,7 @@
                 }
               }
             },
-            "description": "Repos this skill is linked to. Pass-through from authored frontmatter (see schemas/skill.schema.json § repo)."
+            "description": "Repos this skill is linked to. Pass-through from authored frontmatter (see schemas/SKILL_METADATA_PROTOCOL_schema.json § repo)."
           },
           "owner": {
             "type": "string"

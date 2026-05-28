@@ -330,7 +330,7 @@ You've adopted Skill Graph for one painful workflow. The contract paid off twice
 | Next step | Read |
 |---|---|
 | Migrate your second skill | This document, repeated for the next skill |
-| Understand the full contract | [`docs/PRIMER.md`](PRIMER.md) and [`docs/skill-metadata-protocol.md`](skill-metadata-protocol.md) |
+| Understand the full contract | [`docs/SKILL_METADATA_PROTOCOL_PRIMER.md`](SKILL_METADATA_PROTOCOL_PRIMER.md) and [`docs/skill-metadata-protocol.md`](skill-metadata-protocol.md) |
 | See worked examples in a real project | [`examples/projects/markdown-static-site/README.md`](../examples/projects/markdown-static-site/README.md) |
 | Set up CI integration | [`docs/integrations/github-actions.md`](integrations/github-actions.md) |
 | Decide which skills to author next | [`docs/recommended-skills.md`](recommended-skills.md) |

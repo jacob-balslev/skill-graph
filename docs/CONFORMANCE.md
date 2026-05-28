@@ -62,5 +62,5 @@ decision a tool can make.
 |---|---|
 | Base-standard mapping and export rules | [`SKILL-MD-FORMAT-COMPATIBILITY.md`](SKILL-MD-FORMAT-COMPATIBILITY.md) |
 | First-skill decision tree | [`ADOPTION.md`](ADOPTION.md) |
-| Field-level authoring rules | [`field-reference.md`](field-reference.md) |
+| Field-level authoring rules | [`SKILL_METADATA_PROTOCOL_field-reference.md`](SKILL_METADATA_PROTOCOL_field-reference.md) |
 | Routing metrics and scaling limits | [`ROUTING-METRICS.md`](ROUTING-METRICS.md) |

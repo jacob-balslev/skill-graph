@@ -2,7 +2,7 @@
 
 > Type: Reference
 > Purpose: every protocol field tagged by ownership state, so authors, reviewers, and the audit loop never confuse "who writes this" with "what this means."
-> Source of truth: [../SKILL_METADATA_PROTOCOL.md](../SKILL_METADATA_PROTOCOL.md) (semantics), [../schemas/skill.schema.json](../schemas/skill.schema.json) (enforcement), [field-reference.md](./field-reference.md) (per-field detail).
+> Source of truth: [../SKILL_METADATA_PROTOCOL.md](../SKILL_METADATA_PROTOCOL.md) (semantics), [../schemas/SKILL_METADATA_PROTOCOL_schema.json](../schemas/SKILL_METADATA_PROTOCOL_schema.json) (enforcement), [SKILL_METADATA_PROTOCOL_field-reference.md](./SKILL_METADATA_PROTOCOL_field-reference.md) (per-field detail).
 
 ## The six states
 
@@ -17,7 +17,7 @@
 
 ## Required (12 fields, v8 schema gate)
 
-All twelve are **human-authored**. The schema lint gate (`skill-lint.js` against `schemas/skill.schema.json`) fails the skill if any are missing or malformed. Three of them are also **earned-with-receipt**: setting the attested state without the supporting artifact is dishonest.
+All twelve are **human-authored**. The schema lint gate (`skill-lint.js` against `schemas/SKILL_METADATA_PROTOCOL_schema.json`) fails the skill if any are missing or malformed. Three of them are also **earned-with-receipt**: setting the attested state without the supporting artifact is dishonest.
 
 | Field | Type | State | Receipt expected when |
 |---|---|---|---|
@@ -193,8 +193,8 @@ The only alias normalization still performed is the two-physical-encoding reconc
 ## Related
 
 - [../SKILL_METADATA_PROTOCOL.md](../SKILL_METADATA_PROTOCOL.md), normative spec
-- [field-reference.md](./field-reference.md), per-field semantics with examples
-- [field-decision-guide.md](./field-decision-guide.md), when to choose which value
+- [SKILL_METADATA_PROTOCOL_field-reference.md](./SKILL_METADATA_PROTOCOL_field-reference.md), per-field semantics with examples
+- [SKILL_METADATA_PROTOCOL_field-decision-guide.md](./SKILL_METADATA_PROTOCOL_field-decision-guide.md), when to choose which value
 - [AUTHORING-QUICKSTART.md](./AUTHORING-QUICKSTART.md), shortest path to a valid SKILL.md
 - [skill-audit-loop-executable-map.md](./skill-audit-loop-executable-map.md), which scripts write which fields
 - [manifest-field-mapping.md](./manifest-field-mapping.md), authored-to-generated mapping

@@ -2,16 +2,16 @@
 
 > **Scope.** This document is the authored-to-generated bridge for Skill Graph: it specifies exactly how every top-level field in a `SKILL.md` frontmatter block projects into the compiled `skills.manifest.json` that downstream tooling consumes.
 >
-> **Audience.** Authors of manifest generators and consumers of the manifest. If you are authoring a skill itself, read [`SKILL_METADATA_PROTOCOL.md`](../SKILL_METADATA_PROTOCOL.md) and [`docs/field-reference.md`](field-reference.md) instead. This document owns the transformation from authored to generated.
+> **Audience.** Authors of manifest generators and consumers of the manifest. If you are authoring a skill itself, read [`SKILL_METADATA_PROTOCOL.md`](../SKILL_METADATA_PROTOCOL.md) and [`docs/SKILL_METADATA_PROTOCOL_field-reference.md`](SKILL_METADATA_PROTOCOL_field-reference.md) instead. This document owns the transformation from authored to generated.
 >
-> **Authority.** `schemas/skill.schema.json` is the authored schema. `schemas/manifest.schema.json` is the generated manifest schema. This document explains the mapping between them and may not contradict either schema.
+> **Authority.** `schemas/SKILL_METADATA_PROTOCOL_schema.json` is the authored schema. `schemas/manifest.schema.json` is the generated manifest schema. This document explains the mapping between them and may not contradict either schema.
 
 ## Related documents
 
 - [`SKILL_METADATA_PROTOCOL.md`](../SKILL_METADATA_PROTOCOL.md) — normative public spec for the authored `SKILL.md` protocol.
-- [`docs/field-reference.md`](field-reference.md) — per-field authoring reference.
+- [`docs/SKILL_METADATA_PROTOCOL_field-reference.md`](SKILL_METADATA_PROTOCOL_field-reference.md) — per-field authoring reference.
 - [`docs/skill-metadata-protocol.md`](skill-metadata-protocol.md) — rationale and deep explanation.
-- [`schemas/skill.schema.json`](../schemas/skill.schema.json) — enforceable JSON Schema for authored frontmatter.
+- [`schemas/SKILL_METADATA_PROTOCOL_schema.json`](../schemas/SKILL_METADATA_PROTOCOL_schema.json) — enforceable JSON Schema for authored frontmatter.
 - [`schemas/manifest.schema.json`](../schemas/manifest.schema.json) — enforceable JSON Schema for the generated manifest.
 - [`examples/skills.manifest.sample.json`](../examples/skills.manifest.sample.json) — sample manifest showing the generated shape for the current `skills/` library plus the template.
 
@@ -19,7 +19,7 @@
 
 ## Rename Map
 
-Every top-level authored field in `schemas/skill.schema.json` has exactly one entry below. The entry declares one of five fates:
+Every top-level authored field in `schemas/SKILL_METADATA_PROTOCOL_schema.json` has exactly one entry below. The entry declares one of five fates:
 
 | Fate | Meaning |
 |---|---|
@@ -38,7 +38,7 @@ Every top-level authored field in `schemas/skill.schema.json` has exactly one en
 | 3 | `urn` | copied through unchanged | Optional persistent identifier. |
 | 4 | `description` | copied through unchanged | `description`. |
 | 5 | `version` | copied through unchanged | `version`. |
-| 6 | `subject` | copied through unchanged | v8 primary classification — closed 9-value enum. See `schemas/skill.schema.json § subject`. |
+| 6 | `subject` | copied through unchanged | v8 primary classification — closed 9-value enum. See `schemas/SKILL_METADATA_PROTOCOL_schema.json § subject`. |
 | 7 | `subjects` | copied through unchanged | Optional polyhierarchy — ordered array (max 2), `subjects[0]` matches `subject`. |
 | 8 | `taxonomy_domain` | copied through unchanged | Optional slash-delimited sub-path within a `subject` (e.g. `code-engineering/integrations/shopify`). Renamed from `domain`. |
 | 9 | `deployment_target` | copied through unchanged | Closed 2-enum: `portable` \| `project`. Drives project-fit filtering. |
@@ -105,7 +105,7 @@ These fields exist in `skills.manifest.json` with no authored counterpart:
 
 ## Loss Policy
 
-**Current state (2026-05-18, post-SH-6131):** no authored top-level fields are dropped during manifest generation. Every field in `schemas/skill.schema.json` has a manifest projection in `schemas/manifest.schema.json`. This parity is enforced by `scripts/check-protocol-consistency.js` (C2 check) — CI fails if `manifest.schema.json` drops a field declared in the authored contract without a matching entry in this document's loss policy.
+**Current state (2026-05-18, post-SH-6131):** no authored top-level fields are dropped during manifest generation. Every field in `schemas/SKILL_METADATA_PROTOCOL_schema.json` has a manifest projection in `schemas/manifest.schema.json`. This parity is enforced by `scripts/check-protocol-consistency.js` (C2 check) — CI fails if `manifest.schema.json` drops a field declared in the authored contract without a matching entry in this document's loss policy.
 
 The v6 Audit Status fields (`last_audited`, `last_changed`, `audit_verdict`, `eval_score`, `eval_failed_ids`, `lint_verdict`, `drift_status`) were added to the authored schema in commit `ecaf001` (v6 Audit Status addition) but were not registered in the manifest schema or this mapping document until SH-6131 (2026-05-18). They are now flow-through fields grouped under `health.*` in the manifest, matching the pattern of other governance fields (`freshness`, `drift_check`, `eval_artifacts`, etc.).
 
@@ -129,13 +129,13 @@ Four Agent-Skills base-standard fields and one Skill Graph classification field 
 |---|---|---|
 | *(none as of 2026-04-17)* | — | — |
 
-If a future change drops a field, the drop must be documented in this section with three pieces of information: (1) why the field is dropped, (2) which tool or transform could reconstruct it if a consumer later needs it, and (3) the ticket or commit that authorized the drop. `scripts/check-protocol-consistency.js` checks that every field declared in `schemas/skill.schema.json` either appears in `schemas/manifest.schema.json` or has a row in this table.
+If a future change drops a field, the drop must be documented in this section with three pieces of information: (1) why the field is dropped, (2) which tool or transform could reconstruct it if a consumer later needs it, and (3) the ticket or commit that authorized the drop. `scripts/check-protocol-consistency.js` checks that every field declared in `schemas/SKILL_METADATA_PROTOCOL_schema.json` either appears in `schemas/manifest.schema.json` or has a row in this table.
 
 ### Loss-policy parity rule
 
 The contract between authored and generated schemas is intentionally symmetric:
 
-- Every field in `schemas/skill.schema.json` must either appear in `schemas/manifest.schema.json` or appear in the current dropped-field list above.
+- Every field in `schemas/SKILL_METADATA_PROTOCOL_schema.json` must either appear in `schemas/manifest.schema.json` or appear in the current dropped-field list above.
 - Every field in `schemas/manifest.schema.json` must either have an authored source in the rename map above or be declared in "Generated-only manifest fields."
 - `scripts/check-protocol-consistency.js` enforces both directions. CI fails if either side drifts.
 
@@ -154,7 +154,7 @@ Three versions coexist in a manifest ecosystem:
 | Version | Lives in | Meaning |
 |---|---|---|
 | Authored skill `version` | Per-skill frontmatter `version` field | Version of the skill's content (e.g. `1.2.0` means the skill has been iterated twice since its initial publish). |
-| Authored skill schema version | Per-skill frontmatter `schema_version` field | Version of the `skill.schema.json` contract the skill was authored against. The active value is `8` (`subject` + `deployment_target` classification, free-text `scope`, `taxonomy_domain`, `project[]`/`repo[]` belonging-entity references, `grounding.subject_matter`). |
+| Authored skill schema version | Per-skill frontmatter `schema_version` field | Version of the `SKILL_METADATA_PROTOCOL_schema.json` contract the skill was authored against. The active value is `8` (`subject` + `deployment_target` classification, free-text `scope`, `taxonomy_domain`, `project[]`/`repo[]` belonging-entity references, `grounding.subject_matter`). |
 | Manifest schema version | Manifest root `schema_version` field | Version of the compiled manifest root contract. `scripts/generate-manifest.js` emits `4` today and `schemas/manifest.schema.json` intentionally validates that value with `schema_version.const: 4`; the manifest schema file itself is v7 because the field set has advanced additively through v5-v7 without forcing a root-version bump for consumers. |
 
 ### When to bump `schema_version`
@@ -169,7 +169,7 @@ The manifest `schema_version` follows semver on the consumer contract:
 | Field renamed or removed | **major** | Renaming `grounding` back to `domain_frame`, renaming `grounding_mode` back to `evaluation_mode`, or dropping `allowed-tools`. |
 | Field shape changed (e.g. string → object) | **major** | Changing `allowed-tools` from a space-separated string to an array. |
 
-A major bump of the manifest `schema_version` does not force a major bump of the authored `skill.schema.json` — the two contracts evolve independently.
+A major bump of the manifest `schema_version` does not force a major bump of the authored `SKILL_METADATA_PROTOCOL_schema.json` — the two contracts evolve independently.
 
 ### How consumers handle version mismatches
 
@@ -350,7 +350,7 @@ grounding:
   grounding_mode: repo_specific
   truth_sources:
     - docs/skill-metadata-protocol.md
-    - schemas/skill.schema.json
+    - schemas/SKILL_METADATA_PROTOCOL_schema.json
   failure_modes:
     - placeholder_sludge
     - cargo_cult_meta_sections
@@ -400,7 +400,7 @@ lifecycle:
     "grounding_mode": "repo_specific",
     "truth_sources": [
       "docs/skill-metadata-protocol.md",
-      "schemas/skill.schema.json"
+      "schemas/SKILL_METADATA_PROTOCOL_schema.json"
     ],
     "failure_modes": ["placeholder_sludge", "cargo_cult_meta_sections"],
     "evidence_priority": "repo_code_first"
@@ -446,7 +446,7 @@ Each arrow corresponds to one row of the rename map.
 
 After a generator change or a schema change, verify:
 
-- [ ] Every top-level field in `schemas/skill.schema.json` appears in either the rename map above or the current dropped-field list.
+- [ ] Every top-level field in `schemas/SKILL_METADATA_PROTOCOL_schema.json` appears in either the rename map above or the current dropped-field list.
 - [ ] Every field in `schemas/manifest.schema.json` appears in either the rename map or the "Generated-only manifest fields" list.
 - [ ] The worked example's JSON projection can be regenerated from its YAML frontmatter by applying only the transforms declared in the rename map.
 - [ ] `node scripts/skill-lint.js --include-template` exits 0 on the shipped template.

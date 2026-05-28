@@ -2,13 +2,13 @@
 
 Skill Graph is a metadata contract and example pack for graph-aware AI skills. Contributions are welcome — the target audience is anyone extending, auditing, or adopting the contract for their own skill library.
 
-Start with `README.md`, `SKILL_GRAPH.md`, `docs/skill-metadata-protocol.md`, and `docs/field-reference.md` before opening a pull request. `SKILL_GRAPH.md` explains the repo's five-tier organisation — every contribution should be classifiable into exactly one tier.
+Start with `README.md`, `SKILL_GRAPH.md`, `docs/skill-metadata-protocol.md`, and `docs/SKILL_METADATA_PROTOCOL_field-reference.md` before opening a pull request. `SKILL_GRAPH.md` explains the repo's five-tier organisation — every contribution should be classifiable into exactly one tier.
 
 ## What you can contribute
 
 **Welcome:**
 
-- Fixes to broken cross-references, stale examples, or drift between the schemas and the Tier 2 docs (`docs/skill-metadata-protocol.md`, `docs/field-reference.md`, `docs/manifest-field-mapping.md`)
+- Fixes to broken cross-references, stale examples, or drift between the schemas and the Tier 2 docs (`docs/skill-metadata-protocol.md`, `docs/SKILL_METADATA_PROTOCOL_field-reference.md`, `docs/manifest-field-mapping.md`)
 - Additional starter skills that demonstrate contract features the current eight do not already cover (see `README.md § Quick tour → Tier 5` for what each existing starter demonstrates)
 - Worked example artifacts under `examples/audits/` against a starter skill
 - Improvements to `scripts/skill-lint.js` — additional rules, better error messages, clearer SKILL.md compatibility checks
@@ -39,11 +39,11 @@ This step exists because authoring a skill without a plan is the most common cau
 
 1. **Start from the template.** Copy `examples/skill-metadata-template.md` to `skills/<your-skill-name>/SKILL.md`. The template is self-referential — its body teaches you what each section should contain. Read its blockquote notes before editing.
 2. **Rewrite the identity.** Change `name:` to your skill's identifier (lowercase, hyphens, matches the parent directory). Rewrite `description:` as a short about-statement of what the skill is. Activation signals belong to `keywords` / `triggers` / `examples` / `anti_examples`; boundary semantics belong to `relations.boundary`. Rewrite every other field to match your subject.
-3. **Choose `subject` honestly.** Pick from the closed 9-value enum: `agent-ops`, `code-engineering`, `frontend-ui`, `design-craft`, `data-analytics`, `quality-assurance`, `meta-methods`, `knowledge-organization`, `product-domain`. If the skill genuinely spans two shelves, add a secondary in `subjects[]` (max 2 entries, primary first). For field-level guidance, see `docs/field-reference.md § subject`.
+3. **Choose `subject` honestly.** Pick from the closed 9-value enum: `agent-ops`, `code-engineering`, `frontend-ui`, `design-craft`, `data-analytics`, `quality-assurance`, `meta-methods`, `knowledge-organization`, `product-domain`. If the skill genuinely spans two shelves, add a secondary in `subjects[]` (max 2 entries, primary first). For field-level guidance, see `docs/SKILL_METADATA_PROTOCOL_field-reference.md § subject`.
 4. **Strip the teaching layer.** Remove every `> **TEMPLATE NOTE:**` blockquote and every `# TEMPLATE NOTE:` YAML comment before committing. They are authoring scaffolding, not skill content.
-5. **Choose `deployment_target` honestly.** Use `portable` for a skill with no repo-specific claims, `project` for a skill grounded in a specific repo. `deployment_target: project` requires a populated `grounding` block (including `grounding.subject_matter`) — this is machine-enforced by the schema. The `scope` field is now a free-text PRD-style description and is not an enum. For a decision table, see `docs/field-decision-guide.md § 1. Which deployment_target do I use?`.
+5. **Choose `deployment_target` honestly.** Use `portable` for a skill with no repo-specific claims, `project` for a skill grounded in a specific repo. `deployment_target: project` requires a populated `grounding` block (including `grounding.subject_matter`) — this is machine-enforced by the schema. The `scope` field is now a free-text PRD-style description and is not an enum. For a decision table, see `docs/SKILL_METADATA_PROTOCOL_field-decision-guide.md § 1. Which deployment_target do I use?`.
 6. **Point `relations.*` at real skills.** Every `related`, `boundary`, `verify_with`, and `depends_on` target must be the `name` of another skill that exists in `skills/`. `scripts/skill-lint.js` will reject dangling targets.
-7. **Match the 3 eval fields to reality.** `eval_artifacts: none | planned | present` (artifact state), `eval_state: unverified | passing | monitored` (runtime state), `routing_eval: absent | present` (routing coverage). The schema's M5 coherence rule enforces that `eval_state: passing` or `monitored` requires `eval_artifacts: present`. See `docs/field-decision-guide.md § 3. What state do I choose for evals?` for the full decision table.
+7. **Match the 3 eval fields to reality.** `eval_artifacts: none | planned | present` (artifact state), `eval_state: unverified | passing | monitored` (runtime state), `routing_eval: absent | present` (routing coverage). The schema's M5 coherence rule enforces that `eval_state: passing` or `monitored` requires `eval_artifacts: present`. See `docs/SKILL_METADATA_PROTOCOL_field-decision-guide.md § 3. What state do I choose for evals?` for the full decision table.
 
 ## Before opening a pull request
 
@@ -68,19 +68,19 @@ The lint output now prefixes each line with the source tier (see `SKILL_GRAPH.md
 
 | If you touched... | Also update... |
 |---|---|
-| `schemas/skill.schema.json` (Tier 1) | `docs/field-reference.md`, `docs/skill-metadata-protocol.md`, `docs/manifest-field-mapping.md` rename map, `examples/skill-metadata-template.md` if the change affects a required or strongly-recommended field. Per [ADR-0014](docs/adr/0014-canonical-only-schema-files.md), pinned prior-version schemas are NOT mirrored on disk — prior versions live in git history. |
+| `schemas/SKILL_METADATA_PROTOCOL_schema.json` (Tier 1) | `docs/SKILL_METADATA_PROTOCOL_field-reference.md`, `docs/skill-metadata-protocol.md`, `docs/manifest-field-mapping.md` rename map, `examples/skill-metadata-template.md` if the change affects a required or strongly-recommended field. Per [ADR-0014](docs/adr/0014-canonical-only-schema-files.md), pinned prior-version schemas are NOT mirrored on disk — prior versions live in git history. |
 | `schemas/manifest.schema.json` (Tier 1) | `docs/manifest-field-mapping.md`, potentially `scripts/generate-manifest.js` projection logic. (No pinned `manifest.vN.schema.json` on disk per ADR-0014.) |
 | `scripts/generate-manifest.js` (Tier 3) | Regenerate `examples/skills.manifest.sample.json` so generator parity passes |
 | `scripts/skill-lint.js` (Tier 3) | Run against every starter + the template; update `examples/skills.manifest.sample.json` if the skill's `drift_check.truth_source_hashes` references the lint script |
 | Any Tier 5 starter skill with `grounding.truth_sources` | Re-record baselines with `node scripts/skill-graph-drift.js --record --apply skills/<name>` and regenerate the sample manifest |
 
-If you touched a Tier 2 doc (`docs/skill-metadata-protocol.md`, `docs/field-reference.md`, etc.), also update the other Tier 2 docs so they remain in lockstep. Skill Metadata Protocol is the overview; `docs/field-reference.md` is the per-field semantics authority; the schema is Tier 1 — source of truth for machine enforcement. Drift between them is a bug.
+If you touched a Tier 2 doc (`docs/skill-metadata-protocol.md`, `docs/SKILL_METADATA_PROTOCOL_field-reference.md`, etc.), also update the other Tier 2 docs so they remain in lockstep. Skill Metadata Protocol is the overview; `docs/SKILL_METADATA_PROTOCOL_field-reference.md` is the per-field semantics authority; the schema is Tier 1 — source of truth for machine enforcement. Drift between them is a bug.
 
 ## Pull request expectations
 
 - **One logical change per pull request.** A new starter skill is one PR; a contract revision is a separate PR.
 - **Declare the tier** your change belongs to in the PR description. Pick exactly one from: `Tier 1 (schema)`, `Tier 2 (explanation)`, `Tier 3 (enforcement)`, `Tier 4 (consumer)`, `Tier 5 (specimen)`, or `Governance`. If you cannot pick exactly one, the PR probably needs splitting. See `SKILL_GRAPH.md` for the tier definitions.
-- The PR description states what changed and why, references the relevant `docs/skill-metadata-protocol.md` or `docs/field-reference.md` sections, and includes the `node scripts/skill-lint.js` + `node scripts/check-protocol-consistency.js` output.
+- The PR description states what changed and why, references the relevant `docs/skill-metadata-protocol.md` or `docs/SKILL_METADATA_PROTOCOL_field-reference.md` sections, and includes the `node scripts/skill-lint.js` + `node scripts/check-protocol-consistency.js` output.
 - Commits use a short imperative title (≤ 70 chars) and, when needed, a body explaining the motivation rather than restating the diff.
 - Tests, validation, and documentation updates land in the same commit as the code they describe. Do not defer doc updates to a follow-up PR.
 

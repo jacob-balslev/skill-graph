@@ -2,7 +2,7 @@
 /**
  * Schema constants drift check (doctor gate).
  *
- * Validates that `schemas/skill.schema.json` and `schemas/manifest.schema.json`
+ * Validates that `schemas/SKILL_METADATA_PROTOCOL_schema.json` and `schemas/manifest.schema.json`
  * carry the enum values mandated by:
  *   - ADR-0011 (four-verdict Health Block)
  *   - ADR-0017 + its 2026-05-27 amendment (v8 classification: `subject` 9-enum,
@@ -33,7 +33,7 @@ const fs = require('fs');
 const path = require('path');
 
 const REPO_ROOT = process.env.SKILL_GRAPH_PACKAGE_ROOT || process.cwd();
-const SKILL_SCHEMA = path.join(REPO_ROOT, 'schemas', 'skill.schema.json');
+const SKILL_SCHEMA = path.join(REPO_ROOT, 'schemas', 'SKILL_METADATA_PROTOCOL_schema.json');
 const MANIFEST_SCHEMA = path.join(REPO_ROOT, 'schemas', 'manifest.schema.json');
 
 // ---------------------------------------------------------------------------

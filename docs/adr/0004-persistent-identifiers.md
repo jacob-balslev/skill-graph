@@ -62,8 +62,8 @@ Regex: `^urn:skill:[a-z0-9][a-z0-9-]*:[a-z0-9][a-z0-9-/:]*$`
 ## Implementation checklist
 
 - [x] Add optional `urn` field to `schemas/skill.v3.schema.json` with the regex above.
-- [x] Add optional `urn` field to `schemas/skill.schema.json` (mirror of v3).
-- [x] Add `urn` to `docs/field-reference.md` with a URN-authoring guide.
+- [x] Add optional `urn` field to `schemas/SKILL_METADATA_PROTOCOL_schema.json` (mirror of v3).
+- [x] Add `urn` to `docs/SKILL_METADATA_PROTOCOL_field-reference.md` with a URN-authoring guide.
 - [x] Map `urn` to `@id` in `schemas/skill.context.jsonld`.
 - [ ] Ship `scripts/migrate-v3-to-v4.js` when v4 is cut (out of scope for this ADR).
 - [ ] Decide and publish the repo-slug-to-URN mapping rule for multi-root workspaces (out of scope for this ADR).

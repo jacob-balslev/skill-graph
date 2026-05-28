@@ -143,6 +143,6 @@ For an existing v2/v3 single-root repo that wants to adopt multi-root:
 - `scripts/generate-manifest.js` — workspace config loader and multi-root walker.
 - `scripts/skill-graph-route.js` — project-aware filter using semantic-tag expansion.
 - `scripts/skill-graph-drift.js` — walks all workspace roots in default mode.
-- `docs/field-reference.md § workspace_tags` — authored-side semantics.
-- `docs/field-decision-guide.md § 4. How do I tag a skill for multiple projects?` — decision tables.
+- `docs/SKILL_METADATA_PROTOCOL_field-reference.md § workspace_tags` — authored-side semantics.
+- `docs/SKILL_METADATA_PROTOCOL_field-decision-guide.md § 4. How do I tag a skill for multiple projects?` — decision tables.
 - `schemas/manifest.schema.json § workspace` — machine-enforceable config shape in the manifest.

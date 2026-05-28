@@ -50,7 +50,7 @@ function runCheck(scriptRelPath, label, extraArgs = []) {
 }
 
 function readSchemaVersion() {
-  const schema = readJson('schemas/skill.schema.json');
+  const schema = readJson('schemas/SKILL_METADATA_PROTOCOL_schema.json');
   const sv = schema?.properties?.schema_version;
   // const-shaped (older schemas): single value
   if (typeof sv?.const === 'number') return String(sv.const);
@@ -208,7 +208,7 @@ function renderMarkdown(state) {
 >
 > This file is the single-source-of-truth status snapshot for the project's
 > trust surface. Each value below is pulled from a deterministic origin:
-> \`package.json\`, \`schemas/skill.schema.json\`, the generated manifest, ADR
+> \`package.json\`, \`schemas/SKILL_METADATA_PROTOCOL_schema.json\`, the generated manifest, ADR
 > 0009, and the live exit code of each check script.
 
 ## Identity
@@ -218,7 +218,7 @@ function renderMarkdown(state) {
 | Package name | \`${pkg.name}\` | \`package.json\` |
 | Package version | \`${pkg.version}\` | \`package.json\` |
 | Node engine | \`${pkg.engines?.node ?? '—'}\` | \`package.json\` |
-| Active schema version | \`${schema_version}\` | \`schemas/skill.schema.json\` |
+| Active schema version | \`${schema_version}\` | \`schemas/SKILL_METADATA_PROTOCOL_schema.json\` |
 | Skill count (manifest) | \`${skill_count ?? '—'}\` | \`skills.manifest.json\` |
 | Mirror status | ${mirror_status} | \`docs/adr/0009-sibling-repo-deprecation.md\` |
 

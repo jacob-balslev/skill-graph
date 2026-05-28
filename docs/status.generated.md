@@ -1,11 +1,11 @@
 # Skill Graph — Generated Status
 
-> **Generated:** 2026-05-28T14:33:17.606Z
+> **Generated:** 2026-05-28T14:45:04.715Z
 > **Generator:** `node scripts/build-status-doc.js` (regenerate; never hand-edit)
 >
 > This file is the single-source-of-truth status snapshot for the project's
 > trust surface. Each value below is pulled from a deterministic origin:
-> `package.json`, `schemas/skill.schema.json`, the generated manifest, ADR
+> `package.json`, `schemas/SKILL_METADATA_PROTOCOL_schema.json`, the generated manifest, ADR
 > 0009, and the live exit code of each check script.
 
 ## Identity
@@ -15,7 +15,7 @@
 | Package name | `@skill-graph/cli` | `package.json` |
 | Package version | `0.5.10` | `package.json` |
 | Node engine | `>=20.0.0` | `package.json` |
-| Active schema version | `8` | `schemas/skill.schema.json` |
+| Active schema version | `8` | `schemas/SKILL_METADATA_PROTOCOL_schema.json` |
 | Skill count (manifest) | `154` | `skills.manifest.json` |
 | Mirror status | docs-only mirrors per ADR 0009 (2026-05-18) | `docs/adr/0009-sibling-repo-deprecation.md` |
 
@@ -23,11 +23,11 @@
 
 | Check | Status | Duration | Last line |
 |---|---|---|---|
-| check-markdown-links | ✅ PASS | 280 ms | OK   markdown links (762 file(s)) |
-| check-protocol-consistency | ✅ PASS | 133 ms | PASS: all protocol consistency checks passed. 0 warning(s). |
-| check-doc-drift | ✅ PASS | 78 ms | OK   doc drift sentinel: 54 active doc(s) scanned against schema v8 |
-| check-mirror-freeze | ✅ PASS | 56 ms | OK   mirror freeze: 20 file(s) scanned across 2 mirror(s); no active-source/package claims found. |
-| marketplace-export-check | ✅ PASS | 180 ms | PROJECTION TRUNCATED for writing-humanizer: tail truncated from 652 to 465 chars to fit 1024 limit |
+| check-markdown-links | ✅ PASS | 200 ms | OK   markdown links (762 file(s)) |
+| check-protocol-consistency | ✅ PASS | 110 ms | PASS: all protocol consistency checks passed. 0 warning(s). |
+| check-doc-drift | ✅ PASS | 71 ms | OK   doc drift sentinel: 54 active doc(s) scanned against schema v8 |
+| check-mirror-freeze | ✅ PASS | 44 ms | OK   mirror freeze: 20 file(s) scanned across 2 mirror(s); no active-source/package claims found. |
+| marketplace-export-check | ✅ PASS | 139 ms | PROJECTION TRUNCATED for writing-humanizer: tail truncated from 652 to 465 chars to fit 1024 limit |
 
 ## Audit Health
 

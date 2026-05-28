@@ -88,7 +88,7 @@ The full set of edits accompanying this ADR is documented in the synthesis IP-R2
 - `schemas/skill.context.jsonld` — `boundary` keeps `sg:disjointOwnership`; `disjoint_with` switches from alias to `owl:disjointWith`. New `owl` namespace declared. `_adr_anchors` block added so the file points back here.
 - `scripts/skill-lint.js` — `boundary -> disjoint_with` deprecation warning removed; `adjacent -> related` warning kept; new warning for declaring both `adjacent` and `related` (or both `boundary` and `disjoint_with`) for the same target.
 - `docs/adr/0001-predicate-set.md` — Status banner: "Accepted with revision per ADR 0006 (Decision #2 reverted; Decisions #1, #3, #4 stand)."
-- `docs/field-reference.md § relations` — Narrative updated to match the split semantics.
+- `docs/SKILL_METADATA_PROTOCOL_field-reference.md § relations` — Narrative updated to match the split semantics.
 - `CHANGELOG.md` — `[Unreleased]` entry documenting the revision.
 
 ## References

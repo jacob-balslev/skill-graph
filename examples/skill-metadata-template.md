@@ -21,8 +21,8 @@
 #
 #      → **STAY in the derived skill.** These are the design intent at the
 #        point of authoring. Cold-start agents and human authors read them
-#        instead of opening `docs/field-reference.md`. Do NOT strip these.
-#        Canonical source for field-purpose content is `docs/field-reference.md`;
+#        instead of opening `docs/SKILL_METADATA_PROTOCOL_field-reference.md`. Do NOT strip these.
+#        Canonical source for field-purpose content is `docs/SKILL_METADATA_PROTOCOL_field-reference.md`;
 #        the inline comment is the abridged summary. See
 #        `SKILL_METADATA_PROTOCOL.md § Inline field comments — the authoring convention`.
 #
@@ -54,7 +54,7 @@
 # ============================================================================
 # schema_version: protocol contract version this skill conforms to.
 # Integer 8. Prior contract retrievable via
-# `git show schema-v7:schemas/skill.schema.json`.
+# `git show schema-v7:schemas/SKILL_METADATA_PROTOCOL_schema.json`.
 schema_version: 8
 name: skill-metadata-template
 # TEMPLATE NOTE: Be pushy in your description — Claude tends to under-trigger
@@ -139,7 +139,7 @@ eval_state: unverified
 # absent (not verified) / present (gated by lint check 12; harness must exit 0).
 # `present` requires populated `examples` + `anti_examples` (below) AND a passing
 # run of `node scripts/skill-graph-routing-eval.js --skill <name>`. See
-# docs/field-reference.md § routing_eval for the full enforcement contract.
+# docs/SKILL_METADATA_PROTOCOL_field-reference.md § routing_eval for the full enforcement contract.
 #
 # TEMPLATE NOTE: on THIS scaffold, routing_eval MUST stay `absent` even though
 # the harness happens to report every case passing. The scaffold's job is to
@@ -163,7 +163,7 @@ routing_eval: absent
 # frozen (no further changes expected) / deprecated.
 # When `deprecated`, schema's allOf REQUIRES `superseded_by: <real-skill-name>`
 # pointing at an existing skill — otherwise validation fails. Omit
-# `superseded_by` for any other stability value. See docs/field-reference.md
+# `superseded_by` for any other stability value. See docs/SKILL_METADATA_PROTOCOL_field-reference.md
 # § superseded_by for the full allOf contract.
 stability: stable
 license: MIT
@@ -207,7 +207,7 @@ paths:
 # examples: 2-5 realistic user prompts the skill SHOULD activate for.
 # Written in the user's voice, not imperative abstract form. Improves
 # retrieval recall beyond keywords alone. Omit for purely label-routed skills.
-# Introduced in v0.5.0. See docs/field-reference.md § examples.
+# Introduced in v0.5.0. See docs/SKILL_METADATA_PROTOCOL_field-reference.md § examples.
 examples:
   - "I'm writing a new skill from scratch — where do I start?"
   - "how do I pick between capability and workflow for my skill type?"
@@ -216,7 +216,7 @@ examples:
 # Pair with relations.boundary to tell the router which skill owns the
 # confusable territory. Leave absent until you have SEEN the router misfire;
 # speculative anti_examples rarely match reality.
-# See docs/field-reference.md § anti_examples.
+# See docs/SKILL_METADATA_PROTOCOL_field-reference.md § anti_examples.
 anti_examples:
   - "refactor this skill to be more concise"           # → refactor, not authoring
   - "my skill's routing isn't activating — why?"       # → skill-router, not template
@@ -256,7 +256,7 @@ grounding:
     - path: docs/skill-metadata-protocol.md
       anchor: the-52-authored-fields-grouped-by-purpose
       note: "Protocol anatomy and field requiredness"
-    - path: schemas/skill.schema.json
+    - path: schemas/SKILL_METADATA_PROTOCOL_schema.json
       line_range:
         start: 480
         end: 590
@@ -320,7 +320,7 @@ runtime_telemetry:
 - Grounding via `grounding`: when a skill should declare truth sources and failure modes, and when it should stay `grounding_mode: universal`
 - drift evidence: when to record `drift_check.truth_source_hashes` and how the drift sentinel consumes them
 - Project belonging-entity tagging: when to populate `project[]` and `repo[]`, when to leave a skill ambient (omit both arrays), how `deployment_target` interacts with `project[]` membership
-- Adapter workflow: how to strip a template down, how to detect and remove cargo-culted meta, and how to verify a new skill against `schemas/skill.schema.json` before committing
+- Adapter workflow: how to strip a template down, how to detect and remove cargo-culted meta, and how to verify a new skill against `schemas/SKILL_METADATA_PROTOCOL_schema.json` before committing
 
 ## Philosophy of the skill
 
@@ -331,7 +331,7 @@ A template teaches by example, not by placeholder. A concrete, internally consis
 | File | Purpose |
 |---|---|
 | `docs/skill-metadata-protocol.md` | Authoritative field semantics: required vs optional, conditional requiredness, relationship to the plain `SKILL.md` format, archetype section map |
-| `schemas/skill.schema.json` | Enforceable JSON Schema for the frontmatter protocol |
+| `schemas/SKILL_METADATA_PROTOCOL_schema.json` | Enforceable JSON Schema for the frontmatter protocol |
 | `../SKILL_AUDIT_LOOP.md#part-2--per-skill-audit-checklist` | The audit checklist every new skill should pass before commit |
 
 ## Verification
@@ -350,7 +350,7 @@ Use this checklist as the authoring gate before committing a skill adapted from 
 - [ ] `project[]` is populated with `{handle, role}` entries when the skill is project-specific OR absent when the skill is ambient — same for `repo[]`. Not left with stale or placeholder handles.
 - [ ] No placeholder sludge (`your-skill-name`, `path/to/file`, `todo`) remains
 - [ ] No `> **TEMPLATE NOTE:**` blockquotes or `# TEMPLATE NOTE:` YAML comments remain in the adapted skill
-- [ ] The adapted skill validates against `schemas/skill.schema.json` as a real skill
+- [ ] The adapted skill validates against `schemas/SKILL_METADATA_PROTOCOL_schema.json` as a real skill
 
 ## Do NOT Use When
 

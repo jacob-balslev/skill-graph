@@ -95,7 +95,7 @@ const BASE_FM = {
   scope: 'codebase',
   grounding: {
     domain_object: 'test',
-    truth_sources: ['schemas/skill.schema.json'],
+    truth_sources: ['schemas/SKILL_METADATA_PROTOCOL_schema.json'],
   },
 };
 

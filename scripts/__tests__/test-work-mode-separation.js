@@ -50,7 +50,7 @@ process.stdout.write('\n1. Empty file list — no warning, exit 0\n');
 // ── 2. SYSTEM-only changes → no warning ───────────────────────────────
 process.stdout.write('\n2. SYSTEM-only staged paths — no warning\n');
 {
-  const r = runWithFiles('schemas/skill.schema.json,scripts/skill-lint.js,docs/field-reference.md');
+  const r = runWithFiles('schemas/SKILL_METADATA_PROTOCOL_schema.json,scripts/skill-lint.js,docs/SKILL_METADATA_PROTOCOL_field-reference.md');
   assert('2a. Exit 0', r.status === 0);
   assert('2b. No warning emitted', !r.stderr.includes(WARN_NEEDLE), `stderr: ${r.stderr.slice(0, 200)}`);
 }
@@ -66,17 +66,17 @@ process.stdout.write('\n3. CONTENT-only staged paths — no warning\n');
 // ── 4. Mixed SYSTEM + CONTENT → warning fires, still exit 0 ───────────
 process.stdout.write('\n4. Mixed SYSTEM + CONTENT — warning fires\n');
 {
-  const r = runWithFiles('schemas/skill.schema.json,audits/a11y/findings.md');
+  const r = runWithFiles('schemas/SKILL_METADATA_PROTOCOL_schema.json,audits/a11y/findings.md');
   assert('4a. Exit 0 (fail-open)', r.status === 0, `expected 0, got ${r.status}`);
   assert('4b. Warning emitted', r.stderr.includes(WARN_NEEDLE), `stderr did not contain "${WARN_NEEDLE}":\n${r.stderr.slice(0, 400)}`);
-  assert('4c. Warning lists the SYSTEM file', r.stderr.includes('schemas/skill.schema.json'));
+  assert('4c. Warning lists the SYSTEM file', r.stderr.includes('schemas/SKILL_METADATA_PROTOCOL_schema.json'));
   assert('4d. Warning lists the CONTENT file', r.stderr.includes('audits/a11y/findings.md'));
 }
 
 // ── 5. AUDIT_LOOP=1 suppresses the warning even on mixed mix ─────────
 process.stdout.write('\n5. AUDIT_LOOP=1 suppresses the warning on mixed paths\n');
 {
-  const r = runWithFiles('schemas/skill.schema.json,audits/a11y/findings.md', { AUDIT_LOOP: '1' });
+  const r = runWithFiles('schemas/SKILL_METADATA_PROTOCOL_schema.json,audits/a11y/findings.md', { AUDIT_LOOP: '1' });
   assert('5a. Exit 0', r.status === 0);
   assert('5b. No warning emitted (AUDIT_LOOP=1 honored)', !r.stderr.includes(WARN_NEEDLE), `stderr: ${r.stderr.slice(0, 200)}`);
 }
@@ -97,7 +97,7 @@ process.stdout.write('\n7. examples/audits/<skill>/ is CONTENT, not SYSTEM\n');
 {
   // Pair examples/audits/X (CONTENT) with schemas/Y (SYSTEM). If examples/audits
   // were misclassified as SYSTEM, the mix would be SYSTEM-only and no warning.
-  const r = runWithFiles('examples/audits/refactor/verdict.md,schemas/skill.schema.json');
+  const r = runWithFiles('examples/audits/refactor/verdict.md,schemas/SKILL_METADATA_PROTOCOL_schema.json');
   assert('7a. Exit 0', r.status === 0);
   assert('7b. Warning fires (examples/audits/ treated as CONTENT)', r.stderr.includes(WARN_NEEDLE));
 }

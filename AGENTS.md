@@ -12,7 +12,7 @@ This repo defines the Skill Metadata Protocol and the Skill Graph reference tool
 | **First time on this repo** | `~/Development/SKILL-SYSTEM-CHEAT-SHEET.md` (1 page) — workspace-level operator's manual for the three layers. |
 | **Authoring or editing any SKILL.md** | **STOP.** § "Work Modes — SYSTEM vs CONTENT" below. CONTENT mode runs ONLY via `/audit:audit | improve | evaluate | evolve`. Ad-hoc SKILL.md edits outside that loop are banned. |
 | **Editing the schema / audit script / audit prompt / protocol doc** | § "Work Modes" + § "Editing Rules" + § "Version Labels Are Earned, Not Bumped" |
-| **Per-field semantics (`name`, `description`, `scope`, etc.)** | § "Doc Ownership Map" → routes to `docs/field-reference.md` and 70+ other concept owners |
+| **Per-field semantics (`name`, `description`, `scope`, etc.)** | § "Doc Ownership Map" → routes to `docs/SKILL_METADATA_PROTOCOL_field-reference.md` and 70+ other concept owners |
 | **Current state (counts, version, audit-loop maturity)** | `SKILL_GRAPH.md` § Current State — single source of truth |
 | **Per-skill audit checklist + runbook** | `SKILL_AUDIT_LOOP.md` § Part 2 (checklist) + § Part 3 (binding runbook) |
 | **Publishing to skills.sh** | § "Public Distribution — Canonical URL Contract" |
@@ -54,7 +54,7 @@ There are three named things. Keep them distinct; never collapse one into anothe
 | **Skill Audit Loop** | Maintenance discipline | CI plus improvement loop | Keep skills honest as codebases, docs, concepts, and agent behavior drift. |
 
 1. **Skill Metadata Protocol — the per-skill contract (the substrate).**
-   *What it is supposed to do:* make each skill's relevance **explicit**. Every `SKILL.md` declares typed frontmatter — scope, area/category, domain, file surfaces (`paths` / `grounding`), dependencies, related skills, and boundaries (what it is *not* for). This is the contract that turns "name + description" into something a machine can route, group, and check. It is the substrate: without typed fields there is no graph to query and no deterministic gate to audit against. It turns a skill from "a Markdown instruction file" into a **machine-readable relevance contract** that can be linted, compiled into a manifest, routed against, drift-checked, and audited. **When you author or edit a skill, your job is to make its relevance and boundaries true and explicit.** Binding docs: `SKILL_METADATA_PROTOCOL.md`, `docs/field-reference.md`.
+   *What it is supposed to do:* make each skill's relevance **explicit**. Every `SKILL.md` declares typed frontmatter — scope, area/category, domain, file surfaces (`paths` / `grounding`), dependencies, related skills, and boundaries (what it is *not* for). This is the contract that turns "name + description" into something a machine can route, group, and check. It is the substrate: without typed fields there is no graph to query and no deterministic gate to audit against. It turns a skill from "a Markdown instruction file" into a **machine-readable relevance contract** that can be linted, compiled into a manifest, routed against, drift-checked, and audited. **When you author or edit a skill, your job is to make its relevance and boundaries true and explicit.** Binding docs: `SKILL_METADATA_PROTOCOL.md`, `docs/SKILL_METADATA_PROTOCOL_field-reference.md`.
 
 2. **Skill Graph — the library-level system (what reasons over the metadata).**
    *What it is supposed to do:* operate on that metadata across the **whole library**. Route a query to the best-matching skill; show which skills are related, which domains/groups they belong to, and where boundaries lie; detect overlap and boundary violations; drift-check grounding against source-of-truth; and export back to portable `SKILL.md`. It turns a folder of skills into a typed graph an agent, router, or human can reason over. Each node is a `SKILL.md`; each edge is a typed relation such as `relations.related`, `relations.boundary`, `relations.verify_with`, or `relations.depends_on`. It supplies schema validation, manifest compilation, routing, clustering, overlap detection, drift sentinel checks, audit artifacts, evals, and export back to plain `SKILL.md`. It is **build-time / authoring-time tooling — not** an agent runtime, hosted marketplace, or memory system; consumers read from the graph, they do not redefine it. Authority map: `SKILL_GRAPH.md`.
@@ -130,9 +130,9 @@ Until the planned system reaches the state the user wants, CONTENT work is pause
 | Anti-pattern | Why it's a violation | What to do instead |
 |---|---|---|
 | Working on an audit prompt template and "just editing one SKILL.md to test the prompt" | SYSTEM task drifted into CONTENT. The test should run the prompt against an existing skill via `/audit:audit --pilot <skill>`, not by hand-editing the skill. | Test SYSTEM changes via the audit-loop entry points; the skill stays untouched. |
-| Bumping `schema_version` in `skill.schema.json` AND manually editing N SKILL.md files in the same commit | The version-earned gate exists precisely to refuse this. Cascades go through `/audit:evolve`, not a schema commit. | One SYSTEM commit bumps the schema. Then `/audit:evolve --top N` migrates skills, one commit per skill with Audit Status evidence. |
+| Bumping `schema_version` in `SKILL_METADATA_PROTOCOL_schema.json` AND manually editing N SKILL.md files in the same commit | The version-earned gate exists precisely to refuse this. Cascades go through `/audit:evolve`, not a schema commit. | One SYSTEM commit bumps the schema. Then `/audit:evolve --top N` migrates skills, one commit per skill with Audit Status evidence. |
 | Doing a protocol-doc update and "fixing one skill that already shows the new pattern" inline | The doc update is SYSTEM. The skill edit is CONTENT. They belong in two different tasks. | Commit the SYSTEM doc update alone. File a Linear task to migrate the example skill through `/audit:*`. |
-| Inside `/audit:audit`, noticing a schema gap and patching `skill.schema.json` inline | CONTENT task patching SYSTEM. The schema change is now committed alongside the audit's content writes — and probably without the SYSTEM-side reasoning, tests, or doc update it needs. | STOP the audit. File a SYSTEM Linear task with the gap. Resume the audit once the schema lands and is released. |
+| Inside `/audit:audit`, noticing a schema gap and patching `SKILL_METADATA_PROTOCOL_schema.json` inline | CONTENT task patching SYSTEM. The schema change is now committed alongside the audit's content writes — and probably without the SYSTEM-side reasoning, tests, or doc update it needs. | STOP the audit. File a SYSTEM Linear task with the gap. Resume the audit once the schema lands and is released. |
 | Asking the user "should I also tweak this script while I'm in here?" during a CONTENT session | Permission-asking is also a mode boundary signal. If the answer is yes, the task is two tasks. | Finish the CONTENT task as scoped. File the SYSTEM follow-up. |
 | Designing a "compatibility window" / "sunset phase" / "migration mode" that forces every new author to write BOTH old and new fields until the corpus migrates | CONTENT state leaked into SYSTEM thinking. The schema's correctness is independent of how many skills currently comply. Holding the schema hostage to corpus migration produces phrases like "must author BOTH" in normative docs and traps the schema in a perpetual phase state. | Make the schema correct in one edit: move new fields into `required`, drop old fields from `required` (keep them as optional back-compat properties), delete redundant conditional rules. Skills that fail validation route to ONE CONTENT-mode follow-up ticket the audit loop drains per-skill. See `~/Development/.claude/rules/version-schema-contract.md § Companion rule — Do not hold the schema hostage to corpus migration progress`. |
 
@@ -159,7 +159,7 @@ Read these files before changing behavior or docs:
 2. `SKILL_GRAPH.md` - authority tiers and how schemas, docs, scripts, examples, and skills relate.
 3. `SKILL_METADATA_PROTOCOL.md` - top-level normative protocol contract.
 4. `docs/skill-metadata-protocol.md` - deeper rationale, archetypes, migration policy.
-5. `docs/field-reference.md` and `docs/field-decision-guide.md` - field-level semantics and decision tables.
+5. `docs/SKILL_METADATA_PROTOCOL_field-reference.md` and `docs/SKILL_METADATA_PROTOCOL_field-decision-guide.md` - field-level semantics and decision tables.
 6. `docs/manifest-field-mapping.md` - authored-to-generated manifest projection rules.
 7. `CONTRIBUTING.md` - contribution boundaries, skill authoring workflow, PR expectations.
 8. `docs/quality-doctrine.md` - quality bar for scope preservation, readable names, compression, verification, and organization-over-trimming.
@@ -194,7 +194,7 @@ This shape is what distinguishes the Skill Graph from prompt libraries, agent-ru
 
 ## Skill Metadata Protocol — Quick Reference
 
-The Skill Metadata Protocol is the frontmatter contract every `SKILL.md` ships against. Treat this section as the working summary; `SKILL_METADATA_PROTOCOL.md` and `docs/field-reference.md` are the binding documents.
+The Skill Metadata Protocol is the frontmatter contract every `SKILL.md` ships against. Treat this section as the working summary; `SKILL_METADATA_PROTOCOL.md` and `docs/SKILL_METADATA_PROTOCOL_field-reference.md` are the binding documents.
 
 Core required axes (v8 — see `SKILL_METADATA_PROTOCOL.md § Schema contract`):
 
@@ -292,7 +292,7 @@ Stripe's own framing names the principle: their core code "only writes code for 
 2. **Run the migration codemod, then delete it.** v(N-1)→v(N) is a one-time event. The codemod is not permanent tooling. Its history lives in git.
 3. **Rewrite protocol / loop / graph docs to v(N).** No "deprecated v(N-1) fields" sections. No "during the sunset window" prose. No "do not author v(N-1)" rules — because v(N-1) is not part of the live contract.
 4. **Amend any superseded ADRs.** One-line block: `> Superseded by v(N) (<commit>, <date>). See AGENTS.md § Major Version Is a Clean Cut.`
-5. **CHANGELOG records the cut as past tense.** Single historical entry: "v(N-1) → v(N) ran on `<date>` in `<sha>`. Prior contract retrievable via `git show schema-v(N-1):schemas/skill.schema.json`."
+5. **CHANGELOG records the cut as past tense.** Single historical entry: "v(N-1) → v(N) ran on `<date>` in `<sha>`. Prior contract retrievable via `git show schema-v(N-1):schemas/SKILL_METADATA_PROTOCOL_schema.json`."
 6. **Tag the prior contract.** `git tag schema-v(N-1) <last-pre-cut-sha>` so anyone needing the old contract can `git checkout` it.
 
 **Anyone needing v(N-1) reads git, not the live tree.**
@@ -331,7 +331,7 @@ Nothing else.
 - Preserve the current narrow scope: protocol, schemas, deterministic tooling, examples, docs, evals, audit artifacts, and portable `SKILL.md` export.
 - Do not add proprietary company-specific skills, hosted service assumptions, prompt-library content, or agent runtime layers.
 - Do not make breaking schema changes without a `schema_version` bump and migration notes. Per [ADR-0014](docs/adr/0014-canonical-only-schema-files.md), pinned schema copies and per-version codemods are NOT created on disk — prior versions live in git history; codemods run once and are retired. If an external consumer needs to pin against a historical version, resolve via `git tag schema-vN` rather than a duplicate file in `main`.
-- Do not hand-edit generated artifacts unless the owning script says to. `docs/field-reference.generated.md` is generated by `scripts/build-field-reference.js`.
+- Do not hand-edit generated artifacts unless the owning script says to. `docs/SKILL_METADATA_PROTOCOL_field-reference.generated.md` is generated by `scripts/build-field-reference.js`.
 - Do not hide findings during audits. If a check or audit emits N findings, preserve all N, then recommend prioritization separately.
 - Do not commit local-only agent state or research output unless explicitly intended and scrubbed. `.artifacts/`, `.claude/`, `.research/`, `.roundtable/`, `audits/_state/`, and `audits/sweep-ledger.jsonl` are ignored for a reason.
 - Never commit secrets, PII, private filesystem telemetry, credentials, tokens, or public-endpoint logs containing sensitive data.
@@ -340,7 +340,7 @@ Nothing else.
 
 When touching one artifact, update the matching tier artifacts in the same change.
 
-- If you change `schemas/skill.schema.json`, also update `docs/field-reference.md`, `docs/skill-metadata-protocol.md`, `SKILL_METADATA_PROTOCOL.md` when relevant, `docs/manifest-field-mapping.md`, and `examples/skill-metadata-template.md` when affected. Regenerate `docs/field-reference.generated.md` with `node scripts/build-field-reference.js` in the same commit (enforced by `protocol:check § C7`). Per [ADR-0014](docs/adr/0014-canonical-only-schema-files.md), the C6 "Versioned schema parity" check is retired — there is no second pinned file to drift against.
+- If you change `schemas/SKILL_METADATA_PROTOCOL_schema.json`, also update `docs/SKILL_METADATA_PROTOCOL_field-reference.md`, `docs/skill-metadata-protocol.md`, `SKILL_METADATA_PROTOCOL.md` when relevant, `docs/manifest-field-mapping.md`, and `examples/skill-metadata-template.md` when affected. Regenerate `docs/SKILL_METADATA_PROTOCOL_field-reference.generated.md` with `node scripts/build-field-reference.js` in the same commit (enforced by `protocol:check § C7`). Per [ADR-0014](docs/adr/0014-canonical-only-schema-files.md), the C6 "Versioned schema parity" check is retired — there is no second pinned file to drift against.
 - If you change `schemas/manifest.schema.json`, also update `schemas/manifest.schema.json` (the pinned copy of the current contract), `docs/manifest-field-mapping.md`, and `scripts/generate-manifest.js` if projection logic changes.
 - If you change `scripts/generate-manifest.js`, regenerate `examples/skills.manifest.sample.json`.
 - If you change `scripts/skill-lint.js`, run it against every skill and the template. Update sample manifest or drift baselines when lint-affecting sources are part of `drift_check.truth_source_hashes`.
@@ -363,21 +363,21 @@ For any single Skill Metadata Protocol field (`name`, `description`, `subject`, 
 | What you are editing about the field | Canonical owner | Notes |
 |---|---|---|
 | **Normative spec** — required/optional, allowed values, enum, gate condition, version label, what the field *means* in the protocol | `SKILL_METADATA_PROTOCOL.md` | The binding contract. If this and another doc disagree, this wins. |
-| **Per-field human authoring prose** — when to use it, value choice criteria, examples, anti-patterns, common mistakes | `docs/field-reference.md` | The 78k authoring guide. Single biggest doc; agents lose half a turn budget here. Use anchor links when referencing from other docs. **Reader's canonical for `field-reference.md` vs `.generated.md`:** the hand-authored `docs/field-reference.md` is the canonical for "what does this field mean and when do I pick which value"; `docs/field-reference.generated.md` (line below) is a structural skeleton of the schema enum and type — useful for grep, never for picking values. (M2 reconciliation 2026-05-27.) |
-| **Decision logic between values** — "should I pick `portable` vs `project`?", "when is `stability: stable` earned?", branching decision trees | `docs/field-decision-guide.md` | Decision tables only. Do not duplicate decision logic from `field-reference.md`; link to it. |
+| **Per-field human authoring prose** — when to use it, value choice criteria, examples, anti-patterns, common mistakes | `docs/SKILL_METADATA_PROTOCOL_field-reference.md` | The 78k authoring guide. Single biggest doc; agents lose half a turn budget here. Use anchor links when referencing from other docs. **Reader's canonical for `SKILL_METADATA_PROTOCOL_field-reference.md` vs `.generated.md`:** the hand-authored `docs/SKILL_METADATA_PROTOCOL_field-reference.md` is the canonical for "what does this field mean and when do I pick which value"; `docs/SKILL_METADATA_PROTOCOL_field-reference.generated.md` (line below) is a structural skeleton of the schema enum and type — useful for grep, never for picking values. (M2 reconciliation 2026-05-27.) |
+| **Decision logic between values** — "should I pick `portable` vs `project`?", "when is `stability: stable` earned?", branching decision trees | `docs/SKILL_METADATA_PROTOCOL_field-decision-guide.md` | Decision tables only. Do not duplicate decision logic from `SKILL_METADATA_PROTOCOL_field-reference.md`; link to it. |
 | **Why the field exists** — design rationale, rejected alternatives, migration history that *justifies* the field's shape | `docs/field-rationale.md` | "Why this field, not the other thing." Edit when the field's purpose changes, not when its value semantics change. |
-| **Generated type/enum mirror** | `docs/field-reference.generated.md` | **NEVER hand-edit.** Run `node scripts/build-field-reference.js`. Source of truth is `schemas/skill.schema.json`. **Not for "when do I pick this value"** — that lives in the hand-authored `docs/field-reference.md` (row above). Reading the generated doc alone gives a structurally valid but semantically incomplete picture. |
+| **Generated type/enum mirror** | `docs/SKILL_METADATA_PROTOCOL_field-reference.generated.md` | **NEVER hand-edit.** Run `node scripts/build-field-reference.js`. Source of truth is `schemas/SKILL_METADATA_PROTOCOL_schema.json`. **Not for "when do I pick this value"** — that lives in the hand-authored `docs/SKILL_METADATA_PROTOCOL_field-reference.md` (row above). Reading the generated doc alone gives a structurally valid but semantically incomplete picture. |
 | **Source-to-manifest projection** — how the authored value lands in the generated manifest | `docs/manifest-field-mapping.md` | Edit only when `scripts/generate-manifest.js` projection logic changes. |
-| **One-liner mention in the AGENTS.md Quick Reference** | `AGENTS.md` § Skill Metadata Protocol — Quick Reference | Keep to one bullet per field. Never put full prose here; link to `field-reference.md`. |
+| **One-liner mention in the AGENTS.md Quick Reference** | `AGENTS.md` § Skill Metadata Protocol — Quick Reference | Keep to one bullet per field. Never put full prose here; link to `SKILL_METADATA_PROTOCOL_field-reference.md`. |
 | **Glossary entry** for the field name itself | `docs/glossary.md` | One-line definition; link to the canonical detail. |
 
-**Default answer for "where do I edit field X's criteria":** the normative one-liner goes in `SKILL_METADATA_PROTOCOL.md`, the authoring prose goes in `docs/field-reference.md`, and `docs/field-decision-guide.md` is updated only if the change introduces a new decision branch. The other field-* docs are touched only if their specific axis (rationale, generated mirror, manifest projection) is what changed.
+**Default answer for "where do I edit field X's criteria":** the normative one-liner goes in `SKILL_METADATA_PROTOCOL.md`, the authoring prose goes in `docs/SKILL_METADATA_PROTOCOL_field-reference.md`, and `docs/SKILL_METADATA_PROTOCOL_field-decision-guide.md` is updated only if the change introduces a new decision branch. The other field-* docs are touched only if their specific axis (rationale, generated mirror, manifest projection) is what changed.
 
 ### Other concept areas
 
 | Concept area | Canonical owner | Use for |
 |---|---|---|
-| **Migration narrative** (per-version: what each version introduced, breaking changes, codemod usage) | CHANGELOG.md entries + git history of `schemas/skill.schema.json` + the substantive ADR per version (e.g., ADR 0011 for the v6→v7 four-verdict Audit Status split; ADR 0017 for the v7→v8 classification model and its 2026-05-27 amendment) | New per-version migrations get a CHANGELOG entry and (if architecturally significant) a new ADR; do not append migration narrative to AGENTS.md. |
+| **Migration narrative** (per-version: what each version introduced, breaking changes, codemod usage) | CHANGELOG.md entries + git history of `schemas/SKILL_METADATA_PROTOCOL_schema.json` + the substantive ADR per version (e.g., ADR 0011 for the v6→v7 four-verdict Audit Status split; ADR 0017 for the v7→v8 classification model and its 2026-05-27 amendment) | New per-version migrations get a CHANGELOG entry and (if architecturally significant) a new ADR; do not append migration narrative to AGENTS.md. |
 | **Authority tiers** (which file binds which) | `SKILL_GRAPH.md` § Authority Tiers | The map of "Tier 1 schemas → Tier 2 docs → Tier 3 scripts → Tier 4 consumers → Tier 5 examples." |
 | **Current corpus state** — verified counts (canonical skills, exported skills, worklist), build/health snapshot | `SKILL_GRAPH.md` § Current State + `docs/status.generated.md` | Single-source-of-truth count lives in `SKILL_GRAPH.md § Current State`. The generated status file mirrors it. Volatile counts must not be duplicated into AGENTS.md, README.md, or anywhere else — link instead. |
 | **Edges / relations semantics** (`related`, `boundary`, `verify_with`, `depends_on`) — the field-level mechanic | `SKILL_METADATA_PROTOCOL.md` § Relations | The boundary-semantics WARNING (2026-05-23) lives here; `AGENTS.md § What the Skill Graph Is` summarizes and links. |
@@ -405,7 +405,7 @@ For any single Skill Metadata Protocol field (`name`, `description`, `subject`, 
 | **Proposals** (in-flight, not yet decided) | `docs/proposals/*.md` | When accepted, follow through to canonical doc + ADR in the same change. |
 | **Plans** (active multi-step work) | `docs/plans/*.md` | Move to `docs/_archived/` on completion. |
 | **Research findings** (one-shot investigations) | `docs/research/*.md` | If findings drive a change, also update the affected canonical doc in the same commit. |
-| **Concept primer / onboarding narrative** | `docs/PRIMER.md` + `docs/QUICKSTART-30MIN.md` | Long-form teaching. Edit when the public mental model of the project shifts. |
+| **Concept primer / onboarding narrative** | `docs/SKILL_METADATA_PROTOCOL_PRIMER.md` + `docs/QUICKSTART-30MIN.md` | Long-form teaching. Edit when the public mental model of the project shifts. |
 | **Positioning vs other systems** (prompt libraries, marketplaces, runtimes) | `docs/positioning.md` + `docs/positioning-vs-marketplaces.md` | Edit when external landscape shifts or our positioning changes. |
 | **CLI behavior + flags** | `bin/skill-graph.js` `--help` (source of truth) → mirror to `README.md` + `docs/QUICKSTART-30MIN.md` + `CHANGELOG.md` | `--help` output is authoritative; other docs cite it. |
 | **`AGENTS.md` itself** | Repo-wide rules, doctrine, this Doc Ownership Map, Document Routing Table, Public Distribution contract | Edit when *cross-cutting* rules change. Do NOT put per-field prose here. |
@@ -416,7 +416,7 @@ If you find two docs giving different stories about the same concept, the preced
 
 1. **Schema** (`schemas/*.json`) > any prose doc — the schema is the binding contract.
 2. **`SKILL_METADATA_PROTOCOL.md`** > other Tier 2 docs for normative spec language.
-3. **`docs/skill-metadata-protocol.md`** > `docs/field-reference.md` for archetype/migration/rationale narrative; `docs/field-reference.md` > `docs/skill-metadata-protocol.md` for per-field authoring prose.
+3. **`docs/skill-metadata-protocol.md`** > `docs/SKILL_METADATA_PROTOCOL_field-reference.md` for archetype/migration/rationale narrative; `docs/SKILL_METADATA_PROTOCOL_field-reference.md` > `docs/skill-metadata-protocol.md` for per-field authoring prose.
 4. **`SKILL_AUDIT_LOOP.md`** > `AGENTS.md § Skill Audit Loop` summary.
 5. **`SKILL_GRAPH.md` § Current State** > any other doc for live corpus counts.
 
@@ -426,9 +426,9 @@ The losing doc gets fixed in the same commit. Never leave the disagreement to be
 
 | Anti-pattern | Why it fails |
 |---|---|
-| Adding new field prose to `AGENTS.md § Skill Metadata Protocol — Quick Reference` instead of `docs/field-reference.md` | Quick Reference is a one-liner index, not a prose home. Prose here drifts because the canonical file is somewhere else. |
-| Editing `docs/field-reference.generated.md` directly | Generated file — hand-edits are overwritten next time `build-field-reference.js` runs. |
-| Putting decision-tree logic in `field-reference.md` AND `field-decision-guide.md` | One canonical home. The other links. Two homes is two truths. |
+| Adding new field prose to `AGENTS.md § Skill Metadata Protocol — Quick Reference` instead of `docs/SKILL_METADATA_PROTOCOL_field-reference.md` | Quick Reference is a one-liner index, not a prose home. Prose here drifts because the canonical file is somewhere else. |
+| Editing `docs/SKILL_METADATA_PROTOCOL_field-reference.generated.md` directly | Generated file — hand-edits are overwritten next time `build-field-reference.js` runs. |
+| Putting decision-tree logic in `SKILL_METADATA_PROTOCOL_field-reference.md` AND `SKILL_METADATA_PROTOCOL_field-decision-guide.md` | One canonical home. The other links. Two homes is two truths. |
 | Duplicating volatile corpus counts (144 skills, 284 active, etc.) into `README.md` / `AGENTS.md` / topic docs | `SKILL_GRAPH.md § Current State` is single-source-of-truth. Everywhere else links. Inline counts go stale within days. |
 | Creating a new top-level doc instead of finding the existing canonical home for the concept | Doubles the number of places the next agent has to check. If the concept genuinely has no home, propose a new home in an ADR before creating the file. |
 | Editing only the summary (e.g., `AGENTS.md § Skill Audit Loop`) without updating the canonical (`SKILL_AUDIT_LOOP.md`) | The summary drifts from the canonical. Always edit the canonical first, then re-summarize. |
@@ -447,7 +447,7 @@ When a code or schema change lands, update the matching documentation rows in th
 | **`marketplace/skills/<name>/SKILL.md`** (the mirror) | _generated_ — do not hand-edit. Edit the canonical source at `~/Development/skills/skills/<category>/<name>/SKILL.md` and re-run `node scripts/export-marketplace-skills.js` |
 | **Public canonical URLs** (skills.sh, GitHub release repo) | `AGENTS.md` § Public Distribution — Canonical URL Contract, `README.md`, `CHANGELOG.md`, every script/doc that emits a URL |
 | **Schema deprecation, repo split, sibling-repo lifecycle** | New ADR in `docs/adr/NNNN-<slug>.md`, `AGENTS.md` § Project Shape, `CHANGELOG.md`, `SKILL_GRAPH.md` if authority tiers change |
-| **Field semantics, head nouns, decision tables** | `docs/field-reference.md`, `docs/field-decision-guide.md`, `docs/field-rationale.md`, `docs/head-noun-glossary.md`, `docs/glossary.md`. Regenerate `docs/field-reference.generated.md` via `node scripts/build-field-reference.js` in the same commit (enforced by `protocol:check § C7`) |
+| **Field semantics, head nouns, decision tables** | `docs/SKILL_METADATA_PROTOCOL_field-reference.md`, `docs/SKILL_METADATA_PROTOCOL_field-decision-guide.md`, `docs/field-rationale.md`, `docs/head-noun-glossary.md`, `docs/glossary.md`. Regenerate `docs/SKILL_METADATA_PROTOCOL_field-reference.generated.md` via `node scripts/build-field-reference.js` in the same commit (enforced by `protocol:check § C7`) |
 | **Routing eval changes** (`scripts/skill-graph-routing-eval.js`, retrieval baselines) | `docs/ROUTING-METRICS.md`, `docs/recommended-skills.md`, retrieval baselines under `evals/retrieval-baseline-*.json` |
 | **Skill audit loop or checklist** (`scripts/skill-audit.js`, `lib/audit/*`) | `SKILL_AUDIT_LOOP.md`, `SKILL_AUDIT_LOOP.md` § Part 2, `AGENTS.md` § Skill Audit Loop |
 | **Marketplace publication tooling/queue** | `docs/marketplace-publication-queue.generated.md` (_generated_), per-snapshot `docs/marketplace-publication-priority-YYYY-MM-DD.md` if a new priority cut is published |
@@ -458,7 +458,7 @@ When a code or schema change lands, update the matching documentation rows in th
 | **Schema, lint, manifest projection** | See `## Coupled Changes` above — tier-coordinated changes have stricter coupling rules than this table |
 | **README / public positioning** | `README.md`, `docs/positioning-vs-marketplaces.md`, `docs/ADOPTION.md` if adoption surface changes, `CHANGELOG.md` if user-visible |
 | **Quality doctrine, editing rules, audit anti-patterns** | `AGENTS.md` (this file), `docs/quality-doctrine.md`, `SKILL_AUDIT_LOOP.md` § Part 2 |
-| **Generated artifacts** (`docs/field-reference.generated.md`, `examples/skills.manifest.sample.json`, `docs/marketplace-publication-queue.generated.md`, `marketplace/skills/`) | _generated_ — do not hand-edit. Regenerate via the owning script (see `## Coupled Changes`) |
+| **Generated artifacts** (`docs/SKILL_METADATA_PROTOCOL_field-reference.generated.md`, `examples/skills.manifest.sample.json`, `docs/marketplace-publication-queue.generated.md`, `marketplace/skills/`) | _generated_ — do not hand-edit. Regenerate via the owning script (see `## Coupled Changes`) |
 
 **Stale-reference rule:** When renaming or deleting any file, command, flag, or URL referenced in this repo, grep `*.md`, `*.yml`, `*.json`, and `package.json` for the old name and fix every hit in the same commit. The `## Coupled Changes` rules enforce this for tier artifacts; this rule extends it to the rest of the surface.
 

@@ -19,10 +19,10 @@ This doc REPLACES the verdict-semantics restatements that previously lived (drif
 
 | Field | Layer | Owner | Source of truth |
 |---|---|---|---|
-| `structural_verdict` | Form / lint | Gates 1–2 + 7 (schema lint, manifest census, concept-card shape) | [`skill-graph/schemas/skill.schema.json:241-249`](../schemas/skill.schema.json) |
-| `truth_verdict` | Truth-source freshness | Gates 3–6 (truth-source catalog, drift sentinel, test coverage, claim verification) | [`schemas/skill.schema.json:251-259`](../schemas/skill.schema.json) |
-| `comprehension_verdict` | Did the skill teach? | Gate 8 (comprehension grader on `evals/comprehension.json`) | [`schemas/skill.schema.json:261-272`](../schemas/skill.schema.json) |
-| `application_verdict` | Did the skill change agent behavior? | Gate 9 (application grader on `evals/application.json`) | [`schemas/skill.schema.json:274-285`](../schemas/skill.schema.json) |
+| `structural_verdict` | Form / lint | Gates 1–2 + 7 (schema lint, manifest census, concept-card shape) | [`skill-graph/schemas/SKILL_METADATA_PROTOCOL_schema.json:241-249`](../schemas/SKILL_METADATA_PROTOCOL_schema.json) |
+| `truth_verdict` | Truth-source freshness | Gates 3–6 (truth-source catalog, drift sentinel, test coverage, claim verification) | [`schemas/SKILL_METADATA_PROTOCOL_schema.json:251-259`](../schemas/SKILL_METADATA_PROTOCOL_schema.json) |
+| `comprehension_verdict` | Did the skill teach? | Gate 8 (comprehension grader on `evals/comprehension.json`) | [`schemas/SKILL_METADATA_PROTOCOL_schema.json:261-272`](../schemas/SKILL_METADATA_PROTOCOL_schema.json) |
+| `application_verdict` | Did the skill change agent behavior? | Gate 9 (application grader on `evals/application.json`) | [`schemas/SKILL_METADATA_PROTOCOL_schema.json:274-285`](../schemas/SKILL_METADATA_PROTOCOL_schema.json) |
 
 **`application_verdict` is the primary quality signal.** A skill is only behaviorally certified when this verdict is `APPLICABLE`. The other three are necessary infrastructure but never sufficient. See ADR-0011 for the rationale (replaces the v6 aggregate `audit_verdict`).
 
@@ -103,7 +103,7 @@ Specifically:
 
 **This disjointness is enforced by:**
 
-- `skill-graph/schemas/skill.schema.json:261-285` — the `enum` arrays.
+- `skill-graph/schemas/SKILL_METADATA_PROTOCOL_schema.json:261-285` — the `enum` arrays.
 - `skill-graph/scripts/check-audit-manifest.js` — `GRADED_COMPREHENSION_VERDICTS` vs `GRADED_APPLICATION_VERDICTS` constants, plus a category-error guard that flags verdicts which stamp application enums in the comprehension slot.
 - `skill-graph/audits/manifest.json:47` — `when` clause for the `comprehension.json` artifact uses the comprehension-only graded set.
 
@@ -141,7 +141,7 @@ PASS / APPLICABLE  >  PROVISIONAL  >  UNVERIFIED
 ## Related (canonicals + rationale)
 
 - ADR-0011 — Split the v6 aggregate `audit_verdict` into the four-verdict Audit Status. The decision rationale.
-- [`schemas/skill.schema.json:241-285`](../schemas/skill.schema.json) — the binding enum definitions.
+- [`schemas/SKILL_METADATA_PROTOCOL_schema.json:241-285`](../schemas/SKILL_METADATA_PROTOCOL_schema.json) — the binding enum definitions.
 - [`SKILL_AUDIT_LOOP.md`](../SKILL_AUDIT_LOOP.md) — the audit-loop procedure that produces the verdicts.
 - [`SKILL_AUDIT_LOOP.md` § Part 3 — Per-Skill Audit Runbook](../SKILL_AUDIT_LOOP.md#part-3--per-skill-audit-runbook) § 4c — how each verdict is written during a per-skill audit pass.
 - `.claude/rules/version-schema-contract.md` § 5–7 — the `PROVISIONAL > UNVERIFIED` confidence rule and the "labels are earned, not bumped" doctrine.

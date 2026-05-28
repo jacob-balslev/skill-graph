@@ -1,7 +1,7 @@
 # Skill Graph Field Reference
 
 > One section per authored field. Use this when writing or reviewing a `SKILL.md` file.
-> For the "which value do I pick?" decisions, see [`docs/field-decision-guide.md`](field-decision-guide.md).
+> For the "which value do I pick?" decisions, see [`docs/SKILL_METADATA_PROTOCOL_field-decision-guide.md`](SKILL_METADATA_PROTOCOL_field-decision-guide.md).
 > For field groups, conditional requiredness, and schema strictness rules, see [`docs/skill-metadata-protocol.md`](skill-metadata-protocol.md).
 
 Fields are listed in authored order — the same order they appear in [`examples/skill-metadata-template.md`](../examples/skill-metadata-template.md).
@@ -12,8 +12,8 @@ The field reference is split across three coordinated documents. Use whichever f
 
 | Doc | Genre | When to read |
 |---|---|---|
-| [`field-reference.md`](field-reference.md) (this doc) | **Hand-curated prose reference.** Field-by-field, with worked examples, lint notes, and cross-cutting guidance. | When authoring or reviewing a SKILL.md and you want examples and "when to use" rules alongside the schema-canonical definition. |
-| [`field-reference.generated.md`](field-reference.generated.md) | **Auto-generated index.** Built from `schemas/skill.schema.json` description strings by `scripts/build-field-reference.js`. Drift-free against the schema. | When you want the machine-guaranteed list of every field, every type, every pattern, every enum value. The fastest way to verify what the schema actually accepts today. |
+| [`SKILL_METADATA_PROTOCOL_field-reference.md`](SKILL_METADATA_PROTOCOL_field-reference.md) (this doc) | **Hand-curated prose reference.** Field-by-field, with worked examples, lint notes, and cross-cutting guidance. | When authoring or reviewing a SKILL.md and you want examples and "when to use" rules alongside the schema-canonical definition. |
+| [`SKILL_METADATA_PROTOCOL_field-reference.generated.md`](SKILL_METADATA_PROTOCOL_field-reference.generated.md) | **Auto-generated index.** Built from `schemas/SKILL_METADATA_PROTOCOL_schema.json` description strings by `scripts/build-field-reference.js`. Drift-free against the schema. | When you want the machine-guaranteed list of every field, every type, every pattern, every enum value. The fastest way to verify what the schema actually accepts today. |
 | [`field-rationale.md`](field-rationale.md) | **Hand-authored "why this field" rationale.** Covers the ~10 fields whose meaning is non-obvious from the schema description (`scope`, `eval_artifacts`, `eval_state`, `routing_eval`, `relations.depends_on`, `relations.verify_with`, `relations.broader`, `grounding.evidence_priority`, `lifecycle.review_cadence`, `portability.readiness`). | When you understand *what* a field stores but want to know *why the field exists at all* and *what the common confusion looks like*. |
 
 The schema is the single source of truth for shape; this doc is the source of truth for prose; `field-rationale.md` is the source of truth for design intent. Lint check C7 (in `scripts/check-protocol-consistency.js`) verifies the generated index stays in sync with the schema description strings — running `node scripts/build-field-reference.js --check` against the live schema must succeed before commit.
@@ -1017,7 +1017,7 @@ marketplace_tier: A
 
 **Rules.**
 - Optional for non-deprecated skills.
-- **Required when `stability: deprecated`** — enforced by the `allOf` rule in `skill.schema.json`. A deprecated skill without `superseded_by` fails schema validation.
+- **Required when `stability: deprecated`** — enforced by the `allOf` rule in `SKILL_METADATA_PROTOCOL_schema.json`. A deprecated skill without `superseded_by` fails schema validation.
 - The value must be the `name` of an existing skill in the library. (Target-existence check follows the `relations.*` enforcement pattern and is expected to land in a future lint iteration.)
 - Write a brief pointer in `## Coverage` as well so human readers see the migration path without re-parsing frontmatter.
 

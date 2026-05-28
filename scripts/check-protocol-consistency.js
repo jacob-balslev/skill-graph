@@ -11,9 +11,9 @@
  * The 7 checks (C1, C2, C3, C4, C5, C7, C8 — C6 retired per ADR-0014, the
  * versioned-schema-parity check; no second pinned schema file exists to
  * drift against any longer):
- *   C1 -- Field-set parity: docs/field-reference.md section headers vs
- *         schemas/skill.schema.json top-level properties.
- *   C2 -- Authored-to-generated parity: every skill.schema.json property either
+ *   C1 -- Field-set parity: docs/SKILL_METADATA_PROTOCOL_field-reference.md section headers vs
+ *         schemas/SKILL_METADATA_PROTOCOL_schema.json top-level properties.
+ *   C2 -- Authored-to-generated parity: every SKILL_METADATA_PROTOCOL_schema.json property either
  *         appears in manifest.schema.json (possibly grouped) or is listed as
  *         intentional loss in docs/manifest-field-mapping.md.
  *   C3 -- Artifact-root convention: detect when a shipped audit example (one that
@@ -31,7 +31,7 @@
  *              field; post-SH-5784 use eval_artifacts, eval_state, routing_eval).
  *         C5c: Scorecard portability rows must not use v1 sub-field names
  *              ("level" or "exports") -- use v2 names "readiness" and "targets".
- *   C7 -- Generated field-reference parity: docs/field-reference.generated.md
+ *   C7 -- Generated field-reference parity: docs/SKILL_METADATA_PROTOCOL_field-reference.generated.md
  *         must match live regeneration from the current canonical skill schema.
  *   C8 -- JSON-LD context coverage: every top-level authored schema field must
  *         appear in schemas/skill.context.jsonld; every compact IRI prefix
@@ -202,25 +202,25 @@ function validate(value, schema, pointer) {
 // ---------------------------------------------------------------------------
 // Check C1 -- Field-set parity
 //
-// The ## headings in docs/field-reference.md are the authoritative list of
-// authored fields. The top-level properties of schemas/skill.schema.json are
+// The ## headings in docs/SKILL_METADATA_PROTOCOL_field-reference.md are the authoritative list of
+// authored fields. The top-level properties of schemas/SKILL_METADATA_PROTOCOL_schema.json are
 // the schema's field list. Both sets must be identical.
 // ---------------------------------------------------------------------------
 
 function checkC1FieldSetParity() {
   const errors = [];
-  const refPath = path.join(REPO_ROOT, 'docs', 'field-reference.md');
-  const schemaPath = path.join(REPO_ROOT, 'schemas', 'skill.schema.json');
+  const refPath = path.join(REPO_ROOT, 'docs', 'SKILL_METADATA_PROTOCOL_field-reference.md');
+  const schemaPath = path.join(REPO_ROOT, 'schemas', 'SKILL_METADATA_PROTOCOL_schema.json');
 
   const refText = readText(refPath);
   if (!refText) {
-    errors.push('C1 [docs/field-reference.md]: cannot read file -- field-set parity check skipped');
+    errors.push('C1 [docs/SKILL_METADATA_PROTOCOL_field-reference.md]: cannot read file -- field-set parity check skipped');
     return errors;
   }
 
   const schema = readJson(schemaPath);
   if (!schema || !schema.properties) {
-    errors.push('C1 [schemas/skill.schema.json]: cannot read schema or no "properties" key -- field-set parity check skipped');
+    errors.push('C1 [schemas/SKILL_METADATA_PROTOCOL_schema.json]: cannot read schema or no "properties" key -- field-set parity check skipped');
     return errors;
   }
 
@@ -239,15 +239,15 @@ function checkC1FieldSetParity() {
 
   if (inSchemaNotDoc.length > 0) {
     errors.push(
-      `C1 [docs/field-reference.md vs schemas/skill.schema.json]: ` +
-      `${inSchemaNotDoc.length} schema field(s) not documented in field-reference.md: ` +
+      `C1 [docs/SKILL_METADATA_PROTOCOL_field-reference.md vs schemas/SKILL_METADATA_PROTOCOL_schema.json]: ` +
+      `${inSchemaNotDoc.length} schema field(s) not documented in SKILL_METADATA_PROTOCOL_field-reference.md: ` +
       inSchemaNotDoc.map(f => `"${f}"`).join(', ')
     );
   }
   if (inDocNotSchema.length > 0) {
     errors.push(
-      `C1 [docs/field-reference.md vs schemas/skill.schema.json]: ` +
-      `${inDocNotSchema.length} field(s) documented in field-reference.md but absent from schema: ` +
+      `C1 [docs/SKILL_METADATA_PROTOCOL_field-reference.md vs schemas/SKILL_METADATA_PROTOCOL_schema.json]: ` +
+      `${inDocNotSchema.length} field(s) documented in SKILL_METADATA_PROTOCOL_field-reference.md but absent from schema: ` +
       inDocNotSchema.map(f => `"${f}"`).join(', ')
     );
   }
@@ -262,7 +262,7 @@ function checkC1FieldSetParity() {
 // ---------------------------------------------------------------------------
 // Check C2 -- Authored-to-generated parity
 //
-// Every property in schemas/skill.schema.json must either:
+// Every property in schemas/SKILL_METADATA_PROTOCOL_schema.json must either:
 //   (a) appear in schemas/manifest.schema.json (at top level or grouped under
 //       a parent like `activation`, `health`), OR
 //   (b) appear in the rename map table in docs/manifest-field-mapping.md, OR
@@ -274,13 +274,13 @@ function checkC1FieldSetParity() {
 
 function checkC2AuthoredToGeneratedParity() {
   const errors = [];
-  const skillSchemaPath = path.join(REPO_ROOT, 'schemas', 'skill.schema.json');
+  const skillSchemaPath = path.join(REPO_ROOT, 'schemas', 'SKILL_METADATA_PROTOCOL_schema.json');
   const manifestSchemaPath = path.join(REPO_ROOT, 'schemas', 'manifest.schema.json');
   const mappingPath = path.join(REPO_ROOT, 'docs', 'manifest-field-mapping.md');
 
   const skillSchema = readJson(skillSchemaPath);
   if (!skillSchema || !skillSchema.properties) {
-    errors.push('C2 [schemas/skill.schema.json]: cannot read schema -- authored-to-generated parity check skipped');
+    errors.push('C2 [schemas/SKILL_METADATA_PROTOCOL_schema.json]: cannot read schema -- authored-to-generated parity check skipped');
     return errors;
   }
 
@@ -374,7 +374,7 @@ function checkC2AuthoredToGeneratedParity() {
 
   if (uncovered.length > 0) {
     errors.push(
-      `C2 [schemas/skill.schema.json -> schemas/manifest.schema.json]: ` +
+      `C2 [schemas/SKILL_METADATA_PROTOCOL_schema.json -> schemas/manifest.schema.json]: ` +
       `${uncovered.length} authored field(s) not covered by manifest schema, rename map, or loss policy: ` +
       uncovered.map(f => `"${f}"`).join(', ')
     );
@@ -661,7 +661,7 @@ function checkC5ExampleTruthInvariants() {
 // ---------------------------------------------------------------------------
 
 /**
- * Check C7 — `docs/field-reference.generated.md` must match live regeneration
+ * Check C7 — `docs/SKILL_METADATA_PROTOCOL_field-reference.generated.md` must match live regeneration
  * from the current pinned schema description strings via
  * `scripts/build-field-reference.js`.
  *
@@ -680,14 +680,14 @@ function checkC5ExampleTruthInvariants() {
 function checkC7GeneratedFieldReferenceParity() {
   const errors = [];
   const builderPath = path.join(REPO_ROOT, 'scripts', 'build-field-reference.js');
-  const generatedPath = path.join(REPO_ROOT, 'docs', 'field-reference.generated.md');
+  const generatedPath = path.join(REPO_ROOT, 'docs', 'SKILL_METADATA_PROTOCOL_field-reference.generated.md');
 
   if (!fs.existsSync(builderPath)) {
-    errors.push('scripts/build-field-reference.js: missing — required to regenerate docs/field-reference.generated.md');
+    errors.push('scripts/build-field-reference.js: missing — required to regenerate docs/SKILL_METADATA_PROTOCOL_field-reference.generated.md');
     return errors;
   }
   if (!fs.existsSync(generatedPath)) {
-    errors.push('docs/field-reference.generated.md: missing — run `node scripts/build-field-reference.js` to generate');
+    errors.push('docs/SKILL_METADATA_PROTOCOL_field-reference.generated.md: missing — run `node scripts/build-field-reference.js` to generate');
     return errors;
   }
 
@@ -698,13 +698,13 @@ function checkC7GeneratedFieldReferenceParity() {
   );
 
   if (result.error) {
-    errors.push(`C7 [docs/field-reference.generated.md]: cannot invoke build-field-reference.js — ${result.error.message}`);
+    errors.push(`C7 [docs/SKILL_METADATA_PROTOCOL_field-reference.generated.md]: cannot invoke build-field-reference.js — ${result.error.message}`);
     return errors;
   }
 
   if (result.status !== 0) {
     errors.push(
-      `docs/field-reference.generated.md is out of step with the current skill schema description strings. ` +
+      `docs/SKILL_METADATA_PROTOCOL_field-reference.generated.md is out of step with the current skill schema description strings. ` +
       `Run \`node scripts/build-field-reference.js\` to regenerate, then commit the result alongside any schema description edits.`
     );
     if (VERBOSE && result.stderr) {
@@ -721,7 +721,7 @@ function checkC7GeneratedFieldReferenceParity() {
 
 /**
  * Check C8 - `schemas/skill.context.jsonld` must cover every top-level
- * authored field in `schemas/skill.schema.json`.
+ * authored field in `schemas/SKILL_METADATA_PROTOCOL_schema.json`.
  *
  * ADR 0002 makes the JSON-LD context the FAIR interoperability bridge. If a
  * new top-level schema field is added without a context term, RDF consumers
@@ -734,12 +734,12 @@ function checkC7GeneratedFieldReferenceParity() {
  */
 function checkC8JsonLdContextCoverage() {
   const errors = [];
-  const schemaPath = path.join(REPO_ROOT, 'schemas', 'skill.schema.json');
+  const schemaPath = path.join(REPO_ROOT, 'schemas', 'SKILL_METADATA_PROTOCOL_schema.json');
   const contextPath = path.join(REPO_ROOT, 'schemas', 'skill.context.jsonld');
 
   const schema = readJson(schemaPath);
   if (!schema || !schema.properties) {
-    errors.push('C8 [schemas/skill.schema.json]: cannot read schema -- JSON-LD context coverage check skipped');
+    errors.push('C8 [schemas/SKILL_METADATA_PROTOCOL_schema.json]: cannot read schema -- JSON-LD context coverage check skipped');
     return errors;
   }
 

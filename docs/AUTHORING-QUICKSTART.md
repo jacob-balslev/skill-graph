@@ -2,7 +2,7 @@
 
 > Audience: anyone writing a single new SKILL.md for the first time.
 > Time: 10-15 minutes for a competent reader.
-> Scope: this is the **shortest path** from zero to a schema-valid, lint-passing v7 SKILL.md. For a full project-adoption walkthrough see [QUICKSTART-30MIN.md](./QUICKSTART-30MIN.md). For per-field semantics see [field-reference.md](./field-reference.md). For the full protocol see [../SKILL_METADATA_PROTOCOL.md](../SKILL_METADATA_PROTOCOL.md).
+> Scope: this is the **shortest path** from zero to a schema-valid, lint-passing v7 SKILL.md. For a full project-adoption walkthrough see [QUICKSTART-30MIN.md](./QUICKSTART-30MIN.md). For per-field semantics see [SKILL_METADATA_PROTOCOL_field-reference.md](./SKILL_METADATA_PROTOCOL_field-reference.md). For the full protocol see [../SKILL_METADATA_PROTOCOL.md](../SKILL_METADATA_PROTOCOL.md).
 
 ## Step 1, pick your encoding (the one decision you cannot skip)
 
@@ -29,11 +29,11 @@ The template at `examples/skill-metadata-template.md` is a real schema-conforman
 
 ## Step 3, fill the required v8 fields
 
-These are enforced by `skill-lint.js` against `schemas/skill.schema.json`. A skill missing any of these fails the structural gate.
+These are enforced by `skill-lint.js` against `schemas/SKILL_METADATA_PROTOCOL_schema.json`. A skill missing any of these fails the structural gate.
 
 | # | Field | Type | Value rule |
 |---|---|---|---|
-| 1 | `schema_version` | integer | Always `8` for v8 skills (prior contract retrievable via `git show schema-v7:schemas/skill.schema.json`). |
+| 1 | `schema_version` | integer | Always `8` for v8 skills (prior contract retrievable via `git show schema-v7:schemas/SKILL_METADATA_PROTOCOL_schema.json`). |
 | 2 | `name` | string | Lowercase alphanumerics, hyphens, slashes, colons. Must match parent directory name. Used as routing target by other skills. |
 | 3 | `description` | string | Short description of what the skill is about. Activation signals belong to `keywords`/`triggers`/`examples`/`anti_examples`; boundary semantics belong to `relations.boundary`. |
 | 4 | `version` | semver | `x.y.z`. Bump when the skill's instructional content changes. Independent of `schema_version`. |
@@ -197,8 +197,8 @@ A first-commit skill aims to pass level 1. Levels 2 and 3 are earned later.
 
 - [QUICKSTART-30MIN.md](./QUICKSTART-30MIN.md), full project-adoption walkthrough
 - [field-state-matrix.md](./field-state-matrix.md), every field tagged human-authored / loop-written / earned / generated / deprecated / alias
-- [field-reference.md](./field-reference.md), per-field semantics with examples
-- [field-decision-guide.md](./field-decision-guide.md), when to choose which value
+- [SKILL_METADATA_PROTOCOL_field-reference.md](./SKILL_METADATA_PROTOCOL_field-reference.md), per-field semantics with examples
+- [SKILL_METADATA_PROTOCOL_field-decision-guide.md](./SKILL_METADATA_PROTOCOL_field-decision-guide.md), when to choose which value
 - [SKILL-MD-FORMAT-COMPATIBILITY.md](./SKILL-MD-FORMAT-COMPATIBILITY.md), the two physical encodings
 - [../SKILL_METADATA_PROTOCOL.md](../SKILL_METADATA_PROTOCOL.md), the normative spec
 - [../examples/skill-metadata-template.md](../examples/skill-metadata-template.md), the template to copy

@@ -25,7 +25,7 @@ Concretely:
 - The router actually does the opposite: when `skill-A` outscores `skill-B` on a query, it **suppresses** `skill-B` from the result set.
 - Authors writing `reason: "use skill-B instead"` (deference framing) document the field as if deference were the mechanic, then the next author edits skill-A confused that the relation is asymmetric and the suppression of skill-B is silent.
 
-The 2026-05-23 boundary-semantics audit confirmed four canonical docs (`SKILL_METADATA_PROTOCOL.md`, `docs/field-reference.md`, `docs/field-decision-guide.md`, `AGENTS.md`) each held their own version of the truth, because none was declared canonical and the WARNING that documents the inversion is itself an admission that the field name is wrong. The current footing — *"the field name lies, but you must memorise the WARNING"* — is non-scalable.
+The 2026-05-23 boundary-semantics audit confirmed four canonical docs (`SKILL_METADATA_PROTOCOL.md`, `docs/SKILL_METADATA_PROTOCOL_field-reference.md`, `docs/SKILL_METADATA_PROTOCOL_field-decision-guide.md`, `AGENTS.md`) each held their own version of the truth, because none was declared canonical and the WARNING that documents the inversion is itself an admission that the field name is wrong. The current footing — *"the field name lies, but you must memorise the WARNING"* — is non-scalable.
 
 ### 2. Name collision with the Understanding `boundary` field
 
@@ -69,7 +69,7 @@ ADR-0017's v8.0 rollout is already a 17-commit PR landing the 5-axis classificat
 
 ### Phase 1 — Schema + tooling (one PR)
 
-1. **`schemas/skill.schema.json`** — add `relations.suppresses` (same shape as current `relations.boundary`). Keep `relations.boundary` valid in v8.0 schemas. Add `concept_boundary` (string). Keep top-level `boundary` valid in v8.0 schemas.
+1. **`schemas/SKILL_METADATA_PROTOCOL_schema.json`** — add `relations.suppresses` (same shape as current `relations.boundary`). Keep `relations.boundary` valid in v8.0 schemas. Add `concept_boundary` (string). Keep top-level `boundary` valid in v8.0 schemas.
 2. **`scripts/lib/parse-frontmatter.js::normalizeFrontmatter()`** — when reading a skill, lift `relations.boundary` → `relations.suppresses` and top-level `boundary` → `concept_boundary` in the normalized representation so all downstream code reads only the new names.
 3. **`scripts/skill-graph-route.js`** — Stage 5 reads `relations.suppresses` (with `relations.boundary` fallback during the compat window).
 4. **`scripts/skill-lint.js`** — when a skill carries the legacy `boundary` names, emit a `WARN level: rename to suppresses / concept_boundary (ADR-0018)` finding pointing to this ADR. Same severity as the existing v6 `concept.*` nested-block deprecation warning.
@@ -84,8 +84,8 @@ ADR-0017's v8.0 rollout is already a 17-commit PR landing the 5-axis classificat
 
 1. **`SKILL_METADATA_PROTOCOL.md § Relations § boundary`** — replace with `### suppresses`; the WARNING block is removed because the name now matches the mechanic. Cross-link: "renamed from `boundary` in v8.1 per ADR-0018; see migration notes below."
 2. **`SKILL_METADATA_PROTOCOL.md § Understanding § boundary`** — replace with `### concept_boundary`; cross-link the rename.
-3. **`docs/field-reference.md`** — both field sections renamed; the field-name-collision footnote is deleted.
-4. **`docs/field-decision-guide.md`** — decision rows renamed.
+3. **`docs/SKILL_METADATA_PROTOCOL_field-reference.md`** — both field sections renamed; the field-name-collision footnote is deleted.
+4. **`docs/SKILL_METADATA_PROTOCOL_field-decision-guide.md`** — decision rows renamed.
 5. **`AGENTS.md § What the Skill Graph Is`** — `boundary` → `suppresses` in the edge type list; one-line note about the rename with backlink to this ADR.
 6. **`docs/manifest-field-mapping.md`** — manifest projection name updated.
 7. **`CHANGELOG.md`** — v8.1 entry calls out the breaking rename + the codemod path.

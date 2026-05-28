@@ -17,7 +17,7 @@
  * The checks below are the entire contract:
  *
  *   1. Valid YAML frontmatter (parser invariant; every consumer needs this)
- *   2. Frontmatter validates against schemas/skill.schema.json (canonical;
+ *   2. Frontmatter validates against schemas/SKILL_METADATA_PROTOCOL_schema.json (canonical;
  *      resolved from the package root when the caller workspace has no local
  *      schema copy)
  *   3. `name` field uses Skill Metadata Protocol identifier shape
@@ -63,7 +63,7 @@ const TEMPLATE_PATH = [
   path.join(REPO_ROOT, 'examples', 'skill-metadata-template.md'),
   path.join(PACKAGE_ROOT, 'examples', 'skill-metadata-template.md'),
 ].find(candidate => fs.existsSync(candidate)) || path.join(PACKAGE_ROOT, 'examples', 'skill-metadata-template.md');
-const SCHEMA_PATH = resolveSchemaPath(REPO_ROOT, 'skill.schema.json');
+const SCHEMA_PATH = resolveSchemaPath(REPO_ROOT, 'SKILL_METADATA_PROTOCOL_schema.json');
 const WORKSPACE_CONFIG = loadWorkspaceConfig(REPO_ROOT, msg => process.stderr.write(`WARN ${msg}\n`));
 const SKILL_ROOTS = resolveSkillRoots(REPO_ROOT, WORKSPACE_CONFIG);
 const SKILL_SCHEMA = JSON.parse(fs.readFileSync(SCHEMA_PATH, 'utf8'));
@@ -462,7 +462,7 @@ function checkBoundaryReasonText(fm) {
  * authored frontmatter field carries a YAML `#` comment block immediately
  * above it (purpose + allowed values + when-to-use). The convention prevents
  * the "this field looks like dead code, let me delete it" failure mode and
- * keeps cold-start agents from needing to open docs/field-reference.md at
+ * keeps cold-start agents from needing to open docs/SKILL_METADATA_PROTOCOL_field-reference.md at
  * the point of contact.
  *
  * Until backfill-field-purpose-comments.js has run corpus-wide, almost no

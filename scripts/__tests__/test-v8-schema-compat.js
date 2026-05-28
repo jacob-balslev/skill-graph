@@ -33,11 +33,11 @@ const fs = require('fs');
 const path = require('path');
 
 const REPO_ROOT = path.join(__dirname, '..', '..');
-const SCHEMA_PATH = path.join(REPO_ROOT, 'schemas', 'skill.schema.json');
+const SCHEMA_PATH = path.join(REPO_ROOT, 'schemas', 'SKILL_METADATA_PROTOCOL_schema.json');
 const SCHEMA = JSON.parse(fs.readFileSync(SCHEMA_PATH, 'utf8'));
 
 // Reimplement a minimal JSON Schema validator inline — it only needs to handle
-// the subset the skill.schema.json uses: type, enum, required,
+// the subset the SKILL_METADATA_PROTOCOL_schema.json uses: type, enum, required,
 // additionalProperties, properties, items, if/then, oneOf, allOf, anyOf, const.
 // (Importing skill-lint.js as a module would trigger its lint pass as a side
 // effect because it runs at require time.)

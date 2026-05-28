@@ -8,7 +8,7 @@
 //   `token-cost-estimation` shipped PROVISIONAL stamps with no comprehension.json
 //   on disk — that is the failure mode this guard prevents.
 //
-//   Comprehension and application enums are DISJOINT per schemas/skill.schema.json:261-285
+//   Comprehension and application enums are DISJOINT per schemas/SKILL_METADATA_PROTOCOL_schema.json:261-285
 //   and ADR 0011. APPLICABLE / MIXED / HARMFUL are application-verdict values and must
 //   never appear in the comprehension graded set (see GRADED_APPLICATION_VERDICTS below
 //   for the application-layer counterpart). The earlier mixed set leaked application
@@ -37,7 +37,7 @@ const WORKSPACE_DEFAULT = path.resolve(__dirname, '..', '..');
 const REPO_ROOT = path.resolve(__dirname, '..');
 const MANIFEST_PATH = path.join(REPO_ROOT, 'audits', 'manifest.json');
 
-// Comprehension graded set (per schemas/skill.schema.json:261-272 + ADR 0011): values
+// Comprehension graded set (per schemas/SKILL_METADATA_PROTOCOL_schema.json:261-272 + ADR 0011): values
 // that imply a comprehension grader actually ran and produced a result. UNVERIFIED (no
 // assessment), SKIPPED_BASELINE_HIGH (procedural early-skip), and NA (skill has no
 // comprehension.json by design) are explicitly NOT graded.
@@ -45,7 +45,7 @@ const GRADED_COMPREHENSION_VERDICTS = new Set([
   'PROVISIONAL', 'PASS', 'SHALLOW', 'REDUNDANT',
 ]);
 
-// Application graded set (per schemas/skill.schema.json:274-285 + ADR 0011): kept
+// Application graded set (per schemas/SKILL_METADATA_PROTOCOL_schema.json:274-285 + ADR 0011): kept
 // here so future application-artifact gates can reference the same authoritative
 // partition. Currently informational — the verifier only enforces comprehension
 // artifacts. Do not mix these values into GRADED_COMPREHENSION_VERDICTS; that was
@@ -195,7 +195,7 @@ function main() {
       const claimsGraded = verdicts.comprehension && GRADED_COMPREHENSION_VERDICTS.has(verdicts.comprehension);
       // Category-error guard: a verdict.md that stamps an application-only enum
       // (APPLICABLE/MIXED/HARMFUL) into the comprehension slot is malformed. The
-      // schema (schemas/skill.schema.json:261-285) keeps the two enums disjoint;
+      // schema (schemas/SKILL_METADATA_PROTOCOL_schema.json:261-285) keeps the two enums disjoint;
       // surfacing this here catches the parser/author error before it propagates
       // into SKILL.md frontmatter.
       const comprehensionEnumLeak = verdicts.comprehension && GRADED_APPLICATION_VERDICTS.has(verdicts.comprehension);
@@ -228,7 +228,7 @@ function main() {
       if (comprehensionEnumLeak) {
         failures.push({
           ...entry,
-          reason: `Verdict has comprehension_verdict=${verdicts.comprehension}, but that value is an application-layer enum (per schemas/skill.schema.json:274-285 and ADR 0011). The comprehension and application enum sets are disjoint. Either correct the verdict to use a comprehension-layer value (PASS/SHALLOW/REDUNDANT/PROVISIONAL/UNVERIFIED/SKIPPED_BASELINE_HIGH/NA) or move this value into the application_verdict slot.`,
+          reason: `Verdict has comprehension_verdict=${verdicts.comprehension}, but that value is an application-layer enum (per schemas/SKILL_METADATA_PROTOCOL_schema.json:274-285 and ADR 0011). The comprehension and application enum sets are disjoint. Either correct the verdict to use a comprehension-layer value (PASS/SHALLOW/REDUNDANT/PROVISIONAL/UNVERIFIED/SKIPPED_BASELINE_HIGH/NA) or move this value into the application_verdict slot.`,
         });
       }
     }

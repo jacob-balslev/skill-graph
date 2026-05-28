@@ -3,13 +3,13 @@
 > **Work-mode rule (read FIRST).** Editing this document, the schemas it normalizes against, the audit prompts, or the audit/lint/drift scripts is **SYSTEM work**. Editing individual `SKILL.md` files to conform to this contract is **CONTENT work** that runs ONLY via `/audit:audit`, `/audit:improve`, `/audit:evaluate`, `/audit:evolve`. Do not mix them in the same task or commit. Full doctrine: [`AGENTS.md` § Work Modes — SYSTEM vs CONTENT](AGENTS.md#work-modes--system-vs-content).
 
 > **Spec version:** 1.6.0 (`schema_version: 8`, Skill Graph 0.5.10)
-> **Currently enforced by `schemas/skill.schema.json`:** v8. The schema's global `required` array mandates `subject` + `deployment_target` (`scope` is an optional free-text field). See [§ Schema contract](#schema-contract).
+> **Currently enforced by `schemas/SKILL_METADATA_PROTOCOL_schema.json`:** v8. The schema's global `required` array mandates `subject` + `deployment_target` (`scope` is an optional free-text field). See [§ Schema contract](#schema-contract).
 > **Single source of truth for "what is enforced today":** [`SKILL_GRAPH.md § Current State`](SKILL_GRAPH.md#current-state--single-source-of-truth) — link there from any doc that needs the live answer; do not restate.
-> **Machine-readable schema:** `schemas/skill.schema.json`
-> **Detailed field reference:** `docs/field-reference.md`
+> **Machine-readable schema:** `schemas/SKILL_METADATA_PROTOCOL_schema.json`
+> **Detailed field reference:** `docs/SKILL_METADATA_PROTOCOL_field-reference.md`
 > **Full semantics + design rationale:** `docs/skill-metadata-protocol.md`
 > **v8 design rationale:** `docs/adr/0017-five-axis-classification-model.md` (operation axis retired 2026-05-27, see amendment block)
-> **Prior contract:** retrievable via `git show schema-v7:schemas/skill.schema.json`
+> **Prior contract:** retrievable via `git show schema-v7:schemas/SKILL_METADATA_PROTOCOL_schema.json`
 
 ---
 
@@ -29,7 +29,7 @@ This document is the top-level public contract for the Skill Metadata Protocol f
 
 ### Rules
 
-1. **The schema is the binding machine contract.** If this prose and `schemas/skill.schema.json` disagree, the schema wins and the prose is corrected — never the reverse.
+1. **The schema is the binding machine contract.** If this prose and `schemas/SKILL_METADATA_PROTOCOL_schema.json` disagree, the schema wins and the prose is corrected — never the reverse.
 2. **Every authored skill declares the two required classification axes:** `subject` (closed 9-value enum) and `deployment_target` (closed 2-value enum: `portable` / `project`).
 3. **`scope` is an optional free-text statement** of what the skill teaches and what it does not. It is not an enum and never carries deployment-targeting values — that role belongs to `deployment_target`.
 4. **A `deployment_target: project` skill must declare a `grounding` block**, and that block names what it is grounded in via `grounding.subject_matter`.
@@ -42,7 +42,7 @@ This document is the top-level public contract for the Skill Metadata Protocol f
 
 ### Goal
 
-Be the default open-source structure for project-relevant AI-agent skills: simple enough to author, strict enough to validate, and expressive enough to make a `SKILL.md` useful for a real codebase instead of a generic prompt snippet. Near-term: keep this doc, `schemas/skill.schema.json`, `schemas/manifest.schema.json`, and `docs/field-reference.md` in exact agreement, and keep the public skill shape Agent-Skills-compatible while preserving the richer local metadata that routing and audit depend on.
+Be the default open-source structure for project-relevant AI-agent skills: simple enough to author, strict enough to validate, and expressive enough to make a `SKILL.md` useful for a real codebase instead of a generic prompt snippet. Near-term: keep this doc, `schemas/SKILL_METADATA_PROTOCOL_schema.json`, `schemas/manifest.schema.json`, and `docs/SKILL_METADATA_PROTOCOL_field-reference.md` in exact agreement, and keep the public skill shape Agent-Skills-compatible while preserving the richer local metadata that routing and audit depend on.
 
 ---
 
@@ -67,7 +67,7 @@ Be the default open-source structure for project-relevant AI-agent skills: simpl
 
 ## Overview
 
-Every skill is a single `SKILL.md` file with a YAML frontmatter block. The schema contract is `schemas/skill.schema.json`; deterministic verification is split across focused tools. `skill-lint.js` enforces the canonical-source schema gate (valid frontmatter, validation against `schemas/skill.schema.json`, identifier shape, non-empty description, parent-directory/name alignment), while `check-protocol-consistency.js`, `generate-manifest.js`, routing evals, drift checks, and export verification cover the broader protocol surface. The `generate-manifest.js` script reads frontmatter from all skill files and emits a single `skills.manifest.json`.
+Every skill is a single `SKILL.md` file with a YAML frontmatter block. The schema contract is `schemas/SKILL_METADATA_PROTOCOL_schema.json`; deterministic verification is split across focused tools. `skill-lint.js` enforces the canonical-source schema gate (valid frontmatter, validation against `schemas/SKILL_METADATA_PROTOCOL_schema.json`, identifier shape, non-empty description, parent-directory/name alignment), while `check-protocol-consistency.js`, `generate-manifest.js`, routing evals, drift checks, and export verification cover the broader protocol surface. The `generate-manifest.js` script reads frontmatter from all skill files and emits a single `skills.manifest.json`.
 
 The contract has one runtime model: one `SKILL.md` per skill, one manifest, one lint pass. There is no closed/open split, no private control plane, and no enterprise-only fields.
 
@@ -119,10 +119,10 @@ Map the v8 `subject` axis to the on-disk directory under `~/Development/skills/s
 
 | Style | Lifecycle | Example | Purpose |
 |---|---|---|---|
-| **Field-purpose comment** | **STAYS in the production skill.** | `# subject: primary browse shelf — what the skill teaches.`<br>`# code-engineering / quality-assurance / frontend-ui / design-craft / agent-ops / ...` | Authoritative-by-co-location documentation of what the field is for, its allowed values, and when to pick each value. The reader does not need to open `docs/field-reference.md` to understand the frontmatter. |
+| **Field-purpose comment** | **STAYS in the production skill.** | `# subject: primary browse shelf — what the skill teaches.`<br>`# code-engineering / quality-assurance / frontend-ui / design-craft / agent-ops / ...` | Authoritative-by-co-location documentation of what the field is for, its allowed values, and when to pick each value. The reader does not need to open `docs/SKILL_METADATA_PROTOCOL_field-reference.md` to understand the frontmatter. |
 | **`# TEMPLATE NOTE:` comment** | **STRIPPED on derivation.** | `# TEMPLATE NOTE: be pushy in your description — Claude tends to under-trigger skills...` | Authoring scaffolding that only lives in `examples/skill-metadata-template.md`. Derived skills MUST strip every line beginning with `# TEMPLATE NOTE:` before commit (verified with `grep -n "TEMPLATE NOTE" <derived-skill>` returning zero hits). |
 
-**Source of truth** for the content of a field-purpose comment is `docs/field-reference.md`. The inline comment is an abridged summary (purpose + enum + when-to-use). When the comment and the reference doc disagree, the reference doc wins and the comment gets corrected. The discipline mirrors how JSDoc / TSDoc summaries point at canonical type definitions — the comment is a fast lookup, not a parallel truth.
+**Source of truth** for the content of a field-purpose comment is `docs/SKILL_METADATA_PROTOCOL_field-reference.md`. The inline comment is an abridged summary (purpose + enum + when-to-use). When the comment and the reference doc disagree, the reference doc wins and the comment gets corrected. The discipline mirrors how JSDoc / TSDoc summaries point at canonical type definitions — the comment is a fast lookup, not a parallel truth.
 
 **Worked example** — what a complete field section looks like in a derived SKILL.md:
 
@@ -709,12 +709,12 @@ The manifest schema is at `schemas/manifest.schema.json`. For the complete autho
 
 ## Schema contract
 
-> **v8 is the canonical classification.** The schema's global `required` array mandates `subject` (closed 9-enum browse shelf) + `deployment_target` (closed 2-enum `portable`/`project`). `scope` is an optional free-text field (PRD-style). The prior contract (v7 — with `type`, `category`, `categories`, `primaryCategory`, `layerPrimary`, `routingRole`) lives in git history; retrieve via `git show schema-v7:schemas/skill.schema.json`. Note the initial 2026-05-26 v8 design carried an `operation` axis and a closed-enum `scope` that were both reshaped by the 2026-05-27 amendment (operation retired, scope repurposed to free-text, deployment_target introduced) — see CHANGELOG and ADR-0017. See `schemas/skill.schema.json` for the live contract.
+> **v8 is the canonical classification.** The schema's global `required` array mandates `subject` (closed 9-enum browse shelf) + `deployment_target` (closed 2-enum `portable`/`project`). `scope` is an optional free-text field (PRD-style). The prior contract (v7 — with `type`, `category`, `categories`, `primaryCategory`, `layerPrimary`, `routingRole`) lives in git history; retrieve via `git show schema-v7:schemas/SKILL_METADATA_PROTOCOL_schema.json`. Note the initial 2026-05-26 v8 design carried an `operation` axis and a closed-enum `scope` that were both reshaped by the 2026-05-27 amendment (operation retired, scope repurposed to free-text, deployment_target introduced) — see CHANGELOG and ADR-0017. See `schemas/SKILL_METADATA_PROTOCOL_schema.json` for the live contract.
 
 | Surface | State |
 |---|---|
 | **This doc (SKILL_METADATA_PROTOCOL.md)** | v8 |
-| **Schema file (`schemas/skill.schema.json`)** | v8. Global required: `subject`, `deployment_target`, plus identity/lifecycle/Evaluation Status fields. `scope` is an optional free-text field. No v7 fields declared. |
+| **Schema file (`schemas/SKILL_METADATA_PROTOCOL_schema.json`)** | v8. Global required: `subject`, `deployment_target`, plus identity/lifecycle/Evaluation Status fields. `scope` is an optional free-text field. No v7 fields declared. |
 | **Compiled manifest (`skills.manifest.json`) summary** | v8 (`by_subject`, `by_deployment_target`, `by_schema_version`, `by_stability`, `by_project`). |
 | **Audit Loop checklist (`SKILL_AUDIT_LOOP.md` § Part 2)** | v8 |
 
@@ -738,4 +738,4 @@ The contract enforces the following invariants. Any change to the schema or tool
 
 ---
 
-*See `docs/skill-metadata-protocol.md` for full design rationale, overlay composition precedence, and schema versioning policy. See `docs/field-reference.md` for one section per field with examples. See `schemas/skill.schema.json` for the machine-enforceable version of this contract.*
+*See `docs/skill-metadata-protocol.md` for full design rationale, overlay composition precedence, and schema versioning policy. See `docs/SKILL_METADATA_PROTOCOL_field-reference.md` for one section per field with examples. See `schemas/SKILL_METADATA_PROTOCOL_schema.json` for the machine-enforceable version of this contract.*

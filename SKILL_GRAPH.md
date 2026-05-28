@@ -35,7 +35,7 @@ Make a large AI-agent skill library coherent, project-aware, auditable, and expo
 
 | Fact | Value | Source of truth |
 |---|---|---|
-| **Schema version enforced** | **v8**. The schema's global `required` array mandates `subject` + `deployment_target` (`scope` is an optional free-text field). The prior contract (v7) lives in git history; retrieve via `git show schema-v7:schemas/skill.schema.json`. | `schemas/skill.schema.json` + [ADR-0017](docs/adr/0017-five-axis-classification-model.md) |
+| **Schema version enforced** | **v8**. The schema's global `required` array mandates `subject` + `deployment_target` (`scope` is an optional free-text field). The prior contract (v7) lives in git history; retrieve via `git show schema-v7:schemas/SKILL_METADATA_PROTOCOL_schema.json`. | `schemas/SKILL_METADATA_PROTOCOL_schema.json` + [ADR-0017](docs/adr/0017-five-axis-classification-model.md) |
 | Manifest schema file | tracks the v8 contract; v7 fields are not declared | `schemas/manifest.schema.json` |
 | Emitted manifest `schema_version` | **4** (root manifest contract; orthogonal to per-skill `schema_version`) | `scripts/generate-manifest.js`; `schemas/manifest.schema.json` `schema_version.const` |
 | Manifest summary facets | `by_subject`, `by_deployment_target`, `by_schema_version`, `by_stability`, `by_project` | `scripts/generate-manifest.js::computeSummary` |
@@ -140,14 +140,14 @@ A sixth set of files — `README.md`, `CHANGELOG.md`, `CONTRIBUTING.md`, `LICENS
 
 | File | Role |
 |---|---|
-| `schemas/skill.schema.json` | The frontmatter schema — canonical-only per [ADR-0014](docs/adr/0014-canonical-only-schema-files.md). Current contract is v8. The file's `$id` (`https://skillgraph.dev/schemas/skill.schema.json`) is the stable identifier. |
+| `schemas/SKILL_METADATA_PROTOCOL_schema.json` | The frontmatter schema — canonical-only per [ADR-0014](docs/adr/0014-canonical-only-schema-files.md). Current contract is v8. The file's `$id` (`https://skillgraph.dev/schemas/skill.schema.json`) is the stable identifier. |
 | `schemas/manifest.schema.json` | The compiled-manifest schema — canonical-only. Tracks the current contract (carries the four Audit Status verdicts). |
 | `schemas/audits-manifest.schema.json` | The Skill Audit Loop manifest schema — binds the shape of `audits/manifest.json` (protocols, runners, required artifacts, runtime aliases). Authored 2026-05-25; closes the manifest version-discipline gap (Opus novelty memo #1). |
 | `schemas/comprehension.schema.json` | The comprehension-eval schema — binds the shape of `skills/<name>/evals/comprehension.json`, the artifact the gate-8 grader evaluates against. Authored 2026-05-25 to close the highest-priority canonicalization gap (Opus G2#3 CRITICAL). |
 
 One rule governs this tier:
 
-1. **Canonical-only schemas.** Per [ADR-0014](docs/adr/0014-canonical-only-schema-files.md), prior contract versions (v2-v6) live in git history; they are NOT mirrored on disk. The C6 "Versioned schema parity" check is retired. An external consumer that needs to pin against a historical version resolves via `git show <commit>:schemas/skill.schema.json` or a `git tag schema-vN` if one exists — never a duplicate file in `main`.
+1. **Canonical-only schemas.** Per [ADR-0014](docs/adr/0014-canonical-only-schema-files.md), prior contract versions (v2-v6) live in git history; they are NOT mirrored on disk. The C6 "Versioned schema parity" check is retired. An external consumer that needs to pin against a historical version resolves via `git show <commit>:schemas/SKILL_METADATA_PROTOCOL_schema.json` or a `git tag schema-vN` if one exists — never a duplicate file in `main`.
 
 ---
 
@@ -159,13 +159,13 @@ Public docs that define or explain the protocol in prose. If a Tier 2 file disag
 |---|---|
 | [`SKILL_METADATA_PROTOCOL.md`](SKILL_METADATA_PROTOCOL.md) *(repo root)* | Normative spec: required fields, semantic rules, authored vs generated fields, migration notes. |
 | `docs/skill-metadata-protocol.md` | Rationale and deep explanation: body structure, requiredness groups, strictness rules, schema versioning policy, design tradeoffs. |
-| `docs/field-reference.md` | One section per authored field. All current v8 top-level fields with purpose, rules, allowed values, examples. |
-| `docs/field-decision-guide.md` | Decision tables for the hard choices: `deployment_target`, `relations.*`, Evaluation Status, `portability`, `project[]` / `repo[]`, and the "taxonomy_domain vs. subject vs. routing_bundles" question. |
+| `docs/SKILL_METADATA_PROTOCOL_field-reference.md` | One section per authored field. All current v8 top-level fields with purpose, rules, allowed values, examples. |
+| `docs/SKILL_METADATA_PROTOCOL_field-decision-guide.md` | Decision tables for the hard choices: `deployment_target`, `relations.*`, Evaluation Status, `portability`, `project[]` / `repo[]`, and the "taxonomy_domain vs. subject vs. routing_bundles" question. |
 | `docs/manifest-field-mapping.md` | The authored → generated bridge: rename map, loss policy, per-version migration notes, worked example. |
 
 Three rules govern this tier:
 
-1. **Section headers in `field-reference.md` must exactly match the top-level properties of `skill.schema.json`.** Enforced by C1. A missing section or an orphan one is a CI failure.
+1. **Section headers in `SKILL_METADATA_PROTOCOL_field-reference.md` must exactly match the top-level properties of `SKILL_METADATA_PROTOCOL_schema.json`.** Enforced by C1. A missing section or an orphan one is a CI failure.
 2. **Every authored field must be covered in `manifest-field-mapping.md`** (either in the rename map or the dropped-field list). Enforced by C2.
 3. **The v2→v3 migration note in `manifest-field-mapping.md`** must be accurate enough that an author running `migrate-skill-v2-to-v3.js` gets the same result the doc describes. Checked at release time via the worked example.
 
@@ -446,8 +446,8 @@ Every edge is verifiable. `node bin/skill-graph.js lint examples/fixture-skills/
 
 Because the tiers are ordered, a tiny set of invariants holds the whole repo together:
 
-- **Tier 1 → Tier 2:** Every top-level property in `skill.schema.json` has a matching section in `field-reference.md`. (`check-protocol-consistency.js` C1.)
-- **Tier 1 canonical-only:** Per [ADR-0014](docs/adr/0014-canonical-only-schema-files.md), `schemas/skill.schema.json` and `schemas/manifest.schema.json` are the only schema files on disk; prior contract versions live in git history. The C6 "Versioned schema parity" invariant is retired (there is no second pinned file to drift against).
+- **Tier 1 → Tier 2:** Every top-level property in `SKILL_METADATA_PROTOCOL_schema.json` has a matching section in `SKILL_METADATA_PROTOCOL_field-reference.md`. (`check-protocol-consistency.js` C1.)
+- **Tier 1 canonical-only:** Per [ADR-0014](docs/adr/0014-canonical-only-schema-files.md), `schemas/SKILL_METADATA_PROTOCOL_schema.json` and `schemas/manifest.schema.json` are the only schema files on disk; prior contract versions live in git history. The C6 "Versioned schema parity" invariant is retired (there is no second pinned file to drift against).
 - **Tier 1 → Tier 3 (generator):** Every authored field has a documented projection into the manifest — copied, grouped, or dropped. No silent drops. (C2.)
 - **Tier 1 ↔ Tier 5 (sample manifest):** The committed sample manifest matches live generator output. Enforced by `npm run manifest:validate`, not by `skill-lint.js`. (2026-05-27 H12 — the prior "skill-lint.js check 8" claim referred to a check removed in the 2026-05-19 lint reduction.)
 - **Tier 5 → Tier 1:** Every starter skill validates against the schema; every relation target exists; every eval_artifact declaration is backed by a real file. `skill-lint.js` enforces schema, name, description, parent-dir, and subjects-primary (checks 1–5 per its in-file inventory) plus the new advisory field-purpose-comment check (check 6); relation-target existence is enforced by the manifest compiler; eval_artifact backing is enforced by `eval-staleness-checker.js`.
@@ -460,8 +460,8 @@ Break any one of these invariants and CI fails. That's why the tiering works: th
 
 | You want to add | Tier | Also touch |
 |---|---|---|
-| A new required field | 1 (schema) | 2 (field-reference.md, skill-metadata-protocol.md, manifest-field-mapping.md rename map), 3 (generator if grouped; lint deprecation warning if renaming), 5 (template + at least one starter) |
-| A new optional field | 1 (schema) | 2 (field-reference.md entry), 3 (generator flow-through), 5 (template if it demonstrates the new field) |
+| A new required field | 1 (schema) | 2 (SKILL_METADATA_PROTOCOL_field-reference.md, skill-metadata-protocol.md, manifest-field-mapping.md rename map), 3 (generator if grouped; lint deprecation warning if renaming), 5 (template + at least one starter) |
+| A new optional field | 1 (schema) | 2 (SKILL_METADATA_PROTOCOL_field-reference.md entry), 3 (generator flow-through), 5 (template if it demonstrates the new field) |
 | A new lint rule | 3 (skill-lint.js or scripts/lint/) | — |
 | A new tool that uses the manifest | 4 | README Reference consumer section |
 | A new starter skill | 5 | Regenerate sample manifest |
@@ -477,7 +477,7 @@ When in doubt: if the file *defines* a constraint, it's Tier 1. If it *describes
 - [`README.md`](README.md) — the project overview; now structured by these same tiers.
 - [`docs/skill-metadata-protocol.md`](docs/skill-metadata-protocol.md) — the authoritative field-semantics doc; § Anatomy carries the Mermaid diagram of the SKILL.md three-layer composition (frontmatter × body × teaching layer).
 - [`docs/manifest-field-mapping.md`](docs/manifest-field-mapping.md) — the authored → generated bridge.
-- [`docs/field-decision-guide.md`](docs/field-decision-guide.md) — decision tables for hard field choices.
+- [`docs/SKILL_METADATA_PROTOCOL_field-decision-guide.md`](docs/SKILL_METADATA_PROTOCOL_field-decision-guide.md) — decision tables for hard field choices.
 - [`SKILL_AUDIT_LOOP.md`](SKILL_AUDIT_LOOP.md) *(repo root)* — the repeatable audit loop; carries the Mermaid diagram of the five-phase flow (deterministic → graded → aggregate → fix → re-verify).
 - [§ Tier 3 — Pipeline](#pipeline--how-a-skillmd-becomes-a-manifest-entry) — how `generate-manifest.js` projects authored frontmatter into the compiled manifest.
 - [§ Tier 4 — Drift sentinel state machine](#drift-sentinel--state-machine) — the five states a grounded skill sits in and what transitions them.

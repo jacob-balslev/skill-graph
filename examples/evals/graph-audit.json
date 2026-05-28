@@ -32,7 +32,7 @@
       "criticality": "high",
       "truth_sources": [
         "skills/quality/graph-audit/SKILL.md",
-        "schemas/skill.schema.json"
+        "schemas/SKILL_METADATA_PROTOCOL_schema.json"
       ]
     },
     {
@@ -117,7 +117,7 @@
       "criticality": "high",
       "truth_sources": [
         "skills/quality/graph-audit/SKILL.md",
-        "schemas/skill.schema.json",
+        "schemas/SKILL_METADATA_PROTOCOL_schema.json",
         "scripts/skill-lint.js"
       ]
     },
@@ -132,7 +132,7 @@
       "criticality": "high",
       "truth_sources": [
         "skills/quality/graph-audit/SKILL.md",
-        "schemas/skill.schema.json",
+        "schemas/SKILL_METADATA_PROTOCOL_schema.json",
         "scripts/skill-lint.js"
       ]
     },
@@ -148,7 +148,7 @@
       "truth_sources": [
         "skills/quality/graph-audit/SKILL.md",
         "scripts/skill-lint.js",
-        "schemas/skill.schema.json"
+        "schemas/SKILL_METADATA_PROTOCOL_schema.json"
       ]
     },
     {

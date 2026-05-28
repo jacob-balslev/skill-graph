@@ -47,7 +47,7 @@ The trigger-to-launch path:
 ## Consequences
 
 - No immediate work. The 5 closing gates from Phase 2 remain the source of doc-truth.
-- The README's `## Pick the right doc` table and the `docs/PRIMER.md` ↔ `docs/QUICKSTART-30MIN.md` cross-links are the navigation substrate until triggers fire.
+- The README's `## Pick the right doc` table and the `docs/SKILL_METADATA_PROTOCOL_PRIMER.md` ↔ `docs/QUICKSTART-30MIN.md` cross-links are the navigation substrate until triggers fire.
 - The `check-markdown-links` + `check-doc-drift` + `check-mirror-freeze` sentinels keep the GitHub-rendered surface honest. A docs site without those sentinels would *reduce* doc trust, not increase it.
 - Phase 3 closes Item 55 with a "no docs site yet, here is the trigger contract" decision instead of a Mintlify rollout. The work isn't dropped; it is gated behind explicit, measurable triggers.
 

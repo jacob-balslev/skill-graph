@@ -94,7 +94,7 @@ function skillWithRelations(name, relatedName) {
  *         config.json                 ← points skill_roots at ../library/skills
  *       SKILL_AUDIT_LOOP.md § Part 2 — Per-Skill Audit Checklist      ← stub (required by collectContext)
  *       schemas/
- *         skill.schema.json           ← stub (required by collectContext)
+ *         SKILL_METADATA_PROTOCOL_schema.json           ← stub (required by collectContext)
  *       scripts/
  *         export-skill.js             ← stub (controls exportTransformAvailable)
  *     library/
@@ -120,7 +120,7 @@ function createFixtures() {
     '# Stub checklist\n'
   );
   fs.writeFileSync(
-    path.join(repoRoot, 'schemas', 'skill.schema.json'),
+    path.join(repoRoot, 'schemas', 'SKILL_METADATA_PROTOCOL_schema.json'),
     '{}'
   );
   // scripts/export-skill.js stub (controls exportTransformAvailable flag).
@@ -251,7 +251,7 @@ function cleanup(tmpDir) {
     fs.mkdirSync(path.join(repoRoot, 'schemas'), { recursive: true });
     fs.mkdirSync(path.join(repoRoot, 'scripts'), { recursive: true });
     fs.writeFileSync(path.join(repoRoot, 'SKILL_AUDIT_LOOP.md § Part 2 — Per-Skill Audit Checklist'), '# Stub\n');
-    fs.writeFileSync(path.join(repoRoot, 'schemas', 'skill.schema.json'), '{}');
+    fs.writeFileSync(path.join(repoRoot, 'schemas', 'SKILL_METADATA_PROTOCOL_schema.json'), '{}');
     fs.writeFileSync(path.join(repoRoot, 'scripts', 'export-skill.js'), "'use strict';\n");
 
     const neighborName = 'flat-neighbor';

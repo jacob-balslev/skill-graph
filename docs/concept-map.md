@@ -1,7 +1,7 @@
 # Skill Graph Concept Map
 
 > **Status:** Reality-aligned teaching reference as of **2026-04-20** (schema_version 4).
-> **Source of truth precedence:** `schemas/skill.schema.json` > `docs/field-reference.md` > this file.
+> **Source of truth precedence:** `schemas/SKILL_METADATA_PROTOCOL_schema.json` > `docs/SKILL_METADATA_PROTOCOL_field-reference.md` > this file.
 > **Purpose:** Explain the 40-field Skill Metadata Protocol frontmatter at a conceptual level without inventing structure that the schema does not actually enforce. If this file disagrees with the schema, the schema wins — fix this file.
 
 ## What kind of graph is this?
@@ -170,11 +170,11 @@ An earlier concept map (pre-2026-04-20) contained six inaccuracies now corrected
 
 ## References
 
-- `schemas/skill.schema.json` — current canonical schema (source of truth for types and requiredness)
+- `schemas/SKILL_METADATA_PROTOCOL_schema.json` — current canonical schema (source of truth for types and requiredness)
 - `schemas/skill.context.jsonld` — JSON-LD `@context` for W3C interoperability
 - `docs/skill-metadata-protocol.md` — requiredness groups, body structure, schema strictness
-- `docs/field-reference.md` — per-field semantics (authoritative prose)
-- `docs/field-decision-guide.md` — decision tables
+- `docs/SKILL_METADATA_PROTOCOL_field-reference.md` — per-field semantics (authoritative prose)
+- `docs/SKILL_METADATA_PROTOCOL_field-decision-guide.md` — decision tables
 - `docs/adr/0001-predicate-set.md` — predicate evolution decision
 - `docs/adr/0002-json-ld-context.md` — W3C vocabulary mapping decision
 - `docs/adr/0004-persistent-identifiers.md` — URN scheme for v4

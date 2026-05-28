@@ -81,7 +81,7 @@ This distinction matters operationally:
 
 ## The Four Operations
 
-Every action in this loop falls into one of four operations. Each writes to a specific set of flat fields in the skill's Audit Status (see `schemas/skill.schema.json`).
+Every action in this loop falls into one of four operations. Each writes to a specific set of flat fields in the skill's Audit Status (see `schemas/SKILL_METADATA_PROTOCOL_schema.json`).
 
 | Operation | What it does | Edits instructional content? | Writes which fields |
 |---|---|---|---|
@@ -317,7 +317,7 @@ The loop does not require a separate issue tracker, dashboard, control plane, or
 ## Related Specs
 
 - `docs/skill-metadata-protocol.md` — the canonical field list including the Audit Status and flat Understanding fields
-- `schemas/skill.schema.json` — the machine-validated current contract (v8). Prior versions live in git history per [ADR-0014](docs/adr/0014-canonical-only-schema-files.md) and [AGENTS.md § Major Version Is a Clean Cut](AGENTS.md) (retrievable via `git show schema-v7:schemas/skill.schema.json`); the schema's `$id` (`https://skillgraph.dev/schemas/skill.schema.json`) is the stable identifier.
+- `schemas/SKILL_METADATA_PROTOCOL_schema.json` — the machine-validated current contract (v8). Prior versions live in git history per [ADR-0014](docs/adr/0014-canonical-only-schema-files.md) and [AGENTS.md § Major Version Is a Clean Cut](AGENTS.md) (retrievable via `git show schema-v7:schemas/SKILL_METADATA_PROTOCOL_schema.json`); the schema's `$id` (`https://skillgraph.dev/schemas/skill.schema.json`) is the stable identifier.
 - [ADR 0011](docs/adr/0011-split-audit-verdict-into-four-verdicts.md) — the `audit_verdict` → four-verdict split (rationale for the Audit Status's four-verdict shape)
 - [ADR 0017](docs/adr/0017-five-axis-classification-model.md) — the v7→v8 classification model, amended 2026-05-27 (`operation` axis retired, `scope` repurposed to free-text, `deployment_target` introduced as the closed-enum deployment axis, `domain` renamed to `taxonomy_domain`, `project[]` / `repo[]` belonging-entity fields added)
 - **Part 2 below** — the per-skill audit checklist (formerly `SKILL_AUDIT_LOOP.md` § Part 2, deleted in the 2026-05-25 consolidation)
@@ -440,7 +440,7 @@ Required dimension rows:
 
 ### 1. Frontmatter validity
 
-- [ ] `schema_version` exists and equals `8`. Do not author `7` on new skills. String variants `"8"` / `"7"` are tolerated for hand-rolled YAML — see `schemas/skill.schema.json`.
+- [ ] `schema_version` exists and equals `8`. Do not author `7` on new skills. String variants `"8"` / `"7"` are tolerated for hand-rolled YAML — see `schemas/SKILL_METADATA_PROTOCOL_schema.json`.
 - [ ] `name` exists and matches the intended skill identifier
 - [ ] `description` exists and is specific enough to route from
 - [ ] `version` exists

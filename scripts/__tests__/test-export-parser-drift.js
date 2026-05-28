@@ -50,7 +50,7 @@ const crlfSkill = [
   'workspace_tags: [ecommerce, shopify]',
   'grounding:',
   '  truth_sources:',
-  '    - path: docs/field-reference.md',
+  '    - path: docs/SKILL_METADATA_PROTOCOL_field-reference.md',
   '      line_range: { start: 1, end: 3 }',
   '---',
   '# Body',

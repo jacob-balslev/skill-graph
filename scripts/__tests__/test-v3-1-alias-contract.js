@@ -64,7 +64,7 @@ const fm = {
     subject_matter: 'Alias contract',
     grounding_mode: 'repo_specific',
     claim_scope: 'repo_specific',
-    truth_sources: ['schemas/skill.schema.json'],
+    truth_sources: ['schemas/SKILL_METADATA_PROTOCOL_schema.json'],
     failure_modes: ['silent_alias_drop'],
     evidence_priority: 'repo_code_first',
   },
