@@ -28,7 +28,7 @@ Formal class-disjointness assertion. Use only when the two skill concepts are ge
 
 *v3.1 addition; W3C mapping: `skos:broader`*
 
-Cross-skill generalisation. Use when this skill is a *specialisation* of another skill that is NOT its overlay parent (if it were, use `extends` instead). Closes the gap where `category` cannot express skill-to-skill generalisation across taxonomy branches.
+Cross-skill generalisation. Use when this skill is a *specialisation* of another, more general skill. Closes the gap where the flat `subject` / `taxonomy_domain` taxonomy cannot express skill-to-skill generalisation across branches.
 
 Example: `react-best-practices` has `broader: [frontend]`.
 
@@ -50,47 +50,7 @@ Skills that should be co-loaded for verification or that provide cross-checks. T
 
 Pragmatic prerequisite — this skill requires the target conceptually or operationally. Item shape: bare string OR `{skill, min_version}`. Use `min_version` when the depended-on skill's contract has versioned and this skill's claims depend on a specific version.
 
-### `extends`
-
-*W3C mapping: `prov:wasDerivedFrom`*
-
-Overlay specialisation. Single-parent only (ADR 0001). Required when `type: overlay`. The overlay existentially depends on the parent: if the parent were deleted, the overlay loses its meaning (OntoClean +D; ADR 0003).
-
-## Archetypes
-
-### `capability`
-
-*OntoClean: +R (rigid), +I (identity), +U (unity), -D (dependence)*
-
-A standalone functional skill — what the agent *can do*. Has its own identity criteria and scope. Does not existentially depend on another skill.
-
-Required body sections: `## Coverage`, `## Philosophy`, `## Verification`, `## Do NOT Use When`.
-
-### `workflow`
-
-*OntoClean: +R, +I, +U, -D*
-
-A step-by-step procedural skill. Adds `## Workflow` to the required body sections.
-
-Required body sections: `## Coverage`, `## Philosophy`, `## Workflow`, `## Verification`, `## Do NOT Use When`.
-
-### `router`
-
-*OntoClean: ~R (semi-rigid), -I, ~U, +D*
-
-A skill that dispatches to other skills. Its essence is defined by what it dispatches to, so its identity shifts when the dispatch set shifts.
-
-Required body sections: `## Coverage`, `## Routing Rules`, `## Do NOT Use When`.
-
-### `overlay`
-
-*OntoClean: -R (anti-rigid), -I, -U, +D*
-
-A skill that specialises another skill. The overlay's essence is "specialisation of X" — it vanishes if X is deleted. Identity is inherited from the parent, not redefined.
-
-Required body sections: `## Coverage`, `## Overlay Rules`, `## Extends`, `## Do NOT Use When`. Also requires the `extends` field at the top level.
-
-The key OntoClean constraint: an anti-rigid property cannot subsume a rigid one. In practice: an overlay *specialises* its parent, it does not *replace* the parent's identity. If an overlay's body rewrites the parent's `## Coverage`, it is not an overlay — it is a separate capability. Change the `type` accordingly.
+_(The `extends` field and the `capability` / `workflow` / `router` / `overlay` archetypes were removed in the v8 clean cut — see [`AGENTS.md § Major Version Is a Clean Cut`](../AGENTS.md). Body structure is now uniform; see [`docs/skill-metadata-protocol.md § Body Structure`](skill-metadata-protocol.md#body-structure).)
 
 ## Grounding modes
 

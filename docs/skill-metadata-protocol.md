@@ -22,7 +22,7 @@ Skill Graph is the **library-level system** that works with this protocol. It in
 | Document | Purpose |
 |---|---|
 | [`SKILL_METADATA_PROTOCOL.md`](../SKILL_METADATA_PROTOCOL.md) | Normative public spec: required fields, semantic rules, authored vs generated fields, migration notes |
-| `docs/skill-metadata-protocol.md` (this file) | Rationale and deep explanation: archetype map, requiredness groups, schema strictness rules, design tradeoffs |
+| `docs/skill-metadata-protocol.md` (this file) | Rationale and deep explanation: body structure, requiredness groups, schema strictness rules, design tradeoffs |
 | `docs/field-reference.md` | One section per authored field — purpose, rules, examples, when to use |
 | `docs/field-decision-guide.md` | Decision tables for `scope`, `relations.*`, and the Evaluation Status fields (`eval_artifacts`, `eval_state`, `routing_eval`) / `portability` |
 | `docs/concept-map.md` | Teaching map — 36 authored fields grouped by conceptual role; drift log vs earlier framings |
@@ -60,16 +60,6 @@ What it does promise: deterministic lint, manifest generation, relation-aware ro
 
 `drift_check.truth_source_hashes` maps each normalized truth-source key to the **SHA-256 hex digest** at the time of last verification. String truth sources hash the whole local file under `path`; object truth sources can narrow the hash to `path#Lstart-Lend` for a line range or `path#anchor` for a Markdown heading slug / literal-text anchor. Local file content is normalized to LF before hashing so CRLF-only edits do not create false drift. The drift sentinel (`scripts/skill-graph-drift.js`) reports `DRIFT` when the live hash differs from the recorded hash, `BROKEN` when a declared local truth source is missing from disk, `STALE` when `today - drift_check.last_verified > lifecycle.stale_after_days`, `NO_BASELINE` when local truth sources are declared but no hashes are recorded, and `EXTERNAL_UNHASHED` when a URL truth source is a valid reference but is not fetched by the zero-dependency sentinel. To add a local-file baseline: `node scripts/skill-graph-drift.js --record --apply <skill-path>`.
 
-### Overlay composition precedence
-
-When `type: overlay` and `extends: <parent-skill>`, the overlay's authored fields **override** the parent's fields on a per-field basis. There is no field-level merge — a field present on the overlay replaces the same field on the parent entirely. The overlay body sections (`## Coverage`, `## Overlay Rules`, `## Extends`, `## Do NOT Use When`) stand on their own and do not inherit prose from the parent. This mirrors OntoClean specialisation: the overlay is anti-rigid (-R) and existentially dependent (+D) on the parent, but the overlay's *content* is authoritative within its own SKILL.md (ADR 0003). Consumers resolving an overlay at routing time:
-
-1. Load the overlay's frontmatter as the effective skill metadata.
-2. Treat the parent's metadata as context — available for reference but not merged.
-3. Apply the overlay's `## Overlay Rules` as modifications to the parent's behaviour, scoped to the overlay's `## Coverage`.
-
-If an overlay needs to *add* rather than *replace* a field's value (e.g. add keywords), author the full intended set in the overlay — the schema does not offer additive inheritance. Future work under ADR 0001 may introduce explicit merge strategies; today the rule is overlay-wins-per-field.
-
 ## Relationship to the SKILL.md Standard
 
 > **This added structure is the price of making skills verifiable and system-aware once descriptions alone stop being enough.** If your library is small enough that descriptions and keywords are sufficient, stay on plain SKILL.md — Skill Metadata Protocol's additional fields are overhead without payoff until the implicit graph appears.
@@ -86,27 +76,18 @@ A Skill-Metadata-Protocol-enriched `SKILL.md` is *not* automatically a valid SKI
 | `compatibility` | SKILL.md optional | Kept top-level; optional |
 | `allowed-tools` | SKILL.md optional | Kept top-level as a space-separated string |
 | `metadata` | SKILL.md optional | Not used at the top level; the protocol promotes extensions to named fields |
-| `schema_version`, `version`, `type`, `category`, `scope`, `owner`, `freshness`, `drift_check`, `eval_artifacts`, `eval_state`, `routing_eval` | Skill Metadata Protocol extension | Required by the protocol; additive to the base |
-| `relations`, `grounding`, `portability`, `triggers`, `keywords`, `examples`, `anti_examples`, `paths`, `project`, `repo`, `taxonomy_domain`, `routing_bundles`, `lifecycle`, `runtime_telemetry`, `extends`, `stability`, `superseded_by` | Skill Metadata Protocol extension | Optional protocol enrichments; additive to the base |
+| `schema_version`, `version`, `subject`, `deployment_target`, `scope`, `owner`, `freshness`, `drift_check`, `eval_artifacts`, `eval_state`, `routing_eval` | Skill Metadata Protocol extension | Required by the protocol; additive to the base |
+| `relations`, `grounding`, `portability`, `triggers`, `keywords`, `examples`, `anti_examples`, `paths`, `project`, `repo`, `subjects`, `taxonomy_domain`, `routing_bundles`, `lifecycle`, `runtime_telemetry`, `stability`, `superseded_by` | Skill Metadata Protocol extension | Optional protocol enrichments; additive to the base |
 
 A Skill-Metadata-Protocol-enriched `SKILL.md` is **not** a valid SKILL.md file as authored, because the protocol requires fields the base standard does not define. An export transform can produce an SKILL.md-valid file by moving every protocol extension field under the standard `metadata:` key. The transform is implemented as `scripts/export-skill.js`.
 
-## Archetype Section Map
+## Body Structure
 
-Each skill archetype expects a specific set of body H2 sections. These are the minimum required sections per archetype. Additional sections are allowed when they earn their line count.
-
-| Archetype | Required H2 sections | Example for a real project |
-|---|---|---|
-| `capability` | `## Coverage`, `## Philosophy of the skill`, `## Verification`, `## Do NOT Use When` | [`markdown-post-frontmatter-validation`](../examples/projects/markdown-static-site/skills/markdown-post-frontmatter-validation/SKILL.md) — codebase-grounded with full `grounding` block |
-| `workflow` | `## Coverage`, `## Philosophy of the skill`, `## Workflow`, `## Verification`, `## Do NOT Use When` | [`migrate-posts-to-v2-frontmatter`](../examples/projects/markdown-static-site/skills/migrate-posts-to-v2-frontmatter/SKILL.md) — codebase-grounded; demonstrates the four-phase add-required-field workflow with dry-run gate |
-| `router` | `## Coverage`, `## Routing Rules`, `## Do NOT Use When` | [`content-source-router`](../examples/projects/markdown-static-site/skills/content-source-router/SKILL.md) — dispatches between local markdown / MDX / CMS-synced sources by file extension or content-path prefix |
-| `overlay` | `## Coverage`, `## Overlay Rules`, `## Extends` (name of the base skill), `## Do NOT Use When` | [`lint-overlay`](https://github.com/jacob-balslev/skills/blob/main/skills/lint-overlay/SKILL.md) extends [`testing-strategy`](https://github.com/jacob-balslev/skills/blob/main/skills/testing-strategy/SKILL.md) — adds lint-specific gate placement on top of the base verification framework |
-
-`## Key Files` is recommended for skills that reference concrete repo files. Prefer file paths with line ranges (`src/foo.ts:45-120`) over bare paths when the skill depends on a specific function or section. `## References` is recommended for skills that point at external reading.
+Every skill body follows the section structure demonstrated by [`examples/skill-metadata-template.md`](../examples/skill-metadata-template.md), the canonical authoring specimen. At minimum a skill carries `## Coverage` (the scope map), `## Philosophy of the skill` (the methodological stance), `## Verification` (how to confirm the skill was applied correctly), and `## Do NOT Use When` (the negative boundary). `## Key Files` is recommended for skills that reference concrete repo files — prefer file paths with line ranges (`src/foo.ts:45-120`) over bare paths when the skill depends on a specific function or section. `## References` is recommended for skills that point at external reading.
 
 ### Relationship to wider skill-authoring doctrine
 
-This archetype map is Skill Metadata Protocol's own minimum. When the protocol is adopted into a monorepo that already has a canonical authoring standard (e.g., a `canonical-standard` or `skill-scaffold` skill), the adopter's standard may impose additional required sections or stricter content rules on top of this map. Skill Metadata Protocol does not replace such a standard — it provides the portable subset that every skill must satisfy regardless of which adopter's fuller doctrine also applies. If you are adopting Skill Graph into a repo with a `canonical-standard` skill, reference that skill's archetype canon instead of republishing a narrower one in your own repo docs.
+This minimum is Skill Metadata Protocol's own. When the protocol is adopted into a monorepo that already has a canonical authoring standard (e.g., a `canonical-standard` or `skill-scaffold` skill), the adopter's standard may impose additional required sections or stricter content rules on top of it. Skill Metadata Protocol does not replace such a standard — it provides the portable subset that every skill must satisfy regardless of which adopter's fuller doctrine also applies. If you are adopting Skill Graph into a repo with a `canonical-standard` skill, reference that skill's section canon instead of republishing a narrower one in your own repo docs.
 
 ## Requiredness Groups
 
@@ -145,7 +126,6 @@ triggers
 
 | Condition | Required field(s) |
 |---|---|
-| `type: overlay` | `extends` |
 | `deployment_target: project` | `grounding` (schema-enforced) |
 | Routable skills (label or language activation) | `keywords`; `triggers` and `paths` when routing explicitly depends on them |
 
@@ -193,7 +173,7 @@ Meta-commentary aimed at the template reader must never live in an H2 header slo
 ### When adapting the example template
 
 1. Restore `description:` to routing-only if it has drifted into scope description.
-2. Keep the H2 structure that matches the skill archetype (see **Archetype section map** above).
+2. Keep the H2 structure demonstrated by the template (see **Body Structure** above).
 3. Replace example values only with equally real, context-correct values.
 4. Remove sections that are conditionally irrelevant rather than keeping them with fake content.
 5. Leave `> **TEMPLATE NOTE:**` blockquotes and `# TEMPLATE NOTE:` YAML comments out of the new skill — they are authoring scaffolding, not skill content.
@@ -210,7 +190,7 @@ Every `description:` field leads with a trigger clause — `"Use when …"` or a
 
 > **The question this diagram answers:** "What are the parts of a SKILL.md?"
 
-Every Skill Graph SKILL.md is the same shape: a YAML frontmatter, a Markdown body, and — only in the canonical template specimen — a teaching layer that is stripped when the template is adapted. The field-level detail lives in the table below the diagram and in [`docs/field-reference.md`](field-reference.md); the archetype → required-section mapping lives in the [Archetype Section Map](#archetype-section-map) above. This diagram shows only the compositional shape.
+Every Skill Graph SKILL.md is the same shape: a YAML frontmatter, a Markdown body, and — only in the canonical template specimen — a teaching layer that is stripped when the template is adapted. The field-level detail lives in the table below the diagram and in [`docs/field-reference.md`](field-reference.md); the body section structure lives in the [Body Structure](#body-structure) section above. This diagram shows only the compositional shape.
 
 ```mermaid
 flowchart LR
@@ -300,32 +280,6 @@ The YAML frontmatter uses the current v8 schema, including compatibility aliases
 
 **Conditional requiredness in one line:** `keywords` when the skill is routable, `grounding` when `deployment_target: project`, `superseded_by` when `stability: deprecated`. The schema enforces the latter two via `allOf`; lint enforces the `keywords` routability rule. For the decision tables that help you choose between `portable` / `project`, see [`docs/field-decision-guide.md`](field-decision-guide.md).
 
-## Why archetypes are rigid vs anti-rigid (OntoClean per ADR 0003)
-
-The four `type` values — `capability`, `workflow`, `router`, `overlay` — are not interchangeable buckets. They partition the skill space along the OntoClean rigidity axis (Guarino & Welty 2002), which is why ADR 0003 tags each archetype as either RIGID, ANTI-RIGID, or DEPENDENT.
-
-| Archetype | Rigidity tag | What it means |
-|---|---|---|
-| `capability` | **Rigid** | A capability skill's identity is intrinsic. "Web accessibility (a11y)" is a stable concept; an entity that is a `capability` cannot stop being a `capability` without ceasing to exist as the same skill. |
-| `workflow` | **Rigid** | Same as capability — a workflow's identity is the procedure it teaches. "Code review" stops being "code review" only by being deleted, not by changing type. |
-| `router` | **Rigid** | A router's identity is its dispatch role; replacing the dispatch logic produces a different router skill, not the same router doing something else. |
-| `overlay` | **Anti-rigid + Dependent** | An overlay's identity is INHERITED from the parent it `extends`. Without the parent, the overlay does not have a coherent identity on its own. The overlay is a specialisation, not a standalone skill. |
-
-**Operationally, this is why changing a skill's `type` is not a harmless refactor**: it changes how downstream routers, eval graders, and reviewers interpret the skill. A type-change cascades into different routing behaviour, different eval interpretation, and different relation semantics — none of which surface as a syntax error, all of which produce subtly wrong agent behaviour.
-
-The practical consequence is in **migration**: a rigid type cannot change at runtime without invalidating consumer assumptions. If a skill that consumers use as a `capability` is silently switched to `router`, the consumer's keyword scoring, eval interpretation, and routing-eval contract all break. Type changes therefore require a `superseded_by` chain — the old skill becomes `stability: deprecated` and a new skill takes the new type. Rigidity is the invariant that makes this discipline trustworthy.
-
-The anti-rigid `overlay` is treated specially by the lint:
-
-- An overlay must declare `extends: <parent-skill-name>`.
-- The overlay's `## Coverage` should reference parent concepts (heuristic; OntoClean review, ADR 0003).
-- The overlay must NOT declare its own `relations.broader` or `relations.narrower` — those flow through `extends`.
-- Deleting the parent invalidates every overlay that extended it; audit/protocol review must surface the dangling reference.
-
-For cross-skill generalisation that is NOT existential dependency (i.e., the child is a coherent standalone skill that just happens to specialise a parent concept), use `relations.broader` instead of `extends`. `react-best-practices` has `broader: [frontend]` because react-best-practices remains coherent even if `frontend` were deleted; it is RIGID. The `extends`-vs-`broader` decision is the OntoClean test in everyday authoring.
-
-**Read this when:** deciding `type:` for a new skill, deciding `extends:` vs `relations.broader:`, or judging whether a refactor that changes a skill's type is safe.
-
 ## Why the Evaluation Status is orthogonal (ADR 0001 + ADR 0006)
 
 `eval_artifacts`, `eval_state`, and `routing_eval` are three fields that look like they could be one. They are deliberately separate because they answer three orthogonal questions about a skill's Evaluation Status:
@@ -362,7 +316,7 @@ The context is the source of truth for cross-vocabulary mapping. The most conseq
 | `description` | `dcterms:description` | Dublin Core | Free-text subject summary |
 | `version` | `dcterms:hasVersion` | Dublin Core | Skill content version (semver) |
 | `freshness` | `dcterms:modified` | Dublin Core (xsd:date) | Author's claim of last-meaningful-review date |
-| `category` | `skos:broader` | SKOS | Hierarchical category path projects to a skos:broader chain |
+| `taxonomy_domain` | `skos:broader` | SKOS | Hierarchical sub-path within a subject projects to a skos:broader chain |
 | `relations.related` / `adjacent` | `skos:related` | SKOS | Symmetric associative relation between concepts |
 | `relations.broader` | `skos:broader` | SKOS | Cross-skill generalisation (target is more general) |
 | `relations.narrower` | `skos:narrower` | SKOS | Cross-skill specialisation (target is more specific) |
@@ -370,7 +324,6 @@ The context is the source of truth for cross-vocabulary mapping. The most conseq
 | `relations.disjoint_with` | `owl:disjointWith` | OWL | Formal class-theoretic disjointness — distinct from `boundary` (per ADR 0006) |
 | `relations.verify_with` | `prov:wasInformedBy` | PROV-O | Verifier skill informs this skill's claims |
 | `relations.depends_on` | `dcterms:requires` | Dublin Core | Operational prerequisite |
-| `extends` | `prov:wasDerivedFrom` | PROV-O | Overlay derivation relation |
 | `grounding.truth_sources` | `dcterms:source` | Dublin Core | Source resources from which claims are derived |
 | `urn` | `@id` | RFC 8141 + JSON-LD | Globally-unique persistent identifier |
 

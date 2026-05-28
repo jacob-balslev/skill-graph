@@ -37,7 +37,7 @@ Skill Metadata Protocol sits in the second category. Skill Graph sits in the thi
 | **Drift detection** | None — staleness is invisible to the standard | SHA-256 baselines on `truth_sources`; the drift sentinel reports DRIFT / BROKEN / STALE / NO_BASELINE |
 | **Project scoping** | Folder structure or naming hacks | `deployment_target: project` + `project[]` belonging references, no folder gymnastics |
 | **Eval awareness** | Not standardised | `eval_artifacts` + `eval_state` + `routing_eval` triple; routers can gate by quality |
-| **Inheritance** | None | `type: overlay` + `extends` for specialisation with schema-level body-section enforcement |
+| **Generalisation** | None | `relations.broader` / `relations.narrower` cross-skill specialisation edges (SKOS-aligned) |
 | **Round-trip compatibility** | N/A | One-way export to base SKILL.md via `scripts/export-skill.js`; round-trip back requires re-authoring the lost fields |
 
 **When to use both:** when you want Skill Metadata Protocol metadata for authoring and the broader runtime support of SKILL.md' format simultaneously. Author with the protocol; use Skill Graph for library-level operations; export to SKILL.md shape via `scripts/export-skill.js` for runtimes that read only the simpler format. The two contracts are peers, not parent-child.

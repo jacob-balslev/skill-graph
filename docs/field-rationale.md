@@ -163,7 +163,7 @@ The router co-loads `verify_with` partners as a one-hop expansion (Stage 4) — 
 
 ### Common confusion
 
-`broader` looks similar to `extends` but differs critically. `extends` is overlay-only and creates an existential dependency — the overlay ceases to have meaning without its parent (ADR 0003). `broader` is informational generalisation; the child is a coherent skill on its own and would survive its parent being deleted. Use `extends` only with `type: overlay`; use `broader` for everything else.
+`broader` is informational generalisation: the child is a coherent skill on its own and would survive its parent being deleted. It expresses "this skill is a specialisation of a more general skill" without any existential dependency or schema-level body-structure obligation.
 
 ---
 
@@ -216,5 +216,4 @@ Do not use `readiness` as a second taxonomy for project fit. `deployment_target:
 | Decision tree for taxonomy fields (`subject`, `taxonomy_domain`, `deployment_target`, `project[]`, `routing_bundles`) | [`field-decision-guide.md`](field-decision-guide.md) |
 | Predicate semantics (relations) | [`glossary.md` § Relation predicates](glossary.md) |
 | Authoring template | [`../examples/skill-metadata-template.md`](../examples/skill-metadata-template.md) |
-| Why archetypes are rigid vs anti-rigid (OntoClean) | [`adr/0003-ontoclean-rigidity-tags.md`](adr/0003-ontoclean-rigidity-tags.md) |
 | Why the Evaluation Status is orthogonal | [`adr/0001-predicate-set.md`](adr/0001-predicate-set.md) + [`adr/0006-revise-predicate-rename.md`](adr/0006-revise-predicate-rename.md) |

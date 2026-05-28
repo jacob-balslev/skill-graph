@@ -158,7 +158,7 @@ Public docs that define or explain the protocol in prose. If a Tier 2 file disag
 | File | Role |
 |---|---|
 | [`SKILL_METADATA_PROTOCOL.md`](SKILL_METADATA_PROTOCOL.md) *(repo root)* | Normative spec: required fields, semantic rules, authored vs generated fields, migration notes. |
-| `docs/skill-metadata-protocol.md` | Rationale and deep explanation: archetype section map, requiredness groups, strictness rules, schema versioning policy, design tradeoffs. |
+| `docs/skill-metadata-protocol.md` | Rationale and deep explanation: body structure, requiredness groups, strictness rules, schema versioning policy, design tradeoffs. |
 | `docs/field-reference.md` | One section per authored field. All current v8 top-level fields with purpose, rules, allowed values, examples. |
 | `docs/field-decision-guide.md` | Decision tables for the hard choices: `deployment_target`, `relations.*`, Evaluation Status, `portability`, `project[]` / `repo[]`, and the "taxonomy_domain vs. subject vs. routing_bundles" question. |
 | `docs/manifest-field-mapping.md` | The authored → generated bridge: rename map, loss policy, per-version migration notes, worked example. |

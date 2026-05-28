@@ -110,7 +110,6 @@ const SKILL_GRAPH_EXTENSION_FIELDS = new Set([
   'boundary',
   'analogy',
   'misconception',
-  'extends',
   'allowed_tools',
 ]);
 

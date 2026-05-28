@@ -72,7 +72,6 @@ All **human-authored** unless tagged otherwise.
 | `repo` | `{handle, url}[]` | human-authored | Repo-level belonging-entity references. Complements `project[]`. |
 | `routing_bundles` | string[] | human-authored | Routing group memberships. |
 | `taxonomy_domain` | string | human-authored | Slash-delimited hierarchical sub-path within a `subject` (e.g. `engineering/api-design`). Complements `subject`. Renamed from `domain`. |
-| `extends` | string | human-authored | Names a base skill this one specialises. Declared but no longer schema-gated — the v7 `type: overlay` archetype that required it was removed in the v8 clean cut (see [ADR-0017](./adr/0017-five-axis-classification-model.md)). |
 
 ### Classification (taxonomy)
 

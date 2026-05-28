@@ -5,7 +5,7 @@
 > **Predicate glossary:** [`docs/glossary.md`](glossary.md).
 > **JSON-LD @context:** [`schemas/skill.context.jsonld`](../schemas/skill.context.jsonld).
 
-Schema version: **unknown** · Field count: **57** · Required: **12**
+Schema version: **unknown** · Field count: **56** · Required: **12**
 
 ---
 
@@ -491,7 +491,7 @@ SPDX license identifier (e.g., `MIT`, `Apache-2.0`, `CC-BY-4.0`). Resolved again
 
 **Type:** object
 
-Cross-runtime compatibility envelope. `runtimes` lists target agent runtimes with version constraints; `node` is the Node.js version requirement; `notes` is free-text overflow. Distinct from `extends` (overlay parent) and `relations.depends_on` (sibling skill dependency).
+Cross-runtime compatibility envelope. `runtimes` lists target agent runtimes with version constraints; `node` is the Node.js version requirement; `notes` is free-text overflow. Distinct from `relations.depends_on` (sibling skill dependency).
 
 **Sub-fields:**
 
@@ -522,16 +522,6 @@ Optional space-separated whitelist of tools the skill is permitted to use (e.g.,
 Space-separated whitelist of tools (v3.1 preferred snake_case alias for `allowed-tools`). When both are present they must match. The SKILL.md export transform rewrites this to the kebab-case form.
 
 **Full reference:** [`docs/field-reference.md#allowed_tools`](field-reference.md#allowed_tools)
-
----
-
-### `extends` *(optional)*
-
-**Type:** string
-
-Overlay parent skill name. Only valid when `type: overlay`. The overlay specialises the parent and ceases to have meaning without it; its identity is INHERITED from the parent, not REPLACED. For non-existential cross-skill generalisation, use `relations.broader` instead.
-
-**Full reference:** [`docs/field-reference.md#extends`](field-reference.md#extends)
 
 ---
 

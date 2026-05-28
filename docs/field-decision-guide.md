@@ -83,7 +83,7 @@ The distinction between these relation types is best illustrated by existing usa
 
 - **`boundary`** — `refactor` declares `boundary: [documentation]` to assert exclusive ownership of the refactor use-case over documentation. When refactor wins a query that also matched documentation, this entry excludes documentation from co-routing. **Note:** the field name implies "defer to documentation" but the mechanic is "exclude documentation when refactor wins." Write reason text using ownership framing: `"refactor owns this use-case exclusively; documentation does not."` See WARNING in `SKILL_METADATA_PROTOCOL.md § Relations § boundary`.
 
-When a skill extends another skill's base behavior (e.g., an overlay), use the `extends` field instead of relations.
+When a skill is a specialisation of a more general skill, use `relations.broader` to express that generalisation.
 
 ### Combined example
 

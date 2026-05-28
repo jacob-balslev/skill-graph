@@ -490,7 +490,7 @@ Run this section when the skill is repo-grounded or implementation-aware.
 
 - [ ] the skill has a clear `Coverage` section
 - [ ] the skill has a clear `## Philosophy of the skill` section (renamed 2026-05-26 from `## Philosophy`)
-- [ ] the skill has a clear `Verification` section (recommended for `capability` and `workflow` archetypes per `docs/skill-metadata-protocol.md § Archetype Section Map`; not lint-enforced — body section structure is author judgment per the 2026-05-19 audit-doctrine cleanup)
+- [ ] the skill has a clear `Verification` section (recommended for any skill that makes procedural or verifiable claims; not lint-enforced — body section structure is author judgment per the 2026-05-19 audit-doctrine cleanup)
 - [ ] the skill has at least one concrete decision table, checklist, or routing rule
 - [ ] the skill contains negative bounds (`Do NOT Use When` or equivalent)
 - [ ] the skill does not contain generic model-native filler
@@ -537,9 +537,9 @@ Use this when reporting findings.
 F1
 Severity: P1
 Surface: frontmatter
-Problem: `type` uses a deprecated value
-Evidence: `type: doctrine`
-Required action: replace with one of the canonical archetype values
+Problem: `type` is not a v8 schema field (rejected by additionalProperties)
+Evidence: `type: capability`
+Required action: remove `type` — v8 classifies by `subject` + `deployment_target`
 ```
 
 ### Completion Rule

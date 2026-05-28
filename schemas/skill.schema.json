@@ -517,7 +517,7 @@
           "description": "Free-text additional compatibility notes. Use sparingly; prefer structured fields. No protocol length cap."
         }
       },
-      "description": "Cross-runtime compatibility envelope. `runtimes` lists target agent runtimes with version constraints; `node` is the Node.js version requirement; `notes` is free-text overflow. Distinct from `extends` (overlay parent) and `relations.depends_on` (sibling skill dependency)."
+      "description": "Cross-runtime compatibility envelope. `runtimes` lists target agent runtimes with version constraints; `node` is the Node.js version requirement; `notes` is free-text overflow. Distinct from `relations.depends_on` (sibling skill dependency)."
     },
     "allowed-tools": {
       "type": "string",
@@ -526,10 +526,6 @@
     "allowed_tools": {
       "type": "string",
       "description": "Space-separated whitelist of tools (v3.1 preferred snake_case alias for `allowed-tools`). When both are present they must match. The SKILL.md export transform rewrites this to the kebab-case form. "
-    },
-    "extends": {
-      "type": "string",
-      "description": "Overlay parent skill name. Only valid when `type: overlay`. The overlay specialises the parent and ceases to have meaning without it; its identity is INHERITED from the parent, not REPLACED. For non-existential cross-skill generalisation, use `relations.broader` instead."
     },
     "triggers": {
       "type": "array",
@@ -649,7 +645,7 @@
         },
         "broader": {
           "type": "array",
-          "description": "Cross-skill generalisation (skos:broader). Use when this skill is a specialisation of another skill that is NOT its overlay parent (if it were, use `extends`). Example: `react-best-practices` has `broader: [frontend]`. Closes the cross-skill generalisation gap that `category` cannot express.",
+          "description": "Cross-skill generalisation (skos:broader). Use when this skill is a specialisation of another, more general skill. Example: `react-best-practices` has `broader: [frontend]`. Closes the cross-skill generalisation gap that the flat `subject`/`taxonomy_domain` taxonomy cannot express.",
           "items": {
             "type": "string"
           }

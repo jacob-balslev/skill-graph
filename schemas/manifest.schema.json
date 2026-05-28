@@ -270,9 +270,6 @@
             "type": "string",
             "description": "Name of the skill that replaces this one. Populated when authored `stability: deprecated`. Consumers use this to follow deprecation chains automatically."
           },
-          "extends": {
-            "type": "string"
-          },
           "activation": {
             "type": "object",
             "additionalProperties": false,

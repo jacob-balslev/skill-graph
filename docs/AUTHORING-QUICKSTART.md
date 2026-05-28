@@ -53,7 +53,6 @@ Triggered only when the gating condition applies. Schema-enforced via `allOf`:
 
 | Field | Required when |
 |---|---|
-| `extends` | `type: overlay` |
 | `grounding` | `deployment_target: project` |
 | `superseded_by` | `stability: deprecated` |
 | `keywords` | `deployment_target: project` OR `routing_bundles` is set |

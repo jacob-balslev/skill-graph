@@ -20,13 +20,13 @@
 | [`docs/manifest-field-mapping.md`](manifest-field-mapping.md) | The authored → generated bridge: rename map, loss policy, migration notes |
 | [SKILL.md specification](https://agentskills.io/specification) | The base standard Skill Metadata Protocol extends |
 
-> **Terminology note.** This primer describes the **five metadata layers** inside a single skill's frontmatter (Activation, Taxonomy, Ontology, Inheritance, Grounding). Do not confuse these with the **five authority tiers** of the repository (schema, explanation, enforcement, consumer, specimen) described in `SKILL_GRAPH.md`. They are different fives at different scopes: metadata layers live inside one `SKILL.md`; authority tiers span the whole repo.
+> **Terminology note.** This primer describes the **four metadata layers** inside a single skill's frontmatter (Activation, Taxonomy, Ontology, Grounding). Do not confuse these with the **five authority tiers** of the repository (schema, explanation, enforcement, consumer, specimen) described in `SKILL_GRAPH.md`. They are different things at different scopes: metadata layers live inside one `SKILL.md`; authority tiers span the whole repo.
 
 ## Contents
 
 1. [What is Skill Graph?](#1-what-is-skill-graph)
 2. [When to adopt Skill Graph](#2-when-to-adopt-skill-graph)
-3. [Skill Metadata Protocol — five layers](#3-skill-metadata-protocol--five-layers)
+3. [Skill Metadata Protocol — four layers](#3-skill-metadata-protocol--four-layers)
 4. [Structuring and indexing a library — four orthogonal axes](#4-structuring-and-indexing-a-library--four-orthogonal-axes)
 5. [Where domain knowledge about tools, frameworks, and templates lives](#5-where-domain-knowledge-about-tools-frameworks-and-templates-lives)
 6. [Routing — a worked example](#6-routing--a-worked-example)
@@ -89,7 +89,7 @@ Skill Metadata Protocol is materially more expensive to author and maintain than
 ### Adopt when any of the following describe your library
 
 - **You need to know what a skill is relevant for** beyond its prose description: area, angle, project, stack, taxonomy, methodology, framework, semantic neighbours, and verification surface.
-- **You want library structure instead of a flat folder**. `category`, `domain`, `keywords`, `routing_bundles`, and `relations.*` give you taxonomy, semantic clustering, and retrieval surfaces.
+- **You want library structure instead of a flat folder**. `subject`, `taxonomy_domain`, `keywords`, `routing_bundles`, and `relations.*` give you taxonomy, semantic clustering, and retrieval surfaces.
 - **You want Karpathy-style eval loops for skills**. `examples`, `anti_examples`, `routing_eval`, `eval_state`, and `drift_check` give you repeatable cases and evidence instead of vibes.
 - **Two skills cover overlapping territory** and the agent routes to the wrong one on ambiguous prompts. `boundary` pushes the router off the wrong skill explicitly rather than relying on description re-ranking.
 - **One skill is load-bearing for another** and you have silently broken the assumption by editing the parent. `depends_on` surfaces the breakage at lint time instead of at routing time.
@@ -103,22 +103,21 @@ None of the above pressures is pushing on your library yet. The extra fields are
 
 ---
 
-## 3. Skill Metadata Protocol — five layers
+## 3. Skill Metadata Protocol — four layers
 
-Skill Metadata Protocol organises the frontmatter into **five metadata layers**. Each layer is a group of fields that answers a question the layer above it cannot. A flat keyword retriever sees only Layer 1; a graph-aware Skill Graph router reads all five and makes a compound decision.
+Skill Metadata Protocol organises the frontmatter into **four metadata layers**. Each layer is a group of fields that answers a question the layer above it cannot. A flat keyword retriever sees only Layer 1; a graph-aware Skill Graph router reads all four and makes a compound decision.
 
 ```mermaid
 flowchart TB
   L1["<b>Layer 1 — Activation surface</b><br/>description · keywords · triggers · examples · anti_examples<br/>paths · routing_bundles · project[]"]
-  L2["<b>Layer 2 — Taxonomy</b><br/>category · category"]
-  L3["<b>Layer 3 — Ontology</b><br/>relations.depends_on · verify_with · adjacent · boundary"]
-  L4["<b>Layer 4 — Inheritance</b><br/>type: overlay · extends"]
-  L5["<b>Layer 5 — Grounding</b><br/>grounding.* · drift_check · lifecycle · freshness · eval_state"]
+  L2["<b>Layer 2 — Taxonomy</b><br/>subject · subjects[] · taxonomy_domain"]
+  L3["<b>Layer 3 — Ontology</b><br/>relations.depends_on · verify_with · related · boundary"]
+  L4["<b>Layer 4 — Grounding</b><br/>grounding.* · drift_check · lifecycle · freshness · eval_state"]
 
-  L1 --> L2 --> L3 --> L4 --> L5
+  L1 --> L2 --> L3 --> L4
 
   classDef layer fill:#f3f4f6,stroke:#374151,color:#111827
-  class L1,L2,L3,L4,L5 layer
+  class L1,L2,L3,L4 layer
 ```
 
 **Legend.** Each box is the set of fields that constitute one layer. The arrows do not express runtime data flow; they express expressiveness — each layer reasons over strictly more than the one above it.
@@ -137,11 +136,11 @@ flowchart TB
 
 **Purpose.** Place the skill at exactly one position in a hierarchical tree.
 
-**Fields.** `category` (the top-level shelf, always required), `category` (the slash-delimited nested path, optional).
+**Fields.** `subject` (the top-level shelf, a required closed 9-enum), `taxonomy_domain` (the slash-delimited nested path, optional).
 
-**What it answers.** *What kind of concern is this?* The tree carries meaning through nesting: `editor/linting/eslint-rules` says eslint-rules *is a kind of* linting *is a kind of* editor concern. Use `category` only when the library is large enough that a tree helps navigation (`docs/field-reference.md § category` recommends it past ~20 skills). A skill occupies exactly one taxonomic position — this is the difference between taxonomy and the multi-membership tag axes (see section 4).
+**What it answers.** *What kind of concern is this?* The tree carries meaning through nesting: `code-engineering/linting/eslint-rules` says eslint-rules *is a kind of* linting *is a kind of* code-engineering concern. `subject` is always required; add `taxonomy_domain` only when a single `subject` holds enough skills (past ~25) that a sub-path helps navigation. A skill occupies exactly one taxonomic position — this is the difference between taxonomy and the multi-membership tag axes (see section 4).
 
-**What you do with this:** Pick `category` to file the skill on a top-level shelf (`engineering`, `quality`, `integration`, etc.). Add `category` only when your library is past ~20 skills and a tree helps readers navigate.
+**What you do with this:** Pick `subject` to file the skill on one of the nine top-level shelves (`code-engineering`, `quality-assurance`, `frontend-ui`, etc.). Add `taxonomy_domain` only when a subject grows large enough that a tree helps readers navigate.
 
 ### Layer 3. Ontology
 
@@ -153,17 +152,7 @@ flowchart TB
 
 **What you do with this:** Add `boundary` when two skills cover the same prompt and you want the more-specific one to win. Add `verify_with` when one skill's verdict needs another skill's check before being trusted. Add `depends_on` when removing the target would silently break this skill at runtime. Use `adjacent` sparingly — most "often used together" links are better expressed as `verify_with` if the secondary skill should auto-co-load.
 
-### Layer 4. Inheritance
-
-**Purpose.** Express "this skill is a specialisation of that skill" as a single typed predicate with schema-level consequences.
-
-**Fields.** `type: overlay` and `extends` (a sibling skill name).
-
-**What it answers.** *Is this skill a specialised version of another skill?* Inheritance is its own layer rather than folded into Ontology because it carries a dual obligation: an ontological claim (*this is a kind of that*) *and* a schema-level constraint on body structure (overlay skills MUST carry `## Extends` and `## Overlay Rules` sections). The other four relation predicates do not impose body-structure obligations.
-
-**What you do with this:** Use `extends` only when removing the parent would break the overlay's identity (the overlay is anti-rigid in OntoClean terms — it has no coherent meaning standalone). For "this is a kind of that" without existential dependency, use `relations.broader` instead — that's the OntoClean test (ADR 0003). The `lint-overlay` starter `extends: testing-strategy` because lint-overlay is meaningless without the base verification framework; `react-best-practices broader: [frontend]` because react-best-practices remains coherent if `frontend` is deleted.
-
-### Layer 5. Grounding
+### Layer 4. Grounding
 
 **Purpose.** Tie an otherwise abstract skill to specific, hashable artifacts in the codebase, and report when those artifacts have changed.
 
@@ -173,15 +162,15 @@ flowchart TB
 
 **What you do with this:** Re-baseline `truth_source_hashes` after every deliberate edit to the source file (`node scripts/skill-graph-drift.js --record --apply <skill-dir>`). When the drift sentinel reports DRIFT, re-verify the skill's `## Verification` checklist against the changed truth source *before* re-recording — drift is a prompt to re-read the truth source, not to silently rubber-stamp the new hash.
 
-### How the five layers compose into a routing decision
+### How the four layers compose into a routing decision
 
-The reference router (`scripts/skill-graph-route.js`) reads all five layers and produces a single ranked result set. For a query `"accessibility keyboard navigation"` scoped to `--project <your-project>`:
+The reference router (`scripts/skill-graph-route.js`) reads all four layers and produces a single ranked result set. For a query `"accessibility keyboard navigation"` scoped to `--project <your-project>`:
 
 1. **Layer 1** matches against `description`, `keywords`, `triggers`, `paths`. Non-matches are filtered out.
 2. **`project[]`** (Layer 1 field) filters further by project belonging when `deployment_target: project`.
 3. **Layer 3** expands the `depends_on` closure — any skill whose dependency is also matched is boosted; co-loads `verify_with` targets of selected skills.
 4. **Layer 3** applies `boundary`: if a matched skill's boundary targets another skill that also matched, the boundary-owner absorbs the prompt and the boundary-loser is excluded.
-5. **Layer 5** applies the quality gate. The default `--min-eval-state` is `unverified`, which admits everything; passing `--min-eval-state passing` excludes skills below that state. Staleness from `lifecycle.stale_after_days` is annotated on the result line (a `⚠ stale` marker), not used for exclusion.
+5. **Layer 4** applies the quality gate. The default `--min-eval-state` is `unverified`, which admits everything; passing `--min-eval-state passing` excludes skills below that state. Staleness from `lifecycle.stale_after_days` is annotated on the result line (a `⚠ stale` marker), not used for exclusion.
 
 Section 6 shows this in action with a real query.
 
@@ -189,7 +178,7 @@ Section 6 shows this in action with a real query.
 
 ## 4. Structuring and indexing a library — four orthogonal axes
 
-Beyond the five metadata layers that express *meaning*, a library needs four independent axes for *structure and indexing*. These axes live inside Layers 1 and 2 but are worth calling out explicitly because adopters routinely confuse them. They are **orthogonal**: a single skill picks exactly one value of Scope and Taxonomy, and many values of the two tag axes.
+Beyond the four metadata layers that express *meaning*, a library needs four independent axes for *structure and indexing*. These axes live inside Layers 1 and 2 but are worth calling out explicitly because adopters routinely confuse them. They are **orthogonal**: a single skill picks exactly one value of Scope and Taxonomy, and many values of the two tag axes.
 
 | Axis | Field | Cardinality | Purpose |
 |---|---|---|---|
@@ -206,7 +195,7 @@ The axes compose without nesting. A single skill can be `deployment_target: port
 Two values, chosen at authoring time and enforced by the schema:
 
 - **`portable`** — applies to any project. Most reusable skills (for example the starter `refactor` and `testing-strategy`) use this value.
-- **`project`** — anchored to one specific project. Triggers Layer 5 (Grounding): `grounding.subject_matter`, `truth_sources`, and `drift_check.truth_source_hashes` become required, so the skill is pinned to the real artifacts it describes and the drift sentinel can catch silent divergence.
+- **`project`** — anchored to one specific project. Triggers Layer 4 (Grounding): `grounding.subject_matter`, `truth_sources`, and `drift_check.truth_source_hashes` become required, so the skill is pinned to the real artifacts it describes and the drift sentinel can catch silent divergence.
 
 `deployment_target` is the first axis the router filters on and the only axis with body-structure implications (`grounding` is conditional on `deployment_target: project`). The `scope` field is a free-text PRD-style description of the deployment context — it is not an enum and does not replace `deployment_target`. For the full decision table, see `docs/field-decision-guide.md § 1. Which deployment_target do I use?`.
 
@@ -246,9 +235,9 @@ Beyond the four structuring axes, three categories of domain knowledge have dedi
 
 **Features and tools** live on the activation surface: `keywords`, `triggers`, `paths`, plus `allowed-tools` (the space-separated tool allowlist SKILL.md inherits from the base standard) for runtime gating. A skill that operates on `.tsx` files declares `paths: ["**/*.tsx"]`; a skill that should only activate when `jest` is in the prompt declares it in `triggers`.
 
-**Frameworks and patterns** live in the relations graph (Layer 3). `depends_on` is the right edge for "you cannot apply this pattern responsibly without that framework in place" — the starter `refactor` skill declares `depends_on: [testing-strategy]` for exactly this reason. `extends` (Layer 4) is the right edge for "this is a specialisation" — the `lint-overlay` starter extends `testing-strategy`. `adjacent` is for "these are worth reading together" without load-bearing dependency.
+**Frameworks and patterns** live in the relations graph (Layer 3). `depends_on` is the right edge for "you cannot apply this pattern responsibly without that framework in place" — the starter `refactor` skill declares `depends_on: [testing-strategy]` for exactly this reason. `relations.broader` is the right edge for "this is a specialisation of a more general skill." `related` is for "these are worth reading together" without load-bearing dependency.
 
-**Templates** live in the specimen tier of the repo (Tier 5 per `SKILL_GRAPH.md`): `examples/skill-metadata-template.md` is the self-referential authoring template, and the overlay archetype is the protocol's templating mechanism. Adopters fork the template and tighten its frontmatter; the teaching layer (`> **TEMPLATE NOTE:**` blockquotes and `# TEMPLATE NOTE:` YAML comments) is stripped from derived skills before shipping.
+**Templates** live in the specimen tier of the repo (Tier 5 per `SKILL_GRAPH.md`): `examples/skill-metadata-template.md` is the self-referential authoring template. Adopters fork the template and tighten its frontmatter; the teaching layer (`> **TEMPLATE NOTE:**` blockquotes and `# TEMPLATE NOTE:` YAML comments) is stripped from derived skills before shipping.
 
 ---
 
@@ -365,7 +354,7 @@ The positive identity is in [§1 — How Skill Graph differs from marketplaces a
 - **Not an always-on project instruction file.** Keep non-negotiable repo rules in AGENTS.md / CLAUDE.md; keep routable procedural knowledge in skills.
 - **Not a second skill format competing with SKILL.md.** Skill Metadata Protocol is an enriched contract over SKILL.md and can be exported to base SKILL.md (section 7).
 - **Not a tutorial.** For "how do I author my first skill," see [`docs/QUICKSTART-30MIN.md`](QUICKSTART-30MIN.md) and `CONTRIBUTING.md § Adding or modifying a skill`.
-- **Not exhaustive.** This primer transmits the mental model. Normative field semantics live in `docs/field-reference.md`; archetype section maps live in `docs/skill-metadata-protocol.md`; authority-tier invariants live in `SKILL_GRAPH.md`.
+- **Not exhaustive.** This primer transmits the mental model. Normative field semantics live in `docs/field-reference.md`; body structure and requiredness groups live in `docs/skill-metadata-protocol.md`; authority-tier invariants live in `SKILL_GRAPH.md`.
 
 ---
 
@@ -377,7 +366,7 @@ The positive identity is in [§1 — How Skill Graph differs from marketplaces a
 2. `docs/PRIMER.md` — this file
 3. `SKILL_GRAPH.md` — repo organisation and the five authority tiers
 4. `docs/field-decision-guide.md` — decision tables you will consult while authoring
-5. `docs/skill-metadata-protocol.md` — archetype section maps and strictness rules
+5. `docs/skill-metadata-protocol.md` — body structure and strictness rules
 6. `docs/field-reference.md` — per-field reference (bookmark, don't read linearly)
 
 **External specification:** [SKILL.md](https://agentskills.io/specification) — the base standard Skill Metadata Protocol extends.

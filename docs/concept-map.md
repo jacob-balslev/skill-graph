@@ -18,13 +18,13 @@ What it does promise: deterministic lint, manifest generation, relation-aware ro
 
 ## The 40 authored fields — grouped by role
 
-The fields split into nine conceptual groups. This grouping is a teaching aid only — the schema groups by *requiredness* (always required / required-for-archetype / required-for-scope / optional). See `docs/skill-metadata-protocol.md § Requiredness Groups` for the authoritative grouping.
+The fields split into eight conceptual groups. This grouping is a teaching aid only — the schema groups by *requiredness* (always required / required-for-archetype / required-for-scope / optional). See `docs/skill-metadata-protocol.md § Requiredness Groups` for the authoritative grouping.
 
 The exact field count:
 
-- **40 top-level authored fields** — the number authors write in YAML frontmatter, including compatibility aliases.
+- **39 top-level authored fields** — the number authors write in YAML frontmatter, including compatibility aliases.
 - **12 required-for-all fields** — every skill must populate these.
-- **5 conditionally-required fields** — unlocked by `type: overlay`, `deployment_target: project`, `stability: deprecated`, `comprehension_state: present`, plus `keywords` for routable skills.
+- **4 conditionally-required fields** — unlocked by `deployment_target: project`, `stability: deprecated`, `comprehension_state: present`, plus `keywords` for routable skills.
 - **18 optional enrichment fields** — including the full nested sub-fields inside `relations`, `grounding`, `portability`, `compatibility`, `lifecycle`, `runtime_telemetry`, and concept/eval receipts.
 
 When you see "possible fields" counted anywhere, that is the count including nested sub-fields and v3.1 aliases individually. The 40 count refers to canonical top-level authored keys only.
@@ -41,17 +41,18 @@ The identity of the skill — what it is, who it is, which version of itself.
 | `version` | one | Semver of the skill content itself | `dcterms:hasVersion` |
 | `owner` | one | Maintenance accountability | `dcterms:creator` |
 
-### Classification (6 fields, 4 required, 2 optional)
+### Classification (8 fields, 4 required)
 
 The kind of skill and where it lives in the library.
 
 | Field | Cardinality | Role | Required? |
 |---|---|---|---|
-| `schema_version` | one | Contract version - currently `4` | always |
-| `type` | one enum | Archetype — `capability`, `workflow`, `router`, `overlay` | always |
-| `scope` | one enum | Locality — `portable`, `reference`, `codebase` | always |
-| `category` | one | Flat browse bucket (e.g. `engineering`, `knowledge`) | always |
-| `domain` | one slash-path | Hierarchical domain path (e.g. `ecommerce/integrations/shopify`) | optional |
+| `schema_version` | one | Contract version - currently `8` | always |
+| `subject` | one enum | Primary browse shelf — one of nine closed values (`code-engineering`, `quality-assurance`, `frontend-ui`, `design-craft`, `agent-ops`, `product-domain`, `knowledge-organization`, `meta-methods`, `data-analytics`) | always |
+| `deployment_target` | one enum | Where the skill deploys — `portable` or `project` | always |
+| `scope` | one string | Free-text PRD-style statement of what the skill teaches and what it does not | always |
+| `subjects` | up to 2 | Polyhierarchy when a skill genuinely spans two shelves (primary first, must equal `subject`) | optional |
+| `taxonomy_domain` | one slash-path | Hierarchical sub-path within a `subject` (e.g. `ecommerce/integrations/shopify`) | optional |
 | `stability` | one enum | `experimental`, `stable`, `frozen`, `deprecated` | optional |
 | `superseded_by` | one | Replacement skill when deprecated | required if `stability: deprecated` |
 
@@ -111,14 +112,6 @@ Typed edges to sibling skills. Lint verifies every target exists.
 
 `adjacent` remains valid through v3.x as a deprecated alias of `related`; the v4 bump removes it in favour of the SKOS-aligned name. `boundary` remains canonical for routing-layer handoff. ADR 0001 records the `adjacent` rename; ADR 0006 records the `boundary` / `disjoint_with` split.
 
-### Inheritance (1 field, conditionally required)
-
-| Field | Cardinality | Role |
-|---|---|---|
-| `extends` | one skill name | Parent skill being specialised — required when `type: overlay` |
-
-Skill Graph supports single-parent inheritance only. For an overlay that needs to inherit concepts from two parents, express the secondary axis as `depends_on`. The OntoClean rigidity constraints for overlays are documented in ADR 0003.
-
 ### Grounding (1 object, 5 required sub-fields — conditional on `deployment_target: project`)
 
 Ties the skill to hashable artifacts and documents the trust hierarchy.
@@ -160,16 +153,9 @@ Skill Graph classifies along **three strictly-orthogonal axes plus one partially
 
 The taxonomy-vs-routing-group coupling is intentional for ergonomics (a router can say "load all `quality` skills") but means the fourth axis is not a strict Ranganathan facet. Keep the distinction in mind when adding routing groups: if the group is redundant with the skill's category, use the category alone.
 
-## Archetype → body-section requirements
+## Body structure
 
-The `type` field binds to required H2 sections in the SKILL.md body. This is enforced by `scripts/skill-lint.js`.
-
-| Archetype | Required H2 sections | OntoClean rigidity (see ADR 0003) |
-|---|---|---|
-| `capability` | `## Coverage`, `## Philosophy`, `## Verification`, `## Do NOT Use When` | +R +I +U -D |
-| `workflow` | `## Coverage`, `## Philosophy`, `## Workflow`, `## Verification`, `## Do NOT Use When` | +R +I +U -D |
-| `router` | `## Coverage`, `## Routing Rules`, `## Do NOT Use When` | ~R -I ~U +D |
-| `overlay` | `## Coverage`, `## Overlay Rules`, `## Extends`, `## Do NOT Use When` | -R -I -U +D |
+The skill body follows the section structure demonstrated by `examples/skill-metadata-template.md` — at minimum `## Coverage`, `## Philosophy of the skill`, `## Verification`, and `## Do NOT Use When`. v8 has no archetype-specific section requirements; see [`docs/skill-metadata-protocol.md § Body Structure`](skill-metadata-protocol.md#body-structure).
 
 ## How the concept map differs from earlier drafts (drift log)
 
@@ -180,16 +166,15 @@ An earlier concept map (pre-2026-04-20) contained six inaccuracies now corrected
 3. Described `drift_check` as a scalar date — corrected to object (v3 shape, schema-enforced).
 4. Called the axes "4 orthogonal" — corrected to "3 strictly orthogonal + 1 partially coupled".
 5. Stated the field count without distinguishing authored-vs-possible — clarified that the current schema has 36 canonical top-level authored fields, while aliases and nested sub-field counts are separate measures.
-6. Omitted the 6-field-required-for-all set (`category`, `freshness`, `drift_check`, `eval_artifacts`, `eval_state`, `routing_eval`) — restored and grouped under Health & drift and Evaluation Status.
+6. Omitted the required-for-all set (`subject`, `deployment_target`, `freshness`, `drift_check`, `eval_artifacts`, `eval_state`, `routing_eval`) — restored and grouped under Classification, Health & drift, and Evaluation Status.
 
 ## References
 
 - `schemas/skill.schema.json` — current canonical schema (source of truth for types and requiredness)
 - `schemas/skill.context.jsonld` — JSON-LD `@context` for W3C interoperability
-- `docs/skill-metadata-protocol.md` — requiredness groups, archetype section map, schema strictness
+- `docs/skill-metadata-protocol.md` — requiredness groups, body structure, schema strictness
 - `docs/field-reference.md` — per-field semantics (authoritative prose)
 - `docs/field-decision-guide.md` — decision tables
 - `docs/adr/0001-predicate-set.md` — predicate evolution decision
 - `docs/adr/0002-json-ld-context.md` — W3C vocabulary mapping decision
-- `docs/adr/0003-ontoclean-rigidity-tags.md` — archetype rigidity semantics
 - `docs/adr/0004-persistent-identifiers.md` — URN scheme for v4

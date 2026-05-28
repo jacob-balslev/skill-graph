@@ -60,7 +60,6 @@ Every top-level authored field in `schemas/skill.schema.json` has exactly one en
 | 25 | `compatibility` | copied through unchanged | `compatibility`. |
 | 26 | `allowed-tools` | copied through unchanged | `allowed-tools`. |
 | 27 | `allowed_tools` | copied through unchanged | `allowed_tools`; compatibility alias for `allowed-tools`. |
-| 28 | `extends` | copied through unchanged | `extends`. |
 | 29 | `triggers` | grouped under parent | `activation.triggers`. |
 | 30 | `keywords` | grouped under parent | `activation.keywords`. |
 | 31 | `examples` | grouped under parent | `activation.examples`. |

@@ -160,11 +160,6 @@
       "@id": "dcterms:requires",
       "@container": "@set"
     },
-    "extends": {
-      "@id": "prov:wasDerivedFrom",
-      "@type": "@id",
-      "_note": "Overlay specialisation — PROV-O derivation relation"
-    },
     "grounding": "sg:grounding",
     "subject_matter": "sg:subjectMatter",
     "grounding_mode": "sg:groundingMode",

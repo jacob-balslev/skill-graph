@@ -310,9 +310,6 @@ function buildSkillEntry(fm, filePath, skillId, _projectFromRoot) {
   if (fm.superseded_by !== undefined && fm.superseded_by !== null) {
     entry.superseded_by = fm.superseded_by;
   }
-  if (fm.extends !== undefined && fm.extends !== null) {
-    entry.extends = fm.extends;
-  }
   if (fm.license !== undefined && fm.license !== null) {
     entry.license = fm.license;
   }

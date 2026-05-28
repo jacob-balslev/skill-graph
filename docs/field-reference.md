@@ -135,7 +135,7 @@ description: "Shopify integration patterns covering the Admin API, webhook handl
 - Start new skills at `1.0.0`.
 - Increment the patch version for small corrections (examples, wording, typos).
 - Increment the minor version when new sections or fields are added without breaking the existing shape.
-- Increment the major version when content is reorganized or an archetype changes.
+- Increment the major version when content is reorganized in a way that breaks the existing shape, or the skill's classification (`subject` / `deployment_target`) changes.
 
 **Example.**
 ```yaml
@@ -1189,27 +1189,6 @@ allowed_tools: Read Grep Bash
 
 ---
 
-## `extends`
-
-**Purpose.** Explicitly states which base skill an overlay extends. Required for all `type: overlay` skills.
-
-**Rules.**
-- Must be the `name` value of an existing skill in the library.
-- Relation-target existence is verified by graph/manifest review and routing audits, not by `scripts/skill-lint.js`.
-- Only valid when `type: overlay`. Setting `extends` on a non-overlay skill is an error.
-
-**Example.**
-```yaml
-type: overlay
-extends: shopify
-```
-
-**When to use.** When and only when `type: overlay`. The overlay inherits and specializes the base skill's content.
-
-**When NOT to use.** Non-overlay skills. Do not use `extends` to express a dependency — use `relations.depends_on` for that.
-
----
-
 ## `triggers`
 
 **Purpose.** Explicit phrase or label triggers that activate this skill. Complements `keywords` for skills that respond to exact phrases rather than semantic matching.
@@ -1348,7 +1327,7 @@ routing_bundles:
 
 If you are unsure which to use, you want `boundary`. Use `disjoint_with` only when you have an explicit reason to make a formal ontological claim that survives the JSON-LD projection into OWL.
 
-**Glossary.** See `docs/glossary.md § Relation predicates` for the formal definitions of each predicate, including the OntoClean rigidity tags for `extends` (which lives outside `relations` but participates in the same semantic space). The JSON-LD `@context` at `schemas/skill.context.jsonld` projects these predicates to their W3C equivalents for RDF consumers.
+**Glossary.** See `docs/glossary.md § Relation predicates` for the formal definitions of each predicate. The JSON-LD `@context` at `schemas/skill.context.jsonld` projects these predicates to their W3C equivalents for RDF consumers.
 
 **Item shapes in v3.** `boundary`, `disjoint_with`, and `depends_on` accept both the bare-string form (v2-compatible) and the enriched object form (v3 addition). The bare form remains valid — upgrade item-by-item when a reason or version constraint is real.
 
@@ -1356,7 +1335,7 @@ If you are unsure which to use, you want `boundary`. Use `disjoint_with` only wh
 - `depends_on` objects carry a `min_version` semver constraint. Useful when a skill depends on a specific version of another skill's contract.
 - `related`, `broader`, `narrower`, `verify_with` are bare-string only — they carry no additional metadata.
 
-**When to use `broader` vs `extends`.** `extends` is overlay-only (`type: overlay`) and forms a single-parent existential-dependency chain (child ceases to have meaning without parent; ADR 0003). `broader` is cross-skill generalisation that does NOT imply existential dependency or overlay semantics — use it when the target is a more general concept but this skill has its own standalone identity. Example: `react-best-practices` has `broader: [frontend]` because it specialises frontend knowledge, but React-best-practices remains a coherent skill even if the `frontend` skill were deleted.
+**When to use `broader`.** `broader` is cross-skill generalisation — use it when the target is a more general concept but this skill has its own standalone identity. Example: `react-best-practices` has `broader: [frontend]` because it specialises frontend knowledge, but `react-best-practices` remains a coherent skill even if the `frontend` skill were deleted.
 
 **Example (v3.1, SKOS-aligned preferred names + ADR 0006 boundary canonical).**
 ```yaml

@@ -676,7 +676,7 @@ schema_version, name, urn, description, version, subject, subjects,
 deployment_target, scope, taxonomy_domain, project, repo, owner,
 freshness, drift_check, eval_artifacts, eval_state, routing_eval,
 comprehension_state, eval_last_run, stability, superseded_by, license,
-compatibility, allowed-tools, extends, triggers, keywords, examples,
+compatibility, allowed-tools, triggers, keywords, examples,
 anti_examples, paths, routing_bundles, relations, grounding,
 portability, lifecycle, runtime_telemetry,
 # Understanding fields — author these when comprehension_state: present
@@ -704,16 +704,6 @@ The manifest generator (`scripts/generate-manifest.js`) reads the authored front
 - `health` — compiled block merging `eval_artifacts`, `eval_state`, `routing_eval`, `comprehension_state`, `eval_last_run`, `freshness`, and `drift_check`.
 
 The manifest schema is at `schemas/manifest.schema.json`. For the complete authored-to-generated field rename map and loss policy, see `docs/manifest-field-mapping.md`.
-
-### Normalized during manifest generation
-
-Some legacy scope values are normalized by the manifest generator to the schema-valid v8 enum. The normalization is deterministic and logged:
-
-| Legacy value | Normalized to | Reason |
-|---|---|---|
-| `operational` (scope) | `project` | Operational = repo-specific |
-| `overlay` (scope) | `portable` | Overlay skills are cross-repo |
-| `generic` (scope) | `portable` | Generic = cross-repo applicable |
 
 ---
 

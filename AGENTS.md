@@ -358,7 +358,7 @@ The structural rule behind this map: **prose lives in one place per concept.** I
 
 ### Per-field semantics (the most common rabbit hole)
 
-For any single Skill Metadata Protocol field (`name`, `description`, `type`, `scope`, `category`, `stability`, `freshness`, `eval_state`, `routing_eval`, `comprehension_state`, `relations.*`, `grounding.*`, etc.):
+For any single Skill Metadata Protocol field (`name`, `description`, `subject`, `deployment_target`, `scope`, `stability`, `freshness`, `eval_state`, `routing_eval`, `comprehension_state`, `relations.*`, `grounding.*`, etc.):
 
 | What you are editing about the field | Canonical owner | Notes |
 |---|---|---|
@@ -377,7 +377,6 @@ For any single Skill Metadata Protocol field (`name`, `description`, `type`, `sc
 
 | Concept area | Canonical owner | Use for |
 |---|---|---|
-| **Archetypes** (`capability` / `workflow` / `router` / `overlay`) — what they teach, when each applies, eval shape per archetype | `docs/skill-metadata-protocol.md` § Archetypes | Cross-link from `field-reference.md § type`. |
 | **Migration narrative** (per-version: what each version introduced, breaking changes, codemod usage) | CHANGELOG.md entries + git history of `schemas/skill.schema.json` + the substantive ADR per version (e.g., ADR 0011 for the v6→v7 four-verdict Audit Status split; ADR 0017 for the v7→v8 classification model and its 2026-05-27 amendment) | New per-version migrations get a CHANGELOG entry and (if architecturally significant) a new ADR; do not append migration narrative to AGENTS.md. |
 | **Authority tiers** (which file binds which) | `SKILL_GRAPH.md` § Authority Tiers | The map of "Tier 1 schemas → Tier 2 docs → Tier 3 scripts → Tier 4 consumers → Tier 5 examples." |
 | **Current corpus state** — verified counts (canonical skills, exported skills, worklist), build/health snapshot | `SKILL_GRAPH.md` § Current State + `docs/status.generated.md` | Single-source-of-truth count lives in `SKILL_GRAPH.md § Current State`. The generated status file mirrors it. Volatile counts must not be duplicated into AGENTS.md, README.md, or anywhere else — link instead. |
@@ -473,9 +472,9 @@ For non-trivial new skills, write a short spec and plan first as described in `C
 - Put each skill in `skills/<skill-name>/SKILL.md`.
 - Keep `name:` lowercase and aligned with the parent directory.
 - Write `description:` as a routing contract: clear positive trigger plus explicit negative boundary.
-- Pick `type` honestly: `capability`, `workflow`, `router`, or `overlay`.
-- Pick `scope` honestly: `portable`, `workspace`, or `project` (legacy aliases `reference` and `codebase` still validate during sunset).
-- Add `grounding` for `deployment_target: project` (and for any legacy unmigrated skill still carrying `scope: codebase`).
+- Pick `subject` honestly: one of the nine closed values (`code-engineering`, `quality-assurance`, `frontend-ui`, `design-craft`, `agent-ops`, `product-domain`, `knowledge-organization`, `meta-methods`, `data-analytics`).
+- Pick `deployment_target` honestly: `portable` or `project`. Write `scope` as a free-text PRD-style statement of what the skill teaches.
+- Add `grounding` for `deployment_target: project`.
 - Point every `relations.*` target at an existing sibling skill.
 - Keep `eval_artifacts`, `eval_state`, and `routing_eval` truthful.
 - Remove template teaching comments before committing a derived skill.
@@ -498,11 +497,7 @@ The Skill Graph evaluates four layers; each has its own surface and its own defi
 - **≥7 realistic scenarios** per skill — not trivia, not pattern-matching, not single-line "is this X" prompts. Each scenario should require the skill's specific judgment to answer correctly.
 - **Project-grounded** when `deployment_target: project` (anchored to specific repo truth; or a legacy unmigrated skill still carrying `scope: codebase`); **principle-grounded** when `deployment_target: portable` (repo-agnostic patterns). A skill that blends both records `grounding_mode: hybrid`.
 - **At least one negative expectation per eval** — what the answer must *not* say or do. Negative expectations catch silent scope reduction and softened-failure responses.
-- **Archetype-matched coverage:**
-  - `capability` evals test domain correctness, scope boundaries, anti-pattern recognition.
-  - `workflow` evals test sequencing, gate enforcement, failure-mode handling.
-  - `router` evals test correct owner-skill routing and explicit refusal to over-own.
-  - `overlay` evals test local-truth correctness and clear delineation from base skill.
+- **Coverage matched to what the skill teaches:** domain correctness, scope boundaries, and anti-pattern recognition for capability-style skills; sequencing, gate enforcement, and failure-mode handling for procedural skills; correct owner-skill routing and explicit refusal to over-own for router-style skills.
 
 ### What a good routing eval looks like
 
