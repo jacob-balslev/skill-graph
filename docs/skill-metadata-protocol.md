@@ -253,7 +253,7 @@ The YAML frontmatter uses the current v7 schema, including compatibility aliases
 | | [`subject`](field-reference.md#subject) | always | closed 9-value enum — primary classification |
 | | [`subjects`](field-reference.md#subjects) | | ordered polyhierarchy array; first item matches `subject` (max 2) |
 | | [`scope`](field-reference.md#scope) | always | `portable` \| `workspace` \| `project` |
-| | [`domain`](field-reference.md#domain) | | hierarchical path subdividing `subject` |
+| | [`taxonomy_domain`](field-reference.md#taxonomy_domain) | | hierarchical path subdividing `subject` |
 | | [`stability`](field-reference.md#stability) | | `experimental` \| `stable` \| `deprecated` |
 | | [`superseded_by`](field-reference.md#superseded_by) | if `stability: deprecated` | skill name |
 | | [`marketplace_tier`](field-reference.md#marketplace_tier) | | `S` \| `A` \| `B` \| `C` (omit for unpublished; sourced from publication-priority docs) |
@@ -288,7 +288,7 @@ The YAML frontmatter uses the current v7 schema, including compatibility aliases
 | | [`paths`](field-reference.md#paths) | | glob[] |
 | | [`examples`](field-reference.md#examples) | | string[] (positive prompts) |
 | | [`anti_examples`](field-reference.md#anti_examples) | | string[] (negative prompts) |
-| | [`workspace_tags`](field-reference.md#workspace_tags) | | string[] |
+| | [`project`](field-reference.md#project) | | { handle, role }[] (replaces `workspace_tags`) |
 | | [`routing_bundles`](field-reference.md#routing_bundles) | | string[] |
 | **Relations** | [`relations`](field-reference.md#relations) | | `{ adjacent, related, broader, narrower, boundary, disjoint_with, verify_with, depends_on }` |
 | **Grounding** | [`grounding`](field-reference.md#grounding) | if `scope: project` | `{ domain_object, grounding_mode, truth_sources, failure_modes, evidence_priority }` |
