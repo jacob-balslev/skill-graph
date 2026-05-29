@@ -7,6 +7,8 @@
 **Supersedes:** the single `audit_verdict` aggregate field introduced in v6
 **Tags:** schema, audit-loop, evaluation, breaking-change, form-vs-behavior
 
+> **Amendment (2026-05-29) — gate-8 grader-model demotion superseded.** Change 3 / the Consequences section demoted the comprehension grader (gate 8) to Haiku 4.5 for token cost. That **grader-model** choice is reversed: the comprehension grader returns to **Opus** (`DEFAULT_COMPREHENSION_GRADER_MODEL = 'opus'`), per `~/Development/.claude/rules/no-lesser-models-for-quality.md` — quality judging uses the strongest model; a lesser model must never score skill quality. The rest of this ADR stands: `application_verdict` remains the primary quality signal, and the **baseline-skip early-exit** (`SKIPPED_BASELINE_HIGH` when `avg_primary_baseline >= threshold`) is retained as the token-cost mitigation — it avoids the grader call entirely for framework concepts the model already knows, rather than grading them with a weak model. Net: ~80% of the projected token saving (early-skip) is preserved; the cost change is only on the concepts that actually get graded, which now use Opus.
+
 ## Context
 
 The Skill Graph audit pipeline has 9 gates. 8 of them measure **form** (lint, schema, file shape, manifest census, naming) or **recitation** (does the model remember the concept). 1 of them — the application grader (gate 9) — measures **behavior change** on real artifacts. It has never been run on a live skill.
