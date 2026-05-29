@@ -105,16 +105,7 @@ The highest-value cases are hard negatives and prior failures. A routing eval wi
 - Verify with: `testing-strategy`, `skill-infrastructure`
 - Related: `skill-router`, `context-engineering`, `testing-strategy`, `skill-infrastructure`
 
-**Lifecycle & audit status**
-- Stability: `experimental`
-- Freshness: `2026-05-11`
-- Eval state: `unverified`
-- Routing eval: `absent`
-- Audit status: structural PASS, truth PASS, comprehension UNVERIFIED, application UNVERIFIED
-- Last audited: `2026-05-28`
-
-**Provenance**
-- version 1.0.0, schema v8, owner `skill-graph-maintainer`
-- Keywords: `agent eval`, `AI eval design`, `skill routing eval`, `eval rubric`, `hard negatives`, `grader design`, `regression eval`, `trace evaluation`, `acceptance threshold`, `prompt eval`
+**Keywords**
+- `agent eval`, `AI eval design`, `skill routing eval`, `eval rubric`, `hard negatives`, `grader design`, `regression eval`, `trace evaluation`, `acceptance threshold`, `prompt eval`
 
 <!-- skill-graph-context:end -->

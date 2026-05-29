@@ -311,16 +311,7 @@ These are grounding points, not permanent invariants. Re-check them when platfor
 - Mode: `universal`
 - Truth sources: `https://help.etsy.com/hc/en-gb/articles/360000336307-How-to-Use-Tags-to-Get-Found-in-Search`, `https://help.etsy.com/hc/en-us/articles/115015628707-How-to-Create-a-Listing`, `https://sellercentral.amazon.com/seller-forums/discussions/t/923d53dc-a182-4475-a164-6b2500dbaf2d`, `https://sellercentral.amazon.com/seller-forums/discussions/t/b2b15728-0d43-453e-974f-59eb63f73059/`, `https://developers.google.com/search/docs/appearance/title-link`, `https://developers.google.com/search/docs/appearance/snippet`, `https://help.shopify.com/en/manual/promoting-marketing/seo/adding-keywords`, `https://help.shopify.com/en/manual/promoting-marketing/seo/seo-overview`
 
-**Lifecycle & audit status**
-- Stability: `experimental`
-- Freshness: `2026-05-19`
-- Eval state: `unverified`
-- Routing eval: `absent`
-- Audit status: structural PASS, truth UNVERIFIED, comprehension UNVERIFIED, application UNVERIFIED
-- Last audited: `2026-05-28`
-
-**Provenance**
-- version 1.2.0, schema v8, owner `skill-graph-maintainer`
-- Keywords: `keyword research`, `keyword strategy`, `search intent mapping`, `keyword clustering`, `topical cluster`, `topic cluster`, `seed keyword expansion`, `long-tail keyword`, `marketplace keyword optimization`, `etsy tags`, `amazon search terms`, `amazon backend keywords`, `shopify keywords`, `google title link`, `meta description keywords`, `keyword cannibalization`, `rank tracking cadence`, `SERP overlap`, `commercial investigation query`, `transactional query`, `informational query`, `navigational query`, `listing keyword field mapping`
+**Keywords**
+- `keyword research`, `keyword strategy`, `search intent mapping`, `keyword clustering`, `topical cluster`, `topic cluster`, `seed keyword expansion`, `long-tail keyword`, `marketplace keyword optimization`, `etsy tags`, `amazon search terms`, `amazon backend keywords`, `shopify keywords`, `google title link`, `meta description keywords`, `keyword cannibalization`, `rank tracking cadence`, `SERP overlap`, `commercial investigation query`, `transactional query`, `informational query`, `navigational query`, `listing keyword field mapping`
 
 <!-- skill-graph-context:end -->

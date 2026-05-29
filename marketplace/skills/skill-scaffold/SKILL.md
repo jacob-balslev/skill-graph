@@ -190,16 +190,7 @@ Use this checklist as the authoring gate before committing a skill. Every item m
 - Mode: `hybrid`
 - Truth sources: `https://github.com/jacob-balslev/skill-graph/blob/main/examples/skill-metadata-template.md`, `https://github.com/jacob-balslev/skill-graph/blob/main/SKILL_METADATA_PROTOCOL.md`, `https://github.com/jacob-balslev/skill-graph/blob/main/schemas/skill.schema.json`, `https://github.com/jacob-balslev/skill-graph/blob/main/docs/field-reference.md`
 
-**Lifecycle & audit status**
-- Stability: `experimental`
-- Freshness: `2026-05-26`
-- Eval state: `unverified`
-- Routing eval: `absent`
-- Audit status: structural PASS, truth UNVERIFIED, comprehension UNVERIFIED, application UNVERIFIED
-- Last audited: `2026-05-28`
-
-**Provenance**
-- version 1.1.0, schema v8, owner `skill-graph-maintainer`
-- Keywords: `skill authoring`, `new skill`, `writing a skill`, `skill scaffold`, `skill template`, `skill frontmatter`, `skill metadata protocol v7`, `skill graph contract`, `capability or workflow`, `description vs coverage`
+**Keywords**
+- `skill authoring`, `new skill`, `writing a skill`, `skill scaffold`, `skill template`, `skill frontmatter`, `skill metadata protocol v7`, `skill graph contract`, `capability or workflow`, `description vs coverage`
 
 <!-- skill-graph-context:end -->

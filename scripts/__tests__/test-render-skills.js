@@ -27,26 +27,41 @@ if (!_sourceDir || !fs.existsSync(_sourceDir)) {
   process.exit(0);
 }
 
-// --- shared renderer: profile behavior (no library needed) -------------------
+// --- shared renderer: guidance-only body, never maintenance state ------------
+// There is ONE render shape. The body carries agent-facing guidance only;
+// maintenance state (audit verdicts, eval status, lifecycle, provenance) is
+// never projected, because a vendor loader feeds this body straight to the model.
 {
   const fm = {
     subject: 'agent-ops',
     deployment_target: 'portable',
     scope: 'x',
     relations: { depends_on: ['a'], boundary: [{ skill: 'b', reason: 'b owns the X domain; this owns Y.' }] },
-    application_verdict: 'UNVERIFIED',
-    stability: 'experimental',
     keywords: ['k1'],
+    application_verdict: 'APPLICABLE',
+    structural_verdict: 'PASS',
+    eval_state: 'passing',
+    eval_score: 4,
+    stability: 'experimental',
+    freshness: '2026-05-29',
+    last_audited: '2026-05-29',
+    version: '1.0.0',
+    schema_version: 8,
+    owner: 'x',
   };
-  const full = renderSkillGraphContext(fm, { profile: 'full' });
-  const runtime = renderSkillGraphContext(fm, { profile: 'runtime' });
-  assert(full.includes('Audit status'), 'full profile includes audit status');
-  assert(!runtime.includes('Audit status'), 'runtime profile omits audit status');
-  assert(!runtime.includes('Lifecycle'), 'runtime profile omits lifecycle block');
-  assert(runtime.includes('Depends on: `a`'), 'runtime profile keeps behavioral relations');
-  assert(full.includes('skill-graph-context:start') && full.includes('skill-graph-context:end'), 'paired fence markers present');
+  const out = renderSkillGraphContext(fm);
+  // behavioral guidance IS projected
+  assert(out.includes('Depends on: `a`'), 'keeps behavioral relations');
+  assert(out.includes('**Keywords**'), 'keeps keywords (activation signal)');
+  // maintenance state is NEVER projected into the agent-facing body
+  assert(!out.includes('Audit status'), 'omits audit verdicts');
+  assert(!out.includes('Lifecycle'), 'omits lifecycle block');
+  assert(!out.includes('Eval state'), 'omits eval state');
+  assert(!out.includes('Provenance'), 'omits provenance block');
+  assert(!out.includes('APPLICABLE'), 'no verdict value leaks into the body');
+  assert(out.includes('skill-graph-context:start') && out.includes('skill-graph-context:end'), 'paired fence markers present');
   // determinism
-  assert(renderSkillGraphContext(fm, { profile: 'full' }) === full, 'renderSkillGraphContext is pure (full)');
+  assert(renderSkillGraphContext(fm) === out, 'renderSkillGraphContext is pure');
 }
 
 // --- render includes EVERY skill, including project-scoped (no publication gate) ---
@@ -57,7 +72,7 @@ if (!_sourceDir || !fs.existsSync(_sourceDir)) {
   // The marketplace export gates out deployment_target: project skills; render must NOT.
   const projectScoped = skills.filter(s => s.fm.deployment_target === 'project');
   // If the corpus has any project-scoped skills, they must appear in render output.
-  const { files } = expectedFiles(path.join(_root, 'dist', 'skills'), 'full');
+  const { files } = expectedFiles(path.join(_root, 'dist', 'skills'));
   for (const s of projectScoped) {
     const present = [...files.keys()].some(f => f.endsWith(`/${s.fm.name}/SKILL.md`) || f.includes(`/${s.fm.name}/`));
     assert(present, `render must include project-scoped skill ${s.fm.name} (marketplace excludes it)`);
@@ -77,7 +92,7 @@ if (!_sourceDir || !fs.existsSync(_sourceDir)) {
   // buildRenderedSkillText is deterministic for a given skill.
   const sample = skills[0];
   assert(
-    buildRenderedSkillText(sample, 'full') === buildRenderedSkillText(sample, 'full'),
+    buildRenderedSkillText(sample) === buildRenderedSkillText(sample),
     'buildRenderedSkillText is deterministic'
   );
 }

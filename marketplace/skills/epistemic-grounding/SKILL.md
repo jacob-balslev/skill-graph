@@ -174,16 +174,7 @@ After applying this skill, verify:
 - Analogy: Epistemic grounding is to claims what double-entry bookkeeping is to financial transactions — every assertion has a corresponding source on the other side of the ledger, and any entry without its pair is a red flag in the audit.
 - Common misconception: |
 
-**Lifecycle & audit status**
-- Stability: `experimental`
-- Freshness: `2026-05-15`
-- Eval state: `unverified`
-- Routing eval: `absent`
-- Audit status: structural PASS, truth PASS, comprehension UNVERIFIED, application UNVERIFIED
-- Last audited: `2026-05-28`
-
-**Provenance**
-- version 1.0.0, schema v8, owner `skill-graph-maintainer`
-- Keywords: `epistemic grounding`, `claim grounding`, `source citation`, `RFC 2119 modality`, `Toulmin argument`, `evidence-based assertion`, `hallucination prevention`, `normative vocabulary`, `warrant`, `epistemic hedge`
+**Keywords**
+- `epistemic grounding`, `claim grounding`, `source citation`, `RFC 2119 modality`, `Toulmin argument`, `evidence-based assertion`, `hallucination prevention`, `normative vocabulary`, `warrant`, `epistemic hedge`
 
 <!-- skill-graph-context:end -->

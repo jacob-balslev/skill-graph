@@ -325,16 +325,7 @@ After applying this skill, verify:
 - Mode: `universal`
 - Truth sources: `https://developers.openai.com/api/docs/guides/prompt-engineering`, `https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/overview`, `https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/claude-prompting-best-practices`, `https://ai.google.dev/gemini-api/docs/prompting-strategies`, `https://cheatsheetseries.owasp.org/cheatsheets/LLM_Prompt_Injection_Prevention_Cheat_Sheet.html`
 
-**Lifecycle & audit status**
-- Stability: `experimental`
-- Freshness: `2026-05-18`
-- Eval state: `unverified`
-- Routing eval: `absent`
-- Audit status: structural PASS, truth UNVERIFIED, comprehension UNVERIFIED, application UNVERIFIED
-- Last audited: `2026-05-28`
-
-**Provenance**
-- version 1.1.0, schema v8, owner `skill-graph-maintainer`
-- Keywords: `prompt`, `prompt engineering`, `prompt craft`, `write a prompt`, `improve this prompt`, `iterate on prompt`, `prompt template`, `system prompt`, `developer prompt`, `user prompt`, `few shot`, `few-shot examples`, `role prompt`, `instruction hierarchy`, `message roles`, `output format`, `structured output`, `reasoning prompt`, `prompt injection`, `adversarial input`, `llm prompt`, `agent prompt`
+**Keywords**
+- `prompt`, `prompt engineering`, `prompt craft`, `write a prompt`, `improve this prompt`, `iterate on prompt`, `prompt template`, `system prompt`, `developer prompt`, `user prompt`, `few shot`, `few-shot examples`, `role prompt`, `instruction hierarchy`, `message roles`, `output format`, `structured output`, `reasoning prompt`, `prompt injection`, `adversarial input`, `llm prompt`, `agent prompt`
 
 <!-- skill-graph-context:end -->

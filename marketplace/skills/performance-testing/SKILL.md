@@ -189,16 +189,7 @@ After applying this skill, verify:
 - Analogy: Performance testing is to a software system what a load-bearing inspection is to a bridge — you do not certify a bridge by walking across it (functional test) and concluding it works; you drive trucks of known weight across at increasing volumes, with strain gauges on every beam, and verify the deflection stays within spec under expected traffic, that the failure mode is graceful when overloaded (cracks before collapse), that nothing creeps over a long soak. A bridge whose 'average' load it can carry is 50 tonnes but whose p99 stressor reveals harmonic resonance at 80 tonnes is the bridge that fails on a windy day.
 - Common misconception: |
 
-**Lifecycle & audit status**
-- Stability: `experimental`
-- Freshness: `2026-05-16`
-- Eval state: `unverified`
-- Routing eval: `absent`
-- Audit status: structural PASS, truth PASS, comprehension UNVERIFIED, application UNVERIFIED
-- Last audited: `2026-05-28`
-
-**Provenance**
-- version 1.0.0, schema v8, owner `skill-graph-maintainer`
-- Keywords: `performance testing`, `load testing`, `stress testing`, `soak testing`, `spike testing`, `breakpoint test`, `k6`, `JMeter`, `Locust`, `Gatling`
+**Keywords**
+- `performance testing`, `load testing`, `stress testing`, `soak testing`, `spike testing`, `breakpoint test`, `k6`, `JMeter`, `Locust`, `Gatling`
 
 <!-- skill-graph-context:end -->

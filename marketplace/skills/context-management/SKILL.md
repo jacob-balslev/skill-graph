@@ -230,16 +230,7 @@ Do not "warm up" by re-reading everything. Recovery is a _selective_ rebuild, no
 - Verify with: `context-engineering`
 - Related: `context-engineering`, `context-graph`, `tool-call-strategy`
 
-**Lifecycle & audit status**
-- Stability: `experimental`
-- Freshness: `2026-05-06`
-- Eval state: `unverified`
-- Routing eval: `absent`
-- Audit status: structural PASS, truth PASS, comprehension UNVERIFIED, application UNVERIFIED
-- Last audited: `2026-05-28`
-
-**Provenance**
-- version 1.0.0, schema v8, owner `skill-graph-maintainer`
-- Keywords: `context management`, `working set discipline`, `intake triage four buckets`, `context drift recovery`, `context management loop`, `compaction-ready handoff`, `distill raw inputs`, `one active hypothesis`, `selective context rebuild`, `lost-thread recovery`
+**Keywords**
+- `context management`, `working set discipline`, `intake triage four buckets`, `context drift recovery`, `context management loop`, `compaction-ready handoff`, `distill raw inputs`, `one active hypothesis`, `selective context rebuild`, `lost-thread recovery`
 
 <!-- skill-graph-context:end -->

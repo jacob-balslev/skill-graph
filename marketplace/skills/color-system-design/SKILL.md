@@ -87,16 +87,7 @@ Semantic tokens are worth the indirection because color meanings outlive specifi
 **Related skills**
 - Related: `theme-system-design`, `dark-mode-implementation`, `visual-design-foundations`, `a11y`
 
-**Lifecycle & audit status**
-- Stability: `experimental`
-- Freshness: `2026-05-12`
-- Eval state: `unverified`
-- Routing eval: `absent`
-- Audit status: structural PASS, truth PASS, comprehension UNVERIFIED, application UNVERIFIED
-- Last audited: `2026-05-28`
-
-**Provenance**
-- version 1.0.0, schema v8, owner `skill-graph-maintainer`
-- Keywords: `color palette design`, `semantic color tokens`, `wcag contrast ratio`, `apca contrast`, `oklch color space`, `perceptual uniformity`, `color scales`, `light dark parity`, `color accessibility`, `p3 color gamut`
+**Keywords**
+- `color palette design`, `semantic color tokens`, `wcag contrast ratio`, `apca contrast`, `oklch color space`, `perceptual uniformity`, `color scales`, `light dark parity`, `color accessibility`, `p3 color gamut`
 
 <!-- skill-graph-context:end -->

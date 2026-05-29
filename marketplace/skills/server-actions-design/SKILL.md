@@ -307,16 +307,7 @@ After applying this skill, verify:
 - Analogy: Server Actions are to React mutations what stored procedures are to database access — the function looks like an ordinary call in client code, but the work happens on the privileged side of a trust boundary, with the same security implications: the caller controls the arguments, but cannot see the implementation; the implementation must validate every input and authorize every call as if the caller were a hostile script with curl, because functionally they could be.
 - Common misconception: |
 
-**Lifecycle & audit status**
-- Stability: `experimental`
-- Freshness: `2026-05-16`
-- Eval state: `unverified`
-- Routing eval: `absent`
-- Audit status: structural PASS, truth PASS, comprehension UNVERIFIED, application UNVERIFIED
-- Last audited: `2026-05-28`
-
-**Provenance**
-- version 1.0.0, schema v8, owner `skill-graph-maintainer`
-- Keywords: `Server Actions`, `Server Function declaration`, `form action attribute`, `useActionState`, `useFormStatus`, `forms that work without JavaScript`, `revalidatePath`, `revalidateTag`, `server mutation Next.js`, `validate Server Action inputs`
+**Keywords**
+- `Server Actions`, `Server Function declaration`, `form action attribute`, `useActionState`, `useFormStatus`, `forms that work without JavaScript`, `revalidatePath`, `revalidateTag`, `server mutation Next.js`, `validate Server Action inputs`
 
 <!-- skill-graph-context:end -->

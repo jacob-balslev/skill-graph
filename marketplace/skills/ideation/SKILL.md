@@ -86,16 +86,7 @@ The discipline is sceptical of "good enough" early ideas. The first three ideas 
 **Related skills**
 - Related: `problem-framing`, `prototyping`, `design-thinking`
 
-**Lifecycle & audit status**
-- Stability: `experimental`
-- Freshness: `2026-05-12`
-- Eval state: `unverified`
-- Routing eval: `absent`
-- Audit status: structural PASS, truth PASS, comprehension UNVERIFIED, application UNVERIFIED
-- Last audited: `2026-05-28`
-
-**Provenance**
-- version 1.0.0, schema v8, owner `skill-graph-maintainer`
-- Keywords: `crazy 8s`, `brainstorming`, `SCAMPER`, `worst possible idea`, `headlines from the future`, `dot voting`, `NUF test`, `divergent thinking`, `convergent thinking`, `ideation workshop`
+**Keywords**
+- `crazy 8s`, `brainstorming`, `SCAMPER`, `worst possible idea`, `headlines from the future`, `dot voting`, `NUF test`, `divergent thinking`, `convergent thinking`, `ideation workshop`
 
 <!-- skill-graph-context:end -->

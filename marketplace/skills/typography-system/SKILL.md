@@ -87,16 +87,7 @@ Typography is the densest carrier of brand. A wordmark, a heading face, and a bo
 **Related skills**
 - Related: `visual-hierarchy`, `visual-design-foundations`, `theme-system-design`, `layout-composition`
 
-**Lifecycle & audit status**
-- Stability: `experimental`
-- Freshness: `2026-05-12`
-- Eval state: `unverified`
-- Routing eval: `absent`
-- Audit status: structural PASS, truth PASS, comprehension UNVERIFIED, application UNVERIFIED
-- Last audited: `2026-05-28`
-
-**Provenance**
-- version 1.0.0, schema v8, owner `skill-graph-maintainer`
-- Keywords: `type scale`, `typeface pairing`, `vertical rhythm`, `line height`, `measure line length`, `web font delivery`, `variable fonts`, `font-display swap`, `font subsetting`, `modular scale`
+**Keywords**
+- `type scale`, `typeface pairing`, `vertical rhythm`, `line height`, `measure line length`, `web font delivery`, `variable fonts`, `font-display swap`, `font subsetting`, `modular scale`
 
 <!-- skill-graph-context:end -->

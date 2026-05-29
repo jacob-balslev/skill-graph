@@ -300,16 +300,7 @@ A rebase that requires resolving the same conflict in five replayed commits is a
 - Verify with: `code-review`
 - Related: `code-review`, `refactor`, `naming-conventions`, `debugging`
 
-**Lifecycle & audit status**
-- Stability: `experimental`
-- Freshness: `2026-05-06`
-- Eval state: `unverified`
-- Routing eval: `absent`
-- Audit status: structural PASS, truth PASS, comprehension UNVERIFIED, application UNVERIFIED
-- Last audited: `2026-05-28`
-
-**Provenance**
-- version 1.0.0, schema v8, owner `skill-graph-maintainer`
-- Keywords: `version control`, `git workflow`, `branching strategy`, `trunk-based development`, `git flow`, `short-lived branch`, `feature branch`, `merge vs rebase`, `linear history`, `atomic commit`
+**Keywords**
+- `version control`, `git workflow`, `branching strategy`, `trunk-based development`, `git flow`, `short-lived branch`, `feature branch`, `merge vs rebase`, `linear history`, `atomic commit`
 
 <!-- skill-graph-context:end -->

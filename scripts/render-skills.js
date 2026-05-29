@@ -5,8 +5,8 @@
  * Compile the canonical Skill Graph library into the best consumable Agent
  * Skills SKILL.md form, for ACTUAL USE — yours locally, or any developer who
  * clones the project. This is the primary deployment path; the public
- * marketplace export (`scripts/export-marketplace-skills.js`) is just one
- * downstream profile of the same compile core.
+ * marketplace export (`scripts/export-marketplace-skills.js`) is a gated,
+ * privacy-scrubbed variant of the same compile core.
  *
  * Why this exists, distinct from `export`:
  *   - The Skill Audit Loop + Skill Graph evolve high-quality skills whose value
@@ -22,6 +22,14 @@
  *     `deployment_target: project` skills — because the output is for local use
  *     by whoever owns those roots, not for public skills.sh publication.
  *
+ * What the body projection contains: agent-facing guidance ONLY — classification,
+ * when-to-use, not-for, related skills, concept (Understanding fields), grounding,
+ * and keywords. Maintenance state (audit verdicts, eval status, lifecycle,
+ * provenance/version/owner) is deliberately NOT projected — it is bookkeeping for
+ * the audit loop, not guidance for an agent USING the skill. There is exactly one
+ * render shape (the former `--profile full/runtime` split was removed so no path
+ * can leak maintenance state into a consumed skill).
+ *
  * Output: a plain Agent Skills tree at <out>/<name>/SKILL.md. Point a runtime at
  * it (e.g. `skill-graph render --out ~/.claude/skills`) to consume the compiled
  * skills, or `--out dist/skills` (default) to inspect them.
@@ -29,7 +37,6 @@
  * Usage:
  *   node scripts/render-skills.js
  *   node scripts/render-skills.js --out ~/.claude/skills
- *   node scripts/render-skills.js --profile runtime
  *   node scripts/render-skills.js --check
  *
  * Self-contained — Node built-ins only.
@@ -46,7 +53,6 @@ const { renderSkillGraphContext } = require('./lib/render-skill-context');
 
 const REPO_ROOT = workspaceRoot();
 const DEFAULT_OUT = path.join(REPO_ROOT, 'dist', 'skills');
-const VALID_PROFILES = new Set(['full', 'runtime']);
 
 function repoRelative(filePath) {
   return path.relative(REPO_ROOT, filePath).split(path.sep).join('/');
@@ -77,16 +83,16 @@ function collectAllSkills() {
  * Compile one skill to its consumable text: clean Agent Skills frontmatter +
  * authored body + the projected `## Skill Graph context` section.
  */
-function buildRenderedSkillText(skill, profile) {
+function buildRenderedSkillText(skill) {
   const out = buildExportedSkill(skill.text, {
-    bodySuffix: renderSkillGraphContext(skill.fm, { profile }),
+    bodySuffix: renderSkillGraphContext(skill.fm),
   });
   if (!out) throw new Error(`Unable to render ${repoRelative(skill.sourcePath)}`);
   return out;
 }
 
 /** Map of absolute output file path → rendered text, for the whole library. */
-function expectedFiles(outRoot, profile) {
+function expectedFiles(outRoot) {
   const skills = collectAllSkills();
   const files = new Map();
   const collisions = new Map(); // exportName → first source, to detect name clashes
@@ -100,7 +106,7 @@ function expectedFiles(outRoot, profile) {
       );
     }
     collisions.set(name, skill.sourcePath);
-    files.set(dest, buildRenderedSkillText(skill, profile));
+    files.set(dest, buildRenderedSkillText(skill));
   }
   return { skills, files };
 }
@@ -141,7 +147,7 @@ function checkFiles(files) {
 }
 
 function parseArgs(argv) {
-  const options = { outRoot: DEFAULT_OUT, profile: 'full', check: false, json: false, quiet: false };
+  const options = { outRoot: DEFAULT_OUT, check: false, json: false, quiet: false };
   for (let i = 0; i < argv.length; i++) {
     const arg = argv[i];
     if (arg === '--help' || arg === '-h') options.help = true;
@@ -151,12 +157,6 @@ function parseArgs(argv) {
     else if (arg === '--out') {
       if (!argv[i + 1]) throw new Error('--out requires a path');
       options.outRoot = path.resolve(argv[++i]);
-    } else if (arg === '--profile') {
-      if (!argv[i + 1]) throw new Error('--profile requires a value (full|runtime)');
-      options.profile = argv[++i];
-      if (!VALID_PROFILES.has(options.profile)) {
-        throw new Error(`--profile must be one of: ${[...VALID_PROFILES].join(', ')}`);
-      }
     } else {
       throw new Error(`Unknown argument: ${arg}`);
     }
@@ -172,12 +172,14 @@ files (clean frontmatter + authored body + a readable "## Skill Graph context"
 section projected from the protocol fields). Includes every skill — no
 marketplace publication gate.
 
+The body projection carries agent-facing guidance ONLY (classification,
+when-to-use, not-for, related, concept, grounding, keywords). Maintenance state
+(audit verdicts, eval status, lifecycle, provenance/version/owner) is never
+projected into the consumed skill.
+
 Options:
   --out <dir>         Output root (default: dist/skills). Use a runtime's skills
                       dir to consume directly, e.g. --out ~/.claude/skills
-  --profile <name>    Field set to project: full (default, every meaningful
-                      field) or runtime (behavioral fields only — omits
-                      lifecycle / audit status / provenance)
   --check             Do not write; fail if any rendered file is missing or stale
   --json              Print a JSON summary
   --quiet             Suppress success text
@@ -186,7 +188,6 @@ Options:
 Examples:
   node scripts/render-skills.js
   node scripts/render-skills.js --out ~/.claude/skills
-  node scripts/render-skills.js --profile runtime --out .claude/skills
   node scripts/render-skills.js --check
 `);
 }
@@ -197,7 +198,7 @@ function main() {
     if (options.help) { printHelp(); process.exit(0); }
 
     const outRoot = assertSafeOut(options.outRoot);
-    const { skills, files } = expectedFiles(outRoot, options.profile);
+    const { skills, files } = expectedFiles(outRoot);
 
     let problems = [];
     if (options.check) {
@@ -208,7 +209,6 @@ function main() {
 
     const result = {
       out: outRoot,
-      profile: options.profile,
       rendered_skills: files.size,
       total_skills: skills.length,
       ok: problems.length === 0,
@@ -221,7 +221,7 @@ function main() {
       for (const p of problems) process.stderr.write(`FAIL ${p}\n`);
       if (problems.length === 0) {
         const verb = options.check ? 'checked' : 'rendered';
-        process.stdout.write(`OK   ${verb} ${files.size} skill(s) [profile: ${options.profile}] → ${outRoot}\n`);
+        process.stdout.write(`OK   ${verb} ${files.size} skill(s) → ${outRoot}\n`);
       }
     }
 

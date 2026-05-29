@@ -114,16 +114,7 @@ This skill ships a comprehension-eval artifact at [`examples/evals/interaction-p
 - Verify with: `a11y`, `task-analysis`
 - Related: `layout-composition`, `form-ux-architecture`, `microcopy`, `semiotics`, `a11y`
 
-**Lifecycle & audit status**
-- Stability: `experimental`
-- Freshness: `2026-05-11`
-- Eval state: `unverified`
-- Routing eval: `present`
-- Audit status: structural PASS, truth PASS, comprehension UNVERIFIED, application UNVERIFIED
-- Last audited: `2026-05-28`
-
-**Provenance**
-- version 1.0.0, schema v8, owner `skill-graph-maintainer`
-- Keywords: `interaction-patterns`, `control pattern selection`, `dropdown combobox choice`, `modal inline edit choice`, `tabs accordion choice`, `bulk selection pattern`, `command menu pattern`, `disclosure pattern`, `gesture alternative`, `modal vs panel choice`
+**Keywords**
+- `interaction-patterns`, `control pattern selection`, `dropdown combobox choice`, `modal inline edit choice`, `tabs accordion choice`, `bulk selection pattern`, `command menu pattern`, `disclosure pattern`, `gesture alternative`, `modal vs panel choice`
 
 <!-- skill-graph-context:end -->

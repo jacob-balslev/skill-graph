@@ -671,7 +671,10 @@ assert(
   assert(out.includes('- Common misconception: That metadata is always read.'), 'renderSkillGraphContext: misconception rendered');
 }
 
-// renderSkillGraphContext — audit status + provenance render transparently
+// renderSkillGraphContext — maintenance state is NEVER projected into the body.
+// Audit verdicts, eval status, lifecycle, and provenance are bookkeeping for the
+// audit loop, not guidance for an agent USING the skill, and a vendor loader
+// feeds this body straight to the model. Keywords (an activation signal) ARE kept.
 {
   const out = renderSkillGraphContext({
     subject: 'agent-ops',
@@ -683,15 +686,24 @@ assert(
     truth_verdict: 'PASS',
     comprehension_verdict: 'UNVERIFIED',
     application_verdict: 'UNVERIFIED',
+    freshness: '2026-05-29',
+    last_audited: '2026-05-29',
     version: '1.0.0',
     schema_version: '8',
     owner: 'skill-graph-maintainer',
     keywords: ['routing', 'graph'],
   });
-  assert(out.includes('- Eval state: `passing` (score 4)'), `renderSkillGraphContext: eval_state + score; got\n${out}`);
-  assert(out.includes('- Audit status: structural PASS, truth PASS, comprehension UNVERIFIED, application UNVERIFIED'), 'renderSkillGraphContext: four verdicts rendered');
-  assert(out.includes('version 1.0.0, schema v8, owner `skill-graph-maintainer`'), 'renderSkillGraphContext: provenance line rendered');
-  assert(out.includes('- Keywords: `routing`, `graph`'), 'renderSkillGraphContext: keywords rendered');
+  // maintenance / provenance must NOT reach the agent-facing body
+  assert(!out.includes('Eval state'), 'renderSkillGraphContext: eval state omitted');
+  assert(!out.includes('Audit status'), 'renderSkillGraphContext: audit verdicts omitted');
+  assert(!out.includes('Lifecycle'), 'renderSkillGraphContext: lifecycle omitted');
+  assert(!out.includes('Provenance'), 'renderSkillGraphContext: provenance omitted');
+  assert(!out.includes('schema v8'), 'renderSkillGraphContext: schema/version provenance omitted');
+  assert(!out.includes('Last audited'), 'renderSkillGraphContext: last_audited omitted');
+  assert(!out.includes('Routing eval'), 'renderSkillGraphContext: routing_eval omitted');
+  // keywords (an activation signal) ARE kept, under their own heading
+  assert(out.includes('**Keywords**'), 'renderSkillGraphContext: keywords heading present');
+  assert(out.includes('- `routing`, `graph`'), 'renderSkillGraphContext: keywords rendered');
 }
 
 // renderSkillGraphContext — output contains NO markdown links (would create dangling-link findings)

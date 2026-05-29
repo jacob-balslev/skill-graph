@@ -194,16 +194,7 @@ After applying this skill, verify:
 - Mode: `universal`
 - Truth sources: `https://martinfowler.com/bliki/TestDrivenDevelopment.html`, `https://martinfowler.com/articles/mocksArentStubs.html`, `https://link.springer.com/article/10.1007/s10664-008-9062-z`, `https://ieeexplore.ieee.org/document/1423994`, `https://ieeexplore.ieee.org/document/4493089`, `https://doi.org/10.1016/j.infsof.2016.02.004`, `https://dannorth.net/introducing-bdd/`
 
-**Lifecycle & audit status**
-- Stability: `experimental`
-- Freshness: `2026-05-18`
-- Eval state: `unverified`
-- Routing eval: `absent`
-- Audit status: structural PASS, truth UNVERIFIED, comprehension UNVERIFIED, application UNVERIFIED
-- Last audited: `2026-05-28`
-
-**Provenance**
-- version 1.2.0, schema v8, owner `skill-graph-maintainer`
-- Keywords: `test-driven development`, `TDD`, `red green refactor`, `London school`, `Detroit school`, `Chicago school`, `outside-in TDD`, `inside-out TDD`, `mockist`, `classicist`
+**Keywords**
+- `test-driven development`, `TDD`, `red green refactor`, `London school`, `Detroit school`, `Chicago school`, `outside-in TDD`, `inside-out TDD`, `mockist`, `classicist`
 
 <!-- skill-graph-context:end -->

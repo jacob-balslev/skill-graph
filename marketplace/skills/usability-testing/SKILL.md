@@ -88,16 +88,7 @@ The practice is opinionated about moderator behavior. The moderator's job is to 
 **Related skills**
 - Related: `prototyping`, `user-research`, `research-synthesis`, `design-thinking`
 
-**Lifecycle & audit status**
-- Stability: `experimental`
-- Freshness: `2026-05-12`
-- Eval state: `unverified`
-- Routing eval: `absent`
-- Audit status: structural PASS, truth PASS, comprehension UNVERIFIED, application UNVERIFIED
-- Last audited: `2026-05-28`
-
-**Provenance**
-- version 1.0.0, schema v8, owner `skill-graph-maintainer`
-- Keywords: `think aloud protocol`, `task scenario`, `moderated usability test`, `unmoderated test`, `severity rating`, `five user rule`, `formative testing`, `summative testing`, `hallway test`, `moderator neutrality`
+**Keywords**
+- `think aloud protocol`, `task scenario`, `moderated usability test`, `unmoderated test`, `severity rating`, `five user rule`, `formative testing`, `summative testing`, `hallway test`, `moderator neutrality`
 
 <!-- skill-graph-context:end -->

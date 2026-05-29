@@ -200,16 +200,7 @@ After applying this skill, verify:
 - Analogy: State management is to a frontend application what addressing is to a postal system — you do not ask 'should this letter exist?', you ask 'where does it live?', and the right destination depends entirely on the letter's kind: a registered package (server data with provable delivery), a postcard (URL state, public on the back), a private letter (client UI state, inside an envelope), a deed (persistent state, kept in the safe). One mailbox for everything produces predictable failures.
 - Common misconception: |
 
-**Lifecycle & audit status**
-- Stability: `experimental`
-- Freshness: `2026-05-16`
-- Eval state: `unverified`
-- Routing eval: `absent`
-- Audit status: structural PASS, truth PASS, comprehension UNVERIFIED, application UNVERIFIED
-- Last audited: `2026-05-28`
-
-**Provenance**
-- version 1.0.0, schema v8, owner `skill-graph-maintainer`
-- Keywords: `state management`, `state colocation`, `lifting state`, `state derivation`, `single source of truth`, `server state`, `client state`, `URL state`, `persistent state`, `ephemeral state`
+**Keywords**
+- `state management`, `state colocation`, `lifting state`, `state derivation`, `single source of truth`, `server state`, `client state`, `URL state`, `persistent state`, `ephemeral state`
 
 <!-- skill-graph-context:end -->

@@ -86,16 +86,7 @@ The discipline is wary of premature abstraction. A theme named too early ("users
 **Related skills**
 - Related: `user-research`, `journey-mapping`, `problem-framing`, `design-thinking`
 
-**Lifecycle & audit status**
-- Stability: `experimental`
-- Freshness: `2026-05-12`
-- Eval state: `unverified`
-- Routing eval: `absent`
-- Audit status: structural PASS, truth PASS, comprehension UNVERIFIED, application UNVERIFIED
-- Last audited: `2026-05-28`
-
-**Provenance**
-- version 1.0.0, schema v8, owner `skill-graph-maintainer`
-- Keywords: `affinity mapping`, `empathy map`, `insight statement`, `theme clustering`, `jobs to be done synthesis`, `qualitative coding`, `research wall`, `downloading research`, `say think do feel`, `persona drafting`
+**Keywords**
+- `affinity mapping`, `empathy map`, `insight statement`, `theme clustering`, `jobs to be done synthesis`, `qualitative coding`, `research wall`, `downloading research`, `say think do feel`, `persona drafting`
 
 <!-- skill-graph-context:end -->

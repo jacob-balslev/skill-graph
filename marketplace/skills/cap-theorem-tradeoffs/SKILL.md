@@ -190,16 +190,7 @@ After applying this skill, verify:
 - Analogy: CAP is to a distributed database what the Heisenberg uncertainty principle is to physics — you cannot simultaneously have a fully consistent reading and a fully available reading when the network has partitioned, just as you cannot simultaneously measure a precise position and a precise momentum. The trade-off is not a limit of the engineering, it is a limit of the physics; pretending otherwise is the source of every 'CA' system that claims to defy CAP and chooses one side anyway on its first partition.
 - Common misconception: |
 
-**Lifecycle & audit status**
-- Stability: `experimental`
-- Freshness: `2026-05-16`
-- Eval state: `unverified`
-- Routing eval: `absent`
-- Audit status: structural PASS, truth PASS, comprehension UNVERIFIED, application UNVERIFIED
-- Last audited: `2026-05-28`
-
-**Provenance**
-- version 1.0.0, schema v8, owner `skill-graph-maintainer`
-- Keywords: `CAP theorem`, `Brewer`, `Gilbert Lynch`, `consistency availability partition`, `CP system`, `AP system`, `PACELC`, `eventual consistency`, `linearizability`, `distributed system`
+**Keywords**
+- `CAP theorem`, `Brewer`, `Gilbert Lynch`, `consistency availability partition`, `CP system`, `AP system`, `PACELC`, `eventual consistency`, `linearizability`, `distributed system`
 
 <!-- skill-graph-context:end -->

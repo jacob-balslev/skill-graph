@@ -87,16 +87,7 @@ Reading order is a property of the page, not just the markup. CSS source order, 
 **Related skills**
 - Related: `typography-system`, `color-system-design`, `layout-composition`, `visual-design-foundations`
 
-**Lifecycle & audit status**
-- Stability: `experimental`
-- Freshness: `2026-05-12`
-- Eval state: `unverified`
-- Routing eval: `absent`
-- Audit status: structural PASS, truth PASS, comprehension UNVERIFIED, application UNVERIFIED
-- Last audited: `2026-05-28`
-
-**Provenance**
-- version 1.0.0, schema v8, owner `skill-graph-maintainer`
-- Keywords: `visual hierarchy`, `hierarchical type sizing`, `proximity hierarchy`, `contrast hierarchy`, `importance ordering`, `reading order`, `focal point`, `figure ground`, `gestalt principles`, `hierarchy through weight`
+**Keywords**
+- `visual hierarchy`, `hierarchical type sizing`, `proximity hierarchy`, `contrast hierarchy`, `importance ordering`, `reading order`, `focal point`, `figure ground`, `gestalt principles`, `hierarchy through weight`
 
 <!-- skill-graph-context:end -->

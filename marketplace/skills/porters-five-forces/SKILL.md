@@ -288,16 +288,7 @@ Before finishing, verify:
 - Mode: `universal`
 - Truth sources: `https://www.isc.hbs.edu/strategy/business-strategy/Pages/the-five-forces.aspx`, `https://hbr.org/2008/01/the-five-competitive-forces-that-shape-strategy`, `skills/foundations/porters-five-forces/references/porters-five-forces-sources.md`, `skills/foundations/porters-five-forces/references/upstream-displacement-2026-05-26.md`
 
-**Lifecycle & audit status**
-- Stability: `stable`
-- Freshness: `2026-05-26`
-- Eval state: `unverified`
-- Routing eval: `absent`
-- Audit status: structural PASS, truth BROKEN, comprehension UNVERIFIED, application UNVERIFIED
-- Last audited: `2026-05-28`
-
-**Provenance**
-- version 1.0.0, schema v8, owner `skill-graph-maintainer`
-- Keywords: `porter five forces`, `porters five forces`, `five forces`, `industry structure`, `competitive forces`, `industry attractiveness`, `buyer power`, `supplier power`, `threat of entrants`, `threat of substitutes`, `competitive rivalry`
+**Keywords**
+- `porter five forces`, `porters five forces`, `five forces`, `industry structure`, `competitive forces`, `industry attractiveness`, `buyer power`, `supplier power`, `threat of entrants`, `threat of substitutes`, `competitive rivalry`
 
 <!-- skill-graph-context:end -->

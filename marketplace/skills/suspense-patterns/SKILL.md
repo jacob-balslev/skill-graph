@@ -328,16 +328,7 @@ After applying this skill, verify:
 - Analogy: Suspense boundaries are to React's component tree what a restaurant's seating policy is to a multi-course meal — the policy decides whether courses arrive together (boundary around the whole meal, everyone waits for the slowest dish) or course-by-course (boundary per dish, each appears when ready). The component (the kitchen) just signals 'this course needs more time'; the boundary (the maître d') decides who waits for what and what placeholder shows in the meantime.
 - Common misconception: |
 
-**Lifecycle & audit status**
-- Stability: `experimental`
-- Freshness: `2026-05-16`
-- Eval state: `unverified`
-- Routing eval: `absent`
-- Audit status: structural PASS, truth PASS, comprehension UNVERIFIED, application UNVERIFIED
-- Last audited: `2026-05-28`
-
-**Provenance**
-- version 1.0.0, schema v8, owner `skill-graph-maintainer`
-- Keywords: `React Suspense`, `Suspense boundary`, `streaming HTML`, `loading.tsx Next.js`, `useTransition`, `startTransition`, `use hook React 19`, `error boundary with Suspense`, `Suspense waterfall`, `parallel data fetching`
+**Keywords**
+- `React Suspense`, `Suspense boundary`, `streaming HTML`, `loading.tsx Next.js`, `useTransition`, `startTransition`, `use hook React 19`, `error boundary with Suspense`, `Suspense waterfall`, `parallel data fetching`
 
 <!-- skill-graph-context:end -->

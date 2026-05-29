@@ -110,16 +110,7 @@ This skill ships a comprehension-eval artifact at [`examples/evals/interaction-f
 - Verify with: `a11y`, `microcopy`
 - Related: `interaction-patterns`, `microcopy`, `task-analysis`, `a11y`, `performance-engineering`
 
-**Lifecycle & audit status**
-- Stability: `experimental`
-- Freshness: `2026-05-11`
-- Eval state: `unverified`
-- Routing eval: `absent`
-- Audit status: structural PASS, truth PASS, comprehension UNVERIFIED, application UNVERIFIED
-- Last audited: `2026-05-28`
-
-**Provenance**
-- version 1.0.0, schema v8, owner `skill-graph-maintainer`
-- Keywords: `interaction-feedback`, `feedback-state staging`, `optimistic ui`, `pending state`, `retry feedback`, `undo feedback`, `perceived latency`, `long-running action feedback`, `skeleton loading`
+**Keywords**
+- `interaction-feedback`, `feedback-state staging`, `optimistic ui`, `pending state`, `retry feedback`, `undo feedback`, `perceived latency`, `long-running action feedback`, `skeleton loading`
 
 <!-- skill-graph-context:end -->

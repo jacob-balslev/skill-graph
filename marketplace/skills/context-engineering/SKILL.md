@@ -415,16 +415,7 @@ Use this checklist when designing a new skill, debugging a failure, or auditing 
 - Mode: `hybrid`
 - Truth sources: `https://www.anthropic.com/engineering/effective-context-engineering-for-ai-agents`, `https://platform.claude.com/docs/en/build-with-claude/context-windows`, `https://platform.claude.com/cookbook/tool-use-context-engineering-context-engineering-tools`, `https://www.ibm.com/think/topics/context-engineering`, `https://arxiv.org/abs/2510.26493`
 
-**Lifecycle & audit status**
-- Stability: `experimental`
-- Freshness: `2026-05-18`
-- Eval state: `unverified`
-- Routing eval: `absent`
-- Audit status: structural PASS, truth UNVERIFIED, comprehension UNVERIFIED, application UNVERIFIED
-- Last audited: `2026-05-28`
-
-**Provenance**
-- version 1.1.0, schema v8, owner `skill-graph-maintainer`
-- Keywords: `context engineering`, `context failure`, `agent context`, `context quality`, `context design`, `missing context`, `stale context`, `wrong context`, `overwhelming context`, `context window`
+**Keywords**
+- `context engineering`, `context failure`, `agent context`, `context quality`, `context design`, `missing context`, `stale context`, `wrong context`, `overwhelming context`, `context window`
 
 <!-- skill-graph-context:end -->

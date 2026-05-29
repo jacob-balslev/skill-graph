@@ -153,16 +153,7 @@ PRIORITIZATION CHECK
 **Related skills**
 - Related: `constraint-awareness`
 
-**Lifecycle & audit status**
-- Stability: `experimental`
-- Freshness: `2026-03-27`
-- Eval state: `unverified`
-- Routing eval: `absent`
-- Audit status: structural PASS, truth PASS, comprehension UNVERIFIED, application UNVERIFIED
-- Last audited: `2026-05-28`
-
-**Provenance**
-- version 1.0.0, schema v8, owner `skill-graph-maintainer`
-- Keywords: `prioritization`, `RICE`, `ICE`, `MoSCoW`, `RICE-A`, `AI ambiguity`, `feature ranking`, `research prioritization`, `backlog management`, `MVP scope`
+**Keywords**
+- `prioritization`, `RICE`, `ICE`, `MoSCoW`, `RICE-A`, `AI ambiguity`, `feature ranking`, `research prioritization`, `backlog management`, `MVP scope`
 
 <!-- skill-graph-context:end -->

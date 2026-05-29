@@ -384,16 +384,7 @@ After applying this skill, verify:
 - Mode: `hybrid`
 - Truth sources: `https://developers.openai.com/api/docs/guides/function-calling`, `https://platform.claude.com/docs/en/agents-and-tools/tool-use/overview`, `https://platform.claude.com/docs/en/agents-and-tools/tool-use/manage-tool-context`, `https://github.com/jacob-balslev/skills/blob/main/skills/tool-call-flow/SKILL.md`, `https://github.com/jacob-balslev/skills/blob/main/skills/context-engineering/SKILL.md`
 
-**Lifecycle & audit status**
-- Stability: `experimental`
-- Freshness: `2026-05-18`
-- Eval state: `unverified`
-- Routing eval: `absent`
-- Audit status: structural PASS, truth UNVERIFIED, comprehension UNVERIFIED, application UNVERIFIED
-- Last audited: `2026-05-28`
-
-**Provenance**
-- version 1.1.0, schema v8, owner `skill-graph-maintainer`
-- Keywords: `tool call optimization`, `reduce tool calls`, `too many tool calls`, `script vs tool call`, `batching tool calls`, `parallel tool calls`, `parallelize calls`, `independent calls`, `redundant reads`, `re-reading file`
+**Keywords**
+- `tool call optimization`, `reduce tool calls`, `too many tool calls`, `script vs tool call`, `batching tool calls`, `parallel tool calls`, `parallelize calls`, `independent calls`, `redundant reads`, `re-reading file`
 
 <!-- skill-graph-context:end -->

@@ -86,16 +86,7 @@ The practice is opinionated about language. "How might we" is not interchangeabl
 **Related skills**
 - Related: `user-research`, `ideation`, `research-synthesis`, `design-thinking`
 
-**Lifecycle & audit status**
-- Stability: `experimental`
-- Freshness: `2026-05-12`
-- Eval state: `unverified`
-- Routing eval: `absent`
-- Audit status: structural PASS, truth PASS, comprehension UNVERIFIED, application UNVERIFIED
-- Last audited: `2026-05-28`
-
-**Provenance**
-- version 1.0.0, schema v8, owner `skill-graph-maintainer`
-- Keywords: `how might we`, `problem statement`, `reframing`, `assumption mapping`, `root need`, `symptom vs need`, `point of view statement`, `jobs to be done framing`, `design challenge`, `double diamond discover`
+**Keywords**
+- `how might we`, `problem statement`, `reframing`, `assumption mapping`, `root need`, `symptom vs need`, `point of view statement`, `jobs to be done framing`, `design challenge`, `double diamond discover`
 
 <!-- skill-graph-context:end -->

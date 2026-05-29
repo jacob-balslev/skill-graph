@@ -398,16 +398,7 @@ After applying this skill, verify:
 - Mode: `universal`
 - Truth sources: `https://voljournals.utk.edu/utk_harlan/18/`, `https://www.sei.cmu.edu/library/the-team-software-process-tsp/`, `https://www.sei.cmu.edu/library/team-software-process-tsp-and-personal-software-process-psp-materials/`, `https://asq.org/Quality-resources/Dmaic`, `https://asq.org/quality-resources/pdca-cycle`, `https://www.who.int/publications/i/item/9789241598590`, `https://www.nasa.gov/ivv-overview/`, `https://www.nasa.gov/reference/system-engineering-handbook-appendix/`, `https://barryoreilly.com/explore/blog/how-to-implement-hypothesis-driven-development/`, `https://arxiv.org/abs/2411.13768`
 
-**Lifecycle & audit status**
-- Stability: `experimental`
-- Freshness: `2026-05-18`
-- Eval state: `unverified`
-- Routing eval: `absent`
-- Audit status: structural PASS, truth UNVERIFIED, comprehension UNVERIFIED, application UNVERIFIED
-- Last audited: `2026-05-28`
-
-**Provenance**
-- version 1.1.0, schema v8, owner `skill-graph-maintainer`
-- Keywords: `methodology`, `method`, `process`, `formal methods`, `cleanroom`, `PSP`, `TSP`, `hypothesis driven`, `DMAIC`, `PDCA`
+**Keywords**
+- `methodology`, `method`, `process`, `formal methods`, `cleanroom`, `PSP`, `TSP`, `hypothesis driven`, `DMAIC`, `PDCA`
 
 <!-- skill-graph-context:end -->

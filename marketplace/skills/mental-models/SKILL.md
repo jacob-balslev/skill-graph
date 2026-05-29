@@ -191,16 +191,7 @@ After applying this skill, verify:
 - Analogy: A mental model is to a system what a map is to a city — the map is not the territory, the map is useful precisely because it is smaller and selective, and a traveler navigating with the wrong map (a city map for a different city, an out-of-date map, a tourist map missing the metro) does not get lost because the map is 'wrong' but because the map's selectiveness does not match the route they need.
 - Common misconception: |
 
-**Lifecycle & audit status**
-- Stability: `experimental`
-- Freshness: `2026-05-16`
-- Eval state: `unverified`
-- Routing eval: `absent`
-- Audit status: structural PASS, truth PASS, comprehension UNVERIFIED, application UNVERIFIED
-- Last audited: `2026-05-28`
-
-**Provenance**
-- version 1.0.0, schema v8, owner `skill-graph-maintainer`
-- Keywords: `mental models`, `mental model`, `gulf of execution`, `gulf of evaluation`, `user model`, `system model`, `designer model`, `conceptual model`, `metaphor`, `analogy`
+**Keywords**
+- `mental models`, `mental model`, `gulf of execution`, `gulf of evaluation`, `user model`, `system model`, `designer model`, `conceptual model`, `metaphor`, `analogy`
 
 <!-- skill-graph-context:end -->

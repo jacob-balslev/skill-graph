@@ -346,7 +346,6 @@ The staging surface lands under `marketplace/` for the two-step sync into `jacob
 
 ```bash
 skill-graph render --out ~/.claude/skills      # compile every skill into a runtime's skills dir
-skill-graph render --profile runtime --out .claude/skills   # behavioral fields only (leaner)
 skill-graph render --check                     # CI: fail if dist/skills is stale
 ```
 

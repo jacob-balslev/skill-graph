@@ -249,16 +249,7 @@ Each step exercises a different edge type. Skipping a step leaves a stale edge s
 - Mode: `hybrid`
 - Truth sources: `https://github.com/jacob-balslev/skill-graph/blob/main/SKILL_GRAPH.md`, `https://github.com/jacob-balslev/skill-graph/blob/main/docs/PRIMER.md`, `https://github.com/jacob-balslev/skill-graph/blob/main/docs/concept-map.md`, `https://github.com/jacob-balslev/skill-graph/blob/main/docs/diagrams/starter-graph.mmd`, `https://github.com/jacob-balslev/skill-graph/blob/main/scripts/generate-manifest.js`, `https://github.com/jacob-balslev/skill-graph/blob/main/scripts/skill-overlap.js`
 
-**Lifecycle & audit status**
-- Stability: `experimental`
-- Freshness: `2026-05-18`
-- Eval state: `unverified`
-- Routing eval: `absent`
-- Audit status: structural PASS, truth UNVERIFIED, comprehension UNVERIFIED, application UNVERIFIED
-- Last audited: `2026-05-28`
-
-**Provenance**
-- version 1.1.0, schema v8, owner `skill-graph-maintainer`
-- Keywords: `context graph architecture`, `multi-graph context model`, `skill knowledge graph`, `document routing graph`, `memory index graph`, `script command registry graph`, `cross-graph edges`, `orphan detection skill graph`, `graph connectivity metrics`, `average node degree`
+**Keywords**
+- `context graph architecture`, `multi-graph context model`, `skill knowledge graph`, `document routing graph`, `memory index graph`, `script command registry graph`, `cross-graph edges`, `orphan detection skill graph`, `graph connectivity metrics`, `average node degree`
 
 <!-- skill-graph-context:end -->

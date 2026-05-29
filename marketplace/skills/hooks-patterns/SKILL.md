@@ -248,16 +248,7 @@ After applying this skill, verify:
 - Analogy: Hooks are to function components what stack frames are to function calls — they let a function remember things across calls without breaking referential transparency from the outside, by tracking state in a slot array indexed by call order, and the Rules of Hooks are the same kind of invariant as 'do not goto into the middle of a stack frame': violating them produces undefined behavior masked by garbage collection rather than visible crashes.
 - Common misconception: |
 
-**Lifecycle & audit status**
-- Stability: `experimental`
-- Freshness: `2026-05-16`
-- Eval state: `unverified`
-- Routing eval: `absent`
-- Audit status: structural PASS, truth PASS, comprehension UNVERIFIED, application UNVERIFIED
-- Last audited: `2026-05-28`
-
-**Provenance**
-- version 1.0.0, schema v8, owner `skill-graph-maintainer`
-- Keywords: `React Hooks`, `Rules of Hooks`, `useEffect dependencies`, `useState`, `useMemo when not to`, `useCallback footgun`, `custom hooks extraction`, `derived state`, `stale closure`, `effect cleanup`
+**Keywords**
+- `React Hooks`, `Rules of Hooks`, `useEffect dependencies`, `useState`, `useMemo when not to`, `useCallback footgun`, `custom hooks extraction`, `derived state`, `stale closure`, `effect cleanup`
 
 <!-- skill-graph-context:end -->

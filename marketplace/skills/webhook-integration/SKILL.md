@@ -391,16 +391,7 @@ This skill ships a comprehension-eval artifact at [`examples/evals/webhook-integ
 - Verify with: `testing-strategy`, `code-review`
 - Related: `testing-strategy`, `debugging`, `owasp-security`, `code-review`, `event-contract-design`
 
-**Lifecycle & audit status**
-- Stability: `experimental`
-- Freshness: `2026-05-06`
-- Eval state: `unverified`
-- Routing eval: `absent`
-- Audit status: structural PASS, truth PASS, comprehension UNVERIFIED, application UNVERIFIED
-- Last audited: `2026-05-28`
-
-**Provenance**
-- version 1.0.0, schema v8, owner `skill-graph-maintainer`
-- Keywords: `webhook handler`, `webhook signature`, `webhook signature verification`, `HMAC webhook`, `timing-safe comparison`, `duplicate webhook delivery`, `webhook idempotency`, `idempotency key`, `webhook retry`, `retry contract`
+**Keywords**
+- `webhook handler`, `webhook signature`, `webhook signature verification`, `HMAC webhook`, `timing-safe comparison`, `duplicate webhook delivery`, `webhook idempotency`, `idempotency key`, `webhook retry`, `retry contract`
 
 <!-- skill-graph-context:end -->

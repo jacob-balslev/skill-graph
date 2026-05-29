@@ -352,16 +352,7 @@ After applying this skill, verify:
 - Mode: `universal`
 - Truth sources: `https://wordnet.princeton.edu/`, `https://www.w3.org/TR/skos-reference/`, `https://www.w3.org/TR/owl2-primer/`, `https://framenet.icsi.berkeley.edu/WhatIsFrameNet`
 
-**Lifecycle & audit status**
-- Stability: `experimental`
-- Freshness: `2026-05-19`
-- Eval state: `unverified`
-- Routing eval: `absent`
-- Audit status: structural PASS, truth UNVERIFIED, comprehension UNVERIFIED, application UNVERIFIED
-- Last audited: `2026-05-28`
-
-**Provenance**
-- version 1.2.0, schema v8, owner `skill-graph-maintainer`
-- Keywords: `semantic relations`, `relation typing`, `IS-A relation`, `PART-OF relation`, `hypernymy hyponymy`, `meronymy holonymy`, `synonymy versus polysemy`, `thematic role analysis`, `relation property check`, `knowledge-graph edge typing`, `substitution test`, `relation-vocabulary discipline`, `typed-edge taxonomy`, `conceptual-relation analysis`, `adjacency-vs-boundary disambiguation`, `generic related-to anti-pattern`, `SKOS broader narrower related`, `WordNet semantic relations`, `FrameNet frame elements`
+**Keywords**
+- `semantic relations`, `relation typing`, `IS-A relation`, `PART-OF relation`, `hypernymy hyponymy`, `meronymy holonymy`, `synonymy versus polysemy`, `thematic role analysis`, `relation property check`, `knowledge-graph edge typing`, `substitution test`, `relation-vocabulary discipline`, `typed-edge taxonomy`, `conceptual-relation analysis`, `adjacency-vs-boundary disambiguation`, `generic related-to anti-pattern`, `SKOS broader narrower related`, `WordNet semantic relations`, `FrameNet frame elements`
 
 <!-- skill-graph-context:end -->

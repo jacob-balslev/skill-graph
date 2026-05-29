@@ -86,16 +86,7 @@ The practice resists two failure modes. The first is the **anodyne happy-path ma
 **Related skills**
 - Related: `research-synthesis`, `information-architecture`, `design-thinking`, `problem-framing`
 
-**Lifecycle & audit status**
-- Stability: `experimental`
-- Freshness: `2026-05-12`
-- Eval state: `unverified`
-- Routing eval: `absent`
-- Audit status: structural PASS, truth PASS, comprehension UNVERIFIED, application UNVERIFIED
-- Last audited: `2026-05-28`
-
-**Provenance**
-- version 1.0.0, schema v8, owner `skill-graph-maintainer`
-- Keywords: `customer journey map`, `user journey`, `service blueprint`, `touchpoint`, `moments of truth`, `experience map`, `front-stage back-stage`, `emotional curve`, `opportunity areas`, `pain points`
+**Keywords**
+- `customer journey map`, `user journey`, `service blueprint`, `touchpoint`, `moments of truth`, `experience map`, `front-stage back-stage`, `emotional curve`, `opportunity areas`, `pain points`
 
 <!-- skill-graph-context:end -->

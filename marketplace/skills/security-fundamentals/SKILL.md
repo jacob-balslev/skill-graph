@@ -206,16 +206,7 @@ After applying this skill, verify:
 - Analogy: Security fundamentals is to a software system what structural engineering is to a building — load-bearing walls, fire egress, electrical isolation, foundation depth are not features added after the building works; they are properties of the design from the first sketch, and retrofitting them costs ten times more and produces worse results than designing them in. A building that survives an earthquake does so because of decisions made at the structural-engineering stage, not because of decorations added later.
 - Common misconception: |
 
-**Lifecycle & audit status**
-- Stability: `experimental`
-- Freshness: `2026-05-16`
-- Eval state: `unverified`
-- Routing eval: `absent`
-- Audit status: structural PASS, truth PASS, comprehension UNVERIFIED, application UNVERIFIED
-- Last audited: `2026-05-28`
-
-**Provenance**
-- version 1.0.0, schema v8, owner `skill-graph-maintainer`
-- Keywords: `security fundamentals`, `threat modeling`, `input validation`, `authentication`, `authorization`, `authn`, `authz`, `least privilege`, `defense in depth`, `secure by default`
+**Keywords**
+- `security fundamentals`, `threat modeling`, `input validation`, `authentication`, `authorization`, `authn`, `authz`, `least privilege`, `defense in depth`, `secure by default`
 
 <!-- skill-graph-context:end -->

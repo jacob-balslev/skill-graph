@@ -319,16 +319,7 @@ After applying this skill, verify:
 **When to use**
 - Triggers: `mobile-responsive-ux-skill`, `mobile-ux-skill`, `touch-target-skill`, `thumb-zone-skill`, `mobile-dashboard-skill`
 
-**Lifecycle & audit status**
-- Stability: `experimental`
-- Freshness: `2026-03-29`
-- Eval state: `unverified`
-- Routing eval: `absent`
-- Audit status: structural PASS, truth PASS, comprehension UNVERIFIED, application UNVERIFIED
-- Last audited: `2026-05-28`
-
-**Provenance**
-- version 1.0.0, schema v8, owner `skill-graph-maintainer`
-- Keywords: `mobile-responsive-ux`, `mobile`, `responsive`
+**Keywords**
+- `mobile-responsive-ux`, `mobile`, `responsive`
 
 <!-- skill-graph-context:end -->

@@ -162,15 +162,16 @@ publication gate, so project-scoped skills are rendered too.
 Options:
   --out <dir>       Output root (default: dist/skills). Point a runtime at it,
                     e.g. --out ~/.claude/skills
-  --profile <name>  full (default — every meaningful field) or runtime
-                    (behavioral fields only; omits lifecycle/audit/provenance).
   --check           Do not write; fail if any rendered file is missing or stale.
   --json            Print a JSON summary.
+
+The body projection carries agent-facing guidance only (classification,
+when-to-use, not-for, related, concept, grounding, keywords). Maintenance state
+(audit verdicts, eval status, lifecycle, provenance) is never projected.
 
 Examples:
   skill-graph render
   skill-graph render --out ~/.claude/skills
-  skill-graph render --profile runtime --out .claude/skills
 `,
   },
   evolve:  {

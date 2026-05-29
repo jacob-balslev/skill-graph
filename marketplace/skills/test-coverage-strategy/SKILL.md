@@ -170,16 +170,7 @@ After applying this skill, verify:
 - Analogy: Test coverage is to a test suite what cell-phone coverage maps are to a network — a green map on the carrier's website is not the same as actually being able to make a call in your basement; the map measures *where there is theoretical signal*, not *whether the call gets through*. A 100% coverage map with a 30% call-completion rate is the same shape of problem as a 100%-line-coverage suite that misses bugs — the floor is met (no dead zones), but the ceiling is unverified.
 - Common misconception: |
 
-**Lifecycle & audit status**
-- Stability: `experimental`
-- Freshness: `2026-05-16`
-- Eval state: `unverified`
-- Routing eval: `absent`
-- Audit status: structural PASS, truth PASS, comprehension UNVERIFIED, application UNVERIFIED
-- Last audited: `2026-05-28`
-
-**Provenance**
-- version 1.0.0, schema v8, owner `skill-graph-maintainer`
-- Keywords: `code coverage`, `line coverage`, `branch coverage`, `decision coverage`, `condition coverage`, `MC/DC`, `modified condition decision coverage`, `path coverage`, `coverage as target`, `Goodhart on coverage`
+**Keywords**
+- `code coverage`, `line coverage`, `branch coverage`, `decision coverage`, `condition coverage`, `MC/DC`, `modified condition decision coverage`, `path coverage`, `coverage as target`, `Goodhart on coverage`
 
 <!-- skill-graph-context:end -->

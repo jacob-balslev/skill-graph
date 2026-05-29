@@ -330,16 +330,7 @@ After applying this skill, verify:
 - Analogy: An autonomous loop is an autopilot mode: it can keep flying, but only because it has instruments, altitude limits, a route, and a clear handoff back to a pilot.
 - Common misconception: The common mistake is treating autonomy as permission to run forever. A safe loop is defined by when it stops, what state it writes, what evidence proves progress, and what cap forces human review.
 
-**Lifecycle & audit status**
-- Stability: `experimental`
-- Freshness: `2026-05-21`
-- Eval state: `unverified`
-- Routing eval: `absent`
-- Audit status: structural PASS, truth PASS, comprehension UNVERIFIED, application UNVERIFIED
-- Last audited: `2026-05-28`
-
-**Provenance**
-- version 1.3.0, schema v7, owner `skill-graph-maintainer`
-- Keywords: `autonomous agent loop`, `agent loop pattern`, `completion signal`, `checkpoint resume loop`, `supervisor respawn`, `stall detection`, `safety cap`, `agent watchdog`, `human handoff`
+**Keywords**
+- `autonomous agent loop`, `agent loop pattern`, `completion signal`, `checkpoint resume loop`, `supervisor respawn`, `stall detection`, `safety cap`, `agent watchdog`, `human handoff`
 
 <!-- skill-graph-context:end -->

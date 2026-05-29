@@ -88,17 +88,19 @@ function truthSourceLabel(entry) {
  * caller then appends nothing). Only present fields are emitted; order is fixed.
  *
  * @param {object} fm Normalized frontmatter (post normalizeFrontmatter).
- * @param {object} [options]
- * @param {'full'|'runtime'} [options.profile='full'] Field set to project.
- *   - `full`    : every meaningful field, incl. lifecycle / audit status / provenance.
- *   - `runtime` : behavior-changing fields only (classification, when-to-use,
- *     not-for, related, concept, grounding) — omits lifecycle / audit status /
- *     provenance, which are maintenance signals, not runtime guidance.
  * @returns {string} Markdown section text (no trailing newline), or ''.
+ *
+ * Projects ONLY agent-facing guidance into the body: classification, when-to-use,
+ * not-for, related skills, concept (Understanding fields), grounding, and keywords.
+ * Maintenance state — audit verdicts, eval status, lifecycle, and provenance
+ * (version / schema_version / owner) — is deliberately NOT projected. It is
+ * bookkeeping for the audit loop, not guidance for an agent USING the skill, and
+ * a vendor loader feeds this body straight to the model. There is exactly ONE
+ * render shape; the former `full`/`runtime` profile split was removed so no path
+ * can ever leak maintenance state into a consumed skill. See AGENTS.md.
  */
-function renderSkillGraphContext(fm, options = {}) {
+function renderSkillGraphContext(fm) {
   if (!fm || typeof fm !== 'object') return '';
-  const profile = options.profile === 'runtime' ? 'runtime' : 'full';
   const rel = (fm.relations && typeof fm.relations === 'object') ? fm.relations : {};
   const blocks = [];
 
@@ -195,48 +197,14 @@ function renderSkillGraphContext(fm, options = {}) {
     push('Grounding', lines);
   }
 
-  // The remaining blocks are maintenance/provenance signals, not runtime guidance.
-  // The `runtime` profile omits them to keep the consumed skill lean; the `full`
-  // profile (default) keeps them for transparency (e.g. surfacing application_verdict
-  // so a reader knows whether the skill is behaviorally proven).
-  if (profile === 'full') {
-    // 7. Lifecycle & audit status — transparent provenance
-    {
-      const lines = [];
-      if (fm.stability) lines.push(`- Stability: \`${oneLine(fm.stability)}\``);
-      if (fm.freshness) lines.push(`- Freshness: \`${oneLine(fm.freshness)}\``);
-      if (fm.superseded_by) lines.push(`- Superseded by: \`${oneLine(fm.superseded_by)}\``);
-      if (fm.eval_state) {
-        lines.push(`- Eval state: \`${oneLine(fm.eval_state)}\`${fm.eval_score != null ? ` (score ${oneLine(fm.eval_score)})` : ''}`);
-      }
-      if (fm.routing_eval) lines.push(`- Routing eval: \`${oneLine(fm.routing_eval)}\``);
-      const verdicts = [
-        fm.structural_verdict && `structural ${oneLine(fm.structural_verdict)}`,
-        fm.truth_verdict && `truth ${oneLine(fm.truth_verdict)}`,
-        fm.comprehension_verdict && `comprehension ${oneLine(fm.comprehension_verdict)}`,
-        fm.application_verdict && `application ${oneLine(fm.application_verdict)}`,
-      ].filter(Boolean);
-      if (verdicts.length) lines.push(`- Audit status: ${verdicts.join(', ')}`);
-      if (fm.last_audited) lines.push(`- Last audited: \`${oneLine(fm.last_audited)}\``);
-      push('Lifecycle & audit status', lines);
-    }
-
-    // 8. Provenance & keywords
-    {
-      const lines = [];
-      const idParts = [
-        fm.version != null && `version ${oneLine(fm.version)}`,
-        fm.schema_version != null && `schema v${oneLine(fm.schema_version)}`,
-        fm.owner && `owner \`${oneLine(fm.owner)}\``,
-      ].filter(Boolean);
-      if (idParts.length) lines.push(`- ${idParts.join(', ')}`);
-      const keywords = Array.isArray(fm.keywords) ? fm.keywords.map(oneLine).filter(Boolean) : [];
-      if (keywords.length) lines.push(`- Keywords: ${keywords.map(k => `\`${k}\``).join(', ')}`);
-      push('Provenance', lines);
-    }
-  } else {
-    // runtime profile: a single short "common triggers" line is still useful for
-    // activation, but the verbose lifecycle/provenance blocks are omitted.
+  // 7. Keywords — an activation/routing signal, useful to a consuming agent/router.
+  // This is the ONLY non-Understanding metadata projected. Maintenance state
+  // (audit verdicts, eval_state/eval_score, routing_eval, stability, freshness,
+  // superseded_by, last_audited) and provenance identity (version, schema_version,
+  // owner) are deliberately NOT projected: they are bookkeeping for the audit loop,
+  // not guidance for an agent USING the skill. A vendor loader feeds this body
+  // straight to the model, so nothing here may be maintenance state. See AGENTS.md.
+  {
     const keywords = Array.isArray(fm.keywords) ? fm.keywords.map(oneLine).filter(Boolean) : [];
     if (keywords.length) push('Keywords', [`- ${keywords.map(k => `\`${k}\``).join(', ')}`]);
   }

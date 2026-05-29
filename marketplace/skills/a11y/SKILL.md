@@ -119,16 +119,7 @@ This skill ships a comprehension-eval artifact at [`examples/evals/a11y.json`](h
 - Verify with: `testing-strategy`
 - Related: `interaction-patterns`, `form-ux-architecture`, `interaction-feedback`, `design-system-architecture`
 
-**Lifecycle & audit status**
-- Stability: `experimental`
-- Freshness: `2026-04-18`
-- Eval state: `passing`
-- Routing eval: `present`
-- Audit status: structural PASS, truth PASS, comprehension UNVERIFIED, application UNVERIFIED
-- Last audited: `2026-05-28`
-
-**Provenance**
-- version 1.0.0, schema v8, owner `skill-graph-maintainer`
-- Keywords: `screen reader`, `announce`, `validation state`, `form labels`, `assistive tech`, `ARIA roles`, `keyboard support`, `arrow key`, `navigation`, `focus return`
+**Keywords**
+- `screen reader`, `announce`, `validation state`, `form labels`, `assistive tech`, `ARIA roles`, `keyboard support`, `arrow key`, `navigation`, `focus return`
 
 <!-- skill-graph-context:end -->

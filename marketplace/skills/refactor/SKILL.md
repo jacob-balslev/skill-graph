@@ -118,16 +118,7 @@ This skill ships a comprehension-eval artifact at [`examples/evals/refactor.json
 - Depends on: `testing-strategy`
 - Verify with: `testing-strategy`
 
-**Lifecycle & audit status**
-- Stability: `experimental`
-- Freshness: `2026-04-18`
-- Eval state: `passing`
-- Routing eval: `present`
-- Audit status: structural PASS, truth PASS, comprehension UNVERIFIED, application UNVERIFIED
-- Last audited: `2026-05-28`
-
-**Provenance**
-- version 1.0.0, schema v8, owner `skill-graph-maintainer`
-- Keywords: `refactor`, `cleanup`, `simplify`, `extract function`, `reduce duplication`, `clean this up`, `simplify this`, `rename this`, `split this file`, `too long function`, `decompose function`, `decompose this`, `duplicated logic`, `duplicated validation`, `extract duplicated`, `behavior preserving`, `keep tests green`
+**Keywords**
+- `refactor`, `cleanup`, `simplify`, `extract function`, `reduce duplication`, `clean this up`, `simplify this`, `rename this`, `split this file`, `too long function`, `decompose function`, `decompose this`, `duplicated logic`, `duplicated validation`, `extract duplicated`, `behavior preserving`, `keep tests green`
 
 <!-- skill-graph-context:end -->

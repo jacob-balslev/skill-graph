@@ -110,16 +110,7 @@ This skill ships a comprehension-eval artifact at [`examples/evals/visual-design
 - Verify with: `a11y`, `semiotics`
 - Related: `semiotics`, `design-system-architecture`, `layout-composition`, `microcopy`, `a11y`
 
-**Lifecycle & audit status**
-- Stability: `experimental`
-- Freshness: `2026-05-11`
-- Eval state: `unverified`
-- Routing eval: `absent`
-- Audit status: structural PASS, truth PASS, comprehension UNVERIFIED, application UNVERIFIED
-- Last audited: `2026-05-28`
-
-**Provenance**
-- version 1.0.0, schema v8, owner `skill-graph-maintainer`
-- Keywords: `visual-design`, `visual craft`, `palette direction`, `typography direction`, `spatial rhythm`, `density rules`, `elevation treatment`, `motion feel`, `brand fit`
+**Keywords**
+- `visual-design`, `visual craft`, `palette direction`, `typography direction`, `spatial rhythm`, `density rules`, `elevation treatment`, `motion feel`, `brand fit`
 
 <!-- skill-graph-context:end -->

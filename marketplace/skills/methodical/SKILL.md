@@ -331,15 +331,7 @@ After applying this skill, verify:
 - Analogy: Methodical execution is like aviation's 'read-do' checklist: you don't just glance at the panel and say 'looks good', you read the specific gauge, state the value, and check the box, every single time.
 - Common misconception: A common misconception is that 'prioritizing' means 'filtering'. In this methodology, prioritization is strictly a reordering operation; zero items are removed, and the full count is always presented.
 
-**Lifecycle & audit status**
-- Freshness: `2026-04-01`
-- Eval state: `unverified`
-- Routing eval: `absent`
-- Audit status: structural PASS, truth PASS, comprehension UNVERIFIED, application UNVERIFIED
-- Last audited: `2026-05-28`
-
-**Provenance**
-- version 1.0.0, schema v7, owner `claude`
-- Keywords: `methodical`, `completeness`, `no filtering`, `all findings`, `step by step`, `evidence receipt`, `scope reduction`, `sycophancy`, `intellectual honesty`, `no skipping`
+**Keywords**
+- `methodical`, `completeness`, `no filtering`, `all findings`, `step by step`, `evidence receipt`, `scope reduction`, `sycophancy`, `intellectual honesty`, `no skipping`
 
 <!-- skill-graph-context:end -->

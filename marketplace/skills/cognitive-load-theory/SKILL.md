@@ -385,16 +385,7 @@ The four-verdict shape is per [ADR 0011](https://github.com/jacob-balslev/skill-
 - Verify with: `context-management`, `teaching-patterns`, `best-practice`
 - Related: `teaching-patterns`, `context-window`, `compression`, `editorial-standards`, `prompt-craft`
 
-**Lifecycle & audit status**
-- Stability: `experimental`
-- Freshness: `2026-05-19`
-- Eval state: `unverified`
-- Routing eval: `absent`
-- Audit status: structural PASS, truth PASS, comprehension UNVERIFIED, application UNVERIFIED
-- Last audited: `2026-05-28`
-
-**Provenance**
-- version 1.0.0, schema v8, owner `skill-graph-maintainer`
-- Keywords: `cognitive load theory`, `working memory`, `intrinsic load`, `extraneous load`, `germane load`, `chunking`, `segmentation`, `schema formation`, `Sweller`, `prompt design`
+**Keywords**
+- `cognitive load theory`, `working memory`, `intrinsic load`, `extraneous load`, `germane load`, `chunking`, `segmentation`, `schema formation`, `Sweller`, `prompt design`
 
 <!-- skill-graph-context:end -->

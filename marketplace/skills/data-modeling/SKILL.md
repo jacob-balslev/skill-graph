@@ -111,16 +111,7 @@ This skill ships a comprehension-eval artifact at [`examples/evals/data-modeling
 - Verify with: `database-migration`, `testing-strategy`
 - Related: `conceptual-modeling`, `database-migration`, `api-design`, `state-machine-modeling`, `entity-relationship-modeling`
 
-**Lifecycle & audit status**
-- Stability: `experimental`
-- Freshness: `2026-05-11`
-- Eval state: `unverified`
-- Routing eval: `absent`
-- Audit status: structural PASS, truth PASS, comprehension UNVERIFIED, application UNVERIFIED
-- Last audited: `2026-05-28`
-
-**Provenance**
-- version 1.0.0, schema v8, owner `skill-graph-maintainer`
-- Keywords: `data modeling`, `logical data model`, `physical data model`, `entity relationship`, `normalization`, `denormalization`, `primary key`, `foreign key`, `schema design`, `data provenance`
+**Keywords**
+- `data modeling`, `logical data model`, `physical data model`, `entity relationship`, `normalization`, `denormalization`, `primary key`, `foreign key`, `schema design`, `data provenance`
 
 <!-- skill-graph-context:end -->

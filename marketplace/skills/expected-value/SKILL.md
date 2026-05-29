@@ -353,16 +353,7 @@ After applying this skill, verify:
 - Mode: `universal`
 - Truth sources: `https://plato.stanford.edu/entries/rationality-normative-utility/`, `https://plato.stanford.edu/entries/decision-theory/`, `skills/skills/meta-methods/expected-value/references/expected-value-sources.md`, `skills/skills/meta-methods/expected-value/references/upstream-displacement-2026-05-27.md`
 
-**Lifecycle & audit status**
-- Stability: `stable`
-- Freshness: `2026-05-27`
-- Eval state: `unverified`
-- Routing eval: `present`
-- Audit status: structural PASS, truth BROKEN, comprehension UNVERIFIED, application UNVERIFIED
-- Last audited: `2026-05-28`
-
-**Provenance**
-- version 1.0.0, schema v8, owner `skill-graph-maintainer`
-- Keywords: `expected value`, `EV`, `expected utility`, `expected monetary value`, `probability weighted`, `decision under uncertainty`, `payoffs`, `outcome probability`, `sensitivity analysis`, `break-even probability`
+**Keywords**
+- `expected value`, `EV`, `expected utility`, `expected monetary value`, `probability weighted`, `decision under uncertainty`, `payoffs`, `outcome probability`, `sensitivity analysis`, `break-even probability`
 
 <!-- skill-graph-context:end -->

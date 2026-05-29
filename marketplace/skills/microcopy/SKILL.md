@@ -288,16 +288,7 @@ After writing or reviewing UI text, verify:
 - Verify with: `linguistics`, `a11y`
 - Related: `linguistics`, `task-analysis`, `intent-recognition`, `interaction-feedback`, `form-ux-architecture`
 
-**Lifecycle & audit status**
-- Stability: `experimental`
-- Freshness: `2026-05-06`
-- Eval state: `unverified`
-- Routing eval: `absent`
-- Audit status: structural PASS, truth PASS, comprehension UNVERIFIED, application UNVERIFIED
-- Last audited: `2026-05-28`
-
-**Provenance**
-- version 1.0.0, schema v8, owner `skill-graph-maintainer`
-- Keywords: `button label microcopy`, `empty-state copy`, `tooltip text rule`, `confirmation dialog wording`, `inline validation message`, `toast notification copy`, `placeholder text rule`, `loading-state messaging`, `functional UI text`, `ux writing patterns`
+**Keywords**
+- `button label microcopy`, `empty-state copy`, `tooltip text rule`, `confirmation dialog wording`, `inline validation message`, `toast notification copy`, `placeholder text rule`, `loading-state messaging`, `functional UI text`, `ux writing patterns`
 
 <!-- skill-graph-context:end -->

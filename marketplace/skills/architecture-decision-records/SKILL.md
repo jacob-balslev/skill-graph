@@ -104,16 +104,7 @@ Good ADRs are short, dated, statused, and honest about consequences. If a future
 - Verify with: `code-review`
 - Related: `framework-fit-analysis`, `bounded-context-mapping`, `system-interface-contracts`, `dependency-architecture`
 
-**Lifecycle & audit status**
-- Stability: `experimental`
-- Freshness: `2026-05-11`
-- Eval state: `unverified`
-- Routing eval: `absent`
-- Audit status: structural PASS, truth PASS, comprehension UNVERIFIED, application UNVERIFIED
-- Last audited: `2026-05-28`
-
-**Provenance**
-- version 1.0.0, schema v8, owner `skill-graph-maintainer`
-- Keywords: `ADR`, `architecture decision record`, `decision log`, `technical decision`, `decision consequences`, `options rejected`, `superseded ADR`, `architectural rationale`, `decision status`
+**Keywords**
+- `ADR`, `architecture decision record`, `decision log`, `technical decision`, `decision consequences`, `options rejected`, `superseded ADR`, `architectural rationale`, `decision status`
 
 <!-- skill-graph-context:end -->

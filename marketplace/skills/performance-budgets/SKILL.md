@@ -249,16 +249,7 @@ After applying this skill, verify:
 - Analogy: A performance budget is to a web app what a calorie budget is to a diet — the calorie count of any single meal is information; the calorie budget is what you do about it when you exceed it. A diet that 'tracks' calories without consequence is description; a diet with a calorie *budget* is discipline. And a per-meal budget (per-route) catches drift earlier than a per-day total: by the time the day total breaches, the offending meal is hours behind you and harder to undo.
 - Common misconception: |
 
-**Lifecycle & audit status**
-- Stability: `experimental`
-- Freshness: `2026-05-15`
-- Eval state: `unverified`
-- Routing eval: `absent`
-- Audit status: structural PASS, truth PASS, comprehension UNVERIFIED, application UNVERIFIED
-- Last audited: `2026-05-28`
-
-**Provenance**
-- version 1.0.0, schema v8, owner `skill-graph-maintainer`
-- Keywords: `performance budget`, `Core Web Vitals`, `LCP`, `INP`, `CLS`, `RAIL model`, `Lighthouse budgets`, `lab metrics`, `field metrics`, `p75 performance`
+**Keywords**
+- `performance budget`, `Core Web Vitals`, `LCP`, `INP`, `CLS`, `RAIL model`, `Lighthouse budgets`, `lab metrics`, `field metrics`, `p75 performance`
 
 <!-- skill-graph-context:end -->
