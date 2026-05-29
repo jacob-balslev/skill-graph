@@ -301,6 +301,35 @@ node bin/skill-graph.js evolve --workspace-root <workspace> --skills-dir <worksp
 node lib/audit/skill-status.js <skill-name>
 ```
 
+## Running long batches in the background — heartbeat + active Monitor (not blind background tasks)
+
+A graded `evaluate`, an `audit --graded`, or an `evolve --top N` over many skills is a long, multi-minute-per-unit job. **Do not run these as fire-and-forget background tasks.** A blind background task is silent through a crash or a hang, and silence is indistinguishable from "still running" — the recurring failure mode operators hit with the audit loop. Run them under a heartbeat + active listener instead, the same shape as a localhost health check.
+
+**The two pieces:**
+
+1. **Heartbeat (the runner's job).** Any batch runner writes a `status.json` heartbeat on every unit start/finish AND on a periodic tick (≤ 15s). The contract:
+
+   ```json
+   {
+     "ts": "<ISO-8601>", "pid": 12345,
+     "total": 60, "done": 23, "failed": 0,
+     "running": [ { "cell": "<unit-id>", "elapsed_s": 540 } ],
+     "complete": false
+   }
+   ```
+
+2. **Active listener (the operator's job).** `scripts/watch-audit-batch.sh <status-file>` polls the heartbeat and emits one stdout line per event — `PROGRESS`, `HANG` (a unit past `--cell-stall`), `STALE` (heartbeat stopped ticking → runner hung/died), `COMPLETE` (terminal). It covers **every** terminal state, so a crashed or hung run can never look like a running one. Stream it via the Claude Code `Monitor` tool (one stdout line == one chat notification); set the Monitor `timeout_ms` ≥ the batch ETA, or `persistent: true` for multi-hour runs.
+
+   ```bash
+   # Operator arms this via the Monitor tool, not a plain background shell:
+   bash scripts/watch-audit-batch.sh .cache/eval-batch/status.json \
+     --proc 'evaluate-skill.js' --cell-stall 2100 --hb-stale 120 --poll 20
+   ```
+
+**Monitor-filter doctrine (load-bearing):** the watcher's emitted lines must include the failure/stall signatures, not only the success marker — per the `Monitor` tool's own rule, *silence is not success*. `watch-audit-batch.sh` already does this; if you write a bespoke filter, widen it to cover crash/hang, never narrow it to the happy path.
+
+Reference producer of the heartbeat contract: the A/B experiment driver (`dist/ab/comprehension-ab-driver.js` `writeStatus()`). Existing canonical runners (`evaluate`, `evolve`, `batch-eval`) do not yet emit the heartbeat — adopting it is tracked as a follow-up; until then, point `--proc` at the runner process so the listener still detects death and stall by liveness + result-count.
+
 ## Cadence
 
 | Cadence | Action |
