@@ -596,6 +596,7 @@ This gate runs independently because its failure mode is CONTENT-drift, not SYST
 Useful focused checks:
 
 ```bash
+node scripts/skill-audit-preflight.js <skill> --for all   # readiness gate: does the skill have the version/fields/evals an op needs? (exit 0 ready / 2 gaps); --ensure scaffolds deterministic gaps
 node scripts/skill-lint.js examples/skill-metadata-template.md
 node scripts/skill-lint.js --path examples/fixture-skills --no-color
 node scripts/check-protocol-consistency.js
