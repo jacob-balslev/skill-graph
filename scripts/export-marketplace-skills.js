@@ -30,6 +30,11 @@ const { buildExportedSkill, normalizeExportName } = require('./export-skill');
 const { validateExportedFrontmatter } = require('./verify-skill-md-export');
 const { checkFile } = require('./check-markdown-links');
 const { PRIVACY_PATTERNS, scanPrivacyText } = require('./lib/privacy-patterns');
+// The body-projection renderer and its helpers are the shared "compile" core,
+// used by both this marketplace export and the local `scripts/render-skills.js`
+// (the `skill-graph render` command). extractBoundaryOwnsClause is shared with
+// the description projection below.
+const { renderSkillGraphContext, extractBoundaryOwnsClause, relationSlugs, truthSourceLabel } = require('./lib/render-skill-context');
 
 const REPO_ROOT = workspaceRoot();
 const WORKSPACE_CONFIG = loadWorkspaceConfig(REPO_ROOT, msg => process.stderr.write(`WARN ${msg}\n`));
@@ -420,7 +425,8 @@ function provenanceForSkill(sourceRelPath) {
 // ---------------------------------------------------------------------------
 
 const MENTIONED_SLUG_RE = /\(use ([a-z][a-z0-9-]*[a-z0-9])\)/g;
-const OWNS_CLAUSE_RE = /^[a-z][a-z0-9-]*[a-z0-9]\s+owns\s+([^;.]+?)(?:\s+where\s|\s+when\s|\s+that\s|[;.]|$)/i;
+// OWNS_CLAUSE_RE + extractBoundaryOwnsClause now live in ./lib/render-skill-context
+// (shared by the description projection here and the body projection there).
 
 /**
  * Scan a description for `(use <slug>)` mentions so synthesis can skip slugs
@@ -441,23 +447,6 @@ function collectMentionedSlugs(description) {
     slugs.add(m[1]);
   }
   return slugs;
-}
-
-/**
- * Extract the "owns X" clause from a relations.boundary reason string.
- * E.g. "testing-strategy owns deterministic-software testing where every run
- * is binary..." → "deterministic-software testing".
- *
- * @param {string} reason The reason field from a Shape B boundary entry.
- * @returns {string|null} The owns clause, or null if no clean clause.
- */
-function extractBoundaryOwnsClause(reason) {
-  if (!reason || typeof reason !== 'string') return null;
-  const m = OWNS_CLAUSE_RE.exec(reason);
-  if (!m) return null;
-  const clause = m[1].trim();
-  if (clause.length === 0 || clause.length > 120) return null;
-  return clause;
 }
 
 /**
@@ -599,214 +588,11 @@ function exportDescriptionForSkill(skill) {
   };
 }
 
-// ---------------------------------------------------------------------------
-// Export-time body projection — "Skill Graph context" section (added 2026-05-29)
-// ---------------------------------------------------------------------------
-// The description projection above surfaces only the routing-critical boundary
-// signal, bounded by the 1024-char marketplace ceiling. Every other Skill
-// Metadata Protocol field (classification, relations, Understanding fields,
-// grounding, lifecycle, audit status, keywords) is carried JSON-encoded under
-// the exported `metadata:` map — which vendor auto-loaders DO NOT read.
-//
-// This renderer projects those meaningful fields into a generated, clearly
-// delimited Markdown section appended to the exported body. The body IS read by
-// the vendor on activation (progressive-disclosure level 2), so the graph
-// becomes readable prose for any consuming agent — not just for our own
-// tooling. The `metadata:` map is preserved unchanged for lossless round-trip;
-// this section is the human/agent-readable view of the same data.
-//
-// Doctrine fit: AUGMENT, not REPLACE. The authored body is untouched; the
-// section is appended after it with HTML-comment provenance markers so it is
-// regenerable and removable. Output is deterministic (fixed field order, only
-// present fields emitted) so `--check` stays stable. Slugs render as `code`
-// spans, never as Markdown links, so no dangling-link findings are introduced.
-//
-// Pure-bookkeeping fields (urn, drift_check hashes, eval_failed_ids,
-// runtime_telemetry, reviewed_at, last_changed, eval_last_run) stay in the
-// metadata: map only — they are machine state, not readable guidance. Every
-// field that carries meaning to a reader is rendered below.
-// ---------------------------------------------------------------------------
-
-const SKILL_GRAPH_CONTEXT_HEADING = '## Skill Graph context';
-
-/** Collapse internal whitespace/newlines so a free-text field renders as one clean line. */
-function oneLine(value) {
-  return String(value == null ? '' : value).replace(/\s+/g, ' ').trim();
-}
-
-/**
- * Extract skill slugs from a relations[key] array that may be Shape A (bare
- * string slugs) or Shape B (objects `{ skill, reason }`). Returns deduped slugs
- * in source order.
- */
-function relationSlugs(relations, key) {
-  const arr = relations && Array.isArray(relations[key]) ? relations[key] : [];
-  const out = [];
-  for (const entry of arr) {
-    const slug = typeof entry === 'string' ? entry : entry && entry.skill;
-    if (slug && typeof slug === 'string' && !out.includes(slug)) out.push(slug);
-  }
-  return out;
-}
-
-/** Render a single truth-source entry (string or `{ path|file, lines, anchor }`) to a short string. */
-function truthSourceLabel(entry) {
-  if (typeof entry === 'string') return oneLine(entry);
-  if (!entry || typeof entry !== 'object') return '';
-  const base = entry.path || entry.file || entry.source || '';
-  return oneLine(base);
-}
-
-/**
- * Render the generated "Skill Graph context" Markdown section from a skill's
- * normalized frontmatter. Returns '' when no meaningful field is present (the
- * caller then appends nothing). Only present fields are emitted; order is fixed.
- *
- * @param {object} fm Normalized frontmatter (post normalizeFrontmatter).
- * @returns {string} Markdown section text (no trailing newline), or ''.
- */
-function renderSkillGraphContext(fm) {
-  if (!fm || typeof fm !== 'object') return '';
-  const rel = (fm.relations && typeof fm.relations === 'object') ? fm.relations : {};
-  const blocks = [];
-
-  const push = (heading, lines) => {
-    const kept = lines.filter(Boolean);
-    if (kept.length > 0) blocks.push(`**${heading}**\n${kept.join('\n')}`);
-  };
-
-  // 1. Classification
-  {
-    const lines = [];
-    if (fm.subject) {
-      const extra = Array.isArray(fm.subjects)
-        ? fm.subjects.map(s => (typeof s === 'string' ? s : s && s.subject)).filter(s => s && s !== fm.subject)
-        : [];
-      lines.push(`- Subject: \`${oneLine(fm.subject)}\`${extra.length ? ` (also: ${extra.map(s => `\`${oneLine(s)}\``).join(', ')})` : ''}`);
-    }
-    if (fm.deployment_target) lines.push(`- Deployment: \`${oneLine(fm.deployment_target)}\``);
-    if (fm.taxonomy_domain) lines.push(`- Domain: \`${oneLine(fm.taxonomy_domain)}\``);
-    if (fm.scope) lines.push(`- Scope: ${oneLine(fm.scope)}`);
-    push('Classification', lines);
-  }
-
-  // 2. When to use — positive activation signal
-  {
-    const lines = [];
-    const examples = Array.isArray(fm.examples) ? fm.examples : [];
-    for (const ex of examples) {
-      const t = oneLine(typeof ex === 'string' ? ex : ex && (ex.prompt || ex.query));
-      if (t) lines.push(`- ${t}`);
-    }
-    const triggers = Array.isArray(fm.triggers) ? fm.triggers.map(oneLine).filter(Boolean) : [];
-    if (triggers.length) lines.push(`- Triggers: ${triggers.map(t => `\`${t}\``).join(', ')}`);
-    push('When to use', lines);
-  }
-
-  // 3. Not for — negative boundary (readable form of the description projection)
-  {
-    const lines = [];
-    const antis = Array.isArray(fm.anti_examples) ? fm.anti_examples : [];
-    for (const a of antis) {
-      const t = oneLine(typeof a === 'string' ? a : a && (a.prompt || a.query));
-      if (t) lines.push(`- ${t}`);
-    }
-    const boundary = Array.isArray(rel.boundary) ? rel.boundary : [];
-    for (const entry of boundary) {
-      if (!entry || typeof entry !== 'object') continue;
-      if (!entry.skill) continue;
-      const owns = extractBoundaryOwnsClause(entry.reason);
-      lines.push(`- Owned by \`${oneLine(entry.skill)}\`${owns ? `: ${owns}` : ''}`);
-    }
-    push('Not for', lines);
-  }
-
-  // 4. Related skills — the graph neighborhood
-  {
-    const lines = [];
-    const depends = relationSlugs(rel, 'depends_on');
-    const verify = relationSlugs(rel, 'verify_with');
-    const related = [...relationSlugs(rel, 'related'), ...relationSlugs(rel, 'adjacent')];
-    const broader = relationSlugs(rel, 'broader');
-    const narrower = relationSlugs(rel, 'narrower');
-    const disjoint = relationSlugs(rel, 'disjoint_with');
-    const fmt = slugs => slugs.map(s => `\`${s}\``).join(', ');
-    if (depends.length) lines.push(`- Depends on: ${fmt(depends)}`);
-    if (verify.length) lines.push(`- Verify with: ${fmt(verify)}`);
-    if (related.length) lines.push(`- Related: ${fmt([...new Set(related)])}`);
-    if (broader.length) lines.push(`- Broader: ${fmt(broader)}`);
-    if (narrower.length) lines.push(`- Narrower: ${fmt(narrower)}`);
-    if (disjoint.length) lines.push(`- Distinct from: ${fmt(disjoint)}`);
-    push('Related skills', lines);
-  }
-
-  // 5. Concept — Understanding fields (only when authored)
-  {
-    const lines = [];
-    if (fm.mental_model) lines.push(`- Mental model: ${oneLine(fm.mental_model)}`);
-    if (fm.purpose) lines.push(`- Purpose: ${oneLine(fm.purpose)}`);
-    if (fm.boundary) lines.push(`- Boundary: ${oneLine(fm.boundary)}`);
-    if (fm.analogy) lines.push(`- Analogy: ${oneLine(fm.analogy)}`);
-    if (fm.misconception) lines.push(`- Common misconception: ${oneLine(fm.misconception)}`);
-    push('Concept', lines);
-  }
-
-  // 6. Grounding
-  {
-    const g = (fm.grounding && typeof fm.grounding === 'object') ? fm.grounding : null;
-    const lines = [];
-    if (g) {
-      if (g.grounding_mode) lines.push(`- Mode: \`${oneLine(g.grounding_mode)}\``);
-      const sources = Array.isArray(g.truth_sources) ? g.truth_sources.map(truthSourceLabel).filter(Boolean) : [];
-      if (sources.length) lines.push(`- Truth sources: ${sources.map(s => `\`${s}\``).join(', ')}`);
-    }
-    push('Grounding', lines);
-  }
-
-  // 7. Lifecycle & audit status — transparent provenance (per supply-chain audit-signal guidance)
-  {
-    const lines = [];
-    if (fm.stability) lines.push(`- Stability: \`${oneLine(fm.stability)}\``);
-    if (fm.freshness) lines.push(`- Freshness: \`${oneLine(fm.freshness)}\``);
-    if (fm.superseded_by) lines.push(`- Superseded by: \`${oneLine(fm.superseded_by)}\``);
-    if (fm.eval_state) {
-      lines.push(`- Eval state: \`${oneLine(fm.eval_state)}\`${fm.eval_score != null ? ` (score ${oneLine(fm.eval_score)})` : ''}`);
-    }
-    if (fm.routing_eval) lines.push(`- Routing eval: \`${oneLine(fm.routing_eval)}\``);
-    const verdicts = [
-      fm.structural_verdict && `structural ${oneLine(fm.structural_verdict)}`,
-      fm.truth_verdict && `truth ${oneLine(fm.truth_verdict)}`,
-      fm.comprehension_verdict && `comprehension ${oneLine(fm.comprehension_verdict)}`,
-      fm.application_verdict && `application ${oneLine(fm.application_verdict)}`,
-    ].filter(Boolean);
-    if (verdicts.length) lines.push(`- Audit status: ${verdicts.join(', ')}`);
-    if (fm.last_audited) lines.push(`- Last audited: \`${oneLine(fm.last_audited)}\``);
-    push('Lifecycle & audit status', lines);
-  }
-
-  // 8. Provenance & keywords
-  {
-    const lines = [];
-    const idParts = [
-      fm.version != null && `version ${oneLine(fm.version)}`,
-      fm.schema_version != null && `schema v${oneLine(fm.schema_version)}`,
-      fm.owner && `owner \`${oneLine(fm.owner)}\``,
-    ].filter(Boolean);
-    if (idParts.length) lines.push(`- ${idParts.join(', ')}`);
-    const keywords = Array.isArray(fm.keywords) ? fm.keywords.map(oneLine).filter(Boolean) : [];
-    if (keywords.length) lines.push(`- Keywords: ${keywords.map(k => `\`${k}\``).join(', ')}`);
-    push('Provenance', lines);
-  }
-
-  if (blocks.length === 0) return '';
-  return [
-    SKILL_GRAPH_CONTEXT_HEADING,
-    '',
-    '<!-- generated by scripts/export-marketplace-skills.js from Skill Metadata Protocol fields; do not edit by hand -->',
-    '',
-    blocks.join('\n\n'),
-  ].join('\n');
-}
+// The body-projection renderer (`renderSkillGraphContext`) and its helpers
+// (`relationSlugs`, `truthSourceLabel`, `extractBoundaryOwnsClause`) now live in
+// ./lib/render-skill-context — the shared compile core used by both this export
+// and `scripts/render-skills.js` (the `skill-graph render` command). They are
+// imported at the top of this file and re-exported below for back-compat.
 
 function buildMarketplaceSkillText(skill) {
   const description = exportDescriptionForSkill(skill);

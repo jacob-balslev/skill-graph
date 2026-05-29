@@ -148,6 +148,31 @@ Examples:
   skill-graph export --check
 `,
   },
+  render:  {
+    script: 'scripts/render-skills.js',
+    help: `Usage: skill-graph render [options]
+
+Compile the canonical skill library into consumable Agent Skills SKILL.md files
+for ACTUAL USE — yours or any cloner's. Each compiled skill carries clean
+frontmatter + the authored body + a readable "## Skill Graph context" section
+projected from the protocol fields, so a vendor runtime (which reads the body,
+not the metadata map) sees the full graph. Includes EVERY skill — no marketplace
+publication gate, so project-scoped skills are rendered too.
+
+Options:
+  --out <dir>       Output root (default: dist/skills). Point a runtime at it,
+                    e.g. --out ~/.claude/skills
+  --profile <name>  full (default — every meaningful field) or runtime
+                    (behavioral fields only; omits lifecycle/audit/provenance).
+  --check           Do not write; fail if any rendered file is missing or stale.
+  --json            Print a JSON summary.
+
+Examples:
+  skill-graph render
+  skill-graph render --out ~/.claude/skills
+  skill-graph render --profile runtime --out .claude/skills
+`,
+  },
   evolve:  {
     script: 'lib/audit/skill-evolution-loop.js',
     requires: ['lib/audit-shared/auto-improve.js'],

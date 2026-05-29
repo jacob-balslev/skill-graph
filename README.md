@@ -342,6 +342,16 @@ node scripts/verify-skill-md-export.js --plain marketplace/skills
 
 The staging surface lands under `marketplace/` for the two-step sync into `jacob-balslev/skills` (see `AGENTS.MD § Release sync`). The canonical end-user install path is `npx skills add jacob-balslev/skills` — that is the path consumers see, and it must remain working before any marketplace badge is added.
 
+**Consuming the best-quality skills locally (you, or any cloner).** The marketplace export is just one downstream profile. To compile the *whole* library — including `deployment_target: project` skills the marketplace gate excludes — into consumable Agent Skills for your own runtime, use `render`:
+
+```bash
+skill-graph render --out ~/.claude/skills      # compile every skill into a runtime's skills dir
+skill-graph render --profile runtime --out .claude/skills   # behavioral fields only (leaner)
+skill-graph render --check                     # CI: fail if dist/skills is stale
+```
+
+`render` compiles each canonical skill into clean Agent-Skills frontmatter + the authored body + a generated `## Skill Graph context` section (projected from the protocol fields by the shared `scripts/lib/render-skill-context.js`). This is what makes the evolved Skill-Graph intelligence visible to a vendor auto-loader, which reads the body but never the `metadata:` map. Default output is `dist/skills/` (git-ignored); point `--out` at any runtime's skills directory to consume directly.
+
 The npm package exposes the same scripts through a `skill-graph` binary:
 
 ```bash
@@ -352,7 +362,8 @@ skill-graph audit my-skill           # Seed or run a single-skill audit
 skill-graph route "schema drift"     # Select skills for a query
 skill-graph drift                    # Check truth-source hashes
 skill-graph eval-staleness           # Check eval file/path/symbol claims
-skill-graph export                   # Generate marketplace export surface
+skill-graph render --out ~/.claude/skills  # Compile the library into consumable skills for a runtime
+skill-graph export                   # Generate public marketplace export surface
 skill-graph evolve --top 5           # PREVIEW: continuous improvement loop (standalone; see Standalone Installation section)
 ```
 

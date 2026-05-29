@@ -71,6 +71,8 @@
     "export:verify-skill-md": "node scripts/verify-skill-md-export.js",
     "marketplace:export": "node scripts/export-marketplace-skills.js",
     "marketplace:verify": "node scripts/export-marketplace-skills.js --check && node scripts/verify-skill-md-export.js --plain marketplace/skills",
+    "render": "node scripts/render-skills.js",
+    "render:check": "node scripts/render-skills.js --check",
     "overlap": "node scripts/skill-overlap.js",
     "drift": "node scripts/skill-graph-drift.js",
     "status": "node scripts/build-status-doc.js",

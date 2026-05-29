@@ -32,3 +32,8 @@ node_modules/
 .skill-graph/_routing-eval.manifest.json
 .skill-graph/_routing-eval-cli.manifest.json
 skills.manifest.json
+
+# `skill-graph render` default output — compiled consumable skills, regenerated
+# on demand. The canonical source is committed; the compiled artifact is not
+# (it is a `query result`, not a source row). A consumer renders it themselves.
+dist/

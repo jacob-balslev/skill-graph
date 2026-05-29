@@ -167,7 +167,7 @@ The description projection above surfaces the negative-boundary signal, but it i
 
 ### What the projection does
 
-`scripts/export-marketplace-skills.js::renderSkillGraphContext()` projects those fields into a generated `## Skill Graph context` Markdown section appended to the exported body (via the `bodySuffix` hook added to `scripts/export-skill.js::buildExportedSkill()`). The body is read by the vendor on activation (progressive-disclosure level 2), so the graph becomes readable prose for any consuming agent — not just for the workspace router and audit tooling.
+The shared `scripts/lib/render-skill-context.js::renderSkillGraphContext()` projects those fields into a generated `## Skill Graph context` Markdown section appended to the exported body (via the `bodySuffix` hook added to `scripts/export-skill.js::buildExportedSkill()`). It is the single compile core used by **both** this marketplace export and the local `skill-graph render` command (`scripts/render-skills.js`) — marketplace export is just the public-publish profile of the same renderer. The body is read by the vendor on activation (progressive-disclosure level 2), so the graph becomes readable prose for any consuming agent — not just for the workspace router and audit tooling. The section is fenced by stable `<!-- skill-graph-context:start/end -->` markers so it is regenerable, and supports a `full` (default) or `runtime` field profile.
 
 The rendered section has eight sub-blocks, emitted only when their fields are present, in fixed order:
 
