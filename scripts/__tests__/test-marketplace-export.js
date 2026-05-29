@@ -25,6 +25,8 @@ const {
   collectMentionedSlugs,
   exportDescriptionForSkill,
   extractBoundaryOwnsClause,
+  relationSlugs,
+  renderSkillGraphContext,
   rewriteLocalMarkdownLinksToCanonicalRepo,
   scanPrivacyText,
   synthesizeBoundaryTail,
@@ -590,6 +592,145 @@ assert(
       `provenance: projected skill should carry skill_graph_export_description_projection; got ${JSON.stringify(exportedFm.metadata)}`
     );
   }
+}
+
+// ---------------------------------------------------------------------------
+// Export-time body projection tests — "Skill Graph context" section (added 2026-05-29)
+// ---------------------------------------------------------------------------
+// renderSkillGraphContext projects the meaningful Skill Metadata Protocol fields
+// into a generated, readable Markdown section appended to the exported body.
+// The metadata: map is preserved unchanged for round-trip; this section is the
+// human/agent-readable view that vendor auto-loaders actually read on activation.
+// ---------------------------------------------------------------------------
+
+// relationSlugs — handles Shape A (bare strings) and Shape B (objects), dedupes
+{
+  assert(relationSlugs(null, 'related').length === 0, 'relationSlugs: null relations → empty');
+  assert(relationSlugs({}, 'related').length === 0, 'relationSlugs: missing key → empty');
+  const mixed = relationSlugs({ related: ['a', { skill: 'b' }, 'a', { skill: 'b' }] }, 'related');
+  assert(JSON.stringify(mixed) === JSON.stringify(['a', 'b']), `relationSlugs: mixed shapes deduped in order; got ${JSON.stringify(mixed)}`);
+}
+
+// renderSkillGraphContext — empty frontmatter yields empty section
+{
+  assert(renderSkillGraphContext(null) === '', 'renderSkillGraphContext: null → empty');
+  assert(renderSkillGraphContext({}) === '', 'renderSkillGraphContext: no meaningful fields → empty');
+}
+
+// renderSkillGraphContext — classification block renders subject/deployment/domain/scope
+{
+  const out = renderSkillGraphContext({
+    subject: 'quality-assurance',
+    subjects: ['quality-assurance', 'frontend-ui'],
+    deployment_target: 'portable',
+    taxonomy_domain: 'quality/accessibility',
+    scope: 'Teaches accessible interaction patterns.',
+  });
+  assert(out.startsWith('## Skill Graph context'), 'renderSkillGraphContext: starts with heading');
+  assert(out.includes('**Classification**'), 'renderSkillGraphContext: has Classification block');
+  assert(out.includes('- Subject: `quality-assurance` (also: `frontend-ui`)'), `renderSkillGraphContext: subject + secondary; got\n${out}`);
+  assert(out.includes('- Deployment: `portable`'), 'renderSkillGraphContext: deployment rendered');
+  assert(out.includes('- Domain: `quality/accessibility`'), 'renderSkillGraphContext: domain rendered');
+  assert(out.includes('- Scope: Teaches accessible interaction patterns.'), 'renderSkillGraphContext: scope rendered');
+}
+
+// renderSkillGraphContext — relations render with correct labels
+{
+  const out = renderSkillGraphContext({
+    subject: 'code-engineering',
+    relations: {
+      depends_on: ['testing-strategy'],
+      verify_with: [{ skill: 'debugging' }],
+      related: ['refactor'],
+      broader: ['quality'],
+      narrower: ['unit-testing'],
+      disjoint_with: ['observability'],
+    },
+  });
+  assert(out.includes('**Related skills**'), 'renderSkillGraphContext: Related skills block present');
+  assert(out.includes('- Depends on: `testing-strategy`'), 'renderSkillGraphContext: depends_on labeled');
+  assert(out.includes('- Verify with: `debugging`'), 'renderSkillGraphContext: verify_with labeled (Shape B)');
+  assert(out.includes('- Related: `refactor`'), 'renderSkillGraphContext: related labeled');
+  assert(out.includes('- Broader: `quality`'), 'renderSkillGraphContext: broader labeled');
+  assert(out.includes('- Narrower: `unit-testing`'), 'renderSkillGraphContext: narrower labeled');
+  assert(out.includes('- Distinct from: `observability`'), 'renderSkillGraphContext: disjoint_with labeled');
+}
+
+// renderSkillGraphContext — Understanding fields render in the Concept block
+{
+  const out = renderSkillGraphContext({
+    subject: 'meta-methods',
+    mental_model: 'A skill is a typed knowledge object.',
+    purpose: 'Make relevance explicit.',
+    boundary: 'Not a runtime.',
+    analogy: 'A type system for skills.',
+    misconception: 'That metadata is always read.',
+  });
+  assert(out.includes('**Concept**'), 'renderSkillGraphContext: Concept block present');
+  assert(out.includes('- Mental model: A skill is a typed knowledge object.'), 'renderSkillGraphContext: mental_model rendered');
+  assert(out.includes('- Common misconception: That metadata is always read.'), 'renderSkillGraphContext: misconception rendered');
+}
+
+// renderSkillGraphContext — audit status + provenance render transparently
+{
+  const out = renderSkillGraphContext({
+    subject: 'agent-ops',
+    stability: 'experimental',
+    eval_state: 'passing',
+    eval_score: 4,
+    routing_eval: 'present',
+    structural_verdict: 'PASS',
+    truth_verdict: 'PASS',
+    comprehension_verdict: 'UNVERIFIED',
+    application_verdict: 'UNVERIFIED',
+    version: '1.0.0',
+    schema_version: '8',
+    owner: 'skill-graph-maintainer',
+    keywords: ['routing', 'graph'],
+  });
+  assert(out.includes('- Eval state: `passing` (score 4)'), `renderSkillGraphContext: eval_state + score; got\n${out}`);
+  assert(out.includes('- Audit status: structural PASS, truth PASS, comprehension UNVERIFIED, application UNVERIFIED'), 'renderSkillGraphContext: four verdicts rendered');
+  assert(out.includes('version 1.0.0, schema v8, owner `skill-graph-maintainer`'), 'renderSkillGraphContext: provenance line rendered');
+  assert(out.includes('- Keywords: `routing`, `graph`'), 'renderSkillGraphContext: keywords rendered');
+}
+
+// renderSkillGraphContext — output contains NO markdown links (would create dangling-link findings)
+{
+  const out = renderSkillGraphContext({
+    subject: 'code-engineering',
+    scope: 'x',
+    relations: { related: ['a', 'b'], depends_on: ['c'] },
+    keywords: ['k1', 'k2'],
+  });
+  assert(!/\]\(/.test(out), 'renderSkillGraphContext: emits no markdown links (slugs are code spans)');
+}
+
+// renderSkillGraphContext — deterministic (pure function)
+{
+  const fm = {
+    subject: 'data-analytics',
+    deployment_target: 'portable',
+    scope: 'one\ntwo  three',
+    relations: { related: ['x'] },
+    keywords: ['a'],
+  };
+  assert(renderSkillGraphContext(fm) === renderSkillGraphContext(fm), 'renderSkillGraphContext: same input → same output');
+  // free-text newlines collapse to single spaces
+  assert(renderSkillGraphContext(fm).includes('- Scope: one two three'), 'renderSkillGraphContext: multiline scope collapsed to one line');
+}
+
+// Live corpus: every exported skill body carries the generated section, and no
+// generated section introduces a markdown link.
+{
+  const sectionCount = skills.reduce((n, s) => {
+    const exported = buildMarketplaceSkillText(s);
+    const hasSection = exported.includes('## Skill Graph context');
+    return n + (hasSection ? 1 : 0);
+  }, 0);
+  assert(
+    sectionCount === skills.length,
+    `corpus: every exported skill should carry a Skill Graph context section; got ${sectionCount} of ${skills.length}`
+  );
 }
 
 process.stdout.write('PASS test-marketplace-export: marketplace export gates covered\n');

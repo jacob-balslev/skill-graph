@@ -311,9 +311,24 @@ function buildExportedSkill(text, options = {}) {
   if (options.description) exportFm.description = options.description;
   const frontmatter = buildFrontmatter(exportFm, options);
   const body = extractBody(text);
+
+  // options.bodySuffix lets a caller append a generated section after the
+  // authored body — used by the marketplace exporter to project Skill Metadata
+  // Protocol fields into readable prose that vendor auto-loaders actually read
+  // on activation (the metadata: map is round-trip storage, not a read surface).
+  // When no suffix is passed, output is byte-identical to the pre-suffix
+  // behavior so generic single-skill exports (examples/exports/) do not churn.
+  const suffix = typeof options.bodySuffix === 'string' && options.bodySuffix.trim()
+    ? options.bodySuffix.trim()
+    : '';
+  if (!suffix) {
+    return body.trimEnd()
+      ? `${frontmatter}\n${body}`
+      : `${frontmatter}\n`;
+  }
   return body.trimEnd()
-    ? `${frontmatter}\n${body}`
-    : `${frontmatter}\n`;
+    ? `${frontmatter}\n${body.trimEnd()}\n\n${suffix}\n`
+    : `${frontmatter}\n\n${suffix}\n`;
 }
 
 function main() {
