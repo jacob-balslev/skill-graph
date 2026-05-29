@@ -1,6 +1,17 @@
 # ADR 0013 — Scope Field Direction: Fix the Contract, Don't Deprecate the Field
 
-> Status: **Accepted** — Option A (fix, not deprecate)
+> ### Superseded by v8 (2026-05-29) — `scope` is now free-text, not a typed enum
+>
+> This ADR accepted keeping `scope` as a **typed enum** normalized to
+> `portable`/`reference`/`codebase` (Option A). The v7→v8 clean cut **reversed** this: in v8,
+> `scope` is a **required free-text PRD-style string** (the enum — including `codebase`,
+> `reference`, `operational`, `workspace` — was removed), and deployment targeting moved to the
+> separate closed `deployment_target` axis (`portable`/`project`). See
+> [ADR-0017](0017-five-axis-classification-model.md) and `AGENTS.md § Major Version Is a Clean Cut`.
+> The decision below is **historical** — do NOT author `scope` as an enum or use the
+> `codebase`/`reference` values. Prior contract: `git show schema-v7:schemas/skill.schema.json`.
+
+> Status: **Superseded by v8** (2026-05-29; see amendment above) — originally **Accepted** — Option A (fix, not deprecate)
 > Date: 2026-05-23
 > Decided: 2026-05-23 by Jacob Balslev
 > Driver: `skill-corpus-scope-naming-audit-2026-05-23.md` (in the sibling `Development/` repo at `docs/research/skill-corpus-scope-naming-audit-2026-05-23.md`)
