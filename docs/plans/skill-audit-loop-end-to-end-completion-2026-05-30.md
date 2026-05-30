@@ -231,11 +231,38 @@ path-limited and verified:
   is a behavior-bearing fork the SH-6603 collapse left as a full copy. Collapsing it is sequenced AFTER
   Step 0b (so the contract test backs it). Tracked as **SH-6642**.
 
-**Remaining:** Steps 0b, 2, 3, 5, 6, 7. Next: **Step 0b** (model-free black-box public-CLI contract
-test wired into `npm run verify`) — the highest-leverage new work, and the prerequisite that unblocks
-the SH-6642 engine-collapse and the Step 2/3 behavior fixes. Then Step 2 (transactional verdicts +
-promote `check-audit-manifest` to blocking), Step 3 (invert write-verdict default), Step 5 (router →
-Health Block + Decision A), Step 6 (field-shape codemod), Step 7 (end-to-end proof + corpus run).
+**2026-05-30 — Step 0b (model-free black-box public-CLI contract test) — test authored; verify-wiring deferred to post-Step-3.**
+- `skill-graph/scripts/__tests__/test-public-cli-loop-contract.js` (commit `skill-graph@4a3de1f`)
+  drives the real `bin/skill-graph.js` surfaces — `audit`, `evaluate`, `evolve --analyze-only`, and the
+  `init` create path — against a fixture skill (derived from the canonical template) in a hermetic
+  mkdtemp workspace, with a **stubbed `claude`/`opencode`/`gemini` on PATH** returning canned
+  concept-grade JSON (no real model). It asserts on-disk verdict/receipt transitions. **13/14 assertions
+  pass.**
+- **Break #2 is refined by the test (verified on disk):** `comprehension_verdict` + `freshness` ARE
+  written by DEFAULT (`stampComprehensionVerdict`, unconditional, `evaluate-skill.js:2042-2044`). Only
+  the v6 Health Block `eval_score` / `eval_failed_ids` remain gated behind `--write-verdict`
+  (`evaluate-skill.js:2061`). The 1 red assertion (`eval_score` non-null by default) is the **forcing
+  function for Step 3**; it flips green when Step 3 inverts that default.
+- **Break #1 guard:** the test runs `evolve --analyze-only` end-to-end (exit 0) AND asserts the
+  scaffold script the engine references (`skill-auto-create.js`) resolves to a real file — a path
+  regression now fails the test instead of failing silently.
+- **Not yet wired into `npm run verify`** — by design. A red test (the eval_score forcing function) in
+  the shared gate would block parallel sessions; a green-while-broken test is the false-green
+  anti-pattern. The test is wired into `verify` as the LAST sub-step once Step 3 makes it green.
+
+**Ordering note (verified, do not reorder):** Step 2 BEFORE Step 3. Flipping the `--write-verdict`
+default (Step 3) before receipts are durable (Step 2) would persist `eval_score` by default on the same
+ephemeral `.cache/` receipt foundation — more verdicts that can outlive their evidence (Break #4). That
+is the "looks smarter, same bug" trap GPT-5.4 flagged. Make receipts durable first (Step 2), then flip
+the default (Step 3).
+
+**Remaining:** Steps 2, 3, 5, 6, 7. **Next: Step 2** — make verdict-writing transactional with a
+DURABLE artifact (not `.cache/`); promote `check-audit-manifest.js` application-artifact enforcement
+from informational to blocking + move it into `npm run verify`; then reconcile the 14 orphan verdicts
+(SYSTEM: identify + the script; CONTENT: the SKILL.md downgrades + missing `comprehension.json` route
+via `/audit:*`). Then Step 3 (invert write-verdict default + fix the `bin/skill-graph.js:249` help-text;
+flips the contract test green; THEN wire it into `npm run verify`), Step 5 (router → Health Block +
+Decision A), Step 6 (field-shape codemod), Step 7 (end-to-end proof + corpus run).
 
 ## Part 5 — Corrected fix plan (SYSTEM mode, one concern per commit; re-sequenced per the reviews)
 
