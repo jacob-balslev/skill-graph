@@ -88,7 +88,7 @@ Every action in this loop falls into one of four operations. Each writes to a sp
 | **audit** | Read every field, check freshness and validity against repo truth, score the graded gates when `--graded`. | No — writes Audit Status fields only | `last_audited`, `structural_verdict`, `truth_verdict`, `comprehension_verdict` (`--graded`), `application_verdict` (`--graded`); retains the per-script `lint_verdict` + `drift_status` they roll up from |
 | **improve** | Edit one field. One commit. Time-boxed. | Yes | the chosen field + `last_changed` |
 | **evaluate** | Run the eval suite (deterministic + comprehension/application graders) against the skill. | No — writes eval/Audit Status fields only | `eval_score`, `eval_failed_ids`, `freshness`; `comprehension_verdict` / `application_verdict` when those graders run |
-| **evolve** | Loop over the corpus: `audit → improve → evaluate`, prioritised by `application_verdict` then skill-graph centrality + staleness. | Yes (per skill) | all of the above, per skill |
+| **evolve** | Continuous analyzer-driven walk over the corpus that *composes* the operations (ANALYZE → improve → evaluate per item, via the improvement loop), prioritised by `application_verdict` then skill-graph centrality + staleness. NOT a literal per-skill `audit(); improve(); evaluate()` triple — see § The Pipeline of `evolve`. | Yes (per skill) | all of the above, per skill |
 
 `audit` and `evaluate` may mutate frontmatter state because the Audit Status lives on the skill. They do not rewrite the skill's instructional body or routing contract unless an explicit `improve` step follows.
 
@@ -215,29 +215,27 @@ When `evals/comprehension.json` exists, the comprehension grader (`evaluate-skil
 | `--mode <adapter>` | Run an auto-improve adapter (prompt-evolution, design-candidate-discovery, perf, docs) against this skill | When the change pattern is well-known |
 | `--lens <other-skill>` | Apply another skill as an audit lens against this skill and fix the violations | Cross-skill consistency work — formerly `audit:skill-fix` |
 
-## The Inner Pipeline of `evolve`
+## The Pipeline of `evolve`
 
-`evolve` is a thin for-loop over the four operations:
+`evolve` is the corpus-level walker — the **only** operation that is itself a loop. Its ONE meaning, matching both the CLI (`skill-graph evolve --help`) and the implementation: a continuous, checkpoint-resumable, analyzer-driven improvement loop over the corpus, prioritised by `application_verdict` first, then skill-graph centrality + Health-Block staleness.
 
-```
-for skill in priority_order(application_verdict first, then skill-graph centrality + staleness):
-  audit(skill)
-  if structural_verdict in {FAIL, PASS_WITH_FIXES}
-     or truth_verdict in {DRIFT, BROKEN}
-     or application_verdict in {UNVERIFIED, REDUNDANT, HARMFUL, MIXED}:
-    if understanding_field_targetable:
-      improve(skill, field=understanding_field)   # one Understanding field
-  evaluate(skill)
-  write Audit Status fields back
-```
+> **Correction (E1, 2026-05-30 end-to-end review).** Earlier drafts described `evolve` as a "thin for-loop" that literally called `audit(skill); improve(skill); evaluate(skill)` per skill. That pseudo-code matched neither the code (`lib/audit/skill-evolution-loop.js`) nor the CLI help (`bin/skill-graph.js`, which already calls it a "continuous Karpathy-style skill-improvement loop"). Two meanings under one name. The real engine is the phase machine below; this section was rewritten to the single honest meaning before any behavior fix.
 
-`understanding_field` is selected by `understandingField()` in
-`scripts/skill/skill-evolution-loop.js` (monorepo runner; the skill-graph
-copy is `lib/audit/skill-evolution-loop.js`) — empty/missing field wins
-outright, otherwise shortest populated value among `description`,
-`mental_model`, `purpose`, `boundary`, `analogy`, `misconception`. The
-stalest Health date field stays in the trace as a staleness signal
-but is not what gets passed to the improver's HARD SCOPE.
+The engine (`lib/audit/skill-evolution-loop.js`) runs five phases per cycle:
+
+| Phase | What it does | Relation to the four operations |
+|---|---|---|
+| **ANALYZE** | Run `skill-evolution-analyzer.js` (deterministic) → a prioritised queue of actions (`improve_skill`, `scaffold_skill`, `fix_semantics`, `ensure_evals`, `archive_skill`). | Supplies the deterministic prioritisation signal that drives the loop. |
+| **TRIAGE** | Take the top N items from the queue (`--top N`), filtered by `--actions` / `--min-priority`. | — |
+| **EXECUTE** | Process one item at a time. `improve_skill` / `fix_semantics` / `ensure_evals` dispatch the canonical improve runner (`run-skill-improvement-loop.js`), which runs `evaluate` internally and keeps-or-reverts on the metric. `scaffold_skill` runs `skill-auto-create.js` (or redirects into an existing skill's improvement). | EXECUTE delegates to `improve` → `evaluate`. |
+| **VERIFY** | Check that no regression occurred across the batch. | — |
+| **CHECKPOINT** | Persist loop state (resumable via `--resume`) and emit telemetry. Per-skill Audit Status fields are written by the dispatched `improve`/`evaluate` operations. | — |
+
+In `--continuous` mode the loop re-runs ANALYZE after each batch (improve → measure → re-prioritise → improve), bounded by `--max-cycles` / `--failure-budget`. So `evolve` *composes* the operations — the analyzer supplies prioritisation, and EXECUTE delegates to `improve` (which calls `evaluate`) — but it is **not** a literal per-skill `audit(); improve(); evaluate()` triple.
+
+`understanding_field` (the HARD SCOPE passed to the improver for `improve_skill`) is selected by `understandingField()` — empty/missing field wins outright, otherwise the shortest populated value among `description`, `mental_model`, `purpose`, `boundary`, `analogy`, `misconception`. The stalest Health date field stays in the trace as a staleness signal but is not what gets passed to the improver's HARD SCOPE.
+
+> **Implementation SSOT.** The canonical engine is `lib/audit/skill-evolution-loop.js` — what the public CLI (`bin/skill-graph.js evolve`) wires to. The workspace copy `scripts/skill/skill-evolution-loop.js` is a **divergent fork** (1358 differing non-comment lines vs the canonical; 468 vs 1028 non-comment lines — verified 2026-05-30) that the SH-6603 fork-collapse left as a full copy instead of converting to a shim. Collapsing it to a thin shim over the canonical is a behavior-bearing change (the workspace grind-loops run the 468-line copy; switching them to the 1028-line canonical changes behavior), so it is sequenced **after** the model-free black-box contract test exists — tracked as a follow-up SYSTEM task so the collapse is proven not to regress the loop.
 
 Priority reads the Audit Status directly: the walker looks at `application_verdict` first — skills with `application_verdict: UNVERIFIED` and high routing centrality get priority for application-eval authoring — then falls back to `last_audited` ascending for ties. No telemetry crawl, no log aggregation.
 
