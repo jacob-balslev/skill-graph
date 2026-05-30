@@ -286,7 +286,26 @@ Decision A), Step 6 (field-shape codemod), Step 7 (end-to-end proof + corpus run
   forward-looking hardening, not a live gap. Pick it up as a small follow-up when Step 5 touches the
   application axis.
 
-**Remaining:** Steps 3, 5, 6, 7 (+ the application-enforcement hardening noted above).
+**2026-05-31 — Step 3 DONE.**
+- _Inverted the write-verdict default._ The v6 Health Block write (`eval_score` /
+  `eval_failed_ids` / `freshness`) now persists **by default**; `--dry-run` is the single opt-out.
+  `--write-verdict` is retained as a harmless no-op alias. Closes Break #2 (an unattended loop no longer
+  produces zero durable verdicts by forgetting a flag). Commit `skill-graph@0883d0e`.
+- _E2 (help-text lie) resolved by the code._ `bin/skill-graph.js` already documented "Writes (when not
+  --dry-run): eval_score, eval_failed_ids, freshness …" — the code now matches the help, so no help-text
+  edit was needed. The lie was the code, not the doc.
+- _Step 0b contract test flipped GREEN and wired in._ The forcing-function assertion (`evaluate writes
+  eval_score by default`) now passes on a real stubbed-model run (14/14). Added
+  `test-public-cli-loop-contract.js` to the `test:unit` chain so it runs under `npm run verify` AND
+  `verify:system` as the public-CLI loop guard. Commit `skill-graph@0514bb1`.
+- _Portability regression fixed (caught by `test:unit`)._ The Step-2 durable-receipts commit (`3ed080d`)
+  anchored the durable eval path to a hardcoded `SKILL_GRAPH_REPO_ROOT`, which `test-standalone-pipeline.js`
+  forbids in `lib/` (breaks `npm install -g`). Re-resolved via the portable `log-paths.js` `LOG_DIR`.
+  Folded into `0883d0e`. **Lesson: run the full `test:unit` suite per SYSTEM change, not just the one
+  touched test** — Step 2's individual-test check missed this.
+- `test:unit` green (exit 0) end to end.
+
+**Remaining:** Steps 5, 6, 7 (+ the application-artifact-enforcement hardening noted in the Step 2 entry).
 
 ## Part 5 — Corrected fix plan (SYSTEM mode, one concern per commit; re-sequenced per the reviews)
 
