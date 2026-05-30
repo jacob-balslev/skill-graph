@@ -14,6 +14,8 @@
  *   - Files under `examples/` (test fixtures and sample skills intentionally
  *     test multiple schema versions and historical exports)
  *   - Filenames containing `migration` or `compatibility` (cross-version docs)
+ *   - Any git-ignored path (e.g. `dist/`, `.cache/`) — throwaway build/A-B
+ *     output is not an active doc (filtered via `git check-ignore`; SH-6638)
  *
  * Each finding includes file:line and the offending fragment.
  *
@@ -31,6 +33,7 @@
 
 const fs = require('fs');
 const path = require('path');
+const { execFileSync } = require('child_process');
 const { workspaceRoot } = require('./lib/roots');
 
 const REPO_ROOT = workspaceRoot();
@@ -96,6 +99,41 @@ function collectMarkdownFiles(dir, out = []) {
     if (entry.isFile() && entry.name.toLowerCase().endsWith('.md')) out.push(abs);
   }
   return out;
+}
+
+// Drop paths git ignores (e.g. `dist/`, `.cache/`, `.opencode/` — throwaway A/B
+// harness dumps and build output that carry old SKILL.md copies with stale
+// schema_version labels). Those are not "active docs"; scanning them produced
+// 34 false-positive drift reds in `npm run verify:system` (SH-6638). One
+// `git check-ignore --stdin` pass is authoritative against .gitignore and any
+// parent-dir ignore, so this also covers future ignored output dirs without
+// hardcoding each one. Fail-open: if git is unavailable or this is not a git
+// repo, return the list unchanged (the gate must never crash on infra absence).
+function filterGitIgnored(files, repoRoot) {
+  if (!Array.isArray(files) || files.length === 0) return files;
+  const rel = files.map((f) => path.relative(repoRoot, f));
+  let stdout = '';
+  try {
+    stdout = execFileSync('git', ['check-ignore', '--stdin'], {
+      cwd: repoRoot,
+      input: rel.join('\n'),
+      encoding: 'utf8',
+    });
+  } catch (err) {
+    // git check-ignore exits 1 when NONE of the paths are ignored — not an
+    // error, the stdout (empty) is still valid. Any other status (128 = not a
+    // git repo, ENOENT = git not installed) → fail open and scan everything.
+    if (err && err.status === 1) {
+      stdout = err.stdout ? err.stdout.toString() : '';
+    } else {
+      return files;
+    }
+  }
+  const ignored = new Set(
+    stdout.split(/\r?\n/).map((s) => s.trim()).filter(Boolean),
+  );
+  if (ignored.size === 0) return files;
+  return files.filter((f) => !ignored.has(path.relative(repoRoot, f)));
 }
 
 function buildPatterns(activeVersion) {
@@ -211,9 +249,10 @@ function main() {
   const activeVersion = readActiveSchemaVersion();
   const { errorPatterns, warnPatterns } = buildPatterns(activeVersion);
 
-  const files = collectMarkdownFiles(REPO_ROOT)
-    .filter(f => !isAllowlisted(f))
-    .sort((a, b) => a.localeCompare(b));
+  const files = filterGitIgnored(
+    collectMarkdownFiles(REPO_ROOT).filter(f => !isAllowlisted(f)),
+    REPO_ROOT,
+  ).sort((a, b) => a.localeCompare(b));
 
   const errorHits = [];
   const warnHits = [];
@@ -258,6 +297,7 @@ module.exports = {
   buildMigrationSectionMask,
   buildPatterns,
   collectMarkdownFiles,
+  filterGitIgnored,
   isAllowlisted,
   readActiveSchemaVersion,
   scanFile,
