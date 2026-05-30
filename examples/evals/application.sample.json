@@ -24,6 +24,12 @@
       "absent_signals": [
         "Do not claim ADD COLUMN ... NOT NULL DEFAULT is safe merely because there is a default.",
         "Do not ignore the pooled-connection constraint."
+      ],
+      "criteria": [
+        { "id": "c1", "polarity": "positive", "statement": "Identifies that a single blocking ALTER ADD COLUMN NOT NULL DEFAULT can rewrite or lock-block the large live table." },
+        { "id": "c2", "polarity": "positive", "statement": "Recommends an expand-contract sequence: add a nullable/defaulted column, backfill in batches, then enforce NOT NULL after verification." },
+        { "id": "c3", "polarity": "positive", "statement": "Notes the DDL must run on a direct/unpooled connection, not the PgBouncer transaction-pooled port." },
+        { "id": "c4", "polarity": "guard", "statement": "Does NOT claim ADD COLUMN ... NOT NULL DEFAULT is safe merely because a default is supplied." }
       ]
     },
     {
@@ -44,6 +50,11 @@
       ],
       "absent_signals": [
         "Do not recommend a plain ADD CONSTRAINT ... FOREIGN KEY validated inline on a 10M-row live table."
+      ],
+      "criteria": [
+        { "id": "c1", "polarity": "positive", "statement": "Identifies that adding a fully validated foreign key inline on a large live table takes an unsafe lock and scan." },
+        { "id": "c2", "polarity": "positive", "statement": "Recommends adding the constraint NOT VALID first, then running VALIDATE CONSTRAINT in a separate later step." },
+        { "id": "c3", "polarity": "guard", "statement": "Does NOT recommend a plain ADD CONSTRAINT ... FOREIGN KEY validated inline on the 10M-row live table." }
       ]
     },
     {
@@ -62,6 +73,10 @@
       ],
       "absent_signals": [
         "Must not inject migration or DDL advice into a front-end virtualization task."
+      ],
+      "criteria": [
+        { "id": "c1", "polarity": "guard", "statement": "Does NOT inject database migration, SQL, or DDL advice into this front-end virtualization task (the skill must stay silent — this is outside its scope)." },
+        { "id": "c2", "polarity": "positive", "statement": "Correctly frames the task as front-end rendering performance (list virtualization), not a database migration." }
       ]
     },
     {
