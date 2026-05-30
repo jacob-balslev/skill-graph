@@ -111,3 +111,61 @@ Each step = its own SYSTEM task, one concern per commit, verified with a real re
 ```
 
 ## ═══════════ END CONTINUATION PROMPT ═══════════
+
+---
+
+## UPDATE 2026-05-30 (later session) — Step 1 + Step 0b DONE; the block above is SUPERSEDED
+
+> The continuation prompt above (Steps 0b/1 unstarted) is historical. Step 1 and the Step 0b contract
+> test are now committed and verified. The authoritative live record is the plan's **Progress log**
+> (`docs/plans/skill-audit-loop-end-to-end-completion-2026-05-30.md`). Use the prompt below.
+
+**Verified this session (re-confirm with `git -C skill-graph log --oneline -6` + the contract test):**
+- Break #1 fully closed (grep receipt empty).
+- Step 1 DONE: de-forked `scripts/evaluate-skill.js` → delegator (`skill-graph@758738b` exports +
+  `workspace@998302a4a` collapse + test repoint + ownership registry); reconciled the two conflicting
+  `evolve` meanings in `SKILL_AUDIT_LOOP.md` (`skill-graph@1c35224`). Plan recorded (`0b04f50`, `86d0deb`).
+- SH-6642 FILED: collapse divergent `scripts/skill/skill-evolution-loop.js` (468 lines) → shim over
+  canonical (1028; 1358 differing lines). Behavior-bearing — do AFTER Step 0b's test backs it.
+- Step 0b test authored (`skill-graph@4a3de1f`): drives the real bin/skill-graph.js (audit/evaluate/
+  evolve/init) on a hermetic fixture with a PATH-stubbed model CLI. **13/14 pass.** NOT yet in
+  `npm run verify` (a red test would block parallel sessions) — wire it in once Step 3 turns it green.
+- Verified refinement: Break #2 is HALF-fixed — `comprehension_verdict`+`freshness` write by DEFAULT
+  (`evaluate-skill.js:2042-2044`); only v6 `eval_score`/`eval_failed_ids` stay gated behind
+  `--write-verdict` (`evaluate-skill.js:2061`). That gated half is the Step 3 forcing function.
+- Verified ordering (do NOT reorder): **Step 2 BEFORE Step 3** — flipping the default before receipts
+  are durable persists verdicts on the ephemeral `.cache/` foundation (looks smarter, same bug).
+
+```
+Continue the Skill Audit Loop end-to-end completion (SYSTEM mode, skill-graph).
+Read first: docs/plans/skill-audit-loop-end-to-end-completion-2026-05-30.md (Progress log = live record).
+First action: cd /Users/jacobbalslev/Development && git -C skill-graph --no-pager log --oneline -6
+  (expect 86d0deb, 4a3de1f, 0b04f50, 1c35224, 758738b) and the workspace 998302a4a; then
+  cd skill-graph && node scripts/__tests__/test-public-cli-loop-contract.js (EXPECT 13 passed / 1 failed —
+  the 1 fail is the eval_score-by-default forcing function for Step 3, NOT a regression).
+
+DISCIPLINE: absolute `cd` every Bash call; one command then read; verify before claiming
+  (`git show --stat HEAD` after every commit); path-limited `git commit --only -F /tmp/msg -- <paths>`
+  (flags before `--`, `git add` untracked first); SYSTEM mode only (never edit skills/**/SKILL.md —
+  file cross-mode finds to Linear); external review = GPT-5.4 via `codex exec -m gpt-5.4` (no "GPT-5.5").
+
+REMAINING STEPS IN ORDER (Step 2 BEFORE Step 3):
+  Step 2 — durable transactional verdict/receipt write-back (NOT .cache/; evaluate-skill.js:1945/1775);
+    promote check-audit-manifest.js application enforcement from informational (:48) to BLOCKING + move
+    into `npm run verify`; reconcile the 14 orphan verdicts (SYSTEM = the script; CONTENT = SKILL.md
+    downgrades to UNVERIFIED where no artifact + missing comprehension.json routed via /audit:*, FILED).
+  Step 3 — invert evaluate-skill.js write-verdict default to persist-by-default (--dry-run opt-out) for
+    eval_score/eval_failed_ids; fix the bin/skill-graph.js:249 help-text. This turns the Step 0b contract
+    test GREEN → THEN wire test-public-cli-loop-contract.js into `npm run verify` as the final sub-step.
+  Step 5 — wire router off eval_state (skill-graph-route.js:16) onto the four-verdict Health Block; THEN
+    Decision A: gate-OUT negatives (HARMFUL/REDUNDANT/FALSE_POSITIVE) + rank-weight; structural/truth stay
+    hard blocks; UNVERIFIED stays routable; expire negative verdicts.
+  Step 6 — deterministic field-shape codemod for mechanical v8 fields + semantic-debt markers (Decision B);
+    agent authoring only for the 5 Understanding fields + scope prose.
+  Step 7 — one green real-skill end-to-end proof (claim→audit→improve→evaluate graded TOP-MODEL→release→
+    commit, manifest green), then a small corpus run for self-maintenance.
+  Plus SH-6642 (engine-collapse), now unblocked once Step 0b is wired in — superset-diff so no behavior lost.
+
+Each step = its own SYSTEM task, one concern per commit, verified with a real receipt. Keep the plan's
+Progress log updated as you go.
+```
