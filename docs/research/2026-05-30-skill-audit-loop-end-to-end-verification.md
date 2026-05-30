@@ -84,8 +84,19 @@ The user's expectation of an **automated v8 upgrade** does not match the **clean
 
 ### ❌ Findings filed / boundaries (honest)
 
+### ✅ Also proven this session (continued)
+
+| Step | Command actually run | Receipt | Commit |
+|---|---|---|---|
+| **`evaluate --mode comprehension`** end-to-end | `evaluate --mode comprehension bayesian-reasoning/evals/comprehension.json` | `Grader model: opus` + `Generator model: sonnet` (correct no-lesser-models split). Ran 2 evals, baseline-skip fired (`avg_primary_baseline=2.00 ≥ 1`, foundation model already has the concept), classified `BASELINE_SATURATED`, **stamped `comprehension_verdict: SKIPPED_BASELINE_HIGH`** — a real verdict from a real grader. Write-back reverted (SYSTEM mode). | — |
+| **SH-6640 Break #5** — `evolve` improve cycle spawned a MISSING `<sg>/scripts/run-skill-improvement-loop.js` | `buildImprovementLoopArgs("acid-fundamentals", …, {grader:"claude"})` | now returns spawn path `lib/audit/run-skill-improvement-loop.js` **EXISTS:true**, `--grader claude`, `--skills-root …/skills/skills/code-engineering` (real sibling repo via findSkillDir fallback). Both spawn sites + grader passthrough fixed. | `37c0743` |
+
+### ❌ Findings filed / boundaries (honest) — evolve
+
 | Item | State | Next |
 |---|---|---|
+| **`evolve --top 1` full-cycle completion** | **BLOCKED** — for the current corpus the top triage action is `generate_evals` (not `improve_skill`), and that action spawns a MISSING `<sg>/scripts/dispatch-solver.js` → "Failed: dispatch failed". The improve_skill execute path IS fixed (Break #5) but the walker doesn't surface improve_skill items now. | **Break #6 filed as SH-6643** (architectural cross-repo dep — needs a SYSTEM decision: resolve workspace dispatch-solver vs in-loop eval generator). |
+| **SH-6639 — does `improve` AUTHOR v8 fields?** | **PARTIAL (code-read)** — the general improve prompt (`run-skill-improvement-loop.js:300-308`) instructs the v8 *classification* axes (`schema_version 8`, `subject`, `deployment_target`, `scope`) but the five Understanding fields appear only under `--field`. Empirical run on a sub-v8 skill still pending. | Posted to SH-6639. Run `improve --skill methodical --apply` and inspect the candidate frontmatter. |
 | `improve --apply` full keep/revert with the **default `opencode` grader** | **BLOCKED** — the opencode grader hangs when invoked from Node on the eval prompts (matches the known `opencode-run-from-node` gotcha); the run sat on baseline `Eval #1` indefinitely and had to be killed (worktree cleaned manually). | Re-run with `--grader claude` (now Opus, `6515a4a`). The default-grader hang is a separate CLI-integration finding to file. |
 | `improve --apply` full keep/revert end-to-end | ✅ **PROVEN** — `improve --skill acid-fundamentals --apply --grader claude`. Log: `Grader model: opus` (runEval fix `6515a4a` working). `summary.json`: `counts {kept:0, discarded:1}`, `skill_status: discarded`, `skillsRepoRoot: …/skills` (Break #4 confirmed). The Karpathy gate **correctly reverted** the candidate with 7 evidence-backed reasons (candidate regressed 7/8→5/8 on the **frozen** eval set, weighted quality 0.7284 < 0.8432 threshold, +1 exec error, regressed Wilson LB / median / p10 deltas). Non-zero discarded with real opus-graded data — NOT "No empirical eval data captured". The gate judges against frozen evals, so the improver cannot game it by rewriting its own eval set. Worktree + branch cleaned up. | — SH-6640 FINISHED (Break #4 + full keep/revert both proven) |
 | Untracked skills (e.g. `okrs`) are invisible to `improve --apply` | **By design** — `git worktree add HEAD` checks out committed files only; the improve loop operates on committed skills. Not a bug; noted so future runs pick a *tracked* skill. | — |
