@@ -52,6 +52,13 @@ const RUNNERS = [
 // intent (discovery + arg-parse still run) without launching real evals.
 const SAFE_EXTRA_ARGS = {
   'lib/audit/batch-eval.js': ['--dry-run'],
+  // SH-6640: run-skill-improvement-loop.js now resolves the configured skill
+  // library (instead of crashing on a missing .claude/skills), so a bare
+  // invocation walks 158 skills + spawns grader subprocesses and blows the 15s
+  // timeout — same situation as batch-eval.js above. --smoke-test runs preflight
+  // + arg-parse (the require/parse health this test verifies) then exits before
+  // the corpus walk.
+  'lib/audit/run-skill-improvement-loop.js': ['--smoke-test'],
 };
 
 // ── 1. node --check (syntax / immediate require failure) ────────────
