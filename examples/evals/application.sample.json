@@ -1,5 +1,5 @@
 {
-  "_doc": "Worked specimen of a gate-9 application eval consumed by evaluate-skill.js --mode application and graded by lib/audit/graders/application-comparative-grader-prompt.md. Demonstrates the executable cases[] shape for the canonical database-migration skill. This sample is illustrative; live per-skill application evals belong under <skill>/evals/application.json.",
+  "_doc": "Worked specimen of a gate-9 application eval consumed by evaluate-skill.js --mode application (lib/audit/application-eval.js) and graded by lib/audit/graders/application-grader-prompt.md. Validates against schemas/application.schema.json (v1, 2026-05-30, SH-6624). Demonstrates the executable cases[] shape for the canonical database-migration skill. This sample is illustrative; live per-skill application evals belong under <skill>/evals/application.json. Expanded from 3 to 5 cases on 2026-05-30 to meet the schema's production floor (minItems 5, mirroring the comprehension gate-8 floor).",
   "skill_name": "database-migration",
   "subject": "safe production database migrations",
   "mode": "application",
@@ -62,6 +62,48 @@
       ],
       "absent_signals": [
         "Must not inject migration or DDL advice into a front-end virtualization task."
+      ]
+    },
+    {
+      "id": 4,
+      "scenario_type": "index-build",
+      "criticality": "high",
+      "red_herring": false,
+      "scenario": "Add a B-tree index on orders.customer_id to speed up a slow dashboard query, on the live 80M-row orders table.",
+      "context": "Table: orders (~80M rows, continuous write traffic). Postgres 15. The dashboard query filtering by customer_id is doing sequential scans.",
+      "question": "Write the migration to add the index.",
+      "expected_flags": [
+        "A plain CREATE INDEX takes an ACCESS EXCLUSIVE / SHARE lock that blocks writes for the duration of the build on a large table.",
+        "Index builds on an 80M-row table can run for many minutes, so the lock window is operationally significant."
+      ],
+      "expected_fix_hints": [
+        "Use CREATE INDEX CONCURRENTLY so the build does not block writes.",
+        "Run it outside a transaction block (CONCURRENTLY cannot run inside one), and add a check/rebuild path for the INVALID-index failure case."
+      ],
+      "absent_signals": [
+        "Do not claim a plain CREATE INDEX is fine on a large live table because 'indexes are read-only operations'.",
+        "Do not wrap CREATE INDEX CONCURRENTLY inside an explicit transaction."
+      ]
+    },
+    {
+      "id": 5,
+      "scenario_type": "column-rename",
+      "criticality": "critical",
+      "red_herring": false,
+      "scenario": "Rename orders.cust_id to orders.customer_id to match a new naming convention, while the running application still reads and writes orders.cust_id.",
+      "context": "Table: orders (live, high traffic). The deployed application code references cust_id. A single deploy cannot atomically update both the database and every running app instance.",
+      "question": "How should this rename be rolled out?",
+      "expected_flags": [
+        "A direct ALTER TABLE ... RENAME COLUMN breaks every running app instance still referencing the old name until all instances redeploy.",
+        "Schema change and application change cannot be made atomic across a live fleet, so a single-step rename causes errors during the rollout window."
+      ],
+      "expected_fix_hints": [
+        "Use an expand-contract sequence: add the new column, dual-write/backfill, migrate readers, then drop the old column in a later deploy.",
+        "Keep the old and new names both valid during the transition (e.g., a view or trigger) until all readers/writers have cut over."
+      ],
+      "absent_signals": [
+        "Do not claim a single ALTER TABLE ... RENAME COLUMN is safe because the rename itself is fast/metadata-only.",
+        "Do not drop the old column in the same deploy that adds the new one."
       ]
     }
   ]

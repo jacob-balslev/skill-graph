@@ -1,0 +1,150 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://skillgraph.dev/schemas/application.schema.json",
+  "title": "Skill Application Eval",
+  "description": "Binding shape for skills/<name>/evals/application.json — the gate-9 behavioral (application-shape) eval consumed by `evaluate-skill.js --mode application` (lib/audit/application-eval.js) and required-on-disk by skill-graph/scripts/check-audit-manifest.js whenever a graded application_verdict is claimed. v1 authored 2026-05-30 (SH-6624) as the missing sibling of comprehension.schema.json: comprehension had a binding schema since 2026-05-25, application did not — the runner and the worked specimen at examples/evals/application.sample.json both predate this file. Provenance: ADR-0011 (four-verdict Health Block) defines application_verdict as the primary quality signal; this schema defines the eval ARTIFACT the gate-9 grader scores the with/without-skill behavior delta against. NOTE (Phase-0 fork, SH-6624): the required per-case shape below (`expected_flags` / `expected_fix_hints` / `absent_signals`) is the DEPLOYED pointwise-grader contract — what lib/audit/application-eval.js consumes today and what application.sample.json uses. The OPTIONAL `criteria[]` block is the provisional comparative/checklist contract under evaluation by the SH-6624 grader-design pilot (docs/research/*-application-grader-pilot.md); it is a superset extension so a future format choice is additive and non-breaking. This schema is a binding SPEC doc (the repo carries no ajv runtime validator — Node built-ins only); conformance is enforced by construction + the audit loop, mirroring comprehension.schema.json's role.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["skill_name", "subject", "mode", "cases"],
+  "properties": {
+    "_doc": {
+      "type": "string",
+      "description": "Optional free-text documentation note (e.g., on a worked specimen explaining its illustrative purpose). Ignored by the runner."
+    },
+    "skill_name": {
+      "type": "string",
+      "pattern": "^[a-z][a-z0-9-]+$",
+      "description": "Kebab-case name; MUST match the parent directory name (e.g., 'database-migration' for skills/database-migration/evals/application.json) and the `name:` field in the corresponding SKILL.md."
+    },
+    "subject": {
+      "type": "string",
+      "minLength": 1,
+      "description": "Human-readable subject of the skill (e.g., 'safe production database migrations'). Surfaced to the grader as the capability under test. NOTE: this is the eval's free-text subject label, distinct from the SKILL.md `subject` browse-shelf enum."
+    },
+    "mode": {
+      "const": "application",
+      "description": "Discriminator. Always the literal string 'application' for this artifact. The runner fails loudly if it sees a comprehension-shaped file (evals[] instead of cases[]) under --mode application; this field makes the intent explicit for readers and tooling."
+    },
+    "schema_version": {
+      "type": "integer",
+      "minimum": 1,
+      "description": "Version of THIS application-eval artifact contract (orthogonal to the SKILL.md schema_version). v1 = the shape defined here. Optional; defaults to 1 when absent."
+    },
+    "skill_key": {
+      "type": "string",
+      "description": "Optional stable history key used by application-eval.js to group APPLICATION_HISTORY_LOG records. Defaults to a value derived from the skill directory when absent."
+    },
+    "adjacent_concepts": {
+      "type": "array",
+      "items": { "type": "string", "minLength": 1 },
+      "description": "Optional related skills/concepts the grader may use for scope/boundary checks (e.g., ['frontend-performance', 'data-modeling'] for a database-migration eval)."
+    },
+    "cases": {
+      "type": "array",
+      "minItems": 5,
+      "items": { "$ref": "#/$defs/application_case" },
+      "description": "Per-scenario application cases. The application layer uses `cases[]` (NOT `evals[]` — that is the comprehension shape; the runner throws if it sees the wrong key). Minimum 5 to mirror the comprehension gate-8 floor and the agent-eval-design discipline (realistic positives + hard negatives + prior failures); 7 recommended. At least one `red_herring: true` case is strongly recommended — a real-cases-only suite gives false confidence (agent-eval-design: 'the highest-value cases are hard negatives and prior failures')."
+    }
+  },
+  "$defs": {
+    "application_case": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "scenario_type",
+        "criticality",
+        "red_herring",
+        "scenario",
+        "context",
+        "question",
+        "expected_flags",
+        "expected_fix_hints",
+        "absent_signals"
+      ],
+      "properties": {
+        "id": {
+          "type": "integer",
+          "minimum": 1,
+          "description": "Stable integer identifier, unique within this file. The runner reports per-case results by id and the --case filter selects by it."
+        },
+        "scenario_type": {
+          "type": "string",
+          "minLength": 1,
+          "description": "Short label for the scenario family (e.g., 'live-schema-change', 'foreign-key-validation', 'frontend-performance-red-herring'). Used in receipts and console output for grouping."
+        },
+        "criticality": {
+          "type": "string",
+          "enum": ["critical", "high", "normal", "low"],
+          "description": "Per-case weight/severity. A missed `critical` real case is the strongest negative signal. Mirrors the comprehension criticality axis (note: the application layer uses `normal` where comprehension uses `medium`, matching the deployed application.sample.json)."
+        },
+        "red_herring": {
+          "type": "boolean",
+          "description": "When true, this scenario is OUTSIDE the skill's declared scope — the skill should NOT trigger. Graded primarily on `absent_signals` (false-positive avoidance, double-weighted). When false, the skill SHOULD trigger and is graded primarily on flag/fix correctness."
+        },
+        "scenario": {
+          "type": "string",
+          "minLength": 1,
+          "description": "The real code / diff / schema / situation the candidate is shown. Must be concrete enough that the skill's specific judgment changes the answer — not a definitional prompt (that is the comprehension layer's job)."
+        },
+        "context": {
+          "type": "string",
+          "minLength": 1,
+          "description": "Surrounding facts the candidate needs (production vs test, scale, runtime, constraints). Travels into both the baseline and with-skill generator prompts verbatim."
+        },
+        "question": {
+          "type": "string",
+          "minLength": 1,
+          "description": "The open-ended ask. Must NOT lead the candidate toward the expected flags (no leading hints) — the eval measures whether the loaded skill changes behavior, so the question is the same neutral prompt in both runs."
+        },
+        "expected_flags": {
+          "type": "array",
+          "items": { "type": "string", "minLength": 1 },
+          "description": "Issues the skill is supposed to lead the agent to SURFACE. Graded by the flag_correctness axis (weight 2.0 on real cases). On a red-herring case these are the scenario's OWN real issues (which the skill is not responsible for), used to score the candidate's overall framing — NOT the skill-domain claims it should avoid."
+        },
+        "expected_fix_hints": {
+          "type": "array",
+          "items": { "type": "string", "minLength": 1 },
+          "description": "Remediations the skill is supposed to lead the agent to RECOMMEND. Graded by the fix_correctness axis (weight 1.5). A vague label scores 1; a mechanism-level fix scores 2."
+        },
+        "absent_signals": {
+          "type": "array",
+          "items": { "type": "string", "minLength": 1 },
+          "description": "Claims the candidate should NOT make — false-positive risks. Graded by the false_positive_avoidance axis (weight 1.0 on real cases, 2.0 on red-herring cases). On red-herring cases this is the PRIMARY axis: it catches a skill that over-triggers outside its scope."
+        },
+        "criteria": {
+          "type": "array",
+          "minItems": 1,
+          "items": { "$ref": "#/$defs/criterion" },
+          "description": "OPTIONAL (PROVISIONAL — SH-6624 Phase-0 pilot). The boolean per-criterion checklist form under evaluation as a lower-variance alternative/companion to the pointwise 0/1/2 axes (research: CheckEval/FLASK — binary per-criterion rubrics beat graded scales on judge agreement + variance). When present, a checklist grader scores each criterion as met/not-met per run; the runner rolls up gained/lost/already/harm to the verdict. NOT consumed by the deployed pointwise runner — do not rely on it until the pilot resolves the grader-design fork and this field is promoted from optional to part of the contract."
+        },
+        "artifact": {
+          "type": "string",
+          "description": "OPTIONAL (PROVISIONAL — SH-6624 Phase-0 pilot). The single real input the comparative grader operates on (a code diff, a SKILL.md, a config, a query) when the case is graded by the comparative A/B grader (lib/audit/graders/application-comparative-grader-prompt.md). Redundant with `scenario` for the deployed pointwise grader; reserved for the comparative path under evaluation."
+        }
+      }
+    },
+    "criterion": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "polarity", "statement"],
+      "properties": {
+        "id": {
+          "type": "string",
+          "minLength": 1,
+          "description": "Stable per-criterion identifier, unique within the case (e.g., 'c1'). The checklist grader reports baseline_met/with_skill_met by this id."
+        },
+        "polarity": {
+          "type": "string",
+          "enum": ["positive", "negative", "guard"],
+          "description": "`positive` — a behavior the skill should ADD (satisfied when the run does it). `negative`/`guard` — a behavior the skill should PREVENT (satisfied when the harmful behavior is ABSENT). A `guard` criterion failed in the with-skill run while the run actively does the harmful thing is a HARMFUL signal."
+        },
+        "statement": {
+          "type": "string",
+          "minLength": 1,
+          "description": "The single checkable behavior, phrased so a grader can decide met/not-met against a transcript span (e.g., 'uses an expand/contract sequence rather than a single blocking ALTER on the large table')."
+        }
+      }
+    }
+  }
+}
