@@ -59,7 +59,7 @@ For each dimension, here are worked examples at each score level. Before scoring
 
 ### Using the Concept-Grader Calibration Set
 
-For the primary dimension under test, identify which example above the candidate response is closest to. If between two examples, score the lower of the two. This is the BARS (Behaviorally Anchored Rating Scale) technique — research shows it reduces central tendency bias by ~28% versus abstract criteria alone. See `skills/evaluation/references/score-compression-research.md` in the canonical skill library for the full research bibliography.
+For the primary dimension under test, identify which example above the candidate response is closest to. If between two examples, score the lower of the two. This is the BARS (Behaviorally Anchored Rating Scale) technique — research shows it reduces central tendency bias by ~28% versus abstract criteria alone. See `references/score-compression-research.md` (bundled alongside this grader; see also `references/rubric-best-practices.md` for scale-range and weighting guidance) for the full research bibliography.
 
 ## The 7 Dimensions
 

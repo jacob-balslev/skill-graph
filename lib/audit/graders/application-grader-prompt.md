@@ -22,7 +22,7 @@ LLM judges systematically cluster scores in the upper-middle of any scale ("comp
 3. **Never round up.** If the response is between two scores, choose the lower one.
 4. **Watch for the "uses skill vocabulary but doesn't change recommendation" pattern.** This is the most common upward-drift case. If the with-skill response uses the skill's terminology but recommends the same fix as baseline, the operational delta is zero — score accordingly.
 
-See `skills/evaluation/references/score-compression-research.md` in the canonical skill library for the full research bibliography.
+See `references/score-compression-research.md` (bundled alongside this grader; see also `references/rubric-best-practices.md` for scale-range and weighting guidance) for the full research bibliography.
 
 ## Calibration Reference Set (Application Grader)
 
