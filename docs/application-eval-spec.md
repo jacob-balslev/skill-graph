@@ -49,15 +49,24 @@ Each case carries the scenario and the expected-behavior spec the grader scores 
 
 ## How it is graded (deployed pointwise grader)
 
-The runner runs each case **twice** (baseline = no skill; with_skill = skill body injected), grades each run **independently** on 4 axes (0/1/2), then **pairs** the two gradings to compute the per-case verdict from the delta. Independent (pointwise) grading means the grader never sees both runs side-by-side, so it is **not exposed to pairwise position bias** (verified 2026-05-30 against the LLM-as-judge literature; see `docs/research/`).
+For each case the runner runs **N trials** (`--trials`, default 3, recommended 3–5). Each trial is one baseline run (no skill) + one with_skill run (skill body injected), graded **independently** on 4 axes (0/1/2), then **paired** to compute a per-trial verdict from the delta. Independent (pointwise) grading means the grader never sees both runs side-by-side, so it is **not exposed to pairwise position bias** (verified 2026-05-30 against the LLM-as-judge literature; see `docs/research/`).
+
+The authoritative **per-case verdict is the MODE** of the N per-trial verdicts (averaging categorical verdicts is a fallacy; the winning verdict is one a real trial produced). The runner reports `verdict_consistency` (the modal-agreement fraction) and flags `verdict_stable: false` when the mode holds across fewer than 60% of trials — an unstable per-case verdict is surfaced, never silently averaged away. Repetition smooths the single-draw noise of same-judge grading (IRT judge-reliability framework, CARE confounder-aware aggregation; verified 2026-05-30).
 
 Axes and weights: `flag_correctness` (2.0), `fix_correctness` (1.5), `false_positive_avoidance` (1.0 real / 2.0 red-herring), `primary_signal_clarity` (1.0).
 
 Per-case verdict from the delta (real case): `applicable` if flag or fix improves ≥ +0.2 with false-positives clean; `redundant` if no measurable delta; `harmful` if flag/fix regresses; `mixed` on split signals. Red-herring: graded primarily on false-positive avoidance. Aggregate per-skill verdict: `applicable` if ≥60% of real cases are applicable AND ≤20% of red-herrings false-positive; `harmful` if any real case is harmful or >20% red-herrings false-positive.
 
-## Verdict tiering — earned, not assumed
+## Verdict tiering — earned, not assumed (enforced in code)
 
 A single-model run records **`application_verdict: PROVISIONAL`** with an `eval_last_run` receipt — never `APPLICABLE`. `APPLICABLE` requires an **independent, cross-family** dual-run grader (a top-tier judge of a *different model family* than the generator — e.g. Opus generates, GPT-5.4 grades), because a same-family judge inflates its own family's outputs by +10–25pp (self-preference bias, verified 2026-05-30). Until the grader reaches ≥85% agreement with a human reviewer on a calibration set, verdicts are written with `calibrated: false` and MUST NOT certify a skill. See `.claude/rules/version-schema-contract.md` and `docs/verdict-semantics.md`.
+
+This is **enforced in the runner, not just documented** (SH-6624). The runner stamps a `certification_tier` from operator declarations and `stampApplicationVerdict` caps `APPLICABLE → PROVISIONAL` for any tier that is not `certifying`:
+
+- **`provisional` (the default)** — no attestation, undeclared families, or same-family. `APPLICABLE` is unreachable. This is the in-code form of "never UNVERIFIED→APPLICABLE without evidence."
+- **`certifying`** — reached ONLY when the operator passes `--certifying` AND declares two *different* vendor families via `--generator-family <F>` and `--grader-family <G>` (e.g. `--generator-family opus --grader-family gpt-5.4`). These flags are a **declaration of provenance, not a model selector** — the runner never selects a model (the operator sets the session model). The declared families are recorded on every history record and on the run summary.
+
+`--single-model` is an additional, stronger override that forces `PROVISIONAL` even on a `certifying` run. Provisional is the safe default; `APPLICABLE` is a deliberate, recorded cross-family act.
 
 ## Provisional fields (`criteria[]`, `artifact`) — SH-6624 Phase-0 pilot
 

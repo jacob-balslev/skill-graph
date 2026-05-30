@@ -229,10 +229,14 @@ fs.writeFileSync(skillMdPath, SKILL_MD_CONTENT);
 const evalFilePath = path.join(evalsDir, 'application.json');
 fs.writeFileSync(evalFilePath, JSON.stringify({ skill: 'test-skill', cases: [] }));
 
-// 4a. Non-dry-run stamps the verdict
+// 4a. Non-dry-run stamps the verdict. APPLICABLE survives ONLY from a
+// cross-family certifying run (SH-6624) — so this fixture declares
+// certification_tier: 'certifying'. A run without it caps APPLICABLE→PROVISIONAL
+// (covered in test-application-trials-and-certification.js).
 const fakeResult = {
   dryRun: false,
   aggregate_verdict: 'applicable',
+  certification_tier: 'certifying',
   total: 3,
   errors: 0,
 };
@@ -356,6 +360,7 @@ fs.writeFileSync(evalFile5, JSON.stringify({ skill: 'test-skill-canonical', case
 stampApplicationVerdict(evalFile5, {
   dryRun: false,
   aggregate_verdict: 'applicable',
+  certification_tier: 'certifying', // APPLICABLE requires a cross-family certifying run (SH-6624)
   total: 3,
   errors: 0,
 }, false);
