@@ -68,3 +68,25 @@ Prioritized the end-to-end proof on a real skill. Receipts:
 ## Architecture finding to escalate
 
 The user's expectation of an **automated v8 upgrade** does not match the **clean-cut + per-skill-authoring** implementation. Either (a) the loop's `improve`/`evolve` must demonstrably author v8 fields on sub-v8 skills (verify by running), or (b) a real gap exists and an automated-or-assisted v8 authoring path is missing. This must be resolved by a real `improve` run on a sub-v8 skill (e.g. `methodical`, which preflight flagged as missing the required `scope` field), not by reading code.
+
+## SESSION 2 (2026-05-30, second Opus session) — receipts
+
+> Continues the same end-to-end completion goal. Parallel-session-aware: did not touch the 154 staged `marketplace/*` files; all commits path-limited.
+
+### ✅ Proven this session (real runs, receipts)
+
+| Step | Command actually run | Receipt (exit + effect) | Commit |
+|---|---|---|---|
+| **SH-6641** — application grader defaults to Opus, not silent sonnet | `evaluate --mode application --application okrs --eval-id 1 --trials 1` with `APPLICATION_GRADER_MODEL` **unset** | log printed `Grader model: opus  (env APPLICATION_GRADER_MODEL — default Opus…)`; 4 real model calls completed; stamped a real `application_verdict: REDUNDANT` (PROVISIONAL-capped). The default resolves to opus. Unit suite 59/0. | `c97854b` |
+| **SH-6638** — docs:drift scanned gitignored `dist/` → 34 false reds | `node scripts/check-doc-drift.js` before/after | before: `FAIL doc drift: 34 stale … (all in dist/)`; after: `OK doc drift sentinel: 63 active doc(s) scanned`. Fix = one `git check-ignore --stdin` pass, fail-open. Every red was in dist/, so no real drift hidden. | `5bb7265` |
+| **SH-6640 Break #4** — `improve --apply` processed 0 skills (worktree of workspace, but skills live in sibling repo) | `improve --skill acid-fundamentals --apply` | worktree now created on the **skills** repo (branch `automation/skill-loop-skills-*`); `=== acid-fundamentals [standard] ===` + `Eval #1 …` — skill **discovered + processing started**. Processed-count **0 → 1**, the same signal that proved Breaks 1-3. | `46ab052` |
+| **SH-6641 follow-on** — `runEval` keep/revert grader defaulted to sonnet on the `claude` path | code fix + syntax/scope verify | same no-lesser-models bug as SH-6641 in the improve-loop comprehension gate; `runEval` now defaults its claude-grader model to Opus (`comprehensionGraderModel`). Full real-run receipt pending the keep/revert proof below. | `6515a4a` |
+
+### ❌ Findings filed / boundaries (honest)
+
+| Item | State | Next |
+|---|---|---|
+| `improve --apply` full keep/revert with the **default `opencode` grader** | **BLOCKED** — the opencode grader hangs when invoked from Node on the eval prompts (matches the known `opencode-run-from-node` gotcha); the run sat on baseline `Eval #1` indefinitely and had to be killed (worktree cleaned manually). | Re-run with `--grader claude` (now Opus, `6515a4a`). The default-grader hang is a separate CLI-integration finding to file. |
+| `improve --apply` full keep/revert end-to-end (generate candidate → eval → keep-or-revert with non-zero kept/discarded) | **IN PROGRESS** — relaunched with `--grader claude` (opus). | Record kept/discarded + real eval scores when it completes. |
+| Untracked skills (e.g. `okrs`) are invisible to `improve --apply` | **By design** — `git worktree add HEAD` checks out committed files only; the improve loop operates on committed skills. Not a bug; noted so future runs pick a *tracked* skill. | — |
+| `okrs` SKILL.md application_verdict stamped by SESSION-1 + this session's SH-6641 proof | Left as-is — it is **untracked** in the skills repo (parallel-session CONTENT WIP); not part of any SYSTEM commit. | The parallel CONTENT session owns it. |
