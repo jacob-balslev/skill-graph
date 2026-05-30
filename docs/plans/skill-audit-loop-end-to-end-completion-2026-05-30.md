@@ -264,6 +264,30 @@ via `/audit:*`). Then Step 3 (invert write-verdict default + fix the `bin/skill-
 flips the contract test green; THEN wire it into `npm run verify`), Step 5 (router → Health Block +
 Decision A), Step 6 (field-shape codemod), Step 7 (end-to-end proof + corpus run).
 
+**2026-05-30 (later session) — Step 2 MOSTLY DONE.**
+- _Orphan reconciliation._ The 14 orphan verdicts were all run-records for skills **no longer in the
+  library** (renamed/merged/deleted — verified: none of the 14 names resolve to a live SKILL.md
+  anywhere). The plan's envisioned CONTENT path (downgrade the SKILL.md) is moot — there is no SKILL.md.
+  They were **junk**, so they were deleted, not coded around (an earlier attempt to add "stale-record"
+  classification logic to `check-audit-manifest.js` was reverted as bloat — the right fix for junk is
+  `rm`). `check-audit-manifest.js` now exits 0 with **zero code change**. Commit `workspace@73f9e0f`
+  (13 dirs / 122 files).
+- _Durable receipts (Break #4)._ `evaluate-skill.js` now defaults both eval modes to the committed
+  `audits/<skill>/eval-history/<ts>.json` home (was ephemeral `.cache/`), and the application
+  `eval_last_run` receipt records the repo-relative `artifact:` path so a verdict cannot outlive its
+  evidence. Additive (artifact written only when supplied) — 53/53 write-back tests pass. Commit
+  `skill-graph@3ed080d`.
+- _Gate wired into `npm run verify` (E3)._ Added `npm run audit-manifest:check` to the verify chain
+  (after `status:check`) and rewrote the AGENTS.md "Separate gate" section — the evidence-honesty gate
+  is no longer institutionally excluded from "green." Commit `skill-graph@8d3132a`.
+- _NOT done (deliberately — out of the requested scope):_ promoting **application**-artifact enforcement
+  from informational to blocking (`GRADED_APPLICATION_VERDICTS` is still defined-but-unused in
+  `check-audit-manifest.js`). Verified there are currently **0** live application orphans, so this is a
+  forward-looking hardening, not a live gap. Pick it up as a small follow-up when Step 5 touches the
+  application axis.
+
+**Remaining:** Steps 3, 5, 6, 7 (+ the application-enforcement hardening noted above).
+
 ## Part 5 — Corrected fix plan (SYSTEM mode, one concern per commit; re-sequenced per the reviews)
 
 GPT-5.4's framing drives the order: **"the system rewards component truth instead of contract truth."**
