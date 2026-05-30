@@ -305,7 +305,28 @@ Decision A), Step 6 (field-shape codemod), Step 7 (end-to-end proof + corpus run
   touched test** — Step 2's individual-test check missed this.
 - `test:unit` green (exit 0) end to end.
 
-**Remaining:** Steps 5, 6, 7 (+ the application-artifact-enforcement hardening noted in the Step 2 entry).
+**2026-05-31 — Step 4 (the open `--skip-eval` decision) RESOLVED.** The path-audit / fail-closed /
+de-enshrine-the-false-green-test half of Step 4 was already done as Break #1 (earlier sessions). The one
+open item — "Decide whether `/evolve` scaffold should keep `--skip-eval`" (finding E4) — is now resolved:
+- _Decision: KEEP `--skip-eval`._ Verified by reading `skill-auto-create.js`: `--skip-eval` skips Phase 4
+  (the A/B **grading run**), NOT Phase 2 (eval **authoring**). A scaffolded skill ships with its SKILL.md
+  AND eval artifacts; it is created `UNVERIFIED`, not eval-less. Grading a brand-new unproven skill inline
+  would add ~10min/skill to a throughput batch. The create→evaluate lifecycle completes on a LATER walker
+  pass (UNVERIFIED → top-priority → `improve_skill` → generate→evaluate→keep/revert). So E4's "never
+  completes" was an overstatement of a **deferred**, not skipped, lifecycle.
+- _Fix: honesty._ The misleading comment ("Use /skill-discovery for eval-gated creation" implied evolve
+  abandons the skill) + the silent `'created'` result were the real defects. The comment now states the
+  true lifecycle and the success detail reports `created (UNVERIFIED — … grading deferred …)`. Commit
+  `skill-graph@528c81d` (canonical engine only; workspace fork tracked under SH-6642, not sync-edited).
+- _Surfaced dependency (NOT silently swallowed):_ the deferred grading only happens if the scaffolded
+  skill is **committed** — improve/evaluate run on `git worktree add HEAD` (committed files only), so an
+  uncommitted scaffold is invisible to the pass that would grade it. This is the real blocker to fully
+  automatic `create→evaluate`, and it overlaps the worktree design + SH-6643 (generate_evals dispatch).
+  Documented in the engine comment; left as a known dependency, not auto-fixed (auto-committing an
+  AI-authored SKILL.md from the SYSTEM engine would cross the SYSTEM/CONTENT boundary).
+
+**Remaining:** Steps 5, 6, 7 (+ the application-artifact-enforcement hardening from the Step 2 entry; + the
+scaffold-commit-visibility dependency above, coupled to SH-6643).
 
 ## Part 5 — Corrected fix plan (SYSTEM mode, one concern per commit; re-sequenced per the reviews)
 
