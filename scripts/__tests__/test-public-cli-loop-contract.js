@@ -29,11 +29,11 @@
  *
  * Run: node scripts/__tests__/test-public-cli-loop-contract.js
  *
- * Wiring status (2026-05-30): all assertions pass EXCEPT the eval_score-by-default
- * assertion, which is the forcing function for Step 3 (invert the --write-verdict
- * default). The test is wired into `npm run verify` only once that flips green —
- * shipping a red test into the shared gate would block parallel sessions, and a
- * green-while-broken test is the false-green anti-pattern this effort kills.
+ * Wiring status (2026-05-31): all 14 assertions pass. Step 3 inverted the
+ * --write-verdict default to persist-by-default, so the eval_score-by-default
+ * forcing-function assertion is now green, and this test is wired into the
+ * `test:unit` suite (so it runs under both `npm run verify` and
+ * `npm run verify:system`) as the public-CLI loop guard.
  */
 
 const fs = require('fs');
@@ -214,14 +214,11 @@ const afterEvalVerdict = frontmatterValue(afterEval, 'comprehension_verdict');
 const evalScore = frontmatterValue(afterEval, 'eval_score');
 check('evaluate exits 0', evalRun.status === 0,
   `exit ${evalRun.status}; stderr: ${(evalRun.stderr || '').slice(0, 600)}`);
-// FORCING FUNCTION for Step 3. As of 2026-05-30, comprehension_verdict + freshness
-// are stamped by DEFAULT (stampComprehensionVerdict, unconditional), but the v6
-// Health Block eval_score / eval_failed_ids are STILL gated behind --write-verdict
-// (evaluate-skill.js:2061). This assertion is RED until Step 3 inverts that default
-// to persist-by-default; it flips GREEN automatically when the fix lands. The test
-// is wired into `npm run verify` only once this is green — a red test in the shared
-// gate would block parallel sessions, and a green-while-broken test would be the
-// exact false-green anti-pattern this whole effort exists to kill.
+// Step 3 (2026-05-31) CLOSED this. comprehension_verdict + freshness were already
+// stamped by default; Step 3 inverted the v6 Health Block (eval_score /
+// eval_failed_ids) from opt-in (--write-verdict) to persist-by-default with
+// --dry-run as the opt-out. This assertion now passes by default; it guards
+// against a regression back to opt-in write-back (Break #2).
 check('BREAK#2: evaluate writes eval_score by default (no --write-verdict)', evalScore !== null,
   `eval_score=${evalScore} (expected non-null; closed by Step 3); stdout tail: ${(evalRun.stdout || '').slice(-300)}`);
 check('BREAK#2: evaluate moves comprehension_verdict off UNVERIFIED by default',
