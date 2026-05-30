@@ -199,18 +199,43 @@ and `skill-families.js` exist ONLY under `scripts/skill/`. Fixed across both rep
 path-limited and verified:
 - `skill-graph@f268023` — `lib/audit/skill-evolution-loop.js`: corrected scaffold path + added an
   `fs.existsSync` fail-loud guard (was failing silently into the result log).
-- `workspace@9e0a0c8b9` — `scripts/skill/skills.js` (3 SCRIPT_PATHS: batch/create/families),
+- `workspace@6dc475784` — `scripts/skill/skills.js` (3 SCRIPT_PATHS: batch/create/families),
   `scripts/skill/skill-discovery-loop.js` (1 site), and `scripts/__tests__/skills.test.js` (the
-  false-green create+batch assertions that GPT-5.4 flagged — now assert the real paths).
-- Verified: `node -c` on all files; create+batch tests pass; grep confirms zero remaining bare-path
-  sites in live code (the `.legacy.js` copy already used the correct path). The 2 remaining
-  `skills.test.js` failures (`design-guide`/`adr` skill resolution) are pre-existing and unrelated.
-- A polluted first attempt (8 files via a parallel-session staging race) was caught via
-  `git show --stat`, soft-reset, and recommitted clean — the multi-session-commit hazard in action.
+  false-green create+batch assertions that GPT-5.4 flagged — now assert the real paths). (The first
+  attempt `9e0a0c8b9` staged 8 files via a parallel-session race; it was soft-reset and recommitted
+  clean as `6dc475784` — the multi-session-commit hazard in action.)
+- `workspace@9c062858b` — `scripts/skill/skill-auto-create.js:38` `SKILL_FAMILIES_PATH` (the 5th
+  silent-skip site; the `fileExists()` guard was skipping the families refresh).
+- Verified (next session, 2026-05-30): `git log` confirms all four commits landed; the Break #1 grep
+  receipt (array-form AND bare-string-form) returns empty across `scripts/skill` + `skill-graph/lib`;
+  the `.legacy.js` copy already used the correct path. The 2 remaining `skills.test.js` failures
+  (`design-guide`/`adr` skill resolution) are pre-existing and unrelated.
 
-**Remaining:** Steps 0–7 below are unstarted. Recommended next: Step 1 (de-fork `evaluate-skill.js`)
-BEFORE Break #2, per GPT-5.4's dissent — inverting the write-verdict default on the wrong copy of a
-forked file fixes nothing. Then Step 0 (the regression test), then Breaks #2/#3.
+**2026-05-30 — Step 1 (SSOT before any behavior fix) — DONE for its safe scope.**
+- _De-fork `evaluate-skill.js`._ Confirmed `scripts/skill/evaluate-skill.js` is already a clean shim
+  (SH-6603). Found a SECOND, un-collapsed divergent copy: the top-level `scripts/evaluate-skill.js`
+  carried duplicate eval helpers (`buildJudgePrompt`, `getEvalResponse`, `runClaudeCliPrompt`,
+  `parseArgs`, `resolveWorkspaceFromEvalFile`, `normalizeWorkspace`) whose ONLY consumer was its own
+  unit test — dead duplicates that could drift from the canonical. Collapsed it to a pure delegator;
+  exported the three missing helpers from the canonical; repointed `scripts/__tests__/evaluate-skill.js`
+  to exercise the SSOT (8/8 pass). Registered the second shim in `implementation-ownership.{json,md}`.
+  Commits: `skill-graph@758738b` (canonical exports), `workspace@998302a4a` (collapse + test + registry).
+  Verified: 8/8 helper test, 53/53 application-verdict test, 14/14 lib-audit smoke, ownership check pass.
+- _Collapse the conflicting `evolve` meanings (E1)._ Rewrote `SKILL_AUDIT_LOOP.md` "Inner Pipeline of
+  evolve" — the false "thin for-loop calling audit/improve/evaluate" pseudo-code matched neither the
+  engine nor the CLI help. Now one honest meaning: a continuous analyzer-driven 5-phase loop
+  (ANALYZE/TRIAGE/EXECUTE/VERIFY/CHECKPOINT) that composes the operations via the improve runner.
+  Commit: `skill-graph@1c35224`.
+- _Filed, NOT patched inline:_ the deeper implementation divergence — `scripts/skill/skill-evolution-loop.js`
+  (468 non-comment lines) vs canonical `lib/audit/skill-evolution-loop.js` (1028; 1358 differing lines)
+  is a behavior-bearing fork the SH-6603 collapse left as a full copy. Collapsing it is sequenced AFTER
+  Step 0b (so the contract test backs it). Tracked as **SH-6642**.
+
+**Remaining:** Steps 0b, 2, 3, 5, 6, 7. Next: **Step 0b** (model-free black-box public-CLI contract
+test wired into `npm run verify`) — the highest-leverage new work, and the prerequisite that unblocks
+the SH-6642 engine-collapse and the Step 2/3 behavior fixes. Then Step 2 (transactional verdicts +
+promote `check-audit-manifest` to blocking), Step 3 (invert write-verdict default), Step 5 (router →
+Health Block + Decision A), Step 6 (field-shape codemod), Step 7 (end-to-end proof + corpus run).
 
 ## Part 5 — Corrected fix plan (SYSTEM mode, one concern per commit; re-sequenced per the reviews)
 
