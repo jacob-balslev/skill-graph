@@ -586,13 +586,13 @@ npm run verify:system   # SYSTEM-only gate — schema constants, protocol, docs,
 
 **Which to run depends on your work mode.** `npm run verify:system` is the gate for **SYSTEM work** (schema, scripts, protocol docs, fixtures): it excludes the corpus gates (`lint`, `manifest:validate`, `routing-eval`, `export:verify-skill-md`) that go red purely because individual `skills/skills/**/SKILL.md` files have not yet been migrated to the current contract. A SYSTEM change is shippable when `verify:system` is green. `npm run verify` (the full gate) only goes green once the corpus has been migrated through the audit loop (CONTENT work) — do **not** relax the schema or skip a gate to force the full `verify` green while CONTENT migration is paused.
 
-### Separate gate not in `npm run verify`
+### Audit-evidence consistency gate (now in `npm run verify`)
 
-This gate runs independently because its failure mode is CONTENT-drift, not SYSTEM-correctness. A green `npm run verify` does NOT imply it passes; agents and CI must run it explicitly when touching audit artifacts.
+The audit-evidence honesty gate is **wired into `npm run verify`** as of 2026-05-30. It was previously excluded on the rationale that historical verdict records claiming a graded verdict without their artifact would force `verify` red and block unrelated SYSTEM work. That rationale is obsolete: the stale records that caused the reds were run-records for skills no longer in the library (renamed/merged/deleted), so there was no SKILL.md to downgrade and no artifact to author — they were junk. They were deleted (`73f9e0f`), the gate went green, and it is now part of the full gate so the evidence-honesty check is no longer institutionally excluded from "green."
 
-| Gate | Command | What it catches | Why it's separate |
-|---|---|---|---|
-| **Audit-evidence consistency** | `npm run audit-manifest:check` (or `node scripts/check-audit-manifest.js`) | Historical verdict records that claim a graded comprehension/application verdict without the backing `evals/comprehension.json` / `evals/application.json` artifact | Mismatches are CONTENT-debt — the audit loop downgrades them to `UNVERIFIED` per-skill. Wiring this into `npm run verify` would force the verify suite red until all historical verdicts are reconciled, blocking unrelated SYSTEM work. Tracked at the SH-6548 follow-up. |
+| Gate | Command | What it catches |
+|---|---|---|
+| **Audit-evidence consistency** | `npm run audit-manifest:check` (or `node scripts/check-audit-manifest.js`) — also runs inside `npm run verify` | Verdict run-records that claim a graded comprehension verdict without the backing `evals/comprehension.json`. A run-record for a skill that no longer exists in the library is stale junk — delete it rather than treating it as a live failure. |
 
 Useful focused checks:
 
