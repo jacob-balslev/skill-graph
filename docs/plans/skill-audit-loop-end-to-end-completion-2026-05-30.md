@@ -328,6 +328,41 @@ open item — "Decide whether `/evolve` scaffold should keep `--skip-eval`" (fin
 **Remaining:** Steps 5, 6, 7 (+ the application-artifact-enforcement hardening from the Step 2 entry; + the
 scaffold-commit-visibility dependency above, coupled to SH-6643).
 
+**2026-05-31 — Step 5 DONE (router contract migration onto the four-verdict Health Block).**
+- _Wired the router off `eval_state` onto the verdicts (5a)._ `scripts/skill-graph-route.js` now reads
+  `structural_verdict` / `truth_verdict` / `application_verdict` from the (already-projected) manifest
+  `health` block. The manifest already carried all four verdicts (`generate-manifest.js:433-443`) and
+  `deriveAuditState`; only the router was blind to them.
+- _Applied Decision A (5b)._ New Stage-6 verdict gate: (1) HARD integrity block — `structural_verdict=FAIL`
+  / `truth_verdict=BROKEN` exclude a skill; UNVERIFIED structural/truth (the corpus default) stays
+  routable (gating on PASS = ~90% kill-switch, the category error Decision A avoids). (2) BEHAVIOR
+  gate-out — proven-negative `application_verdict` (HARMFUL/REDUNDANT/FALSE_POSITIVE) excluded, with
+  expiry (skill `last_changed` after the grade, OR grade older than `NEGATIVE_VERDICT_EXPIRY_DAYS=90`)
+  so a since-fixed skill isn't tombstoned. MIXED stays routable. (3) RANK-WEIGHT — APPLICABLE/PROVISIONAL
+  get a gentle additive boost (+2/+1, < one keyword hit) folded into the sort key, recorded in the
+  decision reasons; UNVERIFIED neutral. The opt-in `--min-eval-state` gate is preserved verbatim.
+- _Receipt (5c)._ `scripts/__tests__/test-router-verdict-gate.js` (13 assertions, synthetic verdicts
+  through the real `routeSkills`) wired into `test:unit`. The sample-manifest routing-eval baseline is
+  provably unchanged (155 skills all-UNVERIFIED application → boost 0, zero negative/FAIL/BROKEN → zero
+  new exclusions; HEAD vs post-change both 8 PASS / 2 FAIL on the asserted set). The live-corpus
+  routing-eval red is pre-existing CONTENT drift (unmigrated skills missing `scope`), not this change.
+- Commit `skill-graph@6fa82e1` (route.js + test + package.json, path-limited; parallel session's ~155
+  staged `marketplace/*` files NOT swept in).
+
+**2026-05-31 — SH-6548 DONE (application-artifact enforcement informational→blocking), folded into Step 5.**
+- `GRADED_APPLICATION_VERDICTS` was defined-but-unused. `check-audit-manifest.js` now enforces it
+  symmetric to the comprehension gate: a per-run verdict claiming a high-stakes graded
+  `application_verdict` (APPLICABLE/MIXED/HARMFUL) requires `skills/<name>/evals/application.json`, with
+  the same honest-downgrade escape hatch. `readSkillHealthBlock` extended to read `application_verdict`;
+  `resolveComprehensionPath` generalized to `resolveEvalArtifact(ws, skill, name)` + wrappers.
+- Verified **0 live application orphans** (57 run-records carry only (none)/UNVERIFIED/PROVISIONAL — none
+  in the enforced set) → gate stays green; forward-looking hardening, not a live fix.
+- Receipt: `scripts/__tests__/test-application-artifact-enforcement.js` (6 assertions, hermetic
+  temp-workspace fixture) wired into `test:unit`. AGENTS.md gate description updated. Commit
+  `skill-graph@a25df45` (path-limited).
+
+**Remaining:** Steps 6, 7 (+ the scaffold-commit-visibility dependency, coupled to SH-6643).
+
 ## Part 5 — Corrected fix plan (SYSTEM mode, one concern per commit; re-sequenced per the reviews)
 
 GPT-5.4's framing drives the order: **"the system rewards component truth instead of contract truth."**
