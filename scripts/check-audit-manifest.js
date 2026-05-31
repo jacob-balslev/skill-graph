@@ -45,11 +45,14 @@ const GRADED_COMPREHENSION_VERDICTS = new Set([
   'PROVISIONAL', 'PASS', 'SHALLOW', 'REDUNDANT',
 ]);
 
-// Application graded set (per schemas/SKILL_METADATA_PROTOCOL_schema.json:274-285 + ADR 0011): kept
-// here so future application-artifact gates can reference the same authoritative
-// partition. Currently informational — the verifier only enforces comprehension
-// artifacts. Do not mix these values into GRADED_COMPREHENSION_VERDICTS; that was
-// the bug fixed on 2026-05-25.
+// Application graded set (per schemas/SKILL_METADATA_PROTOCOL_schema.json:274-285 + ADR 0011): the
+// high-stakes graded application verdicts. As of SH-6548 (2026-05-31) this set is
+// ENFORCED, not merely informational — a per-run verdict claiming one of these
+// requires skills/<name>/evals/application.json on disk (symmetric to the
+// comprehension-artifact gate). The wider graded set (PROVISIONAL/REDUNDANT/
+// FALSE_POSITIVE) is the documented next expansion (docs/verdict-semantics.md
+// § Application graded set). Do not mix these values into
+// GRADED_COMPREHENSION_VERDICTS; that was the bug fixed on 2026-05-25.
 const GRADED_APPLICATION_VERDICTS = new Set([
   'APPLICABLE', 'MIXED', 'HARMFUL',
 ]);
@@ -121,11 +124,16 @@ function listSkillsWithRuns(progressDir) {
 // and the verifier should not report a live failure for that resolved historical drift.
 function readSkillHealthBlock(skillsRoot, skill) {
   const skillMd = path.join(skillsRoot, skill, 'SKILL.md');
-  if (!fs.existsSync(skillMd)) return { comprehension_verdict: null };
+  if (!fs.existsSync(skillMd)) return { comprehension_verdict: null, application_verdict: null };
   const text = fs.readFileSync(skillMd, 'utf8');
-  // Frontmatter parse — we only need comprehension_verdict, so read the first ~80 lines.
-  const m = text.match(/^comprehension_verdict:\s*([A-Z_]+)\s*$/m);
-  return { comprehension_verdict: m ? m[1].toUpperCase() : null };
+  // Frontmatter parse — we need the two behavior-gate verdicts for the
+  // honest-downgrade escape hatch (comprehension + application).
+  const cm = text.match(/^comprehension_verdict:\s*([A-Z_]+)\s*$/m);
+  const am = text.match(/^application_verdict:\s*([A-Z_]+)\s*$/m);
+  return {
+    comprehension_verdict: cm ? cm[1].toUpperCase() : null,
+    application_verdict: am ? am[1].toUpperCase() : null,
+  };
 }
 
 function listRunsForSkill(progressDir, skill) {
@@ -143,10 +151,10 @@ function listRunsForSkill(progressDir, skill) {
 // (~/Development/skills/<skill>/). Resolve comprehension.json by checking
 // both shapes — flat first (back-compat for legacy deployments), then
 // nested via a recursive walk under <workspace>/skills/skills/.
-function resolveComprehensionPath(workspace, skill) {
+function resolveEvalArtifact(workspace, skill, artifactName) {
   const skillsRoot = path.join(workspace, 'skills');
   // Try the flat layout first (matches legacy ~/Development/skills/<skill>/).
-  const flatPath = path.join(skillsRoot, skill, 'evals', 'comprehension.json');
+  const flatPath = path.join(skillsRoot, skill, 'evals', artifactName);
   if (fs.existsSync(flatPath)) return { path: flatPath, exists: true };
   // Then the nested canonical layout (~/Development/skills/skills/<subject>/<skill>/).
   const nestedRoot = path.join(skillsRoot, 'skills');
@@ -156,7 +164,7 @@ function resolveComprehensionPath(workspace, skill) {
         .filter(d => d.isDirectory())
         .map(d => d.name);
       for (const subject of subjects) {
-        const nestedPath = path.join(nestedRoot, subject, skill, 'evals', 'comprehension.json');
+        const nestedPath = path.join(nestedRoot, subject, skill, 'evals', artifactName);
         if (fs.existsSync(nestedPath)) return { path: nestedPath, exists: true };
       }
     } catch (_) { /* fall through to MISSING */ }
@@ -164,6 +172,14 @@ function resolveComprehensionPath(workspace, skill) {
   // Truly missing — return the expected nested-canonical-shape path for the
   // failure message; the message will tell the reader where the file SHOULD live.
   return { path: flatPath, exists: false };
+}
+
+// Thin wrappers preserving the original call sites' intent.
+function resolveComprehensionPath(workspace, skill) {
+  return resolveEvalArtifact(workspace, skill, 'comprehension.json');
+}
+function resolveApplicationPath(workspace, skill) {
+  return resolveEvalArtifact(workspace, skill, 'application.json');
 }
 
 function main() {
@@ -208,6 +224,21 @@ function main() {
         health.comprehension_verdict &&
         !GRADED_COMPREHENSION_VERDICTS.has(health.comprehension_verdict);
 
+      // SH-6548: symmetric application-artifact enforcement (was informational).
+      // A per-run verdict claiming a high-stakes graded application verdict
+      // (APPLICABLE/MIXED/HARMFUL) must have skills/<name>/evals/application.json
+      // on disk — same honest-downgrade escape hatch as comprehension. The wider
+      // graded set (PROVISIONAL/REDUNDANT/FALSE_POSITIVE) is the documented next
+      // expansion (docs/verdict-semantics.md § Application graded set); enforcing
+      // it here would require those records to ship artifacts first.
+      const claimsGradedApplication = verdicts.application && GRADED_APPLICATION_VERDICTS.has(verdicts.application);
+      const appResolved = claimsGradedApplication ? resolveApplicationPath(args.workspace, skill) : null;
+      const applicationExists = appResolved ? appResolved.exists : null;
+      const applicationPath = appResolved ? appResolved.path : null;
+      const currentAppIsHonestlyDowngraded = claimsGradedApplication &&
+        health.application_verdict &&
+        !GRADED_APPLICATION_VERDICTS.has(health.application_verdict);
+
       const entry = {
         skill,
         runId,
@@ -215,7 +246,10 @@ function main() {
         application_verdict: verdicts.application,
         comprehension_json_exists: comprehensionExists,
         comprehension_json_path: comprehensionPath,
+        application_json_exists: applicationExists,
+        application_json_path: applicationPath,
         skill_md_comprehension_verdict: health.comprehension_verdict,
+        skill_md_application_verdict: health.application_verdict,
       };
       checks.push(entry);
 
@@ -229,6 +263,12 @@ function main() {
         failures.push({
           ...entry,
           reason: `Verdict has comprehension_verdict=${verdicts.comprehension}, but that value is an application-layer enum (per schemas/SKILL_METADATA_PROTOCOL_schema.json:274-285 and ADR 0011). The comprehension and application enum sets are disjoint. Either correct the verdict to use a comprehension-layer value (PASS/SHALLOW/REDUNDANT/PROVISIONAL/UNVERIFIED/SKIPPED_BASELINE_HIGH/NA) or move this value into the application_verdict slot.`,
+        });
+      }
+      if (claimsGradedApplication && !applicationExists && !currentAppIsHonestlyDowngraded) {
+        failures.push({
+          ...entry,
+          reason: `Verdict claims application=${verdicts.application} but ${applicationPath} does not exist on disk, AND the current SKILL.md Health Block (application_verdict=${health.application_verdict || 'unknown'}) has not been honestly downgraded out of the graded set. A high-stakes graded application_verdict (APPLICABLE/MIXED/HARMFUL) is the primary quality signal and requires a gradeable evals/application.json. Either author the application.json (and re-run the assessment) or downgrade the SKILL.md verdict to UNVERIFIED — the verifier respects honest downgrade as the resolution path.`,
         });
       }
     }

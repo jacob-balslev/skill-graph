@@ -592,7 +592,7 @@ The audit-evidence honesty gate is **wired into `npm run verify`** as of 2026-05
 
 | Gate | Command | What it catches |
 |---|---|---|
-| **Audit-evidence consistency** | `npm run audit-manifest:check` (or `node scripts/check-audit-manifest.js`) — also runs inside `npm run verify` | Verdict run-records that claim a graded comprehension verdict without the backing `evals/comprehension.json`. A run-record for a skill that no longer exists in the library is stale junk — delete it rather than treating it as a live failure. |
+| **Audit-evidence consistency** | `npm run audit-manifest:check` (or `node scripts/check-audit-manifest.js`) — also runs inside `npm run verify` | Verdict run-records that claim a graded behavior verdict without the backing artifact: a graded `comprehension_verdict` without `evals/comprehension.json`, OR (as of SH-6548, 2026-05-31) a high-stakes graded `application_verdict` (APPLICABLE/MIXED/HARMFUL) without `evals/application.json`. Honest downgrade of the SKILL.md verdict to UNVERIFIED resolves either. A run-record for a skill that no longer exists in the library is stale junk — delete it rather than treating it as a live failure. |
 
 Useful focused checks:
 
