@@ -13,13 +13,32 @@
  *   - relations.depends_on                      — transitive co-load
  *   - relations.boundary                        — anti-ownership exclusion
  *   - relations.verify_with                     — secondary co-load
- *   - health.eval_state                         — quality gate
+ *   - health.structural_verdict / truth_verdict — hard integrity gate (broken → excluded)
+ *   - health.application_verdict                — behavior gate (Decision A: gate-out
+ *                                                 proven-negatives, rank-weight the rest)
+ *   - health.eval_state                         — opt-in `--min-eval-state` quality gate
  *   - health.drift_check + health.lifecycle     — staleness annotation
  *
  * The output explains WHY each skill was selected or excluded. That is the
- * point: the reference consumer exists so `boundary` and `depends_on` and
- * `eval_state` are visible in a routing decision, not just declared in a
- * frontmatter nobody reads.
+ * point: the reference consumer exists so `boundary`, `depends_on`, the
+ * four-verdict Health Block, and `eval_state` are visible in a routing
+ * decision, not just declared in a frontmatter nobody reads.
+ *
+ * Four-verdict Health Block contract (Step 5, 2026-05-31 — see
+ * docs/plans/skill-audit-loop-end-to-end-completion-2026-05-30.md § Decision A
+ * and docs/verdict-semantics.md):
+ *   - HARD integrity block: structural_verdict=FAIL or truth_verdict=BROKEN excludes
+ *     the skill (genuinely broken). UNVERIFIED structural/truth — the corpus default —
+ *     stays routable; gating on PASS would remove ~the whole library (the kill-switch
+ *     error Decision A explicitly avoids).
+ *   - BEHAVIOR gate-out: a proven-negative application_verdict
+ *     (HARMFUL / REDUNDANT / FALSE_POSITIVE) excludes the skill, UNLESS the verdict
+ *     has expired (skill changed since the grade, or the grade is older than
+ *     NEGATIVE_VERDICT_EXPIRY_DAYS) — so a since-fixed skill is not tombstoned.
+ *     MIXED stays routable (it is not proven-negative).
+ *   - RANK-WEIGHT: APPLICABLE / PROVISIONAL get a gentle additive boost
+ *     (< one keyword hit) so a certified skill wins ties; UNVERIFIED stays neutral
+ *     and routable. The boost is a tiebreaker, never an override of keyword relevance.
  *
  * Usage:
  *   node scripts/skill-graph-route.js "accessibility keyboard navigation"
@@ -376,6 +395,100 @@ function computeStaleness(skill, today) {
 }
 
 // ---------------------------------------------------------------------------
+// Four-verdict Health Block gate (Step 5 — Decision A contract migration)
+// ---------------------------------------------------------------------------
+//
+// The router historically gated only on `eval_state`. Step 5 wires it onto the
+// four-verdict Health Block (structural / truth / comprehension / application)
+// per Decision A. Behavior verdicts gate routing; structural/truth are hard
+// integrity blocks; comprehension is informational (it is the weaker signal and
+// does not gate). Enum values are canonical per docs/verdict-semantics.md.
+
+// Proven-negative APPLICATION verdicts that gate a skill OUT of routing.
+// MIXED is intentionally absent — it means "some cases applicable", not proven-bad.
+// REDUNDANT/FALSE_POSITIVE/HARMFUL are the three Decision A demotes.
+const NEGATIVE_APPLICATION_VERDICTS = new Set(['HARMFUL', 'REDUNDANT', 'FALSE_POSITIVE']);
+
+// Rank-weight boost (additive, gentle). A single exact keyword/trigger hit is +5
+// (scoreSkill), so a boost of 2/1 moves ties but never overrides genuine keyword
+// relevance — a strong keyword match on an UNVERIFIED skill still outranks a weak
+// match on an APPLICABLE one. UNVERIFIED is neutral (0): "unknown" is not "bad".
+const APPLICATION_VERDICT_BOOST = { APPLICABLE: 2, PROVISIONAL: 1 };
+
+// A negative behavior verdict expires after this many days so a skill that has
+// since been fixed (but not yet re-graded) is not tombstoned forever.
+const NEGATIVE_VERDICT_EXPIRY_DAYS = 90;
+
+// Hard integrity blocks. ONLY proven-broken values block — UNVERIFIED structural/
+// truth (the corpus default) stays routable. Gating on PASS would delete ~90% of
+// the library on day one (the kill-switch category error Decision A avoids).
+const STRUCTURAL_HARD_FAIL = new Set(['FAIL']);
+const TRUTH_HARD_FAIL = new Set(['BROKEN']);
+
+/**
+ * Rank-weight boost for a skill's application_verdict. Returns 0 for UNVERIFIED,
+ * MIXED, any negative verdict, or a missing Health Block.
+ */
+function applicationVerdictBoost(skill) {
+  const v = skill.health && skill.health.application_verdict;
+  return (v && APPLICATION_VERDICT_BOOST[v]) || 0;
+}
+
+/**
+ * Decide whether a negative behavior verdict has expired (and so should no longer
+ * gate the skill out). Expiry fires when EITHER the skill changed after the grade
+ * (`last_changed` newer than the `eval_last_run` receipt) OR the grade is older
+ * than NEGATIVE_VERDICT_EXPIRY_DAYS. Returns { expired, detail }.
+ *
+ * A negative verdict with no `eval_last_run` receipt is conservatively treated as
+ * still-active — a recorded HARMFUL/REDUNDANT/FALSE_POSITIVE is a real signal even
+ * without a timestamp, and the fix path produces a fresh receipt that supersedes it.
+ */
+function negativeVerdictExpired(health, today) {
+  const runAt = health.eval_last_run && health.eval_last_run.at;
+  if (health.last_changed && runAt) {
+    const changedAfter = daysBetween(runAt, health.last_changed);
+    if (changedAfter !== null && changedAfter > 0) {
+      return { expired: true, detail: `; expired — skill changed ${changedAfter}d after grade` };
+    }
+  }
+  if (runAt) {
+    const age = daysBetween(runAt, today);
+    if (age !== null && age > NEGATIVE_VERDICT_EXPIRY_DAYS) {
+      return { expired: true, detail: `; expired — grade ${age}d old > ${NEGATIVE_VERDICT_EXPIRY_DAYS}d` };
+    }
+    return { expired: false, detail: age !== null ? `; graded ${age}d ago` : '' };
+  }
+  return { expired: false, detail: '; no eval_last_run receipt' };
+}
+
+/**
+ * Hard verdict exclusion check. Returns null if the skill is NOT excluded by the
+ * integrity/behavior gates, or { role, reason } describing the exclusion.
+ *
+ *   role: 'integrity_excluded' — structural FAIL / truth BROKEN (genuinely broken)
+ *   role: 'behavior_excluded'  — active proven-negative application verdict
+ */
+function verdictExclusion(skill, today) {
+  const h = skill.health || {};
+  if (STRUCTURAL_HARD_FAIL.has(h.structural_verdict)) {
+    return { role: 'integrity_excluded', reason: `structural_verdict=${h.structural_verdict} (broken — hard block)` };
+  }
+  if (TRUTH_HARD_FAIL.has(h.truth_verdict)) {
+    return { role: 'integrity_excluded', reason: `truth_verdict=${h.truth_verdict} (broken — hard block)` };
+  }
+  const av = h.application_verdict;
+  if (NEGATIVE_APPLICATION_VERDICTS.has(av)) {
+    const exp = negativeVerdictExpired(h, today);
+    if (!exp.expired) {
+      return { role: 'behavior_excluded', reason: `application_verdict=${av} (proven-negative — gated out${exp.detail})` };
+    }
+    // Expired: the skill stays routable, treated as if unassessed.
+  }
+  return null;
+}
+
+// ---------------------------------------------------------------------------
 // Routing pipeline
 // ---------------------------------------------------------------------------
 
@@ -410,7 +523,15 @@ function routeSkills(manifest, options) {
     }
     const { score, reasons } = scoreSkill(skill, queryTokens, pathArg, query);
     if (score > 0) {
-      scored.push({ skill, score, reasons, role: 'match', projectMatch: projectCheck.reason });
+      // Decision A rank-weight: a gentle additive boost for a certified
+      // application_verdict (APPLICABLE/PROVISIONAL). Folded into the sort key
+      // below via score+qualityBoost; the raw `score` stays the keyword score so
+      // the displayed reasons remain interpretable.
+      const qualityBoost = applicationVerdictBoost(skill);
+      if (qualityBoost > 0) {
+        reasons.push(`application_verdict=${skill.health.application_verdict} (+${qualityBoost} routing boost)`);
+      }
+      scored.push({ skill, score, reasons, role: 'match', projectMatch: projectCheck.reason, qualityBoost });
     }
   }
 
@@ -439,7 +560,7 @@ function routeSkills(manifest, options) {
     return TYPE_RANK._default;
   }
   scored.sort((a, b) =>
-    (b.score - a.score) ||
+    ((b.score + (b.qualityBoost || 0)) - (a.score + (a.qualityBoost || 0))) ||
     (DEPLOYMENT_TARGET_RANK[a.skill.deployment_target] ?? DEPLOYMENT_TARGET_RANK._default) - (DEPLOYMENT_TARGET_RANK[b.skill.deployment_target] ?? DEPLOYMENT_TARGET_RANK._default) ||
     typeRank(a.skill) - typeRank(b.skill) ||
     a.skill.name.localeCompare(b.skill.name)
@@ -597,11 +718,18 @@ function routeSkills(manifest, options) {
   }
 
   // -------------------------------------------------------------------------
-  // Stage 6: quality gate (eval_state).
+  // Stage 6: verdict gate (four-verdict Health Block, Decision A) + eval_state.
+  //
+  // Order per Decision A: (1) HARD integrity block (structural FAIL / truth
+  // BROKEN) — a broken skill never routes. (2) BEHAVIOR gate-out — an active
+  // proven-negative application_verdict is excluded. (3) the opt-in eval_state
+  // `--min-eval-state` quality gate (preserved verbatim; default = no gating).
   // -------------------------------------------------------------------------
   const gateRank = { unverified: 0, passing: 1, monitored: 2 };
   const minGate = gateRank[minEvalState] ?? 0;
   const qualityExcluded = [];
+  const integrityExcluded = [];
+  const behaviorExcluded = [];
 
   function passesGate(skill) {
     const state = (skill.health && skill.health.eval_state) || 'unverified';
@@ -609,6 +737,14 @@ function routeSkills(manifest, options) {
   }
 
   const filterGate = (list) => list.filter(entry => {
+    // (1)+(2) Hard verdict gates (integrity + behavior).
+    const vex = verdictExclusion(entry.skill, todayISO);
+    if (vex) {
+      const bucket = vex.role === 'integrity_excluded' ? integrityExcluded : behaviorExcluded;
+      bucket.push({ skill: entry.skill, reason: vex.reason, role: vex.role });
+      return false;
+    }
+    // (3) Opt-in eval_state quality gate.
     if (passesGate(entry.skill)) return true;
     qualityExcluded.push({
       skill: entry.skill,
@@ -632,7 +768,7 @@ function routeSkills(manifest, options) {
   return {
     selected: selectedFiltered.map(annotate),
     coLoaded: coLoadedFiltered.map(annotate),
-    excluded: boundaryExcluded.concat(qualityExcluded).map(annotate),
+    excluded: boundaryExcluded.concat(integrityExcluded, behaviorExcluded, qualityExcluded).map(annotate),
     excludedByProject,
     notes: [],
   };
@@ -712,6 +848,9 @@ function renderJson(result, query) {
     score: e.score,
     role: e.role,
     eval_state: (e.skill.health && e.skill.health.eval_state) || null,
+    application_verdict: (e.skill.health && e.skill.health.application_verdict) || null,
+    structural_verdict: (e.skill.health && e.skill.health.structural_verdict) || null,
+    truth_verdict: (e.skill.health && e.skill.health.truth_verdict) || null,
     reasons: e.reasons,
     reason: e.reason,
     staleness: e.staleness,
