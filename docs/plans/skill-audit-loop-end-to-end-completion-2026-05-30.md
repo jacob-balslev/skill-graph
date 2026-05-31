@@ -381,7 +381,47 @@ scaffold-commit-visibility dependency above, coupled to SH-6643).
 - Receipt: `scripts/__tests__/test-normalize-field-shape.js` (15 assertions) wired into test:unit.
   Commit `skill-graph@7ef6100` (path-limited).
 
-**Remaining:** Step 7 (+ the scaffold-commit-visibility dependency, coupled to SH-6643).
+**2026-05-31 — SH-6643 DONE (generate_evals self-contained; evolve execute unblocked).**
+- Decision **(B)** self-contained (per ADR-0009). `generate_evals` now invokes the model IN-LOOP
+  (`resolveModelExecutor` → `buildModelInvocation` → real claude/gemini/opencode CLI) instead of spawning
+  the Development-tree `dispatch-solver.js` (which doesn't exist standalone AND lived at the wrong path —
+  `scripts/loop/`, not flat `scripts/`). `checkpoint()`/`emitEvent()` resolve their orchestration script
+  at the real subdir when present, else no-op gracefully (standalone-safe). Receipts:
+  `test-evolve-self-contained.js` (11 assertions, in test:unit); `evolve --analyze-only` exit 0 / 0.3s;
+  standalone-portability test green; lib-audit smoke green (added the `--analyze-only` SAFE_EXTRA_ARG —
+  a bare run now reaches a real model call like the other execute-phase runners). Commit
+  `skill-graph@93f6f77`. The full execute (authoring evals into a tracked skill via a real model) is
+  CONTENT → audit loop / Step-7 CONTENT run, not a SYSTEM commit. Decision + receipts on SH-6643.
+
+**2026-05-31 — Step 7: SYSTEM-completable portion DONE; the continuous graded chain + corpus run is CONTENT.**
+- _Step-5 router exercised on REAL data (read-only, SYSTEM-safe)._ Generated a real-corpus manifest and ran
+  `skill-graph-route "debug a failing test and find the root cause"`: `debugging` selected (eval_state
+  passing); UNVERIFIED skills (pattern-recognition, problem-locating-solving, …) **still route** —
+  confirming Decision A's "unknown ≠ bad" / no kill-switch on the real corpus; boundary exclusions fire;
+  no integrity/behavior exclusions (the corpus has no FAIL/BROKEN/negative verdicts), so the verdict gate
+  is live and non-destructive on real data.
+- _Machinery proven._ The black-box public-CLI loop contract test (`test-public-cli-loop-contract.js`,
+  stubbed grader, asserts on-disk verdict/receipt transitions) is in `test:unit`; every operation has a
+  real-model receipt from the prior sessions recorded in the companion verification ledger (audit on
+  api-design, evaluate application on okrs + comprehension on bayesian-reasoning with the Opus grader,
+  improve keep/revert on acid-fundamentals with Opus). The loop is now fully UNBLOCKED end-to-end (router
+  wired, evolve execute fixed, application gate enforced, codemod built).
+- _What remains is CONTENT, not SYSTEM._ A fresh single continuous claim→audit→improve→evaluate(graded)→
+  release→**commit** chain, and the multi-skill corpus run, mutate + commit real skills and need the live
+  Opus pipe — that is CONTENT work through `/audit:*` (AUDIT_LOOP=1), which also drains the 153-skill
+  `scope` debt (SH-6591). It is deliberately NOT run from this SYSTEM session (the session's discipline:
+  never edit `skills/**/SKILL.md` in SYSTEM mode; auto-committing AI-authored skill content from the
+  SYSTEM engine crosses the boundary).
+- _Bonus SYSTEM fix._ `docs:drift` false-failed on the untracked `.opencode/` runtime tree (SH-6638 class —
+  `schema_version: 7` strings in upgrade run-records are recorded data, not stale doc refs). Ignored
+  `.opencode/` in `.gitignore`; docs:drift now green (58 docs). Commit `skill-graph@0015655`. Revealed a
+  separate pre-existing red: `marketplace:verify` (stale/missing exports — etsy/okrs/principled-negotiation)
+  is the **parallel session's** in-flight marketplace re-export (154 staged files) — CONTENT/export drift,
+  not touched.
+
+**Status:** The SKILL SYSTEM (machinery) is at 100% — every SYSTEM gap the plan identified is closed,
+verified with deterministic receipts, and the loop is unblocked end-to-end. Remaining work is CONTENT
+(the graded chain + corpus run via `/audit:*`, draining SH-6591) and the parallel-owned marketplace export.
 
 ## Part 5 — Corrected fix plan (SYSTEM mode, one concern per commit; re-sequenced per the reviews)
 
