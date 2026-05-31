@@ -666,3 +666,63 @@ Remaining work, system-first:
 
 First action: declare mode (SH-6650 = SYSTEM), then start SH-6650 — it gates the corpus run.
 ```
+
+### Next-Session Continuation Prompt (authored 2026-05-31, after the 62-skill scope drain)
+
+```
+Resume the Skill Audit Loop end-to-end completion. Read
+skill-graph/docs/plans/skill-audit-loop-end-to-end-completion-2026-05-30.md (progress log) FIRST.
+Mode: SH-6591 scope drain + certifying eval = CONTENT via /audit:* with AUDIT_LOOP=1; manifest
+regen + SKILL_GRAPH count + field-comment-backfill SYSTEM call = declare per task. Grading uses
+Opus or GPT-5.4 only (no-lesser-models). Commit path-limited (git commit --only), one skill per commit.
+
+STATE (2026-05-31): SH-6650 DONE (corpus 160, manifest regen, bare-slug census, count doc). Application
+gate PROVEN LIVE — debugging stamped application_verdict: REDUNDANT (single-model Opus, PROVISIONAL
+tier, receipted; skills@3546e03). SH-6651 filed (version-schema-contract §5 vs verdict-semantics:126
+doc drift). Scope drain (SH-6591) at 70/152 with scope: 62 authored this session
+(code-engineering 14, agent-ops 16, data-analytics 3, design-craft 19, frontend-ui 10).
+
+REMAINING, in order:
+
+1. [CONTENT] Continue the scope drain — 82 v8 skills still need `scope` (knowledge-organization,
+   meta-methods, product-domain, quality-assurance, + remaining frontend-ui/data-analytics). PROVEN
+   PATTERN: list next batch of v8-missing-scope skills with descriptions
+   (find skills/skills -name SKILL.md | filter: no `scope:`, not schema_version:7), Opus authors a
+   PRD-style scope each (positive scope + portability/grounding + explicit exclusions, mirroring the
+   skill's own description boundary — see porters-five-forces as the reference), then a small node
+   applier inserts `scope` after the deployment_target line MATCHING ITS INDENT (flat col-0 vs nested
+   2-space — both encodings exist; hardcoding 2-space breaks flat skills like task-path-optimization),
+   skip any schema_version:7 skill, skill-lint each (0 errors; the field-purpose-comment WARNING is
+   item 5, ignore), then one path-limited AUDIT_LOOP=1 commit per skill. ~6 calls per 10 skills.
+   Authoring stays Opus; only insertion is scripted. NEVER let an internal persona/path (e.g. the
+   Sales Hub "Side Hustler") leak into a portable skill's scope.
+
+2. [CONTENT] The 9 v7 skills (8 missing scope) are a SEPARATE backlog — a scope-only add fails lint
+   (schema_version:7). Migrate v7->v8 via `node skill-graph/bin/skill-graph.js audit <skill> --fix`
+   (mechanical: type/category->subject/deployment_target, bump, regenerate comments), then author scope,
+   then lint+commit. Governed by the version-earned gate. v7 list: run
+   `for f in $(find skills/skills -name SKILL.md); do grep -lE '^\s*schema_version:\s*7\b' "$f"; done`.
+
+3. [SYSTEM] When the scope drain completes: regenerate the manifest
+   (node scripts/skill/skill-census.js --write-manifest) and re-check SKILL_GRAPH.md § Current State
+   (count stays 160; scope coverage improves). Then verify `next->claim` still round-trips. SH-6591 -> Done
+   once 0 v8 skills are missing scope.
+
+4. [CONTENT, deferred] Certifying cross-family application run to lift debugging (REDUNDANT/PROVISIONAL)
+   and other eval-ready skills (a11y, testing-strategy, skill-router, skill-infrastructure, okrs have
+   application.json) to a grader-confirmed verdict. REQUIRES external-model approval (cross-family =
+   1 Anthropic + 1 non-Anthropic; billing-guard). Ask the user before dispatching GPT-5.4/Gemini.
+
+5. [SYSTEM, minor] node skill-graph/scripts/backfill-field-purpose-comments.js corpus-wide (item 5) —
+   note --apply writes SKILL.md so it is CONTENT via the loop, not a SYSTEM commit. Clears the
+   field-purpose-comment lint warning present on most skills.
+
+ENVIRONMENT: a parallel session is migrating/exporting the skills repo (v8 migrations, marketplace
+re-export, flat-copy cleanup). The audit-claim system deconflicts per-skill; for shared docs
+(SKILL_GRAPH.md, manifest) commit immediately after edit and read the FULL `git diff HEAD -- <file>`
+before committing (git commit --only commits the whole file's on-disk delta — a parallel session's
+uncommitted edits to the same file WILL be swept into your commit, as happened with skill-graph@1ef4588).
+
+First action: declare mode (scope drain = CONTENT), then continue item 1 — list the next batch of v8
+skills missing scope and drain it.
+```
