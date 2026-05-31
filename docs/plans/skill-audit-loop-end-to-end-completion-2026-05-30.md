@@ -592,6 +592,24 @@ Completeness: this review covers all 5 requested questions and includes 6 additi
 
 ---
 
+## Session Progress — 2026-05-31 (cont., SYSTEM gate done)
+
+SH-6650 (the gating SYSTEM task) is **DONE**. Sequence executed system-first:
+
+1. **Corpus cleanup** (`skills@315b877`): deleted flat v7 `code-review/` (stale dup — canonical is the v8 nested `skills/quality-assurance/code-review/`); migrated orphan `skill-evolution/` → `skills/meta-methods/skill-evolution/` (relocation only; v8 content migration is separate CONTENT debt — it still carries `scope: codebase`, 0 evals, 1 broken key-file path to `skill-graph/SKILL_AUDIT_LOOP.md`, all routing to the SH-6591 drain).
+2. **Manifest regen** (`workspace@79926d5de`): `summary.active` 157 → **160**; matches census. Diff also absorbed the SH-6596 v8 migrations not yet re-manifested.
+3. **Tests green** (run via `node`, not jest — jest globs `.claude/worktrees/` and crashes): walker 3/3, census 24/0, regressions 8/0.
+4. **`next→claim` round-trip verified**: `cognitive-load-theory` claimed (bare slug, run_id written) + released clean.
+5. **Count doc** (`skill-graph@1ef4588`): `SKILL_GRAPH.md § Current State` canonical count 155 → **160** (161 w/ template).
+
+**Count reconciliation:** final corpus is **160**, not the plan's predicted **159** — because `skill-evolution` was *migrated, not deleted* (per the explicit do-not-delete instruction), so net removal was 1 (the `code-review` dup), not 2. `manifest == corpus` (the real AC) holds at 160.
+
+**Process note (transparency):** the `skill-graph@1ef4588` count commit also swept in a parallel session's uncommitted SKILL_GRAPH.md doc-link-path migration (bare `SKILL_METADATA_PROTOCOL.md`/`SKILL_AUDIT_LOOP.md` refs → subdir paths) sitting in the working tree — `git commit --only <path>` commits the whole file's on-disk delta. Those changes are valid and align with the canonical AGENTS.md structure; nothing lost. Lesson: the multi-session defensive `git diff HEAD -- <file>` must be read in full, not grepped for one's own line.
+
+**Remaining (CONTENT-heavy, unchanged):** item 3 (application gate — primary DoD gap), item 4 (SH-6591 scope drain, 152 skills), item 5 (field-purpose-comment backfill — note: `--apply` writes SKILL.md, so it is CONTENT, run via the loop, not a SYSTEM commit).
+
+---
+
 ## Next-Session Continuation Prompt (authored 2026-05-31)
 
 > Paste this to resume. SYSTEM machinery is verified complete; the claim-gate brick is fixed
