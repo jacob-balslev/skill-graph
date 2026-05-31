@@ -1,6 +1,6 @@
 # Skill Graph
 
-[![npm version](https://img.shields.io/npm/v/@skill-graph/cli?style=flat-square&logo=npm&color=cb3837)](https://www.npmjs.com/package/@skill-graph/cli) [![Schema v8](https://img.shields.io/badge/schema-v8-blueviolet?style=flat-square)](SKILL_METADATA_PROTOCOL.md) [![License Apache-2.0 + CC-BY-4.0](https://img.shields.io/badge/license-Apache--2.0%20%2B%20CC--BY--4.0-green?style=flat-square)](LICENSE) [![Exports SKILL.md](https://img.shields.io/badge/exports-SKILL.md-orange?style=flat-square)](https://agentskills.io/specification) [![CI](https://img.shields.io/github/actions/workflow/status/jacob-balslev/skill-graph/publish.yml?style=flat-square&label=CI)](https://github.com/jacob-balslev/skill-graph/actions) [![GitHub stars](https://img.shields.io/github/stars/jacob-balslev/skill-graph?style=flat-square&logo=github)](https://github.com/jacob-balslev/skill-graph/stargazers)
+[![npm version](https://img.shields.io/npm/v/@skill-graph/cli?style=flat-square&logo=npm&color=cb3837)](https://www.npmjs.com/package/@skill-graph/cli) [![Schema v8](https://img.shields.io/badge/schema-v8-blueviolet?style=flat-square)](skill-metadata-protocol/SKILL_METADATA_PROTOCOL.md) [![License Apache-2.0 + CC-BY-4.0](https://img.shields.io/badge/license-Apache--2.0%20%2B%20CC--BY--4.0-green?style=flat-square)](LICENSE) [![Exports SKILL.md](https://img.shields.io/badge/exports-SKILL.md-orange?style=flat-square)](https://agentskills.io/specification) [![CI](https://img.shields.io/github/actions/workflow/status/jacob-balslev/skill-graph/publish.yml?style=flat-square&label=CI)](https://github.com/jacob-balslev/skill-graph/actions) [![GitHub stars](https://img.shields.io/github/stars/jacob-balslev/skill-graph?style=flat-square&logo=github)](https://github.com/jacob-balslev/skill-graph/stargazers)
 
 **The canonical home for structured `SKILL.md` libraries.** Skill spec, JSON schemas, lint, manifest compiler, router, drift sentinel, audit loop, and the export pipeline — all shipped as a single CLI.
 
@@ -22,7 +22,21 @@ The mechanism is a **Karpathy-style keep-or-revert audit loop** ([autoresearch](
 - Every change has a hard pass/fail gate — a deterministic check script that turns red or green.
 - Failed changes auto-revert. The lesson is recorded; the field's truth is preserved.
 
-The protocol's typed fields are the substrate that makes deterministic gates possible. The audit loop ([`SKILL_AUDIT_LOOP.md`](SKILL_AUDIT_LOOP.md)) is the mechanism. The quality bar that governs every change — what "improve" means, when it's safe to remove, how to enrich without dropping coverage — is codified in [`docs/quality-doctrine.md`](docs/quality-doctrine.md). Together they produce a library that drifts less, even as it grows.
+The protocol's typed fields are the substrate that makes deterministic gates possible. The audit loop ([`skill-audit-loop/SKILL_AUDIT_LOOP.md`](skill-audit-loop/SKILL_AUDIT_LOOP.md)) is the mechanism. The quality bar that governs every change — what "improve" means, when it's safe to remove, how to enrich without dropping coverage — is codified in [`docs/quality-doctrine.md`](docs/quality-doctrine.md). Together they produce a library that drifts less, even as it grows.
+
+## The Three Layers
+
+Skill Graph is three layers, each with its own front door. Keep them distinct — never collapse one into another.
+
+| Layer | Role | Front door |
+|---|---|---|
+| **Skill Metadata Protocol** | The per-skill contract — typed frontmatter that makes one skill's relevance and boundaries explicit. | [`skill-metadata-protocol/`](skill-metadata-protocol/) |
+| **Skill Graph** | The library-level system — compiles the manifest, routes queries, checks drift and overlap, exports back to plain `SKILL.md`. | [`SKILL_GRAPH.md`](SKILL_GRAPH.md) |
+| **Skill Audit Loop** | The maintenance discipline — `read → fix → test → next`, keeping each skill true as code and concepts drift. | [`skill-audit-loop/`](skill-audit-loop/) |
+
+The mission is relevance-at-scale: the Protocol makes relevance explicit, the Graph makes it queryable, and the Audit Loop keeps it true. Each folder front door summarizes its layer and links to the binding spec inside it. The *How … Differ* table further down separates these from the plain `SKILL.md` format.
+
+> The `skill-metadata-protocol/` and `skill-audit-loop/` folders in **this** repo are the live canonical homes. The identically-named nodes in the ecosystem diagram below are the **deprecated external GitHub mirror repos** (`github.com/jacob-balslev/…`), kept only for inbound-link stability — not the same thing.
 
 ## The ecosystem
 
@@ -35,8 +49,8 @@ The protocol's typed fields are the substrate that makes deterministic gates pos
 graph TD
   G["<b>skill-graph</b><br/><i>canonical monolith: spec, schemas, tooling, audit</i><br/>@skill-graph/cli — npm install -g"]
   L["<b>skills</b><br/><i>public open-source skill library</i><br/>npx skills add jacob-balslev/skills"]
-  P["<b>skill-metadata-protocol</b><br/><i>deprecated · docs-only mirror</i><br/>SKILL_METADATA_PROTOCOL.md preserved"]
-  A["<b>skill-audit-loop</b><br/><i>deprecated · docs-only mirror</i><br/>SKILL_AUDIT_LOOP.md preserved"]
+  P["<b>skill-metadata-protocol</b><br/><i>deprecated · docs-only mirror</i><br/>skill-metadata-protocol/SKILL_METADATA_PROTOCOL.md preserved"]
+  A["<b>skill-audit-loop</b><br/><i>deprecated · docs-only mirror</i><br/>skill-audit-loop/SKILL_AUDIT_LOOP.md preserved"]
   G -->|exports SKILL.md| L
   G -. mirrors protocol spec to .-> P
   G -. mirrors audit procedure to .-> A
@@ -52,8 +66,8 @@ graph TD
 |------|-----|--------|---------|
 | **skill-graph** *(this repo)* | [`@skill-graph/cli`](https://www.npmjs.com/package/@skill-graph/cli) | **active** | Canonical home — protocol spec, schemas, CLI, lint, manifest, router, drift, audit loop, export |
 | **[skills](https://github.com/jacob-balslev/skills)** | — | **active** | Public open-source skill library (consumed via `npx skills add jacob-balslev/skills`) |
-| [skill-metadata-protocol](https://github.com/jacob-balslev/skill-metadata-protocol) | _(consolidated)_ | mirror | Historical docs-only mirror of the normative spec — content lives [here](SKILL_METADATA_PROTOCOL.md) |
-| [skill-audit-loop](https://github.com/jacob-balslev/skill-audit-loop) | _(consolidated)_ | mirror | Historical docs-only mirror of the audit procedure — content lives [here](SKILL_AUDIT_LOOP.md) |
+| [skill-metadata-protocol](https://github.com/jacob-balslev/skill-metadata-protocol) | _(consolidated)_ | mirror | Historical docs-only mirror of the normative spec — content lives [here](skill-metadata-protocol/SKILL_METADATA_PROTOCOL.md) |
+| [skill-audit-loop](https://github.com/jacob-balslev/skill-audit-loop) | _(consolidated)_ | mirror | Historical docs-only mirror of the audit procedure — content lives [here](skill-audit-loop/SKILL_AUDIT_LOOP.md) |
 
 > **Recent consolidation (2026-05-18):** Per [SH-6137](https://linear.app/sales-hub/issue/SH-6137) and [ADR 0009](docs/adr/0009-sibling-repo-deprecation.md), `@skill-graph/protocol` and `@skill-graph/audit` were merged into `@skill-graph/cli@0.5.6`. Schemas, audit scripts, graders, eval fixtures, examples, and the protocol/audit canonical docs now all live in this repo. The sibling repos are preserved as read-only mirrors so existing inbound links remain valid; they were **archived on GitHub on 2026-05-20** (read-only, still publicly readable — see [ADR 0009 § Update](docs/adr/0009-sibling-repo-deprecation.md)).
 
@@ -62,7 +76,7 @@ graph TD
 Two onboarding paths, by need:
 
 - **"I want to author my first skill in 30 minutes."** → [`docs/QUICKSTART-30MIN.md`](docs/QUICKSTART-30MIN.md) — literal terminal walkthrough: clone, install, fill in the template, lint, route a query, record the drift baseline. Use this when you'd rather try the tooling than read about it.
-- **"I want to understand the model before I commit."** → [`docs/SKILL_METADATA_PROTOCOL_PRIMER.md`](docs/SKILL_METADATA_PROTOCOL_PRIMER.md) — conceptual primer: what the protocol is, when to adopt it, the four orthogonal classification axes, the routing model, and what Skill Graph is *not*. Use this when you'd rather build the mental model first.
+- **"I want to understand the model before I commit."** → [`skill-metadata-protocol/PRIMER.md`](skill-metadata-protocol/PRIMER.md) — conceptual primer: what the protocol is, when to adopt it, the four orthogonal classification axes, the routing model, and what Skill Graph is *not*. Use this when you'd rather build the mental model first.
 
 The QUICKSTART points at the PRIMER for the "why"; the PRIMER points at the QUICKSTART for the "how". Read either first, then loop back.
 
@@ -72,9 +86,11 @@ For everything else:
 |---|---|
 | **Install the CLI** | [Quick Start](#quick-start) below — `npm install -g @skill-graph/cli` |
 | **Install the public skill library** | [`jacob-balslev/skills`](https://github.com/jacob-balslev/skills) — `npx skills add jacob-balslev/skills` |
-| **Understand the `SKILL.md` frontmatter contract** | [`SKILL_METADATA_PROTOCOL.md`](SKILL_METADATA_PROTOCOL.md) — the normative spec |
-| **Audit an existing skill library** | [`SKILL_AUDIT_LOOP.md`](SKILL_AUDIT_LOOP.md) — the audit procedure |
-| **Look up a specific field** | [`docs/SKILL_METADATA_PROTOCOL_field-reference.md`](docs/SKILL_METADATA_PROTOCOL_field-reference.md) |
+| **Get oriented in the metadata protocol** | [`skill-metadata-protocol/`](skill-metadata-protocol/) — folder front door (why it exists, the axes, the two encodings, where to go next) |
+| **Get oriented in the audit loop** | [`skill-audit-loop/`](skill-audit-loop/) — folder front door (the loop, four operations, two gates, four verdicts) |
+| **Understand the `SKILL.md` frontmatter contract** | [`skill-metadata-protocol/SKILL_METADATA_PROTOCOL.md`](skill-metadata-protocol/SKILL_METADATA_PROTOCOL.md) — the normative spec |
+| **Audit an existing skill library** | [`skill-audit-loop/SKILL_AUDIT_LOOP.md`](skill-audit-loop/SKILL_AUDIT_LOOP.md) — the audit procedure |
+| **Look up a specific field** | [`skill-metadata-protocol/field-reference.md`](skill-metadata-protocol/field-reference.md) |
 | **Plan adoption in a new repo** | [`docs/ADOPTION.md`](docs/ADOPTION.md) and [`docs/CONFORMANCE.md`](docs/CONFORMANCE.md) |
 | **Migrate from an older `schema_version`** | git history (per [ADR 0014](docs/adr/0014-canonical-only-schema-files.md)) |
 
@@ -452,9 +468,11 @@ Exit codes for `skill-graph evolve`:
 | Path | Purpose |
 |---|---|
 | [`SKILL_GRAPH.md`](SKILL_GRAPH.md) | Library-level system model and authority tiers. |
-| [`SKILL_METADATA_PROTOCOL.md`](SKILL_METADATA_PROTOCOL.md) | **Canonical** normative spec for the `SKILL.md` frontmatter contract. |
-| [`SKILL_AUDIT_LOOP.md`](SKILL_AUDIT_LOOP.md) | **Canonical** audit procedure (4 operations: audit, improve, evaluate, evolve). |
-| `SKILL_AUDIT_LOOP.md` § Part 2 — Per-Skill Audit Checklist | Per-skill audit checklist used during `audit`. |
+| [`skill-metadata-protocol/`](skill-metadata-protocol/) | Protocol layer — folder front door (`README.md`) plus the spec and its companions. |
+| [`skill-metadata-protocol/SKILL_METADATA_PROTOCOL.md`](skill-metadata-protocol/SKILL_METADATA_PROTOCOL.md) | **Canonical** normative spec for the `SKILL.md` frontmatter contract. |
+| [`skill-audit-loop/`](skill-audit-loop/) | Audit-loop layer — folder front door (`README.md`) plus the spec and the runner prompts. |
+| [`skill-audit-loop/SKILL_AUDIT_LOOP.md`](skill-audit-loop/SKILL_AUDIT_LOOP.md) | **Canonical** audit procedure (4 operations: audit, improve, evaluate, evolve). |
+| `skill-audit-loop/SKILL_AUDIT_LOOP.md` § Part 2 — Per-Skill Audit Checklist | Per-skill audit checklist used during `audit`. |
 | [`AGENTS.md`](AGENTS.md) | Agent-facing repo guide (doctrine, doc routing, validation commands, `lib/` layout, public-distribution contract). `CLAUDE.md` imports it. |
 | [`CHANGELOG.md`](CHANGELOG.md) | Release notes for protocol, schemas, scripts, and CLI. |
 | [`schemas/`](schemas/) | Canonical-only JSON Schemas — `SKILL_METADATA_PROTOCOL_schema.json` (the binding contract; current shape is v8, see [`SKILL_GRAPH.md § Current State`](SKILL_GRAPH.md#current-state--single-source-of-truth)) + `manifest.schema.json` + `audits-manifest.schema.json` + `comprehension.schema.json`. Prior contract versions live in git history per [ADR-0014](docs/adr/0014-canonical-only-schema-files.md). Also `skill.context.jsonld` and a `vocabulary/` namespace. |
@@ -465,8 +483,8 @@ Exit codes for `skill-graph evolve`:
 | [`data/`](data/) | Hand-edited classification data feeding upstream tooling. Today: `publication-classification.json` (per-skill OSS publication tier, consumed by the parent Development repo's audit worklist). |
 | [`examples/skill-metadata-template.md`](examples/skill-metadata-template.md) | Copyable authoring template. |
 | [`examples/projects/markdown-static-site/`](examples/projects/markdown-static-site/) | Specimen project with codebase-grounded skills. |
-| [`docs/SKILL_METADATA_PROTOCOL_field-reference.md`](docs/SKILL_METADATA_PROTOCOL_field-reference.md) | Field-by-field reference. |
-| [`docs/SKILL_METADATA_PROTOCOL_field-decision-guide.md`](docs/SKILL_METADATA_PROTOCOL_field-decision-guide.md) | Decision tables for hard field choices. |
+| [`skill-metadata-protocol/field-reference.md`](skill-metadata-protocol/field-reference.md) | Field-by-field reference. |
+| [`skill-metadata-protocol/field-decision-guide.md`](skill-metadata-protocol/field-decision-guide.md) | Decision tables for hard field choices. |
 | [`docs/quality-doctrine.md`](docs/quality-doctrine.md) | Quality bar for preserving scope, readable names, organization-over-trimming, compression, and verification. |
 | [`docs/SKILL-MD-FORMAT-COMPATIBILITY.md`](docs/SKILL-MD-FORMAT-COMPATIBILITY.md) | How export maps protocol-enriched skills back to plain `SKILL.md`. |
 | [`docs/marketplace-syndication.md`](docs/marketplace-syndication.md) | Syndication workflow for public `SKILL.md` marketplaces. |
@@ -478,8 +496,8 @@ Exit codes for `skill-graph evolve`:
 | Repo | Status | Purpose |
 |---|---|---|
 | [`jacob-balslev/skills`](https://github.com/jacob-balslev/skills) | **active** | Public open-source canonical skill library — live count in [`SKILL_GRAPH.md § Current State`](SKILL_GRAPH.md#current-state--single-source-of-truth). Distributed via `npx skills add jacob-balslev/skills`. |
-| [`jacob-balslev/skill-metadata-protocol`](https://github.com/jacob-balslev/skill-metadata-protocol) | mirror | Historical docs-only mirror of the protocol spec (kept for inbound-link stability). Canonical doc now in [`SKILL_METADATA_PROTOCOL.md`](SKILL_METADATA_PROTOCOL.md). |
-| [`jacob-balslev/skill-audit-loop`](https://github.com/jacob-balslev/skill-audit-loop) | mirror | Historical docs-only mirror of the audit workflow. Canonical doc now in [`SKILL_AUDIT_LOOP.md`](SKILL_AUDIT_LOOP.md). |
+| [`jacob-balslev/skill-metadata-protocol`](https://github.com/jacob-balslev/skill-metadata-protocol) | mirror | Historical docs-only mirror of the protocol spec (kept for inbound-link stability). Canonical doc now in [`skill-metadata-protocol/SKILL_METADATA_PROTOCOL.md`](skill-metadata-protocol/SKILL_METADATA_PROTOCOL.md). |
+| [`jacob-balslev/skill-audit-loop`](https://github.com/jacob-balslev/skill-audit-loop) | mirror | Historical docs-only mirror of the audit workflow. Canonical doc now in [`skill-audit-loop/SKILL_AUDIT_LOOP.md`](skill-audit-loop/SKILL_AUDIT_LOOP.md). |
 
 ## Releasing (Maintainers)
 

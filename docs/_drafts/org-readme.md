@@ -35,7 +35,7 @@ The differentiator: a Karpathy-style **keep-or-revert audit loop** applied to sk
 
 → **Install:** `npm install -g @skill-graph/cli`
 → **Quickstart:** [author your first skill in 30 minutes](https://github.com/jacob-balslev/skill-graph/blob/main/docs/QUICKSTART-30MIN.md)
-→ **Primer:** [the mental model](https://github.com/jacob-balslev/skill-graph/blob/main/docs/SKILL_METADATA_PROTOCOL_PRIMER.md)
+→ **Primer:** [the mental model](https://github.com/jacob-balslev/skill-graph/blob/main/skill-metadata-protocol/PRIMER.md)
 
 ### [`skills`](https://github.com/jacob-balslev/skills) — published Agent Skills
 

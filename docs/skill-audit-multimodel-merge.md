@@ -1,7 +1,7 @@
 # Multi-Model Skill Audit — Fan-out + Union-Curate Merge
 
 > Type: Reference (protocol)
-> Status: v1 (2026-05-21). Extends the single-agent loop (`skill-graph/SKILL_AUDIT_LOOP.md#part-3--per-skill-audit-runbook`) to many models without losing any valuable contribution.
+> Status: v1 (2026-05-21). Extends the single-agent loop (`skill-graph/skill-audit-loop/SKILL_AUDIT_LOOP.md#part-3--per-skill-audit-runbook`) to many models without losing any valuable contribution.
 
 ## Why this exists
 
@@ -78,7 +78,7 @@ Run the v2.2 verify checklist + the dual-run comprehension grader on the **merge
 - The merge always reads and preserves the current skill state as the baseline.
 
 ## Related
-- Single-agent contract: `skill-graph/SKILL_AUDIT_LOOP.md#part-3--per-skill-audit-runbook`
+- Single-agent contract: `skill-graph/skill-audit-loop/SKILL_AUDIT_LOOP.md#part-3--per-skill-audit-runbook`
 - Runnable prompt (this protocol): `.opencode/commands/skill-audit-merge-v1.md`
-- Audit doctrine + grader policy: `SKILL_AUDIT_LOOP.md`
+- Audit doctrine + grader policy: `skill-audit-loop/SKILL_AUDIT_LOOP.md`
 - Claim helper: `scripts/skill/skill-audit-claim.js`

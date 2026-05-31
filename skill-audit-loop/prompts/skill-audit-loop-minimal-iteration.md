@@ -4,7 +4,7 @@
 > Created: 2026-05-24
 > Replaces: an earlier 8-step thin loop prompt that lacked output targets, evidence requirements, novelty channel, and stop conditions
 > Shape: structured pass + novelty memo + dissent-or-abstain + completeness claim (see `.claude/rules/prompt-shape-structured-plus-novelty.md`)
-> Hand to: any single model. For Codex cron automation use `skill-audit-loop-codex-autonomous-v5.md` instead. For model-agnostic production batch automation use `skill-audit-loop-batch-worker-v4.md`. For the full per-skill contract see `skill-graph/SKILL_AUDIT_LOOP.md#part-3--per-skill-audit-runbook`; the comprehensive single-model runner that drives it is `skill-audit-loop-single-model.md` (v3).
+> Hand to: any single model. For Codex cron automation use `skill-audit-loop-codex-autonomous-v5.md` instead. For model-agnostic production batch automation use `skill-audit-loop-batch-worker-v4.md`. For the full per-skill contract see `skill-graph/skill-audit-loop/SKILL_AUDIT_LOOP.md#part-3--per-skill-audit-runbook`; the comprehensive single-model runner that drives it is `skill-audit-loop-single-model.md` (v3).
 
 ## When to use this prompt
 
@@ -14,7 +14,7 @@
 
 For Codex cron automation use `skill-audit-loop-codex-autonomous-v5.md`.
 For model-agnostic autonomous batches use `skill-audit-loop-batch-worker-v4.md`.
-For the full per-skill contract see `skill-graph/SKILL_AUDIT_LOOP.md#part-3--per-skill-audit-runbook`; the single-model runner that drives it is `skill-audit-loop-single-model.md` (v3).
+For the full per-skill contract see `skill-graph/skill-audit-loop/SKILL_AUDIT_LOOP.md#part-3--per-skill-audit-runbook`; the single-model runner that drives it is `skill-audit-loop-single-model.md` (v3).
 
 ## The prompt
 
@@ -27,10 +27,10 @@ any other model. The multi-model merge flow is separate and not for this prompt.
 1. Read /Users/jacobbalslev/Development/AGENTS.md.
 2. Read, in order:
    - /Users/jacobbalslev/Development/skill-graph/AGENTS.md
-   - /Users/jacobbalslev/Development/skill-graph/SKILL_METADATA_PROTOCOL.md
-   - /Users/jacobbalslev/Development/skill-graph/SKILL_AUDIT_LOOP.md
+   - /Users/jacobbalslev/Development/skill-graph/skill-metadata-protocol/SKILL_METADATA_PROTOCOL.md
+   - /Users/jacobbalslev/Development/skill-graph/skill-audit-loop/SKILL_AUDIT_LOOP.md
    - /Users/jacobbalslev/Development/docs/reference/skill-audit-pipeline.md
-   - /Users/jacobbalslev/Development/skill-graph/SKILL_AUDIT_LOOP.md#part-3--per-skill-audit-runbook (per-skill contract)
+   - /Users/jacobbalslev/Development/skill-graph/skill-audit-loop/SKILL_AUDIT_LOOP.md#part-3--per-skill-audit-runbook (per-skill contract)
 3. Load skills: methodical, evaluation, skill-evolution, skill-infrastructure, quality-doctrine,
    no-cutting-corners. Read each `SKILL.md` directly.
 
@@ -170,7 +170,7 @@ See `.claude/rules/prompt-shape-structured-plus-novelty.md` for the general patt
 - Codex autonomous worker: `skill-audit-loop-codex-autonomous-v5.md`
 - Model-agnostic batch worker: `skill-audit-loop-batch-worker-v4.md`
 - Full per-skill contract: `skill-audit-loop-single-model.md` (v3)
-- Per-skill audit doc: `skill-graph/SKILL_AUDIT_LOOP.md#part-3--per-skill-audit-runbook`
+- Per-skill audit doc: `skill-graph/skill-audit-loop/SKILL_AUDIT_LOOP.md#part-3--per-skill-audit-runbook`
 - Multi-model merge flow (separate, NOT for this prompt): `.opencode/commands/skill-audit-merge-v1.md`
 - Pattern doc: `.claude/rules/prompt-shape-structured-plus-novelty.md`
 - 2026-05-24 source roundtable: `/Users/jacobbalslev/Development/.roundtable/skill-audit-2026-05-24/`

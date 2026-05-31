@@ -12,9 +12,9 @@ This repo defines the Skill Metadata Protocol and the Skill Graph reference tool
 | **First time on this repo** | `~/Development/SKILL-SYSTEM-CHEAT-SHEET.md` (1 page) — workspace-level operator's manual for the three layers. |
 | **Authoring or editing any SKILL.md** | **STOP.** § "Work Modes — SYSTEM vs CONTENT" below. CONTENT mode runs ONLY via `/audit:audit | improve | evaluate | evolve`. Ad-hoc SKILL.md edits outside that loop are banned. |
 | **Editing the schema / audit script / audit prompt / protocol doc** | § "Work Modes" + § "Editing Rules" + § "Version Labels Are Earned, Not Bumped" |
-| **Per-field semantics (`name`, `description`, `scope`, etc.)** | § "Doc Ownership Map" → routes to `docs/SKILL_METADATA_PROTOCOL_field-reference.md` and 70+ other concept owners |
+| **Per-field semantics (`name`, `description`, `scope`, etc.)** | § "Doc Ownership Map" → routes to `skill-metadata-protocol/field-reference.md` and 70+ other concept owners |
 | **Current state (counts, version, audit-loop maturity)** | `SKILL_GRAPH.md` § Current State — single source of truth |
-| **Per-skill audit checklist + runbook** | `SKILL_AUDIT_LOOP.md` § Part 2 (checklist) + § Part 3 (binding runbook) |
+| **Per-skill audit checklist + runbook** | `skill-audit-loop/SKILL_AUDIT_LOOP.md` § Part 2 (checklist) + § Part 3 (binding runbook) |
 | **Publishing to skills.sh** | § "Public Distribution — Canonical URL Contract" |
 | **Anything else** | § "Mission and Vision" (below) → § "Editing Rules" → § "Validation Commands" |
 
@@ -54,13 +54,13 @@ There are three named things. Keep them distinct; never collapse one into anothe
 | **Skill Audit Loop** | Maintenance discipline | CI plus improvement loop | Keep skills honest as codebases, docs, concepts, and agent behavior drift. |
 
 1. **Skill Metadata Protocol — the per-skill contract (the substrate).**
-   *What it is supposed to do:* make each skill's relevance **explicit**. Every `SKILL.md` declares typed frontmatter — scope, area/category, domain, file surfaces (`paths` / `grounding`), dependencies, related skills, and boundaries (what it is *not* for). This is the contract that turns "name + description" into something a machine can route, group, and check. It is the substrate: without typed fields there is no graph to query and no deterministic gate to audit against. It turns a skill from "a Markdown instruction file" into a **machine-readable relevance contract** that can be linted, compiled into a manifest, routed against, drift-checked, and audited. **When you author or edit a skill, your job is to make its relevance and boundaries true and explicit.** Binding docs: `SKILL_METADATA_PROTOCOL.md`, `docs/SKILL_METADATA_PROTOCOL_field-reference.md`.
+   *What it is supposed to do:* make each skill's relevance **explicit**. Every `SKILL.md` declares typed frontmatter — scope, area/category, domain, file surfaces (`paths` / `grounding`), dependencies, related skills, and boundaries (what it is *not* for). This is the contract that turns "name + description" into something a machine can route, group, and check. It is the substrate: without typed fields there is no graph to query and no deterministic gate to audit against. It turns a skill from "a Markdown instruction file" into a **machine-readable relevance contract** that can be linted, compiled into a manifest, routed against, drift-checked, and audited. **When you author or edit a skill, your job is to make its relevance and boundaries true and explicit.** Binding docs: `skill-metadata-protocol/SKILL_METADATA_PROTOCOL.md`, `skill-metadata-protocol/field-reference.md`.
 
 2. **Skill Graph — the library-level system (what reasons over the metadata).**
    *What it is supposed to do:* operate on that metadata across the **whole library**. Route a query to the best-matching skill; show which skills are related, which domains/groups they belong to, and where boundaries lie; detect overlap and boundary violations; drift-check grounding against source-of-truth; and export back to portable `SKILL.md`. It turns a folder of skills into a typed graph an agent, router, or human can reason over. Each node is a `SKILL.md`; each edge is a typed relation such as `relations.related`, `relations.boundary`, `relations.verify_with`, or `relations.depends_on`. It supplies schema validation, manifest compilation, routing, clustering, overlap detection, drift sentinel checks, audit artifacts, evals, and export back to plain `SKILL.md`. It is **build-time / authoring-time tooling — not** an agent runtime, hosted marketplace, or memory system; consumers read from the graph, they do not redefine it. Authority map: `SKILL_GRAPH.md`.
 
 3. **Skill Audit Loop — the discipline that keeps it honest (what the structure enables).**
-   *What it is supposed to do:* answer **one question per skill** — *does it still teach an agent to do the thing it claims to teach?* Shape: `read → fix → test → next`; one field per commit, kept or reverted on a single measurable signal (Karpathy keep-or-revert). Its four operations are `audit`, `improve`, `evaluate`, and `evolve`. It has two gates: the **Integrity Gate** proves the skill is structurally valid, grounded, routable, and export-safe; the **Behavior Gate** proves the skill changes agent behavior on realistic positives, hard negatives, prior failures, and boundary cases. The four-verdict Audit Status records the result on the skill itself: `structural_verdict`, `truth_verdict`, `comprehension_verdict`, and `application_verdict`. **`application_verdict == APPLICABLE` is the only verdict that *certifies* a skill is *useful*** — `structural` / `truth` / `comprehension` establish **eligibility** for assessment, not certification. See [`docs/verdict-semantics.md`](docs/verdict-semantics.md) for the canonical enum definitions, the eligibility-vs-assessment distinction, and the confidence-tier ordering (`APPLICABLE` from dual-run grader > `PROVISIONAL` from single-model assessment > `UNVERIFIED` from no assessment at all). It is **not a lint-test factory**; an empty findings report on a genuinely good skill is a PASS. Procedure: `SKILL_AUDIT_LOOP.md`.
+   *What it is supposed to do:* answer **one question per skill** — *does it still teach an agent to do the thing it claims to teach?* Shape: `read → fix → test → next`; one field per commit, kept or reverted on a single measurable signal (Karpathy keep-or-revert). Its four operations are `audit`, `improve`, `evaluate`, and `evolve`. It has two gates: the **Integrity Gate** proves the skill is structurally valid, grounded, routable, and export-safe; the **Behavior Gate** proves the skill changes agent behavior on realistic positives, hard negatives, prior failures, and boundary cases. The four-verdict Audit Status records the result on the skill itself: `structural_verdict`, `truth_verdict`, `comprehension_verdict`, and `application_verdict`. **`application_verdict == APPLICABLE` is the only verdict that *certifies* a skill is *useful*** — `structural` / `truth` / `comprehension` establish **eligibility** for assessment, not certification. See [`docs/verdict-semantics.md`](docs/verdict-semantics.md) for the canonical enum definitions, the eligibility-vs-assessment distinction, and the confidence-tier ordering (`APPLICABLE` from dual-run grader > `PROVISIONAL` from single-model assessment > `UNVERIFIED` from no assessment at all). It is **not a lint-test factory**; an empty findings report on a genuinely good skill is a PASS. Procedure: `skill-audit-loop/SKILL_AUDIT_LOOP.md`.
 
 **Trunk and leaf.** The mission is relevance-at-scale: the **Protocol** makes relevance explicit, the **Graph** makes it queryable, and the **Audit Loop** keeps it true. Routing the right teaching-skill is the trunk; auditing whether that skill teaches well is the leaf the explicit structure enables. Do not mistake the audit mechanism for the mission.
 
@@ -97,7 +97,7 @@ Skill Graph work splits cleanly into two modes. They are NOT interchangeable, an
 
 | Mode | Allowed paths | Forbidden in this mode |
 |------|---------------|------------------------|
-| **SYSTEM** | `skill-graph/schemas/**`, `skill-graph/docs/**`, `skill-graph/audits/prompts/**`, `skill-graph/audits/_state/**`, `skill-graph/scripts/**`, `skill-graph/bin/**`, `skill-graph/SKILL_*.md`, `~/Development/scripts/skill/**`, `~/Development/.claude/commands/audit/**` | Any edit to `~/Development/skills/skills/**/SKILL.md` or per-skill artifacts (`comprehension.json`, `evals/`, `references/`, `skill-graph/audits/<skill-name>/**`). |
+| **SYSTEM** | `skill-graph/schemas/**`, `skill-graph/docs/**`, `skill-graph/skill-audit-loop/prompts/**`, `skill-graph/audits/_state/**`, `skill-graph/scripts/**`, `skill-graph/bin/**`, `skill-graph/SKILL_*.md`, `~/Development/scripts/skill/**`, `~/Development/.claude/commands/audit/**` | Any edit to `~/Development/skills/skills/**/SKILL.md` or per-skill artifacts (`comprehension.json`, `evals/`, `references/`, `skill-graph/audits/<skill-name>/**`). |
 | **CONTENT** | `~/Development/skills/skills/**/SKILL.md` and per-skill artifacts (`comprehension.json`, `evals/**`, `references/**`, `skill-graph/audits/<skill-name>/**`) | Any edit to schemas, audit prompts, audit scripts, audit slash-commands, or protocol docs. |
 
 CONTENT mode is entered ONLY via the audit loop slash-commands: `/audit:audit`, `/audit:improve`, `/audit:evaluate`, `/audit:evolve`. Manual ad-hoc SKILL.md edits outside that loop are banned by default — even when "fixing one quick thing" looks tempting.
@@ -147,8 +147,8 @@ The `/audit:*` commands set `AUDIT_LOOP=1` before staging their writes; the chec
 - **This section is the canonical doctrine.** It is referenced by:
   - `~/Development/AGENTS.md` § Non-Negotiable Standards #16 (workspace-level summary for all agents; Codex, Claude, Copilot all read this)
   - `~/Development/CLAUDE.md` § Context Files (Claude-specific entrypoint)
-  - `SKILL_AUDIT_LOOP.md` top-of-file (caught when an agent lands there directly)
-  - `SKILL_METADATA_PROTOCOL.md` top-of-file (same)
+  - `skill-audit-loop/SKILL_AUDIT_LOOP.md` top-of-file (caught when an agent lands there directly)
+  - `skill-metadata-protocol/SKILL_METADATA_PROTOCOL.md` top-of-file (same)
 - **OpenCode lanes** (`~/Development/.opencode/instructions/*`) do NOT auto-read AGENTS.md per their local convention. If an OpenCode lane is dispatched to Skill Graph work, the dispatcher must point it at this section explicitly.
 
 ## Start Here
@@ -157,14 +157,14 @@ Read these files before changing behavior or docs:
 
 1. `README.md` - project purpose, public positioning, quick start, repository map.
 2. `SKILL_GRAPH.md` - authority tiers and how schemas, docs, scripts, examples, and skills relate.
-3. `SKILL_METADATA_PROTOCOL.md` - top-level normative protocol contract.
-4. `docs/skill-metadata-protocol.md` - deeper rationale, archetypes, migration policy.
-5. `docs/SKILL_METADATA_PROTOCOL_field-reference.md` and `docs/SKILL_METADATA_PROTOCOL_field-decision-guide.md` - field-level semantics and decision tables.
+3. `skill-metadata-protocol/SKILL_METADATA_PROTOCOL.md` - top-level normative protocol contract.
+4. `skill-metadata-protocol/design-rationale.md` - deeper rationale, archetypes, migration policy.
+5. `skill-metadata-protocol/field-reference.md` and `skill-metadata-protocol/field-decision-guide.md` - field-level semantics and decision tables.
 6. `docs/manifest-field-mapping.md` - authored-to-generated manifest projection rules.
 7. `CONTRIBUTING.md` - contribution boundaries, skill authoring workflow, PR expectations.
 8. `docs/quality-doctrine.md` - quality bar for scope preservation, readable names, compression, verification, and organization-over-trimming.
 
-For audit work, also read `SKILL_AUDIT_LOOP.md` and `SKILL_AUDIT_LOOP.md` § Part 2.
+For audit work, also read `skill-audit-loop/SKILL_AUDIT_LOOP.md` and `skill-audit-loop/SKILL_AUDIT_LOOP.md` § Part 2.
 
 ## Project Shape
 
@@ -184,19 +184,19 @@ For audit work, also read `SKILL_AUDIT_LOOP.md` and `SKILL_AUDIT_LOOP.md` § Par
 The Skill Graph is a routable, evaluable, drift-checked knowledge graph of agent capabilities. Each node is a `SKILL.md` — frontmatter (the contract) plus body (the operational guidance). Each edge is one of:
 
 - `relations.related` — adjacency for browse and routing expansion.
-- `relations.boundary` — score-aware exclusion guard: when this skill wins a query, listed skills are suppressed from co-routing. **Note:** the field name reads as "defer to them" but the mechanic is "exclude them when I win." Use ownership reason-text ("I own this exclusively over X"), not deference ("use X instead"). See WARNING in `SKILL_METADATA_PROTOCOL.md` § Relations § `boundary`.
+- `relations.boundary` — score-aware exclusion guard: when this skill wins a query, listed skills are suppressed from co-routing. **Note:** the field name reads as "defer to them" but the mechanic is "exclude them when I win." Use ownership reason-text ("I own this exclusively over X"), not deference ("use X instead"). See WARNING in `skill-metadata-protocol/SKILL_METADATA_PROTOCOL.md` § Relations § `boundary`.
 - `relations.verify_with` — "when this skill is applied, verify the result with that skill" (cross-check).
 - `relations.depends_on` — composition; "this skill assumes the reader has the other in scope."
 
-The graph is not a documentation pile. It is queried by routers, traversed by injection hooks, evaluated against retrieval baselines, and drift-checked against source-of-truth files. Two skills are "the same kind" iff they share a `subject × deployment_target` pair plus a head noun (per [ADR-0017](docs/adr/0017-five-axis-classification-model.md), with the operation axis retired 2026-05-27). The routing layer uses that pair as a first-pass discriminator before walking edges. Note: in the current corpus, most skills share `deployment_target: portable`, so the pair provides broad stratum separation but not fine-grained routing precision — keyword score and relation edges carry the discriminating load. See `SKILL_METADATA_PROTOCOL.md` § Classification for the current distribution analysis and authoring implications.
+The graph is not a documentation pile. It is queried by routers, traversed by injection hooks, evaluated against retrieval baselines, and drift-checked against source-of-truth files. Two skills are "the same kind" iff they share a `subject × deployment_target` pair plus a head noun (per [ADR-0017](docs/adr/0017-five-axis-classification-model.md), with the operation axis retired 2026-05-27). The routing layer uses that pair as a first-pass discriminator before walking edges. Note: in the current corpus, most skills share `deployment_target: portable`, so the pair provides broad stratum separation but not fine-grained routing precision — keyword score and relation edges carry the discriminating load. See `skill-metadata-protocol/SKILL_METADATA_PROTOCOL.md` § Classification for the current distribution analysis and authoring implications.
 
 This shape is what distinguishes the Skill Graph from prompt libraries, agent-runtime config, hosted marketplaces, and personal memory systems. It is a protocol-and-tooling project that produces a navigable graph; consumers (routers, agent runtimes, hosted marketplaces) read from it but do not redefine it.
 
 ## Skill Metadata Protocol — Quick Reference
 
-The Skill Metadata Protocol is the frontmatter contract every `SKILL.md` ships against. Treat this section as the working summary; `SKILL_METADATA_PROTOCOL.md` and `docs/SKILL_METADATA_PROTOCOL_field-reference.md` are the binding documents.
+The Skill Metadata Protocol is the frontmatter contract every `SKILL.md` ships against. Treat this section as the working summary; `skill-metadata-protocol/SKILL_METADATA_PROTOCOL.md` and `skill-metadata-protocol/field-reference.md` are the binding documents.
 
-Core required axes (v8 — see `SKILL_METADATA_PROTOCOL.md § Schema contract`):
+Core required axes (v8 — see `skill-metadata-protocol/SKILL_METADATA_PROTOCOL.md § Schema contract`):
 
 - `name` — kebab-case, head-noun-anchored (see `docs/head-noun-glossary.md`); aligns with parent directory.
 - `description` — short description of what the skill is about. Activation signals belong to `keywords`/`triggers`/`examples`/`anti_examples`; boundary semantics belong to `relations.boundary`.
@@ -206,9 +206,9 @@ Core required axes (v8 — see `SKILL_METADATA_PROTOCOL.md § Schema contract`):
 
 Activation surfaces: `keywords` (≤10), `triggers` (exact), `examples` / `anti_examples` (positive/negative prompts). Routing edges live in `relations` (`related` / `boundary` / `verify_with` / `depends_on` / `broader` / `narrower` / `disjoint_with`).
 
-Closure of `subject` (9 values) is justified by Miller's 7±2 browseability + MECE pressure + the `foundations` / `knowledge-organization` anti-junk-drawer gate. See `SKILL_METADATA_PROTOCOL.md § Classification` for the disambiguation rules.
+Closure of `subject` (9 values) is justified by Miller's 7±2 browseability + MECE pressure + the `foundations` / `knowledge-organization` anti-junk-drawer gate. See `skill-metadata-protocol/SKILL_METADATA_PROTOCOL.md § Classification` for the disambiguation rules.
 
-Understanding-fields contract (when `comprehension_state: present`) — see `SKILL_METADATA_PROTOCOL.md` § Understanding for the binding rules:
+Understanding-fields contract (when `comprehension_state: present`) — see `skill-metadata-protocol/SKILL_METADATA_PROTOCOL.md` § Understanding for the binding rules:
 
 - Requires the **five flat top-level Understanding fields** (v6+): `mental_model`, `purpose`, `boundary`, `analogy`, `misconception`. The legacy nested `concept` block (`definition / mental_model / purpose / boundary / taxonomy / analogy / misconception`) is deprecated and accepted only for v5 back-compat; flat fields win when both are present.
 - Understanding-field content must contain no repo-specific nouns (no Sales Hub, no orchestrator-ui, no internal file paths) — the concept being taught is universal, not repo-bound.
@@ -247,7 +247,7 @@ Compression is allowed only when it preserves meaning and evidence. A valid comp
 
 When an external format imposes a hard limit, satisfy the limit in a generated/export-specific artifact and preserve the canonical Skill Metadata Protocol source. Document the constraint and point back to the full source instead of weakening the source artifact.
 
-Before changing agent behavior instructions, quality rules, marketplace positioning, or skill-library structure, load the relevant local skills from this repo and from the sibling Development skill library when available. At minimum, check the relevant Skill Graph skills (`semantics`, `information-architecture`, `context-engineering`, `skill-scaffold`, `skill-infrastructure`) and the live audit references (`SKILL_AUDIT_LOOP.md`, `SKILL_AUDIT_LOOP.md` § Part 2) when the task touches those concerns. Also check the broader Development skills that govern quality (`quality-doctrine`, `no-cutting-corners`, `compression`, `token-efficiency`).
+Before changing agent behavior instructions, quality rules, marketplace positioning, or skill-library structure, load the relevant local skills from this repo and from the sibling Development skill library when available. At minimum, check the relevant Skill Graph skills (`semantics`, `information-architecture`, `context-engineering`, `skill-scaffold`, `skill-infrastructure`) and the live audit references (`skill-audit-loop/SKILL_AUDIT_LOOP.md`, `skill-audit-loop/SKILL_AUDIT_LOOP.md` § Part 2) when the task touches those concerns. Also check the broader Development skills that govern quality (`quality-doctrine`, `no-cutting-corners`, `compression`, `token-efficiency`).
 
 Claims of quality require verification. If a change says links work, routing works, exports validate, descriptions fit a limit, or all findings are preserved, run the relevant command and report the result. If verification was not run, say so.
 
@@ -345,7 +345,7 @@ Per the 2026-05-30 end-to-end plan § Decision B, `scripts/normalize-skill-field
 - Preserve the current narrow scope: protocol, schemas, deterministic tooling, examples, docs, evals, audit artifacts, and portable `SKILL.md` export.
 - Do not add proprietary company-specific skills, hosted service assumptions, prompt-library content, or agent runtime layers.
 - Do not make breaking schema changes without a `schema_version` bump and migration notes. Per [ADR-0014](docs/adr/0014-canonical-only-schema-files.md), pinned schema copies and per-version codemods are NOT created on disk — prior versions live in git history; codemods run once and are retired. If an external consumer needs to pin against a historical version, resolve via `git tag schema-vN` rather than a duplicate file in `main`.
-- Do not hand-edit generated artifacts unless the owning script says to. `docs/SKILL_METADATA_PROTOCOL_field-reference.generated.md` is generated by `scripts/build-field-reference.js`.
+- Do not hand-edit generated artifacts unless the owning script says to. `skill-metadata-protocol/field-reference.generated.md` is generated by `scripts/build-field-reference.js`.
 - Do not hide findings during audits. If a check or audit emits N findings, preserve all N, then recommend prioritization separately.
 - Do not commit local-only agent state or research output unless explicitly intended and scrubbed. `.artifacts/`, `.claude/`, `.research/`, `.roundtable/`, `audits/_state/`, and `audits/sweep-ledger.jsonl` are ignored for a reason.
 - Never commit secrets, PII, private filesystem telemetry, credentials, tokens, or public-endpoint logs containing sensitive data.
@@ -354,7 +354,7 @@ Per the 2026-05-30 end-to-end plan § Decision B, `scripts/normalize-skill-field
 
 When touching one artifact, update the matching tier artifacts in the same change.
 
-- If you change `schemas/SKILL_METADATA_PROTOCOL_schema.json`, also update `docs/SKILL_METADATA_PROTOCOL_field-reference.md`, `docs/skill-metadata-protocol.md`, `SKILL_METADATA_PROTOCOL.md` when relevant, `docs/manifest-field-mapping.md`, and `examples/skill-metadata-template.md` when affected. Regenerate `docs/SKILL_METADATA_PROTOCOL_field-reference.generated.md` with `node scripts/build-field-reference.js` in the same commit (enforced by `protocol:check § C7`). Per [ADR-0014](docs/adr/0014-canonical-only-schema-files.md), the C6 "Versioned schema parity" check is retired — there is no second pinned file to drift against.
+- If you change `schemas/SKILL_METADATA_PROTOCOL_schema.json`, also update `skill-metadata-protocol/field-reference.md`, `skill-metadata-protocol/design-rationale.md`, `skill-metadata-protocol/SKILL_METADATA_PROTOCOL.md` when relevant, `docs/manifest-field-mapping.md`, and `examples/skill-metadata-template.md` when affected. Regenerate `skill-metadata-protocol/field-reference.generated.md` with `node scripts/build-field-reference.js` in the same commit (enforced by `protocol:check § C7`). Per [ADR-0014](docs/adr/0014-canonical-only-schema-files.md), the C6 "Versioned schema parity" check is retired — there is no second pinned file to drift against.
 - If you change `schemas/manifest.schema.json`, also update `schemas/manifest.schema.json` (the pinned copy of the current contract), `docs/manifest-field-mapping.md`, and `scripts/generate-manifest.js` if projection logic changes.
 - If you change `scripts/generate-manifest.js`, regenerate `examples/skills.manifest.sample.json`.
 - If you change `scripts/skill-lint.js`, run it against every skill and the template. Update sample manifest or drift baselines when lint-affecting sources are part of `drift_check.truth_source_hashes`.
@@ -376,16 +376,16 @@ For any single Skill Metadata Protocol field (`name`, `description`, `subject`, 
 
 | What you are editing about the field | Canonical owner | Notes |
 |---|---|---|
-| **Normative spec** — required/optional, allowed values, enum, gate condition, version label, what the field *means* in the protocol | `SKILL_METADATA_PROTOCOL.md` | The binding contract. If this and another doc disagree, this wins. |
-| **Per-field human authoring prose** — when to use it, value choice criteria, examples, anti-patterns, common mistakes | `docs/SKILL_METADATA_PROTOCOL_field-reference.md` | The 78k authoring guide. Single biggest doc; agents lose half a turn budget here. Use anchor links when referencing from other docs. **Reader's canonical for `SKILL_METADATA_PROTOCOL_field-reference.md` vs `.generated.md`:** the hand-authored `docs/SKILL_METADATA_PROTOCOL_field-reference.md` is the canonical for "what does this field mean and when do I pick which value"; `docs/SKILL_METADATA_PROTOCOL_field-reference.generated.md` (line below) is a structural skeleton of the schema enum and type — useful for grep, never for picking values. (M2 reconciliation 2026-05-27.) |
-| **Decision logic between values** — "should I pick `portable` vs `project`?", "when is `stability: stable` earned?", branching decision trees | `docs/SKILL_METADATA_PROTOCOL_field-decision-guide.md` | Decision tables only. Do not duplicate decision logic from `SKILL_METADATA_PROTOCOL_field-reference.md`; link to it. |
+| **Normative spec** — required/optional, allowed values, enum, gate condition, version label, what the field *means* in the protocol | `skill-metadata-protocol/SKILL_METADATA_PROTOCOL.md` | The binding contract. If this and another doc disagree, this wins. |
+| **Per-field human authoring prose** — when to use it, value choice criteria, examples, anti-patterns, common mistakes | `skill-metadata-protocol/field-reference.md` | The 78k authoring guide. Single biggest doc; agents lose half a turn budget here. Use anchor links when referencing from other docs. **Reader's canonical for `SKILL_METADATA_PROTOCOL_field-reference.md` vs `.generated.md`:** the hand-authored `skill-metadata-protocol/field-reference.md` is the canonical for "what does this field mean and when do I pick which value"; `skill-metadata-protocol/field-reference.generated.md` (line below) is a structural skeleton of the schema enum and type — useful for grep, never for picking values. (M2 reconciliation 2026-05-27.) |
+| **Decision logic between values** — "should I pick `portable` vs `project`?", "when is `stability: stable` earned?", branching decision trees | `skill-metadata-protocol/field-decision-guide.md` | Decision tables only. Do not duplicate decision logic from `SKILL_METADATA_PROTOCOL_field-reference.md`; link to it. |
 | **Why the field exists** — design rationale, rejected alternatives, migration history that *justifies* the field's shape | `docs/field-rationale.md` | "Why this field, not the other thing." Edit when the field's purpose changes, not when its value semantics change. |
-| **Generated type/enum mirror** | `docs/SKILL_METADATA_PROTOCOL_field-reference.generated.md` | **NEVER hand-edit.** Run `node scripts/build-field-reference.js`. Source of truth is `schemas/SKILL_METADATA_PROTOCOL_schema.json`. **Not for "when do I pick this value"** — that lives in the hand-authored `docs/SKILL_METADATA_PROTOCOL_field-reference.md` (row above). Reading the generated doc alone gives a structurally valid but semantically incomplete picture. |
+| **Generated type/enum mirror** | `skill-metadata-protocol/field-reference.generated.md` | **NEVER hand-edit.** Run `node scripts/build-field-reference.js`. Source of truth is `schemas/SKILL_METADATA_PROTOCOL_schema.json`. **Not for "when do I pick this value"** — that lives in the hand-authored `skill-metadata-protocol/field-reference.md` (row above). Reading the generated doc alone gives a structurally valid but semantically incomplete picture. |
 | **Source-to-manifest projection** — how the authored value lands in the generated manifest | `docs/manifest-field-mapping.md` | Edit only when `scripts/generate-manifest.js` projection logic changes. |
 | **One-liner mention in the AGENTS.md Quick Reference** | `AGENTS.md` § Skill Metadata Protocol — Quick Reference | Keep to one bullet per field. Never put full prose here; link to `SKILL_METADATA_PROTOCOL_field-reference.md`. |
 | **Glossary entry** for the field name itself | `docs/glossary.md` | One-line definition; link to the canonical detail. |
 
-**Default answer for "where do I edit field X's criteria":** the normative one-liner goes in `SKILL_METADATA_PROTOCOL.md`, the authoring prose goes in `docs/SKILL_METADATA_PROTOCOL_field-reference.md`, and `docs/SKILL_METADATA_PROTOCOL_field-decision-guide.md` is updated only if the change introduces a new decision branch. The other field-* docs are touched only if their specific axis (rationale, generated mirror, manifest projection) is what changed.
+**Default answer for "where do I edit field X's criteria":** the normative one-liner goes in `skill-metadata-protocol/SKILL_METADATA_PROTOCOL.md`, the authoring prose goes in `skill-metadata-protocol/field-reference.md`, and `skill-metadata-protocol/field-decision-guide.md` is updated only if the change introduces a new decision branch. The other field-* docs are touched only if their specific axis (rationale, generated mirror, manifest projection) is what changed.
 
 ### Other concept areas
 
@@ -394,12 +394,12 @@ For any single Skill Metadata Protocol field (`name`, `description`, `subject`, 
 | **Migration narrative** (per-version: what each version introduced, breaking changes, codemod usage) | CHANGELOG.md entries + git history of `schemas/SKILL_METADATA_PROTOCOL_schema.json` + the substantive ADR per version (e.g., ADR 0011 for the v6→v7 four-verdict Audit Status split; ADR 0017 for the v7→v8 classification model and its 2026-05-27 amendment) | New per-version migrations get a CHANGELOG entry and (if architecturally significant) a new ADR; do not append migration narrative to AGENTS.md. |
 | **Authority tiers** (which file binds which) | `SKILL_GRAPH.md` § Authority Tiers | The map of "Tier 1 schemas → Tier 2 docs → Tier 3 scripts → Tier 4 consumers → Tier 5 examples." |
 | **Current corpus state** — verified counts (canonical skills, exported skills, worklist), build/health snapshot | `SKILL_GRAPH.md` § Current State + `docs/status.generated.md` | Single-source-of-truth count lives in `SKILL_GRAPH.md § Current State`. The generated status file mirrors it. Volatile counts must not be duplicated into AGENTS.md, README.md, or anywhere else — link instead. |
-| **Edges / relations semantics** (`related`, `boundary`, `verify_with`, `depends_on`) — the field-level mechanic | `SKILL_METADATA_PROTOCOL.md` § Relations | The boundary-semantics WARNING (2026-05-23) lives here; `AGENTS.md § What the Skill Graph Is` summarizes and links. |
-| **Audit loop procedure** (read → fix → test → next; the four operations; the two gates) | `SKILL_AUDIT_LOOP.md` | The four-verdict Audit Status lives here. `AGENTS.md § Skill Audit Loop` summarizes and links. |
-| **Per-skill audit contract** (the binding execution contract; Steps 1-8 of the per-skill pass) | `SKILL_AUDIT_LOOP.md` § Part 3 — Per-Skill Audit Runbook | Project-owned per ADR-0015. Workspace runtime slash commands (`.claude/commands/audit/*`, `.opencode/commands/audit-skill.md`) defer here. |
-| **Audit-loop runner prompts** (interactive single-skill, autonomous batch worker, codex cron, minimal-iteration) | `audits/prompts/skill-audit-loop-*.md` | Project-owned per ADR-0015. Workspace `prompts/audits/skill-audit-loop-*.md` are back-compat pointer stubs only. |
+| **Edges / relations semantics** (`related`, `boundary`, `verify_with`, `depends_on`) — the field-level mechanic | `skill-metadata-protocol/SKILL_METADATA_PROTOCOL.md` § Relations | The boundary-semantics WARNING (2026-05-23) lives here; `AGENTS.md § What the Skill Graph Is` summarizes and links. |
+| **Audit loop procedure** (read → fix → test → next; the four operations; the two gates) | `skill-audit-loop/SKILL_AUDIT_LOOP.md` | The four-verdict Audit Status lives here. `AGENTS.md § Skill Audit Loop` summarizes and links. |
+| **Per-skill audit contract** (the binding execution contract; Steps 1-8 of the per-skill pass) | `skill-audit-loop/SKILL_AUDIT_LOOP.md` § Part 3 — Per-Skill Audit Runbook | Project-owned per ADR-0015. Workspace runtime slash commands (`.claude/commands/audit/*`, `.opencode/commands/audit-skill.md`) defer here. |
+| **Audit-loop runner prompts** (interactive single-skill, autonomous batch worker, codex cron, minimal-iteration) | `skill-audit-loop/prompts/skill-audit-loop-*.md` | Project-owned per ADR-0015. Workspace `prompts/audits/skill-audit-loop-*.md` are back-compat pointer stubs only. |
 | **Machine-readable protocol index** (protocols, runners, required artifacts, runtime aliases) | `audits/manifest.json` + `schemas/audits-manifest.schema.json` (shape) | The verifier `scripts/check-audit-manifest.js` consumes this. Bumping `schema_version` is gated by the version-schema-contract rule. |
-| **Verdict semantics** (enums for all four Audit Status fields, confidence tier ordering, comprehension/application disjointness rule) | `docs/verdict-semantics.md` | Canonical for verdict enums. AGENTS.md / SKILL_AUDIT_LOOP.md / pipeline doc carry one-line summaries that link here. ADR-0011 is the rationale; this doc is the spec. |
+| **Verdict semantics** (enums for all four Audit Status fields, confidence tier ordering, comprehension/application disjointness rule) | `docs/verdict-semantics.md` | Canonical for verdict enums. AGENTS.md / skill-audit-loop/SKILL_AUDIT_LOOP.md / pipeline doc carry one-line summaries that link here. ADR-0011 is the rationale; this doc is the spec. |
 | **Comprehension eval shape** (`evals/comprehension.json` per-case structure, 7 rubric dimensions, criticality + truth_mode enums) | `docs/comprehension-eval-spec.md` + `schemas/comprehension.schema.json` (binding) | The shape gate-8 graders evaluate against; the verifier requires this artifact when `comprehension_verdict ∈ {PROVISIONAL, PASS, SHALLOW, REDUNDANT}`. |
 | **Application eval shape** (`evals/application.json` per-case `cases[]` structure, 4 grader axes + weights, red-herring handling, optional provisional `criteria[]` checklist) | `docs/application-eval-spec.md` + `schemas/application.schema.json` (binding, v1 2026-05-30) | The shape gate-9 grades the with/without-skill behavior delta against; the verifier requires this artifact when a graded `application_verdict` is claimed. Required `expected_flags`/`expected_fix_hints`/`absent_signals` = the deployed pointwise contract; optional `criteria[]`/`artifact` = PROVISIONAL pending the SH-6624 grader-design pilot. |
 | **Audit-loop operational data ownership** (the trinary classification: project content / workspace orchestration / project-protocol scripts over workspace-coordinated data) | `docs/adr/0016-operational-data-ownership.md` **(Status: Accepted 2026-05-27 — per-surface migrations sequenced)** | Settles which side of the boundary new audit-loop surfaces belong to. ADR-0015 + ADR-0016 together cover spec + data ownership. The trinary classification is binding. Per-surface migration state (verified 2026-05-28): S1 lanes.json + S2 merge-protocol MIGRATED; S4 routing-config schema AUTHORED (unwired — no-deps project); S3 run-dir layout PENDING (SH-6607); S5 finding schema PENDING (SH-6608). Cite ADR-0016 as Accepted, but check the per-surface rows below before assuming a given surface has landed. |
@@ -407,9 +407,9 @@ For any single Skill Metadata Protocol field (`name`, `description`, `subject`, 
 | **Run-dir layout** (per-skill `runs/<run-id>/` structure, artifact filenames, claim atomicity) | `scripts/skill/skill-audit-paths.js` (current SoT) — layout-contract extraction to `skill-graph/lib/audit/run-layout.js` **PENDING per ADR-0016 surface #3 (tracked SH-6607)** | Workspace script writes `.opencode/progress/skill-audits/<skill>/runs/<run-id>/...`. The layout CONTRACT is project-owned in the target ADR-0016 end-state; the workspace path is runtime-coordinated today. `run-layout.js` does NOT exist yet (verified 2026-05-28) — edit `skill-audit-paths.js` until SH-6607 lands. |
 | **Finding schema** (severity, evidence, scope, recommended action) | `docs/reference/skill-audit-pipeline.md` § Unified Finding Schema (workspace; migration into `skill-graph/audits/` **PENDING, tracked SH-6608** — F30 in `.roundtable/skill-graph-restructure-review-2026-05-25/followup-tasks.md`) | Currently at workspace root; planned migration into `skill-graph/audits/`. |
 | **Grader prompts** (concept grader for gate 8, application grader for gate 9) | `lib/audit/graders/*-prompt.md` (**canonical, sole copy** since SH-6603) | The grader prompts are now single-canonical here. The divergent workspace `scripts/skill/graders/` copies were collapsed by **SH-6603 (2026-05-28)**: the package `concept-grader-prompt.md` absorbed the workspace's "Anti-Compression Mandate" + "Calibration Reference Set" block (the workspace had been AHEAD there), the workspace `scripts/skill/graders/` directory was removed, and `scripts/skill/evaluate-skill.js` became a thin shim that loads these package prompts. The workspace `Development/scripts/docs/doc-verification-gates.js` COMPRESSION_TRIGGER_FILES set was repointed to these package paths in the same change (caveat: skill-graph is a nested git repo, so a Development-side `git diff` does not surface edits to them — the cross-repo compression-trigger gap is a follow-up). |
-| **Slash-command runtime resolvers** | `.claude/commands/audit/*.md` and `.opencode/commands/audit-skill.md` (workspace runtime), aliased in `audits/manifest.json` § aliases | The slash-command UX surface (description, argument-hint, flags) is workspace-owned per ADR-0015. Substantive operational content defers to `SKILL_AUDIT_LOOP.md` § Part 3 — Per-Skill Audit Runbook. |
+| **Slash-command runtime resolvers** | `.claude/commands/audit/*.md` and `.opencode/commands/audit-skill.md` (workspace runtime), aliased in `audits/manifest.json` § aliases | The slash-command UX surface (description, argument-hint, flags) is workspace-owned per ADR-0015. Substantive operational content defers to `skill-audit-loop/SKILL_AUDIT_LOOP.md` § Part 3 — Per-Skill Audit Runbook. |
 | **Skill-injector routing config — shape** | `schemas/routing-config.schema.json` (project-owned per ADR-0016 surface #4 — **schema AUTHORED 2026-05-27; instance-compatible; unwired**) | The binding shape for `agent-orchestration/references/skill-routing-config.json` (instance file, cross-project orchestration). Type lives here; instance stays at consumer location. Schema authored and verified structurally compatible with the live instance (all `required` keys present, 2026-05-28), but NOT enforced by any CI gate — this repo uses Node built-ins only (no ajv dep), consistent with ADR-0016 surface #4 deferring instance migration. Validate ad hoc via `node -e "..."`. |
-| **Audit checklist items** (per-skill audit deliverable) | `SKILL_AUDIT_LOOP.md` § Part 2 | Itemized checklist. Edit when an audit produces a new mandatory check. |
+| **Audit checklist items** (per-skill audit deliverable) | `skill-audit-loop/SKILL_AUDIT_LOOP.md` § Part 2 | Itemized checklist. Edit when an audit produces a new mandatory check. |
 | **Quality doctrine** (improve = enrich; preserve scope; organize-over-trim) | `docs/quality-doctrine.md` | `AGENTS.md § Quality Doctrine` is a summary; deeper doctrine lives in the docs file. |
 | **Marketplace export contract** (description limits, privacy filter, surface generation, sync protocol) | `docs/marketplace-syndication.md` + `AGENTS.md § Public Distribution` | `AGENTS.md` owns the canonical URL contract + skills.sh manual-removal escalation. The marketplace doc owns export pipeline detail and the post-publication runbook. |
 | **Publish workflow** (step-by-step export + release sync commands, pre-push gate, verification checklist) | `docs/publish-workflow.md` | Canonical how-to for running the two-step export+sync protocol. Updated 2026-05-24 (SH-6331). |
@@ -420,7 +420,7 @@ For any single Skill Metadata Protocol field (`name`, `description`, `subject`, 
 | **Proposals** (in-flight, not yet decided) | `docs/proposals/*.md` | When accepted, follow through to canonical doc + ADR in the same change. |
 | **Plans** (active multi-step work) | `docs/plans/*.md` | Move to `docs/_archived/` on completion. |
 | **Research findings** (one-shot investigations) | `docs/research/*.md` | If findings drive a change, also update the affected canonical doc in the same commit. |
-| **Concept primer / onboarding narrative** | `docs/SKILL_METADATA_PROTOCOL_PRIMER.md` + `docs/QUICKSTART-30MIN.md` | Long-form teaching. Edit when the public mental model of the project shifts. |
+| **Concept primer / onboarding narrative** | `skill-metadata-protocol/PRIMER.md` + `docs/QUICKSTART-30MIN.md` | Long-form teaching. Edit when the public mental model of the project shifts. |
 | **Positioning vs other systems** (prompt libraries, marketplaces, runtimes) | `docs/positioning.md` + `docs/positioning-vs-marketplaces.md` | Edit when external landscape shifts or our positioning changes. |
 | **CLI behavior + flags** | `bin/skill-graph.js` `--help` (source of truth) → mirror to `README.md` + `docs/QUICKSTART-30MIN.md` + `CHANGELOG.md` | `--help` output is authoritative; other docs cite it. |
 | **`AGENTS.md` itself** | Repo-wide rules, doctrine, this Doc Ownership Map, Document Routing Table, Public Distribution contract | Edit when *cross-cutting* rules change. Do NOT put per-field prose here. |
@@ -430,9 +430,9 @@ For any single Skill Metadata Protocol field (`name`, `description`, `subject`, 
 If you find two docs giving different stories about the same concept, the precedence is:
 
 1. **Schema** (`schemas/*.json`) > any prose doc — the schema is the binding contract.
-2. **`SKILL_METADATA_PROTOCOL.md`** > other Tier 2 docs for normative spec language.
-3. **`docs/skill-metadata-protocol.md`** > `docs/SKILL_METADATA_PROTOCOL_field-reference.md` for archetype/migration/rationale narrative; `docs/SKILL_METADATA_PROTOCOL_field-reference.md` > `docs/skill-metadata-protocol.md` for per-field authoring prose.
-4. **`SKILL_AUDIT_LOOP.md`** > `AGENTS.md § Skill Audit Loop` summary.
+2. **`skill-metadata-protocol/SKILL_METADATA_PROTOCOL.md`** > other Tier 2 docs for normative spec language.
+3. **`skill-metadata-protocol/design-rationale.md`** > `skill-metadata-protocol/field-reference.md` for archetype/migration/rationale narrative; `skill-metadata-protocol/field-reference.md` > `skill-metadata-protocol/design-rationale.md` for per-field authoring prose.
+4. **`skill-audit-loop/SKILL_AUDIT_LOOP.md`** > `AGENTS.md § Skill Audit Loop` summary.
 5. **`SKILL_GRAPH.md` § Current State** > any other doc for live corpus counts.
 
 The losing doc gets fixed in the same commit. Never leave the disagreement to be reconciled later — that is how the 2026-05-23 boundary-semantics drift happened (four docs each carrying their own version of the truth for months).
@@ -441,12 +441,12 @@ The losing doc gets fixed in the same commit. Never leave the disagreement to be
 
 | Anti-pattern | Why it fails |
 |---|---|
-| Adding new field prose to `AGENTS.md § Skill Metadata Protocol — Quick Reference` instead of `docs/SKILL_METADATA_PROTOCOL_field-reference.md` | Quick Reference is a one-liner index, not a prose home. Prose here drifts because the canonical file is somewhere else. |
-| Editing `docs/SKILL_METADATA_PROTOCOL_field-reference.generated.md` directly | Generated file — hand-edits are overwritten next time `build-field-reference.js` runs. |
+| Adding new field prose to `AGENTS.md § Skill Metadata Protocol — Quick Reference` instead of `skill-metadata-protocol/field-reference.md` | Quick Reference is a one-liner index, not a prose home. Prose here drifts because the canonical file is somewhere else. |
+| Editing `skill-metadata-protocol/field-reference.generated.md` directly | Generated file — hand-edits are overwritten next time `build-field-reference.js` runs. |
 | Putting decision-tree logic in `SKILL_METADATA_PROTOCOL_field-reference.md` AND `SKILL_METADATA_PROTOCOL_field-decision-guide.md` | One canonical home. The other links. Two homes is two truths. |
 | Duplicating volatile corpus counts (144 skills, 284 active, etc.) into `README.md` / `AGENTS.md` / topic docs | `SKILL_GRAPH.md § Current State` is single-source-of-truth. Everywhere else links. Inline counts go stale within days. |
 | Creating a new top-level doc instead of finding the existing canonical home for the concept | Doubles the number of places the next agent has to check. If the concept genuinely has no home, propose a new home in an ADR before creating the file. |
-| Editing only the summary (e.g., `AGENTS.md § Skill Audit Loop`) without updating the canonical (`SKILL_AUDIT_LOOP.md`) | The summary drifts from the canonical. Always edit the canonical first, then re-summarize. |
+| Editing only the summary (e.g., `AGENTS.md § Skill Audit Loop`) without updating the canonical (`skill-audit-loop/SKILL_AUDIT_LOOP.md`) | The summary drifts from the canonical. Always edit the canonical first, then re-summarize. |
 
 ## Document Routing Table
 
@@ -462,9 +462,9 @@ When a code or schema change lands, update the matching documentation rows in th
 | **`marketplace/skills/<name>/SKILL.md`** (the mirror) | _generated_ — do not hand-edit. Edit the canonical source at `~/Development/skills/skills/<category>/<name>/SKILL.md` and re-run `node scripts/export-marketplace-skills.js` |
 | **Public canonical URLs** (skills.sh, GitHub release repo) | `AGENTS.md` § Public Distribution — Canonical URL Contract, `README.md`, `CHANGELOG.md`, every script/doc that emits a URL |
 | **Schema deprecation, repo split, sibling-repo lifecycle** | New ADR in `docs/adr/NNNN-<slug>.md`, `AGENTS.md` § Project Shape, `CHANGELOG.md`, `SKILL_GRAPH.md` if authority tiers change |
-| **Field semantics, head nouns, decision tables** | `docs/SKILL_METADATA_PROTOCOL_field-reference.md`, `docs/SKILL_METADATA_PROTOCOL_field-decision-guide.md`, `docs/field-rationale.md`, `docs/head-noun-glossary.md`, `docs/glossary.md`. Regenerate `docs/SKILL_METADATA_PROTOCOL_field-reference.generated.md` via `node scripts/build-field-reference.js` in the same commit (enforced by `protocol:check § C7`) |
+| **Field semantics, head nouns, decision tables** | `skill-metadata-protocol/field-reference.md`, `skill-metadata-protocol/field-decision-guide.md`, `docs/field-rationale.md`, `docs/head-noun-glossary.md`, `docs/glossary.md`. Regenerate `skill-metadata-protocol/field-reference.generated.md` via `node scripts/build-field-reference.js` in the same commit (enforced by `protocol:check § C7`) |
 | **Routing eval changes** (`scripts/skill-graph-routing-eval.js`, retrieval baselines) | `docs/ROUTING-METRICS.md`, `docs/recommended-skills.md`, retrieval baselines under `evals/retrieval-baseline-*.json` |
-| **Skill audit loop or checklist** (`scripts/skill-audit.js`, `lib/audit/*`) | `SKILL_AUDIT_LOOP.md`, `SKILL_AUDIT_LOOP.md` § Part 2, `AGENTS.md` § Skill Audit Loop |
+| **Skill audit loop or checklist** (`scripts/skill-audit.js`, `lib/audit/*`) | `skill-audit-loop/SKILL_AUDIT_LOOP.md`, `skill-audit-loop/SKILL_AUDIT_LOOP.md` § Part 2, `AGENTS.md` § Skill Audit Loop |
 | **Marketplace publication tooling/queue** | `docs/marketplace-publication-queue.generated.md` (_generated_), per-snapshot `docs/marketplace-publication-priority-YYYY-MM-DD.md` if a new priority cut is published |
 | **Proposals** | `docs/proposals/*.md` (the proposal file itself); if accepted, follow through to the canonical doc and an ADR in the same change |
 | **Plans** | `docs/plans/*.md` (the plan file); when completed, move from active to `docs/_archived/` |
@@ -472,8 +472,8 @@ When a code or schema change lands, update the matching documentation rows in th
 | **New ADR** (architectural decision) | `docs/adr/NNNN-<slug>.md` (new), `CHANGELOG.md` if architecturally visible, `AGENTS.md` if governance changes |
 | **Schema, lint, manifest projection** | See `## Coupled Changes` above — tier-coordinated changes have stricter coupling rules than this table |
 | **README / public positioning** | `README.md`, `docs/positioning-vs-marketplaces.md`, `docs/ADOPTION.md` if adoption surface changes, `CHANGELOG.md` if user-visible |
-| **Quality doctrine, editing rules, audit anti-patterns** | `AGENTS.md` (this file), `docs/quality-doctrine.md`, `SKILL_AUDIT_LOOP.md` § Part 2 |
-| **Generated artifacts** (`docs/SKILL_METADATA_PROTOCOL_field-reference.generated.md`, `examples/skills.manifest.sample.json`, `docs/marketplace-publication-queue.generated.md`, `marketplace/skills/`) | _generated_ — do not hand-edit. Regenerate via the owning script (see `## Coupled Changes`) |
+| **Quality doctrine, editing rules, audit anti-patterns** | `AGENTS.md` (this file), `docs/quality-doctrine.md`, `skill-audit-loop/SKILL_AUDIT_LOOP.md` § Part 2 |
+| **Generated artifacts** (`skill-metadata-protocol/field-reference.generated.md`, `examples/skills.manifest.sample.json`, `docs/marketplace-publication-queue.generated.md`, `marketplace/skills/`) | _generated_ — do not hand-edit. Regenerate via the owning script (see `## Coupled Changes`) |
 
 **Stale-reference rule:** When renaming or deleting any file, command, flag, or URL referenced in this repo, grep `*.md`, `*.yml`, `*.json`, and `package.json` for the old name and fix every hit in the same commit. The `## Coupled Changes` rules enforce this for tier artifacts; this rule extends it to the rest of the surface.
 
@@ -540,7 +540,7 @@ The Skill Graph evaluates four layers; each has its own surface and its own defi
 
 ## Skill Audit Loop
 
-The audit loop is the disciplined sweep that validates a skill (or a batch of skills) against the Skill Metadata Protocol, drift baselines, retrieval evals, and the quality doctrine. Full contract: `SKILL_AUDIT_LOOP.md` plus `SKILL_AUDIT_LOOP.md` § Part 2. This section is the operational summary.
+The audit loop is the disciplined sweep that validates a skill (or a batch of skills) against the Skill Metadata Protocol, drift baselines, retrieval evals, and the quality doctrine. Full contract: `skill-audit-loop/SKILL_AUDIT_LOOP.md` plus `skill-audit-loop/SKILL_AUDIT_LOOP.md` § Part 2. This section is the operational summary.
 
 ### When to run the loop
 
@@ -555,10 +555,10 @@ The audit operation has two valid modes — they are not in tension:
 
 | Mode | When to use | Effect | Canonical contract |
 |---|---|---|---|
-| **Diagnostic audit (report-only)** | First sweep, pre-release scan, multi-model roundtable, anything where you want the verdict before deciding on fixes. | Runs lint + drift + (optionally graded) phases, stamps the Integrity-layer Audit Status fields, writes findings/verdict/scorecard artifacts. Does NOT mutate skill body or commit. | `SKILL_AUDIT_LOOP.md § Part 3` — Mode table row 1 |
-| **Remediation audit (fix + commit)** | Targeted run after `improve --field <name>` lands a fix; the audit confirms the verdict moved. | Same Integrity write-back + artifacts; the auditor then runs `improve` (or makes the explicit edit), re-audits to confirm, and commits skill + Audit Status + artifacts together in one path-limited commit. | `SKILL_AUDIT_LOOP.md § Part 3` — Mode table row 2 |
+| **Diagnostic audit (report-only)** | First sweep, pre-release scan, multi-model roundtable, anything where you want the verdict before deciding on fixes. | Runs lint + drift + (optionally graded) phases, stamps the Integrity-layer Audit Status fields, writes findings/verdict/scorecard artifacts. Does NOT mutate skill body or commit. | `skill-audit-loop/SKILL_AUDIT_LOOP.md § Part 3` — Mode table row 1 |
+| **Remediation audit (fix + commit)** | Targeted run after `improve --field <name>` lands a fix; the audit confirms the verdict moved. | Same Integrity write-back + artifacts; the auditor then runs `improve` (or makes the explicit edit), re-audits to confirm, and commits skill + Audit Status + artifacts together in one path-limited commit. | `skill-audit-loop/SKILL_AUDIT_LOOP.md § Part 3` — Mode table row 2 |
 
-The summary below covers the diagnostic flow (the more common case in a clean sweep). For the remediation runbook see `SKILL_AUDIT_LOOP.md § Part 3 — Per-Skill Audit Runbook`.
+The summary below covers the diagnostic flow (the more common case in a clean sweep). For the remediation runbook see `skill-audit-loop/SKILL_AUDIT_LOOP.md § Part 3 — Per-Skill Audit Runbook`.
 
 ### What the loop must produce
 
@@ -638,7 +638,7 @@ node scripts/skill-graph-routing-eval.js --only-asserted --confusion-matrix
 For audit scaffolding — prefer the CLI surface over raw script paths:
 
 ```bash
-# The four operations (audit / improve / evaluate / evolve) — see SKILL_AUDIT_LOOP.md.
+# The four operations (audit / improve / evaluate / evolve) — see skill-audit-loop/SKILL_AUDIT_LOOP.md.
 node bin/skill-graph.js audit <skill-name>                          # Integrity Gate + Audit Status write-back
 node bin/skill-graph.js audit <skill-name> --graded --grader-cli "<command>"
 node bin/skill-graph.js improve --skill <skill-name>                # Karpathy keep-or-revert loop

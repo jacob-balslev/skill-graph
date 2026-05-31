@@ -2,7 +2,7 @@
 
 > Audience: anyone writing a single new SKILL.md for the first time.
 > Time: 10-15 minutes for a competent reader.
-> Scope: this is the **shortest path** from zero to a schema-valid, lint-passing v8 SKILL.md. For a full project-adoption walkthrough see [QUICKSTART-30MIN.md](./QUICKSTART-30MIN.md). For per-field semantics see [SKILL_METADATA_PROTOCOL_field-reference.md](./SKILL_METADATA_PROTOCOL_field-reference.md). For the full protocol see [../SKILL_METADATA_PROTOCOL.md](../SKILL_METADATA_PROTOCOL.md).
+> Scope: this is the **shortest path** from zero to a schema-valid, lint-passing v8 SKILL.md. For a full project-adoption walkthrough see [QUICKSTART-30MIN.md](./QUICKSTART-30MIN.md). For per-field semantics see [SKILL_METADATA_PROTOCOL_field-reference.md](../skill-metadata-protocol/field-reference.md). For the full protocol see [../SKILL_METADATA_PROTOCOL.md](../skill-metadata-protocol/SKILL_METADATA_PROTOCOL.md).
 
 ## Step 1, pick your encoding (the one decision you cannot skip)
 
@@ -180,7 +180,7 @@ Neither blocks first commit. A new skill ships honestly as `eval_state: unverifi
 | Description is a summary, not a routing contract | "This skill teaches Conway's Law" | Rewrite as routing instructions: "Use when..." + "Do NOT use for..." with concrete examples. |
 | Setting `eval_state: passing` without a receipt | New skill optimistically claims passing evals | Default to `unverified`. Flip to `passing` only after a real grader run produces a receipt. Same rule for `routing_eval: present`. |
 | Stamping Audit Status fields by hand | Author writes `structural_verdict: PASS` on first commit | Leave the Audit Status absent. The audit loop writes those fields; hand-edits will be overwritten on the next `audit` run. |
-| Cross-domain `boundary[]` entries | `boundary: [skill-from-different-category]` | Move to `anti_examples` + `relations.related`. The `boundary` field is for same-domain handoffs only (see `SKILL_METADATA_PROTOCOL.md § Cross-domain boundary doctrine`). |
+| Cross-domain `boundary[]` entries | `boundary: [skill-from-different-category]` | Move to `anti_examples` + `relations.related`. The `boundary` field is for same-domain handoffs only (see `skill-metadata-protocol/SKILL_METADATA_PROTOCOL.md § Cross-domain boundary doctrine`). |
 | Placeholder sludge | `your-skill-name`, `path/to/file`, `todo` leftover from the template | Strip all template scaffolding before commit. The verification checklist in the template covers this. |
 
 ## What "valid" actually means at three levels
@@ -197,8 +197,8 @@ A first-commit skill aims to pass level 1. Levels 2 and 3 are earned later.
 
 - [QUICKSTART-30MIN.md](./QUICKSTART-30MIN.md), full project-adoption walkthrough
 - [field-state-matrix.md](./field-state-matrix.md), every field tagged human-authored / loop-written / earned / generated / deprecated / alias
-- [SKILL_METADATA_PROTOCOL_field-reference.md](./SKILL_METADATA_PROTOCOL_field-reference.md), per-field semantics with examples
-- [SKILL_METADATA_PROTOCOL_field-decision-guide.md](./SKILL_METADATA_PROTOCOL_field-decision-guide.md), when to choose which value
+- [SKILL_METADATA_PROTOCOL_field-reference.md](../skill-metadata-protocol/field-reference.md), per-field semantics with examples
+- [SKILL_METADATA_PROTOCOL_field-decision-guide.md](../skill-metadata-protocol/field-decision-guide.md), when to choose which value
 - [SKILL-MD-FORMAT-COMPATIBILITY.md](./SKILL-MD-FORMAT-COMPATIBILITY.md), the two physical encodings
-- [../SKILL_METADATA_PROTOCOL.md](../SKILL_METADATA_PROTOCOL.md), the normative spec
+- [../SKILL_METADATA_PROTOCOL.md](../skill-metadata-protocol/SKILL_METADATA_PROTOCOL.md), the normative spec
 - [../examples/skill-metadata-template.md](../examples/skill-metadata-template.md), the template to copy

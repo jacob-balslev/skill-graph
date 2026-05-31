@@ -2,7 +2,7 @@
 
 > Type: Outer queue contract that wraps the single-model audit (v3) for an autonomous batch.
 > Last updated: 2026-05-24 (v4). v4 adds the novelty-memo slot, evidence_strength tagging, format_loss flagging, batch-novelty flush on exit, and an explicit completeness claim. All other v3 mechanics are preserved.
-> Inner contract: `skill-graph/audits/prompts/skill-audit-loop-single-model.md` (v3). RULE 0 still binds.
+> Inner contract: `skill-graph/skill-audit-loop/prompts/skill-audit-loop-single-model.md` (v3). RULE 0 still binds.
 > Pattern: `.claude/rules/prompt-shape-structured-plus-novelty.md`
 > Codex note: for Codex cron automations, prefer `skill-audit-loop-codex-autonomous-v5.md`. This v4 prompt remains the model-agnostic autonomous wrapper.
 
@@ -35,12 +35,12 @@ Read, in this order:
 2. /Users/jacobbalslev/Development/CONTEXT.md
 3. /Users/jacobbalslev/Development/skill-graph/AGENTS.md
 4. /Users/jacobbalslev/Development/skill-graph/SKILL_GRAPH.md
-5. /Users/jacobbalslev/Development/skill-graph/SKILL_AUDIT_LOOP.md
-6. /Users/jacobbalslev/Development/skill-graph/SKILL_AUDIT_LOOP.md § Part 2 — Per-Skill Audit Checklist
+5. /Users/jacobbalslev/Development/skill-graph/skill-audit-loop/SKILL_AUDIT_LOOP.md
+6. /Users/jacobbalslev/Development/skill-graph/skill-audit-loop/SKILL_AUDIT_LOOP.md § Part 2 — Per-Skill Audit Checklist
 7. /Users/jacobbalslev/Development/docs/reference/skill-audit-pipeline.md
 8. /Users/jacobbalslev/Development/.opencode/commands/skill-audit-loop.md
-9. /Users/jacobbalslev/Development/skill-graph/audits/prompts/skill-audit-loop-single-model.md
-10. /Users/jacobbalslev/Development/skill-graph/SKILL_AUDIT_LOOP.md#part-3--per-skill-audit-runbook
+9. /Users/jacobbalslev/Development/skill-graph/skill-audit-loop/prompts/skill-audit-loop-single-model.md
+10. /Users/jacobbalslev/Development/skill-graph/skill-audit-loop/SKILL_AUDIT_LOOP.md#part-3--per-skill-audit-runbook
 
 Load relevant project skills and universalSkills before execution. At minimum, load the audit/quality set named by the single-model prompt plus any universalSkills returned by local skill routing/injection tooling. Read the actual SKILL.md files directly.
 
@@ -182,9 +182,9 @@ See `.claude/rules/prompt-shape-structured-plus-novelty.md` for the general patt
 
 ## Related
 
-- Inner contract (v3): `skill-graph/audits/prompts/skill-audit-loop-single-model.md`
-- Codex autonomous worker: `skill-graph/audits/prompts/skill-audit-loop-codex-autonomous-v5.md`
-- Per-skill audit contract: `skill-graph/SKILL_AUDIT_LOOP.md#part-3--per-skill-audit-runbook`
+- Inner contract (v3): `skill-graph/skill-audit-loop/prompts/skill-audit-loop-single-model.md`
+- Codex autonomous worker: `skill-graph/skill-audit-loop/prompts/skill-audit-loop-codex-autonomous-v5.md`
+- Per-skill audit contract: `skill-graph/skill-audit-loop/SKILL_AUDIT_LOOP.md#part-3--per-skill-audit-runbook`
 - Multi-model merge flow (separate, NOT for this prompt): `.opencode/commands/skill-audit-merge-v1.md`
 - v2 multimodel protocol: `skill-graph/docs/skill-audit-multimodel-merge-v2.md`
 - Pattern doc: `.claude/rules/prompt-shape-structured-plus-novelty.md`

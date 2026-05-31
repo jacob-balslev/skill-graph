@@ -4,8 +4,9 @@
 //
 // Skill-graph-repo-local sibling of ~/Development/scripts/skill/check-work-mode-separation.js.
 // Same purpose, narrower classifier: only skill-graph-relative paths exist in this repo, so the
-// classifier only needs to distinguish per-skill audit artifacts (CONTENT) from audit prompts +
-// audit-loop state + schemas + scripts + protocol docs (SYSTEM).
+// classifier only needs to distinguish per-skill audit artifacts (CONTENT) from the protocol
+// folder (skill-metadata-protocol/), the audit-loop folder (skill-audit-loop/ — spec + runner
+// prompts), audit-loop state, schemas, scripts, and bin (SYSTEM).
 //
 // Enforces:
 //   - skill-graph/AGENTS.md § "Work Modes — SYSTEM vs CONTENT"
@@ -58,6 +59,8 @@ function classify(path) {
 
   if (/^schemas\//.test(path)) return 'SYSTEM';
   if (/^docs\//.test(path)) return 'SYSTEM';
+  if (/^skill-metadata-protocol\//.test(path)) return 'SYSTEM'; // protocol spec + companion docs (moved out of root/docs/ 2026-05-31)
+  if (/^skill-audit-loop\//.test(path)) return 'SYSTEM'; // audit-loop spec + runner prompts (moved out of root/audits/prompts/ 2026-05-31)
   if (/^scripts\//.test(path)) return 'SYSTEM';
   if (/^bin\//.test(path)) return 'SYSTEM';
   if (/^examples\/audits\//.test(path)) return 'CONTENT';

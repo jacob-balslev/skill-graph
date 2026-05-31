@@ -1,6 +1,6 @@
 # Field Rationale — Why These Fields Exist
 
-> Hand-authored "why this field" rationale for the ~10 frontmatter fields whose meaning is non-obvious from the schema description alone. For schema-canonical definitions of every field, see [`SKILL_METADATA_PROTOCOL_field-reference.generated.md`](SKILL_METADATA_PROTOCOL_field-reference.generated.md). For full prose with examples and lint notes, see [`SKILL_METADATA_PROTOCOL_field-reference.md`](SKILL_METADATA_PROTOCOL_field-reference.md).
+> Hand-authored "why this field" rationale for the ~10 frontmatter fields whose meaning is non-obvious from the schema description alone. For schema-canonical definitions of every field, see [`SKILL_METADATA_PROTOCOL_field-reference.generated.md`](../skill-metadata-protocol/field-reference.generated.md). For full prose with examples and lint notes, see [`SKILL_METADATA_PROTOCOL_field-reference.md`](../skill-metadata-protocol/field-reference.md).
 
 This doc exists because the schema description tells you *what* a field stores, but not *why the field exists at all*. For most fields (`name`, `version`, `triggers`) the why is obvious. For ~10 others, the rationale is the load-bearing knowledge — and lives outside any auto-generated index.
 
@@ -211,9 +211,9 @@ Do not use `readiness` as a second taxonomy for project fit. `deployment_target:
 
 | Topic | Read |
 |---|---|
-| Schema-canonical field definitions (auto-generated) | [`SKILL_METADATA_PROTOCOL_field-reference.generated.md`](SKILL_METADATA_PROTOCOL_field-reference.generated.md) |
-| Full prose reference with examples and lint notes | [`SKILL_METADATA_PROTOCOL_field-reference.md`](SKILL_METADATA_PROTOCOL_field-reference.md) |
-| Decision tree for taxonomy fields (`subject`, `taxonomy_domain`, `deployment_target`, `project[]`, `routing_bundles`) | [`SKILL_METADATA_PROTOCOL_field-decision-guide.md`](SKILL_METADATA_PROTOCOL_field-decision-guide.md) |
+| Schema-canonical field definitions (auto-generated) | [`SKILL_METADATA_PROTOCOL_field-reference.generated.md`](../skill-metadata-protocol/field-reference.generated.md) |
+| Full prose reference with examples and lint notes | [`SKILL_METADATA_PROTOCOL_field-reference.md`](../skill-metadata-protocol/field-reference.md) |
+| Decision tree for taxonomy fields (`subject`, `taxonomy_domain`, `deployment_target`, `project[]`, `routing_bundles`) | [`SKILL_METADATA_PROTOCOL_field-decision-guide.md`](../skill-metadata-protocol/field-decision-guide.md) |
 | Predicate semantics (relations) | [`glossary.md` § Relation predicates](glossary.md) |
 | Authoring template | [`../examples/skill-metadata-template.md`](../examples/skill-metadata-template.md) |
 | Why the Evaluation Status is orthogonal | [`adr/0001-predicate-set.md`](adr/0001-predicate-set.md) + [`adr/0006-revise-predicate-rename.md`](adr/0006-revise-predicate-rename.md) |

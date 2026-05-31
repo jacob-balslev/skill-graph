@@ -410,7 +410,7 @@ function checkSubjectsPrimaryMatchesSubject(fm) {
 /**
  * Check 5b — relations.boundary reason-text orientation (audit M4, advisory).
  *
- * SKILL_METADATA_PROTOCOL.md § Relations § boundary carries a WARNING that
+ * skill-metadata-protocol/SKILL_METADATA_PROTOCOL.md § Relations § boundary carries a WARNING that
  * the field NAME reads "defer to them" but the MECHANIC is "exclude them
  * when I win" — and recommends ownership reason-text ("I own X over them"),
  * not deference ("use that-skill for X"). Authors who write the inverted
@@ -445,7 +445,7 @@ function checkBoundaryReasonText(fm) {
         warnings.push({
           field: 'relations.boundary',
           severity: 'warn',
-          msg: `boundary reason reads as deference ("${reason.slice(0, 80)}${reason.length > 80 ? '…' : ''}") — recommend ownership phrasing ("I own X over ${edge.skill || 'the listed skill'}"). The boundary mechanic excludes the listed skill from co-routing when this skill wins; deference wording inverts the intent. See SKILL_METADATA_PROTOCOL.md § Relations § boundary WARNING.`,
+          msg: `boundary reason reads as deference ("${reason.slice(0, 80)}${reason.length > 80 ? '…' : ''}") — recommend ownership phrasing ("I own X over ${edge.skill || 'the listed skill'}"). The boundary mechanic excludes the listed skill from co-routing when this skill wins; deference wording inverts the intent. See skill-metadata-protocol/SKILL_METADATA_PROTOCOL.md § Relations § boundary WARNING.`,
         });
         break;
       }
@@ -458,11 +458,11 @@ function checkBoundaryReasonText(fm) {
 /**
  * Check 5 — field-purpose comment presence (audit H8, advisory).
  *
- * SKILL_METADATA_PROTOCOL.md § Inline field comments mandates that every
+ * skill-metadata-protocol/SKILL_METADATA_PROTOCOL.md § Inline field comments mandates that every
  * authored frontmatter field carries a YAML `#` comment block immediately
  * above it (purpose + allowed values + when-to-use). The convention prevents
  * the "this field looks like dead code, let me delete it" failure mode and
- * keeps cold-start agents from needing to open docs/SKILL_METADATA_PROTOCOL_field-reference.md at
+ * keeps cold-start agents from needing to open skill-metadata-protocol/field-reference.md at
  * the point of contact.
  *
  * Until backfill-field-purpose-comments.js has run corpus-wide, almost no
@@ -512,7 +512,7 @@ function checkFieldPurposeComments(sourceText) {
     warnings.push({
       field: 'frontmatter',
       severity: 'warn',
-      msg: `${uncommentedFields} top-level field(s) missing field-purpose comment (SKILL_METADATA_PROTOCOL.md § Inline field comments). Run \`node scripts/backfill-field-purpose-comments.js\` to add.`,
+      msg: `${uncommentedFields} top-level field(s) missing field-purpose comment (skill-metadata-protocol/SKILL_METADATA_PROTOCOL.md § Inline field comments). Run \`node scripts/backfill-field-purpose-comments.js\` to add.`,
     });
   }
 

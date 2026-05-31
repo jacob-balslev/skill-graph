@@ -65,7 +65,7 @@ The template lints clean as-is, so you can incrementally edit and re-lint to cat
 
 ## M8–M11: Fill in the required fields (v8 classification)
 
-The required v8 fields are: `schema_version`, `name`, `description`, `version`, `subject` (9-enum), `deployment_target` (`portable`/`project`), `scope` (free-text PRD-style description), `owner`, `freshness`, `drift_check`, `eval_artifacts`, `eval_state`, `routing_eval`. See [`SKILL_METADATA_PROTOCOL.md` § Schema contract](../SKILL_METADATA_PROTOCOL.md#schema-contract). The template has all current fields — you're replacing values, not adding fields.
+The required v8 fields are: `schema_version`, `name`, `description`, `version`, `subject` (9-enum), `deployment_target` (`portable`/`project`), `scope` (free-text PRD-style description), `owner`, `freshness`, `drift_check`, `eval_artifacts`, `eval_state`, `routing_eval`. See [`skill-metadata-protocol/SKILL_METADATA_PROTOCOL.md` § Schema contract](../skill-metadata-protocol/SKILL_METADATA_PROTOCOL.md#schema-contract). The template has all current fields — you're replacing values, not adding fields.
 
 For `markdown-post-frontmatter-review`, the values look like:
 
@@ -330,7 +330,7 @@ You've adopted Skill Graph for one painful workflow. The contract paid off twice
 | Next step | Read |
 |---|---|
 | Migrate your second skill | This document, repeated for the next skill |
-| Understand the full contract | [`docs/SKILL_METADATA_PROTOCOL_PRIMER.md`](SKILL_METADATA_PROTOCOL_PRIMER.md) and [`docs/skill-metadata-protocol.md`](skill-metadata-protocol.md) |
+| Understand the full contract | [`skill-metadata-protocol/PRIMER.md`](../skill-metadata-protocol/PRIMER.md) and [`skill-metadata-protocol/design-rationale.md`](../skill-metadata-protocol/design-rationale.md) |
 | See worked examples in a real project | [`examples/projects/markdown-static-site/README.md`](../examples/projects/markdown-static-site/README.md) |
 | Set up CI integration | [`docs/integrations/github-actions.md`](integrations/github-actions.md) |
 | Decide which skills to author next | [`docs/recommended-skills.md`](recommended-skills.md) |

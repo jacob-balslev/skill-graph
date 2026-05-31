@@ -26,7 +26,7 @@
       "type": "array",
       "minItems": 5,
       "items": { "$ref": "#/$defs/eval_case" },
-      "description": "Per-dimension comprehension cases. Minimum 5 (the SKILL_AUDIT_LOOP.md § Part 3 — Per-Skill Audit Runbook § 4c floor). Practitioners typically author 7 covering all rubric dimensions. Below 5 fails the gate-8 floor; below 7 records a dimension-coverage warning."
+      "description": "Per-dimension comprehension cases. Minimum 5 (the skill-audit-loop/SKILL_AUDIT_LOOP.md § Part 3 — Per-Skill Audit Runbook § 4c floor). Practitioners typically author 7 covering all rubric dimensions. Below 5 fails the gate-8 floor; below 7 records a dimension-coverage warning."
     }
   },
   "$defs": {
@@ -52,7 +52,7 @@
             "application",
             "misconception"
           ],
-          "description": "Which comprehension rubric dimension this case targets. The 7 dimensions in active use as of 2026-05-25 are: definition, mental_model, purpose, boundary, taxonomy, analogy, application. The 8th value `misconception` mirrors the Understanding-field name from SKILL_METADATA_PROTOCOL.md § Understanding — currently unused in the corpus but reserved for future cases. Each rubric dimension SHOULD appear at least once across a 7-case set."
+          "description": "Which comprehension rubric dimension this case targets. The 7 dimensions in active use as of 2026-05-25 are: definition, mental_model, purpose, boundary, taxonomy, analogy, application. The 8th value `misconception` mirrors the Understanding-field name from skill-metadata-protocol/SKILL_METADATA_PROTOCOL.md § Understanding — currently unused in the corpus but reserved for future cases. Each rubric dimension SHOULD appear at least once across a 7-case set."
         },
         "prompt": {
           "type": "string",
@@ -91,7 +91,7 @@
         },
         "negative_expectation": {
           "type": "string",
-          "description": "Optional explicit statement of what the answer must NOT say or do. Catches silent scope reduction and softened-failure responses per SKILL_AUDIT_LOOP.md § Part 3 — Per-Skill Audit Runbook § 4c. Recommended for `boundary` and `critical` cases."
+          "description": "Optional explicit statement of what the answer must NOT say or do. Catches silent scope reduction and softened-failure responses per skill-audit-loop/SKILL_AUDIT_LOOP.md § Part 3 — Per-Skill Audit Runbook § 4c. Recommended for `boundary` and `critical` cases."
         }
       }
     }

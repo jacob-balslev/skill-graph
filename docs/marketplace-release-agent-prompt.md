@@ -15,7 +15,7 @@ Read first:
 - AGENTS.MD
 - README.md
 - SKILL_GRAPH.md
-- SKILL_METADATA_PROTOCOL.md
+- skill-metadata-protocol/SKILL_METADATA_PROTOCOL.md
 - docs/quality-doctrine.md
 - docs/marketplace-syndication.md
 - docs/marketplace-skill-candidate-list.md

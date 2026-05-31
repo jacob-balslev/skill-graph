@@ -1,8 +1,8 @@
 # Skill Graph Field Reference
 
 > One section per authored field. Use this when writing or reviewing a `SKILL.md` file.
-> For the "which value do I pick?" decisions, see [`docs/SKILL_METADATA_PROTOCOL_field-decision-guide.md`](SKILL_METADATA_PROTOCOL_field-decision-guide.md).
-> For field groups, conditional requiredness, and schema strictness rules, see [`docs/skill-metadata-protocol.md`](skill-metadata-protocol.md).
+> For the "which value do I pick?" decisions, see [`skill-metadata-protocol/field-decision-guide.md`](field-decision-guide.md).
+> For field groups, conditional requiredness, and schema strictness rules, see [`skill-metadata-protocol/design-rationale.md`](design-rationale.md).
 
 Fields are listed in authored order — the same order they appear in [`examples/skill-metadata-template.md`](../examples/skill-metadata-template.md).
 
@@ -12,9 +12,9 @@ The field reference is split across three coordinated documents. Use whichever f
 
 | Doc | Genre | When to read |
 |---|---|---|
-| [`SKILL_METADATA_PROTOCOL_field-reference.md`](SKILL_METADATA_PROTOCOL_field-reference.md) (this doc) | **Hand-curated prose reference.** Field-by-field, with worked examples, lint notes, and cross-cutting guidance. | When authoring or reviewing a SKILL.md and you want examples and "when to use" rules alongside the schema-canonical definition. |
-| [`SKILL_METADATA_PROTOCOL_field-reference.generated.md`](SKILL_METADATA_PROTOCOL_field-reference.generated.md) | **Auto-generated index.** Built from `schemas/SKILL_METADATA_PROTOCOL_schema.json` description strings by `scripts/build-field-reference.js`. Drift-free against the schema. | When you want the machine-guaranteed list of every field, every type, every pattern, every enum value. The fastest way to verify what the schema actually accepts today. |
-| [`field-rationale.md`](field-rationale.md) | **Hand-authored "why this field" rationale.** Covers the ~10 fields whose meaning is non-obvious from the schema description (`scope`, `eval_artifacts`, `eval_state`, `routing_eval`, `relations.depends_on`, `relations.verify_with`, `relations.broader`, `grounding.evidence_priority`, `lifecycle.review_cadence`, `portability.readiness`). | When you understand *what* a field stores but want to know *why the field exists at all* and *what the common confusion looks like*. |
+| [`SKILL_METADATA_PROTOCOL_field-reference.md`](field-reference.md) (this doc) | **Hand-curated prose reference.** Field-by-field, with worked examples, lint notes, and cross-cutting guidance. | When authoring or reviewing a SKILL.md and you want examples and "when to use" rules alongside the schema-canonical definition. |
+| [`SKILL_METADATA_PROTOCOL_field-reference.generated.md`](field-reference.generated.md) | **Auto-generated index.** Built from `schemas/SKILL_METADATA_PROTOCOL_schema.json` description strings by `scripts/build-field-reference.js`. Drift-free against the schema. | When you want the machine-guaranteed list of every field, every type, every pattern, every enum value. The fastest way to verify what the schema actually accepts today. |
+| [`field-rationale.md`](../docs/field-rationale.md) | **Hand-authored "why this field" rationale.** Covers the ~10 fields whose meaning is non-obvious from the schema description (`scope`, `eval_artifacts`, `eval_state`, `routing_eval`, `relations.depends_on`, `relations.verify_with`, `relations.broader`, `grounding.evidence_priority`, `lifecycle.review_cadence`, `portability.readiness`). | When you understand *what* a field stores but want to know *why the field exists at all* and *what the common confusion looks like*. |
 
 The schema is the single source of truth for shape; this doc is the source of truth for prose; `field-rationale.md` is the source of truth for design intent. Lint check C7 (in `scripts/check-protocol-consistency.js`) verifies the generated index stays in sync with the schema description strings — running `node scripts/build-field-reference.js --check` against the live schema must succeed before commit.
 
@@ -28,7 +28,7 @@ The schema is the single source of truth for shape; this doc is the source of tr
 - Must be the integer `8` or the string `"8"` for current skills.
 - Start every new skill at the current schema version. Do not downgrade.
 - Prior contract shapes, including v7, live in git history and are not accepted by the live schema.
-- Older migration notes live in `SKILL_METADATA_PROTOCOL.md § Schema contract`; do not restate old versions here as the current contract.
+- Older migration notes live in `skill-metadata-protocol/SKILL_METADATA_PROTOCOL.md § Schema contract`; do not restate old versions here as the current contract.
 
 **Versioning semantics (policy).** The integer signals *breaking vs non-breaking* evolution. A minor/patch axis is intentionally not surfaced on this field; additive schema changes do not require consumers to migrate, so no version bump is emitted.
 
@@ -572,7 +572,7 @@ application_verdict: APPLICABLE
 
 ## `audit_verdict` *(deprecated)*
 
-**Purpose.** DEPRECATED in v7. Pre-v7 single aggregate verdict. Replaced by four discrete verdicts (`structural_verdict`, `truth_verdict`, `comprehension_verdict`, `application_verdict`). See [ADR 0011](adr/0011-split-audit-verdict-into-four-verdicts.md).
+**Purpose.** DEPRECATED in v7. Pre-v7 single aggregate verdict. Replaced by four discrete verdicts (`structural_verdict`, `truth_verdict`, `comprehension_verdict`, `application_verdict`). See [ADR 0011](../docs/adr/0011-split-audit-verdict-into-four-verdicts.md).
 
 **Why deprecated.** The single field compressed four independent layers — form, truth, comprehension, behavior — into one PASS/FAIL signal that masqueraded as a quality verdict. A skill could be lint-clean (`audit_verdict: PASS`) while being behaviorally redundant or harmful, and the reader had no way to tell. The four-verdict split lets each layer surface independently. See ADR 0014 (canonical-only schema files); the migration procedure lives in git history.
 
@@ -964,7 +964,7 @@ eval:
 - Omit only for skills where stability is genuinely unknown at authoring time (migrate to a real value quickly).
 - A deprecated skill should add a note in `## Coverage` pointing to the replacement.
 
-**Pre-1.0 stance.** The library defaults all skills to `experimental` because the protocol and skill content are under active development. A near-uniform `experimental` distribution is intentional — it signals that the corpus as a whole is pre-1.0 and no stability guarantees are implied. Do not interpret a uniformly experimental corpus as an unmaintained field; it reflects a deliberate stance. Skills are promoted to `stable` only when all promotion criteria below are met. See `SKILL_METADATA_PROTOCOL.md § stability` for the normative spec.
+**Pre-1.0 stance.** The library defaults all skills to `experimental` because the protocol and skill content are under active development. A near-uniform `experimental` distribution is intentional — it signals that the corpus as a whole is pre-1.0 and no stability guarantees are implied. Do not interpret a uniformly experimental corpus as an unmaintained field; it reflects a deliberate stance. Skills are promoted to `stable` only when all promotion criteria below are met. See `skill-metadata-protocol/SKILL_METADATA_PROTOCOL.md § stability` for the normative spec.
 
 **Promotion to `stable` — minimum criteria:**
 1. `eval_state: passing` or `eval_state: monitored` — evals have been run and pass.
@@ -1322,7 +1322,7 @@ routing_bundles:
 
 **Boundary vs disjoint_with — the ADR 0006 split.** ADR 0001 originally proposed renaming `boundary` to `disjoint_with` and treating them as aliases. ADR 0006 reverses that: the two predicates operate at different semantic layers and the schema keeps them distinct.
 
-- `boundary` is a **routing-layer exclusion guard**. When skill A wins a query, skills listed in A's `boundary[]` are excluded from co-routing results (if A outscores them). The field name implies "defer to B" but the mechanic is "exclude B when A wins" — write reason text that reflects ownership ("I own this exclusively over B"), not deference ("use B instead"). Asymmetric; `reason` is strongly recommended; the canonical name for the everyday use case. See the WARNING callout in `SKILL_METADATA_PROTOCOL.md § Relations § boundary`.
+- `boundary` is a **routing-layer exclusion guard**. When skill A wins a query, skills listed in A's `boundary[]` are excluded from co-routing results (if A outscores them). The field name implies "defer to B" but the mechanic is "exclude B when A wins" — write reason text that reflects ownership ("I own this exclusively over B"), not deference ("use B instead"). Asymmetric; `reason` is strongly recommended; the canonical name for the everyday use case. See the WARNING callout in `skill-metadata-protocol/SKILL_METADATA_PROTOCOL.md § Relations § boundary`.
 - `disjoint_with` is a **formal class-theory** claim. A and B name disjoint conceptual classes; no entity can simultaneously be an instance of both. Maps to OWL `owl:disjointWith` for RDF consumers that reason about class membership. Rare in practice — most skill libraries never need this.
 
 If you are unsure which to use, you want `boundary`. Use `disjoint_with` only when you have an explicit reason to make a formal ontological claim that survives the JSON-LD projection into OWL.

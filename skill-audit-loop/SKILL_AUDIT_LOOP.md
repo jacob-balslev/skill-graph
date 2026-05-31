@@ -1,6 +1,6 @@
 # Skill Audit Loop
 
-> **Work-mode rule (read FIRST).** Editing this document, the audit scripts, the audit slash-commands, the audit prompts, or the schemas is **SYSTEM work**. Running the audit loop against individual `SKILL.md` files (via `/audit:audit`, `/audit:improve`, `/audit:evaluate`, `/audit:evolve`) is **CONTENT work**. Do not mix them in the same task or commit. Full doctrine: [`AGENTS.md` § Work Modes — SYSTEM vs CONTENT](AGENTS.md#work-modes--system-vs-content).
+> **Work-mode rule (read FIRST).** Editing this document, the audit scripts, the audit slash-commands, the audit prompts, or the schemas is **SYSTEM work**. Running the audit loop against individual `SKILL.md` files (via `/audit:audit`, `/audit:improve`, `/audit:evaluate`, `/audit:evolve`) is **CONTENT work**. Do not mix them in the same task or commit. Full doctrine: [`AGENTS.md` § Work Modes — SYSTEM vs CONTENT](../AGENTS.md#work-modes--system-vs-content).
 
 > **Document structure.** Three parts, read top-to-bottom:
 > - **Part 1 — Loop Doctrine & Operations**: doctrine, four operations, two gates, Audit Status, inner pipelines, cadence.
@@ -11,7 +11,7 @@
 
 ## Charter — Rules & Goal
 
-**Mission & Vision** are shared across all three layers (Skill Metadata Protocol, Skill Audit Loop, Skill Graph); the canonical statement is [`AGENTS.md § Mission and Vision`](AGENTS.md#mission-and-vision). This section records the **Audit Loop layer's** own Rules and Goal; the detailed mechanics live in Parts 1–3 below.
+**Mission & Vision** are shared across all three layers (Skill Metadata Protocol, Skill Audit Loop, Skill Graph); the canonical statement is [`AGENTS.md § Mission and Vision`](../AGENTS.md#mission-and-vision). This section records the **Audit Loop layer's** own Rules and Goal; the detailed mechanics live in Parts 1–3 below.
 
 ### Rules
 
@@ -49,8 +49,8 @@ That's it. One field at a time, keep or revert based on a single measurable sign
 The loop exists to answer one question about each skill: **does it still teach an agent to do the thing it claims to teach?** Every operation and verdict below serves that question. We evaluate each skill on three axes:
 
 1. **Intent fidelity** — does the skill's content deliver what its `description` / `scope` / routing contract promises? A skill whose body has drifted from its own stated purpose fails here, even if every path it cites still resolves.
-2. **Teaching efficacy** — does the skill actually change and improve an agent's behavior on the topic? This is the real quality signal. A skill that is structurally perfect but teaches nothing — or teaches it badly — is a weak skill. Under the four-verdict Audit Status (rationale: [ADR 0011](docs/adr/0011-split-audit-verdict-into-four-verdicts.md)), `application_verdict` is where this is certified against real artifacts.
-3. **Upstream currency (anti-displacement)** — is the skill's approach still the best available, or has a recent first-party release (Anthropic / OpenAI), platform release (OpenCode), or widely-adopted open-source release made it obsolete or strictly worse than a native capability? The agentic ecosystem moves fast; a skill that teaches a workaround for something now solved natively is decayed even if it is internally accurate and teaches well. This axis is checked per skill in the operational audit prompt (`skill-graph/SKILL_AUDIT_LOOP.md#part-3--per-skill-audit-runbook` § Step 6-displacement), recorded as a `category: DISPLACEMENT` finding with a deprecate / fold / reframe-to-delta recommendation, and **never actioned by auto-deletion** — removal requires explicit user sign-off (`.claude/rules/code-preservation.md`).
+2. **Teaching efficacy** — does the skill actually change and improve an agent's behavior on the topic? This is the real quality signal. A skill that is structurally perfect but teaches nothing — or teaches it badly — is a weak skill. Under the four-verdict Audit Status (rationale: [ADR 0011](../docs/adr/0011-split-audit-verdict-into-four-verdicts.md)), `application_verdict` is where this is certified against real artifacts.
+3. **Upstream currency (anti-displacement)** — is the skill's approach still the best available, or has a recent first-party release (Anthropic / OpenAI), platform release (OpenCode), or widely-adopted open-source release made it obsolete or strictly worse than a native capability? The agentic ecosystem moves fast; a skill that teaches a workaround for something now solved natively is decayed even if it is internally accurate and teaches well. This axis is checked per skill in the operational audit prompt (`skill-graph/skill-audit-loop/SKILL_AUDIT_LOOP.md#part-3--per-skill-audit-runbook` § Step 6-displacement), recorded as a `category: DISPLACEMENT` finding with a deprecate / fold / reframe-to-delta recommendation, and **never actioned by auto-deletion** — removal requires explicit user sign-off (`.claude/rules/code-preservation.md`).
 
 The audit is **not a lint-test factory.** We do not invent arbitrary internal structural checks to manufacture findings, and an empty findings report on a genuinely good skill is a **PASS** — not a failure to find work. `lint_verdict` / `structural_verdict` cover form, schema validity, and external marketplace mandates only — a **floor the skill must clear**, never the target it aims at. Passing lint says the skill is well-formed; it says nothing about whether the skill teaches well.
 
@@ -63,7 +63,7 @@ The loop has two gates. They must not be blended into one PASS/FAIL label:
 | **Integrity Gate** | The skill is structurally valid, grounded, routable, and export-safe. | Deterministic CI-safe checks: canonical-source lint, schema/protocol consistency, manifest, links, export shape, routing assertions, overlap, and drift. | `structural_verdict`, `truth_verdict`, `lint_verdict`, `drift_status` |
 | **Behavior Gate** | The skill changes agent behavior in the way it claims. | Behavioral evals against realistic positives, hard negatives, prior failures, and boundary cases. | `comprehension_verdict`, `application_verdict`, `eval_score`, `eval_failed_ids` |
 
-The Integrity Gate is required before release because broken metadata poisons the graph. It never certifies skill usefulness. The Behavior Gate is what certifies teaching efficacy; a skill with `application_verdict: UNVERIFIED` is unassessed, not approved — eligibility (passing structural/truth) is not the same as assessment (running and clearing the behavior gates). A skill is audit-complete only when the Integrity Gate passes and the Behavior Gate is either passed or explicitly left `UNVERIFIED` / `NA` with evidence explaining why behavioral certification was not run. For canonical verdict definitions, enum values, confidence-tier ordering, and the eligibility-vs-assessment doctrine, see [`docs/verdict-semantics.md`](docs/verdict-semantics.md).
+The Integrity Gate is required before release because broken metadata poisons the graph. It never certifies skill usefulness. The Behavior Gate is what certifies teaching efficacy; a skill with `application_verdict: UNVERIFIED` is unassessed, not approved — eligibility (passing structural/truth) is not the same as assessment (running and clearing the behavior gates). A skill is audit-complete only when the Integrity Gate passes and the Behavior Gate is either passed or explicitly left `UNVERIFIED` / `NA` with evidence explaining why behavioral certification was not run. For canonical verdict definitions, enum values, confidence-tier ordering, and the eligibility-vs-assessment doctrine, see [`docs/verdict-semantics.md`](../docs/verdict-semantics.md).
 
 ### Current maturity — honest self-location (updated 2026-05-26 post-F14)
 
@@ -115,9 +115,9 @@ This replaces the previous 13-command surface with **4 canonical operations + 2 
 
 ## The Audit Status — state lives on the skill
 
-The Audit Status carries **four discrete verdicts** on every SKILL.md frontmatter — one per audit layer. The split (introduced in v7 and retained through v8) replaced an earlier single aggregate that masqueraded as a quality signal while conflating form, truth, comprehension, and behavior (rationale: [ADR 0011](docs/adr/0011-split-audit-verdict-into-four-verdicts.md)):
+The Audit Status carries **four discrete verdicts** on every SKILL.md frontmatter — one per audit layer. The split (introduced in v7 and retained through v8) replaced an earlier single aggregate that masqueraded as a quality signal while conflating form, truth, comprehension, and behavior (rationale: [ADR 0011](../docs/adr/0011-split-audit-verdict-into-four-verdicts.md)):
 
-The Audit Status uses the **inline field-purpose comment convention** (see `SKILL_METADATA_PROTOCOL.md § Inline field comments — the authoring convention`): every field carries a comment block above it naming purpose + allowed values. The convention is identical for hand-authored fields and audit-loop-written fields — readers should not need to leave the file to decode the verdict.
+The Audit Status uses the **inline field-purpose comment convention** (see `skill-metadata-protocol/SKILL_METADATA_PROTOCOL.md § Inline field comments — the authoring convention`): every field carries a comment block above it naming purpose + allowed values. The convention is identical for hand-authored fields and audit-loop-written fields — readers should not need to leave the file to decode the verdict.
 
 ```yaml
 # schema_version: protocol contract version this skill conforms to.
@@ -343,12 +343,12 @@ The loop does not require a separate issue tracker, dashboard, control plane, or
 
 ## Related Specs
 
-- `docs/skill-metadata-protocol.md` — the canonical field list including the Audit Status and flat Understanding fields
-- `schemas/SKILL_METADATA_PROTOCOL_schema.json` — the machine-validated current contract (v8). Prior versions live in git history per [ADR-0014](docs/adr/0014-canonical-only-schema-files.md) and [AGENTS.md § Major Version Is a Clean Cut](AGENTS.md) (retrievable via `git show schema-v7:schemas/SKILL_METADATA_PROTOCOL_schema.json`); the schema's `$id` (`https://skillgraph.dev/schemas/skill.schema.json`) is the stable identifier.
-- [ADR 0011](docs/adr/0011-split-audit-verdict-into-four-verdicts.md) — the `audit_verdict` → four-verdict split (rationale for the Audit Status's four-verdict shape)
-- [ADR 0017](docs/adr/0017-five-axis-classification-model.md) — the v7→v8 classification model, amended 2026-05-27 (`operation` axis retired, `scope` repurposed to free-text, `deployment_target` introduced as the closed-enum deployment axis, `domain` renamed to `taxonomy_domain`, `project[]` / `repo[]` belonging-entity fields added)
-- **Part 2 below** — the per-skill audit checklist (formerly `SKILL_AUDIT_LOOP.md` § Part 2, deleted in the 2026-05-25 consolidation)
-- **Part 3 below** — the per-skill audit runbook (formerly `SKILL_AUDIT_LOOP.md` § Part 3, deleted in the 2026-05-25 consolidation)
+- `skill-metadata-protocol/design-rationale.md` — the canonical field list including the Audit Status and flat Understanding fields
+- `schemas/SKILL_METADATA_PROTOCOL_schema.json` — the machine-validated current contract (v8). Prior versions live in git history per [ADR-0014](../docs/adr/0014-canonical-only-schema-files.md) and [AGENTS.md § Major Version Is a Clean Cut](../AGENTS.md) (retrievable via `git show schema-v7:schemas/SKILL_METADATA_PROTOCOL_schema.json`); the schema's `$id` (`https://skillgraph.dev/schemas/skill.schema.json`) is the stable identifier.
+- [ADR 0011](../docs/adr/0011-split-audit-verdict-into-four-verdicts.md) — the `audit_verdict` → four-verdict split (rationale for the Audit Status's four-verdict shape)
+- [ADR 0017](../docs/adr/0017-five-axis-classification-model.md) — the v7→v8 classification model, amended 2026-05-27 (`operation` axis retired, `scope` repurposed to free-text, `deployment_target` introduced as the closed-enum deployment axis, `domain` renamed to `taxonomy_domain`, `project[]` / `repo[]` belonging-entity fields added)
+- **Part 2 below** — the per-skill audit checklist (formerly `skill-audit-loop/SKILL_AUDIT_LOOP.md` § Part 2, deleted in the 2026-05-25 consolidation)
+- **Part 3 below** — the per-skill audit runbook (formerly `skill-audit-loop/SKILL_AUDIT_LOOP.md` § Part 3, deleted in the 2026-05-25 consolidation)
 
 ---
 
@@ -477,13 +477,13 @@ Required dimension rows:
    - `scope` is present and free-text (PRD-style label — NOT an enum).
    - `subjects[]` (optional, max 2, primary first) is used only when the skill genuinely spans two browse shelves.
    - `taxonomy_domain` (optional, slash-delimited) is used to subdivide a `subject` that holds many skills.
-   - See `SKILL_METADATA_PROTOCOL.md § Classification` and [ADR-0017](docs/adr/0017-five-axis-classification-model.md) (and its 2026-05-27 amendment).
+   - See `skill-metadata-protocol/SKILL_METADATA_PROTOCOL.md § Classification` and [ADR-0017](../docs/adr/0017-five-axis-classification-model.md) (and its 2026-05-27 amendment).
 - [ ] If the skill still carries fields that no longer exist in the live schema (e.g. v7 classification fields `type`, `category`, `categories`, `secondary_categories`, `primaryCategory`, `layerPrimary`, `routingRole`, `family`, `layer`, `archetype`; the initial v8 `operation` axis retired 2026-05-27; `eval_status`; `workspace_tags`; the retired scope-enum values `reference`/`codebase`/`workspace`; the legacy field name `domain` — renamed to `taxonomy_domain` in the 2026-05-27 amendment): file a CONTENT finding to migrate the skill through `/audit:improve`. The live schema rejects these via `additionalProperties: false`.
 - [ ] `owner` exists
 - [ ] `freshness` exists
 - [ ] `drift_check` exists as an object with `last_verified`
 - [ ] `eval_artifacts`, `eval_state`, `routing_eval` all exist (orthogonal triple — shipped in schema_version 2 under SH-5784, retained through v8)
-- [ ] **Inline field-purpose comments present** above each authored field per the convention in `SKILL_METADATA_PROTOCOL.md § Inline field comments`. Strippable forms (`# TEMPLATE NOTE:` lines and `> **TEMPLATE NOTE:**` body blockquotes) are ABSENT from the production skill: `grep -n "TEMPLATE NOTE" <SKILL.md>` must return zero hits. Field-purpose comments (no `TEMPLATE NOTE:` prefix) are PRESENT and survive verification: `grep -c "^\s*#" <SKILL.md>` should be ≥ the field count, not zero.
+- [ ] **Inline field-purpose comments present** above each authored field per the convention in `skill-metadata-protocol/SKILL_METADATA_PROTOCOL.md § Inline field comments`. Strippable forms (`# TEMPLATE NOTE:` lines and `> **TEMPLATE NOTE:**` body blockquotes) are ABSENT from the production skill: `grep -n "TEMPLATE NOTE" <SKILL.md>` must return zero hits. Field-purpose comments (no `TEMPLATE NOTE:` prefix) are PRESENT and survive verification: `grep -c "^\s*#" <SKILL.md>` should be ≥ the field count, not zero.
 
 ### 2. Activation quality
 
@@ -598,8 +598,8 @@ A skill audit is complete when:
 ## Overview
 
 > Type: Per-skill audit contract — the binding "what every audit run must do" document
-> referenced by every Skill Audit Loop runner in `skill-graph/audits/prompts/`.
-> Canonical path: `skill-graph/SKILL_AUDIT_LOOP.md#part-3--per-skill-audit-runbook`.
+> referenced by every Skill Audit Loop runner in `skill-graph/skill-audit-loop/prompts/`.
+> Canonical path: `skill-graph/skill-audit-loop/SKILL_AUDIT_LOOP.md#part-3--per-skill-audit-runbook`.
 >
 > History: moved into `skill-graph/` on 2026-05-25 from the legacy workspace path
 > `.opencode/commands/skill-audit-prompt-v2.2.md` per ADR 0015 (project-owned
@@ -614,7 +614,7 @@ A skill audit is complete when:
 > rubric design and `lib/audit/graders/concept-grader-prompt.md` for the grader
 > contract.
 
-> **Audit Doctrine — link only.** The canonical doctrine is [`skill-graph/SKILL_AUDIT_LOOP.md` § Audit Doctrine — Intent and Teaching, Not Arbitrary Lint](#audit-doctrine--intent-and-teaching-not-arbitrary-lint). It evaluates each skill on three axes (intent fidelity, teaching efficacy, upstream currency) and `application_verdict` is the real quality signal. Lint is a floor, never the goal. Do not restate the doctrine here — link to it.
+> **Audit Doctrine — link only.** The canonical doctrine is [`skill-graph/skill-audit-loop/SKILL_AUDIT_LOOP.md` § Audit Doctrine — Intent and Teaching, Not Arbitrary Lint](#audit-doctrine--intent-and-teaching-not-arbitrary-lint). It evaluates each skill on three axes (intent fidelity, teaching efficacy, upstream currency) and `application_verdict` is the real quality signal. Lint is a floor, never the goal. Do not restate the doctrine here — link to it.
 
 ### Setup
 
@@ -627,7 +627,7 @@ A skill audit is complete when:
    ```
 1. Read `AGENTS.md`.
 2. Pick your **lane** by capability tier (see `audits/lanes.json` — project-canonical per
-   [ADR-0016](docs/adr/0016-operational-data-ownership.md); the legacy `.opencode/skill-audit-lanes.json`
+   [ADR-0016](../docs/adr/0016-operational-data-ownership.md); the legacy `.opencode/skill-audit-lanes.json`
    path is deprecated and being phased out). A lane enforces a `minTier`, so claim only one your model
    qualifies for (high = opus/gpt-5.5/gemini-3.1-pro; mid = sonnet/gpt-5.4; cheap = haiku/gemini-flash).
    Lanes are model-agnostic above the floor — any qualifying CLI may serve a lane and is attributed

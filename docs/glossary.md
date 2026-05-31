@@ -50,7 +50,7 @@ Skills that should be co-loaded for verification or that provide cross-checks. T
 
 Pragmatic prerequisite — this skill requires the target conceptually or operationally. Item shape: bare string OR `{skill, min_version}`. Use `min_version` when the depended-on skill's contract has versioned and this skill's claims depend on a specific version.
 
-_(The `extends` field and the `capability` / `workflow` / `router` / `overlay` archetypes were removed in the v8 clean cut — see [`AGENTS.md § Major Version Is a Clean Cut`](../AGENTS.md). Body structure is now uniform; see [`docs/skill-metadata-protocol.md § Body Structure`](skill-metadata-protocol.md#body-structure).)
+_(The `extends` field and the `capability` / `workflow` / `router` / `overlay` archetypes were removed in the v8 clean cut — see [`AGENTS.md § Major Version Is a Clean Cut`](../AGENTS.md). Body structure is now uniform; see [`skill-metadata-protocol/design-rationale.md § Body Structure`](../skill-metadata-protocol/design-rationale.md#body-structure).)
 
 ## Grounding modes
 

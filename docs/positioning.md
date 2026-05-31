@@ -81,8 +81,8 @@ The runtime layer answers "how does this skill execute?" The author/audit-time l
 
 ## Related reading
 
-- [`SKILL_METADATA_PROTOCOL.md`](../SKILL_METADATA_PROTOCOL.md) — the contract.
-- [`SKILL_AUDIT_LOOP.md`](../SKILL_AUDIT_LOOP.md) — the four operations (audit, improve, evaluate, evolve).
+- [`skill-metadata-protocol/SKILL_METADATA_PROTOCOL.md`](../skill-metadata-protocol/SKILL_METADATA_PROTOCOL.md) — the contract.
+- [`skill-audit-loop/SKILL_AUDIT_LOOP.md`](../skill-audit-loop/SKILL_AUDIT_LOOP.md) — the four operations (audit, improve, evaluate, evolve).
 - [`docs/quality-doctrine.md`](quality-doctrine.md) — what "improve" means in this discipline.
 - [`docs/adr/0009-sibling-repo-deprecation.md`](adr/0009-sibling-repo-deprecation.md) — why the protocol, audit, and CLI live in one repo now.
 - [Karpathy autoresearch](https://github.com/karpathy/autoresearch) — the keep-or-revert loop applied to LLM training scripts that Skill Graph borrows for skill libraries.

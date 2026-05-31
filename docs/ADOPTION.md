@@ -1,6 +1,6 @@
 # Adopting Skill Graph
 
-> Should you adopt Skill Graph for your AI agent skill library? This page is a 1-screen decision tree. For the full mental model, read [`SKILL_METADATA_PROTOCOL_PRIMER.md`](SKILL_METADATA_PROTOCOL_PRIMER.md). For the contract details, read [`skill-metadata-protocol.md`](skill-metadata-protocol.md).
+> Should you adopt Skill Graph for your AI agent skill library? This page is a 1-screen decision tree. For the full mental model, read [`SKILL_METADATA_PROTOCOL_PRIMER.md`](../skill-metadata-protocol/PRIMER.md). For the contract details, read [`skill-metadata-protocol.md`](../skill-metadata-protocol/design-rationale.md).
 
 ## Relevance probe
 
@@ -49,13 +49,13 @@ If none of these apply, stay on plain [`SKILL.md`](https://agentskills.io/specif
 
 **Total time per skill on day 1: ~20-30 min. Steady-state after the library settles: ~10-15 min per new skill.**
 
-The fields you pay for cluster into 8 semantic purposes (Identity, Classification, Health, Evaluation Status, Activation & Routing, Relations, Grounding, Portability). The full anatomy is in [`skill-metadata-protocol.md § Anatomy`](skill-metadata-protocol.md).
+The fields you pay for cluster into 8 semantic purposes (Identity, Classification, Health, Evaluation Status, Activation & Routing, Relations, Grounding, Portability). The full anatomy is in [`skill-metadata-protocol.md § Anatomy`](../skill-metadata-protocol/design-rationale.md).
 
 ## 5-minute quickstart
 
 > **Step 0 — pilot first, do not migrate the whole library.** Choose ONE skill currently most likely to misroute or drift. Add the required Skill Metadata Protocol fields, route a real query against it, record a drift baseline. Pay the contract once on a skill where the payoff is visible, before paying it 20 times across skills where it isn't yet. The 30-minute walkthrough in [`docs/QUICKSTART-30MIN.md`](QUICKSTART-30MIN.md) walks you through this with literal terminal output at every step.
 
-For the full conceptual primer read [`SKILL_METADATA_PROTOCOL_PRIMER.md`](SKILL_METADATA_PROTOCOL_PRIMER.md). To migrate your first skill from a valid plain `SKILL.md` file:
+For the full conceptual primer read [`SKILL_METADATA_PROTOCOL_PRIMER.md`](../skill-metadata-protocol/PRIMER.md). To migrate your first skill from a valid plain `SKILL.md` file:
 
 1. **Copy the template** — `cp examples/skill-metadata-template.md skills/<your-skill>/SKILL.md`. The template is a real, valid, schema-conformant Skill Metadata Protocol skill whose subject is skill authoring itself; adapt by rewriting identity, description, body, and verification.
 2. **Add the required Skill Metadata Protocol fields** — `schema_version: 8`, `version`, `subject` (9-enum), `scope` (3-enum), `owner`, `freshness`, `drift_check`, `eval_artifacts`, `eval_state`, `routing_eval`, plus your existing `name` and `description`. The template inline-comments each field.
@@ -101,16 +101,16 @@ To set expectations honestly:
 
 | You want to… | Read |
 |---|---|
-| Understand the conceptual model | [`SKILL_METADATA_PROTOCOL_PRIMER.md`](SKILL_METADATA_PROTOCOL_PRIMER.md) |
+| Understand the conceptual model | [`SKILL_METADATA_PROTOCOL_PRIMER.md`](../skill-metadata-protocol/PRIMER.md) |
 | Choose an adoption level | [`CONFORMANCE.md`](CONFORMANCE.md) |
 | Verify `SKILL.md` export compatibility | [`SKILL-MD-FORMAT-COMPATIBILITY.md`](SKILL-MD-FORMAT-COMPATIBILITY.md) |
 | Measure routing quality | [`ROUTING-METRICS.md`](ROUTING-METRICS.md) |
-| Look up a specific field's semantics | [`SKILL_METADATA_PROTOCOL_field-reference.md`](SKILL_METADATA_PROTOCOL_field-reference.md) |
+| Look up a specific field's semantics | [`SKILL_METADATA_PROTOCOL_field-reference.md`](../skill-metadata-protocol/field-reference.md) |
 | See a worked authoring example | [`../examples/skill-metadata-template.md`](../examples/skill-metadata-template.md) |
 | Read the architecture and authority tiers | [`SKILL_GRAPH.md`](../SKILL_GRAPH.md) |
 | See which skills are recommended for a starter library | [`recommended-skills.md`](recommended-skills.md) |
 | Set up CI integration | [`integrations/github-actions.md`](integrations/github-actions.md) |
-| Decide between four overlapping taxonomy axes | [`SKILL_METADATA_PROTOCOL_field-decision-guide.md`](SKILL_METADATA_PROTOCOL_field-decision-guide.md) |
+| Decide between four overlapping taxonomy axes | [`SKILL_METADATA_PROTOCOL_field-decision-guide.md`](../skill-metadata-protocol/field-decision-guide.md) |
 
 ## Compatibility direction (one-paragraph honesty)
 

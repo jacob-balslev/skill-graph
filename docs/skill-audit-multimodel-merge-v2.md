@@ -183,7 +183,7 @@ New in v2:
 - v1 protocol: [skill-audit-multimodel-merge.md](./skill-audit-multimodel-merge.md)
 - Benchmark spec: [model-contribution-benchmarks.md](./model-contribution-benchmarks.md)
 - Sibling consensus protocol: `<workspace>/docs/consensus-review-protocol.md`
-- Audit doctrine: [SKILL_AUDIT_LOOP.md](../SKILL_AUDIT_LOOP.md)
-- Single-agent contract: `skill-graph/SKILL_AUDIT_LOOP.md#part-3--per-skill-audit-runbook`
+- Audit doctrine: [skill-audit-loop/SKILL_AUDIT_LOOP.md](../skill-audit-loop/SKILL_AUDIT_LOOP.md)
+- Single-agent contract: `skill-graph/skill-audit-loop/SKILL_AUDIT_LOOP.md#part-3--per-skill-audit-runbook`
 - Claim helper: `scripts/skill/skill-audit-claim.js`
 - 2026-05-24 roundtable session: `<workspace>/.roundtable/skill-audit-2026-05-24/`

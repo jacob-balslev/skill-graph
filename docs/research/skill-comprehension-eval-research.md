@@ -1402,7 +1402,7 @@ This report examined the following **24 repo files** (23 inside `skill-graph/` p
 3. [`https://github.com/jacob-balslev/skill-graph/blob/main/SKILL_AUDIT_LOOP.md`](https://github.com/jacob-balslev/skill-graph/blob/main/SKILL_AUDIT_LOOP.md) — full read
 4. [`https://github.com/jacob-balslev/skill-graph/blob/main/SKILL_AUDIT_LOOP.md § Part 2 — Per-Skill Audit Checklist`](https://github.com/jacob-balslev/skill-graph/blob/main/SKILL_AUDIT_LOOP.md § Part 2 — Per-Skill Audit Checklist) — full read
 5. [`/Users/jacobbalslev/Development/skill-graph/docs/quality-doctrine.md`](/Users/jacobbalslev/Development/skill-graph/docs/quality-doctrine.md) — full read
-6. [`/Users/jacobbalslev/Development/skill-graph/docs/SKILL_METADATA_PROTOCOL_field-reference.md`](/Users/jacobbalslev/Development/skill-graph/docs/SKILL_METADATA_PROTOCOL_field-reference.md) — read in full (1200 lines); focus on `comprehension_state`, `concept`, `eval_*`, `routing_eval` sections
+6. [`/Users/jacobbalslev/Development/skill-graph/docs/SKILL_METADATA_PROTOCOL_field-reference.md`](../../skill-metadata-protocol/field-reference.md) — read in full (1200 lines); focus on `comprehension_state`, `concept`, `eval_*`, `routing_eval` sections
 7. [`skills/type-safety/SKILL.md`](https://github.com/jacob-balslev/skills/blob/main/skills/type-safety/SKILL.md) — full read; used as worked example
 8. [`skills/acid-fundamentals/SKILL.md`](https://github.com/jacob-balslev/skills/blob/main/skills/acid-fundamentals/SKILL.md) — full read; confirmed gold-standard concept block
 9. [`skills/methodology/SKILL.md`](https://github.com/jacob-balslev/skills/blob/main/skills/methodology/SKILL.md) — full read; note: comprehension_state not declared

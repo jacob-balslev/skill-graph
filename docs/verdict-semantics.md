@@ -13,7 +13,7 @@ The single canonical home for:
 3. **The confidence tier ordering** — `APPLICABLE > PROVISIONAL > UNVERIFIED` and friends.
 4. **The disjointness rule** — comprehension and application enums are disjoint per the schema.
 
-This doc REPLACES the verdict-semantics restatements that previously lived (drift-prone) in `skill-graph/AGENTS.md:50`, `skill-graph/SKILL_AUDIT_LOOP.md:24`, `docs/reference/skill-audit-pipeline.md:22`, `.claude/rules/version-schema-contract.md:33`, and ADR-0011. Those files now carry one-line summaries + a link to this file.
+This doc REPLACES the verdict-semantics restatements that previously lived (drift-prone) in `skill-graph/AGENTS.md:50`, `skill-graph/skill-audit-loop/SKILL_AUDIT_LOOP.md:24`, `docs/reference/skill-audit-pipeline.md:22`, `.claude/rules/version-schema-contract.md:33`, and ADR-0011. Those files now carry one-line summaries + a link to this file.
 
 ## The four Audit Status fields (binding)
 
@@ -32,9 +32,9 @@ This doc REPLACES the verdict-semantics restatements that previously lived (drif
 
 ### Why there is no fifth `displacement_verdict` (the 2026-05-25 decision)
 
-The audit doctrine evaluates each skill on **three axes** ([`SKILL_AUDIT_LOOP.md:13-21`](../SKILL_AUDIT_LOOP.md)): intent fidelity, teaching efficacy, and **upstream currency (anti-displacement)**. But the Audit Status only carries **four verdict fields**, one per gate-output layer. There is intentionally **no fifth `displacement_verdict` / `upstream_verdict`** field. Why:
+The audit doctrine evaluates each skill on **three axes** ([`skill-audit-loop/SKILL_AUDIT_LOOP.md:13-21`](../skill-audit-loop/SKILL_AUDIT_LOOP.md)): intent fidelity, teaching efficacy, and **upstream currency (anti-displacement)**. But the Audit Status only carries **four verdict fields**, one per gate-output layer. There is intentionally **no fifth `displacement_verdict` / `upstream_verdict`** field. Why:
 
-- **Displacement is recorded as a FINDING, not a verdict.** Per [`SKILL_AUDIT_LOOP.md § Part 3:102, :176`](../SKILL_AUDIT_LOOP.md#part-3--per-skill-audit-runbook), the upstream-displacement check writes a `category: DISPLACEMENT` finding when a recent first-party / platform / OSS release makes the skill's approach obsolete or strictly worse than a native capability. The finding carries one of three recommendations: **deprecate** (native fully supersedes) / **fold** (merge the still-useful delta into a broader skill) / **reframe-to-the-delta** (rewrite to teach only what the native does NOT).
+- **Displacement is recorded as a FINDING, not a verdict.** Per [`skill-audit-loop/SKILL_AUDIT_LOOP.md § Part 3:102, :176`](../skill-audit-loop/SKILL_AUDIT_LOOP.md#part-3--per-skill-audit-runbook), the upstream-displacement check writes a `category: DISPLACEMENT` finding when a recent first-party / platform / OSS release makes the skill's approach obsolete or strictly worse than a native capability. The finding carries one of three recommendations: **deprecate** (native fully supersedes) / **fold** (merge the still-useful delta into a broader skill) / **reframe-to-the-delta** (rewrite to teach only what the native does NOT).
 - **Findings ≠ verdicts.** A verdict is a roll-up the four gates produce on every run. A finding is a per-issue record the human + curator triage. Displacement is well-suited to be a finding because: (a) it requires human judgment on the deprecate/fold/reframe call, never auto-deletion (per [`.claude/rules/code-preservation.md`](../../.claude/rules/code-preservation.md)); (b) "no displacement found" is the common valid result, which would clutter a verdict slot with `UNVERIFIED` / `N/A` noise; (c) displacement is an external-world signal (vendor releases), not a property of the skill the gates can measure directly.
 - **The 2026-05-25 multi-model review surfaced this question** ([`.roundtable/skill-graph-restructure-review-2026-05-25/followup-tasks.md`](../../.roundtable/skill-graph-restructure-review-2026-05-25/followup-tasks.md) § F36). Resolved here: 3 axes for doctrine, 4 verdicts for Audit Status, 1 finding-category for displacement output. The mismatch in counts (3 vs 4) is not drift; it reflects that two gates (structural + truth) cover one axis (intent fidelity's foundation), one gate (comprehension) covers one axis (teaching efficacy's depth), one gate (application) covers teaching efficacy's behavior change, and the third doctrinal axis (upstream currency) intentionally bypasses the gate model.
 
@@ -142,8 +142,8 @@ PASS / APPLICABLE  >  PROVISIONAL  >  UNVERIFIED
 
 - ADR-0011 — Split the v6 aggregate `audit_verdict` into the four-verdict Audit Status. The decision rationale.
 - [`schemas/SKILL_METADATA_PROTOCOL_schema.json:241-285`](../schemas/SKILL_METADATA_PROTOCOL_schema.json) — the binding enum definitions.
-- [`SKILL_AUDIT_LOOP.md`](../SKILL_AUDIT_LOOP.md) — the audit-loop procedure that produces the verdicts.
-- [`SKILL_AUDIT_LOOP.md` § Part 3 — Per-Skill Audit Runbook](../SKILL_AUDIT_LOOP.md#part-3--per-skill-audit-runbook) § 4c — how each verdict is written during a per-skill audit pass.
+- [`skill-audit-loop/SKILL_AUDIT_LOOP.md`](../skill-audit-loop/SKILL_AUDIT_LOOP.md) — the audit-loop procedure that produces the verdicts.
+- [`skill-audit-loop/SKILL_AUDIT_LOOP.md` § Part 3 — Per-Skill Audit Runbook](../skill-audit-loop/SKILL_AUDIT_LOOP.md#part-3--per-skill-audit-runbook) § 4c — how each verdict is written during a per-skill audit pass.
 - `.claude/rules/version-schema-contract.md` § 5–7 — the `PROVISIONAL > UNVERIFIED` confidence rule and the "labels are earned, not bumped" doctrine.
 - [`docs/comprehension-eval-spec.md`](comprehension-eval-spec.md) — the binding shape for `evals/comprehension.json`, the artifact the comprehension grader evaluates against.
 
@@ -152,7 +152,7 @@ PASS / APPLICABLE  >  PROVISIONAL  >  UNVERIFIED
 The following files previously restated parts of this content; they now carry a one-line summary + a link to this file. If you find a new restatement, fix it the same way:
 
 - `skill-graph/AGENTS.md:50` (Mission and Vision § "application_verdict is the primary quality signal")
-- `skill-graph/SKILL_AUDIT_LOOP.md:24-30` + `:82-92` (verdict definitions in audit doctrine)
+- `skill-graph/skill-audit-loop/SKILL_AUDIT_LOOP.md:24-30` + `:82-92` (verdict definitions in audit doctrine)
 - `docs/reference/skill-audit-pipeline.md:22` (tier paragraph)
 - `.claude/rules/version-schema-contract.md:33-44` (confidence-tier rule)
 - `skill-graph/docs/adr/0011-split-audit-verdict-into-four-verdicts.md` (ADR rationale + definitions)

@@ -5,6 +5,8 @@
 > Authors: Opus 4.7 session (2026-05-25) following the canonical-source-cleanup roundtable brief at `.roundtable/canonical-source-cleanup-2026-05-25/`
 > Related: ADR-0009 (sibling repo deprecation; this ADR extends the same pattern from canonical *source code* to canonical *operational prompts*).
 
+> **Amendment (2026-05-31) — runner prompts relocated within the repo.** The four runner prompts moved from `skill-graph/audits/prompts/` to `skill-graph/skill-audit-loop/prompts/` as part of the documentation-front-door reorganization (the new `skill-audit-loop/` folder collects the audit-loop spec and its runner prompts behind a `README.md`). This is a relocation only — the prompts remain **project-owned** exactly as this ADR establishes; the decision is unchanged. `audits/manifest.json` runner paths, the `audits-manifest.schema.json` `^skill-graph/skill-audit-loop/prompts/` pattern, the workspace `prompts/audits/` back-compat stubs, and all cross-references were updated in the same change. The decision body below still reads `audits/prompts/` for historical fidelity; the live path is `skill-audit-loop/prompts/`.
+
 ## Status
 
 **Accepted.** Migration executed in three commits on 2026-05-25:

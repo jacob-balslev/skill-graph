@@ -2,15 +2,15 @@
 
 > **Scope.** This document is the authored-to-generated bridge for Skill Graph: it specifies exactly how every top-level field in a `SKILL.md` frontmatter block projects into the compiled `skills.manifest.json` that downstream tooling consumes.
 >
-> **Audience.** Authors of manifest generators and consumers of the manifest. If you are authoring a skill itself, read [`SKILL_METADATA_PROTOCOL.md`](../SKILL_METADATA_PROTOCOL.md) and [`docs/SKILL_METADATA_PROTOCOL_field-reference.md`](SKILL_METADATA_PROTOCOL_field-reference.md) instead. This document owns the transformation from authored to generated.
+> **Audience.** Authors of manifest generators and consumers of the manifest. If you are authoring a skill itself, read [`skill-metadata-protocol/SKILL_METADATA_PROTOCOL.md`](../skill-metadata-protocol/SKILL_METADATA_PROTOCOL.md) and [`skill-metadata-protocol/field-reference.md`](../skill-metadata-protocol/field-reference.md) instead. This document owns the transformation from authored to generated.
 >
 > **Authority.** `schemas/SKILL_METADATA_PROTOCOL_schema.json` is the authored schema. `schemas/manifest.schema.json` is the generated manifest schema. This document explains the mapping between them and may not contradict either schema.
 
 ## Related documents
 
-- [`SKILL_METADATA_PROTOCOL.md`](../SKILL_METADATA_PROTOCOL.md) — normative public spec for the authored `SKILL.md` protocol.
-- [`docs/SKILL_METADATA_PROTOCOL_field-reference.md`](SKILL_METADATA_PROTOCOL_field-reference.md) — per-field authoring reference.
-- [`docs/skill-metadata-protocol.md`](skill-metadata-protocol.md) — rationale and deep explanation.
+- [`skill-metadata-protocol/SKILL_METADATA_PROTOCOL.md`](../skill-metadata-protocol/SKILL_METADATA_PROTOCOL.md) — normative public spec for the authored `SKILL.md` protocol.
+- [`skill-metadata-protocol/field-reference.md`](../skill-metadata-protocol/field-reference.md) — per-field authoring reference.
+- [`skill-metadata-protocol/design-rationale.md`](../skill-metadata-protocol/design-rationale.md) — rationale and deep explanation.
 - [`schemas/SKILL_METADATA_PROTOCOL_schema.json`](../schemas/SKILL_METADATA_PROTOCOL_schema.json) — enforceable JSON Schema for authored frontmatter.
 - [`schemas/manifest.schema.json`](../schemas/manifest.schema.json) — enforceable JSON Schema for the generated manifest.
 - [`examples/skills.manifest.sample.json`](../examples/skills.manifest.sample.json) — sample manifest showing the generated shape for the current `skills/` library plus the template.
@@ -349,7 +349,7 @@ grounding:
   subject_matter: Skill authoring for the Skill Metadata Protocol frontmatter
   grounding_mode: repo_specific
   truth_sources:
-    - docs/skill-metadata-protocol.md
+    - skill-metadata-protocol/design-rationale.md
     - schemas/SKILL_METADATA_PROTOCOL_schema.json
   failure_modes:
     - placeholder_sludge
@@ -399,7 +399,7 @@ lifecycle:
     "subject_matter": "Skill authoring for the Skill Metadata Protocol frontmatter",
     "grounding_mode": "repo_specific",
     "truth_sources": [
-      "docs/skill-metadata-protocol.md",
+      "skill-metadata-protocol/design-rationale.md",
       "schemas/SKILL_METADATA_PROTOCOL_schema.json"
     ],
     "failure_modes": ["placeholder_sludge", "cargo_cult_meta_sections"],

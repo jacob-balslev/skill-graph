@@ -4,7 +4,7 @@
  *
  * One-shot codemod that adds inline field-purpose comment blocks above each
  * frontmatter field in SKILL.md files, per the convention established in
- * skill-graph/SKILL_METADATA_PROTOCOL.md § "Inline field comments — the
+ * skill-graph/skill-metadata-protocol/SKILL_METADATA_PROTOCOL.md § "Inline field comments — the
  * authoring convention" (commit d9fe52f) and demonstrated on
  * skills/meta-methods/first-principles-thinking/SKILL.md (commit d6c13e4).
  *
@@ -72,7 +72,7 @@ const path = require('path');
 // Source of truth for the content of these blocks: the canonical specimen at
 // skill-graph/examples/skill-metadata-template.md (commit 7faadf9) and the
 // pilot at skills/meta-methods/first-principles-thinking/SKILL.md
-// (commit d6c13e4). When `docs/SKILL_METADATA_PROTOCOL_field-reference.md` and these blocks disagree,
+// (commit d6c13e4). When `skill-metadata-protocol/field-reference.md` and these blocks disagree,
 // the reference doc wins and these blocks get corrected (per the convention
 // established in d9fe52f).
 // -----------------------------------------------------------------------------
@@ -236,7 +236,7 @@ const FIELD_COMMENTS = {
   ],
   structural_verdict: [
     '# === Health Block (written by the audit loop, not hand-authored) ===',
-    '# See SKILL_AUDIT_LOOP.md § The Health Block. UNVERIFIED is the honest default.',
+    '# See skill-audit-loop/SKILL_AUDIT_LOOP.md § The Health Block. UNVERIFIED is the honest default.',
     '#',
     '# structural_verdict: form/export shape (gates 1-2, 7 — external mandates only).',
     '# PASS / PASS_WITH_FIXES / FAIL / UNVERIFIED.',
@@ -286,7 +286,7 @@ const SECTION_DIVIDERS = {
 };
 
 // Two indentations are supported (two physical encodings, one logical contract
-// per SKILL_METADATA_PROTOCOL.md § Two physical encodings):
+// per skill-metadata-protocol/SKILL_METADATA_PROTOCOL.md § Two physical encodings):
 //   - Nested encoding (Agent-Skills-compatible): every field under `metadata:`
 //     at 2-space indent. The canonical library uses this.
 //   - Flat top-level encoding (protocol-native illustrative form): every field

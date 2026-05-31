@@ -1,7 +1,7 @@
 # Proposal — Complete the Skill Audit Loop's fix paths (deterministic `repair` + folded eval cold-start)
 
 > **Status:** Proposal (draft — for discussion, no code yet).
-> **Mode:** SYSTEM (audit-loop infrastructure). Building this edits `lib/audit/**`, a command resolver, and `SKILL_AUDIT_LOOP.md`.
+> **Mode:** SYSTEM (audit-loop infrastructure). Building this edits `lib/audit/**`, a command resolver, and `skill-audit-loop/SKILL_AUDIT_LOOP.md`.
 > **Date:** 2026-05-28.
 > **Origin:** SH-6596 (v8 corpus migration) surfaced that the corpus *cannot be migrated through the loop today*. Rather than bypass the loop with an external script (rejected — the loop must be the only gate for skill changes), this proposal closes the structural gap that makes the bypass tempting.
 > **Companion (settled, SYSTEM):** `~/Development/docs/plans/skill-graph-system-side-finish-2026-05-28.md` — the v8 schema is complete; this proposal is about the loop's ability to *apply* it.
@@ -27,7 +27,7 @@ The Karpathy keep-or-revert inner loop (`improve`: one field → edit → evalua
 - **`improve` is LLM-driven + eval-pass-rate-gated** — `runImprover()` spawns a model CLI; `evaluateCandidateGate()` keeps/reverts on eval delta. A shape rename doesn't raise an eval score → would be reverted as "did not improve."
 - **`audit` detects but cannot fix the migration** — `lib/audit/skill-audit.js:339` classifies "Schema migration" as a finding category and writes report artifacts + Audit Status; it does not rewrite frontmatter. The `audit` Integrity pipeline is eval-independent and runs on all 155 skills (`skill-audit.js` runLint/runDrift; graders only under `--graded`).
 - **No deterministic migration function exists anywhere** in `lib/` or `scripts/` (grep for `migrateSkill`/`normalizeToSchema`/`upgradeSkill` → none).
-- **The eval gap is known and planned, not a bug** — `SKILL_AUDIT_LOOP.md:31,73,78`: the runner (`evaluate-skill.js`) is wired; authoring eval data is the "Level 0 → Level 1 lift." Eval-less skills are a content backlog the loop was built to drain, **not** what blocks SH-6596.
+- **The eval gap is known and planned, not a bug** — `skill-audit-loop/SKILL_AUDIT_LOOP.md:31,73,78`: the runner (`evaluate-skill.js`) is wired; authoring eval data is the "Level 0 → Level 1 lift." Eval-less skills are a content backlog the loop was built to drain, **not** what blocks SH-6596.
 
 **Conclusion:** the corpus genuinely cannot be migrated through the loop today, because the loop has no deterministic Integrity-gate fix path. This is a real system gap, not a content chore.
 

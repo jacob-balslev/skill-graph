@@ -1,7 +1,7 @@
 # Skill Graph Concept Map
 
 > **Status:** Reality-aligned teaching reference as of **2026-05-28** (schema_version 8).
-> **Source of truth precedence:** `schemas/SKILL_METADATA_PROTOCOL_schema.json` > `docs/SKILL_METADATA_PROTOCOL_field-reference.md` > this file.
+> **Source of truth precedence:** `schemas/SKILL_METADATA_PROTOCOL_schema.json` > `skill-metadata-protocol/field-reference.md` > this file.
 > **Purpose:** Explain the 40-field Skill Metadata Protocol frontmatter at a conceptual level without inventing structure that the schema does not actually enforce. If this file disagrees with the schema, the schema wins — fix this file.
 
 ## What kind of graph is this?
@@ -18,7 +18,7 @@ What it does promise: deterministic lint, manifest generation, relation-aware ro
 
 ## The 56 authored fields — grouped by role
 
-The fields split into conceptual groups. This grouping is a teaching aid only — the schema groups by requiredness and conditional rules. See `docs/skill-metadata-protocol.md § Requiredness Groups` for the authoritative grouping.
+The fields split into conceptual groups. This grouping is a teaching aid only — the schema groups by requiredness and conditional rules. See `skill-metadata-protocol/design-rationale.md § Requiredness Groups` for the authoritative grouping.
 
 The exact field count:
 
@@ -155,7 +155,7 @@ The taxonomy-vs-routing-group coupling is intentional for ergonomics (a router c
 
 ## Body structure
 
-The skill body follows the section structure demonstrated by `examples/skill-metadata-template.md` — at minimum `## Coverage`, `## Philosophy of the skill`, `## Verification`, and `## Do NOT Use When`. v8 has no archetype-specific section requirements; see [`docs/skill-metadata-protocol.md § Body Structure`](skill-metadata-protocol.md#body-structure).
+The skill body follows the section structure demonstrated by `examples/skill-metadata-template.md` — at minimum `## Coverage`, `## Philosophy of the skill`, `## Verification`, and `## Do NOT Use When`. v8 has no archetype-specific section requirements; see [`skill-metadata-protocol/design-rationale.md § Body Structure`](../skill-metadata-protocol/design-rationale.md#body-structure).
 
 ## How the concept map differs from earlier drafts (drift log)
 
@@ -172,9 +172,9 @@ An earlier concept map (pre-2026-04-20) contained six inaccuracies now corrected
 
 - `schemas/SKILL_METADATA_PROTOCOL_schema.json` — current canonical schema (source of truth for types and requiredness)
 - `schemas/skill.context.jsonld` — JSON-LD `@context` for W3C interoperability
-- `docs/skill-metadata-protocol.md` — requiredness groups, body structure, schema strictness
-- `docs/SKILL_METADATA_PROTOCOL_field-reference.md` — per-field semantics (authoritative prose)
-- `docs/SKILL_METADATA_PROTOCOL_field-decision-guide.md` — decision tables
+- `skill-metadata-protocol/design-rationale.md` — requiredness groups, body structure, schema strictness
+- `skill-metadata-protocol/field-reference.md` — per-field semantics (authoritative prose)
+- `skill-metadata-protocol/field-decision-guide.md` — decision tables
 - `docs/adr/0001-predicate-set.md` — predicate evolution decision
 - `docs/adr/0002-json-ld-context.md` — W3C vocabulary mapping decision
 - `docs/adr/0004-persistent-identifiers.md` — URN scheme for v4

@@ -2,7 +2,7 @@
 
 > **Canonical location:** `skill-graph/audits/merge-protocol.md` (project-owned per ADR-0016 surface #2; relocated 2026-05-25 from `.opencode/commands/skill-audit-merge-v1.md`).
 >
-> Portable across OpenCode, Codex, and Claude. Extends [`skill-graph/SKILL_AUDIT_LOOP.md` § Part 3 — Per-Skill Audit Runbook](../SKILL_AUDIT_LOOP.md#part-3--per-skill-audit-runbook) (the project-owned per-skill audit contract) with dynamic claiming and a union-curate merge so several models can audit the same skill and we keep the union of all valuable work. Full design: [`skill-graph/docs/skill-audit-multimodel-merge.md`](../docs/skill-audit-multimodel-merge.md).
+> Portable across OpenCode, Codex, and Claude. Extends [`skill-graph/skill-audit-loop/SKILL_AUDIT_LOOP.md` § Part 3 — Per-Skill Audit Runbook](../skill-audit-loop/SKILL_AUDIT_LOOP.md#part-3--per-skill-audit-runbook) (the project-owned per-skill audit contract) with dynamic claiming and a union-curate merge so several models can audit the same skill and we keep the union of all valuable work. Full design: [`skill-graph/docs/skill-audit-multimodel-merge.md`](../docs/skill-audit-multimodel-merge.md).
 >
 > **Audit Doctrine** (unchanged from the per-skill contract): evaluate each skill on (1) fidelity to its declared intent and (2) teaching efficacy (`application_verdict`). Lint is a floor, never the goal.
 >

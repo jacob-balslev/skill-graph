@@ -124,7 +124,7 @@ The asymmetry: the workspace's typed-field discipline (`anti_examples`, `relatio
 
 **Deduplication.** Before synthesizing, the projector scans the base description for `(use <slug>)` mentions. Any slug already named in the canonical/override description is excluded from the projected tail, so the same `(use <slug>)` reference is never stacked twice in the exported text. The dedupe set is shared across `anti_examples` and `relations.boundary` so cross-source duplication is also prevented.
 
-**Doctrine fit — augment, not replace.** The workspace's existing mandate that canonical descriptions include their own `Do NOT use for X (use Y).` clause (per `SKILL_METADATA_PROTOCOL.md` § Identity and `AGENTS.md` § Skill Metadata Protocol — Quick Reference) is unchanged. The projection runs **on top of** the canonical clause and only adds entries the canonical clause did not already name.
+**Doctrine fit — augment, not replace.** The workspace's existing mandate that canonical descriptions include their own `Do NOT use for X (use Y).` clause (per `skill-metadata-protocol/SKILL_METADATA_PROTOCOL.md` § Identity and `AGENTS.md` § Skill Metadata Protocol — Quick Reference) is unchanged. The projection runs **on top of** the canonical clause and only adds entries the canonical clause did not already name.
 
 ### 1024-character ceiling enforcement
 

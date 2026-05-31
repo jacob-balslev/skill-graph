@@ -2,11 +2,11 @@
 
 > Type: Reference
 > Purpose: connect each doctrine step in the Skill Audit Loop to the actual script that runs it, the files it touches, the verdict fields it writes, and the conditions under which it can be skipped. Surfaces ADR 0009 canonical-source drift visually.
-> Source of truth: [../SKILL_AUDIT_LOOP.md](../SKILL_AUDIT_LOOP.md) (doctrine), [skill-audit-pipeline.md](../../docs/reference/skill-audit-pipeline.md) (pipeline reference), [field-state-matrix.md](./field-state-matrix.md) (which fields are loop-written).
+> Source of truth: [../SKILL_AUDIT_LOOP.md](../skill-audit-loop/SKILL_AUDIT_LOOP.md) (doctrine), [skill-audit-pipeline.md](../../docs/reference/skill-audit-pipeline.md) (pipeline reference), [field-state-matrix.md](./field-state-matrix.md) (which fields are loop-written).
 
 ## The loop in one sentence
 
-The Skill Audit Loop is **Karpathy's auto-improvement loop** (one editable asset, one scalar metric, one time box, keep-or-revert based on a single measurable signal) applied to skill files, using **Design Thinking**'s "read before changing" framing as the prelude. It is NOT a migration system; the keep-or-revert metric gate is the load-bearing distinction. See [../SKILL_AUDIT_LOOP.md:11](../SKILL_AUDIT_LOOP.md).
+The Skill Audit Loop is **Karpathy's auto-improvement loop** (one editable asset, one scalar metric, one time box, keep-or-revert based on a single measurable signal) applied to skill files, using **Design Thinking**'s "read before changing" framing as the prelude. It is NOT a migration system; the keep-or-revert metric gate is the load-bearing distinction. See [../SKILL_AUDIT_LOOP.md:11](../skill-audit-loop/SKILL_AUDIT_LOOP.md).
 
 ## The four operations (outer layer)
 
@@ -17,7 +17,7 @@ The Skill Audit Loop is **Karpathy's auto-improvement loop** (one editable asset
 | **evaluate** | Run the eval suite (deterministic + comprehension/application graders). | No (eval/Audit Status only) | `eval_score`, `eval_failed_ids`, `freshness`; `comprehension_verdict` / `application_verdict` when those graders run |
 | **evolve** | For-loop over the corpus: `audit → improve → evaluate`, prioritised by `application_verdict` then graph centrality + staleness. | Yes (per skill) | All of the above, per skill |
 
-The Karpathy keep-or-revert gate applies in `improve`: if `eval_score` does not improve (or regresses below threshold), the commit is reverted automatically. The loop records the failed attempt and moves to the next field. See [../SKILL_AUDIT_LOOP.md:120-137](../SKILL_AUDIT_LOOP.md).
+The Karpathy keep-or-revert gate applies in `improve`: if `eval_score` does not improve (or regresses below threshold), the commit is reverted automatically. The loop records the failed attempt and moves to the next field. See [../SKILL_AUDIT_LOOP.md:120-137](../skill-audit-loop/SKILL_AUDIT_LOOP.md).
 
 ## The audit pipeline (inner layer of `audit`)
 
@@ -37,7 +37,7 @@ Both columns "Script (canonical)" and "Script (root, legacy)" should converge to
 
 - Per ADR 0009 (sibling-repo deprecation), `skill-graph/` is the canonical implementation post-2026-05-18.
 - The root copies under `scripts/skill/` are legacy; SH-6198 tracks their deletion or delegation.
-- The `--application` entry point was canonicalized in commit `342a67f`, but the body still delegates to root. See `skill-graph/audits/prompts/skill-audit-loop-single-model.md` Step 6 notes.
+- The `--application` entry point was canonicalized in commit `342a67f`, but the body still delegates to root. See `skill-graph/skill-audit-loop/prompts/skill-audit-loop-single-model.md` Step 6 notes.
 - When the audit pipeline writes to a Audit Status field, **verify which script wrote it** (root vs skill-graph): the legacy root script can still produce non-canonical verdicts.
 
 This duplication is a canonical/version-control issue, not a naming or teachability problem. The intervention is finishing ADR 0009, not renaming.
@@ -81,7 +81,7 @@ for skill in priority_order(application_verdict first, then graph centrality + l
   write Audit Status fields back
 ```
 
-Source: [../SKILL_AUDIT_LOOP.md:138-162](../SKILL_AUDIT_LOOP.md).
+Source: [../SKILL_AUDIT_LOOP.md:138-162](../skill-audit-loop/SKILL_AUDIT_LOOP.md).
 
 **Documented vs implemented divergence (open):** the documented evolve pseudocode branches on structural / truth / comprehension / application failures, but the root impl at `scripts/skill/skill-evolution-loop.js:495-512` only calls `improve` for structural failures or `PASS_WITH_FIXES`. Truth / comprehension / application failures are routed to separate repair paths and not auto-fixed in `evolve`. This is a doctrine-vs-impl gap to track.
 
@@ -148,14 +148,14 @@ Single-model audits remain acceptable for low-centrality skills where a verifica
 
 1. **A clean lint verdict can be mistaken for a useful skill.** Doctrine rejects this interpretation, but the root linter can still write a passing `lint_verdict` while internal findings remain non-fatal at `scripts/skill/skill-lint.js:33-40` and `scripts/skill/skill-lint.js:490-510`.
 2. **A stub audit can complete without proving behavior.** `skill-graph/lib/audit/skill-audit.js:431-502` creates a verdict with Behavior Gate `UNVERIFIED` and human TODOs. Honest, but easy to overread as "audited."
-3. **Behavior remains `UNVERIFIED` and still satisfies audit-complete** if it is explicit and evidenced. Doctrinally intentional at [../SKILL_AUDIT_LOOP.md:23-32](../SKILL_AUDIT_LOOP.md), but it is also a skip path if reviewers do not inspect the evidence.
+3. **Behavior remains `UNVERIFIED` and still satisfies audit-complete** if it is explicit and evidenced. Doctrinally intentional at [../SKILL_AUDIT_LOOP.md:23-32](../skill-audit-loop/SKILL_AUDIT_LOOP.md), but it is also a skip path if reviewers do not inspect the evidence.
 4. **The version-earned gate fail-opens when repository inspection is unavailable** (`scripts/skill/check-version-earned.js:35-40`).
 5. **Claim ownership checks fail open when git metadata is unavailable** (`scripts/skill/skill-audit-claim.js:158-159`, `:173-174`).
-6. **Baseline corpus lint errors are allowed during single-skill preflight.** Per `skill-graph/audits/prompts/skill-audit-loop-single-model.md:51-72`, baseline failures should not stop the run. If the baseline is not captured, new failures can hide in old noise.
+6. **Baseline corpus lint errors are allowed during single-skill preflight.** Per `skill-graph/skill-audit-loop/prompts/skill-audit-loop-single-model.md:51-72`, baseline failures should not stop the run. If the baseline is not captured, new failures can hide in old noise.
 7. **Application certification depends on calibration**, but the code path can still stamp a verdict receipt. The grader says results are advisory until calibrated and should not stamp `APPLICABLE` without a receipt at `skill-graph/lib/audit/graders/application-comparative-grader-prompt.md:77-83`; the evaluator writes `application_verdict` and `eval_last_run` when a mode result is available at `skill-graph/lib/audit/evaluate-skill.js:1442-1508`.
 8. **Completion is ledger-derived**, so artifacts without release can look like progress but not count.
 9. **Export blocks only structural failure, not behavior uncertainty.** Marketplace export at `skill-graph/scripts/export-marketplace-skills.js:314-324` blocks `structural_verdict: FAIL`; behavior `UNVERIFIED` is a quality risk rather than a hard export blocker.
-10. **Metadata is stripped during export.** Per [../SKILL_METADATA_PROTOCOL.md:47-48](../SKILL_METADATA_PROTOCOL.md), export-provenance fields are stripped; Health and Understanding fields are stripped per `skill-graph/scripts/export-skill.js:80-100`. Correct for distribution but exported artifacts cannot be treated as audit-preserving source.
+10. **Metadata is stripped during export.** Per [../SKILL_METADATA_PROTOCOL.md:47-48](../skill-metadata-protocol/SKILL_METADATA_PROTOCOL.md), export-provenance fields are stripped; Health and Understanding fields are stripped per `skill-graph/scripts/export-skill.js:80-100`. Correct for distribution but exported artifacts cannot be treated as audit-preserving source.
 
 ## Quick commands
 
@@ -192,14 +192,14 @@ node lib/audit/skill-status.js <skill-name>
 
 ## Related
 
-- [../SKILL_AUDIT_LOOP.md](../SKILL_AUDIT_LOOP.md), the doctrine (the why)
+- [../SKILL_AUDIT_LOOP.md](../skill-audit-loop/SKILL_AUDIT_LOOP.md), the doctrine (the why)
 - [../../docs/reference/skill-audit-pipeline.md](../../docs/reference/skill-audit-pipeline.md), the pipeline reference (the what at corpus level)
 - [field-state-matrix.md](./field-state-matrix.md), which fields each script writes
 - [AUTHORING-QUICKSTART.md](./AUTHORING-QUICKSTART.md), the author's view
 - [adr/0009-sibling-repo-deprecation.md](./adr/0009-sibling-repo-deprecation.md), why `skill-graph/` is canonical
 - [adr/0011-split-audit-verdict-into-four-verdicts.md](./adr/0011-split-audit-verdict-into-four-verdicts.md), why four verdicts instead of one
 - [adr/0014-canonical-only-schema-files.md](./adr/0014-canonical-only-schema-files.md), why prior schema versions live in git history only
-- `skill-graph/SKILL_AUDIT_LOOP.md#part-3--per-skill-audit-runbook`, the active per-skill execution contract (project-owned per ADR 0015; moved 2026-05-25)
+- `skill-graph/skill-audit-loop/SKILL_AUDIT_LOOP.md#part-3--per-skill-audit-runbook`, the active per-skill execution contract (project-owned per ADR 0015; moved 2026-05-25)
 - `.opencode/commands/skill-audit-loop.md`, the queue wrapper
-- `skill-graph/audits/prompts/skill-audit-loop-single-model.md`, the cross-CLI per-skill prompt (v3)
+- `skill-graph/skill-audit-loop/prompts/skill-audit-loop-single-model.md`, the cross-CLI per-skill prompt (v3)
 - `skill-audit-multimodel-merge-v2.md`, the multi-model union-merge protocol

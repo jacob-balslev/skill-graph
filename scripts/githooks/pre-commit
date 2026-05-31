@@ -3,7 +3,7 @@
 # pre-commit — Skill-graph repo work-mode separation warning (tracked git hook).
 #
 # Enforces the SYSTEM vs CONTENT split for commits made INSIDE the skill-graph repo:
-#   - SYSTEM = schemas/, docs/, audits/prompts/, audits/_state/, scripts/, bin/, SKILL_*.md, etc.
+#   - SYSTEM = schemas/, docs/, skill-metadata-protocol/, skill-audit-loop/, audits/_state/, scripts/, bin/, SKILL_*.md, etc.
 #   - CONTENT = audits/<skill-name>/ per-skill audit artifacts.
 #
 # Workspace-level SKILL.md commits are gated by the parent Development repo's hook

@@ -1,8 +1,8 @@
 # Skill Graph Field Decision Guide
 
 > Decision tables for the three hardest field choices in a `SKILL.md` file.
-> For full field semantics and rules, see `docs/SKILL_METADATA_PROTOCOL_field-reference.md`.
-> For field groups and conditional requiredness, see `docs/skill-metadata-protocol.md`.
+> For full field semantics and rules, see `skill-metadata-protocol/field-reference.md`.
+> For field groups and conditional requiredness, see `skill-metadata-protocol/design-rationale.md`.
 
 ---
 
@@ -81,7 +81,7 @@ The distinction between these relation types is best illustrated by existing usa
 
 - **`related`** — `refactor` can declare `related: [debugging, testing-strategy]` because readers of the refactor skill would benefit from understanding debugging and testing approaches. These are topically related but not mandatory dependencies. `adjacent` remains a back-compat alias, but new skills should use `related`.
 
-- **`boundary`** — `refactor` declares `boundary: [documentation]` to assert exclusive ownership of the refactor use-case over documentation. When refactor wins a query that also matched documentation, this entry excludes documentation from co-routing. **Note:** the field name implies "defer to documentation" but the mechanic is "exclude documentation when refactor wins." Write reason text using ownership framing: `"refactor owns this use-case exclusively; documentation does not."` See WARNING in `SKILL_METADATA_PROTOCOL.md § Relations § boundary`.
+- **`boundary`** — `refactor` declares `boundary: [documentation]` to assert exclusive ownership of the refactor use-case over documentation. When refactor wins a query that also matched documentation, this entry excludes documentation from co-routing. **Note:** the field name implies "defer to documentation" but the mechanic is "exclude documentation when refactor wins." Write reason text using ownership framing: `"refactor owns this use-case exclusively; documentation does not."` See WARNING in `skill-metadata-protocol/SKILL_METADATA_PROTOCOL.md § Relations § boundary`.
 
 When a skill is a specialisation of a more general skill, use `relations.broader` to express that generalisation.
 

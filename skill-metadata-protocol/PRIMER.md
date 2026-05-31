@@ -1,6 +1,6 @@
 # Skill Graph Primer
 
-> **Read this if:** you author SKILL.md and your library is large enough that skills have started to depend on, verify, or exclude one another. This primer is the conceptual introduction to Skill Metadata Protocol and Skill Graph. It is *explanation* documentation — it answers *what* and *why*. For reference material see `docs/SKILL_METADATA_PROTOCOL_field-reference.md`; for procedures see `CONTRIBUTING.md` and `SKILL_AUDIT_LOOP.md`; for decision tables see `docs/SKILL_METADATA_PROTOCOL_field-decision-guide.md`.
+> **Read this if:** you author SKILL.md and your library is large enough that skills have started to depend on, verify, or exclude one another. This primer is the conceptual introduction to Skill Metadata Protocol and Skill Graph. It is *explanation* documentation — it answers *what* and *why*. For reference material see `skill-metadata-protocol/field-reference.md`; for procedures see `CONTRIBUTING.md` and `skill-audit-loop/SKILL_AUDIT_LOOP.md`; for decision tables see `skill-metadata-protocol/field-decision-guide.md`.
 
 **Status.** Stable for `schema_version: 8`. The prior contract (v7) lives in git history; retrieve via `git show schema-v7:schemas/SKILL_METADATA_PROTOCOL_schema.json`.
 **Audience.** Skill authors who need skills to declare their relevance: which area they cover, which angle they take, which project or stack they fit, which taxonomy / semantic cluster they belong to, and how they should be tested or reverified. Library size is a proxy for this — these questions usually start around 5 skills, sometimes earlier if you have multiple projects, sometimes later for a single small project.
@@ -10,14 +10,14 @@
 
 | Document | Purpose |
 |---|---|
-| `docs/SKILL_METADATA_PROTOCOL_PRIMER.md` (this file) | Conceptual introduction: what Skill Graph is, when to adopt it, how the metadata composes (Diátaxis: *explanation*) |
-| [`docs/QUICKSTART-30MIN.md`](QUICKSTART-30MIN.md) | Hands-on tutorial: author your first skill in 30 minutes — clone, install, fill in the template, lint, route, record the drift baseline (Diátaxis: *tutorial*). Read this if you'd rather try the tooling first; the PRIMER is the *why* behind the *how* the QUICKSTART teaches. |
+| `skill-metadata-protocol/PRIMER.md` (this file) | Conceptual introduction: what Skill Graph is, when to adopt it, how the metadata composes (Diátaxis: *explanation*) |
+| [`docs/QUICKSTART-30MIN.md`](../docs/QUICKSTART-30MIN.md) | Hands-on tutorial: author your first skill in 30 minutes — clone, install, fill in the template, lint, route, record the drift baseline (Diátaxis: *tutorial*). Read this if you'd rather try the tooling first; the PRIMER is the *why* behind the *how* the QUICKSTART teaches. |
 | [`README.md`](../README.md) | Project overview, quick start, five-authority-tier tour |
 | [`SKILL_GRAPH.md`](../SKILL_GRAPH.md) | Repo organisation: five **authority tiers** (schema / explanation / enforcement / consumer / specimen) and the invariants CI enforces |
-| [`docs/skill-metadata-protocol.md`](skill-metadata-protocol.md) | Archetype section map, requiredness groups, schema strictness rules |
-| [`docs/SKILL_METADATA_PROTOCOL_field-reference.md`](SKILL_METADATA_PROTOCOL_field-reference.md) | Per-field semantics for all current v8 top-level fields |
-| [`docs/SKILL_METADATA_PROTOCOL_field-decision-guide.md`](SKILL_METADATA_PROTOCOL_field-decision-guide.md) | Decision tables for `deployment_target`, `scope`, `relations.*`, Evaluation Status, `portability`, `project[]` |
-| [`docs/manifest-field-mapping.md`](manifest-field-mapping.md) | The authored → generated bridge: rename map, loss policy, migration notes |
+| [`skill-metadata-protocol/design-rationale.md`](design-rationale.md) | Archetype section map, requiredness groups, schema strictness rules |
+| [`skill-metadata-protocol/field-reference.md`](field-reference.md) | Per-field semantics for all current v8 top-level fields |
+| [`skill-metadata-protocol/field-decision-guide.md`](field-decision-guide.md) | Decision tables for `deployment_target`, `scope`, `relations.*`, Evaluation Status, `portability`, `project[]` |
+| [`docs/manifest-field-mapping.md`](../docs/manifest-field-mapping.md) | The authored → generated bridge: rename map, loss policy, migration notes |
 | [SKILL.md specification](https://agentskills.io/specification) | The base standard Skill Metadata Protocol extends |
 
 > **Terminology note.** This primer describes the **four metadata layers** inside a single skill's frontmatter (Activation, Taxonomy, Ontology, Grounding). Do not confuse these with the **five authority tiers** of the repository (schema, explanation, enforcement, consumer, specimen) described in `SKILL_GRAPH.md`. They are different things at different scopes: metadata layers live inside one `SKILL.md`; authority tiers span the whole repo.
@@ -62,7 +62,7 @@ Skill Metadata Protocol is the canonical contract, not the canonical template. T
 
 ### Scope of this primer
 
-The primer transmits the **mental model** needed to read the reference material without getting lost. It does not exhaust the protocol; every field named here has a normative definition in `docs/SKILL_METADATA_PROTOCOL_field-reference.md`. Worked authoring procedures live in `CONTRIBUTING.md § Adding or modifying a skill`. Audit procedures live in `SKILL_AUDIT_LOOP.md`.
+The primer transmits the **mental model** needed to read the reference material without getting lost. It does not exhaust the protocol; every field named here has a normative definition in `skill-metadata-protocol/field-reference.md`. Worked authoring procedures live in `CONTRIBUTING.md § Adding or modifying a skill`. Audit procedures live in `skill-audit-loop/SKILL_AUDIT_LOOP.md`.
 
 ### How Skill Graph differs from marketplaces and runtimes
 
@@ -78,7 +78,7 @@ Before the four "not"s in section 8, here is what Skill Graph **is**, in relatio
 
 Agent memory belongs in the same mental map. Memory is local or product-managed recall of stable preferences, workflows, pitfalls, and recent context. Skill Graph is not memory; it gives durable skills memory-like discipline: explicit scope, retrieval signals, truth sources, freshness, and drift checks.
 
-For the standalone reference covering every neighbor with pros/cons per axis, see [`docs/positioning-vs-marketplaces.md`](positioning-vs-marketplaces.md).
+For the standalone reference covering every neighbor with pros/cons per axis, see [`docs/positioning-vs-marketplaces.md`](../docs/positioning-vs-marketplaces.md).
 
 ---
 
@@ -197,7 +197,7 @@ Two values, chosen at authoring time and enforced by the schema:
 - **`portable`** — applies to any project. Most reusable skills (for example the starter `refactor` and `testing-strategy`) use this value.
 - **`project`** — anchored to one specific project. Triggers Layer 4 (Grounding): `grounding.subject_matter`, `truth_sources`, and `drift_check.truth_source_hashes` become required, so the skill is pinned to the real artifacts it describes and the drift sentinel can catch silent divergence.
 
-`deployment_target` is the first axis the router filters on and the only axis with body-structure implications (`grounding` is conditional on `deployment_target: project`). The `scope` field is a free-text PRD-style description of the deployment context — it is not an enum and does not replace `deployment_target`. For the full decision table, see `docs/SKILL_METADATA_PROTOCOL_field-decision-guide.md § 1. Which deployment_target do I use?`.
+`deployment_target` is the first axis the router filters on and the only axis with body-structure implications (`grounding` is conditional on `deployment_target: project`). The `scope` field is a free-text PRD-style description of the deployment context — it is not an enum and does not replace `deployment_target`. For the full decision table, see `skill-metadata-protocol/field-decision-guide.md § 1. Which deployment_target do I use?`.
 
 ### 4.2 Taxonomy — *what kind of concern is this?*
 
@@ -353,8 +353,8 @@ The positive identity is in [§1 — How Skill Graph differs from marketplaces a
 - **Not persistent agent memory.** Skill Graph does not remember prior sessions. It structures durable skill knowledge so routers and humans can retrieve and reverify it.
 - **Not an always-on project instruction file.** Keep non-negotiable repo rules in AGENTS.md / CLAUDE.md; keep routable procedural knowledge in skills.
 - **Not a second skill format competing with SKILL.md.** Skill Metadata Protocol is an enriched contract over SKILL.md and can be exported to base SKILL.md (section 7).
-- **Not a tutorial.** For "how do I author my first skill," see [`docs/QUICKSTART-30MIN.md`](QUICKSTART-30MIN.md) and `CONTRIBUTING.md § Adding or modifying a skill`.
-- **Not exhaustive.** This primer transmits the mental model. Normative field semantics live in `docs/SKILL_METADATA_PROTOCOL_field-reference.md`; body structure and requiredness groups live in `docs/skill-metadata-protocol.md`; authority-tier invariants live in `SKILL_GRAPH.md`.
+- **Not a tutorial.** For "how do I author my first skill," see [`docs/QUICKSTART-30MIN.md`](../docs/QUICKSTART-30MIN.md) and `CONTRIBUTING.md § Adding or modifying a skill`.
+- **Not exhaustive.** This primer transmits the mental model. Normative field semantics live in `skill-metadata-protocol/field-reference.md`; body structure and requiredness groups live in `skill-metadata-protocol/design-rationale.md`; authority-tier invariants live in `SKILL_GRAPH.md`.
 
 ---
 
@@ -363,11 +363,11 @@ The positive identity is in [§1 — How Skill Graph differs from marketplaces a
 **Recommended reading order for a newcomer:**
 
 1. `README.md` — project overview and quick start
-2. `docs/SKILL_METADATA_PROTOCOL_PRIMER.md` — this file
+2. `skill-metadata-protocol/PRIMER.md` — this file
 3. `SKILL_GRAPH.md` — repo organisation and the five authority tiers
-4. `docs/SKILL_METADATA_PROTOCOL_field-decision-guide.md` — decision tables you will consult while authoring
-5. `docs/skill-metadata-protocol.md` — body structure and strictness rules
-6. `docs/SKILL_METADATA_PROTOCOL_field-reference.md` — per-field reference (bookmark, don't read linearly)
+4. `skill-metadata-protocol/field-decision-guide.md` — decision tables you will consult while authoring
+5. `skill-metadata-protocol/design-rationale.md` — body structure and strictness rules
+6. `skill-metadata-protocol/field-reference.md` — per-field reference (bookmark, don't read linearly)
 
 **External specification:** [SKILL.md](https://agentskills.io/specification) — the base standard Skill Metadata Protocol extends.
 

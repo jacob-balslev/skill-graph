@@ -137,7 +137,7 @@ The same checks run whether you install the npm package or vendor the script:
 
 Export compatibility is checked by the marketplace export tools, not by `skill-lint.js`.
 
-See `SKILL_AUDIT_LOOP.md` § Part 2 — Per-Skill Audit Checklist for the full list of what each check catches.
+See `skill-audit-loop/SKILL_AUDIT_LOOP.md` § Part 2 — Per-Skill Audit Checklist for the full list of what each check catches.
 
 ## Example: PR blocked by a malformed skill
 

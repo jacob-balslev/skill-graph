@@ -13,7 +13,7 @@
  *   4 | description: "..."
  *   5 | version: 1.0.0
  *
- *   help: Remove or rename 'nme' to a known field. See docs/SKILL_METADATA_PROTOCOL_field-reference.md.
+ *   help: Remove or rename 'nme' to a known field. See skill-metadata-protocol/field-reference.md.
  *
  * Zero external dependencies. Uses only Node.js built-ins.
  *

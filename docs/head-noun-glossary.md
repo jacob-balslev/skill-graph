@@ -59,5 +59,5 @@ _(empty — all reservations promoted to Active or Single-instance lists)_
 ## See also
 
 - `docs/name-exceptions.yaml` — Established industry term-of-art skills that violate the head-noun rule.
-- `SKILL_METADATA_PROTOCOL.md` § `name` — the schema pattern (`^[a-z0-9][a-z0-9-/:]*$`) is the shape; this glossary is the policy.
+- `skill-metadata-protocol/SKILL_METADATA_PROTOCOL.md` § `name` — the schema pattern (`^[a-z0-9][a-z0-9-/:]*$`) is the shape; this glossary is the policy.
 - `scripts/lint/check-category-enum.js` — companion lint check for the category axis.

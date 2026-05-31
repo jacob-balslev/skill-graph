@@ -417,7 +417,7 @@ function provenanceForSkill(sourceRelPath) {
 //
 // Doctrine fit: AUGMENT, not REPLACE. Canonical descriptions still carry the
 // workspace-mandated `Do NOT use for X (use Y).` clause per
-// SKILL_METADATA_PROTOCOL.md § Identity. The projection appends additional
+// skill-metadata-protocol/SKILL_METADATA_PROTOCOL.md § Identity. The projection appends additional
 // boundary entries the canonical clause did not name. Deduplication via
 // `collectMentionedSlugs` prevents stacking the same slug twice.
 //

@@ -5,29 +5,29 @@
     {
       "id": "skill-audit-loop",
       "version": "v3+",
-      "canonical_path": "skill-graph/SKILL_AUDIT_LOOP.md#part-3--per-skill-audit-runbook",
+      "canonical_path": "skill-graph/skill-audit-loop/SKILL_AUDIT_LOOP.md#part-3--per-skill-audit-runbook",
       "runners": [
         {
           "id": "single-model",
-          "path": "skill-graph/audits/prompts/skill-audit-loop-single-model.md",
+          "path": "skill-graph/skill-audit-loop/prompts/skill-audit-loop-single-model.md",
           "mode": "interactive-single-skill",
           "version": "v3"
         },
         {
           "id": "batch-worker-v4",
-          "path": "skill-graph/audits/prompts/skill-audit-loop-batch-worker-v4.md",
+          "path": "skill-graph/skill-audit-loop/prompts/skill-audit-loop-batch-worker-v4.md",
           "mode": "autonomous-batch-model-agnostic",
           "version": "v4"
         },
         {
           "id": "codex-autonomous-v5",
-          "path": "skill-graph/audits/prompts/skill-audit-loop-codex-autonomous-v5.md",
+          "path": "skill-graph/skill-audit-loop/prompts/skill-audit-loop-codex-autonomous-v5.md",
           "mode": "autonomous-batch-codex-cron",
           "version": "v5"
         },
         {
           "id": "minimal-iteration",
-          "path": "skill-graph/audits/prompts/skill-audit-loop-minimal-iteration.md",
+          "path": "skill-graph/skill-audit-loop/prompts/skill-audit-loop-minimal-iteration.md",
           "mode": "interactive-short-batch",
           "version": "1.0"
         }
@@ -62,37 +62,37 @@
         },
         {
           "from": ".claude/commands/audit/audit.md",
-          "to": "skill-graph/audits/prompts/skill-audit-loop-single-model.md",
+          "to": "skill-graph/skill-audit-loop/prompts/skill-audit-loop-single-model.md",
           "notes": "Claude Code slash-command resolver."
         },
         {
           "from": ".opencode/commands/audit-skill.md",
-          "to": "skill-graph/audits/prompts/skill-audit-loop-single-model.md",
+          "to": "skill-graph/skill-audit-loop/prompts/skill-audit-loop-single-model.md",
           "notes": "OpenCode slash-command resolver."
         },
         {
           "from": ".opencode/commands/skill-audit-loop.md",
-          "to": "skill-graph/audits/prompts/skill-audit-loop-codex-autonomous-v5.md",
+          "to": "skill-graph/skill-audit-loop/prompts/skill-audit-loop-codex-autonomous-v5.md",
           "notes": "OpenCode queue wrapper / launcher."
         },
         {
           "from": "prompts/audits/skill-audit-loop-single-model.md",
-          "to": "skill-graph/audits/prompts/skill-audit-loop-single-model.md",
+          "to": "skill-graph/skill-audit-loop/prompts/skill-audit-loop-single-model.md",
           "notes": "Back-compat pointer stub at workspace prompts dir."
         },
         {
           "from": "prompts/audits/skill-audit-loop-batch-worker-v4.md",
-          "to": "skill-graph/audits/prompts/skill-audit-loop-batch-worker-v4.md",
+          "to": "skill-graph/skill-audit-loop/prompts/skill-audit-loop-batch-worker-v4.md",
           "notes": "Back-compat pointer stub."
         },
         {
           "from": "prompts/audits/skill-audit-loop-codex-autonomous-v5.md",
-          "to": "skill-graph/audits/prompts/skill-audit-loop-codex-autonomous-v5.md",
+          "to": "skill-graph/skill-audit-loop/prompts/skill-audit-loop-codex-autonomous-v5.md",
           "notes": "Back-compat pointer stub."
         },
         {
           "from": "prompts/audits/skill-audit-loop-minimal-iteration.md",
-          "to": "skill-graph/audits/prompts/skill-audit-loop-minimal-iteration.md",
+          "to": "skill-graph/skill-audit-loop/prompts/skill-audit-loop-minimal-iteration.md",
           "notes": "Back-compat pointer stub."
         }
       ]

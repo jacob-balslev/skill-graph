@@ -97,7 +97,7 @@ two useful patterns"; the closing line changes "maintenance loop" to
 "re-grounding loop" to match the frame. The two bullet references and the
 seven-step list are unchanged.
 
-### 2b. SKILL_AUDIT_LOOP.md — opening (proposed rewrite)
+### 2b. skill-audit-loop/SKILL_AUDIT_LOOP.md — opening (proposed rewrite)
 
 The current opening goes straight to scope ("This document standardizes the
 repeatable loop..."). Establish purpose first.
@@ -157,4 +157,4 @@ The proposed prose was checked against the existing README voice:
 - **No exclamation, no slogans.** None used.
 - **Restraint about novelty.** The frame is explicitly stated as "not a new capability" — consistent with the README's habit of underclaiming ("not a guarantee that every skill is correct").
 - **Tables for structured comparison.** The two-axis table follows the existing README pattern of one concept per row.
-- **Existing terminology only.** Every field name used (`grounding.truth_sources`, `grounding_mode`, `freshness`, `drift_check`, `failure_modes`, `lifecycle.review_cadence`, `evidence_priority`) appears verbatim in SKILL_METADATA_PROTOCOL.md.
+- **Existing terminology only.** Every field name used (`grounding.truth_sources`, `grounding_mode`, `freshness`, `drift_check`, `failure_modes`, `lifecycle.review_cadence`, `evidence_priority`) appears verbatim in skill-metadata-protocol/SKILL_METADATA_PROTOCOL.md.

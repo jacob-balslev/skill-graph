@@ -68,7 +68,7 @@
       "required": ["id", "path", "mode", "version"],
       "properties": {
         "id": { "type": "string", "pattern": "^[a-z][a-z0-9-]+$" },
-        "path": { "type": "string", "pattern": "^skill-graph/audits/prompts/" },
+        "path": { "type": "string", "pattern": "^skill-graph/skill-audit-loop/prompts/" },
         "mode": {
           "type": "string",
           "enum": [

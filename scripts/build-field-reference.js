@@ -3,13 +3,13 @@
  * build-field-reference.js — Schema → SKILL_METADATA_PROTOCOL_field-reference.generated.md
  *
  * Reads schemas/SKILL_METADATA_PROTOCOL_schema.json (the current canonical schema) and emits
- * docs/SKILL_METADATA_PROTOCOL_field-reference.generated.md
+ * skill-metadata-protocol/field-reference.generated.md
  * with one section per top-level field. The prose is taken from the schema's
  * `description` attributes; cross-links to the full reference + glossary are
  * inserted automatically.
  *
  * Purpose: provide a drift-free field reference that is guaranteed in sync
- * with the schema. The hand-authored `docs/SKILL_METADATA_PROTOCOL_field-reference.md` stays as the
+ * with the schema. The hand-authored `skill-metadata-protocol/field-reference.md` stays as the
  * canonical prose (richer examples, when-to-use guidance, lint notes). This
  * generator produces a thinner companion doc for consumers that want a
  * machine-guaranteed index of every field.
@@ -27,7 +27,7 @@ const path = require('path');
 
 const ROOT = path.resolve(__dirname, '..');
 const SCHEMA_PATH = path.join(ROOT, 'schemas', 'SKILL_METADATA_PROTOCOL_schema.json');
-const DEFAULT_OUTPUT = path.join(ROOT, 'docs', 'SKILL_METADATA_PROTOCOL_field-reference.generated.md');
+const DEFAULT_OUTPUT = path.join(ROOT, 'skill-metadata-protocol', 'field-reference.generated.md');
 
 function parseArgs(argv) {
   const args = { output: DEFAULT_OUTPUT, check: false };
@@ -105,7 +105,7 @@ function renderField(name, prop, requiredSet) {
     parts.push('', '**Item shape (object form):**', '', renderObjectShape(prop.items), '');
   }
 
-  parts.push('', `**Full reference:** [\`docs/SKILL_METADATA_PROTOCOL_field-reference.md#${name}\`](SKILL_METADATA_PROTOCOL_field-reference.md#${name})`, '');
+  parts.push('', `**Full reference:** [\`skill-metadata-protocol/field-reference.md#${name}\`](field-reference.md#${name})`, '');
 
   return parts.join('\n').replace(/\n{3,}/g, '\n\n');
 }
@@ -116,8 +116,8 @@ function render(schema) {
     '# Skill Graph Field Reference (Generated)',
     '',
     '> **Generated from** `schemas/SKILL_METADATA_PROTOCOL_schema.json` by `scripts/build-field-reference.js`.',
-    '> **Do not edit by hand.** The canonical prose reference is [\`docs/SKILL_METADATA_PROTOCOL_field-reference.md\`](SKILL_METADATA_PROTOCOL_field-reference.md).',
-    '> **Predicate glossary:** [\`docs/glossary.md\`](glossary.md).',
+    '> **Do not edit by hand.** The canonical prose reference is [\`skill-metadata-protocol/field-reference.md\`](field-reference.md).',
+    '> **Predicate glossary:** [\`docs/glossary.md\`](../docs/glossary.md).',
     '> **JSON-LD @context:** [\`schemas/skill.context.jsonld\`](../schemas/skill.context.jsonld).',
     '',
     `Schema version: **${schema.properties.schema_version?.oneOf?.[0]?.const ?? 'unknown'}** · Field count: **${Object.keys(schema.properties).length}** · Required: **${requiredSet.size}**`,

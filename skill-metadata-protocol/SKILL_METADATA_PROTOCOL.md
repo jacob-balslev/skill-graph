@@ -1,13 +1,13 @@
 # Skill Metadata Protocol
 
-> **Work-mode rule (read FIRST).** Editing this document, the schemas it normalizes against, the audit prompts, or the audit/lint/drift scripts is **SYSTEM work**. Editing individual `SKILL.md` files to conform to this contract is **CONTENT work** that runs ONLY via `/audit:audit`, `/audit:improve`, `/audit:evaluate`, `/audit:evolve`. Do not mix them in the same task or commit. Full doctrine: [`AGENTS.md` § Work Modes — SYSTEM vs CONTENT](AGENTS.md#work-modes--system-vs-content).
+> **Work-mode rule (read FIRST).** Editing this document, the schemas it normalizes against, the audit prompts, or the audit/lint/drift scripts is **SYSTEM work**. Editing individual `SKILL.md` files to conform to this contract is **CONTENT work** that runs ONLY via `/audit:audit`, `/audit:improve`, `/audit:evaluate`, `/audit:evolve`. Do not mix them in the same task or commit. Full doctrine: [`AGENTS.md` § Work Modes — SYSTEM vs CONTENT](../AGENTS.md#work-modes--system-vs-content).
 
 > **Spec version:** 1.6.0 (`schema_version: 8`, Skill Graph 0.5.10)
 > **Currently enforced by `schemas/SKILL_METADATA_PROTOCOL_schema.json`:** v8. The schema's global `required` array mandates `subject` + `deployment_target` + `scope` (`scope` is required free text, not an enum). See [§ Schema contract](#schema-contract).
-> **Single source of truth for "what is enforced today":** [`SKILL_GRAPH.md § Current State`](SKILL_GRAPH.md#current-state--single-source-of-truth) — link there from any doc that needs the live answer; do not restate.
+> **Single source of truth for "what is enforced today":** [`SKILL_GRAPH.md § Current State`](../SKILL_GRAPH.md#current-state--single-source-of-truth) — link there from any doc that needs the live answer; do not restate.
 > **Machine-readable schema:** `schemas/SKILL_METADATA_PROTOCOL_schema.json`
-> **Detailed field reference:** `docs/SKILL_METADATA_PROTOCOL_field-reference.md`
-> **Full semantics + design rationale:** `docs/skill-metadata-protocol.md`
+> **Detailed field reference:** `skill-metadata-protocol/field-reference.md`
+> **Full semantics + design rationale:** `skill-metadata-protocol/design-rationale.md`
 > **v8 design rationale:** `docs/adr/0017-five-axis-classification-model.md` (operation axis retired 2026-05-27, see amendment block)
 > **Prior contract:** retrievable via `git show schema-v7:schemas/SKILL_METADATA_PROTOCOL_schema.json`; not accepted by the live schema.
 
@@ -19,13 +19,13 @@
 
 This document is the top-level public contract for the Skill Metadata Protocol frontmatter format — the **normative spec**. It defines which fields are required, what each field means in operational terms, which fields are authored by humans vs computed by tooling, and how to migrate from older schema versions. Skill Graph is the library-level system that consumes this contract. The prose is terse and boundary-aware: every clause is a rule a consumer or author can verify against the schema and the focused Skill Graph verification tools.
 
-**Companion docs by genre.** This contract is the *what*. The *why* — design rationale, archetype semantics, OntoClean rigidity, the Evaluation Status's orthogonality, the JSON-LD W3C mappings, and the philosophical posture behind the field choices — lives in [`skill-metadata-protocol.md`](docs/skill-metadata-protocol.md). The two docs are coordinated and grow together: a normative rule that lacks a "why" is fragile; a "why" that lacks a normative rule is vapourware. If you are authoring a SKILL.md, you read this file. If you are deciding whether to add a field to the schema, you read both.
+**Companion docs by genre.** This contract is the *what*. The *why* — design rationale, archetype semantics, OntoClean rigidity, the Evaluation Status's orthogonality, the JSON-LD W3C mappings, and the philosophical posture behind the field choices — lives in [`skill-metadata-protocol.md`](design-rationale.md). The two docs are coordinated and grow together: a normative rule that lacks a "why" is fragile; a "why" that lacks a normative rule is vapourware. If you are authoring a SKILL.md, you read this file. If you are deciding whether to add a field to the schema, you read both.
 
 ---
 
 ## Charter — Rules & Goal
 
-**Mission & Vision** are shared across all three layers (Skill Metadata Protocol, Skill Audit Loop, Skill Graph); the canonical statement is [`AGENTS.md § Mission and Vision`](AGENTS.md#mission-and-vision). This section records the **Protocol layer's** own Rules and Goal, so an agent editing this contract knows what it is bound by and what it is for.
+**Mission & Vision** are shared across all three layers (Skill Metadata Protocol, Skill Audit Loop, Skill Graph); the canonical statement is [`AGENTS.md § Mission and Vision`](../AGENTS.md#mission-and-vision). This section records the **Protocol layer's** own Rules and Goal, so an agent editing this contract knows what it is bound by and what it is for.
 
 ### Rules
 
@@ -42,7 +42,7 @@ This document is the top-level public contract for the Skill Metadata Protocol f
 
 ### Goal
 
-Be the default open-source structure for project-relevant AI-agent skills: simple enough to author, strict enough to validate, and expressive enough to make a `SKILL.md` useful for a real codebase instead of a generic prompt snippet. Near-term: keep this doc, `schemas/SKILL_METADATA_PROTOCOL_schema.json`, `schemas/manifest.schema.json`, and `docs/SKILL_METADATA_PROTOCOL_field-reference.md` in exact agreement, and keep the public skill shape Agent-Skills-compatible while preserving the richer local metadata that routing and audit depend on.
+Be the default open-source structure for project-relevant AI-agent skills: simple enough to author, strict enough to validate, and expressive enough to make a `SKILL.md` useful for a real codebase instead of a generic prompt snippet. Near-term: keep this doc, `schemas/SKILL_METADATA_PROTOCOL_schema.json`, `schemas/manifest.schema.json`, and `skill-metadata-protocol/field-reference.md` in exact agreement, and keep the public skill shape Agent-Skills-compatible while preserving the richer local metadata that routing and audit depend on.
 
 ---
 
@@ -119,10 +119,10 @@ Map the v8 `subject` axis to the on-disk directory under `~/Development/skills/s
 
 | Style | Lifecycle | Example | Purpose |
 |---|---|---|---|
-| **Field-purpose comment** | **STAYS in the production skill.** | `# subject: primary browse shelf — what the skill teaches.`<br>`# code-engineering / quality-assurance / frontend-ui / design-craft / agent-ops / ...` | Authoritative-by-co-location documentation of what the field is for, its allowed values, and when to pick each value. The reader does not need to open `docs/SKILL_METADATA_PROTOCOL_field-reference.md` to understand the frontmatter. |
+| **Field-purpose comment** | **STAYS in the production skill.** | `# subject: primary browse shelf — what the skill teaches.`<br>`# code-engineering / quality-assurance / frontend-ui / design-craft / agent-ops / ...` | Authoritative-by-co-location documentation of what the field is for, its allowed values, and when to pick each value. The reader does not need to open `skill-metadata-protocol/field-reference.md` to understand the frontmatter. |
 | **`# TEMPLATE NOTE:` comment** | **STRIPPED on derivation.** | `# TEMPLATE NOTE: be pushy in your description — Claude tends to under-trigger skills...` | Authoring scaffolding that only lives in `examples/skill-metadata-template.md`. Derived skills MUST strip every line beginning with `# TEMPLATE NOTE:` before commit (verified with `grep -n "TEMPLATE NOTE" <derived-skill>` returning zero hits). |
 
-**Source of truth** for the content of a field-purpose comment is `docs/SKILL_METADATA_PROTOCOL_field-reference.md`. The inline comment is an abridged summary (purpose + enum + when-to-use). When the comment and the reference doc disagree, the reference doc wins and the comment gets corrected. The discipline mirrors how JSDoc / TSDoc summaries point at canonical type definitions — the comment is a fast lookup, not a parallel truth.
+**Source of truth** for the content of a field-purpose comment is `skill-metadata-protocol/field-reference.md`. The inline comment is an abridged summary (purpose + enum + when-to-use). When the comment and the reference doc disagree, the reference doc wins and the comment gets corrected. The discipline mirrors how JSDoc / TSDoc summaries point at canonical type definitions — the comment is a fast lookup, not a parallel truth.
 
 **Worked example** — what a complete field section looks like in a derived SKILL.md:
 
@@ -293,7 +293,7 @@ allowed-tools   # space-separated tool allowlist
 
 ### Classification
 
-> **v8 is the canonical classification.** The schema's global `required` array mandates `subject` + `deployment_target` + `scope`; `scope` is required free text, not an enum. See [ADR 0017](docs/adr/0017-five-axis-classification-model.md) (operation axis retired 2026-05-27 — see ADR amendment block).
+> **v8 is the canonical classification.** The schema's global `required` array mandates `subject` + `deployment_target` + `scope`; `scope` is required free text, not an enum. See [ADR 0017](../docs/adr/0017-five-axis-classification-model.md) (operation axis retired 2026-05-27 — see ADR amendment block).
 
 Skills are classified on three required authored facets — `subject` (what is taught), `deployment_target` (where it applies), and `scope` (what is in and out) — plus typed `relations` to other skills and two activation surfaces (`keywords` for fuzzy match, `triggers`/`examples`/`anti_examples` for explicit signals). The optional `subjects[]` array (max 2 entries, primary first) covers polyhierarchy when a skill genuinely spans two browse shelves; the optional `taxonomy_domain` field (slash-delimited sub-path) provides finer-grained subdivision *within* a subject.
 
@@ -321,7 +321,7 @@ The primary browse shelf and routing seed. Balance rule: each subject holds 5–
 | `knowledge-organization` | Taxonomy, semantics, classification, glossaries, ontology |
 | `product-domain` | Domain-specific (Shopify, Stripe, fulfillment, integrations) |
 
-Live per-subject counts are in [`SKILL_GRAPH.md § Current State`](SKILL_GRAPH.md#current-state--single-source-of-truth); do not restate inline here.
+Live per-subject counts are in [`SKILL_GRAPH.md § Current State`](../SKILL_GRAPH.md#current-state--single-source-of-truth); do not restate inline here.
 
 **To propose a 10th subject value**: write an ADR in `docs/adr/` with (a) ≥5 existing skills that would label primarily under it, AND (b) evidence the value doesn't fit any existing subject by the disambiguation rules. Multi-fit secondaries belong in `subjects[1]`, not in a new top-level value.
 
@@ -334,7 +334,7 @@ Deployment targeting — where this skill applies.
 | `portable` | Repo-agnostic patterns — applies to any project |
 | `project` | Coupled to a specific project; requires a populated `grounding` block + `project[]` membership |
 
-The initial 2026-05-26 v8 design carried a 3-enum `scope` (`portable` / `workspace` / `project`); the 2026-05-27 amendment removed the `workspace` value and moved deployment targeting to `deployment_target`. Workspace-grounded skills migrate to `deployment_target: project` with explicit `project[]` membership. See [ADR-0017](docs/adr/0017-five-axis-classification-model.md) amendment block.
+The initial 2026-05-26 v8 design carried a 3-enum `scope` (`portable` / `workspace` / `project`); the 2026-05-27 amendment removed the `workspace` value and moved deployment targeting to `deployment_target`. Workspace-grounded skills migrate to `deployment_target: project` with explicit `project[]` membership. See [ADR-0017](../docs/adr/0017-five-axis-classification-model.md) amendment block.
 
 #### `scope` (free-text, required)
 
@@ -424,7 +424,7 @@ The three Evaluation Status fields are orthogonal — they measure different dim
 
 Five flat top-level fields that teach the agent what the skill's subject *is*. They replace the v5 nested `concept` block (whose `definition` and `taxonomy` sub-fields are now covered by `description` and `relations.broader`).
 
-**Relationship to the body `## Concept of the skill` section.** The five flat frontmatter fields are the **canonical machine-readable contract** — routers, evaluators, retrieval systems, and lint tools read them directly. The body `## Concept of the skill` section (renamed 2026-05-26 from `## Concept Card`; per the per-skill audit contract's 7-bold-field format: `**What it is:**`, `**Mental model:**`, `**Why it exists:**`, `**What it is NOT:**`, `**Adjacent concepts:**`, `**One-line analogy:**`, `**Common misconception:**`) remains the operational **human-readable rich-expansion form** carrying content the 5 flat fields cannot hold (e.g. "Why it exists" rationale and "Adjacent concepts" cross-links). Both forms are supported in v7. The author owns the consistency: when both are present, the body `## Concept of the skill` MUST agree with the frontmatter fields. The audit contract (`skill-graph/SKILL_AUDIT_LOOP.md#part-3--per-skill-audit-runbook` § Step 4b) checks the body section's presence and field completeness; the schema enforces the frontmatter. Earlier protocol notes that called the body section "retired in v6" reflected the migration of the *machine-readable subset* to frontmatter, not removal of the body section from authoring practice — which remains in active use across the corpus. Skills still carrying the legacy `## Concept Card` heading are CONTENT-mode migration work routed through the audit loop.
+**Relationship to the body `## Concept of the skill` section.** The five flat frontmatter fields are the **canonical machine-readable contract** — routers, evaluators, retrieval systems, and lint tools read them directly. The body `## Concept of the skill` section (renamed 2026-05-26 from `## Concept Card`; per the per-skill audit contract's 7-bold-field format: `**What it is:**`, `**Mental model:**`, `**Why it exists:**`, `**What it is NOT:**`, `**Adjacent concepts:**`, `**One-line analogy:**`, `**Common misconception:**`) remains the operational **human-readable rich-expansion form** carrying content the 5 flat fields cannot hold (e.g. "Why it exists" rationale and "Adjacent concepts" cross-links). Both forms are supported in v7. The author owns the consistency: when both are present, the body `## Concept of the skill` MUST agree with the frontmatter fields. The audit contract (`skill-graph/skill-audit-loop/SKILL_AUDIT_LOOP.md#part-3--per-skill-audit-runbook` § Step 4b) checks the body section's presence and field completeness; the schema enforces the frontmatter. Earlier protocol notes that called the body section "retired in v6" reflected the migration of the *machine-readable subset* to frontmatter, not removal of the body section from authoring practice — which remains in active use across the corpus. Skills still carrying the legacy `## Concept Card` heading are CONTENT-mode migration work routed through the audit loop.
 
 Required when `comprehension_state: present`. No protocol length cap on any of these — author each field as deeply as the concept requires.
 
@@ -440,7 +440,7 @@ Required when `comprehension_state: present`. No protocol length cap on any of t
 **`boundary`** (the Understanding field — distinct from `relations.boundary`)
 - Things commonly confused with the concept but that are NOT it. Express each difference as a *mechanism* (different primitives, different purpose, different scope) — not just different names.
 - Graded by the comprehension grader's `boundary` dimension (weight 1.5).
-- Field-name collision with `relations.boundary` is documented but **not** intentional — both fields are renamed in v8.1 per [ADR-0018](docs/adr/0018-relations-boundary-semantic-inversion.md) (top-level `boundary` → `concept_boundary`; `relations.boundary` → `relations.suppresses`). Until then: top-level `boundary` is a string teaching the concept's edges; `relations.boundary` is an array of skill-name exclusion targets (see § Relations § `boundary` — it excludes listed skills from co-routing when this skill wins, not defers to them).
+- Field-name collision with `relations.boundary` is documented but **not** intentional — both fields are renamed in v8.1 per [ADR-0018](../docs/adr/0018-relations-boundary-semantic-inversion.md) (top-level `boundary` → `concept_boundary`; `relations.boundary` → `relations.suppresses`). Until then: top-level `boundary` is a string teaching the concept's edges; `relations.boundary` is an array of skill-name exclusion targets (see § Relations § `boundary` — it excludes listed skills from co-routing when this skill wins, not defers to them).
 
 **`analogy`**
 - One-sentence analogy that preserves the core mechanism. Translate for a non-expert without breaking the structural relationship between primitives.
@@ -571,7 +571,7 @@ relations:
 
 **`boundary`** (the routing-layer field — distinct from the top-level Understanding `boundary` field)
 
-> **WARNING — the field name inverts the runtime mechanic.** This will be resolved in v8.1 by renaming the field to `relations.suppresses` (matching mechanic) and renaming the Understanding-`boundary` field to `concept_boundary` (resolving the name collision). See [ADR-0018](docs/adr/0018-relations-boundary-semantic-inversion.md) for the migration plan.
+> **WARNING — the field name inverts the runtime mechanic.** This will be resolved in v8.1 by renaming the field to `relations.suppresses` (matching mechanic) and renaming the Understanding-`boundary` field to `concept_boundary` (resolving the name collision). See [ADR-0018](../docs/adr/0018-relations-boundary-semantic-inversion.md) for the migration plan.
 >
 > Until v8.1 lands:
 >
@@ -715,10 +715,10 @@ The manifest schema is at `schemas/manifest.schema.json`. For the complete autho
 
 | Surface | State |
 |---|---|
-| **This doc (SKILL_METADATA_PROTOCOL.md)** | v8 |
+| **This doc (skill-metadata-protocol/SKILL_METADATA_PROTOCOL.md)** | v8 |
 | **Schema file (`schemas/SKILL_METADATA_PROTOCOL_schema.json`)** | v8. Global required: `subject`, `deployment_target`, `scope`, plus identity/lifecycle/Evaluation Status fields. `scope` is required free text. No v7 fields declared. |
 | **Compiled manifest (`skills.manifest.json`) summary** | v8 (`by_subject`, `by_deployment_target`, `by_schema_version`, `by_stability`, `by_project`). |
-| **Audit Loop checklist (`SKILL_AUDIT_LOOP.md` § Part 2)** | v8 |
+| **Audit Loop checklist (`skill-audit-loop/SKILL_AUDIT_LOOP.md` § Part 2)** | v8 |
 
 **What this means for authors:**
 
@@ -740,4 +740,4 @@ The contract enforces the following invariants. Any change to the schema or tool
 
 ---
 
-*See `docs/skill-metadata-protocol.md` for full design rationale, overlay composition precedence, and schema versioning policy. See `docs/SKILL_METADATA_PROTOCOL_field-reference.md` for one section per field with examples. See `schemas/SKILL_METADATA_PROTOCOL_schema.json` for the machine-enforceable version of this contract.*
+*See `skill-metadata-protocol/design-rationale.md` for full design rationale, overlay composition precedence, and schema versioning policy. See `skill-metadata-protocol/field-reference.md` for one section per field with examples. See `schemas/SKILL_METADATA_PROTOCOL_schema.json` for the machine-enforceable version of this contract.*

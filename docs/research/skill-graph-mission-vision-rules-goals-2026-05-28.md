@@ -4,8 +4,8 @@
 > defined here have been promoted to the canonical docs and now live there:
 > shared **Mission & Vision** in [`AGENTS.md § Mission and Vision`](../../AGENTS.md#mission-and-vision);
 > per-layer **Rules & Goal** in each owning doc's "Charter — Rules & Goal" section
-> ([`SKILL_METADATA_PROTOCOL.md`](../../SKILL_METADATA_PROTOCOL.md#charter--rules--goal),
-> [`SKILL_AUDIT_LOOP.md`](../../SKILL_AUDIT_LOOP.md#charter--rules--goal),
+> ([`SKILL_METADATA_PROTOCOL.md`](../../skill-metadata-protocol/SKILL_METADATA_PROTOCOL.md#charter--rules--goal),
+> [`SKILL_AUDIT_LOOP.md`](../../skill-audit-loop/SKILL_AUDIT_LOOP.md#charter--rules--goal),
 > [`SKILL_GRAPH.md`](../../SKILL_GRAPH.md#charter--rules--goal)).
 > Read the canonical docs for current guidance. This file is retained as the
 > dated research input and a record of the freshness findings it surfaced.
