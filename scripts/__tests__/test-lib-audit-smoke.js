@@ -59,6 +59,12 @@ const SAFE_EXTRA_ARGS = {
   // + arg-parse (the require/parse health this test verifies) then exits before
   // the corpus walk.
   'lib/audit/run-skill-improvement-loop.js': ['--smoke-test'],
+  // SH-6643: generate_evals now invokes the model IN-LOOP (option B) instead of
+  // fast-failing on a missing dispatch-solver.js. A bare evolve run therefore reaches
+  // a real model call and blows the 15s timeout — same execute-phase situation as the
+  // two runners above. --analyze-only exercises the require/parse + analyze health this
+  // test verifies (0.3s) without entering the execute phase.
+  'lib/audit/skill-evolution-loop.js': ['--analyze-only'],
 };
 
 // ── 1. node --check (syntax / immediate require failure) ────────────
