@@ -314,8 +314,22 @@ Stripe's own framing names the principle: their core code "only writes code for 
 - **ADR-(N-1)** with an amendment block citing the cut and pointing at the superseding ADR or AGENTS.md anchor
 - **Git tags** for prior contracts (`schema-v(N-1)`, `schema-v(N-2)`…)
 - **`scripts/export-marketplace-skills.js`** — the public-facing compatibility layer that absorbs the translation to the stable Agent-Skills shape
+- **`scripts/normalize-skill-field-shape.js`** — the deterministic, **version-agnostic** field-shape normalizer (see carve-out below). NOT a per-version codemod.
 
 Nothing else.
+
+### Carve-out: a version-agnostic field-shape NORMALIZER is permitted (Decision B, 2026-05-31)
+
+The ban above targets **per-version** codemods (`migrate-skill-v(N-1)-to-v(N).js`) kept in-tree, because they teach an obsolete contract and confuse authors about which version is current. It does **NOT** ban a *version-agnostic* shape normalizer that reads the **current** schema's `required` set and targets whatever the live contract demands.
+
+Per the 2026-05-30 end-to-end plan § Decision B, `scripts/normalize-skill-field-shape.js` is such a tool and is permitted standing infrastructure because:
+
+- It hardcodes **no** version number and names **no** prior version — it reads `schemas/SKILL_METADATA_PROTOCOL_schema.json` live, so it never gives an obsolete contract mind-share.
+- It fills **mechanical** fields only (those with a single honest default: `eval_artifacts`/`eval_state`/`routing_eval`, the four UNVERIFIED Health verdicts) and **never authors a semantic field** (`scope`, `subject`, `deployment_target`, Understanding-field prose) — those route to `/audit:*`.
+- It **never bumps `schema_version`** — the version label stays earned-not-bumped (`~/Development/.claude/rules/version-schema-contract.md`); the integer advances only when the semantic content is authored through the audit loop.
+- A skill it touches with remaining semantic debt carries an explicit `# semantic-debt:` marker, so a shape-migrated-but-semantically-incomplete skill never gets false "latest-schema" legitimacy.
+
+`--report` (default) is read-only and SYSTEM-safe (it is the corpus debt ledger). `--apply` writes SKILL.md and is therefore CONTENT — run it through the audit loop, never from a SYSTEM commit.
 
 ### Cross-references
 
@@ -598,6 +612,7 @@ Useful focused checks:
 
 ```bash
 node scripts/skill-audit-preflight.js <skill> --for all   # readiness gate: does the skill have the version/fields/evals an op needs? (exit 0 ready / 2 gaps); --ensure scaffolds deterministic gaps
+node scripts/normalize-skill-field-shape.js               # version-agnostic field-shape debt ledger (--report read-only; --apply is CONTENT). Mechanical fields only; never authors semantic fields, never bumps schema_version.
 node scripts/skill-lint.js examples/skill-metadata-template.md
 node scripts/skill-lint.js --path examples/fixture-skills --no-color
 node scripts/check-protocol-consistency.js
