@@ -361,7 +361,27 @@ scaffold-commit-visibility dependency above, coupled to SH-6643).
   temp-workspace fixture) wired into `test:unit`. AGENTS.md gate description updated. Commit
   `skill-graph@a25df45` (path-limited).
 
-**Remaining:** Steps 6, 7 (+ the scaffold-commit-visibility dependency, coupled to SH-6643).
+**2026-05-31 — Step 6 DONE (version-agnostic field-shape normalizer, Decision B).**
+- _Mechanism (per the user's chosen option)._ `skill-graph/scripts/normalize-skill-field-shape.js` reads
+  the CURRENT schema's `required` set (no version number hardcoded → NOT a per-version codemod the
+  clean-cut doctrine bans). `--report` (default, read-only, SYSTEM-safe) is the corpus debt ledger;
+  `--apply` (writes SKILL.md = CONTENT) fills mechanical defaults + injects a `# semantic-debt:` marker.
+- _GPT-5.4 guardrails honored._ MECHANICAL fields only (eval_artifacts/eval_state/routing_eval + the four
+  UNVERIFIED Health verdicts — single honest default each). NEVER authors a semantic field
+  (scope/subject/deployment_target/Understanding prose) — structurally impossible (not in
+  MECHANICAL_DEFAULTS; guarded by a test assertion). NEVER bumps `schema_version` (earned-not-bumped); a
+  touched skill with debt keeps its old label + the explicit marker → no false latest-schema legitimacy.
+- _Doctrine reconciled._ Added an AGENTS.md § Major-Version-Clean-Cut carve-out citing Decision B: a
+  version-agnostic normalizer is permitted standing infrastructure (distinct from the banned per-version
+  `migrate-vN-to-vM.js`). Registered in AGENTS.md Validation Commands.
+- _Significant honest finding (read-only report)._ **153 of 159 skills lack the v8-required `scope`** (only
+  6 have it); 151 carry `schema_version: 8` while missing it → the label is corpus-wide AHEAD of content.
+  `scope` is SEMANTIC → drains via /audit:*, NOT codemod. Commented onto the existing CONTENT task
+  **SH-6591** (not duplicate-filed); also flagged lint-overlay's schema-unknown `extends`.
+- Receipt: `scripts/__tests__/test-normalize-field-shape.js` (15 assertions) wired into test:unit.
+  Commit `skill-graph@7ef6100` (path-limited).
+
+**Remaining:** Step 7 (+ the scaffold-commit-visibility dependency, coupled to SH-6643).
 
 ## Part 5 — Corrected fix plan (SYSTEM mode, one concern per commit; re-sequenced per the reviews)
 
