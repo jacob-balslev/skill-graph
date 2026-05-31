@@ -589,3 +589,56 @@ This is why Decision A's implementation (Step 5) is sequenced AFTER Steps 0–1,
 DISSENT: I would not do the router policy change before collapsing the execution paths and proving the public loop contract; changing ranking on top of a lying state machine makes the system look smarter while preserving the same recurrence bug.
 
 Completeness: this review covers all 5 requested questions and includes 6 additional findings grounded in the live docs, scripts, and direct command output.
+
+---
+
+## Next-Session Continuation Prompt (authored 2026-05-31)
+
+> Paste this to resume. SYSTEM machinery is verified complete; the claim-gate brick is fixed
+> (`workspace@caba1ce0a`), the worklist bare-slug fix landed (`workspace@bfd890899`, SH-6649 Done),
+> and ONE full graded chain is proven live on `porters-five-forces`
+> (`skills@887725c` + `skill-graph@3b79a08`): comprehension gate, Opus grader → `SKIPPED_BASELINE_HIGH`,
+> truth-source drift fixed, `scope` authored. What remains is below, in system-first order.
+
+```
+Resume the Skill Audit Loop end-to-end completion. Read
+skill-graph/docs/plans/skill-audit-loop-end-to-end-completion-2026-05-30.md (progress log + Part 4
+decisions) first. Mode discipline: SH-6650/manifest/docs = SYSTEM; application certification + SH-6591
+drain = CONTENT via /audit:* with AUDIT_LOOP=1 — declare mode, never mix. Grading uses Opus or GPT-5.4
+only (no-lesser-models-for-quality). Commit path-limited (git commit --only) per multi-session-commits.
+
+Remaining work, system-first:
+
+1. [SYSTEM, GATING] SH-6650 — manifest-name design decision + corpus cleanup. Decide: manifest `name`
+   = bare frontmatter slug (protocol-aligned; what the claim/ledger/artifact/router system all use) vs
+   the current deliberately-namespaced census output (asserted by test-skill-census-walker.js). Evidence
+   strongly favors bare. If bare: first resolve the corpus issues — the `code-review` DUPLICATE (flat
+   skills/code-review/ AND nested skills/skills/quality-assurance/code-review/) and the ORPHAN flat
+   skill-evolution (no nested copy; migrate, don't delete) — THEN make skill-census.js use the frontmatter
+   name, update the 2 walker-test assertions (test-skill-census-walker.js) with justification, and
+   regenerate the manifest (count should reach 159). This unblocks reliable /evolve corpus-walking and
+   fixes the 2 pre-existing test failures (skill-census.test.js "namespace containers" count 1-vs-2;
+   skill-tooling-regressions.test.js "keyword-matrix walkSkillDir"). Per system-first, do this BEFORE the
+   corpus run.
+
+2. [CONTENT, PRIMARY DoD GAP] Prove the APPLICATION gate (gate 9) live — the plan's primary quality
+   signal, still UNVERIFIED for every skill. Author evals/application.json for one tracked, eval-ready
+   skill, then run a CERTIFYING cross-family dual-run:
+     node skill-graph/bin/skill-graph.js evaluate --mode application --application <skill-dir> \
+       --certifying --generator-family <A> --grader-family <B> <skill-dir>/evals/application.json
+   to earn application_verdict: APPLICABLE on real artifacts (Opus/GPT-5.4 grader). Commit per skill.
+
+3. [CONTENT] SH-6591 corpus drain — author `scope` for the ~152 remaining skills missing it (porters
+   was the first), via /audit:* (AUDIT_LOOP=1), one skill per path-limited commit. Optionally run /evolve
+   --top N for the broader graded corpus pass once SH-6650 makes the worklist queue reliable.
+
+4. [SYSTEM] After SH-6650: regenerate the manifest + SKILL_GRAPH.md § Current State counts (deferred this
+   session — a parallel session's marketplace re-export was in flight; coordinate to avoid the high-race
+   doc clobber).
+
+5. [SYSTEM, minor] Backfill field-purpose comments corpus-wide
+   (node skill-graph/scripts/backfill-field-purpose-comments.js) — lint warning on porters-five-forces
+   (6 top-level fields) and likely most skills.
+
+First action: declare mode (SH-6650 = SYSTEM), then start SH-6650 — it gates the corpus run.
+```
