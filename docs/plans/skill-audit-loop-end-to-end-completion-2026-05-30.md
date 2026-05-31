@@ -419,9 +419,38 @@ scaffold-commit-visibility dependency above, coupled to SH-6643).
   is the **parallel session's** in-flight marketplace re-export (154 staged files) — CONTENT/export drift,
   not touched.
 
-**Status:** The SKILL SYSTEM (machinery) is at 100% — every SYSTEM gap the plan identified is closed,
-verified with deterministic receipts, and the loop is unblocked end-to-end. Remaining work is CONTENT
-(the graded chain + corpus run via `/audit:*`, draining SH-6591) and the parallel-owned marketplace export.
+**2026-05-31 (later) — [P1] the "unblocked end-to-end" claim was FALSE for the documented runbook claim path; now fixed.**
+A real-skill run (the exact discipline this plan champions) caught what code-reading and the hermetic
+contract test missed: **`scripts/skill/skill-audit-claim.js` — the canonical Part-3 runbook claim entry —
+could not claim ANY skill.** The SH-6377 ownership gate ran `git ls-files -- skills/` from
+`REPO_ROOT = ~/Development` (workspace), but the SKILL.md corpus lives in a **separate nested git repo**
+at `~/Development/skills`; git never traverses into a nested repo, so the tracked-set was empty and every
+skill was judged "ignored/untracked" → `claim <slug>` refused all, `next` returned `null`. Compounded by a
+flat-vs-nested mismatch (corpus is 100% nested `skills/<category>/<slug>/`; the gate synthesized a flat
+path). The black-box contract test missed it because it uses a hermetic `mkdtemp` workspace and never
+exercises the real nested-skills-repo claim gate. The CLI path (`bin/skill-graph.js audit`) was unaffected —
+which is how the prior real-model receipts (api-design/okrs/bayesian-reasoning/acid-fundamentals) were
+produced, bypassing this gate.
+- _Fix (SYSTEM, bounded to the gate; SH-6377 safety preserved)._ `workspace@caba1ce0a`: added
+  `SKILLS_REPO_ROOT = REPO_ROOT/skills`; the tracked-check defaults to it; `isUntrackedOrIgnored` now
+  matches layout-agnostically (exact-path back-compat for the SH-6377 flat-fixture tests OR any tracked
+  SKILL.md whose parent dir is the slug → handles nested). gitignored/internal skills still refused.
+  Verified: 9/9 `skill-audit-claim.test.js` pass; `claim porters-five-forces` now succeeds (was refused);
+  `next` recovers (was null).
+- _Separate follow-up filed (NOT patched here)._ `next` now returns **pathy** skill names because
+  `scripts/skill/build-skill-list.js` emits a worklist with corrupted identity: 155/157 entries carry the
+  category path as the `skill` name + a doubled `skills/skills/` path; 2 are flat-stale; 157 entries vs 159
+  corpus skills. Same flat-vs-nested drift, second script. Tracked as **SH-6649** (CONTENT-mode `next`/
+  `evolve` queue driver — SYSTEM script fix).
+
+**Status (corrected 2026-05-31):** The SKILL SYSTEM machinery is **substantially** complete and verified —
+all Steps 0b/1–7 receipts hold AND the workspace claim gate that bricked the documented runbook path is now
+fixed. **Not yet 100%:** the worklist generator (`build-skill-list.js`) still emits drifted entries
+(SH-6649), so the `next`/`evolve` queue driver is unreliable until that lands — `claim <explicit-slug>`
+works. Remaining work is CONTENT (the graded chain + corpus run via `/audit:*`, draining SH-6591) plus the
+SH-6649 worklist fix and the parallel-owned marketplace export. **Lesson reaffirmed:** "done" requires a
+real-run receipt on a real skill through the *documented* entry point, not the CLI fallback — the contract
+test must exercise the real claim gate against the real nested skills repo, not only a hermetic fixture.
 
 ## Part 5 — Corrected fix plan (SYSTEM mode, one concern per commit; re-sequenced per the reviews)
 
