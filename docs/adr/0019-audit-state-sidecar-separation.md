@@ -1,6 +1,7 @@
 # ADR-0019: Separate Audit/Eval/Provenance State into a Per-Skill Sidecar JSON
 
-> Status: **Proposed (2026-06-01)** — awaiting decision-owner acceptance.
+> Status: **Accepted (2026-06-01)** — implementation scoped in
+> [`docs/plans/audit-state-sidecar-implementation.md`](../plans/audit-state-sidecar-implementation.md); schema unchanged until that work lands.
 > Proposal: [audit-state-sidecar-separation.md](../proposals/audit-state-sidecar-separation.md)
 > Companion: [ADR-0017](0017-five-axis-classification-model.md) (v8 classification), the
 > field-relevance benchmark (`benchmarks/field-relevance/FIELD-PLACEMENT-MODEL.md`).
@@ -10,8 +11,33 @@
 
 ## Status
 
-Proposed. Not yet implemented. This ADR records the decision *to be made*; it does not authorize the
-schema/consumer changes, which are sequenced SYSTEM work on acceptance.
+**Accepted (2026-06-01).** Not yet implemented. Acceptance authorizes the sequenced SYSTEM work scoped
+in [`docs/plans/audit-state-sidecar-implementation.md`](../plans/audit-state-sidecar-implementation.md).
+The schema and consumers are unchanged until that plan executes; the corpus migrates per-skill through
+the audit loop afterward (CONTENT).
+
+### Open-question resolutions (2026-06-01, defaults — overridable before implementation)
+
+1. **Sidecar filename + location:** `audit-state.json` at the skill-folder root (sibling of `SKILL.md`,
+   `evals/`, `references/`). The Skill Audit Loop is its sole writer; "audit-state" names the audit
+   loop's recorded state about the skill (it spans audit + eval + provenance + distribution-internal +
+   runtime, all audit-loop-owned).
+2. **`grounding` split-nature:** no split. `grounding` (incl. `truth_sources` = agent-facing source
+   *paths*) stays whole in frontmatter. The audit *hashes* already live in the separate top-level
+   `drift_check` field, which moves to the sidecar — so the audit facet leaves without cutting
+   `grounding`.
+3. **`lifecycle.stale_after_days`:** `lifecycle` moves to the sidecar; the manifest-join (Phase 3)
+   carries `stale_after_days` + the verdicts + `eval_state` into the manifest so the router's staleness
+   and quality gates keep functioning.
+4. **`stability` / `superseded_by`:** stay in frontmatter — the router gates deprecation (don't route
+   to a deprecated skill), an agent-facing routing decision.
+5. **`schema_version`:** moves entirely to the sidecar; the frontmatter carries no version label. Per
+   § Major Version Is a Clean Cut, the live tree *is* the current contract and the parser is the current
+   version (absence = current); the sidecar's `schema_version` is the provenance record of what the
+   audit loop validated against. The public Agent-Skills export never carried it.
+6. **`routing_bundles`:** out of scope for this change — it stays in the frontmatter schema unchanged.
+   Its 0-consumer status is resolved separately (remove vs relocate to library-level
+   `skill-routing-config.json`); it does not block or ride this cut.
 
 ## Context
 

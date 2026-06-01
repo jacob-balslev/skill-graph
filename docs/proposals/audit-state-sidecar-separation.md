@@ -1,7 +1,10 @@
 # Proposal — Separate Audit/Eval/Provenance State into a Sidecar JSON
 
-> Status: **PROPOSED — not decided.** Type: SYSTEM (schema + protocol contract + consumers).
-> Filed: 2026-06-01. Decision owner: project owner.
+> Status: **ACCEPTED (2026-06-01)** via [ADR-0019](../adr/0019-audit-state-sidecar-separation.md).
+> Type: SYSTEM (schema + protocol contract + consumers). Filed: 2026-06-01. Decision owner: project owner.
+> Implementation scoped in [`docs/plans/audit-state-sidecar-implementation.md`](../plans/audit-state-sidecar-implementation.md).
+> The 6 Open Questions below are RESOLVED in ADR-0019 § Open-question resolutions (defaults, overridable
+> before implementation).
 > Source: the field-relevance benchmark + three user directives (2026-06-01) — see
 > `benchmarks/field-relevance/FIELD-PLACEMENT-MODEL.md` (the deliverable) and
 > `benchmarks/field-relevance/CONCEPTUAL-MODEL.md` (the conceptual basis).
