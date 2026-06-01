@@ -67,6 +67,14 @@ const SCHEMA_PATH = resolveSchemaPath(REPO_ROOT, 'SKILL_METADATA_PROTOCOL_schema
 const WORKSPACE_CONFIG = loadWorkspaceConfig(REPO_ROOT, msg => process.stderr.write(`WARN ${msg}\n`));
 const SKILL_ROOTS = resolveSkillRoots(REPO_ROOT, WORKSPACE_CONFIG);
 const SKILL_SCHEMA = JSON.parse(fs.readFileSync(SCHEMA_PATH, 'utf8'));
+// ADR-0019 audit-state sidecar schema (sibling `audit-state.json`). Optional on
+// disk (absent = unmigrated/new skill); validated + cross-checked when present.
+const AUDIT_STATE_SCHEMA_PATH = resolveSchemaPath(REPO_ROOT, 'skill-audit-state.schema.json');
+const AUDIT_STATE_SCHEMA = (() => {
+  try { return JSON.parse(fs.readFileSync(AUDIT_STATE_SCHEMA_PATH, 'utf8')); } catch { return null; }
+})();
+// The five flat Understanding fields the comprehension grader reads.
+const UNDERSTANDING_FIELDS = ['mental_model', 'purpose', 'boundary', 'analogy', 'misconception'];
 
 // Canonical Skill Metadata Protocol identifier shape. Plain Agent Skills export
 // has a stricter hyphen-only/64-char contract; that is enforced by export tools.
@@ -616,6 +624,43 @@ function collectSkillFiles(parsed) {
 // Main
 // ---------------------------------------------------------------------------
 
+// ADR-0019 cross-file checks. The audit-state.json sidecar is optional on disk
+// (absent = unmigrated or brand-new skill — not an error). When present:
+//   1. validate it against schemas/skill-audit-state.schema.json;
+//   2. enforce the cross-file gate that used to live in the frontmatter schema's
+//      allOf but is now cross-file: comprehension_state: present (sidecar) ⇒ the
+//      five flat Understanding fields (frontmatter).
+// The eval_state ⇒ eval_artifacts gate stays intra-sidecar (step 1 catches it);
+// the stability ⇒ superseded_by gate stays intra-frontmatter (checkSchema catches it).
+function checkAuditStateSidecar(file, fm) {
+  const errors = [];
+  const sidecarPath = path.join(path.dirname(file), 'audit-state.json');
+  if (!fs.existsSync(sidecarPath)) return errors; // optional — unmigrated/new skill
+  let sidecar;
+  try {
+    sidecar = JSON.parse(fs.readFileSync(sidecarPath, 'utf8'));
+  } catch (e) {
+    return [{ field: 'audit-state.json', msg: `audit-state.json is not valid JSON — ${e.message}` }];
+  }
+  if (AUDIT_STATE_SCHEMA) {
+    const schemaErrors = [];
+    validateWithSchema(sidecar, AUDIT_STATE_SCHEMA, '', schemaErrors);
+    for (const se of schemaErrors) {
+      errors.push({ field: `audit-state.json:${se.field || 'sidecar'}`, msg: se.msg });
+    }
+  }
+  if (sidecar && sidecar.comprehension_state === 'present') {
+    const missing = UNDERSTANDING_FIELDS.filter(f => fm[f] === undefined || fm[f] === null || fm[f] === '');
+    if (missing.length > 0) {
+      errors.push({
+        field: 'comprehension_state',
+        msg: `audit-state.json declares comprehension_state: present, but SKILL.md frontmatter is missing required Understanding field(s): ${missing.join(', ')} (ADR-0019 cross-file gate).`,
+      });
+    }
+  }
+  return errors;
+}
+
 function lintFile(file) {
   const relPath = path.relative(REPO_ROOT, file);
   const text = fs.readFileSync(file, 'utf8');
@@ -636,6 +681,7 @@ function lintFile(file) {
     ...checkDescription(fm),
     ...checkParentDirMatchesName(file, fm),
     ...checkSubjectsPrimaryMatchesSubject(fm),
+    ...checkAuditStateSidecar(file, fm),
   ];
   const warnings = [
     ...checkFieldPurposeComments(text),
