@@ -1,9 +1,11 @@
 # ADR 0005 — Freshness Field Consolidation (Proposal for v4)
 
-- **Status:** Accepted (2026-05-23)
+- **Status:** Superseded for the live v8 sidecar implementation by [ADR 0019](0019-audit-state-sidecar-separation.md); original v4 proposal accepted 2026-05-23
 - **Deciders:** Skill Graph maintainers
-- **Target:** v4 schema bump (breaking change)
-- **Decision date:** 2026-05-23 (accepted post-review, awaiting implementation post-Phase 2)
+- **Target:** Historical v4 schema-bump proposal, not the current implementation path
+- **Decision date:** 2026-05-23 (accepted post-review)
+
+> **Update - 2026-06-01:** [ADR 0019](0019-audit-state-sidecar-separation.md) supersedes this ADR for the live contract. Instead of collapsing `freshness`, `drift_check.last_verified`, and `lifecycle.stale_after_days` into frontmatter `asserted_at` / `stale_after`, v8 moves freshness, drift, and lifecycle audit state into `audit-state.json` and joins it into the manifest. Treat the `asserted_at` proposal below as historical v4 rationale, not current authoring guidance.
 
 ## Context
 
@@ -61,9 +63,9 @@ Collapse the three fields into two primitives in v4:
 - Whether to require `asserted_at` or make it optional. Today's `freshness` is required. Lean toward required.
 - The exact codemod conflict-resolution rule when `freshness` and `drift_check.last_verified` disagree by more than 30 days — use the later, or warn and ask?
 
-## Status: Accepted (2026-05-23), implementation deferred
+## Status: Superseded for live v8 implementation (2026-06-01)
 
-This ADR was accepted on 2026-05-23 (see header). The decision direction is committed. Implementation is intentionally deferred until v4 schema-bump work resumes — the freshness-field consolidation is a breaking change and lands as part of the next major schema migration, not as an incremental edit to the current v7 contract. Authors are not yet required to take action; the codemod (`scripts/migrate-v3-to-v4.js`) and v4 schema work are tracked separately. When v4 planning resumes, treat this ADR as the binding direction rather than as an open proposal.
+This ADR was accepted on 2026-05-23 as a v4 proposal, but [ADR 0019](0019-audit-state-sidecar-separation.md) supersedes its implementation path for the live v8 contract. Authors should not add `asserted_at` or `stale_after` to `SKILL.md` frontmatter. The current contract keeps agent-facing frontmatter separate from audit-loop-owned `audit-state.json`; freshness, drift, and lifecycle audit state belong in the sidecar and the compiled manifest. If the `asserted_at` / `stale_after` idea is revived, write a new ADR against the sidecar contract instead of treating this historical v4 proposal as binding.
 
 ## References
 

@@ -5,7 +5,7 @@
 - **Supersedes:** ADR 0001 § Decision #2 only (Decisions #1, #3, #4 stand unchanged)
 - **Consulted:** OWL 2 Web Ontology Language Primer (W3C 2012), W3C SKOS Reference, GPT-5.5 empirical confirmation of the in-tree JSON-LD context (2026-05-04)
 
-> **Update — 2026-06-01:** This ADR correctly separates the routing-layer `boundary` predicate from formal OWL `disjoint_with`, but some original paragraphs use "handoff" wording from the pre-ADR-0018 naming frame. Read those passages as routing-layer exclusion, not deference: the current v8.0 field is `relations.boundary`, it maps to `sg:disjointOwnership`, and [ADR 0018](0018-relations-boundary-semantic-inversion.md) schedules the clearer field name `relations.suppresses` for v8.1 while preserving the same predicate URI.
+> **Update - 2026-06-01:** This ADR correctly separates the routing-layer `boundary` predicate from formal OWL `disjoint_with`, but earlier revisions used deference wording from the pre-ADR-0018 naming frame. Read those passages as routing-layer exclusion: the current v8.0 field is `relations.boundary`, it maps to `sg:disjointOwnership`, and [ADR 0018](0018-relations-boundary-semantic-inversion.md) schedules the clearer field name `relations.suppresses` for v8.1 while preserving the same predicate URI.
 
 ## Context
 
@@ -26,10 +26,10 @@ The Opus 4.7 reviewer (`opus.md`) noted this directly. The GPT-5.5 reviewer (`gp
 
 | Question | Answer in Skill Graph | Maps to | Layer |
 |---|---|---|---|
-| "If a query matches skill A, can the router also pick skill B?" | No (because A's `boundary: [B]` is a routing-layer hand-off) | `sg:disjointOwnership` | **Routing layer** — operational |
+| "If a query matches skill A, can the router also pick skill B?" | No (because A's `boundary: [B]` is a routing-layer exclusion edge) | `sg:disjointOwnership` | **Routing layer** — operational |
 | "Is there an entity that is simultaneously an instance of A's class and B's class?" | No (because `owl:disjointWith` claims formal class-disjointness) | `owl:disjointWith` | **Ontology layer** — formal class theory |
 
-`boundary` is a **directional, asymmetric** routing claim. Skill A says "I am not the right answer for queries also matching B; route those to B." Skill B is not required to make the reciprocal claim. The router uses this to demote A in the candidate list when B scores higher, even when A's keywords and triggers also matched.
+`boundary` is a **directional, asymmetric** routing claim. Skill A says "when I own this query, do not co-route B as another answer." Skill B is not required to make the reciprocal claim. The router uses this to suppress B from the candidate list when A scores high enough to own the query, even when B's keywords and triggers also matched.
 
 `owl:disjointWith` is a **symmetric, irreflexive** class-theoretic claim. If A `owl:disjointWith` B, then B `owl:disjointWith` A — and any reasoner deriving an entity that is both A and B will flag a contradiction. (Irreflexive because a class is never disjoint with itself: every class is identical to itself, not disjoint from itself.)
 
@@ -50,7 +50,7 @@ The custom `sg:disjointOwnership` predicate was the right call: it makes a Skill
 
 ## Decision
 
-1. **`boundary` stays canonical** for routing-layer asymmetric handoff. The schema description, JSON-LD context, lint warnings, and field-reference narrative all describe `boundary` as the canonical name for wrong-skill routing protection. The "DEPRECATED ALIAS" framing in the v3.1 schema and ADR 0001 is reverted.
+1. **`boundary` stays canonical** for routing-layer asymmetric exclusion. The schema description, JSON-LD context, lint warnings, and field-reference narrative all describe `boundary` as the canonical name for wrong-skill routing protection. The "DEPRECATED ALIAS" framing in the v3.1 schema and ADR 0001 is reverted.
 2. **`disjoint_with` becomes a separate orthogonal relation** with explicit OWL semantics (Option B from the synthesis IP-R2 § 4). It maps to `owl:disjointWith` in the JSON-LD context. Authors use it ONLY when they want a formal ontological class-disjointness claim — which is rare. Most skill libraries will never need it; `boundary` covers the routing-layer use case.
 3. **The two predicates coexist with distinct mappings.** Lint validates targets exist for both. Routers use `boundary` for routing-layer exclusion (per `scripts/skill-graph-route.js` Stage 5). RDF consumers reading the JSON-LD projection see two distinct predicates.
 4. **Lint deprecation warnings adjust:** the `boundary -> disjoint_with` rename warning in `scripts/skill-lint.js` is removed. The `adjacent -> related` rename warning stays (Decision #1 of ADR 0001 was sound).
@@ -59,7 +59,7 @@ The custom `sg:disjointOwnership` predicate was the right call: it makes a Skill
 ## Rationale
 
 - **The implementation was already correct.** The JSON-LD context never claimed OWL alignment for `boundary`. Reverting the prose is cheaper and safer than retroactively bending the implementation.
-- **`boundary` is a real, distinct relation type.** It encodes a routing-layer fact ("I am the wrong answer; route to X") that has no clean OWL/SKOS analogue. Naming it `disjoint_with` and gesturing at OWL hides that fact under a more famous predicate. Keeping the Skill-Graph-specific name with a Skill-Graph-specific @context predicate (`sg:disjointOwnership`) is the academically defensible call.
+- **`boundary` is a real, distinct relation type.** It encodes a routing-layer fact ("when I own this query, suppress X from co-routing") that has no clean OWL/SKOS analogue. Naming it `disjoint_with` and gesturing at OWL hides that fact under a more famous predicate. Keeping the Skill-Graph-specific name with a Skill-Graph-specific @context predicate (`sg:disjointOwnership`) is the academically defensible call.
 - **Option B preserves capability over Option A (drop).** Per the project's quality doctrine ("improve = enrich, never simplify"), keeping `disjoint_with` available — but with distinct semantics — leaves authors a place to encode formal class-disjointness if the rare case arises. Removing it would force authors who genuinely want OWL semantics to invent custom extensions.
 - **No skill in the wild actually used `disjoint_with` as anything other than a `boundary` alias.** Re-purposing it under the new semantics breaks zero existing skills. (`grep -r "disjoint_with:" skills/` across the workspace returned zero hits at the time of this ADR.)
 

@@ -1,7 +1,7 @@
 # ADR-0019: Separate Audit/Eval/Provenance State into a Per-Skill Sidecar JSON
 
-> Status: **Accepted (2026-06-01)** — implementation scoped in
-> [`docs/plans/audit-state-sidecar-implementation.md`](../plans/audit-state-sidecar-implementation.md); schema unchanged until that work lands.
+> Status: **Accepted and implemented (2026-06-01)** — sidecar schema, manifest join, lint/audit readers and writers, and per-skill `audit-state.json` paths are live.
+> [`docs/plans/audit-state-sidecar-implementation.md`](../plans/audit-state-sidecar-implementation.md) remains as execution history; corpus migration continues per-skill through the Skill Audit Loop.
 > Proposal: [audit-state-sidecar-separation.md](../proposals/audit-state-sidecar-separation.md)
 > Companion: [ADR-0017](0017-five-axis-classification-model.md) (v8 classification), the
 > field-relevance benchmark (`benchmarks/field-relevance/FIELD-PLACEMENT-MODEL.md`).
@@ -11,12 +11,12 @@
 
 ## Status
 
-**Accepted (2026-06-01).** Not yet implemented. Acceptance authorizes the sequenced SYSTEM work scoped
-in [`docs/plans/audit-state-sidecar-implementation.md`](../plans/audit-state-sidecar-implementation.md).
-The schema and consumers are unchanged until that plan executes; the corpus migrates per-skill through
-the audit loop afterward (CONTENT).
+**Accepted and implemented (2026-06-01).** The sidecar schema, manifest join, lint/audit readers and
+writers, sidecar template, and per-skill `audit-state.json` paths are live. The implementation plan remains
+as execution history. Existing skills migrate through CONTENT-mode `/audit:*` runs, one skill per commit;
+do not reintroduce sidecar-owned fields into `SKILL.md` frontmatter.
 
-### Open-question resolutions (2026-06-01, defaults — overridable before implementation)
+### Implementation resolutions (2026-06-01)
 
 1. **Sidecar filename + location:** `audit-state.json` at the skill-folder root (sibling of `SKILL.md`,
    `evals/`, `references/`). The Skill Audit Loop is its sole writer; "audit-state" names the audit
