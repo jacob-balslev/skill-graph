@@ -96,8 +96,10 @@ const DEPLOYMENT_TARGET_RANK = {
 };
 
 /**
- * Type tiebreaker ranks (lower wins). Doctrine: workflow > capability >
- * router > overlay. Matches `skills/skill-router/SKILL.md § Type tiebreaker`.
+ * Legacy type tiebreaker ranks (lower wins). Current v8 skills no longer
+ * author `type`, but older sample manifests can still carry it. Keep this as a
+ * deterministic fallback for legacy fixtures; current routing specificity is
+ * carried by deployment_target/project fit, quality signals, and relations.
  */
 const TYPE_RANK = { workflow: 0, capability: 1, router: 2, overlay: 3, _default: 99 };
 
@@ -545,11 +547,11 @@ function routeSkills(manifest, options) {
     };
   }
 
-  // Tiebreakers implement the doctrine documented in
-  // `skills/skill-router/SKILL.md § Deployment-target tiebreaker` and `§ Type tiebreaker`:
+  // Tiebreakers implement the current routing doctrine:
   //   1. Highest score wins.
   //   2. On a score tie, narrower deployment_target wins: project > portable.
-  //   3. On a deployment_target tie, more specific type wins: workflow > capability > router > overlay.
+  //   3. On a deployment_target tie, legacy `type` breaks ties only for older
+  //      sample manifests that still carry it.
   //   4. On a complete tie, alphabetical by name (stable, deterministic output).
   //
   // (2026-05-27): DEPLOYMENT_TARGET_RANK replaces SCOPE_RANK.
@@ -573,123 +575,17 @@ function routeSkills(manifest, options) {
   const selectedNames = new Set(topMatches.map(e => e.skill.name));
 
   // -------------------------------------------------------------------------
-  // Stage 3: expand via depends_on transitive closure.
-  // -------------------------------------------------------------------------
-  const coLoaded = [];
-  const queue = topMatches.map(e => e.skill.name);
-  const visited = new Set(queue);
-
-  while (queue.length > 0) {
-    const current = queue.shift();
-    const skill = byName.get(current);
-    if (!skill || !skill.relations || !Array.isArray(skill.relations.depends_on)) continue;
-    for (const dep of skill.relations.depends_on) {
-      const depName = relItemName(dep);
-      if (!depName || visited.has(depName)) continue;
-      visited.add(depName);
-      const depSkill = byName.get(depName);
-      if (depSkill) {
-        const projectCheck = skillAppliesToProject(depSkill, project);
-        if (projectCheck.applies) {
-          coLoaded.push({
-            skill: depSkill,
-            reason: `depends_on closure from ${current}`,
-            role: 'depends_on',
-          });
-          selectedNames.add(depName);
-          queue.push(depName);
-        }
-      }
-    }
-  }
-
-  // -------------------------------------------------------------------------
-  // Stage 4: verify_with co-loading (one hop only — no transitive).
-  // -------------------------------------------------------------------------
-  for (const { skill } of topMatches) {
-    if (!skill.relations || !Array.isArray(skill.relations.verify_with)) continue;
-    for (const v of skill.relations.verify_with) {
-      const vName = typeof v === 'string' ? v : null;
-      if (!vName || selectedNames.has(vName)) continue;
-      const vSkill = byName.get(vName);
-      if (vSkill) {
-        const projectCheck = skillAppliesToProject(vSkill, project);
-        if (projectCheck.applies) {
-          coLoaded.push({
-            skill: vSkill,
-            reason: `verify_with partner of ${skill.name}`,
-            role: 'verify_with',
-          });
-          selectedNames.add(vName);
-        }
-      }
-    }
-  }
-
-  // -------------------------------------------------------------------------
-  // Stage 4b: broader (SKOS generalisation) parent recall boost.
+  // Stage 3: score-aware boundary exclusion among independently matched skills.
   //
-  // Per ADR 0001 Decision #3, `relations.broader` declares cross-skill
-  // generalisation — the target is a more general skill the author wants
-  // co-loaded when the specific (child) skill matches. SKOS semantics:
-  //   skos:broader(child, parent) means "parent is broader than child".
-  //
-  // Recall behaviour: when a topMatch declares `broader: [parent]`, the parent
-  // is co-loaded as a generalisation companion — the agent gets the broader
-  // context alongside the specific match. One hop only (no transitive
-  // ancestor walk), to mirror Stage 4's verify_with shape and avoid
-  // accidentally pulling in entire taxonomy chains.
-  //
-  // Inverse direction (`narrower`) is NOT co-loaded because if the parent
-  // matched, the children are NOT necessarily relevant — only an explicit
-  // child match should pull the parent in. (Authors who want parent →
-  // child co-loading should use `verify_with` or `depends_on`.)
-  // -------------------------------------------------------------------------
-  for (const { skill } of topMatches) {
-    if (!skill.relations || !Array.isArray(skill.relations.broader)) continue;
-    for (const b of skill.relations.broader) {
-      const bName = typeof b === 'string' ? b : null;
-      if (!bName || selectedNames.has(bName)) continue;
-      const bSkill = byName.get(bName);
-      if (bSkill) {
-        const projectCheck = skillAppliesToProject(bSkill, project);
-        if (projectCheck.applies) {
-          coLoaded.push({
-            skill: bSkill,
-            reason: `broader generalisation of ${skill.name}`,
-            role: 'broader',
-          });
-          selectedNames.add(bName);
-        }
-      }
-    }
-  }
-
-  // -------------------------------------------------------------------------
-  // Stage 5: score-aware boundary exclusion.
-  //
-  // A skill listed in another SELECTED skill's boundary[] is removed from
-  // the selection, subject to two guards:
-  //
-  //   (1) Only skills that scored in stage 1 — i.e. topMatches — may act as
-  //       declaring skills. Co-loaded skills (brought in via depends_on or
-  //       verify_with, with no independent query score) MUST NOT boundary-
-  //       exclude anyone. Otherwise a topMatch that pulls in a verify_with
-  //       partner can be excluded BY THAT PARTNER if the partner's boundary
-  //       names the topMatch — a cyclic invalidation of the topMatch's own
-  //       win. The partner's boundary is authored as a request-time guard
-  //       for when the partner itself is the primary match, not as a veto
-  //       on whatever brought it along.
-  //
-  //   (2) Even among topMatches, exclusion only fires if the declarer
-  //       actually outscored the target. A weaker match cannot veto a
-  //       stronger, more direct match on its own vocabulary (M3 in the
-  //       follow-up plan). Score ties fall through to exclusion, so
-  //       authored boundaries still break ties deterministically.
+  // Boundary exclusions run BEFORE co-loading. A skill that is excluded by a
+  // stronger/equal selected owner must not still contribute its own
+  // verify_with/broader/depends_on partners to the final result.
   // -------------------------------------------------------------------------
   const boundaryExcluded = [];
+  const boundaryExcludedNames = new Set();
   for (const declaring of topMatches) {
     const skill = declaring.skill;
+    if (!selectedNames.has(skill.name)) continue;
     if (!skill.relations || !Array.isArray(skill.relations.boundary)) continue;
     for (const b of skill.relations.boundary) {
       const bName = relItemName(b);
@@ -713,6 +609,102 @@ function routeSkills(manifest, options) {
           role: 'boundary_excluded',
         });
         selectedNames.delete(bName);
+        boundaryExcludedNames.add(bName);
+      }
+    }
+  }
+
+  const activeTopMatches = topMatches.filter(e => selectedNames.has(e.skill.name));
+
+  // -------------------------------------------------------------------------
+  // Stage 4: expand via depends_on transitive closure.
+  // -------------------------------------------------------------------------
+  const coLoaded = [];
+  const queue = activeTopMatches.map(e => e.skill.name);
+  const visited = new Set(queue);
+
+  while (queue.length > 0) {
+    const current = queue.shift();
+    const skill = byName.get(current);
+    if (!skill || !skill.relations || !Array.isArray(skill.relations.depends_on)) continue;
+    for (const dep of skill.relations.depends_on) {
+      const depName = relItemName(dep);
+      if (!depName || visited.has(depName) || boundaryExcludedNames.has(depName)) continue;
+      visited.add(depName);
+      const depSkill = byName.get(depName);
+      if (depSkill) {
+        const projectCheck = skillAppliesToProject(depSkill, project);
+        if (projectCheck.applies) {
+          coLoaded.push({
+            skill: depSkill,
+            reason: `depends_on closure from ${current}`,
+            role: 'depends_on',
+          });
+          selectedNames.add(depName);
+          queue.push(depName);
+        }
+      }
+    }
+  }
+
+  // -------------------------------------------------------------------------
+  // Stage 5: verify_with co-loading (one hop only — no transitive).
+  // -------------------------------------------------------------------------
+  for (const { skill } of activeTopMatches) {
+    if (!skill.relations || !Array.isArray(skill.relations.verify_with)) continue;
+    for (const v of skill.relations.verify_with) {
+      const vName = typeof v === 'string' ? v : null;
+      if (!vName || selectedNames.has(vName) || boundaryExcludedNames.has(vName)) continue;
+      const vSkill = byName.get(vName);
+      if (vSkill) {
+        const projectCheck = skillAppliesToProject(vSkill, project);
+        if (projectCheck.applies) {
+          coLoaded.push({
+            skill: vSkill,
+            reason: `verify_with partner of ${skill.name}`,
+            role: 'verify_with',
+          });
+          selectedNames.add(vName);
+        }
+      }
+    }
+  }
+
+  // -------------------------------------------------------------------------
+  // Stage 5b: broader (SKOS generalisation) parent recall boost.
+  //
+  // Per ADR 0001 Decision #3, `relations.broader` declares cross-skill
+  // generalisation — the target is a more general skill the author wants
+  // co-loaded when the specific (child) skill matches. SKOS semantics:
+  //   skos:broader(child, parent) means "parent is broader than child".
+  //
+  // Recall behaviour: when a topMatch declares `broader: [parent]`, the parent
+  // is co-loaded as a generalisation companion — the agent gets the broader
+  // context alongside the specific match. One hop only (no transitive
+  // ancestor walk), to mirror Stage 4's verify_with shape and avoid
+  // accidentally pulling in entire taxonomy chains.
+  //
+  // Inverse direction (`narrower`) is NOT co-loaded because if the parent
+  // matched, the children are NOT necessarily relevant — only an explicit
+  // child match should pull the parent in. (Authors who want parent →
+  // child co-loading should use `verify_with` or `depends_on`.)
+  // -------------------------------------------------------------------------
+  for (const { skill } of activeTopMatches) {
+    if (!skill.relations || !Array.isArray(skill.relations.broader)) continue;
+    for (const b of skill.relations.broader) {
+      const bName = typeof b === 'string' ? b : null;
+      if (!bName || selectedNames.has(bName) || boundaryExcludedNames.has(bName)) continue;
+      const bSkill = byName.get(bName);
+      if (bSkill) {
+        const projectCheck = skillAppliesToProject(bSkill, project);
+        if (projectCheck.applies) {
+          coLoaded.push({
+            skill: bSkill,
+            reason: `broader generalisation of ${skill.name}`,
+            role: 'broader',
+          });
+          selectedNames.add(bName);
+        }
       }
     }
   }
