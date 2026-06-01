@@ -39,7 +39,7 @@
 | doc-updater | missing from local skill roots | blocked | blocked |
 | no-cutting-corners | missing from local skill roots | blocked | blocked |
 
-All 31 requested bundle skills are enumerated above. Pending rows remain listed individually until their CONTENT audit and SYSTEM lens commits land.
+All 31 requested bundle skills are enumerated above. The 29 available local skills are complete; the two missing skills remain listed individually as blocked.
 
 ## Findings Table
 
