@@ -1,6 +1,4 @@
-# Seed Findings (Incomplete)
-
-> This file is a seed artifact from `skill-graph audit` without `--graded`. It records deterministic lint evidence plus explicit TODO review areas. It is not a completed qualitative audit until the TODO sections are replaced by reviewer or grader evidence.
+# Findings
 
 ## Skill
 
@@ -8,62 +6,74 @@
 
 ## Audit Date
 
-2026-05-28
+2026-06-01
 
 ## Verdict Summary
 
-PASS_WITH_FIXES
+PASS for Integrity Gate; Behavior Gate remains UNVERIFIED because no graded application eval was run.
 
 ## Findings
 
 ID: F1
-Severity: P2
-Surface: ../skills/skills/quality-assurance/graph-audit/SKILL.md:1:1
-Category: Lint diagnostic
-Problem: 8 top-level field(s) missing field-purpose comment (SKILL_METADATA_PROTOCOL.md § Inline field comments). Run `node scripts/backfill-field-purpose-comments.js` to add.
-Evidence: Emitted by skill-lint.js — see ../skills/skills/quality-assurance/graph-audit/SKILL.md line 1
-Required action: Inspect the flagged line, correct the value, and re-run skill-lint.js.
+Severity: HIGH
+Surface: `/Users/jacobbalslev/Development/skills/skills/quality-assurance/graph-audit/SKILL.md`
+Category: Metadata validity
+Problem: The skill still carried loop-owned audit fields in `SKILL.md`, missed required v8 `scope`, used `skill_graph_protocol: Skill Metadata Protocol v5`, and duplicated stale grounding at the top level and inside `metadata`.
+Evidence: Before repair, `node scripts/normalize-skill-field-shape.js --report --skill graph-audit` reported 14 fields to relocate and semantic debt for `scope`; `node bin/skill-graph.js lint graph-audit` reported 15 errors and 1 warning.
+Required action: Move audit/eval/provenance fields into `audit-state.json`, author `scope`, remove duplicated stale grounding, update the protocol label only after v8 conformance is earned, and re-run lint.
+Status: remediated — `node bin/skill-graph.js lint graph-audit` now reports 0 errors and 0 warnings, and normalization reports 0 remaining work.
 
 ID: F2
-Severity: TODO
-Surface: activation
-Category: Activation quality — routing coverage
-Problem: TODO — human judgment required
-Evidence: TODO — reviewer must inspect the skill body
-Required action: Does the description name real trigger scenarios? Are keywords specific and not generic filler? Does the skill under-trigger or over-trigger for its intended use case?
+Severity: HIGH
+Surface: `/Users/jacobbalslev/Development/skills/skills/quality-assurance/graph-audit/SKILL.md` grounding and body
+Category: Grounding fidelity
+Problem: Truth sources and body claims still named retired files and contract terms such as `schemas/skill.schema.json`, `docs/skill-metadata-protocol.md`, `scope: codebase`, `domain_object`, and older single-frontmatter assumptions.
+Evidence: Pre-repair body and grounding referenced retired paths and v3/v5-era concepts; current repository files are `schemas/SKILL_METADATA_PROTOCOL_schema.json`, `schemas/skill-audit-state.schema.json`, `skill-metadata-protocol/SKILL_METADATA_PROTOCOL.md`, and the sidecar-backed manifest join.
+Required action: Update truth sources, body coverage, key-file table, verification checklist, and grounding vocabulary to the current v8 sidecar contract.
+Status: remediated — drift baseline was recorded for the current local truth sources and `node scripts/skill-graph-drift.js --json ../skills/skills/quality-assurance/graph-audit` now reports `status: "OK"`.
 
 ID: F3
-Severity: TODO
-Surface: relations
-Category: Relation quality — graph correctness
-Problem: TODO — human judgment required
-Evidence: TODO — reviewer must inspect the skill body
-Required action: Do relations point at semantically correct neighbors? Are boundary handoffs crisp enough to prevent misuse? Are broader/narrower claims taxonomic rather than associative? Are dependencies real?
+Severity: MEDIUM
+Surface: `/Users/jacobbalslev/Development/skill-graph/examples/evals/graph-audit.json`
+Category: Eval artifact drift
+Problem: The repo-grounded eval fixture tested retired schema examples and old skill paths, including v3-era `type`, `browse_category`, old `scope` enum examples, and stale `skills/quality/graph-audit/SKILL.md` truth paths.
+Evidence: Pre-repair fixture asked about `schema_version: const 3`, `type: capability`, `browse_category`, `scope: portable`, `scope: codebase`, and old truth-source paths.
+Required action: Rewrite the fixture around current v8 `subject`, `deployment_target`, `scope`, sidecar state, manifest joins, relation targets, and gradeable-artifact evidence.
+Status: remediated — `examples/evals/graph-audit.json` parses as JSON and now contains eight current repo-grounded cases.
 
 ID: F4
-Severity: TODO
-Surface: grounding
-Category: Grounding quality — claims vs truth sources
-Problem: TODO — human judgment required
-Evidence: TODO — reviewer must inspect the skill body
-Required action: If scope: project (or legacy scope: codebase), do all truth_sources exist? Do claims in the body match the referenced files? Classify any mismatch as skill drift, code drift, or doc drift.
+Severity: MEDIUM
+Surface: `/Users/jacobbalslev/Development/skills/skills/quality-assurance/graph-audit/evals/comprehension.json`
+Category: Local comprehension coverage
+Problem: The canonical skill had no local comprehension eval even though the audit loop now expects per-skill comprehension artifacts for behavior work.
+Evidence: Before repair, `find skills/quality-assurance/graph-audit -maxdepth 3 -type f` showed only `SKILL.md`; sidecar declared `eval_artifacts: present` because of the legacy Skill Graph fixture.
+Required action: Add a local comprehension eval covering definition, mental model, boundaries, misconception, and application behavior.
+Status: remediated — local `evals/comprehension.json` exists and parses as JSON.
 
 ID: F5
-Severity: TODO
-Surface: content
-Category: Content quality — completeness and density
-Problem: TODO — human judgment required
-Evidence: TODO — reviewer must inspect the skill body
-Required action: Does the skill have a clear Coverage section, a Philosophy section, at least one decision table or checklist, and explicit negative bounds (Do NOT Use When)? Does it contain generic filler that adds no routing signal?
+Severity: LOW
+Surface: `/Users/jacobbalslev/Development/skills/skills/quality-assurance/graph-audit/SKILL.md` relation metadata
+Category: Relation quality
+Problem: Relation comments still described the older six-edge wording and a pending `boundary` rename; relation neighbors did not clearly distinguish applying graph checks from maintaining health-check tooling or routing between skills.
+Evidence: Pre-repair metadata said "Six edge types" and "rename to `suppresses` pending ADR-0018"; relation set lacked `skill-infrastructure` and `skill-router` ownership distinctions.
+Required action: Refresh relation comments and add mechanism-level boundaries for `skill-infrastructure`, `skill-router`, `refactor`, `debugging`, and `eval-driven-development`.
+Status: remediated.
 
 ID: F6
-Severity: TODO
-Surface: evals
-Category: Eval quality — coverage and realism
-Problem: TODO — human judgment required
-Evidence: TODO — reviewer must inspect the skill body
-Required action: Do eval files exist if the skill is expected to be graded? Do they test realistic prompts — not trivia — and cover boundaries and failure cases as well as the happy path?
+Severity: INFO
+Surface: `/Users/jacobbalslev/Development/skills/skills/quality-assurance/graph-audit/audit-state.json`
+Category: Behavior Gate
+Problem: No graded comprehension or application run was executed, so behavior certification cannot be claimed.
+Evidence: `node bin/skill-graph.js audit graph-audit --force` ran in Integrity-only mode and explicitly said to re-run with `--graded` to populate behavior verdicts.
+Required action: Leave `comprehension_verdict` and `application_verdict` as `UNVERIFIED` until a graded run produces receipts.
+Status: accepted.
 
-## Required Fixes
+## Verification Evidence
 
-- F1 [P2 warning]: 8 top-level field(s) missing field-purpose comment (SKILL_METADATA_PROTOCOL.md § Inline field comments). Run `node scripts/backfill-field-purpose-comments.js` to add.
+- `node bin/skill-graph.js lint graph-audit` — PASS, 0 errors, 0 warnings.
+- `node scripts/normalize-skill-field-shape.js --report --skill graph-audit` — 0 fields to relocate, 0 semantic debt fields.
+- `node scripts/check-markdown-links.js ../skills/skills/quality-assurance/graph-audit/SKILL.md` — OK.
+- `node -e "JSON.parse(...audit-state.json); JSON.parse(...evals/comprehension.json); JSON.parse(...examples/evals/graph-audit.json)"` — JSON OK.
+- `node scripts/skill-graph-drift.js --record --apply ../skills/skills/quality-assurance/graph-audit` — recorded current local truth-source hashes.
+- `node scripts/skill-graph-drift.js --json ../skills/skills/quality-assurance/graph-audit` — `status: "OK"`.
+- `node bin/skill-graph.js audit graph-audit --force` — Integrity-only audit reports lint PASS and drift OK.
