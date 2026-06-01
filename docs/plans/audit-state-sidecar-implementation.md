@@ -1,7 +1,28 @@
 # Implementation Plan — Audit-State Sidecar Separation (ADR-0019)
 
-> Type: **SYSTEM** (schema + protocol + consumers). Status: scoped, not started.
+> Type: **SYSTEM** (schema + protocol + consumers). Status: **Phase 1 landed; Phases 2–5 in progress.**
 > Authorizing decision: [ADR-0019 (Accepted 2026-06-01)](../adr/0019-audit-state-sidecar-separation.md).
+
+> **Progress log**
+> - 2026-06-01 — `schema-v8` git tag created at pre-cut HEAD `83c66385` (clean-cut recovery point).
+> - 2026-06-01 — **Phase 1 DONE** (commit `16038f5`): `schemas/skill-audit-state.schema.json` authored
+>   (28 fields lift-and-shifted, `required[7]`, 2 intra-sidecar `eval_state⇒eval_artifacts` gates).
+>   Self-verified via ajv-free harness (valid passes; missing-required / bad-enum / extra-prop /
+>   wrong-`schema_version` / both eval_state gates reject). Additive — `verify:system` unchanged by it.
+> - 2026-06-01 — **Blocker filed: SH-6655** — pre-existing `docs:drift` red (5 operational `schema_version:7`
+>   refs in `docs/plans/skill-audit-loop-end-to-end-completion-2026-05-30.md`, the v7→v8 migration plan).
+>   Proven independent of this cut, but blocks a fully-green `verify:system` until resolved.
+> - **Discovered downstream impacts to fold into Phases 3–4** (verified this session, not yet in the table
+>   below): (a) `schemas/manifest.schema.json` skill-entry `required` includes `version` + `owner` (both →
+>   sidecar) — must drop both so a sidecar-less/new skill validates. (b) `scripts/check-schema-constants.js`
+>   reads `schema_version.oneOf` and asserts `v8_required_fields` from the **frontmatter** schema — rewrite
+>   to read `schema_version` from the sidecar schema, assert the new 5-field frontmatter `required`, and gate
+>   the sidecar's constants. (c) `scripts/generate-manifest.js` join = merge sidecar into `fm` BEFORE
+>   `buildSkillEntry` (fields are disjoint, so health/eval/lifecycle/concept projections stay byte-identical);
+>   `buildSkillEntry` itself needs no change. (d) `verify:system` lints `examples/skill-metadata-template.md`
+>   AND `examples/fixture-skills/*` against the frontmatter schema → both must migrate (strip audit fields +
+>   add sidecars) in Phase 5. (e) ~22 `scripts/__tests__/*` run in `test:unit`; `test-v8-schema-compat.js`,
+>   `test-normalize-field-shape.js`, and the verdict-writeback tests assert the single-file shape and must move.
 > Proposal: [audit-state-sidecar-separation.md](../proposals/audit-state-sidecar-separation.md).
 > Classification source: `benchmarks/field-relevance/field-placement.json`.
 > **Sequencing (binding):** this is a clean major-version-shaped cut (`AGENTS.md § Major Version Is a
