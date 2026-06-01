@@ -182,7 +182,7 @@ When `evals/comprehension.json` exists, the comprehension grader (`evaluate-skil
 
 ## The Pipeline of `evolve`
 
-`evolve` is the corpus-level walker — the **only** operation that is itself a loop. Its ONE meaning, matching both the CLI (`skill-graph evolve --help`) and the implementation: a continuous, checkpoint-resumable, analyzer-driven improvement loop over the corpus, prioritised by `application_verdict` first, then skill-graph centrality + Health-Block staleness.
+`evolve` is the corpus-level walker — the **only** operation that is itself a loop. Its ONE meaning, matching both the CLI (`skill-graph evolve --help`) and the implementation: a continuous, checkpoint-resumable, analyzer-driven improvement loop over the corpus, prioritised by `application_verdict` first, then skill-graph centrality + Audit Status staleness.
 
 > **Correction (E1, 2026-05-30 end-to-end review).** Earlier drafts described `evolve` as a "thin for-loop" that literally called `audit(skill); improve(skill); evaluate(skill)` per skill. That pseudo-code matched neither the code (`lib/audit/skill-evolution-loop.js`) nor the CLI help (`bin/skill-graph.js`, which already calls it a "continuous Karpathy-style skill-improvement loop"). Two meanings under one name. The real engine is the phase machine below; this section was rewritten to the single honest meaning before any behavior fix.
 
@@ -198,7 +198,7 @@ The engine (`lib/audit/skill-evolution-loop.js`) runs five phases per cycle:
 
 In `--continuous` mode the loop re-runs ANALYZE after each batch (improve → measure → re-prioritise → improve), bounded by `--max-cycles` / `--failure-budget`. So `evolve` *composes* the operations — the analyzer supplies prioritisation, and EXECUTE delegates to `improve` (which calls `evaluate`) — but it is **not** a literal per-skill `audit(); improve(); evaluate()` triple.
 
-`understanding_field` (the HARD SCOPE passed to the improver for `improve_skill`) is selected by `understandingField()` — empty/missing field wins outright, otherwise the shortest populated value among `description`, `mental_model`, `purpose`, `boundary`, `analogy`, `misconception`. The stalest Health date field stays in the trace as a staleness signal but is not what gets passed to the improver's HARD SCOPE.
+`understanding_field` (the HARD SCOPE passed to the improver for `improve_skill`) is selected by `understandingField()` — empty/missing field wins outright, otherwise the shortest populated value among `description`, `mental_model`, `purpose`, `boundary`, `analogy`, `misconception`. The stalest Audit Status date field stays in the trace as a staleness signal but is not what gets passed to the improver's HARD SCOPE.
 
 > **Implementation SSOT.** The canonical engine is `lib/audit/skill-evolution-loop.js` — what the public CLI (`bin/skill-graph.js evolve`) wires to. The workspace copy `scripts/skill/skill-evolution-loop.js` is a **divergent fork** (1358 differing non-comment lines vs the canonical; 468 vs 1028 non-comment lines — verified 2026-05-30) that the SH-6603 fork-collapse left as a full copy instead of converting to a shim. Collapsing it to a thin shim over the canonical is a behavior-bearing change (the workspace grind-loops run the 468-line copy; switching them to the 1028-line canonical changes behavior), so it is sequenced **after** the model-free black-box contract test exists — tracked as a follow-up SYSTEM task so the collapse is proven not to regress the loop.
 
@@ -548,6 +548,7 @@ A skill audit is complete when:
    - `truth_verdict`
    - `comprehension_verdict`
    - `application_verdict`
+7. the report states the governing quality principle, the method used, the ordered process actually executed, and the hard gate plus evidence receipt that decided completion
 
 Before marking the audit run complete, score the audit report itself on a 1-5 scale in `scorecard.md` or `verdict.md`:
 
@@ -568,6 +569,7 @@ Apply score ceilings mechanically:
 | Verification evidence is absent, assumed, or not tied to the changed/read surfaces | 2 |
 | A remediation audit has unresolved required actions inside its declared scope | 3 |
 | Behavior Gate is `UNVERIFIED` / `NA` without explaining why it was not run | 3 |
+| The report omits the governing quality principle, method, ordered process, or hard-gate evidence | 3 |
 | Residual risks, unrun checks, external-source limits, or accepted deferrals are not stated | 3 |
 | External URL drift is unhashable but disclosed with source-review evidence | 4 |
 
@@ -762,6 +764,7 @@ Diagnostic audits may score 4 while leaving fixes for later, but only when the r
    | Comprehension delta avg | `<±N.N>` — verdict: `skill_teaches` \| `skill_helps` \| `redundant` \| `fails_to_teach` \| `harmful` |
    | "Concept of the skill" verdict | PASS / DRIFT / AUTHORED / REWRITTEN |
    | Upstream displacement | `none` \| `superseded-by <vendor/release + date + source url>` — recommend: deprecate \| fold \| reframe-to-delta |
+   | Governing principle / method / process | `principle: <why this audit shape>; method: <technique>; process: <ordered steps actually run>; hard gate: <binary evidence receipt>` |
    | Audit report completion score | `1`-`5`, with every applied score ceiling named |
 
 8. **Verify** (fixed checklist, every skill):
@@ -828,7 +831,7 @@ Diagnostic audits may score 4 while leaving fixes for later, but only when the r
     Completion is already recorded by `release` (Step 10) in the run ledger — the worklist derives
     status from it on the next regenerate. The old `skill-audit-tracker.js done` (A/B/C batch) step is
     retired; do not call it.
-13. **/wrap** with: skill name, what fixed, runtime changed (y/n), tests pass/fail, security flags found, "Concept of the skill" status (PASS/DRIFT/AUTHORED/REWRITTEN), comprehension `delta_avg` and `verdict_category`, audit report completion score, score ceilings applied, evidence packet (files/commands/sources checked), residual risks and unrun checks, commit hash, next skill.
+13. **/wrap** with: skill name, what fixed, runtime changed (y/n), tests pass/fail, security flags found, "Concept of the skill" status (PASS/DRIFT/AUTHORED/REWRITTEN), comprehension `delta_avg` and `verdict_category`, governing principle / method / ordered process / hard-gate evidence, audit report completion score, score ceilings applied, evidence packet (files/commands/sources checked), residual risks and unrun checks, commit hash, next skill.
 
 ### Then continue to next skill. Stop after 4 skills or when a real blocker appears.
 
