@@ -1,15 +1,19 @@
 {
   "skill_name": "graph-audit",
-  "subject": "Skill metadata and manifest consistency auditing for the Skill Graph repository",
+  "subject": "Skill metadata, audit-state, manifest, and relation consistency auditing for the Skill Graph repository",
   "adjacent_concepts": [
-    "documentation",
+    "skill-infrastructure",
+    "skill-router",
+    "schema-evolution",
+    "testing-strategy",
     "refactor",
-    "testing-strategy"
+    "debugging"
   ],
+  "grounding_note": "These cases are repo-grounded to the current v8 two-file contract: authored SKILL.md metadata, sibling audit-state.json sidecar, generated manifest joins, relation targets, gradeable artifacts, and project grounding.",
   "evals": [
     {
       "id": 1,
-      "prompt": "A contributor adds a new skill and sets `eval_artifacts: present` in the frontmatter, but does not create a corresponding eval artifact under `examples/evals/`. What does the graph-audit skill say will happen when `node scripts/skill-lint.js` runs, and which specific check catches this?",
+      "prompt": "A skill passes `node scripts/skill-lint.js`, but its `audit-state.json` claims `application_verdict: APPLICABLE` and there is no `evals/application.json`. What graph-audit finding should be raised, and which checker owns the evidence?",
       "dimension": "definition",
       "substance": "domain",
       "calibration": "semantic",
@@ -17,13 +21,14 @@
       "skill_type": "concept",
       "criticality": "high",
       "truth_sources": [
-        "skills/quality/graph-audit/SKILL.md",
-        "scripts/skill-lint.js"
+        "../skills/skills/quality-assurance/graph-audit/SKILL.md",
+        "scripts/check-audit-manifest.js",
+        "schemas/skill-audit-state.schema.json"
       ]
     },
     {
       "id": 2,
-      "prompt": "A skill with `scope: codebase` is missing its `grounding` block entirely. According to the graph-audit skill, which two enforcement layers catch this violation — name them and explain the role of each.",
+      "prompt": "A SKILL.md file still contains `schema_version`, `freshness`, `eval_state`, and verdict fields in frontmatter after ADR-0019 moved audit/eval/provenance state into audit-state.json. Apply graph-audit: what is wrong and what must change?",
       "dimension": "mental_model",
       "substance": "domain",
       "calibration": "semantic",
@@ -31,54 +36,28 @@
       "skill_type": "concept",
       "criticality": "high",
       "truth_sources": [
-        "skills/quality/graph-audit/SKILL.md",
+        "../skills/skills/quality-assurance/graph-audit/SKILL.md",
+        "skill-metadata-protocol/SKILL_METADATA_PROTOCOL.md",
         "schemas/SKILL_METADATA_PROTOCOL_schema.json"
       ]
     },
     {
       "id": 3,
-      "prompt": "When should an agent use the graph-audit skill instead of the refactor skill to address a problem found in a SKILL.md file? Cite the negative-routing boundary that decides this.",
-      "dimension": "boundary",
-      "substance": "contradiction-check",
-      "calibration": "semantic",
-      "truth_mode": "code_verification",
-      "skill_type": "concept",
-      "criticality": "normal",
-      "truth_sources": [
-        "skills/quality/graph-audit/SKILL.md"
-      ]
-    },
-    {
-      "id": 4,
-      "prompt": "A skill names `relations.verify_with: [missing-skill]` where `missing-skill` does not exist as a directory under `skills/`. What does the graph-audit skill say is the correct fix, and what is the category of this failure mode?",
-      "dimension": "application",
-      "substance": "domain",
-      "calibration": "process",
-      "truth_mode": "process_correctness",
-      "skill_type": "workflow",
-      "criticality": "high",
-      "truth_sources": [
-        "skills/quality/graph-audit/SKILL.md",
-        "scripts/skill-lint.js"
-      ]
-    },
-    {
-      "id": 5,
-      "prompt": "Why does the graph-audit skill set `grounding.grounding_mode: repo_specific` rather than `universal`? What concrete truth sources does this ground it to, and what would be lost if those files changed?",
+      "prompt": "A project-targeted skill declares `deployment_target: project` but has no `grounding.truth_sources`. Which graph-audit check should flag this, and why is a project-targeted skill different from a portable one?",
       "dimension": "purpose",
       "substance": "domain",
       "calibration": "semantic",
       "truth_mode": "conceptual_correctness_plus_repo_application",
       "skill_type": "concept",
-      "criticality": "normal",
+      "criticality": "high",
       "truth_sources": [
-        "skills/quality/graph-audit/SKILL.md",
-        "docs/skill-metadata-protocol.md"
+        "../skills/skills/quality-assurance/graph-audit/SKILL.md",
+        "skill-metadata-protocol/SKILL_METADATA_PROTOCOL.md"
       ]
     },
     {
-      "id": 6,
-      "prompt": "A contributor renames `skills/shopify/` to `skills/shopify-integration/` but forgets to update the `name:` field inside `skills/shopify-integration/SKILL.md` (which still reads `name: shopify`). According to the graph-audit skill, what does `scripts/skill-lint.js` do with this skill, why does this matter for SKILL.md compatibility, and what is the correct fix?",
+      "id": 4,
+      "prompt": "A skill names `relations.verify_with: [missing-skill]` where `missing-skill` does not exist in the sibling skill library. What graph-audit finding should be raised, and what is the required fix?",
       "dimension": "application",
       "substance": "domain",
       "calibration": "process",
@@ -86,29 +65,56 @@
       "skill_type": "workflow",
       "criticality": "high",
       "truth_sources": [
-        "skills/quality/graph-audit/SKILL.md",
-        "scripts/skill-lint.js",
-        "docs/skill-metadata-protocol.md"
+        "../skills/skills/quality-assurance/graph-audit/SKILL.md",
+        "scripts/skill-lint.js"
+      ]
+    },
+    {
+      "id": 5,
+      "prompt": "When should an agent use graph-audit instead of skill-infrastructure? Cite the mechanism-level boundary.",
+      "dimension": "boundary",
+      "substance": "contradiction-check",
+      "calibration": "semantic",
+      "truth_mode": "code_verification",
+      "skill_type": "concept",
+      "criticality": "normal",
+      "truth_sources": [
+        "../skills/skills/quality-assurance/graph-audit/SKILL.md",
+        "../skills/skills/agent-ops/skill-infrastructure/SKILL.md"
+      ]
+    },
+    {
+      "id": 6,
+      "prompt": "A contributor asks graph-audit to debug why an agent is looping forever after a tool call. Should graph-audit own this task? Name the correct boundary and the right skill.",
+      "dimension": "boundary",
+      "substance": "contradiction-check",
+      "calibration": "semantic",
+      "truth_mode": "code_verification",
+      "skill_type": "concept",
+      "criticality": "normal",
+      "truth_sources": [
+        "../skills/skills/quality-assurance/graph-audit/SKILL.md"
       ]
     },
     {
       "id": 7,
-      "prompt": "An agent regenerates `examples/skills.manifest.sample.json` but uses a different `generated_at` timestamp each time, so the sample drifts from whatever `scripts/generate-manifest.js` would produce on the next run. How does the graph-audit skill say this drift is caught, and why does manifest-sample drift matter even when no real consumer reads the sample?",
+      "prompt": "A manifest sample looks current, but the generated manifest joined stale audit-state data for one skill. How should graph-audit reason about manifest sync under the two-file source model?",
       "dimension": "mental_model",
       "substance": "domain",
       "calibration": "semantic",
       "truth_mode": "code_verification",
       "skill_type": "concept",
-      "criticality": "normal",
+      "criticality": "high",
       "truth_sources": [
-        "skills/quality/graph-audit/SKILL.md",
+        "../skills/skills/quality-assurance/graph-audit/SKILL.md",
         "scripts/generate-manifest.js",
+        "schemas/manifest.schema.json",
         "examples/skills.manifest.sample.json"
       ]
     },
     {
       "id": 8,
-      "prompt": "Given the following synthetic SKILL.md frontmatter excerpt:\n\n```yaml\nschema_version: 3\nname: example\ntype: capability\nbrowse_category: quality\nscope: portable\nowner: maintainer\nfreshness: \"2026-04-19\"\ndrift_check:\n  last_verified: \"2026-04-19\"\neval_artifacts: pending\neval_state: passing\nrouting_eval: absent\n```\n\nPredict which check in `scripts/skill-lint.js` will fire first when this skill is linted, what the exact error category will be (per the eleven-check list), and what the underlying rule is. (Hint: one required field has a value that is not in the schema's allowed enum.)",
+      "prompt": "A synthetic skill has valid YAML and a matching directory name, but its `subject` is `quality` and `deployment_target` is `repo`. Predict the graph-audit result and name the schema rule being violated.",
       "dimension": "application",
       "substance": "domain",
       "calibration": "semantic",
@@ -116,65 +122,9 @@
       "skill_type": "workflow",
       "criticality": "high",
       "truth_sources": [
-        "skills/quality/graph-audit/SKILL.md",
+        "../skills/skills/quality-assurance/graph-audit/SKILL.md",
         "schemas/SKILL_METADATA_PROTOCOL_schema.json",
         "scripts/skill-lint.js"
-      ]
-    },
-    {
-      "id": 9,
-      "prompt": "A skill ships with `schema_version: 2` while the current schema locks `schema_version: const 3`. According to the graph-audit skill, which of the eleven lint checks detects this specifically, and why does `additionalProperties: false` in the schema matter for catching schema drift beyond just the version field?",
-      "dimension": "application",
-      "substance": "domain",
-      "calibration": "semantic",
-      "truth_mode": "code_verification",
-      "skill_type": "concept",
-      "criticality": "high",
-      "truth_sources": [
-        "skills/quality/graph-audit/SKILL.md",
-        "schemas/SKILL_METADATA_PROTOCOL_schema.json",
-        "scripts/skill-lint.js"
-      ]
-    },
-    {
-      "id": 10,
-      "prompt": "A contributor runs `node scripts/skill-lint.js skills/a11y` on a correct skill and receives exit code 0, then introduces a typo changing `eval_artifacts: present` to `eval_artifacts: presnt` (misspelled enum value) and re-runs the same command. According to the graph-audit skill's `## Verification` gate, describe the end-to-end behavioral outcome: what exit code returns, what output category surfaces, which specific check produces the error, and what decision should the contributor's CI make based on the non-zero exit? This is a behavioral assertion — the answer is an observable CI outcome, not a skill-quotation.",
-      "dimension": "application",
-      "substance": "domain",
-      "calibration": "process",
-      "truth_mode": "output_correctness",
-      "skill_type": "workflow",
-      "criticality": "high",
-      "truth_sources": [
-        "skills/quality/graph-audit/SKILL.md",
-        "scripts/skill-lint.js",
-        "schemas/SKILL_METADATA_PROTOCOL_schema.json"
-      ]
-    },
-    {
-      "id": 11,
-      "prompt": "A contributor asks graph-audit to debug why their agent is looping infinitely when it tries to resolve a relation target. Should graph-audit take this task? Cite the `Do NOT Use When` row that decides this and name the correct skill.",
-      "dimension": "boundary",
-      "substance": "contradiction-check",
-      "calibration": "semantic",
-      "truth_mode": "code_verification",
-      "skill_type": "concept",
-      "criticality": "normal",
-      "truth_sources": [
-        "skills/quality/graph-audit/SKILL.md"
-      ]
-    },
-    {
-      "id": 12,
-      "prompt": "A contributor asks graph-audit to help rewrite the `## Coverage` prose in an existing SKILL.md to read more naturally — no schema change, no manifest change, just prose polish. Should graph-audit take this task? Cite the `Do NOT Use When` row that decides this and name the correct skill.",
-      "dimension": "boundary",
-      "substance": "contradiction-check",
-      "calibration": "semantic",
-      "truth_mode": "code_verification",
-      "skill_type": "concept",
-      "criticality": "normal",
-      "truth_sources": [
-        "skills/quality/graph-audit/SKILL.md"
       ]
     }
   ]
