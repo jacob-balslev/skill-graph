@@ -549,6 +549,30 @@ A skill audit is complete when:
    - `comprehension_verdict`
    - `application_verdict`
 
+Before marking the audit run complete, score the audit report itself on a 1-5 scale in `scorecard.md` or `verdict.md`:
+
+| Score | Meaning |
+|---|---|
+| 1 | The audit cannot be used: the target skill, artifacts, or core verdicts are missing. |
+| 2 | The audit is partial: important checklist sections, findings evidence, or verification evidence are absent. |
+| 3 | The audit is readable but incomplete: the main report exists, but required remediation, TODO placeholders, or reporting gaps remain. |
+| 4 | The audit is acceptable: findings are complete, evidence is concrete, gates are explicit, residual risks are disclosed, and any deferred work is named. |
+| 5 | The audit is exemplary: it is acceptable plus has strong cross-check evidence, clear scorecard reasoning, and no known material gaps. |
+
+Apply score ceilings mechanically:
+
+| Condition | Maximum audit-report score |
+|---|---:|
+| Any finding lacks severity, surface, evidence, or required action | 2 |
+| `findings.md`, `scorecard.md`, or `verdict.md` still contains seed TODO placeholders | 2 |
+| Verification evidence is absent, assumed, or not tied to the changed/read surfaces | 2 |
+| A remediation audit has unresolved required actions inside its declared scope | 3 |
+| Behavior Gate is `UNVERIFIED` / `NA` without explaining why it was not run | 3 |
+| Residual risks, unrun checks, external-source limits, or accepted deferrals are not stated | 3 |
+| External URL drift is unhashable but disclosed with source-review evidence | 4 |
+
+Diagnostic audits may score 4 while leaving fixes for later, but only when the report is the deliverable and every finding, deferral, unrun check, and residual risk is explicit. Remediation audits with unresolved in-scope required actions must not be released as completed.
+
 ---
 
 # Part 3 — Per-Skill Audit Runbook
@@ -738,6 +762,7 @@ A skill audit is complete when:
    | Comprehension delta avg | `<±N.N>` — verdict: `skill_teaches` \| `skill_helps` \| `redundant` \| `fails_to_teach` \| `harmful` |
    | "Concept of the skill" verdict | PASS / DRIFT / AUTHORED / REWRITTEN |
    | Upstream displacement | `none` \| `superseded-by <vendor/release + date + source url>` — recommend: deprecate \| fold \| reframe-to-delta |
+   | Audit report completion score | `1`-`5`, with every applied score ceiling named |
 
 8. **Verify** (fixed checklist, every skill):
    - `node scripts/skill/skill-census.js --json --write-manifest --write-docs`
@@ -771,6 +796,7 @@ A skill audit is complete when:
       grader later. Do NOT default to UNVERIFIED when you actually assessed it.
     - `UNVERIFIED` is ONLY for "not assessed at all" (no gradeable artifact, or skill skipped).
     Use `--status reverted` if the audit's changes were reverted, `--status aborted` if you could not finish.
+    Before using `--status completed`, confirm the audit report completion score from Step 7 is at least 4 and no score ceiling below 4 applies. If the run is diagnostic, open findings may remain, but the report must be complete and must name those findings as downstream work. If the run is remediation, unresolved in-scope required actions block `--status completed`.
 
 11. **Commit**: Stage only this skill's files + regenerated shared outputs. One commit per skill.
 
@@ -802,7 +828,7 @@ A skill audit is complete when:
     Completion is already recorded by `release` (Step 10) in the run ledger — the worklist derives
     status from it on the next regenerate. The old `skill-audit-tracker.js done` (A/B/C batch) step is
     retired; do not call it.
-13. **/wrap** with: skill name, what fixed, runtime changed (y/n), tests pass/fail, security flags found, "Concept of the skill" status (PASS/DRIFT/AUTHORED/REWRITTEN), comprehension `delta_avg` and `verdict_category`, commit hash, next skill.
+13. **/wrap** with: skill name, what fixed, runtime changed (y/n), tests pass/fail, security flags found, "Concept of the skill" status (PASS/DRIFT/AUTHORED/REWRITTEN), comprehension `delta_avg` and `verdict_category`, audit report completion score, score ceilings applied, evidence packet (files/commands/sources checked), residual risks and unrun checks, commit hash, next skill.
 
 ### Then continue to next skill. Stop after 4 skills or when a real blocker appears.
 
