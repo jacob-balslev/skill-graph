@@ -39,7 +39,9 @@ const path = require('path');
 const crypto = require('crypto');
 const { parseFrontmatter, normalizeFrontmatter } = require('./lib/parse-frontmatter');
 const { collectSkillFilesFromRoots, workspaceRoot, resolveTruthSourcePath } = require('./lib/roots');
-const { updateFrontmatterField } = require('../lib/audit-shared/skill-frontmatter');
+// ADR-0019: drift_check (hashes) + drift_status + lifecycle live in the
+// audit-state.json sidecar; grounding.truth_sources stays in frontmatter.
+const { readSidecar, writeSidecarFields, joinSidecar } = require('./lib/audit-state-sidecar');
 
 const REPO_ROOT = workspaceRoot();
 const DEFAULT_SKILLS_DIR = path.join(REPO_ROOT, 'skills');
@@ -211,10 +213,13 @@ function checkSkill(skillMdPath, skillRoots = []) {
     return { skill: name, path: rel, status: 'UNGROUNDED', details: 'no truth_sources declared', truth_sources: [] };
   }
 
-  const driftCheck = fm.drift_check || {};
+  // ADR-0019: drift_check + lifecycle live in the audit-state.json sidecar.
+  // Join it under the frontmatter (grounding stays frontmatter and wins).
+  const merged = joinSidecar(fm, readSidecar(skillMdPath));
+  const driftCheck = merged.drift_check || {};
   const recordedHashes = driftCheck.truth_source_hashes || {};
   const lastVerified = driftCheck.last_verified || null;
-  const lifecycle = fm.lifecycle || {};
+  const lifecycle = merged.lifecycle || {};
 
   const truthSources = [];
   let anyDrift = false;
@@ -316,52 +321,20 @@ function buildDriftCheckBlock(truthSources, indent) {
  * position. All other frontmatter lines are preserved verbatim.
  */
 function applyRecord(skillMdPath, truthSources) {
-  const text = fs.readFileSync(skillMdPath, 'utf8');
-  const newline = text.includes('\r\n') ? '\r\n' : '\n';
-  const lines = text.split(/\r?\n/);
-  if (lines[0].replace(/^\uFEFF/, '') !== '---') throw new Error('no frontmatter delimiter');
-  let closeIdx = -1;
-  for (let i = 1; i < lines.length; i++) {
-    if (lines[i].trim() === '---') { closeIdx = i; break; }
+  // ADR-0019: drift_check (last_verified + truth_source_hashes) lives in the
+  // audit-state.json sidecar, not frontmatter, so recording is a structured
+  // JSON merge — other sidecar fields are preserved, and a skill with no
+  // sidecar yet gets one created. grounding.truth_sources (the hashed source
+  // list) stays in frontmatter.
+  const truth_source_hashes = {};
+  for (const ts of truthSources) {
+    if (ts.live_hash) truth_source_hashes[ts.source] = ts.live_hash;
   }
-  if (closeIdx === -1) throw new Error('unterminated frontmatter');
-
-  // Locate drift_check block: starts at a top-level `drift_check:` line,
-  // ends just before the next line at the same or shallower indent level.
-  let start = -1;
-  let end = -1;
-  let indent = '';
-  for (let i = 1; i < closeIdx; i++) {
-    const m = lines[i].match(/^(\s*)drift_check\s*:/);
-    if (m) {
-      start = i;
-      indent = m[1];
-      break;
-    }
+  const drift_check = { last_verified: todayISO() };
+  if (Object.keys(truth_source_hashes).length > 0) {
+    drift_check.truth_source_hashes = truth_source_hashes;
   }
-  if (start === -1) {
-    throw new Error('drift_check block not found — run migrate-skill-v2-to-v3.js first');
-  }
-
-  // Find the end of the block.
-  const blockIndentLen = indent.length;
-  end = start;
-  for (let i = start + 1; i < closeIdx; i++) {
-    const line = lines[i];
-    if (line.trim() === '') { end = i; continue; }
-    const lineIndent = line.match(/^ */)[0].length;
-    if (lineIndent <= blockIndentLen) {
-      end = i - 1;
-      break;
-    }
-    end = i;
-  }
-
-  const newBlock = buildDriftCheckBlock(truthSources, indent);
-  const before = lines.slice(0, start);
-  const after = lines.slice(end + 1);
-  const newLines = before.concat(newBlock, after);
-  fs.writeFileSync(skillMdPath, newLines.join(newline), 'utf8');
+  writeSidecarFields(skillMdPath, { drift_check });
 }
 
 // ---------------------------------------------------------------------------
@@ -416,11 +389,8 @@ function mapDriftStatusForWrite(status) {
 
 function writeDriftStatus(skillMdPath, driftStatus) {
   if (!driftStatus) return false;
-  const content = fs.readFileSync(skillMdPath, 'utf8');
-  const updated = updateFrontmatterField(content, 'drift_status', driftStatus);
-  if (updated === content) return false;
-  fs.writeFileSync(skillMdPath, updated);
-  return true;
+  // ADR-0019: drift_status lives in the audit-state.json sidecar.
+  return writeSidecarFields(skillMdPath, { drift_status: driftStatus }).written;
 }
 
 function main() {
@@ -490,7 +460,7 @@ function main() {
           exitCode = 1;
         }
       } else {
-        console.log(`# ${path.relative(REPO_ROOT, skillMdPath)} — preview (re-run with --apply to write)`);
+        console.log(`# ${path.relative(REPO_ROOT, skillMdPath)} — preview (re-run with --apply to write to audit-state.json sidecar)`);
         console.log(buildDriftCheckBlock(truthSources, '').join('\n'));
         console.log('');
       }
