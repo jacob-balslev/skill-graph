@@ -21,10 +21,10 @@
  *
  * The output explains WHY each skill was selected or excluded. That is the
  * point: the reference consumer exists so `boundary`, `depends_on`, the
- * four-verdict Health Block, and `eval_state` are visible in a routing
+ * four-verdict Audit Status, and `eval_state` are visible in a routing
  * decision, not just declared in a frontmatter nobody reads.
  *
- * Four-verdict Health Block contract (Step 5, 2026-05-31 — see
+ * Four-verdict Audit Status contract (Step 5, 2026-05-31 — see
  * docs/plans/skill-audit-loop-end-to-end-completion-2026-05-30.md § Decision A
  * and docs/verdict-semantics.md):
  *   - HARD integrity block: structural_verdict=FAIL or truth_verdict=BROKEN excludes
@@ -397,11 +397,11 @@ function computeStaleness(skill, today) {
 }
 
 // ---------------------------------------------------------------------------
-// Four-verdict Health Block gate (Step 5 — Decision A contract migration)
+// Four-verdict Audit Status gate (Step 5 — Decision A contract migration)
 // ---------------------------------------------------------------------------
 //
 // The router historically gated only on `eval_state`. Step 5 wires it onto the
-// four-verdict Health Block (structural / truth / comprehension / application)
+// four-verdict Audit Status (structural / truth / comprehension / application)
 // per Decision A. Behavior verdicts gate routing; structural/truth are hard
 // integrity blocks; comprehension is informational (it is the weaker signal and
 // does not gate). Enum values are canonical per docs/verdict-semantics.md.
@@ -429,7 +429,7 @@ const TRUTH_HARD_FAIL = new Set(['BROKEN']);
 
 /**
  * Rank-weight boost for a skill's application_verdict. Returns 0 for UNVERIFIED,
- * MIXED, any negative verdict, or a missing Health Block.
+ * MIXED, any negative verdict, or missing Audit Status.
  */
 function applicationVerdictBoost(skill) {
   const v = skill.health && skill.health.application_verdict;
@@ -710,7 +710,7 @@ function routeSkills(manifest, options) {
   }
 
   // -------------------------------------------------------------------------
-  // Stage 6: verdict gate (four-verdict Health Block, Decision A) + eval_state.
+  // Stage 6: verdict gate (four-verdict Audit Status, Decision A) + eval_state.
   //
   // Order per Decision A: (1) HARD integrity block (structural FAIL / truth
   // BROKEN) — a broken skill never routes. (2) BEHAVIOR gate-out — an active

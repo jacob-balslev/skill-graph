@@ -19,8 +19,8 @@
  *      If not, prepend the field's canonical comment block from the in-file
  *      FIELD_COMMENTS map.
  *   4. Inserts section dividers (`# === Section Name ===`) at the documented
- *      transition points (v8 classification, eval-health, Understanding fields,
- *      export provenance, Health Block) when those sections appear.
+ *      transition points (v8 classification, eval/audit status, Understanding fields,
+ *      export provenance, Audit Status) when those sections appear.
  *
  * What it does NOT do
  * -------------------
@@ -95,9 +95,8 @@ const FIELD_COMMENTS = {
     '# project (one or more specific projects; requires populated `grounding` and `project[]`).',
   ],
   scope: [
-    '# scope: PRD-style free-text statement of what the skill teaches and what it',
-    '# doesn\'t. Optional.— no enum constraint. Mirrors `## Coverage`',
-    '# plus `## Do NOT Use When` at the frontmatter level for fast scanning.',
+    '# scope: free-text PRD-style statement of what the skill teaches and where it deploys',
+    '# (v8 required; not an enum). Positive scope + portability/grounding + explicit exclusions.',
   ],
   taxonomy_domain: [
     '# taxonomy_domain: optional hierarchical sub-path within `subject`. Slash-delimited',
@@ -180,14 +179,15 @@ const FIELD_COMMENTS = {
     '# when the bundle label matches. Distinct from project[] (the per-project belonging filter).',
   ],
   relations: [
-    '# relations: typed graph edges to sibling skills. Six edge types:',
+    '# relations: typed graph edges to sibling skills. Current fields:',
     '# related (adjacency for browse / co-routing expansion) /',
     '# boundary (exclude listed skills from co-routing when THIS skill wins — name is inverse',
     '#           to mechanic; write reason as "I own this exclusively over X", not "use X instead";',
-    '#           rename to `suppresses` pending ADR-0018) /',
+    '#           see ADR-0018 for rename rationale) /',
     '# verify_with (cross-check; co-loaded as one-hop expansion) /',
     '# depends_on (composition; transitive — A→B→C loads all three) /',
-    '# broader / narrower (SKOS-style generalization; broader drives co-load, narrower does not).',
+    '# broader / narrower (SKOS-style generalization) /',
+    '# disjoint_with (mutual exclusion for incompatible ownership).',
   ],
   grounding: [
     '# grounding: required when `deployment_target: project`. Declares the truth sources',
@@ -235,8 +235,8 @@ const FIELD_COMMENTS = {
     '# See AGENTS.md § Version Labels Are Earned, Not Bumped.',
   ],
   structural_verdict: [
-    '# === Health Block (written by the audit loop, not hand-authored) ===',
-    '# See skill-audit-loop/SKILL_AUDIT_LOOP.md § The Health Block. UNVERIFIED is the honest default.',
+    '# === Audit Status (written by the audit loop to audit-state.json, not hand-authored here) ===',
+    '# See skill-audit-loop/SKILL_AUDIT_LOOP.md § Audit Status. UNVERIFIED is the honest default.',
     '#',
     '# structural_verdict: form/export shape (gates 1-2, 7 — external mandates only).',
     '# PASS / PASS_WITH_FIXES / FAIL / UNVERIFIED.',

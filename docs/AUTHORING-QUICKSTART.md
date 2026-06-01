@@ -180,7 +180,7 @@ Neither blocks first commit. A new skill ships honestly as `eval_state: unverifi
 | Description is a summary, not a routing contract | "This skill teaches Conway's Law" | Rewrite as routing instructions: "Use when..." + "Do NOT use for..." with concrete examples. |
 | Setting `eval_state: passing` without a receipt | New skill optimistically claims passing evals | Default to `unverified`. Flip to `passing` only after a real grader run produces a receipt. Same rule for `routing_eval: present`. |
 | Stamping Audit Status fields by hand | Author writes `structural_verdict: PASS` on first commit | Leave the Audit Status absent. The audit loop writes those fields; hand-edits will be overwritten on the next `audit` run. |
-| Cross-domain `boundary[]` entries | `boundary: [skill-from-different-category]` | Move to `anti_examples` + `relations.related`. The `boundary` field is for same-domain handoffs only (see `skill-metadata-protocol/SKILL_METADATA_PROTOCOL.md § Cross-domain boundary doctrine`). |
+| Cross-domain `boundary[]` entries | `boundary: [skill-from-different-category]` | Move to `anti_examples` + `relations.related`. The `boundary` field is for same-domain routing exclusions only (see `skill-metadata-protocol/SKILL_METADATA_PROTOCOL.md § Cross-domain boundary doctrine`). |
 | Placeholder sludge | `your-skill-name`, `path/to/file`, `todo` leftover from the template | Strip all template scaffolding before commit. The verification checklist in the template covers this. |
 
 ## What "valid" actually means at three levels

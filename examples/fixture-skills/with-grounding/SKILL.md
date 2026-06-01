@@ -65,4 +65,4 @@ tree, not under the canonical skill library.
 - You need to test the bare-minimum frontmatter — use `minimal-capability`.
 - You need to test typed relations — use `with-relations`.
 - You need to test flat Understanding fields or the nested concept block — use `comprehension-full`.
-- You need a production project-grounded skill — use a real grounded skill from `skills/` (e.g. `nextauth-patterns`, `query-tier-safety`).
+- You need a production project-grounded skill — use a real grounded skill from `skills/` (for example `skill-router` or `graph-audit`).

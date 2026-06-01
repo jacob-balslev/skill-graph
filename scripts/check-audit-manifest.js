@@ -116,23 +116,56 @@ function listSkillsWithRuns(progressDir) {
     .map((d) => d.name);
 }
 
-// Read the current SKILL.md Health Block. Returns the comprehension_verdict declared
-// in the SKILL.md frontmatter (durable state), or null if the file or field is missing.
-// This is the post-2026-05-25 resolution path: a per-run verdict.md may have stamped
-// PROVISIONAL without the artifact (the May 22-25 incident pattern), but if the SKILL.md
-// has since been honestly downgraded to UNVERIFIED, the run-level claim is superseded
-// and the verifier should not report a live failure for that resolved historical drift.
-function readSkillHealthBlock(skillsRoot, skill) {
-  const skillMd = path.join(skillsRoot, skill, 'SKILL.md');
-  if (!fs.existsSync(skillMd)) return { comprehension_verdict: null, application_verdict: null };
+function resolveSkillDir(workspace, skill) {
+  const skillsRoot = path.join(workspace, 'skills');
+  const flat = path.join(skillsRoot, skill);
+  if (fs.existsSync(path.join(flat, 'SKILL.md'))) return flat;
+
+  const nestedRoot = path.join(skillsRoot, 'skills');
+  if (fs.existsSync(nestedRoot)) {
+    const subjects = fs.readdirSync(nestedRoot, { withFileTypes: true })
+      .filter(d => d.isDirectory())
+      .map(d => d.name);
+    for (const subject of subjects) {
+      const nested = path.join(nestedRoot, subject, skill);
+      if (fs.existsSync(path.join(nested, 'SKILL.md'))) return nested;
+    }
+  }
+  return null;
+}
+
+// Read the current durable Audit Status. In the live ADR-0019 contract, verdicts
+// live in audit-state.json beside SKILL.md. Legacy flat/frontmatter fallback is
+// kept only so older deployments can still use the honest-downgrade escape hatch.
+function readSkillAuditStatus(workspace, skill) {
+  const skillDir = resolveSkillDir(workspace, skill);
+  if (!skillDir) {
+    return { comprehension_verdict: null, application_verdict: null, source: null };
+  }
+
+  const sidecar = path.join(skillDir, 'audit-state.json');
+  if (fs.existsSync(sidecar)) {
+    const state = JSON.parse(fs.readFileSync(sidecar, 'utf8'));
+    return {
+      comprehension_verdict: state.comprehension_verdict || null,
+      application_verdict: state.application_verdict || null,
+      source: sidecar,
+    };
+  }
+
+  const skillMd = path.join(skillDir, 'SKILL.md');
+  if (!fs.existsSync(skillMd)) {
+    return { comprehension_verdict: null, application_verdict: null, source: null };
+  }
   const text = fs.readFileSync(skillMd, 'utf8');
-  // Frontmatter parse — we need the two behavior-gate verdicts for the
-  // honest-downgrade escape hatch (comprehension + application).
+  // Legacy fallback: older deployments may still carry behavior-gate verdicts
+  // in frontmatter. New migrated skills use audit-state.json.
   const cm = text.match(/^comprehension_verdict:\s*([A-Z_]+)\s*$/m);
   const am = text.match(/^application_verdict:\s*([A-Z_]+)\s*$/m);
   return {
     comprehension_verdict: cm ? cm[1].toUpperCase() : null,
     application_verdict: am ? am[1].toUpperCase() : null,
+    source: skillMd,
   };
 }
 
@@ -186,8 +219,6 @@ function main() {
   const args = parseArgs(process.argv.slice(2));
   const manifest = loadManifest();
   const progressDir = path.join(args.workspace, '.opencode', 'progress', 'skill-audits');
-  const skillsRoot = path.join(args.workspace, 'skills');
-
   const failures = [];
   const checks = [];
 
@@ -216,10 +247,10 @@ function main() {
       // into SKILL.md frontmatter.
       const comprehensionEnumLeak = verdicts.comprehension && GRADED_APPLICATION_VERDICTS.has(verdicts.comprehension);
 
-      // Read the current SKILL.md Health Block — if the durable state has been
-      // honestly downgraded to UNVERIFIED, treat the historical per-run claim as
-      // resolved-via-downgrade rather than a live failure.
-      const health = readSkillHealthBlock(skillsRoot, skill);
+      // Read the current durable Audit Status — if it has been honestly downgraded
+      // to UNVERIFIED, treat the historical per-run claim as resolved-via-downgrade
+      // rather than a live failure.
+      const health = readSkillAuditStatus(args.workspace, skill);
       const currentHealthIsHonestlyDowngraded = claimsGraded &&
         health.comprehension_verdict &&
         !GRADED_COMPREHENSION_VERDICTS.has(health.comprehension_verdict);
@@ -248,15 +279,16 @@ function main() {
         comprehension_json_path: comprehensionPath,
         application_json_exists: applicationExists,
         application_json_path: applicationPath,
-        skill_md_comprehension_verdict: health.comprehension_verdict,
-        skill_md_application_verdict: health.application_verdict,
+        audit_status_comprehension_verdict: health.comprehension_verdict,
+        audit_status_application_verdict: health.application_verdict,
+        audit_status_source: health.source,
       };
       checks.push(entry);
 
       if (claimsGraded && !comprehensionExists && !currentHealthIsHonestlyDowngraded) {
         failures.push({
           ...entry,
-          reason: `Verdict claims comprehension=${verdicts.comprehension} but ${comprehensionPath} does not exist on disk, AND the current SKILL.md Health Block (comprehension_verdict=${health.comprehension_verdict || 'unknown'}) has not been honestly downgraded to UNVERIFIED. Per the May 22-25 incident root cause, any graded comprehension_verdict (PROVISIONAL/PASS/SHALLOW/REDUNDANT) requires a gradeable comprehension.json. Either author the comprehension.json (and re-run the assessment) or downgrade the SKILL.md verdict to UNVERIFIED — the verifier respects honest downgrade as the resolution path.`,
+          reason: `Verdict claims comprehension=${verdicts.comprehension} but ${comprehensionPath} does not exist on disk, AND the current Audit Status (comprehension_verdict=${health.comprehension_verdict || 'unknown'}, source=${health.source || 'missing'}) has not been honestly downgraded to UNVERIFIED. Per the May 22-25 incident root cause, any graded comprehension_verdict (PROVISIONAL/PASS/SHALLOW/REDUNDANT) requires a gradeable comprehension.json. Either author the comprehension.json (and re-run the assessment) or downgrade the audit-state verdict to UNVERIFIED — the verifier respects honest downgrade as the resolution path.`,
         });
       }
       if (comprehensionEnumLeak) {
@@ -268,7 +300,7 @@ function main() {
       if (claimsGradedApplication && !applicationExists && !currentAppIsHonestlyDowngraded) {
         failures.push({
           ...entry,
-          reason: `Verdict claims application=${verdicts.application} but ${applicationPath} does not exist on disk, AND the current SKILL.md Health Block (application_verdict=${health.application_verdict || 'unknown'}) has not been honestly downgraded out of the graded set. A high-stakes graded application_verdict (APPLICABLE/MIXED/HARMFUL) is the primary quality signal and requires a gradeable evals/application.json. Either author the application.json (and re-run the assessment) or downgrade the SKILL.md verdict to UNVERIFIED — the verifier respects honest downgrade as the resolution path.`,
+          reason: `Verdict claims application=${verdicts.application} but ${applicationPath} does not exist on disk, AND the current Audit Status (application_verdict=${health.application_verdict || 'unknown'}, source=${health.source || 'missing'}) has not been honestly downgraded out of the graded set. A high-stakes graded application_verdict (APPLICABLE/MIXED/HARMFUL) is the primary quality signal and requires a gradeable evals/application.json. Either author the application.json (and re-run the assessment) or downgrade the audit-state verdict to UNVERIFIED — the verifier respects honest downgrade as the resolution path.`,
         });
       }
     }

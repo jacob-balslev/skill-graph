@@ -37,7 +37,7 @@ The four relation kinds with distinct semantics:
 | Predicate | Meaning | Target here |
 |---|---|---|
 | `related` | Adjacency for browse / routing expansion | `minimal-capability` |
-| `boundary` | Routing-layer handoff ("use that one instead because...") | `with-grounding` |
+| `boundary` | Routing-layer exclusion ("when I own this query, suppress that one") | `with-grounding` |
 | `verify_with` | Cross-check: when applied, verify with another | `comprehension-full` |
 | `depends_on` | Composition: this assumes the other is in scope | `minimal-capability` |
 
@@ -50,7 +50,7 @@ version-constrained dependency shape.
 
 Relations are the edges of the Skill Graph. The four predicates are
 intentionally orthogonal: `related` is symmetric and weakly directional,
-`boundary` is asymmetric and routing-routed, `verify_with` is symmetric and
+`boundary` is asymmetric and routing-exclusion-oriented, `verify_with` is symmetric and
 quality-routed, `depends_on` is asymmetric and load-order-routed. Conflating
 them would force the router to guess intent. This fixture is the smallest
 configuration that demonstrates the distinction across every predicate at

@@ -16,7 +16,7 @@ Symmetric co-read relation. Use for skills that teach the same surface from diff
 
 ### `boundary`
 
-Routing-layer anti-ownership edge. Use for skills this skill explicitly does NOT own, where the router should hand a near-miss prompt to a different skill. This relation is directional and Skill-Graph-specific; it is intentionally weaker than formal OWL disjointness. Item shape: bare string OR `{skill, reason}`. Reasons are strongly recommended because routing handoffs need an explicit boundary rule.
+Routing-layer anti-ownership edge. Use for skills this skill explicitly suppresses from co-routing when this skill wins a query. This relation is directional and Skill-Graph-specific; it is intentionally weaker than formal OWL disjointness. Item shape: bare string OR `{skill, reason}`. Reasons are strongly recommended because routing exclusions need an explicit ownership rule.
 
 ### `disjoint_with`
 

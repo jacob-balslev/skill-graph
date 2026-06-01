@@ -782,12 +782,12 @@
               "last_audited": {
                 "type": "string",
                 "format": "date",
-                "description": "ISO date (YYYY-MM-DD) the `audit` command last ran against this skill. Written by `scripts/skill/skill-audit.js`. Pass-through from authored frontmatter (v6 Health Block)."
+                "description": "ISO date (YYYY-MM-DD) the `audit` command last ran against this skill. Joined from the per-skill `audit-state.json` sidecar into the generated manifest."
               },
               "last_changed": {
                 "type": "string",
                 "format": "date",
-                "description": "ISO date (YYYY-MM-DD) the SKILL.md body or frontmatter was last edited. Written automatically by `improve` operations. Pass-through from authored frontmatter (v6 Health Block)."
+                "description": "ISO date (YYYY-MM-DD) the SKILL.md body or frontmatter was last edited. Joined from audit-loop state into the generated manifest when present."
               },
               "structural_verdict": {
                 "type": "string",
@@ -797,7 +797,7 @@
                   "FAIL",
                   "UNVERIFIED"
                 ],
-                "description": "Form-layer verdict (gates 1-2, 7: lint, manifest census, concept-card shape). Pass-through from authored frontmatter (v7 Health Block). Replaces the structural slice of v6 `audit_verdict`. See docs/adr/0011-split-audit-verdict-into-four-verdicts.md."
+                "description": "Form-layer verdict (gates 1-2, 7: lint, manifest census, concept-card shape). Joined from `audit-state.json` into the generated manifest. Replaces the structural slice of v6 `audit_verdict`. See docs/adr/0011-split-audit-verdict-into-four-verdicts.md and docs/adr/0019-audit-state-sidecar-separation.md."
               },
               "truth_verdict": {
                 "type": "string",
@@ -807,7 +807,7 @@
                   "BROKEN",
                   "UNVERIFIED"
                 ],
-                "description": "Truth-layer verdict (gates 3-6: drift sentinel, truth-source catalog, test coverage, claim verification). Pass-through from authored frontmatter (v7 Health Block). Replaces the truth slice of v6 `audit_verdict`."
+                "description": "Truth-layer verdict (gates 3-6: drift sentinel, truth-source catalog, test coverage, claim verification). Joined from `audit-state.json` into the generated manifest. Replaces the truth slice of v6 `audit_verdict`."
               },
               "comprehension_verdict": {
                 "type": "string",
@@ -820,7 +820,7 @@
                   "SKIPPED_BASELINE_HIGH",
                   "NA"
                 ],
-                "description": "Comprehension-layer verdict (gate 8, demoted in v7). Optional smoke test that the foundation model has the concept. `PROVISIONAL` records a single-model self-assessment; `SKIPPED_BASELINE_HIGH` is the expected verdict for any concept the model already knows. Pass-through from authored frontmatter."
+                "description": "Comprehension-layer verdict (gate 8, demoted in v7). Optional smoke test that the foundation model has the concept. `PROVISIONAL` records a single-model self-assessment; `SKIPPED_BASELINE_HIGH` is the expected verdict for any concept the model already knows. Joined from `audit-state.json` into the generated manifest."
               },
               "application_verdict": {
                 "type": "string",
@@ -833,7 +833,7 @@
                   "UNVERIFIED",
                   "PROVISIONAL"
                 ],
-                "description": "Application-layer verdict (gate 9). The v7 primary quality signal — a skill is only behaviorally certified when this is `APPLICABLE`. `UNVERIFIED` means no application assessment has run; `PROVISIONAL` means one model found useful behavior without grader confirmation. Pass-through from authored frontmatter."
+                "description": "Application-layer verdict (gate 9). The v7 primary quality signal — a skill is only behaviorally certified when this is `APPLICABLE`. `UNVERIFIED` means no application assessment has run; `PROVISIONAL` means one model found useful behavior without grader confirmation. Joined from `audit-state.json` into the generated manifest."
               },
               "audit_verdict": {
                 "type": "string",
@@ -850,14 +850,14 @@
                 "type": "number",
                 "minimum": 0,
                 "maximum": 5,
-                "description": "Latest aggregate eval grade on a 0.0–5.0 scale, written by `scripts/skill/evaluate-skill.js`. Pass-through from authored frontmatter (v6 Health Block)."
+                "description": "Latest aggregate eval grade on a 0.0–5.0 scale, written by the eval runner and joined from audit-loop state into the generated manifest."
               },
               "eval_failed_ids": {
                 "type": "array",
                 "items": {
                   "type": "string"
                 },
-                "description": "Eval IDs that failed in the most recent run. Empty array when clean. Pass-through from authored frontmatter (v6 Health Block)."
+                "description": "Eval IDs that failed in the most recent run. Empty array when clean. Joined from audit-loop state into the generated manifest."
               },
               "lint_verdict": {
                 "type": "string",
@@ -866,7 +866,7 @@
                   "FAIL",
                   "UNKNOWN"
                 ],
-                "description": "Result of the most recent deterministic-lint pass against this skill. `PASS` means zero lint errors; `UNKNOWN` is the initial state. Pass-through from authored frontmatter (v6 Health Block)."
+                "description": "Result of the most recent deterministic-lint pass against this skill. `PASS` means zero lint errors; `UNKNOWN` is the initial state. Joined from `audit-state.json` into the generated manifest."
               },
               "drift_status": {
                 "type": "string",
@@ -879,7 +879,7 @@
                   "EXTERNAL_UNHASHED",
                   "UNKNOWN"
                 ],
-                "description": "Current truth-source drift status. `OK` (live hashes match recorded), `DRIFT` (mismatch), `BROKEN` (truth source missing), `STALE`, `NO_BASELINE`, `EXTERNAL_UNHASHED`, `UNKNOWN`. Pass-through from authored frontmatter (v6 Health Block)."
+                "description": "Current truth-source drift status. `OK` (live hashes match recorded), `DRIFT` (mismatch), `BROKEN` (truth source missing), `STALE`, `NO_BASELINE`, `EXTERNAL_UNHASHED`, `UNKNOWN`. Joined from audit-loop state into the generated manifest."
               }
             }
           },

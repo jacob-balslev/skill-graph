@@ -35,7 +35,7 @@ complete.
 
 **L1 - Routable Skill.** Use this when descriptions alone are not enough:
 overlapping skills, ambiguous prompts, path-based activation, or explicit
-`relations.boundary` handoff.
+`relations.boundary` routing-exclusion edge.
 
 **L2 - Grounded Skill.** Use this when a skill makes claims about real repo
 files, APIs, schemas, or operational behavior. The drift hash proves evidence

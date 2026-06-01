@@ -320,7 +320,7 @@ The context is the source of truth for cross-vocabulary mapping. The most conseq
 | `relations.related` / `adjacent` | `skos:related` | SKOS | Symmetric associative relation between concepts |
 | `relations.broader` | `skos:broader` | SKOS | Cross-skill generalisation (target is more general) |
 | `relations.narrower` | `skos:narrower` | SKOS | Cross-skill specialisation (target is more specific) |
-| `relations.boundary` | `sg:disjointOwnership` | Skill-Graph custom | Routing-layer asymmetric handoff — intentionally weaker than OWL class-disjointness (per ADR 0006) |
+| `relations.boundary` | `sg:disjointOwnership` | Skill-Graph custom | Routing-layer asymmetric exclusion — intentionally weaker than OWL class-disjointness (per ADR 0006) |
 | `relations.disjoint_with` | `owl:disjointWith` | OWL | Formal class-theoretic disjointness — distinct from `boundary` (per ADR 0006) |
 | `relations.verify_with` | `prov:wasInformedBy` | PROV-O | Verifier skill informs this skill's claims |
 | `relations.depends_on` | `dcterms:requires` | Dublin Core | Operational prerequisite |

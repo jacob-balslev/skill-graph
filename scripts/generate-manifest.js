@@ -359,7 +359,7 @@ function buildSkillEntry(fm, filePath, skillId, _projectFromRoot) {
 
   // --- Copied-through: relations (with v3 union-type items preserved as-is) ---
   // Predicate set per ADR 0001 (v3.1 SKOS additions: related/broader/narrower) and ADR 0006
-  // (boundary stays canonical for routing-layer handoff; disjoint_with is a separate orthogonal
+  // (boundary stays canonical for routing-layer exclusion; disjoint_with is a separate orthogonal
   // relation for formal OWL class-disjointness). All seven keys flow through to the manifest;
   // back-compat is preserved by keeping `adjacent` valid as an alias for `related`.
   if (fm.relations !== null && fm.relations !== undefined && typeof fm.relations === 'object') {
@@ -431,8 +431,8 @@ function buildSkillEntry(fm, filePath, skillId, _projectFromRoot) {
   if (fm.runtime_telemetry !== undefined && fm.runtime_telemetry !== null && typeof fm.runtime_telemetry === 'object') {
     health.runtime_telemetry = fm.runtime_telemetry;
   }
-  // Health Block fields lifted from frontmatter into the generated manifest's
-  // health object. `audit_verdict` is the DEPRECATED v6 single-aggregate field
+  // Audit Status fields are joined into the generated manifest's health object
+  // from normalized audit state. `audit_verdict` is the DEPRECATED v6 single-aggregate field
   // (replaced by the four discrete verdicts above in v7 per ADR-0011) — kept
   // here for back-compat reads of skills that haven't been run through the
   // v6→v7 codemod yet. Schema-level removal is tracked in SH-6557; this entry

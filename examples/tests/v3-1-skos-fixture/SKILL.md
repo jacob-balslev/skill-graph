@@ -75,7 +75,7 @@ Predicates exercised:
 - `related` — symmetric SKOS associative relation (skos:related)
 - `broader` — SKOS generalisation (skos:broader); triggers Stage 4b parent recall in router
 - `narrower` — SKOS specialisation (skos:narrower)
-- `boundary` — routing-layer asymmetric handoff (sg:disjointOwnership)
+- `boundary` — routing-layer asymmetric exclusion (sg:disjointOwnership)
 - `disjoint_with` — formal OWL class-disjointness (owl:disjointWith)
 - `verify_with` — PROV-O informational influence (prov:wasInformedBy)
 - `depends_on` — DCMI requirement (dcterms:requires)

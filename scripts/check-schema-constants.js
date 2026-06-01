@@ -4,7 +4,7 @@
  *
  * Validates that `schemas/SKILL_METADATA_PROTOCOL_schema.json` and `schemas/manifest.schema.json`
  * carry the enum values mandated by:
- *   - ADR-0011 (four-verdict Health Block)
+ *   - ADR-0011 (four-verdict Audit Status, historically called the Health Block)
  *   - ADR-0017 + its 2026-05-27 amendment (v8 classification: `subject` 9-enum,
  *     `deployment_target` 2-enum, and free-text `scope` with NO enum). The
  *     amendment retired the `operation` axis, removed the `scope` enum, and
@@ -35,7 +35,7 @@ const path = require('path');
 const REPO_ROOT = process.env.SKILL_GRAPH_PACKAGE_ROOT || process.cwd();
 const SKILL_SCHEMA = path.join(REPO_ROOT, 'schemas', 'SKILL_METADATA_PROTOCOL_schema.json');
 const MANIFEST_SCHEMA = path.join(REPO_ROOT, 'schemas', 'manifest.schema.json');
-// ADR-0019 audit-state sidecar: schema_version + owner + the four Health Block
+// ADR-0019 audit-state sidecar: schema_version + owner + the four Audit Status
 // verdicts + the eval/drift bookkeeping live here now, not in the frontmatter
 // schema. This checker asserts the sidecar's constants too.
 const AUDIT_STATE_SCHEMA = path.join(REPO_ROOT, 'schemas', 'skill-audit-state.schema.json');
@@ -80,7 +80,7 @@ const SPEC = {
     'eval_state',
     'routing_eval',
   ],
-  // Health Block — ADR-0011 four-verdict split. Lives in the audit-state
+  // Audit Status — ADR-0011 four-verdict split. Lives in the audit-state
   // sidecar after the ADR-0019 split (was frontmatter under single-file v8).
   health_block_verdict_fields: [
     'structural_verdict',
@@ -228,13 +228,13 @@ function runChecks() {
     results.push(checkEnum('manifest.schema skills.schema_version (string)', SPEC.schema_version.string, strBranch && strBranch.enum));
   }
 
-  // Health Block verdict fields must be declared in the audit-state sidecar
+  // Audit Status verdict fields must be declared in the audit-state sidecar
   // (ADR-0011 four-verdict split; relocated from frontmatter to the sidecar by
   // ADR-0019).
   for (const field of SPEC.health_block_verdict_fields) {
     const def = auditProps[field];
     results.push({
-      label: `audit-state.schema Health Block field: ${field}`,
+      label: `audit-state.schema Audit Status field: ${field}`,
       ok: !!def,
       reason: def ? undefined : 'missing — ADR-0011 four-verdict split incomplete',
     });
