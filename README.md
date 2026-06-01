@@ -301,7 +301,7 @@ For skills, the loop is:
 
 1. Pick a skill or project area.
 2. Gather evidence: the `SKILL.md`, eval files, manifest entry, related skills, and `grounding.truth_sources`.
-3. Run the **Integrity Gate** first. The `npm run verify` chain runs: schema lint, protocol-consistency, doc-link + doc-drift, mirror freeze, charter parity, stability promotion, manifest validation, routing eval (regenerated each run), SKILL.md export shape, marketplace freshness, status doc freshness, overlap, and unit tests. **Drift sentinel** (`npm run drift`) and **audit-manifest verifier** (`npm run audit-manifest:check`) are run separately because they currently surface CONTENT-side debt that is being drained through the audit loop — see audit findings H9 and H10 (2026-05-27).
+3. Run the **Integrity Gate** first. The `npm run verify` chain runs: schema lint, protocol-consistency, doc-link + doc-drift, mirror freeze, charter parity, stability promotion, manifest validation, routing eval (regenerated each run), SKILL.md export shape, marketplace freshness, status doc freshness, audit-manifest verification, overlap, and unit tests. **Drift sentinel** (`npm run drift`) remains separate because it currently surfaces CONTENT-side truth-source debt that is being drained through the audit loop. For SYSTEM-only changes, `npm run verify:system` is the blocking gate; the GitHub workflow also runs full `verify` as an informational corpus gate.
 4. Run the **Behavior Gate** when certification is needed: realistic positive evals, hard negatives, prior failure regressions, and boundary cases that show whether the skill changes agent behavior.
 5. Fix the skill or its metadata when the evidence supports the change.
 6. Re-run checks and record the new state.
