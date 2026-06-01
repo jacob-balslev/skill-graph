@@ -1,53 +1,22 @@
 flowchart LR
-  A11Y["a11y<br/><i>capability · portable</i>"]
-  DBG["debugging<br/><i>workflow · portable</i>"]
-  DOC["documentation<br/><i>capability · portable</i>"]
-  GA["graph-audit<br/><i>capability · codebase</i>"]
-  LO["lint-overlay<br/><i>overlay · portable</i>"]
-  RF["refactor<br/><i>workflow · portable</i>"]
-  SR["skill-router<br/><i>router · portable</i>"]
-  TS["testing-strategy<br/><i>capability · portable</i>"]
-  ST(["skill-metadata-template<br/><i>specimen · reference</i>"])
+  MIN["minimal-capability<br/><i>code-engineering · portable</i>"]
+  GR["with-grounding<br/><i>knowledge-organization · project</i>"]
+  REL["with-relations<br/><i>knowledge-organization · portable</i>"]
+  COMP["comprehension-full<br/><i>knowledge-organization · portable</i>"]
 
   %% depends_on — thick solid, load-bearing
-  RF ==>|depends_on<br/>^1.0.0| TS
-  LO ==>|extends| TS
+  REL ==>|depends_on| MIN
 
   %% verify_with — dashed, co-load for confidence
-  A11Y -.->|verify_with| TS
-  DBG -.->|verify_with| TS
-  GA  -.->|verify_with| TS
-  RF  -.->|verify_with| TS
-  TS  -.->|verify_with| DBG
-  SR  -.->|verify_with| GA
-  ST  -.->|verify_with| DOC
+  REL -.->|verify_with| COMP
 
-  %% adjacent — thin undirected, suggested co-reading
-  DBG --- TS
-  DBG --- RF
+  %% related — thin, suggested co-reading
+  REL ---|related| MIN
 
-  %% boundary — red, anti-ownership
-  A11Y -. boundary .-x RF
-  DBG  -. boundary .-x DOC
-  DOC  -. boundary .-x DBG
-  DOC  -. boundary .-x A11Y
-  DOC  -. boundary .-x RF
-  GA   -. boundary .-x DOC
-  LO   -. boundary .-x DBG
-  RF   -. boundary .-x DOC
-  SR   -. boundary .-x DOC
-  ST   -. boundary .-x RF
-  TS   -. boundary .-x DOC
+  %% boundary — red, score-aware routing exclusion
+  REL -. boundary .-x GR
 
   classDef capability fill:#dbeafe,stroke:#2563eb,color:#1e3a8a
-  classDef workflow fill:#ecfdf5,stroke:#047857,color:#064e3b
-  classDef router fill:#fce7f3,stroke:#db2777,color:#831843
-  classDef overlay fill:#fef3c7,stroke:#d97706,color:#78350f,stroke-dasharray:4 2
-  classDef specimen fill:#f5f3ff,stroke:#7c3aed,color:#4c1d95
-  classDef codebase stroke-width:3px
-  class A11Y,DOC,GA,TS capability
-  class DBG,RF workflow
-  class SR router
-  class LO overlay
-  class ST specimen
-  class GA codebase
+  classDef project stroke-width:3px
+  class MIN,GR,REL,COMP capability
+  class GR project

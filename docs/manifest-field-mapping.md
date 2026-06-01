@@ -1,6 +1,6 @@
 # Manifest Field Mapping
 
-> **Scope.** This document is the authored-to-generated bridge for Skill Graph: it specifies exactly how every top-level field in a `SKILL.md` frontmatter block projects into the compiled `skills.manifest.json` that downstream tooling consumes.
+> **Scope.** This document is the authored-to-generated bridge for Skill Graph: it specifies how fields from `SKILL.md` frontmatter and the sibling `audit-state.json` sidecar project into the compiled `skills.manifest.json` that downstream tooling consumes.
 >
 > **Audience.** Authors of manifest generators and consumers of the manifest. If you are authoring a skill itself, read [`skill-metadata-protocol/SKILL_METADATA_PROTOCOL.md`](../skill-metadata-protocol/SKILL_METADATA_PROTOCOL.md) and [`skill-metadata-protocol/field-reference.md`](../skill-metadata-protocol/field-reference.md) instead. This document owns the transformation from authored to generated.
 >
@@ -12,6 +12,7 @@
 - [`skill-metadata-protocol/field-reference.md`](../skill-metadata-protocol/field-reference.md) — per-field authoring reference.
 - [`skill-metadata-protocol/design-rationale.md`](../skill-metadata-protocol/design-rationale.md) — rationale and deep explanation.
 - [`schemas/SKILL_METADATA_PROTOCOL_schema.json`](../schemas/SKILL_METADATA_PROTOCOL_schema.json) — enforceable JSON Schema for authored frontmatter.
+- [`schemas/skill-audit-state.schema.json`](../schemas/skill-audit-state.schema.json) — enforceable JSON Schema for the audit-state sidecar.
 - [`schemas/manifest.schema.json`](../schemas/manifest.schema.json) — enforceable JSON Schema for the generated manifest.
 - [`examples/skills.manifest.sample.json`](../examples/skills.manifest.sample.json) — sample manifest showing the generated shape for the current `skills/` library plus the template.
 
@@ -155,8 +156,8 @@ Three versions coexist in a manifest ecosystem:
 
 | Version | Lives in | Meaning |
 |---|---|---|
-| Authored skill `version` | Per-skill frontmatter `version` field | Version of the skill's content (e.g. `1.2.0` means the skill has been iterated twice since its initial publish). |
-| Authored skill schema version | Per-skill frontmatter `schema_version` field | Version of the `SKILL_METADATA_PROTOCOL_schema.json` contract the skill was authored against. The active value is `8` (`subject` + `deployment_target` classification, free-text `scope`, `taxonomy_domain`, `project[]`/`repo[]` belonging-entity references, `grounding.subject_matter`). |
+| Authored skill `version` | Per-skill sidecar `version` field | Version of the skill's content (e.g. `1.2.0` means the skill has been iterated twice since its initial publish). |
+| Authored skill schema version | Per-skill sidecar `schema_version` field | Version of the Skill Metadata Protocol contract the skill is audited against. The active value is `8`; the frontmatter schema and sidecar schema together define the contract. |
 | Manifest schema version | Manifest root `schema_version` field | Version of the compiled manifest root contract. `scripts/generate-manifest.js` emits `4` today and `schemas/manifest.schema.json` intentionally validates that value with `schema_version.const: 4`; the manifest schema file itself is v7 because the field set has advanced additively through v5-v7 without forcing a root-version bump for consumers. |
 
 ### When to bump `schema_version`
@@ -306,25 +307,16 @@ The bare-string form remains valid (`- fulfillment`). The object form is opt-in 
 
 The `skill-metadata-template` starter (`examples/skill-metadata-template.md`) is the canonical worked example because it exercises the widest set of fields — it is the only starter that populates `grounding`, `license`, `compatibility`, `allowed-tools`, and `portability` together with activation, relations, and all governance fields.
 
-### Authored frontmatter (abridged to fields that transform)
+### `SKILL.md` frontmatter (abridged to fields that transform)
 
 ```yaml
 ---
-schema_version: 8
 name: skill-metadata-template
 description: "Authoring template for new Skill Metadata Protocol skills. ..."
-version: 1.0.0
 subject: knowledge-organization
 deployment_target: project
 taxonomy_domain: skill-system/authoring
 scope: "Covers authoring a new Skill Metadata Protocol SKILL.md from scratch; does not cover the audit loop or manifest generation."
-owner: maintainer
-freshness: "2026-04-17"
-drift_check:
-  last_verified: "2026-04-17"
-eval_artifacts: planned
-eval_state: unverified
-routing_eval: absent
 stability: stable
 license: MIT
 compatibility:
@@ -339,7 +331,7 @@ paths:
   - examples/skill-metadata-template.md
   - skills/**/SKILL.md
 relations:
-  adjacent: [documentation]
+  related: [documentation]
   boundary:
     - skill: refactor
       reason: "refactor is behavior-preserving code modification, not skill authoring"
@@ -360,10 +352,29 @@ grounding:
 portability:
   readiness: scripted
   targets: [skill-md]
-lifecycle:
-  stale_after_days: 180
-  review_cadence: quarterly
 ---
+```
+
+### `audit-state.json` sidecar (abridged to fields that transform)
+
+```json
+{
+  "schema_version": 8,
+  "version": "1.0.0",
+  "owner": "maintainer",
+  "freshness": "2026-04-17",
+  "drift_check": {
+    "last_verified": "2026-04-17"
+  },
+  "eval_artifacts": "planned",
+  "eval_state": "unverified",
+  "routing_eval": "absent",
+  "comprehension_state": "present",
+  "lifecycle": {
+    "stale_after_days": 180,
+    "review_cadence": "quarterly"
+  }
+}
 ```
 
 ### Manifest projection
@@ -390,7 +401,7 @@ lifecycle:
     "paths": ["examples/skill-metadata-template.md", "skills/**/SKILL.md"]
   },
   "relations": {
-    "adjacent": ["documentation"],
+    "related": ["documentation"],
     "boundary": [
       { "skill": "refactor", "reason": "refactor is behavior-preserving code modification, not skill authoring" }
     ],
@@ -428,19 +439,19 @@ lifecycle:
 
 Each arrow corresponds to one row of the rename map.
 
-- `name` → `id` **and** `name` — the generator writes both. `id` is the stable reference used by other manifest entries (e.g. `relations.adjacent: ["documentation"]` refers to the `id` of another skill). `name` remains human-readable for display.
+- `name` → `id` **and** `name` — the generator writes both. `id` is the stable reference used by other manifest entries (e.g. `relations.related: ["documentation"]` refers to the `id` of another skill). `name` remains human-readable for display.
 - `name` → `path` — the generator records the source file path; this is the only way a consumer can trace a manifest entry back to its authored source without re-scanning the repo.
-- `description`, `version`, `subject`, `deployment_target`, `scope`, `owner`, `stability` — straight copies, same keys, same shape. `subject` is enum-checked in the manifest (closed 9-value enum); `deployment_target` is enum-checked (closed 2-value enum: `portable`/`project`); `scope` is free-text, passed through unchanged. (Historical note: v2 `family` was renamed to `browse_category` in v3, then to `category` in v4, then replaced by `subject` + `deployment_target` in v8 — see § Migration Note — v2 → v3.)
+- `description`, `subject`, `deployment_target`, `scope`, and `stability` come from `SKILL.md`; `version` and `owner` come from `audit-state.json`. The joined manifest entry preserves them at the top level. `subject` is enum-checked in the manifest (closed 9-value enum); `deployment_target` is enum-checked (closed 2-value enum: `portable`/`project`); `scope` is free-text, passed through unchanged. (Historical note: v2 `family` was renamed to `browse_category` in v3, then to `category` in v4, then replaced by `subject` + `deployment_target` in v8 — see § Migration Note — v2 → v3.)
 - `license`, `compatibility`, `allowed-tools` — straight copies (post-SH-5776). The three SKILL.md base-standard optional fields flow through unchanged; a consumer that only speaks SKILL.md sees them at the expected keys.
 - `triggers`, `keywords`, `paths` → `activation.triggers`, `activation.keywords`, `activation.paths` — three sibling authored fields are grouped under a single `activation` object. This matches the semantic: they are all activation signals. The grouping is a presentation choice, not a loss.
 - `relations` → `relations` — copied through with the full sub-key set (`adjacent`, `related`, `broader`, `narrower`, `boundary`, `disjoint_with`, `verify_with`, `depends_on`). Same shape on both sides.
 - `grounding` → `grounding` — copied through unchanged. The authored field was renamed from `domain_frame` to `grounding` in SH-5779 (2026-04-16), aligning the authored field name with its long-standing manifest projection key. The internal sub-field `evaluation_mode` was renamed to `grounding_mode` in the same change. The grounding sub-field `subject_matter` (renamed from `domain_object` in v8) is passed through unchanged inside the `grounding` block.
 - `portability` → `portability` — copied through with the v2 sub-key set (`readiness`, `targets`). Renamed from v1 (`level`, `exports`) in SH-5784.
-- `freshness`, `drift_check`, `eval_artifacts`, `eval_state`, `routing_eval` → `health.freshness`, `health.drift_check`, `health.eval_artifacts`, `health.eval_state`, `health.routing_eval` — five sibling governance fields are grouped under a single `health` object. The three Evaluation Status fields replaced the v1 `health.eval_status` in SH-5784 and stay enum-checked in the manifest. `has_grounding` and `has_relations` are generated boolean flags that summarize presence of the corresponding authored blocks, so a consumer can filter on "grounded skills" without re-parsing the full `grounding` object.
+- `freshness`, `drift_check`, `eval_artifacts`, `eval_state`, `routing_eval`, and `lifecycle` come from `audit-state.json` and project to `health.*`. The three Evaluation Status fields replaced the v1 `health.eval_status` in SH-5784 and stay enum-checked in the manifest. `has_grounding` and `has_relations` are generated boolean flags that summarize presence of the corresponding authored blocks, so a consumer can filter on "grounded skills" without re-parsing the full `grounding` object.
 
 ### What is deliberately absent from the projection
 
-`schema_version` appears only at the manifest root (as `4` in the current manifest), not inside each skill entry — manifest-level schema versioning tracks the manifest contract, and per-skill `schema_version` from the authored frontmatter is absorbed into that root value. If a future manifest supports multiple authored schema versions simultaneously, `skills[].schema_version` would become a flow-through field; today it is not, because every skill in a given manifest is bound to a single authored schema version by assumption.
+There are two schema-version surfaces. The manifest root `schema_version` (currently `4`) tracks the compiled manifest contract. Each `skills[]` entry also carries the joined per-skill `schema_version` from `audit-state.json`, so consumers can distinguish manifest-shape versioning from the skill contract version that the audit loop verified.
 
 ---
 
