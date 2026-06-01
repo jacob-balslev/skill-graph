@@ -190,7 +190,7 @@ The engine (`lib/audit/skill-evolution-loop.js`) runs five phases per cycle:
 
 | Phase | What it does | Relation to the four operations |
 |---|---|---|
-| **ANALYZE** | Run `skill-evolution-analyzer.js` (deterministic) → a prioritised queue of actions (`improve_skill`, `scaffold_skill`, `fix_semantics`, `ensure_evals`, `archive_skill`). | Supplies the deterministic prioritisation signal that drives the loop. |
+| **ANALYZE** | Run the deterministic analyzer when available, otherwise fall back to scanning `SKILL.md` plus `audit-state.json` through the configured skill roots → a prioritised queue of actions (`improve_skill`, `scaffold_skill`, `fix_semantics`, `ensure_evals`, `archive_skill`). | Supplies the prioritisation signal that drives the loop. |
 | **TRIAGE** | Take the top N items from the queue (`--top N`), filtered by `--actions` / `--min-priority`. | — |
 | **EXECUTE** | Process one item at a time. `improve_skill` / `fix_semantics` / `ensure_evals` dispatch the canonical improve runner (`run-skill-improvement-loop.js`), which runs `evaluate` internally and keeps-or-reverts on the metric. `scaffold_skill` runs `skill-auto-create.js` (or redirects into an existing skill's improvement). | EXECUTE delegates to `improve` → `evaluate`. |
 | **VERIFY** | Check that no regression occurred across the batch. | — |

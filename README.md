@@ -418,7 +418,7 @@ SKILL_GRAPH_WORKSPACE=/path/to/my-skills skill-graph audit my-skill
 | `skill-graph audit <skill>` | `--audit-root <path>` | Write audit artifacts to a custom directory instead of `<workspace>/audits/`. |
 | `skill-graph evolve` | `--workspace-root <path>` | Root of your skills workspace (defaults to cwd). |
 | `skill-graph evolve` | `--skills-dir <path>` | Directory containing your SKILL.md files (defaults to `<workspace-root>/skills`). |
-| `skill-graph evolve` | `--output-dir <path>` | Directory for evolve output artifacts (defaults to `<workspace-root>/audits`). |
+| `skill-graph evolve` | `--output-dir <path>` | Directory for evolve output artifacts (defaults to the Skill Graph progress directory). |
 | All commands | `SKILL_GRAPH_WORKSPACE` env var | Override workspace root globally — useful in CI pipelines or when your skill library is not in cwd. |
 
 ### Smoke-testing a fresh install

@@ -194,7 +194,7 @@ Run the continuous Karpathy-style skill-improvement loop.
 Required flags for standalone use (when run via npm install -g @skill-graph/cli):
   --workspace-root <path>   Root of your skills workspace (default: cwd).
   --skills-dir <path>       Directory containing your SKILL.md files (default: <workspace-root>/skills).
-  --output-dir <path>       Directory for evolve output artifacts (default: <workspace-root>/audits).
+  --output-dir <path>       Directory for evolve output artifacts (default: Skill Graph progress dir).
 
 Options:
   --top <n>               Process top n items per cycle (default: 5).

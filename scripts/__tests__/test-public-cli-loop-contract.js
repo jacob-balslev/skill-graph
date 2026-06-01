@@ -252,12 +252,18 @@ check('init create path scaffolds a SKILL.md on disk', initCreatedSkill,
 try { fs.rmSync(initDir, { recursive: true, force: true }); } catch { /* best effort */ }
 
 // --- 4. evolve runs end-to-end in analyze-only mode (no model, no execute). ---
+const evolveOutputDir = path.join(tmp, 'custom-evolve-output');
 const evolveRun = runCli([
   'evolve', '--analyze-only', '--top', '1',
   '--workspace-root', tmp, '--skills-dir', path.join(tmp, 'skills'),
+  '--output-dir', evolveOutputDir,
 ]);
 check('evolve --analyze-only exits 0 (engine loads + analyzer runs)', evolveRun.status === 0,
   `exit ${evolveRun.status}; stderr: ${(evolveRun.stderr || '').slice(0, 600)}`);
+const evolveOutputFiles = fs.existsSync(evolveOutputDir) ? fs.readdirSync(evolveOutputDir) : [];
+check('evolve --output-dir receives analysis artifacts',
+  evolveOutputFiles.some((f) => /^analysis-.*\.json$/.test(f)),
+  `output-dir contents: ${evolveOutputFiles.join(',') || '(missing)'}`);
 
 // --- 5. BREAK #1 guard — the scaffold script the evolve engine dispatches exists. ---
 // The 2026-05-30 path-drift break was a bare wrong scaffold path swallowed into a

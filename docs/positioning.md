@@ -19,7 +19,7 @@ Most agent-skill projects answer one of these questions:
 
 Skill Graph answers a **different** question: **how do you keep a library of skills correct over time?**
 
-It does this by giving every skill a structured contract (`SKILL.md` frontmatter), a graph of typed edges between skills (`relations.*`), a deterministic audit loop (`audit → improve → evaluate`), and a Karpathy-style keep-or-revert discipline for changes. The contract is portable; the audit loop is the unique mechanism.
+It does this by giving every skill a structured contract (`SKILL.md` frontmatter), a graph of typed edges between skills (`relations.*`), a four-operation audit loop (`audit`, `improve`, `evaluate`, `evolve`), and a Karpathy-style keep-or-revert discipline for changes. The contract is portable; the audit loop is the unique mechanism.
 
 ## The "what this is not" matrix
 

@@ -15,7 +15,7 @@ The Skill Audit Loop is **Karpathy's auto-improvement loop** (one editable asset
 | **audit** | Read every field, check freshness and validity against repo truth, score graded gates when `--graded`. | No (Audit Status only) | `last_audited`, `structural_verdict`, `truth_verdict`, `comprehension_verdict` (`--graded`), `application_verdict` (`--graded`) |
 | **improve** | Edit one field. One commit. Time-boxed. | Yes | The chosen field + `last_changed` |
 | **evaluate** | Run the eval suite (deterministic + comprehension/application graders). | No (eval/Audit Status only) | `eval_score`, `eval_failed_ids`, `freshness`; `comprehension_verdict` / `application_verdict` when those graders run |
-| **evolve** | For-loop over the corpus: `audit → improve → evaluate`, prioritised by `application_verdict` then graph centrality + staleness. | Yes (per skill) | All of the above, per skill |
+| **evolve** | Queue-driver over the corpus: analyze → triage → execute → verify, prioritised by Audit Status, score, staleness, and registry facts. | Yes (per skill) | The same `SKILL.md` and `audit-state.json` writes as the operations/actions it composes. |
 
 The Karpathy keep-or-revert gate applies in `improve`: if `eval_score` does not improve (or regresses below threshold), the commit is reverted automatically. The loop records the failed attempt and moves to the next field. See [../SKILL_AUDIT_LOOP.md:120-137](../skill-audit-loop/SKILL_AUDIT_LOOP.md).
 
@@ -174,7 +174,7 @@ node bin/skill-graph.js drift
 node lib/audit/evaluate-skill.js --mode comprehension skills/<skill-name>/evals/comprehension.json
 node lib/audit/evaluate-skill.js --mode application --application skills/<skill-name> skills/<skill-name>/evals/application.json
 
-# Evolve corpus (audit → improve → evaluate in priority order)
+# Evolve corpus (analyze → triage → execute → verify by priority)
 node bin/skill-graph.js evolve --workspace-root <workspace> --skills-dir <workspace>/skills --top 10
 
 # Show Audit Status for a skill at a glance
