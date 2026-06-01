@@ -1,7 +1,19 @@
 # Implementation Plan — Audit-State Sidecar Separation (ADR-0019)
 
-> Type: **SYSTEM** (schema + protocol + consumers). Status: **Phases 1–3 + 5 DONE; Phase 4 SYSTEM-gate + skill-lint DONE; Phase 4 audit-loop-runtime consumers REMAIN; Phase 6 (corpus) not started.**
+> Type: **SYSTEM** (schema + protocol + consumers). Status: **Phases 1–3 + 5 DONE; Phase 4 SYSTEM-gate + skill-lint + audit-loop WRITE-side DONE; Phase 4 read-side + mover REMAIN (SH-6656); Phase 6 (corpus) not started.**
 > Authorizing decision: [ADR-0019 (Accepted 2026-06-01)](../adr/0019-audit-state-sidecar-separation.md).
+
+> **Phase 4 write-side DONE (2026-06-01, commits 264fe3a, e0627c3).** The audit-loop runtime now writes the
+> moved fields to the `audit-state.json` sidecar, not frontmatter — `lib/audit/evaluate-skill.js` (verdicts +
+> eval_* + freshness), `lib/audit/skill-audit.js` (Integrity-gate verdicts), `scripts/skill-graph-drift.js`
+> (drift_check record + drift_status). Shared helper `scripts/lib/audit-state-sidecar.js` (+ lib/audit shim);
+> `generate-manifest.js` dedup'd onto it. `batch-eval.js`/`run-skill-improvement-loop.js` delegate to it (no
+> change). The functional-break risk (audit loop writing invalid audit fields to migrated frontmatter) is
+> eliminated. **Still REMAIN under SH-6656:** `scripts/skill-audit-preflight.js` (read both schemas),
+> `scripts/normalize-skill-field-shape.js` (the frontmatter→sidecar Phase-6 mover), `lib/audit/skill-status.js`
+> `extractHealthBlock` (read sidecar for display), WORKSPACE `scripts/skill/check-version-earned.js` (scan
+> staged `audit-state.json` for version bumps — separate Development-repo commit), and confirm-only guard tests
+> on export/render (frontmatter-only) + route (manifest-only).
 
 > **Status detail (2026-06-01).** Commits: `16038f5` (Phase 1 sidecar schema), `18dbda5` (Phases 2–5 cut),
 > `ea9ea32` (Phase 5 narrative docs), `dc92b03` (Phase 4 skill-lint cross-file gate + sidecar validation).
