@@ -1,6 +1,4 @@
-# Seed Findings (Incomplete)
-
-> This file is a seed artifact from `skill-graph audit` without `--graded`. It records deterministic lint evidence plus explicit TODO review areas. It is not a completed qualitative audit until the TODO sections are replaced by reviewer or grader evidence.
+# Findings
 
 ## Skill
 
@@ -8,62 +6,64 @@
 
 ## Audit Date
 
-2026-05-28
+2026-06-01
 
 ## Verdict Summary
 
-PASS_WITH_FIXES
+PASS for structural Integrity Gate; truth and Behavior Gate remain UNVERIFIED because no truth sources are declared for hash-based drift and no graded application eval was run.
 
 ## Findings
 
 ID: F1
-Severity: P2
-Surface: ../skills/skills/meta-methods/methodical/SKILL.md:1:1
-Category: Lint diagnostic
-Problem: 2 top-level field(s) missing field-purpose comment (SKILL_METADATA_PROTOCOL.md § Inline field comments). Run `node scripts/backfill-field-purpose-comments.js` to add.
-Evidence: Emitted by skill-lint.js — see ../skills/skills/meta-methods/methodical/SKILL.md line 1
-Required action: Inspect the flagged line, correct the value, and re-run skill-lint.js.
+Severity: HIGH
+Surface: `/Users/jacobbalslev/Development/skills/skills/meta-methods/methodical/SKILL.md`
+Category: Metadata validity
+Problem: The skill carried sidecar-owned fields in `SKILL.md` rather than `audit-state.json`.
+Evidence: Before repair, `node scripts/normalize-skill-field-shape.js --report --skill methodical` reported 16 fields to relocate; `node bin/skill-graph.js lint methodical` reported 16 errors and 1 warning.
+Required action: Move loop-owned fields to `audit-state.json`, add missing field-purpose comments, and re-run lint.
+Status: remediated — lint now passes with 0 errors and 0 warnings, and normalization reports 0 remaining work.
 
 ID: F2
-Severity: TODO
-Surface: activation
-Category: Activation quality — routing coverage
-Problem: TODO — human judgment required
-Evidence: TODO — reviewer must inspect the skill body
-Required action: Does the description name real trigger scenarios? Are keywords specific and not generic filler? Does the skill under-trigger or over-trigger for its intended use case?
+Severity: HIGH
+Surface: `/Users/jacobbalslev/Development/skills/skills/meta-methods/methodical/SKILL.md` relations
+Category: Relation quality
+Problem: The relation graph used the deprecated `adjacent` alias, stale six-edge comments, and several non-existent target skills: `self-review-pattern`, `editorial-standards`, `quality-doctrine`, `self-evaluation`, `task-execution`, and `agent-governance`.
+Evidence: Pre-repair relations named those targets; `find /Users/jacobbalslev/Development/skills/skills -path "*/<skill>/SKILL.md"` found only `methodology`, `summarization`, and `context-management` among the old target list.
+Required action: Replace `adjacent` with `related`, update comments to the current relation vocabulary, and retarget boundaries/verification edges to live skills.
+Status: remediated — relations now use live targets: `methodology`, `best-practice`, `epistemic-grounding`, `evaluation`, `prioritization`, `task-path-optimization`, `summarization`, and `context-management`.
 
 ID: F3
-Severity: TODO
-Surface: relations
-Category: Relation quality — graph correctness
-Problem: TODO — human judgment required
-Evidence: TODO — reviewer must inspect the skill body
-Required action: Do relations point at semantically correct neighbors? Are boundary handoffs crisp enough to prevent misuse? Are broader/narrower claims taxonomic rather than associative? Are dependencies real?
+Severity: MEDIUM
+Surface: `/Users/jacobbalslev/Development/skills/skills/meta-methods/methodical/SKILL.md` body
+Category: Boundary quality
+Problem: The skill body told agents to route adjacent work to missing skills, including `quality-doctrine`, `self-review-pattern`, `task-execution`, and `no-cutting-corners`.
+Evidence: Pre-repair description, Concept Card, Trio Boundaries, Key Files, and Do NOT Use When sections referenced those missing skills/paths.
+Required action: Reword body boundaries to use real live skills or explicit out-of-scope language.
+Status: remediated.
 
 ID: F4
-Severity: TODO
-Surface: grounding
-Category: Grounding quality — claims vs truth sources
-Problem: TODO — human judgment required
-Evidence: TODO — reviewer must inspect the skill body
-Required action: If scope: project (or legacy scope: codebase), do all truth_sources exist? Do claims in the body match the referenced files? Classify any mismatch as skill drift, code drift, or doc drift.
+Severity: LOW
+Surface: `node scripts/skill-graph-drift.js --json ../skills/skills/meta-methods/methodical`
+Category: Drift sentinel limitation
+Problem: The skill has bibliographic/source claims in the body but no declared `grounding.truth_sources`, so the drift sentinel has no hashable baseline.
+Evidence: Drift output reports `status: "UNGROUNDED"` with `details: "no truth_sources declared"`.
+Required action: Leave `truth_verdict` as `UNVERIFIED` until the skill declares hashable truth sources or a graded source-review receipt exists.
+Status: accepted.
 
 ID: F5
-Severity: TODO
-Surface: content
-Category: Content quality — completeness and density
-Problem: TODO — human judgment required
-Evidence: TODO — reviewer must inspect the skill body
-Required action: Does the skill have a clear Coverage section, a Philosophy section, at least one decision table or checklist, and explicit negative bounds (Do NOT Use When)? Does it contain generic filler that adds no routing signal?
+Severity: INFO
+Surface: `/Users/jacobbalslev/Development/skills/skills/meta-methods/methodical/evals`
+Category: Behavior Gate
+Problem: Eval files exist and parse, but no graded comprehension or application run was executed, so behavior certification cannot be claimed.
+Evidence: `node bin/skill-graph.js audit methodical --force` ran in Integrity-only mode and said to re-run with `--graded` to populate behavior verdicts.
+Required action: Leave `comprehension_verdict` and `application_verdict` as `UNVERIFIED` until a graded run produces receipts.
+Status: accepted.
 
-ID: F6
-Severity: TODO
-Surface: evals
-Category: Eval quality — coverage and realism
-Problem: TODO — human judgment required
-Evidence: TODO — reviewer must inspect the skill body
-Required action: Do eval files exist if the skill is expected to be graded? Do they test realistic prompts — not trivia — and cover boundaries and failure cases as well as the happy path?
+## Verification Evidence
 
-## Required Fixes
-
-- F1 [P2 warning]: 2 top-level field(s) missing field-purpose comment (SKILL_METADATA_PROTOCOL.md § Inline field comments). Run `node scripts/backfill-field-purpose-comments.js` to add.
+- `node bin/skill-graph.js lint methodical` — PASS, 0 errors, 0 warnings.
+- `node scripts/normalize-skill-field-shape.js --report --skill methodical` — 0 fields to relocate, 0 semantic debt fields.
+- `node scripts/check-markdown-links.js ../skills/skills/meta-methods/methodical/SKILL.md` — OK.
+- `node -e "JSON.parse(...audit-state.json); JSON.parse(...evals/*.json)"` — JSON OK.
+- `node scripts/skill-graph-drift.js --json ../skills/skills/meta-methods/methodical` — `UNGROUNDED` because no truth sources are declared.
+- `node bin/skill-graph.js audit methodical --force` — Integrity-only audit ran lint PASS and drift UNGROUNDED; audit runner kept Audit Status sidecar current.
