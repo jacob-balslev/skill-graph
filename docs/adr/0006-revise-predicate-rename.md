@@ -5,6 +5,8 @@
 - **Supersedes:** ADR 0001 § Decision #2 only (Decisions #1, #3, #4 stand unchanged)
 - **Consulted:** OWL 2 Web Ontology Language Primer (W3C 2012), W3C SKOS Reference, GPT-5.5 empirical confirmation of the in-tree JSON-LD context (2026-05-04)
 
+> **Update — 2026-06-01:** This ADR correctly separates the routing-layer `boundary` predicate from formal OWL `disjoint_with`, but some original paragraphs use "handoff" wording from the pre-ADR-0018 naming frame. Read those passages as routing-layer exclusion, not deference: the current v8.0 field is `relations.boundary`, it maps to `sg:disjointOwnership`, and [ADR 0018](0018-relations-boundary-semantic-inversion.md) schedules the clearer field name `relations.suppresses` for v8.1 while preserving the same predicate URI.
+
 ## Context
 
 ADR 0001 (2026-04-20) accepted four predicate-set proposals as a single bundle for v3.1:

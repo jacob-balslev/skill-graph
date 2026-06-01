@@ -135,5 +135,5 @@ Rejected. v9 has no schedule and no driver. Findings deferred to "v9" historical
 - `SKILL_METADATA_PROTOCOL.md § Understanding § boundary` — the collision documented at field site
 - `scripts/skill-graph-route.js` § Stage 5 — the runtime mechanic the rename matches
 - [ADR 0017](0017-five-axis-classification-model.md) — the v8 5-axis classification compat-mode landing; v8.1 follows its precedent for staged breaking changes
-- [ADR 0006](0006-revise-predicate-rename.md) — the prior precedent that `boundary` stays canonical for routing-layer handoff (this ADR supersedes the naming half of that decision while preserving the mechanic)
+- [ADR 0006](0006-revise-predicate-rename.md) — the prior precedent that `boundary` stays canonical for the routing-layer custom predicate `sg:disjointOwnership` (this ADR supersedes the naming half of that decision while preserving the mechanic)
 - `.claude/rules/version-schema-contract.md` — the "Version Labels Are Earned, Not Bumped" rule the codemod's reason-text rewrite respects

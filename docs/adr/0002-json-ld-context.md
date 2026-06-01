@@ -4,6 +4,8 @@
 - **Deciders:** Skill Graph maintainers
 - **Relates to:** ADR 0001 (Predicate Set), FAIR Wilkinson et al. 2016
 
+> **Update — 2026-06-01:** The body below records the original JSON-LD decision. Current v8 semantics are refined by [ADR 0006](0006-revise-predicate-rename.md), [ADR 0018](0018-relations-boundary-semantic-inversion.md), and [ADR 0019](0019-audit-state-sidecar-separation.md): `relations.boundary` maps to Skill Graph's routing-layer exclusion predicate `sg:disjointOwnership`, `relations.disjoint_with` maps separately to formal OWL `owl:disjointWith`, and audit/eval/provenance fields live in `audit-state.json` and are not exported through this frontmatter JSON-LD context.
+
 ## Context
 
 The external audit of 2026-04-20 identified **FAIR Interoperability** as the Skill Metadata Protocol's weakest dimension. The contract was self-consistent but isolated — no machine-readable mapping to established W3C vocabularies (SKOS, Dublin Core Terms, PROV-O, SPDX, schema.org). Third parties wanting to consume protocol metadata in a federated knowledge-graph tool or a generic RDF triplestore had no adapter path short of writing Skill-Metadata-Protocol-specific code.
