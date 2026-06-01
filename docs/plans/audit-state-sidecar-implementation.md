@@ -1,7 +1,24 @@
 # Implementation Plan — Audit-State Sidecar Separation (ADR-0019)
 
-> Type: **SYSTEM** (schema + protocol + consumers). Status: **Phase 1 landed; Phases 2–5 in progress.**
+> Type: **SYSTEM** (schema + protocol + consumers). Status: **Phases 1–3 + 5 DONE; Phase 4 SYSTEM-gate + skill-lint DONE; Phase 4 audit-loop-runtime consumers REMAIN; Phase 6 (corpus) not started.**
 > Authorizing decision: [ADR-0019 (Accepted 2026-06-01)](../adr/0019-audit-state-sidecar-separation.md).
+
+> **Status detail (2026-06-01).** Commits: `16038f5` (Phase 1 sidecar schema), `18dbda5` (Phases 2–5 cut),
+> `ea9ea32` (Phase 5 narrative docs), `dc92b03` (Phase 4 skill-lint cross-file gate + sidecar validation).
+> `verify:system` is green on every cut-owned gate (check-schema-constants 19/19, protocol:check 7/7,
+> lint:template + fixtures 0 errors, docs:links, test:unit, pilot byte-identical). The only `verify:system`
+> reds are pre-existing and independent (docs:drift SH-6655; marketplace mirror staleness).
+> **Phase 4 REMAINING — the audit-loop-runtime consumers (filed SH-6656):** `lib/audit/evaluate-skill.js`
+> (`stampComprehensionVerdict`/`stampApplicationVerdict` + `eval_*` write-back must target `audit-state.json`,
+> not frontmatter), `lib/audit/run-skill-improvement-loop.js` + `batch-eval.js` (verdict/eval write-back to
+> sidecar), `scripts/skill-graph-drift.js` (read/write `drift_check`+`drift_status` from the sidecar),
+> `scripts/skill-audit-preflight.js` (read the contract from BOTH schemas), `scripts/check-version-earned.js`
+> (read `schema_version` + verdict evidence from the sidecar), `scripts/normalize-skill-field-shape.js`
+> (become the frontmatter→sidecar mover — this is the Phase-6 migration tool), and a confirm-only pass on
+> `export-marketplace-skills.js` / `render-skill-context.js` (frontmatter-only) and `skill-graph-route.js`
+> (manifest-only). These are not caught by `verify:system`; they MUST land before Phase 6 runs (a migrated
+> skill's frontmatter rejects audit fields, so the audit loop must stamp the sidecar). README/QUICKSTART
+> skill-anatomy mentions are minor polish, also remaining.
 
 > **Progress log**
 > - 2026-06-01 — `schema-v8` git tag created at pre-cut HEAD `83c66385` (clean-cut recovery point).
