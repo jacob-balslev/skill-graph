@@ -19,7 +19,7 @@ Four operations form the per-skill loop. Two further commands — `discover` (cr
 | `evaluate` | Run the eval suite (LLM grader); write `eval_score`, `eval_failed_ids`, `freshness`, and the behavior verdicts. | no |
 | `evolve` | Walk the corpus in priority order; per skill run `audit → improve → evaluate`. | via `improve` |
 
-The grader machinery and inner-loop implementation live in [`../lib/audit/`](../lib/audit/); the runner prompts that drive each mode are in [`prompts/`](prompts/).
+The grader machinery and inner-loop implementation live in [`../lib/audit/`](../lib/audit/); the runner prompts that drive each mode are in [`../prompts/`](../prompts/).
 
 ## Two Gates
 
@@ -75,7 +75,7 @@ Live maturity and corpus counts are computed, never inlined here — read [`../S
 |---|---|
 | The binding loop contract (doctrine, operations, gates, runbook) | [`SKILL_AUDIT_LOOP.md`](SKILL_AUDIT_LOOP.md) |
 | The per-skill audit checklist | [`SKILL_AUDIT_LOOP.md`](SKILL_AUDIT_LOOP.md) § Part 2 |
-| The runner prompts (single-model, batch worker, codex-autonomous, minimal-iteration) | [`prompts/`](prompts/) |
+| The runner prompts (single-model, batch worker, codex-autonomous, minimal-iteration) | [`../prompts/`](../prompts/) |
 | Grader prompts + inner-loop implementation | [`../lib/audit/`](../lib/audit/) |
 | Verdict enums + confidence ordering | [`../docs/verdict-semantics.md`](../docs/verdict-semantics.md) |
 | The quality bar the loop enforces | [`../docs/quality-doctrine.md`](../docs/quality-doctrine.md) |

@@ -470,8 +470,9 @@ Exit codes for `skill-graph evolve`:
 | [`SKILL_GRAPH.md`](SKILL_GRAPH.md) | Library-level system model and authority tiers. |
 | [`skill-metadata-protocol/`](skill-metadata-protocol/) | Protocol layer — folder front door (`README.md`) plus the spec and its companions. |
 | [`skill-metadata-protocol/SKILL_METADATA_PROTOCOL.md`](skill-metadata-protocol/SKILL_METADATA_PROTOCOL.md) | **Canonical** normative spec for the `SKILL.md` frontmatter contract. |
-| [`skill-audit-loop/`](skill-audit-loop/) | Audit-loop layer — folder front door (`README.md`) plus the spec and the runner prompts. |
+| [`skill-audit-loop/`](skill-audit-loop/) | Audit-loop layer — folder front door (`README.md`) plus the canonical spec. |
 | [`skill-audit-loop/SKILL_AUDIT_LOOP.md`](skill-audit-loop/SKILL_AUDIT_LOOP.md) | **Canonical** audit procedure (4 operations: audit, improve, evaluate, evolve). |
+| [`prompts/`](prompts/) | The four operational runner prompts (single-model, batch-worker, codex-autonomous, minimal-iteration) that drive the audit loop across Claude / Codex / OpenCode. Project-root home per ADR-0015 (relocated 2026-06-01). |
 | `skill-audit-loop/SKILL_AUDIT_LOOP.md` § Part 2 — Per-Skill Audit Checklist | Per-skill audit checklist used during `audit`. |
 | [`AGENTS.md`](AGENTS.md) | Agent-facing repo guide (doctrine, doc routing, validation commands, `lib/` layout, public-distribution contract). `CLAUDE.md` imports it. |
 | [`CHANGELOG.md`](CHANGELOG.md) | Release notes for protocol, schemas, scripts, and CLI. |

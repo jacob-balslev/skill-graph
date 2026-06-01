@@ -37,6 +37,7 @@
     "!docs/research/**",
     "examples/",
     "lib/",
+    "prompts/",
     "schemas/",
     "scripts/",
     "marketplace/",

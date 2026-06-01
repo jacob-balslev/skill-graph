@@ -598,7 +598,7 @@ A skill audit is complete when:
 ## Overview
 
 > Type: Per-skill audit contract — the binding "what every audit run must do" document
-> referenced by every Skill Audit Loop runner in `skill-graph/skill-audit-loop/prompts/`.
+> referenced by every Skill Audit Loop runner in `skill-graph/prompts/`.
 > Canonical path: `skill-graph/skill-audit-loop/SKILL_AUDIT_LOOP.md#part-3--per-skill-audit-runbook`.
 >
 > History: moved into `skill-graph/` on 2026-05-25 from the legacy workspace path

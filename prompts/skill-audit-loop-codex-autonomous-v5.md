@@ -3,7 +3,7 @@
 > Type: Codex automation prompt for recurring, unattended Skill Audit Loop runs
 > Created: 2026-05-25
 > Supersedes for Codex automation: `skill-audit-loop-batch-worker-v4.md`
-> Inner contract: `skill-graph/skill-audit-loop/prompts/skill-audit-loop-single-model.md` (v3) plus `skill-graph/skill-audit-loop/SKILL_AUDIT_LOOP.md#part-3--per-skill-audit-runbook`
+> Inner contract: `skill-graph/prompts/skill-audit-loop-single-model.md` (v3) plus `skill-graph/skill-audit-loop/SKILL_AUDIT_LOOP.md#part-3--per-skill-audit-runbook`
 > Shape: scheduler-started batch worker + per-skill evidence artifacts + commit-before-release + automation memory
 
 ## When to use this prompt
@@ -78,7 +78,7 @@ Read these before claiming work:
 7. `/Users/jacobbalslev/Development/skill-graph/skill-metadata-protocol/SKILL_METADATA_PROTOCOL.md`
 8. `/Users/jacobbalslev/Development/skill-graph/skill-audit-loop/SKILL_AUDIT_LOOP.md`
 9. `/Users/jacobbalslev/Development/docs/reference/skill-audit-pipeline.md`
-10. `/Users/jacobbalslev/Development/skill-graph/skill-audit-loop/prompts/skill-audit-loop-single-model.md`
+10. `/Users/jacobbalslev/Development/skill-graph/prompts/skill-audit-loop-single-model.md`
 11. `/Users/jacobbalslev/Development/skill-graph/skill-audit-loop/SKILL_AUDIT_LOOP.md#part-3--per-skill-audit-runbook`
 
 Load relevant skills from `SKILL-INDEX.md` and read their actual `SKILL.md` files. At
@@ -320,8 +320,8 @@ data. Do not say the next loop has started; say the scheduler can start it on th
 
 ## Related
 
-- Interactive short run: `skill-graph/skill-audit-loop/prompts/skill-audit-loop-minimal-iteration.md`
-- Model-agnostic batch worker: `skill-graph/skill-audit-loop/prompts/skill-audit-loop-batch-worker-v4.md`
-- Inner single-model contract: `skill-graph/skill-audit-loop/prompts/skill-audit-loop-single-model.md`
+- Interactive short run: `skill-graph/prompts/skill-audit-loop-minimal-iteration.md`
+- Model-agnostic batch worker: `skill-graph/prompts/skill-audit-loop-batch-worker-v4.md`
+- Inner single-model contract: `skill-graph/prompts/skill-audit-loop-single-model.md`
 - Per-skill contract: `skill-graph/skill-audit-loop/SKILL_AUDIT_LOOP.md#part-3--per-skill-audit-runbook`
 - Active Codex automation memory: `$CODEX_HOME/automations/skill-audit-loop-3-0/memory.md`
