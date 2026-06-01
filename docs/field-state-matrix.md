@@ -133,13 +133,13 @@ The Skill Audit Loop owns these. **Do not hand-author.** Hand-edits are overwrit
 | `last_audited` | ISO date | `audit` | Date the audit ran. Loop priority uses this. |
 | `last_changed` | ISO date | `improve` | Date the body or frontmatter was edited. |
 | `structural_verdict` | `PASS` / `PASS_WITH_FIXES` / `FAIL` / `UNVERIFIED` | `audit` | Form-layer (gates 1-2, 7). Rolled up from `lint_verdict`. Only external-mandate violations produce `FAIL`. |
-| `truth_verdict` | `PASS` / `DRIFT` / `BROKEN` / `UNVERIFIED` | `audit` | Truth-layer (gates 3-6). Rolled up from `drift_status`. |
+| `truth_verdict` | `PASS` / `DRIFT` / `BROKEN` / `UNVERIFIED` | `audit` | Truth-layer (gates 3-6). Rolled up from hashable drift evidence plus audit judgment; absent hash coverage requires explicit human/graded truth evidence before `PASS`. |
 | `comprehension_verdict` | `PASS` / `SHALLOW` / `REDUNDANT` / `UNVERIFIED` / `PROVISIONAL` / `SKIPPED_BASELINE_HIGH` / `NA` | comprehension grader | Demoted in v7 to cheap smoke test. Never alone certifies a skill. |
 | `application_verdict` | `APPLICABLE` / `REDUNDANT` / `HARMFUL` / `MIXED` / `FALSE_POSITIVE` / `UNVERIFIED` / `PROVISIONAL` | application grader | **The primary quality signal.** A skill is behaviorally certified only when this is `APPLICABLE`. |
 | `eval_score` | 0.0-5.0 | `evaluate` | Latest aggregate grade. |
 | `eval_failed_ids` | string[] | `evaluate` | Failed eval IDs. Empty when clean. |
 | `lint_verdict` | `PASS` / `FAIL` / `UNKNOWN` | `skill-lint.js` | Per-script signal. Rolls up into `structural_verdict`. |
-| `drift_status` | `OK` / `DRIFT` / `BROKEN` / `STALE` / `NO_BASELINE` / `EXTERNAL_UNHASHED` / `UNKNOWN` | `skill-graph-drift.js` | Per-script signal. Rolls up into `truth_verdict`. |
+| `drift_status` | `OK` / `DRIFT` / `BROKEN` / `STALE` / `NO_BASELINE` / `EXTERNAL_UNHASHED` / `UNKNOWN` | `skill-graph-drift.js` | Per-script signal. Hashable states can support `truth_verdict`; `UNGROUNDED` is a script report, not a schema-valid state to stamp. |
 
 **Confidence ladder (highest → lowest):**
 

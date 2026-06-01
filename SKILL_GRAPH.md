@@ -105,7 +105,7 @@ flowchart LR
   Skill -->|compiled into| Manifest
   State -->|joined into| Manifest
   Linter -->|seeds findings for| Auditor
-  Drift -->|seeds truth_verdict for| Auditor
+  Drift -->|reports hash evidence for| Auditor
   Auditor -->|emits| Artifacts
   Auditor -->|stamps audit state| State
 
@@ -119,7 +119,7 @@ flowchart LR
   class Artifacts artifact
 ```
 
-**Legend.** Blue = authored input. Orange = loop-owned state. Green = tooling. Yellow = output artifact. Solid arrows are the data flow. The auditor closes the loop by stamping `audit-state.json` (`last_audited`, `lint_verdict`, `structural_verdict`, `truth_verdict`, and, in graded mode, behavior verdict fields). The manifest compiler joins `SKILL.md` plus `audit-state.json`, so consumers get one compiled view while the source representation stays split by ownership. Every entity in this diagram has its own deep-dive diagram: [§ Anatomy](skill-metadata-protocol/design-rationale.md#anatomy) for `SKILL.md`, [§ The Four Operations](skill-audit-loop/SKILL_AUDIT_LOOP.md#the-four-operations) for `skill-audit.js`, [§ Manifest Field Mapping](docs/manifest-field-mapping.md) for `skills.manifest.json`.
+**Legend.** Blue = authored input. Orange = loop-owned state. Green = tooling. Yellow = output artifact. Solid arrows are the data flow. The auditor closes the loop by stamping `audit-state.json` (`last_audited`, `lint_verdict`, `structural_verdict`, `truth_verdict`, and, in graded mode, behavior verdict fields). Hash-based drift evidence only supports the truth roll-up when declared truth sources are present and hashable; `UNGROUNDED` means there was no local truth-source baseline to compare. The manifest compiler joins `SKILL.md` plus `audit-state.json`, so consumers get one compiled view while the source representation stays split by ownership. Every entity in this diagram has its own deep-dive diagram: [§ Anatomy](skill-metadata-protocol/design-rationale.md#anatomy) for `SKILL.md`, [§ The Four Operations](skill-audit-loop/SKILL_AUDIT_LOOP.md#the-four-operations) for `skill-audit.js`, [§ Manifest Field Mapping](docs/manifest-field-mapping.md) for `skills.manifest.json`.
 
 ---
 
@@ -241,7 +241,7 @@ flowchart LR
 
 | File | Role |
 |---|---|
-| `scripts/skill-audit.js` | Two-mode audit runner: stub mode (lint-seeded TODO findings) and `--graded` mode (external model CLI for per-dimension verdicts). |
+| `scripts/skill-audit.js` | Two-mode audit runner: stub mode (lint-seeded TODO findings that are incomplete until human review) and `--graded` mode (external model CLI for per-dimension verdicts). |
 | `scripts/lib/audit-prompt-builder.js` | Seven-dimension prompt composer for graded mode. |
 | `scripts/lib/mock-grader.js` | Deterministic stand-in grader for CI smoke-tests without an API key. |
 

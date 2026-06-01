@@ -25,11 +25,11 @@ Five phases. Each writes a layer-scoped verdict instead of one aggregate (post-A
 
 | # | Phase | Classification | Script (canonical) | Script (root, legacy) | Files written | Verdict field | Skip condition |
 |---|---|---|---|---|---|---|---|
-| 1 | Structural lint | form / external-mandate | `skill-graph/scripts/skill-lint.js` (245 lines, strict schema gate) | `scripts/skill/skill-lint.js` (560 lines, legacy v6, accepts compatibility values) | Stamps `lint_verdict` on SKILL.md frontmatter | `lint_verdict` → rolled up into `structural_verdict` | Always runs. Only external-mandate violations (Anthropic Agent Skills marketplace shape, required fields, valid YAML) produce `FAIL`. Internal style preferences are warnings only. |
-| 2 | Truth / drift | infrastructure | `skill-graph/scripts/skill-graph-drift.js` | `scripts/skill/skill-evolution-loop.js:281-320` (drift logic) | Stamps `drift_status` on SKILL.md; updates `drift_check.truth_source_hashes` when `--record --apply` is passed | `drift_status` → rolled up into `truth_verdict` | Always runs. Skips per-skill check when `grounding.truth_sources` is absent (the skill has nothing to drift). |
+| 1 | Structural lint | form / external-mandate | `skill-graph/scripts/skill-lint.js` (245 lines, strict schema gate) | `scripts/skill/skill-lint.js` (560 lines, legacy v6, accepts compatibility values) | Stamps `lint_verdict` in `audit-state.json` through the audit loop | `lint_verdict` → rolled up into `structural_verdict` | Always runs. Only external-mandate violations (Anthropic Agent Skills marketplace shape, required fields, valid YAML) produce `FAIL`. Internal style preferences are warnings only. |
+| 2 | Truth / drift | infrastructure | `skill-graph/scripts/skill-graph-drift.js` | `scripts/skill/skill-evolution-loop.js:281-320` (drift logic) | Stamps `drift_status` in `audit-state.json` when explicitly writing; updates `drift_check.truth_source_hashes` when `--record --apply` is passed | Hashable `drift_status` values can roll up into `truth_verdict`; `UNGROUNDED` means no local truth-source baseline exists | Always runs. Reports `UNGROUNDED` when `grounding.truth_sources` is absent (the skill has nothing hashable to drift). |
 | 3 | Comprehension grader (gate 8) | recitation | `skill-graph/lib/audit/evaluate-skill.js --mode comprehension` | `scripts/skill/evaluate-skill.js --mode comprehension` (still owns the body per ADR 0009 incomplete deprecation) | Run artifacts under `.opencode/progress/skill-audits/<skill>/runs/<run-dir>/scorecard.md` | `comprehension_verdict` | Runs only under `--graded` AND when `evals/comprehension.json` exists. Demoted in v7: never alone certifies a skill. `SKIPPED_BASELINE_HIGH` is the expected verdict for concepts the foundation model already knows. |
 | 4 | Application grader (gate 9) | behavior | `skill-graph/lib/audit/evaluate-skill.js --mode application` (entry point only; `--application` body still delegates to root per SH-6198) | `scripts/skill/evaluate-skill.js --application` (still owns the body) | Run artifacts under `.opencode/progress/skill-audits/<skill>/runs/<run-dir>/scorecard.md` | `application_verdict` (the primary quality signal) | Runs only under `--graded` AND when `evals/application.json` exists. Application-eval coverage across the corpus is sparse — see [`SKILL_GRAPH.md § Current State`](../SKILL_GRAPH.md#current-state--single-source-of-truth) for live counts. Until application artifacts are authored at scale, `application_verdict: UNVERIFIED` is the honest default on most skills. |
-| 5 | Stamp | infrastructure | `scripts/skill/skill-audit-claim.js release` (writes terminal ledger line + verdicts) | n/a | Appends to `.opencode/progress/skill-audits/_ledger.jsonl`, updates `latest` symlink, stamps `last_audited` on SKILL.md | `last_audited` | Always runs at the end of a non-aborted audit. |
+| 5 | Stamp | infrastructure | `scripts/skill/skill-audit-claim.js release` (writes terminal ledger line + verdicts) | n/a | Appends to `.opencode/progress/skill-audits/_ledger.jsonl`, updates `latest` symlink, stamps `last_audited` in `audit-state.json` | `last_audited` | Always runs at the end of a non-aborted audit. |
 
 ## ADR 0009 drift visible
 
@@ -147,7 +147,7 @@ Single-model audits remain acceptable for low-centrality skills where a verifica
 ## Silent failure modes (where the loop can pass while skipping a layer)
 
 1. **A clean lint verdict can be mistaken for a useful skill.** Doctrine rejects this interpretation, but the root linter can still write a passing `lint_verdict` while internal findings remain non-fatal at `scripts/skill/skill-lint.js:33-40` and `scripts/skill/skill-lint.js:490-510`.
-2. **A stub audit can complete without proving behavior.** `skill-graph/lib/audit/skill-audit.js:431-502` creates a verdict with Behavior Gate `UNVERIFIED` and human TODOs. Honest, but easy to overread as "audited."
+2. **A stub audit can complete without proving behavior.** `skill-graph/lib/audit/skill-audit.js:431-502` creates a verdict with Behavior Gate `UNVERIFIED` and human TODOs. Honest, but easy to overread as "audited" unless the human/graded review replaces the TODO sections.
 3. **Behavior remains `UNVERIFIED` and still satisfies audit-complete** if it is explicit and evidenced. Doctrinally intentional at [../SKILL_AUDIT_LOOP.md:23-32](../skill-audit-loop/SKILL_AUDIT_LOOP.md), but it is also a skip path if reviewers do not inspect the evidence.
 4. **The version-earned gate fail-opens when repository inspection is unavailable** (`scripts/skill/check-version-earned.js:35-40`).
 5. **Claim ownership checks fail open when git metadata is unavailable** (`scripts/skill/skill-audit-claim.js:158-159`, `:173-174`).
@@ -167,7 +167,7 @@ node bin/skill-graph.js audit <skill-name> --graded --grader-cli "<command>"
 # Lint a skill (canonical, feeds structural_verdict)
 node bin/skill-graph.js lint <skill-name>
 
-# Drift sentinel (feeds truth_verdict)
+# Drift sentinel (reports hash evidence for the truth roll-up)
 node bin/skill-graph.js drift
 
 # Evaluate a skill (writes eval_score + graded verdicts)
