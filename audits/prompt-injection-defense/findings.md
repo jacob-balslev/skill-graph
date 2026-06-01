@@ -1,6 +1,4 @@
-# Seed Findings (Incomplete)
-
-> This file is a seed artifact from `skill-graph audit` without `--graded`. It records deterministic lint evidence plus explicit TODO review areas. It is not a completed qualitative audit until the TODO sections are replaced by reviewer or grader evidence.
+# Findings
 
 ## Skill
 
@@ -8,62 +6,82 @@
 
 ## Audit Date
 
-2026-05-28
-
-## Verdict Summary
-
-PASS_WITH_FIXES
+2026-06-01
 
 ## Findings
 
 ID: F1
-Severity: P2
-Surface: ../skills/skills/quality-assurance/prompt-injection-defense/SKILL.md:1:1
-Category: Lint diagnostic
-Problem: 3 top-level field(s) missing field-purpose comment (SKILL_METADATA_PROTOCOL.md § Inline field comments). Run `node scripts/backfill-field-purpose-comments.js` to add.
-Evidence: Emitted by skill-lint.js — see ../skills/skills/quality-assurance/prompt-injection-defense/SKILL.md line 1
-Required action: Inspect the flagged line, correct the value, and re-run skill-lint.js.
+Severity: HIGH
+Surface: metadata / sidecar
+Category: Structural conformance
+Problem: `SKILL.md` still carried loop-owned audit/eval state and a deprecated nested `concept` field, while missing the required v8 `scope` field.
+Evidence: `node bin/skill-graph.js lint prompt-injection-defense` reported 17 errors before repair, including missing `scope`, additional properties for `schema_version`, `version`, `owner`, `freshness`, `drift_check`, `eval_artifacts`, `eval_state`, `routing_eval`, `comprehension_state`, verdict fields, `last_audited`, `lint_verdict`, and `concept`. `node scripts/normalize-skill-field-shape.js --report --skill prompt-injection-defense` identified 15 fields to relocate, missing semantic `scope`, and unknown `concept`.
+Evidence strength: command-output
+Action: FIXED-IN-SESSION in skills commit `b400e35`; moved loop-owned state to `audit-state.json`, added `scope`, removed `concept`, and updated export protocol/path.
 
 ID: F2
-Severity: TODO
-Surface: activation
-Category: Activation quality — routing coverage
-Problem: TODO — human judgment required
-Evidence: TODO — reviewer must inspect the skill body
-Required action: Does the description name real trigger scenarios? Are keywords specific and not generic filler? Does the skill under-trigger or over-trigger for its intended use case?
+Severity: MEDIUM
+Surface: grounding
+Category: Truth-source coverage
+Problem: The skill body had useful Key Sources, but no structured truth sources were declared for drift/tooling, so the drift sentinel reported `UNGROUNDED`.
+Evidence: `node scripts/skill-graph-drift.js --json ../skills/skills/quality-assurance/prompt-injection-defense` returned `status: "UNGROUNDED"` with `details: "no truth_sources declared"` before repair. After repair it returned `EXTERNAL_UNHASHED` for OWASP LLM01 2025, OWASP Prompt Injection Prevention Cheat Sheet, Anthropic browser-use prompt-injection research, NIST AI 100-2 E2025, and Greshake et al. arXiv 2302.12173.
+Evidence strength: command-output
+Action: FIXED-IN-SESSION in skills commit `b400e35`; added universal `grounding.truth_sources`. Truth remains `UNVERIFIED` because the drift sentinel cannot hash external URLs.
 
 ID: F3
-Severity: TODO
-Surface: relations
-Category: Relation quality — graph correctness
-Problem: TODO — human judgment required
-Evidence: TODO — reviewer must inspect the skill body
-Required action: Do relations point at semantically correct neighbors? Are boundary handoffs crisp enough to prevent misuse? Are broader/narrower claims taxonomic rather than associative? Are dependencies real?
+Severity: MEDIUM
+Surface: evals
+Category: Comprehension coverage
+Problem: `eval_artifacts` was declared `planned`, but no gradeable comprehension eval existed for the skill.
+Evidence: `find skills/quality-assurance/prompt-injection-defense -maxdepth 3 -type f -print` initially returned only `SKILL.md`. After repair, `node -e` parsed `skills/quality-assurance/prompt-injection-defense/evals/comprehension.json`, and the eval file contains eight dimension-tagged cases covering definition, mental_model, purpose, boundary, taxonomy, analogy, application, and misconception.
+Evidence strength: direct-file-line + command-output
+Action: FIXED-IN-SESSION in skills commit `b400e35`; added `evals/comprehension.json` and set sidecar `eval_artifacts: "present"`.
 
 ID: F4
-Severity: TODO
-Surface: grounding
-Category: Grounding quality — claims vs truth sources
-Problem: TODO — human judgment required
-Evidence: TODO — reviewer must inspect the skill body
-Required action: If scope: project (or legacy scope: codebase), do all truth_sources exist? Do claims in the body match the referenced files? Classify any mismatch as skill drift, code drift, or doc drift.
+Severity: NONE
+Surface: activation
+Category: Activation quality
+Problem: No activation defect found.
+Evidence: The description names the core trigger condition, "systems that pass untrusted content to a language model," and lists direct/indirect/exfiltration/action-trigger taxonomy plus untrusted surfaces. Keywords are capped at 10 and specific to prompt injection. Examples cover RAG, planning/execution separation, blocklist limitations, and tool authority for email attachments. Anti-examples route jailbreak/model-safety, API security, type-safety/API design, and tool-call-flow away from this skill.
+Evidence strength: direct-file-line
+Action: No fix required.
 
 ID: F5
-Severity: TODO
-Surface: content
-Category: Content quality — completeness and density
-Problem: TODO — human judgment required
-Evidence: TODO — reviewer must inspect the skill body
-Required action: Does the skill have a clear Coverage section, a Philosophy section, at least one decision table or checklist, and explicit negative bounds (Do NOT Use When)? Does it contain generic filler that adds no routing signal?
+Severity: NONE
+Surface: relations
+Category: Graph correctness
+Problem: No relation defect found.
+Evidence: `relations.boundary` separates this skill from `tool-call-flow`, `type-safety`, `api-design`, and `http-semantics` by mechanism: protocol cycle, compile-time shape, request/response contract, and transport semantics versus the LLM-specific untrusted-content authority threat. `verify_with` points to `api-design` and `tool-call-flow`, which are useful cross-checks for tool/API authority.
+Evidence strength: direct-file-line
+Action: No fix required.
 
 ID: F6
-Severity: TODO
-Surface: evals
-Category: Eval quality — coverage and realism
-Problem: TODO — human judgment required
-Evidence: TODO — reviewer must inspect the skill body
-Required action: Do eval files exist if the skill is expected to be graded? Do they test realistic prompts — not trivia — and cover boundaries and failure cases as well as the happy path?
+Severity: NONE
+Surface: content
+Category: Content quality
+Problem: No content-density defect found.
+Evidence: The body has Coverage, Philosophy, a direct/indirect threat-model table, a defense-stack table, an injection-surfaces table, a markdown-image exfiltration walkthrough, a dual-LLM pattern section, a verification checklist, and an explicit "Do NOT Use When" boundary table. External source checks on 2026-06-01 confirmed the body still matches current primary guidance: OWASP LLM01 2025 names direct/indirect injection, RAG/fine-tuning limitations, least privilege, human approval, segregating external content, adversarial testing, markdown-image exfiltration, and multimodal injection; Anthropic's 2025 browser-use research says browser agents remain exposed to untrusted web content and no browser agent is immune; NIST AI 100-2 E2025 provides current adversarial-ML taxonomy context; Greshake et al. remains the foundational indirect-injection paper.
+Evidence strength: direct-file-line + external-source
+Action: No fix required.
 
-## Required Fixes
+ID: F7
+Severity: NONE
+Surface: portability
+Category: Export safety
+Problem: No portability defect found.
+Evidence: `deployment_target: portable`, the new `scope` is provider/product agnostic, and the grounding sources are public external references. No private repo paths, credentials, customer data, or Sales Hub-specific assumptions appear in the skill body or eval file.
+Evidence strength: direct-file-line
+Action: No fix required.
 
-- F1 [P2 warning]: 3 top-level field(s) missing field-purpose comment (SKILL_METADATA_PROTOCOL.md § Inline field comments). Run `node scripts/backfill-field-purpose-comments.js` to add.
+## Verification Receipts
+
+- `node bin/skill-graph.js lint prompt-injection-defense` -> PASS, 0 errors, 0 warnings.
+- `node scripts/normalize-skill-field-shape.js --report --skill prompt-injection-defense` -> 0 fields with work.
+- `node scripts/skill-graph-drift.js --json ../skills/skills/quality-assurance/prompt-injection-defense` -> `EXTERNAL_UNHASHED`, not stale, five external truth sources listed.
+- `node scripts/skill/check-version-earned.js skills/skills/quality-assurance/prompt-injection-defense/SKILL.md` -> schema version earned.
+- `node scripts/check-markdown-links.js ../skills/skills/quality-assurance/prompt-injection-defense/SKILL.md` -> OK.
+- `node -e` JSON parse for `audit-state.json` and `evals/comprehension.json` -> OK.
+- `node scripts/skill/source-truth-catalog.js --skill skills/quality-assurance/prompt-injection-defense --deep --json` -> no key files, concept/doctrine skill catalog emitted.
+- `node scripts/skill/skill-test-runner.js --skill skills/quality-assurance/prompt-injection-defense --json` -> skipped, no key-file tests.
+- `node scripts/skill/claim-extractor.js --skill skills/quality-assurance/prompt-injection-defense --json` -> 0 repo path/symbol claims.
+- `git diff --check -- skills/quality-assurance/prompt-injection-defense/SKILL.md skills/quality-assurance/prompt-injection-defense/audit-state.json skills/quality-assurance/prompt-injection-defense/evals/comprehension.json` -> OK.
