@@ -81,14 +81,14 @@ This distinction matters operationally:
 
 ## The Four Operations
 
-Every action in this loop falls into one of four operations. Each writes to a specific set of flat fields in the skill's Audit Status (see `schemas/SKILL_METADATA_PROTOCOL_schema.json`).
+Every action in this loop falls into one of four operations. Keep one question in working memory at a time: is this step inspecting, editing, grading, or walking the corpus? Audit/eval/provenance writes go to the skill's `audit-state.json` sidecar; instructional edits go to `SKILL.md`.
 
-| Operation | What it does | Edits instructional content? | Writes which fields |
+| Operation | What it does | Edits instructional content? | Writes |
 |---|---|---|---|
-| **audit** | Read every field, check freshness and validity against repo truth, score the graded gates when `--graded`. | No — writes Audit Status fields only | `last_audited`, `structural_verdict`, `truth_verdict`, `comprehension_verdict` (`--graded`), `application_verdict` (`--graded`); retains the per-script `lint_verdict` + `drift_status` they roll up from |
-| **improve** | Edit one field. One commit. Time-boxed. | Yes | the chosen field + `last_changed` |
-| **evaluate** | Run the eval suite (deterministic + comprehension/application graders) against the skill. | No — writes eval/Audit Status fields only | `eval_score`, `eval_failed_ids`, `freshness`; `comprehension_verdict` / `application_verdict` when those graders run |
-| **evolve** | Continuous analyzer-driven walk over the corpus that *composes* the operations (ANALYZE → improve → evaluate per item, via the improvement loop), prioritised by `application_verdict` then skill-graph centrality + staleness. NOT a literal per-skill `audit(); improve(); evaluate()` triple — see § The Pipeline of `evolve`. | Yes (per skill) | all of the above, per skill |
+| **audit** | Inspect one skill for structural validity, freshness, and truth-source drift. `--graded` also scores the behavior gates. | No | `audit-state.json`: `last_audited`, `lint_verdict`, `drift_status`, `structural_verdict`, `truth_verdict`; with `--graded`, also behavior verdicts. |
+| **improve** | Edit one field. One commit. Time-boxed. | Yes | `SKILL.md`: the chosen instructional/routing field. `audit-state.json`: `last_changed` when the loop records it. |
+| **evaluate** | Run deterministic checks and comprehension/application graders. | No | `audit-state.json`: eval scores/failures/freshness plus comprehension/application verdicts when those graders run. |
+| **evolve** | Walk the corpus by priority and compose analyze, improve, and evaluate per item through the improvement loop. | Yes (per skill) | The same `SKILL.md` and `audit-state.json` writes as the operations it composes. |
 
 `audit` and `evaluate` may mutate the `audit-state.json` sidecar because the Audit Status lives alongside the skill. They do not rewrite the skill's instructional body or routing contract unless an explicit `improve` step follows.
 

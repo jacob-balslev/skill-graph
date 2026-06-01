@@ -3,7 +3,16 @@
 > **Work-mode rule (read FIRST).** Editing this document, the schemas it normalizes against, the audit prompts, or the audit/lint/drift scripts is **SYSTEM work**. Editing individual `SKILL.md` files to conform to this contract is **CONTENT work** that runs ONLY via `/audit:audit`, `/audit:improve`, `/audit:evaluate`, `/audit:evolve`. Do not mix them in the same task or commit. Full doctrine: [`AGENTS.md` § Work Modes — SYSTEM vs CONTENT](../AGENTS.md#work-modes--system-vs-content).
 
 > **Spec version:** 1.6.0 (`schema_version: 8`, Skill Graph 0.5.10)
-> **Currently enforced by `schemas/SKILL_METADATA_PROTOCOL_schema.json`:** v8. Per [ADR-0019](../docs/adr/0019-audit-state-sidecar-separation.md), a skill is now **two files**: `SKILL.md` frontmatter (25 agent-facing fields; `required`: `name`, `description`, `subject`, `deployment_target`, `scope`) and a sibling `audit-state.json` sidecar (28 audit/eval/provenance fields, schema `schemas/skill-audit-state.schema.json`; `required`: `schema_version`, `owner`, `freshness`, `drift_check`, `eval_artifacts`, `eval_state`, `routing_eval`). The two are joined into the compiled manifest. See [§ Schema contract](#schema-contract).
+> **Currently enforced by `schemas/SKILL_METADATA_PROTOCOL_schema.json`:** v8.
+>
+> Per [ADR-0019](../docs/adr/0019-audit-state-sidecar-separation.md), a skill is now **two files** joined into the compiled manifest:
+>
+> | File | Owns | Required fields |
+> |---|---|---|
+> | `SKILL.md` | Agent-facing routing and teaching content | `name`, `description`, `subject`, `deployment_target`, `scope` |
+> | `audit-state.json` | Audit/eval/provenance state | `schema_version`, `owner`, `freshness`, `drift_check`, `eval_artifacts`, `eval_state`, `routing_eval` |
+>
+> See [§ Schema contract](#schema-contract) for the full field list and sidecar schema (`schemas/skill-audit-state.schema.json`).
 > **Single source of truth for "what is enforced today":** [`SKILL_GRAPH.md § Current State`](../SKILL_GRAPH.md#current-state--single-source-of-truth) — link there from any doc that needs the live answer; do not restate.
 > **Machine-readable schema:** `schemas/SKILL_METADATA_PROTOCOL_schema.json`
 > **Detailed field reference:** `skill-metadata-protocol/field-reference.md`
@@ -13,7 +22,16 @@
 
 ---
 
-> **Author shortcut (TL;DR):** Author `subject` (primary classification, 9-value enum) + `deployment_target` (deployment targeting, 2-value enum: `portable` / `project`) + `scope` (free-text PRD-style statement of what the skill teaches and what it does not). Polyhierarchy via `subjects[]` (max 2, primary first). Activation via `keywords` / `triggers` / `examples` / `anti_examples`. Routing via `relations` (`related` / `boundary` / `verify_with` / `depends_on` / `broader` / `narrower` / `disjoint_with`). Full schema-contract explanation at the END of this doc (§ Schema contract).
+> **Author shortcut (TL;DR):**
+>
+> | Step | Field group | Write |
+> |---|---|---|
+> | 1 | Required classification | `subject` (9-value enum), `deployment_target` (`portable` / `project`), and free-text `scope` |
+> | 2 | Optional polyhierarchy | `subjects[]` when a skill genuinely spans two browse shelves, primary first, max 2 |
+> | 3 | Activation | `keywords`, `triggers`, `examples`, and `anti_examples` |
+> | 4 | Routing graph | `relations.related`, `boundary`, `verify_with`, `depends_on`, `broader`, `narrower`, and `disjoint_with` |
+>
+> Full schema-contract explanation is at the end of this doc: [§ Schema contract](#schema-contract).
 
 ---
 
