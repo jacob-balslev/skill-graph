@@ -524,7 +524,7 @@ The Skill Graph evaluates four layers; each has its own surface and its own defi
 
 ### What a good comprehension eval looks like
 
-- **5-case hard floor; 7-case practitioner default** — not trivia, not pattern-matching, not single-line "is this X" prompts. Each scenario should require the skill's specific judgment to answer correctly.
+- **5-case hard floor; 7–8 case practitioner default** — not trivia, not pattern-matching, not single-line "is this X" prompts. Seven covers the core dimensions for most skills; eight gives one case per rubric dimension, including `misconception`. Each scenario should require the skill's specific judgment to answer correctly.
 - **Project-grounded** when `deployment_target: project` (anchored to specific repo truth; or a legacy unmigrated skill still carrying `scope: codebase`); **principle-grounded** when `deployment_target: portable` (repo-agnostic patterns). A skill that blends both records `grounding_mode: hybrid`.
 - **Negative expectations on critical and boundary cases** — what the answer must *not* say or do. Negative expectations catch silent scope reduction and softened-failure responses.
 - **Coverage matched to what the skill teaches:** domain correctness, scope boundaries, anti-pattern recognition, sequencing, gate enforcement, failure-mode handling, correct owner-skill routing, and explicit refusal to over-own.

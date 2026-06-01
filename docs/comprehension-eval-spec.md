@@ -7,7 +7,7 @@
 
 ## What this artifact is
 
-`comprehension.json` is a per-skill **gradeable comprehension eval**. It enumerates 5–7+ realistic scenarios that exercise the skill's specific judgment across the rubric dimensions, dimension-tagged so the grader can score per-dimension and produce a `comprehension_verdict` (PASS / SHALLOW / REDUNDANT / PROVISIONAL).
+`comprehension.json` is a per-skill **gradeable comprehension eval**. It enumerates 5+ realistic scenarios that exercise the skill's specific judgment across the rubric dimensions, dimension-tagged so the grader can score per-dimension and produce a `comprehension_verdict` (PASS / SHALLOW / REDUNDANT / PROVISIONAL). Seven to eight cases is the normal practitioner range: seven is enough for most skills when taxonomy or analogy is not load-bearing; eight covers every rubric dimension including `misconception`.
 
 **File location:** `skills/<name>/evals/comprehension.json` (workspace canonical; the skill-graph verifier resolves this path via `--workspace` flag).
 
@@ -26,7 +26,7 @@ The shape is normative — `skill-graph/schemas/comprehension.schema.json` is th
 | `skill_name` | yes | kebab-case string | MUST match the parent directory and the SKILL.md `name:` field. |
 | `subject` | yes | string | Human-readable subject (e.g., "Methodical Execution"). Used by the grader prompt header. |
 | `adjacent_concepts` | no | string[] | Related skill names for boundary-check cases. Recommended. |
-| `evals` | yes | array | 5+ eval cases. 7 is the practitioner default (one per rubric dimension). |
+| `evals` | yes | array | 5+ eval cases. Seven to eight cases is the practitioner default; eight gives one case per rubric dimension. |
 
 ### Per-case fields
 
@@ -44,7 +44,7 @@ The shape is normative — `skill-graph/schemas/comprehension.schema.json` is th
 
 ## Rubric Dimensions
 
-Each dimension probes a different layer of comprehension. A complete eval set covers the core dimensions that matter for the skill, with the 5-case hard floor and 7-case practitioner default below:
+Each dimension probes a different layer of comprehension. A complete eval set covers the core dimensions that matter for the skill, with the 5-case hard floor and 7-8 case practitioner default below:
 
 | Dimension | What it tests | When to write a case |
 |---|---|---|
@@ -62,8 +62,8 @@ The schema's `dimension` enum includes `misconception`. New authoring SHOULD inc
 ## Minimum vs. recommended
 
 - **Hard floor: 5 cases.** Per skill-audit-loop/SKILL_AUDIT_LOOP.md § Part 3 — Per-Skill Audit Runbook § 4c. Below 5, the verifier fails with a dimension-coverage error.
-- **Practitioner default: 7 cases**, one per rubric dimension. Catches per-dimension `SHALLOW` failures the 5-case minimum cannot.
-- **Robust: 9–12 cases.** Adds 2–5 application cases probing different novel scenarios.
+- **Practitioner default: 7–8 cases.** Seven covers the core dimensions for most skills; eight gives one case per rubric dimension, including `misconception`. This catches per-dimension `SHALLOW` failures the 5-case minimum cannot.
+- **Robust: 9–12 cases.** Adds 1–4 application cases probing different novel scenarios.
 
 ## Worked example (abbreviated)
 
