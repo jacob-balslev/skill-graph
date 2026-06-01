@@ -106,7 +106,7 @@ Typed edges to sibling skills. Lint verifies every target exists.
 | `adjacent` *(deprecated alias)* / `related` | many skill names | Symmetric "co-read" relation | `skos:related` |
 | `depends_on` | many; string or `{skill, min_version}` | Pragmatic prerequisite | `dcterms:requires` |
 | `verify_with` | many | Co-load for verification | `prov:wasInformedBy` |
-| `boundary` | many; string or `{skill, reason}` | Routing-layer anti-ownership handoff | `sg:disjointOwnership` |
+| `boundary` | many; string or `{skill, reason}` | Routing-layer score-aware exclusion edge; excludes the target when the declaring skill wins | `sg:disjointOwnership` |
 | `disjoint_with` *(v3.1)* | many; string or `{skill, reason}` | Formal class-disjointness assertion | `owl:disjointWith` |
 | `broader` *(v3.1)* | many | Cross-skill generalisation — target is more general | `skos:broader` |
 | `narrower` *(v3.1)* | many | Cross-skill specialisation — target is more specific | `skos:narrower` |
@@ -140,9 +140,9 @@ Artifact-level metadata.
 | `portability.targets` | many, currently `["skill-md"]` only | Export destinations |
 | `urn` *(optional)* | one | Global persistent identifier — `urn:skill:<repo>:<name>`. |
 
-## The four orthogonal classification axes (carefully qualified)
+## Classification And Routing Dimensions
 
-Skill Graph classifies along **three strictly-orthogonal axes plus one partially-coupled axis**. The concept map's earlier claim of "four orthogonal axes" overstated the orthogonality of `routing_bundles`.
+Skill Graph separates strict classification from routing group membership. The first four rows below are classification or belonging dimensions; `routing_bundles` is query-time grouping and is often coupled to taxonomy.
 
 | Axis | Field | Orthogonality | Question |
 |---|---|---|---|
@@ -150,9 +150,9 @@ Skill Graph classifies along **three strictly-orthogonal axes plus one partially
 | Scope | `scope` | Free-text, not an enum | PRD-style description of deployment context |
 | Taxonomy | `subject` + `taxonomy_domain` | Strict — one shelf, one optional tree path | What kind of concern is this? |
 | Project belonging | `project[]` | Strict — explicit belonging references, no hierarchy | Which specific project is this anchored to? |
-| Routing bundle | `routing_bundles` | **Partially coupled to taxonomy** — `quality`, `integrations`, etc. are often functions of *what the skill is*, not *when it fires* | Which query-time bundle does this join? |
+| Routing bundle | `routing_bundles` | **Not strict classification** — `quality`, `integrations`, etc. are often functions of *what the skill is*, not only *when it fires* | Which query-time bundle does this join? |
 
-The taxonomy-vs-routing-group coupling is intentional for ergonomics (a router can say "load all `quality` skills") but means the fourth axis is not a strict Ranganathan facet. Keep the distinction in mind when adding routing groups: if the group is redundant with the skill's category, use the category alone.
+The taxonomy-vs-routing-group coupling is intentional for ergonomics (a router can say "load all `quality` skills") but means routing bundles are not strict Ranganathan facets. Keep the distinction in mind when adding routing groups: if the group is redundant with the skill's `subject` and `taxonomy_domain`, use those fields alone.
 
 ## Body structure
 
@@ -165,8 +165,8 @@ An earlier concept map (pre-2026-04-20) contained six inaccuracies now corrected
 1. Claimed "5 metadata layers" as canonical — corrected to "9 conceptual groups" with an explicit note that the schema groups by requiredness.
 2. Listed 9 identity fields including `schema_version`/`stability`/`superseded_by` — corrected to 4 identity fields (`name`, `description`, `version`, `owner`) with the other fields moved to Classification.
 3. Described `drift_check` as a scalar date — corrected to object (v3 shape, schema-enforced).
-4. Called the axes "4 orthogonal" — corrected to "3 strictly orthogonal + 1 partially coupled".
-5. Stated the field count without distinguishing authored-vs-possible — clarified that the current schema has 36 canonical top-level authored fields, while aliases and nested sub-field counts are separate measures.
+4. Called the axes "4 orthogonal" — corrected to separate strict classification/belonging dimensions from query-time routing bundles.
+5. Stated the field count without distinguishing authored-vs-possible — clarified that the current contract has 25 agent-facing frontmatter fields plus 28 audit-state sidecar fields, while aliases and nested sub-field counts are separate measures.
 6. Omitted the required-for-all set (`subject`, `deployment_target`, `freshness`, `drift_check`, `eval_artifacts`, `eval_state`, `routing_eval`) — restored and grouped under Classification, Health & drift, and Evaluation Status.
 
 ## References

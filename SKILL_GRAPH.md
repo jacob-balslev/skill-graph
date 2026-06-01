@@ -90,7 +90,8 @@ Before drilling into the five authority tiers, orient yourself on the five runti
 
 ```mermaid
 flowchart LR
-  Skill["<b>SKILL.md</b><br/>authored file<br/>frontmatter + body + Audit Status"]
+  Skill["<b>SKILL.md</b><br/>authored file<br/>frontmatter + body"]
+  State["<b>audit-state.json</b><br/>loop-owned sidecar<br/>verdicts + eval/drift state"]
   Linter["<b>skill-lint.js</b><br/>deterministic validator"]
   Drift["<b>skill-graph-drift.js</b><br/>truth-source sentinel"]
   Manifest["<b>skills.manifest.json</b><br/>compiled artifact"]
@@ -98,25 +99,27 @@ flowchart LR
   Artifacts["<b>audits/&lt;skill&gt;/</b><br/>findings · verdict · scorecard"]
 
   Skill -->|validated by| Linter
+  State -->|joined for gates by| Linter
   Skill -->|hashes checked by| Drift
+  State -->|baselines read by| Drift
   Skill -->|compiled into| Manifest
+  State -->|joined into| Manifest
   Linter -->|seeds findings for| Auditor
   Drift -->|seeds truth_verdict for| Auditor
   Auditor -->|emits| Artifacts
-  Auditor -->|stamps Audit Status| Skill
+  Auditor -->|stamps audit state| State
 
   classDef author fill:#dbeafe,stroke:#2563eb,color:#1e3a8a
+  classDef state fill:#fff7ed,stroke:#ea580c,color:#7c2d12
   classDef tool fill:#ecfdf5,stroke:#047857,color:#064e3b
   classDef artifact fill:#fef3c7,stroke:#d97706,color:#78350f
   class Skill author
+  class State state
   class Linter,Drift,Auditor,Manifest tool
   class Artifacts artifact
 ```
 
-<!-- Rendered copy for non-Mermaid viewers. Regenerate via: npx @mermaid-js/mermaid-cli -i <source> -o docs/images/system-model.png -->
-<img src="docs/images/system-model.png" alt="System model — SKILL.md is validated by skill-lint.js, drift-checked by skill-graph-drift.js, compiled into skills.manifest.json, and audited by skill-audit.js which emits findings/verdict/scorecard artifacts AND stamps the Audit Status back onto SKILL.md" width="900" />
-
-**Legend.** Blue = authored input. Green = tooling. Yellow = output artifact. Solid arrows are the data flow. The `stamps Audit Status` arrow (added 2026-05-25 per SH-6481 F14) closes the loop — the Auditor's verdicts land on the skill itself (`last_audited`, `lint_verdict`, `structural_verdict`, `truth_verdict`), so the state-of-truth lives in the skill, not in a side artifact. Every entity in this diagram has its own deep-dive diagram: [§ Anatomy](skill-metadata-protocol/design-rationale.md#anatomy) for `SKILL.md`, [§ The Four Operations](skill-audit-loop/SKILL_AUDIT_LOOP.md#the-four-operations) for `skill-audit.js`, [§ Manifest Field Mapping](docs/manifest-field-mapping.md) for `skills.manifest.json`.
+**Legend.** Blue = authored input. Orange = loop-owned state. Green = tooling. Yellow = output artifact. Solid arrows are the data flow. The auditor closes the loop by stamping `audit-state.json` (`last_audited`, `lint_verdict`, `structural_verdict`, `truth_verdict`, and, in graded mode, behavior verdict fields). The manifest compiler joins `SKILL.md` plus `audit-state.json`, so consumers get one compiled view while the source representation stays split by ownership. Every entity in this diagram has its own deep-dive diagram: [§ Anatomy](skill-metadata-protocol/design-rationale.md#anatomy) for `SKILL.md`, [§ The Four Operations](skill-audit-loop/SKILL_AUDIT_LOOP.md#the-four-operations) for `skill-audit.js`, [§ Manifest Field Mapping](docs/manifest-field-mapping.md) for `skills.manifest.json`.
 
 ---
 

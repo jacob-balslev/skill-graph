@@ -83,10 +83,10 @@ If any step fails, the error message names the rule and the file. Lint output is
 Re-evaluate the cost-benefit when:
 
 - **Your library exceeds 20 skills.** Implicit graph density is hitting; explicit relations start paying back the authoring cost.
-- **You hit a routing failure** that descriptions alone can't fix. `relations.boundary` and `relations.disjoint_with` exist for exactly this.
+- **You hit a routing failure** that descriptions alone can't fix. `examples`, `anti_examples`, and `relations.boundary` exist for routing discrimination; `relations.disjoint_with` is reserved for formal class-disjointness claims.
 - **An eval reveals a quality gradient** you want to express in metadata. `eval_state` + `eval_artifacts` + `routing_eval` are the three orthogonal axes.
 - **A grounded skill claims something the codebase no longer supports.** The drift sentinel will surface this — but only if you adopted it before the drift accumulated.
-- **You start authoring skills for a second project** that shares some and diverges on others. Multi-root workspace mode + `workspace_tags` is built for this.
+- **You start authoring skills for a second project** that shares some and diverges on others. Multi-root workspace mode plus `project[]` / `repo[]` belonging references are built for this.
 
 ## What Skill Graph is *not*
 
