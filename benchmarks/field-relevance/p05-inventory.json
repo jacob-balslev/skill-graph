@@ -1,0 +1,456 @@
+{
+  "generated_for": "field-relevance-benchmark/P0.5",
+  "skills_dir": "../skills/skills",
+  "total_skills": 161,
+  "parse_failures": 0,
+  "fields": [
+    {
+      "field": "application_verdict",
+      "required": false,
+      "populated": 161,
+      "coverage": 1,
+      "distinct": 3,
+      "state": "VARYING"
+    },
+    {
+      "field": "comprehension_verdict",
+      "required": false,
+      "populated": 161,
+      "coverage": 1,
+      "distinct": 3,
+      "state": "VARYING"
+    },
+    {
+      "field": "description",
+      "required": true,
+      "populated": 161,
+      "coverage": 1,
+      "distinct": 161,
+      "state": "VARYING"
+    },
+    {
+      "field": "drift_check",
+      "required": true,
+      "populated": 161,
+      "coverage": 1,
+      "distinct": 36,
+      "state": "VARYING"
+    },
+    {
+      "field": "eval_artifacts",
+      "required": true,
+      "populated": 161,
+      "coverage": 1,
+      "distinct": 3,
+      "state": "VARYING"
+    },
+    {
+      "field": "eval_state",
+      "required": true,
+      "populated": 161,
+      "coverage": 1,
+      "distinct": 2,
+      "state": "VARYING"
+    },
+    {
+      "field": "freshness",
+      "required": true,
+      "populated": 161,
+      "coverage": 1,
+      "distinct": 23,
+      "state": "VARYING"
+    },
+    {
+      "field": "keywords",
+      "required": false,
+      "populated": 161,
+      "coverage": 1,
+      "distinct": 161,
+      "state": "VARYING"
+    },
+    {
+      "field": "lint_verdict",
+      "required": false,
+      "populated": 161,
+      "coverage": 1,
+      "distinct": 2,
+      "state": "VARYING"
+    },
+    {
+      "field": "name",
+      "required": true,
+      "populated": 161,
+      "coverage": 1,
+      "distinct": 161,
+      "state": "VARYING"
+    },
+    {
+      "field": "owner",
+      "required": true,
+      "populated": 161,
+      "coverage": 1,
+      "distinct": 2,
+      "state": "VARYING"
+    },
+    {
+      "field": "relations",
+      "required": false,
+      "populated": 161,
+      "coverage": 1,
+      "distinct": 161,
+      "state": "VARYING"
+    },
+    {
+      "field": "routing_eval",
+      "required": true,
+      "populated": 161,
+      "coverage": 1,
+      "distinct": 2,
+      "state": "VARYING"
+    },
+    {
+      "field": "schema_version",
+      "required": true,
+      "populated": 161,
+      "coverage": 1,
+      "distinct": 2,
+      "state": "VARYING"
+    },
+    {
+      "field": "structural_verdict",
+      "required": false,
+      "populated": 161,
+      "coverage": 1,
+      "distinct": 2,
+      "state": "VARYING"
+    },
+    {
+      "field": "truth_verdict",
+      "required": false,
+      "populated": 161,
+      "coverage": 1,
+      "distinct": 4,
+      "state": "VARYING"
+    },
+    {
+      "field": "version",
+      "required": true,
+      "populated": 161,
+      "coverage": 1,
+      "distinct": 5,
+      "state": "VARYING"
+    },
+    {
+      "field": "deployment_target",
+      "required": true,
+      "populated": 160,
+      "coverage": 0.994,
+      "distinct": 2,
+      "state": "VARYING"
+    },
+    {
+      "field": "last_audited",
+      "required": false,
+      "populated": 160,
+      "coverage": 0.994,
+      "distinct": 6,
+      "state": "VARYING"
+    },
+    {
+      "field": "subject",
+      "required": true,
+      "populated": 160,
+      "coverage": 0.994,
+      "distinct": 9,
+      "state": "VARYING"
+    },
+    {
+      "field": "stability",
+      "required": false,
+      "populated": 158,
+      "coverage": 0.981,
+      "distinct": 2,
+      "state": "VARYING"
+    },
+    {
+      "field": "license",
+      "required": false,
+      "populated": 157,
+      "coverage": 0.975,
+      "distinct": 2,
+      "state": "VARYING"
+    },
+    {
+      "field": "anti_examples",
+      "required": false,
+      "populated": 145,
+      "coverage": 0.901,
+      "distinct": 145,
+      "state": "VARYING"
+    },
+    {
+      "field": "examples",
+      "required": false,
+      "populated": 145,
+      "coverage": 0.901,
+      "distinct": 145,
+      "state": "VARYING"
+    },
+    {
+      "field": "allowed-tools",
+      "required": false,
+      "populated": 139,
+      "coverage": 0.863,
+      "distinct": 6,
+      "state": "VARYING"
+    },
+    {
+      "field": "taxonomy_domain",
+      "required": false,
+      "populated": 139,
+      "coverage": 0.863,
+      "distinct": 82,
+      "state": "VARYING"
+    },
+    {
+      "field": "triggers",
+      "required": false,
+      "populated": 100,
+      "coverage": 0.621,
+      "distinct": 100,
+      "state": "VARYING"
+    },
+    {
+      "field": "portability",
+      "required": false,
+      "populated": 95,
+      "coverage": 0.59,
+      "distinct": 2,
+      "state": "VARYING"
+    },
+    {
+      "field": "compatibility",
+      "required": false,
+      "populated": 93,
+      "coverage": 0.578,
+      "distinct": 78,
+      "state": "VARYING"
+    },
+    {
+      "field": "lifecycle",
+      "required": false,
+      "populated": 89,
+      "coverage": 0.553,
+      "distinct": 3,
+      "state": "VARYING"
+    },
+    {
+      "field": "analogy",
+      "required": false,
+      "populated": 86,
+      "coverage": 0.534,
+      "distinct": 86,
+      "state": "VARYING"
+    },
+    {
+      "field": "boundary",
+      "required": false,
+      "populated": 86,
+      "coverage": 0.534,
+      "distinct": 31,
+      "state": "VARYING"
+    },
+    {
+      "field": "comprehension_state",
+      "required": false,
+      "populated": 86,
+      "coverage": 0.534,
+      "distinct": 1,
+      "state": "INVARIANT"
+    },
+    {
+      "field": "mental_model",
+      "required": false,
+      "populated": 86,
+      "coverage": 0.534,
+      "distinct": 31,
+      "state": "VARYING"
+    },
+    {
+      "field": "misconception",
+      "required": false,
+      "populated": 86,
+      "coverage": 0.534,
+      "distinct": 33,
+      "state": "VARYING"
+    },
+    {
+      "field": "purpose",
+      "required": false,
+      "populated": 86,
+      "coverage": 0.534,
+      "distinct": 31,
+      "state": "VARYING"
+    },
+    {
+      "field": "scope",
+      "required": true,
+      "populated": 71,
+      "coverage": 0.441,
+      "distinct": 71,
+      "state": "VARYING"
+    },
+    {
+      "field": "concept",
+      "required": false,
+      "populated": 65,
+      "coverage": 0.404,
+      "distinct": 65,
+      "state": "VARYING"
+    },
+    {
+      "field": "grounding",
+      "required": false,
+      "populated": 41,
+      "coverage": 0.255,
+      "distinct": 41,
+      "state": "VARYING"
+    },
+    {
+      "field": "drift_status",
+      "required": false,
+      "populated": 8,
+      "coverage": 0.05,
+      "distinct": 2,
+      "state": "UNPOPULATED"
+    },
+    {
+      "field": "last_changed",
+      "required": false,
+      "populated": 6,
+      "coverage": 0.037,
+      "distinct": 5,
+      "state": "UNPOPULATED"
+    },
+    {
+      "field": "eval_last_run",
+      "required": false,
+      "populated": 2,
+      "coverage": 0.012,
+      "distinct": 2,
+      "state": "UNPOPULATED"
+    },
+    {
+      "field": "eval_score",
+      "required": false,
+      "populated": 2,
+      "coverage": 0.012,
+      "distinct": 2,
+      "state": "UNPOPULATED"
+    },
+    {
+      "field": "paths",
+      "required": false,
+      "populated": 2,
+      "coverage": 0.012,
+      "distinct": 2,
+      "state": "UNPOPULATED"
+    },
+    {
+      "field": "routing_bundles",
+      "required": false,
+      "populated": 1,
+      "coverage": 0.006,
+      "distinct": 1,
+      "state": "UNPOPULATED"
+    },
+    {
+      "field": "allowed_tools",
+      "required": false,
+      "populated": 0,
+      "coverage": 0,
+      "distinct": 0,
+      "state": "UNPOPULATED"
+    },
+    {
+      "field": "eval",
+      "required": false,
+      "populated": 0,
+      "coverage": 0,
+      "distinct": 0,
+      "state": "UNPOPULATED"
+    },
+    {
+      "field": "eval_failed_ids",
+      "required": false,
+      "populated": 0,
+      "coverage": 0,
+      "distinct": 0,
+      "state": "UNPOPULATED"
+    },
+    {
+      "field": "marketplace_tier",
+      "required": false,
+      "populated": 0,
+      "coverage": 0,
+      "distinct": 0,
+      "state": "UNPOPULATED"
+    },
+    {
+      "field": "project",
+      "required": false,
+      "populated": 0,
+      "coverage": 0,
+      "distinct": 0,
+      "state": "UNPOPULATED"
+    },
+    {
+      "field": "repo",
+      "required": false,
+      "populated": 0,
+      "coverage": 0,
+      "distinct": 0,
+      "state": "UNPOPULATED"
+    },
+    {
+      "field": "reviewed_at",
+      "required": false,
+      "populated": 0,
+      "coverage": 0,
+      "distinct": 0,
+      "state": "UNPOPULATED"
+    },
+    {
+      "field": "runtime_telemetry",
+      "required": false,
+      "populated": 0,
+      "coverage": 0,
+      "distinct": 0,
+      "state": "UNPOPULATED"
+    },
+    {
+      "field": "subjects",
+      "required": false,
+      "populated": 0,
+      "coverage": 0,
+      "distinct": 0,
+      "state": "UNPOPULATED"
+    },
+    {
+      "field": "superseded_by",
+      "required": false,
+      "populated": 0,
+      "coverage": 0,
+      "distinct": 0,
+      "state": "UNPOPULATED"
+    },
+    {
+      "field": "urn",
+      "required": false,
+      "populated": 0,
+      "coverage": 0,
+      "distinct": 0,
+      "state": "UNPOPULATED"
+    }
+  ]
+}
