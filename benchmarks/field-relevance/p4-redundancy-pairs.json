@@ -1,0 +1,82 @@
+{
+  "generated_for": "field-relevance-benchmark/P4-leave-two-out",
+  "path": "b2-routeSkills",
+  "baseline": {
+    "r1": 0.765625,
+    "r3": 0.890625,
+    "total": 64
+  },
+  "baseline_file": "evals/retrieval-baseline-v2.json",
+  "pairs": [
+    {
+      "pair": [
+        "keywords",
+        "triggers"
+      ],
+      "single_drop_r1": {
+        "keywords": 0.7344,
+        "triggers": 0
+      },
+      "pair_drop_r1": 0.7656,
+      "single_drop_r3": {
+        "keywords": 0.8594,
+        "triggers": 0
+      },
+      "pair_drop_r3": 0.8906,
+      "verdict": "SUBSTITUTE-MASKING (joint > either single — each carries unique signal)"
+    },
+    {
+      "pair": [
+        "relations.related",
+        "relations.broader"
+      ],
+      "single_drop_r1": {
+        "relations.related": 0,
+        "relations.broader": 0
+      },
+      "pair_drop_r1": 0,
+      "single_drop_r3": {
+        "relations.related": 0,
+        "relations.broader": 0
+      },
+      "pair_drop_r3": 0,
+      "verdict": "BOTH-INERT on this baseline (unexercised; not a substitute pair)"
+    },
+    {
+      "pair": [
+        "relations.boundary",
+        "relations.related"
+      ],
+      "single_drop_r1": {
+        "relations.boundary": 0,
+        "relations.related": 0
+      },
+      "pair_drop_r1": 0,
+      "single_drop_r3": {
+        "relations.boundary": -0.0469,
+        "relations.related": 0
+      },
+      "pair_drop_r3": -0.0469,
+      "verdict": "BOTH-INERT on this baseline (unexercised; not a substitute pair)"
+    },
+    {
+      "pair": [
+        "keywords",
+        "paths"
+      ],
+      "single_drop_r1": {
+        "keywords": 0.7344,
+        "paths": 0
+      },
+      "pair_drop_r1": 0.7344,
+      "single_drop_r3": {
+        "keywords": 0.8594,
+        "paths": 0
+      },
+      "pair_drop_r3": 0.8594,
+      "verdict": "INDEPENDENT (additive, no overlap)"
+    }
+  ],
+  "relevance_verdict_validity": "INVALID-self-authored-corpus",
+  "validity_note": "Corpus was authored BEFORE the routing system; routing ablation over the live corpus describes the current router WIRING, not field relevance. Per user directive 2026-06-01, this is NOT evidence for any keep/drop verdict. keywords+triggers and all activation fields are KEEP-BY-CONTRACT."
+}

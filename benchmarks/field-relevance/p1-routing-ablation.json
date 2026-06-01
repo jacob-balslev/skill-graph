@@ -79,5 +79,7 @@
       "d3": 0,
       "load_bearing": false
     }
-  ]
+  ],
+  "relevance_verdict_validity": "INVALID-self-authored-corpus",
+  "validity_note": "Corpus was authored BEFORE the routing system; routing ablation over the live corpus describes the current router WIRING, not field relevance. Per user directive 2026-06-01, this is NOT evidence for any keep/drop verdict. keywords+triggers and all activation fields are KEEP-BY-CONTRACT."
 }

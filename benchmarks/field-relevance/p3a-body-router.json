@@ -1,0 +1,31 @@
+{
+  "generated_for": "field-relevance-benchmark/P3a-body-aware-router",
+  "path": "a-tfidf-body",
+  "retriever": "local-tfidf-cosine",
+  "corpus_skills": 161,
+  "baseline_file": "evals/retrieval-baseline-v2.json",
+  "arms": {
+    "body": {
+      "arm": "body",
+      "recall_at_1": 0.8281,
+      "recall_at_3": 0.9531,
+      "scored": 64
+    },
+    "meta": {
+      "arm": "meta",
+      "recall_at_1": 0.625,
+      "recall_at_3": 0.8281,
+      "scored": 64
+    },
+    "both": {
+      "arm": "body+meta",
+      "recall_at_1": 0.8281,
+      "recall_at_3": 0.9531,
+      "scored": 64
+    }
+  },
+  "delta_meta_over_body_r1": 0,
+  "delta_body_over_meta_r1": 0.2031,
+  "relevance_verdict_validity": "INVALID-self-authored-corpus",
+  "validity_note": "Corpus was authored BEFORE the routing system; routing ablation over the live corpus describes the current router WIRING, not field relevance. Per user directive 2026-06-01, this is NOT evidence for any keep/drop verdict. keywords+triggers and all activation fields are KEEP-BY-CONTRACT."
+}

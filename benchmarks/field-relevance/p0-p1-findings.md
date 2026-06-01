@@ -1,10 +1,22 @@
 # P0 + P1 — Deterministic Findings (adoption-independent)
 
+> **⚠ CORRECTION (user directive, 2026-06-01) — read before using ANY routing number below.**
+> The corpus was authored BEFORE the routing system was built. Therefore routing-ablation
+> over the live corpus (the P1b table, the P4 leave-two-out, the P3a body-vs-meta arms)
+> describes **the current router's WIRING, not field relevance** — it is downstream of our own
+> authoring and is **NOT valid evidence for any keep/drop/consolidate verdict.** `keywords`,
+> `triggers`, and every activation/classification field are **KEEP-BY-CONTRACT** — the benchmark
+> gets no vote on removing them. The routing numbers are retained ONLY as a description of how
+> today's router is wired (a form of consumer-dependency). Valid relevance evidence is invariant
+> to both population and the self-authored routing outcome: consumer wiring (descriptive),
+> gate-flip counterfactual, conceptual/dimensional need, and controlled injection on CONSTRUCTED
+> probes. See `docs/plans/field-relevance-benchmark-2026-05-31.md § Methodology correction #2`.
+>
 > Field-Relevance Benchmark, Phases P0 + P1. All results are deterministic and free
 > (0 model calls). Relevance is judged by **consumer-dependency** + **counterfactual
-> outcome change** — never population. Artifacts: `p1-consumer-map.json`,
-> `p1-routing-ablation.json`. Regenerate: `node benchmarks/field-relevance/consumer-map.js`,
-> `node benchmarks/field-relevance/routing-ablation.js`.
+> outcome change** — never population, never self-authored routing outcome. Artifacts:
+> `p1-consumer-map.json`, `p1-routing-ablation.json` (wiring-only). Regenerate:
+> `node benchmarks/field-relevance/consumer-map.js`, `node benchmarks/field-relevance/routing-ablation.js`.
 
 ## P0 — field → dimension → machine, and the path-a decision
 

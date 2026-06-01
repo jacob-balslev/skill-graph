@@ -54,6 +54,15 @@ dimension is invisible to a field-vs-field rating by construction.
 
 ## Problem 2 — Comprehension conflates authored prose with measurement
 
+> **Carried physically by [ADR-0019](../adr/0019-audit-state-sidecar-separation.md) /
+> [audit-state-sidecar-separation.md](audit-state-sidecar-separation.md) (2026-06-01).** This
+> proposal's fix is a *description* clarification (name the prose as the grader's input, not the
+> measurement). The sidecar split executes the same distinction structurally: the Understanding
+> **prose** (`mental_model`/`purpose`/`boundary`/`analogy`/`misconception`) stays in the agent-facing
+> frontmatter; the comprehension **evaluation** (`comprehension.json`, `comprehension_verdict`,
+> `comprehension_state`) moves to the audit-loop sidecar. The two proposals are complementary — adopt
+> the description fix here and the placement in ADR-0019.
+
 Two distinct artifacts are blurred:
 
 | | Comprehension as authored prose | Comprehension as measurement |

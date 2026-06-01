@@ -1,0 +1,416 @@
+{
+  "generated_for": "field-relevance-benchmark/conceptual-field-placement",
+  "basis": "conceptual (consumer x moment); NOT corpus-empirical — Machine R + Machine B retired per user directive 2026-06-01",
+  "cut_test": "Does the everyday agent need to SEE this field to FIND/UNDERSTAND/EXECUTE the skill? yes=frontmatter, no=sidecar(audit-loop).",
+  "total_fields": 56,
+  "counts": {
+    "frontmatter": 25,
+    "sidecar": 28,
+    "deprecated": 2,
+    "unresolved": 1
+  },
+  "required_fields_moved_to_sidecar": [
+    "schema_version",
+    "version",
+    "owner",
+    "freshness",
+    "drift_check",
+    "eval_artifacts",
+    "eval_state",
+    "routing_eval"
+  ],
+  "fields": {
+    "schema_version": {
+      "placement": "sidecar",
+      "moment": "audit-loop",
+      "role": "provenance",
+      "why": "which contract the skill conforms to — system/audit concern, not the public Agent-Skills spec",
+      "required": true
+    },
+    "name": {
+      "placement": "frontmatter",
+      "moment": "everyday-agentic",
+      "role": "identity",
+      "why": "what the skill is called; every consumer keys on it",
+      "required": true
+    },
+    "urn": {
+      "placement": "sidecar",
+      "moment": "audit-loop",
+      "role": "provenance",
+      "why": "registry identity; provenance, 0 acting consumer today",
+      "required": false
+    },
+    "description": {
+      "placement": "frontmatter",
+      "moment": "everyday-agentic",
+      "role": "description",
+      "why": "one-line what-it-is; primary router signal",
+      "required": true
+    },
+    "version": {
+      "placement": "sidecar",
+      "moment": "audit-loop",
+      "role": "provenance",
+      "why": "skill version number; governance/provenance, not agent-facing",
+      "required": true
+    },
+    "taxonomy_domain": {
+      "placement": "frontmatter",
+      "moment": "everyday-agentic",
+      "role": "classification",
+      "why": "finer browse sub-path within a subject",
+      "required": false
+    },
+    "subject": {
+      "placement": "frontmatter",
+      "moment": "everyday-agentic",
+      "role": "classification",
+      "why": "browse shelf + router stratum + graph node",
+      "required": true
+    },
+    "subjects": {
+      "placement": "frontmatter",
+      "moment": "everyday-agentic",
+      "role": "classification",
+      "why": "polyhierarchy browse (max 2)",
+      "required": false
+    },
+    "scope": {
+      "placement": "frontmatter",
+      "moment": "everyday-agentic",
+      "role": "scope",
+      "why": "PRD-style when/why-to-use; agent reads to decide applicability",
+      "required": true
+    },
+    "deployment_target": {
+      "placement": "frontmatter",
+      "moment": "everyday-agentic",
+      "role": "classification",
+      "why": "where it applies; router tie-break + publication gate",
+      "required": true
+    },
+    "project": {
+      "placement": "frontmatter",
+      "moment": "everyday-agentic",
+      "role": "scope",
+      "why": "router project filter (which project a project-skill belongs to)",
+      "required": false
+    },
+    "repo": {
+      "placement": "sidecar",
+      "moment": "audit-loop",
+      "role": "provenance",
+      "why": "belonging-entity repo reference; provenance",
+      "required": false
+    },
+    "owner": {
+      "placement": "sidecar",
+      "moment": "audit-loop",
+      "role": "provenance",
+      "why": "maintenance accountability; human-curator/audit, not agent",
+      "required": true
+    },
+    "freshness": {
+      "placement": "sidecar",
+      "moment": "audit-loop",
+      "role": "audit",
+      "why": "audit freshness timestamp",
+      "required": true
+    },
+    "reviewed_at": {
+      "placement": "sidecar",
+      "moment": "audit-loop",
+      "role": "audit",
+      "why": "audit timestamp (alias of freshness — consolidate)",
+      "required": false
+    },
+    "drift_check": {
+      "placement": "sidecar",
+      "moment": "audit-loop",
+      "role": "audit",
+      "why": "drift sentinel hashes + last_verified — audit machinery",
+      "required": true
+    },
+    "eval_artifacts": {
+      "placement": "sidecar",
+      "moment": "audit-loop",
+      "role": "evaluation",
+      "why": "whether gradeable eval artifacts exist",
+      "required": true
+    },
+    "eval_state": {
+      "placement": "sidecar",
+      "moment": "audit-loop",
+      "role": "evaluation",
+      "why": "unverified/passing/monitored — eval bookkeeping",
+      "required": true
+    },
+    "routing_eval": {
+      "placement": "sidecar",
+      "moment": "audit-loop",
+      "role": "evaluation",
+      "why": "whether the skill appears in a routing eval",
+      "required": true
+    },
+    "last_audited": {
+      "placement": "sidecar",
+      "moment": "audit-loop",
+      "role": "audit",
+      "why": "when the audit loop last ran",
+      "required": false
+    },
+    "last_changed": {
+      "placement": "sidecar",
+      "moment": "audit-loop",
+      "role": "provenance",
+      "why": "last content change; audit/provenance bookkeeping",
+      "required": false
+    },
+    "structural_verdict": {
+      "placement": "sidecar",
+      "moment": "audit-loop",
+      "role": "audit",
+      "why": "Integrity-gate verdict",
+      "required": false
+    },
+    "truth_verdict": {
+      "placement": "sidecar",
+      "moment": "audit-loop",
+      "role": "audit",
+      "why": "grounding/drift verdict",
+      "required": false
+    },
+    "comprehension_verdict": {
+      "placement": "sidecar",
+      "moment": "audit-loop",
+      "role": "audit",
+      "why": "comprehension-gate verdict (the EVALUATION of comprehension, not the prose)",
+      "required": false
+    },
+    "application_verdict": {
+      "placement": "sidecar",
+      "moment": "audit-loop",
+      "role": "audit",
+      "why": "behavior-gate verdict (primary quality signal) — audit output",
+      "required": false
+    },
+    "eval_score": {
+      "placement": "sidecar",
+      "moment": "audit-loop",
+      "role": "evaluation",
+      "why": "last eval score",
+      "required": false
+    },
+    "eval_failed_ids": {
+      "placement": "sidecar",
+      "moment": "audit-loop",
+      "role": "evaluation",
+      "why": "which eval cases failed",
+      "required": false
+    },
+    "lint_verdict": {
+      "placement": "sidecar",
+      "moment": "audit-loop",
+      "role": "audit",
+      "why": "structural lint result",
+      "required": false
+    },
+    "drift_status": {
+      "placement": "sidecar",
+      "moment": "audit-loop",
+      "role": "audit",
+      "why": "recorded drift result",
+      "required": false
+    },
+    "comprehension_state": {
+      "placement": "sidecar",
+      "moment": "audit-loop",
+      "role": "evaluation",
+      "why": "FLAG that Understanding prose + comprehension eval are present; the eval/bookkeeping side of comprehension (prose itself stays frontmatter)",
+      "required": false
+    },
+    "concept": {
+      "placement": "deprecated",
+      "moment": "n/a",
+      "role": "deprecated",
+      "why": "legacy nested Understanding block; superseded by the 5 flat fields",
+      "required": false
+    },
+    "mental_model": {
+      "placement": "frontmatter",
+      "moment": "everyday-agentic",
+      "role": "comprehension-prose",
+      "why": "ACTUAL comprehension: the frame the agent reasons with",
+      "required": false
+    },
+    "purpose": {
+      "placement": "frontmatter",
+      "moment": "everyday-agentic",
+      "role": "comprehension-prose",
+      "why": "ACTUAL comprehension: when/why to invoke the thinking",
+      "required": false
+    },
+    "boundary": {
+      "placement": "frontmatter",
+      "moment": "everyday-agentic",
+      "role": "comprehension-prose",
+      "why": "ACTUAL comprehension: the not-for / scoping facet",
+      "required": false
+    },
+    "analogy": {
+      "placement": "frontmatter",
+      "moment": "everyday-agentic",
+      "role": "comprehension-prose",
+      "why": "ACTUAL comprehension: transfer from known to new",
+      "required": false
+    },
+    "misconception": {
+      "placement": "frontmatter",
+      "moment": "everyday-agentic",
+      "role": "comprehension-prose",
+      "why": "ACTUAL comprehension: inoculation against the predictable error",
+      "required": false
+    },
+    "eval_last_run": {
+      "placement": "sidecar",
+      "moment": "audit-loop",
+      "role": "evaluation",
+      "why": "eval receipt timestamp",
+      "required": false
+    },
+    "eval": {
+      "placement": "sidecar",
+      "moment": "audit-loop",
+      "role": "evaluation",
+      "why": "legacy nested eval block (alias of flat eval_* — consolidate)",
+      "required": false
+    },
+    "stability": {
+      "placement": "frontmatter",
+      "moment": "everyday-agentic",
+      "role": "lifecycle-routing",
+      "why": "deprecation state the router gates on (do not route to deprecated)",
+      "required": false
+    },
+    "marketplace_tier": {
+      "placement": "sidecar",
+      "moment": "audit-loop",
+      "role": "distribution-internal",
+      "why": "publication tier; marketplace consumer at publish time, not the agent",
+      "required": false
+    },
+    "superseded_by": {
+      "placement": "frontmatter",
+      "moment": "everyday-agentic",
+      "role": "lifecycle-routing",
+      "why": "deprecation redirect the router/agent follows",
+      "required": false
+    },
+    "license": {
+      "placement": "frontmatter",
+      "moment": "everyday-agentic",
+      "role": "distribution-public",
+      "why": "public Agent-Skills standard field; ships with the skill",
+      "required": false
+    },
+    "compatibility": {
+      "placement": "frontmatter",
+      "moment": "everyday-agentic",
+      "role": "distribution-public",
+      "why": "public Agent-Skills standard field (runtime compat)",
+      "required": false
+    },
+    "allowed-tools": {
+      "placement": "frontmatter",
+      "moment": "everyday-agentic",
+      "role": "execution",
+      "why": "harness gates tool calls; public Agent-Skills kebab spelling",
+      "required": false
+    },
+    "allowed_tools": {
+      "placement": "deprecated",
+      "moment": "n/a",
+      "role": "alias",
+      "why": "snake-case alias of allowed-tools (kebab); drop, keep kebab (public spelling)",
+      "required": false
+    },
+    "triggers": {
+      "placement": "frontmatter",
+      "moment": "everyday-agentic",
+      "role": "activation",
+      "why": "exact-phrase activation (substitute carrier when keywords miss)",
+      "required": false
+    },
+    "keywords": {
+      "placement": "frontmatter",
+      "moment": "everyday-agentic",
+      "role": "activation",
+      "why": "dominant deterministic routing signal",
+      "required": false
+    },
+    "examples": {
+      "placement": "frontmatter",
+      "moment": "everyday-agentic",
+      "role": "activation",
+      "why": "positive activation prompts + eval seed",
+      "required": false
+    },
+    "anti_examples": {
+      "placement": "frontmatter",
+      "moment": "everyday-agentic",
+      "role": "activation",
+      "why": "negative boundary prompts + export boundary synth",
+      "required": false
+    },
+    "paths": {
+      "placement": "frontmatter",
+      "moment": "everyday-agentic",
+      "role": "activation",
+      "why": "file-surface activation (--path boost)",
+      "required": false
+    },
+    "routing_bundles": {
+      "placement": "unresolved",
+      "moment": "n/a",
+      "role": "no-consumer",
+      "why": "curated working-set grouping; 0 acting consumer (P1a). If revived it is LIBRARY-LEVEL routing config, not per-skill frontmatter — decision pending, not a default-to-sidecar",
+      "required": false
+    },
+    "relations": {
+      "placement": "frontmatter",
+      "moment": "everyday-agentic",
+      "role": "relations",
+      "why": "graph co-load / exclusion / verify / depends — the navigable graph",
+      "required": false
+    },
+    "grounding": {
+      "placement": "frontmatter",
+      "moment": "everyday-agentic",
+      "role": "scope-grounding",
+      "why": "where it applies + truth surface for project skills (truth_source_hashes are the audit facet — see note)",
+      "required": false
+    },
+    "portability": {
+      "placement": "sidecar",
+      "moment": "audit-loop",
+      "role": "distribution-internal",
+      "why": "portability classification; manifest-only pass-through, not agent-read",
+      "required": false
+    },
+    "lifecycle": {
+      "placement": "sidecar",
+      "moment": "audit-loop",
+      "role": "audit",
+      "why": "review cadence + stale_after_days; audit/freshness scheduling (NOTE: stale_after_days feeds the router staleness gate — see cross-tier note)",
+      "required": false
+    },
+    "runtime_telemetry": {
+      "placement": "sidecar",
+      "moment": "audit-loop",
+      "role": "runtime-feedback",
+      "why": "observed runtime outcome feed; corroborates audit verdicts",
+      "required": false
+    }
+  }
+}

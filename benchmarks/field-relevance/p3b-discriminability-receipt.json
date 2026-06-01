@@ -1,0 +1,4687 @@
+{
+  "generated_at": "2026-06-01T04:16:24.783Z",
+  "skill_filter": null,
+  "sources": {
+    "eval_history": {
+      "path": "agent-orchestration/logs/eval-history.jsonl",
+      "entries": 531
+    },
+    "comprehension_history": {
+      "path": "agent-orchestration/logs/comprehension-history.jsonl",
+      "entries": 1970
+    },
+    "application_history": {
+      "path": "agent-orchestration/logs/application-history.jsonl",
+      "entries": 64
+    },
+    "cache_files": {
+      "dir": ".cache",
+      "count": 90
+    }
+  },
+  "targets": {
+    "coefficient_of_variation_min": 0.2,
+    "coefficient_of_variation_compressed": 0.1,
+    "cronbach_alpha_acceptable": 0.7,
+    "ceiling_effect_threshold": 0.2,
+    "floor_effect_threshold": 0.2
+  },
+  "eval_history_analysis": {
+    "n": 531,
+    "skill_filter": null,
+    "pass_rate": 0.3446,
+    "baseline_pass_rate": 0.1375,
+    "score_descriptive": {
+      "n": 531,
+      "mean": 0.6105,
+      "stddev": 0.3487,
+      "coefficient_of_variation": 0.5712,
+      "min": 0,
+      "max": 1,
+      "ceiling_threshold": 0.95,
+      "floor_threshold": 0.05,
+      "ceiling_count": 121,
+      "ceiling_ratio": 0.2279,
+      "floor_count": 67,
+      "floor_ratio": 0.1262,
+      "histogram": [
+        {
+          "bin": "0-0.1",
+          "count": 74
+        },
+        {
+          "bin": "0.1-0.2",
+          "count": 25
+        },
+        {
+          "bin": "0.2-0.3",
+          "count": 30
+        },
+        {
+          "bin": "0.3-0.4",
+          "count": 26
+        },
+        {
+          "bin": "0.4-0.5",
+          "count": 36
+        },
+        {
+          "bin": "0.5-0.6",
+          "count": 34
+        },
+        {
+          "bin": "0.6-0.7",
+          "count": 28
+        },
+        {
+          "bin": "0.7-0.8",
+          "count": 53
+        },
+        {
+          "bin": "0.8-0.9",
+          "count": 57
+        },
+        {
+          "bin": "0.9-1",
+          "count": 168
+        }
+      ],
+      "bootstrap_mean_ci_95": {
+        "lower": 0.5782,
+        "upper": 0.6387,
+        "n": 531
+      },
+      "flags": [
+        "ceiling 23% > 20%"
+      ]
+    },
+    "baseline_score_descriptive": {
+      "n": 531,
+      "mean": 0.4311,
+      "stddev": 0.3161,
+      "coefficient_of_variation": 0.7332,
+      "min": 0,
+      "max": 1,
+      "ceiling_threshold": 0.95,
+      "floor_threshold": 0.05,
+      "ceiling_count": 43,
+      "ceiling_ratio": 0.081,
+      "floor_count": 73,
+      "floor_ratio": 0.1375,
+      "histogram": [
+        {
+          "bin": "0-0.1",
+          "count": 91
+        },
+        {
+          "bin": "0.1-0.2",
+          "count": 67
+        },
+        {
+          "bin": "0.2-0.3",
+          "count": 59
+        },
+        {
+          "bin": "0.3-0.4",
+          "count": 57
+        },
+        {
+          "bin": "0.4-0.5",
+          "count": 51
+        },
+        {
+          "bin": "0.5-0.6",
+          "count": 34
+        },
+        {
+          "bin": "0.6-0.7",
+          "count": 34
+        },
+        {
+          "bin": "0.7-0.8",
+          "count": 42
+        },
+        {
+          "bin": "0.8-0.9",
+          "count": 38
+        },
+        {
+          "bin": "0.9-1",
+          "count": 58
+        }
+      ],
+      "bootstrap_mean_ci_95": {
+        "lower": 0.4028,
+        "upper": 0.4589,
+        "n": 531
+      },
+      "flags": []
+    },
+    "failure_categories": {
+      "correct": 180,
+      "wrong_answer": 136,
+      "missing_context": 123,
+      "hallucinated_path": 67,
+      "skill_not_activated": 23,
+      "over_general": 2
+    }
+  },
+  "comprehension_analysis": {
+    "n": 1970,
+    "skill_filter": null,
+    "by_dimension": {
+      "definition": {
+        "n": 258,
+        "with_skill_weighted": {
+          "n": 151,
+          "mean": 0.882,
+          "stddev": 0.9357,
+          "coefficient_of_variation": 1.0608,
+          "min": 0,
+          "max": 12,
+          "ceiling_threshold": 0.95,
+          "floor_threshold": 0.05,
+          "ceiling_count": 24,
+          "ceiling_ratio": 0.1589,
+          "floor_count": 8,
+          "floor_ratio": 0.053,
+          "histogram": [
+            {
+              "bin": "0-0.1",
+              "count": 8
+            },
+            {
+              "bin": "0.1-0.2",
+              "count": 0
+            },
+            {
+              "bin": "0.2-0.3",
+              "count": 0
+            },
+            {
+              "bin": "0.3-0.4",
+              "count": 0
+            },
+            {
+              "bin": "0.4-0.5",
+              "count": 1
+            },
+            {
+              "bin": "0.5-0.6",
+              "count": 1
+            },
+            {
+              "bin": "0.6-0.7",
+              "count": 5
+            },
+            {
+              "bin": "0.7-0.8",
+              "count": 29
+            },
+            {
+              "bin": "0.8-0.9",
+              "count": 60
+            },
+            {
+              "bin": "0.9-1",
+              "count": 46
+            }
+          ],
+          "bootstrap_mean_ci_95": {
+            "lower": 0.7839,
+            "upper": 1.0435,
+            "n": 151
+          },
+          "flags": []
+        },
+        "baseline_weighted": {
+          "n": 151,
+          "mean": 0.6631,
+          "stddev": 0.3471,
+          "coefficient_of_variation": 0.5234,
+          "min": 0,
+          "max": 3,
+          "ceiling_threshold": 0.95,
+          "floor_threshold": 0.05,
+          "ceiling_count": 13,
+          "ceiling_ratio": 0.0861,
+          "floor_count": 19,
+          "floor_ratio": 0.1258,
+          "histogram": [
+            {
+              "bin": "0-0.1",
+              "count": 19
+            },
+            {
+              "bin": "0.1-0.2",
+              "count": 0
+            },
+            {
+              "bin": "0.2-0.3",
+              "count": 1
+            },
+            {
+              "bin": "0.3-0.4",
+              "count": 1
+            },
+            {
+              "bin": "0.4-0.5",
+              "count": 3
+            },
+            {
+              "bin": "0.5-0.6",
+              "count": 21
+            },
+            {
+              "bin": "0.6-0.7",
+              "count": 7
+            },
+            {
+              "bin": "0.7-0.8",
+              "count": 42
+            },
+            {
+              "bin": "0.8-0.9",
+              "count": 35
+            },
+            {
+              "bin": "0.9-1",
+              "count": 21
+            }
+          ],
+          "bootstrap_mean_ci_95": {
+            "lower": 0.6077,
+            "upper": 0.7144,
+            "n": 151
+          },
+          "flags": []
+        },
+        "delta_weighted": {
+          "n": 151,
+          "mean": 0.219,
+          "stddev": 0.7771,
+          "coefficient_of_variation": 3.5489,
+          "min": -0.5,
+          "max": 9,
+          "ceiling_threshold": 0.9,
+          "floor_threshold": -0.9,
+          "ceiling_count": 6,
+          "ceiling_ratio": 0.0397,
+          "floor_count": 0,
+          "floor_ratio": 0,
+          "histogram": [
+            {
+              "bin": "0-0.1",
+              "count": 43
+            },
+            {
+              "bin": "0.1-0.2",
+              "count": 31
+            },
+            {
+              "bin": "0.2-0.3",
+              "count": 5
+            },
+            {
+              "bin": "0.3-0.4",
+              "count": 4
+            },
+            {
+              "bin": "0.4-0.5",
+              "count": 2
+            },
+            {
+              "bin": "0.5-0.6",
+              "count": 17
+            },
+            {
+              "bin": "0.6-0.7",
+              "count": 1
+            },
+            {
+              "bin": "0.7-0.8",
+              "count": 1
+            },
+            {
+              "bin": "0.8-0.9",
+              "count": 6
+            },
+            {
+              "bin": "0.9-1",
+              "count": 5
+            }
+          ],
+          "bootstrap_mean_ci_95": {
+            "lower": 0.1252,
+            "upper": 0.3603,
+            "n": 151
+          },
+          "flags": []
+        }
+      },
+      "mental_model": {
+        "n": 250,
+        "with_skill_weighted": {
+          "n": 142,
+          "mean": 0.9283,
+          "stddev": 0.9559,
+          "coefficient_of_variation": 1.0298,
+          "min": 0,
+          "max": 12,
+          "ceiling_threshold": 0.95,
+          "floor_threshold": 0.05,
+          "ceiling_count": 51,
+          "ceiling_ratio": 0.3592,
+          "floor_count": 5,
+          "floor_ratio": 0.0352,
+          "histogram": [
+            {
+              "bin": "0-0.1",
+              "count": 5
+            },
+            {
+              "bin": "0.1-0.2",
+              "count": 0
+            },
+            {
+              "bin": "0.2-0.3",
+              "count": 0
+            },
+            {
+              "bin": "0.3-0.4",
+              "count": 0
+            },
+            {
+              "bin": "0.4-0.5",
+              "count": 0
+            },
+            {
+              "bin": "0.5-0.6",
+              "count": 1
+            },
+            {
+              "bin": "0.6-0.7",
+              "count": 4
+            },
+            {
+              "bin": "0.7-0.8",
+              "count": 21
+            },
+            {
+              "bin": "0.8-0.9",
+              "count": 39
+            },
+            {
+              "bin": "0.9-1",
+              "count": 71
+            }
+          ],
+          "bootstrap_mean_ci_95": {
+            "lower": 0.8261,
+            "upper": 1.1026,
+            "n": 142
+          },
+          "flags": [
+            "ceiling 36% > 20%"
+          ]
+        },
+        "baseline_weighted": {
+          "n": 142,
+          "mean": 0.6573,
+          "stddev": 0.5501,
+          "coefficient_of_variation": 0.837,
+          "min": 0,
+          "max": 6,
+          "ceiling_threshold": 0.95,
+          "floor_threshold": 0.05,
+          "ceiling_count": 25,
+          "ceiling_ratio": 0.1761,
+          "floor_count": 20,
+          "floor_ratio": 0.1408,
+          "histogram": [
+            {
+              "bin": "0-0.1",
+              "count": 20
+            },
+            {
+              "bin": "0.1-0.2",
+              "count": 0
+            },
+            {
+              "bin": "0.2-0.3",
+              "count": 1
+            },
+            {
+              "bin": "0.3-0.4",
+              "count": 4
+            },
+            {
+              "bin": "0.4-0.5",
+              "count": 3
+            },
+            {
+              "bin": "0.5-0.6",
+              "count": 30
+            },
+            {
+              "bin": "0.6-0.7",
+              "count": 4
+            },
+            {
+              "bin": "0.7-0.8",
+              "count": 26
+            },
+            {
+              "bin": "0.8-0.9",
+              "count": 26
+            },
+            {
+              "bin": "0.9-1",
+              "count": 27
+            }
+          ],
+          "bootstrap_mean_ci_95": {
+            "lower": 0.584,
+            "upper": 0.7552,
+            "n": 142
+          },
+          "flags": []
+        },
+        "delta_weighted": {
+          "n": 142,
+          "mean": 0.271,
+          "stddev": 0.5827,
+          "coefficient_of_variation": 2.1501,
+          "min": -0.35,
+          "max": 6,
+          "ceiling_threshold": 0.9,
+          "floor_threshold": -0.9,
+          "ceiling_count": 9,
+          "ceiling_ratio": 0.0634,
+          "floor_count": 0,
+          "floor_ratio": 0,
+          "histogram": [
+            {
+              "bin": "0-0.1",
+              "count": 44
+            },
+            {
+              "bin": "0.1-0.2",
+              "count": 8
+            },
+            {
+              "bin": "0.2-0.3",
+              "count": 13
+            },
+            {
+              "bin": "0.3-0.4",
+              "count": 6
+            },
+            {
+              "bin": "0.4-0.5",
+              "count": 14
+            },
+            {
+              "bin": "0.5-0.6",
+              "count": 14
+            },
+            {
+              "bin": "0.6-0.7",
+              "count": 2
+            },
+            {
+              "bin": "0.7-0.8",
+              "count": 6
+            },
+            {
+              "bin": "0.8-0.9",
+              "count": 4
+            },
+            {
+              "bin": "0.9-1",
+              "count": 8
+            }
+          ],
+          "bootstrap_mean_ci_95": {
+            "lower": 0.1917,
+            "upper": 0.3717,
+            "n": 142
+          },
+          "flags": []
+        }
+      },
+      "boundary": {
+        "n": 232,
+        "with_skill_weighted": {
+          "n": 132,
+          "mean": 0.9312,
+          "stddev": 0.9913,
+          "coefficient_of_variation": 1.0646,
+          "min": 0,
+          "max": 12,
+          "ceiling_threshold": 0.95,
+          "floor_threshold": 0.05,
+          "ceiling_count": 35,
+          "ceiling_ratio": 0.2652,
+          "floor_count": 5,
+          "floor_ratio": 0.0379,
+          "histogram": [
+            {
+              "bin": "0-0.1",
+              "count": 5
+            },
+            {
+              "bin": "0.1-0.2",
+              "count": 0
+            },
+            {
+              "bin": "0.2-0.3",
+              "count": 0
+            },
+            {
+              "bin": "0.3-0.4",
+              "count": 0
+            },
+            {
+              "bin": "0.4-0.5",
+              "count": 0
+            },
+            {
+              "bin": "0.5-0.6",
+              "count": 3
+            },
+            {
+              "bin": "0.6-0.7",
+              "count": 5
+            },
+            {
+              "bin": "0.7-0.8",
+              "count": 15
+            },
+            {
+              "bin": "0.8-0.9",
+              "count": 36
+            },
+            {
+              "bin": "0.9-1",
+              "count": 67
+            }
+          ],
+          "bootstrap_mean_ci_95": {
+            "lower": 0.8216,
+            "upper": 1.1228,
+            "n": 132
+          },
+          "flags": [
+            "ceiling 27% > 20%"
+          ]
+        },
+        "baseline_weighted": {
+          "n": 132,
+          "mean": 0.7045,
+          "stddev": 0.4356,
+          "coefficient_of_variation": 0.6184,
+          "min": 0,
+          "max": 4.5,
+          "ceiling_threshold": 0.95,
+          "floor_threshold": 0.05,
+          "ceiling_count": 15,
+          "ceiling_ratio": 0.1136,
+          "floor_count": 12,
+          "floor_ratio": 0.0909,
+          "histogram": [
+            {
+              "bin": "0-0.1",
+              "count": 12
+            },
+            {
+              "bin": "0.1-0.2",
+              "count": 0
+            },
+            {
+              "bin": "0.2-0.3",
+              "count": 2
+            },
+            {
+              "bin": "0.3-0.4",
+              "count": 4
+            },
+            {
+              "bin": "0.4-0.5",
+              "count": 1
+            },
+            {
+              "bin": "0.5-0.6",
+              "count": 19
+            },
+            {
+              "bin": "0.6-0.7",
+              "count": 17
+            },
+            {
+              "bin": "0.7-0.8",
+              "count": 15
+            },
+            {
+              "bin": "0.8-0.9",
+              "count": 30
+            },
+            {
+              "bin": "0.9-1",
+              "count": 31
+            }
+          ],
+          "bootstrap_mean_ci_95": {
+            "lower": 0.637,
+            "upper": 0.7831,
+            "n": 132
+          },
+          "flags": []
+        },
+        "delta_weighted": {
+          "n": 132,
+          "mean": 0.2267,
+          "stddev": 0.6888,
+          "coefficient_of_variation": 3.039,
+          "min": -0.375,
+          "max": 7.5,
+          "ceiling_threshold": 0.9,
+          "floor_threshold": -0.9,
+          "ceiling_count": 5,
+          "ceiling_ratio": 0.0379,
+          "floor_count": 0,
+          "floor_ratio": 0,
+          "histogram": [
+            {
+              "bin": "0-0.1",
+              "count": 41
+            },
+            {
+              "bin": "0.1-0.2",
+              "count": 12
+            },
+            {
+              "bin": "0.2-0.3",
+              "count": 2
+            },
+            {
+              "bin": "0.3-0.4",
+              "count": 17
+            },
+            {
+              "bin": "0.4-0.5",
+              "count": 2
+            },
+            {
+              "bin": "0.5-0.6",
+              "count": 21
+            },
+            {
+              "bin": "0.6-0.7",
+              "count": 0
+            },
+            {
+              "bin": "0.7-0.8",
+              "count": 1
+            },
+            {
+              "bin": "0.8-0.9",
+              "count": 1
+            },
+            {
+              "bin": "0.9-1",
+              "count": 4
+            }
+          ],
+          "bootstrap_mean_ci_95": {
+            "lower": 0.1402,
+            "upper": 0.3693,
+            "n": 132
+          },
+          "flags": []
+        }
+      },
+      "taxonomy": {
+        "n": 227,
+        "with_skill_weighted": {
+          "n": 124,
+          "mean": 0.9067,
+          "stddev": 0.7697,
+          "coefficient_of_variation": 0.8489,
+          "min": 0,
+          "max": 9,
+          "ceiling_threshold": 0.95,
+          "floor_threshold": 0.05,
+          "ceiling_count": 45,
+          "ceiling_ratio": 0.3629,
+          "floor_count": 7,
+          "floor_ratio": 0.0565,
+          "histogram": [
+            {
+              "bin": "0-0.1",
+              "count": 7
+            },
+            {
+              "bin": "0.1-0.2",
+              "count": 0
+            },
+            {
+              "bin": "0.2-0.3",
+              "count": 0
+            },
+            {
+              "bin": "0.3-0.4",
+              "count": 0
+            },
+            {
+              "bin": "0.4-0.5",
+              "count": 0
+            },
+            {
+              "bin": "0.5-0.6",
+              "count": 4
+            },
+            {
+              "bin": "0.6-0.7",
+              "count": 0
+            },
+            {
+              "bin": "0.7-0.8",
+              "count": 17
+            },
+            {
+              "bin": "0.8-0.9",
+              "count": 24
+            },
+            {
+              "bin": "0.9-1",
+              "count": 71
+            }
+          ],
+          "bootstrap_mean_ci_95": {
+            "lower": 0.8103,
+            "upper": 1.0597,
+            "n": 124
+          },
+          "flags": [
+            "ceiling 36% > 20%"
+          ]
+        },
+        "baseline_weighted": {
+          "n": 124,
+          "mean": 0.7503,
+          "stddev": 0.4561,
+          "coefficient_of_variation": 0.6079,
+          "min": 0,
+          "max": 4.5,
+          "ceiling_threshold": 0.95,
+          "floor_threshold": 0.05,
+          "ceiling_count": 43,
+          "ceiling_ratio": 0.3468,
+          "floor_count": 11,
+          "floor_ratio": 0.0887,
+          "histogram": [
+            {
+              "bin": "0-0.1",
+              "count": 11
+            },
+            {
+              "bin": "0.1-0.2",
+              "count": 0
+            },
+            {
+              "bin": "0.2-0.3",
+              "count": 0
+            },
+            {
+              "bin": "0.3-0.4",
+              "count": 7
+            },
+            {
+              "bin": "0.4-0.5",
+              "count": 1
+            },
+            {
+              "bin": "0.5-0.6",
+              "count": 20
+            },
+            {
+              "bin": "0.6-0.7",
+              "count": 2
+            },
+            {
+              "bin": "0.7-0.8",
+              "count": 18
+            },
+            {
+              "bin": "0.8-0.9",
+              "count": 15
+            },
+            {
+              "bin": "0.9-1",
+              "count": 49
+            }
+          ],
+          "bootstrap_mean_ci_95": {
+            "lower": 0.6765,
+            "upper": 0.8279,
+            "n": 124
+          },
+          "flags": [
+            "ceiling 35% > 20%"
+          ]
+        },
+        "delta_weighted": {
+          "n": 124,
+          "mean": 0.1564,
+          "stddev": 0.5081,
+          "coefficient_of_variation": 3.2494,
+          "min": -1,
+          "max": 4.5,
+          "ceiling_threshold": 0.9,
+          "floor_threshold": -0.9,
+          "ceiling_count": 3,
+          "ceiling_ratio": 0.0242,
+          "floor_count": 2,
+          "floor_ratio": 0.0161,
+          "histogram": [
+            {
+              "bin": "0-0.1",
+              "count": 46
+            },
+            {
+              "bin": "0.1-0.2",
+              "count": 5
+            },
+            {
+              "bin": "0.2-0.3",
+              "count": 6
+            },
+            {
+              "bin": "0.3-0.4",
+              "count": 6
+            },
+            {
+              "bin": "0.4-0.5",
+              "count": 0
+            },
+            {
+              "bin": "0.5-0.6",
+              "count": 19
+            },
+            {
+              "bin": "0.6-0.7",
+              "count": 3
+            },
+            {
+              "bin": "0.7-0.8",
+              "count": 3
+            },
+            {
+              "bin": "0.8-0.9",
+              "count": 1
+            },
+            {
+              "bin": "0.9-1",
+              "count": 2
+            }
+          ],
+          "bootstrap_mean_ci_95": {
+            "lower": 0.0761,
+            "upper": 0.2567,
+            "n": 124
+          },
+          "flags": []
+        }
+      },
+      "application": {
+        "n": 250,
+        "with_skill_weighted": {
+          "n": 146,
+          "mean": 1.0158,
+          "stddev": 1.5936,
+          "coefficient_of_variation": 1.5688,
+          "min": 0,
+          "max": 20,
+          "ceiling_threshold": 0.95,
+          "floor_threshold": 0.05,
+          "ceiling_count": 70,
+          "ceiling_ratio": 0.4795,
+          "floor_count": 5,
+          "floor_ratio": 0.0342,
+          "histogram": [
+            {
+              "bin": "0-0.1",
+              "count": 5
+            },
+            {
+              "bin": "0.1-0.2",
+              "count": 0
+            },
+            {
+              "bin": "0.2-0.3",
+              "count": 0
+            },
+            {
+              "bin": "0.3-0.4",
+              "count": 0
+            },
+            {
+              "bin": "0.4-0.5",
+              "count": 0
+            },
+            {
+              "bin": "0.5-0.6",
+              "count": 2
+            },
+            {
+              "bin": "0.6-0.7",
+              "count": 0
+            },
+            {
+              "bin": "0.7-0.8",
+              "count": 16
+            },
+            {
+              "bin": "0.8-0.9",
+              "count": 44
+            },
+            {
+              "bin": "0.9-1",
+              "count": 78
+            }
+          ],
+          "bootstrap_mean_ci_95": {
+            "lower": 0.8573,
+            "upper": 1.2979,
+            "n": 146
+          },
+          "flags": [
+            "ceiling 48% > 20%"
+          ]
+        },
+        "baseline_weighted": {
+          "n": 146,
+          "mean": 0.7877,
+          "stddev": 0.5021,
+          "coefficient_of_variation": 0.6373,
+          "min": 0,
+          "max": 6,
+          "ceiling_threshold": 0.95,
+          "floor_threshold": 0.05,
+          "ceiling_count": 25,
+          "ceiling_ratio": 0.1712,
+          "floor_count": 8,
+          "floor_ratio": 0.0548,
+          "histogram": [
+            {
+              "bin": "0-0.1",
+              "count": 8
+            },
+            {
+              "bin": "0.1-0.2",
+              "count": 0
+            },
+            {
+              "bin": "0.2-0.3",
+              "count": 2
+            },
+            {
+              "bin": "0.3-0.4",
+              "count": 4
+            },
+            {
+              "bin": "0.4-0.5",
+              "count": 1
+            },
+            {
+              "bin": "0.5-0.6",
+              "count": 17
+            },
+            {
+              "bin": "0.6-0.7",
+              "count": 2
+            },
+            {
+              "bin": "0.7-0.8",
+              "count": 17
+            },
+            {
+              "bin": "0.8-0.9",
+              "count": 54
+            },
+            {
+              "bin": "0.9-1",
+              "count": 40
+            }
+          ],
+          "bootstrap_mean_ci_95": {
+            "lower": 0.7191,
+            "upper": 0.8812,
+            "n": 146
+          },
+          "flags": []
+        },
+        "delta_weighted": {
+          "n": 146,
+          "mean": 0.2281,
+          "stddev": 1.17,
+          "coefficient_of_variation": 5.1299,
+          "min": -0.2857,
+          "max": 14,
+          "ceiling_threshold": 0.9,
+          "floor_threshold": -0.9,
+          "ceiling_count": 3,
+          "ceiling_ratio": 0.0205,
+          "floor_count": 0,
+          "floor_ratio": 0,
+          "histogram": [
+            {
+              "bin": "0-0.1",
+              "count": 58
+            },
+            {
+              "bin": "0.1-0.2",
+              "count": 32
+            },
+            {
+              "bin": "0.2-0.3",
+              "count": 5
+            },
+            {
+              "bin": "0.3-0.4",
+              "count": 4
+            },
+            {
+              "bin": "0.4-0.5",
+              "count": 0
+            },
+            {
+              "bin": "0.5-0.6",
+              "count": 17
+            },
+            {
+              "bin": "0.6-0.7",
+              "count": 3
+            },
+            {
+              "bin": "0.7-0.8",
+              "count": 0
+            },
+            {
+              "bin": "0.8-0.9",
+              "count": 1
+            },
+            {
+              "bin": "0.9-1",
+              "count": 2
+            }
+          ],
+          "bootstrap_mean_ci_95": {
+            "lower": 0.105,
+            "upper": 0.4571,
+            "n": 146
+          },
+          "flags": []
+        }
+      },
+      "purpose": {
+        "n": 232,
+        "with_skill_weighted": {
+          "n": 132,
+          "mean": 0.9142,
+          "stddev": 0.7376,
+          "coefficient_of_variation": 0.8068,
+          "min": 0,
+          "max": 9,
+          "ceiling_threshold": 0.95,
+          "floor_threshold": 0.05,
+          "ceiling_count": 49,
+          "ceiling_ratio": 0.3712,
+          "floor_count": 5,
+          "floor_ratio": 0.0379,
+          "histogram": [
+            {
+              "bin": "0-0.1",
+              "count": 5
+            },
+            {
+              "bin": "0.1-0.2",
+              "count": 0
+            },
+            {
+              "bin": "0.2-0.3",
+              "count": 0
+            },
+            {
+              "bin": "0.3-0.4",
+              "count": 0
+            },
+            {
+              "bin": "0.4-0.5",
+              "count": 0
+            },
+            {
+              "bin": "0.5-0.6",
+              "count": 3
+            },
+            {
+              "bin": "0.6-0.7",
+              "count": 3
+            },
+            {
+              "bin": "0.7-0.8",
+              "count": 20
+            },
+            {
+              "bin": "0.8-0.9",
+              "count": 39
+            },
+            {
+              "bin": "0.9-1",
+              "count": 61
+            }
+          ],
+          "bootstrap_mean_ci_95": {
+            "lower": 0.8254,
+            "upper": 1.0579,
+            "n": 132
+          },
+          "flags": [
+            "ceiling 37% > 20%"
+          ]
+        },
+        "baseline_weighted": {
+          "n": 132,
+          "mean": 0.7286,
+          "stddev": 0.2652,
+          "coefficient_of_variation": 0.364,
+          "min": 0,
+          "max": 1.5,
+          "ceiling_threshold": 0.95,
+          "floor_threshold": 0.05,
+          "ceiling_count": 22,
+          "ceiling_ratio": 0.1667,
+          "floor_count": 9,
+          "floor_ratio": 0.0682,
+          "histogram": [
+            {
+              "bin": "0-0.1",
+              "count": 9
+            },
+            {
+              "bin": "0.1-0.2",
+              "count": 1
+            },
+            {
+              "bin": "0.2-0.3",
+              "count": 0
+            },
+            {
+              "bin": "0.3-0.4",
+              "count": 1
+            },
+            {
+              "bin": "0.4-0.5",
+              "count": 1
+            },
+            {
+              "bin": "0.5-0.6",
+              "count": 16
+            },
+            {
+              "bin": "0.6-0.7",
+              "count": 9
+            },
+            {
+              "bin": "0.7-0.8",
+              "count": 37
+            },
+            {
+              "bin": "0.8-0.9",
+              "count": 27
+            },
+            {
+              "bin": "0.9-1",
+              "count": 30
+            }
+          ],
+          "bootstrap_mean_ci_95": {
+            "lower": 0.6857,
+            "upper": 0.7744,
+            "n": 132
+          },
+          "flags": []
+        },
+        "delta_weighted": {
+          "n": 132,
+          "mean": 0.1856,
+          "stddev": 0.6879,
+          "coefficient_of_variation": 3.7062,
+          "min": -0.5,
+          "max": 7.5,
+          "ceiling_threshold": 0.9,
+          "floor_threshold": -0.9,
+          "ceiling_count": 3,
+          "ceiling_ratio": 0.0227,
+          "floor_count": 0,
+          "floor_ratio": 0,
+          "histogram": [
+            {
+              "bin": "0-0.1",
+              "count": 48
+            },
+            {
+              "bin": "0.1-0.2",
+              "count": 8
+            },
+            {
+              "bin": "0.2-0.3",
+              "count": 23
+            },
+            {
+              "bin": "0.3-0.4",
+              "count": 4
+            },
+            {
+              "bin": "0.4-0.5",
+              "count": 0
+            },
+            {
+              "bin": "0.5-0.6",
+              "count": 14
+            },
+            {
+              "bin": "0.6-0.7",
+              "count": 0
+            },
+            {
+              "bin": "0.7-0.8",
+              "count": 2
+            },
+            {
+              "bin": "0.8-0.9",
+              "count": 1
+            },
+            {
+              "bin": "0.9-1",
+              "count": 2
+            }
+          ],
+          "bootstrap_mean_ci_95": {
+            "lower": 0.1021,
+            "upper": 0.3153,
+            "n": 132
+          },
+          "flags": []
+        }
+      },
+      "analogy": {
+        "n": 217,
+        "with_skill_weighted": {
+          "n": 119,
+          "mean": 0.9296,
+          "stddev": 0.7664,
+          "coefficient_of_variation": 0.8245,
+          "min": 0,
+          "max": 9,
+          "ceiling_threshold": 0.95,
+          "floor_threshold": 0.05,
+          "ceiling_count": 56,
+          "ceiling_ratio": 0.4706,
+          "floor_count": 2,
+          "floor_ratio": 0.0168,
+          "histogram": [
+            {
+              "bin": "0-0.1",
+              "count": 2
+            },
+            {
+              "bin": "0.1-0.2",
+              "count": 0
+            },
+            {
+              "bin": "0.2-0.3",
+              "count": 0
+            },
+            {
+              "bin": "0.3-0.4",
+              "count": 0
+            },
+            {
+              "bin": "0.4-0.5",
+              "count": 0
+            },
+            {
+              "bin": "0.5-0.6",
+              "count": 2
+            },
+            {
+              "bin": "0.6-0.7",
+              "count": 13
+            },
+            {
+              "bin": "0.7-0.8",
+              "count": 21
+            },
+            {
+              "bin": "0.8-0.9",
+              "count": 20
+            },
+            {
+              "bin": "0.9-1",
+              "count": 60
+            }
+          ],
+          "bootstrap_mean_ci_95": {
+            "lower": 0.8365,
+            "upper": 1.0809,
+            "n": 119
+          },
+          "flags": [
+            "ceiling 47% > 20%"
+          ]
+        },
+        "baseline_weighted": {
+          "n": 119,
+          "mean": 0.7664,
+          "stddev": 0.4142,
+          "coefficient_of_variation": 0.5404,
+          "min": 0,
+          "max": 4.5,
+          "ceiling_threshold": 0.95,
+          "floor_threshold": 0.05,
+          "ceiling_count": 36,
+          "ceiling_ratio": 0.3025,
+          "floor_count": 3,
+          "floor_ratio": 0.0252,
+          "histogram": [
+            {
+              "bin": "0-0.1",
+              "count": 3
+            },
+            {
+              "bin": "0.1-0.2",
+              "count": 0
+            },
+            {
+              "bin": "0.2-0.3",
+              "count": 1
+            },
+            {
+              "bin": "0.3-0.4",
+              "count": 0
+            },
+            {
+              "bin": "0.4-0.5",
+              "count": 0
+            },
+            {
+              "bin": "0.5-0.6",
+              "count": 30
+            },
+            {
+              "bin": "0.6-0.7",
+              "count": 15
+            },
+            {
+              "bin": "0.7-0.8",
+              "count": 23
+            },
+            {
+              "bin": "0.8-0.9",
+              "count": 9
+            },
+            {
+              "bin": "0.9-1",
+              "count": 37
+            }
+          ],
+          "bootstrap_mean_ci_95": {
+            "lower": 0.706,
+            "upper": 0.8558,
+            "n": 119
+          },
+          "flags": [
+            "ceiling 30% > 20%"
+          ]
+        },
+        "delta_weighted": {
+          "n": 119,
+          "mean": 0.1632,
+          "stddev": 0.4801,
+          "coefficient_of_variation": 2.9418,
+          "min": -0.4167,
+          "max": 4.5,
+          "ceiling_threshold": 0.9,
+          "floor_threshold": -0.9,
+          "ceiling_count": 2,
+          "ceiling_ratio": 0.0168,
+          "floor_count": 0,
+          "floor_ratio": 0,
+          "histogram": [
+            {
+              "bin": "0-0.1",
+              "count": 37
+            },
+            {
+              "bin": "0.1-0.2",
+              "count": 12
+            },
+            {
+              "bin": "0.2-0.3",
+              "count": 7
+            },
+            {
+              "bin": "0.3-0.4",
+              "count": 5
+            },
+            {
+              "bin": "0.4-0.5",
+              "count": 1
+            },
+            {
+              "bin": "0.5-0.6",
+              "count": 26
+            },
+            {
+              "bin": "0.6-0.7",
+              "count": 0
+            },
+            {
+              "bin": "0.7-0.8",
+              "count": 0
+            },
+            {
+              "bin": "0.8-0.9",
+              "count": 0
+            },
+            {
+              "bin": "0.9-1",
+              "count": 1
+            }
+          ],
+          "bootstrap_mean_ci_95": {
+            "lower": 0.0859,
+            "upper": 0.2551,
+            "n": 119
+          },
+          "flags": []
+        }
+      },
+      "code_verification": {
+        "n": 98,
+        "with_skill_weighted": {
+          "n": 34,
+          "mean": 0.7913,
+          "stddev": 0.3092,
+          "coefficient_of_variation": 0.3907,
+          "min": 0,
+          "max": 1,
+          "ceiling_threshold": 0.95,
+          "floor_threshold": 0.05,
+          "ceiling_count": 17,
+          "ceiling_ratio": 0.5,
+          "floor_count": 3,
+          "floor_ratio": 0.0882,
+          "histogram": [
+            {
+              "bin": "0-0.1",
+              "count": 3
+            },
+            {
+              "bin": "0.1-0.2",
+              "count": 0
+            },
+            {
+              "bin": "0.2-0.3",
+              "count": 1
+            },
+            {
+              "bin": "0.3-0.4",
+              "count": 0
+            },
+            {
+              "bin": "0.4-0.5",
+              "count": 0
+            },
+            {
+              "bin": "0.5-0.6",
+              "count": 3
+            },
+            {
+              "bin": "0.6-0.7",
+              "count": 0
+            },
+            {
+              "bin": "0.7-0.8",
+              "count": 1
+            },
+            {
+              "bin": "0.8-0.9",
+              "count": 9
+            },
+            {
+              "bin": "0.9-1",
+              "count": 17
+            }
+          ],
+          "bootstrap_mean_ci_95": {
+            "lower": 0.6899,
+            "upper": 0.8805,
+            "n": 34
+          },
+          "flags": [
+            "ceiling 50% > 20%"
+          ]
+        },
+        "baseline_weighted": {
+          "n": 34,
+          "mean": 0.1878,
+          "stddev": 0.2077,
+          "coefficient_of_variation": 1.1056,
+          "min": 0,
+          "max": 0.5,
+          "ceiling_threshold": 0.95,
+          "floor_threshold": 0.05,
+          "ceiling_count": 0,
+          "ceiling_ratio": 0,
+          "floor_count": 16,
+          "floor_ratio": 0.4706,
+          "histogram": [
+            {
+              "bin": "0-0.1",
+              "count": 16
+            },
+            {
+              "bin": "0.1-0.2",
+              "count": 4
+            },
+            {
+              "bin": "0.2-0.3",
+              "count": 0
+            },
+            {
+              "bin": "0.3-0.4",
+              "count": 4
+            },
+            {
+              "bin": "0.4-0.5",
+              "count": 4
+            },
+            {
+              "bin": "0.5-0.6",
+              "count": 6
+            },
+            {
+              "bin": "0.6-0.7",
+              "count": 0
+            },
+            {
+              "bin": "0.7-0.8",
+              "count": 0
+            },
+            {
+              "bin": "0.8-0.9",
+              "count": 0
+            },
+            {
+              "bin": "0.9-1",
+              "count": 0
+            }
+          ],
+          "bootstrap_mean_ci_95": {
+            "lower": 0.1216,
+            "upper": 0.2578,
+            "n": 34
+          },
+          "flags": [
+            "floor 47% > 20%"
+          ]
+        },
+        "delta_weighted": {
+          "n": 34,
+          "mean": 0.6034,
+          "stddev": 0.3604,
+          "coefficient_of_variation": 0.5973,
+          "min": -0.5,
+          "max": 1,
+          "ceiling_threshold": 0.9,
+          "floor_threshold": -0.9,
+          "ceiling_count": 9,
+          "ceiling_ratio": 0.2647,
+          "floor_count": 0,
+          "floor_ratio": 0,
+          "histogram": [
+            {
+              "bin": "0-0.1",
+              "count": 3
+            },
+            {
+              "bin": "0.1-0.2",
+              "count": 0
+            },
+            {
+              "bin": "0.2-0.3",
+              "count": 1
+            },
+            {
+              "bin": "0.3-0.4",
+              "count": 1
+            },
+            {
+              "bin": "0.4-0.5",
+              "count": 4
+            },
+            {
+              "bin": "0.5-0.6",
+              "count": 5
+            },
+            {
+              "bin": "0.6-0.7",
+              "count": 4
+            },
+            {
+              "bin": "0.7-0.8",
+              "count": 3
+            },
+            {
+              "bin": "0.8-0.9",
+              "count": 3
+            },
+            {
+              "bin": "0.9-1",
+              "count": 9
+            }
+          ],
+          "bootstrap_mean_ci_95": {
+            "lower": 0.4792,
+            "upper": 0.7288,
+            "n": 34
+          },
+          "flags": [
+            "ceiling 26% > 20%"
+          ]
+        }
+      },
+      "failure_without": {
+        "n": 5,
+        "with_skill_weighted": {
+          "n": 4,
+          "mean": 0.9,
+          "stddev": 0,
+          "coefficient_of_variation": 0,
+          "min": 0.9,
+          "max": 0.9,
+          "ceiling_threshold": 0.95,
+          "floor_threshold": 0.05,
+          "ceiling_count": 0,
+          "ceiling_ratio": 0,
+          "floor_count": 0,
+          "floor_ratio": 0,
+          "histogram": [
+            {
+              "bin": "0-0.1",
+              "count": 0
+            },
+            {
+              "bin": "0.1-0.2",
+              "count": 0
+            },
+            {
+              "bin": "0.2-0.3",
+              "count": 0
+            },
+            {
+              "bin": "0.3-0.4",
+              "count": 0
+            },
+            {
+              "bin": "0.4-0.5",
+              "count": 0
+            },
+            {
+              "bin": "0.5-0.6",
+              "count": 0
+            },
+            {
+              "bin": "0.6-0.7",
+              "count": 0
+            },
+            {
+              "bin": "0.7-0.8",
+              "count": 0
+            },
+            {
+              "bin": "0.8-0.9",
+              "count": 0
+            },
+            {
+              "bin": "0.9-1",
+              "count": 4
+            }
+          ],
+          "bootstrap_mean_ci_95": null,
+          "flags": [
+            "CV 0.000 < 0.1 (compressed)"
+          ]
+        },
+        "baseline_weighted": {
+          "n": 4,
+          "mean": 0.4,
+          "stddev": 0,
+          "coefficient_of_variation": 0,
+          "min": 0.4,
+          "max": 0.4,
+          "ceiling_threshold": 0.95,
+          "floor_threshold": 0.05,
+          "ceiling_count": 0,
+          "ceiling_ratio": 0,
+          "floor_count": 0,
+          "floor_ratio": 0,
+          "histogram": [
+            {
+              "bin": "0-0.1",
+              "count": 0
+            },
+            {
+              "bin": "0.1-0.2",
+              "count": 0
+            },
+            {
+              "bin": "0.2-0.3",
+              "count": 0
+            },
+            {
+              "bin": "0.3-0.4",
+              "count": 0
+            },
+            {
+              "bin": "0.4-0.5",
+              "count": 4
+            },
+            {
+              "bin": "0.5-0.6",
+              "count": 0
+            },
+            {
+              "bin": "0.6-0.7",
+              "count": 0
+            },
+            {
+              "bin": "0.7-0.8",
+              "count": 0
+            },
+            {
+              "bin": "0.8-0.9",
+              "count": 0
+            },
+            {
+              "bin": "0.9-1",
+              "count": 0
+            }
+          ],
+          "bootstrap_mean_ci_95": null,
+          "flags": [
+            "CV 0.000 < 0.1 (compressed)"
+          ]
+        },
+        "delta_weighted": {
+          "n": 4,
+          "mean": 0.5,
+          "stddev": 0,
+          "coefficient_of_variation": 0,
+          "min": 0.5,
+          "max": 0.5,
+          "ceiling_threshold": 0.9,
+          "floor_threshold": -0.9,
+          "ceiling_count": 0,
+          "ceiling_ratio": 0,
+          "floor_count": 0,
+          "floor_ratio": 0,
+          "histogram": [
+            {
+              "bin": "0-0.1",
+              "count": 0
+            },
+            {
+              "bin": "0.1-0.2",
+              "count": 0
+            },
+            {
+              "bin": "0.2-0.3",
+              "count": 0
+            },
+            {
+              "bin": "0.3-0.4",
+              "count": 0
+            },
+            {
+              "bin": "0.4-0.5",
+              "count": 0
+            },
+            {
+              "bin": "0.5-0.6",
+              "count": 4
+            },
+            {
+              "bin": "0.6-0.7",
+              "count": 0
+            },
+            {
+              "bin": "0.7-0.8",
+              "count": 0
+            },
+            {
+              "bin": "0.8-0.9",
+              "count": 0
+            },
+            {
+              "bin": "0.9-1",
+              "count": 0
+            }
+          ],
+          "bootstrap_mean_ci_95": null,
+          "flags": [
+            "CV 0.000 < 0.1 (compressed)"
+          ]
+        }
+      },
+      "key_tradeoff": {
+        "n": 5,
+        "with_skill_weighted": {
+          "n": 4,
+          "mean": 0.95,
+          "stddev": 0.0577,
+          "coefficient_of_variation": 0.0608,
+          "min": 0.9,
+          "max": 1,
+          "ceiling_threshold": 0.95,
+          "floor_threshold": 0.05,
+          "ceiling_count": 2,
+          "ceiling_ratio": 0.5,
+          "floor_count": 0,
+          "floor_ratio": 0,
+          "histogram": [
+            {
+              "bin": "0-0.1",
+              "count": 0
+            },
+            {
+              "bin": "0.1-0.2",
+              "count": 0
+            },
+            {
+              "bin": "0.2-0.3",
+              "count": 0
+            },
+            {
+              "bin": "0.3-0.4",
+              "count": 0
+            },
+            {
+              "bin": "0.4-0.5",
+              "count": 0
+            },
+            {
+              "bin": "0.5-0.6",
+              "count": 0
+            },
+            {
+              "bin": "0.6-0.7",
+              "count": 0
+            },
+            {
+              "bin": "0.7-0.8",
+              "count": 0
+            },
+            {
+              "bin": "0.8-0.9",
+              "count": 0
+            },
+            {
+              "bin": "0.9-1",
+              "count": 4
+            }
+          ],
+          "bootstrap_mean_ci_95": null,
+          "flags": [
+            "CV 0.061 < 0.1 (compressed)",
+            "ceiling 50% > 20%"
+          ]
+        },
+        "baseline_weighted": {
+          "n": 4,
+          "mean": 0.3,
+          "stddev": 0,
+          "coefficient_of_variation": 0,
+          "min": 0.3,
+          "max": 0.3,
+          "ceiling_threshold": 0.95,
+          "floor_threshold": 0.05,
+          "ceiling_count": 0,
+          "ceiling_ratio": 0,
+          "floor_count": 0,
+          "floor_ratio": 0,
+          "histogram": [
+            {
+              "bin": "0-0.1",
+              "count": 0
+            },
+            {
+              "bin": "0.1-0.2",
+              "count": 0
+            },
+            {
+              "bin": "0.2-0.3",
+              "count": 0
+            },
+            {
+              "bin": "0.3-0.4",
+              "count": 4
+            },
+            {
+              "bin": "0.4-0.5",
+              "count": 0
+            },
+            {
+              "bin": "0.5-0.6",
+              "count": 0
+            },
+            {
+              "bin": "0.6-0.7",
+              "count": 0
+            },
+            {
+              "bin": "0.7-0.8",
+              "count": 0
+            },
+            {
+              "bin": "0.8-0.9",
+              "count": 0
+            },
+            {
+              "bin": "0.9-1",
+              "count": 0
+            }
+          ],
+          "bootstrap_mean_ci_95": null,
+          "flags": [
+            "CV 0.000 < 0.1 (compressed)"
+          ]
+        },
+        "delta_weighted": {
+          "n": 4,
+          "mean": 0.65,
+          "stddev": 0.0577,
+          "coefficient_of_variation": 0.0888,
+          "min": 0.6,
+          "max": 0.7,
+          "ceiling_threshold": 0.9,
+          "floor_threshold": -0.9,
+          "ceiling_count": 0,
+          "ceiling_ratio": 0,
+          "floor_count": 0,
+          "floor_ratio": 0,
+          "histogram": [
+            {
+              "bin": "0-0.1",
+              "count": 0
+            },
+            {
+              "bin": "0.1-0.2",
+              "count": 0
+            },
+            {
+              "bin": "0.2-0.3",
+              "count": 0
+            },
+            {
+              "bin": "0.3-0.4",
+              "count": 0
+            },
+            {
+              "bin": "0.4-0.5",
+              "count": 0
+            },
+            {
+              "bin": "0.5-0.6",
+              "count": 0
+            },
+            {
+              "bin": "0.6-0.7",
+              "count": 2
+            },
+            {
+              "bin": "0.7-0.8",
+              "count": 2
+            },
+            {
+              "bin": "0.8-0.9",
+              "count": 0
+            },
+            {
+              "bin": "0.9-1",
+              "count": 0
+            }
+          ],
+          "bootstrap_mean_ci_95": null,
+          "flags": [
+            "CV 0.089 < 0.1 (compressed)"
+          ]
+        }
+      },
+      "why_this_repo_needs_it": {
+        "n": 5,
+        "with_skill_weighted": {
+          "n": 4,
+          "mean": 0.9,
+          "stddev": 0,
+          "coefficient_of_variation": 0,
+          "min": 0.9,
+          "max": 0.9,
+          "ceiling_threshold": 0.95,
+          "floor_threshold": 0.05,
+          "ceiling_count": 0,
+          "ceiling_ratio": 0,
+          "floor_count": 0,
+          "floor_ratio": 0,
+          "histogram": [
+            {
+              "bin": "0-0.1",
+              "count": 0
+            },
+            {
+              "bin": "0.1-0.2",
+              "count": 0
+            },
+            {
+              "bin": "0.2-0.3",
+              "count": 0
+            },
+            {
+              "bin": "0.3-0.4",
+              "count": 0
+            },
+            {
+              "bin": "0.4-0.5",
+              "count": 0
+            },
+            {
+              "bin": "0.5-0.6",
+              "count": 0
+            },
+            {
+              "bin": "0.6-0.7",
+              "count": 0
+            },
+            {
+              "bin": "0.7-0.8",
+              "count": 0
+            },
+            {
+              "bin": "0.8-0.9",
+              "count": 0
+            },
+            {
+              "bin": "0.9-1",
+              "count": 4
+            }
+          ],
+          "bootstrap_mean_ci_95": null,
+          "flags": [
+            "CV 0.000 < 0.1 (compressed)"
+          ]
+        },
+        "baseline_weighted": {
+          "n": 4,
+          "mean": 0.175,
+          "stddev": 0.05,
+          "coefficient_of_variation": 0.2857,
+          "min": 0.1,
+          "max": 0.2,
+          "ceiling_threshold": 0.95,
+          "floor_threshold": 0.05,
+          "ceiling_count": 0,
+          "ceiling_ratio": 0,
+          "floor_count": 0,
+          "floor_ratio": 0,
+          "histogram": [
+            {
+              "bin": "0-0.1",
+              "count": 0
+            },
+            {
+              "bin": "0.1-0.2",
+              "count": 1
+            },
+            {
+              "bin": "0.2-0.3",
+              "count": 3
+            },
+            {
+              "bin": "0.3-0.4",
+              "count": 0
+            },
+            {
+              "bin": "0.4-0.5",
+              "count": 0
+            },
+            {
+              "bin": "0.5-0.6",
+              "count": 0
+            },
+            {
+              "bin": "0.6-0.7",
+              "count": 0
+            },
+            {
+              "bin": "0.7-0.8",
+              "count": 0
+            },
+            {
+              "bin": "0.8-0.9",
+              "count": 0
+            },
+            {
+              "bin": "0.9-1",
+              "count": 0
+            }
+          ],
+          "bootstrap_mean_ci_95": null,
+          "flags": []
+        },
+        "delta_weighted": {
+          "n": 4,
+          "mean": 0.725,
+          "stddev": 0.05,
+          "coefficient_of_variation": 0.069,
+          "min": 0.7,
+          "max": 0.8,
+          "ceiling_threshold": 0.9,
+          "floor_threshold": -0.9,
+          "ceiling_count": 0,
+          "ceiling_ratio": 0,
+          "floor_count": 0,
+          "floor_ratio": 0,
+          "histogram": [
+            {
+              "bin": "0-0.1",
+              "count": 0
+            },
+            {
+              "bin": "0.1-0.2",
+              "count": 0
+            },
+            {
+              "bin": "0.2-0.3",
+              "count": 0
+            },
+            {
+              "bin": "0.3-0.4",
+              "count": 0
+            },
+            {
+              "bin": "0.4-0.5",
+              "count": 0
+            },
+            {
+              "bin": "0.5-0.6",
+              "count": 0
+            },
+            {
+              "bin": "0.6-0.7",
+              "count": 0
+            },
+            {
+              "bin": "0.7-0.8",
+              "count": 3
+            },
+            {
+              "bin": "0.8-0.9",
+              "count": 1
+            },
+            {
+              "bin": "0.9-1",
+              "count": 0
+            }
+          ],
+          "bootstrap_mean_ci_95": null,
+          "flags": [
+            "CV 0.069 < 0.1 (compressed)"
+          ]
+        }
+      },
+      "adjacent_concepts": {
+        "n": 5,
+        "with_skill_weighted": {
+          "n": 4,
+          "mean": 0.9,
+          "stddev": 0,
+          "coefficient_of_variation": 0,
+          "min": 0.9,
+          "max": 0.9,
+          "ceiling_threshold": 0.95,
+          "floor_threshold": 0.05,
+          "ceiling_count": 0,
+          "ceiling_ratio": 0,
+          "floor_count": 0,
+          "floor_ratio": 0,
+          "histogram": [
+            {
+              "bin": "0-0.1",
+              "count": 0
+            },
+            {
+              "bin": "0.1-0.2",
+              "count": 0
+            },
+            {
+              "bin": "0.2-0.3",
+              "count": 0
+            },
+            {
+              "bin": "0.3-0.4",
+              "count": 0
+            },
+            {
+              "bin": "0.4-0.5",
+              "count": 0
+            },
+            {
+              "bin": "0.5-0.6",
+              "count": 0
+            },
+            {
+              "bin": "0.6-0.7",
+              "count": 0
+            },
+            {
+              "bin": "0.7-0.8",
+              "count": 0
+            },
+            {
+              "bin": "0.8-0.9",
+              "count": 0
+            },
+            {
+              "bin": "0.9-1",
+              "count": 4
+            }
+          ],
+          "bootstrap_mean_ci_95": null,
+          "flags": [
+            "CV 0.000 < 0.1 (compressed)"
+          ]
+        },
+        "baseline_weighted": {
+          "n": 4,
+          "mean": 0.375,
+          "stddev": 0.05,
+          "coefficient_of_variation": 0.1333,
+          "min": 0.3,
+          "max": 0.4,
+          "ceiling_threshold": 0.95,
+          "floor_threshold": 0.05,
+          "ceiling_count": 0,
+          "ceiling_ratio": 0,
+          "floor_count": 0,
+          "floor_ratio": 0,
+          "histogram": [
+            {
+              "bin": "0-0.1",
+              "count": 0
+            },
+            {
+              "bin": "0.1-0.2",
+              "count": 0
+            },
+            {
+              "bin": "0.2-0.3",
+              "count": 0
+            },
+            {
+              "bin": "0.3-0.4",
+              "count": 1
+            },
+            {
+              "bin": "0.4-0.5",
+              "count": 3
+            },
+            {
+              "bin": "0.5-0.6",
+              "count": 0
+            },
+            {
+              "bin": "0.6-0.7",
+              "count": 0
+            },
+            {
+              "bin": "0.7-0.8",
+              "count": 0
+            },
+            {
+              "bin": "0.8-0.9",
+              "count": 0
+            },
+            {
+              "bin": "0.9-1",
+              "count": 0
+            }
+          ],
+          "bootstrap_mean_ci_95": null,
+          "flags": []
+        },
+        "delta_weighted": {
+          "n": 4,
+          "mean": 0.525,
+          "stddev": 0.05,
+          "coefficient_of_variation": 0.0952,
+          "min": 0.5,
+          "max": 0.6,
+          "ceiling_threshold": 0.9,
+          "floor_threshold": -0.9,
+          "ceiling_count": 0,
+          "ceiling_ratio": 0,
+          "floor_count": 0,
+          "floor_ratio": 0,
+          "histogram": [
+            {
+              "bin": "0-0.1",
+              "count": 0
+            },
+            {
+              "bin": "0.1-0.2",
+              "count": 0
+            },
+            {
+              "bin": "0.2-0.3",
+              "count": 0
+            },
+            {
+              "bin": "0.3-0.4",
+              "count": 0
+            },
+            {
+              "bin": "0.4-0.5",
+              "count": 0
+            },
+            {
+              "bin": "0.5-0.6",
+              "count": 3
+            },
+            {
+              "bin": "0.6-0.7",
+              "count": 1
+            },
+            {
+              "bin": "0.7-0.8",
+              "count": 0
+            },
+            {
+              "bin": "0.8-0.9",
+              "count": 0
+            },
+            {
+              "bin": "0.9-1",
+              "count": 0
+            }
+          ],
+          "bootstrap_mean_ci_95": null,
+          "flags": [
+            "CV 0.095 < 0.1 (compressed)"
+          ]
+        }
+      },
+      "historical_alternatives": {
+        "n": 5,
+        "with_skill_weighted": {
+          "n": 4,
+          "mean": 0.825,
+          "stddev": 0.05,
+          "coefficient_of_variation": 0.0606,
+          "min": 0.8,
+          "max": 0.9,
+          "ceiling_threshold": 0.95,
+          "floor_threshold": 0.05,
+          "ceiling_count": 0,
+          "ceiling_ratio": 0,
+          "floor_count": 0,
+          "floor_ratio": 0,
+          "histogram": [
+            {
+              "bin": "0-0.1",
+              "count": 0
+            },
+            {
+              "bin": "0.1-0.2",
+              "count": 0
+            },
+            {
+              "bin": "0.2-0.3",
+              "count": 0
+            },
+            {
+              "bin": "0.3-0.4",
+              "count": 0
+            },
+            {
+              "bin": "0.4-0.5",
+              "count": 0
+            },
+            {
+              "bin": "0.5-0.6",
+              "count": 0
+            },
+            {
+              "bin": "0.6-0.7",
+              "count": 0
+            },
+            {
+              "bin": "0.7-0.8",
+              "count": 0
+            },
+            {
+              "bin": "0.8-0.9",
+              "count": 3
+            },
+            {
+              "bin": "0.9-1",
+              "count": 1
+            }
+          ],
+          "bootstrap_mean_ci_95": null,
+          "flags": [
+            "CV 0.061 < 0.1 (compressed)"
+          ]
+        },
+        "baseline_weighted": {
+          "n": 4,
+          "mean": 0.525,
+          "stddev": 0.05,
+          "coefficient_of_variation": 0.0952,
+          "min": 0.5,
+          "max": 0.6,
+          "ceiling_threshold": 0.95,
+          "floor_threshold": 0.05,
+          "ceiling_count": 0,
+          "ceiling_ratio": 0,
+          "floor_count": 0,
+          "floor_ratio": 0,
+          "histogram": [
+            {
+              "bin": "0-0.1",
+              "count": 0
+            },
+            {
+              "bin": "0.1-0.2",
+              "count": 0
+            },
+            {
+              "bin": "0.2-0.3",
+              "count": 0
+            },
+            {
+              "bin": "0.3-0.4",
+              "count": 0
+            },
+            {
+              "bin": "0.4-0.5",
+              "count": 0
+            },
+            {
+              "bin": "0.5-0.6",
+              "count": 3
+            },
+            {
+              "bin": "0.6-0.7",
+              "count": 1
+            },
+            {
+              "bin": "0.7-0.8",
+              "count": 0
+            },
+            {
+              "bin": "0.8-0.9",
+              "count": 0
+            },
+            {
+              "bin": "0.9-1",
+              "count": 0
+            }
+          ],
+          "bootstrap_mean_ci_95": null,
+          "flags": [
+            "CV 0.095 < 0.1 (compressed)"
+          ]
+        },
+        "delta_weighted": {
+          "n": 4,
+          "mean": 0.3,
+          "stddev": 0,
+          "coefficient_of_variation": 0,
+          "min": 0.3,
+          "max": 0.3,
+          "ceiling_threshold": 0.9,
+          "floor_threshold": -0.9,
+          "ceiling_count": 0,
+          "ceiling_ratio": 0,
+          "floor_count": 0,
+          "floor_ratio": 0,
+          "histogram": [
+            {
+              "bin": "0-0.1",
+              "count": 0
+            },
+            {
+              "bin": "0.1-0.2",
+              "count": 0
+            },
+            {
+              "bin": "0.2-0.3",
+              "count": 0
+            },
+            {
+              "bin": "0.3-0.4",
+              "count": 4
+            },
+            {
+              "bin": "0.4-0.5",
+              "count": 0
+            },
+            {
+              "bin": "0.5-0.6",
+              "count": 0
+            },
+            {
+              "bin": "0.6-0.7",
+              "count": 0
+            },
+            {
+              "bin": "0.7-0.8",
+              "count": 0
+            },
+            {
+              "bin": "0.8-0.9",
+              "count": 0
+            },
+            {
+              "bin": "0.9-1",
+              "count": 0
+            }
+          ],
+          "bootstrap_mean_ci_95": null,
+          "flags": [
+            "CV 0.000 < 0.1 (compressed)"
+          ]
+        }
+      },
+      "synthesis": {
+        "n": 2,
+        "with_skill_weighted": {
+          "n": 1,
+          "mean": 0.75,
+          "stddev": null,
+          "coefficient_of_variation": null,
+          "min": 0.75,
+          "max": 0.75,
+          "ceiling_threshold": 0.95,
+          "floor_threshold": 0.05,
+          "ceiling_count": 0,
+          "ceiling_ratio": 0,
+          "floor_count": 0,
+          "floor_ratio": 0,
+          "histogram": [
+            {
+              "bin": "0-0.1",
+              "count": 0
+            },
+            {
+              "bin": "0.1-0.2",
+              "count": 0
+            },
+            {
+              "bin": "0.2-0.3",
+              "count": 0
+            },
+            {
+              "bin": "0.3-0.4",
+              "count": 0
+            },
+            {
+              "bin": "0.4-0.5",
+              "count": 0
+            },
+            {
+              "bin": "0.5-0.6",
+              "count": 0
+            },
+            {
+              "bin": "0.6-0.7",
+              "count": 0
+            },
+            {
+              "bin": "0.7-0.8",
+              "count": 1
+            },
+            {
+              "bin": "0.8-0.9",
+              "count": 0
+            },
+            {
+              "bin": "0.9-1",
+              "count": 0
+            }
+          ],
+          "bootstrap_mean_ci_95": null,
+          "flags": []
+        },
+        "baseline_weighted": {
+          "n": 1,
+          "mean": 0,
+          "stddev": null,
+          "coefficient_of_variation": null,
+          "min": 0,
+          "max": 0,
+          "ceiling_threshold": 0.95,
+          "floor_threshold": 0.05,
+          "ceiling_count": 0,
+          "ceiling_ratio": 0,
+          "floor_count": 1,
+          "floor_ratio": 1,
+          "histogram": [
+            {
+              "bin": "0-0.1",
+              "count": 1
+            },
+            {
+              "bin": "0.1-0.2",
+              "count": 0
+            },
+            {
+              "bin": "0.2-0.3",
+              "count": 0
+            },
+            {
+              "bin": "0.3-0.4",
+              "count": 0
+            },
+            {
+              "bin": "0.4-0.5",
+              "count": 0
+            },
+            {
+              "bin": "0.5-0.6",
+              "count": 0
+            },
+            {
+              "bin": "0.6-0.7",
+              "count": 0
+            },
+            {
+              "bin": "0.7-0.8",
+              "count": 0
+            },
+            {
+              "bin": "0.8-0.9",
+              "count": 0
+            },
+            {
+              "bin": "0.9-1",
+              "count": 0
+            }
+          ],
+          "bootstrap_mean_ci_95": null,
+          "flags": [
+            "floor 100% > 20%"
+          ]
+        },
+        "delta_weighted": {
+          "n": 1,
+          "mean": 0.75,
+          "stddev": null,
+          "coefficient_of_variation": null,
+          "min": 0.75,
+          "max": 0.75,
+          "ceiling_threshold": 0.9,
+          "floor_threshold": -0.9,
+          "ceiling_count": 0,
+          "ceiling_ratio": 0,
+          "floor_count": 0,
+          "floor_ratio": 0,
+          "histogram": [
+            {
+              "bin": "0-0.1",
+              "count": 0
+            },
+            {
+              "bin": "0.1-0.2",
+              "count": 0
+            },
+            {
+              "bin": "0.2-0.3",
+              "count": 0
+            },
+            {
+              "bin": "0.3-0.4",
+              "count": 0
+            },
+            {
+              "bin": "0.4-0.5",
+              "count": 0
+            },
+            {
+              "bin": "0.5-0.6",
+              "count": 0
+            },
+            {
+              "bin": "0.6-0.7",
+              "count": 0
+            },
+            {
+              "bin": "0.7-0.8",
+              "count": 1
+            },
+            {
+              "bin": "0.8-0.9",
+              "count": 0
+            },
+            {
+              "bin": "0.9-1",
+              "count": 0
+            }
+          ],
+          "bootstrap_mean_ci_95": null,
+          "flags": []
+        }
+      },
+      "example": {
+        "n": 1,
+        "with_skill_weighted": {
+          "n": 0,
+          "flags": [
+            "no observations"
+          ]
+        },
+        "baseline_weighted": {
+          "n": 0,
+          "flags": [
+            "no observations"
+          ]
+        },
+        "delta_weighted": {
+          "n": 0,
+          "flags": [
+            "no observations"
+          ]
+        }
+      },
+      "counter_example": {
+        "n": 1,
+        "with_skill_weighted": {
+          "n": 0,
+          "flags": [
+            "no observations"
+          ]
+        },
+        "baseline_weighted": {
+          "n": 0,
+          "flags": [
+            "no observations"
+          ]
+        },
+        "delta_weighted": {
+          "n": 0,
+          "flags": [
+            "no observations"
+          ]
+        }
+      },
+      "comparison": {
+        "n": 1,
+        "with_skill_weighted": {
+          "n": 0,
+          "flags": [
+            "no observations"
+          ]
+        },
+        "baseline_weighted": {
+          "n": 0,
+          "flags": [
+            "no observations"
+          ]
+        },
+        "delta_weighted": {
+          "n": 0,
+          "flags": [
+            "no observations"
+          ]
+        }
+      },
+      "mechanism": {
+        "n": 1,
+        "with_skill_weighted": {
+          "n": 0,
+          "flags": [
+            "no observations"
+          ]
+        },
+        "baseline_weighted": {
+          "n": 0,
+          "flags": [
+            "no observations"
+          ]
+        },
+        "delta_weighted": {
+          "n": 0,
+          "flags": [
+            "no observations"
+          ]
+        }
+      },
+      "invariants": {
+        "n": 2,
+        "with_skill_weighted": {
+          "n": 0,
+          "flags": [
+            "no observations"
+          ]
+        },
+        "baseline_weighted": {
+          "n": 0,
+          "flags": [
+            "no observations"
+          ]
+        },
+        "delta_weighted": {
+          "n": 0,
+          "flags": [
+            "no observations"
+          ]
+        }
+      },
+      "boundaries": {
+        "n": 7,
+        "with_skill_weighted": {
+          "n": 0,
+          "flags": [
+            "no observations"
+          ]
+        },
+        "baseline_weighted": {
+          "n": 0,
+          "flags": [
+            "no observations"
+          ]
+        },
+        "delta_weighted": {
+          "n": 0,
+          "flags": [
+            "no observations"
+          ]
+        }
+      },
+      "decision_routing": {
+        "n": 7,
+        "with_skill_weighted": {
+          "n": 0,
+          "flags": [
+            "no observations"
+          ]
+        },
+        "baseline_weighted": {
+          "n": 0,
+          "flags": [
+            "no observations"
+          ]
+        },
+        "delta_weighted": {
+          "n": 0,
+          "flags": [
+            "no observations"
+          ]
+        }
+      },
+      "anti_patterns": {
+        "n": 7,
+        "with_skill_weighted": {
+          "n": 0,
+          "flags": [
+            "no observations"
+          ]
+        },
+        "baseline_weighted": {
+          "n": 0,
+          "flags": [
+            "no observations"
+          ]
+        },
+        "delta_weighted": {
+          "n": 0,
+          "flags": [
+            "no observations"
+          ]
+        }
+      },
+      "evidence_grounding": {
+        "n": 2,
+        "with_skill_weighted": {
+          "n": 0,
+          "flags": [
+            "no observations"
+          ]
+        },
+        "baseline_weighted": {
+          "n": 0,
+          "flags": [
+            "no observations"
+          ]
+        },
+        "delta_weighted": {
+          "n": 0,
+          "flags": [
+            "no observations"
+          ]
+        }
+      },
+      "failure_mode_awareness": {
+        "n": 7,
+        "with_skill_weighted": {
+          "n": 0,
+          "flags": [
+            "no observations"
+          ]
+        },
+        "baseline_weighted": {
+          "n": 0,
+          "flags": [
+            "no observations"
+          ]
+        },
+        "delta_weighted": {
+          "n": 0,
+          "flags": [
+            "no observations"
+          ]
+        }
+      },
+      "anti_pattern": {
+        "n": 3,
+        "with_skill_weighted": {
+          "n": 3,
+          "mean": 0,
+          "stddev": 0,
+          "coefficient_of_variation": null,
+          "min": 0,
+          "max": 0,
+          "ceiling_threshold": 0.95,
+          "floor_threshold": 0.05,
+          "ceiling_count": 0,
+          "ceiling_ratio": 0,
+          "floor_count": 3,
+          "floor_ratio": 1,
+          "histogram": [
+            {
+              "bin": "0-0.1",
+              "count": 3
+            },
+            {
+              "bin": "0.1-0.2",
+              "count": 0
+            },
+            {
+              "bin": "0.2-0.3",
+              "count": 0
+            },
+            {
+              "bin": "0.3-0.4",
+              "count": 0
+            },
+            {
+              "bin": "0.4-0.5",
+              "count": 0
+            },
+            {
+              "bin": "0.5-0.6",
+              "count": 0
+            },
+            {
+              "bin": "0.6-0.7",
+              "count": 0
+            },
+            {
+              "bin": "0.7-0.8",
+              "count": 0
+            },
+            {
+              "bin": "0.8-0.9",
+              "count": 0
+            },
+            {
+              "bin": "0.9-1",
+              "count": 0
+            }
+          ],
+          "bootstrap_mean_ci_95": null,
+          "flags": [
+            "floor 100% > 20%"
+          ]
+        },
+        "baseline_weighted": {
+          "n": 3,
+          "mean": 0,
+          "stddev": 0,
+          "coefficient_of_variation": null,
+          "min": 0,
+          "max": 0,
+          "ceiling_threshold": 0.95,
+          "floor_threshold": 0.05,
+          "ceiling_count": 0,
+          "ceiling_ratio": 0,
+          "floor_count": 3,
+          "floor_ratio": 1,
+          "histogram": [
+            {
+              "bin": "0-0.1",
+              "count": 3
+            },
+            {
+              "bin": "0.1-0.2",
+              "count": 0
+            },
+            {
+              "bin": "0.2-0.3",
+              "count": 0
+            },
+            {
+              "bin": "0.3-0.4",
+              "count": 0
+            },
+            {
+              "bin": "0.4-0.5",
+              "count": 0
+            },
+            {
+              "bin": "0.5-0.6",
+              "count": 0
+            },
+            {
+              "bin": "0.6-0.7",
+              "count": 0
+            },
+            {
+              "bin": "0.7-0.8",
+              "count": 0
+            },
+            {
+              "bin": "0.8-0.9",
+              "count": 0
+            },
+            {
+              "bin": "0.9-1",
+              "count": 0
+            }
+          ],
+          "bootstrap_mean_ci_95": null,
+          "flags": [
+            "floor 100% > 20%"
+          ]
+        },
+        "delta_weighted": {
+          "n": 3,
+          "mean": 0,
+          "stddev": 0,
+          "coefficient_of_variation": null,
+          "min": 0,
+          "max": 0,
+          "ceiling_threshold": 0.9,
+          "floor_threshold": -0.9,
+          "ceiling_count": 0,
+          "ceiling_ratio": 0,
+          "floor_count": 0,
+          "floor_ratio": 0,
+          "histogram": [
+            {
+              "bin": "0-0.1",
+              "count": 3
+            },
+            {
+              "bin": "0.1-0.2",
+              "count": 0
+            },
+            {
+              "bin": "0.2-0.3",
+              "count": 0
+            },
+            {
+              "bin": "0.3-0.4",
+              "count": 0
+            },
+            {
+              "bin": "0.4-0.5",
+              "count": 0
+            },
+            {
+              "bin": "0.5-0.6",
+              "count": 0
+            },
+            {
+              "bin": "0.6-0.7",
+              "count": 0
+            },
+            {
+              "bin": "0.7-0.8",
+              "count": 0
+            },
+            {
+              "bin": "0.8-0.9",
+              "count": 0
+            },
+            {
+              "bin": "0.9-1",
+              "count": 0
+            }
+          ],
+          "bootstrap_mean_ci_95": null,
+          "flags": []
+        }
+      },
+      "concept_recall": {
+        "n": 2,
+        "with_skill_weighted": {
+          "n": 2,
+          "mean": 0.8333,
+          "stddev": 0,
+          "coefficient_of_variation": 0,
+          "min": 0.8333,
+          "max": 0.8333,
+          "ceiling_threshold": 0.95,
+          "floor_threshold": 0.05,
+          "ceiling_count": 0,
+          "ceiling_ratio": 0,
+          "floor_count": 0,
+          "floor_ratio": 0,
+          "histogram": [
+            {
+              "bin": "0-0.1",
+              "count": 0
+            },
+            {
+              "bin": "0.1-0.2",
+              "count": 0
+            },
+            {
+              "bin": "0.2-0.3",
+              "count": 0
+            },
+            {
+              "bin": "0.3-0.4",
+              "count": 0
+            },
+            {
+              "bin": "0.4-0.5",
+              "count": 0
+            },
+            {
+              "bin": "0.5-0.6",
+              "count": 0
+            },
+            {
+              "bin": "0.6-0.7",
+              "count": 0
+            },
+            {
+              "bin": "0.7-0.8",
+              "count": 0
+            },
+            {
+              "bin": "0.8-0.9",
+              "count": 2
+            },
+            {
+              "bin": "0.9-1",
+              "count": 0
+            }
+          ],
+          "bootstrap_mean_ci_95": null,
+          "flags": [
+            "CV 0.000 < 0.1 (compressed)"
+          ]
+        },
+        "baseline_weighted": {
+          "n": 2,
+          "mean": 0.8,
+          "stddev": 0,
+          "coefficient_of_variation": 0,
+          "min": 0.8,
+          "max": 0.8,
+          "ceiling_threshold": 0.95,
+          "floor_threshold": 0.05,
+          "ceiling_count": 0,
+          "ceiling_ratio": 0,
+          "floor_count": 0,
+          "floor_ratio": 0,
+          "histogram": [
+            {
+              "bin": "0-0.1",
+              "count": 0
+            },
+            {
+              "bin": "0.1-0.2",
+              "count": 0
+            },
+            {
+              "bin": "0.2-0.3",
+              "count": 0
+            },
+            {
+              "bin": "0.3-0.4",
+              "count": 0
+            },
+            {
+              "bin": "0.4-0.5",
+              "count": 0
+            },
+            {
+              "bin": "0.5-0.6",
+              "count": 0
+            },
+            {
+              "bin": "0.6-0.7",
+              "count": 0
+            },
+            {
+              "bin": "0.7-0.8",
+              "count": 0
+            },
+            {
+              "bin": "0.8-0.9",
+              "count": 2
+            },
+            {
+              "bin": "0.9-1",
+              "count": 0
+            }
+          ],
+          "bootstrap_mean_ci_95": null,
+          "flags": [
+            "CV 0.000 < 0.1 (compressed)"
+          ]
+        },
+        "delta_weighted": {
+          "n": 2,
+          "mean": 0.0333,
+          "stddev": 0,
+          "coefficient_of_variation": 0,
+          "min": 0.0333,
+          "max": 0.0333,
+          "ceiling_threshold": 0.9,
+          "floor_threshold": -0.9,
+          "ceiling_count": 0,
+          "ceiling_ratio": 0,
+          "floor_count": 0,
+          "floor_ratio": 0,
+          "histogram": [
+            {
+              "bin": "0-0.1",
+              "count": 2
+            },
+            {
+              "bin": "0.1-0.2",
+              "count": 0
+            },
+            {
+              "bin": "0.2-0.3",
+              "count": 0
+            },
+            {
+              "bin": "0.3-0.4",
+              "count": 0
+            },
+            {
+              "bin": "0.4-0.5",
+              "count": 0
+            },
+            {
+              "bin": "0.5-0.6",
+              "count": 0
+            },
+            {
+              "bin": "0.6-0.7",
+              "count": 0
+            },
+            {
+              "bin": "0.7-0.8",
+              "count": 0
+            },
+            {
+              "bin": "0.8-0.9",
+              "count": 0
+            },
+            {
+              "bin": "0.9-1",
+              "count": 0
+            }
+          ],
+          "bootstrap_mean_ci_95": null,
+          "flags": [
+            "CV 0.000 < 0.1 (compressed)"
+          ]
+        }
+      },
+      "boundary_recognition": {
+        "n": 2,
+        "with_skill_weighted": {
+          "n": 2,
+          "mean": 0.8333,
+          "stddev": 0,
+          "coefficient_of_variation": 0,
+          "min": 0.8333,
+          "max": 0.8333,
+          "ceiling_threshold": 0.95,
+          "floor_threshold": 0.05,
+          "ceiling_count": 0,
+          "ceiling_ratio": 0,
+          "floor_count": 0,
+          "floor_ratio": 0,
+          "histogram": [
+            {
+              "bin": "0-0.1",
+              "count": 0
+            },
+            {
+              "bin": "0.1-0.2",
+              "count": 0
+            },
+            {
+              "bin": "0.2-0.3",
+              "count": 0
+            },
+            {
+              "bin": "0.3-0.4",
+              "count": 0
+            },
+            {
+              "bin": "0.4-0.5",
+              "count": 0
+            },
+            {
+              "bin": "0.5-0.6",
+              "count": 0
+            },
+            {
+              "bin": "0.6-0.7",
+              "count": 0
+            },
+            {
+              "bin": "0.7-0.8",
+              "count": 0
+            },
+            {
+              "bin": "0.8-0.9",
+              "count": 2
+            },
+            {
+              "bin": "0.9-1",
+              "count": 0
+            }
+          ],
+          "bootstrap_mean_ci_95": null,
+          "flags": [
+            "CV 0.000 < 0.1 (compressed)"
+          ]
+        },
+        "baseline_weighted": {
+          "n": 2,
+          "mean": 0.7778,
+          "stddev": 0,
+          "coefficient_of_variation": 0,
+          "min": 0.7778,
+          "max": 0.7778,
+          "ceiling_threshold": 0.95,
+          "floor_threshold": 0.05,
+          "ceiling_count": 0,
+          "ceiling_ratio": 0,
+          "floor_count": 0,
+          "floor_ratio": 0,
+          "histogram": [
+            {
+              "bin": "0-0.1",
+              "count": 0
+            },
+            {
+              "bin": "0.1-0.2",
+              "count": 0
+            },
+            {
+              "bin": "0.2-0.3",
+              "count": 0
+            },
+            {
+              "bin": "0.3-0.4",
+              "count": 0
+            },
+            {
+              "bin": "0.4-0.5",
+              "count": 0
+            },
+            {
+              "bin": "0.5-0.6",
+              "count": 0
+            },
+            {
+              "bin": "0.6-0.7",
+              "count": 0
+            },
+            {
+              "bin": "0.7-0.8",
+              "count": 2
+            },
+            {
+              "bin": "0.8-0.9",
+              "count": 0
+            },
+            {
+              "bin": "0.9-1",
+              "count": 0
+            }
+          ],
+          "bootstrap_mean_ci_95": null,
+          "flags": [
+            "CV 0.000 < 0.1 (compressed)"
+          ]
+        },
+        "delta_weighted": {
+          "n": 2,
+          "mean": 0.0555,
+          "stddev": 0,
+          "coefficient_of_variation": 0,
+          "min": 0.0555,
+          "max": 0.0555,
+          "ceiling_threshold": 0.9,
+          "floor_threshold": -0.9,
+          "ceiling_count": 0,
+          "ceiling_ratio": 0,
+          "floor_count": 0,
+          "floor_ratio": 0,
+          "histogram": [
+            {
+              "bin": "0-0.1",
+              "count": 2
+            },
+            {
+              "bin": "0.1-0.2",
+              "count": 0
+            },
+            {
+              "bin": "0.2-0.3",
+              "count": 0
+            },
+            {
+              "bin": "0.3-0.4",
+              "count": 0
+            },
+            {
+              "bin": "0.4-0.5",
+              "count": 0
+            },
+            {
+              "bin": "0.5-0.6",
+              "count": 0
+            },
+            {
+              "bin": "0.6-0.7",
+              "count": 0
+            },
+            {
+              "bin": "0.7-0.8",
+              "count": 0
+            },
+            {
+              "bin": "0.8-0.9",
+              "count": 0
+            },
+            {
+              "bin": "0.9-1",
+              "count": 0
+            }
+          ],
+          "bootstrap_mean_ci_95": null,
+          "flags": [
+            "CV 0.000 < 0.1 (compressed)"
+          ]
+        }
+      },
+      "anti_pattern_detection": {
+        "n": 1,
+        "with_skill_weighted": {
+          "n": 1,
+          "mean": 0.8333,
+          "stddev": null,
+          "coefficient_of_variation": null,
+          "min": 0.8333,
+          "max": 0.8333,
+          "ceiling_threshold": 0.95,
+          "floor_threshold": 0.05,
+          "ceiling_count": 0,
+          "ceiling_ratio": 0,
+          "floor_count": 0,
+          "floor_ratio": 0,
+          "histogram": [
+            {
+              "bin": "0-0.1",
+              "count": 0
+            },
+            {
+              "bin": "0.1-0.2",
+              "count": 0
+            },
+            {
+              "bin": "0.2-0.3",
+              "count": 0
+            },
+            {
+              "bin": "0.3-0.4",
+              "count": 0
+            },
+            {
+              "bin": "0.4-0.5",
+              "count": 0
+            },
+            {
+              "bin": "0.5-0.6",
+              "count": 0
+            },
+            {
+              "bin": "0.6-0.7",
+              "count": 0
+            },
+            {
+              "bin": "0.7-0.8",
+              "count": 0
+            },
+            {
+              "bin": "0.8-0.9",
+              "count": 1
+            },
+            {
+              "bin": "0.9-1",
+              "count": 0
+            }
+          ],
+          "bootstrap_mean_ci_95": null,
+          "flags": []
+        },
+        "baseline_weighted": {
+          "n": 1,
+          "mean": 0.8,
+          "stddev": null,
+          "coefficient_of_variation": null,
+          "min": 0.8,
+          "max": 0.8,
+          "ceiling_threshold": 0.95,
+          "floor_threshold": 0.05,
+          "ceiling_count": 0,
+          "ceiling_ratio": 0,
+          "floor_count": 0,
+          "floor_ratio": 0,
+          "histogram": [
+            {
+              "bin": "0-0.1",
+              "count": 0
+            },
+            {
+              "bin": "0.1-0.2",
+              "count": 0
+            },
+            {
+              "bin": "0.2-0.3",
+              "count": 0
+            },
+            {
+              "bin": "0.3-0.4",
+              "count": 0
+            },
+            {
+              "bin": "0.4-0.5",
+              "count": 0
+            },
+            {
+              "bin": "0.5-0.6",
+              "count": 0
+            },
+            {
+              "bin": "0.6-0.7",
+              "count": 0
+            },
+            {
+              "bin": "0.7-0.8",
+              "count": 0
+            },
+            {
+              "bin": "0.8-0.9",
+              "count": 1
+            },
+            {
+              "bin": "0.9-1",
+              "count": 0
+            }
+          ],
+          "bootstrap_mean_ci_95": null,
+          "flags": []
+        },
+        "delta_weighted": {
+          "n": 1,
+          "mean": 0.0333,
+          "stddev": null,
+          "coefficient_of_variation": null,
+          "min": 0.0333,
+          "max": 0.0333,
+          "ceiling_threshold": 0.9,
+          "floor_threshold": -0.9,
+          "ceiling_count": 0,
+          "ceiling_ratio": 0,
+          "floor_count": 0,
+          "floor_ratio": 0,
+          "histogram": [
+            {
+              "bin": "0-0.1",
+              "count": 1
+            },
+            {
+              "bin": "0.1-0.2",
+              "count": 0
+            },
+            {
+              "bin": "0.2-0.3",
+              "count": 0
+            },
+            {
+              "bin": "0.3-0.4",
+              "count": 0
+            },
+            {
+              "bin": "0.4-0.5",
+              "count": 0
+            },
+            {
+              "bin": "0.5-0.6",
+              "count": 0
+            },
+            {
+              "bin": "0.6-0.7",
+              "count": 0
+            },
+            {
+              "bin": "0.7-0.8",
+              "count": 0
+            },
+            {
+              "bin": "0.8-0.9",
+              "count": 0
+            },
+            {
+              "bin": "0.9-1",
+              "count": 0
+            }
+          ],
+          "bootstrap_mean_ci_95": null,
+          "flags": []
+        }
+      },
+      "provenance_rules": {
+        "n": 1,
+        "with_skill_weighted": {
+          "n": 1,
+          "mean": 0.8333,
+          "stddev": null,
+          "coefficient_of_variation": null,
+          "min": 0.8333,
+          "max": 0.8333,
+          "ceiling_threshold": 0.95,
+          "floor_threshold": 0.05,
+          "ceiling_count": 0,
+          "ceiling_ratio": 0,
+          "floor_count": 0,
+          "floor_ratio": 0,
+          "histogram": [
+            {
+              "bin": "0-0.1",
+              "count": 0
+            },
+            {
+              "bin": "0.1-0.2",
+              "count": 0
+            },
+            {
+              "bin": "0.2-0.3",
+              "count": 0
+            },
+            {
+              "bin": "0.3-0.4",
+              "count": 0
+            },
+            {
+              "bin": "0.4-0.5",
+              "count": 0
+            },
+            {
+              "bin": "0.5-0.6",
+              "count": 0
+            },
+            {
+              "bin": "0.6-0.7",
+              "count": 0
+            },
+            {
+              "bin": "0.7-0.8",
+              "count": 0
+            },
+            {
+              "bin": "0.8-0.9",
+              "count": 1
+            },
+            {
+              "bin": "0.9-1",
+              "count": 0
+            }
+          ],
+          "bootstrap_mean_ci_95": null,
+          "flags": []
+        },
+        "baseline_weighted": {
+          "n": 1,
+          "mean": 0.7778,
+          "stddev": null,
+          "coefficient_of_variation": null,
+          "min": 0.7778,
+          "max": 0.7778,
+          "ceiling_threshold": 0.95,
+          "floor_threshold": 0.05,
+          "ceiling_count": 0,
+          "ceiling_ratio": 0,
+          "floor_count": 0,
+          "floor_ratio": 0,
+          "histogram": [
+            {
+              "bin": "0-0.1",
+              "count": 0
+            },
+            {
+              "bin": "0.1-0.2",
+              "count": 0
+            },
+            {
+              "bin": "0.2-0.3",
+              "count": 0
+            },
+            {
+              "bin": "0.3-0.4",
+              "count": 0
+            },
+            {
+              "bin": "0.4-0.5",
+              "count": 0
+            },
+            {
+              "bin": "0.5-0.6",
+              "count": 0
+            },
+            {
+              "bin": "0.6-0.7",
+              "count": 0
+            },
+            {
+              "bin": "0.7-0.8",
+              "count": 1
+            },
+            {
+              "bin": "0.8-0.9",
+              "count": 0
+            },
+            {
+              "bin": "0.9-1",
+              "count": 0
+            }
+          ],
+          "bootstrap_mean_ci_95": null,
+          "flags": []
+        },
+        "delta_weighted": {
+          "n": 1,
+          "mean": 0.0555,
+          "stddev": null,
+          "coefficient_of_variation": null,
+          "min": 0.0555,
+          "max": 0.0555,
+          "ceiling_threshold": 0.9,
+          "floor_threshold": -0.9,
+          "ceiling_count": 0,
+          "ceiling_ratio": 0,
+          "floor_count": 0,
+          "floor_ratio": 0,
+          "histogram": [
+            {
+              "bin": "0-0.1",
+              "count": 1
+            },
+            {
+              "bin": "0.1-0.2",
+              "count": 0
+            },
+            {
+              "bin": "0.2-0.3",
+              "count": 0
+            },
+            {
+              "bin": "0.3-0.4",
+              "count": 0
+            },
+            {
+              "bin": "0.4-0.5",
+              "count": 0
+            },
+            {
+              "bin": "0.5-0.6",
+              "count": 0
+            },
+            {
+              "bin": "0.6-0.7",
+              "count": 0
+            },
+            {
+              "bin": "0.7-0.8",
+              "count": 0
+            },
+            {
+              "bin": "0.8-0.9",
+              "count": 0
+            },
+            {
+              "bin": "0.9-1",
+              "count": 0
+            }
+          ],
+          "bootstrap_mean_ci_95": null,
+          "flags": []
+        }
+      },
+      "unknown": {
+        "n": 79,
+        "with_skill_weighted": {
+          "n": 79,
+          "mean": 0.8338,
+          "stddev": 0.2542,
+          "coefficient_of_variation": 0.3049,
+          "min": 0,
+          "max": 1,
+          "ceiling_threshold": 0.95,
+          "floor_threshold": 0.05,
+          "ceiling_count": 21,
+          "ceiling_ratio": 0.2658,
+          "floor_count": 6,
+          "floor_ratio": 0.0759,
+          "histogram": [
+            {
+              "bin": "0-0.1",
+              "count": 6
+            },
+            {
+              "bin": "0.1-0.2",
+              "count": 0
+            },
+            {
+              "bin": "0.2-0.3",
+              "count": 0
+            },
+            {
+              "bin": "0.3-0.4",
+              "count": 0
+            },
+            {
+              "bin": "0.4-0.5",
+              "count": 0
+            },
+            {
+              "bin": "0.5-0.6",
+              "count": 0
+            },
+            {
+              "bin": "0.6-0.7",
+              "count": 2
+            },
+            {
+              "bin": "0.7-0.8",
+              "count": 7
+            },
+            {
+              "bin": "0.8-0.9",
+              "count": 25
+            },
+            {
+              "bin": "0.9-1",
+              "count": 39
+            }
+          ],
+          "bootstrap_mean_ci_95": {
+            "lower": 0.7717,
+            "upper": 0.8837,
+            "n": 79
+          },
+          "flags": [
+            "ceiling 27% > 20%"
+          ]
+        },
+        "baseline_weighted": {
+          "n": 79,
+          "mean": 0.8074,
+          "stddev": 0.2679,
+          "coefficient_of_variation": 0.3318,
+          "min": 0,
+          "max": 1,
+          "ceiling_threshold": 0.95,
+          "floor_threshold": 0.05,
+          "ceiling_count": 20,
+          "ceiling_ratio": 0.2532,
+          "floor_count": 6,
+          "floor_ratio": 0.0759,
+          "histogram": [
+            {
+              "bin": "0-0.1",
+              "count": 6
+            },
+            {
+              "bin": "0.1-0.2",
+              "count": 1
+            },
+            {
+              "bin": "0.2-0.3",
+              "count": 0
+            },
+            {
+              "bin": "0.3-0.4",
+              "count": 0
+            },
+            {
+              "bin": "0.4-0.5",
+              "count": 0
+            },
+            {
+              "bin": "0.5-0.6",
+              "count": 2
+            },
+            {
+              "bin": "0.6-0.7",
+              "count": 1
+            },
+            {
+              "bin": "0.7-0.8",
+              "count": 11
+            },
+            {
+              "bin": "0.8-0.9",
+              "count": 26
+            },
+            {
+              "bin": "0.9-1",
+              "count": 32
+            }
+          ],
+          "bootstrap_mean_ci_95": {
+            "lower": 0.7454,
+            "upper": 0.8627,
+            "n": 79
+          },
+          "flags": [
+            "ceiling 25% > 20%"
+          ]
+        },
+        "delta_weighted": {
+          "n": 79,
+          "mean": 0.0265,
+          "stddev": 0.1497,
+          "coefficient_of_variation": 5.6484,
+          "min": -0.3333,
+          "max": 0.75,
+          "ceiling_threshold": 0.9,
+          "floor_threshold": -0.9,
+          "ceiling_count": 0,
+          "ceiling_ratio": 0,
+          "floor_count": 0,
+          "floor_ratio": 0,
+          "histogram": [
+            {
+              "bin": "0-0.1",
+              "count": 36
+            },
+            {
+              "bin": "0.1-0.2",
+              "count": 12
+            },
+            {
+              "bin": "0.2-0.3",
+              "count": 2
+            },
+            {
+              "bin": "0.3-0.4",
+              "count": 3
+            },
+            {
+              "bin": "0.4-0.5",
+              "count": 0
+            },
+            {
+              "bin": "0.5-0.6",
+              "count": 0
+            },
+            {
+              "bin": "0.6-0.7",
+              "count": 0
+            },
+            {
+              "bin": "0.7-0.8",
+              "count": 1
+            },
+            {
+              "bin": "0.8-0.9",
+              "count": 0
+            },
+            {
+              "bin": "0.9-1",
+              "count": 0
+            }
+          ],
+          "bootstrap_mean_ci_95": {
+            "lower": -0.0045,
+            "upper": 0.0598,
+            "n": 79
+          },
+          "flags": []
+        }
+      }
+    },
+    "overall": {
+      "with_skill_weighted": {
+        "n": 1089,
+        "mean": 0.9149,
+        "stddev": 0.9511,
+        "coefficient_of_variation": 1.0395,
+        "min": 0,
+        "max": 20,
+        "ceiling_threshold": 0.95,
+        "floor_threshold": 0.05,
+        "ceiling_count": 370,
+        "ceiling_ratio": 0.3398,
+        "floor_count": 49,
+        "floor_ratio": 0.045,
+        "histogram": [
+          {
+            "bin": "0-0.1",
+            "count": 49
+          },
+          {
+            "bin": "0.1-0.2",
+            "count": 0
+          },
+          {
+            "bin": "0.2-0.3",
+            "count": 1
+          },
+          {
+            "bin": "0.3-0.4",
+            "count": 0
+          },
+          {
+            "bin": "0.4-0.5",
+            "count": 1
+          },
+          {
+            "bin": "0.5-0.6",
+            "count": 19
+          },
+          {
+            "bin": "0.6-0.7",
+            "count": 32
+          },
+          {
+            "bin": "0.7-0.8",
+            "count": 148
+          },
+          {
+            "bin": "0.8-0.9",
+            "count": 305
+          },
+          {
+            "bin": "0.9-1",
+            "count": 527
+          }
+        ],
+        "bootstrap_mean_ci_95": {
+          "lower": 0.8665,
+          "upper": 0.977,
+          "n": 1089
+        },
+        "flags": [
+          "ceiling 34% > 20%"
+        ]
+      },
+      "delta_weighted": {
+        "n": 1089,
+        "mean": 0.2135,
+        "stddev": 0.7035,
+        "coefficient_of_variation": 3.2953,
+        "min": -1,
+        "max": 14,
+        "ceiling_threshold": 0.9,
+        "floor_threshold": -0.9,
+        "ceiling_count": 40,
+        "ceiling_ratio": 0.0367,
+        "floor_count": 2,
+        "floor_ratio": 0.0018,
+        "histogram": [
+          {
+            "bin": "0-0.1",
+            "count": 365
+          },
+          {
+            "bin": "0.1-0.2",
+            "count": 120
+          },
+          {
+            "bin": "0.2-0.3",
+            "count": 64
+          },
+          {
+            "bin": "0.3-0.4",
+            "count": 54
+          },
+          {
+            "bin": "0.4-0.5",
+            "count": 23
+          },
+          {
+            "bin": "0.5-0.6",
+            "count": 140
+          },
+          {
+            "bin": "0.6-0.7",
+            "count": 16
+          },
+          {
+            "bin": "0.7-0.8",
+            "count": 23
+          },
+          {
+            "bin": "0.8-0.9",
+            "count": 18
+          },
+          {
+            "bin": "0.9-1",
+            "count": 33
+          }
+        ],
+        "bootstrap_mean_ci_95": {
+          "lower": 0.1747,
+          "upper": 0.259,
+          "n": 1089
+        },
+        "flags": []
+      }
+    }
+  },
+  "comprehension_cronbach": {
+    "cache_files_used": 47,
+    "complete_cases": 0,
+    "total_cases": 143,
+    "cronbach_alpha": null,
+    "cronbach_alpha_target": 0.7,
+    "cronbach_alpha_status": "unknown",
+    "cronbach_notes": "Cronbach requires items with scores on ALL dimensions; null dimensions exclude that row. The concept grader correctly uses null for unaddressed dimensions, so Cronbach is usually insufficient-data — the Spearman matrix below is the primary reliability signal.",
+    "spearman": {
+      "overall_mean_off_diagonal": 0.0164,
+      "off_diagonal_sample_count": 18,
+      "per_dim_mean_off_diagonal": {
+        "definition": 0.0836,
+        "mental_model": 0.1164,
+        "purpose": -0.2908,
+        "boundary": 0.197,
+        "taxonomy": 0.0094,
+        "analogy": 0.051,
+        "application": -0.0076
+      },
+      "matrix": {
+        "definition": {
+          "definition": 1,
+          "mental_model": 0.2887,
+          "purpose": -0.3469,
+          "boundary": 0.324,
+          "taxonomy": -0.0882,
+          "analogy": null,
+          "application": 0.2402
+        },
+        "mental_model": {
+          "definition": 0.2887,
+          "mental_model": 1,
+          "purpose": -0.0699,
+          "boundary": 0.0247,
+          "taxonomy": 0.1294,
+          "analogy": null,
+          "application": 0.2093
+        },
+        "purpose": {
+          "definition": -0.3469,
+          "mental_model": -0.0699,
+          "purpose": 1,
+          "boundary": -0.3467,
+          "taxonomy": -0.4616,
+          "analogy": -0.1667,
+          "application": -0.3529
+        },
+        "boundary": {
+          "definition": 0.324,
+          "mental_model": 0.0247,
+          "purpose": -0.3467,
+          "boundary": 1,
+          "taxonomy": 0.4423,
+          "analogy": 0.6124,
+          "application": 0.1255
+        },
+        "taxonomy": {
+          "definition": -0.0882,
+          "mental_model": 0.1294,
+          "purpose": -0.4616,
+          "boundary": 0.4423,
+          "taxonomy": 1,
+          "analogy": null,
+          "application": 0.0249
+        },
+        "analogy": {
+          "definition": null,
+          "mental_model": null,
+          "purpose": -0.1667,
+          "boundary": 0.6124,
+          "taxonomy": null,
+          "analogy": 1,
+          "application": -0.2928
+        },
+        "application": {
+          "definition": 0.2402,
+          "mental_model": 0.2093,
+          "purpose": -0.3529,
+          "boundary": 0.1255,
+          "taxonomy": 0.0249,
+          "analogy": -0.2928,
+          "application": 1
+        }
+      },
+      "pair_counts": {
+        "definition": {
+          "definition": 143,
+          "mental_model": 42,
+          "purpose": 28,
+          "boundary": 33,
+          "taxonomy": 19,
+          "analogy": 4,
+          "application": 21
+        },
+        "mental_model": {
+          "definition": 42,
+          "mental_model": 143,
+          "purpose": 72,
+          "boundary": 83,
+          "taxonomy": 51,
+          "analogy": 12,
+          "application": 102
+        },
+        "purpose": {
+          "definition": 28,
+          "mental_model": 72,
+          "purpose": 143,
+          "boundary": 49,
+          "taxonomy": 26,
+          "analogy": 7,
+          "application": 58
+        },
+        "boundary": {
+          "definition": 33,
+          "mental_model": 83,
+          "purpose": 49,
+          "boundary": 143,
+          "taxonomy": 43,
+          "analogy": 5,
+          "application": 64
+        },
+        "taxonomy": {
+          "definition": 19,
+          "mental_model": 51,
+          "purpose": 26,
+          "boundary": 43,
+          "taxonomy": 143,
+          "analogy": 2,
+          "application": 38
+        },
+        "analogy": {
+          "definition": 4,
+          "mental_model": 12,
+          "purpose": 7,
+          "boundary": 5,
+          "taxonomy": 2,
+          "analogy": 143,
+          "application": 8
+        },
+        "application": {
+          "definition": 21,
+          "mental_model": 102,
+          "purpose": 58,
+          "boundary": 64,
+          "taxonomy": 38,
+          "analogy": 8,
+          "application": 143
+        }
+      },
+      "notes": "Pairwise Spearman with pairwise-deletion of missing data. Per-dim mean off-diagonal correlation is the per-dim reliability proxy: values near 1.0 imply the dimension is redundant with the others; values near 0 imply orthogonal. A healthy grader has 0.3-0.7 mean off-diagonal correlation — dims should correlate (measuring related concepts) but not collapse (each adds signal)."
+    }
+  },
+  "application_analysis": {
+    "n": 64,
+    "skill_filter": null,
+    "by_dimension": {},
+    "overall": {
+      "with_skill_weighted": {
+        "n": 0,
+        "flags": [
+          "no observations"
+        ]
+      },
+      "delta_weighted": {
+        "n": 0,
+        "flags": [
+          "no observations"
+        ]
+      }
+    }
+  },
+  "compression_flags": [
+    {
+      "where": "comprehension.by_dimension.mental_model.with_skill_weighted",
+      "flag": "ceiling 36% > 20%"
+    },
+    {
+      "where": "comprehension.by_dimension.boundary.with_skill_weighted",
+      "flag": "ceiling 27% > 20%"
+    },
+    {
+      "where": "comprehension.by_dimension.taxonomy.with_skill_weighted",
+      "flag": "ceiling 36% > 20%"
+    },
+    {
+      "where": "comprehension.by_dimension.taxonomy.baseline_weighted",
+      "flag": "ceiling 35% > 20%"
+    },
+    {
+      "where": "comprehension.by_dimension.application.with_skill_weighted",
+      "flag": "ceiling 48% > 20%"
+    },
+    {
+      "where": "comprehension.by_dimension.purpose.with_skill_weighted",
+      "flag": "ceiling 37% > 20%"
+    },
+    {
+      "where": "comprehension.by_dimension.analogy.with_skill_weighted",
+      "flag": "ceiling 47% > 20%"
+    },
+    {
+      "where": "comprehension.by_dimension.analogy.baseline_weighted",
+      "flag": "ceiling 30% > 20%"
+    },
+    {
+      "where": "comprehension.by_dimension.code_verification.with_skill_weighted",
+      "flag": "ceiling 50% > 20%"
+    },
+    {
+      "where": "comprehension.by_dimension.code_verification.baseline_weighted",
+      "flag": "floor 47% > 20%"
+    },
+    {
+      "where": "comprehension.by_dimension.code_verification.delta_weighted",
+      "flag": "ceiling 26% > 20%"
+    },
+    {
+      "where": "comprehension.by_dimension.failure_without.with_skill_weighted",
+      "flag": "CV 0.000 < 0.1 (compressed)"
+    },
+    {
+      "where": "comprehension.by_dimension.failure_without.baseline_weighted",
+      "flag": "CV 0.000 < 0.1 (compressed)"
+    },
+    {
+      "where": "comprehension.by_dimension.failure_without.delta_weighted",
+      "flag": "CV 0.000 < 0.1 (compressed)"
+    },
+    {
+      "where": "comprehension.by_dimension.key_tradeoff.with_skill_weighted",
+      "flag": "CV 0.061 < 0.1 (compressed)"
+    },
+    {
+      "where": "comprehension.by_dimension.key_tradeoff.with_skill_weighted",
+      "flag": "ceiling 50% > 20%"
+    },
+    {
+      "where": "comprehension.by_dimension.key_tradeoff.baseline_weighted",
+      "flag": "CV 0.000 < 0.1 (compressed)"
+    },
+    {
+      "where": "comprehension.by_dimension.key_tradeoff.delta_weighted",
+      "flag": "CV 0.089 < 0.1 (compressed)"
+    },
+    {
+      "where": "comprehension.by_dimension.why_this_repo_needs_it.with_skill_weighted",
+      "flag": "CV 0.000 < 0.1 (compressed)"
+    },
+    {
+      "where": "comprehension.by_dimension.why_this_repo_needs_it.delta_weighted",
+      "flag": "CV 0.069 < 0.1 (compressed)"
+    },
+    {
+      "where": "comprehension.by_dimension.adjacent_concepts.with_skill_weighted",
+      "flag": "CV 0.000 < 0.1 (compressed)"
+    },
+    {
+      "where": "comprehension.by_dimension.adjacent_concepts.delta_weighted",
+      "flag": "CV 0.095 < 0.1 (compressed)"
+    },
+    {
+      "where": "comprehension.by_dimension.historical_alternatives.with_skill_weighted",
+      "flag": "CV 0.061 < 0.1 (compressed)"
+    },
+    {
+      "where": "comprehension.by_dimension.historical_alternatives.baseline_weighted",
+      "flag": "CV 0.095 < 0.1 (compressed)"
+    },
+    {
+      "where": "comprehension.by_dimension.historical_alternatives.delta_weighted",
+      "flag": "CV 0.000 < 0.1 (compressed)"
+    },
+    {
+      "where": "comprehension.by_dimension.synthesis.baseline_weighted",
+      "flag": "floor 100% > 20%"
+    },
+    {
+      "where": "comprehension.by_dimension.example.with_skill_weighted",
+      "flag": "no observations"
+    },
+    {
+      "where": "comprehension.by_dimension.example.baseline_weighted",
+      "flag": "no observations"
+    },
+    {
+      "where": "comprehension.by_dimension.example.delta_weighted",
+      "flag": "no observations"
+    },
+    {
+      "where": "comprehension.by_dimension.counter_example.with_skill_weighted",
+      "flag": "no observations"
+    },
+    {
+      "where": "comprehension.by_dimension.counter_example.baseline_weighted",
+      "flag": "no observations"
+    },
+    {
+      "where": "comprehension.by_dimension.counter_example.delta_weighted",
+      "flag": "no observations"
+    },
+    {
+      "where": "comprehension.by_dimension.comparison.with_skill_weighted",
+      "flag": "no observations"
+    },
+    {
+      "where": "comprehension.by_dimension.comparison.baseline_weighted",
+      "flag": "no observations"
+    },
+    {
+      "where": "comprehension.by_dimension.comparison.delta_weighted",
+      "flag": "no observations"
+    },
+    {
+      "where": "comprehension.by_dimension.mechanism.with_skill_weighted",
+      "flag": "no observations"
+    },
+    {
+      "where": "comprehension.by_dimension.mechanism.baseline_weighted",
+      "flag": "no observations"
+    },
+    {
+      "where": "comprehension.by_dimension.mechanism.delta_weighted",
+      "flag": "no observations"
+    },
+    {
+      "where": "comprehension.by_dimension.invariants.with_skill_weighted",
+      "flag": "no observations"
+    },
+    {
+      "where": "comprehension.by_dimension.invariants.baseline_weighted",
+      "flag": "no observations"
+    },
+    {
+      "where": "comprehension.by_dimension.invariants.delta_weighted",
+      "flag": "no observations"
+    },
+    {
+      "where": "comprehension.by_dimension.boundaries.with_skill_weighted",
+      "flag": "no observations"
+    },
+    {
+      "where": "comprehension.by_dimension.boundaries.baseline_weighted",
+      "flag": "no observations"
+    },
+    {
+      "where": "comprehension.by_dimension.boundaries.delta_weighted",
+      "flag": "no observations"
+    },
+    {
+      "where": "comprehension.by_dimension.decision_routing.with_skill_weighted",
+      "flag": "no observations"
+    },
+    {
+      "where": "comprehension.by_dimension.decision_routing.baseline_weighted",
+      "flag": "no observations"
+    },
+    {
+      "where": "comprehension.by_dimension.decision_routing.delta_weighted",
+      "flag": "no observations"
+    },
+    {
+      "where": "comprehension.by_dimension.anti_patterns.with_skill_weighted",
+      "flag": "no observations"
+    },
+    {
+      "where": "comprehension.by_dimension.anti_patterns.baseline_weighted",
+      "flag": "no observations"
+    },
+    {
+      "where": "comprehension.by_dimension.anti_patterns.delta_weighted",
+      "flag": "no observations"
+    },
+    {
+      "where": "comprehension.by_dimension.evidence_grounding.with_skill_weighted",
+      "flag": "no observations"
+    },
+    {
+      "where": "comprehension.by_dimension.evidence_grounding.baseline_weighted",
+      "flag": "no observations"
+    },
+    {
+      "where": "comprehension.by_dimension.evidence_grounding.delta_weighted",
+      "flag": "no observations"
+    },
+    {
+      "where": "comprehension.by_dimension.failure_mode_awareness.with_skill_weighted",
+      "flag": "no observations"
+    },
+    {
+      "where": "comprehension.by_dimension.failure_mode_awareness.baseline_weighted",
+      "flag": "no observations"
+    },
+    {
+      "where": "comprehension.by_dimension.failure_mode_awareness.delta_weighted",
+      "flag": "no observations"
+    },
+    {
+      "where": "comprehension.by_dimension.anti_pattern.with_skill_weighted",
+      "flag": "floor 100% > 20%"
+    },
+    {
+      "where": "comprehension.by_dimension.anti_pattern.baseline_weighted",
+      "flag": "floor 100% > 20%"
+    },
+    {
+      "where": "comprehension.by_dimension.concept_recall.with_skill_weighted",
+      "flag": "CV 0.000 < 0.1 (compressed)"
+    },
+    {
+      "where": "comprehension.by_dimension.concept_recall.baseline_weighted",
+      "flag": "CV 0.000 < 0.1 (compressed)"
+    },
+    {
+      "where": "comprehension.by_dimension.concept_recall.delta_weighted",
+      "flag": "CV 0.000 < 0.1 (compressed)"
+    },
+    {
+      "where": "comprehension.by_dimension.boundary_recognition.with_skill_weighted",
+      "flag": "CV 0.000 < 0.1 (compressed)"
+    },
+    {
+      "where": "comprehension.by_dimension.boundary_recognition.baseline_weighted",
+      "flag": "CV 0.000 < 0.1 (compressed)"
+    },
+    {
+      "where": "comprehension.by_dimension.boundary_recognition.delta_weighted",
+      "flag": "CV 0.000 < 0.1 (compressed)"
+    },
+    {
+      "where": "comprehension.by_dimension.unknown.with_skill_weighted",
+      "flag": "ceiling 27% > 20%"
+    },
+    {
+      "where": "comprehension.by_dimension.unknown.baseline_weighted",
+      "flag": "ceiling 25% > 20%"
+    },
+    {
+      "where": "comprehension.overall.with_skill_weighted",
+      "flag": "ceiling 34% > 20%"
+    },
+    {
+      "where": "eval_history.score_descriptive",
+      "flag": "ceiling 23% > 20%"
+    },
+    {
+      "where": "application.overall.with_skill_weighted",
+      "flag": "no observations"
+    },
+    {
+      "where": "application.overall.delta_weighted",
+      "flag": "no observations"
+    }
+  ],
+  "verdict": "70 compression flag(s) raised — see compression_flags"
+}
