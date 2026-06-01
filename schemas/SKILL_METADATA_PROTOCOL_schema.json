@@ -39,7 +39,7 @@
         "knowledge-organization",
         "product-domain"
       ],
-      "description": "Primary classification — what the skill teaches. Closed 9-value enum. Balance rule: each subject must hold 5-25 skills. <5 = fold or recruit; >25 = subdivide via `domain` slash-path. See docs/adr/0017-five-axis-classification-model.md."
+      "description": "Primary classification — what the skill teaches. Closed 9-value enum. Balance rule: each subject must hold 5-25 skills. <5 = fold or recruit; >25 = subdivide via `taxonomy_domain` slash-path. See docs/adr/0017-five-axis-classification-model.md."
     },
     "subjects": {
       "type": "array",

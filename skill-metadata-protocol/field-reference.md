@@ -155,7 +155,7 @@ version: 1.0.0
 **Rules.**
 - **Required.** Every skill must declare a `subject`.
 - **Closed 9-value enum:** `agent-ops` \| `code-engineering` \| `frontend-ui` \| `design-craft` \| `data-analytics` \| `quality-assurance` \| `meta-methods` \| `knowledge-organization` \| `product-domain`.
-- **Balance rule:** each subject must hold 5–25 skills. <5 = fold or recruit; >25 = subdivide via `domain` slash-path.
+- **Balance rule:** each subject must hold 5–25 skills. <5 = fold or recruit; >25 = subdivide via `taxonomy_domain` slash-path.
 - For polyhierarchy (skills that legitimately span two subjects), use `subjects[]` array (primary first, optional secondary).
 
 **Example.**

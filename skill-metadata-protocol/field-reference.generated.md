@@ -55,7 +55,7 @@ Hierarchical taxonomy sub-path using slash-delimited segments (e.g., `ecommerce/
 
 **Type:** `agent-ops` | `code-engineering` | `frontend-ui` | `design-craft` | `data-analytics` | `quality-assurance` | `meta-methods` | `knowledge-organization` | `product-domain`
 
-Primary classification — what the skill teaches. Closed 9-value enum. Balance rule: each subject must hold 5-25 skills. <5 = fold or recruit; >25 = subdivide via `domain` slash-path. See docs/adr/0017-five-axis-classification-model.md.
+Primary classification — what the skill teaches. Closed 9-value enum. Balance rule: each subject must hold 5-25 skills. <5 = fold or recruit; >25 = subdivide via `taxonomy_domain` slash-path. See docs/adr/0017-five-axis-classification-model.md.
 
 **Full reference:** [`skill-metadata-protocol/field-reference.md#subject`](field-reference.md#subject)
 

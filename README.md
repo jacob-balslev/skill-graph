@@ -238,26 +238,21 @@ Skill Metadata Protocol uses several independent axes. They should not be collap
 
 These are the values used across the canonical skill library (the sibling `~/Development/skills/` repo at `skills/<subject>/<name>/`) and the `examples/fixture-skills/` specimens. Cross-cutting fit is expressed via `subjects[]` (max 2) or `relations.related`, never by adding new subject values without an ADR.
 
-### Current Domain Paths
+### Current Taxonomy Domain Guidance
 
-| Domain root | Current `domain` paths |
-|---|---|
-| `ai-engineering` | `ai-engineering/analysis`, `ai-engineering/architecture`, `ai-engineering/concepts`, `ai-engineering/context`, `ai-engineering/evaluation`, `ai-engineering/knowledge`, `ai-engineering/knowledge-extraction`, `ai-engineering/knowledge-representation`, `ai-engineering/language`, `ai-engineering/prompts`, `ai-engineering/safety`, `ai-engineering/strategy`, `ai-engineering/tool-use` |
-| `architecture` | `architecture/contracts`, `architecture/decision-records`, `architecture/dependencies`, `architecture/domain-boundaries`, `architecture/domain-discovery`, `architecture/events`, `architecture/technology-selection` |
-| `content` | `content/build/images`, `content/maintenance`, `content/markdown/frontmatter`, `content/migrations`, `content/routing` |
-| `data` | `data/migrations`, `data/modeling` |
-| `design` | `design/information-architecture`, `design/interaction`, `design/ux`, `design/visual` |
-| `engineering` | `engineering/api-design`, `engineering/debugging`, `engineering/observability`, `engineering/performance`, `engineering/quality`, `engineering/version-control` |
-| `frontend` | `frontend/design-system`, `frontend/layout` |
-| `integrations` | `integrations/webhooks` |
-| `modeling` | `modeling/conceptual`, `modeling/ontology`, `modeling/state-machines`, `modeling/taxonomy` |
-| `skill-system` | `skill-system/authoring`, `skill-system/health` |
+`taxonomy_domain` is optional and subject-local. It subdivides a crowded `subject`; it is not a global enum and it does not replace the nine `subject` shelves above. Use one organizing principle per slash path, keep paths shallow, and prefer facets (`subjects[]`, `project[]`, `repo[]`, `routing_bundles`, and `relations`) when a second access path is needed.
+
+Examples from the current library:
+
+| Subject | Example `taxonomy_domain` | Example skills |
+|---|---|---|
+| `knowledge-organization` | `foundations/classification` | `taxonomy-design` |
+| `knowledge-organization` | `foundations/ontology` | `ontology-modeling` |
+| `knowledge-organization` | `foundations/semantics` | `semantics`, `semantic-relations` |
+| `agent-ops` | `agent/context` | `context-engineering`, `context-graph`, `context-management`, `context-window` |
+| `agent-ops` | `agent/skill-system` | `skill-infrastructure`, `skill-router`, `skill-scaffold` |
 
 ### Current Project And Routing Groups
-
-`taxonomy_domain` paths demonstrated in this repo (within `subject` shelves):
-
-`build-pipeline`, `content`, `markdown`, `migrations`, `skill-authoring`, `static-site`
 
 `routing_bundles` demonstrated in this repo:
 
