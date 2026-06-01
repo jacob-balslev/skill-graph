@@ -40,7 +40,7 @@ Skill Graph is not a competitor to MCP, A2A, Anthropic Skills, Smithery, or Comp
 Most of the above projects are concerned with the *what* and *how* of agent skills. Skill Graph adds an **opinionated discipline** for the *when* — when a skill is changed:
 
 - **One field, one commit, one keep-or-revert decision** ([Karpathy's autoresearch](https://github.com/karpathy/autoresearch) loop, applied to skill libraries instead of training scripts).
-- Every change has a hard pass/fail gate (a deterministic check script that turns red or green).
+- Every change has a hard pass/fail gate (a deterministic check script that reports PASS or FAIL).
 - Failed changes auto-revert. The lesson is recorded; the field's truth is preserved.
 
 That discipline is the unique angle. The metadata schema is the substrate that makes it possible — without typed fields, you can't have a deterministic gate. The audit loop is the mechanism. The result is a skill library that drifts less, even as it grows.

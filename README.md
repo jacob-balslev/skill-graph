@@ -19,7 +19,7 @@ Full positioning vs. MCP, A2A, Anthropic Skills, Smithery, and Composio: [`docs/
 The mechanism is a **Karpathy-style keep-or-revert audit loop** ([autoresearch](https://github.com/karpathy/autoresearch)) applied to skill libraries instead of training scripts:
 
 - **One field, one commit, one keep-or-revert decision.**
-- Every change has a hard pass/fail gate — a deterministic check script that turns red or green.
+- Every change has a hard pass/fail gate — a deterministic check script that reports PASS or FAIL.
 - Failed changes auto-revert. The lesson is recorded; the field's truth is preserved.
 
 The protocol's typed fields are the substrate that makes deterministic gates possible. The audit loop ([`skill-audit-loop/SKILL_AUDIT_LOOP.md`](skill-audit-loop/SKILL_AUDIT_LOOP.md)) is the mechanism. The quality bar that governs every change — what "improve" means, when it's safe to remove, how to enrich without dropping coverage — is codified in [`docs/quality-doctrine.md`](docs/quality-doctrine.md). Together they produce a library that drifts less, even as it grows.
