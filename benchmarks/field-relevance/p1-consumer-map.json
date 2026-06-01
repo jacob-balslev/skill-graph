@@ -1,0 +1,613 @@
+{
+  "generated_for": "field-relevance-benchmark/P1-consumer-map",
+  "consumers": [
+    {
+      "label": "injector",
+      "role": "path-b1 deterministic injector"
+    },
+    {
+      "label": "router",
+      "role": "path-b2 routeSkills"
+    },
+    {
+      "label": "manifest",
+      "role": "manifest projection"
+    },
+    {
+      "label": "export",
+      "role": "marketplace publication"
+    },
+    {
+      "label": "lint",
+      "role": "schema/structural lint"
+    },
+    {
+      "label": "drift",
+      "role": "drift sentinel"
+    },
+    {
+      "label": "graph",
+      "role": "knowledge-graph edges"
+    },
+    {
+      "label": "cgrader",
+      "role": "comprehension grader"
+    }
+  ],
+  "caveat": "grep access-pattern signal; common-word fields flagged confirm_manually; router scoring fields = triggers/keywords/paths (verified in scoreSkill)",
+  "fields": [
+    {
+      "field": "misconception",
+      "consumers": [],
+      "consumer_count": 0,
+      "no_consumer": true,
+      "confirm_manually": false
+    },
+    {
+      "field": "allowed_tools",
+      "consumers": [
+        "manifest"
+      ],
+      "consumer_count": 1,
+      "no_consumer": false,
+      "confirm_manually": false
+    },
+    {
+      "field": "allowed-tools",
+      "consumers": [
+        "manifest"
+      ],
+      "consumer_count": 1,
+      "no_consumer": false,
+      "confirm_manually": false
+    },
+    {
+      "field": "analogy",
+      "consumers": [
+        "cgrader"
+      ],
+      "consumer_count": 1,
+      "no_consumer": false,
+      "confirm_manually": true
+    },
+    {
+      "field": "compatibility",
+      "consumers": [
+        "manifest"
+      ],
+      "consumer_count": 1,
+      "no_consumer": false,
+      "confirm_manually": false
+    },
+    {
+      "field": "comprehension_state",
+      "consumers": [
+        "manifest"
+      ],
+      "consumer_count": 1,
+      "no_consumer": false,
+      "confirm_manually": false
+    },
+    {
+      "field": "comprehension_verdict",
+      "consumers": [
+        "manifest"
+      ],
+      "consumer_count": 1,
+      "no_consumer": false,
+      "confirm_manually": false
+    },
+    {
+      "field": "concept",
+      "consumers": [
+        "manifest"
+      ],
+      "consumer_count": 1,
+      "no_consumer": false,
+      "confirm_manually": true
+    },
+    {
+      "field": "eval_artifacts",
+      "consumers": [
+        "manifest"
+      ],
+      "consumer_count": 1,
+      "no_consumer": false,
+      "confirm_manually": false
+    },
+    {
+      "field": "eval_failed_ids",
+      "consumers": [
+        "manifest"
+      ],
+      "consumer_count": 1,
+      "no_consumer": false,
+      "confirm_manually": false
+    },
+    {
+      "field": "eval_score",
+      "consumers": [
+        "manifest"
+      ],
+      "consumer_count": 1,
+      "no_consumer": false,
+      "confirm_manually": false
+    },
+    {
+      "field": "freshness",
+      "consumers": [
+        "manifest"
+      ],
+      "consumer_count": 1,
+      "no_consumer": false,
+      "confirm_manually": false
+    },
+    {
+      "field": "last_audited",
+      "consumers": [
+        "manifest"
+      ],
+      "consumer_count": 1,
+      "no_consumer": false,
+      "confirm_manually": false
+    },
+    {
+      "field": "license",
+      "consumers": [
+        "manifest"
+      ],
+      "consumer_count": 1,
+      "no_consumer": false,
+      "confirm_manually": true
+    },
+    {
+      "field": "lint_verdict",
+      "consumers": [
+        "manifest"
+      ],
+      "consumer_count": 1,
+      "no_consumer": false,
+      "confirm_manually": false
+    },
+    {
+      "field": "marketplace_tier",
+      "consumers": [
+        "manifest"
+      ],
+      "consumer_count": 1,
+      "no_consumer": false,
+      "confirm_manually": false
+    },
+    {
+      "field": "mental_model",
+      "consumers": [
+        "cgrader"
+      ],
+      "consumer_count": 1,
+      "no_consumer": false,
+      "confirm_manually": false
+    },
+    {
+      "field": "owner",
+      "consumers": [
+        "manifest"
+      ],
+      "consumer_count": 1,
+      "no_consumer": false,
+      "confirm_manually": true
+    },
+    {
+      "field": "portability",
+      "consumers": [
+        "manifest"
+      ],
+      "consumer_count": 1,
+      "no_consumer": false,
+      "confirm_manually": false
+    },
+    {
+      "field": "purpose",
+      "consumers": [
+        "cgrader"
+      ],
+      "consumer_count": 1,
+      "no_consumer": false,
+      "confirm_manually": true
+    },
+    {
+      "field": "reviewed_at",
+      "consumers": [
+        "manifest"
+      ],
+      "consumer_count": 1,
+      "no_consumer": false,
+      "confirm_manually": false
+    },
+    {
+      "field": "routing_bundles",
+      "consumers": [
+        "manifest"
+      ],
+      "consumer_count": 1,
+      "no_consumer": false,
+      "confirm_manually": false
+    },
+    {
+      "field": "routing_eval",
+      "consumers": [
+        "manifest"
+      ],
+      "consumer_count": 1,
+      "no_consumer": false,
+      "confirm_manually": false
+    },
+    {
+      "field": "runtime_telemetry",
+      "consumers": [
+        "manifest"
+      ],
+      "consumer_count": 1,
+      "no_consumer": false,
+      "confirm_manually": false
+    },
+    {
+      "field": "schema_version",
+      "consumers": [
+        "manifest"
+      ],
+      "consumer_count": 1,
+      "no_consumer": false,
+      "confirm_manually": false
+    },
+    {
+      "field": "stability",
+      "consumers": [
+        "manifest"
+      ],
+      "consumer_count": 1,
+      "no_consumer": false,
+      "confirm_manually": true
+    },
+    {
+      "field": "superseded_by",
+      "consumers": [
+        "manifest"
+      ],
+      "consumer_count": 1,
+      "no_consumer": false,
+      "confirm_manually": false
+    },
+    {
+      "field": "taxonomy_domain",
+      "consumers": [
+        "manifest"
+      ],
+      "consumer_count": 1,
+      "no_consumer": false,
+      "confirm_manually": false
+    },
+    {
+      "field": "urn",
+      "consumers": [
+        "manifest"
+      ],
+      "consumer_count": 1,
+      "no_consumer": false,
+      "confirm_manually": false
+    },
+    {
+      "field": "anti_examples",
+      "consumers": [
+        "manifest",
+        "export"
+      ],
+      "consumer_count": 2,
+      "no_consumer": false,
+      "confirm_manually": false
+    },
+    {
+      "field": "application_verdict",
+      "consumers": [
+        "router",
+        "manifest"
+      ],
+      "consumer_count": 2,
+      "no_consumer": false,
+      "confirm_manually": false
+    },
+    {
+      "field": "drift_status",
+      "consumers": [
+        "manifest",
+        "drift"
+      ],
+      "consumer_count": 2,
+      "no_consumer": false,
+      "confirm_manually": false
+    },
+    {
+      "field": "eval_last_run",
+      "consumers": [
+        "router",
+        "manifest"
+      ],
+      "consumer_count": 2,
+      "no_consumer": false,
+      "confirm_manually": false
+    },
+    {
+      "field": "eval_state",
+      "consumers": [
+        "router",
+        "manifest"
+      ],
+      "consumer_count": 2,
+      "no_consumer": false,
+      "confirm_manually": false
+    },
+    {
+      "field": "last_changed",
+      "consumers": [
+        "router",
+        "manifest"
+      ],
+      "consumer_count": 2,
+      "no_consumer": false,
+      "confirm_manually": false
+    },
+    {
+      "field": "truth_verdict",
+      "consumers": [
+        "router",
+        "manifest"
+      ],
+      "consumer_count": 2,
+      "no_consumer": false,
+      "confirm_manually": false
+    },
+    {
+      "field": "drift_check",
+      "consumers": [
+        "router",
+        "manifest",
+        "drift"
+      ],
+      "consumer_count": 3,
+      "no_consumer": false,
+      "confirm_manually": false
+    },
+    {
+      "field": "eval",
+      "consumers": [
+        "injector",
+        "manifest",
+        "cgrader"
+      ],
+      "consumer_count": 3,
+      "no_consumer": false,
+      "confirm_manually": false
+    },
+    {
+      "field": "grounding",
+      "consumers": [
+        "manifest",
+        "export",
+        "drift"
+      ],
+      "consumer_count": 3,
+      "no_consumer": false,
+      "confirm_manually": false
+    },
+    {
+      "field": "paths",
+      "consumers": [
+        "injector",
+        "router",
+        "manifest"
+      ],
+      "consumer_count": 3,
+      "no_consumer": false,
+      "confirm_manually": true
+    },
+    {
+      "field": "repo",
+      "consumers": [
+        "injector",
+        "manifest",
+        "export"
+      ],
+      "consumer_count": 3,
+      "no_consumer": false,
+      "confirm_manually": true
+    },
+    {
+      "field": "structural_verdict",
+      "consumers": [
+        "router",
+        "manifest",
+        "export"
+      ],
+      "consumer_count": 3,
+      "no_consumer": false,
+      "confirm_manually": false
+    },
+    {
+      "field": "subjects",
+      "consumers": [
+        "manifest",
+        "lint",
+        "graph"
+      ],
+      "consumer_count": 3,
+      "no_consumer": false,
+      "confirm_manually": false
+    },
+    {
+      "field": "version",
+      "consumers": [
+        "manifest",
+        "export",
+        "graph"
+      ],
+      "consumer_count": 3,
+      "no_consumer": false,
+      "confirm_manually": true
+    },
+    {
+      "field": "deployment_target",
+      "consumers": [
+        "router",
+        "manifest",
+        "export",
+        "lint"
+      ],
+      "consumer_count": 4,
+      "no_consumer": false,
+      "confirm_manually": false
+    },
+    {
+      "field": "examples",
+      "consumers": [
+        "router",
+        "manifest",
+        "export",
+        "lint"
+      ],
+      "consumer_count": 4,
+      "no_consumer": false,
+      "confirm_manually": true
+    },
+    {
+      "field": "keywords",
+      "consumers": [
+        "injector",
+        "router",
+        "manifest",
+        "graph"
+      ],
+      "consumer_count": 4,
+      "no_consumer": false,
+      "confirm_manually": false
+    },
+    {
+      "field": "subject",
+      "consumers": [
+        "manifest",
+        "lint",
+        "graph",
+        "cgrader"
+      ],
+      "consumer_count": 4,
+      "no_consumer": false,
+      "confirm_manually": false
+    },
+    {
+      "field": "triggers",
+      "consumers": [
+        "injector",
+        "router",
+        "manifest",
+        "graph"
+      ],
+      "consumer_count": 4,
+      "no_consumer": false,
+      "confirm_manually": false
+    },
+    {
+      "field": "description",
+      "consumers": [
+        "injector",
+        "manifest",
+        "export",
+        "lint",
+        "graph"
+      ],
+      "consumer_count": 5,
+      "no_consumer": false,
+      "confirm_manually": true
+    },
+    {
+      "field": "lifecycle",
+      "consumers": [
+        "injector",
+        "router",
+        "manifest",
+        "drift",
+        "graph"
+      ],
+      "consumer_count": 5,
+      "no_consumer": false,
+      "confirm_manually": false
+    },
+    {
+      "field": "relations",
+      "consumers": [
+        "router",
+        "manifest",
+        "export",
+        "lint",
+        "graph"
+      ],
+      "consumer_count": 5,
+      "no_consumer": false,
+      "confirm_manually": false
+    },
+    {
+      "field": "scope",
+      "consumers": [
+        "injector",
+        "manifest",
+        "export",
+        "lint",
+        "graph"
+      ],
+      "consumer_count": 5,
+      "no_consumer": false,
+      "confirm_manually": true
+    },
+    {
+      "field": "project",
+      "consumers": [
+        "injector",
+        "router",
+        "manifest",
+        "export",
+        "lint",
+        "drift"
+      ],
+      "consumer_count": 6,
+      "no_consumer": false,
+      "confirm_manually": true
+    },
+    {
+      "field": "boundary",
+      "consumers": [
+        "injector",
+        "router",
+        "manifest",
+        "export",
+        "lint",
+        "graph",
+        "cgrader"
+      ],
+      "consumer_count": 7,
+      "no_consumer": false,
+      "confirm_manually": true
+    },
+    {
+      "field": "name",
+      "consumers": [
+        "injector",
+        "router",
+        "manifest",
+        "export",
+        "lint",
+        "drift",
+        "graph"
+      ],
+      "consumer_count": 7,
+      "no_consumer": false,
+      "confirm_manually": true
+    }
+  ]
+}

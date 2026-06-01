@@ -24,8 +24,11 @@ instead of opinion-driven.
 
 | File | What it does |
 |---|---|
-| `inventory.js` | P0.5 — parses all canonical SKILL.md via `normalizeFrontmatter`, reports per-field population/distinct/state. `node benchmarks/field-relevance/inventory.js [--json]` |
-| `p05-inventory.json` | generated inventory output (regenerate with `inventory.js --json`) |
+| `inventory.js` | P0.5 — parses all canonical SKILL.md via `normalizeFrontmatter`, reports per-field population/distinct/state (population = context only). `node benchmarks/field-relevance/inventory.js [--json]` |
+| `consumer-map.js` | P1a — which acting consumer reads each field (access-pattern grep over injector/router/export/lint/drift/graph/cgrader). `--json` |
+| `routing-ablation.js` | P1b — strip each routing field from the manifest, re-run the 64-query baseline, measure ΔRecall@1/@3 (path-b2 routeSkills). |
+| `p05-inventory.json`, `p1-consumer-map.json`, `p1-routing-ablation.json` | generated outputs |
+| `p05-findings.md`, `p0-p1-findings.md` | findings (population context; then adoption-independent P0/P1 verdicts) |
 
 ## The verdict rule (adoption-independent)
 
@@ -38,6 +41,6 @@ an input.** Every verdict names the consumer path it holds for.
 ## Status
 
 - [x] P0.5 — corpus inventory (done)
-- [ ] P0 — field→dimension map + path-a decision
-- [ ] P1 — deterministic free screens (consumer-grep, leave-one-out replay, gate-flip)
-- [ ] P2–P5 — baseline expansion, controlled ablation, behavior A/B, redundancy, scorecard
+- [x] P0 — field→dimension→machine map + path-a decision (SCOPE-OUT) + redundant pairs (`p0-p1-findings.md`)
+- [x] P1 — deterministic free screens: consumer-map + routing ablation + gate-flip catalog (`p0-p1-findings.md`)
+- [ ] P2–P5 — baseline expansion (triggers/paths coverage), path-a router, behavior A/B, redundancy leave-two-out, scorecard (LLM-cost phases — gated on go-ahead)

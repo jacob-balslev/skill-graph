@@ -1,0 +1,83 @@
+{
+  "generated_for": "field-relevance-benchmark/P1-routing-ablation",
+  "path": "b2-routeSkills",
+  "baseline": {
+    "r1": 0.765625,
+    "r3": 0.890625,
+    "total": 64
+  },
+  "results": [
+    {
+      "field": "keywords",
+      "r1": 0.03125,
+      "d1": -0.734375,
+      "r3": 0.03125,
+      "d3": -0.859375,
+      "load_bearing": true
+    },
+    {
+      "field": "triggers",
+      "r1": 0.765625,
+      "d1": 0,
+      "r3": 0.890625,
+      "d3": 0,
+      "load_bearing": false
+    },
+    {
+      "field": "paths",
+      "r1": 0.765625,
+      "d1": 0,
+      "r3": 0.890625,
+      "d3": 0,
+      "load_bearing": false
+    },
+    {
+      "field": "examples",
+      "r1": 0.765625,
+      "d1": 0,
+      "r3": 0.890625,
+      "d3": 0,
+      "load_bearing": false
+    },
+    {
+      "field": "anti_examples",
+      "r1": 0.765625,
+      "d1": 0,
+      "r3": 0.890625,
+      "d3": 0,
+      "load_bearing": false
+    },
+    {
+      "field": "relations",
+      "r1": 0.765625,
+      "d1": 0,
+      "r3": 0.9375,
+      "d3": 0.046875,
+      "load_bearing": true
+    },
+    {
+      "field": "subject",
+      "r1": 0.765625,
+      "d1": 0,
+      "r3": 0.890625,
+      "d3": 0,
+      "load_bearing": false
+    },
+    {
+      "field": "scope",
+      "r1": 0.765625,
+      "d1": 0,
+      "r3": 0.890625,
+      "d3": 0,
+      "load_bearing": false
+    },
+    {
+      "field": "description",
+      "r1": 0.765625,
+      "d1": 0,
+      "r3": 0.890625,
+      "d3": 0,
+      "load_bearing": false
+    }
+  ]
+}
