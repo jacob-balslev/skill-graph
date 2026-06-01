@@ -19,7 +19,9 @@
 
 ## Rename Map
 
-Every top-level authored field in `schemas/SKILL_METADATA_PROTOCOL_schema.json` has exactly one entry below. The entry declares one of five fates:
+> **Two-file source (ADR-0019).** Since the audit-state sidecar split, the manifest is compiled from **two** authored files joined together: `SKILL.md` frontmatter (`schemas/SKILL_METADATA_PROTOCOL_schema.json`) and the `audit-state.json` sidecar (`schemas/skill-audit-state.schema.json`). `generate-manifest.js` merges the sidecar under the frontmatter before projecting, so the manifest shape is unchanged. Where a row below says "Pass-through from authored frontmatter" for an audit/eval/provenance field (`schema_version`, `version`, `owner`, `urn`, `repo`, `freshness`, `drift_check`, the `eval_*` triple, the four verdicts, `comprehension_state`, `lifecycle`, `marketplace_tier`, `portability`, `runtime_telemetry`), read it as "pass-through from the joined authored source (now the sidecar)." Field placement: `benchmarks/field-relevance/field-placement.json`.
+
+Every top-level authored field in `schemas/SKILL_METADATA_PROTOCOL_schema.json` (frontmatter) or `schemas/skill-audit-state.schema.json` (sidecar) has exactly one entry below. The entry declares one of five fates:
 
 | Fate | Meaning |
 |---|---|

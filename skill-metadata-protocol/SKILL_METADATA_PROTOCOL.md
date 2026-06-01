@@ -3,7 +3,7 @@
 > **Work-mode rule (read FIRST).** Editing this document, the schemas it normalizes against, the audit prompts, or the audit/lint/drift scripts is **SYSTEM work**. Editing individual `SKILL.md` files to conform to this contract is **CONTENT work** that runs ONLY via `/audit:audit`, `/audit:improve`, `/audit:evaluate`, `/audit:evolve`. Do not mix them in the same task or commit. Full doctrine: [`AGENTS.md` § Work Modes — SYSTEM vs CONTENT](../AGENTS.md#work-modes--system-vs-content).
 
 > **Spec version:** 1.6.0 (`schema_version: 8`, Skill Graph 0.5.10)
-> **Currently enforced by `schemas/SKILL_METADATA_PROTOCOL_schema.json`:** v8. The schema's global `required` array mandates `subject` + `deployment_target` + `scope` (`scope` is required free text, not an enum). See [§ Schema contract](#schema-contract).
+> **Currently enforced by `schemas/SKILL_METADATA_PROTOCOL_schema.json`:** v8. Per [ADR-0019](../docs/adr/0019-audit-state-sidecar-separation.md), a skill is now **two files**: `SKILL.md` frontmatter (25 agent-facing fields; `required`: `name`, `description`, `subject`, `deployment_target`, `scope`) and a sibling `audit-state.json` sidecar (28 audit/eval/provenance fields, schema `schemas/skill-audit-state.schema.json`; `required`: `schema_version`, `owner`, `freshness`, `drift_check`, `eval_artifacts`, `eval_state`, `routing_eval`). The two are joined into the compiled manifest. See [§ Schema contract](#schema-contract).
 > **Single source of truth for "what is enforced today":** [`SKILL_GRAPH.md § Current State`](../SKILL_GRAPH.md#current-state--single-source-of-truth) — link there from any doc that needs the live answer; do not restate.
 > **Machine-readable schema:** `schemas/SKILL_METADATA_PROTOCOL_schema.json`
 > **Detailed field reference:** `skill-metadata-protocol/field-reference.md`
@@ -90,6 +90,17 @@ The on-disk skill library at `~/Development/skills/` is **one physical repo wear
 2. **Hat 2 — Public Agent-Skills release.** The same repo is published to `https://github.com/jacob-balslev/skills` and indexed at `https://www.skills.sh/jacob-balslev/skills/`. The Agent-Skills format only honours `name`, `description`, `license`, `compatibility`, `allowed-tools` at the top level; everything richer must be nested under `metadata:`. The full publish protocol is in `skill-graph/AGENTS.md § Public Distribution — Canonical URL Contract`.
 
 Authors of new skills should write the **nested encoding** so the file works under both hats simultaneously. The protocol-native flat shape is the spec's illustrative form; the on-disk reality is nested. The normalizer keeps deterministic tooling reading one logical contract from both shapes.
+
+### Two files per skill: `SKILL.md` + `audit-state.json` (ADR-0019)
+
+Distinct from the two *encodings* above (which are two shapes of the same frontmatter), a skill is **two files on disk**:
+
+| File | Holds | Who reads it | Schema |
+|---|---|---|---|
+| **`SKILL.md`** frontmatter | The 25 agent-facing fields — what the everyday agent reads to **find, understand, and execute** the skill: `name`, `description`, `subject`/`subjects`/`taxonomy_domain`, `deployment_target`, `scope`, `grounding`, `project`, the activation surfaces (`keywords`/`triggers`/`examples`/`anti_examples`/`paths`), `relations`, the five flat Understanding fields, `stability`/`superseded_by`, `license`, `compatibility`, `allowed-tools`. `required`: `name`, `description`, `subject`, `deployment_target`, `scope`. | every consumer + the everyday agent | `schemas/SKILL_METADATA_PROTOCOL_schema.json` |
+| **`audit-state.json`** (sidecar, skill-folder root) | The 28 audit/eval/provenance fields — the Skill Audit Loop's records *about* the skill: `schema_version`, `version`, `owner`, `urn`, `repo`, `freshness`, `drift_check`, the `eval_*` triple, the four Audit Status verdicts (`structural`/`truth`/`comprehension`/`application`), `comprehension_state`, `lifecycle`, `marketplace_tier`, `portability`, `runtime_telemetry`. `required`: `schema_version`, `owner`, `freshness`, `drift_check`, `eval_artifacts`, `eval_state`, `routing_eval` (`version` optional). | the audit loop (`/audit:*`) only — written by it, never read by the everyday agent | `schemas/skill-audit-state.schema.json` |
+
+The split *is* the SYSTEM/CONTENT boundary made physical: the sidecar is audit-loop output, the frontmatter is the agent-facing contract. The compiled manifest **joins** the two (`generate-manifest.js` merges the sidecar under the frontmatter before building each entry) so the router's quality and staleness gates read the same `health`/`eval`/`lifecycle` projections as before — the SOURCE changed, the manifest SHAPE did not. Three gates that used to live in the frontmatter schema's `allOf` are now expressed where they belong post-split: `eval_state ∈ {passing, monitored} ⇒ eval_artifacts: present` stays intra-sidecar; `comprehension_state: present` (sidecar) ⇒ the five flat Understanding fields (frontmatter) and `stability: deprecated` (frontmatter) ⇒ `superseded_by` (frontmatter) are **cross-file lint checks** in `skill-lint.js`. The prior single-file contract is recoverable via `git tag schema-v8`.
 
 ### Where does my skill live? (decision tree)
 
