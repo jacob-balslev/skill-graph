@@ -44,8 +44,8 @@ when-to-use. Example:
 subject: agent-ops
 → **STAY in the derived skill.** These are the design intent at the
 point of authoring. Cold-start agents and human authors read them
-instead of opening `docs/SKILL_METADATA_PROTOCOL_field-reference.md`. Do NOT strip these.
-Canonical source for field-purpose content is `docs/SKILL_METADATA_PROTOCOL_field-reference.md`;
+instead of opening `skill-metadata-protocol/field-reference.md`. Do NOT strip these.
+Canonical source for field-purpose content is `skill-metadata-protocol/field-reference.md`;
 the inline comment is the abridged summary. See
 `SKILL_METADATA_PROTOCOL.md § Inline field comments — the authoring convention`.
 2. `# TEMPLATE NOTE:` comments — authoring scaffolding about HOW to use
@@ -65,14 +65,15 @@ inherit a false attestation until the author noticed.
 Build automation treats this file specially: the sample manifest
 generator ingests it only under `--include-template`, and the library-wide
 harness counts it as the 9th "skill" only when the flag is set. It is NOT
-routable in day-to-day skill dispatch — the workspace value was removed; the
-template now declares `deployment_target: portable`. Authors who want the
-skill linked to specific projects/repos add `project[]` and `repo[]`
-explicitly.
+routable in day-to-day skill dispatch. The frontmatter template declares
+`deployment_target: project` because it is itself a Skill Graph specimen with
+local truth sources; authors choose `portable` or `project` for their derived
+skill and keep `project[]` / `repo[]` only when those belonging-entity
+references are true.
 ============================================================================
 schema_version: protocol contract version this skill conforms to.
 Integer 8. Prior contract retrievable via
-`git show schema-v7:schemas/SKILL_METADATA_PROTOCOL_schema.json`.
+`git show schema-v7:schemas/skill.schema.json`.
 
 ```yaml
 schema_version: 8
@@ -150,8 +151,9 @@ eval_state: unverified
 routing_eval: routing-coverage — is the skill's activation verified by the harness?
 absent (not verified) / present (gated by lint check 12; harness must exit 0).
 `present` requires populated `examples` + `anti_examples` (below) AND a passing
-run of `node scripts/skill-graph-routing-eval.js --skill <name>`. See
-docs/SKILL_METADATA_PROTOCOL_field-reference.md § routing_eval for the full enforcement contract.
+run of `node bin/skill-graph.js routing-eval --skill <name> --only-asserted`.
+See `skill-metadata-protocol/field-reference.md` § `routing_eval` for the full
+enforcement contract.
 TEMPLATE NOTE: on THIS scaffold, routing_eval MUST stay `absent` even though
 the harness happens to report every case passing. The scaffold's job is to
 model the correct authoring-time default for a brand-new un-verified skill.
@@ -213,4 +215,3 @@ runtime_telemetry:
     sample_size: 0
     success_rate: 0
 ```
-

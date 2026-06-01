@@ -158,7 +158,7 @@ Read these files before changing behavior or docs:
 1. `README.md` - project purpose, public positioning, quick start, repository map.
 2. `SKILL_GRAPH.md` - authority tiers and how schemas, docs, scripts, examples, and skills relate.
 3. `skill-metadata-protocol/SKILL_METADATA_PROTOCOL.md` - top-level normative protocol contract.
-4. `skill-metadata-protocol/design-rationale.md` - deeper rationale, archetypes, migration policy.
+4. `skill-metadata-protocol/design-rationale.md` - deeper rationale, classification history, migration policy.
 5. `skill-metadata-protocol/field-reference.md` and `skill-metadata-protocol/field-decision-guide.md` - field-level semantics and decision tables.
 6. `docs/manifest-field-mapping.md` - authored-to-generated manifest projection rules.
 7. `CONTRIBUTING.md` - contribution boundaries, skill authoring workflow, PR expectations.
@@ -217,7 +217,7 @@ Closure of `subject` (9 values) is justified by Miller's 7±2 browseability + ME
 
 Understanding-fields contract (when `comprehension_state: present`) — see `skill-metadata-protocol/SKILL_METADATA_PROTOCOL.md` § Understanding for the binding rules:
 
-- Requires the **five flat top-level Understanding fields** (v6+): `mental_model`, `purpose`, `boundary`, `analogy`, `misconception`. The legacy nested `concept` block (`definition / mental_model / purpose / boundary / taxonomy / analogy / misconception`) is deprecated and accepted only for v5 back-compat; flat fields win when both are present.
+- Requires the **five flat top-level Understanding fields**: `mental_model`, `purpose`, `boundary`, `analogy`, `misconception`. The legacy nested `concept` block (`definition / mental_model / purpose / boundary / taxonomy / analogy / misconception`) is deprecated and accepted only for back-compat; flat fields win when both are present.
 - Understanding-field content must contain no repo-specific nouns (no Sales Hub, no orchestrator-ui, no internal file paths) — the concept being taught is universal, not repo-bound.
 
 Lifecycle fields that must remain truthful, not aspirational:
