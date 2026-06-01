@@ -1,6 +1,4 @@
-# Seed Findings (Incomplete)
-
-> This file is a seed artifact from `skill-graph audit` without `--graded`. It records deterministic lint evidence plus explicit TODO review areas. It is not a completed qualitative audit until the TODO sections are replaced by reviewer or grader evidence.
+# Audit Findings
 
 ## Skill
 
@@ -8,7 +6,7 @@
 
 ## Audit Date
 
-2026-05-28
+2026-06-01
 
 ## Verdict Summary
 
@@ -20,50 +18,60 @@ ID: F1
 Severity: P2
 Surface: ../skills/skills/agent-ops/context-graph/SKILL.md:1:1
 Category: Lint diagnostic
-Problem: 4 top-level field(s) missing field-purpose comment (SKILL_METADATA_PROTOCOL.md § Inline field comments). Run `node scripts/backfill-field-purpose-comments.js` to add.
-Evidence: Emitted by skill-lint.js — see ../skills/skills/agent-ops/context-graph/SKILL.md line 1
-Required action: Inspect the flagged line, correct the value, and re-run skill-lint.js.
+Problem: 4 top-level field(s) are missing field-purpose comments required by the Skill Metadata Protocol inline-comment convention.
+Evidence: `node bin/skill-graph.js lint context-graph` emits this warning against line 1 after the structural repair.
+Required action: Run the field-purpose comment backfill or edit comments in a CONTENT-mode improvement pass, then rerun lint.
 
 ID: F2
-Severity: TODO
-Surface: activation
-Category: Activation quality — routing coverage
-Problem: TODO — human judgment required
-Evidence: TODO — reviewer must inspect the skill body
-Required action: Does the description name real trigger scenarios? Are keywords specific and not generic filler? Does the skill under-trigger or over-trigger for its intended use case?
+Severity: P2
+Surface: ../skills/skills/agent-ops/context-graph/SKILL.md relations/body prose
+Category: Relation vocabulary drift
+Problem: The skill still teaches an older relation vocabulary in comments and body prose. Its inline `relations` comment says "Six edge types," and the Coverage section says the skill graph uses three edge types: `adjacent`, `boundary`, and `verify_with`.
+Evidence: Current protocol uses `related`, `boundary`, `verify_with`, `depends_on`, `broader`, `narrower`, and `disjoint_with`, with `adjacent` retained only as a deprecated alias of `related`.
+Required action: Update the relation-vocabulary prose in a CONTENT-mode improvement so the skill teaches the current graph edge set.
 
 ID: F3
-Severity: TODO
-Surface: relations
-Category: Relation quality — graph correctness
-Problem: TODO — human judgment required
-Evidence: TODO — reviewer must inspect the skill body
-Required action: Do relations point at semantically correct neighbors? Are boundary handoffs crisp enough to prevent misuse? Are broader/narrower claims taxonomic rather than associative? Are dependencies real?
+Severity: P3
+Surface: grounding.truth_sources
+Category: Truth-source verification
+Problem: The skill declares external GitHub URL truth sources, but drift reports `EXTERNAL_UNHASHED`; the audit-state truth verdict remains `UNVERIFIED`.
+Evidence: `node bin/skill-graph.js audit context-graph --force` reports `drift: EXTERNAL_UNHASHED`; `audit-state.json` records `truth_verdict: UNVERIFIED`.
+Required action: Either convert truth sources to local hashable paths or keep truth certification UNVERIFIED and treat the URLs as citation context.
 
 ID: F4
-Severity: TODO
-Surface: grounding
-Category: Grounding quality — claims vs truth sources
-Problem: TODO — human judgment required
-Evidence: TODO — reviewer must inspect the skill body
-Required action: If scope: project (or legacy scope: codebase), do all truth_sources exist? Do claims in the body match the referenced files? Classify any mismatch as skill drift, code drift, or doc drift.
+Severity: P2
+Surface: evals
+Category: Behavior Gate coverage
+Problem: `eval_artifacts` is `planned`, `eval_state` is `unverified`, `routing_eval` is `absent`, and no eval files exist under the skill directory.
+Evidence: The skill directory contains `SKILL.md` and `audit-state.json`; no `evals/` directory is present.
+Required action: Add evals that test graph-health diagnosis, orphan detection, edge-density judgment, and false positives that should route to `skill-router`, `skill-infrastructure`, `skill-scaffold`, `context-window`, or `context-management`.
 
 ID: F5
-Severity: TODO
-Surface: content
-Category: Content quality — completeness and density
-Problem: TODO — human judgment required
-Evidence: TODO — reviewer must inspect the skill body
-Required action: Does the skill have a clear Coverage section, a Philosophy section, at least one decision table or checklist, and explicit negative bounds (Do NOT Use When)? Does it contain generic filler that adds no routing signal?
+Severity: INFO
+Surface: activation
+Category: Activation quality
+Problem: No activation defect found.
+Evidence: Description, examples, anti-examples, and keywords name multi-graph context architecture, orphan detection, graph connectivity, deterministic synthesis, and near-miss owners.
+Required action: No action required.
 
 ID: F6
-Severity: TODO
-Surface: evals
-Category: Eval quality — coverage and realism
-Problem: TODO — human judgment required
-Evidence: TODO — reviewer must inspect the skill body
-Required action: Do eval files exist if the skill is expected to be graded? Do they test realistic prompts — not trivia — and cover boundaries and failure cases as well as the happy path?
+Severity: INFO
+Surface: relations
+Category: Relation target quality
+Problem: No relation-target defect found.
+Evidence: Boundaries to `skill-router`, `skill-infrastructure`, and `skill-scaffold` are semantically crisp; `verify_with` points to `skill-infrastructure`, which is the correct implementation cross-check.
+Required action: No action required beyond F2's stale relation-vocabulary prose.
+
+## Fixed During This Audit Pass
+
+- Removed sidecar-owned fields from `SKILL.md`: `schema_version`, `version`, `owner`, `freshness`, `drift_check`, `eval_artifacts`, `eval_state`, `routing_eval`, `comprehension_state`, `portability`, `lifecycle`, `structural_verdict`, `truth_verdict`, `comprehension_verdict`, `application_verdict`, `last_audited`, and `lint_verdict`.
+- Removed the deprecated nested `concept` block because the five flat Understanding fields are already present.
+- Restored the required frontmatter `scope` field that the deterministic `--fix` pass dropped.
+- Populated `audit-state.json` with the loop-owned sidecar fields and reran the audit loop; lint moved from FAIL to PASS with one warning.
 
 ## Required Fixes
 
-- F1 [P2 warning]: 4 top-level field(s) missing field-purpose comment (SKILL_METADATA_PROTOCOL.md § Inline field comments). Run `node scripts/backfill-field-purpose-comments.js` to add.
+- F1 [P2]: add missing field-purpose comments or run the backfill in CONTENT mode.
+- F2 [P2]: update relation-vocabulary prose to the current protocol.
+- F3 [P3]: keep truth certification UNVERIFIED until external or local truth-source receipts can be verified.
+- F4 [P2]: add behavior/routing eval coverage before claiming Behavior Gate certification.
