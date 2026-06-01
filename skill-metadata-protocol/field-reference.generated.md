@@ -335,7 +335,7 @@ Current truth-source drift status, mirroring the `scripts/skill-graph-drift.js` 
 
 **Type:** `absent` | `present`
 
-Does this skill carry a comprehension eval (typically `evals/comprehension.json`) and the Understanding fields authored for the comprehension grader? `absent` (no comprehension grading), `present` (comprehension evals exist; the five flat Understanding fields `mental_model`, `purpose`, `boundary`, `analogy`, `misconception` are required by the allOf rule, OR the legacy `concept` block satisfies the requirement for v5 skills not yet migrated). Independent of `routing_eval` (router-level) and `eval_state` (content-level). The nested `eval.comprehension_state` is the v3.1 preferred alias.
+Does this skill carry a comprehension eval (typically `evals/comprehension.json`) and the Understanding fields authored for the comprehension grader? `absent` (no comprehension grading), `present` (comprehension evals exist; the five flat Understanding fields `mental_model`, `purpose`, `boundary`, `analogy`, `misconception` are required by the allOf rule, OR the legacy `concept` block satisfies the requirement for v5 skills not yet migrated). Authored-vs-measured boundary: the Understanding fields (and the legacy `concept` block) are AUTHORED CONTENT — the comprehension grader's INPUT, never the measurement itself. The measurement is the eval artifact (`comprehension.json`) plus the `comprehension_verdict` it produces. A field description that reads 'authored input read by the grader's X dimension' means exactly this — the field feeds the measurement, it is not the score. Independent of `routing_eval` (router-level) and `eval_state` (content-level). The nested `eval.comprehension_state` is the v3.1 preferred alias.
 
 **Full reference:** [`skill-metadata-protocol/field-reference.md#comprehension_state`](field-reference.md#comprehension_state)
 
@@ -365,7 +365,7 @@ Legacy nested encoding of the Understanding fields. The current contract authors
 
 **Type:** string
 
-Primitives and their relationships. Name primitives and the relationships between them. Markdown permitted. Author with the depth the concept needs — no protocol length cap. Graded by the comprehension grader's `mental_model` dimension (weight 1.5). Replaces nested `concept.mental_model` in v6 — see the v5-to-v6 migration note.
+Primitives and their relationships. Name primitives and the relationships between them. Markdown permitted. Author with the depth the concept needs — no protocol length cap. Authored input read by the comprehension grader's `mental_model` dimension (weight 1.5). Replaces nested `concept.mental_model` in v6 — see the v5-to-v6 migration note.
 
 **Full reference:** [`skill-metadata-protocol/field-reference.md#mental_model`](field-reference.md#mental_model)
 
@@ -375,7 +375,7 @@ Primitives and their relationships. Name primitives and the relationships betwee
 
 **Type:** string
 
-What problem the concept solves and the alternative it replaced. Concrete pain point + prior alternative. No length cap. Graded by the comprehension grader's `purpose` dimension (weight 1.0). Replaces nested `concept.purpose` in v6.
+What problem the concept solves and the alternative it replaced. Concrete pain point + prior alternative. No length cap. Authored input read by the comprehension grader's `purpose` dimension (weight 1.0). Replaces nested `concept.purpose` in v6.
 
 **Full reference:** [`skill-metadata-protocol/field-reference.md#purpose`](field-reference.md#purpose)
 
@@ -385,7 +385,7 @@ What problem the concept solves and the alternative it replaced. Concrete pain p
 
 **Type:** string
 
-Things commonly confused with the concept but that are NOT it. Express each difference as a mechanism (different primitives, purpose, or scope) — not just different names. No length cap. Graded by the comprehension grader's `boundary` dimension (weight 1.5). Replaces nested `concept.boundary` in v6. Distinct from `relations.boundary` (routing-layer handoff).
+Things commonly confused with the concept but that are NOT it. Express each difference as a mechanism (different primitives, purpose, or scope) — not just different names. No length cap. Authored input read by the comprehension grader's `boundary` dimension (weight 1.5). Replaces nested `concept.boundary` in v6. Distinct from `relations.boundary` (routing-layer handoff).
 
 **Full reference:** [`skill-metadata-protocol/field-reference.md#boundary`](field-reference.md#boundary)
 
@@ -395,7 +395,7 @@ Things commonly confused with the concept but that are NOT it. Express each diff
 
 **Type:** string
 
-Analogy that preserves the core mechanism. Translates the concept for a non-expert without breaking the structural relationship between primitives. No length cap. Graded by the comprehension grader's `analogy` dimension (weight 0.5). Replaces nested `concept.analogy` in v6.
+Analogy that preserves the core mechanism. Translates the concept for a non-expert without breaking the structural relationship between primitives. No length cap. Authored input read by the comprehension grader's `analogy` dimension (weight 0.5). Replaces nested `concept.analogy` in v6.
 
 **Full reference:** [`skill-metadata-protocol/field-reference.md#analogy`](field-reference.md#analogy)
 

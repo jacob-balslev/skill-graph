@@ -96,9 +96,14 @@ naming a concrete consumer for a `philosophy` field.
 1. **Philosophy:** first — is there a concrete consumer (human-browse surface, or a
    philosophy-aware grader) that would read a `philosophy` field? If yes → add it (Option A).
    If no consumer can be named → it stays body content; do NOT add the field yet.
-2. **Comprehension:** apply the description clarification (name the eval artifact + verdicts as
-   the measurement; name the Understanding fields as the grader's authored input)? (yes / no)
-   This is a low-risk SYSTEM doc/schema-description edit — no field added or removed.
+2. **Comprehension — DECIDED & APPLIED (2026-06-01).** The description clarification landed in
+   `schemas/SKILL_METADATA_PROTOCOL_schema.json`: the 9 Understanding/`concept` field
+   descriptions were reframed from "Graded by the comprehension grader's X dimension" →
+   "Authored input read by the comprehension grader's X dimension", and `comprehension_state`
+   now states the authored-vs-measured boundary explicitly (the fields are the grader's INPUT;
+   the measurement is `comprehension.json` + `comprehension_verdict`). No field added or
+   removed; no `schema_version` bump (description-only). Generated `field-reference.generated.md`
+   regenerated; `protocol:check` PASS (C7 parity OK).
 
 Until decided, the benchmark treats #3 (Philosophy) as a **candidate dimension gated on a named
 consumer** and #4 (Comprehension) as a **framing/description defect**, not a structural one.

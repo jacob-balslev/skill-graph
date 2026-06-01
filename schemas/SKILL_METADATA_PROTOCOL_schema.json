@@ -311,7 +311,7 @@
         "absent",
         "present"
       ],
-      "description": "Does this skill carry a comprehension eval (typically `evals/comprehension.json`) and the Understanding fields authored for the comprehension grader? `absent` (no comprehension grading), `present` (comprehension evals exist; the five flat Understanding fields `mental_model`, `purpose`, `boundary`, `analogy`, `misconception` are required by the allOf rule, OR the legacy `concept` block satisfies the requirement for v5 skills not yet migrated). Independent of `routing_eval` (router-level) and `eval_state` (content-level). The nested `eval.comprehension_state` is the v3.1 preferred alias."
+      "description": "Does this skill carry a comprehension eval (typically `evals/comprehension.json`) and the Understanding fields authored for the comprehension grader? `absent` (no comprehension grading), `present` (comprehension evals exist; the five flat Understanding fields `mental_model`, `purpose`, `boundary`, `analogy`, `misconception` are required by the allOf rule, OR the legacy `concept` block satisfies the requirement for v5 skills not yet migrated). Authored-vs-measured boundary: the Understanding fields (and the legacy `concept` block) are AUTHORED CONTENT — the comprehension grader's INPUT, never the measurement itself. The measurement is the eval artifact (`comprehension.json`) plus the `comprehension_verdict` it produces. A field description that reads 'authored input read by the grader's X dimension' means exactly this — the field feeds the measurement, it is not the score. Independent of `routing_eval` (router-level) and `eval_state` (content-level). The nested `eval.comprehension_state` is the v3.1 preferred alias."
     },
     "concept": {
       "type": "object",
@@ -328,27 +328,27 @@
       "properties": {
         "definition": {
           "type": "string",
-          "description": "What the concept IS. Primary category + what it does + who uses it. A domain outsider should understand. Author as deeply as the concept requires — there is no protocol length cap. Graded by the comprehension grader's `definition` dimension (weight 1.0)."
+          "description": "What the concept IS. Primary category + what it does + who uses it. A domain outsider should understand. Author as deeply as the concept requires — there is no protocol length cap. Authored input read by the comprehension grader's `definition` dimension (weight 1.0)."
         },
         "mental_model": {
           "type": "string",
-          "description": "Primitives and their relationships. Name primitives and the relationships between them. Markdown permitted inside the string. Author with the depth the concept needs — there is no protocol length cap. Graded by the comprehension grader's `mental_model` dimension (weight 1.5)."
+          "description": "Primitives and their relationships. Name primitives and the relationships between them. Markdown permitted inside the string. Author with the depth the concept needs — there is no protocol length cap. Authored input read by the comprehension grader's `mental_model` dimension (weight 1.5)."
         },
         "purpose": {
           "type": "string",
-          "description": "What problem the concept solves and the alternative it replaced. Concrete pain point + prior alternative. No protocol length cap — explain as fully as the concept needs. Graded by the comprehension grader's `purpose` dimension (weight 1.0)."
+          "description": "What problem the concept solves and the alternative it replaced. Concrete pain point + prior alternative. No protocol length cap — explain as fully as the concept needs. Authored input read by the comprehension grader's `purpose` dimension (weight 1.0)."
         },
         "boundary": {
           "type": "string",
-          "description": "Things commonly confused with the concept but that are NOT it. Express each difference as a mechanism (different primitives, different purpose, different scope) - not just different names. No protocol length cap. Graded by the comprehension grader's `boundary` dimension (weight 1.5)."
+          "description": "Things commonly confused with the concept but that are NOT it. Express each difference as a mechanism (different primitives, different purpose, different scope) - not just different names. No protocol length cap. Authored input read by the comprehension grader's `boundary` dimension (weight 1.5)."
         },
         "taxonomy": {
           "type": "string",
-          "description": "Nearby concepts with their relationship type (subset / alternative / prerequisite / composition / specialization). Markdown list permitted inside the string. No protocol length cap. Graded by the comprehension grader's `taxonomy` dimension (weight 1.0)."
+          "description": "Nearby concepts with their relationship type (subset / alternative / prerequisite / composition / specialization). Markdown list permitted inside the string. No protocol length cap. Authored input read by the comprehension grader's `taxonomy` dimension (weight 1.0)."
         },
         "analogy": {
           "type": "string",
-          "description": "Analogy that preserves the core mechanism. Translate for a non-expert without breaking the structural relationship between primitives. No protocol length cap. Graded by the comprehension grader's `analogy` dimension (weight 0.5)."
+          "description": "Analogy that preserves the core mechanism. Translate for a non-expert without breaking the structural relationship between primitives. No protocol length cap. Authored input read by the comprehension grader's `analogy` dimension (weight 0.5)."
         },
         "misconception": {
           "type": "string",
@@ -359,19 +359,19 @@
     },
     "mental_model": {
       "type": "string",
-      "description": "Primitives and their relationships. Name primitives and the relationships between them. Markdown permitted. Author with the depth the concept needs — no protocol length cap. Graded by the comprehension grader's `mental_model` dimension (weight 1.5). Replaces nested `concept.mental_model` in v6 — see the v5-to-v6 migration note."
+      "description": "Primitives and their relationships. Name primitives and the relationships between them. Markdown permitted. Author with the depth the concept needs — no protocol length cap. Authored input read by the comprehension grader's `mental_model` dimension (weight 1.5). Replaces nested `concept.mental_model` in v6 — see the v5-to-v6 migration note."
     },
     "purpose": {
       "type": "string",
-      "description": "What problem the concept solves and the alternative it replaced. Concrete pain point + prior alternative. No length cap. Graded by the comprehension grader's `purpose` dimension (weight 1.0). Replaces nested `concept.purpose` in v6."
+      "description": "What problem the concept solves and the alternative it replaced. Concrete pain point + prior alternative. No length cap. Authored input read by the comprehension grader's `purpose` dimension (weight 1.0). Replaces nested `concept.purpose` in v6."
     },
     "boundary": {
       "type": "string",
-      "description": "Things commonly confused with the concept but that are NOT it. Express each difference as a mechanism (different primitives, purpose, or scope) — not just different names. No length cap. Graded by the comprehension grader's `boundary` dimension (weight 1.5). Replaces nested `concept.boundary` in v6. Distinct from `relations.boundary` (routing-layer handoff)."
+      "description": "Things commonly confused with the concept but that are NOT it. Express each difference as a mechanism (different primitives, purpose, or scope) — not just different names. No length cap. Authored input read by the comprehension grader's `boundary` dimension (weight 1.5). Replaces nested `concept.boundary` in v6. Distinct from `relations.boundary` (routing-layer handoff)."
     },
     "analogy": {
       "type": "string",
-      "description": "Analogy that preserves the core mechanism. Translates the concept for a non-expert without breaking the structural relationship between primitives. No length cap. Graded by the comprehension grader's `analogy` dimension (weight 0.5). Replaces nested `concept.analogy` in v6."
+      "description": "Analogy that preserves the core mechanism. Translates the concept for a non-expert without breaking the structural relationship between primitives. No length cap. Authored input read by the comprehension grader's `analogy` dimension (weight 0.5). Replaces nested `concept.analogy` in v6."
     },
     "misconception": {
       "type": "string",
