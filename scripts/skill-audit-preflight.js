@@ -45,14 +45,25 @@ const fs = require('fs');
 const path = require('path');
 const { execSync } = require('child_process');
 const { parseFrontmatter, normalizeFrontmatter } = require('../lib/audit/parse-frontmatter');
+const { readSidecar, joinSidecar } = require('./lib/audit-state-sidecar');
 
 const REPO = path.resolve(__dirname, '..');
 const LIB = path.resolve(REPO, '..', 'skills', 'skills'); // canonical skill library
 const SCHEMA_PATH = path.join(REPO, 'schemas', 'SKILL_METADATA_PROTOCOL_schema.json');
+// ADR-0019: a skill is two schemas. The 25 agent-facing fields are governed by the
+// frontmatter schema; the 28 audit/eval/provenance fields live in the audit-state.json
+// sidecar (governed by skill-audit-state.schema.json). Preflight reads BOTH so each op
+// checks the file that owns its fields — v8 required against the frontmatter (those fields
+// MUST live in SKILL.md), audit status / schema_version / comprehension_state against the
+// joined sidecar (those fields moved out of frontmatter).
+const SIDECAR_SCHEMA_PATH = path.join(REPO, 'schemas', 'skill-audit-state.schema.json');
 const COMPREHENSION_MIN_CASES = 7; // audit doctrine floor (schema minItems is 5; doctrine wants >=7)
 const UNDERSTANDING_FIELDS = ['mental_model', 'purpose', 'boundary', 'analogy', 'misconception'];
 
 // audit/eval/provenance fields — the "bloat" the with-vs-without-metadata experiment strips.
+// Post-ADR-0019 these are sidecar fields (read from the joined sidecar, not frontmatter);
+// the trailing skill_graph_* provenance keys are legacy frontmatter forms kept for
+// unmigrated skills that still carry them.
 const BLOAT_FIELDS = [
   'eval_artifacts', 'eval_state', 'routing_eval', 'drift_check', 'drift_status',
   'lint_verdict', 'last_audited', 'structural_verdict', 'truth_verdict',
@@ -94,13 +105,29 @@ function loadSchema() {
   return s;
 }
 
-/** Build the readiness object for a skill against the schema. */
-function assess(skillDir, schema) {
+/** Load the audit-state sidecar schema (ADR-0019). Required: a skill is two schemas now. */
+function loadSidecarSchema() {
+  const s = readJson(SIDECAR_SCHEMA_PATH);
+  if (!s) { console.error(`[preflight] cannot read sidecar schema at ${SIDECAR_SCHEMA_PATH}`); process.exit(3); }
+  return s;
+}
+
+/** Build the readiness object for a skill against the two schemas (frontmatter + sidecar). */
+function assess(skillDir, schema, sidecarSchema) {
   const skillName = path.basename(skillDir);
   const mdPath = path.join(skillDir, 'SKILL.md');
   const raw = fs.readFileSync(mdPath, 'utf8');
   const fm = normalizeFrontmatter(parseFrontmatter(raw)) || {};
   const body = raw.split(/^---$/m).slice(2).join('---').trim();
+
+  // ADR-0019 join: the audit/eval/provenance fields live in audit-state.json. Merge the
+  // sidecar UNDER the frontmatter (frontmatter wins on any collision for a mid-migration
+  // skill that still carries the field in both) so the moved fields read from the sidecar
+  // for a migrated skill and from frontmatter for an unmigrated one. A missing sidecar is
+  // the unmigrated/brand-new case — readSidecar returns null, joinSidecar returns fm, and
+  // the moved fields read as absent (never a crash).
+  const sidecar = readSidecar(mdPath);
+  const merged = joinSidecar(fm, sidecar);
 
   const required = schema.required || [];
   const props = schema.properties || {};
@@ -108,19 +135,35 @@ function assess(skillDir, schema) {
   const dtEnum = (props.deployment_target || {}).enum || [];
 
   // --- structural (v8) ---
+  // The frontmatter `required` set (name/description/subject/deployment_target/scope) MUST
+  // live in SKILL.md, so check it against `fm` (the frontmatter), never the merged view —
+  // a moved field satisfying a frontmatter-required slot would be a false PASS.
   const missingRequired = required.filter((k) => fm[k] === undefined || fm[k] === null || fm[k] === '');
   const subjectValid = fm.subject !== undefined && subjectEnum.includes(fm.subject);
   const dtValid = fm.deployment_target !== undefined && dtEnum.includes(fm.deployment_target);
   const v8 = {
     ok: missingRequired.length === 0 && subjectValid && dtValid,
-    schema_version: fm.schema_version,
+    schema_version: merged.schema_version, // sidecar field (ADR-0019) — read from the join
     missing_required: missingRequired,
     subject: fm.subject, subject_valid: subjectValid,
     deployment_target: fm.deployment_target, deployment_target_valid: dtValid,
   };
 
+  // --- sidecar readiness (ADR-0019) ---
+  // The 7 sidecar-required audit fields (schema_version/owner/freshness/drift_check/
+  // eval_artifacts/eval_state/routing_eval). A missing sidecar means none are present —
+  // honest "not yet migrated", not an error.
+  const sidecarRequired = (sidecarSchema && Array.isArray(sidecarSchema.required)) ? sidecarSchema.required : [];
+  const sidecarObj = sidecar || {};
+  const sidecarMissing = sidecarRequired.filter((k) => sidecarObj[k] === undefined || sidecarObj[k] === null || sidecarObj[k] === '');
+  const sidecarReadiness = {
+    ok: !!sidecar && sidecarMissing.length === 0,
+    present: !!sidecar,
+    required_missing: sidecarMissing,
+  };
+
   // --- comprehension ---
-  const comprehensionState = fm.comprehension_state;
+  const comprehensionState = merged.comprehension_state; // sidecar field (ADR-0019)
   const understandingPresent = UNDERSTANDING_FIELDS.filter((k) => fm[k] !== undefined && fm[k] !== '');
   const understandingMissing = UNDERSTANDING_FIELDS.filter((k) => !understandingPresent.includes(k));
   const legacyConcept = fm.concept && typeof fm.concept === 'object';
@@ -154,7 +197,9 @@ function assess(skillDir, schema) {
   };
 
   // --- pairwise (with-vs-without-metadata experiment) ---
-  const bloatPresent = BLOAT_FIELDS.filter((k) => fm[k] !== undefined && fm[k] !== '');
+  // Read bloat presence from the merged view: post-ADR-0019 these are sidecar fields, so a
+  // migrated skill carries them in audit-state.json, an unmigrated one in frontmatter.
+  const bloatPresent = BLOAT_FIELDS.filter((k) => merged[k] !== undefined && merged[k] !== '');
   const pairwise = {
     ok: body.length > 0,
     body_nonempty: body.length > 0,
@@ -164,10 +209,16 @@ function assess(skillDir, schema) {
 
   return {
     skill: skillName, dir: skillDir,
+    sidecar_present: !!sidecar,
+    // Informational (not a gating op): reported so callers can see migration state, but kept
+    // out of `operations` so `--for all` readiness stays v8+comprehension+application+pairwise
+    // and does not flip to GAP for the currently-unmigrated corpus.
+    sidecar_readiness: sidecarReadiness,
     audit_status: {
-      structural_verdict: fm.structural_verdict, truth_verdict: fm.truth_verdict,
-      comprehension_verdict: fm.comprehension_verdict, application_verdict: fm.application_verdict,
-      eval_state: fm.eval_state, eval_artifacts: fm.eval_artifacts,
+      // Read from the joined sidecar (ADR-0019) — these fields no longer live in frontmatter.
+      structural_verdict: merged.structural_verdict, truth_verdict: merged.truth_verdict,
+      comprehension_verdict: merged.comprehension_verdict, application_verdict: merged.application_verdict,
+      eval_state: merged.eval_state, eval_artifacts: merged.eval_artifacts,
     },
     operations: { v8, comprehension, application, pairwise },
   };
@@ -241,6 +292,9 @@ function fmt(a, opSel, plan, ensured) {
   row('comprehension', o.comprehension.ok, `state=${o.comprehension.comprehension_state} understanding=${o.comprehension.understanding_fields_present.length}/5 comprehension.json=${o.comprehension.comprehension_json_exists ? `${o.comprehension.comprehension_cases} cases` : 'MISSING'}`);
   row('application', o.application.ok, o.application.application_json_exists ? 'application.json present' : 'application.json MISSING');
   row('pairwise', o.pairwise.ok, `body=${o.pairwise.body_nonempty ? 'ok' : 'EMPTY'} bloat-to-strip=${o.pairwise.bloat_fields_present.length} fields`);
+  // Informational sidecar row (ADR-0019) — does not gate `--for all`.
+  const sr = a.sidecar_readiness;
+  L.push(`  [${sr.ok ? 'PASS' : 'INFO'}] ${'sidecar'.padEnd(14)} ${sr.present ? (sr.required_missing.length ? `present, missing required: ${sr.required_missing.join(', ')}` : 'present, all required fields') : 'absent (skill not yet migrated to audit-state.json)'}`);
   if (ensured && ensured.length) { L.push('\n  --ensure applied:'); ensured.forEach((d) => L.push(`    + ${d}`)); }
   if (plan.length) {
     L.push(`\n  Remediation plan for "${opSel}" (deterministic = run with --ensure; authoring = needs an agent via /audit:*):`);
@@ -257,9 +311,10 @@ function main() {
   const dir = locateSkillDir(o.skill);
   if (!dir) { console.error(`[preflight] skill not found: ${o.skill} (searched ${LIB})`); process.exit(3); }
   const schema = loadSchema();
-  let a = assess(dir, schema);
+  const sidecarSchema = loadSidecarSchema();
+  let a = assess(dir, schema, sidecarSchema);
   let ensured = [];
-  if (o.ensure) { ensured = ensure(o.for, a); a = assess(dir, schema); } // re-assess after scaffolding
+  if (o.ensure) { ensured = ensure(o.for, a); a = assess(dir, schema, sidecarSchema); } // re-assess after scaffolding
   const plan = remediation(o.for, a);
   const ready = o.for === 'all'
     ? Object.values(a.operations).every((x) => x.ok)
@@ -273,4 +328,6 @@ function main() {
   process.exit(ready ? 0 : 2);
 }
 
-main();
+if (require.main === module) main();
+
+module.exports = { assess, loadSchema, loadSidecarSchema, locateSkillDir, BLOAT_FIELDS };
