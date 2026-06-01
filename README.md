@@ -88,6 +88,7 @@ For everything else:
 | **Install the public skill library** | [`jacob-balslev/skills`](https://github.com/jacob-balslev/skills) — `npx skills add jacob-balslev/skills` |
 | **Get oriented in the metadata protocol** | [`skill-metadata-protocol/`](skill-metadata-protocol/) — folder front door (why it exists, the axes, the two encodings, where to go next) |
 | **Get oriented in the audit loop** | [`skill-audit-loop/`](skill-audit-loop/) — folder front door (the loop, four operations, two gates, four verdicts) |
+| **Find the owning doc for a task** | [`docs/README.md`](docs/README.md) — task-based docs map |
 | **Understand the `SKILL.md` frontmatter contract** | [`skill-metadata-protocol/SKILL_METADATA_PROTOCOL.md`](skill-metadata-protocol/SKILL_METADATA_PROTOCOL.md) — the normative spec |
 | **Audit an existing skill library** | [`skill-audit-loop/SKILL_AUDIT_LOOP.md`](skill-audit-loop/SKILL_AUDIT_LOOP.md) — the audit procedure |
 | **Look up a specific field** | [`skill-metadata-protocol/field-reference.md`](skill-metadata-protocol/field-reference.md) |
