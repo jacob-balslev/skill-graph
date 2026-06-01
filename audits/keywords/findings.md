@@ -1,6 +1,4 @@
-# Seed Findings (Incomplete)
-
-> This file is a seed artifact from `skill-graph audit` without `--graded`. It records deterministic lint evidence plus explicit TODO review areas. It is not a completed qualitative audit until the TODO sections are replaced by reviewer or grader evidence.
+# Findings
 
 ## Skill
 
@@ -8,62 +6,73 @@
 
 ## Audit Date
 
-2026-05-28
+2026-06-01
 
 ## Verdict Summary
 
-PASS_WITH_FIXES
+PASS for structural Integrity Gate; truth and Behavior Gate remain UNVERIFIED because truth sources are external URLs and no graded application eval was run.
 
 ## Findings
 
 ID: F1
-Severity: P2
-Surface: ../skills/skills/product-domain/keywords/SKILL.md:1:1
-Category: Lint diagnostic
-Problem: 6 top-level field(s) missing field-purpose comment (SKILL_METADATA_PROTOCOL.md § Inline field comments). Run `node scripts/backfill-field-purpose-comments.js` to add.
-Evidence: Emitted by skill-lint.js — see ../skills/skills/product-domain/keywords/SKILL.md line 1
-Required action: Inspect the flagged line, correct the value, and re-run skill-lint.js.
+Severity: HIGH
+Surface: `/Users/jacobbalslev/Development/skills/skills/product-domain/keywords/SKILL.md`
+Category: Metadata validity
+Problem: The skill carried sidecar-owned fields in `SKILL.md`, missed required v8 `scope`, retained legacy `concept`, used `skill_graph_protocol: Skill Metadata Protocol v6`, and exceeded the v8 keyword cap with a very large keyword list.
+Evidence: Before repair, `node scripts/normalize-skill-field-shape.js --report --skill keywords` reported 17 fields to relocate, semantic debt for `scope`, and schema-unknown `concept`; `node bin/skill-graph.js lint keywords` reported 19 errors and 1 warning.
+Required action: Move loop-owned fields to `audit-state.json`, author scope, remove the legacy concept block, update protocol label after conformance is earned, cap keywords, and re-run lint.
+Status: remediated — lint now passes with 0 errors and 0 warnings, and normalization reports 0 remaining work.
 
 ID: F2
-Severity: TODO
-Surface: activation
-Category: Activation quality — routing coverage
-Problem: TODO — human judgment required
-Evidence: TODO — reviewer must inspect the skill body
-Required action: Does the description name real trigger scenarios? Are keywords specific and not generic filler? Does the skill under-trigger or over-trigger for its intended use case?
+Severity: HIGH
+Surface: `/Users/jacobbalslev/Development/skills/skills/product-domain/keywords/SKILL.md` grounding and Amazon guidance
+Category: Source freshness
+Problem: The skill used stale Seller Central forum URLs and stated Amazon search terms as a hard 250-byte constraint, while current public Seller Central guidance includes newer title guidance and search-term guidance that should be verified in the current field before publication.
+Evidence: Pre-repair grounding referenced older Seller Central discussion URLs; body said "Amazon search terms are limited to 250 bytes" and checklist said "current byte limits." Current source review on 2026-06-01 found newer Seller Central public guidance for 2025 title requirements and search terms.
+Required action: Update Amazon truth sources and reword body/checklist guidance to avoid overclaiming byte-vs-character enforcement across marketplaces or account surfaces.
+Status: remediated.
 
 ID: F3
-Severity: TODO
-Surface: relations
-Category: Relation quality — graph correctness
-Problem: TODO — human judgment required
-Evidence: TODO — reviewer must inspect the skill body
-Required action: Do relations point at semantically correct neighbors? Are boundary handoffs crisp enough to prevent misuse? Are broader/narrower claims taxonomic rather than associative? Are dependencies real?
+Severity: MEDIUM
+Surface: `/Users/jacobbalslev/Development/skills/skills/product-domain/keywords/SKILL.md` relation metadata
+Category: Relation quality
+Problem: Relation comments still described the older six-edge vocabulary and pending `boundary` rename.
+Evidence: Pre-repair metadata said "Six edge types" and "rename to `suppresses` pending ADR-0018".
+Required action: Refresh relation comments to the current relation field set and keep boundary reason text in ownership form.
+Status: remediated.
 
 ID: F4
-Severity: TODO
-Surface: grounding
-Category: Grounding quality — claims vs truth sources
-Problem: TODO — human judgment required
-Evidence: TODO — reviewer must inspect the skill body
-Required action: If scope: project (or legacy scope: codebase), do all truth_sources exist? Do claims in the body match the referenced files? Classify any mismatch as skill drift, code drift, or doc drift.
+Severity: MEDIUM
+Surface: `/Users/jacobbalslev/Development/skills/skills/product-domain/keywords/evals/comprehension.json`
+Category: Eval artifact coverage
+Problem: The skill declared eval intent but had no local comprehension eval under its skill directory.
+Evidence: Pre-repair sidecar state was `eval_artifacts: planned`; the skill directory contained only `SKILL.md`.
+Required action: Add a local comprehension eval covering definition, mental model, boundaries, misconception, and application workflow.
+Status: remediated — local eval exists and parses as JSON.
 
 ID: F5
-Severity: TODO
-Surface: content
-Category: Content quality — completeness and density
-Problem: TODO — human judgment required
-Evidence: TODO — reviewer must inspect the skill body
-Required action: Does the skill have a clear Coverage section, a Philosophy section, at least one decision table or checklist, and explicit negative bounds (Do NOT Use When)? Does it contain generic filler that adds no routing signal?
+Severity: LOW
+Surface: `node scripts/skill-graph-drift.js --json ../skills/skills/product-domain/keywords`
+Category: Drift sentinel limitation
+Problem: All grounding sources are external URLs, so the zero-dependency drift sentinel cannot hash them.
+Evidence: Drift output reports `status: "EXTERNAL_UNHASHED"` for Etsy Help, Amazon Seller Central, Google Search Central, and Shopify Help sources.
+Required action: Leave `truth_verdict` as `UNVERIFIED` until a snapshot/hash or graded source-review receipt exists.
+Status: accepted.
 
 ID: F6
-Severity: TODO
-Surface: evals
-Category: Eval quality — coverage and realism
-Problem: TODO — human judgment required
-Evidence: TODO — reviewer must inspect the skill body
-Required action: Do eval files exist if the skill is expected to be graded? Do they test realistic prompts — not trivia — and cover boundaries and failure cases as well as the happy path?
+Severity: INFO
+Surface: `/Users/jacobbalslev/Development/skills/skills/product-domain/keywords/audit-state.json`
+Category: Behavior Gate
+Problem: No graded comprehension or application run was executed, so behavior certification cannot be claimed.
+Evidence: `node bin/skill-graph.js audit keywords --force` ran in Integrity-only mode and said to re-run with `--graded` to populate behavior verdicts.
+Required action: Leave `comprehension_verdict` and `application_verdict` as `UNVERIFIED` until a graded run produces receipts.
+Status: accepted.
 
-## Required Fixes
+## Verification Evidence
 
-- F1 [P2 warning]: 6 top-level field(s) missing field-purpose comment (SKILL_METADATA_PROTOCOL.md § Inline field comments). Run `node scripts/backfill-field-purpose-comments.js` to add.
+- `node bin/skill-graph.js lint keywords` — PASS, 0 errors, 0 warnings.
+- `node scripts/normalize-skill-field-shape.js --report --skill keywords` — 0 fields to relocate, 0 semantic debt fields.
+- `node scripts/check-markdown-links.js ../skills/skills/product-domain/keywords/SKILL.md` — OK.
+- `node -e "JSON.parse(...audit-state.json); JSON.parse(...evals/comprehension.json)"` — JSON OK.
+- `node scripts/skill-graph-drift.js --json ../skills/skills/product-domain/keywords` — `EXTERNAL_UNHASHED` for external URL truth sources.
+- `node bin/skill-graph.js audit keywords --force` — Integrity-only audit ran lint PASS and drift EXTERNAL_UNHASHED.
