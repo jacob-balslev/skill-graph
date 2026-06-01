@@ -254,7 +254,13 @@ Compression is allowed only when it preserves meaning and evidence. A valid comp
 
 When an external format imposes a hard limit, satisfy the limit in a generated/export-specific artifact and preserve the canonical Skill Metadata Protocol source. Document the constraint and point back to the full source instead of weakening the source artifact.
 
-Before changing agent behavior instructions, quality rules, marketplace positioning, or skill-library structure, load the relevant local skills from this repo and from the sibling Development skill library when available. At minimum, check the relevant Skill Graph skills (`semantics`, `information-architecture`, `context-engineering`, `skill-scaffold`, `skill-infrastructure`) and the live audit references (`skill-audit-loop/SKILL_AUDIT_LOOP.md`, `skill-audit-loop/SKILL_AUDIT_LOOP.md` § Part 2) when the task touches those concerns. Also check the broader Development skills that govern quality (`quality-doctrine`, `no-cutting-corners`, `compression`, `token-efficiency`).
+Before changing agent behavior instructions, quality rules, marketplace positioning, or skill-library structure, compile the smallest sufficient working set for the task:
+
+- Start from the exact owning surface: schema files for binding field shape, `SKILL_METADATA_PROTOCOL.md` for normative field semantics, `SKILL_AUDIT_LOOP.md` for audit procedure, `SKILL_GRAPH.md § Current State` for live corpus facts, and the document-routing table below when ownership is unclear.
+- Read the relevant local skill files from this repo and the sibling Development skill library when available. Check the Skill Graph skills that match the task (`semantics`, `information-architecture`, `context-engineering`, `skill-scaffold`, `skill-infrastructure`) and the live audit references (`skill-audit-loop/SKILL_AUDIT_LOOP.md`, `skill-audit-loop/SKILL_AUDIT_LOOP.md` § Part 2) when those concerns are actually in scope. Also check the broader Development skills that govern quality when present (`quality-doctrine`, `no-cutting-corners`, `compression`, `token-efficiency`).
+- Treat missing local skills as a reported limitation for that lens, not as permission to skip available skills.
+- Avoid loading generated marketplace output, historical ADR bodies, archived research, or previous audit artifacts unless that file is the source of truth for the question being answered.
+- When a session grows large, continue from a short evidence list that names the files and commands checked instead of carrying raw search dumps forward.
 
 Claims of quality require verification. If a change says links work, routing works, exports validate, descriptions fit a limit, or all findings are preserved, run the relevant command and report the result. If verification was not run, say so.
 
