@@ -35,7 +35,7 @@ All twelve are **human-authored**. The schema lint gate (`skill-lint.js` against
 | `eval_state` | enum | human-authored, **earned-with-receipt when `passing` or `monitored`** | `passing` requires a real grader run; `monitored` requires CI integration |
 | `routing_eval` | enum | human-authored, **earned-with-receipt when `present`** | `present` requires populated `examples` + `anti_examples` AND a passing `node scripts/skill-graph-routing-eval.js --skill <name>` run |
 
-## Conditionally required (3 fields, allOf-enforced)
+## Conditionally required (2 fields, allOf-enforced)
 
 Required only when the gating condition applies. All **human-authored**.
 
@@ -43,7 +43,6 @@ Required only when the gating condition applies. All **human-authored**.
 |---|---|---|
 | `grounding` | `deployment_target: project` | schema `allOf` |
 | `superseded_by` | `stability: deprecated` | schema `allOf` |
-| `keywords` | `deployment_target: project` OR `routing_bundles` is set | routing review / routing evals (not schema-enforced) |
 
 ## Optional, strongly recommended (5 fields)
 
@@ -53,7 +52,7 @@ All **human-authored**. Not schema-required but materially improve discoverabili
 |---|---|---|
 | `stability` | enum | `experimental` (default) / `stable` / `frozen` / `deprecated`. Promotion to `stable` is gated by `check-stability-promotion.js`. |
 | `license` | string | SPDX identifier. Strongly recommended for any skill intended for distribution. |
-| `keywords` | string[] | Semantic phrases for fuzzy/embedding-based routing. |
+| `keywords` | string[] | Recommended semantic phrases for fuzzy/embedding-based routing; capped at 10 to prevent keyword stuffing. |
 | `triggers` | string[] | Exact match strings for label-routable skills. |
 | `relations` | object | Typed edges to sibling skills. Lint enforces target existence. |
 

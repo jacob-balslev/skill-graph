@@ -1187,9 +1187,9 @@ keywords:
   - e-commerce integration
 ```
 
-**When to use.** Required for all routable skills. Omit only for internal helper skills that are never activated by user language.
+**When to use.** Recommended for routable skills. Use up to 10 phrases a user would naturally type when asking for this skill's domain.
 
-**When NOT to use.** Keywords are not tags for browse taxonomy — that is `category` / `category`'s job. Do not add every possible synonym; keep to the 3–8 most likely search terms.
+**When NOT to use.** Keywords are not tags for browse taxonomy — that is `subject` and `taxonomy_domain`'s job. Do not add every possible synonym; keep to the most likely search terms.
 
 **Verification.** Routers and routing-eval cases expose missing keyword coverage. The canonical linter no longer carries the removed routing-quality check module.
 

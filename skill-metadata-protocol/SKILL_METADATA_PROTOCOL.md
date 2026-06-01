@@ -215,7 +215,7 @@ Required in `audit-state.json`:
 
 ### Conditionally required
 
-These fields are required only when a specific condition is met. The frontmatter schema enforces `grounding`; the sidecar schema enforces the `eval_state` / `eval_artifacts` coherence rule; `skill-lint.js` enforces cross-file conditions such as `comprehension_state` requiring Understanding prose. The `keywords` rule is a routing-quality convention verified by review and routing evals rather than by schema lint, since the schema cannot reason about routability intent.
+These fields are required only when a specific condition is met. The frontmatter schema enforces `grounding`; the sidecar schema enforces the `eval_state` / `eval_artifacts` coherence rule; `skill-lint.js` enforces cross-file conditions such as `comprehension_state` requiring Understanding prose. `keywords` are recommended activation evidence for routable skills, but they are not a required-field rule.
 
 | Field | Required when | Enforced by |
 |---|---|---|
@@ -223,7 +223,6 @@ These fields are required only when a specific condition is met. The frontmatter
 | `superseded_by` | `stability: deprecated` | cross-file lint / frontmatter lint |
 | `mental_model` + `purpose` + `boundary` + `analogy` + `misconception` | `comprehension_state: present` in `audit-state.json` | cross-file lint |
 | `eval_artifacts: present` | `eval_state: passing` or `eval_state: monitored` | sidecar schema `allOf` |
-| `keywords` | `deployment_target: project` OR `routing_bundles` is set | routing review / routing evals |
 
 ### Optional (strongly recommended)
 
@@ -232,7 +231,7 @@ Not schema-required, but most useful skills include these:
 ```yaml
 stability       # experimental | stable | frozen | deprecated
 license         # SPDX identifier (e.g. MIT, Apache-2.0)
-keywords        # string[] — semantic phrases for discovery
+keywords        # string[] — recommended semantic phrases for discovery; max 10
 triggers        # string[] — exact match activation phrases
 relations       # typed edges to sibling skills
                 # ⚠ relations.boundary is INVERSE to its name — it EXCLUDES the

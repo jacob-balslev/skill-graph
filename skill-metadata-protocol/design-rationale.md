@@ -278,7 +278,7 @@ The YAML frontmatter uses the current v8 schema, including the flat Understandin
 | | [`compatibility`](field-reference.md#compatibility) | | `{ runtimes?, node?, notes? }` |
 | | [`allowed-tools`](field-reference.md#allowed-tools) | | space-separated string |
 
-**Conditional requiredness in one line:** `grounding` when `deployment_target: project`, `superseded_by` when `stability: deprecated`, Understanding fields or `concept` when `comprehension_state: present`, and `eval_artifacts: present` when `eval_state` is `passing` or `monitored`. The schema enforces those rules via `allOf` / `anyOf`. `keywords` are expected when the skill is routable, but that is checked by routing review and routing evals rather than by schema lint. For the decision tables that help you choose between `portable` / `project`, see [`skill-metadata-protocol/field-decision-guide.md`](field-decision-guide.md).
+**Conditional requiredness in one line:** `grounding` when `deployment_target: project`, `superseded_by` when `stability: deprecated`, Understanding fields or `concept` when `comprehension_state: present`, and `eval_artifacts: present` when `eval_state` is `passing` or `monitored`. The schema enforces those rules via `allOf` / `anyOf`. `keywords` are recommended for routable skills and reviewed by routing review / routing evals, but they are not a required-field rule. For the decision tables that help you choose between `portable` / `project`, see [`skill-metadata-protocol/field-decision-guide.md`](field-decision-guide.md).
 
 ## Why the Evaluation Status is orthogonal (ADR 0001 + ADR 0006)
 

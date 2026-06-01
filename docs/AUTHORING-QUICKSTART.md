@@ -55,7 +55,8 @@ Triggered only when the gating condition applies. Schema-enforced via `allOf`:
 |---|---|
 | `grounding` | `deployment_target: project` |
 | `superseded_by` | `stability: deprecated` |
-| `keywords` | `deployment_target: project` OR `routing_bundles` is set |
+
+For routable skills, add `keywords` as a recommended activation surface: up to 10 semantic phrases a user would naturally type. `keywords` are reviewed by routing evals and routing review, but they are not a schema-required field.
 
 ### Do NOT hand-author these (loop-written)
 

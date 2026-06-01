@@ -83,14 +83,14 @@ Three independent axes of eval status. A skill can be at any point in the 3×3×
 | `concept` | Legacy concept model accepted only in historical skills | retired seven-field teaching block |
 | `eval_last_run` | What concrete run supports the current eval claim? | `{ at, status, receipt? }` |
 
-### Activation & routing (7 fields, 1 conditionally-required, 6 optional)
+### Activation & routing (7 optional fields)
 
 How the skill surfaces to a router. The three trigger fields (`triggers`, `keywords`, `examples`) answer routing at three different specificities.
 
 | Field | Cardinality | Role |
 |---|---|---|
 | `triggers` | many | Exact phrase or label triggers |
-| `keywords` | many | Semantic keywords for fuzzy matching — required when skill is routable (`deployment_target: project` or non-empty `routing_bundles`) |
+| `keywords` | many, max 10 | Recommended semantic phrases for fuzzy matching; not a schema-required field |
 | `examples` | many | Positive-class activation prompts (few-shot retrieval targets) |
 | `anti_examples` | many | Negative-class prompts (hard negatives for boundary discrimination) |
 | `paths` | many glob patterns | File-surface activation |
