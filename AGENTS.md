@@ -66,9 +66,9 @@ There are three named things. Keep them distinct; never collapse one into anothe
 
 ### What each command writes (so the three layers stay distinct)
 
-The three layers above describe **roles**; this table is the operational counterpart — which command writes to which surface. Use when debugging "why didn't field X get stamped?" or "which command should I run to refresh Y?" The Audit Status fields appear in skill frontmatter; the artifacts appear under `audits/<skill>/`.
+The three layers above describe **roles**; this table is the operational counterpart — which command writes to which surface. Use when debugging "why didn't field X get stamped?" or "which command should I run to refresh Y?" The Audit Status fields live in the skill's sibling `audit-state.json` sidecar; the artifacts appear under `audits/<skill>/`.
 
-| Operation | Reads | Writes to SKILL.md frontmatter | Writes artifacts |
+| Operation | Reads | Writes to `audit-state.json` sidecar | Writes artifacts |
 |---|---|---|---|
 | `audit` (Integrity Gate, no flags) | skill source + truth_sources | `last_audited`, `lint_verdict`, `structural_verdict`, `truth_verdict` | `audits/<skill>/{findings,verdict,scorecard}.md` |
 | `audit --graded` | + grader CLI | + `comprehension_verdict`, `application_verdict` (when their evals exist) | graded scorecard rows |

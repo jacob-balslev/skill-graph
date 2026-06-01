@@ -63,33 +63,41 @@ The template lints clean as-is, so you can incrementally edit and re-lint to cat
 
 ---
 
-## M8–M11: Fill in the required fields (v8 classification)
+## M8–M11: Fill in the required fields (v8 classification + sidecar)
 
-The required v8 fields are: `schema_version`, `name`, `description`, `version`, `subject` (9-enum), `deployment_target` (`portable`/`project`), `scope` (free-text PRD-style description), `owner`, `freshness`, `drift_check`, `eval_artifacts`, `eval_state`, `routing_eval`. See [`skill-metadata-protocol/SKILL_METADATA_PROTOCOL.md` § Schema contract](../skill-metadata-protocol/SKILL_METADATA_PROTOCOL.md#schema-contract). The template has all current fields — you're replacing values, not adding fields.
+The required v8 `SKILL.md` frontmatter fields are: `name`, `description`, `subject` (9-enum), `deployment_target` (`portable`/`project`), and `scope` (free-text PRD-style description). The required sibling `audit-state.json` fields are: `schema_version`, `owner`, `freshness`, `drift_check`, `eval_artifacts`, `eval_state`, and `routing_eval`. See [`skill-metadata-protocol/SKILL_METADATA_PROTOCOL.md` § Schema contract](../skill-metadata-protocol/SKILL_METADATA_PROTOCOL.md#schema-contract). The template has all current fields — you're replacing values, not inventing a new shape.
 
-For `markdown-post-frontmatter-review`, the values look like:
+For `markdown-post-frontmatter-review`, the `SKILL.md` frontmatter values look like:
 
 ```yaml
-schema_version: 8
 name: markdown-post-frontmatter-review
 description: "Authoring and reviewing the YAML frontmatter of a markdown post — required fields (title, date, slug, tags), validation against the content schema, ambiguous date formats, slug/file-path alignment."
-version: 0.1.0
 
 # v8 classification (required)
 subject: code-engineering
 deployment_target: project
 scope: "Markdown post frontmatter review for a static-site content project"
-
-owner: <your-handle-or-team>
-freshness: "2026-05-06"
-drift_check:
-  last_verified: "2026-05-06"
-eval_artifacts: none
-eval_state: unverified
-routing_eval: absent
 ```
 
-For `deployment_target: project` you also need a `grounding` block — point it at the real content schema and template post in your repo:
+The sibling `audit-state.json` starts with:
+
+```json
+{
+  "schema_version": 8,
+  "owner": "<your-handle-or-team>",
+  "freshness": "2026-05-06",
+  "drift_check": {
+    "last_verified": "2026-05-06"
+  },
+  "eval_artifacts": "none",
+  "eval_state": "unverified",
+  "routing_eval": "absent"
+}
+```
+
+The Skill Audit Loop will update the sidecar as audits and evals run.
+
+For `deployment_target: project` you also need a `grounding` block in `SKILL.md` frontmatter — point it at the real content schema and template post in your repo:
 
 ```yaml
 grounding:

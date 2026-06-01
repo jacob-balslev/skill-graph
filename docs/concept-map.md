@@ -2,11 +2,11 @@
 
 > **Status:** Reality-aligned teaching reference as of **2026-05-28** (schema_version 8).
 > **Source of truth precedence:** `schemas/SKILL_METADATA_PROTOCOL_schema.json` > `skill-metadata-protocol/field-reference.md` > this file.
-> **Purpose:** Explain the 40-field Skill Metadata Protocol frontmatter at a conceptual level without inventing structure that the schema does not actually enforce. If this file disagrees with the schema, the schema wins — fix this file.
+> **Purpose:** Explain the two-file Skill Metadata Protocol contract at a conceptual level without inventing structure that the schemas do not actually enforce. If this file disagrees with the schemas, the schemas win — fix this file.
 
 ## What kind of graph is this?
 
-Skill Graph is a **property graph with a controlled-vocabulary set of typed predicates**, not an RDF knowledge graph. Nodes are skills. Edges are the keys inside `relations.*`. Node attributes are the 40 top-level authored frontmatter fields. A JSON-LD `@context` (`schemas/skill.context.jsonld`) projects the property graph into SKOS / Dublin Core / PROV-O triples for consumers that want RDF semantics, but authoring stays in flat YAML.
+Skill Graph is a **property graph with a controlled-vocabulary set of typed predicates**, not an RDF knowledge graph. Nodes are skills. Edges are the keys inside `relations.*`. Node attributes come from `SKILL.md` frontmatter joined with sibling `audit-state.json` sidecars. A JSON-LD `@context` (`schemas/skill.context.jsonld`) projects the agent-facing frontmatter into SKOS / Dublin Core / PROV-O triples for consumers that want RDF semantics, but authoring stays in `SKILL.md` plus JSON sidecar files.
 
 Skill Graph does **not** promise:
 
@@ -16,20 +16,22 @@ Skill Graph does **not** promise:
 
 What it does promise: deterministic lint, manifest generation, relation-aware routing, drift detection against content-addressable truth sources, and portable export to SKILL.md.
 
-## The 56 authored fields — grouped by role
+## The two-file contract — grouped by role
 
 The fields split into conceptual groups. This grouping is a teaching aid only — the schema groups by requiredness and conditional rules. See `skill-metadata-protocol/design-rationale.md § Requiredness Groups` for the authoritative grouping.
 
 The exact field count:
 
-- **56 top-level authored fields** — the number authors may write in YAML frontmatter.
-- **13 required-for-all fields** — every skill must populate these: `schema_version`, `name`, `description`, `version`, `subject`, `deployment_target`, `scope`, `owner`, `freshness`, `drift_check`, `eval_artifacts`, `eval_state`, and `routing_eval`.
+- **25 agent-facing frontmatter fields** — the current `SKILL.md` surface authors maintain for routing and execution.
+- **28 audit-state sidecar fields** — the sibling `audit-state.json` surface the Skill Audit Loop owns.
+- **5 required frontmatter fields** — every `SKILL.md` must populate `name`, `description`, `subject`, `deployment_target`, and `scope`.
+- **7 required sidecar fields** — every `audit-state.json` must populate `schema_version`, `owner`, `freshness`, `drift_check`, `eval_artifacts`, `eval_state`, and `routing_eval`.
 - **Conditionally-required fields** — `grounding` when `deployment_target: project`, `superseded_by` when `stability: deprecated`, and the Understanding fields or `concept` when `comprehension_state: present`.
 - **Optional enrichment fields** — including nested sub-fields inside `relations`, `grounding`, `portability`, `compatibility`, `lifecycle`, `runtime_telemetry`, and concept/eval receipts.
 
-When you see "possible fields" counted anywhere, that is the count including nested sub-fields and v3.1 aliases individually. The 40 count refers to canonical top-level authored keys only.
+When you see "possible fields" counted anywhere, that is the count including nested sub-fields and legacy aliases individually. The current contract is the two-file ADR-0019 shape, not the older single-frontmatter count.
 
-### Identity (5 fields, 4 required, 1 optional)
+### Identity (5 fields)
 
 The identity of the skill — what it is, who it is, which version of itself.
 
@@ -38,16 +40,15 @@ The identity of the skill — what it is, who it is, which version of itself.
 | `name` | one | Stable identifier; the handle other skills point at | `dcterms:identifier` |
 | `urn` | one | Optional globally unique persistent identifier | `dcterms:identifier` |
 | `description` | one | Routing contract — *when* to activate, not *what* the skill covers | `dcterms:description` |
-| `version` | one | Semver of the skill content itself | `dcterms:hasVersion` |
-| `owner` | one | Maintenance accountability | `dcterms:creator` |
+| `version` | one | Semver of the skill content itself; sidecar field | `dcterms:hasVersion` |
+| `owner` | one | Maintenance accountability; sidecar field | `dcterms:creator` |
 
-### Classification (8 fields, 4 required)
+### Classification (7 frontmatter fields)
 
 The kind of skill and where it lives in the library.
 
 | Field | Cardinality | Role | Required? |
 |---|---|---|---|
-| `schema_version` | one | Contract version - currently `8` | always |
 | `subject` | one enum | Primary browse shelf — one of nine closed values (`code-engineering`, `quality-assurance`, `frontend-ui`, `design-craft`, `agent-ops`, `product-domain`, `knowledge-organization`, `meta-methods`, `data-analytics`) | always |
 | `deployment_target` | one enum | Where the skill deploys — `portable` or `project` | always |
 | `scope` | one string | Free-text PRD-style statement of what the skill teaches and what it does not | always |
@@ -56,7 +57,7 @@ The kind of skill and where it lives in the library.
 | `stability` | one enum | `experimental`, `stable`, `frozen`, `deprecated` | optional |
 | `superseded_by` | one | Replacement skill when deprecated | required if `stability: deprecated` |
 
-### Health & drift (4 fields, 2 required, 2 optional)
+### Health & drift (sidecar fields)
 
 Whether the skill is fresh, verified, and monitored. The two required fields (`freshness`, `drift_check`) answer different questions; lifecycle and telemetry add maintenance policy and live feedback when available.
 
@@ -69,7 +70,7 @@ Whether the skill is fresh, verified, and monitored. The two required fields (`f
 
 Historical proposal: collapse `freshness` + `drift_check.last_verified` + `lifecycle.stale_after_days` into two primitives (`asserted_at` + `stale_after`). That proposal did not land in v8; the current schema keeps the three-field shape above.
 
-### Evaluation Status (5 fields, 3 required, 2 optional)
+### Evaluation Status (sidecar fields plus frontmatter Understanding fields)
 
 Three independent axes of eval status. A skill can be at any point in the 3×3×2 product of these enums.
 
@@ -79,7 +80,7 @@ Three independent axes of eval status. A skill can be at any point in the 3×3×
 | `eval_state` | Have the evals been run and passed? | `unverified` \| `passing` \| `monitored` |
 | `routing_eval` | Is routing explicitly evaluated? | `absent` \| `present` |
 | `comprehension_state` | Is concept comprehension explicitly evaluated? | `absent` \| `present` |
-| `concept` | What concept model supports comprehension grading? | seven-field teaching block |
+| `concept` | Legacy concept model accepted only in historical skills | retired seven-field teaching block |
 | `eval_last_run` | What concrete run supports the current eval claim? | `{ at, status, receipt? }` |
 
 ### Activation & routing (7 fields, 1 conditionally-required, 6 optional)

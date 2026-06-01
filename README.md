@@ -4,7 +4,7 @@
 
 **The canonical home for structured `SKILL.md` libraries.** Skill spec, JSON schemas, lint, manifest compiler, router, drift sentinel, audit loop, and the export pipeline — all shipped as a single CLI.
 
-A plain `SKILL.md` gives an agent a procedure to load. The Skill Metadata Protocol adds the structured frontmatter contract. Skill Graph turns those declarations into a compiled manifest, routing map, drift sentinel, overlap detector, audit loop, and export path back to the plain `SKILL.md` format.
+A plain `SKILL.md` gives an agent a procedure to load. The Skill Metadata Protocol adds the structured `SKILL.md` frontmatter plus the `audit-state.json` sidecar. Skill Graph turns those declarations into a compiled manifest, routing map, drift sentinel, overlap detector, audit loop, and export path back to the plain `SKILL.md` format.
 
 ## Is this for me?
 
@@ -101,7 +101,7 @@ For everything else:
 | Layer | Job | Concrete output |
 |---|---|---|
 | **SKILL.md format** | Portable skill packaging. | A folder with `SKILL.md`, optional `scripts/`, `references/`, and `assets/`. |
-| **Skill Metadata Protocol** | The per-skill relevance contract. | YAML frontmatter that declares identity, scope, taxonomy, activation signals, relations, grounding, eval state, and portability. |
+| **Skill Metadata Protocol** | The per-skill relevance and audit-state contract. | `SKILL.md` YAML frontmatter declares identity, scope, taxonomy, activation signals, relations, and grounding; sibling `audit-state.json` records eval, freshness, lifecycle, portability, and audit verdict state. |
 | **Skill Graph** | The library-level system around the protocol. | Lint, manifest generation, routing, clustering, overlap checks, drift checks, audits, evals, and `SKILL.md` export. |
 
 The distinction matters. The `SKILL.md` format answers "what can this skill do?" Skill Metadata Protocol answers "what is this skill relevant for, where does it belong, and what makes it trustworthy?" Skill Graph answers "how do we operate across a whole library of those declarations?"
@@ -119,33 +119,24 @@ Skill Metadata Protocol makes these questions explicit:
 | When should it load? | `description`, `keywords`, `triggers`, `examples`, `anti_examples`, `paths` |
 | What is it near, dependent on, or not responsible for? | `relations.related`, `relations.depends_on`, `relations.verify_with`, `relations.boundary`, `relations.broader`, `relations.narrower` |
 | What evidence makes it true? | `grounding.truth_sources`, `grounding.failure_modes`, `grounding.evidence_priority` |
-| Is it current and tested? | `freshness`, `drift_check`, `eval_artifacts`, `eval_state`, `routing_eval`, `eval_last_run`, `lifecycle` |
+| Is it current and tested? | `audit-state.json` fields: `freshness`, `drift_check`, `eval_artifacts`, `eval_state`, `routing_eval`, `eval_last_run`, `lifecycle` |
 | Can it move to another runtime? | `portability`, `compatibility`, `allowed-tools` |
 
 Once those fields exist, a skill library stops being a flat folder of Markdown files. It becomes a map of project knowledge that humans can browse and agents can route through.
 
 ## Skill Metadata Protocol
 
-This is a compact example. The full authoring scaffold is [`examples/skill-metadata-template.md`](examples/skill-metadata-template.md).
+This is a compact `SKILL.md` frontmatter example. The full authoring scaffold is [`examples/skill-metadata-template.md`](examples/skill-metadata-template.md), with the sibling audit sidecar shown after the YAML block.
 
 ```yaml
 ---
-schema_version: 8
 name: product-page-ux-review
 description: "Reviewing a product page's UX, visual hierarchy, interaction patterns, accessibility, and conversion-critical content."
-version: 1.0.0
 # v8 classification (required)
 subject: design-craft
 deployment_target: project
 scope: "Shopify product page UX review for an ecommerce project"
 taxonomy_domain: design-craft/ux
-owner: design-platform
-freshness: "2026-05-13"
-drift_check:
-  last_verified: "2026-05-13"
-eval_artifacts: planned
-eval_state: unverified
-routing_eval: absent
 keywords:
   - product page UX
   - visual hierarchy
@@ -191,17 +182,35 @@ grounding:
     - color_contrast_regression
     - interaction_feedback_missing
   evidence_priority: repo_code_first
-portability:
-  readiness: scripted
-  targets:
-    - skill-md
-lifecycle:
-  stale_after_days: 90
-  review_cadence: quarterly
 ---
 ```
 
-The protocol is the contract. The template is just the easiest way to author the contract correctly.
+The sibling `audit-state.json` carries audit/eval/provenance state:
+
+```json
+{
+  "schema_version": 8,
+  "version": "1.0.0",
+  "owner": "design-platform",
+  "freshness": "2026-05-13",
+  "drift_check": {
+    "last_verified": "2026-05-13"
+  },
+  "eval_artifacts": "planned",
+  "eval_state": "unverified",
+  "routing_eval": "absent",
+  "portability": {
+    "readiness": "scripted",
+    "targets": ["skill-md"]
+  },
+  "lifecycle": {
+    "stale_after_days": 90,
+    "review_cadence": "quarterly"
+  }
+}
+```
+
+The protocol is the two-file contract. The template is just the easiest way to author the contract correctly.
 
 ## Library Axes
 
@@ -469,7 +478,7 @@ Exit codes for `skill-graph evolve`:
 |---|---|
 | [`SKILL_GRAPH.md`](SKILL_GRAPH.md) | Library-level system model and authority tiers. |
 | [`skill-metadata-protocol/`](skill-metadata-protocol/) | Protocol layer — folder front door (`README.md`) plus the spec and its companions. |
-| [`skill-metadata-protocol/SKILL_METADATA_PROTOCOL.md`](skill-metadata-protocol/SKILL_METADATA_PROTOCOL.md) | **Canonical** normative spec for the `SKILL.md` frontmatter contract. |
+| [`skill-metadata-protocol/SKILL_METADATA_PROTOCOL.md`](skill-metadata-protocol/SKILL_METADATA_PROTOCOL.md) | **Canonical** normative spec for the `SKILL.md` frontmatter + `audit-state.json` sidecar contract. |
 | [`skill-audit-loop/`](skill-audit-loop/) | Audit-loop layer — folder front door (`README.md`) plus the canonical spec. |
 | [`skill-audit-loop/SKILL_AUDIT_LOOP.md`](skill-audit-loop/SKILL_AUDIT_LOOP.md) | **Canonical** audit procedure (4 operations: audit, improve, evaluate, evolve). |
 | [`prompts/`](prompts/) | The four operational runner prompts (single-model, batch-worker, codex-autonomous, minimal-iteration) that drive the audit loop across Claude / Codex / OpenCode. Project-root home per ADR-0015 (relocated 2026-06-01). |
@@ -479,7 +488,7 @@ Exit codes for `skill-graph evolve`:
 | [`schemas/`](schemas/) | Canonical-only JSON Schemas — `SKILL_METADATA_PROTOCOL_schema.json` (the binding contract; current shape is v8, see [`SKILL_GRAPH.md § Current State`](SKILL_GRAPH.md#current-state--single-source-of-truth)) + `manifest.schema.json` + `audits-manifest.schema.json` + `comprehension.schema.json`. Prior contract versions live in git history per [ADR-0014](docs/adr/0014-canonical-only-schema-files.md). Also `skill.context.jsonld` and a `vocabulary/` namespace. |
 | [`lib/audit/`](lib/audit/) | Audit-loop runtime bundled in `@skill-graph/cli` — see [`AGENTS.md § Internal lib/ layout`](AGENTS.md#internal-lib-layout). |
 | [`marketplace/`](marketplace/) | Staging buffer for the public `jacob-balslev/skills` release. Generated by `scripts/export-marketplace-skills.js`. **Never hand-edit** — see [`AGENTS.md § Public Distribution`](AGENTS.md#public-distribution--canonical-url-contract). |
-| [`audits/`](audits/) | Per-skill audit artifacts (`audits/<skill>/findings.md`, `verdict.md`, `scorecard.md`) emitted by `audit`. Evidence, not state — state lives in each skill's Audit Status. |
+| [`audits/`](audits/) | Per-skill audit artifacts (`audits/<skill>/findings.md`, `verdict.md`, `scorecard.md`) emitted by `audit`. Evidence, not state — state lives in each skill's `audit-state.json` Audit Status. |
 | [`evals/`](evals/) | Routing-eval baseline (`retrieval-baseline-v2.json`). Per-skill comprehension/application evals live alongside each skill or under `examples/evals/`. |
 | [`data/`](data/) | Hand-edited classification data feeding upstream tooling. Today: `publication-classification.json` (per-skill OSS publication tier, consumed by the parent Development repo's audit worklist). |
 | [`examples/skill-metadata-template.md`](examples/skill-metadata-template.md) | Copyable authoring template. |

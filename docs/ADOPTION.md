@@ -40,7 +40,7 @@ If none of these apply, stay on plain [`SKILL.md`](https://agentskills.io/specif
 
 | You pay | Time investment per skill | You get (in outcomes) |
 |---|---|---|
-| 13 required frontmatter fields per skill (vs plain `SKILL.md`'s 2) | ~15-20 min first pass (use template) | Wrong-skill activation becomes debuggable |
+| 5 required `SKILL.md` fields plus 7 required `audit-state.json` fields per skill (vs plain `SKILL.md`'s 2) | ~15-20 min first pass (use template) | Wrong-skill activation becomes debuggable |
 | SHA-256 baselines for grounded skills | ~5 min one-command baseline (`drift-check --record`) | Repo-specific skills stop silently rotting |
 | Cross-skill relation existence checks | ~10 min on day 1 (less afterward as relations stabilise) | Team conventions become auditable rather than tribal |
 | Time-boxed `freshness` claims | <1 min per re-verification | Credibility you can defend in code review |
@@ -58,7 +58,7 @@ The fields you pay for cluster into 8 semantic purposes (Identity, Classificatio
 For the full conceptual primer read [`SKILL_METADATA_PROTOCOL_PRIMER.md`](../skill-metadata-protocol/PRIMER.md). To migrate your first skill from a valid plain `SKILL.md` file:
 
 1. **Copy the template** — `cp examples/skill-metadata-template.md skills/<your-skill>/SKILL.md`. The template is a real, valid, schema-conformant Skill Metadata Protocol skill whose subject is skill authoring itself; adapt by rewriting identity, description, body, and verification.
-2. **Add the required Skill Metadata Protocol fields** — `schema_version: 8`, `version`, `subject` (9-enum), `scope` (3-enum), `owner`, `freshness`, `drift_check`, `eval_artifacts`, `eval_state`, `routing_eval`, plus your existing `name` and `description`. The template inline-comments each field.
+2. **Add the required Skill Metadata Protocol fields** — in `SKILL.md`: `name`, `description`, `subject` (9-enum), `deployment_target`, and free-text `scope`; in sibling `audit-state.json`: `schema_version: 8`, `owner`, `freshness`, `drift_check`, `eval_artifacts`, `eval_state`, and `routing_eval`. The template inline-comments each field.
 3. **Strip the teaching annotations** — every `> **TEMPLATE NOTE:**` blockquote and `# TEMPLATE NOTE:` YAML comment must be removed before commit.
 4. **Validate locally:**
    ```bash

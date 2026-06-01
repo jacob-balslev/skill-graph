@@ -17,7 +17,7 @@
 
 ---
 
-This document is the top-level public contract for the Skill Metadata Protocol frontmatter format — the **normative spec**. It defines which fields are required, what each field means in operational terms, which fields are authored by humans vs computed by tooling, and how to migrate from older schema versions. Skill Graph is the library-level system that consumes this contract. The prose is terse and boundary-aware: every clause is a rule a consumer or author can verify against the schema and the focused Skill Graph verification tools.
+This document is the top-level public contract for the two-file Skill Metadata Protocol shape — the **normative spec**. It defines which fields are required in `SKILL.md` and `audit-state.json`, what each field means in operational terms, which fields are authored by humans vs computed by tooling, and how to migrate from older schema versions. Skill Graph is the library-level system that consumes this contract. The prose is terse and boundary-aware: every clause is a rule a consumer or author can verify against the schema and the focused Skill Graph verification tools.
 
 **Companion docs by genre.** This contract is the *what*. The *why* — design rationale, archetype semantics, OntoClean rigidity, the Evaluation Status's orthogonality, the JSON-LD W3C mappings, and the philosophical posture behind the field choices — lives in [`skill-metadata-protocol.md`](design-rationale.md). The two docs are coordinated and grow together: a normative rule that lacks a "why" is fragile; a "why" that lacks a normative rule is vapourware. If you are authoring a SKILL.md, you read this file. If you are deciding whether to add a field to the schema, you read both.
 
@@ -67,7 +67,7 @@ Be the default open-source structure for project-relevant AI-agent skills: simpl
 
 ## Overview
 
-Every skill is a single `SKILL.md` file with a YAML frontmatter block. The schema contract is `schemas/SKILL_METADATA_PROTOCOL_schema.json`; deterministic verification is split across focused tools. `skill-lint.js` enforces the canonical-source schema gate (valid frontmatter, validation against `schemas/SKILL_METADATA_PROTOCOL_schema.json`, identifier shape, non-empty description, parent-directory/name alignment), while `check-protocol-consistency.js`, `generate-manifest.js`, routing evals, drift checks, and export verification cover the broader protocol surface. The `generate-manifest.js` script reads frontmatter from all skill files and emits a single `skills.manifest.json`.
+Every skill is a `SKILL.md` file with YAML frontmatter plus a sibling `audit-state.json` sidecar. The frontmatter schema contract is `schemas/SKILL_METADATA_PROTOCOL_schema.json`; the sidecar schema contract is `schemas/skill-audit-state.schema.json`; deterministic verification is split across focused tools. `skill-lint.js` enforces the canonical-source schema gate (valid frontmatter, valid sidecar, identifier shape, non-empty description, parent-directory/name alignment, and cross-file checks), while `check-protocol-consistency.js`, `generate-manifest.js`, routing evals, drift checks, and export verification cover the broader protocol surface. The `generate-manifest.js` script joins frontmatter and sidecars from all skill files and emits a single `skills.manifest.json`.
 
 The contract has one runtime model: one `SKILL.md` per skill, one manifest, one lint pass. There is no closed/open split, no private control plane, and no enterprise-only fields.
 
@@ -77,7 +77,7 @@ The field tables in this document describe the **logical contract** — the fiel
 
 | Encoding | Shape | Where it is used |
 |---|---|---|
-| **Protocol-native** | Every field a top-level YAML key; structured fields (`relations`, `drift_check`, `grounding`, …) are native YAML objects/arrays. | The shape the field tables below illustrate; produced by the authoring template. |
+| **Protocol-native** | Every agent-facing field is a top-level YAML key in `SKILL.md`; structured frontmatter fields (`relations`, `grounding`, …) are native YAML objects/arrays. Audit/eval/provenance fields live in `audit-state.json`. | The shape the field tables below illustrate; produced by the authoring template. |
 | **Agent-Skills-compatible** | Only `name`, `description`, `license`, `compatibility`, `allowed-tools` at top level; **all other fields nested under a `metadata:` map, with objects and arrays JSON-string-encoded** (e.g. `relations: "{\"boundary\":[…]}"`). | The shape the **entire canonical library** at `~/Development/skills/` is authored in, because that repo is also the public Agent-Skills release repo (one repo, two hats — see `AGENTS.md § Public Distribution`). |
 
 `scripts/lib/parse-frontmatter.js::normalizeFrontmatter()` reconciles the two: it lifts `metadata.*` back to top level and `JSON.parse`s the stringified values, so `skill-lint.js`, `generate-manifest.js`, `skill-graph-route.js`, and `skill-graph-drift.js` all see the protocol-native shape regardless of which encoding the file uses. Two precedence rules apply: (1) a top-level field wins over a `metadata.*` field of the same name (the explicit author signal wins); (2) export-provenance keys (`skill_graph_source_repo`, `skill_graph_protocol`, `skill_graph_project`, `skill_graph_canonical_skill`, and the description-length book-keeping keys) are **stripped** during normalization and are not part of the contract — a consequence is that the `skill_graph_protocol` content-label is invisible to all deterministic tooling and is governed by human discipline only (see `AGENTS.md § Version Labels Are Earned, Not Bumped`). Round-tripping from the Agent-Skills shape back to protocol-native is lossy for rich types; keep the canonical source authoritative. See `docs/SKILL-MD-FORMAT-COMPATIBILITY.md`.
@@ -154,26 +154,14 @@ metadata:
   # Not an enum (the deployment-targeting role belongs to `deployment_target`).
   scope: "Teaches first-principles decomposition; not for routine refactors."
 
-  # === Evaluation Status (three orthogonal axes — never collapse to boolean) ===
-
-  # eval_artifacts: disk-truth — does an eval file exist on disk?
-  # none (no intent) / planned (intent declared, no file yet) / present (file exists).
-  eval_artifacts: planned
-
-  # eval_state: runtime-truth — has the eval been run and passed?
-  # unverified (no run yet) / passing (one-shot green) / monitored (cadenced green).
-  # `monitored` is a forward state — advance here when continuous cadence runs.
-  eval_state: unverified
-
-  # routing_eval: routing-coverage — is the skill's activation verified by the harness?
-  # absent (not verified) / present (harness `npm run routing-eval` must exit 0).
-  # `skill-lint.js` does NOT check this; the standalone routing-eval gate enforces it
-  # via the verify chain. (2026-05-27 H12 — earlier "gated by lint check 12" framing
-  # referred to a check removed in the 2026-05-19 lint reduction.)
-  routing_eval: absent
+  # keywords: semantic phrases for fuzzy router activation. v8 cap: max 10.
+  keywords:
+    - first principles
+    - root assumption
+    - decomposition
 ```
 
-**The convention applies to all three named layers** of the skill system: the Skill Metadata Protocol (this contract), the Skill Graph (the library-level system), and the Skill Audit Loop (the maintenance discipline). Templates and authored skills under any of those layers carry field-purpose comments by default. The template `examples/skill-metadata-template.md` is the canonical specimen; derived skills inherit the field-purpose comments (and strip the `# TEMPLATE NOTE:` lines) per the workflow in `skill-scaffold` (`~/Development/skills/skills/agent-ops/skill-scaffold/SKILL.md`).
+**The convention applies to `SKILL.md` frontmatter fields** across all three named layers of the skill system: the Skill Metadata Protocol (this contract), the Skill Graph (the library-level system), and the Skill Audit Loop (the maintenance discipline). JSON sidecars cannot carry comments, so sidecar field purpose lives in `field-reference.md` and the sidecar schema. Templates and authored skills under any of those layers carry field-purpose comments by default. The template `examples/skill-metadata-template.md` is the canonical specimen; derived skills inherit the field-purpose comments (and strip the `# TEMPLATE NOTE:` lines) per the workflow in `skill-scaffold` (`~/Development/skills/skills/agent-ops/skill-scaffold/SKILL.md`).
 
 **Why this exists.** The 2026-05-26 cleanup session surfaced the exact failure mode this convention prevents: a cold-start agent read the schema's distribution of `eval_state` values (`unverified: 144 / passing: 7 / monitored: 0`) and proposed cutting `monitored` as "dead value" — because the field's design intent (a forward state for cadenced runs) lived only in `docs/field-rationale.md`, three reads away from where the field actually appeared. With co-located comments, that intent is visible at the point where the field is read. The cost of reading the field-purpose comment is one screenful of YAML; the cost of NOT having it is an entire session of misguided cut-proposals.
 
@@ -183,17 +171,23 @@ metadata:
 
 ### Required for all skills
 
-The v8 contract requires thirteen canonical fields, including the v8 classification fields (`subject` + `deployment_target` + `scope`). The `skill-lint.js` schema gate enforces the current schema shape; use the protocol, manifest, routing, drift, export, and eval checks for the rest of the full contract.
+The v8 contract is split across two files. `SKILL.md` frontmatter requires five agent-facing fields. The sibling `audit-state.json` sidecar requires seven audit/eval/provenance fields. `skill-lint.js` validates both files and runs the cross-file checks that neither JSON Schema can express alone.
+
+Required in `SKILL.md` frontmatter:
 
 | Field | Type | Purpose |
 |---|---|---|
-| `schema_version` | integer `8` | Signals the contract version. Prior versions live in git history (see ADR 0014 — canonical-only schema files, and `git tag --list 'schema-*'`). |
 | `name` | string | Stable identifier. Used for routing and `relations.*` targets. |
 | `description` | string | Short description of what the skill is about. Activation signals belong to `keywords`/`triggers`/`examples`/`anti_examples`; boundary semantics belong to `relations.boundary` (⚠ name inverts mechanic — it *excludes* the listed skills when this skill wins; see § Relations § `boundary`). |
-| `version` | semver string | Skill content version (e.g. `1.2.0`). Bumped by the author. |
 | `subject` | enum (9 closed values) | Primary classification — what the skill teaches. One of: `code-engineering`, `quality-assurance`, `frontend-ui`, `design-craft`, `agent-ops`, `product-domain`, `knowledge-organization`, `meta-methods`, `data-analytics`. See § Classification. |
 | `deployment_target` | enum (2 closed values) | Deployment targeting — where the skill applies. One of: `portable` (any project), `project` (one specific project; requires `grounding`). See § Classification. |
 | `scope` | string | PRD-style free-text statement of what the skill teaches and what it does not. Not an enum. |
+
+Required in `audit-state.json`:
+
+| Field | Type | Purpose |
+|---|---|---|
+| `schema_version` | integer `8` | Signals the current sidecar/schema contract. Prior versions live in git history (see ADR 0014 — canonical-only schema files, and `git tag --list 'schema-*'`). |
 | `owner` | string | Team, username, or tool that is responsible for keeping this skill current. |
 | `freshness` | ISO date | Date the skill body was last reviewed or updated. |
 | `drift_check` | object | Contains `last_verified` (ISO date) and optional `truth_source_hashes`. |
@@ -203,14 +197,14 @@ The v8 contract requires thirteen canonical fields, including the v8 classificat
 
 ### Conditionally required
 
-These fields are required only when a specific condition is met. The schema gate enforces `grounding`, `superseded_by`, the comprehension-evidence shape, and the `eval_state` / `eval_artifacts` coherence rule. The `keywords` rule is a routing-quality convention verified by review and routing evals rather than by schema lint, since the schema cannot reason about routability intent.
+These fields are required only when a specific condition is met. The frontmatter schema enforces `grounding`; the sidecar schema enforces the `eval_state` / `eval_artifacts` coherence rule; `skill-lint.js` enforces cross-file conditions such as `comprehension_state` requiring Understanding prose. The `keywords` rule is a routing-quality convention verified by review and routing evals rather than by schema lint, since the schema cannot reason about routability intent.
 
 | Field | Required when | Enforced by |
 |---|---|---|
-| `grounding` | `deployment_target: project` | schema `allOf` |
-| `superseded_by` | `stability: deprecated` | schema `allOf` |
-| `mental_model` + `purpose` + `boundary` + `analogy` + `misconception`, or `concept` | `comprehension_state: present` | schema `allOf` / `anyOf` |
-| `eval_artifacts: present` | `eval_state: passing` or `eval_state: monitored` | schema `allOf` |
+| `grounding` | `deployment_target: project` | frontmatter schema `allOf` |
+| `superseded_by` | `stability: deprecated` | cross-file lint / frontmatter lint |
+| `mental_model` + `purpose` + `boundary` + `analogy` + `misconception` | `comprehension_state: present` in `audit-state.json` | cross-file lint |
+| `eval_artifacts: present` | `eval_state: passing` or `eval_state: monitored` | sidecar schema `allOf` |
 | `keywords` | `deployment_target: project` OR `routing_bundles` is set | routing review / routing evals |
 
 ### Optional (strongly recommended)
@@ -390,14 +384,14 @@ The graph layer. Seven edge types — `related`, `boundary` (⚠ name inverts me
 
 ### Health and Drift
 
-**`freshness`**
+**`freshness`** (in `audit-state.json`)
 - ISO date the author last **reviewed** the skill's content. This is the **reviewer's footprint**, NOT the editor's footprint.
-- Set by the author when they verify the skill is still accurate. The Audit Status field [`last_changed`](#audit-status-v6-flat--written-by-the-audit-loop) records when the SKILL.md was last **edited** (loop-stamped); the two are intentionally distinct because a skill can be edited without a fresh review (e.g. a typo fix) and reviewed without an edit (the author re-read and confirmed it still holds).
+- Set by the author when they verify the skill is still accurate. The Audit Status field `last_changed` records when the SKILL.md was last **edited** (loop-stamped); the two are intentionally distinct because a skill can be edited without a fresh review (e.g. a typo fix) and reviewed without an edit (the author re-read and confirmed it still holds).
 - Not computed; the author sets it. It is an authored claim, not a hash.
 - Cosmetic edits (typo, formatting) should NOT bump `freshness` — they bump `last_changed` only. Substantive review or content update should bump `freshness`.
 - Agents reading `freshness` should interpret it as "the author asserts they reviewed this on date X," NOT as "the file was last touched on date X" — for that, read `last_changed`.
 
-**`drift_check`**
+**`drift_check`** (in `audit-state.json`)
 - Object with `last_verified` (ISO date, required) and `truth_source_hashes` (optional).
 - `last_verified`: when the skill was last verified against its truth sources.
 - `truth_source_hashes`: a map of normalized truth-source key -> SHA-256 hex digest at the time of last verification. Keys are `path` for whole-file sources, `path#Lstart-Lend` for line ranges, and `path#anchor` for anchor-only sources. Computed by `node scripts/skill-graph-drift.js --record --apply <skill-dir>` for local truth sources. The drift sentinel (`skill-graph drift`) reports `DRIFT` when a live hash differs from the recorded hash, `BROKEN` when a local truth source file is missing, `STALE` when today exceeds `last_verified + lifecycle.stale_after_days`, `NO_BASELINE` when local truth sources are declared but no hashes are recorded, and `EXTERNAL_UNHASHED` when a URL truth source is valid but is not fetched by the zero-dependency sentinel.
@@ -411,25 +405,25 @@ The graph layer. Seven edge types — `related`, `boundary` (⚠ name inverts me
 
 The three Evaluation Status fields are orthogonal — they measure different dimensions.
 
-**`eval_artifacts`** — Does an evaluation artifact exist?
+**`eval_artifacts`** (in `audit-state.json`) — Does an evaluation artifact exist?
 - `none`: no evals defined.
 - `planned`: evals are planned but not yet written.
 - `present`: at least one eval file exists.
 
-**`eval_state`** — What is the current evaluation result?
+**`eval_state`** (in `audit-state.json`) — What is the current evaluation result?
 - `unverified`: evals exist but have not been run against a grader.
 - `passing`: evals have been run and pass.
 - `monitored`: evals are integrated into CI and are tracked.
 
-**`routing_eval`** — Does a routing-specific eval exist?
+**`routing_eval`** (in `audit-state.json`) — Does a routing-specific eval exist?
 - `absent`: no routing eval.
 - `present`: a routing eval exists (typically `evals/routing.json` or similar).
 
-**`comprehension_state`**
+**`comprehension_state`** (in `audit-state.json`)
 - Optional comprehension-grading axis.
 - `absent` or omitted: no comprehension grading is declared.
 - `present`: the skill has comprehension grading and must populate either the **five flat Understanding fields** (`mental_model`, `purpose`, `boundary`, `analogy`, `misconception`) OR the legacy nested `concept` block.
-- The current schema's `allOf` rule enforces this via an `anyOf` clause: at least one of the two shapes must be present. When both are present, the flat fields win.
+- `skill-lint.js` enforces this as a cross-file rule: the sidecar flag requires the frontmatter Understanding fields. The flat fields are canonical; the legacy nested `concept` block is retired from the current frontmatter contract.
 
 ### Understanding (v6+, flat)
 
@@ -472,11 +466,11 @@ Required when `comprehension_state: present`. No protocol length cap on any of t
 - Optional sub-fields: `runner`, `model`, `receipt`, `receipt_hash`.
 - Use this to support `eval_state: passing` or `eval_state: monitored` with a concrete scorecard, grader history, or CI receipt.
 
-### Audit Status (v6+, flat — written by the audit loop)
+### Audit Status (v6+, flat — written by the audit loop into `audit-state.json`)
 
-Seven flat top-level fields that record a skill's audit fingerprint in its own frontmatter, replacing the scattered log-file model of v5 (`eval-history.jsonl`, `routing-misses.jsonl`, `.opencode/progress/skill-audit-*`, `health-ledger.jsonl`, `findings/*.md`). The Skill Audit Loop reads these directly; no log-file crawl required.
+Seven flat top-level fields that record a skill's audit fingerprint in its sibling `audit-state.json` sidecar, replacing the scattered log-file model of v5 (`eval-history.jsonl`, `routing-misses.jsonl`, `.opencode/progress/skill-audit-*`, `health-ledger.jsonl`, `findings/*.md`). The Skill Audit Loop reads these directly; no log-file crawl required.
 
-**Do not hand-author these fields.** They are stamped by `scripts/skill/skill-audit.js`, `scripts/skill/evaluate-skill.js`, and `scripts/skill-graph-drift.js` as the audit loop runs. Hand-edits will be overwritten on the next `audit` run.
+**Do not hand-author these fields.** They are stamped by `lib/audit/skill-audit.js`, `lib/audit/evaluate-skill.js`, and `scripts/skill-graph-drift.js` as the audit loop runs. Hand-edits will be overwritten on the next `audit` run.
 
 **`last_audited`**
 - ISO date (YYYY-MM-DD) the `audit` command last ran against this skill.
@@ -678,28 +672,29 @@ grounding:
 
 ## Authored vs Generated Fields
 
-### Authored in `SKILL.md` (human-written)
+### Authored vs loop-written source files
 
-The canonical fields in the frontmatter are authored by humans, with two exceptions: `drift_check.truth_source_hashes` is computed by the drift sentinel (`skill-graph drift --record --apply`), and the **Audit Status** fields (`last_audited`, `last_changed`, `structural_verdict`, `truth_verdict`, `comprehension_verdict`, `application_verdict`, `eval_score`, `eval_failed_ids`, `lint_verdict`, `drift_status`) are stamped automatically by the Skill Audit Loop's `audit`, `improve`, `evaluate`, and grader operations. Do not hand-author the Audit Status — those values are owned by the loop and the dedicated graders (comprehension and application).
+`SKILL.md` frontmatter is human-authored agent-facing content. `audit-state.json` is audit-loop-owned state. The manifest compiler joins the two before projecting health/eval/lifecycle blocks.
 
-**Human-authored fields:**
+**Human-authored `SKILL.md` frontmatter fields:**
 
 ```
-schema_version, name, urn, description, version, subject, subjects,
-deployment_target, scope, taxonomy_domain, project, repo, owner,
-freshness, drift_check, eval_artifacts, eval_state, routing_eval,
-comprehension_state, eval_last_run, stability, superseded_by, license,
+name, description, subject, subjects, deployment_target, scope,
+taxonomy_domain, project, repo, stability, superseded_by, license,
 compatibility, allowed-tools, triggers, keywords, examples,
 anti_examples, paths, routing_bundles, relations, grounding,
-portability, lifecycle, runtime_telemetry,
 # Understanding fields — author these when comprehension_state: present
 mental_model, purpose, boundary, analogy, misconception
 ```
 
-**Loop-written fields (Audit Status):**
+**Loop-owned `audit-state.json` fields:**
 
 ```
-# Stamped by `audit` / `improve` / `evaluate` — do not hand-author
+schema_version, version, owner, urn, repo, freshness, reviewed_at,
+drift_check, eval_artifacts, eval_state, routing_eval, eval_last_run,
+eval, comprehension_state, lifecycle, marketplace_tier, portability,
+runtime_telemetry,
+# Audit Status stamped by `audit` / `improve` / `evaluate`
 last_audited, last_changed, structural_verdict, truth_verdict,
 comprehension_verdict, application_verdict, eval_score, eval_failed_ids,
 lint_verdict, drift_status
