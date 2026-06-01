@@ -38,13 +38,13 @@ The shape is normative — `skill-graph/schemas/comprehension.schema.json` is th
 | `substance` | yes | enum | `concept` / `procedure` / `boundary` — what kind of knowledge is probed. |
 | `calibration` | yes | enum | `semantic` (paraphrase OK) / `exact-match` / `structural`. |
 | `truth_mode` | yes | enum | `conceptual_correctness`, `conceptual_correctness_plus_repo_application`, `spec_grounded`, `principle_grounded`. |
-| `skill_type` | yes | enum | `concept` / `procedure` / `router` / `overlay`. Maps to SKILL.md `type`. |
+| `skill_type` | yes | enum | `concept` / `procedure` / `router` / `overlay`. Grader hint for the case's knowledge shape; it does not map to the retired SKILL.md `type` axis. |
 | `criticality` | yes | enum | `critical` / `high` / `medium` / `low`. |
 | `negative_expectation` | no | string | What the answer must NOT say. Recommended for `boundary` + `critical` cases. |
 
-## The 7 rubric dimensions
+## Rubric Dimensions
 
-Each dimension probes a different layer of comprehension. A complete eval set covers all 7:
+Each dimension probes a different layer of comprehension. A complete eval set covers the core dimensions that matter for the skill, with the 5-case hard floor and 7-case practitioner default below:
 
 | Dimension | What it tests | When to write a case |
 |---|---|---|
@@ -57,7 +57,7 @@ Each dimension probes a different layer of comprehension. A complete eval set co
 | **application** | Can the agent apply the skill to a NOVEL scenario (not in the skill body)? | Always — the application case is the gate-8 signal. |
 | **misconception** | Can the agent name + correct the most common wrong reading? | Recommended; surfaces silent failure modes. |
 
-The schema's `dimension` enum includes `misconception`; the corpus has not yet adopted it as of 2026-05-25 (Opus's audit found 0 cases). New authoring SHOULD include a misconception case.
+The schema's `dimension` enum includes `misconception`. New authoring SHOULD include a misconception case when the skill has a common wrong reading.
 
 ## Minimum vs. recommended
 

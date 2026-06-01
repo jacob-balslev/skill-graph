@@ -651,13 +651,13 @@ A skill audit is complete when:
 4c. **Comprehension evals check**:
    - Check `skills/<skill-slug>/evals/comprehension.json` exists.
    - If present, verify shape: top-level object `{skill_name, subject, adjacent_concepts, evals}`.
-   - Verify `evals.length >= 5` AND the set of `dimension` values covers at least 5 of the 7 rubric dimensions: `definition`, `mental_model`, `purpose`, `boundary`, `taxonomy`, `analogy`, `application`.
-   - Every eval entry must have: `id`, `dimension` (one of the 7), `prompt`, `substance: "concept"`, `calibration: "semantic"`, `truth_mode: "conceptual_correctness_plus_repo_application"`, `skill_type: "concept"`, `criticality` set.
+   - Verify `evals.length >= 5` AND the set of `dimension` values covers at least 5 rubric dimensions from: `definition`, `mental_model`, `purpose`, `boundary`, `taxonomy`, `analogy`, `application`, `misconception`.
+   - Every eval entry must have: `id`, `dimension`, `prompt`, `substance`, `calibration`, `truth_mode`, `skill_type` (eval-case knowledge-shape hint, not the retired SKILL.md `type` axis), and `criticality` set.
    - If missing or under-specified, treat as drift and author in Step 5.
 
 5. **Fix drift** in skill/evals. If you find a real repo bug, fix that too. Test failures and security flags are code bugs, not skill drift.
    - If Step 4b flagged a missing or partial "Concept of the skill": author it now. Reference `skills/shopify/SKILL.md` lines 92–106 for the exact format. Place it immediately after the frontmatter's closing `---`, before `# <Title>`, and before every other section including Coverage and `## Philosophy of the skill`. Word budget: ~150–250 is a guideline, NOT a limit — never trim or pad a clear card to hit a count. **`## Philosophy of the skill` is about the philosophy BEHIND the skill** — the underlying methodological stance, principles, or opinionated worldview the skill embodies. `## Concept of the skill` is about the universal subject. Never copy text between the two sections. (Updated 2026-05-26 — renamed `## Concept Card` → `## Concept of the skill` and `## Philosophy` → `## Philosophy of the skill`; earlier framing "Philosophy is about THIS repo's skill file" was redundant with `## Concept of the skill`'s `**Why it exists:**` field.)
-   - If Step 4c flagged a missing or insufficient `evals/comprehension.json`: author it now. Use `skills/ontology/evals/comprehension.json` as the shape reference. Minimum 5 evals covering at least 5 of the 7 dimensions. Every eval has: `id`, `dimension` (one of `definition|mental_model|purpose|boundary|taxonomy|analogy|application`), `prompt`, `substance: "concept"`, `calibration: "semantic"`, `truth_mode: "conceptual_correctness_plus_repo_application"`, `skill_type: "concept"`, `criticality: "high"` (or `"critical"` for application-dimension evals).
+   - If Step 4c flagged a missing or insufficient `evals/comprehension.json`: author it now. Use an existing `skills/<name>/evals/comprehension.json` file or `docs/comprehension-eval-spec.md` as the shape reference. Minimum 5 evals covering at least 5 rubric dimensions. Every eval has: `id`, `dimension` (one of `definition|mental_model|purpose|boundary|taxonomy|analogy|application|misconception`), `prompt`, `substance`, `calibration`, `truth_mode`, `skill_type`, and `criticality`.
 
 6. **Research** externally:
    - **Platform/framework/integration skills**: external research is MANDATORY (vendor docs, API docs, auth patterns).
@@ -733,7 +733,7 @@ A skill audit is complete when:
    |---|---|
    | "Concept of the skill" present | yes / no / partial (list missing fields) |
    | "Concept of the skill" word count | `<N>` (informational only — no limit) |
-   | Comprehension evals | `<N>` covering `<N>/7` dimensions (pass/fail) |
+   | Comprehension evals | `<N>` covering `<N>` rubric dimensions (pass/fail) |
    | Comprehension raw score | `<N>/14` (baseline) → `<N>/14` (with skill) |
    | Comprehension delta avg | `<±N.N>` — verdict: `skill_teaches` \| `skill_helps` \| `redundant` \| `fails_to_teach` \| `harmful` |
    | "Concept of the skill" verdict | PASS / DRIFT / AUTHORED / REWRITTEN |
@@ -777,9 +777,8 @@ A skill audit is complete when:
     Path-limited staging (no `git add -A`; use `git commit --only -- <paths>`). Paths to include when they changed:
     ```
     skills/<skill-slug>/SKILL.md                              (if "Concept of the skill" added or edited)
-    skills/<skill-slug>/evals/comprehension.json              (if authored or edited)
-    skills/<skill-slug>/evals/evals.json                      (if audited)
-    skills/<skill-slug>/evals/eval-set.json                   (if audited)
+    skills/<skill-slug>/evals/comprehension.json              (if authored, edited, or audited)
+    skills/<skill-slug>/evals/application.json                (if authored, edited, or audited)
     agent-orchestration/logs/comprehension-history.jsonl      (always — grader output)
     .opencode/progress/skill-audits/<skill-slug>/             (the run dir + history.jsonl + latest, written by release)
     .opencode/progress/skill-audits/_ledger.jsonl             (the run ledger — terminal line appended by release in Step 10)

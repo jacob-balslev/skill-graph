@@ -414,7 +414,7 @@ For any single Skill Metadata Protocol field (`name`, `description`, `subject`, 
 | **Audit-loop runner prompts** (interactive single-skill, autonomous batch worker, codex cron, minimal-iteration) | `prompts/skill-audit-loop-*.md` | Project-owned per ADR-0015 (relocated to the project-root `prompts/` dir 2026-06-01). Workspace `prompts/audits/skill-audit-loop-*.md` are back-compat pointer stubs only. |
 | **Machine-readable protocol index** (protocols, runners, required artifacts, runtime aliases) | `audits/manifest.json` + `schemas/audits-manifest.schema.json` (shape) | The verifier `scripts/check-audit-manifest.js` consumes this. Bumping `schema_version` is gated by the version-schema-contract rule. |
 | **Verdict semantics** (enums for all four Audit Status fields, confidence tier ordering, comprehension/application disjointness rule) | `docs/verdict-semantics.md` | Canonical for verdict enums. AGENTS.md / skill-audit-loop/SKILL_AUDIT_LOOP.md / pipeline doc carry one-line summaries that link here. ADR-0011 is the rationale; this doc is the spec. |
-| **Comprehension eval shape** (`evals/comprehension.json` per-case structure, 7 rubric dimensions, criticality + truth_mode enums) | `docs/comprehension-eval-spec.md` + `schemas/comprehension.schema.json` (binding) | The shape gate-8 graders evaluate against; the verifier requires this artifact when `comprehension_verdict ∈ {PROVISIONAL, PASS, SHALLOW, REDUNDANT}`. |
+| **Comprehension eval shape** (`evals/comprehension.json` per-case structure, rubric dimensions, criticality + truth_mode enums) | `docs/comprehension-eval-spec.md` + `schemas/comprehension.schema.json` (binding) | The shape gate-8 graders evaluate against; the verifier requires this artifact when `comprehension_verdict ∈ {PROVISIONAL, PASS, SHALLOW, REDUNDANT}`. |
 | **Application eval shape** (`evals/application.json` per-case `cases[]` structure, 4 grader axes + weights, red-herring handling, optional provisional `criteria[]` checklist) | `docs/application-eval-spec.md` + `schemas/application.schema.json` (binding, v1 2026-05-30) | The shape gate-9 grades the with/without-skill behavior delta against; the verifier requires this artifact when a graded `application_verdict` is claimed. Required `expected_flags`/`expected_fix_hints`/`absent_signals` = the deployed pointwise contract; optional `criteria[]`/`artifact` = PROVISIONAL pending the SH-6624 grader-design pilot. |
 | **Audit-loop operational data ownership** (the trinary classification: project content / workspace orchestration / project-protocol scripts over workspace-coordinated data) | `docs/adr/0016-operational-data-ownership.md` **(Status: Accepted 2026-05-27 — per-surface migrations sequenced)** | Settles which side of the boundary new audit-loop surfaces belong to. ADR-0015 + ADR-0016 together cover spec + data ownership. The trinary classification is binding. Per-surface migration state (verified 2026-05-28): S1 lanes.json + S2 merge-protocol MIGRATED; S4 routing-config schema AUTHORED (unwired — no-deps project); S3 run-dir layout PENDING (SH-6607); S5 finding schema PENDING (SH-6608). Cite ADR-0016 as Accepted, but check the per-surface rows below before assuming a given surface has landed. |
 | **Audit lane configuration** (importance bands, model tier floor, concurrency caps) | `audits/lanes.json` (project canonical per ADR-0016 surface #1 — **MIGRATED 2026-05-25**) — read by `scripts/skill/skill-audit-claim.js` | Migrated: `skill-audit-claim.js` reads `skill-graph/audits/lanes.json` first; the legacy `.opencode/skill-audit-lanes.json` is deleted (a fallback read remains in code only as defensive back-compat). Edit `audits/lanes.json`. |
@@ -516,17 +516,26 @@ The Skill Graph evaluates four layers; each has its own surface and its own defi
 
 | Layer | Question answered | Surface |
 |---|---|---|
-| Per-skill comprehension | Does an agent given this `SKILL.md` answer realistic scenarios correctly? | `evals/evals.json` (or `examples/evals/<skill>.json`) |
+| Per-skill comprehension | Does an agent given this `SKILL.md` understand the concept/procedure well enough to answer realistic scenarios? | `skills/<name>/evals/comprehension.json` (legacy worked specimens may still live under `examples/evals/<skill>.json`) |
+| Per-skill application | Does loading this skill change agent behavior on real tasks compared with a no-skill baseline? | `skills/<name>/evals/application.json` |
 | Routing | Does the router fire the right skill(s) for a given query? | `scripts/skill-graph-routing-eval.js` + retrieval baseline at `evals/retrieval-baseline-*.json` |
 | Manifest / contract | Does the generated manifest match the skill source 1:1, no parity drift? | `scripts/generate-manifest.js --validate-only` and the sample manifest |
 | Drift | Has the skill's truth source (cited file, schema, doc, external spec) changed since the skill claimed `last_verified`? | `scripts/skill-graph-drift.js` against `drift_check.truth_source_hashes` |
 
 ### What a good comprehension eval looks like
 
-- **≥7 realistic scenarios** per skill — not trivia, not pattern-matching, not single-line "is this X" prompts. Each scenario should require the skill's specific judgment to answer correctly.
+- **5-case hard floor; 7-case practitioner default** — not trivia, not pattern-matching, not single-line "is this X" prompts. Each scenario should require the skill's specific judgment to answer correctly.
 - **Project-grounded** when `deployment_target: project` (anchored to specific repo truth; or a legacy unmigrated skill still carrying `scope: codebase`); **principle-grounded** when `deployment_target: portable` (repo-agnostic patterns). A skill that blends both records `grounding_mode: hybrid`.
-- **At least one negative expectation per eval** — what the answer must *not* say or do. Negative expectations catch silent scope reduction and softened-failure responses.
-- **Coverage matched to what the skill teaches:** domain correctness, scope boundaries, and anti-pattern recognition for capability-style skills; sequencing, gate enforcement, and failure-mode handling for procedural skills; correct owner-skill routing and explicit refusal to over-own for router-style skills.
+- **Negative expectations on critical and boundary cases** — what the answer must *not* say or do. Negative expectations catch silent scope reduction and softened-failure responses.
+- **Coverage matched to what the skill teaches:** domain correctness, scope boundaries, anti-pattern recognition, sequencing, gate enforcement, failure-mode handling, correct owner-skill routing, and explicit refusal to over-own.
+
+### What a good application eval looks like
+
+- **5-case hard floor; 7 recommended** in `skills/<name>/evals/application.json`, using `cases[]` rather than comprehension's `evals[]`.
+- **At least one hard negative / red-herring case** with `red_herring: true`, so the suite catches over-triggering and false positives.
+- **Neutral prompts**: the same `question` runs in baseline and with-skill arms; do not lead the candidate toward the expected flags.
+- **Observable expectations**: each case declares `expected_flags[]`, `expected_fix_hints[]`, and `absent_signals[]` so the grader can score behavior change and false-positive avoidance.
+- **Risk-calibrated criticality**: privacy, destructive mutation, or public-release failures should be `critical` even when they are rare.
 
 ### What a good routing eval looks like
 
@@ -547,7 +556,8 @@ The Skill Graph evaluates four layers; each has its own surface and its own defi
 |---|---|
 | Eval with only positive expectations | Cannot detect filtering, softening, or scope reduction. |
 | Eval that paraphrases the skill body back to itself | Measures the skill's prose, not an agent's comprehension of it. |
-| Single-scenario eval | Below the ≥7 threshold; insufficient signal. |
+| Single-scenario eval | Below the 5-case floor; insufficient signal. |
+| Application eval with only real positives | Cannot detect over-triggering; include at least one red-herring / hard-negative case. |
 | `eval_state: passing` without re-running the eval in this change | Stale truth claim; fails the No-Unverified-Claims rule. |
 | Routing eval that excludes the skills under review | Self-confirming; not a real test. |
 | Using vibe judgments instead of the retrieval baseline | Migration claims need numeric comparison, not memory. |
@@ -583,7 +593,7 @@ For every audited skill (in either mode), the loop produces evidence on:
 1. **Schema conformance** — `node scripts/skill-lint.js skills/<name>/SKILL.md` clean, no warnings hidden behind filters.
 2. **Manifest parity** — the skill round-trips through `scripts/generate-manifest.js` without drift.
 3. **Drift status** — `scripts/skill-graph-drift.js` agrees with declared `last_verified` and truth-source hashes.
-4. **Eval coverage** — `evals/evals.json` exists, has ≥7 scenarios, has at least one negative expectation per scenario; `eval_state` reflects reality.
+4. **Eval coverage** — `evals/comprehension.json` and/or `evals/application.json` exist when a graded verdict is claimed; comprehension has at least 5 realistic scenarios, application has at least 5 cases with hard negatives / red herrings where relevant; `eval_state` reflects reality.
 5. **Routing presence** — the skill is referenced in at least one routing eval that passes; `routing_eval` is honest.
 6. **Relations resolution** — every `relations.*` target exists in the configured roots; no dangling pointers.
 7. **Description hygiene** — positive trigger phrases present, explicit negative boundary present, marketplace description (if exported) ≤ the marketplace limit (currently 1024 chars).
