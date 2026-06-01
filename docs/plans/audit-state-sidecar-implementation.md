@@ -1,7 +1,23 @@
 # Implementation Plan — Audit-State Sidecar Separation (ADR-0019)
 
-> Type: **SYSTEM** (schema + protocol + consumers). Status: **Phases 1–3 + 5 DONE; Phase 4 SYSTEM-gate + skill-lint + audit-loop WRITE-side DONE; Phase 4 read-side + mover REMAIN (SH-6656); Phase 6 (corpus) not started.**
+> Type: **SYSTEM** (schema + protocol + consumers). Status: **Phases 1–5 DONE (Phase 4 read-side + mover landed 2026-06-01, SH-6656); Phase 6 (corpus migration via `/audit:*`) not started.**
 > Authorizing decision: [ADR-0019 (Accepted 2026-06-01)](../adr/0019-audit-state-sidecar-separation.md).
+
+> **Phase 4 read-side + mover DONE (2026-06-01, SH-6656).** The remaining audit-loop-runtime
+> consumers are now sidecar-aware. skill-graph commits: `check-doc-drift.js` reads the
+> active-version constraint from the sidecar schema (was crashing — a discovered read-side
+> regression of the cut, not the pre-existing SH-6655); `skill-audit-preflight.js` loads BOTH
+> schemas and reads the moved fields from the joined sidecar (v8 required still checked against
+> frontmatter); `lib/audit/skill-status.js` `extractHealthBlock` joins the sidecar for display;
+> `scripts/normalize-skill-field-shape.js` is now the deterministic frontmatter→sidecar MOVER
+> (the Phase-6 corpus tool — `--report` SYSTEM-safe, `--apply` CONTENT, never bumps the version
+> label). Workspace (separate Development commit): `scripts/skill/check-version-earned.js` scans
+> the staged `audit-state.json` for version bumps and reads earned-content evidence across both
+> files. Confirm-only guard tests lock the read boundary: `export-marketplace-skills.js` /
+> `render-skill-context.js` read frontmatter only, `skill-graph-route.js` gates on the manifest.
+> `npm run verify:system` is green on every cut-owned gate; the only reds are the 3 pre-existing
+> independents (docs:drift SH-6655 content false-positive, marketplace mirror staleness,
+> status:check downstream of those two).
 
 > **Phase 4 write-side DONE (2026-06-01, commits 264fe3a, e0627c3).** The audit-loop runtime now writes the
 > moved fields to the `audit-state.json` sidecar, not frontmatter — `lib/audit/evaluate-skill.js` (verdicts +
@@ -9,18 +25,22 @@
 > (drift_check record + drift_status). Shared helper `scripts/lib/audit-state-sidecar.js` (+ lib/audit shim);
 > `generate-manifest.js` dedup'd onto it. `batch-eval.js`/`run-skill-improvement-loop.js` delegate to it (no
 > change). The functional-break risk (audit loop writing invalid audit fields to migrated frontmatter) is
-> eliminated. **Still REMAIN under SH-6656:** `scripts/skill-audit-preflight.js` (read both schemas),
-> `scripts/normalize-skill-field-shape.js` (the frontmatter→sidecar Phase-6 mover), `lib/audit/skill-status.js`
-> `extractHealthBlock` (read sidecar for display), WORKSPACE `scripts/skill/check-version-earned.js` (scan
-> staged `audit-state.json` for version bumps — separate Development-repo commit), and confirm-only guard tests
-> on export/render (frontmatter-only) + route (manifest-only).
+> eliminated. **~~Still REMAIN under SH-6656~~ — ALL RESOLVED 2026-06-01 (see the Phase 4 read-side + mover DONE
+> block at the top):** `scripts/skill-audit-preflight.js` (read both schemas) ✓,
+> `scripts/normalize-skill-field-shape.js` (the frontmatter→sidecar Phase-6 mover) ✓, `lib/audit/skill-status.js`
+> `extractHealthBlock` (read sidecar for display) ✓, WORKSPACE `scripts/skill/check-version-earned.js` (scan
+> staged `audit-state.json` for version bumps — separate Development-repo commit) ✓, and confirm-only guard tests
+> on export/render (frontmatter-only) + route (manifest-only) ✓.
 
 > **Status detail (2026-06-01).** Commits: `16038f5` (Phase 1 sidecar schema), `18dbda5` (Phases 2–5 cut),
 > `ea9ea32` (Phase 5 narrative docs), `dc92b03` (Phase 4 skill-lint cross-file gate + sidecar validation).
 > `verify:system` is green on every cut-owned gate (check-schema-constants 19/19, protocol:check 7/7,
 > lint:template + fixtures 0 errors, docs:links, test:unit, pilot byte-identical). The only `verify:system`
 > reds are pre-existing and independent (docs:drift SH-6655; marketplace mirror staleness).
-> **Phase 4 REMAINING — the audit-loop-runtime consumers (filed SH-6656):** `lib/audit/evaluate-skill.js`
+> **~~Phase 4 REMAINING — the audit-loop-runtime consumers (filed SH-6656)~~ — ALL LANDED 2026-06-01.** The
+> write-side (evaluate-skill / skill-audit / skill-graph-drift) landed in `264fe3a`/`e0627c3`; the read-side +
+> mover (preflight, normalize mover, skill-status, check-doc-drift, workspace check-version-earned, guard tests)
+> landed 2026-06-01 under SH-6656. The historical to-do list below is retained for the record:** `lib/audit/evaluate-skill.js`
 > (`stampComprehensionVerdict`/`stampApplicationVerdict` + `eval_*` write-back must target `audit-state.json`,
 > not frontmatter), `lib/audit/run-skill-improvement-loop.js` + `batch-eval.js` (verdict/eval write-back to
 > sidecar), `scripts/skill-graph-drift.js` (read/write `drift_check`+`drift_status` from the sidecar),
@@ -33,6 +53,14 @@
 > skill-anatomy mentions are minor polish, also remaining.
 
 > **Progress log**
+> - 2026-06-01 — **Phase 4 read-side + mover DONE (SH-6656).** `check-doc-drift.js` (read active version from
+>   the sidecar schema — fixed a cut-introduced crash, distinct from SH-6655), `skill-audit-preflight.js` (both
+>   schemas + join), `lib/audit/skill-status.js` `extractHealthBlock` (sidecar join), `normalize-skill-field-shape.js`
+>   (frontmatter→sidecar mover), workspace `check-version-earned.js` (scan staged sidecar — separate Development
+>   commit), confirm-only guard tests (export/render frontmatter-only, route manifest-only). New tests:
+>   test-preflight-sidecar, test-skill-status-sidecar, rewritten test-normalize-field-shape (with AC integration),
+>   test-sidecar-read-boundary, and Development `check-version-earned.test.js`. `verify:system` green on all
+>   cut-owned gates; 3 pre-existing reds remain (docs:drift SH-6655, marketplace mirror staleness, status:check).
 > - 2026-06-01 — `schema-v8` git tag created at pre-cut HEAD `83c66385` (clean-cut recovery point).
 > - 2026-06-01 — **Phase 1 DONE** (commit `16038f5`): `schemas/skill-audit-state.schema.json` authored
 >   (28 fields lift-and-shifted, `required[7]`, 2 intra-sidecar `eval_state⇒eval_artifacts` gates).
