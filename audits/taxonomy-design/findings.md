@@ -1,6 +1,4 @@
-# Seed Findings (Incomplete)
-
-> This file is a seed artifact from `skill-graph audit` without `--graded`. It records deterministic lint evidence plus explicit TODO review areas. It is not a completed qualitative audit until the TODO sections are replaced by reviewer or grader evidence.
+# Audit Findings
 
 ## Skill
 
@@ -8,7 +6,7 @@
 
 ## Audit Date
 
-2026-05-28
+2026-06-01
 
 ## Verdict Summary
 
@@ -20,50 +18,61 @@ ID: F1
 Severity: P2
 Surface: ../skills/skills/knowledge-organization/taxonomy-design/SKILL.md:1:1
 Category: Lint diagnostic
-Problem: 4 top-level field(s) missing field-purpose comment (SKILL_METADATA_PROTOCOL.md § Inline field comments). Run `node scripts/backfill-field-purpose-comments.js` to add.
-Evidence: Emitted by skill-lint.js — see ../skills/skills/knowledge-organization/taxonomy-design/SKILL.md line 1
-Required action: Inspect the flagged line, correct the value, and re-run skill-lint.js.
+Problem: 4 top-level field(s) are missing field-purpose comments required by the Skill Metadata Protocol inline-comment convention.
+Evidence: `node bin/skill-graph.js lint taxonomy-design` emits this warning against line 1.
+Required action: Run the field-purpose comment backfill or edit comments in a CONTENT-mode improvement pass, then rerun lint.
 
 ID: F2
-Severity: TODO
-Surface: activation
-Category: Activation quality — routing coverage
-Problem: TODO — human judgment required
-Evidence: TODO — reviewer must inspect the skill body
-Required action: Does the description name real trigger scenarios? Are keywords specific and not generic filler? Does the skill under-trigger or over-trigger for its intended use case?
+Severity: P2
+Surface: ../skills/skills/knowledge-organization/taxonomy-design/SKILL.md metadata comments
+Category: Sidecar-era metadata comments
+Problem: The skill still carries comment-only guidance for sidecar-owned audit/eval/provenance fields inside `SKILL.md`, even though ADR-0019 moved those fields to `audit-state.json`.
+Evidence: `schema_version`, `version`, `owner`, `freshness`, `drift_check`, and Health Block guidance appear as comments in the skill body; actual values live in `../skills/skills/knowledge-organization/taxonomy-design/audit-state.json`.
+Required action: Remove or rewrite sidecar-owned comment blocks during a CONTENT-mode improvement so authors are not steered toward editing loop-owned state in frontmatter.
 
 ID: F3
-Severity: TODO
-Surface: relations
-Category: Relation quality — graph correctness
-Problem: TODO — human judgment required
-Evidence: TODO — reviewer must inspect the skill body
-Required action: Do relations point at semantically correct neighbors? Are boundary handoffs crisp enough to prevent misuse? Are broader/narrower claims taxonomic rather than associative? Are dependencies real?
+Severity: P2
+Surface: ../skills/skills/knowledge-organization/taxonomy-design/SKILL.md relations comment
+Category: Relation vocabulary comment
+Problem: The inline `relations` comment says there are "Six edge types" and omits `disjoint_with`, while the current protocol names seven current relation fields plus the deprecated `adjacent` alias.
+Evidence: The authored relation values are semantically sound, but the field-purpose comment is stale after the current relation vocabulary settled.
+Required action: Update the `relations` comment in CONTENT mode to match the current protocol vocabulary.
 
 ID: F4
-Severity: TODO
-Surface: grounding
-Category: Grounding quality — claims vs truth sources
-Problem: TODO — human judgment required
-Evidence: TODO — reviewer must inspect the skill body
-Required action: If scope: project (or legacy scope: codebase), do all truth_sources exist? Do claims in the body match the referenced files? Classify any mismatch as skill drift, code drift, or doc drift.
+Severity: P2
+Surface: evals
+Category: Behavior Gate coverage
+Problem: `eval_artifacts` is `planned`, `eval_state` is `unverified`, `routing_eval` is `absent`, and no eval files exist under the skill directory.
+Evidence: `find ../skills/skills/knowledge-organization/taxonomy-design -maxdepth 3 -type f` returns only `SKILL.md` and `audit-state.json`.
+Required action: Add evals that test facet-vs-tree choices, SKOS broader/narrower use, duplicate-category cleanup, and false positives that should route to ontology, knowledge modeling, semantic relations, or information architecture.
 
 ID: F5
-Severity: TODO
-Surface: content
-Category: Content quality — completeness and density
-Problem: TODO — human judgment required
-Evidence: TODO — reviewer must inspect the skill body
-Required action: Does the skill have a clear Coverage section, a Philosophy section, at least one decision table or checklist, and explicit negative bounds (Do NOT Use When)? Does it contain generic filler that adds no routing signal?
+Severity: INFO
+Surface: activation
+Category: Activation quality
+Problem: No activation defect found.
+Evidence: Description, keywords, examples, and anti-examples name category trees, facets, SKOS hierarchy, controlled vocabulary, duplicate cleanup, and clear near misses.
+Required action: No action required.
 
 ID: F6
-Severity: TODO
-Surface: evals
-Category: Eval quality — coverage and realism
-Problem: TODO — human judgment required
-Evidence: TODO — reviewer must inspect the skill body
-Required action: Do eval files exist if the skill is expected to be graded? Do they test realistic prompts — not trivia — and cover boundaries and failure cases as well as the happy path?
+Severity: INFO
+Surface: relations
+Category: Relation quality
+Problem: No relation-target defect found.
+Evidence: Boundaries to `ontology-modeling`, `knowledge-modeling`, and `semantic-relations` mirror the skill's Do NOT Use When table; `depends_on` and `verify_with` point to `semantic-relations`, which is appropriate for SKOS-grade edge checks.
+Required action: No action required beyond F3's stale relation-vocabulary comment.
+
+ID: F7
+Severity: INFO
+Surface: content and portability
+Category: Content/portability
+Problem: No content or portability defect found.
+Evidence: The skill includes Coverage, Philosophy, Method, Verification, Do NOT Use When, and strong sources; it is `deployment_target: portable`, drift reports `UNGROUNDED`, and audit-state records scripted export readiness.
+Required action: No action required.
 
 ## Required Fixes
 
-- F1 [P2 warning]: 4 top-level field(s) missing field-purpose comment (SKILL_METADATA_PROTOCOL.md § Inline field comments). Run `node scripts/backfill-field-purpose-comments.js` to add.
+- F1 [P2]: add missing field-purpose comments or run the backfill in CONTENT mode.
+- F2 [P2]: remove or rewrite sidecar-owned comment-only guidance from `SKILL.md`.
+- F3 [P2]: update the relation-vocabulary comment to include `disjoint_with` and the deprecated `adjacent` alias.
+- F4 [P2]: add behavior/routing eval coverage before claiming Behavior Gate certification.
