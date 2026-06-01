@@ -1,23 +1,21 @@
-# Scorecard
+# Audit Scorecard
 
 ## Skill
 
 `skill-router`
 
-## Audit Date
-
-2026-05-18
-
 ## Dimensions
 
 | Dimension | Score | Note |
-|---|---|---|
-| Metadata validity | 4 | lint passes clean from skill-graph workspace; 2 stale metadata fields (protocol label v5→v6, scope/grounding_mode tension) |
-| Activation quality | 5 | description specific, 25 targeted keywords, trigger label present, realistic examples and anti-examples |
-| Relation quality | 5 | boundary crisp at 4 skills; verify_with appropriate; routing eval 7/7 confirms boundary exclusions work |
-| Grounding fidelity | 4 | truth sources exist and hashed; routing eval passes; scope:portable + grounding_mode:repo_specific is in tension |
-| Content quality | 5 | Coverage, Philosophy, Routing Rules table, Fallback, Do NOT Use When — all present and substantive |
-| Eval quality | 5 | both eval files present; routing eval 7/7 PASS; cases cover dispatch, boundaries, and coverage-gap |
-| Portability quality | 4 | marketplace export exists; scope tension (F2) limits cross-context use in practice |
+|---|---:|---|
+| Metadata validity | 4 | Repaired to the sidecar shape; lint passes with one field-purpose-comment warning. |
+| Activation quality | 4 | Strong trigger, examples, anti-examples, and 10 focused keywords; routing eval is declared present. |
+| Relation quality | 4 | Boundary targets are appropriate and relation prose was updated to the current vocabulary. |
+| Grounding fidelity | 2 | Routing truth-source hashes are stale, so truth verdict remains DRIFT. |
+| Content quality | 4 | Current routing mechanics are now represented; remaining concern is re-grounding against the exact implementation. |
+| Eval quality | 3 | Routing/application artifacts exist, but no graded Behavior Gate receipt was produced in this pass. |
+| Portability quality | 3 | Useful outside the repo as a model, but intentionally `deployment_target: project` because it is anchored to the Skill Graph routing harness. |
 
-**Overall: PASS WITH FIXES** — P0=0, P1=0, P2=1 (tool bug, not skill defect), P3=2, P4=1
+## Notes
+
+The skill is now structurally current and instructionally useful. Re-grounding is the main Integrity Gate follow-up; graded application evidence is the Behavior Gate follow-up.

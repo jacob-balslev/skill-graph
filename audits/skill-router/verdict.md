@@ -1,4 +1,4 @@
-# Verdict
+# Audit Verdict
 
 ## Skill
 
@@ -6,29 +6,22 @@
 
 ## Audit Date
 
-2026-05-18
+2026-06-01
 
-## Final Verdict
+## Integrity Gate
 
-PASS WITH FIXES
+PASS_WITH_FIXES
+
+## Behavior Gate
+
+UNVERIFIED
 
 ## Rationale
 
-The skill passes all substantive quality checks:
+`skill-router` started this audit with loop-owned state in `SKILL.md` and with body guidance that still taught retired `scope`/`type` routing tiebreakers. This pass moved loop-owned fields into `audit-state.json`, rewrote the routing explanation around current v8 project-fit, relation-aware, eval-aware, and staleness-aware behavior, reduced the keywords to the v8 cap, and reran the audit loop.
 
-- Lint passes clean (0 errors) when run with absolute path resolution from the `skill-graph` workspace.
-- Routing eval: 7/7 cases pass (`node scripts/skill-graph-routing-eval.js --skill skill-router`).
-- Description, keywords, triggers, and examples are specific and accurate.
-- Boundary relations are crisp and correctly prevent misuse.
-- Philosophy, Coverage, Routing Rules, and Do NOT Use When sections are all present and substantive.
-- Both eval files exist (`examples/evals/skill-router.json`, `examples/evals/skill-router.routing.json`).
-
-Two P3 fixes are deferred (scope/grounding_mode tension, protocol version label) and one P2 fix (skill-audit.js cross-repo resolution) is tracked as a sub-issue. None block the PASS verdict.
+The repaired skill passes deterministic lint with one warning. The truth layer remains DRIFT because routing implementation and fixture hashes are stale.
 
 ## Follow-up State
 
-Fixes deferred:
-- F1 (P2): `skill-audit.js` cross-repo resolution — tracked as sub-issue, not a skill-router defect
-- F2 (P3): scope vs grounding_mode — defer to next edit cycle
-- F3 (P3): skill_graph_protocol label — fix in next SKILL.md edit
-- F4 (P4): Evals section body clarification — fix in next SKILL.md edit
+Fixes applied for sidecar separation, routing-model drift, keyword cap, relation-vocabulary prose, and authoring-boundary wording. Fixes deferred for field-purpose comments, truth-source re-grounding, and graded application evals. Behavior Gate remains UNVERIFIED until a real application grader run supports promotion.

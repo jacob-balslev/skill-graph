@@ -1,4 +1,4 @@
-# Findings
+# Audit Findings
 
 ## Skill
 
@@ -6,81 +6,89 @@
 
 ## Audit Date
 
-2026-05-18
-
-## Audit Mode
-
-Manual audit using `node scripts/skill-lint.js` (absolute path) + `node scripts/skill-graph-routing-eval.js` + body review against `SKILL_AUDIT_LOOP.md` § Part 2.
-
-> **Workspace note.** `node scripts/skill-audit.js skill-router` run via `SKILL_GRAPH_WORKSPACE=/...skills` reports 6 lint errors because truth-source paths (`scripts/skill-graph-route.js`, `examples/evals/skill-router.*`) exist in the `skill-graph` tooling repo, not the `skills` library repo. Running lint with the absolute path from the `skill-graph` workspace resolves all truth sources correctly and passes clean. The cross-repo resolution gap is a tool limitation — `skill-audit.js` hardcodes `SKILLS_DIR = path.join(REPO_ROOT, 'skills')` rather than using `resolveSkillRoots()`.
+2026-06-01
 
 ## Verdict Summary
 
-PASS WITH FIXES
+PASS_WITH_FIXES
 
 ## Findings
 
 ID: F1
 Severity: P2
-Surface: scripts/skill-audit.js — cross-repo path resolution
-Category: Tool limitation
-Problem: When `skill-audit.js` runs via `SKILL_GRAPH_WORKSPACE=/...skills`, it cannot resolve `scripts/skill-graph-route.js`, `scripts/skill-graph-routing-eval.js`, `examples/evals/skill-router.json`, `examples/evals/skill-router.routing.json` or `examples/evals/` because those paths live in the sibling `skill-graph` repo, not the `skills` workspace. The script hardcodes `SKILLS_DIR = path.join(REPO_ROOT, 'skills')` rather than calling `resolveSkillRoots()`.
-Evidence: `node scripts/skill-audit.js skill-router` (SKILL_GRAPH_WORKSPACE=/skills) reports 6 lint errors. `node scripts/skill-lint.js /...skills/skills/skill-router` (absolute path from skill-graph): 0 skill-level errors.
-Required action: Fix `scripts/skill-audit.js` to use `resolveSkillRoots()` and `resolveTruthSourcePath()` when resolving truth sources. Track as SH-6107 sub-issue.
+Surface: ../skills/skills/agent-ops/skill-router/SKILL.md:1:1
+Category: Lint diagnostic
+Problem: 5 top-level field(s) are missing field-purpose comments required by the Skill Metadata Protocol inline-comment convention.
+Evidence: `node bin/skill-graph.js lint skill-router` emits this warning against line 1 after the sidecar repair and content updates.
+Required action: Run the field-purpose comment backfill or edit comments in a CONTENT-mode improvement pass, then rerun lint.
 
 ID: F2
-Severity: P3
-Surface: skills/skill-router/SKILL.md — metadata.scope vs grounding.grounding_mode
-Category: Grounding fidelity
-Problem: The skill declares `scope: portable` but also `grounding_mode: repo_specific` with truth sources pointing to `skill-graph` scripts. A portable skill should not embed repo-specific grounding.
-Evidence: `scope: portable` in frontmatter vs `grounding_mode: repo_specific` in grounding JSON.
-Required action: Either change scope to `codebase` (honest about what it describes) or change grounding_mode to `portable` and replace truth_sources with abstract references. Defer to next edit cycle.
+Severity: P1
+Surface: grounding.truth_sources / audit-state.json drift_check.truth_source_hashes
+Category: Truth-source drift
+Problem: The skill is grounded in the Skill Graph routing implementation and routing eval fixtures, but recorded hashes no longer match several current files.
+Evidence: `node bin/skill-graph.js audit skill-router --force` reports `drift: DRIFT`. `node scripts/skill-graph-drift.js` reports drift for `scripts/skill-graph-route.js`, `scripts/skill-graph-routing-eval.js`, and `examples/evals/skill-router.json`.
+Required action: Re-ground the skill against current routing code and fixtures, update any stale claims, then record fresh truth-source hashes.
 
 ID: F3
-Severity: P3
-Surface: skills/skill-router/SKILL.md — metadata.skill_graph_protocol
-Category: Schema migration
-Problem: The `skill_graph_protocol` field says "Skill Metadata Protocol v5" but `schema_version` is 7.
-Evidence: `skill_graph_protocol: Skill Metadata Protocol v5` alongside `schema_version: 7`.
-Required action: Update to "Skill Metadata Protocol v7" in next skill edit.
+Severity: P1
+Surface: SKILL.md / audit-state.json field placement
+Category: Sidecar split
+Problem: The skill started this audit with loop-owned audit/eval/provenance fields in `SKILL.md` instead of the sibling `audit-state.json` sidecar.
+Evidence: `node scripts/normalize-skill-field-shape.js --report --skill skill-router` reported 15 fields to relocate.
+Required action: Fixed during this pass: moved loop-owned fields into `audit-state.json` and reran the audit loop.
 
 ID: F4
-Severity: P4
-Surface: skills/skill-router/SKILL.md — Evals section body
+Severity: P1
+Surface: Description, Coverage, Routing Rules, tiebreaker sections
+Category: Retired routing model
+Problem: The skill still taught retired `scope`/`type` tiebreakers (`scope: codebase`, `type: workflow`, `schema_version: 2`) even though the current router uses v8 project fit, relation expansion/exclusion, eval-state quality gates, and lifecycle staleness annotations.
+Evidence: Before this pass the description and body named `scope/type` tiebreakers; the Routing Rules section ranked keyword ties with `scope` then `type`; the Scope and Type tiebreaker sections documented retired enums.
+Required action: Fixed during this pass: rewrote those sections around `deployment_target`, `project[]` / `repo[]`, `relations.depends_on`, `relations.verify_with`, `relations.boundary`, `relations.disjoint_with`, `eval_state`, and `lifecycle.stale_after_days`.
+
+ID: F5
+Severity: P2
+Surface: metadata.keywords and relation comments
+Category: Activation and relation hygiene
+Problem: The keyword list exceeded the current v8 cap and the inline relation comment still said "Six edge types" while omitting `disjoint_with`.
+Evidence: The pre-fix keyword string contained more than 10 terms; relation prose lagged the current relation vocabulary.
+Required action: Fixed during this pass: reduced keywords to 10 high-signal phrases and updated the relation comment to the current relation vocabulary.
+
+ID: F6
+Severity: P2
+Surface: evals / audit-state.json
+Category: Behavior Gate coverage
+Problem: Routing and application eval artifacts exist, but `application_verdict` remains `UNVERIFIED`; no graded Behavior Gate receipt was produced in this pass.
+Evidence: The skill directory contains `evals/application.json`, and `examples/evals/skill-router.json` plus `examples/evals/skill-router.routing.json` exist; `audit-state.json` records `eval_artifacts: present`, `routing_eval: present`, and `application_verdict: UNVERIFIED`.
+Required action: Run the graded application eval and keep the Behavior Gate UNVERIFIED until a real grader receipt supports promotion.
+
+ID: F7
+Severity: INFO
+Surface: activation and boundaries
+Category: Activation quality
+Problem: No activation defect remains after the keyword trim and boundary wording updates.
+Evidence: Description, examples, anti-examples, and boundary relations clearly separate routing unknown/ambiguous requests from known-target skill loading, single-skill graph audits, and skill authoring.
+Required action: No action required.
+
+ID: F8
+Severity: INFO
+Surface: content structure
 Category: Content quality
-Problem: The Evals section says "ships a comprehension-eval artifact as `skill-router.json`" without distinguishing it from the routing eval (`skill-router.routing.json`).
-Evidence: Body Evals section references only one file; the directory has two.
-Required action: Clarify to name both files and their purposes (comprehension vs routing).
+Problem: No content-structure defect remains after the routing-model update.
+Evidence: The skill now explains priority surfaces, coverage-gap behavior, project-fit/quality gates, graph expansion/exclusion, eval artifacts, and explicit Do NOT Use When boundaries.
+Required action: No action required beyond re-grounding F2 and behavior evidence F6.
+
+## Fixed During This Audit Pass
+
+- Moved 15 sidecar-owned fields from `SKILL.md` into `audit-state.json`.
+- Rewrote retired `scope`/`type` tiebreaker guidance around current v8 routing mechanics.
+- Reduced keywords to the v8 cap of 10.
+- Updated relation-vocabulary prose.
+- Updated authoring-boundary wording from the template artifact to `skill-scaffold`.
+- Bumped sidecar content version to `1.0.1` and freshness to `2026-06-01`.
 
 ## Required Fixes
 
-- F1 [P2]: Fix `skill-audit.js` cross-repo resolution — create sub-issue (not blocking skill-router pass)
-- F2 [P3]: Resolve scope/grounding_mode tension — defer to next edit
-- F3 [P3]: Update skill_graph_protocol label v5 → v6 — fix in next edit
-- F4 [P4]: Clarify Evals section to label both eval files
-
-## Qualitative Assessment (Human Review)
-
-### Activation quality — PASS
-
-Description is specific and covers trigger scenarios. 25 keywords cover the routing vocabulary. Trigger label enables label-based dispatch. Examples are realistic. Anti-examples correctly name adjacent skills.
-
-### Relation quality — PASS
-
-Boundary relations are crisp and semantically correct. `verify_with: graph-audit` is appropriate. Routing eval 7/7 PASS confirms boundary exclusions work.
-
-### Grounding fidelity — PASS WITH FIXES (F2)
-
-Truth sources exist and are hashed. Routing eval passes 7/7. The scope/grounding_mode tension is a classification issue, not a live defect.
-
-### Content quality — PASS
-
-Coverage, Philosophy, Routing Rules, and Do NOT Use When sections are all present and substantive. No generic filler detected.
-
-### Eval quality — PASS
-
-Both eval files exist in skill-graph. Routing eval 7/7 PASS. Cases cover positive dispatch, boundary exclusions, and coverage-gap scenarios.
-
-### Portability quality — PASS WITH FIXES (F2)
-
-Marketplace export exists. The scope/grounding_mode tension (F2) limits portability in practice.
+- F1 [P2]: add missing field-purpose comments or run the backfill in CONTENT mode.
+- F2 [P1]: re-ground the skill against current routing code and fixtures, then record fresh hashes.
+- F6 [P2]: run graded application evals before claiming Behavior Gate certification.
