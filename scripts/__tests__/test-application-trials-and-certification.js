@@ -305,8 +305,13 @@ const stampEval = path.join(tmpStampDir, 'evals', 'application.json');
 fs.writeFileSync(stampEval, JSON.stringify({ skill: 'stamp-skill', cases: [] }));
 
 function readVerdict(file) {
-  const m = fs.readFileSync(file, 'utf8').match(/application_verdict:\s*(\S+)/);
-  return m ? m[1] : null;
+  // ADR-0019: application_verdict lives in the audit-state.json sidecar, not
+  // the SKILL.md frontmatter. Each stamp overwrites the field (merge), so no
+  // per-test sidecar cleanup is needed.
+  const sidecarPath = path.join(path.dirname(file), 'audit-state.json');
+  if (!fs.existsSync(sidecarPath)) return null;
+  try { return JSON.parse(fs.readFileSync(sidecarPath, 'utf8')).application_verdict || null; }
+  catch { return null; }
 }
 
 // 6a. No certification_tier + APPLICABLE → capped to PROVISIONAL.

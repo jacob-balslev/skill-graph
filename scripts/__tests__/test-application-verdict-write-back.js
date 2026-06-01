@@ -240,47 +240,54 @@ const fakeResult = {
   total: 3,
   errors: 0,
 };
+// ADR-0019: the verdict + eval_last_run land in the audit-state.json SIDECAR,
+// not the SKILL.md frontmatter. The SKILL.md is left untouched.
+const sidecarPath = path.join(tmpDir, 'audit-state.json');
+const readSidecar = () => (fs.existsSync(sidecarPath) ? JSON.parse(fs.readFileSync(sidecarPath, 'utf8')) : null);
+const resetState = () => { fs.writeFileSync(skillMdPath, SKILL_MD_CONTENT); if (fs.existsSync(sidecarPath)) fs.rmSync(sidecarPath); };
+
 stampApplicationVerdict(evalFilePath, fakeResult, false);
 
-const afterStamp = fs.readFileSync(skillMdPath, 'utf8');
+const sc4a = readSidecar();
 assert(
-  afterStamp.includes('application_verdict: APPLICABLE'),
-  '4a. application_verdict stamped as APPLICABLE (UPPERCASE)',
-  `Content: ${afterStamp.slice(0, 300)}`,
+  sc4a && sc4a.application_verdict === 'APPLICABLE',
+  '4a. application_verdict stamped as APPLICABLE (UPPERCASE) in the sidecar',
+  `sidecar: ${JSON.stringify(sc4a)}`,
 );
 assert(
-  afterStamp.includes('eval_last_run:'),
-  '4a. eval_last_run block inserted',
+  sc4a && sc4a.eval_last_run && typeof sc4a.eval_last_run === 'object',
+  '4a. eval_last_run block written to the sidecar',
 );
 assert(
-  afterStamp.includes('  status: pass'),
+  sc4a && sc4a.eval_last_run && sc4a.eval_last_run.status === 'pass',
   '4a. eval_last_run.status: pass for APPLICABLE',
 );
-
-// 4b. Dry-run does NOT modify the file
-fs.writeFileSync(skillMdPath, SKILL_MD_CONTENT); // reset
-stampApplicationVerdict(evalFilePath, fakeResult, true);
-const afterDryRun = fs.readFileSync(skillMdPath, 'utf8');
 assert(
-  afterDryRun === SKILL_MD_CONTENT,
-  '4b. Dry-run does not modify SKILL.md',
+  fs.readFileSync(skillMdPath, 'utf8') === SKILL_MD_CONTENT,
+  '4a. SKILL.md frontmatter is left untouched (sidecar owns the verdict)',
+);
+
+// 4b. Dry-run does NOT write the sidecar
+resetState();
+stampApplicationVerdict(evalFilePath, fakeResult, true);
+assert(
+  readSidecar() === null && fs.readFileSync(skillMdPath, 'utf8') === SKILL_MD_CONTENT,
+  '4b. Dry-run writes neither sidecar nor SKILL.md',
 );
 
 // 4c. dryRun flag on result prevents write
-fs.writeFileSync(skillMdPath, SKILL_MD_CONTENT); // reset
+resetState();
 stampApplicationVerdict(evalFilePath, { dryRun: true, aggregate_verdict: 'applicable' }, false);
-const afterResultDryRun = fs.readFileSync(skillMdPath, 'utf8');
 assert(
-  afterResultDryRun === SKILL_MD_CONTENT,
-  '4c. applicationResult.dryRun prevents write',
+  readSidecar() === null,
+  '4c. applicationResult.dryRun prevents sidecar write',
 );
 
 // 4d. All-errored run does NOT stamp
-fs.writeFileSync(skillMdPath, SKILL_MD_CONTENT); // reset
+resetState();
 stampApplicationVerdict(evalFilePath, { dryRun: false, aggregate_verdict: 'applicable', total: 3, errors: 3 }, false);
-const afterAllErrors = fs.readFileSync(skillMdPath, 'utf8');
 assert(
-  afterAllErrors === SKILL_MD_CONTENT,
+  readSidecar() === null,
   '4d. All-errored run does not stamp (run is incomplete)',
 );
 
@@ -293,29 +300,29 @@ try {
 }
 
 // 4f. Harmful verdict gets status: fail
-fs.writeFileSync(skillMdPath, SKILL_MD_CONTENT); // reset
+resetState();
 stampApplicationVerdict(evalFilePath, { dryRun: false, aggregate_verdict: 'harmful', total: 3, errors: 0 }, false);
-const afterHarmful = fs.readFileSync(skillMdPath, 'utf8');
+const sc4f = readSidecar();
 assert(
-  afterHarmful.includes('application_verdict: HARMFUL'),
-  '4f. harmful → HARMFUL stamped',
+  sc4f && sc4f.application_verdict === 'HARMFUL',
+  '4f. harmful → HARMFUL stamped in sidecar',
 );
 assert(
-  afterHarmful.includes('  status: fail'),
-  '4f. HARMFUL gets status: fail',
+  sc4f && sc4f.eval_last_run && sc4f.eval_last_run.status === 'fail',
+  '4f. HARMFUL gets eval_last_run.status: fail',
 );
 
 // 4g. Mixed verdict gets status: mixed
-fs.writeFileSync(skillMdPath, SKILL_MD_CONTENT); // reset
+resetState();
 stampApplicationVerdict(evalFilePath, { dryRun: false, aggregate_verdict: 'mixed', total: 3, errors: 0 }, false);
-const afterMixed = fs.readFileSync(skillMdPath, 'utf8');
+const sc4g = readSidecar();
 assert(
-  afterMixed.includes('application_verdict: MIXED'),
-  '4g. mixed → MIXED stamped',
+  sc4g && sc4g.application_verdict === 'MIXED',
+  '4g. mixed → MIXED stamped in sidecar',
 );
 assert(
-  afterMixed.includes('  status: mixed'),
-  '4g. MIXED gets status: mixed',
+  sc4g && sc4g.eval_last_run && sc4g.eval_last_run.status === 'mixed',
+  '4g. MIXED gets eval_last_run.status: mixed',
 );
 
 // Cleanup
@@ -365,35 +372,33 @@ stampApplicationVerdict(evalFile5, {
   errors: 0,
 }, false);
 
+// ADR-0019: the verdict lands in the sidecar; the SKILL.md frontmatter (even
+// the nested metadata: format) is left entirely untouched. The SH-6302
+// frontmatter-mutation bug (duplicate/indented top-level field) is moot —
+// verdicts no longer live in frontmatter, so there is nothing to mutate there.
 const after5 = fs.readFileSync(skillMd5, 'utf8');
-
-// The indented field must be replaced in-place (not duplicated at top level)
-const lines5 = after5.split('\n');
-const verdictLines5 = lines5.filter((l) => l.includes('application_verdict'));
+const sc5 = JSON.parse(fs.readFileSync(path.join(tmpDir5, 'audit-state.json'), 'utf8'));
 
 assert(
-  verdictLines5.length === 1,
-  '5a. Exactly one application_verdict line (no duplicate top-level field)',
-  `Found ${verdictLines5.length} lines: ${JSON.stringify(verdictLines5)}`,
+  sc5.application_verdict === 'APPLICABLE',
+  '5a. application_verdict stamped APPLICABLE in the sidecar (metadata-format skill)',
+  `sidecar: ${JSON.stringify(sc5)}`,
 );
-
 assert(
-  verdictLines5[0] === '  application_verdict: APPLICABLE',
-  '5b. Indented field stamped with correct indent and APPLICABLE',
-  `Got: ${JSON.stringify(verdictLines5[0])}`,
+  sc5.eval_last_run && typeof sc5.eval_last_run === 'object',
+  '5b. eval_last_run written to the sidecar',
 );
-
 assert(
-  !after5.includes('application_verdict: UNVERIFIED'),
-  '5c. Old UNVERIFIED value is gone',
+  after5 === SKILL_MD_METADATA_NESTED,
+  '5c. SKILL.md frontmatter is byte-for-byte untouched (no mutation of the metadata: block)',
+  `after: ${after5.slice(0, 200)}`,
 );
-
+// The frontmatter metadata: verdicts remain UNVERIFIED (untouched) — the manifest
+// join, not a frontmatter write, is what surfaces the sidecar verdict to consumers.
 assert(
-  after5.includes('eval_last_run:'),
-  '5d. eval_last_run block inserted into metadata-format skill',
+  after5.includes('  application_verdict: UNVERIFIED'),
+  '5d. frontmatter metadata: application_verdict is untouched (still UNVERIFIED)',
 );
-
-// Verify that the other verdict fields under metadata: are untouched
 assert(
   after5.includes('  structural_verdict: UNVERIFIED'),
   '5e. structural_verdict under metadata: is untouched',

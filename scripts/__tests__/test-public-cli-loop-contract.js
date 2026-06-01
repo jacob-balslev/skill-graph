@@ -184,6 +184,18 @@ function frontmatterValue(text, key) {
   return m ? m[1].replace(/^["']|["']$/g, '') : null;
 }
 
+// ADR-0019: the audit loop stamps verdicts + eval state into the audit-state.json
+// sidecar (sibling of SKILL.md), not the frontmatter.
+function readSidecar() {
+  const p = path.join(path.dirname(skillMd), 'audit-state.json');
+  if (!fs.existsSync(p)) return {};
+  try { return JSON.parse(fs.readFileSync(p, 'utf8')); } catch { return {}; }
+}
+function sidecarValue(key) {
+  const v = readSidecar()[key];
+  return v === undefined ? null : v;
+}
+
 // ===========================================================================
 console.log('Public-CLI loop contract test\n');
 
@@ -199,19 +211,18 @@ check('audit --dry-run resolves the fixture skill (exit 0)', dryRun.status === 0
 
 // --- 1. audit writes Integrity-gate verdicts to disk (deterministic, no model). ---
 const auditRun = runCli(['audit', SKILL_NAME, '--force']);
-const afterAudit = readSkill();
 check('audit exits 0', auditRun.status === 0,
   `exit ${auditRun.status}; stderr: ${(auditRun.stderr || '').slice(0, 400)}`);
-check('audit stamps structural_verdict on disk', /structural_verdict:/.test(afterAudit));
-check('audit stamps truth_verdict on disk', /truth_verdict:/.test(afterAudit));
-check('audit stamps last_audited on disk', Boolean(frontmatterValue(afterAudit, 'last_audited')));
+// ADR-0019: Integrity-gate verdicts are stamped into the audit-state.json sidecar.
+check('audit stamps structural_verdict to the sidecar', sidecarValue('structural_verdict') !== null);
+check('audit stamps truth_verdict to the sidecar', sidecarValue('truth_verdict') !== null);
+check('audit stamps last_audited to the sidecar', Boolean(sidecarValue('last_audited')));
 
 // --- 2. BREAK #2 — evaluate stamps the Health Block by DEFAULT (no flag). ---
-const beforeEvalVerdict = frontmatterValue(readSkill(), 'comprehension_verdict');
+const beforeEvalVerdict = sidecarValue('comprehension_verdict');
 const evalRun = runCli(['evaluate', '--mode', 'comprehension', compEval]);
-const afterEval = readSkill();
-const afterEvalVerdict = frontmatterValue(afterEval, 'comprehension_verdict');
-const evalScore = frontmatterValue(afterEval, 'eval_score');
+const afterEvalVerdict = sidecarValue('comprehension_verdict');
+const evalScore = sidecarValue('eval_score');
 check('evaluate exits 0', evalRun.status === 0,
   `exit ${evalRun.status}; stderr: ${(evalRun.stderr || '').slice(0, 600)}`);
 // Step 3 (2026-05-31) CLOSED this. comprehension_verdict + freshness were already
@@ -225,7 +236,7 @@ check('BREAK#2: evaluate moves comprehension_verdict off UNVERIFIED by default',
   afterEvalVerdict !== null && afterEvalVerdict !== 'UNVERIFIED',
   `before=${beforeEvalVerdict} after=${afterEvalVerdict}`);
 check('BREAK#3: evaluate stamps freshness (durable on-disk receipt)',
-  Boolean(frontmatterValue(afterEval, 'freshness')));
+  Boolean(sidecarValue('freshness')));
 
 // --- 3. init create path scaffolds a SKILL.md (deterministic). ---
 const initDir = fs.mkdtempSync(path.join(os.tmpdir(), 'sg-cli-init-'));

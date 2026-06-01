@@ -35,6 +35,8 @@ const crypto = require('crypto');
 const { parseFrontmatter, normalizeFrontmatter } = require('./lib/parse-frontmatter');
 const { checkAliasParity } = require('./lib/alias-contract');
 const { collectSkillFilesFromRoots, resolveSchemaPath, workspaceRoot } = require('./lib/roots');
+// ADR-0019: the audit-state sidecar join helper (canonical home).
+const { readSidecar: loadAuditStateSidecar, joinSidecar } = require('./lib/audit-state-sidecar');
 
 const REPO_ROOT = workspaceRoot();
 const DEFAULT_SKILLS_DIR = path.join(REPO_ROOT, 'skills');
@@ -235,46 +237,13 @@ function detectDrift(fm) {
   return false;
 }
 
-// ---------------------------------------------------------------------------
-// Audit-state sidecar join (ADR-0019)
-//
-// Audit/eval/provenance fields live in `audit-state.json` at the skill-folder
-// root (sibling of SKILL.md), NOT in frontmatter. The manifest join reads the
-// sidecar and merges it UNDER the frontmatter so buildSkillEntry sees the same
-// combined shape it read from single-file frontmatter before the split — the
-// manifest's health/eval/lifecycle/concept projections stay byte-identical.
-// Frontmatter wins on any key collision: the two field sets are disjoint by
-// contract, so a collision only happens for a skill mid-migration that still
-// carries an audit field in frontmatter, and there the frontmatter copy is the
-// one consumers read today, so it must win. Missing sidecar => the merge is a
-// no-op => an unmigrated skill (audit fields still in frontmatter) or a
-// brand-new skill (neither) behaves exactly as before: brand-new gets honest
-// UNVERIFIED/default health from buildSkillEntry, never a crash.
-// See docs/adr/0019-audit-state-sidecar-separation.md.
-// ---------------------------------------------------------------------------
-
-function loadAuditStateSidecar(skillFilePath) {
-  const sidecarPath = path.join(path.dirname(skillFilePath), 'audit-state.json');
-  if (!fs.existsSync(sidecarPath)) return null;
-  try {
-    const obj = JSON.parse(fs.readFileSync(sidecarPath, 'utf8'));
-    if (!obj || typeof obj !== 'object' || Array.isArray(obj)) return null;
-    return obj;
-  } catch (e) {
-    process.stderr.write(`WARN ${repoRelative(sidecarPath)}: cannot parse audit-state.json — ${e.message}\n`);
-    return null;
-  }
-}
-
-/**
- * Merge an audit-state sidecar UNDER a frontmatter object. Frontmatter wins on
- * key collision. Returns a new object; mutates neither input. Null sidecar
- * returns the frontmatter unchanged.
- */
-function joinSidecar(fm, sidecar) {
-  if (!sidecar) return fm;
-  return { ...sidecar, ...fm };
-}
+// Audit-state sidecar join (ADR-0019): `loadAuditStateSidecar` (= readSidecar)
+// and `joinSidecar` are imported from scripts/lib/audit-state-sidecar.js above.
+// The manifest join reads the sidecar and merges it UNDER the frontmatter so
+// buildSkillEntry sees the same combined shape it read from single-file
+// frontmatter pre-split — health/eval/lifecycle/concept projections stay
+// byte-identical. Missing sidecar => no-op merge => unmigrated/new skill behaves
+// exactly as before. See docs/adr/0019-audit-state-sidecar-separation.md.
 
 // ---------------------------------------------------------------------------
 // Rename map — implements docs/manifest-field-mapping.md § "Top-level authored fields"
