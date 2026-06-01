@@ -27,6 +27,9 @@ const path = require('path');
 
 const ROOT = path.resolve(__dirname, '..');
 const SCHEMA_PATH = path.join(ROOT, 'schemas', 'SKILL_METADATA_PROTOCOL_schema.json');
+// ADR-0019: audit/eval/provenance fields live in the audit-state sidecar.
+// The generated reference covers BOTH files so no field loses its index entry.
+const AUDIT_STATE_PATH = path.join(ROOT, 'schemas', 'skill-audit-state.schema.json');
 const DEFAULT_OUTPUT = path.join(ROOT, 'skill-metadata-protocol', 'field-reference.generated.md');
 
 function parseArgs(argv) {
@@ -48,6 +51,11 @@ function parseArgs(argv) {
 
 function loadSchema() {
   const raw = fs.readFileSync(SCHEMA_PATH, 'utf8');
+  return JSON.parse(raw);
+}
+
+function loadAuditStateSchema() {
+  const raw = fs.readFileSync(AUDIT_STATE_PATH, 'utf8');
   return JSON.parse(raw);
 }
 
@@ -110,35 +118,55 @@ function renderField(name, prop, requiredSet) {
   return parts.join('\n').replace(/\n{3,}/g, '\n\n');
 }
 
-function render(schema) {
+function renderSchemaSection(schema, heading, sourceFile) {
   const requiredSet = new Set(schema.required || []);
   const lines = [
-    '# Skill Graph Field Reference (Generated)',
+    `## ${heading}`,
     '',
-    '> **Generated from** `schemas/SKILL_METADATA_PROTOCOL_schema.json` by `scripts/build-field-reference.js`.',
-    '> **Do not edit by hand.** The canonical prose reference is [\`skill-metadata-protocol/field-reference.md\`](field-reference.md).',
-    '> **Predicate glossary:** [\`docs/glossary.md\`](../docs/glossary.md).',
-    '> **JSON-LD @context:** [\`schemas/skill.context.jsonld\`](../schemas/skill.context.jsonld).',
-    '',
-    `Schema version: **${schema.properties.schema_version?.oneOf?.[0]?.const ?? 'unknown'}** · Field count: **${Object.keys(schema.properties).length}** · Required: **${requiredSet.size}**`,
+    `> Source schema: \`${sourceFile}\`. Field count: **${Object.keys(schema.properties).length}** · Required: **${requiredSet.size}**.`,
     '',
     '---',
     ''
   ];
-
   for (const [name, prop] of Object.entries(schema.properties)) {
     lines.push(renderField(name, prop, requiredSet));
     lines.push('---');
     lines.push('');
   }
+  return lines;
+}
+
+function render(frontmatter, sidecar) {
+  const sv = sidecar.properties.schema_version?.oneOf?.[0]?.const
+    ?? sidecar.properties.schema_version?.oneOf?.find(b => b.type === 'integer')?.enum?.[0]
+    ?? 'unknown';
+  const totalFields = Object.keys(frontmatter.properties).length + Object.keys(sidecar.properties).length;
+  const lines = [
+    '# Skill Graph Field Reference (Generated)',
+    '',
+    '> **Generated from** `schemas/SKILL_METADATA_PROTOCOL_schema.json` (frontmatter) and',
+    '> `schemas/skill-audit-state.schema.json` (audit-state sidecar) by `scripts/build-field-reference.js`.',
+    '> **Do not edit by hand.** The canonical prose reference is [\`skill-metadata-protocol/field-reference.md\`](field-reference.md).',
+    '> **Predicate glossary:** [\`docs/glossary.md\`](../docs/glossary.md).',
+    '> **JSON-LD @context:** [\`schemas/skill.context.jsonld\`](../schemas/skill.context.jsonld) (frontmatter fields only — the sidecar is not exported/RDF\'d).',
+    '> **Two-file split:** per [ADR-0019](../docs/adr/0019-audit-state-sidecar-separation.md), agent-facing fields live in `SKILL.md` frontmatter; audit/eval/provenance fields live in the `audit-state.json` sidecar.',
+    '',
+    `Schema version: **${sv}** · Total fields: **${totalFields}**`,
+    '',
+    '---',
+    '',
+    ...renderSchemaSection(frontmatter, 'Frontmatter fields (`SKILL.md`)', 'schemas/SKILL_METADATA_PROTOCOL_schema.json'),
+    ...renderSchemaSection(sidecar, 'Audit-state sidecar fields (`audit-state.json`)', 'schemas/skill-audit-state.schema.json'),
+  ];
 
   return lines.join('\n');
 }
 
 function main() {
   const args = parseArgs(process.argv);
-  const schema = loadSchema();
-  const output = render(schema);
+  const frontmatter = loadSchema();
+  const sidecar = loadAuditStateSchema();
+  const output = render(frontmatter, sidecar);
 
   if (args.check) {
     let existing = '';
@@ -153,7 +181,8 @@ function main() {
 
   fs.mkdirSync(path.dirname(args.output), { recursive: true });
   fs.writeFileSync(args.output, output, 'utf8');
-  console.log(`Wrote ${args.output} (${output.length} bytes, ${Object.keys(schema.properties).length} fields)`);
+  const fieldCount = Object.keys(frontmatter.properties).length + Object.keys(sidecar.properties).length;
+  console.log(`Wrote ${args.output} (${output.length} bytes, ${fieldCount} fields across 2 schemas)`);
 }
 
 main();

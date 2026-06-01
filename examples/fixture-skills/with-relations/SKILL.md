@@ -1,13 +1,9 @@
 ---
-schema_version: 8
 name: with-relations
 description: "Use as the v8-conformant fixture exercising typed relation predicates (related, boundary, verify_with, depends_on) using the live schema item shapes. Activate this skill when verifying that lint resolves cross-fixture relation targets without a sibling skills clone. Do NOT use as a production skill (use a real capability skill from the canonical library)."
-version: 1.0.0
 subject: knowledge-organization
 deployment_target: portable
 scope: "Hermetic v8 fixture for validating relation target resolution and relation item shapes. Out: production relation modeling guidance."
-owner: skill-graph-fixture-suite
-freshness: "2026-05-19"
 relations:
   related:
     - minimal-capability
@@ -19,11 +15,6 @@ relations:
   depends_on:
     - skill: minimal-capability
       min_version: "1.0.0"
-drift_check:
-  last_verified: "2026-05-19"
-eval_artifacts: none
-eval_state: unverified
-routing_eval: absent
 stability: experimental
 license: Apache-2.0
 ---

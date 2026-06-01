@@ -35,6 +35,10 @@ const path = require('path');
 const REPO_ROOT = process.env.SKILL_GRAPH_PACKAGE_ROOT || process.cwd();
 const SKILL_SCHEMA = path.join(REPO_ROOT, 'schemas', 'SKILL_METADATA_PROTOCOL_schema.json');
 const MANIFEST_SCHEMA = path.join(REPO_ROOT, 'schemas', 'manifest.schema.json');
+// ADR-0019 audit-state sidecar: schema_version + owner + the four Health Block
+// verdicts + the eval/drift bookkeeping live here now, not in the frontmatter
+// schema. This checker asserts the sidecar's constants too.
+const AUDIT_STATE_SCHEMA = path.join(REPO_ROOT, 'schemas', 'skill-audit-state.schema.json');
 
 // ---------------------------------------------------------------------------
 // Spec — the ground truth from ADR-0011 and ADR-0017.
@@ -61,7 +65,23 @@ const SPEC = {
   ],
   v8_deployment_target: ['portable', 'project'],
   v8_required_fields: ['subject', 'deployment_target', 'scope'],
-  // Health Block — ADR-0011 four-verdict split (current under v8)
+  // Frontmatter `required` is exactly the 5 agent-facing core fields after the
+  // ADR-0019 sidecar split. schema_version/owner/freshness/drift_check/eval_*
+  // are no longer frontmatter-required — they are sidecar-required.
+  frontmatter_required_exact: ['name', 'description', 'subject', 'deployment_target', 'scope'],
+  // Audit-state sidecar `required` (7 of the 8 previously-required audit fields;
+  // `version` is optional in the sidecar). ADR-0019.
+  sidecar_required_fields: [
+    'schema_version',
+    'owner',
+    'freshness',
+    'drift_check',
+    'eval_artifacts',
+    'eval_state',
+    'routing_eval',
+  ],
+  // Health Block — ADR-0011 four-verdict split. Lives in the audit-state
+  // sidecar after the ADR-0019 split (was frontmatter under single-file v8).
   health_block_verdict_fields: [
     'structural_verdict',
     'truth_verdict',
@@ -134,9 +154,12 @@ function checkFreeText(label, def) {
 function runChecks() {
   const skill = readSchema(SKILL_SCHEMA);
   const manifest = readSchema(MANIFEST_SCHEMA);
+  const auditState = readSchema(AUDIT_STATE_SCHEMA);
 
   const skillProps = skill.properties || {};
   const skillRequired = skill.required || [];
+  const auditProps = auditState.properties || {};
+  const auditRequired = auditState.required || [];
   const manifestSkillRequired =
     (manifest.properties &&
       manifest.properties.skills &&
@@ -152,19 +175,33 @@ function runChecks() {
 
   const results = [];
 
-  // schema_version oneOf — verify integer + string branches both list only v8
-  const sv = skillProps.schema_version;
+  // schema_version oneOf — lives in the audit-state sidecar after ADR-0019.
+  // Verify integer + string branches both list only v8.
+  const sv = auditProps.schema_version;
   if (!sv || !Array.isArray(sv.oneOf)) {
-    results.push({ label: 'skill.schema schema_version.oneOf', ok: false, reason: 'missing or not an array' });
+    results.push({ label: 'audit-state.schema schema_version.oneOf', ok: false, reason: 'missing or not an array' });
   } else {
     const intBranch = sv.oneOf.find(b => b.type === 'integer');
     const strBranch = sv.oneOf.find(b => b.type === 'string');
-    results.push(checkEnum('skill.schema schema_version (integer)', SPEC.schema_version.integer, intBranch && intBranch.enum));
-    results.push(checkEnum('skill.schema schema_version (string)', SPEC.schema_version.string, strBranch && strBranch.enum));
+    results.push(checkEnum('audit-state.schema schema_version (integer)', SPEC.schema_version.integer, intBranch && intBranch.enum));
+    results.push(checkEnum('audit-state.schema schema_version (string)', SPEC.schema_version.string, strBranch && strBranch.enum));
   }
 
-  // v8 classification (ADR-0017 + 2026-05-27 amendment)
+  // Frontmatter `required` is exactly the 5 agent-facing core fields (ADR-0019).
   results.push(checkRequiredFields('skill.schema required v8 fields', skillRequired, SPEC.v8_required_fields));
+  {
+    const { missing, extra } = symDiff(SPEC.frontmatter_required_exact, skillRequired);
+    results.push({
+      label: 'skill.schema required is exactly the 5 core fields (ADR-0019)',
+      ok: missing.length === 0 && extra.length === 0,
+      reason: (missing.length || extra.length)
+        ? [missing.length ? `missing: ${missing.join(', ')}` : '', extra.length ? `extra (audit field still required in frontmatter?): ${extra.join(', ')}` : ''].filter(Boolean).join(' | ')
+        : undefined,
+    });
+  }
+
+  // Audit-state sidecar `required` (7 fields; `version` optional). ADR-0019.
+  results.push(checkRequiredFields('audit-state.schema required fields', auditRequired, SPEC.sidecar_required_fields));
   results.push(checkEnum('skill.schema subject (v8 9-enum)', SPEC.v8_subject, skillProps.subject && skillProps.subject.enum));
   if (skillProps.subjects && skillProps.subjects.items) {
     results.push(checkEnum('skill.schema subjects[].items (v8 9-enum)', SPEC.v8_subject, skillProps.subjects.items.enum));
@@ -191,11 +228,13 @@ function runChecks() {
     results.push(checkEnum('manifest.schema skills.schema_version (string)', SPEC.schema_version.string, strBranch && strBranch.enum));
   }
 
-  // Health Block verdict fields must be declared (ADR-0011, current under v8)
+  // Health Block verdict fields must be declared in the audit-state sidecar
+  // (ADR-0011 four-verdict split; relocated from frontmatter to the sidecar by
+  // ADR-0019).
   for (const field of SPEC.health_block_verdict_fields) {
-    const def = skillProps[field];
+    const def = auditProps[field];
     results.push({
-      label: `skill.schema Health Block field: ${field}`,
+      label: `audit-state.schema Health Block field: ${field}`,
       ok: !!def,
       reason: def ? undefined : 'missing — ADR-0011 four-verdict split incomplete',
     });

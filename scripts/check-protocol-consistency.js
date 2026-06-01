@@ -211,6 +211,10 @@ function checkC1FieldSetParity() {
   const errors = [];
   const refPath = path.join(REPO_ROOT, 'skill-metadata-protocol', 'field-reference.md');
   const schemaPath = path.join(REPO_ROOT, 'schemas', 'SKILL_METADATA_PROTOCOL_schema.json');
+  // ADR-0019: field-reference.md documents BOTH the frontmatter fields and the
+  // audit-state sidecar fields (each section notes its file), so parity is
+  // checked against the UNION of both schemas' top-level properties.
+  const sidecarSchemaPath = path.join(REPO_ROOT, 'schemas', 'skill-audit-state.schema.json');
 
   const refText = readText(refPath);
   if (!refText) {
@@ -224,6 +228,12 @@ function checkC1FieldSetParity() {
     return errors;
   }
 
+  const sidecarSchema = readJson(sidecarSchemaPath);
+  if (!sidecarSchema || !sidecarSchema.properties) {
+    errors.push('C1 [schemas/skill-audit-state.schema.json]: cannot read sidecar schema or no "properties" key -- field-set parity check skipped');
+    return errors;
+  }
+
   // Extract ## heading backtick-wrapped field names like ## `schema_version`
   const headings = extractH2Headings(refText);
   const docFields = new Set();
@@ -232,7 +242,10 @@ function checkC1FieldSetParity() {
     if (m) docFields.add(m[1]);
   }
 
-  const schemaFields = new Set(Object.keys(schema.properties));
+  const schemaFields = new Set([
+    ...Object.keys(schema.properties),
+    ...Object.keys(sidecarSchema.properties),
+  ]);
 
   const inSchemaNotDoc = [...schemaFields].filter(f => !docFields.has(f));
   const inDocNotSchema = [...docFields].filter(f => !schemaFields.has(f));

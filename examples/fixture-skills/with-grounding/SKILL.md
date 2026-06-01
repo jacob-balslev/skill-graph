@@ -1,13 +1,9 @@
 ---
-schema_version: 8
 name: with-grounding
 description: "Use as the minimal v8-conformant project-grounded fixture for skill-graph package tests. Activate this skill when verifying that lint enforces deployment_target: project requiring grounding fields (subject_matter, grounding_mode, truth_sources, failure_modes, evidence_priority). Do NOT use as a production skill (use a real grounded skill from the canonical library)."
-version: 1.0.0
 subject: knowledge-organization
 deployment_target: project
 scope: "Hermetic v8 fixture for validating project-grounded skill metadata and grounding requiredness. Out: production grounding guidance."
-owner: skill-graph-fixture-suite
-freshness: "2026-05-19"
 keywords:
   - grounding
   - fixture
@@ -24,11 +20,6 @@ grounding:
     - "If the v8 schema renames or removes a grounding sub-field, this fixture must move in lockstep with the schema change."
     - "If the fixture-skills README anchor 'Invariants' is renamed, the anchor reference above breaks and lint fails."
   evidence_priority: repo_code_first
-drift_check:
-  last_verified: "2026-05-19"
-eval_artifacts: none
-eval_state: unverified
-routing_eval: absent
 stability: experimental
 license: Apache-2.0
 ---

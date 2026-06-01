@@ -35,6 +35,22 @@ const path = require('path');
 const REPO_ROOT = path.join(__dirname, '..', '..');
 const SCHEMA_PATH = path.join(REPO_ROOT, 'schemas', 'SKILL_METADATA_PROTOCOL_schema.json');
 const SCHEMA = JSON.parse(fs.readFileSync(SCHEMA_PATH, 'utf8'));
+// ADR-0019: schema_version + the audit/eval fields live in the audit-state
+// sidecar now. schema_version validity (8 only) is asserted against this schema.
+const AUDIT_STATE_SCHEMA = JSON.parse(
+  fs.readFileSync(path.join(REPO_ROOT, 'schemas', 'skill-audit-state.schema.json'), 'utf8'),
+);
+// Minimal valid audit-state sidecar (all 7 required fields), used to isolate
+// the schema_version enum checks without missing-required noise.
+const sidecarBase = {
+  schema_version: 8,
+  owner: 'test-owner',
+  freshness: '2026-05-25',
+  drift_check: { last_verified: '2026-05-25' },
+  eval_artifacts: 'none',
+  eval_state: 'unverified',
+  routing_eval: 'absent',
+};
 
 // Reimplement a minimal JSON Schema validator inline — it only needs to handle
 // the subset the SKILL_METADATA_PROTOCOL_schema.json uses: type, enum, required,
@@ -141,26 +157,34 @@ const v7Legacy = {
 };
 
 // Minimal valid v8 frontmatter — both required classification axes present,
-// no retired v7 fields. This is the clean-cut authoring shape.
+// no retired v7 fields, and (per ADR-0019) NO audit/eval/provenance fields:
+// schema_version, version, owner, freshness, drift_check, eval_artifacts,
+// eval_state, routing_eval all moved to the audit-state.json sidecar and are
+// now additionalProperties violations in frontmatter. This is the clean-cut
+// post-sidecar authoring shape — frontmatter `required` is the 5 core fields.
 const v8Base = {
-  schema_version: 8,
   name: 'test-skill',
   description: 'A test skill for v8 schema checks.',
-  version: '1.0.0',
   subject: 'code-engineering',
   deployment_target: 'portable',
   scope: 'Teaches the test subsystem; not for unrelated concerns.',
-  owner: 'test-owner',
-  freshness: '2026-05-25',
-  drift_check: { last_verified: '2026-05-25' },
-  eval_artifacts: 'none',
-  eval_state: 'unverified',
-  routing_eval: 'absent',
 };
 
 check('minimal v8 frontmatter (subject + deployment_target + scope) validates', () => {
   const errors = validate(v8Base, SCHEMA);
   if (errors.length > 0) throw new Error(`v8 base failed: ${errors.join('; ')}`);
+});
+
+check('ADR-0019: an audit-state field in frontmatter is now rejected (sidecar-only)', () => {
+  // schema_version/owner/eval_state etc. live in audit-state.json after the
+  // split; carrying one in frontmatter is an additionalProperties violation.
+  for (const k of ['schema_version', 'owner', 'eval_state', 'drift_check', 'application_verdict']) {
+    const withAudit = { ...v8Base, [k]: k === 'drift_check' ? { last_verified: '2026-05-25' } : (k === 'schema_version' ? 8 : 'x') };
+    const errors = validate(withAudit, SCHEMA);
+    if (!errors.some(e => e.includes(`unexpected key '${k}'`))) {
+      throw new Error(`expected additionalProperties rejection of frontmatter audit field '${k}', got: ${errors.join('; ') || '(none)'}`);
+    }
+  }
 });
 
 check('legacy v7-shaped frontmatter fails (missing v8 fields + retired fields)', () => {
@@ -284,21 +308,21 @@ check('subjects array with valid entries validates', () => {
 // here doesn't implement maxItems. The real corpus check happens when an
 // authored skill runs through skill-lint as part of `npm run verify`.
 
-check('schema_version int 7 is rejected (v7 deprecated, clean cut to v8)', () => {
-  const intSeven = { ...v8Base, schema_version: 7 };
-  const errors = validate(intSeven, SCHEMA);
+check('schema_version int 7 is rejected in the sidecar (v7 deprecated, clean cut to v8)', () => {
+  const intSeven = { ...sidecarBase, schema_version: 7 };
+  const errors = validate(intSeven, AUDIT_STATE_SCHEMA);
   if (errors.length === 0) throw new Error('schema_version int 7 should now fail — v7 is deprecated');
 });
 
-check('schema_version string "7" is rejected (v7 deprecated, clean cut to v8)', () => {
-  const strSeven = { ...v8Base, schema_version: '7' };
-  const errors = validate(strSeven, SCHEMA);
+check('schema_version string "7" is rejected in the sidecar (v7 deprecated, clean cut to v8)', () => {
+  const strSeven = { ...sidecarBase, schema_version: '7' };
+  const errors = validate(strSeven, AUDIT_STATE_SCHEMA);
   if (errors.length === 0) throw new Error('schema_version string "7" should now fail — v7 is deprecated');
 });
 
-check('schema_version string "8" valid (parity with int)', () => {
-  const strEight = { ...v8Base, schema_version: '8' };
-  const errors = validate(strEight, SCHEMA);
+check('schema_version string "8" valid in the sidecar (parity with int)', () => {
+  const strEight = { ...sidecarBase, schema_version: '8' };
+  const errors = validate(strEight, AUDIT_STATE_SCHEMA);
   if (errors.length > 0) throw new Error(`schema_version string "8" failed: ${errors.join('; ')}`);
 });
 

@@ -789,33 +789,6 @@ comprehension_state: present
 
 ---
 
-## `concept`
-
-**Purpose.** Seven-field teaching block for the skill's subject. It gives graders and agents a direct concept model: what the subject is, how to think about it, why it exists, what it is not, where it sits near other concepts, a useful analogy, and the common misconception to avoid.
-
-**Rules.**
-- Required when `comprehension_state: present`.
-- Object with required `definition`, `mental_model`, `purpose`, `boundary`, `taxonomy`, `analogy`, and `misconception`.
-- Keep this about the universal subject. The body `## Philosophy` explains why this skill exists in this repo.
-
-**Example.**
-```yaml
-concept:
-  definition: "Relational mapping is the practice of translating domain relationships into durable data structures."
-  mental_model: "Start from entities, cardinality, optionality, ownership, and lifecycle."
-  purpose: "It prevents persistence shape from smuggling in a false domain model."
-  boundary: "It is not database tuning, UI information architecture, or API envelope design."
-  taxonomy: "Prerequisite to data-modeling; adjacent to bounded-context-mapping."
-  analogy: "Like drawing load-bearing walls before choosing interior paint."
-  misconception: "A table diagram is not a domain model unless the relationships have domain meaning."
-```
-
-**When to use.** Skills whose subject needs concept transfer, not just procedural steps.
-
-**When NOT to use.** Pure execution wrappers where the body already contains all needed operational instruction and no concept grader exists.
-
----
-
 ## `mental_model`
 
 **Purpose.** v6 flat form of `concept.mental_model`. The primitives, metaphors, or operative principles an agent needs to reason about this subject. Describes *how* to think about the subject — the reasoning substrate, not a procedure.
@@ -1170,22 +1143,6 @@ allowed-tools: Read Grep Bash
 **When to use.** When deploying to a runtime that enforces tool allowlists and you want to declare the minimum required set.
 
 **When NOT to use.** Skills where all tools are permitted (omit the field) or where the deployment runtime does not read this field.
-
----
-
-## `allowed_tools`
-
-**Purpose.** v3.1 preferred snake_case alias for `allowed-tools`. The kebab-case form is the only field in a snake_case schema; the alias removes that inconsistency on the authoring side. The export transform still writes the kebab-case form for SKILL.md consumers.
-
-**Rules.**
-- Space-separated string (same as `allowed-tools`).
-- When both forms are present, they must match.
-- v3.x skills can set either; v4 makes `allowed_tools` canonical for authoring. The export transform continues to write `allowed-tools` (kebab) for SKILL.md compatibility.
-
-**Example.**
-```yaml
-allowed_tools: Read Grep Bash
-```
 
 ---
 

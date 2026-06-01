@@ -263,7 +263,6 @@ The YAML frontmatter uses the current v8 schema, including the flat Understandin
 | | [`boundary`](field-reference.md#boundary) | if `comprehension_state: present` | string |
 | | [`analogy`](field-reference.md#analogy) | if `comprehension_state: present` | string |
 | | [`misconception`](field-reference.md#misconception) | if `comprehension_state: present` | string |
-| | [`concept`](field-reference.md#concept) | DEPRECATED in v6 | `{ definition, mental_model, purpose, boundary, taxonomy, analogy, misconception }` — legacy v5 shape, accepted for back-compat |
 | | [`eval_last_run`](field-reference.md#eval_last_run) | | `{ at, status, runner?, model?, receipt?, receipt_hash? }` |
 | **Activation & Routing** | [`keywords`](field-reference.md#keywords) | if routable | string[] |
 | | [`triggers`](field-reference.md#triggers) | | string[] |

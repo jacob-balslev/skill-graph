@@ -1,18 +1,9 @@
 ---
-schema_version: 8
 name: minimal-capability
 description: "Use as the smallest v8-compat capability fixture for skill-graph package tests. Activate this skill when verifying that lint, manifest generation, and routing accept the bare-minimum required frontmatter. Do NOT use as a production skill (use a real capability skill from the canonical library)."
-version: 1.0.0
 subject: code-engineering
 deployment_target: portable
 scope: "Minimal v8 schema fixture for validating lint, manifest generation, routing, and standalone audit smoke tests. Out: production skill guidance."
-owner: skill-graph-fixture-suite
-freshness: "2026-05-19"
-drift_check:
-  last_verified: "2026-05-19"
-eval_artifacts: none
-eval_state: unverified
-routing_eval: absent
 stability: experimental
 license: Apache-2.0
 ---

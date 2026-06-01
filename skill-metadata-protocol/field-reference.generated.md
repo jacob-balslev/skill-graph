@@ -1,21 +1,19 @@
 # Skill Graph Field Reference (Generated)
 
-> **Generated from** `schemas/SKILL_METADATA_PROTOCOL_schema.json` by `scripts/build-field-reference.js`.
+> **Generated from** `schemas/SKILL_METADATA_PROTOCOL_schema.json` (frontmatter) and
+> `schemas/skill-audit-state.schema.json` (audit-state sidecar) by `scripts/build-field-reference.js`.
 > **Do not edit by hand.** The canonical prose reference is [`skill-metadata-protocol/field-reference.md`](field-reference.md).
 > **Predicate glossary:** [`docs/glossary.md`](../docs/glossary.md).
-> **JSON-LD @context:** [`schemas/skill.context.jsonld`](../schemas/skill.context.jsonld).
+> **JSON-LD @context:** [`schemas/skill.context.jsonld`](../schemas/skill.context.jsonld) (frontmatter fields only — the sidecar is not exported/RDF'd).
+> **Two-file split:** per [ADR-0019](../docs/adr/0019-audit-state-sidecar-separation.md), agent-facing fields live in `SKILL.md` frontmatter; audit/eval/provenance fields live in the `audit-state.json` sidecar.
 
-Schema version: **unknown** · Field count: **56** · Required: **13**
+Schema version: **8** · Total fields: **54**
 
 ---
 
-### `schema_version` *(required)*
+## Frontmatter fields (`SKILL.md`)
 
-**Type:** multiple — see schema
-
-Major contract shape version. Integer 8 is the only accepted current value. v7 is a prior contract shape retrievable from git history, not an accepted live-schema value. Bumps when shape changes break consumers. v8 carries `subject` + `deployment_target` classification, required free-text `scope`, `project[]` and `repo[]` belonging-entity fields, `taxonomy_domain` taxonomic sub-path, and `grounding.subject_matter`. Prior versions live in git history — see `git tag --list 'schema-*'`. See docs/adr/0017-five-axis-classification-model.md and its amendments.
-
-**Full reference:** [`skill-metadata-protocol/field-reference.md#schema_version`](field-reference.md#schema_version)
+> Source schema: `schemas/SKILL_METADATA_PROTOCOL_schema.json`. Field count: **26** · Required: **5**.
 
 ---
 
@@ -31,18 +29,6 @@ Stable display-layer skill identifier. Lowercase kebab-case; allows `/` and `:` 
 
 ---
 
-### `urn` *(optional)*
-
-**Type:** string
-
-Optional globally-unique persistent identifier in the `urn:skill:<repo>:<skill-name>` form (RFC 8141). Consumers treat the URN as the stable identity across repos and federated registries; `name` is the display-layer handle. The `<skill-name>` segment MUST equal the `name` field.
-
-**Pattern:** `^urn:skill:[a-z0-9][a-z0-9-]*:[a-z0-9][a-z0-9-/:]*$`
-
-**Full reference:** [`skill-metadata-protocol/field-reference.md#urn`](field-reference.md#urn)
-
----
-
 ### `description` *(required)*
 
 **Type:** string
@@ -50,18 +36,6 @@ Optional globally-unique persistent identifier in the `urn:skill:<repo>:<skill-n
 A short description of what the skill is about. Activation, trigger, and boundary semantics belong to the dedicated fields built for them: `keywords` and `triggers` for activation signals, `examples` and `anti_examples` for prompt-level coverage, and `relations.boundary` for routing-layer exclusion edges. Keep `description` descriptive, not prescriptive. No protocol length cap.
 
 **Full reference:** [`skill-metadata-protocol/field-reference.md#description`](field-reference.md#description)
-
----
-
-### `version` *(required)*
-
-**Type:** string
-
-Skill content version (semver). Bumps when the SKILL.md body or contract changes meaningfully. Distinct from `schema_version` (the contract shape). Used by `relations.depends_on` for `min_version` constraints.
-
-**Pattern:** `^[0-9]+\.[0-9]+\.[0-9]+$`
-
-**Full reference:** [`skill-metadata-protocol/field-reference.md#version`](field-reference.md#version)
 
 ---
 
@@ -132,235 +106,6 @@ Projects this skill is linked to. Each entry has a kebab-case `handle` and a fre
 
 ---
 
-### `repo` *(optional)*
-
-**Type:** array of object
-
-Repos this skill is linked to. Each entry has a kebab-case `handle` and a canonical `url`. Optional; plural even though most skills today have one source repo, so federation is structurally ready without a future schema bump. Replaces the implicit identity encoded in URN compounds and stripped `skill_graph_source_repo` export-provenance keys. See the ADR-0017 amendment of 2026-05-27.
-
-**Item shape (object form):**
-
-- `handle` *required* — Kebab-case repo handle (e.
-- `url` *optional* — Canonical repository URL.
-
-**Full reference:** [`skill-metadata-protocol/field-reference.md#repo`](field-reference.md#repo)
-
----
-
-### `owner` *(required)*
-
-**Type:** string
-
-Maintainer or team accountable for keeping this skill correct. Free-form string; conventional values: `skill-graph-maintainer`, GitHub team handles, individual usernames. Used by drift-check workflows to route review requests.
-
-**Full reference:** [`skill-metadata-protocol/field-reference.md#owner`](field-reference.md#owner)
-
----
-
-### `freshness` *(required)*
-
-**Type:** string
-
-ISO date (YYYY-MM-DD) of the last meaningful content review. The author's claim that the skill was current as of this date. Complemented by `drift_check.truth_source_hashes` for grounded skills. `reviewed_at` is the supported alias.
-
-**Format:** date
-
-**Full reference:** [`skill-metadata-protocol/field-reference.md#freshness`](field-reference.md#freshness)
-
----
-
-### `reviewed_at` *(optional)*
-
-**Type:** string
-
-ISO date (YYYY-MM-DD) of the last meaningful content review (v3.1 preferred alias for `freshness`). When both are present they must match.
-
-**Format:** date
-
-**Full reference:** [`skill-metadata-protocol/field-reference.md#reviewed_at`](field-reference.md#reviewed_at)
-
----
-
-### `drift_check` *(required)*
-
-**Type:** object
-
-Drift-detection record for grounded skills. `last_verified` is the author's claim; `truth_source_hashes` is content-addressable evidence keyed by each normalized `grounding.truth_sources` entry. Whole-file sources hash normalized file content; line-range sources hash only the cited slice; anchor-only sources hash the resolved Markdown section or literal text. The combination lets `scripts/skill-graph-drift.js` detect when underlying truth has changed without an accompanying review.
-
-**Sub-fields:**
-
-- `last_verified` *required* — ISO date of the last verification against truth sources.
-- `verified_at` *optional* — ISO date of the last verification against truth sources (v3.
-- `truth_source_hashes` *optional* — Map of normalized truth source key to SHA-256 hex digest at the time of last verification.
-
-**Full reference:** [`skill-metadata-protocol/field-reference.md#drift_check`](field-reference.md#drift_check)
-
----
-
-### `eval_artifacts` *(required)*
-
-**Type:** `none` | `planned` | `present`
-
-Are eval artifacts present on disk for this skill? `none` (no evals planned), `planned` (eval intent declared but not yet shipped), `present` (eval JSON exists at `evals/<skill>.json` or similar). The `present` claim requires a real artifact and audit/eval receipt.
-
-**Full reference:** [`skill-metadata-protocol/field-reference.md#eval_artifacts`](field-reference.md#eval_artifacts)
-
----
-
-### `eval_state` *(required)*
-
-**Type:** `unverified` | `passing` | `monitored`
-
-What does the eval say about content quality? `unverified` (no eval has run), `passing` (last run passed), `monitored` (eval runs on a cadence and is currently passing). Independent of `routing_eval` (the routing-coverage axis). Use to express content-level quality grading orthogonal to routing coverage.
-
-**Full reference:** [`skill-metadata-protocol/field-reference.md#eval_state`](field-reference.md#eval_state)
-
----
-
-### `routing_eval` *(required)*
-
-**Type:** `absent` | `present`
-
-Is routing / trigger coverage explicitly evaluated? `absent` (router behaviour is not part of the eval set), `present` (the skill's `examples[]` and `anti_examples[]` pass `scripts/skill-graph-routing-eval.js`). Honesty over green checkmarks — flip to `present` only after the harness PASSes. The nested `eval.routing_coverage` is the v3.1 preferred alias.
-
-**Full reference:** [`skill-metadata-protocol/field-reference.md#routing_eval`](field-reference.md#routing_eval)
-
----
-
-### `last_audited` *(optional)*
-
-**Type:** string
-
-ISO date (YYYY-MM-DD) the `audit` command last ran against this skill. Written by `scripts/skill/skill-audit.js`. Independent of `freshness` (which is the author's claim of content-level review) and `drift_check.last_verified` (which is the truth-source verification). Loop priority uses `last_audited` to pick the stalest skill.
-
-**Format:** date
-
-**Full reference:** [`skill-metadata-protocol/field-reference.md#last_audited`](field-reference.md#last_audited)
-
----
-
-### `last_changed` *(optional)*
-
-**Type:** string
-
-ISO date (YYYY-MM-DD) the SKILL.md body or frontmatter was last edited. Written automatically by `improve` operations. Distinct from `freshness` (review claim) — `last_changed` is the editor's footprint, `freshness` is the reviewer's footprint.
-
-**Format:** date
-
-**Full reference:** [`skill-metadata-protocol/field-reference.md#last_changed`](field-reference.md#last_changed)
-
----
-
-### `structural_verdict` *(optional)*
-
-**Type:** `PASS` | `PASS_WITH_FIXES` | `FAIL` | `UNVERIFIED`
-
-Structural-layer verdict produced by gates 1–2 and 7 of the skill-audit loop (schema lint, manifest census, concept-card shape). `PASS` (clean), `PASS_WITH_FIXES` (warnings present but no errors), `FAIL` (lint or schema errors), `UNVERIFIED` (no structural audit has run yet). Independent of `lint_verdict` (per-script signal); this is the audit-loop roll-up. See docs/adr/0011-split-audit-verdict-into-four-verdicts.md.
-
-**Full reference:** [`skill-metadata-protocol/field-reference.md#structural_verdict`](field-reference.md#structural_verdict)
-
----
-
-### `truth_verdict` *(optional)*
-
-**Type:** `PASS` | `DRIFT` | `BROKEN` | `UNVERIFIED`
-
-Truth-layer verdict produced by gates 3–6 of the skill-audit loop (truth-source catalog, drift sentinel, test coverage, claim verification). `PASS` (truth sources align with declared `last_verified` and hashes), `DRIFT` (truth sources changed since last_verified), `BROKEN` (declared truth sources missing or unreadable), `UNVERIFIED` (no truth audit has run yet). Independent of `drift_status` (per-script signal); this is the audit-loop roll-up. See docs/adr/0011-split-audit-verdict-into-four-verdicts.md.
-
-**Full reference:** [`skill-metadata-protocol/field-reference.md#truth_verdict`](field-reference.md#truth_verdict)
-
----
-
-### `comprehension_verdict` *(optional)*
-
-**Type:** `PASS` | `SHALLOW` | `REDUNDANT` | `UNVERIFIED` | `PROVISIONAL` | `SKIPPED_BASELINE_HIGH` | `NA`
-
-Comprehension-layer verdict produced by gate 8 (the comprehension grader on `evals/comprehension.json`). `PASS` (with-skill answers measurably deeper than baseline; dual-run grader earned), `PROVISIONAL` (a single competent model ran the comprehension assessment and recorded a real result — lower confidence than `PASS` because not yet confirmed by the independent dual-run grader, but distinct from `UNVERIFIED` which means no assessment has run), `SHALLOW` (skill recites the concept but does not deepen agent understanding), `REDUNDANT` (baseline already saturated — skill adds no comprehension lift on this concept), `SKIPPED_BASELINE_HIGH` (early-skip — `avg_primary_baseline >= 1.0` after the first 2 evals so the dual-run was aborted), `NA` (skill carries no `evals/comprehension.json`), `UNVERIFIED` (initial state before any grader run). Confidence hierarchy: `PASS (grader) > PROVISIONAL (single model) > UNVERIFIED (none)`. Comprehension never alone certifies a skill as useful — `application_verdict` is the aggregate-quality field. See docs/adr/0011-split-audit-verdict-into-four-verdicts.md and .claude/rules/version-schema-contract.md § 5.
-
-**Full reference:** [`skill-metadata-protocol/field-reference.md#comprehension_verdict`](field-reference.md#comprehension_verdict)
-
----
-
-### `application_verdict` *(optional)*
-
-**Type:** `APPLICABLE` | `REDUNDANT` | `HARMFUL` | `MIXED` | `FALSE_POSITIVE` | `UNVERIFIED` | `PROVISIONAL`
-
-Application-layer verdict produced by gate 9 (the application grader on `evals/application.json`). `APPLICABLE` (loading the skill changes agent behavior on real artifacts in the expected direction — flags, fixes, generative trajectory), `REDUNDANT` (no behavioral delta — agent behaves the same with or without the skill loaded), `HARMFUL` (negative delta — agent makes worse decisions with the skill loaded; SkillsBench arXiv 2602.12670 found 19% of evaluated skills exhibit this), `MIXED` (delta varies across cases — some applicable, some redundant or false-positive), `FALSE_POSITIVE` (skill over-triggers — applies on cases where its expertise does not apply), `UNVERIFIED` (no application assessment has run), `PROVISIONAL` (single-model self-assessment audit found useful behavior but the independent application grader has not confirmed it). This is the aggregate-quality field: a skill is only behaviorally certified when this verdict is `APPLICABLE`. See docs/adr/0011-split-audit-verdict-into-four-verdicts.md.
-
-**Full reference:** [`skill-metadata-protocol/field-reference.md#application_verdict`](field-reference.md#application_verdict)
-
----
-
-### `eval_score` *(optional)*
-
-**Type:** number
-
-Latest aggregate eval grade on a 0.0–5.0 scale, written by `scripts/skill/evaluate-skill.js`. Replaces the read-the-log dance for knowing how this skill scored. When `evals/comprehension.json` exists, the comprehension grader's score lands here; otherwise the standard eval-suite score. Use `eval_failed_ids` to inspect the failing cases.
-
-**Full reference:** [`skill-metadata-protocol/field-reference.md#eval_score`](field-reference.md#eval_score)
-
----
-
-### `eval_failed_ids` *(optional)*
-
-**Type:** array of string
-
-Eval IDs that failed in the most recent run. Empty array when clean. Populated alongside `eval_score` by the eval runner. Surfaces failures without forcing readers to crawl `eval-history.jsonl`.
-
-**Full reference:** [`skill-metadata-protocol/field-reference.md#eval_failed_ids`](field-reference.md#eval_failed_ids)
-
----
-
-### `lint_verdict` *(optional)*
-
-**Type:** `PASS` | `FAIL` | `UNKNOWN`
-
-Result of the most recent canonical-source schema lint pass against this skill (`scripts/skill-lint.js`). The current lint gate checks valid frontmatter, validation against `schemas/SKILL_METADATA_PROTOCOL_schema.json`, identifier shape, non-empty description, and parent-directory/name alignment. Relation targets, routing quality, drift, export, and eval checks are separate tools. `PASS` means zero lint errors. `UNKNOWN` is the initial state.
-
-**Full reference:** [`skill-metadata-protocol/field-reference.md#lint_verdict`](field-reference.md#lint_verdict)
-
----
-
-### `drift_status` *(optional)*
-
-**Type:** `OK` | `DRIFT` | `BROKEN` | `STALE` | `NO_BASELINE` | `EXTERNAL_UNHASHED` | `UNKNOWN`
-
-Current truth-source drift status, mirroring the `scripts/skill-graph-drift.js` sentinel verdicts. `OK` (live hashes match recorded), `DRIFT` (mismatch), `BROKEN` (declared truth source missing), `STALE` (older than `lifecycle.stale_after_days`), `NO_BASELINE` (local truth sources declared but no hashes recorded), `EXTERNAL_UNHASHED` (URL truth sources not fetched), `UNKNOWN` (no drift check has run). Written by the drift sentinel; read by the loop to prioritise re-grounding work.
-
-**Full reference:** [`skill-metadata-protocol/field-reference.md#drift_status`](field-reference.md#drift_status)
-
----
-
-### `comprehension_state` *(optional)*
-
-**Type:** `absent` | `present`
-
-Does this skill carry a comprehension eval (typically `evals/comprehension.json`) and the Understanding fields authored for the comprehension grader? `absent` (no comprehension grading), `present` (comprehension evals exist; the five flat Understanding fields `mental_model`, `purpose`, `boundary`, `analogy`, `misconception` are required by the allOf rule, OR the legacy `concept` block satisfies the requirement for v5 skills not yet migrated). Authored-vs-measured boundary: the Understanding fields (and the legacy `concept` block) are AUTHORED CONTENT — the comprehension grader's INPUT, never the measurement itself. The measurement is the eval artifact (`comprehension.json`) plus the `comprehension_verdict` it produces. A field description that reads 'authored input read by the grader's X dimension' means exactly this — the field feeds the measurement, it is not the score. Independent of `routing_eval` (router-level) and `eval_state` (content-level). The nested `eval.comprehension_state` is the v3.1 preferred alias.
-
-**Full reference:** [`skill-metadata-protocol/field-reference.md#comprehension_state`](field-reference.md#comprehension_state)
-
----
-
-### `concept` *(optional)*
-
-**Type:** object
-
-Legacy nested encoding of the Understanding fields. The current contract authors `mental_model`, `purpose`, `boundary`, `analogy`, and `misconception` as flat top-level fields; `description` covers the former `definition`; `relations.broader` covers the former `taxonomy`. The nested block is retained ONLY for skills that have not yet been migrated to the flat encoding; new skills MUST author the flat fields. The comprehension grader reads either location; when both are present, the flat fields win. Per AGENTS.md § Major Version Is a Clean Cut, structural removal of this block is CONTENT-mode work the audit loop drains per-skill.
-
-**Sub-fields:**
-
-- `definition` *required* — What the concept IS.
-- `mental_model` *required* — Primitives and their relationships.
-- `purpose` *required* — What problem the concept solves and the alternative it replaced.
-- `boundary` *required* — Things commonly confused with the concept but that are NOT it.
-- `taxonomy` *required* — Nearby concepts with their relationship type (subset / alternative / prerequisite / composition / specialization).
-- `analogy` *required* — Analogy that preserves the core mechanism.
-- `misconception` *required* — The wrong mental model people bring and why it misleads.
-
-**Full reference:** [`skill-metadata-protocol/field-reference.md#concept`](field-reference.md#concept)
-
----
-
 ### `mental_model` *(optional)*
 
 **Type:** string
@@ -411,42 +156,6 @@ The wrong mental model people bring and why it misleads. Authored hint to inocul
 
 ---
 
-### `eval_last_run` *(optional)*
-
-**Type:** object
-
-Optional receipt for the most recent eval run. Complements `eval_state` so `passing` and `monitored` claims can point at evidence instead of remaining self-attested.
-
-**Sub-fields:**
-
-- `at` *required* — Timestamp for the eval run that supports the current eval_state claim.
-- `status` *required* (`pass` | `fail` | `mixed`)
-- `runner` *optional* — Eval runner or command used, e.
-- `model` *optional* — Optional grader/model identifier when an LLM grader was used.
-- `receipt` *optional* — Path or URL to the eval receipt, scorecard, grader history, or CI run.
-- `receipt_hash` *optional* — Optional SHA-256 digest of the receipt artifact.
-
-**Full reference:** [`skill-metadata-protocol/field-reference.md#eval_last_run`](field-reference.md#eval_last_run)
-
----
-
-### `eval` *(optional)*
-
-**Type:** object
-
-Nested Evaluation Status record (v3.1 preferred alias for the sibling fields `eval_artifacts` / `eval_state` / `routing_eval`). When both the top-level and nested forms are present they must match.
-
-**Sub-fields:**
-
-- `artifacts` *optional* (`none` | `planned` | `present`) — Are eval artifacts present on disk for this skill? Mirrors top-level `eval_artifacts`.
-- `content_state` *optional* (`unverified` | `passing` | `monitored`) — What does the eval say about content quality? Mirrors top-level `eval_state`.
-- `routing_coverage` *optional* (`absent` | `present`) — Is routing / trigger coverage explicitly evaluated? Mirrors top-level `routing_eval`.
-- `comprehension_state` *optional* (`absent` | `present`) — Mirrors top-level `comprehension_state`.
-
-**Full reference:** [`skill-metadata-protocol/field-reference.md#eval`](field-reference.md#eval)
-
----
-
 ### `stability` *(optional)*
 
 **Type:** `experimental` | `stable` | `frozen` | `deprecated`
@@ -454,16 +163,6 @@ Nested Evaluation Status record (v3.1 preferred alias for the sibling fields `ev
 Lifecycle posture for consumers. `experimental` (subject to change), `stable` (production-ready), `frozen` (no further changes expected), `deprecated` (use `superseded_by` to name the replacement). Drives consumer pinning decisions.
 
 **Full reference:** [`skill-metadata-protocol/field-reference.md#stability`](field-reference.md#stability)
-
----
-
-### `marketplace_tier` *(optional)*
-
-**Type:** `S` | `A` | `B` | `C`
-
-Publication priority for the public marketplace at `github.com/jacob-balslev/skills` / `skills.sh`. `S` = featured (top-of-README, individual hero copy). `A` = high-demand (named in collection tables). `B` = standard utility (included in collection tables). `C` = niche (collapsed 'More' section). Omit entirely for skills that should not be published. Sourced from `marketplace-publication-priority-*.md` and authored per skill. Lint validates the enum; consumers (export-marketplace-skills.js, generate-marketplace-readmes.js) filter and group on this field.
-
-**Full reference:** [`skill-metadata-protocol/field-reference.md#marketplace_tier`](field-reference.md#marketplace_tier)
 
 ---
 
@@ -512,16 +211,6 @@ Cross-runtime compatibility envelope. `runtimes` lists target agent runtimes wit
 Optional space-separated whitelist of tools the skill is permitted to use (e.g., `Read Edit Bash`). Honoured by harnesses that gate tool calls per skill. Kebab-case spelling matches the common SKILL.md field name and Claude Code's `--allowed-tools` CLI flag. `allowed_tools` (snake_case) is the v3.1 preferred protocol alias; the export transform writes the kebab-case form for SKILL.md consumers.
 
 **Full reference:** [`skill-metadata-protocol/field-reference.md#allowed-tools`](field-reference.md#allowed-tools)
-
----
-
-### `allowed_tools` *(optional)*
-
-**Type:** string
-
-Space-separated whitelist of tools (v3.1 preferred snake_case alias for `allowed-tools`). When both are present they must match. The SKILL.md export transform rewrites this to the kebab-case form.
-
-**Full reference:** [`skill-metadata-protocol/field-reference.md#allowed_tools`](field-reference.md#allowed_tools)
 
 ---
 
@@ -625,11 +314,306 @@ Records what the skill is grounded against — the truth sources, the grounding 
 
 ---
 
+## Audit-state sidecar fields (`audit-state.json`)
+
+> Source schema: `schemas/skill-audit-state.schema.json`. Field count: **28** · Required: **7**.
+
+---
+
+### `schema_version` *(required)*
+
+**Type:** multiple — see schema
+
+Major contract shape version. Integer 8 is the only accepted current value. v7 is a prior contract shape retrievable from git history, not an accepted live-schema value. Bumps when shape changes break consumers. Moved from SKILL.md frontmatter to this sidecar in the audit-state split (ADR-0019): which contract a skill conforms to is a system/audit concern, not part of the public Agent-Skills frontmatter. Prior versions live in git history — see `git tag --list 'schema-*'`.
+
+**Full reference:** [`skill-metadata-protocol/field-reference.md#schema_version`](field-reference.md#schema_version)
+
+---
+
+### `version` *(optional)*
+
+**Type:** string
+
+Skill content version (semver). Bumps when the SKILL.md body or contract changes meaningfully. Distinct from `schema_version` (the contract shape). Used by `relations.depends_on` for `min_version` constraints. Governance/provenance — moved to the sidecar in ADR-0019. Optional in the sidecar (the only currently-required audit field NOT carried into the sidecar `required` set).
+
+**Pattern:** `^[0-9]+\.[0-9]+\.[0-9]+$`
+
+**Full reference:** [`skill-metadata-protocol/field-reference.md#version`](field-reference.md#version)
+
+---
+
+### `urn` *(optional)*
+
+**Type:** string
+
+Optional globally-unique persistent identifier in the `urn:skill:<repo>:<skill-name>` form (RFC 8141). Consumers treat the URN as the stable identity across repos and federated registries; the frontmatter `name` is the display-layer handle. The `<skill-name>` segment MUST equal the frontmatter `name` field. Registry identity / provenance — moved to the sidecar in ADR-0019 (0 acting consumer today).
+
+**Pattern:** `^urn:skill:[a-z0-9][a-z0-9-]*:[a-z0-9][a-z0-9-/:]*$`
+
+**Full reference:** [`skill-metadata-protocol/field-reference.md#urn`](field-reference.md#urn)
+
+---
+
+### `owner` *(required)*
+
+**Type:** string
+
+Maintainer or team accountable for keeping this skill correct. Free-form string; conventional values: `skill-graph-maintainer`, GitHub team handles, individual usernames. Used by drift-check workflows to route review requests. Maintenance accountability is a human-curator/audit concern, not agent-facing — moved to the sidecar in ADR-0019.
+
+**Full reference:** [`skill-metadata-protocol/field-reference.md#owner`](field-reference.md#owner)
+
+---
+
+### `repo` *(optional)*
+
+**Type:** array of object
+
+Repos this skill is linked to. Each entry has a kebab-case `handle` and a canonical `url`. Optional; plural even though most skills today have one source repo, so federation is structurally ready without a future schema bump. Belonging-entity / provenance reference — moved to the sidecar in ADR-0019.
+
+**Item shape (object form):**
+
+- `handle` *required* — Kebab-case repo handle (e.
+- `url` *optional* — Canonical repository URL.
+
+**Full reference:** [`skill-metadata-protocol/field-reference.md#repo`](field-reference.md#repo)
+
+---
+
+### `freshness` *(required)*
+
+**Type:** string
+
+ISO date (YYYY-MM-DD) of the last meaningful content review. The author's claim that the skill was current as of this date. Complemented by `drift_check.truth_source_hashes` for grounded skills. `reviewed_at` is the supported alias. Audit freshness timestamp — moved to the sidecar in ADR-0019.
+
+**Format:** date
+
+**Full reference:** [`skill-metadata-protocol/field-reference.md#freshness`](field-reference.md#freshness)
+
+---
+
+### `reviewed_at` *(optional)*
+
+**Type:** string
+
+ISO date (YYYY-MM-DD) of the last meaningful content review (v3.1 preferred alias for `freshness`). When both are present they must match.
+
+**Format:** date
+
+**Full reference:** [`skill-metadata-protocol/field-reference.md#reviewed_at`](field-reference.md#reviewed_at)
+
+---
+
+### `drift_check` *(required)*
+
+**Type:** object
+
+Drift-detection record for grounded skills. `last_verified` is the author's claim; `truth_source_hashes` is content-addressable evidence keyed by each normalized frontmatter `grounding.truth_sources` entry. Whole-file sources hash normalized file content; line-range sources hash only the cited slice; anchor-only sources hash the resolved Markdown section or literal text. The combination lets `scripts/skill-graph-drift.js` detect when underlying truth has changed without an accompanying review. Audit machinery — moved to the sidecar in ADR-0019 (grounding stays frontmatter; only the hashes move).
+
+**Sub-fields:**
+
+- `last_verified` *required* — ISO date of the last verification against truth sources.
+- `verified_at` *optional* — ISO date of the last verification against truth sources (v3.
+- `truth_source_hashes` *optional* — Map of normalized truth source key to SHA-256 hex digest at the time of last verification.
+
+**Full reference:** [`skill-metadata-protocol/field-reference.md#drift_check`](field-reference.md#drift_check)
+
+---
+
+### `eval_artifacts` *(required)*
+
+**Type:** `none` | `planned` | `present`
+
+Are eval artifacts present on disk for this skill? `none` (no evals planned), `planned` (eval intent declared but not yet shipped), `present` (eval JSON exists at `evals/<skill>.json` or similar). The `present` claim requires a real artifact and audit/eval receipt.
+
+**Full reference:** [`skill-metadata-protocol/field-reference.md#eval_artifacts`](field-reference.md#eval_artifacts)
+
+---
+
+### `eval_state` *(required)*
+
+**Type:** `unverified` | `passing` | `monitored`
+
+What does the eval say about content quality? `unverified` (no eval has run), `passing` (last run passed), `monitored` (eval runs on a cadence and is currently passing). Independent of `routing_eval` (the routing-coverage axis). Use to express content-level quality grading orthogonal to routing coverage.
+
+**Full reference:** [`skill-metadata-protocol/field-reference.md#eval_state`](field-reference.md#eval_state)
+
+---
+
+### `routing_eval` *(required)*
+
+**Type:** `absent` | `present`
+
+Is routing / trigger coverage explicitly evaluated? `absent` (router behaviour is not part of the eval set), `present` (the skill's frontmatter `examples[]` and `anti_examples[]` pass `scripts/skill-graph-routing-eval.js`). Honesty over green checkmarks — flip to `present` only after the harness PASSes. The nested `eval.routing_coverage` is the v3.1 preferred alias.
+
+**Full reference:** [`skill-metadata-protocol/field-reference.md#routing_eval`](field-reference.md#routing_eval)
+
+---
+
+### `last_audited` *(optional)*
+
+**Type:** string
+
+ISO date (YYYY-MM-DD) the `audit` command last ran against this skill. Written by `scripts/skill/skill-audit.js`. Independent of `freshness` (which is the author's claim of content-level review) and `drift_check.last_verified` (which is the truth-source verification). Loop priority uses `last_audited` to pick the stalest skill.
+
+**Format:** date
+
+**Full reference:** [`skill-metadata-protocol/field-reference.md#last_audited`](field-reference.md#last_audited)
+
+---
+
+### `last_changed` *(optional)*
+
+**Type:** string
+
+ISO date (YYYY-MM-DD) the SKILL.md body or frontmatter was last edited. Written automatically by `improve` operations. Distinct from `freshness` (review claim) — `last_changed` is the editor's footprint, `freshness` is the reviewer's footprint.
+
+**Format:** date
+
+**Full reference:** [`skill-metadata-protocol/field-reference.md#last_changed`](field-reference.md#last_changed)
+
+---
+
+### `structural_verdict` *(optional)*
+
+**Type:** `PASS` | `PASS_WITH_FIXES` | `FAIL` | `UNVERIFIED`
+
+Structural-layer verdict produced by gates 1–2 and 7 of the skill-audit loop (schema lint, manifest census, concept-card shape). `PASS` (clean), `PASS_WITH_FIXES` (warnings present but no errors), `FAIL` (lint or schema errors), `UNVERIFIED` (no structural audit has run yet). Independent of `lint_verdict` (per-script signal); this is the audit-loop roll-up. See docs/adr/0011-split-audit-verdict-into-four-verdicts.md.
+
+**Full reference:** [`skill-metadata-protocol/field-reference.md#structural_verdict`](field-reference.md#structural_verdict)
+
+---
+
+### `truth_verdict` *(optional)*
+
+**Type:** `PASS` | `DRIFT` | `BROKEN` | `UNVERIFIED`
+
+Truth-layer verdict produced by gates 3–6 of the skill-audit loop (truth-source catalog, drift sentinel, test coverage, claim verification). `PASS` (truth sources align with declared `last_verified` and hashes), `DRIFT` (truth sources changed since last_verified), `BROKEN` (declared truth sources missing or unreadable), `UNVERIFIED` (no truth audit has run yet). Independent of `drift_status` (per-script signal); this is the audit-loop roll-up. See docs/adr/0011-split-audit-verdict-into-four-verdicts.md.
+
+**Full reference:** [`skill-metadata-protocol/field-reference.md#truth_verdict`](field-reference.md#truth_verdict)
+
+---
+
+### `comprehension_verdict` *(optional)*
+
+**Type:** `PASS` | `SHALLOW` | `REDUNDANT` | `UNVERIFIED` | `PROVISIONAL` | `SKIPPED_BASELINE_HIGH` | `NA`
+
+Comprehension-layer verdict produced by gate 8 (the comprehension grader on `evals/comprehension.json`). `PASS` (with-skill answers measurably deeper than baseline; dual-run grader earned), `PROVISIONAL` (a single competent model ran the comprehension assessment and recorded a real result — lower confidence than `PASS` because not yet confirmed by the independent dual-run grader, but distinct from `UNVERIFIED` which means no assessment has run), `SHALLOW` (skill recites the concept but does not deepen agent understanding), `REDUNDANT` (baseline already saturated — skill adds no comprehension lift on this concept), `SKIPPED_BASELINE_HIGH` (early-skip — `avg_primary_baseline >= 1.0` after the first 2 evals so the dual-run was aborted), `NA` (skill carries no `evals/comprehension.json`), `UNVERIFIED` (initial state before any grader run). Confidence hierarchy: `PASS (grader) > PROVISIONAL (single model) > UNVERIFIED (none)`. Comprehension never alone certifies a skill as useful — `application_verdict` is the aggregate-quality field. See docs/adr/0011-split-audit-verdict-into-four-verdicts.md and .claude/rules/version-schema-contract.md § 5.
+
+**Full reference:** [`skill-metadata-protocol/field-reference.md#comprehension_verdict`](field-reference.md#comprehension_verdict)
+
+---
+
+### `application_verdict` *(optional)*
+
+**Type:** `APPLICABLE` | `REDUNDANT` | `HARMFUL` | `MIXED` | `FALSE_POSITIVE` | `UNVERIFIED` | `PROVISIONAL`
+
+Application-layer verdict produced by gate 9 (the application grader on `evals/application.json`). `APPLICABLE` (loading the skill changes agent behavior on real artifacts in the expected direction — flags, fixes, generative trajectory), `REDUNDANT` (no behavioral delta — agent behaves the same with or without the skill loaded), `HARMFUL` (negative delta — agent makes worse decisions with the skill loaded; SkillsBench arXiv 2602.12670 found 19% of evaluated skills exhibit this), `MIXED` (delta varies across cases — some applicable, some redundant or false-positive), `FALSE_POSITIVE` (skill over-triggers — applies on cases where its expertise does not apply), `UNVERIFIED` (no application assessment has run), `PROVISIONAL` (single-model self-assessment audit found useful behavior but the independent application grader has not confirmed it). This is the aggregate-quality field: a skill is only behaviorally certified when this verdict is `APPLICABLE`. See docs/adr/0011-split-audit-verdict-into-four-verdicts.md.
+
+**Full reference:** [`skill-metadata-protocol/field-reference.md#application_verdict`](field-reference.md#application_verdict)
+
+---
+
+### `lint_verdict` *(optional)*
+
+**Type:** `PASS` | `FAIL` | `UNKNOWN`
+
+Result of the most recent canonical-source schema lint pass against this skill (`scripts/skill-lint.js`). The current lint gate checks valid frontmatter, validation against `schemas/SKILL_METADATA_PROTOCOL_schema.json` (and this sidecar schema), identifier shape, non-empty description, and parent-directory/name alignment. Relation targets, routing quality, drift, export, and eval checks are separate tools. `PASS` means zero lint errors. `UNKNOWN` is the initial state.
+
+**Full reference:** [`skill-metadata-protocol/field-reference.md#lint_verdict`](field-reference.md#lint_verdict)
+
+---
+
+### `drift_status` *(optional)*
+
+**Type:** `OK` | `DRIFT` | `BROKEN` | `STALE` | `NO_BASELINE` | `EXTERNAL_UNHASHED` | `UNKNOWN`
+
+Current truth-source drift status, mirroring the `scripts/skill-graph-drift.js` sentinel verdicts. `OK` (live hashes match recorded), `DRIFT` (mismatch), `BROKEN` (declared truth source missing), `STALE` (older than `lifecycle.stale_after_days`), `NO_BASELINE` (local truth sources declared but no hashes recorded), `EXTERNAL_UNHASHED` (URL truth sources not fetched), `UNKNOWN` (no drift check has run). Written by the drift sentinel; read by the loop to prioritise re-grounding work.
+
+**Full reference:** [`skill-metadata-protocol/field-reference.md#drift_status`](field-reference.md#drift_status)
+
+---
+
+### `eval_score` *(optional)*
+
+**Type:** number
+
+Latest aggregate eval grade on a 0.0–5.0 scale, written by `scripts/skill/evaluate-skill.js`. Replaces the read-the-log dance for knowing how this skill scored. When `evals/comprehension.json` exists, the comprehension grader's score lands here; otherwise the standard eval-suite score. Use `eval_failed_ids` to inspect the failing cases.
+
+**Full reference:** [`skill-metadata-protocol/field-reference.md#eval_score`](field-reference.md#eval_score)
+
+---
+
+### `eval_failed_ids` *(optional)*
+
+**Type:** array of string
+
+Eval IDs that failed in the most recent run. Empty array when clean. Populated alongside `eval_score` by the eval runner. Surfaces failures without forcing readers to crawl `eval-history.jsonl`.
+
+**Full reference:** [`skill-metadata-protocol/field-reference.md#eval_failed_ids`](field-reference.md#eval_failed_ids)
+
+---
+
+### `eval_last_run` *(optional)*
+
+**Type:** object
+
+Optional receipt for the most recent eval run. Complements `eval_state` so `passing` and `monitored` claims can point at evidence instead of remaining self-attested.
+
+**Sub-fields:**
+
+- `at` *required* — Timestamp for the eval run that supports the current eval_state claim.
+- `status` *required* (`pass` | `fail` | `mixed`)
+- `runner` *optional* — Eval runner or command used, e.
+- `model` *optional* — Optional grader/model identifier when an LLM grader was used.
+- `receipt` *optional* — Path or URL to the eval receipt, scorecard, grader history, or CI run.
+- `receipt_hash` *optional* — Optional SHA-256 digest of the receipt artifact.
+
+**Full reference:** [`skill-metadata-protocol/field-reference.md#eval_last_run`](field-reference.md#eval_last_run)
+
+---
+
+### `eval` *(optional)*
+
+**Type:** object
+
+Nested Evaluation Status record (v3.1 preferred alias for the sibling fields `eval_artifacts` / `eval_state` / `routing_eval`). When both the top-level and nested forms are present they must match.
+
+**Sub-fields:**
+
+- `artifacts` *optional* (`none` | `planned` | `present`) — Are eval artifacts present on disk for this skill? Mirrors top-level `eval_artifacts`.
+- `content_state` *optional* (`unverified` | `passing` | `monitored`) — What does the eval say about content quality? Mirrors top-level `eval_state`.
+- `routing_coverage` *optional* (`absent` | `present`) — Is routing / trigger coverage explicitly evaluated? Mirrors top-level `routing_eval`.
+- `comprehension_state` *optional* (`absent` | `present`) — Mirrors top-level `comprehension_state`.
+
+**Full reference:** [`skill-metadata-protocol/field-reference.md#eval`](field-reference.md#eval)
+
+---
+
+### `comprehension_state` *(optional)*
+
+**Type:** `absent` | `present`
+
+Does this skill carry a comprehension eval (typically `evals/comprehension.json`) and the Understanding fields authored for the comprehension grader? `absent` (no comprehension grading), `present` (comprehension evals exist; the five flat Understanding fields `mental_model`, `purpose`, `boundary`, `analogy`, `misconception` in SKILL.md frontmatter are required by the cross-file lint check in scripts/skill-lint.js). The gate that ties this flag to the Understanding fields is CROSS-FILE (sidecar flag ⇒ frontmatter prose) and so lives in skill-lint.js, not in this schema's allOf. Authored-vs-measured boundary: the Understanding fields are AUTHORED CONTENT — the comprehension grader's INPUT, never the measurement itself. The measurement is the eval artifact (`comprehension.json`) plus the `comprehension_verdict` it produces. Independent of `routing_eval` (router-level) and `eval_state` (content-level). The nested `eval.comprehension_state` is the v3.1 preferred alias.
+
+**Full reference:** [`skill-metadata-protocol/field-reference.md#comprehension_state`](field-reference.md#comprehension_state)
+
+---
+
+### `marketplace_tier` *(optional)*
+
+**Type:** `S` | `A` | `B` | `C`
+
+Publication priority for the public marketplace at `github.com/jacob-balslev/skills` / `skills.sh`. `S` = featured (top-of-README, individual hero copy). `A` = high-demand (named in collection tables). `B` = standard utility (included in collection tables). `C` = niche (collapsed 'More' section). Omit entirely for skills that should not be published. Sourced from `marketplace-publication-priority-*.md` and authored per skill. Lint validates the enum; consumers (export-marketplace-skills.js, generate-marketplace-readmes.js) filter and group on this field. Distribution-internal — a marketplace consumer reads it at publish time, not the everyday agent; moved to the sidecar in ADR-0019.
+
+**Full reference:** [`skill-metadata-protocol/field-reference.md#marketplace_tier`](field-reference.md#marketplace_tier)
+
+---
+
 ### `portability` *(optional)*
 
 **Type:** object
 
-Portability execution signal. `readiness` declares whether portability is only declared (`declared`), covered by export tooling (`scripted`), or verified with a target-runtime receipt (`verified`). `targets` lists supported export destinations, currently `skill-md`.
+Portability execution signal. `readiness` declares whether portability is only declared (`declared`), covered by export tooling (`scripted`), or verified with a target-runtime receipt (`verified`). `targets` lists supported export destinations, currently `skill-md`. Manifest-only pass-through, not agent-read — moved to the sidecar in ADR-0019.
 
 **Sub-fields:**
 
@@ -645,7 +629,7 @@ Portability execution signal. `readiness` declares whether portability is only d
 
 **Type:** object
 
-Per-skill maintenance policy consumed by the drift sentinel.
+Per-skill maintenance policy consumed by the drift sentinel. Audit/freshness scheduling — moved to the sidecar in ADR-0019. NOTE: `stale_after_days` feeds the router staleness gate; the manifest-join carries it into the manifest so the gate keeps working with the field living in the sidecar.
 
 **Sub-fields:**
 
@@ -660,7 +644,7 @@ Per-skill maintenance policy consumed by the drift sentinel.
 
 **Type:** object
 
-Optional pointer to a real-world success/failure feed. Consumers may use telemetry to corroborate or override `eval_state`.
+Optional pointer to a real-world success/failure feed. Consumers may use telemetry to corroborate or override `eval_state`. Runtime-feedback that corroborates audit verdicts — moved to the sidecar in ADR-0019.
 
 **Sub-fields:**
 

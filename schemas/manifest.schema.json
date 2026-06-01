@@ -134,11 +134,9 @@
           "path",
           "name",
           "description",
-          "version",
           "subject",
           "deployment_target",
-          "scope",
-          "owner"
+          "scope"
         ],
         "properties": {
           "id": {

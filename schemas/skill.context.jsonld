@@ -33,27 +33,12 @@
     "xsd": "http://www.w3.org/2001/XMLSchema#",
     "name": "dcterms:identifier",
     "description": "dcterms:description",
-    "version": "dcterms:hasVersion",
-    "schema_version": "sg:schemaVersion",
-    "owner": "dcterms:creator",
     "license": {
       "@id": "dcterms:license",
       "@type": "@id",
       "_note": "SPDX identifier; resolve against spdx:licenseId"
     },
-    "freshness": {
-      "@id": "dcterms:modified",
-      "@type": "xsd:date"
-    },
-    "reviewed_at": {
-      "@id": "dcterms:modified",
-      "@type": "xsd:date"
-    },
     "stability": "sg:stability",
-    "marketplace_tier": {
-      "@id": "sg:marketplaceTier",
-      "_note": "NOT a v7 contract field. Retained only for back-read of legacy manifests. The v7 protocol has no marketplace_tier field."
-    },
     "superseded_by": {
       "@id": "prov:wasRevisionOf",
       "@type": "@id",
@@ -72,14 +57,8 @@
       "@container": "@set",
       "_note": "v8: Projects this skill is linked to. Array of {handle, role} objects. Replaces the original v8 `workspace_tags`."
     },
-    "repo": {
-      "@id": "sg:repo",
-      "@container": "@set",
-      "_note": "v8: Repos this skill is linked to. Array of {handle, url} objects. Replaces implicit URN repo-slug parsing."
-    },
     "handle": "sg:entityHandle",
     "role": "sg:projectRole",
-    "url": "@id",
     "subject": {
       "@id": "sg:subject",
       "_note": "Primary classification — what the skill teaches. Closed 9-value enum (agent-ops, code-engineering, frontend-ui, design-craft, data-analytics, quality-assurance, meta-methods, knowledge-organization, product-domain). See docs/adr/0017-five-axis-classification-model.md."
@@ -110,7 +89,6 @@
       "@container": "@set"
     },
     "allowed-tools": "sg:allowedTools",
-    "allowed_tools": "sg:allowedTools",
     "relations": {
       "@id": "sg:relations",
       "@context": {
@@ -174,59 +152,6 @@
       "@container": "@set"
     },
     "evidence_priority": "sg:evidencePriority",
-    "drift_check": "sg:driftCheck",
-    "last_verified": {
-      "@id": "prov:generatedAtTime",
-      "@type": "xsd:date"
-    },
-    "verified_at": {
-      "@id": "prov:generatedAtTime",
-      "@type": "xsd:date"
-    },
-    "truth_source_hashes": {
-      "@id": "sg:truthSourceHash",
-      "_note": "Map of normalized truth-source key to SHA-256 hex digest. Complements prov:generatedAtTime with content-addressable evidence."
-    },
-    "concept": "sg:concept",
-    "comprehension_state": "sg:comprehensionState",
-    "eval_artifacts": "sg:evalArtifacts",
-    "eval_state": "sg:evalState",
-    "routing_eval": "sg:routingEval",
-    "eval": "sg:eval",
-    "artifacts": "sg:evalArtifacts",
-    "content_state": "sg:evalState",
-    "routing_coverage": "sg:routingEval",
-    "eval_last_run": "sg:evalLastRun",
-    "at": {
-      "@id": "prov:generatedAtTime",
-      "@type": "xsd:dateTime"
-    },
-    "status": "sg:evalRunStatus",
-    "runner": "sg:evalRunner",
-    "model": "sg:evalModel",
-    "receipt": "sg:evalReceipt",
-    "receipt_hash": "sg:evalReceiptHash",
-    "lifecycle": "sg:lifecycle",
-    "stale_after_days": {
-      "@id": "sg:staleAfterDays",
-      "@type": "xsd:integer"
-    },
-    "review_cadence": "sg:reviewCadence",
-    "runtime_telemetry": "sg:runtimeTelemetry",
-    "feedback_source": "sg:feedbackSource",
-    "last_updated": {
-      "@id": "dcterms:modified",
-      "@type": "xsd:date"
-    },
-    "metrics": "sg:telemetryMetrics",
-    "sample_size": {
-      "@id": "sg:sampleSize",
-      "@type": "xsd:integer"
-    },
-    "success_rate": {
-      "@id": "sg:successRate",
-      "@type": "xsd:double"
-    },
     "compatibility": "sg:compatibility",
     "runtimes": {
       "@id": "sg:compatibleRuntime",
@@ -239,20 +164,6 @@
     "node": "sg:nodeVersion",
     "node_version": "sg:nodeVersion",
     "notes": "sg:compatibilityNotes",
-    "portability": "sg:portability",
-    "readiness": "sg:portabilityReadiness",
-    "targets": {
-      "@id": "sg:portabilityTarget",
-      "@container": "@set"
-    },
-    "export_targets": {
-      "@id": "sg:portabilityTarget",
-      "@container": "@set"
-    },
-    "urn": {
-      "@id": "@id",
-      "_note": "Globally-unique persistent identifier (urn:skill:<repo>:<name>). Unlocks FAIR Findability. Optional in v3, recommended for v4."
-    },
     "taxonomy_domain": {
       "@id": "skos:broader",
       "_note": "Hierarchical slash-delimited taxonomy path projects to a chain of skos:broader edges in RDF output. Renamed from the original v8 `domain`."
@@ -260,50 +171,6 @@
     "routing_bundles": {
       "@id": "sg:routingBundle",
       "@container": "@set"
-    },
-    "last_audited": {
-      "@id": "sg:lastAudited",
-      "@type": "xsd:date",
-      "_note": "Health Block — date the skill last passed the audit loop (v6+)"
-    },
-    "last_changed": {
-      "@id": "sg:lastChanged",
-      "@type": "xsd:date",
-      "_note": "Health Block — date the skill frontmatter or body was last modified (v6+)"
-    },
-    "structural_verdict": {
-      "@id": "sg:structuralVerdict",
-      "_note": "Health Block — form-layer verdict (gates 1-2, 7): PASS | PASS_WITH_FIXES | FAIL | UNVERIFIED (v7+)"
-    },
-    "truth_verdict": {
-      "@id": "sg:truthVerdict",
-      "_note": "Health Block — truth-layer verdict (gates 3-6): PASS | DRIFT | BROKEN | UNVERIFIED (v7+)"
-    },
-    "comprehension_verdict": {
-      "@id": "sg:comprehensionVerdict",
-      "_note": "Health Block — comprehension grader verdict (gate 8, demoted in v7): PASS | PROVISIONAL | SHALLOW | REDUNDANT | UNVERIFIED | SKIPPED_BASELINE_HIGH | NA"
-    },
-    "application_verdict": {
-      "@id": "sg:applicationVerdict",
-      "_note": "Audit Status — application grader verdict (gate 9, primary quality signal): APPLICABLE | REDUNDANT | HARMFUL | MIXED | FALSE_POSITIVE | UNVERIFIED | PROVISIONAL. A skill is only behaviorally certified when this is APPLICABLE."
-    },
-    "eval_score": {
-      "@id": "sg:evalScore",
-      "@type": "xsd:double",
-      "_note": "Health Block — latest aggregate eval grade on a 0.0–5.0 scale (v6+). Written by evaluate-skill.js. NOT a 0.0–1.0 pass rate; see SKILL_METADATA_PROTOCOL.md § eval_score and SKILL_AUDIT_LOOP.md."
-    },
-    "eval_failed_ids": {
-      "@id": "sg:evalFailedIds",
-      "@container": "@set",
-      "_note": "Health Block — list of eval case IDs that failed in the most recent run (v6+)"
-    },
-    "lint_verdict": {
-      "@id": "sg:lintVerdict",
-      "_note": "Health Block — PASS | FAIL | UNKNOWN from the most recent deterministic lint run (v6+). PASS means zero lint errors; warnings do not flip the verdict (there is no `warn` value). Rolls up into structural_verdict."
-    },
-    "drift_status": {
-      "@id": "sg:driftStatus",
-      "_note": "Health Block — OK | DRIFT | BROKEN | STALE | NO_BASELINE | EXTERNAL_UNHASHED | UNKNOWN, mirroring the skill-graph-drift.js sentinel verdicts (v6+). Rolls up into truth_verdict."
     },
     "mental_model": {
       "@id": "sg:mentalModel",
