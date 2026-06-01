@@ -1,6 +1,4 @@
-# Seed Findings (Incomplete)
-
-> This file is a seed artifact from `skill-graph audit` without `--graded`. It records deterministic lint evidence plus explicit TODO review areas. It is not a completed qualitative audit until the TODO sections are replaced by reviewer or grader evidence.
+# Findings
 
 ## Skill
 
@@ -8,62 +6,73 @@
 
 ## Audit Date
 
-2026-05-28
+2026-06-01
 
 ## Verdict Summary
 
-PASS_WITH_FIXES
+Integrity Gate: PASS
+
+Behavior Gate: UNVERIFIED
 
 ## Findings
 
 ID: F1
-Severity: P2
-Surface: ../skills/skills/quality-assurance/agent-eval-design/SKILL.md:1:1
-Category: Lint diagnostic
-Problem: 4 top-level field(s) missing field-purpose comment (SKILL_METADATA_PROTOCOL.md § Inline field comments). Run `node scripts/backfill-field-purpose-comments.js` to add.
-Evidence: Emitted by skill-lint.js — see ../skills/skills/quality-assurance/agent-eval-design/SKILL.md line 1
-Required action: Inspect the flagged line, correct the value, and re-run skill-lint.js.
+Severity: P1
+Surface: `../skills/skills/quality-assurance/agent-eval-design/SKILL.md` and `../skills/skills/quality-assurance/agent-eval-design/audit-state.json`
+Category: Contract shape
+Problem: Audit/eval/provenance fields were still embedded in `metadata` even though the current contract stores them in sibling `audit-state.json`.
+Evidence: `node scripts/normalize-skill-field-shape.js --report --skill agent-eval-design` reported 16 fields to relocate: `schema_version`, `version`, `owner`, `freshness`, `drift_check`, `eval_artifacts`, `eval_state`, `routing_eval`, `last_audited`, `structural_verdict`, `truth_verdict`, `comprehension_verdict`, `application_verdict`, `lint_verdict`, `portability`, and `lifecycle`.
+Required action: Applied. The fields now live in `../skills/skills/quality-assurance/agent-eval-design/audit-state.json`.
 
 ID: F2
-Severity: TODO
-Surface: activation
-Category: Activation quality — routing coverage
-Problem: TODO — human judgment required
-Evidence: TODO — reviewer must inspect the skill body
-Required action: Does the description name real trigger scenarios? Are keywords specific and not generic filler? Does the skill under-trigger or over-trigger for its intended use case?
+Severity: P1
+Surface: `../skills/skills/quality-assurance/agent-eval-design/SKILL.md`
+Category: Required v8 field
+Problem: The skill did not declare required free-text `scope`.
+Evidence: The normalizer reported `scope` as semantic debt after moving mechanical fields.
+Required action: Applied. `scope` now states the positive eval-design surface, portable deployment target, and exclusions for application-code testing, library health tooling, live debugging, and code review.
 
 ID: F3
-Severity: TODO
-Surface: relations
-Category: Relation quality — graph correctness
-Problem: TODO — human judgment required
-Evidence: TODO — reviewer must inspect the skill body
-Required action: Do relations point at semantically correct neighbors? Are boundary handoffs crisp enough to prevent misuse? Are broader/narrower claims taxonomic rather than associative? Are dependencies real?
+Severity: P2
+Surface: `../skills/skills/quality-assurance/agent-eval-design/SKILL.md`
+Category: Stale protocol wording
+Problem: The skill carried a stale `Skill Metadata Protocol v5` export label and old relation-comment text that omitted `disjoint_with` and described a pending `suppresses` rename.
+Evidence: Pre-fix frontmatter had `skill_graph_protocol: Skill Metadata Protocol v5` and relation comments saying "Six edge types" plus "rename to `suppresses` pending ADR-0018."
+Required action: Applied. The content label now matches v8, and relation comments describe the current relation vocabulary and boundary exclusion mechanic.
 
 ID: F4
-Severity: TODO
-Surface: grounding
-Category: Grounding quality — claims vs truth sources
-Problem: TODO — human judgment required
-Evidence: TODO — reviewer must inspect the skill body
-Required action: If scope: project (or legacy scope: codebase), do all truth_sources exist? Do claims in the body match the referenced files? Classify any mismatch as skill drift, code drift, or doc drift.
+Severity: P2
+Surface: `../skills/skills/quality-assurance/agent-eval-design/SKILL.md`
+Category: Content quality
+Problem: The body was directionally correct but too thin for the skill's subject: it named eval ingredients but did not show how to map agent behavior surfaces to positive cases, hard negatives, and grader shapes.
+Evidence: Pre-fix body had Coverage, Philosophy, Method, Verification, and Do NOT Use When, but no decision table or concrete matrix.
+Required action: Applied. Added an Eval Case Matrix and Threshold Design section covering routing, grounding, tool-use policy, multi-step workflow, and prompt/system behavior.
 
 ID: F5
-Severity: TODO
-Surface: content
-Category: Content quality — completeness and density
-Problem: TODO — human judgment required
-Evidence: TODO — reviewer must inspect the skill body
-Required action: Does the skill have a clear Coverage section, a Philosophy section, at least one decision table or checklist, and explicit negative bounds (Do NOT Use When)? Does it contain generic filler that adds no routing signal?
+Severity: Info
+Surface: Activation and relation metadata
+Category: Activation/relations
+Problem: No defect found after repair. The trigger surface and boundaries are appropriately scoped for agent behavior evals rather than product tests, health tooling, live debugging, or code review.
+Evidence: `description`, `keywords`, `examples`, `anti_examples`, and `relations.boundary` all distinguish agent eval design from adjacent QA and debugging skills.
+Required action: No content fix required.
 
 ID: F6
-Severity: TODO
-Surface: evals
-Category: Eval quality — coverage and realism
-Problem: TODO — human judgment required
-Evidence: TODO — reviewer must inspect the skill body
-Required action: Do eval files exist if the skill is expected to be graded? Do they test realistic prompts — not trivia — and cover boundaries and failure cases as well as the happy path?
+Severity: Info
+Surface: Grounding metadata
+Category: Truth-source verification
+Problem: No grounding defect found. This is a portable methodology skill with no project-specific truth sources, so the drift sentinel reports `UNGROUNDED` and the audit loop stamps `truth_verdict: PASS`.
+Evidence: `node bin/skill-graph.js audit agent-eval-design --force` reported `drift: UNGROUNDED` and stamped `truth_verdict: PASS`.
+Required action: No grounding fix required.
 
-## Required Fixes
+ID: F7
+Severity: P2
+Surface: Behavior Gate
+Category: Eval coverage
+Problem: The Behavior Gate remains unverified. `eval_artifacts` is `planned`, but no comprehension/application eval artifacts or graded run exist.
+Evidence: `audit-state.json` keeps `eval_state: unverified`, `comprehension_verdict: UNVERIFIED`, and `application_verdict: UNVERIFIED`; the audit command was run without `--graded`.
+Required action: Deferred to a future `evaluate` run with real eval artifacts.
 
-- F1 [P2 warning]: 4 top-level field(s) missing field-purpose comment (SKILL_METADATA_PROTOCOL.md § Inline field comments). Run `node scripts/backfill-field-purpose-comments.js` to add.
+## Verification
+
+- `node bin/skill-graph.js lint agent-eval-design` — PASS, 0 errors, 0 warnings.
+- `node bin/skill-graph.js audit agent-eval-design --force` — PASS structural lint, `UNGROUNDED` drift, stamped `truth_verdict: PASS`.
