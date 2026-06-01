@@ -471,6 +471,8 @@ Break any one of these invariants and CI fails. That's why the tiering works: th
 | A new worked audit | 5 | — |
 | A new integration guide | Governance | — |
 
+When a schema/protocol change adds, removes, renames, or moves a field, the SYSTEM commit must prove the ordered compatibility state across the repo before any CONTENT audit migrates individual skills. That proof is: schema(s) updated; parser/normalizer behavior updated when field shape changes; lint/audit/read/write tools updated when they read or stamp the field; manifest projection and `docs/manifest-field-mapping.md` updated; export/help text updated when affected; templates, fixtures, and sample manifests regenerated or intentionally left untouched with a reason; Tier 2 docs updated; and major cuts tagged or recorded per `AGENTS.md § Major Version Is a Clean Cut`. This is the internal schema-evolution discipline for a controlled monorepo, not a public-API deprecation window.
+
 When in doubt: if the file *defines* a constraint, it's Tier 1. If it *describes* a constraint, it's Tier 2. If it *enforces* a constraint, it's Tier 3. If it *uses* a constraint to make a decision, it's Tier 4. If it *illustrates* a constraint, it's Tier 5. If none of those fit, it's Governance.
 
 ---

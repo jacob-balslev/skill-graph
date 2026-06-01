@@ -45,7 +45,7 @@ Every top-level authored field in `schemas/SKILL_METADATA_PROTOCOL_schema.json` 
 | 7 | `subjects` | copied through unchanged | Optional polyhierarchy — ordered array (max 2), `subjects[0]` matches `subject`. |
 | 8 | `taxonomy_domain` | copied through unchanged | Optional slash-delimited sub-path within a `subject` (e.g. `code-engineering/integrations/shopify`). Renamed from `domain`. |
 | 9 | `deployment_target` | copied through unchanged | Closed 2-enum: `portable` \| `project`. Drives project-fit filtering. |
-| 10 | `scope` | copied through unchanged | Optional free-text PRD-style statement. Not an enum. |
+| 10 | `scope` | copied through unchanged | Required free-text PRD-style statement in `SKILL.md`. Not an enum. |
 | 11 | `owner` | copied through unchanged | `owner`. |
 | 12 | `freshness` | grouped under parent | `health.freshness`. |
 | 13 | `reviewed_at` | grouped under parent | `health.reviewed_at`; compatibility alias for `freshness`. |
