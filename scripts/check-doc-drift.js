@@ -38,12 +38,28 @@ const { workspaceRoot } = require('./lib/roots');
 
 const REPO_ROOT = workspaceRoot();
 const SKILL_SCHEMA_PATH = path.join(REPO_ROOT, 'schemas', 'SKILL_METADATA_PROTOCOL_schema.json');
+// ADR-0019: `schema_version` moved from the frontmatter schema to the audit-state
+// sidecar schema (which contract a skill conforms to is a system/audit concern, not
+// part of the public Agent-Skills frontmatter). The active-version source of truth is
+// now the sidecar schema; the frontmatter schema is kept as a back-compat fallback for
+// pre-cut trees retrieved from git history.
+const AUDIT_STATE_SCHEMA_PATH = path.join(REPO_ROOT, 'schemas', 'skill-audit-state.schema.json');
 const IGNORED_DIRS = new Set(['.git', 'node_modules', '.artifacts', '.roundtable', 'marketplace']);
 
 function readActiveSchemaVersion() {
-  const schema = JSON.parse(fs.readFileSync(SKILL_SCHEMA_PATH, 'utf8'));
-  const sv = schema?.properties?.schema_version;
-  if (!sv) throw new Error(`Cannot resolve schema_version constraint in ${SKILL_SCHEMA_PATH}`);
+  // Read schema_version from the sidecar schema first (its post-ADR-0019 home), then
+  // fall back to the frontmatter schema (pre-cut shape). Either source resolves to the
+  // same canonical-version constraint; only the file that owns the field moved.
+  let svSchemaPath = AUDIT_STATE_SCHEMA_PATH;
+  let sv = null;
+  if (fs.existsSync(AUDIT_STATE_SCHEMA_PATH)) {
+    sv = JSON.parse(fs.readFileSync(AUDIT_STATE_SCHEMA_PATH, 'utf8'))?.properties?.schema_version || null;
+  }
+  if (!sv) {
+    svSchemaPath = SKILL_SCHEMA_PATH;
+    sv = JSON.parse(fs.readFileSync(SKILL_SCHEMA_PATH, 'utf8'))?.properties?.schema_version || null;
+  }
+  if (!sv) throw new Error(`Cannot resolve schema_version constraint in ${AUDIT_STATE_SCHEMA_PATH} or ${SKILL_SCHEMA_PATH}`);
   // Supported shapes (in order of historical evolution):
   //   { const: N }                                — single-version contract (pre-v7)
   //   { oneOf: [{ const: N }, { const: "N" }] }  — single-version w/ string back-compat (v7)
@@ -69,7 +85,7 @@ function readActiveSchemaVersion() {
     }
     if (ints.length > 0) return Math.max(...ints);
   }
-  throw new Error(`Unsupported schema_version shape in ${SKILL_SCHEMA_PATH}`);
+  throw new Error(`Unsupported schema_version shape in ${svSchemaPath}`);
 }
 
 function isAllowlisted(absPath) {
