@@ -8,32 +8,33 @@
 
 | State | Meaning | Who writes it | When |
 |---|---|---|---|
-| **human-authored** | The author writes this in `SKILL.md` and is responsible for keeping it current. | The author. | At authoring time + on content updates. |
-| **loop-written** | The Skill Audit Loop stamps this on the skill's own frontmatter. Hand-edits are overwritten on the next `audit` run. | `audit` / `improve` / `evaluate` and the graders. | On every audit/eval run that touches the skill. |
+| **human-authored** | The author writes this in `SKILL.md` or initializes it in `audit-state.json` and is responsible for keeping it current until an audit/eval command updates it. | The author. | At authoring time + on content updates. |
+| **loop-written** | The Skill Audit Loop stamps this in the skill's sibling `audit-state.json` sidecar. Hand-edits are overwritten on the next `audit` / `evaluate` run. | `audit` / `improve` / `evaluate` and the graders. | On every audit/eval run that touches the skill. |
 | **earned-with-receipt** | Author writes the value, but the protocol expects it to be backed by a runnable artifact (eval, drift hash, routing eval). Setting it without the receipt is dishonest attestation. | The author, after the receipt exists. | When the supporting artifact is created and verified. |
 | **generated** | Lives in `skills.manifest.json` (NOT in `SKILL.md`). Computed from authored fields by `generate-manifest.js`. Authors never edit. | `scripts/generate-manifest.js`. | On every manifest rebuild. |
 | **deprecated** | Was part of an older schema version. Still accepted for back-compat; should not be added to new skills. | n/a (legacy). | Phased out per the schema migration plan. |
 | **compatibility-alias** | An alternative name or value the normalizer maps to the canonical shape. Accepted on read; new skills should use the canonical form. | n/a (legacy / workspace convention). | Normalized at parse time. |
 
-## Required (12 fields, v8 schema gate)
+## Required (5 `SKILL.md` fields + 7 `audit-state.json` sidecar fields, v8 gates)
 
-All twelve are **human-authored**. The schema lint gate (`skill-lint.js` against `schemas/SKILL_METADATA_PROTOCOL_schema.json`) fails the skill if any are missing or malformed. Three of them are also **earned-with-receipt**: setting the attested state without the supporting artifact is dishonest.
+`schemas/SKILL_METADATA_PROTOCOL_schema.json` governs the agent-facing `SKILL.md` fields. `schemas/skill-audit-state.schema.json` governs the sibling sidecar. The schema lint gate checks both files and fails the skill if required fields are missing or malformed.
 
-| Field | Type | State | Receipt expected when |
+| File | Field | Type | State | Receipt expected when |
 |---|---|---|---|
-| `schema_version` | int | human-authored | n/a (canonical value is `8`) |
-| `name` | string | human-authored | n/a |
-| `description` | string ≥ 20 | human-authored | n/a |
-| `version` | semver | human-authored | n/a (author bumps on content change) |
-| `subject` | closed 9-enum | human-authored | n/a |
-| `deployment_target` | closed 2-enum | human-authored | n/a |
-| `owner` | string | human-authored | n/a |
-| `freshness` | ISO date | human-authored | n/a (authored review date, not computed) |
-| `drift_check.last_verified` | ISO date | human-authored | n/a |
-| `drift_check.truth_source_hashes` | object | **earned-with-receipt** | `node scripts/skill-graph-drift.js --record --apply <skill-dir>` produced the hashes |
-| `eval_artifacts` | enum | human-authored, **earned-with-receipt when `present`** | `present` requires a real eval file under the skill's `evals/` dir |
-| `eval_state` | enum | human-authored, **earned-with-receipt when `passing` or `monitored`** | `passing` requires a real grader run; `monitored` requires CI integration |
-| `routing_eval` | enum | human-authored, **earned-with-receipt when `present`** | `present` requires populated `examples` + `anti_examples` AND a passing `node scripts/skill-graph-routing-eval.js --skill <name>` run |
+| `SKILL.md` | `name` | string | human-authored | n/a |
+| `SKILL.md` | `description` | string >= 20 | human-authored | n/a |
+| `SKILL.md` | `subject` | closed 9-enum | human-authored | n/a |
+| `SKILL.md` | `deployment_target` | closed 2-enum | human-authored | n/a |
+| `SKILL.md` | `scope` | string | human-authored | n/a |
+| `audit-state.json` | `schema_version` | int/string enum `8` | human-authored in sidecar; loop-maintained | n/a (canonical value is `8`) |
+| `audit-state.json` | `owner` | string | human-authored in sidecar | n/a |
+| `audit-state.json` | `freshness` | ISO date | human-authored in sidecar; loop-maintained when a review/audit updates it | n/a (review date, not computed by the schema) |
+| `audit-state.json` | `drift_check.last_verified` | ISO date | human-authored in sidecar; loop-maintained when drift is recorded | n/a |
+| `audit-state.json` | `eval_artifacts` | enum | human-authored in sidecar; **earned-with-receipt when `present`** | `present` requires a real eval file under the skill's `evals/` dir |
+| `audit-state.json` | `eval_state` | enum | human-authored in sidecar; **earned-with-receipt when `passing` or `monitored`** | `passing` requires a real grader run; `monitored` requires CI integration |
+| `audit-state.json` | `routing_eval` | enum | human-authored in sidecar; **earned-with-receipt when `present`** | `present` requires populated `examples` + `anti_examples` AND a passing routing eval run |
+
+Optional receipt fields in `audit-state.json`, such as `version` and `drift_check.truth_source_hashes`, are not part of the required array. They become required by honesty when their claim is made: for example, `truth_source_hashes` requires a real `node scripts/skill-graph-drift.js --record --apply <skill-dir>` receipt.
 
 ## Conditionally required (2 fields, allOf-enforced)
 
@@ -82,11 +83,11 @@ All **human-authored** unless tagged otherwise.
 
 ### Understanding fields (v6+, flat)
 
-All **human-authored**. Required as a group when `comprehension_state: present`.
+The five Understanding fields are **human-authored** in `SKILL.md`. The sidecar's `comprehension_state: present` claim requires the group to exist.
 
 | Field | Type | State | Notes |
 |---|---|---|---|
-| `comprehension_state` | enum | human-authored | `absent` (default) or `present`. When `present`, the five Understanding fields below are required. |
+| `comprehension_state` | enum | human-authored in `audit-state.json` | `absent` (default) or `present`. When `present`, the five Understanding fields below are required. |
 | `mental_model` | string | human-authored | Primitives + relationships. Graded by comprehension grader's `mental_model` dimension (weight 1.5). |
 | `purpose` | string | human-authored | Problem + prior alternative. Comprehension dimension (weight 1.0). |
 | `boundary` | string | human-authored | Things commonly confused with the concept. Comprehension dimension (weight 1.5). **Note:** field name shared with `relations.boundary`; disambiguated by nesting depth. |
@@ -108,9 +109,9 @@ All **human-authored**. Required as a group when `comprehension_state: present`.
 
 | Field | Type | State | Notes |
 |---|---|---|---|
-| `portability.readiness` | enum | human-authored | `declared` / `scripted` / `verified`. `verified` requires an export receipt. |
-| `portability.targets` | enum[] | human-authored | Only `skill-md` is valid today. |
-| `urn` | string | human-authored | Format: `urn:skill:<repo-slug>:<skill-name>`. The skill-name segment must equal `name`. |
+| `portability.readiness` | enum | human-authored in `audit-state.json` | `declared` / `scripted` / `verified`. `verified` requires an export receipt. |
+| `portability.targets` | enum[] | human-authored in `audit-state.json` | Only `skill-md` is valid today. |
+| `urn` | string | human-authored in `audit-state.json` | Format: `urn:skill:<repo-slug>:<skill-name>`. The skill-name segment must equal `name`. |
 | `compatibility` | object | human-authored | `{ runtimes?, node?, notes? }`. Plain string accepted in Agent-Skills-compatible encoding. |
 | `allowed-tools` | string | human-authored | Space-separated tool allowlist. |
 
@@ -118,14 +119,14 @@ All **human-authored**. Required as a group when `comprehension_state: present`.
 
 | Field | Type | State | Notes |
 |---|---|---|---|
-| `lifecycle.stale_after_days` | int | human-authored | When the drift sentinel flags the skill `STALE` after `drift_check.last_verified`. |
-| `lifecycle.review_cadence` | enum | human-authored | `per-commit` / `weekly` / `quarterly` / `on-truth-source-change`. |
-| `runtime_telemetry` | object | human-authored | Points at a JSONL feed of run receipts. Optional. |
-| `eval_last_run` | object | human-authored | Receipt for the most recent eval run. Supports `eval_state: passing` / `monitored` with a real receipt. |
+| `lifecycle.stale_after_days` | int | human-authored in `audit-state.json` | When the drift sentinel flags the skill `STALE` after `drift_check.last_verified`. |
+| `lifecycle.review_cadence` | enum | human-authored in `audit-state.json` | `per-commit` / `weekly` / `quarterly` / `on-truth-source-change`. |
+| `runtime_telemetry` | object | human-authored in `audit-state.json` | Points at a JSONL feed of run receipts. Optional. |
+| `eval_last_run` | object | earned-with-receipt in `audit-state.json` | Receipt for the most recent eval run. Supports `eval_state: passing` / `monitored` with a real receipt. |
 
 ## Audit Status (v7+, loop-written)
 
-The Skill Audit Loop owns these. **Do not hand-author.** Hand-edits are overwritten on the next `audit` run.
+The Skill Audit Loop owns these in `audit-state.json`. **Do not hand-author.** Hand-edits are overwritten on the next `audit` / `evaluate` run.
 
 | Field | Enum | Written by | What it records |
 |---|---|---|---|
@@ -187,7 +188,7 @@ The only alias normalization still performed is the two-physical-encoding reconc
 1. **Top-level wins over `metadata.*`.** When the same field appears in both, the top-level entry is the canonical signal. (Author overrode the nested default deliberately.)
 2. **Flat Understanding fields win over `concept` block.** When both are present, the comprehension grader reads the flat fields and ignores the nested block.
 3. **`structural_verdict` from canonical lint wins over root lint.** The root `scripts/skill/skill-lint.js` writes legacy `lint_verdict`; the canonical `skill-graph/scripts/skill-lint.js` writes the Audit-Status-aligned signal. Per ADR 0009 the canonical version is authoritative; see SH-6198 for the in-progress deprecation of the root copy.
-4. **Loop-written fields are not authored.** Hand-edits to Audit Status fields are silently overwritten on the next `audit` run. If you need a different verdict, run the audit; do not edit the frontmatter.
+4. **Loop-written fields are not authored in `SKILL.md`.** Hand-edits to Audit Status fields in `audit-state.json` are overwritten on the next `audit` / `evaluate` run. If you need a different verdict, run the audit; do not edit the sidecar by hand except when creating the initial template state.
 
 ## Related
 

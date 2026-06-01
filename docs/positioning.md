@@ -52,7 +52,7 @@ Reach for it when:
 - You have **more than ~5 skills** and they have started to depend on, verify, or exclude one another.
 - You want **deterministic checks** for skill correctness (schema, paths, Evaluation Status) and not just LLM-as-grader.
 - You want **graph queries** over the library — "what skills depend on this one?", "what's the boundary between X and Y?", "which skills verify this one?"
-- You want a **single audit loop** that produces a fingerprint per skill (`structural_verdict`, `truth_verdict`, `comprehension_verdict`, `application_verdict`, `eval_score`, `drift_status`) you can ship in the skill's own frontmatter.
+- You want a **single audit loop** that produces a fingerprint per skill (`structural_verdict`, `truth_verdict`, `comprehension_verdict`, `application_verdict`, `eval_score`, `drift_status`) recorded in the skill's sibling `audit-state.json` sidecar and joined into the compiled manifest.
 
 Do NOT reach for it when:
 
