@@ -1,6 +1,4 @@
-# Seed Findings (Incomplete)
-
-> This file is a seed artifact from `skill-graph audit` without `--graded`. It records deterministic lint evidence plus explicit TODO review areas. It is not a completed qualitative audit until the TODO sections are replaced by reviewer or grader evidence.
+# Findings
 
 ## Skill
 
@@ -8,62 +6,73 @@
 
 ## Audit Date
 
-2026-05-28
+2026-06-01
 
 ## Verdict Summary
 
-PASS_WITH_FIXES
+PASS for structural Integrity Gate; truth and Behavior Gate remain UNVERIFIED because public provider/security sources are external URLs the zero-dependency drift sentinel does not hash, and no graded application eval was run.
 
 ## Findings
 
 ID: F1
-Severity: P2
-Surface: ../skills/skills/agent-ops/prompt-craft/SKILL.md:1:1
-Category: Lint diagnostic
-Problem: 4 top-level field(s) missing field-purpose comment (SKILL_METADATA_PROTOCOL.md § Inline field comments). Run `node scripts/backfill-field-purpose-comments.js` to add.
-Evidence: Emitted by skill-lint.js — see ../skills/skills/agent-ops/prompt-craft/SKILL.md line 1
-Required action: Inspect the flagged line, correct the value, and re-run skill-lint.js.
+Severity: HIGH
+Surface: `/Users/jacobbalslev/Development/skills/skills/agent-ops/prompt-craft/SKILL.md`
+Category: Metadata validity
+Problem: The skill carried sidecar-owned fields in `SKILL.md`, retained a deprecated `concept` block despite having flat Understanding fields, used `skill_graph_protocol: Skill Metadata Protocol v6`, and described audit state as a Health Block.
+Evidence: Before repair, `node scripts/normalize-skill-field-shape.js --report --skill prompt-craft` reported 17 fields to relocate and schema-unknown `concept`; `node bin/skill-graph.js lint prompt-craft` reported 18 errors and 1 warning.
+Required action: Move loop-owned fields to `audit-state.json`, remove the legacy `concept` block, update protocol/provenance comments after conformance is earned, and re-run lint.
+Status: remediated - lint now passes with 0 errors and 0 warnings, and normalization reports 0 remaining work.
 
 ID: F2
-Severity: TODO
-Surface: activation
-Category: Activation quality — routing coverage
-Problem: TODO — human judgment required
-Evidence: TODO — reviewer must inspect the skill body
-Required action: Does the description name real trigger scenarios? Are keywords specific and not generic filler? Does the skill under-trigger or over-trigger for its intended use case?
+Severity: MEDIUM
+Surface: `/Users/jacobbalslev/Development/skills/skills/agent-ops/prompt-craft/SKILL.md` activation metadata
+Category: Activation quality
+Problem: The `keywords` list exceeded the v8 cap of 10, increasing activation noise and making the fuzzy routing surface less disciplined.
+Evidence: Pre-repair `keywords` contained broad overlapping terms such as `prompt`, `prompt craft`, `write a prompt`, `improve this prompt`, `iterate on prompt`, `llm prompt`, and `agent prompt`, plus more than 10 total entries.
+Required action: Reduce keywords to 10 user-plausible semantic phrases that preserve the main activation surface.
+Status: remediated.
 
 ID: F3
-Severity: TODO
-Surface: relations
-Category: Relation quality — graph correctness
-Problem: TODO — human judgment required
-Evidence: TODO — reviewer must inspect the skill body
-Required action: Do relations point at semantically correct neighbors? Are boundary handoffs crisp enough to prevent misuse? Are broader/narrower claims taxonomic rather than associative? Are dependencies real?
+Severity: MEDIUM
+Surface: `/Users/jacobbalslev/Development/skills/skills/agent-ops/prompt-craft/SKILL.md` relation metadata
+Category: Relation quality
+Problem: Relation comments still described the older edge vocabulary and pending `boundary` rename instead of the current relation field set.
+Evidence: Pre-repair metadata said "Six edge types" and "rename to `suppresses` pending ADR-0018".
+Required action: Refresh relation comments to the current relation field set, including `disjoint_with`, and keep boundary reason text in ownership/exclusion form.
+Status: remediated.
 
 ID: F4
-Severity: TODO
-Surface: grounding
-Category: Grounding quality — claims vs truth sources
-Problem: TODO — human judgment required
-Evidence: TODO — reviewer must inspect the skill body
-Required action: If scope: project (or legacy scope: codebase), do all truth_sources exist? Do claims in the body match the referenced files? Classify any mismatch as skill drift, code drift, or doc drift.
+Severity: MEDIUM
+Surface: `/Users/jacobbalslev/Development/skills/skills/agent-ops/prompt-craft/SKILL.md` truth sources
+Category: Grounding fidelity
+Problem: The skill has public OpenAI, Anthropic, Gemini, and OWASP truth sources, but they are external URLs without recorded hashes, so the local drift sentinel cannot certify source freshness.
+Evidence: `node scripts/skill-graph-drift.js --json ../skills/skills/agent-ops/prompt-craft` reports `status: "EXTERNAL_UNHASHED"` for all five truth sources.
+Required action: Keep `truth_verdict: UNVERIFIED` until a hashable source-review receipt or graded source review exists.
+Status: accepted - the audit state uses `truth_verdict: UNVERIFIED`.
 
 ID: F5
-Severity: TODO
-Surface: content
-Category: Content quality — completeness and density
-Problem: TODO — human judgment required
-Evidence: TODO — reviewer must inspect the skill body
-Required action: Does the skill have a clear Coverage section, a Philosophy section, at least one decision table or checklist, and explicit negative bounds (Do NOT Use When)? Does it contain generic filler that adds no routing signal?
+Severity: MEDIUM
+Surface: `/Users/jacobbalslev/Development/skills/skills/agent-ops/prompt-craft/evals/comprehension.json`
+Category: Eval artifact coverage
+Problem: The skill declared eval intent but had no local comprehension eval artifact under its skill directory.
+Evidence: Pre-repair sidecar state was `eval_artifacts: planned`; the skill directory contained only `SKILL.md`.
+Required action: Add a local comprehension eval covering definition, mental model, boundaries, misconception, and application.
+Status: remediated - local eval exists and parses as JSON.
 
 ID: F6
-Severity: TODO
-Surface: evals
-Category: Eval quality — coverage and realism
-Problem: TODO — human judgment required
-Evidence: TODO — reviewer must inspect the skill body
-Required action: Do eval files exist if the skill is expected to be graded? Do they test realistic prompts — not trivia — and cover boundaries and failure cases as well as the happy path?
+Severity: INFO
+Surface: `/Users/jacobbalslev/Development/skills/skills/agent-ops/prompt-craft/audit-state.json`
+Category: Behavior Gate
+Problem: No graded comprehension or application run was executed, so behavior certification cannot be claimed.
+Evidence: `node bin/skill-graph.js audit prompt-craft --force` ran in Integrity-only mode and said to re-run with `--graded` to populate behavior verdicts.
+Required action: Leave `comprehension_verdict` and `application_verdict` as `UNVERIFIED` until a graded run produces receipts.
+Status: accepted.
 
-## Required Fixes
+## Verification Evidence
 
-- F1 [P2 warning]: 4 top-level field(s) missing field-purpose comment (SKILL_METADATA_PROTOCOL.md § Inline field comments). Run `node scripts/backfill-field-purpose-comments.js` to add.
+- `node bin/skill-graph.js lint prompt-craft` - PASS, 0 errors, 0 warnings.
+- `node scripts/normalize-skill-field-shape.js --report --skill prompt-craft` - 0 fields to relocate, 0 semantic debt fields.
+- `node scripts/check-markdown-links.js ../skills/skills/agent-ops/prompt-craft/SKILL.md` - OK.
+- `node -e "JSON.parse(...audit-state.json); JSON.parse(...evals/comprehension.json)"` - JSON OK.
+- `node scripts/skill-graph-drift.js --json ../skills/skills/agent-ops/prompt-craft` - `EXTERNAL_UNHASHED` for public external truth sources.
+- `node bin/skill-graph.js audit prompt-craft --force` - Integrity-only audit ran lint PASS and drift EXTERNAL_UNHASHED; audit runner kept Audit Status sidecar current.
