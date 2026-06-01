@@ -187,6 +187,11 @@ The Skill Graph is a routable, evaluable, drift-checked knowledge graph of agent
 - `relations.boundary` — score-aware exclusion guard: when this skill wins a query, listed skills are suppressed from co-routing. **Note:** the field name reads as "defer to them" but the mechanic is "exclude them when I win." Use ownership reason-text ("I own this exclusively over X"), not deference ("use X instead"). See WARNING in `skill-metadata-protocol/SKILL_METADATA_PROTOCOL.md` § Relations § `boundary`.
 - `relations.verify_with` — "when this skill is applied, verify the result with that skill" (cross-check).
 - `relations.depends_on` — composition; "this skill assumes the reader has the other in scope."
+- `relations.broader` — taxonomy hierarchy; this skill is a specialization of the target skill.
+- `relations.narrower` — taxonomy hierarchy; this skill is a generalization of the target skill.
+- `relations.disjoint_with` — formal class-disjointness assertion; rare, and distinct from the routing-layer exclusion mechanic in `relations.boundary`.
+
+Tooling still accepts `relations.adjacent` as a deprecated alias for `relations.related` so unmigrated skills keep parsing. New skills author `relations.related`.
 
 The graph is not a documentation pile. It is queried by routers, traversed by injection hooks, evaluated against retrieval baselines, and drift-checked against source-of-truth files. Two skills are "the same kind" iff they share a `subject × deployment_target` pair plus a head noun (per [ADR-0017](docs/adr/0017-five-axis-classification-model.md), with the operation axis retired 2026-05-27). The routing layer uses that pair as a first-pass discriminator before walking edges. Note: in the current corpus, most skills share `deployment_target: portable`, so the pair provides broad stratum separation but not fine-grained routing precision — keyword score and relation edges carry the discriminating load. See `skill-metadata-protocol/SKILL_METADATA_PROTOCOL.md` § Classification for the current distribution analysis and authoring implications.
 

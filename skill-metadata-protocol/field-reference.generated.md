@@ -130,7 +130,7 @@ What problem the concept solves and the alternative it replaced. Concrete pain p
 
 **Type:** string
 
-Things commonly confused with the concept but that are NOT it. Express each difference as a mechanism (different primitives, purpose, or scope) — not just different names. No length cap. Authored input read by the comprehension grader's `boundary` dimension (weight 1.5). Replaces nested `concept.boundary` in v6. Distinct from `relations.boundary` (routing-layer handoff).
+Things commonly confused with the concept but that are NOT it. Express each difference as a mechanism (different primitives, purpose, or scope) — not just different names. No length cap. Authored input read by the comprehension grader's `boundary` dimension (weight 1.5). Replaces nested `concept.boundary` in v6. Distinct from `relations.boundary` (routing-layer exclusion).
 
 **Full reference:** [`skill-metadata-protocol/field-reference.md#boundary`](field-reference.md#boundary)
 
@@ -278,7 +278,7 @@ Tags that group skills into activation bundles (e.g., `frontend`, `data-pipeline
 
 **Type:** object
 
-Typed edges to sibling skills. Lint verifies every target exists. Predicate-to-W3C-vocabulary mapping is provided via schemas/skill.context.jsonld (JSON-LD @context). `boundary` is routing-layer asymmetric handoff; `disjoint_with` is the optional OWL class-disjointness predicate — they are distinct, not aliases.
+Typed edges to sibling skills. Lint verifies every target exists. Predicate-to-W3C-vocabulary mapping is provided via schemas/skill.context.jsonld (JSON-LD @context). `boundary` is a routing-layer asymmetric exclusion edge; `disjoint_with` is the optional OWL class-disjointness predicate — they are distinct, not aliases.
 
 **Sub-fields:**
 

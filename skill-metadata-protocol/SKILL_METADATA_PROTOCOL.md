@@ -596,8 +596,8 @@ relations:
 
 **Cross-domain boundary doctrine — SAME-DOMAIN ONLY.** Codified 2026-05-17 after the Tier C″ empirical sweep across 8 Wave 6 skills:
 
-1. `boundary[]` entries should declare SAME-DOMAIN handoffs only (same `subject` AND same `taxonomy_domain` sub-tree). Example: `code-engineering/frontend` ↔ `code-engineering/frontend` is fine; `code-engineering/frontend` ↔ `design-craft/component-systems` is not.
-2. Cross-subject or cross-sub-domain handoffs belong in `anti_examples` + `relations.related`, NOT in `boundary[]`. The `anti_examples` array preserves routing-visible documentation as wrong-use phrases; `relations.related` signals the semantic adjacency without invoking the score-aware exclusion mechanic.
+1. `boundary[]` entries should declare SAME-DOMAIN routing exclusions only (same `subject` AND same `taxonomy_domain` sub-tree). Example: `code-engineering/frontend` ↔ `code-engineering/frontend` is fine; `code-engineering/frontend` ↔ `design-craft/component-systems` is not.
+2. Cross-subject or cross-sub-domain routing distinctions belong in `anti_examples` + `relations.related`, NOT in `boundary[]`. The `anti_examples` array preserves routing-visible documentation as wrong-use phrases; `relations.related` signals the semantic adjacency without invoking the score-aware exclusion mechanic.
 3. Empirical justification: removing 16 cross-domain `boundary[]` entries across 8 skills caused **0 top-1 routing changes** on the 30-query baseline; only 3/30 low-confidence unmaskings of legitimate alternatives at score 3 surfaced. The cross-domain entries were performing silent low-confidence exclusion only — exactly the silent-failure risk the doctrine prevents.
 
 Authors who introduce a cross-domain `boundary[]` entry must move it to `anti_examples` + `relations.related` instead. Lint (planned, not yet implemented) will warn on cross-domain boundary declarations.

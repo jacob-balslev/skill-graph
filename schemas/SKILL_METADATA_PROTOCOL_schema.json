@@ -106,7 +106,7 @@
     },
     "boundary": {
       "type": "string",
-      "description": "Things commonly confused with the concept but that are NOT it. Express each difference as a mechanism (different primitives, purpose, or scope) — not just different names. No length cap. Authored input read by the comprehension grader's `boundary` dimension (weight 1.5). Replaces nested `concept.boundary` in v6. Distinct from `relations.boundary` (routing-layer handoff)."
+      "description": "Things commonly confused with the concept but that are NOT it. Express each difference as a mechanism (different primitives, purpose, or scope) — not just different names. No length cap. Authored input read by the comprehension grader's `boundary` dimension (weight 1.5). Replaces nested `concept.boundary` in v6. Distinct from `relations.boundary` (routing-layer exclusion)."
     },
     "analogy": {
       "type": "string",
@@ -219,7 +219,7 @@
     "relations": {
       "type": "object",
       "additionalProperties": false,
-      "description": "Typed edges to sibling skills. Lint verifies every target exists. Predicate-to-W3C-vocabulary mapping is provided via schemas/skill.context.jsonld (JSON-LD @context). `boundary` is routing-layer asymmetric handoff; `disjoint_with` is the optional OWL class-disjointness predicate — they are distinct, not aliases.",
+      "description": "Typed edges to sibling skills. Lint verifies every target exists. Predicate-to-W3C-vocabulary mapping is provided via schemas/skill.context.jsonld (JSON-LD @context). `boundary` is a routing-layer asymmetric exclusion edge; `disjoint_with` is the optional OWL class-disjointness predicate — they are distinct, not aliases.",
       "properties": {
         "adjacent": {
           "type": "array",
@@ -263,7 +263,7 @@
         },
         "disjoint_with": {
           "type": "array",
-          "description": "Optional OWL class-disjointness assertion. Maps to owl:disjointWith — a formal ontological claim that the two skills name disjoint conceptual classes (no entity can simultaneously be an instance of both). Rare in practice. Does NOT replace `boundary` (the routing-layer asymmetric handoff). Same item shape as `boundary` — bare string OR `{skill, reason}`.",
+          "description": "Optional OWL class-disjointness assertion. Maps to owl:disjointWith — a formal ontological claim that the two skills name disjoint conceptual classes (no entity can simultaneously be an instance of both). Rare in practice. Does NOT replace `boundary` (the routing-layer asymmetric exclusion edge). Same item shape as `boundary` — bare string OR `{skill, reason}`.",
           "items": {
             "oneOf": [
               {
