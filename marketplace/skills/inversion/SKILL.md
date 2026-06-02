@@ -241,7 +241,16 @@ After applying this skill, verify:
 - Analogy: Inversion is like checking a bridge design by asking where it would snap first, not because you want it to snap, but because that is where reinforcement matters.
 - Common misconception: |
 
-**Keywords**
-- `inversion thinking`, `invert the goal`, `reverse the problem`, `failure path`, `opposite hypothesis`, `obstacle first`, `what would make this fail`, `avoid failure`, `anti-goal`, `reverse reasoning`
+**Lifecycle & audit status**
+- Stability: `experimental`
+- Freshness: `2026-05-21`
+- Eval state: `unverified`
+- Routing eval: `absent`
+- Audit status: structural PASS, truth PASS, comprehension UNVERIFIED, application UNVERIFIED
+- Last audited: `2026-05-28`
+
+**Provenance**
+- version 1.0.0, schema v7, owner `skill-graph-maintainer`
+- Keywords: `inversion thinking`, `invert the goal`, `reverse the problem`, `failure path`, `opposite hypothesis`, `obstacle first`, `what would make this fail`, `avoid failure`, `anti-goal`, `reverse reasoning`
 
 <!-- skill-graph-context:end -->

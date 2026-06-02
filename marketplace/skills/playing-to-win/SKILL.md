@@ -296,7 +296,16 @@ Before finishing, verify:
 - Mode: `universal`
 - Truth sources: `https://hbr.org/books/playing-to-win`, `https://hbr.org/webinar/2013/04/a-playbook-for-winning`, `https://www-2.rotman.utoronto.ca/insightshub/strategy-value-creation/playing-to-win-how-strategy-re`, `skills/meta-methods/playing-to-win/references/playing-to-win-sources.md`, `skills/meta-methods/playing-to-win/references/upstream-displacement-2026-05-26.md`
 
-**Keywords**
-- `playing to win`, `strategy cascade`, `strategic choice cascade`, `winning aspiration`, `where to play`, `how to win`, `strategy choices`, `capability system`, `management systems`, `lafley martin`
+**Lifecycle & audit status**
+- Stability: `stable`
+- Freshness: `2026-05-26`
+- Eval state: `unverified`
+- Routing eval: `absent`
+- Audit status: structural PASS, truth UNVERIFIED, comprehension UNVERIFIED, application UNVERIFIED
+- Last audited: `2026-05-28`
+
+**Provenance**
+- version 1.0.0, schema v8, owner `skill-graph-maintainer`
+- Keywords: `playing to win`, `strategy cascade`, `strategic choice cascade`, `winning aspiration`, `where to play`, `how to win`, `strategy choices`, `capability system`, `management systems`, `lafley martin`
 
 <!-- skill-graph-context:end -->

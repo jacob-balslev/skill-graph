@@ -433,7 +433,16 @@ After applying this skill, verify:
 - Analogy: Middleware is to a Next.js app what a building's lobby concierge is to its offices — every visitor passes through the lobby before reaching any specific floor; the concierge can check ID badges (auth gate), redirect visitors to the right elevator (locale or A/B rewrite), hand out lanyards with security policies attached (CSP nonce, request-ID header), or turn away bad-faith visitors at the door (bot block). The concierge cannot do the work of any specific office (per-route business logic) — that happens after the visitor gets off the elevator — but they enforce the rules that apply to every floor.
 - Common misconception: |
 
-**Keywords**
-- `Next.js middleware`, `middleware.ts file`, `NextRequest NextResponse`, `matcher config middleware`, `Edge Runtime constraints`, `NextResponse.redirect rewrite next`, `auth check before route`, `locale routing i18n middleware`, `A/B testing variant rewrite`, `CSP nonce middleware`
+**Lifecycle & audit status**
+- Stability: `experimental`
+- Freshness: `2026-05-17`
+- Eval state: `unverified`
+- Routing eval: `absent`
+- Audit status: structural PASS, truth PASS, comprehension UNVERIFIED, application UNVERIFIED
+- Last audited: `2026-05-28`
+
+**Provenance**
+- version 1.0.0, schema v8, owner `skill-graph-maintainer`
+- Keywords: `Next.js middleware`, `middleware.ts file`, `NextRequest NextResponse`, `matcher config middleware`, `Edge Runtime constraints`, `NextResponse.redirect rewrite next`, `auth check before route`, `locale routing i18n middleware`, `A/B testing variant rewrite`, `CSP nonce middleware`
 
 <!-- skill-graph-context:end -->

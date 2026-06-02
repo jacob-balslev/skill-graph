@@ -252,7 +252,16 @@ Before finishing, verify:
 - Mode: `universal`
 - Truth sources: `https://plato.stanford.edu/entries/bayes-theorem/`, `https://plato.stanford.edu/entries/epistemology-bayesian/`, `https://pubmed.ncbi.nlm.nih.gov/17835457/`, `skills/meta-methods/bayesian-reasoning/references/bayesian-reasoning-sources.md`, `skills/meta-methods/bayesian-reasoning/references/upstream-displacement-2026-05-26.md`
 
-**Keywords**
-- `bayesian reasoning`, `bayes theorem`, `bayesian update`, `base rate`, `prior probability`, `posterior probability`, `likelihood ratio`, `evidence strength`, `confidence calibration`, `probabilistic reasoning`
+**Lifecycle & audit status**
+- Stability: `stable`
+- Freshness: `2026-05-26`
+- Eval state: `unverified`
+- Routing eval: `absent`
+- Audit status: structural PASS, truth UNVERIFIED, comprehension UNVERIFIED, application UNVERIFIED
+- Last audited: `2026-05-28`
+
+**Provenance**
+- version 1.0.0, schema v8, owner `skill-graph-maintainer`
+- Keywords: `bayesian reasoning`, `bayes theorem`, `bayesian update`, `base rate`, `prior probability`, `posterior probability`, `likelihood ratio`, `evidence strength`, `confidence calibration`, `probabilistic reasoning`
 
 <!-- skill-graph-context:end -->

@@ -127,7 +127,16 @@ This skill ships a comprehension-eval artifact at [`examples/evals/lint-overlay.
 - Mode: `hybrid`
 - Truth sources: `scripts/skill-lint.js`, `scripts/lint/check-routing-quality.js`, `scripts/lint/check-routing-eval.js`, `examples/evals/lint-overlay.json`, `skills/testing-strategy/SKILL.md`
 
-**Keywords**
-- `lint`, `linting`, `lint rules`, `lint integration`, `static analysis`, `eslint`, `format check`, `add eslint rule`, `lint is failing`, `add lint check`, `noImplicitAny`, `phased lint rollout`, `lint rule migration`, `pre-commit lint`, `ci lint gate`, `lint rule violations`
+**Lifecycle & audit status**
+- Stability: `experimental`
+- Freshness: `2026-04-18`
+- Eval state: `passing`
+- Routing eval: `present`
+- Audit status: structural PASS, truth DRIFT, comprehension UNVERIFIED, application UNVERIFIED
+- Last audited: `2026-05-28`
+
+**Provenance**
+- version 1.0.0, schema v8, owner `skill-graph-maintainer`
+- Keywords: `lint`, `linting`, `lint rules`, `lint integration`, `static analysis`, `eslint`, `format check`, `add eslint rule`, `lint is failing`, `add lint check`, `noImplicitAny`, `phased lint rollout`, `lint rule migration`, `pre-commit lint`, `ci lint gate`, `lint rule violations`
 
 <!-- skill-graph-context:end -->

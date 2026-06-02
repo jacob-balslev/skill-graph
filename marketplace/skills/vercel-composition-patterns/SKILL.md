@@ -193,7 +193,16 @@ For the complete guide with all rules expanded: `AGENTS.md`
 - Verify with: `code-review`
 - Related: `refactor`
 
-**Keywords**
-- `composition pattern`, `compound component`, `boolean prop`, `render prop`, `react composition`, `context provider`, `state explosion`, `variant component`
+**Lifecycle & audit status**
+- Stability: `experimental`
+- Freshness: `2026-03-28`
+- Eval state: `unverified`
+- Routing eval: `absent`
+- Audit status: structural PASS, truth PASS, comprehension UNVERIFIED, application UNVERIFIED
+- Last audited: `2026-05-28`
+
+**Provenance**
+- version 1.0.0, schema v8, owner `skill-graph-maintainer`
+- Keywords: `composition pattern`, `compound component`, `boolean prop`, `render prop`, `react composition`, `context provider`, `state explosion`, `variant component`
 
 <!-- skill-graph-context:end -->

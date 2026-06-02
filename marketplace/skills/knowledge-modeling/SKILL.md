@@ -313,7 +313,16 @@ Rules:
 - Mode: `hybrid`
 - Truth sources: `https://doi.org/10.1016/0004-3702(82)90012-1`, `https://books.google.com/books/about/Knowledge_Representation_and_Reasoning.html?id=ln6Ux-EZm6YC`, `https://courses.media.mit.edu/2004spring/mas966/Minsky%201974%20Framework%20for%20knowledge.pdf`, `https://www.w3.org/TR/skos-reference/`, `https://arxiv.org/abs/2404.16130`
 
-**Keywords**
-- `knowledge representation`, `knowledge graph`, `frames and slots`, `production rules`, `semantic network`, `concept map`, `procedural ontology PKO`, `hybrid knowledge representation`, `tacit to explicit knowledge`, `knowledge acquisition pipeline`
+**Lifecycle & audit status**
+- Stability: `experimental`
+- Freshness: `2026-05-18`
+- Eval state: `unverified`
+- Routing eval: `absent`
+- Audit status: structural PASS, truth UNVERIFIED, comprehension UNVERIFIED, application UNVERIFIED
+- Last audited: `2026-05-28`
+
+**Provenance**
+- version 1.2.0, schema v8, owner `skill-graph-maintainer`
+- Keywords: `knowledge representation`, `knowledge graph`, `frames and slots`, `production rules`, `semantic network`, `concept map`, `procedural ontology PKO`, `hybrid knowledge representation`, `tacit to explicit knowledge`, `knowledge acquisition pipeline`
 
 <!-- skill-graph-context:end -->

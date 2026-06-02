@@ -476,7 +476,16 @@ After applying agent-engineering decisions, verify:
 - Mode: `hybrid`
 - Truth sources: `https://www.anthropic.com/engineering/building-effective-agents`, `https://www.anthropic.com/engineering/multi-agent-research-system`, `https://www.anthropic.com/engineering/effective-harnesses-for-long-running-agents`, `https://openai.github.io/openai-agents-python/tracing/`, `https://arxiv.org/abs/2308.08155`
 
-**Keywords**
-- `agent engineering`, `agentic engineering`, `multi-agent systems`, `production agent system`, `orchestration patterns`, `orchestrator worker`, `fan-out merge`, `consensus pattern`, `evaluator optimizer`, `sequential chain`
+**Lifecycle & audit status**
+- Stability: `experimental`
+- Freshness: `2026-05-18`
+- Eval state: `unverified`
+- Routing eval: `absent`
+- Audit status: structural PASS, truth UNVERIFIED, comprehension UNVERIFIED, application UNVERIFIED
+- Last audited: `2026-05-28`
+
+**Provenance**
+- version 1.1.0, schema v8, owner `skill-graph-maintainer`
+- Keywords: `agent engineering`, `agentic engineering`, `multi-agent systems`, `production agent system`, `orchestration patterns`, `orchestrator worker`, `fan-out merge`, `consensus pattern`, `evaluator optimizer`, `sequential chain`
 
 <!-- skill-graph-context:end -->

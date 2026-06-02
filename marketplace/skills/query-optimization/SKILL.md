@@ -206,7 +206,16 @@ After applying this skill, verify:
 - Analogy: Query optimization is to a slow SQL query what a medical specialist's chart-reading is to a slow-recovering patient — you do not prescribe before reading the lab values; the plan reads like a chart, every plan node is a vital sign, every cardinality misestimate is a misdiagnosis the planner already made, and your job is to translate the chart into the right intervention rather than the most familiar one.
 - Common misconception: |
 
-**Keywords**
-- `query optimization`, `query planner`, `EXPLAIN`, `EXPLAIN ANALYZE`, `sequential scan`, `index scan`, `nested loop`, `hash join`, `merge join`, `query rewriting`
+**Lifecycle & audit status**
+- Stability: `experimental`
+- Freshness: `2026-05-16`
+- Eval state: `unverified`
+- Routing eval: `absent`
+- Audit status: structural PASS, truth PASS, comprehension UNVERIFIED, application UNVERIFIED
+- Last audited: `2026-05-28`
+
+**Provenance**
+- version 1.0.0, schema v8, owner `skill-graph-maintainer`
+- Keywords: `query optimization`, `query planner`, `EXPLAIN`, `EXPLAIN ANALYZE`, `sequential scan`, `index scan`, `nested loop`, `hash join`, `merge join`, `query rewriting`
 
 <!-- skill-graph-context:end -->

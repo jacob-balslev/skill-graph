@@ -89,7 +89,16 @@ The meta-skill is sceptical of two opposite failure modes. The first is **stage 
 **Related skills**
 - Related: `problem-framing`, `user-research`, `research-synthesis`, `journey-mapping`, `ideation`, `prototyping`, `usability-testing`
 
-**Keywords**
-- `design thinking process`, `double diamond`, `five stage design process`, `empathize define ideate prototype test`, `human centered design`, `Stanford d.school`, `IDEO method`, `design sprint`, `discover define develop deliver`, `looping back`
+**Lifecycle & audit status**
+- Stability: `experimental`
+- Freshness: `2026-05-12`
+- Eval state: `unverified`
+- Routing eval: `absent`
+- Audit status: structural PASS, truth PASS, comprehension UNVERIFIED, application UNVERIFIED
+- Last audited: `2026-05-28`
+
+**Provenance**
+- version 1.0.0, schema v8, owner `skill-graph-maintainer`
+- Keywords: `design thinking process`, `double diamond`, `five stage design process`, `empathize define ideate prototype test`, `human centered design`, `Stanford d.school`, `IDEO method`, `design sprint`, `discover define develop deliver`, `looping back`
 
 <!-- skill-graph-context:end -->

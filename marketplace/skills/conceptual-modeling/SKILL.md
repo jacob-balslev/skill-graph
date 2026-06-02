@@ -297,7 +297,16 @@ Do not erase the conceptual model after implementation starts. Keep it as the ex
 - Mode: `universal`
 - Truth sources: `https://doi.org/10.1145/320434.320440`, `https://www.omg.org/spec/UML/2.5.1/PDF`, `https://opentextbc.ca/dbdesign01/chapter/chapter-8-entity-relationship-model/`, `https://www.ibm.com/think/topics/conceptual-data-model`
 
-**Keywords**
-- `conceptual model`, `conceptual modeling methodology`, `domain abstraction`, `implementation neutral model`, `business model to system model`, `stakeholder validation`, `entity identity criteria`, `named relationship`, `relationship cardinality`, `reified relationship`, `associative entity`, `generalization specialization`, `aggregation composition relationship`, `conceptual logical physical layers`, `implementation leakage anti-pattern`, `unnamed relationship anti-pattern`, `god entity anti-pattern`, `missing entity anti-pattern`, `attribute as entity anti-pattern`, `conceptual schema before implementation`, `UML class diagram conceptual`, `role modeling pattern`, `is-a vs part-of vs owns`
+**Lifecycle & audit status**
+- Stability: `experimental`
+- Freshness: `2026-05-19`
+- Eval state: `unverified`
+- Routing eval: `absent`
+- Audit status: structural PASS, truth UNVERIFIED, comprehension UNVERIFIED, application UNVERIFIED
+- Last audited: `2026-05-28`
+
+**Provenance**
+- version 1.1.0, schema v8, owner `skill-graph-maintainer`
+- Keywords: `conceptual model`, `conceptual modeling methodology`, `domain abstraction`, `implementation neutral model`, `business model to system model`, `stakeholder validation`, `entity identity criteria`, `named relationship`, `relationship cardinality`, `reified relationship`, `associative entity`, `generalization specialization`, `aggregation composition relationship`, `conceptual logical physical layers`, `implementation leakage anti-pattern`, `unnamed relationship anti-pattern`, `god entity anti-pattern`, `missing entity anti-pattern`, `attribute as entity anti-pattern`, `conceptual schema before implementation`, `UML class diagram conceptual`, `role modeling pattern`, `is-a vs part-of vs owns`
 
 <!-- skill-graph-context:end -->

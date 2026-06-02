@@ -299,7 +299,16 @@ After applying this skill, verify:
 - Analogy: An error boundary is to React's component tree what a circuit breaker is to a building's electrical system — when a fault occurs in one circuit, the breaker for THAT circuit trips, isolating the fault so the rest of the building keeps running, while sub-panels still healthy on other circuits keep lights and outlets working. A single master breaker would protect against fault propagation but at the cost of darkening everything; the right granularity is one breaker per useful zone.
 - Common misconception: |
 
-**Keywords**
-- `React Error Boundary`, `componentDidCatch`, `getDerivedStateFromError`, `react-error-boundary library`, `Next.js error.tsx`, `global-error.tsx`, `error boundary granularity`, `resetKeys`, `error boundary with Suspense`, `caught render error`
+**Lifecycle & audit status**
+- Stability: `experimental`
+- Freshness: `2026-05-16`
+- Eval state: `unverified`
+- Routing eval: `absent`
+- Audit status: structural PASS, truth PASS, comprehension UNVERIFIED, application UNVERIFIED
+- Last audited: `2026-05-28`
+
+**Provenance**
+- version 1.0.0, schema v8, owner `skill-graph-maintainer`
+- Keywords: `React Error Boundary`, `componentDidCatch`, `getDerivedStateFromError`, `react-error-boundary library`, `Next.js error.tsx`, `global-error.tsx`, `error boundary granularity`, `resetKeys`, `error boundary with Suspense`, `caught render error`
 
 <!-- skill-graph-context:end -->

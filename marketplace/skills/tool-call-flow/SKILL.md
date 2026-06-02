@@ -293,7 +293,16 @@ After applying this skill, verify:
 - Analogy: A tool-call flow is to a language model what a procurement system is to an executive — the executive does not personally drive to the supplier; they sign a typed purchase order, the procurement department validates the order, executes it, and returns the receipt with whatever was delivered or with a documented reason it could not be. The executive's signature is intent; the department's stamp is authorization; the receipt is the only state of the cycle that survives, and the next decision is made against that record.
 - Common misconception: |
 
-**Keywords**
-- `tool call`, `tool use`, `function calling`, `MCP`, `Model Context Protocol`, `tool result`, `parallel tool calls`, `tool schema`, `JSON Schema`, `assistant turn`
+**Lifecycle & audit status**
+- Stability: `experimental`
+- Freshness: `2026-05-15`
+- Eval state: `unverified`
+- Routing eval: `absent`
+- Audit status: structural PASS, truth PASS, comprehension UNVERIFIED, application UNVERIFIED
+- Last audited: `2026-05-28`
+
+**Provenance**
+- version 1.0.0, schema v8, owner `skill-graph-maintainer`
+- Keywords: `tool call`, `tool use`, `function calling`, `MCP`, `Model Context Protocol`, `tool result`, `parallel tool calls`, `tool schema`, `JSON Schema`, `assistant turn`
 
 <!-- skill-graph-context:end -->

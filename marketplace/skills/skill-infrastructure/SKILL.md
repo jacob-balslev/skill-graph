@@ -387,7 +387,16 @@ Before any batch skill commit, verify:
 - Mode: `hybrid`
 - Truth sources: `package.json`, `bin/skill-graph.js`, `scripts/skill-lint.js`, `scripts/lib/roots.js`, `scripts/check-protocol-consistency.js`, `scripts/generate-manifest.js`, `scripts/skill-graph-drift.js`, `scripts/skill-overlap.js`, `scripts/skill-graph-routing-eval.js`, `docs/manifest-field-mapping.md`
 
-**Keywords**
-- `skill library health`, `skill system tooling`, `skill library decay`, `skill library maintenance`, `skill census`, `skill inventory`, `frontmatter validation`, `imperative conflict`, `skill overlap detection`, `skill conflict`, `routing gap`, `routing miss`, `routing health`, `eval threshold`, `eval minimum`, `contradiction check`, `negative expectation`, `drift sentinel`, `truth source hash`, `mirror parity`, `skill graph health`, `production skill library`, `skill linter`, `skill quality gate`, `phantom ref`, `schema conformance`, `audit skills`, `audit my skills`, `skill schema conformance`, `skill schema validation`, `audit skill metadata`
+**Lifecycle & audit status**
+- Stability: `experimental`
+- Freshness: `2026-05-18`
+- Eval state: `unverified`
+- Routing eval: `absent`
+- Audit status: structural PASS, truth DRIFT, comprehension UNVERIFIED, application UNVERIFIED
+- Last audited: `2026-05-28`
+
+**Provenance**
+- version 1.1.0, schema v7, owner `skill-graph-maintainer`
+- Keywords: `skill library health`, `skill system tooling`, `skill library decay`, `skill library maintenance`, `skill census`, `skill inventory`, `frontmatter validation`, `imperative conflict`, `skill overlap detection`, `skill conflict`, `routing gap`, `routing miss`, `routing health`, `eval threshold`, `eval minimum`, `contradiction check`, `negative expectation`, `drift sentinel`, `truth source hash`, `mirror parity`, `skill graph health`, `production skill library`, `skill linter`, `skill quality gate`, `phantom ref`, `schema conformance`, `audit skills`, `audit my skills`, `skill schema conformance`, `skill schema validation`, `audit skill metadata`
 
 <!-- skill-graph-context:end -->

@@ -358,7 +358,16 @@ Moving down the slider is also legitimate: high-stakes work (production deployme
 - Mode: `hybrid`
 - Truth sources: `https://www.youtube.com/watch?v=LCEmiRjPEtQ`, `https://github.com/karpathy/autoresearch`, `https://arxiv.org/abs/2211.03622`, `https://arxiv.org/abs/2504.20814`, `https://snyk.io/lp/secure-adoption-in-the-genai-era/`, `https://owasp.org/www-project-top-10-for-large-language-model-applications/`
 
-**Keywords**
-- `software 3.0 concepts`, `vibe coding`, `agentic engineering doctrine`, `autonomy slider`, `prompt as code`, `karpathy three eras`, `autoresearch loop`, `ai-generated code quality`, `vibe hangover`, `llm-native development`
+**Lifecycle & audit status**
+- Stability: `experimental`
+- Freshness: `2026-05-18`
+- Eval state: `unverified`
+- Routing eval: `absent`
+- Audit status: structural PASS, truth UNVERIFIED, comprehension UNVERIFIED, application UNVERIFIED
+- Last audited: `2026-05-28`
+
+**Provenance**
+- version 1.1.0, schema v8, owner `skill-graph-maintainer`
+- Keywords: `software 3.0 concepts`, `vibe coding`, `agentic engineering doctrine`, `autonomy slider`, `prompt as code`, `karpathy three eras`, `autoresearch loop`, `ai-generated code quality`, `vibe hangover`, `llm-native development`
 
 <!-- skill-graph-context:end -->

@@ -169,7 +169,16 @@ After applying this skill, verify:
 - Analogy: A connection pool is to a database what a taxi rank is to an airport — every taxi has a standing cost (driver salary, fuel, parking space); a rank with too few taxis leaves passengers queuing on the curb; a rank with too many burns money on idle taxis and clogs the access road. The right number is the smallest that doesn't queue under peak arrival rate, sized by how long each taxi trip actually takes — and adding more taxis doesn't make the trips faster, it just lets more start at once.
 - Common misconception: |
 
-**Keywords**
-- `connection pooling`, `PgBouncer`, `HikariCP`, `pool sizing`, `session pooling`, `transaction pooling`, `statement pooling`, `prepared statements`, `idle in transaction`, `Little's Law`
+**Lifecycle & audit status**
+- Stability: `experimental`
+- Freshness: `2026-05-16`
+- Eval state: `unverified`
+- Routing eval: `absent`
+- Audit status: structural PASS, truth PASS, comprehension UNVERIFIED, application UNVERIFIED
+- Last audited: `2026-05-28`
+
+**Provenance**
+- version 1.0.0, schema v8, owner `skill-graph-maintainer`
+- Keywords: `connection pooling`, `PgBouncer`, `HikariCP`, `pool sizing`, `session pooling`, `transaction pooling`, `statement pooling`, `prepared statements`, `idle in transaction`, `Little's Law`
 
 <!-- skill-graph-context:end -->

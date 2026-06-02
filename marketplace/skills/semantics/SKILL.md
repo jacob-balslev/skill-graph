@@ -470,7 +470,16 @@ SEMANTICS CHECK
 - Mode: `universal`
 - Truth sources: `https://martinfowler.com/bliki/UbiquitousLanguage.html`, `https://hilton.org.uk/blog/naming-smells`, `https://semver.org/`, `https://www.conventionalcommits.org/en/v1.0.0/`, `https://www.rfc-editor.org/rfc/rfc9110.html`, `https://www.designtokens.org/tr/drafts/format/`, `https://www.w3.org/WAI/WCAG22/Understanding/use-of-color.html`, `https://www.typescriptlang.org/docs/handbook/type-compatibility.html`, `https://lexi-lambda.github.io/blog/2019/11/05/parse-don-t-validate/`
 
-**Keywords**
-- `semantic naming`, `semantic drift detection`, `meaning encoding`, `names as contracts`, `branded type design`, `semantic versioning rules`, `conventional commit type choice`, `HTTP status semantic signaling`, `design-token semantic layer`, `naming smells catalogue`, `DDD ubiquitous language`, `semantic affordance naming`, `semantic UI signal`, `semantic API contract`, `parse-dont-validate pattern`, `three-layer token architecture`, `semantic-vs-syntactic distinction`, `cargo-cult naming anti-pattern`, `status code semantics`, `semantic design tokens`
+**Lifecycle & audit status**
+- Stability: `experimental`
+- Freshness: `2026-05-19`
+- Eval state: `unverified`
+- Routing eval: `absent`
+- Audit status: structural PASS, truth UNVERIFIED, comprehension UNVERIFIED, application UNVERIFIED
+- Last audited: `2026-05-28`
+
+**Provenance**
+- version 1.2.0, schema v8, owner `skill-graph-maintainer`
+- Keywords: `semantic naming`, `semantic drift detection`, `meaning encoding`, `names as contracts`, `branded type design`, `semantic versioning rules`, `conventional commit type choice`, `HTTP status semantic signaling`, `design-token semantic layer`, `naming smells catalogue`, `DDD ubiquitous language`, `semantic affordance naming`, `semantic UI signal`, `semantic API contract`, `parse-dont-validate pattern`, `three-layer token architecture`, `semantic-vs-syntactic distinction`, `cargo-cult naming anti-pattern`, `status code semantics`, `semantic design tokens`
 
 <!-- skill-graph-context:end -->

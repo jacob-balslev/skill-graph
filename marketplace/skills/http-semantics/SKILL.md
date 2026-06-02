@@ -199,7 +199,16 @@ After applying this skill, verify:
 - Analogy: HTTP semantics is to web APIs what the rules of grammar are to written language — the framework provides the dictionary (routes, handlers, middleware) but the grammar is non-negotiable, and a sentence that follows the dictionary while violating the grammar is technically intelligible but causes downstream tooling (CDNs, proxies, client libraries) to misinterpret it.
 - Common misconception: |
 
-**Keywords**
-- `HTTP semantics`, `RFC 9110`, `idempotent methods`, `safe methods`, `HTTP status codes`, `conditional requests`, `content negotiation`, `cache control`, `HTTP caching`, `representation metadata`
+**Lifecycle & audit status**
+- Stability: `experimental`
+- Freshness: `2026-05-15`
+- Eval state: `unverified`
+- Routing eval: `absent`
+- Audit status: structural PASS, truth PASS, comprehension UNVERIFIED, application UNVERIFIED
+- Last audited: `2026-05-28`
+
+**Provenance**
+- version 1.0.0, schema v8, owner `skill-graph-maintainer`
+- Keywords: `HTTP semantics`, `RFC 9110`, `idempotent methods`, `safe methods`, `HTTP status codes`, `conditional requests`, `content negotiation`, `cache control`, `HTTP caching`, `representation metadata`
 
 <!-- skill-graph-context:end -->

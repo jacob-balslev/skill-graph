@@ -129,7 +129,16 @@ After applying this skill, verify:
 **Related skills**
 - Related: `version-control`
 
-**Keywords**
-- `merge queue`, `atomic lock`, `idempotency`, `no-ff merge`, `worktree cleanup`, `agent branch`, `master merge`
+**Lifecycle & audit status**
+- Stability: `experimental`
+- Freshness: `2026-04-01`
+- Eval state: `unverified`
+- Routing eval: `absent`
+- Audit status: structural PASS, truth PASS, comprehension UNVERIFIED, application UNVERIFIED
+- Last audited: `2026-05-28`
+
+**Provenance**
+- version 1.0.0, schema v8, owner `skill-graph-maintainer`
+- Keywords: `merge queue`, `atomic lock`, `idempotency`, `no-ff merge`, `worktree cleanup`, `agent branch`, `master merge`
 
 <!-- skill-graph-context:end -->

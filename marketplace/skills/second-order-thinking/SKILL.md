@@ -272,7 +272,16 @@ After applying this skill, verify:
 - Analogy: Second-order thinking is like playing chess beyond the current move: the obvious move matters less than the position it creates after everyone else responds.
 - Common misconception: |
 
-**Keywords**
-- `second-order thinking`, `second order effects`, `downstream consequences`, `and then what`, `unintended consequences`, `delayed effects`, `feedback loops`, `incentive response`, `compounding effects`, `time horizon analysis`
+**Lifecycle & audit status**
+- Stability: `experimental`
+- Freshness: `2026-05-21`
+- Eval state: `unverified`
+- Routing eval: `absent`
+- Audit status: structural PASS, truth PASS, comprehension UNVERIFIED, application UNVERIFIED
+- Last audited: `2026-05-28`
+
+**Provenance**
+- version 1.0.0, schema v7, owner `skill-graph-maintainer`
+- Keywords: `second-order thinking`, `second order effects`, `downstream consequences`, `and then what`, `unintended consequences`, `delayed effects`, `feedback loops`, `incentive response`, `compounding effects`, `time horizon analysis`
 
 <!-- skill-graph-context:end -->

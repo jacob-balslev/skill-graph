@@ -109,7 +109,16 @@ This skill ships a comprehension-eval artifact at [`examples/evals/dependency-ar
 - Verify with: `owasp-security`, `code-review`
 - Related: `framework-fit-analysis`, `system-interface-contracts`, `version-control`, `owasp-security`
 
-**Keywords**
-- `dependency architecture`, `dependency graph`, `package boundaries`, `runtime dependency`, `build dependency`, `duplicate libraries`, `supply chain risk`, `adapter layer`, `lock-in`, `upgrade policy`
+**Lifecycle & audit status**
+- Stability: `experimental`
+- Freshness: `2026-05-11`
+- Eval state: `unverified`
+- Routing eval: `absent`
+- Audit status: structural PASS, truth PASS, comprehension UNVERIFIED, application UNVERIFIED
+- Last audited: `2026-05-28`
+
+**Provenance**
+- version 1.0.0, schema v8, owner `skill-graph-maintainer`
+- Keywords: `dependency architecture`, `dependency graph`, `package boundaries`, `runtime dependency`, `build dependency`, `duplicate libraries`, `supply chain risk`, `adapter layer`, `lock-in`, `upgrade policy`
 
 <!-- skill-graph-context:end -->

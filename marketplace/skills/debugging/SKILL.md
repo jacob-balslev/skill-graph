@@ -115,7 +115,16 @@ This skill ships a comprehension-eval artifact at [`examples/evals/debugging.jso
 **Related skills**
 - Verify with: `testing-strategy`
 
-**Keywords**
-- `debugging`, `reproduce failure`, `reproduce bug`, `failing test`, `root cause`, `symptom vs cause`, `minimum reproduction`, `bisect`, `what caused it`, `my tests are failing`, `what changed`, `regression`, `used to work`, `what broke`
+**Lifecycle & audit status**
+- Stability: `experimental`
+- Freshness: `2026-04-18`
+- Eval state: `passing`
+- Routing eval: `present`
+- Audit status: structural PASS, truth PASS, comprehension UNVERIFIED, application UNVERIFIED
+- Last audited: `2026-05-28`
+
+**Provenance**
+- version 1.0.0, schema v8, owner `skill-graph-maintainer`
+- Keywords: `debugging`, `reproduce failure`, `reproduce bug`, `failing test`, `root cause`, `symptom vs cause`, `minimum reproduction`, `bisect`, `what caused it`, `my tests are failing`, `what changed`, `regression`, `used to work`, `what broke`
 
 <!-- skill-graph-context:end -->

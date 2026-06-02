@@ -88,7 +88,16 @@ The publish lifecycle is asynchronous and partially observable. Treat publish su
 **Related skills**
 - Related: `shopify`, `webhook-integration`, `api-design`
 
-**Keywords**
-- `printify api`, `print on demand`, `printify blueprints`, `printify print providers`, `printify publish lifecycle`, `printify webhooks`, `printify variants`, `printify shipping costs`, `printify order routing`, `print provider catalog`
+**Lifecycle & audit status**
+- Stability: `experimental`
+- Freshness: `2026-05-12`
+- Eval state: `unverified`
+- Routing eval: `absent`
+- Audit status: structural PASS, truth PASS, comprehension UNVERIFIED, application UNVERIFIED
+- Last audited: `2026-05-28`
+
+**Provenance**
+- version 1.0.0, schema v8, owner `skill-graph-maintainer`
+- Keywords: `printify api`, `print on demand`, `printify blueprints`, `printify print providers`, `printify publish lifecycle`, `printify webhooks`, `printify variants`, `printify shipping costs`, `printify order routing`, `print provider catalog`
 
 <!-- skill-graph-context:end -->

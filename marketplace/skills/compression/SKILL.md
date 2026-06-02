@@ -147,7 +147,16 @@ After applying this skill, verify:
 **Related skills**
 - Related: `context-window`
 
-**Keywords**
-- `compression`, `Zstd`, `Brotli`, `Gzip`, `context window`, `token efficiency`, `semantic summarization`, `payload reduction`, `DB TOAST`
+**Lifecycle & audit status**
+- Stability: `experimental`
+- Freshness: `2026-03-28`
+- Eval state: `unverified`
+- Routing eval: `absent`
+- Audit status: structural PASS, truth PASS, comprehension UNVERIFIED, application UNVERIFIED
+- Last audited: `2026-05-28`
+
+**Provenance**
+- version 1.0.0, schema v8, owner `skill-graph-maintainer`
+- Keywords: `compression`, `Zstd`, `Brotli`, `Gzip`, `context window`, `token efficiency`, `semantic summarization`, `payload reduction`, `DB TOAST`
 
 <!-- skill-graph-context:end -->

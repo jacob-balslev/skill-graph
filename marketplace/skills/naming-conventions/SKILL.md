@@ -165,7 +165,16 @@ Renaming is a small change that touches many places. Do all of them in one commi
 - Verify with: `code-review`
 - Related: `refactor`
 
-**Keywords**
-- `naming`, `naming convention`, `name a file`, `name a function`, `name a variable`, `name a type`, `rename`, `identifier`, `kebab case`, `camel case`
+**Lifecycle & audit status**
+- Stability: `experimental`
+- Freshness: `2026-05-04`
+- Eval state: `unverified`
+- Routing eval: `absent`
+- Audit status: structural PASS, truth PASS, comprehension UNVERIFIED, application UNVERIFIED
+- Last audited: `2026-05-28`
+
+**Provenance**
+- version 1.0.0, schema v8, owner `skill-graph-maintainer`
+- Keywords: `naming`, `naming convention`, `name a file`, `name a function`, `name a variable`, `name a type`, `rename`, `identifier`, `kebab case`, `camel case`
 
 <!-- skill-graph-context:end -->

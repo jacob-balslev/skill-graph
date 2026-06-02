@@ -133,7 +133,16 @@ The ontology must preserve business meaning while stating which inferences are a
 - Analogy: An ontology is to a domain model what an engineering tolerance specification is to a manufactured part — the part might fit at +/-0.5mm informally (taxonomy, conceptual model), but if another factory must mass-produce a counterpart that mates with it, both factories need a tolerance spec that says *exactly* what 'fits' means in microns. The spec is more expensive to write than the napkin sketch, but it is the artefact that lets two shops produce interlocking parts without ever talking to each other.
 - Common misconception: |
 
-**Keywords**
-- `ontology modeling`, `formal semantics`, `RDF`, `OWL`, `JSON-LD`, `SHACL`, `class axioms`, `property domains`, `property ranges`, `disjoint classes`
+**Lifecycle & audit status**
+- Stability: `experimental`
+- Freshness: `2026-05-16`
+- Eval state: `unverified`
+- Routing eval: `absent`
+- Audit status: structural PASS, truth PASS, comprehension UNVERIFIED, application UNVERIFIED
+- Last audited: `2026-05-28`
+
+**Provenance**
+- version 1.1.0, schema v8, owner `skill-graph-maintainer`
+- Keywords: `ontology modeling`, `formal semantics`, `RDF`, `OWL`, `JSON-LD`, `SHACL`, `class axioms`, `property domains`, `property ranges`, `disjoint classes`
 
 <!-- skill-graph-context:end -->

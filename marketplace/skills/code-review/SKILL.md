@@ -175,7 +175,16 @@ This skill ships a comprehension-eval artifact at [`examples/evals/code-review.j
 - Verify with: `testing-strategy`
 - Related: `testing-strategy`, `naming-conventions`, `owasp-security`
 
-**Keywords**
-- `code review`, `review this PR`, `review this diff`, `review this change`, `review this AI generated code`, `PR review`, `diff review`, `severity grade`, `reviewer rubric`, `approve or block`
+**Lifecycle & audit status**
+- Stability: `experimental`
+- Freshness: `2026-05-04`
+- Eval state: `unverified`
+- Routing eval: `absent`
+- Audit status: structural PASS, truth PASS, comprehension UNVERIFIED, application UNVERIFIED
+- Last audited: `2026-05-28`
+
+**Provenance**
+- version 1.0.0, schema v8, owner `skill-graph-maintainer`
+- Keywords: `code review`, `review this PR`, `review this diff`, `review this change`, `review this AI generated code`, `PR review`, `diff review`, `severity grade`, `reviewer rubric`, `approve or block`
 
 <!-- skill-graph-context:end -->

@@ -161,7 +161,16 @@ After applying this skill, verify:
 - Analogy: An isolation level is to a database what a confidentiality regime is to a research lab — Read Uncommitted is the open whiteboard (anyone can read anyone's half-finished work); Read Committed is the rule that you only photograph your colleague's notebook after they have signed each page; Repeatable Read is a sealed envelope (you read once, you keep reading the same thing for the duration); Serializable is a locked vault (you take exclusive custody, others queue); Snapshot Isolation is a private photocopy (you read from your photocopy, others read from theirs, and only at commit time do the photocopies have to agree on the world they were taken from).
 - Common misconception: |
 
-**Keywords**
-- `isolation level`, `read committed`, `repeatable read`, `serializable`, `snapshot isolation`, `SSI`, `MVCC`, `dirty read`, `non-repeatable read`, `phantom read`
+**Lifecycle & audit status**
+- Stability: `experimental`
+- Freshness: `2026-05-16`
+- Eval state: `unverified`
+- Routing eval: `absent`
+- Audit status: structural PASS, truth PASS, comprehension UNVERIFIED, application UNVERIFIED
+- Last audited: `2026-05-28`
+
+**Provenance**
+- version 1.0.0, schema v8, owner `skill-graph-maintainer`
+- Keywords: `isolation level`, `read committed`, `repeatable read`, `serializable`, `snapshot isolation`, `SSI`, `MVCC`, `dirty read`, `non-repeatable read`, `phantom read`
 
 <!-- skill-graph-context:end -->

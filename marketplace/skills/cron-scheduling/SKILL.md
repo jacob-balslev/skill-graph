@@ -258,7 +258,16 @@ After applying this skill, verify:
 **Related skills**
 - Related: `background-jobs`
 
-**Keywords**
-- `cron-scheduling`, `cron`, `scheduling`
+**Lifecycle & audit status**
+- Stability: `experimental`
+- Freshness: `2026-03-29`
+- Eval state: `unverified`
+- Routing eval: `absent`
+- Audit status: structural PASS, truth PASS, comprehension UNVERIFIED, application UNVERIFIED
+- Last audited: `2026-05-28`
+
+**Provenance**
+- version 1.0.0, schema v8, owner `skill-graph-maintainer`
+- Keywords: `cron-scheduling`, `cron`, `scheduling`
 
 <!-- skill-graph-context:end -->

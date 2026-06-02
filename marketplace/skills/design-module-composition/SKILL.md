@@ -87,7 +87,16 @@ Headless primitives separate three concerns that are routinely conflated: state 
 **Related skills**
 - Related: `design-system-architecture`, `frontend-architecture`, `interaction-patterns`, `a11y`
 
-**Keywords**
-- `component composition`, `compound components`, `slot api`, `headless components`, `render props`, `polymorphic components`, `asChild pattern`, `children as api`, `composition over configuration`, `component contract design`
+**Lifecycle & audit status**
+- Stability: `experimental`
+- Freshness: `2026-05-12`
+- Eval state: `unverified`
+- Routing eval: `absent`
+- Audit status: structural PASS, truth PASS, comprehension UNVERIFIED, application UNVERIFIED
+- Last audited: `2026-05-28`
+
+**Provenance**
+- version 1.0.0, schema v8, owner `skill-graph-maintainer`
+- Keywords: `component composition`, `compound components`, `slot api`, `headless components`, `render props`, `polymorphic components`, `asChild pattern`, `children as api`, `composition over configuration`, `component contract design`
 
 <!-- skill-graph-context:end -->

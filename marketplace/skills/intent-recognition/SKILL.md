@@ -193,7 +193,16 @@ These triggers are deliberately broad. False positives (classifying a Passive ac
 - Verify with: `owasp-security`
 - Related: `owasp-security`, `version-control`, `debugging`
 
-**Keywords**
-- `intent recognition`, `pre-execution risk classification`, `four tier action taxonomy`, `passive read reconnaissance modification destructive`, `identify confirm verify sequence`, `destructive operation classification`, `credential read is reconnaissance`, `git reset hard is destructive`, `force push is destructive`, `lockfile install is high impact`
+**Lifecycle & audit status**
+- Stability: `experimental`
+- Freshness: `2026-05-06`
+- Eval state: `unverified`
+- Routing eval: `absent`
+- Audit status: structural PASS, truth PASS, comprehension UNVERIFIED, application UNVERIFIED
+- Last audited: `2026-05-28`
+
+**Provenance**
+- version 1.0.0, schema v8, owner `skill-graph-maintainer`
+- Keywords: `intent recognition`, `pre-execution risk classification`, `four tier action taxonomy`, `passive read reconnaissance modification destructive`, `identify confirm verify sequence`, `destructive operation classification`, `credential read is reconnaissance`, `git reset hard is destructive`, `force push is destructive`, `lockfile install is high impact`
 
 <!-- skill-graph-context:end -->

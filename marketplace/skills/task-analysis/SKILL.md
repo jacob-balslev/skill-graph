@@ -261,7 +261,16 @@ After applying task analysis, verify:
 - Verify with: `a11y`
 - Related: `diagnosis`, `pattern-recognition`, `information-architecture`, `layout-composition`, `interaction-patterns`, `interaction-feedback`
 
-**Keywords**
-- `top task analysis`, `goal-driven UX review`, `route audit workflow`, `onboarding flow analysis`, `task friction scoring`, `five friction dimensions`, `dead-end detection`, `hidden next-step diagnosis`, `hierarchy contract first viewport`, `actor and scenario identification`
+**Lifecycle & audit status**
+- Stability: `experimental`
+- Freshness: `2026-05-06`
+- Eval state: `unverified`
+- Routing eval: `absent`
+- Audit status: structural PASS, truth PASS, comprehension UNVERIFIED, application UNVERIFIED
+- Last audited: `2026-05-28`
+
+**Provenance**
+- version 1.0.0, schema v8, owner `skill-graph-maintainer`
+- Keywords: `top task analysis`, `goal-driven UX review`, `route audit workflow`, `onboarding flow analysis`, `task friction scoring`, `five friction dimensions`, `dead-end detection`, `hidden next-step diagnosis`, `hierarchy contract first viewport`, `actor and scenario identification`
 
 <!-- skill-graph-context:end -->

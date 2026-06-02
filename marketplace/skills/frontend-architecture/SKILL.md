@@ -89,7 +89,16 @@ Server state and client state are different problems. Mixing them in a single st
 **Related skills**
 - Related: `design-system-architecture`, `design-module-composition`, `refactor`, `testing-strategy`
 
-**Keywords**
-- `frontend architecture`, `component boundaries`, `module organization`, `state management shape`, `feature-sliced design`, `container presentational`, `data flow direction`, `shared primitives`, `component layering`, `frontend folder structure`
+**Lifecycle & audit status**
+- Stability: `experimental`
+- Freshness: `2026-05-12`
+- Eval state: `unverified`
+- Routing eval: `absent`
+- Audit status: structural PASS, truth PASS, comprehension UNVERIFIED, application UNVERIFIED
+- Last audited: `2026-05-28`
+
+**Provenance**
+- version 1.0.0, schema v8, owner `skill-graph-maintainer`
+- Keywords: `frontend architecture`, `component boundaries`, `module organization`, `state management shape`, `feature-sliced design`, `container presentational`, `data flow direction`, `shared primitives`, `component layering`, `frontend folder structure`
 
 <!-- skill-graph-context:end -->

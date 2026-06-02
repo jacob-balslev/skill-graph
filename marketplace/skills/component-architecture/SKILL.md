@@ -193,7 +193,16 @@ After applying this skill, verify:
 - Analogy: Component architecture is to a UI library what API design is to a backend service — the public contract is the only thing consumers see; every consumer depends on shape, behavior, and naming for things that may seem internal to the author; once a version ships, every prop and slot becomes a thing future versions must continue to support, just as every endpoint and field of a public API does. The headless/styled split is to component libraries what the data-plane/control-plane split is to distributed systems: separating the part that changes slowly (behavior, contracts) from the part that changes fast (visual treatment, theming).
 - Common misconception: |
 
-**Keywords**
-- `component library design`, `atomic design layering`, `component primitives`, `component composites`, `compound components`, `polymorphic component`, `asChild prop`, `headless component`, `styled component`, `controlled component`
+**Lifecycle & audit status**
+- Stability: `experimental`
+- Freshness: `2026-05-16`
+- Eval state: `unverified`
+- Routing eval: `absent`
+- Audit status: structural PASS, truth PASS, comprehension UNVERIFIED, application UNVERIFIED
+- Last audited: `2026-05-28`
+
+**Provenance**
+- version 1.0.0, schema v8, owner `skill-graph-maintainer`
+- Keywords: `component library design`, `atomic design layering`, `component primitives`, `component composites`, `compound components`, `polymorphic component`, `asChild prop`, `headless component`, `styled component`, `controlled component`
 
 <!-- skill-graph-context:end -->

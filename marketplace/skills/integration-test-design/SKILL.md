@@ -174,7 +174,16 @@ After applying this skill, verify:
 - Analogy: An integration test is to a software system what a fire-suppression drill in a specific corridor is to the whole building's safety plan — you are not testing whether each sprinkler head works in isolation (unit), nor whether everyone evacuates the entire building in fifteen minutes (e2e), you are testing whether the smoke detector in *this corridor* triggers the alarm panel which triggers the sprinkler which actually wets *that carpet*; the test's identity is the named boundary, and changing the named boundary changes the test's identity.
 - Common misconception: |
 
-**Keywords**
-- `integration test`, `integration testing`, `test pyramid`, `test trophy`, `sociable test`, `test data setup`, `test transaction rollback`, `test containers`, `testcontainers`, `boundary test`
+**Lifecycle & audit status**
+- Stability: `experimental`
+- Freshness: `2026-05-16`
+- Eval state: `unverified`
+- Routing eval: `absent`
+- Audit status: structural PASS, truth PASS, comprehension UNVERIFIED, application UNVERIFIED
+- Last audited: `2026-05-28`
+
+**Provenance**
+- version 1.0.0, schema v8, owner `skill-graph-maintainer`
+- Keywords: `integration test`, `integration testing`, `test pyramid`, `test trophy`, `sociable test`, `test data setup`, `test transaction rollback`, `test containers`, `testcontainers`, `boundary test`
 
 <!-- skill-graph-context:end -->

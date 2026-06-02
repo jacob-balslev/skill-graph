@@ -240,7 +240,16 @@ After applying this skill, verify:
 - Analogy: Type safety is to programs what a passport check is to international travel — the document (type annotation) certifies identity within the issuing country's records, but on the way through customs (the I/O boundary), the document is re-verified against the actual traveler, and any mismatch is rejected before they enter the trusted zone.
 - Common misconception: |
 
-**Keywords**
-- `type safety`, `TypeScript`, `sound type system`, `unsound type system`, `structural typing`, `nominal typing`, `type narrowing`, `exhaustiveness check`, `gradual typing`, `runtime boundary`
+**Lifecycle & audit status**
+- Stability: `experimental`
+- Freshness: `2026-05-15`
+- Eval state: `unverified`
+- Routing eval: `absent`
+- Audit status: structural PASS, truth PASS, comprehension UNVERIFIED, application UNVERIFIED
+- Last audited: `2026-05-28`
+
+**Provenance**
+- version 1.0.0, schema v8, owner `skill-graph-maintainer`
+- Keywords: `type safety`, `TypeScript`, `sound type system`, `unsound type system`, `structural typing`, `nominal typing`, `type narrowing`, `exhaustiveness check`, `gradual typing`, `runtime boundary`
 
 <!-- skill-graph-context:end -->

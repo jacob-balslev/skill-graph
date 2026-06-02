@@ -528,7 +528,16 @@ LINGUISTICS I18N CHECK
 - Mode: `universal`
 - Truth sources: `https://developers.google.com/style/voice`, `https://developers.google.com/style/tone`, `https://developers.google.com/style/translation`, `https://learn.microsoft.com/en-us/windows/apps/design/style/writing-style`, `https://learn.microsoft.com/en-us/windows/win32/debug/error-message-guidelines`, `https://www.w3.org/TR/WCAG22/`, `https://www.nngroup.com/articles/ten-usability-heuristics/`, `https://www.nngroup.com/articles/hostile-error-messages/`
 
-**Keywords**
-- `linguistic precision`, `software linguistics`, `identifier morphology`, `polysemy resolution`, `polysemy map`, `register selection`, `audience register`, `blame-free error wording`, `what why action error structure`, `compound-word ordering`, `abbreviation policy`, `ambiguous identifier qualification`, `semantic naming`, `global audience language`, `cross-cultural language awareness`, `verb-noun naming rule`, `unqualified polysemous identifier`, `error-message linguistics`
+**Lifecycle & audit status**
+- Stability: `experimental`
+- Freshness: `2026-05-19`
+- Eval state: `unverified`
+- Routing eval: `absent`
+- Audit status: structural PASS, truth UNVERIFIED, comprehension UNVERIFIED, application UNVERIFIED
+- Last audited: `2026-05-28`
+
+**Provenance**
+- version 1.2.0, schema v8, owner `skill-graph-maintainer`
+- Keywords: `linguistic precision`, `software linguistics`, `identifier morphology`, `polysemy resolution`, `polysemy map`, `register selection`, `audience register`, `blame-free error wording`, `what why action error structure`, `compound-word ordering`, `abbreviation policy`, `ambiguous identifier qualification`, `semantic naming`, `global audience language`, `cross-cultural language awareness`, `verb-noun naming rule`, `unqualified polysemous identifier`, `error-message linguistics`
 
 <!-- skill-graph-context:end -->

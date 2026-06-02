@@ -254,7 +254,16 @@ After applying this skill, verify:
 - Analogy: A Server Component is to a React tree what a printed page is to a book — the typesetter (server) sets the lead, presses the ink, and ships the printed page (RSC payload); the reader's table lamp (Client Component) is wired and switchable at the reader's end. You do not ship the typesetter to the reader's living room, and you do not ship the lamp's wiring to the printer — the boundary is where 'this never changes once it leaves my workshop' ends and 'this responds to who touches it' begins.
 - Common misconception: |
 
-**Keywords**
-- `React Server Components`, `RSC`, `Next.js App Router`, `async components`, `server-side data fetching`, `streaming RSC`, `server/client component tree`, `RSC payload`, `Suspense boundaries with RSC`, `data flow without API layer`
+**Lifecycle & audit status**
+- Stability: `experimental`
+- Freshness: `2026-05-16`
+- Eval state: `unverified`
+- Routing eval: `absent`
+- Audit status: structural PASS, truth PASS, comprehension UNVERIFIED, application UNVERIFIED
+- Last audited: `2026-05-28`
+
+**Provenance**
+- version 1.0.0, schema v8, owner `skill-graph-maintainer`
+- Keywords: `React Server Components`, `RSC`, `Next.js App Router`, `async components`, `server-side data fetching`, `streaming RSC`, `server/client component tree`, `RSC payload`, `Suspense boundaries with RSC`, `data flow without API layer`
 
 <!-- skill-graph-context:end -->

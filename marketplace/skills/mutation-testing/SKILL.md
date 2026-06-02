@@ -174,7 +174,16 @@ After applying this skill, verify:
 - Analogy: Mutation testing is to a test suite what a fire drill is to a building's evacuation plan — you do not measure preparedness by counting how many exits exist (coverage), you measure it by deliberately staging a fire and watching whether anyone notices in time (mutation kill rate). An exit that nobody walks through during the drill is not really an exit, regardless of how prominently it is signposted.
 - Common misconception: |
 
-**Keywords**
-- `mutation testing`, `mutation score`, `mutant`, `mutant operator`, `PIT`, `Stryker`, `DeMillo`, `equivalent mutant`, `killed mutant`, `selective mutation`
+**Lifecycle & audit status**
+- Stability: `experimental`
+- Freshness: `2026-05-16`
+- Eval state: `unverified`
+- Routing eval: `absent`
+- Audit status: structural PASS, truth PASS, comprehension UNVERIFIED, application UNVERIFIED
+- Last audited: `2026-05-28`
+
+**Provenance**
+- version 1.0.0, schema v8, owner `skill-graph-maintainer`
+- Keywords: `mutation testing`, `mutation score`, `mutant`, `mutant operator`, `PIT`, `Stryker`, `DeMillo`, `equivalent mutant`, `killed mutant`, `selective mutation`
 
 <!-- skill-graph-context:end -->

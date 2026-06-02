@@ -266,7 +266,16 @@ These rules appear across 3+ domains — **highest enforcement weight**:
 **Grounding**
 - Mode: `hybrid`
 
-**Keywords**
-- `best practice`, `best practices`, `code quality`, `quality enforcement`, `code review checklist`, `OWASP`, `WCAG`, `Core Web Vitals`, `SOLID principles`, `clean code`
+**Lifecycle & audit status**
+- Stability: `stable`
+- Freshness: `2026-05-18`
+- Eval state: `unverified`
+- Routing eval: `absent`
+- Audit status: structural PASS, truth PASS, comprehension UNVERIFIED, application UNVERIFIED
+- Last audited: `2026-05-28`
+
+**Provenance**
+- version 1.2.0, schema v8, owner `skill-graph-maintainer`
+- Keywords: `best practice`, `best practices`, `code quality`, `quality enforcement`, `code review checklist`, `OWASP`, `WCAG`, `Core Web Vitals`, `SOLID principles`, `clean code`
 
 <!-- skill-graph-context:end -->

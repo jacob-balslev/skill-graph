@@ -111,7 +111,16 @@ This skill ships a comprehension-eval artifact at [`examples/evals/system-interf
 - Verify with: `testing-strategy`, `code-review`
 - Related: `bounded-context-mapping`, `api-design`, `event-storming`, `event-contract-design`, `state-machine-modeling`
 
-**Keywords**
-- `interface contract`, `system boundary`, `contract design`, `compatibility contract`, `input output invariant`, `event schema`, `module boundary`, `idempotency contract`, `versioning contract`, `error contract`
+**Lifecycle & audit status**
+- Stability: `experimental`
+- Freshness: `2026-05-11`
+- Eval state: `unverified`
+- Routing eval: `absent`
+- Audit status: structural PASS, truth PASS, comprehension UNVERIFIED, application UNVERIFIED
+- Last audited: `2026-05-28`
+
+**Provenance**
+- version 1.0.0, schema v8, owner `skill-graph-maintainer`
+- Keywords: `interface contract`, `system boundary`, `contract design`, `compatibility contract`, `input output invariant`, `event schema`, `module boundary`, `idempotency contract`, `versioning contract`, `error contract`
 
 <!-- skill-graph-context:end -->

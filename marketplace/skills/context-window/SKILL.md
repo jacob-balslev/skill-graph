@@ -325,7 +325,16 @@ A 1M window is not a license to ignore the rules — it just shifts the breaking
 - Mode: `hybrid`
 - Truth sources: `https://platform.claude.com/docs/en/build-with-claude/context-windows`, `https://ai.google.dev/gemini-api/docs/long-context`, `https://developers.openai.com/api/docs/models/compare`, `https://github.com/jacob-balslev/skills/blob/main/skills/context-engineering/SKILL.md`, `https://github.com/jacob-balslev/skills/blob/main/skills/context-management/SKILL.md`, `https://github.com/jacob-balslev/skills/blob/main/skills/tool-call-strategy/SKILL.md`
 
-**Keywords**
-- `context window management`, `context budget allocation`, `80% compaction rule`, `context health states`, `pre-compact hook`, `post-compact recovery`, `cross-session persistence hierarchy`, `token consumption per operation`, `deterministic cli vs mcp tool result tokens`, `targeted file read offset limit`
+**Lifecycle & audit status**
+- Stability: `experimental`
+- Freshness: `2026-05-18`
+- Eval state: `unverified`
+- Routing eval: `absent`
+- Audit status: structural PASS, truth UNVERIFIED, comprehension UNVERIFIED, application UNVERIFIED
+- Last audited: `2026-05-28`
+
+**Provenance**
+- version 1.1.0, schema v8, owner `skill-graph-maintainer`
+- Keywords: `context window management`, `context budget allocation`, `80% compaction rule`, `context health states`, `pre-compact hook`, `post-compact recovery`, `cross-session persistence hierarchy`, `token consumption per operation`, `deterministic cli vs mcp tool result tokens`, `targeted file read offset limit`
 
 <!-- skill-graph-context:end -->

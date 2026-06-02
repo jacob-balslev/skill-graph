@@ -106,7 +106,16 @@ The central question is: "Where does this word mean something different?" Those 
 - Verify with: `semantic-relations`, `system-interface-contracts`
 - Related: `event-storming`, `system-interface-contracts`, `conceptual-modeling`, `architecture-decision-records`
 
-**Keywords**
-- `bounded context`, `context map`, `domain-driven design`, `DDD boundary`, `anti-corruption layer`, `shared kernel`, `upstream downstream`, `conformist`, `customer supplier`, `domain boundary`
+**Lifecycle & audit status**
+- Stability: `experimental`
+- Freshness: `2026-05-11`
+- Eval state: `unverified`
+- Routing eval: `absent`
+- Audit status: structural PASS, truth PASS, comprehension UNVERIFIED, application UNVERIFIED
+- Last audited: `2026-05-28`
+
+**Provenance**
+- version 1.0.0, schema v8, owner `skill-graph-maintainer`
+- Keywords: `bounded context`, `context map`, `domain-driven design`, `DDD boundary`, `anti-corruption layer`, `shared kernel`, `upstream downstream`, `conformist`, `customer supplier`, `domain boundary`
 
 <!-- skill-graph-context:end -->

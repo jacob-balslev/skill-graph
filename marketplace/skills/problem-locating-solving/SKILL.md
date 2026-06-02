@@ -263,7 +263,16 @@ If the same class of bug could reasonably recur, promote the learning into a pre
 - Verify with: `tool-call-strategy`, `context-graph`, `skill-infrastructure`
 - Related: `pattern-recognition`, `diagnosis`, `lint-overlay`
 
-**Keywords**
-- `locate a defect in unfamiliar codebase`, `failing-boundary identification`, `first failing boundary`, `find where defect originates`, `trace symptom backward to source`, `search-space reduction by symptom type`, `boundary-based fault localization`, `locate-to-solve workflow`, `search-space bounding rules`, `entry-point tracing technique`
+**Lifecycle & audit status**
+- Stability: `experimental`
+- Freshness: `2026-05-06`
+- Eval state: `unverified`
+- Routing eval: `absent`
+- Audit status: structural PASS, truth PASS, comprehension UNVERIFIED, application UNVERIFIED
+- Last audited: `2026-05-28`
+
+**Provenance**
+- version 1.0.0, schema v8, owner `skill-graph-maintainer`
+- Keywords: `locate a defect in unfamiliar codebase`, `failing-boundary identification`, `first failing boundary`, `find where defect originates`, `trace symptom backward to source`, `search-space reduction by symptom type`, `boundary-based fault localization`, `locate-to-solve workflow`, `search-space bounding rules`, `entry-point tracing technique`
 
 <!-- skill-graph-context:end -->

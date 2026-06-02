@@ -417,7 +417,16 @@ After applying this skill, verify:
 - Analogy: A Route Handler is to a Next.js app what a service window at a government office is to its workflow — different windows handle different services (`GET /posts`, `POST /comments`); each window has a posted sign saying which forms it accepts and what stamps it returns; you do not walk into the back office (Server Action) unless you work there. The window is the contract: filesystem path = window number, export name = service offered, function body = the clerk's actual work.
 - Common misconception: |
 
-**Keywords**
-- `Next.js Route Handler`, `route.ts file`, `API endpoint via route.ts`, `GET POST PUT DELETE export`, `Web Request Response API`, `NextRequest NextResponse`, `request.json formData parsing`, `dynamic force-dynamic segment config`, `revalidate Route Handler`, `Edge runtime vs Node runtime`
+**Lifecycle & audit status**
+- Stability: `experimental`
+- Freshness: `2026-05-17`
+- Eval state: `unverified`
+- Routing eval: `absent`
+- Audit status: structural PASS, truth PASS, comprehension UNVERIFIED, application UNVERIFIED
+- Last audited: `2026-05-28`
+
+**Provenance**
+- version 1.0.0, schema v8, owner `skill-graph-maintainer`
+- Keywords: `Next.js Route Handler`, `route.ts file`, `API endpoint via route.ts`, `GET POST PUT DELETE export`, `Web Request Response API`, `NextRequest NextResponse`, `request.json formData parsing`, `dynamic force-dynamic segment config`, `revalidate Route Handler`, `Edge runtime vs Node runtime`
 
 <!-- skill-graph-context:end -->

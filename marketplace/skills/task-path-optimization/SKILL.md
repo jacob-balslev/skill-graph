@@ -360,7 +360,15 @@ After applying this skill, verify:
 - Analogy: Task path optimization is like choosing a route before a trip: walking across the street needs no map, crossing a city needs traffic awareness, and crossing a mountain range needs checkpoints and fallback routes.
 - Common misconception: The common mistake is treating more process as safer. The safest path is the smallest path that still handles ambiguity, dependency, risk, and verification.
 
-**Keywords**
-- `optimal path`, `plan vs act`, `task decomposition`, `critical path`, `parallelization strategy`, `agent architecture`, `scope management`, `execution efficiency`, `shortest path to solution`, `when to plan`, `when to act immediately`, `fresh approach`, `task complexity assessment`
+**Lifecycle & audit status**
+- Freshness: `2026-05-18`
+- Eval state: `passing`
+- Routing eval: `present`
+- Audit status: structural PASS, truth PASS, comprehension UNVERIFIED, application UNVERIFIED
+- Last audited: `2026-05-28`
+
+**Provenance**
+- version 1.1.0, schema v8, owner `claude`
+- Keywords: `optimal path`, `plan vs act`, `task decomposition`, `critical path`, `parallelization strategy`, `agent architecture`, `scope management`, `execution efficiency`, `shortest path to solution`, `when to plan`, `when to act immediately`, `fresh approach`, `task complexity assessment`
 
 <!-- skill-graph-context:end -->

@@ -224,7 +224,16 @@ After applying this skill, verify:
 - Verify with: `refactor`
 - Related: `semantics`
 
-**Keywords**
-- `git diff`, `unified diff`, `patch analysis`, `changeset review`, `diff analysis`, `read a diff`
+**Lifecycle & audit status**
+- Stability: `experimental`
+- Freshness: `2026-03-28`
+- Eval state: `unverified`
+- Routing eval: `absent`
+- Audit status: structural PASS, truth PASS, comprehension UNVERIFIED, application UNVERIFIED
+- Last audited: `2026-05-28`
+
+**Provenance**
+- version 1.0.0, schema v8, owner `skill-graph-maintainer`
+- Keywords: `git diff`, `unified diff`, `patch analysis`, `changeset review`, `diff analysis`, `read a diff`
 
 <!-- skill-graph-context:end -->

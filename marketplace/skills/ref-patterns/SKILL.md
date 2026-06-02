@@ -352,7 +352,16 @@ After applying this skill, verify:
 - Analogy: A ref is to a React component what a static local variable is to a C function — it persists across calls (renders), reading it does not make the function 'depend on' it, writing to it does not change the function's signature or trigger any caller-visible event, and its single purpose is to hold the state that is not part of the function's interface. State, by contrast, is to the component what the function's return value is to the caller: every read participates in the contract, every change requires a re-evaluation.
 - Common misconception: |
 
-**Keywords**
-- `useRef hook`, `forwardRef`, `useImperativeHandle`, `ref callback`, `DOM ref React`, `ref forwarding compound component`, `React 19 ref as prop`, `mutable ref vs state`, `current property ref`, `Radix Slot ref forwarding`
+**Lifecycle & audit status**
+- Stability: `experimental`
+- Freshness: `2026-05-17`
+- Eval state: `unverified`
+- Routing eval: `absent`
+- Audit status: structural PASS, truth PASS, comprehension UNVERIFIED, application UNVERIFIED
+- Last audited: `2026-05-28`
+
+**Provenance**
+- version 1.0.0, schema v8, owner `skill-graph-maintainer`
+- Keywords: `useRef hook`, `forwardRef`, `useImperativeHandle`, `ref callback`, `DOM ref React`, `ref forwarding compound component`, `React 19 ref as prop`, `mutable ref vs state`, `current property ref`, `Radix Slot ref forwarding`
 
 <!-- skill-graph-context:end -->

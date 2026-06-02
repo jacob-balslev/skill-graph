@@ -181,7 +181,16 @@ Guardrails for tool-using agents must cover LLM-specific risks as well as classi
 - Mode: `hybrid`
 - Truth sources: `https://openai.github.io/openai-agents-python/guardrails/`, `https://owasp.org/www-project-top-10-for-large-language-model-applications/`, `https://www.nist.gov/itl/ai-risk-management-framework`, `https://nvlpubs.nist.gov/nistpubs/ai/NIST.AI.600-1.pdf`, `https://docs.github.com/en/code-security/how-tos/secure-your-secrets/detect-secret-leaks`
 
-**Keywords**
-- `guardrails`, `tool guardrails`, `tripwire`, `safety gate`, `force push`, `secret detection`, `destructive action`, `protected files`, `circuit breaker`, `excessive agency`
+**Lifecycle & audit status**
+- Stability: `experimental`
+- Freshness: `2026-05-18`
+- Eval state: `unverified`
+- Routing eval: `absent`
+- Audit status: structural PASS, truth UNVERIFIED, comprehension UNVERIFIED, application UNVERIFIED
+- Last audited: `2026-05-28`
+
+**Provenance**
+- version 1.2.0, schema v8, owner `skill-graph-maintainer`
+- Keywords: `guardrails`, `tool guardrails`, `tripwire`, `safety gate`, `force push`, `secret detection`, `destructive action`, `protected files`, `circuit breaker`, `excessive agency`
 
 <!-- skill-graph-context:end -->

@@ -259,7 +259,16 @@ After applying this skill, verify:
 - Analogy: A streaming architecture is to data delivery what a conveyor belt is to a factory's order fulfillment — you do not wait for an entire shipment to be assembled before any piece leaves the warehouse; the belt moves boxes one at a time, the loading dock signals when it's full (backpressure), a final marker indicates the shipment is complete (termination), and the receiving truck can start unloading the first box while the last one is still being assembled. A conveyor with no full-dock signal flings boxes onto the floor; a conveyor with no end-marker keeps the truck driver waiting forever.
 - Common misconception: |
 
-**Keywords**
-- `streaming`, `stream`, `backpressure`, `SSE`, `server-sent events`, `chunked transfer`, `HTTP/2`, `WebSocket`, `WHATWG Streams`, `ReadableStream`
+**Lifecycle & audit status**
+- Stability: `experimental`
+- Freshness: `2026-05-16`
+- Eval state: `unverified`
+- Routing eval: `absent`
+- Audit status: structural PASS, truth PASS, comprehension UNVERIFIED, application UNVERIFIED
+- Last audited: `2026-05-28`
+
+**Provenance**
+- version 1.0.0, schema v8, owner `skill-graph-maintainer`
+- Keywords: `streaming`, `stream`, `backpressure`, `SSE`, `server-sent events`, `chunked transfer`, `HTTP/2`, `WebSocket`, `WHATWG Streams`, `ReadableStream`
 
 <!-- skill-graph-context:end -->

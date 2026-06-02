@@ -93,7 +93,16 @@ The user's explicit choice overrides the system. A user who has toggled to Dark 
 **Related skills**
 - Related: `theme-system-design`, `color-system-design`, `a11y`, `frontend-architecture`
 
-**Keywords**
-- `dark mode`, `prefers-color-scheme`, `theme persistence`, `flash of unstyled theme`, `flash of incorrect theme`, `color-scheme css property`, `meta theme-color`, `dark mode images`, `picture source media`, `system theme detection`
+**Lifecycle & audit status**
+- Stability: `experimental`
+- Freshness: `2026-05-12`
+- Eval state: `unverified`
+- Routing eval: `absent`
+- Audit status: structural PASS, truth PASS, comprehension UNVERIFIED, application UNVERIFIED
+- Last audited: `2026-05-28`
+
+**Provenance**
+- version 1.0.0, schema v8, owner `skill-graph-maintainer`
+- Keywords: `dark mode`, `prefers-color-scheme`, `theme persistence`, `flash of unstyled theme`, `flash of incorrect theme`, `color-scheme css property`, `meta theme-color`, `dark mode images`, `picture source media`, `system theme detection`
 
 <!-- skill-graph-context:end -->

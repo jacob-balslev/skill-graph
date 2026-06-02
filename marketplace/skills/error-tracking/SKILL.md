@@ -325,7 +325,16 @@ This public skill does not bundle a runnable eval artifact. The Skill Graph tool
 - Mode: `universal`
 - Truth sources: `https://nextjs.org/docs/app/getting-started/error-handling`, `https://docs.sentry.io/platforms/javascript/configuration/environments/`, `https://docs.sentry.io/platforms/javascript/guides/koa/data-management/data-collected/`, `https://cheatsheetseries.owasp.org/cheatsheets/Logging_Cheat_Sheet.html`
 
-**Keywords**
-- `error tracking`, `exception reporting`, `error reporting`, `error boundary`, `React ErrorBoundary`, `route error boundary`, `global error boundary`, `error tracker SDK`, `Sentry integration`, `captureException wrapper`
+**Lifecycle & audit status**
+- Stability: `experimental`
+- Freshness: `2026-05-18`
+- Eval state: `unverified`
+- Routing eval: `absent`
+- Audit status: structural PASS, truth UNVERIFIED, comprehension UNVERIFIED, application UNVERIFIED
+- Last audited: `2026-05-28`
+
+**Provenance**
+- version 1.1.0, schema v8, owner `skill-graph-maintainer`
+- Keywords: `error tracking`, `exception reporting`, `error reporting`, `error boundary`, `React ErrorBoundary`, `route error boundary`, `global error boundary`, `error tracker SDK`, `Sentry integration`, `captureException wrapper`
 
 <!-- skill-graph-context:end -->

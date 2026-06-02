@@ -181,7 +181,16 @@ After applying this skill, verify:
 - Analogy: Data-modeling fundamentals is to schema design what Euclidean geometry is to architecture — the architect does not draw a right-angled wall by intuition each time; they draw it because the geometry guarantees stability and squares lock together. A schema in 3NF is the wall built to plumb, where every dependency is structural and no anomaly is hiding in the carpentry. Denormalization is the deliberate decision to cut a non-load-bearing wall for an open floor plan — defensible when the workload justifies it, indefensible when the cost is invisible.
 - Common misconception: |
 
-**Keywords**
-- `relational model`, `Codd`, `normalization`, `normal forms`, `functional dependency`, `1NF`, `2NF`, `3NF`, `BCNF`, `4NF`
+**Lifecycle & audit status**
+- Stability: `experimental`
+- Freshness: `2026-05-16`
+- Eval state: `unverified`
+- Routing eval: `absent`
+- Audit status: structural PASS, truth PASS, comprehension UNVERIFIED, application UNVERIFIED
+- Last audited: `2026-05-28`
+
+**Provenance**
+- version 1.0.0, schema v8, owner `skill-graph-maintainer`
+- Keywords: `relational model`, `Codd`, `normalization`, `normal forms`, `functional dependency`, `1NF`, `2NF`, `3NF`, `BCNF`, `4NF`
 
 <!-- skill-graph-context:end -->

@@ -544,7 +544,16 @@ Before codifying a pattern, confirm:
 - Analogy: Pattern recognition is to a codebase what epidemiology is to a city's public health — a doctor (debugging) treats one patient with one infection; the epidemiologist (this skill) notices that fourteen patients across three hospitals all have the same infection, traces it back to a contaminated water source (root cause), names the outbreak, prescribes a public-health intervention (lint rule, type constraint, architectural fix) that prevents the next thousand cases, and updates the surveillance protocol so the next outbreak is caught at three cases instead of fourteen.
 - Common misconception: |
 
-**Keywords**
-- `recurring code pattern detection`, `anti-pattern audit`, `convention drift detection`, `error cluster triage`, `normalize-then-hash error grouping`, `five-whys root cause ladder`, `eval as pattern test`, `heading hierarchy violation`, `design token drift`, `null-vs-zero domain encoding`
+**Lifecycle & audit status**
+- Stability: `experimental`
+- Freshness: `2026-05-18`
+- Eval state: `unverified`
+- Routing eval: `absent`
+- Audit status: structural PASS, truth PASS, comprehension UNVERIFIED, application UNVERIFIED
+- Last audited: `2026-05-28`
+
+**Provenance**
+- version 1.2.0, schema v8, owner `skill-graph-maintainer`
+- Keywords: `recurring code pattern detection`, `anti-pattern audit`, `convention drift detection`, `error cluster triage`, `normalize-then-hash error grouping`, `five-whys root cause ladder`, `eval as pattern test`, `heading hierarchy violation`, `design token drift`, `null-vs-zero domain encoding`
 
 <!-- skill-graph-context:end -->

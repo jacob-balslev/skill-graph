@@ -187,7 +187,16 @@ After applying this skill, verify:
 - Analogy: Sharding is to a database what tenant-based building partitioning is to a multinational corporation — replicating each office to multiple cities is fault tolerance (replication); putting *Sales* in Building A and *Engineering* in Building B *because they do not talk to each other* is sharding. The shard key is the rule that decides who goes in which building, and the most catastrophic operational outcome is choosing a rule that puts everyone in Building A on Monday morning and Building B on Tuesday morning — the hot shard, where the structure was right but the routing rule was wrong.
 - Common misconception: |
 
-**Keywords**
-- `sharding`, `partitioning`, `horizontal partitioning`, `shard key`, `hash partitioning`, `range partitioning`, `consistent hashing`, `hot shard`, `resharding`, `cross-shard query`
+**Lifecycle & audit status**
+- Stability: `experimental`
+- Freshness: `2026-05-16`
+- Eval state: `unverified`
+- Routing eval: `absent`
+- Audit status: structural PASS, truth PASS, comprehension UNVERIFIED, application UNVERIFIED
+- Last audited: `2026-05-28`
+
+**Provenance**
+- version 1.0.0, schema v8, owner `skill-graph-maintainer`
+- Keywords: `sharding`, `partitioning`, `horizontal partitioning`, `shard key`, `hash partitioning`, `range partitioning`, `consistent hashing`, `hot shard`, `resharding`, `cross-shard query`
 
 <!-- skill-graph-context:end -->

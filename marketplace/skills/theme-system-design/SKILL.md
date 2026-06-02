@@ -87,7 +87,16 @@ Semantic names beat descriptive names. color.background.surface tells a componen
 **Related skills**
 - Related: `color-system-design`, `design-system-architecture`, `visual-design-foundations`, `dark-mode-implementation`
 
-**Keywords**
-- `theme token contract`, `theme semantic layer`, `theme variables`, `css custom properties`, `runtime theme switching`, `token tiers`, `theme contract`, `design tokens community group`, `theme parity`, `token naming`
+**Lifecycle & audit status**
+- Stability: `experimental`
+- Freshness: `2026-05-12`
+- Eval state: `unverified`
+- Routing eval: `absent`
+- Audit status: structural PASS, truth PASS, comprehension UNVERIFIED, application UNVERIFIED
+- Last audited: `2026-05-28`
+
+**Provenance**
+- version 1.0.0, schema v8, owner `skill-graph-maintainer`
+- Keywords: `theme token contract`, `theme semantic layer`, `theme variables`, `css custom properties`, `runtime theme switching`, `token tiers`, `theme contract`, `design tokens community group`, `theme parity`, `token naming`
 
 <!-- skill-graph-context:end -->

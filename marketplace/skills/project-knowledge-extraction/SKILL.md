@@ -109,7 +109,16 @@ Durable knowledge must be evidence-backed. If it cannot be tied to code, docs, d
 - Mode: `hybrid`
 - Truth sources: `docs/PRIMER.md`, `docs/ADOPTION.md`, `docs/recommended-skills.md`, `skills/skill-scaffold/SKILL.md`, `skills/context-graph/SKILL.md`
 
-**Keywords**
-- `project knowledge extraction`, `context extraction`, `durable knowledge`, `knowledge capture`, `code archaeology`, `docs mining`, `issue mining`, `tacit knowledge`, `context doc`, `agent memory`
+**Lifecycle & audit status**
+- Stability: `experimental`
+- Freshness: `2026-05-11`
+- Eval state: `unverified`
+- Routing eval: `absent`
+- Audit status: structural PASS, truth DRIFT, comprehension UNVERIFIED, application UNVERIFIED
+- Last audited: `2026-05-28`
+
+**Provenance**
+- version 1.0.0, schema v8, owner `skill-graph-maintainer`
+- Keywords: `project knowledge extraction`, `context extraction`, `durable knowledge`, `knowledge capture`, `code archaeology`, `docs mining`, `issue mining`, `tacit knowledge`, `context doc`, `agent memory`
 
 <!-- skill-graph-context:end -->

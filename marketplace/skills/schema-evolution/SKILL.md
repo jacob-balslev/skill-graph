@@ -203,7 +203,16 @@ After applying this skill, verify:
 - Analogy: Schema evolution is to a database what stage carpentry is to a Broadway musical — the show does not stop; you do not bolt a new staircase to the stage during the second act; you build the new staircase upstage while the old staircase serves the cast (expand), gradually rehearse the cast to use the new one while the old still works (migrate), and only after every performer has memorized the new route do you remove the old staircase (contract). Removing the old before everyone has migrated is the production-incident equivalent of a missed cue.
 - Common misconception: |
 
-**Keywords**
-- `schema evolution`, `expand contract`, `parallel change`, `zero-downtime migration`, `backwards compatibility`, `rolling deploy`, `dual write`, `dual read`, `schema versioning`, `additive change`
+**Lifecycle & audit status**
+- Stability: `experimental`
+- Freshness: `2026-05-16`
+- Eval state: `unverified`
+- Routing eval: `absent`
+- Audit status: structural PASS, truth PASS, comprehension UNVERIFIED, application UNVERIFIED
+- Last audited: `2026-05-28`
+
+**Provenance**
+- version 1.0.0, schema v8, owner `skill-graph-maintainer`
+- Keywords: `schema evolution`, `expand contract`, `parallel change`, `zero-downtime migration`, `backwards compatibility`, `rolling deploy`, `dual write`, `dual read`, `schema versioning`, `additive change`
 
 <!-- skill-graph-context:end -->

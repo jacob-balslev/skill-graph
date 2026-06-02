@@ -162,7 +162,16 @@ After applying this skill, verify:
 - Analogy: A property-based test is to an example test what an actuarial table is to a single insurance claim — the example tells you what happened in one case, the property tells you what must hold across the entire population; you do not learn that fire insurance is sound by inspecting one policy, you learn it from a contract that quantifies over every house ever insured.
 - Common misconception: |
 
-**Keywords**
-- `property-based testing`, `PBT`, `QuickCheck`, `Hypothesis`, `fast-check`, `generator`, `shrinker`, `forall`, `invariant`, `round-trip property`
+**Lifecycle & audit status**
+- Stability: `experimental`
+- Freshness: `2026-05-16`
+- Eval state: `unverified`
+- Routing eval: `absent`
+- Audit status: structural PASS, truth PASS, comprehension UNVERIFIED, application UNVERIFIED
+- Last audited: `2026-05-28`
+
+**Provenance**
+- version 1.0.0, schema v8, owner `skill-graph-maintainer`
+- Keywords: `property-based testing`, `PBT`, `QuickCheck`, `Hypothesis`, `fast-check`, `generator`, `shrinker`, `forall`, `invariant`, `round-trip property`
 
 <!-- skill-graph-context:end -->

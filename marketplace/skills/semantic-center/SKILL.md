@@ -305,7 +305,16 @@ After delivering a semantic-center analysis, verify:
 - Mode: `universal`
 - Truth sources: `https://networkx.org/documentation/stable/reference/algorithms/centrality.html`, `https://www.w3.org/TR/skos-reference/`, `https://www.barbaraminto.com/`
 
-**Keywords**
-- `semantic center`, `semantic-center workflow`, `one-primary-part reduction`, `removal test`, `governance test`, `load-bearing part`, `typed relation map`, `center-finding method`, `structural importance`, `single primary part`, `figure-ground reduction`, `explanation structure`, `relation typing rules`, `supporting-relation map`, `analysis-vs-prioritization distinction`, `what is the core`, `what is load bearing`, `how do these parts connect`, `relation map around a center`
+**Lifecycle & audit status**
+- Stability: `experimental`
+- Freshness: `2026-05-19`
+- Eval state: `unverified`
+- Routing eval: `absent`
+- Audit status: structural PASS, truth UNVERIFIED, comprehension UNVERIFIED, application UNVERIFIED
+- Last audited: `2026-05-28`
+
+**Provenance**
+- version 1.2.0, schema v8, owner `skill-graph-maintainer`
+- Keywords: `semantic center`, `semantic-center workflow`, `one-primary-part reduction`, `removal test`, `governance test`, `load-bearing part`, `typed relation map`, `center-finding method`, `structural importance`, `single primary part`, `figure-ground reduction`, `explanation structure`, `relation typing rules`, `supporting-relation map`, `analysis-vs-prioritization distinction`, `what is the core`, `what is load bearing`, `how do these parts connect`, `relation map around a center`
 
 <!-- skill-graph-context:end -->

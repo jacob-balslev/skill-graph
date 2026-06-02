@@ -183,7 +183,16 @@ After applying this skill, verify:
 - Analogy: A snapshot test is to a piece of output what a wedding photograph is to a memory of the day — the photograph does not say what the wedding *should* have looked like, only what it did look like; on the next anniversary, you compare the room to the photograph and notice 'the curtains are different' (intentional — they were replaced) or 'the picture is crooked' (unintentional — fix it). A photograph filed away without anyone ever looking at it again is not a record; it is paper. A snapshot file the team auto-accepts via `-u` is the same.
 - Common misconception: |
 
-**Keywords**
-- `snapshot testing`, `golden file`, `characterization test`, `approval testing`, `visual regression`, `Chromatic`, `Percy`, `Storybook`, `Jest snapshot`, `DOM snapshot`
+**Lifecycle & audit status**
+- Stability: `experimental`
+- Freshness: `2026-05-16`
+- Eval state: `unverified`
+- Routing eval: `absent`
+- Audit status: structural PASS, truth PASS, comprehension UNVERIFIED, application UNVERIFIED
+- Last audited: `2026-05-28`
+
+**Provenance**
+- version 1.0.0, schema v8, owner `skill-graph-maintainer`
+- Keywords: `snapshot testing`, `golden file`, `characterization test`, `approval testing`, `visual regression`, `Chromatic`, `Percy`, `Storybook`, `Jest snapshot`, `DOM snapshot`
 
 <!-- skill-graph-context:end -->

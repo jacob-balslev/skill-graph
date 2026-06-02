@@ -88,7 +88,16 @@ The theme surface and the API surface should remain separable. Online Store 2.0 
 **Related skills**
 - Related: `webhook-integration`, `api-design`, `printify`
 
-**Keywords**
-- `shopify admin api`, `shopify storefront api`, `shopify webhooks`, `shopify oauth scopes`, `shopify hmac verification`, `online store 2.0 sections`, `liquid templates`, `shopify graphql query cost`, `shopify metafields`, `shopify rate limits`
+**Lifecycle & audit status**
+- Stability: `experimental`
+- Freshness: `2026-05-12`
+- Eval state: `unverified`
+- Routing eval: `absent`
+- Audit status: structural PASS, truth PASS, comprehension UNVERIFIED, application UNVERIFIED
+- Last audited: `2026-05-28`
+
+**Provenance**
+- version 1.0.0, schema v8, owner `skill-graph-maintainer`
+- Keywords: `shopify admin api`, `shopify storefront api`, `shopify webhooks`, `shopify oauth scopes`, `shopify hmac verification`, `online store 2.0 sections`, `liquid templates`, `shopify graphql query cost`, `shopify metafields`, `shopify rate limits`
 
 <!-- skill-graph-context:end -->

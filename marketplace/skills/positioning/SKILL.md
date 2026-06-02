@@ -332,7 +332,16 @@ For [customers] who [current alternative/problem], [product] is a [category] tha
 - Mode: `universal`
 - Truth sources: `https://www.aprildunford.com/post/a-quickstart-guide-to-positioning`, `https://www.aprildunford.com/books`, `https://public.summaries.com/files/1-page-summary/obviously-awesome.pdf`, `skills/skills/meta-methods/positioning/references/positioning-sources.md`, `skills/skills/meta-methods/positioning/references/upstream-displacement-2026-05-29.md`
 
-**Keywords**
-- `positioning`, `product positioning`, `April Dunford`, `Obviously Awesome`, `competitive alternatives`, `market category`, `value themes`, `best-fit customers`, `positioning canvas`, `sales narrative`
+**Lifecycle & audit status**
+- Stability: `stable`
+- Freshness: `2026-05-29`
+- Eval state: `unverified`
+- Routing eval: `absent`
+- Audit status: structural PASS, truth BROKEN, comprehension UNVERIFIED, application UNVERIFIED
+- Last audited: `2026-05-29`
+
+**Provenance**
+- version 1.0.0, schema v8, owner `skill-graph-maintainer`
+- Keywords: `positioning`, `product positioning`, `April Dunford`, `Obviously Awesome`, `competitive alternatives`, `market category`, `value themes`, `best-fit customers`, `positioning canvas`, `sales narrative`
 
 <!-- skill-graph-context:end -->

@@ -116,7 +116,16 @@ This skill ships a comprehension-eval artifact at [`examples/evals/design-system
 - Verify with: `a11y`, `code-review`
 - Related: `a11y`, `microcopy`, `information-architecture`, `semantics`, `layout-composition`, `visual-design-foundations`, `interaction-patterns`
 
-**Keywords**
-- `design tokens`, `semantic tokens`, `component API`, `theming`, `component library`, `token taxonomy`, `design system migration`, `design system audit`, `component library audit`, `token drift`
+**Lifecycle & audit status**
+- Stability: `experimental`
+- Freshness: `2026-05-11`
+- Eval state: `unverified`
+- Routing eval: `absent`
+- Audit status: structural PASS, truth PASS, comprehension UNVERIFIED, application UNVERIFIED
+- Last audited: `2026-05-28`
+
+**Provenance**
+- version 1.0.0, schema v8, owner `skill-graph-maintainer`
+- Keywords: `design tokens`, `semantic tokens`, `component API`, `theming`, `component library`, `token taxonomy`, `design system migration`, `design system audit`, `component library audit`, `token drift`
 
 <!-- skill-graph-context:end -->

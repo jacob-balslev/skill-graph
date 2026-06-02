@@ -251,7 +251,16 @@ After applying this skill, verify:
 - Mode: `hybrid`
 - Truth sources: `https://owl.purdue.edu/owl/research_and_citation/using_research/quoting_paraphrasing_and_summarizing/index.html`, `https://fortelabs.com/blog/progressive-summarization-a-practical-technique-for-designing-discoverable-notes/`, `https://arxiv.org/abs/2204.09519`, `https://github.com/jacob-balslev/skills/blob/main/skills/agent-ops/context-management/SKILL.md`, `https://github.com/jacob-balslev/skills/blob/main/skills/agent-ops/context-window/SKILL.md`, `https://github.com/jacob-balslev/skills/blob/main/skills/design-craft/writing-humanizer/SKILL.md`
 
-**Keywords**
-- `summarization`, `summary`, `TLDR`, `executive summary`, `condensation`, `abstract`, `distill`, `key findings`, `brief`, `compress text`
+**Lifecycle & audit status**
+- Stability: `experimental`
+- Freshness: `2026-05-18`
+- Eval state: `unverified`
+- Routing eval: `absent`
+- Audit status: structural PASS, truth UNVERIFIED, comprehension UNVERIFIED, application UNVERIFIED
+- Last audited: `2026-05-28`
+
+**Provenance**
+- version 1.1.0, schema v8, owner `skill-graph-maintainer`
+- Keywords: `summarization`, `summary`, `TLDR`, `executive summary`, `condensation`, `abstract`, `distill`, `key findings`, `brief`, `compress text`
 
 <!-- skill-graph-context:end -->

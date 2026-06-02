@@ -111,7 +111,16 @@ This skill ships a comprehension-eval artifact at [`examples/evals/information-a
 - Verify with: `task-analysis`, `a11y`
 - Related: `taxonomy-design`, `task-analysis`, `design-system-architecture`, `layout-composition`
 
-**Keywords**
-- `information architecture`, `navigation structure`, `sitemap`, `wayfinding`, `page hierarchy`, `docs architecture`, `labeling system`, `content grouping`, `findability`, `content model`
+**Lifecycle & audit status**
+- Stability: `experimental`
+- Freshness: `2026-05-11`
+- Eval state: `unverified`
+- Routing eval: `absent`
+- Audit status: structural PASS, truth PASS, comprehension UNVERIFIED, application UNVERIFIED
+- Last audited: `2026-05-28`
+
+**Provenance**
+- version 1.0.0, schema v8, owner `skill-graph-maintainer`
+- Keywords: `information architecture`, `navigation structure`, `sitemap`, `wayfinding`, `page hierarchy`, `docs architecture`, `labeling system`, `content grouping`, `findability`, `content model`
 
 <!-- skill-graph-context:end -->

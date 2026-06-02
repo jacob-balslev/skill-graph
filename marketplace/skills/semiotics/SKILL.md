@@ -306,7 +306,16 @@ After applying this skill, verify:
 - Mode: `universal`
 - Truth sources: `https://plato.stanford.edu/archives/spr2024/entries/peirce-semiotics/`, `https://openlibrary.org/books/OL23291521M/Course_in_general_linguistics.`, `https://openlibrary.org/books/OL21215289M/Mythologies`, `https://jnd.org/signifiers-not-affordances/`, `https://www.nngroup.com/articles/icon-usability/`, `https://www.w3.org/WAI/WCAG22/Understanding/use-of-color`
 
-**Keywords**
-- `sign-system analysis`, `icon polysemy`, `signifier signified mapping`, `denotation versus connotation`, `affordance signifier match`, `icon-index-symbol trichotomy`, `visual metaphor clarity`, `color connotation audit`, `cross-surface sign drift`, `semiotic coherence audit`
+**Lifecycle & audit status**
+- Stability: `experimental`
+- Freshness: `2026-05-18`
+- Eval state: `unverified`
+- Routing eval: `absent`
+- Audit status: structural PASS, truth UNVERIFIED, comprehension UNVERIFIED, application UNVERIFIED
+- Last audited: `2026-05-28`
+
+**Provenance**
+- version 1.2.0, schema v8, owner `skill-graph-maintainer`
+- Keywords: `sign-system analysis`, `icon polysemy`, `signifier signified mapping`, `denotation versus connotation`, `affordance signifier match`, `icon-index-symbol trichotomy`, `visual metaphor clarity`, `color connotation audit`, `cross-surface sign drift`, `semiotic coherence audit`
 
 <!-- skill-graph-context:end -->

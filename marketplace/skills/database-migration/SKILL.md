@@ -486,7 +486,16 @@ This skill ships a comprehension-eval artifact at [`examples/evals/database-migr
 - Verify with: `testing-strategy`, `code-review`
 - Related: `testing-strategy`, `debugging`, `owasp-security`
 
-**Keywords**
-- `database migration`, `schema migration`, `zero-downtime migration`, `DDL migration`, `raw SQL migration`, `Postgres DDL`, `alter table production`, `expand contract migration`, `concurrent index creation`, `migration rollback`
+**Lifecycle & audit status**
+- Stability: `experimental`
+- Freshness: `2026-05-06`
+- Eval state: `unverified`
+- Routing eval: `absent`
+- Audit status: structural PASS, truth PASS, comprehension UNVERIFIED, application UNVERIFIED
+- Last audited: `2026-05-28`
+
+**Provenance**
+- version 1.0.0, schema v8, owner `skill-graph-maintainer`
+- Keywords: `database migration`, `schema migration`, `zero-downtime migration`, `DDL migration`, `raw SQL migration`, `Postgres DDL`, `alter table production`, `expand contract migration`, `concurrent index creation`, `migration rollback`
 
 <!-- skill-graph-context:end -->

@@ -239,7 +239,16 @@ After applying this skill, verify:
 - Mode: `universal`
 - Truth sources: `https://github.com/openai/evals`, `https://www.anthropic.com/engineering/demystifying-evals-for-ai-agents`, `https://platform.claude.com/docs/en/test-and-evaluate/develop-tests`, `https://adk.dev/evaluate/`, `https://airc.nist.gov/`
 
-**Keywords**
-- `evaluation`, `quality gate`, `deliverable review`, `completion review`, `evidence-based score`, `skeptical critic`, `score 1-5`, `evaluation revision loop`, `acceptance criteria review`, `done gate`
+**Lifecycle & audit status**
+- Stability: `experimental`
+- Freshness: `2026-05-18`
+- Eval state: `unverified`
+- Routing eval: `absent`
+- Audit status: structural PASS, truth UNVERIFIED, comprehension UNVERIFIED, application UNVERIFIED
+- Last audited: `2026-05-28`
+
+**Provenance**
+- version 1.1.0, schema v8, owner `skill-graph-maintainer`
+- Keywords: `evaluation`, `quality gate`, `deliverable review`, `completion review`, `evidence-based score`, `skeptical critic`, `score 1-5`, `evaluation revision loop`, `acceptance criteria review`, `done gate`
 
 <!-- skill-graph-context:end -->

@@ -304,7 +304,16 @@ Before finishing, verify:
 - Mode: `universal`
 - Truth sources: `https://www.blueoceanstrategy.com/what-is-blue-ocean-strategy/`, `https://www.blueoceanstrategy.com/tools/value-innovation/`, `https://www.blueoceanstrategy.com/tools/strategy-canvas/`, `https://www.blueoceanstrategy.com/tools/four-actions-framework/`, `https://www.blueoceanstrategy.com/tools/errc-grid/`, `https://www.blueoceanstrategy.com/tools/six-paths-framework/`, `https://www.blueoceanstrategy.com/tools/buyer-utility-map/`, `https://www.blueoceanstrategy.com/tools/three-tiers-of-noncustomers/`, `skills/skills/meta-methods/blue-ocean-strategy/references/blue-ocean-strategy-sources.md`, `skills/skills/meta-methods/blue-ocean-strategy/references/upstream-displacement-2026-05-28.md`
 
-**Keywords**
-- `blue ocean strategy`, `value innovation`, `strategy canvas`, `four actions framework`, `ERRC grid`, `eliminate reduce raise create`, `six paths framework`, `buyer utility map`, `three tiers of noncustomers`, `uncontested market space`
+**Lifecycle & audit status**
+- Stability: `stable`
+- Freshness: `2026-05-28`
+- Eval state: `unverified`
+- Routing eval: `absent`
+- Audit status: structural PASS, truth BROKEN, comprehension UNVERIFIED, application UNVERIFIED
+- Last audited: `2026-05-28`
+
+**Provenance**
+- version 1.0.0, schema v8, owner `skill-graph-maintainer`
+- Keywords: `blue ocean strategy`, `value innovation`, `strategy canvas`, `four actions framework`, `ERRC grid`, `eliminate reduce raise create`, `six paths framework`, `buyer utility map`, `three tiers of noncustomers`, `uncontested market space`
 
 <!-- skill-graph-context:end -->

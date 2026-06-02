@@ -110,7 +110,16 @@ This skill ships a comprehension-eval artifact at [`examples/evals/framework-fit
 - Verify with: `architecture-decision-records`, `dependency-architecture`
 - Related: `architecture-decision-records`, `dependency-architecture`, `performance-engineering`, `owasp-security`
 
-**Keywords**
-- `framework fit`, `technology selection`, `library choice`, `SDK evaluation`, `platform evaluation`, `migration cost`, `exit cost`, `operability`, `ecosystem maturity`, `build vs buy`
+**Lifecycle & audit status**
+- Stability: `experimental`
+- Freshness: `2026-05-11`
+- Eval state: `unverified`
+- Routing eval: `absent`
+- Audit status: structural PASS, truth PASS, comprehension UNVERIFIED, application UNVERIFIED
+- Last audited: `2026-05-28`
+
+**Provenance**
+- version 1.0.0, schema v8, owner `skill-graph-maintainer`
+- Keywords: `framework fit`, `technology selection`, `library choice`, `SDK evaluation`, `platform evaluation`, `migration cost`, `exit cost`, `operability`, `ecosystem maturity`, `build vs buy`
 
 <!-- skill-graph-context:end -->

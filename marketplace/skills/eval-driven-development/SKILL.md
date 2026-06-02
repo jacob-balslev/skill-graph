@@ -211,7 +211,16 @@ After applying this skill, verify:
 - Analogy: Eval-driven development is to LLM system engineering what crash-test ratings are to automotive safety — you do not ship a car based on how well it parked in your driveway; you ship it after a battery of standardized tests on representative crash scenarios, with the pass-rate against named criteria as the gating signal. A score of 4.3 stars across the suite is the only defensible claim of 'safer'; a developer's intuition that 'the new model feels smarter' is the unmeasured equivalent of 'I drove it home, it seemed fine.'
 - Common misconception: |
 
-**Keywords**
-- `eval-driven development`, `LLM evals`, `evaluation harness`, `benchmark`, `HumanEval`, `MMLU`, `BIG-bench`, `GAIA`, `LLM-as-judge`, `model-graded eval`
+**Lifecycle & audit status**
+- Stability: `experimental`
+- Freshness: `2026-05-16`
+- Eval state: `unverified`
+- Routing eval: `absent`
+- Audit status: structural PASS, truth PASS, comprehension UNVERIFIED, application UNVERIFIED
+- Last audited: `2026-05-28`
+
+**Provenance**
+- version 1.0.0, schema v8, owner `skill-graph-maintainer`
+- Keywords: `eval-driven development`, `LLM evals`, `evaluation harness`, `benchmark`, `HumanEval`, `MMLU`, `BIG-bench`, `GAIA`, `LLM-as-judge`, `model-graded eval`
 
 <!-- skill-graph-context:end -->

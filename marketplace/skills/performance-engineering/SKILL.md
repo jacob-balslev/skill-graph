@@ -109,7 +109,16 @@ This skill ships a comprehension-eval artifact at [`examples/evals/performance-e
 - Verify with: `observability-modeling`, `code-review`
 - Related: `observability-modeling`, `api-design`, `data-modeling`, `testing-strategy`
 
-**Keywords**
-- `performance engineering`, `performance budget`, `profiling`, `latency`, `throughput`, `Core Web Vitals`, `database performance`, `caching`, `bundle size`, `performance regression`
+**Lifecycle & audit status**
+- Stability: `experimental`
+- Freshness: `2026-05-11`
+- Eval state: `unverified`
+- Routing eval: `absent`
+- Audit status: structural PASS, truth PASS, comprehension UNVERIFIED, application UNVERIFIED
+- Last audited: `2026-05-28`
+
+**Provenance**
+- version 1.0.0, schema v8, owner `skill-graph-maintainer`
+- Keywords: `performance engineering`, `performance budget`, `profiling`, `latency`, `throughput`, `Core Web Vitals`, `database performance`, `caching`, `bundle size`, `performance regression`
 
 <!-- skill-graph-context:end -->
