@@ -84,14 +84,14 @@ function fakeRunner(verdictByDirection, { breakParity = false } = {}) {
     grader_model: graderModel,
     verdict: verdictByDirection[direction],
     certification_tier: 'certifying',
-    // Direction B optionally records a DIFFERENT profile to simulate a parity break.
-    execution_profile: breakParity && direction === 'B'
+    // The Codex direction optionally records a DIFFERENT profile to simulate a parity break.
+    execution_profile: breakParity && direction === 'Codex'
       ? { ...executionProfile, tools: 'none' }
       : executionProfile,
   });
 }
 
-check('swaps generator/grader across directions (A: opus→codex-current, B: codex-current→opus)', () => {
+check('swaps generator/grader across directions (Claude: opus→codex-current, Codex: codex-current→opus)', () => {
   const seen = [];
   runBidirectionalEval({
     mode: 'application',
@@ -104,8 +104,8 @@ check('swaps generator/grader across directions (A: opus→codex-current, B: cod
       },
     },
   });
-  const A = seen.find((s) => s.direction === 'A');
-  const B = seen.find((s) => s.direction === 'B');
+  const A = seen.find((s) => s.direction === 'Claude');
+  const B = seen.find((s) => s.direction === 'Codex');
   assert.strictEqual(A.generatorModel, 'opus');
   assert.strictEqual(A.graderModel, 'codex-current');
   assert.strictEqual(B.generatorModel, 'codex-current');
@@ -115,7 +115,7 @@ check('swaps generator/grader across directions (A: opus→codex-current, B: cod
 check('both APPLICABLE + parity OK + cross-family => APPLICABLE, certifying_clean', () => {
   const r = runBidirectionalEval({
     mode: 'application', skill: 's', cwd: '/x/skill-graph',
-    deps: { runDirection: fakeRunner({ A: 'APPLICABLE', B: 'APPLICABLE' }) },
+    deps: { runDirection: fakeRunner({ Claude: 'APPLICABLE', Codex: 'APPLICABLE' }) },
   });
   assert.strictEqual(r.synthesized_verdict, 'APPLICABLE');
   assert.strictEqual(r.certifying_clean, true);
@@ -127,7 +127,7 @@ check('both APPLICABLE + parity OK + cross-family => APPLICABLE, certifying_clea
 check('disagreement reconciles conservatively (APPLICABLE vs MIXED => MIXED)', () => {
   const r = runBidirectionalEval({
     mode: 'application', skill: 's', cwd: '/x/skill-graph',
-    deps: { runDirection: fakeRunner({ A: 'APPLICABLE', B: 'MIXED' }) },
+    deps: { runDirection: fakeRunner({ Claude: 'APPLICABLE', Codex: 'MIXED' }) },
   });
   assert.strictEqual(r.synthesized_verdict, 'MIXED');
   assert.strictEqual(r.agreement, false);
@@ -136,7 +136,7 @@ check('disagreement reconciles conservatively (APPLICABLE vs MIXED => MIXED)', (
 check('parity break => strong verdict capped to PROVISIONAL, certifying_clean false', () => {
   const r = runBidirectionalEval({
     mode: 'application', skill: 's', cwd: '/x/skill-graph',
-    deps: { runDirection: fakeRunner({ A: 'APPLICABLE', B: 'APPLICABLE' }, { breakParity: true }) },
+    deps: { runDirection: fakeRunner({ Claude: 'APPLICABLE', Codex: 'APPLICABLE' }, { breakParity: true }) },
   });
   assert.strictEqual(r.parity.parity_ok, false);
   assert.strictEqual(r.certifying_clean, false);
@@ -147,7 +147,7 @@ check('parity break => strong verdict capped to PROVISIONAL, certifying_clean fa
 check('comprehension mode: both PASS => PASS', () => {
   const r = runBidirectionalEval({
     mode: 'comprehension', skill: 's', cwd: '/x/skill-graph',
-    deps: { runDirection: fakeRunner({ A: 'PASS', B: 'PASS' }) },
+    deps: { runDirection: fakeRunner({ Claude: 'PASS', Codex: 'PASS' }) },
   });
   assert.strictEqual(r.synthesized_verdict, 'PASS');
   assert.strictEqual(r.certifying_clean, true);
@@ -166,9 +166,9 @@ check('F6: an unresolved direction model caps APPLICABLE to PROVISIONAL (cannot 
   const runDirection = ({ direction, generatorModel, graderModel, executionProfile }) => ({
     direction, generator_model: generatorModel, grader_model: graderModel,
     verdict: 'APPLICABLE', certification_tier: 'certifying', execution_profile: executionProfile,
-    // Direction B's grader model is unresolvable (the codex-current case before
-    // codex's concrete model is captured) → the run cannot honestly certify.
-    resolved_model: direction === 'B' ? 'latest-alias-unresolved' : 'claude-opus-x',
+    // The Codex direction's grader model is unresolvable (the codex-current case
+    // before codex's concrete model is captured) → the run cannot honestly certify.
+    resolved_model: direction === 'Codex' ? 'latest-alias-unresolved' : 'claude-opus-x',
   });
   const r = runBidirectionalEval({ mode: 'application', skill: 's', cwd: '/x/skill-graph', deps: { runDirection } });
   assert.strictEqual(r.resolved_clean, false);

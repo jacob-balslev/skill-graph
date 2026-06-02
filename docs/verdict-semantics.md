@@ -128,7 +128,7 @@ PASS / APPLICABLE  >  PROVISIONAL  >  UNVERIFIED
 
 ## Two-frontier bidirectional reconciliation (how a dual-run verdict is earned)
 
-The dual-run that earns `PASS` / `APPLICABLE` is the **two-frontier bidirectional eval** (`lib/audit/run-bidirectional-eval.js`): Direction A (Opus answers → GPT-5.5 grades) and Direction B (the swap), reconciled **conservatively** — the more-skeptical verdict wins (`lib/audit-shared/synthesize-bidirectional.js`). So a strong verdict requires BOTH cross-family directions to reach it independently.
+The dual-run that earns `PASS` / `APPLICABLE` is the **two-frontier bidirectional eval** (`lib/audit/run-bidirectional-eval.js`). The two directions are named by which model GENERATES: the **Claude** direction (Claude/opus answers → Codex/gpt grades) and the **Codex** direction (the swap), reconciled **conservatively** — the more-skeptical verdict wins (`lib/audit-shared/synthesize-bidirectional.js`). So a strong verdict requires BOTH cross-family directions to reach it independently.
 
 A strong verdict additionally requires the run to be **certifying-clean**, or it is capped to `PROVISIONAL`:
 

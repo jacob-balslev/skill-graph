@@ -128,7 +128,7 @@ read it before changing how the loop builds or scores skills.
 | Module | Role |
 |---|---|
 | `lib/audit/run-bidirectional-enrich.js` | PRIMARY. Per skill: research brief → claim two frontier slots (opus + codex-current) → EACH model researches (repo+web, tools ON, privacy-scoped) + proposes → curator union-curate merge (anti-loss) → eval guardrail → keep-or-revert. The per-model proposal contract is `prompts/skill-audit-loop-enrich-pass.md` (research-required + novelty memo, no commit). |
-| `lib/audit/run-bidirectional-eval.js` | GUARDRAIL. Direction A (opus answers → codex-current grades) + Direction B (swap), conservative reconciliation, parity assertion; APPLICABLE/PASS only when BOTH directions reach it under an identical tools-ON profile. |
+| `lib/audit/run-bidirectional-eval.js` | GUARDRAIL. Directions are named by their generator: the **Claude** direction (Claude/opus answers → Codex/gpt grades) + the **Codex** direction (the swap), conservative reconciliation, parity assertion; APPLICABLE/PASS only when BOTH directions reach it under an identical tools-ON profile. |
 | `lib/audit/eval-execution-profile.js` | The lockstep-parity invariant: one tools-ON profile (`tools:full`, `research:repo+web`, `repoScope:'skill-graph + skills ONLY'`, `cwd:<skill-graph>`), per-CLI EQUAL-access translation, and `assertParity()`. `parity_ok:false` ⇒ INVALID run, never certifies. |
 
 **Hard rules (from the philosophy doc):**

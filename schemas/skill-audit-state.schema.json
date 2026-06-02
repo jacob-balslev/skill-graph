@@ -312,12 +312,12 @@
               "type": "array",
               "minItems": 2,
               "maxItems": 2,
-              "description": "The two eval directions. Direction A: opus generates → codex-current grades. Direction B: the swap.",
+              "description": "The two eval directions, named by which model GENERATES (the measured agent). Direction 'Claude': Claude (opus) generates → Codex (gpt) grades. Direction 'Codex': the swap.",
               "items": {
                 "type": "object",
                 "additionalProperties": false,
                 "properties": {
-                  "role": { "type": "string", "enum": ["A", "B"] },
+                  "role": { "type": "string", "enum": ["Claude", "Codex"] },
                   "generator_model": { "type": "string", "description": "Role/alias of the model that produced the answer." },
                   "grader_model": { "type": "string", "description": "Role/alias of the model that graded it (cross-family)." },
                   "generator_family": { "type": "string" },
