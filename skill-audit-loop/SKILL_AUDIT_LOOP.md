@@ -115,6 +115,31 @@ This replaces the previous 13-command surface with **4 canonical operations + 2 
 
 > **On the "5-command" framing.** Earlier prose called this a "5-command surface" — counting `audit / improve / evaluate / evolve / discover`. The actual file count under `.claude/commands/audit/` is **6** because `merge.md` was added later. The honest framing: **4 canonical operations (audit/improve/evaluate/evolve) + 2 utilities (discover/merge)**. Use that phrasing in new docs.
 
+### Two-frontier ENRICH + EVAL-guardrail (the primary curation path)
+
+The `merge` utility's union-curate flow plus the eval are wired into one
+orchestrated cycle by the **two-frontier bidirectional** modules (2026-06-02). This
+is the *curate-the-best-knowledge* path; `evaluate` is its guardrail. WHY each
+choice is made — enrich (never strip to a delta), two fully-tooled frontier
+models, frontier generator, tools-ON research — lives in
+[`docs/audit-loop-enrich-philosophy.md`](../docs/audit-loop-enrich-philosophy.md);
+read it before changing how the loop builds or scores skills.
+
+| Module | Role |
+|---|---|
+| `lib/audit/run-bidirectional-enrich.js` | PRIMARY. Per skill: research brief → claim two frontier slots (opus + codex-current) → EACH model researches (repo+web, tools ON, privacy-scoped) + proposes → curator union-curate merge (anti-loss) → eval guardrail → keep-or-revert. |
+| `lib/audit/run-bidirectional-eval.js` | GUARDRAIL. Direction A (opus answers → codex-current grades) + Direction B (swap), conservative reconciliation, parity assertion; APPLICABLE/PASS only when BOTH directions reach it under an identical tools-ON profile. |
+| `lib/audit/eval-execution-profile.js` | The lockstep-parity invariant: one tools-ON profile (`tools:full`, `research:repo+web`, `repoScope:'skill-graph + skills ONLY'`, `cwd:<skill-graph>`), per-CLI EQUAL-access translation, and `assertParity()`. `parity_ok:false` ⇒ INVALID run, never certifies. |
+
+**Hard rules (from the philosophy doc):**
+
+- **ENRICH, never strip to a delta.** The eval is a non-regression guardrail, not the optimizer. Keep-or-revert reverts ONLY a genuine regression (HARMFUL / measurably worse than the prior graded verdict); a non-improving or UNVERIFIED result is NEVER grounds to remove curated knowledge. The anti-loss check (`validateAntiLoss`) refuses any merge that drops a contribution for an "unscored / didn't move the score" reason.
+- **Tools are ON, both directions, equal access.** Research IS the curation mechanism; disabling tools defeats the assignment. Parity means equal *full* access, not equal-zero.
+- **Frontier generator.** The measured agent is a frontier deployment-matched model (`DEFAULT_COMPREHENSION_GENERATOR_MODEL = 'opus'`), never a weaker stand-in.
+- **Private-content boundary (HARD).** Research scope is the public skill-graph repo + skills tree + the open web — never private workspace data.
+
+The receipt records both directions' resolved models, the execution profile + `parity_ok`, `agreement`, `reconciliation: conservative`, `registry_version`, and a `merge_ledger_ref` linking enrichment provenance to eval provenance (schema: `eval_last_run.bidirectional` in `schemas/skill-audit-state.schema.json`).
+
 ## The Audit Status — state lives in `audit-state.json`
 
 The Audit Status carries **four discrete verdicts** in each skill's sibling `audit-state.json` sidecar — one per audit layer. The split (introduced in v7 and retained through v8) replaced an earlier single aggregate that masqueraded as a quality signal while conflating form, truth, comprehension, and behavior (rationale: [ADR 0011](../docs/adr/0011-split-audit-verdict-into-four-verdicts.md)). ADR-0019 then moved the audit/eval/provenance fields out of `SKILL.md` frontmatter and into the sidecar:
