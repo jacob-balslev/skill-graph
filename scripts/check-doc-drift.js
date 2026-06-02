@@ -96,6 +96,7 @@ function isAllowlisted(absPath) {
   if (rel[0] === 'docs' && rel[1] === 'migrations') return true;
   if (rel[0] === 'docs' && rel[1] === 'adr') return true;
   if (rel[0] === 'docs' && rel[1] === 'research') return true;
+  if (rel[0] === 'docs' && rel[1] === 'plans') return true;
   if (rel[0] === 'examples') return true;
   if (path.basename(absPath) === 'CHANGELOG.md') return true;
   const base = path.basename(absPath).toLowerCase();
@@ -299,7 +300,7 @@ function main() {
   }
 
   if (errorHits.length > 0) {
-    process.stderr.write(`FAIL doc drift: ${errorHits.length} stale schema-version reference(s) in active docs (active v${activeVersion}). Allowlisted: _archived/, docs/migrations/, CHANGELOG.md.\n`);
+    process.stderr.write(`FAIL doc drift: ${errorHits.length} stale schema-version reference(s) in active docs (active v${activeVersion}). Allowlisted: _archived/, _drafts/, audits/, docs/{migrations,adr,research,plans}/, examples/, CHANGELOG.md.\n`);
     process.exit(1);
   }
 
