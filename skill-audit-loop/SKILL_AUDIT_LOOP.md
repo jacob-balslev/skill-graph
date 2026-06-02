@@ -1,5 +1,7 @@
 # Skill Audit Loop
 
+> **Why this loop exists (read FIRST, before the procedure).** [`docs/audit-loop-enrich-philosophy.md`](../docs/audit-loop-enrich-philosophy.md) — the assignment is to ENRICH each skill toward the best possible curated knowledge for its topic (two fully-tooled frontier models research + union-curate); the eval is a non-regression GUARDRAIL, never the optimizer. Do not "optimize" the loop into a delta-stripper. This document is the *procedure*; that doc is the *why*.
+
 > **Work-mode rule (read FIRST).** Editing this document, the audit scripts, the audit slash-commands, the audit prompts, or the schemas is **SYSTEM work**. Running the audit loop against individual `SKILL.md` files (via `/audit:audit`, `/audit:improve`, `/audit:evaluate`, `/audit:evolve`) is **CONTENT work**. Do not mix them in the same task or commit. Full doctrine: [`AGENTS.md` § Work Modes — SYSTEM vs CONTENT](../AGENTS.md#work-modes--system-vs-content).
 
 > **Document structure.** Three parts, read top-to-bottom:

@@ -622,6 +622,8 @@ Findings carry a severity column drawn from a fixed schema — `CRITICAL` (contr
 
 ## Skill Audit Loop Model Policy
 
+> **Read the rationale first:** [`docs/audit-loop-enrich-philosophy.md`](docs/audit-loop-enrich-philosophy.md) — WHY the loop enriches (never strips to a delta), WHY two fully-tooled frontier models research and curate, WHY the eval generator is a frontier model, and HOW agents use the enrich→eval cycle. Do not change how the loop builds or scores skills without reading it.
+
 The Skill Audit Loop selects models by **registry role**, not by hand-written release names. The registry (`lib/audit-shared/model-provider.js`, mirrored at workspace `scripts/shared/model-provider.js`) is the single source of truth for model identity; this section is the policy that governs it. See workspace `AGENTS.md` § "Model Identity Discipline" for the cross-cutting rule.
 
 - **Default quality judge = the `strongest-reasoning-grader` role** — the newest Opus, resolved by the bare `claude` CLI alias (`claude --model opus` → latest installed). The evaluator is always the strongest available reasoning model; a stale alias resolving to an older Opus is a SYSTEM bug, not a reason to grade on the old model.

@@ -3,6 +3,7 @@
 > Type: Reference (binding)
 > Authored: 2026-05-25 — closes the 5-way verdict-semantics restatement gap surfaced by the 2026-05-25 multi-model review (Opus G2#2 HIGH, GPT-5.5 G2#2 HIGH).
 > Source of truth for verdict enums + tier ordering. All other surfaces should LINK to this file, not restate it.
+> **The verdict is a guardrail, not an optimizer:** see [`docs/audit-loop-enrich-philosophy.md`](audit-loop-enrich-philosophy.md) — verdicts confirm an enriched skill helps and didn't regress; they must never drive stripping knowledge that didn't move a score.
 
 ## What this file is
 

@@ -1,5 +1,7 @@
 # Quality Doctrine
 
+> **Applied to the audit loop:** [`docs/audit-loop-enrich-philosophy.md`](audit-loop-enrich-philosophy.md) is this doctrine's enforcement on the Skill Audit Loop — *improve = enrich, never strip to a delta; the eval is a guardrail, not the optimizer.*
+
 > **Audience.** Agents and maintainers changing Skill Graph docs, skills, schemas, exports, marketplace positioning, or repository instructions.
 >
 > **Status.** Governance reference. Keep aligned with `AGENTS.MD`.
