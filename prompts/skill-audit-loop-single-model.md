@@ -22,7 +22,7 @@ You are running the Skill Audit Loop. Work from the repo root (Development/).
 ╔══════════════════════════════════════════════════════════════════════════╗
 ║  RULE 0 — RUN AS YOURSELF, ONE MODEL ONLY.                                 ║
 ║  You are the single model executing this prompt (set MODEL to your slug:   ║
-║  opus | gpt-5.5 | gemini-3-pro | sonnet | codex). You do ONE model's audit.║
+║  opus | codex-current | gemini | sonnet | codex). You do ONE model's audit.║
 ║  Do NOT spawn, invoke, delegate to, or "consult" any other model or CLI —  ║
 ║  not Gemini, not Claude/Opus, not OpenCode, not Codex — under any           ║
 ║  circumstance. The repo documents a MULTI-MODEL MERGE flow                  ║

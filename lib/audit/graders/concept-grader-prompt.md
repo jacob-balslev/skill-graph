@@ -1,7 +1,7 @@
 # Concept Comprehension Grader Prompt
 
 > Used by `lib/audit/evaluate-skill.js --comprehension` to grade model responses against the 7-dimension Concept Comprehension rubric. See `docs/plans/concept-comprehension-layer.md` for the full design.
-> Grader model (pilot): **Opus 4.6** (`claude-opus-4-6`). Never use the same model for generation and grading.
+> Grader model: the **`strongest-reasoning-grader`** role (newest Opus, resolved by the registry — see workspace `AGENTS.md` § Model Identity Discipline). Never use the same model for generation and grading.
 > Version: 1.0 — 2026-04-08
 
 ## Role
@@ -171,7 +171,7 @@ You grade **both runs independently** and compute the **delta** (with_skill_scor
 - **No half credit for prose.** You assign 0, 1, or 2. You do not use decimals.
 - **Baseline is not penalized for brevity.** The baseline model does not have the skill file loaded — grade it on concept quality, not on whether it mentions repo-specific details.
 - **With-skill IS penalized for ignoring the skill.** If the skill file contains useful concept framing and the candidate ignores it, that is a failure of the skill-injection path, not the concept — but score it on the answer it produced.
-- **Grader and generator must differ.** This grader prompt is invoked by Opus 4.6. The generator in the pilot is Sonnet 4.6.
+- **Grader and generator must differ.** This grader prompt is invoked by the `strongest-reasoning-grader` role (newest Opus); the generator is the `representative-generator` role (newest Sonnet).
 
 ## Required JSON output shape (Concept Grader)
 

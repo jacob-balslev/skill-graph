@@ -620,6 +620,19 @@ Findings carry a severity column drawn from a fixed schema — `CRITICAL` (contr
 - Marking a skill `eval_state: passing` as part of an audit without running the eval in the same change.
 - Marking a finding "fixed" inside a **diagnostic** audit report — diagnostic mode is report-only; fixes belong in a downstream task or in a **remediation** audit (which commits the fix in the same pass, see § Two operating modes).
 
+## Skill Audit Loop Model Policy
+
+The Skill Audit Loop selects models by **registry role**, not by hand-written release names. The registry (`lib/audit-shared/model-provider.js`, mirrored at workspace `scripts/shared/model-provider.js`) is the single source of truth for model identity; this section is the policy that governs it. See workspace `AGENTS.md` § "Model Identity Discipline" for the cross-cutting rule.
+
+- **Default quality judge = the `strongest-reasoning-grader` role** — the newest Opus, resolved by the bare `claude` CLI alias (`claude --model opus` → latest installed). The evaluator is always the strongest available reasoning model; a stale alias resolving to an older Opus is a SYSTEM bug, not a reason to grade on the old model.
+- **Default measured-agent generator = the `representative-generator` role** — the newest Sonnet. This is the *subject* of the measurement (an average agent), not a judge, so a representative tier is correct here (consistent with `~/Development/.claude/rules/no-lesser-models-for-quality.md`).
+- **GPT quality work run through Codex/another GPT app = the `codex-current` role** — whatever GPT model that app currently serves (the model flag is omitted so a new GPT release is used automatically). Acceptable for a quality judge only because Codex serves a frontier model; the eval receipt must record the resolved identity or be capped PROVISIONAL when the concrete model cannot be proven.
+- **Grader prompts and audit docs must not name dated model versions.** Say "quality judge", "the `strongest-reasoning-grader` role", or the registry alias being requested — never "Opus 4.6", "GPT-5.5", `claude-opus-4-8`, or `gpt-5.4`. Enforced by `npm run models:check` (`scripts/check-no-restated-model-versions.js`), wired into both `verify` and `verify:system`.
+- **`application_verdict: APPLICABLE` requires honest model provenance.** If the grader or generator identity is unresolved, same-family, or only "whatever the session used", the run is not certifying and stays PROVISIONAL unless the eval contract explicitly records stronger evidence.
+- **Eval receipts record the model epoch.** Comprehension and application receipts carry `registry_version` (from `REGISTRY_VERSION` in the registry); scores are comparable only within the same registry version, because a score from one Opus generation is not comparable to the next.
+
+Providers without a CLI latest-alias (Gemini, the OpenCode GPT pin) keep their concrete id in the registry's `MODEL_LATEST` block and are bumped in one place via `node scripts/update-model-roster.js --set <key>=<id>` (or `npm run models:update`), which also bumps `REGISTRY_VERSION`. When a stronger model ships: update the registry/resolver first, verify the CLI/API route, run the model-provider load check, run a calibration eval, and record the new epoch — never sweep version names through docs.
+
 ## Validation Commands
 
 Use the full repo verification before handing off substantive changes:
