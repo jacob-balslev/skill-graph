@@ -1,6 +1,6 @@
 # Skill Audit Loop — Per-Model ENRICH Pass
 
-> Portable across the two frontier models (Opus = `opus`, GPT-5.5 = `codex-current`).
+> Portable across the two frontier models — the registry roles `opus` and `codex-current`.
 > This is the **per-model enrich pass** the bidirectional enrich orchestrator
 > (`lib/audit/run-bidirectional-enrich.js`) dispatches to EACH frontier model
 > independently. You produce a **proposal**, not a commit — the curator unions the
