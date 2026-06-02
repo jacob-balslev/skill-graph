@@ -1,6 +1,6 @@
 # Skill Graph — Generated Status
 
-> **Generated:** 2026-05-29T04:50:49.115Z
+> **Generated:** 2026-06-02T07:54:32.019Z
 > **Generator:** `node scripts/build-status-doc.js` (regenerate; never hand-edit)
 >
 > This file is the single-source-of-truth status snapshot for the project's
@@ -15,7 +15,7 @@
 | Package name | `@skill-graph/cli` | `package.json` |
 | Package version | `0.5.10` | `package.json` |
 | Node engine | `>=20.0.0` | `package.json` |
-| Active schema version | `8` | `schemas/SKILL_METADATA_PROTOCOL_schema.json` |
+| Active schema version | `unknown` | `schemas/SKILL_METADATA_PROTOCOL_schema.json` |
 | Skill count (manifest) | `154` | `skills.manifest.json` |
 | Mirror status | docs-only mirrors per ADR 0009 (2026-05-18) | `docs/adr/0009-sibling-repo-deprecation.md` |
 
@@ -23,10 +23,10 @@
 
 | Check | Status | Duration | Last line |
 |---|---|---|---|
-| check-markdown-links | ✅ PASS | 211 ms | OK   markdown links (765 file(s)) |
-| check-protocol-consistency | ✅ PASS | 117 ms | PASS: all protocol consistency checks passed. 0 warning(s). |
-| check-doc-drift | ✅ PASS | 75 ms | OK   doc drift sentinel: 54 active doc(s) scanned against schema v8 |
-| check-mirror-freeze | ✅ PASS | 45 ms | OK   mirror freeze: 20 file(s) scanned across 2 mirror(s); no active-source/package claims found. |
+| check-markdown-links | ✅ PASS | 269 ms | OK   markdown links (1427 file(s)) |
+| check-protocol-consistency | ✅ PASS | 111 ms | PASS: all protocol consistency checks passed. 0 warning(s). |
+| check-doc-drift | ✅ PASS | 100 ms | OK   doc drift sentinel: 68 active doc(s) scanned against schema v8 |
+| check-mirror-freeze | ✅ PASS | 42 ms | OK   mirror freeze: 20 file(s) scanned across 2 mirror(s); no active-source/package claims found. |
 | marketplace-export-check | ✅ PASS | 154 ms | PROJECTION TRUNCATED for writing-humanizer: tail truncated from 652 to 465 chars to fit 1024 limit |
 
 ## Audit Health
