@@ -126,6 +126,18 @@ PASS / APPLICABLE  >  PROVISIONAL  >  UNVERIFIED
 - **Never present "carries the vN label" as "verified."** A skill that is "fully v8" but never assessed at all is still `UNVERIFIED` — but it becomes `PROVISIONAL` the moment a single model assesses it. Never stuck at `UNVERIFIED` out of process purity.
 - **The negative verdicts (`SHALLOW` / `REDUNDANT` / `HARMFUL` / `MIXED` / `FALSE_POSITIVE`) are also lower-confidence when produced by a single model**, but record the negative grader signal honestly. They are NOT downgraded to `PROVISIONAL` when single-model — the verdict label captures the grader output, the confidence tier is implicit in whether a dual-run confirmed it.
 
+## Two-frontier bidirectional reconciliation (how a dual-run verdict is earned)
+
+The dual-run that earns `PASS` / `APPLICABLE` is the **two-frontier bidirectional eval** (`lib/audit/run-bidirectional-eval.js`): Direction A (Opus answers → GPT-5.5 grades) and Direction B (the swap), reconciled **conservatively** — the more-skeptical verdict wins (`lib/audit-shared/synthesize-bidirectional.js`). So a strong verdict requires BOTH cross-family directions to reach it independently.
+
+A strong verdict additionally requires the run to be **certifying-clean**, or it is capped to `PROVISIONAL`:
+
+1. **`parity_ok`** — both directions ran under an identical tools-ON execution profile. A parity mismatch means the run measured permissions, not the model — INVALID, capped.
+2. **both directions cross-family certifying** — generator and grader families differ in each direction (self-preference guard, `certification.js`).
+3. **resolved models** — neither direction's generator/grader model is the `latest-alias-unresolved` sentinel. If we cannot prove WHICH concrete model ran, the run caps to `PROVISIONAL` (honest provenance, per `.claude/rules/version-schema-contract.md` § 5). NOTE: until codex's resolved model is captured from its output (SH-6680), the GPT direction always carries the sentinel, so every bidirectional run currently caps to `PROVISIONAL` — this is the honest current state, not a defect.
+
+A capped/invalid run is **inconclusive**, never a regression: the enrich keep-or-revert defers (keeps) on it and never reverts a skill for a confidence cap.
+
 ## How to update verdicts honestly
 
 | Situation | Correct value |
