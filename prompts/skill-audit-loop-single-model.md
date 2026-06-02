@@ -62,7 +62,7 @@ SETUP
 PREFLIGHT (verify the TOOLCHAIN RUNS — not that the corpus is already perfect)
 4. Smoke-test the toolchain once, from the repo root. The question is "do the scripts RUN
    without crashing," NOT "is the whole skill library already lint-clean":
-     node scripts/skill/build-skill-audit-worklist.js --write     # re-rank the queue
+     node scripts/skill/build-skill-list.js --write     # re-rank the queue
      node scripts/skill/skill-audit-claim.js reap                  # clear dead-pid claims
      node scripts/skill/skill-lint.js | tail -3                    # CAPTURE the error count as BASELINE_ERRORS
    STOP and report ONLY if a script CRASHES — throws, exits non-zero from a missing dependency,
@@ -220,7 +220,7 @@ self-assessment + DOCUMENT
    UNVERIFIED ONLY if you genuinely could not assess the dimension, and the negative enums
    — SHALLOW/REDUNDANT for comprehension, REDUNDANT/HARMFUL/MIXED for application — when your
    assessment was negative. Never record PASS/APPLICABLE without a dual-run grader receipt.)
-     node scripts/skill/build-skill-audit-worklist.js --write
+     node scripts/skill/build-skill-list.js --write
    (If `release` reports "no lock by pid-..." it is because the lock is bound to the claiming
    process's pid. In a single long-running loop process this won't happen; if it does, the
    completed claim is cleared by `skill-audit-claim.js reap --ttl-min 0`.)

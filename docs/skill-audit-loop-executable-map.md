@@ -106,7 +106,7 @@ Per `scripts/skill/skill-audit-paths.js` (the single source of truth for run-dir
     latest -> runs/<newest-run-dir>       ← symlink to most recent run
 ```
 
-Completion is **ledger-derived, not file-presence-derived.** `build-skill-audit-worklist.js` reads `_ledger.jsonl` (via `skill-audit-ledger.js::summarizeAll()`) to compute each skill's status. The legacy "scorecard.md exists → completed" heuristic is retained only as a fallback for un-migrated artifacts.
+Completion is **ledger-derived, not file-presence-derived.** `build-skill-list.js` reads `_ledger.jsonl` (via `skill-audit-ledger.js::summarizeAll()`) to compute each skill's status. The legacy "scorecard.md exists → completed" heuristic is retained only as a fallback for un-migrated artifacts.
 
 ## Lanes (partitioned, attributable dispatch)
 

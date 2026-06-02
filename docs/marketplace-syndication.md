@@ -372,7 +372,7 @@ ADR 0008 freezes the legacy outer skill surface (`~/Development/skills/<name>/`)
 | Scope screening | Exclude Sales Hub-coupled skills and personal-infra skills from public export | `classification: sales-hub-bound` / `personal-infra` in `data/publication-classification.json` |
 | Generalization | Rewrite eligible ideas as portable skills instead of copying private source directly | `source: rewrite`, `port+sanitize`, or `port` in `data/publication-classification.json` |
 | v8 authoring | Land promoted skills directly in the nested v8 library; do not codemod the frozen outer surface | `~/Development/skills/skills/<subject>/<name>/SKILL.md` |
-| Queue generation | Rebuild the publication queue from the ledger after classification edits | `node scripts/skill/build-skill-audit-worklist.js --write` → `docs/marketplace-publication-queue.generated.md` |
+| Queue generation | Rebuild the publication queue from the ledger after classification edits | `node scripts/skill/build-skill-list.js --write` → `docs/marketplace-publication-queue.generated.md` |
 | Export verification | Generate and verify the plain marketplace surface before publication | `node scripts/export-marketplace-skills.js --check`, `node scripts/verify-skill-md-export.js --plain marketplace/skills` |
 
 Promotion criteria are all required:

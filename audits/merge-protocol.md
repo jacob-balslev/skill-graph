@@ -10,7 +10,7 @@
 
 ## Setup (every session)
 1. Read `AGENTS.md`.
-2. `node scripts/skill/build-skill-audit-worklist.js --write` — re-rank.
+2. `node scripts/skill/build-skill-list.js --write` — re-rank.
 3. `node scripts/skill/skill-audit-claim.js reap` — clear stale claims.
 4. Know your **mode** and **model**:
    - Set `MODEL` env to your model slug (`opus`, `gpt-5.5`, `gemini-3.1-pro`, `sonnet`, …).

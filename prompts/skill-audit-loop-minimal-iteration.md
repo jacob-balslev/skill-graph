@@ -49,7 +49,7 @@ any other model. The multi-model merge flow is separate and not for this prompt.
 ## Preflight (once per session)
 
 4. Verify the toolchain RUNS (not that the corpus is clean):
-     node scripts/skill/build-skill-audit-worklist.js --write
+     node scripts/skill/build-skill-list.js --write
      node scripts/skill/skill-audit-claim.js reap
      node scripts/skill/skill-lint.js | tail -3       # capture as BASELINE_ERRORS
    STOP only if a script CRASHES. A non-zero error count is NOT a stop condition; it is the
@@ -126,7 +126,7 @@ any other model. The multi-model merge flow is separate and not for this prompt.
 12. Release claim and rebuild worklist:
     node scripts/skill/skill-audit-claim.js release <slug> --status completed \
       --structural PASS --truth PASS --comprehension PROVISIONAL --application PROVISIONAL
-    node scripts/skill/build-skill-audit-worklist.js --write
+    node scripts/skill/build-skill-list.js --write
 
 13. Repeat from step 5 unless a stop condition is met:
     - 3 skills completed (interactive sessions stay small for context budget)
@@ -160,7 +160,7 @@ The improvements applied:
 | Earlier step | What was missing | What this version does |
 |---|---|---|
 | 1-3 (read docs, load skills) | No file paths, ambiguous "all relevant" | Explicit ordered reads + named skills |
-| 4 (find worklist) | No tool reference | Explicit `build-skill-audit-worklist.js --write` |
+| 4 (find worklist) | No tool reference | Explicit `build-skill-list.js --write` |
 | 5 (claim) | Privacy via model judgment | Privacy enforced by the claim helper (tool, not judgment) |
 | 6 (audit + bullets) | No evidence requirement, no verdict mapping | Structured 6a-6h with evidence_strength per answer |
 | 6 (continued) | "Skip no steps" (uncheckable) | Concrete commands per sub-question |

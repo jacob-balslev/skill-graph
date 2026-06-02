@@ -72,7 +72,7 @@ Preflight once per automation wake:
 1. Read automation memory first.
 2. Verify repo root: `git rev-parse --show-toplevel`.
 3. Run:
-   - `node scripts/skill/build-skill-audit-worklist.js --write`
+   - `node scripts/skill/build-skill-list.js --write`
    - `node scripts/skill/skill-audit-claim.js reap`
    - `node scripts/skill/skill-lint.js | tail -3`
 4. Capture the corpus lint baseline as BASELINE_ERRORS. Do not require a clean corpus; only ensure the claimed skill is clean and the run does not increase baseline errors. (See v3 PREFLIGHT incident note: 191 environmental false-positive lint errors in a sparse worktree.)
@@ -134,7 +134,7 @@ Per-skill loop:
 13. Release claim:
    - `node scripts/skill/skill-audit-claim.js release <slug> --status completed --structural PASS --truth PASS --comprehension PROVISIONAL --application PROVISIONAL`
 14. Rebuild worklist:
-   - `node scripts/skill/build-skill-audit-worklist.js --write`
+   - `node scripts/skill/build-skill-list.js --write`
 15. Commit path-limited in the repo that owns changed files:
    - Verify ownership with `git ls-files --error-unmatch <path>`.
    - Do not use broad `git add -A`.

@@ -109,7 +109,7 @@ Run and capture evidence:
 
   git rev-parse --show-toplevel
   git status --short
-  node scripts/skill/build-skill-audit-worklist.js --write
+  node scripts/skill/build-skill-list.js --write
   node scripts/skill/skill-audit-claim.js reap
   node scripts/skill/skill-lint.js | tail -3
 
@@ -279,7 +279,7 @@ After a successful commit:
   node scripts/skill/skill-audit-claim.js release <slug> --model "$MODEL" --status completed \
     --structural <STRUCTURAL_VERDICT> --truth <TRUTH_VERDICT> \
     --comprehension <COMPREHENSION_VERDICT> --application <APPLICATION_VERDICT>
-  node scripts/skill/build-skill-audit-worklist.js --write
+  node scripts/skill/build-skill-list.js --write
 
 Then append to `$AUDIT_MEMORY`:
 - timestamp
