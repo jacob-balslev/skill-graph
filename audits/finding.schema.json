@@ -1,0 +1,92 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://skillgraph.dev/schemas/finding.schema.json",
+  "title": "Skill Audit Finding",
+  "description": "Binding shape for a single skill-audit finding — `skill-audit.finding/v1`. Project-owned per ADR-0016 surface #5 (migrated from the workspace docs/reference/skill-audit-pipeline.md § Unified Finding Schema on 2026-06-02, SH-6608). All active skill-audit outputs emit or convert to this shape so findings are comparable, severity-tagged, and traceable across the v2.2 loop, the v2.1-compat loop, and the legacy-474 archive. Severity uses the canonical P0..P4 scale (workspace AGENTS.md § Canonical Severity Schema). The prose source-of-truth + mapping rules live in docs/reference/skill-audit-pipeline.md, which now defers to this schema for the field shape.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schemaVersion",
+    "pipeline",
+    "skill",
+    "findingId",
+    "severity",
+    "category",
+    "claimType",
+    "surface",
+    "summary",
+    "evidence",
+    "requiredAction",
+    "status",
+    "sourceRef"
+  ],
+  "properties": {
+    "schemaVersion": {
+      "const": "skill-audit.finding/v1",
+      "description": "Fixed schema tag for this finding shape."
+    },
+    "pipeline": {
+      "enum": ["v2.2", "v2.1-compat", "legacy-474-archive"],
+      "description": "Which audit pipeline produced the finding. v2.2 = current per-skill loop; v2.1-compat = compatibility loop (same four artifact files, no new schema branch); legacy-474-archive = the 474-finding archive (converts by link only, never writes new live findings)."
+    },
+    "skill": {
+      "type": "string",
+      "minLength": 1,
+      "description": "Skill slug or bundle owner the finding is about."
+    },
+    "findingId": {
+      "type": "string",
+      "minLength": 1,
+      "description": "Stable local identifier such as F1, CC-3, or a legacy task code."
+    },
+    "severity": {
+      "enum": ["P0", "P1", "P2", "P3", "P4"],
+      "description": "Canonical severity (P0 CRITICAL .. P4 INFO) per the workspace Canonical Severity Schema."
+    },
+    "category": {
+      "enum": ["BUG", "DRIFT", "COVERAGE", "SECURITY", "QUALITY", "DISPLACEMENT", "ARCHIVE"],
+      "description": "Audited class of the finding. DISPLACEMENT = the skill's capability is now superseded by a newer first-party / platform / OSS release. ARCHIVE = converted historical record, not new live work."
+    },
+    "claimType": {
+      "enum": ["file", "factual", "behavioral", "relation", "eval", "concept", "archive-mapping"],
+      "description": "What kind of claim the finding makes (drives how it is verified)."
+    },
+    "surface": {
+      "type": "string",
+      "minLength": 1,
+      "description": "File path, command path, plan path, or tracker surface being audited."
+    },
+    "summary": {
+      "type": "string",
+      "minLength": 1,
+      "description": "One-sentence statement of the finding."
+    },
+    "evidence": {
+      "type": "string",
+      "minLength": 1,
+      "description": "Concrete proof: file:line, command output, or artifact path."
+    },
+    "requiredAction": {
+      "enum": ["fix-now", "follow-up", "archive-only", "no-action"],
+      "description": "What the finding demands. archive-only = historical conversion; no-action = an observation (INFO)."
+    },
+    "status": {
+      "enum": ["open", "fixed", "verified", "archived", "migrated"],
+      "description": "Lifecycle state of the finding."
+    },
+    "artifacts": {
+      "type": "object",
+      "additionalProperties": { "type": "string" },
+      "description": "Optional map of artifact role -> path (findings, scorecard, research, catalog) when those run-dir artifacts exist. Run-dir layout: see skill-graph/lib/audit/run-layout.js (ADR-0016 surface #3)."
+    },
+    "sourceRef": {
+      "type": "string",
+      "minLength": 1,
+      "description": "Linear task, archive doc section, or session-log source the finding traces to."
+    },
+    "migratedFrom": {
+      "type": "string",
+      "description": "Optional legacy source when converted from an older audit system (use with pipeline: legacy-474-archive / v2.1-compat)."
+    }
+  }
+}
