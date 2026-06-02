@@ -617,7 +617,7 @@ relations:
 2. Cross-subject or cross-sub-domain routing distinctions belong in `anti_examples` + `relations.related`, NOT in `boundary[]`. The `anti_examples` array preserves routing-visible documentation as wrong-use phrases; `relations.related` signals the semantic adjacency without invoking the score-aware exclusion mechanic.
 3. Empirical justification: removing 16 cross-domain `boundary[]` entries across 8 skills caused **0 top-1 routing changes** on the 30-query baseline; only 3/30 low-confidence unmaskings of legitimate alternatives at score 3 surfaced. The cross-domain entries were performing silent low-confidence exclusion only — exactly the silent-failure risk the doctrine prevents.
 
-Authors who introduce a cross-domain `boundary[]` entry must move it to `anti_examples` + `relations.related` instead. Lint (planned, not yet implemented) will warn on cross-domain boundary declarations.
+Authors who introduce a cross-domain `boundary[]` entry must move it to `anti_examples` + `relations.related` instead. `scripts/skill-lint.js` Check 5c warns (advisory) on cross-**subject** boundary declarations — it resolves each `boundary[]` target's `subject` against the corpus and flags any whose subject differs from the source skill's. (It checks the `subject` axis, the high-value case; cross-`taxonomy_domain`-within-subject is not yet flagged.) The warning is advisory, not a build failure; as of the 2026-06-02 implementation it surfaces a large standing backlog of cross-subject boundaries across the corpus that the audit loop drains per-skill (move to `anti_examples` + `relations.related`).
 
 **`disjoint_with`**
 - Formal class-disjointness assertion. Use only when the two skill concepts are genuinely disjoint in the ontology sense.

@@ -1,6 +1,6 @@
 ---
 name: no-cutting-corners
-description: "Enforces five non-negotiable quality pillars that counter the shortcuts an agent takes under training pressure: complete reporting (show ALL items, never filter unilaterally), verification (no claim of works/done/exists without a tool-call receipt in the same turn), thoroughness (every acceptance criterion individually verified; docs ship with the change), enrichment ('improve' means add capability, never trim), and anti-shortcut (exhaust deterministic lookup before guessing; findings demand action, not just filing). Use when reviewing any enumerated output for completeness, when an agent claims something works without evidence, when marking a task done, when asked to 'improve' or 'clean up' anything, or when findings are filed without being acted on. Do NOT use for the deep explanatory model of WHY completeness fails or the step-level execution mechanics (use `methodical`), for the cross-domain quality-standards catalog like OWASP/WCAG/SOLID (use `best-practice`), for scoring whether a result is good enough"
+description: "Enforce five non-negotiable quality pillars as a pre-output gate: complete reporting (show ALL items, never filter unilaterally), verification (no claim of works/done/exists without a tool-call receipt in the same turn), thoroughness (every acceptance criterion verified with evidence; docs ship with the change), enrichment ('improve' adds capability, never trims), and anti-shortcut (exhaust deterministic lookup before guessing; findings demand action, not filing). Use when reviewing enumerated output for completeness, when an agent claims something works without evidence, when marking a task done, or when asked to 'improve' anything. Do NOT use for the cross-domain quality-standards catalog (OWASP, WCAG, SOLID, etc (use best-practice). Do NOT use for compression once a complete enumeration exists (use summarization). Do NOT use for choosing or shortening the route through a task (use task-path-optimization). Do NOT use for the review methodology and feedback phrasing (use code-review)."
 metadata:
   subject: meta-methods
   deployment_target: portable
@@ -18,6 +18,7 @@ metadata:
   skill_graph_canonical_skill: skills/meta-methods/no-cutting-corners/SKILL.md
   skill_graph_export_description: shortened for Agent Skills 1024-character description limit; canonical source keeps the full routing contract
   skill_graph_canonical_description_length: "1121"
+  skill_graph_export_description_projection: boundary
 ---
 
 ## Concept Card

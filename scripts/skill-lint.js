@@ -464,6 +464,47 @@ function checkBoundaryReasonText(fm) {
 }
 
 /**
+ * Check 5c — cross-domain relations.boundary (advisory).
+ *
+ * Per skill-metadata-protocol/SKILL_METADATA_PROTOCOL.md § Relations: a boundary edge is a
+ * SAME-DOMAIN routing-exclusion guard — when THIS skill wins a query the listed
+ * sibling is suppressed from co-routing, which only makes sense between skills
+ * that compete on the same browse shelf (same `subject`). A boundary pointing at
+ * a DIFFERENT subject is almost always a mis-modeled cross-domain distinction
+ * that belongs in `anti_examples` + `relations.related`, not as an exclusion
+ * guard. Warns when the target's subject is known and differs from this skill's
+ * subject; when the target is outside the linted roots its subject is unknown
+ * and the edge is skipped. Requires the corpus subject registry built in main().
+ */
+function checkCrossDomainBoundary(fm, subjectRegistry) {
+  const warnings = [];
+  if (!fm || typeof fm !== 'object' || !fm.relations) return warnings;
+  if (!subjectRegistry || typeof subjectRegistry.get !== 'function') return warnings;
+  const boundary = fm.relations.boundary;
+  if (!Array.isArray(boundary)) return warnings;
+  const sourceSubject = typeof fm.subject === 'string' ? fm.subject : null;
+  if (!sourceSubject) return warnings;
+
+  for (const edge of boundary) {
+    const target = typeof edge === 'string'
+      ? edge
+      : (edge && typeof edge === 'object' ? edge.skill : null);
+    if (typeof target !== 'string' || !target) continue;
+    const targetName = target.split(/[/:]/).pop();
+    const targetSubject = subjectRegistry.get(target) || subjectRegistry.get(targetName);
+    if (!targetSubject) continue; // target outside linted roots — cannot judge domain
+    if (targetSubject !== sourceSubject) {
+      warnings.push({
+        field: 'relations.boundary',
+        severity: 'warn',
+        msg: `cross-domain boundary: "${targetName}" is in subject "${targetSubject}", but a boundary edge is a SAME-DOMAIN routing-exclusion guard (this skill's subject is "${sourceSubject}"). A cross-domain distinction belongs in anti_examples + relations.related, not a boundary exclusion. See skill-metadata-protocol/SKILL_METADATA_PROTOCOL.md § Relations.`,
+      });
+    }
+  }
+  return warnings;
+}
+
+/**
  * Check 5 — field-purpose comment presence (audit H8, advisory).
  *
  * skill-metadata-protocol/SKILL_METADATA_PROTOCOL.md § Inline field comments mandates that every
@@ -620,6 +661,25 @@ function collectSkillFiles(parsed) {
   return [...new Set(files.map(file => path.resolve(file)))];
 }
 
+// Build a name -> subject map across the given roots, consumed by Check 5c
+// (cross-domain boundary) to resolve each boundary target's subject. Built once
+// per run from the same roots being linted; targets outside these roots resolve
+// to undefined and are skipped by the check.
+function buildSubjectRegistry(roots) {
+  const registry = new Map();
+  for (const entry of collectSkillFilesFromRoots(roots)) {
+    let fm;
+    try {
+      fm = normalizeFrontmatter(parseFrontmatter(fs.readFileSync(entry.filePath, 'utf8')));
+    } catch { continue; }
+    if (fm && typeof fm.name === 'string' && typeof fm.subject === 'string') {
+      registry.set(fm.name, fm.subject);
+      registry.set(fm.name.split(/[/:]/).pop(), fm.subject);
+    }
+  }
+  return registry;
+}
+
 // ---------------------------------------------------------------------------
 // Main
 // ---------------------------------------------------------------------------
@@ -661,7 +721,7 @@ function checkAuditStateSidecar(file, fm) {
   return errors;
 }
 
-function lintFile(file) {
+function lintFile(file, subjectRegistry) {
   const relPath = path.relative(REPO_ROOT, file);
   const text = fs.readFileSync(file, 'utf8');
   const fm = normalizeFrontmatter(parseFrontmatter(text));
@@ -686,6 +746,7 @@ function lintFile(file) {
   const warnings = [
     ...checkFieldPurposeComments(text),
     ...checkBoundaryReasonText(fm),
+    ...checkCrossDomainBoundary(fm, subjectRegistry),
   ];
 
   return {
@@ -706,7 +767,10 @@ function main() {
     process.exit(1);
   }
 
-  const results = files.map(lintFile);
+  // Built once from the same roots being linted; threaded into each lintFile so
+  // Check 5c can resolve boundary targets' subjects without re-walking per file.
+  const subjectRegistry = buildSubjectRegistry(rootsForArgs(parsed));
+  const results = files.map(file => lintFile(file, subjectRegistry));
   const totalErrors = results.reduce((sum, result) => sum + result.errors.length, 0);
   const totalWarnings = results.reduce((sum, result) => sum + (result.warnings ? result.warnings.length : 0), 0);
 
