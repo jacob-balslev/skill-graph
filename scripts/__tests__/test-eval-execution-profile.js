@@ -7,7 +7,7 @@
 
 const assert = require('assert');
 const ep = require('../../lib/audit/eval-execution-profile');
-const { runBidirectionalEval } = require('../../lib/audit/run-bidirectional-eval');
+const { runBidirectionalEval, toSidecarReceipt } = require('../../lib/audit/run-bidirectional-eval');
 
 let passed = 0;
 function check(name, fn) {
@@ -153,9 +153,46 @@ check('comprehension mode: both PASS => PASS', () => {
   assert.strictEqual(r.certifying_clean, true);
 });
 
-check('rejects a non-frontier pair / bad mode', () => {
+check('rejects a bad mode', () => {
   assert.throws(() => runBidirectionalEval({ mode: 'bogus', cwd: '/x', deps: { runDirection: () => ({}) } }), /mode must be/);
-  assert.throws(() => runBidirectionalEval({ mode: 'application', cwd: '/x' }), /runDirection must be a function/);
+});
+check('defaults runDirection to the live evaluate-skill.runEvalDirection when none injected', () => {
+  // No deps.runDirection ⇒ the runner lazy-requires the real wiring (not an error).
+  assert.strictEqual(typeof require('../../lib/audit/evaluate-skill').runEvalDirection, 'function');
+});
+
+console.log('5. Honest model provenance + receipt normalization (GPT-5.5 review F6, F8)');
+check('F6: an unresolved direction model caps APPLICABLE to PROVISIONAL (cannot prove which model ran)', () => {
+  const runDirection = ({ direction, generatorModel, graderModel, executionProfile }) => ({
+    direction, generator_model: generatorModel, grader_model: graderModel,
+    verdict: 'APPLICABLE', certification_tier: 'certifying', execution_profile: executionProfile,
+    // Direction B's grader model is unresolvable (the codex-current case before
+    // codex's concrete model is captured) → the run cannot honestly certify.
+    resolved_model: direction === 'B' ? 'latest-alias-unresolved' : 'claude-opus-x',
+  });
+  const r = runBidirectionalEval({ mode: 'application', skill: 's', cwd: '/x/skill-graph', deps: { runDirection } });
+  assert.strictEqual(r.resolved_clean, false);
+  assert.strictEqual(r.certifying_clean, false);
+  assert.strictEqual(r.verdict_capped, true);
+  assert.strictEqual(r.synthesized_verdict, 'PROVISIONAL');
+  assert.ok(/unresolved/.test(r.cap_reason));
+});
+check('F8: toSidecarReceipt projects ONLY schema-allowed keys', () => {
+  const allowed = new Set(['frontier_pair', 'reconciliation', 'agreement', 'parity_ok', 'certifying_clean', 'synthesized_verdict', 'registry_version', 'merge_ledger_ref', 'execution_profile', 'directions']);
+  const dirKeys = new Set(['role', 'generator_model', 'grader_model', 'generator_family', 'grader_family', 'resolved_model', 'verdict', 'certification_tier']);
+  const epKeys = new Set(['tools', 'research', 'repoScope', 'cwd']);
+  const runDirection = ({ direction, generatorModel, graderModel, generatorFamily, graderFamily, executionProfile }) => ({
+    direction, generator_model: generatorModel, grader_model: graderModel,
+    generator_family: generatorFamily, grader_family: graderFamily, resolved_model: 'm',
+    verdict: 'APPLICABLE', certification_tier: 'certifying', execution_profile: executionProfile,
+  });
+  const full = runBidirectionalEval({ mode: 'application', skill: 's', cwd: '/x/skill-graph', deps: { runDirection } });
+  const rec = toSidecarReceipt(full);
+  for (const k of Object.keys(rec)) assert.ok(allowed.has(k), `unexpected receipt key: ${k}`);
+  assert.strictEqual(rec.directions.length, 2);
+  for (const d of rec.directions) for (const k of Object.keys(d)) assert.ok(dirKeys.has(k), `unexpected direction key: ${k}`);
+  for (const k of Object.keys(rec.execution_profile)) assert.ok(epKeys.has(k), `unexpected execution_profile key: ${k}`);
+  assert.strictEqual(rec.reconciliation, 'conservative');
 });
 
 console.log(`\nResults: ${passed} passed, 0 failed`);

@@ -75,8 +75,9 @@ KEEP-OR-REVERT (guardrail only)
 Both frontier models must run under **identical conditions** — the only variable is the model:
 
 1. **Prompt lockstep.** The generator task and the grader rubric are each built once and handed to both models byte-identical. Never branch prompt content on model or provider.
-2. **Permission parity = equal full tool access.** Both models get the *same* tools, the *same* repo scope, the *same* web allowance. Parity means *equal access*, not equal-zero. If the two directions did not run under matched permissions, the run is **invalid** (`parity_ok: false`) and may never certify a skill — different permissions per provider would mean you measured "who got to peek," not the model.
-3. **Private-content boundary** (above) applies to every model, every direction.
+2. **Permission parity = equal full tool access for the GENERATORS.** The parity invariant binds the two *generators* (the measured agents that research + answer the eval task): both get the *same* tools, the *same* repo scope, the *same* web allowance. Parity means *equal access*, not equal-zero. If the two directions' generators did not run under matched permissions, the run is **invalid** (`parity_ok: false`) and may never certify a skill — different permissions per provider would mean you measured "who got to peek," not the model. The **graders** are a separate role: each grades a *fixed, closed evidence packet* (the prompt + the candidate response) with **tools OFF** — a judge that browses mid-grade is non-deterministic. Grader parity is "both graders closed and identical," which is the default. (Clarified 2026-06-03 per the GPT-5.5 cross-review, finding F3.)
+3. **The repo-scope fence is prompt + claim-filter, not an OS sandbox (yet).** `cwd: <skill-graph>` and `repoScope: 'skill-graph + skills ONLY'` declare the *intended* public scope, but process cwd does not stop an agent from path-traversing to `../sales-hub`. Today the boundary is enforced by (a) the prompt instruction and (b) the `skill-audit-claim` private-skill filter; true OS-level enforcement (an isolated checkout containing only the public trees) is a tracked follow-up. Do not describe cwd as a hard fence. (Clarified 2026-06-03 per GPT-5.5 review finding F5.)
+4. **Private-content boundary** (above) applies to every model, every role, every direction.
 
 ### Operator commands
 

@@ -45,6 +45,11 @@ check('unknown disposition => violation', () => {
   const r = enrich.validateAntiLoss({ contributions: [{ id: 1, disposition: 'maybe' }] });
   assert.strictEqual(r.ok, false);
 });
+check('F10: empty / missing ledger => violation (a union of 2 proposals must record contributions)', () => {
+  assert.strictEqual(enrich.validateAntiLoss({ contributions: [] }).ok, false);
+  assert.strictEqual(enrich.validateAntiLoss({}).ok, false);
+  assert.strictEqual(enrich.validateAntiLoss(null).ok, false);
+});
 
 console.log('2. decideKeepOrRevert — guardrail only (revert ONLY on genuine regression)');
 check('HARMFUL => revert', () => {
@@ -67,6 +72,18 @@ check('UNVERIFIED / non-lift => KEEP (absence of measured lift is not a regressi
   assert.strictEqual(enrich.decideKeepOrRevert({ synthesized_verdict: 'PROVISIONAL' }).action, 'keep');
   // REDUNDANT (skill didn't add measured value) is NOT a regression to revert — enrich keeps it.
   assert.strictEqual(enrich.decideKeepOrRevert({ synthesized_verdict: 'REDUNDANT' }).action, 'keep');
+});
+check('F9: an invalid/capped run (certifying_clean:false) DEFERS — never reverts on a confidence cap', () => {
+  // Parity failed → APPLICABLE was capped to PROVISIONAL; prior was APPLICABLE. The
+  // naive prior-comparison would revert, but a cap is not a regression — defer (keep).
+  const d = enrich.decideKeepOrRevert(
+    { synthesized_verdict: 'PROVISIONAL', certifying_clean: false, cap_reason: 'parity failed' },
+    { priorVerdict: 'APPLICABLE' },
+  );
+  assert.strictEqual(d.action, 'keep');
+  // Even a HARMFUL verdict on a non-certifying-clean (untrustworthy) run defers,
+  // because the run itself is invalid — we don't act on an unprovable measurement.
+  assert.strictEqual(enrich.decideKeepOrRevert({ synthesized_verdict: 'HARMFUL', certifying_clean: false }).action, 'keep');
 });
 
 console.log('3. runBidirectionalEnrich — DI sequencing');
