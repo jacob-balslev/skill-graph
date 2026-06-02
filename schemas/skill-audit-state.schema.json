@@ -256,6 +256,79 @@
           "type": "string",
           "pattern": "^[a-f0-9]{64}$",
           "description": "Optional SHA-256 digest of the receipt artifact."
+        },
+        "bidirectional": {
+          "type": "object",
+          "additionalProperties": false,
+          "description": "Two-frontier bidirectional eval provenance (Opus 4.8 / GPT-5.5), present when the receipt comes from lib/audit/run-bidirectional-eval.js. Records BOTH directions' resolved models, the tools-ON execution profile + parity result, the conservative reconciliation, and a link to the enrichment merge-ledger so enrichment and eval provenance are one record (SH-6663). A graded verdict (PASS/APPLICABLE) is honest only when `parity_ok` AND `certifying_clean` are both true; otherwise the verdict was capped to PROVISIONAL. See docs/audit-loop-enrich-philosophy.md and lib/audit/eval-execution-profile.js.",
+          "properties": {
+            "frontier_pair": {
+              "type": "array",
+              "items": { "type": "string" },
+              "minItems": 2,
+              "maxItems": 2,
+              "description": "The two frontier model role/aliases used (e.g. [\"opus\", \"codex-current\"]). Aliases, never dated versions (model-identity discipline)."
+            },
+            "reconciliation": {
+              "const": "conservative",
+              "description": "How the two directions were reconciled. Only the conservative rule (more-skeptical verdict wins) is valid — APPLICABLE/PASS requires BOTH directions to reach it."
+            },
+            "agreement": {
+              "type": "boolean",
+              "description": "True when both directions produced the same verdict."
+            },
+            "parity_ok": {
+              "type": "boolean",
+              "description": "True when both directions ran under an identical tools-ON execution profile. parity_ok:false ⇒ the run measured permissions, not the model — INVALID, may never certify."
+            },
+            "certifying_clean": {
+              "type": "boolean",
+              "description": "True when parity_ok AND both directions are cross-family certifying. A strong verdict (PASS/APPLICABLE) stands only when this is true; otherwise it was capped to PROVISIONAL."
+            },
+            "synthesized_verdict": {
+              "type": "string",
+              "description": "The reconciled verdict after the conservative rule and the certifying-clean cap."
+            },
+            "registry_version": {
+              "type": "string",
+              "description": "Model-registry epoch (REGISTRY_VERSION). Scores compare only within the same epoch."
+            },
+            "merge_ledger_ref": {
+              "type": ["string", "null"],
+              "description": "Path/ref to the enrichment merge-ledger that produced the skill version this eval graded, so enrichment and eval provenance are one record. Null when the eval ran standalone (not after an enrich)."
+            },
+            "execution_profile": {
+              "type": "object",
+              "additionalProperties": false,
+              "description": "The tools-ON parity profile both directions ran under.",
+              "properties": {
+                "tools": { "type": "string", "description": "Tool-access level, e.g. 'full'." },
+                "research": { "type": "string", "description": "Research allowance, e.g. 'repo+web'." },
+                "repoScope": { "type": "string", "description": "Repo scope fence, e.g. 'skill-graph + skills ONLY' (the public-content boundary)." },
+                "cwd": { "type": "string", "description": "Working directory both directions ran from (the skill-graph repo root)." }
+              }
+            },
+            "directions": {
+              "type": "array",
+              "minItems": 2,
+              "maxItems": 2,
+              "description": "The two eval directions. Direction A: opus generates → codex-current grades. Direction B: the swap.",
+              "items": {
+                "type": "object",
+                "additionalProperties": false,
+                "properties": {
+                  "role": { "type": "string", "enum": ["A", "B"] },
+                  "generator_model": { "type": "string", "description": "Role/alias of the model that produced the answer." },
+                  "grader_model": { "type": "string", "description": "Role/alias of the model that graded it (cross-family)." },
+                  "generator_family": { "type": "string" },
+                  "grader_family": { "type": "string" },
+                  "resolved_model": { "type": "string", "description": "Resolved concrete model when knowable, else the literal 'latest-alias-unresolved' (an unresolved alias caps the run at PROVISIONAL)." },
+                  "verdict": { "type": "string", "description": "This direction's standalone verdict before reconciliation." },
+                  "certification_tier": { "type": "string", "enum": ["certifying", "provisional"] }
+                }
+              }
+            }
+          }
         }
       }
     },

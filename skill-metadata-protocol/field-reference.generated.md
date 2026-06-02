@@ -567,6 +567,7 @@ Optional receipt for the most recent eval run. Complements `eval_state` so `pass
 - `model` *optional* — Optional grader/model identifier when an LLM grader was used.
 - `receipt` *optional* — Path or URL to the eval receipt, scorecard, grader history, or CI run.
 - `receipt_hash` *optional* — Optional SHA-256 digest of the receipt artifact.
+- `bidirectional` *optional* — Two-frontier bidirectional eval provenance (Opus 4.
 
 **Full reference:** [`skill-metadata-protocol/field-reference.md#eval_last_run`](field-reference.md#eval_last_run)
 
