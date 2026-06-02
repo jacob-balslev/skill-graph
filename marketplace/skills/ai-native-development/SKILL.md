@@ -9,6 +9,7 @@ metadata:
   version: "1.1.0"
   subject: agent-ops
   deployment_target: portable
+  scope: "Reasoning about agent autonomy levels, auto-improve loops, AI-generated code quality, and productivity in LLM-assisted codebases — Karpathy's three eras (1.0 explicit / 2.0 learned / 3.0 natural-language), the vibe-coding-vs-agentic-engineering distinction, the 0–5 autonomy slider with task-type recommendations, the one-asset/one-metric/one-time-box AutoResearch loop, Software 3.0 productivity metrics, and the documented regressions of ungated AI-generated code (the 'vibe hangover'). Portable across any LLM-assisted codebase; principle-grounded, not repo-bound. Excludes choosing a specific autonomy-loop topology (agent-engineering), per-prompt authoring discipline (prompt-craft), and reviewing the AI-generated code itself (code-review)."
   taxonomy_domain: agent/concepts
   owner: skill-graph-maintainer
   freshness: "2026-05-18"
@@ -328,6 +329,7 @@ Moving down the slider is also legitimate: high-stakes work (production deployme
 - Subject: `agent-ops`
 - Deployment: `portable`
 - Domain: `agent/concepts`
+- Scope: Reasoning about agent autonomy levels, auto-improve loops, AI-generated code quality, and productivity in LLM-assisted codebases — Karpathy's three eras (1.0 explicit / 2.0 learned / 3.0 natural-language), the vibe-coding-vs-agentic-engineering distinction, the 0–5 autonomy slider with task-type recommendations, the one-asset/one-metric/one-time-box AutoResearch loop, Software 3.0 productivity metrics, and the documented regressions of ungated AI-generated code (the 'vibe hangover'). Portable across any LLM-assisted codebase; principle-grounded, not repo-bound. Excludes choosing a specific autonomy-loop topology (agent-engineering), per-prompt authoring discipline (prompt-craft), and reviewing the AI-generated code itself (code-review).
 
 **When to use**
 - we keep accepting agent-generated code on first try and shipping bugs — what discipline replaces this?
@@ -358,16 +360,7 @@ Moving down the slider is also legitimate: high-stakes work (production deployme
 - Mode: `hybrid`
 - Truth sources: `https://www.youtube.com/watch?v=LCEmiRjPEtQ`, `https://github.com/karpathy/autoresearch`, `https://arxiv.org/abs/2211.03622`, `https://arxiv.org/abs/2504.20814`, `https://snyk.io/lp/secure-adoption-in-the-genai-era/`, `https://owasp.org/www-project-top-10-for-large-language-model-applications/`
 
-**Lifecycle & audit status**
-- Stability: `experimental`
-- Freshness: `2026-05-18`
-- Eval state: `unverified`
-- Routing eval: `absent`
-- Audit status: structural PASS, truth UNVERIFIED, comprehension UNVERIFIED, application UNVERIFIED
-- Last audited: `2026-05-28`
-
-**Provenance**
-- version 1.1.0, schema v8, owner `skill-graph-maintainer`
-- Keywords: `software 3.0 concepts`, `vibe coding`, `agentic engineering doctrine`, `autonomy slider`, `prompt as code`, `karpathy three eras`, `autoresearch loop`, `ai-generated code quality`, `vibe hangover`, `llm-native development`
+**Keywords**
+- `software 3.0 concepts`, `vibe coding`, `agentic engineering doctrine`, `autonomy slider`, `prompt as code`, `karpathy three eras`, `autoresearch loop`, `ai-generated code quality`, `vibe hangover`, `llm-native development`
 
 <!-- skill-graph-context:end -->

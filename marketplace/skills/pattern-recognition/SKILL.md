@@ -5,37 +5,20 @@ license: MIT
 compatibility: "Language- and stack-agnostic. The recognition loop, clustering method, eval pipeline, and 5-Whys ladder apply to any codebase; the grep patterns and example detection rules are illustrative — substitute the equivalents of your stack."
 allowed-tools: Read Grep
 metadata:
-  schema_version: "8"
-  version: "1.2.0"
   subject: meta-methods
   deployment_target: portable
+  scope: "Portable pattern-recognition methodology for auditing recurring issues, clustering errors, detecting convention drift, naming root-cause patterns, and converting repeated observations into prevention through docs, evals, lint rules, hooks, or architecture changes. Covers the Observe -> Cluster -> Name -> Codify -> Detect -> Prevent loop, grep-based scans, normalize-then-hash error clustering, board-health patterns, design-token and heading drift, domain-encoding traps, eval-as-pattern-tests, 5 Whys, pattern lifecycle states, and drift traps. Excludes one-off bug localization (debugging/diagnosis), PR-scope code judgment (code-review), naming-rule definition (naming-conventions), lint-rule implementation machinery (lint-overlay), and designing the classification system itself (taxonomy-design)."
   taxonomy_domain: foundations/cognition
-  owner: skill-graph-maintainer
-  freshness: "2026-05-18"
-  drift_check: "{\"last_verified\":\"2026-05-18\"}"
-  eval_artifacts: present
-  eval_state: unverified
-  routing_eval: absent
-  comprehension_state: present
   stability: experimental
   keywords: "[\"recurring code pattern detection\",\"anti-pattern audit\",\"convention drift detection\",\"error cluster triage\",\"normalize-then-hash error grouping\",\"five-whys root cause ladder\",\"eval as pattern test\",\"heading hierarchy violation\",\"design token drift\",\"null-vs-zero domain encoding\"]"
   examples: "[\"I keep seeing the same null-pointer crash in three different files — what's the systemic fix?\",\"audit this codebase for hardcoded colors instead of design tokens\",\"cluster the errors from this session log into root-cause buckets\",\"I've fixed this bug five times in five different places — how do I codify a detection rule?\",\"the agent keeps treating null and zero as the same thing in financial calculations — flag the pattern class\",\"every PR introduces a new convention violation — what's the lint rule that would prevent it?\",\"the same Linear ticket keeps reappearing under different titles — how do I deduplicate?\"]"
   anti_examples: "[\"review this code for semantic correctness\",\"find where the user-auth helper is defined\",\"design a MECE classification taxonomy for our error catalogue\",\"investigate why this single failing test is breaking\",\"trigger an alert when CPU exceeds 80% for 5 minutes\",\"rewrite this function to be cleaner\"]"
   relations: "{\"boundary\":[{\"skill\":\"debugging\",\"reason\":\"debugging fixes one specific bug; pattern-recognition identifies the recurring class behind many bugs and proposes a structural fix that prevents the whole class — same recurring-bug prompt routes to debugging for the immediate fix and to pattern-recognition for the systemic rule\"},{\"skill\":\"code-review\",\"reason\":\"code-review judges quality of a specific change at PR scope; pattern-recognition systematically detects recurring structural issues across the entire codebase — same 'recurring violation in PRs' prompt routes to code-review for blocking that PR and to pattern-recognition for adding a lint rule\"}],\"related\":[\"refactor\",\"naming-conventions\",\"lint-overlay\",\"diagnosis\"],\"verify_with\":[\"context-graph\",\"skill-infrastructure\",\"tool-call-strategy\"]}"
-  portability: "{\"readiness\":\"scripted\",\"targets\":[\"skill-md\"]}"
-  lifecycle: "{\"stale_after_days\":365,\"review_cadence\":\"quarterly\"}"
   mental_model: "|"
   purpose: "|"
   boundary: "|"
   analogy: "Pattern recognition is to a codebase what epidemiology is to a city's public health — a doctor (debugging) treats one patient with one infection; the epidemiologist (this skill) notices that fourteen patients across three hospitals all have the same infection, traces it back to a contaminated water source (root cause), names the outbreak, prescribes a public-health intervention (lint rule, type constraint, architectural fix) that prevents the next thousand cases, and updates the surveillance protocol so the next outbreak is caught at three cases instead of fourteen."
   misconception: "|"
-  concept: "{\"definition\":\"Pattern recognition is the cognitive and methodological discipline of identifying recurring structures across instances — separating signal from noise, naming the structure once detected, and elevating it into durable, transmissible knowledge. Drawing from Gestalt perception (Wertheimer 1923), expert intuition research (Klein 1998, Chase & Simon 1973), and the software-pattern tradition (Alexander 1977, Gamma et al. 1994), it treats pattern as a class noun: a regularity worth naming because it explains many observations through one structure.\",\"mental_model\":\"|\",\"purpose\":\"|\",\"boundary\":\"|\",\"taxonomy\":\"|\",\"analogy\":\"|\",\"misconception\":\"|\"}"
-  structural_verdict: PASS
-  truth_verdict: PASS
-  comprehension_verdict: UNVERIFIED
-  application_verdict: UNVERIFIED
-  last_audited: "2026-05-28"
-  lint_verdict: PASS
   skill_graph_source_repo: "https://github.com/jacob-balslev/skill-graph"
   skill_graph_project: Skill Graph
   skill_graph_canonical_skill: skills/meta-methods/pattern-recognition/SKILL.md
@@ -513,6 +496,7 @@ Before codifying a pattern, confirm:
 - Subject: `meta-methods`
 - Deployment: `portable`
 - Domain: `foundations/cognition`
+- Scope: Portable pattern-recognition methodology for auditing recurring issues, clustering errors, detecting convention drift, naming root-cause patterns, and converting repeated observations into prevention through docs, evals, lint rules, hooks, or architecture changes. Covers the Observe -> Cluster -> Name -> Codify -> Detect -> Prevent loop, grep-based scans, normalize-then-hash error clustering, board-health patterns, design-token and heading drift, domain-encoding traps, eval-as-pattern-tests, 5 Whys, pattern lifecycle states, and drift traps. Excludes one-off bug localization (debugging/diagnosis), PR-scope code judgment (code-review), naming-rule definition (naming-conventions), lint-rule implementation machinery (lint-overlay), and designing the classification system itself (taxonomy-design).
 
 **When to use**
 - I keep seeing the same null-pointer crash in three different files — what's the systemic fix?
@@ -544,16 +528,7 @@ Before codifying a pattern, confirm:
 - Analogy: Pattern recognition is to a codebase what epidemiology is to a city's public health — a doctor (debugging) treats one patient with one infection; the epidemiologist (this skill) notices that fourteen patients across three hospitals all have the same infection, traces it back to a contaminated water source (root cause), names the outbreak, prescribes a public-health intervention (lint rule, type constraint, architectural fix) that prevents the next thousand cases, and updates the surveillance protocol so the next outbreak is caught at three cases instead of fourteen.
 - Common misconception: |
 
-**Lifecycle & audit status**
-- Stability: `experimental`
-- Freshness: `2026-05-18`
-- Eval state: `unverified`
-- Routing eval: `absent`
-- Audit status: structural PASS, truth PASS, comprehension UNVERIFIED, application UNVERIFIED
-- Last audited: `2026-05-28`
-
-**Provenance**
-- version 1.2.0, schema v8, owner `skill-graph-maintainer`
-- Keywords: `recurring code pattern detection`, `anti-pattern audit`, `convention drift detection`, `error cluster triage`, `normalize-then-hash error grouping`, `five-whys root cause ladder`, `eval as pattern test`, `heading hierarchy violation`, `design token drift`, `null-vs-zero domain encoding`
+**Keywords**
+- `recurring code pattern detection`, `anti-pattern audit`, `convention drift detection`, `error cluster triage`, `normalize-then-hash error grouping`, `five-whys root cause ladder`, `eval as pattern test`, `heading hierarchy violation`, `design token drift`, `null-vs-zero domain encoding`
 
 <!-- skill-graph-context:end -->

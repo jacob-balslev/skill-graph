@@ -8,6 +8,7 @@ metadata:
   version: "1.0.0"
   subject: frontend-ui
   deployment_target: portable
+  scope: "Reasoning about the line at which execution context changes between a server runtime and a client runtime — what values can cross via serialization and what cannot, the directives that mark transitions ('use client', 'use server'), the difference between server-rendered HTML and a serialized component tree, the trust model that treats client input as adversarial, and the consequences of leaking server-only modules into client bundles. Portable across any server/client web framework; principle-grounded, not repo-bound. Excludes when and where the UI is produced (rendering-models), the HTTP wire protocol itself (http-semantics), frontend codebase organization (frontend-architecture), and API JSON-shape design (api-design)."
   taxonomy_domain: engineering/frontend
   owner: skill-graph-maintainer
   freshness: "2026-05-15"
@@ -223,6 +224,7 @@ After applying this skill, verify:
 - Subject: `frontend-ui`
 - Deployment: `portable`
 - Domain: `engineering/frontend`
+- Scope: Reasoning about the line at which execution context changes between a server runtime and a client runtime — what values can cross via serialization and what cannot, the directives that mark transitions ('use client', 'use server'), the difference between server-rendered HTML and a serialized component tree, the trust model that treats client input as adversarial, and the consequences of leaking server-only modules into client bundles. Portable across any server/client web framework; principle-grounded, not repo-bound. Excludes when and where the UI is produced (rendering-models), the HTTP wire protocol itself (http-semantics), frontend codebase organization (frontend-architecture), and API JSON-shape design (api-design).
 
 **When to use**
 - decide whether a piece of data must cross the network or can stay server-only
@@ -251,16 +253,7 @@ After applying this skill, verify:
 - Analogy: The client-server boundary is to a unified codebase what an embassy boundary is to a city — both spaces exist in the same physical address, but inside the embassy the law of one country applies (server: full filesystem, secret access, database), outside the law of another applies (client: browser sandbox, no secrets), and everyone crossing must pass through documented customs (serialization) with their bags inspected (validation) and stamped (authentication).
 - Common misconception: |
 
-**Lifecycle & audit status**
-- Stability: `experimental`
-- Freshness: `2026-05-15`
-- Eval state: `unverified`
-- Routing eval: `absent`
-- Audit status: structural PASS, truth PASS, comprehension UNVERIFIED, application UNVERIFIED
-- Last audited: `2026-05-28`
-
-**Provenance**
-- version 1.0.0, schema v8, owner `skill-graph-maintainer`
-- Keywords: `client server boundary`, `serialization boundary`, `use client directive`, `use server directive`, `React Server Components`, `server actions`, `RPC`, `serializable types`, `structured clone`, `secret leakage`
+**Keywords**
+- `client server boundary`, `serialization boundary`, `use client directive`, `use server directive`, `React Server Components`, `server actions`, `RPC`, `serializable types`, `structured clone`, `secret leakage`
 
 <!-- skill-graph-context:end -->

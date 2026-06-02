@@ -344,16 +344,7 @@ After applying this skill, verify:
 - Analogy: A real-time UI is a newsroom ticker: it needs a wire service, an editor that knows what changed, and a visible timestamp so readers know whether the headline is current.
 - Common misconception: The common mistake is treating real-time as a transport choice first. The actual design starts with the freshness promise: how current the view must be, what happens during disconnect, when updates are safe to apply automatically, and when the user needs control.
 
-**Lifecycle & audit status**
-- Stability: `stable`
-- Freshness: `2026-05-21`
-- Eval state: `unverified`
-- Routing eval: `absent`
-- Audit status: structural PASS, truth PASS, comprehension UNVERIFIED, application UNVERIFIED
-- Last audited: `2026-05-28`
-
-**Provenance**
-- version 1.1.0, schema v7, owner `skill-graph-maintainer`
-- Keywords: `real-time updates`, `live dashboard`, `browser freshness`, `stale data indicator`, `Server-Sent Events`, `SSE`, `WebSocket`, `adaptive polling`, `optimistic update`, `reconnect catch-up`, `new data banner`, `live notification`, `push updates`, `freshness timestamp`
+**Keywords**
+- `real-time updates`, `live dashboard`, `browser freshness`, `stale data indicator`, `Server-Sent Events`, `SSE`, `WebSocket`, `adaptive polling`, `optimistic update`, `reconnect catch-up`, `new data banner`, `live notification`, `push updates`, `freshness timestamp`
 
 <!-- skill-graph-context:end -->

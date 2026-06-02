@@ -9,6 +9,7 @@ metadata:
   version: "1.0.0"
   subject: code-engineering
   deployment_target: portable
+  scope: "Choosing, replacing, or justifying a framework, library, SDK, runtime, database, UI kit, or platform by fit — weighing constraints, team skill, ecosystem maturity, migration cost, operability, performance, security, and exit cost. Portable across any technology-selection decision; principle-grounded, not repo-bound. Excludes routine dependency hygiene (dependency-architecture), documenting an already-accepted decision (architecture-decision-records), and framework-specific implementation work."
   taxonomy_domain: architecture/technology-selection
   owner: skill-graph-maintainer
   freshness: "2026-05-11"
@@ -89,6 +90,7 @@ This skill ships a comprehension-eval artifact at [`examples/evals/framework-fit
 - Subject: `code-engineering`
 - Deployment: `portable`
 - Domain: `architecture/technology-selection`
+- Scope: Choosing, replacing, or justifying a framework, library, SDK, runtime, database, UI kit, or platform by fit — weighing constraints, team skill, ecosystem maturity, migration cost, operability, performance, security, and exit cost. Portable across any technology-selection decision; principle-grounded, not repo-bound. Excludes routine dependency hygiene (dependency-architecture), documenting an already-accepted decision (architecture-decision-records), and framework-specific implementation work.
 
 **When to use**
 - should we use Next.js server actions, route handlers, or a separate API service for this workflow?
@@ -110,16 +112,7 @@ This skill ships a comprehension-eval artifact at [`examples/evals/framework-fit
 - Verify with: `architecture-decision-records`, `dependency-architecture`
 - Related: `architecture-decision-records`, `dependency-architecture`, `performance-engineering`, `owasp-security`
 
-**Lifecycle & audit status**
-- Stability: `experimental`
-- Freshness: `2026-05-11`
-- Eval state: `unverified`
-- Routing eval: `absent`
-- Audit status: structural PASS, truth PASS, comprehension UNVERIFIED, application UNVERIFIED
-- Last audited: `2026-05-28`
-
-**Provenance**
-- version 1.0.0, schema v8, owner `skill-graph-maintainer`
-- Keywords: `framework fit`, `technology selection`, `library choice`, `SDK evaluation`, `platform evaluation`, `migration cost`, `exit cost`, `operability`, `ecosystem maturity`, `build vs buy`
+**Keywords**
+- `framework fit`, `technology selection`, `library choice`, `SDK evaluation`, `platform evaluation`, `migration cost`, `exit cost`, `operability`, `ecosystem maturity`, `build vs buy`
 
 <!-- skill-graph-context:end -->

@@ -7,6 +7,7 @@ metadata:
   version: "1.0.0"
   subject: design-craft
   deployment_target: portable
+  scope: "Establishing visual hierarchy — type-scale ratios, spacing rhythm, contrast as an ordering signal, weight and size as importance cues, and the layered relationship between primary, secondary, and tertiary information. Portable across any visual interface; principle-grounded, not repo-bound. Excludes content writing, information architecture, and specific color-palette construction (color-system-design)."
   owner: skill-graph-maintainer
   freshness: "2026-05-12"
   drift_check: "{\"last_verified\":\"2026-05-12\"}"
@@ -70,6 +71,7 @@ Reading order is a property of the page, not just the markup. CSS source order, 
 **Classification**
 - Subject: `design-craft`
 - Deployment: `portable`
+- Scope: Establishing visual hierarchy — type-scale ratios, spacing rhythm, contrast as an ordering signal, weight and size as importance cues, and the layered relationship between primary, secondary, and tertiary information. Portable across any visual interface; principle-grounded, not repo-bound. Excludes content writing, information architecture, and specific color-palette construction (color-system-design).
 
 **When to use**
 - Decide the H1/H2/H3 size ratios and weight contrast for a long-form article layout
@@ -87,16 +89,7 @@ Reading order is a property of the page, not just the markup. CSS source order, 
 **Related skills**
 - Related: `typography-system`, `color-system-design`, `layout-composition`, `visual-design-foundations`
 
-**Lifecycle & audit status**
-- Stability: `experimental`
-- Freshness: `2026-05-12`
-- Eval state: `unverified`
-- Routing eval: `absent`
-- Audit status: structural PASS, truth PASS, comprehension UNVERIFIED, application UNVERIFIED
-- Last audited: `2026-05-28`
-
-**Provenance**
-- version 1.0.0, schema v8, owner `skill-graph-maintainer`
-- Keywords: `visual hierarchy`, `hierarchical type sizing`, `proximity hierarchy`, `contrast hierarchy`, `importance ordering`, `reading order`, `focal point`, `figure ground`, `gestalt principles`, `hierarchy through weight`
+**Keywords**
+- `visual hierarchy`, `hierarchical type sizing`, `proximity hierarchy`, `contrast hierarchy`, `importance ordering`, `reading order`, `focal point`, `figure ground`, `gestalt principles`, `hierarchy through weight`
 
 <!-- skill-graph-context:end -->

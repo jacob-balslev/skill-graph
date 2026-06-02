@@ -8,6 +8,7 @@ metadata:
   version: "1.0.0"
   subject: design-craft
   deployment_target: portable
+  scope: "Structuring a component library or design system for reuse across products, themes, and teams — layering of primitives/composites/product-specific assemblies, component API design (props, polymorphism, compound components, render props vs hooks vs slots), the open-closed principle for component evolution, the headless/styled split for theming, controlled vs uncontrolled state contracts, ref forwarding and imperative escape hatches, and composition-over-configuration trade-offs. Portable across any component library; principle-grounded, not repo-bound. Excludes within-product module composition (design-module-composition), design-system meta-architecture (design-system-architecture), the visual language itself (visual-design-foundations, tokens), tactical hooks (library docs), and non-component-API state-management decisions (state-management)."
   taxonomy_domain: design/component-systems
   owner: skill-graph-maintainer
   freshness: "2026-05-16"
@@ -163,6 +164,7 @@ After applying this skill, verify:
 - Subject: `design-craft`
 - Deployment: `portable`
 - Domain: `design/component-systems`
+- Scope: Structuring a component library or design system for reuse across products, themes, and teams — layering of primitives/composites/product-specific assemblies, component API design (props, polymorphism, compound components, render props vs hooks vs slots), the open-closed principle for component evolution, the headless/styled split for theming, controlled vs uncontrolled state contracts, ref forwarding and imperative escape hatches, and composition-over-configuration trade-offs. Portable across any component library; principle-grounded, not repo-bound. Excludes within-product module composition (design-module-composition), design-system meta-architecture (design-system-architecture), the visual language itself (visual-design-foundations, tokens), tactical hooks (library docs), and non-component-API state-management decisions (state-management).
 
 **When to use**
 - design the API surface for a Dialog component that must work in multiple products with different visual languages
@@ -193,16 +195,7 @@ After applying this skill, verify:
 - Analogy: Component architecture is to a UI library what API design is to a backend service — the public contract is the only thing consumers see; every consumer depends on shape, behavior, and naming for things that may seem internal to the author; once a version ships, every prop and slot becomes a thing future versions must continue to support, just as every endpoint and field of a public API does. The headless/styled split is to component libraries what the data-plane/control-plane split is to distributed systems: separating the part that changes slowly (behavior, contracts) from the part that changes fast (visual treatment, theming).
 - Common misconception: |
 
-**Lifecycle & audit status**
-- Stability: `experimental`
-- Freshness: `2026-05-16`
-- Eval state: `unverified`
-- Routing eval: `absent`
-- Audit status: structural PASS, truth PASS, comprehension UNVERIFIED, application UNVERIFIED
-- Last audited: `2026-05-28`
-
-**Provenance**
-- version 1.0.0, schema v8, owner `skill-graph-maintainer`
-- Keywords: `component library design`, `atomic design layering`, `component primitives`, `component composites`, `compound components`, `polymorphic component`, `asChild prop`, `headless component`, `styled component`, `controlled component`
+**Keywords**
+- `component library design`, `atomic design layering`, `component primitives`, `component composites`, `compound components`, `polymorphic component`, `asChild prop`, `headless component`, `styled component`, `controlled component`
 
 <!-- skill-graph-context:end -->

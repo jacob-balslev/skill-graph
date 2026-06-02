@@ -7,6 +7,7 @@ metadata:
   version: "1.0.0"
   subject: design-craft
   deployment_target: portable
+  scope: "Implementing dark mode — prefers-color-scheme detection, theme persistence, flash-of-unstyled-theme prevention, color-token mirroring, image/asset variants, and meta theme-color updates. Portable across any web UI; principle-grounded, not repo-bound. Excludes designing the dark palette itself (color-system-design), token-architecture design, and generic theme-switching across more than two themes."
   taxonomy_domain: design/visual
   owner: skill-graph-maintainer
   freshness: "2026-05-12"
@@ -76,6 +77,7 @@ The user's explicit choice overrides the system. A user who has toggled to Dark 
 - Subject: `design-craft`
 - Deployment: `portable`
 - Domain: `design/visual`
+- Scope: Implementing dark mode — prefers-color-scheme detection, theme persistence, flash-of-unstyled-theme prevention, color-token mirroring, image/asset variants, and meta theme-color updates. Portable across any web UI; principle-grounded, not repo-bound. Excludes designing the dark palette itself (color-system-design), token-architecture design, and generic theme-switching across more than two themes.
 
 **When to use**
 - Add a dark mode toggle with system / light / dark options and persist the user's choice
@@ -93,16 +95,7 @@ The user's explicit choice overrides the system. A user who has toggled to Dark 
 **Related skills**
 - Related: `theme-system-design`, `color-system-design`, `a11y`, `frontend-architecture`
 
-**Lifecycle & audit status**
-- Stability: `experimental`
-- Freshness: `2026-05-12`
-- Eval state: `unverified`
-- Routing eval: `absent`
-- Audit status: structural PASS, truth PASS, comprehension UNVERIFIED, application UNVERIFIED
-- Last audited: `2026-05-28`
-
-**Provenance**
-- version 1.0.0, schema v8, owner `skill-graph-maintainer`
-- Keywords: `dark mode`, `prefers-color-scheme`, `theme persistence`, `flash of unstyled theme`, `flash of incorrect theme`, `color-scheme css property`, `meta theme-color`, `dark mode images`, `picture source media`, `system theme detection`
+**Keywords**
+- `dark mode`, `prefers-color-scheme`, `theme persistence`, `flash of unstyled theme`, `flash of incorrect theme`, `color-scheme css property`, `meta theme-color`, `dark mode images`, `picture source media`, `system theme detection`
 
 <!-- skill-graph-context:end -->

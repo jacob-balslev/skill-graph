@@ -9,6 +9,7 @@ metadata:
   version: "1.0.0"
   subject: design-craft
   deployment_target: portable
+  scope: "Designing and auditing form structure and validation UX — field grouping, required vs optional inputs, validation timing, the client/server validation split, the submission lifecycle, recovery, multi-step forms, and high-risk data entry. Portable across any form-bearing UI; principle-grounded, not repo-bound. Excludes labels and announcements alone (a11y), validation-message wording (microcopy), API schema design (api-design), and stored data modeling (data-modeling)."
   taxonomy_domain: design/ux
   owner: skill-graph-maintainer
   freshness: "2026-05-11"
@@ -90,6 +91,7 @@ This skill ships a comprehension-eval artifact at [`examples/evals/form-ux-archi
 - Subject: `design-craft`
 - Deployment: `portable`
 - Domain: `design/ux`
+- Scope: Designing and auditing form structure and validation UX — field grouping, required vs optional inputs, validation timing, the client/server validation split, the submission lifecycle, recovery, multi-step forms, and high-risk data entry. Portable across any form-bearing UI; principle-grounded, not repo-bound. Excludes labels and announcements alone (a11y), validation-message wording (microcopy), API schema design (api-design), and stored data modeling (data-modeling).
 
 **When to use**
 - design the validation lifecycle for this signup form
@@ -111,16 +113,7 @@ This skill ships a comprehension-eval artifact at [`examples/evals/form-ux-archi
 - Verify with: `a11y`, `microcopy`
 - Related: `interaction-patterns`, `interaction-feedback`, `task-analysis`, `a11y`, `microcopy`
 
-**Lifecycle & audit status**
-- Stability: `experimental`
-- Freshness: `2026-05-11`
-- Eval state: `unverified`
-- Routing eval: `absent`
-- Audit status: structural PASS, truth PASS, comprehension UNVERIFIED, application UNVERIFIED
-- Last audited: `2026-05-28`
-
-**Provenance**
-- version 1.0.0, schema v8, owner `skill-graph-maintainer`
-- Keywords: `form-ux`, `form architecture`, `validation timing`, `client server validation`, `field grouping`, `submission lifecycle`, `form recovery`, `multi-step forms`, `required optional inputs`, `error recovery flow`
+**Keywords**
+- `form-ux`, `form architecture`, `validation timing`, `client server validation`, `field grouping`, `submission lifecycle`, `form recovery`, `multi-step forms`, `required optional inputs`, `error recovery flow`
 
 <!-- skill-graph-context:end -->

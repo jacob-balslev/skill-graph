@@ -1,33 +1,18 @@
 ---
 name: methodical
-description: "Enforces disciplined, complete, step-by-step execution that prevents the LLM failure modes of scope reduction, finding filtering, step skipping, assumed verification, and sycophantic output compression. Provides the explanatory model for WHY agents fail at completeness (RLHF training rewards shorter, cleaner, more positive outputs — 58% sycophancy rate measured in frontier models) and the structural countermeasures: pre-task declarations, step-level evidence receipts, generation/criticism separation, explicit completeness claims, and anti-pattern detection. Use when executing audits, producing reports, creating Linear tasks from findings, verifying acceptance criteria, or any task where completeness and honesty matter more than brevity. Do NOT use for task workflow sequencing (use task-execution), quality definitions per artifact type (use quality-doctrine), or the generate-critique-revise loop mechanics (use self-review-pattern)."
+description: "Enforces disciplined, complete, step-by-step execution that prevents the LLM failure modes of scope reduction, finding filtering, step skipping, assumed verification, and sycophantic output compression. Provides the explanatory model for WHY agents fail at completeness (RLHF training rewards shorter, cleaner, more positive outputs — 58% sycophancy rate measured in frontier models) and the structural countermeasures: pre-task declarations, step-level evidence receipts, generation/criticism separation, explicit completeness claims, and anti-pattern detection. Use when executing audits, producing reports, creating tracked tasks from findings, verifying acceptance criteria, or any task where completeness and honesty matter more than brevity. Do NOT use for task workflow sequencing (use `task-path-optimization`), artifact-quality breadth checks (use `best-practice`), result scoring (use `evaluation`), or compression after complete enumeration (use `summarization`)."
 metadata:
-  schema_version: "7"
   subject: meta-methods
   deployment_target: portable
-  version: "1.0.0"
+  scope: "Portable across any project, repo, or agent runtime. Teaches the execution discipline that counters LLM completeness failures — scope reduction, finding filtering, step skipping, assumed verification, and sycophantic output compression — in any task where completeness and honesty outweigh brevity: audits, reports, converting findings into tracked tasks, and acceptance-criteria verification. Not bound to any codebase; the countermeasures (pre-task declarations, step-level evidence receipts, generation/criticism separation, explicit completeness claims) are universal."
   triggers: "[\"methodical-skill\",\"completeness-skill\"]"
   keywords: "[\"methodical\",\"completeness\",\"no filtering\",\"all findings\",\"step by step\",\"evidence receipt\",\"scope reduction\",\"sycophancy\",\"intellectual honesty\",\"no skipping\"]"
-  owner: claude
-  freshness: "2026-04-01"
-  eval_artifacts: present
-  eval_state: unverified
-  routing_eval: absent
-  drift_check: "{\"last_verified\":\"2026-04-01\"}"
-  lint_verdict: PASS
-  drift_status: OK
-  last_audited: "2026-05-28"
-  relations: "{\"adjacent\":[\"self-review-pattern\",\"editorial-standards\",\"methodology\",\"quality-doctrine\",\"self-evaluation\"],\"boundary\":[\"task-execution\",\"summarization\",\"context-management\"],\"verify_with\":[\"self-evaluation\",\"quality-doctrine\",\"agent-governance\"]}"
-  comprehension_state: present
+  relations: "{\"related\":[\"methodology\",\"best-practice\",\"epistemic-grounding\",\"evaluation\",\"prioritization\"],\"boundary\":[{\"skill\":\"task-path-optimization\",\"reason\":\"task-path-optimization owns choosing or shortening the route through a task; methodical owns preserving complete evidence, counts, and verification while executing any route.\"},{\"skill\":\"best-practice\",\"reason\":\"best-practice owns broad artifact-quality standards; methodical owns complete and honest execution mechanics independent of artifact type.\"},{\"skill\":\"summarization\",\"reason\":\"summarization owns compression after the source material is complete; methodical owns preventing premature compression or item loss before summarization.\"},{\"skill\":\"context-management\",\"reason\":\"context-management owns what enters or leaves the working context; methodical owns making sure output and claims do not silently drop in-scope findings.\"},{\"skill\":\"evaluation\",\"reason\":\"evaluation owns scoring and verdict interpretation; methodical owns the evidence discipline that makes a later score defensible.\"}],\"verify_with\":[\"best-practice\",\"epistemic-grounding\",\"evaluation\"]}"
   mental_model: "LLMs are naturally sycophantic, lazy, and eager to summarize away complexity due to RLHF training. This skill provides the rigid System 2 scaffolding—checklists, evidence receipts, and separation of generation from critique—to force honest, exhaustive execution."
   purpose: "To prevent agents from silently filtering findings, skipping instructions, or hallucinating verification by enforcing a strict, step-by-step reporting and evidence protocol."
-  boundary: "This skill enforces *how* to execute tasks transparently and completely. It does not dictate *what* quality means for a specific artifact (which is `quality-doctrine`), nor does it sequence the larger task phases (which is `task-execution`)."
+  boundary: "This skill enforces *how* to execute tasks transparently and completely. It does not dictate broad artifact quality (which is `best-practice`), score a result (which is `evaluation`), compress complete output (which is `summarization`), or optimize the route through a task (which is `task-path-optimization`)."
   analogy: "Methodical execution is like aviation's 'read-do' checklist: you don't just glance at the panel and say 'looks good', you read the specific gauge, state the value, and check the box, every single time."
   misconception: "A common misconception is that 'prioritizing' means 'filtering'. In this methodology, prioritization is strictly a reordering operation; zero items are removed, and the full count is always presented."
-  structural_verdict: PASS
-  truth_verdict: PASS
-  comprehension_verdict: UNVERIFIED
-  application_verdict: UNVERIFIED
   skill_graph_source_repo: "https://github.com/jacob-balslev/skill-graph"
   skill_graph_project: Skill Graph
   skill_graph_canonical_skill: skills/meta-methods/methodical/SKILL.md
@@ -41,7 +26,7 @@ metadata:
 
 **Why it exists:** Unstructured multi-agent networks amplify errors. When agents act on assumed state, filter negative findings to appear "helpful", or summarize before enumerating, they create false state that poisons downstream tasks. 
 
-**What it is NOT:** It is not a guide for what makes code "good" (that is `quality-doctrine`). It is not the task workflow engine (that is `task-execution`). It is specifically the discipline of *how* an agent observes, reports, and verifies.
+**What it is NOT:** It is not a broad artifact-quality checklist (that is `best-practice`). It is not task route optimization (that is `task-path-optimization`). It is specifically the discipline of *how* an agent observes, reports, and verifies.
 
 **Adjacent concepts:** Intellectual honesty, System 1 vs System 2 thinking, Cleanroom formal specification, OODA loop.
 
@@ -62,10 +47,10 @@ metadata:
 | File | Purpose |
 |---|---|
 | `AGENTS.md` | Root source for complete-reporting, verification, and completeness-claim rules |
-| `skills/methodical/references/README.md` | Reference index for the research and source material behind this skill |
+| `skills/meta-methods/methodical/references/README.md` | Reference index for the research and source material behind this skill |
 | `.claude/commands/system-health.md` | Concrete command applying methodical completeness and self-critique requirements |
 | `scripts/memory/session-log.js` | Session finding extraction flow that depends on exhaustive reporting discipline |
-| `skills/no-cutting-corners/SKILL.md` | Adjacent enforcement skill that reuses the methodical anti-pattern model |
+| `skills/quality-assurance/best-practice/SKILL.md` | Adjacent broad quality-enforcement skill that methodical verifies against |
 
 ## Coverage
 
@@ -81,7 +66,7 @@ LLMs operate in permanent System 1 mode (Kahneman) — fast, automatic, pattern-
 
 ## Trio Boundaries
 
-methodical enforces *how* work is executed (completeness, evidence, honesty). It does NOT define *what quality means* per artifact type — use `quality-doctrine` for that. It does NOT provide the generate-critique-revise loop mechanics — use `self-review-pattern` for that. It does NOT sequence task phases — use `task-execution` for that.
+methodical enforces *how* work is executed (completeness, evidence, honesty). It does NOT define broad artifact quality — use `best-practice` for that. It does NOT score or interpret outcomes — use `evaluation` for that. It does NOT choose the task route — use `task-path-optimization` for that.
 
 ---
 
@@ -292,9 +277,9 @@ After applying this skill, verify:
 
 | Instead of this skill | Use | Why |
 |---|---|---|
-| Defining what "better" means per artifact type | `quality-doctrine` | quality-doctrine owns quality definitions; methodical owns execution discipline |
-| Implementing generate-critique-revise loops | `self-review-pattern` | self-review-pattern owns the loop mechanics; methodical provides the forcing function |
-| Sequencing task phases (claim, implement, verify, wrap) | `task-execution` | task-execution owns the workflow; methodical governs behavior within each phase |
+| Defining broad artifact quality expectations | `best-practice` | best-practice owns cross-domain quality standards; methodical owns execution discipline |
+| Scoring or interpreting whether an output is good enough | `evaluation` | evaluation owns scoring and verdict interpretation; methodical owns evidence completeness |
+| Choosing or shortening the route through a task | `task-path-optimization` | task-path-optimization owns the route; methodical governs behavior within each phase |
 | Compressing output for token efficiency | `summarization` | summarization has explicit level hierarchy; methodical requires completeness BEFORE summarization |
 | Managing what enters/exits context | `context-management` | context-management shapes the working set; methodical ensures nothing is silently dropped from output |
 
@@ -316,30 +301,30 @@ After applying this skill, verify:
 **Classification**
 - Subject: `meta-methods`
 - Deployment: `portable`
+- Scope: Portable across any project, repo, or agent runtime. Teaches the execution discipline that counters LLM completeness failures — scope reduction, finding filtering, step skipping, assumed verification, and sycophantic output compression — in any task where completeness and honesty outweigh brevity: audits, reports, converting findings into tracked tasks, and acceptance-criteria verification. Not bound to any codebase; the countermeasures (pre-task declarations, step-level evidence receipts, generation/criticism separation, explicit completeness claims) are universal.
 
 **When to use**
 - Triggers: `methodical-skill`, `completeness-skill`
 
+**Not for**
+- Owned by `task-path-optimization`: choosing or shortening the route through a task
+- Owned by `best-practice`: broad artifact-quality standards
+- Owned by `summarization`: compression after the source material is complete
+- Owned by `context-management`: what enters or leaves the working context
+- Owned by `evaluation`: scoring and verdict interpretation
+
 **Related skills**
-- Verify with: `self-evaluation`, `quality-doctrine`, `agent-governance`
-- Related: `self-review-pattern`, `editorial-standards`, `methodology`, `quality-doctrine`, `self-evaluation`
+- Verify with: `best-practice`, `epistemic-grounding`, `evaluation`
+- Related: `methodology`, `best-practice`, `epistemic-grounding`, `evaluation`, `prioritization`
 
 **Concept**
 - Mental model: LLMs are naturally sycophantic, lazy, and eager to summarize away complexity due to RLHF training. This skill provides the rigid System 2 scaffolding—checklists, evidence receipts, and separation of generation from critique—to force honest, exhaustive execution.
 - Purpose: To prevent agents from silently filtering findings, skipping instructions, or hallucinating verification by enforcing a strict, step-by-step reporting and evidence protocol.
-- Boundary: This skill enforces *how* to execute tasks transparently and completely. It does not dictate *what* quality means for a specific artifact (which is `quality-doctrine`), nor does it sequence the larger task phases (which is `task-execution`).
+- Boundary: This skill enforces *how* to execute tasks transparently and completely. It does not dictate broad artifact quality (which is `best-practice`), score a result (which is `evaluation`), compress complete output (which is `summarization`), or optimize the route through a task (which is `task-path-optimization`).
 - Analogy: Methodical execution is like aviation's 'read-do' checklist: you don't just glance at the panel and say 'looks good', you read the specific gauge, state the value, and check the box, every single time.
 - Common misconception: A common misconception is that 'prioritizing' means 'filtering'. In this methodology, prioritization is strictly a reordering operation; zero items are removed, and the full count is always presented.
 
-**Lifecycle & audit status**
-- Freshness: `2026-04-01`
-- Eval state: `unverified`
-- Routing eval: `absent`
-- Audit status: structural PASS, truth PASS, comprehension UNVERIFIED, application UNVERIFIED
-- Last audited: `2026-05-28`
-
-**Provenance**
-- version 1.0.0, schema v7, owner `claude`
-- Keywords: `methodical`, `completeness`, `no filtering`, `all findings`, `step by step`, `evidence receipt`, `scope reduction`, `sycophancy`, `intellectual honesty`, `no skipping`
+**Keywords**
+- `methodical`, `completeness`, `no filtering`, `all findings`, `step by step`, `evidence receipt`, `scope reduction`, `sycophancy`, `intellectual honesty`, `no skipping`
 
 <!-- skill-graph-context:end -->

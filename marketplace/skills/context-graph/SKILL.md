@@ -5,38 +5,21 @@ license: MIT
 compatibility: "Architecture-level skill. Applies to any agent-coding workspace that has more than one skill / doc-routing / memory artifact and any way to traverse them — Claude Code, OpenCode, Cursor, Aider, Continue, Copilot Workspace, or a custom harness. The four-graph model and the orphan / connectivity metrics are independent of the specific runtime."
 allowed-tools: Read Grep
 metadata:
-  schema_version: "8"
-  version: "1.1.0"
   subject: agent-ops
   deployment_target: portable
+  scope: "Designing and auditing the multi-graph context architecture of an AI-coding workspace: skill graph, document routing graph, memory index, script registry, and the cross-graph edges between them. Covers edge typing, orphan detection, connectivity health, deterministic graph-synthesis signals, change-propagation checks, and drift or hub-and-spoke anti-patterns. Excludes authoring one SKILL.md, validating one skill, live routing decisions, context-window budgeting, and session load/drop choices."
   taxonomy_domain: agent/context
-  owner: skill-graph-maintainer
-  freshness: "2026-05-18"
-  drift_check: "{\"last_verified\":\"2026-05-18\"}"
-  eval_artifacts: planned
-  eval_state: unverified
-  routing_eval: absent
-  comprehension_state: present
   stability: experimental
   keywords: "[\"context graph architecture\",\"multi-graph context model\",\"skill knowledge graph\",\"document routing graph\",\"memory index graph\",\"script command registry graph\",\"cross-graph edges\",\"orphan detection skill graph\",\"graph connectivity metrics\",\"average node degree\"]"
   examples: "[\"we have ~300 skills but the agent never finds half of them — what's the diagnostic frame?\",\"how do I measure whether our skill graph is actually navigable vs just present?\",\"I changed a webhook handler — what's the discipline for tracing the impact across docs, skills, memory, and scripts?\",\"we keep accumulating orphan skills and our connectivity drops every quarter — how do I make graph-health a deliberate gate?\",\"the agent is loading 15 skills per task and burning context — is the underlying graph too dense, too sparse, or wrong-shaped?\",\"design a deterministic recipe for synthesizing the skill graph from frontmatter without running an LLM\",\"what's the right cap on adjacent / boundary / verify_with relations per skill?\"]"
   anti_examples: "[\"scaffold a new SKILL.md from a template\",\"validate that this single skill's frontmatter matches the schema\",\"decide which skill to inject for this query right now\",\"this skill says 'use orgQuery'; that one says 'never use orgQuery' — fix the conflict\",\"decide what should and shouldn't be in this agent's context window for this task\",\"review this AI-generated PR for correctness\"]"
   relations: "{\"boundary\":[{\"skill\":\"skill-router\",\"reason\":\"skill-router is the per-query dispatch decision (which skill activates now); context-graph is the underlying graph the router traverses\"},{\"skill\":\"skill-infrastructure\",\"reason\":\"skill-infrastructure owns the live skill library tooling (census, conflict detection, routing-gap reporting); context-graph owns the architectural model behind it\"},{\"skill\":\"skill-scaffold\",\"reason\":\"skill-scaffold authors a single SKILL.md; context-graph designs the graph that those authored skills participate in\"}],\"related\":[\"skill-router\",\"skill-infrastructure\",\"skill-scaffold\"],\"verify_with\":[\"skill-infrastructure\"]}"
   grounding: "{\"subject_matter\":\"Agent workspace context topology and discovery model\",\"grounding_mode\":\"hybrid\",\"truth_sources\":[\"https://github.com/jacob-balslev/skill-graph/blob/main/SKILL_GRAPH.md\",\"https://github.com/jacob-balslev/skill-graph/blob/main/docs/PRIMER.md\",\"https://github.com/jacob-balslev/skill-graph/blob/main/docs/concept-map.md\",\"https://github.com/jacob-balslev/skill-graph/blob/main/docs/diagrams/starter-graph.mmd\",\"https://github.com/jacob-balslev/skill-graph/blob/main/scripts/generate-manifest.js\",\"https://github.com/jacob-balslev/skill-graph/blob/main/scripts/skill-overlap.js\"],\"failure_modes\":[\"inferred_edges_replace_authored_relations\",\"orphan_skills_remain_unreachable\",\"relation_caps_turn_into_hub_and_spoke_graph\",\"change_propagation_ignores_cross_graph_edges\"],\"evidence_priority\":\"repo_code_first\"}"
-  portability: "{\"readiness\":\"scripted\",\"targets\":[\"skill-md\"]}"
-  lifecycle: "{\"stale_after_days\":365,\"review_cadence\":\"quarterly\"}"
   mental_model: "Context discovery is a graph problem: agents start from the current task, then traverse typed edges to find the skills, docs, memory records, scripts, and command surfaces that are relevant but not explicitly named. The useful primitives are nodes, typed edges, traversal roots, graph health metrics, and propagation paths. The core relationship is that a node's quality only matters if traversal can reach it; unreachable knowledge behaves like missing knowledge."
   purpose: "Prevents large agent workspaces from becoming flat piles of disconnected files. Without a context graph, agents over-rely on exact-name recall, load overly broad context, miss nearby safety or correctness skills, and let documentation or memory drift because change propagation has no visible route. This skill replaces ad hoc \\\"search until something looks relevant\\\" with explicit topology, health checks, and propagation discipline."
   boundary: "Distinct from skill routing, which decides what to load for one query; this skill designs the graph that routing traverses. Distinct from context-window budgeting, which decides how much selected material fits; this skill decides how material becomes discoverable. Distinct from single-skill audit, which validates one node; this skill evaluates library topology, edge discipline, orphan risk, and cross-graph propagation."
   analogy: "A context graph is a transit map for an agent workspace: individual stations can be excellent, but the system only works when routes connect them, transfer points are intentional, and isolated stops are visible enough to fix."
   misconception: "The common mistake is treating graph metadata as decoration: add a few \\\"related\\\" links, trust search to fill gaps, and assume more edges always means better discovery. That produces noisy hubs, one-way references, and isolated specialist skills. A useful graph is not the densest graph; it is the graph whose typed edges preserve routing meaning, keep important nodes reachable, and make change propagation auditable."
-  concept: "{\"definition\":\"A context graph is the explicit topology that connects an agent workspace's skills, docs, memory records, scripts, and commands so agents can discover relevant context by traversal rather than exact-name recall.\",\"mental_model\":\"Agents start from a task as the traversal root, then follow typed edges to reachable nodes. Node quality and graph reachability are separate properties: a beautifully written skill that no route reaches behaves like absent knowledge. Healthy graph work therefore watches edge meaning, orphan rate, degree distribution, cluster boundaries, and cross-graph propagation paths together.\",\"purpose\":\"It solves the flat-library failure mode where useful knowledge exists but agents cannot find it unless the user names it directly. The replacement is explicit topology: authored relations, deterministic synthesis signals, health metrics, and propagation checks that make relevance discoverable and drift visible.\",\"boundary\":\"It is not per-query skill routing, context-window budgeting, or single-file metadata linting. Routing consumes the graph, budgeting trims selected context, and single-skill audit checks one node; context-graph work asks whether the whole workspace is navigable and whether changes propagate through the right edges.\",\"taxonomy\":\"Main graph families are skill knowledge graphs, document routing graphs, memory indexes, and script or command registries. Main edge concerns are typed meaning, reachability, reciprocity, degree caps, cross-graph propagation, and deterministic rebuild signals.\",\"analogy\":\"A context graph is a transit map for an agent workspace: individual stations can be excellent, but the system only works when routes connect them, transfer points are intentional, and isolated stops are visible enough to fix.\",\"misconception\":\"The trap is believing more links always improve discovery. Over-linking creates noisy hubs, under-linking creates orphans, and untyped links destroy routing meaning. The useful graph is the one whose edges preserve intent and make important context reachable.\"}"
-  structural_verdict: PASS
-  truth_verdict: UNVERIFIED
-  comprehension_verdict: UNVERIFIED
-  application_verdict: UNVERIFIED
-  last_audited: "2026-05-28"
-  lint_verdict: PASS
   skill_graph_source_repo: "https://github.com/jacob-balslev/skill-graph"
   skill_graph_project: Skill Graph
   skill_graph_canonical_skill: skills/agent-ops/context-graph/SKILL.md
@@ -213,6 +196,7 @@ Each step exercises a different edge type. Skipping a step leaves a stale edge s
 - Subject: `agent-ops`
 - Deployment: `portable`
 - Domain: `agent/context`
+- Scope: Designing and auditing the multi-graph context architecture of an AI-coding workspace: skill graph, document routing graph, memory index, script registry, and the cross-graph edges between them. Covers edge typing, orphan detection, connectivity health, deterministic graph-synthesis signals, change-propagation checks, and drift or hub-and-spoke anti-patterns. Excludes authoring one SKILL.md, validating one skill, live routing decisions, context-window budgeting, and session load/drop choices.
 
 **When to use**
 - we have ~300 skills but the agent never finds half of them — what's the diagnostic frame?
@@ -249,16 +233,7 @@ Each step exercises a different edge type. Skipping a step leaves a stale edge s
 - Mode: `hybrid`
 - Truth sources: `https://github.com/jacob-balslev/skill-graph/blob/main/SKILL_GRAPH.md`, `https://github.com/jacob-balslev/skill-graph/blob/main/docs/PRIMER.md`, `https://github.com/jacob-balslev/skill-graph/blob/main/docs/concept-map.md`, `https://github.com/jacob-balslev/skill-graph/blob/main/docs/diagrams/starter-graph.mmd`, `https://github.com/jacob-balslev/skill-graph/blob/main/scripts/generate-manifest.js`, `https://github.com/jacob-balslev/skill-graph/blob/main/scripts/skill-overlap.js`
 
-**Lifecycle & audit status**
-- Stability: `experimental`
-- Freshness: `2026-05-18`
-- Eval state: `unverified`
-- Routing eval: `absent`
-- Audit status: structural PASS, truth UNVERIFIED, comprehension UNVERIFIED, application UNVERIFIED
-- Last audited: `2026-05-28`
-
-**Provenance**
-- version 1.1.0, schema v8, owner `skill-graph-maintainer`
-- Keywords: `context graph architecture`, `multi-graph context model`, `skill knowledge graph`, `document routing graph`, `memory index graph`, `script command registry graph`, `cross-graph edges`, `orphan detection skill graph`, `graph connectivity metrics`, `average node degree`
+**Keywords**
+- `context graph architecture`, `multi-graph context model`, `skill knowledge graph`, `document routing graph`, `memory index graph`, `script command registry graph`, `cross-graph edges`, `orphan detection skill graph`, `graph connectivity metrics`, `average node degree`
 
 <!-- skill-graph-context:end -->

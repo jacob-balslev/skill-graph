@@ -1,43 +1,28 @@
 ---
 name: epistemic-grounding
-description: "Use when authoring any artifact that makes claims — skill content, documentation, audit findings, architecture proposals, code review comments. Covers the discipline of grounding every claim to a verifiable source, distinguishing verified-by-evidence from inferred-from-context, using normative vocabulary precisely (RFC 2119 MUST/SHOULD/MAY), and structuring arguments so the warrant from data to claim is visible to a reader. Do NOT use for verification protocol mechanics in this repo (use the verification-protocol rule file), for output-completeness enforcement (use methodology), or for self-scoring on a 1-5 scale (use self-evaluation). Do NOT use for decide which lint rule to add for a specific kind of drift (use skill-infrastructure). Do NOT use for evaluate a finished SKILL.md against the comprehension grader (use evaluation). Do NOT use for the rules for naming and meaning-making (use semantics)."
+description: "Use when authoring any artifact that makes claims — skill content, documentation, audit findings, architecture proposals, code review comments. Covers the discipline of grounding every claim to a verifiable source, distinguishing verified-by-evidence from inferred-from-context, using normative vocabulary precisely (RFC 2119 MUST/SHOULD/MAY), and structuring arguments so the warrant from data to claim is visible to a reader. Do NOT use for execution-level evidence protocols or output-completeness enforcement (use methodology), naming precision (use semantics), or grader/rubric design (use evaluation or agent-eval-design). Do NOT use for decide which lint rule to add for a specific kind of drift (use skill-infrastructure). Do NOT use for evaluate a finished SKILL.md against the comprehension grader (use evaluation)."
 license: MIT
 allowed-tools: Read Grep
 metadata:
-  schema_version: "8"
-  version: "1.0.0"
   subject: meta-methods
   deployment_target: portable
+  scope: "Portable claim-grounding discipline for skill content, documentation, audit findings, architecture proposals, code review comments, and other artifacts that assert facts. Teaches Toulmin claim/data/warrant/backing/qualifier/rebuttal structure, RFC 2119 modality, verified/inferred/asserted labels, source-to-claim warrants, and honest hedging. Excludes execution-level evidence receipts and output completeness (methodology), naming precision (semantics), and grader/rubric design (evaluation or agent-eval-design)."
   taxonomy_domain: foundations/epistemics
-  owner: skill-graph-maintainer
-  freshness: "2026-05-15"
-  drift_check: "{\"last_verified\":\"2026-05-15\"}"
-  eval_artifacts: planned
-  eval_state: unverified
-  routing_eval: absent
-  comprehension_state: present
   stability: experimental
   keywords: "[\"epistemic grounding\",\"claim grounding\",\"source citation\",\"RFC 2119 modality\",\"Toulmin argument\",\"evidence-based assertion\",\"hallucination prevention\",\"normative vocabulary\",\"warrant\",\"epistemic hedge\"]"
   triggers: "[\"ground this claim\",\"cite a source\",\"MUST vs SHOULD\",\"is this verified\",\"how do you know that\"]"
   examples: "[\"before stating that this library supports X, confirm against the actual docs\",\"rewrite this finding so each assertion either cites a file or is marked as inference\",\"should this be a MUST or a SHOULD? what's the strength of the claim?\",\"the agent reported 'fix works' but no test was run — flag the gap in grounding\"]"
   anti_examples: "[\"verify every step of an audit task with concrete evidence (use methodology)\",\"decide which lint rule to add for a specific kind of drift (use skill-infrastructure)\",\"evaluate a finished SKILL.md against the comprehension grader (use evaluation)\"]"
-  relations: "{\"related\":[\"methodology\",\"semantics\"],\"boundary\":[{\"skill\":\"methodology\",\"reason\":\"methodology enforces output-level completeness and step-level evidence receipts; epistemic-grounding is the upstream discipline that decides what counts as evidence in the first place.\"},{\"skill\":\"semantics\",\"reason\":\"semantics owns the rules for naming and meaning-making; epistemic-grounding owns the rules for grounding a claim to a verifiable source.\"}],\"verify_with\":[\"methodology\",\"evaluation\"]}"
+  relations: "{\"related\":[\"methodology\",\"semantics\",\"evaluation\",\"agent-eval-design\",\"best-practice\"],\"boundary\":[{\"skill\":\"methodology\",\"reason\":\"epistemic-grounding owns what counts as a grounded claim; methodology owns execution-level completeness and step-level evidence receipts\"},{\"skill\":\"semantics\",\"reason\":\"epistemic-grounding owns source-to-claim warrants; semantics owns naming and meaning precision\"},{\"skill\":\"evaluation\",\"reason\":\"epistemic-grounding owns claim grounding before judgment; evaluation owns scoring frameworks and result interpretation\"}],\"verify_with\":[\"methodology\",\"evaluation\",\"best-practice\"]}"
   mental_model: "|"
   purpose: "|"
   boundary: "|"
   analogy: "Epistemic grounding is to claims what double-entry bookkeeping is to financial transactions — every assertion has a corresponding source on the other side of the ledger, and any entry without its pair is a red flag in the audit."
   misconception: "|"
-  concept: "{\"definition\":\"Epistemic grounding is the discipline of binding every assertion to a verifiable source, marking the modality (strength) of the claim, and making the warrant (the inference from source to claim) explicit. It is the practice that turns a generated statement into a defended statement.\",\"mental_model\":\"|\",\"purpose\":\"|\",\"boundary\":\"|\",\"taxonomy\":\"|\",\"analogy\":\"|\",\"misconception\":\"|\"}"
-  structural_verdict: PASS
-  truth_verdict: PASS
-  comprehension_verdict: UNVERIFIED
-  application_verdict: UNVERIFIED
-  last_audited: "2026-05-28"
-  lint_verdict: PASS
   skill_graph_source_repo: "https://github.com/jacob-balslev/skill-graph"
   skill_graph_project: Skill Graph
   skill_graph_canonical_skill: skills/meta-methods/epistemic-grounding/SKILL.md
-  skill_graph_export_description_projection: anti_examples+boundary
+  skill_graph_export_description_projection: anti_examples
 ---
 
 # Epistemic Grounding
@@ -128,8 +113,8 @@ After applying this skill, verify:
 |---|---|---|
 | Enforcing step-level evidence receipts and output completeness | `methodology` | methodology owns the execution discipline; this skill is the upstream grounding discipline that decides what counts as evidence in the first place |
 | Naming things precisely (variables, functions, files) | `semantics` | semantics owns naming precision; this skill owns claim grounding |
-| Drawing inferences from premises | `reasoning` | reasoning is the cognitive primitive; this skill is the marking discipline for distinguishing inference from observation |
-| Verifying that a specific implementation works | `evaluation` or repo-local verification protocol | evaluation owns grader frameworks; this skill is the structural discipline upstream of any verification |
+| Drawing inferences from premises | `first-principles-thinking` or `bayesian-reasoning` | those skills own reasoning moves; this skill is the marking discipline for distinguishing inference from observation |
+| Verifying that a specific implementation works | `evaluation` or `methodology` | evaluation owns grader frameworks and methodology owns execution evidence; this skill is the structural discipline upstream of any verification |
 | Designing the rules of a skill audit | `skill-infrastructure` | skill-infrastructure owns lint and census tooling; this skill governs what counts as a grounded claim that lint might check |
 
 ## Key Sources
@@ -137,8 +122,8 @@ After applying this skill, verify:
 - Toulmin, S. (1958). *The Uses of Argument*. Cambridge University Press. The canonical six-primitive argument structure (claim/data/warrant/backing/qualifier/rebuttal).
 - Bradner, S. (1997). [RFC 2119: Key words for use in RFCs to Indicate Requirement Levels](https://datatracker.ietf.org/doc/html/rfc2119). IETF. The standardized MUST/SHOULD/MAY normative vocabulary.
 - Leiba, B. (2017). [RFC 8174: Ambiguity of Uppercase vs Lowercase in RFC 2119 Key Words](https://datatracker.ietf.org/doc/html/rfc8174). IETF. Clarifies that only ALL-CAPS forms carry RFC 2119 weight.
-- Northeastern University (2025). "AI sycophancy: 58.19% rate across frontier models." The measurement that justifies structural countermeasures over behavioral ones.
-- Royal Society Open Science (2025). "LLM summarization bias: overgeneralization in 26-73% of cases." The measurement that justifies explicit source-to-claim warrant tracking.
+- Fanous et al. (2025). [SycEval: Evaluating LLM Sycophancy](https://ojs.aaai.org/index.php/AIES/article/view/36598). *AAAI/ACM AIES 2025*. Reports sycophantic behavior in 58.19% of evaluated cases; supports structural countermeasures over tone-based trust.
+- Peters, U., & Chin-Yee, B. (2025). [Generalization bias in large language model summarization of scientific research](https://doi.org/10.1098/rsos.241776). *Royal Society Open Science*. Reports overgeneralization in 26-73% of cases for several tested LLMs; supports explicit source-to-claim warrant tracking.
 
 ## Skill Graph context
 
@@ -148,6 +133,7 @@ After applying this skill, verify:
 - Subject: `meta-methods`
 - Deployment: `portable`
 - Domain: `foundations/epistemics`
+- Scope: Portable claim-grounding discipline for skill content, documentation, audit findings, architecture proposals, code review comments, and other artifacts that assert facts. Teaches Toulmin claim/data/warrant/backing/qualifier/rebuttal structure, RFC 2119 modality, verified/inferred/asserted labels, source-to-claim warrants, and honest hedging. Excludes execution-level evidence receipts and output completeness (methodology), naming precision (semantics), and grader/rubric design (evaluation or agent-eval-design).
 
 **When to use**
 - before stating that this library supports X, confirm against the actual docs
@@ -160,12 +146,13 @@ After applying this skill, verify:
 - verify every step of an audit task with concrete evidence (use methodology)
 - decide which lint rule to add for a specific kind of drift (use skill-infrastructure)
 - evaluate a finished SKILL.md against the comprehension grader (use evaluation)
-- Owned by `methodology`
-- Owned by `semantics`: the rules for naming and meaning-making
+- Owned by `methodology`: what counts as a grounded claim
+- Owned by `semantics`: source-to-claim warrants
+- Owned by `evaluation`: claim grounding before judgment
 
 **Related skills**
-- Verify with: `methodology`, `evaluation`
-- Related: `methodology`, `semantics`
+- Verify with: `methodology`, `evaluation`, `best-practice`
+- Related: `methodology`, `semantics`, `evaluation`, `agent-eval-design`, `best-practice`
 
 **Concept**
 - Mental model: |
@@ -174,16 +161,7 @@ After applying this skill, verify:
 - Analogy: Epistemic grounding is to claims what double-entry bookkeeping is to financial transactions — every assertion has a corresponding source on the other side of the ledger, and any entry without its pair is a red flag in the audit.
 - Common misconception: |
 
-**Lifecycle & audit status**
-- Stability: `experimental`
-- Freshness: `2026-05-15`
-- Eval state: `unverified`
-- Routing eval: `absent`
-- Audit status: structural PASS, truth PASS, comprehension UNVERIFIED, application UNVERIFIED
-- Last audited: `2026-05-28`
-
-**Provenance**
-- version 1.0.0, schema v8, owner `skill-graph-maintainer`
-- Keywords: `epistemic grounding`, `claim grounding`, `source citation`, `RFC 2119 modality`, `Toulmin argument`, `evidence-based assertion`, `hallucination prevention`, `normative vocabulary`, `warrant`, `epistemic hedge`
+**Keywords**
+- `epistemic grounding`, `claim grounding`, `source citation`, `RFC 2119 modality`, `Toulmin argument`, `evidence-based assertion`, `hallucination prevention`, `normative vocabulary`, `warrant`, `epistemic hedge`
 
 <!-- skill-graph-context:end -->

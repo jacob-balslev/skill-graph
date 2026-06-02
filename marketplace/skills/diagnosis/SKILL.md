@@ -415,16 +415,7 @@ The current eval metadata remains intentionally conservative: `eval_artifacts: p
 - Mode: `universal`
 - Truth sources: `https://sre.google/sre-book/effective-troubleshooting/`, `https://git-scm.com/docs/git-bisect`, `https://stackoverflow.com/help/minimal-reproducible-example`, `https://developer.chrome.com/docs/devtools/performance/overview`, `https://www.postgresql.org/docs/current/sql-explain.html`, `https://cheatsheetseries.owasp.org/cheatsheets/Logging_Cheat_Sheet.html`, `https://opentelemetry.io/docs/security/handling-sensitive-data/`
 
-**Lifecycle & audit status**
-- Stability: `experimental`
-- Freshness: `2026-05-18`
-- Eval state: `unverified`
-- Routing eval: `absent`
-- Audit status: structural PASS, truth UNVERIFIED, comprehension UNVERIFIED, application UNVERIFIED
-- Last audited: `2026-05-28`
-
-**Provenance**
-- version 1.1.0, schema v8, owner `skill-graph-maintainer`
-- Keywords: `diagnostic triage software failure`, `symptom classification taxonomy`, `what kind of bug is this`, `which debugging approach`, `diagnostic routing framework`, `evidence collection before hypothesis`, `confidence ladder debugging`, `escalation criteria debugging`, `cascade vs coincidence failure`, `environment ghost`
+**Keywords**
+- `diagnostic triage software failure`, `symptom classification taxonomy`, `what kind of bug is this`, `which debugging approach`, `diagnostic routing framework`, `evidence collection before hypothesis`, `confidence ladder debugging`, `escalation criteria debugging`, `cascade vs coincidence failure`, `environment ghost`
 
 <!-- skill-graph-context:end -->

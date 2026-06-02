@@ -8,6 +8,7 @@ metadata:
   version: "1.0.0"
   subject: code-engineering
   deployment_target: portable
+  scope: "The consistency-availability-partition-tolerance trade-off for distributed data systems — Brewer's CAP conjecture (2000), Gilbert & Lynch's 2002 proof, why P is not optional, the CP-vs-AP dichotomy, PACELC as the latency-vs-consistency extension that holds even without partition, the CAP-C vs ACID-C distinction, and the choice procedure of naming what the system must guarantee under partition. Portable across any distributed data system; principle-grounded, not repo-bound. Excludes single-node transactional guarantees (acid-fundamentals), choosing an isolation level (transaction-isolation), replication topology design (replication-patterns), and sharding decisions (sharding-strategy)."
   taxonomy_domain: engineering/data
   owner: skill-graph-maintainer
   freshness: "2026-05-16"
@@ -162,6 +163,7 @@ After applying this skill, verify:
 - Subject: `code-engineering`
 - Deployment: `portable`
 - Domain: `engineering/data`
+- Scope: The consistency-availability-partition-tolerance trade-off for distributed data systems — Brewer's CAP conjecture (2000), Gilbert & Lynch's 2002 proof, why P is not optional, the CP-vs-AP dichotomy, PACELC as the latency-vs-consistency extension that holds even without partition, the CAP-C vs ACID-C distinction, and the choice procedure of naming what the system must guarantee under partition. Portable across any distributed data system; principle-grounded, not repo-bound. Excludes single-node transactional guarantees (acid-fundamentals), choosing an isolation level (transaction-isolation), replication topology design (replication-patterns), and sharding decisions (sharding-strategy).
 
 **When to use**
 - decide whether a new distributed service should be CP or AP given its workload
@@ -190,16 +192,7 @@ After applying this skill, verify:
 - Analogy: CAP is to a distributed database what the Heisenberg uncertainty principle is to physics — you cannot simultaneously have a fully consistent reading and a fully available reading when the network has partitioned, just as you cannot simultaneously measure a precise position and a precise momentum. The trade-off is not a limit of the engineering, it is a limit of the physics; pretending otherwise is the source of every 'CA' system that claims to defy CAP and chooses one side anyway on its first partition.
 - Common misconception: |
 
-**Lifecycle & audit status**
-- Stability: `experimental`
-- Freshness: `2026-05-16`
-- Eval state: `unverified`
-- Routing eval: `absent`
-- Audit status: structural PASS, truth PASS, comprehension UNVERIFIED, application UNVERIFIED
-- Last audited: `2026-05-28`
-
-**Provenance**
-- version 1.0.0, schema v8, owner `skill-graph-maintainer`
-- Keywords: `CAP theorem`, `Brewer`, `Gilbert Lynch`, `consistency availability partition`, `CP system`, `AP system`, `PACELC`, `eventual consistency`, `linearizability`, `distributed system`
+**Keywords**
+- `CAP theorem`, `Brewer`, `Gilbert Lynch`, `consistency availability partition`, `CP system`, `AP system`, `PACELC`, `eventual consistency`, `linearizability`, `distributed system`
 
 <!-- skill-graph-context:end -->

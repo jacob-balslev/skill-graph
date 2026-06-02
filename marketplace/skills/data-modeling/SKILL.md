@@ -9,6 +9,7 @@ metadata:
   version: "1.0.0"
   subject: code-engineering
   deployment_target: portable
+  scope: "Designing logical and physical data structures — entities as stored data, keys, constraints, normalization and denormalization, provenance, lifecycle, indexing implications, and schema tradeoffs. Portable across relational and document data stores; principle-grounded, not repo-bound. Excludes pre-implementation business-concept discovery (conceptual-modeling), migrations against an existing database (database-migration), and formal ontology semantics (ontology-modeling)."
   taxonomy_domain: data/modeling
   owner: skill-graph-maintainer
   freshness: "2026-05-11"
@@ -89,6 +90,7 @@ This skill ships a comprehension-eval artifact at [`examples/evals/data-modeling
 - Subject: `code-engineering`
 - Deployment: `portable`
 - Domain: `data/modeling`
+- Scope: Designing logical and physical data structures — entities as stored data, keys, constraints, normalization and denormalization, provenance, lifecycle, indexing implications, and schema tradeoffs. Portable across relational and document data stores; principle-grounded, not repo-bound. Excludes pre-implementation business-concept discovery (conceptual-modeling), migrations against an existing database (database-migration), and formal ontology semantics (ontology-modeling).
 
 **When to use**
 - turn this conceptual model into a logical schema with keys and constraints
@@ -111,16 +113,7 @@ This skill ships a comprehension-eval artifact at [`examples/evals/data-modeling
 - Verify with: `database-migration`, `testing-strategy`
 - Related: `conceptual-modeling`, `database-migration`, `api-design`, `state-machine-modeling`, `entity-relationship-modeling`
 
-**Lifecycle & audit status**
-- Stability: `experimental`
-- Freshness: `2026-05-11`
-- Eval state: `unverified`
-- Routing eval: `absent`
-- Audit status: structural PASS, truth PASS, comprehension UNVERIFIED, application UNVERIFIED
-- Last audited: `2026-05-28`
-
-**Provenance**
-- version 1.0.0, schema v8, owner `skill-graph-maintainer`
-- Keywords: `data modeling`, `logical data model`, `physical data model`, `entity relationship`, `normalization`, `denormalization`, `primary key`, `foreign key`, `schema design`, `data provenance`
+**Keywords**
+- `data modeling`, `logical data model`, `physical data model`, `entity relationship`, `normalization`, `denormalization`, `primary key`, `foreign key`, `schema design`, `data provenance`
 
 <!-- skill-graph-context:end -->

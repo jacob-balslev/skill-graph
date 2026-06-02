@@ -9,6 +9,7 @@ metadata:
   version: "1.0.0"
   subject: design-craft
   deployment_target: portable
+  scope: "Choosing and auditing UI interaction patterns and controls — tabs vs pages, dropdown vs combobox, stepper vs wizard, modal vs inline edit, disclosure, command menus, selection, filtering, and gesture alternatives. Portable across any UI; principle-grounded, not repo-bound. Excludes accessibility compliance (a11y), task decomposition (task-analysis), feedback-state staging (interaction-feedback), and reusable component API design (design-system-architecture)."
   taxonomy_domain: design/interaction
   owner: skill-graph-maintainer
   freshness: "2026-05-11"
@@ -90,6 +91,7 @@ This skill ships a comprehension-eval artifact at [`examples/evals/interaction-p
 - Subject: `design-craft`
 - Deployment: `portable`
 - Domain: `design/interaction`
+- Scope: Choosing and auditing UI interaction patterns and controls — tabs vs pages, dropdown vs combobox, stepper vs wizard, modal vs inline edit, disclosure, command menus, selection, filtering, and gesture alternatives. Portable across any UI; principle-grounded, not repo-bound. Excludes accessibility compliance (a11y), task decomposition (task-analysis), feedback-state staging (interaction-feedback), and reusable component API design (design-system-architecture).
 
 **When to use**
 - should this control be a dropdown, combobox, radio group, or stepper?
@@ -114,16 +116,7 @@ This skill ships a comprehension-eval artifact at [`examples/evals/interaction-p
 - Verify with: `a11y`, `task-analysis`
 - Related: `layout-composition`, `form-ux-architecture`, `microcopy`, `semiotics`, `a11y`
 
-**Lifecycle & audit status**
-- Stability: `experimental`
-- Freshness: `2026-05-11`
-- Eval state: `unverified`
-- Routing eval: `present`
-- Audit status: structural PASS, truth PASS, comprehension UNVERIFIED, application UNVERIFIED
-- Last audited: `2026-05-28`
-
-**Provenance**
-- version 1.0.0, schema v8, owner `skill-graph-maintainer`
-- Keywords: `interaction-patterns`, `control pattern selection`, `dropdown combobox choice`, `modal inline edit choice`, `tabs accordion choice`, `bulk selection pattern`, `command menu pattern`, `disclosure pattern`, `gesture alternative`, `modal vs panel choice`
+**Keywords**
+- `interaction-patterns`, `control pattern selection`, `dropdown combobox choice`, `modal inline edit choice`, `tabs accordion choice`, `bulk selection pattern`, `command menu pattern`, `disclosure pattern`, `gesture alternative`, `modal vs panel choice`
 
 <!-- skill-graph-context:end -->

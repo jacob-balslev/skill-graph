@@ -9,6 +9,7 @@ metadata:
   version: "1.0.0"
   subject: code-engineering
   deployment_target: portable
+  scope: "Cron-job architecture for web applications — Inngest schedule integration, Vercel Cron configuration, retry logic, monitoring and alerting for failed crons, and idempotency requirements — for designing scheduled tasks, configuring triggers, and debugging missed or duplicate executions. Portable across web-application stacks; principle-grounded, not repo-bound. Excludes general background-job queue design and one-off task debugging unrelated to scheduling."
   taxonomy_domain: engineering/scheduling
   owner: skill-graph-maintainer
   freshness: "2026-03-29"
@@ -251,6 +252,7 @@ After applying this skill, verify:
 - Subject: `code-engineering`
 - Deployment: `portable`
 - Domain: `engineering/scheduling`
+- Scope: Cron-job architecture for web applications — Inngest schedule integration, Vercel Cron configuration, retry logic, monitoring and alerting for failed crons, and idempotency requirements — for designing scheduled tasks, configuring triggers, and debugging missed or duplicate executions. Portable across web-application stacks; principle-grounded, not repo-bound. Excludes general background-job queue design and one-off task debugging unrelated to scheduling.
 
 **When to use**
 - Triggers: `cron-scheduling-skill`, `cron-job-skill`, `scheduled-task-skill`, `vercel-cron-skill`, `recurring-job-skill`
@@ -258,16 +260,7 @@ After applying this skill, verify:
 **Related skills**
 - Related: `background-jobs`
 
-**Lifecycle & audit status**
-- Stability: `experimental`
-- Freshness: `2026-03-29`
-- Eval state: `unverified`
-- Routing eval: `absent`
-- Audit status: structural PASS, truth PASS, comprehension UNVERIFIED, application UNVERIFIED
-- Last audited: `2026-05-28`
-
-**Provenance**
-- version 1.0.0, schema v8, owner `skill-graph-maintainer`
-- Keywords: `cron-scheduling`, `cron`, `scheduling`
+**Keywords**
+- `cron-scheduling`, `cron`, `scheduling`
 
 <!-- skill-graph-context:end -->

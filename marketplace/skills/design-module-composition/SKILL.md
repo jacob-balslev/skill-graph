@@ -7,6 +7,7 @@ metadata:
   version: "1.0.0"
   subject: design-craft
   deployment_target: portable
+  scope: "Designing reusable component modules — composition patterns, compound components, slot/children APIs, render props, headless component contracts, and the configuration-vs-composition choice. Portable across any component-based UI; principle-grounded, not repo-bound. Excludes application-level architecture, single-use feature components, and visual styling decisions."
   owner: skill-graph-maintainer
   freshness: "2026-05-12"
   drift_check: "{\"last_verified\":\"2026-05-12\"}"
@@ -70,6 +71,7 @@ Headless primitives separate three concerns that are routinely conflated: state 
 **Classification**
 - Subject: `design-craft`
 - Deployment: `portable`
+- Scope: Designing reusable component modules — composition patterns, compound components, slot/children APIs, render props, headless component contracts, and the configuration-vs-composition choice. Portable across any component-based UI; principle-grounded, not repo-bound. Excludes application-level architecture, single-use feature components, and visual styling decisions.
 
 **When to use**
 - Design a Dialog component whose trigger, content, and close button are addressable by consumers
@@ -87,16 +89,7 @@ Headless primitives separate three concerns that are routinely conflated: state 
 **Related skills**
 - Related: `design-system-architecture`, `frontend-architecture`, `interaction-patterns`, `a11y`
 
-**Lifecycle & audit status**
-- Stability: `experimental`
-- Freshness: `2026-05-12`
-- Eval state: `unverified`
-- Routing eval: `absent`
-- Audit status: structural PASS, truth PASS, comprehension UNVERIFIED, application UNVERIFIED
-- Last audited: `2026-05-28`
-
-**Provenance**
-- version 1.0.0, schema v8, owner `skill-graph-maintainer`
-- Keywords: `component composition`, `compound components`, `slot api`, `headless components`, `render props`, `polymorphic components`, `asChild pattern`, `children as api`, `composition over configuration`, `component contract design`
+**Keywords**
+- `component composition`, `compound components`, `slot api`, `headless components`, `render props`, `polymorphic components`, `asChild pattern`, `children as api`, `composition over configuration`, `component contract design`
 
 <!-- skill-graph-context:end -->

@@ -172,16 +172,7 @@ After applying this skill, verify:
 - Analogy: Replication is to a database what mirror copies of a master photograph are to a museum's record — single-leader async is the photographer keeping the negative and printing copies as requested; single-leader sync is the conservator requiring two darkroom signatures before any print leaves the building; multi-leader is multiple authorized photographers in different cities each accepting submissions and reconciling at intervals; leaderless quorum is asking three of five archivists to vote on whether this print matches the master, accepting their verdict. Failover is replacing the negative-keeper when they retire; split brain is what happens when the agency forgets to revoke the old keeper's keys.
 - Common misconception: |
 
-**Lifecycle & audit status**
-- Stability: `experimental`
-- Freshness: `2026-05-16`
-- Eval state: `unverified`
-- Routing eval: `absent`
-- Audit status: structural PASS, truth PASS, comprehension UNVERIFIED, application UNVERIFIED
-- Last audited: `2026-05-28`
-
-**Provenance**
-- version 1.0.0, schema v8, owner `skill-graph-maintainer`
-- Keywords: `replication`, `primary replica`, `multi-leader`, `leaderless`, `quorum`, `synchronous replication`, `asynchronous replication`, `replication lag`, `read-after-write`, `failover`
+**Keywords**
+- `replication`, `primary replica`, `multi-leader`, `leaderless`, `quorum`, `synchronous replication`, `asynchronous replication`, `replication lag`, `read-after-write`, `failover`
 
 <!-- skill-graph-context:end -->

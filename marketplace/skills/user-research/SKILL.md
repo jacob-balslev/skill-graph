@@ -7,6 +7,7 @@ metadata:
   version: "1.0.0"
   subject: design-craft
   deployment_target: portable
+  scope: "Planning and conducting generative qualitative research with real users — interviews, contextual inquiry, ethnographic observation, diary studies — to learn what people do, think, and need in their own context. Portable across any product-discovery effort; principle-grounded, not repo-bound. Excludes analytics review, survey statistics, A/B test interpretation, and agent-side intent classification (different research practices)."
   owner: skill-graph-maintainer
   freshness: "2026-05-12"
   drift_check: "{\"last_verified\":\"2026-05-12\"}"
@@ -70,6 +71,7 @@ The practice is grounded in a specific epistemological claim: people are unrelia
 **Classification**
 - Subject: `design-craft`
 - Deployment: `portable`
+- Scope: Planning and conducting generative qualitative research with real users — interviews, contextual inquiry, ethnographic observation, diary studies — to learn what people do, think, and need in their own context. Portable across any product-discovery effort; principle-grounded, not repo-bound. Excludes analytics review, survey statistics, A/B test interpretation, and agent-side intent classification (different research practices).
 
 **When to use**
 - Draft an interview guide for SMB founders adopting their first accounting software.
@@ -88,16 +90,7 @@ The practice is grounded in a specific epistemological claim: people are unrelia
 **Related skills**
 - Related: `problem-framing`, `research-synthesis`, `usability-testing`, `design-thinking`
 
-**Lifecycle & audit status**
-- Stability: `experimental`
-- Freshness: `2026-05-12`
-- Eval state: `unverified`
-- Routing eval: `absent`
-- Audit status: structural PASS, truth PASS, comprehension UNVERIFIED, application UNVERIFIED
-- Last audited: `2026-05-28`
-
-**Provenance**
-- version 1.0.0, schema v8, owner `skill-graph-maintainer`
-- Keywords: `user interviews`, `contextual inquiry`, `ethnographic observation`, `diary study`, `generative research`, `qualitative research`, `interview guide`, `leading questions`, `master-apprentice model`, `in-context observation`
+**Keywords**
+- `user interviews`, `contextual inquiry`, `ethnographic observation`, `diary study`, `generative research`, `qualitative research`, `interview guide`, `leading questions`, `master-apprentice model`, `in-context observation`
 
 <!-- skill-graph-context:end -->

@@ -5,39 +5,22 @@ license: MIT
 compatibility: "Provider-agnostic prompt-design discipline for OpenAI, Anthropic, Google Gemini, open-weight models, and agent runtimes; provider-specific APIs, role names, structured-output features, and reasoning controls must be checked before implementation."
 allowed-tools: Read Grep Bash Edit
 metadata:
-  schema_version: "8"
-  version: "1.1.0"
   subject: agent-ops
   deployment_target: portable
+  scope: "Writing, tightening, evaluating, and repairing LLM prompts and reusable prompt templates for completion, agent dispatch, grading, structured extraction, tool use, and prompt-engineered workflows — instruction hierarchy, message roles, context placement, few-shot examples, structured output, positive constraints, reasoning guidance, prompt-injection resistance, provider differences, and eval-driven iteration. Portable across any LLM provider; principle-grounded, not repo-bound. Excludes whole context-system design (context-engineering), eval dataset or grader design (agent-eval-design), reviewing generated code (code-review), authoring SKILL.md files (skill-scaffold), choosing which skill or agent activates (skill-router), and root-causing a deployed failure after outputs exist (debugging)."
   taxonomy_domain: agent/prompts
-  owner: skill-graph-maintainer
-  freshness: "2026-05-18"
-  drift_check: "{\"last_verified\":\"2026-05-18\"}"
-  eval_artifacts: planned
-  eval_state: unverified
-  routing_eval: absent
-  comprehension_state: present
   stability: experimental
-  keywords: "[\"prompt\",\"prompt engineering\",\"prompt craft\",\"write a prompt\",\"improve this prompt\",\"iterate on prompt\",\"prompt template\",\"system prompt\",\"developer prompt\",\"user prompt\",\"few shot\",\"few-shot examples\",\"role prompt\",\"instruction hierarchy\",\"message roles\",\"output format\",\"structured output\",\"reasoning prompt\",\"prompt injection\",\"adversarial input\",\"llm prompt\",\"agent prompt\"]"
+  keywords: "[\"prompt engineering\",\"prompt template\",\"system prompt\",\"developer prompt\",\"structured output\",\"few-shot examples\",\"instruction hierarchy\",\"message roles\",\"prompt injection\",\"eval-driven iteration\"]"
   triggers: "[\"prompt-craft-skill\",\"prompt-engineering-skill\",\"prompt-template-skill\"]"
   examples: "[\"write a reusable prompt for an LLM to classify support tickets and return one JSON object\",\"improve this system prompt because the model keeps giving generic answers\",\"how do I get the model to return strict JSON and retry safely when it does not?\",\"tighten this sub-agent prompt so it knows what evidence to gather and when to stop\",\"should this task use zero-shot, few-shot examples, or a separate eval loop?\",\"the model follows instructions embedded in user content; harden the prompt against injection\",\"review this LLM-as-judge prompt for clarity and output constraints\",\"how do I prompt the model to ask clarifying questions only when ambiguity blocks the task?\"]"
   anti_examples: "[\"review this AI-generated PR for correctness\",\"scaffold a new skill that teaches prompt engineering\",\"which skill should the router pick for this query?\",\"design an eval suite and grader thresholds for this agent\",\"debug why the deployed prompt failed last night\",\"write a doc explaining our prompt conventions for humans only\"]"
   relations: "{\"boundary\":[{\"skill\":\"context-engineering\",\"reason\":\"context-engineering designs the whole information environment, retrieval payload, memory, compaction, and context budget; prompt-craft shapes the instructions and prompt template that consume that context.\"},{\"skill\":\"agent-eval-design\",\"reason\":\"agent-eval-design creates eval datasets, graders, thresholds, hard negatives, and harnesses; prompt-craft uses eval evidence to revise prompt wording and structure.\"},{\"skill\":\"code-review\",\"reason\":\"code-review evaluates generated or human-written code; prompt-craft writes or improves the prompt that may produce or grade code.\"},{\"skill\":\"skill-scaffold\",\"reason\":\"skill-scaffold owns SKILL.md authoring and metadata structure; prompt-craft owns prompts used by agents or tools.\"},{\"skill\":\"skill-router\",\"reason\":\"skill-router decides which skill or agent activates for a user request; prompt-craft writes the selected prompt or dispatch instruction after that routing decision.\"},{\"skill\":\"debugging\",\"reason\":\"debugging investigates a known deployed failure and root cause; prompt-craft provides prompt-level remediation once evidence shows prompt wording or structure is the failing surface.\"}],\"related\":[\"context-engineering\",\"agent-eval-design\",\"evaluation\",\"guardrails\",\"debugging\",\"code-review\"],\"verify_with\":[\"agent-eval-design\",\"evaluation\",\"guardrails\"]}"
   grounding: "{\"subject_matter\":\"Portable LLM prompt design, instruction hierarchy, structured-output prompting, adversarial-input boundaries, and eval-driven prompt iteration\",\"grounding_mode\":\"universal\",\"truth_sources\":[\"https://developers.openai.com/api/docs/guides/prompt-engineering\",\"https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/overview\",\"https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/claude-prompting-best-practices\",\"https://ai.google.dev/gemini-api/docs/prompting-strategies\",\"https://cheatsheetseries.owasp.org/cheatsheets/LLM_Prompt_Injection_Prevention_Cheat_Sheet.html\"],\"failure_modes\":[\"prompt_shipped_after_one_plausible_output_without_eval\",\"role_or_instruction_authority_confused_with_user_input\",\"examples_teach_surface_patterns_instead_of_decision_boundaries\",\"structured_output_assumed_without_validation_or_schema_support\",\"negative_instruction_increases_salience_without_positive_target\",\"hidden_chain_of_thought_requested_or_exposed_unnecessarily\",\"prompt_injection_treated_as_wording_problem_instead_of_data_instruction_separation\",\"prompt_changes_claimed_success_without_rerunning_linked_eval\"],\"evidence_priority\":\"equal\"}"
-  portability: "{\"readiness\":\"scripted\",\"targets\":[\"skill-md\"]}"
-  lifecycle: "{\"stale_after_days\":90,\"review_cadence\":\"quarterly\"}"
   mental_model: "A prompt is an executable instruction contract: stable rules and examples define the function, variable user content supplies arguments, and evals decide whether revisions improved behavior."
   purpose: "Make LLM behavior more reliable, inspectable, portable, and safe by turning vague requests into tested instruction structures with clear boundaries and output contracts."
   boundary: "This skill owns prompt wording and template structure. It does not own the entire context system, eval harness design, generated-code review, SKILL.md authoring, routing selection, or root-cause debugging of an already observed failure."
   analogy: "Prompt craft is like writing a contract for a skilled but unfamiliar collaborator: specify the job, available evidence, allowed moves, examples, and acceptance format before judging the result."
   misconception: "The common mistake is believing a clever prompt can replace context quality, tool permissions, evals, validation, or security controls. Good prompts make those surfaces explicit; they do not substitute for them."
-  concept: "{\"definition\":\"Prompt craft is the disciplined design and revision of LLM instructions, examples, context boundaries, and output constraints so a model can perform a target task reliably under measured conditions.\",\"mental_model\":\"Treat the prompt as an executable contract. Stable instructions and examples define the function, variable user content supplies arguments, and eval results decide whether the contract works.\",\"purpose\":\"It turns vague intent into inspectable instructions with clear task framing, input boundaries, output shape, safety constraints, and revision evidence.\",\"boundary\":\"It does not design the full context stack, create eval harnesses, review generated code, author SKILL.md files, select routing, or debug deployed failures without prompt-specific evidence.\",\"taxonomy\":\"Core surfaces are instruction authority, role and tone, task statement, context and retrieval payload, constraints, examples, variable input delimitation, output format, tool-use instructions, safety boundaries, provider controls, and eval-linked revision.\",\"analogy\":\"It is like writing a contract for a skilled but unfamiliar collaborator: the contract names the job, evidence, allowed moves, examples, acceptance format, and escalation path.\",\"misconception\":\"A longer or more forceful prompt is not automatically better. Prompt quality is measured by reliable task performance, format compliance, safety behavior, and maintainability under realistic inputs.\"}"
-  structural_verdict: PASS
-  truth_verdict: UNVERIFIED
-  comprehension_verdict: UNVERIFIED
-  application_verdict: UNVERIFIED
-  last_audited: "2026-05-28"
-  lint_verdict: PASS
   skill_graph_source_repo: "https://github.com/jacob-balslev/skill-graph"
   skill_graph_project: Skill Graph
   skill_graph_canonical_skill: skills/agent-ops/prompt-craft/SKILL.md
@@ -284,6 +267,7 @@ After applying this skill, verify:
 - Subject: `agent-ops`
 - Deployment: `portable`
 - Domain: `agent/prompts`
+- Scope: Writing, tightening, evaluating, and repairing LLM prompts and reusable prompt templates for completion, agent dispatch, grading, structured extraction, tool use, and prompt-engineered workflows — instruction hierarchy, message roles, context placement, few-shot examples, structured output, positive constraints, reasoning guidance, prompt-injection resistance, provider differences, and eval-driven iteration. Portable across any LLM provider; principle-grounded, not repo-bound. Excludes whole context-system design (context-engineering), eval dataset or grader design (agent-eval-design), reviewing generated code (code-review), authoring SKILL.md files (skill-scaffold), choosing which skill or agent activates (skill-router), and root-causing a deployed failure after outputs exist (debugging).
 
 **When to use**
 - write a reusable prompt for an LLM to classify support tickets and return one JSON object
@@ -325,16 +309,7 @@ After applying this skill, verify:
 - Mode: `universal`
 - Truth sources: `https://developers.openai.com/api/docs/guides/prompt-engineering`, `https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/overview`, `https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/claude-prompting-best-practices`, `https://ai.google.dev/gemini-api/docs/prompting-strategies`, `https://cheatsheetseries.owasp.org/cheatsheets/LLM_Prompt_Injection_Prevention_Cheat_Sheet.html`
 
-**Lifecycle & audit status**
-- Stability: `experimental`
-- Freshness: `2026-05-18`
-- Eval state: `unverified`
-- Routing eval: `absent`
-- Audit status: structural PASS, truth UNVERIFIED, comprehension UNVERIFIED, application UNVERIFIED
-- Last audited: `2026-05-28`
-
-**Provenance**
-- version 1.1.0, schema v8, owner `skill-graph-maintainer`
-- Keywords: `prompt`, `prompt engineering`, `prompt craft`, `write a prompt`, `improve this prompt`, `iterate on prompt`, `prompt template`, `system prompt`, `developer prompt`, `user prompt`, `few shot`, `few-shot examples`, `role prompt`, `instruction hierarchy`, `message roles`, `output format`, `structured output`, `reasoning prompt`, `prompt injection`, `adversarial input`, `llm prompt`, `agent prompt`
+**Keywords**
+- `prompt engineering`, `prompt template`, `system prompt`, `developer prompt`, `structured output`, `few-shot examples`, `instruction hierarchy`, `message roles`, `prompt injection`, `eval-driven iteration`
 
 <!-- skill-graph-context:end -->

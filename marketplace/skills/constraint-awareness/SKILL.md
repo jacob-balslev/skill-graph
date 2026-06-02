@@ -355,16 +355,7 @@ When the constraint moves, the Five Focusing Steps restart from step 1. The proc
 - Analogy: Constraint awareness is to AI-coding what Drum-Buffer-Rope is to a factory floor — the slowest machine on the line sets the pace for the whole plant; speeding up the other machines just piles inventory in front of the bottleneck. Adding more agents to an AI-coding team where review bandwidth is the constraint is the same as buying faster CNC mills when the constraint is the inspection station — the parts pile up at inspection, the lead time gets worse, and the new mills look efficient locally while the whole shop ships less per day.
 - Common misconception: |
 
-**Lifecycle & audit status**
-- Stability: `experimental`
-- Freshness: `2026-05-16`
-- Eval state: `unverified`
-- Routing eval: `absent`
-- Audit status: structural PASS, truth PASS, comprehension UNVERIFIED, application UNVERIFIED
-- Last audited: `2026-05-28`
-
-**Provenance**
-- version 1.1.0, schema v8, owner `skill-graph-maintainer`
-- Keywords: `theory of constraints`, `goldratt five focusing steps`, `bottleneck identification`, `constraint of an ai-coding system`, `human attention as constraint`, `cost structure inversion ai`, `what to automate vs keep manual`, `batch decisions not interrupt`, `options not questions`, `constraint-aware process design`
+**Keywords**
+- `theory of constraints`, `goldratt five focusing steps`, `bottleneck identification`, `constraint of an ai-coding system`, `human attention as constraint`, `cost structure inversion ai`, `what to automate vs keep manual`, `batch decisions not interrupt`, `options not questions`, `constraint-aware process design`
 
 <!-- skill-graph-context:end -->

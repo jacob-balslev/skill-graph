@@ -1,31 +1,23 @@
 ---
 name: cognitive-load-theory
-description: "Sweller's Cognitive Load Theory (CLT) for agents writing skill content, designing prompts, building UI/dashboards, and authoring documentation. Working memory holds roughly 4 chunks at a time; CLT classifies load into three types — intrinsic (irreducible task difficulty), extraneous (unnecessary load from poor presentation, ELIMINATE), and germane (load that builds schemas, PROMOTE). Use when writing a SKILL.md body (does this section add extraneous load?), designing prompts (am I asking the model to hold too much at once?), building dashboards (what is the per-screen cognitive budget?), or authoring docs (is intrinsic load minimized via segmentation?). Do NOT use for retrieval and context-loading design (use context-management), prompt engineering tactics (use prompt-craft), or instructional design beyond what grounds the theory. Do NOT use for memory pruning and consolidation (use memory-gardener)."
+description: "Sweller's Cognitive Load Theory (CLT) for agents writing skill content, designing prompts, building UI/dashboards, and authoring documentation. Working memory holds roughly 4 chunks at a time; CLT classifies load into three types — intrinsic (irreducible task difficulty), extraneous (unnecessary load from poor presentation, ELIMINATE), and germane (load that builds schemas, PROMOTE). Use when writing a SKILL.md body (does this section add extraneous load?), designing prompts (am I asking the model to hold too much at once?), building dashboards (what is the per-screen cognitive budget?), or authoring docs (is intrinsic load minimized via segmentation?). Do NOT use for retrieval and context-loading design (use context-management), prompt engineering tactics (use prompt-craft), or instructional design beyond what grounds the theory. Do NOT use for human/model working-memory analogies (use context-window). Do NOT use for extraneous-load diagnosis (use compression)."
 license: MIT
 compatibility: "Markdown, Git, any agent-skill runtime"
 allowed-tools: Read Grep
 metadata:
-  schema_version: "8"
-  version: "1.0.0"
   subject: quality-assurance
   deployment_target: portable
+  scope: "Portable cognitive-load review for skill bodies, prompts, documentation, dashboards, and agent outputs. Teaches Sweller's intrinsic/extraneous/germane load taxonomy, working-memory chunk limits, segmentation, chunking, worked examples, and structure-over-prose checks. Excludes retrieval/session working-set design (context-management), prompt tactic authoring (prompt-craft), token budget math (context-window), and general compression mechanics (compression)."
   taxonomy_domain: quality/cognition
-  owner: skill-graph-maintainer
-  freshness: "2026-05-19"
-  drift_check: "{\"last_verified\":\"2026-05-19\"}"
-  eval_artifacts: present
-  eval_state: unverified
-  routing_eval: absent
   stability: experimental
   keywords: "[\"cognitive load theory\",\"working memory\",\"intrinsic load\",\"extraneous load\",\"germane load\",\"chunking\",\"segmentation\",\"schema formation\",\"Sweller\",\"prompt design\"]"
   triggers: "[\"cognitive-load-skill\",\"working-memory-skill\",\"clt-skill\"]"
-  relations: "{\"adjacent\":[\"teaching-patterns\",\"context-window\",\"compression\",\"editorial-standards\",\"prompt-craft\"],\"boundary\":[{\"skill\":\"context-management\",\"reason\":\"context-management owns retrieval and session working-set design; CLT owns the cognitive-load taxonomy applied to authored content\"},{\"skill\":\"memory-gardener\",\"reason\":\"memory-gardener owns memory pruning and consolidation; CLT owns the cognitive-load framing for what to keep vs cut\"}],\"verify_with\":[\"context-management\",\"teaching-patterns\",\"best-practice\"]}"
-  structural_verdict: PASS
-  truth_verdict: PASS
-  comprehension_verdict: UNVERIFIED
-  application_verdict: UNVERIFIED
-  last_audited: "2026-05-28"
-  lint_verdict: PASS
+  relations: "{\"boundary\":[{\"skill\":\"context-management\",\"reason\":\"cognitive-load-theory owns cognitive-load diagnosis in authored content; context-management owns retrieval and active session working-set design\"},{\"skill\":\"prompt-craft\",\"reason\":\"cognitive-load-theory owns load taxonomy and segmentation rationale; prompt-craft owns prompt tactic selection and wording\"},{\"skill\":\"context-window\",\"reason\":\"cognitive-load-theory owns human/model working-memory analogies; context-window owns token budget allocation\"},{\"skill\":\"compression\",\"reason\":\"cognitive-load-theory owns extraneous-load diagnosis; compression owns token-efficient representation mechanics\"}],\"related\":[\"context-management\",\"context-window\",\"compression\",\"prompt-craft\",\"information-architecture\",\"layout-composition\",\"visual-hierarchy\",\"microcopy\",\"writing-humanizer\",\"summarization\",\"best-practice\"],\"verify_with\":[\"best-practice\",\"information-architecture\",\"prompt-craft\"]}"
+  mental_model: "Working memory is a small workspace with roughly four independent chunks available at once. Cognitive Load Theory separates total load into intrinsic load from the task itself, extraneous load from poor presentation, and germane effort that builds reusable schemas. Good design manages intrinsic load through sequencing, removes extraneous load, and preserves or promotes germane load."
+  purpose: "This skill prevents agents from treating 'simplify' as 'make shorter.' It gives a precise review lens for skill bodies, prompts, docs, dashboards, and agent outputs: identify which load type a section adds, remove only unnecessary presentation burden, and keep worked examples or structure when they build understanding."
+  boundary: "This skill diagnoses cognitive load in authored or presented material. It is not retrieval selection, session-state pruning, token-budget math, prompt phrasing craft, plain-language editing, or general pedagogy beyond the cognitive-load mechanisms named here."
+  analogy: "Cognitive Load Theory is like RAM management for comprehension: intrinsic load is the program that must run, extraneous load is unnecessary background work, and germane load is useful caching that makes the next run easier."
+  misconception: "The common mistake is thinking reduced cognitive load always means shorter output. Cutting context, examples, or schema-building structure can increase intrinsic load and destroy germane load; the correct target is extraneous load."
   skill_graph_source_repo: "https://github.com/jacob-balslev/skill-graph"
   skill_graph_project: Skill Graph
   skill_graph_canonical_skill: skills/quality-assurance/cognitive-load-theory/SKILL.md
@@ -65,11 +57,11 @@ Every agent output — a SKILL.md body, a prompt, a dashboard widget, a Linear c
 ## Cross-Domain Synergy
 
 CLT is the theoretical foundation that neighboring skills draw on implicitly:
-- **`teaching-patterns`**: Uses CLT when choosing progressive disclosure (segmentation), worked examples (germane load promotion), and scaffolding removal.
+- **`information-architecture`**: Uses CLT when deciding what structure helps readers orient without forcing cross-reference.
 - **`context-management`**: The discipline of controlling what enters a session is CLT applied to the agent's own working memory, not just the human reader's.
 - **`context-window`**: Token budget management mirrors the working-memory budget — both measure available capacity against load.
 - **`compression`**: Token-efficient compression is an application of extraneous-load elimination.
-- **`editorial-standards`**: Structure-over-prose editorial rules are CLT operationalized for written output.
+- **`writing-humanizer` and `microcopy`**: Structure-over-prose editorial rules are CLT operationalized for written output.
 
 ---
 
@@ -88,7 +80,7 @@ Use this skill when answering any of these questions:
 
 **Do NOT invoke this skill for:**
 - Deciding *what* retrieval files to load in a session (use `context-management`)
-- Writing the actual copy / prose (use `editorial-standards`)
+- Writing the actual copy / prose (use `writing-humanizer` or `microcopy`)
 - Choosing prompt phrasing strategies (use `prompt-craft`)
 
 ---
@@ -297,7 +289,7 @@ I think these should be fixed but the skill is otherwise in reasonable shape.
 |---------|----------|-----|
 | description missing use_when / not_for pattern | BLOCKING | Add "Use when: ... Do NOT use for: ..." |
 | relations.verify_with is empty | ADVISORY | Add at least one verify_with skill |
-| evals/evals.json has 1 eval (min: 2) | BLOCKING | Add a second eval case |
+| evals/comprehension.json has fewer than 5 cases | BLOCKING | Add realistic boundary and application cases |
 
 Overall: 2 BLOCKING. Fix before marking PASS.
 ```
@@ -337,20 +329,9 @@ Rate any output (skill body, prompt, doc section, dashboard widget) against CLT:
 
 ---
 
-## Health Block
+## Audit Status
 
-| Field | Value |
-|-------|-------|
-| structural_verdict | UNVERIFIED |
-| truth_verdict | UNVERIFIED |
-| comprehension_verdict | UNVERIFIED |
-| application_verdict | UNVERIFIED |
-| last_audited | 2026-05-19 |
-| eval_failed_ids | [] |
-| drift_status | UNKNOWN |
-| freshness | 2026-05-19 |
-
-The four-verdict shape is per [ADR 0011](https://github.com/jacob-balslev/skill-graph/blob/main/docs/adr/0011-split-audit-verdict-into-four-verdicts.md). All four verdicts default to `UNVERIFIED` on a fresh port; gates 1–8 and the application-eval pilot populate them in subsequent audits.
+Audit/eval/provenance state lives in the sibling `audit-state.json` sidecar, not in the skill body. Run the Skill Audit Loop to update verdicts, freshness, and eval state; the teaching surface should not duplicate those values.
 
 ---
 
@@ -360,7 +341,7 @@ The four-verdict shape is per [ADR 0011](https://github.com/jacob-balslev/skill-
 |---|---|---|
 | `cognitive-load-theory` | `context-management` | `context-management` owns retrieval and session working-set design |
 | `cognitive-load-theory` | `prompt-craft` | `prompt-craft` owns the full prompt engineering tactic set |
-| `cognitive-load-theory` | `teaching-patterns` | `teaching-patterns` owns explanation and pedagogy methods |
+| `cognitive-load-theory` | `information-architecture` | `information-architecture` owns navigation and information structure beyond CLT diagnosis |
 | `cognitive-load-theory` | `compression` | `compression` owns token-efficiency strategies for context windows |
 
 ---
@@ -373,28 +354,29 @@ The four-verdict shape is per [ADR 0011](https://github.com/jacob-balslev/skill-
 - Subject: `quality-assurance`
 - Deployment: `portable`
 - Domain: `quality/cognition`
+- Scope: Portable cognitive-load review for skill bodies, prompts, documentation, dashboards, and agent outputs. Teaches Sweller's intrinsic/extraneous/germane load taxonomy, working-memory chunk limits, segmentation, chunking, worked examples, and structure-over-prose checks. Excludes retrieval/session working-set design (context-management), prompt tactic authoring (prompt-craft), token budget math (context-window), and general compression mechanics (compression).
 
 **When to use**
 - Triggers: `cognitive-load-skill`, `working-memory-skill`, `clt-skill`
 
 **Not for**
-- Owned by `context-management`: retrieval and session working-set design
-- Owned by `memory-gardener`: memory pruning and consolidation
+- Owned by `context-management`: cognitive-load diagnosis in authored content
+- Owned by `prompt-craft`: load taxonomy and segmentation rationale
+- Owned by `context-window`: human/model working-memory analogies
+- Owned by `compression`: extraneous-load diagnosis
 
 **Related skills**
-- Verify with: `context-management`, `teaching-patterns`, `best-practice`
-- Related: `teaching-patterns`, `context-window`, `compression`, `editorial-standards`, `prompt-craft`
+- Verify with: `best-practice`, `information-architecture`, `prompt-craft`
+- Related: `context-management`, `context-window`, `compression`, `prompt-craft`, `information-architecture`, `layout-composition`, `visual-hierarchy`, `microcopy`, `writing-humanizer`, `summarization`, `best-practice`
 
-**Lifecycle & audit status**
-- Stability: `experimental`
-- Freshness: `2026-05-19`
-- Eval state: `unverified`
-- Routing eval: `absent`
-- Audit status: structural PASS, truth PASS, comprehension UNVERIFIED, application UNVERIFIED
-- Last audited: `2026-05-28`
+**Concept**
+- Mental model: Working memory is a small workspace with roughly four independent chunks available at once. Cognitive Load Theory separates total load into intrinsic load from the task itself, extraneous load from poor presentation, and germane effort that builds reusable schemas. Good design manages intrinsic load through sequencing, removes extraneous load, and preserves or promotes germane load.
+- Purpose: This skill prevents agents from treating 'simplify' as 'make shorter.' It gives a precise review lens for skill bodies, prompts, docs, dashboards, and agent outputs: identify which load type a section adds, remove only unnecessary presentation burden, and keep worked examples or structure when they build understanding.
+- Boundary: This skill diagnoses cognitive load in authored or presented material. It is not retrieval selection, session-state pruning, token-budget math, prompt phrasing craft, plain-language editing, or general pedagogy beyond the cognitive-load mechanisms named here.
+- Analogy: Cognitive Load Theory is like RAM management for comprehension: intrinsic load is the program that must run, extraneous load is unnecessary background work, and germane load is useful caching that makes the next run easier.
+- Common misconception: The common mistake is thinking reduced cognitive load always means shorter output. Cutting context, examples, or schema-building structure can increase intrinsic load and destroy germane load; the correct target is extraneous load.
 
-**Provenance**
-- version 1.0.0, schema v8, owner `skill-graph-maintainer`
-- Keywords: `cognitive load theory`, `working memory`, `intrinsic load`, `extraneous load`, `germane load`, `chunking`, `segmentation`, `schema formation`, `Sweller`, `prompt design`
+**Keywords**
+- `cognitive load theory`, `working memory`, `intrinsic load`, `extraneous load`, `germane load`, `chunking`, `segmentation`, `schema formation`, `Sweller`, `prompt design`
 
 <!-- skill-graph-context:end -->

@@ -5,30 +5,15 @@ license: MIT
 compatibility: "Portable eval-design discipline for agent workflows, skill routers, prompt systems, and tool-use policies."
 allowed-tools: Read Grep
 metadata:
-  schema_version: "8"
-  version: "1.0.0"
   subject: quality-assurance
   deployment_target: portable
+  scope: "Designing behavioral evaluations for AI agents, skills, routers, prompts, tool-use policies, and multi-step workflows: task sets, rubrics, graders, hard negatives, regression cases, traces, and acceptance thresholds. Portable across agentic systems and skill libraries. Excludes application-code test planning, skill-library health tooling, live failure debugging, and code-diff review."
   taxonomy_domain: ai-engineering/evaluation
-  owner: skill-graph-maintainer
-  freshness: "2026-05-11"
-  drift_check: "{\"last_verified\":\"2026-05-11\"}"
-  eval_artifacts: planned
-  eval_state: unverified
-  routing_eval: absent
   stability: experimental
   keywords: "[\"agent eval\",\"AI eval design\",\"skill routing eval\",\"eval rubric\",\"hard negatives\",\"grader design\",\"regression eval\",\"trace evaluation\",\"acceptance threshold\",\"prompt eval\"]"
   examples: "[\"design an eval set for whether this skill routes correctly against near-miss prompts\",\"create a rubric for judging agent outputs on grounded project knowledge extraction\",\"what hard negatives should test this router before we mark routing_eval present?\",\"turn these agent failure traces into regression eval cases\"]"
   anti_examples: "[\"plan unit, integration, and e2e tests for this product feature\",\"run the skill graph lint and overlap tooling\",\"debug why yesterday's agent run failed\",\"write production code to fix this failing test\"]"
   relations: "{\"boundary\":[{\"skill\":\"testing-strategy\",\"reason\":\"testing-strategy plans software tests; agent-eval-design designs behavioral evals for AI agents and skills\"},{\"skill\":\"skill-infrastructure\",\"reason\":\"skill-infrastructure owns library health tooling; agent-eval-design owns eval content and grading design\"},{\"skill\":\"debugging\",\"reason\":\"debugging investigates a live failure; agent-eval-design turns patterns into future evals\"},{\"skill\":\"code-review\",\"reason\":\"code-review evaluates diffs; agent-eval-design evaluates agent behavior\"}],\"related\":[\"skill-router\",\"context-engineering\",\"testing-strategy\",\"skill-infrastructure\"],\"verify_with\":[\"testing-strategy\",\"skill-infrastructure\"]}"
-  portability: "{\"readiness\":\"scripted\",\"targets\":[\"skill-md\"]}"
-  lifecycle: "{\"stale_after_days\":365,\"review_cadence\":\"quarterly\"}"
-  structural_verdict: PASS
-  truth_verdict: PASS
-  comprehension_verdict: UNVERIFIED
-  application_verdict: UNVERIFIED
-  last_audited: "2026-05-28"
-  lint_verdict: PASS
   skill_graph_source_repo: "https://github.com/jacob-balslev/skill-graph"
   skill_graph_project: Skill Graph
   skill_graph_canonical_skill: skills/quality-assurance/agent-eval-design/SKILL.md
@@ -57,6 +42,23 @@ The highest-value cases are hard negatives and prior failures. A routing eval wi
 6. Set pass thresholds and severity for failures.
 7. Add regression cases whenever a real agent failure is fixed.
 
+## Eval Case Matrix
+
+| Behavior surface | Positive cases | Hard negatives | Grader shape |
+|---|---|---|---|
+| Skill routing | Real prompts that should load the target skill | Near-miss prompts owned by boundary skills or no skill | Exact expected skill plus explanation check |
+| Grounded project work | Tasks with enough source files to answer correctly | Stale docs, missing files, or tempting unsupported claims | Rubric plus citation/trace inspection |
+| Tool-use policy | Cases where tool use is necessary and allowed | Cases where a tool would leak data, mutate state, or skip approval | Trace inspection against policy constraints |
+| Multi-step workflow | End-to-end tasks with intermediate checkpoints | Partial completion, skipped verification, or wrong order | Artifact check plus step-completion rubric |
+| Prompt/system behavior | Representative prompts from actual usage | Jailbreaks, prompt injection, ambiguity, or scope inversion | Rubric with refusal/boundary criteria |
+
+## Threshold Design
+
+- Set the pass bar from user and system risk, not from a desired green percentage.
+- Separate blocking failures from score-lowering failures; one critical privacy or mutation error should fail even if most rubric items pass.
+- Track regressions from prior failures as named cases so fixes stay fixed.
+- Keep hard negatives in the suite even when they feel adversarial; they are where overconfident agents reveal the real boundary.
+
 ## Verification
 
 - [ ] Eval cases include positives, hard negatives, and prior failures
@@ -84,6 +86,7 @@ The highest-value cases are hard negatives and prior failures. A routing eval wi
 - Subject: `quality-assurance`
 - Deployment: `portable`
 - Domain: `ai-engineering/evaluation`
+- Scope: Designing behavioral evaluations for AI agents, skills, routers, prompts, tool-use policies, and multi-step workflows: task sets, rubrics, graders, hard negatives, regression cases, traces, and acceptance thresholds. Portable across agentic systems and skill libraries. Excludes application-code test planning, skill-library health tooling, live failure debugging, and code-diff review.
 
 **When to use**
 - design an eval set for whether this skill routes correctly against near-miss prompts
@@ -105,16 +108,7 @@ The highest-value cases are hard negatives and prior failures. A routing eval wi
 - Verify with: `testing-strategy`, `skill-infrastructure`
 - Related: `skill-router`, `context-engineering`, `testing-strategy`, `skill-infrastructure`
 
-**Lifecycle & audit status**
-- Stability: `experimental`
-- Freshness: `2026-05-11`
-- Eval state: `unverified`
-- Routing eval: `absent`
-- Audit status: structural PASS, truth PASS, comprehension UNVERIFIED, application UNVERIFIED
-- Last audited: `2026-05-28`
-
-**Provenance**
-- version 1.0.0, schema v8, owner `skill-graph-maintainer`
-- Keywords: `agent eval`, `AI eval design`, `skill routing eval`, `eval rubric`, `hard negatives`, `grader design`, `regression eval`, `trace evaluation`, `acceptance threshold`, `prompt eval`
+**Keywords**
+- `agent eval`, `AI eval design`, `skill routing eval`, `eval rubric`, `hard negatives`, `grader design`, `regression eval`, `trace evaluation`, `acceptance threshold`, `prompt eval`
 
 <!-- skill-graph-context:end -->

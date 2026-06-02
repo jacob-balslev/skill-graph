@@ -109,16 +109,7 @@ Do not confuse domain events with technical notifications. "OrderPlaced" is busi
 - Verify with: `conceptual-modeling`, `bounded-context-mapping`
 - Related: `bounded-context-mapping`, `state-machine-modeling`, `system-interface-contracts`, `event-contract-design`, `conceptual-modeling`
 
-**Lifecycle & audit status**
-- Stability: `experimental`
-- Freshness: `2026-05-11`
-- Eval state: `unverified`
-- Routing eval: `absent`
-- Audit status: structural PASS, truth PASS, comprehension UNVERIFIED, application UNVERIFIED
-- Last audited: `2026-05-28`
-
-**Provenance**
-- version 1.0.0, schema v8, owner `skill-graph-maintainer`
-- Keywords: `event storming`, `domain events`, `commands`, `aggregates`, `policies`, `read models`, `temporal workflow`, `event-driven discovery`, `process modeling`
+**Keywords**
+- `event storming`, `domain events`, `commands`, `aggregates`, `policies`, `read models`, `temporal workflow`, `event-driven discovery`, `process modeling`
 
 <!-- skill-graph-context:end -->

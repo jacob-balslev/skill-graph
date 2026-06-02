@@ -9,6 +9,7 @@ metadata:
   version: "1.1.0"
   subject: agent-ops
   deployment_target: portable
+  scope: "Condensing prose while preserving meaning — session findings, wrap reports, research briefs, executive summaries, TLDRs, agent handoffs, progressive summaries, audit summaries, and long-document distillation — covering extractive vs abstractive summarization, what to keep vs drop, evidence preservation, summary levels, handoff summaries, and audit-report condensation without hiding findings. Portable across any text-condensation task; principle-grounded, not repo-bound. Excludes byte/data compression algorithms (compression), context-window budget math and compaction triggers (context-window), working-set selection (context-management), prose tone repair (writing-humanizer), and quality scoring (evaluation)."
   taxonomy_domain: agent/cognition
   owner: skill-graph-maintainer
   freshness: "2026-05-18"
@@ -225,6 +226,7 @@ After applying this skill, verify:
 - Subject: `agent-ops`
 - Deployment: `portable`
 - Domain: `agent/cognition`
+- Scope: Condensing prose while preserving meaning — session findings, wrap reports, research briefs, executive summaries, TLDRs, agent handoffs, progressive summaries, audit summaries, and long-document distillation — covering extractive vs abstractive summarization, what to keep vs drop, evidence preservation, summary levels, handoff summaries, and audit-report condensation without hiding findings. Portable across any text-condensation task; principle-grounded, not repo-bound. Excludes byte/data compression algorithms (compression), context-window budget math and compaction triggers (context-window), working-set selection (context-management), prose tone repair (writing-humanizer), and quality scoring (evaluation).
 
 **When to use**
 - Triggers: `summarization-skill`, `summary-skill`
@@ -251,16 +253,7 @@ After applying this skill, verify:
 - Mode: `hybrid`
 - Truth sources: `https://owl.purdue.edu/owl/research_and_citation/using_research/quoting_paraphrasing_and_summarizing/index.html`, `https://fortelabs.com/blog/progressive-summarization-a-practical-technique-for-designing-discoverable-notes/`, `https://arxiv.org/abs/2204.09519`, `https://github.com/jacob-balslev/skills/blob/main/skills/agent-ops/context-management/SKILL.md`, `https://github.com/jacob-balslev/skills/blob/main/skills/agent-ops/context-window/SKILL.md`, `https://github.com/jacob-balslev/skills/blob/main/skills/design-craft/writing-humanizer/SKILL.md`
 
-**Lifecycle & audit status**
-- Stability: `experimental`
-- Freshness: `2026-05-18`
-- Eval state: `unverified`
-- Routing eval: `absent`
-- Audit status: structural PASS, truth UNVERIFIED, comprehension UNVERIFIED, application UNVERIFIED
-- Last audited: `2026-05-28`
-
-**Provenance**
-- version 1.1.0, schema v8, owner `skill-graph-maintainer`
-- Keywords: `summarization`, `summary`, `TLDR`, `executive summary`, `condensation`, `abstract`, `distill`, `key findings`, `brief`, `compress text`
+**Keywords**
+- `summarization`, `summary`, `TLDR`, `executive summary`, `condensation`, `abstract`, `distill`, `key findings`, `brief`, `compress text`
 
 <!-- skill-graph-context:end -->

@@ -8,6 +8,7 @@ metadata:
   version: "1.0.0"
   subject: frontend-ui
   deployment_target: portable
+  scope: "React Hooks as a discipline — when a render is the right shape for state, why the Rules of Hooks exist as a compile-time invariant, how the dependency array encodes a closure/rerender contract, when useEffect is the wrong primitive, derived vs stored state, when to extract a custom hook, and when memoization (useMemo, useCallback) is a footgun. Covers React 18+ (automatic batching, concurrent rendering); portable across React codebases; principle-grounded, not repo-bound. Excludes general React rendering models (rendering-models), the client/server boundary (client-server-boundary), component composition (component-architecture), and application-wide state location (state-management)."
   taxonomy_domain: engineering/frontend
   owner: skill-graph-maintainer
   freshness: "2026-05-16"
@@ -220,6 +221,7 @@ After applying this skill, verify:
 - Subject: `frontend-ui`
 - Deployment: `portable`
 - Domain: `engineering/frontend`
+- Scope: React Hooks as a discipline — when a render is the right shape for state, why the Rules of Hooks exist as a compile-time invariant, how the dependency array encodes a closure/rerender contract, when useEffect is the wrong primitive, derived vs stored state, when to extract a custom hook, and when memoization (useMemo, useCallback) is a footgun. Covers React 18+ (automatic batching, concurrent rendering); portable across React codebases; principle-grounded, not repo-bound. Excludes general React rendering models (rendering-models), the client/server boundary (client-server-boundary), component composition (component-architecture), and application-wide state location (state-management).
 
 **When to use**
 - review a useEffect whose dependency array is missing a variable and decide whether to add it, hoist the value, or rethink whether an effect is needed at all
@@ -248,16 +250,7 @@ After applying this skill, verify:
 - Analogy: Hooks are to function components what stack frames are to function calls — they let a function remember things across calls without breaking referential transparency from the outside, by tracking state in a slot array indexed by call order, and the Rules of Hooks are the same kind of invariant as 'do not goto into the middle of a stack frame': violating them produces undefined behavior masked by garbage collection rather than visible crashes.
 - Common misconception: |
 
-**Lifecycle & audit status**
-- Stability: `experimental`
-- Freshness: `2026-05-16`
-- Eval state: `unverified`
-- Routing eval: `absent`
-- Audit status: structural PASS, truth PASS, comprehension UNVERIFIED, application UNVERIFIED
-- Last audited: `2026-05-28`
-
-**Provenance**
-- version 1.0.0, schema v8, owner `skill-graph-maintainer`
-- Keywords: `React Hooks`, `Rules of Hooks`, `useEffect dependencies`, `useState`, `useMemo when not to`, `useCallback footgun`, `custom hooks extraction`, `derived state`, `stale closure`, `effect cleanup`
+**Keywords**
+- `React Hooks`, `Rules of Hooks`, `useEffect dependencies`, `useState`, `useMemo when not to`, `useCallback footgun`, `custom hooks extraction`, `derived state`, `stale closure`, `effect cleanup`
 
 <!-- skill-graph-context:end -->

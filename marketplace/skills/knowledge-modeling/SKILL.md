@@ -5,38 +5,21 @@ license: MIT
 compatibility: "Theory-level skill. Applies to any AI-coding workspace that maintains structured knowledge artefacts: skill libraries, reference docs, decision records, runbooks, agent memory systems, RAG/GraphRAG pipelines."
 allowed-tools: Read Grep
 metadata:
-  schema_version: "8"
-  version: "1.2.0"
   subject: knowledge-organization
   deployment_target: portable
+  scope: "Teaches choosing and maintaining the representation paradigm for domain knowledge: graphs, frames, semantic networks, production rules, concept maps, procedural ontologies, GraphRAG, or hybrids. Excludes stakeholder-readable conceptual modeling, database schema design, pure taxonomy hierarchy, formal ontology axioms, exact semantic edge labeling, and live skill-library tooling."
   taxonomy_domain: foundations/knowledge
-  owner: skill-graph-maintainer
-  freshness: "2026-05-18"
-  drift_check: "{\"last_verified\":\"2026-05-18\"}"
-  eval_artifacts: planned
-  eval_state: unverified
-  routing_eval: absent
-  comprehension_state: present
   stability: experimental
   keywords: "[\"knowledge representation\",\"knowledge graph\",\"frames and slots\",\"production rules\",\"semantic network\",\"concept map\",\"procedural ontology PKO\",\"hybrid knowledge representation\",\"tacit to explicit knowledge\",\"knowledge acquisition pipeline\"]"
   examples: "[\"should this domain knowledge be a graph, a set of rules, a frame structure, or a hybrid?\",\"our skill library keeps adding prose but the agent can't reason over relationships — which representation should change?\",\"the agent retrieves topically similar passages but misses structurally related facts — is GraphRAG the right shift?\",\"how do I capture decision traces and triggers as first-class entities so the agent can replay why it chose Y?\",\"we have facts, exceptions, and procedural decisions for an audit system — what representation keeps both retrieval and reasoning tractable?\",\"should this workflow stay a human concept map or be promoted to machine-usable production rules?\",\"we want to validate the knowledge base against real scenarios — what completeness / consistency / relevance / currency checks should run?\"]"
   anti_examples: "[\"design the database tables and foreign keys for this schema\",\"I just need a clean IS-A category hierarchy with no rules or graph behavior\",\"I need formal OWL axioms with class restrictions and reasoning semantics\",\"I want the exact edge labels (hypernymy / meronymy / synonymy) between concepts\",\"I need to maintain the skill library tooling and overlap detector\",\"abstract the domain into entities and relationships in human-readable terms before any database talk\"]"
   relations: "{\"boundary\":[{\"skill\":\"conceptual-modeling\",\"reason\":\"conceptual-modeling is the human-readable domain analysis layer (entities, attributes, relationships, cardinality); knowledge-modeling is the representation-strategy layer above that — choosing between graphs, frames, rules, and hybrids\"},{\"skill\":\"data-modeling\",\"reason\":\"data-modeling owns logical and physical data structures such as tables, columns, constraints, and persistence shape; knowledge-modeling owns meaning structures and representation paradigms\"},{\"skill\":\"taxonomy-design\",\"reason\":\"taxonomy-design owns pure IS-A hierarchy design and browse/category structure; knowledge-modeling owns broader representation choice across graphs, frames, rules, concept maps, and hybrids\"},{\"skill\":\"ontology-modeling\",\"reason\":\"ontology-modeling owns formal axioms, OWL/RDFS-style constraints, and automated reasoning semantics; knowledge-modeling decides whether that level of formality is needed\"},{\"skill\":\"semantic-relations\",\"reason\":\"semantic-relations owns exact edge-label semantics such as hypernymy, meronymy, synonymy, and polysemy; knowledge-modeling chooses the representation paradigm that will contain those edges\"},{\"skill\":\"context-graph\",\"reason\":\"context-graph is one specific application of knowledge modeling to workspace context topology; knowledge-modeling is the general theory it draws on\"},{\"skill\":\"skill-infrastructure\",\"reason\":\"skill-infrastructure is the live tooling that maintains the skill library; knowledge-modeling is the theory of what kind of knowledge artefact a SKILL.md is and why frames are the right paradigm for one\"}],\"related\":[\"conceptual-modeling\",\"ontology-modeling\",\"taxonomy-design\",\"semantic-relations\",\"context-graph\",\"context-engineering\",\"skill-infrastructure\"],\"verify_with\":[\"conceptual-modeling\",\"ontology-modeling\"]}"
   grounding: "{\"subject_matter\":\"Knowledge representation paradigm choice and GraphRAG-ready knowledge modeling\",\"grounding_mode\":\"hybrid\",\"truth_sources\":[\"https://doi.org/10.1016/0004-3702(82)90012-1\",\"https://books.google.com/books/about/Knowledge_Representation_and_Reasoning.html?id=ln6Ux-EZm6YC\",\"https://courses.media.mit.edu/2004spring/mas966/Minsky%201974%20Framework%20for%20knowledge.pdf\",\"https://www.w3.org/TR/skos-reference/\",\"https://arxiv.org/abs/2404.16130\"],\"failure_modes\":[\"representation_chosen_by_familiarity_not_query_pattern\",\"graph_structure_too_sparse_for_graphrag\",\"formalism_overfit_to_theory_not_maintenance\",\"tacit_knowledge_transcribed_without_validation\",\"taxonomy_used_when_rules_or_frames_are_required\"],\"evidence_priority\":\"equal\"}"
-  portability: "{\"readiness\":\"scripted\",\"targets\":[\"skill-md\"]}"
-  lifecycle: "{\"stale_after_days\":365,\"review_cadence\":\"quarterly\"}"
   mental_model: "|"
   purpose: "|"
   boundary: "|"
   analogy: "Knowledge modeling is to a knowledge artefact what choosing between blueprint, schematic, exploded view, flowchart, and storyboard is to documenting a complex device — the device hasn't changed, but each format makes different questions easy or impossible to answer. A blueprint answers 'where does this part go?'; a schematic answers 'what is connected to what?'; a flowchart answers 'what happens when?'. Showing a customer a wiring schematic when they want to know how the product is assembled is choosing the wrong representation, not failing at the documentation."
   misconception: "|"
-  concept: "{\"definition\":\"Knowledge modeling is the discipline of choosing a representation paradigm — knowledge graph, frames, production rules, semantic network, concept map, procedural ontology, or a hybrid — that fits how knowledge will be queried, reasoned over, validated, and maintained.\",\"mental_model\":\"Choose by the dominant query pattern and operating constraint. Graphs answer relationship questions, rules answer decision questions, frames answer object-property questions, concept maps communicate to humans, procedural ontologies preserve why/how traces, and hybrids handle real systems when one paradigm is insufficient.\",\"purpose\":\"It prevents teams from treating all structured text as equivalent. The goal is to make agent and product knowledge explicit enough to retrieve, reason over, validate, update, and retire without over-formalizing beyond the system's real needs.\",\"boundary\":\"It is representation strategy, not human-readable domain analysis, database/data modeling, pure taxonomy design, formal ontology axiom authoring, exact semantic edge labeling, or live skill-library operations.\",\"taxonomy\":\"Core paradigms include knowledge graphs, frames, semantic networks, production rules, concept maps, procedural knowledge ontologies, and hybrids. Core lifecycle stages include create, validate, publish, use, monitor, update, and retire.\",\"analogy\":\"Knowledge modeling is like choosing between a blueprint, schematic, flowchart, and storyboard for the same device: each representation makes different questions easy and different mistakes visible.\",\"misconception\":\"The common mistake is believing more structure or more formalism is automatically better. A sparse graph, vague edge labels, or OWL-level formality without query demand can make the system harder to validate and worse for retrieval than plain text with conventions.\"}"
-  structural_verdict: PASS
-  truth_verdict: UNVERIFIED
-  comprehension_verdict: UNVERIFIED
-  application_verdict: UNVERIFIED
-  last_audited: "2026-05-28"
-  lint_verdict: PASS
   skill_graph_source_repo: "https://github.com/jacob-balslev/skill-graph"
   skill_graph_project: Skill Graph
   skill_graph_canonical_skill: skills/knowledge-organization/knowledge-modeling/SKILL.md
@@ -273,6 +256,7 @@ Rules:
 - Subject: `knowledge-organization`
 - Deployment: `portable`
 - Domain: `foundations/knowledge`
+- Scope: Teaches choosing and maintaining the representation paradigm for domain knowledge: graphs, frames, semantic networks, production rules, concept maps, procedural ontologies, GraphRAG, or hybrids. Excludes stakeholder-readable conceptual modeling, database schema design, pure taxonomy hierarchy, formal ontology axioms, exact semantic edge labeling, and live skill-library tooling.
 
 **When to use**
 - should this domain knowledge be a graph, a set of rules, a frame structure, or a hybrid?
@@ -313,16 +297,7 @@ Rules:
 - Mode: `hybrid`
 - Truth sources: `https://doi.org/10.1016/0004-3702(82)90012-1`, `https://books.google.com/books/about/Knowledge_Representation_and_Reasoning.html?id=ln6Ux-EZm6YC`, `https://courses.media.mit.edu/2004spring/mas966/Minsky%201974%20Framework%20for%20knowledge.pdf`, `https://www.w3.org/TR/skos-reference/`, `https://arxiv.org/abs/2404.16130`
 
-**Lifecycle & audit status**
-- Stability: `experimental`
-- Freshness: `2026-05-18`
-- Eval state: `unverified`
-- Routing eval: `absent`
-- Audit status: structural PASS, truth UNVERIFIED, comprehension UNVERIFIED, application UNVERIFIED
-- Last audited: `2026-05-28`
-
-**Provenance**
-- version 1.2.0, schema v8, owner `skill-graph-maintainer`
-- Keywords: `knowledge representation`, `knowledge graph`, `frames and slots`, `production rules`, `semantic network`, `concept map`, `procedural ontology PKO`, `hybrid knowledge representation`, `tacit to explicit knowledge`, `knowledge acquisition pipeline`
+**Keywords**
+- `knowledge representation`, `knowledge graph`, `frames and slots`, `production rules`, `semantic network`, `concept map`, `procedural ontology PKO`, `hybrid knowledge representation`, `tacit to explicit knowledge`, `knowledge acquisition pipeline`
 
 <!-- skill-graph-context:end -->

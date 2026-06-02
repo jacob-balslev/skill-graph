@@ -9,6 +9,7 @@ metadata:
   version: "1.1.0"
   subject: design-craft
   deployment_target: portable
+  scope: "Writing and editing human-readable prose — docs, PRs, issues, release notes, errors, UI copy, commits, tooltips, support replies — especially when text sounds robotic, padded, monotonous, or overly formal: AI-tell removal, active voice, hedging reduction, readability diagnosis, sentence rhythm, vocabulary variety, tone mapping, paragraph rhythm, the bullets-vs-prose choice, and the 5-step humanization workflow. Portable across any written communication; principle-grounded, not repo-bound. Excludes documentation routing/type selection, code-identifier naming, and in-product UI-text pattern catalogs (microcopy)."
   taxonomy_domain: design/content
   owner: skill-graph-maintainer
   freshness: "2026-05-18"
@@ -429,6 +430,7 @@ Before finalizing any humanized text, confirm:
 - Subject: `design-craft`
 - Deployment: `portable`
 - Domain: `design/content`
+- Scope: Writing and editing human-readable prose — docs, PRs, issues, release notes, errors, UI copy, commits, tooltips, support replies — especially when text sounds robotic, padded, monotonous, or overly formal: AI-tell removal, active voice, hedging reduction, readability diagnosis, sentence rhythm, vocabulary variety, tone mapping, paragraph rhythm, the bullets-vs-prose choice, and the 5-step humanization workflow. Portable across any written communication; principle-grounded, not repo-bound. Excludes documentation routing/type selection, code-identifier naming, and in-product UI-text pattern catalogs (microcopy).
 
 **When to use**
 - this PR description sounds AI-generated — strip the tells and rewrite it concisely
@@ -460,16 +462,7 @@ Before finalizing any humanized text, confirm:
 - Analogy: Writing humanization is like audio mastering: the recording may already contain the right notes, but mastering removes hiss, balances loudness, and restores dynamics so a listener can trust what they hear.
 - Common misconception: The wrong mental model is that humanizing means adding slang, contractions, typos, or random sentence fragments until a detector score changes. That treats the detector as the audience. The real audience is the reader. Good humanization preserves truth, sharpens specificity, varies rhythm where it helps, and refuses edits that make the text less clear or less honest.
 
-**Lifecycle & audit status**
-- Stability: `experimental`
-- Freshness: `2026-05-18`
-- Eval state: `unverified`
-- Routing eval: `absent`
-- Audit status: structural PASS, truth PASS, comprehension UNVERIFIED, application UNVERIFIED
-- Last audited: `2026-05-28`
-
-**Provenance**
-- version 1.1.0, schema v8, owner `skill-graph-maintainer`
-- Keywords: `AI-tell detection`, `AI-tell removal`, `prose humanization`, `passive-to-active voice`, `hedging-pattern removal`, `readability scoring diagnosis`, `sentence-rhythm pattern`, `3-beat sentence variety`, `hook-body-landing paragraph`, `tone mapping framework`
+**Keywords**
+- `AI-tell detection`, `AI-tell removal`, `prose humanization`, `passive-to-active voice`, `hedging-pattern removal`, `readability scoring diagnosis`, `sentence-rhythm pattern`, `3-beat sentence variety`, `hook-body-landing paragraph`, `tone mapping framework`
 
 <!-- skill-graph-context:end -->

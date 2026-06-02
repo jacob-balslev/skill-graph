@@ -325,16 +325,7 @@ After applying this skill, verify:
 - Analogy: A background job is a numbered work order in a shop: the front desk accepts the request, the workshop picks it up when capacity exists, and the status board shows where it is.
 - Common misconception: Putting work in a worker is not enough. Without durable state, idempotency, progress, retry policy, and observability, a background job is just an invisible request handler with a longer timeout.
 
-**Lifecycle & audit status**
-- Stability: `stable`
-- Freshness: `2026-05-21`
-- Eval state: `unverified`
-- Routing eval: `absent`
-- Audit status: structural PASS, truth PASS, comprehension UNVERIFIED, application UNVERIFIED
-- Last audited: `2026-05-28`
-
-**Provenance**
-- version 1.1.0, schema v7, owner `skill-graph-maintainer`
-- Keywords: `background jobs`, `job queue`, `worker queue`, `async processing`, `long-running task`, `retry backoff`, `dead letter queue`, `job progress`, `checkpointing`, `worker concurrency`, `idempotent job`, `queue lease`, `job cancellation`
+**Keywords**
+- `background jobs`, `job queue`, `worker queue`, `async processing`, `long-running task`, `retry backoff`, `dead letter queue`, `job progress`, `checkpointing`, `worker concurrency`, `idempotent job`, `queue lease`, `job cancellation`
 
 <!-- skill-graph-context:end -->

@@ -119,16 +119,7 @@ This skill ships a comprehension-eval artifact at [`examples/evals/testing-strat
 **Related skills**
 - Verify with: `debugging`
 
-**Lifecycle & audit status**
-- Stability: `experimental`
-- Freshness: `2026-04-18`
-- Eval state: `passing`
-- Routing eval: `present`
-- Audit status: structural PASS, truth PASS, comprehension UNVERIFIED, application UNVERIFIED
-- Last audited: `2026-05-28`
-
-**Provenance**
-- version 1.0.0, schema v8, owner `skill-graph-maintainer`
-- Keywords: `testing strategy`, `what to test`, `what not to test`, `which test level`, `test scope`, `effort vs risk`, `regression target`, `failure case coverage`, `test plan`, `do I need a test`, `unit test or integration`, `test level decision`, `pin this regression`, `regression test`, `slip through`, `pure formatter test`
+**Keywords**
+- `testing strategy`, `what to test`, `what not to test`, `which test level`, `test scope`, `effort vs risk`, `regression target`, `failure case coverage`, `test plan`, `do I need a test`, `unit test or integration`, `test level decision`, `pin this regression`, `regression test`, `slip through`, `pure formatter test`
 
 <!-- skill-graph-context:end -->

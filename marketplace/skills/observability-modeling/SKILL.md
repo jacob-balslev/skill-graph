@@ -9,6 +9,7 @@ metadata:
   version: "1.0.0"
   subject: data-analytics
   deployment_target: portable
+  scope: "Designing telemetry semantics before or during implementation — logs, metrics, traces, events, spans, attributes, correlation IDs, SLOs, alert signals, and the diagnostic questions telemetry must answer. Portable across any instrumented system; principle-grounded, not repo-bound. Excludes domain/business event contracts (event-contract-design), configuring an error tracker alone (error-tracking), performance optimization (performance-engineering), and debugging a current incident (debugging)."
   taxonomy_domain: engineering/observability
   owner: skill-graph-maintainer
   freshness: "2026-05-11"
@@ -89,6 +90,7 @@ This skill ships a comprehension-eval artifact at [`examples/evals/observability
 - Subject: `data-analytics`
 - Deployment: `portable`
 - Domain: `engineering/observability`
+- Scope: Designing telemetry semantics before or during implementation — logs, metrics, traces, events, spans, attributes, correlation IDs, SLOs, alert signals, and the diagnostic questions telemetry must answer. Portable across any instrumented system; principle-grounded, not repo-bound. Excludes domain/business event contracts (event-contract-design), configuring an error tracker alone (error-tracking), performance optimization (performance-engineering), and debugging a current incident (debugging).
 
 **When to use**
 - design telemetry for this ingestion pipeline so failures can be diagnosed later
@@ -111,16 +113,7 @@ This skill ships a comprehension-eval artifact at [`examples/evals/observability
 - Verify with: `error-tracking`, `debugging`
 - Related: `error-tracking`, `performance-engineering`, `system-interface-contracts`, `event-contract-design`, `debugging`
 
-**Lifecycle & audit status**
-- Stability: `experimental`
-- Freshness: `2026-05-11`
-- Eval state: `unverified`
-- Routing eval: `absent`
-- Audit status: structural PASS, truth PASS, comprehension UNVERIFIED, application UNVERIFIED
-- Last audited: `2026-05-28`
-
-**Provenance**
-- version 1.0.0, schema v8, owner `skill-graph-maintainer`
-- Keywords: `observability modeling`, `telemetry design`, `logs metrics traces`, `SLO`, `spans`, `correlation id`, `diagnostic events`, `alert design`, `instrumentation model`
+**Keywords**
+- `observability modeling`, `telemetry design`, `logs metrics traces`, `SLO`, `spans`, `correlation id`, `diagnostic events`, `alert design`, `instrumentation model`
 
 <!-- skill-graph-context:end -->

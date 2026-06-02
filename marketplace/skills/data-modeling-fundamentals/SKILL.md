@@ -8,6 +8,7 @@ metadata:
   version: "1.0.0"
   subject: code-engineering
   deployment_target: portable
+  scope: "The foundational theory beneath data modeling — Codd's relational model (1970) and its algebra, the normal forms (1NF–5NF, BCNF) as a constraint-elimination sequence, functional dependencies and the closure algorithm, Chen's entity-relationship model (1976), the principled case for and against denormalization, the relational-vs-document tradeoff at the conceptual level, and the immutable-data-model alternative (event sourcing, append-only tables) with its grounding literature. Portable across any data-modeling effort; principle-grounded, not repo-bound. Excludes practical persistence design and method (data-modeling), applying changes to an existing schema (schema-evolution), choosing indexes (indexing-strategy), and the conceptual-modeling layer above the data model (conceptual-modeling)."
   taxonomy_domain: engineering/data
   owner: skill-graph-maintainer
   freshness: "2026-05-16"
@@ -152,6 +153,7 @@ After applying this skill, verify:
 - Subject: `code-engineering`
 - Deployment: `portable`
 - Domain: `engineering/data`
+- Scope: The foundational theory beneath data modeling — Codd's relational model (1970) and its algebra, the normal forms (1NF–5NF, BCNF) as a constraint-elimination sequence, functional dependencies and the closure algorithm, Chen's entity-relationship model (1976), the principled case for and against denormalization, the relational-vs-document tradeoff at the conceptual level, and the immutable-data-model alternative (event sourcing, append-only tables) with its grounding literature. Portable across any data-modeling effort; principle-grounded, not repo-bound. Excludes practical persistence design and method (data-modeling), applying changes to an existing schema (schema-evolution), choosing indexes (indexing-strategy), and the conceptual-modeling layer above the data model (conceptual-modeling).
 
 **When to use**
 - explain why a table is in 2NF but not 3NF and what change would bring it to 3NF
@@ -181,16 +183,7 @@ After applying this skill, verify:
 - Analogy: Data-modeling fundamentals is to schema design what Euclidean geometry is to architecture — the architect does not draw a right-angled wall by intuition each time; they draw it because the geometry guarantees stability and squares lock together. A schema in 3NF is the wall built to plumb, where every dependency is structural and no anomaly is hiding in the carpentry. Denormalization is the deliberate decision to cut a non-load-bearing wall for an open floor plan — defensible when the workload justifies it, indefensible when the cost is invisible.
 - Common misconception: |
 
-**Lifecycle & audit status**
-- Stability: `experimental`
-- Freshness: `2026-05-16`
-- Eval state: `unverified`
-- Routing eval: `absent`
-- Audit status: structural PASS, truth PASS, comprehension UNVERIFIED, application UNVERIFIED
-- Last audited: `2026-05-28`
-
-**Provenance**
-- version 1.0.0, schema v8, owner `skill-graph-maintainer`
-- Keywords: `relational model`, `Codd`, `normalization`, `normal forms`, `functional dependency`, `1NF`, `2NF`, `3NF`, `BCNF`, `4NF`
+**Keywords**
+- `relational model`, `Codd`, `normalization`, `normal forms`, `functional dependency`, `1NF`, `2NF`, `3NF`, `BCNF`, `4NF`
 
 <!-- skill-graph-context:end -->

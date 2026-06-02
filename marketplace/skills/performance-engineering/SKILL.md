@@ -9,6 +9,7 @@ metadata:
   version: "1.0.0"
   subject: data-analytics
   deployment_target: portable
+  scope: "Measuring, diagnosing, budgeting, and improving performance — latency, throughput, Core Web Vitals, database queries, caching, bundle size, concurrency, resource use, and regression prevention. Portable across any system with performance goals; principle-grounded, not repo-bound. Excludes telemetry schema design alone (observability-modeling), error-capture setup (error-tracking), and premature micro-optimization without a measured bottleneck."
   taxonomy_domain: quality/performance
   owner: skill-graph-maintainer
   freshness: "2026-05-11"
@@ -88,6 +89,7 @@ This skill ships a comprehension-eval artifact at [`examples/evals/performance-e
 - Subject: `data-analytics`
 - Deployment: `portable`
 - Domain: `quality/performance`
+- Scope: Measuring, diagnosing, budgeting, and improving performance — latency, throughput, Core Web Vitals, database queries, caching, bundle size, concurrency, resource use, and regression prevention. Portable across any system with performance goals; principle-grounded, not repo-bound. Excludes telemetry schema design alone (observability-modeling), error-capture setup (error-tracking), and premature micro-optimization without a measured bottleneck.
 
 **When to use**
 - profile this slow dashboard and decide what to optimize first
@@ -109,16 +111,7 @@ This skill ships a comprehension-eval artifact at [`examples/evals/performance-e
 - Verify with: `observability-modeling`, `code-review`
 - Related: `observability-modeling`, `api-design`, `data-modeling`, `testing-strategy`
 
-**Lifecycle & audit status**
-- Stability: `experimental`
-- Freshness: `2026-05-11`
-- Eval state: `unverified`
-- Routing eval: `absent`
-- Audit status: structural PASS, truth PASS, comprehension UNVERIFIED, application UNVERIFIED
-- Last audited: `2026-05-28`
-
-**Provenance**
-- version 1.0.0, schema v8, owner `skill-graph-maintainer`
-- Keywords: `performance engineering`, `performance budget`, `profiling`, `latency`, `throughput`, `Core Web Vitals`, `database performance`, `caching`, `bundle size`, `performance regression`
+**Keywords**
+- `performance engineering`, `performance budget`, `profiling`, `latency`, `throughput`, `Core Web Vitals`, `database performance`, `caching`, `bundle size`, `performance regression`
 
 <!-- skill-graph-context:end -->

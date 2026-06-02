@@ -9,6 +9,7 @@ metadata:
   version: "1.0.0"
   subject: agent-ops
   deployment_target: portable
+  scope: "Extracting durable project knowledge from code, docs, issues, incidents, reports, screenshots, or conversations into reusable context — skills, ADRs, glossaries, context docs, or memory entries. Portable across any project accumulating knowledge; principle-grounded, not repo-bound. Excludes writing a new skill contract (skill-scaffold), maintaining library tooling (skill-infrastructure), and generic documentation polish (documentation)."
   taxonomy_domain: agent/knowledge
   owner: skill-graph-maintainer
   freshness: "2026-05-11"
@@ -85,6 +86,7 @@ Durable knowledge must be evidence-backed. If it cannot be tied to code, docs, d
 - Subject: `agent-ops`
 - Deployment: `portable`
 - Domain: `agent/knowledge`
+- Scope: Extracting durable project knowledge from code, docs, issues, incidents, reports, screenshots, or conversations into reusable context — skills, ADRs, glossaries, context docs, or memory entries. Portable across any project accumulating knowledge; principle-grounded, not repo-bound. Excludes writing a new skill contract (skill-scaffold), maintaining library tooling (skill-infrastructure), and generic documentation polish (documentation).
 
 **When to use**
 - read this repo and extract the durable domain knowledge an agent should know next time
@@ -109,16 +111,7 @@ Durable knowledge must be evidence-backed. If it cannot be tied to code, docs, d
 - Mode: `hybrid`
 - Truth sources: `docs/PRIMER.md`, `docs/ADOPTION.md`, `docs/recommended-skills.md`, `skills/skill-scaffold/SKILL.md`, `skills/context-graph/SKILL.md`
 
-**Lifecycle & audit status**
-- Stability: `experimental`
-- Freshness: `2026-05-11`
-- Eval state: `unverified`
-- Routing eval: `absent`
-- Audit status: structural PASS, truth DRIFT, comprehension UNVERIFIED, application UNVERIFIED
-- Last audited: `2026-05-28`
-
-**Provenance**
-- version 1.0.0, schema v8, owner `skill-graph-maintainer`
-- Keywords: `project knowledge extraction`, `context extraction`, `durable knowledge`, `knowledge capture`, `code archaeology`, `docs mining`, `issue mining`, `tacit knowledge`, `context doc`, `agent memory`
+**Keywords**
+- `project knowledge extraction`, `context extraction`, `durable knowledge`, `knowledge capture`, `code archaeology`, `docs mining`, `issue mining`, `tacit knowledge`, `context doc`, `agent memory`
 
 <!-- skill-graph-context:end -->

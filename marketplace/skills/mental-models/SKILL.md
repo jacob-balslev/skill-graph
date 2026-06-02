@@ -4,36 +4,21 @@ description: "Use when reasoning about how a system, user, or designer's interna
 license: MIT
 allowed-tools: Read Grep
 metadata:
-  schema_version: "8"
-  version: "1.0.0"
   subject: meta-methods
   deployment_target: portable
+  scope: "Mental-models reasoning for diagnosing how users, designers, developers, teams, and agents represent a system differently from how it actually behaves. Portable across UX, distributed systems, type systems, API design, and collaboration contexts. Covers the three-model frame, the two gulfs, analogy/metaphor as model-seeding, model failure modes, model depth layers, and validation against system behavior. Excludes formal entity/schema modeling (conceptual-modeling), representation-paradigm choice (knowledge-modeling), empirical research-method design (user-research), cognitive-bias analysis, and tactical implementation choices."
   taxonomy_domain: foundations/mental-models
-  owner: skill-graph-maintainer
-  freshness: "2026-05-16"
-  drift_check: "{\"last_verified\":\"2026-05-16\"}"
-  eval_artifacts: planned
-  eval_state: unverified
-  routing_eval: absent
-  comprehension_state: present
   stability: experimental
   keywords: "[\"mental models\",\"mental model\",\"gulf of execution\",\"gulf of evaluation\",\"user model\",\"system model\",\"designer model\",\"conceptual model\",\"metaphor\",\"analogy\"]"
   triggers: "[\"how do I think about\",\"users expect X but the system does Y\",\"this is confusing\",\"the user's model doesn't match\",\"why is this surprising\",\"what's the right metaphor\"]"
   examples: "[\"users keep trying to drag a row to reorder but the table doesn't support drag — diagnose the model mismatch\",\"explain why race conditions across parallel tool calls are hard for developers to anticipate\",\"decide on the right metaphor for a feature that combines folders and tags\",\"the team disagrees on what 'workspace' means in the product — surface the divergent mental models\"]"
-  anti_examples: "[\"draw the boxes-and-arrows diagram of the system (use knowledge-modeling)\",\"name the React hook for managing form state (tactical implementation choice)\",\"write user-research interview questions (use user-research)\",\"teach a junior engineer about distributed-systems consistency models (use teaching-patterns)\"]"
+  anti_examples: "[\"draw the boxes-and-arrows diagram of the system (use knowledge-modeling)\",\"name the React hook for managing form state (tactical implementation choice)\",\"write user-research interview questions (use user-research)\",\"teach a junior engineer about distributed-systems consistency models\"]"
   relations: "{\"related\":[\"conceptual-modeling\",\"knowledge-modeling\",\"user-research\",\"semantics\"],\"boundary\":[{\"skill\":\"conceptual-modeling\",\"reason\":\"conceptual-modeling owns the FORMAL representation of a domain (entities, attributes, relationships) for downstream use by schemas and APIs; this skill owns the COGNITIVE construct (how a mind represents the system), which is upstream of any formalism.\"},{\"skill\":\"knowledge-modeling\",\"reason\":\"knowledge-modeling owns the choice of representation paradigm (graphs, frames, rules, networks); this skill owns the discipline of reasoning about model-system fit before any paradigm is chosen.\"},{\"skill\":\"user-research\",\"reason\":\"user-research owns the methods for eliciting and validating user mental models empirically; this skill owns the framing of what a mental model is and how to reason about its accuracy.\"}],\"verify_with\":[\"user-research\"]}"
   mental_model: "|"
   purpose: "|"
   boundary: "|"
   analogy: "A mental model is to a system what a map is to a city — the map is not the territory, the map is useful precisely because it is smaller and selective, and a traveler navigating with the wrong map (a city map for a different city, an out-of-date map, a tourist map missing the metro) does not get lost because the map is 'wrong' but because the map's selectiveness does not match the route they need."
   misconception: "|"
-  concept: "{\"definition\":\"A mental model is the internal representation a person carries of how a system, domain, or set of relationships behaves — used to predict outcomes, plan actions, and interpret feedback. Mental models are constructed (from experience, instruction, analogy, and inference), private (each mind holds its own), and partial (no model captures the full complexity of its referent). They are the cognitive scaffolding that makes the world tractable; they are also the silent source of most surprise, frustration, and bug-shaped misunderstanding. The discipline of mental-models is the explicit study of how these representations are built, where they diverge from the systems they represent, and how to bring multiple models into alignment when collaborators, users, and systems are working from different ones.\",\"mental_model\":\"|\",\"purpose\":\"|\",\"boundary\":\"|\",\"taxonomy\":\"|\",\"analogy\":\"|\",\"misconception\":\"|\"}"
-  structural_verdict: PASS
-  truth_verdict: PASS
-  comprehension_verdict: UNVERIFIED
-  application_verdict: UNVERIFIED
-  last_audited: "2026-05-28"
-  lint_verdict: PASS
   skill_graph_source_repo: "https://github.com/jacob-balslev/skill-graph"
   skill_graph_project: Skill Graph
   skill_graph_canonical_skill: skills/meta-methods/mental-models/SKILL.md
@@ -137,7 +122,7 @@ After applying this skill, verify:
 | Building a formal representation (entities, attributes, schemas) | `conceptual-modeling` | conceptual-modeling owns formal-domain representation; mental-models owns the cognitive layer above any formalism |
 | Choosing between graphs, frames, rules as a knowledge representation paradigm | `knowledge-modeling` | knowledge-modeling owns paradigm selection; mental-models is upstream of paradigm choice |
 | Empirically eliciting user mental models through research methods | `user-research` | user-research owns the elicitation methods; this skill owns the conceptual frame the methods serve |
-| Transferring a known mental model to another person | `teaching-patterns` | teaching-patterns owns the transmission discipline; this skill owns the construction discipline |
+| Transferring a known mental model to another person | Out of scope | This skill owns diagnosing and aligning model-system fit, not instructional delivery or curriculum design |
 | Reasoning about specific cognitive biases (anchoring, framing, recency) | (no direct skill — out of scope) | The cognitive-bias literature is its own discipline; this skill focuses on system-model representation rather than decision-making bias |
 | Choosing the React hook for a state-management decision | `state-management` + library docs | Tactical implementation choice; this skill is the upstream framing |
 | The drawing or notation of a model | diagramming tools / `knowledge-modeling` | The artifact is not the model; this skill applies to the cognitive structure, not its visual representation |
@@ -163,6 +148,7 @@ After applying this skill, verify:
 - Subject: `meta-methods`
 - Deployment: `portable`
 - Domain: `foundations/mental-models`
+- Scope: Mental-models reasoning for diagnosing how users, designers, developers, teams, and agents represent a system differently from how it actually behaves. Portable across UX, distributed systems, type systems, API design, and collaboration contexts. Covers the three-model frame, the two gulfs, analogy/metaphor as model-seeding, model failure modes, model depth layers, and validation against system behavior. Excludes formal entity/schema modeling (conceptual-modeling), representation-paradigm choice (knowledge-modeling), empirical research-method design (user-research), cognitive-bias analysis, and tactical implementation choices.
 
 **When to use**
 - users keep trying to drag a row to reorder but the table doesn't support drag — diagnose the model mismatch
@@ -175,7 +161,7 @@ After applying this skill, verify:
 - draw the boxes-and-arrows diagram of the system (use knowledge-modeling)
 - name the React hook for managing form state (tactical implementation choice)
 - write user-research interview questions (use user-research)
-- teach a junior engineer about distributed-systems consistency models (use teaching-patterns)
+- teach a junior engineer about distributed-systems consistency models
 - Owned by `conceptual-modeling`: the FORMAL representation of a domain (entities, attributes, relationships) for downstream use by schemas and APIs
 - Owned by `knowledge-modeling`: the choice of representation paradigm (graphs, frames, rules, networks)
 - Owned by `user-research`: the methods for eliciting and validating user mental models empirically
@@ -191,16 +177,7 @@ After applying this skill, verify:
 - Analogy: A mental model is to a system what a map is to a city — the map is not the territory, the map is useful precisely because it is smaller and selective, and a traveler navigating with the wrong map (a city map for a different city, an out-of-date map, a tourist map missing the metro) does not get lost because the map is 'wrong' but because the map's selectiveness does not match the route they need.
 - Common misconception: |
 
-**Lifecycle & audit status**
-- Stability: `experimental`
-- Freshness: `2026-05-16`
-- Eval state: `unverified`
-- Routing eval: `absent`
-- Audit status: structural PASS, truth PASS, comprehension UNVERIFIED, application UNVERIFIED
-- Last audited: `2026-05-28`
-
-**Provenance**
-- version 1.0.0, schema v8, owner `skill-graph-maintainer`
-- Keywords: `mental models`, `mental model`, `gulf of execution`, `gulf of evaluation`, `user model`, `system model`, `designer model`, `conceptual model`, `metaphor`, `analogy`
+**Keywords**
+- `mental models`, `mental model`, `gulf of execution`, `gulf of evaluation`, `user model`, `system model`, `designer model`, `conceptual model`, `metaphor`, `analogy`
 
 <!-- skill-graph-context:end -->

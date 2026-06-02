@@ -7,10 +7,17 @@ metadata:
   version: "1.0.0"
   subject: design-craft
   deployment_target: portable
+  scope: "Portable across any product, service, or team. Teaches how to model a person's end-to-end lived experience across touchpoints, channels, and time — the actions, thoughts, and emotional curve front-stage, plus the back-stage processes that produce each moment — so a team aligns on one cross-channel reality and fixes the moments that matter. Not bound to any codebase or tool; applies to any experience being designed, audited, or aligned on."
+  comprehension_state: present
+  mental_model: "A journey map is a time-ordered model of one actor's lived experience across touchpoints and channels, layering what they do, think, and feel against the front-stage interactions and the back-stage processes that produce each moment. Experience is treated as one continuous arc, not a set of isolated screens."
+  purpose: "To surface where an end-to-end experience helps or fails a person — emotional peaks and troughs, drop-off points, and opportunity moments — so a team aligns on the same cross-channel reality and invests in the moments that matter instead of optimizing individual screens in isolation."
+  boundary: "It models human experience over time and across channels, not system topology. It is NOT single-interface task decomposition (that is task-analysis) and NOT service or architecture diagramming; a journey map's unit is a person's moment — including emotion and context — not a UI step or a service call."
+  analogy: "A journey map is like a film's emotional storyboard rather than a wiring diagram: it tracks how the protagonist feels scene by scene across locations and time, so you fix the scenes that lose the audience — not the lighting rig behind them."
+  misconception: "That a journey map is just a flowchart of screens or steps. A flow without the emotional curve, the cross-channel and time span, and the back-stage layer is a task flow — collapsing journey-mapping into that discards exactly the human-experience signal it exists to capture."
   owner: skill-graph-maintainer
   freshness: "2026-05-12"
   drift_check: "{\"last_verified\":\"2026-05-12\"}"
-  eval_artifacts: planned
+  eval_artifacts: present
   eval_state: unverified
   routing_eval: absent
   stability: experimental
@@ -32,6 +39,18 @@ metadata:
 ---
 
 # Journey Mapping
+
+## Concept Card
+
+**What it is:** A time-ordered model of one actor's lived experience across touchpoints and channels — laying out what they do, think, and feel, against the front-stage interactions and the back-stage processes that produce each moment.
+
+**Mental model:** Experience is one continuous arc, not a set of isolated screens. A journey map layers actions, thoughts, and an emotional curve over a stage timeline, then (in a service blueprint) extends downward through the line of visibility into the back-stage work and support processes that cause each moment.
+
+**Why it exists:** To surface where an end-to-end experience helps or fails a person — emotional peaks and troughs, drop-off points, opportunity moments — so a team aligns on the same cross-channel reality and invests in the moments that matter, rather than optimizing individual screens in isolation.
+
+**What it is NOT:** Not single-interface task decomposition (that is `task-analysis`), and not service/architecture diagramming. Its unit is a person's *moment* — including emotion and context — not a UI step or a service call. A flow stripped of the emotional curve, the cross-channel/time span, and the back-stage layer is a task flow, not a journey map.
+
+**One-line analogy:** Like a film's emotional storyboard rather than a wiring diagram — track how the protagonist feels scene by scene across locations and time, and fix the scenes that lose the audience, not the lighting rig behind them.
 
 ## Coverage
 Journey mapping covers the family of visualizations that lay out a user's experience as a timeline across stages, actions, thoughts, feelings, and touchpoints. The classic **customer journey map** (Jeff Patton's writing on story mapping is an adjacent influence; NN/g has codified the canonical structure) typically has a horizontal axis of stages (e.g., Awareness → Consideration → Purchase → Onboarding → Use → Renew/Churn) and vertical lanes for what the user is doing, thinking, feeling, and which touchpoint they are interacting with. An **emotional curve** rendered along the timeline highlights peaks and troughs — the "moments of truth" that disproportionately shape the overall impression.
@@ -68,6 +87,7 @@ The practice resists two failure modes. The first is the **anodyne happy-path ma
 **Classification**
 - Subject: `design-craft`
 - Deployment: `portable`
+- Scope: Portable across any product, service, or team. Teaches how to model a person's end-to-end lived experience across touchpoints, channels, and time — the actions, thoughts, and emotional curve front-stage, plus the back-stage processes that produce each moment — so a team aligns on one cross-channel reality and fixes the moments that matter. Not bound to any codebase or tool; applies to any experience being designed, audited, or aligned on.
 
 **When to use**
 - Build a journey map for first-time tax filers from awareness through filing to refund.
@@ -86,16 +106,14 @@ The practice resists two failure modes. The first is the **anodyne happy-path ma
 **Related skills**
 - Related: `research-synthesis`, `information-architecture`, `design-thinking`, `problem-framing`
 
-**Lifecycle & audit status**
-- Stability: `experimental`
-- Freshness: `2026-05-12`
-- Eval state: `unverified`
-- Routing eval: `absent`
-- Audit status: structural PASS, truth PASS, comprehension UNVERIFIED, application UNVERIFIED
-- Last audited: `2026-05-28`
+**Concept**
+- Mental model: A journey map is a time-ordered model of one actor's lived experience across touchpoints and channels, layering what they do, think, and feel against the front-stage interactions and the back-stage processes that produce each moment. Experience is treated as one continuous arc, not a set of isolated screens.
+- Purpose: To surface where an end-to-end experience helps or fails a person — emotional peaks and troughs, drop-off points, and opportunity moments — so a team aligns on the same cross-channel reality and invests in the moments that matter instead of optimizing individual screens in isolation.
+- Boundary: It models human experience over time and across channels, not system topology. It is NOT single-interface task decomposition (that is task-analysis) and NOT service or architecture diagramming; a journey map's unit is a person's moment — including emotion and context — not a UI step or a service call.
+- Analogy: A journey map is like a film's emotional storyboard rather than a wiring diagram: it tracks how the protagonist feels scene by scene across locations and time, so you fix the scenes that lose the audience — not the lighting rig behind them.
+- Common misconception: That a journey map is just a flowchart of screens or steps. A flow without the emotional curve, the cross-channel and time span, and the back-stage layer is a task flow — collapsing journey-mapping into that discards exactly the human-experience signal it exists to capture.
 
-**Provenance**
-- version 1.0.0, schema v8, owner `skill-graph-maintainer`
-- Keywords: `customer journey map`, `user journey`, `service blueprint`, `touchpoint`, `moments of truth`, `experience map`, `front-stage back-stage`, `emotional curve`, `opportunity areas`, `pain points`
+**Keywords**
+- `customer journey map`, `user journey`, `service blueprint`, `touchpoint`, `moments of truth`, `experience map`, `front-stage back-stage`, `emotional curve`, `opportunity areas`, `pain points`
 
 <!-- skill-graph-context:end -->

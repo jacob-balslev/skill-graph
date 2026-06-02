@@ -9,6 +9,7 @@ metadata:
   version: "1.1.0"
   subject: code-engineering
   deployment_target: portable
+  scope: "Designing and extending an application exception-reporting pipeline — error-boundary placement, tracker-SDK wrappers, sanitized reporting calls, environment gating, PII-free user context, breadcrumbs, and per-layer reporting verification across component, route, global, and manual capture surfaces (central reportError/reportMessage patterns). Portable across any application stack; principle-grounded, not repo-bound. Excludes the user-facing error UX (a11y and interaction skills), chasing a single captured error (debugging), and broad privacy/retention policy (owasp-security)."
   taxonomy_domain: engineering/observability
   owner: skill-graph-maintainer
   freshness: "2026-05-18"
@@ -293,6 +294,7 @@ This public skill does not bundle a runnable eval artifact. The Skill Graph tool
 - Subject: `code-engineering`
 - Deployment: `portable`
 - Domain: `engineering/observability`
+- Scope: Designing and extending an application exception-reporting pipeline — error-boundary placement, tracker-SDK wrappers, sanitized reporting calls, environment gating, PII-free user context, breadcrumbs, and per-layer reporting verification across component, route, global, and manual capture surfaces (central reportError/reportMessage patterns). Portable across any application stack; principle-grounded, not repo-bound. Excludes the user-facing error UX (a11y and interaction skills), chasing a single captured error (debugging), and broad privacy/retention policy (owasp-security).
 
 **When to use**
 - set up exception reporting for a new React + Next.js application
@@ -325,16 +327,7 @@ This public skill does not bundle a runnable eval artifact. The Skill Graph tool
 - Mode: `universal`
 - Truth sources: `https://nextjs.org/docs/app/getting-started/error-handling`, `https://docs.sentry.io/platforms/javascript/configuration/environments/`, `https://docs.sentry.io/platforms/javascript/guides/koa/data-management/data-collected/`, `https://cheatsheetseries.owasp.org/cheatsheets/Logging_Cheat_Sheet.html`
 
-**Lifecycle & audit status**
-- Stability: `experimental`
-- Freshness: `2026-05-18`
-- Eval state: `unverified`
-- Routing eval: `absent`
-- Audit status: structural PASS, truth UNVERIFIED, comprehension UNVERIFIED, application UNVERIFIED
-- Last audited: `2026-05-28`
-
-**Provenance**
-- version 1.1.0, schema v8, owner `skill-graph-maintainer`
-- Keywords: `error tracking`, `exception reporting`, `error reporting`, `error boundary`, `React ErrorBoundary`, `route error boundary`, `global error boundary`, `error tracker SDK`, `Sentry integration`, `captureException wrapper`
+**Keywords**
+- `error tracking`, `exception reporting`, `error reporting`, `error boundary`, `React ErrorBoundary`, `route error boundary`, `global error boundary`, `error tracker SDK`, `Sentry integration`, `captureException wrapper`
 
 <!-- skill-graph-context:end -->

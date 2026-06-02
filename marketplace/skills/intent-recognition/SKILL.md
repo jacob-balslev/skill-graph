@@ -9,6 +9,7 @@ metadata:
   version: "1.0.0"
   subject: frontend-ui
   deployment_target: portable
+  scope: "Classifying the intent of an operation BEFORE any tool call that could modify state, touch sensitive targets, rewrite history, install dependencies, publish packages, or expose credentials — sorting into Passive/Read, Reconnaissance, Modification, or Destructive/Irreversible by operation type plus target sensitivity, then running Identify / Confirm / Verify before action. Portable across any agent with tool access; principle-grounded, not repo-bound. Excludes deciding what code to write, executing already-classified work, reactive post-execution guardrails, and defining upstream governance policy."
   taxonomy_domain: ai-engineering/safety
   owner: skill-graph-maintainer
   freshness: "2026-05-06"
@@ -166,6 +167,7 @@ These triggers are deliberately broad. False positives (classifying a Passive ac
 - Subject: `frontend-ui`
 - Deployment: `portable`
 - Domain: `ai-engineering/safety`
+- Scope: Classifying the intent of an operation BEFORE any tool call that could modify state, touch sensitive targets, rewrite history, install dependencies, publish packages, or expose credentials — sorting into Passive/Read, Reconnaissance, Modification, or Destructive/Irreversible by operation type plus target sensitivity, then running Identify / Confirm / Verify before action. Portable across any agent with tool access; principle-grounded, not repo-bound. Excludes deciding what code to write, executing already-classified work, reactive post-execution guardrails, and defining upstream governance policy.
 
 **When to use**
 - the agent is about to run `git reset --hard` — what tier is this and what's the safer alternative?
@@ -193,16 +195,7 @@ These triggers are deliberately broad. False positives (classifying a Passive ac
 - Verify with: `owasp-security`
 - Related: `owasp-security`, `version-control`, `debugging`
 
-**Lifecycle & audit status**
-- Stability: `experimental`
-- Freshness: `2026-05-06`
-- Eval state: `unverified`
-- Routing eval: `absent`
-- Audit status: structural PASS, truth PASS, comprehension UNVERIFIED, application UNVERIFIED
-- Last audited: `2026-05-28`
-
-**Provenance**
-- version 1.0.0, schema v8, owner `skill-graph-maintainer`
-- Keywords: `intent recognition`, `pre-execution risk classification`, `four tier action taxonomy`, `passive read reconnaissance modification destructive`, `identify confirm verify sequence`, `destructive operation classification`, `credential read is reconnaissance`, `git reset hard is destructive`, `force push is destructive`, `lockfile install is high impact`
+**Keywords**
+- `intent recognition`, `pre-execution risk classification`, `four tier action taxonomy`, `passive read reconnaissance modification destructive`, `identify confirm verify sequence`, `destructive operation classification`, `credential read is reconnaissance`, `git reset hard is destructive`, `force push is destructive`, `lockfile install is high impact`
 
 <!-- skill-graph-context:end -->

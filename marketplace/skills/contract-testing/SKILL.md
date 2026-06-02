@@ -186,16 +186,7 @@ After applying this skill, verify:
 - Analogy: A contract test is to a service interface what a lease is to a tenancy — the consumer writes down the specific obligations they depend on (utilities included, quiet hours, this exact rent), the landlord (provider) verifies independently that they can honor those obligations, and the lease in the broker's filing cabinet lets either party prove compatibility without re-negotiating from scratch each time one of them moves.
 - Common misconception: |
 
-**Lifecycle & audit status**
-- Stability: `experimental`
-- Freshness: `2026-05-16`
-- Eval state: `unverified`
-- Routing eval: `absent`
-- Audit status: structural PASS, truth PASS, comprehension UNVERIFIED, application UNVERIFIED
-- Last audited: `2026-05-28`
-
-**Provenance**
-- version 1.0.0, schema v8, owner `skill-graph-maintainer`
-- Keywords: `contract testing`, `consumer-driven contracts`, `Pact`, `Spring Cloud Contract`, `Specmatic`, `contract broker`, `provider verification`, `consumer test`, `CDC`, `OpenAPI conformance`
+**Keywords**
+- `contract testing`, `consumer-driven contracts`, `Pact`, `Spring Cloud Contract`, `Specmatic`, `contract broker`, `provider verification`, `consumer test`, `CDC`, `OpenAPI conformance`
 
 <!-- skill-graph-context:end -->

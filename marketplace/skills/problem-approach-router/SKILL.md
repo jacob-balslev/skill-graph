@@ -109,16 +109,7 @@ When a problem matches more than one row simultaneously (e.g., it is both novel 
 **Related skills**
 - Related: `epistemic-grounding`, `taxonomy-design`
 
-**Lifecycle & audit status**
-- Stability: `experimental`
-- Freshness: `2026-05-23`
-- Eval state: `unverified`
-- Routing eval: `absent`
-- Audit status: structural PASS, truth PASS, comprehension UNVERIFIED, application UNVERIFIED
-- Last audited: `2026-05-28`
-
-**Provenance**
-- version 1.0.0, schema v8, owner `skill-graph-maintainer`
-- Keywords: `which approach`, `which methodology`, `problem-solving method`, `select methodology`, `which skill first`, `approach selection`, `methodology dispatch`, `method router`, `first principles vs pattern`, `how to approach this problem`
+**Keywords**
+- `which approach`, `which methodology`, `problem-solving method`, `select methodology`, `which skill first`, `approach selection`, `methodology dispatch`, `method router`, `first principles vs pattern`, `how to approach this problem`
 
 <!-- skill-graph-context:end -->

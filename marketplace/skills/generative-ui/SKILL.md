@@ -8,6 +8,7 @@ metadata:
   version: "1.0.0"
   subject: agent-ops
   deployment_target: portable
+  scope: "The pattern where a language model emits, as structured output, a description of UI components or a UI sub-tree that an application then renders — the typed-schema component palette, the structured-output mechanism (JSON Schema, function-calling) constraining emission to renderable specs, the application-side render pipeline, the interaction loop feeding user actions back into the next turn, the model-author/application-renderer security boundary, and the distinction from adjacent patterns (chat-with-markdown, prebuilt-widget routing, RSC streaming, model-emits-code). Portable across any LLM application that renders model-described UI; principle-grounded, not repo-bound. Excludes the page-level rendering taxonomy (rendering-models), the tool-call protocol cycle (tool-call-flow), the untrusted-content trust boundary (prompt-injection-defense), and general component-library architecture (design-system-architecture)."
   taxonomy_domain: agent/ui
   owner: skill-graph-maintainer
   freshness: "2026-05-16"
@@ -153,6 +154,7 @@ After applying this skill, verify:
 - Subject: `agent-ops`
 - Deployment: `portable`
 - Domain: `agent/ui`
+- Scope: The pattern where a language model emits, as structured output, a description of UI components or a UI sub-tree that an application then renders — the typed-schema component palette, the structured-output mechanism (JSON Schema, function-calling) constraining emission to renderable specs, the application-side render pipeline, the interaction loop feeding user actions back into the next turn, the model-author/application-renderer security boundary, and the distinction from adjacent patterns (chat-with-markdown, prebuilt-widget routing, RSC streaming, model-emits-code). Portable across any LLM application that renders model-described UI; principle-grounded, not repo-bound. Excludes the page-level rendering taxonomy (rendering-models), the tool-call protocol cycle (tool-call-flow), the untrusted-content trust boundary (prompt-injection-defense), and general component-library architecture (design-system-architecture).
 
 **When to use**
 - design the component schema for an assistant that can render a date picker, a chart, or a confirmation card depending on the question
@@ -182,16 +184,7 @@ After applying this skill, verify:
 - Analogy: Generative UI is to a model-rendered interface what a building's framework is to a tenant's customization — the architect (application) lays the structural floor plan, frames the walls, and provides a catalog of approved fixtures (component palette); the tenant (model) picks which fixtures to install where for this particular layout, but cannot punch new holes in load-bearing walls or wire fixtures that don't exist in the catalog. The freedom is in the composition; the safety is in the structure.
 - Common misconception: |
 
-**Lifecycle & audit status**
-- Stability: `experimental`
-- Freshness: `2026-05-16`
-- Eval state: `unverified`
-- Routing eval: `absent`
-- Audit status: structural PASS, truth PASS, comprehension UNVERIFIED, application UNVERIFIED
-- Last audited: `2026-05-28`
-
-**Provenance**
-- version 1.0.0, schema v8, owner `skill-graph-maintainer`
-- Keywords: `generative UI`, `generative interface`, `structured output`, `component schema`, `typed UI spec`, `JSON Schema`, `function calling UI`, `RSC streaming UI`, `model-rendered components`, `assistant UI`
+**Keywords**
+- `generative UI`, `generative interface`, `structured output`, `component schema`, `typed UI spec`, `JSON Schema`, `function calling UI`, `RSC streaming UI`, `model-rendered components`, `assistant UI`
 
 <!-- skill-graph-context:end -->

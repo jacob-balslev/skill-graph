@@ -8,6 +8,7 @@ metadata:
   version: "1.0.0"
   subject: frontend-ui
   deployment_target: portable
+  scope: "Designing and reviewing React error boundaries — what a boundary catches (rendering, lifecycle, constructor errors) and what it does not (event-handler, async, SSR, in-boundary errors), why React still requires class components for boundaries, placement by granularity (page/feature/leaf), pairing with Suspense, the reset-and-recover pattern (resetKeys, error.reset), the Next.js error.tsx route-segment convention, and integration with error reporting. Covers React 18+ and Next.js App Router; portable across React codebases; principle-grounded, not repo-bound. Excludes Suspense boundary placement (suspense-patterns), general async error-handling and validation, backend error contracts (api-design), and observability infrastructure (error-tracking)."
   taxonomy_domain: engineering/frontend
   owner: skill-graph-maintainer
   freshness: "2026-05-16"
@@ -271,6 +272,7 @@ After applying this skill, verify:
 - Subject: `frontend-ui`
 - Deployment: `portable`
 - Domain: `engineering/frontend`
+- Scope: Designing and reviewing React error boundaries — what a boundary catches (rendering, lifecycle, constructor errors) and what it does not (event-handler, async, SSR, in-boundary errors), why React still requires class components for boundaries, placement by granularity (page/feature/leaf), pairing with Suspense, the reset-and-recover pattern (resetKeys, error.reset), the Next.js error.tsx route-segment convention, and integration with error reporting. Covers React 18+ and Next.js App Router; portable across React codebases; principle-grounded, not repo-bound. Excludes Suspense boundary placement (suspense-patterns), general async error-handling and validation, backend error contracts (api-design), and observability infrastructure (error-tracking).
 
 **When to use**
 - design a route-segment error.tsx for a dashboard so one failing widget doesn't blank the whole page
@@ -299,16 +301,7 @@ After applying this skill, verify:
 - Analogy: An error boundary is to React's component tree what a circuit breaker is to a building's electrical system — when a fault occurs in one circuit, the breaker for THAT circuit trips, isolating the fault so the rest of the building keeps running, while sub-panels still healthy on other circuits keep lights and outlets working. A single master breaker would protect against fault propagation but at the cost of darkening everything; the right granularity is one breaker per useful zone.
 - Common misconception: |
 
-**Lifecycle & audit status**
-- Stability: `experimental`
-- Freshness: `2026-05-16`
-- Eval state: `unverified`
-- Routing eval: `absent`
-- Audit status: structural PASS, truth PASS, comprehension UNVERIFIED, application UNVERIFIED
-- Last audited: `2026-05-28`
-
-**Provenance**
-- version 1.0.0, schema v8, owner `skill-graph-maintainer`
-- Keywords: `React Error Boundary`, `componentDidCatch`, `getDerivedStateFromError`, `react-error-boundary library`, `Next.js error.tsx`, `global-error.tsx`, `error boundary granularity`, `resetKeys`, `error boundary with Suspense`, `caught render error`
+**Keywords**
+- `React Error Boundary`, `componentDidCatch`, `getDerivedStateFromError`, `react-error-boundary library`, `Next.js error.tsx`, `global-error.tsx`, `error boundary granularity`, `resetKeys`, `error boundary with Suspense`, `caught render error`
 
 <!-- skill-graph-context:end -->

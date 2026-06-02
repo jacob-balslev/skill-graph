@@ -8,6 +8,7 @@ metadata:
   version: "1.0.0"
   subject: frontend-ui
   deployment_target: portable
+  scope: "Designing and reviewing Next.js middleware (the single root middleware.ts) — the cross-cutting request/response transforms that run before route resolution, the Edge Runtime constraints, the matcher config, the NextRequest/NextResponse API (cookies/geo/IP), the four response shapes (next/rewrite/redirect/direct), the canonical patterns (auth gate, locale routing, A/B testing, header injection, geo-routing, bot blocking), the per-matched-request performance cost, and the rule that middleware is for cross-cutting concerns, never per-route business logic. Portable across Next.js App Router projects; principle-grounded, not repo-bound. Excludes per-route endpoint logic (route-handler-design), the Server Action surface (server-actions-design), abstract HTTP semantics (http-semantics), CSP and hardening (security-fundamentals), and the streaming model (streaming-architecture)."
   taxonomy_domain: engineering/frontend
   owner: skill-graph-maintainer
   freshness: "2026-05-17"
@@ -400,6 +401,7 @@ After applying this skill, verify:
 - Subject: `frontend-ui`
 - Deployment: `portable`
 - Domain: `engineering/frontend`
+- Scope: Designing and reviewing Next.js middleware (the single root middleware.ts) — the cross-cutting request/response transforms that run before route resolution, the Edge Runtime constraints, the matcher config, the NextRequest/NextResponse API (cookies/geo/IP), the four response shapes (next/rewrite/redirect/direct), the canonical patterns (auth gate, locale routing, A/B testing, header injection, geo-routing, bot blocking), the per-matched-request performance cost, and the rule that middleware is for cross-cutting concerns, never per-route business logic. Portable across Next.js App Router projects; principle-grounded, not repo-bound. Excludes per-route endpoint logic (route-handler-design), the Server Action surface (server-actions-design), abstract HTTP semantics (http-semantics), CSP and hardening (security-fundamentals), and the streaming model (streaming-architecture).
 
 **When to use**
 - design middleware that redirects unauthenticated users to /login while letting public routes through, configured via a matcher
@@ -433,16 +435,7 @@ After applying this skill, verify:
 - Analogy: Middleware is to a Next.js app what a building's lobby concierge is to its offices — every visitor passes through the lobby before reaching any specific floor; the concierge can check ID badges (auth gate), redirect visitors to the right elevator (locale or A/B rewrite), hand out lanyards with security policies attached (CSP nonce, request-ID header), or turn away bad-faith visitors at the door (bot block). The concierge cannot do the work of any specific office (per-route business logic) — that happens after the visitor gets off the elevator — but they enforce the rules that apply to every floor.
 - Common misconception: |
 
-**Lifecycle & audit status**
-- Stability: `experimental`
-- Freshness: `2026-05-17`
-- Eval state: `unverified`
-- Routing eval: `absent`
-- Audit status: structural PASS, truth PASS, comprehension UNVERIFIED, application UNVERIFIED
-- Last audited: `2026-05-28`
-
-**Provenance**
-- version 1.0.0, schema v8, owner `skill-graph-maintainer`
-- Keywords: `Next.js middleware`, `middleware.ts file`, `NextRequest NextResponse`, `matcher config middleware`, `Edge Runtime constraints`, `NextResponse.redirect rewrite next`, `auth check before route`, `locale routing i18n middleware`, `A/B testing variant rewrite`, `CSP nonce middleware`
+**Keywords**
+- `Next.js middleware`, `middleware.ts file`, `NextRequest NextResponse`, `matcher config middleware`, `Edge Runtime constraints`, `NextResponse.redirect rewrite next`, `auth check before route`, `locale routing i18n middleware`, `A/B testing variant rewrite`, `CSP nonce middleware`
 
 <!-- skill-graph-context:end -->

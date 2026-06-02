@@ -7,6 +7,7 @@ metadata:
   version: "1.0.0"
   subject: design-craft
   deployment_target: portable
+  scope: "Generating a wide range of solution concepts before converging — running structured idea-generation sessions, breaking out of solution fixation, and moving from divergent to convergent selection with explicit criteria. Portable across any design or product effort; principle-grounded, not repo-bound. Excludes collaborative engineering domain discovery (event-storming), solo deep technical design, and final go/no-go investment decisions."
   owner: skill-graph-maintainer
   freshness: "2026-05-12"
   drift_check: "{\"last_verified\":\"2026-05-12\"}"
@@ -68,6 +69,7 @@ The discipline is sceptical of "good enough" early ideas. The first three ideas 
 **Classification**
 - Subject: `design-craft`
 - Deployment: `portable`
+- Scope: Generating a wide range of solution concepts before converging — running structured idea-generation sessions, breaking out of solution fixation, and moving from divergent to convergent selection with explicit criteria. Portable across any design or product effort; principle-grounded, not repo-bound. Excludes collaborative engineering domain discovery (event-storming), solo deep technical design, and final go/no-go investment decisions.
 
 **When to use**
 - Run a crazy-8s round on this how-might-we statement and produce a divergent set.
@@ -86,16 +88,7 @@ The discipline is sceptical of "good enough" early ideas. The first three ideas 
 **Related skills**
 - Related: `problem-framing`, `prototyping`, `design-thinking`
 
-**Lifecycle & audit status**
-- Stability: `experimental`
-- Freshness: `2026-05-12`
-- Eval state: `unverified`
-- Routing eval: `absent`
-- Audit status: structural PASS, truth PASS, comprehension UNVERIFIED, application UNVERIFIED
-- Last audited: `2026-05-28`
-
-**Provenance**
-- version 1.0.0, schema v8, owner `skill-graph-maintainer`
-- Keywords: `crazy 8s`, `brainstorming`, `SCAMPER`, `worst possible idea`, `headlines from the future`, `dot voting`, `NUF test`, `divergent thinking`, `convergent thinking`, `ideation workshop`
+**Keywords**
+- `crazy 8s`, `brainstorming`, `SCAMPER`, `worst possible idea`, `headlines from the future`, `dot voting`, `NUF test`, `divergent thinking`, `convergent thinking`, `ideation workshop`
 
 <!-- skill-graph-context:end -->

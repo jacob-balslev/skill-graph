@@ -4,36 +4,22 @@ description: "Use when reasoning about how a database schema changes over time w
 license: MIT
 allowed-tools: Read Grep
 metadata:
-  schema_version: "8"
-  version: "1.0.0"
   subject: code-engineering
   deployment_target: portable
+  scope: "Evolving a database schema over time without breaking deployed application code — the expand/contract pattern, zero-downtime change rules, the backwards/forwards compatibility envelope (deploy ordering and rollback discipline), the per-change-type safe procedure (add/drop/rename column, type change, constraints, indexes), and dual-write/dual-read transitions. Portable across relational databases and deploy pipelines; principle-grounded, not repo-bound. Excludes mechanical execution of one migration (database-migration), schema design from scratch (data-modeling), query tuning (query-optimization), and distributed-data partitioning (sharding-strategy)."
   taxonomy_domain: engineering/data
-  owner: skill-graph-maintainer
-  freshness: "2026-05-16"
-  drift_check: "{\"last_verified\":\"2026-05-16\"}"
-  eval_artifacts: planned
-  eval_state: unverified
-  routing_eval: absent
-  comprehension_state: present
   stability: experimental
   keywords: "[\"schema evolution\",\"expand contract\",\"parallel change\",\"zero-downtime migration\",\"backwards compatibility\",\"rolling deploy\",\"dual write\",\"dual read\",\"schema versioning\",\"additive change\"]"
   triggers: "[\"how do we rename this column without downtime\",\"expand contract\",\"is this migration safe\",\"schema versioning\",\"backwards compatibility for database\"]"
   examples: "[\"design the expand-contract sequence to rename a column from `name` to `full_name` across a deployed system\",\"decide whether to add a NOT NULL column with a default or with a separate backfill phase\",\"diagnose a deploy that broke because the schema change shipped before the code change\",\"explain why drop-column is the third phase of expand-contract, not the first\"]"
   relations: "{\"related\":[\"data-modeling\",\"database-migration\",\"indexing-strategy\",\"acid-fundamentals\"],\"boundary\":[{\"skill\":\"data-modeling\",\"reason\":\"data-modeling owns the design of a schema at a point in time; this skill owns how that schema changes between points in time. The two compose: data-modeling decides the target shape; this skill decides the safe path from current to target.\"},{\"skill\":\"database-migration\",\"reason\":\"database-migration owns the mechanics of applying one migration (ALTER TABLE, batched backfill, CONCURRENTLY indexes, unpooled connections); this skill owns the multi-step sequence of migrations and the deploy-coordination discipline that makes the sequence safe.\"},{\"skill\":\"indexing-strategy\",\"reason\":\"indexing-strategy owns which indexes the database has; this skill owns how the index set evolves over time. Adding or removing an index is one type of schema change governed by this skill's discipline.\"}],\"verify_with\":[\"data-modeling\",\"database-migration\"]}"
+  grounding: "{\"subject_matter\":\"Portable database schema evolution, expand/contract sequencing, zero-downtime compatibility envelopes, online migrations, and production-safe constraint/index changes\",\"grounding_mode\":\"universal\",\"truth_sources\":[\"https://martinfowler.com/articles/evodb.html\",\"https://martinfowler.com/bliki/ParallelChange.html\",\"https://www.postgresql.org/docs/current/sql-altertable.html\",\"https://www.postgresql.org/docs/current/sql-createindex.html\",\"https://stripe.com/blog/online-migrations\"],\"failure_modes\":[\"treating_nontrivial_schema_change_as_one_alter_table\",\"dropping_old_shape_before_all_code_and_data_migrate\",\"deploying_code_and_schema_outside_a_backward_forward_compatibility_envelope\",\"tightening_constraints_without_not_valid_validate_or_equivalent_pattern\",\"creating_production_indexes_without_concurrent_or_online_mechanism\",\"running_backfill_as_one_unbounded_nonresumable_update\"],\"evidence_priority\":\"equal\"}"
   anti_examples: "[\"execute one ALTER TABLE migration mechanically (use database-migration)\",\"design a schema from scratch (use data-modeling)\",\"diagnose a slow query (use query-optimization)\"]"
   mental_model: "|"
   purpose: "|"
   boundary: "|"
   analogy: "Schema evolution is to a database what stage carpentry is to a Broadway musical — the show does not stop; you do not bolt a new staircase to the stage during the second act; you build the new staircase upstage while the old staircase serves the cast (expand), gradually rehearse the cast to use the new one while the old still works (migrate), and only after every performer has memorized the new route do you remove the old staircase (contract). Removing the old before everyone has migrated is the production-incident equivalent of a missed cue."
   misconception: "|"
-  concept: "{\"definition\":\"Schema evolution is the discipline of changing a database schema over time in a way that keeps deployed application code working. The unit of work is a *change to the schema* (add a column, rename a column, change a type, add a constraint, drop a column) that must be applied to a database serving an application that does not stop running. The central technique is expand/contract (Ambler & Sadalage 2006; also called parallel change): introduce the new shape *additively* without removing the old shape (expand), migrate the application to use the new shape, then remove the old shape (contract). The discipline is the *ordering* across migrations and deploys, the backwards-and-forwards-compatibility envelope each intermediate state must satisfy, and the rollback discipline that keeps the system recoverable when any step fails. The mechanical execution of any single migration is the concern of database-migration; the *sequence* of migrations and their relationship to application deploys is this skill's concern.\",\"mental_model\":\"|\",\"purpose\":\"|\",\"boundary\":\"|\",\"taxonomy\":\"|\",\"analogy\":\"|\",\"misconception\":\"|\"}"
-  structural_verdict: PASS
-  truth_verdict: PASS
-  comprehension_verdict: UNVERIFIED
-  application_verdict: UNVERIFIED
-  last_audited: "2026-05-28"
-  lint_verdict: PASS
   skill_graph_source_repo: "https://github.com/jacob-balslev/skill-graph"
   skill_graph_project: Skill Graph
   skill_graph_canonical_skill: skills/code-engineering/schema-evolution/SKILL.md
@@ -176,6 +162,7 @@ After applying this skill, verify:
 - Subject: `code-engineering`
 - Deployment: `portable`
 - Domain: `engineering/data`
+- Scope: Evolving a database schema over time without breaking deployed application code — the expand/contract pattern, zero-downtime change rules, the backwards/forwards compatibility envelope (deploy ordering and rollback discipline), the per-change-type safe procedure (add/drop/rename column, type change, constraints, indexes), and dual-write/dual-read transitions. Portable across relational databases and deploy pipelines; principle-grounded, not repo-bound. Excludes mechanical execution of one migration (database-migration), schema design from scratch (data-modeling), query tuning (query-optimization), and distributed-data partitioning (sharding-strategy).
 
 **When to use**
 - design the expand-contract sequence to rename a column from `name` to `full_name` across a deployed system
@@ -203,16 +190,11 @@ After applying this skill, verify:
 - Analogy: Schema evolution is to a database what stage carpentry is to a Broadway musical — the show does not stop; you do not bolt a new staircase to the stage during the second act; you build the new staircase upstage while the old staircase serves the cast (expand), gradually rehearse the cast to use the new one while the old still works (migrate), and only after every performer has memorized the new route do you remove the old staircase (contract). Removing the old before everyone has migrated is the production-incident equivalent of a missed cue.
 - Common misconception: |
 
-**Lifecycle & audit status**
-- Stability: `experimental`
-- Freshness: `2026-05-16`
-- Eval state: `unverified`
-- Routing eval: `absent`
-- Audit status: structural PASS, truth PASS, comprehension UNVERIFIED, application UNVERIFIED
-- Last audited: `2026-05-28`
+**Grounding**
+- Mode: `universal`
+- Truth sources: `https://martinfowler.com/articles/evodb.html`, `https://martinfowler.com/bliki/ParallelChange.html`, `https://www.postgresql.org/docs/current/sql-altertable.html`, `https://www.postgresql.org/docs/current/sql-createindex.html`, `https://stripe.com/blog/online-migrations`
 
-**Provenance**
-- version 1.0.0, schema v8, owner `skill-graph-maintainer`
-- Keywords: `schema evolution`, `expand contract`, `parallel change`, `zero-downtime migration`, `backwards compatibility`, `rolling deploy`, `dual write`, `dual read`, `schema versioning`, `additive change`
+**Keywords**
+- `schema evolution`, `expand contract`, `parallel change`, `zero-downtime migration`, `backwards compatibility`, `rolling deploy`, `dual write`, `dual read`, `schema versioning`, `additive change`
 
 <!-- skill-graph-context:end -->

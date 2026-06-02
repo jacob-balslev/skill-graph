@@ -5,30 +5,15 @@ license: MIT
 compatibility: "Portable ADR discipline for Markdown decision logs, repo docs, design docs, and architecture governance."
 allowed-tools: Read Grep
 metadata:
-  schema_version: "8"
-  version: "1.0.0"
   subject: code-engineering
   deployment_target: portable
+  scope: "Writing, reviewing, and updating Architecture Decision Records — context, decision, options rejected, consequences, status, supersession, and follow-up verification. Portable across any project that records architectural decisions; principle-grounded, not repo-bound. Excludes general documentation prose (documentation), code-review findings (code-review), and choosing between frameworks before a decision exists (framework-fit-analysis)."
   taxonomy_domain: architecture/decision-records
-  owner: skill-graph-maintainer
-  freshness: "2026-05-11"
-  drift_check: "{\"last_verified\":\"2026-05-11\"}"
-  eval_artifacts: planned
-  eval_state: unverified
-  routing_eval: absent
   stability: experimental
   keywords: "[\"ADR\",\"architecture decision record\",\"decision log\",\"technical decision\",\"decision consequences\",\"options rejected\",\"superseded ADR\",\"architectural rationale\",\"decision status\"]"
   examples: "[\"write an ADR for choosing Postgres views as the source of truth\",\"review this architecture decision record for missing consequences and rejected options\",\"this decision changed - should we amend the ADR or supersede it?\",\"extract the decision from this long architecture discussion into a durable ADR\"]"
   anti_examples: "[\"write a general README section explaining how this module works\",\"choose which framework we should use for this project\",\"review this PR for bugs and regressions\",\"design the interface contract between these two services\"]"
   relations: "{\"boundary\":[{\"skill\":\"framework-fit-analysis\",\"reason\":\"framework-fit-analysis evaluates options before selection; architecture-decision-records records the selected option and tradeoffs\"},{\"skill\":\"code-review\",\"reason\":\"code-review evaluates a diff; architecture-decision-records evaluates the decision record\"},{\"skill\":\"system-interface-contracts\",\"reason\":\"system-interface-contracts designs boundaries and contracts; architecture-decision-records records the decision to adopt one\"}],\"related\":[\"framework-fit-analysis\",\"bounded-context-mapping\",\"system-interface-contracts\",\"dependency-architecture\"],\"verify_with\":[\"code-review\"]}"
-  portability: "{\"readiness\":\"scripted\",\"targets\":[\"skill-md\"]}"
-  lifecycle: "{\"stale_after_days\":365,\"review_cadence\":\"quarterly\"}"
-  structural_verdict: PASS
-  truth_verdict: PASS
-  comprehension_verdict: UNVERIFIED
-  application_verdict: UNVERIFIED
-  last_audited: "2026-05-28"
-  lint_verdict: PASS
   skill_graph_source_repo: "https://github.com/jacob-balslev/skill-graph"
   skill_graph_project: Skill Graph
   skill_graph_canonical_skill: skills/code-engineering/architecture-decision-records/SKILL.md
@@ -57,6 +42,17 @@ Good ADRs are short, dated, statused, and honest about consequences. If a future
 6. Set status: proposed, accepted, deprecated, or superseded.
 7. Link implementation surfaces and verification checks.
 
+## Status Decision Table
+
+| Situation | ADR action |
+|---|---|
+| Decision is still under review | Keep status `proposed`; record open questions and decision date target. |
+| Decision has been made and implementation is active | Set status `accepted`; link implementation surfaces and verification checks. |
+| Decision remains historically true but is no longer recommended | Set status `deprecated`; explain the replacement direction. |
+| A later decision replaces it | Set status `superseded`; link the newer ADR and summarize what changed. |
+| Implementation drifted but the decision still stands | Keep status, add a follow-up section with the verification gap and owner. |
+| The ADR records multiple unrelated choices | Split into one ADR per decision before accepting it. |
+
 ## Verification
 
 - [ ] The ADR records one decision, not a cluster of unrelated choices
@@ -84,6 +80,7 @@ Good ADRs are short, dated, statused, and honest about consequences. If a future
 - Subject: `code-engineering`
 - Deployment: `portable`
 - Domain: `architecture/decision-records`
+- Scope: Writing, reviewing, and updating Architecture Decision Records — context, decision, options rejected, consequences, status, supersession, and follow-up verification. Portable across any project that records architectural decisions; principle-grounded, not repo-bound. Excludes general documentation prose (documentation), code-review findings (code-review), and choosing between frameworks before a decision exists (framework-fit-analysis).
 
 **When to use**
 - write an ADR for choosing Postgres views as the source of truth
@@ -104,16 +101,7 @@ Good ADRs are short, dated, statused, and honest about consequences. If a future
 - Verify with: `code-review`
 - Related: `framework-fit-analysis`, `bounded-context-mapping`, `system-interface-contracts`, `dependency-architecture`
 
-**Lifecycle & audit status**
-- Stability: `experimental`
-- Freshness: `2026-05-11`
-- Eval state: `unverified`
-- Routing eval: `absent`
-- Audit status: structural PASS, truth PASS, comprehension UNVERIFIED, application UNVERIFIED
-- Last audited: `2026-05-28`
-
-**Provenance**
-- version 1.0.0, schema v8, owner `skill-graph-maintainer`
-- Keywords: `ADR`, `architecture decision record`, `decision log`, `technical decision`, `decision consequences`, `options rejected`, `superseded ADR`, `architectural rationale`, `decision status`
+**Keywords**
+- `ADR`, `architecture decision record`, `decision log`, `technical decision`, `decision consequences`, `options rejected`, `superseded ADR`, `architectural rationale`, `decision status`
 
 <!-- skill-graph-context:end -->

@@ -7,6 +7,7 @@ metadata:
   version: "1.0.0"
   subject: frontend-ui
   deployment_target: portable
+  scope: "Organizing a frontend codebase — module boundaries, component layering, state ownership, data-flow direction, and the separation between feature code and shared primitives. Portable across any frontend stack; principle-grounded, not repo-bound. Excludes visual design decisions, specific framework migration tactics, and backend API contract design."
   taxonomy_domain: engineering/frontend
   owner: skill-graph-maintainer
   freshness: "2026-05-12"
@@ -72,6 +73,7 @@ Server state and client state are different problems. Mixing them in a single st
 - Subject: `frontend-ui`
 - Deployment: `portable`
 - Domain: `engineering/frontend`
+- Scope: Organizing a frontend codebase — module boundaries, component layering, state ownership, data-flow direction, and the separation between feature code and shared primitives. Portable across any frontend stack; principle-grounded, not repo-bound. Excludes visual design decisions, specific framework migration tactics, and backend API contract design.
 
 **When to use**
 - Decide whether a new modal lives in the shared component library or inside a feature folder
@@ -89,16 +91,7 @@ Server state and client state are different problems. Mixing them in a single st
 **Related skills**
 - Related: `design-system-architecture`, `design-module-composition`, `refactor`, `testing-strategy`
 
-**Lifecycle & audit status**
-- Stability: `experimental`
-- Freshness: `2026-05-12`
-- Eval state: `unverified`
-- Routing eval: `absent`
-- Audit status: structural PASS, truth PASS, comprehension UNVERIFIED, application UNVERIFIED
-- Last audited: `2026-05-28`
-
-**Provenance**
-- version 1.0.0, schema v8, owner `skill-graph-maintainer`
-- Keywords: `frontend architecture`, `component boundaries`, `module organization`, `state management shape`, `feature-sliced design`, `container presentational`, `data flow direction`, `shared primitives`, `component layering`, `frontend folder structure`
+**Keywords**
+- `frontend architecture`, `component boundaries`, `module organization`, `state management shape`, `feature-sliced design`, `container presentational`, `data flow direction`, `shared primitives`, `component layering`, `frontend folder structure`
 
 <!-- skill-graph-context:end -->

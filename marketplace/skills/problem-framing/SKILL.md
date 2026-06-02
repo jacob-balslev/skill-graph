@@ -7,6 +7,7 @@ metadata:
   version: "1.0.0"
   subject: design-craft
   deployment_target: portable
+  scope: "Reframing a stated problem before solutions are committed — surfacing assumptions, separating symptoms from root needs, converting feature-request briefs into problem statements, and aligning a team on the problem before design proceeds. Portable across any design or product effort; principle-grounded, not repo-bound. Excludes code-level bug triage, runtime failure diagnosis, and root-cause analysis of system errors (engineering investigation, not design framing)."
   owner: skill-graph-maintainer
   freshness: "2026-05-12"
   drift_check: "{\"last_verified\":\"2026-05-12\"}"
@@ -68,6 +69,7 @@ The practice is opinionated about language. "How might we" is not interchangeabl
 **Classification**
 - Subject: `design-craft`
 - Deployment: `portable`
+- Scope: Reframing a stated problem before solutions are committed — surfacing assumptions, separating symptoms from root needs, converting feature-request briefs into problem statements, and aligning a team on the problem before design proceeds. Portable across any design or product effort; principle-grounded, not repo-bound. Excludes code-level bug triage, runtime failure diagnosis, and root-cause analysis of system errors (engineering investigation, not design framing).
 
 **When to use**
 - We've been asked to 'add a chatbot' — help me reframe what we're actually solving for users.
@@ -86,16 +88,7 @@ The practice is opinionated about language. "How might we" is not interchangeabl
 **Related skills**
 - Related: `user-research`, `ideation`, `research-synthesis`, `design-thinking`
 
-**Lifecycle & audit status**
-- Stability: `experimental`
-- Freshness: `2026-05-12`
-- Eval state: `unverified`
-- Routing eval: `absent`
-- Audit status: structural PASS, truth PASS, comprehension UNVERIFIED, application UNVERIFIED
-- Last audited: `2026-05-28`
-
-**Provenance**
-- version 1.0.0, schema v8, owner `skill-graph-maintainer`
-- Keywords: `how might we`, `problem statement`, `reframing`, `assumption mapping`, `root need`, `symptom vs need`, `point of view statement`, `jobs to be done framing`, `design challenge`, `double diamond discover`
+**Keywords**
+- `how might we`, `problem statement`, `reframing`, `assumption mapping`, `root need`, `symptom vs need`, `point of view statement`, `jobs to be done framing`, `design challenge`, `double diamond discover`
 
 <!-- skill-graph-context:end -->

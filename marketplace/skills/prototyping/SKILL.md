@@ -7,6 +7,7 @@ metadata:
   version: "1.0.0"
   subject: design-craft
   deployment_target: portable
+  scope: "Building an artifact whose purpose is to answer a specific question — paper sketch, wireframe, clickable mockup, wizard-of-oz, role-play, service prototype, or code spike — at the lowest fidelity sufficient to produce that learning. Portable across any design effort; principle-grounded, not repo-bound. Excludes production-grade component construction (design-module-composition), design-system contribution, and building the ship-ready feature (engineering implementation)."
   owner: skill-graph-maintainer
   freshness: "2026-05-12"
   drift_check: "{\"last_verified\":\"2026-05-12\"}"
@@ -70,6 +71,7 @@ The discipline insists prototypes are means, not ends. A successful prototype is
 **Classification**
 - Subject: `design-craft`
 - Deployment: `portable`
+- Scope: Building an artifact whose purpose is to answer a specific question — paper sketch, wireframe, clickable mockup, wizard-of-oz, role-play, service prototype, or code spike — at the lowest fidelity sufficient to produce that learning. Portable across any design effort; principle-grounded, not repo-bound. Excludes production-grade component construction (design-module-composition), design-system contribution, and building the ship-ready feature (engineering implementation).
 
 **When to use**
 - Pick the right fidelity for a prototype that tests whether users will trust an AI-suggested category.
@@ -88,16 +90,7 @@ The discipline insists prototypes are means, not ends. A successful prototype is
 **Related skills**
 - Related: `ideation`, `usability-testing`, `design-thinking`
 
-**Lifecycle & audit status**
-- Stability: `experimental`
-- Freshness: `2026-05-12`
-- Eval state: `unverified`
-- Routing eval: `absent`
-- Audit status: structural PASS, truth PASS, comprehension UNVERIFIED, application UNVERIFIED
-- Last audited: `2026-05-28`
-
-**Provenance**
-- version 1.0.0, schema v8, owner `skill-graph-maintainer`
-- Keywords: `paper prototype`, `low fidelity prototype`, `clickable prototype`, `wizard of oz`, `role play prototype`, `service prototype`, `code spike`, `learning goal`, `fidelity matching`, `throwaway prototype`
+**Keywords**
+- `paper prototype`, `low fidelity prototype`, `clickable prototype`, `wizard of oz`, `role play prototype`, `service prototype`, `code spike`, `learning goal`, `fidelity matching`, `throwaway prototype`
 
 <!-- skill-graph-context:end -->

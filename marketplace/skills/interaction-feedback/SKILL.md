@@ -9,6 +9,7 @@ metadata:
   version: "1.0.0"
   subject: design-craft
   deployment_target: portable
+  scope: "Designing UI feedback around user actions and system state — loading, skeletons, optimistic updates, progress, success, errors, empty states, retries, disabled/pending states, autosave, undo, and perceived latency. Portable across any interactive UI; principle-grounded, not repo-bound. Excludes the words inside feedback (microcopy), accessibility announcement mechanics (a11y), business lifecycle modeling (state-machine-modeling), and performance optimization (performance-engineering)."
   taxonomy_domain: design/interaction
   owner: skill-graph-maintainer
   freshness: "2026-05-11"
@@ -89,6 +90,7 @@ This skill ships a comprehension-eval artifact at [`examples/evals/interaction-f
 - Subject: `design-craft`
 - Deployment: `portable`
 - Domain: `design/interaction`
+- Scope: Designing UI feedback around user actions and system state — loading, skeletons, optimistic updates, progress, success, errors, empty states, retries, disabled/pending states, autosave, undo, and perceived latency. Portable across any interactive UI; principle-grounded, not repo-bound. Excludes the words inside feedback (microcopy), accessibility announcement mechanics (a11y), business lifecycle modeling (state-machine-modeling), and performance optimization (performance-engineering).
 
 **When to use**
 - design loading, success, error, and retry feedback for this async action
@@ -110,16 +112,7 @@ This skill ships a comprehension-eval artifact at [`examples/evals/interaction-f
 - Verify with: `a11y`, `microcopy`
 - Related: `interaction-patterns`, `microcopy`, `task-analysis`, `a11y`, `performance-engineering`
 
-**Lifecycle & audit status**
-- Stability: `experimental`
-- Freshness: `2026-05-11`
-- Eval state: `unverified`
-- Routing eval: `absent`
-- Audit status: structural PASS, truth PASS, comprehension UNVERIFIED, application UNVERIFIED
-- Last audited: `2026-05-28`
-
-**Provenance**
-- version 1.0.0, schema v8, owner `skill-graph-maintainer`
-- Keywords: `interaction-feedback`, `feedback-state staging`, `optimistic ui`, `pending state`, `retry feedback`, `undo feedback`, `perceived latency`, `long-running action feedback`, `skeleton loading`
+**Keywords**
+- `interaction-feedback`, `feedback-state staging`, `optimistic ui`, `pending state`, `retry feedback`, `undo feedback`, `perceived latency`, `long-running action feedback`, `skeleton loading`
 
 <!-- skill-graph-context:end -->

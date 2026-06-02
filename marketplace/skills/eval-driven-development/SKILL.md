@@ -4,36 +4,21 @@ description: "Use when reasoning about building language-model-integrated system
 license: MIT
 allowed-tools: Read Grep
 metadata:
-  schema_version: "8"
-  version: "1.0.0"
   subject: agent-ops
   deployment_target: portable
+  scope: "Building language-model-integrated systems by writing evaluations before and alongside the system — the statistical (not binary) nature of LLM evals, the five primitives (dataset, evaluation function, aggregation, iteration loop, regression budget), the judgment-mechanism taxonomy (programmatic, model-graded, human-graded, preference comparison), system-specific evals vs canonical benchmarks (MMLU, HumanEval, BIG-bench, GAIA), how evals drive prompt/model/scaffolding/tooling changes, Goodhart's Law on eval scores, and the offline-eval-vs-production-telemetry distinction. Portable across any LLM-integrated system; principle-grounded, not repo-bound. Excludes deterministic unit testing and general TDD (testing-strategy), production monitoring (evaluation, error-tracking), and constructing individual eval rubrics and task sets (agent-eval-design owns construction; this skill owns iteration discipline)."
   taxonomy_domain: agent/evaluation
-  owner: skill-graph-maintainer
-  freshness: "2026-05-16"
-  drift_check: "{\"last_verified\":\"2026-05-16\"}"
-  eval_artifacts: planned
-  eval_state: unverified
-  routing_eval: absent
-  comprehension_state: present
   stability: experimental
   keywords: "[\"eval-driven development\",\"LLM evals\",\"evaluation harness\",\"benchmark\",\"HumanEval\",\"MMLU\",\"BIG-bench\",\"GAIA\",\"LLM-as-judge\",\"model-graded eval\"]"
   triggers: "[\"how do we know this prompt change improved things\",\"should this be an eval or a unit test\",\"the model passes the benchmark but fails in production\",\"what should we measure\",\"the LLM-as-judge gives different scores each run\"]"
   examples: "[\"design an offline eval suite for an LLM-integrated summarization feature before writing the prompt\",\"decide between programmatic grading, model-graded judgment, and human review for a freeform-output eval\",\"explain why MMLU score is a poor predictor of a domain-specific assistant's quality\",\"structure an iteration loop where each prompt change is gated by a regression budget\"]"
-  anti_examples: "[\"write unit tests for a deterministic data transformation (use testing-strategy)\",\"set up production alerting on API error rates (use observability)\",\"interpret a specific benchmark's leaderboard (use benchmarking-engine)\"]"
-  relations: "{\"related\":[\"tool-call-flow\",\"prompt-injection-defense\",\"testing-strategy\",\"type-safety\",\"agent-eval-design\",\"evaluation\"],\"boundary\":[{\"skill\":\"testing-strategy\",\"reason\":\"testing-strategy owns deterministic-software testing where every run is binary pass/fail; this skill owns LLM evaluation where every run is a sample from a distribution and pass-rate is the unit of judgment. The disciplines share vocabulary (suite, gate, regression) but the math underneath differs.\"},{\"skill\":\"tool-call-flow\",\"reason\":\"tool-call-flow owns the protocol cycle by which a model invokes tools; this skill owns the discipline of measuring whether that cycle produces correct behavior. Tool-call evals are a specialization of the general pattern.\"},{\"skill\":\"prompt-injection-defense\",\"reason\":\"prompt-injection-defense owns the security property; this skill owns the measurement of whether the property holds. Red-team evals against an injection corpus are one application of eval-driven-development.\"},{\"skill\":\"agent-eval-design\",\"reason\":\"agent-eval-design owns the construction of evals — task sets, rubrics, graders, hard negatives, traces; this skill owns the development discipline that uses constructed evals to gate every change to prompt, model, retrieval, scaffolding, or tooling. The two compose: agent-eval-design produces the suite; this skill applies it.\"},{\"skill\":\"type-safety\",\"reason\":\"type-safety owns the compile-time property of programs; this skill owns the runtime-distributional property of LLM outputs. They are both validate-at-the-boundary disciplines with different threat models.\"}],\"verify_with\":[\"testing-strategy\",\"agent-eval-design\"]}"
+  anti_examples: "[\"write unit tests for a deterministic data transformation (use testing-strategy)\",\"set up production alerting on API error rates (use error-tracking or observability-modeling)\",\"interpret a specific benchmark's leaderboard without changing a system-specific eval loop (use evaluation)\"]"
+  relations: "{\"related\":[\"agent-eval-design\",\"evaluation\",\"testing-strategy\",\"prompt-injection-defense\",\"tool-call-flow\",\"error-tracking\",\"observability-modeling\",\"type-safety\"],\"boundary\":[{\"skill\":\"agent-eval-design\",\"reason\":\"eval-driven-development owns the change-gating discipline that uses eval suites; agent-eval-design owns construction of task sets, rubrics, graders, hard negatives, and traces\"},{\"skill\":\"testing-strategy\",\"reason\":\"eval-driven-development owns statistical LLM behavior measurement; testing-strategy owns deterministic software tests where every run is binary pass/fail\"},{\"skill\":\"evaluation\",\"reason\":\"eval-driven-development owns iterative development loops around LLM eval suites; evaluation owns general scoring frameworks and result interpretation\"},{\"skill\":\"error-tracking\",\"reason\":\"eval-driven-development owns offline pre-deployment measurement; error-tracking owns production incidents, exceptions, and runtime failure monitoring\"},{\"skill\":\"prompt-injection-defense\",\"reason\":\"eval-driven-development owns measuring whether a prompt-injection defense holds; prompt-injection-defense owns the security property and threat model itself\"}],\"verify_with\":[\"agent-eval-design\",\"evaluation\",\"testing-strategy\"]}"
   mental_model: "|"
   purpose: "|"
   boundary: "|"
   analogy: "Eval-driven development is to LLM system engineering what crash-test ratings are to automotive safety — you do not ship a car based on how well it parked in your driveway; you ship it after a battery of standardized tests on representative crash scenarios, with the pass-rate against named criteria as the gating signal. A score of 4.3 stars across the suite is the only defensible claim of 'safer'; a developer's intuition that 'the new model feels smarter' is the unmeasured equivalent of 'I drove it home, it seemed fine.'"
   misconception: "|"
-  concept: "{\"definition\":\"Eval-driven development is the practice of building language-model-integrated systems by writing evaluations before and alongside the system, where each evaluation defines a behavioral criterion the system must satisfy on a representative input set, and the suite's aggregated pass-rate signal gates every change to the prompt, model, retrieval, scaffolding, or tooling. Evals are the LLM analog of automated tests for deterministic software with one fundamental difference: LLM evals are statistical (pass-rate over a sampled population) rather than binary (pass/fail per run), because the system under test is itself stochastic. The discipline is the rigorous separation of generation (what the system produces) from judgment (how it is scored) with explicit accounting for the uncertainty in both.\",\"mental_model\":\"|\",\"purpose\":\"|\",\"boundary\":\"|\",\"taxonomy\":\"|\",\"analogy\":\"|\",\"misconception\":\"|\"}"
-  structural_verdict: PASS
-  truth_verdict: PASS
-  comprehension_verdict: UNVERIFIED
-  application_verdict: UNVERIFIED
-  last_audited: "2026-05-28"
-  lint_verdict: PASS
   skill_graph_source_repo: "https://github.com/jacob-balslev/skill-graph"
   skill_graph_project: Skill Graph
   skill_graph_canonical_skill: skills/agent-ops/eval-driven-development/SKILL.md
@@ -133,8 +118,8 @@ This skill is the *concept* of eval-driven development. Specific topics with the
 - The mechanics of running evals in CI/CD pipelines belong to a tooling skill.
 - The construction of individual eval rubrics, task sets, graders, and hard negatives belongs to `agent-eval-design`.
 - The deterministic testing of non-LLM code belongs to `testing-strategy`.
-- The production monitoring of running systems belongs to observability and reliability skills.
-- The obra/superpowers `test-driven-development` skill (on skills.sh) is a process-shape workflow skill for general software TDD; this one is the concept-shape complement for the LLM-specific evaluation discipline.
+- The production monitoring of running systems belongs to `error-tracking` or `observability-modeling`.
+- General software TDD belongs to `test-driven-development` or `testing-strategy`; this skill is the LLM-specific evaluation-iteration discipline.
 
 ## Verification
 
@@ -159,7 +144,7 @@ After applying this skill, verify:
 | Setting up production monitoring, alerting, or telemetry | `evaluation` (general framing) or `error-tracking` | those own runtime measurement of deployed systems; this skill owns offline pre-deployment measurement |
 | Reasoning about the protocol cycle of tool calls | `tool-call-flow` | tool-call-flow owns the cycle; eval-driven development can measure tool-call correctness as one criterion |
 | Defending against prompt injection | `prompt-injection-defense` | prompt-injection-defense owns the security property; this skill can measure whether the defense holds |
-| General software TDD process | the obra/superpowers `test-driven-development` skill or `testing-strategy` | TDD is process-shape for general software; this skill is concept-shape for the LLM-specific evaluation discipline |
+| General software TDD process | `test-driven-development` or `testing-strategy` | TDD is process-shape for general software; this skill is concept-shape for the LLM-specific evaluation discipline |
 
 ## Key Sources
 
@@ -169,8 +154,8 @@ After applying this skill, verify:
 - Mialon, G., Fourrier, C., Swift, C., Wolf, T., LeCun, Y., & Scialom, T. (2023). ["GAIA: A Benchmark for General AI Assistants"](https://arxiv.org/abs/2311.12983). The GAIA benchmark paper; canonical reference for evaluating multi-step assistant tasks with tool use.
 - Zheng, L., Chiang, W.-L., et al. (2023). ["Judging LLM-as-a-Judge with MT-Bench and Chatbot Arena"](https://arxiv.org/abs/2306.05685). The MT-Bench paper; canonical reference for LLM-as-judge methodology, including known biases.
 - OpenAI. [Evals framework on GitHub](https://github.com/openai/evals). Open-source framework for writing and running LLM evals; documents the practical mechanics of the discipline.
-- Anthropic. [Building evals — Anthropic Cookbook](https://github.com/anthropics/anthropic-cookbook/tree/main/skills/classification) and [Evaluation guide](https://docs.anthropic.com/en/docs/test-and-evaluate/develop-tests). Practitioner-oriented guidance on building eval suites.
-- UK AI Safety Institute. [Inspect: An open-source evaluation framework](https://inspect.ai-safety-institute.org.uk/). Open framework purpose-built for capability and safety evaluations of LLMs.
+- Anthropic. [Building evals — Claude Cookbook](https://platform.claude.com/cookbook/misc-building-evals) and [Create strong empirical evaluations](https://docs.anthropic.com/en/docs/test-and-evaluate/develop-tests). Practitioner-oriented guidance on building eval suites.
+- UK AI Security Institute and Meridian Labs. [Inspect](https://inspect.aisi.org.uk/). Open framework purpose-built for capability and safety evaluations of LLMs.
 - Goodhart, C. (1975). "Problems of Monetary Management: The U.K. Experience." The origin of Goodhart's Law as commonly cited; "when a measure becomes a target, it ceases to be a good measure."
 - Liang, P., et al. (2022). ["Holistic Evaluation of Language Models"](https://arxiv.org/abs/2211.09110). The HELM framework paper; argues for multi-metric eval across many dimensions as a counter to single-metric Goodharting.
 
@@ -182,6 +167,7 @@ After applying this skill, verify:
 - Subject: `agent-ops`
 - Deployment: `portable`
 - Domain: `agent/evaluation`
+- Scope: Building language-model-integrated systems by writing evaluations before and alongside the system — the statistical (not binary) nature of LLM evals, the five primitives (dataset, evaluation function, aggregation, iteration loop, regression budget), the judgment-mechanism taxonomy (programmatic, model-graded, human-graded, preference comparison), system-specific evals vs canonical benchmarks (MMLU, HumanEval, BIG-bench, GAIA), how evals drive prompt/model/scaffolding/tooling changes, Goodhart's Law on eval scores, and the offline-eval-vs-production-telemetry distinction. Portable across any LLM-integrated system; principle-grounded, not repo-bound. Excludes deterministic unit testing and general TDD (testing-strategy), production monitoring (evaluation, error-tracking), and constructing individual eval rubrics and task sets (agent-eval-design owns construction; this skill owns iteration discipline).
 
 **When to use**
 - design an offline eval suite for an LLM-integrated summarization feature before writing the prompt
@@ -192,17 +178,17 @@ After applying this skill, verify:
 
 **Not for**
 - write unit tests for a deterministic data transformation (use testing-strategy)
-- set up production alerting on API error rates (use observability)
-- interpret a specific benchmark's leaderboard (use benchmarking-engine)
-- Owned by `testing-strategy`: deterministic-software testing
-- Owned by `tool-call-flow`: the protocol cycle by which a model invokes tools
-- Owned by `prompt-injection-defense`: the security property
-- Owned by `agent-eval-design`: the construction of evals — task sets, rubrics, graders, hard negatives, traces
-- Owned by `type-safety`: the compile-time property of programs
+- set up production alerting on API error rates (use error-tracking or observability-modeling)
+- interpret a specific benchmark's leaderboard without changing a system-specific eval loop (use evaluation)
+- Owned by `agent-eval-design`: the change-gating discipline
+- Owned by `testing-strategy`: statistical LLM behavior measurement
+- Owned by `evaluation`: iterative development loops around LLM eval suites
+- Owned by `error-tracking`: offline pre-deployment measurement
+- Owned by `prompt-injection-defense`: measuring whether a prompt-injection defense holds
 
 **Related skills**
-- Verify with: `testing-strategy`, `agent-eval-design`
-- Related: `tool-call-flow`, `prompt-injection-defense`, `testing-strategy`, `type-safety`, `agent-eval-design`, `evaluation`
+- Verify with: `agent-eval-design`, `evaluation`, `testing-strategy`
+- Related: `agent-eval-design`, `evaluation`, `testing-strategy`, `prompt-injection-defense`, `tool-call-flow`, `error-tracking`, `observability-modeling`, `type-safety`
 
 **Concept**
 - Mental model: |
@@ -211,16 +197,7 @@ After applying this skill, verify:
 - Analogy: Eval-driven development is to LLM system engineering what crash-test ratings are to automotive safety — you do not ship a car based on how well it parked in your driveway; you ship it after a battery of standardized tests on representative crash scenarios, with the pass-rate against named criteria as the gating signal. A score of 4.3 stars across the suite is the only defensible claim of 'safer'; a developer's intuition that 'the new model feels smarter' is the unmeasured equivalent of 'I drove it home, it seemed fine.'
 - Common misconception: |
 
-**Lifecycle & audit status**
-- Stability: `experimental`
-- Freshness: `2026-05-16`
-- Eval state: `unverified`
-- Routing eval: `absent`
-- Audit status: structural PASS, truth PASS, comprehension UNVERIFIED, application UNVERIFIED
-- Last audited: `2026-05-28`
-
-**Provenance**
-- version 1.0.0, schema v8, owner `skill-graph-maintainer`
-- Keywords: `eval-driven development`, `LLM evals`, `evaluation harness`, `benchmark`, `HumanEval`, `MMLU`, `BIG-bench`, `GAIA`, `LLM-as-judge`, `model-graded eval`
+**Keywords**
+- `eval-driven development`, `LLM evals`, `evaluation harness`, `benchmark`, `HumanEval`, `MMLU`, `BIG-bench`, `GAIA`, `LLM-as-judge`, `model-graded eval`
 
 <!-- skill-graph-context:end -->

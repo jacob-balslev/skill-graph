@@ -208,16 +208,7 @@ The four questions are due *before* implementation, not during review. A feature
 - Verify with: `testing-strategy`, `code-review`
 - Related: `code-review`, `testing-strategy`
 
-**Lifecycle & audit status**
-- Stability: `experimental`
-- Freshness: `2026-05-04`
-- Eval state: `unverified`
-- Routing eval: `absent`
-- Audit status: structural PASS, truth PASS, comprehension UNVERIFIED, application UNVERIFIED
-- Last audited: `2026-05-28`
-
-**Provenance**
-- version 1.0.0, schema v8, owner `skill-graph-maintainer`
-- Keywords: `security`, `owasp`, `owasp top 10`, `vulnerability`, `sql injection`, `xss`, `cross site scripting`, `csrf`, `authentication`, `authorization`
+**Keywords**
+- `security`, `owasp`, `owasp top 10`, `vulnerability`, `sql injection`, `xss`, `cross site scripting`, `csrf`, `authentication`, `authorization`
 
 <!-- skill-graph-context:end -->

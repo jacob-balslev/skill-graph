@@ -349,16 +349,7 @@ A good Seven Powers answer:
 - Mode: `universal`
 - Truth sources: `https://7powers.com/`, `https://7powers.com/synopsis/`, `https://7powers.com/foreword/`, `skills/meta-methods/seven-powers/references/seven-powers-sources.md`, `skills/meta-methods/seven-powers/references/upstream-displacement-2026-05-26.md`
 
-**Lifecycle & audit status**
-- Stability: `stable`
-- Freshness: `2026-05-26`
-- Eval state: `unverified`
-- Routing eval: `absent`
-- Audit status: structural PASS, truth UNVERIFIED, comprehension UNVERIFIED, application UNVERIFIED
-- Last audited: `2026-05-28`
-
-**Provenance**
-- version 1.0.0, schema v8, owner `skill-graph-maintainer`
-- Keywords: `seven powers`, `7 powers`, `Hamilton Helmer`, `strategic power`, `durable moat`, `scale economies`, `network economies`, `counter-positioning`, `switching costs`, `process power`
+**Keywords**
+- `seven powers`, `7 powers`, `Hamilton Helmer`, `strategic power`, `durable moat`, `scale economies`, `network economies`, `counter-positioning`, `switching costs`, `process power`
 
 <!-- skill-graph-context:end -->

@@ -260,16 +260,7 @@ After applying this skill, verify:
 - Analogy: First-principles thinking is like dismantling a machine to its load-bearing parts, discarding decorative casing and copied attachments, then rebuilding only the mechanism that the physics of the problem requires.
 - Common misconception: |
 
-**Lifecycle & audit status**
-- Stability: `experimental`
-- Freshness: `2026-05-26`
-- Eval state: `unverified`
-- Routing eval: `absent`
-- Audit status: structural PASS, truth PASS, comprehension UNVERIFIED, application UNVERIFIED
-- Last audited: `2026-05-28`
-
-**Provenance**
-- version 1.0.0, schema v7, owner `skill-graph-maintainer`
-- Keywords: `first principles thinking`, `first principle`, `irreducible premise`, `assumption stripping`, `rebuild from fundamentals`, `primitive constraints`, `axiomatic reasoning`, `inherited assumptions`, `reasoning from basics`, `ab initio reasoning`
+**Keywords**
+- `first principles thinking`, `first principle`, `irreducible premise`, `assumption stripping`, `rebuild from fundamentals`, `primitive constraints`, `axiomatic reasoning`, `inherited assumptions`, `reasoning from basics`, `ab initio reasoning`
 
 <!-- skill-graph-context:end -->

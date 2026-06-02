@@ -6,6 +6,7 @@ metadata:
   version: "1.1.0"
   subject: agent-ops
   deployment_target: portable
+  scope: "Choosing the optimal execution path before starting work — plan-vs-act gates, agent-architecture selection (chaining, routing, parallelization, orchestrator-worker, evaluator-optimizer), scope-management heuristics, critical-path analysis across task networks, and context-budget awareness, including the fresh-approach reset when a task has failed twice. Portable across any agentic execution; principle-grounded, not repo-bound. Excludes executing the chosen plan (task-execution), debugging failures (troubleshooting, diagnosis), and tool-level efficiency (tool-call-strategy)."
   eval_artifacts: present
   eval_state: passing
   routing_eval: present
@@ -331,6 +332,7 @@ After applying this skill, verify:
 **Classification**
 - Subject: `agent-ops`
 - Deployment: `portable`
+- Scope: Choosing the optimal execution path before starting work — plan-vs-act gates, agent-architecture selection (chaining, routing, parallelization, orchestrator-worker, evaluator-optimizer), scope-management heuristics, critical-path analysis across task networks, and context-budget awareness, including the fresh-approach reset when a task has failed twice. Portable across any agentic execution; principle-grounded, not repo-bound. Excludes executing the chosen plan (task-execution), debugging failures (troubleshooting, diagnosis), and tool-level efficiency (tool-call-strategy).
 
 **When to use**
 - this task has failed twice, I need a fresh approach not another retry on the same path
@@ -360,15 +362,7 @@ After applying this skill, verify:
 - Analogy: Task path optimization is like choosing a route before a trip: walking across the street needs no map, crossing a city needs traffic awareness, and crossing a mountain range needs checkpoints and fallback routes.
 - Common misconception: The common mistake is treating more process as safer. The safest path is the smallest path that still handles ambiguity, dependency, risk, and verification.
 
-**Lifecycle & audit status**
-- Freshness: `2026-05-18`
-- Eval state: `passing`
-- Routing eval: `present`
-- Audit status: structural PASS, truth PASS, comprehension UNVERIFIED, application UNVERIFIED
-- Last audited: `2026-05-28`
-
-**Provenance**
-- version 1.1.0, schema v8, owner `claude`
-- Keywords: `optimal path`, `plan vs act`, `task decomposition`, `critical path`, `parallelization strategy`, `agent architecture`, `scope management`, `execution efficiency`, `shortest path to solution`, `when to plan`, `when to act immediately`, `fresh approach`, `task complexity assessment`
+**Keywords**
+- `optimal path`, `plan vs act`, `task decomposition`, `critical path`, `parallelization strategy`, `agent architecture`, `scope management`, `execution efficiency`, `shortest path to solution`, `when to plan`, `when to act immediately`, `fresh approach`, `task complexity assessment`
 
 <!-- skill-graph-context:end -->

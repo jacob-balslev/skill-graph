@@ -9,6 +9,7 @@ metadata:
   version: "1.0.0"
   subject: agent-ops
   deployment_target: portable
+  scope: "Building and operating multi-source intelligence pipelines across video, GitHub, Reddit, curated lists, search, and RSS — source adapters, the discovery/transcription/summarization/evaluation phases, deduplication, schedules, per-stage model choice, and actionable brief generation. Portable across any content-monitoring pipeline; principle-grounded, not repo-bound. Excludes SEO keyword research (keywords) and competitive product analysis (user-research)."
   taxonomy_domain: agent/ops
   owner: skill-graph-maintainer
   freshness: "2026-03-28"
@@ -237,6 +238,7 @@ After modifying the content monitor pipeline, verify:
 - Subject: `agent-ops`
 - Deployment: `portable`
 - Domain: `agent/ops`
+- Scope: Building and operating multi-source intelligence pipelines across video, GitHub, Reddit, curated lists, search, and RSS — source adapters, the discovery/transcription/summarization/evaluation phases, deduplication, schedules, per-stage model choice, and actionable brief generation. Portable across any content-monitoring pipeline; principle-grounded, not repo-bound. Excludes SEO keyword research (keywords) and competitive product analysis (user-research).
 
 **When to use**
 - Triggers: `content-monitor-skill`, `research-mode`
@@ -244,16 +246,7 @@ After modifying the content monitor pipeline, verify:
 **Related skills**
 - Verify with: `evaluation`
 
-**Lifecycle & audit status**
-- Stability: `experimental`
-- Freshness: `2026-03-28`
-- Eval state: `unverified`
-- Routing eval: `absent`
-- Audit status: structural PASS, truth PASS, comprehension UNVERIFIED, application UNVERIFIED
-- Last audited: `2026-05-28`
-
-**Provenance**
-- version 1.0.0, schema v8, owner `skill-graph-maintainer`
-- Keywords: `content monitor`, `github trending`, `blog monitor`, `intelligence brief`, `youtube monitor`, `awesome list`, `trend tracking`, `content pipeline`, `content-monitor`, `rss feed`
+**Keywords**
+- `content monitor`, `github trending`, `blog monitor`, `intelligence brief`, `youtube monitor`, `awesome list`, `trend tracking`, `content pipeline`, `content-monitor`, `rss feed`
 
 <!-- skill-graph-context:end -->

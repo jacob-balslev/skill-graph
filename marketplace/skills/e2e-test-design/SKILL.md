@@ -176,16 +176,7 @@ After applying this skill, verify:
 - Analogy: An e2e test is to a software system what a flight rehearsal is to a launch — you do not certify a rocket by testing each bolt in a clean room (units), nor by firing each engine in isolation (integration), nor by writing a specification of what the avionics should do (contract); you certify it by performing the entire launch sequence, with real fuel, against a real flight plan, with the actual crew, and you do this rarely because each rehearsal costs millions and ten high-fidelity rehearsals tell you more than a thousand quick ones.
 - Common misconception: |
 
-**Lifecycle & audit status**
-- Stability: `experimental`
-- Freshness: `2026-05-16`
-- Eval state: `unverified`
-- Routing eval: `absent`
-- Audit status: structural PASS, truth PASS, comprehension UNVERIFIED, application UNVERIFIED
-- Last audited: `2026-05-28`
-
-**Provenance**
-- version 1.0.0, schema v8, owner `skill-graph-maintainer`
-- Keywords: `end-to-end testing`, `e2e test`, `user journey test`, `Playwright`, `Cypress`, `Selenium`, `page object`, `test flake`, `wait strategy`, `trace test`
+**Keywords**
+- `end-to-end testing`, `e2e test`, `user journey test`, `Playwright`, `Cypress`, `Selenium`, `page object`, `test flake`, `wait strategy`, `trace test`
 
 <!-- skill-graph-context:end -->

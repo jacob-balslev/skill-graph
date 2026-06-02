@@ -171,16 +171,7 @@ After applying this skill, verify:
 - Analogy: An index is to a database what the back-of-the-book index is to a reference manual — you do not flip through every page to find every mention of 'Postgres'; you go to the I section, find the page numbers, and jump. Adding an index for every word in the book is technically possible and obviously wrong; the printer would still have to update every index every time the text changed, and the book would now spend most of its pages on indexes rather than content.
 - Common misconception: |
 
-**Lifecycle & audit status**
-- Stability: `experimental`
-- Freshness: `2026-05-16`
-- Eval state: `unverified`
-- Routing eval: `absent`
-- Audit status: structural PASS, truth PASS, comprehension UNVERIFIED, application UNVERIFIED
-- Last audited: `2026-05-28`
-
-**Provenance**
-- version 1.0.0, schema v8, owner `skill-graph-maintainer`
-- Keywords: `indexing`, `index`, `B-tree`, `hash index`, `bitmap index`, `GIN`, `GiST`, `BRIN`, `LSM`, `composite index`
+**Keywords**
+- `indexing`, `index`, `B-tree`, `hash index`, `bitmap index`, `GIN`, `GiST`, `BRIN`, `LSM`, `composite index`
 
 <!-- skill-graph-context:end -->

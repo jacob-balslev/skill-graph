@@ -7,6 +7,7 @@ metadata:
   version: "1.0.0"
   subject: design-craft
   deployment_target: portable
+  scope: "Observing real users attempting tasks on a prototype or live product to surface usability issues — moderated or unmoderated, think-aloud protocol, task scenarios, severity rating, and sample sizing per Nielsen's heuristics. Portable across any product under evaluation; principle-grounded, not repo-bound. Excludes automated test suites, code coverage, CI pipelines, and unit/integration testing (testing-strategy) — this is human-behavior observation, not engineering verification."
   owner: skill-graph-maintainer
   freshness: "2026-05-12"
   drift_check: "{\"last_verified\":\"2026-05-12\"}"
@@ -70,6 +71,7 @@ The practice is opinionated about moderator behavior. The moderator's job is to 
 **Classification**
 - Subject: `design-craft`
 - Deployment: `portable`
+- Scope: Observing real users attempting tasks on a prototype or live product to surface usability issues — moderated or unmoderated, think-aloud protocol, task scenarios, severity rating, and sample sizing per Nielsen's heuristics. Portable across any product under evaluation; principle-grounded, not repo-bound. Excludes automated test suites, code coverage, CI pipelines, and unit/integration testing (testing-strategy) — this is human-behavior observation, not engineering verification.
 
 **When to use**
 - Write three task scenarios for a usability test of this onboarding flow.
@@ -88,16 +90,7 @@ The practice is opinionated about moderator behavior. The moderator's job is to 
 **Related skills**
 - Related: `prototyping`, `user-research`, `research-synthesis`, `design-thinking`
 
-**Lifecycle & audit status**
-- Stability: `experimental`
-- Freshness: `2026-05-12`
-- Eval state: `unverified`
-- Routing eval: `absent`
-- Audit status: structural PASS, truth PASS, comprehension UNVERIFIED, application UNVERIFIED
-- Last audited: `2026-05-28`
-
-**Provenance**
-- version 1.0.0, schema v8, owner `skill-graph-maintainer`
-- Keywords: `think aloud protocol`, `task scenario`, `moderated usability test`, `unmoderated test`, `severity rating`, `five user rule`, `formative testing`, `summative testing`, `hallway test`, `moderator neutrality`
+**Keywords**
+- `think aloud protocol`, `task scenario`, `moderated usability test`, `unmoderated test`, `severity rating`, `five user rule`, `formative testing`, `summative testing`, `hallway test`, `moderator neutrality`
 
 <!-- skill-graph-context:end -->

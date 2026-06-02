@@ -8,6 +8,7 @@ metadata:
   version: "1.0.0"
   subject: data-analytics
   deployment_target: portable
+  scope: "Declaring, measuring, and enforcing performance thresholds as a quality contract rather than an aspirational target — the three budget axes (time, size, count), the four governing properties of a real budget (metric, threshold, percentile, consequence), the Core Web Vitals set (LCP, INP, CLS), the RAIL model, Lighthouse budgets.json, lab vs field measurement, and treating budget breach as a build/deploy failure. Portable across any product with performance SLAs; principle-grounded, not repo-bound. Excludes profiling and optimizing a specific slow path (performance-engineering), the rendering-model choice that bounds achievable budgets (rendering-models), and observability/telemetry signal design (observability-modeling)."
   taxonomy_domain: quality/performance
   owner: skill-graph-maintainer
   freshness: "2026-05-15"
@@ -221,6 +222,7 @@ After applying this skill, verify:
 - Subject: `data-analytics`
 - Deployment: `portable`
 - Domain: `quality/performance`
+- Scope: Declaring, measuring, and enforcing performance thresholds as a quality contract rather than an aspirational target — the three budget axes (time, size, count), the four governing properties of a real budget (metric, threshold, percentile, consequence), the Core Web Vitals set (LCP, INP, CLS), the RAIL model, Lighthouse budgets.json, lab vs field measurement, and treating budget breach as a build/deploy failure. Portable across any product with performance SLAs; principle-grounded, not repo-bound. Excludes profiling and optimizing a specific slow path (performance-engineering), the rendering-model choice that bounds achievable budgets (rendering-models), and observability/telemetry signal design (observability-modeling).
 
 **When to use**
 - set a Core Web Vitals budget for a marketing landing page and enforce it in CI
@@ -249,16 +251,7 @@ After applying this skill, verify:
 - Analogy: A performance budget is to a web app what a calorie budget is to a diet — the calorie count of any single meal is information; the calorie budget is what you do about it when you exceed it. A diet that 'tracks' calories without consequence is description; a diet with a calorie *budget* is discipline. And a per-meal budget (per-route) catches drift earlier than a per-day total: by the time the day total breaches, the offending meal is hours behind you and harder to undo.
 - Common misconception: |
 
-**Lifecycle & audit status**
-- Stability: `experimental`
-- Freshness: `2026-05-15`
-- Eval state: `unverified`
-- Routing eval: `absent`
-- Audit status: structural PASS, truth PASS, comprehension UNVERIFIED, application UNVERIFIED
-- Last audited: `2026-05-28`
-
-**Provenance**
-- version 1.0.0, schema v8, owner `skill-graph-maintainer`
-- Keywords: `performance budget`, `Core Web Vitals`, `LCP`, `INP`, `CLS`, `RAIL model`, `Lighthouse budgets`, `lab metrics`, `field metrics`, `p75 performance`
+**Keywords**
+- `performance budget`, `Core Web Vitals`, `LCP`, `INP`, `CLS`, `RAIL model`, `Lighthouse budgets`, `lab metrics`, `field metrics`, `p75 performance`
 
 <!-- skill-graph-context:end -->

@@ -9,6 +9,7 @@ metadata:
   version: "1.0.0"
   subject: frontend-ui
   deployment_target: portable
+  scope: "Designing and auditing a design system's architecture — token taxonomy, semantic tokens, component APIs, theming, accessibility contracts, documentation, governance, and migration strategy. Portable across any design system; principle-grounded, not repo-bound. Excludes information hierarchy and navigation (information-architecture), page-specific layout (layout-composition), visual craft direction (visual-design-foundations), sentence-level UI copy (microcopy), and accessibility-only audits (a11y)."
   taxonomy_domain: design/system
   owner: skill-graph-maintainer
   freshness: "2026-05-11"
@@ -92,6 +93,7 @@ This skill ships a comprehension-eval artifact at [`examples/evals/design-system
 - Subject: `frontend-ui`
 - Deployment: `portable`
 - Domain: `design/system`
+- Scope: Designing and auditing a design system's architecture — token taxonomy, semantic tokens, component APIs, theming, accessibility contracts, documentation, governance, and migration strategy. Portable across any design system; principle-grounded, not repo-bound. Excludes information hierarchy and navigation (information-architecture), page-specific layout (layout-composition), visual craft direction (visual-design-foundations), sentence-level UI copy (microcopy), and accessibility-only audits (a11y).
 
 **When to use**
 - define semantic tokens so charts, status colors, and surfaces do not hardcode raw colors
@@ -116,16 +118,7 @@ This skill ships a comprehension-eval artifact at [`examples/evals/design-system
 - Verify with: `a11y`, `code-review`
 - Related: `a11y`, `microcopy`, `information-architecture`, `semantics`, `layout-composition`, `visual-design-foundations`, `interaction-patterns`
 
-**Lifecycle & audit status**
-- Stability: `experimental`
-- Freshness: `2026-05-11`
-- Eval state: `unverified`
-- Routing eval: `absent`
-- Audit status: structural PASS, truth PASS, comprehension UNVERIFIED, application UNVERIFIED
-- Last audited: `2026-05-28`
-
-**Provenance**
-- version 1.0.0, schema v8, owner `skill-graph-maintainer`
-- Keywords: `design tokens`, `semantic tokens`, `component API`, `theming`, `component library`, `token taxonomy`, `design system migration`, `design system audit`, `component library audit`, `token drift`
+**Keywords**
+- `design tokens`, `semantic tokens`, `component API`, `theming`, `component library`, `token taxonomy`, `design system migration`, `design system audit`, `component library audit`, `token drift`
 
 <!-- skill-graph-context:end -->

@@ -7,6 +7,7 @@ metadata:
   version: "1.0.0"
   subject: design-craft
   deployment_target: portable
+  scope: "Designing a typography system — typeface selection and pairing, a modular type scale, vertical rhythm, line-height and measure rules, and web font delivery (subsetting, font-display, variable fonts). Portable across any design system; principle-grounded, not repo-bound. Excludes body-copy writing, single-headline font pairing, and non-text design tokens."
   owner: skill-graph-maintainer
   freshness: "2026-05-12"
   drift_check: "{\"last_verified\":\"2026-05-12\"}"
@@ -70,6 +71,7 @@ Typography is the densest carrier of brand. A wordmark, a heading face, and a bo
 **Classification**
 - Subject: `design-craft`
 - Deployment: `portable`
+- Scope: Designing a typography system — typeface selection and pairing, a modular type scale, vertical rhythm, line-height and measure rules, and web font delivery (subsetting, font-display, variable fonts). Portable across any design system; principle-grounded, not repo-bound. Excludes body-copy writing, single-headline font pairing, and non-text design tokens.
 
 **When to use**
 - Build a type scale with seven steps using a 1.25 ratio and assign each step to a semantic token (display, h1, body, caption)
@@ -87,16 +89,7 @@ Typography is the densest carrier of brand. A wordmark, a heading face, and a bo
 **Related skills**
 - Related: `visual-hierarchy`, `visual-design-foundations`, `theme-system-design`, `layout-composition`
 
-**Lifecycle & audit status**
-- Stability: `experimental`
-- Freshness: `2026-05-12`
-- Eval state: `unverified`
-- Routing eval: `absent`
-- Audit status: structural PASS, truth PASS, comprehension UNVERIFIED, application UNVERIFIED
-- Last audited: `2026-05-28`
-
-**Provenance**
-- version 1.0.0, schema v8, owner `skill-graph-maintainer`
-- Keywords: `type scale`, `typeface pairing`, `vertical rhythm`, `line height`, `measure line length`, `web font delivery`, `variable fonts`, `font-display swap`, `font subsetting`, `modular scale`
+**Keywords**
+- `type scale`, `typeface pairing`, `vertical rhythm`, `line height`, `measure line length`, `web font delivery`, `variable fonts`, `font-display swap`, `font subsetting`, `modular scale`
 
 <!-- skill-graph-context:end -->

@@ -7,6 +7,7 @@ metadata:
   version: "1.0.0"
   subject: design-craft
   deployment_target: portable
+  scope: "Orchestrating a full human-centered design process across discovery, definition, ideation, prototyping, and testing — identifying which stage of the arc a team is in, deciding whether to loop back, and routing to the right stage-specific sibling skill. Portable across any design effort; principle-grounded, not repo-bound. Excludes single-stage execution (go directly to problem-framing, user-research, research-synthesis, journey-mapping, ideation, prototyping, or usability-testing) and engineering domain discovery (event-storming)."
   owner: skill-graph-maintainer
   freshness: "2026-05-12"
   drift_check: "{\"last_verified\":\"2026-05-12\"}"
@@ -71,6 +72,7 @@ The meta-skill is sceptical of two opposite failure modes. The first is **stage 
 **Classification**
 - Subject: `design-craft`
 - Deployment: `portable`
+- Scope: Orchestrating a full human-centered design process across discovery, definition, ideation, prototyping, and testing — identifying which stage of the arc a team is in, deciding whether to loop back, and routing to the right stage-specific sibling skill. Portable across any design effort; principle-grounded, not repo-bound. Excludes single-stage execution (go directly to problem-framing, user-research, research-synthesis, journey-mapping, ideation, prototyping, or usability-testing) and engineering domain discovery (event-storming).
 
 **When to use**
 - We have user interviews done but no synthesis yet — which design-thinking stage are we in and what's next?
@@ -89,16 +91,7 @@ The meta-skill is sceptical of two opposite failure modes. The first is **stage 
 **Related skills**
 - Related: `problem-framing`, `user-research`, `research-synthesis`, `journey-mapping`, `ideation`, `prototyping`, `usability-testing`
 
-**Lifecycle & audit status**
-- Stability: `experimental`
-- Freshness: `2026-05-12`
-- Eval state: `unverified`
-- Routing eval: `absent`
-- Audit status: structural PASS, truth PASS, comprehension UNVERIFIED, application UNVERIFIED
-- Last audited: `2026-05-28`
-
-**Provenance**
-- version 1.0.0, schema v8, owner `skill-graph-maintainer`
-- Keywords: `design thinking process`, `double diamond`, `five stage design process`, `empathize define ideate prototype test`, `human centered design`, `Stanford d.school`, `IDEO method`, `design sprint`, `discover define develop deliver`, `looping back`
+**Keywords**
+- `design thinking process`, `double diamond`, `five stage design process`, `empathize define ideate prototype test`, `human centered design`, `Stanford d.school`, `IDEO method`, `design sprint`, `discover define develop deliver`, `looping back`
 
 <!-- skill-graph-context:end -->

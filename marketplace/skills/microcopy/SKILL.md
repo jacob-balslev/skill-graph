@@ -9,6 +9,7 @@ metadata:
   version: "1.0.0"
   subject: design-craft
   deployment_target: portable
+  scope: "Writing and reviewing functional UI text — button labels, empty states, tooltips, dialogs, placeholders, loading/progress messages, toasts, inline validation, permission copy, and onboarding steps — using interface-copy patterns such as verb-first action labels, acknowledge-explain-guide empty states, one-sentence tooltips, consequence-first confirmations, progressive loading language, and blur/fix validation messages. Portable across any UI; principle-grounded, not repo-bound. Excludes marketing persuasion, documentation prose and guide structure, feedback-state staging (interaction-feedback), and general linguistic rationale behind wording."
   taxonomy_domain: design/ux
   owner: skill-graph-maintainer
   freshness: "2026-05-06"
@@ -263,6 +264,7 @@ After writing or reviewing UI text, verify:
 - Subject: `design-craft`
 - Deployment: `portable`
 - Domain: `design/ux`
+- Scope: Writing and reviewing functional UI text — button labels, empty states, tooltips, dialogs, placeholders, loading/progress messages, toasts, inline validation, permission copy, and onboarding steps — using interface-copy patterns such as verb-first action labels, acknowledge-explain-guide empty states, one-sentence tooltips, consequence-first confirmations, progressive loading language, and blur/fix validation messages. Portable across any UI; principle-grounded, not repo-bound. Excludes marketing persuasion, documentation prose and guide structure, feedback-state staging (interaction-feedback), and general linguistic rationale behind wording.
 
 **When to use**
 - rewrite this button label so it names the actual action instead of saying Submit
@@ -288,16 +290,7 @@ After writing or reviewing UI text, verify:
 - Verify with: `linguistics`, `a11y`
 - Related: `linguistics`, `task-analysis`, `intent-recognition`, `interaction-feedback`, `form-ux-architecture`
 
-**Lifecycle & audit status**
-- Stability: `experimental`
-- Freshness: `2026-05-06`
-- Eval state: `unverified`
-- Routing eval: `absent`
-- Audit status: structural PASS, truth PASS, comprehension UNVERIFIED, application UNVERIFIED
-- Last audited: `2026-05-28`
-
-**Provenance**
-- version 1.0.0, schema v8, owner `skill-graph-maintainer`
-- Keywords: `button label microcopy`, `empty-state copy`, `tooltip text rule`, `confirmation dialog wording`, `inline validation message`, `toast notification copy`, `placeholder text rule`, `loading-state messaging`, `functional UI text`, `ux writing patterns`
+**Keywords**
+- `button label microcopy`, `empty-state copy`, `tooltip text rule`, `confirmation dialog wording`, `inline validation message`, `toast notification copy`, `placeholder text rule`, `loading-state messaging`, `functional UI text`, `ux writing patterns`
 
 <!-- skill-graph-context:end -->

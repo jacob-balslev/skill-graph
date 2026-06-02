@@ -9,6 +9,7 @@ metadata:
   version: "1.0.0"
   subject: code-engineering
   deployment_target: portable
+  scope: "Drawing Domain-Driven Design boundaries — bounded contexts, context maps, ownership seams, upstream/downstream relationships, anti-corruption layers, shared kernels, and translation boundaries. Portable across any DDD-modeled system; principle-grounded, not repo-bound. Excludes pre-DDD entity discovery (conceptual-modeling), database schema design (data-modeling), and HTTP endpoint design (api-design)."
   taxonomy_domain: architecture/domain-boundaries
   owner: skill-graph-maintainer
   freshness: "2026-05-11"
@@ -84,6 +85,7 @@ The central question is: "Where does this word mean something different?" Those 
 - Subject: `code-engineering`
 - Deployment: `portable`
 - Domain: `architecture/domain-boundaries`
+- Scope: Drawing Domain-Driven Design boundaries — bounded contexts, context maps, ownership seams, upstream/downstream relationships, anti-corruption layers, shared kernels, and translation boundaries. Portable across any DDD-modeled system; principle-grounded, not repo-bound. Excludes pre-DDD entity discovery (conceptual-modeling), database schema design (data-modeling), and HTTP endpoint design (api-design).
 
 **When to use**
 - orders, fulfillment, payments, and support all use status differently - where should the bounded contexts be?
@@ -106,16 +108,7 @@ The central question is: "Where does this word mean something different?" Those 
 - Verify with: `semantic-relations`, `system-interface-contracts`
 - Related: `event-storming`, `system-interface-contracts`, `conceptual-modeling`, `architecture-decision-records`
 
-**Lifecycle & audit status**
-- Stability: `experimental`
-- Freshness: `2026-05-11`
-- Eval state: `unverified`
-- Routing eval: `absent`
-- Audit status: structural PASS, truth PASS, comprehension UNVERIFIED, application UNVERIFIED
-- Last audited: `2026-05-28`
-
-**Provenance**
-- version 1.0.0, schema v8, owner `skill-graph-maintainer`
-- Keywords: `bounded context`, `context map`, `domain-driven design`, `DDD boundary`, `anti-corruption layer`, `shared kernel`, `upstream downstream`, `conformist`, `customer supplier`, `domain boundary`
+**Keywords**
+- `bounded context`, `context map`, `domain-driven design`, `DDD boundary`, `anti-corruption layer`, `shared kernel`, `upstream downstream`, `conformist`, `customer supplier`, `domain boundary`
 
 <!-- skill-graph-context:end -->

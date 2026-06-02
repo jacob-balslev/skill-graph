@@ -9,6 +9,7 @@ metadata:
   version: "1.0.0"
   subject: frontend-ui
   deployment_target: portable
+  scope: "Deciding responsive page or screen structure — section order, scan pattern, grid/flex composition, breakpoints, viewport hierarchy, responsive media, and density. Portable across any UI; principle-grounded, not repo-bound. Excludes user-goal decomposition (task-analysis), navigation taxonomy (information-architecture), visual polish (visual-design-foundations), and component/token contracts (design-system-architecture)."
   taxonomy_domain: design/layout
   owner: skill-graph-maintainer
   freshness: "2026-05-11"
@@ -89,6 +90,7 @@ This skill ships a comprehension-eval artifact at [`examples/evals/layout-compos
 - Subject: `frontend-ui`
 - Deployment: `portable`
 - Domain: `design/layout`
+- Scope: Deciding responsive page or screen structure — section order, scan pattern, grid/flex composition, breakpoints, viewport hierarchy, responsive media, and density. Portable across any UI; principle-grounded, not repo-bound. Excludes user-goal decomposition (task-analysis), navigation taxonomy (information-architecture), visual polish (visual-design-foundations), and component/token contracts (design-system-architecture).
 
 **When to use**
 - turn this route hierarchy into a responsive section order
@@ -110,16 +112,7 @@ This skill ships a comprehension-eval artifact at [`examples/evals/layout-compos
 - Verify with: `task-analysis`, `a11y`
 - Related: `task-analysis`, `information-architecture`, `design-system-architecture`, `a11y`, `performance-engineering`
 
-**Lifecycle & audit status**
-- Stability: `experimental`
-- Freshness: `2026-05-11`
-- Eval state: `unverified`
-- Routing eval: `absent`
-- Audit status: structural PASS, truth PASS, comprehension UNVERIFIED, application UNVERIFIED
-- Last audited: `2026-05-28`
-
-**Provenance**
-- version 1.0.0, schema v8, owner `skill-graph-maintainer`
-- Keywords: `layout-composition`, `responsive screen composition`, `viewport hierarchy`, `breakpoint selection`, `grid flex composition`, `stable dimensions`, `scan pattern`, `responsive media`, `density planning`, `whitespace balance`
+**Keywords**
+- `layout-composition`, `responsive screen composition`, `viewport hierarchy`, `breakpoint selection`, `grid flex composition`, `stable dimensions`, `scan pattern`, `responsive media`, `density planning`, `whitespace balance`
 
 <!-- skill-graph-context:end -->

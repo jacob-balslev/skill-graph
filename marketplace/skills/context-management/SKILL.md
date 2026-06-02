@@ -9,6 +9,7 @@ metadata:
   version: "1.0.0"
   subject: agent-ops
   deployment_target: portable
+  scope: "Deciding what to load into an active agent session, recovering from context drift, preparing compaction or restart, distilling raw inputs into a working summary, and writing a resumable handoff — intake triage, the six-step context-management loop, working-set shaping, evidence-first loading, drift signals, anti-drift rules, compaction-ready handoffs, and selective rebuild after context loss. Portable across any agent session; principle-grounded, not repo-bound. Excludes token math (context-window), prompt wording (prompt-craft), persistent memory curation, and multi-graph context architecture (context-graph)."
   taxonomy_domain: agent/context
   owner: skill-graph-maintainer
   freshness: "2026-05-06"
@@ -204,6 +205,7 @@ Do not "warm up" by re-reading everything. Recovery is a _selective_ rebuild, no
 - Subject: `agent-ops`
 - Deployment: `portable`
 - Domain: `agent/context`
+- Scope: Deciding what to load into an active agent session, recovering from context drift, preparing compaction or restart, distilling raw inputs into a working summary, and writing a resumable handoff — intake triage, the six-step context-management loop, working-set shaping, evidence-first loading, drift signals, anti-drift rules, compaction-ready handoffs, and selective rebuild after context loss. Portable across any agent session; principle-grounded, not repo-bound. Excludes token math (context-window), prompt wording (prompt-craft), persistent memory curation, and multi-graph context architecture (context-graph).
 
 **When to use**
 - the session feels noisy and I'm re-reading the same files — what discipline pulls it back?
@@ -230,16 +232,7 @@ Do not "warm up" by re-reading everything. Recovery is a _selective_ rebuild, no
 - Verify with: `context-engineering`
 - Related: `context-engineering`, `context-graph`, `tool-call-strategy`
 
-**Lifecycle & audit status**
-- Stability: `experimental`
-- Freshness: `2026-05-06`
-- Eval state: `unverified`
-- Routing eval: `absent`
-- Audit status: structural PASS, truth PASS, comprehension UNVERIFIED, application UNVERIFIED
-- Last audited: `2026-05-28`
-
-**Provenance**
-- version 1.0.0, schema v8, owner `skill-graph-maintainer`
-- Keywords: `context management`, `working set discipline`, `intake triage four buckets`, `context drift recovery`, `context management loop`, `compaction-ready handoff`, `distill raw inputs`, `one active hypothesis`, `selective context rebuild`, `lost-thread recovery`
+**Keywords**
+- `context management`, `working set discipline`, `intake triage four buckets`, `context drift recovery`, `context management loop`, `compaction-ready handoff`, `distill raw inputs`, `one active hypothesis`, `selective context rebuild`, `lost-thread recovery`
 
 <!-- skill-graph-context:end -->

@@ -5,6 +5,7 @@ license: MIT
 compatibility: "Markdown, Git, any codebase"
 allowed-tools: Read Grep Bash
 metadata:
+  eval_last_run: "{\"at\":\"2026-05-31T13:46:54.722Z\",\"status\":\"fail\",\"runner\":\"node skill-graph/lib/audit/evaluate-skill.js --mode application\",\"artifact\":\"agent-orchestration/logs/eval-results/debugging/2026-05-31T13-46-54-721Z.json\"}"
   schema_version: "8"
   version: "1.0.0"
   subject: code-engineering
@@ -25,7 +26,7 @@ metadata:
   structural_verdict: PASS
   truth_verdict: PASS
   comprehension_verdict: UNVERIFIED
-  application_verdict: UNVERIFIED
+  application_verdict: REDUNDANT
   last_audited: "2026-05-28"
   lint_verdict: PASS
   skill_graph_source_repo: "https://github.com/jacob-balslev/skill-graph"
@@ -115,16 +116,7 @@ This skill ships a comprehension-eval artifact at [`examples/evals/debugging.jso
 **Related skills**
 - Verify with: `testing-strategy`
 
-**Lifecycle & audit status**
-- Stability: `experimental`
-- Freshness: `2026-04-18`
-- Eval state: `passing`
-- Routing eval: `present`
-- Audit status: structural PASS, truth PASS, comprehension UNVERIFIED, application UNVERIFIED
-- Last audited: `2026-05-28`
-
-**Provenance**
-- version 1.0.0, schema v8, owner `skill-graph-maintainer`
-- Keywords: `debugging`, `reproduce failure`, `reproduce bug`, `failing test`, `root cause`, `symptom vs cause`, `minimum reproduction`, `bisect`, `what caused it`, `my tests are failing`, `what changed`, `regression`, `used to work`, `what broke`
+**Keywords**
+- `debugging`, `reproduce failure`, `reproduce bug`, `failing test`, `root cause`, `symptom vs cause`, `minimum reproduction`, `bisect`, `what caused it`, `my tests are failing`, `what changed`, `regression`, `used to work`, `what broke`
 
 <!-- skill-graph-context:end -->

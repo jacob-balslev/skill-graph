@@ -113,16 +113,7 @@ This skill ships a comprehension-eval artifact at [`examples/evals/api-design.js
 - Verify with: `testing-strategy`, `code-review`
 - Related: `system-interface-contracts`, `data-modeling`, `testing-strategy`, `webhook-integration`, `event-contract-design`
 
-**Lifecycle & audit status**
-- Stability: `experimental`
-- Freshness: `2026-05-11`
-- Eval state: `unverified`
-- Routing eval: `absent`
-- Audit status: structural PASS, truth PASS, comprehension UNVERIFIED, application UNVERIFIED
-- Last audited: `2026-05-28`
-
-**Provenance**
-- version 1.0.0, schema v8, owner `skill-graph-maintainer`
-- Keywords: `API design`, `REST API`, `endpoint design`, `request response schema`, `status codes`, `pagination`, `filtering`, `idempotency`, `API versioning`, `error envelope`
+**Keywords**
+- `API design`, `REST API`, `endpoint design`, `request response schema`, `status codes`, `pagination`, `filtering`, `idempotency`, `API versioning`, `error envelope`
 
 <!-- skill-graph-context:end -->
