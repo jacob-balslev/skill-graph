@@ -36,10 +36,18 @@ For routing concerns that span Development + skill-graph (cross-repo coordinatio
 
 Cross-session memory for this repo lives in the workspace project at `~/.claude/projects/-Users-jacobbalslev-Development/memory/`. Repo-scoped memories use the `skill_graph_*.md` filename prefix.
 
-Linear tasks for this repo are created via the Development CLI:
+Linear tasks for this repo live in the dedicated **skill-metadata-protocol** org (team `SKI`),
+migrated out of Sales Hub on 2026-06-03 (clean break — see
+`~/Development/docs/plans/skill-graph-linear-workspace-migration-2026-06-03.md`). Target it with the
+`--workspace smp` selector (reads `LINEAR_API_KEY_SMP` + `LINEAR_TEAM_ID_SMP` from `~/.claude/.env.keys`):
 
 ```bash
-node ~/Development/scripts/linear/linear-cli.js create --project skill-graph --title "..."
+node ~/Development/scripts/linear/linear-cli.js create --workspace smp \
+  --project "Skill Graph" --title "..."   # projects: Metadata Protocol | Skill Graph | Skill Audit Loop
 ```
+
+Per-skill audit work is **not** tracked as Linear issues — the audit loop drains the file-based ranked
+worklist (`.opencode/progress/SKILL_LIST.json`) + per-skill run ledger; Linear holds SYSTEM tasks,
+epics, and blockers only (per-skill audit tickets were deprecated 2026-05-25).
 
 Never via Linear MCP tools (banned workspace-wide per `~/Development/.claude/rules/cli-first.md`).
