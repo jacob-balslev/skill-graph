@@ -59,13 +59,25 @@ check('throws with a clear message for an out-of-scope target', () => {
 });
 
 console.log('3. defaultPublicRoots');
-check('derives [skillGraphRoot, <workspace>/skills] by default', () => {
+check('derives [skillGraphRoot, <ws>/skills, <ws>/.opencode/progress/skill-audits]', () => {
   const r = f.defaultPublicRoots({ skillGraphRoot: '/ws/skill-graph' });
-  assert.deepStrictEqual(r, [path.resolve('/ws/skill-graph'), path.resolve('/ws/skills')]);
+  assert.deepStrictEqual(r, [
+    path.resolve('/ws/skill-graph'),
+    path.resolve('/ws/skills'),
+    path.resolve('/ws/.opencode/progress/skill-audits'),
+  ]);
 });
 check('honors explicit skillsRoot + workspaceRoot', () => {
   const r = f.defaultPublicRoots({ skillGraphRoot: '/a/sg', workspaceRoot: '/a', skillsRoot: '/a/custom-skills' });
-  assert.deepStrictEqual(r, [path.resolve('/a/sg'), path.resolve('/a/custom-skills')]);
+  assert.deepStrictEqual(r, [path.resolve('/a/sg'), path.resolve('/a/custom-skills'), path.resolve('/a/.opencode/progress/skill-audits')]);
+});
+check('the audit-artifacts root is IN scope; a sibling private tree is NOT', () => {
+  const roots = f.defaultPublicRoots({ skillGraphRoot: '/ws/skill-graph' });
+  // A claim run dir under the workspace audit-artifacts root is allowed.
+  assert.strictEqual(f.isWithinPublicScope('/ws/.opencode/progress/skill-audits/cognitive-load-theory/runs/r1/x.md', { roots }), true);
+  // The workspace itself / a sibling private repo is still refused.
+  assert.strictEqual(f.isWithinPublicScope('/ws/sales-hub/secret.ts', { roots }), false);
+  assert.strictEqual(f.isWithinPublicScope('/ws/.opencode/other/thing', { roots }), false);
 });
 check('requires skillGraphRoot', () => {
   assert.throws(() => f.defaultPublicRoots({}), /skillGraphRoot is required/);
