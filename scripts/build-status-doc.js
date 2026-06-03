@@ -50,8 +50,14 @@ function runCheck(scriptRelPath, label, extraArgs = []) {
 }
 
 function readSchemaVersion() {
-  const schema = readJson('schemas/SKILL_METADATA_PROTOCOL_schema.json');
-  const sv = schema?.properties?.schema_version;
+  // `schema_version` moved from the frontmatter schema to the audit-state sidecar in the
+  // ADR-0019 audit-state split (which contract a skill conforms to is a system/audit
+  // concern, not part of the public Agent-Skills frontmatter). Read the sidecar schema
+  // first; fall back to the frontmatter schema for pre-split back-compat. Without this
+  // the status doc printed "schema vunknown" post-split (SH-6662).
+  const sidecar = readJson('schemas/skill-audit-state.schema.json');
+  const frontmatter = readJson('schemas/SKILL_METADATA_PROTOCOL_schema.json');
+  const sv = sidecar?.properties?.schema_version ?? frontmatter?.properties?.schema_version;
   // const-shaped (older schemas): single value
   if (typeof sv?.const === 'number') return String(sv.const);
   // oneOf with const branches: pick the highest const
@@ -218,7 +224,7 @@ function renderMarkdown(state) {
 | Package name | \`${pkg.name}\` | \`package.json\` |
 | Package version | \`${pkg.version}\` | \`package.json\` |
 | Node engine | \`${pkg.engines?.node ?? '—'}\` | \`package.json\` |
-| Active schema version | \`${schema_version}\` | \`schemas/SKILL_METADATA_PROTOCOL_schema.json\` |
+| Active schema version | \`${schema_version}\` | \`schemas/skill-audit-state.schema.json\` (moved from frontmatter schema per ADR-0019) |
 | Skill count (manifest) | \`${skill_count ?? '—'}\` | \`skills.manifest.json\` |
 | Mirror status | ${mirror_status} | \`docs/adr/0009-sibling-repo-deprecation.md\` |
 
