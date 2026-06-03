@@ -98,7 +98,9 @@ check('dry-run runs claim → propose(both) → curate → anti-loss → keep', 
   const skill = 'demo-skill';
   const skillDir = path.join(tmp, 'skills', skill);
   fs.mkdirSync(skillDir, { recursive: true });
-  fs.writeFileSync(path.join(skillDir, 'SKILL.md'), '---\nname: demo-skill\n---\n# Demo\nBody.\n');
+  const canonical = path.join(skillDir, 'SKILL.md');
+  const ORIGINAL = '---\nname: demo-skill\n---\n# Demo\nBody.\n';
+  fs.writeFileSync(canonical, ORIGINAL);
 
   const deps = d.createLiveEnrichDeps({ skillGraphRoot: tmp, workspaceRoot: tmp, dryRun: true });
   const result = runBidirectionalEnrich({ skill, skillDir, cwd: tmp, deps });
@@ -118,6 +120,10 @@ check('dry-run runs claim → propose(both) → curate → anti-loss → keep', 
   assert.strictEqual(result.eval, null);
   assert.strictEqual(result.keep_or_revert.keep, true);
   assert.strictEqual(result.objective, 'enrich');
+  // SH-6686: a dry-run NEVER mutates the canonical SKILL.md — applyMerge no-ops, so the
+  // file is byte-identical and `applied` is false even though the decision was KEEP.
+  assert.strictEqual(result.applied, false);
+  assert.strictEqual(fs.readFileSync(canonical, 'utf8'), ORIGINAL, 'canonical SKILL.md unchanged in dry-run');
 
   fs.rmSync(tmp, { recursive: true, force: true });
 });

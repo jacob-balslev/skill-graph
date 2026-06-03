@@ -89,7 +89,7 @@ check('F9: an invalid/capped run (certifying_clean:false) DEFERS — never rever
 console.log('3. runBidirectionalEnrich — DI sequencing');
 
 function makeDeps(overrides = {}) {
-  const calls = { claims: [], releases: [], proposals: [], curated: 0, reverts: [] };
+  const calls = { claims: [], releases: [], proposals: [], curated: 0, prepared: 0, cleaned: 0, applied: 0, evalDirs: [] };
   const base = {
     _calls: calls,
     buildResearchBrief: () => 'BRIEF',
@@ -97,17 +97,24 @@ function makeDeps(overrides = {}) {
     researchAndPropose: ({ model }) => { calls.proposals.push(model); return { proposalPath: `p-${model}.md`, noveltyMemoPath: `n-${model}.md` }; },
     releaseSlot: ({ model, status }) => calls.releases.push(`${model}:${status}`),
     curate: () => { calls.curated += 1; return { mergedSkillPath: 'SKILL.md', mergeLedgerPath: 'merge-ledger.json', mergeLedger: { contributions: [{ id: 1, disposition: 'kept' }] } }; },
+    // SH-6686: the guardrail grades the ENRICHED skill — prepareEnrichedEval returns a
+    // (mock) temp dir; the eval should run against it, not the canonical skillDir.
+    prepareEnrichedEval: ({ skillDir }) => { calls.prepared += 1; return { evalSkillDir: `${skillDir}/.enriched`, cleanup: () => { calls.cleaned += 1; } }; },
+    // SH-6686: apply only on KEEP — records the call and returns the canonical path.
+    applyMerge: ({ skillDir }) => { calls.applied += 1; return { applied: `${skillDir}/SKILL.md` }; },
     // runEvalDirection echoes the profile so parity holds; both directions APPLICABLE.
-    runEvalDirection: ({ direction, generatorModel, graderModel, executionProfile }) => ({
-      direction, generator_model: generatorModel, grader_model: graderModel,
-      verdict: 'APPLICABLE', certification_tier: 'certifying', execution_profile: executionProfile,
-    }),
-    revert: ({ reason }) => calls.reverts.push(reason),
+    runEvalDirection: ({ direction, generatorModel, graderModel, executionProfile, skillDir }) => {
+      calls.evalDirs.push(skillDir);
+      return {
+        direction, generator_model: generatorModel, grader_model: graderModel,
+        verdict: 'APPLICABLE', certification_tier: 'certifying', execution_profile: executionProfile,
+      };
+    },
   };
   return { ...base, ...overrides };
 }
 
-check('runs both frontier models, curates, runs eval guardrail, keeps', () => {
+check('runs both frontier models, curates, evals the ENRICHED copy, keeps + applies', () => {
   const deps = makeDeps();
   const r = enrich.runBidirectionalEnrich({ skill: 's', skillDir: '/x/skills/s', cwd: '/x/skill-graph', deps });
   assert.deepStrictEqual(deps._calls.claims, ['opus', 'codex-current']);
@@ -118,7 +125,14 @@ check('runs both frontier models, curates, runs eval guardrail, keeps', () => {
   assert.strictEqual(r.eval.synthesized_verdict, 'APPLICABLE');
   assert.strictEqual(r.eval.merge_ledger_ref, 'merge-ledger.json');
   assert.strictEqual(r.keep_or_revert.action, 'keep');
-  assert.strictEqual(deps._calls.reverts.length, 0);
+  // SH-6686: the eval ran against the ENRICHED temp dir, not the canonical skillDir.
+  assert.strictEqual(deps._calls.prepared, 1);
+  assert.strictEqual(r.enriched_eval, true);
+  assert.ok(deps._calls.evalDirs.every((d) => d === '/x/skills/s/.enriched'), 'eval ran on the enriched copy');
+  // KEEP => applied to canonical exactly once; the temp eval dir was cleaned up.
+  assert.strictEqual(deps._calls.applied, 1);
+  assert.strictEqual(r.applied, true);
+  assert.strictEqual(deps._calls.cleaned, 1);
 });
 
 check('anti-loss violation in the merge throws (no silent lossy merge)', () => {
@@ -128,20 +142,25 @@ check('anti-loss violation in the merge throws (no silent lossy merge)', () => {
   assert.throws(() => enrich.runBidirectionalEnrich({ skill: 's', skillDir: '/x/s', cwd: '/x', deps }), /anti-loss/);
 });
 
-check('genuine regression (HARMFUL eval) triggers revert', () => {
+check('genuine regression (HARMFUL eval) => revert: does NOT apply to canonical (SH-6686)', () => {
   const deps = makeDeps({
     runEvalDirection: ({ direction, executionProfile }) => ({ direction, verdict: 'HARMFUL', certification_tier: 'certifying', execution_profile: executionProfile }),
   });
   const r = enrich.runBidirectionalEnrich({ skill: 's', skillDir: '/x/s', cwd: '/x', deps });
   assert.strictEqual(r.keep_or_revert.action, 'revert');
-  assert.strictEqual(deps._calls.reverts.length, 1);
+  // The canonical skill is mutated ONLY on keep — a revert never applies (no git-revert-HEAD).
+  assert.strictEqual(deps._calls.applied, 0);
+  assert.strictEqual(r.applied, false);
+  // The enriched temp eval dir is still cleaned up.
+  assert.strictEqual(deps._calls.cleaned, 1);
 });
 
-check('eval guardrail skipped when no direction runner injected (enrich-only) => keep, eval null', () => {
+check('eval guardrail skipped when no direction runner injected (enrich-only) => keep + apply, eval null', () => {
   const deps = makeDeps({ runEvalDirection: undefined });
   const r = enrich.runBidirectionalEnrich({ skill: 's', skillDir: '/x/s', cwd: '/x', deps });
   assert.strictEqual(r.eval, null);
   assert.strictEqual(r.keep_or_revert.action, 'keep');
+  assert.strictEqual(r.applied, true); // keep => apply, even when the eval was deferred
 });
 
 check('requires skill, skillDir, cwd, and the injected deps', () => {
