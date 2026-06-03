@@ -2,6 +2,7 @@
 
 > Used by `lib/audit/evaluate-skill.js --comprehension` to grade model responses against the 7-dimension Concept Comprehension rubric. See `docs/plans/concept-comprehension-layer.md` for the full design.
 > Grader model: the **`strongest-reasoning-grader`** role (newest Opus, resolved by the registry — see workspace `AGENTS.md` § Model Identity Discipline). Never use the same model for generation and grading.
+> Certifying-run model contract: a single same-family top-tier run supports **at most `PROVISIONAL`**; certifying `PASS`/`APPLICABLE` requires an independent **cross-family** top-tier grader (self-preference bias inflates same-family judging ~+10–25pp, [arXiv 2410.21819](https://arxiv.org/abs/2410.21819)). See `docs/verdict-semantics.md § Two-frontier bidirectional reconciliation` point 2.
 > Version: 1.0 — 2026-04-08
 
 ## Role
