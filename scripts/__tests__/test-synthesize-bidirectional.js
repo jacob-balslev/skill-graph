@@ -63,8 +63,23 @@ check('APPLICABLE vs HARMFUL => HARMFUL (most skeptical)', () => {
 check('APPLICABLE only when BOTH agree (PROVISIONAL drags it down)', () => {
   assert.strictEqual(syn.reconcile({ verdict: 'APPLICABLE' }, { verdict: 'PROVISIONAL' }, { mode: 'application' }).verdict, 'PROVISIONAL');
 });
-check('unknown verdict cannot certify (floor rank)', () => {
-  assert.strictEqual(syn.reconcile({ verdict: 'APPLICABLE' }, { verdict: 'WAT' }, { mode: 'application' }).verdict, 'WAT');
+check('unknown verdict is normalized to UNVERIFIED — never surfaced as the synthesized verdict (SH-6678)', () => {
+  const r = syn.reconcile({ verdict: 'APPLICABLE' }, { verdict: 'WAT' }, { mode: 'application' });
+  // The invalid "WAT" must NOT become the synthesized verdict; it floors to UNVERIFIED,
+  // which (conservatively) caps the whole reconciliation at UNVERIFIED.
+  assert.strictEqual(r.verdict, 'UNVERIFIED');
+  assert.strictEqual(r.agreement, false);
+  assert.match(r.note, /normalized to UNVERIFIED/);
+  assert.match(r.note, /codex="WAT"/);
+});
+check('unknown verdict on BOTH directions floors to UNVERIFIED, agreement false (SH-6678)', () => {
+  const r = syn.reconcile({ verdict: 'BOGUS' }, { verdict: 'WAT' }, { mode: 'comprehension' });
+  assert.strictEqual(r.verdict, 'UNVERIFIED');
+  assert.strictEqual(r.agreement, false);
+});
+check('normalizeKnown leaves real verdicts untouched, floors unknowns', () => {
+  assert.strictEqual(syn.normalizeKnown(syn.APPLICATION_RANK, 'APPLICABLE'), 'APPLICABLE');
+  assert.strictEqual(syn.normalizeKnown(syn.APPLICATION_RANK, 'WAT'), 'UNVERIFIED');
 });
 
 console.log('4. Conservative synthesis (comprehension) + procedural carve-out');
