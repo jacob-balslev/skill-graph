@@ -53,11 +53,9 @@ const SKILL_GRAPH_EXTENSION_FIELDS = new Set([
   'schema_version',
   'urn',
   'version',
-  'type',
-  'archetype',
-  'category',
-  'domain',
-  'family',
+  // v7 classification fields (type/archetype/category/domain/family) were removed in
+  // the v8 clean cut (ADR-0017; schema 0 occurrences) — not listed here. v8 uses
+  // subject / subjects / deployment_target / taxonomy_domain (below).
   'scope',
   'subject',
   'subjects',
@@ -78,7 +76,6 @@ const SKILL_GRAPH_EXTENSION_FIELDS = new Set([
   'relations',
   'grounding',
   'portability',
-  'concept',
   'triggers',
   'keywords',
   'paths',
@@ -87,7 +84,6 @@ const SKILL_GRAPH_EXTENSION_FIELDS = new Set([
   'routing_bundles',
   'lifecycle',
   'runtime_telemetry',
-  'secondary_categories',
   'marketplace_tier',
   'last_audited',
   'last_changed',
