@@ -7,6 +7,8 @@
 > **Audit Doctrine** (unchanged from the per-skill contract): evaluate each skill on (1) fidelity to its declared intent and (2) teaching efficacy (`application_verdict`). Lint is a floor, never the goal.
 >
 > **When this merge flow is mandatory (SH-6344):** skills in the **critical** importance band (worklist `importanceBand: critical`) MUST use this multi-model merge (≥ 2 model AUDIT proposals → curator MERGE), not a single-model audit — one model's verification is one model's blind spot. Doctrine: `docs/reference/skill-audit-pipeline.md` § "Audit rigor scales with centrality".
+>
+> **Operationalized as the two-frontier ENRICH orchestrator (HOW).** The claim → per-model propose → curator union-merge sequence below is driven programmatically by `lib/audit/run-bidirectional-enrich.js` (orchestration: sequencing + anti-loss + keep-or-revert) with its live production deps in `lib/audit/enrich-live-deps.js` (it shells the same `skill-audit-claim.js` slots + the claude/codex CLIs this doc describes). Run one skill end-to-end: `node lib/audit/run-bidirectional-enrich.js --skill <slug> --skill-dir <dir> --cwd <skill-graph-root>` (add `--dry-run` to exercise the wiring offline). The **WHY** — enrich-never-strip, two fully-tooled frontier models, tools-ON research as the curation mechanism — is the canonical doctrine in [`docs/audit-loop-enrich-philosophy.md`](../docs/audit-loop-enrich-philosophy.md). This manual runbook remains the by-hand / mixed-CLI path and the source of the merge-ledger v2 contract the orchestrator validates.
 
 ## Setup (every session)
 1. Read `AGENTS.md`.
