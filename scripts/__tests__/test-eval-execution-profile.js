@@ -153,6 +153,40 @@ check('comprehension mode: both PASS => PASS', () => {
   assert.strictEqual(r.certifying_clean, true);
 });
 
+check('SH-6682: per-family applicable_for — both certifying => "both", aggregate kept', () => {
+  const r = runBidirectionalEval({
+    mode: 'application', skill: 's', cwd: '/x/skill-graph',
+    deps: { runDirection: fakeRunner({ Claude: 'APPLICABLE', Codex: 'APPLICABLE' }) },
+  });
+  assert.strictEqual(r.applicable_for, 'both');
+  assert.strictEqual(r.synthesized_verdict, 'APPLICABLE'); // aggregate unchanged
+});
+check('SH-6682: divergent — only the anthropic (Claude/opus) direction certifies => "anthropic"', () => {
+  // Claude (opus → anthropic) APPLICABLE, Codex (gpt → openai) MIXED. The conservative
+  // aggregate caps to MIXED, but the per-family field surfaces that the skill helps Anthropic.
+  const r = runBidirectionalEval({
+    mode: 'application', skill: 's', cwd: '/x/skill-graph',
+    deps: { runDirection: fakeRunner({ Claude: 'APPLICABLE', Codex: 'MIXED' }) },
+  });
+  assert.strictEqual(r.applicable_for, 'anthropic');
+  assert.strictEqual(r.synthesized_verdict, 'MIXED');
+});
+check('SH-6682: not certifying-clean (parity break) => "neither" even with both APPLICABLE', () => {
+  const r = runBidirectionalEval({
+    mode: 'application', skill: 's', cwd: '/x/skill-graph',
+    deps: { runDirection: fakeRunner({ Claude: 'APPLICABLE', Codex: 'APPLICABLE' }, { breakParity: true }) },
+  });
+  assert.strictEqual(r.certifying_clean, false);
+  assert.strictEqual(r.applicable_for, 'neither');
+});
+check('SH-6682: comprehension — only Codex (openai) PASS => "openai"', () => {
+  const r = runBidirectionalEval({
+    mode: 'comprehension', skill: 's', cwd: '/x/skill-graph',
+    deps: { runDirection: fakeRunner({ Claude: 'SHALLOW', Codex: 'PASS' }) },
+  });
+  assert.strictEqual(r.applicable_for, 'openai');
+});
+
 check('rejects a bad mode', () => {
   assert.throws(() => runBidirectionalEval({ mode: 'bogus', cwd: '/x', deps: { runDirection: () => ({}) } }), /mode must be/);
 });
@@ -178,7 +212,7 @@ check('F6: an unresolved direction model caps APPLICABLE to PROVISIONAL (cannot 
   assert.ok(/unresolved/.test(r.cap_reason));
 });
 check('F8: toSidecarReceipt projects ONLY schema-allowed keys', () => {
-  const allowed = new Set(['frontier_pair', 'reconciliation', 'agreement', 'parity_ok', 'certifying_clean', 'synthesized_verdict', 'registry_version', 'merge_ledger_ref', 'execution_profile', 'directions']);
+  const allowed = new Set(['frontier_pair', 'reconciliation', 'agreement', 'parity_ok', 'certifying_clean', 'synthesized_verdict', 'applicable_for', 'registry_version', 'merge_ledger_ref', 'execution_profile', 'directions']);
   const dirKeys = new Set(['role', 'generator_model', 'grader_model', 'generator_family', 'grader_family', 'resolved_model', 'verdict', 'certification_tier']);
   const epKeys = new Set(['tools', 'research', 'repoScope', 'cwd']);
   const runDirection = ({ direction, generatorModel, graderModel, generatorFamily, graderFamily, executionProfile }) => ({

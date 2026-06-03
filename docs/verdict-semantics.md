@@ -140,6 +140,8 @@ A strong verdict additionally requires the run to be **certifying-clean**, or it
 
 A capped/invalid run is **inconclusive**, never a regression: the enrich keep-or-revert defers (keeps) on it and never reverts a skill for a confidence cap.
 
+**Per-family applicability (`applicable_for`, SH-6682).** The conservative aggregate is one verdict, but the generator is the measured agent — so each direction measures whether the skill helps THAT generator's model family (the Claude direction → Anthropic, the Codex direction → OpenAI). The receipt records `applicable_for: anthropic | openai | both | neither` alongside (never replacing) the conservative `synthesized_verdict`. A family is listed only when the run is certifying-clean AND its direction reached the certifying verdict. This surfaces the nuance the conservative rule hides: a skill that genuinely helps Anthropic's model but not OpenAI's caps the aggregate below APPLICABLE yet is honestly `applicable_for: 'anthropic'`. `neither` = no family certified (or run not certifying-clean).
+
 ## How to update verdicts honestly
 
 | Situation | Correct value |

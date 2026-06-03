@@ -289,6 +289,11 @@
               "type": "string",
               "description": "The reconciled verdict after the conservative rule and the certifying-clean cap."
             },
+            "applicable_for": {
+              "type": "string",
+              "enum": ["anthropic", "openai", "both", "neither"],
+              "description": "Per-family applicability (SH-6682). The generator is the measured agent, so each direction measures whether the skill helps THAT generator's model family. A family is listed only when the run is certifying-clean AND its direction reached the certifying verdict (APPLICABLE/PASS). The conservative `synthesized_verdict` stays THE verdict; this records the per-family nuance it hides — e.g. a skill that helps Anthropic's model but not OpenAI's is `applicable_for: 'anthropic'` while the aggregate caps below APPLICABLE. 'neither' = no family certified (or run not certifying-clean)."
+            },
             "registry_version": {
               "type": "string",
               "description": "Model-registry epoch (REGISTRY_VERSION). Scores compare only within the same epoch."
