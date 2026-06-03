@@ -85,6 +85,14 @@ check('buildEnrichPrompt names the exact output paths + private-content scope vi
   assert.ok(p.includes('/r/p.md') && p.includes('/r/m.md'));
   assert.ok(p.includes('Your model role: opus'));
 });
+check('buildEnrichPrompt embeds the current SKILL.md so cross-tree FS access is unnecessary', () => {
+  const p = d.buildEnrichPrompt({ template: 'T', skill: 's', skillDir: '/s', model: 'codex-current', brief: 'B', skillBody: '# THE SKILL BODY', proposalPath: '/r/p.md', noveltyMemoPath: '/r/m.md' });
+  assert.ok(p.includes('# THE SKILL BODY'));
+  assert.ok(/embedded/i.test(p));
+  // No skillBody => no embedded block.
+  const p2 = d.buildEnrichPrompt({ template: 'T', skill: 's', skillDir: '/s', model: 'opus', brief: 'B', proposalPath: '/r/p.md', noveltyMemoPath: '/r/m.md' });
+  assert.ok(!/embedded/i.test(p2));
+});
 check('buildCuratePrompt forbids "did not move a score" drops + names ledger path', () => {
   const p = d.buildCuratePrompt({ skill: 's', proposals: [{ model: 'opus', proposalPath: '/r/a', noveltyMemoPath: '/r/an' }], currentSkillPath: '/s/SKILL.md', mergedSkillPath: '/r/m.md', mergeLedgerPath: '/r/l.json', mergeProtocolRef: 'P' });
   assert.ok(/did not move a score/i.test(p));
