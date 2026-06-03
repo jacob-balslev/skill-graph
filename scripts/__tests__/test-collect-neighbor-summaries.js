@@ -92,7 +92,7 @@ function skillWithRelations(name, relatedName) {
  *     skill-graph/                    ← fake repoRoot
  *       .skill-graph/
  *         config.json                 ← points skill_roots at ../library/skills
- *       SKILL_AUDIT_LOOP.md § Part 2 — Per-Skill Audit Checklist      ← stub (required by collectContext)
+ *       skill-audit-loop/SKILL_AUDIT_LOOP.md (§ Part 2 anchor)        ← stub (required by collectContext)
  *       schemas/
  *         SKILL_METADATA_PROTOCOL_schema.json           ← stub (required by collectContext)
  *       scripts/
@@ -114,10 +114,14 @@ function createFixtures() {
   fs.mkdirSync(path.join(repoRoot, 'schemas'), { recursive: true });
   fs.mkdirSync(path.join(repoRoot, 'scripts'), { recursive: true });
 
-  // Stub files collectContext reads unconditionally.
+  // Stub files collectContext reads unconditionally. The per-skill checklist lives in
+  // skill-audit-loop/SKILL_AUDIT_LOOP.md § Part 2 (SH-6652 — the path was a glued-anchor
+  // bogus filename before). Provide the real path with a Part 2 anchor so the section
+  // extraction has something to slice.
+  fs.mkdirSync(path.join(repoRoot, 'skill-audit-loop'), { recursive: true });
   fs.writeFileSync(
-    path.join(repoRoot, 'SKILL_AUDIT_LOOP.md § Part 2 — Per-Skill Audit Checklist'),
-    '# Stub checklist\n'
+    path.join(repoRoot, 'skill-audit-loop', 'SKILL_AUDIT_LOOP.md'),
+    '# Part 1 — Overview\n\nstub\n\n# Part 2 — Per-Skill Audit Checklist\n\nstub checklist content\n\n# Part 3 — Runbook\n\nstub\n'
   );
   fs.writeFileSync(
     path.join(repoRoot, 'schemas', 'SKILL_METADATA_PROTOCOL_schema.json'),
@@ -250,7 +254,8 @@ function cleanup(tmpDir) {
     const repoRoot = path.join(tmpDir, 'repo');
     fs.mkdirSync(path.join(repoRoot, 'schemas'), { recursive: true });
     fs.mkdirSync(path.join(repoRoot, 'scripts'), { recursive: true });
-    fs.writeFileSync(path.join(repoRoot, 'SKILL_AUDIT_LOOP.md § Part 2 — Per-Skill Audit Checklist'), '# Stub\n');
+    fs.mkdirSync(path.join(repoRoot, 'skill-audit-loop'), { recursive: true });
+    fs.writeFileSync(path.join(repoRoot, 'skill-audit-loop', 'SKILL_AUDIT_LOOP.md'), '# Part 2 — Per-Skill Audit Checklist\n\nstub\n');
     fs.writeFileSync(path.join(repoRoot, 'schemas', 'SKILL_METADATA_PROTOCOL_schema.json'), '{}');
     fs.writeFileSync(path.join(repoRoot, 'scripts', 'export-skill.js'), "'use strict';\n");
 

@@ -92,6 +92,12 @@ const EVAL_ARTIFACTS_DIR_REL = path.join('examples', 'evals');
 const SCHEMA_REL = path.join('schemas', 'SKILL_METADATA_PROTOCOL_schema.json');
 const SKILLS_DIR_REL = 'skills';
 const EXPORT_SCRIPT_REL = path.join('scripts', 'export-skill.js');
+// The single-skill audit checklist lives in SKILL_AUDIT_LOOP.md § Part 2. The doc moved
+// into the skill-audit-loop/ folder in the 2026-05-31 reorg (SH-6652): the old code
+// joined the whole reference string "SKILL_AUDIT_LOOP.md § Part 2 — …" as a FILENAME at
+// the repo root, which never existed — a latent ENOENT crash whenever this builder ran.
+const CHECKLIST_REL = path.join('skill-audit-loop', 'SKILL_AUDIT_LOOP.md');
+const CHECKLIST_SECTION_ANCHOR = '# Part 2 — Per-Skill Audit Checklist';
 
 /**
  * Read the skill, its truth sources, its eval artifacts, and the checklist.
@@ -188,8 +194,27 @@ function collectContext(opts) {
   // realistic" concretely rather than speculatively.
   const exportTransformAvailable = fs.existsSync(path.join(repoRoot, EXPORT_SCRIPT_REL));
 
-  const checklistPath = path.join(repoRoot, 'SKILL_AUDIT_LOOP.md § Part 2 — Per-Skill Audit Checklist');
-  const checklist = fs.readFileSync(checklistPath, 'utf8');
+  const checklistPath = path.join(repoRoot, CHECKLIST_REL);
+  if (!fs.existsSync(checklistPath)) {
+    throw new Error(
+      `audit-prompt-builder: per-skill audit checklist not found at ${checklistPath} `
+      + '(SKILL_AUDIT_LOOP.md § Part 2). It is required to build the grader prompt.',
+    );
+  }
+  const checklistFull = fs.readFileSync(checklistPath, 'utf8');
+  // Extract the "Part 2 — Per-Skill Audit Checklist" section: from its `# ` anchor to
+  // the next top-level (`# `) heading or EOF. If the anchor was renamed/moved, fall back
+  // to the whole doc rather than crash — the grader still gets the checklist content.
+  const checklist = (() => {
+    const lines = checklistFull.split('\n');
+    const start = lines.findIndex((l) => l.trim() === CHECKLIST_SECTION_ANCHOR);
+    if (start === -1) return checklistFull;
+    let end = lines.length;
+    for (let i = start + 1; i < lines.length; i += 1) {
+      if (/^# /.test(lines[i])) { end = i; break; }
+    }
+    return lines.slice(start, end).join('\n');
+  })();
 
   const skillName = path.basename(skillDir);
   return {
