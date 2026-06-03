@@ -130,6 +130,8 @@ PASS / APPLICABLE  >  PROVISIONAL  >  UNVERIFIED
 
 The dual-run that earns `PASS` / `APPLICABLE` is the **two-frontier bidirectional eval** (`lib/audit/run-bidirectional-eval.js`). The two directions are named by which model GENERATES: the **Claude** direction (Claude/opus answers → Codex/gpt grades) and the **Codex** direction (the swap), reconciled **conservatively** — the more-skeptical verdict wins (`lib/audit-shared/synthesize-bidirectional.js`). So a strong verdict requires BOTH cross-family directions to reach it independently.
 
+**Procedural carve-out (one direction did not grade).** A `SKIPPED_BASELINE_HIGH` / `NA` direction carries no graded signal, so only ONE direction actually graded. A single graded direction can support **at most `PROVISIONAL`** — it may not certify `PASS` / `APPLICABLE`, because the second corroborating direction is missing (the conservative rule forbids single-direction certification). The cap never inflates a weak verdict: a lone `SHALLOW` / `REDUNDANT` / `MIXED` / `UNVERIFIED` stays as-is. An **unknown / invalid** direction verdict (a grader returned a label outside the enum) is normalized to `UNVERIFIED` and never surfaces as the synthesized verdict. (`synthesize-bidirectional.capAtProvisional` / `normalizeKnown`; SH-6679 / SH-6678.)
+
 A strong verdict additionally requires the run to be **certifying-clean**, or it is capped to `PROVISIONAL`:
 
 1. **`parity_ok`** — both directions ran under an identical tools-ON execution profile. A parity mismatch means the run measured permissions, not the model — INVALID, capped.

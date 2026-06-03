@@ -89,9 +89,28 @@ check('both PASS => PASS', () => {
 check('PASS vs SHALLOW => SHALLOW', () => {
   assert.strictEqual(syn.reconcile({ verdict: 'PASS' }, { verdict: 'SHALLOW' }, { mode: 'comprehension' }).verdict, 'SHALLOW');
 });
-check('procedural direction defers to graded direction', () => {
-  assert.strictEqual(syn.reconcile({ verdict: 'PASS' }, { verdict: 'SKIPPED_BASELINE_HIGH' }, { mode: 'comprehension' }).verdict, 'PASS');
+check('one procedural direction caps the lone graded direction at PROVISIONAL — PASS requires both (SH-6679)', () => {
+  // A graded PASS opposite a procedural direction may NOT certify alone — caps to PROVISIONAL.
+  const r = syn.reconcile({ verdict: 'PASS' }, { verdict: 'SKIPPED_BASELINE_HIGH' }, { mode: 'comprehension' });
+  assert.strictEqual(r.verdict, 'PROVISIONAL');
+  assert.strictEqual(r.agreement, false);
+  assert.match(r.note, /capped at PROVISIONAL/);
+});
+check('procedural cap does not inflate a genuine negative (SH-6679)', () => {
+  // A lone SHALLOW opposite a procedural direction stays SHALLOW (cap blocks certification, never inflates).
+  assert.strictEqual(syn.reconcile({ verdict: 'NA' }, { verdict: 'SHALLOW' }, { mode: 'comprehension' }).verdict, 'SHALLOW');
+  // A lone PROVISIONAL stays PROVISIONAL.
   assert.strictEqual(syn.reconcile({ verdict: 'NA' }, { verdict: 'PROVISIONAL' }, { mode: 'comprehension' }).verdict, 'PROVISIONAL');
+});
+check('both procedural — no graded signal either way (SH-6679)', () => {
+  const r = syn.reconcile({ verdict: 'NA' }, { verdict: 'NA' }, { mode: 'comprehension' });
+  assert.strictEqual(r.verdict, 'NA');
+  assert.strictEqual(r.agreement, true);
+});
+check('capAtProvisional caps PASS, keeps negatives', () => {
+  assert.strictEqual(syn.capAtProvisional(syn.COMPREHENSION_RANK, 'PASS'), 'PROVISIONAL');
+  assert.strictEqual(syn.capAtProvisional(syn.COMPREHENSION_RANK, 'SHALLOW'), 'SHALLOW');
+  assert.strictEqual(syn.capAtProvisional(syn.APPLICATION_RANK, 'APPLICABLE'), 'PROVISIONAL');
 });
 check('unknown mode throws', () => {
   assert.throws(() => syn.reconcile({ verdict: 'PASS' }, { verdict: 'PASS' }, { mode: 'bogus' }), /unknown mode/);
