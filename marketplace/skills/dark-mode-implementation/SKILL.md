@@ -20,7 +20,7 @@ metadata:
   triggers: "[\"dark mode\",\"prefers-color-scheme\",\"light dark toggle\",\"system theme\",\"FOUC dark mode\"]"
   examples: "[\"Add a dark mode toggle with system / light / dark options and persist the user's choice\",\"Eliminate the white flash that appears for a moment when a dark-mode user loads the page\",\"Provide dark variants of the marketing illustrations and the favicon\"]"
   anti_examples: "[\"Pick the dark mode color palette values\",\"Design the three-tier token architecture\",\"Build a multi-brand theme system with five themes\"]"
-  relations: "{\"related\":[\"theme-system-design\",\"color-system-design\",\"a11y\",\"frontend-architecture\"],\"boundary\":[{\"skill\":\"theme-system-design\",\"reason\":\"theme-system-design defines the token layering that makes dark mode a token-mapping change; this skill handles the integration mechanics on top of that foundation.\"},{\"skill\":\"color-system-design\",\"reason\":\"The dark palette and its contrast pairings are color-system-design's responsibility; this skill consumes them.\"}]}"
+  relations: "{\"related\":[\"theme-system-design\",\"color-system-design\",\"a11y\",\"frontend-architecture\"],\"boundary\":[{\"skill\":\"color-system-design\",\"reason\":\"The dark palette and its contrast pairings are color-system-design's responsibility; this skill consumes them.\"}]}"
   structural_verdict: PASS
   truth_verdict: PASS
   comprehension_verdict: UNVERIFIED
@@ -89,7 +89,6 @@ The user's explicit choice overrides the system. A user who has toggled to Dark 
 - Pick the dark mode color palette values
 - Design the three-tier token architecture
 - Build a multi-brand theme system with five themes
-- Owned by `theme-system-design`
 - Owned by `color-system-design`
 
 **Related skills**

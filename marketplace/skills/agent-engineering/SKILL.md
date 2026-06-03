@@ -23,7 +23,7 @@ metadata:
   keywords: "[\"agent engineering\",\"agentic engineering\",\"multi-agent systems\",\"production agent system\",\"orchestration patterns\",\"orchestrator worker\",\"fan-out merge\",\"consensus pattern\",\"evaluator optimizer\",\"sequential chain\"]"
   examples: "[\"we want to fan out 40 classification subtasks to subagents — what coordination pattern should we use and what are the failure modes?\",\"two of our agents claimed the same task and produced duplicate PRs — what atomicity guarantee prevents this?\",\"the orchestrator burns 6x the budget we planned every Tuesday — where do we add cost visibility and caps?\",\"an agent loop ran for four hours without progress before anyone noticed — how do we detect silent stalls?\",\"we keep getting context-contamination bugs where agent B uses stale output from agent A's failed run — fix the protocol\",\"audit this agent loop and tell me whether it's production-ready or still a demo\",\"is consensus-of-three worth the 3x cost for security-critical decisions, or is two-pass cheaper and good enough?\",\"design the lifecycle for a long-running autonomous agent that survives crashes mid-task\"]"
   anti_examples: "[\"improve this prompt's wording to get better outputs\",\"the agent made 17 read calls when 3 greps would have done\",\"design what skills get loaded for which prompts\",\"scaffold a new SKILL.md for our orchestration runbook\",\"review this AI-generated PR for correctness\",\"the test suite is failing after my change — find the cause\",\"draft an architecture note explaining why we chose Postgres\"]"
-  relations: "{\"boundary\":[{\"skill\":\"prompt-craft\",\"reason\":\"prompt-craft optimises a single LLM call's wording; agent-engineering optimises the entire system that composes many calls into a workflow\"},{\"skill\":\"tool-call-strategy\",\"reason\":\"tool-call-strategy owns per-call efficiency decisions inside one agent; agent-engineering owns the multi-agent architecture those calls run within\"},{\"skill\":\"context-engineering\",\"reason\":\"context-engineering owns what reaches a single agent's context window; agent-engineering owns the system architecture that decides which agent runs at all\"},{\"skill\":\"context-window\",\"reason\":\"context-window owns token-budget thresholds and compaction timing; agent-engineering uses those signals as one part of lifecycle and coordination design\"},{\"skill\":\"debugging\",\"reason\":\"debugging chases a specific runtime failure; agent-engineering is about preventing classes of coordination failure through architecture\"},{\"skill\":\"architecture-decision-records\",\"reason\":\"architecture-decision-records records and explains decisions; agent-engineering designs the agent-system architecture being decided\"}],\"related\":[\"context-engineering\",\"context-window\",\"tool-call-strategy\",\"prompt-craft\",\"summarization\"],\"verify_with\":[\"testing-strategy\",\"code-review\"]}"
+  relations: "{\"boundary\":[{\"skill\":\"architecture-decision-records\",\"reason\":\"architecture-decision-records records and explains decisions; agent-engineering designs the agent-system architecture being decided\"}],\"related\":[\"context-engineering\",\"context-window\",\"tool-call-strategy\",\"prompt-craft\",\"summarization\",\"debugging\"],\"verify_with\":[\"testing-strategy\",\"code-review\"]}"
   grounding: "{\"subject_matter\":\"Production AI agent system architecture and multi-agent coordination\",\"grounding_mode\":\"hybrid\",\"truth_sources\":[\"https://www.anthropic.com/engineering/building-effective-agents\",\"https://www.anthropic.com/engineering/multi-agent-research-system\",\"https://www.anthropic.com/engineering/effective-harnesses-for-long-running-agents\",\"https://openai.github.io/openai-agents-python/tracing/\",\"https://arxiv.org/abs/2308.08155\"],\"failure_modes\":[\"coordination_pattern_mismatch\",\"unbounded_agent_loop\",\"missing_observability\",\"duplicate_task_claims\",\"handoff_context_loss\",\"over_delegation_cost_spike\"],\"evidence_priority\":\"equal\"}"
   portability: "{\"readiness\":\"scripted\",\"targets\":[\"skill-md\"]}"
   lifecycle: "{\"stale_after_days\":90,\"review_cadence\":\"quarterly\"}"
@@ -42,7 +42,7 @@ metadata:
   skill_graph_source_repo: "https://github.com/jacob-balslev/skill-graph"
   skill_graph_project: Skill Graph
   skill_graph_canonical_skill: skills/software-architecture/agent-engineering/SKILL.md
-  skill_graph_export_description_projection: anti_examples+boundary
+  skill_graph_export_description_projection: anti_examples
   skill_graph_export_description_projection_truncated: "true"
 ---
 
@@ -457,16 +457,11 @@ After applying agent-engineering decisions, verify:
 - review this AI-generated PR for correctness
 - the test suite is failing after my change — find the cause
 - draft an architecture note explaining why we chose Postgres
-- Owned by `prompt-craft`
-- Owned by `tool-call-strategy`: per-call efficiency decisions inside one agent
-- Owned by `context-engineering`: what reaches a single agent's context window
-- Owned by `context-window`: token-budget thresholds and compaction timing
-- Owned by `debugging`
 - Owned by `architecture-decision-records`
 
 **Related skills**
 - Verify with: `testing-strategy`, `code-review`
-- Related: `context-engineering`, `context-window`, `tool-call-strategy`, `prompt-craft`, `summarization`
+- Related: `context-engineering`, `context-window`, `tool-call-strategy`, `prompt-craft`, `summarization`, `debugging`
 
 **Concept**
 - Mental model: Agent engineering treats LLM calls as unreliable, tool-using components inside a larger workflow. The core move is to make lifecycle, delegation, coordination, verification, observability, budgets, and recovery explicit so model variability is contained by system design.

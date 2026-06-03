@@ -20,7 +20,7 @@ metadata:
   keywords: "[\"event storming\",\"domain events\",\"commands\",\"aggregates\",\"policies\",\"read models\",\"temporal workflow\",\"event-driven discovery\",\"process modeling\"]"
   examples: "[\"map the order lifecycle as domain events before we design tables or APIs\",\"which commands, policies, and external systems are hidden in this workflow?\",\"use event storming to find aggregate boundaries for fulfillment\",\"turn this incident-prone business process into events and decisions\"]"
   anti_examples: "[\"implement Shopify webhook signature verification and idempotent retries\",\"draw the state machine for this one status field\",\"create a normalized data model and indexes\",\"write event-bus infrastructure code\",\"define the schema, topic, compatibility, and fixtures for a selected event\"]"
-  relations: "{\"boundary\":[{\"skill\":\"event-contract-design\",\"reason\":\"event-contract-design owns publishable event envelopes, schemas, topics, and compatibility; event-storming discovers the domain behavior before contract design\"},{\"skill\":\"webhook-integration\",\"reason\":\"webhook-integration implements inbound provider event handlers; event-storming discovers business-domain events before implementation\"},{\"skill\":\"state-machine-modeling\",\"reason\":\"state-machine-modeling formalizes states and transitions; event-storming discovers events, commands, policies, and aggregates\"},{\"skill\":\"data-modeling\",\"reason\":\"data-modeling designs stored data structures after domain events are understood\"},{\"skill\":\"api-design\",\"reason\":\"api-design shapes endpoint surfaces; event-storming discovers the domain behavior those surfaces expose\"}],\"related\":[\"bounded-context-mapping\",\"state-machine-modeling\",\"system-interface-contracts\",\"event-contract-design\",\"conceptual-modeling\"],\"verify_with\":[\"conceptual-modeling\",\"bounded-context-mapping\"]}"
+  relations: "{\"boundary\":[{\"skill\":\"event-contract-design\",\"reason\":\"event-contract-design owns publishable event envelopes, schemas, topics, and compatibility; event-storming discovers the domain behavior before contract design\"},{\"skill\":\"state-machine-modeling\",\"reason\":\"state-machine-modeling formalizes states and transitions; event-storming discovers events, commands, policies, and aggregates\"},{\"skill\":\"data-modeling\",\"reason\":\"data-modeling designs stored data structures after domain events are understood\"}],\"related\":[\"bounded-context-mapping\",\"state-machine-modeling\",\"system-interface-contracts\",\"event-contract-design\",\"conceptual-modeling\",\"webhook-integration\",\"api-design\"],\"verify_with\":[\"conceptual-modeling\",\"bounded-context-mapping\"]}"
   portability: "{\"readiness\":\"scripted\",\"targets\":[\"skill-md\"]}"
   lifecycle: "{\"stale_after_days\":365,\"review_cadence\":\"quarterly\"}"
   structural_verdict: PASS
@@ -100,14 +100,12 @@ Do not confuse domain events with technical notifications. "OrderPlaced" is busi
 - write event-bus infrastructure code
 - define the schema, topic, compatibility, and fixtures for a selected event
 - Owned by `event-contract-design`: publishable event envelopes, schemas, topics, and compatibility
-- Owned by `webhook-integration`
 - Owned by `state-machine-modeling`
 - Owned by `data-modeling`
-- Owned by `api-design`
 
 **Related skills**
 - Verify with: `conceptual-modeling`, `bounded-context-mapping`
-- Related: `bounded-context-mapping`, `state-machine-modeling`, `system-interface-contracts`, `event-contract-design`, `conceptual-modeling`
+- Related: `bounded-context-mapping`, `state-machine-modeling`, `system-interface-contracts`, `event-contract-design`, `conceptual-modeling`, `webhook-integration`, `api-design`
 
 **Keywords**
 - `event storming`, `domain events`, `commands`, `aggregates`, `policies`, `read models`, `temporal workflow`, `event-driven discovery`, `process modeling`

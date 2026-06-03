@@ -20,7 +20,7 @@ metadata:
   keywords: "[\"top task analysis\",\"goal-driven UX review\",\"route audit workflow\",\"onboarding flow analysis\",\"task friction scoring\",\"five friction dimensions\",\"dead-end detection\",\"hidden next-step diagnosis\",\"hierarchy contract first viewport\",\"actor and scenario identification\"]"
   examples: "[\"this onboarding flow feels confusing — analyze the task structure\",\"audit this dashboard route for whether it supports the user's top task\",\"what should be above the fold on this page?\",\"users keep abandoning this wizard at step 3 — find the breakpoint\",\"decide what belongs in the first viewport for this analytics page\",\"diagnose why this multi-step setup has too many decisions\",\"the team disagrees on what the top task is for this route — settle it\"]"
   anti_examples: "[\"review this PR for code quality\",\"audit this UI for WCAG 2.2 violations\",\"decide the CSS grid layout for this hero section\",\"pick the right colors for this status badge\",\"build the navigation taxonomy for the whole product\",\"should we use a dropdown or a stepper here\"]"
-  relations: "{\"boundary\":[{\"skill\":\"code-review\",\"reason\":\"code-review judges the quality and correctness of a specific change at PR scope; task-analysis judges whether a route's structure supports the user's top task — same 'review this page' prompt routes by whether the lens is code or user goal\"},{\"skill\":\"a11y\",\"reason\":\"a11y is accessibility QA against WCAG / ARIA / keyboard / screen-reader contracts on an existing UI; task-analysis is goal-driven decomposition of what the UI must support — same 'review this UI' prompt routes by whether the trigger is accessibility compliance or user-task fit\"},{\"skill\":\"layout-composition\",\"reason\":\"layout-composition owns responsive section order, grids, and scan patterns; task-analysis stops at the first-viewport hierarchy contract\"},{\"skill\":\"visual-design-foundations\",\"reason\":\"visual-design-foundations owns visual craft; task-analysis owns whether the route supports the user's goal\"},{\"skill\":\"interaction-patterns\",\"reason\":\"interaction-patterns owns control-pattern selection; task-analysis identifies the decision or action that the pattern must support\"},{\"skill\":\"interaction-feedback\",\"reason\":\"interaction-feedback owns loading, progress, success, error, retry, and undo behavior; task-analysis identifies where feedback is needed\"},{\"skill\":\"information-architecture\",\"reason\":\"information-architecture owns navigation and page grouping across a product; task-analysis owns one route or flow\"}],\"related\":[\"diagnosis\",\"pattern-recognition\",\"information-architecture\",\"layout-composition\",\"interaction-patterns\",\"interaction-feedback\"],\"verify_with\":[\"a11y\"]}"
+  relations: "{\"related\":[\"diagnosis\",\"pattern-recognition\",\"information-architecture\",\"layout-composition\",\"interaction-patterns\",\"interaction-feedback\",\"code-review\",\"a11y\",\"visual-design-foundations\"],\"verify_with\":[\"a11y\"]}"
   portability: "{\"readiness\":\"scripted\",\"targets\":[\"skill-md\"]}"
   lifecycle: "{\"stale_after_days\":365,\"review_cadence\":\"quarterly\"}"
   structural_verdict: PASS
@@ -32,8 +32,7 @@ metadata:
   skill_graph_source_repo: "https://github.com/jacob-balslev/skill-graph"
   skill_graph_project: Skill Graph
   skill_graph_canonical_skill: skills/reasoning-strategy/task-analysis/SKILL.md
-  skill_graph_export_description_projection: anti_examples+boundary
-  skill_graph_export_description_projection_truncated: "true"
+  skill_graph_export_description_projection: anti_examples
 ---
 
 # Task Analysis
@@ -249,17 +248,10 @@ After applying task analysis, verify:
 - pick the right colors for this status badge
 - build the navigation taxonomy for the whole product
 - should we use a dropdown or a stepper here
-- Owned by `code-review`
-- Owned by `a11y`
-- Owned by `layout-composition`: responsive section order, grids, and scan patterns
-- Owned by `visual-design-foundations`: visual craft
-- Owned by `interaction-patterns`: control-pattern selection
-- Owned by `interaction-feedback`: loading, progress, success, error, retry, and undo behavior
-- Owned by `information-architecture`: navigation and page grouping across a product
 
 **Related skills**
 - Verify with: `a11y`
-- Related: `diagnosis`, `pattern-recognition`, `information-architecture`, `layout-composition`, `interaction-patterns`, `interaction-feedback`
+- Related: `diagnosis`, `pattern-recognition`, `information-architecture`, `layout-composition`, `interaction-patterns`, `interaction-feedback`, `code-review`, `a11y`, `visual-design-foundations`
 
 **Keywords**
 - `top task analysis`, `goal-driven UX review`, `route audit workflow`, `onboarding flow analysis`, `task friction scoring`, `five friction dimensions`, `dead-end detection`, `hidden next-step diagnosis`, `hierarchy contract first viewport`, `actor and scenario identification`

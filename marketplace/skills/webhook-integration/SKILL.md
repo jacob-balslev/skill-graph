@@ -21,7 +21,7 @@ metadata:
   keywords: "[\"webhook handler\",\"webhook signature\",\"webhook signature verification\",\"HMAC webhook\",\"timing-safe comparison\",\"duplicate webhook delivery\",\"webhook idempotency\",\"idempotency key\",\"webhook retry\",\"retry contract\"]"
   examples: "[\"implement signature verification for a new third-party webhook handler\",\"the same webhook event is being processed twice — fix the idempotency\",\"should I return 200 or 500 when a webhook handler hits a database error?\",\"the provider keeps retrying a webhook we already accepted — what's wrong with our 200 path?\",\"design a quarantine path for webhooks that fail signature verification\",\"extract a stable idempotency key from this provider's webhook payload\",\"reject all webhook deliveries with an invalid HMAC, log them for audit\",\"the provider deletes customer data 30 days after order — how do I capture PII safely on first delivery?\"]"
   anti_examples: "[\"design our outbound webhook product (we want to deliver events to customers)\",\"the production webhook is failing — find the root cause\",\"explain our webhook patterns in the contributor docs\",\"review this AI-generated webhook handler for correctness\",\"refactor the webhook handler helpers for clarity\",\"decide whether this webhook needs an integration test\",\"design the secret-rotation policy for our integration credentials\"]"
-  relations: "{\"boundary\":[{\"skill\":\"event-contract-design\",\"reason\":\"event-contract-design owns outbound event and webhook contracts; webhook-integration owns inbound third-party handler mechanics\"},{\"skill\":\"debugging\",\"reason\":\"debugging chases an observed handler failure with reproduction; webhook-integration plans the safe handler shape before deployment\"},{\"skill\":\"refactor\",\"reason\":\"refactor is behavior-preserving cleanup; webhook-integration is the contract-enforcement layer that decides what behavior the handler must preserve\"},{\"skill\":\"owasp-security\",\"reason\":\"owasp-security owns the secret-storage and rotation policy; webhook-integration owns the per-request signature-verification mechanics that consume those secrets\"},{\"skill\":\"testing-strategy\",\"reason\":\"testing-strategy decides what deserves a regression test; webhook-integration defines the failure modes (replay, signature mismatch, duplicate delivery) those tests target\"}],\"related\":[\"testing-strategy\",\"debugging\",\"owasp-security\",\"code-review\",\"event-contract-design\"],\"verify_with\":[\"testing-strategy\",\"code-review\"]}"
+  relations: "{\"related\":[\"testing-strategy\",\"debugging\",\"owasp-security\",\"code-review\",\"event-contract-design\",\"refactor\"],\"verify_with\":[\"testing-strategy\",\"code-review\"]}"
   portability: "{\"readiness\":\"scripted\",\"targets\":[\"skill-md\"]}"
   lifecycle: "{\"stale_after_days\":90,\"review_cadence\":\"quarterly\"}"
   structural_verdict: PASS
@@ -33,7 +33,7 @@ metadata:
   skill_graph_source_repo: "https://github.com/jacob-balslev/skill-graph"
   skill_graph_project: Skill Graph
   skill_graph_canonical_skill: skills/backend-engineering/webhook-integration/SKILL.md
-  skill_graph_export_description_projection: anti_examples+boundary
+  skill_graph_export_description_projection: anti_examples
   skill_graph_export_description_projection_truncated: "true"
 ---
 
@@ -382,15 +382,10 @@ This skill ships a comprehension-eval artifact at [`examples/evals/webhook-integ
 - refactor the webhook handler helpers for clarity
 - decide whether this webhook needs an integration test
 - design the secret-rotation policy for our integration credentials
-- Owned by `event-contract-design`: outbound event and webhook contracts
-- Owned by `debugging`
-- Owned by `refactor`
-- Owned by `owasp-security`: the secret-storage and rotation policy
-- Owned by `testing-strategy`
 
 **Related skills**
 - Verify with: `testing-strategy`, `code-review`
-- Related: `testing-strategy`, `debugging`, `owasp-security`, `code-review`, `event-contract-design`
+- Related: `testing-strategy`, `debugging`, `owasp-security`, `code-review`, `event-contract-design`, `refactor`
 
 **Keywords**
 - `webhook handler`, `webhook signature`, `webhook signature verification`, `HMAC webhook`, `timing-safe comparison`, `duplicate webhook delivery`, `webhook idempotency`, `idempotency key`, `webhook retry`, `retry contract`

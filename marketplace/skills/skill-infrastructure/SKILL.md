@@ -14,7 +14,7 @@ metadata:
   keywords: "[\"skill library health\",\"skill system tooling\",\"skill library decay\",\"skill inventory\",\"frontmatter validation\",\"imperative conflict\",\"skill overlap detection\",\"routing health\",\"eval threshold\",\"drift sentinel\"]"
   examples: "[\"our skill library is growing and we're getting silent decay — eval counts dropping, conflicts emerging — what tooling should we add?\",\"two of our skills give opposite instructions for the same function — how do we detect this automatically?\",\"we keep getting skill-router misses on real user queries — how do we surface and close routing gaps?\",\"design a health-check pipeline for a 200-skill library that runs in CI\",\"what's a reasonable minimum eval count per skill, and how do we enforce it?\",\"our skill mirror in `.claude/skills` keeps drifting from the source — what's the parity check?\",\"we want to add a contradiction-check eval pattern — what does it look like and when do we use it?\",\"skill-overlap-detector flagged 12 imperative conflicts — how do we triage which to fix vs suppress?\",\"audit my skills for schema conformance\",\"check that my skill frontmatter conforms to the schema\"]"
   anti_examples: "[\"scaffold a new SKILL.md for our team's deploy procedure\",\"audit this Skill Graph repo for schema conformance and dangling relation targets\",\"the manifest sample drifted from the generator — find the mismatch\",\"improve this prompt's wording to get better outputs\",\"review this AI-generated PR for correctness\",\"set up ESLint for our TypeScript repo\",\"draft an architecture note explaining why we chose Postgres\"]"
-  relations: "{\"boundary\":[{\"skill\":\"skill-scaffold\",\"reason\":\"skill-scaffold owns authoring methodology for one new SKILL.md; skill-infrastructure owns the deterministic health-tooling layer that watches the entire library after authoring\"},{\"skill\":\"graph-audit\",\"reason\":\"graph-audit is the operational audit of the Skill Graph project; skill-infrastructure is the portable discipline of designing health tooling for any skill library\"},{\"skill\":\"lint-overlay\",\"reason\":\"lint-overlay covers lint-rule selection and gate placement for general codebases; skill-infrastructure covers the skill-system-specific tooling category that includes lint but extends to overlap, routing-gap, drift, and mirror-parity\"}],\"related\":[\"skill-scaffold\",\"graph-audit\",\"testing-strategy\"],\"verify_with\":[\"testing-strategy\",\"code-review\"]}"
+  relations: "{\"boundary\":[{\"skill\":\"skill-scaffold\",\"reason\":\"skill-scaffold owns authoring methodology for one new SKILL.md; skill-infrastructure owns the deterministic health-tooling layer that watches the entire library after authoring\"}],\"related\":[\"skill-scaffold\",\"graph-audit\",\"testing-strategy\",\"lint-overlay\"],\"verify_with\":[\"testing-strategy\",\"code-review\"]}"
   skill_graph_source_repo: "https://github.com/jacob-balslev/skill-graph"
   skill_graph_project: Skill Graph
   skill_graph_canonical_skill: skills/agent-ops/skill-infrastructure/SKILL.md
@@ -363,12 +363,10 @@ Before any batch skill commit, verify:
 - set up ESLint for our TypeScript repo
 - draft an architecture note explaining why we chose Postgres
 - Owned by `skill-scaffold`: authoring methodology for one new SKILL
-- Owned by `graph-audit`
-- Owned by `lint-overlay`
 
 **Related skills**
 - Verify with: `testing-strategy`, `code-review`
-- Related: `skill-scaffold`, `graph-audit`, `testing-strategy`
+- Related: `skill-scaffold`, `graph-audit`, `testing-strategy`, `lint-overlay`
 
 **Grounding**
 - Mode: `hybrid`

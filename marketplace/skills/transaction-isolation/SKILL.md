@@ -21,7 +21,7 @@ metadata:
   triggers: "[\"what isolation level do we need\",\"is read committed enough\",\"what's write skew\",\"MVCC vs locking\",\"Postgres serializable vs MySQL serializable\"]"
   examples: "[\"choose an isolation level for a workload that has concurrent balance-decrement operations\",\"diagnose a data-correctness bug caused by an anomaly the chosen isolation level permits\",\"explain the difference between snapshot isolation and full serializability\",\"decide whether to use SELECT FOR UPDATE or upgrade isolation level\"]"
   anti_examples: "[\"explain the four ACID properties (use acid-fundamentals)\",\"reason about distributed-replica consistency under partition (use cap-theorem-tradeoffs)\",\"tune a slow query (use query-optimization)\"]"
-  relations: "{\"related\":[\"acid-fundamentals\",\"cap-theorem-tradeoffs\",\"data-modeling\",\"query-optimization\"],\"boundary\":[{\"skill\":\"acid-fundamentals\",\"reason\":\"acid-fundamentals owns the four-property ACID frame as a whole; this skill owns the I axis specifically — the choice and semantics of isolation levels as a tunable. The two compose: acid-fundamentals names isolation as one of four guarantees; this skill makes the I axis operational.\"},{\"skill\":\"cap-theorem-tradeoffs\",\"reason\":\"cap-theorem-tradeoffs owns distributed-replica agreement (CAP's C); this skill owns single-cluster transaction isolation (ACID's I). The two C/I letters concern different layers of the system.\"},{\"skill\":\"query-optimization\",\"reason\":\"query-optimization owns the performance dimension of query execution; this skill owns the correctness dimension of concurrent execution. Optimizations that change locking behavior can shift anomaly exposure; the two interact.\"},{\"skill\":\"data-modeling\",\"reason\":\"data-modeling owns schema and access-pattern design; this skill owns the concurrency-correctness contract under whichever schema and access pattern are chosen.\"}],\"verify_with\":[\"acid-fundamentals\",\"query-optimization\"]}"
+  relations: "{\"related\":[\"acid-fundamentals\",\"cap-theorem-tradeoffs\",\"data-modeling\",\"query-optimization\"],\"boundary\":[{\"skill\":\"acid-fundamentals\",\"reason\":\"acid-fundamentals owns the four-property ACID frame as a whole; this skill owns the I axis specifically — the choice and semantics of isolation levels as a tunable. The two compose: acid-fundamentals names isolation as one of four guarantees; this skill makes the I axis operational.\"}],\"verify_with\":[\"acid-fundamentals\",\"query-optimization\"]}"
   mental_model: "|"
   purpose: "|"
   boundary: "|"
@@ -146,9 +146,6 @@ After applying this skill, verify:
 - reason about distributed-replica consistency under partition (use cap-theorem-tradeoffs)
 - tune a slow query (use query-optimization)
 - Owned by `acid-fundamentals`: the four-property ACID frame as a whole
-- Owned by `cap-theorem-tradeoffs`: distributed-replica agreement (CAP's C)
-- Owned by `query-optimization`: the performance dimension of query execution
-- Owned by `data-modeling`: schema and access-pattern design
 
 **Related skills**
 - Verify with: `acid-fundamentals`, `query-optimization`

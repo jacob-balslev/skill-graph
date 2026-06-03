@@ -21,7 +21,7 @@ metadata:
   triggers: "[\"background-jobs-skill\",\"job-queue-skill\",\"async-processing-skill\",\"long-running-task-skill\",\"worker-pattern-skill\"]"
   examples: "[\"move this report generation out of the API handler and still show progress\",\"design a queue-backed import job that can resume after failure\",\"choose retry and dead-letter behavior for a worker\",\"avoid duplicate processing when a job is enqueued twice\",\"add cancellation and progress to a long-running export\"]"
   anti_examples: "[\"choose the cron expression for a daily run\",\"design an SSE or WebSocket browser update channel\",\"define an event envelope and topic naming standard\",\"debug why this already-running worker crashed\",\"model the database schema for the business entity being processed\"]"
-  relations: "{\"related\":[\"cron-scheduling\",\"real-time-updates\",\"observability-modeling\",\"event-contract-design\"],\"boundary\":[{\"skill\":\"cron-scheduling\",\"reason\":\"cron-scheduling owns when recurring work starts; background-jobs owns how queued work executes after it starts\"},{\"skill\":\"real-time-updates\",\"reason\":\"real-time-updates owns browser freshness transports; background-jobs only defines progress state and completion signals\"},{\"skill\":\"event-contract-design\",\"reason\":\"event-contract-design owns async event envelope compatibility; background-jobs owns worker execution semantics\"}],\"verify_with\":[\"observability-modeling\",\"testing-strategy\"]}"
+  relations: "{\"related\":[\"cron-scheduling\",\"real-time-updates\",\"observability-modeling\",\"event-contract-design\"],\"boundary\":[{\"skill\":\"cron-scheduling\",\"reason\":\"cron-scheduling owns when recurring work starts; background-jobs owns how queued work executes after it starts\"},{\"skill\":\"real-time-updates\",\"reason\":\"real-time-updates owns browser freshness transports; background-jobs only defines progress state and completion signals\"}],\"verify_with\":[\"observability-modeling\",\"testing-strategy\"]}"
   portability: "{\"readiness\":\"scripted\",\"targets\":[\"skill-md\"]}"
   lifecycle: "{\"stale_after_days\":180,\"review_cadence\":\"quarterly\"}"
   comprehension_state: present
@@ -40,7 +40,6 @@ metadata:
   skill_graph_project: Skill Graph
   skill_graph_canonical_skill: skills/backend-engineering/background-jobs/SKILL.md
   skill_graph_export_description_projection: anti_examples+boundary
-  skill_graph_export_description_projection_truncated: "true"
 ---
 
 # Background Jobs
@@ -312,7 +311,6 @@ After applying this skill, verify:
 - model the database schema for the business entity being processed
 - Owned by `cron-scheduling`: when recurring work starts
 - Owned by `real-time-updates`: browser freshness transports
-- Owned by `event-contract-design`: async event envelope compatibility
 
 **Related skills**
 - Verify with: `observability-modeling`, `testing-strategy`

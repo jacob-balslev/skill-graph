@@ -1,6 +1,6 @@
 ---
 name: agent-eval-design
-description: "Use when designing evaluations for AI agents, skills, routers, prompts, tool-use policies, or multi-step workflows: task sets, rubrics, graders, hard negatives, regression cases, traces, and acceptance thresholds. Do NOT use for application test planning (use `testing-strategy`), skill-library health tooling (use `skill-infrastructure`), or live debugging of a failed run (use `debugging`). Do NOT use for plan unit, integration, and e2e tests for this product feature. Do NOT use for run the skill graph lint and overlap tooling. Do NOT use for debug why yesterday's agent run failed. Do NOT use for write production code to fix this failing test. Do NOT use for library health tooling (use skill-infrastructure)."
+description: "Use when designing evaluations for AI agents, skills, routers, prompts, tool-use policies, or multi-step workflows: task sets, rubrics, graders, hard negatives, regression cases, traces, and acceptance thresholds. Do NOT use for application test planning (use `testing-strategy`), skill-library health tooling (use `skill-infrastructure`), or live debugging of a failed run (use `debugging`). Do NOT use for plan unit, integration, and e2e tests for this product feature. Do NOT use for run the skill graph lint and overlap tooling. Do NOT use for debug why yesterday's agent run failed. Do NOT use for write production code to fix this failing test."
 license: MIT
 compatibility: "Portable eval-design discipline for agent workflows, skill routers, prompt systems, and tool-use policies."
 allowed-tools: Read Grep
@@ -13,11 +13,11 @@ metadata:
   keywords: "[\"agent eval\",\"AI eval design\",\"skill routing eval\",\"eval rubric\",\"hard negatives\",\"grader design\",\"regression eval\",\"trace evaluation\",\"acceptance threshold\",\"prompt eval\"]"
   examples: "[\"design an eval set for whether this skill routes correctly against near-miss prompts\",\"create a rubric for judging agent outputs on grounded project knowledge extraction\",\"what hard negatives should test this router before we mark routing_eval present?\",\"turn these agent failure traces into regression eval cases\"]"
   anti_examples: "[\"plan unit, integration, and e2e tests for this product feature\",\"run the skill graph lint and overlap tooling\",\"debug why yesterday's agent run failed\",\"write production code to fix this failing test\"]"
-  relations: "{\"boundary\":[{\"skill\":\"testing-strategy\",\"reason\":\"testing-strategy plans software tests; agent-eval-design designs behavioral evals for AI agents and skills\"},{\"skill\":\"skill-infrastructure\",\"reason\":\"skill-infrastructure owns library health tooling; agent-eval-design owns eval content and grading design\"},{\"skill\":\"debugging\",\"reason\":\"debugging investigates a live failure; agent-eval-design turns patterns into future evals\"},{\"skill\":\"code-review\",\"reason\":\"code-review evaluates diffs; agent-eval-design evaluates agent behavior\"}],\"related\":[\"skill-router\",\"context-engineering\",\"testing-strategy\",\"skill-infrastructure\"],\"verify_with\":[\"testing-strategy\",\"skill-infrastructure\"]}"
+  relations: "{\"related\":[\"skill-router\",\"context-engineering\",\"testing-strategy\",\"skill-infrastructure\",\"debugging\",\"code-review\"],\"verify_with\":[\"testing-strategy\",\"skill-infrastructure\"]}"
   skill_graph_source_repo: "https://github.com/jacob-balslev/skill-graph"
   skill_graph_project: Skill Graph
   skill_graph_canonical_skill: skills/ai-engineering/agent-eval-design/SKILL.md
-  skill_graph_export_description_projection: anti_examples+boundary
+  skill_graph_export_description_projection: anti_examples
 ---
 
 # Agent Eval Design
@@ -99,14 +99,10 @@ The highest-value cases are hard negatives and prior failures. A routing eval wi
 - run the skill graph lint and overlap tooling
 - debug why yesterday's agent run failed
 - write production code to fix this failing test
-- Owned by `testing-strategy`
-- Owned by `skill-infrastructure`: library health tooling
-- Owned by `debugging`
-- Owned by `code-review`
 
 **Related skills**
 - Verify with: `testing-strategy`, `skill-infrastructure`
-- Related: `skill-router`, `context-engineering`, `testing-strategy`, `skill-infrastructure`
+- Related: `skill-router`, `context-engineering`, `testing-strategy`, `skill-infrastructure`, `debugging`, `code-review`
 
 **Keywords**
 - `agent eval`, `AI eval design`, `skill routing eval`, `eval rubric`, `hard negatives`, `grader design`, `regression eval`, `trace evaluation`, `acceptance threshold`, `prompt eval`

@@ -1,6 +1,6 @@
 ---
 name: design-system-architecture
-description: "Use when designing or auditing a design system's architecture: token taxonomy, semantic tokens, component APIs, theming, accessibility contracts, documentation, governance, and migration strategy. Do NOT use for information hierarchy and navigation (use `information-architecture`), page-specific layout (use `layout-composition`), visual craft direction (use `visual-design-foundations`), sentence-level UI copy (use `microcopy`), or accessibility-only audits (use `a11y`). Do NOT use for organize pages, nav, sitemap, and wayfinding. Do NOT use for rewrite the empty-state text and tooltip labels. Do NOT use for add aria-labels and keyboard behavior to this component. Do NOT use for draft an architecture note explaining why we chose Postgres over DynamoDB. Do NOT use for navigation and content structure (use information-architecture). Do NOT use for UI text patterns (use microcopy). Do NOT use for page-specific responsive structure (use layout-composition)."
+description: "Use when designing or auditing a design system's architecture: token taxonomy, semantic tokens, component APIs, theming, accessibility contracts, documentation, governance, and migration strategy. Do NOT use for information hierarchy and navigation (use `information-architecture`), page-specific layout (use `layout-composition`), visual craft direction (use `visual-design-foundations`), sentence-level UI copy (use `microcopy`), or accessibility-only audits (use `a11y`). Do NOT use for organize pages, nav, sitemap, and wayfinding. Do NOT use for rewrite the empty-state text and tooltip labels. Do NOT use for add aria-labels and keyboard behavior to this component. Do NOT use for draft an architecture note explaining why we chose Postgres over DynamoDB."
 license: MIT
 compatibility: "Portable design-system architecture guidance for web and app component systems, token systems, and multi-theme UI libraries."
 allowed-tools: Read Grep
@@ -21,7 +21,7 @@ metadata:
   keywords: "[\"design tokens\",\"semantic tokens\",\"component API\",\"theming\",\"component library\",\"token taxonomy\",\"design system migration\",\"design system audit\",\"component library audit\",\"token drift\"]"
   examples: "[\"define semantic tokens so charts, status colors, and surfaces do not hardcode raw colors\",\"audit this component library for API consistency and token drift\",\"design the theming architecture before adding dark mode\",\"how should we migrate old CSS variables to canonical design-system tokens?\"]"
   anti_examples: "[\"organize pages, nav, sitemap, and wayfinding\",\"rewrite the empty-state text and tooltip labels\",\"add aria-labels and keyboard behavior to this component\",\"draft an architecture note explaining why we chose Postgres over DynamoDB\"]"
-  relations: "{\"boundary\":[{\"skill\":\"information-architecture\",\"reason\":\"information-architecture owns navigation and content structure; design-system-architecture owns tokens and component systems\"},{\"skill\":\"microcopy\",\"reason\":\"microcopy owns UI text patterns; design-system-architecture owns reusable component and token contracts\"},{\"skill\":\"a11y\",\"reason\":\"a11y verifies accessibility behavior; design-system-architecture embeds accessibility contracts into components\"},{\"skill\":\"layout-composition\",\"reason\":\"layout-composition owns page-specific responsive structure; design-system-architecture owns reusable component and token rules\"},{\"skill\":\"visual-design-foundations\",\"reason\":\"visual-design-foundations owns surface-level visual craft; design-system-architecture owns reusable system contracts\"},{\"skill\":\"interaction-patterns\",\"reason\":\"interaction-patterns owns selecting the right pattern for a task; design-system-architecture owns reusable component APIs once the pattern belongs in the system\"},{\"skill\":\"refactor\",\"reason\":\"refactor restructures code behavior-preservingly; design-system-architecture changes the UI system contract\"}],\"related\":[\"a11y\",\"microcopy\",\"information-architecture\",\"semantics\",\"layout-composition\",\"visual-design-foundations\",\"interaction-patterns\"],\"verify_with\":[\"a11y\",\"code-review\"]}"
+  relations: "{\"related\":[\"a11y\",\"microcopy\",\"information-architecture\",\"semantics\",\"layout-composition\",\"visual-design-foundations\",\"interaction-patterns\",\"refactor\"],\"verify_with\":[\"a11y\",\"code-review\"]}"
   portability: "{\"readiness\":\"scripted\",\"targets\":[\"skill-md\"]}"
   lifecycle: "{\"stale_after_days\":365,\"review_cadence\":\"quarterly\"}"
   structural_verdict: PASS
@@ -33,8 +33,7 @@ metadata:
   skill_graph_source_repo: "https://github.com/jacob-balslev/skill-graph"
   skill_graph_project: Skill Graph
   skill_graph_canonical_skill: skills/frontend-engineering/design-system-architecture/SKILL.md
-  skill_graph_export_description_projection: anti_examples+boundary
-  skill_graph_export_description_projection_truncated: "true"
+  skill_graph_export_description_projection: anti_examples
 ---
 
 # Design System Architecture
@@ -106,17 +105,10 @@ This skill ships a comprehension-eval artifact at [`examples/evals/design-system
 - rewrite the empty-state text and tooltip labels
 - add aria-labels and keyboard behavior to this component
 - draft an architecture note explaining why we chose Postgres over DynamoDB
-- Owned by `information-architecture`: navigation and content structure
-- Owned by `microcopy`: UI text patterns
-- Owned by `a11y`
-- Owned by `layout-composition`: page-specific responsive structure
-- Owned by `visual-design-foundations`: surface-level visual craft
-- Owned by `interaction-patterns`: selecting the right pattern for a task
-- Owned by `refactor`
 
 **Related skills**
 - Verify with: `a11y`, `code-review`
-- Related: `a11y`, `microcopy`, `information-architecture`, `semantics`, `layout-composition`, `visual-design-foundations`, `interaction-patterns`
+- Related: `a11y`, `microcopy`, `information-architecture`, `semantics`, `layout-composition`, `visual-design-foundations`, `interaction-patterns`, `refactor`
 
 **Keywords**
 - `design tokens`, `semantic tokens`, `component API`, `theming`, `component library`, `token taxonomy`, `design system migration`, `design system audit`, `component library audit`, `token drift`

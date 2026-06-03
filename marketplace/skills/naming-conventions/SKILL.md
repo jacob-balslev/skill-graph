@@ -13,7 +13,7 @@ metadata:
   keywords: "[\"naming\",\"naming convention\",\"name a file\",\"name a function\",\"name a variable\",\"name a type\",\"rename\",\"identifier\",\"kebab case\",\"camel case\"]"
   examples: "[\"what should I name this util that converts between order shapes?\",\"is `isValidUser` or `validateUser` the right name for this guard?\",\"this function is called `getThing` but it also writes to disk — rename it\",\"kebab-case or snake_case for a new database column?\",\"the type is called `Result` but it's specifically the order-pricing result — rename\",\"should I prefix this hook with `use` or just call it `subscribeOrders`?\",\"we have `User` and `UserAccount` and `AccountUser` — which means what?\",\"rename plan: this column was called `created` but it stores the ship date\"]"
   anti_examples: "[\"refactor this 200-line function into smaller pieces\",\"write a doc explaining our naming conventions\",\"review this PR's naming choices\",\"the variable named `userIsActive` is logging the wrong value\",\"scaffold a new skill that teaches naming conventions\"]"
-  relations: "{\"boundary\":[{\"skill\":\"refactor\",\"reason\":\"refactor reshapes existing code structure; naming-conventions decides what an artifact should be CALLED, before or independently of restructuring\"},{\"skill\":\"code-review\",\"reason\":\"code-review evaluates a diff holistically; naming-conventions is the focused naming-decision skill invoked during authoring\"},{\"skill\":\"debugging\",\"reason\":\"debugging chases observed wrong behaviour; naming-conventions catches names that LIE about their meaning before the bug ships\"}],\"related\":[\"refactor\"],\"verify_with\":[\"code-review\"]}"
+  relations: "{\"boundary\":[{\"skill\":\"refactor\",\"reason\":\"refactor reshapes existing code structure; naming-conventions decides what an artifact should be CALLED, before or independently of restructuring\"},{\"skill\":\"debugging\",\"reason\":\"debugging chases observed wrong behaviour; naming-conventions catches names that LIE about their meaning before the bug ships\"}],\"related\":[\"refactor\",\"code-review\"],\"verify_with\":[\"code-review\"]}"
   mental_model: "A name is a compact contract. It binds an artifact kind, a casing convention, a grammatical shape, and a behavior promise. Good naming starts by identifying the artifact type, choosing the casing that readers expect for that artifact, selecting words whose verbs and nouns match actual behavior, and then coordinating the rename so every reference carries the same meaning."
   purpose: "Prevents code and system artifacts from lying to future readers. Accurate names reduce debugging time, make APIs and data models easier to scan, and keep refactors honest because the name travels with every call site while comments explaining a bad name usually rot."
   boundary: "This skill decides what an artifact should be called. It does not restructure code, review a whole diff, write prose documentation about a convention, debug a runtime failure, or choose end-user UI copy. If the work changes structure, use refactor; if the work evaluates all PR risks, use code-review; if the behavior is already broken, use debugging."
@@ -167,12 +167,11 @@ Renaming is a small change that touches many places. Do all of them in one commi
 - the variable named `userIsActive` is logging the wrong value
 - scaffold a new skill that teaches naming conventions
 - Owned by `refactor`
-- Owned by `code-review`
 - Owned by `debugging`
 
 **Related skills**
 - Verify with: `code-review`
-- Related: `refactor`
+- Related: `refactor`, `code-review`
 
 **Concept**
 - Mental model: A name is a compact contract. It binds an artifact kind, a casing convention, a grammatical shape, and a behavior promise. Good naming starts by identifying the artifact type, choosing the casing that readers expect for that artifact, selecting words whose verbs and nouns match actual behavior, and then coordinating the rename so every reference carries the same meaning.

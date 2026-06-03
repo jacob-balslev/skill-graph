@@ -20,7 +20,7 @@ metadata:
   triggers: "[\"frontend architecture\",\"component boundaries\",\"folder structure\",\"state shape\",\"where should this code live\"]"
   examples: "[\"Decide whether a new modal lives in the shared component library or inside a feature folder\",\"Reorganize a frontend that has mixed presentational components and data-fetching components in the same files\",\"Choose a state shape that doesn't force every consumer to re-render on unrelated changes\"]"
   anti_examples: "[\"Pick the brand color palette for a marketing site\",\"Design the REST endpoint shape for the orders resource\",\"Decide whether to use CSS-in-JS or Tailwind\"]"
-  relations: "{\"related\":[\"design-system-architecture\",\"design-module-composition\",\"refactor\",\"testing-strategy\"],\"boundary\":[{\"skill\":\"design-system-architecture\",\"reason\":\"design-system-architecture covers token layering, primitive component contracts, and library publishing; this skill covers application-side organization that consumes those primitives.\"},{\"skill\":\"api-design\",\"reason\":\"API contract shape lives in api-design; this skill takes the API as given and structures the frontend around it.\"}]}"
+  relations: "{\"related\":[\"design-system-architecture\",\"design-module-composition\",\"refactor\",\"testing-strategy\",\"api-design\"],\"boundary\":[{\"skill\":\"design-system-architecture\",\"reason\":\"design-system-architecture covers token layering, primitive component contracts, and library publishing; this skill covers application-side organization that consumes those primitives.\"}]}"
   structural_verdict: PASS
   truth_verdict: PASS
   comprehension_verdict: UNVERIFIED
@@ -86,10 +86,9 @@ Server state and client state are different problems. Mixing them in a single st
 - Design the REST endpoint shape for the orders resource
 - Decide whether to use CSS-in-JS or Tailwind
 - Owned by `design-system-architecture`
-- Owned by `api-design`
 
 **Related skills**
-- Related: `design-system-architecture`, `design-module-composition`, `refactor`, `testing-strategy`
+- Related: `design-system-architecture`, `design-module-composition`, `refactor`, `testing-strategy`, `api-design`
 
 **Keywords**
 - `frontend architecture`, `component boundaries`, `module organization`, `state management shape`, `feature-sliced design`, `container presentational`, `data flow direction`, `shared primitives`, `component layering`, `frontend folder structure`

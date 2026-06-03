@@ -22,7 +22,7 @@ metadata:
   triggers: "[\"what should max pool size be\",\"PgBouncer transaction mode\",\"too many connections error\",\"connection exhaustion\",\"prepared statements not working with PgBouncer\"]"
   examples: "[\"size a connection pool for a workload with N application servers and M cores per database\",\"diagnose why a workload is bottlenecked on connections rather than query performance\",\"decide between PgBouncer session mode and transaction mode for an application\",\"explain why HikariCP recommends small pools instead of large ones\"]"
   anti_examples: "[\"tune a slow query (use query-optimization)\",\"design indexes (use indexing-strategy)\",\"route reads to a replica (use replication-patterns)\",\"design partitioning across shards (use sharding-strategy)\"]"
-  relations: "{\"related\":[\"query-optimization\",\"replication-patterns\",\"sharding-strategy\",\"transaction-isolation\"],\"boundary\":[{\"skill\":\"query-optimization\",\"reason\":\"query-optimization owns the cost of individual query work; this skill owns the cost of having a connection at all. A workload contending on connections has different symptoms than a workload contending on query work, and the diagnostic discipline differs.\"},{\"skill\":\"replication-patterns\",\"reason\":\"replication-patterns owns the routing of reads and writes across replicas; this skill owns the connection layer beneath that routing. They compose: a pooled architecture often pools to each replica separately.\"},{\"skill\":\"sharding-strategy\",\"reason\":\"sharding-strategy owns how data is partitioned across nodes; this skill owns how application connections to those nodes are pooled. A sharded architecture multiplies the pool-sizing surface — one pool per shard.\"},{\"skill\":\"transaction-isolation\",\"reason\":\"transaction-isolation owns the per-transaction concurrency-correctness contract; this skill owns the connection-level mechanics that determine whether a transaction's connection is held, released, or shared. PgBouncer's transaction mode in particular interacts with isolation level and session state.\"}],\"verify_with\":[\"query-optimization\",\"replication-patterns\"]}"
+  relations: "{\"related\":[\"query-optimization\",\"replication-patterns\",\"sharding-strategy\",\"transaction-isolation\"],\"boundary\":[{\"skill\":\"transaction-isolation\",\"reason\":\"transaction-isolation owns the per-transaction concurrency-correctness contract; this skill owns the connection-level mechanics that determine whether a transaction's connection is held, released, or shared. PgBouncer's transaction mode in particular interacts with isolation level and session state.\"}],\"verify_with\":[\"query-optimization\",\"replication-patterns\"]}"
   mental_model: "|"
   purpose: "|"
   boundary: "|"
@@ -155,9 +155,6 @@ After applying this skill, verify:
 - design indexes (use indexing-strategy)
 - route reads to a replica (use replication-patterns)
 - design partitioning across shards (use sharding-strategy)
-- Owned by `query-optimization`: the cost of individual query work
-- Owned by `replication-patterns`: the routing of reads and writes across replicas
-- Owned by `sharding-strategy`: how data is partitioned across nodes
 - Owned by `transaction-isolation`: the per-transaction concurrency-correctness contract
 
 **Related skills**

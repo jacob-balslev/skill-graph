@@ -21,7 +21,7 @@ metadata:
   triggers: "[\"is this secure\",\"where should validation happen\",\"authentication vs authorization\",\"what could go wrong here\",\"threat model\",\"OWASP\",\"do I need to check permissions here\"]"
   examples: "[\"audit a route handler for authn, authz, and input validation\",\"decide where to validate inbound data when the same shape comes in through multiple endpoints\",\"decide whether a piece of data is a secret, a credential, or non-sensitive — and what handling each requires\",\"produce a threat model for a new feature before any code is written\"]"
   anti_examples: "[\"implement HMAC verification for a Shopify webhook (use webhook-integration)\",\"configure a SAST scanner for the CI pipeline (use security-scanning)\",\"store an OAuth refresh token in an encrypted column (use credential-encryption)\",\"respond to a GDPR data-subject-access request (use gdpr-compliance)\",\"defend an LLM agent against prompt injection (use prompt-injection-defense)\"]"
-  relations: "{\"related\":[\"type-safety\",\"api-design\",\"http-semantics\",\"prompt-injection-defense\"],\"boundary\":[{\"skill\":\"type-safety\",\"reason\":\"type-safety provides compile-time guarantees about the SHAPE of data inside the program; security-fundamentals provides the runtime discipline that decides what to trust and what to validate at the system's TRUST BOUNDARIES. The two compose: validate at the boundary, then trust the type inside.\"},{\"skill\":\"api-design\",\"reason\":\"api-design owns the external surface contract (endpoints, methods, schemas); this skill owns the security properties any such surface must enforce regardless of design choices (authn, authz, input validation, rate limiting).\"},{\"skill\":\"prompt-injection-defense\",\"reason\":\"prompt-injection-defense owns the LLM-specific threat class where untrusted text is interpreted as instructions by a model; this skill owns the general security framing that prompt injection specializes from. Prompt injection is one row in the OWASP LLM Top 10; this skill covers the broader discipline.\"},{\"skill\":\"http-semantics\",\"reason\":\"http-semantics owns the protocol-level meaning of methods, status codes, and headers; this skill owns the security properties that protocol must enforce at every endpoint (authn, authz, rate limiting, validation). They compose: HTTP gives the protocol; this skill gives the security discipline applied to it.\"}],\"verify_with\":[\"type-safety\",\"api-design\"]}"
+  relations: "{\"related\":[\"type-safety\",\"api-design\",\"http-semantics\",\"prompt-injection-defense\"],\"boundary\":[{\"skill\":\"type-safety\",\"reason\":\"type-safety provides compile-time guarantees about the SHAPE of data inside the program; security-fundamentals provides the runtime discipline that decides what to trust and what to validate at the system's TRUST BOUNDARIES. The two compose: validate at the boundary, then trust the type inside.\"}],\"verify_with\":[\"type-safety\",\"api-design\"]}"
   mental_model: "|"
   purpose: "|"
   boundary: "|"
@@ -37,8 +37,7 @@ metadata:
   skill_graph_source_repo: "https://github.com/jacob-balslev/skill-graph"
   skill_graph_project: Skill Graph
   skill_graph_canonical_skill: skills/quality-assurance/security-fundamentals/SKILL.md
-  skill_graph_export_description_projection: anti_examples+boundary
-  skill_graph_export_description_projection_truncated: "true"
+  skill_graph_export_description_projection: anti_examples
 ---
 
 # Security Fundamentals
@@ -191,9 +190,6 @@ After applying this skill, verify:
 - respond to a GDPR data-subject-access request (use gdpr-compliance)
 - defend an LLM agent against prompt injection (use prompt-injection-defense)
 - Owned by `type-safety`
-- Owned by `api-design`: the external surface contract (endpoints, methods, schemas)
-- Owned by `prompt-injection-defense`: the LLM-specific threat class
-- Owned by `http-semantics`: the protocol-level meaning of methods, status codes, and headers
 
 **Related skills**
 - Verify with: `type-safety`, `api-design`

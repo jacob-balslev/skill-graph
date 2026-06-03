@@ -19,7 +19,7 @@ metadata:
   triggers: "[\"interview users\",\"user research plan\",\"what to ask users\",\"contextual inquiry\",\"diary study\"]"
   examples: "[\"Draft an interview guide for SMB founders adopting their first accounting software.\",\"How do I observe ICU nurses on shift without disturbing the workflow?\",\"Review my interview script for leading questions and solution-prompts.\",\"Plan a two-week diary study for commuters using public transit apps.\"]"
   anti_examples: "[\"Analyze last quarter's NPS results and produce a dashboard.\",\"Classify whether this agent request from the user is high-risk before executing.\",\"Set up an A/B test of two onboarding flows.\"]"
-  relations: "{\"related\":[\"problem-framing\",\"research-synthesis\",\"usability-testing\",\"design-thinking\"],\"boundary\":[{\"skill\":\"intent-recognition\",\"reason\":\"intent-recognition classifies an agent request's risk level at runtime from the agent's perspective. user-research investigates real human users' goals, contexts, and needs through fieldwork — these are entirely different practices that share only the word 'intent'.\"},{\"skill\":\"usability-testing\",\"reason\":\"usability-testing is evaluative — it watches users attempt tasks on an artifact to find usability defects. user-research is generative — it studies users before any artifact exists, to discover needs and context.\"}]}"
+  relations: "{\"related\":[\"problem-framing\",\"research-synthesis\",\"usability-testing\",\"design-thinking\",\"intent-recognition\"],\"boundary\":[{\"skill\":\"usability-testing\",\"reason\":\"usability-testing is evaluative — it watches users attempt tasks on an artifact to find usability defects. user-research is generative — it studies users before any artifact exists, to discover needs and context.\"}]}"
   structural_verdict: PASS
   truth_verdict: PASS
   comprehension_verdict: UNVERIFIED
@@ -84,11 +84,10 @@ The practice is grounded in a specific epistemological claim: people are unrelia
 - Analyze last quarter's NPS results and produce a dashboard.
 - Classify whether this agent request from the user is high-risk before executing.
 - Set up an A/B test of two onboarding flows.
-- Owned by `intent-recognition`
 - Owned by `usability-testing`
 
 **Related skills**
-- Related: `problem-framing`, `research-synthesis`, `usability-testing`, `design-thinking`
+- Related: `problem-framing`, `research-synthesis`, `usability-testing`, `design-thinking`, `intent-recognition`
 
 **Keywords**
 - `user interviews`, `contextual inquiry`, `ethnographic observation`, `diary study`, `generative research`, `qualitative research`, `interview guide`, `leading questions`, `master-apprentice model`, `in-context observation`

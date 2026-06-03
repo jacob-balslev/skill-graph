@@ -20,7 +20,7 @@ metadata:
   stability: experimental
   keywords: "[\"content monitor\",\"github trending\",\"blog monitor\",\"intelligence brief\",\"youtube monitor\",\"awesome list\",\"trend tracking\",\"content pipeline\",\"content-monitor\",\"rss feed\"]"
   triggers: "[\"content-monitor-skill\",\"research-mode\"]"
-  relations: "{\"boundary\":[\"keywords\",\"seo-strategy\"],\"verify_with\":[\"evaluation\"]}"
+  relations: "{\"verify_with\":[\"evaluation\"],\"related\":[\"keywords\",\"seo-strategy\"]}"
   portability: "{\"readiness\":\"scripted\",\"targets\":[\"skill-md\"]}"
   lifecycle: "{\"stale_after_days\":90,\"review_cadence\":\"quarterly\"}"
   structural_verdict: PASS
@@ -245,6 +245,7 @@ After modifying the content monitor pipeline, verify:
 
 **Related skills**
 - Verify with: `evaluation`
+- Related: `keywords`, `seo-strategy`
 
 **Keywords**
 - `content monitor`, `github trending`, `blog monitor`, `intelligence brief`, `youtube monitor`, `awesome list`, `trend tracking`, `content pipeline`, `content-monitor`, `rss feed`

@@ -21,7 +21,7 @@ metadata:
   triggers: "[\"is this database ACID\",\"what does consistency mean\",\"ACID vs BASE\",\"is my transaction atomic\",\"what's the durability guarantee\"]"
   examples: "[\"explain what ACID guarantees a database does and does not provide to the application\",\"decide whether ACID or BASE is the right model for a new system\",\"diagnose a data-loss incident — likely a durability or atomicity failure\",\"explain why the 'C' in ACID is not the same as application consistency\"]"
   anti_examples: "[\"choose an isolation level for a workload (use transaction-isolation)\",\"reason about availability vs consistency in a distributed system (use cap-theorem-tradeoffs)\",\"design a database schema (use data-modeling)\"]"
-  relations: "{\"related\":[\"transaction-isolation\",\"cap-theorem-tradeoffs\",\"data-modeling\",\"replication-patterns\"],\"boundary\":[{\"skill\":\"transaction-isolation\",\"reason\":\"transaction-isolation owns the choice and semantics of isolation levels (read uncommitted, read committed, repeatable read, serializable, snapshot) — the 'I' of ACID specifically as a tunable. This skill owns ACID as the four-property foundational frame; transaction-isolation owns one of the four in operational depth.\"},{\"skill\":\"cap-theorem-tradeoffs\",\"reason\":\"cap-theorem-tradeoffs owns the distributed-systems frame (consistency, availability, partition tolerance) which uses 'consistency' in a different sense than the C in ACID. This skill owns the single-system transactional frame; cap-theorem-tradeoffs owns the distributed frame; conflating them is the most common misconception in this space.\"},{\"skill\":\"data-modeling\",\"reason\":\"data-modeling owns schema design and entity structure; this skill owns the transactional-guarantee semantics that any data model relies on at runtime.\"},{\"skill\":\"replication-patterns\",\"reason\":\"replication-patterns owns the patterns for keeping multiple replicas in agreement; this skill owns the single-node transactional model from which distributed replication is a generalization (and often a relaxation of).\"}],\"verify_with\":[\"transaction-isolation\",\"cap-theorem-tradeoffs\"]}"
+  relations: "{\"related\":[\"transaction-isolation\",\"cap-theorem-tradeoffs\",\"data-modeling\",\"replication-patterns\"],\"boundary\":[{\"skill\":\"transaction-isolation\",\"reason\":\"transaction-isolation owns the choice and semantics of isolation levels (read uncommitted, read committed, repeatable read, serializable, snapshot) — the 'I' of ACID specifically as a tunable. This skill owns ACID as the four-property foundational frame; transaction-isolation owns one of the four in operational depth.\"}],\"verify_with\":[\"transaction-isolation\",\"cap-theorem-tradeoffs\"]}"
   mental_model: "|"
   purpose: "|"
   boundary: "|"
@@ -37,8 +37,7 @@ metadata:
   skill_graph_source_repo: "https://github.com/jacob-balslev/skill-graph"
   skill_graph_project: Skill Graph
   skill_graph_canonical_skill: skills/backend-engineering/acid-fundamentals/SKILL.md
-  skill_graph_export_description_projection: anti_examples+boundary
-  skill_graph_export_description_projection_truncated: "true"
+  skill_graph_export_description_projection: anti_examples
 ---
 
 # ACID Fundamentals
@@ -156,9 +155,6 @@ After applying this skill, verify:
 - reason about availability vs consistency in a distributed system (use cap-theorem-tradeoffs)
 - design a database schema (use data-modeling)
 - Owned by `transaction-isolation`
-- Owned by `cap-theorem-tradeoffs`
-- Owned by `data-modeling`: schema design and entity structure
-- Owned by `replication-patterns`: the patterns for keeping multiple replicas in agreement
 
 **Related skills**
 - Verify with: `transaction-isolation`, `cap-theorem-tradeoffs`

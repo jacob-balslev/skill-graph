@@ -1,6 +1,6 @@
 ---
 name: debugging
-description: "Use when behavior is broken, a test is failing, or runtime output contradicts expectations. Covers failure reproduction, scope reduction by bisection, evidence capture at the moment of failure, root-cause isolation (not symptom patching), fix verification against the same evidence path, and regression-test creation. Do NOT use for feature planning, architectural design, or behavior-preserving refactor. Do NOT use for plan test coverage for a new feature. Do NOT use for document what this function does for future readers. Do NOT use for refactor this messy code while the test suite is green. Do NOT use for the model-emits-typed-UI-spec pattern for writing documentation or explanatory content (use generative-ui). Do NOT use for writing test cases first as part of the spec-then-implement loop on green code (use test-driven-development)."
+description: "Use when behavior is broken, a test is failing, or runtime output contradicts expectations. Covers failure reproduction, scope reduction by bisection, evidence capture at the moment of failure, root-cause isolation (not symptom patching), fix verification against the same evidence path, and regression-test creation. Do NOT use for feature planning, architectural design, or behavior-preserving refactor. Do NOT use for plan test coverage for a new feature. Do NOT use for document what this function does for future readers. Do NOT use for refactor this messy code while the test suite is green."
 license: MIT
 compatibility: "Markdown, Git, any codebase"
 allowed-tools: Read Grep Bash
@@ -21,7 +21,7 @@ metadata:
   triggers: "[\"debugging-skill\"]"
   examples: "[\"my tests pass locally but fail in CI — why?\",\"this function used to work yesterday; what changed?\",\"reproduce this Stripe webhook failure from production logs\",\"I see the symptom but can't find the root cause of this nil panic\"]"
   anti_examples: "[\"plan test coverage for a new feature\",\"document what this function does for future readers\",\"refactor this messy code while the test suite is green\"]"
-  relations: "{\"boundary\":[{\"skill\":\"testing-strategy\",\"reason\":\"testing-strategy plans what to test before a failure exists; debugging chases a specific observed failure\"},{\"skill\":\"refactor\",\"reason\":\"refactor is behavior-preserving code change with green tests; debugging is invoked because tests or behavior are NOT green\"},{\"skill\":\"generative-ui\",\"reason\":\"generative-ui owns the model-emits-typed-UI-spec pattern for writing documentation or explanatory content; debugging owns chasing observed runtime failures, not writing documentation about functions\"},{\"skill\":\"test-driven-development\",\"reason\":\"test-driven-development owns writing test cases first as part of the spec-then-implement loop on green code; debugging owns chasing a specific observed failure on broken code — TDD operates pre-failure, debugging operates post-failure\"}],\"verify_with\":[\"testing-strategy\"]}"
+  relations: "{\"boundary\":[{\"skill\":\"refactor\",\"reason\":\"refactor is behavior-preserving code change with green tests; debugging is invoked because tests or behavior are NOT green\"}],\"verify_with\":[\"testing-strategy\"],\"related\":[\"testing-strategy\",\"generative-ui\",\"test-driven-development\"]}"
   portability: "{\"readiness\":\"scripted\",\"targets\":[\"skill-md\"]}"
   structural_verdict: PASS
   truth_verdict: PASS
@@ -32,7 +32,7 @@ metadata:
   skill_graph_source_repo: "https://github.com/jacob-balslev/skill-graph"
   skill_graph_project: Skill Graph
   skill_graph_canonical_skill: skills/software-engineering-method/debugging/SKILL.md
-  skill_graph_export_description_projection: anti_examples+boundary
+  skill_graph_export_description_projection: anti_examples
 ---
 
 # Debugging
@@ -108,13 +108,11 @@ This skill ships a comprehension-eval artifact at [`examples/evals/debugging.jso
 - plan test coverage for a new feature
 - document what this function does for future readers
 - refactor this messy code while the test suite is green
-- Owned by `testing-strategy`
 - Owned by `refactor`
-- Owned by `generative-ui`: the model-emits-typed-UI-spec pattern for writing documentation or explanatory content
-- Owned by `test-driven-development`: writing test cases first as part of the spec-then-implement loop on green code
 
 **Related skills**
 - Verify with: `testing-strategy`
+- Related: `testing-strategy`, `generative-ui`, `test-driven-development`
 
 **Keywords**
 - `debugging`, `reproduce failure`, `reproduce bug`, `failing test`, `root cause`, `symptom vs cause`, `minimum reproduction`, `bisect`, `what caused it`, `my tests are failing`, `what changed`, `regression`, `used to work`, `what broke`

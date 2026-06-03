@@ -21,7 +21,7 @@ metadata:
   triggers: "[\"problem-approach-router\",\"methodology-router\",\"approach-router\"]"
   examples: "[\"I have a completely novel problem nobody has solved before — where do I start?\",\"the codebase has a recurring bug pattern — which foundational approach should I use?\",\"I need to explain a complex system to a stakeholder — which skill applies?\",\"I'm blocked by conflicting requirements that all seem equally valid — which approach first?\",\"the task feels overwhelming because there are too many parts — what's the right starting lens?\",\"a user is asking me to solve something I know a similar solution for but the details differ\",\"I don't know what I don't know about this problem — which foundational skill handles that?\"]"
   anti_examples: "[\"actually apply first-principles thinking to this specific problem\",\"analyze why this pattern keeps recurring in the codebase\",\"break down the constraints on this engineering decision\",\"map the mental model for this domain concept\",\"implement the algorithm we already decided on\",\"choose a testing strategy for this feature\"]"
-  relations: "{\"boundary\":[{\"skill\":\"first-principles-thinking\",\"reason\":\"first-principles-thinking executes the approach for novel, assumption-heavy problems; problem-approach-router routes to it — the router does not apply the method itself\"},{\"skill\":\"pattern-recognition\",\"reason\":\"pattern-recognition executes the approach for recurring or familiar problem shapes; problem-approach-router routes to it — the router does not apply the method itself\"},{\"skill\":\"mental-models\",\"reason\":\"mental-models executes the approach for system-understanding and explanation problems; problem-approach-router routes to it — the router does not apply the method itself\"},{\"skill\":\"constraint-awareness\",\"reason\":\"constraint-awareness executes the approach for constraint-dominated problems; problem-approach-router routes to it — the router does not apply the method itself\"},{\"skill\":\"task-analysis\",\"reason\":\"task-analysis executes the approach for workflow and user-goal decomposition problems; problem-approach-router routes to it — the router does not apply the method itself\"}],\"related\":[\"epistemic-grounding\",\"taxonomy-design\"]}"
+  relations: "{\"related\":[\"epistemic-grounding\",\"taxonomy-design\",\"first-principles-thinking\",\"pattern-recognition\",\"mental-models\",\"constraint-awareness\",\"task-analysis\"]}"
   portability: "{\"readiness\":\"scripted\",\"targets\":[\"skill-md\"]}"
   lifecycle: "{\"stale_after_days\":365,\"review_cadence\":\"quarterly\"}"
   structural_verdict: PASS
@@ -100,14 +100,9 @@ When a problem matches more than one row simultaneously (e.g., it is both novel 
 - map the mental model for this domain concept
 - implement the algorithm we already decided on
 - choose a testing strategy for this feature
-- Owned by `first-principles-thinking`
-- Owned by `pattern-recognition`
-- Owned by `mental-models`
-- Owned by `constraint-awareness`
-- Owned by `task-analysis`
 
 **Related skills**
-- Related: `epistemic-grounding`, `taxonomy-design`
+- Related: `epistemic-grounding`, `taxonomy-design`, `first-principles-thinking`, `pattern-recognition`, `mental-models`, `constraint-awareness`, `task-analysis`
 
 **Keywords**
 - `which approach`, `which methodology`, `problem-solving method`, `select methodology`, `which skill first`, `approach selection`, `methodology dispatch`, `method router`, `first principles vs pattern`, `how to approach this problem`

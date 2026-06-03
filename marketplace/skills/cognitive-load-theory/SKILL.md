@@ -12,7 +12,7 @@ metadata:
   stability: experimental
   keywords: "[\"cognitive load theory\",\"working memory\",\"intrinsic load\",\"extraneous load\",\"germane load\",\"chunking\",\"segmentation\",\"element interactivity\",\"expertise reversal\",\"prompt design\"]"
   triggers: "[\"cognitive-load-skill\",\"working-memory-skill\",\"clt-skill\"]"
-  relations: "{\"boundary\":[{\"skill\":\"context-management\",\"reason\":\"cognitive-load-theory owns load diagnosis in authored or presented material; context-management owns which evidence enters, stays in, or leaves an active session working set\"},{\"skill\":\"context-window\",\"reason\":\"cognitive-load-theory may use working-memory analogies, but context-window owns quantitative token capacity, zone budgets, and compaction timing\"},{\"skill\":\"prompt-craft\",\"reason\":\"cognitive-load-theory owns load taxonomy, segmentation rationale, and schema-building checks; prompt-craft owns provider-specific prompt wording, roles, examples, structured-output prompting, and prompt-injection tactics\"},{\"skill\":\"compression\",\"reason\":\"cognitive-load-theory owns extraneous-load diagnosis; compression owns token-efficient representation, payload compression, semantic summarization, and token pruning mechanics\"}],\"related\":[\"context-management\",\"context-window\",\"compression\",\"prompt-craft\",\"information-architecture\",\"layout-composition\",\"visual-hierarchy\",\"microcopy\",\"writing-humanizer\",\"summarization\",\"best-practice\",\"guardrails\"],\"verify_with\":[\"best-practice\",\"information-architecture\",\"prompt-craft\"]}"
+  relations: "{\"related\":[\"context-management\",\"context-window\",\"compression\",\"prompt-craft\",\"information-architecture\",\"layout-composition\",\"visual-hierarchy\",\"microcopy\",\"writing-humanizer\",\"summarization\",\"best-practice\",\"guardrails\"],\"verify_with\":[\"best-practice\",\"information-architecture\",\"prompt-craft\"]}"
   mental_model: "Working memory is a small workspace with roughly four independent chunks available at once, and expertise changes what counts as one chunk. Cognitive Load Theory asks whether the material's element interactivity is intrinsic to the task, imposed by presentation (extraneous), or productive schema-building work (germane). Good design sequences unavoidable intrinsic load, eliminates extraneous load, and frees capacity so the learner can devote germane processing to schema construction through examples, self-explanation, contrast, and practice."
   purpose: "This skill prevents agents from treating 'simplify' as 'make shorter.' It gives a precise review lens for skill bodies, prompts, docs, dashboards, and agent outputs: identify which kind of load each section creates, remove only unnecessary presentation burden, keep worked examples and structure that build schemas, and verify that newer model/tool features did not merely hide the load in a different layer."
   boundary: "This skill diagnoses cognitive load in authored or presented material. It is not source selection, session-state pruning, token-budget accounting, compaction timing, prompt phrasing craft, plain-language editing, token compression, or general pedagogy beyond the cognitive-load mechanisms named here."
@@ -536,12 +536,6 @@ The canonical sibling `references/sweller-1988.md` remains the local source trai
 
 **When to use**
 - Triggers: `cognitive-load-skill`, `working-memory-skill`, `clt-skill`
-
-**Not for**
-- Owned by `context-management`: load diagnosis in authored or presented material
-- Owned by `context-window`
-- Owned by `prompt-craft`: load taxonomy, segmentation rationale, and schema-building checks
-- Owned by `compression`: extraneous-load diagnosis
 
 **Related skills**
 - Verify with: `best-practice`, `information-architecture`, `prompt-craft`

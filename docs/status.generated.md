@@ -1,6 +1,6 @@
 # Skill Graph — Generated Status
 
-> **Generated:** 2026-06-03T18:55:42.010Z
+> **Generated:** 2026-06-03T22:03:35.754Z
 > **Generator:** `node scripts/build-status-doc.js` (regenerate; never hand-edit)
 >
 > This file is the single-source-of-truth status snapshot for the project's
@@ -23,11 +23,11 @@
 
 | Check | Status | Duration | Last line |
 |---|---|---|---|
-| check-markdown-links | ✅ PASS | 318 ms | OK   markdown links (1438 file(s)) |
-| check-protocol-consistency | ✅ PASS | 124 ms | PASS: all protocol consistency checks passed. 0 warning(s). |
-| check-doc-drift | ✅ PASS | 108 ms | OK   doc drift sentinel: 69 active doc(s) scanned against schema v8 |
-| check-mirror-freeze | ✅ PASS | 51 ms | OK   mirror freeze: 20 file(s) scanned across 2 mirror(s); no active-source/package claims found. |
-| marketplace-export-check | ✅ PASS | 202 ms | PROJECTION TRUNCATED for writing-humanizer: tail truncated from 652 to 465 chars to fit 1024 limit |
+| check-markdown-links | ✅ PASS | 282 ms | OK   markdown links (1439 file(s)) |
+| check-protocol-consistency | ✅ PASS | 116 ms | PASS: all protocol consistency checks passed. 0 warning(s). |
+| check-doc-drift | ✅ PASS | 107 ms | OK   doc drift sentinel: 70 active doc(s) scanned against schema v8 |
+| check-mirror-freeze | ✅ PASS | 47 ms | OK   mirror freeze: 20 file(s) scanned across 2 mirror(s); no active-source/package claims found. |
+| marketplace-export-check | ✅ PASS | 162 ms | PROJECTION TRUNCATED for writing-humanizer: tail truncated from 503 to 465 chars to fit 1024 limit |
 
 ## Audit Health
 

@@ -1,6 +1,6 @@
 ---
 name: api-design
-description: "Use when designing or reviewing API surfaces: resources/actions, request and response schemas, status codes, pagination, filtering, idempotency, versioning, auth boundaries, and error envelopes. Do NOT use for non-HTTP system contracts (use `system-interface-contracts`), async event contracts (use `event-contract-design`), database design (use `data-modeling`), or inbound provider webhook mechanics (use `webhook-integration`). Do NOT use for define the broader contract between a job, service, and dashboard. Do NOT use for design database tables, foreign keys, and views. Do NOT use for implement provider webhook signature verification and retry behavior. Do NOT use for debug why this endpoint is returning 500. Do NOT use for interface contracts across any boundary (use system-interface-contracts). Do NOT use for asynchronous event and message contracts (use event-contract-design). Do NOT use for persistence shape (use data-modeling). Do NOT use for inbound provider webhooks (use webhook-integration)."
+description: "Use when designing or reviewing API surfaces: resources/actions, request and response schemas, status codes, pagination, filtering, idempotency, versioning, auth boundaries, and error envelopes. Do NOT use for non-HTTP system contracts (use `system-interface-contracts`), async event contracts (use `event-contract-design`), database design (use `data-modeling`), or inbound provider webhook mechanics (use `webhook-integration`). Do NOT use for define the broader contract between a job, service, and dashboard. Do NOT use for design database tables, foreign keys, and views. Do NOT use for implement provider webhook signature verification and retry behavior. Do NOT use for debug why this endpoint is returning 500. Do NOT use for inbound provider webhooks (use webhook-integration)."
 license: MIT
 compatibility: "Portable API design guidance for REST-like HTTP APIs, route handlers, internal APIs, and documented JSON contracts."
 allowed-tools: Read Grep
@@ -20,7 +20,7 @@ metadata:
   keywords: "[\"API design\",\"REST API\",\"endpoint design\",\"request response schema\",\"status codes\",\"pagination\",\"filtering\",\"idempotency\",\"API versioning\",\"error envelope\"]"
   examples: "[\"design the API for listing orders with filters, pagination, and stable errors\",\"review this route contract before frontend and backend implement it separately\",\"should this operation be a resource update, an action endpoint, or an async job?\",\"define API versioning and idempotency for this create endpoint\"]"
   anti_examples: "[\"define the broader contract between a job, service, and dashboard\",\"design database tables, foreign keys, and views\",\"implement provider webhook signature verification and retry behavior\",\"debug why this endpoint is returning 500\"]"
-  relations: "{\"boundary\":[{\"skill\":\"system-interface-contracts\",\"reason\":\"system-interface-contracts owns interface contracts across any boundary; api-design owns API endpoint shape and HTTP semantics\"},{\"skill\":\"event-contract-design\",\"reason\":\"event-contract-design owns asynchronous event and message contracts; api-design owns HTTP request/response surfaces\"},{\"skill\":\"data-modeling\",\"reason\":\"data-modeling owns persistence shape; api-design owns external representation and operation shape\"},{\"skill\":\"webhook-integration\",\"reason\":\"webhook-integration owns inbound provider webhooks; api-design owns APIs the system exposes or calls by contract\"},{\"skill\":\"debugging\",\"reason\":\"debugging owns known endpoint failures; api-design owns pre-implementation surface design\"}],\"related\":[\"system-interface-contracts\",\"data-modeling\",\"testing-strategy\",\"webhook-integration\",\"event-contract-design\"],\"verify_with\":[\"testing-strategy\",\"code-review\"]}"
+  relations: "{\"boundary\":[{\"skill\":\"webhook-integration\",\"reason\":\"webhook-integration owns inbound provider webhooks; api-design owns APIs the system exposes or calls by contract\"}],\"related\":[\"system-interface-contracts\",\"data-modeling\",\"testing-strategy\",\"webhook-integration\",\"event-contract-design\",\"debugging\"],\"verify_with\":[\"testing-strategy\",\"code-review\"]}"
   portability: "{\"readiness\":\"scripted\",\"targets\":[\"skill-md\"]}"
   lifecycle: "{\"stale_after_days\":365,\"review_cadence\":\"quarterly\"}"
   structural_verdict: PASS
@@ -33,7 +33,6 @@ metadata:
   skill_graph_project: Skill Graph
   skill_graph_canonical_skill: skills/backend-engineering/api-design/SKILL.md
   skill_graph_export_description_projection: anti_examples+boundary
-  skill_graph_export_description_projection_truncated: "true"
 ---
 
 # API Design
@@ -103,15 +102,11 @@ This skill ships a comprehension-eval artifact at [`examples/evals/api-design.js
 - design database tables, foreign keys, and views
 - implement provider webhook signature verification and retry behavior
 - debug why this endpoint is returning 500
-- Owned by `system-interface-contracts`: interface contracts across any boundary
-- Owned by `event-contract-design`: asynchronous event and message contracts
-- Owned by `data-modeling`: persistence shape
 - Owned by `webhook-integration`: inbound provider webhooks
-- Owned by `debugging`: known endpoint failures
 
 **Related skills**
 - Verify with: `testing-strategy`, `code-review`
-- Related: `system-interface-contracts`, `data-modeling`, `testing-strategy`, `webhook-integration`, `event-contract-design`
+- Related: `system-interface-contracts`, `data-modeling`, `testing-strategy`, `webhook-integration`, `event-contract-design`, `debugging`
 
 **Keywords**
 - `API design`, `REST API`, `endpoint design`, `request response schema`, `status codes`, `pagination`, `filtering`, `idempotency`, `API versioning`, `error envelope`

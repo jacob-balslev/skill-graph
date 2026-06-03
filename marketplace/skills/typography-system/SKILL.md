@@ -19,7 +19,7 @@ metadata:
   triggers: "[\"typography system\",\"type scale\",\"font pairing\",\"variable fonts\",\"vertical rhythm\"]"
   examples: "[\"Build a type scale with seven steps using a 1.25 ratio and assign each step to a semantic token (display, h1, body, caption)\",\"Pair a serif display face with a sans-serif text face and document when to use each\",\"Self-host a variable font with WOFF2 subsetting and font-display: swap\"]"
   anti_examples: "[\"Write the headline copy for the landing page\",\"Pick the brand's primary color\",\"Decide where the headline component lives in the folder structure\"]"
-  relations: "{\"related\":[\"visual-hierarchy\",\"visual-design-foundations\",\"theme-system-design\",\"layout-composition\"],\"boundary\":[{\"skill\":\"visual-hierarchy\",\"reason\":\"visual-hierarchy decides how to deploy type as an ordering signal on a given surface; this skill defines the scale and faces that get deployed.\"},{\"skill\":\"theme-system-design\",\"reason\":\"theme-system-design covers how typography tokens are layered and switched; this skill produces the typographic decisions inside them.\"}]}"
+  relations: "{\"related\":[\"visual-hierarchy\",\"visual-design-foundations\",\"theme-system-design\",\"layout-composition\"],\"boundary\":[{\"skill\":\"visual-hierarchy\",\"reason\":\"visual-hierarchy decides how to deploy type as an ordering signal on a given surface; this skill defines the scale and faces that get deployed.\"}]}"
   structural_verdict: PASS
   truth_verdict: PASS
   comprehension_verdict: UNVERIFIED
@@ -84,7 +84,6 @@ Typography is the densest carrier of brand. A wordmark, a heading face, and a bo
 - Pick the brand's primary color
 - Decide where the headline component lives in the folder structure
 - Owned by `visual-hierarchy`
-- Owned by `theme-system-design`
 
 **Related skills**
 - Related: `visual-hierarchy`, `visual-design-foundations`, `theme-system-design`, `layout-composition`

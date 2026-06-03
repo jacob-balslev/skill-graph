@@ -1,6 +1,6 @@
 ---
 name: rendering-models
-description: "Use when reasoning about how a web UI is produced and delivered: client-side rendering, server-side rendering, static-site generation, incremental static regeneration, React Server Components, streaming SSR, edge rendering, and partial prerendering. Covers the time × place grid (build/request/stream/interaction × server/edge/client), the trade-offs between first-paint latency and time-to-interactive, the relationship between rendering and hydration, and how a route's content profile (dynamic / static / personalized) maps to a model. Do NOT use for organizing the frontend codebase (use frontend-architecture), the serialization frontier between server and client code (use client-server-boundary), the wire protocol itself (use http-semantics), or specific deploy-platform composition patterns (use vercel-composition-patterns). Do NOT use for measurement, profiling, and optimization across the stack (use performance-engineering)."
+description: "Use when reasoning about how a web UI is produced and delivered: client-side rendering, server-side rendering, static-site generation, incremental static regeneration, React Server Components, streaming SSR, edge rendering, and partial prerendering. Covers the time × place grid (build/request/stream/interaction × server/edge/client), the trade-offs between first-paint latency and time-to-interactive, the relationship between rendering and hydration, and how a route's content profile (dynamic / static / personalized) maps to a model. Do NOT use for organizing the frontend codebase (use frontend-architecture), the serialization frontier between server and client code (use client-server-boundary), the wire protocol itself (use http-semantics), or specific deploy-platform composition patterns (use vercel-composition-patterns)."
 license: MIT
 allowed-tools: Read Grep
 metadata:
@@ -21,7 +21,7 @@ metadata:
   triggers: "[\"should this page be server-rendered\",\"static or dynamic\",\"what's the difference between SSR and RSC\",\"why is this page slow to first paint\",\"should this be a client component\"]"
   examples: "[\"decide whether a product page should be SSG with revalidation or SSR\",\"explain why a marketing page is fast but a dashboard is slow despite both 'server rendering'\",\"choose between streaming SSR and a loading skeleton\",\"diagnose why a server component re-renders on every navigation\"]"
   anti_examples: "[\"organize the folder structure of a frontend codebase (use frontend-architecture)\",\"decide what types can cross the network boundary (use client-server-boundary)\",\"design HTTP cache headers (use http-semantics)\"]"
-  relations: "{\"related\":[\"frontend-architecture\",\"client-server-boundary\",\"http-semantics\",\"performance-engineering\",\"vercel-composition-patterns\"],\"boundary\":[{\"skill\":\"frontend-architecture\",\"reason\":\"frontend-architecture owns how the codebase is organized; rendering-models owns where and when the UI is produced. A route's architecture and its rendering model are independent decisions.\"},{\"skill\":\"client-server-boundary\",\"reason\":\"client-server-boundary owns the serialization frontier (what can cross between server and client code). rendering-models owns the staging of work across build/request/stream/interaction.\"},{\"skill\":\"http-semantics\",\"reason\":\"http-semantics owns the wire protocol (caching headers, status codes, content negotiation). rendering-models is upstream — it decides what HTML and JS exist; http-semantics decides how they are delivered and cached.\"},{\"skill\":\"performance-engineering\",\"reason\":\"performance-engineering owns measurement, profiling, and optimization across the stack. rendering-models is one input — the choice of model bounds what performance numbers are achievable on a given route.\"}],\"verify_with\":[\"performance-engineering\",\"frontend-architecture\"]}"
+  relations: "{\"related\":[\"frontend-architecture\",\"client-server-boundary\",\"http-semantics\",\"performance-engineering\",\"vercel-composition-patterns\"],\"boundary\":[{\"skill\":\"frontend-architecture\",\"reason\":\"frontend-architecture owns how the codebase is organized; rendering-models owns where and when the UI is produced. A route's architecture and its rendering model are independent decisions.\"},{\"skill\":\"client-server-boundary\",\"reason\":\"client-server-boundary owns the serialization frontier (what can cross between server and client code). rendering-models owns the staging of work across build/request/stream/interaction.\"}],\"verify_with\":[\"performance-engineering\",\"frontend-architecture\"]}"
   mental_model: "|"
   purpose: "|"
   boundary: "|"
@@ -37,7 +37,6 @@ metadata:
   skill_graph_source_repo: "https://github.com/jacob-balslev/skill-graph"
   skill_graph_project: Skill Graph
   skill_graph_canonical_skill: skills/frontend-engineering/rendering-models/SKILL.md
-  skill_graph_export_description_projection: boundary
 ---
 
 # Rendering Models
@@ -192,8 +191,6 @@ After applying this skill, verify:
 - design HTTP cache headers (use http-semantics)
 - Owned by `frontend-architecture`: how the codebase is organized
 - Owned by `client-server-boundary`: the serialization frontier (what can cross between server and client code)
-- Owned by `http-semantics`: the wire protocol (caching headers, status codes, content negotiation)
-- Owned by `performance-engineering`: measurement, profiling, and optimization across the stack
 
 **Related skills**
 - Verify with: `performance-engineering`, `frontend-architecture`

@@ -13,7 +13,7 @@ metadata:
   keywords: "[\"ADR\",\"architecture decision record\",\"decision log\",\"technical decision\",\"decision consequences\",\"options rejected\",\"superseded ADR\",\"architectural rationale\",\"decision status\"]"
   examples: "[\"write an ADR for choosing Postgres views as the source of truth\",\"review this architecture decision record for missing consequences and rejected options\",\"this decision changed - should we amend the ADR or supersede it?\",\"extract the decision from this long architecture discussion into a durable ADR\"]"
   anti_examples: "[\"write a general README section explaining how this module works\",\"choose which framework we should use for this project\",\"review this PR for bugs and regressions\",\"design the interface contract between these two services\"]"
-  relations: "{\"boundary\":[{\"skill\":\"framework-fit-analysis\",\"reason\":\"framework-fit-analysis evaluates options before selection; architecture-decision-records records the selected option and tradeoffs\"},{\"skill\":\"code-review\",\"reason\":\"code-review evaluates a diff; architecture-decision-records evaluates the decision record\"},{\"skill\":\"system-interface-contracts\",\"reason\":\"system-interface-contracts designs boundaries and contracts; architecture-decision-records records the decision to adopt one\"}],\"related\":[\"framework-fit-analysis\",\"bounded-context-mapping\",\"system-interface-contracts\",\"dependency-architecture\"],\"verify_with\":[\"code-review\"]}"
+  relations: "{\"boundary\":[{\"skill\":\"framework-fit-analysis\",\"reason\":\"framework-fit-analysis evaluates options before selection; architecture-decision-records records the selected option and tradeoffs\"},{\"skill\":\"system-interface-contracts\",\"reason\":\"system-interface-contracts designs boundaries and contracts; architecture-decision-records records the decision to adopt one\"}],\"related\":[\"framework-fit-analysis\",\"bounded-context-mapping\",\"system-interface-contracts\",\"dependency-architecture\",\"code-review\"],\"verify_with\":[\"code-review\"]}"
   skill_graph_source_repo: "https://github.com/jacob-balslev/skill-graph"
   skill_graph_project: Skill Graph
   skill_graph_canonical_skill: skills/software-architecture/architecture-decision-records/SKILL.md
@@ -94,12 +94,11 @@ Good ADRs are short, dated, statused, and honest about consequences. If a future
 - review this PR for bugs and regressions
 - design the interface contract between these two services
 - Owned by `framework-fit-analysis`
-- Owned by `code-review`
 - Owned by `system-interface-contracts`
 
 **Related skills**
 - Verify with: `code-review`
-- Related: `framework-fit-analysis`, `bounded-context-mapping`, `system-interface-contracts`, `dependency-architecture`
+- Related: `framework-fit-analysis`, `bounded-context-mapping`, `system-interface-contracts`, `dependency-architecture`, `code-review`
 
 **Keywords**
 - `ADR`, `architecture decision record`, `decision log`, `technical decision`, `decision consequences`, `options rejected`, `superseded ADR`, `architectural rationale`, `decision status`

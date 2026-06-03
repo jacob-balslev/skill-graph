@@ -21,7 +21,7 @@ metadata:
   triggers: "[\"this query is slow\",\"EXPLAIN ANALYZE output\",\"why isn't the planner using the index\",\"join order optimization\",\"subquery vs join\"]"
   examples: "[\"diagnose a query that takes 8 seconds and identify the plan node responsible\",\"rewrite a slow correlated subquery as a join to enable a faster plan\",\"explain why ANALYZE on a recently-changed table can change the planner's decisions\",\"decide whether to add an index, rewrite the query, or accept the cost\"]"
   anti_examples: "[\"design which indexes to maintain on a new schema (use indexing-strategy)\",\"choose a database schema (use data-modeling)\",\"decide isolation level for a workload (use transaction-isolation)\"]"
-  relations: "{\"related\":[\"indexing-strategy\",\"data-modeling\",\"transaction-isolation\",\"schema-evolution\"],\"boundary\":[{\"skill\":\"indexing-strategy\",\"reason\":\"indexing-strategy owns the design of which indexes the database has; this skill owns the diagnosis and tuning of specific slow queries. The two compose: query-optimization diagnoses; indexing-strategy is one of the response tools.\"},{\"skill\":\"data-modeling\",\"reason\":\"data-modeling owns schema and access-pattern design; this skill owns the tuning of queries against the existing schema. Sometimes the diagnosis is 'the schema is wrong for this query'; the response is then in data-modeling's scope.\"},{\"skill\":\"transaction-isolation\",\"reason\":\"transaction-isolation owns concurrency correctness; this skill owns single-query performance. Sometimes a slow query is slow because of lock contention from isolation; the disciplines intersect on those cases.\"}],\"verify_with\":[\"indexing-strategy\",\"data-modeling\"]}"
+  relations: "{\"related\":[\"indexing-strategy\",\"data-modeling\",\"transaction-isolation\",\"schema-evolution\"],\"boundary\":[{\"skill\":\"indexing-strategy\",\"reason\":\"indexing-strategy owns the design of which indexes the database has; this skill owns the diagnosis and tuning of specific slow queries. The two compose: query-optimization diagnoses; indexing-strategy is one of the response tools.\"}],\"verify_with\":[\"indexing-strategy\",\"data-modeling\"]}"
   mental_model: "|"
   purpose: "|"
   boundary: "|"
@@ -192,8 +192,6 @@ After applying this skill, verify:
 - choose a database schema (use data-modeling)
 - decide isolation level for a workload (use transaction-isolation)
 - Owned by `indexing-strategy`: the design of which indexes the database has
-- Owned by `data-modeling`: schema and access-pattern design
-- Owned by `transaction-isolation`: concurrency correctness
 
 **Related skills**
 - Verify with: `indexing-strategy`, `data-modeling`

@@ -1,6 +1,6 @@
 ---
 name: client-server-boundary
-description: "Use when reasoning about the line at which execution context changes between a server runtime and a client runtime: what values can cross via serialization, what cannot, the directives that mark transitions (`'use client'`, `'use server'`), the difference between server-rendered HTML and a serialized component tree, the trust model that treats client input as adversarial, and the consequences of leaking server-only modules into client bundles. Do NOT use for when and where the UI is produced (use rendering-models), the HTTP wire protocol itself (use http-semantics), how to organize the frontend codebase (use frontend-architecture), or how to design the JSON shape of an API endpoint (use api-design). Do NOT use for the discipline of compile-time type checking (use type-safety)."
+description: "Use when reasoning about the line at which execution context changes between a server runtime and a client runtime: what values can cross via serialization, what cannot, the directives that mark transitions (`'use client'`, `'use server'`), the difference between server-rendered HTML and a serialized component tree, the trust model that treats client input as adversarial, and the consequences of leaking server-only modules into client bundles. Do NOT use for when and where the UI is produced (use rendering-models), the HTTP wire protocol itself (use http-semantics), how to organize the frontend codebase (use frontend-architecture), or how to design the JSON shape of an API endpoint (use api-design)."
 license: MIT
 allowed-tools: Read Grep
 metadata:
@@ -22,7 +22,7 @@ metadata:
   triggers: "[\"can I pass this function as a prop\",\"why is my server-only module in the client bundle\",\"what does 'use client' actually do\",\"is it safe to put this secret in a server component\",\"why won't this Date / Map / class serialize\"]"
   examples: "[\"decide whether a piece of data must cross the network or can stay server-only\",\"diagnose why a component marked as a server component is being shipped to the client\",\"review whether secrets in server code can leak through serialized props\",\"design which functions are exposed as server actions and which stay internal\"]"
   anti_examples: "[\"decide whether a route should be SSG or SSR (use rendering-models)\",\"design HTTP authentication headers (use http-semantics)\",\"design the JSON shape of an API response body (use api-design)\"]"
-  relations: "{\"related\":[\"rendering-models\",\"http-semantics\",\"frontend-architecture\",\"type-safety\",\"api-design\"],\"boundary\":[{\"skill\":\"rendering-models\",\"reason\":\"rendering-models owns the staging of work across build/request/stream/interaction. client-server-boundary owns the serialization frontier — what can cross between server code and client code. The two compose: any rendering model that emits a server-produced artifact for client consumption faces a boundary.\"},{\"skill\":\"http-semantics\",\"reason\":\"http-semantics owns the wire protocol (verbs, status codes, headers, caching). client-server-boundary is upstream — it decides what data exists at the boundary and how it is encoded into request and response bodies.\"},{\"skill\":\"api-design\",\"reason\":\"api-design owns the external API surface (versioning, REST/GraphQL choice, endpoint shape). client-server-boundary owns the in-program boundary between a unified frontend codebase's server and client halves — a tighter, framework-mediated boundary than a public API.\"},{\"skill\":\"type-safety\",\"reason\":\"type-safety owns the discipline of compile-time type checking. client-server-boundary is one of the places where the type system stops — values crossing the boundary lose their type until parsed.\"}],\"verify_with\":[\"type-safety\",\"api-design\"]}"
+  relations: "{\"related\":[\"rendering-models\",\"http-semantics\",\"frontend-architecture\",\"type-safety\",\"api-design\"],\"boundary\":[{\"skill\":\"rendering-models\",\"reason\":\"rendering-models owns the staging of work across build/request/stream/interaction. client-server-boundary owns the serialization frontier — what can cross between server code and client code. The two compose: any rendering model that emits a server-produced artifact for client consumption faces a boundary.\"}],\"verify_with\":[\"type-safety\",\"api-design\"]}"
   mental_model: "|"
   purpose: "|"
   boundary: "|"
@@ -38,7 +38,6 @@ metadata:
   skill_graph_source_repo: "https://github.com/jacob-balslev/skill-graph"
   skill_graph_project: Skill Graph
   skill_graph_canonical_skill: skills/frontend-engineering/client-server-boundary/SKILL.md
-  skill_graph_export_description_projection: boundary
 ---
 
 # Client-Server Boundary
@@ -238,9 +237,6 @@ After applying this skill, verify:
 - design HTTP authentication headers (use http-semantics)
 - design the JSON shape of an API response body (use api-design)
 - Owned by `rendering-models`: the staging of work across build/request/stream/interaction
-- Owned by `http-semantics`: the wire protocol (verbs, status codes, headers, caching)
-- Owned by `api-design`: the external API surface (versioning, REST/GraphQL choice, endpoint shape)
-- Owned by `type-safety`: the discipline of compile-time type checking
 
 **Related skills**
 - Verify with: `type-safety`, `api-design`

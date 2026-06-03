@@ -1,6 +1,6 @@
 ---
 name: interaction-feedback
-description: "Use when designing UI feedback around user actions and system state: loading, skeletons, optimistic updates, progress, success, errors, empty states, retries, disabled/pending states, autosave, undo, and perceived latency. Do NOT use for the words inside feedback (use `microcopy`), accessibility announcement mechanics (use `a11y`), business lifecycle modeling (use `state-machine-modeling`), or performance optimization (use `performance-engineering`). Do NOT use for rewrite the toast and validation text. Do NOT use for make sure the status update is announced to screen readers. Do NOT use for model the order lifecycle and legal transitions. Do NOT use for profile the endpoint that makes this action slow. Do NOT use for the words inside feedback states (use microcopy). Do NOT use for assistive-technology announcement mechanics (use a11y). Do NOT use for business lifecycle legality (use state-machine-modeling)."
+description: "Use when designing UI feedback around user actions and system state: loading, skeletons, optimistic updates, progress, success, errors, empty states, retries, disabled/pending states, autosave, undo, and perceived latency. Do NOT use for the words inside feedback (use `microcopy`), accessibility announcement mechanics (use `a11y`), business lifecycle modeling (use `state-machine-modeling`), or performance optimization (use `performance-engineering`). Do NOT use for rewrite the toast and validation text. Do NOT use for make sure the status update is announced to screen readers. Do NOT use for model the order lifecycle and legal transitions. Do NOT use for profile the endpoint that makes this action slow. Do NOT use for the words inside feedback states (use microcopy)."
 license: MIT
 compatibility: Portable feedback-state design for web and app UI. Applies before framework-specific implementation and after task or interaction pattern selection.
 allowed-tools: Read Grep
@@ -21,7 +21,7 @@ metadata:
   keywords: "[\"interaction-feedback\",\"feedback-state staging\",\"optimistic ui\",\"pending state\",\"retry feedback\",\"undo feedback\",\"perceived latency\",\"long-running action feedback\",\"skeleton loading\"]"
   examples: "[\"design loading, success, error, and retry feedback for this async action\",\"should this save be optimistic, pending, blocked, or undoable?\",\"the sync takes 30 seconds - what should users see at each stage?\",\"add feedback states so the UI does not feel frozen after clicking Export\"]"
   anti_examples: "[\"rewrite the toast and validation text\",\"make sure the status update is announced to screen readers\",\"model the order lifecycle and legal transitions\",\"profile the endpoint that makes this action slow\"]"
-  relations: "{\"boundary\":[{\"skill\":\"microcopy\",\"reason\":\"microcopy owns the words inside feedback states; interaction-feedback owns timing, placement, persistence, and recovery behavior\"},{\"skill\":\"a11y\",\"reason\":\"a11y owns assistive-technology announcement mechanics; interaction-feedback owns the visible and behavioral feedback model\"},{\"skill\":\"state-machine-modeling\",\"reason\":\"state-machine-modeling owns business lifecycle legality; interaction-feedback owns the UI representation of pending, success, failure, and recovery\"},{\"skill\":\"performance-engineering\",\"reason\":\"performance-engineering reduces measured latency; interaction-feedback communicates latency and state honestly\"}],\"related\":[\"interaction-patterns\",\"microcopy\",\"task-analysis\",\"a11y\",\"performance-engineering\"],\"verify_with\":[\"a11y\",\"microcopy\"]}"
+  relations: "{\"boundary\":[{\"skill\":\"microcopy\",\"reason\":\"microcopy owns the words inside feedback states; interaction-feedback owns timing, placement, persistence, and recovery behavior\"}],\"related\":[\"interaction-patterns\",\"microcopy\",\"task-analysis\",\"a11y\",\"performance-engineering\",\"state-machine-modeling\"],\"verify_with\":[\"a11y\",\"microcopy\"]}"
   portability: "{\"readiness\":\"scripted\",\"targets\":[\"skill-md\"]}"
   lifecycle: "{\"stale_after_days\":365,\"review_cadence\":\"quarterly\"}"
   structural_verdict: PASS
@@ -104,13 +104,10 @@ This skill ships a comprehension-eval artifact at [`examples/evals/interaction-f
 - model the order lifecycle and legal transitions
 - profile the endpoint that makes this action slow
 - Owned by `microcopy`: the words inside feedback states
-- Owned by `a11y`: assistive-technology announcement mechanics
-- Owned by `state-machine-modeling`: business lifecycle legality
-- Owned by `performance-engineering`
 
 **Related skills**
 - Verify with: `a11y`, `microcopy`
-- Related: `interaction-patterns`, `microcopy`, `task-analysis`, `a11y`, `performance-engineering`
+- Related: `interaction-patterns`, `microcopy`, `task-analysis`, `a11y`, `performance-engineering`, `state-machine-modeling`
 
 **Keywords**
 - `interaction-feedback`, `feedback-state staging`, `optimistic ui`, `pending state`, `retry feedback`, `undo feedback`, `perceived latency`, `long-running action feedback`, `skeleton loading`

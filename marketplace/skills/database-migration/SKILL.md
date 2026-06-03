@@ -20,7 +20,7 @@ metadata:
   keywords: "[\"database migration\",\"schema migration\",\"zero-downtime migration\",\"DDL migration\",\"raw SQL migration\",\"Postgres DDL\",\"alter table production\",\"expand contract migration\",\"concurrent index creation\",\"migration rollback\"]"
   examples: "[\"add a nullable column to a 50M-row orders table without taking downtime\",\"rename the `display_name` column to `username` while the app is live\",\"create a btree index on a 100M-row table without locking writes\",\"the migration takes ACCESS EXCLUSIVE — how do I avoid the lock?\",\"add a foreign key to a 10M-row table without blocking writes\",\"should I use ADD COLUMN ... NOT NULL DEFAULT 0 in this migration?\",\"write a rollback strategy for this schema change in case production breaks\",\"split the migration into expand and contract phases across two deploys\"]"
   anti_examples: "[\"design the row-level-security model for our new tenant table\",\"the migration crashed in production — find the root cause\",\"explain our migration conventions in the contributor docs\",\"refactor the migration runner helper for clarity\",\"decide whether this column rename needs an automated regression test\",\"review this AI-generated DDL diff for correctness\"]"
-  relations: "{\"boundary\":[{\"skill\":\"debugging\",\"reason\":\"debugging chases an observed migration failure; database-migration plans the safe DDL path forward before execution\"},{\"skill\":\"refactor\",\"reason\":\"refactor is behavior-preserving code reorganization; database-migration is schema mutation that may require coordinated code changes across two or more deploys\"},{\"skill\":\"testing-strategy\",\"reason\":\"testing-strategy decides what deserves a regression test; database-migration owns the verification dance that runs before, during, and after applying DDL\"}],\"related\":[\"testing-strategy\",\"debugging\",\"owasp-security\"],\"verify_with\":[\"testing-strategy\",\"code-review\"]}"
+  relations: "{\"related\":[\"testing-strategy\",\"debugging\",\"owasp-security\",\"refactor\"],\"verify_with\":[\"testing-strategy\",\"code-review\"]}"
   portability: "{\"readiness\":\"scripted\",\"targets\":[\"skill-md\"]}"
   lifecycle: "{\"stale_after_days\":90,\"review_cadence\":\"quarterly\"}"
   structural_verdict: PASS
@@ -478,13 +478,10 @@ This skill ships a comprehension-eval artifact at [`examples/evals/database-migr
 - refactor the migration runner helper for clarity
 - decide whether this column rename needs an automated regression test
 - review this AI-generated DDL diff for correctness
-- Owned by `debugging`
-- Owned by `refactor`
-- Owned by `testing-strategy`
 
 **Related skills**
 - Verify with: `testing-strategy`, `code-review`
-- Related: `testing-strategy`, `debugging`, `owasp-security`
+- Related: `testing-strategy`, `debugging`, `owasp-security`, `refactor`
 
 **Keywords**
 - `database migration`, `schema migration`, `zero-downtime migration`, `DDL migration`, `raw SQL migration`, `Postgres DDL`, `alter table production`, `expand contract migration`, `concurrent index creation`, `migration rollback`

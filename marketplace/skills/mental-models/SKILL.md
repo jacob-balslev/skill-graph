@@ -13,7 +13,7 @@ metadata:
   triggers: "[\"how do I think about\",\"users expect X but the system does Y\",\"this is confusing\",\"the user's model doesn't match\",\"why is this surprising\",\"what's the right metaphor\"]"
   examples: "[\"users keep trying to drag a row to reorder but the table doesn't support drag — diagnose the model mismatch\",\"explain why race conditions across parallel tool calls are hard for developers to anticipate\",\"decide on the right metaphor for a feature that combines folders and tags\",\"the team disagrees on what 'workspace' means in the product — surface the divergent mental models\"]"
   anti_examples: "[\"draw the boxes-and-arrows diagram of the system (use knowledge-modeling)\",\"name the React hook for managing form state (tactical implementation choice)\",\"write user-research interview questions (use user-research)\",\"teach a junior engineer about distributed-systems consistency models\"]"
-  relations: "{\"related\":[\"conceptual-modeling\",\"knowledge-modeling\",\"user-research\",\"semantics\"],\"boundary\":[{\"skill\":\"conceptual-modeling\",\"reason\":\"conceptual-modeling owns the FORMAL representation of a domain (entities, attributes, relationships) for downstream use by schemas and APIs; this skill owns the COGNITIVE construct (how a mind represents the system), which is upstream of any formalism.\"},{\"skill\":\"knowledge-modeling\",\"reason\":\"knowledge-modeling owns the choice of representation paradigm (graphs, frames, rules, networks); this skill owns the discipline of reasoning about model-system fit before any paradigm is chosen.\"},{\"skill\":\"user-research\",\"reason\":\"user-research owns the methods for eliciting and validating user mental models empirically; this skill owns the framing of what a mental model is and how to reason about its accuracy.\"}],\"verify_with\":[\"user-research\"]}"
+  relations: "{\"related\":[\"conceptual-modeling\",\"knowledge-modeling\",\"user-research\",\"semantics\"],\"verify_with\":[\"user-research\"]}"
   mental_model: "|"
   purpose: "|"
   boundary: "|"
@@ -162,9 +162,6 @@ After applying this skill, verify:
 - name the React hook for managing form state (tactical implementation choice)
 - write user-research interview questions (use user-research)
 - teach a junior engineer about distributed-systems consistency models
-- Owned by `conceptual-modeling`: the FORMAL representation of a domain (entities, attributes, relationships) for downstream use by schemas and APIs
-- Owned by `knowledge-modeling`: the choice of representation paradigm (graphs, frames, rules, networks)
-- Owned by `user-research`: the methods for eliciting and validating user mental models empirically
 
 **Related skills**
 - Verify with: `user-research`

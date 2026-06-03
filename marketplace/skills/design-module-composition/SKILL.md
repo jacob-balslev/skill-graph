@@ -19,7 +19,7 @@ metadata:
   triggers: "[\"compound component\",\"composition over configuration\",\"headless component\",\"slot pattern\",\"asChild\"]"
   examples: "[\"Design a Dialog component whose trigger, content, and close button are addressable by consumers\",\"Refactor a Card with 14 boolean props into a composition-based API\",\"Build a headless table primitive that exposes state and behavior without imposing markup\"]"
   anti_examples: "[\"Choose the border radius value for cards\",\"Decide where the OrderDetailPage component lives in the folder structure\",\"Pick the brand font for headings\"]"
-  relations: "{\"related\":[\"design-system-architecture\",\"frontend-architecture\",\"interaction-patterns\",\"a11y\"],\"boundary\":[{\"skill\":\"frontend-architecture\",\"reason\":\"frontend-architecture covers application-level organization; this skill covers the internal API of a reusable module that the application composes.\"},{\"skill\":\"a11y\",\"reason\":\"Composition choices affect accessibility (focus management, ARIA wiring); when the question is whether a pattern meets WCAG requirements, hand off to a11y.\"}]}"
+  relations: "{\"related\":[\"design-system-architecture\",\"frontend-architecture\",\"interaction-patterns\",\"a11y\"]}"
   structural_verdict: PASS
   truth_verdict: PASS
   comprehension_verdict: UNVERIFIED
@@ -83,8 +83,6 @@ Headless primitives separate three concerns that are routinely conflated: state 
 - Choose the border radius value for cards
 - Decide where the OrderDetailPage component lives in the folder structure
 - Pick the brand font for headings
-- Owned by `frontend-architecture`
-- Owned by `a11y`
 
 **Related skills**
 - Related: `design-system-architecture`, `frontend-architecture`, `interaction-patterns`, `a11y`

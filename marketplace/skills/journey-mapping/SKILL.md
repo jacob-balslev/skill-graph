@@ -25,7 +25,7 @@ metadata:
   triggers: "[\"journey map\",\"service blueprint\",\"map the user experience\",\"customer journey\",\"touchpoints\"]"
   examples: "[\"Build a journey map for first-time tax filers from awareness through filing to refund.\",\"Add a service-blueprint layer below this journey map showing the back-stage support steps.\",\"Identify the emotional low points in this onboarding journey and the opportunities at each.\",\"Map the cross-channel experience of returning an online order to a physical store.\"]"
   anti_examples: "[\"Break down the steps a user takes inside the upload modal.\",\"Draw the microservice call graph for the checkout API.\",\"Diagram the database schema for the order entity.\"]"
-  relations: "{\"related\":[\"research-synthesis\",\"information-architecture\",\"design-thinking\",\"problem-framing\"],\"boundary\":[{\"skill\":\"task-analysis\",\"reason\":\"task-analysis decomposes a single goal-directed task into ordered steps within one interface or session. journey-mapping spans many sessions, channels, and days, and includes emotional and contextual layers task-analysis does not.\"},{\"skill\":\"bounded-context-mapping\",\"reason\":\"bounded-context-mapping is an engineering practice for modeling DDD context boundaries. journey-mapping describes human experience across touchpoints — a similar diagrammatic instinct but unrelated output.\"}]}"
+  relations: "{\"related\":[\"research-synthesis\",\"information-architecture\",\"design-thinking\",\"problem-framing\",\"task-analysis\",\"bounded-context-mapping\"]}"
   structural_verdict: PASS
   truth_verdict: PASS
   comprehension_verdict: UNVERIFIED
@@ -100,11 +100,9 @@ The practice resists two failure modes. The first is the **anodyne happy-path ma
 - Break down the steps a user takes inside the upload modal.
 - Draw the microservice call graph for the checkout API.
 - Diagram the database schema for the order entity.
-- Owned by `task-analysis`
-- Owned by `bounded-context-mapping`
 
 **Related skills**
-- Related: `research-synthesis`, `information-architecture`, `design-thinking`, `problem-framing`
+- Related: `research-synthesis`, `information-architecture`, `design-thinking`, `problem-framing`, `task-analysis`, `bounded-context-mapping`
 
 **Concept**
 - Mental model: A journey map is a time-ordered model of one actor's lived experience across touchpoints and channels, layering what they do, think, and feel against the front-stage interactions and the back-stage processes that produce each moment. Experience is treated as one continuous arc, not a set of isolated screens.

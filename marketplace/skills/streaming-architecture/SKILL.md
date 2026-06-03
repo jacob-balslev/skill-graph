@@ -21,7 +21,7 @@ metadata:
   triggers: "[\"how should this endpoint stream\",\"should this be SSE or WebSocket\",\"is the consumer slow\",\"what's the backpressure story\",\"partial result delivery\"]"
   examples: "[\"design the response shape for an endpoint that returns 50,000 rows incrementally\",\"decide between SSE and WebSocket for a live progress feed\",\"diagnose why a fast producer is exhausting memory when the consumer falls behind\",\"explain why an RSC-streamed page renders out of order and how the boundary resolves\"]"
   anti_examples: "[\"design the JSON shape of a single response payload (use api-design)\",\"implement the model→tool message-history protocol (use tool-call-flow)\",\"design pub-sub topic structure (use event-driven-architecture)\"]"
-  relations: "{\"related\":[\"tool-call-flow\",\"client-server-boundary\",\"rendering-models\",\"performance-budgets\",\"api-design\"],\"boundary\":[{\"skill\":\"tool-call-flow\",\"reason\":\"tool-call-flow owns the message-history protocol between a model and a tool runtime; streaming-architecture owns the lower-level pattern of incremental value emission with backpressure that streaming tool-call responses are a specialization of.\"},{\"skill\":\"api-design\",\"reason\":\"api-design owns the request/response surface for one round-trip; streaming-architecture owns the multi-value-over-time surface where one logical response is delivered as N chunks.\"},{\"skill\":\"rendering-models\",\"reason\":\"rendering-models owns the page-rendering taxonomy (CSR/SSR/SSG/RSC); streaming-architecture owns the incremental-delivery primitive that streaming SSR and RSC are built on.\"},{\"skill\":\"client-server-boundary\",\"reason\":\"client-server-boundary owns the serialization frontier; streaming-architecture is what makes the frontier traversable over time rather than only once per request.\"}],\"verify_with\":[\"api-design\",\"performance-budgets\"]}"
+  relations: "{\"related\":[\"tool-call-flow\",\"client-server-boundary\",\"rendering-models\",\"performance-budgets\",\"api-design\"],\"boundary\":[{\"skill\":\"api-design\",\"reason\":\"api-design owns the request/response surface for one round-trip; streaming-architecture owns the multi-value-over-time surface where one logical response is delivered as N chunks.\"}],\"verify_with\":[\"api-design\",\"performance-budgets\"]}"
   mental_model: "|"
   purpose: "|"
   boundary: "|"
@@ -37,8 +37,7 @@ metadata:
   skill_graph_source_repo: "https://github.com/jacob-balslev/skill-graph"
   skill_graph_project: Skill Graph
   skill_graph_canonical_skill: skills/backend-engineering/streaming-architecture/SKILL.md
-  skill_graph_export_description_projection: anti_examples+boundary
-  skill_graph_export_description_projection_truncated: "true"
+  skill_graph_export_description_projection: anti_examples
 ---
 
 # Streaming Architecture
@@ -243,10 +242,7 @@ After applying this skill, verify:
 - design the JSON shape of a single response payload (use api-design)
 - implement the model→tool message-history protocol (use tool-call-flow)
 - design pub-sub topic structure (use event-driven-architecture)
-- Owned by `tool-call-flow`: the message-history protocol between a model and a tool runtime
 - Owned by `api-design`: the request/response surface for one round-trip
-- Owned by `rendering-models`: the page-rendering taxonomy (CSR/SSR/SSG/RSC)
-- Owned by `client-server-boundary`: the serialization frontier
 
 **Related skills**
 - Verify with: `api-design`, `performance-budgets`

@@ -1,6 +1,6 @@
 ---
 name: event-contract-design
-description: "Use when designing or reviewing asynchronous event contracts: producer/consumer ownership, event envelope, schema, topic/channel naming, ordering, idempotency, versioning, compatibility, replay, dead-letter behavior, and AsyncAPI/CloudEvents-style documentation. Do NOT use for domain-event discovery (use `event-storming`), broad interface contracts (use `system-interface-contracts`), inbound provider webhook mechanics (use `webhook-integration`), or HTTP endpoint design (use `api-design`). Do NOT use for discover the domain events, commands, and policies in this business process. Do NOT use for define every boundary contract between services, jobs, and APIs. Do NOT use for verify inbound provider webhook signatures and retry behavior. Do NOT use for design REST endpoints, status codes, and pagination. Do NOT use for broad boundary contracts (use system-interface-contracts). Do NOT use for inbound third-party delivery mechanics (use webhook-integration)."
+description: "Use when designing or reviewing asynchronous event contracts: producer/consumer ownership, event envelope, schema, topic/channel naming, ordering, idempotency, versioning, compatibility, replay, dead-letter behavior, and AsyncAPI/CloudEvents-style documentation. Do NOT use for domain-event discovery (use `event-storming`), broad interface contracts (use `system-interface-contracts`), inbound provider webhook mechanics (use `webhook-integration`), or HTTP endpoint design (use `api-design`). Do NOT use for discover the domain events, commands, and policies in this business process. Do NOT use for define every boundary contract between services, jobs, and APIs. Do NOT use for verify inbound provider webhook signatures and retry behavior. Do NOT use for design REST endpoints, status codes, and pagination. Do NOT use for broad boundary contracts (use system-interface-contracts)."
 license: MIT
 compatibility: "Portable async-event contract guidance for queues, streams, pub/sub, internal events, outbound webhooks, and documented event-driven APIs."
 allowed-tools: Read Grep
@@ -20,7 +20,7 @@ metadata:
   keywords: "[\"event-contract\",\"async-api\",\"cloudevents\",\"event envelope\",\"topic naming\",\"async event schema\",\"event compatibility\",\"replay contract\",\"dead-letter behavior\",\"consumer fixtures\"]"
   examples: "[\"design the event contract for publishing OrderPaid to downstream consumers\",\"define topic names, payload schema, idempotency, and versioning for this event stream\",\"review this outbound webhook event schema before customers integrate with it\",\"write the compatibility rules for consumers of these async messages\"]"
   anti_examples: "[\"discover the domain events, commands, and policies in this business process\",\"define every boundary contract between services, jobs, and APIs\",\"verify inbound provider webhook signatures and retry behavior\",\"design REST endpoints, status codes, and pagination\"]"
-  relations: "{\"boundary\":[{\"skill\":\"event-storming\",\"reason\":\"event-storming discovers domain events and policies; event-contract-design turns selected events into publishable contracts\"},{\"skill\":\"system-interface-contracts\",\"reason\":\"system-interface-contracts owns broad boundary contracts; event-contract-design owns asynchronous message and event surfaces\"},{\"skill\":\"webhook-integration\",\"reason\":\"webhook-integration owns inbound third-party delivery mechanics; event-contract-design owns events this system publishes or documents for consumers\"},{\"skill\":\"api-design\",\"reason\":\"api-design owns HTTP resource and action surfaces; event-contract-design owns asynchronous event contracts\"}],\"related\":[\"event-storming\",\"system-interface-contracts\",\"observability-modeling\",\"state-machine-modeling\",\"data-modeling\"],\"verify_with\":[\"system-interface-contracts\",\"observability-modeling\"]}"
+  relations: "{\"boundary\":[{\"skill\":\"event-storming\",\"reason\":\"event-storming discovers domain events and policies; event-contract-design turns selected events into publishable contracts\"},{\"skill\":\"system-interface-contracts\",\"reason\":\"system-interface-contracts owns broad boundary contracts; event-contract-design owns asynchronous message and event surfaces\"}],\"related\":[\"event-storming\",\"system-interface-contracts\",\"observability-modeling\",\"state-machine-modeling\",\"data-modeling\",\"webhook-integration\",\"api-design\"],\"verify_with\":[\"system-interface-contracts\",\"observability-modeling\"]}"
   portability: "{\"readiness\":\"scripted\",\"targets\":[\"skill-md\"]}"
   lifecycle: "{\"stale_after_days\":365,\"review_cadence\":\"quarterly\"}"
   structural_verdict: PASS
@@ -33,7 +33,6 @@ metadata:
   skill_graph_project: Skill Graph
   skill_graph_canonical_skill: skills/software-architecture/event-contract-design/SKILL.md
   skill_graph_export_description_projection: anti_examples+boundary
-  skill_graph_export_description_projection_truncated: "true"
 ---
 
 # Event Contract Design
@@ -105,12 +104,10 @@ This skill ships a comprehension-eval artifact at [`examples/evals/event-contrac
 - design REST endpoints, status codes, and pagination
 - Owned by `event-storming`
 - Owned by `system-interface-contracts`: broad boundary contracts
-- Owned by `webhook-integration`: inbound third-party delivery mechanics
-- Owned by `api-design`: HTTP resource and action surfaces
 
 **Related skills**
 - Verify with: `system-interface-contracts`, `observability-modeling`
-- Related: `event-storming`, `system-interface-contracts`, `observability-modeling`, `state-machine-modeling`, `data-modeling`
+- Related: `event-storming`, `system-interface-contracts`, `observability-modeling`, `state-machine-modeling`, `data-modeling`, `webhook-integration`, `api-design`
 
 **Keywords**
 - `event-contract`, `async-api`, `cloudevents`, `event envelope`, `topic naming`, `async event schema`, `event compatibility`, `replay contract`, `dead-letter behavior`, `consumer fixtures`

@@ -19,7 +19,7 @@ metadata:
   triggers: "[\"frame this problem\",\"how might we\",\"write a problem statement\",\"this brief is a solution\",\"what are we actually solving\"]"
   examples: "[\"We've been asked to 'add a chatbot' — help me reframe what we're actually solving for users.\",\"Draft three how-might-we statements from these synthesis insights.\",\"The PRD jumps straight to features; help me extract the underlying user problem.\",\"List the assumptions baked into this product brief and rank them by riskiness.\"]"
   anti_examples: "[\"Find the bug causing the 500 error in the checkout endpoint.\",\"Why is the test suite flaky on CI?\",\"Classify whether this agent request is high-risk before executing.\"]"
-  relations: "{\"related\":[\"user-research\",\"ideation\",\"research-synthesis\",\"design-thinking\"],\"boundary\":[{\"skill\":\"problem-locating-solving\",\"reason\":\"problem-locating-solving handles bug localization in source code — concrete failure traced to a line or function. problem-framing handles ambiguous human/business problems where the question itself is unclear and there is no error to reproduce.\"},{\"skill\":\"diagnosis\",\"reason\":\"diagnosis handles failure triage of broken systems and incidents. problem-framing handles upstream definition of what a team should be working on at all.\"}]}"
+  relations: "{\"related\":[\"user-research\",\"ideation\",\"research-synthesis\",\"design-thinking\",\"problem-locating-solving\",\"diagnosis\"]}"
   structural_verdict: PASS
   truth_verdict: PASS
   comprehension_verdict: UNVERIFIED
@@ -82,11 +82,9 @@ The practice is opinionated about language. "How might we" is not interchangeabl
 - Find the bug causing the 500 error in the checkout endpoint.
 - Why is the test suite flaky on CI?
 - Classify whether this agent request is high-risk before executing.
-- Owned by `problem-locating-solving`
-- Owned by `diagnosis`
 
 **Related skills**
-- Related: `user-research`, `ideation`, `research-synthesis`, `design-thinking`
+- Related: `user-research`, `ideation`, `research-synthesis`, `design-thinking`, `problem-locating-solving`, `diagnosis`
 
 **Keywords**
 - `how might we`, `problem statement`, `reframing`, `assumption mapping`, `root need`, `symptom vs need`, `point of view statement`, `jobs to be done framing`, `design challenge`, `double diamond discover`

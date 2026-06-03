@@ -1,6 +1,6 @@
 ---
 name: intent-recognition
-description: "Use BEFORE any tool call that could modify state, touch sensitive targets, rewrite history, install dependencies, publish packages, or expose credentials/environment data. Classifies intent into Passive/Read, Reconnaissance, Modification, or Destructive/Irreversible using operation type plus target sensitivity, then runs Identify / Confirm / Verify before action. Do NOT use for deciding what code to write, executing already-classified work, reactive post-execution guardrails, or defining upstream governance policy. Do NOT use for design the deterministic safety hook that blocks destructive commands. Do NOT use for decide whether to use a switch or a chain of ifs. Do NOT use for actually execute the migration after we've classified the risk. Do NOT use for scan this repo for OWASP top 10 vulnerabilities. Do NOT use for review this AI-generated PR for correctness. Do NOT use for the loop is stalling — what's the steering signal. Do NOT use for the discipline of using git well (use version-control)."
+description: "Use BEFORE any tool call that could modify state, touch sensitive targets, rewrite history, install dependencies, publish packages, or expose credentials/environment data. Classifies intent into Passive/Read, Reconnaissance, Modification, or Destructive/Irreversible using operation type plus target sensitivity, then runs Identify / Confirm / Verify before action. Do NOT use for deciding what code to write, executing already-classified work, reactive post-execution guardrails, or defining upstream governance policy. Do NOT use for design the deterministic safety hook that blocks destructive commands. Do NOT use for decide whether to use a switch or a chain of ifs. Do NOT use for actually execute the migration after we've classified the risk. Do NOT use for scan this repo for OWASP top 10 vulnerabilities. Do NOT use for review this AI-generated PR for correctness. Do NOT use for the loop is stalling — what's the steering signal."
 license: MIT
 compatibility: "Runtime-agnostic. The four-tier classification, target-content rule, and Identify/Confirm/Verify sequence apply to any agent harness with tool execution — Claude Code, OpenCode, Cursor, Aider, Copilot Workspace, custom MCP-based agents, or any LLM with shell access."
 allowed-tools: Read Grep
@@ -21,7 +21,7 @@ metadata:
   keywords: "[\"intent recognition\",\"pre-execution risk classification\",\"four tier action taxonomy\",\"passive read reconnaissance modification destructive\",\"identify confirm verify sequence\",\"destructive operation classification\",\"credential read is reconnaissance\",\"git reset hard is destructive\",\"force push is destructive\",\"lockfile install is high impact\"]"
   examples: "[\"the agent is about to run `git reset --hard` — what tier is this and what's the safer alternative?\",\"is reading the `.env` file a Passive operation since nothing mutates?\",\"I'm about to install a new package — what tier does that fit and why?\",\"force-push to main looks like 'just a push' — should I classify it as Modification?\",\"before running `DELETE FROM orders WHERE …`, what's the verification sequence?\",\"the agent classified everything as Modification because there's no exception for credentials\",\"what trigger phrases should activate this skill in our harness?\"]"
   anti_examples: "[\"design the deterministic safety hook that blocks destructive commands\",\"decide whether to use a switch or a chain of ifs\",\"actually execute the migration after we've classified the risk\",\"scan this repo for OWASP top 10 vulnerabilities\",\"review this AI-generated PR for correctness\",\"the loop is stalling — what's the steering signal\"]"
-  relations: "{\"boundary\":[{\"skill\":\"owasp-security\",\"reason\":\"owasp-security is a domain audit against a known threat list; intent-recognition is the per-action risk classification that runs immediately before a tool call regardless of domain\"},{\"skill\":\"debugging\",\"reason\":\"debugging investigates a failure that has already happened; intent-recognition prevents one class of failure (destructive action mis-classification) from happening at all\"},{\"skill\":\"code-review\",\"reason\":\"code-review evaluates code-quality of an artefact; intent-recognition evaluates risk of an action about to be performed by a tool\"},{\"skill\":\"version-control\",\"reason\":\"version-control owns the discipline of using git well; intent-recognition specifically classifies which git commands are safe vs destructive at the moment of execution\"},{\"skill\":\"testing-strategy\",\"reason\":\"testing-strategy decides what to test proactively; intent-recognition gates one specific tool call from firing without classification\"}],\"related\":[\"owasp-security\",\"version-control\",\"debugging\"],\"verify_with\":[\"owasp-security\"]}"
+  relations: "{\"related\":[\"owasp-security\",\"version-control\",\"debugging\",\"code-review\",\"testing-strategy\"],\"verify_with\":[\"owasp-security\"]}"
   portability: "{\"readiness\":\"scripted\",\"targets\":[\"skill-md\"]}"
   lifecycle: "{\"stale_after_days\":365,\"review_cadence\":\"quarterly\"}"
   structural_verdict: PASS
@@ -33,7 +33,7 @@ metadata:
   skill_graph_source_repo: "https://github.com/jacob-balslev/skill-graph"
   skill_graph_project: Skill Graph
   skill_graph_canonical_skill: skills/ai-engineering/intent-recognition/SKILL.md
-  skill_graph_export_description_projection: anti_examples+boundary
+  skill_graph_export_description_projection: anti_examples
 ---
 
 # Intent Recognition
@@ -185,15 +185,10 @@ These triggers are deliberately broad. False positives (classifying a Passive ac
 - scan this repo for OWASP top 10 vulnerabilities
 - review this AI-generated PR for correctness
 - the loop is stalling — what's the steering signal
-- Owned by `owasp-security`
-- Owned by `debugging`
-- Owned by `code-review`
-- Owned by `version-control`: the discipline of using git well
-- Owned by `testing-strategy`
 
 **Related skills**
 - Verify with: `owasp-security`
-- Related: `owasp-security`, `version-control`, `debugging`
+- Related: `owasp-security`, `version-control`, `debugging`, `code-review`, `testing-strategy`
 
 **Keywords**
 - `intent recognition`, `pre-execution risk classification`, `four tier action taxonomy`, `passive read reconnaissance modification destructive`, `identify confirm verify sequence`, `destructive operation classification`, `credential read is reconnaissance`, `git reset hard is destructive`, `force push is destructive`, `lockfile install is high impact`

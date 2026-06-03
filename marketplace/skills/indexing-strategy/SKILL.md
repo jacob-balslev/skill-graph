@@ -21,7 +21,7 @@ metadata:
   triggers: "[\"should I add an index\",\"which columns to index\",\"B-tree vs hash\",\"is this index being used\",\"composite index column order\"]"
   examples: "[\"design indexes for a table with high-volume reads on user_id and date-range queries\",\"decide between a B-tree index and a partial index for a small subset of rows\",\"diagnose a query that ignores an existing index — likely a selectivity or type-coercion issue\",\"explain why adding a sixth index to a write-heavy table is usually wrong\"]"
   anti_examples: "[\"diagnose why this specific query is slow (use query-optimization)\",\"choose a database schema (use data-modeling)\",\"decide how to partition data across nodes (use sharding-strategy)\"]"
-  relations: "{\"related\":[\"query-optimization\",\"data-modeling\",\"schema-evolution\",\"transaction-isolation\"],\"boundary\":[{\"skill\":\"query-optimization\",\"reason\":\"query-optimization owns the diagnosis and tuning of specific slow queries; this skill owns the *design* of which indexes the database has. The two compose: query-optimization diagnoses; this skill is one of the responses.\"},{\"skill\":\"data-modeling\",\"reason\":\"data-modeling owns the schema and access patterns; this skill owns the auxiliary search structures that make access patterns efficient. The schema determines what indexes can exist; the access patterns determine which should.\"},{\"skill\":\"schema-evolution\",\"reason\":\"schema-evolution owns how the database changes shape over time; this skill owns the indexes that must change with it. Adding or removing an index is itself a schema change.\"}],\"verify_with\":[\"query-optimization\",\"data-modeling\"]}"
+  relations: "{\"related\":[\"query-optimization\",\"data-modeling\",\"schema-evolution\",\"transaction-isolation\"],\"boundary\":[{\"skill\":\"query-optimization\",\"reason\":\"query-optimization owns the diagnosis and tuning of specific slow queries; this skill owns the *design* of which indexes the database has. The two compose: query-optimization diagnoses; this skill is one of the responses.\"},{\"skill\":\"schema-evolution\",\"reason\":\"schema-evolution owns how the database changes shape over time; this skill owns the indexes that must change with it. Adding or removing an index is itself a schema change.\"}],\"verify_with\":[\"query-optimization\",\"data-modeling\"]}"
   mental_model: "|"
   purpose: "|"
   boundary: "|"
@@ -157,7 +157,6 @@ After applying this skill, verify:
 - choose a database schema (use data-modeling)
 - decide how to partition data across nodes (use sharding-strategy)
 - Owned by `query-optimization`: the diagnosis and tuning of specific slow queries
-- Owned by `data-modeling`: the schema and access patterns
 - Owned by `schema-evolution`: how the database changes shape over time
 
 **Related skills**

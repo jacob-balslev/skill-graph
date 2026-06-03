@@ -13,7 +13,7 @@ metadata:
   triggers: "[\"ground this claim\",\"cite a source\",\"MUST vs SHOULD\",\"is this verified\",\"how do you know that\"]"
   examples: "[\"before stating that this library supports X, confirm against the actual docs\",\"rewrite this finding so each assertion either cites a file or is marked as inference\",\"should this be a MUST or a SHOULD? what's the strength of the claim?\",\"the agent reported 'fix works' but no test was run — flag the gap in grounding\"]"
   anti_examples: "[\"verify every step of an audit task with concrete evidence (use methodology)\",\"decide which lint rule to add for a specific kind of drift (use skill-infrastructure)\",\"evaluate a finished SKILL.md against the comprehension grader (use evaluation)\"]"
-  relations: "{\"related\":[\"methodology\",\"semantics\",\"evaluation\",\"agent-eval-design\",\"best-practice\"],\"boundary\":[{\"skill\":\"methodology\",\"reason\":\"epistemic-grounding owns what counts as a grounded claim; methodology owns execution-level completeness and step-level evidence receipts\"},{\"skill\":\"semantics\",\"reason\":\"epistemic-grounding owns source-to-claim warrants; semantics owns naming and meaning precision\"},{\"skill\":\"evaluation\",\"reason\":\"epistemic-grounding owns claim grounding before judgment; evaluation owns scoring frameworks and result interpretation\"}],\"verify_with\":[\"methodology\",\"evaluation\",\"best-practice\"]}"
+  relations: "{\"related\":[\"methodology\",\"semantics\",\"evaluation\",\"agent-eval-design\",\"best-practice\"],\"verify_with\":[\"methodology\",\"evaluation\",\"best-practice\"]}"
   mental_model: "|"
   purpose: "|"
   boundary: "|"
@@ -146,9 +146,6 @@ After applying this skill, verify:
 - verify every step of an audit task with concrete evidence (use methodology)
 - decide which lint rule to add for a specific kind of drift (use skill-infrastructure)
 - evaluate a finished SKILL.md against the comprehension grader (use evaluation)
-- Owned by `methodology`: what counts as a grounded claim
-- Owned by `semantics`: source-to-claim warrants
-- Owned by `evaluation`: claim grounding before judgment
 
 **Related skills**
 - Verify with: `methodology`, `evaluation`, `best-practice`

@@ -1,6 +1,6 @@
 ---
 name: tool-call-flow
-description: "Use when reasoning about the protocol-level cycle by which a language model uses external tools: the four phases (declaration, request, execution, continuation), the message-history state model that ties them together, the structural differences between vendor protocols (Anthropic tool-use, OpenAI function-calling, MCP) and how they compose, parallel vs sequential tool calls, error handling and retries inside the cycle, and the separation between the model (which produces structured intent) and the runtime (which executes the intent and routes results back). Do NOT use for the decision of when and how many tool calls to make (use tool-call-strategy), agent-system architecture and coordination patterns (use agent-engineering), prompt wording (use prompt-craft), or the design of evals for tool-use behavior (use agent-eval-design). Do NOT use for the external API surface (use api-design). Do NOT use for the serialization frontier between server and client code (use client-server-boundary)."
+description: "Use when reasoning about the protocol-level cycle by which a language model uses external tools: the four phases (declaration, request, execution, continuation), the message-history state model that ties them together, the structural differences between vendor protocols (Anthropic tool-use, OpenAI function-calling, MCP) and how they compose, parallel vs sequential tool calls, error handling and retries inside the cycle, and the separation between the model (which produces structured intent) and the runtime (which executes the intent and routes results back). Do NOT use for the decision of when and how many tool calls to make (use tool-call-strategy), agent-system architecture and coordination patterns (use agent-engineering), prompt wording (use prompt-craft), or the design of evals for tool-use behavior (use agent-eval-design)."
 license: MIT
 allowed-tools: Read Grep
 metadata:
@@ -22,7 +22,7 @@ metadata:
   triggers: "[\"how does tool calling actually work\",\"what's the message shape for a tool result\",\"MCP vs function calling vs Anthropic tools\",\"can the model call tools in parallel\",\"where do tool errors live in the message history\"]"
   examples: "[\"design the message-shape contract between a model and a tool runtime\",\"explain why a tool result must be appended to the message history before the next assistant turn\",\"decide whether to expose a capability as a tool, an MCP server, or an inline API\",\"diagnose why a model keeps re-calling the same tool with the same arguments\"]"
   anti_examples: "[\"decide whether to call a tool or write a script (use tool-call-strategy)\",\"choose a multi-agent coordination pattern (use agent-engineering)\",\"design an eval suite that tests tool-call correctness (use agent-eval-design)\"]"
-  relations: "{\"related\":[\"tool-call-strategy\",\"agent-engineering\",\"api-design\",\"type-safety\",\"client-server-boundary\"],\"boundary\":[{\"skill\":\"tool-call-strategy\",\"reason\":\"tool-call-strategy owns the decision of when, how many, and which tools to call (token cost, redundancy, parallelization, decision gate). tool-call-flow owns the protocol-level cycle that makes any call possible. The two compose: strategy decides what to do; flow describes the mechanism that carries it out.\"},{\"skill\":\"agent-engineering\",\"reason\":\"agent-engineering owns multi-agent and multi-step system architecture (orchestrator/worker, consensus, sequential chains). tool-call-flow is one cycle inside a single agent — the protocol for a single model-to-runtime interaction.\"},{\"skill\":\"api-design\",\"reason\":\"api-design owns the external API surface that tools may wrap. tool-call-flow owns the model-facing contract: how the tool is declared to the model, how the result is encoded back to it, and how the cycle is structured.\"},{\"skill\":\"client-server-boundary\",\"reason\":\"client-server-boundary owns the serialization frontier between server and client code. tool-call-flow is an analogous frontier between a language model (which produces structured intent) and a runtime (which executes the intent) — the trust direction is different but the discipline of explicit serialization is identical.\"}],\"verify_with\":[\"tool-call-strategy\",\"agent-eval-design\"]}"
+  relations: "{\"related\":[\"tool-call-strategy\",\"agent-engineering\",\"api-design\",\"type-safety\",\"client-server-boundary\"],\"boundary\":[{\"skill\":\"tool-call-strategy\",\"reason\":\"tool-call-strategy owns the decision of when, how many, and which tools to call (token cost, redundancy, parallelization, decision gate). tool-call-flow owns the protocol-level cycle that makes any call possible. The two compose: strategy decides what to do; flow describes the mechanism that carries it out.\"}],\"verify_with\":[\"tool-call-strategy\",\"agent-eval-design\"]}"
   mental_model: "|"
   purpose: "|"
   boundary: "|"
@@ -38,7 +38,6 @@ metadata:
   skill_graph_source_repo: "https://github.com/jacob-balslev/skill-graph"
   skill_graph_project: Skill Graph
   skill_graph_canonical_skill: skills/ai-engineering/tool-call-flow/SKILL.md
-  skill_graph_export_description_projection: boundary
 ---
 
 # Tool-Call Flow
@@ -280,9 +279,6 @@ After applying this skill, verify:
 - choose a multi-agent coordination pattern (use agent-engineering)
 - design an eval suite that tests tool-call correctness (use agent-eval-design)
 - Owned by `tool-call-strategy`: the decision of when, how many, and which tools to call (token cost, redundancy, parallelization, decision gate)
-- Owned by `agent-engineering`: multi-agent and multi-step system architecture (orchestrator/worker, consensus, sequential chains)
-- Owned by `api-design`: the external API surface
-- Owned by `client-server-boundary`: the serialization frontier between server and client code
 
 **Related skills**
 - Verify with: `tool-call-strategy`, `agent-eval-design`

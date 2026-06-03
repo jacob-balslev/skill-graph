@@ -19,7 +19,7 @@ metadata:
   triggers: "[\"brainstorm\",\"ideation session\",\"crazy 8s\",\"generate concepts\",\"narrow down ideas\"]"
   examples: "[\"Run a crazy-8s round on this how-might-we statement and produce a divergent set.\",\"Apply SCAMPER to this existing feature to generate variant concepts.\",\"Use dot voting and an impact/effort matrix to converge on three concepts to prototype.\",\"Help me set up a worst-possible-idea round to break the team out of solution fixation.\"]"
   anti_examples: "[\"Decide whether to invest in this feature for the next quarter.\",\"Model the bounded contexts for the order-fulfillment domain.\",\"Write the production code for the selected concept.\"]"
-  relations: "{\"related\":[\"problem-framing\",\"prototyping\",\"design-thinking\"],\"boundary\":[{\"skill\":\"event-storming\",\"reason\":\"event-storming is a collaborative engineering discovery practice for mapping domain events and aggregates. ideation generates user-facing concept variants and applies divergent/convergent selection — different purpose, different output, different participants.\"},{\"skill\":\"conceptual-modeling\",\"reason\":\"conceptual-modeling produces a single best model of a domain. ideation deliberately produces many alternatives before selecting — opposite epistemic stance.\"}]}"
+  relations: "{\"related\":[\"problem-framing\",\"prototyping\",\"design-thinking\",\"event-storming\",\"conceptual-modeling\"]}"
   structural_verdict: PASS
   truth_verdict: PASS
   comprehension_verdict: UNVERIFIED
@@ -82,11 +82,9 @@ The discipline is sceptical of "good enough" early ideas. The first three ideas 
 - Decide whether to invest in this feature for the next quarter.
 - Model the bounded contexts for the order-fulfillment domain.
 - Write the production code for the selected concept.
-- Owned by `event-storming`
-- Owned by `conceptual-modeling`
 
 **Related skills**
-- Related: `problem-framing`, `prototyping`, `design-thinking`
+- Related: `problem-framing`, `prototyping`, `design-thinking`, `event-storming`, `conceptual-modeling`
 
 **Keywords**
 - `crazy 8s`, `brainstorming`, `SCAMPER`, `worst possible idea`, `headlines from the future`, `dot voting`, `NUF test`, `divergent thinking`, `convergent thinking`, `ideation workshop`

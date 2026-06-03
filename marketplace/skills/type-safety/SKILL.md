@@ -21,7 +21,7 @@ metadata:
   triggers: "[\"is this type-safe\",\"should this be `any` or `unknown`\",\"exhaustiveness check\",\"narrowing\",\"where does validation belong\"]"
   examples: "[\"review whether this discriminated union has an exhaustiveness check at the switch\",\"decide whether to use `any` or `unknown` for this third-party JSON payload\",\"explain why TypeScript's `as` cast doesn't actually validate at runtime\",\"design where Zod (or any validator) parses at the application boundary\"]"
   anti_examples: "[\"implement HMAC verification for an inbound webhook (use webhook-integration)\",\"design the JSON shape of an API endpoint (use api-design)\",\"choose between Postgres column types (use data-modeling)\"]"
-  relations: "{\"related\":[\"api-design\",\"testing-strategy\",\"code-review\"],\"boundary\":[{\"skill\":\"api-design\",\"reason\":\"api-design owns the external request/response surface; type-safety owns the discipline of expressing internal program correctness as types.\"},{\"skill\":\"testing-strategy\",\"reason\":\"testing-strategy owns the runtime verification of behavior; type-safety owns the compile-time verification of structure. They cover different failure modes.\"},{\"skill\":\"data-modeling\",\"reason\":\"data-modeling owns persistence and entity shape; type-safety owns the in-memory type contracts that consume that shape.\"}],\"verify_with\":[\"testing-strategy\",\"code-review\"]}"
+  relations: "{\"related\":[\"api-design\",\"testing-strategy\",\"code-review\",\"data-modeling\"],\"boundary\":[{\"skill\":\"testing-strategy\",\"reason\":\"testing-strategy owns the runtime verification of behavior; type-safety owns the compile-time verification of structure. They cover different failure modes.\"}],\"verify_with\":[\"testing-strategy\",\"code-review\"]}"
   mental_model: "|"
   purpose: "|"
   boundary: "|"
@@ -225,13 +225,11 @@ After applying this skill, verify:
 - implement HMAC verification for an inbound webhook (use webhook-integration)
 - design the JSON shape of an API endpoint (use api-design)
 - choose between Postgres column types (use data-modeling)
-- Owned by `api-design`: the external request/response surface
 - Owned by `testing-strategy`: the runtime verification of behavior
-- Owned by `data-modeling`: persistence and entity shape
 
 **Related skills**
 - Verify with: `testing-strategy`, `code-review`
-- Related: `api-design`, `testing-strategy`, `code-review`
+- Related: `api-design`, `testing-strategy`, `code-review`, `data-modeling`
 
 **Concept**
 - Mental model: |

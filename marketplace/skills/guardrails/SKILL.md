@@ -1,6 +1,6 @@
 ---
 name: guardrails
-description: "Use when planning or executing agent/tool operations that touch protected files, credentials, destructive git commands, destructive SQL, PII, secrets, deployments, package publication, or irreversible system mutations. Covers proactive safety policy, tool-call tripwires, blocking vs advisory enforcement, secret-exposure prevention, and excessive-agency containment. Do NOT use for application input validation, routine git workflow design, migration authoring, or general code correctness review (use `code-review`, `version-control`, or `database-migration`). Do NOT use for routine git hygiene (use version-control)."
+description: "Use when planning or executing agent/tool operations that touch protected files, credentials, destructive git commands, destructive SQL, PII, secrets, deployments, package publication, or irreversible system mutations. Covers proactive safety policy, tool-call tripwires, blocking vs advisory enforcement, secret-exposure prevention, and excessive-agency containment. Do NOT use for application input validation, routine git workflow design, migration authoring, or general code correctness review (use `code-review`, `version-control`, or `database-migration`)."
 license: MIT
 compatibility: "Markdown, Git, agent-skill runtimes"
 allowed-tools: Read Grep Bash
@@ -19,7 +19,7 @@ metadata:
   stability: experimental
   keywords: "[\"guardrails\",\"tool guardrails\",\"tripwire\",\"safety gate\",\"force push\",\"secret detection\",\"destructive action\",\"protected files\",\"circuit breaker\",\"excessive agency\"]"
   triggers: "[\"guardrails-skill\",\"tool-guardrails\",\"tripwire-skill\",\"agent-safety-guardrails\"]"
-  relations: "{\"related\":[\"intent-recognition\",\"version-control\",\"database-migration\"],\"boundary\":[{\"skill\":\"code-review\",\"reason\":\"code-review evaluates a proposed code change; guardrails evaluates whether an agent/tool action should be blocked, confirmed, or allowed before side effects happen\"},{\"skill\":\"version-control\",\"reason\":\"version-control owns routine git hygiene; guardrails owns high-risk git tripwires such as force-push, hard reset, branch deletion, and history rewrite\"},{\"skill\":\"database-migration\",\"reason\":\"database-migration plans safe DDL and data migrations; guardrails blocks or escalates destructive SQL patterns at execution time\"}],\"verify_with\":[\"intent-recognition\",\"code-review\"]}"
+  relations: "{\"related\":[\"intent-recognition\",\"version-control\",\"database-migration\",\"code-review\"],\"verify_with\":[\"intent-recognition\",\"code-review\"]}"
   grounding: "{\"subject_matter\":\"Agent and tool-call safety guardrails for destructive operations, secret exposure prevention, excessive-agency containment, and irreversible system mutations\",\"grounding_mode\":\"hybrid\",\"truth_sources\":[\"https://openai.github.io/openai-agents-python/guardrails/\",\"https://owasp.org/www-project-top-10-for-large-language-model-applications/\",\"https://www.nist.gov/itl/ai-risk-management-framework\",\"https://nvlpubs.nist.gov/nistpubs/ai/NIST.AI.600-1.pdf\",\"https://docs.github.com/en/code-security/how-tos/secure-your-secrets/detect-secret-leaks\"],\"failure_modes\":[\"tool_call_runs_before_guardrail_completes\",\"agent_level_guardrail_misses_delegated_tool_call\",\"secret_pattern_committed_or_echoed\",\"force_push_or_hard_reset_destroys_work\",\"unbounded_sql_mutation_reaches_live_database\",\"excessive_agency_allows_unchecked_real_world_action\",\"guardrail_bypass_treated_as_normal_override\"],\"evidence_priority\":\"equal\"}"
   portability: "{\"readiness\":\"scripted\",\"targets\":[\"skill-md\"]}"
   lifecycle: "{\"stale_after_days\":90,\"review_cadence\":\"quarterly\"}"
@@ -32,7 +32,6 @@ metadata:
   skill_graph_source_repo: "https://github.com/jacob-balslev/skill-graph"
   skill_graph_project: Skill Graph
   skill_graph_canonical_skill: skills/ai-engineering/guardrails/SKILL.md
-  skill_graph_export_description_projection: boundary
 ---
 # Guardrails
 
@@ -168,14 +167,9 @@ Guardrails for tool-using agents must cover LLM-specific risks as well as classi
 **When to use**
 - Triggers: `guardrails-skill`, `tool-guardrails`, `tripwire-skill`, `agent-safety-guardrails`
 
-**Not for**
-- Owned by `code-review`
-- Owned by `version-control`: routine git hygiene
-- Owned by `database-migration`
-
 **Related skills**
 - Verify with: `intent-recognition`, `code-review`
-- Related: `intent-recognition`, `version-control`, `database-migration`
+- Related: `intent-recognition`, `version-control`, `database-migration`, `code-review`
 
 **Grounding**
 - Mode: `hybrid`

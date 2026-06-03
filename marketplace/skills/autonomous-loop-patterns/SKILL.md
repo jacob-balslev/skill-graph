@@ -1,6 +1,6 @@
 ---
 name: autonomous-loop-patterns
-description: "Use when designing, reviewing, or debugging an autonomous AI agent loop: repeated agent execution, completion signals, checkpoints, supervisor respawn, stall detection, safety caps, and human handoff rules. Covers the core loop patterns from simple bounded runs through sentinel-based continuation, checkpoint-resume, and external supervisor loops. Do NOT use for choosing a specific agent product command (use agent-engineering or the product's docs), writing ordinary task instructions (use prompt-craft), or optimizing individual tool calls (use tool-call-strategy). Do NOT use for full production agent-system architecture (use agent-engineering)."
+description: "Use when designing, reviewing, or debugging an autonomous AI agent loop: repeated agent execution, completion signals, checkpoints, supervisor respawn, stall detection, safety caps, and human handoff rules. Covers the core loop patterns from simple bounded runs through sentinel-based continuation, checkpoint-resume, and external supervisor loops. Do NOT use for choosing a specific agent product command (use agent-engineering or the product's docs), writing ordinary task instructions (use prompt-craft), or optimizing individual tool calls (use tool-call-strategy)."
 metadata:
   schema_version: "7"
   subject: agent-ops
@@ -22,7 +22,7 @@ metadata:
   boundary: "This skill owns loop control shape, not the work performed inside each iteration. Use prompt-craft for the wording of a single worker prompt, tool-call-strategy for per-tool efficiency, agent-engineering for broader multi-agent system architecture, context-management for what context to load, and observability-modeling for telemetry schema design."
   analogy: "An autonomous loop is an autopilot mode: it can keep flying, but only because it has instruments, altitude limits, a route, and a clear handoff back to a pilot."
   misconception: "The common mistake is treating autonomy as permission to run forever. A safe loop is defined by when it stops, what state it writes, what evidence proves progress, and what cap forces human review."
-  relations: "{\"related\":[\"agent-engineering\",\"prompt-craft\",\"tool-call-strategy\",\"context-management\",\"observability-modeling\"],\"boundary\":[{\"skill\":\"prompt-craft\",\"reason\":\"Prompt-craft owns the wording of one worker instruction; this skill owns the loop control shape around repeated worker execution.\"},{\"skill\":\"tool-call-strategy\",\"reason\":\"Tool-call-strategy owns per-call efficiency inside an agent; this skill owns whether and how the agent repeats across iterations.\"},{\"skill\":\"agent-engineering\",\"reason\":\"Agent-engineering owns full production agent-system architecture; this skill owns the narrower loop-pattern decision and safety checklist.\"}],\"verify_with\":[\"agent-engineering\",\"observability-modeling\"]}"
+  relations: "{\"related\":[\"agent-engineering\",\"prompt-craft\",\"tool-call-strategy\",\"context-management\",\"observability-modeling\"],\"verify_with\":[\"agent-engineering\",\"observability-modeling\"]}"
   structural_verdict: PASS
   truth_verdict: PASS
   comprehension_verdict: UNVERIFIED
@@ -32,7 +32,6 @@ metadata:
   skill_graph_source_repo: "https://github.com/jacob-balslev/skill-graph"
   skill_graph_project: Skill Graph
   skill_graph_canonical_skill: skills/agent-ops/autonomous-loop-patterns/SKILL.md
-  skill_graph_export_description_projection: boundary
 ---
 
 # Autonomous Loop Patterns
@@ -313,11 +312,6 @@ After applying this skill, verify:
 
 **When to use**
 - Triggers: `autonomous-loop-skill`, `loop-patterns-skill`, `agent-loop-design`
-
-**Not for**
-- Owned by `prompt-craft`: the wording of one worker instruction
-- Owned by `tool-call-strategy`: per-call efficiency inside an agent
-- Owned by `agent-engineering`: full production agent-system architecture
 
 **Related skills**
 - Verify with: `agent-engineering`, `observability-modeling`

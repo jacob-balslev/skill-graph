@@ -21,7 +21,7 @@ metadata:
   triggers: "[\"should this be a mock or a stub\",\"are we using mocks correctly\",\"the test is brittle when I refactor\",\"do we need a fake here\",\"is this test really testing anything\"]"
   examples: "[\"decide between a mock, a stub, and a fake for a database collaborator in a test\",\"explain why over-mocking produces fragile tests that change with every refactor\",\"diagnose a passing test that mirrors the implementation rather than specifying behavior\",\"design an in-memory fake for a repository interface that supports both classicist tests and integration tests\"]"
   anti_examples: "[\"decide which test levels (unit/integration/e2e) the project should invest in (use testing-strategy)\",\"set up a production feature flag (use feature-gating)\",\"configure a specific mocking library — Jest, Sinon, Mockito (library docs)\"]"
-  relations: "{\"related\":[\"testing-strategy\",\"test-driven-development\",\"refactor\",\"api-design\",\"type-safety\"],\"boundary\":[{\"skill\":\"test-driven-development\",\"reason\":\"test-driven-development owns the design discipline of writing the test before the production code; this skill owns the design of the stand-in objects those tests use. The two compose: TDD prescribes the rhythm; test-doubles-design prescribes the stand-ins.\"},{\"skill\":\"testing-strategy\",\"reason\":\"testing-strategy owns the strategic question of what to test at which level; this skill owns the tactical construction of the stand-ins that make a given test possible.\"},{\"skill\":\"refactor\",\"reason\":\"refactor owns behavior-preserving structural change; this skill owns the doubles whose over-use produces refactor-fragile tests. The two skills are read together when a test suite resists refactoring.\"},{\"skill\":\"api-design\",\"reason\":\"api-design owns the design of an interface as a production contract; this skill owns the doubles that exercise that interface in tests. When test doubles drive interface decisions (London-school TDD), this skill and api-design overlap heavily.\"}],\"verify_with\":[\"test-driven-development\",\"refactor\"]}"
+  relations: "{\"related\":[\"testing-strategy\",\"test-driven-development\",\"refactor\",\"api-design\",\"type-safety\"],\"boundary\":[{\"skill\":\"test-driven-development\",\"reason\":\"test-driven-development owns the design discipline of writing the test before the production code; this skill owns the design of the stand-in objects those tests use. The two compose: TDD prescribes the rhythm; test-doubles-design prescribes the stand-ins.\"},{\"skill\":\"testing-strategy\",\"reason\":\"testing-strategy owns the strategic question of what to test at which level; this skill owns the tactical construction of the stand-ins that make a given test possible.\"}],\"verify_with\":[\"test-driven-development\",\"refactor\"]}"
   mental_model: "|"
   purpose: "|"
   boundary: "|"
@@ -37,7 +37,7 @@ metadata:
   skill_graph_source_repo: "https://github.com/jacob-balslev/skill-graph"
   skill_graph_project: Skill Graph
   skill_graph_canonical_skill: skills/quality-assurance/test-doubles-design/SKILL.md
-  skill_graph_export_description_projection: anti_examples+boundary
+  skill_graph_export_description_projection: anti_examples
   skill_graph_export_description_projection_truncated: "true"
 ---
 
@@ -149,8 +149,6 @@ After applying this skill, verify:
 - configure a specific mocking library — Jest, Sinon, Mockito (library docs)
 - Owned by `test-driven-development`: the design discipline of writing the test before the production code
 - Owned by `testing-strategy`: the strategic question of what to test at which level
-- Owned by `refactor`: behavior-preserving structural change
-- Owned by `api-design`: the design of an interface as a production contract
 
 **Related skills**
 - Verify with: `test-driven-development`, `refactor`

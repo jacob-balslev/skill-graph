@@ -21,7 +21,7 @@ metadata:
   keywords: "[\"tool call optimization\",\"reduce tool calls\",\"too many tool calls\",\"script vs tool call\",\"batching tool calls\",\"parallel tool calls\",\"parallelize calls\",\"independent calls\",\"redundant reads\",\"re-reading file\"]"
   examples: "[\"the agent made 17 read_file calls when 3 greps would have done — what should it have done?\",\"we're renaming a variable across 40 files — script or tool calls?\",\"the agent re-reads the same file three times in one task — fix the policy\",\"should I batch these reads into one message or wait for each result?\",\"design a tool-use protocol for our new agent harness — what rules matter?\",\"the context window is filling with verbose terminal output — how do I cut it?\",\"is it worth delegating this exploratory search to a subagent?\",\"what's a reasonable tool-call budget for a single-file bug fix?\"]"
   anti_examples: "[\"improve this prompt's wording to get better outputs\",\"design what skills get loaded for which prompts\",\"the test suite is failing after my change — find the cause\",\"extract this repeated string-concat into a helper function\",\"scaffold a new SKILL.md for our team's tool-use rules\",\"review this AI-generated PR for correctness\"]"
-  relations: "{\"boundary\":[{\"skill\":\"context-engineering\",\"reason\":\"context-engineering designs the entire information stack reaching the model; tool-call-strategy owns the per-call efficiency decisions inside that stack\"},{\"skill\":\"prompt-craft\",\"reason\":\"prompt-craft writes the wording of one instruction; tool-call-strategy decides which external operations the agent should invoke around that instruction\"},{\"skill\":\"debugging\",\"reason\":\"debugging chases a specific runtime failure; tool-call-strategy is about the efficiency profile of healthy tool use\"},{\"skill\":\"refactor\",\"reason\":\"refactor owns behaviour-preserving code transformations as the deliverable; tool-call-strategy decides whether to deliver that transformation through 50 tool calls or one script\"}],\"related\":[\"context-engineering\",\"refactor\",\"prompt-craft\"],\"verify_with\":[\"code-review\"]}"
+  relations: "{\"boundary\":[{\"skill\":\"prompt-craft\",\"reason\":\"prompt-craft writes the wording of one instruction; tool-call-strategy decides which external operations the agent should invoke around that instruction\"}],\"related\":[\"context-engineering\",\"refactor\",\"prompt-craft\",\"debugging\"],\"verify_with\":[\"code-review\"]}"
   grounding: "{\"subject_matter\":\"Efficient tool-call strategy for LLM coding agents\",\"grounding_mode\":\"hybrid\",\"truth_sources\":[\"https://developers.openai.com/api/docs/guides/function-calling\",\"https://platform.claude.com/docs/en/agents-and-tools/tool-use/overview\",\"https://platform.claude.com/docs/en/agents-and-tools/tool-use/manage-tool-context\",\"https://github.com/jacob-balslev/skills/blob/main/skills/tool-call-flow/SKILL.md\",\"https://github.com/jacob-balslev/skills/blob/main/skills/context-engineering/SKILL.md\"],\"failure_modes\":[\"tool_call_minimization_without_verification\",\"serial_calls_when_parallel_independent\",\"shell_bulk_work_without_reviewable_diff\",\"verbose_outputs_pollute_context\",\"same_result_refetched_from_conversation\"],\"evidence_priority\":\"equal\"}"
   portability: "{\"readiness\":\"scripted\",\"targets\":[\"skill-md\"]}"
   lifecycle: "{\"stale_after_days\":90,\"review_cadence\":\"quarterly\"}"
@@ -40,7 +40,7 @@ metadata:
   skill_graph_source_repo: "https://github.com/jacob-balslev/skill-graph"
   skill_graph_project: Skill Graph
   skill_graph_canonical_skill: skills/ai-engineering/tool-call-strategy/SKILL.md
-  skill_graph_export_description_projection: anti_examples+boundary
+  skill_graph_export_description_projection: anti_examples
   skill_graph_export_description_projection_truncated: "true"
 ---
 
@@ -364,14 +364,11 @@ After applying this skill, verify:
 - extract this repeated string-concat into a helper function
 - scaffold a new SKILL.md for our team's tool-use rules
 - review this AI-generated PR for correctness
-- Owned by `context-engineering`
 - Owned by `prompt-craft`
-- Owned by `debugging`
-- Owned by `refactor`: behaviour-preserving code transformations as the deliverable
 
 **Related skills**
 - Verify with: `code-review`
-- Related: `context-engineering`, `refactor`, `prompt-craft`
+- Related: `context-engineering`, `refactor`, `prompt-craft`, `debugging`
 
 **Concept**
 - Mental model: Tool-call strategy is the query planner for an agent's external actions. Treat every call as an expensive, stateful evidence-acquisition operation with three costs: latency, tokens, and context pollution. The goal is sufficient evidence with minimum noise: pick the narrowest tool that can answer the question, batch independent calls, keep dependent calls sequential, use scripts for deterministic bulk work, preserve reviewability for edits, and stop re-fetching facts already present in the conversation.

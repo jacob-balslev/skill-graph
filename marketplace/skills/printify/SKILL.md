@@ -20,7 +20,7 @@ metadata:
   triggers: "[\"printify\",\"printify api\",\"printify webhook\",\"print on demand\"]"
   examples: "[\"Create a Printify product from a blueprint + print provider + variant set and publish it to a connected Shopify store\",\"Handle a Printify order:updated webhook and reconcile fulfillment status\",\"Resolve shipping cost for a basket of Printify variants given a destination country\"]"
   anti_examples: "[\"Generate the artwork PNG file that gets uploaded as a print file\",\"Implement the Shopify side of the Printify-to-Shopify sync\",\"Design a generic POD-vendor-agnostic product schema\"]"
-  relations: "{\"related\":[\"shopify\",\"webhook-integration\",\"api-design\"],\"boundary\":[{\"skill\":\"shopify\",\"reason\":\"Printify publishes to Shopify (and other channels) but the Shopify-side concerns — theme display, Shopify webhooks, Admin API — belong in the shopify skill.\"},{\"skill\":\"webhook-integration\",\"reason\":\"webhook-integration covers vendor-neutral signing/retry patterns; this skill handles Printify's specific event types and signature scheme.\"}]}"
+  relations: "{\"related\":[\"shopify\",\"webhook-integration\",\"api-design\"],\"boundary\":[{\"skill\":\"shopify\",\"reason\":\"Printify publishes to Shopify (and other channels) but the Shopify-side concerns — theme display, Shopify webhooks, Admin API — belong in the shopify skill.\"}]}"
   structural_verdict: PASS
   truth_verdict: PASS
   comprehension_verdict: UNVERIFIED
@@ -84,7 +84,6 @@ The publish lifecycle is asynchronous and partially observable. Treat publish su
 - Implement the Shopify side of the Printify-to-Shopify sync
 - Design a generic POD-vendor-agnostic product schema
 - Owned by `shopify`
-- Owned by `webhook-integration`
 
 **Related skills**
 - Related: `shopify`, `webhook-integration`, `api-design`

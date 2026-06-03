@@ -1,6 +1,6 @@
 ---
 name: constraint-awareness
-description: "Use when prioritizing work in an AI-assisted codebase, designing agent autonomy levels, deciding what to automate vs keep manual, or evaluating whether a process/tool adds value. Covers Theory of Constraints for AI-era engineering: cheap code production, human review/validation/decision bottlenecks, Five Focusing Steps, constraint-aware process design, attention audits, and constraint-shift modeling. Do NOT use for task-effort estimation, backlog scoring with RICE/WSJF/ICE, or routing a task to a specific model. Do NOT use for what's the ICE / RICE score for this initiative against five others. Do NOT use for estimate the effort tier for this ticket. Do NOT use for route this debugging task to the cheapest model that can solve it. Do NOT use for review this AI-generated PR for correctness. Do NOT use for design the production reliability layer for our agent system. Do NOT use for production reliability patterns (orchestration, error budgets, observability) (use agent-engineering)."
+description: "Use when prioritizing work in an AI-assisted codebase, designing agent autonomy levels, deciding what to automate vs keep manual, or evaluating whether a process/tool adds value. Covers Theory of Constraints for AI-era engineering: cheap code production, human review/validation/decision bottlenecks, Five Focusing Steps, constraint-aware process design, attention audits, and constraint-shift modeling. Do NOT use for task-effort estimation, backlog scoring with RICE/WSJF/ICE, or routing a task to a specific model. Do NOT use for what's the ICE / RICE score for this initiative against five others. Do NOT use for estimate the effort tier for this ticket. Do NOT use for route this debugging task to the cheapest model that can solve it. Do NOT use for review this AI-generated PR for correctness. Do NOT use for design the production reliability layer for our agent system."
 license: MIT
 compatibility: "Operating-model-agnostic. Applies whether the constraint is a single solo developer operating multiple agents, a small team where one senior engineer reviews everything, or a larger team where review capacity is the limiting factor. The framework adapts as the constraint identity changes."
 allowed-tools: Read Grep
@@ -21,7 +21,7 @@ metadata:
   keywords: "[\"theory of constraints\",\"goldratt five focusing steps\",\"bottleneck identification\",\"constraint of an ai-coding system\",\"human attention as constraint\",\"cost structure inversion ai\",\"what to automate vs keep manual\",\"batch decisions not interrupt\",\"options not questions\",\"constraint-aware process design\"]"
   examples: "[\"we keep adding tooling and the agent throughput isn't going up — what TOC step are we missing?\",\"should this approval gate stay in the loop or be replaced by an automated check?\",\"the agents keep asking me clarifying questions and I'm answering 30 a day — what's the structural fix?\",\"we're considering a 4-model review panel on every architectural decision — does that subordinate to or overload the constraint?\",\"code production used to be the bottleneck; what does the new bottleneck look like once agents do all the typing?\",\"is this proposed automation a constraint-elevator or a non-constraint optimization that won't move throughput?\",\"the rework rate climbed from 12% to 24% over the quarter — which constraint step does that point at?\"]"
   anti_examples: "[\"what's the ICE / RICE score for this initiative against five others\",\"estimate the effort tier for this ticket\",\"route this debugging task to the cheapest model that can solve it\",\"review this AI-generated PR for correctness\",\"design the production reliability layer for our agent system\"]"
-  relations: "{\"boundary\":[{\"skill\":\"ai-native-development\",\"reason\":\"ai-native-development is the conceptual frame for AI-coding (eras, autonomy slider, vibe vs agentic); constraint-awareness is the prioritization lens applied within that frame\"},{\"skill\":\"agent-engineering\",\"reason\":\"agent-engineering owns production reliability patterns (orchestration, error budgets, observability); constraint-awareness owns *which* of those to invest in based on where the bottleneck currently is\"},{\"skill\":\"code-review\",\"reason\":\"code-review evaluates one piece of work; constraint-awareness reasons about whether the review gate itself is the bottleneck\"},{\"skill\":\"tool-call-strategy\",\"reason\":\"tool-call-strategy decides per-action which tool an agent calls; constraint-awareness decides per-process whether that whole class of action should require human intervention at all\"}],\"related\":[\"ai-native-development\",\"agent-engineering\",\"code-review\"]}"
+  relations: "{\"related\":[\"ai-native-development\",\"agent-engineering\",\"code-review\",\"tool-call-strategy\"]}"
   portability: "{\"readiness\":\"scripted\",\"targets\":[\"skill-md\"]}"
   lifecycle: "{\"stale_after_days\":365,\"review_cadence\":\"quarterly\"}"
   mental_model: "|"
@@ -39,7 +39,7 @@ metadata:
   skill_graph_source_repo: "https://github.com/jacob-balslev/skill-graph"
   skill_graph_project: Skill Graph
   skill_graph_canonical_skill: skills/reasoning-strategy/constraint-awareness/SKILL.md
-  skill_graph_export_description_projection: anti_examples+boundary
+  skill_graph_export_description_projection: anti_examples
 ---
 
 # Constraint Awareness
@@ -340,13 +340,9 @@ When the constraint moves, the Five Focusing Steps restart from step 1. The proc
 - route this debugging task to the cheapest model that can solve it
 - review this AI-generated PR for correctness
 - design the production reliability layer for our agent system
-- Owned by `ai-native-development`
-- Owned by `agent-engineering`: production reliability patterns (orchestration, error budgets, observability)
-- Owned by `code-review`
-- Owned by `tool-call-strategy`
 
 **Related skills**
-- Related: `ai-native-development`, `agent-engineering`, `code-review`
+- Related: `ai-native-development`, `agent-engineering`, `code-review`, `tool-call-strategy`
 
 **Concept**
 - Mental model: |

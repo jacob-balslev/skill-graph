@@ -1,6 +1,6 @@
 ---
 name: mobile-responsive-ux
-description: "Use when designing mobile-specific UX for dashboards and operational web apps: touch-friendly targets, thumb-zone optimization, swipe gestures, condensed data display, bottom navigation, bottom sheets, mobile inputs, and pull-to-refresh. Load when adapting a desktop dashboard to phone use, implementing touch interactions, or checking whether a mobile layout serves quick-glance tasks rather than compressed desktop analysis. Do NOT use for audit ARIA labels and keyboard focus order. Do NOT use for choose global page breakpoints and responsive grid tracks. Do NOT use for design reusable design tokens for mobile components. Do NOT use for create the product information architecture. Do NOT use for page and screen structure across breakpoints (use layout-composition)."
+description: "Use when designing mobile-specific UX for dashboards and operational web apps: touch-friendly targets, thumb-zone optimization, swipe gestures, condensed data display, bottom navigation, bottom sheets, mobile inputs, and pull-to-refresh. Load when adapting a desktop dashboard to phone use, implementing touch interactions, or checking whether a mobile layout serves quick-glance tasks rather than compressed desktop analysis. Do NOT use for audit ARIA labels and keyboard focus order. Do NOT use for choose global page breakpoints and responsive grid tracks. Do NOT use for design reusable design tokens for mobile components. Do NOT use for create the product information architecture."
 license: MIT
 compatibility: "Markdown, Git, agent-skill runtimes"
 allowed-tools: Read Grep Bash
@@ -23,7 +23,7 @@ metadata:
   examples: "[\"make this dashboard usable on phones\",\"turn this desktop order table into a mobile card flow\",\"check whether these mobile controls are thumb friendly\",\"design a bottom sheet filter pattern for mobile\",\"add pull to refresh and touch gestures to this operational view\"]"
   anti_examples: "[\"audit ARIA labels and keyboard focus order\",\"choose global page breakpoints and responsive grid tracks\",\"design reusable design tokens for mobile components\",\"create the product information architecture\"]"
   triggers: "[\"mobile-responsive-ux-skill\",\"mobile-ux-skill\",\"touch-target-skill\",\"thumb-zone-skill\",\"mobile-dashboard-skill\"]"
-  relations: "{\"related\":[\"layout-composition\",\"interaction-patterns\",\"a11y\"],\"boundary\":[{\"skill\":\"a11y\",\"reason\":\"a11y owns accessibility compliance breadth: ARIA, keyboard behavior, focus order, screen reader output, contrast, and WCAG audit mechanics. mobile-responsive-ux owns touch ergonomics, mobile dashboard task shape, and small-screen interaction layout.\"},{\"skill\":\"layout-composition\",\"reason\":\"layout-composition owns page and screen structure across breakpoints. mobile-responsive-ux owns phone-specific dashboard behavior after the layout must become thumb-operated, glance-first, and progressively disclosed.\"}],\"verify_with\":[\"a11y\",\"layout-composition\"]}"
+  relations: "{\"related\":[\"layout-composition\",\"interaction-patterns\",\"a11y\"],\"verify_with\":[\"a11y\",\"layout-composition\"]}"
   mental_model: "Mobile dashboard UX treats the phone as a quick control surface, not a shrunken analytics workstation. The primitives are reach, target size, glanceable hierarchy, progressive disclosure, touch gestures with visible alternatives, mobile-appropriate inputs, and recovery from cramped or interrupted use."
   purpose: "This skill prevents agents from compressing desktop tables, sidebars, modals, and hover interactions into a phone viewport. It preserves the mobile user's likely job: check status, spot a problem, perform one short action, and leave."
   boundary: "This skill does not own general responsive structure across all breakpoints; that belongs to layout-composition. It does not own accessibility compliance, ARIA, keyboard order, screen reader behavior, or audit mechanics; that belongs to a11y. It does not own component token architecture or visual style systems."
@@ -41,7 +41,7 @@ metadata:
   skill_graph_source_repo: "https://github.com/jacob-balslev/skill-graph"
   skill_graph_project: Skill Graph
   skill_graph_canonical_skill: skills/frontend-engineering/mobile-responsive-ux/SKILL.md
-  skill_graph_export_description_projection: anti_examples+boundary
+  skill_graph_export_description_projection: anti_examples
 ---
 # Mobile Responsive UX Skill
 
@@ -359,8 +359,6 @@ After applying this skill, verify:
 - choose global page breakpoints and responsive grid tracks
 - design reusable design tokens for mobile components
 - create the product information architecture
-- Owned by `a11y`
-- Owned by `layout-composition`: page and screen structure across breakpoints
 
 **Related skills**
 - Verify with: `a11y`, `layout-composition`

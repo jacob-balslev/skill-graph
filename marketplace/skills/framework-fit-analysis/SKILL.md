@@ -21,7 +21,7 @@ metadata:
   keywords: "[\"framework fit\",\"technology selection\",\"library choice\",\"SDK evaluation\",\"platform evaluation\",\"migration cost\",\"exit cost\",\"operability\",\"ecosystem maturity\",\"build vs buy\"]"
   examples: "[\"should we use Next.js server actions, route handlers, or a separate API service for this workflow?\",\"evaluate whether adding this charting library is worth it\",\"compare Supabase, Firebase, and custom Postgres for this project under real constraints\",\"we want to replace this framework - what fit analysis should happen before an ADR?\"]"
   anti_examples: "[\"audit installed packages for duplication and supply-chain risk\",\"write the ADR after we chose the framework\",\"implement this feature in the framework we already selected\",\"profile a slow page and optimize bottlenecks\"]"
-  relations: "{\"boundary\":[{\"skill\":\"dependency-architecture\",\"reason\":\"dependency-architecture governs dependency graph shape and package boundaries; framework-fit-analysis evaluates a candidate technology decision\"},{\"skill\":\"architecture-decision-records\",\"reason\":\"architecture-decision-records records accepted decisions; framework-fit-analysis compares options before acceptance\"},{\"skill\":\"performance-engineering\",\"reason\":\"performance-engineering measures and optimizes actual behavior; framework-fit-analysis weighs expected performance among selection criteria\"},{\"skill\":\"refactor\",\"reason\":\"refactor changes existing code structure; framework-fit-analysis decides whether a larger technology shift is justified\"}],\"related\":[\"architecture-decision-records\",\"dependency-architecture\",\"performance-engineering\",\"owasp-security\"],\"verify_with\":[\"architecture-decision-records\",\"dependency-architecture\"]}"
+  relations: "{\"boundary\":[{\"skill\":\"dependency-architecture\",\"reason\":\"dependency-architecture governs dependency graph shape and package boundaries; framework-fit-analysis evaluates a candidate technology decision\"},{\"skill\":\"architecture-decision-records\",\"reason\":\"architecture-decision-records records accepted decisions; framework-fit-analysis compares options before acceptance\"}],\"related\":[\"architecture-decision-records\",\"dependency-architecture\",\"performance-engineering\",\"owasp-security\",\"refactor\"],\"verify_with\":[\"architecture-decision-records\",\"dependency-architecture\"]}"
   portability: "{\"readiness\":\"scripted\",\"targets\":[\"skill-md\"]}"
   lifecycle: "{\"stale_after_days\":180,\"review_cadence\":\"quarterly\"}"
   structural_verdict: PASS
@@ -105,12 +105,10 @@ This skill ships a comprehension-eval artifact at [`examples/evals/framework-fit
 - profile a slow page and optimize bottlenecks
 - Owned by `dependency-architecture`
 - Owned by `architecture-decision-records`
-- Owned by `performance-engineering`
-- Owned by `refactor`
 
 **Related skills**
 - Verify with: `architecture-decision-records`, `dependency-architecture`
-- Related: `architecture-decision-records`, `dependency-architecture`, `performance-engineering`, `owasp-security`
+- Related: `architecture-decision-records`, `dependency-architecture`, `performance-engineering`, `owasp-security`, `refactor`
 
 **Keywords**
 - `framework fit`, `technology selection`, `library choice`, `SDK evaluation`, `platform evaluation`, `migration cost`, `exit cost`, `operability`, `ecosystem maturity`, `build vs buy`

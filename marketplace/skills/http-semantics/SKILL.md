@@ -1,6 +1,6 @@
 ---
 name: http-semantics
-description: "Use when designing or reviewing HTTP-based systems where method semantics, status codes, idempotency, safe methods, conditional requests, content negotiation, caching headers, or representation metadata are load-bearing. Covers the RFC 9110/9111/9112 contract layer below any specific framework. Do NOT use for API surface shape and route taxonomy (use api-design), for WebSocket or SSE bidirectional streams (use streaming-architecture skill when available), for vendor-specific webhook signing (use webhook-integration), or for transport-level concerns like TLS or QUIC (use platform-level documentation). Do NOT use for decide between WebSocket and SSE for live updates (use streaming-architecture). Do NOT use for cross-boundary contract shapes regardless of transport (use system-interface-contracts)."
+description: "Use when designing or reviewing HTTP-based systems where method semantics, status codes, idempotency, safe methods, conditional requests, content negotiation, caching headers, or representation metadata are load-bearing. Covers the RFC 9110/9111/9112 contract layer below any specific framework. Do NOT use for API surface shape and route taxonomy (use api-design), for WebSocket or SSE bidirectional streams (use streaming-architecture skill when available), for vendor-specific webhook signing (use webhook-integration), or for transport-level concerns like TLS or QUIC (use platform-level documentation). Do NOT use for decide between WebSocket and SSE for live updates (use streaming-architecture)."
 license: MIT
 allowed-tools: Read Grep
 metadata:
@@ -21,7 +21,7 @@ metadata:
   triggers: "[\"what status code should this return\",\"is this method idempotent\",\"RFC 9110\",\"conditional request\",\"cache control header\"]"
   examples: "[\"decide whether bulk-update should be PUT or PATCH\",\"explain why this endpoint should return 409 instead of 400\",\"review whether this DELETE handler is truly idempotent\",\"design the Vary header for this endpoint that varies on Accept-Language\"]"
   anti_examples: "[\"design the JSON shape of the request and response bodies (use api-design)\",\"verify a Stripe webhook signature (use webhook-integration)\",\"decide between WebSocket and SSE for live updates (use streaming-architecture)\"]"
-  relations: "{\"related\":[\"api-design\",\"webhook-integration\",\"system-interface-contracts\"],\"boundary\":[{\"skill\":\"api-design\",\"reason\":\"api-design owns the surface shape (routes, request/response schemas, pagination); http-semantics owns the protocol-level method/status/header contract that any HTTP API builds on.\"},{\"skill\":\"webhook-integration\",\"reason\":\"webhook-integration owns inbound provider mechanics (signing, retry, vendor-specific topics); http-semantics owns vendor-neutral HTTP method and status semantics.\"},{\"skill\":\"system-interface-contracts\",\"reason\":\"system-interface-contracts owns cross-boundary contract shapes regardless of transport; http-semantics is HTTP-specific.\"}],\"verify_with\":[\"api-design\",\"code-review\"]}"
+  relations: "{\"related\":[\"api-design\",\"webhook-integration\",\"system-interface-contracts\"],\"boundary\":[{\"skill\":\"api-design\",\"reason\":\"api-design owns the surface shape (routes, request/response schemas, pagination); http-semantics owns the protocol-level method/status/header contract that any HTTP API builds on.\"},{\"skill\":\"webhook-integration\",\"reason\":\"webhook-integration owns inbound provider mechanics (signing, retry, vendor-specific topics); http-semantics owns vendor-neutral HTTP method and status semantics.\"}],\"verify_with\":[\"api-design\",\"code-review\"]}"
   mental_model: "|"
   purpose: "|"
   boundary: "|"
@@ -37,7 +37,7 @@ metadata:
   skill_graph_source_repo: "https://github.com/jacob-balslev/skill-graph"
   skill_graph_project: Skill Graph
   skill_graph_canonical_skill: skills/backend-engineering/http-semantics/SKILL.md
-  skill_graph_export_description_projection: anti_examples+boundary
+  skill_graph_export_description_projection: anti_examples
 ---
 
 # HTTP Semantics
@@ -186,7 +186,6 @@ After applying this skill, verify:
 - decide between WebSocket and SSE for live updates (use streaming-architecture)
 - Owned by `api-design`: the surface shape (routes, request/response schemas, pagination)
 - Owned by `webhook-integration`: inbound provider mechanics (signing, retry, vendor-specific topics)
-- Owned by `system-interface-contracts`: cross-boundary contract shapes regardless of transport
 
 **Related skills**
 - Verify with: `api-design`, `code-review`

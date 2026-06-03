@@ -21,7 +21,7 @@ metadata:
   keywords: "[\"software 3.0 concepts\",\"vibe coding\",\"agentic engineering doctrine\",\"autonomy slider\",\"prompt as code\",\"karpathy three eras\",\"autoresearch loop\",\"ai-generated code quality\",\"vibe hangover\",\"llm-native development\"]"
   examples: "[\"we keep accepting agent-generated code on first try and shipping bugs — what discipline replaces this?\",\"what autonomy level should I run for a security-sensitive change?\",\"does measuring lines-of-code per session make sense when an agent generates the code?\",\"the team is treating prompts and skill files like throwaway notes — what's the alternative framing?\",\"we want an auto-improve loop for our skill content — how do we constrain it so it doesn't regress?\",\"what's the conceptual difference between a vibe coding session and an agentic engineering session?\",\"AI-generated code is shipping with vulnerabilities — what gates should sit between agent output and production?\",\"how do I match autonomy level to the risk profile of the task?\"]"
   anti_examples: "[\"improve this specific prompt for the grader\",\"review this AI-generated PR for correctness\",\"design the checkpoint state machine for our loop\",\"scaffold a new skill that codifies our coding doctrine\",\"the autonomous loop is stalling — debug it\"]"
-  relations: "{\"boundary\":[{\"skill\":\"prompt-craft\",\"reason\":\"prompt-craft is the per-prompt authoring discipline; ai-native-development is the meta-frame that explains why prompts are source code\"},{\"skill\":\"agent-engineering\",\"reason\":\"agent-engineering owns the production reliability discipline (orchestration, error budgets, observability); ai-native-development owns the conceptual model that motivates those concerns\"},{\"skill\":\"code-review\",\"reason\":\"code-review evaluates the AI-generated output; ai-native-development frames why that output exists and how to size the gates around it\"},{\"skill\":\"tool-call-strategy\",\"reason\":\"tool-call-strategy is the tactical layer for an agent's tool dispatch; ai-native-development is the conceptual layer above it\"}],\"related\":[\"prompt-craft\",\"agent-engineering\",\"code-review\",\"skill-router\"],\"verify_with\":[\"code-review\",\"testing-strategy\"]}"
+  relations: "{\"related\":[\"prompt-craft\",\"agent-engineering\",\"code-review\",\"skill-router\",\"tool-call-strategy\"],\"verify_with\":[\"code-review\",\"testing-strategy\"]}"
   grounding: "{\"subject_matter\":\"AI-native software development discipline for prompt-as-code workflows, agent autonomy calibration, metric-gated auto-improvement loops, and quality gates for AI-generated code\",\"grounding_mode\":\"hybrid\",\"truth_sources\":[\"https://www.youtube.com/watch?v=LCEmiRjPEtQ\",\"https://github.com/karpathy/autoresearch\",\"https://arxiv.org/abs/2211.03622\",\"https://arxiv.org/abs/2504.20814\",\"https://snyk.io/lp/secure-adoption-in-the-genai-era/\",\"https://owasp.org/www-project-top-10-for-large-language-model-applications/\"],\"failure_modes\":[\"unintentional_high_autonomy_for_high_risk_work\",\"accepting_ai_generated_code_without_review_or_tests\",\"treating_prompts_and_skills_as_throwaway_notes\",\"optimizing_agent_loops_against_multiple_moving_metrics\",\"citing_stale_ai_code_security_statistics_as_fixed_truth\",\"shipping_agentic_systems_without_prompt_injection_or_excessive_agency_controls\"],\"evidence_priority\":\"equal\"}"
   portability: "{\"readiness\":\"scripted\",\"targets\":[\"skill-md\"]}"
   lifecycle: "{\"stale_after_days\":180,\"review_cadence\":\"quarterly\"}"
@@ -34,7 +34,7 @@ metadata:
   skill_graph_source_repo: "https://github.com/jacob-balslev/skill-graph"
   skill_graph_project: Skill Graph
   skill_graph_canonical_skill: skills/agent-ops/ai-native-development/SKILL.md
-  skill_graph_export_description_projection: anti_examples+boundary
+  skill_graph_export_description_projection: anti_examples
   skill_graph_export_description_projection_truncated: "true"
 ---
 
@@ -347,14 +347,10 @@ Moving down the slider is also legitimate: high-stakes work (production deployme
 - design the checkpoint state machine for our loop
 - scaffold a new skill that codifies our coding doctrine
 - the autonomous loop is stalling — debug it
-- Owned by `prompt-craft`
-- Owned by `agent-engineering`: the production reliability discipline (orchestration, error budgets, observability)
-- Owned by `code-review`
-- Owned by `tool-call-strategy`
 
 **Related skills**
 - Verify with: `code-review`, `testing-strategy`
-- Related: `prompt-craft`, `agent-engineering`, `code-review`, `skill-router`
+- Related: `prompt-craft`, `agent-engineering`, `code-review`, `skill-router`, `tool-call-strategy`
 
 **Grounding**
 - Mode: `hybrid`

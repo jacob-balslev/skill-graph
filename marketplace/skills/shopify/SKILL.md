@@ -20,7 +20,7 @@ metadata:
   triggers: "[\"shopify\",\"shopify webhook\",\"shopify api\",\"shopify theme\",\"shopify app\"]"
   examples: "[\"Verify an incoming Shopify webhook by computing HMAC SHA-256 over the raw body and comparing against the X-Shopify-Hmac-Sha256 header\",\"Query the Shopify Admin GraphQL API for product variants with their metafields and handle query cost throttling\",\"Build an Online Store 2.0 section schema with block types and dynamic settings\"]"
   anti_examples: "[\"Design the event payload schema for our internal order-processing pipeline\",\"Implement Stripe Connect onboarding for a marketplace\",\"Refactor a generic shopping cart component that isn't Shopify-specific\"]"
-  relations: "{\"related\":[\"webhook-integration\",\"api-design\",\"printify\"],\"boundary\":[{\"skill\":\"webhook-integration\",\"reason\":\"webhook-integration covers vendor-agnostic delivery, retries, and signing; this skill handles Shopify's specific topic names, X-Shopify-* header contract, and the 5-second response deadline before retry.\"},{\"skill\":\"event-contract-design\",\"reason\":\"Hand off to event-contract-design when modeling internal events downstream of Shopify webhooks — the contract surface there is your own system, not Shopify's.\"}]}"
+  relations: "{\"related\":[\"webhook-integration\",\"api-design\",\"printify\",\"event-contract-design\"]}"
   structural_verdict: PASS
   truth_verdict: PASS
   comprehension_verdict: UNVERIFIED
@@ -83,11 +83,9 @@ The theme surface and the API surface should remain separable. Online Store 2.0 
 - Design the event payload schema for our internal order-processing pipeline
 - Implement Stripe Connect onboarding for a marketplace
 - Refactor a generic shopping cart component that isn't Shopify-specific
-- Owned by `webhook-integration`
-- Owned by `event-contract-design`
 
 **Related skills**
-- Related: `webhook-integration`, `api-design`, `printify`
+- Related: `webhook-integration`, `api-design`, `printify`, `event-contract-design`
 
 **Keywords**
 - `shopify admin api`, `shopify storefront api`, `shopify webhooks`, `shopify oauth scopes`, `shopify hmac verification`, `online store 2.0 sections`, `liquid templates`, `shopify graphql query cost`, `shopify metafields`, `shopify rate limits`

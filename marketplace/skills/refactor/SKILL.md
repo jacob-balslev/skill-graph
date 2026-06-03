@@ -1,6 +1,6 @@
 ---
 name: refactor
-description: "Use when reorganizing existing code without changing external behavior — extracting functions, reducing duplication, renaming for clarity, splitting modules, or tightening structure. Covers behavior preservation, duplication reduction, decomposition, naming improvements, structural reorganization, and before/after verification. Do NOT use for bug investigation, adding new product behavior, or writing documentation (even when the docs describe the refactored code). Do NOT use for the test is failing after my edit — what did I break? Do NOT use for write an architecture note explaining this pattern for new team members. Do NOT use for reproduce why this function retries three times on transient network errors. Do NOT use for the protocol-level cycle of model→runtime tool invocation including retry encoding inside the cycle (use tool-call-flow). Do NOT use for the model-emits-typed-UI-spec pattern (use generative-ui)."
+description: "Use when reorganizing existing code without changing external behavior — extracting functions, reducing duplication, renaming for clarity, splitting modules, or tightening structure. Covers behavior preservation, duplication reduction, decomposition, naming improvements, structural reorganization, and before/after verification. Do NOT use for bug investigation, adding new product behavior, or writing documentation (even when the docs describe the refactored code). Do NOT use for the test is failing after my edit — what did I break? Do NOT use for write an architecture note explaining this pattern for new team members. Do NOT use for reproduce why this function retries three times on transient network errors."
 license: MIT
 compatibility: "Markdown, Git, any codebase"
 allowed-tools: Read Grep Bash
@@ -21,7 +21,7 @@ metadata:
   triggers: "[\"refactor-skill\"]"
   examples: "[\"this 600-line function is hard to reason about — decompose it while keeping tests green\",\"extract the duplicated validation logic from these three handlers into a helper\",\"rename this module from `utils` to something that describes what it actually does\",\"split this file by responsibility; no behavior changes, tests must still pass\"]"
   anti_examples: "[\"the test is failing after my edit — what did I break?\",\"write an architecture note explaining this pattern for new team members\",\"reproduce why this function retries three times on transient network errors\"]"
-  relations: "{\"boundary\":[{\"skill\":\"debugging\",\"reason\":\"debugging chases an observed failure; refactor runs only with a green test suite and preserves behavior\"},{\"skill\":\"tool-call-flow\",\"reason\":\"tool-call-flow owns the protocol-level cycle of model→runtime tool invocation including retry encoding inside the cycle; refactor only restructures the surrounding code while preserving behavior. The anti_example about a function retrying three times is a tool-call/runtime concern, not a refactor concern.\"},{\"skill\":\"generative-ui\",\"reason\":\"generative-ui owns the model-emits-typed-UI-spec pattern; refactor only restructures existing code while preserving behavior. The retries anti_example has token overlap with the model-output/runtime cycle vocabulary generative-ui discusses, so naming it here keeps the boundary explicit.\"},{\"skill\":\"context-graph\",\"reason\":\"context-graph owns the design and documentation of AI workspace graph architecture; refactor owns behavior-preserving code restructuring. Writing an architecture note for team members is documentation work, not a code refactor.\"},{\"skill\":\"error-boundary\",\"reason\":\"error-boundary owns React error boundary design and the mechanics of retry-on-error patterns; refactor owns behavior-preserving code restructuring. Reproducing or explaining retry behavior is a runtime/error-handling concern, not a refactor concern.\"},{\"skill\":\"performance-testing\",\"reason\":\"performance-testing owns load, latency, and regression-on-edit testing under realistic workloads; refactor owns behavior-preserving code restructuring. A test failing after an edit is a debugging/regression-investigation concern, not a refactor concern.\"},{\"skill\":\"semantics\",\"reason\":\"semantics owns naming discipline and ubiquitous-language documentation including architectural narrative; refactor owns behavior-preserving code restructuring. Writing an architecture note for team members is documentation work, not a code refactor.\"}],\"verify_with\":[\"testing-strategy\"],\"depends_on\":[{\"skill\":\"testing-strategy\",\"min_version\":\"^1.0.0\"}]}"
+  relations: "{\"boundary\":[{\"skill\":\"debugging\",\"reason\":\"debugging chases an observed failure; refactor runs only with a green test suite and preserves behavior\"}],\"verify_with\":[\"testing-strategy\"],\"depends_on\":[{\"skill\":\"testing-strategy\",\"min_version\":\"^1.0.0\"}],\"related\":[\"tool-call-flow\",\"generative-ui\",\"context-graph\",\"error-boundary\",\"performance-testing\",\"semantics\"]}"
   portability: "{\"readiness\":\"scripted\",\"targets\":[\"skill-md\"]}"
   structural_verdict: PASS
   truth_verdict: PASS
@@ -32,8 +32,7 @@ metadata:
   skill_graph_source_repo: "https://github.com/jacob-balslev/skill-graph"
   skill_graph_project: Skill Graph
   skill_graph_canonical_skill: skills/software-engineering-method/refactor/SKILL.md
-  skill_graph_export_description_projection: anti_examples+boundary
-  skill_graph_export_description_projection_truncated: "true"
+  skill_graph_export_description_projection: anti_examples
 ---
 
 # Refactor
@@ -109,16 +108,11 @@ This skill ships a comprehension-eval artifact at [`examples/evals/refactor.json
 - write an architecture note explaining this pattern for new team members
 - reproduce why this function retries three times on transient network errors
 - Owned by `debugging`
-- Owned by `tool-call-flow`: the protocol-level cycle of model→runtime tool invocation including retry encoding inside the cycle
-- Owned by `generative-ui`: the model-emits-typed-UI-spec pattern
-- Owned by `context-graph`: the design and documentation of AI workspace graph architecture
-- Owned by `error-boundary`: React error boundary design and the mechanics of retry-on-error patterns
-- Owned by `performance-testing`: load, latency, and regression-on-edit testing under realistic workloads
-- Owned by `semantics`: naming discipline and ubiquitous-language documentation including architectural narrative
 
 **Related skills**
 - Depends on: `testing-strategy`
 - Verify with: `testing-strategy`
+- Related: `tool-call-flow`, `generative-ui`, `context-graph`, `error-boundary`, `performance-testing`, `semantics`
 
 **Keywords**
 - `refactor`, `cleanup`, `simplify`, `extract function`, `reduce duplication`, `clean this up`, `simplify this`, `rename this`, `split this file`, `too long function`, `decompose function`, `decompose this`, `duplicated logic`, `duplicated validation`, `extract duplicated`, `behavior preserving`, `keep tests green`

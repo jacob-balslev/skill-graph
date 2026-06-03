@@ -1,6 +1,6 @@
 ---
 name: color-system-design
-description: "Use when designing a color system — palette construction, semantic color tokens, WCAG contrast ratios, perceptual uniformity in OKLCH/LCH, and light/dark mode parity. Do NOT use for single brand-color picks, runtime theme-switching mechanics, or non-color design tokens. Do NOT use for Pick the brand's primary color from scratch with no constraints. Do NOT use for Implement the prefers-color-scheme media query and toggle UI. Do NOT use for Choose spacing values for the layout grid. Do NOT use for the WCAG criteria themselves (use a11y)."
+description: "Use when designing a color system — palette construction, semantic color tokens, WCAG contrast ratios, perceptual uniformity in OKLCH/LCH, and light/dark mode parity. Do NOT use for single brand-color picks, runtime theme-switching mechanics, or non-color design tokens. Do NOT use for Pick the brand's primary color from scratch with no constraints. Do NOT use for Implement the prefers-color-scheme media query and toggle UI. Do NOT use for Choose spacing values for the layout grid."
 license: CC-BY-4.0
 metadata:
   schema_version: "8"
@@ -19,7 +19,7 @@ metadata:
   triggers: "[\"color system\",\"color palette\",\"color tokens\",\"wcag contrast\",\"oklch\"]"
   examples: "[\"Build a 10-step color scale from a brand seed color with perceptually even lightness steps\",\"Map semantic intents (success, warning, danger, info) to scale colors with WCAG AA contrast against both light and dark surfaces\",\"Audit an existing palette for AA contrast failures and propose minimal changes\"]"
   anti_examples: "[\"Pick the brand's primary color from scratch with no constraints\",\"Implement the prefers-color-scheme media query and toggle UI\",\"Choose spacing values for the layout grid\"]"
-  relations: "{\"related\":[\"theme-system-design\",\"dark-mode-implementation\",\"visual-design-foundations\",\"a11y\"],\"boundary\":[{\"skill\":\"theme-system-design\",\"reason\":\"theme-system-design structures how color decisions become tokens and reach components; this skill produces those color decisions.\"},{\"skill\":\"a11y\",\"reason\":\"a11y owns the WCAG criteria themselves; this skill applies them when constructing palettes and selecting pairings.\"}]}"
+  relations: "{\"related\":[\"theme-system-design\",\"dark-mode-implementation\",\"visual-design-foundations\",\"a11y\"]}"
   structural_verdict: PASS
   truth_verdict: PASS
   comprehension_verdict: UNVERIFIED
@@ -29,7 +29,7 @@ metadata:
   skill_graph_source_repo: "https://github.com/jacob-balslev/skill-graph"
   skill_graph_project: Skill Graph
   skill_graph_canonical_skill: skills/design/color-system-design/SKILL.md
-  skill_graph_export_description_projection: anti_examples+boundary
+  skill_graph_export_description_projection: anti_examples
 ---
 
 # Color System Design
@@ -83,8 +83,6 @@ Semantic tokens are worth the indirection because color meanings outlive specifi
 - Pick the brand's primary color from scratch with no constraints
 - Implement the prefers-color-scheme media query and toggle UI
 - Choose spacing values for the layout grid
-- Owned by `theme-system-design`
-- Owned by `a11y`: the WCAG criteria themselves
 
 **Related skills**
 - Related: `theme-system-design`, `dark-mode-implementation`, `visual-design-foundations`, `a11y`

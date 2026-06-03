@@ -22,7 +22,7 @@ metadata:
   triggers: "[\"how fast does this page need to be\",\"what's a good LCP target\",\"should this fail the build\",\"why is the Lighthouse score different from real users\",\"we need a performance budget\"]"
   examples: "[\"set a Core Web Vitals budget for a marketing landing page and enforce it in CI\",\"explain why a green Lighthouse score still produced bad real-user performance\",\"decide between INP and FID as the interaction-responsiveness metric\",\"design a per-route budget table that distinguishes static pages from logged-in dashboards\"]"
   anti_examples: "[\"profile a specific slow query and decide what to fix (use performance-engineering)\",\"choose between SSG and SSR for a route (use rendering-models)\",\"design telemetry spans and traces (use observability-modeling)\"]"
-  relations: "{\"related\":[\"performance-engineering\",\"rendering-models\",\"observability-modeling\",\"testing-strategy\",\"http-semantics\"],\"boundary\":[{\"skill\":\"performance-engineering\",\"reason\":\"performance-engineering owns the activity of measuring, profiling, and improving performance. performance-budgets owns the threshold-and-consequence contract. The two compose: budgets define the failure conditions; engineering produces the improvements that prevent breach.\"},{\"skill\":\"rendering-models\",\"reason\":\"rendering-models owns the choice of when and where the UI is produced. performance-budgets sits downstream — the chosen rendering model bounds which budgets are achievable on a given route.\"},{\"skill\":\"observability-modeling\",\"reason\":\"observability-modeling owns the design of telemetry signals (spans, metrics, logs). performance-budgets consumes signals as evidence of breach but does not design the signals themselves.\"},{\"skill\":\"testing-strategy\",\"reason\":\"testing-strategy owns runtime-correctness verification. performance-budgets is an analogous discipline for non-functional properties — a budget breach is the same kind of CI failure as a failing test.\"}],\"verify_with\":[\"performance-engineering\",\"observability-modeling\"]}"
+  relations: "{\"related\":[\"performance-engineering\",\"rendering-models\",\"observability-modeling\",\"testing-strategy\",\"http-semantics\"],\"boundary\":[{\"skill\":\"performance-engineering\",\"reason\":\"performance-engineering owns the activity of measuring, profiling, and improving performance. performance-budgets owns the threshold-and-consequence contract. The two compose: budgets define the failure conditions; engineering produces the improvements that prevent breach.\"},{\"skill\":\"testing-strategy\",\"reason\":\"testing-strategy owns runtime-correctness verification. performance-budgets is an analogous discipline for non-functional properties — a budget breach is the same kind of CI failure as a failing test.\"}],\"verify_with\":[\"performance-engineering\",\"observability-modeling\"]}"
   mental_model: "|"
   purpose: "|"
   boundary: "|"
@@ -236,8 +236,6 @@ After applying this skill, verify:
 - choose between SSG and SSR for a route (use rendering-models)
 - design telemetry spans and traces (use observability-modeling)
 - Owned by `performance-engineering`: the activity of measuring, profiling, and improving performance
-- Owned by `rendering-models`: the choice of
-- Owned by `observability-modeling`: the design of telemetry signals (spans, metrics, logs)
 - Owned by `testing-strategy`: runtime-correctness verification
 
 **Related skills**

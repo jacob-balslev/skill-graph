@@ -19,7 +19,7 @@ metadata:
   triggers: "[\"usability test\",\"think aloud\",\"test this prototype\",\"task scenarios\",\"test with users\"]"
   examples: "[\"Write three task scenarios for a usability test of this onboarding flow.\",\"How many participants do I need for a formative round on this prototype?\",\"Review my moderator script for neutrality and leading prompts.\",\"Rate the severity of these eight usability findings using Nielsen's scale.\"]"
   anti_examples: "[\"Add unit tests for the order-total calculation function.\",\"Set up the CI pipeline for the new repo.\",\"Run a load test against the checkout API.\"]"
-  relations: "{\"related\":[\"prototyping\",\"user-research\",\"research-synthesis\",\"design-thinking\"],\"boundary\":[{\"skill\":\"testing-strategy\",\"reason\":\"testing-strategy is an engineering practice for automated test suites that verify code behavior against specifications. usability-testing is a research practice for observing humans interacting with artifacts. The shared word 'testing' is the only thing in common.\"},{\"skill\":\"a11y\",\"reason\":\"a11y covers accessibility conformance criteria (WCAG, screen reader behavior, keyboard operability). usability-testing can include accessibility-focused sessions but its scope is broader and its method is empirical observation rather than spec conformance.\"}]}"
+  relations: "{\"related\":[\"prototyping\",\"user-research\",\"research-synthesis\",\"design-thinking\",\"testing-strategy\",\"a11y\"]}"
   structural_verdict: PASS
   truth_verdict: PASS
   comprehension_verdict: UNVERIFIED
@@ -84,11 +84,9 @@ The practice is opinionated about moderator behavior. The moderator's job is to 
 - Add unit tests for the order-total calculation function.
 - Set up the CI pipeline for the new repo.
 - Run a load test against the checkout API.
-- Owned by `testing-strategy`
-- Owned by `a11y`
 
 **Related skills**
-- Related: `prototyping`, `user-research`, `research-synthesis`, `design-thinking`
+- Related: `prototyping`, `user-research`, `research-synthesis`, `design-thinking`, `testing-strategy`, `a11y`
 
 **Keywords**
 - `think aloud protocol`, `task scenario`, `moderated usability test`, `unmoderated test`, `severity rating`, `five user rule`, `formative testing`, `summative testing`, `hallway test`, `moderator neutrality`

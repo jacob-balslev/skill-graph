@@ -21,7 +21,7 @@ metadata:
   keywords: "[\"performance engineering\",\"performance budget\",\"profiling\",\"latency\",\"throughput\",\"Core Web Vitals\",\"database performance\",\"caching\",\"bundle size\",\"performance regression\"]"
   examples: "[\"profile this slow dashboard and decide what to optimize first\",\"set performance budgets for API latency, page load, and query time\",\"review this change for likely N+1 queries, cache mistakes, or bundle growth\",\"design a regression check so this endpoint cannot get slow again unnoticed\"]"
   anti_examples: "[\"design logs, spans, metrics, and correlation IDs before implementation\",\"set up Sentry and error redaction\",\"make random micro-optimizations without measurements\",\"write general unit tests for this feature\"]"
-  relations: "{\"boundary\":[{\"skill\":\"observability-modeling\",\"reason\":\"observability-modeling designs telemetry signals; performance-engineering uses measurements to improve performance\"},{\"skill\":\"error-tracking\",\"reason\":\"error-tracking captures failures; performance-engineering handles latency, throughput, and resource efficiency\"},{\"skill\":\"testing-strategy\",\"reason\":\"testing-strategy plans correctness tests; performance-engineering plans performance budgets and regressions\"},{\"skill\":\"refactor\",\"reason\":\"refactor restructures code while preserving behavior; performance-engineering changes behavior characteristics under measurement\"}],\"related\":[\"observability-modeling\",\"api-design\",\"data-modeling\",\"testing-strategy\"],\"verify_with\":[\"observability-modeling\",\"code-review\"]}"
+  relations: "{\"boundary\":[{\"skill\":\"error-tracking\",\"reason\":\"error-tracking captures failures; performance-engineering handles latency, throughput, and resource efficiency\"},{\"skill\":\"testing-strategy\",\"reason\":\"testing-strategy plans correctness tests; performance-engineering plans performance budgets and regressions\"}],\"related\":[\"observability-modeling\",\"api-design\",\"data-modeling\",\"testing-strategy\",\"refactor\"],\"verify_with\":[\"observability-modeling\",\"code-review\"]}"
   portability: "{\"readiness\":\"scripted\",\"targets\":[\"skill-md\"]}"
   lifecycle: "{\"stale_after_days\":180,\"review_cadence\":\"quarterly\"}"
   structural_verdict: PASS
@@ -102,14 +102,12 @@ This skill ships a comprehension-eval artifact at [`examples/evals/performance-e
 - set up Sentry and error redaction
 - make random micro-optimizations without measurements
 - write general unit tests for this feature
-- Owned by `observability-modeling`
 - Owned by `error-tracking`
 - Owned by `testing-strategy`
-- Owned by `refactor`
 
 **Related skills**
 - Verify with: `observability-modeling`, `code-review`
-- Related: `observability-modeling`, `api-design`, `data-modeling`, `testing-strategy`
+- Related: `observability-modeling`, `api-design`, `data-modeling`, `testing-strategy`, `refactor`
 
 **Keywords**
 - `performance engineering`, `performance budget`, `profiling`, `latency`, `throughput`, `Core Web Vitals`, `database performance`, `caching`, `bundle size`, `performance regression`

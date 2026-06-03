@@ -1,6 +1,6 @@
 ---
 name: ontology-modeling
-description: "Use when formalizing domain meaning with classes, properties, constraints, RDF/OWL-style semantics, SHACL-like validation shapes, or reasoning-ready axioms. Do NOT use for simple category trees (use `taxonomy-design`), pre-implementation business entity sketches (use `conceptual-modeling`), database schemas (use `data-modeling`), or broad representation choice (use `knowledge-modeling`). Do NOT use for make a simple browse category tree for skills. Do NOT use for identify the business entities and relationships before implementation. Do NOT use for design the SQL tables, keys, and indexes. Do NOT use for choose whether this knowledge belongs in rules, frames, a graph, or a hybrid. Do NOT use for informal classification and facets (use taxonomy-design). Do NOT use for persistence structure and constraints (use data-modeling)."
+description: "Use when formalizing domain meaning with classes, properties, constraints, RDF/OWL-style semantics, SHACL-like validation shapes, or reasoning-ready axioms. Do NOT use for simple category trees (use `taxonomy-design`), pre-implementation business entity sketches (use `conceptual-modeling`), database schemas (use `data-modeling`), or broad representation choice (use `knowledge-modeling`). Do NOT use for make a simple browse category tree for skills. Do NOT use for identify the business entities and relationships before implementation. Do NOT use for design the SQL tables, keys, and indexes. Do NOT use for choose whether this knowledge belongs in rules, frames, a graph, or a hybrid. Do NOT use for informal classification and facets (use taxonomy-design)."
 license: MIT
 compatibility: "Portable ontology modeling guidance; implementation can be Markdown, RDF, JSON-LD, OWL, SHACL, or an internal schema language."
 allowed-tools: Read Grep
@@ -13,7 +13,7 @@ metadata:
   keywords: "[\"ontology modeling\",\"formal semantics\",\"RDF\",\"OWL\",\"JSON-LD\",\"SHACL\",\"class axioms\",\"property domains\",\"property ranges\",\"disjoint classes\"]"
   examples: "[\"we need class and property definitions that another system can reason over, not just a human-readable diagram\",\"should Customer and Organization be disjoint classes in this ontology?\",\"define property domains and ranges for our skill graph export\",\"turn this conceptual model into a machine-checkable ontology without inventing database tables\"]"
   anti_examples: "[\"make a simple browse category tree for skills\",\"identify the business entities and relationships before implementation\",\"design the SQL tables, keys, and indexes\",\"choose whether this knowledge belongs in rules, frames, a graph, or a hybrid\"]"
-  relations: "{\"boundary\":[{\"skill\":\"taxonomy-design\",\"reason\":\"taxonomy-design owns informal classification and facets; ontology-modeling owns formal semantics\"},{\"skill\":\"conceptual-modeling\",\"reason\":\"conceptual-modeling is stakeholder-readable domain analysis; ontology-modeling is machine-checkable semantic formalization\"},{\"skill\":\"data-modeling\",\"reason\":\"data-modeling owns persistence structure and constraints; ontology-modeling owns meaning constraints\"},{\"skill\":\"knowledge-modeling\",\"reason\":\"knowledge-modeling chooses the representation paradigm; ontology-modeling applies one formal paradigm\"}],\"related\":[\"semantic-relations\",\"taxonomy-design\",\"knowledge-modeling\"],\"depends_on\":[\"semantic-relations\"],\"verify_with\":[\"semantic-relations\",\"conceptual-modeling\"]}"
+  relations: "{\"boundary\":[{\"skill\":\"taxonomy-design\",\"reason\":\"taxonomy-design owns informal classification and facets; ontology-modeling owns formal semantics\"},{\"skill\":\"knowledge-modeling\",\"reason\":\"knowledge-modeling chooses the representation paradigm; ontology-modeling applies one formal paradigm\"}],\"related\":[\"semantic-relations\",\"taxonomy-design\",\"knowledge-modeling\",\"conceptual-modeling\",\"data-modeling\"],\"depends_on\":[\"semantic-relations\"],\"verify_with\":[\"semantic-relations\",\"conceptual-modeling\"]}"
   mental_model: "|"
   purpose: "|"
   boundary: "|"
@@ -101,14 +101,12 @@ The ontology must preserve business meaning while stating which inferences are a
 - design the SQL tables, keys, and indexes
 - choose whether this knowledge belongs in rules, frames, a graph, or a hybrid
 - Owned by `taxonomy-design`: informal classification and facets
-- Owned by `conceptual-modeling`
-- Owned by `data-modeling`: persistence structure and constraints
 - Owned by `knowledge-modeling`
 
 **Related skills**
 - Depends on: `semantic-relations`
 - Verify with: `semantic-relations`, `conceptual-modeling`
-- Related: `semantic-relations`, `taxonomy-design`, `knowledge-modeling`
+- Related: `semantic-relations`, `taxonomy-design`, `knowledge-modeling`, `conceptual-modeling`, `data-modeling`
 
 **Concept**
 - Mental model: |

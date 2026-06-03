@@ -19,7 +19,7 @@ metadata:
   triggers: "[\"design thinking\",\"human-centered design\",\"double diamond\",\"which stage\",\"design process\"]"
   examples: "[\"We have user interviews done but no synthesis yet — which design-thinking stage are we in and what's next?\",\"Plan a full design-thinking arc for a four-week project on rural healthcare access.\",\"We just finished a usability test and three findings broke our framing — should we loop back to define?\",\"Route this brief to the right stage-specific skill: 'help us figure out what to build for new homeowners'.\"]"
   anti_examples: "[\"Run a single crazy-8s round on this specific how-might-we.\",\"Write the React component for the dashboard widget.\",\"Model the bounded contexts for the order-fulfillment domain.\"]"
-  relations: "{\"related\":[\"problem-framing\",\"user-research\",\"research-synthesis\",\"journey-mapping\",\"ideation\",\"prototyping\",\"usability-testing\"],\"boundary\":[{\"skill\":\"event-storming\",\"reason\":\"event-storming is a collaborative engineering discovery practice for mapping domain events, commands, and aggregates with developers and domain experts. design-thinking orchestrates a human-centered design arc with users at the center. Both are 'discovery' practices but they differ in subject (system vs. human), participants, and output.\"},{\"skill\":\"problem-locating-solving\",\"reason\":\"problem-locating-solving handles concrete code-level bug localization. design-thinking handles the upstream open-ended question of what should be designed at all — different problem class entirely.\"}]}"
+  relations: "{\"related\":[\"problem-framing\",\"user-research\",\"research-synthesis\",\"journey-mapping\",\"ideation\",\"prototyping\",\"usability-testing\",\"event-storming\",\"problem-locating-solving\"]}"
   structural_verdict: PASS
   truth_verdict: PASS
   comprehension_verdict: UNVERIFIED
@@ -85,11 +85,9 @@ The meta-skill is sceptical of two opposite failure modes. The first is **stage 
 - Run a single crazy-8s round on this specific how-might-we.
 - Write the React component for the dashboard widget.
 - Model the bounded contexts for the order-fulfillment domain.
-- Owned by `event-storming`
-- Owned by `problem-locating-solving`
 
 **Related skills**
-- Related: `problem-framing`, `user-research`, `research-synthesis`, `journey-mapping`, `ideation`, `prototyping`, `usability-testing`
+- Related: `problem-framing`, `user-research`, `research-synthesis`, `journey-mapping`, `ideation`, `prototyping`, `usability-testing`, `event-storming`, `problem-locating-solving`
 
 **Keywords**
 - `design thinking process`, `double diamond`, `five stage design process`, `empathize define ideate prototype test`, `human centered design`, `Stanford d.school`, `IDEO method`, `design sprint`, `discover define develop deliver`, `looping back`

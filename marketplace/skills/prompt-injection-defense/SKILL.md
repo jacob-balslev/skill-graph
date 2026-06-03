@@ -1,6 +1,6 @@
 ---
 name: prompt-injection-defense
-description: "Use when reasoning about systems that pass untrusted content to a language model: the data-vs-instruction collapse that makes this attack class a structural property of LLMs rather than a fixable bug, the direct/indirect/exfiltration/action-trigger taxonomy, the role of every untrusted surface (RAG retrievals, tool results, attachments, web content, document parsing, user-provided text), why content filters and improved system prompts do not solve it, and the defense-in-depth measures that do (capability constraint, content origin tracking, separate planning and execution stages, human-in-the-loop gates, principle-of-least-authority for tools). Do NOT use for jailbreaking and policy circumvention (use model-safety), for general API security (use api-security), for runtime input validation patterns (use type-safety + api-design), or for the protocol cycle of tool calls (use tool-call-flow). Do NOT use for preventing type errors at compile time (use type-safety)."
+description: "Use when reasoning about systems that pass untrusted content to a language model: the data-vs-instruction collapse that makes this attack class a structural property of LLMs rather than a fixable bug, the direct/indirect/exfiltration/action-trigger taxonomy, the role of every untrusted surface (RAG retrievals, tool results, attachments, web content, document parsing, user-provided text), why content filters and improved system prompts do not solve it, and the defense-in-depth measures that do (capability constraint, content origin tracking, separate planning and execution stages, human-in-the-loop gates, principle-of-least-authority for tools). Do NOT use for jailbreaking and policy circumvention (use model-safety), for general API security (use api-security), for runtime input validation patterns (use type-safety + api-design), or for the protocol cycle of tool calls (use tool-call-flow)."
 license: MIT
 allowed-tools: Read Grep
 metadata:
@@ -13,7 +13,7 @@ metadata:
   triggers: "[\"is this an injection vector\",\"how do we stop the model from following commands in user input\",\"the model is treating retrieved content as commands\",\"is RAG safe\",\"can the model exfiltrate data via a tool call\"]"
   examples: "[\"review whether retrieved documents in a RAG pipeline can override the system prompt\",\"design the boundary between a planning agent and an execution agent so injected commands cannot trigger destructive tool calls\",\"explain why a content filter that blocks one canonical attack phrase does not stop the broader class\",\"decide what tools an agent reading email attachments may invoke without human confirmation\"]"
   anti_examples: "[\"design the JSON shape of a tool's parameters (use tool-call-flow)\",\"harden an HTTP API against SQL injection or XSS (use api-security)\",\"audit a model's refusal behavior on disallowed content (use model-safety)\"]"
-  relations: "{\"related\":[\"tool-call-flow\",\"http-semantics\",\"type-safety\",\"api-design\"],\"boundary\":[{\"skill\":\"tool-call-flow\",\"reason\":\"tool-call-flow owns the protocol cycle by which a model invokes a tool; this skill owns the security property the cycle must preserve when any message carries untrusted content.\"},{\"skill\":\"type-safety\",\"reason\":\"type-safety owns preventing type errors at compile time; this skill owns preventing command-execution errors at the data-vs-instruction boundary. Both are validate-at-the-boundary problems with different threat models.\"},{\"skill\":\"api-design\",\"reason\":\"api-design owns the request/response surface contract; this skill owns the constraint that no field carrying user content may be treated as commands by a downstream model.\"},{\"skill\":\"http-semantics\",\"reason\":\"http-semantics owns transport meaning (cache, idempotency, content type); this skill owns the threat that arrives over correct HTTP and is still harmful because the model interprets it as a command.\"}],\"verify_with\":[\"api-design\",\"tool-call-flow\"]}"
+  relations: "{\"related\":[\"tool-call-flow\",\"http-semantics\",\"type-safety\",\"api-design\"],\"boundary\":[{\"skill\":\"tool-call-flow\",\"reason\":\"tool-call-flow owns the protocol cycle by which a model invokes a tool; this skill owns the security property the cycle must preserve when any message carries untrusted content.\"}],\"verify_with\":[\"api-design\",\"tool-call-flow\"]}"
   grounding: "{\"subject_matter\":\"Portable prompt-injection threat modeling and defense-in-depth for LLM-integrated systems and agents\",\"grounding_mode\":\"universal\",\"truth_sources\":[\"https://genai.owasp.org/llmrisk/llm01-prompt-injection/\",\"https://cheatsheetseries.owasp.org/cheatsheets/LLM_Prompt_Injection_Prevention_Cheat_Sheet.html\",\"https://www.anthropic.com/research/prompt-injection-defenses\",\"https://csrc.nist.gov/pubs/ai/100/2/e2025/final\",\"https://arxiv.org/abs/2302.12173\"],\"failure_modes\":[\"treating_prompt_injection_as_a_model_bug_fixed_by_prompt_wording\",\"confusing_jailbreak_policy_bypass_with_agent_action_exfiltration_risk\",\"trusting_rag_tool_results_attachments_or_subagent_output_as_instructions\",\"allowing_untrusted_content_and_high_impact_tools_in_the_same_turn\",\"relying_on_content_filters_without_capability_constraint_or_human_approval\",\"rendering_model_output_with_unrestricted_external_image_or_link_targets\"],\"evidence_priority\":\"equal\"}"
   mental_model: "|"
   purpose: "|"
@@ -23,8 +23,6 @@ metadata:
   skill_graph_source_repo: "https://github.com/jacob-balslev/skill-graph"
   skill_graph_project: Skill Graph
   skill_graph_canonical_skill: skills/ai-engineering/prompt-injection-defense/SKILL.md
-  skill_graph_export_description_projection: boundary
-  skill_graph_export_description_projection_truncated: "true"
 ---
 
 # Prompt-Injection Defense
@@ -169,9 +167,6 @@ After applying this skill, verify:
 - harden an HTTP API against SQL injection or XSS (use api-security)
 - audit a model's refusal behavior on disallowed content (use model-safety)
 - Owned by `tool-call-flow`: the protocol cycle by which a model invokes a tool
-- Owned by `type-safety`: preventing type errors at compile time
-- Owned by `api-design`: the request/response surface contract
-- Owned by `http-semantics`: transport meaning (cache, idempotency, content type)
 
 **Related skills**
 - Verify with: `api-design`, `tool-call-flow`

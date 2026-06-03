@@ -1,6 +1,6 @@
 ---
 name: summarization
-description: "Use when condensing prose while preserving meaning: session findings, wrap reports, research briefs, executive summaries, TLDRs, agent handoffs, progressive summaries, audit summaries, and long-document distillation. Covers extractive vs abstractive summarization, what to keep vs drop, evidence preservation, summary levels, handoff summaries, and audit-report condensation without hiding findings. Do NOT use for byte/data compression algorithms (use `compression`), context-window budget math or compaction triggers (use `context-window`), working-set selection (use `context-management`), prose tone repair (use `writing-humanizer`), or quality scoring (use `evaluation`). Do NOT use for byte, payload, and storage compression (use compression). Do NOT use for token-budget math and compaction triggers (use context-window)."
+description: "Use when condensing prose while preserving meaning: session findings, wrap reports, research briefs, executive summaries, TLDRs, agent handoffs, progressive summaries, audit summaries, and long-document distillation. Covers extractive vs abstractive summarization, what to keep vs drop, evidence preservation, summary levels, handoff summaries, and audit-report condensation without hiding findings. Do NOT use for byte/data compression algorithms (use `compression`), context-window budget math or compaction triggers (use `context-window`), working-set selection (use `context-management`), prose tone repair (use `writing-humanizer`), or quality scoring (use `evaluation`)."
 license: MIT
 compatibility: "Markdown, Git, agent-skill runtimes"
 allowed-tools: Read Grep Bash
@@ -21,7 +21,7 @@ metadata:
   stability: experimental
   keywords: "[\"summarization\",\"summary\",\"TLDR\",\"executive summary\",\"condensation\",\"abstract\",\"distill\",\"key findings\",\"brief\",\"compress text\"]"
   triggers: "[\"summarization-skill\",\"summary-skill\"]"
-  relations: "{\"related\":[\"context-management\",\"context-window\",\"writing-humanizer\"],\"boundary\":[{\"skill\":\"compression\",\"reason\":\"compression owns byte, payload, and storage compression; summarization owns semantic prose condensation\"},{\"skill\":\"context-window\",\"reason\":\"context-window owns token-budget math and compaction triggers; summarization is one technique for shrinking prose after the budget decision is made\"},{\"skill\":\"context-management\",\"reason\":\"context-management decides what belongs in the active working set; summarization condenses selected material into a usable form\"},{\"skill\":\"writing-humanizer\",\"reason\":\"writing-humanizer repairs tone and AI-patterned prose; summarization decides what meaning to preserve and what to omit\"},{\"skill\":\"evaluation\",\"reason\":\"evaluation scores work quality; summarization may report scores but does not define the rubric\"}],\"verify_with\":[\"evaluation\",\"writing-humanizer\"]}"
+  relations: "{\"related\":[\"context-management\",\"context-window\",\"writing-humanizer\",\"compression\"],\"boundary\":[{\"skill\":\"evaluation\",\"reason\":\"evaluation scores work quality; summarization may report scores but does not define the rubric\"}],\"verify_with\":[\"evaluation\",\"writing-humanizer\"]}"
   grounding: "{\"subject_matter\":\"Prose summarization and agent handoff condensation\",\"grounding_mode\":\"hybrid\",\"truth_sources\":[\"https://owl.purdue.edu/owl/research_and_citation/using_research/quoting_paraphrasing_and_summarizing/index.html\",\"https://fortelabs.com/blog/progressive-summarization-a-practical-technique-for-designing-discoverable-notes/\",\"https://arxiv.org/abs/2204.09519\",\"https://github.com/jacob-balslev/skills/blob/main/skills/agent-ops/context-management/SKILL.md\",\"https://github.com/jacob-balslev/skills/blob/main/skills/agent-ops/context-window/SKILL.md\",\"https://github.com/jacob-balslev/skills/blob/main/skills/design-craft/writing-humanizer/SKILL.md\"],\"failure_modes\":[\"summary_drops_decisive_evidence\",\"summary_introduces_new_claims\",\"audit_summary_hides_findings\",\"handoff_omits_next_step\",\"style_polish_overrides_meaning_preservation\"],\"evidence_priority\":\"equal\"}"
   portability: "{\"readiness\":\"scripted\",\"targets\":[\"skill-md\"]}"
   lifecycle: "{\"stale_after_days\":90,\"review_cadence\":\"quarterly\"}"
@@ -40,7 +40,6 @@ metadata:
   skill_graph_source_repo: "https://github.com/jacob-balslev/skill-graph"
   skill_graph_project: Skill Graph
   skill_graph_canonical_skill: skills/ai-engineering/summarization/SKILL.md
-  skill_graph_export_description_projection: boundary
 ---
 # Summarization
 
@@ -232,15 +231,11 @@ After applying this skill, verify:
 - Triggers: `summarization-skill`, `summary-skill`
 
 **Not for**
-- Owned by `compression`: byte, payload, and storage compression
-- Owned by `context-window`: token-budget math and compaction triggers
-- Owned by `context-management`
-- Owned by `writing-humanizer`
 - Owned by `evaluation`
 
 **Related skills**
 - Verify with: `evaluation`, `writing-humanizer`
-- Related: `context-management`, `context-window`, `writing-humanizer`
+- Related: `context-management`, `context-window`, `writing-humanizer`, `compression`
 
 **Concept**
 - Mental model: Summarization is semantic compression: reduce a source to the smallest useful representation for a reader and task while preserving meaning, provenance, decisions, evidence, and next actions. It is lossy by design, so the quality question is not how short the summary is; it is whether the chosen loss is intentional, reversible through evidence links, and appropriate for the audience.

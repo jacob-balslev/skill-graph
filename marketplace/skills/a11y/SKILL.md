@@ -1,6 +1,6 @@
 ---
 name: a11y
-description: "Use when building or reviewing interactive UI, forms, navigation, or dynamic content. Covers semantic HTML, keyboard access, focus management, labeling, state-change announcement, and reduced-motion / high-contrast preferences. Do NOT use for color-palette creation, visual branding, feedback-state staging, or prose reading-level accessibility - those belong to `visual-design-foundations`, `interaction-feedback`, and documentation respectively. Do NOT use for rewrite this error message at a 6th-grade reading level. Do NOT use for clean up this accessibility code without changing how it behaves. Do NOT use for reading-level, audience-register, and wording rationale (use linguistics). Do NOT use for palette, typography, spacing, and visual craft (use visual-design-foundations). Do NOT use for feedback-state staging (use interaction-feedback). Do NOT use for generic code-quality cleanup and language/idiom hygiene (use best-practice)."
+description: "Use when building or reviewing interactive UI, forms, navigation, or dynamic content. Covers semantic HTML, keyboard access, focus management, labeling, state-change announcement, and reduced-motion / high-contrast preferences. Do NOT use for color-palette creation, visual branding, feedback-state staging, or prose reading-level accessibility - those belong to `visual-design-foundations`, `interaction-feedback`, and documentation respectively. Do NOT use for rewrite this error message at a 6th-grade reading level. Do NOT use for clean up this accessibility code without changing how it behaves. Do NOT use for generic code-quality cleanup and language/idiom hygiene (use best-practice)."
 license: MIT
 compatibility: "Markdown, Git, any web stack"
 allowed-tools: Read Grep
@@ -24,7 +24,7 @@ metadata:
   paths: "[\"**/*.{html,tsx,jsx,vue,svelte}\",\"**/*.css\",\"!**/*.test.{ts,tsx,js,jsx}\",\"!**/dist/**\",\"!**/node_modules/**\"]"
   examples: "[\"this modal is keyboard-trapped — users can't Escape to close it\",\"screen reader doesn't announce when the form validation state changes\",\"add proper labels to these form fields so assistive tech can read them\",\"review this dropdown menu for arrow-key navigation and focus return\"]"
   anti_examples: "[\"rewrite this error message at a 6th-grade reading level\",\"clean up this accessibility code without changing how it behaves\"]"
-  relations: "{\"boundary\":[{\"skill\":\"refactor\",\"reason\":\"refactor is behavior-preserving code modification; a11y is observable user-facing behavior\"},{\"skill\":\"diagnosis\",\"reason\":\"diagnosis classifies failure symptoms (Logic / Runtime / Performance / etc.) for triage; a11y owns assistive-tech behavior. The phrase 'rewrite this error message...' is a documentation/UX concern, not a diagnosis or a11y concern — diagnosis is named here so the router excludes it from a11y's positive scope.\"},{\"skill\":\"linguistics\",\"reason\":\"linguistics owns reading-level, audience-register, and wording rationale; a11y owns assistive-technology behavior and accessibility semantics. Rewriting an error message for reading level is language work, not an accessibility implementation task.\"},{\"skill\":\"visual-design-foundations\",\"reason\":\"visual-design-foundations owns palette, typography, spacing, and visual craft; a11y owns whether the resulting interaction is perceivable, operable, understandable, and robust\"},{\"skill\":\"interaction-feedback\",\"reason\":\"interaction-feedback owns feedback-state staging; a11y owns whether those state changes are announced and operable\"},{\"skill\":\"best-practice\",\"reason\":\"best-practice owns generic code-quality cleanup and language/idiom hygiene; a11y owns assistive-tech behavior. Phrases like 'clean up this accessibility code without changing behavior' are best-practice refactor activities, not a11y semantic work — best-practice is named here so the router excludes it from a11y's positive scope.\"}],\"related\":[\"interaction-patterns\",\"form-ux-architecture\",\"interaction-feedback\",\"design-system-architecture\"],\"verify_with\":[\"testing-strategy\"]}"
+  relations: "{\"boundary\":[{\"skill\":\"best-practice\",\"reason\":\"best-practice owns generic code-quality cleanup and language/idiom hygiene; a11y owns assistive-tech behavior. Phrases like 'clean up this accessibility code without changing behavior' are best-practice refactor activities, not a11y semantic work — best-practice is named here so the router excludes it from a11y's positive scope.\"}],\"related\":[\"interaction-patterns\",\"form-ux-architecture\",\"interaction-feedback\",\"design-system-architecture\",\"refactor\",\"diagnosis\",\"linguistics\",\"visual-design-foundations\"],\"verify_with\":[\"testing-strategy\"]}"
   portability: "{\"readiness\":\"scripted\",\"targets\":[\"skill-md\"]}"
   structural_verdict: PASS
   truth_verdict: PASS
@@ -108,16 +108,11 @@ This skill ships a comprehension-eval artifact at [`examples/evals/a11y.json`](h
 **Not for**
 - rewrite this error message at a 6th-grade reading level
 - clean up this accessibility code without changing how it behaves
-- Owned by `refactor`
-- Owned by `diagnosis`
-- Owned by `linguistics`: reading-level, audience-register, and wording rationale
-- Owned by `visual-design-foundations`: palette, typography, spacing, and visual craft
-- Owned by `interaction-feedback`: feedback-state staging
 - Owned by `best-practice`: generic code-quality cleanup and language/idiom hygiene
 
 **Related skills**
 - Verify with: `testing-strategy`
-- Related: `interaction-patterns`, `form-ux-architecture`, `interaction-feedback`, `design-system-architecture`
+- Related: `interaction-patterns`, `form-ux-architecture`, `interaction-feedback`, `design-system-architecture`, `refactor`, `diagnosis`, `linguistics`, `visual-design-foundations`
 
 **Keywords**
 - `screen reader`, `announce`, `validation state`, `form labels`, `assistive tech`, `ARIA roles`, `keyboard support`, `arrow key`, `navigation`, `focus return`

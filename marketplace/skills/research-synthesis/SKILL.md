@@ -19,7 +19,7 @@ metadata:
   triggers: "[\"synthesize research\",\"affinity map\",\"empathy map\",\"find themes in interviews\",\"insight statements\"]"
   examples: "[\"Cluster these 14 interview transcripts into themes using affinity mapping.\",\"Build an empathy map for the 'first-time buyer' segment from these field notes.\",\"Turn this set of observations into three insight statements I can take into ideation.\",\"Draft a jobs-to-be-done statement from this user research corpus.\"]"
   anti_examples: "[\"Run more interviews with five additional participants.\",\"Calculate the response rate of the survey.\",\"Summarize this single PDF document.\"]"
-  relations: "{\"related\":[\"user-research\",\"journey-mapping\",\"problem-framing\",\"design-thinking\"],\"boundary\":[{\"skill\":\"user-research\",\"reason\":\"user-research collects primary qualitative data. research-synthesis transforms that data into design-ready themes. Both are needed, in that order.\"},{\"skill\":\"conceptual-modeling\",\"reason\":\"conceptual-modeling synthesizes domain entities and their relationships for engineering. research-synthesis synthesizes human behavior and need patterns for design — different output shapes, different audiences.\"}]}"
+  relations: "{\"related\":[\"user-research\",\"journey-mapping\",\"problem-framing\",\"design-thinking\",\"conceptual-modeling\"],\"boundary\":[{\"skill\":\"user-research\",\"reason\":\"user-research collects primary qualitative data. research-synthesis transforms that data into design-ready themes. Both are needed, in that order.\"}]}"
   structural_verdict: PASS
   truth_verdict: PASS
   comprehension_verdict: UNVERIFIED
@@ -83,10 +83,9 @@ The discipline is wary of premature abstraction. A theme named too early ("users
 - Calculate the response rate of the survey.
 - Summarize this single PDF document.
 - Owned by `user-research`
-- Owned by `conceptual-modeling`
 
 **Related skills**
-- Related: `user-research`, `journey-mapping`, `problem-framing`, `design-thinking`
+- Related: `user-research`, `journey-mapping`, `problem-framing`, `design-thinking`, `conceptual-modeling`
 
 **Keywords**
 - `affinity mapping`, `empathy map`, `insight statement`, `theme clustering`, `jobs to be done synthesis`, `qualitative coding`, `research wall`, `downloading research`, `say think do feel`, `persona drafting`

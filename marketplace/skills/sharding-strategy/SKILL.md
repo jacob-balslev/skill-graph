@@ -1,6 +1,6 @@
 ---
 name: sharding-strategy
-description: "Use when reasoning about horizontal partitioning of data across nodes for storage capacity and write throughput beyond a single node: the three foundational partitioning schemes (range, hash, directory/lookup), the shard-key choice that determines whether the system scales or hotspots, the resharding problem and how consistent hashing addresses it, cross-shard queries and the joins-and-transactions trade-off, the relationship to replication (sharding partitions data; replication copies each shard), and the failure modes (hot shard, skewed distribution, cross-shard transactions, range-end overload). Do NOT use for replicating the same data across nodes (use replication-patterns), the CAP/PACELC frame (use cap-theorem-tradeoffs), single-node performance tuning (use query-optimization), or indexing within a shard (use indexing-strategy). Do NOT use for schema and access-pattern design (use data-modeling)."
+description: "Use when reasoning about horizontal partitioning of data across nodes for storage capacity and write throughput beyond a single node: the three foundational partitioning schemes (range, hash, directory/lookup), the shard-key choice that determines whether the system scales or hotspots, the resharding problem and how consistent hashing addresses it, cross-shard queries and the joins-and-transactions trade-off, the relationship to replication (sharding partitions data; replication copies each shard), and the failure modes (hot shard, skewed distribution, cross-shard transactions, range-end overload). Do NOT use for replicating the same data across nodes (use replication-patterns), the CAP/PACELC frame (use cap-theorem-tradeoffs), single-node performance tuning (use query-optimization), or indexing within a shard (use indexing-strategy)."
 license: MIT
 allowed-tools: Read Grep
 metadata:
@@ -21,7 +21,7 @@ metadata:
   triggers: "[\"how should we shard\",\"what's the right shard key\",\"hot shard\",\"cross-shard transaction\",\"consistent hashing\"]"
   examples: "[\"choose a shard key for a multi-tenant system where 90% of queries are tenant-scoped\",\"diagnose a hot shard caused by skewed shard-key distribution\",\"design the resharding strategy when adding nodes to a hash-sharded cluster\",\"decide whether to accept cross-shard JOIN complexity or denormalize\"]"
   anti_examples: "[\"design replication topology for the same data (use replication-patterns)\",\"tune a single slow query (use query-optimization)\",\"design indexes within one shard (use indexing-strategy)\"]"
-  relations: "{\"related\":[\"replication-patterns\",\"cap-theorem-tradeoffs\",\"indexing-strategy\",\"data-modeling\"],\"boundary\":[{\"skill\":\"replication-patterns\",\"reason\":\"replication-patterns owns copying the same data across nodes; this skill owns splitting different data across nodes. The two compose: a sharded system can replicate each shard. They answer different questions.\"},{\"skill\":\"cap-theorem-tradeoffs\",\"reason\":\"cap-theorem-tradeoffs owns the theoretical consistency-availability frame; this skill owns the operational partitioning that often interacts with it (cross-shard transactions have stronger consistency requirements than single-shard ones).\"},{\"skill\":\"indexing-strategy\",\"reason\":\"indexing-strategy owns within-node retrieval; this skill owns how data is divided across nodes. Indexes within a shard are designed normally; cross-shard secondary indexes are a separate, harder problem.\"},{\"skill\":\"data-modeling\",\"reason\":\"data-modeling owns schema and access-pattern design; this skill owns the partitioning of that schema across nodes. The shard key is a schema design decision with operational consequences.\"}],\"verify_with\":[\"replication-patterns\",\"data-modeling\"]}"
+  relations: "{\"related\":[\"replication-patterns\",\"cap-theorem-tradeoffs\",\"indexing-strategy\",\"data-modeling\"],\"boundary\":[{\"skill\":\"replication-patterns\",\"reason\":\"replication-patterns owns copying the same data across nodes; this skill owns splitting different data across nodes. The two compose: a sharded system can replicate each shard. They answer different questions.\"},{\"skill\":\"cap-theorem-tradeoffs\",\"reason\":\"cap-theorem-tradeoffs owns the theoretical consistency-availability frame; this skill owns the operational partitioning that often interacts with it (cross-shard transactions have stronger consistency requirements than single-shard ones).\"},{\"skill\":\"indexing-strategy\",\"reason\":\"indexing-strategy owns within-node retrieval; this skill owns how data is divided across nodes. Indexes within a shard are designed normally; cross-shard secondary indexes are a separate, harder problem.\"}],\"verify_with\":[\"replication-patterns\",\"data-modeling\"]}"
   mental_model: "|"
   purpose: "|"
   boundary: "|"
@@ -37,7 +37,6 @@ metadata:
   skill_graph_source_repo: "https://github.com/jacob-balslev/skill-graph"
   skill_graph_project: Skill Graph
   skill_graph_canonical_skill: skills/data-engineering/sharding-strategy/SKILL.md
-  skill_graph_export_description_projection: boundary
 ---
 
 # Sharding Strategy
@@ -174,7 +173,6 @@ After applying this skill, verify:
 - Owned by `replication-patterns`: copying the same data across nodes
 - Owned by `cap-theorem-tradeoffs`: the theoretical consistency-availability frame
 - Owned by `indexing-strategy`: within-node retrieval
-- Owned by `data-modeling`: schema and access-pattern design
 
 **Related skills**
 - Verify with: `replication-patterns`, `data-modeling`
