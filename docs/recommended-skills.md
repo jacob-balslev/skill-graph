@@ -88,6 +88,34 @@ Deferred split candidates: `color-science`, `typography`, `motion-design`, and `
 
 ---
 
+## Tier D — Agentic Development Core (highest 2026 demand; **build next**)
+
+> Added 2026-06-04 from the Skill Graph board meeting (`.boardmeeting/agentic-dev-skill-roadmap-2026-06-04.md`). The board's finding: for a library positioning as *skills for agentic development*, the agentic core (agent-ops + ai-engineering = 21 skills) is the **thinnest** part of the corpus, and the highest-demand 2026 agentic primitives are **flat-out missing**. These are not stack-specific Tier C extensions — they are the skills an AI coding agent loads most, and the library's positioning depends on shipping them. Gap status verified by corpus keyword scan on 2026-06-04.
+
+### Tier D-1 — the 2026 agentic primitives (Linear: SKI-156…162)
+
+| Skill | Why it's core for agentic dev | Corpus gap (verified) | Task |
+|---|---|---|---|
+| `mcp-server-design` | Model Context Protocol — THE agent↔tool integration standard; official Anthropic skill. | 0 skills mention `model-context-protocol` | SKI-156 |
+| `rag-pipeline-design` | Retrieval-augmented generation — default pattern for grounding agents in external knowledge. | 1 mention | SKI-157 |
+| `vector-search` | Embeddings + semantic retrieval — foundation under RAG, agent-memory, and skill-routing itself. | 1 embedding mention | SKI-158 |
+| `agent-memory-architecture` | Persistent/episodic/semantic memory — what turns a chatbot into an agent (`context-management` owns the window, not durable memory). | 0 skills | SKI-159 |
+| `multi-agent-orchestration` | Dispatch, handoff, supervisor/worker, fan-out/merge (`autonomous-loop-patterns` is single-agent). | no dedicated skill | SKI-160 |
+| `model-routing` | Capability/cost/latency model selection — the workspace does it (`model-router.js`) but no skill teaches it. | 2 mentions | SKI-161 |
+| `structured-output-design` | JSON-schema / function-calling contracts for reliable agent I/O (`tool-call-flow` owns the call, not the output shape). | 4 mentions | SKI-162 |
+
+### Tier D-2 — agentic workflow & runtime (build after D-1)
+
+`anthropic-api` (official Anthropic skill; Files/Skills/Batch/caching), `agent-observability` (agent-run tracing, eval replay — distinct from data-eng `observability-modeling`), `agent-sandboxing` (safe execution of agent-generated code), `agent-task-delegation` (sub-agent dispatch — root legacy, public-safe rewrite), `session-lifecycle` / `agent-session-handoff` (context handoff across runs), `skill-discovery-import` (the `find-skills` differentiator — top skills.sh skill at 1.5M installs), `token-budget-management`, `prompt-caching` (cache-hit optimization — large cost lever for agent loops).
+
+> **Note on the existing "Agent System cluster" (Tier C):** that cluster (`agent-orchestration`, `agent-observability`, `autonomous-loop-patterns`, `session-lifecycle`, `claude-api`, …) overlaps Tier D-2. Tier D promotes the agentic primitives out of "optional, project-driven" because the board judged them **core to the library's agentic-development positioning**, not optional extensions.
+
+### Certify before you expand
+
+The board's #1 recommendation (SKI-149) is to **prove the existing ~20 agentic-core skills are `APPLICABLE`** (the context/eval/tool-use/prompt-safety/agent-loop clusters) before — or alongside — building Tier D. 0/165 skills are currently certified useful; certifying the core is the publish gate. Build Tier D to fill the gaps; certify the core to prove the value.
+
+---
+
 ## Sequencing recommendation
 
 | Phase | Ships | When |
@@ -97,6 +125,7 @@ Deferred split candidates: `color-science`, `typography`, `motion-design`, and `
 | **Phase 2 — Tier B batch 1** | `context-engineering`, `tool-call-strategy`, `agent-engineering`, `skill-infrastructure` | Done — 2026-05-06 |
 | **Phase 3 — Tier B batch 2** | `database-migration`, `webhook-integration`, `version-control`, `error-tracking` | Done — 2026-05-06 |
 | **Phase 4 — Tier C pilot** | Pick one Tier C cluster based on observed adopter demand; ship its 5–7 skills | When Phase 3 stabilizes |
+| **Phase 5 — Tier D agentic core** | Certify the ~20 agentic-core skills (SKI-149), then build Tier D-1 (`mcp-server-design`, `rag-pipeline-design`, `vector-search`, `agent-memory-architecture`, `multi-agent-orchestration`, `model-routing`, `structured-output-design` — SKI-156…162) | Next — board 2026-06-04 (highest 2026 demand) |
 
 **Rationale:** Tier A → B → C is a deliberate sequencing from universal to specialized. A starter library with all of Tier A + 4 from Tier B (17 skills total) is a credible foundation for any adopter regardless of stack or domain. Tier C should ship demand-driven, not speculatively.
 
