@@ -7,7 +7,7 @@ allowed-tools: Read Grep Bash
 metadata:
   schema_version: "8"
   version: "1.1.0"
-  subject: agent-ops
+  subject: ai-engineering
   deployment_target: portable
   scope: "Condensing prose while preserving meaning — session findings, wrap reports, research briefs, executive summaries, TLDRs, agent handoffs, progressive summaries, audit summaries, and long-document distillation — covering extractive vs abstractive summarization, what to keep vs drop, evidence preservation, summary levels, handoff summaries, and audit-report condensation without hiding findings. Portable across any text-condensation task; principle-grounded, not repo-bound. Excludes byte/data compression algorithms (compression), context-window budget math and compaction triggers (context-window), working-set selection (context-management), prose tone repair (writing-humanizer), and quality scoring (evaluation)."
   taxonomy_domain: agent/cognition
@@ -39,7 +39,7 @@ metadata:
   lint_verdict: PASS
   skill_graph_source_repo: "https://github.com/jacob-balslev/skill-graph"
   skill_graph_project: Skill Graph
-  skill_graph_canonical_skill: skills/agent-ops/summarization/SKILL.md
+  skill_graph_canonical_skill: skills/ai-engineering/summarization/SKILL.md
   skill_graph_export_description_projection: boundary
 ---
 # Summarization
@@ -223,7 +223,7 @@ After applying this skill, verify:
 <!-- skill-graph-context:start (generated — do not edit by hand) -->
 
 **Classification**
-- Subject: `agent-ops`
+- Subject: `ai-engineering`
 - Deployment: `portable`
 - Domain: `agent/cognition`
 - Scope: Condensing prose while preserving meaning — session findings, wrap reports, research briefs, executive summaries, TLDRs, agent handoffs, progressive summaries, audit summaries, and long-document distillation — covering extractive vs abstractive summarization, what to keep vs drop, evidence preservation, summary levels, handoff summaries, and audit-report condensation without hiding findings. Portable across any text-condensation task; principle-grounded, not repo-bound. Excludes byte/data compression algorithms (compression), context-window budget math and compaction triggers (context-window), working-set selection (context-management), prose tone repair (writing-humanizer), and quality scoring (evaluation).

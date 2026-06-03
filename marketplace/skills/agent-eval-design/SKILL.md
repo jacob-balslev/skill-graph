@@ -5,7 +5,7 @@ license: MIT
 compatibility: "Portable eval-design discipline for agent workflows, skill routers, prompt systems, and tool-use policies."
 allowed-tools: Read Grep
 metadata:
-  subject: quality-assurance
+  subject: ai-engineering
   deployment_target: portable
   scope: "Designing behavioral evaluations for AI agents, skills, routers, prompts, tool-use policies, and multi-step workflows: task sets, rubrics, graders, hard negatives, regression cases, traces, and acceptance thresholds. Portable across agentic systems and skill libraries. Excludes application-code test planning, skill-library health tooling, live failure debugging, and code-diff review."
   taxonomy_domain: ai-engineering/evaluation
@@ -16,7 +16,7 @@ metadata:
   relations: "{\"boundary\":[{\"skill\":\"testing-strategy\",\"reason\":\"testing-strategy plans software tests; agent-eval-design designs behavioral evals for AI agents and skills\"},{\"skill\":\"skill-infrastructure\",\"reason\":\"skill-infrastructure owns library health tooling; agent-eval-design owns eval content and grading design\"},{\"skill\":\"debugging\",\"reason\":\"debugging investigates a live failure; agent-eval-design turns patterns into future evals\"},{\"skill\":\"code-review\",\"reason\":\"code-review evaluates diffs; agent-eval-design evaluates agent behavior\"}],\"related\":[\"skill-router\",\"context-engineering\",\"testing-strategy\",\"skill-infrastructure\"],\"verify_with\":[\"testing-strategy\",\"skill-infrastructure\"]}"
   skill_graph_source_repo: "https://github.com/jacob-balslev/skill-graph"
   skill_graph_project: Skill Graph
-  skill_graph_canonical_skill: skills/quality-assurance/agent-eval-design/SKILL.md
+  skill_graph_canonical_skill: skills/ai-engineering/agent-eval-design/SKILL.md
   skill_graph_export_description_projection: anti_examples+boundary
 ---
 
@@ -83,7 +83,7 @@ The highest-value cases are hard negatives and prior failures. A routing eval wi
 <!-- skill-graph-context:start (generated — do not edit by hand) -->
 
 **Classification**
-- Subject: `quality-assurance`
+- Subject: `ai-engineering`
 - Deployment: `portable`
 - Domain: `ai-engineering/evaluation`
 - Scope: Designing behavioral evaluations for AI agents, skills, routers, prompts, tool-use policies, and multi-step workflows: task sets, rubrics, graders, hard negatives, regression cases, traces, and acceptance thresholds. Portable across agentic systems and skill libraries. Excludes application-code test planning, skill-library health tooling, live failure debugging, and code-diff review.

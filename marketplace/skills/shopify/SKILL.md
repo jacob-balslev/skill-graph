@@ -6,6 +6,7 @@ metadata:
   schema_version: "8"
   version: "1.0.0"
   subject: product-domain
+  subjects: "[\"product-domain\",\"backend-engineering\"]"
   deployment_target: portable
   taxonomy_domain: engineering/integrations
   owner: skill-graph-maintainer
@@ -68,7 +69,7 @@ The theme surface and the API surface should remain separable. Online Store 2.0 
 <!-- skill-graph-context:start (generated — do not edit by hand) -->
 
 **Classification**
-- Subject: `product-domain`
+- Subject: `product-domain` (also: `backend-engineering`)
 - Deployment: `portable`
 - Domain: `engineering/integrations`
 

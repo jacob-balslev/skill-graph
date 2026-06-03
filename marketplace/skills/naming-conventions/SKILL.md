@@ -5,7 +5,7 @@ license: MIT
 compatibility: Language-agnostic
 allowed-tools: Read Grep Bash Edit
 metadata:
-  subject: code-engineering
+  subject: software-engineering-method
   deployment_target: portable
   scope: "Portable naming-decision guidance for files, functions, variables, types, routes, database columns, environment variables, and related code/system artifacts. Teaches truthful identifier morphology, artifact-specific casing, abbreviation discipline, name-vs-path semantics, rename coordination, and detection of names that lie. Excludes prose documentation writing, structural refactoring where naming is incidental, whole-diff code review, debugging a misnamed behavior after failure, and end-user UI copy."
   taxonomy_domain: engineering/naming
@@ -21,7 +21,7 @@ metadata:
   misconception: "The wrong mental model is that naming is cosmetic. A misleading name is a behavioral bug in the reader's model: `getOrder()` that returns `undefined`, `validate()` that mutates input, or `created` that stores a ship date will eventually cause wrong assumptions."
   skill_graph_source_repo: "https://github.com/jacob-balslev/skill-graph"
   skill_graph_project: Skill Graph
-  skill_graph_canonical_skill: skills/code-engineering/naming-conventions/SKILL.md
+  skill_graph_canonical_skill: skills/software-engineering-method/naming-conventions/SKILL.md
   skill_graph_export_description_projection: anti_examples
 ---
 
@@ -145,7 +145,7 @@ Renaming is a small change that touches many places. Do all of them in one commi
 <!-- skill-graph-context:start (generated — do not edit by hand) -->
 
 **Classification**
-- Subject: `code-engineering`
+- Subject: `software-engineering-method`
 - Deployment: `portable`
 - Domain: `engineering/naming`
 - Scope: Portable naming-decision guidance for files, functions, variables, types, routes, database columns, environment variables, and related code/system artifacts. Teaches truthful identifier morphology, artifact-specific casing, abbreviation discipline, name-vs-path semantics, rename coordination, and detection of names that lie. Excludes prose documentation writing, structural refactoring where naming is incidental, whole-diff code review, debugging a misnamed behavior after failure, and end-user UI copy.

@@ -7,7 +7,7 @@ allowed-tools: Read Grep
 metadata:
   schema_version: "8"
   version: "1.0.0"
-  subject: frontend-ui
+  subject: frontend-engineering
   deployment_target: portable
   scope: "Designing and auditing a design system's architecture — token taxonomy, semantic tokens, component APIs, theming, accessibility contracts, documentation, governance, and migration strategy. Portable across any design system; principle-grounded, not repo-bound. Excludes information hierarchy and navigation (information-architecture), page-specific layout (layout-composition), visual craft direction (visual-design-foundations), sentence-level UI copy (microcopy), and accessibility-only audits (a11y)."
   taxonomy_domain: design/system
@@ -32,7 +32,7 @@ metadata:
   lint_verdict: PASS
   skill_graph_source_repo: "https://github.com/jacob-balslev/skill-graph"
   skill_graph_project: Skill Graph
-  skill_graph_canonical_skill: skills/frontend-ui/design-system-architecture/SKILL.md
+  skill_graph_canonical_skill: skills/frontend-engineering/design-system-architecture/SKILL.md
   skill_graph_export_description_projection: anti_examples+boundary
   skill_graph_export_description_projection_truncated: "true"
 ---
@@ -90,7 +90,7 @@ This skill ships a comprehension-eval artifact at [`examples/evals/design-system
 <!-- skill-graph-context:start (generated — do not edit by hand) -->
 
 **Classification**
-- Subject: `frontend-ui`
+- Subject: `frontend-engineering`
 - Deployment: `portable`
 - Domain: `design/system`
 - Scope: Designing and auditing a design system's architecture — token taxonomy, semantic tokens, component APIs, theming, accessibility contracts, documentation, governance, and migration strategy. Portable across any design system; principle-grounded, not repo-bound. Excludes information hierarchy and navigation (information-architecture), page-specific layout (layout-composition), visual craft direction (visual-design-foundations), sentence-level UI copy (microcopy), and accessibility-only audits (a11y).

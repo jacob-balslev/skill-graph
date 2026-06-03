@@ -5,7 +5,7 @@ license: CC-BY-4.0
 metadata:
   schema_version: "8"
   version: "1.0.0"
-  subject: design-craft
+  subject: reasoning-strategy
   deployment_target: portable
   scope: "Reframing a stated problem before solutions are committed — surfacing assumptions, separating symptoms from root needs, converting feature-request briefs into problem statements, and aligning a team on the problem before design proceeds. Portable across any design or product effort; principle-grounded, not repo-bound. Excludes code-level bug triage, runtime failure diagnosis, and root-cause analysis of system errors (engineering investigation, not design framing)."
   owner: skill-graph-maintainer
@@ -28,7 +28,7 @@ metadata:
   lint_verdict: PASS
   skill_graph_source_repo: "https://github.com/jacob-balslev/skill-graph"
   skill_graph_project: Skill Graph
-  skill_graph_canonical_skill: skills/design-craft/problem-framing/SKILL.md
+  skill_graph_canonical_skill: skills/reasoning-strategy/problem-framing/SKILL.md
   skill_graph_export_description_projection: anti_examples
 ---
 
@@ -67,7 +67,7 @@ The practice is opinionated about language. "How might we" is not interchangeabl
 <!-- skill-graph-context:start (generated — do not edit by hand) -->
 
 **Classification**
-- Subject: `design-craft`
+- Subject: `reasoning-strategy`
 - Deployment: `portable`
 - Scope: Reframing a stated problem before solutions are committed — surfacing assumptions, separating symptoms from root needs, converting feature-request briefs into problem statements, and aligning a team on the problem before design proceeds. Portable across any design or product effort; principle-grounded, not repo-bound. Excludes code-level bug triage, runtime failure diagnosis, and root-cause analysis of system errors (engineering investigation, not design framing).
 

@@ -4,7 +4,7 @@ description: "Use when reasoning about how a database schema changes over time w
 license: MIT
 allowed-tools: Read Grep
 metadata:
-  subject: code-engineering
+  subject: data-engineering
   deployment_target: portable
   scope: "Evolving a database schema over time without breaking deployed application code — the expand/contract pattern, zero-downtime change rules, the backwards/forwards compatibility envelope (deploy ordering and rollback discipline), the per-change-type safe procedure (add/drop/rename column, type change, constraints, indexes), and dual-write/dual-read transitions. Portable across relational databases and deploy pipelines; principle-grounded, not repo-bound. Excludes mechanical execution of one migration (database-migration), schema design from scratch (data-modeling), query tuning (query-optimization), and distributed-data partitioning (sharding-strategy)."
   taxonomy_domain: engineering/data
@@ -22,7 +22,7 @@ metadata:
   misconception: "|"
   skill_graph_source_repo: "https://github.com/jacob-balslev/skill-graph"
   skill_graph_project: Skill Graph
-  skill_graph_canonical_skill: skills/code-engineering/schema-evolution/SKILL.md
+  skill_graph_canonical_skill: skills/data-engineering/schema-evolution/SKILL.md
   skill_graph_export_description_projection: boundary
 ---
 
@@ -159,7 +159,7 @@ After applying this skill, verify:
 <!-- skill-graph-context:start (generated — do not edit by hand) -->
 
 **Classification**
-- Subject: `code-engineering`
+- Subject: `data-engineering`
 - Deployment: `portable`
 - Domain: `engineering/data`
 - Scope: Evolving a database schema over time without breaking deployed application code — the expand/contract pattern, zero-downtime change rules, the backwards/forwards compatibility envelope (deploy ordering and rollback discipline), the per-change-type safe procedure (add/drop/rename column, type change, constraints, indexes), and dual-write/dual-read transitions. Portable across relational databases and deploy pipelines; principle-grounded, not repo-bound. Excludes mechanical execution of one migration (database-migration), schema design from scratch (data-modeling), query tuning (query-optimization), and distributed-data partitioning (sharding-strategy).

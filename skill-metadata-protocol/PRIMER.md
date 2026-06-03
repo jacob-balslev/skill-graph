@@ -136,11 +136,11 @@ flowchart TB
 
 **Purpose.** Place the skill at exactly one position in a hierarchical tree.
 
-**Fields.** `subject` (the top-level shelf, a required closed 9-enum), `taxonomy_domain` (the slash-delimited nested path, optional).
+**Fields.** `subject` (the top-level shelf, a required closed 12-enum), `taxonomy_domain` (the slash-delimited nested path, optional).
 
-**What it answers.** *What kind of concern is this?* The tree carries meaning through nesting: `code-engineering/linting/eslint-rules` says eslint-rules *is a kind of* linting *is a kind of* code-engineering concern. `subject` is always required; add `taxonomy_domain` only when a single `subject` holds enough skills (past ~25) that a sub-path helps navigation. A skill occupies exactly one taxonomic position — this is the difference between taxonomy and the multi-membership tag axes (see section 4).
+**What it answers.** *What kind of concern is this?* The tree carries meaning through nesting: `backend-engineering/persistence/connection-pooling` says connection-pooling *is a kind of* persistence *is a kind of* backend-engineering concern. `subject` is always required; add `taxonomy_domain` only when a single `subject` holds enough skills (past ~25) that a sub-path helps navigation. A skill occupies exactly one taxonomic position — this is the difference between taxonomy and the multi-membership tag axes (see section 4).
 
-**What you do with this:** Pick `subject` to file the skill on one of the nine top-level shelves (`code-engineering`, `quality-assurance`, `frontend-ui`, etc.). Add `taxonomy_domain` only when a subject grows large enough that a tree helps readers navigate.
+**What you do with this:** Pick `subject` to file the skill on one of the twelve top-level shelves (`backend-engineering`, `quality-assurance`, `frontend-engineering`, etc.). Add `taxonomy_domain` only when a subject grows large enough that a tree helps readers navigate.
 
 ### Layer 3. Ontology
 
@@ -188,7 +188,7 @@ Beyond the four metadata layers that express *meaning*, a library needs four ind
 | **Project belonging** | `project[]` | Many objects (handle + role) | *Which specific project(s) is this skill anchored to?* |
 | **Routing group (bundle)** | `routing_bundles` | Many-to-many | *Which router-query-time bundle does this skill join?* |
 
-The axes compose without nesting. A single skill can be `deployment_target: portable` with `subject: code-engineering`, `taxonomy_domain: code-engineering/linting/eslint-rules`, and `routing_bundles: [quality, linting]` — each axis carries a different shape of answer, and the router uses them for different things.
+The axes compose without nesting. A single skill can be `deployment_target: portable` with `subject: backend-engineering`, `taxonomy_domain: backend-engineering/linting/eslint-rules`, and `routing_bundles: [quality, linting]` — each axis carries a different shape of answer, and the router uses them for different things.
 
 ### 4.1 Deployment target — *where does this deploy?*
 
@@ -201,7 +201,7 @@ Two values, chosen at authoring time and enforced by the schema:
 
 ### 4.2 Taxonomy — *what kind of concern is this?*
 
-`subject` is the top-level shelf (closed 9-value enum); `taxonomy_domain` is the optional slash-delimited path beneath. Exactly one position per skill. Segments inherit meaning from the ones above them, so `code-engineering/linting/eslint-rules` encodes a three-level kind-of hierarchy. This is the closest thing in the contract to a **taxonomical layer** in the classical sense — each skill sits at a unique address in a tree.
+`subject` is the top-level shelf (closed 12-value enum); `taxonomy_domain` is the optional slash-delimited path beneath. Exactly one position per skill. Segments inherit meaning from the ones above them, so `backend-engineering/linting/eslint-rules` encodes a three-level kind-of hierarchy. This is the closest thing in the contract to a **taxonomical layer** in the classical sense — each skill sits at a unique address in a tree.
 
 Use `taxonomy_domain` only when the library is big enough that a tree helps navigation. Smaller libraries stay flat on `subject` alone.
 
@@ -270,7 +270,7 @@ schema_version: 8
 name: refactor
 description: "Reorganizing existing code without changing external behavior."
 version: 1.0.0
-subject: code-engineering
+subject: backend-engineering
 deployment_target: portable
 owner: skill-graph-maintainer
 freshness: "2026-05-27"

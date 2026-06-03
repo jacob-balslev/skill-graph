@@ -16,7 +16,7 @@ Each axis below is *named* here and *specified* in [`field-reference.md`](field-
 
 | Axis | Required | What it declares |
 |------|----------|------------------|
-| `subject` | yes | Primary browse shelf — one of nine closed values (`code-engineering`, `quality-assurance`, `frontend-ui`, `design-craft`, `agent-ops`, `product-domain`, `knowledge-organization`, `meta-methods`, `data-analytics`). |
+| `subject` | yes | Primary browse shelf — one of twelve closed values (`backend-engineering`, `frontend-engineering`, `software-architecture`, `data-engineering`, `agent-ops`, `ai-engineering`, `quality-assurance`, `design`, `reasoning-strategy`, `software-engineering-method`, `knowledge-organization`, `product-domain`). |
 | `deployment_target` | yes | `portable` (any project) or `project` (anchored to one repo — requires `grounding`). |
 | `scope` | yes | Free-text PRD-style statement of what the skill teaches and where it deploys. |
 | `subjects[]` | when it applies | Polyhierarchy (max 2, primary first) for a skill that genuinely spans two shelves. |

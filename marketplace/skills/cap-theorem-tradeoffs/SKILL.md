@@ -6,7 +6,7 @@ allowed-tools: Read Grep
 metadata:
   schema_version: "8"
   version: "1.0.0"
-  subject: code-engineering
+  subject: data-engineering
   deployment_target: portable
   scope: "The consistency-availability-partition-tolerance trade-off for distributed data systems — Brewer's CAP conjecture (2000), Gilbert & Lynch's 2002 proof, why P is not optional, the CP-vs-AP dichotomy, PACELC as the latency-vs-consistency extension that holds even without partition, the CAP-C vs ACID-C distinction, and the choice procedure of naming what the system must guarantee under partition. Portable across any distributed data system; principle-grounded, not repo-bound. Excludes single-node transactional guarantees (acid-fundamentals), choosing an isolation level (transaction-isolation), replication topology design (replication-patterns), and sharding decisions (sharding-strategy)."
   taxonomy_domain: engineering/data
@@ -37,7 +37,7 @@ metadata:
   lint_verdict: PASS
   skill_graph_source_repo: "https://github.com/jacob-balslev/skill-graph"
   skill_graph_project: Skill Graph
-  skill_graph_canonical_skill: skills/code-engineering/cap-theorem-tradeoffs/SKILL.md
+  skill_graph_canonical_skill: skills/data-engineering/cap-theorem-tradeoffs/SKILL.md
 ---
 
 # CAP-Theorem Tradeoffs
@@ -160,7 +160,7 @@ After applying this skill, verify:
 <!-- skill-graph-context:start (generated — do not edit by hand) -->
 
 **Classification**
-- Subject: `code-engineering`
+- Subject: `data-engineering`
 - Deployment: `portable`
 - Domain: `engineering/data`
 - Scope: The consistency-availability-partition-tolerance trade-off for distributed data systems — Brewer's CAP conjecture (2000), Gilbert & Lynch's 2002 proof, why P is not optional, the CP-vs-AP dichotomy, PACELC as the latency-vs-consistency extension that holds even without partition, the CAP-C vs ACID-C distinction, and the choice procedure of naming what the system must guarantee under partition. Portable across any distributed data system; principle-grounded, not repo-bound. Excludes single-node transactional guarantees (acid-fundamentals), choosing an isolation level (transaction-isolation), replication topology design (replication-patterns), and sharding decisions (sharding-strategy).

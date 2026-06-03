@@ -9,7 +9,7 @@ metadata:
   drift_check: "{\"last_verified\":\"2026-05-19\"}"
   schema_version: "8"
   version: "1.1.0"
-  subject: code-engineering
+  subject: software-architecture
   deployment_target: portable
   scope: "Translating messy business requirements, stakeholder language, and early product ideas into an implementation-neutral domain model before schemas, endpoints, or DDD aggregates are named — entities, attributes, named relationships, cardinality, identity criteria, specialization/generalization, aggregation/composition, reification, abstraction-level control, stakeholder validation, and modeling anti-patterns. Portable across any domain-modeling effort; principle-grounded, not repo-bound. Excludes database ER diagrams with keys and normalization (data-modeling), formal ontology axioms in OWL/RDFS (ontology-modeling), and DDD tactical design (bounded-context-mapping)."
   taxonomy_domain: engineering/modeling
@@ -40,7 +40,7 @@ metadata:
   lint_verdict: PASS
   skill_graph_source_repo: "https://github.com/jacob-balslev/skill-graph"
   skill_graph_project: Skill Graph
-  skill_graph_canonical_skill: skills/code-engineering/conceptual-modeling/SKILL.md
+  skill_graph_canonical_skill: skills/software-architecture/conceptual-modeling/SKILL.md
   skill_graph_export_description_projection: anti_examples+boundary
   skill_graph_export_description_projection_truncated: "true"
 ---
@@ -254,7 +254,7 @@ Do not erase the conceptual model after implementation starts. Keep it as the ex
 <!-- skill-graph-context:start (generated — do not edit by hand) -->
 
 **Classification**
-- Subject: `code-engineering`
+- Subject: `software-architecture`
 - Deployment: `portable`
 - Domain: `engineering/modeling`
 - Scope: Translating messy business requirements, stakeholder language, and early product ideas into an implementation-neutral domain model before schemas, endpoints, or DDD aggregates are named — entities, attributes, named relationships, cardinality, identity criteria, specialization/generalization, aggregation/composition, reification, abstraction-level control, stakeholder validation, and modeling anti-patterns. Portable across any domain-modeling effort; principle-grounded, not repo-bound. Excludes database ER diagrams with keys and normalization (data-modeling), formal ontology axioms in OWL/RDFS (ontology-modeling), and DDD tactical design (bounded-context-mapping).

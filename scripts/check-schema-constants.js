@@ -5,7 +5,7 @@
  * Validates that `schemas/SKILL_METADATA_PROTOCOL_schema.json` and `schemas/manifest.schema.json`
  * carry the enum values mandated by:
  *   - ADR-0011 (four-verdict Audit Status, historically called the Health Block)
- *   - ADR-0017 + its 2026-05-27 amendment (v8 classification: `subject` 9-enum,
+ *   - ADR-0020 twelve-shelf re-axis (`subject` 12-enum, supersedes ADR-0017's 9),
  *     `deployment_target` 2-enum, and free-text `scope` with NO enum). The
  *     amendment retired the `operation` axis, removed the `scope` enum, and
  *     dropped the `category` and `type` axes. This checker asserts the
@@ -51,15 +51,20 @@ const SPEC = {
     integer: [8],
     string: ['8'],
   },
-  // v8 classification (ADR-0017 + 2026-05-27 amendment)
+  // classification subject enum (ADR-0020 twelve-shelf competency re-axis,
+  // supersedes the ADR-0017 9-value model). 3 bands: engineering /
+  // AI-agentic / cross-cutting craft.
   v8_subject: [
+    'backend-engineering',
+    'frontend-engineering',
+    'software-architecture',
+    'data-engineering',
     'agent-ops',
-    'code-engineering',
-    'frontend-ui',
-    'design-craft',
-    'data-analytics',
+    'ai-engineering',
     'quality-assurance',
-    'meta-methods',
+    'design',
+    'reasoning-strategy',
+    'software-engineering-method',
     'knowledge-organization',
     'product-domain',
   ],
@@ -202,9 +207,9 @@ function runChecks() {
 
   // Audit-state sidecar `required` (7 fields; `version` optional). ADR-0019.
   results.push(checkRequiredFields('audit-state.schema required fields', auditRequired, SPEC.sidecar_required_fields));
-  results.push(checkEnum('skill.schema subject (v8 9-enum)', SPEC.v8_subject, skillProps.subject && skillProps.subject.enum));
+  results.push(checkEnum('skill.schema subject (12-enum)', SPEC.v8_subject, skillProps.subject && skillProps.subject.enum));
   if (skillProps.subjects && skillProps.subjects.items) {
-    results.push(checkEnum('skill.schema subjects[].items (v8 9-enum)', SPEC.v8_subject, skillProps.subjects.items.enum));
+    results.push(checkEnum('skill.schema subjects[].items (12-enum)', SPEC.v8_subject, skillProps.subjects.items.enum));
   }
   results.push(checkEnum('skill.schema deployment_target (v8 2-enum)', SPEC.v8_deployment_target, skillProps.deployment_target && skillProps.deployment_target.enum));
 
@@ -213,7 +218,7 @@ function runChecks() {
 
   // Manifest mirrors: per-skill enum must match
   results.push(checkRequiredFields('manifest.schema skills.required v8 fields', manifestSkillRequired, SPEC.v8_required_fields));
-  results.push(checkEnum('manifest.schema skills.subject (v8 9-enum)', SPEC.v8_subject, manifestSkillProps.subject && manifestSkillProps.subject.enum));
+  results.push(checkEnum('manifest.schema skills.subject (12-enum)', SPEC.v8_subject, manifestSkillProps.subject && manifestSkillProps.subject.enum));
   results.push(checkEnum('manifest.schema skills.deployment_target (v8 2-enum)', SPEC.v8_deployment_target, manifestSkillProps.deployment_target && manifestSkillProps.deployment_target.enum));
   results.push(checkFreeText('manifest.schema skills.scope (free-text, no enum)', manifestSkillProps.scope));
 

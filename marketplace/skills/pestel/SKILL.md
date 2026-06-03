@@ -5,7 +5,7 @@ license: MIT
 compatibility: "Markdown, strategy memos, market-entry analysis, business plans, product strategy, nonprofit planning, policy-aware planning"
 allowed-tools: Read Grep WebSearch WebFetch
 metadata:
-  subject: meta-methods
+  subject: reasoning-strategy
   deployment_target: portable
   scope: "PESTEL/PESTLE macro-environment scanning for organizations, products, programs, markets, and strategic decisions: define scope and horizon, gather external evidence across political, economic, social, technological, environmental, and legal forces, rate impact/probability/uncertainty, convert signals into opportunities, threats, assumptions, and monitoring triggers, and route the resulting fact base into downstream strategy work. Excludes internal capability analysis, industry profit-pool structure, value-innovation design, integrated strategy-choice formulation, execution goal-setting, and quantified expected-value comparison."
   taxonomy_domain: foundations/strategy
@@ -23,7 +23,7 @@ metadata:
   misconception: "The common mistake is treating PESTEL as a six-heading brainstorming table. A useful PESTEL scan is evidence-backed, scoped by geography and horizon, prioritized by decision impact, and explicit about which signals become opportunities, threats, assumptions, or monitoring triggers."
   skill_graph_source_repo: "https://github.com/jacob-balslev/skill-graph"
   skill_graph_project: Skill Graph
-  skill_graph_canonical_skill: skills/meta-methods/pestel/SKILL.md
+  skill_graph_canonical_skill: skills/reasoning-strategy/pestel/SKILL.md
   skill_graph_export_description_projection: anti_examples+boundary
   skill_graph_export_description_projection_truncated: "true"
 ---
@@ -245,7 +245,7 @@ Before returning a PESTEL output, verify:
 <!-- skill-graph-context:start (generated — do not edit by hand) -->
 
 **Classification**
-- Subject: `meta-methods`
+- Subject: `reasoning-strategy`
 - Deployment: `portable`
 - Domain: `foundations/strategy`
 - Scope: PESTEL/PESTLE macro-environment scanning for organizations, products, programs, markets, and strategic decisions: define scope and horizon, gather external evidence across political, economic, social, technological, environmental, and legal forces, rate impact/probability/uncertainty, convert signals into opportunities, threats, assumptions, and monitoring triggers, and route the resulting fact base into downstream strategy work. Excludes internal capability analysis, industry profit-pool structure, value-innovation design, integrated strategy-choice formulation, execution goal-setting, and quantified expected-value comparison.

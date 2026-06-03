@@ -7,7 +7,7 @@ allowed-tools: Read Grep
 metadata:
   schema_version: "8"
   version: "1.0.0"
-  subject: code-engineering
+  subject: software-architecture
   deployment_target: portable
   taxonomy_domain: modeling/state-machines
   owner: skill-graph-maintainer
@@ -31,7 +31,7 @@ metadata:
   lint_verdict: PASS
   skill_graph_source_repo: "https://github.com/jacob-balslev/skill-graph"
   skill_graph_project: Skill Graph
-  skill_graph_canonical_skill: skills/code-engineering/state-machine-modeling/SKILL.md
+  skill_graph_canonical_skill: skills/software-architecture/state-machine-modeling/SKILL.md
   skill_graph_export_description_projection: anti_examples
 ---
 
@@ -82,7 +82,7 @@ Make illegal states unrepresentable where possible. Where that is not possible, 
 <!-- skill-graph-context:start (generated — do not edit by hand) -->
 
 **Classification**
-- Subject: `code-engineering`
+- Subject: `software-architecture`
 - Deployment: `portable`
 - Domain: `modeling/state-machines`
 

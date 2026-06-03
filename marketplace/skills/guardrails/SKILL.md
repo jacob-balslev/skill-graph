@@ -7,7 +7,7 @@ allowed-tools: Read Grep Bash
 metadata:
   schema_version: "8"
   version: "1.2.0"
-  subject: quality-assurance
+  subject: ai-engineering
   deployment_target: portable
   taxonomy_domain: quality/safety
   owner: skill-graph-maintainer
@@ -31,7 +31,7 @@ metadata:
   lint_verdict: PASS
   skill_graph_source_repo: "https://github.com/jacob-balslev/skill-graph"
   skill_graph_project: Skill Graph
-  skill_graph_canonical_skill: skills/quality-assurance/guardrails/SKILL.md
+  skill_graph_canonical_skill: skills/ai-engineering/guardrails/SKILL.md
   skill_graph_export_description_projection: boundary
 ---
 # Guardrails
@@ -161,7 +161,7 @@ Guardrails for tool-using agents must cover LLM-specific risks as well as classi
 <!-- skill-graph-context:start (generated — do not edit by hand) -->
 
 **Classification**
-- Subject: `quality-assurance`
+- Subject: `ai-engineering`
 - Deployment: `portable`
 - Domain: `quality/safety`
 

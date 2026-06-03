@@ -124,19 +124,24 @@ The split *is* the SYSTEM/CONTENT boundary made physical: the sidecar is audit-l
 
 Map the v8 `subject` axis to the on-disk directory under `~/Development/skills/skills/`. **Updated 2026-05-26 — F23 reorg landed; directory names now match v8 subjects 1:1.** The 47 previously-nested skills (e.g., `engineering/data/<name>/`, `agent/context/<name>/`) were flattened to `<v8-subject>/<name>/`:
 
-| If `subject:` is… | Directory | Notes |
+| If `subject:` is… | Directory | Band / Notes |
 |---|---|---|
-| `code-engineering` | `skills/code-engineering/<name>/` | Largest shelf (36 skills, 25%). Subdivide via `domain:` (frontend / backend / infrastructure / build) when >25 skills. |
-| `quality-assurance` | `skills/quality-assurance/<name>/` | Audit, testing, security, performance, accessibility (27 skills, 18%). |
-| `frontend-ui` | `skills/frontend-ui/<name>/` | Frontend implementation (rendering, hooks, styling, components, layout) (20 skills, 13%). Boundary with `design-craft`: pick by what the skill *teaches* — implementation patterns (rendering, state, props) → frontend-ui; design judgment (composition, hierarchy, typography) → design-craft. |
-| `design-craft` | `skills/design-craft/<name>/` | Information architecture, composition, typography, UX research (20 skills, 13%). |
-| `agent-ops` | `skills/agent-ops/<name>/` | Agent orchestration, skill system itself, multi-agent coordination (17 skills, 11%). |
-| `product-domain` | `skills/product-domain/<name>/` | Product-shaped knowledge: e-commerce, billing, integrations, customer workflows (11 skills, 7%). |
-| `meta-methods` | `skills/meta-methods/<name>/` | Cross-cutting methodology: methodical reasoning, no-cutting-corners, code-preservation (8 skills, 5%). |
-| `knowledge-organization` | `skills/knowledge-organization/<name>/` | Information architecture for *the skill library itself* — head nouns, taxonomy, glossary (7 skills, 5%). |
-| `data-analytics` | `skills/data-analytics/<name>/` | Quantitative analysis, modeling, statistics (3 skills, 2%). Smallest shelf — earns its own root per the v8 design even at <5 skills because category cleanliness > population threshold. |
+| `backend-engineering` | `skills/backend-engineering/<name>/` | Band A. Server-side construction: APIs, async/jobs, runtime, protocols, integration-as-code. |
+| `frontend-engineering` | `skills/frontend-engineering/<name>/` | Band A. Client/UI construction in a web framework: components, rendering, state, hooks, routing. Boundary with `design`: implementation (rendering, state, hooks) → here; design judgment (composition, hierarchy, typography) → `design`. |
+| `software-architecture` | `skills/software-architecture/<name>/` | Band A. Shape before code: boundaries, contracts, ADRs, tech selection, event/domain + conceptual/ER/state modeling. |
+| `data-engineering` | `skills/data-engineering/<name>/` | Band A. Data tier: schema/migration, indexing, replication, sharding, transactions, query/connection tuning. |
+| `agent-ops` | `skills/agent-ops/<name>/` | Band B. The agent *runtime*: loops, context windows, skill infrastructure, dispatch, tool-call protocol, monitoring. |
+| `ai-engineering` | `skills/ai-engineering/<name>/` | Band B. LLM *features in a product*: prompt design, evals, generative UI, guardrails, tool-use strategy, summarization. |
+| `quality-assurance` | `skills/quality-assurance/<name>/` | Band C. Verifying *properties*: testing, a11y, performance, security, type-safety, code review. |
+| `design` | `skills/design/<name>/` | Band C. Human-facing design craft: visual systems, typography, interaction, UX, design research, content/microcopy. |
+| `reasoning-strategy` | `skills/reasoning-strategy/<name>/` | Band C. Generic thinking + business/market strategy: decision quality, mental models, competitive strategy, negotiation. |
+| `software-engineering-method` | `skills/software-engineering-method/<name>/` | Band C. Engineering process discipline: spec/test-driven dev, debugging method, prioritization, refactor, version-control, doc discipline. |
+| `knowledge-organization` | `skills/knowledge-organization/<name>/` | Band C. Structuring meaning: taxonomy, ontology, semantics, classification, linguistics, knowledge/concept modeling. |
+| `product-domain` | `skills/product-domain/<name>/` | Band C. Genuine external product/market verticals: ecommerce platforms, marketplaces, fulfillment, vendor playbooks. Floor-exception (3) per ADR-0020 — recruit to ≥5 or fold. |
 
-**Naming convention.** Directory name = skill `name:` value (kebab-case, head-noun-anchored). The `skill-lint.js` parent-dir alignment check enforces this.
+Live per-subject counts: [`SKILL_GRAPH.md § Current State`](../SKILL_GRAPH.md#current-state--single-source-of-truth) (never restated inline). The 12-shelf set is [ADR-0020](../docs/adr/0020-twelve-shelf-competency-reaxis.md).
+
+**Naming convention.** Directory name = skill `name:` value (kebab-case, head-noun-anchored). The `skill-lint.js` parent-dir alignment check enforces this. The directory always mirrors `subject` 1:1 — a `subject` change is also a `git mv` of the folder.
 
 > **Layout history.** Pre-2026-05-26 the canonical library used a v7 6-directory layout (`agent / design / engineering / foundations / product / quality`) with v8 subjects living only in frontmatter. F23 from the 2026-05-25 audit (SH-6481) recommended flattening to v8 subject names; the codemod ran 2026-05-26 (`/tmp/migrate-skill-layout-v7-to-v8.js`, 148 git-mv operations + 1 manual move for the untracked `playing-to-win` skill). Pre-reorg paths are reachable via git history.
 
@@ -148,7 +153,7 @@ Map the v8 `subject` axis to the on-disk directory under `~/Development/skills/s
 
 | Style | Lifecycle | Example | Purpose |
 |---|---|---|---|
-| **Field-purpose comment** | **STAYS in the production skill.** | `# subject: primary browse shelf — what the skill teaches.`<br>`# code-engineering / quality-assurance / frontend-ui / design-craft / agent-ops / ...` | Authoritative-by-co-location documentation of what the field is for, its allowed values, and when to pick each value. The reader does not need to open `skill-metadata-protocol/field-reference.md` to understand the frontmatter. |
+| **Field-purpose comment** | **STAYS in the production skill.** | `# subject: primary browse shelf — the competency the skill teaches.`<br>`# backend-engineering / frontend-engineering / software-architecture / data-engineering / agent-ops / ai-engineering / ...` | Authoritative-by-co-location documentation of what the field is for, its allowed values, and when to pick each value. The reader does not need to open `skill-metadata-protocol/field-reference.md` to understand the frontmatter. |
 | **`# TEMPLATE NOTE:` comment** | **STRIPPED on derivation.** | `# TEMPLATE NOTE: be pushy in your description — Claude tends to under-trigger skills...` | Authoring scaffolding that only lives in `examples/skill-metadata-template.md`. Derived skills MUST strip every line beginning with `# TEMPLATE NOTE:` before commit (verified with `grep -n "TEMPLATE NOTE" <derived-skill>` returning zero hits). |
 
 **Source of truth** for the content of a field-purpose comment is `skill-metadata-protocol/field-reference.md`. The inline comment is an abridged summary (purpose + enum + when-to-use). When the comment and the reference doc disagree, the reference doc wins and the comment gets corrected. The discipline mirrors how JSDoc / TSDoc summaries point at canonical type definitions — the comment is a fast lookup, not a parallel truth.
@@ -157,12 +162,13 @@ Map the v8 `subject` axis to the on-disk directory under `~/Development/skills/s
 
 ```yaml
 metadata:
-  # === v8 Classification (subject + deployment_target; polyhierarchy via subjects[]) — see ADR-0017 ===
+  # === Classification (subject + deployment_target; polyhierarchy via subjects[]) — see ADR-0020 ===
 
-  # subject: primary browse shelf — what the skill teaches. One of nine closed values:
-  # code-engineering / quality-assurance / frontend-ui / design-craft / agent-ops /
-  # product-domain / knowledge-organization / meta-methods / data-analytics.
-  subject: meta-methods
+  # subject: primary browse shelf — the competency the skill teaches. One of twelve closed values:
+  # backend-engineering / frontend-engineering / software-architecture / data-engineering /
+  # agent-ops / ai-engineering / quality-assurance / design / reasoning-strategy /
+  # software-engineering-method / knowledge-organization / product-domain.
+  subject: reasoning-strategy
 
   # deployment_target: deployment targeting. One of two closed values:
   # portable (any project) / project (one specific project; requires a populated `grounding` block).
@@ -197,7 +203,7 @@ Required in `SKILL.md` frontmatter:
 |---|---|---|
 | `name` | string | Stable identifier. Used for routing and `relations.*` targets. |
 | `description` | string | Short description of what the skill is about. Activation signals belong to `keywords`/`triggers`/`examples`/`anti_examples`; boundary semantics belong to `relations.boundary` (⚠ name inverts mechanic — it *excludes* the listed skills when this skill wins; see § Relations § `boundary`). |
-| `subject` | enum (9 closed values) | Primary classification — what the skill teaches. One of: `code-engineering`, `quality-assurance`, `frontend-ui`, `design-craft`, `agent-ops`, `product-domain`, `knowledge-organization`, `meta-methods`, `data-analytics`. See § Classification. |
+| `subject` | enum (12 closed values) | Primary classification — the competency the skill teaches. One of: `backend-engineering`, `frontend-engineering`, `software-architecture`, `data-engineering`, `agent-ops`, `ai-engineering`, `quality-assurance`, `design`, `reasoning-strategy`, `software-engineering-method`, `knowledge-organization`, `product-domain`. See § Classification. |
 | `deployment_target` | enum (2 closed values) | Deployment targeting — where the skill applies. One of: `portable` (any project), `project` (one specific project; requires `grounding`). See § Classification. |
 | `scope` | string | PRD-style free-text statement of what the skill teaches and what it does not. Not an enum. |
 
@@ -321,31 +327,34 @@ Skills are classified on three required authored facets — `subject` (what is t
 
 | Axis | Type | Required | Purpose |
 |---|---|---|---|
-| **`subject`** | closed 9-enum | yes | Primary classification — what the skill teaches |
+| **`subject`** | closed 12-enum | yes | Primary classification — the competency the skill teaches |
 | **`deployment_target`** | closed 2-enum | yes | Deployment targeting — where the skill applies |
 | **`scope`** | free-text | yes | PRD-style statement of what the skill teaches and what it does not |
 | **`keywords`** | ≤10 strings | recommended | Fuzzy agent activation |
 | **`relations`** | typed edges | recommended | Prerequisite + clustering graph |
 
-#### `subject` (9 closed values)
+#### `subject` (12 closed values)
 
-The primary browse shelf and routing seed. Balance rule: each subject holds 5–25 skills; <5 = fold or recruit, >25 = subdivide via `taxonomy_domain`.
+The primary browse shelf and routing seed — the competency the skill teaches ("what does this teach you to do?"). Closed 12-value enum in 3 navigational bands (see [ADR-0020](../docs/adr/0020-twelve-shelf-competency-reaxis.md)). Balance rule: each subject holds 5–25 skills; <5 = fold or recruit, >25 = subdivide via `taxonomy_domain`.
 
-| Value | Description |
-|---|---|
-| `agent-ops` | Agent orchestration, dispatch, lifecycle, multi-agent comms |
-| `code-engineering` | Backend, APIs, libraries, infrastructure, runtime |
-| `frontend-ui` | UI components, layout, interaction, web framework specifics |
-| `design-craft` | Visual design, typography, brand, motion, design tokens |
-| `data-analytics` | Data viz, analytics, observability, financial display |
-| `quality-assurance` | Testing, a11y, perf, security, type-safety |
-| `meta-methods` | Methodology, reasoning, verification, decision frameworks |
-| `knowledge-organization` | Taxonomy, semantics, classification, glossaries, ontology |
-| `product-domain` | Domain-specific (Shopify, Stripe, fulfillment, integrations) |
+| Value | Teaches | Does NOT hold |
+|---|---|---|
+| `backend-engineering` | Server-side construction: APIs, async/jobs, runtime, protocols, integration-as-code | Backend *properties* (perf/security → `quality-assurance`); shape-before-code (→ `software-architecture`); render-coupled server code (→ `frontend-engineering`) |
+| `frontend-engineering` | Client/UI construction in a web framework: components, rendering, state, hooks, routing, streaming UI | Visual/UX design (→ `design`); a11y/perf *as a property* (→ `quality-assurance`) |
+| `software-architecture` | System shape before code: boundaries, contracts, ADRs, tech selection, event/domain + conceptual/ER/state modeling | Implementing the chosen store/API (→ `backend-engineering`); modeling *of meaning/vocabulary* (→ `knowledge-organization`) |
+| `data-engineering` | Data tier: persistence schema/migration, indexing, replication, sharding, transactions, query/connection tuning | Data viz/analytics readout; architectural boundary modeling (→ `software-architecture`) |
+| `agent-ops` | Building/operating the agent **runtime**: loops, context windows, skill infrastructure, dispatch, tool-call protocol, monitoring | An LLM **product feature** (→ `ai-engineering`); generic reasoning (→ `reasoning-strategy`) |
+| `ai-engineering` | Building **AI/LLM features into a product**: prompt design, evals, generative UI, AI safety/guardrails, tool-use strategy, summarization | Operating the agent harness (→ `agent-ops`); deterministic testing (→ `quality-assurance`) |
+| `quality-assurance` | Verifying *properties* of a system: testing, a11y, performance, security, type-safety, code review | How to *build* the thing (→ engineering shelves); how to *reason* (→ `reasoning-strategy`) |
+| `design` | Human-facing design craft: visual systems, typography, interaction, UX, design research, content/microcopy | Front-end *implementation* of a design (→ `frontend-engineering`); information *taxonomy/semantics* (→ `knowledge-organization`) |
+| `reasoning-strategy` | Generic thinking + business/market strategy applied to any problem: decision quality, mental models, competitive strategy, negotiation | Engineering process method (→ `software-engineering-method`); classifying/naming knowledge (→ `knowledge-organization`) |
+| `software-engineering-method` | Process discipline for doing engineering well: spec/test-driven dev, debugging method, prioritization, refactor, version-control, doc discipline | Generic decision frameworks (→ `reasoning-strategy`); a testing *technique* (→ `quality-assurance`) |
+| `knowledge-organization` | Structuring meaning: taxonomy, ontology, semantics, classification, linguistics, knowledge/concept modeling | Data *schema* modeling (→ `data-engineering`); *system* boundary modeling (→ `software-architecture`) |
+| `product-domain` | Genuine external product/market verticals: ecommerce platforms, marketplaces, fulfillment, vendor-specific integration playbooks | Engineering primitives dressed as "product" (→ `backend-engineering`/`software-architecture`) |
 
 Live per-subject counts are in [`SKILL_GRAPH.md § Current State`](../SKILL_GRAPH.md#current-state--single-source-of-truth); do not restate inline here.
 
-**To propose a 10th subject value**: write an ADR in `docs/adr/` with (a) ≥5 existing skills that would label primarily under it, AND (b) evidence the value doesn't fit any existing subject by the disambiguation rules. Multi-fit secondaries belong in `subjects[1]`, not in a new top-level value.
+**To propose a 13th subject value**: write an ADR in `docs/adr/` with (a) ≥5 existing skills that would label primarily under it, AND (b) evidence the value doesn't fit any existing subject by the disambiguation rules. Multi-fit secondaries belong in `subjects[1]`, not in a new top-level value.
 
 #### `deployment_target` (2 closed values)
 
@@ -374,10 +383,15 @@ The graph layer. Seven edge types — `related`, `boundary` (⚠ name inverts me
 
 #### Disambiguation rules (apply in order when choosing `subject` for a new skill)
 
-  1. *Primary surface* — what the skill is *about*, not what it *enables*.
-  2. *Property vs subject* — properties (a11y, perf, security, testing, type-safety) → `quality-assurance`. How-to-build → `code-engineering` / `frontend-ui` / `design-craft` / `agent-ops`.
-  3. *Multi-fit* — skills that legitimately span two shelves set `subjects: [primary, secondary]` (max 2). Secondaries widen the browse net; they do NOT change the primary. Semantic adjacencies that are NOT subject-shaped still live in `relations.related`.
-  4. *`meta-methods` and `knowledge-organization` gates* — anti-junk-drawer. `meta-methods` is for methodology/reasoning; `knowledge-organization` is for taxonomy/semantics/glossary work. Don't default here when the skill is really about engineering or quality.
+  1. *Primary surface, not enablement* — classify by what the skill is *about*, never what it *enables*.
+  2. *Property vs construction vs shape* — a property to *verify* (a11y, perf, security, testing, type-safety) → `quality-assurance`; how to *construct* the artifact → `backend-engineering` / `frontend-engineering` / `data-engineering` / `design` / `ai-engineering` / `agent-ops`; which *shape* to choose before building (boundaries, contracts, ADRs, tech selection) → `software-architecture`.
+  3. *Runtime vs feature (the AI split)* — operating the agent harness → `agent-ops`; building an LLM capability into a product → `ai-engineering`. Tie-break: "would this exist with no product UI?" yes → `agent-ops`.
+  4. *Build-method vs generic-reasoning* — engineering process discipline (spec/test-driven, debugging, refactor, prioritization-of-engineering, doc discipline) → `software-engineering-method`; an any-domain thinking/decision/business framework → `reasoning-strategy`.
+  5. *Meaning vs data vs system (the modeling triage)* — structuring vocabulary/meaning (ontology, taxonomy, semantics) → `knowledge-organization`; structuring stored data (schema, ER-for-persistence, migrations) → `data-engineering`; structuring system boundaries/contracts (DDD, event/domain modeling) → `software-architecture`.
+  6. *Design-craft vs front-end-impl* — visual/UX/interaction/research/content → `design`; turning a design into framework code (components, hooks, rendering) → `frontend-engineering`.
+  7. *`product-domain` gate (anti-sink)* — only genuine *external* product/market verticals (named platforms, marketplaces, fulfillment) land here. An engineering primitive is never `product-domain` just because a product uses it.
+  8. *meta gates (anti-junk-drawer)* — don't default to `reasoning-strategy`, `software-engineering-method`, or `knowledge-organization` when the skill is really about building or verifying something concrete.
+  9. *Multi-fit* — skills that legitimately span two shelves set `subjects: [primary, secondary]` (max 2). The secondary widens the browse net; it does NOT change the primary or the on-disk folder. Semantic adjacencies that are NOT subject-shaped still live in `relations.related`.
 
 **`taxonomy_domain`** (renamed from `domain` in the 2026-05-27 amendment to disambiguate from `grounding.subject_matter` and cross-taxonomy routing prose)
 - Optional slash-delimited taxonomy sub-path (e.g. `engineering/api-design`, `frontend/state`).
@@ -613,7 +627,7 @@ relations:
 
 **Cross-domain boundary doctrine — SAME-DOMAIN ONLY.** Codified 2026-05-17 after the Tier C″ empirical sweep across 8 Wave 6 skills:
 
-1. `boundary[]` entries should declare SAME-DOMAIN routing exclusions only (same `subject` AND same `taxonomy_domain` sub-tree). Example: `code-engineering/frontend` ↔ `code-engineering/frontend` is fine; `code-engineering/frontend` ↔ `design-craft/component-systems` is not.
+1. `boundary[]` entries should declare SAME-DOMAIN routing exclusions only (same `subject` AND same `taxonomy_domain` sub-tree). Example: `frontend-engineering/rendering` ↔ `frontend-engineering/rendering` is fine; `frontend-engineering/rendering` ↔ `design/component-systems` is not.
 2. Cross-subject or cross-sub-domain routing distinctions belong in `anti_examples` + `relations.related`, NOT in `boundary[]`. The `anti_examples` array preserves routing-visible documentation as wrong-use phrases; `relations.related` signals the semantic adjacency without invoking the score-aware exclusion mechanic.
 3. Empirical justification: removing 16 cross-domain `boundary[]` entries across 8 skills caused **0 top-1 routing changes** on the 30-query baseline; only 3/30 low-confidence unmaskings of legitimate alternatives at score 3 surfaced. The cross-domain entries were performing silent low-confidence exclusion only — exactly the silent-failure risk the doctrine prevents.
 
@@ -734,7 +748,7 @@ The manifest schema is at `schemas/manifest.schema.json`. For the complete autho
 
 ## Schema contract
 
-> **v8 is the canonical classification.** The schema's global `required` array mandates `subject` (closed 9-enum browse shelf) + `deployment_target` (closed 2-enum `portable`/`project`) + `scope` (required free text). The prior contract (v7 — with `type`, `category`, `categories`, `primaryCategory`, `layerPrimary`, `routingRole`) lives in git history; retrieve via `git show schema-v7:schemas/SKILL_METADATA_PROTOCOL_schema.json`; it is not accepted by the live schema. Note the initial 2026-05-26 v8 design carried an `operation` axis and a closed-enum `scope` that were both reshaped by the 2026-05-27 amendment (operation retired, scope repurposed to free-text, deployment_target introduced) — see CHANGELOG and ADR-0017. See `schemas/SKILL_METADATA_PROTOCOL_schema.json` for the live contract.
+> **v8 is the canonical classification.** The schema's global `required` array mandates `subject` (closed 12-enum browse shelf — competency the skill teaches; see ADR-0020) + `deployment_target` (closed 2-enum `portable`/`project`) + `scope` (required free text). The prior contract (v7 — with `type`, `category`, `categories`, `primaryCategory`, `layerPrimary`, `routingRole`) lives in git history; retrieve via `git show schema-v7:schemas/SKILL_METADATA_PROTOCOL_schema.json`; it is not accepted by the live schema. Note the initial 2026-05-26 v8 design carried an `operation` axis and a closed-enum `scope` that were both reshaped by the 2026-05-27 amendment (operation retired, scope repurposed to free-text, deployment_target introduced) — see CHANGELOG and ADR-0017. See `schemas/SKILL_METADATA_PROTOCOL_schema.json` for the live contract.
 
 | Surface | State |
 |---|---|
@@ -745,7 +759,7 @@ The manifest schema is at `schemas/manifest.schema.json`. For the complete autho
 
 **What this means for authors:**
 
-- A new skill MUST declare the v8 classification fields: `subject` (9-enum) + `deployment_target` (2-enum) + `scope` (required free text). Polyhierarchy via optional `subjects[]` (max 2). See § Classification.
+- A new skill MUST declare the v8 classification fields: `subject` (12-enum) + `deployment_target` (2-enum) + `scope` (required free text). Polyhierarchy via optional `subjects[]` (max 2). See § Classification.
 - Skills still carrying v7 classification fields fail lint against the live schema. Migration of those skills is **CONTENT-mode work** handled per-skill through the audit loop (`/audit:audit`, `/audit:evolve`) — see `skill-graph/AGENTS.md § Work Modes — SYSTEM vs CONTENT`. The schema's correctness is independent of how many individual skills currently comply.
 - The normalizer in `scripts/lib/parse-frontmatter.js::normalizeFrontmatter()` continues to read either physical encoding (nested `metadata:` or flat).
 

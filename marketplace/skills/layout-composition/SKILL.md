@@ -7,7 +7,7 @@ allowed-tools: Read Grep
 metadata:
   schema_version: "8"
   version: "1.0.0"
-  subject: frontend-ui
+  subject: design
   deployment_target: portable
   scope: "Deciding responsive page or screen structure — section order, scan pattern, grid/flex composition, breakpoints, viewport hierarchy, responsive media, and density. Portable across any UI; principle-grounded, not repo-bound. Excludes user-goal decomposition (task-analysis), navigation taxonomy (information-architecture), visual polish (visual-design-foundations), and component/token contracts (design-system-architecture)."
   taxonomy_domain: design/layout
@@ -32,7 +32,7 @@ metadata:
   lint_verdict: PASS
   skill_graph_source_repo: "https://github.com/jacob-balslev/skill-graph"
   skill_graph_project: Skill Graph
-  skill_graph_canonical_skill: skills/frontend-ui/layout-composition/SKILL.md
+  skill_graph_canonical_skill: skills/design/layout-composition/SKILL.md
   skill_graph_export_description_projection: anti_examples+boundary
 ---
 
@@ -87,7 +87,7 @@ This skill ships a comprehension-eval artifact at [`examples/evals/layout-compos
 <!-- skill-graph-context:start (generated — do not edit by hand) -->
 
 **Classification**
-- Subject: `frontend-ui`
+- Subject: `design`
 - Deployment: `portable`
 - Domain: `design/layout`
 - Scope: Deciding responsive page or screen structure — section order, scan pattern, grid/flex composition, breakpoints, viewport hierarchy, responsive media, and density. Portable across any UI; principle-grounded, not repo-bound. Excludes user-goal decomposition (task-analysis), navigation taxonomy (information-architecture), visual polish (visual-design-foundations), and component/token contracts (design-system-architecture).

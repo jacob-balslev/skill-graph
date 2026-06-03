@@ -5,7 +5,7 @@ license: MIT
 compatibility: "Provider-agnostic prompt-design discipline for OpenAI, Anthropic, Google Gemini, open-weight models, and agent runtimes; provider-specific APIs, role names, structured-output features, and reasoning controls must be checked before implementation."
 allowed-tools: Read Grep Bash Edit
 metadata:
-  subject: agent-ops
+  subject: ai-engineering
   deployment_target: portable
   scope: "Writing, tightening, evaluating, and repairing LLM prompts and reusable prompt templates for completion, agent dispatch, grading, structured extraction, tool use, and prompt-engineered workflows — instruction hierarchy, message roles, context placement, few-shot examples, structured output, positive constraints, reasoning guidance, prompt-injection resistance, provider differences, and eval-driven iteration. Portable across any LLM provider; principle-grounded, not repo-bound. Excludes whole context-system design (context-engineering), eval dataset or grader design (agent-eval-design), reviewing generated code (code-review), authoring SKILL.md files (skill-scaffold), choosing which skill or agent activates (skill-router), and root-causing a deployed failure after outputs exist (debugging)."
   taxonomy_domain: agent/prompts
@@ -23,7 +23,7 @@ metadata:
   misconception: "The common mistake is believing a clever prompt can replace context quality, tool permissions, evals, validation, or security controls. Good prompts make those surfaces explicit; they do not substitute for them."
   skill_graph_source_repo: "https://github.com/jacob-balslev/skill-graph"
   skill_graph_project: Skill Graph
-  skill_graph_canonical_skill: skills/agent-ops/prompt-craft/SKILL.md
+  skill_graph_canonical_skill: skills/ai-engineering/prompt-craft/SKILL.md
   skill_graph_export_description_projection: anti_examples
   skill_graph_export_description_projection_truncated: "true"
 ---
@@ -264,7 +264,7 @@ After applying this skill, verify:
 <!-- skill-graph-context:start (generated — do not edit by hand) -->
 
 **Classification**
-- Subject: `agent-ops`
+- Subject: `ai-engineering`
 - Deployment: `portable`
 - Domain: `agent/prompts`
 - Scope: Writing, tightening, evaluating, and repairing LLM prompts and reusable prompt templates for completion, agent dispatch, grading, structured extraction, tool use, and prompt-engineered workflows — instruction hierarchy, message roles, context placement, few-shot examples, structured output, positive constraints, reasoning guidance, prompt-injection resistance, provider differences, and eval-driven iteration. Portable across any LLM provider; principle-grounded, not repo-bound. Excludes whole context-system design (context-engineering), eval dataset or grader design (agent-eval-design), reviewing generated code (code-review), authoring SKILL.md files (skill-scaffold), choosing which skill or agent activates (skill-router), and root-causing a deployed failure after outputs exist (debugging).

@@ -5,7 +5,7 @@ license: CC-BY-4.0
 metadata:
   schema_version: "8"
   version: "1.0.0"
-  subject: design-craft
+  subject: design
   deployment_target: portable
   scope: "Orchestrating a full human-centered design process across discovery, definition, ideation, prototyping, and testing — identifying which stage of the arc a team is in, deciding whether to loop back, and routing to the right stage-specific sibling skill. Portable across any design effort; principle-grounded, not repo-bound. Excludes single-stage execution (go directly to problem-framing, user-research, research-synthesis, journey-mapping, ideation, prototyping, or usability-testing) and engineering domain discovery (event-storming)."
   owner: skill-graph-maintainer
@@ -28,7 +28,7 @@ metadata:
   lint_verdict: PASS
   skill_graph_source_repo: "https://github.com/jacob-balslev/skill-graph"
   skill_graph_project: Skill Graph
-  skill_graph_canonical_skill: skills/design-craft/design-thinking/SKILL.md
+  skill_graph_canonical_skill: skills/design/design-thinking/SKILL.md
   skill_graph_export_description_projection: anti_examples
 ---
 
@@ -70,7 +70,7 @@ The meta-skill is sceptical of two opposite failure modes. The first is **stage 
 <!-- skill-graph-context:start (generated — do not edit by hand) -->
 
 **Classification**
-- Subject: `design-craft`
+- Subject: `design`
 - Deployment: `portable`
 - Scope: Orchestrating a full human-centered design process across discovery, definition, ideation, prototyping, and testing — identifying which stage of the arc a team is in, deciding whether to loop back, and routing to the right stage-specific sibling skill. Portable across any design effort; principle-grounded, not repo-bound. Excludes single-stage execution (go directly to problem-framing, user-research, research-synthesis, journey-mapping, ideation, prototyping, or usability-testing) and engineering domain discovery (event-storming).
 

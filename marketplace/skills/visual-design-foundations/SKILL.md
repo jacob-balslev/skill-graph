@@ -7,7 +7,7 @@ allowed-tools: Read Grep
 metadata:
   schema_version: "8"
   version: "1.0.0"
-  subject: frontend-ui
+  subject: design
   deployment_target: portable
   taxonomy_domain: design/visual
   owner: skill-graph-maintainer
@@ -31,7 +31,7 @@ metadata:
   lint_verdict: PASS
   skill_graph_source_repo: "https://github.com/jacob-balslev/skill-graph"
   skill_graph_project: Skill Graph
-  skill_graph_canonical_skill: skills/frontend-ui/visual-design-foundations/SKILL.md
+  skill_graph_canonical_skill: skills/design/visual-design-foundations/SKILL.md
   skill_graph_export_description_projection: anti_examples+boundary
 ---
 
@@ -86,7 +86,7 @@ This skill ships a comprehension-eval artifact at [`examples/evals/visual-design
 <!-- skill-graph-context:start (generated — do not edit by hand) -->
 
 **Classification**
-- Subject: `frontend-ui`
+- Subject: `design`
 - Deployment: `portable`
 - Domain: `design/visual`
 

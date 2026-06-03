@@ -6,7 +6,7 @@ allowed-tools: Read Grep
 metadata:
   schema_version: "8"
   version: "1.0.0"
-  subject: frontend-ui
+  subject: frontend-engineering
   deployment_target: portable
   scope: "Reasoning about the line at which execution context changes between a server runtime and a client runtime — what values can cross via serialization and what cannot, the directives that mark transitions ('use client', 'use server'), the difference between server-rendered HTML and a serialized component tree, the trust model that treats client input as adversarial, and the consequences of leaking server-only modules into client bundles. Portable across any server/client web framework; principle-grounded, not repo-bound. Excludes when and where the UI is produced (rendering-models), the HTTP wire protocol itself (http-semantics), frontend codebase organization (frontend-architecture), and API JSON-shape design (api-design)."
   taxonomy_domain: engineering/frontend
@@ -37,7 +37,7 @@ metadata:
   lint_verdict: PASS
   skill_graph_source_repo: "https://github.com/jacob-balslev/skill-graph"
   skill_graph_project: Skill Graph
-  skill_graph_canonical_skill: skills/frontend-ui/client-server-boundary/SKILL.md
+  skill_graph_canonical_skill: skills/frontend-engineering/client-server-boundary/SKILL.md
   skill_graph_export_description_projection: boundary
 ---
 
@@ -221,7 +221,7 @@ After applying this skill, verify:
 <!-- skill-graph-context:start (generated — do not edit by hand) -->
 
 **Classification**
-- Subject: `frontend-ui`
+- Subject: `frontend-engineering`
 - Deployment: `portable`
 - Domain: `engineering/frontend`
 - Scope: Reasoning about the line at which execution context changes between a server runtime and a client runtime — what values can cross via serialization and what cannot, the directives that mark transitions ('use client', 'use server'), the difference between server-rendered HTML and a serialized component tree, the trust model that treats client input as adversarial, and the consequences of leaking server-only modules into client bundles. Portable across any server/client web framework; principle-grounded, not repo-bound. Excludes when and where the UI is produced (rendering-models), the HTTP wire protocol itself (http-semantics), frontend codebase organization (frontend-architecture), and API JSON-shape design (api-design).

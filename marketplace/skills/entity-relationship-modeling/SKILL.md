@@ -7,7 +7,7 @@ allowed-tools: Read Grep Bash
 metadata:
   schema_version: "8"
   version: "1.0.0"
-  subject: code-engineering
+  subject: software-architecture
   deployment_target: portable
   taxonomy_domain: engineering/modeling
   owner: skill-graph-maintainer
@@ -30,7 +30,7 @@ metadata:
   lint_verdict: PASS
   skill_graph_source_repo: "https://github.com/jacob-balslev/skill-graph"
   skill_graph_project: Skill Graph
-  skill_graph_canonical_skill: skills/code-engineering/entity-relationship-modeling/SKILL.md
+  skill_graph_canonical_skill: skills/software-architecture/entity-relationship-modeling/SKILL.md
 ---
 # Entity-Relationship Modeling
 
@@ -243,7 +243,7 @@ After applying this skill, verify:
 <!-- skill-graph-context:start (generated — do not edit by hand) -->
 
 **Classification**
-- Subject: `code-engineering`
+- Subject: `software-architecture`
 - Deployment: `portable`
 - Domain: `engineering/modeling`
 

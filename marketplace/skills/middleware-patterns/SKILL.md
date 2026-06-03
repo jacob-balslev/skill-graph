@@ -6,7 +6,7 @@ allowed-tools: Read Grep
 metadata:
   schema_version: "8"
   version: "1.0.0"
-  subject: frontend-ui
+  subject: frontend-engineering
   deployment_target: portable
   scope: "Designing and reviewing Next.js middleware (the single root middleware.ts) — the cross-cutting request/response transforms that run before route resolution, the Edge Runtime constraints, the matcher config, the NextRequest/NextResponse API (cookies/geo/IP), the four response shapes (next/rewrite/redirect/direct), the canonical patterns (auth gate, locale routing, A/B testing, header injection, geo-routing, bot blocking), the per-matched-request performance cost, and the rule that middleware is for cross-cutting concerns, never per-route business logic. Portable across Next.js App Router projects; principle-grounded, not repo-bound. Excludes per-route endpoint logic (route-handler-design), the Server Action surface (server-actions-design), abstract HTTP semantics (http-semantics), CSP and hardening (security-fundamentals), and the streaming model (streaming-architecture)."
   taxonomy_domain: engineering/frontend
@@ -37,7 +37,7 @@ metadata:
   lint_verdict: PASS
   skill_graph_source_repo: "https://github.com/jacob-balslev/skill-graph"
   skill_graph_project: Skill Graph
-  skill_graph_canonical_skill: skills/frontend-ui/middleware-patterns/SKILL.md
+  skill_graph_canonical_skill: skills/frontend-engineering/middleware-patterns/SKILL.md
   skill_graph_export_description: shortened for Agent Skills 1024-character description limit; canonical source keeps the full routing contract
   skill_graph_canonical_description_length: "1178"
   skill_graph_export_description_projection: anti_examples+boundary
@@ -398,7 +398,7 @@ After applying this skill, verify:
 <!-- skill-graph-context:start (generated — do not edit by hand) -->
 
 **Classification**
-- Subject: `frontend-ui`
+- Subject: `frontend-engineering`
 - Deployment: `portable`
 - Domain: `engineering/frontend`
 - Scope: Designing and reviewing Next.js middleware (the single root middleware.ts) — the cross-cutting request/response transforms that run before route resolution, the Edge Runtime constraints, the matcher config, the NextRequest/NextResponse API (cookies/geo/IP), the four response shapes (next/rewrite/redirect/direct), the canonical patterns (auth gate, locale routing, A/B testing, header injection, geo-routing, bot blocking), the per-matched-request performance cost, and the rule that middleware is for cross-cutting concerns, never per-route business logic. Portable across Next.js App Router projects; principle-grounded, not repo-bound. Excludes per-route endpoint logic (route-handler-design), the Server Action surface (server-actions-design), abstract HTTP semantics (http-semantics), CSP and hardening (security-fundamentals), and the streaming model (streaming-architecture).

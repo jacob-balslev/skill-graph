@@ -7,7 +7,7 @@ allowed-tools: Read Grep Bash
 metadata:
   schema_version: "8"
   version: "1.0.0"
-  subject: quality-assurance
+  subject: software-engineering-method
   deployment_target: portable
   taxonomy_domain: quality/doctrine
   owner: skill-graph-maintainer
@@ -30,7 +30,7 @@ metadata:
   lint_verdict: PASS
   skill_graph_source_repo: "https://github.com/jacob-balslev/skill-graph"
   skill_graph_project: Skill Graph
-  skill_graph_canonical_skill: skills/quality-assurance/prioritization/SKILL.md
+  skill_graph_canonical_skill: skills/software-engineering-method/prioritization/SKILL.md
 ---
 # Prioritization
 
@@ -143,7 +143,7 @@ PRIORITIZATION CHECK
 <!-- skill-graph-context:start (generated — do not edit by hand) -->
 
 **Classification**
-- Subject: `quality-assurance`
+- Subject: `software-engineering-method`
 - Deployment: `portable`
 - Domain: `quality/doctrine`
 

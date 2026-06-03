@@ -7,7 +7,7 @@ allowed-tools: Read Grep
 metadata:
   schema_version: "8"
   version: "1.0.0"
-  subject: code-engineering
+  subject: software-architecture
   deployment_target: portable
   scope: "Drawing Domain-Driven Design boundaries — bounded contexts, context maps, ownership seams, upstream/downstream relationships, anti-corruption layers, shared kernels, and translation boundaries. Portable across any DDD-modeled system; principle-grounded, not repo-bound. Excludes pre-DDD entity discovery (conceptual-modeling), database schema design (data-modeling), and HTTP endpoint design (api-design)."
   taxonomy_domain: architecture/domain-boundaries
@@ -32,7 +32,7 @@ metadata:
   lint_verdict: PASS
   skill_graph_source_repo: "https://github.com/jacob-balslev/skill-graph"
   skill_graph_project: Skill Graph
-  skill_graph_canonical_skill: skills/code-engineering/bounded-context-mapping/SKILL.md
+  skill_graph_canonical_skill: skills/software-architecture/bounded-context-mapping/SKILL.md
   skill_graph_export_description_projection: anti_examples+boundary
 ---
 
@@ -82,7 +82,7 @@ The central question is: "Where does this word mean something different?" Those 
 <!-- skill-graph-context:start (generated — do not edit by hand) -->
 
 **Classification**
-- Subject: `code-engineering`
+- Subject: `software-architecture`
 - Deployment: `portable`
 - Domain: `architecture/domain-boundaries`
 - Scope: Drawing Domain-Driven Design boundaries — bounded contexts, context maps, ownership seams, upstream/downstream relationships, anti-corruption layers, shared kernels, and translation boundaries. Portable across any DDD-modeled system; principle-grounded, not repo-bound. Excludes pre-DDD entity discovery (conceptual-modeling), database schema design (data-modeling), and HTTP endpoint design (api-design).

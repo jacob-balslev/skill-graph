@@ -7,7 +7,7 @@ allowed-tools: Read Grep Edit
 metadata:
   schema_version: "8"
   version: "1.1.0"
-  subject: design-craft
+  subject: design
   deployment_target: portable
   scope: "Writing and editing human-readable prose — docs, PRs, issues, release notes, errors, UI copy, commits, tooltips, support replies — especially when text sounds robotic, padded, monotonous, or overly formal: AI-tell removal, active voice, hedging reduction, readability diagnosis, sentence rhythm, vocabulary variety, tone mapping, paragraph rhythm, the bullets-vs-prose choice, and the 5-step humanization workflow. Portable across any written communication; principle-grounded, not repo-bound. Excludes documentation routing/type selection, code-identifier naming, and in-product UI-text pattern catalogs (microcopy)."
   taxonomy_domain: design/content
@@ -39,7 +39,7 @@ metadata:
   lint_verdict: PASS
   skill_graph_source_repo: "https://github.com/jacob-balslev/skill-graph"
   skill_graph_project: Skill Graph
-  skill_graph_canonical_skill: skills/design-craft/writing-humanizer/SKILL.md
+  skill_graph_canonical_skill: skills/design/writing-humanizer/SKILL.md
   skill_graph_export_description_projection: anti_examples+boundary
   skill_graph_export_description_projection_truncated: "true"
 ---
@@ -427,7 +427,7 @@ Before finalizing any humanized text, confirm:
 <!-- skill-graph-context:start (generated — do not edit by hand) -->
 
 **Classification**
-- Subject: `design-craft`
+- Subject: `design`
 - Deployment: `portable`
 - Domain: `design/content`
 - Scope: Writing and editing human-readable prose — docs, PRs, issues, release notes, errors, UI copy, commits, tooltips, support replies — especially when text sounds robotic, padded, monotonous, or overly formal: AI-tell removal, active voice, hedging reduction, readability diagnosis, sentence rhythm, vocabulary variety, tone mapping, paragraph rhythm, the bullets-vs-prose choice, and the 5-step humanization workflow. Portable across any written communication; principle-grounded, not repo-bound. Excludes documentation routing/type selection, code-identifier naming, and in-product UI-text pattern catalogs (microcopy).

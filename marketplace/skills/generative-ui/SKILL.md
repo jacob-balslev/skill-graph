@@ -6,7 +6,8 @@ allowed-tools: Read Grep
 metadata:
   schema_version: "8"
   version: "1.0.0"
-  subject: agent-ops
+  subject: frontend-engineering
+  subjects: "[\"frontend-engineering\",\"ai-engineering\"]"
   deployment_target: portable
   scope: "The pattern where a language model emits, as structured output, a description of UI components or a UI sub-tree that an application then renders — the typed-schema component palette, the structured-output mechanism (JSON Schema, function-calling) constraining emission to renderable specs, the application-side render pipeline, the interaction loop feeding user actions back into the next turn, the model-author/application-renderer security boundary, and the distinction from adjacent patterns (chat-with-markdown, prebuilt-widget routing, RSC streaming, model-emits-code). Portable across any LLM application that renders model-described UI; principle-grounded, not repo-bound. Excludes the page-level rendering taxonomy (rendering-models), the tool-call protocol cycle (tool-call-flow), the untrusted-content trust boundary (prompt-injection-defense), and general component-library architecture (design-system-architecture)."
   taxonomy_domain: agent/ui
@@ -37,7 +38,7 @@ metadata:
   lint_verdict: PASS
   skill_graph_source_repo: "https://github.com/jacob-balslev/skill-graph"
   skill_graph_project: Skill Graph
-  skill_graph_canonical_skill: skills/agent-ops/generative-ui/SKILL.md
+  skill_graph_canonical_skill: skills/frontend-engineering/generative-ui/SKILL.md
 ---
 
 # Generative UI
@@ -151,7 +152,7 @@ After applying this skill, verify:
 <!-- skill-graph-context:start (generated — do not edit by hand) -->
 
 **Classification**
-- Subject: `agent-ops`
+- Subject: `frontend-engineering` (also: `ai-engineering`)
 - Deployment: `portable`
 - Domain: `agent/ui`
 - Scope: The pattern where a language model emits, as structured output, a description of UI components or a UI sub-tree that an application then renders — the typed-schema component palette, the structured-output mechanism (JSON Schema, function-calling) constraining emission to renderable specs, the application-side render pipeline, the interaction loop feeding user actions back into the next turn, the model-author/application-renderer security boundary, and the distinction from adjacent patterns (chat-with-markdown, prebuilt-widget routing, RSC streaming, model-emits-code). Portable across any LLM application that renders model-described UI; principle-grounded, not repo-bound. Excludes the page-level rendering taxonomy (rendering-models), the tool-call protocol cycle (tool-call-flow), the untrusted-content trust boundary (prompt-injection-defense), and general component-library architecture (design-system-architecture).

@@ -4,7 +4,7 @@ description: "Use when reasoning about building language-model-integrated system
 license: MIT
 allowed-tools: Read Grep
 metadata:
-  subject: agent-ops
+  subject: ai-engineering
   deployment_target: portable
   scope: "Building language-model-integrated systems by writing evaluations before and alongside the system — the statistical (not binary) nature of LLM evals, the five primitives (dataset, evaluation function, aggregation, iteration loop, regression budget), the judgment-mechanism taxonomy (programmatic, model-graded, human-graded, preference comparison), system-specific evals vs canonical benchmarks (MMLU, HumanEval, BIG-bench, GAIA), how evals drive prompt/model/scaffolding/tooling changes, Goodhart's Law on eval scores, and the offline-eval-vs-production-telemetry distinction. Portable across any LLM-integrated system; principle-grounded, not repo-bound. Excludes deterministic unit testing and general TDD (testing-strategy), production monitoring (evaluation, error-tracking), and constructing individual eval rubrics and task sets (agent-eval-design owns construction; this skill owns iteration discipline)."
   taxonomy_domain: agent/evaluation
@@ -21,7 +21,7 @@ metadata:
   misconception: "|"
   skill_graph_source_repo: "https://github.com/jacob-balslev/skill-graph"
   skill_graph_project: Skill Graph
-  skill_graph_canonical_skill: skills/agent-ops/eval-driven-development/SKILL.md
+  skill_graph_canonical_skill: skills/ai-engineering/eval-driven-development/SKILL.md
 ---
 
 # Eval-Driven Development
@@ -164,7 +164,7 @@ After applying this skill, verify:
 <!-- skill-graph-context:start (generated — do not edit by hand) -->
 
 **Classification**
-- Subject: `agent-ops`
+- Subject: `ai-engineering`
 - Deployment: `portable`
 - Domain: `agent/evaluation`
 - Scope: Building language-model-integrated systems by writing evaluations before and alongside the system — the statistical (not binary) nature of LLM evals, the five primitives (dataset, evaluation function, aggregation, iteration loop, regression budget), the judgment-mechanism taxonomy (programmatic, model-graded, human-graded, preference comparison), system-specific evals vs canonical benchmarks (MMLU, HumanEval, BIG-bench, GAIA), how evals drive prompt/model/scaffolding/tooling changes, Goodhart's Law on eval scores, and the offline-eval-vs-production-telemetry distinction. Portable across any LLM-integrated system; principle-grounded, not repo-bound. Excludes deterministic unit testing and general TDD (testing-strategy), production monitoring (evaluation, error-tracking), and constructing individual eval rubrics and task sets (agent-eval-design owns construction; this skill owns iteration discipline).

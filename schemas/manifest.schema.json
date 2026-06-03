@@ -179,13 +179,16 @@
           "subject": {
             "type": "string",
             "enum": [
+              "backend-engineering",
+              "frontend-engineering",
+              "software-architecture",
+              "data-engineering",
               "agent-ops",
-              "code-engineering",
-              "frontend-ui",
-              "design-craft",
-              "data-analytics",
+              "ai-engineering",
               "quality-assurance",
-              "meta-methods",
+              "design",
+              "reasoning-strategy",
+              "software-engineering-method",
               "knowledge-organization",
               "product-domain"
             ],

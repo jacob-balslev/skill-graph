@@ -7,7 +7,7 @@ allowed-tools: Read Grep
 metadata:
   schema_version: "8"
   version: "1.0.0"
-  subject: code-engineering
+  subject: software-architecture
   deployment_target: portable
   taxonomy_domain: architecture/dependencies
   owner: skill-graph-maintainer
@@ -31,7 +31,7 @@ metadata:
   lint_verdict: PASS
   skill_graph_source_repo: "https://github.com/jacob-balslev/skill-graph"
   skill_graph_project: Skill Graph
-  skill_graph_canonical_skill: skills/code-engineering/dependency-architecture/SKILL.md
+  skill_graph_canonical_skill: skills/software-architecture/dependency-architecture/SKILL.md
   skill_graph_export_description_projection: anti_examples+boundary
 ---
 
@@ -85,7 +85,7 @@ This skill ships a comprehension-eval artifact at [`examples/evals/dependency-ar
 <!-- skill-graph-context:start (generated — do not edit by hand) -->
 
 **Classification**
-- Subject: `code-engineering`
+- Subject: `software-architecture`
 - Deployment: `portable`
 - Domain: `architecture/dependencies`
 

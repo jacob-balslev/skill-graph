@@ -6,7 +6,7 @@ allowed-tools: Read Grep
 metadata:
   schema_version: "8"
   version: "1.0.0"
-  subject: product-domain
+  subject: backend-engineering
   deployment_target: portable
   taxonomy_domain: engineering/protocol
   owner: skill-graph-maintainer
@@ -36,7 +36,7 @@ metadata:
   lint_verdict: PASS
   skill_graph_source_repo: "https://github.com/jacob-balslev/skill-graph"
   skill_graph_project: Skill Graph
-  skill_graph_canonical_skill: skills/product-domain/http-semantics/SKILL.md
+  skill_graph_canonical_skill: skills/backend-engineering/http-semantics/SKILL.md
   skill_graph_export_description_projection: anti_examples+boundary
 ---
 
@@ -169,7 +169,7 @@ After applying this skill, verify:
 <!-- skill-graph-context:start (generated — do not edit by hand) -->
 
 **Classification**
-- Subject: `product-domain`
+- Subject: `backend-engineering`
 - Deployment: `portable`
 - Domain: `engineering/protocol`
 

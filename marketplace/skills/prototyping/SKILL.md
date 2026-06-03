@@ -5,7 +5,7 @@ license: CC-BY-4.0
 metadata:
   schema_version: "8"
   version: "1.0.0"
-  subject: design-craft
+  subject: design
   deployment_target: portable
   scope: "Building an artifact whose purpose is to answer a specific question — paper sketch, wireframe, clickable mockup, wizard-of-oz, role-play, service prototype, or code spike — at the lowest fidelity sufficient to produce that learning. Portable across any design effort; principle-grounded, not repo-bound. Excludes production-grade component construction (design-module-composition), design-system contribution, and building the ship-ready feature (engineering implementation)."
   owner: skill-graph-maintainer
@@ -28,7 +28,7 @@ metadata:
   lint_verdict: PASS
   skill_graph_source_repo: "https://github.com/jacob-balslev/skill-graph"
   skill_graph_project: Skill Graph
-  skill_graph_canonical_skill: skills/design-craft/prototyping/SKILL.md
+  skill_graph_canonical_skill: skills/design/prototyping/SKILL.md
   skill_graph_export_description_projection: anti_examples
 ---
 
@@ -69,7 +69,7 @@ The discipline insists prototypes are means, not ends. A successful prototype is
 <!-- skill-graph-context:start (generated — do not edit by hand) -->
 
 **Classification**
-- Subject: `design-craft`
+- Subject: `design`
 - Deployment: `portable`
 - Scope: Building an artifact whose purpose is to answer a specific question — paper sketch, wireframe, clickable mockup, wizard-of-oz, role-play, service prototype, or code spike — at the lowest fidelity sufficient to produce that learning. Portable across any design effort; principle-grounded, not repo-bound. Excludes production-grade component construction (design-module-composition), design-system contribution, and building the ship-ready feature (engineering implementation).
 

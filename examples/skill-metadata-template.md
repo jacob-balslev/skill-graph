@@ -15,11 +15,12 @@ name: skill-metadata-template
 description: "Use when creating a new SKILL.md from scratch, restructuring a draft before it becomes a stable skill, or teaching an author the canonical Skill Metadata Protocol frontmatter and body structure. Covers schema-conformant frontmatter, v8 classification, body layout by skill intent, semantic-layer discipline (description vs Coverage), teaching-layer mechanics (TEMPLATE NOTE blockquotes and YAML comments), and the authoring gate. Do NOT use when modifying an already-written skill (edit that skill directly), writing general technical documentation, or debugging routing for an existing skill."
 
 # === v8 Classification (subject + deployment_target; polyhierarchy via subjects[]) ===
-# See docs/adr/0017-five-axis-classification-model.md and its amendments.
+# See docs/adr/0020-twelve-shelf-competency-reaxis.md (supersedes the 9-value enum in ADR-0017).
 
-# subject: primary browse shelf — what the skill teaches. One of nine closed values:
-# code-engineering / quality-assurance / frontend-ui / design-craft / agent-ops /
-# product-domain / knowledge-organization / meta-methods / data-analytics.
+# subject: primary browse shelf — the competency the skill teaches. One of twelve closed values:
+# backend-engineering / frontend-engineering / software-architecture / data-engineering /
+# agent-ops / ai-engineering / quality-assurance / design / reasoning-strategy /
+# software-engineering-method / knowledge-organization / product-domain.
 subject: agent-ops
 
 # deployment_target: where this skill applies. One of two closed values:

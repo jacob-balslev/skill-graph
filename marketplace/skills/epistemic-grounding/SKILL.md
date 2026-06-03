@@ -4,7 +4,7 @@ description: "Use when authoring any artifact that makes claims — skill conten
 license: MIT
 allowed-tools: Read Grep
 metadata:
-  subject: meta-methods
+  subject: reasoning-strategy
   deployment_target: portable
   scope: "Portable claim-grounding discipline for skill content, documentation, audit findings, architecture proposals, code review comments, and other artifacts that assert facts. Teaches Toulmin claim/data/warrant/backing/qualifier/rebuttal structure, RFC 2119 modality, verified/inferred/asserted labels, source-to-claim warrants, and honest hedging. Excludes execution-level evidence receipts and output completeness (methodology), naming precision (semantics), and grader/rubric design (evaluation or agent-eval-design)."
   taxonomy_domain: foundations/epistemics
@@ -21,7 +21,7 @@ metadata:
   misconception: "|"
   skill_graph_source_repo: "https://github.com/jacob-balslev/skill-graph"
   skill_graph_project: Skill Graph
-  skill_graph_canonical_skill: skills/meta-methods/epistemic-grounding/SKILL.md
+  skill_graph_canonical_skill: skills/reasoning-strategy/epistemic-grounding/SKILL.md
   skill_graph_export_description_projection: anti_examples
 ---
 
@@ -130,7 +130,7 @@ After applying this skill, verify:
 <!-- skill-graph-context:start (generated — do not edit by hand) -->
 
 **Classification**
-- Subject: `meta-methods`
+- Subject: `reasoning-strategy`
 - Deployment: `portable`
 - Domain: `foundations/epistemics`
 - Scope: Portable claim-grounding discipline for skill content, documentation, audit findings, architecture proposals, code review comments, and other artifacts that assert facts. Teaches Toulmin claim/data/warrant/backing/qualifier/rebuttal structure, RFC 2119 modality, verified/inferred/asserted labels, source-to-claim warrants, and honest hedging. Excludes execution-level evidence receipts and output completeness (methodology), naming precision (semantics), and grader/rubric design (evaluation or agent-eval-design).

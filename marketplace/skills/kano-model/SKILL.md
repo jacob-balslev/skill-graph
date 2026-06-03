@@ -7,7 +7,7 @@ allowed-tools: Read Grep
 metadata:
   schema_version: "8"
   version: "1.0.0"
-  subject: meta-methods
+  subject: reasoning-strategy
   deployment_target: portable
   scope: "Kano model feature and customer-need classification for product, service, and quality decisions: classify candidate features by satisfaction response to presence and absence, design paired functional/dysfunctional questions, handle segment differences, translate must-be/performance/attractive/indifferent/reverse categories into roadmap implications, and avoid over-ranking delighters before basics. Excludes generic backlog scoring without customer-response evidence, broad qualitative research synthesis, product-market positioning, and financial expected-value comparison."
   taxonomy_domain: foundations/product-strategy
@@ -42,7 +42,7 @@ metadata:
   drift_status: EXTERNAL_UNHASHED
   skill_graph_source_repo: "https://github.com/jacob-balslev/skill-graph"
   skill_graph_project: Skill Graph
-  skill_graph_canonical_skill: skills/meta-methods/kano-model/SKILL.md
+  skill_graph_canonical_skill: skills/reasoning-strategy/kano-model/SKILL.md
   skill_graph_export_description_projection: anti_examples+boundary
   skill_graph_export_description_projection_truncated: "true"
 ---
@@ -251,7 +251,7 @@ Before finalizing a Kano analysis, check:
 <!-- skill-graph-context:start (generated — do not edit by hand) -->
 
 **Classification**
-- Subject: `meta-methods`
+- Subject: `reasoning-strategy`
 - Deployment: `portable`
 - Domain: `foundations/product-strategy`
 - Scope: Kano model feature and customer-need classification for product, service, and quality decisions: classify candidate features by satisfaction response to presence and absence, design paired functional/dysfunctional questions, handle segment differences, translate must-be/performance/attractive/indifferent/reverse categories into roadmap implications, and avoid over-ranking delighters before basics. Excludes generic backlog scoring without customer-response evidence, broad qualitative research synthesis, product-market positioning, and financial expected-value comparison.

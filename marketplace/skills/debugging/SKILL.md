@@ -8,7 +8,7 @@ metadata:
   eval_last_run: "{\"at\":\"2026-05-31T13:46:54.722Z\",\"status\":\"fail\",\"runner\":\"node skill-graph/lib/audit/evaluate-skill.js --mode application\",\"artifact\":\"agent-orchestration/logs/eval-results/debugging/2026-05-31T13-46-54-721Z.json\"}"
   schema_version: "8"
   version: "1.0.0"
-  subject: code-engineering
+  subject: software-engineering-method
   deployment_target: portable
   owner: skill-graph-maintainer
   freshness: "2026-04-18"
@@ -31,7 +31,7 @@ metadata:
   lint_verdict: PASS
   skill_graph_source_repo: "https://github.com/jacob-balslev/skill-graph"
   skill_graph_project: Skill Graph
-  skill_graph_canonical_skill: skills/code-engineering/debugging/SKILL.md
+  skill_graph_canonical_skill: skills/software-engineering-method/debugging/SKILL.md
   skill_graph_export_description_projection: anti_examples+boundary
 ---
 
@@ -94,7 +94,7 @@ This skill ships a comprehension-eval artifact at [`examples/evals/debugging.jso
 <!-- skill-graph-context:start (generated — do not edit by hand) -->
 
 **Classification**
-- Subject: `code-engineering`
+- Subject: `software-engineering-method`
 - Deployment: `portable`
 
 **When to use**

@@ -23,7 +23,7 @@ function assert(condition, msg) {
 
 // 1. Migrated: frontmatter has no audit fields; the sidecar carries them.
 {
-  const fm = { name: 'migrated', subject: 'code-engineering' };
+  const fm = { name: 'migrated', subject: 'backend-engineering' };
   const sidecar = {
     structural_verdict: 'PASS', truth_verdict: 'PASS',
     comprehension_verdict: 'UNVERIFIED', application_verdict: 'APPLICABLE',

@@ -9,7 +9,7 @@ metadata:
   lint_verdict: PASS
   schema_version: "8"
   version: "1.0.0"
-  subject: meta-methods
+  subject: reasoning-strategy
   deployment_target: portable
   scope: "Industry competitive-structure analysis using Porter's Five Forces — defining industry boundaries, diagnosing each of the five forces (rivalry, new entrants, supplier power, buyer power, substitutes) by their structural drivers, reading dynamic trends, and translating force intensity into profit-pool and positioning implications. Portable across any domain doing competitive or market-structure analysis; principle-grounded, not repo-bound. Excludes integrated strategy-cascade design (playing-to-win), durable-moat classification (seven-powers), task/option scoring (prioritization), and generic market sizing."
   taxonomy_domain: foundations/strategy
@@ -41,7 +41,7 @@ metadata:
   eval_failed_ids: "[]"
   skill_graph_source_repo: "https://github.com/jacob-balslev/skill-graph"
   skill_graph_project: Skill Graph
-  skill_graph_canonical_skill: skills/meta-methods/porters-five-forces/SKILL.md
+  skill_graph_canonical_skill: skills/reasoning-strategy/porters-five-forces/SKILL.md
   skill_graph_export_description_projection: anti_examples
 ---
 
@@ -255,7 +255,7 @@ Before finishing, verify:
 <!-- skill-graph-context:start (generated — do not edit by hand) -->
 
 **Classification**
-- Subject: `meta-methods`
+- Subject: `reasoning-strategy`
 - Deployment: `portable`
 - Domain: `foundations/strategy`
 - Scope: Industry competitive-structure analysis using Porter's Five Forces — defining industry boundaries, diagnosing each of the five forces (rivalry, new entrants, supplier power, buyer power, substitutes) by their structural drivers, reading dynamic trends, and translating force intensity into profit-pool and positioning implications. Portable across any domain doing competitive or market-structure analysis; principle-grounded, not repo-bound. Excludes integrated strategy-cascade design (playing-to-win), durable-moat classification (seven-powers), task/option scoring (prioritization), and generic market sizing.

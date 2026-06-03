@@ -7,7 +7,7 @@ allowed-tools: Read Grep
 metadata:
   schema_version: "8"
   version: "1.0.0"
-  subject: code-engineering
+  subject: software-architecture
   deployment_target: portable
   scope: "Choosing, replacing, or justifying a framework, library, SDK, runtime, database, UI kit, or platform by fit — weighing constraints, team skill, ecosystem maturity, migration cost, operability, performance, security, and exit cost. Portable across any technology-selection decision; principle-grounded, not repo-bound. Excludes routine dependency hygiene (dependency-architecture), documenting an already-accepted decision (architecture-decision-records), and framework-specific implementation work."
   taxonomy_domain: architecture/technology-selection
@@ -32,7 +32,7 @@ metadata:
   lint_verdict: PASS
   skill_graph_source_repo: "https://github.com/jacob-balslev/skill-graph"
   skill_graph_project: Skill Graph
-  skill_graph_canonical_skill: skills/code-engineering/framework-fit-analysis/SKILL.md
+  skill_graph_canonical_skill: skills/software-architecture/framework-fit-analysis/SKILL.md
   skill_graph_export_description_projection: anti_examples
 ---
 
@@ -87,7 +87,7 @@ This skill ships a comprehension-eval artifact at [`examples/evals/framework-fit
 <!-- skill-graph-context:start (generated — do not edit by hand) -->
 
 **Classification**
-- Subject: `code-engineering`
+- Subject: `software-architecture`
 - Deployment: `portable`
 - Domain: `architecture/technology-selection`
 - Scope: Choosing, replacing, or justifying a framework, library, SDK, runtime, database, UI kit, or platform by fit — weighing constraints, team skill, ecosystem maturity, migration cost, operability, performance, security, and exit cost. Portable across any technology-selection decision; principle-grounded, not repo-bound. Excludes routine dependency hygiene (dependency-architecture), documenting an already-accepted decision (architecture-decision-records), and framework-specific implementation work.

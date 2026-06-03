@@ -7,7 +7,8 @@ allowed-tools: Read Grep
 metadata:
   schema_version: "8"
   version: "1.0.0"
-  subject: data-analytics
+  subject: data-engineering
+  subjects: "[\"data-engineering\",\"quality-assurance\"]"
   deployment_target: portable
   scope: "Designing telemetry semantics before or during implementation — logs, metrics, traces, events, spans, attributes, correlation IDs, SLOs, alert signals, and the diagnostic questions telemetry must answer. Portable across any instrumented system; principle-grounded, not repo-bound. Excludes domain/business event contracts (event-contract-design), configuring an error tracker alone (error-tracking), performance optimization (performance-engineering), and debugging a current incident (debugging)."
   taxonomy_domain: engineering/observability
@@ -32,7 +33,7 @@ metadata:
   lint_verdict: PASS
   skill_graph_source_repo: "https://github.com/jacob-balslev/skill-graph"
   skill_graph_project: Skill Graph
-  skill_graph_canonical_skill: skills/data-analytics/observability-modeling/SKILL.md
+  skill_graph_canonical_skill: skills/data-engineering/observability-modeling/SKILL.md
   skill_graph_export_description_projection: anti_examples+boundary
 ---
 
@@ -87,7 +88,7 @@ This skill ships a comprehension-eval artifact at [`examples/evals/observability
 <!-- skill-graph-context:start (generated — do not edit by hand) -->
 
 **Classification**
-- Subject: `data-analytics`
+- Subject: `data-engineering` (also: `quality-assurance`)
 - Deployment: `portable`
 - Domain: `engineering/observability`
 - Scope: Designing telemetry semantics before or during implementation — logs, metrics, traces, events, spans, attributes, correlation IDs, SLOs, alert signals, and the diagnostic questions telemetry must answer. Portable across any instrumented system; principle-grounded, not repo-bound. Excludes domain/business event contracts (event-contract-design), configuring an error tracker alone (error-tracking), performance optimization (performance-engineering), and debugging a current incident (debugging).

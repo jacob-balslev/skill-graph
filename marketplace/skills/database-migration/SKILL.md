@@ -7,7 +7,7 @@ allowed-tools: Read Grep Bash Edit
 metadata:
   schema_version: "8"
   version: "1.0.0"
-  subject: code-engineering
+  subject: data-engineering
   deployment_target: portable
   taxonomy_domain: data/migrations
   owner: skill-graph-maintainer
@@ -31,7 +31,7 @@ metadata:
   lint_verdict: PASS
   skill_graph_source_repo: "https://github.com/jacob-balslev/skill-graph"
   skill_graph_project: Skill Graph
-  skill_graph_canonical_skill: skills/code-engineering/database-migration/SKILL.md
+  skill_graph_canonical_skill: skills/data-engineering/database-migration/SKILL.md
   skill_graph_export_description_projection: anti_examples
   skill_graph_export_description_projection_truncated: "true"
 ---
@@ -457,7 +457,7 @@ This skill ships a comprehension-eval artifact at [`examples/evals/database-migr
 <!-- skill-graph-context:start (generated — do not edit by hand) -->
 
 **Classification**
-- Subject: `code-engineering`
+- Subject: `data-engineering`
 - Deployment: `portable`
 - Domain: `data/migrations`
 

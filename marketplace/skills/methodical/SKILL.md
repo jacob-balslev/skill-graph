@@ -2,7 +2,7 @@
 name: methodical
 description: "Enforces disciplined, complete, step-by-step execution that prevents the LLM failure modes of scope reduction, finding filtering, step skipping, assumed verification, and sycophantic output compression. Provides the explanatory model for WHY agents fail at completeness (RLHF training rewards shorter, cleaner, more positive outputs — 58% sycophancy rate measured in frontier models) and the structural countermeasures: pre-task declarations, step-level evidence receipts, generation/criticism separation, explicit completeness claims, and anti-pattern detection. Use when executing audits, producing reports, creating tracked tasks from findings, verifying acceptance criteria, or any task where completeness and honesty matter more than brevity. Do NOT use for task workflow sequencing (use `task-path-optimization`), artifact-quality breadth checks (use `best-practice`), result scoring (use `evaluation`), or compression after complete enumeration (use `summarization`)."
 metadata:
-  subject: meta-methods
+  subject: software-engineering-method
   deployment_target: portable
   scope: "Portable across any project, repo, or agent runtime. Teaches the execution discipline that counters LLM completeness failures — scope reduction, finding filtering, step skipping, assumed verification, and sycophantic output compression — in any task where completeness and honesty outweigh brevity: audits, reports, converting findings into tracked tasks, and acceptance-criteria verification. Not bound to any codebase; the countermeasures (pre-task declarations, step-level evidence receipts, generation/criticism separation, explicit completeness claims) are universal."
   triggers: "[\"methodical-skill\",\"completeness-skill\"]"
@@ -15,7 +15,7 @@ metadata:
   misconception: "A common misconception is that 'prioritizing' means 'filtering'. In this methodology, prioritization is strictly a reordering operation; zero items are removed, and the full count is always presented."
   skill_graph_source_repo: "https://github.com/jacob-balslev/skill-graph"
   skill_graph_project: Skill Graph
-  skill_graph_canonical_skill: skills/meta-methods/methodical/SKILL.md
+  skill_graph_canonical_skill: skills/software-engineering-method/methodical/SKILL.md
 ---
 
 ## Concept Card
@@ -299,7 +299,7 @@ After applying this skill, verify:
 <!-- skill-graph-context:start (generated — do not edit by hand) -->
 
 **Classification**
-- Subject: `meta-methods`
+- Subject: `software-engineering-method`
 - Deployment: `portable`
 - Scope: Portable across any project, repo, or agent runtime. Teaches the execution discipline that counters LLM completeness failures — scope reduction, finding filtering, step skipping, assumed verification, and sycophantic output compression — in any task where completeness and honesty outweigh brevity: audits, reports, converting findings into tracked tasks, and acceptance-criteria verification. Not bound to any codebase; the countermeasures (pre-task declarations, step-level evidence receipts, generation/criticism separation, explicit completeness claims) are universal.
 

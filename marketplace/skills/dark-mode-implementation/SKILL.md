@@ -5,7 +5,7 @@ license: CC-BY-4.0
 metadata:
   schema_version: "8"
   version: "1.0.0"
-  subject: design-craft
+  subject: design
   deployment_target: portable
   scope: "Implementing dark mode — prefers-color-scheme detection, theme persistence, flash-of-unstyled-theme prevention, color-token mirroring, image/asset variants, and meta theme-color updates. Portable across any web UI; principle-grounded, not repo-bound. Excludes designing the dark palette itself (color-system-design), token-architecture design, and generic theme-switching across more than two themes."
   taxonomy_domain: design/visual
@@ -29,7 +29,7 @@ metadata:
   lint_verdict: PASS
   skill_graph_source_repo: "https://github.com/jacob-balslev/skill-graph"
   skill_graph_project: Skill Graph
-  skill_graph_canonical_skill: skills/design-craft/dark-mode-implementation/SKILL.md
+  skill_graph_canonical_skill: skills/design/dark-mode-implementation/SKILL.md
   skill_graph_export_description_projection: anti_examples
 ---
 
@@ -74,7 +74,7 @@ The user's explicit choice overrides the system. A user who has toggled to Dark 
 <!-- skill-graph-context:start (generated — do not edit by hand) -->
 
 **Classification**
-- Subject: `design-craft`
+- Subject: `design`
 - Deployment: `portable`
 - Domain: `design/visual`
 - Scope: Implementing dark mode — prefers-color-scheme detection, theme persistence, flash-of-unstyled-theme prevention, color-token mirroring, image/asset variants, and meta theme-color updates. Portable across any web UI; principle-grounded, not repo-bound. Excludes designing the dark palette itself (color-system-design), token-architecture design, and generic theme-switching across more than two themes.

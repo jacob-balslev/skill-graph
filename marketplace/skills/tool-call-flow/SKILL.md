@@ -6,7 +6,7 @@ allowed-tools: Read Grep
 metadata:
   schema_version: "8"
   version: "1.0.0"
-  subject: agent-ops
+  subject: ai-engineering
   deployment_target: portable
   scope: "The protocol-level cycle by which a language model uses external tools — the four phases (declaration, request, execution, continuation), the message-history state model tying them together, the structural differences between vendor protocols (Anthropic tool-use, OpenAI function-calling, MCP) and how they compose, parallel vs sequential calls, in-cycle error handling and retries, and the model-produces-intent / runtime-executes-intent separation. Portable across any tool-using LLM runtime; principle-grounded, not repo-bound. Excludes the decision of when and how many tool calls to make (tool-call-strategy), agent-system architecture and coordination (agent-engineering), prompt wording (prompt-craft), and designing evals for tool-use behavior (agent-eval-design)."
   taxonomy_domain: agent/protocol
@@ -37,7 +37,7 @@ metadata:
   lint_verdict: PASS
   skill_graph_source_repo: "https://github.com/jacob-balslev/skill-graph"
   skill_graph_project: Skill Graph
-  skill_graph_canonical_skill: skills/agent-ops/tool-call-flow/SKILL.md
+  skill_graph_canonical_skill: skills/ai-engineering/tool-call-flow/SKILL.md
   skill_graph_export_description_projection: boundary
 ---
 
@@ -263,7 +263,7 @@ After applying this skill, verify:
 <!-- skill-graph-context:start (generated — do not edit by hand) -->
 
 **Classification**
-- Subject: `agent-ops`
+- Subject: `ai-engineering`
 - Deployment: `portable`
 - Domain: `agent/protocol`
 - Scope: The protocol-level cycle by which a language model uses external tools — the four phases (declaration, request, execution, continuation), the message-history state model tying them together, the structural differences between vendor protocols (Anthropic tool-use, OpenAI function-calling, MCP) and how they compose, parallel vs sequential calls, in-cycle error handling and retries, and the model-produces-intent / runtime-executes-intent separation. Portable across any tool-using LLM runtime; principle-grounded, not repo-bound. Excludes the decision of when and how many tool calls to make (tool-call-strategy), agent-system architecture and coordination (agent-engineering), prompt wording (prompt-craft), and designing evals for tool-use behavior (agent-eval-design).

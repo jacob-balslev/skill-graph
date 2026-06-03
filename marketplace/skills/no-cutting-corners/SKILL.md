@@ -2,7 +2,7 @@
 name: no-cutting-corners
 description: "Enforce five non-negotiable quality pillars as a pre-output gate: complete reporting (show ALL items, never filter unilaterally), verification (no claim of works/done/exists without a tool-call receipt in the same turn), thoroughness (every acceptance criterion verified with evidence; docs ship with the change), enrichment ('improve' adds capability, never trims), and anti-shortcut (exhaust deterministic lookup before guessing; findings demand action, not filing). Use when reviewing enumerated output for completeness, when an agent claims something works without evidence, when marking a task done, or when asked to 'improve' anything. Do NOT use for the cross-domain quality-standards catalog (OWASP, WCAG, SOLID, etc (use best-practice). Do NOT use for compression once a complete enumeration exists (use summarization). Do NOT use for choosing or shortening the route through a task (use task-path-optimization). Do NOT use for the review methodology and feedback phrasing (use code-review)."
 metadata:
-  subject: meta-methods
+  subject: software-engineering-method
   deployment_target: portable
   scope: "Portable across any project, repo, or agent runtime. Consolidates five non-negotiable quality pillars — completeness, verification, thoroughness, enrichment, and anti-shortcut — into one enforcement reference an agent runs as a gate before any enumerated output, any 'done' claim, any 'improve' task, or any handling of findings. The pillars are universal countermeasures to RLHF-trained shortcut behavior (scope reduction, unverified confidence, simplify-as-improve, guess-instead-of-look); a project supplies only its own concrete instantiation of what 'complete' and 'verified' mean, not the doctrine itself."
   triggers: "[\"no-cutting-corners\",\"completeness-check\",\"thoroughness-gate\"]"
@@ -15,7 +15,7 @@ metadata:
   misconception: "The common misconception is that cutting a corner is 'being efficient' or 'being helpful' — showing the top findings, saying it should work, improving by simplifying. Each of those is not efficiency; it is the silent transfer of a decision (what to cut, whether it works, what 'better' means) from the user to the agent, destroying information the user needed to decide."
   skill_graph_source_repo: "https://github.com/jacob-balslev/skill-graph"
   skill_graph_project: Skill Graph
-  skill_graph_canonical_skill: skills/meta-methods/no-cutting-corners/SKILL.md
+  skill_graph_canonical_skill: skills/software-engineering-method/no-cutting-corners/SKILL.md
   skill_graph_export_description: shortened for Agent Skills 1024-character description limit; canonical source keeps the full routing contract
   skill_graph_canonical_description_length: "1121"
   skill_graph_export_description_projection: boundary
@@ -333,7 +333,7 @@ After applying this skill, verify:
 <!-- skill-graph-context:start (generated — do not edit by hand) -->
 
 **Classification**
-- Subject: `meta-methods`
+- Subject: `software-engineering-method`
 - Deployment: `portable`
 - Scope: Portable across any project, repo, or agent runtime. Consolidates five non-negotiable quality pillars — completeness, verification, thoroughness, enrichment, and anti-shortcut — into one enforcement reference an agent runs as a gate before any enumerated output, any 'done' claim, any 'improve' task, or any handling of findings. The pillars are universal countermeasures to RLHF-trained shortcut behavior (scope reduction, unverified confidence, simplify-as-improve, guess-instead-of-look); a project supplies only its own concrete instantiation of what 'complete' and 'verified' mean, not the doctrine itself.
 

@@ -154,29 +154,32 @@ version: 1.0.0
 
 **Rules.**
 - **Required.** Every skill must declare a `subject`.
-- **Closed 9-value enum:** `agent-ops` \| `code-engineering` \| `frontend-ui` \| `design-craft` \| `data-analytics` \| `quality-assurance` \| `meta-methods` \| `knowledge-organization` \| `product-domain`.
+- **Closed 12-value enum** (the competency the skill teaches), in 3 bands: `backend-engineering` \| `frontend-engineering` \| `software-architecture` \| `data-engineering` \| `agent-ops` \| `ai-engineering` \| `quality-assurance` \| `design` \| `reasoning-strategy` \| `software-engineering-method` \| `knowledge-organization` \| `product-domain`.
 - **Balance rule:** each subject must hold 5–25 skills. <5 = fold or recruit; >25 = subdivide via `taxonomy_domain` slash-path.
 - For polyhierarchy (skills that legitimately span two subjects), use `subjects[]` array (primary first, optional secondary).
 
 **Example.**
 ```yaml
-subject: code-engineering
+subject: backend-engineering
 ```
 
 **When to use.** Always. Pick the single best primary; cross-cutting fit goes into `subjects[1]` (max 1 secondary).
 
-**Subject definitions.**
-- `agent-ops` — agent orchestration, dispatch, lifecycle, multi-agent comms.
-- `code-engineering` — backend, APIs, libraries, infrastructure, runtime.
-- `frontend-ui` — UI components, layout, interaction, web framework specifics.
-- `design-craft` — visual design, typography, brand, motion, design tokens.
-- `data-analytics` — data viz, analytics, observability, financial display.
-- `quality-assurance` — testing, a11y, perf, security, type-safety.
-- `meta-methods` — methodology, reasoning, verification, decision frameworks.
-- `knowledge-organization` — taxonomy, semantics, classification, glossaries, ontology.
-- `product-domain` — domain-specific (Shopify, Stripe, fulfillment, integrations).
+**Subject definitions** (band A — engineering; band B — AI-agentic; band C — cross-cutting craft).
+- `backend-engineering` — server-side construction: APIs, async/jobs, runtime, protocols, integration-as-code.
+- `frontend-engineering` — client/UI construction in a web framework: components, rendering, state, hooks, routing.
+- `software-architecture` — system shape before code: boundaries, contracts, ADRs, tech selection, event/domain + conceptual/ER/state modeling.
+- `data-engineering` — data tier: schema/migration, indexing, replication, sharding, transactions, query/connection tuning.
+- `agent-ops` — the agent *runtime*: loops, context windows, skill infrastructure, dispatch, tool-call protocol, monitoring.
+- `ai-engineering` — LLM *features in a product*: prompt design, evals, generative UI, guardrails, tool-use strategy, summarization.
+- `quality-assurance` — verifying *properties*: testing, a11y, perf, security, type-safety, code review.
+- `design` — human-facing design craft: visual systems, typography, interaction, UX, design research, content/microcopy.
+- `reasoning-strategy` — generic thinking + business/market strategy: decision quality, mental models, competitive strategy, negotiation.
+- `software-engineering-method` — engineering process discipline: spec/test-driven dev, debugging method, prioritization, refactor, version-control, doc discipline.
+- `knowledge-organization` — structuring meaning: taxonomy, ontology, semantics, classification, linguistics, knowledge/concept modeling.
+- `product-domain` — genuine external product/market verticals: ecommerce platforms, marketplaces, fulfillment, vendor playbooks.
 
-See `docs/adr/0017-five-axis-classification-model.md` for rationale.
+See `docs/adr/0020-twelve-shelf-competency-reaxis.md` for rationale (supersedes the 9-value enum in `docs/adr/0017-five-axis-classification-model.md`).
 
 ---
 
@@ -187,14 +190,14 @@ See `docs/adr/0017-five-axis-classification-model.md` for rationale.
 **Rules.**
 - Optional. When present, `subjects[0]` MUST equal `subject`.
 - Max 2 entries.
-- Drawn from the same closed 9-enum as `subject`.
-- Use when a skill genuinely teaches a primary subject AND meaningfully covers a secondary. Example: `webhook-integration` is primarily `code-engineering` and secondarily `quality-assurance` because reliable delivery is a quality property.
+- Drawn from the same closed 12-enum as `subject` (see ADR-0020).
+- Use when a skill genuinely teaches a primary subject AND meaningfully covers a secondary. Example: `webhook-integration` is primarily `backend-engineering` and secondarily `product-domain`; `information-architecture` is primarily `design` and secondarily `knowledge-organization`.
 - Do NOT use for semantic adjacency that isn't shelf-level — `relations.related` covers that.
 
 **Example.**
 ```yaml
-subject: code-engineering
-subjects: [code-engineering, quality-assurance]
+subject: backend-engineering
+subjects: [backend-engineering, product-domain]
 ```
 
 **When NOT to use.** Skills that fit one subject cleanly. Adding a forced secondary dilutes the polyhierarchy signal.

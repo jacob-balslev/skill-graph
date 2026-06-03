@@ -7,7 +7,7 @@ allowed-tools: Read Grep
 metadata:
   schema_version: "8"
   version: "1.0.0"
-  subject: meta-methods
+  subject: reasoning-strategy
   deployment_target: portable
   scope: "Blue Ocean Strategy for market-creating strategy work: diagnose the current value curve, reconstruct market boundaries, target noncustomers, design eliminate/reduce/raise/create moves, and test utility-price-cost-adoption viability. Excludes Five Forces industry-pressure diagnosis, Seven Powers moat taxonomy, generic positioning copy, and OKR execution tracking."
   taxonomy_domain: foundations/strategy
@@ -40,7 +40,7 @@ metadata:
   drift_status: EXTERNAL_UNHASHED
   skill_graph_source_repo: "https://github.com/jacob-balslev/skill-graph"
   skill_graph_project: Skill Graph
-  skill_graph_canonical_skill: skills/meta-methods/blue-ocean-strategy/SKILL.md
+  skill_graph_canonical_skill: skills/reasoning-strategy/blue-ocean-strategy/SKILL.md
   skill_graph_export_description_projection: anti_examples+boundary
   skill_graph_export_description_projection_truncated: "true"
 ---
@@ -267,7 +267,7 @@ Before finishing, verify:
 <!-- skill-graph-context:start (generated — do not edit by hand) -->
 
 **Classification**
-- Subject: `meta-methods`
+- Subject: `reasoning-strategy`
 - Deployment: `portable`
 - Domain: `foundations/strategy`
 - Scope: Blue Ocean Strategy for market-creating strategy work: diagnose the current value curve, reconstruct market boundaries, target noncustomers, design eliminate/reduce/raise/create moves, and test utility-price-cost-adoption viability. Excludes Five Forces industry-pressure diagnosis, Seven Powers moat taxonomy, generic positioning copy, and OKR execution tracking.

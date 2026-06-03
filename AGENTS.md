@@ -213,7 +213,7 @@ Core required axes (v8 — see `skill-metadata-protocol/SKILL_METADATA_PROTOCOL.
 
 - `name` — kebab-case, head-noun-anchored (see `docs/head-noun-glossary.md`); aligns with parent directory.
 - `description` — short description of what the skill is about. Activation signals belong to `keywords`/`triggers`/`examples`/`anti_examples`; boundary semantics belong to `relations.boundary`.
-- `subject` — primary browse shelf, ONE of nine closed values: `code-engineering`, `quality-assurance`, `frontend-ui`, `design-craft`, `agent-ops`, `product-domain`, `knowledge-organization`, `meta-methods`, `data-analytics`. Each subject holds 5–25 skills; <5 = fold or recruit, >25 = subdivide via `taxonomy_domain`. To propose a 10th value: ADR + ≥5 primary-fit skills. See [ADR-0017](docs/adr/0017-five-axis-classification-model.md).
+- `subject` — primary browse shelf (the competency the skill teaches), ONE of twelve closed values in 3 bands: **engineering** `backend-engineering`, `frontend-engineering`, `software-architecture`, `data-engineering`; **AI-agentic** `agent-ops`, `ai-engineering`; **cross-cutting** `quality-assurance`, `design`, `reasoning-strategy`, `software-engineering-method`, `knowledge-organization`, `product-domain`. Each subject holds 5–25 skills; <5 = fold or recruit, >25 = subdivide via `taxonomy_domain`. To propose a 13th value: ADR + ≥5 primary-fit skills. See [ADR-0020](docs/adr/0020-twelve-shelf-competency-reaxis.md) (supersedes the 9-value enum in [ADR-0017](docs/adr/0017-five-axis-classification-model.md)).
 - `deployment_target` — deployment targeting, ONE of two values: `portable` (any project), `project` (one specific project; requires `grounding`). The `scope` field is now a required free-text PRD-style statement (the v8 `scope` enum's `workspace` value was removed 2026-05-27; see ADR-0017 amendment).
 - `subjects[]` (optional, max 2, primary first) covers polyhierarchy when a skill genuinely spans two browse shelves.
 
@@ -508,7 +508,7 @@ For non-trivial new skills, write a short spec and plan first as described in `C
 - Put each skill in `skills/<skill-name>/SKILL.md`.
 - Keep `name:` lowercase and aligned with the parent directory.
 - Write `description:` as a routing contract: clear positive trigger plus explicit negative boundary.
-- Pick `subject` honestly: one of the nine closed values (`code-engineering`, `quality-assurance`, `frontend-ui`, `design-craft`, `agent-ops`, `product-domain`, `knowledge-organization`, `meta-methods`, `data-analytics`).
+- Pick `subject` honestly: one of the twelve closed values (`backend-engineering`, `frontend-engineering`, `software-architecture`, `data-engineering`, `agent-ops`, `ai-engineering`, `quality-assurance`, `design`, `reasoning-strategy`, `software-engineering-method`, `knowledge-organization`, `product-domain`) — see ADR-0020.
 - Pick `deployment_target` honestly: `portable` or `project`. Write `scope` as a free-text PRD-style statement of what the skill teaches.
 - Add `grounding` for `deployment_target: project`.
 - Point every `relations.*` target at an existing sibling skill.

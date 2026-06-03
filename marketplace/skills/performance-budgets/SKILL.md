@@ -6,7 +6,7 @@ allowed-tools: Read Grep
 metadata:
   schema_version: "8"
   version: "1.0.0"
-  subject: data-analytics
+  subject: quality-assurance
   deployment_target: portable
   scope: "Declaring, measuring, and enforcing performance thresholds as a quality contract rather than an aspirational target — the three budget axes (time, size, count), the four governing properties of a real budget (metric, threshold, percentile, consequence), the Core Web Vitals set (LCP, INP, CLS), the RAIL model, Lighthouse budgets.json, lab vs field measurement, and treating budget breach as a build/deploy failure. Portable across any product with performance SLAs; principle-grounded, not repo-bound. Excludes profiling and optimizing a specific slow path (performance-engineering), the rendering-model choice that bounds achievable budgets (rendering-models), and observability/telemetry signal design (observability-modeling)."
   taxonomy_domain: quality/performance
@@ -37,7 +37,7 @@ metadata:
   lint_verdict: PASS
   skill_graph_source_repo: "https://github.com/jacob-balslev/skill-graph"
   skill_graph_project: Skill Graph
-  skill_graph_canonical_skill: skills/data-analytics/performance-budgets/SKILL.md
+  skill_graph_canonical_skill: skills/quality-assurance/performance-budgets/SKILL.md
   skill_graph_export_description_projection: boundary
 ---
 
@@ -219,7 +219,7 @@ After applying this skill, verify:
 <!-- skill-graph-context:start (generated — do not edit by hand) -->
 
 **Classification**
-- Subject: `data-analytics`
+- Subject: `quality-assurance`
 - Deployment: `portable`
 - Domain: `quality/performance`
 - Scope: Declaring, measuring, and enforcing performance thresholds as a quality contract rather than an aspirational target — the three budget axes (time, size, count), the four governing properties of a real budget (metric, threshold, percentile, consequence), the Core Web Vitals set (LCP, INP, CLS), the RAIL model, Lighthouse budgets.json, lab vs field measurement, and treating budget breach as a build/deploy failure. Portable across any product with performance SLAs; principle-grounded, not repo-bound. Excludes profiling and optimizing a specific slow path (performance-engineering), the rendering-model choice that bounds achievable budgets (rendering-models), and observability/telemetry signal design (observability-modeling).

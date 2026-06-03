@@ -5,7 +5,7 @@ license: CC-BY-4.0
 metadata:
   schema_version: "8"
   version: "1.0.0"
-  subject: frontend-ui
+  subject: frontend-engineering
   deployment_target: portable
   scope: "Organizing a frontend codebase — module boundaries, component layering, state ownership, data-flow direction, and the separation between feature code and shared primitives. Portable across any frontend stack; principle-grounded, not repo-bound. Excludes visual design decisions, specific framework migration tactics, and backend API contract design."
   taxonomy_domain: engineering/frontend
@@ -29,7 +29,7 @@ metadata:
   lint_verdict: PASS
   skill_graph_source_repo: "https://github.com/jacob-balslev/skill-graph"
   skill_graph_project: Skill Graph
-  skill_graph_canonical_skill: skills/frontend-ui/frontend-architecture/SKILL.md
+  skill_graph_canonical_skill: skills/frontend-engineering/frontend-architecture/SKILL.md
   skill_graph_export_description_projection: anti_examples
 ---
 
@@ -70,7 +70,7 @@ Server state and client state are different problems. Mixing them in a single st
 <!-- skill-graph-context:start (generated — do not edit by hand) -->
 
 **Classification**
-- Subject: `frontend-ui`
+- Subject: `frontend-engineering`
 - Deployment: `portable`
 - Domain: `engineering/frontend`
 - Scope: Organizing a frontend codebase — module boundaries, component layering, state ownership, data-flow direction, and the separation between feature code and shared primitives. Portable across any frontend stack; principle-grounded, not repo-bound. Excludes visual design decisions, specific framework migration tactics, and backend API contract design.

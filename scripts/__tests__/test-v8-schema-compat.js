@@ -165,7 +165,7 @@ const v7Legacy = {
 const v8Base = {
   name: 'test-skill',
   description: 'A test skill for v8 schema checks.',
-  subject: 'code-engineering',
+  subject: 'backend-engineering',
   deployment_target: 'portable',
   scope: 'Teaches the test subsystem; not for unrelated concerns.',
 };
@@ -298,7 +298,7 @@ check('subject: invalid value fails enum check', () => {
 });
 
 check('subjects array with valid entries validates', () => {
-  const withSubjects = { ...v8Base, subjects: ['code-engineering', 'quality-assurance'] };
+  const withSubjects = { ...v8Base, subjects: ['backend-engineering', 'quality-assurance'] };
   const errors = validate(withSubjects, SCHEMA);
   if (errors.length > 0) throw new Error(`subjects array failed: ${errors.join('; ')}`);
 });

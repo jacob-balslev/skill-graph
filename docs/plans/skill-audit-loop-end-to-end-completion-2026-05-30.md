@@ -596,7 +596,7 @@ Completeness: this review covers all 5 requested questions and includes 6 additi
 
 SH-6650 (the gating SYSTEM task) is **DONE**. Sequence executed system-first:
 
-1. **Corpus cleanup** (`skills@315b877`): deleted flat v7 `code-review/` (stale dup — canonical is the v8 nested `skills/quality-assurance/code-review/`); migrated orphan `skill-evolution/` → `skills/meta-methods/skill-evolution/` (relocation only; v8 content migration is separate CONTENT debt — it still carries `scope: codebase`, 0 evals, 1 broken key-file path to `skill-graph/SKILL_AUDIT_LOOP.md`, all routing to the SH-6591 drain).
+1. **Corpus cleanup** (`skills@315b877`): deleted flat v7 `code-review/` (stale dup — canonical is the v8 nested `skills/quality-assurance/code-review/`); migrated orphan `skill-evolution/` → `skills/knowledge-organization/skill-evolution/` (relocation only; v8 content migration is separate CONTENT debt — it still carries `scope: codebase`, 0 evals, 1 broken key-file path to `skill-graph/SKILL_AUDIT_LOOP.md`, all routing to the SH-6591 drain).
 2. **Manifest regen** (`workspace@79926d5de`): `summary.active` 157 → **160**; matches census. Diff also absorbed the SH-6596 v8 migrations not yet re-manifested.
 3. **Tests green** (run via `node`, not jest — jest globs `.claude/worktrees/` and crashes): walker 3/3, census 24/0, regressions 8/0.
 4. **`next→claim` round-trip verified**: `cognitive-load-theory` claimed (bare slug, run_id written) + released clean.

@@ -7,7 +7,7 @@ allowed-tools: Read Grep
 metadata:
   schema_version: "8"
   version: "1.0.0"
-  subject: code-engineering
+  subject: software-architecture
   deployment_target: portable
   scope: "Designing logical and physical data structures — entities as stored data, keys, constraints, normalization and denormalization, provenance, lifecycle, indexing implications, and schema tradeoffs. Portable across relational and document data stores; principle-grounded, not repo-bound. Excludes pre-implementation business-concept discovery (conceptual-modeling), migrations against an existing database (database-migration), and formal ontology semantics (ontology-modeling)."
   taxonomy_domain: data/modeling
@@ -32,7 +32,7 @@ metadata:
   lint_verdict: PASS
   skill_graph_source_repo: "https://github.com/jacob-balslev/skill-graph"
   skill_graph_project: Skill Graph
-  skill_graph_canonical_skill: skills/code-engineering/data-modeling/SKILL.md
+  skill_graph_canonical_skill: skills/software-architecture/data-modeling/SKILL.md
   skill_graph_export_description_projection: anti_examples
 ---
 
@@ -87,7 +87,7 @@ This skill ships a comprehension-eval artifact at [`examples/evals/data-modeling
 <!-- skill-graph-context:start (generated — do not edit by hand) -->
 
 **Classification**
-- Subject: `code-engineering`
+- Subject: `software-architecture`
 - Deployment: `portable`
 - Domain: `data/modeling`
 - Scope: Designing logical and physical data structures — entities as stored data, keys, constraints, normalization and denormalization, provenance, lifecycle, indexing implications, and schema tradeoffs. Portable across relational and document data stores; principle-grounded, not repo-bound. Excludes pre-implementation business-concept discovery (conceptual-modeling), migrations against an existing database (database-migration), and formal ontology semantics (ontology-modeling).

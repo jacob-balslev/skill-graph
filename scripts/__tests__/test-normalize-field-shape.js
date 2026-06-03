@@ -47,7 +47,7 @@ const unmigrated = `---
 schema_version: 8
 name: fixture
 description: "x"
-subject: meta-methods
+subject: reasoning-strategy
 deployment_target: portable
 structural_verdict: PASS
 retired_field: legacy
@@ -77,7 +77,7 @@ Real teaching content here.
   const fmOnlyScopeMissing = `---
 name: fixture
 description: "x"
-subject: meta-methods
+subject: reasoning-strategy
 deployment_target: portable
 scope: "teaches X; not Y"
 ---
@@ -101,7 +101,7 @@ body
   assert(changed, 'applyToText: reports changed when there are audit fields to relocate');
   assert(!/^schema_version:/m.test(text) && !/^structural_verdict:/m.test(text),
     'applyToText: strips the relocated audit fields from frontmatter');
-  assert(/^name: fixture$/m.test(text) && /^subject: meta-methods$/m.test(text),
+  assert(/^name: fixture$/m.test(text) && /^subject: reasoning-strategy$/m.test(text),
     'applyToText: leaves frontmatter-owned fields in place');
   assert(/# semantic-debt: scope/.test(text) && /owner/.test(text.match(/# semantic-debt:.*/)[0]),
     'applyToText: injects the semantic-debt marker covering frontmatter + sidecar debt');
@@ -123,11 +123,11 @@ body
   schema_version: 8
   drift_check:
     last_verified: "2026-06-01"
-  subject: meta-methods`;
+  subject: reasoning-strategy`;
   const stripped = stripFieldsFromBlock(nested, ['schema_version', 'drift_check']);
   assert(!/schema_version:/.test(stripped) && !/last_verified:/.test(stripped),
     'stripFieldsFromBlock: removes a nested key AND its deeper-indented block body');
-  assert(/name: fixture/.test(stripped) && /subject: meta-methods/.test(stripped),
+  assert(/name: fixture/.test(stripped) && /subject: reasoning-strategy/.test(stripped),
     'stripFieldsFromBlock: preserves sibling keys around the stripped block');
 }
 
@@ -150,7 +150,7 @@ assert(!('scope' in MECHANICAL_DEFAULTS) && !('subject' in MECHANICAL_DEFAULTS) 
   const skill = `---
 name: mover-fixture
 description: "Use as a fixture for the ADR-0019 mover AC integration test. Activate when verifying that --apply relocates audit fields to the sidecar and both files lint clean. Do NOT use as a production skill."
-subject: code-engineering
+subject: backend-engineering
 deployment_target: portable
 scope: "Fixture proving the mover produces lint-clean frontmatter + sidecar. Out: production use."
 license: Apache-2.0

@@ -5,7 +5,7 @@ license: MIT
 compatibility: "Language- and stack-agnostic. The recognition loop, clustering method, eval pipeline, and 5-Whys ladder apply to any codebase; the grep patterns and example detection rules are illustrative — substitute the equivalents of your stack."
 allowed-tools: Read Grep
 metadata:
-  subject: meta-methods
+  subject: reasoning-strategy
   deployment_target: portable
   scope: "Portable pattern-recognition methodology for auditing recurring issues, clustering errors, detecting convention drift, naming root-cause patterns, and converting repeated observations into prevention through docs, evals, lint rules, hooks, or architecture changes. Covers the Observe -> Cluster -> Name -> Codify -> Detect -> Prevent loop, grep-based scans, normalize-then-hash error clustering, board-health patterns, design-token and heading drift, domain-encoding traps, eval-as-pattern-tests, 5 Whys, pattern lifecycle states, and drift traps. Excludes one-off bug localization (debugging/diagnosis), PR-scope code judgment (code-review), naming-rule definition (naming-conventions), lint-rule implementation machinery (lint-overlay), and designing the classification system itself (taxonomy-design)."
   taxonomy_domain: foundations/cognition
@@ -21,7 +21,7 @@ metadata:
   misconception: "|"
   skill_graph_source_repo: "https://github.com/jacob-balslev/skill-graph"
   skill_graph_project: Skill Graph
-  skill_graph_canonical_skill: skills/meta-methods/pattern-recognition/SKILL.md
+  skill_graph_canonical_skill: skills/reasoning-strategy/pattern-recognition/SKILL.md
   skill_graph_export_description_projection: anti_examples
 ---
 
@@ -493,7 +493,7 @@ Before codifying a pattern, confirm:
 <!-- skill-graph-context:start (generated — do not edit by hand) -->
 
 **Classification**
-- Subject: `meta-methods`
+- Subject: `reasoning-strategy`
 - Deployment: `portable`
 - Domain: `foundations/cognition`
 - Scope: Portable pattern-recognition methodology for auditing recurring issues, clustering errors, detecting convention drift, naming root-cause patterns, and converting repeated observations into prevention through docs, evals, lint rules, hooks, or architecture changes. Covers the Observe -> Cluster -> Name -> Codify -> Detect -> Prevent loop, grep-based scans, normalize-then-hash error clustering, board-health patterns, design-token and heading drift, domain-encoding traps, eval-as-pattern-tests, 5 Whys, pattern lifecycle states, and drift traps. Excludes one-off bug localization (debugging/diagnosis), PR-scope code judgment (code-review), naming-rule definition (naming-conventions), lint-rule implementation machinery (lint-overlay), and designing the classification system itself (taxonomy-design).

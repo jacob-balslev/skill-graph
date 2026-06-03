@@ -7,7 +7,7 @@ allowed-tools: Read Grep
 metadata:
   schema_version: "8"
   version: "1.0.0"
-  subject: product-domain
+  subject: software-architecture
   deployment_target: portable
   taxonomy_domain: architecture/domain-discovery
   owner: skill-graph-maintainer
@@ -31,7 +31,7 @@ metadata:
   lint_verdict: PASS
   skill_graph_source_repo: "https://github.com/jacob-balslev/skill-graph"
   skill_graph_project: Skill Graph
-  skill_graph_canonical_skill: skills/product-domain/event-storming/SKILL.md
+  skill_graph_canonical_skill: skills/software-architecture/event-storming/SKILL.md
   skill_graph_export_description_projection: anti_examples+boundary
 ---
 
@@ -83,7 +83,7 @@ Do not confuse domain events with technical notifications. "OrderPlaced" is busi
 <!-- skill-graph-context:start (generated — do not edit by hand) -->
 
 **Classification**
-- Subject: `product-domain`
+- Subject: `software-architecture`
 - Deployment: `portable`
 - Domain: `architecture/domain-discovery`
 

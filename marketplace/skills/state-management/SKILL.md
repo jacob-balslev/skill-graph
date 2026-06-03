@@ -4,7 +4,7 @@ description: "Use when deciding where state lives, how it propagates, and how it
 license: MIT
 allowed-tools: Read Grep
 metadata:
-  subject: frontend-ui
+  subject: frontend-engineering
   deployment_target: portable
   scope: "Portable frontend state-placement discipline for deciding where each piece of application data lives, who owns it, how it propagates, and how it stays consistent across changes. Teaches the four-kinds classification (server state, client UI state, URL state, persistent state), the colocation-and-lifting decision path, single source of truth, server-state cache invalidation, URL state for deep-linking, and anti-pattern detection for prop drilling, duplicated state, state sprawl, and global-state-by-default. Excludes tactical library choice, API surface design, client/server execution-boundary decisions, distributed-system replication, and finite-state workflow modeling."
   taxonomy_domain: engineering/frontend
@@ -21,7 +21,7 @@ metadata:
   misconception: "|"
   skill_graph_source_repo: "https://github.com/jacob-balslev/skill-graph"
   skill_graph_project: Skill Graph
-  skill_graph_canonical_skill: skills/frontend-ui/state-management/SKILL.md
+  skill_graph_canonical_skill: skills/frontend-engineering/state-management/SKILL.md
   skill_graph_export_description_projection: anti_examples+boundary
   skill_graph_export_description_projection_truncated: "true"
 ---
@@ -169,7 +169,7 @@ After applying this skill, verify:
 <!-- skill-graph-context:start (generated — do not edit by hand) -->
 
 **Classification**
-- Subject: `frontend-ui`
+- Subject: `frontend-engineering`
 - Deployment: `portable`
 - Domain: `engineering/frontend`
 - Scope: Portable frontend state-placement discipline for deciding where each piece of application data lives, who owns it, how it propagates, and how it stays consistent across changes. Teaches the four-kinds classification (server state, client UI state, URL state, persistent state), the colocation-and-lifting decision path, single source of truth, server-state cache invalidation, URL state for deep-linking, and anti-pattern detection for prop drilling, duplicated state, state sprawl, and global-state-by-default. Excludes tactical library choice, API surface design, client/server execution-boundary decisions, distributed-system replication, and finite-state workflow modeling.

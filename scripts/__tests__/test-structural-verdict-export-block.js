@@ -40,7 +40,7 @@ function makeTmpSkillDir(skillName, extraFrontmatter = '') {
     `name: ${skillName}`,
     `description: "Portable test skill ${skillName}."`,
     'version: 1.0.0',
-    'subject: code-engineering',
+    'subject: backend-engineering',
     'deployment_target: portable',
     'scope: "Portable test fixture for structural_verdict export blocking."',
     'owner: test-suite',

@@ -7,7 +7,7 @@ allowed-tools: Read Grep
 metadata:
   schema_version: "8"
   version: "1.0.0"
-  subject: design-craft
+  subject: design
   deployment_target: portable
   scope: "Writing and reviewing functional UI text — button labels, empty states, tooltips, dialogs, placeholders, loading/progress messages, toasts, inline validation, permission copy, and onboarding steps — using interface-copy patterns such as verb-first action labels, acknowledge-explain-guide empty states, one-sentence tooltips, consequence-first confirmations, progressive loading language, and blur/fix validation messages. Portable across any UI; principle-grounded, not repo-bound. Excludes marketing persuasion, documentation prose and guide structure, feedback-state staging (interaction-feedback), and general linguistic rationale behind wording."
   taxonomy_domain: design/ux
@@ -32,7 +32,7 @@ metadata:
   lint_verdict: PASS
   skill_graph_source_repo: "https://github.com/jacob-balslev/skill-graph"
   skill_graph_project: Skill Graph
-  skill_graph_canonical_skill: skills/design-craft/microcopy/SKILL.md
+  skill_graph_canonical_skill: skills/design/microcopy/SKILL.md
   skill_graph_export_description_projection: anti_examples+boundary
   skill_graph_export_description_projection_truncated: "true"
 ---
@@ -261,7 +261,7 @@ After writing or reviewing UI text, verify:
 <!-- skill-graph-context:start (generated — do not edit by hand) -->
 
 **Classification**
-- Subject: `design-craft`
+- Subject: `design`
 - Deployment: `portable`
 - Domain: `design/ux`
 - Scope: Writing and reviewing functional UI text — button labels, empty states, tooltips, dialogs, placeholders, loading/progress messages, toasts, inline validation, permission copy, and onboarding steps — using interface-copy patterns such as verb-first action labels, acknowledge-explain-guide empty states, one-sentence tooltips, consequence-first confirmations, progressive loading language, and blur/fix validation messages. Portable across any UI; principle-grounded, not repo-bound. Excludes marketing persuasion, documentation prose and guide structure, feedback-state staging (interaction-feedback), and general linguistic rationale behind wording.

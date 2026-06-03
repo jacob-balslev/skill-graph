@@ -4,7 +4,7 @@ description: "This skill provides decision frameworks for choosing the optimal e
 metadata:
   schema_version: "8"
   version: "1.1.0"
-  subject: agent-ops
+  subject: software-engineering-method
   deployment_target: portable
   scope: "Choosing the optimal execution path before starting work — plan-vs-act gates, agent-architecture selection (chaining, routing, parallelization, orchestrator-worker, evaluator-optimizer), scope-management heuristics, critical-path analysis across task networks, and context-budget awareness, including the fresh-approach reset when a task has failed twice. Portable across any agentic execution; principle-grounded, not repo-bound. Excludes executing the chosen plan (task-execution), debugging failures (troubleshooting, diagnosis), and tool-level efficiency (tool-call-strategy)."
   eval_artifacts: present
@@ -32,7 +32,7 @@ metadata:
   application_verdict: UNVERIFIED
   skill_graph_source_repo: "https://github.com/jacob-balslev/skill-graph"
   skill_graph_project: Skill Graph
-  skill_graph_canonical_skill: skills/agent-ops/task-path-optimization/SKILL.md
+  skill_graph_canonical_skill: skills/software-engineering-method/task-path-optimization/SKILL.md
   skill_graph_export_description_projection: anti_examples+boundary
   skill_graph_export_description_projection_truncated: "true"
 ---
@@ -330,7 +330,7 @@ After applying this skill, verify:
 <!-- skill-graph-context:start (generated — do not edit by hand) -->
 
 **Classification**
-- Subject: `agent-ops`
+- Subject: `software-engineering-method`
 - Deployment: `portable`
 - Scope: Choosing the optimal execution path before starting work — plan-vs-act gates, agent-architecture selection (chaining, routing, parallelization, orchestrator-worker, evaluator-optimizer), scope-management heuristics, critical-path analysis across task networks, and context-budget awareness, including the fresh-approach reset when a task has failed twice. Portable across any agentic execution; principle-grounded, not repo-bound. Excludes executing the chosen plan (task-execution), debugging failures (troubleshooting, diagnosis), and tool-level efficiency (tool-call-strategy).
 

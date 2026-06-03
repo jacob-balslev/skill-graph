@@ -7,7 +7,8 @@ allowed-tools: Read Grep Bash Edit Write
 metadata:
   schema_version: "8"
   version: "1.1.0"
-  subject: code-engineering
+  subject: software-architecture
+  subjects: "[\"software-architecture\",\"ai-engineering\"]"
   deployment_target: portable
   scope: "Designing and evaluating production AI agent systems — multi-agent coordination patterns (orchestrator/worker, fan-out, consensus, sequential chain, evaluator/optimizer), the four pillars (architecture/lifecycle, task decomposition, coordination, production reliability), the six reliability requirements (observability, cost budgets, idempotency, failure recovery, safety caps, claim locks), the delegation decision framework with overhead crossover, and coordination-failure diagnosis (claim races, silent stalls, context contamination, runaway loops). Portable across any agent runtime; principle-grounded, not repo-bound. Excludes prompt wording (prompt-craft), per-call tool efficiency (tool-call-strategy), single-agent context-stack design (context-engineering), and runtime debugging of a deployed system (debugging)."
   taxonomy_domain: ai-engineering/architecture
@@ -40,7 +41,7 @@ metadata:
   lint_verdict: PASS
   skill_graph_source_repo: "https://github.com/jacob-balslev/skill-graph"
   skill_graph_project: Skill Graph
-  skill_graph_canonical_skill: skills/code-engineering/agent-engineering/SKILL.md
+  skill_graph_canonical_skill: skills/software-architecture/agent-engineering/SKILL.md
   skill_graph_export_description_projection: anti_examples+boundary
   skill_graph_export_description_projection_truncated: "true"
 ---
@@ -433,7 +434,7 @@ After applying agent-engineering decisions, verify:
 <!-- skill-graph-context:start (generated — do not edit by hand) -->
 
 **Classification**
-- Subject: `code-engineering`
+- Subject: `software-architecture` (also: `ai-engineering`)
 - Deployment: `portable`
 - Domain: `ai-engineering/architecture`
 - Scope: Designing and evaluating production AI agent systems — multi-agent coordination patterns (orchestrator/worker, fan-out, consensus, sequential chain, evaluator/optimizer), the four pillars (architecture/lifecycle, task decomposition, coordination, production reliability), the six reliability requirements (observability, cost budgets, idempotency, failure recovery, safety caps, claim locks), the delegation decision framework with overhead crossover, and coordination-failure diagnosis (claim races, silent stalls, context contamination, runaway loops). Portable across any agent runtime; principle-grounded, not repo-bound. Excludes prompt wording (prompt-craft), per-call tool efficiency (tool-call-strategy), single-agent context-stack design (context-engineering), and runtime debugging of a deployed system (debugging).

@@ -6,7 +6,7 @@ allowed-tools: Read Grep
 metadata:
   schema_version: "8"
   version: "1.0.0"
-  subject: frontend-ui
+  subject: frontend-engineering
   deployment_target: portable
   scope: "Designing and reviewing React ref usage — refs (mutable handle that survives renders without triggering them) vs state (reactive value), useRef for DOM access and mutable instance values, ref callbacks for mount/unmount hooks, forwardRef (and the React 19 ref-as-prop change that retires it for new code), useImperativeHandle for a controlled imperative surface, ref forwarding through compound-component primitives (Radix Slot / Headless UI), and the rule that refs are an escape hatch (DOM access, non-React DOM libraries, focus, animation, measurement, imperative APIs) never a substitute for state. Portable across React codebases; principle-grounded, not repo-bound. Excludes broader hook discipline (hooks-patterns), component layering (component-architecture), state location and ownership (state-management), the use-client/use-server boundary (client-server-boundary), and form-state/validation (form-ux-architecture)."
   taxonomy_domain: engineering/frontend
@@ -37,7 +37,7 @@ metadata:
   lint_verdict: PASS
   skill_graph_source_repo: "https://github.com/jacob-balslev/skill-graph"
   skill_graph_project: Skill Graph
-  skill_graph_canonical_skill: skills/frontend-ui/ref-patterns/SKILL.md
+  skill_graph_canonical_skill: skills/frontend-engineering/ref-patterns/SKILL.md
   skill_graph_export_description: shortened for Agent Skills 1024-character description limit; canonical source keeps the full routing contract
   skill_graph_canonical_description_length: "1311"
   skill_graph_export_description_projection: anti_examples
@@ -318,7 +318,7 @@ After applying this skill, verify:
 <!-- skill-graph-context:start (generated — do not edit by hand) -->
 
 **Classification**
-- Subject: `frontend-ui`
+- Subject: `frontend-engineering`
 - Deployment: `portable`
 - Domain: `engineering/frontend`
 - Scope: Designing and reviewing React ref usage — refs (mutable handle that survives renders without triggering them) vs state (reactive value), useRef for DOM access and mutable instance values, ref callbacks for mount/unmount hooks, forwardRef (and the React 19 ref-as-prop change that retires it for new code), useImperativeHandle for a controlled imperative surface, ref forwarding through compound-component primitives (Radix Slot / Headless UI), and the rule that refs are an escape hatch (DOM access, non-React DOM libraries, focus, animation, measurement, imperative APIs) never a substitute for state. Portable across React codebases; principle-grounded, not repo-bound. Excludes broader hook discipline (hooks-patterns), component layering (component-architecture), state location and ownership (state-management), the use-client/use-server boundary (client-server-boundary), and form-state/validation (form-ux-architecture).

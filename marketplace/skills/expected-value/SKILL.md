@@ -7,7 +7,7 @@ allowed-tools: Read Grep
 metadata:
   schema_version: "8"
   version: "1.0.0"
-  subject: meta-methods
+  subject: reasoning-strategy
   deployment_target: portable
   taxonomy_domain: foundations/decision-quality
   owner: skill-graph-maintainer
@@ -41,7 +41,7 @@ metadata:
   drift_status: EXTERNAL_UNHASHED
   skill_graph_source_repo: "https://github.com/jacob-balslev/skill-graph"
   skill_graph_project: Skill Graph
-  skill_graph_canonical_skill: skills/meta-methods/expected-value/SKILL.md
+  skill_graph_canonical_skill: skills/reasoning-strategy/expected-value/SKILL.md
   skill_graph_export_description_projection: anti_examples
 ---
 
@@ -319,7 +319,7 @@ After applying this skill, verify:
 <!-- skill-graph-context:start (generated — do not edit by hand) -->
 
 **Classification**
-- Subject: `meta-methods`
+- Subject: `reasoning-strategy`
 - Deployment: `portable`
 - Domain: `foundations/decision-quality`
 

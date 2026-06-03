@@ -7,7 +7,7 @@ allowed-tools: Read Grep
 metadata:
   schema_version: "8"
   version: "1.0.0"
-  subject: meta-methods
+  subject: software-engineering-method
   deployment_target: portable
   taxonomy_domain: foundations/meta
   owner: skill-graph-maintainer
@@ -32,7 +32,7 @@ metadata:
   lint_verdict: PASS
   skill_graph_source_repo: "https://github.com/jacob-balslev/skill-graph"
   skill_graph_project: Skill Graph
-  skill_graph_canonical_skill: skills/meta-methods/problem-approach-router/SKILL.md
+  skill_graph_canonical_skill: skills/software-engineering-method/problem-approach-router/SKILL.md
   skill_graph_export_description_projection: anti_examples
 ---
 
@@ -79,7 +79,7 @@ When a problem matches more than one row simultaneously (e.g., it is both novel 
 <!-- skill-graph-context:start (generated — do not edit by hand) -->
 
 **Classification**
-- Subject: `meta-methods`
+- Subject: `software-engineering-method`
 - Deployment: `portable`
 - Domain: `foundations/meta`
 

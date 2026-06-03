@@ -7,7 +7,7 @@ allowed-tools: Read Grep
 metadata:
   schema_version: "8"
   version: "1.0.0"
-  subject: data-analytics
+  subject: quality-assurance
   deployment_target: portable
   scope: "Measuring, diagnosing, budgeting, and improving performance — latency, throughput, Core Web Vitals, database queries, caching, bundle size, concurrency, resource use, and regression prevention. Portable across any system with performance goals; principle-grounded, not repo-bound. Excludes telemetry schema design alone (observability-modeling), error-capture setup (error-tracking), and premature micro-optimization without a measured bottleneck."
   taxonomy_domain: quality/performance
@@ -32,7 +32,7 @@ metadata:
   lint_verdict: PASS
   skill_graph_source_repo: "https://github.com/jacob-balslev/skill-graph"
   skill_graph_project: Skill Graph
-  skill_graph_canonical_skill: skills/data-analytics/performance-engineering/SKILL.md
+  skill_graph_canonical_skill: skills/quality-assurance/performance-engineering/SKILL.md
   skill_graph_export_description_projection: anti_examples
 ---
 
@@ -86,7 +86,7 @@ This skill ships a comprehension-eval artifact at [`examples/evals/performance-e
 <!-- skill-graph-context:start (generated — do not edit by hand) -->
 
 **Classification**
-- Subject: `data-analytics`
+- Subject: `quality-assurance`
 - Deployment: `portable`
 - Domain: `quality/performance`
 - Scope: Measuring, diagnosing, budgeting, and improving performance — latency, throughput, Core Web Vitals, database queries, caching, bundle size, concurrency, resource use, and regression prevention. Portable across any system with performance goals; principle-grounded, not repo-bound. Excludes telemetry schema design alone (observability-modeling), error-capture setup (error-tracking), and premature micro-optimization without a measured bottleneck.

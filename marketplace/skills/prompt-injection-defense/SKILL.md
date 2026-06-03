@@ -4,7 +4,7 @@ description: "Use when reasoning about systems that pass untrusted content to a 
 license: MIT
 allowed-tools: Read Grep
 metadata:
-  subject: quality-assurance
+  subject: ai-engineering
   deployment_target: portable
   scope: "Reasoning about prompt-injection defense for systems that pass untrusted content to language models: data-vs-instruction collapse, direct and indirect injection, exfiltration, action-trigger attacks, untrusted content surfaces, and defense-in-depth through capability constraint, origin tracking, separated planning/execution, human approval, and least authority. Portable across LLM-integrated products and agent architectures. Excludes model jailbreaking/policy bypass, general API security, non-LLM input validation, and ordinary tool-call protocol design."
   taxonomy_domain: quality/security
@@ -22,7 +22,7 @@ metadata:
   misconception: "|"
   skill_graph_source_repo: "https://github.com/jacob-balslev/skill-graph"
   skill_graph_project: Skill Graph
-  skill_graph_canonical_skill: skills/quality-assurance/prompt-injection-defense/SKILL.md
+  skill_graph_canonical_skill: skills/ai-engineering/prompt-injection-defense/SKILL.md
   skill_graph_export_description_projection: boundary
   skill_graph_export_description_projection_truncated: "true"
 ---
@@ -152,7 +152,7 @@ After applying this skill, verify:
 <!-- skill-graph-context:start (generated — do not edit by hand) -->
 
 **Classification**
-- Subject: `quality-assurance`
+- Subject: `ai-engineering`
 - Deployment: `portable`
 - Domain: `quality/security`
 - Scope: Reasoning about prompt-injection defense for systems that pass untrusted content to language models: data-vs-instruction collapse, direct and indirect injection, exfiltration, action-trigger attacks, untrusted content surfaces, and defense-in-depth through capability constraint, origin tracking, separated planning/execution, human approval, and least authority. Portable across LLM-integrated products and agent architectures. Excludes model jailbreaking/policy bypass, general API security, non-LLM input validation, and ordinary tool-call protocol design.

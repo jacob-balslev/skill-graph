@@ -259,26 +259,26 @@ These four fields all group skills, but they answer different questions. Picking
 
 | Field | Answers the question | Shape | Primary consumer |
 |---|---|---|---|
-| `subject` | What flat browse shelf does this skill live on? | single string from the closed 9-value enum (see `SKILL_METADATA_PROTOCOL_field-reference.md § subject`) | human browse UI, filter dropdowns, routing first-pass discriminator |
-| `taxonomy_domain` | Where does this skill sit in a hierarchy for tree browsing within its `subject`? | optional slash-delimited path (e.g., `code-engineering/integrations/shopify`) | folder-tree UI, docs site navigation |
+| `subject` | What flat browse shelf does this skill live on? | single string from the closed 12-value enum (see `SKILL_METADATA_PROTOCOL_field-reference.md § subject`) | human browse UI, filter dropdowns, routing first-pass discriminator |
+| `taxonomy_domain` | Where does this skill sit in a hierarchy for tree browsing within its `subject`? | optional slash-delimited path (e.g., `backend-engineering/integrations/shopify`) | folder-tree UI, docs site navigation |
 | `project[]` / `repo[]` | Which specific project(s) or repo(s) is this skill anchored to? | array of `{handle, role}` objects | router project-fit filter, manifest `by_project` rollup |
 | `routing_bundles` | Which batch-activation group does this skill belong to? | flat array (e.g., `[quality, security]`) | router batch-load by group label |
 
 ### Three rules that prevent misuse
 
-1. **Never use `subject` for routing-bundle membership.** It's a browse shelf. If you find yourself writing "when the router sees `code-engineering` it should load all X" — you want `routing_bundles`, not `subject`.
+1. **Never use `subject` for routing-bundle membership.** It's a browse shelf. If you find yourself writing "when the router sees `backend-engineering` it should load all X" — you want `routing_bundles`, not `subject`.
 
 2. **Never use `project[]` for taxonomy.** It's a project-fit filter for `deployment_target: project` skills. If you find yourself declaring every project handle to build a grouping — you want `subject` or `taxonomy_domain`.
 
-3. **Never use `taxonomy_domain` to filter routing.** A hierarchy helps humans find skills. The router doesn't walk it. If you want the router to match `code-engineering/integrations/shopify` at query time, flatten it into `routing_bundles: [integrations]` or declare the project in `project[]`.
+3. **Never use `taxonomy_domain` to filter routing.** A hierarchy helps humans find skills. The router doesn't walk it. If you want the router to match `backend-engineering/integrations/shopify` at query time, flatten it into `routing_bundles: [integrations]` or declare the project in `project[]`.
 
 ### Worked example
 
 A Shopify skill in a project-anchored, large-library workspace:
 
 ```yaml
-subject: code-engineering                                    # "Which flat browse shelf?" (one of the 9-value enum)
-taxonomy_domain: code-engineering/integrations/shopify       # "Where in a tree?" (optional; complements subject for hierarchical browsing)
+subject: backend-engineering                                    # "Which flat browse shelf?" (one of the 12-value enum)
+taxonomy_domain: backend-engineering/integrations/shopify       # "Where in a tree?" (optional; complements subject for hierarchical browsing)
 deployment_target: project                                   # "Portable or project-specific?"
 project:
   - handle: sales-hub                                        # "Which project?"

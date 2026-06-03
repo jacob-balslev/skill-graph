@@ -7,7 +7,7 @@ allowed-tools: Read Grep Bash
 metadata:
   schema_version: "8"
   version: "1.1.0"
-  subject: code-engineering
+  subject: software-engineering-method
   deployment_target: portable
   taxonomy_domain: engineering/methodology
   owner: skill-graph-maintainer
@@ -31,7 +31,7 @@ metadata:
   lint_verdict: PASS
   skill_graph_source_repo: "https://github.com/jacob-balslev/skill-graph"
   skill_graph_project: Skill Graph
-  skill_graph_canonical_skill: skills/code-engineering/spec-driven-development/SKILL.md
+  skill_graph_canonical_skill: skills/software-engineering-method/spec-driven-development/SKILL.md
 ---
 # Spec Driven Development (SDD)
 
@@ -173,7 +173,7 @@ After applying this skill, verify:
 <!-- skill-graph-context:start (generated — do not edit by hand) -->
 
 **Classification**
-- Subject: `code-engineering`
+- Subject: `software-engineering-method`
 - Deployment: `portable`
 - Domain: `engineering/methodology`
 

@@ -6,7 +6,7 @@ allowed-tools: Read Grep
 metadata:
   schema_version: "8"
   version: "1.0.0"
-  subject: code-engineering
+  subject: data-engineering
   deployment_target: portable
   scope: "The foundational theory beneath data modeling — Codd's relational model (1970) and its algebra, the normal forms (1NF–5NF, BCNF) as a constraint-elimination sequence, functional dependencies and the closure algorithm, Chen's entity-relationship model (1976), the principled case for and against denormalization, the relational-vs-document tradeoff at the conceptual level, and the immutable-data-model alternative (event sourcing, append-only tables) with its grounding literature. Portable across any data-modeling effort; principle-grounded, not repo-bound. Excludes practical persistence design and method (data-modeling), applying changes to an existing schema (schema-evolution), choosing indexes (indexing-strategy), and the conceptual-modeling layer above the data model (conceptual-modeling)."
   taxonomy_domain: engineering/data
@@ -37,7 +37,7 @@ metadata:
   lint_verdict: PASS
   skill_graph_source_repo: "https://github.com/jacob-balslev/skill-graph"
   skill_graph_project: Skill Graph
-  skill_graph_canonical_skill: skills/code-engineering/data-modeling-fundamentals/SKILL.md
+  skill_graph_canonical_skill: skills/data-engineering/data-modeling-fundamentals/SKILL.md
 ---
 
 # Data Modeling Fundamentals
@@ -150,7 +150,7 @@ After applying this skill, verify:
 <!-- skill-graph-context:start (generated — do not edit by hand) -->
 
 **Classification**
-- Subject: `code-engineering`
+- Subject: `data-engineering`
 - Deployment: `portable`
 - Domain: `engineering/data`
 - Scope: The foundational theory beneath data modeling — Codd's relational model (1970) and its algebra, the normal forms (1NF–5NF, BCNF) as a constraint-elimination sequence, functional dependencies and the closure algorithm, Chen's entity-relationship model (1976), the principled case for and against denormalization, the relational-vs-document tradeoff at the conceptual level, and the immutable-data-model alternative (event sourcing, append-only tables) with its grounding literature. Portable across any data-modeling effort; principle-grounded, not repo-bound. Excludes practical persistence design and method (data-modeling), applying changes to an existing schema (schema-evolution), choosing indexes (indexing-strategy), and the conceptual-modeling layer above the data model (conceptual-modeling).

@@ -5,7 +5,7 @@ license: CC-BY-4.0
 metadata:
   schema_version: "8"
   version: "1.0.0"
-  subject: design-craft
+  subject: design
   deployment_target: portable
   scope: "Observing real users attempting tasks on a prototype or live product to surface usability issues — moderated or unmoderated, think-aloud protocol, task scenarios, severity rating, and sample sizing per Nielsen's heuristics. Portable across any product under evaluation; principle-grounded, not repo-bound. Excludes automated test suites, code coverage, CI pipelines, and unit/integration testing (testing-strategy) — this is human-behavior observation, not engineering verification."
   owner: skill-graph-maintainer
@@ -28,7 +28,7 @@ metadata:
   lint_verdict: PASS
   skill_graph_source_repo: "https://github.com/jacob-balslev/skill-graph"
   skill_graph_project: Skill Graph
-  skill_graph_canonical_skill: skills/design-craft/usability-testing/SKILL.md
+  skill_graph_canonical_skill: skills/design/usability-testing/SKILL.md
   skill_graph_export_description_projection: anti_examples
 ---
 
@@ -69,7 +69,7 @@ The practice is opinionated about moderator behavior. The moderator's job is to 
 <!-- skill-graph-context:start (generated — do not edit by hand) -->
 
 **Classification**
-- Subject: `design-craft`
+- Subject: `design`
 - Deployment: `portable`
 - Scope: Observing real users attempting tasks on a prototype or live product to surface usability issues — moderated or unmoderated, think-aloud protocol, task scenarios, severity rating, and sample sizing per Nielsen's heuristics. Portable across any product under evaluation; principle-grounded, not repo-bound. Excludes automated test suites, code coverage, CI pipelines, and unit/integration testing (testing-strategy) — this is human-behavior observation, not engineering verification.
 

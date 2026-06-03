@@ -7,7 +7,7 @@ allowed-tools: Read Grep Bash
 metadata:
   schema_version: "7"
   version: "1.1.0"
-  subject: product-domain
+  subject: backend-engineering
   deployment_target: portable
   taxonomy_domain: engineering/realtime/browser-freshness
   owner: skill-graph-maintainer
@@ -38,7 +38,7 @@ metadata:
   lint_verdict: PASS
   skill_graph_source_repo: "https://github.com/jacob-balslev/skill-graph"
   skill_graph_project: Skill Graph
-  skill_graph_canonical_skill: skills/product-domain/real-time-updates/SKILL.md
+  skill_graph_canonical_skill: skills/backend-engineering/real-time-updates/SKILL.md
   skill_graph_export_description_projection: anti_examples+boundary
   skill_graph_export_description_projection_truncated: "true"
 ---
@@ -311,7 +311,7 @@ After applying this skill, verify:
 <!-- skill-graph-context:start (generated — do not edit by hand) -->
 
 **Classification**
-- Subject: `product-domain`
+- Subject: `backend-engineering`
 - Deployment: `portable`
 - Domain: `engineering/realtime/browser-freshness`
 

@@ -5,7 +5,7 @@ license: MIT
 compatibility: Portable keyword research and marketplace keyword-mapping guidance. Platform limits and field names can drift; verify against current marketplace docs before high-stakes listing work.
 allowed-tools: Read Grep Bash
 metadata:
-  subject: product-domain
+  subject: knowledge-organization
   deployment_target: portable
   scope: "Keyword research, search-intent mapping, topical clustering, product/listing target assignment, marketplace field translation, cannibalization detection, and rank-tracking cadence for public ecommerce, marketplace, SaaS, and content surfaces. Portable across projects, but external platform constraints drift and must be verified against current official docs before high-stakes listing or SEO work. Excludes SEO implementation and schema strategy (seo-strategy), final prose writing (writing-humanizer), and navigation/page hierarchy (information-architecture)."
   taxonomy_domain: product/search
@@ -23,7 +23,7 @@ metadata:
   misconception: "The common mistake is treating keywords as magic words to repeat. Search systems reward relevance, clarity, and satisfaction signals; repeated or irrelevant terms can waste fields, confuse readers, and make pages compete with each other."
   skill_graph_source_repo: "https://github.com/jacob-balslev/skill-graph"
   skill_graph_project: Skill Graph
-  skill_graph_canonical_skill: skills/product-domain/keywords/SKILL.md
+  skill_graph_canonical_skill: skills/knowledge-organization/keywords/SKILL.md
   skill_graph_export_description_projection: anti_examples+boundary
   skill_graph_export_description_projection_truncated: "true"
 ---
@@ -254,7 +254,7 @@ These are grounding points, not permanent invariants. Re-check them when platfor
 <!-- skill-graph-context:start (generated — do not edit by hand) -->
 
 **Classification**
-- Subject: `product-domain`
+- Subject: `knowledge-organization`
 - Deployment: `portable`
 - Domain: `product/search`
 - Scope: Keyword research, search-intent mapping, topical clustering, product/listing target assignment, marketplace field translation, cannibalization detection, and rank-tracking cadence for public ecommerce, marketplace, SaaS, and content surfaces. Portable across projects, but external platform constraints drift and must be verified against current official docs before high-stakes listing or SEO work. Excludes SEO implementation and schema strategy (seo-strategy), final prose writing (writing-humanizer), and navigation/page hierarchy (information-architecture).

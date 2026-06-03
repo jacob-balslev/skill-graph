@@ -621,14 +621,14 @@ assert(
 {
   const out = renderSkillGraphContext({
     subject: 'quality-assurance',
-    subjects: ['quality-assurance', 'frontend-ui'],
+    subjects: ['quality-assurance', 'frontend-engineering'],
     deployment_target: 'portable',
     taxonomy_domain: 'quality/accessibility',
     scope: 'Teaches accessible interaction patterns.',
   });
   assert(out.startsWith('## Skill Graph context'), 'renderSkillGraphContext: starts with heading');
   assert(out.includes('**Classification**'), 'renderSkillGraphContext: has Classification block');
-  assert(out.includes('- Subject: `quality-assurance` (also: `frontend-ui`)'), `renderSkillGraphContext: subject + secondary; got\n${out}`);
+  assert(out.includes('- Subject: `quality-assurance` (also: `frontend-engineering`)'), `renderSkillGraphContext: subject + secondary; got\n${out}`);
   assert(out.includes('- Deployment: `portable`'), 'renderSkillGraphContext: deployment rendered');
   assert(out.includes('- Domain: `quality/accessibility`'), 'renderSkillGraphContext: domain rendered');
   assert(out.includes('- Scope: Teaches accessible interaction patterns.'), 'renderSkillGraphContext: scope rendered');
@@ -637,7 +637,7 @@ assert(
 // renderSkillGraphContext — relations render with correct labels
 {
   const out = renderSkillGraphContext({
-    subject: 'code-engineering',
+    subject: 'backend-engineering',
     relations: {
       depends_on: ['testing-strategy'],
       verify_with: [{ skill: 'debugging' }],
@@ -659,7 +659,7 @@ assert(
 // renderSkillGraphContext — Understanding fields render in the Concept block
 {
   const out = renderSkillGraphContext({
-    subject: 'meta-methods',
+    subject: 'reasoning-strategy',
     mental_model: 'A skill is a typed knowledge object.',
     purpose: 'Make relevance explicit.',
     boundary: 'Not a runtime.',
@@ -709,7 +709,7 @@ assert(
 // renderSkillGraphContext — output contains NO markdown links (would create dangling-link findings)
 {
   const out = renderSkillGraphContext({
-    subject: 'code-engineering',
+    subject: 'backend-engineering',
     scope: 'x',
     relations: { related: ['a', 'b'], depends_on: ['c'] },
     keywords: ['k1', 'k2'],
@@ -720,7 +720,7 @@ assert(
 // renderSkillGraphContext — deterministic (pure function)
 {
   const fm = {
-    subject: 'data-analytics',
+    subject: 'data-engineering',
     deployment_target: 'portable',
     scope: 'one\ntwo  three',
     relations: { related: ['x'] },

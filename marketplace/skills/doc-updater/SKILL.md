@@ -2,7 +2,7 @@
 name: doc-updater
 description: "Enforces the documentation-sync discipline: every code or behavior change ships its documentation in the SAME commit, never after. Provides the five-step workflow — diff the change, route each changed file to the doc that OWNS that behavior (document by ownership, not convenience), update each owning doc, verify the update actually landed, and report what was changed — plus the doc-type-purity and stale-reference gates that keep a docs corpus from drifting as code moves. Use at the pre-commit step of any task that changes code, when a change touches several docs, when renaming or deleting something that is referenced elsewhere, or whenever you are unsure which doc owns a change. Do NOT use for how to WRITE good documentation prose or pick a doc's Diátaxis type (that is a documentation-authoring skill), for choosing clear names (use `naming-conventions`), or for the broad cross-domain quality catalog (use `best-practice`). Do NOT use for choosing clear, correct, self-documenting names (use naming-conventions)."
 metadata:
-  subject: knowledge-organization
+  subject: software-engineering-method
   deployment_target: portable
   scope: "Portable across any project, repo, or agent runtime that keeps documentation alongside code. Teaches the discipline of keeping docs synchronized with the code they describe: documentation is part of the change, not optional cleanup afterward, so doc edits ship in the same commit as the code that changed the documented behavior. The five-step workflow (diff → route-by-ownership → update → verify → report), the doc-type-purity gate, and the rename/delete stale-reference sweep are codebase-agnostic; a project supplies only its own routing table of which doc owns which behavior."
   triggers: "[\"doc-updater-skill\",\"doc-sync\"]"
@@ -15,7 +15,7 @@ metadata:
   misconception: "The common misconception is that documentation is a finishing step you do 'after the task is done.' Deferred docs are not done docs — they are a drift window that usually never closes. Docs are part of the change; a commit that updates behavior without its docs is partial, not complete."
   skill_graph_source_repo: "https://github.com/jacob-balslev/skill-graph"
   skill_graph_project: Skill Graph
-  skill_graph_canonical_skill: skills/knowledge-organization/doc-updater/SKILL.md
+  skill_graph_canonical_skill: skills/software-engineering-method/doc-updater/SKILL.md
   skill_graph_export_description_projection: boundary
 ---
 
@@ -197,7 +197,7 @@ After applying this skill, verify:
 <!-- skill-graph-context:start (generated — do not edit by hand) -->
 
 **Classification**
-- Subject: `knowledge-organization`
+- Subject: `software-engineering-method`
 - Deployment: `portable`
 - Scope: Portable across any project, repo, or agent runtime that keeps documentation alongside code. Teaches the discipline of keeping docs synchronized with the code they describe: documentation is part of the change, not optional cleanup afterward, so doc edits ship in the same commit as the code that changed the documented behavior. The five-step workflow (diff → route-by-ownership → update → verify → report), the doc-type-purity gate, and the rename/delete stale-reference sweep are codebase-agnostic; a project supplies only its own routing table of which doc owns which behavior.
 

@@ -53,9 +53,9 @@ Hierarchical taxonomy sub-path using slash-delimited segments (e.g., `ecommerce/
 
 ### `subject` *(required)*
 
-**Type:** `agent-ops` | `code-engineering` | `frontend-ui` | `design-craft` | `data-analytics` | `quality-assurance` | `meta-methods` | `knowledge-organization` | `product-domain`
+**Type:** `backend-engineering` | `frontend-engineering` | `software-architecture` | `data-engineering` | `agent-ops` | `ai-engineering` | `quality-assurance` | `design` | `reasoning-strategy` | `software-engineering-method` | `knowledge-organization` | `product-domain`
 
-Primary classification — what the skill teaches. Closed 9-value enum. Balance rule: each subject must hold 5-25 skills. <5 = fold or recruit; >25 = subdivide via `taxonomy_domain` slash-path. See docs/adr/0017-five-axis-classification-model.md.
+Primary classification — the competency the skill teaches ("what does this teach you to do?"). Closed 12-value enum in 3 navigational bands: software & web engineering (backend-engineering, frontend-engineering, software-architecture, data-engineering); AI-agentic (agent-ops, ai-engineering); cross-cutting craft (quality-assurance, design, reasoning-strategy, software-engineering-method, knowledge-organization, product-domain). Balance rule: each subject must hold 5-25 skills. <5 = fold or recruit; >25 = subdivide via `taxonomy_domain` slash-path. See docs/adr/0020-twelve-shelf-competency-reaxis.md (supersedes the 9-value model in docs/adr/0017-five-axis-classification-model.md).
 
 **Full reference:** [`skill-metadata-protocol/field-reference.md#subject`](field-reference.md#subject)
 
@@ -65,7 +65,7 @@ Primary classification — what the skill teaches. Closed 9-value enum. Balance 
 
 **Type:** array of string
 
-Ordered subject array for polyhierarchy. First entry is the primary and must match `subject`; second entry (optional) is a secondary subject for skills that genuinely span shelves (e.g. `webhook-integration` is primarily `code-engineering` and secondarily `quality-assurance`). Max 2 entries to keep polyhierarchy the exception, not the default. Drawn from the same closed 9-enum as `subject`.
+Ordered subject array for polyhierarchy. First entry is the primary and must match `subject`; second entry (optional) is a secondary subject for skills that genuinely span shelves (e.g. `webhook-integration` is primarily `backend-engineering` and secondarily `product-domain`; `information-architecture` is primarily `design` and secondarily `knowledge-organization`). Max 2 entries to keep polyhierarchy the exception, not the default. Drawn from the same closed 12-enum as `subject`.
 
 **Full reference:** [`skill-metadata-protocol/field-reference.md#subjects`](field-reference.md#subjects)
 

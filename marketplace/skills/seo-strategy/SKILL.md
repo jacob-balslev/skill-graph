@@ -8,6 +8,7 @@ metadata:
   schema_version: "8"
   version: "1.0.0"
   subject: quality-assurance
+  subjects: "[\"quality-assurance\",\"product-domain\"]"
   deployment_target: portable
   taxonomy_domain: quality/display
   owner: skill-graph-maintainer
@@ -285,7 +286,7 @@ After applying this skill, verify:
 <!-- skill-graph-context:start (generated — do not edit by hand) -->
 
 **Classification**
-- Subject: `quality-assurance`
+- Subject: `quality-assurance` (also: `product-domain`)
 - Deployment: `portable`
 - Domain: `quality/display`
 

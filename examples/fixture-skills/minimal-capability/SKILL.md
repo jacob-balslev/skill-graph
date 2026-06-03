@@ -1,7 +1,7 @@
 ---
 name: minimal-capability
 description: "Use as the smallest v8-compat capability fixture for skill-graph package tests. Activate this skill when verifying that lint, manifest generation, and routing accept the bare-minimum required frontmatter. Do NOT use as a production skill (use a real capability skill from the canonical library)."
-subject: code-engineering
+subject: backend-engineering
 deployment_target: portable
 scope: "Minimal v8 schema fixture for validating lint, manifest generation, routing, and standalone audit smoke tests. Out: production skill guidance."
 stability: experimental

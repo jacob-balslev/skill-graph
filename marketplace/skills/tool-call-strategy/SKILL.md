@@ -7,7 +7,7 @@ allowed-tools: Read Grep Bash Edit
 metadata:
   schema_version: "8"
   version: "1.1.0"
-  subject: code-engineering
+  subject: ai-engineering
   deployment_target: portable
   taxonomy_domain: ai-engineering/tool-use
   owner: skill-graph-maintainer
@@ -39,7 +39,7 @@ metadata:
   lint_verdict: PASS
   skill_graph_source_repo: "https://github.com/jacob-balslev/skill-graph"
   skill_graph_project: Skill Graph
-  skill_graph_canonical_skill: skills/code-engineering/tool-call-strategy/SKILL.md
+  skill_graph_canonical_skill: skills/ai-engineering/tool-call-strategy/SKILL.md
   skill_graph_export_description_projection: anti_examples+boundary
   skill_graph_export_description_projection_truncated: "true"
 ---
@@ -343,7 +343,7 @@ After applying this skill, verify:
 <!-- skill-graph-context:start (generated — do not edit by hand) -->
 
 **Classification**
-- Subject: `code-engineering`
+- Subject: `ai-engineering`
 - Deployment: `portable`
 - Domain: `ai-engineering/tool-use`
 

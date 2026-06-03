@@ -7,7 +7,7 @@ allowed-tools: Read Grep Bash Edit
 metadata:
   schema_version: "8"
   version: "1.1.0"
-  subject: code-engineering
+  subject: quality-assurance
   deployment_target: portable
   scope: "Designing and extending an application exception-reporting pipeline — error-boundary placement, tracker-SDK wrappers, sanitized reporting calls, environment gating, PII-free user context, breadcrumbs, and per-layer reporting verification across component, route, global, and manual capture surfaces (central reportError/reportMessage patterns). Portable across any application stack; principle-grounded, not repo-bound. Excludes the user-facing error UX (a11y and interaction skills), chasing a single captured error (debugging), and broad privacy/retention policy (owasp-security)."
   taxonomy_domain: engineering/observability
@@ -33,7 +33,7 @@ metadata:
   lint_verdict: PASS
   skill_graph_source_repo: "https://github.com/jacob-balslev/skill-graph"
   skill_graph_project: Skill Graph
-  skill_graph_canonical_skill: skills/code-engineering/error-tracking/SKILL.md
+  skill_graph_canonical_skill: skills/quality-assurance/error-tracking/SKILL.md
   skill_graph_export_description_projection: anti_examples+boundary
   skill_graph_export_description_projection_truncated: "true"
 ---
@@ -291,7 +291,7 @@ This public skill does not bundle a runnable eval artifact. The Skill Graph tool
 <!-- skill-graph-context:start (generated — do not edit by hand) -->
 
 **Classification**
-- Subject: `code-engineering`
+- Subject: `quality-assurance`
 - Deployment: `portable`
 - Domain: `engineering/observability`
 - Scope: Designing and extending an application exception-reporting pipeline — error-boundary placement, tracker-SDK wrappers, sanitized reporting calls, environment gating, PII-free user context, breadcrumbs, and per-layer reporting verification across component, route, global, and manual capture surfaces (central reportError/reportMessage patterns). Portable across any application stack; principle-grounded, not repo-bound. Excludes the user-facing error UX (a11y and interaction skills), chasing a single captured error (debugging), and broad privacy/retention policy (owasp-security).

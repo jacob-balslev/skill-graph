@@ -7,7 +7,7 @@ allowed-tools: Read Grep
 metadata:
   schema_version: "8"
   version: "1.0.0"
-  subject: agent-ops
+  subject: ai-engineering
   deployment_target: portable
   scope: "Extracting durable project knowledge from code, docs, issues, incidents, reports, screenshots, or conversations into reusable context — skills, ADRs, glossaries, context docs, or memory entries. Portable across any project accumulating knowledge; principle-grounded, not repo-bound. Excludes writing a new skill contract (skill-scaffold), maintaining library tooling (skill-infrastructure), and generic documentation polish (documentation)."
   taxonomy_domain: agent/knowledge
@@ -33,7 +33,7 @@ metadata:
   lint_verdict: PASS
   skill_graph_source_repo: "https://github.com/jacob-balslev/skill-graph"
   skill_graph_project: Skill Graph
-  skill_graph_canonical_skill: skills/agent-ops/project-knowledge-extraction/SKILL.md
+  skill_graph_canonical_skill: skills/ai-engineering/project-knowledge-extraction/SKILL.md
   skill_graph_export_description_projection: anti_examples
 ---
 
@@ -83,7 +83,7 @@ Durable knowledge must be evidence-backed. If it cannot be tied to code, docs, d
 <!-- skill-graph-context:start (generated — do not edit by hand) -->
 
 **Classification**
-- Subject: `agent-ops`
+- Subject: `ai-engineering`
 - Deployment: `portable`
 - Domain: `agent/knowledge`
 - Scope: Extracting durable project knowledge from code, docs, issues, incidents, reports, screenshots, or conversations into reusable context — skills, ADRs, glossaries, context docs, or memory entries. Portable across any project accumulating knowledge; principle-grounded, not repo-bound. Excludes writing a new skill contract (skill-scaffold), maintaining library tooling (skill-infrastructure), and generic documentation polish (documentation).

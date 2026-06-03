@@ -8,7 +8,7 @@ metadata:
   eval_last_run: "{\"at\":\"2026-05-30T15:16:09.302Z\",\"status\":\"fail\",\"runner\":\"node skill-graph/lib/audit/evaluate-skill.js --mode application\"}"
   schema_version: "8"
   version: "1.0.0"
-  subject: meta-methods
+  subject: reasoning-strategy
   deployment_target: portable
   scope: "OKR goal-setting for strategy execution: define qualitative Objectives, 2-5 measurable outcome Key Results, alignment checks, scoring, review cadence, and learning loops. Excludes upstream strategy formulation, backlog prioritization, KPI dashboard design, compensation evaluation, and task-list management."
   taxonomy_domain: foundations/strategy-execution
@@ -43,7 +43,7 @@ metadata:
   drift_status: EXTERNAL_UNHASHED
   skill_graph_source_repo: "https://github.com/jacob-balslev/skill-graph"
   skill_graph_project: Skill Graph
-  skill_graph_canonical_skill: skills/meta-methods/okrs/SKILL.md
+  skill_graph_canonical_skill: skills/reasoning-strategy/okrs/SKILL.md
   skill_graph_export_description_projection: anti_examples+boundary
 ---
 
@@ -280,7 +280,7 @@ Before finalizing OKRs, verify:
 <!-- skill-graph-context:start (generated — do not edit by hand) -->
 
 **Classification**
-- Subject: `meta-methods`
+- Subject: `reasoning-strategy`
 - Deployment: `portable`
 - Domain: `foundations/strategy-execution`
 - Scope: OKR goal-setting for strategy execution: define qualitative Objectives, 2-5 measurable outcome Key Results, alignment checks, scoring, review cadence, and learning loops. Excludes upstream strategy formulation, backlog prioritization, KPI dashboard design, compensation evaluation, and task-list management.

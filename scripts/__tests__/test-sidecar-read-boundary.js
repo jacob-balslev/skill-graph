@@ -77,7 +77,7 @@ function synthSkill(name, structuralVerdict) {
   return {
     name,
     description: `alpha routing fixture ${name}`,
-    subject: 'code-engineering',
+    subject: 'backend-engineering',
     deployment_target: 'portable',
     // Manifest entries nest activation signals under `activation` (what scoreSkill reads).
     activation: { triggers: ['alpha'], keywords: ['alpha'] },

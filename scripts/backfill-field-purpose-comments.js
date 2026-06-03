@@ -6,7 +6,7 @@
  * frontmatter field in SKILL.md files, per the convention established in
  * skill-graph/skill-metadata-protocol/SKILL_METADATA_PROTOCOL.md § "Inline field comments — the
  * authoring convention" (commit d9fe52f) and demonstrated on
- * skills/meta-methods/first-principles-thinking/SKILL.md (commit d6c13e4).
+ * skills/reasoning-strategy/first-principles-thinking/SKILL.md (commit d6c13e4).
  *
  * What it does
  * ------------
@@ -43,11 +43,11 @@
  * -----
  *   # Dry-run on one file (prints diff to stdout, no write):
  *   node scripts/backfill-field-purpose-comments.js \
- *     ../skills/skills/meta-methods/inversion/SKILL.md --dry-run
+ *     ../skills/skills/reasoning-strategy/inversion/SKILL.md --dry-run
  *
  *   # Apply to one file:
  *   node scripts/backfill-field-purpose-comments.js \
- *     ../skills/skills/meta-methods/inversion/SKILL.md
+ *     ../skills/skills/reasoning-strategy/inversion/SKILL.md
  *
  *   # Dry-run on multiple files (one diff per file):
  *   node scripts/backfill-field-purpose-comments.js \
@@ -71,7 +71,7 @@ const path = require('path');
 //
 // Source of truth for the content of these blocks: the canonical specimen at
 // skill-graph/examples/skill-metadata-template.md (commit 7faadf9) and the
-// pilot at skills/meta-methods/first-principles-thinking/SKILL.md
+// pilot at skills/reasoning-strategy/first-principles-thinking/SKILL.md
 // (commit d6c13e4). When `skill-metadata-protocol/field-reference.md` and these blocks disagree,
 // the reference doc wins and these blocks get corrected (per the convention
 // established in d9fe52f).
@@ -86,8 +86,8 @@ const FIELD_COMMENTS = {
   ],
   subject: [
     '# subject: primary browse shelf — what the skill teaches. One of nine closed values:',
-    '# code-engineering / quality-assurance / frontend-ui / design-craft / agent-ops /',
-    '# product-domain / knowledge-organization / meta-methods / data-analytics.',
+    '# backend-engineering / frontend-engineering / software-architecture / data-engineering / agent-ops / ai-engineering /',
+    '# quality-assurance / design / reasoning-strategy / software-engineering-method / knowledge-organization / product-domain.',
   ],
   deployment_target: [
     '# deployment_target: where this skill applies. One of two closed values:',

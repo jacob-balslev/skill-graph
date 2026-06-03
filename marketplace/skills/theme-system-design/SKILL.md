@@ -5,7 +5,7 @@ license: CC-BY-4.0
 metadata:
   schema_version: "8"
   version: "1.0.0"
-  subject: frontend-ui
+  subject: frontend-engineering
   deployment_target: portable
   owner: skill-graph-maintainer
   freshness: "2026-05-12"
@@ -27,7 +27,7 @@ metadata:
   lint_verdict: PASS
   skill_graph_source_repo: "https://github.com/jacob-balslev/skill-graph"
   skill_graph_project: Skill Graph
-  skill_graph_canonical_skill: skills/frontend-ui/theme-system-design/SKILL.md
+  skill_graph_canonical_skill: skills/frontend-engineering/theme-system-design/SKILL.md
   skill_graph_export_description_projection: anti_examples
 ---
 
@@ -68,7 +68,7 @@ Semantic names beat descriptive names. color.background.surface tells a componen
 <!-- skill-graph-context:start (generated — do not edit by hand) -->
 
 **Classification**
-- Subject: `frontend-ui`
+- Subject: `frontend-engineering`
 - Deployment: `portable`
 
 **When to use**

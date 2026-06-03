@@ -5,7 +5,7 @@ license: CC-BY-4.0
 metadata:
   schema_version: "8"
   version: "1.0.0"
-  subject: design-craft
+  subject: design
   deployment_target: portable
   scope: "Designing a color system — palette construction, semantic color tokens, WCAG contrast ratios, perceptual uniformity in OKLCH/LCH, and light/dark mode parity. Portable across any design system; principle-grounded, not repo-bound. Excludes single brand-color picks, runtime theme-switching mechanics (dark-mode-implementation), and non-color design tokens."
   owner: skill-graph-maintainer
@@ -28,7 +28,7 @@ metadata:
   lint_verdict: PASS
   skill_graph_source_repo: "https://github.com/jacob-balslev/skill-graph"
   skill_graph_project: Skill Graph
-  skill_graph_canonical_skill: skills/design-craft/color-system-design/SKILL.md
+  skill_graph_canonical_skill: skills/design/color-system-design/SKILL.md
   skill_graph_export_description_projection: anti_examples+boundary
 ---
 
@@ -69,7 +69,7 @@ Semantic tokens are worth the indirection because color meanings outlive specifi
 <!-- skill-graph-context:start (generated — do not edit by hand) -->
 
 **Classification**
-- Subject: `design-craft`
+- Subject: `design`
 - Deployment: `portable`
 - Scope: Designing a color system — palette construction, semantic color tokens, WCAG contrast ratios, perceptual uniformity in OKLCH/LCH, and light/dark mode parity. Portable across any design system; principle-grounded, not repo-bound. Excludes single brand-color picks, runtime theme-switching mechanics (dark-mode-implementation), and non-color design tokens.
 

@@ -5,7 +5,7 @@ license: MIT
 compatibility: "Markdown, strategy memos, planning workshops, business plans, product strategy, nonprofit and project planning"
 allowed-tools: Read Grep
 metadata:
-  subject: meta-methods
+  subject: reasoning-strategy
   deployment_target: portable
   scope: "SWOT and TOWS strategy option generation for organizations, products, programs, and projects: separate internal strengths/weaknesses from external opportunities/threats, attach evidence and uncertainty, convert the four-quadrant inventory into SO/WO/ST/WT strategic options, and identify follow-on validation. Excludes Five Forces industry-structure diagnosis, Seven Powers moat-source classification, Blue Ocean value innovation, Playing to Win strategy-cascade design, OKR execution tracking, and quantified expected-value comparison."
   taxonomy_domain: foundations/strategy
@@ -23,7 +23,7 @@ metadata:
   misconception: "The common mistake is treating SWOT as the strategy. A SWOT table is only the inventory; strategic work begins when the strongest evidence-backed factors are crossed into options, tested for coherence, and handed to a method that chooses, validates, or executes them."
   skill_graph_source_repo: "https://github.com/jacob-balslev/skill-graph"
   skill_graph_project: Skill Graph
-  skill_graph_canonical_skill: skills/meta-methods/swot-tows/SKILL.md
+  skill_graph_canonical_skill: skills/reasoning-strategy/swot-tows/SKILL.md
   skill_graph_export_description_projection: anti_examples+boundary
   skill_graph_export_description_projection_truncated: "true"
 ---
@@ -217,7 +217,7 @@ After applying this skill, verify:
 <!-- skill-graph-context:start (generated — do not edit by hand) -->
 
 **Classification**
-- Subject: `meta-methods`
+- Subject: `reasoning-strategy`
 - Deployment: `portable`
 - Domain: `foundations/strategy`
 - Scope: SWOT and TOWS strategy option generation for organizations, products, programs, and projects: separate internal strengths/weaknesses from external opportunities/threats, attach evidence and uncertainty, convert the four-quadrant inventory into SO/WO/ST/WT strategic options, and identify follow-on validation. Excludes Five Forces industry-structure diagnosis, Seven Powers moat-source classification, Blue Ocean value innovation, Playing to Win strategy-cascade design, OKR execution tracking, and quantified expected-value comparison.

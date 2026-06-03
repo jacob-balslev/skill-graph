@@ -7,7 +7,7 @@ allowed-tools: Read Grep
 metadata:
   schema_version: "8"
   version: "1.0.0"
-  subject: meta-methods
+  subject: reasoning-strategy
   deployment_target: portable
   scope: "Principled negotiation and BATNA methodology for preparing and conducting negotiations: map parties and issues, separate relationship from substance, convert positions into interests, create option packages, use objective criteria, compare offers to BATNA/reservation value/ZOPA, and choose accept, improve, pause, or walk away. Excludes persuasion copy, legal advice, crisis/hostage negotiation, broad business strategy, and one-party decision scoring without counterparties."
   taxonomy_domain: foundations/negotiation
@@ -44,7 +44,7 @@ metadata:
   eval_failed_ids: "[]"
   skill_graph_source_repo: "https://github.com/jacob-balslev/skill-graph"
   skill_graph_project: Skill Graph
-  skill_graph_canonical_skill: skills/meta-methods/principled-negotiation/SKILL.md
+  skill_graph_canonical_skill: skills/reasoning-strategy/principled-negotiation/SKILL.md
   skill_graph_export_description_projection: anti_examples+boundary
   skill_graph_export_description_projection_truncated: "true"
 ---
@@ -297,7 +297,7 @@ Before finalizing a negotiation answer, check:
 <!-- skill-graph-context:start (generated — do not edit by hand) -->
 
 **Classification**
-- Subject: `meta-methods`
+- Subject: `reasoning-strategy`
 - Deployment: `portable`
 - Domain: `foundations/negotiation`
 - Scope: Principled negotiation and BATNA methodology for preparing and conducting negotiations: map parties and issues, separate relationship from substance, convert positions into interests, create option packages, use objective criteria, compare offers to BATNA/reservation value/ZOPA, and choose accept, improve, pause, or walk away. Excludes persuasion copy, legal advice, crisis/hostage negotiation, broad business strategy, and one-party decision scoring without counterparties.

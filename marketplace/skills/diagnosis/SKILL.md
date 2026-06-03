@@ -7,7 +7,7 @@ allowed-tools: Read Grep
 metadata:
   schema_version: "8"
   version: "1.1.0"
-  subject: code-engineering
+  subject: software-engineering-method
   deployment_target: portable
   taxonomy_domain: engineering/debugging
   owner: skill-graph-maintainer
@@ -32,7 +32,7 @@ metadata:
   lint_verdict: PASS
   skill_graph_source_repo: "https://github.com/jacob-balslev/skill-graph"
   skill_graph_project: Skill Graph
-  skill_graph_canonical_skill: skills/code-engineering/diagnosis/SKILL.md
+  skill_graph_canonical_skill: skills/software-engineering-method/diagnosis/SKILL.md
   skill_graph_export_description_projection: anti_examples
 ---
 
@@ -382,7 +382,7 @@ The current eval metadata remains intentionally conservative: `eval_artifacts: p
 <!-- skill-graph-context:start (generated — do not edit by hand) -->
 
 **Classification**
-- Subject: `code-engineering`
+- Subject: `software-engineering-method`
 - Deployment: `portable`
 - Domain: `engineering/debugging`
 

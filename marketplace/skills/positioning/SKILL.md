@@ -7,7 +7,7 @@ allowed-tools: Read Grep
 metadata:
   schema_version: "8"
   version: "1.0.0"
-  subject: meta-methods
+  subject: reasoning-strategy
   deployment_target: portable
   scope: "April Dunford product-positioning methodology for choosing the market context that makes a product's differentiated value obvious to best-fit buyers. Includes competitive alternatives, unique attributes, value themes, target segmentation, market category, optional trend context, positioning capture, and sales-message translation. Excludes integrated company strategy, industry-structure analysis, value-innovation market creation, durable moat diagnosis, and finished copywriting."
   taxonomy_domain: foundations/strategy
@@ -41,7 +41,7 @@ metadata:
   drift_status: EXTERNAL_UNHASHED
   skill_graph_source_repo: "https://github.com/jacob-balslev/skill-graph"
   skill_graph_project: Skill Graph
-  skill_graph_canonical_skill: skills/meta-methods/positioning/SKILL.md
+  skill_graph_canonical_skill: skills/reasoning-strategy/positioning/SKILL.md
   skill_graph_export_description_projection: anti_examples+boundary
   skill_graph_export_description_projection_truncated: "true"
 ---
@@ -293,7 +293,7 @@ For [customers] who [current alternative/problem], [product] is a [category] tha
 <!-- skill-graph-context:start (generated — do not edit by hand) -->
 
 **Classification**
-- Subject: `meta-methods`
+- Subject: `reasoning-strategy`
 - Deployment: `portable`
 - Domain: `foundations/strategy`
 - Scope: April Dunford product-positioning methodology for choosing the market context that makes a product's differentiated value obvious to best-fit buyers. Includes competitive alternatives, unique attributes, value themes, target segmentation, market category, optional trend context, positioning capture, and sales-message translation. Excludes integrated company strategy, industry-structure analysis, value-innovation market creation, durable moat diagnosis, and finished copywriting.

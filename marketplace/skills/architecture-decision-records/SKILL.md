@@ -5,7 +5,7 @@ license: MIT
 compatibility: "Portable ADR discipline for Markdown decision logs, repo docs, design docs, and architecture governance."
 allowed-tools: Read Grep
 metadata:
-  subject: code-engineering
+  subject: software-architecture
   deployment_target: portable
   scope: "Writing, reviewing, and updating Architecture Decision Records — context, decision, options rejected, consequences, status, supersession, and follow-up verification. Portable across any project that records architectural decisions; principle-grounded, not repo-bound. Excludes general documentation prose (documentation), code-review findings (code-review), and choosing between frameworks before a decision exists (framework-fit-analysis)."
   taxonomy_domain: architecture/decision-records
@@ -16,7 +16,7 @@ metadata:
   relations: "{\"boundary\":[{\"skill\":\"framework-fit-analysis\",\"reason\":\"framework-fit-analysis evaluates options before selection; architecture-decision-records records the selected option and tradeoffs\"},{\"skill\":\"code-review\",\"reason\":\"code-review evaluates a diff; architecture-decision-records evaluates the decision record\"},{\"skill\":\"system-interface-contracts\",\"reason\":\"system-interface-contracts designs boundaries and contracts; architecture-decision-records records the decision to adopt one\"}],\"related\":[\"framework-fit-analysis\",\"bounded-context-mapping\",\"system-interface-contracts\",\"dependency-architecture\"],\"verify_with\":[\"code-review\"]}"
   skill_graph_source_repo: "https://github.com/jacob-balslev/skill-graph"
   skill_graph_project: Skill Graph
-  skill_graph_canonical_skill: skills/code-engineering/architecture-decision-records/SKILL.md
+  skill_graph_canonical_skill: skills/software-architecture/architecture-decision-records/SKILL.md
   skill_graph_export_description_projection: anti_examples
 ---
 
@@ -77,7 +77,7 @@ Good ADRs are short, dated, statused, and honest about consequences. If a future
 <!-- skill-graph-context:start (generated — do not edit by hand) -->
 
 **Classification**
-- Subject: `code-engineering`
+- Subject: `software-architecture`
 - Deployment: `portable`
 - Domain: `architecture/decision-records`
 - Scope: Writing, reviewing, and updating Architecture Decision Records — context, decision, options rejected, consequences, status, supersession, and follow-up verification. Portable across any project that records architectural decisions; principle-grounded, not repo-bound. Excludes general documentation prose (documentation), code-review findings (code-review), and choosing between frameworks before a decision exists (framework-fit-analysis).

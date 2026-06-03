@@ -7,7 +7,7 @@ allowed-tools: Read Grep Bash
 metadata:
   schema_version: "8"
   version: "1.0.0"
-  subject: code-engineering
+  subject: software-engineering-method
   deployment_target: portable
   scope: "Behavior-preserving restructuring of existing code — extracting functions, reducing duplication, renaming for clarity, splitting modules, and tightening structure, with every change verified against before/after behavior so external contracts stay identical. Portable across any language or codebase; principle-grounded, not repo-bound. Excludes bug investigation and root-cause isolation (debugging, diagnosis), adding new product behavior (feature implementation), and documentation authoring (doc-updater) even when the docs describe the refactored code."
   owner: skill-graph-maintainer
@@ -31,7 +31,7 @@ metadata:
   lint_verdict: PASS
   skill_graph_source_repo: "https://github.com/jacob-balslev/skill-graph"
   skill_graph_project: Skill Graph
-  skill_graph_canonical_skill: skills/code-engineering/refactor/SKILL.md
+  skill_graph_canonical_skill: skills/software-engineering-method/refactor/SKILL.md
   skill_graph_export_description_projection: anti_examples+boundary
   skill_graph_export_description_projection_truncated: "true"
 ---
@@ -93,7 +93,7 @@ This skill ships a comprehension-eval artifact at [`examples/evals/refactor.json
 <!-- skill-graph-context:start (generated — do not edit by hand) -->
 
 **Classification**
-- Subject: `code-engineering`
+- Subject: `software-engineering-method`
 - Deployment: `portable`
 - Scope: Behavior-preserving restructuring of existing code — extracting functions, reducing duplication, renaming for clarity, splitting modules, and tightening structure, with every change verified against before/after behavior so external contracts stay identical. Portable across any language or codebase; principle-grounded, not repo-bound. Excludes bug investigation and root-cause isolation (debugging, diagnosis), adding new product behavior (feature implementation), and documentation authoring (doc-updater) even when the docs describe the refactored code.
 

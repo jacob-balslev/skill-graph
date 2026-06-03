@@ -6,7 +6,7 @@ allowed-tools: Read Grep
 metadata:
   schema_version: "8"
   version: "1.0.0"
-  subject: frontend-ui
+  subject: frontend-engineering
   deployment_target: portable
   scope: "Designing and reviewing React error boundaries — what a boundary catches (rendering, lifecycle, constructor errors) and what it does not (event-handler, async, SSR, in-boundary errors), why React still requires class components for boundaries, placement by granularity (page/feature/leaf), pairing with Suspense, the reset-and-recover pattern (resetKeys, error.reset), the Next.js error.tsx route-segment convention, and integration with error reporting. Covers React 18+ and Next.js App Router; portable across React codebases; principle-grounded, not repo-bound. Excludes Suspense boundary placement (suspense-patterns), general async error-handling and validation, backend error contracts (api-design), and observability infrastructure (error-tracking)."
   taxonomy_domain: engineering/frontend
@@ -37,7 +37,7 @@ metadata:
   lint_verdict: PASS
   skill_graph_source_repo: "https://github.com/jacob-balslev/skill-graph"
   skill_graph_project: Skill Graph
-  skill_graph_canonical_skill: skills/frontend-ui/error-boundary/SKILL.md
+  skill_graph_canonical_skill: skills/frontend-engineering/error-boundary/SKILL.md
   skill_graph_export_description_projection: anti_examples
 ---
 
@@ -269,7 +269,7 @@ After applying this skill, verify:
 <!-- skill-graph-context:start (generated — do not edit by hand) -->
 
 **Classification**
-- Subject: `frontend-ui`
+- Subject: `frontend-engineering`
 - Deployment: `portable`
 - Domain: `engineering/frontend`
 - Scope: Designing and reviewing React error boundaries — what a boundary catches (rendering, lifecycle, constructor errors) and what it does not (event-handler, async, SSR, in-boundary errors), why React still requires class components for boundaries, placement by granularity (page/feature/leaf), pairing with Suspense, the reset-and-recover pattern (resetKeys, error.reset), the Next.js error.tsx route-segment convention, and integration with error reporting. Covers React 18+ and Next.js App Router; portable across React codebases; principle-grounded, not repo-bound. Excludes Suspense boundary placement (suspense-patterns), general async error-handling and validation, backend error contracts (api-design), and observability infrastructure (error-tracking).
