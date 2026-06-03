@@ -43,7 +43,7 @@ any other model. The multi-model merge flow is separate and not for this prompt.
    - /Users/jacobbalslev/Development/skill-graph/skill-audit-loop/SKILL_AUDIT_LOOP.md
    - /Users/jacobbalslev/Development/docs/reference/skill-audit-pipeline.md
    - /Users/jacobbalslev/Development/skill-graph/skill-audit-loop/SKILL_AUDIT_LOOP.md#part-3--per-skill-audit-runbook (per-skill contract)
-3. Load skills: methodical, evaluation, skill-evolution, skill-infrastructure, quality-doctrine,
+3. Load skills: methodical, evaluation, skill-evolution, skill-infrastructure, best-practice,
    no-cutting-corners. Read each `SKILL.md` directly.
 
 ## Preflight (once per session)

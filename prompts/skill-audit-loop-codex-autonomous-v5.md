@@ -98,7 +98,7 @@ minimum load:
 - `evaluation`
 - `skill-evolution`
 - `skill-infrastructure`
-- `quality-doctrine`
+- `best-practice`
 - `no-cutting-corners`
 
 Also load any directly relevant project skills returned by local routing/injection tooling.

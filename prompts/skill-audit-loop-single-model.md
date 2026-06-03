@@ -56,7 +56,7 @@ SETUP
      teaching efficacy; lint is a floor, never the goal)
    Do NOT read or act on skill-audit-merge-v1.md — that is the multi-model flow (see RULE 0).
 3. Load the skills relevant to this task: skill-infrastructure, skill-scaffold,
-   skill-evolution, evaluation, methodical, no-cutting-corners, quality-doctrine
+   skill-evolution, evaluation, methodical, no-cutting-corners, best-practice
    (read skills/<name>/SKILL.md directly — these are the quality-assurance set).
 
 PREFLIGHT (verify the TOOLCHAIN RUNS — not that the corpus is already perfect)
