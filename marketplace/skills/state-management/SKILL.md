@@ -4,36 +4,21 @@ description: "Use when deciding where state lives, how it propagates, and how it
 license: MIT
 allowed-tools: Read Grep
 metadata:
-  schema_version: "8"
-  version: "1.0.0"
   subject: frontend-ui
   deployment_target: portable
+  scope: "Portable frontend state-placement discipline for deciding where each piece of application data lives, who owns it, how it propagates, and how it stays consistent across changes. Teaches the four-kinds classification (server state, client UI state, URL state, persistent state), the colocation-and-lifting decision path, single source of truth, server-state cache invalidation, URL state for deep-linking, and anti-pattern detection for prop drilling, duplicated state, state sprawl, and global-state-by-default. Excludes tactical library choice, API surface design, client/server execution-boundary decisions, distributed-system replication, and finite-state workflow modeling."
   taxonomy_domain: engineering/frontend
-  owner: skill-graph-maintainer
-  freshness: "2026-05-16"
-  drift_check: "{\"last_verified\":\"2026-05-16\"}"
-  eval_artifacts: planned
-  eval_state: unverified
-  routing_eval: absent
-  comprehension_state: present
   stability: experimental
   keywords: "[\"state management\",\"state colocation\",\"lifting state\",\"state derivation\",\"single source of truth\",\"server state\",\"client state\",\"URL state\",\"persistent state\",\"ephemeral state\"]"
   triggers: "[\"where should this state live\",\"should this be in component state or global\",\"I have state across multiple routes\",\"this prop is drilled through 5 components\",\"is this server state or client state\",\"should this be in the URL\"]"
   examples: "[\"decide where the filter/sort/page state for a data table should live\",\"decide whether a piece of state should be in the URL, component state, or persistent storage\",\"diagnose whether a piece of duplicated state is a real performance need or accidental sprawl\",\"structure state for a form that spans multiple steps and survives navigation\"]"
   anti_examples: "[\"implement a specific Redux reducer (tactical, library-specific)\",\"design the JSON shape of an API response (use api-design)\",\"model the state transitions of a multi-step workflow (use state-machine-modeling)\",\"configure HTTP cache headers on the server (use rendering-models or http-semantics)\"]"
-  relations: "{\"related\":[\"rendering-models\",\"client-server-boundary\",\"frontend-architecture\",\"api-design\",\"state-machine-modeling\"],\"boundary\":[{\"skill\":\"client-server-boundary\",\"reason\":\"client-server-boundary owns the line between code-that-runs-where (server components, client components, the serialization boundary); this skill owns the orthogonal question of which side owns which piece of state. They compose: the boundary skill says what code runs where; this skill says what state lives where.\"},{\"skill\":\"state-machine-modeling\",\"reason\":\"state-machine-modeling owns finite-state representation of workflows (states, transitions, guards); this skill owns the decision of where state of any kind lives. The two compose when a workflow has a finite state space whose value still has to live somewhere — the machine names the values, this skill names the location.\"},{\"skill\":\"api-design\",\"reason\":\"api-design owns the external request/response shape; this skill owns where the response data lives once it arrives, and how it's invalidated. Server state cache management (React Query / SWR doctrine) is in scope of this skill; the API surface itself is not.\"},{\"skill\":\"rendering-models\",\"reason\":\"rendering-models owns the question of when content is generated (SSR, RSC, CSR, ISR); this skill owns the question of where data backing that content lives. The two intersect in 'server state' — data fetched on the server that the client needs.\"}],\"verify_with\":[\"rendering-models\",\"api-design\"]}"
+  relations: "{\"related\":[\"rendering-models\",\"client-server-boundary\",\"frontend-architecture\",\"api-design\",\"state-machine-modeling\"],\"boundary\":[{\"skill\":\"client-server-boundary\",\"reason\":\"client-server-boundary owns the line between code-that-runs-where (server components, client components, the serialization boundary); this skill owns the orthogonal question of which side owns which piece of state. They compose: the boundary skill says what code runs where; this skill says what state lives where.\"},{\"skill\":\"rendering-models\",\"reason\":\"rendering-models owns the question of when content is generated (SSR, RSC, CSR, ISR); this skill owns the question of where data backing that content lives. The two intersect in server state: data fetched on the server that the client may still need to cache, invalidate, or localize.\"}],\"verify_with\":[\"rendering-models\",\"api-design\",\"state-machine-modeling\"]}"
   mental_model: "|"
   purpose: "|"
   boundary: "|"
   analogy: "State management is to a frontend application what addressing is to a postal system — you do not ask 'should this letter exist?', you ask 'where does it live?', and the right destination depends entirely on the letter's kind: a registered package (server data with provable delivery), a postcard (URL state, public on the back), a private letter (client UI state, inside an envelope), a deed (persistent state, kept in the safe). One mailbox for everything produces predictable failures."
   misconception: "|"
-  concept: "{\"definition\":\"State management is the architectural discipline of deciding, for each distinct piece of data that an application reads or writes, where that data lives, who owns it, how it propagates to the components that need it, and how it stays consistent across changes. The discipline is upstream of any specific state library: it asks 'should this be local, lifted, global, server-cached, URL-encoded, or persisted' before asking 'which library do I use to hold it.' State is not a single thing; it is a category with at least four distinct kinds (server state, client UI state, URL state, persistent state), each with different lifetimes, invalidation rules, and consistency requirements. The discipline is the recognition that treating all state the same — putting all of it in one global store, or scattering it across every component — produces the recurring frontend problems of prop drilling, stale data, broken back-buttons, and tests that pass while users are confused.\",\"mental_model\":\"|\",\"purpose\":\"|\",\"boundary\":\"|\",\"taxonomy\":\"|\",\"analogy\":\"|\",\"misconception\":\"|\"}"
-  structural_verdict: PASS
-  truth_verdict: PASS
-  comprehension_verdict: UNVERIFIED
-  application_verdict: UNVERIFIED
-  last_audited: "2026-05-28"
-  lint_verdict: PASS
   skill_graph_source_repo: "https://github.com/jacob-balslev/skill-graph"
   skill_graph_project: Skill Graph
   skill_graph_canonical_skill: skills/frontend-ui/state-management/SKILL.md
@@ -41,13 +26,29 @@ metadata:
   skill_graph_export_description_projection_truncated: "true"
 ---
 
+## Concept of the skill
+
+**What it is:** State management is the frontend architecture discipline of deciding where each changing value lives, who owns it, how it propagates to consumers, and how it stays consistent over time.
+
+**Mental model:** State is at least four kinds with different owners and lifetimes: server state, client UI state, URL state, and persistent state. Classify the value first, then choose the narrowest owner and tool that fits its lifetime and invalidation needs.
+
+**Why it exists:** Most recurring frontend state bugs come from putting the right value in the wrong place: server data in a general-purpose store, URL-worthy state in component state, duplicated values in two owners, or global stores used before local state has proven insufficient.
+
+**What it is NOT:** It is not tactical state-library selection, API schema design, finite-state workflow modeling, distributed replication, or the client/server execution-boundary decision. Those skills can compose with this one after the state kind and owner are clear.
+
+**Adjacent concepts:** Rendering models, client-server boundary, frontend architecture, API design, state-machine modeling, server-state caching, and URL state.
+
+**One-line analogy:** State management is like addressing mail: each item needs the right destination for its kind, and one mailbox for everything creates predictable delivery failures.
+
+**Common misconception:** The wrong starting question is "which state library should hold this?" The right first question is "what kind of state is this, who owns it, and how long should it live?"
+
 # State Management
 
 ## Coverage
 
 The architectural discipline of deciding, for each distinct piece of data an application reads or writes, where it lives, who owns it, how it propagates, and how it stays consistent. Covers the four kinds of state (server, client UI, URL, persistent), the colocation default and the lifting move, the single-source-of-truth principle, the React Query / SWR doctrine for server state, the URL as a state container, the architectural anti-patterns of premature globalization and state sprawl, optimistic-update trade-offs, and the framing of state ownership as a design contract distinct from state-library selection.
 
-## Philosophy
+## Philosophy of the skill
 
 State management is a series of location and ownership decisions, each of which has a correct default. The defaults are: colocate locally; lift only when needed; put server state in a server-state library; put URL-worthy state in the URL; put session-survival state in persistent storage; never have two sources of truth for one value. Most recurring frontend bugs (broken back-button, stale data, prop drilling, "why is this re-rendering," changes that don't reflect everywhere) are violations of these defaults. The discipline is not the library; it is the application of the defaults.
 
@@ -171,6 +172,7 @@ After applying this skill, verify:
 - Subject: `frontend-ui`
 - Deployment: `portable`
 - Domain: `engineering/frontend`
+- Scope: Portable frontend state-placement discipline for deciding where each piece of application data lives, who owns it, how it propagates, and how it stays consistent across changes. Teaches the four-kinds classification (server state, client UI state, URL state, persistent state), the colocation-and-lifting decision path, single source of truth, server-state cache invalidation, URL state for deep-linking, and anti-pattern detection for prop drilling, duplicated state, state sprawl, and global-state-by-default. Excludes tactical library choice, API surface design, client/server execution-boundary decisions, distributed-system replication, and finite-state workflow modeling.
 
 **When to use**
 - decide where the filter/sort/page state for a data table should live
@@ -185,12 +187,10 @@ After applying this skill, verify:
 - model the state transitions of a multi-step workflow (use state-machine-modeling)
 - configure HTTP cache headers on the server (use rendering-models or http-semantics)
 - Owned by `client-server-boundary`: the line between code-that-runs-where (server components, client components, the serialization boundary)
-- Owned by `state-machine-modeling`: finite-state representation of workflows (states, transitions, guards)
-- Owned by `api-design`: the external request/response shape
 - Owned by `rendering-models`: the question of
 
 **Related skills**
-- Verify with: `rendering-models`, `api-design`
+- Verify with: `rendering-models`, `api-design`, `state-machine-modeling`
 - Related: `rendering-models`, `client-server-boundary`, `frontend-architecture`, `api-design`, `state-machine-modeling`
 
 **Concept**

@@ -1,6 +1,6 @@
 # Marketplace Publication Queue (generated)
 
-Generated: 2026-06-02T06:38:54.841Z
+Generated: 2026-06-03T00:18:56.062Z
 Schema: 2.0.0
 Generator: scripts/skill/build-skill-list.js@0.4.0
 Source ledger: `skill-graph/data/publication-classification.json`
@@ -14,7 +14,7 @@ Source ledger: `skill-graph/data/publication-classification.json`
 - Publishable candidates: 136
 - Sales-Hub-bound (excluded): 51
 - Personal-infra (excluded): 29
-- Already published (in OSS export): 154
+- Already published (in OSS export): 161
 - Tier counts: S=18 A=29 B=42 C=47
 - Ledger entries total: 216
 
@@ -51,7 +51,7 @@ Source ledger: `skill-graph/data/publication-classification.json`
 | 22 | `chat-interface` | 4 | rewrite | yes | demand-cluster | no |  | chat UI patterns; demand from AI app builders |
 | 23 | `dark-mode` | 4 | port | minor | skills.sh-leaderboard | no |  | skills.sh design topic; companion to `dark-mode-implementation` (already pub) |
 | 24 | `doc-co-authoring` | 4 | port | no | anthropic-official | no |  | Anthropic official slot is `doc-coauthoring` |
-| 25 | `doc-updater` | 4 | port+sanitize | yes | demand-cluster | no |  | doc routing protocol — high demand |
+| 25 | `doc-updater` | 4 | port+sanitize | yes | demand-cluster | yes |  | doc routing protocol — high demand |
 | 26 | `docs-development` | 4 | port | minor | demand-cluster | no |  | docs-as-code; broad audience |
 | 27 | `editorial-standards` | 4 | port | no | demand-cluster | no |  | doc quality bar; complements writing-humanizer |
 | 28 | `email-templates` | 4 | port+sanitize | yes | demand-cluster | no |  | email patterns; transactional + marketing |
@@ -67,7 +67,7 @@ Source ledger: `skill-graph/data/publication-classification.json`
 | 38 | `methodical` | 4 | rewrite | yes | demand-cluster | yes | 3 | RLHF anti-patterns; very portable methodology |
 | 39 | `middleware-architecture` | 4 | port | no | demand-cluster | no |  | Next.js/Express middleware patterns |
 | 40 | `motion-design` | 4 | port | no | skills.sh-leaderboard | no |  | skills.sh design topic; `delight` adjacent |
-| 41 | `no-cutting-corners` | 4 | port | no | demand-cluster | no |  | quality doctrine; companion to `methodical` |
+| 41 | `no-cutting-corners` | 4 | port | no | demand-cluster | yes |  | quality doctrine; companion to `methodical` |
 | 42 | `quality-doctrine` | 4 | port | no | demand-cluster | no |  | per-artifact quality definitions |
 | 43 | `self-evaluation` | 4 | port | no | demand-cluster | no |  | 1-5 self-score pattern; agent quality |
 | 44 | `self-review-pattern` | 4 | port | no | demand-cluster | no |  | generate-critique-revise; eval discipline |
@@ -174,7 +174,7 @@ Source ledger: `skill-graph/data/publication-classification.json`
 | 135 | `value-engineering` | 2 | port | no | niche | no |  | value engineering methodology |
 | 136 | `visual-design` | 2 | port | no | niche | no |  | dup of `visual-design-foundations` — merge |
 
-## Orphan ledger entries (199)
+## Orphan ledger entries (197)
 
 Ledger names skills not present in the active manifest or marketplace export. Likely archived or stale.
 
@@ -201,7 +201,6 @@ Ledger names skills not present in the active manifest or marketplace export. Li
 - `chat-interface`
 - `dark-mode`
 - `doc-co-authoring`
-- `doc-updater`
 - `docs-development`
 - `editorial-standards`
 - `email-templates`
@@ -216,7 +215,6 @@ Ledger names skills not present in the active manifest or marketplace export. Li
 - `memory-prune`
 - `middleware-architecture`
 - `motion-design`
-- `no-cutting-corners`
 - `quality-doctrine`
 - `self-evaluation`
 - `self-review-pattern`
