@@ -1,6 +1,6 @@
 # Skill Graph — Generated Status
 
-> **Generated:** 2026-06-03T11:40:53.885Z
+> **Generated:** 2026-06-03T12:12:48.905Z
 > **Generator:** `node scripts/build-status-doc.js` (regenerate; never hand-edit)
 >
 > This file is the single-source-of-truth status snapshot for the project's
@@ -23,11 +23,11 @@
 
 | Check | Status | Duration | Last line |
 |---|---|---|---|
-| check-markdown-links | ✅ PASS | 274 ms | OK   markdown links (1435 file(s)) |
-| check-protocol-consistency | ✅ PASS | 109 ms | PASS: all protocol consistency checks passed. 0 warning(s). |
+| check-markdown-links | ✅ PASS | 424 ms | OK   markdown links (1436 file(s)) |
+| check-protocol-consistency | ✅ PASS | 116 ms | PASS: all protocol consistency checks passed. 0 warning(s). |
 | check-doc-drift | ✅ PASS | 100 ms | OK   doc drift sentinel: 69 active doc(s) scanned against schema v8 |
-| check-mirror-freeze | ✅ PASS | 47 ms | OK   mirror freeze: 20 file(s) scanned across 2 mirror(s); no active-source/package claims found. |
-| marketplace-export-check | ✅ PASS | 173 ms | PROJECTION TRUNCATED for writing-humanizer: tail truncated from 652 to 465 chars to fit 1024 limit |
+| check-mirror-freeze | ✅ PASS | 48 ms | OK   mirror freeze: 20 file(s) scanned across 2 mirror(s); no active-source/package claims found. |
+| marketplace-export-check | ✅ PASS | 192 ms | PROJECTION TRUNCATED for writing-humanizer: tail truncated from 652 to 465 chars to fit 1024 limit |
 
 ## Audit Health
 
