@@ -22,9 +22,15 @@ function check(name, fn) {
 }
 
 console.log('1. Pure seams — claim args + parsing');
-check('buildClaimArgs builds a merge claim with --json', () => {
+check('buildClaimArgs defaults a per-model PROPOSE slot to the AUDIT op, not merge (SH-6687)', () => {
   assert.deepStrictEqual(
     d.buildClaimArgs({ skill: 'debugging', model: 'opus' }),
+    ['claim', 'debugging', '--op', 'audit', '--json', '--model', 'opus'],
+  );
+});
+check('buildClaimArgs honors an explicit merge op for the curator (SH-6687)', () => {
+  assert.deepStrictEqual(
+    d.buildClaimArgs({ skill: 'debugging', model: 'opus', op: 'merge' }),
     ['claim', 'debugging', '--op', 'merge', '--json', '--model', 'opus'],
   );
 });
@@ -124,6 +130,66 @@ check('dry-run runs claim → propose(both) → curate → anti-loss → keep', 
   // file is byte-identical and `applied` is false even though the decision was KEEP.
   assert.strictEqual(result.applied, false);
   assert.strictEqual(fs.readFileSync(canonical, 'utf8'), ORIGINAL, 'canonical SKILL.md unchanged in dry-run');
+
+  fs.rmSync(tmp, { recursive: true, force: true });
+});
+
+console.log('5. Claim ops — per-model PROPOSE = audit, curator = merge, distinct owners (SH-6687)');
+check('claimSlot claims --op audit per model; curate claims --op merge with a distinct AGENT_ID', () => {
+  const tmp = fs.mkdtempSync(path.join(os.tmpdir(), 'enrich-claim-'));
+  const skill = 'demo-skill';
+  const skillDir = path.join(tmp, 'skills', skill);
+  fs.mkdirSync(skillDir, { recursive: true });
+  fs.writeFileSync(path.join(skillDir, 'SKILL.md'), '---\nname: demo-skill\n---\n# Demo\n');
+  // The live researchAndPropose loads the enrich-pass template from <root>/prompts/.
+  fs.mkdirSync(path.join(tmp, 'prompts'), { recursive: true });
+  fs.writeFileSync(path.join(tmp, 'prompts', 'skill-audit-loop-enrich-pass.md'), '```\nENRICH TEMPLATE\n```\n');
+
+  const claims = [];
+  const releases = [];
+  // Stub dispatch: emulate the claim CLI + the model writing its artifacts (parsed
+  // from the prompt) so the live (non-dry) path completes without any real CLI.
+  function stubDispatch({ cli, args, env }) {
+    const isClaimScript = cli === 'node' && args.some((a) => /skill-audit-claim/.test(a));
+    if (isClaimScript && args.includes('claim')) {
+      const op = args[args.indexOf('--op') + 1];
+      claims.push({ op, agentId: env.AGENT_ID, model: env.MODEL });
+      const runDir = path.join('.opencode', 'progress', 'skill-audits', skill, 'runs', `${op}-${env.MODEL || 'x'}`);
+      fs.mkdirSync(path.join(tmp, runDir), { recursive: true });
+      return JSON.stringify({ claimed: 'k', run_id: `r-${op}`, audit_run_dir: runDir });
+    }
+    if (isClaimScript && args.includes('release')) { releases.push({ agentId: env.AGENT_ID }); return 'RELEASED'; }
+    // A model dispatch (claude/codex): write whatever artifact paths the prompt names.
+    const text = args.join('\n');
+    for (const re of [/(\S+\.proposed-SKILL\.md)/, /(\S+\.novelty-memo\.md)/, /(\S+\.merged-SKILL\.md)/]) {
+      const m = text.match(re); if (m) { fs.mkdirSync(path.dirname(m[1]), { recursive: true }); fs.writeFileSync(m[1], '# stub\n'); }
+    }
+    const lm = text.match(/(\S+\.merge-ledger\.json)/);
+    if (lm) { fs.mkdirSync(path.dirname(lm[1]), { recursive: true }); fs.writeFileSync(lm[1], JSON.stringify({ curator: 'opus', contributions: [{ id: 1, surfaced_by: 'opus', disposition: 'kept' }] })); }
+    return '';
+  }
+
+  const deps = d.createLiveEnrichDeps({ skillGraphRoot: tmp, workspaceRoot: tmp, dryRun: false, dispatch: stubDispatch });
+  const s1 = deps.claimSlot({ skill, model: 'opus' });
+  deps.researchAndPropose({ skill, skillDir, model: 'opus', brief: 'B', artifactsDir: s1.artifactsDir });
+  deps.releaseSlot({ skill, model: 'opus', status: 'completed' });
+  const s2 = deps.claimSlot({ skill, model: 'codex-current' });
+  deps.researchAndPropose({ skill, skillDir, model: 'codex-current', brief: 'B', artifactsDir: s2.artifactsDir });
+  deps.releaseSlot({ skill, model: 'codex-current', status: 'completed' });
+  const merge = deps.curate({ skill, skillDir, proposals: [{ model: 'opus', proposalPath: path.join(s1.artifactsDir, `${skill}.opus.proposed-SKILL.md`), noveltyMemoPath: 'n' }], currentSkillPath: path.join(skillDir, 'SKILL.md') });
+
+  // The two per-model PROPOSE slots claimed AUDIT (not merge); the curator claimed MERGE.
+  const proposeClaims = claims.filter((c) => c.op === 'audit');
+  const mergeClaims = claims.filter((c) => c.op === 'merge');
+  assert.strictEqual(proposeClaims.length, 2, 'two per-model audit claims');
+  assert.deepStrictEqual(proposeClaims.map((c) => c.model).sort(), ['codex-current', 'opus']);
+  assert.strictEqual(mergeClaims.length, 1, 'one curator merge claim');
+  // The curator merge lock has a DISTINCT owner from the per-model slots.
+  assert.strictEqual(mergeClaims[0].agentId, 'enrich-curator');
+  assert.ok(!proposeClaims.some((c) => c.agentId === 'enrich-curator'), 'propose slots are not the curator owner');
+  // The curator lock was released (finally block).
+  assert.ok(releases.some((r) => r.agentId === 'enrich-curator'), 'curator lock released');
+  assert.ok(fs.existsSync(merge.mergeLedgerPath));
 
   fs.rmSync(tmp, { recursive: true, force: true });
 });
