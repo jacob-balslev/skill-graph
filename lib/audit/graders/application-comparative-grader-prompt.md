@@ -38,6 +38,16 @@ checkable behaviors the skill claims to produce). **You grade the behavioral del
 If only one run is supplied, you cannot compute a delta — return `application_verdict: UNVERIFIED`
 with a reason. Never guess a delta from a single run.
 
+**Position-bias guard (SKI-49).** You see the two runs in a fixed order (baseline, then with_skill).
+LLM judges carry a significant recency bias toward whichever transcript they read SECOND, which here
+would inflate `with_skill_met` and fabricate a positive delta. Judge each run's criterion satisfaction
+against the criterion's OWN absolute behavior on that run's transcript — `with_skill_met` is decided
+solely by what the with_skill transcript does, never by "it looked better than baseline" or relative to
+`baseline_met`. The boolean-per-criterion form below exists partly to enforce this: it forces an
+absolute per-run judgment instead of a single "which run won" pairwise preference. (See the audit-loop
+pairwise-judge requirement: `lib/audit/graders/references/rubric-best-practices.md` § Pairwise Judging:
+Neutralize Position Bias.)
+
 ## Per-criterion boolean checklist (not a fine-grained scale)
 
 For each entry in the eval's `criteria[]`, score **both runs** as a boolean: did the run satisfy

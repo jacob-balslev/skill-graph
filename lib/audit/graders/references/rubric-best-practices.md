@@ -1,7 +1,7 @@
 # Rubric Design Best Practices
 
 > Research-grounded guidance on scale ranges, dimensional weighting, holistic vs analytic scoring, and rubric construction for LLM-as-judge and human-evaluation systems.
-> Last updated: 2026-05-18
+> Last updated: 2026-06-03
 
 ## Optimal Scale Ranges
 
@@ -149,6 +149,7 @@ When designing a new rubric:
 8. **Measure discriminability**: emit CV, Cronbach's alpha, histograms per dimension. Flag dimensions with CV < 0.1 as compressed.
 9. **For N-candidate winner selection, prefer pairwise**. Bradley-Terry over rubric for the actual decision.
 10. **Use multiple judges from different model families** for tier-1 decisions. Treat disagreement as a signal.
+11. **Randomize presentation order in every pairwise comparison** (and every before/after comparison). Pairwise LLM judges carry a strong, significant second-position/recency bias. Run both orders and require agreement, or randomize order per trial. See § Pairwise Judging: Neutralize Position Bias.
 
 ## Anti-Patterns
 
@@ -160,7 +161,23 @@ When designing a new rubric:
 | No calibration set in prompt | Judge never predicts certain scores | Embed 1 worked example per level |
 | Single judge, single run | High variance, low reliability | Multi-judge ensemble, average across N runs |
 | Pointwise scoring for N-candidate selection | ~10x more variance than pairwise | Bradley-Terry / Elo tournament |
+| Single-direction pairwise comparison (fixed A-then-B order) | Judge favors the second-shown by a large, significant margin (win-rate flipped 2.5%→82.5% on reorder) | Run both orders and require agreement, or randomize order per trial |
 | Never measuring discriminability | Can't detect compression when it happens | Emit CV / Cronbach's alpha / histogram per dim |
+
+## Pairwise Judging: Neutralize Position Bias
+
+Pairwise comparison is the recommended decision form for N-candidate selection (lower variance than pointwise), but the **same judge that is more reliable pairwise is also strongly biased toward whichever response it sees SECOND**. This is mandatory to mitigate in every audit-loop pairwise judge.
+
+**Evidence.** A single-direction pairwise comparison flipped a model's win-rate from 2.5% to 82.5% purely by reordering the two responses (Arena-Lite, EMNLP 2025; LMSYS Chatbot Arena). In-repo (SKI-49, 2026-05-29 structure A/B, Opus judge): first-shown win-rate among decisive trials was 1/19, p=0.0001; overall p=0.0007–0.026 across pairs. Per-trial presentation-order randomization neutralized it — the win tallies stayed balanced.
+
+**The requirement.** Every pairwise (and every before/after) LLM-judge in the audit/eval tooling MUST do one of:
+
+1. **Run both orders and require agreement** — compare A-then-B and B-then-A; a clean winner needs both directions to agree, otherwise split credit / call it a tie. This is the strongest mitigation and the one `fusion-judge` uses (the Bradley-Terry tournament runs each pair twice with positions swapped).
+2. **Randomize order per trial** — present the two responses in a coin-flipped order each trial (seeded so the run is reproducible) and de-randomize the recorded verdict back to the real arms. This is what the `structure-ab` harness uses.
+
+For a **labeled** comparison where the two items are not interchangeable (before/after, baseline/with-skill), score each side on its **absolute** anchor independently — never as "is the second one better?" — so recency cannot inflate the second-examined side. See `.claude/agents/experiment-judge.md` § Anti-Position-Bias Mandate.
+
+**Compliance (audit-loop pairwise judges).** `fusion-judge` (both-orders + agreement) ✓; `structure-ab` (per-trial randomized coin) ✓; `experiment-judge` (independent absolute before/after scoring) ✓. Any new pairwise judge MUST satisfy this section before it is wired into the loop.
 
 ## Application to This Repo (Rubric Design)
 
