@@ -44,7 +44,7 @@ function parseSetArgs(argv) {
 }
 
 function printRoster() {
-  const { MODEL_LATEST, REGISTRY_VERSION } = require(CANONICAL);
+  const { MODEL_LATEST, OPENCODE_LATEST, REGISTRY_VERSION } = require(CANONICAL);
   console.log(`Model roster — registry version ${REGISTRY_VERSION}\n`);
   console.log('Auto-latest (no pin to maintain):');
   console.log('  opus / sonnet / haiku          → newest Claude (claude CLI alias)');
@@ -54,6 +54,13 @@ function printRoster() {
   console.log('Single-source pins in MODEL_LATEST (bump with --set <key>=<id>):');
   for (const [k, v] of Object.entries(MODEL_LATEST)) {
     console.log(`  ${k.padEnd(14)} = ${v}`);
+  }
+  if (OPENCODE_LATEST) {
+    console.log('\nOpenCode Zen free-tier pins in OPENCODE_LATEST (bump with --set <key>=<id>;');
+    console.log('verify against the live catalog: `opencode models | grep -iE free`):');
+    for (const [k, v] of Object.entries(OPENCODE_LATEST)) {
+      console.log(`  ${k.padEnd(14)} = ${v}`);
+    }
   }
 }
 
@@ -80,10 +87,11 @@ function main() {
     return;
   }
 
-  const { MODEL_LATEST } = require(CANONICAL);
+  const { MODEL_LATEST, OPENCODE_LATEST = {} } = require(CANONICAL);
+  const validKeys = { ...MODEL_LATEST, ...OPENCODE_LATEST };
   for (const [key, value] of Object.entries(sets)) {
-    if (!(key in MODEL_LATEST)) {
-      console.error(`✗ Unknown MODEL_LATEST key '${key}'. Valid keys: ${Object.keys(MODEL_LATEST).join(', ')}`);
+    if (!(key in validKeys)) {
+      console.error(`✗ Unknown pin key '${key}'. Valid keys: ${Object.keys(validKeys).join(', ')}`);
       process.exit(2);
     }
     const a = applySet(CANONICAL, key, value);
