@@ -668,6 +668,7 @@ node scripts/skill-graph-routing-eval.js --manifest examples/skills.manifest.sam
 node scripts/verify-skill-md-export.js
 node scripts/export-marketplace-skills.js --check
 node scripts/build-status-doc.js --check
+node scripts/skill-conformance-ledger.js          # per-shelf lint-conformance ledger (X/165 clean) — report-only, NOT in verify; the incremental signal the binary gate can't give. --check N for a threshold gate, --json for machine output. Writes docs/conformance.generated.md.
 node lib/audit/eval-staleness-checker.js
 node scripts/skill-overlap.js
 node scripts/skill-graph-drift.js
