@@ -84,6 +84,11 @@ const EXPORT_DESCRIPTION_OVERRIDES = {
   // canonical description stays full; this marketplace-only override is tighter
   // so the projection fits. Keep the five pillars + the positive triggers.
   'no-cutting-corners': "Enforce five non-negotiable quality pillars as a pre-output gate: complete reporting (show ALL items, never filter unilaterally), verification (no claim of works/done/exists without a tool-call receipt in the same turn), thoroughness (every acceptance criterion verified with evidence; docs ship with the change), enrichment ('improve' adds capability, never trims), and anti-shortcut (exhaust deterministic lookup before guessing; findings demand action, not filing). Use when reviewing enumerated output for completeness, when an agent claims something works without evidence, when marking a task done, or when asked to 'improve' anything.",
+  // Canonical description grew to ~1133 chars in the 2026-06-03 two-frontier enrich
+  // (SH-6688), over the 1024 marketplace limit + projection tail. Per AGENTS.md the
+  // canonical description stays full; this marketplace-only override is tighter (keeps
+  // the load taxonomy + the positive triggers + the boundary).
+  'cognitive-load-theory': "Sweller's Cognitive Load Theory (CLT) for agents reviewing skill bodies, prompts, docs, dashboards, and agent outputs for avoidable cognitive burden. Working memory holds ~4 chunks; CLT splits load into intrinsic (irreducible difficulty), extraneous (avoidable load from poor presentation — ELIMINATE), and germane (the schema-building work applied to intrinsic load — PROTECT). Use when writing a SKILL.md body, designing prompts (am I asking the model to hold too much at once?), building dashboards (per-screen cognitive budget), authoring docs (is intrinsic load segmented?), or checking whether modern features (long context, structured outputs, prompt caching, subagents) actually reduce load or just move it. Do NOT use for retrieval/session working-set design (use context-management), token budget and compaction timing (use context-window), prompt engineering tactics (use prompt-craft), or token-efficient representation (use compression).",
 };
 
 // PRIVACY_PATTERNS and scanPrivacyText are imported from ./lib/privacy-patterns —
