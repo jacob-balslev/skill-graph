@@ -42,6 +42,7 @@ const {
   APPLICATION_VERDICT_CONSISTENCY_THRESHOLD,
 } = require(path.join(REPO_ROOT, 'lib', 'audit', 'application-eval'));
 const { stampApplicationVerdict } = require(path.join(REPO_ROOT, 'lib', 'audit', 'evaluate-skill'));
+const { isLesserQualityGraderModel, assertTopTierGraderModel } = require(path.join(REPO_ROOT, 'lib', 'audit-shared', 'certification'));
 
 let passCount = 0;
 let failCount = 0;
@@ -338,6 +339,21 @@ assert(readVerdict(stampSkillMd) === 'PROVISIONAL', '6d. certifying + --single-m
 fs.writeFileSync(stampSkillMd, STAMP_SKILL);
 stampApplicationVerdict(stampEval, { dryRun: false, aggregate_verdict: 'harmful', total: 2, errors: 0 }, false);
 assert(readVerdict(stampSkillMd) === 'HARMFUL', '6e. harmful is unaffected by certification_tier');
+
+// ── 7. Top-tier grader allowlist (SH-6626) ────────────────────────────────────
+// A quality JUDGE may never be a lesser tier; the grader-model env override must fail
+// closed. The generator (measured agent) is NOT covered by this guard.
+for (const top of ['opus', 'codex-current', 'gpt-5.4', 'gemini', 'strongest-reasoning-grader']) {
+  assert(isLesserQualityGraderModel(top) === false, `7. top-tier judge accepted: ${top}`);
+  assert(assertTopTierGraderModel(top) === top, `7. assertTopTierGraderModel passes through: ${top}`);
+}
+for (const weak of ['haiku', 'sonnet', 'claude-haiku-4-5', 'sonnet-4-6', 'gemini-3-flash-preview', 'minimax', 'nemotron']) {
+  assert(isLesserQualityGraderModel(weak) === true, `7. lesser tier flagged: ${weak}`);
+  let threw = false;
+  try { assertTopTierGraderModel(weak, { source: 'COMPREHENSION_GRADER_MODEL' }); } catch (e) { threw = /lesser-tier/.test(e.message); }
+  assert(threw, `7. assertTopTierGraderModel fails closed on: ${weak}`);
+}
+assert(isLesserQualityGraderModel('') === false && isLesserQualityGraderModel(null) === false, '7. empty/null is not flagged (caller handles unset)');
 
 // ── Cleanup ──────────────────────────────────────────────────────────────────
 
