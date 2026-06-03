@@ -136,7 +136,7 @@ A strong verdict additionally requires the run to be **certifying-clean**, or it
 
 1. **`parity_ok`** — both directions ran under an identical tools-ON execution profile. A parity mismatch means the run measured permissions, not the model — INVALID, capped.
 2. **both directions cross-family certifying** — generator and grader families differ in each direction (self-preference guard, `certification.js`).
-3. **resolved models** — neither direction's generator/grader model is the `latest-alias-unresolved` sentinel. If we cannot prove WHICH concrete model ran, the run caps to `PROVISIONAL` (honest provenance, per `.claude/rules/version-schema-contract.md` § 5). NOTE: until codex's resolved model is captured from its output (SH-6680), the GPT direction always carries the sentinel, so every bidirectional run currently caps to `PROVISIONAL` — this is the honest current state, not a defect.
+3. **resolved models** — neither direction's generator/grader model is the `latest-alias-unresolved` sentinel. If we cannot prove WHICH concrete model ran, the run caps to `PROVISIONAL` (honest provenance, per `.claude/rules/version-schema-contract.md` § 5). The GPT (`codex-current`) direction omits the model flag so Codex serves its own current model; its concrete id is now captured from `codex exec`'s output header (`model: <id>`) by `evaluate-skill.extractCodexModel` (SH-6680), so a resolved-clean codex run no longer carries the sentinel. The sentinel still applies — and still caps to `PROVISIONAL` — only when codex emits no parseable header model line.
 
 A capped/invalid run is **inconclusive**, never a regression: the enrich keep-or-revert defers (keeps) on it and never reverts a skill for a confidence cap.
 
