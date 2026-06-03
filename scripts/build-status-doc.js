@@ -49,6 +49,24 @@ function runCheck(scriptRelPath, label, extraArgs = []) {
   };
 }
 
+// The sentinel returned when the schema version cannot be resolved from any schema file.
+// Kept as the raw word "unknown" so any internal comparison stays simple; human-facing
+// output must go through formatSchemaVersion (never concatenate the `v` prefix directly).
+const SCHEMA_VERSION_UNKNOWN = 'unknown';
+
+/**
+ * Render a schema version for human output. A resolved version takes the conventional
+ * `v` prefix (e.g. `v8`); the unresolved sentinel renders as the explicit words
+ * "version unknown" — NEVER the ambiguous mash-word "vunknown" (the `v` prefix glued to
+ * the word "unknown"), which reads as a single non-word a reader has to decode. Per the
+ * naming-conventions skill: a label you must decode is the wrong label. (SH-6662 follow-up.)
+ * @param {string} sv  the raw schema version, or SCHEMA_VERSION_UNKNOWN
+ * @returns {string}
+ */
+function formatSchemaVersion(sv) {
+  return sv === SCHEMA_VERSION_UNKNOWN ? 'version unknown' : `v${sv}`;
+}
+
 function readSchemaVersion() {
   // `schema_version` moved from the frontmatter schema to the audit-state sidecar in the
   // ADR-0019 audit-state split (which contract a skill conforms to is a system/audit
@@ -74,7 +92,7 @@ function readSchemaVersion() {
     const numeric = sv.enum.map(v => Number(v)).filter(n => Number.isFinite(n));
     if (numeric.length > 0) return String(Math.max(...numeric));
   }
-  return 'unknown';
+  return SCHEMA_VERSION_UNKNOWN;
 }
 
 function readSkillCount() {
@@ -224,7 +242,7 @@ function renderMarkdown(state) {
 | Package name | \`${pkg.name}\` | \`package.json\` |
 | Package version | \`${pkg.version}\` | \`package.json\` |
 | Node engine | \`${pkg.engines?.node ?? '—'}\` | \`package.json\` |
-| Active schema version | \`${schema_version}\` | \`schemas/skill-audit-state.schema.json\` (moved from frontmatter schema per ADR-0019) |
+| Active schema version | \`${formatSchemaVersion(schema_version)}\` | \`schemas/skill-audit-state.schema.json\` (moved from frontmatter schema per ADR-0019) |
 | Skill count (manifest) | \`${skill_count ?? '—'}\` | \`skills.manifest.json\` |
 | Mirror status | ${mirror_status} | \`docs/adr/0009-sibling-repo-deprecation.md\` |
 
@@ -331,7 +349,7 @@ function main() {
   }
 
   process.stdout.write(
-    `OK   ${opts.check ? 'checked' : 'wrote'} ${path.relative(REPO_ROOT, OUTPUT_PATH)} (${pkg.name}@${pkg.version}, schema v${schema_version}, ${skill_count ?? '?'} skills, ${checks.length} checks)\n`
+    `OK   ${opts.check ? 'checked' : 'wrote'} ${path.relative(REPO_ROOT, OUTPUT_PATH)} (${pkg.name}@${pkg.version}, schema ${formatSchemaVersion(schema_version)}, ${skill_count ?? '?'} skills, ${checks.length} checks)\n`
   );
 }
 

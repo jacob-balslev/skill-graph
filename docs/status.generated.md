@@ -1,6 +1,6 @@
 # Skill Graph — Generated Status
 
-> **Generated:** 2026-06-03T10:25:24.950Z
+> **Generated:** 2026-06-03T10:29:24.799Z
 > **Generator:** `node scripts/build-status-doc.js` (regenerate; never hand-edit)
 >
 > This file is the single-source-of-truth status snapshot for the project's
@@ -15,7 +15,7 @@
 | Package name | `@skill-graph/cli` | `package.json` |
 | Package version | `0.5.10` | `package.json` |
 | Node engine | `>=20.0.0` | `package.json` |
-| Active schema version | `8` | `schemas/skill-audit-state.schema.json` (moved from frontmatter schema per ADR-0019) |
+| Active schema version | `v8` | `schemas/skill-audit-state.schema.json` (moved from frontmatter schema per ADR-0019) |
 | Skill count (manifest) | `154` | `skills.manifest.json` |
 | Mirror status | docs-only mirrors per ADR 0009 (2026-05-18) | `docs/adr/0009-sibling-repo-deprecation.md` |
 
@@ -23,11 +23,11 @@
 
 | Check | Status | Duration | Last line |
 |---|---|---|---|
-| check-markdown-links | ✅ PASS | 446 ms | OK   markdown links (1435 file(s)) |
-| check-protocol-consistency | ✅ PASS | 118 ms | PASS: all protocol consistency checks passed. 0 warning(s). |
-| check-doc-drift | ✅ PASS | 100 ms | OK   doc drift sentinel: 70 active doc(s) scanned against schema v8 |
-| check-mirror-freeze | ✅ PASS | 48 ms | OK   mirror freeze: 20 file(s) scanned across 2 mirror(s); no active-source/package claims found. |
-| marketplace-export-check | ✅ PASS | 193 ms | PROJECTION TRUNCATED for writing-humanizer: tail truncated from 652 to 465 chars to fit 1024 limit |
+| check-markdown-links | ✅ PASS | 448 ms | OK   markdown links (1435 file(s)) |
+| check-protocol-consistency | ✅ PASS | 114 ms | PASS: all protocol consistency checks passed. 0 warning(s). |
+| check-doc-drift | ✅ PASS | 99 ms | OK   doc drift sentinel: 70 active doc(s) scanned against schema v8 |
+| check-mirror-freeze | ✅ PASS | 51 ms | OK   mirror freeze: 20 file(s) scanned across 2 mirror(s); no active-source/package claims found. |
+| marketplace-export-check | ✅ PASS | 187 ms | PROJECTION TRUNCATED for writing-humanizer: tail truncated from 652 to 465 chars to fit 1024 limit |
 
 ## Audit Health
 
