@@ -73,11 +73,18 @@ check('claude enrich args are write-capable (bypassPermissions)', () => {
   assert.strictEqual(a[a.indexOf('--permission-mode') + 1], 'bypassPermissions');
   assert.ok(a.includes('-p') && a.includes('PROMPT'));
 });
-check('codex enrich args use workspace-write sandbox', () => {
+check('codex enrich args use workspace-write sandbox + narrow extra writable root', () => {
   const a = d.buildCodexEnrichArgs('PROMPT');
   assert.ok(a.includes('workspace-write'));
   assert.ok(a.includes('--skip-git-repo-check'));
   assert.strictEqual(a[a.length - 1], 'PROMPT');
+  // No writableRoots => no -c flag.
+  assert.ok(!a.includes('-c'));
+  // With a writable root => an explicit sandbox_workspace_write config naming ONLY it.
+  const b = d.buildCodexEnrichArgs('PROMPT', { writableRoots: ['/ws/.opencode/progress/skill-audits/s/runs/r1'] });
+  const ci = b.indexOf('-c');
+  assert.ok(ci !== -1);
+  assert.match(b[ci + 1], /sandbox_workspace_write=\{writable_roots=\["\/ws\/\.opencode\/progress\/skill-audits\/s\/runs\/r1"\]\}/);
 });
 check('buildEnrichPrompt names the exact output paths + private-content scope via template', () => {
   const p = d.buildEnrichPrompt({ template: 'TEMPLATE', skill: 's', skillDir: '/s', model: 'opus', brief: 'B', proposalPath: '/r/p.md', noveltyMemoPath: '/r/m.md' });
