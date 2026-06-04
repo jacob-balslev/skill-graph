@@ -58,7 +58,13 @@ const DIMENSIONS = [
     id: 'grounding',
     label: 'Grounding fidelity',
     checklistAnchor: '4. Grounding quality',
-    appliesWhen: (fm) => fm && fm.scope === 'codebase',
+    // v8: the old scope: 'codebase' was replaced by deployment_target: 'project'.
+    // Keep the legacy scope check for back-compat with unmigrated skills.
+    appliesWhen: (fm) => fm && (
+      fm.deployment_target === 'project' ||
+      fm.scope === 'codebase' ||
+      (fm.grounding && fm.grounding.grounding_mode === 'repo_specific')
+    ),
   },
   {
     id: 'content',

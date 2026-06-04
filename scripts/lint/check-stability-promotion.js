@@ -86,8 +86,14 @@ function checkStabilityPromotion({ fm, today = new Date() } = {}) {
     }
   }
 
-  if (fm.scope === 'codebase' && !hasTruthSources(fm)) {
-    warnings.push(warning('stability: stable criterion 5 failed: codebase skills require non-empty grounding.truth_sources'));
+  // v8: the old scope: 'codebase' was replaced by deployment_target: 'project'.
+  // Check both for back-compat with legacy skills not yet migrated through the audit loop.
+  const isProjectScoped =
+    fm.deployment_target === 'project' ||
+    fm.scope === 'codebase' ||
+    (fm.grounding && fm.grounding.grounding_mode === 'repo_specific');
+  if (isProjectScoped && !hasTruthSources(fm)) {
+    warnings.push(warning('stability: stable criterion 5 failed: project-scoped skills require non-empty grounding.truth_sources'));
   }
 
   return { errors, warnings };

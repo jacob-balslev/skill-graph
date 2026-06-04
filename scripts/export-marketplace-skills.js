@@ -204,9 +204,15 @@ function assertSourceRootIsPortable(sourceDir, workspaceConfig) {
       const text = fs.readFileSync(skillMd, 'utf8');
       const fm = _parseFm(text);
       const scope = fm && (fm.scope || (fm.metadata && fm.metadata.scope));
-      // v8 compat: `project` is the v8 rename of `codebase` — both indicate
-      // a repo-coupled skill that should NOT be in the marketplace.
-      if (scope === 'operational' || scope === 'codebase' || scope === 'project') operationalCount++;
+      const deploymentTarget = fm && fm.deployment_target;
+      // v8 primary gate: deployment_target === 'project' marks a repo-coupled skill.
+      // Legacy back-compat: scope: 'operational'|'codebase'|'project' from unmigrated skills
+      // also indicate internal-only content. Both check types remain so this guard
+      // fires correctly regardless of how far the audit-loop migration has progressed.
+      if (
+        deploymentTarget === 'project' ||
+        scope === 'operational' || scope === 'codebase' || scope === 'project'
+      ) operationalCount++;
     } catch { /* skip unreadable files */ }
   }
 
@@ -214,7 +220,7 @@ function assertSourceRootIsPortable(sourceDir, workspaceConfig) {
   if (operationalFraction > GUARD_OPERATIONAL_THRESHOLD) {
     throw new Error(
       `Root-resolution guard: resolved source root appears to be the internal operational\n` +
-      `  skill library (${operationalCount}/${samplePaths.length} sampled skills have scope:operational/codebase).\n` +
+      `  skill library (${operationalCount}/${samplePaths.length} sampled skills have deployment_target:project/scope:operational/codebase).\n` +
       `  Resolved source root: ${sourceDir}\n` +
       `  Generating from this root would include internal sales-hub/ references and fail\n` +
       `  the privacy gate. The marketplace export must run against the clean portable library.\n` +
