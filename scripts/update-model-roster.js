@@ -62,6 +62,16 @@ function printRoster() {
       console.log(`  ${k.padEnd(14)} = ${v}`);
     }
   }
+  const { DISPLAY_NAMES } = require(CANONICAL);
+  if (DISPLAY_NAMES) {
+    console.log('\nHuman display names in DISPLAY_NAMES (OUTPUT only — board minutes, audit');
+    console.log('receipts). The CLI-resolving aliases (opus/codex-current) are display PINS:');
+    console.log('hand-edit DISPLAY_NAMES in BOTH model-provider.js copies when a new model');
+    console.log('ships (e.g. Opus 4.8 → Opus 4.9). This never affects dispatch/resolution:');
+    for (const [k, v] of Object.entries(DISPLAY_NAMES)) {
+      console.log(`  ${k.padEnd(28)} → ${v}`);
+    }
+  }
 }
 
 function applySet(filePath, key, value) {

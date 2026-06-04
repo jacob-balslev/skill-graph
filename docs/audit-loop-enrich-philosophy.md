@@ -47,6 +47,12 @@ When the eval measures "does this skill help," the agent that *answers the eval 
 - The generator *reasons* to produce the answer; that requires real capability. A weak generator conflates "skill quality" with "model capability."
 - The "ceiling effect" worry ("the frontier model already knows it, so no lift") is the **correct signal**, not a problem to engineer around: if a fully-resourced frontier agent already produces the best solution without the skill, the skill is *redundant for our deployment* — and enrichment's job is to keep pushing each skill to carry knowledge the agent does **not** already have or trivially find.
 
+## The advisory tier (breadth — NEVER certifies)
+
+The CORE of the loop is the two-frontier certifying pair above (Opus 4.8 ⇄ GPT-5.5). On top of it, an **opt-in advisory tier** widens the search: **Gemini 3.1 Pro** + the free OpenCode Zen models (**MiniMax M3, Nemotron 3 Super, Big Pickle, DeepSeek V4 Flash, MiMo V2.5**) + **Gemini 3 Flash** (`ADVISORY_MODELS` in `lib/audit-shared/model-provider.js`). Each advisory model runs as a **measured generator graded by a CORE frontier** (Opus — top-tier, cross-family), via `runAdvisoryPanel` (`lib/audit/run-bidirectional-eval.js`), enabled with `--advisory` / `AUDIT_ADVISORY_PANEL=1`.
+
+This does **not** contradict the "generator must be frontier" rule above: that rule governs the **certifying** generator. The advisory tier asks a *different, non-certifying* question — does the skill *also* help a cheaper/other-family agent? — and is recorded separately (`advisory_panel`). **It never feeds the conservative reconciliation and never sets a verdict.** `no-lesser-models-for-quality` is honored because the GRADER is always a top-tier frontier; the advisory model is only the measured subject (measurement, not quality-judging). Certification stays with Opus 4.8 ⇄ GPT-5.5.
+
 ## HOW agents use the loop
 
 Per skill, the cycle is **enrich → eval-guardrail → keep-or-revert**:
