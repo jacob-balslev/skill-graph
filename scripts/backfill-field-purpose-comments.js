@@ -85,7 +85,7 @@ const FIELD_COMMENTS = {
     '# version: skill content version (semver). Bumped when the instructional content changes.',
   ],
   subject: [
-    '# subject: primary browse shelf — what the skill teaches. One of nine closed values:',
+    '# subject: primary browse shelf — what the skill teaches. One of twelve closed values:',
     '# backend-engineering / frontend-engineering / software-architecture / data-engineering / agent-ops / ai-engineering /',
     '# quality-assurance / design / reasoning-strategy / software-engineering-method / knowledge-organization / product-domain.',
   ],

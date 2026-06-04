@@ -38,7 +38,7 @@ author a new skill. Two distinct comment conventions live in this template
 above each field, naming what the field is, its allowed values, and
 when-to-use. Example:
 # subject: primary browse shelf — what the skill teaches.
-# One of nine closed values: code-engineering / quality-assurance /
+# One of twelve closed values: code-engineering / quality-assurance /
 # frontend-ui / design-craft / agent-ops / product-domain /
 # knowledge-organization / meta-methods / data-analytics.
 subject: agent-ops
