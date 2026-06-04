@@ -1,26 +1,41 @@
 ---
-schema_version: 8
 name: payment-provider-router
 description: "Use when dispatching a verified payment event (Stripe webhook or future provider) to the correct downstream handler based on event type. Routes `checkout.session.completed` to subscription provisioning, `invoice.payment_failed` to dunning logic, and `customer.subscription.deleted` to cancellation. Do NOT use for signature verification of the incoming event (use stripe-webhook-signature-verification first) or for the actual subscription database writes (use the per-handler skill or postgres-rls-pattern)."
-version: 0.1.0
-subject: code-engineering
+
+# === v8 Classification (subject + deployment_target; polyhierarchy via subjects[]) — see ADR-0017 ===
+# subject: primary browse shelf — what the skill teaches. One of twelve closed values:
+# backend-engineering / frontend-engineering / software-architecture / data-engineering / agent-ops / ai-engineering /
+# quality-assurance / design / reasoning-strategy / software-engineering-method / knowledge-organization / product-domain.
+subject: backend-engineering
+# deployment_target: where this skill applies. One of two closed values:
+# portable (any project, repo-agnostic) /
+# project (one or more specific projects; requires populated `grounding` and `project[]`).
 deployment_target: portable
+# scope: free-text PRD-style statement of what the skill teaches and where it deploys
+# (v8 required; not an enum). Positive scope + portability/grounding + explicit exclusions.
+scope: "Dispatching a verified payment event to the correct downstream handler by event type in the saas-stripe-postgres example. Excludes webhook signature verification (stripe-webhook-signature-verification) and the subscription database writes (postgres-rls-pattern)."
+# taxonomy_domain: optional hierarchical sub-path within `subject`. Slash-delimited
+# lowercase kebab-case segments. rename of the original v8 `domain`. Remove when the flat
+# `subject` is sufficient.
 taxonomy_domain: engineering/payments
-owner: saas-stripe-postgres-example
-freshness: "2026-05-18"
-drift_check:
-  last_verified: "2026-05-18"
-eval_artifacts: none
-eval_state: unverified
-routing_eval: absent
+
+# stability: lifecycle marker. One of:
+# experimental (active development) / stable (production-ready) /
+# frozen (no further changes expected) / deprecated.
+# When `deprecated`, schema's allOf REQUIRES `superseded_by: <real-skill-name>`.
 stability: experimental
+# license: SPDX license identifier (e.g., MIT, Apache-2.0).
 license: MIT
+# compatibility: runtime compatibility object. Prefer structured fields
+# (`runtimes`, `node`) over free-text `notes`.
 compatibility:
   runtimes:
     - node
   node: ">=20"
   notes: "Stripe SDK >=14; event types sourced from Stripe's published event catalog."
 allowed-tools: Read Grep
+# keywords: semantic phrases for fuzzy router activation. v8 cap: max 10.
+# Keep terms a user would actually type when starting a task in this skill's domain.
 keywords:
   - payment event routing
   - stripe event type dispatch
@@ -32,20 +47,37 @@ keywords:
   - event type switch
   - payment event handler
   - multi-provider payment routing
+# triggers: explicit-match activation phrases the router fires on literally.
+# Use when label-based routing is intended; usually keywords + examples are enough.
 triggers:
   - payment-provider-router
+# paths: glob array of code surfaces this skill governs. Supports gitignore-style
+# negation. Each glob should map to ONE canonical skill. Omit if purely conceptual.
 paths:
   - "lib/payments/router.ts"
   - "app/api/webhooks/stripe/route.ts"
+# examples: 2-5 realistic user prompts the skill SHOULD activate for.
+# Written in the user's voice. Improves retrieval recall beyond keywords alone.
 examples:
   - "route checkout.session.completed to subscription provisioning"
   - "which handler should process invoice.payment_failed for dunning?"
   - "add a new event type handler for customer.subscription.updated"
   - "design the event router so it is extensible to a second payment provider"
+# anti_examples: near-miss prompts that should route ELSEWHERE.
+# Pair with relations.boundary to indicate the confusable territory's owner.
 anti_examples:
   - "verify that the webhook request is genuinely from Stripe"
   - "write the database insert that creates the subscription record"
   - "handle a failed Stripe API call when creating a payment intent"
+# relations: typed graph edges to sibling skills. Current fields:
+# related (adjacency for browse / co-routing expansion) /
+# boundary (exclude listed skills from co-routing when THIS skill wins — name is inverse
+#           to mechanic; write reason as "I own this exclusively over X", not "use X instead";
+#           see ADR-0018 for rename rationale) /
+# verify_with (cross-check; co-loaded as one-hop expansion) /
+# depends_on (composition; transitive — A→B→C loads all three) /
+# broader / narrower (SKOS-style generalization) /
+# disjoint_with (mutual exclusion for incompatible ownership).
 relations:
   boundary:
     - skill: stripe-webhook-signature-verification
@@ -53,17 +85,9 @@ relations:
     - skill: postgres-rls-pattern
       reason: "postgres-rls-pattern governs the database writes that each handler performs; this router decides which handler runs, not how it writes"
   depends_on:
-    - skill: stripe-webhook-signature-verification
-      reason: "this router must only receive events that have already passed signature verification — call stripe-webhook-signature-verification first"
+    - stripe-webhook-signature-verification
   verify_with:
     - stripe-webhook-signature-verification
-portability:
-  readiness: scripted
-  targets:
-    - skill-md
-lifecycle:
-  stale_after_days: 90
-  review_cadence: quarterly
 ---
 
 # Payment Provider Router

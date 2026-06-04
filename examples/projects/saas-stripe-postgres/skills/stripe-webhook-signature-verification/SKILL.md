@@ -1,28 +1,41 @@
 ---
-schema_version: 8
 name: stripe-webhook-signature-verification
 description: "Use when validating incoming Stripe webhook requests in a Node.js or Next.js backend before processing any payment event. Verifies the `stripe-signature` header against `STRIPE_WEBHOOK_SECRET` using Stripe's HMAC-SHA256 scheme, and rejects replays older than 300 seconds. Do NOT use for general HTTP signature validation (use a generic crypto-signature skill), for processing the webhook payload after signature is confirmed (use payment-provider-router), or for Stripe API calls that are not webhook-driven."
-version: 0.1.0
-subject: code-engineering
+
+# === v8 Classification (subject + deployment_target; polyhierarchy via subjects[]) — see ADR-0017 ===
+# subject: primary browse shelf — what the skill teaches. One of twelve closed values:
+# backend-engineering / frontend-engineering / software-architecture / data-engineering / agent-ops / ai-engineering /
+# quality-assurance / design / reasoning-strategy / software-engineering-method / knowledge-organization / product-domain.
+subject: backend-engineering
+# deployment_target: where this skill applies. One of two closed values:
+# portable (any project, repo-agnostic) /
+# project (one or more specific projects; requires populated `grounding` and `project[]`).
 deployment_target: portable
+# scope: free-text PRD-style statement of what the skill teaches and where it deploys
+# (v8 required; not an enum). Positive scope + portability/grounding + explicit exclusions.
+scope: "Verifying the authenticity of an incoming Stripe webhook via signature check before any processing in the saas-stripe-postgres example. Excludes routing the verified event (payment-provider-router) and the downstream database writes (postgres-rls-pattern)."
+# taxonomy_domain: optional hierarchical sub-path within `subject`. Slash-delimited
+# lowercase kebab-case segments. rename of the original v8 `domain`. Remove when the flat
+# `subject` is sufficient.
 taxonomy_domain: engineering/payments
-owner: saas-stripe-postgres-example
-freshness: "2026-05-18"
-drift_check:
-  last_verified: "2026-05-18"
-  truth_source_hashes:
-    stripe-webhook-docs: "sha256:placeholder-record-with-node-scripts-skill-graph-drift-js"
-eval_artifacts: none
-eval_state: unverified
-routing_eval: absent
+
+# stability: lifecycle marker. One of:
+# experimental (active development) / stable (production-ready) /
+# frozen (no further changes expected) / deprecated.
+# When `deprecated`, schema's allOf REQUIRES `superseded_by: <real-skill-name>`.
 stability: experimental
+# license: SPDX license identifier (e.g., MIT, Apache-2.0).
 license: MIT
+# compatibility: runtime compatibility object. Prefer structured fields
+# (`runtimes`, `node`) over free-text `notes`.
 compatibility:
   runtimes:
     - node
   node: ">=20"
   notes: "Stripe SDK >=14; expects raw request body (not parsed JSON) for signature verification."
 allowed-tools: Read Grep
+# keywords: semantic phrases for fuzzy router activation. v8 cap: max 10.
+# Keep terms a user would actually type when starting a task in this skill's domain.
 keywords:
   - stripe webhook signature verification
   - stripe-signature header
@@ -33,20 +46,37 @@ keywords:
   - webhook security
   - payment webhook validation
   - stripe webhook secret
+# triggers: explicit-match activation phrases the router fires on literally.
+# Use when label-based routing is intended; usually keywords + examples are enough.
 triggers:
   - stripe-webhook-signature-verification
+# paths: glob array of code surfaces this skill governs. Supports gitignore-style
+# negation. Each glob should map to ONE canonical skill. Omit if purely conceptual.
 paths:
   - "app/api/webhooks/stripe/route.ts"
   - "lib/stripe/webhook.ts"
+# examples: 2-5 realistic user prompts the skill SHOULD activate for.
+# Written in the user's voice. Improves retrieval recall beyond keywords alone.
 examples:
   - "how do I verify that a webhook is really from Stripe?"
   - "my webhook handler is returning 400 — is the signature verification failing?"
   - "set up the Stripe webhook endpoint in a Next.js App Router API route"
   - "reject replayed webhook events older than 5 minutes"
+# anti_examples: near-miss prompts that should route ELSEWHERE.
+# Pair with relations.boundary to indicate the confusable territory's owner.
 anti_examples:
   - "process the Stripe payment_intent.succeeded event payload"
   - "call the Stripe API to create a payment intent"
   - "validate a generic HTTP signature that is not from Stripe"
+# relations: typed graph edges to sibling skills. Current fields:
+# related (adjacency for browse / co-routing expansion) /
+# boundary (exclude listed skills from co-routing when THIS skill wins — name is inverse
+#           to mechanic; write reason as "I own this exclusively over X", not "use X instead";
+#           see ADR-0018 for rename rationale) /
+# verify_with (cross-check; co-loaded as one-hop expansion) /
+# depends_on (composition; transitive — A→B→C loads all three) /
+# broader / narrower (SKOS-style generalization) /
+# disjoint_with (mutual exclusion for incompatible ownership).
 relations:
   boundary:
     - skill: payment-provider-router
@@ -54,17 +84,9 @@ relations:
     - skill: nextjs-server-action-validation
       reason: "nextjs-server-action-validation validates user-submitted form input via Zod; this skill validates Stripe's HMAC signature — different trust boundary, different mechanism"
   depends_on:
-    - skill: postgres-rls-pattern
-      reason: "idempotency key lookups that prevent double-processing run inside the RLS-scoped query layer; this skill activates before those lookups"
+    - postgres-rls-pattern
   verify_with:
     - nextjs-server-action-validation
-portability:
-  readiness: scripted
-  targets:
-    - skill-md
-lifecycle:
-  stale_after_days: 90
-  review_cadence: quarterly
 ---
 
 # Stripe Webhook Signature Verification

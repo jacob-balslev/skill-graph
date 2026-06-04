@@ -1,26 +1,41 @@
 ---
-schema_version: 8
 name: postgres-rls-pattern
 description: "Use when writing or reviewing Postgres queries in a multi-tenant SaaS where every table row must be scoped to a single organization. Enforces the FORCE ROW LEVEL SECURITY + USING + WITH CHECK triple on every tenant-bound table, and wraps application queries in an `orgQuery(orgId)` helper that sets `app.current_org_id` before each statement. Do NOT use for cross-org system queries such as billing cron jobs or admin panels (those bypass RLS intentionally via the service role); use a service-role query wrapper instead."
-version: 0.1.0
-subject: code-engineering
+
+# === v8 Classification (subject + deployment_target; polyhierarchy via subjects[]) — see ADR-0017 ===
+# subject: primary browse shelf — what the skill teaches. One of twelve closed values:
+# backend-engineering / frontend-engineering / software-architecture / data-engineering / agent-ops / ai-engineering /
+# quality-assurance / design / reasoning-strategy / software-engineering-method / knowledge-organization / product-domain.
+subject: backend-engineering
+# deployment_target: where this skill applies. One of two closed values:
+# portable (any project, repo-agnostic) /
+# project (one or more specific projects; requires populated `grounding` and `project[]`).
 deployment_target: portable
+# scope: free-text PRD-style statement of what the skill teaches and where it deploys
+# (v8 required; not an enum). Positive scope + portability/grounding + explicit exclusions.
+scope: "Row-level-security policy pattern for multi-tenant Postgres in the saas-stripe-postgres example — tenant isolation via RLS policies on every tenant-scoped table. Excludes application-layer authorization logic and the event routing that triggers the writes."
+# taxonomy_domain: optional hierarchical sub-path within `subject`. Slash-delimited
+# lowercase kebab-case segments. rename of the original v8 `domain`. Remove when the flat
+# `subject` is sufficient.
 taxonomy_domain: engineering/database
-owner: saas-stripe-postgres-example
-freshness: "2026-05-18"
-drift_check:
-  last_verified: "2026-05-18"
-eval_artifacts: none
-eval_state: unverified
-routing_eval: absent
+
+# stability: lifecycle marker. One of:
+# experimental (active development) / stable (production-ready) /
+# frozen (no further changes expected) / deprecated.
+# When `deprecated`, schema's allOf REQUIRES `superseded_by: <real-skill-name>`.
 stability: experimental
+# license: SPDX license identifier (e.g., MIT, Apache-2.0).
 license: MIT
+# compatibility: runtime compatibility object. Prefer structured fields
+# (`runtimes`, `node`) over free-text `notes`.
 compatibility:
   runtimes:
     - node
   node: ">=20"
   notes: "Postgres >=14 with row-level security enabled; assumes pg or postgres.js driver."
 allowed-tools: Read Grep
+# keywords: semantic phrases for fuzzy router activation. v8 cap: max 10.
+# Keep terms a user would actually type when starting a task in this skill's domain.
 keywords:
   - postgres row level security
   - RLS multi-tenant
@@ -32,21 +47,38 @@ keywords:
   - multi-tenant postgres
   - row security policy
   - using with check policy
+# triggers: explicit-match activation phrases the router fires on literally.
+# Use when label-based routing is intended; usually keywords + examples are enough.
 triggers:
   - postgres-rls-pattern
+# paths: glob array of code surfaces this skill governs. Supports gitignore-style
+# negation. Each glob should map to ONE canonical skill. Omit if purely conceptual.
 paths:
   - "lib/db.ts"
   - "db/schema.sql"
   - "db/migrations/*.sql"
+# examples: 2-5 realistic user prompts the skill SHOULD activate for.
+# Written in the user's voice. Improves retrieval recall beyond keywords alone.
 examples:
   - "how do I prevent one tenant's data from appearing in another tenant's queries?"
   - "write the RLS policy for the orders table in a multi-tenant SaaS"
   - "set up the orgQuery helper so every query is automatically scoped to the current org"
   - "add row level security to a new subscriptions table"
+# anti_examples: near-miss prompts that should route ELSEWHERE.
+# Pair with relations.boundary to indicate the confusable territory's owner.
 anti_examples:
   - "run a billing cron job that needs to read all orgs"
   - "write a migration that backfills data across all organizations"
   - "query the database without any tenant context for an admin dashboard"
+# relations: typed graph edges to sibling skills. Current fields:
+# related (adjacency for browse / co-routing expansion) /
+# boundary (exclude listed skills from co-routing when THIS skill wins — name is inverse
+#           to mechanic; write reason as "I own this exclusively over X", not "use X instead";
+#           see ADR-0018 for rename rationale) /
+# verify_with (cross-check; co-loaded as one-hop expansion) /
+# depends_on (composition; transitive — A→B→C loads all three) /
+# broader / narrower (SKOS-style generalization) /
+# disjoint_with (mutual exclusion for incompatible ownership).
 relations:
   boundary:
     - skill: migrate-orders-to-canonical-schema
@@ -56,13 +88,6 @@ relations:
   depends_on: []
   verify_with:
     - migrate-orders-to-canonical-schema
-portability:
-  readiness: scripted
-  targets:
-    - skill-md
-lifecycle:
-  stale_after_days: 180
-  review_cadence: quarterly
 ---
 
 # Postgres RLS Pattern

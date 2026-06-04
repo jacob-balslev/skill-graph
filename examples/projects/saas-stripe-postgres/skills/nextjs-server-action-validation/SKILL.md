@@ -1,26 +1,41 @@
 ---
-schema_version: 8
 name: nextjs-server-action-validation
 description: "Use when writing a Next.js Server Action that accepts user-submitted form data, mutation parameters, or any client-originated input. Every Server Action is a public HTTP endpoint regardless of how it is called — validate with Zod and check authentication as the first two operations before touching the database. Do NOT use for GET route handlers or Server Components that fetch data (those have no user-supplied input); do NOT use for Stripe webhook handlers (use stripe-webhook-signature-verification instead)."
-version: 0.1.0
-subject: code-engineering
+
+# === v8 Classification (subject + deployment_target; polyhierarchy via subjects[]) — see ADR-0017 ===
+# subject: primary browse shelf — what the skill teaches. One of twelve closed values:
+# backend-engineering / frontend-engineering / software-architecture / data-engineering / agent-ops / ai-engineering /
+# quality-assurance / design / reasoning-strategy / software-engineering-method / knowledge-organization / product-domain.
+subject: frontend-engineering
+# deployment_target: where this skill applies. One of two closed values:
+# portable (any project, repo-agnostic) /
+# project (one or more specific projects; requires populated `grounding` and `project[]`).
 deployment_target: portable
+# scope: free-text PRD-style statement of what the skill teaches and where it deploys
+# (v8 required; not an enum). Positive scope + portability/grounding + explicit exclusions.
+scope: "Server-side input validation for Next.js Server Actions in the saas-stripe-postgres example — schema-validate untrusted form/RPC payloads at the server boundary before any mutation. Excludes external-webhook signature verification (stripe-webhook-signature-verification) and database-layer RLS enforcement (postgres-rls-pattern)."
+# taxonomy_domain: optional hierarchical sub-path within `subject`. Slash-delimited
+# lowercase kebab-case segments. rename of the original v8 `domain`. Remove when the flat
+# `subject` is sufficient.
 taxonomy_domain: engineering/web
-owner: saas-stripe-postgres-example
-freshness: "2026-05-18"
-drift_check:
-  last_verified: "2026-05-18"
-eval_artifacts: none
-eval_state: unverified
-routing_eval: absent
+
+# stability: lifecycle marker. One of:
+# experimental (active development) / stable (production-ready) /
+# frozen (no further changes expected) / deprecated.
+# When `deprecated`, schema's allOf REQUIRES `superseded_by: <real-skill-name>`.
 stability: experimental
+# license: SPDX license identifier (e.g., MIT, Apache-2.0).
 license: MIT
+# compatibility: runtime compatibility object. Prefer structured fields
+# (`runtimes`, `node`) over free-text `notes`.
 compatibility:
   runtimes:
     - node
   node: ">=20"
   notes: "Next.js App Router >=14 with server actions enabled; Zod >=3."
 allowed-tools: Read Grep
+# keywords: semantic phrases for fuzzy router activation. v8 cap: max 10.
+# Keep terms a user would actually type when starting a task in this skill's domain.
 keywords:
   - next.js server action validation
   - zod input validation
@@ -32,20 +47,37 @@ keywords:
   - server action pattern
   - mutation validation
   - next.js app router actions
+# triggers: explicit-match activation phrases the router fires on literally.
+# Use when label-based routing is intended; usually keywords + examples are enough.
 triggers:
   - nextjs-server-action-validation
+# paths: glob array of code surfaces this skill governs. Supports gitignore-style
+# negation. Each glob should map to ONE canonical skill. Omit if purely conceptual.
 paths:
   - "app/actions/*.ts"
   - "lib/actions/*.ts"
+# examples: 2-5 realistic user prompts the skill SHOULD activate for.
+# Written in the user's voice. Improves retrieval recall beyond keywords alone.
 examples:
   - "write a Server Action for the checkout form that validates the selected plan before creating a Stripe session"
   - "secure a Server Action so it rejects unauthenticated requests"
   - "validate user input with Zod in a Server Action before writing to Postgres"
   - "my Server Action is being called directly via fetch — is that safe?"
+# anti_examples: near-miss prompts that should route ELSEWHERE.
+# Pair with relations.boundary to indicate the confusable territory's owner.
 anti_examples:
   - "validate the stripe-signature header in a webhook route handler"
   - "fetch data in a Server Component to display on a page"
   - "write a GET route handler that returns public product data"
+# relations: typed graph edges to sibling skills. Current fields:
+# related (adjacency for browse / co-routing expansion) /
+# boundary (exclude listed skills from co-routing when THIS skill wins — name is inverse
+#           to mechanic; write reason as "I own this exclusively over X", not "use X instead";
+#           see ADR-0018 for rename rationale) /
+# verify_with (cross-check; co-loaded as one-hop expansion) /
+# depends_on (composition; transitive — A→B→C loads all three) /
+# broader / narrower (SKOS-style generalization) /
+# disjoint_with (mutual exclusion for incompatible ownership).
 relations:
   boundary:
     - skill: stripe-webhook-signature-verification
@@ -53,17 +85,9 @@ relations:
     - skill: postgres-rls-pattern
       reason: "postgres-rls-pattern governs the database layer; this skill governs the action layer — both are required in a secure Server Action, but at separate tiers"
   depends_on:
-    - skill: postgres-rls-pattern
-      reason: "Server Actions that write to Postgres must call orgQuery to enforce tenant isolation after input is validated"
+    - postgres-rls-pattern
   verify_with:
     - stripe-webhook-signature-verification
-portability:
-  readiness: scripted
-  targets:
-    - skill-md
-lifecycle:
-  stale_after_days: 90
-  review_cadence: quarterly
 ---
 
 # Next.js Server Action Validation

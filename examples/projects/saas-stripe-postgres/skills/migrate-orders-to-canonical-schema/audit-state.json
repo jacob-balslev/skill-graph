@@ -1,0 +1,16 @@
+{
+  "schema_version": 8,
+  "version": "0.1.0",
+  "owner": "saas-stripe-postgres-example",
+  "freshness": "2026-05-18",
+  "drift_check": {
+    "last_verified": "2026-05-18"
+  },
+  "eval_artifacts": "none",
+  "eval_state": "unverified",
+  "routing_eval": "absent",
+  "lifecycle": {
+    "stale_after_days": 30,
+    "review_cadence": "quarterly"
+  }
+}
